@@ -229,6 +229,9 @@ def parseConfig_CompileTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   if cfgTELEMAC[cfg]['MODULES'] == {}:
+      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
+      sys.exit()
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
@@ -292,6 +295,9 @@ def parseConfig_TranslateTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   if cfgTELEMAC[cfg]['MODULES'] == {}:
+      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
+      sys.exit()
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -325,6 +331,9 @@ def parseConfig_TranslateCAS(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   if cfgTELEMAC[cfg]['MODULES'] == {}:
+      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
+      sys.exit()
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -364,6 +373,9 @@ def parseConfig_DoxygenTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   if cfgTELEMAC[cfg]['MODULES'] == {}:
+      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
+      sys.exit()
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -397,6 +409,9 @@ def parseConfig_CompactTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   if cfgTELEMAC[cfg]['MODULES'] == {}:
+      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
+      sys.exit()
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
