@@ -552,7 +552,7 @@ def scanSources(cfgdir,cfg):
       fic.update({mod:{}})
       # ~~ Scans the sources that are relevant to the model ~~~~~~~~
       SrcDir = path.join(cfg['MODULES'][mod]['path'],'sources')     # assumes the sources are under ./sources
-      FileList = utils.getFiles(SrcDir,['.f'])
+      FileList = utils.getTheseFiles(SrcDir,['.f'])
       ODir = path.join(cfg['MODULES'][mod]['path'],cfgdir)
 
       print '... now scanning ', path.basename(cfg['MODULES'][mod]['path'])
