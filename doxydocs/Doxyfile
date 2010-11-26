@@ -89,16 +89,18 @@ WARN_LOGFILE           = Doxygen_BuildLog.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ./ \
-                         ../artemis/arte_v6p0/sources \
-                         ../bief/bief_v6p0/sources \
-                         ../damocles/damo_v6p0/sources \
-                         ../mumpsvoid/mumpsvoid_v6p0/sources \
-                         ../parallel/parallel_v6p0/sources \
-                         ../sisyphe/sisyphe_v6p0/sources \
-                         ../special/special_v6p0/sources \
-                         ../telemac2d/tel2d_v6p0/sources \
-                         ../telemac3d/tel3d_v6p0/sources \
-                         ../tomawac/toma_v6p0/sources
+                         ./artemis/arte_v6p0/sources \
+                         ./bief/bief_v6p0/sources \
+                         ./damocles/damo_v6p0/sources \
+                         ./mumpsvoid/mumpsvoid_v6p0/sources \
+                         ./parallel/parallel_v6p0/sources \
+                         ./sisyphe/sisyphe_v6p0/sources \
+                         ./special/special_v6p0/sources \
+                         ./stbtel/stbtel_v6p0/sources \
+                         ./postel3d/postel3d_v6p0/sources \
+                         ./telemac2d/tel2d_v6p0/sources \
+                         ./telemac3d/tel3d_v6p0/sources \
+                         ./tomawac/toma_v6p0/sources
 FILE_PATTERNS          = *.f \
                          *.dox
 RECURSIVE              = YES
