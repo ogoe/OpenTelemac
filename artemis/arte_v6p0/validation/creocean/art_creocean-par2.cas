@@ -1,0 +1,42 @@
+/
+/  HP C3700 : 1178 s
+/
+/
+/---------------------------------------------------------------------
+/                       Port de Borme
+/---------------------------------------------------------------------
+/
+/    NOM DES FICHIERS
+/
+FICHIER FORTRAN                          : 'art_actu-para.f'
+FICHIER DES CONDITIONS AUX LIMITES       : 'geo_borme_actu.cli'
+FICHIER DE GEOMETRIE                     : 'geo_borme_actu.slf'
+FICHIER DES RESULTATS                    : 'r2d_creocean-par2.slf'
+/
+VALIDATION : OUI
+FICHIER DE REFERENCE : 'actu.res'
+/
+/    PARAMETRES GENERAUX
+/
+TITRE = 'Agitation port de Borme - Cas: T=8 sec, H=2 m, Dir=Est90³'
+VARIABLES POUR LES SORTIES GRAPHIQUES    : 'HS,INC,PHAS,QB,ZS,ZF'
+/
+/    CONDITIONS AUX LIMITES
+/
+HOULE ALEATOIRE MONODIRECTIONNELLE       : OUI
+GAMMA                                    : 2. 
+PERIODE DE PIC                           : 8.
+PERIODE MAXIMUM DU SPECTRE               : 12
+PERIODE MINIMUM DU SPECTRE               : 6
+DEFERLEMENT                              : OUI
+DIRECTION DE PROPAGATION DE LA HOULE     : 180.
+NOMBRE DE PERIODES DE DISCRETISATION     : 4
+/
+/    CONDITIONS INITIALES
+/
+CONDITIONS INITIALES                     : 'COTE CONSTANTE'
+COTE INITIALE                            : 0.5
+/
+PROCESSEURS PARALLELES : 2
+SOLVEUR : 9
+STOCKAGE DES MATRICES : 3
