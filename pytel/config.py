@@ -229,9 +229,6 @@ def parseConfig_CompileTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
-   if cfgTELEMAC[cfg]['MODULES'] == {}:
-      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
-      sys.exit()
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
@@ -295,9 +292,6 @@ def parseConfig_TranslateTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
-   if cfgTELEMAC[cfg]['MODULES'] == {}:
-      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
-      sys.exit()
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -331,9 +325,6 @@ def parseConfig_TranslateCAS(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
-   if cfgTELEMAC[cfg]['MODULES'] == {}:
-      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
-      sys.exit()
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -373,9 +364,6 @@ def parseConfig_DoxygenTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
-   if cfgTELEMAC[cfg]['MODULES'] == {}:
-      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
-      sys.exit()
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -409,15 +397,89 @@ def parseConfig_CompactTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\sources\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
-   if cfgTELEMAC[cfg]['MODULES'] == {}:
-      print ('The TELEMAC structure seems to be empty from the root: %s \n' % (cfgTELEMAC[cfg]['TELDIR']))
-      sys.exit()
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
    cfgTELEMAC[cfg].update({'ZIPPER':getConfigKey(CONFIGS[cfg],'sfx_zip',True,True)[1:]})
 
    return cfgTELEMAC
+
+"""
+   Extract all the information required for the validation
+   of the relevant modules for each configuration
+"""
+def parseConfig_ValidateTELEMAC(cfg):
+   #  cfg is either  wintel32s wintel32p wing9532s wing9532p ...
+   cfgTELEMAC = {cfg:{}}
+   # Get teldir: ...
+   # or the absolute path to the TELEMAC root
+   get = getConfigKey(CONFIGS[cfg],'root',True,True)
+   if not path.exists(get):
+      print ('\nThe following directory does not exist %s \n' % (get))
+      sys.exit()
+   cfgTELEMAC[cfg].update({'TELDIR':get})
+   # Get telver:
+   # TELEMAC version number, to build relative path names to \sources\
+   # using the template ... teldir\*\*telver\sources\
+   get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
+   cfgTELEMAC[cfg].update({'TELVER':get})
+
+   # Deduce the actual list of modules existing within the root teldir,
+   # identified by matching the directory structure to the template
+   # teldir\module_name\*telver\sources\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
+   # for every module in the list of modules to account for
+   # specific external includes for all or each module
+   for mod in cfgTELEMAC[cfg]['MODULES'].keys():
+      cfgTELEMAC[cfg]['MODULES'][mod].update({'mods':getEXTERNALs(CONFIGS[cfg],'mods',mod)})
+      cfgTELEMAC[cfg]['MODULES'][mod].update({'incs':getEXTERNALs(CONFIGS[cfg],'incs',mod)})
+      cfgTELEMAC[cfg]['MODULES'][mod].update({'libs':getEXTERNALs(CONFIGS[cfg],'libs',mod)})
+
+   cfgTELEMAC[cfg].update({'VALIDATION':{}})
+   # Get modules: user list of module and there associated directories
+   # in which 'system' means all existing modules,
+   # and in which 'update' means a continuation, ignoring previously completed runs
+   # and in which 'clean' means a re-run of all validation tests
+   # and Get options: for the switches such as parallel, openmi, mumps, etc.
+   get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
+   cfgTELEMAC[cfg].update({'REBUILD':tbd})
+   for mod in get.split():
+      if mod in cfgTELEMAC[cfg]['MODULES'].keys():
+         got = getFolders_ValidationTELEMAC(cfgTELEMAC[cfg]['MODULES'][mod]['path'])
+         if got != []:
+            cfgTELEMAC[cfg]['VALIDATION'].update({mod:got})
+
+   # Get command_zip: and command_piz:
+   # the command lines to zip/unzip respectively
+   cfgTELEMAC[cfg].update({'ZIPPER':getConfigKey(CONFIGS[cfg],'sfx_zip',True,True)[1:]})
+
+   # Get system's suffixes for obj, lib, mod, and exe
+   system = {}
+   system.update({'SFX_OBJ':getConfigKey(CONFIGS[cfg],'sfx_obj',True,False).lower()})
+   system.update({'SFX_EXE':getConfigKey(CONFIGS[cfg],'sfx_exe',True,False).lower()})
+   system.update({'SFX_LIB':getConfigKey(CONFIGS[cfg],'sfx_lib',True,False).lower()})
+   system.update({'SFX_MOD':getConfigKey(CONFIGS[cfg],'sfx_mod',True,False).lower()})
+   cfgTELEMAC[cfg].update({'SYSTEM':system})
+
+   return cfgTELEMAC
+
+"""
+   Walk through the directory structure available from the root
+   and identifies modules with the template
+   root\validation\*\*.cas
+"""
+def getFolders_ValidationTELEMAC(root):
+   validation = []
+   valroot = path.join(root,'validation')
+   if path.exists(valroot) :
+      for valdir in listdir(valroot) :
+         if not (valdir[0] == '.' or path.isfile(path.join(valroot,valdir))) :
+            subroot = path.join(valroot,valdir)
+            for file in listdir(subroot):
+               if path.splitext(file)[1] == '.cas' and path.isfile(path.join(subroot,file)) :
+                  validation.append(path.join(subroot,file))
+   return validation
 
 """
    Walk through the directory structure available from the root

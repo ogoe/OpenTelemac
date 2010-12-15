@@ -50,7 +50,7 @@ def getFileContent(file):
    ilines = []
    SrcF = open(file,'r')
    for line in SrcF:
-      ilines.append(line.replace('\r',''))
+      ilines.append(line)
    SrcF.close()
    return ilines
 
@@ -59,7 +59,7 @@ def getFileContent(file):
 """
 def putFileContent(file,lines):
    SrcF = open(file,'wb')
-   SrcF.write(''.join(lines))
+   SrcF.write(('\n'.join(lines)).replace('\r','').replace('\n\n','\n'))
    SrcF.close()
    return
 

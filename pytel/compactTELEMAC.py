@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
       for cfg in cfgs:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-         print '\n\nConfiguration' + cfg + '\n\
+         print '\n\nConfiguration ' + cfg + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
          pt = cfgs[cfg]['TELDIR']

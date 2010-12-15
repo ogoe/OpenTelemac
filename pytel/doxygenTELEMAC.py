@@ -9,6 +9,7 @@ from config import parseConfigFile, parseConfig_DoxygenTELEMAC
 from parserFortran import scanSources, parseDoxyWrap, parseVars
 from os import path, chdir, mkdir, remove, system
 from utils import getFileContent, putFileContent, createDirectories
+import sys
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -466,7 +467,7 @@ if __name__ == "__main__":
                # ~~ Update its Doxygen content ~~~~~~~~~~~~~~~~~~~~~
                olines = updateDOXYGEN(ilines,mod,len(fic[mod][ifile]),all)
                # ~~ Make sure the distination exists ~~~~~~~~~~~~~~~
-               ofile = ifile.replace(cfgs[cfg]['TELDIR'],path.join(path.dirname(cfgs[cfg]['TELDIR']),cfg))
+               ofile = ifile.replace(cfgs[cfg]['TELDIR'],path.join(cfgs[cfg]['TELDIR'],cfg))
                createDirectories(path.dirname(ofile))
                # ~~ Write the content of the source file ~~~~~~~~~~~
                putFileContent(ofile,olines)

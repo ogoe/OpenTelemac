@@ -592,7 +592,7 @@ def scanSources(cfgdir,cfg):
          found = False #ndu
          while core != [] and not found:                             # ignores what might be in the file after the main program
 
-            # ~~ Parse Main Structure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            # ~~ Parse Main Structure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             code,w,face,ctns,core = parsePrincipalWrap(core)
             name,whoi,rest = parsePrincipalMain(code,who,w[0],w[1],w[2],w[3])
             if name == 'EXTENS': print found
@@ -802,7 +802,7 @@ def parseDoxyHeader(core):
    while 1:
       line = core[0].rstrip()
       proc = re.match(emptyline,line)
-      if proc and found:
+      if proc and found:  # here you do not allow for duplicated empty lines
          if doxy[len(doxy)-1] != '': doxy.append('')
          core.pop(0)
          continue
@@ -897,7 +897,7 @@ def parseDoxyWrap(lines,icount):
       wrap[count][0],wrap[count][1],core = parseDoxyHeader(core)
       wrap[count][2],wrap[count][4],core = parseFortHeader(core)
       wrap[count][3] = []
-
+      
       block = 0
       ctain = 0; ltain = False; lface = False
       while core != []:
