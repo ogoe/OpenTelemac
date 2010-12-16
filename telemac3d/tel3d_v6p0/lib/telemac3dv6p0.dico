@@ -11,7 +11,7 @@
 /
 /  - "SELAFIN" :	
 /     Le fichier est "decompose/regroupe en sous-domaines" avec les outils
-/      "partel/gretel" (dans le mode par defaut "parallelisme automatique")	
+/      "partel/gretel" (dans le mode par defaut "parallelisme automatique")
 /     Chaque processeur dispose d'un fichier prive.
 /  - "SELAFIN-GEOM" :
 /     idem SELAFIN mais pour le fichier de geometrie ='FICHIER DE GEOMETRIE'
@@ -2962,7 +2962,7 @@ RUBRIQUE = 'SEDIMENT'
 RUBRIQUE1 = 'SEDIMENT'
 NIVEAU = 1
 AIDE = 'epaisseur de reference pour creer de nouvelles couches
-de vase.Ce parametre est utilise seulement dans le cas 
+de vase.Ce parametre est utilise seulement dans le cas
 MODELE DE TASSEMENT DE GIBSON = OUI.Avec ce modele, le sediment 
 qui se depose sur le fond est tout d''abord stocke dans une couche
 tampon appelee couche des depots frais. C''est seulement quand 
