@@ -769,7 +769,7 @@ NIVEAU = 1
 COMPORT = 'Foreground ("TRANSPORT SOLIDE") IS BRUT (springgreen)'
 AIDE = '10 formules de transport solide sont implementees dans SISYPHE.
 Les formules Ne3, Ne30 et Ne9 ne doivent pas etre utilisees en cas de couplage avec la suspension.
-Les formules Ne4, Ne5, Ne8 and Ne9 calculent le taux de transport sous l'action combinee
+Les formules Ne4, Ne5, Ne8 and Ne9 calculent le taux de transport sous l''action combinee
 de la houle et du courant :
                  1 : MEYER-PETER (charriage)
                  2 : EINSTEIN-BROWN (charriage)
@@ -1778,7 +1778,7 @@ CHOIX =
 '5="SCHEMA PSI CONSERVATIF"';
 '6="SCHEMA PSI NON CONSERVATIF"';
 '7="SCHEMA N IMPLICITE NON CONSERVATIF"';
-'13="SCHEMA N PAR SEGMENTS";
+'13="SCHEMA N PAR SEGMENTS"';
 '14="SCHEMA N PAR SEGMENTS"'
 CHOIX1 =
 '1="CHARACTERISTICS"';
@@ -1788,7 +1788,7 @@ CHOIX1 =
 '5="CONSERVATIVE PSI-SCHEME"';
 '6="NON CONSERVATIVE PSI SCHEME"';
 '7="IMPLICIT NON CONSERVATIVE N SCHEME"';
-'13="EDGE-BASED N-SCHEME";
+'13="EDGE-BASED N-SCHEME"';
 '14="EDGE-BASED N-SCHEME"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'FORME DE LA CONVECTION';
             'SUSPENSION'
@@ -2401,7 +2401,7 @@ AIDE1 = '1 : Zysderman and Fredsoe, equilibrium formula
          2: Bijker method. The near bed concentration 
          is related to the bedload . This option cannot be used 
          without bedload transport'
-/        
+/
 NOM = 'CORRECTION DU CHAMP CONVECTEUR'
 NOM1 = 'CORRECTION ON CONVECTION VELOCITY'
 TYPE = LOGIQUE
@@ -2897,9 +2897,9 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE = 'This is the given allocation limit, secure default NOMLAY=2'
-AIDE1 ='This is the given allocation limit, secure default NOMLAY=2'/
+AIDE1 ='This is the given allocation limit, secure default NOMLAY=2'
 
-// jaj #### added for sections 
+// jaj #### added for sections
 
 NOM = 'SECTIONS INPUT FILE'
 NOM1 = 'SECTIONS INPUT FILE'
