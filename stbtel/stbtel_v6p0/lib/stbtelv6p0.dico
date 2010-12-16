@@ -418,13 +418,13 @@ non le maillage extrait sur les aretes du polygone.'
 AIDE1 =
 'When a mesh is extracted inside a polygon, indicates whether the mesh
 should be projected through the faces of the polygon or not.'
- 
+
 
 NOM = 'USER'
 NOM1 = 'USER'
 TYPE = CARACTERE
 INDEX = 1
-SUBMIT = 'user;opt;void;void'
+SUBMIT = 'user;opt;void;void;void;void'
 DEFAUT = ' '
 DEFAUT1 = ' '
 MNEMO = ''
@@ -503,7 +503,7 @@ NOM = 'FICHIER UNIVERSEL'
 NOM1 = 'UNIVERSAL FILE'
 TYPE = CARACTERE
 INDEX = 5
-SUBMIT = 'INUTILE;FORT.1;OBLIG;ASC;LIT;SCAL'
+SUBMIT = 'INUTILE;FORT.1;OBLIG;BIN;LIT;SCAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
 MNEMO = ''
@@ -573,7 +573,7 @@ NOM = 'FICHIER DE GEOMETRIE POUR TELEMAC'
 NOM1 = 'GEOMETRY FILE FOR TELEMAC'
 TYPE = CARACTERE
 INDEX = 6
-SUBMIT = 'INUTILE;FORT.8;OBLIG;ASC;ECR;PARAL'
+SUBMIT = 'INUTILE;FORT.8;OBLIG;BIN;ECR;PARAL'
 DEFAUT = ' '
 DEFAUT1 = ' '
 MNEMO = ''
