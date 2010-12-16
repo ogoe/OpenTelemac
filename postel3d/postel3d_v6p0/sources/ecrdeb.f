@@ -58,8 +58,8 @@ C
       INTEGER IB(2)
       CHARACTER(LEN=3) :: EXTEN1
       CHARACTER(LEN=7) :: EXTEN2
-      EXTERNAL EXTEN1
-      EXTERNAL EXTEN2
+C      EXTERNAL EXTEN1
+C      EXTERNAL EXTEN2
 C
 C-----------------------------------------------------------------------
 C
