@@ -1,0 +1,121 @@
+#!/bin/sh                                        
+#---------------------------------------------------------------------- 
+# NOM  
+#	usage = extraction s≈lective d'aide courte ou longue
+#                                                                       
+# SYNTAXE                                                               
+#	usage -h|H 
+#	usage proc≈dure [niveau_d_aide]
+#	usage -l [-a] proc≈dure1 [proc≈dure2 [proc≈dure3 [...]]]
+#---------------------------------------------------------------------- 
+#                                                                       
+# DESCRIPTION                                                           
+#	Extrait l'en-t¡te d'une proc≈dure "shell".
+#	l'en-t¡te doit ¡tre encadr≈e de lignes "#---" ;
+#	le param…tre niveau permet d'extraire plus ou moins de commentaires,
+#       » chaque niveau doit correspondre une ligne "#---" comme d≈limiteur.
+#       Par d≈faut niveau=2.
+#       Lorsque niveau=2, les lignes superflues (intitul≈es, lignes blanches)
+#       sont supprim≈es.
+#	Les proc≈dures sont cherch≈es dans les r≈pertoires indiqu≈s par la
+#	variable MONPATH dans l'ordre oÀ ils sont d≈clar≈s.
+# OPTIONS                                                               
+#	-h|H	aide courte ou longue
+#	-l	liste l'aide courte de plusieurs fichiers
+#	-a	v≈rifie que les fichiers ne sont pas des "pure executable".
+#                                                                       
+# EXEMPLES                                                              
+#	usage usage	==> va extraire les lignes qui suivent NOM et SYNTAXE
+#	usage usage 3	==> va extraire la totalit≈ de cette aide.
+#                                                                       
+# FICHIERS                                                              
+#	S. o.
+# DEPENDANCES                                                           
+#	S. o.
+# REMARQUES                                                             
+#	L'aide est accessible si cette proc≈dure est dans /usr/lnh
+#	Les 2 formes suivantes sont ≈quivalentes :
+#		usage -l proc1 proc2 ....
+#		usage proc1 proc2 ....
+#	pourvu qu'il y ait au moins 2 proc≈dures.
+#                                                                       
+# AUTEUR     : jean-luc        Cr≈≈ : 06/02/91  
+# REPRIS PAR : blq             Le 4 mai 92
+#
+# $Header: usage,v 1.2 92/05/04 14:52:35 blq Exp $
+#---------------------------------------------------------------------- 
+set -- `getopt hHla $*`                 
+for i in $*                                            
+do                                                             
+  case $i in                                           
+  -h)	usage $0    ; exit 0 ;;                               
+  -H)	usage $0 3  ; exit 0 ;;                               
+  -l)	recur="oui" ; shift ;;                                        
+  -a)	analyse="oui" ;shift ;;                                        
+  --)	shift ; break ;;                                        
+  esac                                                        
+done                                                          
+#----------------------------------------------------------------------
+mywhence(){
+#	echo "-$*- et $#" >&2
+#	exit
+	if [ $# -ne 0 ]
+	then	type $*|awk '$2=="is"{print $NF}'
+	fi
+}
+OLDPATH=$PATH
+MONPATH=$PATH:/USERS/jean-luc/bin:/users/jean-luc/bin:${PROJECT:=$HOME}/bin
+if [ "$recur" = "oui" -o \( $# -gt 1 -a "$2" != "2" -a "$2" != "3" \) ]
+then
+	PATH=$MONPATH
+	liste="`mywhence $*`"
+	[ -z "$liste" ] && echo "$* non trouv≈ !" && exit
+	PATH=$OLDPATH
+	if [ "$analyse" = "oui" ]
+	then liste="`file $liste |awk -F: '!/pure executable/{print $1}'`"
+	fi
+	awk 'BEGIN{ nmax=2; imax=5; nl_max=10; i=n=0 
+		sep="---------------------------------"
+	}
+	f!=FILENAME{ f=FILENAME; nl=NR; n=i=0 }
+	(NR-nl<nl_max) && (n>=0) && (n<nmax){
+		if ($0 ~ /^#[ 	]*[A-Z]*[ 	]*#*$/) next
+		else if($0 ~ /^#(#+|-+|ˆ+|\*+|\\+|\++|=+|\.+|\/+)* *$/){
+			if(++n==1) {printf("%s%47.47s\n",sep,f sep sep)}
+		}
+		else if($0 ~ /^#[^!]/){
+			if(++i<imax && n!=0)print substr($0,1,80)
+		}
+	}
+	END { if(n==2 || n==1) printf("%s%14.14s%s\n",sep,sep,sep) } ' $liste\
+	|sed -e 's/^#[ 	]*//' -e 's/[ 	]*#$//'
+	exit
+fi
+PATH=$MONPATH
+fichier=`mywhence $1`
+[ -z "$fichier" ] && echo "$1 non trouv≈ !" && exit
+PATH=$OLDPATH
+niveau=$2
+if [ ${niveau:=2} = 2 ]
+then
+	awk 'BEGIN {i=2}
+	/^#(#+|-+|ˆ+|\*+|\\+|\++|=+|\.+|\/+)+ *$/{
+		if(--i<=0)exit
+		next
+	}
+	/^#[ 	]*[A-Z]*[ 	]*$/{
+		next
+	}
+	/^#[^!]/{
+		print substr($0,1,80)
+	}' $fichier |sed -e 's/^#[ 	]*//'
+else
+	awk '\
+	/^#(#+|-+|ˆ+|\*+|\\+|\++|=+|\.+|\/+)+ *$/{
+		if(--i<=0) exit
+		next
+	}
+	/^#[^!]/{
+		print substr($0,2,80)
+	}' i=$niveau $fichier |pg -e
+fi

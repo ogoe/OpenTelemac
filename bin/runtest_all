@@ -1,0 +1,14 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Lancement de runtest_all pour SYSTEL
+#
+#------------------------------DeltaCAD-Septembre98---
+#
+PERL5LIB=`getperl5lib`
+export PERL5LIB
+#
+PERLPATH=`getperlpath`
+export PERLPATH
+#
+$PERLPATH/perl -x -S runtest_all.pl $1 $2 $3 $4 $5

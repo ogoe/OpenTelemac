@@ -1,0 +1,13 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Lancement de MAKE pour SYSTEL
+#
+#------------------------------DeltaCAD-Septembre98---
+#
+SYSTELCFG=`getsystelcfg`
+export SYSTELCFG
+#
+#correction 13/09/99
+#make $1 $2 $3
+make $*

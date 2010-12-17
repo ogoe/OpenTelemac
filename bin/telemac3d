@@ -1,0 +1,14 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Lancement sous Unix du code TELEMAC3D
+#
+#------------------------------DeltaCAD-Septembre98---
+#
+PERL5LIB=`getperl5lib`
+export PERL5LIB
+#
+PERLPATH=`getperlpath`
+export PERLPATH
+#
+$PERLPATH/perl -x -S runtel.pl telemac3d $1 $2 $3 $4 $5

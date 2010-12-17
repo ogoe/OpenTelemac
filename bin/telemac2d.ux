@@ -1,0 +1,706 @@
+#!/bin/sh                                        
+#set -x
+#---------------------------------------------------------------------- 
+#                                         
+#		Procedures de lancement simplifie de code sur HP
+# NOM	telemac2d, telemac3d, stbtel, tsef, subief , postel3d , artemis
+#
+# SYNTAXE                                    
+#	telemac2d [-D] [-s|b|n|d heure] [cas]
+#	telemac2d -h|H                                             (aide)   
+#	telemac3d , stbtel, tsef, subief , postel3d [options de telemac]  [cas]
+#---------------------------------------------------------------------- 
+# DESCRIPTION                                
+#	Cette procedure permet de lancer un calcul 'telemac2d' ou 'stbtel'
+#	dont toutes les caracteristiques d'execution (physiques et
+#	informatiques) sont precisees dans un fichier de parametres
+#	(appele 'cas' par defaut).
+#
+#	A chaque lancement les operations suivantes sont realisees :
+#       1) options par defaut 
+#       2) parametres configurables 
+#       3) Traitement des options 
+#          initialisation des variables a partir du nom du generique 
+#       4) creation du repertoire temporaire             
+#       5) copie du dictionnaire reduit et du fichier cas dans ce repertoire 
+#       6) execution de damocle dans ce repertoire       
+#       7) test sur les mots cles imperatifs concernant les fichiers
+#       8) test sur l'existance des fichiers 
+#       9) copie du fichier unix en entete du fichier $generique.exec
+#      10) recherche de la version du code lance    
+#      11) copie du dictionnaire de la version utilisee               
+#      12) copie $generique.hp dans $generique.exec
+#      13) lancement de $generique.exec : 
+#               mode interactif - lancement immediat sans sortie listing redirige
+#		dans un fichier
+#               mode interactif - lancement immediat avec une sortie listing
+#               redirige dans un fichier
+#               mode batch - lancement immediat en rendant la connexion  
+#               creation dans le repertoire de lancement d'un fichier
+#               delete_$PARA$WORKING  pour effacer le calcul en cours    
+#               mode nuit - lancement a 20h00 en rendant la connexion
+#               creation dans le repertoire de lancement d'un fichier
+#               delete_$PARA$WORKING pour effacer le calcul lance en batch
+#        
+#      14) Allocation des fichiers sur des canaux predefinis (FORT.xx)
+#	   dans le repertoire de travail apres contr¬le de leur existence.
+#      15) Compilation du programme principal fournis par l'utilisateur
+#	   et edition de liens avec les bibliotheques ad-hoc.
+#      16) Lancement de TELEMAC 
+#      17) Restitution des fichiers resultats aux endroits precises par
+#          l'utilisateur dans son fichier 'cas'.
+#          Si le nom du fichier resultat existe deja la procedure le renom
+#          avec la terminaison ".old"
+#                                            
+# OPTIONS                                    
+#	-h|H	  aide courte ou longue.        
+#       [ ]       mode interactif sans fichier listing du calcul resultats 
+#                 seulement a l'ecran
+#       -s        mode interactif avec fichier listing du calcul
+#	-D	  mode de compilation : Debogueur 
+#	-b	  lancement en B-atch (depart immediat) on peut se deconnecter
+#	-n	  lancement de N-uit (depart a 20 H) on peut se deconnecter
+#	-d heure  lancement avec depart D-iffere a 'xx:xx', on peut se deconnecter
+#		  l'heure est precise sous la forme de 2 chiffres pour l'heure,
+#		  du signe ':' et de 2 chiffres pour les minutes (d'autres
+#		  formes compatibles avec la commande 'at' peuvent etre utilisees,
+#		  pour cela se reporter au manuel de cette commande).
+#                                            
+# ENVIRONNEMENT
+#   Le fonctionnement de cette procedure sous-entend que l'utilisateur a declare
+#   dans son environnement la variable PROJECT, cette variable servant a indiquer
+#   le chemin du repertoire 'bin' dans lequel est place tous les
+#   fichiers utiles.
+#   De plus, il faut initialiser les variables suivantes a 1 pour la langue
+#   francais ou 2  pour la langue anglaise :
+#                               - LNGTEL    -----> pour TELEMAC2D
+#                               - LNGTEL3D  -----> pour TELAMC3D
+#                               - LNGSTB    -----> pour STBTEL
+#                               - LNGSUB    -----> pour SUBIEF
+#                               - LNGTSE    -----> pour TSEF
+#    La variable LC_TIME doit etre initialise a "". Ceci concerne la commande at
+#
+# FICHIERS                                   
+#
+#   Dans les explications qui suivent le mot $GENERIQUE vaut pour le nom
+#   du code utilise : 'telemac2d', 'stbtel',...
+#
+#   ---------------------------------------------------------------------
+#   Repertoire	cas_$WORKING.tmp
+#   Fichiers	cas
+#   		cas_$WORKING.sortie
+#               delete_cas_$WORKING.
+#   		cas_$WORKING.error
+#   ---------------------------------------------------------------------
+#	Pour chaque cas traite cette procedure cree un repertoire temporaire
+#	qui contient tout ce qui est necessaire a l'execution du code.
+#	Si le fichier de parametres utilise s'appelle 'cas' ce repertoire
+#	s'appelle 'cas_$WORKING.tmp' et est situe dans le meme repertoire
+#       que le fichier 'cas'. Les impressions du code sont placees dans le fichier
+#       'cas_$WORKING.sortie' dans le meme repertoire que le fichier 'cas'.
+#       Si une erreur intervient le fichier  cas_$WORKING.error apparait
+#       et contient l'explication de l'arret du calcul.
+#
+#   ---------------------------------------------------------------------
+#   Fichier	'$PROJECT/$CODE/share/$GENERIQUE.dico'
+#   ---------------------------------------------------------------------
+#	Le dictionnaire des mots cles du code au standard DAMOCLE.
+#
+#   ---------------------------------------------------------------------
+#   Fichier	'$PROJECT/$CODE/$RACINE$VERSION$DICO/share/$GENERIQUE.hp'     
+#   ---------------------------------------------------------------------
+#                pour cette nouvelle version contient toutes les allocations 
+#                des fichiers fortran.
+#                C'est ce fichier qui est ensuite execute.
+#   
+#   ---------------------------------------------------------------------
+#   Repertoire	cas_$WORKING.tmp
+#
+#   Fichier	cas_$WORKING.tmp/TESTFIC 
+#               contient les mots-cles concernant
+#               les fichiers obligatoires qui ne sont contenus dans le fichier cas
+#               Ce fichier est genere par damocle
+#
+#   Fichier	cas_$WORKING.tmp/TESTOBL
+#               contient les noms des fichiers obligatoires. Ce fichier est genere
+#               par damocle
+#   ---------------------------------------------------------------------
+#
+#   ---------------------------------------------------------------------
+#   LES VARIABLES UTILISEES 
+#   /
+#   / PROJECT   = racine du projet - variable d'environnement 
+#   / GENERIQUE = nom du code lance
+#   / DICO      = dictionnaire reduit ou complet pour determiner la version
+#   / DAMO      = executable damocle qui teste le fichier parametres
+#   /             par rapport au dictionnaire
+#   / CHEMIN    = chemin de la version du code utilise sans le numero 
+#   /             de le version
+#   / TERMDAMO  = terme pour identifier le nom de l'executable damocle
+#   / RACINE    = racine de l'arborescence du code lance
+#   / RACINEBAN = racine de l'arborescence du code lance pour le banner
+#   / PARA       = nom du fichier parametres recupere dans la variables $1
+#   / REP       = repertoire temporaire pour l'execution
+#   / VERSBAN   = numero de la version du code pour utiliser le banner 
+#   / VERSDICO  = numero de la version du code pour utiliser la version 
+#   /             correspondante du dictionnaire 
+#   / TESTFIC   = fichier cree dans le repertoire temporaire par damocle
+#   /             pour savoir si les mot-cles des fichiers obligatiores 
+#   /             sont presents. Sinon arret
+#   / TESTOBL   = fichier cree dans le repertoire temporaire par damocle 
+#   /             pour savoir si les fichiers obligatiores existent et sont 
+#   /             non vides
+#   / LANCEMENT = type de lancement (immediat-en batch immediat-en batch nuit)
+#   / LOGIN     = nom de la connexion
+#   / BASE      = repertoire de lancement
+#   / WORKING   =  numero du process
+#   / DEBUGGER  =  xdb
+#   / DEBUG     = pas de debugger
+#   / FC        = compilateur f77
+#   / MODE      = mode de compilation des bibliotheques
+#   /
+#   /  OPTIONS PAR DEFAUT /
+#   /
+#                                            
+# DEPENDANCES                                
+#	Utilise les commandes "at", "kill", "ps", "time", "ln", "chmod", "grep"
+#	                      "cut ", "cat", "export", "", "", "", ""
+#                                            
+# REMARQUES                                  
+#       Le meme fichier 'cas' peut etre lance plusieurs fois simultanement.
+#	Attention au fichier resultat, s'il a le meme nom le fichier existant 
+#       sera renome avec la terminaison .old lors de la restitution du calcul
+#                                            
+#
+# AUTEUR : didier Rouge  : 29/08/94  
+#---------------------------------------------------------------------- 
+#----------------------------------------------------------------------
+# Decodage de la cha—ne de lancement
+#----------------------------------------------------------------------
+###############################
+# Modifs                      #
+###############################
+
+if [ "`echo -n`" = "" ]
+then
+	on=-n oc=
+else
+	on= oc='\c'
+fi
+if [ -f "/hp-ux" ]
+then
+esc="\033"
+blanc=`echo    "\033&v0S"`
+rouge=`echo    "\033&v1S"`
+vert=`echo     "\033&v2S"`
+jaune=`echo    "\033&v3S"`
+bleu=`echo     "\033&v4S"`
+magenta=`echo  "\033&v5S"`
+cyan=`echo     "\033&v6S"`
+noir=`echo     "\033&v7S"`
+souligne=`echo "\033&dD"`
+inverse=`echo  "\033&dB"`
+invsous=`echo  "\033&dF"`
+norm=`echo     "\033&d@"`
+normal=${norm}${blanc}
+fi
+#
+######################################################   
+#   /  Parametres configurables /
+######################################################   
+#
+sortie=nul
+lancement=interactif
+LOGIN=`whoami`
+BASE=`pwd`
+WORKING=_$$
+DEBUGGER="xdb"
+DEBUG="pasdebug"
+FC=f77
+LNG=0
+: ${SUITE:=""}
+: ${VALIDATION:=""}
+: ${PROJECT:=/GHF3/SYS_TEL}
+: ${MODE:=""}
+: ${V_CODE:="V3P0"}
+: ${FFLAGS:=" "}
+: ${option:=none}
+: ${SET_FLAG:=+x}
+#   
+######################################################   
+#   / Traitement des options /
+######################################################   
+#
+GENERIQUE=`basename $0`
+set -- `getopt hHxsDbnd: $*`
+if [ $? != 0 ]
+then	usage $0		
+	exit	
+fi
+for i in $*
+do
+  case $i in
+  -h)   usage $0		;exit	;;
+
+  -H)   usage $0 3		;exit	;;
+
+  -x)   SET_FLAG="-x"	; shift ;;
+
+  -D)   FFLAGS="-g"	;MODE="D"	;DEBUG="debug" ;lancement="interactif" ;
+	sortie="nul" ; shift	;;
+
+  -s)   lancement="interactif"  ; sortie=listing ;  
+	shift	;;
+
+  -b)   lancement="batch"  ; sortie=listing ;
+	shift	;;
+
+  -n)   lancement="nuit" ; sortie=listing ;
+	shift	;;
+
+  -d)   lancement="diff" ;  sortie=listing ;
+	soumission="at $2" ; heure=$2	;shift ;shift	;;
+
+  --)   shift ;break ;;
+
+  esac
+done
+#   
+#####################################################################   
+#   / INITIALISATION DES VARIABLES A PARTIR DU NOM DU GENERIQUE /
+#####################################################################   
+#   
+case $GENERIQUE in
+*mac3d)		CHEMIN=TELEMAC3D/TEL3D_ 
+                TERMDAMO=damotel3d
+		 RACINE=TELEMAC3D
+		 RACINEBAN=TELEMAC-3D
+		if [ $LNGTEL -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGTEL -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi
+		;;
+
+*mac2d)	 CHEMIN=TELEMAC2D/TEL2D_ 
+                 TERMDAMO=damotel2d
+		 RACINE=TELEMAC2D
+		 RACINEBAN=TELEMAC-2D
+		if [ $LNGTEL -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGTEL -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi 
+		;;
+
+stbtel)		CHEMIN=STBTEL/STB_ 
+                 TERMDAMO=damostb
+		 RACINE=STBTEL
+		 RACINEBAN=STBTEL
+		if [ $LNGSTB -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGSTB -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi
+		;;
+
+tsef)		 CHEMIN=TSEF/TSE_ 
+                 TERMDAMO=damotsef
+		 RACINE=TSEF
+		 RACINEBAN=TSEF
+		if [ $LNGTSE -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGTSE -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi
+		;;
+
+subief)		 CHEMIN=SUBIEF/SUB_ 
+                 TERMDAMO=damosub
+		 RACINE=SUBIEF
+		 RACINEBAN=SUBIEF
+		if [ $LNGSUB -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGSUB -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi
+		;;
+
+postel3d)   	 CHEMIN=POSTEL3D/POSTEL3D_ 
+                 TERMDAMO=damopost
+		 RACINE=POSTEL3D
+		 RACINEBAN=POSTEL3D
+		if [ $LNGPOSTE -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGPOSTE -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi
+		;;
+
+artemis)   	 CHEMIN=ARTEMIS/ARTE_
+                 TERMDAMO=damoarte
+		 RACINE=ARTEMIS
+		 RACINEBAN=ARTEMIS
+		if [ $LNGARTE -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGARTE -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi
+		;;
+
+sisyphe)   	 CHEMIN=SISYPHE/SISYPHE_
+                 TERMDAMO=damosisy
+		 RACINE=SISYPHE
+		 RACINEBAN=SISYPHE
+		if [ $LNGSISY -eq 1 ] >/dev/null 2>&1
+		then
+		LNG=1
+		fi
+		if [ $LNGSISY -eq 2 ] >/dev/null 2>&1
+		then
+		LNG=2
+		fi
+		;;
+esac
+		if [ $LNG -eq 0 ]
+		then
+		echo " "
+		echo "${rouge}--- VARIABLE DE LA LANGUE PAS INITIALISEE ----  LANGUAGE VARIABLE NOT INITIALIZED ----"
+		echo " "
+		exit
+		fi 
+#
+######################################################   
+#   /  Routines                /
+######################################################   
+#
+ecrire()
+{
+if [ $LNG -eq 1 ]
+then
+echo "${magenta}________________________________________________________"
+    echo "${vert}$1" "     " "${cyan}$3"  
+echo "${magenta}________________________________________________________"
+    else
+echo "${magenta}________________________________________________________"
+    echo "${vert}$2" "     " "${cyan}$3" 
+echo "${magenta}________________________________________________________"
+fi
+}
+ecriligne()
+{
+echo "${magenta}________________________________________________________"
+}
+blancbann()
+{
+echo " "
+echo " "
+echo " "
+echo " "
+echo " "
+echo " "
+echo " "
+echo " "
+echo " "
+}
+entete()
+{
+if [ $LNG -eq 1 ]
+then
+    banner $1 > banner1
+    else
+    banner $2 > banner1
+fi
+paste $PROJECT/bin/escape banner1 > monbanner
+cat monbanner
+}
+suitvalid()
+{
+SUITE=$1
+VALIDATION=$2
+PRECEDENT=$3
+if [ $SUITE = T ]
+then
+echo
+ecrire "IL EXISTE UNE SUITE DE CALCUL" "YOU START FROM A PREVIOUS COMPUTATION FILE"
+echo
+ecrire  "NOM DU FICHIER DU CALCUL PRECEDENT = "  "PREVIOUS COMPUTATION FILE" $PRECEDENT
+echo
+fi
+if [ $VALIDA = T ]
+then
+echo
+ecrire  "IL EXISTE UNE VALIDATION POUR VOTRE CALCUL" "VALIDATION IS ASKED"
+echo
+ecrire  "LE NOM DU FICHIER DU CALCUL PRECEDENT = " "PREVIOUS COMPUTATION FILE" $PRECEDENT
+fi
+}
+#
+######################################################   
+#   /  PROGRAMME PRINCIPAL               /
+######################################################   
+#
+set $SET_FLAG
+clear
+cat $PROJECT/bin/fetes
+DICO=$PROJECT/$RACINE/share/lib/$GENERIQUE.dico
+DAMO=$PROJECT/$RACINE/share/bin/$TERMDAMO.exec
+PARA=$1
+: ${PARA:="cas"}
+REPLANCE=`dirname $PARA`
+PARA=`basename $PARA`
+REP=$PARA$WORKING.tmp
+cd $REPLANCE
+#   /
+#   / TEST SUR L'EXISTANCE DU FICHIER DES PARAMETRES
+#   /
+if [ ! -s $PARA ]
+    then
+    ecrire "le fichier des parametres n'existe pas" "the steering file does not exist"
+    exit
+fi
+#   /
+#   / CREATION DU REPERTOIRE TEMPORAIRE             / 
+#   / COPY DU DICTIONNAIRE REDUIT ET DU FICHIER CAS /
+#   / EXECUTION DE DAMOCLE DANS CE REPERTOIRE       / 
+#   /
+mkdir $REP
+cd $REP
+cp $BASE/$REPLANCE/$PARA $BASE/$REPLANCE/$REP/CAS
+cp $DAMO $BASE/$REPLANCE/$REP/.
+cp $PROJECT/$RACINE/share/lib/$GENERIQUE.dico DICO
+echo "Fichier de langue pour damocles (1=Fr;2=GB)" >LANGDAMO
+echo $LNG >>LANGDAMO
+$DAMO 1> erreur
+#   /
+#   / SI IL EXISTE UNE ERREUR DAMOCLES LE PROGRAMME STOPPE
+#   /
+cat erreur | egrep "ARRET DE DAMOCLES|ERREUR DANS|INTERRUPTION|DAMOCLES STOPPED|ERROR IN|STOP OF DAMOCLES|DAMOC IS STOPPED|INVALID INDEX"
+#
+if [ $?  = 0 ]
+then
+cat erreur
+cd ..
+rm -r $PARA$WORKING.tmp
+exit
+fi
+#   /
+#   / TEST SUR LES MOTS CLES IMPERATIFS CONCERNANT LES FICHIERS/ 
+#   /
+if [ -s TESTFIC ]
+then 
+cat TESTFIC
+exit
+fi
+#   /
+#   / TEST SUR L'EXISTANCE DES FICHIERS /
+#   /
+cd $BASE/$REPLANCE
+for i in `cat $BASE/$REPLANCE/$REP/TESTOBL`
+do
+if [ -s "$i" ]
+	then 
+	echo 
+	else 
+	echo "file" $i "does not exist "
+	rm -r $REP
+exit
+fi
+	done
+#
+cd $REP
+#   //
+#   / COPIE DU FICHIER UNIX EN ENTETE DU FICHIER $GENERIQUE.exec
+#   / RECHERCHE DE LA VERSION DU CODE LANCE                       /
+#   / COPIE DU DICTIONNAIRE DE LA VERSION UTILISEE               
+#   / COPIE $GENERIQUE.hp DANS $GENERIQUE.exec
+#   ///
+vi unix <<eof  2>/dev/null 1>&2
+:1,\$s% %%g
+:wq!
+eof
+cat unix > $GENERIQUE.exec
+VERSDICO1=`cat unix | grep VERSION | cut -f2 -d"=" | tee tempo1`
+#VERSDICO=`echo $VERSDICO1 | cut -c1-4 | tee tempo2`
+# modifications pour l'utilisation d'une sous-version
+VERSDICO=`echo $VERSDICO1 | cut -c1-6 | tee tempo2`
+cat tempo2 | grep ","  >/dev/null 2>&1
+if [ $?  = 0 ]
+then
+VERSDICO=`echo $VERSDICO1 | cut -c1-4 | tee tempo2`
+else
+VERSDICO=`echo $VERSDICO1 | cut -c1-6 | tee tempo2`
+fi
+VERSBAN=`sed -e "s/V/ /" -e "s/P/./" tempo2`
+DICO=$PROJECT/$CHEMIN$VERSDICO/lib/$GENERIQUE$VERSDICO.dico
+cat $PROJECT/$CHEMIN$VERSDICO/lib/$GENERIQUE.hp >> $GENERIQUE.exec
+chmod +x $BASE/$REPLANCE/$REP/$GENERIQUE.exec
+export CAS PARA REP BASE DICO MODE V_CODE FFLAGS DEBUG DEBUGGER WORKING LNG
+export lancement sortie SET_FLAG REPLANCE FC
+. unix
+#   //
+#   / creation du fichier PARALL dans le repertoire de travail
+#   / pour le parallelisme
+#   ///
+NCSIZE=`cat unix | grep NBPROCESSEUR | cut -f2 -d"="`
+NCAR=`echo $BASE/$REPLANCE/$REP | wc -c`
+export NCSIZE
+cat > $BASE/$REPLANCE/$REP/PARAL << EOF_CNTL
+$NCSIZE
+$NCAR
+$BASE/$REPLANCE/$REP/
+EOF_CNTL
+#   /
+#   / TEST SUR LE MODE DE LANCEMENT  /
+#   /
+#   /
+#   /
+#   / MODE INTERACTIF - LANCEMENT IMMEDIAT  /
+#   /
+case $lancement  in
+	interactif)     sleep 4
+                        entete "$RACINEBAN sur STATION" "$RACINEBAN ON STATION"
+			sleep 3
+			entete " Lancement en interactif" "interactive mode"
+			blancbann
+			sleep 2
+			entete "VERSION $VERSBAN" "RELEASE $VERSBAN"
+			blancbann
+			sleep 2
+			ecrire "fichier des parametres   : " "steering file   : " $PARA
+			echo
+		        if [ $GENERIQUE = "telemac2d" ] || [ $GENERIQUE = "telemac3d" ]
+		        then
+			   suitvalid "$SUITE"  "$VALIDATION" "$PRECEDENT"
+		        fi
+                        . $BASE/$REPLANCE/$REP/$GENERIQUE.exec 
+			ecriligne
+			ecrire "execution terminee " "job finished           "
+			ecriligne
+			if [ $sortie = "listing" ]
+			then
+			ecrire "sortie listing	: " "output file	: " $PARA$WORKING.sortie 
+			fi
+			ecriligne
+			;;
+#   /
+#   / MODE BATCH - LANCEMENT IMMEDIAT EN RENDANT LA CONNEXION                     /
+#   / CREATION DANS LE REPERTOIRE DE LANCEMENT D'UN FICHIER delete_$PARA$WORKING  /
+#   / POUR EFFACER UN CALCUL EN COURS                                             /
+#   /
+	batch)	 	sleep 4
+	      	 	entete "$RACINEBAN sur STATION" "$RACINEBAN ON STATION"
+			sleep 3
+			entete "Lancement en batch" "operating in batch mode"
+			blancbann
+			sleep 2
+			entete "VERSION $VERSBAN" "RELEASE $VERSBAN"
+			blancbann
+			sleep 2
+			echo
+			ecrire "fichier des parametres   : " "steering file   : " $PARA
+		        if [ $GENERIQUE = "telemac2d" ] || [ $GENERIQUE = "telemac3d" ]
+		        then
+			   suitvalid "$SUITE"  "$VALIDATION" "$PRECEDENT"
+		        fi
+			echo
+         		at now  <$BASE/$REPLANCE/$REP/$GENERIQUE.exec 1>/dev/null 2>&1
+			echo 'PID="`ps -u '$LOGIN' | grep '$out$WORKING'`"'  >../delete_$PARA$WORKING
+			echo "kill -9"  "$""PID" ">/dev/null 2>&1">>../delete_$PARA$WORKING
+			echo "rm delete_$PARA$WORKING" >>../delete_$PARA$WORKING
+			echo "rm -r  $PARA$WORKING.tmp" >>../delete_$PARA$WORKING
+			echo "rm $PARA$WORKING.sortie" >>../delete_$PARA$WORKING
+			echo "rm $PARA$WORKING.error" >>../delete_$PARA$WORKING
+			chmod +x $BASE/$REPLANCE/delete_$PARA$WORKING
+			ecrire "lancement de l'ex≈cutable" "running in batch mode"
+			ecrire "sortie listing	: " "output file	: " $PARA$WORKING.sortie 
+			ecrire "sortie erreur	: " "error file	: " $PARA$WORKING.error 
+			;;
+#   /
+#   / MODE NUIT - LANCEMENT A 20H00 EN RENDANT LA CONNEXION                       /
+#   / CREATION DANS LE REPERTOIRE DE LANCEMENT D'UN FICHIER delete_$PARA$WORKING  /
+#   / POUR EFFACER LE CALCUL LANCE EN BATCH                                       /
+#   /
+	nuit)	 	sleep 4
+	     	 	entete "$RACINEBAN SUR STATION" "$RACINEBAN ON STATION"
+			blancbann
+			sleep 3
+			entete "Lancement a 20H00" "RUNNING at 20H00"
+			blancbann
+			sleep 2
+			entete "VERSION $VERSBAN" "RELEASE $VERSBAN"
+			blancbann
+			sleep 2
+			ecrire "fichier des parametres   : " "steering file   : " $PARA
+		        if [ $GENERIQUE = "telemac2d" ] || [ $GENERIQUE = "telemac3d" ]
+		        then
+			   suitvalid "$SUITE"  "$VALIDATION" "$PRECEDENT"
+		        fi
+			echo
+			ecrire "sortie listing	: " "output file	: " $PARA$WORKING.sortie 
+			ecrire "sortie erreur	: " "error file	: " $PARA$WORKING.error 
+                	at 20:00 <$BASE/$REPLANCE/$REP/$GENERIQUE.exec 2>./delete
+                        NUMJOB=`cat delete | grep job | cut -f2 -d" "`
+			echo "at -r" $NUMJOB >../delete_$PARA$WORKING
+			echo "rm -r $BASE/$REPLANCE/$PARA$WORKING.tmp" >>../delete_$PARA$WORKING
+			echo "rm $PARA$WORKING.error" >>../delete_$PARA$WORKING
+			echo "rm delete_$PARA$WORKING" >>../delete_$PARA$WORKING
+			chmod +x $BASE/$REPLANCE/delete_$PARA$WORKING
+			echo
+			;;
+#   /
+#   / MODE BATCH - LANCEMENT DIFFERE EN RENDANT LA CONNEXION                     /
+#   / CREATION DANS LE REPERTOIRE DE LANCEMENT D'UN FICHIER delete_$PARA$WORKING /
+#   / POUR EFFACER LE CALCUL LANCE EN BATCH                                      /
+#   /
+	diff)	 	sleep 4
+		 	entete "$RACINEBAN SUR STATION" "$RACINEBAN ON STATION"
+			blancbann
+			sleep 3
+			entete "Lancement a $heure" "RUNNING at $heure"
+			sleep 2
+			entete "VERSION $VERSBAN" "RELEASE $VERSBAN"
+			blancbann
+			blancbann
+			sleep 2
+			ecrire "fichier des parametres   : " "steering file   : " $PARA
+		        if [ $GENERIQUE = "telemac2d" ] || [ $GENERIQUE = "telemac3d" ]
+		        then
+			   suitvalid "$SUITE"  "$VALIDATION" "$PRECEDENT"
+		        fi
+			echo
+			ecrire "sortie listing	: " "output file	: " $PARA$WORKING.sortie 
+			ecrire "sortie erreur	: " "error file	: " $PARA$WORKING.error 
+                	$soumission <$BASE/$REPLANCE/$REP/$GENERIQUE.exec 2>./delete
+                        NUMJOB=`cat delete | grep job | cut -f2 -d" "`
+			echo "at -r" $NUMJOB >../delete_$PARA$WORKING
+			echo "rm -r $BASE/$REPLANCE/$PARA$WORKING.tmp" >>../delete_$PARA$WORKING
+			echo "rm $PARA$WORKING.error" >>../delete_$PARA$WORKING
+			echo "rm delete_$PARA$WORKING" >>../delete_$PARA$WORKING
+			chmod +x $BASE/$REPLANCE/delete_$PARA$WORKING
+			echo
+			;;
+esac
+cd ..
+exit

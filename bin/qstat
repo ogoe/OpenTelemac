@@ -1,0 +1,9 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Lancement de QSTAT sur le CRAY ou le FUJITSU
+#
+#-----------------------------------------------------
+#
+[ "$1" = "-F" ] && ( banner "clcathy"; remsh clcathy -l "$2" "qstat -a; " )
+[ "$1" = "-C" ] && ( banner "clcray-b"; remsh clcrayb -l "$2" "qstat -a; qstat -b; " )

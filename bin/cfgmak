@@ -1,0 +1,14 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Creation d'un fichier CFGMAK.MAK
+#
+#------------------------------DeltaCAD-Septembre98---
+#
+PERL5LIB=`getperl5lib`
+export PERL5LIB
+#
+PERLPATH=`getperlpath`
+export PERLPATH
+#
+$PERLPATH/perl -x -S cfgmak.pl
