@@ -38,8 +38,7 @@ def processCAS(casFile,dicoFile,frgb):
 
    # ~~ extract keywords ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cas = scanCAS(casFile)
-   sys.exit()
-
+   print casFile
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    lang = 1

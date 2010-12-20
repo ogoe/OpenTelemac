@@ -192,7 +192,6 @@ def getIOFilesSubmit(frgb,dico):
    iFiles = {}; oFiles = {}
    for key in dico.keys():
       if dico[key].has_key('SUBMIT'):
-         print dico[key]['SUBMIT']
          if 'LIT' in dico[key]['SUBMIT'][0]:
             iFiles.update({key:dico[key]['SUBMIT'][0]})
             iFiles.update({frgb['FR'][key]:dico[key]['SUBMIT'][0]})
@@ -243,11 +242,7 @@ if __name__ == "__main__":
             print '\n\nConfiguration ' + cfg + ', Module '+ mod + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
             print '... reading module dictionary'
-            print mod+cfgs[cfg]['TELVER']+'.dico'
-            print cfgs[cfg]['MODULES'][mod]['path']
             frgb,dico = scanDICO(path.join(path.join(cfgs[cfg]['MODULES'][mod]['path'],'lib'),mod+cfgs[cfg]['TELVER']+'.dico'))
-            print frgb['FR'].keys()
-            sys.exit()
             for casFile in cfgs[cfg]['VALIDATION'][mod]:
                print '... CAS file: ',casFile
                casKeys = scanCAS(casFile)

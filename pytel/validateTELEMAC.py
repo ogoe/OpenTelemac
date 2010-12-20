@@ -28,7 +28,7 @@ if __name__ == "__main__":
    for cfgname in parseConfigFile('').keys():
       cfgs = parseConfig_ValidateTELEMAC(cfgname)
 
-      for cfg in cfgs:
+      for cfg in cfgs.keys():
          for mod in cfgs[cfg]['VALIDATION'].keys():
 # ~~ Scans all CAS files to launch validation ~~~~~~~~~~~~~~~~~~~~~~
             print '\n\nConfiguration ' + cfg + ', Module '+ mod + '\n\
@@ -36,7 +36,9 @@ if __name__ == "__main__":
             print '... reading module dictionary'
             dicoFile = path.join(path.join(cfgs[cfg]['MODULES'][mod]['path'],'lib'),mod+cfgs[cfg]['TELVER']+'.dico')
             frgb,dico = scanDICO(dicoFile)
+            print 'dico'
             iFS,oFS = getIOFilesSubmit(frgb,dico)
+            print 'iFS,oFS'
 
             for casFile in cfgs[cfg]['VALIDATION'][mod]:
 
