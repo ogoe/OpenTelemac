@@ -5,7 +5,7 @@
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-from config import parseConfigFile, parseConfig_CompactTELEMAC
+from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
 from os import path
 from utils import createDirectories,removeDirectories,zip,copyFiles
 import sys
@@ -23,7 +23,14 @@ if __name__ == "__main__":
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   for cfgname in parseConfigFile('').keys():
+   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser.add_option("-c", "--configfile",
+                      type="string",
+                      dest="configFile",
+                      default='systel.cfg',
+                      help="specify configuration file, default is systel.cfg" )
+   options, args = parser.parse_args()
+   for cfgname in parseConfigFile(options.configFile).keys():
       cfgs = parseConfig_CompactTELEMAC(cfgname)
 
       for cfg in cfgs:

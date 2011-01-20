@@ -9,7 +9,7 @@
 # ____/ Imports /__________________________________________________/
 #
 
-from config import parseConfigFile, parseConfig_ValidateTELEMAC
+from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 from utils import getFileContent
 import re
 from os import path
@@ -230,7 +230,14 @@ if __name__ == "__main__":
    # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   for cfgname in parseConfigFile('').keys():
+   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser.add_option("-c", "--configfile",
+                      type="string",
+                      dest="configFile",
+                      default='systel.cfg',
+                      help="specify configuration file, default is systel.cfg" )
+   options, args = parser.parse_args()
+   for cfgname in parseConfigFile(options.configFile).keys():
       cfgs = parseConfig_ValidateTELEMAC(cfgname)
 
       for cfg in cfgs:        # ~~ for each configuration ~~~~~~~~~~

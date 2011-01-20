@@ -44,11 +44,11 @@
    - The key 'root' defines the directory path to the base of the
    TELEMAC system files.
    - The key 'version' defines the version number, assuming this
-     number fits the template root\*\*_version\sources\
+     number fits the template root\*\*_version\
    - the key 'module' defines the name of the modules upon which
      the action of the configuration is carried out. The module
    names that are not recognised as part of the TELEMAC system
-   (following the template root\module\*_version\sources\) are
+   (following the template root\module\*_version\) are
    ignored. Three additonal names are however allowed:
    - system: which is replaced by the list of all available modules
    - clean: which trigger the action to be carried out as if it was
@@ -120,13 +120,9 @@ import sys
 #
 """
    Contains the entire configuration tree for all user configurations.
-"""
-CONFIGS = {}
-"""
-   Contains the name of the cfg file passed as argument.
    By default the name is systel.cfg stored locally
 """
-CFGFILE = ''
+CONFIGS = {}
 
 # _____                        _____________________________________
 # ____/ Configuration Toolbox /____________________________________/
@@ -158,20 +154,9 @@ def getConfigs(file):
 """
    Get the name of the config file from command line arguments
    and store its rough content in a dict -- Returns the dict
-   set globals CFGFILE and CONFIGS
+   set globals CONFIGS
 """
 def parseConfigFile(file):
-   #
-   # ~~ Acquire CFG File Name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #
-   print "... considering command line options"
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default='systel.cfg',
-                      help="specify configuration file, default is systel.cfg" )
-   options, args = parser.parse_args()
    #
    # ~~ Parse CFG File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
@@ -181,8 +166,6 @@ def parseConfigFile(file):
    if configDict == {}:
       print '\nPlease specify configuration in config file \n'
       sys.exit()
-   
-   globals()["CFGFILE"] = file
    globals()["CONFIGS"] = configDict
    return configDict
 
@@ -220,15 +203,15 @@ def parseConfig_CompileTELEMAC(cfg):
       sys.exit()
    cfgTELEMAC[cfg].update({'TELDIR':get})
    # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\
-   # using the template ... teldir\*\*telver\sources\
+   # TELEMAC version number, to build relative path names to \sources\ etc...
+   # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'TELVER':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
-   # teldir\module_name\*telver\sources\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # teldir\module_name\*telver\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
@@ -283,15 +266,15 @@ def parseConfig_TranslateTELEMAC(cfg):
       sys.exit()
    cfgTELEMAC[cfg].update({'TELDIR':get})
    # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\
-   # using the template ... teldir\*\*telver\sources\
+   # TELEMAC version number, to build relative path names to \sources\ etc...
+   # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'TELVER':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
-   # teldir\module_name\*telver\sources\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # teldir\module_name\*telver\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -316,15 +299,15 @@ def parseConfig_TranslateCAS(cfg):
       sys.exit()
    cfgTELEMAC[cfg].update({'TELDIR':get})
    # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\
-   # using the template ... teldir\*\*telver\sources\
+   # TELEMAC version number, to build relative path names to \sources\ etc...
+   # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'TELVER':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
-   # teldir\module_name\*telver\sources\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # teldir\module_name\*telver\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -355,15 +338,15 @@ def parseConfig_DoxygenTELEMAC(cfg):
       sys.exit()
    cfgTELEMAC[cfg].update({'TELDIR':get})
    # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\
-   # using the template ... teldir\*\*telver\sources\
+   # TELEMAC version number, to build relative path names to \sources\ etc...
+   # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'TELVER':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
-   # teldir\module_name\*telver\sources\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # teldir\module_name\*telver\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -388,15 +371,15 @@ def parseConfig_CompactTELEMAC(cfg):
       sys.exit()
    cfgTELEMAC[cfg].update({'TELDIR':get})
    # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\
-   # using the template ... teldir\*\*telver\sources\
+   # TELEMAC version number, to build relative path names to \sources\ etc...
+   # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'TELVER':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
-   # teldir\module_name\*telver\sources\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # teldir\module_name\*telver\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -419,15 +402,15 @@ def parseConfig_ValidateTELEMAC(cfg):
       sys.exit()
    cfgTELEMAC[cfg].update({'TELDIR':get})
    # Get telver:
-   # TELEMAC version number, to build relative path names to \sources\
-   # using the template ... teldir\*\*telver\sources\
+   # TELEMAC version number, to build relative path names to \sources\ etc..
+   # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'TELVER':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
-   # teldir\module_name\*telver\sources\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_SourcesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # teldir\module_name\*telver\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
@@ -465,6 +448,56 @@ def parseConfig_ValidateTELEMAC(cfg):
    return cfgTELEMAC
 
 """
+   Extract all the information required for the launch and execution
+   of TELEMAC based on one CAS file, for each configuration
+"""
+def parseConfig_RunningTELEMAC(cfg):
+   #  cfg is either  wintel32s wintel32p wing9532s wing9532p ...
+   cfgTELEMAC = {cfg:{}}
+   # Get teldir: ...
+   # or the absolute path to the TELEMAC root
+   get = getConfigKey(CONFIGS[cfg],'root',True,True)
+   if not path.exists(get):
+      print ('\nThe following directory does not exist %s \n' % (get))
+      sys.exit()
+   cfgTELEMAC[cfg].update({'TELDIR':get})
+   # Get telver:
+   # TELEMAC version number, to build relative path names to \sources\ etc...
+   # using the template ... teldir\*\*telver\
+   get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
+   cfgTELEMAC[cfg].update({'TELVER':get})
+
+   # Deduce the actual list of modules existing within the root teldir,
+   # identified by matching the directory structure to the template
+   # teldir\module_name\*telver\
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
+   # for every module in the list of modules to account for
+   # specific external includes for all or each module
+   for mod in cfgTELEMAC[cfg]['MODULES'].keys():
+      cfgTELEMAC[cfg]['MODULES'][mod].update({'mods':getEXTERNALs(CONFIGS[cfg],'mods',mod)})
+      cfgTELEMAC[cfg]['MODULES'][mod].update({'incs':getEXTERNALs(CONFIGS[cfg],'incs',mod)})
+      cfgTELEMAC[cfg]['MODULES'][mod].update({'libs':getEXTERNALs(CONFIGS[cfg],'libs',mod)})
+
+   get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
+   cfgTELEMAC[cfg].update({'REBUILD':tbd})
+   # You do not need 'get' at this stage
+
+   # Get command_zip: and command_piz:
+   # the command lines to zip/unzip respectively
+   cfgTELEMAC[cfg].update({'ZIPPER':getConfigKey(CONFIGS[cfg],'sfx_zip',True,True)[1:]})
+
+   # Get system's suffixes for obj, lib, mod, and exe
+   system = {}
+   system.update({'SFX_OBJ':getConfigKey(CONFIGS[cfg],'sfx_obj',True,False).lower()})
+   system.update({'SFX_EXE':getConfigKey(CONFIGS[cfg],'sfx_exe',True,False).lower()})
+   system.update({'SFX_LIB':getConfigKey(CONFIGS[cfg],'sfx_lib',True,False).lower()})
+   system.update({'SFX_MOD':getConfigKey(CONFIGS[cfg],'sfx_mod',True,False).lower()})
+   cfgTELEMAC[cfg].update({'SYSTEM':system})
+
+   return cfgTELEMAC
+
+"""
    Walk through the directory structure available from the root
    and identifies modules with the template
    root\validation\*\*.cas
@@ -484,9 +517,9 @@ def getFolders_ValidationTELEMAC(root):
 """
    Walk through the directory structure available from the root
    and identifies modules with the template
-   teldir\module_name\*telver\sources\
+   teldir\module_name\*telver
 """
-def getFolders_SourcesTELEMAC(root,dirname):
+def getFolders_ModulesTELEMAC(root,dirname):
    modules = {}
    for moddir in listdir(root) :
       if not (moddir[0] == '.' or path.isfile(path.join(root,moddir))) :
@@ -591,12 +624,19 @@ __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
    if CONFIGS == {}:
-      cfgs = parseConfigFile(CFGFILE)
-      print CFGFILE
+      parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+      parser.add_option("-c", "--configfile",
+                         type="string",
+                         dest="configFile",
+                         default='systel.cfg',
+                         help="specify configuration file, default is systel.cfg" )
+      options, args = parser.parse_args()
+      cfgs = parseConfigFile(options.configFile)
       for cfgname in cfgs.keys():
          cfg = parseConfig_CompileTELEMAC(cfgname)
          #cfg = parseConfig_TranslateTELEMAC(cfgname)
          for c in cfg.keys():
             print c + ': ' + ' '.join(cfg[c]['COMPILER']['MODULES'])
             print 'including ... ' + ' '.join(cfg[c]['MODULES'])
+   
    sys.exit()

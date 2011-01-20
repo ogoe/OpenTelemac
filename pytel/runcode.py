@@ -5,9 +5,11 @@
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-from os import path,walk,mkdir,getcwd,chdir,remove,rmdir,listdir,system
-from utils import getFileContent,putFileContent
-from parserKeywords import scanCAS,getKeyWord
+from subprocess import *
+from os import path,mkdir,chdir,remove,system,sep,environ, waitpid
+from utils import getFileContent,putFileContent,removeDirectories
+from parserKeywords import scanCAS,scanDICO,getKeyWord,getIOFilesSubmit
+from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 import sys
 import shutil
 from time import gmtime, strftime
@@ -148,6 +150,10 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
 def runCode(exe):
 
    failure = system(exe)
+   #p = Popen(["exe"], stdout=PIPE, stderr=PIPE ,shell=True)
+   #print p.communicate()[0]
+   #failure = False
+   #if p.communicate()[1] != '': failure = True
    if not failure:
       return True
    else: return False
@@ -161,5 +167,121 @@ __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
    debug = False
+
+   """p = Popen(["dir"], stdout=PIPE, stderr=PIPE ,shell=True)
+   print p.communicate()[0]
+   p.stdout.read
+   #sts = waitpid(p.pid, 0)
+   #print sts
+   ##p = Popen(["dir","*.py"], shell=False)
+   ##sts = waitpid(p.pid, 0)
+   system("C:\\opentelemac\\bin\\systall.bat")
+   p = Popen(["C:\\opentelemac\\bin\\systall.bat"], stdout=PIPE, stderr=PIPE, shell=True)
+   print p.communicate()
+   #(child_stdin, child_stdout) = (p.stdin, p.stdout)
+   #print child_stdin
+   #print child_stdout
+
+   sys.exit()"""
+# ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nLoading Options and Configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   SYSTELCFG = 'systel.cfg'
+   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser.add_option("-c", "--configfile",
+                      type="string",
+                      dest="configFile",
+                      default=SYSTELCFG,
+                      help="specify configuration file, default is systel.cfg" )
+   parser.add_option("-s", "--sortiefile",
+                      action="store_true",
+                      dest="sortieFile",
+                      default=False,
+                      help="specify whether there is a sortie file, default is no" )
+   parser.add_option("-t", "--tmpdirectory",
+                      action="store_false",
+                      dest="tmpdirectory",
+                      default=True,
+                      help="specify whether the temporary directory is removed, default is yes" )
+   parser.add_option("-x", "--compileonly",
+                      action="store_true",
+                      dest="compileonly",
+                      default=False,
+                      help="specify whether to only create an executable but not run, default is no" )
+   options, args = parser.parse_args()
+   if not path.isfile(options.configFile):
+      print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
+      sys.exit()
+   if args == []:
+      print '\nThe name of the module to run and one CAS file at least are required\n'
+      sys.exit()
+   codeName = args[0]
+   casFiles = args[1:]
+   for cfgname in parseConfigFile(options.configFile).keys():
+      cfgs = parseConfig_RunningTELEMAC(cfgname)
+
+      for cfg in cfgs.keys():
+         cfgs[cfg].update({'TELCOD':codeName})
+         if codeName not in cfgs[cfg]['MODULES']:
+            print '\nThe code to run is not installed on this system : ' + codeName + '\n'
+            sys.exit()
+         for casFile in casFiles:
+            casFile = path.realpath(casFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+            print '\n\nRunning ' + path.basename(casFile) + ' with '+ codeName + ' under ' + path.dirname(casFile) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+            print '... reading module dictionary'
+            dicoFile = path.join(path.join(cfgs[cfg]['MODULES'][codeName]['path'],'lib'),codeName+cfgs[cfg]['TELVER']+'.dico')
+            frgb,dico = scanDICO(dicoFile)
+            iFS,oFS = getIOFilesSubmit(frgb,dico)
+            cas,lang = processCAS(casFile,dicoFile,frgb)
+            if not checkConsistency(cas,dico,frgb,cfgs[cfg]):
+               print '... inconsistent CAS file: ',casFile
+               continue
+
+            CASDir = path.dirname(casFile)
+            TMPDir = processTMP(casFile)
+
+            chdir(CASDir)
+            if not processLIT(cas,iFS,TMPDir):
+               sys.exit()
+
+            chdir(TMPDir)
+            processCONFIG(lang)
+            proc = processPARALLEL(cas,dico,frgb,TMPDir+sep)
+            if proc > 1:
+               print '... sorry, parallel option not yet available'
+               sys.exit()
+
+            # ~~ Names for the executable set
+            if options.compileonly: cfgs[cfg]['REBUILD'] = 2
+            #> names within TMPDir
+            f90File = iFS['FICHIER FORTRAN'].split(';')[1]
+            objFile = path.splitext(f90File)[0] + cfgs[cfg]['SYSTEM']['SFX_OBJ']
+            #> default executable name
+            exeFile = path.join(path.join(cfgs[cfg]['MODULES'][codeName]['path'],cfg),codeName+cfgs[cfg]['TELVER']+cfgs[cfg]['SYSTEM']['SFX_EXE'])
+            #> user defined executable name
+            useFile = exeFile
+            value,defaut = getKeyWord('FICHIER FORTRAN',cas,dico,frgb)
+            if value != []:
+               useFile = path.join(CASDir,path.splitext(value[0])[0]+cfgs[cfg]['SYSTEM']['SFX_EXE'])
+               if path.exists(useFile) and cfgs[cfg]['REBUILD'] > 0: remove(useFile)
+            #> default command line compilation and linkage
+            objCmd = getFileContent(path.join(path.join(cfgs[cfg]['MODULES'][codeName]['path'],cfg),codeName+cfgs[cfg]['TELVER']+'.cmdo'))[0]
+            exeCmd = getFileContent(path.join(path.join(cfgs[cfg]['MODULES'][codeName]['path'],cfg),codeName+cfgs[cfg]['TELVER']+'.cmdx'))[0]
+            # ~~ process Executable
+            if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir):
+               sys.exit()
+
+            if not options.compileonly:
+
+               if not runCode(useFile):
+                  sys.exit()
+
+               if not processECR(cas,oFS,CASDir):
+                  sys.exit()
+
+            chdir(CASDir)
+            if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
 
    sys.exit()
