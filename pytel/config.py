@@ -483,6 +483,11 @@ def parseConfig_RunningTELEMAC(cfg):
    cfgTELEMAC[cfg].update({'REBUILD':tbd})
    # You do not need 'get' at this stage
 
+   # Get path_parallel: for parallel option
+   # the parallel dependent command line executables (partel, gretel, ...)
+   get = getPARALLEL(CONFIGS[cfg])
+   if get != {}: cfgTELEMAC[cfg].update({'PARALLEL':get})
+
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
    cfgTELEMAC[cfg].update({'ZIPPER':getConfigKey(CONFIGS[cfg],'sfx_zip',True,True)[1:]})
@@ -561,6 +566,16 @@ def getCOMPILER(cfgDict):
    if cfgDict.has_key('cmd_exe'): cmd_exe = cfgDict['cmd_exe']
    compiler.update({'CMD_EXE':cmd_exe})
    return compiler
+
+"""
+   Extract full user defined comand line
+   for the treatment of the option 'parallel'
+"""
+def getPARALLEL(cfgDict):
+   # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   parallel = {}
+   if cfgDict.has_key('path_parallel'): parallel.update({'PATH':cfgDict['path_parallel']})
+   return parallel
 
 """
    Read the list of user defined modules for action -- Certain

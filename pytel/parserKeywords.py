@@ -167,7 +167,7 @@ def scanDICO(dicoFile):
          proc = re.match(val_equals,dicoStream)
       keylist.append([kw,val])
    # ~~ sort out the groups, starting with 'NOM'
-   dico = {'FR':{},'GB':{}}; keywords = {}
+   dico = {'FR':{},'GB':{},'DICO':dicoFile}; keywords = {}
    while keylist != []:
       if keylist[0][0] != 'NOM' and keylist[1][0] != 'NOM1':
          print 'could not read NOM or NOM1 from ',keylist[0][1]
