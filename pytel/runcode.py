@@ -370,7 +370,7 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    chdir(CASDir)
-   #if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
+   if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
 
    return
 
