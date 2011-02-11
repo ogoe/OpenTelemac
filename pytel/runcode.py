@@ -72,7 +72,6 @@ def processLIT(cas,iFiles,TMPDir):
    for k in cas.keys():
       if iFiles.has_key(k):
          cref = cas[k][0]
-         print k,cas[k]
          if not path.isfile(cref):
             print '... file does not exist ',cref
             return False
@@ -108,7 +107,7 @@ def processCONFIG(lang):
    putFileContent('CONFIG',[str(lang),'6'])
    return True
 
-def processPARALLEL(cas,dico,frgb,wdir):
+def getNCSIZE(cas,dico,frgb):
 
    # ~~ check keyword ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
@@ -116,13 +115,33 @@ def processPARALLEL(cas,dico,frgb,wdir):
    if value != []: ncsize = int(value[0])
    elif defaut != []: ncsize = int(defaut[0])
 
+   return ncsize
+
+def processPARALLEL(ncsize,wdir):
+
    # ~~ parallel case ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if ncsize >= 0:
       putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir])
    elif ncsize > 1:
       putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir])
 
-   return ncsize
+   return
+
+def processMPI(ncsize,cpus):
+
+   # ~~ mpi_configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   lcpus = cpus.split()
+   dcpus = [str(len(lcpus)/2)]
+   nprocs = 0
+   for i in range(len(lcpus)/2):
+      dcpus.append(lcpus[2*i]+' '+lcpus[2*i+1])
+      nprocs = nprocs + int(lcpus[2*i+1])
+   #putFileContent('mpi_telemac.conf',dcpus)
+   if nprocs != ncsize:
+      print '... incoherent number of hosts vs. demand',nprocs,ncsize
+      sys.exit()
+
+   return ' '.join(dcpus)
 
 def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
 
@@ -186,7 +205,7 @@ def runPartition(partel,cas,conlim,iFiles,ncsize):
 
 def runPARTEL(partel,file,conlim,ncsize):
 
-   putFileContent('partel'+file+'.par',[file,conlim,str(ncsize),str(1),str(0)]) # option 1, without sections 0
+   putFileContent('partel_'+file+'.par',[file,conlim,str(ncsize),str(1),str(0)]) # option 1, without sections 0
    failure = system(partel+' < partel_'+file+'.par >> partel_'+file+'.log')
    if not failure: return True
    return False
@@ -262,26 +281,6 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
    # >>> Creating LNG file
    processCONFIG(lang)
 
-   # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # >>> Creating PARA file ( and the mpi_telemac.conf ? )
-   ncsize = processPARALLEL(cas,dico,frgb,TMPDir+sep)  # /!\ Make sure TMPDir works in UNC convention
-   # >>> Parallel tools
-   if ncsize > 1:
-      # ~~> Default path
-      PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
-      # ~~> User path
-      if cfg.has_key('PARALLEL'):
-         if cfg['PARALLEL'].has_key('PATH'):
-            PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['TELDIR']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
-
-   # ~~ Running the partionning ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if ncsize > 1:
-      # ~~> PARTEL Executable
-      exeCmd = path.join(PARDir,'partel'+cfg['SYSTEM']['SFX_EXE'])
-      # ~~> Run PARTEL
-      CONLIM = getCONLIM(cas,iFS)      # no check on existence
-      runPartition(exeCmd,cas,CONLIM,iFS,ncsize)
-
    # ~~ Handling Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Names for the executable set
       #> names within TMPDir
@@ -301,13 +300,66 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
    # >>> Compiling the executable if required
    if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
 
-   if not options.compileonly:
-   # ~~ Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if not runCode(useFile): sys.exit()
+   # >>> Rename executable because of firewall issues ~~~~~~~~~~~~~~
+   runCmd = 'out_'+path.basename(useFile)
+   shutil.move(path.basename(useFile),runCmd)
 
-   # ~~ Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if not options.compileonly:
+
+   # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ncsize = getNCSIZE(cas,dico,frgb)
+      
       if ncsize > 1:
-      # ~~> GRETEL Executable
+      # >>> MPI configuration
+         # ~~> Executable                  /!\ you need one if ncsize > 1
+         mpiCmd = ''
+         if cfg.has_key('MPI'):
+            if cfg['MPI'].has_key('EXEC'):
+               mpiCmd = cfg['MPI']['EXEC']
+         if mpiCmd == '':
+            print '... I do not know how to run MPI, can you help ?'
+            return    # /!\ should you stop or carry on ?
+         # ~~> Assign the mpi_telemac.conf
+         cpus = ''
+         if cfg.has_key('MPI'):
+            if cfg['MPI'].has_key('CPUS'):
+               cpus = cfg['MPI']['CPUS']
+         # ~~> MPI Command line
+         if cpus == '':
+            mpiCmd = mpiCmd.replace('<wdir>','-localonly')
+            mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
+            mpiCmd = mpiCmd.replace('<exename>',runCmd)
+         else:
+            mpiCmd = mpiCmd.replace('<wdir>','-wdir '+TMPDir)   # /!\ Make sure TMPDir works in UNC convention
+            mpiCmd = mpiCmd.replace('<ncsize>','-hosts '+processMPI(ncsize,cpus))
+            mpiCmd = mpiCmd.replace('<exename>',runCmd)
+         runCmd = mpiCmd
+
+      # >>> Parallel tools
+         # ~~> Default path
+         PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
+         # ~~> User path
+         if cfg.has_key('PARALLEL'):
+            if cfg['PARALLEL'].has_key('PATH'):
+               PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['TELDIR']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
+         # ~~> Creating PARA file and the mpi_telemac.conf
+         processPARALLEL(ncsize,TMPDir+sep)  # /!\ Make sure TMPDir works in UNC convention
+
+      # >>> Running the partionning
+      if ncsize > 1:
+         # ~~> PARTEL Executable
+         exeCmd = path.join(PARDir,'partel'+cfg['SYSTEM']['SFX_EXE'])
+         # ~~> Run PARTEL
+         CONLIM = getCONLIM(cas,iFS)      # no check on existence
+         runPartition(exeCmd,cas,CONLIM,iFS,ncsize)
+
+      # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      print runCmd
+      if not runCode(runCmd): sys.exit()
+
+      # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if ncsize > 1:
+         # ~~> GRETEL Executable
          exeCmd = path.join(PARDir,'gretel'+cfg['SYSTEM']['SFX_EXE'])
          # ~~> Run GRETEL
          GLOGEO = getGLOGEO(cas,iFS)      # no check on existence
@@ -318,7 +370,7 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    chdir(CASDir)
-   if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
+   #if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
 
    return
 

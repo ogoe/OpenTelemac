@@ -487,6 +487,10 @@ def parseConfig_RunningTELEMAC(cfg):
    # the parallel dependent command line executables (partel, gretel, ...)
    get = getPARALLEL(CONFIGS[cfg])
    if get != {}: cfgTELEMAC[cfg].update({'PARALLEL':get})
+   # Get mpi_cpulist and mpi_cmdexec: for mpi option
+   # .. in theory, mpi could be replaced by something else (?)
+   get = getMPI(CONFIGS[cfg])
+   if get != {}: cfgTELEMAC[cfg].update({'MPI':get})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -576,6 +580,17 @@ def getPARALLEL(cfgDict):
    parallel = {}
    if cfgDict.has_key('path_parallel'): parallel.update({'PATH':cfgDict['path_parallel']})
    return parallel
+
+"""
+   Extract full user defined comand line
+   for the treatment of the option 'mpi'
+"""
+def getMPI(cfgDict):
+   # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   mpi = {}
+   if cfgDict.has_key('mpi_cpulist'): mpi.update({'CPUS':cfgDict['mpi_cpulist']})
+   if cfgDict.has_key('mpi_cmdexec'): mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
+   return mpi
 
 """
    Read the list of user defined modules for action -- Certain
