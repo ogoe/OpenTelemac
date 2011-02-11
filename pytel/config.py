@@ -433,6 +433,15 @@ def parseConfig_ValidateTELEMAC(cfg):
          if got != []:
             cfgTELEMAC[cfg]['VALIDATION'].update({mod:got})
 
+   # Get path_parallel: for parallel option
+   # the parallel dependent command line executables (partel, gretel, ...)
+   get = getPARALLEL(CONFIGS[cfg])
+   if get != {}: cfgTELEMAC[cfg].update({'PARALLEL':get})
+   # Get mpi_cpulist and mpi_cmdexec: for mpi option
+   # .. in theory, mpi could be replaced by something else (?)
+   get = getMPI(CONFIGS[cfg])
+   if get != {}: cfgTELEMAC[cfg].update({'MPI':get})
+
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
    cfgTELEMAC[cfg].update({'ZIPPER':getConfigKey(CONFIGS[cfg],'sfx_zip',True,True)[1:]})
