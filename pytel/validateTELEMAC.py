@@ -6,10 +6,9 @@
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
-from parserKeywords import scanDICO,getIOFilesSubmit,getKeyWord
-from runcode import processCAS,processTMP,processLIT,processCONFIG,processPARALLEL,processExecutable,runCode,processECR,checkConsistency
-from utils import getFileContent,removeDirectories
-from os import path,chdir,sep,remove
+from parserKeywords import scanDICO,getIOFilesSubmit
+from runcode import processCAS,checkConsistency,runCAS
+from os import path,environ
 import sys
 
 # _____             ________________________________________________
@@ -22,16 +21,40 @@ __date__ ="$11-Mar-2010 13:51:29$"
 if __name__ == "__main__":
    debug = False
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   SYSTELCFG = 'systel.cfg'
+   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configfile",
                       type="string",
                       dest="configFile",
-                      default='systel.cfg',
+                      default=SYSTELCFG,
                       help="specify configuration file, default is systel.cfg" )
+   parser.add_option("-s", "--sortiefile",
+                      action="store_true",
+                      dest="sortieFile",
+                      default=False,
+                      help="specify whether there is a sortie file, default is no" )
+   parser.add_option("-t", "--tmpdirectory",
+                      action="store_false",
+                      dest="tmpdirectory",
+                      default=True,
+                      help="specify whether the temporary directory is removed, default is yes" )
+   parser.add_option("-x", "--compileonly",
+                      action="store_true",
+                      dest="compileonly",
+                      default=False,
+                      help="specify whether to only create an executable but not run, default is no" )
    options, args = parser.parse_args()
+   if not path.isfile(options.configFile):
+      print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
+      sys.exit()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for cfgname in parseConfigFile(options.configFile).keys():
       cfgs = parseConfig_ValidateTELEMAC(cfgname)
 
@@ -43,57 +66,15 @@ if __name__ == "__main__":
             print '... reading module dictionary'
             dicoFile = path.join(path.join(cfgs[cfg]['MODULES'][mod]['path'],'lib'),mod+cfgs[cfg]['TELVER']+'.dico')
             frgb,dico = scanDICO(dicoFile)
-            print 'dico'
             iFS,oFS = getIOFilesSubmit(frgb,dico)
-            print 'iFS,oFS'
 
             for casFile in cfgs[cfg]['VALIDATION'][mod]:
 
-               cas,lang = processCAS(casFile,dicoFile,frgb)
+               cas,lang = processCAS(casFile,frgb)
                if not checkConsistency(cas,dico,frgb,cfgs[cfg]):
                   print '... inconsistent CAS file: ',casFile
                   continue
 
-               print '... CAS file: ',casFile
-               CASDir = path.dirname(casFile)
-               TMPDir = processTMP(casFile)
-
-               chdir(CASDir)
-               if not processLIT(cas,iFS,TMPDir):
-                  sys.exit()
-
-               chdir(TMPDir)
-               processCONFIG(lang)
-               proc = processPARALLEL(cas,dico,frgb,TMPDir+sep)
-               if proc > 1:
-                  print '... sorry, parallel option not yet available'
-                  sys.exit()
-
-               # ~~ Names for the executable set
-               #> names within TMPDir
-               f90File = iFS['FICHIER FORTRAN'].split(';')[1]
-               objFile = path.splitext(f90File)[0] + cfgs[cfg]['SYSTEM']['SFX_OBJ']
-               #> default executable name
-               exeFile = path.join(path.join(cfgs[cfg]['MODULES'][mod]['path'],cfg),mod+cfgs[cfg]['TELVER']+cfgs[cfg]['SYSTEM']['SFX_EXE'])
-               #> user defined executable name
-               useFile = exeFile
-               value,defaut = getKeyWord('FICHIER FORTRAN',cas,dico,frgb)
-               if value != []:
-                  useFile = path.join(CASDir,path.splitext(value[0])[0]+cfgs[cfg]['SYSTEM']['SFX_EXE'])
-                  if path.exists(useFile) and cfgs[cfg]['REBUILD'] > 0: remove(useFile)
-               #> default command line compilation and linkage
-               objCmd = getFileContent(path.join(path.join(cfgs[cfg]['MODULES'][mod]['path'],cfg),mod+cfgs[cfg]['TELVER']+'.cmdo'))[0]
-               exeCmd = getFileContent(path.join(path.join(cfgs[cfg]['MODULES'][mod]['path'],cfg),mod+cfgs[cfg]['TELVER']+'.cmdx'))[0]
-               # ~~ process Executable
-               if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir):
-                  sys.exit()
-
-               if not runCode(useFile):
-                  sys.exit()
-
-               if not processECR(cas,oFS,CASDir):
-                  sys.exit()
-
-               chdir(CASDir) #; removeDirectories(TMPDir)
+               runCAS(cfg,cfgs[cfg],mod,casFile,dico,frgb,iFS,oFS,options)
 
    sys.exit()
