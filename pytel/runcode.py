@@ -301,7 +301,7 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
    if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
 
    # >>> Rename executable because of firewall issues ~~~~~~~~~~~~~~
-   runCmd = 'out_'+path.basename(useFile)
+   runCmd = path.join(CASDir,'out_'+path.basename(useFile))
    shutil.move(path.basename(useFile),runCmd)
 
    if not options.compileonly:
