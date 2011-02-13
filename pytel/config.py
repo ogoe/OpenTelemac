@@ -597,7 +597,7 @@ def getPARALLEL(cfgDict):
 def getMPI(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpi = {}
-   if cfgDict.has_key('mpi_cpulist'): mpi.update({'CPUS':cfgDict['mpi_cpulist']})
+   if cfgDict.has_key('mpi_hosts'): mpi.update({'HOSTS':cfgDict['mpi_hosts']})
    if cfgDict.has_key('mpi_cmdexec'): mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
    return mpi
 
