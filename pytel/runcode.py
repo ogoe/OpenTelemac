@@ -127,22 +127,6 @@ def processPARALLEL(ncsize,wdir):
 
    return
 
-def processMPI(ncsize,cpus):
-
-   # ~~ mpi_configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   lcpus = cpus.split()
-   dcpus = [str(len(lcpus)/2)]
-   nprocs = 0
-   for i in range(len(lcpus)/2):
-      dcpus.append(lcpus[2*i]+' '+lcpus[2*i+1])
-      nprocs = nprocs + int(lcpus[2*i+1])
-   #putFileContent('mpi_telemac.conf',dcpus)
-   if nprocs != ncsize:
-      print '... incoherent number of hosts vs. demand',nprocs,ncsize
-      sys.exit()
-
-   return ' '.join(dcpus)
-
 def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
 
    if path.exists(f90Name) and not path.exists(useName):
@@ -320,19 +304,15 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
             print '... I do not know how to run MPI, can you help ?'
             return    # /!\ should you stop or carry on ?
          # ~~> Assign the mpi_telemac.conf
-         cpus = ''
+         hosts = ''
          if cfg.has_key('MPI'):
-            if cfg['MPI'].has_key('CPUS'):
-               cpus = cfg['MPI']['CPUS']
+            if cfg['MPI'].has_key('HOSTS'):
+               hosts = cfg['MPI']['HOSTS']
          # ~~> MPI Command line
-         if cpus == '':
-            mpiCmd = mpiCmd.replace('<wdir>','-localonly')
-            mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
-            mpiCmd = mpiCmd.replace('<exename>',runCmd)
-         else:
-            mpiCmd = mpiCmd.replace('<wdir>','-wdir '+TMPDir)   # /!\ Make sure TMPDir works in UNC convention
-            mpiCmd = mpiCmd.replace('<ncsize>','-hosts '+processMPI(ncsize,cpus))
-            mpiCmd = mpiCmd.replace('<exename>',runCmd)
+         mpiCmd = mpiCmd.replace('<wdir>','-wdir '+TMPDir)   # /!\ Make sure TMPDir works in UNC convention
+         mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
+         mpiCmd = mpiCmd.replace('<hosts>',hosts)
+         mpiCmd = mpiCmd.replace('<exename>',runCmd)
          runCmd = mpiCmd
 
       # >>> Parallel tools
