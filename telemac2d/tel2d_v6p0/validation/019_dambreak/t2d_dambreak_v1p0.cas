@@ -1,0 +1,82 @@
+/-------------------------------------------------------------------/
+/ TELEMAC-2D       -  VALIDATION TEST CASE NUMBER  -                /
+/                       DAM BREAK OVER DRY BED                      /
+/-------------------------------------------------------------------/
+/
+/  HP C3700 compilateur HP      : 16 s  version 5.7 20/04/2007
+/  HP C3700 compilateur Nag     : 54 s  version 5.7 20/04/2007
+/  Dell 2.8 MHz compilateur pgi :  7 s  version 5.7 20/04/2007
+/
+/  HP C3700 compilateur HP      : 14 s  version 5.8 30/11/2007
+/  HP C3700 compilateur Nag     : 49 s  version 5.8 26/12/2007
+/  Dell 2.8 MHz compilateur pgi :  6 s  version 5.8 19/12/2007
+/
+/  HP C3700 compilateur HP      : 14 s  version 5.9 16/10/2008
+/  HP C3700 compilateur Nag     : 47 s  version 5.9 17/10/2008
+/  Dell 2.8 MHz compilateur pgi :  6 s  version 5.9 16/10/2008
+/
+/  HP C3700 compilateur HP        : 14 s  version 6.0 24/11/2009
+/  HP C3700 compilateur Nag       : 48 s  version 6.0 27/11/2009
+/  Dell 2.8 MHz compilateur Intel :  5 s  version 6.0 26/11/2009
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+/
+GEOMETRY FILE                   = geo_dambreak.slf
+FORTRAN FILE                    = t2d_dambreak.f
+BOUNDARY CONDITIONS FILE        = geo_dambreak.cli
+RESULTS FILE                    = r2d_dambreak_v1p0.slf
+REFERENCE FILE                  = f2d_dambreak_v1p0.slf
+PARALLEL PROCESSORS             = 0
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITLE                           = 'DAM BREAK OVER DRY BED'
+VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,F,L,N'
+GRAPHIC PRINTOUT PERIOD         = 10
+LISTING PRINTOUT PERIOD         = 15
+TIME STEP                       = 0.01
+NUMBER OF TIME STEPS            = 150
+VARIABLE TIME-STEP : YES
+DURATION : 1.5
+MASS-BALANCE                    = YES
+INFORMATION ABOUT SOLVER        = YES
+VALIDATION                      = YES
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED           = NO 
+INITIAL CONDITIONS              = 'PARTICULAR'
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION          = 0.
+TURBULENCE MODEL                = 1
+VELOCITY DIFFUSIVITY            = 0.
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+EQUATIONS                       = 'SAINT-VENANT FV'
+FINITE VOLUME SCHEME            = 2
+NUMBER OF PRIVATE ARRAYS        = 1
+TIDAL FLATS                     = YES
+TYPE OF ADVECTION               = 7;5
+SUPG OPTION                     = 2;2
+DISCRETIZATIONS IN SPACE        = 11;11
+SOLVER ACCURACY                 = 1.E-4
+SOLVER                          = 7
+SOLVER OPTION                   = 3
+PRECONDITIONING                 = 2
+IMPLICITATION FOR DEPTH         = 1.
+IMPLICITATION FOR VELOCITY      = 0.6
+INITIAL GUESS FOR H             = 1   
+/           
+&FIN
