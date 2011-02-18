@@ -1,0 +1,72 @@
+/
+STOCKAGE DES MATRICES : 1
+/
+/ sur HP C3700   96 s  5.5  JMH le 15/12/2004
+/ sur HP C3700   77 s  5.6  JMH le 24/08/2005
+/ sur HP C3700   73 s  5.7  JMH le 13/02/2007 (Nag:163 s,Dell:52 s)
+/ sur HP C3700   77 s  5.8  JMH le 19/12/2007 (Nag:183 s,Dell:54 s)
+/ sur HP C3700   71 s  5.9  JMH le 17/10/2008 (Nag:165 s,Dell:44 s)
+/
+FICHIER FORTRAN                    : t3d_source_v2p0.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_source_v2p0.cli
+FICHIER DE GEOMETRIE               : geo_source_v2p0.slf
+FICHIER DES RESULTATS 3D           : r3d_source_v2p0.slf
+FICHIER DES RESULTATS 2D           : r2d_source_v2p0.slf
+FICHIER DE REFERENCE               : f3d_source_v2p0.slf
+VALIDATION : OUI
+/
+NOMBRE DE PLANS HORIZONTAUX : 5         
+/----------------------------------------------------------------------/ 
+/                     OPTIONS GENERALES                                  
+/----------------------------------------------------------------------/ 
+TITRE = 'TELEMAC 3D : TEST POUR SOURCE'              
+SUITE DE CALCUL : NON                                                    
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D : 'U,V,H,S,TA1,TA2,TA3'
+VARIABLES POUR LES SORTIES GRAPHIQUES 3D : 'Z,U,V,W,TA1,TA2,TA3'  
+PAS DE TEMPS = 1.0 
+NOMBRE DE PAS DE TEMPS = 1000
+PERIODE POUR LES SORTIES GRAPHIQUES : 100
+PERIODE POUR LES SORTIES LISTING    : 100
+CONDITIONS INITIALES              = 'COTE NULLE'
+COTES IMPOSEES	: 0;0
+DEBITS IMPOSES	: 0;40
+/----------------------------------------------------------------------/ 
+/     SOURCES                                                        
+/----------------------------------------------------------------------/
+FICHIER DES SOURCES : src_source_v2p0.txt
+ABSCISSES DES SOURCES : -20.0; 0.0
+ORDONNEES DES SOURCES :   5.0; -10.0
+COTES DES SOURCES     :  -0.5; -0.5
+DEBITS DES SOURCES    :   1.0;  1.0
+VITESSE DES SOURCES SELON X  :  0.0; 0.5
+VITESSE DES SOURCES SELON Y  :  0.0; 2.0 
+/                                  S1_T1;S2_T1;S1_T2;S2_T2;S1_T3;S2_T3
+VALEURS DES TRACEURS DES SOURCES  : 10.0; 10.0;  0.0;  0.0; 10.0; 10.0
+/----------------------------------------------------------------------/ 
+/     PROPAGATION                                                        
+/----------------------------------------------------------------------/ 
+SCHEMA POUR LA DIFFUSION DES VITESSES = 1
+PRECONDITIONNEMENT POUR LA DIFFUSION DES VITESSES : 2
+MODELE DE TURBULENCE VERTICAL : 1
+SOLVEUR POUR LA PROPAGATION : 7
+MAXIMUM D'ITERATIONS POUR LA PROPAGATION : 100 
+PRECISION POUR LA PROPAGATION = 1.E-6  
+IMPLICITATION POUR LA HAUTEUR = 0.6 
+IMPLICITATION POUR LES VITESSES = 0.6  
+PRECONDITIONNEMENT POUR LA PROPAGATION : 2    
+ORDRE DU TIR INITIAL POUR LA HAUTEUR : 1                
+/----------------------------------------------------------------------/
+BILAN DE MASSE : OUI
+INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING : OUI
+SCHEMA POUR LA CONVECTION DES VITESSES = 5
+SCHEMA POUR LA CONVECTION DE LA HAUTEUR = 5                 
+/----------------------------------------------------------------------/ 
+/     TRACEUR                                                            
+/----------------------------------------------------------------------/ 
+BANCS DECOUVRANTS : NON                                                  
+NOMBRE DE TRACEURS = 3
+VALEURS INITIALES DES TRACEURS : 0.;0.;0.
+PRECISION POUR LA DIFFUSION DES TRACEURS = 1.E-7
+&ETA                                                                     
+&FIN
+ 

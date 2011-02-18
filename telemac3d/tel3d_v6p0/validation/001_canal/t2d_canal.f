@@ -1,0 +1,11 @@
+       SUBROUTINE CHECKDOT(X,T,TEXTE,MESH)
+       USE BIEF
+       CHARACTER(LEN=*) :: TEXTE
+       TYPE(BIEF_OBJ)  :: X,T
+       TYPE(BIEF_MESH) :: MESH
+       CALL OS('X=Y     ',X=T,Y=X)
+       IF(NCSIZE.GT.1) CALL PARCOM(T,2,MESH)
+       PRINT*,TEXTE,'=',P_DOTS(T,T,MESH)
+       RETURN
+       END
+
