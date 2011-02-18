@@ -1,0 +1,22 @@
+/**********************************************************************/
+/
+/           FICHIER DE DECLARATION DES MOTS CLES DU CODE               /
+/                            STBTEL                                    /
+/
+/**********************************************************************/
+/
+FICHIER DES PARAMETRES             : cas
+FICHIER UNIVERSEL                  : geo
+/FICHIER FORTRAN                    : princi.f
+/
+FICHIER DE GEOMETRIE POUR TELEMAC  : geonew
+FICHIER DES CONDITIONS AUX LIMITES : clinew
+/
+/NUMEROS DE VERSION                 : V5P2;V5P2;V5P2;V5P2
+DECOUPAGE DES TRIANGLES SURCONTRAINTS : OUI
+ELIMINATION DES DEPENDANCES ARRIERES : OUI
+RENUMEROTATION DES POINTS          : OUI
+MAILLEUR                           : SELAFIN
+/
+&ETA
+&FIN
