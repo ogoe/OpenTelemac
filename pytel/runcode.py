@@ -181,9 +181,9 @@ def runPartition(partel,cas,conlim,iFiles,ncsize):
          if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
             print ' partitioning: ', path.basename(crun)   # path.basename(cas[k][0])
             runPARTEL(partel,crun,conlim,ncsize)
-         elif iFiles[k].split(';')[5][0:4] == 'SCAL':
+         elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             print ' duplicating: ', path.basename(crun)    # path.basename(cas[k][0])
-            for n in rang(ncsize): shutil.copy(crun,crun+('000000'+str(n))[-6:])
+            for n in range(ncsize): shutil.copy(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
 
@@ -368,10 +368,16 @@ if __name__ == "__main__":
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   CFGNAME = ''
    SYSTELCFG = 'systel.cfg'
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configfile",
+   parser.add_option("-c", "--configname",
+                      type="string",
+                      dest="configName",
+                      default=CFGNAME,
+                      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_option("-f", "--configfile",
                       type="string",
                       dest="configFile",
                       default=SYSTELCFG,
@@ -405,34 +411,39 @@ if __name__ == "__main__":
    casFiles = args[1:]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for cfgname in parseConfigFile(options.configFile).keys():
-      cfgs = parseConfig_RunningTELEMAC(cfgname)
+# ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cfgname = options.configName
+   if options.configName == '':
+      cfgname = parseConfigFile(options.configFile).keys()[0]
+   if cfgname not in parseConfigFile(options.configFile).keys():
+      print '\nNot able to get to find your configurtaion in the configuration file: ' + options.configFile + '\n'
+      sys.exit()
+
+   cfg = parseConfig_RunningTELEMAC(cfgname)[cfgname]
 
 # >>> Check wether the config has been compiled for the runcode
-      for cfg in cfgs.keys():
-         if options.compileonly: cfgs[cfg]['REBUILD'] = 2
-         cfgs[cfg].update({'TELCOD':codeName})
-         if codeName not in cfgs[cfg]['MODULES']:
-            print '\nThe code requested is not installed on this system : ' + codeName + '\n'
-            sys.exit()
+   if options.compileonly: cfg['REBUILD'] = 2
+   cfg.update({'TELCOD':codeName})
+   if codeName not in cfg['MODULES']:
+      print '\nThe code requested is not installed on this system : ' + codeName + '\n'
+      sys.exit()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Loop over CAS Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         for casFile in casFiles:
-            casFile = path.realpath(casFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
-            print '\n\nRunning ' + path.basename(casFile) + ' with '+ codeName + ' under ' + path.dirname(casFile) + '\n\
+   for casFile in casFiles:
+      casFile = path.realpath(casFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+      print '\n\nRunning ' + path.basename(casFile) + ' with '+ codeName + ' under ' + path.dirname(casFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-            print '... reading module dictionary'
+      print '... reading module dictionary'
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            dicoFile = path.join(path.join(cfgs[cfg]['MODULES'][codeName]['path'],'lib'),codeName+cfgs[cfg]['TELVER']+'.dico')
-            frgb,dico = scanDICO(dicoFile)
-            iFS,oFS = getIOFilesSubmit(frgb,dico)
+      dicoFile = path.join(path.join(cfg['MODULES'][codeName]['path'],'lib'),codeName+cfg['TELVER']+'.dico')
+      frgb,dico = scanDICO(dicoFile)
+      iFS,oFS = getIOFilesSubmit(frgb,dico)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            runCAS(cfg,cfgs[cfg],codeName,casFile,dico,frgb,iFS,oFS,options)
+      runCAS(cfgname,cfg,codeName,casFile,dico,frgb,iFS,oFS,options)
 
    sys.exit()

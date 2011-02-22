@@ -238,51 +238,69 @@ if __name__ == "__main__":
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   CFGNAME = ''
    SYSTELCFG = 'systel.cfg'
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configfile",
+   parser.add_option("-c", "--configname",
+                      type="string",
+                      dest="configName",
+                      default=CFGNAME,
+                      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_option("-f", "--configfile",
                       type="string",
                       dest="configFile",
                       default=SYSTELCFG,
                       help="specify configuration file, default is systel.cfg" )
    options, args = parser.parse_args()
-   for cfgname in parseConfigFile(options.configFile).keys():
-      cfgs = parseConfig_CompileTELEMAC(cfgname)
+   if not path.isfile(options.configFile):
+      print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
+      sys.exit()
 
-      for cfg in cfgs:
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
+   if options.configName != '':
+      cfgnames = [options.configName]
+   else:
+      cfgnames = parseConfigFile(options.configFile).keys()
+
+   for cfgname in cfgnames:
+      cfg = parseConfig_CompileTELEMAC(cfgname)[cfgname]
+
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-         print '\n\nScanning the source code\n\
+      print '\n\nScanning the source code\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         fic,mdl,sbt,fct,prg,dep,all = scanSources(cfg,cfgs[cfg])
+      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg)
 
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
-         HOMERES = {}
-         for item in prg.keys() :
-            if prg[item][0] in cfgs[cfg]['COMPILER']['MODULES']:
+      HOMERES = {}
+      for item in prg.keys() :
+         if prg[item][0] in cfg['COMPILER']['MODULES']:
 
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
-               print '\n\nBuilding the who calls who tree for ' + item + ' and dependents\n\
+            print '\n\nBuilding the who calls who tree for ' + item + ' and dependents\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-               debug = False
-               MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
-               t,r = getTree(item,prg[item][0],all,0)
-               debug = True
-               #del MAKSYSTEL['deps'][prg[item][0]]
-               MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=True)
-               HOMERES.update({item:MAKSYSTEL})
+            debug = False
+            MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
+            t,r = getTree(item,prg[item][0],all,0)
+            debug = True
+            #del MAKSYSTEL['deps'][prg[item][0]]
+            MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=True)
+            HOMERES.update({item:MAKSYSTEL})
 
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-               for obj,lib in HOMERES[item]['add'] :
-                  Root,Suffix = path.splitext(obj)
-                  if not createObjFiles(obj.lower(),item,all[lib][Root.upper()],cfg):
-                     sys.exit()
+            for obj,lib in HOMERES[item]['add'] :
+               Root,Suffix = path.splitext(obj)
+               if not createObjFiles(obj.lower(),item,all[lib][Root.upper()],cfgname):
+                  sys.exit()
 
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-               for lib in HOMERES[item]['deps']:
-                  if not createLibFiles(lib.lower(),cfg,prg[item][0]):
-                     sys.exit()
+            for lib in HOMERES[item]['deps']:
+               if not createLibFiles(lib.lower(),cfgname,prg[item][0]):
+                  sys.exit()
 
 # ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-               if not createExeFiles(item.lower(),cfg,prg[item][0]):
-                  sys.exit()
+            if not createExeFiles(item.lower(),cfgname,prg[item][0]):
+               sys.exit()
+
+   sys.exit()

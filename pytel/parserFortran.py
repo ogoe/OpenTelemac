@@ -962,27 +962,47 @@ __author__="Sebastien Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
-   # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   CFGNAME = ''
+   SYSTELCFG = 'systel.cfg'
+   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configfile",
+   parser.add_option("-c", "--configname",
+                      type="string",
+                      dest="configName",
+                      default=CFGNAME,
+                      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_option("-f", "--configfile",
                       type="string",
                       dest="configFile",
-                      default='systel.cfg',
+                      default=SYSTELCFG,
                       help="specify configuration file, default is systel.cfg" )
    options, args = parser.parse_args()
-   for cfgname in parseConfigFile(options.configFile).keys():
-      cfgs = parseConfig_CompileTELEMAC(cfgname)
+   if not path.isfile(options.configFile):
+      print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
+      sys.exit()
 
-      for cfg in cfgs:        # ~~ for each configuration ~~~~~~~~~~
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
+   if options.configName != '':
+      cfgnames = [options.configName]
+   else:
+      cfgnames = parseConfigFile(options.configFile).keys()
 
-         debug = True
+   #  /!\  for testing purposes ... no real use
+   for cfgname in cfgnames:
+      cfg = parseConfig_CompileTELEMAC(cfgname)[cfgname]
 
-         # ~~ Scans all source files to build a relation database ~~~~~
-         print '\n\nScanning the source code\n\
+      debug = True
+
+      # ~~ Scans all source files to build a relation database ~~~~~
+      print '\n\nScanning the source code\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         fic,mdl,sbt,fct,prg,dep,all = scanSources(cfg,cfgs[cfg])
+      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg)
       
    sys.exit()
 

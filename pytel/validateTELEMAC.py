@@ -25,10 +25,16 @@ if __name__ == "__main__":
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   CFGNAME = ''
    SYSTELCFG = 'systel.cfg'
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configfile",
+   parser.add_option("-c", "--configname",
+                      type="string",
+                      dest="configName",
+                      default=CFGNAME,
+                      help="specify configuration name, default is the first found in the configuration file" )
+   parser.add_option("-f", "--configfile",
                       type="string",
                       dest="configFile",
                       default=SYSTELCFG,
@@ -54,27 +60,32 @@ if __name__ == "__main__":
       sys.exit()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for cfgname in parseConfigFile(options.configFile).keys():
-      cfgs = parseConfig_ValidateTELEMAC(cfgname)
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
+   if options.configName != '':
+      cfgnames = [options.configName]
+   else:
+      cfgnames = parseConfigFile(options.configFile).keys()
 
-      for cfg in cfgs.keys():
-         for mod in cfgs[cfg]['VALIDATION'].keys():
+   for cfgname in cfgnames:
+
+      cfg = parseConfig_ValidateTELEMAC(cfgname)[cfgname]
+
+      for mod in cfg['VALIDATION'].keys():
 # ~~ Scans all CAS files to launch validation ~~~~~~~~~~~~~~~~~~~~~~
-            print '\n\nConfiguration ' + cfg + ', Module '+ mod + '\n\
+         print '\n\nConfiguration ' + cfgname + ', Module '+ mod + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-            print '... reading module dictionary'
-            dicoFile = path.join(path.join(cfgs[cfg]['MODULES'][mod]['path'],'lib'),mod+cfgs[cfg]['TELVER']+'.dico')
-            frgb,dico = scanDICO(dicoFile)
-            iFS,oFS = getIOFilesSubmit(frgb,dico)
+         print '... reading module dictionary'
+         dicoFile = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['TELVER']+'.dico')
+         frgb,dico = scanDICO(dicoFile)
+         iFS,oFS = getIOFilesSubmit(frgb,dico)
 
-            for casFile in cfgs[cfg]['VALIDATION'][mod]:
+         for casFile in cfg['VALIDATION'][mod]:
 
-               cas,lang = processCAS(casFile,frgb)
-               if not checkConsistency(cas,dico,frgb,cfgs[cfg]):
-                  print '... inconsistent CAS file: ',casFile
-                  continue
+            cas,lang = processCAS(casFile,frgb)
+            if not checkConsistency(cas,dico,frgb,cfg):
+               print '... inconsistent CAS file: ',casFile
+               continue
 
-               runCAS(cfg,cfgs[cfg],mod,casFile,dico,frgb,iFS,oFS,options)
+            runCAS(cfgname,cfg,mod,casFile,dico,frgb,iFS,oFS,options)
 
    sys.exit()

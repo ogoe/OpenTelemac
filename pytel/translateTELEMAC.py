@@ -453,36 +453,51 @@ if __name__ == "__main__":
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   CFGNAME = ''
+   SYSTELCFG = 'systel.cfg'
+   if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configfile",
+   parser.add_option("-c", "--configname",
+                      type="string",
+                      dest="configName",
+                      default=CFGNAME,
+                      help="specify configuration name, default is randomly found in the configuration file" )
+   parser.add_option("-f", "--configfile",
                       type="string",
                       dest="configFile",
-                      default='systel.cfg',
+                      default=SYSTELCFG,
                       help="specify configuration file, default is systel.cfg" )
    options, args = parser.parse_args()
-   for cfgname in parseConfigFile(options.configFile).keys():
-      cfgs = parseConfig_TranslateTELEMAC(cfgname)
+   if not path.isfile(options.configFile):
+      print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
+      sys.exit()
 
-      if len(cfgs) > 1:
-         print '... you need only one configuration named'
-         sys.exit()
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cfgname = options.configName
+   if options.configName == '':
+      cfgname = parseConfigFile(options.configFile).keys()[0]
+   if cfgname not in parseConfigFile(options.configFile).keys():
+      print '\nNot able to get to find your configurtaion in the configuration file: ' + options.configFile + '\n'
+      sys.exit()
 
-      cfg = cfgs.keys()[0]
-      MODULES = {}
-      for mod in cfgs[cfg]['MODULES'].keys():
-         if mod in cfgs[cfg]['COMPILER']['MODULES']:
-            files = getTheseFiles(path.join(cfgs[cfg]['MODULES'][mod]['path'],'sources'),['.f'])
-            if files != []:
-               MODULES.update({mod:cfgs[cfg]['MODULES'][mod]})
-               MODULES[mod].update({'sources':files})
+   cfg = parseConfig_TranslateTELEMAC(cfgname)[cfgname]
 
-      app = QtGui.QApplication(sys.argv)
-      translationUI = dlgBox()
-      translationUI.show()
-      app.exec_()
+   MODULES = {}
+   for mod in cfg['MODULES'].keys():
+      if mod in cfg['COMPILER']['MODULES']:
+         files = getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f'])
+         if files != []:
+            MODULES.update({mod:cfg['MODULES'][mod]})
+            MODULES[mod].update({'sources':files})
 
-      """      for mod in cfgs[cfg]['COMPILER']['MODULES']:
+   app = QtGui.QApplication(sys.argv)
+   translationUI = dlgBox()
+   translationUI.show()
+   app.exec_()
+
+   """      for mod in cfg['COMPILER']['MODULES']:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
          print '\n\nTranslation of module  ' + mod + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      """
+   """
