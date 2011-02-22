@@ -21,8 +21,8 @@ PROCESSEURS PARALLELES : 2
 FICHIER FORTRAN                   : t2d_bumpflu_v1p0.f
 FICHIER DES CONDITIONS AUX LIMITES: geo_bumpflu_v1p0.cli
 FICHIER DE GEOMETRIE              : geo_bumpflu_v1p0.slf
-FICHIER DE REFERENCE              : f2d_bumpflu_v1p1.slf
-FICHIER DES RESULTATS             : r2d_bumpflu_v1p0.slf
+FICHIER DE REFERENCE              : f2d_bumpflu_v1p0.slf
+FICHIER DES RESULTATS             : r2d_bumpflu_v1p1.slf
 /                                                          
 /----------------------------------------------------------------------/  
 /                       OPTIONS GENERALES                                 
