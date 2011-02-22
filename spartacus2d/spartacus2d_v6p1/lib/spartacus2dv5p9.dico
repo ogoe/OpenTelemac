@@ -1,0 +1,872 @@
+&DYN
+
+/=====================================================================/
+/ MOTS-CLES CORRESPONDANT A DES FICHIERS OU DES CHAINES DE CARACTERES /
+/=====================================================================/
+
+NOM = 'FICHIER INITIALISATION'
+NOM1 = 'INITIALIZING FILE'
+TYPE = CARACTERE
+APPARENCE = 'LISTE IS FICHIER'
+INDEX = 3
+MNEMO = 'FICHINIT'
+TAILLE = 0
+SUBMIT = 'INUTILE;FORT.77;OBLIG;ASC;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'FICHIERS ENTREES-SORTIES'
+RUBRIQUE1 = 'INPUT-OUTPUT FILES'
+NIVEAU = 1
+AIDE = 'Fichier contenant la geometrie initiale du systeme'
+AIDE1 = 'File including system initial geometry'
+
+NOM = 'FICHIER DE MAILLAGE'
+NOM1 = 'MESH FILE'
+TYPE = CARACTERE
+APPARENCE = 'LISTE IS FICHIER'
+INDEX = 2
+MNEMO = 'FICHMAIL'
+TAILLE = 0
+SUBMIT = 'INUTILE;FORT.11;OBLIG;ASC;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'FICHIERS ENTREES-SORTIES'
+RUBRIQUE1 = 'INPUT-OUTPUT FILES'
+NIVEAU = 1
+AIDE = 'Fichier contenant le maillage d''interpolation pour
+lecture sous Rubens'
+AIDE1 = 'File including the interpolation mesh for Rubens output'
+
+NOM = 'FICHIER DES PARAMETRES'
+NOM1 = 'STEERING FILE'
+TYPE = CARACTERE
+APPARENCE = 'LISTE IS FICHIER'
+INDEX = 1
+MNEMO = 'FICHPARAM'
+TAILLE = 0
+SUBMIT = 'INUTILE;T2CAS;OBLIG;ASC;LIT;CAS'
+DEFAUT = ' '
+DEFAUT1 = ' '
+NIVEAU = 1
+RUBRIQUE = 'FICHIERS ENTREES-SORTIES'
+RUBRIQUE1 = 'INPUT-OUTPUT FILES'
+AIDE = 'Fichier contenant les parametres du calcul'
+AIDE1 = 'File including computation parameters'
+
+NOM = 'FICHIER DES POSITIONS'
+NOM1 = 'POSITION FILE'
+TYPE = CARACTERE
+APPARENCE = 'LISTE IS FICHIER'
+INDEX = 6
+MNEMO = 'FICHPOS'
+SUBMIT = 'INUTILE;FORT.47;OBL;ASC;ECR;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'FICHIERS ENTREES-SORTIES'
+RUBRIQUE1 = 'INPUT-OUTPUT FILES'
+NIVEAU = 1
+AIDE = 'Fichier resultat contenant les positions des particules'
+AIDE1 = 'Result file including printout particle positions'
+
+NOM = 'FICHIER DES RESULTATS'
+NOM1 = 'RESULT FILE'
+TYPE = CARACTERE
+APPARENCE = 'LISTE IS FICHIER'
+INDEX = 5
+MNEMO = 'FICHRES'
+SUBMIT = 'INUTILE;FORT.48;OBLIG;BIN;ECR;SELAFIN'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'FICHIERS ENTREES-SORTIES'
+RUBRIQUE1 = 'INPUT-OUTPUT FILES'
+NIVEAU = 1
+AIDE = 'Fichier resultat contenant les champs continus'
+AIDE1 = 'Result file including continuous fields'
+
+NOM = 'FICHIER FORTRAN'
+NOM1 = 'FORTRAN FILE'
+TYPE = CARACTERE
+INDEX =  200
+MNEMO = 'NOMFOR'
+SUBMIT = 'INUTILE;t2dfort.f;FACUL;ASC;LIT;FORTRAN'
+DEFAUT = 'DEFAUT'
+DEFAUT1 = 'DEFAUT'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Fichier contenant les routines modifiees
+par l''utilisateur'
+AIDE1 = 'Name of the file including all the user
+modified subroutines'
+
+NOM = 'FICHIER SUITE'
+NOM1 = 'CONTINUATION FILE'
+TYPE = CARACTERE
+APPARENCE = 'LISTE IS FICHIER'
+INDEX = 4
+MNEMO = 'FICHSUITE'
+TAILLE = 0
+SUBMIT = 'INUTILE;FORT.49;FACUL;ASC;ECR;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'FICHIERS ENTREES-SORTIES'
+RUBRIQUE1 = 'INPUT-OUTPUT FILES'
+NIVEAU = 1
+AIDE = 'Fichier contenant les routines modifiees 
+par l''utilisateur'
+AIDE1 = 'Data file including the user modified subroutines'
+
+/========================================/
+/ MOTS-CLES CORRESPONDANT A DES LOGIQUES /
+/========================================/
+
+NOM = 'AMORTISSEMENT SELON X'
+NOM1 = 'X-DAMPING'
+TYPE = LOGIQUE
+INDEX = 4
+MNEMO = 'KGAMMAX'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'ARTIFICES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL CORRECTIONS'
+NIVEAU = 2
+AIDE = 'Logique de choix pour imposer un coefficient 
+d''amortissement selon x'
+AIDE1= 'Choice logical for an x-damping coefficient'
+
+NOM = 'AMORTISSEMENT SELON Z'
+NOM1 = 'Z-DAMPING'
+TYPE = LOGIQUE
+INDEX = 5
+MNEMO = 'KGAMMAZ'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'ARTIFICES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL CORRECTIONS'
+NIVEAU = 2
+AIDE = 'Logique de choix pour imposer un coefficient 
+d''amortissement selon z'
+AIDE1 = 'Choice logical for a z-damping coefficient'
+
+NOM = 'GRAVITE'
+NOM1 = 'GRAVITY'
+TYPE = LOGIQUE
+INDEX = 2
+MNEMO = 'KGRAV'
+TAILLE = 0
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Logique de choix pour un ecoulement gravitaire'
+AIDE1 = 'Choice logical for a gravitational flow'
+
+NOM = 'LISSAGE DE LA DENSITE'
+NOM1 = 'DENSITY SMOOTHING'
+TYPE = LOGIQUE
+INDEX = 7
+MNEMO = 'KLISS'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'ARTIFICES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL CORRECTIONS'
+NIVEAU = 2
+AIDE = 'Logique de choix pour effectuer un lissage de la densite'
+AIDE1 = 'Choice logical for density smoothing'
+
+NOM = 'PAROIS MOBILES'
+NOM1 = 'MOVING WALLS'
+TYPE = LOGIQUE
+INDEX = 6
+MNEMO = 'KPARM'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'MODELISATION DES PAROIS'
+RUBRIQUE1 = 'WALL MODELLING'
+NIVEAU = 1
+AIDE = 'Logique de choix relatif a l''existence d''une ou 
+        plusieurs parois mobiles'
+AIDE1 = 'Choice logical relative to one or several moving wall'
+
+NOM = 'PERIODICITE SELON X'
+NOM1 = 'X-PERIODICITY'
+TYPE = LOGIQUE
+INDEX = 3
+MNEMO = 'KPER'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES GEOMETRIQUES'
+RUBRIQUE1 = 'GEOMETRY PARAMETERS'
+NIVEAU = 1
+AIDE = 'Logique de choix pour un ecoulement periodique selon x'
+AIDE1 = 'Choice logical for a x-periodic flow'
+
+NOM = 'SUITE DE CALCUL'
+NOM1 = 'CALCULATION CONTINUED'
+TYPE = LOGIQUE
+INDEX = 1
+MNEMO = 'KSUITE'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES DE CALCUL'
+RUBRIQUE1 = 'CALCULATION PARAMETERS'
+NIVEAU = 1
+AIDE = 'Logique de choix pour une suite de calcul'
+AIDE1 = 'Choice logical for a continued calculation'
+
+/=======================================/
+/ MOTS-CLES CORRESPONDANT A DES ENTIERS /
+/=======================================/
+
+NOM = 'MODELE DE DEFORMATION'
+NOM1 = 'STRAIN MODEL'
+TYPE = ENTIER
+INDEX = 8
+MNEMO = 'KDEF'
+CONTROLE = 1; 2
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 2
+AIDE = 'Indice de choix pour le modele de deformation'
+AIDE1 = 'Choice index relative to the strain model'
+
+NOM = 'MODELE DE GRADIENT DE PRESSION'
+NOM1 = 'PRESSURE GRADIENT MODEL'
+TYPE = ENTIER
+INDEX = 13
+MNEMO = 'KPRES'
+CONTROLE = 1; 2
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Indice de choix relatif a la modelisation du 
+gradient de pression'
+AIDE1 = 'Choice index relative to pressure gradient modelling'
+
+NOM = 'MODELE DE PRODUCTION'
+NOM1 = 'PRODUCTION MODEL'
+TYPE = ENTIER
+INDEX = 9
+MNEMO = 'KPROD'
+CONTROLE = 1; 2
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 2
+AIDE = 'Indice de choix pour le modele de production'
+AIDE1 = 'Choice index relative to the production model'
+
+NOM = 'MODELE DE TURBULENCE'
+NOM1 = 'TURBULENCE MODEL'
+TYPE = ENTIER
+INDEX = 7
+MNEMO = 'KTURB'
+CONTROLE = 0; 3
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 1
+AIDE = 'Indice de choix pour le modele de turbulence'
+AIDE1 = 'Choice index relative to the turbulence model'
+
+NOM = 'MODELE DE VISCOSITE'
+NOM1 = 'VISCOUS MODEL'
+TYPE = ENTIER
+INDEX = 14
+MNEMO = 'KVISQ'
+CONTROLE =1; 2
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Indice de choix relatif a la modelisation du terme 
+visqueux'
+AIDE1 = 'Choice index relative to viscous term modelling'
+
+NOM = 'MODELE DE VITESSE DE FROTTEMENT'
+NOM1 = 'FRICTION VELOCITY MODEL'
+TYPE = ENTIER
+INDEX = 10
+MNEMO = 'KUSTAR'
+CONTROLE = 1; 2
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 2
+AIDE = 'Indice de choix pour le calcul de la vitesse de frottement'
+AIDE1 = 'Choice index relative to the friction velocity computation'
+
+NOM = 'MOTEUR'
+NOM1 = 'DRIVING'
+TYPE = ENTIER
+INDEX = 12
+MNEMO = 'KMOT'
+CONTROLE = 0; 3
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'MOTEUR DE L''ECOULEMENT SELON X'
+RUBRIQUE1 = 'X-DRIVING TERM'
+NIVEAU = 1
+AIDE = 'Indice de choix relatif au moteur de l''ecoulement selon x'
+AIDE1 = 'Choice index relative to the x-driving'
+
+NOM = 'NOMBRE DE FLUIDES'
+NOM1 = 'NUMBER OF FLUIDS'
+TYPE = ENTIER
+INDEX = 4
+MNEMO = 'NFLUID'
+CONTROLE = 1; 3
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Nombre de fluides impliques dans la simulation consideree'
+AIDE1 = 'Fluid number involved in the considered calculation'
+
+NOM = 'NOMBRE DE PAS DE TEMPS'
+NOM1 = 'NUMBER OF TIME STEPS'
+TYPE = ENTIER
+INDEX = 1
+MNEMO = 'NT'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES DE CALCUL'
+RUBRIQUE1 = 'CALCULATION PARAMETERS'
+NIVEAU = 1
+AIDE = 'Nombre d''iterations demandees'
+AIDE1 = 'Number of iterations'
+
+NOM = 'PERIODE DE SORTIE LISTING'
+NOM1 = 'LISTING PRINTOUT PERIOD'
+TYPE = ENTIER
+INDEX = 2
+MNEMO = 'NLIST'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SORTIES'
+RUBRIQUE1 = 'PRINTOUTS'
+NIVEAU = 1
+AIDE = 'Nombre d''iterations separant deux affichages
+a l''ecran'
+AIDE1 = 'Number of time steps between two screen listing'
+
+NOM = 'PERIODE DE SORTIE DES CHAMPS'
+NOM1 = 'FIELD PRINTOUT PERIOD'
+TYPE = ENTIER
+INDEX = 3
+MNEMO = 'NSORTR'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SORTIES'
+RUBRIQUE1 = 'PRINTOUTS'
+NIVEAU = 1
+AIDE = 'Nombre d''iterations separant deux impressions
+dans le fichier des resultats'
+AIDE1 = 'Number of time steps between two writings in the 
+result file'
+
+NOM = 'PERIODE DE SORTIE DES POSITIONS'
+NOM1 = 'POSITION PRINTOUT PERIOD'
+TYPE = ENTIER
+INDEX = 16
+MNEMO = 'NSORTP'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SORTIES'
+RUBRIQUE1 = 'PRINTOUTS'
+NIVEAU = 1
+AIDE = 'Nombre d''iterations separant deux impressions
+dans le fichier des positions'
+AIDE1 = 'Number of time steps between two writings in the 
+position file'
+
+NOM = 'POST-PROCESSEUR'
+NOM1 = 'POSTPROCESSOR'
+TYPE = ENTIER
+INDEX = 15
+MNEMO = 'KVISU'
+CONTROLE = 1; 2
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SORTIES'
+RUBRIQUE1 = 'PRINTOUTS'
+NIVEAU = 1
+AIDE = 'Indice de choix relatif au post_processeur'
+AIDE1 = 'Choice index relative to the postprocessor'
+
+NOM = 'TYPE DE CONDITION DE PAROI'
+NOM1 = 'WALL TREATMENT'
+TYPE = ENTIER
+INDEX = 11
+MNEMO = 'KCPAR'
+CONTROLE = 0; 1
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'MODELISATION DES PAROIS'
+RUBRIQUE1 = 'WALL MODELLING'
+NIVEAU = 1
+AIDE = 'Indice de choix pour la modelisation des parois'
+AIDE1 = 'Choice index relative to wall modelling'
+
+NOM = 'TYPE DE FORCES DE PAROI'
+NOM1 = 'WALL FORCE TYPE'
+TYPE = ENTIER
+INDEX = 5
+MNEMO = 'KFPAR'
+CONTROLE = 1; 3
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'MODELISATION DES PAROIS'
+RUBRIQUE1 = 'WALL MODELLING'
+NIVEAU = 2
+AIDE = 'Choix du modele de forces de paroi'
+AIDE1 = 'Choice of the wall force model'
+
+NOM = 'TYPE DU NOYAU'
+NOM1 = 'KERNEL TYPE'
+TYPE = ENTIER
+INDEX = 6
+MNEMO = 'KKERNEL'
+CONTROLE = 1; 3
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Indice de choix relatif au type de noyau utilise'
+AIDE1 = 'Choice index relative to considered kernel type'
+
+/=====================================/
+/ MOTS-CLES CORRESPONDANT A DES REELS /
+/=====================================/
+
+NOM = 'ABSCISSE MAXIMALE DU DOMAINE D ETUDE'
+NOM1 = 'MAXIMAL AXIAL CO-ORDINATE OF THE DOMAIN'
+TYPE = REEL
+INDEX = 2
+MNEMO = 'XMAX'
+TAILLE = 0
+DEFAUT = 10000.
+DEFAUT1 = 10000.
+RUBRIQUE = 'PARAMETRES GEOMETRIQUES'
+RUBRIQUE1 = 'GEOMETRY PARAMETERS'
+NIVEAU = 1
+AIDE = 'Abscisse maximale du domaine de calcul considere'
+AIDE1 = 'Maximal axial co-ordinate of the considered 
+computation domain'
+
+NOM = 'ABSCISSE MINIMALE DU DOMAINE D ETUDE'
+NOM1 = 'MINIMAL AXIAL CO-ORDINATE OF THE DOMAIN'
+TYPE = REEL
+INDEX = 1
+MNEMO = 'XMIN'
+TAILLE = 0
+DEFAUT = -10000.
+DEFAUT1 = -10000.
+RUBRIQUE = 'PARAMETRES GEOMETRIQUES'
+RUBRIQUE1 = 'GEOMETRY PARAMETERS'
+NIVEAU = 1
+AIDE = 'Abscisse minimale du domaine de calcul considere'
+AIDE1 = 'Minimal axial co-ordinate of the considered 
+computation domain'
+
+NOM = 'COEFFICIENT DES FORCES DE PAROI'
+NOM1 = 'WALL-FORCE COEFFICIENT'
+TYPE = REEL
+INDEX = 8
+MNEMO = 'CPAR'
+TAILLE = 0
+DEFAUT = 50.
+DEFAUT1 = 50.
+RUBRIQUE = 'MODELISATION DES PAROIS'
+RUBRIQUE1 = 'WALL MODELLING'
+NIVEAU = 2
+AIDE = 'Coefficient relatif a la force de paroi n 1'
+AIDE1 = 'Coefficient relative to wall force 1'
+
+NOM = 'COEFFICIENT D AMORTISSEMENT SELON X'
+NOM1 = 'X-DAMPING COEFFICIENT'
+TYPE = REEL
+INDEX = 12
+MNEMO = 'GAMMAX'
+TAILLE = 0
+DEFAUT = 10000.
+DEFAUT1 = 10000.
+RUBRIQUE = 'ARTIFICES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL CORRECTIONS'
+NIVEAU = 2
+AIDE = 'Valeur du coefficient d''amortissement 
+selon x'
+AIDE1 = 'Value of the x-damping coefficient'
+
+NOM = 'COEFFICIENT D AMORTISSEMENT SELON Z'
+NOM1 = 'Z-DAMPING COEFFICIENT'
+TYPE = REEL
+INDEX = 13
+MNEMO = 'GAMMAZ'
+TAILLE = 0
+DEFAUT = 10000.
+DEFAUT1 = 10000.
+RUBRIQUE = 'ARTIFICES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL CORRECTIONS'
+NIVEAU = 2
+AIDE = 'Valeur du coefficient d''amortissement 
+selon z'
+AIDE1 = 'Value of the z-damping coefficient'
+
+NOM = 'COTE MAXIMALE DU DOMAINE D ETUDE'
+NOM1 = 'MAXIMAL VERTICAL CO-ORDINATE OF THE DOMAIN'
+TYPE = REEL
+INDEX = 4
+MNEMO = 'ZMAX'
+TAILLE = 0
+DEFAUT = 10000.
+DEFAUT1 = 10000.
+RUBRIQUE = 'PARAMETRES GEOMETRIQUES'
+RUBRIQUE1 = 'GEOMETRY PARAMETERS'
+NIVEAU = 1
+AIDE = 'Cote maximale du domaine de calcul considere'
+AIDE1 = 'Maximal vertical co-ordinate of the considered 
+computation domain'
+
+NOM = 'COTE MINIMALE DU DOMAINE D ETUDE'
+NOM1 = 'MINIMAL VERTICAL CO-ORDINATE OF THE DOMAIN'
+TYPE = REEL
+INDEX = 3
+MNEMO = 'ZMIN'
+TAILLE = 0
+DEFAUT = -10000.
+DEFAUT1 = -10000.
+RUBRIQUE = 'PARAMETRES GEOMETRIQUES'
+RUBRIQUE1 = 'GEOMETRY PARAMETERS'
+NIVEAU = 1
+AIDE = 'Cote minimale du domaine de calcul considere'
+AIDE1 = 'Minimal vertical co-ordinate of the considered 
+computation domain'
+
+NOM = 'DENSITES DE REFERENCE'
+NOM1 = 'REFERENCE DENSITIES'
+TYPE = REEL
+INDEX = 5
+MNEMO = 'RHO0'
+TAILLE = 2
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Tableau des densites de reference de chaque fluide considere'
+AIDE1 = 'Array of reference density of each considered fluid'
+
+NOM = 'FACTEUR DE LISSAGE'
+NOM1 = 'SMOOTHING FACTOR'
+TYPE = REEL
+INDEX = 16
+MNEMO = 'FACTLISS'
+TAILLE = 0
+DEFAUT = 0.05
+DEFAUT1 = 0.05
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Valeur du coefficient de lissage de la densite'
+AIDE1 = 'Value of the density coefficient factor'
+
+NOM = 'RAPPORT DELTA-DR'
+NOM1 = 'RATIO DELTA-DR'
+TYPE = REEL
+INDEX = 10
+MNEMO = 'DELTADR'
+TAILLE = 0
+DEFAUT = 0.1
+DEFAUT1 = 0.1
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 2
+AIDE = 'Valeur du rapport Delta/Delta_r'
+AIDE1 = 'Ratio Delta/Delta_r'
+
+NOM = 'RAPPORT DEST-DR'
+NOM1 = 'RATIO DEST-DR'
+TYPE = REEL
+INDEX = 17
+MNEMO = 'DESTDR'
+TAILLE = 0
+DEFAUT = 5.0
+DEFAUT1 = 5.0
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 2
+AIDE = 'Valeur du rapport DELTA/Delta_r'
+AIDE1 = 'Ratio DELTA/Delta_r'
+
+NOM = 'RAPPORT H-DR'
+NOM1 = 'RATIO H-DR'
+TYPE = REEL
+INDEX = 11
+MNEMO = 'HDR'
+CONTROLE = 1.0;1.8
+TAILLE = 0
+DEFAUT = 1.3
+DEFAUT1 = 1.3
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Valeur du rapport h/dr'
+AIDE1 = 'Ratio h/dr'
+
+NOM = 'RUGOSITE EQUIVALENTE'
+NOM1 = 'EQUIVALENT ROUGHNESS'
+TYPE = REEL
+INDEX = 9
+MNEMO = 'RUG'
+TAILLE = 0
+DEFAUT = 0.0001
+DEFAUT1 = 0.0001
+RUBRIQUE = 'TURBULENCE'
+RUBRIQUE1 = 'TURBULENCE'
+NIVEAU = 1
+AIDE = 'Rugosite equivalente des parois'
+AIDE1 = 'Wall equivalent roughness'
+
+NOM = 'VALEUR DE LA VITESSE DEBITANTE'
+NOM1 = 'BULK VELOCITY VALUE'
+TYPE = REEL
+INDEX = 15
+MNEMO = 'DEBREF'
+TAILLE = 0
+DEFAUT = 1.0
+DEFAUT1 = 1.0
+RUBRIQUE = 'MOTEUR DE L''ECOULEMENT SELON X'
+RUBRIQUE1 = 'AXIAL DRIVING TERM'
+NIVEAU = 1
+AIDE = 'Valeur de la vitesse debitante pour 
+l''ecoulement considere'
+AIDE1 = 'Value of the mean bulk velocity for the 
+considered flow'
+
+NOM = 'VALEUR DE LA FORCE MOTRICE'
+NOM1 = 'DRIVING FORCE VALUE'
+TYPE = REEL
+INDEX = 14
+MNEMO = 'FORCST'
+TAILLE = 0
+DEFAUT = 0.05
+DEFAUT1 = 0.05
+RUBRIQUE = 'MOTEUR DE L ECOULEMENT SELON X'
+RUBRIQUE1 = 'X-DRIVING TERM'
+NIVEAU = 1
+AIDE = 'Valeur de la force motrice constante'
+AIDE1 = 'Value of the constant driving force'
+
+NOM = 'VISCOSITES MOLECULAIRES'
+NOM1 = 'MOLECULAR VISCOSITIES'
+TYPE = REEL
+INDEX = 7
+MNEMO = 'NU0'
+TAILLE = 2
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Tableau des viscosites moleculaires de chaque fluide considere'
+AIDE1 = 'Array of molecular viscosity of each considered fluid'
+
+NOM = 'VITESSE DU SON'
+NOM1 = 'SPEED OF SOUND'
+TYPE = REEL
+INDEX = 6
+MNEMO = 'VITC0'
+CONTROLE = 0; 1000
+TAILLE = 0
+DEFAUT = 100.
+DEFAUT1 = 100.
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Vitesse du son numerique'
+AIDE1 = 'Numerical speed of sound'
+
+/
+/===================================================================
+/
+NOM = 'LISTE DES FICHIERS'
+NOM1 = 'LIST OF FILES'
+TYPE = CARACTERE
+INDEX = 99
+MNEMO = ''
+TAILLE = 8
+DEFAUT = 'FICHIER DES PARAMETRES';
+         'DICTIONNAIRE';
+         'FICHIER FORTRAN';
+         'FICHIER DE MAILLAGE';
+         'FICHIER INITIALISATION';
+         'FICHIER DES RESULTATS';
+         'FICHIER DES POSITIONS';
+         'FICHIER SUITE'
+DEFAUT1 ='STEERING FILE';
+         'DICTIONARY';
+         'FORTRAN FILE';
+         'MESH FILE';
+         'INITIALIZING FILE';
+         'RESULT FILE';
+         'POSITION FILE';
+         'PREVIOUS COMPUTATION FILE'
+RUBRIQUE  = 'FICHIERS'
+RUBRIQUE1 = 'FILES'
+NIVEAU = 1
+AIDE = 'Noms des fichiers exploites par le code'
+AIDE1= 'File names of the used files'
+
+NOM = 'DICTIONNAIRE'
+NOM1 = 'DICTIONARY'
+TYPE = CARACTERE
+INDEX = 100
+MNEMO = ''
+SUBMIT = 'INUTILE;T2DDICO;OBLIG;ASC;LIT;DICO'
+DEFAUT = 'spartacus2dv5p9.dico'
+DEFAUT1 = 'spartacus2dv5p9.dico'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
+NIVEAU = 1
+AIDE ='Dictionnaire des mots cles.'
+AIDE1 ='Key word dictionary.'
+
+//
+//----Librairies du code-------------------------------------------
+//
+//Conventions de notation :
+//   VVV = version
+//   MMM = mode (debug ou non)
+//   PPP = plateforme
+//   LLL = extension d'une librairie ("a" ou "lib")
+//    |  = seperateur dans un path (/ sous Unix, \ sous NT)
+//
+//    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL"
+
+NOM = 'DESCRIPTION DES LIBRAIRIES'
+NOM1 = 'DESCRIPTION OF LIBRARIES'
+TYPE = CARACTERE
+INDEX = 98
+MNEMO = 'LINKLIBS'
+TAILLE = 5
+DEFAUT = 'spartacus2d|spartacus2d_VVV|PPP|spartacus2dMMMVVV.LLL';
+'bief|bief_VVV|PPP|biefMMMVVV.LLL';
+'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
+'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL';
+'special|special_VVV|PPP|specialMMMVVV.LLL'
+DEFAUT1 = 'spartacus2d|spartacus2d_VVV|PPP|spartacus2dMMMVVV.LLL';
+'bief|bief_VVV|PPP|biefMMMVVV.LLL';
+'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
+'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL';
+'special|special_VVV|PPP|specialMMMVVV.LLL'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Description des librairies de spartacus2d'
+AIDE1 = 'LIBRARIES description'
+
+//----Executable par defaut du code---------------------------------
+//
+//Conventions de notation :
+//   VVV = version
+//   MMM = mode (debug ou non)
+//   PPP = plateforme
+//    |  = separateur dans un path (/ sous Unix, \ sous NT)
+//
+//    ex : "spartacus2d|spartacus2d_VVV|PPP|spartacus2dMMMVVV.LLL"
+
+NOM = 'EXECUTABLE PAR DEFAUT'
+NOM1 = 'DEFAULT EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 97
+MNEMO = 'EXEDEF'
+TAILLE = 1
+DEFAUT  = 'spartacus2d|spartacus2d_VVV|PPP|spartacus2dMMMVVV.exe'
+DEFAUT1 = 'spartacus2d|spartacus2d_VVV|PPP|spartacus2dMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable par defaut de spartacus2d'
+AIDE1 = 'Default executable for spartacus2d'
+
+NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
+NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 101
+MNEMO = 'EXEDEFPARA'
+TAILLE = 1
+DEFAUT  = 'spartacus2d|spartacus2d_VVV|PPP|spartacus2dMMMVVV_MP.exe'
+DEFAUT1 = 'spartacus2d|spartacus2d_VVV|PPP|spartacus2dMMMVVV_MP.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable parallele par defaut de spartacus2d'
+AIDE1 = 'Default parallel executable for spartacus2d'
+
+NOM = 'NUMERO DE VERSION'
+NOM1 = 'RELEASE'
+TYPE = CARACTERE
+INDEX = 109
+MNEMO = ''
+TAILLE = 0
+DEFAUT = 'V5P9,V5P9,V5P9,V5P9,V5P9'
+DEFAUT1 = 'V5P9,V5P9,V5P9,V5P9,V5P9'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = -3
+AIDE = 'Numero de version des bibliothèques utilisees par TELEMAC.
+SUR UNE STATION DE TRAVAIL
+3 versions sont donnees correspondant a :
+SPARTACUS2D,BIEF,DAMO'
+AIDE1 = 'version number of the libraries used by TELEMAC.
+ON A WORKSTATION
+5 numbers are given, corresponding to the libraries called:
+SPARTACUS2D,BIEF,DAMO'
+
+NOM = 'TITRE'
+NOM1 = 'TITLE'
+TYPE = CARACTERE
+INDEX = 8
+MNEMO = 'TITRE'
+TAILLE = 0
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+COMPORT =
+'Foreground ("ENTREES-SORTIES, GENERALITES*CALCUL")
+IS VALEUR (red)'
+NIVEAU = 1
+AIDE = 'Titre du cas etudie. Ce titre figurera sur les dessins.'
+AIDE1 = 'Title of the case being considered. This title shall be marked
+on the drawings.'
