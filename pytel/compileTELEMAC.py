@@ -86,34 +86,34 @@ def createObjFiles(oname,oprog,odict,ocfg):
 
    # ~~ Removes exisitng objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if odict['type'] == 'M' :
-      ModFile = path.join(ObjDir,Root + cfgs[ocfg]['SYSTEM']['SFX_MOD'])
+      ModFile = path.join(ObjDir,Root + cfg['SYSTEM']['SFX_MOD'])
       if path.exists(ModFile): remove(ModFile)
-   ObjFile = path.join(ObjDir,Root + cfgs[ocfg]['SYSTEM']['SFX_OBJ'])
+   ObjFile = path.join(ObjDir,Root + cfg['SYSTEM']['SFX_OBJ'])
    if path.exists(ObjFile): remove(ObjFile)
 
    # ~~ creation of the module (according to makefile.wnt + systel.ini):
    # ~~ ifort.exe /c /Ot /names:uppercase /convert:big_endian /extend_source:132 /include:..\..\..\postel3d\postel3d_V5P9\1 declarations_postel3d.f
-   cmd = cfgs[ocfg]['COMPILER']['CMD_OBJ']
-   incs = cfgs[ocfg]['MODULES'][odict['libname']]['incs']
+   cmd = cfg['COMPILER']['CMD_OBJ']
+   incs = cfg['MODULES'][odict['libname']]['incs']
    cmd = cmd.replace('<incs>',incs)
    mods = ''
    for mod in HOMERES[oprog]['deps']:
-      mods = mods + path.join(cfgs[ocfg]['MODULES'][odict['libname']]['mods'].replace('<config>',cfgs[ocfg]['MODULES'][mod]['path']),ocfg) + ' '
-   #mods = mods + path.join(cfgs[ocfg]['MODULES'][odict['libname']]['mods'].replace('<config>',cfgs[ocfg]['MODULES'][odict['libname']]['path']),ocfg) + ' '
+      mods = mods + path.join(cfg['MODULES'][odict['libname']]['mods'].replace('<config>',cfg['MODULES'][mod]['path']),ocfg) + ' '
+   #mods = mods + path.join(cfg['MODULES'][odict['libname']]['mods'].replace('<config>',cfg['MODULES'][odict['libname']]['path']),ocfg) + ' '
    cmd = cmd.replace('<mods>',mods)
    cmd = cmd.replace('<f95name>',oname)
-   cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfgs[ocfg]['TELDIR'])
+   cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfg['TELDIR'])
 
    if debug : print cmd
    failure = system(cmd)
    if not failure:
       if odict['type'] == 'M' :
          print '   - created ' + ObjFile + ' and ' + ModFile
-         shutil.move(Root.lower()+cfgs[ocfg]['SYSTEM']['SFX_OBJ'],ObjDir)
-         shutil.move(Root.lower()+cfgs[ocfg]['SYSTEM']['SFX_MOD'],ObjDir)
+         shutil.move(Root.lower()+cfg['SYSTEM']['SFX_OBJ'],ObjDir)
+         shutil.move(Root.lower()+cfg['SYSTEM']['SFX_MOD'],ObjDir)
       else :
          print '   - created ' + ObjFile
-         shutil.move(Root.lower()+cfgs[ocfg]['SYSTEM']['SFX_OBJ'],ObjDir)
+         shutil.move(Root.lower()+cfg['SYSTEM']['SFX_OBJ'],ObjDir)
       #change time
       #and remove .f from objList
       return True
@@ -124,25 +124,25 @@ def createLibFiles(lname,lcfg,lprog):
    # ~~ recreates the lib regardless ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   LibDir = path.join(cfgs[lcfg]['MODULES'][lname]['path'],lcfg)
+   LibDir = path.join(cfg['MODULES'][lname]['path'],lcfg)
    chdir(LibDir)
 
    # LibFile is now created directly within prg[0]'s directory - /!\ hopefuly, the directory exists
-   LibFile = path.join(path.join(cfgs[lcfg]['MODULES'][lprog]['path'],lcfg),lname + cfgs[lcfg]['TELVER'] + cfgs[lcfg]['SYSTEM']['SFX_LIB'])
-   if cfgs[lcfg]['COMPILER']['REBUILD'] > 0 and path.exists(LibFile): remove(LibFile)
+   LibFile = path.join(path.join(cfg['MODULES'][lprog]['path'],lcfg),lname + cfg['TELVER'] + cfg['SYSTEM']['SFX_LIB'])
+   if cfg['COMPILER']['REBUILD'] > 0 and path.exists(LibFile): remove(LibFile)
 
    # ~~ Lists all objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
    for obj,lib in HOMERES[item]['add'] :
       Root,Suffix = path.splitext(obj)
-      if lib == lname: ObjFiles = ObjFiles + (Root.lower()+cfgs[lcfg]['SYSTEM']['SFX_OBJ']+' ')
+      if lib == lname: ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
    if ObjFiles.strip() == '' and path.exists(LibFile): return True
    for obj,lib in HOMERES[item]['tag'] :
-      if lib == lname: ObjFiles = ObjFiles + (obj.lower()+cfgs[lcfg]['SYSTEM']['SFX_OBJ']+' ')
+      if lib == lname: ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
 
    # ~~ creation of the librairies (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe -lib /nologo /out:postel3dV5P9.lib declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj
-   cmd = cfgs[lcfg]['COMPILER']['CMD_LIB']
+   cmd = cfg['COMPILER']['CMD_LIB']
    cmd = cmd.replace('<objs>',ObjFiles)
    cmd = cmd.replace('<libname>',LibFile)
 
@@ -150,7 +150,7 @@ def createLibFiles(lname,lcfg,lprog):
    failure = system(cmd)
    if not failure:
       print '   - created ' + LibFile
-      #ModDir = path.join(cfgs[lcfg]['MODULES'][prg[item][0]]['path'],lcfg)       # moves all the libraries relevant to a TELEMAC model
+      #ModDir = path.join(cfg['MODULES'][prg[item][0]]['path'],lcfg)       # moves all the libraries relevant to a TELEMAC model
       #if path.exists(path.join(ModDir,path.basename(LibFile))): remove(path.join(ModDir,path.basename(LibFile)))
       #shutil.move(LibFile,ModDir)                                     # in the cfgdir (ModDir) of that model
       return True
@@ -159,58 +159,58 @@ def createLibFiles(lname,lcfg,lprog):
 def createExeFiles(ename,ecfg,eprog):
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ExeDir = path.join(cfgs[ecfg]['MODULES'][eprog.lower()]['path'],ecfg)
+   ExeDir = path.join(cfg['MODULES'][eprog.lower()]['path'],ecfg)
    chdir(ExeDir)
    
    # ~~ Removes existing executables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if 'homere' in ename:
-      ExeFile = path.join(ExeDir,eprog + cfgs[ecfg]['TELVER'] + cfgs[ecfg]['SYSTEM']['SFX_EXE'])
-      LibFile = path.join(ExeDir,eprog + cfgs[ecfg]['TELVER'] + cfgs[ecfg]['SYSTEM']['SFX_LIB'])
-      ObjCmd = path.join(ExeDir,eprog + cfgs[ecfg]['TELVER'] + '.cmdo')
-      ExeCmd = path.join(ExeDir,eprog + cfgs[ecfg]['TELVER'] + '.cmdx')
+      ExeFile = path.join(ExeDir,eprog + cfg['TELVER'] + cfg['SYSTEM']['SFX_EXE'])
+      LibFile = path.join(ExeDir,eprog + cfg['TELVER'] + cfg['SYSTEM']['SFX_LIB'])
+      ObjCmd = path.join(ExeDir,eprog + cfg['TELVER'] + '.cmdo')
+      ExeCmd = path.join(ExeDir,eprog + cfg['TELVER'] + '.cmdx')
    else:
-      ExeFile = path.join(ExeDir,ename + cfgs[ecfg]['SYSTEM']['SFX_EXE'])
-      LibFile = path.join(ExeDir,ename + cfgs[ecfg]['SYSTEM']['SFX_LIB'])
+      ExeFile = path.join(ExeDir,ename + cfg['SYSTEM']['SFX_EXE'])
+      LibFile = path.join(ExeDir,ename + cfg['SYSTEM']['SFX_LIB'])
       ObjCmd = path.join(ExeDir,ename + '.cmdo')
       ExeCmd = path.join(ExeDir,ename + '.cmdx')
-   if cfgs[ecfg]['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
+   if cfg['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
 
    # ~~ Lists all libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    LibFiles = ''
    for lib in HOMERES[ename.upper()]['deps'][1:]:   # /!\ [1:] to create the exe from local objs.
-      #ModDir = path.join(cfgs[ecfg]['MODULES'][eprog.lower()]['path'],ecfg)
-      LibFiles = LibFiles + path.join(ExeDir,lib.lower()+cfgs[ecfg]['TELVER']+cfgs[ecfg]['SYSTEM']['SFX_LIB']) + ' '
-   LibFiles = LibFiles + ' ' + cfgs[ecfg]['MODULES'][eprog]['libs']     # parallel executable: adding MPI library
+      #ModDir = path.join(cfg['MODULES'][eprog.lower()]['path'],ecfg)
+      LibFiles = LibFiles + path.join(ExeDir,lib.lower()+cfg['TELVER']+cfg['SYSTEM']['SFX_LIB']) + ' '
+   LibFiles = LibFiles + ' ' + cfg['MODULES'][eprog]['libs']     # parallel executable: adding MPI library
 
    # ~~ Lists local objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
    for obj,lib in HOMERES[ename.upper()]['add'] :
       Root,Suffix = path.splitext(obj)
-      if lib == eprog and obj.lower()+cfgs[ecfg]['SYSTEM']['SFX_OBJ'] not in ObjFiles.split(): ObjFiles = ObjFiles + (Root.lower()+cfgs[ecfg]['SYSTEM']['SFX_OBJ']+' ')
+      if lib == eprog and obj.lower()+cfg['SYSTEM']['SFX_OBJ'] not in ObjFiles.split(): ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
    if ObjFiles.strip() == '' and path.exists(ExeFile): return True
    for obj,lib in HOMERES[ename.upper()]['tag'] :
-      if lib == eprog and obj.lower()+cfgs[ecfg]['SYSTEM']['SFX_OBJ'] not in ObjFiles.split(): ObjFiles = ObjFiles + (obj.lower()+cfgs[ecfg]['SYSTEM']['SFX_OBJ']+' ')
+      if lib == eprog and obj.lower()+cfg['SYSTEM']['SFX_OBJ'] not in ObjFiles.split(): ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
 
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
-   cmd = cfgs[ecfg]['COMPILER']['CMD_EXE']
+   cmd = cfg['COMPILER']['CMD_EXE']
    cmd = cmd.replace('<libs>',LibFiles)
    cmd = cmd.replace('<objs>',ObjFiles)
-   cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfgs[ecfg]['TELDIR'])
+   cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfg['TELDIR'])
 
-   xocmd = cfgs[ecfg]['COMPILER']['CMD_OBJ']
-   xocmd = xocmd.replace('<incs>',cfgs[ecfg]['MODULES'][eprog]['incs'])
+   xocmd = cfg['COMPILER']['CMD_OBJ']
+   xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
    mods = ''
    for mod in HOMERES[ename.upper()]['deps']:
-      mods = mods + path.join(cfgs[ecfg]['MODULES'][eprog]['mods'].replace('<config>',cfgs[ecfg]['MODULES'][mod]['path']),ecfg) + ' '
+      mods = mods + path.join(cfg['MODULES'][eprog]['mods'].replace('<config>',cfg['MODULES'][mod]['path']),ecfg) + ' '
    xocmd = xocmd.replace('<mods>',mods)
    # <f95name> ... still to be replaced
-   xocmd = xocmd.replace('<config>',ExeDir).replace('<root>',cfgs[ecfg]['TELDIR'])
+   xocmd = xocmd.replace('<config>',ExeDir).replace('<root>',cfg['TELDIR'])
 
-   xecmd = cfgs[ecfg]['COMPILER']['CMD_EXE']
+   xecmd = cfg['COMPILER']['CMD_EXE']
    xecmd = xecmd.replace('<libs>',LibFile + ' ' + LibFiles)
    # <exename> and <objs> ... still to be replaced
-   xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfgs[ecfg]['TELDIR'])
+   xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['TELDIR'])
 
    if debug : print cmd
    failure = system(cmd)
@@ -260,6 +260,9 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    if options.configName != '':
+      if options.configName not in parseConfigFile(options.configFile).keys():
+         print '\nNot able to find your configuration in the configuration file: ' + options.configFile + '\n'
+         sys.exit()
       cfgnames = [options.configName]
    else:
       cfgnames = parseConfigFile(options.configFile).keys()

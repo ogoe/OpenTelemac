@@ -688,6 +688,9 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    if options.configName != '':
+      if options.configName not in parseConfigFile(options.configFile).keys():
+         print '\nNot able to find your configuration in the configuration file: ' + options.configFile + '\n'
+         sys.exit()
       cfgnames = [options.configName]
    else:
       cfgnames = parseConfigFile(options.configFile).keys()
