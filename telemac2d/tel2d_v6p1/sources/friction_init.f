@@ -1,103 +1,39 @@
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES FRICTION BY ZONE INITIALISATION.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, DECLARATIONS_TELEMAC, DECLARATIONS_TELEMAC2D, FRICTION_DEF, INTERFACE_TELEMAC2D
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink<hr>
-!> DECLARATIONS_TELEMAC2D :<br>
-!> @link DECLARATIONS_TELEMAC2D::CF CF@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::CHBORD CHBORD@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::CHESTR CHESTR@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::FRTAB FRTAB@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::ITURB ITURB@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::KFROPT KFROPT@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::KFROT KFROT@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::KFRO_B KFRO_B@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::LINDDP LINDDP@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::LINDNER LINDNER@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::LINDSP LINDSP@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::LISRUG LISRUG@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::MESH MESH@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::NDEFMA NDEFMA@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::NDEF_B NDEF_B@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::NKFROT NKFROT@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::NPOIN NPOIN@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::NZONES NZONES@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::NZONMX NZONMX@endlink, 
-!> @link DECLARATIONS_TELEMAC2D::T2D_FILES T2D_FILES@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> FRICTION_ERR, I, J, K
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> FRICTION_READ(), FRICTION_USER(), PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>FRICTION_CHOICE()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td>
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/04/2004
-!> </td><td> F. HUVELIN
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE FRICTION_INIT
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ************************
+                     SUBROUTINE FRICTION_INIT
+!                    ************************
+!
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES FRICTION BY ZONE INITIALISATION.
+!
+!history  F. HUVELIN
+!+        20/04/2004
+!+        
+!+   
+!
+!history  J-M HERVOUET (LNHE)
+!+        
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE FRICTION_DEF
       USE DECLARATIONS_TELEMAC
@@ -115,7 +51,7 @@ C
 !
 !=======================================================================!
 !=======================================================================!
-C                               PROGRAMME                               !
+!                               PROGRAMME                               !
 !=======================================================================!
 !=======================================================================!
 !
@@ -138,18 +74,16 @@ C                               PROGRAMME                               !
 !
       ! CHECK VALUE
       ! -----------
-C FH : FOR QUASI-BUBBLE
-C FH : 2004/03/01
+! FH : FOR QUASI-BUBBLE
+! FH : 2004/03/01
 ! =>
       DO I=1, NPOIN
 ! <=
-C FH : 2004/03/01
-C FH : FOR QUASI-BUBBLE
-
+! FH : 2004/03/01
+! FH : FOR QUASI-BUBBLE
          ! NO FRICTION ZONE DEFINED
          ! ------------------------
          IF (KFROPT%I(I) == -1) THEN
-
             FRICTION_ERR = .TRUE.
             IF(NCSIZE>1) THEN
               K = MESH%KNOLG%I(I)
@@ -197,8 +131,8 @@ C FH : FOR QUASI-BUBBLE
         STOP
       ENDIF
 !
-C FH : FOR QUASI-BUBBLE
-C FH : 2004/03/01
+! FH : FOR QUASI-BUBBLE
+! FH : 2004/03/01
 ! =>
       ! VECTOR INITIALIZATION : WHOLE DOMAIN
       ! (FOR QUASI_BUBBLE, SEE FRICTION_CHOICE.F : CALL FRICTION_BUBBLE)
@@ -231,8 +165,8 @@ C FH : 2004/03/01
       ENDIF
 !
 ! <=
-C FH : 2004/03/01
-C FH : FOR QUASI-BUBBLE
+! FH : 2004/03/01
+! FH : FOR QUASI-BUBBLE
       ! KFROT IS USED IN ORDER TO KNOW
       ! HOW MANY ZONE HAVES A FRICTION COEFFCIENT
       ! -----------------------------------------
@@ -246,6 +180,3 @@ C FH : FOR QUASI-BUBBLE
 !
       RETURN
       END SUBROUTINE FRICTION_INIT
-C
-C#######################################################################
-C

@@ -1,158 +1,81 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       SETS THE FRICTION COEFFICIENT.
-!>  @code
-!>     FRICTION LAWS PROGRAMMED :<br>
-!>     KFROT = 0 :  NO FRICTION
-!>     KFROT = 1 :  LAW OF HAALAND
-!>     KFROT = 2 :  LAW OF CHEZY
-!>     KFROT = 3 :  LAW OF STRICKLER
-!>     KFROT = 4 :  LAW OF MANNING
-!>     KFROT = 5 :  LAW OF NIKURADSE
-!>     KFROT = 6 :  LOG LAW OF WALL
-!>     KFROT = 7 :  LAW OF COLEBROOK-WHITE
-!>  @endcode
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @note         LAWS CODED UP : NO FRICTION; HAALAND; CHEZY;
-!>                STRICKLER; MANNING; NIKURADSE; WALL; COLEBROOK-WHITE
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> CF, CHESTR, DW_MESH, GRAV, HC, KARMAN, KFROT, NDEF, N_END, N_START, VK, VRES
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> AUX, DW, DWPLUS, I, INLOG, ITER, OLDCF, OLDUST, RE, TERM1, TERM2, TIERS, UNORM, UST
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>FRICTION_UNIF(), FRICTION_ZONES()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.5                                       </center>
-!> </td><td>
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/04/2004
-!> </td><td> F. HUVELIN
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>CF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>CHESTR
-!></td><td>--></td><td>FRICTION PARAMETER
-!>    </td></tr>
-!>          <tr><td>DW_MESH
-!></td><td>--></td><td>DISTANCE TO THE BOUNDARY
-!>    </td></tr>
-!>          <tr><td>GRAV
-!></td><td>--></td><td>GRAVITY ACCELERATION
-!>    </td></tr>
-!>          <tr><td>HC
-!></td><td>--></td><td>WATER DEPTH : MAX(H,HMIN)
-!>    </td></tr>
-!>          <tr><td>KARMAN
-!></td><td>--></td><td>VON KARMAN'S CONSTANT
-!>    </td></tr>
-!>          <tr><td>KFROT
-!></td><td>--></td><td>LAW USED FOR THE CALCULATION
-!>    </td></tr>
-!>          <tr><td>NDEF
-!></td><td>--></td><td>DEFAULT'S MANNING
-!>    </td></tr>
-!>          <tr><td>N_START,N_END
-!></td><td>--></td><td>STARTING AND ENDING POINT
-!>    </td></tr>
-!>          <tr><td>VK
-!></td><td>--></td><td>KINEMATIC VISCOSITY
-!>    </td></tr>
-!>          <tr><td>VRES
-!></td><td>--></td><td>RESULTANT VELOCITY
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE FRICTION_CALC
+!                    ************************
+                     SUBROUTINE FRICTION_CALC
+!                    ************************
+!
      &(N_START, N_END, KFROT, NDEF, VK, GRAV,
      & KARMAN, CHESTR, DW_MESH, HC, VRES, CF)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| CF             |---| 
-C| CHESTR         |-->| FRICTION PARAMETER
-C| DW_MESH        |-->| DISTANCE TO THE BOUNDARY
-C| GRAV           |-->| GRAVITY ACCELERATION
-C| HC             |-->| WATER DEPTH : MAX(H,HMIN)
-C| KARMAN         |-->| VON KARMAN'S CONSTANT
-C| KFROT          |-->| LAW USED FOR THE CALCULATION
-C| NDEF           |-->| DEFAULT'S MANNING
-C| N_START,N_END  |-->| STARTING AND ENDING POINT
-C| VK             |-->| KINEMATIC VISCOSITY
-C| VRES           |-->| RESULTANT VELOCITY
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    SETS THE FRICTION COEFFICIENT.
+!code
+!+     FRICTION LAWS PROGRAMMED :
+!+
+!+     KFROT = 0 :  NO FRICTION
+!+     KFROT = 1 :  LAW OF HAALAND
+!+     KFROT = 2 :  LAW OF CHEZY
+!+     KFROT = 3 :  LAW OF STRICKLER
+!+     KFROT = 4 :  LAW OF MANNING
+!+     KFROT = 5 :  LAW OF NIKURADSE
+!+     KFROT = 6 :  LOG LAW OF WALL
+!+     KFROT = 7 :  LAW OF COLEBROOK-WHITE
+!
+!note     LAWS CODED UP : NO FRICTION; HAALAND; CHEZY;
+!+                STRICKLER; MANNING; NIKURADSE; WALL; COLEBROOK-WHITE
+!
+!history  F. HUVELIN
+!+        20/04/2004
+!+        
+!+   
+!
+!history  J-M HERVOUET (LNHE)
+!+        
+!+        V5P5
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CF             |---| 
+!| CHESTR         |-->| FRICTION PARAMETER
+!| DW_MESH        |-->| DISTANCE TO THE BOUNDARY
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HC             |-->| WATER DEPTH : MAX(H,HMIN)
+!| KARMAN         |-->| VON KARMAN'S CONSTANT
+!| KFROT          |-->| LAW USED FOR THE CALCULATION
+!| NDEF           |-->| DEFAULT'S MANNING
+!| N_START,N_END  |-->| STARTING AND ENDING POINT
+!| VK             |-->| KINEMATIC VISCOSITY
+!| VRES           |-->| RESULTANT VELOCITY
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,          INTENT(IN)    :: N_START, N_END, KFROT
       DOUBLE PRECISION, INTENT(IN)    :: NDEF, VK, GRAV, KARMAN
       TYPE(BIEF_OBJ),   INTENT(IN)    :: CHESTR,DW_MESH,HC,VRES
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: CF
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER                       :: I, ITER
       DOUBLE PRECISION, PARAMETER   :: TIERS = 1.D0/3.D0
       DOUBLE PRECISION, PARAMETER   :: SUR30 = 1.D0/30.D0
@@ -224,11 +147,11 @@ C
 ! ----------------
 !
       CASE(5)
-! 
+!
 !        NOTE: 11.036 IS 30.D0/EXP(1.D0)
-         DO I = N_START, N_END     
-           AUX=MAX(1.001D0,HC%R(I)*11.036D0/CHESTR%R(I))  
-           CF%R(I) = 2.D0 / (LOG(AUX)/KARMAN)**2                              
+         DO I = N_START, N_END
+           AUX=MAX(1.001D0,HC%R(I)*11.036D0/CHESTR%R(I))
+           CF%R(I) = 2.D0 / (LOG(AUX)/KARMAN)**2
          ENDDO
 !
 ! LOG LAW OF WALL FOR VISCOUS FRICTION
@@ -376,6 +299,3 @@ C
 !
       RETURN
       END
-C
-C#######################################################################
-C

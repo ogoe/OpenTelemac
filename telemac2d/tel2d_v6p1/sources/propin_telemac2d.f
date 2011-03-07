@@ -1,285 +1,106 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       1) CHECKS THE COMPATIBILITY OF BOUNDARY CONDITIONS.
-!><br>            2) FILLS ARRAYS LIMPRO AND MASK.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> CLH, CLU, CLV, DEBLIQ, ENTET, FINLIQ, FRTYPE, GRAV, H, IELMU, KADH, KDDL, KDIR, KENT, KENTU, KINC, KLOG, KNEU, KOND, KP1BOR, KSORT, LIHBOR, LIMDIM, LIMPRO, LIUBOR, LIVBOR, LT, MASK, MASKEL, MESH, MSK, NBOR, NELBOR, NELMAX, NFRLIQ, NPOIN, NPTFR, THOMFR, U, V, XNEBOR, YNEBOR
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> ALERTE1, ALERTE2, DEP, F2, F3, HDDL, HDIR, HNEU, HOND, IELEM, IFRLIQ, IGUILT1, IGUILT2, K, KP1, N, UDDL, UDIR, UNEU, UNONNEU, VDDL, VDIR, VNEU, YY
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> OS(), PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TELEMAC2D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 27/06/2008
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>CLH,CLU,CLV
-!></td><td><-></td><td>TYPES DE CONDITIONS AUX LIMITES SUR H,U,V
-!>                  RECOPIES DE LIHBOR,LIUBOR,LIVBOR
-!>    </td></tr>
-!>          <tr><td>DEBLIQ
-!></td><td>--></td><td>NUMERO DU PREMIER POINT DE LA FRONTIERE LIQUID
-!>    </td></tr>
-!>          <tr><td>ENTET
-!></td><td>--></td><td>SI OUI : MESSAGES IMPRIMES
-!>                  SAUF MESSAGES D'ERREURS QUI TOUJOURS IMPRIMES
-!>    </td></tr>
-!>          <tr><td>FINLIQ
-!></td><td>--></td><td>NUMERO DU DERNIER POINT DE LA FRONTIERE LIQUID
-!>    </td></tr>
-!>          <tr><td>FRTYPE
-!></td><td>--></td><td>TYPE DE TRAITEMENT POUR LES FRONTIERES LIQUIDE
-!>    </td></tr>
-!>          <tr><td>GRAV
-!></td><td>--></td><td>PESANTEUR
-!>    </td></tr>
-!>          <tr><td>IELMU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KADH
-!></td><td>--></td><td>INDICATEUR DE POINT DIRICHLET
-!>    </td></tr>
-!>          <tr><td>KDDL
-!></td><td>--></td><td>INDICATEUR DE DEGRE DE LIBERTE AU BORD
-!>    </td></tr>
-!>          <tr><td>KDIR
-!></td><td>--></td><td>INDICATEUR DE POINT DE DIRICHLET
-!>    </td></tr>
-!>          <tr><td>KENT
-!></td><td>--></td><td>INDICATEUR DE POINT D'ENTREE FLUIDE
-!>    </td></tr>
-!>          <tr><td>KENTU
-!></td><td>--></td><td>INDICATEUR DE VITESSE IMPOSEE.
-!>    </td></tr>
-!>          <tr><td>KINC
-!></td><td>--></td><td>INDICATEUR D'ONDE INCIDENTE
-!>                  CONDITIONS AUX LIMITES TECHNIQUES:
-!>    </td></tr>
-!>          <tr><td>KLOG
-!></td><td>--></td><td>INDICATEUR DE PAROI SOLIDE
-!>    </td></tr>
-!>          <tr><td>KNEU
-!></td><td>--></td><td>INDICATEUR DE POINT DE NEUMANN
-!>    </td></tr>
-!>          <tr><td>KOND
-!></td><td>--></td><td>INDICATEUR D'ONDE INCIDENTE
-!>    </td></tr>
-!>          <tr><td>KP1BOR
-!></td><td>--></td><td>POINT SUIVANT SUR LA FRONTIERE.
-!>    </td></tr>
-!>          <tr><td>KSORT
-!></td><td>--></td><td>INDICATEUR DE POINT DE SORTIE FLUIDE
-!>    </td></tr>
-!>          <tr><td>LIHBOR
-!></td><td>--></td><td>TYPES DE CONDITIONS AUX LIMITES SUR H
-!>    </td></tr>
-!>          <tr><td>LIMDIM
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LIMPRO
-!></td><td><--</td><td>TYPES DE CONDITIONS AUX LIMITES POUR LA
-!>                  PROPAGATION
-!>                  PAR POINTS   :    .1:H  .2:U  .3:V
-!>                  PAR SEGMENTS :    .4:H  .5:U  .6:V
-!>    </td></tr>
-!>          <tr><td>LIUBOR
-!></td><td>--></td><td>TYPES DE CONDITIONS AUX LIMITES SUR U
-!>    </td></tr>
-!>          <tr><td>LIVBOR
-!></td><td>--></td><td>TYPES DE CONDITIONS AUX LIMITES SUR V
-!>    </td></tr>
-!>          <tr><td>LT
-!></td><td>--></td><td>NUMERO DE L'ITERATION COURANTE.
-!>    </td></tr>
-!>          <tr><td>MASK
-!></td><td><--</td><td>MASQUES POUR LES SEGMENTS
-!>                  MASK(NPTFR,1) : 1. SI KDIR SUR U 0. SINON
-!>                  MASK(NPTFR,2) : 1. SI KDIR SUR V 0. SINON
-!>                  MASK(NPTFR,3) : 1. SI KDDL SUR U 0. SINON
-!>                  MASK(NPTFR,4) : 1. SI KDDL SUR V 0. SINON
-!>                  MASK(NPTFR,5) : 1. SI KNEU SUR U 0. SINON
-!>                  MASK(NPTFR,6) : 1. SI KNEU SUR V 0. SINON
-!>                  MASK(NPTFR,7) : 1. SI KOND 0. SINON
-!>                  MASK(NPTFR,8) : 1. - MASK( ,5)
-!>                  MASK(NPTFR,9) : 1. SI H DIRICHLET
-!>                  MASK(NPTFR,10): 1. SI H NEUMANN
-!>                  MASK(NPTFR,11): 1. SI H DEGRE DE LIBERTE
-!>    </td></tr>
-!>          <tr><td>MASKEL
-!></td><td>--></td><td>TABLEAU DE MASQUAGE DES ELEMENTS
-!>                  =1. : NORMAL   =0. : ELEMENT MASQUE
-!>    </td></tr>
-!>          <tr><td>MESH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MSK
-!></td><td>--></td><td>SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!>    </td></tr>
-!>          <tr><td>NBOR
-!></td><td>--></td><td>CORRESPONDANCE ENTRE NUMEROTATION DES
-!>                  POINTS FRONTIERES ET NUMEROTATION GLOBALE
-!>    </td></tr>
-!>          <tr><td>NELBOR
-!></td><td>--></td><td>NUMEROS DES ELEMENTS ADJACENTS AUX BORDS.
-!>    </td></tr>
-!>          <tr><td>NELMAX
-!></td><td>--></td><td>NOMBRE MAXIMUM D'ELEMENTS.
-!>    </td></tr>
-!>          <tr><td>NFRLIQ
-!></td><td>--></td><td>NOMBRE DE FRONTIERES LIQUIDES
-!>    </td></tr>
-!>          <tr><td>NPOIN
-!></td><td>--></td><td>NOMBRE DE NOEUD DU MAILLAGE
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>--></td><td>DIMENSION DES TABLEAUX.
-!>                  CONDITIONS AUX LIMITES PHYSIQUES:
-!>    </td></tr>
-!>          <tr><td>THOMFR
-!></td><td>--></td><td>TRAITEMENT PAR CARACTERISTIQUES DES FRONTIERES
-!>                  LIQUIDES
-!>    </td></tr>
-!>          <tr><td>U,V, ,H
-!></td><td>--></td><td>VALEURS DE U,V   ET H AU TEMPS T
-!>    </td></tr>
-!>          <tr><td>XNEBOR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>YNEBOR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE PROPIN_TELEMAC2D
+!                    ***************************
+                     SUBROUTINE PROPIN_TELEMAC2D
+!                    ***************************
+!
      &(LIMPRO,LIMDIM,MASK,LIUBOR,LIVBOR,LIHBOR,KP1BOR,NBOR,NPTFR,
      & KENT,KENTU,KSORT,KADH,KLOG,KINC,KNEU,KDIR,KDDL,KOND,
      & CLH,CLU,CLV,IELMU,U,V,GRAV,H,LT,NPOIN,NELBOR,NELMAX,MSK,MASKEL,
      & NFRLIQ,THOMFR,DEBLIQ,FINLIQ,FRTYPE,XNEBOR,YNEBOR,ENTET,MESH)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| CLH,CLU,CLV    |<->| TYPES DE CONDITIONS AUX LIMITES SUR H,U,V
-C|                |   | RECOPIES DE LIHBOR,LIUBOR,LIVBOR
-C| DEBLIQ         |-->| NUMERO DU PREMIER POINT DE LA FRONTIERE LIQUID
-C| ENTET          |-->| SI OUI : MESSAGES IMPRIMES
-C|                |   | SAUF MESSAGES D'ERREURS QUI TOUJOURS IMPRIMES
-C| FINLIQ         |-->| NUMERO DU DERNIER POINT DE LA FRONTIERE LIQUID
-C| FRTYPE         |-->| TYPE DE TRAITEMENT POUR LES FRONTIERES LIQUIDE
-C| GRAV           |-->| PESANTEUR
-C| IELMU          |---| 
-C| KADH           |-->| INDICATEUR DE POINT DIRICHLET
-C| KDDL           |-->| INDICATEUR DE DEGRE DE LIBERTE AU BORD
-C| KDIR           |-->| INDICATEUR DE POINT DE DIRICHLET
-C| KENT           |-->| INDICATEUR DE POINT D'ENTREE FLUIDE
-C| KENTU          |-->| INDICATEUR DE VITESSE IMPOSEE.
-C| KINC           |-->| INDICATEUR D'ONDE INCIDENTE
-C|                |   | CONDITIONS AUX LIMITES TECHNIQUES:
-C| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
-C| KNEU           |-->| INDICATEUR DE POINT DE NEUMANN
-C| KOND           |-->| INDICATEUR D'ONDE INCIDENTE
-C| KP1BOR         |-->| POINT SUIVANT SUR LA FRONTIERE.
-C| KSORT          |-->| INDICATEUR DE POINT DE SORTIE FLUIDE
-C| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
-C| LIMDIM         |---| 
-C| LIMPRO         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA
-C|                |   | PROPAGATION
-C|                |   | PAR POINTS   :    .1:H  .2:U  .3:V
-C|                |   | PAR SEGMENTS :    .4:H  .5:U  .6:V
-C| LIUBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR U
-C| LIVBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR V
-C| LT             |-->| NUMERO DE L'ITERATION COURANTE.
-C| MASK           |<--| MASQUES POUR LES SEGMENTS
-C|                |   | MASK(NPTFR,1) : 1. SI KDIR SUR U 0. SINON
-C|                |   | MASK(NPTFR,2) : 1. SI KDIR SUR V 0. SINON
-C|                |   | MASK(NPTFR,3) : 1. SI KDDL SUR U 0. SINON
-C|                |   | MASK(NPTFR,4) : 1. SI KDDL SUR V 0. SINON
-C|                |   | MASK(NPTFR,5) : 1. SI KNEU SUR U 0. SINON
-C|                |   | MASK(NPTFR,6) : 1. SI KNEU SUR V 0. SINON
-C|                |   | MASK(NPTFR,7) : 1. SI KOND 0. SINON
-C|                |   | MASK(NPTFR,8) : 1. - MASK( ,5)
-C|                |   | MASK(NPTFR,9) : 1. SI H DIRICHLET
-C|                |   | MASK(NPTFR,10): 1. SI H NEUMANN
-C|                |   | MASK(NPTFR,11): 1. SI H DEGRE DE LIBERTE
-C| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-C|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-C| MESH           |---| 
-C| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-C| NBOR           |-->| CORRESPONDANCE ENTRE NUMEROTATION DES
-C|                |   | POINTS FRONTIERES ET NUMEROTATION GLOBALE
-C| NELBOR         |-->| NUMEROS DES ELEMENTS ADJACENTS AUX BORDS.
-C| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-C| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
-C| NPOIN          |-->| NOMBRE DE NOEUD DU MAILLAGE
-C| NPTFR          |-->| DIMENSION DES TABLEAUX.
-C|                |   | CONDITIONS AUX LIMITES PHYSIQUES:
-C| THOMFR         |-->| TRAITEMENT PAR CARACTERISTIQUES DES FRONTIERES
-C|                |   | LIQUIDES
-C| U,V, ,H        |-->| VALEURS DE U,V   ET H AU TEMPS T
-C| XNEBOR         |---| 
-C| YNEBOR         |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    1) CHECKS THE COMPATIBILITY OF BOUNDARY CONDITIONS.
+!+
+!+            2) FILLS ARRAYS LIMPRO AND MASK.
+!
+!history  J-M HERVOUET (LNHE)
+!+        27/06/2008
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CLH,CLU,CLV    |<->| TYPES DE CONDITIONS AUX LIMITES SUR H,U,V
+!|                |   | RECOPIES DE LIHBOR,LIUBOR,LIVBOR
+!| DEBLIQ         |-->| NUMERO DU PREMIER POINT DE LA FRONTIERE LIQUID
+!| ENTET          |-->| SI OUI : MESSAGES IMPRIMES
+!|                |   | SAUF MESSAGES D'ERREURS QUI TOUJOURS IMPRIMES
+!| FINLIQ         |-->| NUMERO DU DERNIER POINT DE LA FRONTIERE LIQUID
+!| FRTYPE         |-->| TYPE DE TRAITEMENT POUR LES FRONTIERES LIQUIDE
+!| GRAV           |-->| PESANTEUR
+!| IELMU          |---| 
+!| KADH           |-->| INDICATEUR DE POINT DIRICHLET
+!| KDDL           |-->| INDICATEUR DE DEGRE DE LIBERTE AU BORD
+!| KDIR           |-->| INDICATEUR DE POINT DE DIRICHLET
+!| KENT           |-->| INDICATEUR DE POINT D'ENTREE FLUIDE
+!| KENTU          |-->| INDICATEUR DE VITESSE IMPOSEE.
+!| KINC           |-->| INDICATEUR D'ONDE INCIDENTE
+!|                |   | CONDITIONS AUX LIMITES TECHNIQUES:
+!| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
+!| KNEU           |-->| INDICATEUR DE POINT DE NEUMANN
+!| KOND           |-->| INDICATEUR D'ONDE INCIDENTE
+!| KP1BOR         |-->| POINT SUIVANT SUR LA FRONTIERE.
+!| KSORT          |-->| INDICATEUR DE POINT DE SORTIE FLUIDE
+!| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
+!| LIMDIM         |---| 
+!| LIMPRO         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA
+!|                |   | PROPAGATION
+!|                |   | PAR POINTS   :    .1:H  .2:U  .3:V
+!|                |   | PAR SEGMENTS :    .4:H  .5:U  .6:V
+!| LIUBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR U
+!| LIVBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR V
+!| LT             |-->| NUMERO DE L'ITERATION COURANTE.
+!| MASK           |<--| MASQUES POUR LES SEGMENTS
+!|                |   | MASK(NPTFR,1) : 1. SI KDIR SUR U 0. SINON
+!|                |   | MASK(NPTFR,2) : 1. SI KDIR SUR V 0. SINON
+!|                |   | MASK(NPTFR,3) : 1. SI KDDL SUR U 0. SINON
+!|                |   | MASK(NPTFR,4) : 1. SI KDDL SUR V 0. SINON
+!|                |   | MASK(NPTFR,5) : 1. SI KNEU SUR U 0. SINON
+!|                |   | MASK(NPTFR,6) : 1. SI KNEU SUR V 0. SINON
+!|                |   | MASK(NPTFR,7) : 1. SI KOND 0. SINON
+!|                |   | MASK(NPTFR,8) : 1. - MASK( ,5)
+!|                |   | MASK(NPTFR,9) : 1. SI H DIRICHLET
+!|                |   | MASK(NPTFR,10): 1. SI H NEUMANN
+!|                |   | MASK(NPTFR,11): 1. SI H DEGRE DE LIBERTE
+!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
+!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
+!| MESH           |---| 
+!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
+!| NBOR           |-->| CORRESPONDANCE ENTRE NUMEROTATION DES
+!|                |   | POINTS FRONTIERES ET NUMEROTATION GLOBALE
+!| NELBOR         |-->| NUMEROS DES ELEMENTS ADJACENTS AUX BORDS.
+!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
+!| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
+!| NPOIN          |-->| NOMBRE DE NOEUD DU MAILLAGE
+!| NPTFR          |-->| DIMENSION DES TABLEAUX.
+!|                |   | CONDITIONS AUX LIMITES PHYSIQUES:
+!| THOMFR         |-->| TRAITEMENT PAR CARACTERISTIQUES DES FRONTIERES
+!|                |   | LIQUIDES
+!| XNEBOR         |---| 
+!| YNEBOR         |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: NPOIN,NELMAX,NPTFR,KOND,KENTU,LT,NFRLIQ
       INTEGER, INTENT(IN) :: KENT,KSORT,KADH,KLOG,KINC,KNEU,KDIR,KDDL
       INTEGER, INTENT(IN) :: LIMDIM,IELMU
@@ -295,11 +116,11 @@ C
       DOUBLE PRECISION, INTENT(IN)   :: GRAV,MASKEL(NELMAX)
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: MASK
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER K,N,IFRLIQ,IELEM,KP1
-C
+!
       INTEGER, PARAMETER :: UDIR    =  1
       INTEGER, PARAMETER :: VDIR    =  2
       INTEGER, PARAMETER :: UDDL    =  3
@@ -311,27 +132,27 @@ C
       INTEGER, PARAMETER :: HDIR    =  9
       INTEGER, PARAMETER :: HNEU    = 10
       INTEGER, PARAMETER :: HDDL    = 11
-C
+!
       DOUBLE PRECISION YY,F2,F3
-C
+!
       LOGICAL DEP,ALERTE1,ALERTE2
-C
+!
       INTEGER IGUILT1,IGUILT2
-C
+!
       INTRINSIC MAX
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       DO 1 K=1,NPTFR
         CLH(K) = LIHBOR(K)
         CLU(K) = LIUBOR(K)
         CLV(K) = LIVBOR(K)
 1     CONTINUE
-C
-C SHORTCUT FOR THOMPSON TREATMENT
-C
+!
+! SHORTCUT FOR THOMPSON TREATMENT
+!
       IF(NFRLIQ.NE.0.AND.THOMFR) THEN
-C
+!
       DO 2 IFRLIQ = 1 , NFRLIQ
         DEP=.FALSE.
         K = DEBLIQ(IFRLIQ)
@@ -344,40 +165,40 @@ C
           GO TO 16
         ELSE
           DEP=.TRUE.
-C         DOES NOT WORK IN PARALLEL; THEN AGAIN NEITHER DOES THOMPSON
+!         DOES NOT WORK IN PARALLEL; THEN AGAIN NEITHER DOES THOMPSON
           K = KP1BOR(K)
           GO TO 15
         ENDIF
 16      CONTINUE
 2     CONTINUE
-C
+!
       ENDIF
-C
-C  CHECKS AND MODIFIES THE CONDITIONS (IF REQUIRED) TO AVOID NON
-C  PHYSICAL CASES : COMPLETELY FREE EXIT IN RIVER FLOW
-C                   INCIDENT WAVE IN SUPERCRITICAL OUTGOING FLOW
-C                   INCIDENT WAVE IN SUPERCRITICAL INCOMING FLOW
-C
+!
+!  CHECKS AND MODIFIES THE CONDITIONS (IF REQUIRED) TO AVOID NON
+!  PHYSICAL CASES : COMPLETELY FREE EXIT IN RIVER FLOW
+!                   INCIDENT WAVE IN SUPERCRITICAL OUTGOING FLOW
+!                   INCIDENT WAVE IN SUPERCRITICAL INCOMING FLOW
+!
       ALERTE1=.FALSE.
       ALERTE2=.FALSE.
-C
+!
       DO 3 K=1,NPTFR
-C
+!
         N = NBOR(K)
         F2 = (U(N)**2+V(N)**2) / GRAV / MAX(H(N),1.D-8)
-C
-C       INCIDENT WAVE IN SUPERCRITICAL OUTGOING FLOW
-C       INCIDENT WAVE IN SUPERCRITICAL INCOMING FLOW
-C
+!
+!       INCIDENT WAVE IN SUPERCRITICAL OUTGOING FLOW
+!       INCIDENT WAVE IN SUPERCRITICAL INCOMING FLOW
+!
         IF(CLU(K).EQ.KINC.AND.
      &     CLV(K).EQ.KINC.AND.
      &     F2.GE.1.D0) THEN
           CLU(K) = KSORT
           CLV(K) = KSORT
         ENDIF
-C
-C       COMPLETELY FREE EXIT IN RIVER FLOW
-C
+!
+!       COMPLETELY FREE EXIT IN RIVER FLOW
+!
         IF(CLH(K).EQ.KSORT.AND.
      &     CLU(K).EQ.KSORT.AND.
      &     CLV(K).EQ.KSORT.AND.
@@ -385,9 +206,9 @@ C
           CLU(K) = KINC
           CLV(K) = KINC
         ENDIF
-C
-C       INCOMING FREE VELOCITY
-C
+!
+!       INCOMING FREE VELOCITY
+!
         IF(CLU(K).EQ.KSORT.AND.CLV(K).EQ.KSORT) THEN
           F3 = U(N)*XNEBOR(K)+V(N)*YNEBOR(K)
           IF(F3.LE.-1.D-2) THEN
@@ -395,9 +216,9 @@ C
             IGUILT1=K
           ENDIF
         ENDIF
-C
-C       SUPERCRITICAL INFLOW WITH FREE ELEVATION
-C
+!
+!       SUPERCRITICAL INFLOW WITH FREE ELEVATION
+!
         IF(CLH(K).EQ.KSORT.AND.F2.GE.1.D0) THEN
           F3 = U(N)*XNEBOR(K)+V(N)*YNEBOR(K)
           IF(F3.LE.-1.D-2) THEN
@@ -405,9 +226,9 @@ C
             IGUILT2=K
           ENDIF
         ENDIF
-C
+!
 3     CONTINUE
-C
+!
       IF(ALERTE1.AND.ENTET) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'PROBLEME MAL POSE, VITESSE LIBRE ENTRANTE'
@@ -418,7 +239,7 @@ C
           WRITE(LU,*) 'FOR EXAMPLE AT BOUNDARY POINT NUMBER ',IGUILT1
         ENDIF
       ENDIF
-C
+!
       IF(ALERTE2.AND.ENTET) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'PROBLEME MAL POSE, HAUTEUR LIBRE'
@@ -433,25 +254,25 @@ C
           WRITE(LU,*) 'FOR EXAMPLE AT BOUNDARY POINT NUMBER ',IGUILT2
         ENDIF
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISES THE BOUNDARY CONDITIONS FOR PROPAGATION:
-C
-C     INITIALISES ALL THE VECTORS OF THE BLOCK TO 0
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISES THE BOUNDARY CONDITIONS FOR PROPAGATION:
+!
+!     INITIALISES ALL THE VECTORS OF THE BLOCK TO 0
+!
       CALL OS('X=0     ',X=MASK)
-C
+!
       DO 4 K=1,NPTFR
-C
-C     IF THE NODE FOLLOWING K IS NOT IN THE SUB-DOMAIN IN PARALLEL MODE
-C     WILL HAVE KP1=K
+!
+!     IF THE NODE FOLLOWING K IS NOT IN THE SUB-DOMAIN IN PARALLEL MODE
+!     WILL HAVE KP1=K
       KP1=KP1BOR(K)
-C
-C-----------------------------------------------------------------------
-C
-C     BOUNDARY CONDITIONS ON ELEVATION
-C
+!
+!-----------------------------------------------------------------------
+!
+!     BOUNDARY CONDITIONS ON ELEVATION
+!
       IF(CLH(K).EQ.KENT) THEN
         LIMPRO(K,1) = KDIR
         IF(KP1.NE.K) THEN
@@ -493,9 +314,9 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C   BOUNDARY CONDITIONS ON U
-C
+!
+!   BOUNDARY CONDITIONS ON U
+!
       IF(CLU(K).EQ.KENT.OR.CLU(K).EQ.KENTU) THEN
         LIMPRO(K,2) = KDIR
         IF(KP1.NE.K) THEN
@@ -579,9 +400,9 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C   BOUNDARY CONDITIONS ON V
-C
+!
+!   BOUNDARY CONDITIONS ON V
+!
       IF(CLV(K).EQ.KENT.OR.CLV(K).EQ.KENTU) THEN
         LIMPRO(K,3) = KDIR
         IF(KP1.NE.K) THEN
@@ -665,20 +486,20 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
+!
 4     CONTINUE
-C
-C-----------------------------------------------------------------------
-C
-C     LIQUID BOUNDARIES MASK
-C
+!
+!-----------------------------------------------------------------------
+!
+!     LIQUID BOUNDARIES MASK
+!
       DO K=1,NPTFR
         KP1=KP1BOR(K)
         IF(KP1.NE.K) MASK%ADR(UNONNEU)%P%R(K)=1.D0-MASK%ADR(UNEU)%P%R(K)
       ENDDO
-C
-C     DEDUCES ARRAYS LIMPRO (. , 4 5 AND 6) FROM THE MASKS
-C
+!
+!     DEDUCES ARRAYS LIMPRO (. , 4 5 AND 6) FROM THE MASKS
+!
       DO K=1,NPTFR
         IF(MASK%ADR(HDIR)%P%R(K).GT.0.5D0) THEN
           LIMPRO(K,4)=KDIR
@@ -735,19 +556,19 @@ C
           ENDIF
         ENDIF
       ENDDO
-C
-C     SUPPLEMENT FOR QUADRATIC SPEEDS
-C     THE POINT IN THE MIDDLE OF A SEGMENT HAS THE SAME CONDITION AS THE SEGMENT
-C
+!
+!     SUPPLEMENT FOR QUADRATIC SPEEDS
+!     THE POINT IN THE MIDDLE OF A SEGMENT HAS THE SAME CONDITION AS THE SEGMENT
+!
       IF(IELMU.EQ.13) THEN
         DO K=1,NPTFR
           LIMPRO(K+NPTFR,2)=LIMPRO(K,5)
           LIMPRO(K+NPTFR,3)=LIMPRO(K,6)
         ENDDO
       ENDIF
-C
-C     MASKS USING THE MASK OF THE ELEMENTS
-C
+!
+!     MASKS USING THE MASK OF THE ELEMENTS
+!
       IF(MSK) THEN
         DO K=1,NPTFR
           IELEM=NELBOR(K)
@@ -767,20 +588,17 @@ C
           ENDIF
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
 10    FORMAT(1X,'PROPIN : POINT DE BORD',1I5,' CAS NON PREVU SUR H')
 11    FORMAT(1X,'PROPIN: BOUNDARY POINT',1I5,' UNKNOWN PARAMETER FOR H')
 20    FORMAT(1X,'PROPIN : POINT DE BORD',1I5,' CAS NON PREVU SUR U')
 21    FORMAT(1X,'PROPIN: BOUNDARY POINT',1I5,' UNKNOWN PARAMETER FOR U')
 30    FORMAT(1X,'PROPIN : POINT DE BORD',1I5,' CAS NON PREVU SUR V')
 31    FORMAT(1X,'PROPIN: BOUNDARY POINT',1I5,' UNKNOWN PARAMETER FOR V')
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,186 +1,73 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       WRITES OUT THE HYDRODYNAMIC FILE FOR DELWAQ (.HYD).
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> DIFF_DEL, F, ITSTEP, ITSTOP, ITSTRT, MARDAT, MARTIM, MBND, NHYD, NOLAY, NOMCOU, NOMGEO, NOMINI, NOMLIM, NOMSAL, NOMSOU, NOMTEM, NOMVEB, NOMVEL, NOMVIS, NORSED, NOSUIS, NPOIN2, NSEG, NSTEPA, SALI_DEL, TEMP_DEL, TITRE, VELO_DEL
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> ILAY, IWAQ
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TEL4DEL()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 20/03/2007
-!> </td><td> CHARLES MOULINEC
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>DIFF_DEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>F
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ITSTEP
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ITSTOP
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ITSTRT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MARDAT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MARTIM
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MBND
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NHYD
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOLAY
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMCOU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMGEO
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMINI
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMLIM
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMSAL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMSOU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMTEM
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMVEB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMVEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMVIS
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NORSED
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOSUIS
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPOIN2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NSEG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NSTEPA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>SALI_DEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TEMP_DEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TITRE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>VELO_DEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                           SUBROUTINE WRIHYD
+!                    *****************
+                     SUBROUTINE WRIHYD
+!                    *****************
+!
      &(TITRE , ITSTRT , ITSTOP , ITSTEP , NPOIN2 , MBND   ,
      & NSEG  , NOLAY  , NOMGEO , NOMLIM ,
      & F     , NSTEPA , NOMSOU , NOSUIS , NOMCOU ,
      & NOMINI, NOMVEB , NORSED , NOMSAL , NOMTEM , NOMVEL , NOMVIS ,
      & NHYD,
      & SALI_DEL,TEMP_DEL,VELO_DEL,DIFF_DEL,MARDAT,MARTIM)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| DIFF_DEL       |---| 
-C| F             |---| 
-C| ITSTEP         |---| 
-C| ITSTOP         |---| 
-C| ITSTRT         |---| 
-C| MARDAT         |---| 
-C| MARTIM         |---| 
-C| MBND           |---| 
-C| NHYD           |---| 
-C| NOLAY          |---| 
-C| NOMCOU         |---| 
-C| NOMGEO         |---| 
-C| NOMINI         |---| 
-C| NOMLIM         |---| 
-C| NOMSAL         |---| 
-C| NOMSOU         |---| 
-C| NOMTEM         |---| 
-C| NOMVEB         |---| 
-C| NOMVEL         |---| 
-C| NOMVIS         |---| 
-C| NORSED         |---| 
-C| NOSUIS         |---| 
-C| NPOIN2         |---| 
-C| NSEG           |---| 
-C| NSTEPA         |---| 
-C| SALI_DEL       |---| 
-C| TEMP_DEL       |---| 
-C| TITRE          |---| 
-C| VELO_DEL       |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    WRITES OUT THE HYDRODYNAMIC FILE FOR DELWAQ (.HYD).
+!
+!history  CHARLES MOULINEC
+!+        20/03/2007
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DIFF_DEL       |---| 
+!| F              |---| 
+!| ITSTEP         |---| 
+!| ITSTOP         |---| 
+!| ITSTRT         |---| 
+!| MARDAT         |---| 
+!| MARTIM         |---| 
+!| MBND           |---| 
+!| NHYD           |---| 
+!| NOLAY          |---| 
+!| NOMCOU         |---| 
+!| NOMGEO         |---| 
+!| NOMINI         |---| 
+!| NOMLIM         |---| 
+!| NOMSAL         |---| 
+!| NOMSOU         |---| 
+!| NOMTEM         |---| 
+!| NOMVEB         |---| 
+!| NOMVEL         |---| 
+!| NOMVIS         |---| 
+!| NORSED         |---| 
+!| NOSUIS         |---| 
+!| NPOIN2         |---| 
+!| NSEG           |---| 
+!| NSTEPA         |---| 
+!| SALI_DEL       |---| 
+!| TEMP_DEL       |---| 
+!| TITRE          |---| 
+!| VELO_DEL       |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,          INTENT(IN) :: NHYD,ITSTRT,ITSTOP,ITSTEP,NPOIN2
       INTEGER,          INTENT(IN) :: NSEG,NOLAY,NSTEPA,MBND
       INTEGER,          INTENT(IN) :: MARDAT(3),MARTIM(3)
@@ -190,13 +77,13 @@ C
       DOUBLE PRECISION, INTENT(IN) :: F(NPOIN2,NOLAY)
       LOGICAL,          INTENT(IN) :: SALI_DEL,TEMP_DEL
       LOGICAL,          INTENT(IN) :: VELO_DEL,DIFF_DEL
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER ILAY,IWAQ
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       WRITE ( NHYD, '(A)' )
      &    "TASK      FULL-COUPLING                              "
       WRITE ( NHYD, '(A)' )
@@ -365,11 +252,8 @@ C
      &    "DISCHARGES                                           "
       WRITE ( NHYD, '(A)' )
      &    "END-DISCHARGES                                       "
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

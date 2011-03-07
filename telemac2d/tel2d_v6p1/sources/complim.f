@@ -1,175 +1,70 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       SUPPLEMENTS THE BOUNDARY CONDITION FILE
-!>                FOR THE QUADRATIC ELEMENTS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> ATBOR, AUBOR, BTBOR, IELMT, IELMU, IELMV, KADH, KENT, KENTU, KINC, KLOG, KSORT, LITBOR, LIUBOR, LIVBOR, MESH, NBOR, NPOIN, NPTFR, TBOR, TRAC, UBOR, VBOR
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> K, KP1
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TELEMAC2D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 23/10/2008
-!> </td><td> ALGIANE FROEHLY (MATMECA PLACEMENT)
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>ATBOR,BTBOR
-!></td><td><-></td><td>COEFFICIENTS D'ECHANGE THERMIQUE.
-!>    </td></tr>
-!>          <tr><td>AUBOR
-!></td><td><-></td><td>COEFFICIENT DE FROTTEMENT AU BORD
-!>    </td></tr>
-!>          <tr><td>IELMT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IELMU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IELMV
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KADH
-!></td><td>--></td><td>TYPE DE CONDITION LIMITE DE PAROI (ADHERENCE)
-!>    </td></tr>
-!>          <tr><td>KENT
-!></td><td>--></td><td>TYPE DE CONDITION LIMITE D'ENTREE.
-!>    </td></tr>
-!>          <tr><td>KENTU
-!></td><td>--></td><td>TYPE DE CONDITION LIMITE : VITESSES IMPOSEES
-!>    </td></tr>
-!>          <tr><td>KINC
-!></td><td>--></td><td>TYPE DE CONDITION LIMITE D'ONDE INCIDENTE
-!>    </td></tr>
-!>          <tr><td>KLOG
-!></td><td>--></td><td>TYPE DE CONDITION LIMITE DE PAROI (PAROI)
-!>    </td></tr>
-!>          <tr><td>KSORT
-!></td><td>--></td><td>TYPE DE CONDITION LIMITE DE SORTIE LIBRE
-!>    </td></tr>
-!>          <tr><td>LITBOR
-!></td><td><-></td><td>TYPES DE CONDITIONS AUX LIMITES EN TEMPERA-
-!>                  TURE POUR LES POINTS DE BORD.
-!>    </td></tr>
-!>          <tr><td>LIUBOR,LIVBOR
-!></td><td><-></td><td>TYPES DE CONDITIONS AUX LIMITES POUR LES
-!>                  POINTS DE BORD.
-!>    </td></tr>
-!>          <tr><td>MESH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NBOR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPOIN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>--></td><td>NOMBRE DE POINTS FRONTIERES.
-!>    </td></tr>
-!>          <tr><td>TBOR
-!></td><td><-></td><td>TRACEUR AUX BORDS
-!>    </td></tr>
-!>          <tr><td>TRAC
-!></td><td>--></td><td>INDICATEUR DE TRACEUR .
-!>    </td></tr>
-!>          <tr><td>UBOR
-!></td><td><-></td><td>CONDITIONS AUX LIMITES SUR U
-!>    </td></tr>
-!>          <tr><td>VBOR
-!></td><td><-></td><td>CONDITIONS AUX LIMITES SUR V
-!>                  (COEFFICIENTS DE LA LOI LOG)
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE COMPLIM
+!                    ******************
+                     SUBROUTINE COMPLIM
+!                    ******************
+!
      &(LIUBOR,LIVBOR,LITBOR,UBOR,VBOR,TBOR,
      & AUBOR,ATBOR,BTBOR,NBOR,NPTFR,NPOIN,TRAC,
      & KENT,KENTU,KSORT,KADH,KLOG,KINC,IELMU,IELMV,IELMT,MESH)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ATBOR,BTBOR    |<->| COEFFICIENTS D'ECHANGE THERMIQUE.
-C| AUBOR          |<->| COEFFICIENT DE FROTTEMENT AU BORD
-C| IELMT          |---| 
-C| IELMU          |---| 
-C| IELMV          |---| 
-C| KADH           |-->| TYPE DE CONDITION LIMITE DE PAROI (ADHERENCE)
-C| KENT           |-->| TYPE DE CONDITION LIMITE D'ENTREE.
-C| KENTU          |-->| TYPE DE CONDITION LIMITE : VITESSES IMPOSEES
-C| KINC           |-->| TYPE DE CONDITION LIMITE D'ONDE INCIDENTE
-C| KLOG           |-->| TYPE DE CONDITION LIMITE DE PAROI (PAROI)
-C| KSORT          |-->| TYPE DE CONDITION LIMITE DE SORTIE LIBRE
-C| LITBOR         |<->| TYPES DE CONDITIONS AUX LIMITES EN TEMPERA-
-C|                |   | TURE POUR LES POINTS DE BORD.
-C| LIUBOR,LIVBOR  |<->| TYPES DE CONDITIONS AUX LIMITES POUR LES
-C|                |   | POINTS DE BORD.
-C| MESH           |---| 
-C| NBOR           |---| 
-C| NPOIN          |---| 
-C| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-C| TBOR           |<->| TRACEUR AUX BORDS
-C| TRAC           |-->| INDICATEUR DE TRACEUR .
-C| UBOR           |<->| CONDITIONS AUX LIMITES SUR U
-C| VBOR           |<->| CONDITIONS AUX LIMITES SUR V
-C|                |   | (COEFFICIENTS DE LA LOI LOG)
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    SUPPLEMENTS THE BOUNDARY CONDITION FILE
+!+                FOR THE QUADRATIC ELEMENTS.
+!
+!history  ALGIANE FROEHLY (MATMECA PLACEMENT)
+!+        23/10/2008
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ATBOR,BTBOR    |<->| COEFFICIENTS D'ECHANGE THERMIQUE.
+!| AUBOR          |<->| COEFFICIENT DE FROTTEMENT AU BORD
+!| IELMT          |---| 
+!| IELMU          |---| 
+!| IELMV          |---| 
+!| KADH           |-->| TYPE DE CONDITION LIMITE DE PAROI (ADHERENCE)
+!| KENT           |-->| TYPE DE CONDITION LIMITE D'ENTREE.
+!| KENTU          |-->| TYPE DE CONDITION LIMITE : VITESSES IMPOSEES
+!| KINC           |-->| TYPE DE CONDITION LIMITE D'ONDE INCIDENTE
+!| KLOG           |-->| TYPE DE CONDITION LIMITE DE PAROI (PAROI)
+!| KSORT          |-->| TYPE DE CONDITION LIMITE DE SORTIE LIBRE
+!| LITBOR         |<->| TYPES DE CONDITIONS AUX LIMITES EN TEMPERA-
+!|                |   | TURE POUR LES POINTS DE BORD.
+!| LIUBOR,LIVBOR  |<->| TYPES DE CONDITIONS AUX LIMITES POUR LES
+!|                |   | POINTS DE BORD.
+!| MESH           |---| 
+!| NBOR           |---| 
+!| NPOIN          |---| 
+!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
+!| TBOR           |<->| TRACEUR AUX BORDS
+!| TRAC           |-->| INDICATEUR DE TRACEUR .
+!| UBOR           |<->| CONDITIONS AUX LIMITES SUR U
+!| VBOR           |<->| CONDITIONS AUX LIMITES SUR V
+!|                |   | (COEFFICIENTS DE LA LOI LOG)
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: NPTFR,NPOIN,KENT,KSORT,KADH,KLOG,KINC,KENTU
       INTEGER, INTENT(IN) :: IELMU,IELMV,IELMT
       LOGICAL, INTENT(IN) :: TRAC
@@ -181,21 +76,21 @@ C
       DOUBLE PRECISION, INTENT(INOUT) :: TBOR(*),ATBOR(*)
       DOUBLE PRECISION, INTENT(INOUT) :: BTBOR(*)
       TYPE(BIEF_MESH),INTENT(INOUT)   :: MESH
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER K,KP1
-C
-C----------------------------------------------------------------------
-C
-C     VELOCITY WITH QUADRATIC U-COMPONENT
-C
+!
+!----------------------------------------------------------------------
+!
+!     VELOCITY WITH QUADRATIC U-COMPONENT
+!
       IF(IELMU.EQ.13) THEN
-C
+!
         DO K=1,NPTFR
-C
+!
         KP1=MESH%KP1BOR%I(K)
-C
+!
         IF(KP1.NE.K) THEN
         IF(LIUBOR(K).EQ.LIUBOR(KP1)) THEN
           LIUBOR(K+NPTFR) = LIUBOR(K)
@@ -222,21 +117,21 @@ C
           STOP
         ENDIF
         UBOR(K+NPTFR,1) = (UBOR(K,1)+UBOR(KP1,1))*0.5D0
-C
+!
         ENDIF
-C
+!
         ENDDO
-C
+!
       ENDIF
-C
-C     VELOCITY WITH QUADRATIC V-COMPONENT
-C
+!
+!     VELOCITY WITH QUADRATIC V-COMPONENT
+!
       IF(IELMV.EQ.13) THEN
-C
+!
         DO K=1,NPTFR
-C
+!
         KP1=MESH%KP1BOR%I(K)
-C
+!
         IF(KP1.NE.K) THEN
         IF(LIVBOR(K).EQ.LIVBOR(KP1)) THEN
           LIVBOR(K+NPTFR) = LIVBOR(K)
@@ -264,25 +159,25 @@ C
         ENDIF
         VBOR(K+NPTFR,1) = (VBOR(K,1)+VBOR(KP1,1))*0.5D0
         ENDIF
-C
+!
         ENDDO
-C
+!
       ENDIF
-C
+!
       IF(IELMV.EQ.13.OR.IELMU.EQ.13) THEN
         DO K=1,NPTFR
           AUBOR(K+NPTFR) = (AUBOR(K)+AUBOR(MESH%KP1BOR%I(K)))*0.5D0
         ENDDO
       ENDIF
-C
-C     WITH QUADRATIC TRACER T
-C
+!
+!     WITH QUADRATIC TRACER T
+!
       IF(TRAC.AND.IELMT.EQ.13) THEN
-C
+!
         DO K=1,NPTFR
-C
+!
         KP1=MESH%KP1BOR%I(K)
-C
+!
         IF(KP1.NE.K) THEN
         IF(LITBOR(K).EQ.LITBOR(KP1)) THEN
           LITBOR(K+NPTFR) = LITBOR(K)
@@ -312,25 +207,25 @@ C
         ATBOR(K+NPTFR) = (ATBOR(K)+ATBOR(KP1))*0.5D0
         BTBOR(K+NPTFR) = (BTBOR(K)+BTBOR(KP1))*0.5D0
         ENDIF
-C
+!
         ENDDO
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C  CHECKS, CORRECTS AND SAVES:
-C
+!
+!-----------------------------------------------------------------------
+!
+!  CHECKS, CORRECTS AND SAVES:
+!
       IF(IELMU.EQ.13.OR.IELMV.EQ.13) THEN
-C
+!
       DO K=NPTFR+1,2*NPTFR
-C
-C     FRICTION COEFFICIENT SET TO 0 WHEN NOT NEEDED
-C
+!
+!     FRICTION COEFFICIENT SET TO 0 WHEN NOT NEEDED
+!
       IF(LIUBOR(K).NE.KLOG.AND.LIVBOR(K).NE.KLOG) AUBOR(K) = 0.D0
-C
-C     WALL ADHERENCE MODIFIED FOR H
-C
+!
+!     WALL ADHERENCE MODIFIED FOR H
+!
       IF(AUBOR(K).GT.0.D0) THEN
         IF(LNG.EQ.1) WRITE(LU,48) K
         IF(LNG.EQ.2) WRITE(LU,49) K
@@ -341,32 +236,29 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C     DIRICHLET VALUES SET TO 0 WHEN THE POINT IS NOT A DIRICHLET
-C     FOR THE NODES WITH WALL ADHERENCE, UBOR OR VBOR =0 IS REQUIRED
-C
+!
+!     DIRICHLET VALUES SET TO 0 WHEN THE POINT IS NOT A DIRICHLET
+!     FOR THE NODES WITH WALL ADHERENCE, UBOR OR VBOR =0 IS REQUIRED
+!
       IF(LIUBOR(K).NE.KENT.AND.LIUBOR(K).NE.KENTU) UBOR(K,1)=0.D0
       IF(LIVBOR(K).NE.KENT.AND.LIVBOR(K).NE.KENTU) VBOR(K,1)=0.D0
-C
-C     SAVES UBOR AND VBOR ON THEIR SECOND DIMENSION
-C
+!
+!     SAVES UBOR AND VBOR ON THEIR SECOND DIMENSION
+!
       UBOR(K,2) = UBOR(K,1)
       VBOR(K,2) = VBOR(K,1)
-C
+!
       ENDDO
-C
+!
       IF(TRAC) THEN
         DO K=1,NPTFR
           IF(LITBOR(K).NE.KENT) TBOR(K)=0.D0
         ENDDO
       ENDIF
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

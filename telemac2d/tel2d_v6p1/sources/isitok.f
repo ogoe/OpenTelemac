@@ -1,130 +1,69 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       CHECKS THAT THE PHYSICAL PARAMETERS ARE CREDIBLE.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @warning  ARRET IS NOT INITIALISED
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> ARRET, BORNES, H, NPH, NPT, NPU, NPV, NTRAC, T, U, V, X, Y
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> I, ITRAC
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TELEMAC2D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.8                                       </center>
-!> </td><td> 05/09/2007
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>ARRET
-!></td><td><--</td><td>LOGIQUE MIS A TRUE SI BORNES SONT DEPASSEES
-!>    </td></tr>
-!>          <tr><td>BORNES
-!></td><td>--></td><td>VALEURS LIMITES DES TABLEAUX H,U,V,T
-!>                  DANS L'ORDRE SUIVANT : HMIN,HMAX,UMIN,UMAX,...
-!>    </td></tr>
-!>          <tr><td>H,NPH
-!></td><td>--></td><td>HAUTEUR ET NOMBRE DE POINTS DE HAUTEUR.
-!>    </td></tr>
-!>          <tr><td>NTRAC
-!></td><td>--></td><td>NOMBRE DE TRACEURS.
-!>    </td></tr>
-!>          <tr><td>T,NPT
-!></td><td>--></td><td>TRACEUR ET NOMBRE DE POINTS DE TRACEUR.
-!>    </td></tr>
-!>          <tr><td>U,NPU
-!></td><td>--></td><td>VITESSE U ET NOMBRE DE POINTS DE VITESSE U.
-!>    </td></tr>
-!>          <tr><td>V,NPV
-!></td><td>--></td><td>VITESSE V ET NOMBRE DE POINTS DE VITESSE V.
-!>    </td></tr>
-!>          <tr><td>X,Y
-!></td><td>--></td><td>COORDONNEES
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE ISITOK
+!                    *****************
+                     SUBROUTINE ISITOK
+!                    *****************
+!
      &(H,NPH,U,NPU,V,NPV,NTRAC,T,NPT,X,Y,BORNES,ARRET)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ARRET          |<--| LOGIQUE MIS A TRUE SI BORNES SONT DEPASSEES
-C| BORNES         |-->| VALEURS LIMITES DES TABLEAUX H,U,V,T
-C|                |   | DANS L'ORDRE SUIVANT : HMIN,HMAX,UMIN,UMAX,...
-C| H,NPH          |-->| HAUTEUR ET NOMBRE DE POINTS DE HAUTEUR.
-C| NTRAC          |-->| NOMBRE DE TRACEURS.
-C| T,NPT          |-->| TRACEUR ET NOMBRE DE POINTS DE TRACEUR.
-C| U,NPU          |-->| VITESSE U ET NOMBRE DE POINTS DE VITESSE U.
-C| V,NPV          |-->| VITESSE V ET NOMBRE DE POINTS DE VITESSE V.
-C| X,Y            |-->| COORDONNEES
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    CHECKS THAT THE PHYSICAL PARAMETERS ARE CREDIBLE.
+!
+!warning  ARRET IS NOT INITIALISED
+!
+!history  J-M HERVOUET (LNHE)
+!+        05/09/2007
+!+        V5P8
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ARRET          |<--| LOGIQUE MIS A TRUE SI BORNES SONT DEPASSEES
+!| BORNES         |-->| VALEURS LIMITES DES TABLEAUX H,U,V,T
+!|                |   | DANS L'ORDRE SUIVANT : HMIN,HMAX,UMIN,UMAX,...
+!| H,NPH          |-->| HAUTEUR ET NOMBRE DE POINTS DE HAUTEUR.
+!| NTRAC          |-->| NOMBRE DE TRACEURS.
+!| T,NPT          |-->| TRACEUR ET NOMBRE DE POINTS DE TRACEUR.
+!| U,NPU          |-->| VITESSE U ET NOMBRE DE POINTS DE VITESSE U.
+!| V,NPV          |-->| VITESSE V ET NOMBRE DE POINTS DE VITESSE V.
+!| X,Y            |-->| COORDONNEES
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-C
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)          :: NPH,NPU,NPV,NPT,NTRAC
       LOGICAL, INTENT(INOUT)       :: ARRET
       DOUBLE PRECISION, INTENT(IN) :: H(NPH),U(NPU),V(NPV)
       DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),BORNES(8)
       TYPE(BIEF_OBJ)  , INTENT(IN) :: T
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I,ITRAC
-C
-C-----------------------------------------------------------------------
-C
-C  CHECKS THE DEPTH
-C
+!
+!-----------------------------------------------------------------------
+!
+!  CHECKS THE DEPTH
+!
       DO 10 I = 1 , NPH
         IF(H(I).LT.BORNES(1)) THEN
           ARRET = .TRUE.
@@ -145,11 +84,11 @@ C
           ENDIF
         ENDIF
 10    CONTINUE
-C
-C-----------------------------------------------------------------------
-C
-C  CHECKS THE VELOCITY U
-C
+!
+!-----------------------------------------------------------------------
+!
+!  CHECKS THE VELOCITY U
+!
       DO 20 I = 1 , NPU
         IF(U(I).LT.BORNES(3)) THEN
           ARRET = .TRUE.
@@ -170,11 +109,11 @@ C
           ENDIF
         ENDIF
 20    CONTINUE
-C
-C-----------------------------------------------------------------------
-C
-C  CHECKS THE VELOCITY V
-C
+!
+!-----------------------------------------------------------------------
+!
+!  CHECKS THE VELOCITY V
+!
       DO 30 I = 1 , NPV
         IF(V(I).LT.BORNES(5)) THEN
           ARRET = .TRUE.
@@ -195,15 +134,15 @@ C
           ENDIF
         ENDIF
 30    CONTINUE
-C
-C-----------------------------------------------------------------------
-C
-C  CHECKS THE TRACER
-C
+!
+!-----------------------------------------------------------------------
+!
+!  CHECKS THE TRACER
+!
       IF(NTRAC.GT.0) THEN
-C
+!
       DO ITRAC=1,NTRAC
-C
+!
       DO I = 1 , NPT
         IF(T%ADR(ITRAC)%P%R(I).LT.BORNES(7)) THEN
           ARRET = .TRUE.
@@ -228,24 +167,21 @@ C
           ENDIF
         ENDIF
       ENDDO
-C
+!
       ENDDO
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
 100   FORMAT(/,1X,'LIMITE ',A10,' SUR ',A1,' ATTEINTE AU POINT ',I6,/,
      &         1X,'DE COORDONNEES ',G16.7,' ET ',G16.7,/,1X,
      &         A1,' VAUT : ',G16.7,' ET LA LIMITE EST :',G16.7)
 101   FORMAT(/,1X,A5,' LIMIT ON ',A1,' REACHED AT POINT ',I6,/,1X,
      &         'WITH COORDINATES',G16.7,' AND ',G16.7,/,1X,
      &         'THE VALUE OF ',A1,' IS ',G16.7,' THE LIMIT IS: ',G16.7)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

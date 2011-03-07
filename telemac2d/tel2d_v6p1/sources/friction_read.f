@@ -1,133 +1,66 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       FRICTION FILE READ.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>FRICTION_DEF, INTERFACE_TELEMAC2D
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> FRTAB, ITURB, LINDNER, LISRUG, NCOF, NOMCOF, NZONES, NZONMX
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> CHAINE, I, IZ1, IZ2, IZONE, J, LAW, LINE, LOOP, N, NLOOP, R1, R2, TYP
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_FRICTION_READ
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> FRICTION_SCAN(), MAJUS(), PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>FRICTION_INIT()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.5                                       </center>
-!> </td><td>
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/04/2004
-!> </td><td> F. HUVELIN
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>FRTAB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ITURB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LINDNER
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LISRUG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NCOF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOMCOF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NZONES
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NZONMX
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE FRICTION_READ
+!                    ************************
+                     SUBROUTINE FRICTION_READ
+!                    ************************
+!
      & (NCOF, NZONMX, ITURB, LISRUG, LINDNER, NOMCOF, NZONES, FRTAB)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| FRTAB          |---| 
-C| ITURB          |---| 
-C| LINDNER        |---| 
-C| LISRUG         |---| 
-C| NCOF           |---| 
-C| NOMCOF         |---| 
-C| NZONES         |---| 
-C| NZONMX         |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    FRICTION FILE READ.
+!
+!history  F. HUVELIN
+!+        20/04/2004
+!+        
+!+   
+!
+!history  J-M HERVOUET (LNHE)
+!+        
+!+        V5P5
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FRTAB          |---| 
+!| ITURB          |---| 
+!| LINDNER        |---| 
+!| LISRUG         |---| 
+!| NCOF           |---| 
+!| NOMCOF         |---| 
+!| NZONES         |---| 
+!| NZONMX         |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE FRICTION_DEF
       USE INTERFACE_TELEMAC2D, EX_FRICTION_READ => FRICTION_READ
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,            INTENT(IN)    :: NCOF, NZONMX
       INTEGER,            INTENT(IN)    :: ITURB, LISRUG
       LOGICAL,            INTENT(IN)    :: LINDNER
       CHARACTER(LEN=144), INTENT(IN)    :: NOMCOF
       INTEGER,            INTENT(OUT)   :: NZONES
       TYPE(FRICTION_OBJ), INTENT(INOUT) :: FRTAB
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER          :: I, J, LOOP, NLOOP, N, IZ1, IZ2
       INTEGER          :: IZONE, TYP, LINE
       DOUBLE PRECISION :: R1, R2
@@ -136,7 +69,7 @@ C
 !
 !=======================================================================!
 !=======================================================================!
-C                               PROGRAMME                               !
+!                               PROGRAMME                               !
 !=======================================================================!
 !=======================================================================!
 !
@@ -214,7 +147,6 @@ C                               PROGRAMME                               !
          DO LOOP = 1, NLOOP
 !
             IF (LOOP == 2) BACKSPACE(NCOF)
-
             ! READ THE NAME OF THE LAW AND NUMBERING OF THE ZONE
             ! --------------------------------------------------
             CHAINE(1) = ' '
@@ -326,7 +258,6 @@ C                               PROGRAMME                               !
             FRTAB%ADR(I)%P%DP = 0.D0
             FRTAB%ADR(I)%P%SP = 0.D0
          ENDIF
-
          WRITE(LU,11) FRTAB%ADR(I)%P%GNUMB(1),
      &                FRTAB%ADR(I)%P%GNUMB(2),
      &                FRTAB%ADR(I)%P%RTYPE(1),
@@ -355,43 +286,36 @@ C                               PROGRAMME                               !
 !
 1     FORMAT('PAS DE FICHIER DE DONNEES POUR LE FROTTEMENT')
 2     FORMAT('NO FRICTION DATA FILE')
-
 3     FORMAT('-------------------------------------------------------'
      &     , '------------------------------------------------------')
 4     FORMAT('                      BOTTOM                         '
      &     , 'BOUNDARY CONDITION              NON-SUBMERGED VEGETATION'
      &     ,/'NO                    LAW   RCOEF        NDEF        '
      &     , 'LAW   RCOEF        NDEF         DP           SP')
-
 5     FORMAT('NOMBRE DE ZONES DE FROTTEMENT DEFINI TROP NOMBREUSES'
      &     ,/'AUGMENTER LE NOMBRE DE ZONES MAXIMALES AVEC LE MOT-CLE :'
      &     ,/'NOMBRE MAXIMALE DE ZONES POUR LE FROTTEMENT')
 6     FORMAT('TOO MANY NUMBER OF FRICTION ZONES DEFINED'
      &     ,/'INCREASED THE NUMBER OF MAXIMAL ZONES WITH THE KEYWORD :'
      &     ,/'MAXIMUM NUMBER OF ZONES FOR THE FRICTION')
-
 7     FORMAT('FICHIER DE DONNEES POUR LE FROTTEMENT : ',A144
      &      ,/'ZONE : ',I9
      &      ,/'LA LOI LOG NE PEUT ETRE UTILISEE SUR LE FOND')
 8     FORMAT('FRICTION DATA FILE : ',A144
      &      ,/'ZONE : ',I9
      &      ,/'LOG LAW CAN''T BE USED FOR THE BOTTOM')
-
 9     FORMAT('FICHIER DE DONNEES POUR LE FROTTEMENT'
      &     ,/'ERREUR DE LECTURE LIGNE : ',I10
      &     ,/'ZONE DE ',I10,' A ',I10
      &     ,/'LOI ',A4)
-
 10    FORMAT('FRICTION DATA FILE'
      &     ,/'READ ERROR LINE',I10
      &     ,/'ZONE FROM ',I10,' TO ',I10
      &     ,/'LAW ',A4)
-
 11    FORMAT(2(1X,I9),1X,I4,2(1X,E12.4),1X,I4,4(1X,E12.4))
 !
 13    FORMAT(I5,' TYPES DE ZONES DEFINIES')
 14    FORMAT(I5,' ZONES TYPE SPECIFICATIONS')
-
 15    FORMAT('FICHIER DE DONNEES POUR LE FROTTEMENT : ',A144
      &      ,/'ZONE : ',I9
      &      ,/'LE COEFFICIENT DE FROTTEMENT DE LA LOI DE HAALAND POUR'
@@ -432,7 +356,6 @@ C                               PROGRAMME                               !
       ENDIF
       CALL PLANTE(0)
       STOP
-
       ! NON-SUBMERGED VEGETATION PARAMETER
       ! ----------------------------------
 888   CONTINUE
@@ -534,7 +457,6 @@ C                               PROGRAMME                               !
      &                  ' LE COEFFICIENT DE FROTTEMENT ET LE MANNING'
          ENDIF
       ENDIF
-
       IF (LNG.EQ.2) THEN
          WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
          WRITE(LU,*) 'READ ERROR ZONE : ',CHAINE(1)
@@ -563,6 +485,3 @@ C                               PROGRAMME                               !
 !
       RETURN
       END
-C
-C#######################################################################
-C

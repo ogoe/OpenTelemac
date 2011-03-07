@@ -1,181 +1,154 @@
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       SOLVES THE SAINT-VENANT EQUATIONS FOR U,V,H.
-!><br>            ADJO = .TRUE.  : DIRECT MODE
-!><br>            ADJO = .FALSE. : ADJOINT MODE
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 25/11/2009
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td> VERSION WITH MULTIPLE TRACERS
-!> <br>      DOUBLE CALL TO SISYPHE (BEDLOAD + SUSPENSION)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 22/07/2009
-!> </td><td>
-!> </td><td> 3 NEW ARGUMENTS IN PROPAG
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/07/2009
-!> </td><td>
-!> </td><td> 1 OUT OF 3 CALLS TO TEL4DEL REMOVED (THANKS TO A
-!>           MODIFICATION OF PROPAG: COMPUTATION OF UDEL AND VDEL
-!>           IF(SOLSYS.EQ.1)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 09/07/2009
-!> </td><td>
-!> </td><td> ARGUMENT NPTFR2 ADDED TO LECLIM
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 02/04/2009
-!> </td><td>
-!> </td><td> NEW FILE STRUCTURE T2D_FILES AND MED FORMAT
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 19/02/2009
-!> </td><td>
-!> </td><td> H CLIPPED IN CASE OF COMPUTATION CONTINUED
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 16/02/2009
-!> </td><td>
-!> </td><td> CALL TO POSITIVE_DEPTHS
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 09/02/2009
-!> </td><td>
-!> </td><td> IF H CLIPPED, USES HMIN INSTEAD OF 0.D0
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 21/10/2008
-!> </td><td>
-!> </td><td> CALL TO MODIFIED MASKTO (PARALLEL VERSION OF MASKTO)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 25/09/2008
-!> </td><td>
-!> </td><td> CALL TO MODIFIED TEL4DEL (FLUXES SENT THRU MESH%W%R)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 02/09/2008
-!> </td><td>
-!> </td><td> CALL TO MODIFIED TEL4DEL (ADDED VELOCITY AND DIFFUSION)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/08/2008
-!> </td><td>
-!> </td><td> LIST_PTS MODIFIED IN PARALLEL
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 13/08/2008
-!> </td><td>
-!> </td><td> CHANGED CALL AND CALL CONDITIONS TO CHARAC
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 29/07/2008
-!> </td><td>
-!> </td><td> ADDED CALL TO FLUSEC BEFORE THE 1ST CALL PRERES
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 27/06/2008
-!> </td><td>
-!> </td><td> ARGUMENTS OF PROPIN_TELEMAC2D : MESH ADDED TO THE END
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 25/06/2008
-!> </td><td>
-!> </td><td> DIFFIN2 RENAMED DIFFIN + ARGUMENT MESH
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 16/06/2008
-!> </td><td>
-!> </td><td> SECOND CALL TO PROPIN FOLLOWING CALL TO BORD
-!>          (USER CHANGES THE CONDITIONS IN BORD)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 06/06/2008
-!> </td><td>
-!> </td><td> OPTIONAL ARGUMENT BOUNDARY_COLOUR ADDED TO LECLIM
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/05/2008
-!> </td><td>
-!> </td><td> FLUXES DUE TO SMOOTHING OF NEGATIVE VALUES (NEW FILTER_H) PASSED TO TEL4DEL
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 14/05/2008
-!> </td><td>
-!> </td><td> HN INITIALISED BEFORE CALL TO SISYPHE
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 05/05/2008
-!> </td><td>
-!> </td><td> USIS AND VSIS IN CALL TO SISYPHE
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 07/04/2008
-!> </td><td>
-!> </td><td> SOURCES VARY IN TIME
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE TELEMAC2D
+!                    ********************
+                     SUBROUTINE TELEMAC2D
+!                    ********************
+!
      &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
-C| CODE           |-->| CALLING PROGRAM (IF COUPLING)
-C| DOPRINT        |---| 
-C| DTDEP          |---| 
-C| NEWTIME        |---| 
-C| NITER          |-->| NUMBER OF ITERATIONS WHEN CALLED FOR COUPLING
-C| PASS           |-->| -1 : ALL STEPS
-C|                |   | 0 : ONLY INITIALISATION
-C|                |   | 1 : ONLY TIME-STEPS STEPS
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC2D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    SOLVES THE SAINT-VENANT EQUATIONS FOR U,V,H.
+!+
+!+            ADJO = .TRUE.  : DIRECT MODE
+!+
+!+            ADJO = .FALSE. : ADJOINT MODE
+!
+!history  
+!+        07/04/2008
+!+        
+!+   SOURCES VARY IN TIME 
+!
+!history  
+!+        05/05/2008
+!+        
+!+   USIS AND VSIS IN CALL TO SISYPHE 
+!
+!history  
+!+        14/05/2008
+!+        
+!+   HN INITIALISED BEFORE CALL TO SISYPHE 
+!
+!history  
+!+        20/05/2008
+!+        
+!+   FLUXES DUE TO SMOOTHING OF NEGATIVE VALUES (NEW FILTER_H) PASSED 
+!+   TO TEL4DEL 
+!
+!history  
+!+        06/06/2008
+!+        
+!+   OPTIONAL ARGUMENT BOUNDARY_COLOUR ADDED TO LECLIM 
+!
+!history  
+!+        16/06/2008
+!+        
+!+   SECOND CALL TO PROPIN FOLLOWING CALL TO BORD 
+!
+!history  
+!+        25/06/2008
+!+        
+!+   DIFFIN2 RENAMED DIFFIN + ARGUMENT MESH 
+!
+!history  
+!+        27/06/2008
+!+        
+!+   ARGUMENTS OF PROPIN_TELEMAC2D : MESH ADDED TO THE END 
+!
+!history  
+!+        29/07/2008
+!+        
+!+   ADDED CALL TO FLUSEC BEFORE THE 1ST CALL PRERES 
+!
+!history  
+!+        13/08/2008
+!+        
+!+   CHANGED CALL AND CALL CONDITIONS TO CHARAC 
+!
+!history  
+!+        20/08/2008
+!+        
+!+   LIST_PTS MODIFIED IN PARALLEL 
+!
+!history  
+!+        02/09/2008
+!+        
+!+   CALL TO MODIFIED TEL4DEL (ADDED VELOCITY AND DIFFUSION) 
+!
+!history  
+!+        25/09/2008
+!+        
+!+   CALL TO MODIFIED TEL4DEL (FLUXES SENT THRU MESH%W%R) 
+!
+!history  
+!+        21/10/2008
+!+        
+!+   CALL TO MODIFIED MASKTO (PARALLEL VERSION OF MASKTO) 
+!
+!history  
+!+        09/02/2009
+!+        
+!+   IF H CLIPPED, USES HMIN INSTEAD OF 0.D0 
+!
+!history  
+!+        16/02/2009
+!+        
+!+   CALL TO POSITIVE_DEPTHS 
+!
+!history  
+!+        19/02/2009
+!+        
+!+   H CLIPPED IN CASE OF COMPUTATION CONTINUED 
+!
+!history  
+!+        02/04/2009
+!+        
+!+   NEW FILE STRUCTURE T2D_FILES AND MED FORMAT 
+!
+!history  
+!+        09/07/2009
+!+        
+!+   ARGUMENT NPTFR2 ADDED TO LECLIM 
+!
+!history  
+!+        20/07/2009
+!+        
+!+   1 OUT OF 3 CALLS TO TEL4DEL REMOVED (THANKS TO A 
+!
+!history  
+!+        22/07/2009
+!+        
+!+   3 NEW ARGUMENTS IN PROPAG 
+!
+!history  J-M HERVOUET (LNHE)
+!+        25/11/2009
+!+        V6P0
+!+   VERSION WITH MULTIPLE TRACERS 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
+!| CODE           |-->| CALLING PROGRAM (IF COUPLING)
+!| DOPRINT        |---| 
+!| DTDEP          |---| 
+!| NEWTIME        |---| 
+!| NITER          |-->| NUMBER OF ITERATIONS WHEN CALLED FOR COUPLING
+!| PASS           |-->| -1 : ALL STEPS
+!|                |   | 0 : ONLY INITIALISATION
+!|                |   | 1 : ONLY TIME-STEPS STEPS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
@@ -184,165 +157,165 @@ C
       USE INTERFACE_TOMAWAC, ONLY: WAC
       USE GRACESTOP
       USE FRICTION_DEF
-C     MODULE SPECIFIC TO COUPLING WITH ESTEL-3D
+!     MODULE SPECIFIC TO COUPLING WITH ESTEL-3D
       USE M_COUPLING_ESTEL3D
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,          INTENT(IN) :: PASS,NITER
       DOUBLE PRECISION, INTENT(IN) :: ATDEP
       CHARACTER(LEN=*), INTENT(IN) :: CODE
-C     TIME STEP TO USE WHEN COUPLING WITH ESTEL-3D
+!     TIME STEP TO USE WHEN COUPLING WITH ESTEL-3D
       DOUBLE PRECISION, INTENT(IN), OPTIONAL :: DTDEP
-C     ARE WE STARTING A NEW TIME STEP OR JUST ITERATING?
+!     ARE WE STARTING A NEW TIME STEP OR JUST ITERATING?
       LOGICAL,          INTENT(IN), OPTIONAL :: NEWTIME
-C     DO WE WANT TELEMAC2D TO OUTPUT IN THE LISTING OR NOT?
+!     DO WE WANT TELEMAC2D TO OUTPUT IN THE LISTING OR NOT?
       LOGICAL,          INTENT(IN), OPTIONAL :: DOPRINT
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C INTEGERS
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+! INTEGERS
+!
       INTEGER IELM,I,IELMX,ISOUSI,IBID,STOP2,LEOPRD_CHARR
       INTEGER ALIRE(MAXVAR),TROUVE(MAXVAR+10)
-C
-C REAL SCALARS
-C
+!
+! REAL SCALARS
+!
       DOUBLE PRECISION KMIN,KMAX,KARMAN,FLUSOR,FLUENT,HIST(1),AT0
       DOUBLE PRECISION C,MASSES,RELAXS,CFLMAX,TETAHC,DTCAS,RELAX
       DOUBLE PRECISION EMAX,EMIN,SCHMIT,ESTAR,SIGMAE,SIGMAK,C2,C1,CMU
-C
-C FOR TRACERS
-C
-C     MASSOU: MASS CREATED BY SOURCE TERM DURING THE TIME STEP
-C     MASTR0: INITIAL MASS
-C     MASTR2: CURRENT MASS
-C     MASTEN: MASS ENTERED THROUGH BOUNDARIES
-C     MASTOU: TOTAL MASS CREATED BY SOURCE TERM
+!
+! FOR TRACERS
+!
+!     MASSOU: MASS CREATED BY SOURCE TERM DURING THE TIME STEP
+!     MASTR0: INITIAL MASS
+!     MASTR2: CURRENT MASS
+!     MASTEN: MASS ENTERED THROUGH BOUNDARIES
+!     MASTOU: TOTAL MASS CREATED BY SOURCE TERM
       DOUBLE PRECISION MASSOU(MAXTRA),MASTR0(MAXTRA),MASTR2(MAXTRA)
       DOUBLE PRECISION MASTEN(MAXTRA),MASTOU(MAXTRA)
-C
-C LOGICALS
-C
+!
+! LOGICALS
+!
       LOGICAL AKEP,INFOGS,INFOGT,ARRET1,ARRET2,YASMH,ARRET3,CORBOT
       LOGICAL CHARR,SUSP,SUSP1,NON,INIFLOW,YAFLODEL,YAFLULIM
       LOGICAL YASMI(MAXTRA)
-C
+!
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
       CHARACTER(LEN=16) :: FORMUL
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTEGER IOPTAN,IMAX,ITRAC,NPTFR2
-C
-C-----------------------------------------------------------------------
-C
-C ADDED FOR KINETIC SCHEMES
-C
+!
+!-----------------------------------------------------------------------
+!
+! ADDED FOR KINETIC SCHEMES
+!
       DOUBLE PRECISION FLUTSOR(MAXTRA),FLUTENT(MAXTRA),DTN
       DOUBLE PRECISION FLUSORTN,FLUENTN,TMAX,DTT
       INTEGER LTT
-C
-C-----------------------------------------------------------------------
-C
-C     FOR SISYPHE : GRAIN FEEDING AND CONSTANT FLOW DISCHARGE
+!
+!-----------------------------------------------------------------------
+!
+!     FOR SISYPHE : GRAIN FEEDING AND CONSTANT FLOW DISCHARGE
       INTEGER :: ISIS_CFD, NSIS_CFD
       LOGICAL :: SISYPHE_CFD, CONSTFLOW_SIS
-C     FRICTION DATA
+!     FRICTION DATA
       INTEGER :: KFROT_TP
-C
+!
       INTEGER  P_IMAX,P_IMIN
       DOUBLE PRECISION P_DMIN
       EXTERNAL P_IMAX,P_IMIN,P_DMIN
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTRINSIC MAX
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       DATA HIST /9999.D0/
-C
-C-----------------------------------------------------------------------
-C
-C  VARIABLES TO READ IN THE EVENT OF A CONTINUATION:
-C  0 : DISCARD    1 : READ  (SEE SS-PG NOMVAR)
-C
-C                                 0: OLD PLACE FOR THE TRACER
+!
+!-----------------------------------------------------------------------
+!
+!  VARIABLES TO READ IN THE EVENT OF A CONTINUATION:
+!  0 : DISCARD    1 : READ  (SEE SS-PG NOMVAR)
+!
+!                                 0: OLD PLACE FOR THE TRACER
       DATA ALIRE /1,1,0,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
-C
-C-----------------------------------------------------------------------
-C
-C     ADVECTION FIELD USED FOR SISYPHE CALL
-C
+!
+!-----------------------------------------------------------------------
+!
+!     ADVECTION FIELD USED FOR SISYPHE CALL
+!
       TYPE(BIEF_OBJ), POINTER :: USIS,VSIS
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       SAVE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       NON=.FALSE.
       CHARR=.FALSE.
       SUSP=.FALSE.
-C
-C-----------------------------------------------------------------------
-C
-C     FOR INITIALISATION OF FLODEL (ARRAY FLOW) IN DELWAQ
-C
+!
+!-----------------------------------------------------------------------
+!
+!     FOR INITIALISATION OF FLODEL (ARRAY FLOW) IN DELWAQ
+!
       IF(OPTBAN.EQ.1.OR.OPTBAN.EQ.3) THEN
         INIFLOW=.FALSE.
       ELSE
         INIFLOW=.TRUE.
       ENDIF
-C
-C     FOR COMPUTING EXTRA FLOWS DUE TO TIDAL FLATS TREATMENT
-C
+!
+!     FOR COMPUTING EXTRA FLOWS DUE TO TIDAL FLATS TREATMENT
+!
       IF(INCLUS(COUPLING,'DELWAQ')) THEN
         YAFLODEL=.TRUE.
       ELSE
         YAFLODEL=.FALSE.
       ENDIF
-C
-C     FOR TAKING INTO ACCOUNT FLUX LIMITATION OF ARRAY FLULIM IN ADVECTION
-C     SCHEMES (SO FAR ONLY FOR TRACERS IN CASE SOLSYS=2 AND OPT_HNEG=2).
-C
+!
+!     FOR TAKING INTO ACCOUNT FLUX LIMITATION OF ARRAY FLULIM IN ADVECTION
+!     SCHEMES (SO FAR ONLY FOR TRACERS IN CASE SOLSYS=2 AND OPT_HNEG=2).
+!
       YAFLULIM=.FALSE.
-C
-C     FOR READING TRACERS IN SELAFIN FILES
-C
+!
+!     FOR READING TRACERS IN SELAFIN FILES
+!
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-C         SEE POINT_TELEMAC2D
+!         SEE POINT_TELEMAC2D
           ALIRE(31+ITRAC) = 1
         ENDDO
       ENDIF
-C
-C     FOR AVOIDING READING K, EPSILON AND DIFFUSION WHEN NOT RELEVANT
-C
+!
+!     FOR AVOIDING READING K, EPSILON AND DIFFUSION WHEN NOT RELEVANT
+!
       IF(ITURB.NE.3) ALIRE(10) = 0
       IF(ITURB.NE.3) ALIRE(11) = 0
       IF(ITURB.EQ.1) ALIRE(12) = 0
-C
-C-----------------------------------------------------------------------
-C
-C     USE DOPRINT TO LIMIT TELEMAC-2D OUTPUTS IN THE LISTING
-C
+!
+!-----------------------------------------------------------------------
+!
+!     USE DOPRINT TO LIMIT TELEMAC-2D OUTPUTS IN THE LISTING
+!
       IF(PRESENT(DOPRINT)) THEN
         LISTIN =  DOPRINT
         ENTET  =  DOPRINT
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF(PASS.EQ.0) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'INITIALISATION DE TELEMAC2D POUR ',CODE
@@ -358,23 +331,23 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C=======================================================================
-C
-C : 1          READS, PREPARES AND CONTROLS THE DATA
-C
-C=======================================================================
-C
-C  TYPES OF DISCRETISATION: P1 TRIANGLES FOR NOW
-C
+!
+!=======================================================================
+!
+! : 1          READS, PREPARES AND CONTROLS THE DATA
+!
+!=======================================================================
+!
+!  TYPES OF DISCRETISATION: P1 TRIANGLES FOR NOW
+!
       IELM=IELM1
-C     THE MOST COMPLEX ELEMENT
+!     THE MOST COMPLEX ELEMENT
       IELMX = MAX(IELMH,IELMU,IELMT,IELMK,IELME)
-C
-C-----------------------------------------------------------------------
-C
-C READS THE BOUNDARY CONDITIONS AND INDICES OF THE BOUNDARY POINTS
-C
+!
+!-----------------------------------------------------------------------
+!
+! READS THE BOUNDARY CONDITIONS AND INDICES OF THE BOUNDARY POINTS
+!
       IF(IELMX.EQ.13) THEN
         NPTFR2=2*NPTFR
       ELSE
@@ -389,9 +362,9 @@ C
      &             KENT       , KENTU    , KSORT ,  KADH , KLOG , KINC,
      &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I,NPTFR2)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECLIM'
-C
-C DUPLICATES THE BOUNDARY CONDITIONS FOR THE TRACERS
-C
+!
+! DUPLICATES THE BOUNDARY CONDITIONS FOR THE TRACERS
+!
       IF(NTRAC.GE.2) THEN
         DO ITRAC=2,NTRAC
           DO I=1,NPTFR
@@ -402,16 +375,16 @@ C
           ENDDO
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C  COMPLEMENT OF THE DATA STRUCTURE FOR BIEF
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!  COMPLEMENT OF THE DATA STRUCTURE FOR BIEF
+!-----------------------------------------------------------------------
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INBIEF'
       CALL INBIEF(LIHBOR%I,KLOG,IT1,IT2,IT3,LVMAC,IELMX,
      &            LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE INBIEF'
-C
+!
       IF(IELMX.EQ.13) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE COMPLIM'
         CALL COMPLIM( LIUBOR%I , LIVBOR%I , LITBOR%ADR(1)%P%I,
@@ -422,65 +395,65 @@ C
      &                IELMU,IELMU,IELMT,MESH)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE COMPLIM'
       ENDIF
-C
-C-----------------------------------------------------------------------
-C  DEFINITION OF ZONES BY THE USER
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!  DEFINITION OF ZONES BY THE USER
+!-----------------------------------------------------------------------
+!
       IF(DEFZON) CALL DEF_ZONES
-C
-C-----------------------------------------------------------------------
-C  CHANGES FROM GLOBAL TO LOCAL IN LIST OF POINTS IN PARALLEL
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!  CHANGES FROM GLOBAL TO LOCAL IN LIST OF POINTS IN PARALLEL
+!-----------------------------------------------------------------------
+!
       IF(NPTS.GT.0.AND.NCSIZE.GT.0) THEN
         DO I=1,NPTS
           LIST_PTS(I)=MESH%KNOGL%I(LIST_PTS(I))
         ENDDO
       ENDIF
-C
-C-----------------------------------------------------------------------
-C  LOOKS FOR VARIABLES BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE:
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!  LOOKS FOR VARIABLES BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE:
+!-----------------------------------------------------------------------
+!
       IF(     .NOT.INCLU2(ESTIME,'FROTTEMENT')
      &   .AND..NOT.INCLU2(ESTIME,'FRICTION'  )  ) THEN
-C       NO PARAMETER ESTIMATION
+!       NO PARAMETER ESTIMATION
         CALL FONSTR(T1,ZF,T2,CHESTR,T2D_FILES(T2DGEO)%LU,
      &              T2D_FILES(T2DFON)%LU,T2D_FILES(T2DFON)%NAME,
      &              MESH,FFON,LISTIN)
         CORBOT=.TRUE.
       ELSEIF(NITERA.EQ.1.AND..NOT.ADJO) THEN
-C       WITH PARAMETER ESTIMATION (HENCE NITERA DEFINED),
-C       FONSTR CALLED ONCE TO GET
-C       THE BOTTOM TOPOGRAPHY AND THE INITIAL FRICTION (CALL TO STRCHE)
+!       WITH PARAMETER ESTIMATION (HENCE NITERA DEFINED),
+!       FONSTR CALLED ONCE TO GET
+!       THE BOTTOM TOPOGRAPHY AND THE INITIAL FRICTION (CALL TO STRCHE)
         CALL FONSTR(T1,ZF,T2,CHESTR,T2D_FILES(T2DGEO)%LU,
      &              T2D_FILES(T2DFON)%LU,T2D_FILES(T2DFON)%NAME,
      &              MESH,FFON,LISTIN)
-C       IF OPTID=0, VALUES OF SETSTR ARE GIVEN BY FILE, MUST NOT BE ERASED
+!       IF OPTID=0, VALUES OF SETSTR ARE GIVEN BY FILE, MUST NOT BE ERASED
         IF(OPTID.NE.0) CALL INITSTR(CHESTR,SETSTR,ZONE%I,NZONE,NPOIN,T1)
         CALL ASSIGNSTR(CHESTR,SETSTR,ZONE%I,NZONE,NPOIN)
         CORBOT=.TRUE.
       ELSE
-C       IN PARAMETER ESTIMATION, FROM NITERA=2 ON, BOTTOM IS NOT READ
-C       AGAIN, SO NO CALL TO CORFON
+!       IN PARAMETER ESTIMATION, FROM NITERA=2 ON, BOTTOM IS NOT READ
+!       AGAIN, SO NO CALL TO CORFON
         CORBOT=.FALSE.
       ENDIF
-C
-C     INITIALISES FRICTION COEFFICIENT BY ZONE
-C
+!
+!     INITIALISES FRICTION COEFFICIENT BY ZONE
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FRICTION_CHOICE'
       CALL FRICTION_CHOICE(0,KARMAN)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FRICTION_CHOICE'
-C
-C-----------------------------------------------------------------------
-C
-C PREPARES THE RESULTS FILE (OPTIONAL)
-C
-C      STANDARD SELAFIN
-C
+!
+!-----------------------------------------------------------------------
+!
+! PREPARES THE RESULTS FILE (OPTIONAL)
+!
+!      STANDARD SELAFIN
+!
       IF(ADJO) THEN
-C
+!
         IF(T2D_FILES(T2DRBI)%NAME.NE.' '.AND.
      &     INCLU2(ESTIME,'DEBUG')) THEN
          CALL ECRGEO(MESH%X%R,MESH%Y%R,MESH%NPOIN,MESH%NBOR%I,
@@ -489,14 +462,14 @@ C
      &               MESH%NELEM,MESH%NPTFR,3,MARDAT,MARTIM,
      &               NCSIZE,NPTIR,MESH%KNOLG%I,I3=I_ORIG,I4=J_ORIG)
         ENDIF
-C
+!
       ELSE
-C
-C       CALL ECRGEO(MESH%X%R,MESH%Y%R,MESH%NPOIN,MESH%NBOR%I,
-C    *            NRES,IBID,TEXTE,VARCLA,NVARCL,
-C    *            TITCAS,SORLEO,MAXVAR,MESH%IKLE%I,
-C    *            MESH%NELEM,MESH%NPTFR,3,MARDAT,MARTIM,
-C    *            NCSIZE,NPTIR,MESH%KNOLG%I,I3=I_ORIG,I4=J_ORIG)
+!
+!       CALL ECRGEO(MESH%X%R,MESH%Y%R,MESH%NPOIN,MESH%NBOR%I,
+!    *            NRES,IBID,TEXTE,VARCLA,NVARCL,
+!    *            TITCAS,SORLEO,MAXVAR,MESH%IKLE%I,
+!    *            MESH%NELEM,MESH%NPTFR,3,MARDAT,MARTIM,
+!    *            NCSIZE,NPTIR,MESH%KNOLG%I,I3=I_ORIG,I4=J_ORIG)
         ! CREATES THE DATA FILE USING A GIVEN FILE FORMAT:
         ! FORMAT_RES.
         ! THE DATA ARE CREATED IN THE FILE: NRES, AND ARE
@@ -519,28 +492,28 @@ C    *            NCSIZE,NPTIR,MESH%KNOLG%I,I3=I_ORIG,I4=J_ORIG)
      &                  MARDAT,        ! START DATE
      &                  MARTIM,        ! START TIME
      &                  I_ORIG,J_ORIG) ! COORDINATES OF THE ORIGIN.
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C     INITIALISES PRIVE
-C
+!
+!-----------------------------------------------------------------------
+!
+!     INITIALISES PRIVE
+!
       IF(NPRIV.GT.0) CALL OS('X=0     ',X=PRIVE)
-C
-C  ENLARGES COSLAT AND SINLAT TO GIVE THEM THE DIMENSION OF U AND V
-C  SAME THING FOR FRICTION
-C
+!
+!  ENLARGES COSLAT AND SINLAT TO GIVE THEM THE DIMENSION OF U AND V
+!  SAME THING FOR FRICTION
+!
       IF(IELMU.NE.IELM1) THEN
         IF(SPHERI) CALL CHGDIS(MESH%COSLAT,IELM1,IELMU,MESH)
         IF(SPHERI) CALL CHGDIS(MESH%SINLAT,IELM1,IELMU,MESH)
         CALL CHGDIS(CHESTR,IELM1,IELMU,MESH)
       ENDIF
-C
-C=======================================================================
-C
-C  LOCATES THE BOUNDARIES
-C
+!
+!=======================================================================
+!
+!  LOCATES THE BOUNDARIES
+!
       IF(NCSIZE.GT.1) THEN
        NFRLIQ=0
        DO I=1,NPTFR
@@ -558,23 +531,23 @@ C
      &             IT1%I,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ%I,MAXFRO)
        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FRONT2'
       ENDIF
-C
-C=======================================================================
-C
-C  READS THE FILE WITH STAGE-DISCHARGE CURVES
-C
+!
+!=======================================================================
+!
+!  READS THE FILE WITH STAGE-DISCHARGE CURVES
+!
       IF(T2D_FILES(T2DMAB)%NAME(1:1).NE.' ') THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE READ_FIC_CURVES'
         CALL READ_FIC_CURVES(T2D_FILES(T2DMAB)%LU,NFRLIQ,
      &                       STA_DIS_CURVES,PTS_CURVES)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE READ_FIC_CURVES'
       ENDIF
-C
-C=======================================================================
-C
-C CORRECTS THE NORMALS TO THE BOUNDARY NODES TO HAVE NORMALS TO
-C ADJACENT LIQUID SEGMENT IN THE CASE OF A TRANSITION FROM LIQUID TO SOLID
-C
+!
+!=======================================================================
+!
+! CORRECTS THE NORMALS TO THE BOUNDARY NODES TO HAVE NORMALS TO
+! ADJACENT LIQUID SEGMENT IN THE CASE OF A TRANSITION FROM LIQUID TO SOLID
+!
       IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORNOR'
         CALL CORNOR(MESH%XNEBOR%R,MESH%YNEBOR%R,
@@ -583,37 +556,37 @@ C
      &              T1,T2,MESH)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORNOR'
       ENDIF
-C
-C=======================================================================
-C
-C FILLS IN MASKEL BY DEFAULT
-C (ALL THE ELEMENTS ARE TO BE CONSIDERED)
-C
+!
+!=======================================================================
+!
+! FILLS IN MASKEL BY DEFAULT
+! (ALL THE ELEMENTS ARE TO BE CONSIDERED)
+!
       IF(MSK) CALL OS ( 'X=C     ' , MASKEL , S , S , 1.D0 )
-C
-C     USER CHOOSES TO HIDE SOME OF THE ELEMENTS
-C     THIS SUBROUTINE IS ALSO CALLED AT EVERY TIME STEP
+!
+!     USER CHOOSES TO HIDE SOME OF THE ELEMENTS
+!     THIS SUBROUTINE IS ALSO CALLED AT EVERY TIME STEP
       IF(MSKUSE) THEN
         CALL MASKOB (MASKEL%R,MESH%X%R,MESH%Y%R,
      &               IKLE%I,NELEM,NELMAX,NPOIN,0.D0,0)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C  INTEGRAL OF TEST FUNCTIONS (ONCE FOR ALL AND WITHOUT MASKING)
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!  INTEGRAL OF TEST FUNCTIONS (ONCE FOR ALL AND WITHOUT MASKING)
+!-----------------------------------------------------------------------
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MASBAS2D'
       CALL MASBAS2D(VOLU2D,V2DPAR,UNSV2D,IELM1,MESH,.FALSE.,
      &              MASKEL,T2,T2)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MASBAS2D'
-C
-C=======================================================================
-C
-C CORRECTS THE BOTTOM WITH USER-SUBROUTINE CORFON
-C ZF IS TREATED AS LINEAR IN CORFON
-C IF(CORBOT) : SEE CALL FONSTR ABOVE, IN PARAMETER ESTIMATION,
-C ZF IS READ ONLY AT THE FIRST RUN
-C
+!
+!=======================================================================
+!
+! CORRECTS THE BOTTOM WITH USER-SUBROUTINE CORFON
+! ZF IS TREATED AS LINEAR IN CORFON
+! IF(CORBOT) : SEE CALL FONSTR ABOVE, IN PARAMETER ESTIMATION,
+! ZF IS READ ONLY AT THE FIRST RUN
+!
       IF(CORBOT) THEN
         IF(IELMH.NE.IELM1) CALL CHGDIS(ZF,IELMH,IELM1,MESH)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORFON'
@@ -621,19 +594,19 @@ C
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORFON'
         IF(IELMH.NE.IELM1) CALL CHGDIS(ZF,IELM1,IELMH,MESH)
       ENDIF
-C
-C=======================================================================
-C
-C IS POSSIBLE TO REDEFINE THE CHARACTERISTICS OF THE SOURCES
-C
-C STANDARD SUBROUTINE DOES NOT DO ANYTHING
-C
+!
+!=======================================================================
+!
+! IS POSSIBLE TO REDEFINE THE CHARACTERISTICS OF THE SOURCES
+!
+! STANDARD SUBROUTINE DOES NOT DO ANYTHING
+!
       CALL SOURCE_TELEMAC2D
-C
-C=======================================================================
-C
-C CAREFULLY ANALYSES TOPOGRAPHY
-C
+!
+!=======================================================================
+!
+! CAREFULLY ANALYSES TOPOGRAPHY
+!
       IF(OPTBAN.EQ.2) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TOPOGR'
         CALL TOPOGR(ZF%R,T1%R,ZFE%R,IKLE%I,MESH%IFABOR%I,
@@ -642,31 +615,31 @@ C
      &              NELEM,NPTFR,NPOIN,MXPTVS)
        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TOPOGR'
       ENDIF
-C
-C=======================================================================
-C
-C : 2                  INITIALISES
-C
-C=======================================================================
-C
-C K-EPSILON AND OTHER CONSTANTS (KARMAN IS USED EVEN WITHOUT K-E)
-C
+!
+!=======================================================================
+!
+! : 2                  INITIALISES
+!
+!=======================================================================
+!
+! K-EPSILON AND OTHER CONSTANTS (KARMAN IS USED EVEN WITHOUT K-E)
+!
       CALL COSAKE(KARMAN,CMU,C1,C2,SIGMAK,SIGMAE,
      &            ESTAR,SCHMIT,KMIN,KMAX,EMIN,EMAX)
-C
+!
       IF(ITURB.EQ.3) THEN
-C       WILL HAVE TO INITIALISE K AND EPSILON
+!       WILL HAVE TO INITIALISE K AND EPSILON
         AKEP = .TRUE.
       ELSE
-C       SHOULD NOT INITIALISE K AND EPSILON
+!       SHOULD NOT INITIALISE K AND EPSILON
         AKEP = .FALSE.
       ENDIF
-C
-C INITIALISES PHYSICAL PARAMETERS
-C
-C     CONDIN IS CALLED EVEN IN THE EVENT OF A CONTINUATION, SO THAT THE DEFINITION
-C     OF C0 DOES NOT CHANGE IN THE EVENT OF A CONTINUATION (CASE OF INCIDENT WAVES)
-C
+!
+! INITIALISES PHYSICAL PARAMETERS
+!
+!     CONDIN IS CALLED EVEN IN THE EVENT OF A CONTINUATION, SO THAT THE DEFINITION
+!     OF C0 DOES NOT CHANGE IN THE EVENT OF A CONTINUATION (CASE OF INCIDENT WAVES)
+!
       IF(ADJO) THEN
         CALL CONDIN_ADJ(ALIRE,T2D_FILES(T2DRES)%LU,TROUVE)
       ELSE
@@ -674,30 +647,30 @@ C
         CALL CONDIN
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIN'
       ENDIF
-C
-C     CORRECTS USER ERRORS IF H HAS BEEN USED
-C     HERE THE NUMBER OF POINTS IS FORCED TO NPOIN.
+!
+!     CORRECTS USER ERRORS IF H HAS BEEN USED
+!     HERE THE NUMBER OF POINTS IS FORCED TO NPOIN.
       CALL CLIP(H,0.D0,.TRUE.,1.D6,.FALSE.,-NPOIN)
-C
-C     STORES THE INITIAL CELERITY (FOR THE INCIDENT WAVE)
-C
+!
+!     STORES THE INITIAL CELERITY (FOR THE INCIDENT WAVE)
+!
       CALL CELERITE
-C
-C COMPUTES REFERENCE HEIGHT FOR BOUSSINESQ EQUATIONS
-C
+!
+! COMPUTES REFERENCE HEIGHT FOR BOUSSINESQ EQUATIONS
+!
       IF(EQUA(1:10).EQ.'BOUSSINESQ') THEN
         CALL HREF
       ENDIF
-C     ADDED ON 27/05/2002 (WAS NOT INITIALISED BEFORE)
+!     ADDED ON 27/05/2002 (WAS NOT INITIALISED BEFORE)
       AT0=0.D0
-C
+!
       IF(.NOT.DEBU.AND..NOT.ADJO) THEN
-C
-C       BEWARE : BIEF_SUITE WILL TAKE THE BOTTOM IN THE FILE
-C                IF IT IS THERE.
-C
-C       FRICTION COEFFICIENT ALSO READ IN CASE IT HAS BEEN DONE
-C       BY THE USER INTERFACE (JMH 27/11/2006)
+!
+!       BEWARE : BIEF_SUITE WILL TAKE THE BOTTOM IN THE FILE
+!                IF IT IS THERE.
+!
+!       FRICTION COEFFICIENT ALSO READ IN CASE IT HAS BEEN DONE
+!       BY THE USER INTERFACE (JMH 27/11/2006)
         ALIRE(19)=1
         CALL BIEF_SUITE(VARSOR,VARCL,IBID,
      &                  T2D_FILES(T2DPRE)%LU,
@@ -713,36 +686,36 @@ C       BY THE USER INTERFACE (JMH 27/11/2006)
         AT0=AT
         CALL RESCUE(U%R,V%R,H%R,FV%R,ZF%R,T,TRAC0,NTRAC,
      &              ITURB,NPOIN,AKEP,TROUVE)
-C       CASE WHERE POSITIVE DEPTHS ARE NECESSARY
+!       CASE WHERE POSITIVE DEPTHS ARE NECESSARY
         IF(OPTBAN.EQ.1.AND.OPT_HNEG.EQ.2) THEN
           CALL CLIP(H,0.D0,.TRUE.,1.D6,.FALSE.,-NPOIN)
         ENDIF
       ENDIF
-C
+!
       TMAX=DUREE+AT0
-C
-C-----------------------------------------------------------------------
-C
-C  INITIALISES PARAMETERS SPECIFIC TO FINITE VOLUMES
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!  INITIALISES PARAMETERS SPECIFIC TO FINITE VOLUMES
+!
+!-----------------------------------------------------------------------
+!
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
-C
+!
         CALL OS( 'X=YZ    ' , QU , U , H , C )
         CALL OS( 'X=YZ    ' , QV , V , H , C )
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       LT=0
       LTT=0
-C
-C=======================================================================
-C EXTENDS THE VARIABLES WHICH ARE NOT LINEAR P1
-C=======================================================================
-C
+!
+!=======================================================================
+! EXTENDS THE VARIABLES WHICH ARE NOT LINEAR P1
+!=======================================================================
+!
       IF(NTRAC.GT.0.AND.IELMT.NE.IELM1) THEN
         DO ITRAC=1,NTRAC
           CALL CHGDIS( T%ADR(ITRAC)%P ,IELM1 , IELMT , MESH )
@@ -756,28 +729,28 @@ C
         CALL CHGDIS( U , IELM1 , IELMU , MESH )
         CALL CHGDIS( V , IELM1 , IELMU , MESH )
       ENDIF
-C
-C=======================================================================
-C INITIAL CONDITIONS NOT IN CONTINUATION FILE NOR IN CONDIN
-C=======================================================================
-C
-C  CLIPPING (CONDITIONAL) OF H
-C
+!
+!=======================================================================
+! INITIAL CONDITIONS NOT IN CONTINUATION FILE NOR IN CONDIN
+!=======================================================================
+!
+!  CLIPPING (CONDITIONAL) OF H
+!
       IF(CLIPH) CALL CLIP( H , HMIN , .TRUE. , 1.D6 , .FALSE. , 0 )
-C
-C-----------------------------------------------------------------------
-C INITIAL WEATHER CONDITIONS
-C
+!
+!-----------------------------------------------------------------------
+! INITIAL WEATHER CONDITIONS
+!
       IF (VENT.OR.ATMOS) THEN
         CALL METEO(PATMOS%R,WINDX%R,WINDY%R,
      &             FUAIR,FVAIR,MESH%X%R,MESH%Y%R,AT,LT,NPOIN,VENT,ATMOS,
      &             H%R,T1%R,GRAV,ROEAU,NORD,PRIVE)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C READS THE GEOMETRY OF SINGULARITIES
-C
+!
+!-----------------------------------------------------------------------
+!
+! READS THE GEOMETRY OF SINGULARITIES
+!
       IF(NWEIRS.GT.0) THEN
        CALL LECSNG(NWEIRS,NWRMAX,NPSING,NUMDIG%I,
      &             ZDIG%R,PHIDIG%R,IOPTAN,NPSMAX,NPOIN,
@@ -788,16 +761,16 @@ C
      &             ALTSCE,CSSCE,CESCE,DELSCE,
      &             ANGSCE,LSCE,MAXSCE,T2D_FILES(T2DFO1)%LU)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C INITIAL CONDITIONS FOR K-EPSILON MODEL AND DIFFUSION
-C
-C   K-EPSILON
-C
-C     IF AKEP = .FALSE. K AND EPSILON COME FROM SUITE OR CONDIN
+!
+!-----------------------------------------------------------------------
+!
+! INITIAL CONDITIONS FOR K-EPSILON MODEL AND DIFFUSION
+!
+!   K-EPSILON
+!
+!     IF AKEP = .FALSE. K AND EPSILON COME FROM SUITE OR CONDIN
       IF(AKEP) THEN
-C
+!
         CALL FRICTION_CHOICE(1, KARMAN)
         IF(FRICTB) THEN
            KFROT_TP = 0
@@ -808,27 +781,27 @@ C
 !
         CALL AKEPIN(AK%R,EP%R,U%R,V%R,H%R,NPOIN,KFROT_TP,CMU,C2,
      &              ESTAR,SCHMIT,KMIN,EMIN,CF%R)
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C     PREPARES BOUNDARY CONDITIONS FOR WEIRS.
-C
+!
+!-----------------------------------------------------------------------
+!
+!     PREPARES BOUNDARY CONDITIONS FOR WEIRS.
+!
       IF(NWEIRS.GT.0) THEN
-C
+!
         CALL CLSING(NWEIRS,NPSING,NPSMAX,NUMDIG%I,
      &              MESH%X%R,MESH%Y%R,ZF%R,CHESTR%R,NKFROT%I,
      &              KARMAN,ZDIG%R,PHIDIG%R,MESH%NBOR%I,
      &              H%R,T,NTRAC,IOPTAN,T1%R,UBOR%R,VBOR%R,TBOR,
      &              LIHBOR%I,LIUBOR%I,LIVBOR%I,LITBOR,GRAV)
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C     TYPES OF CONDITIONS FOR TRACER:
-C
+!
+!-----------------------------------------------------------------------
+!
+!     TYPES OF CONDITIONS FOR TRACER:
+!
       IF(NTRAC.GT.0) THEN
         IF(NWEIRS.GT.0) CALL CLTRAC(NWEIRS,NPSING,NPSMAX,NUMDIG%I,
      &                 ZF%R,ZDIG%R,H%R,T,MESH%NBOR%I,LITBOR,TBOR,NTRAC)
@@ -842,9 +815,9 @@ C
      &              TN%ADR(ITRAC)%P,TBOR%ADR(ITRAC)%P,MESH)
         ENDDO
       ENDIF
-C
-C     TYPES OF CONDITIONS FOR PROPAGATION:
-C
+!
+!     TYPES OF CONDITIONS FOR PROPAGATION:
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPIN'
       CALL PROPIN_TELEMAC2D
      &            (LIMPRO%I,LIMPRO%DIM1,MASK,LIUBOR%I,LIVBOR%I,
@@ -856,36 +829,36 @@ C
      &             NFRLIQ,THOMFR,DEBLIQ,FINLIQ,FRTYPE,
      &             MESH%XNEBOR%R,MESH%YNEBOR%R,ENTET,MESH)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPIN'
-C
-C     PROPIN WILL BE CALLED IN THE TIME LOOP AFTER EACH CALL
-C     TO BORD
-C
-C-----------------------------------------------------------------------
-C
-C     FRICTION COEFFICIENT:
-C
+!
+!     PROPIN WILL BE CALLED IN THE TIME LOOP AFTER EACH CALL
+!     TO BORD
+!
+!-----------------------------------------------------------------------
+!
+!     FRICTION COEFFICIENT:
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FRICTION_CHOICE'
       CALL FRICTION_CHOICE(1,KARMAN)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FRICTION_CHOICE'
-C
-C  DIFFUSION OF SPEED (CALLED HERE TO INITIALISE VISC IN CASE
-C                           IT IS ONE OF THE OUTPUT VARIABLES)
+!
+!  DIFFUSION OF SPEED (CALLED HERE TO INITIALISE VISC IN CASE
+!                           IT IS ONE OF THE OUTPUT VARIABLES)
       IF(ITURB.EQ.1) THEN
-C
+!
         CALL OS('X=C     ', X=VISC , C=PROPNU )
-C
+!
       ELSEIF(ITURB.EQ.2) THEN
-C
+!
         CALL DISPER( VISC , U%R , V%R , H%R , CF%R , ELDER , PROPNU )
-C
+!
       ELSEIF(ITURB.EQ.3) THEN
-C
+!
         CALL VISTUR(VISC,AK,EP,NPOIN,CMU,PROPNU)
-C
+!
       ELSEIF(ITURB.EQ.4) THEN
-C
+!
         CALL SMAGOR(VISC,CF,U,V,MESH,T1,T2,T3,T4,MSK,MASKEL,PROPNU)
-C
+!
       ELSE
         IF(LISTIN) THEN
           IF(LNG.EQ.1) WRITE(LU,15) ITURB
@@ -896,54 +869,54 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C  DROGUE(S)
-C
+!
+!-----------------------------------------------------------------------
+!  DROGUE(S)
+!
       IF(NFLOT.NE.0) CALL FLOT(XFLOT%R,YFLOT%R,NFLOT,NITFLO,
      &                         FLOPRD,MESH%X%R,MESH%Y%R,
      &                         NPOIN,DEBFLO%I,FINFLO%I,NIT)
-C
-C-----------------------------------------------------------------------
-C  LAGRANGIAN DRIFT(S)
-C
+!
+!-----------------------------------------------------------------------
+!  LAGRANGIAN DRIFT(S)
+!
       IF(NLAG.NE.0) CALL LAGRAN(NLAG,DEBLAG%I,FINLAG%I)
-C
-C-----------------------------------------------------------------------
-C  LOCATION OF THE OUTLETS
-C
+!
+!-----------------------------------------------------------------------
+!  LOCATION OF THE OUTLETS
+!
       IF(NREJET.NE.0.OR.NREJTR.NE.0) THEN
         CALL PROXIM(ISCE,XSCE,YSCE,
      &              MESH%X%R,MESH%Y%R,
      &              NREJET,NPOIN,
      &              MESH%IKLE%I,NELEM,NELMAX)
       ENDIF
-C
-C=======================================================================
-C END OF INITIAL CONDITIONS
-C=======================================================================
-C
-C INITIALISES ADVECTION
-C FTILD COMPRISES UTILD,VTILD,HTILD,(TTILD),(AKTILD AND EPTILD)
-C
+!
+!=======================================================================
+! END OF INITIAL CONDITIONS
+!=======================================================================
+!
+! INITIALISES ADVECTION
+! FTILD COMPRISES UTILD,VTILD,HTILD,(TTILD),(AKTILD AND EPTILD)
+!
       CALL OS( 'X=0     ' , X=FTILD )
-C
-C***********************************************************************
-C
-C LISTING AND OUTPUT FOR THE INITIAL CONDITIONS.
-C
+!
+!***********************************************************************
+!
+! LISTING AND OUTPUT FOR THE INITIAL CONDITIONS.
+!
       IF(LISTIN) CALL ENTETE(1,AT,LT)
-C
-C     OUTINI IS KEY-WORD "OUTPUT OF INITIAL CONDITONS"
-C     IT HAS PRIORITY OVER FIRST TIME-STEP FOR GRAPHIC PRINTOUTS.
-C
-C     NOTE THAT OUTPUTS ARE DONE WITHIN ESTEL3D IN COUPLED MODE)
-C
+!
+!     OUTINI IS KEY-WORD "OUTPUT OF INITIAL CONDITONS"
+!     IT HAS PRIORITY OVER FIRST TIME-STEP FOR GRAPHIC PRINTOUTS.
+!
+!     NOTE THAT OUTPUTS ARE DONE WITHIN ESTEL3D IN COUPLED MODE)
+!
       IF(OUTINI .AND. (.NOT.ADJO)
      &          .AND. (CODE(1:7).NE.'ESTEL3D') ) THEN
-C
-C CONTROL SECTIONS (0. IN PLACE OF DT)
-C
+!
+! CONTROL SECTIONS (0. IN PLACE OF DT)
+!
         IF(NCP.NE.0.AND.(ENTET.OR.CUMFLO)) THEN
           CALL FLUSEC_TELEMAC2D(U,V,H,MESH%IKLE%I,MESH%XEL%R,MESH%YEL%R,
      &                          MESH%NELMAX,MESH%NELEM,
@@ -960,21 +933,21 @@ C
      &                  HIST,0,NPOIN,T2D_FILES(T2DRES)%LU,'STD',AT,LT,
      &                  LISPRD,LEOPRD,
      &                  SORLEO,SORIMP,MAXVAR,TEXTE,0,     0)
-C                                                  PTINIG,PTINIL
+!                                                  PTINIG,PTINIL
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DESIMP'
-C
+!
       ENDIF
-C
-C=======================================================================
-C
-C     COUPLING WITH DELWAQ
-C
+!
+!=======================================================================
+!
+!     COUPLING WITH DELWAQ
+!
       IF(INCLUS(COUPLING,'DELWAQ')) THEN
-C
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TEL4DEL'
-C
-C     T3 : MODIFIED DEPTH TO TAKE INTO ACCOUNT MASS-LUMPING
-C          IN THE CONTINUITY EQUATION
+!
+!     T3 : MODIFIED DEPTH TO TAKE INTO ACCOUNT MASS-LUMPING
+!          IN THE CONTINUITY EQUATION
       IF(ABS(1.D0-AGGLOC).GT.1.D-8) THEN
         CALL VECTOR(T3 ,'=','MASVEC          ',IELMH,
      &              1.D0-AGGLOC,H ,S,S,S,S,S,MESH,MSK,MASKEL)
@@ -1001,25 +974,25 @@ C          IN THE CONTINUITY EQUATION
      & VELO_DEL,DIFF_DEL,MARDAT,MARTIM,FLODEL%R,INIFLOW,MESH%W%R,
      & .FALSE.,FLULIM%R,V2DPAR%R,MESH%KNOLG%I,MESH,MESH)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TEL4DEL'
-C
+!
       ENDIF
-C
-C=======================================================================
-C
-C     OPTIONAL USER OUTPUT (COURTESY JACEK JANKOWSKI, BAW)
+!
+!=======================================================================
+!
+!     OPTIONAL USER OUTPUT (COURTESY JACEK JANKOWSKI, BAW)
       CALL UTIMP_TELEMAC2D(LT,AT,PTINIG,LEOPRD,PTINIL,LISPRD)
-C
-C=======================================================================
-C
-C  INITIALISES THE ADVECTION AND PROPAGATION FIELDS
-C
+!
+!=======================================================================
+!
+!  INITIALISES THE ADVECTION AND PROPAGATION FIELDS
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE HPROPA'
       CALL HPROPA(HPROP,H,H,PROLIN,HAULIN,TETAC,NSOUSI)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE HPROPA APPEL DE CHPCON'
       CALL CHPCON(UCONV,VCONV,U,V,U,V,TETAU)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CHPCON'
       IF(SOLSYS.EQ.2) THEN
-C       INITIALISES UDEL AND VDEL ONLY AT FIRST CALL TO SISYPHE
+!       INITIALISES UDEL AND VDEL ONLY AT FIRST CALL TO SISYPHE
         CALL OS('X=Y     ',X=UDEL,Y=UCONV)
         CALL OS('X=Y     ',X=VDEL,Y=VCONV)
         USIS=>UDEL
@@ -1028,25 +1001,25 @@ C       INITIALISES UDEL AND VDEL ONLY AT FIRST CALL TO SISYPHE
         USIS=>UCONV
         VSIS=>VCONV
       ENDIF
-C
-C=======================================================================
-C
-C     TETAHC: SEMI-IMPLICITATION OF H IN THE CONTINUITY EQUATION
-C             IS ALSO USED FOR FLUXES IN THE MASS BALANCE
+!
+!=======================================================================
+!
+!     TETAHC: SEMI-IMPLICITATION OF H IN THE CONTINUITY EQUATION
+!             IS ALSO USED FOR FLUXES IN THE MASS BALANCE
       TETAHC = TETAC
       IF(ICONVF(2).EQ.5) TETAHC = 0.D0
-C
-C     FIRST COMPUTATION OF POROSITY
-C
+!
+!     FIRST COMPUTATION OF POROSITY
+!
       IF(OPTBAN.EQ.3) THEN
         CALL POROS(TE5,ZF,H,MESH)
         IF(MSK) CALL OS('X=XY    ',X=TE5,Y=MASKEL)
       ENDIF
-C
-C FIRST COMPUTATIONS FOR BALANCE
-C
+!
+! FIRST COMPUTATIONS FOR BALANCE
+!
       IF(BILMAS) THEN
-C
+!
         MASSES = 0.D0
         FLUSOR = 0.D0
         FLUENT = 0.D0
@@ -1056,9 +1029,9 @@ C
      &             MESH%NPTFR,FLBOR,
      &             FLUX_BOUNDARIES,NUMLIQ%I,NFRLIQ)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BILAN'
-C
+!
         IF(NTRAC.GT.0) THEN
-C
+!
           IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BILANT'
             DO ITRAC=1,NTRAC
@@ -1072,7 +1045,7 @@ C
      &                  FLBORTRA)
             ENDDO
             IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BILANT'
-C
+!
           ELSE
             FLUTSOR = 0.D0
             FLUTENT = 0.D0
@@ -1086,13 +1059,13 @@ C
             ENDDO
             IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BILANT1'
           ENDIF
-C
+!
         ENDIF
-C
+!
       ENDIF
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       IF(NIT.EQ.0) THEN
         IF(LISTIN) THEN
           IF(LNG.EQ.1) WRITE(LU,9)
@@ -1102,36 +1075,36 @@ C
 10     FORMAT(1X,'STOP IN TELEMAC, NUMBER OF TIME STEP ASKED EQUALS 0')
        STOP
       ENDIF
-C
-C=======================================================================
-C
-C     COUPLING 
-C
+!
+!=======================================================================
+!
+!     COUPLING
+!
       IF(COUPLING.NE.' ') THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'TELEMAC2D COUPLE AVEC : ',COUPLING
         IF(LNG.EQ.2) WRITE(LU,*) 'TELEMAC2D COUPLED WITH: ',COUPLING
       ENDIF
-C
-C     INITIALISES CONSTANT FLOW DISCHARGE (SEE SISYPHE)
-C     ------------------------------------------------------------------
-C
+!
+!     INITIALISES CONSTANT FLOW DISCHARGE (SEE SISYPHE)
+!     ------------------------------------------------------------------
+!
       SISYPHE_CFD   = .FALSE.
       CONSTFLOW_SIS = .FALSE.
       NSIS_CFD      = 1
-C
+!
       IF(INCLUS(COUPLING,'SISYPHE')) THEN
-C
+!
          IF(INCLUS(COUPLING,'FILE-SISYPHE')) THEN
-C
+!
            WRITE (LU,*) 'TELEMAC-2D: FILE-COUPLING HAS NOW BEEN'
            WRITE (LU,*) '            SUPPRESSED'
            WRITE (LU,*) '            USE INTER-SISYPHE OR SISYPHE'
            WRITE (LU,*) '            INSTEAD OF FILE-SISYPHE'
            CALL PLANTE(1)
            STOP
-C
+!
          ELSEIF(INCLUS(COUPLING,'SISYPHE')) THEN
-C
+!
            IF(LNG.EQ.1) THEN
              WRITE (LU,*) 'TELEMAC-2D : COUPLAGE INTERNE AVEC SISYPHE'
            ENDIF
@@ -1143,24 +1116,24 @@ C
            CALL SISYPHE(0,LT,LEOPRD,LISPRD,NIT,U,V,H,H,ZF,CF,CF,CHESTR,
      &                  CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,CODE1,PERCOU,
      &                  U,V,AT,VISC,DT,CHARR,SUSP,
-C                                      CHARR,SUSP : RETURNED BY SISYPHE
-C                                                   BUT THEN GIVEN TO IT
+!                                      CHARR,SUSP : RETURNED BY SISYPHE
+!                                                   BUT THEN GIVEN TO IT
      &                  FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
            IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SISYPHE'
            CALL CONFIG_CODE(1)
-C          AVOIDS TWO OUTPUTS WHEN SISYPHE IS CALLED TWICE
+!          AVOIDS TWO OUTPUTS WHEN SISYPHE IS CALLED TWICE
            IF(SUSP.AND.CHARR.AND.PERCOU.NE.1) THEN
              LEOPRD_CHARR=NIT+PERCOU
            ELSE
              LEOPRD_CHARR=LEOPRD
            ENDIF
-C
+!
          ENDIF
-C
+!
        ENDIF
-C
+!
       IF(INCLUS(COUPLING,'TOMAWAC')) THEN
-C
+!
         IF(LNG.EQ.1) THEN
           WRITE (LU,*) 'TELEMAC-2D : COUPLAGE INTERNE AVEC TOMAWAC'
         ENDIF
@@ -1172,67 +1145,67 @@ C
 !       CALL WAC(0,U,V,H,FXWAVE,FYWAVE,WINDX,WINDY,CODE1,AT,DT,NIT,
 !                PERCOU_WAC)
         CALL WAC(0,U,V,H,FXWAVE,FYWAVE,T1   ,T2   ,CODE1,AT,DT,NIT,
-     *           PERCOU_WAC)
+     &           PERCOU_WAC)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TOMAWAC'
         CALL CONFIG_CODE(1)
-C
+!
        ENDIF
-C
-C=======================================================================
-C INITIALISES INFILTRATION STRUCTURES FOR COUPLING WITH ESTEL3D
-C
+!
+!=======================================================================
+! INITIALISES INFILTRATION STRUCTURES FOR COUPLING WITH ESTEL3D
+!
       CALL INFILTRATION_INIT(NPOIN,(CODE(1:7).EQ.'ESTEL3D'))
-C
-C     SAVES THE DEPTH CALCULATED BY TELEMAC2D FOR ESTEL3D
-C
+!
+!     SAVES THE DEPTH CALCULATED BY TELEMAC2D FOR ESTEL3D
+!
       IF(CODE(1:7).EQ.'ESTEL3D') CALL DEPTH_FILL(H%R)
-C
-C=======================================================================
-C
-C : 3                    /* TIME LOOP */
-C
-C=======================================================================
-C
-C     STORES DT FOR CASE WITH VARIABLE TIME-STEP
-C
+!
+!=======================================================================
+!
+! : 3                    /* TIME LOOP */
+!
+!=======================================================================
+!
+!     STORES DT FOR CASE WITH VARIABLE TIME-STEP
+!
       DTCAS = DT
-C
-C     CALLED BY ANOTHER PROGRAM, ONLY INITIALISATION REQUIRED
+!
+!     CALLED BY ANOTHER PROGRAM, ONLY INITIALISATION REQUIRED
       IF(PASS.EQ.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*) 'FIN D''INITIALISATION DE TELEMAC2D'
         IF(LNG.EQ.2) WRITE(LU,*) 'TELEMAC2D INITIALISED'
         RETURN
       ENDIF
-C
+!
 700   CONTINUE
-C
+!
       IF(PASS.EQ.1) THEN
         IF(CODE(1:7).EQ.'ESTEL3D') THEN
           AT=ATDEP
           NIT=NITER
-C --- JP RENAUD START ---
-C         USE THE TIME STEP SPECIFIED BY ESTEL-3D
+! --- JP RENAUD START ---
+!         USE THE TIME STEP SPECIFIED BY ESTEL-3D
           IF(PRESENT(DTDEP)) THEN
             DT = DTDEP
             DTCAS = DTDEP
           ! TO DO: CHECK WHAT HAPPENS WITH ADAPTIVE TIME STEP
           ENDIF
-C --- JP RENAUD END ---
+! --- JP RENAUD END ---
         ELSE
           CALL PLANTE(1)
           STOP 'UNKNOWN CALLING PROGRAM'
         ENDIF
       ENDIF
-C
+!
       LT = LT + 1
-C
+!
       IF(DTVARI.AND.EQUA(1:15).NE.'SAINT-VENANT VF') THEN
-C       COURANT NUMBER FOR PSI SCHEME IN P1
+!       COURANT NUMBER FOR PSI SCHEME IN P1
         CALL CFLPSI(T1,U,V,DT,IELM,MESH,MSK,MASKEL)
         CALL MAXI(CFLMAX,IMAX,T1%R,NPOIN)
-C       LIMITS VARIATIONS IN THE RANGE (1/2, 2)
+!       LIMITS VARIATIONS IN THE RANGE (1/2, 2)
         DT = DT * MAX(MIN(CFLWTD/MAX(CFLMAX,1.D-6),2.D0),0.5D0)
-C       LIMITS DT TO THAT OF THE STEERING FILE
+!       LIMITS DT TO THAT OF THE STEERING FILE
         DT=MIN(DT,DTCAS)
         IF(NCSIZE.GT.1) DT=P_DMIN(DT)
         IF(ENTET) THEN
@@ -1244,31 +1217,31 @@ C       LIMITS DT TO THAT OF THE STEERING FILE
      &              '    TIME-STEP                 :',G16.7)
         ENDIF
       ENDIF
-C
-C=======================================================================
-C
-C     COUPLING WITH SISYPHE
-C
+!
+!=======================================================================
+!
+!     COUPLING WITH SISYPHE
+!
       IF(INCLUS(COUPLING,'SISYPHE')) THEN
-C
+!
         CALL CONFIG_CODE(2)
-C       HN NOT DEFINED HERE AT FIRST ITERATION
+!       HN NOT DEFINED HERE AT FIRST ITERATION
         IF(LT.EQ.1) CALL OS('X=Y     ',X=HN,Y=H)
-C
+!
         SUSP1=SUSP.AND.PERCOU.EQ.1
         IF(SUSP1.OR.(CHARR.AND.(PERCOU*((LT-1)/PERCOU).EQ.LT-1))) THEN
-C
+!
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE, CHARRIAGE'
           CALL SISYPHE(1,LT,LEOPRD_CHARR,LISPRD,NIT,U,V,H,HN,ZF,
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
      &                 CODE1,PERCOU,U,V,AT,VISC,DT*PERCOU,CHARR,SUSP1,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL SISYPHE, CHARRIAGE'
-C
+!
         ENDIF
-C
+!
         IF(SUSP.AND.PERCOU.NE.1) THEN
-C
+!
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE, SUSPENSION'
           CALL SISYPHE(1,LT,LEOPRD,LISPRD,NIT,U,V,H,HN,ZF,
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
@@ -1276,166 +1249,164 @@ C
      &                 DT,NON,SUSP,
      &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL DE SISYPHE, SUSPENSION'
-C
+!
         ENDIF
-C
+!
         CALL CONFIG_CODE(1)
-C
+!
       ENDIF
-C
-C=======================================================================
-C
-C     COUPLING WITH TOMAWAC
-C
+!
+!=======================================================================
+!
+!     COUPLING WITH TOMAWAC
+!
       IF(INCLUS(COUPLING,'TOMAWAC').AND.
-     *   PERCOU_WAC*((LT-1)/PERCOU_WAC).EQ.LT-1) THEN
-C
+     &   PERCOU_WAC*((LT-1)/PERCOU_WAC).EQ.LT-1) THEN
+!
         CALL CONFIG_CODE(3)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TOMAWAC'
 !       CALL WAC(1,U,V,H,FXWAVE,FYWAVE,WINDX,WINDY,CODE1,AT,
 !    *           DT*PERCOU_WAC,NIT,PERCOU_WAC)
         CALL WAC(1,U,V,H,FXWAVE,FYWAVE,T1   ,T2   ,CODE1,AT,
-     *           DT*PERCOU_WAC,NIT,PERCOU_WAC)
+     &           DT*PERCOU_WAC,NIT,PERCOU_WAC)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TOMAWAC'
         CALL CONFIG_CODE(1)
-C
+!
        ENDIF
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       IF(ADJO) THEN
         AT = AT - DT
       ELSE
-C       DT IS NOT YET KNOWN IN FINITE VOLUMES
+!       DT IS NOT YET KNOWN IN FINITE VOLUMES
         IF(EQUA(1:15).NE.'SAINT-VENANT VF') AT = AT + DT
       ENDIF
-C
+!
       IF(DTVARI) THEN
         IF(AT.GT.DUREE+AT0) THEN
-C         LAST TIME STEP
+!         LAST TIME STEP
           NIT = LT
         ELSE
-C         DUMMY VALUE GREATER THAN LT
+!         DUMMY VALUE GREATER THAN LT
           NIT = LT + 10
         ENDIF
       ENDIF
-C
+!
       IF((LISPRD*(LT/LISPRD).EQ.LT.AND.LT.GE.PTINIL).OR.LT.EQ.NIT) THEN
         ENTET=LISTIN
       ELSE
         ENTET=.FALSE.
       ENDIF
-
-C --- JP RENAUD START ---
-C CONSTRAINS TELEMAC-2D OUTPUT IN THE LISTING
+! --- JP RENAUD START ---
+! CONSTRAINS TELEMAC-2D OUTPUT IN THE LISTING
       IF (PRESENT(DOPRINT)) ENTET = ENTET .AND. DOPRINT
-C --- JP RENAUD END ---
-
+! --- JP RENAUD END ---
       IF(ENTET) CALL ENTETE(2,AT,LT)
-C
-C=======================================================================
-C
-C BACKUP OF UN, VN, HN, TN, AKN AND EPN (THEY ARE IN FN)
-C
-C --- JP RENAUD START ---
-C THIS IS NOT DONE WHEN ITERATING FOR THE COUPLING WITH ESTEL-3D
+!
+!=======================================================================
+!
+! BACKUP OF UN, VN, HN, TN, AKN AND EPN (THEY ARE IN FN)
+!
+! --- JP RENAUD START ---
+! THIS IS NOT DONE WHEN ITERATING FOR THE COUPLING WITH ESTEL-3D
        IF(CODE(1:7).EQ.'ESTEL3D'.AND.PRESENT(NEWTIME)) THEN
         IF(NEWTIME) CALL OS('X=Y     ',X=FN,Y=F)
        ELSE
          CALL OS('X=Y     ',X=FN,Y=F)
        ENDIF
-C      CALL OS( 'X=Y     ' , FN , F , F , C )
-C --- JP RENAUD END ---
-C
-C=======================================================================
-C
-C NEW COUPLING WITH SISYPHE FOR CONSTANT FLOW DISCHARGE
-C
+!      CALL OS( 'X=Y     ' , FN , F , F , C )
+! --- JP RENAUD END ---
+!
+!=======================================================================
+!
+! NEW COUPLING WITH SISYPHE FOR CONSTANT FLOW DISCHARGE
+!
       IF(SISYPHE_CFD.AND.CONSTFLOW_SIS) GOTO 999
-C
+!
       DO 888 ISIS_CFD=1,NSIS_CFD
-C
-C=======================================================================
-C
-C  MASKING OF THE WETTING/DRYING ELEMENTS
-C
+!
+!=======================================================================
+!
+!  MASKING OF THE WETTING/DRYING ELEMENTS
+!
       IF(MSK) CALL OS( 'X=C     ' , MASKEL , S , S , 1.D0 )
       IF (OPTBAN.EQ.2) THEN
         CALL MASKBD(MASKEL%R,ZFE%R,ZF%R,H%R,
      &              HMIN,MESH%IKLE%I,MESH%IFABOR%I,IT1%I,NELEM,NPOIN)
       ENDIF
-C
-C  MASKING SPECIFIED BY USER
-C
+!
+!  MASKING SPECIFIED BY USER
+!
       IF(MSKUSE) THEN
       CALL MASKOB (MASKEL%R,MESH%X%R,MESH%Y%R,
      &             MESH%IKLE%I,NELEM,NELMAX,NPOIN,AT,LT)
       ENDIF
-C
-C CREATES THE MASK OF THE POINTS FROM THE MASK OF THE ELEMENTS
-C AND CHANGES OF IFAMAS (IFABOR WITH MASKING)
-C
+!
+! CREATES THE MASK OF THE POINTS FROM THE MASK OF THE ELEMENTS
+! AND CHANGES OF IFAMAS (IFABOR WITH MASKING)
+!
       IF(MSK) THEN
         CALL MASKTO(MASKEL%R,MASKPT,IFAMAS%I,MESH%IKLE%I,
      &              MESH%IFABOR%I,MESH%ELTSEG%I,MESH%NSEG,
      &              NELEM,NPOIN,IELMT,MESH)
         IF(IELMX.NE.IELM1) CALL CHGDIS(MASKPT,IELM1,IELMX,MESH)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C  COMPUTATION OF THE INTEGRAL OF THE BASES
-C-----------------------------------------------------------------------
-C
-C     IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MASBAS2D'
-C     IF(MSK) THEN
-C       CALL MASBAS2D(VOLU2D,V2DPAR,UNSV2D,IELM1,MESH,MSK,MASKEL,T2,T2)
-C     ENDIF
-C     IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MASBAS2D'
-C
-C-----------------------------------------------------------------------
-C
-C UPDATES POROSITY : NEW VALUE IN TE5
-C                    OLD - NEW IN TE4
-C
+!
+!-----------------------------------------------------------------------
+!  COMPUTATION OF THE INTEGRAL OF THE BASES
+!-----------------------------------------------------------------------
+!
+!     IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MASBAS2D'
+!     IF(MSK) THEN
+!       CALL MASBAS2D(VOLU2D,V2DPAR,UNSV2D,IELM1,MESH,MSK,MASKEL,T2,T2)
+!     ENDIF
+!     IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MASBAS2D'
+!
+!-----------------------------------------------------------------------
+!
+! UPDATES POROSITY : NEW VALUE IN TE5
+!                    OLD - NEW IN TE4
+!
       IF(OPTBAN.EQ.3) THEN
-C
+!
          CALL OS('X=Y     ',TE4,TE5,TE5,0.D0)
          CALL POROS(TE5,ZF,HN,MESH)
          IF(MSK) CALL OS('X=XY    ',X=TE5,Y=MASKEL)
-C        TEST OF UNDER-RELAXATION
+!        TEST OF UNDER-RELAXATION
          RELAX = 0.05D0
          CALL OS('X=CX    ',X=TE5,C=RELAX)
          CALL OS('X=X+CY  ',X=TE5,Y=TE4,C=1.D0-RELAX)
-C        TE4 = OLD POROS - NEW POROS
+!        TE4 = OLD POROS - NEW POROS
          CALL OS('X=X-Y   ',X=TE4,Y=TE5)
-C
+!
       ENDIF
-C
-C=======================================================================
-C
-C NEW ADVECTION AND PROPAGATION FIELDS
-C NOTE THAT U = UN, V = VN AND H = HN AT THIS STAGE
-C
+!
+!=======================================================================
+!
+! NEW ADVECTION AND PROPAGATION FIELDS
+! NOTE THAT U = UN, V = VN AND H = HN AT THIS STAGE
+!
       IF(CONV) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CHPCON'
         CALL CHPCON(UCONV,VCONV,U,V,UN,VN,TETAU)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CHPCON'
       ENDIF
-C
-C     COMPUTATION OF THE NEW PROPAGATION TERM
-C
+!
+!     COMPUTATION OF THE NEW PROPAGATION TERM
+!
       IF(PROPA) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE HPROPA'
         CALL HPROPA(HPROP ,HN,H,PROLIN,HAULIN,TETAHC,NSOUSI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE HPROPA'
       ENDIF
-C
-C=======================================================================
-C
-C PREPARES BOUNDARY CONDITIONS FOR WEIRS.
-C
+!
+!=======================================================================
+!
+! PREPARES BOUNDARY CONDITIONS FOR WEIRS.
+!
       IF(NWEIRS.GT.0) THEN
-C
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CLSING'
         CALL CLSING(NWEIRS,NPSING,NPSMAX,NUMDIG%I,
      &              MESH%X%R,MESH%Y%R,ZF%R,CHESTR%R,NKFROT%I,
@@ -1443,21 +1414,21 @@ C
      &              H%R,T,NTRAC,IOPTAN,T1%R,UBOR%R,VBOR%R,TBOR,
      &              LIHBOR%I,LIUBOR%I,LIVBOR%I,LITBOR,GRAV)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CLSING'
-C
+!
       ENDIF
-C
-C IT IS ASSUMED THAT THE TYPES OF BOUNDARY CONDITIONS DO NOT CHANGE
-C DURING THE SUB-ITERATIONS. IF NOT IT IS NECESSARY TO MOVE THE CALLS
-C TO KEPSIN, DIFFIN, PROPIN
-C
-C TYPES OF CONDITIONS FOR THE K-EPSILON MODEL
-C
+!
+! IT IS ASSUMED THAT THE TYPES OF BOUNDARY CONDITIONS DO NOT CHANGE
+! DURING THE SUB-ITERATIONS. IF NOT IT IS NECESSARY TO MOVE THE CALLS
+! TO KEPSIN, DIFFIN, PROPIN
+!
+! TYPES OF CONDITIONS FOR THE K-EPSILON MODEL
+!
       IF(ITURB.EQ.3) CALL KEPSIN(LIMKEP%I,LIUBOR%I,NPTFR,
      &                           KENT,KENTU,KSORT,KADH,KLOG,
      &                           KINC,KNEU,KDIR)
-C
-C TYPES OF CONDITIONS FOR THE DIFFUSION OF THE TRACER:
-C
+!
+! TYPES OF CONDITIONS FOR THE DIFFUSION OF THE TRACER:
+!
       IF(NTRAC.GT.0) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DIFFIN'
         DO ITRAC=1,NTRAC
@@ -1471,11 +1442,11 @@ C
         ENDDO
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DIFFIN'
       ENDIF
-C
-C TYPES OF CONDITIONS FOR THE PROPAGATION:
-C REQUIRED FOR THOMFR ?? (OTHERWISE DONE AFTER BORD !)
-C
-C
+!
+! TYPES OF CONDITIONS FOR THE PROPAGATION:
+! REQUIRED FOR THOMFR ?? (OTHERWISE DONE AFTER BORD !)
+!
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPIN'
       CALL PROPIN_TELEMAC2D
      &            (LIMPRO%I,LIMPRO%DIM1,MASK,LIUBOR%I,LIVBOR%I,
@@ -1486,74 +1457,74 @@ C
      &             MESH%NELBOR%I,NELMAX,MSK,MASKEL%R,
      &             NFRLIQ,THOMFR,DEBLIQ,FINLIQ,FRTYPE,
      &             MESH%XNEBOR%R,MESH%YNEBOR%R,.FALSE.,MESH)
-C    *             MESH%XNEBOR%R,MESH%YNEBOR%R, ENTET ,MESH)
-C       WARNINGS WILL BE GIVEN AT THE SECOND CALL AFTER BORD
+!    *             MESH%XNEBOR%R,MESH%YNEBOR%R, ENTET ,MESH)
+!       WARNINGS WILL BE GIVEN AT THE SECOND CALL AFTER BORD
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPIN'
-C
-C=======================================================================
-C                 COMPUTES THE FRICTION COEFFICIENTS
-C                         VARIABLE IN TIME
-C=======================================================================
-C CORSTR DOES NOT DO ANYTHING UNLESS MODIFIED BY THE USER.
-C
+!
+!=======================================================================
+!                 COMPUTES THE FRICTION COEFFICIENTS
+!                         VARIABLE IN TIME
+!=======================================================================
+! CORSTR DOES NOT DO ANYTHING UNLESS MODIFIED BY THE USER.
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORSTR'
       CALL CORSTR
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORSTR'
-C
+!
       IF(IELMU.EQ.12.OR.IELMU.EQ.13) CALL CHGDIS(CHESTR,11,IELMU,MESH)
-C
+!
       CALL FRICTION_CHOICE(1,KARMAN)
-C
-C=======================================================================
-C                 COMPUTES VISCOSITY COEFFICIENTS
-C=======================================================================
-C
-C  COMPUTES DYNAMIC VISCOSITY VISC
-C
+!
+!=======================================================================
+!                 COMPUTES VISCOSITY COEFFICIENTS
+!=======================================================================
+!
+!  COMPUTES DYNAMIC VISCOSITY VISC
+!
       IF(ITURB.EQ.1) THEN
-C
+!
         CALL OS( 'X=C     ' , VISC , VISC , VISC , PROPNU )
-C
+!
       ELSEIF(ITURB.EQ.2) THEN
-C
+!
         CALL DISPER( VISC , U%R , V%R , H%R , CF%R , ELDER , PROPNU )
-C
+!
       ELSEIF(ITURB.EQ.3) THEN
-C
+!
         CALL VISTUR(VISC,AK,EP,NPOIN,CMU,PROPNU)
-C
+!
       ELSEIF(ITURB.EQ.4) THEN
-C
+!
         CALL SMAGOR(VISC,CF,U,V,MESH,T1,T2,T3,T4,MSK,MASKEL,PROPNU)
-C
+!
       ELSE
-C
+!
         IF(LISTIN) THEN
           IF(LNG.EQ.1) WRITE(LU,15) ITURB
           IF(LNG.EQ.2) WRITE(LU,16) ITURB
         ENDIF
         CALL PLANTE(1)
         STOP
-C
+!
       ENDIF
-C
-C  COEFFICIENT FOR THERMAL DIFFUSION (PRANDTL = 1 FOR NOW)
-C  AND THE SAME FOR ALL THE TRACERS
-C
+!
+!  COEFFICIENT FOR THERMAL DIFFUSION (PRANDTL = 1 FOR NOW)
+!  AND THE SAME FOR ALL THE TRACERS
+!
       IF(NTRAC.GT.0.AND.DIFT) THEN
         DO ITRAC=1,NTRAC
           CALL OS( 'X=Y     ' , X=VISCT%ADR(ITRAC)%P , Y=VISC )
           CALL OS( 'X=X+C   ' , X=VISCT%ADR(ITRAC)%P , C=DIFNU-PROPNU )
         ENDDO
       ENDIF
-C
-C  IT IS POSSIBLE TO CORRECT THE VISCOSITY COEFFICIENTS.
-C
+!
+!  IT IS POSSIBLE TO CORRECT THE VISCOSITY COEFFICIENTS.
+!
       CALL CORVIS
 !
 !=======================================================================
-C  SOURCES : COMPUTATION OF INPUTS WHEN VARYING IN TIME
-C            IF NO VARIATION IN TIME DSCE2=DSCE AND TSCE2=TSCE
+!  SOURCES : COMPUTATION OF INPUTS WHEN VARYING IN TIME
+!            IF NO VARIATION IN TIME DSCE2=DSCE AND TSCE2=TSCE
 !=======================================================================
 !
       IF(NREJET.GT.0) THEN
@@ -1568,22 +1539,22 @@ C            IF NO VARIATION IN TIME DSCE2=DSCE AND TSCE2=TSCE
           ENDDO
         ENDIF
       ENDIF
-C
-C=======================================================================
-C BOUNDARY CONDITIONS
-C=======================================================================
-C
+!
+!=======================================================================
+! BOUNDARY CONDITIONS
+!=======================================================================
+!
       IF(THOMFR) THEN
-C
+!
       CALL CPSTVC(H,T9)
       CALL PREBOR(HBOR%R,UBOR%R,VBOR%R,TBOR,U%R,V%R,H%R,
      &            T9%R,T,MESH%NBOR%I,MESH%KP1BOR%I,
      &            NPOIN,NPTFR,NTRAC,DEBLIQ,FINLIQ,NFRLIQ)
-C
+!
       ENDIF
-C
-C CALLS THE USER-SUBROUTINE DETERMINING THE BOUNDARY CONDITIONS.
-C
+!
+! CALLS THE USER-SUBROUTINE DETERMINING THE BOUNDARY CONDITIONS.
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BORD'
       CALL BORD(HBOR%R,UBOR%R,VBOR%R,TBOR,
      &          U,V,H,ZF%R,MESH%NBOR%I,W1,T8,
@@ -1593,9 +1564,9 @@ C
      &          NDEBIT,NCOTE,NVITES,NTRAC,NTRACE,NFRLIQ,NUMLIQ%I,
      &          KENT,KENTU,PROVEL,MASK,MESH,EQUA,T2D_FILES(T2DIMP)%NAME)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BORD'
-C
-C COMPUTES LIMPRO, CLU,CLV, CLH AND MASK
-C
+!
+! COMPUTES LIMPRO, CLU,CLV, CLH AND MASK
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPIN'
       CALL PROPIN_TELEMAC2D
      &            (LIMPRO%I,LIMPRO%DIM1,MASK,LIUBOR%I,LIVBOR%I,
@@ -1607,9 +1578,9 @@ C
      &             NFRLIQ,THOMFR,DEBLIQ,FINLIQ,FRTYPE,
      &             MESH%XNEBOR%R,MESH%YNEBOR%R,ENTET,MESH)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPIN'
-C
-C PREPARING THE FRICTION ON THE LATERAL BOUNDARIES
-C
+!
+! PREPARING THE FRICTION ON THE LATERAL BOUNDARIES
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WALL_FRICTION'
       CALL WALL_FRICTION(UETUTA%R,AUBOR%R,CFBOR%R,
      &                   MESH%DISBOR%R,UN%R,VN%R,LIMPRO%I,
@@ -1617,9 +1588,9 @@ C
      &                   LISRUG,KNEU,KDIR,KENT,KENTU,KADH,KLOG,
      &                   IELMU,MESH%KP1BOR%I)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WALL_FRICTION'
-C
-C K-EPSILON BOUNDARY CONDITIONS: KBOR,EBOR AND AUBOR
-C
+!
+! K-EPSILON BOUNDARY CONDITIONS: KBOR,EBOR AND AUBOR
+!
       IF(ITURB.EQ.3) THEN
         CALL KEPSCL(KBOR%R,EBOR%R,AUBOR%R,CF%R,CFBOR%R,
      &              MESH%DISBOR%R,
@@ -1628,12 +1599,12 @@ C
      &              SCHMIT,LISRUG,PROPNU,KMIN,EMIN,KNEU,KDIR,
      &              KENT,KENTU,KADH,KLOG,UETUTA%R)
       ENDIF
-C
-C CALLS THE SYSTEM OF RESOLUTION FOR BOUNDARIES BY THE CHARACTERISTICS
-C METHOD (THOMPSON)
-C
+!
+! CALLS THE SYSTEM OF RESOLUTION FOR BOUNDARIES BY THE CHARACTERISTICS
+! METHOD (THOMPSON)
+!
       IF(THOMFR) THEN
-C
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE THOMPS'
       CALL THOMPS(HBOR%R,UBOR%R,VBOR%R,TBOR,U,V,T9,
      &            T,ZF,MESH%X%R,MESH%Y%R,MESH%NBOR%I,
@@ -1655,54 +1626,54 @@ C
      &            VARCL,NVARCL,VARCLA,NUMLIQ%I,BM1%X%R,UNSV2D,HFROT,
      &            FXWAVE,FYWAVE)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE THOMPS'
-C
+!
       ENDIF
-C
-C     CHECKS HBOR BECAUSE THE USER CAN MODIFY BORD AND MAKE A MISTAKE
+!
+!     CHECKS HBOR BECAUSE THE USER CAN MODIFY BORD AND MAKE A MISTAKE
       CALL CLIP(HBOR,0.D0,.TRUE.,1.D6,.FALSE.,0)
-C
-C=======================================================================
-C
-C LOOP OVER THE SUB-ITERATIONS WHERE ADVECTION AND PROPAGATION ARE UPDATED
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+! LOOP OVER THE SUB-ITERATIONS WHERE ADVECTION AND PROPAGATION ARE UPDATED
+!
+!=======================================================================
+!
       DO 701 ISOUSI = 1 , NSOUSI
       IF(DEBUG.GT.0) WRITE(LU,*) 'BOUCLE 701 ISOUSI=',ISOUSI
-C
-C=======================================================================
-C
-C : 4                     ADVECTION
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+! : 4                     ADVECTION
+!
+!=======================================================================
+!
       IF(CONV.AND.FTILD%N.GT.0) THEN
-C
+!
         IF(ENTET) CALL ENTETE(3,AT,LT)
-C
+!
         IF(SPHERI) THEN
           CALL OS('X=Y/Z   ',UCONV,UCONV,MESH%COSLAT,C)
           CALL OS('X=Y/Z   ',VCONV,VCONV,MESH%COSLAT,C)
         ENDIF
-C
-C       CALLS CHARAC
-C
+!
+!       CALLS CHARAC
+!
         CALL CHARAC( FNCAR , FTILD  , FTILD%N  , UCONV , VCONV,S,S,
      &               DT    , IFAMAS , IELM     , NPOIN , 1 , 1,
      &               MSK   , MASKEL , BM1%X    , BM1%D , TB   ,
      &               IT1%I , IT2%I  , IT3%I    , IT4%I , MESH ,
      &               MESH%NELEM,MESH%NELMAX,MESH%IKLE,MESH%SURDET)
-C
+!
         IF(SPHERI) THEN
           CALL OS('X=XY    ',UCONV,MESH%COSLAT,S,C)
           CALL OS('X=XY    ',VCONV,MESH%COSLAT,S,C)
         ENDIF
-C
+!
         IF(IELM1.NE.IELMH.AND.CONVV(2)) THEN
           CALL CHGDIS(HTILD,IELM1,IELMH,MESH)
         ENDIF
         IF(IELM1.NE.IELMU.AND.CONVV(1)) THEN
-C         QUASI-BUBBLE POINTS OBTAINED BY INTERPOLATION
+!         QUASI-BUBBLE POINTS OBTAINED BY INTERPOLATION
           IF(IELMU.EQ.12) THEN
             CALL CHGDIS(UTILD,IELM1,IELMU,MESH)
             CALL CHGDIS(VTILD,IELM1,IELMU,MESH)
@@ -1713,48 +1684,48 @@ C         QUASI-BUBBLE POINTS OBTAINED BY INTERPOLATION
             CALL CHGDIS(TTILD%ADR(ITRAC)%P,IELM1,IELMT,MESH)
           ENDDO
         ENDIF
-C
+!
       ENDIF
-C
-C MANAGEMENT OF THE ARRAYS.
-C
+!
+! MANAGEMENT OF THE ARRAYS.
+!
       CALL GESTIO(UN   ,VN   ,HN   ,TN   ,AKN   ,EPN   ,
      &            UTILD,VTILD,HTILD,TTILD,AKTILD,EPTILD,
      &            NTRAC.GT.0,PROPA,CONVV,ITURB,3)
-C
-C=======================================================================
-C                       END OF ADVECTION
-C=======================================================================
-C=======================================================================
-C
-C : 6                DIFFUSION - PROPAGATION
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!                       END OF ADVECTION
+!=======================================================================
+!=======================================================================
+!
+! : 6                DIFFUSION - PROPAGATION
+!
+!=======================================================================
+!
       IF(PROPA) THEN
       IF(ENTET) CALL ENTETE(6,AT,LT)
-C     INFORMATION ON THE METHOD OF RESOLUTION IS GIVEN ONLY
-C     IF LISTING IS REQUESTED
+!     INFORMATION ON THE METHOD OF RESOLUTION IS GIVEN ONLY
+!     IF LISTING IS REQUESTED
       INFOGS=.FALSE.
       IF(INFOGR.AND.ENTET) INFOGS=.TRUE.
-C
-C  WEATHER CONDITIONS.
-C
+!
+!  WEATHER CONDITIONS.
+!
       IF(VENT.OR.ATMOS) THEN
         CALL METEO(PATMOS%R,WINDX%R,WINDY%R,
      &             FUAIR,FVAIR,MESH%X%R,MESH%Y%R,AT,LT,NPOIN,VENT,ATMOS,
      &             H%R,T1%R,GRAV,ROEAU,NORD,PRIVE)
       ENDIF
-C
-C  COMPUTES THE DENSITY WHEN IT IS VARIABLE
-C
+!
+!  COMPUTES THE DENSITY WHEN IT IS VARIABLE
+!
       IF(ROVAR) THEN
-C       BEWARE, SALINITY MUST BE HERE THE FIRST TRACER
+!       BEWARE, SALINITY MUST BE HERE THE FIRST TRACER
         CALL VALRO(RO,T,ROEAU)
       ENDIF
-C
-C  SOURCE TERMS DUE TO NOZZLES AND SIPHONS.
-C
+!
+!  SOURCE TERMS DUE TO NOZZLES AND SIPHONS.
+!
       IF(NSIPH.GT.0) THEN
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SIPHON'
       CALL SIPHON(RELAXS,NSIPH,ENTSIP,SORSIP,GRAV,
@@ -1763,9 +1734,9 @@ C
      &            NTRAC,T,TSCE,USCE,VSCE,U%R,V%R,ENTET,MAXSCE)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SIPHON'
       ENDIF
-C
-C  SOURCE TERMS FOR PROPAGATION.
-C
+!
+!  SOURCE TERMS FOR PROPAGATION.
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROSOU'
       CALL PROSOU(FU,FV,SMH,UN,VN,HN,GRAV,NORD,
      &            FAIR,WINDX,WINDY,VENT,HWIND,
@@ -1775,12 +1746,12 @@ C
      &            MAREE,MARDAT,MARTIM,PHI0,OPTSOU,COUROU,NPTH,
      &            VARCL,NVARCL,VARCLA,UNSV2D,FXWAVE,FYWAVE)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROSOU'
-C
-C  PROPAGATION.
-C
+!
+!  PROPAGATION.
+!
       IF(EQUA(1:15).EQ.'SAINT-VENANT EF'.OR.
      &   EQUA(1:10).EQ.'BOUSSINESQ') THEN
-C
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPAG'
       CALL PROPAG
      &(U,V,H,UCONV,VCONV,CONVV,H0,C0,COTOND,PATMOS,ATMOS,
@@ -1795,15 +1766,15 @@ C
      & PRIVE,ISOUSI,BILMAS,MASSES,YASMH,OPTBAN,CORCON,
      & OPTSUP,MSK,MASKEL,MASKPT,RO,ROVAR,
      & MAT,RHS,UNK,TB,S,TB,PRECCU,SOLSYS,CFLMAX,OPDVIT,
-C                       TB HERE TO REPLACE BD SUPPRESSED, NOT USED
+!                       TB HERE TO REPLACE BD SUPPRESSED, NOT USED
      & OPTSOU,NFRLIQ,SLVPRO,EQUA,VERTIC,ADJO,ZFLATS,TETAZCOMP,
      & UDEL,VDEL,DM1,ZCONV,COUPLING,FLBOR,BM1S,BM2S,CV1S,
      & VOLU2D,V2DPAR,UNSV2D,NUMDIG%I,NWEIRS,NPSING,HFROT,
      & FLULIM,YAFLULIM)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPAG'
-C
+!
       IF(ADJO) THEN
-C
+!
        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPAG_ADJ'
        CALL PROPAG_ADJ
      &(UCONV,VCONV,CONVV,H0,C0,COTOND,PATMOS,ATMOS,
@@ -1826,15 +1797,15 @@ C
      & TEXREF,TEXRES,W,OUTINI,CHESTR,KARMAN,NDEF,ITURB,LISRUG,
      & LINDNER,SB,DP,SP,CHBORD,CFBOR,HFROT,UNSV2D)
        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPAG_ADJ'
-C
+!
       ENDIF
-C
+!
       ELSEIF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
-C
-C      VOLFIN MAY CHANGE DT
-C
-C      CM1%D%R : HT
-C
+!
+!      VOLFIN MAY CHANGE DT
+!
+!      CM1%D%R : HT
+!
        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE VOLFIN'
        CALL VOLFIN(W1%R,AT,DT,LT,NIT,NELEM,NPTFR,
      &      TB,ZF%R,CHESTR%R,NPOIN,HN%R,H%R,U%R,V%R,QU%R,QV%R,
@@ -1854,115 +1825,115 @@ C
      &      LTT,FLUXTEMP,FLUHBTEMP,HC%R,SMTR,MESH%AIRST%R,
      &      TMAX,DTT)
        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VOLFIN'
-C
+!
        AT = AT + DT
        IF(AT.GE.TMAX) THEN
          NIT = LT
          IF(LISTIN) CALL ENTETE(1,AT,LT)
        ENDIF
-C
+!
       ELSE
-C
+!
         IF(LNG.EQ.1) WRITE(LU,*) 'EQUATIONS INCONNUES : ',EQUA
         IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN EQUATIONS: ',EQUA
         CALL PLANTE(1)
         STOP
-C
+!
       ENDIF
-C
-C IF NO PROPAGATION :
-C
+!
+! IF NO PROPAGATION :
+!
       ELSE
-C
-C MANAGEMENT OF THE ARRAYS .
-C
+!
+! MANAGEMENT OF THE ARRAYS .
+!
          CALL GESTIO(U    ,V    ,H    ,T,AK  ,EP ,
      &               UTILD,VTILD,HTILD,T,AK  ,EP ,
      &               NTRAC.GT.0,PROPA,CONVV,ITURB ,6)
-C
-C        SMH USED BY THE TRACER
-C        TO SIMULATE SUBIEF TAKING OFF PROPAGATION
-C        AND ADVECTION, PROSOU IS NOT CALLED AND DISCRETE
-C        SOURCES ARE NOT TAKEN INTO ACCOUNT.
-C        STRICTLY 'CALL PROSOU' SHOULD BE HERE.
+!
+!        SMH USED BY THE TRACER
+!        TO SIMULATE SUBIEF TAKING OFF PROPAGATION
+!        AND ADVECTION, PROSOU IS NOT CALLED AND DISCRETE
+!        SOURCES ARE NOT TAKEN INTO ACCOUNT.
+!        STRICTLY 'CALL PROSOU' SHOULD BE HERE.
          IF(NTRAC.GT.0) CALL OS('X=0     ',X=SMH)
-C
+!
       ENDIF
-C
-C     TREATMENT OF NEGATIVE DEPTHS
-C
+!
+!     TREATMENT OF NEGATIVE DEPTHS
+!
       CALL CORRECTION_DEPTH_2D(MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
      &                         YAFLODEL,YASMH,YAFLULIM)
-C
-C=======================================================================
-C                          END OF PROPAGATION
-C=======================================================================
-C
-C  COMPUTES THE NEW ADVECTION FIELDS IF THERE REMAIN
-C  SUB-ITERATIONS.
-C
-C  THE TEST ON ISOUSI IS MADE ONLY FOR HPROP AND NOT FOR UCONV
-C  FOR REASONS OF TRACER MASS CONSERVATION (IT IS NECESSARY TO KEEP
-C  THE SAME HPROP FOR THE TRACER AS THAT FOR H AND U)
-C
+!
+!=======================================================================
+!                          END OF PROPAGATION
+!=======================================================================
+!
+!  COMPUTES THE NEW ADVECTION FIELDS IF THERE REMAIN
+!  SUB-ITERATIONS.
+!
+!  THE TEST ON ISOUSI IS MADE ONLY FOR HPROP AND NOT FOR UCONV
+!  FOR REASONS OF TRACER MASS CONSERVATION (IT IS NECESSARY TO KEEP
+!  THE SAME HPROP FOR THE TRACER AS THAT FOR H AND U)
+!
       IF(ISOUSI.NE.NSOUSI) THEN
-C      COMPUTES THE NEW PROPAGATION FIELD IF PROPAGATION
+!      COMPUTES THE NEW PROPAGATION FIELD IF PROPAGATION
        IF(PROPA) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE HPROPA'
         CALL HPROPA(HPROP ,HN,H,PROLIN,HAULIN,TETAHC,NSOUSI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE HPROPA'
        ENDIF
       ENDIF
-C
-C     COMPUTES THE NEW ADVECTION FIELD (IF ADVECTION)
+!
+!     COMPUTES THE NEW ADVECTION FIELD (IF ADVECTION)
       IF(CONV) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CHPCON'
         CALL CHPCON(UCONV,VCONV,U,V,UN,VN,TETAU)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CHPCON'
       ENDIF
-C
-C=======================================================================
-C END OF THE LOOP OF THE SUB-ITERATIONS
-C
+!
+!=======================================================================
+! END OF THE LOOP OF THE SUB-ITERATIONS
+!
 701   CONTINUE
-C
-C=======================================================================
-C
-C : 5                 DIFFUSION OF THE TRACER
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+! : 5                 DIFFUSION OF THE TRACER
+!
+!=======================================================================
+!
       IF(NTRAC.GT.0.AND.EQUA(1:15).NE.'SAINT-VENANT VF') THEN
-C
+!
       IF(ENTET) CALL ENTETE(5,AT,LT)
-C
+!
       DO ITRAC=1,NTRAC
-C
-C  BOUNDARY CONDITIONS FOR THE DIFFUSION OF THE TRACER.
-C
+!
+!  BOUNDARY CONDITIONS FOR THE DIFFUSION OF THE TRACER.
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DIFFCL POUR ITRAC=',ITRAC
       CALL DIFFCL(LITBOR%ADR(ITRAC)%P%I,
      &            TTILD%ADR(ITRAC)%P%R,TBOR%ADR(ITRAC)%P%R,
      &            MESH%NBOR%I,ICONVF(3),NPOIN,NPTFR)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DIFFCL'
-C
+!
       ENDDO
-C
-C  SOURCE TERMS FOR DIFFUSION - SOURCE TERMS OF THE TRACER
-C
+!
+!  SOURCE TERMS FOR DIFFUSION - SOURCE TERMS OF THE TRACER
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DIFSOU'
       CALL DIFSOU(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJTR,
      &            ISCE,DSCE2,TSCE2,MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,
      &            MESH%FAC%R)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DIFSOU'
-C
+!
       DO ITRAC=1,NTRAC
-C
-C  CALLS THE STANDARD DIFFUSER. (CV1 IS THE SECOND MEMBER)
-C
+!
+!  CALLS THE STANDARD DIFFUSER. (CV1 IS THE SECOND MEMBER)
+!
       INFOGT=INFOGR.AND.ENTET
-C     HTILD: WORKING ARRAY WHERE HPROP IS RE-COMPUTED
-C             (SAME ARRAY STRUCTURE)
+!     HTILD: WORKING ARRAY WHERE HPROP IS RE-COMPUTED
+!             (SAME ARRAY STRUCTURE)
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CVDFTR SOLSYS=',SOLSYS
       IF(SOLSYS.EQ.1) THEN
       CALL CVDFTR(T%ADR(ITRAC)%P,TTILD%ADR(ITRAC)%P,TN%ADR(ITRAC)%P,
@@ -1980,7 +1951,7 @@ C             (SAME ARRAY STRUCTURE)
      &            MSK,MASKEL,MASKPT,MBOR,S,MASSOU(ITRAC),
      &            OPTSOU,SLVTRA,FLBOR,V2DPAR,UNSV2D,2,FLBORTRA,
      &            FLULIM,YAFLULIM)
-C
+!
       ELSE
       CALL CVDFTR(T%ADR(ITRAC)%P,TTILD%ADR(ITRAC)%P,TN%ADR(ITRAC)%P,
      &            TSCEXP%ADR(ITRAC)%P,
@@ -1996,10 +1967,10 @@ C
      &            ISOUSI,LT,NIT,OPDTRA,OPTBAN,
      &            MSK,MASKEL,MASKPT,MBOR,S,MASSOU(ITRAC),
      &            OPTSOU,SLVTRA,FLBOR,V2DPAR,UNSV2D,2,FLBORTRA,
-     &            FLULIM,YAFLULIM)      
+     &            FLULIM,YAFLULIM)
       ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CVDFTR'
-C
+!
       IF(BILMAS) THEN
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BILANT'
       CALL BILANT(H,T2,T3,DT,LT,NIT,ENTET,
@@ -2009,29 +1980,29 @@ C
      &            NFRLIQ,NPTFR,NAMETRAC(ITRAC),FLBORTRA)
       ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BILANT'
-C
+!
       ENDDO
-C
+!
       ENDIF
-C
-C=======================================================================
-C                    END OF DIFFUSION OF THE TRACER
-C=======================================================================
-C
-C
-C
-C
-C=======================================================================
-C           DIFFUSION AND SOURCE TERMS FOR K-EPSILON MODEL
-C=======================================================================
-C
+!
+!=======================================================================
+!                    END OF DIFFUSION OF THE TRACER
+!=======================================================================
+!
+!
+!
+!
+!=======================================================================
+!           DIFFUSION AND SOURCE TERMS FOR K-EPSILON MODEL
+!=======================================================================
+!
       IF(ITURB.EQ.3.AND..NOT.ADJO) THEN
-C
+!
         IF (ENTET) CALL ENTETE(4,AT,LT)
-C
-C BEWARE THE MATRIX STRUCTURE (SYMMETRICAL OR NOT)
-C WHEN CONSIDERING THE COUPLED SYSTEM K-E
-C
+!
+! BEWARE THE MATRIX STRUCTURE (SYMMETRICAL OR NOT)
+! WHEN CONSIDERING THE COUPLED SYSTEM K-E
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE KEPSIL'
         CALL KEPSIL(AK,EP,AKTILD,EPTILD,AKN,EPN,VISC,CF,U,V,H,
      &              UCONV,VCONV,KBOR,EBOR,LIMKEP%I,IELMK,IELME,
@@ -2042,15 +2013,15 @@ C
      &              KDIR,MSK,MASKEL,MASKPT,S,SLVK,SLVEP,
      &              ICONVF(4),OPTSUP(4))
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE KEPSIL'
-C
+!
       ENDIF
-C
-C=======================================================================
-C  1)                 CHECKS MASS BALANCE
-C=======================================================================
-C
-C CONTROL SECTIONS
-C
+!
+!=======================================================================
+!  1)                 CHECKS MASS BALANCE
+!=======================================================================
+!
+! CONTROL SECTIONS
+!
       IF(NCP.NE.0.AND.(ENTET.OR.CUMFLO)) THEN
         CALL FLUSEC_TELEMAC2D(U,V,H,MESH%IKLE%I,MESH%XEL%R,MESH%YEL%R,
      &                        MESH%NELMAX,MESH%NELEM,
@@ -2059,21 +2030,21 @@ C
      &                        MSKSEC,BM1,BM2,T1,HPROP,MESH,S,CV1,
      &                        MESH%IFABOR%I,COMFLU,CUMFLO)
       ENDIF
-C
-C MASS BALANCE
-C
+!
+! MASS BALANCE
+!
       IF(BILMAS) THEN
-C
+!
         CALL BILAN(MESH,H,T1,MASK,AT,DT,LT,NIT,ENTET,
      &             MASSES,MSK,MASKEL,EQUA,TE5,OPTBAN,
      &             MESH%NPTFR,FLBOR,
      &             FLUX_BOUNDARIES,NUMLIQ%I,NFRLIQ)
-C
-C       ADDED FOR THE KINETIC SCHEMES (TO BE CHECKED)
-C
+!
+!       ADDED FOR THE KINETIC SCHEMES (TO BE CHECKED)
+!
         IF(NTRAC.GT.0) THEN
           IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
-C
+!
             DO ITRAC=1,NTRAC
             CALL BILANT1(HSTOK,UCONV,VCONV,HPROP,T2,T3,T4,T5,T6,
      &                   DT,LT,NIT,ENTET,MASKTR,
@@ -2081,57 +2052,57 @@ C
      &                   MASSOU(ITRAC),MSK,MASKEL,MESH,
      &                   FLUTSOR(ITRAC),FLUTENT(ITRAC),EQUA,LTT,ITRAC)
             ENDDO
-C
+!
           ENDIF
         ENDIF
-C
+!
       ENDIF
-C
-C=======================================================================
-C                           DROGUE(S)
-C=======================================================================
-C
+!
+!=======================================================================
+!                           DROGUE(S)
+!=======================================================================
+!
       IF(NFLOT.NE.0) THEN
-C
+!
         IF(ENTET) CALL ENTETE(12,AT,LT)
-C
+!
         IF(SPHERI) THEN
           CALL OS('X=Y/Z   ',UCONV,UCONV,MESH%COSLAT,C)
           CALL OS('X=Y/Z   ',VCONV,VCONV,MESH%COSLAT,C)
         ENDIF
-C
+!
         CALL DERIVE(UCONV%R,VCONV%R,DT,
      &              MESH%X%R,MESH%Y%R,MESH%IKLE%I,MESH%IFABOR%I,
      &              LT,IELM,3,NPOIN,
      &              NELEM,NELMAX,MESH%SURDET%R,XFLOT%R,YFLOT%R,
      &              SHPFLO%R,DEBFLO%I,FINFLO%I,ELTFLO%I,
      &              NFLOT,NITFLO,FLOPRD,T8%R)
-C
+!
         IF(SPHERI) THEN
           CALL OS('X=XY    ',UCONV,MESH%COSLAT,S,C)
           CALL OS('X=XY    ',VCONV,MESH%COSLAT,S,C)
         ENDIF
-C
+!
       ENDIF
-C
-C=======================================================================
-C       OIL SPILL MODEL (UNDER DEVELOPMENT IN MYGRHYCAR PROJECT)
-C=======================================================================
-C
+!
+!=======================================================================
+!       OIL SPILL MODEL (UNDER DEVELOPMENT IN MYGRHYCAR PROJECT)
+!=======================================================================
+!
       IF(SPILL_MODEL) THEN
-C
+!
         CALL OIL_SPILL
-C
+!
       ENDIF
-C
-C=======================================================================
-C                        LAGRANGIAN DRIFT(S)
-C=======================================================================
-C
+!
+!=======================================================================
+!                        LAGRANGIAN DRIFT(S)
+!=======================================================================
+!
       IF(NLAG.NE.0) THEN
-C
+!
         IF (ENTET) CALL ENTETE(13,AT,LT)
-C
+!
         CALL DERLAG(UCONV%R,VCONV%R,DT,MESH%X%R,MESH%Y%R,
      &              MESH%IKLE%I,MESH%IFABOR%I,LT,IELM,3,NPOIN,
      &              NELEM,NELMAX,MESH%SURDET%R,
@@ -2139,20 +2110,20 @@ C
      &              DEBLAG%I,FINLAG%I,ELTLAG%I,NLAG,
      &              T7%R,T8%R,MESH%NBOR%I,MESH%NELBOR%I,
      &              MESH%NULONE%I,NPTFR,MSK,MASKEL%R,MASKPT%R,T8%R)
-C
+!
       ENDIF
-C
-C=======================================================================
-C                     CREDIBILITY CHECKS
-C                   LOOKS FOR A STEADY STATE
-C=======================================================================
-C
+!
+!=======================================================================
+!                     CREDIBILITY CHECKS
+!                   LOOKS FOR A STEADY STATE
+!=======================================================================
+!
       ARRET1=.FALSE.
       IF(VERLIM) THEN
         CALL ISITOK(H%R,H%DIM1,U%R,U%DIM1,V%R,V%DIM1,NTRAC,
      &              T,T%ADR(1)%P%DIM1,
      &              MESH%X%R,MESH%Y%R,BORNES,ARRET1)
-C       CORRECTION SUGGESTED BY NOEMIE DURAND (CHC-NRC) 04/01/2006
+!       CORRECTION SUGGESTED BY NOEMIE DURAND (CHC-NRC) 04/01/2006
         IF(NCSIZE.GT.1) THEN
           STOP2=0
           IF(ARRET1) STOP2=1
@@ -2165,7 +2136,7 @@ C       CORRECTION SUGGESTED BY NOEMIE DURAND (CHC-NRC) 04/01/2006
         CALL STEADY(H%R,HN%R,H%DIM1,U%R,UN%R,U%DIM1,V%R,VN%R,
      &              V%DIM1,NTRAC,T,TN,T%ADR(1)%P%DIM1,
      &              CRIPER,ARRET2)
-C       CORRECTION BY NOEMIE DURAND (CHC-NRC) 04/01/2006
+!       CORRECTION BY NOEMIE DURAND (CHC-NRC) 04/01/2006
         IF(NCSIZE.GT.1) THEN
           STOP2=0
           IF(ARRET2) STOP2=1
@@ -2177,32 +2148,31 @@ C       CORRECTION BY NOEMIE DURAND (CHC-NRC) 04/01/2006
         LEOPRD=1
         LISPRD=1
       ENDIF
-C
+!
       ARRET3=.FALSE.
       CALL TRAPSIG()
       IF(BREAKER) ARRET3=.TRUE.
-C
+!
       IF(ARRET1.OR.ARRET2.OR.ARRET3) THEN
         LEOPRD=1
         LISPRD=1
       ENDIF
-C
-C FH-BMD
-C=============================================
-C     FOR NEW COUPLING
+!
+! FH-BMD
+!=============================================
+!     FOR NEW COUPLING
 888   CONTINUE
       IF (SISYPHE_CFD) CONSTFLOW_SIS = .TRUE.
 999   CONTINUE
-C=============================================
-C FH-BMD
-
-C
-C=======================================================================
-C                      WRITES OUT THE RESULTS
-C=======================================================================
-C
+!=============================================
+! FH-BMD
+!
+!=======================================================================
+!                      WRITES OUT THE RESULTS
+!=======================================================================
+!
       IF(ADJO) THEN
-C
+!
         IF(T2D_FILES(T2DRBI)%NAME.NE.' '.AND.
      &     INCLU2(ESTIME,'DEBUG')) THEN
           CALL BIEF_DESIMP('SERAFIN ',VARSORA,
@@ -2210,16 +2180,16 @@ C
      &                     'STD',-AT,LT,LISPRD,1,
      &                     SORLEOA,SORIMPA,MAXVAR,TEXTE,PTINIG,PTINIL)
         ENDIF
-C
+!
       ELSE
-C
+!
         IF(CODE(1:7).EQ.'ESTEL3D') THEN
-C
-C         SAVES THE DEPTH FOR ESTEL3D
+!
+!         SAVES THE DEPTH FOR ESTEL3D
           CALL DEPTH_FILL(H%R)
-C
-C (NOTE THAT OUTPUTS ARE DONE WITHIN ESTEL3D IN COUPLED MODE)
-C
+!
+! (NOTE THAT OUTPUTS ARE DONE WITHIN ESTEL3D IN COUPLED MODE)
+!
         ELSE
           CALL PRERES_TELEMAC2D
           CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
@@ -2227,12 +2197,12 @@ C
      &            LISPRD,LEOPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
         ENDIF
-C
-C
+!
+!
         IF(INCLUS(COUPLING,'DELWAQ')) THEN
-C
-C         T3 : MODIFIED DEPTH TO TAKE INTO ACCOUNT MASS-LUMPING
-C              IN THE CONTINUITY EQUATION
+!
+!         T3 : MODIFIED DEPTH TO TAKE INTO ACCOUNT MASS-LUMPING
+!              IN THE CONTINUITY EQUATION
           IF(ABS(1.D0-AGGLOC).GT.1.D-8) THEN
             CALL VECTOR(T3,'=','MASVEC          ',IELMH,
      &                  1.D0-AGGLOC,H ,S,S,S,S,S,MESH,MSK,MASKEL)
@@ -2242,10 +2212,10 @@ C              IN THE CONTINUITY EQUATION
           ELSE
             CALL OS('X=Y     ',X=T3 ,Y=H )
           ENDIF
-C         FOR COMPUTATION OF THE FLUXES (CALL VECTOR BELOW)
+!         FOR COMPUTATION OF THE FLUXES (CALL VECTOR BELOW)
           FORMUL='HUGRADP         '
           IF(SOLSYS.EQ.2) FORMUL(8:8)='2'
-C
+!
           CALL VECTOR(T4,'=',FORMUL,11,-1.D0,
      &                HPROP,DM1,ZCONV,UDEL,VDEL,VDEL,MESH,MSK,MASKEL)
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TEL4DEL'
@@ -2267,24 +2237,24 @@ C
      &    INIFLOW,MESH%W%R,.FALSE.,FLULIM%R,V2DPAR%R,MESH%KNOLG%I,
      &    MESH,MESH)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TEL4DEL'
-C
+!
         ENDIF
-C
+!
       ENDIF  !(ADJO)
-C
-C     OPTIONAL USER OUTPUT (COURTESY JACEK JANKOWSKI, BAW)
+!
+!     OPTIONAL USER OUTPUT (COURTESY JACEK JANKOWSKI, BAW)
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE UTIMP_TELEMAC2D'
       CALL UTIMP_TELEMAC2D(LT,AT,PTINIG,LEOPRD,PTINIL,LISPRD)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE UTIMP_TELEMAC2D'
-C
-C=======================================================================
-C              COMPARISON AGAINST A REFERENCE FILE
-C=======================================================================
-C
-C     THE VALIDA SUBROUTINE FROM THE BIEF LIBRARY IS STANDARD.
-C     IT CAN BE MODIFIED BY THE USER FOR THEIR PARTICULAR CASE.
-C     BUT THE CALL TO THE SUBROUTINE MUST STAY IN THE TIME LOOP.
-C
+!
+!=======================================================================
+!              COMPARISON AGAINST A REFERENCE FILE
+!=======================================================================
+!
+!     THE VALIDA SUBROUTINE FROM THE BIEF LIBRARY IS STANDARD.
+!     IT CAN BE MODIFIED BY THE USER FOR THEIR PARTICULAR CASE.
+!     BUT THE CALL TO THE SUBROUTINE MUST STAY IN THE TIME LOOP.
+!
       IF(VALID) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_VALIDA'
         CALL BIEF_VALIDA(TB,TEXTPR,
@@ -2294,11 +2264,11 @@ C
      &                   MAXVAR,NPOIN,LT,NIT,ALIRE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_VALIDA'
       ENDIF
-C
-C=======================================================================
-C
-C  NEAT (PROGRAMMED) STOP OF THE MODEL:
-C
+!
+!=======================================================================
+!
+!  NEAT (PROGRAMMED) STOP OF THE MODEL:
+!
       IF(ARRET1) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*)
@@ -2342,40 +2312,37 @@ C
         ENDIF
         RETURN
       ENDIF
-C
-C     NOW ADVECTION SCHEME WILL BE CHANGED AND FLULIM
-C     WILL NOT CORRESPOND TO IT.
-C
+!
+!     NOW ADVECTION SCHEME WILL BE CHANGED AND FLULIM
+!     WILL NOT CORRESPOND TO IT.
+!
       YAFLULIM=.FALSE.
-C
-C
-C 700: TIME LOOP
-C
+!
+!
+! 700: TIME LOOP
+!
       IF(LT.LT.NIT) GO TO 700
-C
-C=======================================================================
-C
-C :                 /* END OF THE LOOP IN TIME */
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+! :                 /* END OF THE LOOP IN TIME */
+!
+!=======================================================================
+!
       IF(LNG.EQ.1.AND.LISTIN) WRITE(LU,18)
       IF(LNG.EQ.2.AND.LISTIN) WRITE(LU,19)
 18    FORMAT(/,1X,'FIN DE LA BOUCLE EN TEMPS',////)
 19    FORMAT(/,1X,'END OF TIME LOOP',////)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF (NFLOT.NE.0) CALL SORFLO
      &   (XFLOT%R,YFLOT%R,IKLFLO%I,DEBFLO%I,FINFLO%I,
      &    NFLOT,NITFLO,FLOPRD,T2D_FILES(T2DRBI)%LU,TITCAS,
      &    'STD',T2D_FILES(T2DRBI)%NAME,
      &    NIT,MAXVAR,MARDAT,MARTIM,MESH,I_ORIG,J_ORIG)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C
