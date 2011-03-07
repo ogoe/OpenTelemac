@@ -1,107 +1,65 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       HARMONISES THE BOUNDARY CONDITIONS, INITIALISES 'IBOR'.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @warning  THE ORDER OF THE INDICES HAS CHANGED FOR THIS VARIABLE
-!>            BECAUSE OF THE 2D ADVECTION BY CHARACTERISTICS OF H
-!>            WITH TIDAL FLATS (PASSES IBOR INSTEAD OF IFABOR)
-!>  @code
-!>      BEFORE :   IBOR(IELEM,IETAGE,IFACE)
-!>      NOW :      IBOR(IELEM,IFACE,IETAGE)
-!>  @endcode
-
-!>  @warning  JAJ: DOES NOT HARMONISE THE BC'S IN THE NON-HYDROSTATIC
-!>            CASE. IN PRINCIPLE, BC TYPES CAN BE DIFFERENT FOR U, V
-!>            AND W VELOCITY COMPONENTS
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 15/11/08
-!> </td><td> JMH (LNHE)
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 15/09/2008
-!> </td><td> JMH
-!> </td><td> TREATS KP1BOR IN PARALLEL
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/99
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/12/98
-!> </td><td> JACEK A. JANKOWSKI - UNIVERSITAET HANNOVER
-!> </td><td> NON-HYDROSTATIC VERSION
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE LICHEK
+!                    *****************
+                     SUBROUTINE LICHEK
+!                    *****************
+!
      & (LIMPRP, NPTFR)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| KADH           |-->| INDICATEUR DE POINT DIRICHLET
-C| KDDL           |-->| INDICATEUR DE DEGRE DE LIBERTE AU BORD
-C| KDIR           |-->| INDICATEUR DE POINT DE DIRICHLET
-C| KENT           |-->| INDICATEUR DE POINT D'ENTREE FLUIDE
-C| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
-C|                |   | CONDITIONS AUX LIMITES TECHNIQUES:
-C| KNEU           |-->| INDICATEUR DE POINT DE NEUMANN
-C| KP1BOR         |-->| PT FRONT. SUIVANT LE PT FRONT. CONSIDERE
-C| KSORT          |-->| INDICATEUR DE POINT DE SORTIE FLUIDE
-C| LIHBOR         |<->| TYPES DE CONDITIONS AUX LIMITES SUR H
-C| LIMPRP         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA
-C|                |   | PROPAGATION
-C|                |   | PAR POINTS   :    .1:H  .2:U  .3:V
-C|                |   | PAR SEGMENTS :    .4:H  .5:U  .6:V
-C| LIUBOR         |<->| TYPES DE CONDITIONS AUX LIMITES SUR U
-C| LIVBOR         |<->| TYPES DE CONDITIONS AUX LIMITES SUR V
-C| LIWBOR         |<->| TYPES DE CONDITIONS AUX LIMITES SUR W
-C| MASK           |<--| MASQUES POUR LES SEGMENTS 2D
-C|                |   | MASK(NPTFR2,1): 1. SI KDIR SUR U 0. SINON
-C|                |   | MASK(NPTFR2,2): 1. SI KDIR SUR V 0. SINON
-C|                |   | MASK(NPTFR2,3): 1. SI KDDL SUR U 0. SINON
-C|                |   | MASK(NPTFR2,4): 1. SI KDDL SUR V 0. SINON
-C|                |   | MASK(NPTFR2,5): 1. SI KNEU SUR U 0. SINON
-C|                |   | MASK(NPTFR2,6): 1. SI KNEU SUR V 0. SINON
-C|                |   | MASK(NPTFR2,7): 1. SI KOND 0. SINON
-C|                |   | (KOND N'EST PAS DEFINI DANS TELEMAC-3D,
-C|                |   | CAR IL N Y A PAS D'ONDE INCIDENTE. EN
-C|                |   | CONSEQUENCE, MASK(*,7)=0)
-C| NELBOR         |-->| NUMERO GLOBAUX DES ELEMENTS DE BORD
-C| NELEM2         |-->| NOMBRE D'ELEMENTS EN 2D
-C| NETAGE         |-->| NPLAN - 1
-C| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-C| NPOIN2         |-->| NOMBRE DE POINTS 2D
-C| NPTFR          |-->| NOMBRE DE POINTS DE BORD 2D
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    HARMONISES THE BOUNDARY CONDITIONS, INITIALISES 'IBOR'.
+!
+!warning  THE ORDER OF THE INDICES HAS CHANGED FOR THIS VARIABLE
+!+            BECAUSE OF THE 2D ADVECTION BY CHARACTERISTICS OF H
+!+            WITH TIDAL FLATS (PASSES IBOR INSTEAD OF IFABOR)
+!code
+!+      BEFORE :   IBOR(IELEM,IETAGE,IFACE)
+!+      NOW :      IBOR(IELEM,IFACE,IETAGE)
+!warning  JAJ: DOES NOT HARMONISE THE BC'S IN THE NON-HYDROSTATIC
+!+            CASE. IN PRINCIPLE, BC TYPES CAN BE DIFFERENT FOR U, V
+!+            AND W VELOCITY COMPONENTS
+!
+!history  JACEK A. JANKOWSKI - UNIVERSITAET HANNOVER
+!+        **/12/98
+!+        
+!+   NON-HYDROSTATIC VERSION 
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  JMH
+!+        15/09/2008
+!+        
+!+   TREATS KP1BOR IN PARALLEL 
+!
+!history  JMH (LNHE)
+!+        15/11/08
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| LIMPRP         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA
+!|                |   | PROPAGATION
+!|                |   | PAR POINTS   :    .1:H  .2:U  .3:V
+!|                |   | PAR SEGMENTS :    .4:H  .5:U  .6:V
+!| NPTFR          |-->| NOMBRE DE POINTS DE BORD 2D
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
@@ -109,20 +67,20 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)    :: NPTFR
       INTEGER, INTENT(INOUT) :: LIMPRP(NPTFR,6)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IPOIN2, IPTFR, IPTFR3, IPTFRX
       DOUBLE PRECISION C
 !
 !***********************************************************************
 !
-C HARMONISES THE BOUNDARY CONDITIONS
+! HARMONISES THE BOUNDARY CONDITIONS
 !
 !=======================================================================
 !
@@ -159,13 +117,13 @@ C HARMONISES THE BOUNDARY CONDITIONS
 !
 !=======================================================================
 !
-C INITIALISES THE BOUNDARY CONDITIONS FOR PROPAGATION IN 2D:
+! INITIALISES THE BOUNDARY CONDITIONS FOR PROPAGATION IN 2D:
 !
 !=======================================================================
 !
       DO IPTFR = 1,NPTFR
 !
-C   BOUNDARY CONDITIONS ON H
+!   BOUNDARY CONDITIONS ON H
 !
       IF(LIHBOR%I(IPTFR).EQ.KENT ) THEN
          LIMPRP(IPTFR,1) = KDIR
@@ -190,13 +148,12 @@ C   BOUNDARY CONDITIONS ON H
 !
 !-----------------------------------------------------------------------
 !
-C   BOUNDARY CONDITIONS ON U
-C  (TAKES THE BOUNDARY CONDITIONS DEFINED ON THE SECOND PLANE
-C   AS MEAN 2D VELOCITY)
+!   BOUNDARY CONDITIONS ON U
+!  (TAKES THE BOUNDARY CONDITIONS DEFINED ON THE SECOND PLANE
+!   AS MEAN 2D VELOCITY)
 !
       IPTFR3 = NPTFR + IPTFR
       IPTFRX = NPTFR + MESH2D%KP1BOR%I(IPTFR)
-
       IF(LIUBOL%I(IPTFR3).EQ.KENT.OR.
      &   LIUBOL%I(IPTFR3).EQ.KENTU.OR.
      &   LIUBOL%I(IPTFR3).EQ.KADH) THEN
@@ -268,7 +225,7 @@ C   AS MEAN 2D VELOCITY)
       CALL OS('X=0     ',X=MASK)
 !
       IF (.NOT. MSK) THEN
-C
+!
        C = 1.D0
        DO IPTFR = 1,NPTFR
 !
@@ -285,7 +242,6 @@ C
         MASK%ADR(8)%P%R(IPTFR) = (1.D0 - MASK%ADR(5)%P%R(IPTFR)) * C
 !
       ENDDO
-
       ELSE
       DO IPTFR = 1,NPTFR
 !
@@ -339,6 +295,3 @@ C
 !
       RETURN
       END
-C
-C#######################################################################
-C

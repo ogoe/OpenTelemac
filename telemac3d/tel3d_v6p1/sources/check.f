@@ -1,150 +1,55 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       CHECKS FOR COMMON ERRORS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> IKLBOR, IKLE2, IKLE3, INFO, NBOR, NBOR3, NELBO3, NELBOR, NELEM2, NELEM3, NETAGE, NPOIN2, NPTFR, NPTFR3, NTRAC, NULONE
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> IEL, IERR, IETAGE, ILOC, IPTFR, N1, N2
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TELEMAC3D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.1                                       </center>
-!> </td><td> **/03/99
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>IKLBOR
-!></td><td>--></td><td>TABLE DE CONNECTIVITE ELEMENTS DE BORD
-!>    </td></tr>
-!>          <tr><td>IKLE2
-!></td><td>--></td><td>NUMEROS GLOBAUX DES POINTS DES ELEMENTS 2D
-!>    </td></tr>
-!>          <tr><td>IKLE3
-!></td><td>--></td><td>NUMEROS GLOBAUX DES POINTS DES ELEMENTS 3D
-!>    </td></tr>
-!>          <tr><td>INFO
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NBOR
-!></td><td>--></td><td>ADRESSES GLOBALES DES POINTS FRONTIERES 2D
-!>    </td></tr>
-!>          <tr><td>NBOR3
-!></td><td>--></td><td>ADRESSES GLOBALES DES POINTS FRONTIERES 3D
-!>    </td></tr>
-!>          <tr><td>NELBO3
-!></td><td>--></td><td>ASSOCIE A CHAQUE FACE DE BORD L'ELEMENT 3D
-!>                  AUQUEL ELLE APPARTIENT
-!>    </td></tr>
-!>          <tr><td>NELBOR
-!></td><td>--></td><td>NUMERO DE L'ELEMENT ADJACENT AU K IEME
-!>                  SEGMENT DE BORD
-!>    </td></tr>
-!>          <tr><td>NELEM2
-!></td><td>--></td><td>NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 2D
-!>    </td></tr>
-!>          <tr><td>NELEM3
-!></td><td>--></td><td>NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 3D
-!>    </td></tr>
-!>          <tr><td>NETAGE
-!></td><td>--></td><td>NOMBRE D'ETAGES
-!>    </td></tr>
-!>          <tr><td>NPOIN2
-!></td><td>--></td><td>NOMBRE DE POINTS DU MAILLAGE 2D
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>--></td><td>NOMBRE DE POINTS FRONTIERE 2D
-!>    </td></tr>
-!>          <tr><td>NPTFR3
-!></td><td>--></td><td>NOMBRE DE POINTS FRONTIERE 3D
-!>    </td></tr>
-!>          <tr><td>NTRAC
-!></td><td>--></td><td>NOMBRE DE TRACEURS ACTIFS
-!>    </td></tr>
-!>          <tr><td>NULONE
-!></td><td>--></td><td>ASSOCIE LA NUMEROTATION LOCALE DE BORD A LA
-!>                  NUMEROTATION LOCALE 3D
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE CHECK
+!                    ****************
+                     SUBROUTINE CHECK
+!                    ****************
+!
      &(IKLE2,NBOR,NELBOR,IKLBOR,IKLE3,NELBO3,NULONE,NBOR3,NELEM2,NPOIN2,
      & NPTFR,NETAGE,NELEM3,NPTFR3,NTRAC,INFO)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| IKLBOR         |-->| TABLE DE CONNECTIVITE ELEMENTS DE BORD
-C| IKLE2          |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 2D
-C| IKLE3          |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 3D
-C| INFO           |---| 
-C| NBOR           |-->| ADRESSES GLOBALES DES POINTS FRONTIERES 2D
-C| NBOR3          |-->| ADRESSES GLOBALES DES POINTS FRONTIERES 3D
-C| NELBO3         |-->| ASSOCIE A CHAQUE FACE DE BORD L'ELEMENT 3D
-C|                |   | AUQUEL ELLE APPARTIENT
-C| NELBOR         |-->| NUMERO DE L'ELEMENT ADJACENT AU K IEME
-C|                |   | SEGMENT DE BORD
-C| NELEM2         |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 2D
-C| NELEM3         |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 3D
-C| NETAGE         |-->| NOMBRE D'ETAGES
-C| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-C| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE 2D
-C| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE 3D
-C| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-C| NULONE         |-->| ASSOCIE LA NUMEROTATION LOCALE DE BORD A LA
-C|                |   | NUMEROTATION LOCALE 3D
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    CHECKS FOR COMMON ERRORS.
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+        V5P1
+!+   FORTRAN95 VERSION 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| IKLBOR         |-->| TABLE DE CONNECTIVITE ELEMENTS DE BORD
+!| IKLE2          |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 2D
+!| IKLE3          |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 3D
+!| INFO           |---| 
+!| NBOR           |-->| ADRESSES GLOBALES DES POINTS FRONTIERES 2D
+!| NBOR3          |-->| ADRESSES GLOBALES DES POINTS FRONTIERES 3D
+!| NELBO3         |-->| ASSOCIE A CHAQUE FACE DE BORD L'ELEMENT 3D
+!|                |   | AUQUEL ELLE APPARTIENT
+!| NELBOR         |-->| NUMERO DE L'ELEMENT ADJACENT AU K IEME
+!|                |   | SEGMENT DE BORD
+!| NELEM2         |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 2D
+!| NELEM3         |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 3D
+!| NETAGE         |-->| NOMBRE D'ETAGES
+!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
+!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE 2D
+!| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE 3D
+!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
+!| NULONE         |-->| ASSOCIE LA NUMEROTATION LOCALE DE BORD A LA
+!|                |   | NUMEROTATION LOCALE 3D
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
 !
       IMPLICIT NONE
@@ -169,13 +74,13 @@ C
 !
 !***********************************************************************
 !
-C INITIALISES
+! INITIALISES
 !
-C FATAL ERROR COUNT:
+! FATAL ERROR COUNT:
       IERR  = 0
 !
 !-----------------------------------------------------------------------
-C CHECKS ARRAY NELBOR
+! CHECKS ARRAY NELBOR
 !
       IF (NCSIZE.LE.1) THEN
         DO IPTFR = 1,NPTFR
@@ -190,7 +95,7 @@ C CHECKS ARRAY NELBOR
         END DO
 !
 !-----------------------------------------------------------------------
-C CHECKS ARRAYS IKLBOR,NELBO3,NULONE
+! CHECKS ARRAYS IKLBOR,NELBO3,NULONE
 !
         DO ILOC = 1,4
           DO IETAGE = 1,NETAGE
@@ -209,7 +114,7 @@ C CHECKS ARRAYS IKLBOR,NELBO3,NULONE
 !
 !-----------------------------------------------------------------------
 !
-C PRINTS OUT THE RESULTS
+! PRINTS OUT THE RESULTS
 !
       IF(IERR.EQ.0) THEN
          IF (LNG.EQ.1 .AND. INFO) WRITE(LU,111)
@@ -247,6 +152,3 @@ C PRINTS OUT THE RESULTS
 !
       RETURN
       END SUBROUTINE CHECK
-C
-C#######################################################################
-C

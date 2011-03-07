@@ -1,52 +1,7 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       SOURCE TERMS FOR U & V MOMENTUM EQUATIONS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 29/06/2009
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 19/12/2008
-!> </td><td> JMH
-!> </td><td> WAVE DRIVEN CURRENTS ADDED. SEE IF(COUROU)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td>
-!> </td><td> AG (LNHE)
-!> </td><td> BUOYANCY TERMS COMPUTED IN PHYSICAL SPACE
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td>
-!> </td><td> CGD/SOGREAH
-!> </td><td> CORIOLIS FORCE ADDED
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE TRISOU
+!                    *****************
+                     SUBROUTINE TRISOU
+!                    *****************
+!
      & (CV1, CV2, SCV1, SCV2, UN3, VN3, TA, X, Y, Z, ZS,
      &  DELTAR,MESH3,FCOR,CORIOL,NTRAC,LT,AT,DT,SURFAC,
      &  T1,ST1, W1, W2, W3, SEDI, GRAV, NPOIN3, NELEM3, NPOIN2,
@@ -55,75 +10,111 @@ C
      &  IELM2H,GRADZSX,GRADZSY,Z3,TRAV2,FU2,MESH2D, ST2,T2,ST3,T3,
      &  LATIT, LONGIT, NORD,SMU,SMV,YASEM3D,SCHCVI,DENLAW,FXH,FYH,
      &  COUROU,NPTH,T3D_FILES,T3DBI1)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AT             |-->| TEMPS DU PAS DE TEMPS
-C| CORIOL         |-->| LOGIQUE INDIQUANT SI FORCE DE CORIOLIS
-C| CV1,CV2        |<--| TERMES SOURCES SUR U ET V
-C| DELTAR         |-->| DENSITE RELATIVE
-C| DENLAW         |---| 
-C| DT             |-->| PAS DE TEMPS
-C| FCOR           |-->| COEFFICIENT DE CORIOLIS
-C| FU2            |---| 
-C| GRADZSX        |---| 
-C| GRADZSY        |---| 
-C| GRAV           |-->| GRAVITE
-C| IELM2H         |---| 
-C| IELM3          |---| 
-C| IKLE3          |-->| CORRESPONDANCE ENTRE LA NUMEROTATION LOCALE
-C|                |   | ET GLOBALE 3D
-C| INCHYD         |---| 
-C| ISCE           |---| 
-C| KSCE           |---| 
-C| LATIT          |---| 
-C| LONGIT         |---| 
-C| LT             |-->| NUMERO DU PAS DE TEMPS
-C| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-C| MASKEL         |-->| MASQUAGE DES ELEMENTS
-C| MESH2D         |---| 
-C| MESH3          |---| 
-C| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-C| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D
-C| NELEM3         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 3D
-C| NETAGE         |-->| NOMBRE D'ETAGES SUR LA VERTICALE
-C| NORD           |---| 
-C| NPLAN          |-->| NOMBRE DE PLANS SUR LA VERTICALE
-C| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-C| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-C| NPRIV          |-->| NOMBRE DE TABLEAUX DE DIMENSION NPOIN3
-C|                |   | RESERVES A L'UTILISATEUR
-C| NREJEU         |---| 
-C| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-C| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
-C| QSCE           |---| 
-C| SCHCVI         |-->| ADVECTION SCHEME ON VELOCITY
-C| SCV1,SCV2      |<--| STRUCTURES ASSOCIEES
-C| SEDI           |-->| LOGIQUE INDIQUANT LA PRESENCE D'UN SEDIMENT
-C| SMASKEL        |---| 
-C| SMU            |---| 
-C| SMV            |---| 
-C| ST1            |-->| STRUCTURE ASSOCIEE
-C| ST2            |---| 
-C| ST3            |---| 
-C| SURFAC         |-->| SURFACE DES ELEMENTS 2D
-C| SVIDE          |---| 
-C| SVOLU          |---| 
-C| T1             |-->| TABLEAU DE TRAVAIL PAR POINTS
-C| T2             |---| 
-C| T3             |---| 
-C| TA             |-->| TRACEURS
-C| TRAV2          |---| 
-C| UN3,VN3        |-->| COMPOSANTES HORIZONTALES DE LA VITESSE A TN
-C| USCE           |---| 
-C| VOLU           |---| 
-C| VSCE           |---| 
-C| W1,W2,W3       |-->| TABLEAUX DE TRAVAIL PAR ELEMENTS 3D
-C| X,Y,Z          |-->| COORDONNEES DU MAILLAGE 3D
-C| YASEM3D        |---| 
-C| Z3             |---| 
-C| ZS             |-->| COTE PAR RAPPORT A LA SURFACE
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    SOURCE TERMS FOR U & V MOMENTUM EQUATIONS.
+!
+!history  CGD/SOGREAH
+!+        
+!+        
+!+   CORIOLIS FORCE ADDED 
+!
+!history  AG (LNHE)
+!+        
+!+        
+!+   BUOYANCY TERMS COMPUTED IN PHYSICAL SPACE 
+!
+!history  JMH
+!+        19/12/2008
+!+        
+!+   WAVE DRIVEN CURRENTS ADDED. SEE IF(COUROU) 
+!
+!history  J-M HERVOUET (LNHE)
+!+        29/06/2009
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT             |-->| TEMPS DU PAS DE TEMPS
+!| CORIOL         |-->| LOGIQUE INDIQUANT SI FORCE DE CORIOLIS
+!| CV1,CV2        |<--| TERMES SOURCES SUR U ET V
+!| DELTAR         |-->| DENSITE RELATIVE
+!| DENLAW         |---| 
+!| DT             |-->| PAS DE TEMPS
+!| FCOR           |-->| COEFFICIENT DE CORIOLIS
+!| FU2            |---| 
+!| GRADZSX        |---| 
+!| GRADZSY        |---| 
+!| GRAV           |-->| GRAVITE
+!| IELM2H         |---| 
+!| IELM3          |---| 
+!| IKLE3          |-->| CORRESPONDANCE ENTRE LA NUMEROTATION LOCALE
+!|                |   | ET GLOBALE 3D
+!| INCHYD         |---| 
+!| ISCE           |---| 
+!| KSCE           |---| 
+!| LATIT          |---| 
+!| LONGIT         |---| 
+!| LT             |-->| NUMERO DU PAS DE TEMPS
+!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
+!| MASKEL         |-->| MASQUAGE DES ELEMENTS
+!| MESH2D         |---| 
+!| MESH3          |---| 
+!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
+!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D
+!| NELEM3         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 3D
+!| NETAGE         |-->| NOMBRE D'ETAGES SUR LA VERTICALE
+!| NORD           |---| 
+!| NPLAN          |-->| NOMBRE DE PLANS SUR LA VERTICALE
+!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
+!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
+!| NREJEU         |---| 
+!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
+!| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
+!| QSCE           |---| 
+!| SCHCVI         |-->| ADVECTION SCHEME ON VELOCITY
+!| SCV1,SCV2      |<--| STRUCTURES ASSOCIEES
+!| SEDI           |-->| LOGIQUE INDIQUANT LA PRESENCE D'UN SEDIMENT
+!| SMASKEL        |---| 
+!| SMU            |---| 
+!| SMV            |---| 
+!| ST1            |-->| STRUCTURE ASSOCIEE
+!| ST2            |---| 
+!| ST3            |---| 
+!| SURFAC         |-->| SURFACE DES ELEMENTS 2D
+!| SVIDE          |---| 
+!| SVOLU          |---| 
+!| T1             |-->| TABLEAU DE TRAVAIL PAR POINTS
+!| T2             |---| 
+!| T3             |---| 
+!| TA             |-->| TRACEURS
+!| TRAV2          |---| 
+!| UN3,VN3        |-->| COMPOSANTES HORIZONTALES DE LA VITESSE A TN
+!| USCE           |---| 
+!| VOLU           |---| 
+!| VSCE           |---| 
+!| W1,W2,W3       |-->| TABLEAUX DE TRAVAIL PAR ELEMENTS 3D
+!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE 3D
+!| YASEM3D        |---| 
+!| Z3             |---| 
+!| ZS             |-->| COTE PAR RAPPORT A LA SURFACE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_TRISOU => TRISOU
@@ -131,9 +122,9 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: NPOIN3,NELEM3,NPOIN2,NELEM2
       INTEGER, INTENT(IN) :: NPLAN,NETAGE,NTRAC,NPTH,T3DBI1
       INTEGER, INTENT(IN) :: LV,LT,IELM2H,NREJEU,IELM3,SCHCVI,DENLAW
@@ -170,7 +161,7 @@ C
       TYPE (BIEF_OBJ), INTENT(INOUT)  :: TRAV2, FU2
       TYPE(BIEF_OBJ),  INTENT(INOUT)  :: SVOLU,SMU,SMV
 !
-C                                 * = NSCE
+!                                 * = NSCE
       INTEGER, INTENT(IN) :: ISCE(*),KSCE(*)
       DOUBLE PRECISION, INTENT(IN) :: QSCE(*),USCE(*),VSCE(*)
 !
@@ -178,13 +169,13 @@ C                                 * = NSCE
       LOGICAL, INTENT(IN) :: CORIOL, SEDI, MSK, INCHYD,COUROU
       LOGICAL, INTENT(INOUT) :: YASEM3D
       TYPE(BIEF_FILE), INTENT(IN) :: T3D_FILES(*)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IELEM3,IPLAN,IETAGE,IZ,IZM,IZS,ERR,NP,I3D
       DOUBLE PRECISION A,OMEGA,PI,COSNORD,SINNORD,CORI,BETA0Y,FF0
       LOGICAL CORIVAR
-C
+!
       INTEGER I,OPTFLO
       CHARACTER(LEN=15) FORMUL
 !
@@ -195,7 +186,7 @@ C
       DOUBLE PRECISION DZSUDX,DZSUDY,DRSUDX,DRSUDY
       DOUBLE PRECISION DZ123,C,ATH
 !
-C     FOR WAVE DRIVEN CURRENTS
+!     FOR WAVE DRIVEN CURRENTS
 !
       CHARACTER*16 NOMX,NOMY
       LOGICAL DEJALU,OKX,OKY
@@ -205,16 +196,16 @@ C     FOR WAVE DRIVEN CURRENTS
 !
 !***********************************************************************
 !
-C INITIALISES
+! INITIALISES
 !
-C     CALL OS( 'X=C     ' , X=SCV1 , C=0.D0 )
-C     CALL OS( 'X=C     ' , X=SCV2 , C=0.D0 )
+!     CALL OS( 'X=C     ' , X=SCV1 , C=0.D0 )
+!     CALL OS( 'X=C     ' , X=SCV2 , C=0.D0 )
 !
       SCV1%TYPR='0'
       SCV2%TYPR='0'
 !
 !-----------------------------------------------------------------------
-C  BUOYANCY SOURCE TERMS
+!  BUOYANCY SOURCE TERMS
 !-----------------------------------------------------------------------
 !
       YASEM3D=.FALSE.
@@ -226,19 +217,19 @@ C  BUOYANCY SOURCE TERMS
       CALL OS( 'X=0     ' , X=SCV1 )
       CALL OS( 'X=0     ' , X=SCV2 )
 !
-C     VOLUME OF TEST FUNCTIONS
+!     VOLUME OF TEST FUNCTIONS
 !
       CALL VECTOR(ST1, '=', 'MASBAS          ',IELM3, 1.D0,
      &            SVIDE, SVIDE,
      &            SVIDE, SVIDE, SVIDE, SVIDE, MESH3,.FALSE.,SMASKEL)
       IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH3)
 !
-C     1 : BUOYANCY IN REAL MESH
-C     2 : BUOYANCY IN TRANSFORMED MESH
+!     1 : BUOYANCY IN REAL MESH
+!     2 : BUOYANCY IN TRANSFORMED MESH
 !
-C     OPTFLO CHANGED FROM 2 INTO 1 BY JMH ON 03/10/2002
-C     ENABLES TREATMENT WITH TETRAHEDRONS
-C     WHO CAN TELL WHICH IS BEST WITH PRISMS ?
+!     OPTFLO CHANGED FROM 2 INTO 1 BY JMH ON 03/10/2002
+!     ENABLES TREATMENT WITH TETRAHEDRONS
+!     WHO CAN TELL WHICH IS BEST WITH PRISMS ?
 !
       OPTFLO=1
 !
@@ -246,24 +237,24 @@ C     WHO CAN TELL WHICH IS BEST WITH PRISMS ?
 !
       YASEM3D=.FALSE.
 !
-C - G DENSITY GRADIENTS
-C     WITH TREATMENT OF HYDROSTATIC INCONSISTENCIES IF NEEDED
+! - G DENSITY GRADIENTS
+!     WITH TREATMENT OF HYDROSTATIC INCONSISTENCIES IF NEEDED
 !
       FORMUL='GRADF          '
       IF(INCHYD) FORMUL(6:6)='2'
 !
 !     ===============================================
-C     BETTER FILTERING OF HYDROSTATIC INCONSISTENCIES
+!     BETTER FILTERING OF HYDROSTATIC INCONSISTENCIES
 !     ===============================================
 !
-C     3 OR 4 IMPLIES THAT 2 IS ALSO APPLIED
+!     3 OR 4 IMPLIES THAT 2 IS ALSO APPLIED
 !
-C     RECOMMENDED : FILTER 4
+!     RECOMMENDED : FILTER 4
 !
-C     FILTER 3
-C     IF(INCHYD) FORMUL(6:6)='3'
-C     FILTER 4
-C     IF(INCHYD) FORMUL(6:6)='4'
+!     FILTER 3
+!     IF(INCHYD) FORMUL(6:6)='3'
+!     FILTER 4
+!     IF(INCHYD) FORMUL(6:6)='4'
 !
 !
       CALL VECTOR(ST2, '=',FORMUL//'X',IELM3,-GRAV,DELTAR,SVIDE,
@@ -277,12 +268,12 @@ C     IF(INCHYD) FORMUL(6:6)='4'
         CALL PARCOM(ST3,2,MESH3)
       ENDIF
 !
-C NODAL VALUE
+! NODAL VALUE
 !
       CALL OVD('X=Y/Z   ',T2,T2,T1,0.D0,NPOIN3,2,0.D0,1.D-9)
       CALL OVD('X=Y/Z   ',T3,T3,T1,0.D0,NPOIN3,2,0.D0,1.D-9)
 !
-C SIMPSON INTEGRATION
+! SIMPSON INTEGRATION
 !
       DO IPLAN = NPLAN, 2, -1
         DO I = 1, NPOIN2
@@ -294,7 +285,7 @@ C SIMPSON INTEGRATION
         ENDDO
       ENDDO
 !
-C TERMS WITH FREE SURFACE GRADIENT (NODAL VALUES)
+! TERMS WITH FREE SURFACE GRADIENT (NODAL VALUES)
 !
       DO IPLAN = 1, NPLAN-1
 !
@@ -314,9 +305,9 @@ C TERMS WITH FREE SURFACE GRADIENT (NODAL VALUES)
 !
       YASEM3D = .FALSE.
 !
-C TRANSFORMED MESH
+! TRANSFORMED MESH
 !
-C COMPUTES ZS: OPPOSITE OF WATER DEPTH AT CONSIDERED POINT
+! COMPUTES ZS: OPPOSITE OF WATER DEPTH AT CONSIDERED POINT
 !
         I2 = NPOIN3 - NPOIN2 + 1
         I4 = NPOIN3
@@ -447,13 +438,13 @@ C COMPUTES ZS: OPPOSITE OF WATER DEPTH AT CONSIDERED POINT
 !
       ENDIF
 !
-C     IF(NTRAC.GT.0)
+!     IF(NTRAC.GT.0)
       ENDIF
 !
 !-----------------------------------------------------------------------
-C  CORIOLIS FORCE
+!  CORIOLIS FORCE
 !
-C  NOTE JMH : THERE ARE ADDITIONAL TERMS IF W IS TAKEN INTO ACCOUNT
+!  NOTE JMH : THERE ARE ADDITIONAL TERMS IF W IS TAKEN INTO ACCOUNT
 !
 !-----------------------------------------------------------------------
 !
@@ -469,12 +460,12 @@ C  NOTE JMH : THERE ARE ADDITIONAL TERMS IF W IS TAKEN INTO ACCOUNT
          PI=ACOS(-1.D0)
          OMEGA=2.D0*PI/86164.D0
 !
-C - NORD IS THE ANGLE BETWEEN NORTH AND THE USER'S Y AXIS
+! - NORD IS THE ANGLE BETWEEN NORTH AND THE USER'S Y AXIS
 !
          COSNORD=COS(PI*NORD/180.D0)
          SINNORD=SIN(PI*NORD/180.D0)
 !
-C - IF CORIOLIS FORCE DEPENDS ON Y COORDINATE (DEFAULT)
+! - IF CORIOLIS FORCE DEPENDS ON Y COORDINATE (DEFAULT)
 !
         CORIVAR=.FALSE.
 !
@@ -484,7 +475,7 @@ C - IF CORIOLIS FORCE DEPENDS ON Y COORDINATE (DEFAULT)
 !
           DO I=1,NPOIN3
 !
-C                            6.37D6 : EARTH RADIUS
+!                            6.37D6 : EARTH RADIUS
           BETA0Y=(2.D0*OMEGA/6.37D6)*COS(LATIT*PI/180.D0)
      &                              *(Y(I)*COSNORD-X(I)*SINNORD)
           CORI=FF0+BETA0Y
@@ -512,22 +503,22 @@ C                            6.37D6 : EARTH RADIUS
         ENDIF
 !
       ENDIF
-C
-C***********************************************************************
-C
-C     * WITH WAVE DRIVEN CURRENTS
-C       -------------------------
-C
-C       FORCING TERMS FROM A TOMAWAC RESULTS FILE
-C
-C       BEWARE :    1. MESHES MUST BE THE SAME
-C       ---------
-C                   2. TAKES THE LAST TIMESTEP FROM TOMAWAC FILE
-C
+!
+!***********************************************************************
+!
+!     * WITH WAVE DRIVEN CURRENTS
+!       -------------------------
+!
+!       FORCING TERMS FROM A TOMAWAC RESULTS FILE
+!
+!       BEWARE :    1. MESHES MUST BE THE SAME
+!       ---------
+!                   2. TAKES THE LAST TIMESTEP FROM TOMAWAC FILE
+!
       IF(COUROU) THEN
-C
+!
          IF(.NOT.DEJALU.AND..NOT.INCLUS(COUPLING,'TOMAWAC')) THEN
-C
+!
             ALLOCATE(W(NPOIN2),STAT=ERR)
             IF(ERR.NE.0) THEN
               IF(LNG.EQ.1) THEN
@@ -537,15 +528,15 @@ C
                 WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN TRISOU'
               ENDIF
             ENDIF
-C
-C           T3DBI1 : BINARY DATA FILE 1
+!
+!           T3DBI1 : BINARY DATA FILE 1
             NOMX='FORCE FX        '
             NOMY='FORCE FY        '
             CALL FIND_IN_SEL(FXH,NOMX,T3D_FILES(T3DBI1)%LU,
      &                       W,OKX,NPTH,NP,ATH)
             CALL FIND_IN_SEL(FYH,NOMY,T3D_FILES(T3DBI1)%LU,
      &                       W,OKY,NPTH,NP,ATH)
-C
+!
             IF(.NOT.OKX.OR..NOT.OKY) THEN
               IF(LNG.EQ.1) WRITE(LU,5)
               IF(LNG.EQ.2) WRITE(LU,6)
@@ -565,11 +556,11 @@ C
  96           FORMAT(1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING.',/,
      &               1X,'WAVE AND CURRENT MODELS MESHES ARE ',/,
      &               1X,'DIFFERENT : NOT POSSIBLE AT THE MOMENT.')
-C
+!
               CALL PLANTE(1)
               STOP
             ENDIF
-C           WRITES OUT TO LISTING
+!           WRITES OUT TO LISTING
             IF(LNG.EQ.1) WRITE(LU,115) ATH
             IF(LNG.EQ.2) WRITE(LU,116) ATH
 115         FORMAT(1X,/,1X,'TRISOU : COURANTS DE HOULE',/,
@@ -577,16 +568,16 @@ C           WRITES OUT TO LISTING
 116         FORMAT(1X,/,1X,'TRISOU: WAVE DRIVEN CURRENTS MODELLING',/,
      &                  1X,'         READING FILE AT TIME ',F10.3,/)
             DEJALU = .TRUE.
-C
+!
          ENDIF
-C
-C        ADDS TO SOURCE TERMS
-C
+!
+!        ADDS TO SOURCE TERMS
+!
          IF(SCV1%TYPR.EQ.'0') THEN
            DO I=1,NPOIN2
              DO IPLAN=1,NPLAN
                I3D=((IPLAN-1)*NPOIN2)+I
-C              CV1(I3D)=1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
+!              CV1(I3D)=1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
                CV1(I3D)=FXH%R(I)
                CV2(I3D)=FYH%R(I)
              ENDDO
@@ -597,7 +588,7 @@ C              CV1(I3D)=1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
            DO I=1,NPOIN2
              DO IPLAN=1,NPLAN
                I3D=((IPLAN-1)*NPOIN2)+I
-C              CV1(I3D)=CV1(I3D)+1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
+!              CV1(I3D)=CV1(I3D)+1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION)
                CV1(I3D)=CV1(I3D)+FXH%R(I)
                CV2(I3D)=CV2(I3D)+FYH%R(I)
              ENDDO
@@ -608,10 +599,10 @@ C              CV1(I3D)=CV1(I3D)+1.5D0*FXH%R(I)  (SOGREAH-PECHON-TEISSON VERSION
 !
 !-----------------------------------------------------------------------
 !
-C TAKES THE VELOCITY OF SOURCES INTO ACCOUNT
+! TAKES THE VELOCITY OF SOURCES INTO ACCOUNT
 !
-C NOTE : IF USCE AND VSCE ARE NOT GIVEN, CONSIDERS THAT
-C        USCE=UN3 AND VSCE=VN3
+! NOTE : IF USCE AND VSCE ARE NOT GIVEN, CONSIDERS THAT
+!        USCE=UN3 AND VSCE=VN3
 !
       IF(NREJEU.GT.0.AND.SCHCVI.NE.ADV_NSC.AND.SCHCVI.NE.ADV_PSI
      &              .AND.SCHCVI.NE.ADV_LPO.AND.SCHCVI.NE.ADV_NSC_TF
@@ -624,8 +615,8 @@ C        USCE=UN3 AND VSCE=VN3
           SCV2%TYPR='Q'
         ENDIF
 !
-C       WITH DISTRIBUTIVE SCHEMES AND FINITE VOLUME SCHEMES
-C       THIS IS DONE DIRECTLY INTO SUBROUTINE MURD3D, AND NOT WITH CV1
+!       WITH DISTRIBUTIVE SCHEMES AND FINITE VOLUME SCHEMES
+!       THIS IS DONE DIRECTLY INTO SUBROUTINE MURD3D, AND NOT WITH CV1
 !
         DO I=1,NREJEU
         CV1((KSCE(I)-1)*NPOIN2+ISCE(I))=CV1((KSCE(I)-1)*NPOIN2+ISCE(I))
@@ -642,6 +633,3 @@ C       THIS IS DONE DIRECTLY INTO SUBROUTINE MURD3D, AND NOT WITH CV1
 !
       RETURN
       END
-C
-C#######################################################################
-C

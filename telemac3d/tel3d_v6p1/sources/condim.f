@@ -1,69 +1,54 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       INITIALISES VELOCITY, DEPTH AND TRACERS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 05/05/2010
-!> </td><td> J-M HERVOUET(LNHE) 01 30 87 80 18
-!> </td><td> SUPPRESSED INITIALISATION OF DPWAVE
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 16/03/2010
-!> </td><td>
-!> </td><td> NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 23/01/2009
-!> </td><td>
-!> </td><td> ADDED CHECK OF ZSTAR
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/04/2007
-!> </td><td>
-!> </td><td> ADDED INITIALISATION OF DPWAVE
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/1999
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE CONDIM
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    *****************
+                     SUBROUTINE CONDIM
+!                    *****************
+!
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    INITIALISES VELOCITY, DEPTH AND TRACERS.
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  
+!+        20/04/2007
+!+        
+!+   ADDED INITIALISATION OF DPWAVE 
+!
+!history  
+!+        23/01/2009
+!+        
+!+   ADDED CHECK OF ZSTAR 
+!
+!history  
+!+        16/03/2010
+!+        
+!+   NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW 
+!
+!history  J-M HERVOUET(LNHE)
+!+        05/05/2010
+!+        V6P0
+!+   SUPPRESSED INITIALISATION OF DPWAVE 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_CONDIM => CONDIM
       USE DECLARATIONS_TELEMAC
@@ -79,11 +64,11 @@ C
 !
 !***********************************************************************
 !
-C     ORIGIN OF TIME
+!     ORIGIN OF TIME
 !
       IF(.NOT.SUIT2) AT  = 0.D0
 !
-C     INITIALISES H, THE WATER DEPTH
+!     INITIALISES H, THE WATER DEPTH
 !
       IF(.NOT.SUIT2) THEN
 !
@@ -104,8 +89,8 @@ C     INITIALISES H, THE WATER DEPTH
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-C     USER INPUT :
-C     PROGRAM HERE SPECIAL INITIAL CONDITIONS ON DEPTH
+!     USER INPUT :
+!     PROGRAM HERE SPECIAL INITIAL CONDITIONS ON DEPTH
         IF(LNG.EQ.1) WRITE(LU,10)
         IF(LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'CONDIM : AVEC DES CONDITIONS INITIALES PARTICULIERES'
@@ -114,8 +99,8 @@ C     PROGRAM HERE SPECIAL INITIAL CONDITIONS ON DEPTH
      &      ,/,1X,'         YOU HAVE TO MODIFY CONDIM')
         CALL PLANTE(1)
         STOP
-C     END OF SPECIAL INITIAL CONDITIONS
-C     END OF USER INPUT
+!     END OF SPECIAL INITIAL CONDITIONS
+!     END OF USER INPUT
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIM : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -130,7 +115,7 @@ C     END OF USER INPUT
         IF(LNG.EQ.2) WRITE(LU,*) 'DEPTH IS READ IN THE BINARY FILE 1'
       ENDIF
 !
-C     CLIPS H
+!     CLIPS H
 !
       DO I=1,NPOIN2
         H%R(I)=MAX(H%R(I),0.D0)
@@ -140,88 +125,88 @@ C     CLIPS H
 !
 !-----------------------------------------------------------------------
 !
-C     DATA TO BUILD VERTICAL COORDINATES IN CALCOT
+!     DATA TO BUILD VERTICAL COORDINATES IN CALCOT
 !
-C     TRANSF IS KEYWORD "MESH TRANSFORMATION"
-C     IF TRANSF = 0, SUBROUTINE CALCOT MUST BE IMPLEMENTED BY THE USER
+!     TRANSF IS KEYWORD "MESH TRANSFORMATION"
+!     IF TRANSF = 0, SUBROUTINE CALCOT MUST BE IMPLEMENTED BY THE USER
 !
-C     AN EQUIVALENT OF TRANSF MUST BE GIVEN FOR EVERY PLANE:
+!     AN EQUIVALENT OF TRANSF MUST BE GIVEN FOR EVERY PLANE:
 !
-C     POSSIBLE VALUES OF TRANSF_PLANE :
+!     POSSIBLE VALUES OF TRANSF_PLANE :
 !
-C     1 : SIGMA TRANSFORMATION WITH EVENLY SPACED PLANES
-C     2 : SIGMA TRANSFORMATION WITH PROPORTIONS GIVEN IN ZSTAR
-C     3 : PRESCRIBED ELEVATION GIVEN IN ZPLANE
+!     1 : SIGMA TRANSFORMATION WITH EVENLY SPACED PLANES
+!     2 : SIGMA TRANSFORMATION WITH PROPORTIONS GIVEN IN ZSTAR
+!     3 : PRESCRIBED ELEVATION GIVEN IN ZPLANE
 !
-C     STANDARD BELOW IS: EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
+!     STANDARD BELOW IS: EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
 !
       DO IPLAN = 1,NPLAN
         TRANSF_PLANE%I(IPLAN)=1
       ENDDO
-C
-C     OTHER EXAMPLES:
-C
-C     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
-C
-C     DO IPLAN = 1,NPLAN
-C       TRANSF_PLANE%I(IPLAN)=3
-C     ENDDO
-C     ZPLANE%R(2)=-7.D0
-C     ZPLANE%R(3)=-4.D0
-C     ...
-C     ZPLANE%R(NPLAN-1)=-0.05D0
-C
-C
-C     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
-C
-C     DO IPLAN = 1,NPLAN
-C       TRANSF_PLANE%I(IPLAN)=2
-C     ENDDO
-C     ZSTAR%R(2)=0.02D0
-C     ZSTAR%R(3)=0.1D0
-C     ...
-C     ZSTAR%R(NPLAN-1)=0.95D0
-C
-C
-C     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
-C                AND SIGMA ELSEWHERE
-C
-C     DO IPLAN = 1,NPLAN
-C       TRANSF_PLANE%I(IPLAN)=1
-C     ENDDO
-C     TRANSF_PLANE%I(4)=3
-C     ZPLANE%R(4)=-3.D0
-C
-C
-C     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
-C                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
-C                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
-C                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
-C                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
-C                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
-C                                      1. FOR UPPER FIXED PLANE
-C
-C     DO IPLAN = 1,7
-C       TRANSF_PLANE%I(IPLAN)=2
-C     ENDDO
-C     TRANSF_PLANE%I(4)=3
-C     ZPLANE%R(4)=3.D0
-C     ZSTAR%R(2)=0.2D0
-C     ZSTAR%R(3)=0.8D0
-C     ZSTAR%R(5)=0.1D0
-C     ZSTAR%R(6)=0.9D0
-C
+!
+!     OTHER EXAMPLES:
+!
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
+!
+!
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
+!
+!
+!     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
+!                AND SIGMA ELSEWHERE
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=1
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=-3.D0
+!
+!
+!     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
+!     DO IPLAN = 1,7
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=3.D0
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+!
 !
 !***********************************************************************
 !
-C     COMPUTES ELEVATIONS
-C     IF IT IS A CONTINUATION, WILL BE DONE AFTER CALLING 'SUITE'
+!     COMPUTES ELEVATIONS
+!     IF IT IS A CONTINUATION, WILL BE DONE AFTER CALLING 'SUITE'
 !
       IF(DEBU) CALL CALCOT(Z,H%R)
 !
 !***********************************************************************
 !
-C     INITIALISES VELOCITIES
+!     INITIALISES VELOCITIES
 !
       IF(SUIT2) THEN
         DO I=1,NPLAN
@@ -239,7 +224,7 @@ C     INITIALISES VELOCITIES
 !
 !-----------------------------------------------------------------------
 !
-C     INITIALISES TRACERS
+!     INITIALISES TRACERS
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
@@ -249,21 +234,21 @@ C     INITIALISES TRACERS
 !
 !
 !-----------------------------------------------------------------------
-C   INITIALISES THE K-EPSILON MODEL (OPTIONAL)
-C   WHEN DONE: AKEP = .FALSE.
+!   INITIALISES THE K-EPSILON MODEL (OPTIONAL)
+!   WHEN DONE: AKEP = .FALSE.
 !
       AKEP=.TRUE.
 !
-C     IF(ITURBV.EQ.3) THEN
+!     IF(ITURBV.EQ.3) THEN
 !
-C       HERE INITIALISES K AND EPSILON
+!       HERE INITIALISES K AND EPSILON
 !
-C       AKEP = .FALSE.
-C     ENDIF
+!       AKEP = .FALSE.
+!     ENDIF
 !
 !-----------------------------------------------------------------------
 !
-C INITIALISES THE PRESSURE FIELDS TO 0.0
+! INITIALISES THE PRESSURE FIELDS TO 0.0
 !
       IF(NONHYD) THEN
         CALL OS('X=C     ',X=DP,C=0.D0)
@@ -276,6 +261,3 @@ C INITIALISES THE PRESSURE FIELDS TO 0.0
 !
       RETURN
       END
-C
-C#######################################################################
-C

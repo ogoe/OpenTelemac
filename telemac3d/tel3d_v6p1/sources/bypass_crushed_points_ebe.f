@@ -1,143 +1,57 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       BYPASSES FLUXES TO POINTS THAT WILL REMAIN WITH
-!>                A ZERO VOLUME.
-!><br>            FLUX IS CONVEYED TO UPPER LAYER THROUGH A VERTICAL.
-!><br>            THIS AVOIDS USELESS ITERATIONS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @warning  HERE FLUXES ARE FROM POINT 2 TO POINT 1.
-!>            SEE FLUX3D (HORIZONTAL FLUXES BASED ON FLUINT)
-!>            AND PRECON (VERTICAL FLUXES BASED ON WSCONV)
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, DECLARATIONS_TELEMAC
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> FLUX, IKLE, MESH2, MESH3, NELEM2, NELEM3, NPLAN, NPOIN3, SVOLU, SVOLUN, TRA01, VOLU, VOLUN
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> EPS_VOLUME, I, I1, I2, I3, I4, I5, I6, IELEM2, IELEM3, IPLAN
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> OS(), PARCOM()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>PRECON()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 20/04/2010
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>FLUX
-!></td><td><-></td><td>FLUXES TO BE CHANGED
-!>    </td></tr>
-!>          <tr><td>IKLE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MESH2,3
-!></td><td>--></td><td>2D MESH, 3D MESH
-!>    </td></tr>
-!>          <tr><td>MESH3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NELEM2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NELEM3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPLAN
-!></td><td>--></td><td>NUMBER OF PLANES
-!>    </td></tr>
-!>          <tr><td>NPOIN3
-!></td><td>--></td><td>NUMBER OF 3D POINTS
-!>    </td></tr>
-!>          <tr><td>SVOLU
-!></td><td>--></td><td>BIEF_OBJ STRUCTURE, WITH SVOLU%R=VOLU
-!>    </td></tr>
-!>          <tr><td>SVOLUN
-!></td><td>--></td><td>BIEF_OBJ STRUCTURE, WITH SVOLUN%R=VOLUN
-!>    </td></tr>
-!>          <tr><td>TRA01
-!></td><td><-></td><td>WORK BIEF_OBJ STRUCTURE
-!>    </td></tr>
-!>          <tr><td>VOLU
-!></td><td>--></td><td>VOLUME AROUND POINTS AT TIME N+1
-!>    </td></tr>
-!>          <tr><td>VOLUN
-!></td><td>--></td><td>VOLUME AROUND POINTS AT TIME N+1
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE BYPASS_CRUSHED_POINTS_EBE
+!                    ************************************
+                     SUBROUTINE BYPASS_CRUSHED_POINTS_EBE
+!                    ************************************
+!
      &(VOLU,SVOLU,VOLUN,SVOLUN,FLUX,TRA01,MESH2,MESH3,
      & NPOIN3,NELEM2,NELEM3,NPLAN,IKLE)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| FLUX           |<->| FLUXES TO BE CHANGED
-C| IKLE           |---| 
-C| MESH2,3        |-->| 2D MESH, 3D MESH
-C| MESH3          |---| 
-C| NELEM2         |---| 
-C| NELEM3         |---| 
-C| NPLAN          |-->| NUMBER OF PLANES
-C| NPOIN3         |-->| NUMBER OF 3D POINTS
-C| SVOLU          |-->| BIEF_OBJ STRUCTURE, WITH SVOLU%R=VOLU
-C| SVOLUN         |-->| BIEF_OBJ STRUCTURE, WITH SVOLUN%R=VOLUN
-C| TRA01          |<->| WORK BIEF_OBJ STRUCTURE
-C| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
-C| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N+1
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    BYPASSES FLUXES TO POINTS THAT WILL REMAIN WITH
+!+                A ZERO VOLUME.
+!+
+!+            FLUX IS CONVEYED TO UPPER LAYER THROUGH A VERTICAL.
+!+
+!+            THIS AVOIDS USELESS ITERATIONS.
+!
+!warning  HERE FLUXES ARE FROM POINT 2 TO POINT 1.
+!+            SEE FLUX3D (HORIZONTAL FLUXES BASED ON FLUINT)
+!+            AND PRECON (VERTICAL FLUXES BASED ON WSCONV)
+!
+!history  J-M HERVOUET (LNHE)
+!+        20/04/2010
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FLUX           |<->| FLUXES TO BE CHANGED
+!| IKLE           |---| 
+!| MESH3          |---| 
+!| NELEM2         |---| 
+!| NELEM3         |---| 
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| SVOLU          |-->| BIEF_OBJ STRUCTURE, WITH SVOLU%R=VOLU
+!| SVOLUN         |-->| BIEF_OBJ STRUCTURE, WITH SVOLUN%R=VOLUN
+!| TRA01          |<->| WORK BIEF_OBJ STRUCTURE
+!| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
+!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N+1
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
 !
@@ -169,7 +83,7 @@ C
 !
 !-----------------------------------------------------------------------
 !
-C     TRA01=VOLU+VOLUN=0 MEANS THAT BOTH VOLU AND VOLUN ARE EQUAL TO 0
+!     TRA01=VOLU+VOLUN=0 MEANS THAT BOTH VOLU AND VOLUN ARE EQUAL TO 0
 !
       CALL OS('X=Y+Z   ',X=TRA01,Y=SVOLU,Z=SVOLUN)
 !
@@ -177,7 +91,7 @@ C     TRA01=VOLU+VOLUN=0 MEANS THAT BOTH VOLU AND VOLUN ARE EQUAL TO 0
         CALL PARCOM(TRA01,2,MESH3)
       ENDIF
 !
-C     GROUPS FLUXES
+!     GROUPS FLUXES
 !
       DO IELEM3=1,NELEM3
         DO I=1,15
@@ -185,7 +99,7 @@ C     GROUPS FLUXES
         ENDDO
       ENDDO
 !
-C     BYPASSES FLUXES
+!     BYPASSES FLUXES
 !
       DO IELEM2=1,NELEM2
         DO IPLAN=1,NPLAN-1
@@ -202,9 +116,9 @@ C     BYPASSES FLUXES
           I5=IKLE(IELEM3,5)
           I6=IKLE(IELEM3,6)
 !
-C         CROSSED SEGMENTS
+!         CROSSED SEGMENTS
 !
-C         ISSUED FROM 1
+!         ISSUED FROM 1
           IF(TRA01%R(I1).LT.EPS_VOLUME.OR.
      &       TRA01%R(I5).LT.EPS_VOLUME) THEN
             FLUX(13,IELEM3)=FLUX(13,IELEM3)+FLUX(04,IELEM3)
@@ -217,7 +131,7 @@ C         ISSUED FROM 1
             FLUX(03,IELEM3)=FLUX(03,IELEM3)+FLUX(05,IELEM3)
             FLUX(05,IELEM3)=0.D0
           ENDIF
-C         ISSUED FROM 2
+!         ISSUED FROM 2
           IF(TRA01%R(I2).LT.EPS_VOLUME.OR.
      &       TRA01%R(I4).LT.EPS_VOLUME) THEN
             FLUX(13,IELEM3)=FLUX(13,IELEM3)-FLUX(07,IELEM3)
@@ -230,7 +144,7 @@ C         ISSUED FROM 2
             FLUX(08,IELEM3)=FLUX(08,IELEM3)+FLUX(09,IELEM3)
             FLUX(09,IELEM3)=0.D0
           ENDIF
-C         ISSUED FROM 3
+!         ISSUED FROM 3
           IF(TRA01%R(I3).LT.EPS_VOLUME.OR.
      &       TRA01%R(I4).LT.EPS_VOLUME) THEN
             FLUX(14,IELEM3)=FLUX(14,IELEM3)-FLUX(10,IELEM3)
@@ -244,10 +158,10 @@ C         ISSUED FROM 3
             FLUX(11,IELEM3)=0.D0
           ENDIF
 !
-C         LOWER HORIZONTAL SEGMENTS
+!         LOWER HORIZONTAL SEGMENTS
 !
           IF(TRA01%R(I1).LT.EPS_VOLUME) THEN
-C           ISSUED FROM 1
+!           ISSUED FROM 1
             FLUX(13,IELEM3)=FLUX(13,IELEM3)+FLUX(01,IELEM3)
             FLUX(14,IELEM3)=FLUX(14,IELEM3)+FLUX(02,IELEM3)
             FLUX(03,IELEM3)=FLUX(03,IELEM3)+FLUX(01,IELEM3)
@@ -258,7 +172,7 @@ C           ISSUED FROM 1
             FLUX(02,IELEM3)=0.D0
           ENDIF
           IF(TRA01%R(I2).LT.EPS_VOLUME) THEN
-C           ISSUED FROM 2
+!           ISSUED FROM 2
             FLUX(13,IELEM3)=FLUX(13,IELEM3)+FLUX(01,IELEM3)
             FLUX(15,IELEM3)=FLUX(15,IELEM3)+FLUX(06,IELEM3)
             FLUX(08,IELEM3)=FLUX(08,IELEM3)-FLUX(01,IELEM3)
@@ -269,7 +183,7 @@ C           ISSUED FROM 2
             FLUX(06,IELEM3)=0.D0
           ENDIF
           IF(TRA01%R(I3).LT.EPS_VOLUME) THEN
-C           ISSUED FROM 3
+!           ISSUED FROM 3
             FLUX(15,IELEM3)=FLUX(15,IELEM3)+FLUX(06,IELEM3)
             FLUX(14,IELEM3)=FLUX(14,IELEM3)+FLUX(02,IELEM3)
             FLUX(12,IELEM3)=FLUX(12,IELEM3)-FLUX(06,IELEM3)
@@ -280,16 +194,16 @@ C           ISSUED FROM 3
             FLUX(02,IELEM3)=0.D0
           ENDIF
 !
-C         THESE PROPERTIES SHOULD BE ENSURED AFTER ASSEMBLING
-C         SMALL MASS ERROR IF 3 FOLLOWING LINES ARE DELETED (WHY ?)
+!         THESE PROPERTIES SHOULD BE ENSURED AFTER ASSEMBLING
+!         SMALL MASS ERROR IF 3 FOLLOWING LINES ARE DELETED (WHY ?)
 !
           IF(TRA01%R(I1).LT.EPS_VOLUME) FLUX(03,IELEM3)=0.D0
           IF(TRA01%R(I2).LT.EPS_VOLUME) FLUX(08,IELEM3)=0.D0
           IF(TRA01%R(I3).LT.EPS_VOLUME) FLUX(12,IELEM3)=0.D0
 !
-C         UPPER HORIZONTAL SEGMENTS CANNOT BE TREATED
-C         NO DEGREE OF FREEDOM LEFT, THEY ARE TRANSFERRED
-C         TO UPPER LEVEL
+!         UPPER HORIZONTAL SEGMENTS CANNOT BE TREATED
+!         NO DEGREE OF FREEDOM LEFT, THEY ARE TRANSFERRED
+!         TO UPPER LEVEL
 !
           IF(IPLAN.NE.NPLAN-1) THEN
             FLUX(01,IELEM3+NELEM2)=FLUX(01,IELEM3+NELEM2)
@@ -304,14 +218,14 @@ C         TO UPPER LEVEL
           ENDIF
 !
         ELSE
-C         NO MORE CRUSHED POINTS ABOVE
+!         NO MORE CRUSHED POINTS ABOVE
           EXIT
         ENDIF
 !
         ENDDO
       ENDDO
 !
-C     UNGROUPS FLUXES
+!     UNGROUPS FLUXES
 !
       DO IELEM3=1,NELEM3
         DO I=1,15
@@ -323,11 +237,8 @@ C     UNGROUPS FLUXES
           ENDIF
         ENDDO
       ENDDO
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,61 +1,55 @@
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       WRITES HEADERS TO THE LISTING AT THE VARIOUS STAGES
-!>                OF THE PROGRAM.
-!><br>           (NON-HYDROSTATIC VERSION MESSAGES ADDED).
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.6                                       </center>
-!> </td><td> 05/07/05
-!> </td><td> J.M. HERVOUET  (LNH) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/99
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE MITTIT
+!                    *****************
+                     SUBROUTINE MITTIT
+!                    *****************
+!
      & (IETAPE,AT,LT)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AT , LT        |-->| TEMPS , NUMERO DU PAS DE TEMPS.
-C| IETAPE         |-->| INDICATEUR D'AVANCEMENT DANS LE PROGRAMME.
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    WRITES HEADERS TO THE LISTING AT THE VARIOUS STAGES
+!+                OF THE PROGRAM.
+!+
+!+           (NON-HYDROSTATIC VERSION MESSAGES ADDED).
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  J.M. HERVOUET  (LNH)
+!+        05/07/05
+!+        V5P6
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| IETAPE         |-->| INDICATEUR D'AVANCEMENT DANS LE PROGRAMME.
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: IETAPE,LT
       DOUBLE PRECISION, INTENT(IN) :: AT
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       CHARACTER(LEN=50) :: FR(17), GB(17)
       CHARACTER(LEN=50) :: FRNH(4), GBNH(4)
 !
@@ -164,6 +158,3 @@ C
 !
       RETURN
       END
-C
-C#######################################################################
-C

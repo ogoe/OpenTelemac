@@ -1,193 +1,74 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       ENSURES THE CONDITION U . N = 0  (U AND N ARE VECTORS).
-!><br>           (FOR A LATERAL SOLID BOUNDARY, DUPLICATES THE NORMAL
-!>                COMPONENT OF THE VELOCITY, COMPUTED BY TELEMAC, ON THE VERTICAL).
-!><br>            ALSO ENSURES THE DIRICHLET CONDITIONS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> KADH, KDEB, KENT, KLOG, KP1BOR, LIHBOR, LIUBOF, LIUBOL, LIUBOS, LIVBOF, LIVBOL, LIVBOS, LIWBOF, LIWBOL, LIWBOS, NBOR, NPLAN, NPOIN2, NPTFR, U, UBORF, UBORL, UBORS, V, VBORF, VBORL, VBORS, VELPROLAT, W, WBORF, WBORL, WBORS, XNEBOR, YNEBOR
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> IPLAN, IPOIN, IPOIN2, IPTF2, IPTFR, PSCAL
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TELEMAC3D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 29/02/08
-!> </td><td> JM HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 1.2                                       </center>
-!> </td><td> **/03/99
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>KADH
-!></td><td>--></td><td>CONVENTION POUR LES PAROIS AVEC ADHERENCE
-!>    </td></tr>
-!>          <tr><td>KDEB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KENT
-!></td><td>--></td><td>CONVENTION POUR LES VALEURS IMPOSEES (ENT.)
-!>    </td></tr>
-!>          <tr><td>KLOG
-!></td><td>--></td><td>CONVENTION POUR LES PAROIS AVEC GLISSEMENT
-!>    </td></tr>
-!>          <tr><td>KP1BOR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KSORT
-!></td><td>--></td><td>CONVENTION POUR LES VALEURS LIBRES (SORT.)
-!>    </td></tr>
-!>          <tr><td>LIHBOR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LIUBOF,LIVBOF
-!></td><td>--></td><td>TYPES DE C.L. SUR U ET V AU FOND
-!>    </td></tr>
-!>          <tr><td>LIUBOL,LIVBOL
-!></td><td>--></td><td>TYPES DE C.L. SUR U ET V SUR LES PAROIS LAT.
-!>    </td></tr>
-!>          <tr><td>LIUBOS,LIVBOS
-!></td><td>--></td><td>TYPES DE C.L. SUR U ET V EN SURFACE
-!>    </td></tr>
-!>          <tr><td>LIWBOF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LIWBOL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LIWBOS
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NBOR
-!></td><td>--></td><td>CORRESPONDANCE NUMEROTATION FRONTIERE ET
-!>                  NUMEROTATION GLOBALE EN 2D
-!>    </td></tr>
-!>          <tr><td>NPLAN
-!></td><td>--></td><td>NOMBRE DE PLANS HORIZONTAUX
-!>    </td></tr>
-!>          <tr><td>NPOIN2
-!></td><td>--></td><td>NOMBRE DE POINTS DU MAILLAGE 2D
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>--></td><td>NOMBRE DE POINTS FRONTIERES 2D
-!>    </td></tr>
-!>          <tr><td>U , V
-!></td><td><-></td><td>VITESSES U ET V 3D
-!>    </td></tr>
-!>          <tr><td>U2D , V2D
-!></td><td><-></td><td>VITESSES U ET V 2D
-!>    </td></tr>
-!>          <tr><td>UBORF,VBORF
-!></td><td>--></td><td>VITESSES U ET V IMPOSEES AU FOND
-!>    </td></tr>
-!>          <tr><td>UBORL,VBORL
-!></td><td>--></td><td>VITESSES U ET V IMPOSEES SUR LES PAROIS LAT.
-!>    </td></tr>
-!>          <tr><td>UBORS,VBORS
-!></td><td>--></td><td>VITESSES U ET V IMPOSEES EN SURFACE
-!>    </td></tr>
-!>          <tr><td>VELPROLAT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>W
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>WBORF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>WBORL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>WBORS
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XNEBOR,YNEBOR
-!></td><td>--></td><td>COMPOSANTES VECTEUR NORMAL POINTS FRONTIERES
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE AIRWIK2
+!                    ******************
+                     SUBROUTINE AIRWIK2
+!                    ******************
+!
      &(LIHBOR,UBORF,VBORF,WBORF,LIUBOF,LIVBOF,LIWBOF,UBORL,VBORL,WBORL,
      & LIUBOL,LIVBOL,LIWBOL,
      & UBORS,VBORS,WBORS,LIUBOS,LIVBOS,LIWBOS,U,V,W,XNEBOR,YNEBOR,NBOR,
      & NPTFR,NPLAN,NPOIN2,KENT,KADH,KLOG,KDEB,KP1BOR,VELPROLAT)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| KADH           |-->| CONVENTION POUR LES PAROIS AVEC ADHERENCE
-C| KDEB           |---| 
-C| KENT           |-->| CONVENTION POUR LES VALEURS IMPOSEES (ENT.)
-C| KLOG           |-->| CONVENTION POUR LES PAROIS AVEC GLISSEMENT
-C| KP1BOR         |---| 
-C| KSORT          |-->| CONVENTION POUR LES VALEURS LIBRES (SORT.)
-C| LIHBOR         |---| 
-C| LIUBOF,LIVBOF  |-->| TYPES DE C.L. SUR U ET V AU FOND
-C| LIUBOL,LIVBOL  |-->| TYPES DE C.L. SUR U ET V SUR LES PAROIS LAT.
-C| LIUBOS,LIVBOS  |-->| TYPES DE C.L. SUR U ET V EN SURFACE
-C| LIWBOF         |---| 
-C| LIWBOL         |---| 
-C| LIWBOS         |---| 
-C| NBOR           |-->| CORRESPONDANCE NUMEROTATION FRONTIERE ET
-C|                |   | NUMEROTATION GLOBALE EN 2D
-C| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-C| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-C| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES 2D
-C| U , V          |<->| VITESSES U ET V 3D
-C| U2D , V2D      |<->| VITESSES U ET V 2D
-C| UBORF,VBORF    |-->| VITESSES U ET V IMPOSEES AU FOND
-C| UBORL,VBORL    |-->| VITESSES U ET V IMPOSEES SUR LES PAROIS LAT.
-C| UBORS,VBORS    |-->| VITESSES U ET V IMPOSEES EN SURFACE
-C| VELPROLAT      |---| 
-C| W             |---| 
-C| WBORF          |---| 
-C| WBORL          |---| 
-C| WBORS          |---| 
-C| XNEBOR,YNEBOR  |-->| COMPOSANTES VECTEUR NORMAL POINTS FRONTIERES
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    ENSURES THE CONDITION U . N = 0  (U AND N ARE VECTORS).
+!+
+!+           (FOR A LATERAL SOLID BOUNDARY, DUPLICATES THE NORMAL
+!+                COMPONENT OF THE VELOCITY, COMPUTED BY TELEMAC, ON THE VERTICAL).
+!+
+!+            ALSO ENSURES THE DIRICHLET CONDITIONS.
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+        V1P2
+!+   FORTRAN95 VERSION 
+!
+!history  JM HERVOUET (LNHE)
+!+        29/02/08
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| KADH           |-->| CONVENTION POUR LES PAROIS AVEC ADHERENCE
+!| KDEB           |---| 
+!| KENT           |-->| CONVENTION POUR LES VALEURS IMPOSEES (ENT.)
+!| KLOG           |-->| CONVENTION POUR LES PAROIS AVEC GLISSEMENT
+!| KP1BOR         |---| 
+!| LIHBOR         |---| 
+!| LIUBOF,LIVBOF  |-->| TYPES DE C.L. SUR U ET V AU FOND
+!| LIUBOL,LIVBOL  |-->| TYPES DE C.L. SUR U ET V SUR LES PAROIS LAT.
+!| LIUBOS,LIVBOS  |-->| TYPES DE C.L. SUR U ET V EN SURFACE
+!| LIWBOF         |---| 
+!| LIWBOL         |---| 
+!| LIWBOS         |---| 
+!| NBOR           |-->| CORRESPONDANCE NUMEROTATION FRONTIERE ET
+!|                |   | NUMEROTATION GLOBALE EN 2D
+!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
+!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
+!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES 2D
+!| UBORF,VBORF    |-->| VITESSES U ET V IMPOSEES AU FOND
+!| UBORL,VBORL    |-->| VITESSES U ET V IMPOSEES SUR LES PAROIS LAT.
+!| UBORS,VBORS    |-->| VITESSES U ET V IMPOSEES EN SURFACE
+!| VELPROLAT      |---| 
+!| W              |---| 
+!| WBORF          |---| 
+!| WBORL          |---| 
+!| WBORS          |---| 
+!| XNEBOR,YNEBOR  |-->| COMPOSANTES VECTEUR NORMAL POINTS FRONTIERES
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -225,7 +106,7 @@ C
 !
 !-----------------------------------------------------------------------
 !
-C ENFORCES U.N = 0
+! ENFORCES U.N = 0
 !
       IF(VELPROLAT) THEN
         DO IPLAN=1,NPLAN
@@ -243,7 +124,7 @@ C ENFORCES U.N = 0
 !
 !-----------------------------------------------------------------------
 !
-C DIRICHLET AND NO SLIP CONDITION
+! DIRICHLET AND NO SLIP CONDITION
 !
       DO IPLAN=1,NPLAN
         DO IPTFR=1,NPTFR
@@ -262,7 +143,7 @@ C DIRICHLET AND NO SLIP CONDITION
         ENDDO
       ENDDO
 !
-C BOTTOM AND FREE SURFACE
+! BOTTOM AND FREE SURFACE
 !
       DO IPOIN=1,NPOIN2
          IF (LIUBOF(IPOIN).EQ.KENT.OR.LIUBOF(IPOIN).EQ.KADH)
@@ -283,6 +164,3 @@ C BOTTOM AND FREE SURFACE
 !
       RETURN
       END
-C
-C#######################################################################
-C

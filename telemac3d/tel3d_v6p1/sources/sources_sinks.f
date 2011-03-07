@@ -1,40 +1,35 @@
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       BUILDS THE SOURCE TERMS TO ADD IN 2D AND 3D
-!>                CONTINUITY EQUATIONS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 07/04/2009
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE SOURCES_SINKS
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ************************
+                     SUBROUTINE SOURCES_SINKS
+!                    ************************
+!
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    BUILDS THE SOURCE TERMS TO ADD IN 2D AND 3D
+!+                CONTINUITY EQUATIONS.
+!
+!history  J-M HERVOUET (LNHE)
+!+        07/04/2009
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
@@ -59,7 +54,7 @@ C
 !
       IF(NSCE.GT.0) THEN
 !
-C       HERE T3_02 LIKE VOLU, BUT CALL PARCOM (AND ZPROP INSTEAD OF Z)
+!       HERE T3_02 LIKE VOLU, BUT CALL PARCOM (AND ZPROP INSTEAD OF Z)
         CALL VECTOR(T3_02,'=','MASBAS          ',IELM3,1.D0,SVIDE,
      &              SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
      &              MESH3D,.FALSE.,MASKEL)
@@ -67,7 +62,7 @@ C       HERE T3_02 LIKE VOLU, BUT CALL PARCOM (AND ZPROP INSTEAD OF Z)
         CALL CPSTVC(T3_02,T3_03)
         DO IS=1,NSCE
           CALL OS('X=0     ',X=T3_03)
-C         IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
+!         IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
           IF(ISCE(IS).GT.0) THEN
             I=(KSCE(IS)-1)*NPOIN2+ISCE(IS)
             T3_03%R(I)=QSCE2(IS)/MAX(1.D-8,T3_02%R(I))
@@ -76,7 +71,7 @@ C         IN PARALLEL IF ISCE(IS)=0, THE POINT IS OUTSIDE THE SUBDOMAIN
      &                IELM3,1.D0,T3_03,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
      &                MESH3D,MSK,MASKEL)
         ENDDO
-C       SUMS ON THE VERTICAL TO GET THE 2D SOURCES
+!       SUMS ON THE VERTICAL TO GET THE 2D SOURCES
         DO IS=1,NSCE
           DO IP=1,NPLAN
             DO I=1,NPOIN2
@@ -92,11 +87,11 @@ C       SUMS ON THE VERTICAL TO GET THE 2D SOURCES
 !     RAIN AND EVAPORATION (NEGATIVE RAIN)
 !
       IF(RAIN) THEN
-C       PLUIE IS NON ASSEMBLED IN PARALLEL
+!       PLUIE IS NON ASSEMBLED IN PARALLEL
         CALL OS('X=CY    ',X=PLUIE,Y=VOLU2D,C=RAIN_MMPD/86400000.D0)
         CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
         IF(NCSIZE.GT.1) THEN
-C         USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
+!         USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
           CALL OS('X=CY    ',X=PARAPLUIE,Y=V2DPAR,
      &                       C=RAIN_MMPD/86400000.D0)
 !       ELSE
@@ -106,11 +101,11 @@ C         USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
 !
 !-----------------------------------------------------------------------
 !
-C     PARALLELISM, REAL VALUES REQUIRED IN SOURCES FOR MURD3D
-C     BUT BEWARE IN TRIDW2, PARCOM MUST NOT BE DONE TWICE ON SOURCES
+!     PARALLELISM, REAL VALUES REQUIRED IN SOURCES FOR MURD3D
+!     BUT BEWARE IN TRIDW2, PARCOM MUST NOT BE DONE TWICE ON SOURCES
 !
-C     12/06/2007 : VALUES WITHOUT PARCOM STORED IN ADDRESS IS+NSCE
-C                  SIZE CHANGED ACCORDINGLY IN POINT_TELEMAC3D
+!     12/06/2007 : VALUES WITHOUT PARCOM STORED IN ADDRESS IS+NSCE
+!                  SIZE CHANGED ACCORDINGLY IN POINT_TELEMAC3D
 !
       IF(NCSIZE.GT.1) THEN
         IF(NSCE.GT.0) THEN
@@ -126,6 +121,3 @@ C                  SIZE CHANGED ACCORDINGLY IN POINT_TELEMAC3D
 !
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,68 +1,61 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE SQUARE OF THE MIXING LENGTH
-!>                FOR A BUOYANT JET.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/99
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.4                                       </center>
-!> </td><td> 25/11/97
-!> </td><td> F MARCOS    (LNH) 30 87 72 66
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE LONGMB
+!                    *****************
+                     SUBROUTINE LONGMB
+!                    *****************
+!
      &(LM,Z,HN,NPOIN3,NPOIN2,NPLAN,U,V,X,Y,P1,P2,P3,NTRAC,TA,KARMAN,ZF)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| HN             |-->| HAUTEUR D'EAU
-C| KARMAN         |---| 
-C| LM             |---| 
-C| LM2            |<--| CARRE DE LA LONGUEUR DE MELANGE
-C| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE
-C| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-C| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-C| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-C| P              |<->| TABLEAU DE TRAVAIL
-C| P1             |---| 
-C| P2             |---| 
-C| P3             |---| 
-C| TA             |-->| CONCENTRATIONS DES TRACEURS ACTIFS
-C| U,V            |-->| VITESSE HORIZONTALE
-C| X,Y            |-->| COORDONNEES HORIZONTALES
-C| Z             |-->| COTES DU MAILLAGE
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE SQUARE OF THE MIXING LENGTH
+!+                FOR A BUOYANT JET.
+!
+!history  F MARCOS    (LNH)
+!+        25/11/97
+!+        V5P4
+!+   
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| HN             |-->| HAUTEUR D'EAU
+!| KARMAN         |---| 
+!| LM             |---| 
+!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE
+!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
+!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
+!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
+!| P1             |---| 
+!| P2             |---| 
+!| P3             |---| 
+!| TA             |-->| CONCENTRATIONS DES TRACEURS ACTIFS
+!| U,V            |-->| VITESSE HORIZONTALE
+!| X,Y            |-->| COORDONNEES HORIZONTALES
+!| Z              |-->| COTES DU MAILLAGE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)             :: NPOIN3, NPOIN2, NPLAN, NTRAC
 !
       DOUBLE PRECISION, INTENT(INOUT) :: LM(NPOIN3) ! POINTER
@@ -72,9 +65,9 @@ C
       DOUBLE PRECISION, INTENT(INOUT) :: P1(NPOIN3), P2(NPOIN3)
       DOUBLE PRECISION, INTENT(INOUT) :: P3(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: TA(NPOIN3),ZF(NPOIN2)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I, IPLAN, I3D, I3DI, I3DS, I3DM
       INTEGER IMAX, ICHSUP, ICHINF, I3DMIN, IMIN
       DOUBLE PRECISION  ZCHSUP, ZCHINF,COSA, SINA, EPS
@@ -82,9 +75,9 @@ C
 !
 !***********************************************************************
 !
-C SQUARE OF THE MIXING LENGTH ALONG Z
-C (SEE : RODI , TURBULENCE MODELS AND THEIR APPLICATIONS IN HYDRAULICS
-C        IAHR)
+! SQUARE OF THE MIXING LENGTH ALONG Z
+! (SEE : RODI , TURBULENCE MODELS AND THEIR APPLICATIONS IN HYDRAULICS
+!        IAHR)
 !
 !
       IF(NTRAC.EQ.0) THEN
@@ -244,6 +237,3 @@ C        IAHR)
 !
       RETURN
       END
-C
-C#######################################################################
-C

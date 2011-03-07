@@ -1,43 +1,39 @@
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       ALLOCATES TELEMAC3D STRUCTURES.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 19/10/2009
-!> </td><td> J-M HERVOUET (LNHE)
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/1999
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-                        SUBROUTINE POINT_TELEMAC3D
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    **************************
+                     SUBROUTINE POINT_TELEMAC3D
+!                    **************************
+!
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    ALLOCATES TELEMAC3D STRUCTURES.
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  J-M HERVOUET (LNHE)
+!+        19/10/2009
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
@@ -64,13 +60,12 @@ C
  21   FORMAT(1X,/,1X,'POINT_TELEMAC3D: MEMORY ALLOCATION',/)
 !
 !-----------------------------------------------------------------------
-C DECLARES DISCRETISATION TYPES HERE
-
+! DECLARES DISCRETISATION TYPES HERE
       IELM0 = 10*(IELMH/10) ! FOR TELEMAC2D
       IELM1 = IELM0 + 1     ! FOR TELEMAC2D
 !
-C TELEMAC3D DISCRETISATION TYPES: 3D, 2D HORIZONTAL BOUNDARY,
-C 2D VERTICAL BOUNDARY
+! TELEMAC3D DISCRETISATION TYPES: 3D, 2D HORIZONTAL BOUNDARY,
+! 2D VERTICAL BOUNDARY
 !
       IF(ELEMENT(1:5).EQ.'PRISM') THEN
 !
@@ -93,21 +88,21 @@ C 2D VERTICAL BOUNDARY
 !
       IELM1  = IELBOR(IELMH,1) ! BOUNDARY DISCRET. FOR TELEMAC2D
 !
-C IELMU IS 12, WHEN QUASI-BUBBLE FREE SURFACE REQUIRED (IN LECDON)
-C IF NOT, IELMU=IELMH
+! IELMU IS 12, WHEN QUASI-BUBBLE FREE SURFACE REQUIRED (IN LECDON)
+! IF NOT, IELMU=IELMH
 !
       IELMX=MAX(IELMU,IELM2H,IELM1,IELMH) ! IT WILL BE MAX. DISCR. IN 2D
 !
-C STORAGE TYPE AND MATRIX-VECTOR PRODUCT TYPE
+! STORAGE TYPE AND MATRIX-VECTOR PRODUCT TYPE
 !
       CFG(1) = OPTASS
       CFG(2) = PRODUC   ! PRODUC=1 HARD IN LECDON
       CFG2D(1) = OPTASS2D
       CFG2D(2) = PRODUC   ! PRODUC=1 HARD IN LECDON
-C     MURD MATRIX WITH EDGE-BASED STORAGE FOR TIDAL FLATS
+!     MURD MATRIX WITH EDGE-BASED STORAGE FOR TIDAL FLATS
       CFGMURD_TF(1)=3
       CFGMURD_TF(2)=1
-C     NORMAL MURD MATRIX WITH EBE STORAGE
+!     NORMAL MURD MATRIX WITH EBE STORAGE
       CFGMURD(1)=1
       CFGMURD(2)=1
 !
@@ -117,14 +112,14 @@ C     NORMAL MURD MATRIX WITH EBE STORAGE
 !=======================================================================
 !
 !                     *********************
-C                     *  MESH - GEOMETRY  *
+!                     *  MESH - GEOMETRY  *
 !                     *********************
 !
-C TWO MESHES ARE ALLOCATED: (1) 2D BASE MESH, (2) 3D SIGMA-MESH
+! TWO MESHES ARE ALLOCATED: (1) 2D BASE MESH, (2) 3D SIGMA-MESH
 !
-C ALLOCATES THE 2D MESH STRUCTURE FOR TELEMAC2D
-C DISCRETISATION IELMH GIVEN IN LECDON
-C IELMX = IELMU IF QUASI-BUBBLE ELEMENT REQUIRED, OTHERWISE IELMH
+! ALLOCATES THE 2D MESH STRUCTURE FOR TELEMAC2D
+! DISCRETISATION IELMH GIVEN IN LECDON
+! IELMX = IELMU IF QUASI-BUBBLE ELEMENT REQUIRED, OTHERWISE IELMH
 !
       EQUA = 'NO_EQUATION_IS_GIVEN'
 !
@@ -132,7 +127,7 @@ C IELMX = IELMU IF QUASI-BUBBLE ELEMENT REQUIRED, OTHERWISE IELMH
      &            T3D_FILES(T3DGEO)%LU,EQUA,NPLAN=1)
       NSEG=MESH2D%NSEG
 !
-C ALIASES FOR CERTAIN COMPONENTS OF THE 2D MESH STRUCTURE
+! ALIASES FOR CERTAIN COMPONENTS OF THE 2D MESH STRUCTURE
 !
       X2      => MESH2D%X
       Y2      => MESH2D%Y
@@ -161,15 +156,15 @@ C ALIASES FOR CERTAIN COMPONENTS OF THE 2D MESH STRUCTURE
       LV      => MESH2D%LV      ! MESH-CHECKED? 2D=3D FOR SIGMA MESH
 !
 !-----------------------------------------------------------------------
-C ALLOCATES THE 3D MESH STRUCTURE (EQUA=EMPTY) (READ AGAIN?)
+! ALLOCATES THE 3D MESH STRUCTURE (EQUA=EMPTY) (READ AGAIN?)
 !
       EQUA = 'NO_EQUATION_IS_GIVEN'
 !
       CALL ALMESH(MESH3D,'MESH3D',IELM3,SPHERI,CFG,T3D_FILES(T3DGEO)%LU,
      &            EQUA,NPLAN=NPLAN)
 !
-C ALIAS FOR CERTAIN COMPONENTS OF THE 3D MESH STRUCTURE
-C THEY ARE DEFINED IN DECLARATIONS
+! ALIAS FOR CERTAIN COMPONENTS OF THE 3D MESH STRUCTURE
+! THEY ARE DEFINED IN DECLARATIONS
 !
       X       => MESH3D%X%R
       Y       => MESH3D%Y%R
@@ -200,10 +195,10 @@ C THEY ARE DEFINED IN DECLARATIONS
       MXELVS3 => MESH3D%MXELVS
 !
 !-----------------------------------------------------------------------
-C VARIOUS MESH PARAMETER FIX
+! VARIOUS MESH PARAMETER FIX
 !
       NETAGE = NPLAN - 1
-!     
+!
 !     NUMBER OF ADVECTED VARIABLES (3 FOR VELOCITY, 2 FOR K-EPSILON
 !                                   THEN TRACERS)
       NVBIL  = 5 + NTRAC
@@ -254,8 +249,8 @@ C VARIOUS MESH PARAMETER FIX
      &         '                         BOTTOM : ',I8,/)
 !
 !-----------------------------------------------------------------------
-C FIELDS CONNECTED STRONGLY WITH GEOMETRY AND MESH
-C REAL
+! FIELDS CONNECTED STRONGLY WITH GEOMETRY AND MESH
+! REAL
 !
       CALL BIEF_ALLVEC(1, ZPROP,  'ZPROP ', IELM3 , 1, 1,MESH3D)
       CALL BIEF_ALLVEC(1, ZT   ,  'ZT    ', IELM3 , 1, 1,MESH3D)
@@ -271,14 +266,14 @@ C REAL
 !
       CALL BIEF_ALLVEC(1, DSSUDT, 'DSSUDT', IELM2H, 1, 1,MESH2D)
 !
-C     DESCRIBES THE MESH ON THE VERTICAL
+!     DESCRIBES THE MESH ON THE VERTICAL
 !
       CALL BIEF_ALLVEC(1, ZSTAR       , 'ZSTAR ' , NPLAN ,1,0,MESH3D)
       CALL BIEF_ALLVEC(1, ZPLANE      , 'ZPLANE' , NPLAN ,1,0,MESH3D)
       CALL BIEF_ALLVEC(1, ZCHAR       , 'ZCHAR ' , NPLAN ,1,0,MESH3D)
       CALL BIEF_ALLVEC(2, TRANSF_PLANE, 'TRAPLA' , NPLAN ,1,0,MESH3D)
 !
-C MESH AND GEOMETRY, INTEGERS
+! MESH AND GEOMETRY, INTEGERS
 !
       CALL BIEF_ALLVEC(2, LIHBOR, 'LIHBOR',         IELM1,1,1,MESH2D)
       CALL BIEF_ALLVEC(2, NUMLIQ, 'NUMLIQ',        IELM2V,1,1,MESH3D)
@@ -287,15 +282,15 @@ C MESH AND GEOMETRY, INTEGERS
 !
 !-----------------------------------------------------------------------
 !
-C  BLOCK OF BOUNDARY CONDITIONS MASKS FOR PROPAGATION
-C
-C  BLOCK OF 9 VECTORS FOR MASKING (USED BY T2D)
+!  BLOCK OF BOUNDARY CONDITIONS MASKS FOR PROPAGATION
+!
+!  BLOCK OF 9 VECTORS FOR MASKING (USED BY T2D)
 !
       CALL ALLBLO(MASK, 'MASK  ')
       CALL BIEF_ALLVEC_IN_BLOCK(MASK,9,1,'MASK  ',IELM1,1,1,MESH2D)
 !
-C MASKING
-C JMH : I USE MASKEL IN VELRES
+! MASKING
+! JMH : I USE MASKEL IN VELRES
 !
       IF (MSK.OR.(OPTBAN.EQ.1.AND.NONHYD)) THEN
         CALL BIEF_ALLVEC(1, MASKEL, 'MASKEL',10*(IELM3/10),1,1,MESH3D)
@@ -311,13 +306,13 @@ C JMH : I USE MASKEL IN VELRES
 !
 !=======================================================================
 !                     ********************
-C                     *    VARIABLES     *
+!                     *    VARIABLES     *
 !                     ********************
 !
 !-----------------------------------------------------------------------
-C HORIZONTAL VELOCITY (U,V)
+! HORIZONTAL VELOCITY (U,V)
 !
-C U AND V VELOCITY COMPONENTS
+! U AND V VELOCITY COMPONENTS
 !
       CALL BIEF_ALLVEC(1, UN,       'UN    ',IELM3,  1,1,MESH3D)
       CALL BIEF_ALLVEC(1, VN,       'VN    ',IELM3,  1,1,MESH3D)
@@ -356,16 +351,16 @@ C U AND V VELOCITY COMPONENTS
       CALL BIEF_ALLVEC(1, VBORSAVE, 'VBSAVE',IELM2V, 1,1,MESH3D)
       CALL BIEF_ALLVEC(1, WBORSAVE, 'WBSAVE',IELM2V, 1,1,MESH3D)
 !
-C FRICTION VELOCITY **2 ON THE BOTTOM
+! FRICTION VELOCITY **2 ON THE BOTTOM
 !
       CALL BIEF_ALLVEC(1, UETCAR, 'UETCAR', IELM2H, 1,1,MESH2D)
 !
-C PLANE ON THE BOTTOM (THE FIRST ONE WITH A REAL ELEMENT HEIGHT ABOVE)
+! PLANE ON THE BOTTOM (THE FIRST ONE WITH A REAL ELEMENT HEIGHT ABOVE)
 !
       CALL BIEF_ALLVEC(2, IPBOT,  'IPBOT ', IELM2H, 1,1,MESH2D)
 !
-C BOUNDARY CONDITION TYPES/
-C ATTRIBUTES FOR THE HORIZONTAL VELOCITY COMPONENTS
+! BOUNDARY CONDITION TYPES/
+! ATTRIBUTES FOR THE HORIZONTAL VELOCITY COMPONENTS
 !
       CALL BIEF_ALLVEC(2, LIUBOF,     'LIUBOF', IELM2H, 1,1,MESH2D)
       CALL BIEF_ALLVEC(2, LIUBOL,     'LIUBOL', IELM2V, 2,1,MESH3D)
@@ -376,8 +371,8 @@ C ATTRIBUTES FOR THE HORIZONTAL VELOCITY COMPONENTS
       CALL BIEF_ALLVEC(2, LIVBOS,     'LIVBOS', IELM2H, 1,1,MESH2D)
 !
 !-----------------------------------------------------------------------
-C W VERTICAL VELOCITY COMPONENT (REAL VALUES)
-C TREATED DIFFERENTLY DEPENDING ON THE (NON)HYDROSTATIC OPTION
+! W VERTICAL VELOCITY COMPONENT (REAL VALUES)
+! TREATED DIFFERENTLY DEPENDING ON THE (NON)HYDROSTATIC OPTION
 !
       IF (NONHYD) THEN
         CALL BIEF_ALLVEC(1, WN,     'WN    ', IELM3, 1, 1,MESH3D)
@@ -421,12 +416,12 @@ C TREATED DIFFERENTLY DEPENDING ON THE (NON)HYDROSTATIC OPTION
       CALL BIEF_ALLVEC(2, LIWBOL,    'LIWBOL', IELM2V, 2, 1,MESH3D)
       CALL BIEF_ALLVEC(2, LIWBOS,    'LIWBOS', IELM2H, 1, 1,MESH2D)
 !
-C SIGMA-TRANSFORMED VALUES / NO BLOCK
+! SIGMA-TRANSFORMED VALUES / NO BLOCK
 !
       CALL BIEF_ALLVEC(1, WS,        'WS    ', IELM3,  1, 1,MESH3D)
 !
 !=======================================================================
-C HYDRODYNAMIC PRESSURE SPECIFIC FOR THE NON-HYDROSTATIC OPTION
+! HYDRODYNAMIC PRESSURE SPECIFIC FOR THE NON-HYDROSTATIC OPTION
 !
       IF (NONHYD) THEN
         CALL BIEF_ALLVEC(1, DP,     'DP    ', IELM3,  1, 2,MESH3D)
@@ -484,54 +479,54 @@ C HYDRODYNAMIC PRESSURE SPECIFIC FOR THE NON-HYDROSTATIC OPTION
         STATUT = 0
       ENDIF
 !
-C GENERIC NAMES SHORTENED IN ORDER TO PROVIDE THE AUTOMATIC
-C NUMBERING MECHANISM!
+! GENERIC NAMES SHORTENED IN ORDER TO PROVIDE THE AUTOMATIC
+! NUMBERING MECHANISM!
 !
-C NOTE JMH : MAX(NTRAC,1) BELOW : TO HAVE AT LEAST ONE ARRAY, EVEN EMPTY
-C                                 TO PUT IN THE CALL TO CONLIM
+! NOTE JMH : MAX(NTRAC,1) BELOW : TO HAVE AT LEAST ONE ARRAY, EVEN EMPTY
+!                                 TO PUT IN THE CALL TO CONLIM
 !
       CALL BIEF_ALLVEC_IN_BLOCK(TAN,    NTRAC,
-     *                          1, 'TAN   ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'TAN   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TAC,    NTRAC,
-     *                          1, 'TAC   ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'TAC   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TA,     NTRAC,
-     *                          1, 'TA    ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'TA    ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(S0TA,   NTRAC,
-     *                          1, 'S0TA  ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'S0TA  ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(S1TA,   NTRAC,
-     *                          1, 'S1TA  ', IELM, 1, STATUT,MESH3D)
+     &                          1, 'S1TA  ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TABORF, NTRAC,
-     *                          1, 'TABF  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'TABF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(TABORL, MAX(NTRAC,1) ,
-     *                          1, 'TABL  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'TABL  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TABORS, NTRAC,
-     *                          1, 'TABS  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'TABS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(ATABOF, NTRAC,
-     *                          1, 'ATAF  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'ATAF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(ATABOL, MAX(NTRAC,1),
-     *                          1, 'ATAL  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'ATAL  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(ATABOS, NTRAC,
-     *                          1, 'ATAS  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'ATAS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(BTABOF, NTRAC,
-     *                          1, 'BTAF  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'BTAF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(BTABOL, MAX(NTRAC,1),
-     *                          1, 'BTAL  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'BTAL  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(BTABOS, NTRAC,
-     *                          1, 'BTAS  ', IELH, 1, STATUT,MESH2D)
+     &                          1, 'BTAS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(LITABF, NTRAC,
-     *                          2, 'LTAF  ', IELH, 1, STATUT,MESH2D)
+     &                          2, 'LTAF  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(LITABL, MAX(NTRAC,1) ,
-     *                          2, 'LTAL  ', IELV, 2, STATUT,MESH3D)
+     &                          2, 'LTAL  ', IELV, 2, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(LITABS, NTRAC,
-     *                          2, 'LTAS  ', IELH, 1, STATUT,MESH2D)
+     &                          2, 'LTAS  ', IELH, 1, STATUT,MESH2D)
       CALL BIEF_ALLVEC_IN_BLOCK(TRBORSAVE,NTRAC,
-     *                          1, 'TBSA  ', IELV, 1, STATUT,MESH3D)
+     &                          1, 'TBSA  ', IELV, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TA_SCE,NTRAC,
-     *                          1, 'TSCE  ', NSCE, 1, 0     ,MESH3D)
+     &                          1, 'TSCE  ', NSCE, 1, 0     ,MESH3D)
 !                                                     SIZE NSCE ALWAYS
 !
 !=======================================================================
-C K-EPSILON MODEL
+! K-EPSILON MODEL
 !
       IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
         IELM   = IELM3
@@ -597,7 +592,7 @@ C K-EPSILON MODEL
 !                     * OTHER VARIABLES *
 !		      *******************
 !
-C  VARIOUS VELOCITY COMPONENTS 3D, 2D, BOUNDARY CONDITION VALUES
+!  VARIOUS VELOCITY COMPONENTS 3D, 2D, BOUNDARY CONDITION VALUES
 !
       CALL BIEF_ALLVEC(1, U2D,        'U2D   ', IELMU,  1, 1,MESH2D)
       CALL BIEF_ALLVEC(1, UN2D,       'UN2D  ', IELMU,  1, 1,MESH2D)
@@ -605,7 +600,7 @@ C  VARIOUS VELOCITY COMPONENTS 3D, 2D, BOUNDARY CONDITION VALUES
       CALL BIEF_ALLVEC(1, V2D,        'V2D   ', IELMU,  1, 1,MESH2D)
       CALL BIEF_ALLVEC(1, VN2D,       'VN2D  ', IELMU,  1, 1,MESH2D)
       CALL BIEF_ALLVEC(1, FV,         'FV    ', IELMU,  1, 1,MESH2D)
-C     DIMENSION 2 : SEE IN LECLIM, USED IN BORD3D
+!     DIMENSION 2 : SEE IN LECLIM, USED IN BORD3D
       CALL BIEF_ALLVEC(1, UBOR2D,     'UBOR2D', IELM1, 2, 1,MESH2D)
       CALL BIEF_ALLVEC(1, VBOR2D,     'VBOR2D', IELM1, 2, 1,MESH2D)
 !
@@ -620,8 +615,8 @@ C     DIMENSION 2 : SEE IN LECLIM, USED IN BORD3D
       CALL BIEF_ALLVEC(1, DM1   ,      'DM1   ', IELM3, 1, 1,MESH3D)
 !
 !-----------------------------------------------------------------------
-C WATER DEPTH AND VARIABLES DERIVED FROM IT,
-C PRINCIPALLY T2D DISCRETISATION OF DEPTH IELMH = IELM2H
+! WATER DEPTH AND VARIABLES DERIVED FROM IT,
+! PRINCIPALLY T2D DISCRETISATION OF DEPTH IELMH = IELM2H
 !
       CALL BIEF_ALLVEC(1, H,      'H     ', IELMH, 1, 1,MESH2D)
       CALL BIEF_ALLVEC(1, HN,     'HN    ', IELMH, 1, 1,MESH2D)
@@ -655,7 +650,7 @@ C PRINCIPALLY T2D DISCRETISATION OF DEPTH IELMH = IELM2H
       ENDIF
 !
 !-----------------------------------------------------------------------
-C NUMERICAL VARIABLES
+! NUMERICAL VARIABLES
 !
       CALL BIEF_ALLVEC(1, VOLU  , 'VOLU  ', IELM3 , 1, 1,MESH3D)
       CALL BIEF_ALLVEC(1, VOLUN , 'VOLUN ', IELM3 , 1, 1,MESH3D)
@@ -689,16 +684,16 @@ C NUMERICAL VARIABLES
       CALL BIEF_ALLVEC(1, FLINT2,    'FLINT2', IELM2H, 1, 1,MESH2D)
 !
 !-----------------------------------------------------------------------
-C PHYSICAL VARIABLES
+! PHYSICAL VARIABLES
 !
-C (COMPONENTS OF VISCOSITY AS SEPARATE VECTORS ARE REQUIRED!)
+! (COMPONENTS OF VISCOSITY AS SEPARATE VECTORS ARE REQUIRED!)
 !
       CALL ALLBLO(VISCVI, 'VISCVI')
       CALL BIEF_ALLVEC_IN_BLOCK(VISCVI,3,1,'VISC  ',IELM3,1,2,MESH3D)
 !
-C ADDRESSING IS AWKWARD, E.G. REAL PART OF THE DIFFUSIVITY STRUCTURE
-C OF THE THIRD TRACER IN THE Y-DIRECTION IS VISCTA%ADR(3)%P%ADR(2)%P%R
-C DEAR ME!
+! ADDRESSING IS AWKWARD, E.G. REAL PART OF THE DIFFUSIVITY STRUCTURE
+! OF THE THIRD TRACER IN THE Y-DIRECTION IS VISCTA%ADR(3)%P%ADR(2)%P%R
+! DEAR ME!
 !
       CALL ALLBLO(VISCTA, 'VISCTA')
       IF(NTRAC.GT.0) THEN
@@ -732,7 +727,7 @@ C DEAR ME!
       ENDIF
 !
 !-----------------------------------------------------------------------
-!     VARIABLES USED IN MASS BALANCE 
+!     VARIABLES USED IN MASS BALANCE
 !     THEY WILL CORRESPOND TO THE NUMBERING OF ADVECTED VARIABLES
 !
       CALL BIEF_ALLVEC(1, MASINI, 'MASINI', NVBIL,1, 0,MESH3D)
@@ -741,11 +736,11 @@ C DEAR ME!
       CALL BIEF_ALLVEC(1, FLUCUM, 'FLUCUM', NVBIL,1, 0,MESH3D)
       CALL BIEF_ALLVEC(1, FLUX,   'FLUX  ', NVBIL,1, 0,MESH3D)
 !
-C BOTTOM AS GIVEN FROM THE GEOMETRY FILE
+! BOTTOM AS GIVEN FROM THE GEOMETRY FILE
 !
       CALL BIEF_ALLVEC(1, ZF, 'ZF    ', IELM2H, 1, 1,MESH2D)
 !
-C BOTTOM GEOMETRY PER 2D-ELEMENT FOR TIDAL FLATS TREATMENT
+! BOTTOM GEOMETRY PER 2D-ELEMENT FOR TIDAL FLATS TREATMENT
 !
       IF(MSK) THEN
         CALL BIEF_ALLVEC(1, ZFE, 'ZFE   ', 10, 1, 1,MESH2D)
@@ -754,7 +749,7 @@ C BOTTOM GEOMETRY PER 2D-ELEMENT FOR TIDAL FLATS TREATMENT
       ENDIF
 !
 !-----------------------------------------------------------------------
-C DROGUES (FLOATS ...EHM, TRACERS...)
+! DROGUES (FLOATS ...EHM, TRACERS...)
 !
       CALL BIEF_ALLVEC(1, XFLOT,  'XFLOT ', NFLOT*NITFLO,  1, 0,MESH3D)
       CALL BIEF_ALLVEC(1, YFLOT,  'YFLOT ', NFLOT*NITFLO,  1, 0,MESH3D)
@@ -776,10 +771,10 @@ C DROGUES (FLOATS ...EHM, TRACERS...)
 !     ALL ARE ALLOCATED, EVEN IF NOT USED
 !
       CALL BIEF_ALLVEC(1,U_SCE ,'U_SCE ',NSCE,1,0,MESH3D)
-      CALL BIEF_ALLVEC(1,V_SCE ,'V_SCE ',NSCE,1,0,MESH3D) 
-      CALL BIEF_ALLVEC(1,W_SCE ,'W_SCE ',NSCE,1,0,MESH3D) 
-      CALL BIEF_ALLVEC(1,AK_SCE,'AK_SCE',NSCE,1,0,MESH3D) 
-      CALL BIEF_ALLVEC(1,EP_SCE,'EP_SCE',NSCE,1,0,MESH3D) 
+      CALL BIEF_ALLVEC(1,V_SCE ,'V_SCE ',NSCE,1,0,MESH3D)
+      CALL BIEF_ALLVEC(1,W_SCE ,'W_SCE ',NSCE,1,0,MESH3D)
+      CALL BIEF_ALLVEC(1,AK_SCE,'AK_SCE',NSCE,1,0,MESH3D)
+      CALL BIEF_ALLVEC(1,EP_SCE,'EP_SCE',NSCE,1,0,MESH3D)
 !
 !     COPYING USCE AND VSCE INTO U_SCE AND VSCE
 !     PROVISIONNALY CANCELLING W_SCE, AK_SCE AND EP_SCE
@@ -801,7 +796,7 @@ C DROGUES (FLOATS ...EHM, TRACERS...)
 !
       CALL ALLBLO (PRIVE,'PRIVE ')
       CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,MAX(4,NPRIV),
-     *                          1,'PRIV  ',IELM3,1,2,MESH3D)
+     &                          1,'PRIV  ',IELM3,1,2,MESH3D)
 !
 ! INTEGER WORK FIELDS
 !
@@ -871,16 +866,16 @@ C DROGUES (FLOATS ...EHM, TRACERS...)
           CALL ADDBLO(BL_BORL,TABORL%ADR(ITRAC)%P)
         ENDDO
       ENDIF
-!      
+!
 !     BLOCKS OF ADVECTED VARIABLES WITH CHARACTERISTICS
 !     MODULE STREAMLINE MUST BE CHANGED TO DEAL WITH A
-!     LIST IN A BLOCK AS DONE ABOVE 
-!     
+!     LIST IN A BLOCK AS DONE ABOVE
+!
       CALL ALLBLO(FC3D, 'FC3D  ')
       CALL ALLBLO(FN3D, 'FN3D  ')
 !     ADVECTION OF VELOCITIES IS DONE FOR THE NEXT STEP
 !     SO HERE U AND NOT UN
-      IF(SCHCVI.EQ.ADV_CAR) THEN  
+      IF(SCHCVI.EQ.ADV_CAR) THEN
         CALL ADDBLO(FN3D,U )
         CALL ADDBLO(FC3D,UC)
         CALL ADDBLO(FN3D,V )
@@ -891,9 +886,9 @@ C DROGUES (FLOATS ...EHM, TRACERS...)
         ENDIF
       ENDIF
       IF(SCHCKE.EQ.ADV_CAR.AND.(ITURBH.EQ.3.OR.
-     *                          ITURBH.EQ.7.OR.
-     *                          ITURBV.EQ.3.OR.
-     *                          ITURBV.EQ.7)) THEN  
+     &                          ITURBH.EQ.7.OR.
+     &                          ITURBV.EQ.3.OR.
+     &                          ITURBV.EQ.7)) THEN
         CALL ADDBLO(FN3D,AKN)
         CALL ADDBLO(FC3D,AKC)
         CALL ADDBLO(FN3D,EPN)
@@ -901,29 +896,29 @@ C DROGUES (FLOATS ...EHM, TRACERS...)
       ENDIF
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-          IF(SCHCTA(ITRAC).EQ.ADV_CAR) THEN  
+          IF(SCHCTA(ITRAC).EQ.ADV_CAR) THEN
             CALL ADDBLO(FN3D,TAN%ADR(ITRAC)%P)
             CALL ADDBLO(FC3D,TAC%ADR(ITRAC)%P)
-          ENDIF 
+          ENDIF
         ENDDO
-      ENDIF           
+      ENDIF
 !
 !=======================================================================
 !
 !                   *********************************
-C                   * STRUCTURES FOR THE RESOLUTION *
-C                   *  OF LINEAR EQUATION SYSTEMS   *
-C                   *          F I R S T            *
-C                   *        M A T R I C E S        *
+!                   * STRUCTURES FOR THE RESOLUTION *
+!                   *  OF LINEAR EQUATION SYSTEMS   *
+!                   *          F I R S T            *
+!                   *        M A T R I C E S        *
 !                   *********************************
 !
-C BEWARE : 2D AND ESPECIALLY 3D MATRICES OCCUPY
-C ======   A LARGE CHUNK OF MEMORY
+! BEWARE : 2D AND ESPECIALLY 3D MATRICES OCCUPY
+! ======   A LARGE CHUNK OF MEMORY
 !
 !-----------------------------------------------------------------------
-C 3D MATRICES
+! 3D MATRICES
 !
-C S.U.P.G.
+! S.U.P.G.
 !
       TYPDIA = '0'
       TYPEXT = '0'
@@ -932,9 +927,9 @@ C S.U.P.G.
         TYPEXT = 'Q'
       ENDIF
       CALL BIEF_ALLMAT(MSUPG,'SUPG  ',
-     *                 IELM3,IELM3,CFG,TYPDIA,TYPEXT,MESH3D)
+     &                 IELM3,IELM3,CFG,TYPDIA,TYPEXT,MESH3D)
 !
-C M.U.R.D.
+! M.U.R.D.
 !
       TYPDIA = '0'
       TYPEXT = '0'
@@ -943,9 +938,9 @@ C M.U.R.D.
         TYPEXT = 'Q'
       ENDIF
       CALL BIEF_ALLMAT(MMURD,'MURD  ',
-     *                 IELM3,IELM3,CFGMURD,TYPDIA,TYPEXT,MESH3D)
+     &                 IELM3,IELM3,CFGMURD,TYPDIA,TYPEXT,MESH3D)
 !
-C M.U.R.D. (EDGE-BASED FOR TIDAL FLATS)
+! M.U.R.D. (EDGE-BASED FOR TIDAL FLATS)
 !
       TYPDIA = '0'
       TYPEXT = '0'
@@ -956,30 +951,30 @@ C M.U.R.D. (EDGE-BASED FOR TIDAL FLATS)
       CALL BIEF_ALLMAT(MURD_TF,'MURDTF',IELM3,IELM3,CFGMURD_TF,
      &                 TYPDIA,TYPEXT,MESH3D)
 !
-C DIFFUSION
+! DIFFUSION
 !
       TYPDIA = '0'
       IF (DIF(1) .OR. NONHYD) TYPDIA = 'Q'
       TYPEXT = '0'
       IF (DIF(1) .OR. NONHYD) TYPEXT = 'S'
       CALL BIEF_ALLMAT (MDIFF, 'DIFF  ',
-     *                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
+     &                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
 !
-C THE 3D WORK MATRICES (ALWAYS ALLOCATED AS NON SYMMETRICAL)
-C                       SEE USE OF MTRA2%X IN WAVE_EQUATION
+! THE 3D WORK MATRICES (ALWAYS ALLOCATED AS NON SYMMETRICAL)
+!                       SEE USE OF MTRA2%X IN WAVE_EQUATION
 !
       TYPDIA = 'Q'
       TYPEXT = 'Q'
       CALL BIEF_ALLMAT (MTRA2, 'MTRA2 ',
-     *                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
+     &                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
       CALL BIEF_ALLMAT (MTRA1, 'MTRA1 ',
-     *                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
+     &                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
 !
 !-----------------------------------------------------------------------
-C 3 2D MATRICES (IELM2H) - (EACH OF THEM ALLOCATED IN A
-C SEPARATE BLOCK), ALL IN BLOCK MAT2D 
-C E.G. WORK MATRIX 3 IS: MAT2D%ADR(3)%P
-C THEY ALL GET NAMED MAT2D...............
+! 3 2D MATRICES (IELM2H) - (EACH OF THEM ALLOCATED IN A
+! SEPARATE BLOCK), ALL IN BLOCK MAT2D
+! E.G. WORK MATRIX 3 IS: MAT2D%ADR(3)%P
+! THEY ALL GET NAMED MAT2D...............
 !
       CALL ALLBLO (MAT2D, 'MAT2D ')
       CALL ALLBLO_IN_BLOCK(MAT2D,3,'MAT2D ')
@@ -988,30 +983,30 @@ C THEY ALL GET NAMED MAT2D...............
      &                   IELMU, IELMU, CFG2D, 'Q', 'Q',MESH2D)
       END DO
 !
-C ANOTHER WORK MATRIX IS BUILT USING ALMESH FOR THE 2D MESH: MTRA2
+! ANOTHER WORK MATRIX IS BUILT USING ALMESH FOR THE 2D MESH: MTRA2
 !
-C BOUNDARY MATRIX FOR 2D
+! BOUNDARY MATRIX FOR 2D
 !
       CALL BIEF_ALLMAT(MBOR2D, 'MBOR2D',
-     *                 IELM1, IELM1, CFGBOR2D, 'Q','Q',MESH2D)
+     &                 IELM1, IELM1, CFGBOR2D, 'Q','Q',MESH2D)
 !
-C 2D WORK MATRIX FOR IELMU.
+! 2D WORK MATRIX FOR IELMU.
 !
       CALL BIEF_ALLMAT(MATR2H,'MATR2H',IELMU ,IELMU ,CFG,'Q','Q',MESH2D)
 !
 !=======================================================================
 !
 !                   *********************************
-C                   * STRUCTURES FOR THE RESOLUTION *
-C                   *  OF LINEAR EQUATION SYSTEMS   *
-C                   *  S E C O N D   M E M B E R S  *
-C                   *         V E C T O R S         *
+!                   * STRUCTURES FOR THE RESOLUTION *
+!                   *  OF LINEAR EQUATION SYSTEMS   *
+!                   *  S E C O N D   M E M B E R S  *
+!                   *         V E C T O R S         *
 !                   *********************************
 !
 !-----------------------------------------------------------------------
-C FOR 3D PART
-C COMPUTES THE NUMBER OF 3D WORK FIELDS AS A FUNCTION OF
-C SOLVER AND PRECONDITIONING TYPE AND NUMBER OF VARIABLES
+! FOR 3D PART
+! COMPUTES THE NUMBER OF 3D WORK FIELDS AS A FUNCTION OF
+! SOLVER AND PRECONDITIONING TYPE AND NUMBER OF VARIABLES
 !
       NTR = 10
 !
@@ -1037,7 +1032,7 @@ C SOLVER AND PRECONDITIONING TYPE AND NUMBER OF VARIABLES
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-          IF(3*(SLVDTA(ITRAC)%PRECON/3).EQ.SLVDTA(1)%PRECON) NTR = I+2          
+          IF(3*(SLVDTA(ITRAC)%PRECON/3).EQ.SLVDTA(1)%PRECON) NTR = I+2
         ENDDO
       ENDIF
 !
@@ -1050,7 +1045,7 @@ C SOLVER AND PRECONDITIONING TYPE AND NUMBER OF VARIABLES
       CALL ALLBLO(TRAV3, 'TRAV3 ')
       CALL BIEF_ALLVEC_IN_BLOCK(TRAV3,NTR,1,'TRAV  ',IELM3,1,2,MESH3D)
 !
-C POINTERS TO THESE 3D WORK VECTORS; FIRST 10 EXIST FOR SURE
+! POINTERS TO THESE 3D WORK VECTORS; FIRST 10 EXIST FOR SURE
 !
       T3_01 => TRAV3%ADR(1)%P
       T3_02 => TRAV3%ADR(2)%P
@@ -1075,11 +1070,11 @@ C POINTERS TO THESE 3D WORK VECTORS; FIRST 10 EXIST FOR SURE
         T3_18 => TRAV3%ADR(18)%P
       ENDIF
 !
-C SECOND MEMBER 3D
+! SECOND MEMBER 3D
 !
       CALL BIEF_ALLVEC(1, SEM3D, 'SEM3D ', IELM3, 1, 2,MESH3D)
 !
-C RIGHT HAND SIDE OF CONTINUITY EQUATIONS IF SOURCES
+! RIGHT HAND SIDE OF CONTINUITY EQUATIONS IF SOURCES
 !
       CALL ALLBLO(SOURCES, 'SOURCE')
       I=NSCE
@@ -1091,11 +1086,11 @@ C RIGHT HAND SIDE OF CONTINUITY EQUATIONS IF SOURCES
       ENDIF
 !
 !-----------------------------------------------------------------------
-C FOR 2D PART
+! FOR 2D PART
 !
-C COMPUTES THE NUMBER OF 3D WORK FIELDS AS A FUNCTION OF
-C SOLVER AND PRECONDITIONING TYPE AND NUMBER OF VARIABLES
-C FIRST 21 ALLOCATED FOR SURE... (WOW!?)
+! COMPUTES THE NUMBER OF 3D WORK FIELDS AS A FUNCTION OF
+! SOLVER AND PRECONDITIONING TYPE AND NUMBER OF VARIABLES
+! FIRST 21 ALLOCATED FOR SURE... (WOW!?)
 !
       NTR = 21
       IF (SLVPRO%SLV.EQ.7) NTR = MAX(NTR,6+6*SLVPRO%KRYLOV)
@@ -1103,13 +1098,13 @@ C FIRST 21 ALLOCATED FOR SURE... (WOW!?)
       IF (3*(SLVPRO%PRECON/3) .EQ. SLVPRO%PRECON .OR.
      &    3*(SLVW%PRECON/3)   .EQ. SLVW%PRECON ) NTR = NTR + 6
 !
-C     SEE VARSOR BELOW
+!     SEE VARSOR BELOW
       NTR=MAX(NTR,13+NTRAC)
 !
       CALL ALLBLO(TRAV2, 'TRAV2 ')
       CALL BIEF_ALLVEC_IN_BLOCK(TRAV2,NTR,1,'TR2D  ',IELMU,1,2,MESH2D)
 !
-C POINTERS TO FIRST 10 2D WORK VECTORS (21 EXIST FOR SURE)
+! POINTERS TO FIRST 10 2D WORK VECTORS (21 EXIST FOR SURE)
 !
       T2_01 => TRAV2%ADR( 1)%P
       T2_02 => TRAV2%ADR( 2)%P
@@ -1133,49 +1128,49 @@ C POINTERS TO FIRST 10 2D WORK VECTORS (21 EXIST FOR SURE)
       T2_20 => TRAV2%ADR(20)%P
       T2_21 => TRAV2%ADR(21)%P
 !
-C SECOND MEMBERS BLOCK - 3 NEEDED
+! SECOND MEMBERS BLOCK - 3 NEEDED
 !
       CALL ALLBLO (SEM2D,'SEM2D ')
       CALL BIEF_ALLVEC_IN_BLOCK(SEM2D,3,1,'SEM2D ',IELMU,1,2,MESH2D)
 !
-C WORK FIELDS WITH A DIMENSION OF THE MAX. 2D ELEMENT NUMBER
-C IELM = 10
+! WORK FIELDS WITH A DIMENSION OF THE MAX. 2D ELEMENT NUMBER
+! IELM = 10
 !
       CALL BIEF_ALLVEC(1,   TE1, 'TE1   ', 10, 1, 1,MESH2D)
       CALL BIEF_ALLVEC(1,   TE2, 'TE2   ', 10, 1, 1,MESH2D)
       CALL BIEF_ALLVEC(1,   TE3, 'TE3   ', 10, 1, 1,MESH2D)
 !
-C PIECE-WISE LINEAR FREE SURFACE
+! PIECE-WISE LINEAR FREE SURFACE
       CALL BIEF_ALLVEC(1,ZFLATS, 'ZFLATS', 10, 3, 1,MESH2D)
       CALL BIEF_ALLVEC(1,ZCONV , 'ZCONV ', 10, 3, 1,MESH2D)
       ZFLATS%DIMDISC=11
       ZCONV%DIMDISC =11
 !
-C DELWAQ FLOWS BETWEEN POINTS
+! DELWAQ FLOWS BETWEEN POINTS
       CALL BIEF_ALLVEC(1,FLODEL,'FLODEL',
-     *                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
-C     FULL SIZE OF FLOPAR PROBABLY NOT USEFUL IF NOT PARALLEL MODE
+     &                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
+!     FULL SIZE OF FLOPAR PROBABLY NOT USEFUL IF NOT PARALLEL MODE
       CALL BIEF_ALLVEC(1,FLOPAR,'FLOPAR',
-     *                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
-C LIMITATION OF 2D SEGMENT FLUXES
+     &                 NSEG*NPLAN+NETAGE*NPOIN2, 1, 0,MESH3D)
+! LIMITATION OF 2D SEGMENT FLUXES
       CALL BIEF_ALLVEC(1,FLULIM,'FLULIM',NSEG,1,0,MESH3D)
 !
 !-----------------------------------------------------------------------
-C ALLOCATES VOID STRUCTURE
+! ALLOCATES VOID STRUCTURE
 !
       CALL BIEF_ALLVEC(1, SVIDE, 'SVIDE ', 0, 1, 1,MESH3D)
 !
-C PREVIOUSLY CALLED CALL BIEF_ALLVEC(1,SVIDE,'SVIDE ',0,1,-99,MESH3D)
+! PREVIOUSLY CALLED CALL BIEF_ALLVEC(1,SVIDE,'SVIDE ',0,1,-99,MESH3D)
 !
-C A VOID BLOCK
+! A VOID BLOCK
 !
       CALL ALLBLO(BVIDE,'BVIDE ')
 !
 !=======================================================================
-C SEDIMENT
-C  IF CONSOLIDATION IS MODELLED USING THE MULTI-LAYER MODEL,
-C  THE MAXIMUM NUMBER OF PLANES DISCRETISING THE BED: NPFMAX
-C  EQUALS (NCOUCH+1) :
+! SEDIMENT
+!  IF CONSOLIDATION IS MODELLED USING THE MULTI-LAYER MODEL,
+!  THE MAXIMUM NUMBER OF PLANES DISCRETISING THE BED: NPFMAX
+!  EQUALS (NCOUCH+1) :
 !
       IF(SEDI) THEN
         CALL BIEF_ALLVEC(1, WCHU,      'WCHU  ', IELM3, 1,1,MESH3D)
@@ -1228,7 +1223,7 @@ C  EQUALS (NCOUCH+1) :
       ENDIF
 !
 !-----------------------------------------------------------------------
-C VARSOR BLOCK FOR 2D OUTPUT COMPATIBILITY
+! VARSOR BLOCK FOR 2D OUTPUT COMPATIBILITY
 !
       CALL ALLBLO(VARSOR ,'VARSOR')
 !
@@ -1267,53 +1262,53 @@ C VARSOR BLOCK FOR 2D OUTPUT COMPATIBILITY
       CALL ADDBLO(VARSOR,T2_12)           ! QS 33 SOLID DISCHARGE ALONG X
       CALL ADDBLO(VARSOR,T2_13)           ! QS 34 SOLID DISCHARGE ALONG Y
 !
-C     VARIABLES 35 TO 35+NTRAC-1
+!     VARIABLES 35 TO 35+NTRAC-1
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-C         SIZE OF TRAV2 MUST BE GREATER THAN 13+NTRAC
+!         SIZE OF TRAV2 MUST BE GREATER THAN 13+NTRAC
           CALL ADDBLO(VARSOR,TRAV2%ADR(13+I)%P)
         ENDDO
       ENDIF
 !
-C QUASI - OTHER VARIABLES, AN EMPTY BLOCK
+! QUASI - OTHER VARIABLES, AN EMPTY BLOCK
 !
       CALL ALLBLO(VARCL,'VARCL ')
 !
 !-----------------------------------------------------------------------
-C VARSOR BLOCK FOR 3D OUTPUT
+! VARSOR BLOCK FOR 3D OUTPUT
 !
       CALL ALLBLO(VARSO3 ,'VARSO3')
-C 1
+! 1
       CALL ADDBLO(VARSO3,Z3)
-C 2
+! 2
       CALL ADDBLO(VARSO3,U)
-C 3
+! 3
       CALL ADDBLO(VARSO3,V)
-C 4
+! 4
       CALL ADDBLO(VARSO3,W)
-C 5
+! 5
       CALL ADDBLO(VARSO3,VISCVI%ADR(1)%P)
-C 6
+! 6
       CALL ADDBLO(VARSO3,VISCVI%ADR(2)%P)
-C 7
+! 7
       CALL ADDBLO(VARSO3,VISCVI%ADR(3)%P)
-C 8
+! 8
       CALL ADDBLO(VARSO3,AK)
-C 9
+! 9
       CALL ADDBLO(VARSO3,EP)
-C 10
+! 10
       CALL ADDBLO(VARSO3,RI)
-C 11
+! 11
       CALL ADDBLO(VARSO3,DELTAR)
-C 12 : DYNAMIC PRESSURE
+! 12 : DYNAMIC PRESSURE
       CALL ADDBLO(VARSO3,DP)
-C 13 : HYDROSTATIC PRESSURE
+! 13 : HYDROSTATIC PRESSURE
       CALL ADDBLO(VARSO3,PH)
 !
-C  NEXT = 14
+!  NEXT = 14
 !
-C VARIABLES NUMBER "NEXT" TO "NEXT" + NTRAC - 1
+! VARIABLES NUMBER "NEXT" TO "NEXT" + NTRAC - 1
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
@@ -1321,7 +1316,7 @@ C VARIABLES NUMBER "NEXT" TO "NEXT" + NTRAC - 1
         ENDDO
       ENDIF
 !
-C VARIABLES NUMBER "NEXT" + NTRAC TO "NEXT" + 4*NTRAC - 1
+! VARIABLES NUMBER "NEXT" + NTRAC TO "NEXT" + 4*NTRAC - 1
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC

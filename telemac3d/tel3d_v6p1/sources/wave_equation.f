@@ -1,83 +1,58 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
-!>                EQUATION METHOD.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 05/05/2010
-!> </td><td> J.M. HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td> MODIFIED CASE DPWAVEQ (SECOND COMPUTATION OF
-!>           DYNAMIC PRESSURE CANCELLED IN TELEMAC3D.F
-!>           AND SOME TUNING HERE)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 20/08/2009
-!> </td><td> JMH
-!> </td><td> NOW COMPUTES UNSV3D IN MESH_PROP
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 18/08/2009
-!> </td><td> JMH
-!> </td><td> COMPUTES UCONVC AND VCONVC AT THE END (SEE PRECON)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 27/07/2009
-!> </td><td> JMH
-!> </td><td> MODIFIED TREATMENT OF FRICTION TERMS ON DRY ZONES ;
-!>           CLIPPING OF UNSV3D USELESS (IT IS IN MATMAS)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 23/01/2009
-!> </td><td> JMH
-!> </td><td> SUMS FRICTION TERMS IN T3_04 ;
-!>           IF(NCSIZE.GT.1) CALLS PARCOM AT THE END
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>ISOUSI
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE WAVE_EQUATION
+!                    ************************
+                     SUBROUTINE WAVE_EQUATION
+!                    ************************
+!
      &(LT,ISOUSI)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ISOUSI         |---| 
-C| LT             |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
+!+                EQUATION METHOD.
+!
+!history  JMH
+!+        23/01/2009
+!+        
+!+   SUMS FRICTION TERMS IN T3_04 ; 
+!
+!history  JMH
+!+        27/07/2009
+!+        
+!+   MODIFIED TREATMENT OF FRICTION TERMS ON DRY ZONES ; 
+!
+!history  JMH
+!+        18/08/2009
+!+        
+!+   COMPUTES UCONVC AND VCONVC AT THE END (SEE PRECON) 
+!
+!history  JMH
+!+        20/08/2009
+!+        
+!+   NOW COMPUTES UNSV3D IN MESH_PROP 
+!
+!history  J.M. HERVOUET (LNHE)
+!+        05/05/2010
+!+        V6P0
+!+   MODIFIED CASE DPWAVEQ (SECOND COMPUTATION OF 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ISOUSI         |---| 
+!| LT             |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_WAVE_EQUATION => WAVE_EQUATION
       USE DECLARATIONS_TELEMAC
@@ -86,13 +61,13 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: LT,ISOUSI
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       CHARACTER(LEN=16) :: FORMUL
       INTEGER           :: I,IPTFR3,IPOIN2,IPLAN,I1,I2,I3,IELEM,NP
       INTEGER           :: I3D,IP
@@ -103,12 +78,12 @@ C
 !
 !-----------------------------------------------------------------------
 !
-C     DEFINES POINTERS TO RENAME PARTS OF MEMORY
-C     MTRA2%X%R HAS AT LEAST THE SIZE 30*NELMAX (STORAGE 1)
-C                                  OR  2*NSEG3D (STORAGE 3)
+!     DEFINES POINTERS TO RENAME PARTS OF MEMORY
+!     MTRA2%X%R HAS AT LEAST THE SIZE 30*NELMAX (STORAGE 1)
+!                                  OR  2*NSEG3D (STORAGE 3)
 !
-C     WE NEED: 8*NPOIN
-C           OR 8*NPOIN
+!     WE NEED: 8*NPOIN
+!           OR 8*NPOIN
 !
 !
       DOUBLE PRECISION, POINTER :: TRIC(:),TRID(:),TRIE(:)
@@ -116,8 +91,8 @@ C           OR 8*NPOIN
       TRIC=>MTRA2%X%R(          1:   NPOIN3)
       TRID=>MTRA2%X%R(   NPOIN3+1: 2*NPOIN3)
       TRIE=>MTRA2%X%R( 2*NPOIN3+1: 3*NPOIN3)
-C         =>MTRA2%X%R( 3*NPOIN3+1: 4*NPOIN3) USED IN TRID3D
-C         =>MTRA2%X%R( 4*NPOIN3+1: 5*NPOIN3) USED IN TRID3D
+!         =>MTRA2%X%R( 3*NPOIN3+1: 4*NPOIN3) USED IN TRID3D
+!         =>MTRA2%X%R( 4*NPOIN3+1: 5*NPOIN3) USED IN TRID3D
       UAUX=>MTRA2%X%R( 5*NPOIN3+1: 6*NPOIN3)
       VAUX=>MTRA2%X%R( 6*NPOIN3+1: 7*NPOIN3)
 !
@@ -132,11 +107,11 @@ C         =>MTRA2%X%R( 4*NPOIN3+1: 5*NPOIN3) USED IN TRID3D
       ENDIF
 !
 !=======================================================================
-C    1) COMPUTES THE DIFFUSION TERMS DIFF
+!    1) COMPUTES THE DIFFUSION TERMS DIFF
 !
-C       AND THEN UC + DT(F - DIFF -G GRAD(Z))
+!       AND THEN UC + DT(F - DIFF -G GRAD(Z))
 !
-C       STORED IN T3_01 AND T3_02
+!       STORED IN T3_01 AND T3_02
 !
 !=======================================================================
 !
@@ -147,8 +122,8 @@ C       STORED IN T3_01 AND T3_02
      &            VISCVI%ADR(1)%P,VISCVI%ADR(2)%P,VISCVI%ADR(3)%P,
      &            SVIDE,SVIDE,SVIDE,MESH3D,MSK,MASKEL)
 !
-C     IMPLICITATION OF DIAGONAL TERMS
-C     BUILDS A TRIDIAGONAL MATRIX IN OFF-DIAGONAL TERMS OF MTRA2
+!     IMPLICITATION OF DIAGONAL TERMS
+!     BUILDS A TRIDIAGONAL MATRIX IN OFF-DIAGONAL TERMS OF MTRA2
 !
       CALL GETTRI(MTRA2%X%R,MDIFF,TETADI,MESH3D,NPLAN,MESH2D%NPOIN,
      &            MESH2D%NSEG)
@@ -159,12 +134,12 @@ C     BUILDS A TRIDIAGONAL MATRIX IN OFF-DIAGONAL TERMS OF MTRA2
         TRIE(I)=TRIE(I)*UNSV3D%R(I)*DT
       ENDDO
 !
-C     EXPLICIT DIFFUSION TERMS
+!     EXPLICIT DIFFUSION TERMS
 !
       CALL MATVEC ('X=AY     ',T3_01,MDIFF,UN,0.D0,MESH3D)
       CALL MATVEC ('X=AY     ',T3_02,MDIFF,VN,0.D0,MESH3D)
 !
-C     EXPLICIT STRESS TERMS
+!     EXPLICIT STRESS TERMS
 !
       CALL STRESS(T3_01,'X=X-Y   ',T2_02,T3_04,
      &            BUBORL,BUBORF,BUBORS,NPOIN2,NPOIN3,MESH2D,
@@ -173,26 +148,26 @@ C     EXPLICIT STRESS TERMS
      &            BVBORL,BVBORF,BVBORS,NPOIN2,NPOIN3,MESH2D,
      &            MESH3D,IELM3,IELM2H,IELM2V,SVIDE,MSK,MASKBR,MASKEL)
 !
-C     REQUIRES REAL VALUES IN PARALLEL MODE
+!     REQUIRES REAL VALUES IN PARALLEL MODE
 !
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM(T3_01,2,MESH3D)
         CALL PARCOM(T3_02,2,MESH3D)
       ENDIF
 !
-C     DIVIDES BY VOLUME OF BASES
+!     DIVIDES BY VOLUME OF BASES
 !
       CALL OS('X=XY    ',X=T3_01,Y=UNSV3D)
       CALL OS('X=XY    ',X=T3_02,Y=UNSV3D)
 !
-C     COMPUTES UC + DT(F - DIFF -G GRAD(Z))
-C     STARTS THE COMPUTATION OF UAUX AND VAUX
+!     COMPUTES UC + DT(F - DIFF -G GRAD(Z))
+!     STARTS THE COMPUTATION OF UAUX AND VAUX
 !
-C     NEW IN VERSION 5.8 : SUPG SCHEME IS POSSIBLE
-C                          AND RESULT OF ADVECTION IS THEN IN UD AND VD
-C                          AFTER CALL TO CVDF3D (BUT DIFFUSION AND
-C                          SOURCES TERMS NOT DONE IN CVDF3D, SEE
-C                          SCHDVI_HOR AND YAS0U, YAS1U IN TELEMAC3D.F)
+!     NEW IN VERSION 5.8 : SUPG SCHEME IS POSSIBLE
+!                          AND RESULT OF ADVECTION IS THEN IN UD AND VD
+!                          AFTER CALL TO CVDF3D (BUT DIFFUSION AND
+!                          SOURCES TERMS NOT DONE IN CVDF3D, SEE
+!                          SCHDVI_HOR AND YAS0U, YAS1U IN TELEMAC3D.F)
 !
       IF(SCHCVI.EQ.ADV_SUP) THEN
         CALL OS('X=Y     ',X=UC,Y=UD)
@@ -220,7 +195,7 @@ C                          SCHDVI_HOR AND YAS0U, YAS1U IN TELEMAC3D.F)
 !     ATMOSPHERIC PRESSURE: ADDED BY JMH ON 10/11/2010
 !
       IF(ATMOS) THEN
-!       PRESSURE GRADIENTS WILL BE LOCALLY MASKED 
+!       PRESSURE GRADIENTS WILL BE LOCALLY MASKED
         IF(MSK.OR.OPTBAN.EQ.1) THEN
           MSKGRA = .TRUE.
           IF(OPTBAN.EQ.1) THEN
@@ -238,17 +213,17 @@ C                          SCHDVI_HOR AND YAS0U, YAS1U IN TELEMAC3D.F)
         ENDIF
 !       ATMOSPHERIC PRESSURE GRADIENT
         CALL VECTOR(T2_01,'=','GRADF          X',IELM2H,
-     *              -DT/RHO0,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     *              MESH2D,MSKGRA,TE3)
+     &              -DT/RHO0,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &              MESH2D,MSKGRA,TE3)
         CALL VECTOR(T2_02,'=','GRADF          Y',IELM2H,
-     *              -DT/RHO0,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
-     *              MESH2D,MSKGRA,TE3)
+     &              -DT/RHO0,PATMOS,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
+     &              MESH2D,MSKGRA,TE3)
         DO I=1,U%DIM1
           I2=MOD(I-1,NPOIN2)+1
           T3_01%R(I)=T3_01%R(I)+T2_01%R(I2)
           T3_02%R(I)=T3_02%R(I)+T2_02%R(I2)
         ENDDO
-      ENDIF            
+      ENDIF
 !
 !=======================================================================
 !    2) COMPUTES 1/(1+DT*(FROT3D+S1U))      IN T3_04
@@ -295,11 +270,11 @@ C                          SCHDVI_HOR AND YAS0U, YAS1U IN TELEMAC3D.F)
       IF(AUBORL%TYPR.NE.'0') THEN
         CALL VECTOR(T3_06, '=','MASBAS          ',IELM2V,+1.D0,SVIDE,
      &              SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,MSK, MASKEL)
-C       IF(NCSIZE.GT.1) : DONE ON THE FINAL T3_04
+!       IF(NCSIZE.GT.1) : DONE ON THE FINAL T3_04
         CALL OSDB( 'X=X-YZ  ' ,T3_04,AUBORL,T3_06,C,MESH3D)
       ENDIF
 !
-C     SURFACE (MASS-LUMPED FORM):
+!     SURFACE (MASS-LUMPED FORM):
 !
       IF(AUBORS%TYPR.NE.'0') THEN
         CALL OV('X=X-YZ  ',T3_04%R(NPOIN3-NPOIN2+1:NPOIN3),
@@ -308,7 +283,7 @@ C     SURFACE (MASS-LUMPED FORM):
 !
       IF(NCSIZE.GT.1) CALL PARCOM(T3_04,2,MESH3D)
 !
-C     2.2) COMPUTES THE INVERSE OF THE DENOMINATOR FOR U(N+1) AND V(N+1)
+!     2.2) COMPUTES THE INVERSE OF THE DENOMINATOR FOR U(N+1) AND V(N+1)
 !
       IF(S1U%TYPR.NE.'0') THEN
         DO I=1,U%DIM1
@@ -320,13 +295,13 @@ C     2.2) COMPUTES THE INVERSE OF THE DENOMINATOR FOR U(N+1) AND V(N+1)
         ENDDO
       ENDIF
 !
-C     COMPUTES THE SOLUTION OF TRI * X = UNITY VECTOR EVERYWHERE
-C     PUT IN INV1
+!     COMPUTES THE SOLUTION OF TRI * X = UNITY VECTOR EVERYWHERE
+!     PUT IN INV1
 !
       CALL OS('X=C     ',X=T3_04,C=1.D0)
       CALL TRID3D(MTRA2%X%R,DM1%R,T3_04%R,NPOIN3,NPOIN2)
 !
-C     LATERAL BOUNDARY CONDITION: CANCELS DM1 FOR THE VELOCITY DIRICHLET
+!     LATERAL BOUNDARY CONDITION: CANCELS DM1 FOR THE VELOCITY DIRICHLET
 !
       DO IPTFR3 = 1,NPTFR3
         IF(LIUBOL%I(IPTFR3).EQ.KENT.OR.
@@ -336,46 +311,46 @@ C     LATERAL BOUNDARY CONDITION: CANCELS DM1 FOR THE VELOCITY DIRICHLET
       ENDDO
 !
 !=======================================================================
-C    2) COMPUTES THE NEW DEPTH WITH WAVE EQUATION
+!    2) COMPUTES THE NEW DEPTH WITH WAVE EQUATION
 !=======================================================================
 !
-C     STARTS COMPUTATION OF THE SECOND MEMBER (IN SEM2D%ADR(1)%P)
+!     STARTS COMPUTATION OF THE SECOND MEMBER (IN SEM2D%ADR(1)%P)
 !
       CALL OS('X=Y     ',X=SEM2D%ADR(1)%P,Y=SMH)
 !
-C     PSEUDO-VISCOSITY IN THE WAVE EQUATION (IN NUWAVE, P0 FUNCTION)
+!     PSEUDO-VISCOSITY IN THE WAVE EQUATION (IN NUWAVE, P0 FUNCTION)
 !
       CALL NUWAVE_P0(NUWAVE%R,DM1%R,Z,T3_03%R,IKLE2%I,
      &               NPOIN2,NPLAN,MESH2D%NELMAX,NELEM2,
      &               GRAV*TETAH*TETAU*DT)
 !
-C     CORRESPONDING DIFFUSION MATRIX
+!     CORRESPONDING DIFFUSION MATRIX
 !
       CALL MATRIX(MAT2D%ADR(1)%P,'M=N     ','MATDIF          ',
      &            IELM2H,IELM2H,1.D0,SVIDE,SVIDE,SVIDE,
      &            NUWAVE,SVIDE,SVIDE,MESH2D,MSK,MASKEL)
 !
-C     STORES THIS MATRIX FOR THE COMPUTATION OF FLINT2
+!     STORES THIS MATRIX FOR THE COMPUTATION OF FLINT2
 !
       CALL OM('M=N     ',MAT2D%ADR(2)%P,MAT2D%ADR(1)%P,
      &        SVIDE,0.D0,MESH2D)
 !
-C     SEM2D%ADR(1)%P = SEM2D%ADR(1)%P + INTEGRAL ON OMEGA3D
+!     SEM2D%ADR(1)%P = SEM2D%ADR(1)%P + INTEGRAL ON OMEGA3D
 !
-C     3D VECTOR TO INTEGRATE (IN UCONV, VCONV)
+!     3D VECTOR TO INTEGRATE (IN UCONV, VCONV)
 !
-C     COMPUTES UAUX BY SOLVING TRIDIAGONAL SYSTEMS
+!     COMPUTES UAUX BY SOLVING TRIDIAGONAL SYSTEMS
 !
       CALL TRID3D(MTRA2%X%R,UAUX,T3_01%R,NPOIN3,NPOIN2)
       CALL TRID3D(MTRA2%X%R,VAUX,T3_02%R,NPOIN3,NPOIN2)
 !
-C     TAKES THE PRESSURE GRADIENT INTO ACCOUNT
+!     TAKES THE PRESSURE GRADIENT INTO ACCOUNT
 !
       IF(NONHYD.AND.DPWAVEQ) THEN
 !
-C       COMPUTES AN ESTIMATE OF THE DYNAMIC PRESSURE WITH UAUX TAKEN
-C       AS U(N+1). THIS ESTIMATE WILL BE THE RESULT GIVEN IN THE RESULT
-C       FILE, AS DP IN THE SECOND CALL TO PREDIV IS (ONLY) INCREMENTAL.
+!       COMPUTES AN ESTIMATE OF THE DYNAMIC PRESSURE WITH UAUX TAKEN
+!       AS U(N+1). THIS ESTIMATE WILL BE THE RESULT GIVEN IN THE RESULT
+!       FILE, AS DP IN THE SECOND CALL TO PREDIV IS (ONLY) INCREMENTAL.
 !
         CALL CPSTVC(UN,T3_04)
         CALL CPSTVC(VN,T3_05)
@@ -383,8 +358,8 @@ C       FILE, AS DP IN THE SECOND CALL TO PREDIV IS (ONLY) INCREMENTAL.
         CALL OV('X=Y     ',T3_04%R,UAUX,UAUX,0.D0,NPOIN3)
         CALL OV('X=Y     ',T3_05%R,VAUX,VAUX,0.D0,NPOIN3)
         CALL OS('X=Y     ',X=T3_06,Y=WD)
-C       NON COMPATIBLE PART OF FREE SURFACE GRADIENT
-C      (WHICH IS NOT IN UAUX, SEE ALSO FINAL COMPUTATION OF U AND V)
+!       NON COMPATIBLE PART OF FREE SURFACE GRADIENT
+!      (WHICH IS NOT IN UAUX, SEE ALSO FINAL COMPUTATION OF U AND V)
         IF(ABS(1.D0-TETAZCOMP).GT.1.D-6) THEN
           C=-DT*GRAV*(1.D0-TETAZCOMP)
           DO I=1,U%DIM1
@@ -395,8 +370,8 @@ C      (WHICH IS NOT IN UAUX, SEE ALSO FINAL COMPUTATION OF U AND V)
           ENDDO
         ENDIF
 !
-C       TAKES DH INTO ACCOUNT, IF KNOWN (I.E. FROM 2ND SUBITERATIONS ON)
-C       TAKING DH FROM PREVIOUS TIMESTEP IS NOT A GOOD IDEA
+!       TAKES DH INTO ACCOUNT, IF KNOWN (I.E. FROM 2ND SUBITERATIONS ON)
+!       TAKING DH FROM PREVIOUS TIMESTEP IS NOT A GOOD IDEA
 !
         IF(ISOUSI.GT.1) THEN
           CALL VECTOR(T2_02,'=','GRADF          X',
@@ -419,26 +394,26 @@ C       TAKING DH FROM PREVIOUS TIMESTEP IS NOT A GOOD IDEA
           ENDDO
         ENDIF
 !
-C       APPLIES LATERAL BOUNDARY CONDITIONS
-C       NOT VERY SIGNIFICANT
+!       APPLIES LATERAL BOUNDARY CONDITIONS
+!       NOT VERY SIGNIFICANT
 !
-C       DO IPTFR3 = 1,NPTFR3
-C         IF(LIUBOL%I(IPTFR3).EQ.KENT .OR.
-C    *       LIUBOL%I(IPTFR3).EQ.KENTU.OR.
-C    *       LIUBOL%I(IPTFR3).EQ.KADH) THEN
-C            T3_04%R(MESH3D%NBOR%I(IPTFR3)) = UBORL%R(IPTFR3)
-C         ENDIF
-C         IF(LIVBOL%I(IPTFR3).EQ.KENT .OR.
-C    *       LIVBOL%I(IPTFR3).EQ.KENTU.OR.
-C    *       LIVBOL%I(IPTFR3).EQ.KADH) THEN
-C            T3_05%R(MESH3D%NBOR%I(IPTFR3)) = VBORL%R(IPTFR3)
-C         ENDIF
-C       ENDDO
+!       DO IPTFR3 = 1,NPTFR3
+!         IF(LIUBOL%I(IPTFR3).EQ.KENT .OR.
+!    *       LIUBOL%I(IPTFR3).EQ.KENTU.OR.
+!    *       LIUBOL%I(IPTFR3).EQ.KADH) THEN
+!            T3_04%R(MESH3D%NBOR%I(IPTFR3)) = UBORL%R(IPTFR3)
+!         ENDIF
+!         IF(LIVBOL%I(IPTFR3).EQ.KENT .OR.
+!    *       LIVBOL%I(IPTFR3).EQ.KENTU.OR.
+!    *       LIVBOL%I(IPTFR3).EQ.KADH) THEN
+!            T3_05%R(MESH3D%NBOR%I(IPTFR3)) = VBORL%R(IPTFR3)
+!         ENDIF
+!       ENDDO
 !
-C       BEWARE: PREDIV WILL ERASE ALL T3_** WORK ARRAYS BECAUSE CALLS SOLVE
+!       BEWARE: PREDIV WILL ERASE ALL T3_** WORK ARRAYS BECAUSE CALLS SOLVE
         CALL PREDIV(DP,T3_04,T3_05,T3_06,INFOGR,.TRUE.,1,
-     *              .TRUE.,.TRUE.,.TRUE.)
-C       APPLIES CORRECTION TO UAUX
+     &              .TRUE.,.TRUE.,.TRUE.)
+!       APPLIES CORRECTION TO UAUX
         CALL VELRES(UAUX,VAUX,WD%R,DP,
      &              T3_08,T3_09,T3_10,MSK,MASKEL,MESH3D,
      &              SVIDE,IELM3,NPLAN,OPTBAN,UNSV3D,NPOIN3,NPOIN2,
@@ -446,10 +421,10 @@ C       APPLIES CORRECTION TO UAUX
 !
       ENDIF
 !
-C     END OF 'TAKES THE PRESSURE GRADIENT INTO ACCOUNT'
+!     END OF 'TAKES THE PRESSURE GRADIENT INTO ACCOUNT'
 !
 !
-C     LATERAL BOUNDARY CONDITION IN UAUX AND VAUX
+!     LATERAL BOUNDARY CONDITION IN UAUX AND VAUX
 !
       DO IPTFR3 = 1,NPTFR3
         IF(LIUBOL%I(IPTFR3).EQ.KENT.OR.
@@ -462,16 +437,16 @@ C     LATERAL BOUNDARY CONDITION IN UAUX AND VAUX
         ENDIF
       ENDDO
 !
-C     COMPUTES TETAU * UAUX + (1-TETAU) * UN
+!     COMPUTES TETAU * UAUX + (1-TETAU) * UN
 !
       DO I=1,U%DIM1
         UCONV%R(I)=TETAU*UAUX(I)+(1.D0-TETAU)*UN%R(I)
         VCONV%R(I)=TETAU*VAUX(I)+(1.D0-TETAU)*VN%R(I)
       ENDDO
 !
-C     SEM2D%ADR(1)%P = SEM2D%ADR(1)%P - FLUX2D
+!     SEM2D%ADR(1)%P = SEM2D%ADR(1)%P - FLUX2D
 !
-C     UNONNEU=8 : 1 IF NOT A WALL
+!     UNONNEU=8 : 1 IF NOT A WALL
       CALL EXTMSK(MASKBR,MASK%ADR(8)%P%R,MESH2D%NPTFR,NETAGE)
       CALL VECTOR(T3_06,'=','FLUBOR          ',IELBOR(IELM3,2),
      &            1.D0,SVIDE,SVIDE,SVIDE,UCONV,VCONV,SVIDE,
@@ -481,15 +456,15 @@ C     UNONNEU=8 : 1 IF NOT A WALL
 !
       CALL OSDB( 'X=X-Y   ',SEM2D%ADR(1)%P,FLBOR,FLBOR,C,MESH2D)
 !
-C     MULTIPLIES BY THE GRADIENT OF THE 3D BASES
+!     MULTIPLIES BY THE GRADIENT OF THE 3D BASES
 !
       FORMUL = 'VGRADP       HOR'
       CALL VECTOR(T3_01,'=',FORMUL,IELM3,1.D0,SVIDE,SVIDE,SVIDE,
      &            UCONV,VCONV,SVIDE,MESH3D,MSK,MASKEL)
 !
-C     SUM ON THE VERTICAL
-C     FLINT2 WILL BE ADDED TO SEM2D, BUT MAY BE USED TO CHECK IN TRIDW2
-C     THAT THE SUM ON THE VERTICAL OF FLUINT = FLINT2
+!     SUM ON THE VERTICAL
+!     FLINT2 WILL BE ADDED TO SEM2D, BUT MAY BE USED TO CHECK IN TRIDW2
+!     THAT THE SUM ON THE VERTICAL OF FLUINT = FLINT2
 !
       CALL OS('X=0     ',X=FLINT2)
       DO IPLAN=1,NPLAN
@@ -499,29 +474,29 @@ C     THAT THE SUM ON THE VERTICAL OF FLUINT = FLINT2
       ENDDO
 !
 !=======================================================================
-C     CONTRIBUTION OF NON COMPATIBLE LAPLACIAN
-C     SEE ALSO MODIFICATION OF ZCONV LATER ON
+!     CONTRIBUTION OF NON COMPATIBLE LAPLACIAN
+!     SEE ALSO MODIFICATION OF ZCONV LATER ON
 !=======================================================================
 !
       IF(ABS(1.D0-TETAZCOMP).GT.1.D-6) THEN
 !
-C       ADDS NON COMPATIBLE LAPLACIAN
-C       FOR THE CONTRIBUTION OF EXPLICIT FREE-SURFACE
-C       TO THE VELOCITY
-C       TETAZCOMP=1 : COMPATIBLE
-C       TETAZCOMP=0 : NON COMPATIBLE
+!       ADDS NON COMPATIBLE LAPLACIAN
+!       FOR THE CONTRIBUTION OF EXPLICIT FREE-SURFACE
+!       TO THE VELOCITY
+!       TETAZCOMP=1 : COMPATIBLE
+!       TETAZCOMP=0 : NON COMPATIBLE
 !
-C       ADDS THE NON COMPATIBLE EXPLICIT FREE SURFACE GRADIENT
+!       ADDS THE NON COMPATIBLE EXPLICIT FREE SURFACE GRADIENT
         CALL CPSTVC(H,T2_04)
         CALL CPSTVC(H,T2_05)
         IF(OPTBAN.EQ.1) THEN
-C         FREE SURFACE PIECE-WISE LINEAR IN ZFLATS
+!         FREE SURFACE PIECE-WISE LINEAR IN ZFLATS
           CALL VECTOR(FLINT2,'+','VGRADP 2        ',IELM2H,
      &                -(1.D0-TETAZCOMP)/TETAH,
      &                SVIDE,SVIDE,SVIDE,NUWAVE,ZFLATS,SVIDE,
      &                MESH2D,MSK,MASKEL)
         ELSE
-C         FREE SURFACE LINEAR IN T2_04
+!         FREE SURFACE LINEAR IN T2_04
           DO I=1,NPOIN2
             T2_04%R(I)=HN%R(I)+ZF%R(I)
           ENDDO
@@ -536,15 +511,15 @@ C         FREE SURFACE LINEAR IN T2_04
       CALL OS('X=X+Y   ',X=SEM2D%ADR(1)%P,Y=FLINT2)
 !
 !=======================================================================
-C     ADDS THE MASS MATRIX (LUMPED OR NOT) TO THE SYSTEM MATRIX
-C     SOLVES THE EQUATION
+!     ADDS THE MASS MATRIX (LUMPED OR NOT) TO THE SYSTEM MATRIX
+!     SOLVES THE EQUATION
 !=======================================================================
 !
-C     COMPUTES THE PARTIALLY LUMPED 2D MASS MATRIX
+!     COMPUTES THE PARTIALLY LUMPED 2D MASS MATRIX
 !
       FORMUL='MATMAS          '
-C     NOTE: THERE IS LOCAL LUMPING IN PROPAG
-C           ON THE TIDAL FLATS
+!     NOTE: THERE IS LOCAL LUMPING IN PROPAG
+!           ON THE TIDAL FLATS
       CALL MATRIX(MAT2D%ADR(3)%P,'M=N     ',FORMUL,IELM2H,IELM2H,
      &            1.D0/DT,
      &            SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,
@@ -555,7 +530,7 @@ C           ON THE TIDAL FLATS
       CALL OM('M=M+D   ',MAT2D%ADR(1)%P,MAT2D%ADR(1)%P,
      &        T2_01,C,MESH2D)
 !
-C     INITIAL GUESS FOR DH
+!     INITIAL GUESS FOR DH
 !
       IF(IORDRH.EQ.0) THEN
         CALL OS('X=0     ',X=DH)
@@ -570,14 +545,14 @@ C     INITIAL GUESS FOR DH
         STOP
       ENDIF
 !
-C     SAVES THE ORIGINAL MATRIX, BEFORE DIRICHLETS AND PRECONDITIONING
+!     SAVES THE ORIGINAL MATRIX, BEFORE DIRICHLETS AND PRECONDITIONING
 !
       IF(OPTBAN.EQ.1.AND.OPT_HNEG.EQ.2.AND.NPTFR2.GT.0) THEN
         CALL OM('M=N     ',MAT2D%ADR(3)%P,MAT2D%ADR(1)%P,
      &          SVIDE,0.D0,MESH2D)
       ENDIF
 !
-C     DIRICHLET + SOLVES THE SYSTEM
+!     DIRICHLET + SOLVES THE SYSTEM
 !
       CALL OSBD( 'X=X-Y   ' , HBOR , HN , HN , C , MESH2D )
       CALL DIRICH(DH,MAT2D%ADR(1)%P,SEM2D%ADR(1)%P,
@@ -586,15 +561,15 @@ C     DIRICHLET + SOLVES THE SYSTEM
      &           TRAV2,SLVPRO,INFOGR,MESH2D,MAT2D%ADR(2)%P)
       CALL OSBD( 'X=X+Y   ' , HBOR , HN , HN , C , MESH2D )
 !
-C     RECOVERS THE NEW DEPTH
+!     RECOVERS THE NEW DEPTH
 !
       CALL OS('X=Y+Z   ',X=H,Y=HN,Z=DH)
 !
-C     COMPLETES THE 2D INTERNAL FLUXES
-C     COMPATIBLE WITH CONTINUITY EQUATION
+!     COMPLETES THE 2D INTERNAL FLUXES
+!     COMPATIBLE WITH CONTINUITY EQUATION
 !
-C     BOUNDARY FLUXES THAT SOLVE THE CONTINUITY EQUATION
-C     WHEN DEPTHS ARE PRESCRIBED
+!     BOUNDARY FLUXES THAT SOLVE THE CONTINUITY EQUATION
+!     WHEN DEPTHS ARE PRESCRIBED
 !
       IF(OPTBAN.EQ.1.AND.OPT_HNEG.EQ.2.AND.NPTFR2.GT.0) THEN
         CALL MATVEC('X=AY    ',T2_01,MAT2D%ADR(3)%P,DH,1.D0,MESH2D)
@@ -605,13 +580,13 @@ C     WHEN DEPTHS ARE PRESCRIBED
         ENDDO
       ENDIF
 !
-C     UNCOMMENT THIS LINE
-C     TO CHECK THAT SUM OF FLUINT = FLINT2 (IN TRIDW2)
+!     UNCOMMENT THIS LINE
+!     TO CHECK THAT SUM OF FLUINT = FLINT2 (IN TRIDW2)
 !
-C     CALL MATVEC ('X=X+CAY  ',FLINT2,MAT2D%ADR(2)%P,DH,-1.D0,MESH2D)
+!     CALL MATVEC ('X=X+CAY  ',FLINT2,MAT2D%ADR(2)%P,DH,-1.D0,MESH2D)
 !
-C     PREPARES THE PIECE-WISE LINEAR FUNCTION ZCONV
-C    (THE ADVECTING FIELD WILL BE UCONV-GRAV*DT*TETAU*TETAH*GRAD(ZCONV))
+!     PREPARES THE PIECE-WISE LINEAR FUNCTION ZCONV
+!    (THE ADVECTING FIELD WILL BE UCONV-GRAV*DT*TETAU*TETAH*GRAD(ZCONV))
 !
       DO IELEM=1,NELEM2
         ZCONV%R(IELEM         )=DH%R(IKLE2%I(IELEM         ))
@@ -621,10 +596,10 @@ C    (THE ADVECTING FIELD WILL BE UCONV-GRAV*DT*TETAU*TETAH*GRAD(ZCONV))
       IF(ABS(1.D0-TETAZCOMP).GT.1.D-6) THEN
         C=(1.D0-TETAZCOMP)/TETAH
         IF(OPTBAN.EQ.1) THEN
-C         FREE SURFACE PIECE-WISE LINEAR IN ZFLATS
+!         FREE SURFACE PIECE-WISE LINEAR IN ZFLATS
           CALL OS('X=X+CY  ',X=ZCONV,Y=ZFLATS,C=C)
         ELSE
-C         FREE SURFACE LINEAR
+!         FREE SURFACE LINEAR
           DO IELEM=1,NELEM2
             I1=IKLE2%I(IELEM         )
             I2=IKLE2%I(IELEM+  NELEM2)
@@ -640,12 +615,12 @@ C         FREE SURFACE LINEAR
       ENDIF
 !
 !=======================================================================
-C     3) COMPUTES NEW VELOCITIES
+!     3) COMPUTES NEW VELOCITIES
 !=======================================================================
 !
-C     3.1) GRADIENT OF DH (IN T2_02 AND T2_03)
+!     3.1) GRADIENT OF DH (IN T2_02 AND T2_03)
 !
-C     COMPONENT X (IN T2_02)
+!     COMPONENT X (IN T2_02)
 !
       CALL VECTOR
      & (T2_02,'=','GRADF          X',IELM2H,-GRAV*TETAH,DH,SVIDE,SVIDE,
@@ -653,7 +628,7 @@ C     COMPONENT X (IN T2_02)
       IF (NCSIZE.GT.1) CALL PARCOM(T2_02,2,MESH2D)
       CALL OS ( 'X=XY    ' ,X=T2_02,Y=UNSV2D)
 !
-C     COMPONENT Y (IN T2_03)
+!     COMPONENT Y (IN T2_03)
 !
       CALL VECTOR
      & (T2_03,'=','GRADF          Y',IELM2H,-GRAV*TETAH,DH,SVIDE,SVIDE,
@@ -661,9 +636,9 @@ C     COMPONENT Y (IN T2_03)
       IF(NCSIZE.GT.1) CALL PARCOM(T2_03,2,MESH2D)
       CALL OS ( 'X=XY    ' ,X=T2_03,Y=UNSV2D)
 !
-C     THE NON COMPATIBLE PART OF THE LAPLACIAN FOR THE FREE SURFACE
-C     GRADIENT HAS NOT BEEN PUT IN UAUX, IT IS ADDED HERE IN A
-C     COMPATIBLE WAY TO COMPUTE U AND V
+!     THE NON COMPATIBLE PART OF THE LAPLACIAN FOR THE FREE SURFACE
+!     GRADIENT HAS NOT BEEN PUT IN UAUX, IT IS ADDED HERE IN A
+!     COMPATIBLE WAY TO COMPUTE U AND V
 !
       IF(ABS(1.D0-TETAZCOMP).GT.1.D-6) THEN
         C=-GRAV*(1.D0-TETAZCOMP)
@@ -671,20 +646,20 @@ C     COMPATIBLE WAY TO COMPUTE U AND V
         CALL OS('X=X+CY  ',X=T2_03,Y=GRADZN%ADR(2)%P,C=C)
       ENDIF
 !
-C     3.2) FINAL COMPUTATION OF U AND V
+!     3.2) FINAL COMPUTATION OF U AND V
 !
       DO I=1,U%DIM1
         U%R(I)=UAUX(I)+DT*T2_02%R(MOD(I-1,NPOIN2)+1)*DM1%R(I)
         V%R(I)=VAUX(I)+DT*T2_03%R(MOD(I-1,NPOIN2)+1)*DM1%R(I)
       ENDDO
 !
-C     MODIFIES DM1 FOR USE IN PRECON, FLUX3D, ETC
+!     MODIFIES DM1 FOR USE IN PRECON, FLUX3D, ETC
 !
       CALL OS('X=CX    ',X=DM1,C=-DT*GRAV*TETAH*TETAU)
 !
-C     DIRICHLET TYPE BOUNDARY CONDITIONS
+!     DIRICHLET TYPE BOUNDARY CONDITIONS
 !
-C     LATERAL BOUNDARY CONDITION
+!     LATERAL BOUNDARY CONDITION
 !
       DO IPTFR3 = 1,NPTFR3
         IF(LIUBOL%I(IPTFR3).EQ.KENT.OR.
@@ -697,7 +672,7 @@ C     LATERAL BOUNDARY CONDITION
         ENDIF
       ENDDO
 !
-C     BOTTOM AND SURFACE BOUNDARY CONDITION
+!     BOTTOM AND SURFACE BOUNDARY CONDITION
 !
       DO IPOIN2 = 1,NPOIN2
         IF(LIUBOF%I(IPOIN2).EQ.KENT.OR.LIUBOF%I(IPOIN2).EQ.KADH) THEN
@@ -714,19 +689,19 @@ C     BOTTOM AND SURFACE BOUNDARY CONDITION
         ENDIF
       ENDDO
 !
-C     PROJECTION ON SOLID BOUNDARIES (KLOG)
+!     PROJECTION ON SOLID BOUNDARIES (KLOG)
 !
       IF(VELPROLAT) THEN
         CALL AIRWIK3(LIHBOR%I,U%R,V%R,MESH2D%XNEBOR%R,MESH2D%YNEBOR%R,
      &               NBOR2%I,NPTFR2,NPLAN,NPOIN2,KLOG)
       ENDIF
 !
-C     THIS SEQUENCE WILL BE DONE AFTER IF DYNAMIC PRESSURE HAS NOT BEEN
-C     COMPUTED HERE
+!     THIS SEQUENCE WILL BE DONE AFTER IF DYNAMIC PRESSURE HAS NOT BEEN
+!     COMPUTED HERE
 !
       IF(NONHYD) CALL OS ('X=Y     ', X=W , Y=WD  )
       IF(NONHYD.AND.DPWAVEQ) THEN
-C       BOUNDARY CONDITION ON FREE SURFACE STRONGLY ENFORCED
+!       BOUNDARY CONDITION ON FREE SURFACE STRONGLY ENFORCED
         IF(CLDYN) THEN
           CALL OV('X=Y     ',W%R(NPOIN3-NPOIN2+1:NPOIN3),DSSUDT%R,
      &                       DSSUDT%R,0.D0,NPOIN2)
@@ -737,7 +712,7 @@ C       BOUNDARY CONDITION ON FREE SURFACE STRONGLY ENFORCED
      &                       GRADZS%ADR(2)%P%R,
      &                       V%R(NPOIN3-NPOIN2+1:NPOIN3),0.D0,NPOIN2)
         ENDIF
-C       BOUNDARY CONDITION ON BOTTOM STRONGLY ENFORCED
+!       BOUNDARY CONDITION ON BOTTOM STRONGLY ENFORCED
         IF(VELPROBOT) THEN
           IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
             DO I=1,NPOIN2
@@ -772,14 +747,14 @@ C       BOUNDARY CONDITION ON BOTTOM STRONGLY ENFORCED
         ENDDO
       ENDIF
 !
-!     COMPUTING WCONV, BEFORE MODIFICATION OF W BY PRESSURE, 
+!     COMPUTING WCONV, BEFORE MODIFICATION OF W BY PRESSURE,
 !     IN ACCORDANCE WITH UCONV AND VCONV DONE BEFORE
 !
       IF(NONHYD) THEN
         DO I=1,NPOIN3
           WCONV%R(I)=TETAU*W%R(I)+(1.D0-TETAU)*WN%R(I)
         ENDDO
-      ENDIF    
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -802,6 +777,3 @@ C       BOUNDARY CONDITION ON BOTTOM STRONGLY ENFORCED
 !
       RETURN
       END
-C
-C#######################################################################
-C

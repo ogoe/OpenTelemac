@@ -1,49 +1,7 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       EXPRESSES THE BOUNDARY CONDITIONS FOR THE SEDIMENT,
-!>                AT THE BOTTOM AND SURFACE (FOR COHESIVE SEDIMENT OR NOT).
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.0                                       </center>
-!> </td><td> 12/09/07
-!> </td><td> C LE NORMANT (LNH)
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/06/03
-!> </td><td> CAMILLE LEQUETTE
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/99
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C
-C#######################################################################
-C
-                        SUBROUTINE CLSEDI
+!                    *****************
+                     SUBROUTINE CLSEDI
+!                    *****************
+!
      &( ATABOF , BTABOF , ATABOS , BTABOS , TA     ,
      &  WC     , GRADZFX, GRADZFY, GRADZSX, GRADZSY,
      &  X      , Y      , Z      , HN     , DELTAR ,
@@ -55,85 +13,105 @@ C
      &  GIBSON , PRIVE  , UETCAR ,
      &  GRAV   , SEDCO  , DMOY   , CREF   , CF,
      &  AC     , KSPRATIO,ICR)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AC             |-->| 
-C| ATABO,BTABO    |<--| LOI LOG SUR TRACEURS ACTIFS:ATABO*TA + BTABO
-C| ATABOF         |---| 
-C| ATABOS         |---| 
-C| BTABOF         |---| 
-C| BTABOS         |---| 
-C| CF             |---| 
-C| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
-C| CONC           |-->| CONCENTRATIONS DES COUCHES DU FOND VASEUX
-C| CREF           |---| 
-C| DELTAR         |-->| DELTA RHO SUR RHO0 = (RHO-RHO0)/RHO0
-C| DENSI          |-->| DENSITE DE L'EAU
-C| DMOY           |-->| DIAMETRE MOYEN DES GRAINS
-C| DNUTAV         |-->| VISCOSITE LAMINAIRE DU TRACEUR
-C| DNUVIV         |-->| VISCOSITE LAMINAIRE DE L'EAU
-C| DT             |-->| PAS DE TEMPS HYDRAULIQUE
-C| EPAI           |<->| TAILLE DES MAILLES DU FOND EN
-C|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+IVIDE))
-C| F,  S          |---| F : FOND     S : SURFACE
-C| FLUER          |<--| FLUX D'EROSION EN CHAQUE POINT 2D
-C| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
-C| GRADZFX        |---| 
-C| GRADZFY        |---| 
-C| GRADZSX        |---| 
-C| GRADZSY        |---| 
-C| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
-C| HDEP           |<->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
-C| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
-C| ITURBV         |-->| MODELE DE TURBULENCE  VERTICAL
-C| IVIDE          |<->| INDICE DES VIDES AUX POINTS DU MAILLAGE
-C| KARMAN         |-->| CONSTANTE DE KARMAN
-C| KFROT          |-->| LOI DE FROTTEMENT UTILISEE
-C| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
-C| KSPRATIO       |-->| RATIO RUGOSITE DE PEAU / DIAMETRE DES GRAINS
-C| LITA,BF        |<->| TYPE COND. LIMITES SUR TA         : FOND
-C| LITA,BS        |<->| TYPE COND. LIMITES SUR TA         : SURFACE
-C| LITABF         |---| 
-C| LITABS         |---| 
-C| MPART          |-->| COEFFICIENT D'EROSION (LOI DE PARTHENIADES)
-C| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
-C|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
-C| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-C| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-C| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
-C| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-C|                |   | DISCRETISANT LE FOND VASEUX(MODELE DE GIBSON)
-C| NPLAN          |---| 
-C| NPOIN2         |-->| NOMBRE DE POINTS 2D
-C| NPOIN3         |-->| NOMBRE DE POINTS 3D
-C| NPRIV          |-->| NOMBRE DE TABLEAUX DE DIMENSION NPOIN3
-C|                |   | RESERVES A L'UTILISATEUR
-C| PDEPOT         |<--| PROBABILITE DE DEPOT EN CHAQUE POINT 2D
-C| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
-C| RHO0           |-->| DENSITE DE REFERENCE DE L'EAU
-C| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
-C| RUGOF0         |-->| COEFFICIENT DE NIKURADSE TOTAL
-C| SEDCO          |-->| LOGIQUE POUR SEDIMENT COHESIF
-C| TA             |-->| CONCENTRATION EN SEDIMENT
-C| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-C| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
-C| TOCD           |-->| CONTRAINTE CRITIQUE DE DEPOT
-C| TOCE           |-->| CONTRAINTE CRITIQUE D'EROSION
-C| TRA03          |<->| TABLEAU DE TRAVAIL
-C| UETCAR         |-->| U ETOILE CARRE
-C| VARIABLE NON CO|---| 
-C| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
-C| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    EXPRESSES THE BOUNDARY CONDITIONS FOR THE SEDIMENT,
+!+                AT THE BOTTOM AND SURFACE (FOR COHESIVE SEDIMENT OR NOT).
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/99
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  CAMILLE LEQUETTE
+!+        **/06/03
+!+        
+!+   
+!
+!history  C LE NORMANT (LNH)
+!+        12/09/07
+!+        V5P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AC             |-->| 
+!| ATABOF         |---| 
+!| ATABOS         |---| 
+!| BTABOF         |---| 
+!| BTABOS         |---| 
+!| CF             |---| 
+!| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
+!| CONC           |-->| CONCENTRATIONS DES COUCHES DU FOND VASEUX
+!| CREF           |---| 
+!| DELTAR         |-->| DELTA RHO SUR RHO0 = (RHO-RHO0)/RHO0
+!| DENSI          |-->| DENSITE DE L'EAU
+!| DMOY           |-->| DIAMETRE MOYEN DES GRAINS
+!| DT             |-->| PAS DE TEMPS HYDRAULIQUE
+!| EPAI           |<->| TAILLE DES MAILLES DU FOND EN
+!|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+IVIDE))
+!| FLUER          |<--| FLUX D'EROSION EN CHAQUE POINT 2D
+!| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
+!| GRADZFX        |---| 
+!| GRADZFY        |---| 
+!| GRADZSX        |---| 
+!| GRADZSY        |---| 
+!| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
+!| HDEP           |<->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
+!| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
+!| ITURBV         |-->| MODELE DE TURBULENCE  VERTICAL
+!| IVIDE          |<->| INDICE DES VIDES AUX POINTS DU MAILLAGE
+!| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
+!| KSPRATIO       |-->| RATIO RUGOSITE DE PEAU / DIAMETRE DES GRAINS
+!| LITABF         |---| 
+!| LITABS         |---| 
+!| MPART          |-->| COEFFICIENT D'EROSION (LOI DE PARTHENIADES)
+!| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
+!|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
+!| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
+!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
+!|                |   | DISCRETISANT LE FOND VASEUX(MODELE DE GIBSON)
+!| NPLAN          |---| 
+!| NPOIN2         |-->| NOMBRE DE POINTS 2D
+!| NPOIN3         |-->| NOMBRE DE POINTS 3D
+!| PDEPOT         |<--| PROBABILITE DE DEPOT EN CHAQUE POINT 2D
+!| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
+!| RHO0           |-->| DENSITE DE REFERENCE DE L'EAU
+!| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
+!| SEDCO          |-->| LOGIQUE POUR SEDIMENT COHESIF
+!| TA             |-->| CONCENTRATION EN SEDIMENT
+!| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
+!| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
+!| TOCD           |-->| CONTRAINTE CRITIQUE DE DEPOT
+!| TOCE           |-->| CONTRAINTE CRITIQUE D'EROSION
+!| TRA03          |<->| TABLEAU DE TRAVAIL
+!| UETCAR         |-->| U ETOILE CARRE
+!| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
+!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_CLSEDI => CLSEDI
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: NPOIN2,NPOIN3,KLOG,NPFMAX
       INTEGER, INTENT(IN) :: NCOUCH,ITURBV,NPLAN,ICR
 !
@@ -167,9 +145,9 @@ C
 !
       LOGICAL, INTENT(IN)             :: TASSE , GIBSON , SEDCO
       DOUBLE PRECISION, INTENT(IN)    :: AC, KSPRATIO
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION KSP,A,C,ZERO,HCLIP,MU
       INTEGER IPOIN,I
 !
@@ -178,16 +156,16 @@ C
       ZERO = 1.D-6
 !
       DO IPOIN=1,NPOIN2
-C       COMPUTES THE FLUID DENSITY
+!       COMPUTES THE FLUID DENSITY
         DENSI(IPOIN) = (DELTAR(IPOIN)+1.D0)*RHO0
-C       COMPUTES THE STRESS AT THE BOTTOM
+!       COMPUTES THE STRESS AT THE BOTTOM
         TOB%R(IPOIN) = DENSI(IPOIN)*UETCAR(IPOIN)
       ENDDO
 !
       IF(ICR.EQ.1) THEN
 !
         DO IPOIN=1,NPOIN2
-C         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
+!         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
           KSP=KSPRATIO *DMOY%R(IPOIN)
           IF(CF%R(IPOIN) > ZERO.AND.HN%R(IPOIN).GT.KSP) THEN
             HCLIP=MAX(HN%R(IPOIN),KSP)
@@ -201,7 +179,7 @@ C         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
 !
       ENDIF
 !
-C      -----COMPUTES THE EXPLICIT EROSION FLUX-----
+!      -----COMPUTES THE EXPLICIT EROSION FLUX-----
 !
       IF(SEDCO) THEN
 !
@@ -217,7 +195,6 @@ C      -----COMPUTES THE EXPLICIT EROSION FLUX-----
      &               CFDEP,RHOS,DT,GIBSON)
 !
         ENDIF
-
       ELSE
 !
           CALL ERODNC(CFDEP,WC,HDEP,FLUER,TOB,DT,
@@ -226,8 +203,8 @@ C      -----COMPUTES THE EXPLICIT EROSION FLUX-----
 !
       ENDIF
 !
-C      -----WRITES THE BOUNDARY CONDITIONS AT THE BOTTOM / SURFACE-----
-C      -----                FOR THE SEDIMENT                      -----
+!      -----WRITES THE BOUNDARY CONDITIONS AT THE BOTTOM / SURFACE-----
+!      -----                FOR THE SEDIMENT                      -----
 !
       CALL FLUSED(ATABOF , BTABOF , ATABOS , BTABOS ,
      &            LITABF , LITABS , TA     , WC     ,
@@ -240,6 +217,3 @@ C      -----                FOR THE SEDIMENT                      -----
 !
       RETURN
       END
-C
-C#######################################################################
-C

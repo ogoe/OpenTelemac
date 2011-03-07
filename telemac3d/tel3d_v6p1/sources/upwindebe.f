@@ -1,152 +1,79 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       UPWINDS THE ADVECTION TERM OF VERTICAL VELOCITY.
-!>  @code
-!>        A DIFFUSION TERM WITH DIFFUSION COEFFICIENT ABS(WCC)*DZ/2
-!>        IS ADDED TO THE MATRIX. FORMULA IS OBTAINED BY SIMPLIFYING
-!>        THE Z PART OF DIFFUSION MATRIX BUILT IN SUBROUTINE MT02PP
-!>        DZ THEN VANISHES.<br>
-!>        THIS IS USED IN DIFF3D FOR SEDIMENT SETTLING VELOCITY
-!>  @endcode
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> D, DELTA, EXT, IKLE, NELEM2, NELEM3, NELMAX, NPLAN, SURFAC, WCC, X
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> DS6, I, I1, I2, I3, I4, I5, I6, IELEM2, IELEM3, UP1, UP2, UP3
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>UPWIND()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.6                                       </center>
-!> </td><td> 12/12/05
-!> </td><td> J.M. HERVOUET  (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>D
-!></td><td><-></td><td>MATRIX DIAGONAL
-!>    </td></tr>
-!>          <tr><td>DELTA
-!></td><td>--></td><td>UPWIND COEFFICIENT (BETWEEN 0 AND 1)
-!>    </td></tr>
-!>          <tr><td>EXT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IKLE
-!></td><td>--></td><td>CONNECTIVITY TABLE
-!>    </td></tr>
-!>          <tr><td>NELEM2
-!></td><td>--></td><td>NUMBER OF ELEMENTS IN 2D MESH
-!>    </td></tr>
-!>          <tr><td>NELEM3
-!></td><td>--></td><td>NUMBER OF ELEMENTS IN 3D MESH
-!>    </td></tr>
-!>          <tr><td>NELMAX
-!></td><td>--></td><td>MAXIMUM NUMBER OF ELEMENTS
-!>    </td></tr>
-!>          <tr><td>NPLAN
-!></td><td>--></td><td>NUMBER OF PLANES ON THE VERTICAL
-!>    </td></tr>
-!>          <tr><td>SURFAC
-!></td><td>--></td><td>AREA OF TRIANGLES
-!>    </td></tr>
-!>          <tr><td>WCC
-!></td><td>--></td><td>VELOCITY (NEGATIVE IF SETTLING VELOCITY)
-!>                  CAN BE ALSO WSCONV IN THE TRANSFPRMED MESH
-!>    </td></tr>
-!>          <tr><td>X
-!></td><td><-></td><td>MATRIX OFF-DIAGONAL TERMS
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE UPWINDEBE
+!                    ********************
+                     SUBROUTINE UPWINDEBE
+!                    ********************
+!
      &(D,X,IKLE,NELMAX,NELEM3,NELEM2,SURFAC,NPLAN,WCC,EXT,DELTA)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| D             |<->| MATRIX DIAGONAL
-C| DELTA          |-->| UPWIND COEFFICIENT (BETWEEN 0 AND 1)
-C| EXT            |---| 
-C| IKLE           |-->| CONNECTIVITY TABLE
-C| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
-C| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D MESH
-C| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
-C| NPLAN          |-->| NUMBER OF PLANES ON THE VERTICAL
-C| SURFAC         |-->| AREA OF TRIANGLES
-C| WCC            |-->| VELOCITY (NEGATIVE IF SETTLING VELOCITY)
-C|                |   | CAN BE ALSO WSCONV IN THE TRANSFPRMED MESH
-C| X             |<->| MATRIX OFF-DIAGONAL TERMS
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    UPWINDS THE ADVECTION TERM OF VERTICAL VELOCITY.
+!code
+!+        A DIFFUSION TERM WITH DIFFUSION COEFFICIENT ABS(WCC)*DZ/2
+!+        IS ADDED TO THE MATRIX. FORMULA IS OBTAINED BY SIMPLIFYING
+!+        THE Z PART OF DIFFUSION MATRIX BUILT IN SUBROUTINE MT02PP
+!+        DZ THEN VANISHES.
+!+
+!+        THIS IS USED IN DIFF3D FOR SEDIMENT SETTLING VELOCITY
+!
+!history  J.M. HERVOUET  (LNHE)
+!+        12/12/05
+!+        V5P6
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| D              |<->| MATRIX DIAGONAL
+!| DELTA          |-->| UPWIND COEFFICIENT (BETWEEN 0 AND 1)
+!| EXT            |---| 
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D MESH
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPLAN          |-->| NUMBER OF PLANES ON THE VERTICAL
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| WCC            |-->| VELOCITY (NEGATIVE IF SETTLING VELOCITY)
+!|                |   | CAN BE ALSO WSCONV IN THE TRANSFPRMED MESH
+!| X              |<->| MATRIX OFF-DIAGONAL TERMS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)             :: NELMAX,NELEM3,NELEM2,NPLAN
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,6)
       DOUBLE PRECISION, INTENT(IN   ) :: SURFAC(NELMAX),WCC(*),DELTA
       DOUBLE PRECISION, INTENT(INOUT) :: D(*),X(NELMAX,30)
       CHARACTER(LEN=1), INTENT(IN)    :: EXT
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I,I1,I2,I3,I4,I5,I6,IELEM2,IELEM3
       DOUBLE PRECISION UP1,UP2,UP3,DS6
-C
+!
       INTRINSIC ABS
-C
-C=======================================================================
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+!=======================================================================
+!
       DS6=DELTA/6.D0
 !
       IF(EXT.EQ.'S') THEN
@@ -160,10 +87,10 @@ C
           I4=IKLE(IELEM3,4)
           I5=IKLE(IELEM3,5)
           I6=IKLE(IELEM3,6)
-C         AVERAGE VELOCITY TAKEN AT THE BOTTOM OF THE PRISM
-C         IF IT IS WSCONV (CALL BY PRECON, IT IS CONSTANT ON THE VERTICAL)
-C         AND WCC(I4,I5 OR I6) NOT DEFINED FOR LAST LAYER OF ELEMENTS
-C         IF IT IS THE SETTLING VELOCITY, IT IS CONSTANT EVERYWHERE
+!         AVERAGE VELOCITY TAKEN AT THE BOTTOM OF THE PRISM
+!         IF IT IS WSCONV (CALL BY PRECON, IT IS CONSTANT ON THE VERTICAL)
+!         AND WCC(I4,I5 OR I6) NOT DEFINED FOR LAST LAYER OF ELEMENTS
+!         IF IT IS THE SETTLING VELOCITY, IT IS CONSTANT EVERYWHERE
           UP1=SURFAC(IELEM2)*DS6*ABS(WCC(I1))
           UP2=SURFAC(IELEM2)*DS6*ABS(WCC(I2))
           UP3=SURFAC(IELEM2)*DS6*ABS(WCC(I3))
@@ -190,10 +117,10 @@ C         IF IT IS THE SETTLING VELOCITY, IT IS CONSTANT EVERYWHERE
           I4=IKLE(IELEM3,4)
           I5=IKLE(IELEM3,5)
           I6=IKLE(IELEM3,6)
-C         AVERAGE VELOCITY TAKEN AT THE BOTTOM OF THE PRISM
-C         IF IT IS WSCONV (CALL BY PRECON, IT IS CONSTANT ON THE VERTICAL)
-C         AND WCC(I4,I5 OR I6) NOT DEFINED FOR LAST LAYER OF ELEMENTS
-C         IF IT IS THE SETTLING VELOCITY, IT IS CONSTANT EVERYWHERE
+!         AVERAGE VELOCITY TAKEN AT THE BOTTOM OF THE PRISM
+!         IF IT IS WSCONV (CALL BY PRECON, IT IS CONSTANT ON THE VERTICAL)
+!         AND WCC(I4,I5 OR I6) NOT DEFINED FOR LAST LAYER OF ELEMENTS
+!         IF IT IS THE SETTLING VELOCITY, IT IS CONSTANT EVERYWHERE
           UP1=SURFAC(IELEM2)*DS6*ABS(WCC(I1))
           UP2=SURFAC(IELEM2)*DS6*ABS(WCC(I2))
           UP3=SURFAC(IELEM2)*DS6*ABS(WCC(I3))
@@ -225,6 +152,3 @@ C         IF IT IS THE SETTLING VELOCITY, IT IS CONSTANT EVERYWHERE
 !
       RETURN
       END
-C
-C#######################################################################
-C

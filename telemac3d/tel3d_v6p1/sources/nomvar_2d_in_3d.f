@@ -1,121 +1,72 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
-!>                FILES (IN TEXTE) AND FOR THE PREVIOUS COMPUTATION
-!>                RESULTS FILE (IN TEXTPR).
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @note  TEXTE AND TEXTPR ARE GENERALLY THE SAME EXCEPT IF THE
-!>         PREVIOUS COMPUTATION COMES FROM ANOTHER SOFTWARE.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> MNEMO, NAMETRAC, NTRAC, TEXTE, TEXTPR
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> I, I_IN_2_LETTERS, NEXT
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>LECDON_TELEMAC3D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.7                                       </center>
-!> </td><td> 15/09/06
-!> </td><td> J-M HERVOUET (LNH) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>MNEMO
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NAMETRAC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NTRAC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TEXTE
-!></td><td><--</td><td>SEE ABOVE
-!>    </td></tr>
-!>          <tr><td>TEXTPR
-!></td><td><--</td><td>SEE ABOVE
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE NOMVAR_2D_IN_3D
+!                    **************************
+                     SUBROUTINE NOMVAR_2D_IN_3D
+!                    **************************
+!
      &(TEXTE,TEXTPR,MNEMO,NTRAC,NAMETRAC)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| MNEMO          |---| 
-C| NAMETRAC       |---| 
-C| NTRAC          |---| 
-C| TEXTE          |<--| SEE ABOVE
-C| TEXTPR         |<--| SEE ABOVE
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
+!+                FILES (IN TEXTE) AND FOR THE PREVIOUS COMPUTATION
+!+                RESULTS FILE (IN TEXTPR).
+!
+!note     TEXTE AND TEXTPR ARE GENERALLY THE SAME EXCEPT IF THE
+!+         PREVIOUS COMPUTATION COMES FROM ANOTHER SOFTWARE.
+!
+!history  J-M HERVOUET (LNH)
+!+        15/09/06
+!+        V5P7
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| MNEMO          |---| 
+!| NAMETRAC       |---| 
+!| NTRAC          |---| 
+!| TEXTE          |<--| SEE ABOVE
+!| TEXTPR         |<--| SEE ABOVE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXTE(*),TEXTPR(*)
       CHARACTER(LEN=8) , INTENT(INOUT) :: MNEMO(*)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
       INTEGER, INTENT(IN) :: NTRAC
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       CHARACTER(LEN=2) I_IN_2_LETTERS(32)
       DATA I_IN_2_LETTERS /'1 ','2 ','3 ','4 ','5 ','6 ','7 ','8 ','9 ',
      &                     '10','11','12','13','14','15','16','17','18',
      &                     '19','20','21','22','23','24','25','26','27',
      &                     '28','29','30','31','32'/
-C
+!
       INTEGER I,NEXT
-C
-C-----------------------------------------------------------------------
-C
-C  ENGLISH
-C
+!
+!-----------------------------------------------------------------------
+!
+!  ENGLISH
+!
       IF(LNG.EQ.2) THEN
-C
+!
       TEXTE (1 ) = 'VELOCITY U      M/S             '
       TEXTE (2 ) = 'VELOCITY V      M/S             '
       TEXTE (3 ) = 'CELERITY        M/S             '
@@ -150,12 +101,12 @@ C
       TEXTE (32) = 'SOLID DISCHARGE M2/S            '
       TEXTE (33) = 'SOLID DIS IN X  M2/S            '
       TEXTE (34) = 'SOLID DIS IN Y  M2/S            '
-C
-C TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
-C IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
-C FROM ANOTHER CODE WITH DIFFERENT VARIABLE NAMES, WHICH MUST
-C BE GIVEN HERE:
-C
+!
+! TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
+! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
+! FROM ANOTHER CODE WITH DIFFERENT VARIABLE NAMES, WHICH MUST
+! BE GIVEN HERE:
+!
       TEXTPR (1 ) = 'VELOCITY U      M/S             '
       TEXTPR (2 ) = 'VELOCITY V      M/S             '
       TEXTPR (3 ) = 'CELERITY        M/S             '
@@ -190,13 +141,13 @@ C
       TEXTPR (32) = 'SOLID DISCHARGE M2/S            '
       TEXTPR (33) = 'SOLID DIS IN X  M2/S            '
       TEXTPR (34) = 'SOLID DIS IN Y  M2/S            '
-C
-C-----------------------------------------------------------------------
-C
-C  FRANCAIS OU AUTRE
-C
+!
+!-----------------------------------------------------------------------
+!
+!  FRANCAIS OU AUTRE
+!
       ELSE
-C
+!
       TEXTE (1 ) = 'VITESSE U       M/S             '
       TEXTE (2 ) = 'VITESSE V       M/S             '
       TEXTE (3 ) = 'CELERITE        M/S             '
@@ -231,11 +182,11 @@ C
       TEXTE (32) = 'DEBIT SOLIDE    M2/S            '
       TEXTE (33) = 'DEBIT SOL EN X  M2/S            '
       TEXTE (34) = 'DEBIT SOL EN Y  M2/S            '
-C
-C TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
-C A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
-C DE CALCUL A PARTIR D'UN AUTRE CODE.
-C
+!
+! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
+! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
+! DE CALCUL A PARTIR D'UN AUTRE CODE.
+!
       TEXTPR (1 ) = 'VITESSE U       M/S             '
       TEXTPR (2 ) = 'VITESSE V       M/S             '
       TEXTPR (3 ) = 'CELERITE        M/S             '
@@ -270,109 +221,106 @@ C
       TEXTPR (32) = 'DEBIT SOLIDE    M2/S            '
       TEXTPR (33) = 'DEBIT SOL EN X  M2/S            '
       TEXTPR (34) = 'DEBIT SOL EN Y  M2/S            '
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   ALIASES FOR THE VARIABLES IN THE STEERING FILE
-C
-C     UVCHSBFQTKEDIJMXYPWAGLNORZ
-C     VELOCITY COMPONENT U
+!
+!-----------------------------------------------------------------------
+!
+!   ALIASES FOR THE VARIABLES IN THE STEERING FILE
+!
+!     UVCHSBFQTKEDIJMXYPWAGLNORZ
+!     VELOCITY COMPONENT U
       MNEMO(1)   = 'U       '
-C     VELOCITY COMPONENT V
+!     VELOCITY COMPONENT V
       MNEMO(2)   = 'V       '
-C     CELERITY
+!     CELERITY
       MNEMO(3)   = 'C       '
-C     WATER DEPTH
+!     WATER DEPTH
       MNEMO(4)   = 'H       '
-C     FREE SURFACE ELEVATION
+!     FREE SURFACE ELEVATION
       MNEMO(5)   = 'S       '
-C     BOTTOM ELEVATION
+!     BOTTOM ELEVATION
       MNEMO(6)   = 'B       '
-C     FROUDE
+!     FROUDE
       MNEMO(7)   = 'F       '
-C     FLOW RATE
+!     FLOW RATE
       MNEMO(8)   = 'Q       '
-C     TRACER
+!     TRACER
       MNEMO(9)   = 'T       '
-C     TURBULENT ENERGY
+!     TURBULENT ENERGY
       MNEMO(10)   = 'K       '
-C     DISSIPATION
+!     DISSIPATION
       MNEMO(11)   = 'E       '
-C     TURBULENT VISCOSITY
+!     TURBULENT VISCOSITY
       MNEMO(12)   = 'D       '
-C     FLOWRATE ALONG X
+!     FLOWRATE ALONG X
       MNEMO(13)   = 'I       '
-C     FLOWRATE ALONG Y
+!     FLOWRATE ALONG Y
       MNEMO(14)   = 'J       '
-C     SPEED
+!     SPEED
       MNEMO(15)   = 'M       '
-C     WIND COMPONENT X
+!     WIND COMPONENT X
       MNEMO(16)   = 'X       '
-C     WIND COMPONENT Y
+!     WIND COMPONENT Y
       MNEMO(17)   = 'Y       '
-C     ATMOSPHERIC PRESSURE
+!     ATMOSPHERIC PRESSURE
       MNEMO(18)   = 'P       '
-C     FRICTION
+!     FRICTION
       MNEMO(19)   = 'W       '
-C     DRIFT IN X
+!     DRIFT IN X
       MNEMO(20)   = 'A       '
-C     DRIFT IN Y
+!     DRIFT IN Y
       MNEMO(21)   = 'G       '
-C     COURANT NUMBER
+!     COURANT NUMBER
       MNEMO(22)   = 'L       '
-C     RIGID BOTTOM
+!     RIGID BOTTOM
       MNEMO(23)   = 'RB      '
-C     FRESH DEPOSIT
+!     FRESH DEPOSIT
       MNEMO(24)   = 'FD      '
-C     EROSION FLUX
+!     EROSION FLUX
       MNEMO(25)   = 'EF      '
-C     PROBABILITY OF DEPOSITION
+!     PROBABILITY OF DEPOSITION
       MNEMO(26)   = 'DP      '
-C     VARIABLE 27
+!     VARIABLE 27
       MNEMO(27)   = 'PRIVE1  '
-C     VARIABLE 28
+!     VARIABLE 28
       MNEMO(28)   = 'PRIVE2  '
-C     VARIABLE 29
+!     VARIABLE 29
       MNEMO(29)   = 'PRIVE3  '
-C     VARIABLE 30
+!     VARIABLE 30
       MNEMO(30)   = 'PRIVE4  '
-C     VARIABLE 31
+!     VARIABLE 31
       MNEMO(31)   = 'US      '
-C     SOLID DISCHARGE 32
+!     SOLID DISCHARGE 32
       MNEMO(32)   = 'QS      '
-C     SOLID DISCHARGE ALONG X 33
+!     SOLID DISCHARGE ALONG X 33
       MNEMO(33)   = 'QSX     '
-C     SOLID DISCHARGE ALONG Y 34
+!     SOLID DISCHARGE ALONG Y 34
       MNEMO(34)   = 'QSY     '
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       NEXT = 35
-C
+!
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
           TEXTE(NEXT+I-1) = NAMETRAC(I)
           MNEMO(NEXT+I-1) = 'TA'//I_IN_2_LETTERS(I)//'    '
         ENDDO
       ENDIF
-C
+!
       IF(NEXT+NTRAC-1.GT.100) THEN
         IF(LNG.EQ.1) WRITE(LU,98)
 98      FORMAT(1X,'NOMVAR_2D_IN_3D : MAXVAR=100 TROP PETIT')
         IF(LNG.EQ.1) WRITE(LU,99)
 99      FORMAT(1X,'NOMVAR_2D_IN_3D : MAXVAR=100 TOO SMALL')
       ENDIF
-C
+!
       DO I=NEXT,100
         TEXTPR(I)=TEXTE(I)
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

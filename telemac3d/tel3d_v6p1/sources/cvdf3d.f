@@ -1,41 +1,7 @@
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       SOLVES THE ADVECTION-DIFFUSION STEP.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 18/12/2009
-!> </td><td> J.M. HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/1999
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE CVDF3D
+!                    *****************
+                     SUBROUTINE CVDF3D
+!                    *****************
+!
      & (FD,FC,FN,VISCF,SIGMAF,S0F,YAS0F,S1F,YAS1F,
      &  FBORL,FBORF,FBORS,AFBORL,AFBORF,AFBORS,
      &  BFBORL,BFBORF,BFBORS,LIFBOL,LIFBOF,LIFBOS,
@@ -50,148 +16,140 @@ C
      &  TRAV3,MESH2D,MATR2H,H,OPTBAN,OPTDIF,TETADI,
      &  YAWCC,WCC,AGGLOD,NSCE,SOURCES,FSCE,NUMLIQ,DIRFLU,NFRLIQ,
      &  VOLUT,ZT,ZPROP,RAIN,PLUIE,PARAPLUIE,FLODEL,FLOPAR,SIGMAG,IPBOT)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AFBORF         |---| 
-C| AFBORL,F,S     |-->| FROTTEMENT AUX LIMITES IMPLICITE
-C| AFBORS         |---| 
-C| AGGLOD         |-->| MASS-LUMPING DANS LA DIFFUSION
-C| AMESH2         |-->| BLOC DES TABLEAUX DE REELS DU MAILLAGE 2D
-C| AMESH3         |-->| BLOC DES TABLEAUX DE REELS DU MAILLAGE 3D
-C| BFBORF         |---| 
-C| BFBORL,F,S     |-->| FROTTEMENT AUX LIMITES EXPLICITE
-C| BFBORS         |---| 
-C| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
-C| CLIMAX         |---| 
-C| CLIMIN,MAX     |-->| AUTORISE OU NON LE CLIPPING
-C| DIFF           |<->| MATRICE DE DIFFUSION SYMETRIQUE
-C| DIRFLU         |---| 
-C| DMURD,XMURD    |-->| MATRICE MURD NON SYMETRIQUE
-C| DT             |-->| PAS DE TEMPS
-C| ELT            |-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES
-C|                |   | CARACTERISTIQUES.
-C| EPSDF          |-->| PRECISION POUR LA DIFFUSION DE F
-C| ETA            |-->| NUMEROS DES ETAGES AU PIED DES COURBES
-C|                |   | CARACTERISTIQUES.
-C| FBORF          |---| 
-C| FBORL,F,S      |-->| CONDITIONS AUX LIMITES DIRICHLET
-C| FBORS          |---| 
-C| FC             |<--| VARIABLE APRES CONVECTION
-C| FD             |<--| VARIABLE APRES DIFFUSION
-C| FLODEL         |---| 
-C| FLOPAR         |---| 
-C| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
-C| FLUEXT        |---| 
-C| FLUX           |<->| FLUX GLOBAL A INCREMENTER
-C| FLUXF          |---| 
-C| FMIN,FMAX      |-->| VALEURS DE CLIPPING
-C| FN             |-->| VARIABLE AU TEMPS N
-C| FSCE           |---| 
-C| H             |---| 
-C| IELM2H         |-->| TYPE DE DISCRETISATION 2DH
-C| IELM2V         |-->| TYPE DE DISCRETISATION 2DV
-C| IELM3          |-->| TYPE DE DISCRETISATION 3D
-C| IKLE2          |-->| IDEM EN 2D
-C| IKLE3          |-->| CORRESPONDANCE NUMEROTATION LOCALE ET GLOBALE
-C| IMESH2         |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE 2D
-C| IMESH3         |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE 3D
-C| INCHYD         |---| 
-C| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
-C| IPBOT          |---| 
-C| IT1            |---| 
-C| IT2            |---| 
-C| KNEU,KDIR,KDDL |-->| TYPES DES CONDITIONS LIMITES TECHNIQUES
-C| LIFBOF         |---| 
-C| LIFBOL,F,S     |-->| TYPE DE CONDITIONS LIMITES PHYSIQUES
-C| LIFBOS         |---| 
-C| LIMDIF         |-->| TYPE DE CONDITIONS LIMITES TECHNIQUES
-C| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-C| MASKBR         |---| 
-C| MASKEL         |-->| MASQUAGE DES ELEMENTS
-C| MASKPT         |-->| MASQUAGE DES POINTS
-C| MATR2H         |<->| MATRICE DE TRAVAIL 2DH
-C| MDIFF          |---| 
-C| MESH2D         |---| 
-C| MESH3D         |---| 
-C| MMURD          |---| 
-C| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-C| MSUPG          |---| 
-C| MTRA1          |---| 
-C| MTRA2          |---| 
-C| MURD_TF        |---| 
-C| NBOR3          |-->| NUMEROS GLOBAUX DES POINTS FRONTIERES 3D
-C| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-C| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-C| NEWDIF         |-->| RECALCULE OU NON LA MATRICE DE DIFFUSION
-C| NFRLIQ         |---| 
-C| NITDF          |-->| NOMBRE D'ITERATIONS POUR LA DIFFUSION DE F
-C| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE 3D
-C| NPOIN2         |-->| NOMBRE DE POINTS 2D
-C| NPOIN3         |-->| NOMBRE DE POINTS 3D
-C| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE BORDS LATERAUX
-C| NSCE           |---| 
-C| NUMLIQ         |---| 
-C| OPTBAN         |---| 
-C| OPTDIF         |---| 
-C| PLUIE          |-->| RAIN  
-C| PARAPLUIE      |-->| RAIN (IN ASSEMBLED MODE IN PARALLEL) 
-C| PREDF          |-->| PRECONDITIONNEMENT POUR LA DIFFUSION DE F
-C| RAIN           |---| 
-C| S0F ,YAS0F     |-->| TERME SOURCE EXPLICITE (DIM=F/T) (IF YAS0F)
-C| S1F ,YAS1F     |-->| TERME SOURCE IMPLICITE (DIM=1/T) (IF YAS1F)
-C| SCHCF          |-->| SCHEMA DE CONVECTION DE F
-C| SCHDF          |-->| SCHEMA DE DIFFUSION DE F
-C| SEM3D          |---| 
-C| SHP            |-->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
-C|                |   | COURBES CARACTERISTIQUES.
-C| SHZ            |-->| COORDONNEES BARYCENTRIQUES SUIVANT Z AU PIED
-C|                |   | DES COURBES CARACTERISTIQUES.
-C| SIGMAF         |-->| COEFFICIENT DE REDUCTION DE LA VISCOSITE
-C| SIGMAG         |---| 
-C| SLVDIF         |---| 
-C| SOLDF          |-->| SOLVEUR POUR LA DIFFUSION DE F
-C| SOURCES        |---| 
-C| SUPG           |-->| MATRICE SUPG NON SYMETRIQUE
-C| SVIDE          |-->| STRUCTURE VIDE
-C| T2_01          |---| 
-C| T2_02          |---| 
-C| T2_03          |---| 
-C| T3_01          |---| 
-C| T3_02          |---| 
-C| T3_03          |---| 
-C| T3_04          |---| 
-C| TBB            |-->| BLOC DE BLOCS DE TRAVAIL
-C| TETADI         |---| 
-C| TRA1,DTRA1,XTRA|<->| MATRICE DE TRAVAIL 3D
-C| TRA2           |<->| MATRICE DE TRAVAIL 3D
-C| TRAV3          |<->| STRUCTURE DE TABLEAUX DE TRAVAIL 3D
-C| TRBAF          |---| 
-C| UCONV,         |-->| COMPOSANTES DU CHAMP CONVECTEUR
-C| VISCF          |-->| COEFFICIENTS DE VISCOSITE
-C|                |   | VISCF(*,1 OU 2) VISCOSITE HORIZONTALE
-C|                |   | VISCF(*,3)      VISCOSITE VERTICALE
-C| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
-C| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N
-C| VOLUT          |---| 
-C| W1             |<->| TABLEAU DE TRAVAIL (CALCUL DES MATRICES...)
-C| WCC            |---| 
-C| YASEM3D        |---| 
-C| YAWCC          |---| 
-C| ZERO           |-->| PLUS PETITE VALEUR NON NULLE AUTORISEE
-C| ZPROP          |---| 
-C| ZT             |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    SOLVES THE ADVECTION-DIFFUSION STEP.
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  J.M. HERVOUET (LNHE)
+!+        18/12/2009
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AFBORF         |---| 
+!| AFBORS         |---| 
+!| AGGLOD         |-->| MASS-LUMPING DANS LA DIFFUSION
+!| BFBORF         |---| 
+!| BFBORS         |---| 
+!| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
+!| CLIMAX         |---| 
+!| DIRFLU         |---| 
+!| DT             |-->| PAS DE TEMPS
+!| FBORF          |---| 
+!| FBORS          |---| 
+!| FC             |<--| VARIABLE APRES CONVECTION
+!| FD             |<--| VARIABLE APRES DIFFUSION
+!| FLODEL         |---| 
+!| FLOPAR         |---| 
+!| FLUEXT         |---| 
+!| FLUXF          |---| 
+!| FMIN,FMAX      |-->| VALEURS DE CLIPPING
+!| FN             |-->| VARIABLE AU TEMPS N
+!| FSCE           |---| 
+!| H              |---| 
+!| IELM2H         |-->| TYPE DE DISCRETISATION 2DH
+!| IELM2V         |-->| TYPE DE DISCRETISATION 2DV
+!| IELM3          |-->| TYPE DE DISCRETISATION 3D
+!| IKLE3          |-->| CORRESPONDANCE NUMEROTATION LOCALE ET GLOBALE
+!| INCHYD         |---| 
+!| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
+!| IPBOT          |---| 
+!| IT1            |---| 
+!| IT2            |---| 
+!| LIFBOF         |---| 
+!| LIFBOS         |---| 
+!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
+!| MASKBR         |---| 
+!| MASKEL         |-->| MASQUAGE DES ELEMENTS
+!| MASKPT         |-->| MASQUAGE DES POINTS
+!| MATR2H         |<->| MATRICE DE TRAVAIL 2DH
+!| MDIFF          |---| 
+!| MESH2D         |---| 
+!| MESH3D         |---| 
+!| MMURD          |---| 
+!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
+!| MSUPG          |---| 
+!| MTRA1          |---| 
+!| MTRA2          |---| 
+!| MURD_TF        |---| 
+!| NBOR3          |-->| NUMEROS GLOBAUX DES POINTS FRONTIERES 3D
+!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
+!| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
+!| NEWDIF         |-->| RECALCULE OU NON LA MATRICE DE DIFFUSION
+!| NFRLIQ         |---| 
+!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE 3D
+!| NPOIN2         |-->| NOMBRE DE POINTS 2D
+!| NPOIN3         |-->| NOMBRE DE POINTS 3D
+!| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE BORDS LATERAUX
+!| NSCE           |---| 
+!| NUMLIQ         |---| 
+!| OPTBAN         |---| 
+!| OPTDIF         |---| 
+!| PARAPLUIE      |-->| RAIN (IN ASSEMBLED MODE IN PARALLEL)
+!| PLUIE          |-->| RAIN
+!| RAIN           |---| 
+!| SCHCF          |-->| SCHEMA DE CONVECTION DE F
+!| SCHDF          |-->| SCHEMA DE DIFFUSION DE F
+!| SEM3D          |---| 
+!| SIGMAF         |-->| COEFFICIENT DE REDUCTION DE LA VISCOSITE
+!| SIGMAG         |---| 
+!| SLVDIF         |---| 
+!| SOURCES        |---| 
+!| SVIDE          |-->| STRUCTURE VIDE
+!| T2_01          |---| 
+!| T2_02          |---| 
+!| T2_03          |---| 
+!| T3_01          |---| 
+!| T3_02          |---| 
+!| T3_03          |---| 
+!| T3_04          |---| 
+!| TETADI         |---| 
+!| TRAV3          |<->| STRUCTURE DE TABLEAUX DE TRAVAIL 3D
+!| TRBAF          |---| 
+!| VISCF          |-->| COEFFICIENTS DE VISCOSITE
+!|                |   | VISCF(*,1 OU 2) VISCOSITE HORIZONTALE
+!|                |   | VISCF(*,3)      VISCOSITE VERTICALE
+!| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
+!| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N
+!| VOLUT          |---| 
+!| W1             |<->| TABLEAU DE TRAVAIL (CALCUL DES MATRICES...)
+!| WCC            |---| 
+!| YASEM3D        |---| 
+!| YAWCC          |---| 
+!| ZPROP          |---| 
+!| ZT             |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE INTERFACE_TELEMAC3D, EX_CVDF3D => CVDF3D  
+      USE INTERFACE_TELEMAC3D, EX_CVDF3D => CVDF3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FD, FC, FN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: S0F, S1F, VISCF
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: LIFBOL, LIFBOF, LIFBOS
@@ -228,15 +186,15 @@ C
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: SEM3D,IT1,IT2,TRAV3,MTRA2
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: MSUPG,MDIFF,MATR2H
       DOUBLE PRECISION, INTENT(IN)    :: FSCE(NSCE)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IP,K,NPTFR,IPLAN,IPTFR,IS,IPTFR2,I,IIS,PARA
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
       DOUBLE PRECISION STOFD,TETASUPG
       TYPE(BIEF_OBJ), POINTER :: VOLUME
 !
-C     FUNCTIONS
+!     FUNCTIONS
 !
       DOUBLE PRECISION P_DSUM,LAMBDA
       EXTERNAL         P_DSUM
@@ -254,14 +212,14 @@ C     FUNCTIONS
 !
       FLUXF = 0.D0
 !
-C     WITH DISTRIBUTIVE SCHEMES : COMPUTES PRESCRIBED VALUES THAT
-C     WILL ENSURE THE CORRECT FLUX (REAL PRESCRIBED VALUES DISCARDED)
-C     THESE CORRECTED PRESCRIBED VALUES ARE SET BEFORE ADVECTION
+!     WITH DISTRIBUTIVE SCHEMES : COMPUTES PRESCRIBED VALUES THAT
+!     WILL ENSURE THE CORRECT FLUX (REAL PRESCRIBED VALUES DISCARDED)
+!     THESE CORRECTED PRESCRIBED VALUES ARE SET BEFORE ADVECTION
 !
-C     YADIRFLU=.TRUE. : THERE IS AT LEAST ONE BOUNDARY WITH
-C                       TREATMENT OF FLUXES AT BOUNDARIES = 2
+!     YADIRFLU=.TRUE. : THERE IS AT LEAST ONE BOUNDARY WITH
+!                       TREATMENT OF FLUXES AT BOUNDARIES = 2
       YADIRFLU=.FALSE.
-C     DIRFLU DISCARDED FOR VELOCITIES
+!     DIRFLU DISCARDED FOR VELOCITIES
       IF(NFRLIQ.GT.0.AND..NOT.VELOCITY) THEN
         DO K=1,NFRLIQ
           IF(DIRFLU(K).EQ.2) YADIRFLU=.TRUE.
@@ -322,9 +280,9 @@ C     DIRFLU DISCARDED FOR VELOCITIES
 !
 !=======================================================================
 !
-C     PUTS DIRICHLET VALUES IN FN
-C     MAY HAVE NO EFFECT IF TREATMENT OF FLUXES AT THE BOUNDARIES=2
-C     BECAUSE LIFBOL CHANGED ABOVE
+!     PUTS DIRICHLET VALUES IN FN
+!     MAY HAVE NO EFFECT IF TREATMENT OF FLUXES AT THE BOUNDARIES=2
+!     BECAUSE LIFBOL CHANGED ABOVE
 !
       IF(NPTFR3.GT.0) THEN
         DO IPTFR=1,NPTFR3
@@ -362,19 +320,19 @@ C     BECAUSE LIFBOL CHANGED ABOVE
 !
 !-----------------------------------------------------------------------
 !
-C     ADVECTION BY CHARACTERISTICS
+!     ADVECTION BY CHARACTERISTICS
 !
       IF(SCHCF.EQ.ADV_CAR) THEN
 !
-C       THIS IS NOW DONE IN CHARAC CALLED BY PRECON
+!       THIS IS NOW DONE IN CHARAC CALLED BY PRECON
 !
-C       CALL CARA3D(FC%R,FN%R,SHP%R,SHZ%R,ELT%I,ETA%I,IKLE2%I,
-C    &              NELEM2,NPOIN2,NPOIN3,DT,INFOR)
-C       IF(NCSIZE.GT.1) CALL PARCOM(FC,2,MESH3D)
+!       CALL CARA3D(FC%R,FN%R,SHP%R,SHZ%R,ELT%I,ETA%I,IKLE2%I,
+!    &              NELEM2,NPOIN2,NPOIN3,DT,INFOR)
+!       IF(NCSIZE.GT.1) CALL PARCOM(FC,2,MESH3D)
 !
 !-----------------------------------------------------------------------
 !
-C     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION N
+!     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION N
 !
       ELSEIF(SCHCF.EQ.ADV_NSC) THEN
 !
@@ -389,14 +347,14 @@ C     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION N
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
      &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN)
 !
-C       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-C       IF DIFF3D IS CALLED AFTER
-C       CALL OS('X=C     ',X=S0F,C=0.D0)
+!       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!       IF DIFF3D IS CALLED AFTER
+!       CALL OS('X=C     ',X=S0F,C=0.D0)
         S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
 !
-C     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION PSI
+!     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION PSI
 !
       ELSEIF(SCHCF.EQ.ADV_PSI) THEN
 !
@@ -411,15 +369,15 @@ C     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION PSI
      &               FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
      &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN)
 !
-C        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-C        IF DIFF3D IS CALLED AFTER
+!        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!        IF DIFF3D IS CALLED AFTER
 !
-C        CALL OS('X=C     ',X=S0F,C=0.D0)
+!        CALL OS('X=C     ',X=S0F,C=0.D0)
          S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
 !
-C     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
+!     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
 !
       ELSEIF(SCHCF.EQ.ADV_LPO) THEN
 !
@@ -434,10 +392,10 @@ C     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
      &               FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
      &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN)
 !
-C        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-C        IF DIFF3D IS CALLED AFTER
+!        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!        IF DIFF3D IS CALLED AFTER
 !
-C        CALL OS('X=C     ',X=S0F,C=0.D0)
+!        CALL OS('X=C     ',X=S0F,C=0.D0)
          S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
@@ -462,12 +420,12 @@ C        CALL OS('X=C     ',X=S0F,C=0.D0)
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
 !
-C        CALL OS('X=C     ',X=S0F,C=0.D0)
+!        CALL OS('X=C     ',X=S0F,C=0.D0)
          S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
 !
-C     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
+!     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
 !
       ELSEIF(SCHCF.EQ.ADV_NSC_TF) THEN
 !
@@ -488,15 +446,15 @@ C     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
      &                   TRAV3%ADR(8)%P,
      &                   TRAV3%ADR(9)%P,2)
 !
-C        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-C        IF DIFF3D IS CALLED AFTER
+!        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
+!        IF DIFF3D IS CALLED AFTER
 !
-C        CALL OS('X=C     ',X=S0F,C=0.D0)
+!        CALL OS('X=C     ',X=S0F,C=0.D0)
          S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
 !
-C     OTHER CASES (SUPG OR NO ADVECTION)
+!     OTHER CASES (SUPG OR NO ADVECTION)
 !
       ELSE
 !
@@ -564,13 +522,13 @@ C     OTHER CASES (SUPG OR NO ADVECTION)
         ENDIF
 !
         IF(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP) THEN
-C         SOURCES HAVE TO BE TREATED
+!         SOURCES HAVE TO BE TREATED
           YASCE=.TRUE.
           YARAIN=RAIN
         ELSE
-C         SOURCES HAVE ALREADY BEEN TREATED BY DISTRIBUTIVE SCHEMES
+!         SOURCES HAVE ALREADY BEEN TREATED BY DISTRIBUTIVE SCHEMES
           YASCE=.FALSE.
-C         RAIN HAS ALREADY BEEN TREATED BY DISTRIBUTIVE SCHEMES
+!         RAIN HAS ALREADY BEEN TREATED BY DISTRIBUTIVE SCHEMES
           YARAIN=.FALSE.
         ENDIF
 !
@@ -590,7 +548,7 @@ C         RAIN HAS ALREADY BEEN TREATED BY DISTRIBUTIVE SCHEMES
      &              VELOCITY,YARAIN,PLUIE%R,SIGMAG,IPBOT)
 !
         IF(SCHCF.EQ.ADV_SUP.AND..NOT.VELOCITY) THEN
-C         MESH3D%Z RESTORED
+!         MESH3D%Z RESTORED
           MESH3D%Z%R=>SAVEZ
         ENDIF
 !
@@ -600,7 +558,7 @@ C         MESH3D%Z RESTORED
 !
 !-----------------------------------------------------------------------
 !
-C     ADVECTIVE FLUXES AND SOURCES
+!     ADVECTIVE FLUXES AND SOURCES
 !
       IF(CALFLU) THEN
 !
@@ -615,19 +573,19 @@ C     ADVECTIVE FLUXES AND SOURCES
           ENDDO
         ENDIF
 !
-C       CHARACTERISTICS OR SUPG : FLUX DUE TO SOURCES
-C       (FOR DISTRIBUTIVE SCHEMES IT IS DONE IN MURD3D)
+!       CHARACTERISTICS OR SUPG : FLUX DUE TO SOURCES
+!       (FOR DISTRIBUTIVE SCHEMES IT IS DONE IN MURD3D)
 !
         IF(NSCE.GT.0.AND.(SCHCF.EQ.ADV_CAR.OR.SCHCF.EQ.ADV_SUP)) THEN
           DO IS=1,NSCE
             IIS=IS
-C           HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
             IF(NCSIZE.GT.1) IIS=IIS+NSCE
             DO IP=1,NPOIN3
               IF(SOURCES%ADR(IS)%P%R(IP).GT.0.D0) THEN
                 FLUXF=FLUXF-FSCE(IS)*SOURCES%ADR(IIS)%P%R(IP)*DT
               ELSE
-C                           FN FOR CHARACTERISTICS ?
+!                           FN FOR CHARACTERISTICS ?
                 FLUXF=FLUXF-FD%R(IP)*SOURCES%ADR(IIS)%P%R(IP)*DT
               ENDIF
             ENDDO
@@ -673,9 +631,9 @@ C                           FN FOR CHARACTERISTICS ?
 !-----------------------------------------------------------------------
 !
       IF(CALFLU) THEN
-C       NOW RETURNS TO REAL FLUXES, NOT FLUXES*DT
+!       NOW RETURNS TO REAL FLUXES, NOT FLUXES*DT
         FLUXF = FLUXF / DT
-C       PARALLEL MODE
+!       PARALLEL MODE
         IF(NCSIZE.GT.1) FLUXF = P_DSUM(FLUXF)
       ENDIF
 !
@@ -691,6 +649,3 @@ C       PARALLEL MODE
 !
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,58 +1,45 @@
-!                       ***********************
-                        SUBROUTINE RHS_PRESSURE
-!                       ***********************
+!                    ***********************
+                     SUBROUTINE RHS_PRESSURE
+!                    ***********************
 !
      &(DIVU,UP,VP,WP,IELM3,DM1,ZCONV,SVIDE,MESH3D,MSK,MASKEL,FLUEXT,
      & NSCE,RAIN,PLUIE,SOURCES,GRADZF,VOLU2D,DSSUDT,NPOIN2,NPOIN3,NPLAN)
 !
-!=======================================================================
-! TELEMAC 3D VERSION 6.1  25/11/2010  J-M HERVOUET (LNHE) 01 30 87 80 18    
-!                                           
-!=======================================================================
+!***********************************************************************
+! TELEMAC3D
+!***********************************************************************
 !
-! FUNCTION: COMPUTES -DIV(U) IN A PROJECTED FORM, AS A SUM OF FLUXES
-!           IT IS USED TO COMPUTE THE NON HYDROSTATIC PRESSURE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DIVU           |<--| RESULT
+!| IELM3          |-->| TYPE OF ELEMENT
+!| UP             |-->| X COMPONENT OF INTERMEDIATE VELOCITY FIELD
+!| VP             |-->| Y COMPONENT OF INTERMEDIATE VELOCITY FIELD
+!| WP             |-->| Z COMPONENT OF INTERMEDIATE VELOCITY FIELD
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!----------------------------------------------------------------------- 
-!                             ARGUMENTS 
-! .________________.____.______________________________________________. 
-! | VARIABLE NAME  |MODE|  FUNCTION                                    | 
-! |________________|____|______________________________________________|                              
-! | DIVU           |<-- | RESULT   
-! | UP             | -->| X COMPONENT OF INTERMEDIATE VELOCITY FIELD 
-! | VP             | -->| Y COMPONENT OF INTERMEDIATE VELOCITY FIELD   
-! | WP             | -->| Z COMPONENT OF INTERMEDIATE VELOCITY FIELD 
-! | IELM3          | -->| TYPE OF ELEMENT 
-! |________________|____|______________________________________________|
-! MODE: -->(VARIABLE NOT MODIFIED), <--(RESULT), <-->(MODIFIED VARIABLE)
-!     
-! SUBROUTINE CALLED BY: TELEMAC3D
-! SUBROUTINE CALLS:
-!======================================================================
-!    
       USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,         INTENT(IN)    :: IELM3,NSCE,NPOIN2,NPOIN3,NPLAN
       LOGICAL,         INTENT(IN)    :: MSK,RAIN
       TYPE(BIEF_OBJ),  INTENT(INOUT) :: DIVU
       TYPE(BIEF_OBJ),  INTENT(IN)    :: UP,VP,WP,PLUIE,SOURCES,GRADZF
       TYPE(BIEF_OBJ),  INTENT(IN)    :: DM1,ZCONV,SVIDE,MASKEL,FLUEXT
       TYPE(BIEF_OBJ),  INTENT(IN)    :: VOLU2D,DSSUDT
-      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D   
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IS,IIS,IPLAN,IPOIN2,IPOIN3,ILEVEL,IUPPER,ILOWER
       CHARACTER(LEN=16) FORMUL
 !
 !=======================================================================
-! RIGHT HAND SIDE VECTOR SEM3D = - DIV (INTERMEDIATE VELOCITY) 
+! RIGHT HAND SIDE VECTOR SEM3D = - DIV (INTERMEDIATE VELOCITY)
 !=======================================================================
 !
 !     VERTICAL FLUXES FLUVER2
@@ -60,7 +47,7 @@ C
       CALL CPSTVC(UP,DIVU)
       CALL FLUVER_2(DIVU,UP,VP,WP,GRADZF,VOLU2D,DSSUDT,NPLAN,NPOIN2)
 !
-!     FLUINT 
+!     FLUINT
 !
       IF(UP%NAME.EQ.'UCONV ') THEN
 !       FOR UCONV, CONTRIBUTION OF DM1*ZCONV IS NECESSARY
@@ -80,8 +67,8 @@ C
       IF(NSCE.GE.1) THEN
         DO IS=1,NSCE
           IIS=IS
-C         HERE SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
-C         SEE SOURCES_SINKS
+!         HERE SOURCES IN THE NON ASSEMBLED (PARCOM) FORM
+!         SEE SOURCES_SINKS
           IF(NCSIZE.GT.1) IIS=IS+NSCE
           CALL OS('X=X+Y   ',X=DIVU,Y=SOURCES%ADR(IIS)%P)
         ENDDO
@@ -94,9 +81,9 @@ C         SEE SOURCES_SINKS
           IPOIN3=NPOIN3-NPOIN2+IPOIN2
           DIVU%R(IPOIN3)=DIVU%R(IPOIN3)+PLUIE%R(IPOIN2)
         ENDDO
-      ENDIF     
+      ENDIF
 !
 !-----------------------------------------------------------------------
-! 
+!
       RETURN
       END

@@ -1,138 +1,78 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       READS STAGE-DISCHARGE CURVES IN THEIR FILE.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @note  THIS IS A MERE COPY OF READ_FIC_CURVES IN TELEMAC2D LIBRARY
-!>         ONLY THE USE DECLARATIONS IS CHANGED FROM 2D TO 3D, TO REACH
-!>         ALLOCATABLE ARRAY QZ.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>DECLARATIONS_TELEMAC3D
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> NFIC, NFRLIQ, PTS_CURVES, STA_DIS_CURVES
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> DECLARATIONS_TELEMAC3D :<br>
-!> @link DECLARATIONS_TELEMAC3D::QZ QZ@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> I, ICURVE, IDEB, IFIN, LIGNE, NMAXPTS, OK, PASS, WHAT
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TELEMAC3D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 09/04/08
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>NFIC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NFRLIQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>PTS_CURVES
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>STA_DIS_CURVES
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE T3D_READ_FIC_CURVES
+!                    ******************************
+                     SUBROUTINE T3D_READ_FIC_CURVES
+!                    ******************************
+!
      &(NFIC,NFRLIQ,STA_DIS_CURVES,PTS_CURVES)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| NFIC           |---| 
-C| NFRLIQ         |---| 
-C| PTS_CURVES     |---| 
-C| STA_DIS_CURVES |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    READS STAGE-DISCHARGE CURVES IN THEIR FILE.
+!
+!note     THIS IS A MERE COPY OF READ_FIC_CURVES IN TELEMAC2D LIBRARY
+!+         ONLY THE USE DECLARATIONS IS CHANGED FROM 2D TO 3D, TO REACH
+!+         ALLOCATABLE ARRAY QZ.
+!
+!history  J-M HERVOUET (LNHE)
+!+        09/04/08
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| NFIC           |---| 
+!| NFRLIQ         |---| 
+!| PTS_CURVES     |---| 
+!| STA_DIS_CURVES |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE DECLARATIONS_TELEMAC3D, ONLY : QZ
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)    :: NFIC,NFRLIQ
       INTEGER, INTENT(IN)    :: STA_DIS_CURVES(NFRLIQ)
       INTEGER, INTENT(INOUT) :: PTS_CURVES(NFRLIQ)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER NMAXPTS,IDEB,IFIN,ICURVE,PASS,I,OK
-C
+!
       CHARACTER(LEN=144) :: LIGNE
       CHARACTER(LEN=1)   :: WHAT
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       NMAXPTS=0
-C     FILE WILL BE READ TWICE, THE FIRST TIME (PASS=0) TO COUNT DATA
-C                              THE SECOND TIME (PASS=1) TO READ THEM
+!     FILE WILL BE READ TWICE, THE FIRST TIME (PASS=0) TO COUNT DATA
+!                              THE SECOND TIME (PASS=1) TO READ THEM
       PASS=0
-C
+!
 10    CONTINUE
       REWIND(NFIC)
-C     SKIPS COMMENTS
+!     SKIPS COMMENTS
 1     READ(NFIC,FMT='(A)',END=1000,ERR=999) LIGNE
       IF(LIGNE(1:1).EQ.'#') GO TO 1
-C
-C     NOW A LINE ANNOUNCING Q(??) OR Z(??)
-C
-C     IDENTIFIES FIRST CHARACTER OF NAME
+!
+!     NOW A LINE ANNOUNCING Q(??) OR Z(??)
+!
+!     IDENTIFIES FIRST CHARACTER OF NAME
 2     CONTINUE
       IDEB=1
       IF(LIGNE(IDEB:IDEB).EQ.' ') THEN
@@ -145,7 +85,7 @@ C     IDENTIFIES FIRST CHARACTER OF NAME
       ENDIF
       IF(LIGNE(IDEB:IDEB+1).EQ.'Q('.OR.LIGNE(IDEB:IDEB+1).EQ.'Z(') THEN
         WHAT=LIGNE(IDEB:IDEB)
-C       WHICH BOUNDARY NUMBER ?
+!       WHICH BOUNDARY NUMBER ?
         IDEB=IDEB+2
         IFIN=IDEB+1
 3       IF(LIGNE(IFIN:IFIN).NE.')') THEN
@@ -165,14 +105,14 @@ C       WHICH BOUNDARY NUMBER ?
           GO TO 3
         ENDIF
         READ(LIGNE(IDEB:IFIN-1),*) ICURVE
-C       SKIPS UNITS (UNITS NOT CHECKED)
+!       SKIPS UNITS (UNITS NOT CHECKED)
         READ(NFIC,FMT='(A)',END=1000,ERR=999) LIGNE
         PTS_CURVES(ICURVE)=0
 4       READ(NFIC,FMT='(A)',END=1001,ERR=999) LIGNE
         IF(LIGNE(1:1).NE.'#') THEN
           PTS_CURVES(ICURVE)=PTS_CURVES(ICURVE)+1
           IF(PASS.EQ.1) THEN
-C           READS AND STORES
+!           READS AND STORES
             IF(WHAT.EQ.'Q') THEN
             READ(LIGNE,*,ERR=999) QZ(1,ICURVE,PTS_CURVES(ICURVE)),
      &                            QZ(2,ICURVE,PTS_CURVES(ICURVE))
@@ -184,9 +124,9 @@ C           READS AND STORES
           ENDIF
           GO TO 4
         ENDIF
-C       END OF BLOCK FOR CURVE ICURVE
+!       END OF BLOCK FOR CURVE ICURVE
 1001    NMAXPTS=MAX(NMAXPTS,PTS_CURVES(ICURVE))
-C       TREATS THE NEXT CURVE
+!       TREATS THE NEXT CURVE
         GO TO 1
       ELSE
         IF(LNG.EQ.1) THEN
@@ -202,7 +142,7 @@ C       TREATS THE NEXT CURVE
         CALL PLANTE(1)
         STOP
       ENDIF
-C
+!
 999   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'ERREUR DANS LE FICHIER DES COURBES DE TARAGE'
@@ -213,9 +153,9 @@ C
       CALL PLANTE(1)
       STOP
 1000  CONTINUE
-C
-C     CHECKING
-C
+!
+!     CHECKING
+!
       DO ICURVE=1,NFRLIQ
         IF(STA_DIS_CURVES(ICURVE).GT.0.AND.PTS_CURVES(ICURVE).EQ.0) THEN
           IF(LNG.EQ.1) THEN
@@ -230,9 +170,9 @@ C
           STOP
         ENDIF
       ENDDO
-C
-C     DYNAMICALLY ALLOCATES QZ
-C
+!
+!     DYNAMICALLY ALLOCATES QZ
+!
       IF(PASS.EQ.0) THEN
         ALLOCATE(QZ(2,NFRLIQ,NMAXPTS),STAT=OK)
         IF(OK.NE.0) THEN
@@ -241,12 +181,12 @@ C
           STOP
         ENDIF
         PASS=1
-C       SHOOT AGAIN
+!       SHOOT AGAIN
         GO TO 10
       ENDIF
-C
-C     REPORTS IN LISTING
-C
+!
+!     REPORTS IN LISTING
+!
       DO ICURVE=1,NFRLIQ
         IF(PTS_CURVES(ICURVE).GT.0) THEN
           WRITE(LU,*) ' '
@@ -259,11 +199,8 @@ C
         ENDIF
         WRITE(LU,*) ' '
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,100 +1,93 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       SETS CONSTANTS OF K-EPSILON AND K-OMEGA MODELS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 14/12/09
-!> </td><td> J-M HERVOUET(LNH) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 18/03/04
-!> </td><td> OLIVER GOETHEL
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 01/02/01
-!> </td><td> VINCENT BOYER
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE CSTKEP
+!                    *****************
+                     SUBROUTINE CSTKEP
+!                    *****************
+!
      & (KARMAN,CMU,C1,C2,SIGMAK,SIGMAE,VIRT,SCHMIT,
      &  KMIN,KMAX,EMIN,EMAX,PRANDTL,ALPHA,BETA,BETAS,OMSTAR,ITURBV)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ALPHA          |---| 
-C| BETA           |---| 
-C| BETAS          |---| 
-C| C1             |<--| K-EPSILON CONSTANT
-C| C2             |<--| K-EPSILON CONSTANT
-C| CMU            |<--| K-EPSILON CONSTANT
-C| EMAX           |<--| EPSILON MAXIMUM
-C| EMIN           |<--| EPSILON MINIMUM
-C| ESTAR          |<--| K-EPSILON CONSTANT
-C| ITURBV         |-->| TURBULENCE MODEL (3:K-EPSILON 7:K-OMEGA)
-C| KARMAN         |<--| VON KARMAN CONSTANT
-C| KMAX           |<--| K MAXIMUM
-C| KMIN           |<--| K MINIMUM
-C| OMSTAR         |---| 
-C| PRANDTL        |<--| PRANDTL NUMBER
-C| SCHMIT         |<--| SCHMIT NUMBER
-C| SIGMAE         |<--| K-EPSILON CONSTANT
-C| SIGMAK         |<--| K-EPSILON CONSTANT
-C| VIRT           |<--| VIRTUAL ORIGIN FOR EPSILON
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    SETS CONSTANTS OF K-EPSILON AND K-OMEGA MODELS.
+!
+!history  VINCENT BOYER
+!+        01/02/01
+!+        
+!+   
+!
+!history  OLIVER GOETHEL
+!+        18/03/04
+!+        
+!+   
+!
+!history  J-M HERVOUET(LNH)
+!+        14/12/09
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ALPHA          |---| 
+!| BETA           |---| 
+!| BETAS          |---| 
+!| C1             |<--| K-EPSILON CONSTANT
+!| C2             |<--| K-EPSILON CONSTANT
+!| CMU            |<--| K-EPSILON CONSTANT
+!| EMAX           |<--| EPSILON MAXIMUM
+!| EMIN           |<--| EPSILON MINIMUM
+!| ITURBV         |-->| TURBULENCE MODEL (3:K-EPSILON 7:K-OMEGA)
+!| KARMAN         |<--| VON KARMAN CONSTANT
+!| KMAX           |<--| K MAXIMUM
+!| KMIN           |<--| K MINIMUM
+!| OMSTAR         |---| 
+!| PRANDTL        |<--| PRANDTL NUMBER
+!| SCHMIT         |<--| SCHMIT NUMBER
+!| SIGMAE         |<--| K-EPSILON CONSTANT
+!| SIGMAK         |<--| K-EPSILON CONSTANT
+!| VIRT           |<--| VIRTUAL ORIGIN FOR EPSILON
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,          INTENT(IN )   :: ITURBV
       DOUBLE PRECISION, INTENT(INOUT) :: KMIN,KMAX,EMIN,EMAX
       DOUBLE PRECISION, INTENT(INOUT) :: KARMAN,CMU,C1,C2,SIGMAK,SIGMAE
       DOUBLE PRECISION, INTENT(INOUT) :: VIRT,PRANDTL,SCHMIT
       DOUBLE PRECISION, INTENT(INOUT) :: ALPHA,BETA,BETAS,OMSTAR
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C     VON KARMAN CONSTANT
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     VON KARMAN CONSTANT
 !
 !     UP TO VERSION 6.0, 0.41  FROM NOW ON : 0.40
 !
       KARMAN = 0.40D0
 !
-C     SCHMIDT NUMBER
+!     SCHMIDT NUMBER
 !
       SCHMIT = 1.D0
 !
-C     PRANDTL NUMBER (BETWEEN 0.8 AND 0.9 FOR TEMPERATURE)
+!     PRANDTL NUMBER (BETWEEN 0.8 AND 0.9 FOR TEMPERATURE)
 !
       PRANDTL = 1.D0
 !
-C     OTHER CONSTANTS
+!     OTHER CONSTANTS
 !
       CMU    = 0.09D0
       C1     = 1.44D0
@@ -108,17 +101,17 @@ C     OTHER CONSTANTS
         SIGMAE = 2.D0
       ENDIF
 !
-C     K-OMEGA MODEL
+!     K-OMEGA MODEL
 !
       ALPHA  = 5.D0/9.D0
       BETA   = 3.D0/40.D0
       BETAS  = 0.09D0
-C     TO COMPUTE THE FREE SURFACE VALUE OF OMEGA
+!     TO COMPUTE THE FREE SURFACE VALUE OF OMEGA
       OMSTAR  = 100.D0
-C     VIRTUAL ORIGIN FOR EPSILON
+!     VIRTUAL ORIGIN FOR EPSILON
       VIRT = 0.07D0
 !
-C     MINIMA AND MAXIMA FOR CLIPPING
+!     MINIMA AND MAXIMA FOR CLIPPING
 !
       IF(ITURBV.EQ.3) THEN
         KMIN = 1.D-10
@@ -136,6 +129,3 @@ C     MINIMA AND MAXIMA FOR CLIPPING
 !
       RETURN
       END
-C
-C#######################################################################
-C

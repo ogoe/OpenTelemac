@@ -1,56 +1,53 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       DECLARATION OF PRINCIPAL TELEMAC3D VARIABLES
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  <tr>
-!>    <td><center>                                        </center></td>
-!>    <td>                                                         </td>
-!>    <td> J-M HERVOUET (LNH) 01.30.87.80.18                       </td>
-!>    <td> LINKED TO BIEF 5.0                                      </td>
-!>  </table>
-
-C
-C#######################################################################
-C
-                       MODULE DECLARATIONS_TELEMAC3D
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    *****************************
+                     MODULE DECLARATIONS_TELEMAC3D
+!                    *****************************
+!
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    DECLARATION OF PRINCIPAL TELEMAC3D VARIABLES
+!
+!history  J-M HERVOUET (LNH)
+!+        
+!+        
+!+   LINKED TO BIEF 5.0 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF_DEF
-C
-C       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
-C
-C       (1) VECTORS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       (2) MATRICES (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       (3) BLOCKS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       (4) INTEGERS
-C       (5) LOGICAL VALUES
-C       (6) REALS
-C       (7) STRINGS
-C       (8) SLVCFG STRUCTURES
-C       (9) MESH STRUCTURE
-C      (10) ALIASES
-C
-C-----------------------------------------------------------------------
-C (1) VECTORS (REAL AND INTEGER)
-C-----------------------------------------------------------------------
-C
+!
+!       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
+!
+!       (1) VECTORS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (2) MATRICES (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (3) BLOCKS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (4) INTEGERS
+!       (5) LOGICAL VALUES
+!       (6) REALS
+!       (7) STRINGS
+!       (8) SLVCFG STRUCTURES
+!       (9) MESH STRUCTURE
+!      (10) ALIASES
+!
+!-----------------------------------------------------------------------
+! (1) VECTORS (REAL AND INTEGER)
+!-----------------------------------------------------------------------
+!
 !> @brief 3D VELOCITY COMPONENT AT PREVIOUS TIMESTEP (TIME N)
 C composantes de la vitesse au pas de temps precedent (n)
       TYPE(BIEF_OBJ), TARGET :: UN
@@ -1965,6 +1962,3 @@ C
       SAVE
 C
       END MODULE DECLARATIONS_TELEMAC3D
-C
-C#######################################################################
-C

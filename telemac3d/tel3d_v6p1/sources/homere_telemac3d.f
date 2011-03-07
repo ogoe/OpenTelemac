@@ -1,48 +1,45 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       1) OPENS FILES, SETS POINTERS ACCORDING TO THE
-!>                   PARAMETERS IMPOSED IN THE STEERING FILE AND
-!>                   THE GIVEN GEOMETRY.
-!><br>            2) CALLS THE MAIN SUBROUTINE.
-!><br>            3) MEASURES CPU TIME.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 10/04/2009
-!> </td><td>
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> **/03/1999
-!> </td><td> JACEK A. JANKOWSKI PINXIT
-!> </td><td> FORTRAN95 VERSION
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        PROGRAM HOMERE_TELEMAC3D
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ************************
+                     PROGRAM HOMERE_TELEMAC3D
+!                    ************************
+!
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    1) OPENS FILES, SETS POINTERS ACCORDING TO THE
+!+                   PARAMETERS IMPOSED IN THE STEERING FILE AND
+!+                   THE GIVEN GEOMETRY.
+!+
+!+            2) CALLS THE MAIN SUBROUTINE.
+!+
+!+            3) MEASURES CPU TIME.
+!
+!history  JACEK A. JANKOWSKI PINXIT
+!+        **/03/1999
+!+        
+!+   FORTRAN95 VERSION 
+!
+!history  
+!+        10/04/2009
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE INTERFACE_TELEMAC3D
       USE DECLARATIONS_TELEMAC, ONLY : COUPLING
@@ -140,10 +137,10 @@ C
 !
 !-----------------------------------------------------------------------
 !
-C     INITIALISES TOMAWAC
-C
+!     INITIALISES TOMAWAC
+!
       IF(INCLUS(COUPLING,'TOMAWAC')) THEN
-C
+!
         WRITE(LU,106)
         WRITE(LU,107)
 106     FORMAT(100(1H-),////////,
@@ -177,13 +174,13 @@ C
      &  ,/,15X,
      &  '             ^^^^      ^^^                 '
      &,///)
-C
+!
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE3)
       CALL BIEF_OPEN_FILES(CODE3,WAC_FILES,MAXLU_WAC,PATH,NCAR,
      &                     .TRUE.,IFLOT,3)
       CALL CONFIG_CODE(1)
       CALL POINT_TOMAWAC
-C
+!
       ENDIF
 !
 !=======================================================================
@@ -222,6 +219,3 @@ C
 !
       STOP
       END
-C
-C#######################################################################
-C

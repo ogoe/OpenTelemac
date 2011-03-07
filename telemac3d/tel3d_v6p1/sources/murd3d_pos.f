@@ -1,111 +1,100 @@
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
-!>                VOLUME SCHEME.
-!><br>           (THE ADVECTION IS DONE EDGE BY EDGE, WHICH ENABLES
-!>                LOCAL DEPTHS EQUAL TO ZERO).
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @warning  HERE FLUXES IN FLODEL ARE FROM POINT 2 TO POINT 1.
-!><br>        SEE FLUX3D (HORIZONTAL FLUXES BASED ON FLUINT)
-!>            AND PRECON (VERTICAL FLUXES BASED ON WSCONV)
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 19/04/2010
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C
-C#######################################################################
-C
-                        SUBROUTINE MURD3D_POS
+!                    *********************
+                     SUBROUTINE MURD3D_POS
+!                    *********************
+!
      &(FC,FN,VOLU,SVOLU,VOLUN,SVOLUN,VOLU2,SVOLU2,RMASS,
      & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,MESH2,MESH3,
      & NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
      & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,NPOIN2,
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,
      & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
-C| DA,XA          |-->| MATRICE MURD NON SYMETRIQUE OPTION N
-C| DB,XB          |<->| MATRICE MURD NON SYMETRIQUE OPTION N
-C|                |   | EVENTUELLEMENT TRANSFORME EN OPTION PSI
-C| DIMGLO         |-->| FIRST DIMENSION OF ARRAY GLOSEG 
-C| DT             |-->| PAS DE TEMPS
-C| FC             |<--| VARIABLE APRES CONVECTION
-C| FLODEL         |-->| FLUXES BY SEGMENT
-C| FLOPAR         |-->| FLUXES BY SEGMENT, ASSEMBLED IN PARALLEL
-C| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
-C| FLUX           |<->| FLUX GLOBAL A INCREMENTER
-C| FN             |-->| VARIABLE AU TEMPS N
-C| FSCE           |-->| DIRICHLET BOUNDARY CONDITIONS OF F 
-C| GLOSEG         |-->| GLOBAL NUMBERS OF POINTS, PER SEGMENT 
-C| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
-C| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-C| MASKEL         |-->| MASQUAGE DES ELEMENTS
-C| MESH2          |-->| 2D MESH 
-C| MESH3          |-->| 3D MESH 
-C| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-C| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-C| NPLAN          |---| 
-C| NPOIN2         |-->| NUMBER OF POINTS IN 2D
-C| NPOIN3         |-->| NOMBRE DE POINTS 3D
-C| NSCE           |---| 
-C| NSEG           |---| 
-C| OPTBAN         |---| 
-C| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
-C| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
-C| RMASS          |---| 
-C| S0F            |-->| TERME SOURCE EXPLICITE
-C| SCHCF          |-->| SCHEMA DE CONVECTION DE F
-C| SOURCES        |---| 
-C| STRA01         |---| 
-C| STRA02         |---| 
-C| STRA03         |---| 
-C| SVOLU          |---| 
-C| SVOLU2         |---| 
-C| SVOLUN         |---| 
-C| TRA01          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
-C|                |   | EQUIVALENT DE VOLU2 POUR LE TEMPS FINAL COURANT
-C| TRA02          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
-C| TRA03          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3 
-C| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
-C| VOLU2          |-->| COMME VOLU MAIS ASSEMBLE EN PARALLELISME
-C| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TELEMAC3D   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
+!+                VOLUME SCHEME.
+!+
+!+           (THE ADVECTION IS DONE EDGE BY EDGE, WHICH ENABLES
+!+                LOCAL DEPTHS EQUAL TO ZERO).
+!
+!warning  HERE FLUXES IN FLODEL ARE FROM POINT 2 TO POINT 1.
+!+
+!+        SEE FLUX3D (HORIZONTAL FLUXES BASED ON FLUINT)
+!+            AND PRECON (VERTICAL FLUXES BASED ON WSCONV)
+!
+!history  J-M HERVOUET (LNHE)
+!+        19/04/2010
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
+!| DIMGLO         |-->| FIRST DIMENSION OF ARRAY GLOSEG
+!| DT             |-->| PAS DE TEMPS
+!| FC             |<--| VARIABLE APRES CONVECTION
+!| FLODEL         |-->| FLUXES BY SEGMENT
+!| FLOPAR         |-->| FLUXES BY SEGMENT, ASSEMBLED IN PARALLEL
+!| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
+!| FLUX           |<->| FLUX GLOBAL A INCREMENTER
+!| FN             |-->| VARIABLE AU TEMPS N
+!| FSCE           |-->| DIRICHLET BOUNDARY CONDITIONS OF F
+!| GLOSEG         |-->| GLOBAL NUMBERS OF POINTS, PER SEGMENT
+!| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
+!| MASKEL         |-->| MASQUAGE DES ELEMENTS
+!| MESH2          |-->| 2D MESH
+!| MESH3          |-->| 3D MESH
+!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
+!| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
+!| NPLAN          |---| 
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NOMBRE DE POINTS 3D
+!| NSCE           |---| 
+!| NSEG           |---| 
+!| OPTBAN         |---| 
+!| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
+!| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
+!| RMASS          |---| 
+!| S0F            |-->| TERME SOURCE EXPLICITE
+!| SCHCF          |-->| SCHEMA DE CONVECTION DE F
+!| SOURCES        |---| 
+!| STRA01         |---| 
+!| STRA02         |---| 
+!| STRA03         |---| 
+!| SVOLU          |---| 
+!| SVOLU2         |---| 
+!| SVOLUN         |---| 
+!| TRA01          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
+!|                |   | EQUIVALENT DE VOLU2 POUR LE TEMPS FINAL COURANT
+!| TRA02          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
+!| TRA03          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
+!| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
+!| VOLU2          |-->| COMME VOLU MAIS ASSEMBLE EN PARALLELISME
+!| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,NPOIN2
       INTEGER, INTENT(IN)             :: NSCE,OPTBAN,NSEG,NPLAN,DIMGLO
       INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2),OPTION
@@ -130,16 +119,16 @@ C
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: STRA01,STRA02,STRA03
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH2,MESH3
 !
-C     DIMENSION OF FLODEL AND FLOPAR=NSEG2D*NPLAN+NPOIN2*NETAGE
+!     DIMENSION OF FLODEL AND FLOPAR=NSEG2D*NPLAN+NPOIN2*NETAGE
       DOUBLE PRECISION, INTENT(IN)    :: FLODEL(*),FLOPAR(*)
       DOUBLE PRECISION, INTENT(INOUT) :: RMASS(*)
-C                                        SIZE IN MEMORY = 30*NELEM
-C                                        THIS IS ENOUGH
+!                                        SIZE IN MEMORY = 30*NELEM
+!                                        THIS IS ENOUGH
 !
       LOGICAL, INTENT(IN)             :: MSK,INFOR,CALFLU,RAIN
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IPOIN,NITER,IS,IIS,I,NSEGH,NSEGV,OPT,IR
       INTEGER I1,I2,IPLAN,ISEG3D,I2D,I3D,IPTFR
       INTEGER REMAIN_SEG,NEWREMAIN,REMAIN_TOT,REMAIN_SEG_INIT
@@ -167,11 +156,11 @@ C
 !
       LOGICAL TESTING
       DATA    TESTING/.FALSE./
-C
-C-----------------------------------------------------------------------
-C
-C     INDIC WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
-C
+!
+!-----------------------------------------------------------------------
+!
+!     INDIC WILL BE A LIST OF SEGMENTS WITH NON ZERO FLUXES
+!
       LOGICAL DEJA
       DATA DEJA/.FALSE./
       INTEGER, ALLOCATABLE :: INDIC(:)
@@ -185,9 +174,9 @@ C
 !
       IF(NCSIZE.GT.1) THEN
         CALL OV('X=Y     ',TRA03,FLUEXT,FLUEXT,0.D0,NPOIN3)
-C       TRA03 WILL BE THE ASSEMBLED AND SHARED FLUEXT
+!       TRA03 WILL BE THE ASSEMBLED AND SHARED FLUEXT
         CALL PARCOM(STRA03,2,MESH3)
-C       SHARES AFTER SUMMING (AS WILL BEEN DONE WITH VOLUMES)
+!       SHARES AFTER SUMMING (AS WILL BEEN DONE WITH VOLUMES)
         DO IPTFR=1,NPTIR
           I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
           DO IPLAN=1,NPLAN
@@ -200,11 +189,11 @@ C       SHARES AFTER SUMMING (AS WILL BEEN DONE WITH VOLUMES)
       NSEGH=NSEG*NPLAN
       NSEGV=NPOIN2*(NPLAN-1)
       IF(SCHCF.EQ.ADV_LPO_TF) THEN
-C       HORIZONTAL AND VERTICAL SEGMENTS
+!       HORIZONTAL AND VERTICAL SEGMENTS
         REMAIN_SEG=NSEGH+NSEGV
         OPT=1
       ELSEIF(SCHCF.EQ.ADV_NSC_TF) THEN
-C       ALL SEGMENTS
+!       ALL SEGMENTS
         REMAIN_SEG=NSEGH+NSEGV+2*NSEG*(NPLAN-1)
         OPT=2
       ELSE
@@ -238,20 +227,20 @@ C       ALL SEGMENTS
           RMASS(I)=-DT*FLOPAR(I)
         ENDDO
       ENDIF
-C
-C     SHARES ASSEMBLED FLUXES ON INTERFACE SEGMENTS BY:
-C     DIVIDING BY 2 ON INTERFACE HORIZONTAL AND CROSSED SEGMENTS
-C     MULTIPLYING BY FAC ON VERTICAL FLUXES
-C     THIS WILL GIVE THE SAME UPWINDING INFORMATION
-C
+!
+!     SHARES ASSEMBLED FLUXES ON INTERFACE SEGMENTS BY:
+!     DIVIDING BY 2 ON INTERFACE HORIZONTAL AND CROSSED SEGMENTS
+!     MULTIPLYING BY FAC ON VERTICAL FLUXES
+!     THIS WILL GIVE THE SAME UPWINDING INFORMATION
+!
       IF(NCSIZE.GT.1) THEN
         CALL SHARE_3D_FLUXES(RMASS,1.D0,NPLAN,MESH2,MESH3,OPT)
       ENDIF
-C
-C     REMAINING FLUXES (SPLIT INTO POSITIVE AND NEGATIVE
-C                       SO THAT THEY SUM CORRECTLY IN PARALLEL
-C                       ABSOLUTE VALUES WOULD NOT SUM CORRECTLY)
-C
+!
+!     REMAINING FLUXES (SPLIT INTO POSITIVE AND NEGATIVE
+!                       SO THAT THEY SUM CORRECTLY IN PARALLEL
+!                       ABSOLUTE VALUES WOULD NOT SUM CORRECTLY)
+!
       RFLUX_OLD=0.D0
       DO I=1,REMAIN_SEG
         RFLUX_OLD=RFLUX_OLD+ABS(RMASS(I))
@@ -274,12 +263,12 @@ C
 !
       IF(NCSIZE.GT.1) THEN
         DO I=1,NPOIN3
-C         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
+!         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
           VOLU2(I)=VOLU2(I)-MIN(TRA03(I),0.D0)*DT
         ENDDO
       ELSE
         DO I=1,NPOIN3
-C         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
+!         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
           VOLU2(I)=VOLU2(I)-MIN(FLUEXT(I),0.D0)*DT
         ENDDO
       ENDIF
@@ -294,12 +283,12 @@ C         FLUEXT SHARED IN PARALLEL (HENCE SAME SIGN)
             FLUX = FLUX + DT*FC(IPOIN)*MIN(FLUEXT(IPOIN),0.D0)
           ENDDO
         ENDIF
-C       ENTERING SOURCES
+!       ENTERING SOURCES
         IF(NSCE.GT.0) THEN
           DO IS=1,NSCE
             IIS=IS
-C           HERE IN PARALLEL SOURCES WITHOUT PARCOM
-C           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
             IF(NCSIZE.GT.1) IIS=IIS+NSCE
             DO IPOIN=1,NPOIN3
               IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
@@ -314,12 +303,12 @@ C           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
 !
       IF(NCSIZE.GT.1) CALL PARCOM(SVOLU2,2,MESH3)
 !
-C     ENTERING SOURCES (WITH FC = FSCE)
-C     IT WILL ALWAYS GIVE POSITIVE VOLUMES
+!     ENTERING SOURCES (WITH FC = FSCE)
+!     IT WILL ALWAYS GIVE POSITIVE VOLUMES
       IF(NSCE.GT.0) THEN
         DO IS=1,NSCE
           DO IPOIN=1,NPOIN3
-C           HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+!           HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
             IF(SOURCES%ADR(IS)%P%R(IPOIN).GT.0.D0) THEN
               VOLU2(IPOIN)=VOLU2(IPOIN)+DT*SOURCES%ADR(IS)%P%R(IPOIN)
               FC(IPOIN)=FC(IPOIN)+DT*(FSCE(IS)-FC(IPOIN))
@@ -329,13 +318,13 @@ C           HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
         ENDDO
       ENDIF
 !
-C     RAIN-EVAPORATION (HERE ONLY RAIN, NOT EVAPORATION)
+!     RAIN-EVAPORATION (HERE ONLY RAIN, NOT EVAPORATION)
 !
       IF(RAIN) THEN
         DO IPOIN=1,NPOIN2
           IF(PLUIE(IPOIN).GT.0.D0) THEN
             IS=NPOIN3-NPOIN2+IPOIN
-C           ASSEMBLED FORM OF PLUIE NEEDED HERE
+!           ASSEMBLED FORM OF PLUIE NEEDED HERE
             VOLU2(IS)=VOLU2(IS)+DT*PLUIE(IPOIN)
             FC(IS)=FC(IS)-DT*FC(IS)*PLUIE(IPOIN)/VOLU2(IS)
           ENDIF
@@ -348,17 +337,17 @@ C           ASSEMBLED FORM OF PLUIE NEEDED HERE
 !
       NITER = NITER + 1
 !
-C
-C
-C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-C     FOR DISTRIBUTING THE VOLUMES BETWEEN SEGMENTS
-C
+!
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!     FOR DISTRIBUTING THE VOLUMES BETWEEN SEGMENTS
+!
       IF(OPTION.EQ.2) THEN
-C
-C       FLUX_REMOVED (T6)    : TOTAL FLUX REMOVED OF EACH POINT 
-C       SAVED_VOLU2 (T8)     : VOLUME VOLU2 SAVED
-C       SAVED_F (T9)         : TRACER SAVED
-C
+!
+!       FLUX_REMOVED (T6)    : TOTAL FLUX REMOVED OF EACH POINT
+!       SAVED_VOLU2 (T8)     : VOLUME VOLU2 SAVED
+!       SAVED_F (T9)         : TRACER SAVED
+!
         IF(NITER.EQ.1) THEN
           DO I=1,NPOIN3
             FLUX_REMOVED%R(I)=0.D0
@@ -367,25 +356,25 @@ C
             T5%R(I)=FC(I)*VOLU2(I)
           ENDDO
           IF(NCSIZE.GT.1) THEN
-C           SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
+!           SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
             DO IPTFR=1,NPTIR
               I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
               DO IPLAN=1,NPLAN
                 I3D=I2D+(IPLAN-1)*NPOIN2
-                VOLU2(I3D)=VOLU2(I3D)*MESH3%FAC%R(I3D)   
+                VOLU2(I3D)=VOLU2(I3D)*MESH3%FAC%R(I3D)
                 T5%R(I3D) = T5%R(I3D)*MESH3%FAC%R(I3D)
               ENDDO
             ENDDO
           ENDIF
         ELSE
-C         NOT ALL THE POINTS NEED TO BE INITIALISED NOW
+!         NOT ALL THE POINTS NEED TO BE INITIALISED NOW
           DO IR=1,REMAIN_SEG
             I=INDIC(IR)
             I1=GLOSEG(I,1)
             I2=GLOSEG(I,2)
             FLUX_REMOVED%R(I1)=0.D0
             FLUX_REMOVED%R(I2)=0.D0
-C           SAVING THE DEPTH AND TRACER
+!           SAVING THE DEPTH AND TRACER
             SAVED_VOLU2%R(I1)=VOLU2(I1)
             SAVED_VOLU2%R(I2)=VOLU2(I2)
             SAVED_F%R(I1)=FC(I1)
@@ -393,28 +382,28 @@ C           SAVING THE DEPTH AND TRACER
             T5%R(I1)=FC(I1)*VOLU2(I1)
             T5%R(I2)=FC(I2)*VOLU2(I2)
           ENDDO
-C         CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
-C         AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)   
+!         CANCELLING INTERFACE POINTS (SOME MAY BE ISOLATED IN A SUBDOMAIN
+!         AT THE TIP OF AN ACTIVE SEGMENT WHICH IS ELSEWHERE)
           IF(NCSIZE.GT.1) THEN
             DO IPTFR=1,NPTIR
               I2D=MESH3%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
               DO IPLAN=1,NPLAN
                 I3D=(IPLAN-1)*NPOIN2+I2D
                 FLUX_REMOVED%R(I3D)=0.D0
-C               SAVING THE VOLUME AND TRACER
+!               SAVING THE VOLUME AND TRACER
                 SAVED_VOLU2%R(I3D)=VOLU2(I3D)
                 SAVED_F%R(I3D)=FC(I3D)
                 VOLU2(I3D)=VOLU2(I3D)*MESH3%FAC%R(I3D)
                 T5%R(I3D) = T5%R(I3D)*MESH3%FAC%R(I3D)
               ENDDO
             ENDDO
-          ENDIF 
+          ENDIF
         ENDIF
         DO I=1,REMAIN_SEG
           ISEG3D=INDIC(I)
           I1=GLOSEG(ISEG3D,1)
           I2=GLOSEG(ISEG3D,2)
-!         POSITIVE FLUXES FROM 1 TO 2 !!! 
+!         POSITIVE FLUXES FROM 1 TO 2 !!!
           IF(RMASS(ISEG3D).GT.EPS_VOLUME) THEN
             FLUX_REMOVED%R(I1)=FLUX_REMOVED%R(I1)+RMASS(ISEG3D)
             VOLU2(I1)=0.D0
@@ -428,8 +417,8 @@ C               SAVING THE VOLUME AND TRACER
 !
         IF(NCSIZE.GT.1) CALL PARCOM(FLUX_REMOVED,2,MESH3)
 !
-C       FOR ISOLATED POINTS CONNECTED TO AN ACTIVE SEGMENT
-C       THAT IS IN ANOTHER SUBDOMAIN     
+!       FOR ISOLATED POINTS CONNECTED TO AN ACTIVE SEGMENT
+!       THAT IS IN ANOTHER SUBDOMAIN
         IF(NCSIZE.GT.1) THEN
           DO IPTFR=1,NPTIR
             I2D=MESH3%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
@@ -442,12 +431,12 @@ C       THAT IS IN ANOTHER SUBDOMAIN
               ENDIF
             ENDDO
           ENDDO
-        ENDIF 
+        ENDIF
 !
       ELSEIF(OPTION.EQ.1) THEN
 !
         IF(NCSIZE.GT.1) THEN
-C         SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
+!         SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
           DO IPTFR=1,NPTIR
             I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
             DO IPLAN=1,NPLAN
@@ -458,9 +447,9 @@ C         SHARES AFTER SUMMING (AS HAS BEEN DONE WITH FLUXES)
         ENDIF
 !
       ENDIF
-C
-C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-C
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
 !
 !     FROM HERE RMASS IS THE REMAINING MASSES TO BE PASSED BETWEEN POINTS
 !
@@ -470,13 +459,13 @@ C
 !
       RFLUX=0.D0
       NEWREMAIN=0
-C
+!
       IF(OPTION.EQ.1) THEN
-C
+!
       DO I=1,REMAIN_SEG
         ISEG3D=INDIC(I)
         IF(RMASS(ISEG3D).GT.EPS_VOLUME) THEN
-C         FLUX FROM 2 TO 1 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
+!         FLUX FROM 2 TO 1 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
           I1=GLOSEG(ISEG3D,1)
           I2=GLOSEG(ISEG3D,2)
           IF(RMASS(ISEG3D).GT.VOLU2(I2)) THEN
@@ -499,7 +488,7 @@ C         FLUX FROM 2 TO 1 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
             VOLU2(I2)=VOLU2(I2)-RMASS(ISEG3D)
           ENDIF
         ELSEIF(RMASS(ISEG3D).LT.-EPS_VOLUME) THEN
-C         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
+!         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
           I1=GLOSEG(ISEG3D,1)
           I2=GLOSEG(ISEG3D,2)
           IF(-RMASS(ISEG3D).GT.VOLU2(I1)) THEN
@@ -523,17 +512,17 @@ C         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
           ENDIF
         ENDIF
       ENDDO
-C
+!
       ELSEIF(OPTION.EQ.2) THEN
-C
+!
       DO IR=1,REMAIN_SEG
         I=INDIC(IR)
         IF(RMASS(I).GT.EPS_VOLUME) THEN
           I1=GLOSEG(I,1)
-C         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
+!         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
           IF(SAVED_VOLU2%R(I1).GT.0.D0) THEN
             I2=GLOSEG(I,2)
-!           SHARING ON DEMAND: RMASS(I)/FLUX_REMOVED%R(I1) IS A PERCENTAGE 
+!           SHARING ON DEMAND: RMASS(I)/FLUX_REMOVED%R(I1) IS A PERCENTAGE
             VOLSEG1=SAVED_VOLU2%R(I1)*RMASS(I)/FLUX_REMOVED%R(I1)
 !           END OF SHARING ON DEMAND
             IF(RMASS(I).GE.VOLSEG1) THEN
@@ -541,7 +530,7 @@ C         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
 !             VOLSEG1 > 0, HENCE VOLU2(I2) ALSO
               RMASS(I) =RMASS(I) -VOLSEG1
               VOLU2(I2)=VOLU2(I2)+VOLSEG1
-!             GROUPING H*F 
+!             GROUPING H*F
               T5%R(I2)=T5%R(I2)+VOLSEG1*SAVED_F%R(I1)
 !             THIS MAY BE DONE SEVERAL TIMES FOR THE SAME POINT
 !             BUT THE LAST ONE WILL BE THE GOOD ONE
@@ -566,7 +555,7 @@ C         FLUX FROM 1 TO 2 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
           ENDIF
         ELSEIF(RMASS(I).LT.-EPS_VOLUME) THEN
           I2=GLOSEG(I,2)
-C         FLUX FROM 2 TO 1 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
+!         FLUX FROM 2 TO 1 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
           IF(SAVED_VOLU2%R(I2).GT.0.D0) THEN
             I1=GLOSEG(I,1)
 !           SHARING ON DEMAND
@@ -578,30 +567,30 @@ C         FLUX FROM 2 TO 1 !!! (SEE REMARKS AND HOW RMASS INITIALISED)
               VOLU2(I1)=VOLU2(I1)+VOLSEG2
               RMASS(I) =RMASS(I) +VOLSEG2
               T5%R(I1)=T5%R(I1)+VOLSEG2*SAVED_F%R(I2)
-              FC(I1)=T5%R(I1)/VOLU2(I1)   
-              RFLUX=RFLUX-RMASS(I)     
+              FC(I1)=T5%R(I1)/VOLU2(I1)
+              RFLUX=RFLUX-RMASS(I)
               NEWREMAIN=NEWREMAIN+1
-              INDIC(NEWREMAIN)=I       
+              INDIC(NEWREMAIN)=I
             ELSE
               VOLSEG2=VOLSEG2+RMASS(I)
 !             GATHERING VOLUMES (HERE VOLU2(I1) WILL REMAIN POSITIVE)
               VOLU2(I1)=VOLU2(I1)-RMASS(I)
-              VOLU2(I2)=VOLU2(I2)+VOLSEG2 
-              T5%R(I1)=T5%R(I1)-RMASS(I)*SAVED_F%R(I2)           
-              T5%R(I2)=T5%R(I2)+VOLSEG2*SAVED_F%R(I2) 
-              FC(I1)=T5%R(I1)/VOLU2(I1)     
-              FC(I2)=T5%R(I2)/VOLU2(I2) 
+              VOLU2(I2)=VOLU2(I2)+VOLSEG2
+              T5%R(I1)=T5%R(I1)-RMASS(I)*SAVED_F%R(I2)
+              T5%R(I2)=T5%R(I2)+VOLSEG2*SAVED_F%R(I2)
+              FC(I1)=T5%R(I1)/VOLU2(I1)
+              FC(I2)=T5%R(I2)/VOLU2(I2)
             ENDIF
           ELSE
-            RFLUX=RFLUX-RMASS(I)     
+            RFLUX=RFLUX-RMASS(I)
             NEWREMAIN=NEWREMAIN+1
-            INDIC(NEWREMAIN)=I    
+            INDIC(NEWREMAIN)=I
           ENDIF
         ENDIF
       ENDDO
-C
-C     ELSE
-C       UNKNOWN OPTION
+!
+!     ELSE
+!       UNKNOWN OPTION
       ENDIF
 !
       REMAIN_SEG=NEWREMAIN
@@ -613,19 +602,19 @@ C       UNKNOWN OPTION
           I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
           DO IPLAN=1,NPLAN
             I3D=I2D+(IPLAN-1)*NPOIN2
-C           ARRAY WITH VOLUME*FC AT INTERFACE POINTS
+!           ARRAY WITH VOLUME*FC AT INTERFACE POINTS
             TRA01(I3D)=VOLU2(I3D)*FC(I3D)
           ENDDO
         ENDDO
-C       SUMS VOLUME*FC AT INTERFACE POINTS
+!       SUMS VOLUME*FC AT INTERFACE POINTS
         CALL PARCOM(STRA01,2,MESH3)
-C       SUMS THE NEW POSITIVE PARTIAL VOLUMES OF INTERFACE POINTS
+!       SUMS THE NEW POSITIVE PARTIAL VOLUMES OF INTERFACE POINTS
         CALL PARCOM(SVOLU2,2,MESH3)
         DO IPTFR=1,NPTIR
           I2D=MESH2%NACHB%I(NBMAXNSHARE*(IPTFR-1)+1)
           DO IPLAN=1,NPLAN
             I3D=I2D+(IPLAN-1)*NPOIN2
-C           ARRAY WITH VOLUME*F AT INTERFACE POINTS
+!           ARRAY WITH VOLUME*F AT INTERFACE POINTS
             IF(VOLU2(I3D).GT.0.D0) THEN
               FC(I3D)=TRA01(I3D)/VOLU2(I3D)
             ENDIF
@@ -663,7 +652,7 @@ C           ARRAY WITH VOLUME*F AT INTERFACE POINTS
 !    (BUT THE MASS OF TRACER CHANGES)
 !
       IF(CALFLU) THEN
-C       EXITING FLUXES
+!       EXITING FLUXES
         IF(NCSIZE.GT.1) THEN
           DO IPOIN = 1,NPOIN3
             FLUX = FLUX + DT*FC(IPOIN)*MAX(TRA03(IPOIN),0.D0)
@@ -673,12 +662,12 @@ C       EXITING FLUXES
             FLUX = FLUX + DT*FC(IPOIN)*MAX(FLUEXT(IPOIN),0.D0)
           ENDDO
         ENDIF
-C       EXITING SOURCES
+!       EXITING SOURCES
         IF(NSCE.GT.0) THEN
           DO IS=1,NSCE
             IIS=IS
-C           HERE IN PARALLEL SOURCES WITHOUT PARCOM
-C           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
+!           HERE IN PARALLEL SOURCES WITHOUT PARCOM
+!           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
             IF(NCSIZE.GT.1) IIS=IIS+NSCE
             DO IPOIN=1,NPOIN3
               IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
@@ -690,25 +679,25 @@ C           ARE STORED AT ADRESSES IS+NSCE (SEE SOURCES_SINKS.F)
         ENDIF
       ENDIF
 !
-C     RAIN-EVAPORATION (HERE ONLY EVAPORATION, NOT RAIN)
+!     RAIN-EVAPORATION (HERE ONLY EVAPORATION, NOT RAIN)
 !
       IF(RAIN) THEN
         DO IPOIN=1,NPOIN2
           IF(PLUIE(IPOIN).LT.0.D0) THEN
             IS=NPOIN3-NPOIN2+IPOIN
             VOLU2(IS)=VOLU2(IS)+DT*PLUIE(IPOIN)
-C           DIVISION BY 0 NOT CHECKED
+!           DIVISION BY 0 NOT CHECKED
             FC(IS)=FC(IS)-DT*FC(IS)*PLUIE(IPOIN)/VOLU2(IS)
           ENDIF
         ENDDO
       ENDIF
 !
       IF(TESTING) THEN
-C       EXITING SOURCES (WITH FC UNCHANGED)
+!       EXITING SOURCES (WITH FC UNCHANGED)
         IF(NSCE.GT.0) THEN
           DO IS=1,NSCE
             DO IPOIN=1,NPOIN3
-C             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
+!             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
               IF(SOURCES%ADR(IS)%P%R(IPOIN).LT.0.D0) THEN
                 VOLU2(IPOIN)=VOLU2(IPOIN)+
      &                      DT*SOURCES%ADR(IS)%P%R(IPOIN)
@@ -716,11 +705,11 @@ C             HERE VERSION OF SOURCES ASSEMBLED IN PARALLEL
             ENDDO
           ENDDO
         ENDIF
-C       EXITING FLUXES
+!       EXITING FLUXES
         IF(NCSIZE.GT.1) THEN
           DO I=1,NPOIN3
             TRA02(I)=MAX(TRA03(I),0.D0)
-C           SHARED FLUEXT IN TRA03 ERASED NOW (NOT USED AFTER)
+!           SHARED FLUEXT IN TRA03 ERASED NOW (NOT USED AFTER)
             TRA03(I)=VOLU(I)
           ENDDO
         ELSE
@@ -741,7 +730,7 @@ C           SHARED FLUEXT IN TRA03 ERASED NOW (NOT USED AFTER)
             STOP
           ENDIF
         ENDDO
-C       CHECKS EQUALITY OF ASSEMBLED VOLUMES
+!       CHECKS EQUALITY OF ASSEMBLED VOLUMES
         C=0.D0
         IF(NCSIZE.GT.1) THEN
           DO I=1,NPOIN3
@@ -782,6 +771,3 @@ C       CHECKS EQUALITY OF ASSEMBLED VOLUMES
 !
       RETURN
       END
-C
-C#######################################################################
-C
