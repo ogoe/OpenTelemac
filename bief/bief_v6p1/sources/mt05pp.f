@@ -33,37 +33,37 @@
 !history  J-M HERVOUET (LNHE)
 !+        26/06/06
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F,G,H          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
 !|                |   | MATRICE.
-!| IKLE           |---| 
+!| IKLE           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
 !| SF,SG,SH       |-->| STRUCTURES DE F,G ET H.
-!| SIGMAG         |---| 
-!| SPECAD         |---| 
+!| SIGMAG         |---|
+!| SPECAD         |---|
 !| SU,SV,SW       |-->| STRUCTURES DE U,V ET W.
 !| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| T              |---| 
+!| T              |---|
 !| U,V,W          |-->| COMPOSANTES D'UN VECTEUR INTERVENANT DANS LE
 !|                |   | CALCUL DE LA MATRICE.
 !| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---| 
+!| XM             |---|
 !| XMUL           |-->| FACTEUR MULTIPLICATIF
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

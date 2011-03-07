@@ -17,22 +17,22 @@
 !history  J-M HERVOUET (LNH)     ; REGINA NEBAUER; LAM MINH PHUONG
 !+        29/04/04
 !+        V5P5
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IB             |-->| 
+!| IB             |-->|
 !| IKLES          |<--| TABLE DE CONNECTIVITE
 !| IPOBO          |<--| TABLE NUEROS NOEUDS DE BORD
 !| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT

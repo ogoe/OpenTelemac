@@ -34,42 +34,42 @@
 !history  J-M HERVOUET (LNH)
 !+        19/05/2010
 !+        V6P0
-!+   NEW FILTER FOR PARTLY CRUSHED ELEMENTS 
+!+   NEW FILTER FOR PARTLY CRUSHED ELEMENTS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FORMUL         |-->| SEE AT THE END OF THE SUBROUTINE
 !|                |   | THE USE OF FORMUL(6:6) AND FORMUL(7:7)
 !|                |   | FOR APPLYING FILTERS.
 !| ICOORD         |-->| COORDONNEE SUIVANT LAQUELLE ON DERIVE.
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
-!| IKLE5          |---| 
-!| IKLE6          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
+!| IKLE5          |---|
+!| IKLE6          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---| 
-!| W3             |---| 
-!| W4             |---| 
-!| W5             |---| 
-!| W6             |---| 
-!| X              |---| 
+!| W2             |---|
+!| W3             |---|
+!| W4             |---|
+!| W5             |---|
+!| W6             |---|
+!| X              |---|
 !| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| Y              |---| 
-!| Z              |---| 
+!| Y              |---|
+!| Z              |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF  !, EX_VC13PP => VC13PP

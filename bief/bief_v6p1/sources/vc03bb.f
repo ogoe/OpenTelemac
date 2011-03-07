@@ -26,33 +26,33 @@
 !history  J-M HERVOUET (LNH)    ; C MOULIN  (LNH)
 !+        13/01/95
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE.
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
 !| SF,SG,SH       |-->| STRUCTURES DES FONCTIONS F,G ET H
 !| SURFAC         |-->| SURFACE DES ELEMENTS.
-!| W2             |---| 
-!| W3             |---| 
-!| W4             |---| 
+!| W2             |---|
+!| W3             |---|
+!| W4             |---|
 !| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

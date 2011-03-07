@@ -35,19 +35,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/02/06
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRICE DU SYSTEME
@@ -55,7 +55,7 @@
 !| AG             |<->| A X (GRADIENT DE DESCENTE).
 !| AUX            |-->| MATRICE POUR LE PRECONDITIONNEMENT.
 !| B              |-->| SECOND MEMBRE DU SYSTEME.
-!| CFG            |---| 
+!| CFG            |---|
 !| D              |<->| DIRECTION DE DESCENTE.
 !| G              |<->| GRADIENT DE DESCENTE.
 !| INFOGR         |-->| SI OUI, IMPRESSION D'UN COMPTE-RENDU.

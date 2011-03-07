@@ -38,26 +38,26 @@
 !history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
 !+        05/02/91
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| CONSTANTE DONNEE
 !| DA             |-->| DIAGONALE DE LA MATRICE
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS.
 !| NPOIN          |-->| NOMBRE DE POINTS.
 !| OP             |-->| OPERATION A EFFECTUER
@@ -68,18 +68,18 @@
 !| TYPEXT         |-->| TYPEXT = 'Q' : QUELCONQUES.
 !|                |   | TYPEXT = 'S' : SYMETRIQUES.
 !|                |   | TYPEXT = '0' : NULS.
-!| W2             |---| 
-!| W3             |---| 
-!| W4             |---| 
+!| W2             |---|
+!| W3             |---|
+!| W4             |---|
 !| X              |<--| VECTEUR IMAGE
-!| XA13           |---| 
-!| XA21           |---| 
-!| XA23           |---| 
-!| XA31           |---| 
-!| XA32           |---| 
-!| XA41           |---| 
-!| XA42           |---| 
-!| XA43           |---| 
+!| XA13           |---|
+!| XA21           |---|
+!| XA23           |---|
+!| XA31           |---|
+!| XA32           |---|
+!| XA41           |---|
+!| XA42           |---|
+!| XA43           |---|
 !| Y              |-->| VECTEUR OPERANDE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

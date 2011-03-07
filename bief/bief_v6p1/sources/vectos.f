@@ -34,25 +34,25 @@
 !
 !history  REGINA NEBAUER
 !+        22/09/05
-!+        
-!+   
+!+
+!+
 !
 !history  JM HERVOUET (LNHE)
 !+        16/07/07
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE
@@ -63,7 +63,7 @@
 !| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| NBOR           |-->| NUMEROTATION GLOBALE DES POINTS DE BORD
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
@@ -333,7 +333,7 @@
              CALL VC01TT0(XMUL,SF,F,XEL,YEL,ZEL,
      &                   IKLE(:,1),IKLE(:,2),IKLE(:,3),IKLE(:,4),
      &                   NELEM,NELMAX,VEC)
-
+!
 !
 !-----------------------------------------------------------------------
 !       OTHER

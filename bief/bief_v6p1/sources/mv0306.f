@@ -39,31 +39,31 @@
 !history  ALGIANE FROEHLY (MATMECA); J-M HERVOUET (LNH)
 !+        31/03/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| CONSTANTE DONNEE
 !| DA             |-->| DIAGONALE DE LA MATRICE
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
-!| IKLE5          |---| 
-!| IKLE6          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
+!| IKLE5          |---|
+!| IKLE6          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS.
 !| NPOIN          |-->| NOMBRE DE POINTS.
-!| NPT2           |---| 
+!| NPT2           |---|
 !| OP             |-->| OPERATION A EFFECTUER
 !| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
 !|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE
@@ -72,26 +72,26 @@
 !| TYPEXT         |-->| TYPEXT = 'Q' : QUELCONQUES.
 !|                |   | TYPEXT = 'S' : SYMETRIQUES.
 !|                |   | TYPEXT = '0' : NULS.
-!| W2             |---| 
-!| W3             |---| 
-!| W4             |---| 
-!| W5             |---| 
-!| W6             |---| 
+!| W2             |---|
+!| W3             |---|
+!| W4             |---|
+!| W5             |---|
+!| W6             |---|
 !| X              |<--| VECTEUR IMAGE
-!| XA13           |---| 
-!| XA14           |---| 
-!| XA15           |---| 
-!| XA16           |---| 
-!| XA21           |---| 
-!| XA23           |---| 
-!| XA24           |---| 
-!| XA25           |---| 
-!| XA26           |---| 
-!| XA31           |---| 
-!| XA32           |---| 
-!| XA34           |---| 
-!| XA35           |---| 
-!| XA36           |---| 
+!| XA13           |---|
+!| XA14           |---|
+!| XA15           |---|
+!| XA16           |---|
+!| XA21           |---|
+!| XA23           |---|
+!| XA24           |---|
+!| XA25           |---|
+!| XA26           |---|
+!| XA31           |---|
+!| XA32           |---|
+!| XA34           |---|
+!| XA35           |---|
+!| XA36           |---|
 !| Y              |-->| VECTEUR OPERANDE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -150,7 +150,7 @@
      &                     + XA34(IELEM) * Y(IKLE4(IELEM))
      &                     + XA35(IELEM) * Y(IKLE5(IELEM))
      &                     + XA36(IELEM) * Y(IKLE6(IELEM))
-
+!
 20     CONTINUE
 !
          ELSEIF(TYPEXT(1:1).EQ.'0') THEN

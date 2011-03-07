@@ -24,19 +24,19 @@
 !history  J-M HERVOUET (LNHE)     ; ALGIANE FROEHLY (MATMECA)
 !+        27/08/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS
@@ -45,21 +45,21 @@
 !|                |   | CARACTERISTIQUES.
 !| ETA            |---| NUMEROS DES ETAGES AU PIED DES COURBES
 !|                |   | CARACTERISTIQUES (POUR TEL3D).
-!| FAC            |---| 
+!| FAC            |---|
 !| IELM           |-->| TYPE D'ELEMENT : 11 : TRIANGLE P1
 !|                |   | 21 : QUADRANGLE P1
 !|                |   | 41 : PRISME DE TEL3D
-!| IELMU          |---| 
+!| IELMU          |---|
 !| IFABOR         |-->| NUMEROS DES ELEMENTS VOISINS (ATTENTION, POUR
 !|                |   | TEL3D, IFABOR EST LE TABLEAU IBOR DE MITRID).
 !| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 2D.
-!| INITLOC        |---| 
+!| INITLOC        |---|
 !| ITRAV1         |---| TABLEAU DE TRAVAIL ENTIER.
 !| ITRAV2         |---| TABLEAU DE TRAVAIL ENTIER.
 !| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION.
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT 2D.
 !| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 2D.
@@ -72,18 +72,18 @@
 !|                |   | COURBES CARACTERISTIQUES.
 !| SHZ            |---| COORDONNEES BARYCENTRIQUES SUIVANT Z AU PIED
 !|                |   | DES COURBES CARACTERISTIQUES (POUR TEL3D)
-!| STEST          |---| 
+!| STEST          |---|
 !| SURDET         |-->| 1/DETERMINANT POUR LES ELEMENTS 2D.
-!| T1             |---| 
-!| T2             |---| 
-!| TEST           |---| 
+!| T1             |---|
+!| T2             |---|
+!| TEST           |---|
 !| U              |-->| VARIABLES A L'ETAPE N .
 !| UCONV,VCONV    |-->| COMPOSANTES DES VITESSES DU CONVECTEUR.
 !| UTILD          |<--| VARIABLES APRES LA CONVECTION .
-!| WCONV          |---| 
+!| WCONV          |---|
 !| X,Y,ZSTAR      |-->| COORDONNEES DU MAILLAGE .
 !| Z              |-->| COTE DANS LE MAILLAGE REEL (POUR TEL3D) .
-!| ZCONV          |---| 
+!| ZCONV          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CARACT => CARACT

@@ -37,19 +37,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        23/06/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| CONSTANTE DONNEE
@@ -62,7 +62,7 @@
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
 !| NULONE         |-->| NUMEROS LOCAUX DES NOEUDS DE BORD.
 !| OP             |-->| OPERATION A EFFECTUER
-!| SIZDN          |---| 
+!| SIZDN          |---|
 !| SZMXN          |-->| NOMBRE MAXIMUM D'ELEMENTS DE BORD.
 !| XM,TYPEXM      |-->| TERMES EXTRA-DIAG. ET TYPE POUR M
 !| XN,TYPEXN      |-->| TERMES EXTRA-DIAG. ET TYPE POUR N

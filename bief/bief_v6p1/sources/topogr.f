@@ -18,26 +18,26 @@
 !history  J-M JANIN (LNH)
 !+        17/08/94
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFABOR         |-->| NUMERO DES ELEMENTS VOISINS
 !| IKLE           |-->| TABLE DE CONNECTIVITE
-!| ITRA02         |---| 
-!| ITRA03         |---| 
-!| ITRA05         |---| 
+!| ITRA02         |---|
+!| ITRA03         |---|
+!| ITRA05         |---|
 !| MXPTVS         |-->| NOMBRE MAXIMUM DE POINTS VOISINS D'UN POINT
 !|                |   | (A VERIFIER, LE NOMBRE D'ELEMENTS SUFFIT
 !|                |   | VRAISEMBLABLEMENT)

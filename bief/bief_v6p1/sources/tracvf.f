@@ -16,54 +16,54 @@
 !history  C-T PHAM (LNHE)
 !+        06/02/09
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DDT            |---| 
+!| DDT            |---|
 !| DT             |-->| PAS DE TEMPS.
 !| F              |<--| VALEURS DU TRACEUR A L'ETAPE N+1.
 !| FBOR           |-->| VALEURS DU TRACEUR SUR LE BORD.
-!| FLBORTRA       |---| 
+!| FLBORTRA       |---|
 !| FN             |-->| VALEURS DU TRACEUR A L'ETAPE N.
-!| FSCEXP         |---| 
+!| FSCEXP         |---|
 !| FXBOR          |-->| MATRICE DES FLUX SUR LE BORD.
 !| FXMAT          |-->| MATRICE DE STOCKAGE DES FLUX.
-!| FXMATPAR       |---| 
+!| FXMATPAR       |---|
 !| H              |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N+1.
 !| HN             |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N.
 !| IOPT2          |-->| 0 : UCONV RESPECTE LA CONTINUITE
 !|                |   | 1 : UCONV NE RESPECTE PAS LA CONTINUITE
-!| IT             |---| 
-!| KDDL           |---| 
-!| KDIR           |---| 
-!| LIMTRA         |---| 
+!| IT             |---|
+!| KDDL           |---|
+!| KDIR           |---|
+!| LIMTRA         |---|
 !| MESH           |-->| STRUCTURE DE MAILLAGE.
 !| MSK            |-->| IF YES, MASKING OF DRY ELEMENTS
-!| OPTSOU         |---| 
+!| OPTSOU         |---|
 !| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE.
-!| T1             |---| 
-!| T2             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| TDT            |---| 
-!| UNSV2D         |---| 
-!| V2DPAR         |---| 
-!| YASMH          |---| 
+!| T1             |---|
+!| T2             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| TDT            |---|
+!| UNSV2D         |---|
+!| V2DPAR         |---|
+!| YASMH          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_TRACVF => TRACVF

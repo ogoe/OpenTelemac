@@ -30,44 +30,44 @@
 !history  J-M HERVOUET (LNH)
 !+        30/01/95
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A12            |---| 
-!| A13            |---| 
-!| A21            |---| 
-!| A22            |---| 
-!| A23            |---| 
-!| A31            |---| 
-!| A32            |---| 
-!| A33            |---| 
+!| A12            |---|
+!| A13            |---|
+!| A21            |---|
+!| A22            |---|
+!| A23            |---|
+!| A31            |---|
+!| A32            |---|
+!| A33            |---|
 !| KDIR           |-->| CONDITION A LA LIMITE DE TYPE DIRICHLET
-!| LIDIR2         |---| 
-!| LIDIR3         |---| 
+!| LIDIR2         |---|
+!| LIDIR3         |---|
 !| MASKPT         |-->| TABLEAU DE MASQUAGE DES POINTS
 !|                |   | =1. : NORMAL   =0. : POINT MASQUE.
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| SM1,SM2,SM3    |-->| SECONDS MEMBRES DU SYSTEME.
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| XBOR2          |---| 
-!| XBOR3          |---| 
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| XBOR2          |---|
+!| XBOR3          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DIRI09 => DIRI09

@@ -16,33 +16,33 @@
 !history  J-M HERVOUET (LNH)
 !+        25/06/2008
 !+        V5P9
-!+   MOVED FROM TELEMAC-2D TO ALLOW CALL BY SISYPHE 
+!+   MOVED FROM TELEMAC-2D TO ALLOW CALL BY SISYPHE
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLT            |<--| CONDITIONS AUX LIMITES DU TRACEUR POUR
 !|                |   | LE CALCUL (LITBOR MODIFIES).
-!| DEBLIQ         |---| 
-!| FINLIQ         |---| 
-!| FRTYPE         |---| 
+!| DEBLIQ         |---|
+!| FINLIQ         |---|
+!| FRTYPE         |---|
 !| ICONV          |-->| OPTION DE CONVECTION : 1) CARACTERISTIQUES
 !|                |   | 2) SUPG
 !|                |   | 3) HYBRIDE
 !| KDDL           |-->| INDICATEUR DE DEGRE DE LIBERTE
 !| KDIR           |-->| INDICATEUR DE POINT DE DIRICHLET
 !| KENT           |-->| INDICATEUR DE POINT D'ENTREE FLUIDE .
-!| KINC           |---| 
+!| KINC           |---|
 !| KLOG           |-->| INDICATEUR DE PAROI SOLIDE .
 !| KNEU           |-->| INDICATEUR DE POINT DE NEUMANN
 !| KP1BOR         |-->| UN SEGMENT EST SITUE ENTRE LE POINT DE BORD K
@@ -52,17 +52,17 @@
 !| LITBOR         |-->| TYPES DE CONDITIONS AUX LIMITES DU TRACEUR.
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
 !| NELBOR         |-->| NUMEROS DES ELEMENTS ADJACENTS AUX BORDS
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NFRLIQ         |---| 
+!| NFRLIQ         |---|
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NPTFR          |-->| DIMENSION DES TABLEAUX .
-!| TBOR           |---| 
-!| THOMFR         |---| 
-!| TN             |---| 
+!| TBOR           |---|
+!| THOMFR         |---|
+!| TN             |---|
 !| U,V            |-->| COMPOSANTES DU COURANT
 !| XNEBOR,YNEBOR  |-->| COMPOSANTES DE LA NORMALE EXTERIEURE AU
 !|                |   | DOMAINE PAR POINT DE BORD

@@ -28,31 +28,31 @@
 !warning  THE POLYGON VERTICES MUST BE DISTINCT (NO DUPLICATE NODES)
 !
 !history  E. DAVID (LHF)
-!+        
-!+        
-!+   ORIGINAL IDEA AND CODE 
+!+
+!+
+!+   ORIGINAL IDEA AND CODE
 !
 !history  J.-M. HERVOUET (LNH)
 !+        18/06/96
 !+        V5P2
-!+   
+!+
 !
 !history  JEAN-PHILIPPE RENAUD (CSN BRISTOL)
 !+        27/07/99
-!+        
-!+   CORRECTION FOR A SPECIAL CASE 
+!+
+!+   CORRECTION FOR A SPECIAL CASE
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NSOM           |---| : -->: NOMBRE DE SOMMETS

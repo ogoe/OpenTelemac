@@ -25,10 +25,10 @@
 !+    F IS A VECTOR OF TYPE P1 OR OTHER
 !
 !note     IMPORTANT : IF F IS OF TYPE P0, THE RESULT IS 0.
-!+  
+!+
 !+               HERE, IF F IS P0, IT REALLY MEANS THAT F IS
 !+                     P1, BUT GIVEN BY ELEMENTS.
-!+  
+!+
 !+               THE SIZE OF F SHOULD THEN BE : F(NELMAX,3).
 !
 !warning  THE JACOBIAN MUST BE POSITIVE
@@ -37,44 +37,44 @@
 !history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
 !+        09/12/94
 !+        V5P1
-!+   
+!+
 !
 !history  ARNAUD DESITTER - UNIVERSITY OF BRISTOL
 !+        **/04/98
-!+        
-!+   
+!+
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ICOORD         |-->| COORDONNEE SUIVANT LAQUELLE ON DERIVE.
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
-!| IKLE5          |---| 
-!| IKLE6          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
+!| IKLE5          |---|
+!| IKLE6          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---| 
-!| W3             |---| 
-!| W4             |---| 
-!| W5             |---| 
-!| W6             |---| 
-!| X              |---| 
+!| W2             |---|
+!| W3             |---|
+!| W4             |---|
+!| W5             |---|
+!| W6             |---|
+!| X              |---|
 !| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| Y              |---| 
-!| Z              |---| 
+!| Y              |---|
+!| Z              |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF   !, EX_VC11PP => VC11PP

@@ -19,35 +19,35 @@
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        20/11/06
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CVB1,CVB2      |-->| SECONDS MEMBRES
-!| DAB1           |---| 
-!| DAB2           |---| 
-!| DAB3           |---| 
-!| DAB4           |---| 
-!| GLOSEGB        |---| 
+!| DAB1           |---|
+!| DAB2           |---|
+!| DAB3           |---|
+!| DAB4           |---|
+!| GLOSEGB        |---|
 !| INFOGR         |-->| IF, YES INFORMATIONS ON LISTING
 !| NPOIN          |-->| NOMBRE D'INCONNUES
 !| NSEGB          |-->| NOMBRE DE SEGMENTS
-!| TYPEXT         |---| 
-!| XAB1           |---| 
-!| XAB2           |---| 
-!| XAB3           |---| 
-!| XAB4           |---| 
+!| TYPEXT         |---|
+!| XAB1           |---|
+!| XAB2           |---|
+!| XAB3           |---|
+!| XAB4           |---|
 !| XX1,XX2        |<--| SOLUTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

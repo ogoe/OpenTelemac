@@ -18,34 +18,34 @@
 !history  J-M HERVOUET (LNH)
 !+        30/06/99
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG1        |---| 
-!| ELTSEG2        |---| 
-!| ELTSEG3        |---| 
-!| ELTSEG4        |---| 
-!| ELTSEG5        |---| 
-!| ELTSEG6        |---| 
+!| ELTSEG1        |---|
+!| ELTSEG2        |---|
+!| ELTSEG3        |---|
+!| ELTSEG4        |---|
+!| ELTSEG5        |---|
+!| ELTSEG6        |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
 !| NELMAX         |-->| PREMIERE DIMENSION DE IKLE ET W.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NSEG11         |---| 
-!| NSEG12         |---| 
-!| XM             |---| 
-!| XMT            |---| 
+!| NSEG11         |---|
+!| NSEG12         |---|
+!| XM             |---|
+!| XMT            |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

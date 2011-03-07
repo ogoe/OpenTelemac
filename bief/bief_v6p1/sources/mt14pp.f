@@ -20,60 +20,60 @@
 !
 !history  J-M JANIN (LNH)
 !+        28/11/1994
-!+        
-!+   
+!+
+!+
 !
 !history  JMH
 !+        16/08/1999
-!+        
-!+   EPS ADDED FOR THE DIVISION BY 0 TESTS 
+!+
+!+   EPS ADDED FOR THE DIVISION BY 0 TESTS
 !
 !history  JMH
 !+        21/10/2004
-!+        
-!+   MASS-LUMPING FOR COMPATIBILITY WITH NEW VERSION OF TRIDW2, 
+!+
+!+   MASS-LUMPING FOR COMPATIBILITY WITH NEW VERSION OF TRIDW2,
 !
 !history  JMH
 !+        04/08/2008
-!+        
-!+   INVERTED DIMENSIONS OF XM (SEE ALSO MURD3D) 
+!+
+!+   INVERTED DIMENSIONS OF XM (SEE ALSO MURD3D)
 !
 !history  J-M HERVOUET / A. DECOENE (LNHE)
 !+        27/04/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F,G,H          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
 !|                |   | MATRICE.
-!| IKLE           |---| 
-!| LEGO           |---| 
+!| IKLE           |---|
+!| LEGO           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| PPQ            |---| 
+!| PPQ            |---|
 !| SF,SG,SH       |-->| STRUCTURES DE F,G ET H.
-!| SIGMAG         |---| 
-!| SPECAD         |---| 
+!| SIGMAG         |---|
+!| SPECAD         |---|
 !| SU,SV,SW       |-->| STRUCTURES DE U,V ET W.
 !| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| T              |---| 
+!| T              |---|
 !| U,V,W          |-->| COMPOSANTES D'UN VECTEUR INTERVENANT DANS LE
 !|                |   | CALCUL DE LA MATRICE.
 !| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---| 
+!| XM             |---|
 !| XMUL           |-->| FACTEUR MULTIPLICATIF
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

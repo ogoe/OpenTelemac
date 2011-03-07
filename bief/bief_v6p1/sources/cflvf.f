@@ -14,35 +14,35 @@
 !
 !history  JMH
 !+        11/04/2008
-!+        
-!+   ADDED YASMH 
+!+
+!+   ADDED YASMH
 !
 !history  JMH
 !+        10/06/2008
-!+        
-!+   ADDED SIZGLO 
+!+
+!+   ADDED SIZGLO
 !
 !history  JMH
 !+        02/10/2008
-!+        
-!+   PARALLEL MODE (ADDED FXMATPAR, ETC.) 
+!+
+!+   PARALLEL MODE (ADDED FXMATPAR, ETC.)
 !
 !history  C-T PHAM (LNHE)
 !+        30/11/2009
 !+        V6P0
-!+   REFINED COMPUTATION OF DTMAX (AS IN 3D) 
+!+   REFINED COMPUTATION OF DTMAX (AS IN 3D)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
@@ -54,9 +54,9 @@
 !| H              |-->| H AT THE END OF FULL TIME STEP
 !| HSTART         |-->| H AT BEGINNING OF SUB TIME STEP
 !| MAS            |-->| INTEGRAL OF TEST FUNCTIONS (=AREA AROUND POINTS)
-!| MASKPT         |---| 
+!| MASKPT         |---|
 !| MESH           |-->| MESH STRUCTURE
-!| MSK            |---| 
+!| MSK            |---|
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS

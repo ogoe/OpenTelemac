@@ -14,19 +14,19 @@
 !history  J-M HERVOUET (LNH)
 !+        02/10/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |<--| SEGMENTS OF EVERY TRIANGLE.
@@ -35,7 +35,7 @@
 !|                |   | 21: QUADRILATERES.
 !| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
 !| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| KNOLG          |---| 
+!| KNOLG          |---|
 !| KP1BOR         |-->| NUMBER OF POINT FOLLOWING BOUNDARY POINT K
 !|                |   | (I.E. K+1 MOST OF THE TIME BUT NOT ALWAYS).
 !| MAXSEG         |<--| 1st DIMENSION OF MAXSEG.

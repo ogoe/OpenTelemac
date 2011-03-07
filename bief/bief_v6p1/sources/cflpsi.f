@@ -14,33 +14,33 @@
 !warning  THE COORDINATES ARE HERE GIVEN BY ELEMENTS
 !
 !history  C MOULIN   (LNH)
-!+        
-!+        
-!+   
+!+
+!+
+!+
 !
 !history  JMH
 !+        17/08/94
 !+        V5P3
-!+   MODIFICATIONS 
+!+   MODIFICATIONS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS DU CALCUL.
 !| IELM           |-->| TYPE D'ELEMENT.
-!| MASKEL         |---| 
-!| MESH           |---| 
-!| MSK            |---| 
+!| MASKEL         |---|
+!| MESH           |---|
+!| MSK            |---|
 !| SYGMA          |<--| NOMBRE DE COURANT.
 !| U              |-->| VITESSE SUIVANT X.
 !| V              |-->| VITESSE SUIVANT Y.

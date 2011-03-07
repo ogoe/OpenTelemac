@@ -32,33 +32,33 @@
 !history  J-M HERVOUET (LNHE)
 !+        12/02/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| CONSTANTE DONNEE
 !| D              |-->| MATRICE DIAGONALE
 !| DM,TYPDIM      |<->| DIAGONALE ET TYPE DE DIAGONALE DE M
 !| DN,TYPDIN      |-->| DIAGONALE ET TYPE DE DIAGONALE DE N
-!| IELM1          |---| 
-!| IELN1          |---| 
-!| KP1BOR         |---| 
-!| NBOR           |---| 
+!| IELM1          |---|
+!| IELN1          |---|
+!| KP1BOR         |---|
+!| NBOR           |---|
 !| NDIAG          |-->| NOMBRE DE VALEURS DE LA DIAGONALE.
-!| NPTFR          |---| 
-!| NSEG1          |---| 
-!| NSEG2          |---| 
+!| NPTFR          |---|
+!| NSEG1          |---|
+!| NSEG2          |---|
 !| OP             |-->| OPERATION A EFFECTUER
 !| XM,TYPEXM      |-->| TERMES EXTRA-DIAG. ET TYPE POUR M
 !| XN,TYPEXN      |-->| TERMES EXTRA-DIAG. ET TYPE POUR N

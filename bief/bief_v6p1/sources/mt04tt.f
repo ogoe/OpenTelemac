@@ -36,31 +36,31 @@
 !history  J-M HERVOUET (LNHE)     ; F  LEPEINTRE (LNH)
 !+        22/08/05
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---| 
+!| IKLE           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
 !| SU,SV,SW       |-->| STRUCTURES DE U,V ET W.
-!| T              |---| 
+!| T              |---|
 !| U,V,W          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
 !|                |   | MATRICE.
 !| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---| 
+!| XM             |---|
 !| XMUL           |-->| FACTEUR MULTIPLICATIF
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

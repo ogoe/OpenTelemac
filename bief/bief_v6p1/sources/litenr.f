@@ -20,19 +20,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        09/12/08
 !+        V5P9
-!+   STD IS NOW A STRING OF ANY SIZE 
+!+   STD IS NOW A STRING OF ANY SIZE
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALIRE          |-->| VARIABLES QU'IL FAUT LIRE (POUR LES AUTRES ON
@@ -46,9 +46,9 @@
 !| LISTIN         |-->| SI OUI, IMPRESSION D'INFORMATIONS SUR LISTING
 !| MAXVAR         |-->| NOMBRE MAXIMUM DE VARIABLES
 !| NHIST          |-->| NOMBRE DE VALEURS DANS LE TABLEAU HIST.
-!| NPLAN_PREV     |---| 
+!| NPLAN_PREV     |---|
 !| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| NPOIN_PREV     |---| 
+!| NPOIN_PREV     |---|
 !| NPRE           |-->| NUMERO DE CANAL DU FICHIER
 !| NVAR           |-->| NOMBRE DE VARIABLES NORMALES
 !| NVARCL         |-->| NOMBRE DE VARIABLES CLANDESTINES.
@@ -65,7 +65,7 @@
 !|                |   | CLANDESTINES.
 !| VARSOR         |<--| BLOC DES TABLEAUX CONTENANT LES VARIABLES
 !| W              |-->| TABLEAU DE TRAVAIL REEL, DE TAILLE NPOIN.
-!| WD             |---| 
+!| WD             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF

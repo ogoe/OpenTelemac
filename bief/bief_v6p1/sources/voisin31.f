@@ -17,36 +17,36 @@
 !history  REGINA NEBAUER (LNHE)
 !+        22/01/08
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| 31: TETRAEDRES NON STRUCTURES
 !| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
 !|                |   | (CAS DES MAILLAGES ADAPTATIFS)
 !| IKLE           |-->| TABLE DE CONNECTIVITE DOMAINE
-!| IKLESTR        |---| 
+!| IKLESTR        |---|
 !| KLOG           |-->| ????
 !| LIHBOR         |-->| TYPE DE CL PAR NOEUD
 !| NACHB          |-->| TABLEAU DE VOISINAGE POUR PARALLELISME
 !| NBOR           |-->| CORRESPONDANCE NO NOEUD DE BORD/NO GLOBAL
 !| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELEMTOTAL     |---| 
+!| NELEMTOTAL     |---|
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
 !| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE
 !| NPTFR          |-->| NOMBRE DE POINTS DE BORD
-!| SIZIKL         |---| 
+!| SIZIKL         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VOISIN31 => VOISIN31

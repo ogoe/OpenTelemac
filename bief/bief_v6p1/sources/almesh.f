@@ -14,19 +14,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        05/02/2010
 !+        V6P0
-!+   EDGE-BASED STUCTURES ALWAYS ALLOCATED 
+!+   EDGE-BASED STUCTURES ALWAYS ALLOCATED
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| NAME IN 20 CHARACTERS TO ENABLE DIFFERENT
@@ -34,17 +34,17 @@
 !|                |   | "SAINT-VENANT EF"
 !|                |   | "SAINT-VENANT VF"
 !|                |   | "BOUSSINESQ"
-!| I3             |---| 
-!| I4             |---| 
+!| I3             |---|
+!| I4             |---|
 !| IELM           |-->| ELEMENT QUI CONTIENT LE PLUS GRAND NOMBRE
 !|                |   | DE POINTS QUI SERA UTILISE.
 !| MESH           |-->| STRUCTURE A ALLOUER
-!| NELMAX         |---| 
-!| NFIC           |---| 
+!| NELMAX         |---|
+!| NFIC           |---|
 !| NOM            |-->| NAME OF THE MESH
-!| NPLAN          |---| 
-!| NPMAX          |---| 
-!| NPTFRX         |---| 
+!| NPLAN          |---|
+!| NPMAX          |---|
+!| NPTFRX         |---|
 !| SPHERI         |-->| LOGIQUE, SI OUI : COORDONNEES SPHERIQUES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

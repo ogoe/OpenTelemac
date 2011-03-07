@@ -24,31 +24,31 @@
 !history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
 !+        29/12/05
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FORMUL         |---| 
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
+!| FORMUL         |---|
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---| 
-!| W3             |---| 
-!| W4             |---| 
+!| W2             |---|
+!| W3             |---|
+!| W4             |---|
 !| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

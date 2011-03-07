@@ -16,39 +16,39 @@
 !history  J-M HERVOUET (LNHE)
 !+        20/03/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GLOSEG         |---| 
+!| GLOSEG         |---|
 !| IELM           |-->| TYPE D'ELEMENT.
 !|                |   | 11 : TRIANGLES.
 !|                |   | 21 : QUADRILATERES.
 !| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| IKLEM1         |---| 
-!| LIMVOI         |---| 
+!| IKLEM1         |---|
+!| LIMVOI         |---|
 !| MXPTVS         |-->| NOMBRE MAXIMUM DE VOISINS D'UN POINT
 !| NBOR           |-->| NUMERO GLOBAL DU POINT DE BORD K.
 !| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |---| 
-!| NPMAX          |---| 
+!| NELMAX         |---|
+!| NPMAX          |---|
 !| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NSEG           |---| 
-!| OPTASS         |---| 
-!| PRODUC         |---| 
-!| SIZGLO         |---| 
+!| NSEG           |---|
+!| OPTASS         |---|
+!| PRODUC         |---|
+!| SIZGLO         |---|
 !| T1             |-->| TABLEAUX DE TRAVAIL ENTIERS.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

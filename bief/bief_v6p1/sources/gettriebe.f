@@ -22,30 +22,30 @@
 !history  J-M HERVOUET (LNHE)
 !+        13/08/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AD             |---| 
-!| AX             |---| 
-!| IKLE           |---| 
-!| MESH           |---| 
+!| AD             |---|
+!| AX             |---|
+!| IKLE           |---|
+!| MESH           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!| NPOIN          |---| 
-!| TETA           |---| 
-!| XAUX           |---| 
+!| NPOIN          |---|
+!| TETA           |---|
+!| XAUX           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GETTRIEBE => GETTRIEBE

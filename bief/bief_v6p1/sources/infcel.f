@@ -11,22 +11,22 @@
 !
 !brief    COMPUTES NUBO, VNOIN, AIRS, JMI, CMI, AIRST.
 !
-!history  
+!history
 !+        18/06/03
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRST          |<--| AIRES DES SOUS-TRIANGLES D'UNE CELLULE
@@ -35,7 +35,7 @@
 !| JMI            |<--| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE
 !|                |   | POINT MILIEU D'UNE INTERFACE
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |---| 
+!| NELMAX         |---|
 !| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE.
 !| NSEG           |-->| NOMBRE DE SEGMENTS DU MAILLAGE.
 !| NUBO           |<--| NUMEROS DES DEUX SOMMETS D'UNE ARETE
@@ -44,8 +44,8 @@
 !| VNOIN          |<--| NORMALE A L'INTERFACE
 !|                |   | (2 PREMIERES COMPOSANTES) ET
 !|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
-!| XX             |---| 
-!| YY             |---| 
+!| XX             |---|
+!| YY             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT  NONE

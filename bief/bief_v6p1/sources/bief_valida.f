@@ -22,35 +22,35 @@
 !history  J-M HERVOUET (LNHE)
 !+        05/08/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACOMPARER      |-->| TABLEAU DES VARIABLE A LIRE DANS LE FICHIER
 !|                |   | DES RESULTATS DU CLCUL PRECEDENT
 !| IT             |-->| NUMERO DU PAS DE TEMPS
 !| MAXIT          |-->| NOMBRE MAXIMUM D'ITERATIONS DU PRESENT CALCUL
-!| MAXTAB         |---| 
+!| MAXTAB         |---|
 !| NP             |-->| NOMBRE DE POINTS A VERIFIER.
-!| REFFORMAT      |---| 
-!| RESFORMAT      |---| 
-!| TEXTREF        |---| 
-!| TEXTRES        |---| 
+!| REFFORMAT      |---|
+!| RESFORMAT      |---|
+!| TEXTREF        |---|
+!| TEXTRES        |---|
 !| UREF           |-->| UNITE LOGIQUE DU FICHIER DE REFERENCE
-!| URES           |---| 
-!| VARREF         |---| 
-!| VARRES         |---| 
+!| URES           |---|
+!| VARREF         |---|
+!| VARRES         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_VALIDA => VALIDA

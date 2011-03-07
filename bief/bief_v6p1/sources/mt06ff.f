@@ -27,42 +27,42 @@
 !history  J-M HERVOUET (LNH)
 !+        18/08/94
 !+        V5P3
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---| 
-!| A14            |---| 
-!| A22            |---| 
-!| A23            |---| 
-!| A24            |---| 
-!| A33            |---| 
-!| A34            |---| 
-!| A44            |---| 
+!| A13            |---|
+!| A14            |---|
+!| A22            |---|
+!| A23            |---|
+!| A24            |---|
+!| A33            |---|
+!| A34            |---|
+!| A44            |---|
 !| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
-!| NBOR           |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
+!| NBOR           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| X              |---| 
+!| X              |---|
 !| XMUL           |-->| FACTEUR MULTIPLICATIF
-!| Y              |---| 
-!| Z              |---| 
+!| Y              |---|
+!| Z              |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT06FF => MT06FF

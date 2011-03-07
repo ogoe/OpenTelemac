@@ -181,28 +181,28 @@
           IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
           RETURN
         END SUBROUTINE ORG_CHARAC_TYPE
-
+!
         SUBROUTINE DEORG_CHARAC_TYPE
           IMPLICIT NONE
           INTEGER IER
           CALL P_MPI_TYPE_FREE(CHARACTERISTIC,IER)
           RETURN
         END SUBROUTINE DEORG_CHARAC_TYPE
-
+!
   !---------------------------------------------------------------------
   ! GET/SET ON DIMENSIONS AND COUNTERS
   !---------------------------------------------------------------------
-
+!
         INTEGER FUNCTION GET_MAX_BASKET_SIZE()
           IMPLICIT NONE
           GET_MAX_BASKET_SIZE = MAX_BASKET_SIZE
         END FUNCTION GET_MAX_BASKET_SIZE
-
+!
   !---------------------------------------------------------------------
   ! ALLOCATES ALL STATIC FIELDS FOR ALL-TO-ALL COMMUNICATION
   ! PREPARES THE MPI_TYPE FOR LOST CHARACTERISTICS / TRACEBACKS
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE ORGANISE_CHARS(NPARAM,NOMB,NCHDIM) ! WATCH OUT
           USE BIEF_DEF, ONLY: NCSIZE
           IMPLICIT NONE
@@ -229,13 +229,13 @@
           CALL ORG_CHARAC_TYPE(NOMB) ! COMMIT THE CHARACTERISTICS TYPE FOR COMM.
           RETURN
         END SUBROUTINE ORGANISE_CHARS
-
+!
   !---------------------------------------------------------------------
   ! FOR COLLECTING CHARACTERISTICS LEAVING INITIALLY A GIVEN PARTITION
   ! TO BE CALLED IN MODIFIED CHAR11 OR CHAR41 SIMILAR TO THE ORIGINAL
   ! BIEF SUBROUTINES / NOTE THE COUNTER NCHARA/HEAPCHAR USAGE
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE COLLECT_CHAR(MYPID,IOR,MYII,IFACE,KNE,
      &                          ISP,NSP,XP,YP,ZP,IFAPAR,
      &                          NCHDIM,NCHARA)
@@ -278,7 +278,7 @@
           !
           RETURN
         END SUBROUTINE COLLECT_CHAR
-
+!
   !---------------------------------------------------------------------
   ! THE NUMBER OF INITALLY COLLECTED LOST TRACEBACKS IS DIMINISHED
   ! AFTER APPLYING THE JMH'S ALGORITHM - I.E. MARK ALL -INITIAL-
@@ -286,7 +286,7 @@
   ! IN THE NEIGHBOUR PARTITION - THEY DO NOT HAVE TO BE TREATED
   ! THIS IS VIRTUALLY THE SAME PROCEDURE AS IN BIEF CARACT
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE WIPE_HEAPED_CHAR(RTEST,NPOIN,DOIT,NSEND,NLOSTCHAR,
      &                              NCHDIM,NCHARA)
           IMPLICIT NONE
@@ -324,11 +324,11 @@
      &            NSEND, NLOSTCHAR, NCHARA, SUM(HEAPCOUNTS)
           RETURN
         END SUBROUTINE WIPE_HEAPED_CHAR
-
+!
   !---------------------------------------------------------------------
   ! RE-INITIALISES THE STRUCTURE AFTER COMPLETING ALL ACTIONS
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV)
           IMPLICIT NONE
           INTEGER, INTENT(OUT) :: NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV
@@ -344,12 +344,12 @@
           IF (ALLOCATED(RDISPLS))    RDISPLS=0    ! NOT NECESSARY?
           IF (ALLOCATED(ICHA))      ICHA=0      ! NOT NECESSARY?
         END SUBROUTINE RE_INITIALISE_CHARS
-
+!
   !---------------------------------------------------------------------
   ! PREPARES THE INITIAL SEND OF THE LOST CHARACTERISTICS
   ! THE FIELDS ARE PREPARED ACCORDING THE MPI_ALLTOALL(V) REQUIREMENTS
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA)
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
@@ -379,14 +379,14 @@
           NCHARA=0
           RETURN
         END SUBROUTINE PREP_INITIAL_SEND
-
+!
   !---------------------------------------------------------------------
   ! COLLECTS IMPLANTED TRACEBACKS WHICH ARE COMPLETED/LOCALISED
   ! ON A HEAP, SETTING BY THE WAY ALSO THE NUMBER OF THE LOST-AGAIN
   ! TRACEBACKS ACCORDINGLY TO THE PARTITION THEY SHOULD BE SEND TO
   ! THE "LOCALISED" MARK IS SET IN ADD_CHAR11/41
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE HEAP_FOUND(NLOSTAGAIN,NARRV,NCHARA)
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -415,14 +415,14 @@
      &                 ' LOST-AGAIN: ',NLOSTAGAIN
           RETURN
         END SUBROUTINE HEAP_FOUND
-
+!
   !---------------------------------------------------------------------
   ! PREPARES LOST-AGAIN TRACEBACKS FOR THE NEXT COMMUNICATION
   ! FILLS IN THE STRUCTURE FOR THE ALL-TO-ALL COMMUNICATION
   ! NOTE THAT SENDCOUNTS ARE SET IN HEAP_FOUND
   ! (OPTIMISE(?): HEAP-FOUND AND PREP_LOST_AGAIN CAN BE JOINED)
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE PREP_LOST_AGAIN(NOMB,NSEND,NLOSTAGAIN,NARRV)
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
@@ -469,14 +469,14 @@
           ENDIF
           RETURN
         END SUBROUTINE PREP_LOST_AGAIN
-
+!
   !---------------------------------------------------------------------
   ! MOVES THE HEAP OF IMPLANTED AND COMPLETED TRACEBACKS (I.E. COMPLETED
   ! IN MY PARTITION) TO DATA STRUCTURES FOR ALL-TO-ALL COMMUNICATION
   ! SENDCHAR IS FILLED ACCORDING TO THE MPI_ALLTOALLV REQUIREMENTS
   ! ALL-TO-ALL PATTERN INCLUDE MY OWN LOST TRACEBACKS THAT CAME BACK
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE PREP_SENDBACK(NOMB,NCHARA)
           USE BIEF_DEF, ONLY: IPID, NCSIZE
           IMPLICIT NONE
@@ -529,7 +529,7 @@
           NCHARA=0
           RETURN
         END SUBROUTINE PREP_SENDBACK
-
+!
   !---------------------------------------------------------------------
   ! THE GLOBAL COMMUNICATION OF LOST CHARACTERISTICS - ALL-TO-ALL
   ! (THIS IS THE HEART OF ALL THINGS / THE GLOBAL COMMUNICATION)
@@ -538,7 +538,7 @@
   ! DATA FOR A GIVEN PROCESSOR/PARTITION IN FIELD SECTIONS DESCRIBED BY
   ! DISPLACEMENTS SDISPLS AND RDISPLS
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE GLOB_CHAR_COMM ()
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
@@ -569,14 +569,14 @@
           ENDIF
           RETURN
         END SUBROUTINE GLOB_CHAR_COMM
-
+!
   !---------------------------------------------------------------------
   ! TELEMAC3D PRISMS, INTERPOLATION OF RECVCHAR
   ! ELT,ETA AND SHP,SHZ MUST BE CORRECTLY PROVIDED VIA ADD_CHAR11
   !   -> MATCHED TO THE RANGE 1:NRANGE (NO CHECKING - FOR SPEED!!!)
   !   N IS THE POSITION FORESEEN FOR A GIVEN VARIABLE VAL IN THE BASKET
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE INTERP_RECVCHAR_41
      &      (VAL,N,IKLE,ELT,ETA,SHP,SHZ,NELEM,NPOIN2,NPLAN,NRANGE)
           IMPLICIT NONE
@@ -611,14 +611,14 @@
           !
           RETURN
         END SUBROUTINE INTERP_RECVCHAR_41
-
+!
   !---------------------------------------------------------------------
   ! TELEMAC2D TRIANGLES, INTERPOLATION OF RECVCHAR
   ! ELT AND SHP MUST BE CORRECTLY PROVIDED VIA ADD_CHAR11
   !   -> MATCHED TO THE RANGE 1:NRANGE (NO CHECKING - FOR SPEED!!!)
   !   N IS THE POSITION FORESEEN FOR A GIVEN VARIABLE VAL IN THE BASKET
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE INTERP_RECVCHAR_11
      &      (VAL,N,IKLE,ELT,SHP,NELEM,NPOIN,NRANGE,IELM)
           IMPLICIT NONE
@@ -676,12 +676,12 @@
           !
           RETURN
         END SUBROUTINE INTERP_RECVCHAR_11
-
+!
   !---------------------------------------------------------------------
   ! INTRODUCES RECEIVED VALUES IN THE BASKET BACK IN THE TELEMAC
   ! STRUCTURES, N BEING THE POSITION IN THE BASKET FOR A GIVEN VARIABLE
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE INTRODUCE_RECVCHAR(VAL,N,NPOIN,NOMB,NARRV)
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -702,13 +702,13 @@
           ENDDO
           RETURN
         END SUBROUTINE INTRODUCE_RECVCHAR
-
+!
   !---------------------------------------------------------------------
   ! PRINTOUTS FOR DEBUGGING / PRINTING CHARS / NOTICE COUNTERS!
   !---------------------------------------------------------------------
-
+!
         ! PRINTS SENDCHAR STRUCTURE TO LU
-
+!
         SUBROUTINE PRINT_HEAPCHAR(MESSAGE,NOMB,NCHARA)
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -738,9 +738,9 @@
 !     &       ( HEAPCHAR(I)%BASKET(J), J=1,SIZE(HEAPCHAR(I)%BASKET))
           END DO
         END SUBROUTINE PRINT_HEAPCHAR
-
+!
         ! PRINTS SENDCHAR STRUCTURE TO LU
-
+!
         SUBROUTINE PRINT_SENDCHAR(MESSAGE,NOMB,NSEND)
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -771,9 +771,9 @@
 !     &       ( SENDCHAR(I)%BASKET(J), J=1,SIZE(SENDCHAR(I)%BASKET))
           END DO
         END SUBROUTINE PRINT_SENDCHAR
-
+!
         ! PRINTS RECVCHAR STRUCTURE TO LU
-
+!
         SUBROUTINE PRINT_RECVCHAR(MESSAGE,NOMB,NARRV)
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -803,14 +803,14 @@
      &       ( RECVCHAR(I)%BASKET(J), J=1,NOMB)
           END DO
         END SUBROUTINE PRINT_RECVCHAR
-
+!
   !/////////////////////////////////////////////////////////////////////
   !
   !   TELEMAC ROUTINES MODIFIED FOR THE PURPOSE OF
   !           PARALLEL STREAMLINE TRACKING - MOSTLY FROM BIEF
   !
   !/////////////////////////////////////////////////////////////////////
-
+!
   !---------------------------------------------------------------------
   ! CHAR41 MODIFIED FOR INITIAL COLLECTING OF THE LOST CHARACTERISTICS
   ! I.E. THE ONES CROSSING INTERFACE PARTITIONS IN THE PARALLEL CASE 3D
@@ -818,7 +818,7 @@
   !            WHEN CROSSING THE INTERFACE VIA A HALO ELEMENT FACE
   !---------------------------------------------------------------------
   ! JAJ MODIFIED FRI JUL 18 10:11:11 CEST 2008
-
+!
 !                       ******************
                         SUBROUTINE SCHAR41
 !                       ******************
@@ -1397,9 +1397,9 @@
 !
       RETURN
       END SUBROUTINE SCHAR41
-
+!
 ! 4141414141414141414141414141414141414141414141414141414141414141414141
-
+!
 !-----------------------------------------------------------------------
 ! 3D STREAMLINE TRACKING FOR ADDITIONAL CHARACTERISTICS ARRIVED FROM
 ! NEIGHBOUR PARTITIONS - THERE'S NPLOT=NARRV OF THEM
@@ -1418,7 +1418,7 @@
      &   XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP , SHZ , ELT , ETA,
      &   NSP , ISPDONE, NPLOT , NPOIN2 , NELEM2 , NPLAN ,
      &   SURDET , SENS , TEST, IFAPAR, NOMB,NARRV)
-
+!
       USE BIEF
 !
       IMPLICIT NONE
@@ -1455,7 +1455,7 @@
       DOUBLE PRECISION DELTAZ,EPSDZ,PAS2
 !
       INTRINSIC ABS
-
+!
       INTEGER P_IMAX
       EXTERNAL P_IMAX
 !
@@ -1890,7 +1890,7 @@
                I1 = IKLE2(IEL,1)
                I2 = IKLE2(IEL,2)
                I3 = IKLE2(IEL,3)
-
+!
 !
                DX(IPLOT) = ( U(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
      &                     + U(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
@@ -1947,13 +1947,13 @@
 !
            ! CONTINUOUS SETTING OF THE REACHED POSITION FOR IPLOT
            ! AND THE NUMBER OF STEPS DONE ALREADY
-
+!
                RECVCHAR(IPLOT)%XP=XPLOT(IPLOT)
                RECVCHAR(IPLOT)%YP=YPLOT(IPLOT)
                RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT)
                RECVCHAR(IPLOT)%INE=ELT(IPLOT)
                RECVCHAR(IPLOT)%ISP=ISP
-
+!
             ENDIF
 !
 !-----------------------------------------------------------------------
@@ -2324,7 +2324,7 @@
 !
       RETURN
       END SUBROUTINE ADD_CHAR41
-
+!
 !-----------------------------------------------------------------------
 ! CHAR11 MODIFIED FOR INITIAL COLLECTING OF THE LOST CHARACTERISTICS
 ! I.E. THE ONES CROSSING INTERFACE PARTITIONS IN THE PARALLEL CASE
@@ -2333,7 +2333,7 @@
 !-----------------------------------------------------------------------
 ! JAJ MODIFIED WED JUL 16 18:24:08 CEST 2008
 !
-
+!
 !                       ******************
                         SUBROUTINE SCHAR11
 !                       ******************
@@ -2625,7 +2625,7 @@
 !
       RETURN
       END SUBROUTINE SCHAR11
-
+!
 ! 1111111111111111111111111111111111111111111111111111111111111111111111
 !
 !-----------------------------------------------------------------------
@@ -2863,7 +2863,7 @@
 !
            ! CONTINUOUS SETTING OF THE REACHED POSITION FOR IPLOT
            ! AND THE NUMBER OF STEPS DONE ALREADY
-
+!
                RECVCHAR(IPLOT)%XP=XPLOT(IPLOT)
                RECVCHAR(IPLOT)%YP=YPLOT(IPLOT)
                RECVCHAR(IPLOT)%INE=ELT(IPLOT)
@@ -2939,16 +2939,16 @@
 !-----------------------------------------------------------------------
 ! DETECTS PASSING TO THE NEIGHBOURING SUBDOMAIN AND COLLECTS DATA
 !-----------------------------------------------------------------------
-
+!
                IF (IEL==-2) THEN  ! A LOST-AGAIN TRACEBACK DETECTED
-
+!
                  ! SET THE IMPLANTING PARAMETERS
                  IPROC=IFAPAR(IFA  ,ELT(IPLOT))
                  ILOC =IFAPAR(IFA+3,ELT(IPLOT))
                  RECVCHAR(IPLOT)%NEPID=IPROC  ! ANOTHER ONE AS IPID
                  RECVCHAR(IPLOT)%INE=ILOC
                  EXIT ! LOOP ON NSP
-
+!
                ENDIF
 !
 !-----------------------------------------------------------------------
@@ -3022,8 +3022,8 @@
 !
       RETURN
       END SUBROUTINE ADD_CHAR11
-
-
+!
+!
 !-----------------------------------------------------------------------
 ! BIEF'S CARACT MODIFIED FOR PARALLEL STREAMLINE TRACKING
 ! IN THEORY THIS IS THE ONLY PUBLIC SUBROUTINE IN THIS MODULE
@@ -3345,7 +3345,7 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
+!JAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
 !    TO DETECT THESE LOST TRACEBACKS WITH THEIR HEADS
 !    AT INTERFACE POINTS, WHICH ARE COMPLETED IN THE NEIGHBOUR
 !    PARTITION / NOTE, THE ALGORITHM WOULD WORK WITHOUT IT AS WELL
@@ -3467,32 +3467,32 @@ CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
 !-----------------------------------------------------------------------
 !
       IF(NCSIZE.GT.1) THEN
-
+!
         ! TAKE ACCOUNT TO THE JMH METHOD -> WIPE OUT FROM THE LIST
         ! THE TRACEBACKS COMPLETED CORRECTLY BY THE NEIGHBOURS
         ! THE NUMBER GETS REDUCED FROM NCHARA TO NLOSTCHAR
-
+!
         CALL WIPE_HEAPED_CHAR(TEST,NPOINT,DOIT,NSEND,NLOSTCHAR,NCHDIM,
      &                        NCHARA)
-
+!
         IF(TRACE) CALL PRINT_HEAPCHAR
      &   (' ===> HEAPCHAR COLLECTED FOR THE TREATMENT ::',NOMB,NCHARA) ! DEBUG
-
+!
         IF(P_IMAX(NLOSTCHAR)>0) THEN ! THERE ARE -REALLY- LOST TRACEBACKS SOMEWHERE
-
+!
           ! PREPARE INITIAL SENDING OF COLLECTED LOST TRACEBACKS
           CALL PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA)
-
+!
           IF (TRACE) CALL PRINT_SENDCHAR
      &     (' ===> SENDCHAR PREPARED BY TESTING ::',NOMB,NSEND) ! DEBUG
-
+!
           IGEN=0 ! NUMBER OF GENERATIONS (I.E. INTERFACE CROSSINGS ON THE WAY)
           DO
             IGEN=IGEN+1
-
+!
             ! GET THE ARRIVING TRACEBACKS VIA ALL-TO-ALL COMMUNICATION
             CALL GLOB_CHAR_COMM()
-
+!
             ! COMPUTE THE NUMBER OF ARRIVED ONES (NECESSARY)
             NARRV = SUM(RECVCOUNTS)
             ISTOP=0
@@ -3507,31 +3507,31 @@ CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
               CALL PLANTE(1)
               STOP
             ENDIF
-
+!
             IF (TRACE) CALL PRINT_RECVCHAR
      &             (' ===> RECVCHAR RECEIVED IS ::',NOMB,NARRV) ! DEBUG
-
+!
             ! CALL TRACKING WITH ARRIVED TRACEBACKS ...
             ! WE RE-USE THE PREVIOUSLY USED FIELDS FOR ADDITIONAL TRACEBACKS
             ! COMPUTING SHAPE FUNCTIONS BY THE WAY / 2D OR 3D
-
+!
             IF(IELM.EQ.11) CALL ADD_CHAR11
      &             (UCONV, VCONV, DT, NRK, X, Y, IKLE, IFABOR,
      &              XCONV%R,YCONV%R,DX,DY,SHP,ELT,ITRAV1,ITRAV2,
      &              NARRV, NPOIN, NELEM, NELMAX, SURDET, -1, TEST,
      &              MESH%IFAPAR%I, NOMB,NARRV)
-
+!
             IF(IELM.EQ.41) CALL ADD_CHAR41
      &             (UCONV, VCONV, WCONV, DT, NRK, X, Y, ZSTAR, Z,
      &              IKLE, IFABOR, XCONV%R, YCONV%R, ZCONV, DX, DY, DZ,
      &              SHP, SHZ, ELT, ETA, ITRAV1, ITRAV2, NARRV,
      &              NPOIN2, NELEM, NPLAN, SURDET, -1,
      &              TEST, MESH%IFAPAR%I, NOMB,NARRV)
-
+!
             IF (TRACE) CALL PRINT_RECVCHAR
      &          (' ===> RECVCHAR AFTER ADDITIONAL TRACKING ::',
      &           NOMB,NARRV) ! DEBUG
-
+!
             ! INTERPOLATE THE -LOCATED- TRACEBACKS -> SOME OF RANGE 1:NARRV
             ! APPLYING THE JUST VALID ELT, SHP, ETC. JUST SAVED FROM
             ! ADD_CHAR11 OR ADD_CHAR41 COMPUTED FOR JUST THIS RANGE
@@ -3543,7 +3543,7 @@ CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
             ! WE HAVE TO CHECK FOR EACH TRACEBACK IF IT IS LOCATED OR NOT
             !
             ! NOTE: UTILD==RECVCHAR%BASKET(:)
-
+!
           IF(NARRV.GT.0) THEN
             IF(U%TYPE==2) THEN
               IF(IELM.EQ.11) THEN
@@ -3591,7 +3591,7 @@ CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
      &                 ', #LOST-AGAIN: ',NLOSTAGAIN
             IF(TRACE) WRITE (LU,'(A,1X,I9)')
      &        ' #LOST-AGAIN SUM EVERYWHERE: ', P_ISUM(NLOSTAGAIN)
-
+!
             IF(P_ISUM(NLOSTAGAIN)>0) THEN ! THERE ARE LOST-AGAINS SOMEWHERE
               CALL PREP_LOST_AGAIN(NOMB,NSEND,NLOSTAGAIN,NARRV) ! PREPARE SENDING LOST-AGAINS
             ELSE
@@ -3604,19 +3604,19 @@ CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
               CALL PLANTE(1)
               STOP
             ENDIF
-
+!
           ENDDO ! ON TRACEBACKS GENERATIONS (IGEN) / ALL COLLECTED
-
+!
           ! PREPARE SENDING OF THE HEAPED LOCALISED TRACEBACKS
           CALL PREP_SENDBACK(NOMB,NCHARA)
           ! THE FINAL SEND/RECV OF THE LOST TRACEBACKS BACK VIA ALLTOALL COMM.
           CALL GLOB_CHAR_COMM()
           NARRV = SUM(RECVCOUNTS) ! FROM RECVCOUNTS / THE FINALLY ARRIVED ONES
-
+!
           IF(TRACE) CALL PRINT_RECVCHAR
      &               (' ===> RECVCHAR FINALLY RECEIVED IS ::',
      &                NOMB,NARRV) ! DEBUG
-
+!
           IF(NARRV/=NLOSTCHAR) THEN ! THE MOST SERIOUS PROBLEM WE CAN HAVE
             WRITE (LU,*) ' @STREAMLINE::SCARACT ::',
      &                   ' THE NUMBER OF INITALLY LOST TRACEBACKS',
@@ -3626,10 +3626,10 @@ CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
             CALL PLANTE(1)
             STOP
           ENDIF
-
+!
           ! INTRODUCE THE VALUES FROM THE RECEIVED TRACEBACK BASKETS
           ! NOTE THAT IN 3D, NPOIN->NPOIN3 / WE DO NOT DISTINGUISH 11 AND 41
-
+!
           IF (NARRV>0) THEN
             IF(UTILD%TYPE==2) THEN
               CALL INTRODUCE_RECVCHAR(UTILD%R,1,UTILD%DIM1,NOMB,NARRV)
@@ -3691,7 +3691,7 @@ CJAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL
 !-----------------------------------------------------------------------
 !
       RETURN
-
+!
       END SUBROUTINE SCARACT
-
+!
       END MODULE STREAMLINE

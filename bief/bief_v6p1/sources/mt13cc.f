@@ -32,56 +32,56 @@
 !history  ALGIANE FROEHLY (MATMECA)
 !+        16/06/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---| 
-!| A14            |---| 
-!| A15            |---| 
-!| A16            |---| 
-!| A21            |---| 
-!| A22            |---| 
-!| A23            |---| 
-!| A24            |---| 
-!| A25            |---| 
-!| A26            |---| 
-!| A31            |---| 
-!| A32            |---| 
-!| A33            |---| 
-!| A34            |---| 
-!| A35            |---| 
-!| A36            |---| 
-!| A41            |---| 
-!| A42            |---| 
-!| A43            |---| 
-!| A44            |---| 
-!| A45            |---| 
-!| A46            |---| 
-!| A51            |---| 
-!| A52            |---| 
-!| A53            |---| 
-!| A54            |---| 
-!| A55            |---| 
-!| A56            |---| 
-!| A61            |---| 
-!| A62            |---| 
-!| A63            |---| 
-!| A64            |---| 
-!| A65            |---| 
-!| A66            |---| 
+!| A13            |---|
+!| A14            |---|
+!| A15            |---|
+!| A16            |---|
+!| A21            |---|
+!| A22            |---|
+!| A23            |---|
+!| A24            |---|
+!| A25            |---|
+!| A26            |---|
+!| A31            |---|
+!| A32            |---|
+!| A33            |---|
+!| A34            |---|
+!| A35            |---|
+!| A36            |---|
+!| A41            |---|
+!| A42            |---|
+!| A43            |---|
+!| A44            |---|
+!| A45            |---|
+!| A46            |---|
+!| A51            |---|
+!| A52            |---|
+!| A53            |---|
+!| A54            |---|
+!| A55            |---|
+!| A56            |---|
+!| A61            |---|
+!| A62            |---|
+!| A63            |---|
+!| A64            |---|
+!| A65            |---|
+!| A66            |---|
 !| ICOORD         |-->| 1: DERIVEE SUIVANT X, 2:SUIVANT Y
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE

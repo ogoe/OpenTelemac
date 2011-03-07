@@ -14,33 +14,33 @@
 !history  J-M HERVOUET (LNHE)
 !+        01/04/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FORMAT_RES     |---| 
-!| HIST           |---| 
+!| FORMAT_RES     |---|
+!| HIST           |---|
 !| LEOPRD         |-->| PERIODE DE SORTIE SUR LE FICHIER DE RESULTAT
 !| LISPRD         |-->| PERIODE DE SORTIE SUR LISTING.
-!| MAXVAR         |---| 
+!| MAXVAR         |---|
 !| N              |-->| NOMBRE DE POINTS DU MAILLAGE.
 !| NHIST          |-->| NOMBRE DE VALEURS DANS HIST
 !| NRES           |-->| UNITE LOGIQUE DU FICHIER DE RESULTATS.
 !| PTINIG         |-->| 1ER PAS DE TEMPS POUR LES SORTIES GRAPHIQUES
 !| PTINIL         |-->| 1ER PAS DE TEMPS POUR LES SORTIES LISTING
-!| SORIMP         |---| 
-!| SORLEO         |---| 
+!| SORIMP         |---|
+!| SORLEO         |---|
 !| STD            |-->| BINAIRE DU FICHIER DE RESULTATS (IBM,I3E,STD)
 !| TEXTE          |-->| NOMS ET UNITES DES VARIABLES.
 !| VARSOR         |-->| BLOC CONTENANT LES VARIABLES A METTRE DANS LES

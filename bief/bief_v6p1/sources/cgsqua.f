@@ -90,32 +90,32 @@
 !history  J-M HERVOUET (LNH)    ; F  LEPEINTRE (LNH)
 !+        24/04/97
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRICE DU SYSTEME
-!| AHPK           |---| 
+!| AHPK           |---|
 !| B              |-->| SECOND MEMBRE DU SYSTEME.
-!| CFG            |---| 
+!| CFG            |---|
 !| G              |<->| GRADIENT DE DESCENTE.
-!| G0             |---| 
-!| H              |---| 
+!| G0             |---|
+!| H              |---|
 !| INFOGR         |-->| SI OUI, ON IMPRIME UN COMPTE-RENDU
-!| K              |---| 
-!| MESH           |---| 
-!| P              |---| 
+!| K              |---|
+!| MESH           |---|
+!| P              |---|
 !| X              |<--| VALEUR INITIALE, PUIS SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

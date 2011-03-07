@@ -27,36 +27,36 @@
 !
 !history  J-M HERVOUET (LNH)
 !+        15/12/1994
-!+        
-!+   
+!+
+!+
 !
 !history  ALGIANE FROEHLY (STAGIAIRE MATMECA)
 !+        29/05/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---| 
+!| IKLE           |---|
 !| LGSEG          |-->| LONGUEUR DES SEGMENTS.
-!| NBOR           |---| 
+!| NBOR           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---| 
+!| W2             |---|
 !| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| YNOR           |---| 
+!| YNOR           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF   !, EX_VC10OO => VC10OO

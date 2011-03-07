@@ -35,31 +35,31 @@
 !
 !history  ALGIANE FROEHLY (MATMECA)
 !+        31/03/2008
-!+        
-!+   QUADRATIC TRIANGLE 
+!+
+!+   QUADRATIC TRIANGLE
 !
 !history  J-M HERVOUET (LNHE)
 !+        05/02/2010
 !+        V6P0
-!+   NSEG1 AND NSEG2 MODIFIED BEFORE CALLING MVSEG 
+!+   NSEG1 AND NSEG2 MODIFIED BEFORE CALLING MVSEG
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| CONSTANTE DONNEE
 !| DA             |-->| DIAGONALE DE LA MATRICE.
 !| DIMIKM         |-->| PREMIERE DIMENSION DE IKLEM1.
-!| GLOSEG         |---| 
+!| GLOSEG         |---|
 !| IELM1          |-->| TYPE D'ELEMENT (LIGNES DE LA MATRICE).
 !| IELM2          |-->| TYPE D'ELEMENT (COLONNES DE LA MATRICE).
 !| IELMX          |-->| TYPE D'ELEMENT DU RESULTAT
@@ -82,7 +82,7 @@
 !| OP             |-->| OPERATION A EFFECTUER
 !| P              |-->| TYPE DE PRODUIT MATRICE X VECTEUR.
 !| S              |-->| TYPE DE STOCKAGE.
-!| SIZGLO         |---| 
+!| SIZGLO         |---|
 !| SIZXA          |-->| FIRST DIMENSION OF ARRAY XA
 !| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
 !|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE

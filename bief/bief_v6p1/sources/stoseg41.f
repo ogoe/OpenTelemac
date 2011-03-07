@@ -41,30 +41,30 @@
 !
 !history  JMH
 !+        11/08/09
-!+        
-!+   CROSSED AND VERTICAL SEGMENTS INVERTED IN THE NUMBERING. 
+!+
+!+   CROSSED AND VERTICAL SEGMENTS INVERTED IN THE NUMBERING.
 !
 !history  JMH
 !+        16/10/09
-!+        
-!+   NUMBERING OF CROSSED SEGMENTS CHANGED, TO FACILITATE 
+!+
+!+   NUMBERING OF CROSSED SEGMENTS CHANGED, TO FACILITATE
 !
 !history  J-M HERVOUET (LNHE)
 !+        19/10/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |<--| SEGMENTS OF EVERY TRIANGLE.
@@ -73,7 +73,7 @@
 !|                |   | 21: QUADRILATERES.
 !| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
 !| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| KNOLG          |---| 
+!| KNOLG          |---|
 !| KP1BOR         |-->| NUMBER OF POINT FOLLOWING BOUNDARY POINT K
 !|                |   | (I.E. K+1 MOST OF THE TIME BUT NOT ALWAYS).
 !| MAXSEG         |<--| 1st DIMENSION OF MAXSEG.
@@ -81,14 +81,14 @@
 !| NELBOR         |-->| NUMBER OF ELEMENT CONTAINING SEGMENT K OF
 !|                |   | THE BOUNDARY.
 !| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELEM2         |---| 
+!| NELEM2         |---|
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
 !|                |   | (CAS DES MAILLAGES ADAPTATIFS)
-!| NELMAX2        |---| 
-!| NPLAN          |---| 
-!| NPOIN2         |---| 
+!| NELMAX2        |---|
+!| NPLAN          |---|
+!| NPOIN2         |---|
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS.
-!| NPTFR2         |---| 
+!| NPTFR2         |---|
 !| NSEG           |<--| NUMBER OF SEGMENTS OF THE MESH.
 !| NULONE         |-->| LOCAL NUMBER OF BOUNDARY POINTS IN A BOUNDARY
 !|                |   | ELEMENT.

@@ -15,34 +15,34 @@
 !history  J-M HERVOUET (LNHE)
 !+        05/02/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1XMT        |-->| FIRST DIMENSION OF XMT
 !| DIM2XMT        |-->| SECOND DIMENSION OF XMT
-!| ELTSEG         |---| 
-!| IELM1          |---| 
-!| IELM2          |---| 
-!| MESH           |---| 
-!| NAME           |---| 
-!| NELMAX         |---| 
-!| ORISEG         |---| 
+!| ELTSEG         |---|
+!| IELM1          |---|
+!| IELM2          |---|
+!| MESH           |---|
+!| NAME           |---|
+!| NELMAX         |---|
+!| ORISEG         |---|
 !| STO            |-->| STORAGE REQUIRED IN XM 1: EBE  3: EDGE-BASED
 !| STOXMT         |-->| STORAGE OF OFF-DIAGONAL TERMS
 !|                |   | 1: XMT(NELMAX,*)  2: XMT(*,NELMAX)
-!| TYPEXT         |---| 
+!| TYPEXT         |---|
 !| XM             |-->| ASSEMBLED OFF-DIAGONAL TERMS
 !| XMT            |-->| OFF-DIAGONAL TERMS OF THE WORK MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

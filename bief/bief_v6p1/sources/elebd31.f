@@ -12,26 +12,26 @@
 !brief    BUILDS NELBOR, NULONE, IKLBORD.
 !
 !history  LAM MINH-PHUONG
-!+        
-!+        
-!+   
+!+
+!+
+!+
 !
 !history  J-M HERVOUET (LNH)
 !+        09/04/04
 !+        V5P5
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
@@ -43,7 +43,7 @@
 !| NELBOR         |<--| NUMERO DE L'ELEMENT ADJACENT AU KIEME SEGMENT
 !| NELEB          |-->| NOMBRE D'ELEMENTS DE BORD.
 !| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |---| 
+!| NELMAX         |---|
 !| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
 !| NULONE         |<--| NUMERO LOCAL D'UN POINT DE BORD DANS
@@ -85,7 +85,7 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-
+!
 ! BUILDS IPOBO TO GO FROM GLOBAL NUMBERING TO LOCAL NUMBERING
       DO IPOIN=1,NPOIN
         IPOBO(IPOIN) = 0
@@ -93,7 +93,7 @@
       DO K = 1, NPTFR
          IPOBO(NBOR(K)) = K
       ENDDO
-
+!
 ! BUILDS NELBOR, NULONE, IKLBORD
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IELEB = 0

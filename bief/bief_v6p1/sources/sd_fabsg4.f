@@ -14,35 +14,35 @@
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        20/11/06
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DA,XA          |-->| DIAGONALES ET TERMES EXTRA-DIAGONAUX DES
 !|                |   | MATRICES
-!| DAB1           |---| 
-!| DAB2           |---| 
-!| DAB3           |---| 
-!| DAB4           |---| 
-!| NPBLK          |---| 
+!| DAB1           |---|
+!| DAB2           |---|
+!| DAB3           |---|
+!| DAB4           |---|
+!| NPBLK          |---|
 !| NPOIN          |-->| NOMBRE D'INCONNUES D'UNE MATRICE DU BLOC
 !| NSEG           |-->| NOMBRE DE SEGMENTS
-!| NSEGBLK        |---| 
-!| XAB1           |---| 
-!| XAB2           |---| 
-!| XAB3           |---| 
-!| XAB4           |---| 
+!| NSEGBLK        |---|
+!| XAB1           |---|
+!| XAB2           |---|
+!| XAB3           |---|
+!| XAB4           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_FABSG4 => SD_FABSG4

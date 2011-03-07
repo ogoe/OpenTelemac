@@ -52,22 +52,22 @@
 !history  J-M HERVOUET (LNHE)
 !+        02/02/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG         |---| 
+!| ELTSEG         |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
 !| NELMAX         |-->| PREMIERE DIMENSION DE IKLE ET W.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
@@ -76,9 +76,9 @@
 !|                |   | THE NUMBER OF PURELY QUADRATIC SEGMENTS
 !|                |   | (THEY ARE NOT CONSIDERED IN RECTANGULAR
 !|                |   | MATRICES)
-!| ORISEG         |---| 
+!| ORISEG         |---|
 !| XM             |<--| TERMES EXTRA-DIAGONAUX ASSEMBLES XA12,23,31
-!| XMT            |---| 
+!| XMT            |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

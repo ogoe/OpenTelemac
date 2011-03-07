@@ -36,31 +36,31 @@
 !history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
 !+        05/02/91
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| CONSTANTE DONNEE
 !| DA             |-->| DIAGONALE DE LA MATRICE
-!| GLOSEG1        |---| 
-!| GLOSEG2        |---| 
-!| IELM1          |---| 
-!| IELM2          |---| 
+!| GLOSEG1        |---|
+!| GLOSEG2        |---|
+!| IELM1          |---|
+!| IELM2          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS.
 !| NPOIN          |-->| NOMBRE DE POINTS.
-!| NSEG1          |---| 
-!| NSEG2          |---| 
+!| NSEG1          |---|
+!| NSEG2          |---|
 !| OP             |-->| OPERATION A EFFECTUER
 !| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
 !|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE
@@ -70,8 +70,8 @@
 !|                |   | TYPEXT = 'S' : SYMETRIQUES.
 !|                |   | TYPEXT = '0' : NULS.
 !| X              |<--| VECTEUR IMAGE
-!| XA1            |---| 
-!| XA2            |---| 
+!| XA1            |---|
+!| XA2            |---|
 !| Y              |-->| VECTEUR OPERANDE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

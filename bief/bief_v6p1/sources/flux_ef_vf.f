@@ -14,39 +14,39 @@
 !
 !history  JMH
 !+        06/05/2009
-!+        
-!+   OPTIMISATION 
+!+
+!+   OPTIMISATION
 !
 !history  JMH
 !+        01/10/2009
-!+        
-!+   OPTION -1 ADDED, ARGUMENT FN ADDED, PSI SCHEME ADDED 
+!+
+!+   OPTION -1 ADDED, ARGUMENT FN ADDED, PSI SCHEME ADDED
 !
 !history  LEO POSTMA (DELTARES)
 !+        27/10/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTSEG         |-->| SEGMENTS OF EVERY TRIANGLE.
 !| FLOW           |<--| FLUXES PER SEGMENTS
-!| FN             |---| 
-!| IKLE           |---| 
+!| FN             |---|
+!| IKLE           |---|
 !| INIFLO         |-->| IF(YES) FLOW WILL BE INITIALISED AT 0.
 !| IOPT           |-->| OPTION FOR THE CONSTANT PER ELEMENT
-!| NELEM          |---| 
+!| NELEM          |---|
 !| NSEG           |-->| NOMBRE DE SEGMENTS DANS LE MAILLAGE.
 !| ORISEG         |-->| ORIENTATION OF SEGMENTS OF EVERY TRIANGLE.
 !| PHIEL          |-->| PER ELEMENT, FLUXES LEAVING POINTS

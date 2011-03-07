@@ -23,44 +23,44 @@
 !history  J-M HERVOUET (LNHE)
 !+        23/06/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
 !|                |   | 11 : TRIANGLES.
 !|                |   | 21 : QUADRILATERES.
 !| IFABOR         |-->| TABLEAU DES VOISINS DES FACES.
-!| IFANUM         |---| 
-!| IKLBOR         |---| 
+!| IFANUM         |---|
+!| IKLBOR         |---|
 !| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| ISEG           |---| 
+!| ISEG           |---|
 !| KLOG           |-->| CONVENTION POUR LA CONDITION LIMITE DE PAROI
 !| KP1BOR         |<--| NUMERO DU POINT SUIVANT LE POINT DE BORD K.
 !| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
 !| NBOR           |-->| NUMERO GLOBAL DU POINT DE BORD K.
 !| NELBOR         |<--| NUMERO DE L'ELEMENT ADJACENT AU KIEME SEGMENT
 !| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |---| 
+!| NELMAX         |---|
 !| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
 !| NULONE         |<--| NUMERO LOCAL D'UN POINT DE BORD DANS
 !|                |   | L'ELEMENT ADJACENT DONNE PAR NELBOR
-!| OPTASS         |---| 
-!| SIZIKL         |---| 
-!| T2             |---| 
-!| T3             |---| 
+!| OPTASS         |---|
+!| SIZIKL         |---|
+!| T2             |---|
+!| T3             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ELEBD => ELEBD

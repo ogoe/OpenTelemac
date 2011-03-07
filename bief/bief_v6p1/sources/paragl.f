@@ -15,22 +15,22 @@
 !history  J-M HERVOUET (LNH)
 !+        19/12/05
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIM1_KNOGL     |---| 
+!| DIM1_KNOGL     |---|
 !| KNOGL          |<--| PASSAGE DES NUMEROS GLOBAUX AUX LOCAUX.
 !| KNOLG          |<--| PASSAGE DES NUMEROS LOCAUX  AUX GLOBAUX.
 !| NACHB          |<->| NACHB(1,I) : GLOBAL (INPUT) OR LOCAL (OUTPUT)
@@ -40,7 +40,7 @@
 !|                |   | I IS A NUMBERING OF INTERFACE POINTS.
 !| NBOR           |<->| NUMEROS GLOBAUX DES POINTS DE BORD.
 !| NPOIN          |-->| NUMBER OF POINTS IN THE DOMAIN.
-!| NPTFR          |---| 
+!| NPTFR          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARAGL => PARAGL

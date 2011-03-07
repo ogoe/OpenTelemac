@@ -32,25 +32,25 @@
 !history  J-M HERVOUET (LNH)
 !+        **/06/04
 !+        V5P5
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ICOORD         |-->| COORDONNEE SUIVANT LAQUELLE ON DERIVE.
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
 !| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
 !| W              |<--| VECTEUR RESULTAT
@@ -138,9 +138,9 @@
      &        1I6,' CHECK ICOORD')
          CALL PLANTE(1)
       END SELECT
-
+!
       IF(IELMF.EQ.31.AND.IELMG.EQ.30) THEN
-
+!
 ! LOOP ON THE ELEMENTS
       DO  IELEM = 1 , NELEM
 ! GETS THE ID OF THE FOUR NODES OF THE ELEMENT
@@ -173,11 +173,11 @@
 ! RESULT
          W(IELEM) = DET* G(IELEM) * XSUR24
       ENDDO
-
+!
 !
 !=======================================================================
 !     ERROR ON THE ELEMENT TYPES
-
+!
       ELSE
 !-----------------------------------------------------------------------
 !

@@ -18,39 +18,39 @@
 !history  J-M JANIN (LNH)
 !+        21/08/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |<--| NUMEROS DES ELEMENTS CHOISIS POUR CHAQUE
 !|                |   | NOEUD.
-!| ETA            |---| 
-!| IKLE2          |---| 
-!| INDIC          |---| 
-!| LV             |---| 
+!| ETA            |---|
+!| IKLE2          |---|
+!| INDIC          |---|
+!| LV             |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NELEM2         |---| 
-!| NLOC           |---| 
-!| NPLAN          |---| 
-!| NPOIN2         |---| 
+!| NELEM2         |---|
+!| NLOC           |---|
+!| NPLAN          |---|
+!| NPOIN2         |---|
 !| SHP            |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
 !|                |   | LEURS ELEMENTS "ELT" ASSOCIES.
-!| SHZ            |---| 
+!| SHZ            |---|
 !| U,V            |-->| COMPOSANTES DE LA VITESSE
-!| WS             |---| 
+!| WS             |---|
 !| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

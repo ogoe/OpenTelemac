@@ -20,26 +20,26 @@
 !+                INFORMATION ON THE SAME SEGMENTS.
 !
 !history  J-M HERVOUET (LNHE)
-!+        
+!+
 !+        V5P9
-!+   
+!+
 !
 !history  C. DENIS
 !+        22/07/2009
 !+        V6P0
-!+   AVOIDS THE (TOO) LARGE INTEGERS OF 5.9 RELEASE 
+!+   AVOIDS THE (TOO) LARGE INTEGERS OF 5.9 RELEASE
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1NHCOM      |-->| FIRST DIMENSION OF NH_COM_SEG

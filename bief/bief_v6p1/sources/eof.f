@@ -14,22 +14,22 @@
 !+
 !+            IF EOF = .FALSE. : CAN CARRY ON.
 !
-!history  
+!history
 !+        17/08/94
 !+        V5P1
-!+   ORIGINAL IDEA : ANTOINE YESSAYAN (THANK YOU TONIO) 
+!+   ORIGINAL IDEA : ANTOINE YESSAYAN (THANK YOU TONIO)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LUNIT          |-->| UNITE LOGIQUE DU FICHIER QUE L'ON LIT

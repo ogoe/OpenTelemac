@@ -24,19 +24,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        07/08/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |<->| VALEURS A L'ETAPE N+1 ET INITIALISATION
@@ -47,11 +47,11 @@
 !|                |   | EST DE TYPE DIRICHLET.
 !| MASKPT         |-->| TABLEAU DE MASQUAGE DES POINTS
 !|                |   | =1. : NORMAL   =0. : POINT MASQUE.
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| S              |<->| MATRICE DU SYSTEME
 !| SM             |-->| SECOND MEMBRE DU SYSTEME.
-!| WORK2          |---| 
+!| WORK2          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DIRI01 => DIRI01

@@ -18,33 +18,33 @@
 !history  ALGIANE FROEHLY (MATMECA)
 !+        08/08/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |<--| NUMEROS DES ELEMENTS CHOISIS POUR CHAQUE
 !|                |   | NOEUD.
 !| IKLE           |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
 !|                |   | ET GLOBALE.
-!| INDIC          |---| 
-!| LV             |---| 
+!| INDIC          |---|
+!| LV             |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| NELEM          |-->| NOMBRE D'ELEMENTS.
 !| NELMAX         |-->| NOMBRE MAXIMAL D'ELEMENTS DANS LE MAILLAGE 2D
-!| NLOC           |---| 
+!| NLOC           |---|
 !| NPOIN          |-->| NOMBRE DE POINTS.
 !| SHP            |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
 !|                |   | LEURS ELEMENTS "ELT" ASSOCIES.

@@ -34,33 +34,33 @@
 !
 !history  ALGIANE FROEHLY
 !+        13/02/2008
-!+        
-!+   ADDED OM1113 AND OM1311 
+!+
+!+   ADDED OM1113 AND OM1311
 !
 !history  J-M HERVOUET (LNHE)     ; F  LEPEINTRE (LNH)
 !+        05/02/2010
 !+        V6P0
-!+   CALL TO OMSEGBOR MODIFIED, OMSEGPAR SUPPRESSED 
+!+   CALL TO OMSEGBOR MODIFIED, OMSEGPAR SUPPRESSED
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| CONSTANTE DONNEE
 !| D              |-->| MATRICE DIAGONALE : PEUT ETRE UNE STRUCTURE
 !|                |   | OU UN TABLEAU PROVISOIREMENT (VOIR TEST SUR D)
-!| M              |---| 
-!| MESH           |---| 
-!| N              |---| 
+!| M              |---|
+!| MESH           |---|
+!| N              |---|
 !| OP             |-->| OPERATION A EFFECTUER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -206,7 +206,7 @@
       CALL OM0101(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
      &                 N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
      &                 IKLE,NELEM,NELMAX,NDIAGM)
-
+!
 !
 !     ELEMENTS WITH 3 POINTS
 !

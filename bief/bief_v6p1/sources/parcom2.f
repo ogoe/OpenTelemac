@@ -25,33 +25,33 @@
 !history  J-M HERVOUET (LNHE)
 !+        13/08/08
 !+        V5P9
-!+   AFTER REINHARD HINKELMANN (HANNOVER UNI.) 
+!+   AFTER REINHARD HINKELMANN (HANNOVER UNI.)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IAN            |---| 
+!| IAN            |---|
 !| ICOM           |-->| COMMUNICATION MODE
 !|                |   | = 1 : VALUE WITH MAXIMUM ABSOLUTE VALUE TAKEN
 !|                |   | = 2 : CONTRIBUTIONS ADDED
 !|                |   | = 3 : MAXIMUM CONTRIBUTION RETAINED
 !|                |   | = 4 : MINIMUM CONTRIBUTION RETAINED
 !| MESH           |-->| MAILLAGE.
-!| NPLAN          |---| 
-!| NPOIN          |---| 
-!| X1             |---| 
-!| X2             |---| 
-!| X3             |---| 
+!| NPLAN          |---|
+!| NPOIN          |---|
+!| X1             |---|
+!| X2             |---|
+!| X3             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARCOM2 => PARCOM2

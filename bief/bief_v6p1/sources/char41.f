@@ -30,45 +30,45 @@
 !
 !history  J-M JANIN (LNH)
 !+        28/04/1993
-!+        
-!+   
+!+
+!+
 !
-!history  
+!history
 !+        08/11/2004
-!+        
-!+   ADAPTED TO THE GENERALISED SIGMA TRANSFORM 
+!+
+!+   ADAPTED TO THE GENERALISED SIGMA TRANSFORM
 !
-!history  
+!history
 !+        12/10/2005
-!+        
-!+   CORRECTED A BUG (SEE VARIABLE IELE, WHICH WAS PREVIOUSLY 
+!+
+!+   CORRECTED A BUG (SEE VARIABLE IELE, WHICH WAS PREVIOUSLY
 !
-!history  
+!history
 !+        28/08/2008
-!+        
-!+   INVERTED THE LOOPS ON NSP AND IPLOT 
+!+
+!+   INVERTED THE LOOPS ON NSP AND IPLOT
 !
-!history  
+!history
 !+        23/01/2009
-!+        
-!+   CORRECTED A BUG WHEN IS CROSSING A PLANE (SEE PAS2) 
+!+
+!+   CORRECTED A BUG WHEN IS CROSSING A PLANE (SEE PAS2)
 !
 !history  J-M HERVOUET (LNHE)
 !+        16/02/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS.
@@ -81,7 +81,7 @@
 !|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
 !| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
 !|                |   | ET GLOBALE DU MAILLAGE 2D.
-!| ISO_USELESS    |---| 
+!| ISO_USELESS    |---|
 !| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
 !| NPLAN          |-->| NOMBRE DE PLANS.
 !| NPLOT          |-->| NOMBRE DE DERIVANTS.
@@ -94,13 +94,13 @@
 !| SHZ            |<->| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
 !|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
 !| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
-!| TEST           |---| 
+!| TEST           |---|
 !| U,V,W          |-->| COMPOSANTE DE LA VITESSE DU CONVECTEUR
 !| X,Y,ZSTAR      |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XPLOT          |---| 
-!| YPLOT          |---| 
+!| XPLOT          |---|
+!| YPLOT          |---|
 !| Z              |-->| COTE DANS LE MAILLAGE REEL
-!| ZPLOT          |---| 
+!| ZPLOT          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CHAR41 => CHAR41

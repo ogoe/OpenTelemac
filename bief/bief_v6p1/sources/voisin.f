@@ -16,41 +16,41 @@
 !
 !history  OLIVIER BOITEAU (SINETICS)
 !+        19/02/08
-!+        
-!+   SIZE OF NACHB 
+!+
+!+   SIZE OF NACHB
 !
 !history  J-M HERVOUET (LNHE)
 !+        16/06/08
 !+        V5P9
-!+   MODIFICATION TO THE MAX NUMBER OF NEIGHBOURS 
+!+   MODIFICATION TO THE MAX NUMBER OF NEIGHBOURS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IADR           |---| 
+!| IADR           |---|
 !| IELM           |-->| 11: TRIANGLES
 !|                |   | 21: QUADRILATERES
 !| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
 !| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT
-!| NACHB          |---| 
-!| NBOR           |---| 
+!| NACHB          |---|
+!| NBOR           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
 !|                |   | (CAS DES MAILLAGES ADAPTATIFS)
 !| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE
-!| NPTFR          |---| 
-!| NVOIS          |---| 
-!| SIZIKL         |---| 
+!| NPTFR          |---|
+!| NVOIS          |---|
+!| SIZIKL         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VOISIN => VOISIN

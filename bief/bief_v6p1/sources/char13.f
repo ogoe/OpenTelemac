@@ -31,19 +31,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        08/08/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS.
@@ -65,7 +65,7 @@
 !| SHP            |<->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
 !|                |   | COURBES CARACTERISTIQUES.
 !| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
-!| TEST           |---| 
+!| TEST           |---|
 !| U,V            |-->| COMPOSANTE DE LA VITESSE DU CONVECTEUR
 !| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
 !| XPLOT,YPLOT    |<->| POSITIONS SUCCESSIVES DES DERIVANTS.

@@ -14,25 +14,25 @@
 !history  P. VEZOLLE(IBM)
 !+        18/07/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BUF_RECV       |<->| BUFFER FOR RECEIVING DATA
 !| BUF_SEND       |<->| BUFFER FOR SENDING DATA
 !| DIMBUF         |-->| FIRST DIMENSION OF BUFFERS
-!| DIMNHCOM       |---| 
+!| DIMNHCOM       |---|
 !| IAN            |-->| NUMBER OF VECTORS TO BE CONDIDERED (1, 2 OR 3)
 !| ICOM           |-->| OPTION OF COMMUNICATION :
 !|                |   | = 1 : VALUE WITH MAXIMUM ABSOLUTE VALUE

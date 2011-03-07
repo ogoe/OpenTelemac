@@ -2,9 +2,9 @@
                      SUBROUTINE VC02PP_STAR
 !                    **********************
 !
-     *( XMUL,SF,SG,SH,SU,F,G,H,U,X,Y,Z,SURFAC,
-     *  IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
-     *  W1,W2,W3,W4,W5,W6,FORMUL)
+     &( XMUL,SF,SG,SH,SU,F,G,H,U,X,Y,Z,SURFAC,
+     &  IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
+     &  W1,W2,W3,W4,W5,W6,FORMUL)
 !
 !***********************************************************************
 ! BIEF

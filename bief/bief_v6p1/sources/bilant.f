@@ -16,25 +16,25 @@
 !history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
 !+        10/06/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AGGLOT         |---| 
+!| AGGLOT         |---|
 !| DT             |-->| PAS DE TEMPS
-!| FLBOR          |---| 
-!| FLBORTRA       |---| 
+!| FLBOR          |---|
+!| FLBORTRA       |---|
 !| H              |-->| VALEURS DE H A L' ETAPE N+1.
 !| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
 !| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
@@ -42,19 +42,19 @@
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
 !| MASSOU         |-->| QUANTITE DE TRACEUR APPORTEE PAR LE TERME
 !|                |   | SOURCE
-!| MASTEN         |---| 
-!| MASTOU         |---| 
-!| MASTR0         |---| 
-!| MASTR2         |---| 
-!| MESH           |---| 
+!| MASTEN         |---|
+!| MASTOU         |---|
+!| MASTR0         |---|
+!| MASTR2         |---|
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NAMETRAC       |---| 
-!| NFRLIQ         |---| 
-!| NPTFR          |---| 
-!| NUMLIQ         |---| 
+!| NAMETRAC       |---|
+!| NFRLIQ         |---|
+!| NPTFR          |---|
+!| NUMLIQ         |---|
 !| T              |-->| TRACEUR AU TEMPS T(N+1)
-!| WORK2          |---| 
-!| WORK3          |---| 
+!| WORK2          |---|
+!| WORK3          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BILANT => BILANT

@@ -17,29 +17,29 @@
 !history  J-M HERVOUET (LNH)
 !+        24/04/97
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A12            |---| 
-!| A13            |---| 
-!| A21            |---| 
-!| A22            |---| 
-!| A23            |---| 
-!| A31            |---| 
-!| A32            |---| 
-!| A33            |---| 
+!| A12            |---|
+!| A13            |---|
+!| A21            |---|
+!| A22            |---|
+!| A23            |---|
+!| A31            |---|
+!| A32            |---|
+!| A33            |---|
 !| B1,B2,B3       |-->| SECONDS MEMBRES DU SYSTEME.
 !| D1,D2,D3       |<--| STOCKAGE DE MATRICES DIAGONALES
 !| DIADON         |-->| .TRUE. : LES DIAGONALES SONT DONNEES.

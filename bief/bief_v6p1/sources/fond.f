@@ -13,22 +13,22 @@
 !history  J-M HERVOUET (LNHE)
 !+        20/03/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KP1BOR         |---| 
+!| KP1BOR         |---|
 !| NBOR           |-->| NUMEROS GLOBAUX DES NOEUDS DE BORD.
 !| NFON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DES FONDS.
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.

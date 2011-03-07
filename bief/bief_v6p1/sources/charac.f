@@ -17,19 +17,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        12/02/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS
@@ -38,28 +38,28 @@
 !| IELM           |-->| TYPE D'ELEMENT : 11 : TRIANGLE P1
 !|                |   | 41 : PRISME DE TEL3D
 !| IFAMAS         |-->| IFABOR MODIFIE QUAND DES ELEMENTS SONT MASQUES
-!| IKLE2          |---| 
-!| INILOC         |---| 
-!| IT1            |---| 
-!| IT2            |---| 
-!| IT3            |---| 
-!| IT4            |---| 
+!| IKLE2          |---|
+!| INILOC         |---|
+!| IT1            |---|
+!| IT2            |---|
+!| IT3            |---|
+!| IT4            |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
 !| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NELEM2         |---| 
-!| NELMAX2        |---| 
+!| NELEM2         |---|
+!| NELMAX2        |---|
 !| NOMB           |-->| NOMBRE DE VARIABLES A CONVECTER.
 !| NPLAN          |-->| NOMBRE DE PLAN SUIVANT Z (POUR TEL3D).
 !| NPLINT         |-->| PLAN DE REFERENCE INTERMEDIAIRE (POUR TEL3D).
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D (POUR TEL3D).
-!| SHP            |---| 
-!| SHZ            |---| 
-!| SURDET2        |---| 
+!| SHP            |---|
+!| SHZ            |---|
+!| SURDET2        |---|
 !| TB             |-->| BLOC DE TABLEAUX DE TRAVAIL (AU MOINS 8)
 !| UCONV,VCONV    |-->| COMPOSANTES DES VITESSES DU CONVECTEUR.
-!| WCONV          |---| 
+!| WCONV          |---|
 !| ZSTAR          |-->| COORDONNEES VERTICALES EN 3D.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

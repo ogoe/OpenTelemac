@@ -17,19 +17,19 @@
 !history  C-T PHAM (LNHE)
 !+        27/02/09
 !+        V5P9
-!+   JMH : DISTINGUISHES BETWEEN FXBOR AND FXBORTRA 
+!+   JMH : DISTINGUISHES BETWEEN FXBOR AND FXBORTRA
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS.
@@ -38,7 +38,7 @@
 !| FBOR           |-->| VALEURS DU TRACEUR SUR LE BORD.
 !| FC             |-->| VALEURS DU TRACEUR A L'ETAPE N
 !|                |   | DE LA SOUS-ITERATION
-!| FLBORTRA       |---| 
+!| FLBORTRA       |---|
 !| FN             |-->| VALEURS DU TRACEUR A L'ETAPE N
 !| FSCEXP         |-->| FSCE-(1-TETAT)*FN, SEE DIFSOU
 !|                |   | SO HERE FSCE-FN, THIS IS NOT VERY CONVENIENT
@@ -55,22 +55,22 @@
 !| HLIN           |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N+1.
 !|                |   | AVEC INTERPOLATION LINEAIRE EN TEMPS
 !|                |   | ENTRE HN ET H
-!| IOPT2          |---| 
-!| KDDL           |---| 
-!| KDIR           |---| 
-!| LIMTRA         |---| 
-!| MESH           |---| 
+!| IOPT2          |---|
+!| KDDL           |---|
+!| KDIR           |---|
+!| LIMTRA         |---|
+!| MESH           |---|
 !| NBOR           |-->| TABLEAU D'INDICES DE NOEUDS SUR LE BORD.
 !| NPOIN          |-->| NOMBRE DE NOEUDS DANS LE MAILLAGE.
 !| NPTFR          |-->| NOMBRE DE NOEUDS SUR LA FRONTIERE.
 !| NSEG           |-->| NOMBRE DE SEGMENTS DANS LE MAILLAGE.
-!| OPTSOU         |---| 
-!| SF             |---| 
-!| SIZGLO         |---| 
+!| OPTSOU         |---|
+!| SF             |---|
+!| SIZGLO         |---|
 !| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE.
-!| SURNIT         |---| 
-!| T7             |---| 
-!| UNSV2D         |---| 
+!| SURNIT         |---|
+!| T7             |---|
+!| UNSV2D         |---|
 !| YASMH          |-->| IF YES, SOURCE TERMS IN SMH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

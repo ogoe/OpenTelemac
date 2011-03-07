@@ -15,19 +15,19 @@
 !history  CHI-TUAN PHAM (LNHE)
 !+        09/02/2009
 !+        V5P9
-!+   JMH : SEQUENCE IF(MSK) : AVOIDS NEGATIVE DEPTHS 
+!+   JMH : SEQUENCE IF(MSK) : AVOIDS NEGATIVE DEPTHS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS.
@@ -37,7 +37,7 @@
 !| GLOSEG         |-->| GLOBAL NUMBER OF THE 2 POINTS OF A SEGMENT
 !| H              |<--| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N+1.
 !| HN             |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N.
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| MSK : IF YES, MASKING OF DRY ELEMENTS
 !| NBOR           |-->| TABLEAU D'INDICES DE NOEUDS SUR LE BORD.
 !| NPOIN          |-->| NOMBRE DE NOEUDS DANS LE MAILLAGE.
@@ -46,10 +46,10 @@
 !| OPTSOU         |-->| OPTION FOR THE TREATMENT OF SOURCES
 !|                |   | 1: NORMAL  2: DIRAC
 !|                |   | SEE PROPAG IN TELEMAC-2D
-!| SIZGLO         |---| 
+!| SIZGLO         |---|
 !| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE.
-!| T7             |---| 
-!| UNSV2D         |---| 
+!| T7             |---|
+!| UNSV2D         |---|
 !| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

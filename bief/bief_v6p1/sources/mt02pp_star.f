@@ -43,52 +43,52 @@
 !
 !warning  THE JACOBIAN MUST BE POSITIVE
 !
-!history  
+!history
 !+        22/08/07
-!+        
-!+   CAN OPTIONALLY TREAT (USES DIMDISC) A P0 VERTICAL 
+!+
+!+   CAN OPTIONALLY TREAT (USES DIMDISC) A P0 VERTICAL
 !
-!history  
+!history
 !+        06/02/07
-!+        
-!+   IF FORMUL(14:16)='MON' : 
+!+
+!+   IF FORMUL(14:16)='MON' :
 !
 !history  JMH
 !+        15/03/2010
-!+        
-!+   PARAMETER EPSILON ADDED 
+!+
+!+   PARAMETER EPSILON ADDED
 !
 !history  J-M HERVOUET (LNHE)     ; F  LEPEINTRE (LNH)
 !+        20/05/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F,G,H          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
 !|                |   | MATRICE.
-!| FORMUL         |---| 
-!| IKLE           |---| 
-!| INCHYD         |---| 
+!| FORMUL         |---|
+!| IKLE           |---|
+!| INCHYD         |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
 !| SF,SG,SH       |-->| STRUCTURES DE F,G ET H.
-!| SURFAC         |---| 
-!| T              |---| 
+!| SURFAC         |---|
+!| T              |---|
 !| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---| 
+!| XM             |---|
 !| XMUL           |-->| FACTEUR MULTIPLICATIF
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

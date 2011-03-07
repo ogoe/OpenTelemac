@@ -19,27 +19,27 @@
 !
 !warning  THIS WILL NOT WORK IF A LOGICAL UNIT IS CLOSED AND RE-OPENED
 !
-!history  
+!history
 !+        09/12/2008
-!+        
-!+   STD IS NOW A STRING OF ANY SIZE 
+!+
+!+   STD IS NOW A STRING OF ANY SIZE
 !
 !history  J-M HERVOUET (LNHE)
 !+        09/04/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALIRE          |-->| VARIABLES QU'IL FAUT LIRE (POUR LES AUTRES ON

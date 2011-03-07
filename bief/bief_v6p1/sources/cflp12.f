@@ -15,26 +15,26 @@
 !+                IS HERE USED TO EVALUATE THE COURANT NUMBER.
 !
 !history  C MOULIN   (LNH)
-!+        
-!+        
-!+   
+!+
+!+
+!+
 !
 !history  JMH
 !+        29/12/05
 !+        V5P6
-!+   MODIFICATIONS 
+!+   MODIFICATIONS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| NUMEROS DES NOEUDS DE CHAQUE ELEMENT.
@@ -43,7 +43,7 @@
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF).
 !| U              |-->| VITESSE SUIVANT X.
 !| V              |-->| VITESSE SUIVANT Y.
-!| W1             |---| 
+!| W1             |---|
 !| X              |-->| ABSCISSES DES POINTS DU MAILLAGE PAR ELEMENTS
 !| Y              |-->| ORDONNEES DES POINTS DU MAILLAGE PAR ELEMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

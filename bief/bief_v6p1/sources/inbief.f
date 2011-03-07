@@ -13,49 +13,49 @@
 !+                THE INTEGER AND REAL ARRAYS DESCRIBING THE MESH
 !+                ARE BUILT AND STORED IN MESH.
 !
-!history  
+!history
 !+        22/01/2008
-!+        
-!+   DYNAMIC ALLOCATION OF IKLESTR DELETED 
+!+
+!+   DYNAMIC ALLOCATION OF IKLESTR DELETED
 !
-!history  
+!history
 !+        29/02/2008
-!+        
-!+   NORMAB MODIFIED; XSEG, YSEG NO LONGER USED 
+!+
+!+   NORMAB MODIFIED; XSEG, YSEG NO LONGER USED
 !
-!history  
+!history
 !+        20/03/2008
-!+        
-!+   NBOR, IKLBOR ADAPTED FOR QUADRATIC TRIANGLES 
+!+
+!+   NBOR, IKLBOR ADAPTED FOR QUADRATIC TRIANGLES
 !
-!history  
+!history
 !+        14/08/2008
-!+        
-!+   PARINI MODIFIED 
+!+
+!+   PARINI MODIFIED
 !
 !history  J-M HERVOUET (LNHE)     ; REGINA NEBAUER; LAM MINH PHUONG; EMILE RAZAFINDRAKOTO
 !+        05/02/2010
 !+        V6P0
-!+   COMP_SEG UPDATED FOR QUADRATIC TRIANGLES 
+!+   COMP_SEG UPDATED FOR QUADRATIC TRIANGLES
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION DU CODE OU DES EQUATIONS
 !| IELMX          |-->| TYPE DE L'ELEMENT LE PLUS COMPLEXE UTILISE
-!| IT1            |---| 
-!| IT2            |---| 
-!| IT3            |---| 
+!| IT1            |---|
+!| IT2            |---|
+!| IT3            |---|
 !| KLOG           |-->| CONVENTION POUR LA CONDITION LIMITE DE PAROI
 !| LAMBD0         |-->| LATITUDE ORIGINE (COORDONNEES SPHERIQUES)
 !| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
@@ -64,7 +64,7 @@
 !| OPTASS         |-->| OPTION D'ASSEMBLAGE.
 !| PRODUC         |-->| OPTION DU PRODUIT MATRICE X VECTEUR
 !| SPHERI         |-->| LOGIQUE, SI OUI : COORDONNEES SPHERIQUES
-!| T2             |---| 
+!| T2             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_INBIEF => INBIEF

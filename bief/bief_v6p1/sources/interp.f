@@ -21,24 +21,24 @@
 !history  J-M JANIN (LNH)
 !+        28/04/93
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES
 !|                |   | CARACTERISTIQUES.
-!| ETA            |---| 
+!| ETA            |---|
 !| IELM           |-->| TYPE D'ELEMENT.
 !| IKLE           |-->| TABLE DE CONNECTIVITE.
 !| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT POUR LA FONCTION

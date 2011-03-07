@@ -21,19 +21,19 @@
 !history  CHI-TUAN PHAM  (LNHE)    ?? ??
 !+        09/10/09
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -42,14 +42,14 @@
 !|                |   | VALEUR DE L'APPORT DES TERMES SOURCES.
 !| CONV           |-->| LOGIQUE INDIQUANT S'IL Y A CONVECTION DE F
 !| DIFT           |-->| LOGIQUE INDIQUANT S'IL Y A DIFFUSION DE F
-!| DM1            |---| 
+!| DM1            |---|
 !| DT             |-->| PAS DE TEMPS
 !| ENTET          |-->| LOGIQUE INDIQUANT SI ON IMPRIME DES INFOS
 !|                |   | SUR LE BILAN DE MASSE DE TRACEUR
 !| F              |<--| VALEURS A L' ETAPE N+1.
 !| FBOR           |-->| CONDITIONS DE DIRICHLET SUR F.
-!| FLBOR          |---| 
-!| FLBORTRA       |---| 
+!| FLBOR          |---|
+!| FLBORTRA       |---|
 !| FN             |-->| VALEURS A L' ETAPE N.
 !| FSCEXP         |-->| PARTIE EXPLICITE DU TERME SOURCE
 !|                |   | EGALE A ZERO PARTOUT SAUF POUR LES POINTS
@@ -68,16 +68,16 @@
 !|                |   | 2 : SCHEMA N
 !|                |   | 3 : SCHEMA PSI
 !| KDDL           |-->| CONVENTION POUR LES DEGRES DE LIBERTE
-!| KDIR           |---| 
-!| LIMTRA         |---| 
+!| KDIR           |---|
+!| LIMTRA         |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKPT         |---| 
+!| MASKPT         |---|
 !| MASSOU         |-->| MASSE DE TRACEUR AJOUTEE PAR TERME SOURCE
 !|                |   | VOIR DIFSOU
 !| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE.
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NPTFR          |---| 
+!| NPTFR          |---|
 !| OPDTRA         |-->| MOT-CLE : OPTION POUR LA DIFFUSION DU TRACEUR
 !| OPTSOU         |-->| OPTION DE TRAITEMENT DES TERMES SOURCES.
 !|                |   | 1 : NORMAL
@@ -85,22 +85,22 @@
 !| S              |-->| STRUCTURE BIDON
 !| SM             |-->| TERMES SOURCES .
 !| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE
-!| SMI            |---| 
-!| SOLSYS         |---| 
+!| SMI            |---|
+!| SOLSYS         |---|
 !| T5,T6,T7       |<->| TABLEAUX DE TRAVAIL
-!| T8             |---| 
+!| T8             |---|
 !| TE1            |<->| TABLEAU DE TRAVAIL SUR LES ELEMENTS
 !| UCONV,VCONV    |-->| TABLEAUX DE TRAVAIL.
-!| UNSV2D         |---| 
-!| V2DPAR         |---| 
+!| UNSV2D         |---|
+!| V2DPAR         |---|
 !| VISC           |-->| COEFFICIENTS DE VISCOSITE SUIVANT X,Y ET Z .
 !|                |   | SI P0 : VISCOSITE DONNEE PAR ELEMENT
 !|                |   | SINON : VISCOSITE DONNEE PAR POINT
-!| VISC_S         |---| 
-!| YAFLBOR        |---| 
+!| VISC_S         |---|
+!| YAFLBOR        |---|
 !| YASMH          |-->| LOGIQUE INDIQUANT DE PRENDRE EN COMPTE SMH
-!| YASMI          |---| 
-!| ZCONV          |---| 
+!| YASMI          |---|
+!| ZCONV          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CVTRVF => CVTRVF

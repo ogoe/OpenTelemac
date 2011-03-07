@@ -24,22 +24,22 @@
 !history  J-M HERVOUET (LNHE)
 !+        21/10/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG         |---| 
+!| ELTSEG         |---|
 !| IELM           |-->| TYPE D'ELEMENTS.
 !| IFABOR         |-->| NUMERO DES ELEMENTS VOISINS SANS MASQUE.
 !| IFAMAS         |<--| NUMERO DES ELEMENTS VOISINS AVEC MASQUE.
@@ -48,10 +48,10 @@
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
 !| MASKPT         |<--| TABLEAU DE MASQUAGE DES POINTS
 !|                |   | =1. : NORMAL   =0. : POINT MASQUE.
-!| MESH           |---| 
+!| MESH           |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS.
 !| NPOIN          |-->| NOMBRE DE POINTS.
-!| NSEG           |---| 
+!| NSEG           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MASKTO => MASKTO

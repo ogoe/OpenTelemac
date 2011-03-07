@@ -30,31 +30,31 @@
 !history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
 !+        09/12/94
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE.
 !| ICOORD         |-->| NUMERO DE LA COORDONNEE.
-!| IKLE2          |---| 
-!| IKLE3          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
 !| SF,SG,SH       |-->| STRUCTURES DES FONCTIONS F,G ET H
-!| W2             |---| 
-!| W3             |---| 
+!| W2             |---|
+!| W3             |---|
 !| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

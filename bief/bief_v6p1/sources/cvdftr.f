@@ -75,25 +75,25 @@
 !
 !history  JMH
 !+        27/02/2009
-!+        
-!+   CALLS CVTFVF_POS, OPTION 14 
+!+
+!+   CALLS CVTFVF_POS, OPTION 14
 !
 !history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
 !+        29/12/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS DES CONDITIONS DE NEUMANN
@@ -136,7 +136,7 @@
 !| ISOUSI         |-->| NUMERO DE LA SOUS-ITERATION
 !| KDDL           |-->| CONVENTION POUR LES DEGRES DE LIBERTE
 !| KDIR           |-->| CONVENTION POUR LES POINTS DE DIRICHLET
-!| KENT           |-->| 
+!| KENT           |-->|
 !| LIMTRA         |-->| TYPES DE CONDITIONS AUX LIMITES SUR LES
 !|                |   | POINTS DE BORD.
 !| LT,NIT         |-->| NUMERO DU PAS DE TEMPS,NOMBRE TOTAL DE PAS.
@@ -154,7 +154,7 @@
 !| OPTSOU         |-->| OPTION DE TRAITEMENT DES TERMES SOURCES.
 !|                |   | 1 : NORMAL
 !|                |   | 2 : DIRAC
-!| OPTSUP         |---| 
+!| OPTSUP         |---|
 !|                |   | 1 : SUPG CLASSIQUE
 !|                |   | 2 : SUPG MODIFIE
 !| OPTVF          |-->| OPTIONS POUR LES VOLUMES FINIS (VOIR CVTRVF)
@@ -164,14 +164,14 @@
 !| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE
 !| SMI            |-->| IMPLICIT SOURCE TERM
 !| SOLSYS         |-->| 1 OR 2. IF 2 ADVECTION FIELD IS UCONV + DM1*GRAD(ZCONV)
-!| T1             |---| 
-!| T10            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
+!| T1             |---|
+!| T10            |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
 !| TB             |-->| BLOC DE TABLEAUX DE TRAVAIL (CONTIENT T1,...)
 !| TE1,TE2,TE3    |<->| TABLEAUX DE TRAVAIL SUR LES ELEMENTS
 !| TETAH          |-->| IMPLICITATION BETWEEN H AND HN

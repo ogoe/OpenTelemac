@@ -26,47 +26,47 @@
 !history  A FROEHLY (MATMECA)
 !+        01/06/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---| 
-!| A14            |---| 
-!| A15            |---| 
-!| A16            |---| 
-!| A22            |---| 
-!| A23            |---| 
-!| A24            |---| 
-!| A25            |---| 
-!| A26            |---| 
-!| A33            |---| 
-!| A34            |---| 
-!| A35            |---| 
-!| A36            |---| 
-!| A44            |---| 
-!| A45            |---| 
-!| A46            |---| 
-!| A55            |---| 
-!| A56            |---| 
-!| A66            |---| 
+!| A13            |---|
+!| A14            |---|
+!| A15            |---|
+!| A16            |---|
+!| A22            |---|
+!| A23            |---|
+!| A24            |---|
+!| A25            |---|
+!| A26            |---|
+!| A33            |---|
+!| A34            |---|
+!| A35            |---|
+!| A36            |---|
+!| A44            |---|
+!| A45            |---|
+!| A46            |---|
+!| A55            |---|
+!| A56            |---|
+!| A66            |---|
 !| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| IKLE2          |---| 
-!| IKLE3          |---| 
-!| IKLE4          |---| 
-!| IKLE5          |---| 
-!| IKLE6          |---| 
+!| IKLE2          |---|
+!| IKLE3          |---|
+!| IKLE4          |---|
+!| IKLE5          |---|
+!| IKLE6          |---|
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)

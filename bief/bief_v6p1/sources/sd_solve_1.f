@@ -158,29 +158,29 @@
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        20/11/06
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DA,XA          |-->| DIAGONALE ET TERMES EXTRA-DIAGONAUX DE LA MATRICE
 !| GLOSEG         |-->| NUMEROS GLOBAUX DES POINTS DES SEGMENTS
 !| INFOGR         |-->| IF, YES INFORMATIONS ON LISTING
-!| MAXSEG         |---| 
+!| MAXSEG         |---|
 !| NPOIN          |-->| NOMBRE D'INCONNUES
 !| NSEGB          |-->| NOMBRE DE SEGMENTS
 !| RHS            |-->| SECOND MEMBRE
-!| TYPEXT         |---| 
+!| TYPEXT         |---|
 !| XINC           |<--| SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

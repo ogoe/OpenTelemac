@@ -17,41 +17,41 @@
 !history  J-M HERVOUET (LNHE)
 !+        14/01/08
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BM1            |---| 
-!| BM2            |---| 
-!| COMFLU         |---| 
+!| BM1            |---|
+!| BM2            |---|
+!| COMFLU         |---|
 !| CTRLSC         |-->| DONNEES SUR LES SECTIONS DE CONTROLE.
-!| CUMFLO         |---| 
-!| CV1            |---| 
+!| CUMFLO         |---|
+!| CV1            |---|
 !| DT             |-->| PAS DE TEMPS.
 !| H              |-->| HAUTEUR D'EAU
-!| HPROP          |---| 
-!| IFABOR         |---| 
+!| HPROP          |---|
+!| IFABOR         |---|
 !| IKLE           |-->| TABLEAUX DE CONNECTIVITE LOCAL-GLOBAL
 !| INFO           |-->| SI OUI : IMPRESSIONS.
-!| KNOGL          |---| 
-!| MESH           |---| 
-!| MSKSEC         |---| 
+!| KNOGL          |---|
+!| MESH           |---|
+!| MSKSEC         |---|
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
 !| NELEM          |-->| NOMBRE D'ELEMENTS.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| S              |---| 
-!| T1             |---| 
+!| S              |---|
+!| T1             |---|
 !| TPS            |-->| TEMPS
 !| U,V            |-->| CHAMP DE VITESSE
 !| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
