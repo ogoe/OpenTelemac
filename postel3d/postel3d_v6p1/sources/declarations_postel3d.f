@@ -2,9 +2,9 @@
                        module DECLARATIONS_POSTEL3D
 !                      ******************************
 !
-C***********************************************************************
-C  POSTEL3D VERSION 6.0
-C***********************************************************************
+!***********************************************************************
+!  POSTEL3D VERSION 6.0
+!***********************************************************************
 !=======================================================================
 ! Telemac-3D best version number
 ! fortran95 version         march 1999        Jacek A. Jankowski pinxit
@@ -17,7 +17,7 @@ C***********************************************************************
 !       note: this module is organised in 10 parts
 !
 !       (1) vectors (will be declared as bief_obj structures)
-!       (2) matrices (will be declared as bief_obj structures) 
+!       (2) matrices (will be declared as bief_obj structures)
 !       (3) blocks (will be declared as bief_obj structures)
 !       (4) integers
 !       (5) logical values
@@ -25,7 +25,7 @@ C***********************************************************************
 !       (7) strings
 !       (8) slvcfg structures
 !       (9) mesh structure
-!      (10) aliases    
+!      (10) aliases
 !
 !-----------------------------------------------------------------------
 ! (1) vectors (real and integer)
@@ -48,8 +48,8 @@ C***********************************************************************
 !
 !
 ! 2D output compatibility - output variables organised in blocks
-cth pour bientot, avec le nouveau format 
-cth        type(bief_obj), target :: varsor, varcl
+!th pour bientot, avec le nouveau format
+!th        type(bief_obj), target :: varsor, varcl
 !
 !-----------------------------------------------------------------------
 ! (4) integers
@@ -71,7 +71,7 @@ cth        type(bief_obj), target :: varsor, varcl
       integer nuprso,pesogr,nc2dh,nc2dv
       integer nplref(9),nseg(9)
 !
-!      nombre max de coupes 
+!      nombre max de coupes
         integer, parameter :: maxcou = 9
 !      nombre max de points pour les coupes verticales
         integer, parameter :: maxpts = 50
@@ -92,12 +92,12 @@ cth        type(bief_obj), target :: varsor, varcl
 !
       double precision hmin,  cotint
 !
-cth  a voir si on met le parametre
-cth  en dur pour l'instant
-c      double precision href(maxcou),distor(maxcou)
-c      double precision x2dv(maxpts,maxcou),y2dv(maxpts,maxcou)
+!th  a voir si on met le parametre
+!th  en dur pour l'instant
+!      double precision href(maxcou),distor(maxcou)
+!      double precision x2dv(maxpts,maxcou),y2dv(maxpts,maxcou)
       double precision href(9),distor(9)
-cth      double precision zstar(5)
+!th      double precision zstar(5)
       double precision x2dv(50,9),y2dv(50,9)
 !
 !-----------------------------------------------------------------------
@@ -105,13 +105,13 @@ cth      double precision zstar(5)
 !-----------------------------------------------------------------------
 !
 ! previous mitcar
-! changes: nomsui -> nompre ; nomr3d -> nomres ; nomr2d -> nomrbi 
+! changes: nomsui -> nompre ; nomr3d -> nomres ; nomr2d -> nomrbi
 !     (see module for Telemac definitions)
 ! consequently binr3d -> binres ;  binsui -> binpre ; binr2d -> binrbi
 !
-cth  on laisse tout en attendant
+!th  on laisse tout en attendant
 !
-      character(len=72) titcas, sort3d, sort2d, varimp 
+      character(len=72) titcas, sort3d, sort2d, varimp
       character(len=3)  bingeo, binres, binpre, binrbi , binr3d , bincou
 !
       character(len=20) equa
@@ -126,7 +126,7 @@ cth  on laisse tout en attendant
 !-----------------------------------------------------------------------
 ! (9) mesh structure(s)
 !-----------------------------------------------------------------------
-! two separate meshes, 2D as usual and 3D with sigma-mesh specific 
+! two separate meshes, 2D as usual and 3D with sigma-mesh specific
 ! features, see almesh.f
 !
         type(bief_mesh) :: mesh2D, mesh3D
@@ -139,27 +139,27 @@ cth  on laisse tout en attendant
 !
 ! useful pointers for often used components in 2d and 3D mesh structures
 !
-! x,y,z node coordinates: base mesh and 3D sigma mesh 
+! x,y,z node coordinates: base mesh and 3D sigma mesh
 !
         type(bief_obj), pointer :: x2, y2, z2, x3, y3, z3
 !
-cth surement plein de choses a virer
-cth
+!th surement plein de choses a virer
+!th
         type(bief_obj), pointer :: xnebor2, ynebor2
         type(bief_obj), pointer :: xnebor3, ynebor3, znebor3
 !
-! 2D and 3D lateral boundary normal vectors defined 
+! 2D and 3D lateral boundary normal vectors defined
 ! per boundary segment (2D) or boundary element (3D)
 !
         type(bief_obj), pointer :: xsgbor2, ysgbor2
         type(bief_obj), pointer :: xsgbor3, ysgbor3, zsgbor3
 !
-! connectivity tables 2D and 3D 
+! connectivity tables 2D and 3D
 ! (element number and local node number) --> global node number
 !
         type(bief_obj), pointer :: ikle2, ikle3
 !
-! tables connecting (node boundary number) --> global node number 
+! tables connecting (node boundary number) --> global node number
 !
         type(bief_obj), pointer :: nbor2, nbor3
 !
@@ -195,6 +195,6 @@ cth
 !-----------------------------------------------------------------------
 ! save all - important
 !
-      SAVE 
+      SAVE
 !
       END MODULE DECLARATIONS_POSTEL3D

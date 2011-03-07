@@ -1,22 +1,22 @@
-C                       *************************
+!                       *************************
                         SUBROUTINE POINT_POSTEL3D
-C                       *************************
-C
-C***********************************************************************
-C POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
-C FORTRAN90
-C***********************************************************************
-C
+!                       *************************
+!
+!***********************************************************************
+! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
+! FORTRAN90
+!***********************************************************************
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_POSTEL3D
-C 
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C
-C***********************************************************************
+!
+!
+!***********************************************************************
 !
       INTEGER CFG(2),NGEO
       NGEO=POS_FILES(POSGEO)%LU
@@ -30,7 +30,7 @@ C***********************************************************************
 !
 !-----------------------------------------------------------------------
 ! discretisation types are declared here
-
+!
       ielm0 = 10*(ielmh/10) ! for Telemac2D
       ielm1 = ielm0 + 1     ! for Telemac2D
 !
@@ -43,7 +43,7 @@ C***********************************************************************
 !
       ielmx=max(ielmu,ielm2h,ielmh) ! it will be max. discr. in 2D
 !
-      cfg(1) = 1 
+      cfg(1) = 1
       cfg(2) = 1
 !
 !=======================================================================
@@ -92,7 +92,7 @@ C***********************************************************************
       equa = 'NO_EQUATION_IS_GIVEN'
 !
       CALL ALMESH(mesh3D,'MESH3D',ielm3,spheri,cfg,ngeo,equa,
-     *            nplan=nplan)
+     &            nplan=nplan)
 !
 ! alias for certain components of the 3D mesh structure
 ! they are defined in declarations
@@ -133,68 +133,68 @@ C***********************************************************************
      &             typelm2,npoin2,nelem2,nptfr2,typelm3,npoin3,nelem3,
      &             nplan,neleb,nptfr3+2*npoin2,nptfr3,npoin2,npoin2
 !
- 31   format(/,' MAILLAGE 2D',/,                                        
-     &         ' -----------',//,                                       
-     &         ' 2D element type                : ',i8,/,               
-     &         ' nombre de points 2D            : ',i8,/,               
-     &         ' nombre d''elements 2D           : ',i8,/,              
-     &         ' nombre de points de bord 2D    : ',i8,///,             
-     &         ' MAILLAGE 3D',/,                                        
-     &         ' -----------',//,                                       
-     &         ' 3D element type                : ',i8,/,               
-     &         ' nombre de points 3D            : ',i8,/,               
-     &         ' nombre d''elements 3D           : ',i8,/,              
-     &         ' nombre de plans                : ',i8,/,               
-     &         ' nombre d''elements de bord      : ',i8,/,              
-     &         ' nombre total de points de bord : ',i8,/,               
-     &         ' dont            cotes lateraux : ',i8,/,               
-     &         '                        surface : ',i8,/,               
+ 31   format(/,' MAILLAGE 2D',/,
+     &         ' -----------',//,
+     &         ' 2D element type                : ',i8,/,
+     &         ' nombre de points 2D            : ',i8,/,
+     &         ' nombre d''elements 2D           : ',i8,/,
+     &         ' nombre de points de bord 2D    : ',i8,///,
+     &         ' MAILLAGE 3D',/,
+     &         ' -----------',//,
+     &         ' 3D element type                : ',i8,/,
+     &         ' nombre de points 3D            : ',i8,/,
+     &         ' nombre d''elements 3D           : ',i8,/,
+     &         ' nombre de plans                : ',i8,/,
+     &         ' nombre d''elements de bord      : ',i8,/,
+     &         ' nombre total de points de bord : ',i8,/,
+     &         ' dont            cotes lateraux : ',i8,/,
+     &         '                        surface : ',i8,/,
      &         '                           fond : ',i8,/)
 !
- 32   format(/,' 2D MESH',/,                                            
-     &         ' -------',//,                                           
-     &         ' 2D element type                : ',i8,/,               
-     &         ' number of 2D nodes             : ',i8,/,               
-     &         ' number of 2D elements          : ',i8,/,               
-     &         ' number of 2D boundary nodes    : ',i8,///,             
-     &         ' 3D MESH',/,                                            
-     &         ' -------',//,                                           
-     &         ' 3D element type                : ',i8,/,               
-     &         ' number of 3D nodes             : ',i8,/,               
-     &         ' number of 3D elements          : ',i8,/,               
-     &         ' number of levels               : ',i8,/,               
-     &         ' number of boundary elements    : ',i8,/,               
-     &         ' total number of boundary nodes : ',i8,/,               
-     &         ' including   lateral boundaries : ',i8,/,               
-     &         '                        surface : ',i8,/,               
+ 32   format(/,' 2D MESH',/,
+     &         ' -------',//,
+     &         ' 2D element type                : ',i8,/,
+     &         ' number of 2D nodes             : ',i8,/,
+     &         ' number of 2D elements          : ',i8,/,
+     &         ' number of 2D boundary nodes    : ',i8,///,
+     &         ' 3D MESH',/,
+     &         ' -------',//,
+     &         ' 3D element type                : ',i8,/,
+     &         ' number of 3D nodes             : ',i8,/,
+     &         ' number of 3D elements          : ',i8,/,
+     &         ' number of levels               : ',i8,/,
+     &         ' number of boundary elements    : ',i8,/,
+     &         ' total number of boundary nodes : ',i8,/,
+     &         ' including   lateral boundaries : ',i8,/,
+     &         '                        surface : ',i8,/,
      &         '                         bottom : ',i8,/)
 !
-C
-C DEFINITION DES POINTEURS
-C
+!
+! DEFINITION DES POINTEURS
+!
       CALL BIEF_ALLVEC(1, u,      'U     ', ielm3,  1,1,MESH3D)
       CALL BIEF_ALLVEC(1, v,      'V     ', ielm3,  1,1,MESH3D)
       CALL BIEF_ALLVEC(1, w,      'W     ', ielm3,  1,1,MESH3D)
-C
+!
       CALL ALLBLO(TAB,'TAB   ')
       if (nva3.gt.4) then
       CALL BIEF_ALLVEC_IN_BLOCK(tab,nva3-4,1,'TAB   ',ielm3,1,1,MESH3D)
       endif
-C
-C=======================================================================
-C
-C IMPRESSIONS :
-C
+!
+!=======================================================================
+!
+! IMPRESSIONS :
+!
       IF(LNG.EQ.1) WRITE(LU,22)
       IF(LNG.EQ.2) WRITE(LU,23)
 22    FORMAT(1X,///,21X,'****************************************',/,
-     *21X,              '* FIN DE L''ALLOCATION DE LA MEMOIRE  : *',/,
-     *21X,              '****************************************',/)
+     &21X,              '* FIN DE L''ALLOCATION DE LA MEMOIRE  : *',/,
+     &21X,              '****************************************',/)
 23    FORMAT(1X,///,21X,'*************************************',/,
-     *21X,              '*    END OF MEMORY ORGANIZATION:    *',/,
-     *21X,              '*************************************',/)
-C
-C-----------------------------------------------------------------------
-C
+     &21X,              '*    END OF MEMORY ORGANIZATION:    *',/,
+     &21X,              '*************************************',/)
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
