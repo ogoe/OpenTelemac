@@ -14,39 +14,39 @@
 !
 !history  J-M HERVOUET (LNH)
 !+        17/08/1994
-!+        
-!+   LINKED TO BIEF 5.0 
+!+
+!+   LINKED TO BIEF 5.0
 !
 !history  D. AELBRECHT (LNH)
 !+        21/08/2000
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFAPAR         |---| 
-!| ISEG           |---| 
+!| IFAPAR         |---|
+!| ISEG           |---|
 !| LIHBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
 !|                |   | POUR LES POINTS DE BORD.
-!| NACHB          |---| 
+!| NACHB          |---|
 !| NBOR           |<--| ADRESSES DES POINTS DE BORD.
 !| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NUMLIQ         |---| 
+!| NUMLIQ         |---|
 !| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
-!| XSEG           |---| 
-!| YSEG           |---| 
+!| XSEG           |---|
+!| YSEG           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -78,7 +78,7 @@
 !
 !
       NLIG=1
-
+!
       DO 20 K=1,NPTFR
 !
         IF(STDGEO.EQ.3.AND.NCSIZE.LE.1) THEN
@@ -114,7 +114,7 @@
         ENDIF
 !
  20     CONTINUE
-
+!
         IF(NLIG.NE.NPTFR+1) THEN
            IF(LNG.EQ.1) WRITE(LU,23) NLIG-1,NPTFR
            IF(LNG.EQ.2) WRITE(LU,24) NLIG-1,NPTFR
@@ -127,7 +127,7 @@
            CALL PLANTE(1)
            STOP
         ENDIF
-
+!
         NLIG=1
         IF(NCSIZE.GT.1) THEN
            READ(NLIM,*,ERR=900) PTIR
@@ -177,8 +177,8 @@
         ENDDO
 !
       ENDIF
-
-
+!
+!
 !
 !      JAJ //// READS THE NEIGHBOURHOODS FOR HALO CELLS ALONG THE INTERFACES
 !      FILLING PATTERN: IFAPAR(1:7,K), K=1:NHALO
@@ -196,7 +196,7 @@
 !                  AND INITIALISED TO 0 IN ALMESH
 !
 !
-
+!
       GOTO 1000
 900   CONTINUE
 !
@@ -217,8 +217,8 @@
      &          '1) WINDOWS CARRIAGE RETURN ON UNIX ?',/,1X,
      &          '2) INFORMATIONS ON PARALLELISM MISSING ?')
       CALL PLANTE(1)
-
-
+!
+!
       STOP
 !JAJ //// BE PRECISE IN THE CASE OF THE BC FILE APPENDIX
 901   CONTINUE
@@ -230,6 +230,6 @@
 !-----------------------------------------------------------------------
 !
 1000  CONTINUE
-
+!
       RETURN
       END

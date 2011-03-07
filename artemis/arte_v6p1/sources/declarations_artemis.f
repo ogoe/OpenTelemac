@@ -30,7 +30,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF
-
+!
 !brief TO MANAGE THE GLOBAL BUILDING OF THE BOUNDARY
 !
       INTEGER NPTFR_TOT
@@ -740,65 +740,65 @@
 !-----------------------------------------------------------------------
 !
 !      10) ALIASES
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
 !       DECLARATION OF POINTERS FOR ALIASES.
 !       TARGETS ARE DEFINED IN POINT_ARTEMIS
-C
+!
 !       ALIASES FOR WORKING VECTORS IN TB AND TBBD
-C
+!
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T1
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T2
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T3
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T4
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T5
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T6
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T7
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T8
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T9
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T10
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T11
 !brief WORKING VECTOR IN TB
-C
+!
       TYPE(BIEF_OBJ),POINTER :: T12
 !brief WORKING VECTOR IN TBBD
-C
+!
       TYPE(BIEF_OBJ),POINTER :: TBD1
 !brief WORKING VECTOR IN TBBD
-C
+!
       TYPE(BIEF_OBJ),POINTER :: TBD2
 !brief WORKING VECTOR IN TBBD
-C
+!
       TYPE(BIEF_OBJ),POINTER :: TBD3
 !brief WORKING VECTOR IN TBBD
-C
+!
       TYPE(BIEF_OBJ),POINTER :: TBD4
-C
+!
 !       USEFUL COMPONENTS IN STRUCTURE MESH
-C
+!
 !brief
 ! table de connectivite
       TYPE(BIEF_OBJ), POINTER :: IKLE
@@ -812,28 +812,28 @@ C
 ! nombre d'elements du maillage
       INTEGER, POINTER        :: NELEM
 !brief
-C
+!
       INTEGER, POINTER        :: NELMAX
 !brief
 ! nombre de points frontiere
       INTEGER, POINTER        :: NPTFR
 !brief
-C
+!
       INTEGER, POINTER        :: NPTFRX
 !brief
-C
+!
       INTEGER, POINTER        :: DIM
 !brief
-C
+!
       INTEGER, POINTER        :: TYPELM
 !brief
 ! nombre de points du maillage
       INTEGER, POINTER        :: NPOIN
 !brief
-C
+!
       INTEGER, POINTER        :: NPMAX
 !brief
-C
+!
       INTEGER, POINTER        :: MXPTVS
 !brief
 !

@@ -10,26 +10,26 @@
 !brief    INITIALISES THE PHYSICAL PARAMETER ARRAYS.
 !
 !history  J-M HERVOUET (LNH)
-!+        
-!+        
-!+   LINKED TO BIEF 5.0 
+!+
+!+
+!+   LINKED TO BIEF 5.0
 !
 !history  D. AELBRECHT (LNH)
 !+        02/06/1999
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +107,7 @@
 !   USING AN EXPLICIT FORMULATION (SEE EDF'S EXCELLENT REPORT BY
 !   F. DHELLEMMES 'PRECIS SUR LES VAGUES' )
 !
-
+!
       OMEGA = 2.D0*PI/PER
       CALL OS('X=CY    ', T1 , H , SBID , OMEGA**2/GRAV )
 !
@@ -155,7 +155,7 @@
      &             (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
 200   CONTINUE
 !
-
+!
 !-----------------------------------------------------------------------
 !
       RETURN

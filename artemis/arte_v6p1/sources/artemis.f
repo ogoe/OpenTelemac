@@ -10,31 +10,31 @@
 !brief    SOLVES THE MODIFIED BERKHOFF EQUATION.
 !
 !history  J-M HERVOUET (LNH)
-!+        
-!+        
-!+   LINKED TO BIEF 5.0 
+!+
+!+
+!+   LINKED TO BIEF 5.0
 !
 !history  D. AELBRECHT (LNH)
 !+        21/04/1999
 !+        V5P1
-!+   
+!+
 !
 !history  C. DENIS (SINETICS)
 !+        21/06/2010
 !+        V6P0
-!+   PARALLEL VERSION 
+!+   PARALLEL VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +77,7 @@
 !
       INTEGER IBID
       DOUBLE PRECISION BID
-
+!
       INTEGER  P_IMAX,P_IMIN
       DOUBLE PRECISION P_DMIN
       EXTERNAL P_IMAX,P_IMIN,P_DMIN
@@ -111,7 +111,7 @@
 !  SEGMENTS  : P1 FOR THE BOUNDARY
       IELMB = 1
 !
-
+!
 !  MAXIMUM SIZE (CASE OF AN ADAPTIVE GRID)
 !  THESE PARAMETERS ARE USED IN BIEF CALLS
 !
@@ -202,7 +202,7 @@
      &                  MARDAT,        ! START DATE
      &                  MARTIM,        ! START TIME
      &                  I_ORIG,J_ORIG) ! COORDINATES OF THE ORIGIN.
-
+!
 !-----------------------------------------------------------------------
 !
 !     INITIALISES PRIVE
@@ -236,7 +236,7 @@
 ! STANDARD SUBROUTINE DOES NOT DO ANYTHING
 !
       CALL CORFON
-
+!
 !
 !=======================================================================
 !
@@ -245,7 +245,7 @@
       IF (ALEMON .OR. ALEMUL) THEN
        CALL OS('X=C     ', HALE , SBID , SBID , 0.D0 )
       ENDIF
-
+!
 !
 ! DETERMINES THE DIFFERENT PERIODS FOR A RANDOM SEA COMPUTATION
 !
@@ -254,8 +254,8 @@
      &               NPRIV,PMIN,PMAX)
          PER = PALE%R(1)
       ENDIF
-
-
+!
+!
 ! DETERMINES THE DIFFERENT DIRECTIONS FOR A MULTIDIRECTIONAL RANDOM
 ! SEA COMPUTATION
 !
@@ -263,8 +263,8 @@
          CALL DIRALE(DALE%R,EXPOS,TETAH,TETMIN,TETMAX,NDALE,
      &               T1%R,NPOIN,PRIVE,NPRIV)
       ENDIF
-
-
+!
+!
 !
 !=======================================================================
 !
@@ -316,7 +316,7 @@
 !
 ! INITIALISES PHYSICAL PARAMETERS
 !
-
+!
       CALL CONDIH
 !
 !=======================================================================
@@ -327,7 +327,7 @@
 !
 ! CALLS THE USER SUBROUTINE
 !
-
+!
 !
       IF (NCSIZE .GT. 1) THEN
          CALL BUILD_GLOBAL_BOUND(MESH%KNOLG%I,MESH%NPOIN,NPOIN_TOT,
@@ -361,7 +361,7 @@
 !
 !      IF (LT .EQ. 0) THEN
       CALL MASQUE_ARTEMIS
-
+!
       CALL PHBOR
 !      END IF
 !
@@ -568,7 +568,7 @@
 !
 !=======================================================================
 !
-
+!
 !     THE VALIDA SUBROUTINE FROM THE BIEF LIBRARY IS STANDARD.
 !     IT CAN BE MODIFIED BY THE USER FOR THEIR PARTICULAR CASE.
 !     BUT THE CALL TO THE SUBROUTINE MUST STAY IN THE TIME LOOP.

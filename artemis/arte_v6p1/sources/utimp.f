@@ -45,26 +45,26 @@
 !+ 25   CONTINUE
 !
 !history  J-M HERVOUET (LNH)
-!+        
-!+        
-!+   LINKED TO BIEF 5.0 
+!+
+!+
+!+   LINKED TO BIEF 5.0
 !
 !history  D. AELBRECHT (LNH)
 !+        04/06/1999
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C,CG           |-->| VITESSE DE PHASE ET DE GROUPE
@@ -79,7 +79,7 @@
 !| KP1BOR         |-->| NUMERO DE BORD DU POINT SUIVANT
 !| NBOR           |-->| ADRESSES DES POINTS DE BORD
 !| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |---| 
+!| NELMAX         |---|
 !| NPOIN          |-->| NOMBRE DE POINTS
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
 !| OMEGA          |-->| PULSATION DE LA HOULE
@@ -88,9 +88,9 @@
 !| PHIR,PHII      |-->| COMPOSANTES DU POTENTIEL
 !| PRIVE          |<->| TABLEAUX RESERVE A L'UTILISATEUR
 !| S              |-->| COTE DE LA SURFACE LIBRE
-!| TRA02          |---| 
-!| TRA03          |---| 
-!| TRA04          |---| 
+!| TRA02          |---|
+!| TRA03          |---|
+!| TRA04          |---|
 !| U0,V0          |-->| VITESSES EN SURFACE (A T=0)
 !| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
 !| ZF             |-->| COTE DU FOND

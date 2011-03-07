@@ -1,9 +1,9 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @brief       INTERFACES FOR ARTEMIS SUBROUTINES
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @par Use(s)
 !><br>BIEF_DEF
 !>  @par Details of primary variable(s)
@@ -11,22 +11,22 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>
 !>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
 !>     </table>
-C
-C#######################################################################
-C
+!
+!#######################################################################
+!
       MODULE INTERFACE_ARTEMIS
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF_DEF
-C
-C-----------------------------------------------------------------------
-C
-C     DEFINES INTERFACES
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!     DEFINES INTERFACES
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE BERKHO(LT)
        USE BIEF_DEF
@@ -34,9 +34,9 @@ C
        INTEGER LT
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE CALCFW
      &(I,H,C,CG,K,HMU,NPOIN,OMEGA,GRAV,VISCO,
@@ -52,9 +52,9 @@ C
        LOGICAL ENTREG,ENTRUG
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE CALCQB
      &(Q1,Q2,Q3)
@@ -62,9 +62,9 @@ C
        DOUBLE PRECISION Q1,Q2,Q3
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE CNTPRE
      &(DAM,NPOIN,IPRECO,IPREC2)
@@ -73,9 +73,9 @@ C
        DOUBLE PRECISION DAM(NPOIN)
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE DIRALE
      &(DALE,EXPOS,TETAH,TETMIN,TETMAX,
@@ -88,9 +88,9 @@ C
        TYPE(BIEF_OBJ) :: PRIVE
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE DISMOY
      &(NPOIN,NELEM,X,Y,IKLE,K,LISHHO)
@@ -100,9 +100,9 @@ C
        DOUBLE PRECISION X(NPOIN),Y(NPOIN),K(NPOIN)
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE ENTART
      &(ITITRE,X,LT,NBR,NBRTOT,ALEMON,ALEMUL,BALAYE)
@@ -112,9 +112,9 @@ C
        LOGICAL ALEMON,ALEMUL,BALAYE
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE FWSPEC
      &(FW,FWCOEF,X,Y,NPOIN,PRIVE,ZF)
@@ -126,25 +126,25 @@ C
        TYPE(BIEF_OBJ) :: PRIVE
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE LECDON_ARTEMIS
      &(FILE_DESC,PATH,NCAR,CODE)
         IMPLICIT NONE
-
-
+!
+!
        CHARACTER(LEN=24), INTENT(IN)     :: CODE
        CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,*)
        INTEGER, INTENT(IN)               :: NCAR
        CHARACTER(LEN=250), INTENT(IN)    :: PATH
-
+!
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE LECLIM_ARTEMIS
      &(LIHBOR,LIUBOR,NPTFR,NBOR,STDGEO,NLIM,
@@ -158,9 +158,9 @@ C
        INTEGER :: IFAPAR(6,*)
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE NOMVAR_ARTEMIS
      &(TEXTE,TEXTPR,MNEMO)
@@ -169,9 +169,9 @@ C
        CHARACTER*8  MNEMO(26)
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE PERALE
      &(PALE,GAMMA,PERPIC,NPALE,TRA01,
@@ -184,9 +184,9 @@ C
        TYPE(BIEF_OBJ) :: PRIVE
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE RADIA1(LISHHO)
        USE BIEF_DEF
@@ -194,9 +194,9 @@ C
        INTEGER LISHHO
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE RADIA2(LISHHO)
        USE BIEF_DEF
@@ -204,27 +204,27 @@ C
        INTEGER LISHHO
         END SUBROUTINE
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         DOUBLE PRECISION FUNCTION SPD(TETA)
        IMPLICIT NONE
        DOUBLE PRECISION TETA
         END FUNCTION
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         DOUBLE PRECISION FUNCTION SPE(F)
        IMPLICIT NONE
        DOUBLE PRECISION F
         END FUNCTION
       END INTERFACE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       INTERFACE
         SUBROUTINE UTIMP
      &(PHIR,PHII,C,CG,K,X,Y,ZF,H,
@@ -247,10 +247,10 @@ C
        TYPE(BIEF_OBJ) :: PRIVE
         END SUBROUTINE
       END INTERFACE
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       END MODULE INTERFACE_ARTEMIS
-C
-C#######################################################################
-C
+!
+!#######################################################################
+!

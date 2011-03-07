@@ -74,37 +74,37 @@
 !+ GIVEN THAT APHII=-APHIR, BM1 IS ALSO IN THE EQUATION IN PHII.
 !
 !history  J-M HERVOUET (LNH)
-!+        
-!+        
-!+   LINKED TO BIEF 5.0 
+!+
+!+
+!+   LINKED TO BIEF 5.0
 !
 !history  D. AELBRECHT (LNH)
 !+        04/06/1999
 !+        V5P1
-!+   
+!+
 !
-!history  
+!history
 !+        02/04/2007
-!+        
-!+   INVERSION OF THE SECOND EQUATION BEFORE CALL TO SOLVE IF DIRECT 
-!+   SOLVEUR IS USED 
+!+
+!+   INVERSION OF THE SECOND EQUATION BEFORE CALL TO SOLVE IF DIRECT
+!+   SOLVEUR IS USED
 !
 !history  C. DENIS (SINETICS)
 !+        18/03/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| INDICE DU CALCUL COURANT
@@ -194,7 +194,7 @@
 !     MASS MATRIX FOR AM1
 !     -----------------------
 !
-
+!
       CALL OS( 'X=Y/Z   ' , T1 , CG , C , CBID )
       CALL MATRIX(AM2,'M=N     ','FMATMA          ', IELM , IELM ,
      &            OMEGA**2 , T1,S,S,S,S,S,MESH,MSK,MASKEL)
@@ -296,7 +296,7 @@
      &           1.D0,CPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
             CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
          END IF
-
+!
 !     ---------------------
 !     SECOND MEMBERS : CV2
 !     ---------------------
@@ -323,7 +323,7 @@
      &           1.D0,DPHI1B,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
          END IF
          CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
-
+!
 !        ------------------------------
 !        BOUNDARY TERM: FREE EXIT
 !        ------------------------------
@@ -496,7 +496,7 @@
        CALL OS('X=-Y    ',X=RHS%ADR(2)%P,Y=RHS%ADR(2)%P)
       ENDIF
 !
-
+!
       CALL SOLVE(UNK,MAT,RHS,TB,SLVART,INFOGR,MESH,AM3)
 !
 !
@@ -507,7 +507,7 @@
 !     IF BREAKING OR BOTTOM FRICTION TAKEN INTO ACCOUNT
 !     ============================================================
 !
-
+!
       IF (DEFERL .OR. FROTTE) THEN
          ECRHMU = 0.D0
          MODHMU = 0.D0
@@ -527,7 +527,7 @@
 !
          CALL OS( 'X=N(Y,Z)', T1  , PHIR , PHII , CBID )
          CALL OS( 'X=CY    ', HMU , T1   , SBID , 2.D0*OMEGA/GRAV )
-
+!
 !
 !        --------------
 !        IF BREAKING
@@ -585,7 +585,7 @@
                      ENDIF
                   ENDIF
  20            CONTINUE
-
+!
 !
 !           --------------------------------
 !           DALLY AND AL 1985
@@ -647,7 +647,7 @@
                MU2%R(I)=ALFABJ*OMEGA*T3%R(I)*((HM/HEFF)**2.D0)/
      &                (3.14159D0*CG%R(I))
  50         CONTINUE
-
+!
          END IF
 !
 !        ------------------
@@ -740,7 +740,7 @@
 !        CONVERGENCE OF THE SOLVEUR
 !        -------------------------------------------------------
 !
-
+!
          DO 60 I = 1,NPOIN
 !
 !           --------------------------
@@ -766,8 +766,8 @@
                HMUANC%R(I) = HMU%R(I)
             ENDIF
  60      CONTINUE
-
-
+!
+!
 !        RELAXES THE RELAXATION AT EACH SUB-ITERATION
 !        TO FACILITATE CONVERGENCE OF THE ALGORITHM USED TO
 !        COMPUTE DISSIPATION (REGULAR WAVES)
@@ -787,7 +787,7 @@
      &        SUB-ITERATIONS (%) ',
      &        100*ECRHMU/MODHMU
          ITERMU = ITERMU + 1
-
+!
 !
 !        -----------------------------------------------------------
 !        IF NUMBER OF SUB-ITERATIONS FOR MU >= MAX NUMBER OF SUB-ITERATIONS

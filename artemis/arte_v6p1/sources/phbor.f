@@ -13,31 +13,31 @@
 !+                APHIR, APHII, ... FOR EACH BOUNDARY SEGMENT.
 !
 !history  J-M HERVOUET (LNH)
-!+        
-!+        
-!+   LINKED TO BIEF 5.0 
+!+
+!+
+!+   LINKED TO BIEF 5.0
 !
 !history  D. AELBRECHT (LNH)
 !+        21/08/2000
 !+        V5P1
-!+   
+!+
 !
 !history  C. DENIS (SINETICS)
 !+        18/03/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,7 +73,7 @@
       DOUBLE PRECISION, ALLOCATABLE ::  BPHI4BT(:)
       DOUBLE PRECISION, ALLOCATABLE ::  CPHI4BT(:)
       DOUBLE PRECISION, ALLOCATABLE ::  DPHI4BT(:)
-
+!
       INTRINSIC COS,SIN
 !
 !-----------------------------------------------------------------------
@@ -87,7 +87,7 @@
 ! IN ORDER NOT TO TAKE NODES IMPOSED IN PRIDIH INTO ACCOUNT,
 ! WHEN IT HAS NOT BEEN REQUESTED.
 !
-
+!
       IF (NCSIZE .GT. 1) THEN
       ALLOCATE(APHI1BT(NPTFR_TOT))
       ALLOCATE(BPHI1BT(NPTFR_TOT))
@@ -106,7 +106,7 @@
       ALLOCATE(CPHI4BT(NPTFR_TOT))
       ALLOCATE(DPHI4BT(NPTFR_TOT))
       ALLOCATE(LIDIRT(2*NPTFR_TOT))
-
+!
       DO I=1,MESH%NPTFR
          APHI1B%R(I) = 0.D0
          BPHI1B%R(I) = 0.D0
@@ -125,8 +125,8 @@
          CPHI4B%R(I) = 0.D0
          DPHI4B%R(I) = 0.D0
       END DO
-
-
+!
+!
         DO I=1,NPTFR_TOT
            LIDIRT(I) = KSORT
 !     BEWARE: IT IS ASSUMED HERE THAT NPTFRX=NPTFR
@@ -151,7 +151,7 @@
            CPHI4BT(I) = 0.D0
            DPHI4BT(I) = 0.D0
         END DO
-
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -195,7 +195,7 @@
 !     FROM IOIDEB (BEGINNING OF INCIDENT WAVE)
 !     --------------------------------------------------------------
 !
-
+!
       DO 15 IFR=1,IFROI
          I = IOIDEB(IFR)
 !
@@ -219,7 +219,7 @@
 !        ****************************************
 !
       IGP1 = NBOR_TOT(KP1BOR_TOT(I))
-
+!
          AUXIC      = COS(TETABT(I)*DEGRAD)
          AUXIS      = SIN(TETABT(I)*DEGRAD)
          AUXI1      = GRAV/OMEGA * HBT(I)/2.D0 *
@@ -491,7 +491,7 @@
 !        CALL GLOBAL_TO_LOCAL_BOUND2(CTT,C,MESH%NPOIN,NPOIN_TOT)
 !        CALL GLOBAL_TO_LOCAL_BOUND2(CGT,CG,MESH%NPOIN,NPOIN_TOT)
 !        CALL GLOBAL_TO_LOCAL_BOUND2(KT,K,MESH%NPOIN,NPOIN_TOT)
-
+!
         DEALLOCATE(APHI1BT)
         DEALLOCATE(BPHI1BT)
         DEALLOCATE(CPHI1BT)
@@ -521,8 +521,8 @@
 110   CONTINUE
 !
       ELSE
-
-
+!
+!
         DO I=1,NPTFR
                 LIHBOR%I(I)=LIHBORT(I)
                 RP%R(I)=RPT(I)
@@ -531,7 +531,7 @@
                 TETAB%R(I)=TETABT(I)
                 TETAP%R(I)=TETAPT(I)
          END DO
-
+!
          DO 501 I=1,NPTFR
         LIDIR%I(I) = KSORT
 !       BEWARE: IT IS ASSUMED HERE THAT NPTFRX=NPTFR
@@ -586,7 +586,7 @@
                ENDIF
          ENDIF
  101  CONTINUE
-
+!
 !
       IF(LNG.EQ.1) WRITE(LU,111) IFROI
       IF(LNG.EQ.2) WRITE(LU,121) IFROI
@@ -600,7 +600,7 @@
 !     FROM IOIDEB (BEGINNING OF INCIDENT WAVE)
 !     --------------------------------------------------------------
 !
-
+!
       DO 151 IFR=1,IFROI
          I = IOIDEB(IFR)
 !
@@ -624,7 +624,7 @@
 !
          IGP1 = MESH%NBOR%I(MESH%KP1BOR%I(I))
 !
-
+!
          AUXIC      = COS(TETAB%R(I)*DEGRAD)
          AUXIS      = SIN(TETAB%R(I)*DEGRAD)
          AUXI1      = GRAV/OMEGA * HB%R(I)/2.D0 *
@@ -870,8 +870,8 @@
 !
  1001 CONTINUE
 !-----------------------------------------------------------------------
-
-
+!
+!
       DO 1101 IFR = 1,IFROI
          I          = IOIFIN(IFR)
          IPREC      = MESH%KP1BOR%I(I+NPTFR)
@@ -885,9 +885,9 @@
 !         RP%R(I)=RPT(I)
 !         HB%R(I)=HBT(I)
 !      END DO
-
+!
       END IF
-
+!
       WRITE(LU,*) 'END PHBOR'
       RETURN
       CONTAINS
@@ -907,10 +907,10 @@
          END DO
       END DO
       OBJ%DIM1=NPTFR
-
+!
       END SUBROUTINE
-      
-
+!
+!
       SUBROUTINE GLOBAL_TO_LOCAL_BOUNDI(TAB1,OBJ,NPTFR,NPTFR_TOT)
       IMPLICIT NONE
       INTEGER, INTENT(INOUT)  :: TAB1(:)
@@ -934,7 +934,7 @@
          END DO
       END DO
       END SUBROUTINE
-
+!
        SUBROUTINE GLOBAL_TO_LOCAL_BOUND2(TAB1,OBJ,NPOIN,NPOIN_TOT)
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(INOUT)  :: TAB1(:)
@@ -951,7 +951,7 @@
          END DO
       END DO
       OBJ%DIM1=NPOIN
-
+!
       END SUBROUTINE
-      
+!
       END
