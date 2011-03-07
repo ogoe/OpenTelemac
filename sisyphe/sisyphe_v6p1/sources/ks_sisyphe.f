@@ -1,13 +1,19 @@
-          SUBROUTINE KS_SISYPHE(IKS,KS,KSP,KSR,KSPRATIO,HOULE,
+!                    ****************************************************
+                     SUBROUTINE KS_SISYPHE(IKS,KS,KSP,KSR,KSPRATIO,HOULE,
+!                    ****************************************************
+!
      &           GRAV,XMVE,XMVS,VCE,
      &           HMIN,HN,ACLADM,UNORM,UW,TW,NPOIN)
-
-C 
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C
+!
+!***********************************************************************
+! SISYPHE
+!***********************************************************************
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-C
+!
       INTEGER,            INTENT(IN)  :: NPOIN,IKS
       LOGICAL,            INTENT(IN)  :: HOULE
       DOUBLE PRECISION,   INTENT(IN)  :: XMVE,XMVS, VCE,GRAV
@@ -15,58 +21,54 @@ C
       TYPE(BIEF_OBJ), INTENT(IN)      :: HN,UNORM
       TYPE(BIEF_OBJ), INTENT(IN)      :: TW,UW
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: KS,KSP,KSR
-      TYPE(BIEF_OBJ), INTENT(IN)      :: ACLADM      
-
-C
-C
-C +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-C  BED ROUGHNESS PREDICTOR
-C                         SKIN   : KSP
-C                         TOTAL  : KS
-C                         RIPPLES : KSR
-C                         KS PUT IN CHESTR IF NO COUPLING, RE-COMPUTED OTHERWISE
-C  NOTE: IT IS RECOMMENDED TO USE FRICTION LAW NO 3 WHEN COUPLING TO
-C        AVOID UNNECESSARY COMPUTATION
-C +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-C
-C SKIN BED ROUGHNESS --> KSP
-C
-C RIPPLED BED ROUGHNESS --> KSR =KSP
-C
-C
-C TOTAL BED ROUGHNESS --> KS
-C       IKS= 0: FLAT BED     KS=KSP
-C       IKS = 1: RIPPLED BED KS= KSP + KSR 
-C       IKS=3 :  DUNED BED   KS= KSP +KSR +KSMR +KSD
-
+      TYPE(BIEF_OBJ), INTENT(IN)      :: ACLADM
+!
+!
+! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!  BED ROUGHNESS PREDICTOR
+!                         SKIN   : KSP
+!                         TOTAL  : KS
+!                         RIPPLES : KSR
+!                         KS PUT IN CHESTR IF NO COUPLING, RE-COMPUTED OTHERWISE
+!  NOTE: IT IS RECOMMENDED TO USE FRICTION LAW NO 3 WHEN COUPLING TO
+!        AVOID UNNECESSARY COMPUTATION
+! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!
+! SKIN BED ROUGHNESS --> KSP
+!
+! RIPPLED BED ROUGHNESS --> KSR =KSP
+!
+!
+! TOTAL BED ROUGHNESS --> KS
+!       IKS= 0: FLAT BED     KS=KSP
+!       IKS = 1: RIPPLED BED KS= KSP + KSR
+!       IKS=3 :  DUNED BED   KS= KSP +KSR +KSMR +KSD
          IF(IKS.EQ.0) THEN
            CALL OS('X=Y     ', X=KS, Y=KSP)
          ENDIF
-C
+!
          IF(IKS.EQ.1) THEN
-C
+!
            IF(HOULE) THEN
-C WIBERG AND HARRIS: KSR (RIPPLES)
-C                    KS (RIPPLES + SKIN)
+! WIBERG AND HARRIS: KSR (RIPPLES)
+!                    KS (RIPPLES + SKIN)
               CALL RIDE(KSR%R, TW%R, UW%R, UNORM%R, GRAV, XMVE,
      &                XMVS, VCE, NPOIN, KSPRATIO, ACLADM%R)
               CALL OS('X=Y+Z   ', X=KS, Y=KSP, Z=KSR)
            ELSE
-C VR PREDICTOR : KSR (RIPPLES)
+! VR PREDICTOR : KSR (RIPPLES)
               CALL RIDE_VR(KSR%R,KS%R,UNORM%R,HN%R,GRAV,XMVE,
      &                     XMVS,NPOIN,ACLADM%R)
               CALL OS('X=Y+Z   ', X=KS, Y=KSP, Z=KSR)
            ENDIF
-C
-         ENDIF  
-C
-          IF(IKS.EQ.3) THEN            
-C VR PREDICTOR : KSR (RIPPLES)
+!
+         ENDIF
+!
+          IF(IKS.EQ.3) THEN
+! VR PREDICTOR : KSR (RIPPLES)
               CALL RIDE_VR(KSR%R,KS%R,UNORM%R,HN%R,GRAV,XMVE,
      &                     XMVS,NPOIN,ACLADM%R)
               CALL OS('X=X+Y   ', X=KS, Y=KSP)
            ENDIF
-C 
-
+!
         END
-C

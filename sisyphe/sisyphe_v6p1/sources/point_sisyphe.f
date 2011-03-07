@@ -1,283 +1,74 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       ALLOCATES STRUCTURES.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, DECLARATIONS_SISYPHE
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> DECLARATIONS_SISYPHE :<br>
-!> @link DECLARATIONS_SISYPHE::ACLADM ACLADM@endlink, 
-!> @link DECLARATIONS_SISYPHE::AFBOR AFBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::AM1_S AM1_S@endlink, 
-!> @link DECLARATIONS_SISYPHE::AM2_S AM2_S@endlink, 
-!> @link DECLARATIONS_SISYPHE::AVAI AVAI@endlink, 
-!> @link DECLARATIONS_SISYPHE::AVAIL AVAIL@endlink, 
-!> @link DECLARATIONS_SISYPHE::BFBOR BFBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::BOUNDARY_COLOUR BOUNDARY_COLOUR@endlink, 
-!> @link DECLARATIONS_SISYPHE::BREACH BREACH@endlink, 
-!> @link DECLARATIONS_SISYPHE::CALFA CALFA@endlink, 
-!> @link DECLARATIONS_SISYPHE::CBOR CBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::CF CF@endlink, 
-!> @link DECLARATIONS_SISYPHE::CHESTR CHESTR@endlink, 
-!> @link DECLARATIONS_SISYPHE::CLT CLT@endlink, 
-!> @link DECLARATIONS_SISYPHE::CLU CLU@endlink, 
-!> @link DECLARATIONS_SISYPHE::CLV CLV@endlink, 
-!> @link DECLARATIONS_SISYPHE::COEFPN COEFPN@endlink, 
-!> @link DECLARATIONS_SISYPHE::CS CS@endlink, 
-!> @link DECLARATIONS_SISYPHE::CST CST@endlink, 
-!> @link DECLARATIONS_SISYPHE::CSTAEQ CSTAEQ@endlink, 
-!> @link DECLARATIONS_SISYPHE::CTILD CTILD@endlink, 
-!> @link DECLARATIONS_SISYPHE::DEL_QU DEL_QU@endlink, 
-!> @link DECLARATIONS_SISYPHE::DEL_QV DEL_QV@endlink, 
-!> @link DECLARATIONS_SISYPHE::DEL_Z DEL_Z@endlink, 
-!> @link DECLARATIONS_SISYPHE::DISP DISP@endlink, 
-!> @link DECLARATIONS_SISYPHE::DISP_C DISP_C@endlink, 
-!> @link DECLARATIONS_SISYPHE::DZF_GF DZF_GF@endlink, 
-!> @link DECLARATIONS_SISYPHE::E E@endlink, 
-!> @link DECLARATIONS_SISYPHE::EBOR EBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::ECPL ECPL@endlink, 
-!> @link DECLARATIONS_SISYPHE::ELAY ELAY@endlink, 
-!> @link DECLARATIONS_SISYPHE::EMAX EMAX@endlink, 
-!> @link DECLARATIONS_SISYPHE::EQUA EQUA@endlink, 
-!> @link DECLARATIONS_SISYPHE::ES ES@endlink, 
-!> @link DECLARATIONS_SISYPHE::ESOMT ESOMT@endlink, 
-!> @link DECLARATIONS_SISYPHE::ESTRAT ESTRAT@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLBOR FLBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLBORTRA FLBORTRA@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLBOR_SIS FLBOR_SIS@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLUDP FLUDP@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLUDPT FLUDPT@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLUER FLUER@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLUERT FLUERT@endlink, 
-!> @link DECLARATIONS_SISYPHE::FLUER_VASE FLUER_VASE@endlink, 
-!> @link DECLARATIONS_SISYPHE::FW FW@endlink, 
-!> @link DECLARATIONS_SISYPHE::HCLIP HCLIP@endlink, 
-!> @link DECLARATIONS_SISYPHE::HCPL HCPL@endlink, 
-!> @link DECLARATIONS_SISYPHE::HIDING HIDING@endlink, 
-!> @link DECLARATIONS_SISYPHE::HN HN@endlink, 
-!> @link DECLARATIONS_SISYPHE::HPROP HPROP@endlink, 
-!> @link DECLARATIONS_SISYPHE::HW HW@endlink, 
-!> @link DECLARATIONS_SISYPHE::IELMH_SIS IELMH_SIS@endlink, 
-!> @link DECLARATIONS_SISYPHE::IELMT IELMT@endlink, 
-!> @link DECLARATIONS_SISYPHE::IFAMAS IFAMAS@endlink, 
-!> @link DECLARATIONS_SISYPHE::INDIC INDIC@endlink, 
-!> @link DECLARATIONS_SISYPHE::IT1 IT1@endlink, 
-!> @link DECLARATIONS_SISYPHE::IT2 IT2@endlink, 
-!> @link DECLARATIONS_SISYPHE::IT3 IT3@endlink, 
-!> @link DECLARATIONS_SISYPHE::IT4 IT4@endlink, 
-!> @link DECLARATIONS_SISYPHE::KS KS@endlink, 
-!> @link DECLARATIONS_SISYPHE::KSP KSP@endlink, 
-!> @link DECLARATIONS_SISYPHE::KSR KSR@endlink, 
-!> @link DECLARATIONS_SISYPHE::KX KX@endlink, 
-!> @link DECLARATIONS_SISYPHE::KY KY@endlink, 
-!> @link DECLARATIONS_SISYPHE::KZ KZ@endlink, 
-!> @link DECLARATIONS_SISYPHE::LAYTHI LAYTHI@endlink, 
-!> @link DECLARATIONS_SISYPHE::LICBOR LICBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::LIEBOR LIEBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::LIHBOR LIHBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::LIMDIF LIMDIF@endlink, 
-!> @link DECLARATIONS_SISYPHE::LIMPRO LIMPRO@endlink, 
-!> @link DECLARATIONS_SISYPHE::LIMTEC LIMTEC@endlink, 
-!> @link DECLARATIONS_SISYPHE::LIQBOR LIQBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::MASK MASK@endlink, 
-!> @link DECLARATIONS_SISYPHE::MASKB MASKB@endlink, 
-!> @link DECLARATIONS_SISYPHE::MASKEL MASKEL@endlink, 
-!> @link DECLARATIONS_SISYPHE::MASKPT MASKPT@endlink, 
-!> @link DECLARATIONS_SISYPHE::MASKTR MASKTR@endlink, 
-!> @link DECLARATIONS_SISYPHE::MBOR MBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::MESH MESH@endlink, 
-!> @link DECLARATIONS_SISYPHE::MSK MSK@endlink, 
-!> @link DECLARATIONS_SISYPHE::MSKTMP MSKTMP@endlink, 
-!> @link DECLARATIONS_SISYPHE::MS_SABLE MS_SABLE@endlink, 
-!> @link DECLARATIONS_SISYPHE::MS_VASE MS_VASE@endlink, 
-!> @link DECLARATIONS_SISYPHE::MU MU@endlink, 
-!> @link DECLARATIONS_SISYPHE::NCP NCP@endlink, 
-!> @link DECLARATIONS_SISYPHE::NLAYER NLAYER@endlink, 
-!> @link DECLARATIONS_SISYPHE::NOMBLAY NOMBLAY@endlink, 
-!> @link DECLARATIONS_SISYPHE::NPRIV NPRIV@endlink, 
-!> @link DECLARATIONS_SISYPHE::NSICLA NSICLA@endlink, 
-!> @link DECLARATIONS_SISYPHE::NUMLIQ NUMLIQ@endlink, 
-!> @link DECLARATIONS_SISYPHE::NVARCL NVARCL@endlink, 
-!> @link DECLARATIONS_SISYPHE::OPTASS OPTASS@endlink, 
-!> @link DECLARATIONS_SISYPHE::PRIVE PRIVE@endlink, 
-!> @link DECLARATIONS_SISYPHE::PRODUC PRODUC@endlink, 
-!> @link DECLARATIONS_SISYPHE::QBOR QBOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::QS QS@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCL QSCL@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCLX QSCLX@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCLXC QSCLXC@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCLXS QSCLXS@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCLY QSCLY@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCLYC QSCLYC@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCLYS QSCLYS@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCL_C QSCL_C@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSCL_S QSCL_S@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSX QSX@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSXC QSXC@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSXS QSXS@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSY QSY@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSYC QSYC@endlink, 
-!> @link DECLARATIONS_SISYPHE::QSYS QSYS@endlink, 
-!> @link DECLARATIONS_SISYPHE::QS_C QS_C@endlink, 
-!> @link DECLARATIONS_SISYPHE::QS_S QS_S@endlink, 
-!> @link DECLARATIONS_SISYPHE::QU QU@endlink, 
-!> @link DECLARATIONS_SISYPHE::QV QV@endlink, 
-!> @link DECLARATIONS_SISYPHE::S S@endlink, 
-!> @link DECLARATIONS_SISYPHE::SALFA SALFA@endlink, 
-!> @link DECLARATIONS_SISYPHE::SEDCO SEDCO@endlink, 
-!> @link DECLARATIONS_SISYPHE::SISSEC SISSEC@endlink, 
-!> @link DECLARATIONS_SISYPHE::SIS_FILES SIS_FILES@endlink, 
-!> @link DECLARATIONS_SISYPHE::SLVSED SLVSED@endlink, 
-!> @link DECLARATIONS_SISYPHE::SLVTRA SLVTRA@endlink, 
-!> @link DECLARATIONS_SISYPHE::SORLEO SORLEO@endlink, 
-!> @link DECLARATIONS_SISYPHE::SPHERI SPHERI@endlink, 
-!> @link DECLARATIONS_SISYPHE::TB TB@endlink, 
-!> @link DECLARATIONS_SISYPHE::TE1 TE1@endlink, 
-!> @link DECLARATIONS_SISYPHE::TE2 TE2@endlink, 
-!> @link DECLARATIONS_SISYPHE::TE3 TE3@endlink, 
-!> @link DECLARATIONS_SISYPHE::THETAW THETAW@endlink, 
-!> @link DECLARATIONS_SISYPHE::TOB TOB@endlink, 
-!> @link DECLARATIONS_SISYPHE::TOBW TOBW@endlink, 
-!> @link DECLARATIONS_SISYPHE::TOCE_MIXTE TOCE_MIXTE@endlink, 
-!> @link DECLARATIONS_SISYPHE::TW TW@endlink, 
-!> @link DECLARATIONS_SISYPHE::U2D U2D@endlink, 
-!> @link DECLARATIONS_SISYPHE::UCONV UCONV@endlink, 
-!> @link DECLARATIONS_SISYPHE::UNLADM UNLADM@endlink, 
-!> @link DECLARATIONS_SISYPHE::UNORM UNORM@endlink, 
-!> @link DECLARATIONS_SISYPHE::UNSV2D UNSV2D@endlink, 
-!> @link DECLARATIONS_SISYPHE::UW UW@endlink, 
-!> @link DECLARATIONS_SISYPHE::V2D V2D@endlink, 
-!> @link DECLARATIONS_SISYPHE::V2DPAR V2DPAR@endlink, 
-!> @link DECLARATIONS_SISYPHE::VARCL VARCL@endlink, 
-!> @link DECLARATIONS_SISYPHE::VARSOR VARSOR@endlink, 
-!> @link DECLARATIONS_SISYPHE::VCONV VCONV@endlink, 
-!> @link DECLARATIONS_SISYPHE::VF VF@endlink, 
-!> @link DECLARATIONS_SISYPHE::VOLU2D VOLU2D@endlink, 
-!> @link DECLARATIONS_SISYPHE::W1 W1@endlink, 
-!> @link DECLARATIONS_SISYPHE::Z Z@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZF ZF@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZFCL ZFCL@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZFCL_C ZFCL_C@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZFCL_S ZFCL_S@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZF_C ZF_C@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZF_S ZF_S@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZR ZR@endlink, 
-!> @link DECLARATIONS_SISYPHE::ZREF ZREF@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> CFG, CFGBOR, I, IELBT, IELM0, IELM0_SUB, IELM1, K, NTR
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> DIM, IKLE, LV, MXELVS, MXPTVS, NELEM, NELMAX, NPMAX, NPOIN, NPTFR, NPTFRX, T1, T10, T11, T12, T13, T14, T2, T3, T4, T5, T6, T7, T8, T9, TYPELM, X, Y
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> ADDBLO(), ALLBLO(), ALLMAT(), ALLVEC(), ALLVEC_IN_BLOCK(), ALMESH(), IELBOR(), NBFEL(), OS(), Q(), READ_SECTIONS_SISYPHE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>HOMERE_SISYPHE(), HOMERE_TELEMAC2D(), HOMERE_TELEMAC3D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 19/08/2010
-!> </td><td> JMH
-!> </td><td> SEE MS_VASE (FOR MIXED SEDIMENTS)
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 18/09/2009
-!> </td><td> JMH
-!> </td><td> SEE AVAI AND LAYTHI
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 16/09/2009
-!> </td><td> JMH
-!> </td><td> AVAIL(NPOIN,10,NSICLA)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 16/06/2008
-!> </td><td> JMH
-!> </td><td> ADDED BOUNDARY_COLOUR
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 10/06/2002
-!> </td><td> C. MACHET
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 11/09/1995
-!> </td><td> C. LENORMANT; J.-M. HERVOUET
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-C
-C#######################################################################
-
-                        SUBROUTINE POINT_SISYPHE
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ************************
+                     SUBROUTINE POINT_SISYPHE
+!                    ************************
+!
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    ALLOCATES STRUCTURES.
+!
+!history  C. LENORMANT; J.-M. HERVOUET
+!+        11/09/1995
+!+        
+!+   
+!
+!history  C. MACHET
+!+        10/06/2002
+!+        
+!+   
+!
+!history  JMH
+!+        16/06/2008
+!+        
+!+   ADDED BOUNDARY_COLOUR 
+!
+!history  JMH
+!+        16/09/2009
+!+        
+!+   AVAIL(NPOIN,10,NSICLA) 
+!
+!history  JMH
+!+        18/09/2009
+!+        V6P0
+!+   SEE AVAI AND LAYTHI 
+!
+!history  JMH
+!+        19/08/2010
+!+        V6P0
+!+   SEE MS_VASE (FOR MIXED SEDIMENTS) 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_SISYPHE
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 
-
       ! 2/ LOCAL VARIABLES
       ! ------------------
       INTEGER :: I,K,NTR,IELM0,IELM1,IELBT,IELM0_SUB
       INTEGER :: CFG(2),CFGBOR(2)
-
-C-----------------------------------------------------------------------
-C
-C-----------------------------------------------------------------------
-
+!-----------------------------------------------------------------------
+!
+!-----------------------------------------------------------------------
       IF (LNG == 1) WRITE(LU,11)
       IF (LNG == 2) WRITE(LU,12)
-
       ! ************************************** !
       ! I - DISCRETISATION AND TYPE OF STORAGE !
       ! ************************************** !
@@ -286,20 +77,16 @@ C-----------------------------------------------------------------------
       IELM1     = 11
       IELBT     = IELBOR(IELMT,1)
       IELM0_SUB = 10*(IELMT/10)
-
       CFG(1)    = OPTASS
       CFG(2)    = PRODUC
       CFGBOR(1) = 1 ! CFG IMPOSED FOR BOUNDARY MATRICES
       CFGBOR(2) = 1 ! CFG IMPOSED FOR BOUNDARY MATRICES
-
       IF(VF) EQUA(1:15)='SAINT-VENANT VF'
-
       ! ******************************************* !
       ! II - ALLOCATES THE MESH STRUCTURE           !
       ! ******************************************* !
       CALL ALMESH(MESH,'MESH_S',IELMT,SPHERI,CFG,
      &            SIS_FILES(SISGEO)%LU,EQUA)
-
       IKLE  => MESH%IKLE
       X     => MESH%X%R
       Y     => MESH%Y%R
@@ -314,7 +101,6 @@ C-----------------------------------------------------------------------
       MXPTVS=> MESH%MXPTVS
       MXELVS=> MESH%MXELVS
       LV    => MESH%LV
-
 
       ! ******************** !
       ! III - REAL ARRAYS    !
@@ -383,7 +169,7 @@ C-----------------------------------------------------------------------
       CALL BIEF_ALLVEC(1,AFBOR , 'AFBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,BFBOR , 'BFBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBOR , 'FLBOR ', IELBT, 1, 1,MESH)
-C     BOUNDARY FLUX FOR CALL TO CVDFTR
+!     BOUNDARY FLUX FOR CALL TO CVDFTR
       CALL BIEF_ALLVEC(1,FLBOR_SIS , 'FLBORS', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBORTRA  , 'FLBTRA', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,CSTAEQ, 'CSTAEQ', IELMT, 1, 2,MESH)
@@ -404,7 +190,7 @@ C     BOUNDARY FLUX FOR CALL TO CVDFTR
         CALL BIEF_ALLVEC(1,MASKPT,'MASKPT', 0 , 1 , 0 ,MESH)
       ENDIF
 !
-C     FOR MIXED SEDIMENTS
+!     FOR MIXED SEDIMENTS
 !
       IF(SEDCO(1).OR.SEDCO(2)) THEN
 !      IF(MIXTE.OR.TASS) THEN
@@ -441,26 +227,22 @@ C     FOR MIXED SEDIMENTS
       CALL BIEF_ALLVEC(2, IT3   , 'IT3   ', IELM1          , 1, 2,MESH)
       CALL BIEF_ALLVEC(2, IT4   , 'IT4   ', IELM1          , 1, 2,MESH)
       CALL BIEF_ALLVEC(2, NLAYER, 'NLAYE ', IELMT          , 1, 2,MESH) ! NUMBER OF LAYERS
-
       IF(VF) THEN
         CALL BIEF_ALLVEC(2,BREACH,'BREACH',IELM1,1,2,MESH)
       ELSE
         CALL BIEF_ALLVEC(2,BREACH,'BREACH',0,1,0,MESH)
       ENDIF
-
       IF(MSK) THEN
         CALL BIEF_ALLVEC(2,IFAMAS,'IFAMAS',
-     *                   IELM0,BIEF_NBFEL(IELM0,MESH),1,MESH)
+     &                   IELM0,BIEF_NBFEL(IELM0,MESH),1,MESH)
       ELSE
         CALL BIEF_ALLVEC(2,IFAMAS,'IFAMAS',0,1,0,MESH)
       ENDIF
-
       ! ******************* !
       ! V - BLOCK OF ARRAYS !
       ! ******************* !
       ALLOCATE(AVAIL(NPOIN,10,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
       ALLOCATE(ES(NPOIN,10))           ! THICKNESS OF EACH CLASS ???
-
       !================================================================!
       CALL ALLBLO(MASKTR, 'MASKTR') ! MASK OF THE BOUNDARY CONDITIONS
       CALL ALLBLO(EBOR  , 'EBOR  ') ! BOUNDARY CONDITIONS
@@ -495,12 +277,12 @@ C     FOR MIXED SEDIMENTS
       CALL BIEF_ALLVEC_IN_BLOCK(EBOR  ,NSICLA,1,'EBOR  ',IELBT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QBOR  ,NSICLA,1,'QBOR  ',IELBT,1,2,MESH)
 !
-C     JMH 18/09/09 AVAI ALLOCATED WITH SIZE 0 AND POINTING TO
-C                  RELEVANT SECTIONS OF AVAIL
-C     CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
-C    *                          1,'AVAI  ',IELMT,1,2,MESH)
+!     JMH 18/09/09 AVAI ALLOCATED WITH SIZE 0 AND POINTING TO
+!                  RELEVANT SECTIONS OF AVAIL
+!     CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
+!    *                          1,'AVAI  ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
-     *                          1,'AVAI  ',    0,1,0,MESH)
+     &                          1,'AVAI  ',    0,1,0,MESH)
       DO I=1,NSICLA
         DO K=1,NOMBLAY
           AVAI%ADR(K+(I-1)*NOMBLAY)%P%R=>AVAIL(1:NPOIN,K,I)
@@ -508,11 +290,11 @@ C    *                          1,'AVAI  ',IELMT,1,2,MESH)
           AVAI%ADR(K+(I-1)*NOMBLAY)%P%DIM1=NPOIN
         ENDDO
       ENDDO
-C     LAYTHI ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
-C     CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,
-C    *                          1, 'LAYTHI', IELMT, 1, 2,MESH)
+!     LAYTHI ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
+!     CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,
+!    *                          1, 'LAYTHI', IELMT, 1, 2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,
-     *                          1, 'LAYTHI',     0, 1, 0,MESH)
+     &                          1, 'LAYTHI',     0, 1, 0,MESH)
       DO K=1,NOMBLAY
         LAYTHI%ADR(K)%P%R=>ES(1:NPOIN,K)
         LAYTHI%ADR(K)%P%MAXDIM1=NPOIN
@@ -543,11 +325,9 @@ C    *                          1, 'LAYTHI', IELMT, 1, 2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(CST   ,NSICLA,1,'CST   ',IELMT,1,2,MESH)
       !================================================================!
 
-
       ! ************* !
       ! VI - MATRICES !
       ! ************* !
-
 
       !================================================================!
       CALL BIEF_ALLMAT(AM1_S,'AM1_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
@@ -555,21 +335,20 @@ C    *                          1, 'LAYTHI', IELMT, 1, 2,MESH)
       CALL BIEF_ALLMAT(MBOR ,'MBOR  ',IELBT,IELBT,CFGBOR,'Q','Q',MESH) ! SUSPENSION BOUNDRAY MATRIX
       !================================================================!
 
-
       ! ****************** !
       ! VII - OTHER ARRAYS !
       ! ****************** !
 !
-C     NTR SHOULD AT LEAST BE THE NUMBER OF VARIABLES IN VARSOR THAT WILL BE READ IN
-C     VALIDA. HERE UP TO THE LAYER THICKNESSES
-CV 2010 +1
+!     NTR SHOULD AT LEAST BE THE NUMBER OF VARIABLES IN VARSOR THAT WILL BE READ IN
+!     VALIDA. HERE UP TO THE LAYER THICKNESSES
+!V 2010 +1
       NTR   = 27+(NOMBLAY+4)*NSICLA+NOMBLAY+NPRIV
       IF(SLVSED%SLV == 7) NTR = MAX(NTR,2+2*SLVSED%KRYLOV)
       IF(SLVTRA%SLV == 7) NTR = MAX(NTR,2+2*SLVTRA%KRYLOV)
       IF(3*(SLVSED%PRECON/3) == SLVSED%PRECON) NTR = NTR + 2 ! IF PRECOND. BLOC-DIAG (+2 DIAG)
       IF(3*(SLVTRA%PRECON/3) == SLVTRA%PRECON) NTR = NTR + 2 ! IF PRECOND. BLOC-DIAG (+2 DIAG)
 !
-C     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
+!     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
       CALL BIEF_ALLVEC(1, W1 , 'W1    ', IELM0    , 1,1,MESH) ! WORK ARRAY
       CALL BIEF_ALLVEC(1, TE1, 'TE1   ', IELM0_SUB, 1,1,MESH) ! WORK ARRAY BY ELEMENT
       CALL BIEF_ALLVEC(1, TE2, 'TE2   ', IELM0_SUB, 1,1,MESH) ! WORK ARRAY BY ELEMENT
@@ -583,12 +362,12 @@ C     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
       CALL BIEF_ALLVEC_IN_BLOCK(VARCL,NVARCL,1,'CL    ',IELMT,1,2,MESH)
       IF(NPRIV.GT.0) THEN
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,MAX(NPRIV,4),
-     *                            1,'PRIV  ',IELMT,1, 2,MESH)
+     &                            1,'PRIV  ',IELMT,1, 2,MESH)
       ELSE
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,4           ,
-     *                            1,'PRIV  ',    0,1, 0,MESH)
+     &                            1,'PRIV  ',    0,1, 0,MESH)
       ENDIF
-C     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
+!     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
       CALL OS('X=0     ',X=PRIVE)
 !
       ! ************ !
@@ -635,55 +414,55 @@ C     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
       CALL ADDBLO(VARSOR, ESOMT )             ! 18
       CALL ADDBLO(VARSOR, KS)                 ! 19
       CALL ADDBLO(VARSOR, MU)                 ! 20
-CV 2010
+!V 2010
       CALL ADDBLO(VARSOR, ACLADM)             ! 21
-C CV +1
-C     AVAI: FROM 22 TO 21+NOMBLAY*NSICLA
-C
+! CV +1
+!     AVAI: FROM 22 TO 21+NOMBLAY*NSICLA
+!
       DO I = 1,NOMBLAY*NSICLA
         CALL ADDBLO(VARSOR, AVAI%ADR(I)%P)
       ENDDO
-C CV +1
-C     QSCL: FROM 22+NOMBLAY*NSICLA TO 21+(NOMBLAY+1)*NSICLA
-C
+! CV +1
+!     QSCL: FROM 22+NOMBLAY*NSICLA TO 21+(NOMBLAY+1)*NSICLA
+!
       DO I = 1, NSICLA
         CALL ADDBLO(VARSOR, QSCL%ADR(I)%P)
       ENDDO
-C
-C     CS: FROM 22+(NOMBLAY+1)*NSICLA TO 21+(NOMBLAY+2)*NSICLA
-C
+!
+!     CS: FROM 22+(NOMBLAY+1)*NSICLA TO 21+(NOMBLAY+2)*NSICLA
+!
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR, CS%ADR(I)%P)
       ENDDO
-CV 2010 ! +1      
+!V 2010 ! +1
       CALL ADDBLO(VARSOR,QS_C)               ! 22+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSXC)               ! 23+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSYC)               ! 24+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QS_S)               ! 25+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSXS)               ! 26+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSYS)               ! 27+(NOMBLAY+2)*NSICLA
-C
-C     QSCL_C: FROM 28+(NOMBLAY+2)*NSICLA TO 27+(NOMBLAY+3)*NSICLA
-C
+!
+!     QSCL_C: FROM 28+(NOMBLAY+2)*NSICLA TO 27+(NOMBLAY+3)*NSICLA
+!
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR,QSCL_C%ADR(I)%P)
       ENDDO
-C
-C     QSCL_S: FROM 28+(NOMBLAY+3)*NSICLA TO 27+(NOMBLAY+4)*NSICLA
-C
+!
+!     QSCL_S: FROM 28+(NOMBLAY+3)*NSICLA TO 27+(NOMBLAY+4)*NSICLA
+!
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR,QSCL_S%ADR(I)%P)
       ENDDO
-C
-C     LAYTHI: FROM 28+(NOMBLAY+4)*NSICLA TO 27+(NOMBLAY+4)*NSICLA+NOMBLAY
-C
+!
+!     LAYTHI: FROM 28+(NOMBLAY+4)*NSICLA TO 27+(NOMBLAY+4)*NSICLA+NOMBLAY
+!
       DO I=1,NOMBLAY
         CALL ADDBLO(VARSOR,LAYTHI%ADR(I)%P) ! 27+(NOMBLAY+4)*NSICLA+NOMBLAY
       ENDDO
-C
-C     PRIVE: FROM 28+(NOMBLAY+4)*NSICLA+NOMBLAY TO
-C                 27+(NOMBLAY+4)*NSICLA+MAX(4,NPRIV)+NOMBLAY
-C
+!
+!     PRIVE: FROM 28+(NOMBLAY+4)*NSICLA+NOMBLAY TO
+!                 27+(NOMBLAY+4)*NSICLA+MAX(4,NPRIV)+NOMBLAY
+!
       DO I=1,MAX(4,NPRIV)
         CALL ADDBLO(VARSOR,PRIVE%ADR(I)%P)
       ENDDO
@@ -691,15 +470,15 @@ C
       IF(VARCL%N.GT.0) THEN
         DO I=1,VARCL%N
           CALL ADDBLO(VARSOR,VARCL%ADR(I)%P)
-! CV 2010 +1         
+! CV 2010 +1
           SORLEO(27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY+I)=.TRUE.
         ENDDO
       ENDIF
 !
 !
 !-----------------------------------------------------------------------
-C !JAJ #### IF REQUIRED, HERE WE CAN READ THE INPUT SECTIONS FILE
-C      AND MODIFY NCP AND CTRLSC(1:NCP) ACCORDINGLY IN READ_SECTIONS
+! !JAJ #### IF REQUIRED, HERE WE CAN READ THE INPUT SECTIONS FILE
+!      AND MODIFY NCP AND CTRLSC(1:NCP) ACCORDINGLY IN READ_SECTIONS
 !
       IF(TRIM(SIS_FILES(SISSEC)%NAME).NE.'') THEN
         IF(LNG.EQ.1) THEN
@@ -731,17 +510,14 @@ C      AND MODIFY NCP AND CTRLSC(1:NCP) ACCORDINGLY IN READ_SECTIONS
 21    FORMAT(1X,///,21X,'****************************************',/,
      &21X,              '* FIN DE L''ALLOCATION DE LA MEMOIRE  : *',/,
      &21X,              '****************************************',/)
-
 12    FORMAT(1X,///,21X,'*******************************',/,
      &21X,              '*     MEMORY ORGANISATION     *',/,
      &21X,              '*******************************',/)
 22    FORMAT(1X,///,21X,'*************************************',/,
      &21X,              '*    END OF MEMORY ORGANIZATION:    *',/,
      &21X,              '*************************************',/)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C######################################################################

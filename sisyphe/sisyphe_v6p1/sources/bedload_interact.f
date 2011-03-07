@@ -1,117 +1,51 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE FRICTION COEFFICIENT UNDER
-!>                WAVE AND CURRENT COMBINED ACTION.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, INTERFACE_SISYPHE
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> ALPHAW, CF, FCW, FW, NPOIN, TOB, TOBW, UCMOY, UW, XMVE
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> AX, BX, CSAL, CSAL1, CSAL2, CSAL3, I, LOGF, MX, NX, PX, QX, TAUCW, TX, UCW2, ZERO
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_BEDLOAD_INTERACT
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>BEDLOAD_BAILARD(), BEDLOAD_DIBWAT()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 23/09/2010
-!> </td><td> C. VILLARET (LNHE)
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.7                                       </center>
-!> </td><td> 01/10/2003
-!> </td><td> C. VILLARET (LNHE)
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>ALPHAW
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>CF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>FCW
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>FW
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPOIN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TOB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TOBW
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>UCMOY
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>UW
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XMVE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                       SUBROUTINE BEDLOAD_INTERACT
+!                    ***************************
+                     SUBROUTINE BEDLOAD_INTERACT
+!                    ***************************
+!
      &(UCMOY,TOBW,TOB,ALPHAW,FW,CF,UW,NPOIN,XMVE,FCW)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ALPHAW         |---| 
-C| CF             |---| 
-C| FCW            |---| 
-C| FW             |---| 
-C| NPOIN          |---| 
-C| TOB            |---| 
-C| TOBW           |---| 
-C| UCMOY          |---| 
-C| UW             |---| 
-C| XMVE           |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE FRICTION COEFFICIENT UNDER
+!+                WAVE AND CURRENT COMBINED ACTION.
+!
+!history  C. VILLARET (LNHE)
+!+        01/10/2003
+!+        V5P7
+!+   
+!
+!history  C. VILLARET (LNHE)
+!+        23/09/2010
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ALPHAW         |---| 
+!| CF             |---| 
+!| FCW            |---| 
+!| FW             |---| 
+!| NPOIN          |---| 
+!| TOB            |---| 
+!| TOBW           |---| 
+!| UCMOY          |---| 
+!| UW             |---| 
+!| XMVE           |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE INTERFACE_SISYPHE,EX_BEDLOAD_INTERACT => BEDLOAD_INTERACT
       USE BIEF
       IMPLICIT NONE
@@ -135,12 +69,12 @@ C
       DOUBLE PRECISION            :: CSAL,CSAL1, CSAL2, CSAL3
       DOUBLE PRECISION            :: AX, MX, NX, BX, PX, QX
       DOUBLE PRECISION            :: UCW2, TAUCW,ZERO
-C
+!
       INTRINSIC MAX
 !
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
 !
@@ -182,6 +116,3 @@ C                               PROGRAM                                !
 !
       RETURN
       END
-C
-C#######################################################################
-C

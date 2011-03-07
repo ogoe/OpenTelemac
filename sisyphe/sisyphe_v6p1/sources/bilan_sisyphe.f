@@ -1,257 +1,134 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE MASS BALANCE.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @note  T2 IS NOT USED
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> DT, DZF_GF, E, ESOMT, IELMU, INFO, LGRAFED, MASKEL, MASS_GF, MESH, MSK, NFRLIQ, NPTFR, NSICLA, NUMLIQ, QSCLXC, QSCLYC, QSX, QSY, S, T1, T2, VCUMU, VOLTOT, ZFCL_C
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> FLT_BOUND, FLUXT, I, IFRLIQ, IPTFR, MASST, RCUMU, RMASCLA, RMASSE, VCUMUCLA
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> BIEF_SUM(), IELBOR(), P_DSUM(), VECTOR()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>SISYPHE()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td>
-!> </td><td> CMGDL
-!> </td><td> CHANGED FOR GRADED SEDIMENT
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>DT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DZF_GF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>E
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ESOMT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IELMU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>INFO
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LGRAFED
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASKEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASS_GF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MESH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MSK
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NFRLIQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NSICLA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NUMLIQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>QSCLXC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>QSCLYC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>QSX
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>QSY
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>S
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T1
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>VCUMU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>VOLTOT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ZFCL_C
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE BILAN_SISYPHE
+!                    ************************
+                     SUBROUTINE BILAN_SISYPHE
+!                    ************************
+!
      &( E      , ESOMT  , QSX    , QSY    , MESH   , MSK    , MASKEL ,
      &  T1     , T2     , S      , IELMU  , VCUMU  , DT     , NPTFR  ,
      &  INFO   , ZFCL_C , QSCLXC , QSCLYC , NSICLA ,
      &  VOLTOT , DZF_GF , MASS_GF, LGRAFED, NUMLIQ , NFRLIQ)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| DT             |---| 
-C| DZF_GF         |---| 
-C| E             |---| 
-C| ESOMT          |---| 
-C| IELMU          |---| 
-C| INFO           |---| 
-C| LGRAFED        |---| 
-C| MASKEL         |---| 
-C| MASS_GF        |---| 
-C| MESH           |---| 
-C| MSK            |---| 
-C| NFRLIQ         |---| 
-C| NPTFR          |---| 
-C| NSICLA         |---| 
-C| NUMLIQ         |---| 
-C| QSCLXC         |---| 
-C| QSCLYC         |---| 
-C| QSX            |---| 
-C| QSY            |---| 
-C| S             |---| 
-C| T1             |---| 
-C| T2             |---| 
-C| VCUMU          |---| 
-C| VOLTOT         |---| 
-C| ZFCL_C         |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE MASS BALANCE.
+!
+!note     T2 IS NOT USED
+!
+!history  CMGDL
+!+        
+!+        V5P9
+!+   CHANGED FOR GRADED SEDIMENT 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DT             |---| 
+!| DZF_GF         |---| 
+!| E              |---| 
+!| ESOMT          |---| 
+!| IELMU          |---| 
+!| INFO           |---| 
+!| LGRAFED        |---| 
+!| MASKEL         |---| 
+!| MASS_GF        |---| 
+!| MESH           |---| 
+!| MSK            |---| 
+!| NFRLIQ         |---| 
+!| NPTFR          |---| 
+!| NSICLA         |---| 
+!| NUMLIQ         |---| 
+!| QSCLXC         |---| 
+!| QSCLYC         |---| 
+!| QSX            |---| 
+!| QSY            |---| 
+!| S              |---| 
+!| T1             |---| 
+!| T2             |---| 
+!| VCUMU          |---| 
+!| VOLTOT         |---| 
+!| ZFCL_C         |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)          :: NPTFR,NFRLIQ,IELMU,NSICLA
       INTEGER, INTENT(IN)          :: NUMLIQ(NPTFR)
       DOUBLE PRECISION, INTENT(IN) :: DT
       LOGICAL, INTENT(IN)          :: MSK, INFO
-C
+!
       LOGICAL,          INTENT(IN)    :: LGRAFED
       DOUBLE PRECISION, INTENT(INOUT) :: MASS_GF,VCUMU
       DOUBLE PRECISION, INTENT(IN)    :: VOLTOT(10)
-C
-C-----------------------------------------------------------------------
-C
-C     VECTOR STRUCTURES
-C
+!
+!-----------------------------------------------------------------------
+!
+!     VECTOR STRUCTURES
+!
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,S,ZFCL_C,QSCLXC,QSCLYC
       TYPE(BIEF_OBJ), INTENT(IN)    :: E,ESOMT,QSX,QSY,DZF_GF
       TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2
-C
-C-----------------------------------------------------------------------
-C
-C     MESH STRUCTURES
-C
+!
+!-----------------------------------------------------------------------
+!
+!     MESH STRUCTURES
+!
       TYPE(BIEF_MESH) :: MESH
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I,IFRLIQ,IPTFR
       DOUBLE PRECISION RMASSE,RCUMU,RMASCLA(10)
       DOUBLE PRECISION VCUMUCLA(10),MASST,FLUXT
-C     300 STANDS FOR MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
+!     300 STANDS FOR MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
       DOUBLE PRECISION FLT_BOUND(300)
-C
+!
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
-C
-C-----------------------------------------------------------------------
-C
-C     COMPUTES THE EVOLUTION (E)
-C
+!
+!-----------------------------------------------------------------------
+!
+!     COMPUTES THE EVOLUTION (E)
+!
       CALL VECTOR(T1,'=','MASVEC          ',IELMU,
      &            1.D0,E,S,S,S,S,S,MESH,MSK,MASKEL)
       RMASSE = BIEF_SUM(T1)
       IF(NCSIZE.GT.1) RMASSE = P_DSUM(RMASSE)
-C
-C=======================================================================
-C
-C     COMPUTES THE INTEGRAL OF EVOLUTION (ESOMT)
-C
+!
+!=======================================================================
+!
+!     COMPUTES THE INTEGRAL OF EVOLUTION (ESOMT)
+!
       CALL VECTOR(T1,'=','MASVEC          ',IELMU,
      &            1.D0,ESOMT,S,S,S,S,S,MESH,MSK,MASKEL)
       RCUMU = BIEF_SUM(T1)
       IF(NCSIZE.GT.1) RCUMU = P_DSUM(RCUMU)
-C
-C=======================================================================
-C
-C     COMPUTES THE FLUXES AT THE BOUNDARIES
-C
+!
+!=======================================================================
+!
+!     COMPUTES THE FLUXES AT THE BOUNDARIES
+!
       CALL VECTOR(T1,'=','FLUBOR          ',IELBOR(IELMU,1),
      &            1.D0,S,S,S,QSX,QSY,S,MESH,MSK,MASKEL)
-C
+!
       FLUXT=0.D0
-C
+!
       IF(NFRLIQ.GT.0) THEN
         DO IFRLIQ=1,NFRLIQ
           FLT_BOUND(IFRLIQ)=0.D0
@@ -273,29 +150,29 @@ C
           FLUXT=FLUXT+FLT_BOUND(IFRLIQ)
         ENDDO
       ENDIF
-C
+!
       VCUMU = VCUMU - FLUXT*DT
-C
-C     BALANCE IN EXTENDED GRANULOMETRY
-C
+!
+!     BALANCE IN EXTENDED GRANULOMETRY
+!
       IF(NSICLA.GT.1) THEN
-C
+!
         DO I=1,NSICLA
-C
-C       COMPUTES THE EVOLUTION PER CLASS
-C
+!
+!       COMPUTES THE EVOLUTION PER CLASS
+!
         CALL VECTOR(T1,'=','MASVEC          ',IELMU,
      &              1.D0,ZFCL_C%ADR(I)%P,S,S,S,S,S,
      &              MESH,MSK,MASKEL)
         RMASCLA(I) = BIEF_SUM(T1)
         IF(NCSIZE.GT.1) RMASCLA(I) = P_DSUM(RMASCLA(I))
-C
-C       COMPUTES THE FREE FLUXES BY CLASS
-C
+!
+!       COMPUTES THE FREE FLUXES BY CLASS
+!
         CALL VECTOR(T1,'=','FLUBOR          ',IELBOR(IELMU,1),
      &              1.D0,S,S,S,QSCLXC%ADR(I)%P,QSCLYC%ADR(I)%P,
      &              S,MESH,MSK,MASKEL)
-C
+!
         FLUXT=0.D0
         IF(NFRLIQ.GT.0) THEN
           IF(NPTFR.GT.0) THEN
@@ -308,29 +185,29 @@ C
           ENDIF
           IF(NCSIZE.GT.1) FLUXT=P_DSUM(FLUXT)
         ENDIF
-C
+!
         VCUMUCLA(I) = - FLUXT*DT
-C
+!
         ENDDO
-C
+!
       ENDIF
-C
-C=======================================================================
-C
-C     GRAIN-FEEDING
-C     IF (LGRAFED) THEN
-C        CALL VECTOR(T1,'=','MASVEC          ',IELMU,
-C    &               1.D0,DZF_GF,S,S,S,S,S,MESH,MSK,MASKEL)
-C        MASST = BIEF_SUM(T1)
-C        IF(NCSIZE.GT.1) MASST = P_DSUM(MASST)
-C        MASS_GF = MASS_GF + MASST
-C     ENDIF
-C     IF(DREDGESIM) ...   ?????
-C
-C  WRITES OUT THE BALANCE
-C
+!
+!=======================================================================
+!
+!     GRAIN-FEEDING
+!     IF (LGRAFED) THEN
+!        CALL VECTOR(T1,'=','MASVEC          ',IELMU,
+!    &               1.D0,DZF_GF,S,S,S,S,S,MESH,MSK,MASKEL)
+!        MASST = BIEF_SUM(T1)
+!        IF(NCSIZE.GT.1) MASST = P_DSUM(MASST)
+!        MASS_GF = MASS_GF + MASST
+!     ENDIF
+!     IF(DREDGESIM) ...   ?????
+!
+!  WRITES OUT THE BALANCE
+!
       IF (INFO) THEN
-C
+!
           WRITE(LU,*)
           IF(LNG.EQ.1) THEN
             WRITE(LU,1000)
@@ -379,7 +256,7 @@ C
             ENDIF
          ENDIF
       ENDIF
-C
+!
 1000  FORMAT(1X,'BILAN DE MASSE : ')
 1010  FORMAT(1X,'SOMME DES EVOLUTIONS : ',G16.7)
 1020  FORMAT(1X,'FLUX IMPOSE          : ', G16.7,' M3/S'
@@ -408,17 +285,12 @@ C
 3011  FORMAT(1X,'SOMME DES EVOLUTIONS POUR CETTE CLASSE : ',G16.7)
 3032  FORMAT(1X,'VOLUME ENTRE DANS LE DOMAINE POUR CETTE CLASSE : '
      &       ,G16.7,' M3')
-
 4000  FORMAT(1X,'GRAIN-FEEDING A CET INSTANT       : ',G16.7)
 4010  FORMAT(1X,'GRAIN-FEEDING JUSQU''A MAINTENANT : ',G16.7)
 4001  FORMAT(1X,'GRAIN-FEEDING THIS MOMENT : ',G16.7)
 4011  FORMAT(1X,'GRAIN-FEEDING UNTIL NOW   : ',G16.7)
-
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

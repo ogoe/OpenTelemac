@@ -1,74 +1,70 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief  
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td>
-!> </td><td> C. LENORMANT; J.-M. HERVOUET; S. HADJI; C. MACHET; C. VILLARET
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE SISYPHE
+!                    ******************
+                     SUBROUTINE SISYPHE
+!                    ******************
+!
      &(PART,LOOPCOUNT,GRAFCOUNT,LISTCOUNT,TELNIT,
      & U_TEL,V_TEL,H_TEL,HN_TEL,ZF_SIS,UETCAR,CF_TEL,KS_TEL,
      & CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      & U3D,V3D,T_TEL,VISC_TEL,DT_TEL,CHARR_TEL,SUSP_TEL,
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| CF_TEL         |---| 
-C| CHARR_TEL      |---| 
-C| CODE           |---| NAME OF CALLING PROGRAMME
-C| CONSTFLOW      |---| 
-C| DM1            |---| 
-C| DT_TEL         |---| 
-C| FLBOR_TEL      |---| 
-C| GRAFCOUNT      |-->| PERIODE DE SORTIE GRAPHIQUE
-C| HN_TEL         |---| 
-C| H_TEL          |-->| 
-C| LISTCOUNT      |-->| PERIODE DE SORTIE LISTING
-C| LOOPCOUNT      |-->| NUMERO DE L'ITERATION
-C| NSIS_CFD       |---| 
-C| PART           |-->| SI -1, PAS DE COUPLAGE : ON PASSE TOUTE LA
-C|                |   | SUBROUTINE. SINON, INDIQUE LA PARTIE DE LA
-C|                |   | SUBROUTINE DANS LAQUELLE ON PASSE
-C| PERICOU        |-->| COUPLING PERIOD 
-C| SISYPHE_CFD    |---| 
-C| SOLSYS         |---| 
-C| SUSP_TEL       |---| 
-C| TELNIT         |-->| NOMBRE D'ITERATION
-C| T_TEL          |-->| CURRENT TIME IN CALLING PROGRAMME
-C| U3D,V3D        |-->| 3D VELOCITY SENT BY TELEMAC 3D
-C| UCONV_TEL      |---| 
-C| UETCAR         |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
-C| U_TEL          |-->| 
-C| VCONV_TEL      |---| 
-C| VISC_TEL       |---| 
-C| V_TEL          |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
-C| ZCONV          |---| 
-C| ZF_SIS         |<--| FOND ENVOYE A TELEMAC 2D
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief
+!
+!history  C. LENORMANT; J.-M. HERVOUET; S. HADJI; C. MACHET; C. VILLARET
+!+        
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CF_TEL         |---| 
+!| CHARR_TEL      |---| 
+!| CODE           |---| NAME OF CALLING PROGRAMME
+!| CONSTFLOW      |---| 
+!| DM1            |---| 
+!| DT_TEL         |---| 
+!| FLBOR_TEL      |---| 
+!| GRAFCOUNT      |-->| PERIODE DE SORTIE GRAPHIQUE
+!| HN_TEL         |---| 
+!| H_TEL          |-->| 
+!| LISTCOUNT      |-->| PERIODE DE SORTIE LISTING
+!| LOOPCOUNT      |-->| NUMERO DE L'ITERATION
+!| NSIS_CFD       |---| 
+!| PART           |-->| SI -1, PAS DE COUPLAGE : ON PASSE TOUTE LA
+!|                |   | SUBROUTINE. SINON, INDIQUE LA PARTIE DE LA
+!|                |   | SUBROUTINE DANS LAQUELLE ON PASSE
+!| PERICOU        |-->| COUPLING PERIOD
+!| SISYPHE_CFD    |---| 
+!| SOLSYS         |---| 
+!| SUSP_TEL       |---| 
+!| TELNIT         |-->| NOMBRE D'ITERATION
+!| T_TEL          |-->| CURRENT TIME IN CALLING PROGRAMME
+!| U3D,V3D        |-->| 3D VELOCITY SENT BY TELEMAC 3D
+!| UCONV_TEL      |---| 
+!| UETCAR         |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
+!| U_TEL          |-->| 
+!| VCONV_TEL      |---| 
+!| VISC_TEL       |---| 
+!| V_TEL          |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
+!| ZCONV          |---| 
+!| ZF_SIS         |<--| FOND ENVOYE A TELEMAC 2D
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE INTERFACE_SISYPHE, EX_SISYPHE => SISYPHE
       USE BIEF
       USE DECLARATIONS_TELEMAC
@@ -77,9 +73,9 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,           INTENT(IN)    :: PART,LOOPCOUNT,GRAFCOUNT
       INTEGER,           INTENT(IN)    :: LISTCOUNT,TELNIT,PERICOU
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
@@ -95,11 +91,11 @@ C
       INTEGER,           INTENT(IN)    :: SOLSYS
       TYPE(BIEF_OBJ),    INTENT(IN)    :: FLBOR_TEL,DM1,ZCONV
       TYPE(BIEF_OBJ),    INTENT(IN)    :: UCONV_TEL,VCONV_TEL
-C
+!
       INTEGER                        P_IMAX
       DOUBLE PRECISION P_DMAX,P_DMIN
       EXTERNAL         P_DMAX,P_DMIN,P_IMAX
-C
+!
       INTEGER, PARAMETER :: NHIST = 0
       INTEGER, PARAMETER :: NSOR = 100
       INTEGER            :: VALNIT,NLISS
@@ -125,7 +121,7 @@ C
       SAVE PASS, PASS_SUSP     ! IDENTIFIES 1ST TIMESTEP
       SAVE NIDT, NCALCU, NUMEN, NIT, VALNIT !
       SAVE AT0                 ! TIME
-C     NUMEN0 : 1ST RECORD TO READ
+!     NUMEN0 : 1ST RECORD TO READ
       INTEGER :: NUMEN0
 !
       ! VARIABLES TO READ IF COMPUTATION IS CONTINUED
@@ -133,104 +129,104 @@ C     NUMEN0 : 1ST RECORD TO READ
       ! 0 : DISCARD
       ! 1 : READ  (SEE SUBROUTINE NOMVAR)
 !
-C   HYDRO + EVOLUTION
+!   HYDRO + EVOLUTION
       DATA ALIRE /1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400*0/
-C   WAVES ONLY
+!   WAVES ONLY
       DATA ALIRH /0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400*0/
-C   NOTHING TO READ
+!   NOTHING TO READ
       DATA ALIR0 /0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,400*0/
 !
-C    FOR VALIDATION, EACH VARIABLE IN THE FILE IS COMPARED
+!    FOR VALIDATION, EACH VARIABLE IN THE FILE IS COMPARED
 !
       DATA ALIRV /500*1/
 !
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
 !
-C------------------------------------------------------------------
-C     PART 1 : INITIALISATION
-C------------------------------------------------------------------
-C
+!------------------------------------------------------------------
+!     PART 1 : INITIALISATION
+!------------------------------------------------------------------
+!
       IF(PART==0.OR.PART==-1) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'INITIALIZATION'
-C
+!
         WRITE(LU,*) 'PART 0 : INITIALISING SISYPHE'
-C
-C       INITIALISES THE CONSTANTS
-C
+!
+!       INITIALISES THE CONSTANTS
+!
         CALL INIT_CONSTANT(KARIM_HOLLY_YANG,KARMAN,PI)
-C        IF(SUSP) CALL USER_KRONE_PART(VITCE,VITCD,
-C     *                                PARTHENIADES,XMVS,CMAX)
-C
-C      READS THE WAVE DATA IN THE HYDRODYNAMIC FILE
-C
+!        IF(SUSP) CALL USER_KRONE_PART(VITCE,VITCD,
+!     *                                PARTHENIADES,XMVS,CMAX)
+!
+!      READS THE WAVE DATA IN THE HYDRODYNAMIC FILE
+!
         IF(HOULE.AND.SIS_FILES(SISCOU)%NAME(1:1).EQ.' ') THEN
           ALIRE(12)=1
           ALIRE(13)=1
           ALIRE(14)=1
         ENDIF
-C
-C       READS THE SEDIMENTOLOGICAL DATA IN THE CONTINUATION FILE
-C
+!
+!       READS THE SEDIMENTOLOGICAL DATA IN THE CONTINUATION FILE
+!
         IF(DEBU) THEN
           ALIRE(15)=1
           ALIRE(16)=1
           ALIRE(17)=1
           ALIRE(18)=1
-C         READS AVAI FROM THE PREVIOUS COMPUTATION FILE
+!         READS AVAI FROM THE PREVIOUS COMPUTATION FILE
           DO I=1,NSICLA*NOMBLAY
-CV 2010
+!V 2010
             ALIRE(21+I)=1
           ENDDO
-C         READS CS (CONCENTRATION) FROM THE PREVIOUS COMPUTATION FILE
+!         READS CS (CONCENTRATION) FROM THE PREVIOUS COMPUTATION FILE
           IF(SUSP) THEN
             DO I=1,NSICLA
-CV 2010
+!V 2010
              ALIRE(21+(NOMBLAY+1)*NSICLA+I)=1
             ENDDO
           ENDIF
-C         READS THE LAYER THICKNESSES
+!         READS THE LAYER THICKNESSES
           DO I=1,NOMBLAY
-CV 2019          
+!V 2019
             ALIRE(27+(NOMBLAY+4)*NSICLA+I)=1
           ENDDO
         ENDIF
-C
-C --------  INITIALISES (SETS TO 0) THE ARRAYS
-C
+!
+! --------  INITIALISES (SETS TO 0) THE ARRAYS
+!
         CALL INIT_ZERO
-C
-C --------  END OF INITIALISATION
-C
-C       DISCRETISATION : LINEAR FOR THE TIME BEING
-C
-C       IELMT HARD-CODED IN LECDON
-C
+!
+! --------  END OF INITIALISATION
+!
+!       DISCRETISATION : LINEAR FOR THE TIME BEING
+!
+!       IELMT HARD-CODED IN LECDON
+!
         IELMX  = MAX(IELMT,IELMH_SIS,IELMU_SIS)
         NELMAX = NELEM
-C
-C=======================================================================
-C
-C : 1          READS, PREPARES AND CONTROLS THE DATA
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+! : 1          READS, PREPARES AND CONTROLS THE DATA
+!
+!=======================================================================
+!
         RESU = .TRUE.
-C
-C       READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES
-C
+!
+!       READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'LECLIS'
         CALL LECLIS(LIEBOR%I,EBOR,
      &              MESH%NPTFR,MESH%NBOR%I,3,
@@ -239,21 +235,21 @@ C
      &              NUMLIQ%I,NSICLA,AFBOR%R,BFBOR%R,BOUNDARY_COLOUR%I,
      &              MESH)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_LECLIS'
-C
-C-----------------------------------------------------------------------
-C
-C       COMPLEMENTS THE DATA STRUCTURE FOR BIEF
-C
+!
+!-----------------------------------------------------------------------
+!
+!       COMPLEMENTS THE DATA STRUCTURE FOR BIEF
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'INBIEF'
         CALL INBIEF(IT1%I,KLOG,IT2,IT3,IT4,LVMAC,IELMX,
      &                 0.D0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA)
-C
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_INBIEF'
-C
-C-----------------------------------------------------------------------
-C
-C       LOCATES THE BOUNDARIES
-C
+!
+!-----------------------------------------------------------------------
+!
+!       LOCATES THE BOUNDARIES
+!
         IF(NCSIZE.GT.1) THEN
           NFRLIQ=0
           DO I=1,NPTFR
@@ -271,23 +267,23 @@ C
      &                IT1%I,NPOIN,NPTFR,KLOG,.TRUE.,NUMLIQ%I,MAXFRO)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FRONT2'
         ENDIF
-C
-C-----------------------------------------------------------------------
-C       LOOKS FOR BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE :
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!       LOOKS FOR BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE :
+!-----------------------------------------------------------------------
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'FONSTR'
         CALL FONSTR(T1,ZF,T2,CHESTR,SIS_FILES(SISGEO)%LU,
      &              SIS_FILES(SISFON)%LU,SIS_FILES(SISFON)%NAME,
      &              MESH,SFON,.TRUE.)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_FONSTR'
-C
-C-----------------------------------------------------------------------
-C
-C       PREPARES THE RESULTS FILE (OPTIONAL)
-C
-C       STANDARD SELAFIN FORMAT
-C
+!
+!-----------------------------------------------------------------------
+!
+!       PREPARES THE RESULTS FILE (OPTIONAL)
+!
+!       STANDARD SELAFIN FORMAT
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'ECRGEO'
         ! CREATES DATA FILE USING A GIVEN FILE FORMAT : FORMAT_RES
         ! THE DATA ARE CREATED IN THE FILE: SISRES, AND ARE
@@ -312,13 +308,13 @@ C
      &                  MARTIM,        ! START TIME
      &                  I_ORIG,J_ORIG) ! COORDINATES OF THE ORIGIN.
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_ECRGEO'
-C
-C   --- FILLS IN MASKEL BY DEFAULT
-C
+!
+!   --- FILLS IN MASKEL BY DEFAULT
+!
         IF(MSK) CALL OS ('X=C     ', X=MASKEL, C=1.D0)
-C
-C       BUILDS THE MASK
-C
+!
+!       BUILDS THE MASK
+!
         DO K = 1, MESH%NPTFR
           IF(LIEBOR%I(K).NE.2.AND.LIEBOR%I(MESH%KP1BOR%I(K)).NE.2) THEN
             MASK%R(K) = 1.D0
@@ -327,27 +323,27 @@ C
           ENDIF
           LIQBOR%I(K) = KSORT
         ENDDO
-C
-C=======================================================================
-C
-C : 2                  INITIALISES
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+! : 2                  INITIALISES
+!
+!=======================================================================
+!
         PASS      = .TRUE.
-C
+!
         PASS_SUSP = .TRUE.
         VCUMU     = 0.D0
         MASS_GF   = 0.D0
-C
-C
-C----   DETERMINES THE NUMBER OF EVENTS (1ST LOOP)       : NCALCU
-C                      NUMBER OF TIMESTEPS (2ND LOOP)    : NIDT
-C                      TOTAL NUMBER OF TIMESTEPS         : NIT
-C                      INITIAL TIME                      : AT0
-C                      TIMESTEP                          : DT
-C
-C
+!
+!
+!----   DETERMINES THE NUMBER OF EVENTS (1ST LOOP)       : NCALCU
+!                      NUMBER OF TIMESTEPS (2ND LOOP)    : NIDT
+!                      TOTAL NUMBER OF TIMESTEPS         : NIT
+!                      INITIAL TIME                      : AT0
+!                      TIMESTEP                          : DT
+!
+!
         IF(PART.EQ.0) THEN
           AT0=T_TEL
           DT = DT_TEL
@@ -361,33 +357,32 @@ C
             NCALCU=1
             NIDT=NPAS
             NIT=NIDT
-CV
+!V
             NSOUS=1
           ELSE
             NCALCU = NMAREE
-C COMPUTES DT AFTER READING THE HYDRO FILE
-C           NIDT =  NINT ( PMAREE / DT + 0.1D0 )
-C           NIT=NIDT*NCALCU
-C ELSE
+! COMPUTES DT AFTER READING THE HYDRO FILE
+!           NIDT =  NINT ( PMAREE / DT + 0.1D0 )
+!           NIT=NIDT*NCALCU
+! ELSE
             NIDT=NPAS
             NIT=NIDT*NCALCU
           ENDIF
         ENDIF
-C
-C UNSTEADY MODE : DT IS COMPUTED FROM THE HYDRO FILE
-C                 NUMEN: TOTAL NUMBER OF RECORDS
-
+!
+! UNSTEADY MODE : DT IS COMPUTED FROM THE HYDRO FILE
+!                 NUMEN: TOTAL NUMBER OF RECORDS
         IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
             WRITE(LU,*) 'APPEL DE BIEF_SUITE'
-C           JUST TO GET NUMEN AND DT (SEE ALIR0)
+!           JUST TO GET NUMEN AND DT (SEE ALIR0)
             CALL BIEF_SUITE(VARSOR,VARCL,NUMEN,SIS_FILES(SISHYD)%LU,
      &                    SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
      &                    TEXTPR,VARCLA,
      &                    0,TROUVE,ALIR0,.TRUE.,.TRUE.,MAXVAR,DT=DT)
             IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE BIEF_SUITE'
             WRITE(LU,*) 'LECTURE FICHIER HYDRODYNAMIQUE:'
-          IF(PERMA) DT = DELT 
+          IF(PERMA) DT = DELT
           IF(.NOT.PERMA) THEN
              NIDT =  NINT ( PMAREE / DT + 0.1D0 )
              IF(ABS(NIDT*DT-PMAREE) > 1.D-3) THEN
@@ -397,11 +392,11 @@ C           JUST TO GET NUMEN AND DT (SEE ALIR0)
              NIT  = NCALCU * NIDT
           ENDIF
         ENDIF
-C
-C       VALIDATES AGAINST THE LAST TIMESTEP
-C
+!
+!       VALIDATES AGAINST THE LAST TIMESTEP
+!
         VALNIT = NIT
-C
+!
 101     FORMAT(/,'ATTENTION : LA PERIODE DE CALCUL NE CORRESPOND PAS A',/,
      &       'UN MULTIPLE DE LA PERIODE DE SORTIE HYDRODYNAMIQUE.',/,
      &       'LE CALCUL S''EFFECTUERA DONC SUR ',G16.7,'SECONDES')
@@ -409,22 +404,21 @@ C
      &         /,'OF THE HYDRODYNAMIC FILE PRINTOUT PERIOD.',/,
      &       'THE LENGTH OF COMPUTATION WILL THEREFORE BE',G16.7,/,
      &       'SECONDS')
-C
-
-C  SISYPHE ONLY
-C  -----------------------------------------------------------------------
-C  ---- READS
-C       THE PREVIOUS HYDRODYNAMIC FILE
-C
-C
-C NUMEN : NUMBER OF RECORDS IN THE HYDRODYNAMIC FILE
-C DT    : TIMESTEP OF THE HYDRODYNAMIC RECORDS
-C NUMEN0: 1ST RECORD TO READ FROM HYDRODYNAMIC FILE
-C TPREC : START TIME
-C
-C
-C V5P9      NUMEN0 = INT( (TPREC - ATDEB)/DT + 1.1D0 )
-C
+!
+!  SISYPHE ONLY
+!  -----------------------------------------------------------------------
+!  ---- READS
+!       THE PREVIOUS HYDRODYNAMIC FILE
+!
+!
+! NUMEN : NUMBER OF RECORDS IN THE HYDRODYNAMIC FILE
+! DT    : TIMESTEP OF THE HYDRODYNAMIC RECORDS
+! NUMEN0: 1ST RECORD TO READ FROM HYDRODYNAMIC FILE
+! TPREC : START TIME
+!
+!
+! V5P9      NUMEN0 = INT( (TPREC - ATDEB)/DT + 1.1D0 )
+!
         IF(PART.EQ.-1) THEN
           IF(.NOT.PERMA) THEN
             IF(TPREC.GE.0.D0) THEN
@@ -439,16 +433,16 @@ C
                NUMEN0 = NUMEN
             ENDIF
           ENDIF
-C
+!
           IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
             CALL BIEF_SUITE(VARSOR,VARCL,NUMEN0,SIS_FILES(SISHYD)%LU,
      &                    SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
      &                    TEXTPR,VARCLA,
      &                    0,TROUVE,ALIRE,.TRUE.,PERMA,MAXVAR)
-C
-C           TRACES IF WAVE DATA HAVE BEEN FOUND
-C
+!
+!           TRACES IF WAVE DATA HAVE BEEN FOUND
+!
             IF(HOULE) THEN
               IF(TROUVE(12).EQ.1) HW%TYPR='Q'
               IF(TROUVE(13).EQ.1) TW%TYPR='Q'
@@ -461,16 +455,16 @@ C
      &                        TROUVE,ALIRE,PASS,ICF,.TRUE.,MAXVAR)
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_RESCUE_SISYPHE'
           ENDIF
-C
+!
         ENDIF
-C
-C---- RESUMES SISYPHE COMPUTATION
-C
+!
+!---- RESUMES SISYPHE COMPUTATION
+!
         YAZR=.FALSE.
         IF(SIS_FILES(SISPRE)%NAME(1:1).NE.' ')  THEN
-C
-C         READS THE HYDRO AND SEDIMENTOLOGICAL VARIABLES
-C
+!
+!         READS THE HYDRO AND SEDIMENTOLOGICAL VARIABLES
+!
           IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
           CALL BIEF_SUITE(VARSOR,VARCL,NUMENX,SIS_FILES(SISPRE)%LU,
      &                    SIS_FILES(SISPRE)%FMT,
@@ -478,31 +472,31 @@ C
      &                    TROUVE,ALIRE,.TRUE.,.TRUE.,MAXVAR)
           IF(TROUVE(9).EQ.1) YAZR=.TRUE.
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BIEF_SUITE'
-C
+!
           IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
           CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,ZF%R,
      &                        HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,
      &                        PASS,ICF,.TRUE.,MAXVAR)
           IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE BIEF_SUITE'
-C
-C         CHANGES THE UNITS OF CONCENTRATIONS
-C
+!
+!         CHANGES THE UNITS OF CONCENTRATIONS
+!
           IF(SUSP.AND.UNIT) THEN
             DO I=1,NSICLA
              IF(TROUVE(21+(NOMBLAY+1)*NSICLA+I).EQ.1) THEN
                CALL OS('X=CX    ',X=CS%ADR(I)%P,C=1.D0/XMVS)
              ENDIF
             ENDDO
-          ENDIF        
-C
+          ENDIF
+!
         ENDIF
-C
-C----   READS THE LAST RECORD : WAVE FILE
-C
-C       NOTE : SIS_FILES(SISCOU)%NAME SET TO ' ' IF HOULE=NO
-C
+!
+!----   READS THE LAST RECORD : WAVE FILE
+!
+!       NOTE : SIS_FILES(SISCOU)%NAME SET TO ' ' IF HOULE=NO
+!
         IF(SIS_FILES(SISCOU)%NAME(1:1).NE.' ')  THEN
-C
+!
           IF(DEBUG.GT.0) WRITE(LU,*) 'SUITE_HOULE'
           WRITE(LU,*) ' LECTURE HOULE :',SIS_FILES(SISCOU)%NAME
           CALL BIEF_SUITE(VARSOR,VARCL,NUMENX,SIS_FILES(SISCOU)%LU,
@@ -510,33 +504,33 @@ C
      &                    TEXTPR,VARCLA,0,
      &                    TROUVE,ALIRH,.TRUE.,.TRUE.,MAXVAR)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_SUITE_HOULE'
-C         TRACES IF WAVE DATA HAVE BEEN FOUND
+!         TRACES IF WAVE DATA HAVE BEEN FOUND
           IF(TROUVE(12).EQ.1) HW%TYPR='Q'
           IF(TROUVE(13).EQ.1) TW%TYPR='Q'
           IF(TROUVE(14).EQ.1) THETAW%TYPR='Q'
-C
+!
         ENDIF
-C
+!
         IF(CODE(1:7) == 'TELEMAC'.AND.PART==0) THEN
-CV 
+!V
           AT0=T_TEL
-CV        
+!V
           WRITE(LU,*) 'INITIALISATION EN CAS DE COUPLAGE : PART=',PART
-C         INFORMATION ON SUSPENSION SENT BACK
+!         INFORMATION ON SUSPENSION SENT BACK
           CHARR_TEL = CHARR
           SUSP_TEL = SUSP
-C
-C         OV INSTEAD OF OS IN ORDER TO AVOID PROBLEMS WITH QUASI-BUBBLE ELEMENTS
-C         OPERATES ONLY ON THE (1:NPOIN) RANGE OF THE TELEMAC FIELDS
-C         IT IS A HIDDEN DISCRETISATION CHANGE
-C
+!
+!         OV INSTEAD OF OS IN ORDER TO AVOID PROBLEMS WITH QUASI-BUBBLE ELEMENTS
+!         OPERATES ONLY ON THE (1:NPOIN) RANGE OF THE TELEMAC FIELDS
+!         IT IS A HIDDEN DISCRETISATION CHANGE
+!
           CALL OV( 'X=Y     ', U2D%R, U_TEL%R, U_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', V2D%R, V_TEL%R, V_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', HN%R , H_TEL%R, H_TEL%R, 0.D0, NPOIN)
           CALL OS('X=Y     ', X=ZF,Y=ZF_SIS)
-C
-C         CLIPS NEGATIVE DEPTHS
-C
+!
+!         CLIPS NEGATIVE DEPTHS
+!
           IF(OPTBAN.GT.0) THEN
             DO I = 1,NPOIN
              IF(HN%R(I).LT.HMIN) THEN
@@ -547,9 +541,9 @@ C
             ENDDO
           ENDIF
         ENDIF
-C
-C  ---- END COUPLING  -------------
-C
+!
+!  ---- END COUPLING  -------------
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'CONDIM_SISYPHE'
         IF(.NOT.DEBU) THEN
         CALL CONDIM_SISYPHE
@@ -557,26 +551,26 @@ C
      &         Q%R,HW%R,TW%R,MESH%X%R,MESH%Y%R,NPOIN,AT0,PMAREE)
         ENDIF
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
-C
-C       AT THIS LEVEL U2D,V2D,H AND ZF MUST HAVE BEEN DEFINED
-C       EITHER BY BIEF_SUITE, CONDIM_SISYPHE OR CALLING PROGRAM
-C
-C       NOW COMPUTES FUNCTIONS OF U2D,V2D,HN AND ZF
-C
-C       FREE SURFACE
+!
+!       AT THIS LEVEL U2D,V2D,H AND ZF MUST HAVE BEEN DEFINED
+!       EITHER BY BIEF_SUITE, CONDIM_SISYPHE OR CALLING PROGRAM
+!
+!       NOW COMPUTES FUNCTIONS OF U2D,V2D,HN AND ZF
+!
+!       FREE SURFACE
         CALL OS('X=Y+Z   ', X=Z, Y=ZF, Z=HN)
-C
+!
         IF(CODE(1:7).NE.'TELEMAC') THEN
-C         PRODUCT H*
+!         PRODUCT H*
           CALL OS('X=YZ    ', X=QU, Y=U2D, Z=HN)
-C         PRODUCT H*V
+!         PRODUCT H*V
           CALL OS('X=YZ    ', X=QV, Y=V2D, Z=HN)
-C         DISCHARGE
+!         DISCHARGE
           CALL OS('X=N(Y,Z)', X=Q, Y=QU, Z=QV)
         ENDIF
-C
-C       CHECKS THE WAVE DATA
-C
+!
+!       CHECKS THE WAVE DATA
+!
         IF(HOULE) THEN
           IF(HW%TYPR    .NE.'Q'.OR.
      &       TW%TYPR    .NE.'Q'.OR.
@@ -599,35 +593,35 @@ C
             STOP
           ENDIF
         ENDIF
-C
-C END OF HYDRODYNAMIC INITIALISATION
-C
-C
-C        COMPUTES AREAS (WITHOUT MASKING)
-C
+!
+! END OF HYDRODYNAMIC INITIALISATION
+!
+!
+!        COMPUTES AREAS (WITHOUT MASKING)
+!
          CALL VECTOR(VOLU2D,'=','MASBAS          ',
      &               IELMH_SIS,1.D0,
      &               T1,T1,T1,T1,T1,T1,MESH,.FALSE.,MASKEL)
-C        V2DPAR : LIKE VOLU2D BUT IN PARALLEL VALUES COMPLETED AT
-C                 INTERFACES BETWEEN SUBDOMAINS
+!        V2DPAR : LIKE VOLU2D BUT IN PARALLEL VALUES COMPLETED AT
+!                 INTERFACES BETWEEN SUBDOMAINS
          CALL OS('X=Y     ',X=V2DPAR,Y=VOLU2D)
          IF(NCSIZE.GT.1) CALL PARCOM(V2DPAR,2,MESH)
-C        INVERSE OF VOLUMES (DONE WITHOUT MASKING)
+!        INVERSE OF VOLUMES (DONE WITHOUT MASKING)
          CALL OS('X=1/Y   ',X=UNSV2D,Y=V2DPAR,
      &           IOPT=2,INFINI=0.D0,ZERO=1.D-12)
-C
-C START OF MODIFICATIONS FOR MIXED SEDIMENTS
-C
-C        SETTING THE NON-ERODABLE BED (IT CAN BE SET BEFORE
-C                                      IF COMPUTATION CONTINUED, I.E. DEBU)
-C
+!
+! START OF MODIFICATIONS FOR MIXED SEDIMENTS
+!
+!        SETTING THE NON-ERODABLE BED (IT CAN BE SET BEFORE
+!                                      IF COMPUTATION CONTINUED, I.E. DEBU)
+!
          IF(.NOT.DEBU.OR..NOT.YAZR) THEN
            CALL NOEROD(HN%R,ZF%R,ZR%R,Z%R,MESH%X%R,
      &                 MESH%Y%R,NPOIN,CHOIX,NLISS)
          ENDIF
-C
-C        INITIALISATION FOR SEDIMENT
-C
+!
+!        INITIALISATION FOR SEDIMENT
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'INIT_SEDIMENT'
           CALL INIT_SEDIMENT(NSICLA,ELAY,ZF,ZR,NPOIN,
      &                    AVAIL,FRACSED_GF,AVA0,LGRAFED,CALWC,
@@ -635,25 +629,21 @@ C
      &                    SEDCO, ES, NCOUCH_TASS,CONC_VASE,
      &                    MS_SABLE, MS_VASE,ACLADM, UNLADM)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END INIT_SEDIMENT'
-C
-C
-C END OF MODIFICATIONS CV
-C
 !
-C MEAN VELOCITY
+!
+! END OF MODIFICATIONS CV
+!
+!
+! MEAN VELOCITY
 !======================================================================
-
         CALL OS('X=N(Y,Z)',X=UNORM,Y=U2D,Z=V2D)
-
 ! =====================================================================
-C  WAVE ORBITAL VELOCITY
+!  WAVE ORBITAL VELOCITY
 ! =====================================================================
-
         IF(HOULE) THEN
           CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
         ENDIF
-
-C ======================================================================
+! ======================================================================
         IF(DEBUG.GT.0) WRITE(LU,*) 'TOB_SISYPHE'
         CALL TOB_SISYPHE(TOB,TOBW,MU,KS,KSP,KSR,CF,FW,
      &                   CHESTR,UETCAR,CF_TEL,KS_TEL,CODE ,
@@ -661,9 +651,9 @@ C ======================================================================
      &                   GRAV,XMVE,XMVS,VCE,KARMAN,ZERO,
      &                   HMIN,HN,ACLADM,UNORM,UW,TW,NPOIN,KSPRED,IKS)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END TOB_SISYPHE'
-C
-C       INITIALISATION FOR TRANSPORT
-C
+!
+!       INITIALISATION FOR TRANSPORT
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'INIT_TRANSPORT'
         CALL INIT_TRANSPORT(TROUVE,DEBU,HIDING,NSICLA,NPOIN,
      &     T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T14,
@@ -676,53 +666,53 @@ C
      &     CMAX,CS,CS0,UCONV,VCONV,CORR_CONV,SECCURRENT,BIJK,
      &     IELMT, MESH, FDM,XWC,FD90,SEDCO,VITCE,PARTHENIADES,VITCD,
 !RK
-     &     U3D,V3D,CODE)    
+     &     U3D,V3D,CODE)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END INIT_TRANSPORT'
-C
-C ---------- DEBUT IMPRESSIION INITIALISATION =================
-C
+!
+! ---------- DEBUT IMPRESSIION INITIALISATION =================
+!
         CALL ENTETE_SISYPHE(1,AT0,0)
-C       PREPARES RESULTS
-C
-C CONCENTRATION OUTPUT IN G/L
-C
+!       PREPARES RESULTS
+!
+! CONCENTRATION OUTPUT IN G/L
+!
         IF(UNIT) CALL OS('X=CX    ',X=CS,C=XMVS)
         CALL PREDES(0,AT0)
-C
-C       PRINTS OUT THE RESULTS
-C
+!
+!       PRINTS OUT THE RESULTS
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_DESIMP'
         CALL BIEF_DESIMP(SIS_FILES(SISRES)%FMT,VARSOR,
      &                   HIST,0,NPOIN,SIS_FILES(SISRES)%LU,'STD',
      &                   AT0,0,LISPR,LEOPR,SORLEO,SORIMP,MAXVAR,
      &                   TEXTE,PTINIG,PTINIL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END BIEF_DESIMP'
-C
+!
         IF(UNIT) CALL OS('X=CX    ',X=CS,C=1.D0/XMVS)
-C
-C===============FIN IMPRESSION CONDITIONS INITIALES =================
-C
-C      COUPLING
-C
+!
+!===============FIN IMPRESSION CONDITIONS INITIALES =================
+!
+!      COUPLING
+!
        IF(DREDGESIM) THEN
          CALL DREDGESIM_INTERFACE(1)
          IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC DREDGESIM'
          IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH DREDGESIM'
        ENDIF
-C
+!
        IF(CODE(1:7).NE.'SISYPHE') THEN
          IF(LNG.EQ.1) WRITE(LU,*) 'SISYPHE COUPLE AVEC : ',CODE
          IF(LNG.EQ.2) WRITE(LU,*) 'SISYPHE COUPLED WITH: ',CODE
        ENDIF
-C
-C      COUPLING WITH TELEMAC-2D OR 3D
-C
+!
+!      COUPLING WITH TELEMAC-2D OR 3D
+!
        IF(CODE(1:7).EQ.'TELEMAC') NCALCU = 1
-C
-C=======================================================================
-C
-C     INITIAL CONDITION FOR CONSTANT FLOW DISCHARGE
-C
+!
+!=======================================================================
+!
+!     INITIAL CONDITION FOR CONSTANT FLOW DISCHARGE
+!
       IF(LCONDIS) THEN
         SISYPHE_CFD = LCONDIS
         NSIS_CFD    = NCONDIS
@@ -732,27 +722,27 @@ C
         NSIS_CFD    = 1
         CONSTFLOW   = .FALSE.
       ENDIF
-C
-C=======================================================================
-C
-C     END OF INITIALISATIONS
+!
+!=======================================================================
+!
+!     END OF INITIALISATIONS
          IF(DEBUG.GT.0) WRITE(LU,*) 'END_INITIALIZATION'
       ENDIF ! IF (PART==0 OR PART = -1)
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       IF(PART==1.OR.PART==-1) THEN
-C
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'TIME_LOOP'
-C
-C=======================================================================
-C
-C : 3                    /* LOOP ON TIME */
-C
-C=======================================================================
-C
-C----   STOPS THE COMPUTATION WHEN THE REQUIRED NUMBER OF ITERATIONS IS 0
-C
+!
+!=======================================================================
+!
+! : 3                    /* LOOP ON TIME */
+!
+!=======================================================================
+!
+!----   STOPS THE COMPUTATION WHEN THE REQUIRED NUMBER OF ITERATIONS IS 0
+!
         IF(NIT == 0) THEN
           IF (LNG == 1) WRITE(LU,200)
           IF (LNG == 2) WRITE(LU,201)
@@ -762,32 +752,32 @@ C
           CALL PLANTE(1)
           STOP
         ENDIF
-C
-C---------------------------------------------------------------------
-C       STARTS THE COMPUTATIONS
-C---------------------------------------------------------------------
-C       LOOP ON THE NUMBER OF EVENTS
-C       (IN STEADY STATE: LOOP ON THE TIMESTEPS)
-C---------------------------------------------------------------------
-C
+!
+!---------------------------------------------------------------------
+!       STARTS THE COMPUTATIONS
+!---------------------------------------------------------------------
+!       LOOP ON THE NUMBER OF EVENTS
+!       (IN STEADY STATE: LOOP ON THE TIMESTEPS)
+!---------------------------------------------------------------------
+!
         IF(CODE(1:7) == 'TELEMAC') THEN
-C         VALNIT WILL BE USED FOR CALLING VALIDA
+!         VALNIT WILL BE USED FOR CALLING VALIDA
           VALNIT = (TELNIT/PERICOU)*PERICOU-PERICOU+1
-C         MODIFICATION JMH + CV: TO AVOID 2 SUCCESSIVE CALLS TO VALIDA
-C         WHEN BEDLOAD AND SUSPENSION
+!         MODIFICATION JMH + CV: TO AVOID 2 SUCCESSIVE CALLS TO VALIDA
+!         WHEN BEDLOAD AND SUSPENSION
           IF(GRAFCOUNT.GT.TELNIT) VALNIT=NIT+1
-C         CHARR, SUSP AND TIME STEP MONITORED BY CALLING PROGRAM
+!         CHARR, SUSP AND TIME STEP MONITORED BY CALLING PROGRAM
           CHARR = CHARR_TEL
           SUSP= SUSP_TEL
           AT0=T_TEL
         ENDIF
-C
+!
         DO 710 MN = 1, NCALCU
-C
+!
           IF(.NOT.PERMA.AND.CODE(1:7).NE.'TELEMAC') THEN
-C           DETERMINES THE FIRST RECORD TO BE READ :
-C           NUMDEB IS THE FIRST RECORD TO BE READ FROM THE HYDRO
-C           FILE
+!           DETERMINES THE FIRST RECORD TO BE READ :
+!           NUMDEB IS THE FIRST RECORD TO BE READ FROM THE HYDRO
+!           FILE
             NUMDEB=NUMEN0
             IF(NUMDEB+NIDT > NUMEN) THEN
               IF (LNG == 1) WRITE(LU,202)
@@ -797,19 +787,19 @@ C           FILE
               CALL PLANTE(1)
             ENDIF
           ENDIF
-C
-C         LOOP ON THE RECORDS (IF PERMA NIDT=1)
-C         ------------------------------
-C         WHEN COUPLED
-C
-CV          IF(CODE(1:7) == 'TELEMAC') DT=DT_TEL
-C
+!
+!         LOOP ON THE RECORDS (IF PERMA NIDT=1)
+!         ------------------------------
+!         WHEN COUPLED
+!
+!V          IF(CODE(1:7) == 'TELEMAC') DT=DT_TEL
+!
           DO 700 MT = 1, NIDT
-C
-C  ----   DETERMINES THE TIMESTEP NUMBER :
-C
+!
+!  ----   DETERMINES THE TIMESTEP NUMBER :
+!
             LT = (MN-1)*NIDT +  MT
-C
+!
             IF(CODE(1:7) == 'TELEMAC') THEN
               DT=DT_TEL
               LT    = LOOPCOUNT
@@ -817,33 +807,33 @@ C
               LISPR = LISTCOUNT
               NSOUS=1
             ENDIF
-C
-C  ----     PRINTOUTS TO LISTING :
-C
+!
+!  ----     PRINTOUTS TO LISTING :
+!
             ENTETS = .FALSE.
             IF(LISPR*((LT-1+PERICOU)/LISPR) == (LT-1+PERICOU)) THEN
               ENTET = .TRUE.
             ELSE
               ENTET = .FALSE.
             ENDIF
-C
-C----      READS AND UPDATES H AND ZF
-C----      IF 1ST PASS OR UNSTEADY AND NO COUPLING
-C
+!
+!----      READS AND UPDATES H AND ZF
+!----      IF 1ST PASS OR UNSTEADY AND NO COUPLING
+!
            DTS = DT / NSOUS
-C
+!
            ISOUS = 0
-C
+!
            IF(.NOT.PERMA.OR.PASS) THEN
-C
-C            BEWARE : THE VALUE FOR ESOMT IS NOT READ FROM THE FILE SISHYD
-C            NOTE : NAME FOR SISHYD SET TO ' ' IF COUPLING
-C
+!
+!            BEWARE : THE VALUE FOR ESOMT IS NOT READ FROM THE FILE SISHYD
+!            NOTE : NAME FOR SISHYD SET TO ' ' IF COUPLING
+!
              IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
-C
-C              WORK ON ZF,QU,QV,Z WILL BE IN FACT DONE ON:
-C              T4,DEL_QU,DEL_QV AND DEL_Z
-C              BY PLAYING WITH POINTERS
+!
+!              WORK ON ZF,QU,QV,Z WILL BE IN FACT DONE ON:
+!              T4,DEL_QU,DEL_QV AND DEL_Z
+!              BY PLAYING WITH POINTERS
                SAVEZF=>ZF%R
                SAVEQU=>QU%R
                SAVEQV=>QV%R
@@ -852,44 +842,44 @@ C              BY PLAYING WITH POINTERS
                QU%R  =>DEL_QU%R
                QV%R  =>DEL_QV%R
                Z%R   =>DEL_Z%R
-C
+!
                NUMDEB=NUMDEB+1
-C
+!
                IF(ENTET) WRITE(LU,*) 'DEFINITION INITIALE DES VITESSES'
-C
+!
                CALL BIEF_SUITE(VARSOR,VARCL,NUMDEB,
      &            SIS_FILES(SISHYD)%LU,SIS_FILES(SISHYD)%FMT,
      &            HIST,0,NPOIN,BID,TEXTPR,VARCLA,0,
      &            TROUVE,ALIRE,ENTET,PERMA,MAXVAR)
-C
+!
                IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE_NOTPERMA'
                CALL RESCUE_SISYPHE_NOTPERMA
      &              (QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,T4%R,
      &               HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,ICF,ENTET,
      &               MAXVAR)
                IF(DEBUG.GT.0) WRITE(LU,*) 'END_RESCUE_SISYPHE_NOTPERMA'
-C
-C              BACK TO ORIGINAL ADDRESSES
+!
+!              BACK TO ORIGINAL ADDRESSES
                ZF%R=>SAVEZF
                QU%R=>SAVEQU
                QV%R=>SAVEQV
                Z%R=>SAVEZ
-C
-C              INCREMENT OF QU, QV AND Z PER SUB-TIME-STEP
+!
+!              INCREMENT OF QU, QV AND Z PER SUB-TIME-STEP
                DO I = 1,NPOIN
                  DEL_QU%R(I) = (DEL_QU%R(I)-QU%R(I))/NSOUS
                  DEL_QV%R(I) = (DEL_QV%R(I)-QV%R(I))/NSOUS
                  DEL_Z%R(I)  = (DEL_Z%R(I) -Z%R(I)) /NSOUS
                ENDDO
-C
-C              UPDATES UNSTEADY HYDRO
-C              (TO BE MOVED TO RESCUE_SISYPHE_NOTPERMA)
-C              -----------------------------------
-C              CLIPS NEGATIVE DEPTHS
-C              COMPUTES U2D AND V2D
-C
+!
+!              UPDATES UNSTEADY HYDRO
+!              (TO BE MOVED TO RESCUE_SISYPHE_NOTPERMA)
+!              -----------------------------------
+!              CLIPS NEGATIVE DEPTHS
+!              COMPUTES U2D AND V2D
+!
                CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
-C
+!
                IF(OPTBAN.GT.0) THEN
                  DO I = 1,NPOIN
                    IF(HN%R(I).LT.HMIN) THEN
@@ -905,7 +895,7 @@ C
                  CALL OS('X=Y/Z   ', X=U2D, Y=QU,   Z=HN)
                  CALL OS('X=Y/Z   ', X=V2D, Y=QV,   Z=HN)
                ENDIF
-C
+!
                IF(DEBUG.GT.0) WRITE(LU,*) 'CONDIM_SISYPHE'
                CALL CONDIM_SISYPHE
      &        (U2D%R,V2D%R,QU%R,QV%R,HN%R,ZF%R,Z%R,ESOMT%R,THETAW%R,
@@ -913,29 +903,29 @@ C
                IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
              ENDIF ! (SIS_FILES(SISHYD)%NAME(1:1) /=' ')
            ENDIF ! (NOT.PERMA.OR.PASS)
-C
+!
         IF(PASS) THEN
-C         IN STEADY STATE LOGICAL FOR READING SET TO FALSE
+!         IN STEADY STATE LOGICAL FOR READING SET TO FALSE
           IF (PERMA) PASS = .FALSE.
         ELSE
-C         COMPUTES THE WATER DEPTH
+!         COMPUTES THE WATER DEPTH
           CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
         ENDIF
-C
-C       COUPLING
-C
+!
+!       COUPLING
+!
         IF(CODE(1:7) == 'TELEMAC') THEN
-C
-C         OV INSTEAD OF OS IN ORDER TO AVOID PROBLEMS WITH QUASI-BUBBLE ELEMENTS
-C         OPERATES ONLY ON THE (1:NPOIN) RANGE OF THE TELEMAC FIELDS
-C         IT IS A HIDDEN DISCRETISATION CHANGE
-C
+!
+!         OV INSTEAD OF OS IN ORDER TO AVOID PROBLEMS WITH QUASI-BUBBLE ELEMENTS
+!         OPERATES ONLY ON THE (1:NPOIN) RANGE OF THE TELEMAC FIELDS
+!         IT IS A HIDDEN DISCRETISATION CHANGE
+!
           CALL OV( 'X=Y     ',U2D%R, U_TEL%R, U_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ',V2D%R, V_TEL%R, V_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', HN%R, H_TEL%R, H_TEL%R, 0.D0, NPOIN)
-C         ADDED BY JMH 01/07/2004 (ZF MAY BE MODIFIED BY CALLING PROGRAM)
+!         ADDED BY JMH 01/07/2004 (ZF MAY BE MODIFIED BY CALLING PROGRAM)
           CALL OS('X=Y     ', X=ZF, Y=ZF_SIS)
-C         CLIPS NEGATIVE DEPTHS
+!         CLIPS NEGATIVE DEPTHS
           IF(OPTBAN.GT.0) THEN
             DO I = 1,HN%DIM1
               IF(HN%R(I).LT.HMIN) THEN
@@ -945,112 +935,111 @@ C         CLIPS NEGATIVE DEPTHS
               ENDIF
             ENDDO
           ENDIF
-C         FREE SURFACE
+!         FREE SURFACE
           CALL OS('X=Y+Z   ', X=Z, Y=ZF, Z=HN)
-C
+!
         ENDIF
-C
-C       END OF COUPLING
+!
+!       END OF COUPLING
 ! =========================================================================
-C TREATMENT OF TIDAL FLATS, DEFINITION OF THE MASKS
+! TREATMENT OF TIDAL FLATS, DEFINITION OF THE MASKS
 ! =====================================================================!
-C
+!
         IF(OPTBAN.EQ.2) THEN
-C
-C ----    BUILDS MASKING BY ELEMENTS
-C
+!
+! ----    BUILDS MASKING BY ELEMENTS
+!
           CHGMSK = .FALSE.
           CALL OS ('X=Y     ', X=MSKTMP, Y=MASKEL)
           CALL OS ('X=C     ', X=MASKEL, C=1.D0)
           IF(CODE(1:7) == 'TELEMAC') THEN
-C           MASKS ARE DERIVED FROM THE NON-CLIPPED VALUES OF H
-C           PROVIDED BY TELEMAC
+!           MASKS ARE DERIVED FROM THE NON-CLIPPED VALUES OF H
+!           PROVIDED BY TELEMAC
             CALL MASKTF(MASKEL%R,H_TEL%R,HMIN,MESH%IKLE%I,
      &                  NELEM,NPOIN)
           ELSE
             CALL MASKTF(MASKEL%R,HN%R,HMIN,MESH%IKLE%I,
      &                  NELEM,NPOIN)
           ENDIF
-C
+!
           DO I=1,NELEM
             IF(MASKEL%R(I).NE.MSKTMP%R(I)) THEN
               CHGMSK = .TRUE.
               EXIT
             ENDIF
           ENDDO
-C
-C        JMH 17/12/2009
-C
-C        ELSEIF(OPTBAN.EQ.1) THEN
-C
-C          CANCELS Q QU AND QV IF HN.LE.0.D0
-C          CALL MASKAB(HN%R,Q%R,QU%R,QV%R,NPOIN)
-C
+!
+!        JMH 17/12/2009
+!
+!        ELSEIF(OPTBAN.EQ.1) THEN
+!
+!          CANCELS Q QU AND QV IF HN.LE.0.D0
+!          CALL MASKAB(HN%R,Q%R,QU%R,QV%R,NPOIN)
+!
         ENDIF
-C
-C ----   BUILDS THE MASK OF THE POINTS FROM THE MASK OF THE ELEMENTS
-C ----   AND CHANGES IFAMAS (IFABOR WITH MASKING)
-C
+!
+! ----   BUILDS THE MASK OF THE POINTS FROM THE MASK OF THE ELEMENTS
+! ----   AND CHANGES IFAMAS (IFABOR WITH MASKING)
+!
         IF(MSK) CALL MASKTO(MASKEL%R,MASKPT,IFAMAS%I,
      &                      MESH%IKLE%I,
      &                      MESH%IFABOR%I,MESH%ELTSEG%I,MESH%NSEG,
      &                      NELEM,NPOIN,IELMT,MESH)
-C
-C ------------------------------------------------------------------
-C  START OF SUB-ITERATIONS IN UNSTEADY STATE
-C
-C ------------------------------------------------------------------
-C
+!
+! ------------------------------------------------------------------
+!  START OF SUB-ITERATIONS IN UNSTEADY STATE
+!
+! ------------------------------------------------------------------
+!
 702      CONTINUE
-C
+!
          ISOUS = ISOUS + 1
          AT0=AT0+DTS
          IF(ENTET.AND.ISOUS.EQ.1) CALL ENTETE_SISYPHE(2,AT0,LT)
          IF(ENTET.AND.ISOUS.EQ.NSOUS) ENTETS=.TRUE.
-C
-C---------------------------------------------------------------------
-C        FRICTION COEFFICIENT VARIABLE IN TIME
-C---------------------------------------------------------------------
-C
+!
+!---------------------------------------------------------------------
+!        FRICTION COEFFICIENT VARIABLE IN TIME
+!---------------------------------------------------------------------
+!
          CALL CORSTR_SISYPHE
-C
-C ----   READS THE BOUNDARY CONDITIONS
-C
+!
+! ----   READS THE BOUNDARY CONDITIONS
+!
          CALL CONLIT(MESH%NBOR%I)
-C
-C =======================================================================
-C
-C        IF 'VARIABLE TIME-STEP = YES' NSOUS WILL BE COMPUTED FURTHER DOWN
-C        THE CONPUTATION OF THE TIMESTEP SIS HAS BEEN MOVED BEFORE READING
-C        THE HYDRO CONDITIONS
-C
-C  ---   MEAN DIAMETER FOR THE ACTIVE-LAYER AND UNDER-LAYER
-C
+!
+! =======================================================================
+!
+!        IF 'VARIABLE TIME-STEP = YES' NSOUS WILL BE COMPUTED FURTHER DOWN
+!        THE CONPUTATION OF THE TIMESTEP SIS HAS BEEN MOVED BEFORE READING
+!        THE HYDRO CONDITIONS
+!
+!  ---   MEAN DIAMETER FOR THE ACTIVE-LAYER AND UNDER-LAYER
+!
          IF(.NOT.MIXTE.AND.NSICLA.GT.1) CALL MEAN_GRAIN_SIZE
-C
-C  ---   MEAN VELOCITY UNORM
-C
+!
+!  ---   MEAN VELOCITY UNORM
+!
          CALL OS('X=N(Y,Z)',X=UNORM,Y=U2D,Z=V2D)
-C
-C  ---   WAVE ORBITAL VELOCITY --> UW
-C
+!
+!  ---   WAVE ORBITAL VELOCITY --> UW
+!
          IF(HOULE) THEN
            CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
          ENDIF
-C
+!
           CALL TOB_SISYPHE
      &     (TOB,TOBW, MU, KS, KSP,KSR,CF, FW,
      &      CHESTR, UETCAR, CF_TEL,KS_TEL, CODE ,
      &      KFROT, ICR, KSPRATIO,HOULE,
      &      GRAV,XMVE,  XMVS, VCE, KARMAN,ZERO,
      &      HMIN,HN, ACLADM, UNORM,UW, TW, NPOIN,KSPRED,IKS)
-C
-C  END OF INITIALISATION
-C
+!
+!  END OF INITIALISATION
+!
       ! ******************** !
       ! BEDLOAD COMPUTATION  !
       ! ******************** !
-
         IF(CHARR) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'BEDLOAD_MAIN'
           CALL BEDLOAD_MAIN
@@ -1072,17 +1061,17 @@ C
      &         QSYC,SALFA,ZF_C,ZFCL_C,NSOUS,ENTETS,
      &         SECCURRENT,SLOPEFF,PHISED,DEVIA,BETA2,BIJK,
      &         SEDCO,HOULE,
-!RK 
+!RK
      &         U3D,V3D,CODE)
-C
+!
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_MAIN'
-C
-C         UPDATES THE BOTTOM
-C
+!
+!         UPDATES THE BOTTOM
+!
           CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
-C
-C         UPDATES THE LAYERS  --> ELAY
-C
+!
+!         UPDATES THE LAYERS  --> ELAY
+!
           IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
             CALL LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
@@ -1092,14 +1081,13 @@ C
           ELSE
             CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
           ENDIF
-C END OF BEDLOAD
+! END OF BEDLOAD
         ENDIF
-
       ! ********************** !
       ! SUSPENSION COMPUTATION !
       ! ********************** !
         IF(SUSP) THEN
-C
+!
           IF(DEBUG.GT.0) WRITE(LU,*) 'SUSPENSION_MAIN'
           CALL SUSPENSION_MAIN
      &(SLVTRA,HN,HN_TEL,MU,TOB,ACLADM,KSP,KSR,KS,CF,
@@ -1122,15 +1110,15 @@ C
      & MIXTE,NCOUCH_TASS,CONC_VASE,TOCE_VASE,
      & FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS)
          IF(DEBUG.GT.0) WRITE(LU,*) 'END_SUSPENSION_MAIN'
-C
-C      UPDATES THE BOTTOM
-C
+!
+!      UPDATES THE BOTTOM
+!
        CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
-C
-C      UPDATES THE LAYERS
-C      REDEFINES THE LAYER OF ERODABLE SEDIMENT
-C      EXTENDED GRANULOMETRY (TO BE REPLACED WITH NOMBLAY>1
-C
+!
+!      UPDATES THE LAYERS
+!      REDEFINES THE LAYER OF ERODABLE SEDIMENT
+!      EXTENDED GRANULOMETRY (TO BE REPLACED WITH NOMBLAY>1
+!
         IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
           CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
@@ -1140,10 +1128,10 @@ C
         ELSE
           CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
         ENDIF
-C END OF SUSPENSION
+! END OF SUSPENSION
       ENDIF
 !
-C RECONSTITUTES THE BEDLOAD AND/OR SUSPENSION DATA
+! RECONSTITUTES THE BEDLOAD AND/OR SUSPENSION DATA
 ! -----------------------------------------------------
 !
         IF( DEBUG.GT.0) WRITE(LU,*) 'QS_RESULT'
@@ -1166,7 +1154,7 @@ C RECONSTITUTES THE BEDLOAD AND/OR SUSPENSION DATA
 !
 !=======================================================================
 !
-C     MAXIMUM BOTTOM SLOPE : EVOL IN T1
+!     MAXIMUM BOTTOM SLOPE : EVOL IN T1
 !
       IF(SLIDE) THEN
 !
@@ -1190,35 +1178,35 @@ C     MAXIMUM BOTTOM SLOPE : EVOL IN T1
 !
 !========================================================================
 !
-C     SETTLING: EVOLUTION COMPUTED IN T3
+!     SETTLING: EVOLUTION COMPUTED IN T3
 !
       IF(TASS) THEN
-C
+!
         IF(ENTET) THEN
           IF(.NOT.CHARR.AND..NOT.SUSP.AND..NOT.SLIDE) THEN
             CALL ENTETE_SISYPHE(2,AT0,LT)
           ENDIF
           CALL ENTETE_SISYPHE(15,AT0,LT)
         ENDIF
-C
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TASSEMENT'
         CALL TASSEMENT(ZF,NPOIN,DTS,ELAY,T3,T2,LT,AVAIL,NSICLA,
      &                 ES,XMVS,XKV,TRANS_MASS,CONC_VASE,NCOUCH_TASS,
      &                 MS_SABLE%R,MS_VASE%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TASSEMENT'
-C
-C       UPDATES ZF (ELAY HAS BEEN UPDATED IN TASSEMENT)
-C
+!
+!       UPDATES ZF (ELAY HAS BEEN UPDATED IN TASSEMENT)
+!
         CALL OS('X=X+Y   ',X=ZF,Y=T3)
-C
+!
       ENDIF
 !
 !=======================================================================
-C : 5        COMPUTES THE EVOLUTIONS FOR THIS CYCLE OF TIMESTEP
-C            AND UPDATES AFTER THIS COMPUTATION
+! : 5        COMPUTES THE EVOLUTIONS FOR THIS CYCLE OF TIMESTEP
+!            AND UPDATES AFTER THIS COMPUTATION
 !=======================================================================
 !
-C ----  COMPUTES  THE EVOLUTIONS FOR THIS (SUB) TIMESTEP
+! ----  COMPUTES  THE EVOLUTIONS FOR THIS (SUB) TIMESTEP
 !
       IF(CHARR) THEN
         CALL OS('X=Y     ',X=E,Y=ZF_C)
@@ -1230,11 +1218,11 @@ C ----  COMPUTES  THE EVOLUTIONS FOR THIS (SUB) TIMESTEP
       IF(TASS)  CALL OS('X=X+Y   ',X=E,Y=T3)
 !
       CALL OS('X=X+Y   ', X=ESOMT, Y=E)
-C
-C  UPDATES
-C
+!
+!  UPDATES
+!
         IF(PART.EQ.-1) THEN
-C
+!
         CALL OS('X=X-Y   ',X=HN,Y=E)
         IF(OPTBAN.GT.0) THEN
           DO I = 1,HN%DIM1
@@ -1251,19 +1239,19 @@ C
           CALL OS('X=Y/Z   ', X=U2D, Y=QU,   Z=HN)
           CALL OS('X=Y/Z   ', X=V2D, Y=QV,   Z=HN)
         ENDIF
-C
-C=======================================================================
-C : 6     STOPS IF EVOLUTIONS GREATER THAN EMAX = RC*(INITIAL DEPTH)
-C=======================================================================
-C
-C       DETERMINES THE MAXIMUM EVOLUTION THRESHOLD
+!
+!=======================================================================
+! : 6     STOPS IF EVOLUTIONS GREATER THAN EMAX = RC*(INITIAL DEPTH)
+!=======================================================================
+!
+!       DETERMINES THE MAXIMUM EVOLUTION THRESHOLD
         DO I = 1, NPOIN
           EMAX%R(I) = RC*MAX(HN%R(I),HMIN)
         ENDDO
-C
-C ----  STOPS WHEN THE EVOLUTIONS ARE GREATER THAN A CERTAIN THRESHOLD
-C CCV   THIS TEST IS ONLY CALLED IN 'SISYPHE ONLY' MODE
-C
+!
+! ----  STOPS WHEN THE EVOLUTIONS ARE GREATER THAN A CERTAIN THRESHOLD
+! CCV   THIS TEST IS ONLY CALLED IN 'SISYPHE ONLY' MODE
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'ARRET'
           CALL SIS_ARRET(ESOMT,EMAX,HN,VARSOR,NPOIN,MN,
      &                   SIS_FILES(SISRES)%LU,SIS_FILES(SISRES)%FMT,
@@ -1271,21 +1259,21 @@ C
      &                   SORLEO,SORIMP,T1,T2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_ARRET'
         ENDIF
-C
-C ----     CONSTANT FLOW DISCHARGE
-C
+!
+! ----     CONSTANT FLOW DISCHARGE
+!
         IF(LCONDIS) THEN
           CALL CONDIS_SISYPHE(CONSTFLOW)
         ELSE
           CONSTFLOW =.FALSE.
         ENDIF
-C
-C=======================================================================
-C : 8     MASS BALANCE
-C=======================================================================
-C       COMPUTES THE COMPONENTS OF SAND TRANSPORT FOR THE MASS BALANCE,
-C       GRAPHIC OUTPUTS AND VALIDATION STAGE
-C
+!
+!=======================================================================
+! : 8     MASS BALANCE
+!=======================================================================
+!       COMPUTES THE COMPONENTS OF SAND TRANSPORT FOR THE MASS BALANCE,
+!       GRAPHIC OUTPUTS AND VALIDATION STAGE
+!
         IF(BILMA.AND.CHARR) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'BILAN_SISYPHE'
           CALL BILAN_SISYPHE(E,ESOMT,QSX,QSY,
@@ -1294,9 +1282,9 @@ C
      &       VOLTOT,DZF_GF,MASS_GF,LGRAFED,NUMLIQ%I,NFRLIQ)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BILAN_SISYPHE'
         ENDIF
-C
-C       CONTROL SECTIONS
-C
+!
+!       CONTROL SECTIONS
+!
         IF(NCP.GT.0) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'FLUSEC_SISYPHE'
           CALL FLUSEC_SISYPHE(U2D,V2D,HN,
@@ -1307,21 +1295,21 @@ C
      &                        DT,NCP,CTRLSC,ENTETS,AT0,MESH%KNOGL%I)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_FLUSEC_SISYPHE'
         ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
         IF(.NOT.PERMA.AND.SIS_FILES(SISHYD)%NAME(1:1).NE.' ') THEN
-C
-C         UPDATES THE HYDRO
-C
-C         IF READING ON HYDRODYNAMIC FILE, INCREMENTS QU, QV AND Z
+!
+!         UPDATES THE HYDRO
+!
+!         IF READING ON HYDRODYNAMIC FILE, INCREMENTS QU, QV AND Z
           IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
             CALL OS('X=X+Y   ', X=QU, Y=DEL_QU)
             CALL OS('X=X+Y   ', X=QV, Y=DEL_QV)
             CALL OS('X=X+Y   ', X=Z , Y=DEL_Z)
           ENDIF
           CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
-C         CLIPS NEGATIVE DEPTHS
+!         CLIPS NEGATIVE DEPTHS
           IF(OPTBAN.GT.0) THEN
             DO I = 1, NPOIN
              IF(HN%R(I).LT.HMIN) THEN
@@ -1337,18 +1325,18 @@ C         CLIPS NEGATIVE DEPTHS
             CALL OS('X=Y/Z   ', X=U2D, Y=QU,   Z=HN)
             CALL OS('X=Y/Z   ', X=V2D, Y=QV,   Z=HN)
           ENDIF
-C
+!
         ENDIF
-C
-C       END OF THE LOOP ON SUB-TIMESTEPS NSOUS
-C ---------------------------------------------------------
+!
+!       END OF THE LOOP ON SUB-TIMESTEPS NSOUS
+! ---------------------------------------------------------
         IF(DEBUG.GT.0) WRITE(LU,*) 'SOUS_ITERATION_NEXT'
         IF (ISOUS < NSOUS) GOTO 702
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_SOUS_ITERATION'
-C=======================================================================
-C : 9        PRINTS OUT EXTREME VALUES
-C=======================================================================
-C
+!=======================================================================
+! : 9        PRINTS OUT EXTREME VALUES
+!=======================================================================
+!
         IF(ENTET.AND.CHARR) THEN
           WRITE(LU,*)
           CALL MAXI(XMAX,IMAX,E%R,NPOIN)
@@ -1385,7 +1373,7 @@ C
           IF(LNG.EQ.2) WRITE(LU,374) XMI,IMI
 373       FORMAT(' EVOLUTION MINIMUM        : ',G16.7,' NOEUD : ',I6)
 374       FORMAT(' MINIMAL EVOLUTION        : ',G16.7,' NODE  : ',I6)
-C
+!
           IF(CONST_ALAYER) THEN
             IF(NSICLA.GT.1.AND.XMI.LT.-0.5D0*ELAY0) THEN
               IF(LNG.EQ.1) WRITE(LU,885)
@@ -1449,23 +1437,21 @@ C
 883       FORMAT(' EVOLUTION MINIMUM TOTALE : ',G16.7,' NOEUD : ',I6)
 884       FORMAT(' TOTAL MINIMAL EVOLUTION  : ',G16.7,' NODE  : ',I6)
         ENDIF
-
-C=======================================================================
-C : 10         PRINTS OUT RESULTS AT THIS TIMESTEP
-C              AND COMPARES AGAINST A REFERENCE FILE
-C=======================================================================
-C
-
-C       IN COUPLING MODE, OUTPUT TIMES OF TELEMAC AND SISYPHE ARE
-C       SYNCHRONISED, IT MEANS THAT WE MUST HAVE :
-C       LT * DT (TIME AT THE END OF TIME STEP LT IN TELEMAC)
-C       EQUAL TO:
-C       (LT-1)*DT + PERICOU*DT (TIME AT THE END OF TIME STEP LT IN SISYPHE
-C       HENCE THE FACT THAT LT IS REPLACED BY LT-1+PERICOU
-C       DEFAULT VALUE OF PERICOU IS 1
-C
+!=======================================================================
+! : 10         PRINTS OUT RESULTS AT THIS TIMESTEP
+!              AND COMPARES AGAINST A REFERENCE FILE
+!=======================================================================
+!
+!       IN COUPLING MODE, OUTPUT TIMES OF TELEMAC AND SISYPHE ARE
+!       SYNCHRONISED, IT MEANS THAT WE MUST HAVE :
+!       LT * DT (TIME AT THE END OF TIME STEP LT IN TELEMAC)
+!       EQUAL TO:
+!       (LT-1)*DT + PERICOU*DT (TIME AT THE END OF TIME STEP LT IN SISYPHE
+!       HENCE THE FACT THAT LT IS REPLACED BY LT-1+PERICOU
+!       DEFAULT VALUE OF PERICOU IS 1
+!
         IF(UNIT) CALL OS('X=CX    ', X=CS, C= XMVS)
-C
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDES'
         CALL PREDES(LT-1+PERICOU,AT0)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDES'
@@ -1475,19 +1461,19 @@ C
      &                   'STD',AT0,LT-1+PERICOU,LISPR,LEOPR,
      &                   SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
-C
+!
         IF(UNIT) CALL OS('X=CX    ', X=CS,  C= 1.D0/XMVS)
-C
-C       SENDS THE NEW ZF TO TELEMAC-2D OR 3D
-C
+!
+!       SENDS THE NEW ZF TO TELEMAC-2D OR 3D
+!
         IF(CODE(1:7) == 'TELEMAC') THEN
           CALL OV ('X=Y     ', ZF_SIS%R, ZF%R, ZF%R, 0.D0, NPOIN)
         ENDIF
-C
-C       THE SUBROUTINE VALIDA FROM THE LIBRARY IS STANDARD
-C       IT CAN BE MODIFIED FOR EACH PARTICULAR CASE
-C       BUT ITS CALL MUST BE LEFT IN THE LOOP ON TIME
-C
+!
+!       THE SUBROUTINE VALIDA FROM THE LIBRARY IS STANDARD
+!       IT CAN BE MODIFIED FOR EACH PARTICULAR CASE
+!       BUT ITS CALL MUST BE LEFT IN THE LOOP ON TIME
+!
         IF(VALID) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_VALIDA'
           CALL BIEF_VALIDA(TB,TEXTPR,SIS_FILES(SISREF)%LU,
@@ -1497,32 +1483,29 @@ C
      &                     MAXVAR,NPOIN,LT,VALNIT,ALIRV)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_VALIDA'
         ENDIF
-C
-C       END OF THE LOOP ON THE RECORDS : 700
+!
+!       END OF THE LOOP ON THE RECORDS : 700
 700     CONTINUE
-C
-C=======================================================================
-C
-C       END OF THE LOOP ON THE NUMBER OF EVENTS : 710
-C
+!
+!=======================================================================
+!
+!       END OF THE LOOP ON THE NUMBER OF EVENTS : 710
+!
 710     CONTINUE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_TIME_LOOP'
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF(DREDGESIM.AND.(LOOPCOUNT.EQ.TELNIT.AND.PART.EQ.1.
      &                                            .OR. PART.EQ.-1)) THEN
          CALL DREDGESIM_INTERFACE(3)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

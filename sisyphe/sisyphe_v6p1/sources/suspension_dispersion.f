@@ -1,157 +1,60 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE DISPERSION PARAMETERS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, INTERFACE_SISYPHE
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> CODE, DISP, HN, KX, KY, KZ, NPOIN, OPTDIF, T1, T2, T3, TOB, U2D, V2D, VISC_TEL, XKX, XKY, XMVE
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> COST, DIMVISC, K, SINT, UETH
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_SUSPENSION_DISPERSION
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> CPSTVC(), OS(), OV_2(), PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>SUSPENSION_MAIN()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.1                                       </center>
-!> </td><td> 13/12/2000
-!> </td><td> C. MOULIN (LNH)  01 30 87 83 81
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>CODE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DISP
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>HN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KX
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KY
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KZ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPOIN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>OPTDIF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T1
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TOB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>U2D
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>V2D
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>VISC_TEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XKX
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XKY
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XMVE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-        SUBROUTINE SUSPENSION_DISPERSION ! (_IMP_)
+!                    ******************************************
+                     SUBROUTINE SUSPENSION_DISPERSION ! (_IMP_)
+!                    ******************************************
+!
      &  (TOB, XMVE,HN,  OPTDIF, NPOIN, XKX, XKY,
      &   T1, T2, T3, KX, KY, KZ, DISP,U2D,V2D,VISC_TEL,CODE)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| CODE           |---| 
-C| DISP           |---| 
-C| HN             |---| 
-C| KX             |---| 
-C| KY             |---| 
-C| KZ             |---| 
-C| NPOIN          |---| 
-C| OPTDIF         |---| 
-C| T1             |---| 
-C| T2             |---| 
-C| T3             |---| 
-C| TOB            |---| 
-C| U2D            |---| 
-C| V2D            |---| 
-C| VISC_TEL       |---| 
-C| XKX            |---| 
-C| XKY            |---| 
-C| XMVE           |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE DISPERSION PARAMETERS.
+!
+!history  C. MOULIN (LNH)
+!+        13/12/2000
+!+        V5P1
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CODE           |---| 
+!| DISP           |---| 
+!| HN             |---| 
+!| KX             |---| 
+!| KY             |---| 
+!| KZ             |---| 
+!| NPOIN          |---| 
+!| OPTDIF         |---| 
+!| T1             |---| 
+!| T2             |---| 
+!| T3             |---| 
+!| TOB            |---| 
+!| U2D            |---| 
+!| V2D            |---| 
+!| VISC_TEL       |---| 
+!| XKX            |---| 
+!| XKY            |---| 
+!| XMVE           |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE INTERFACE_SISYPHE,
      &    EX_SUSPENSION_DISPERSION => SUSPENSION_DISPERSION
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE (BIEF_OBJ),  INTENT(IN)    :: TOB,HN,VISC_TEL
@@ -161,16 +64,14 @@ C
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: KX, KY, KZ, DISP
       TYPE (BIEF_OBJ),  INTENT(IN)    :: U2D,V2D
       CHARACTER(LEN=24), INTENT(IN)   :: CODE
-
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER                     :: K,DIMVISC
       DOUBLE PRECISION            :: UETH, COST, SINT
-
 !
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
 !
@@ -179,7 +80,7 @@ C                               PROGRAM                                !
       ! ****************************************************** !
       IF (OPTDIF == 2.OR.OPTDIF == 1) THEN
 !
-C        ADDED ON 19/10/2007 (JMH)
+!        ADDED ON 19/10/2007 (JMH)
          CALL CPSTVC(U2D,T1)
          CALL CPSTVC(U2D,T2)
 !
@@ -280,18 +181,12 @@ C        ADDED ON 19/10/2007 (JMH)
      &          DISP%MAXDIM1, DISP%DIM1)
       CALL OV_2('X=Y     ', DISP%R, 3, KZ%R, 1, KZ%R, 1, 0.D0,
      &          DISP%MAXDIM1, DISP%DIM1)
-
       !----------------------------------------------------------------!
 30    FORMAT('DISPERSION : OPTION POUR LA DISPERSION NON PREVUE: ',1I6)
       !----------------------------------------------------------------!
 31    FORMAT('DISPERSION: OPTION FOR THE DISPERSION NOT AVAILABLE:',1I6)
       !----------------------------------------------------------------!
-
 !======================================================================!
 !======================================================================!
-
       RETURN
       END SUBROUTINE SUSPENSION_DISPERSION
-C
-C#######################################################################
-C

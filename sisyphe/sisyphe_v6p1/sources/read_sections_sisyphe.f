@@ -1,91 +1,50 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       - READS SECTIONS INPUT FILE IN SCALAR AND PARALLEL MODES
-!><br>            - DEFINES THE CONTROL SECTIONS, OR...
-!><br>            - ...RE-DEFINES THE ONES DECLARED PREVIOUSLY IN THE STEERING FILE
-!><br>            - SECTIONS ARE DEFINED BY GLOBAL NODE NUMBERS OR,
-!>                BY END POINT COORDINATES (THEN NEAREST NODE FOUND)
-!><br>            - IN PARALLEL MODE, TWO OPTIONS:
-!><br>                 -> TAKES THE "SCALAR" FILE (AS "PREVIOUSLY")
-!><br>                 -> TAKES A PARTITIONED FILE - COMPUTING FLUXES THROUGH SECTIONS
-!>                     - CROSSING NUMEROUS MESH PARTITIONS IS POSSIBLE
-!><br>            - MODIFIES CTRLSC AND NCP
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, DECLARATIONS_SISYPHE
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink<hr>
-!> DECLARATIONS_SISYPHE :<br>
-!> @link DECLARATIONS_SISYPHE::CHAIN CHAIN@endlink, 
-!> @link DECLARATIONS_SISYPHE::CTRLSC CTRLSC@endlink, 
-!> @link DECLARATIONS_SISYPHE::MESH MESH@endlink, 
-!> @link DECLARATIONS_SISYPHE::NCP NCP@endlink, 
-!> @link DECLARATIONS_SISYPHE::SISSEC SISSEC@endlink, 
-!> @link DECLARATIONS_SISYPHE::SIS_FILES SIS_FILES@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> DISTB, DISTE, DMINB, DMINE, ERR, I, IHOWSEC, INP, N, NSEC, XA, YA
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>POINT_SISYPHE()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 15/02/2010
-!> </td><td> JAJ PINXIT JACEK.JANKOWSKI@BAW.DE
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-C
-C#######################################################################
-C
+!                    ********************************
                      SUBROUTINE READ_SECTIONS_SISYPHE
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ********************************
+!
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    - READS SECTIONS INPUT FILE IN SCALAR AND PARALLEL MODES
+!+
+!+            - DEFINES THE CONTROL SECTIONS, OR...
+!+
+!+            - ...RE-DEFINES THE ONES DECLARED PREVIOUSLY IN THE STEERING FILE
+!+
+!+            - SECTIONS ARE DEFINED BY GLOBAL NODE NUMBERS OR,
+!+                BY END POINT COORDINATES (THEN NEAREST NODE FOUND)
+!+
+!+            - IN PARALLEL MODE, TWO OPTIONS:
+!+
+!+                 -> TAKES THE "SCALAR" FILE (AS "PREVIOUSLY")
+!+
+!+                 -> TAKES A PARTITIONED FILE - COMPUTING FLUXES THROUGH SECTIONS
+!+                     - CROSSING NUMEROUS MESH PARTITIONS IS POSSIBLE
+!+
+!+            - MODIFIES CTRLSC AND NCP
+!
+!history  JAJ PINXIT JACEK.JANKOWSKI@BAW.DE
+!+        15/02/2010
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF, ONLY: NCSIZE
       USE DECLARATIONS_SISYPHE, ONLY: MESH, CHAIN, NCP, CTRLSC,
      &                                SIS_FILES, SISSEC
@@ -98,7 +57,7 @@ C
 !
 !-----------------------------------------------------------------------
 !
-C      WRITE(LU,*) '-> ENTERING READ_SECTIONS_SISYPHE'
+!      WRITE(LU,*) '-> ENTERING READ_SECTIONS_SISYPHE'
       INP=SIS_FILES(SISSEC)%LU
       READ (INP,*) ! THE NECESSARY COMMENT LINE
       READ (INP,*) NSEC, IHOWSEC
@@ -111,7 +70,6 @@ C      WRITE(LU,*) '-> ENTERING READ_SECTIONS_SISYPHE'
           STOP
         ENDIF
       ENDIF
-
       SELECT CASE (IHOWSEC)
       CASE (:-1) ! SECTION END POINTS PROVIDED AS GLOBAL NODES
         DO N=1,NSEC
@@ -129,11 +87,11 @@ C      WRITE(LU,*) '-> ENTERING READ_SECTIONS_SISYPHE'
           CHAIN(N)%NSEG=-1
           NULLIFY(CHAIN(N)%LISTE)
         END DO
-C        WRITE(LU,'(A)') ' -> SECTION, TERMINAL COORDINATES:'
-C        DO N=1,NSEC
-C          WRITE(LU,'(I9,4(1X,1PG13.6))') N,
-C     &          CHAIN(N)%XYBEG, CHAIN(N)%XYEND
-C        END DO
+!        WRITE(LU,'(A)') ' -> SECTION, TERMINAL COORDINATES:'
+!        DO N=1,NSEC
+!          WRITE(LU,'(I9,4(1X,1PG13.6))') N,
+!     &          CHAIN(N)%XYBEG, CHAIN(N)%XYEND
+!        END DO
       CASE (0) ! SECTION END POINTS PROVIDED BY COORDINATES
         DO N=1,NSEC
           READ (INP,*) CHAIN(N)%DESCR
@@ -167,8 +125,8 @@ C        END DO
               DMINE=DISTE
             ENDIF
           END DO
-C          WRITE(LU,'(A,3(1X,I9))')
-C     &          ' -> SECTION, TERMINAL NODES: ', N, CHAIN(N)%NPAIR(:)
+!          WRITE(LU,'(A,3(1X,I9))')
+!     &          ' -> SECTION, TERMINAL NODES: ', N, CHAIN(N)%NPAIR(:)
         END DO
       CASE (1:) ! PARTITIONED, INSTEAD OF END POINTS, READY CHAINS PROVIDED
         DO N=1,NSEC
@@ -196,33 +154,33 @@ C     &          ' -> SECTION, TERMINAL NODES: ', N, CHAIN(N)%NPAIR(:)
 !
 !-----------------------------------------------------------------------
 !
-C      WRITE(LU,*) 'SECTIONS SUMMARY:'
-C      WRITE(LU,*) 'NSEC,IHOWSEC: ',NSEC,IHOWSEC
-C      SELECT CASE (IHOWSEC)
-C      CASE(:0) ! SERIAL CASE, OR "CLASSICAL CASE" IN PARALLEL (DEVEL)
-C        DO N=1,NSEC
-C          WRITE(LU,*) CHAIN(N)%DESCR
-C          WRITE(LU,*) CHAIN(N)%XYBEG(:), CHAIN(N)%XYEND(:)
-C          WRITE(LU,*) CHAIN(N)%NPAIR(:)
-C        END DO
-C      CASE (1:) ! PARTITIONED, READY SEGMENT CHAINS GIVEN
-C        DO N=1,NSEC
-C          WRITE(LU,*) 'NAME: ', CHAIN(N)%DESCR
-C          WRITE(LU,*) 'NSEG: ', CHAIN(N)%NSEG
-C          DO I=1,CHAIN(N)%NSEG
-C            WRITE(LU,*) CHAIN(N)%LISTE(I,:)
-C          END DO
-C        END DO
-C      END SELECT
+!      WRITE(LU,*) 'SECTIONS SUMMARY:'
+!      WRITE(LU,*) 'NSEC,IHOWSEC: ',NSEC,IHOWSEC
+!      SELECT CASE (IHOWSEC)
+!      CASE(:0) ! SERIAL CASE, OR "CLASSICAL CASE" IN PARALLEL (DEVEL)
+!        DO N=1,NSEC
+!          WRITE(LU,*) CHAIN(N)%DESCR
+!          WRITE(LU,*) CHAIN(N)%XYBEG(:), CHAIN(N)%XYEND(:)
+!          WRITE(LU,*) CHAIN(N)%NPAIR(:)
+!        END DO
+!      CASE (1:) ! PARTITIONED, READY SEGMENT CHAINS GIVEN
+!        DO N=1,NSEC
+!          WRITE(LU,*) 'NAME: ', CHAIN(N)%DESCR
+!          WRITE(LU,*) 'NSEG: ', CHAIN(N)%NSEG
+!          DO I=1,CHAIN(N)%NSEG
+!            WRITE(LU,*) CHAIN(N)%LISTE(I,:)
+!          END DO
+!        END DO
+!      END SELECT
 !
 !-----------------------------------------------------------------------
-C TRANSFER TO THE GLOBAL TELEMAC OR SISYPHE VARIABLES
-C NCP IS 2 * NUMBER OF SECTIONS
-C CTRLSC IS THE LIST OF THE SECTION END NODES
-C CTRLSC HAS TO BE RE-ALLOCATED CAREFULLY
+! TRANSFER TO THE GLOBAL TELEMAC OR SISYPHE VARIABLES
+! NCP IS 2 * NUMBER OF SECTIONS
+! CTRLSC IS THE LIST OF THE SECTION END NODES
+! CTRLSC HAS TO BE RE-ALLOCATED CAREFULLY
 !
-C      WRITE (LU,*) 'ARRANGING SECTIONS FOR SISYPHE'
-C      WRITE (LU,*) 'SISYPHE NCP WAS: ',NCP
+!      WRITE (LU,*) 'ARRANGING SECTIONS FOR SISYPHE'
+!      WRITE (LU,*) 'SISYPHE NCP WAS: ',NCP
       NCP = 2*NSEC
       IF (ALLOCATED(CTRLSC)) THEN
         DEALLOCATE(CTRLSC, STAT=ERR)
@@ -246,15 +204,11 @@ C      WRITE (LU,*) 'SISYPHE NCP WAS: ',NCP
         CTRLSC(I+1) = CHAIN(N)%NPAIR(2)
         I=I+2
       END DO
-C      WRITE (LU,*) 'NCP@SISYPHE: ',NCP
-C      WRITE (LU,*) 'CTRLSC@SISYPHE: ',CTRLSC
+!      WRITE (LU,*) 'NCP@SISYPHE: ',NCP
+!      WRITE (LU,*) 'CTRLSC@SISYPHE: ',CTRLSC
 !
 !-----------------------------------------------------------------------
 !
-C      WRITE(LU,*) '-> LEAVING READ_SECTIONS_SISYPHE'
+!      WRITE(LU,*) '-> LEAVING READ_SECTIONS_SISYPHE'
       RETURN
       END SUBROUTINE READ_SECTIONS_SISYPHE
-!-----------------------------------------------------------------------
-C
-C#######################################################################
-C

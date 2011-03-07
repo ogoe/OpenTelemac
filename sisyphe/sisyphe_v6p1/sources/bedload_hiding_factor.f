@@ -1,118 +1,52 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       HIDING FACTOR FOR EACH NODE, SEDIMENT CLASS
-!>                AND TIME STEP.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, INTERFACE_SISYPHE
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> ACLADM, DM, HIDFAC, HIDI, HIDING, KARIM_HOLLY_YANG, NPOIN
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_BEDLOAD_HIDING_FACTOR
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> OS(), PLANTE()
-!>   </td></tr>
-!>     <tr><th> Unknown(s)
-!>    </th><td> BIEF_OBJ, C1, C2, DOUBLE, GLOBAL, IN, INOUT, INTEGER, INTENT, J, LOCAL, TYPE, VARIABLES
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>BEDLOAD_SOLIDISCHARGE()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.5                                       </center>
-!> </td><td> 14/09/2004
-!> </td><td> F. HUVELIN
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.3                                       </center>
-!> </td><td> **/**/2002
-!> </td><td> M. GONZALES DE LINARES
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.3                                       </center>
-!> </td><td> **/11/2002
-!> </td><td> B. MINH DUC
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>ACLADM
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DM
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>HIDFAC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>HIDI
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>HIDING
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KARIM_HOLLY_YANG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPOIN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-        SUBROUTINE BEDLOAD_HIDING_FACTOR
+!                    ********************************
+                     SUBROUTINE BEDLOAD_HIDING_FACTOR
+!                    ********************************
+!
      &(ACLADM, HIDFAC, NPOIN, HIDI, DM, KARIM_HOLLY_YANG, HIDING)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ACLADM         |---| 
-C| DM             |---| 
-C| HIDFAC         |---| 
-C| HIDI           |---| 
-C| HIDING         |---| 
-C| KARIM_HOLLY_YAN|---| 
-C| NPOIN          |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    HIDING FACTOR FOR EACH NODE, SEDIMENT CLASS
+!+                AND TIME STEP.
+!
+!history  B. MINH DUC
+!+        **/11/2002
+!+        V5P3
+!+   
+!
+!history  M. GONZALES DE LINARES
+!+        **/**/2002
+!+        V5P3
+!+   
+!
+!history  F. HUVELIN
+!+        14/09/2004
+!+        V5P5
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ACLADM         |---| 
+!| DM             |---| 
+!| HIDFAC         |---| 
+!| HIDI           |---| 
+!| HIDING         |---| 
+!| NPOIN          |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE INTERFACE_SISYPHE,
      &    EX_BEDLOAD_HIDING_FACTOR => BEDLOAD_HIDING_FACTOR
       USE BIEF
@@ -138,12 +72,12 @@ C
 !
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
 !
 ! *************************** !
-C IA - CONSTANT HIDING FACTOR !
+! IA - CONSTANT HIDING FACTOR !
 ! *************************** !
 !
       IF (HIDFAC == 0) THEN
@@ -151,7 +85,7 @@ C IA - CONSTANT HIDING FACTOR !
          CALL OS('X=C     ', X=HIDING, C=HIDI)
 !
 ! ************************** !
-C IB - EGIAZAROFF FORMULATION !
+! IB - EGIAZAROFF FORMULATION !
 ! ************************** !
 !
       ELSEIF (HIDFAC == 1) THEN
@@ -163,7 +97,7 @@ C IB - EGIAZAROFF FORMULATION !
          ENDDO
 !
 ! ********************************** !
-C IC - ASHIDA AND MICHIUE FORMULATION !
+! IC - ASHIDA AND MICHIUE FORMULATION !
 ! ********************************** !
 !
       ELSEIF (HIDFAC == 2) THEN
@@ -181,7 +115,7 @@ C IC - ASHIDA AND MICHIUE FORMULATION !
          ENDDO
 !
 ! ************************************* !
-C IE - KARIM, HOLLY AND YANG FORMULATION !
+! IE - KARIM, HOLLY AND YANG FORMULATION !
 ! ************************************* !
 !
       ELSEIF (HIDFAC == 4) THEN
@@ -208,6 +142,3 @@ C IE - KARIM, HOLLY AND YANG FORMULATION !
 !
       RETURN
       END SUBROUTINE BEDLOAD_HIDING_FACTOR
-C
-C#######################################################################
-C

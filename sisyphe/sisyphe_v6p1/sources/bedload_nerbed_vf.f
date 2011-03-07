@@ -1,172 +1,71 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       NON ERODABLE METHOD FOR FINITE VOLUMES.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, INTERFACE_SISYPHE
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> AVA, BREACH, DT, ELAY, KSORT, LIEBOR, MESH, NPOIN, NPTFR, NSEG, QS, QSX, QSY, T1, T2, T3, V2DPAR
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> I, IEL, IEL1, IEL2, ISEGIN, K, QSP1, QSP2, QSPC, RNORM, TEMP, VNOIN1, VNOIN2, XN, YN
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_BEDLOAD_NERBED_VF
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> CPSTVC(), PARCOM()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>BEDLOAD_EVOL()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 31/01/2008
-!> </td><td> JMH
-!> </td><td> CORRECTED INITIALISATION ERROR FOR T1 AND T2
-!> <br>      KSORT ADDED (WAS HARD-CODED BEFORE !!!!)
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 14/09/2004
-!> </td><td> F. HUVELIN
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.3                                       </center>
-!> </td><td> 07/05/2002
-!> </td><td> M. GONZALES DE LINARES
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>AVA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>BREACH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ELAY
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KSORT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LIEBOR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MESH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPOIN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NSEG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>QS
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>QSX
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>QSY
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T1
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>V2DPAR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-        SUBROUTINE BEDLOAD_NERBED_VF !
+!                    ******************************
+                     SUBROUTINE BEDLOAD_NERBED_VF !
+!                    ******************************
+!
      &(MESH,LIEBOR,KSORT,ELAY,V2DPAR,QSX,QSY,AVA,NPOIN,NSEG,NPTFR,
      & DT,QS,T1,T2,T3,BREACH)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AVA            |---| 
-C| BREACH         |---| 
-C| DT             |---| 
-C| ELAY           |---| 
-C| KSORT          |---| 
-C| LIEBOR         |---| 
-C| MESH           |---| 
-C| NPOIN          |---| 
-C| NPTFR          |---| 
-C| NSEG           |---| 
-C| QS             |---| 
-C| QSX            |---| 
-C| QSY            |---| 
-C| T1             |---| 
-C| T2             |---| 
-C| T3             |---| 
-C| V2DPAR         |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    NON ERODABLE METHOD FOR FINITE VOLUMES.
+!
+!history  M. GONZALES DE LINARES
+!+        07/05/2002
+!+        V5P3
+!+   
+!
+!history  F. HUVELIN
+!+        14/09/2004
+!+        
+!+   
+!
+!history  JMH
+!+        31/01/2008
+!+        V6P0
+!+   CORRECTED INITIALISATION ERROR FOR T1 AND T2 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AVA            |---| 
+!| BREACH         |---| 
+!| DT             |---| 
+!| ELAY           |---| 
+!| KSORT          |---| 
+!| LIEBOR         |---| 
+!| MESH           |---| 
+!| NPOIN          |---| 
+!| NPTFR          |---| 
+!| NSEG           |---| 
+!| QS             |---| 
+!| QSX            |---| 
+!| QSY            |---| 
+!| T1             |---| 
+!| T2             |---| 
+!| T3             |---| 
+!| V2DPAR         |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE INTERFACE_SISYPHE, EX_BEDLOAD_NERBED_VF => BEDLOAD_NERBED_VF
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: LIEBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: QSX, QSY
@@ -176,9 +75,9 @@ C
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH
       DOUBLE PRECISION, INTENT(IN)    :: ELAY(NPOIN),V2DPAR(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER          :: I, K
       INTEGER          :: IEL, IEL1, IEL2, ISEGIN
       DOUBLE PRECISION :: QSP1, QSP2, QSPC
@@ -187,7 +86,7 @@ C
 !
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
 !
@@ -199,7 +98,7 @@ C                               PROGRAM                                !
       ! DURING TIME STEP FOR THIS POINT
       ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-C     GIVE T1 AND T2 THE SAME STRUCTURE AS QS
+!     GIVE T1 AND T2 THE SAME STRUCTURE AS QS
 !
       CALL CPSTVC(QS,T1)
       CALL CPSTVC(QS,T2)
@@ -266,7 +165,6 @@ C     GIVE T1 AND T2 THE SAME STRUCTURE AS QS
             XN   = MESH%XNEBOR%R(K+NPTFR)
             YN   = MESH%YNEBOR%R(K+NPTFR)
             TEMP = QSX%R(IEL)*XN + QSY%R(IEL)*YN
-
             IF (TEMP > 0.D0) THEN
                T1%R(IEL) = T1%R(IEL) + TEMP
                T2%R(IEL) = T2%R(IEL) + TEMP
@@ -310,6 +208,3 @@ C     GIVE T1 AND T2 THE SAME STRUCTURE AS QS
 !
       RETURN
       END
-C
-C#######################################################################
-C

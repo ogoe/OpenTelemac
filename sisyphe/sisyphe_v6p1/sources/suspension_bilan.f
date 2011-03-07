@@ -1,253 +1,103 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       MASS-BALANCE FOR THE SUSPENSION.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, INTERFACE_SISYPHE
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> AGGLOT, CSF, CST, DT, ENTET, FLBORTRA, HN, IELMT, ITRA, LT, MASDEP, MASDEPT, MASED0, MASFIN, MASINI, MASKEL, MASSOU, MASTEN, MASTOU, MESH, MSK, NFRLIQ, NIT, NPTFR, NUMLIQ, T2, T3, VOLU2D, ZFCL_S
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> ERREUR, FLT_BOUND, FLUXT, I, IFRLIQ, PERDUE, P_DSUM, RELATI
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_SUSPENSION_BILAN
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> BIEF_SUM(), DOTS(), OS(), VECTOR()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>SUSPENSION_COMPUTATION()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 10/06/2008
-!> </td><td>
-!> </td><td> TRACER FLUX GIVEN BY FLBORTRA (FROM CVDFTR)
-!> <br>      DELETED 13 ARGUMENTS
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 28/05/2008
-!> </td><td>
-!> </td><td> FLUX GIVEN BY BOUNDARIES
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 05/05/2008
-!> </td><td>
-!> </td><td> COMPUTES THE MASS ACCOUNTING FOR MASS-LUMPING
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.8                                       </center>
-!> </td><td> 29/10/2007
-!> </td><td> J-M HERVOUET
-!> </td><td> CORRECTIONS IN PARALLEL MODE
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.6                                       </center>
-!> </td><td> 22/12/2004
-!> </td><td> F. HUVELIN
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.4                                       </center>
-!> </td><td> **/05/2003
-!> </td><td> M. GONZALES DE LINARES
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.1                                       </center>
-!> </td><td> 13/12/2000
-!> </td><td> C. MOULIN (LNH) 01 30 87 83 81
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>AGGLOT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>CSF
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>CST
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DISP_C
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ENTET
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>FLBORTRA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>HN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>HPROP
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IELMT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ITRA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASDEP
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASDEPT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASED0
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASFIN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASINI
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASKEL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASSOU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASTEN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASTOU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MESH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MSK
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NFRLIQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NIT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NUMLIQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>VOLU2D
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ZFCL_S
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-        SUBROUTINE SUSPENSION_BILAN
+!                    ***************************
+                     SUBROUTINE SUSPENSION_BILAN
+!                    ***************************
+!
      &(MESH,CST,HN,ZFCL_S,MASKEL,
      & IELMT,ITRA,LT,NIT,DT,CSF,
      & MASSOU,MASED0,MSK,ENTET,MASTEN,MASTOU,MASINI,T2,
      & T3,MASFIN,MASDEPT,MASDEP,AGGLOT,
      & VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AGGLOT         |---| 
-C| CSF            |---| 
-C| CST            |---| 
-C| DISP_C         |---| 
-C| DT             |---| 
-C| ENTET          |---| 
-C| FLBORTRA       |---| 
-C| HN             |---| 
-C| HPROP          |---| 
-C| IELMT          |---| 
-C| ITRA           |---| 
-C| LT             |---| 
-C| MASDEP         |---| 
-C| MASDEPT        |---| 
-C| MASED0         |---| 
-C| MASFIN         |---| 
-C| MASINI         |---| 
-C| MASKEL         |---| 
-C| MASSOU         |---| 
-C| MASTEN         |---| 
-C| MASTOU         |---| 
-C| MESH           |---| 
-C| MSK            |---| 
-C| NFRLIQ         |---| 
-C| NIT            |---| 
-C| NPTFR          |---| 
-C| NUMLIQ         |---| 
-C| T2             |---| 
-C| T3             |---| 
-C| VOLU2D         |---| 
-C| ZFCL_S         |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! SISYPHE   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    MASS-BALANCE FOR THE SUSPENSION.
+!
+!history  C. MOULIN (LNH)
+!+        13/12/2000
+!+        V5P1
+!+   
+!
+!history  M. GONZALES DE LINARES
+!+        **/05/2003
+!+        V5P4
+!+   
+!
+!history  F. HUVELIN
+!+        22/12/2004
+!+        V5P6
+!+   
+!
+!history  J-M HERVOUET
+!+        29/10/2007
+!+        V5P8
+!+   CORRECTIONS IN PARALLEL MODE 
+!
+!history  
+!+        05/05/2008
+!+        
+!+   COMPUTES THE MASS ACCOUNTING FOR MASS-LUMPING 
+!
+!history  
+!+        28/05/2008
+!+        
+!+   FLUX GIVEN BY BOUNDARIES 
+!
+!history  
+!+        10/06/2008
+!+        
+!+   TRACER FLUX GIVEN BY FLBORTRA (FROM CVDFTR) 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AGGLOT         |---| 
+!| CSF            |---| 
+!| CST            |---| 
+!| DT             |---| 
+!| ENTET          |---| 
+!| FLBORTRA       |---| 
+!| HN             |---| 
+!| IELMT          |---| 
+!| ITRA           |---| 
+!| LT             |---| 
+!| MASDEP         |---| 
+!| MASDEPT        |---| 
+!| MASED0         |---| 
+!| MASFIN         |---| 
+!| MASINI         |---| 
+!| MASKEL         |---| 
+!| MASSOU         |---| 
+!| MASTEN         |---| 
+!| MASTOU         |---| 
+!| MESH           |---| 
+!| MSK            |---| 
+!| NFRLIQ         |---| 
+!| NIT            |---| 
+!| NPTFR          |---| 
+!| NUMLIQ         |---| 
+!| T2             |---| 
+!| T3             |---| 
+!| VOLU2D         |---| 
+!| ZFCL_S         |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN => SUSPENSION_BILAN
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -261,30 +111,26 @@ C
       DOUBLE PRECISION, INTENT(INOUT) :: MASTEN,MASTOU,MASINI
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T2,T3
       DOUBLE PRECISION, INTENT(INOUT) :: MASFIN,MASDEPT,MASDEP
-
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER IFRLIQ,I
       DOUBLE PRECISION            :: ERREUR, PERDUE, RELATI, FLUXT
-C     HERE 300 IS MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
+!     HERE 300 IS MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
       DOUBLE PRECISION FLT_BOUND(300)
-
       ! 4/ EXTERNAL FUNCTION
       ! --------------------
       DOUBLE PRECISION, EXTERNAL :: P_DSUM
-
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
-
       ! ************************************** !
       ! I - QUANTITY OF SEDIMENT IN SUSPENSION !
       ! ************************************** !
 !
       IF(AGGLOT.GT.0.999999D0) THEN
-C       ASSUMES HERE THAT AGGLOT=1.D0
+!       ASSUMES HERE THAT AGGLOT=1.D0
         CALL OS('X=YZ    ',X=T2,Y=VOLU2D,Z=CST)
       ELSE
         CALL VECTOR(T2,'=','MASVEC          ',IELMT,
@@ -293,40 +139,36 @@ C       ASSUMES HERE THAT AGGLOT=1.D0
      &                   AGGLOT,T2,T2,T2,T2,T2,T2,MESH,MSK,MASKEL)
         CALL OS('X=X+YZ  ',X=T2,Y=T3,Z=CST)
       ENDIF
-C
+!
       MASFIN = DOTS(T2,HN)
       IF(NCSIZE.GT.1) MASFIN=P_DSUM(MASFIN)
-
       ! ************************** !
       ! II - TOTAL MASS OF DEPOSIT !
       ! ************************** !
-
       CALL VECTOR(T2, '=', 'MASVEC          ', IELMT, CSF, ZFCL_S, HN,
      &            HN, HN, HN, HN, MESH, MSK, MASKEL)
       MASDEPT = BIEF_SUM(T2)
       IF(NCSIZE.GT.1) MASDEPT = P_DSUM(MASDEPT)
-
       ! *************************************************** !
       ! III - TOTAL MASS OF DEPOSITED (OR ERODED) SEDIMENTS !
       ! *************************************************** !
-
       MASDEP = MASDEP + MASDEPT
-C
-C=======================================================================
-C
-C   COMPUTES THE FLUXES (NO DIFFUSIVE FLUX,...TO INVESTIGATE)
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+!   COMPUTES THE FLUXES (NO DIFFUSIVE FLUX,...TO INVESTIGATE)
+!
+!=======================================================================
+!
       FLUXT=0.D0
-C
+!
       IF(NFRLIQ.GT.0) THEN
         DO IFRLIQ=1,NFRLIQ
           FLT_BOUND(IFRLIQ)=0.D0
         ENDDO
         IF(NPTFR.GT.0) THEN
           DO I=1,NPTFR
-C           NOTE: FLUX_BOUNDARIES COULD BE DEFINED BETWEEN 0 AND NFRLIQ
+!           NOTE: FLUX_BOUNDARIES COULD BE DEFINED BETWEEN 0 AND NFRLIQ
             IFRLIQ=NUMLIQ(I)
             IF(IFRLIQ.GT.0) THEN
               FLT_BOUND(IFRLIQ)=FLT_BOUND(IFRLIQ)+FLBORTRA%R(I)
@@ -342,33 +184,26 @@ C           NOTE: FLUX_BOUNDARIES COULD BE DEFINED BETWEEN 0 AND NFRLIQ
           FLUXT=FLUXT+FLT_BOUND(IFRLIQ)
         ENDDO
       ENDIF
-
       ! ********************************************** !
       ! VII - QUANTITY ENTERED THROUGH LIQUID BOUNDARY !
       ! ********************************************** !
-
       MASTEN = MASTEN - FLUXT * DT
-
       ! ************************************** !
       ! VIII - QUANTITY CREATED BY SOURCE TERM !
       ! ************************************** !
-
       MASTOU = MASTOU + MASSOU
-
       ! ***************************** !
       ! IX - RELATIVE ERROR ON VOLUME !
       ! ***************************** !
 !
-C CORRECTION JMH 17/03/05 : MISSING TERM
-C                                         - MASDEPT
+! CORRECTION JMH 17/03/05 : MISSING TERM
+!                                         - MASDEPT
       ERREUR = MASINI + MASSOU - DT*FLUXT - MASDEPT - MASFIN
 !
       IF (MASFIN > 1.D-8) ERREUR = ERREUR / MASFIN
-
       ! *********** !
       ! X - LISTING !
       ! *********** !
-
       IF(ENTET) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,1005) ITRA,MASINI
@@ -394,19 +229,15 @@ C                                         - MASDEPT
           WRITE(LU,2120) ERREUR
         ENDIF
       ENDIF
-
       ! ************************************** !
       ! XI - LISTING OF THE FINAL MASS-BALANCE !
       ! ************************************** !
-
       IF(LT.EQ.NIT.AND.ENTET) THEN
-
          PERDUE = MASED0 + MASTEN + MASTOU - MASFIN - MASDEP
          RELATI = PERDUE
          IF(MAX(MASED0,MASFIN) > 1.D-10) THEN
            RELATI = RELATI / MAX(MASED0,MASFIN)
          ENDIF
-
          IF(LNG.EQ.1) THEN
             WRITE(LU,3000) ITRA
             WRITE(LU,1140) RELATI
@@ -425,13 +256,10 @@ C                                         - MASDEPT
             WRITE(LU,2166) PERDUE
          ENDIF
       ENDIF
-
       ! *************************** !
       ! XII - UPDATES INITIAL MASS  !
       ! *************************** !
-
       MASINI = MASFIN
-
       !----------------------------------------------------------------!
 1005  FORMAT(1X,'QUANTITE DE LA CLASSE    ',I2
      &         ,' EN SUSPENSION AU TEMPS T    : ',G16.7,' M3')
@@ -489,12 +317,7 @@ C                                         - MASDEPT
 2167  FORMAT(1X,'TOTAL MASS OF DEPOSIT              : ', G16.7, ' M3')
 3100  FORMAT(/,1X,'      *** ','FINAL BALANCE FOR TRACER',I2,' ***')
       !----------------------------------------------------------------!
-
 !======================================================================!
 !======================================================================!
-
       RETURN
       END
-C
-C#######################################################################
-C
