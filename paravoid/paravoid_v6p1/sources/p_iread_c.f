@@ -1,9 +1,9 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief  
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+!>  @brief
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @par Variable(s)
 !>  <br><table>
 !>     <tr><th> Argument(s)
@@ -17,12 +17,12 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>    </th><td> IER
 !>   </td></tr>
 !>     </table>
-
+!
 !>  @par Called by
 !><br>TOMAWAC_MPI_TOOLS()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @par Development history
 !>   <br><table>
 !> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
@@ -37,9 +37,9 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>    </td><td> Translation of French comments within the FORTRAN sources into English comments
 !>   </td></tr>
 !>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @par Details of primary variable(s)
 !>  <br><table>
 !>
@@ -63,39 +63,39 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>                  TID OF THE SENDER / KNOTEN-ID DES SENDER
 !>    </td></tr>
 !>     </table>
-C
-C#######################################################################
-C
+!
+!#######################################################################
+!
                         SUBROUTINE P_IREAD_C
      &(BUFFER,NBYTES,SOURCE,ITAG,IREQ)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| BUFFER         |-->| ZONE TAMPON POUR LES DONNEES
-C|                |   | BUFFER / PUFFERFELD
-C| IREQ           |-->| NUMERO DE REQUEST POUR MPI_IRECV
-C| ITAG           |-->| MESSAGE TAG
-C| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
-C|                |   | LENGTH IN BYTES / LAENGE IN BYTES
-C| SOURCE         |-->| ORIGINE DES DONNEES
-C|                |   | TID OF THE SENDER / KNOTEN-ID DES SENDER
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| BUFFER         |-->| ZONE TAMPON POUR LES DONNEES
+!|                |   | BUFFER / PUFFERFELD
+!| IREQ           |-->| NUMERO DE REQUEST POUR MPI_IRECV
+!| ITAG           |-->| MESSAGE TAG
+!| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
+!|                |   | LENGTH IN BYTES / LAENGE IN BYTES
+!| SOURCE         |-->| ORIGINE DES DONNEES
+!|                |   | TID OF THE SENDER / KNOTEN-ID DES SENDER
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER NBYTES,SOURCE,ITAG,IREQ,IER
       CHARACTER(LEN=*) BUFFER
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_IREAD VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_IREAD IN ITS VOID VERSION'
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C
+!
+!#######################################################################
+!

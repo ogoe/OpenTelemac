@@ -1,9 +1,9 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @brief       EXCHANGES VALUES BETWEEN PROCESSORS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @par Variable(s)
 !>  <br><table>
 !>     <tr><th> Argument(s)
@@ -17,12 +17,12 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>    </th><td> IER
 !>   </td></tr>
 !>     </table>
-
+!
 !>  @par Called by
 !><br>PARACO(), TOMAWAC_MPI_TOOLS()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @par Development history
 !>   <br><table>
 !> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
@@ -37,9 +37,9 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>    </td><td> Translation of French comments within the FORTRAN sources into English comments
 !>   </td></tr>
 !>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !>  @par Details of primary variable(s)
 !>  <br><table>
 !>
@@ -63,39 +63,39 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>                  LENGTH IN BYTES / LAENGE IN BYTES
 !>    </td></tr>
 !>     </table>
-C
-C#######################################################################
-C
+!
+!#######################################################################
+!
                         SUBROUTINE P_IWRIT
      &(BUFFER,NBYTES,DEST,ITAG,IREQ)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| BUFFER         |-->| ZONE TAMPON POUR LES DONNEES
-C|                |   | BUFFER / PUFFERFELD
-C| DEST           |-->| DESTINATION DES DONNEES
-C|                |   | TID OF THE DEST.  / KNOTEN-ID DES EMPFAENGERS
-C| IREQ           |-->| NUMERO DE REQUEST POUR MPI_ISEND
-C| ITAG           |-->| MESSAGE TAG
-C| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
-C|                |   | LENGTH IN BYTES / LAENGE IN BYTES
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| BUFFER         |-->| ZONE TAMPON POUR LES DONNEES
+!|                |   | BUFFER / PUFFERFELD
+!| DEST           |-->| DESTINATION DES DONNEES
+!|                |   | TID OF THE DEST.  / KNOTEN-ID DES EMPFAENGERS
+!| IREQ           |-->| NUMERO DE REQUEST POUR MPI_ISEND
+!| ITAG           |-->| MESSAGE TAG
+!| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
+!|                |   | LENGTH IN BYTES / LAENGE IN BYTES
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER NBYTES,DEST,ITAG,IREQ,IER
       DOUBLE PRECISION BUFFER(*)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_IWRIT VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_IWRIT IN ITS VOID VERSION'
-C
-C----------------------------------------------------------------------
-C
+!
+!----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C
+!
+!#######################################################################
+!
