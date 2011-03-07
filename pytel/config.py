@@ -347,8 +347,11 @@ def parseConfig_DoxygenTELEMAC(cfg):
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
    cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+
    cfgTELEMAC[cfg].update({'COMPILER':{}})
-   # Get cmplr_mod: user list of module
+   # Get modules: user list of module
+   # in which 'system' means all existing modules,
+   # and Get options: for the switches such as parallel, openmi, mumps, etc.
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
    cfgTELEMAC[cfg]['COMPILER'].update({'MODULES':get.split()})
    for mod in get.split():
