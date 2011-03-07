@@ -2,7 +2,7 @@
                      SUBROUTINE FLUXZZ
 !                    *****************
 !
-     *(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
+     &(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
 !
 !***********************************************************************
 ! TELEMAC2D

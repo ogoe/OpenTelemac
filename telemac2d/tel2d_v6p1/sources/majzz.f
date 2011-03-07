@@ -2,8 +2,8 @@
                         SUBROUTINE MAJZZ
 !                       ****************
 !
-     *(W,FLUX,AIRS,DT,NPOIN,ZF,CF,EPS,DDMIN,KFROT,SMH,
-     * HN,QU,QV)
+     &(W,FLUX,AIRS,DT,NPOIN,ZF,CF,EPS,DDMIN,KFROT,SMH,
+     & HN,QU,QV)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P0                                   21/08/2010
@@ -62,6 +62,6 @@
       IF (KFROT.NE.0) CALL FRICTION(NPOIN,G,DT,W,HN,QU,QV,CF)
 !
 !-----------------------------------------------------------------------
-!  
-      RETURN                                                            
+!
+      RETURN
       END

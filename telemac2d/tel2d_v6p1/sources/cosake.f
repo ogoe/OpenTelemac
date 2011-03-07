@@ -13,19 +13,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        17/08/1994
 !+        V5P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C1             |<--| CONSTANTE DU MODELE K-EPSILON
@@ -37,7 +37,7 @@
 !| KARMAN         |<--| CONSTANTE DE KARMAN
 !| KMAX           |<--| K MAXIMUM EN CAS DE CLIPPING
 !| KMIN           |<--| K MINIMUM EN CAS DE CLIPPING
-!| SCHMIT         |---| 
+!| SCHMIT         |---|
 !| SIGMAE         |<--| CONSTANTE DU MODELE K-EPSILON
 !| SIGMAK         |<--| CONSTANTE DU MODELE K-EPSILON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

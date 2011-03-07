@@ -12,38 +12,38 @@
 !
 !history  E. BARROS
 !+        02/08/1993
-!+        
-!+   
+!+
+!+
 !
 !history  A. LEOPARDI (UNINA)
 !+        04/10/2000
 !+        V5P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DESC           |<--| VECTOR USED TO CHANGE THE SET OF STRICKLERS'
-!| ESTIME         |---| 
+!| ESTIME         |---|
 !| GRADJ          |-->| GRADIENT OF COST FUNCTION (ITERATION K)
 !| GRADJN         |-->| GRADIENT OF COST FUNCTION (ITERATION K-1)
-!| JCOUT1         |---| 
+!| JCOUT1         |---|
 !| NPARAM         |-->| TOTAL NUMBER OF PARAMETERS TO ESTIMATE
 !| OPTID          |-->| METHOD 1=GRADIENT, 2=GRADIENT CONJUGUE, 3=LAGRANGE)
-!| R02            |---| 
-!| R03            |---| 
+!| R02            |---|
+!| R03            |---|
 !| RO             |<->| COEFFICIENT OF THE GRADIENT
-!| RSTART         |---| 
+!| RSTART         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

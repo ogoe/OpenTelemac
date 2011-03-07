@@ -15,45 +15,45 @@
 !history  J-M HERVOUET (LNHE)
 !+        05/11/2007
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS
-!| EQUA           |---| 
-!| FLUENT         |---| 
-!| FLUSOR         |---| 
+!| EQUA           |---|
+!| FLUENT         |---|
+!| FLUSOR         |---|
 !| H              |-->| VALEURS DE H A L' ETAPE N+1.
 !| HPROP          |-->| HAUTEUR DE PROPAGATION
 !| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
-!| ITRAC          |---| 
+!| ITRAC          |---|
 !| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
 !| LTT            |-->| NUMERO DU PAS DE TEMPS TRACEUR
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKTR         |---| 
+!| MASKTR         |---|
 !| MASSOU         |-->| QUANTITE DE TRACEUR APPORTEE PAR LE TERME
 !|                |   | SOURCE
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| T,TN           |-->| TRACEUR AU TEMPS T(N+1) ET T(N)
 !| TETAT          |-->| SEMI-IMPLICITATION DU TRACEUR.
 !| UCONV,VCONV    |-->| CHAMP CONVECTEUR
-!| WORK2          |---| 
-!| WORK3          |---| 
-!| WORK4          |---| 
-!| WORK5          |---| 
+!| WORK2          |---|
+!| WORK3          |---|
+!| WORK4          |---|
+!| WORK5          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -29,25 +29,25 @@
 !
 !history  N.GOUTAL; INRIA
 !+        22/03/1998
-!+        
-!+   ROE SCHEME (NG); KINETIC SCHEMES (INRIA) 
+!+
+!+   ROE SCHEME (NG); KINETIC SCHEMES (INRIA)
 !
 !history  J-M HERVOUET (LNHE)
 !+        05/09/2007
-!+        
-!+   MULTIPLE TRACERS 
+!+
+!+   MULTIPLE TRACERS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| AIRES DES ELEMENTS
@@ -67,12 +67,12 @@
 !| DTHAUT         |-->| UTILISE POUR CONDITION CFL
 !| DTN            |<->| PAS DE TEMPS   DE TN+1 A TN+2
 !| DTT            |<->| PAS DE TEMPS TRACEUR
-!| DTVARI         |---| 
+!| DTVARI         |---|
 !| DX,DY          |---| TABLEAUX DE TRAVAIL
 !| DXT,DYT        |---| TABLEAUX DE TRAVAIL POUR TRACEUR
 !| FLUENT,FLUSORT |<--| FLUX MASSE ENTREE ET SORTIE DE TN A TN+1
 !| FLUHBTEMP      |<->| FLUX BORD POUR TRACEUR
-!| FLUSCE         |---| 
+!| FLUSCE         |---|
 !| FLUSORTN,FLUENT|<->| FLUX MASSE ENTREE ET SORTIE DE TN+1 A TN+2
 !| FLUTENT,FLUTSOR|<--| FLUX TRACEUR ENTREE ET SORTIE
 !| FLUX           |---| TABLEAU DE TRAVAIL
@@ -101,8 +101,8 @@
 !| LTT            |<->| NOMBRE DE PAS DE TEMPS TRACEUR
 !| MASSES         |<--| MASSE AJOUTEE PAR TERME SOURCE
 !| MASSOU         |<--| MASSE DE TRACEUR AJOUTEE PAR TERME SOURCE
-!| MAXSCE         |---| 
-!| MAXTRA         |---| 
+!| MAXSCE         |---|
+!| MAXTRA         |---|
 !| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
 !| NELEM          |-->| NOMBRE D'ELEMENTS
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
@@ -111,7 +111,7 @@
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
 !| NREJET         |-->| NOMBRE DE SOURCES/PUITS
 !| NSEG           |-->| NOMBRE D'ARETES
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| NUBO           |-->| NUMEROS GLOBAUX DES EXTREMITES DES ARETES
 !| OPTVF          |-->| OPTION SCHEMA
 !|                |   | 0:ROE, 1:CINETIQUE ORDRE 1,2:CINETIQUE ORDRE 2
@@ -123,7 +123,7 @@
 !| T1,T2,T3,T4,T5 |---| TABLEAUX DE TRAVAIL
 !| TBOR           |-->| CONDITIONS AUX LIMITES SUR T
 !| TMAX           |-->| TEMPS DE FIN DU CALCUL
-!| TSCE2          |---| 
+!| TSCE2          |---|
 !| U,V            |<--| COMPOSANTES DE LA VITESSE AU TEMPS N+1
 !| UBOR           |-->| VALEURS IMPOSEES DE U
 !| VBOR           |-->| VALEURS IMPOSEES DE V
@@ -131,7 +131,7 @@
 !|                |   | (2 PREMIERES COMPOSANTES) ET
 !|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
 !| W              |<->| TABLEAU DE TRAVAIL
-!| WINF           |---| 
+!| WINF           |---|
 !| X,Y            |-->| COORDONNEES DES NOEUDS DU MAILLAGE
 !| XNEBOR,YNEBOR  |-->| NORMALE AUX POINTS FRONTIERE
 !| YASMH          |-->| INDIQUE SI ON PREND EN COMPTE SMH

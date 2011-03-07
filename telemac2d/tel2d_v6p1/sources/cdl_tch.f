@@ -2,10 +2,10 @@
                      SUBROUTINE CDL_TCH
 !                    ******************
 !
-     *(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
-     * HBOR,UBOR,VBOR,W,CE,FLUENT,FLUSORT,
-     * FLBOR,DTHAUT,DT,CFL,EPS,
-     * ZF,WINF)
+     &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
+     & HBOR,UBOR,VBOR,W,CE,FLUENT,FLUSORT,
+     & FLBOR,DTHAUT,DT,CFL,EPS,
+     & ZF,WINF)
 !
 !***********************************************************************
 ! TELEMAC2D

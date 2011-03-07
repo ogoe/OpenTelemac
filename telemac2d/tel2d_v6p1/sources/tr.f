@@ -14,25 +14,25 @@
 !history  J-M HERVOUET (LNHE)
 !+        02/04/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| RANG DE LA FRONTIERE A DEBIT IMPOSE
 !|                |   | (1 S'IL N'Y EN A QU'UNE)
-!| IERR           |---| 
-!| ITRAC          |---| 
+!| IERR           |---|
+!| ITRAC          |---|
 !| N              |-->| NUMERO GLOBAL DU POINT
 !|                |   | (LU DANS LE FICHIER DES PARAMETRES)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

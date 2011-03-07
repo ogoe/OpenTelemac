@@ -13,25 +13,25 @@
 !history  LEO POSTMA (DELFT HYDRAULICS)
 !+        03/04/2007
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFRM           |-->| 
-!| IFRM1          |---| 
-!| ITO            |-->| 
-!| ITOP1          |---| 
+!| IFRM           |-->|
+!| IFRM1          |---|
+!| ITO            |-->|
+!| ITOP1          |---|
 !| NODENRS        |-->| IF > 0 : NODE NUMBER
 !|                |   | IF
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D

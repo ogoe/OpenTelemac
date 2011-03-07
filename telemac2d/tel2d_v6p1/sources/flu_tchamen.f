@@ -2,8 +2,8 @@
                      SUBROUTINE FLU_TCHAMEN
 !                    **********************
 !
-     *(H1,H2,ETA1,ETA2,U1,U2,V1,V2,
-     * XNN,YNN,FLX,G,EPS)
+     &(H1,H2,ETA1,ETA2,U1,U2,V1,V2,
+     & XNN,YNN,FLX,G,EPS)
 !
 !***********************************************************************
 ! TELEMAC2D

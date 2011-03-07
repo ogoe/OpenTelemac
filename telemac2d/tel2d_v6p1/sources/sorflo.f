@@ -16,23 +16,23 @@
 !history  J-M JANIN (LNH)
 !+        08/03/2007
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BINRES         |-->| TYPE DE BINAIRE DU FICHIER DE RESULTATS
-!| DATE           |---| 
+!| DATE           |---|
 !| DEBFLO         |-->| NUMEROS DES PAS DE TEMPS DE LARGAGE DE
 !|                |   | CHAQUE FLOTTEUR.
 !| FINFLO         |-->| NUMEROS DES PAS DE TEMPS DE FIN DE CALCUL DE
@@ -41,10 +41,10 @@
 !|                |   | DES POSITIONS SUCCESSIVES DES FLOTTEURS.
 !| IKLFLO         |---| TABLE DE CONNECTIVITE BIDON UTILISEE POUR LA
 !|                |   | SORTIE DES TRAJECTOIRES SOUS FORME DE MAILLAGE
-!| I_ORIG         |---| 
-!| J_ORIG         |---| 
-!| MAXVAR         |---| 
-!| MESH           |---| 
+!| I_ORIG         |---|
+!| J_ORIG         |---|
+!| MAXVAR         |---|
+!| MESH           |---|
 !| NFLOT          |-->| NOMBRE DE FLOTTEURS.
 !| NIT            |-->| NOMBRE DE PAS DE TEMPS
 !| NITFLO         |-->| NOMBRE MAXIMAL D'ENREGISTREMENTS DES
@@ -52,7 +52,7 @@
 !| NOMRBI         |-->| NOM DU FICHIER DE RESULTATS BINAIRE SUP.
 !| NRBI           |-->| FICHIER DE RESULTATS BINAIRE SUPPLEMENTAIRE
 !|                |   | POUR STOCKER LES TRAJECTOIRES DE FLOTTEURS
-!| TIME           |---| 
+!| TIME           |---|
 !| TITCAS         |-->| TITRE DU FICHIER CAS
 !| XFLOT,YFLOT    |-->| POSITIONS SUCCESSIVES DES FLOTTEURS.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

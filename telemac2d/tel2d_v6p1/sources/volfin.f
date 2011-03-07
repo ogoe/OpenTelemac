@@ -24,19 +24,19 @@
 !history  J-M HERVOUET (LNHE)     ; INRIA
 !+        05/08/2007
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRST          |-->| AIRES DES SOUS-TRIANGLES DANS CELLULES
@@ -54,10 +54,10 @@
 !| DTHAUT         |-->| UTILISE POUR CONDITION CFL
 !| DTN            |<->| PAS DE TEMPS   DE TN+1 A TN+2
 !| DTT            |<->| PAS DE TEMPS TRACEUR
-!| DTVARI         |---| 
+!| DTVARI         |---|
 !| DX,DY          |---| TABLEAUX DE TRAVAIL
 !| FLUHBTEMP      |<->| FLUX BORD POUR TRACEUR
-!| FLUSOR         |---| 
+!| FLUSOR         |---|
 !| FLUSORTN,FLUENT|<->| FLUX MASSE ENTREE ET SORTIE DE TN+1 A TN+2
 !| FLUTENT,FLUTSOR|<--| FLUX TRACEUR ENTREE ET SORTIE
 !| FLUXT,FLUHBOR  |<->| FLUX, FLUX BORD ACCUMULES POUR TRACEUR
@@ -84,8 +84,8 @@
 !| MASKEL         |-->| MASQUE DES ELEMENTS.
 !| MASSES         |<--| MASSE AJOUTEE PAR TERME SOURCE
 !| MASSOU         |<--| MASSE DE TRACEUR AJOUTEE PAR TERME SOURCE
-!| MAXSCE         |---| 
-!| MAXTRA         |---| 
+!| MAXSCE         |---|
+!| MAXTRA         |---|
 !| MESH           |-->| BLOC DE TABLEAUX D'ENTIERS DU MAILLAGE.
 !| MSK            |-->| SI OUI, MASQUAGE D'ELEMENTS.
 !| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD.
@@ -94,7 +94,7 @@
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
 !| NREJET         |-->| NOMBRE DE SOURCES/PUITS
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| OPTVF          |-->| OPTION SCHEMA
 !|                |   | 0:ROE, 1:CINETIQUE ORDRE 1,2:CINETIQUE ORDRE 2
 !| PROPNU         |-->| COEFFICIENT DE DIFFUSION MOLECULAIRE
@@ -107,7 +107,7 @@
 !| TBOR           |-->| CONDITIONS AUX LIMITES SUR T
 !| TMAX           |-->| TEMPS DE FIN DU CALCUL
 !| TN             |-->| T  AU TEMPS N
-!| TSCE2          |---| 
+!| TSCE2          |---|
 !| U,V            |<->| COMPOSANTES DE LA VITESSE.
 !| UBOR           |-->| VALEURS IMPOSEES DE U
 !| VBOR           |-->| VALEURS IMPOSEES DE V

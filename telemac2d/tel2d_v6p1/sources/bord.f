@@ -22,40 +22,40 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/03/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EQUA           |---| 
+!| EQUA           |---|
 !| H              |-->| HAUTEUR AU TEMPS N
 !| HBOR           |<--| HAUTEUR IMPOSEE.
 !| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
 !| LITBOR         |-->| CONDITIONS AUX LIMITES SUR LE TRACEUR
 !| LIUBOR         |-->| CONDITIONS AUX LIMITES SUR U
-!| MASK           |---| 
-!| MESH           |---| 
+!| MASK           |---|
+!| MESH           |---|
 !| NBOR           |-->| ADRESSES DES POINTS DE BORD
 !| NCOTE          |-->| NOMBRE DE FRONTIERES A COTE IMPOSEE
 !| NDEBIT         |-->| NOMBRE DE FRONTIERES A DEBIT IMPOSE
 !| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
-!| NOMIMP         |---| 
+!| NOMIMP         |---|
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
-!| NPTFR2         |---| 
-!| NTRAC          |---| 
+!| NPTFR2         |---|
+!| NTRAC          |---|
 !| NTRACE         |-->| NOMBRE DE FRONTIERES A TRACEUR IMPOSE
-!| NUMLIQ         |---| 
+!| NUMLIQ         |---|
 !| NVITES         |-->| NOMBRE DE FRONTIERES A VITESSE IMPOSEE
 !| PROVEL         |-->| OPTION POUR LES PROFILS DE VITESSE
 !| TBOR           |<--| TRACEUR IMPOSE AU BORD
@@ -64,8 +64,8 @@
 !| U,V            |-->| COMPOSANTES DE LA VITESSE AU TEMPS N
 !| UBOR           |<--| VITESSE U IMPOSEE.
 !| VBOR           |<--| VITESSE V IMPOSEE.
-!| XNEBOR         |---| 
-!| YNEBOR         |---| 
+!| XNEBOR         |---|
+!| YNEBOR         |---|
 !| ZF             |-->| FOND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

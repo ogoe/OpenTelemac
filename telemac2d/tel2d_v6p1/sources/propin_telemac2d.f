@@ -18,19 +18,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/06/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLH,CLU,CLV    |<->| TYPES DE CONDITIONS AUX LIMITES SUR H,U,V
@@ -41,7 +41,7 @@
 !| FINLIQ         |-->| NUMERO DU DERNIER POINT DE LA FRONTIERE LIQUID
 !| FRTYPE         |-->| TYPE DE TRAITEMENT POUR LES FRONTIERES LIQUIDE
 !| GRAV           |-->| PESANTEUR
-!| IELMU          |---| 
+!| IELMU          |---|
 !| KADH           |-->| INDICATEUR DE POINT DIRICHLET
 !| KDDL           |-->| INDICATEUR DE DEGRE DE LIBERTE AU BORD
 !| KDIR           |-->| INDICATEUR DE POINT DE DIRICHLET
@@ -55,7 +55,7 @@
 !| KP1BOR         |-->| POINT SUIVANT SUR LA FRONTIERE.
 !| KSORT          |-->| INDICATEUR DE POINT DE SORTIE FLUIDE
 !| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
-!| LIMDIM         |---| 
+!| LIMDIM         |---|
 !| LIMPRO         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA
 !|                |   | PROPAGATION
 !|                |   | PAR POINTS   :    .1:H  .2:U  .3:V
@@ -77,7 +77,7 @@
 !|                |   | MASK(NPTFR,11): 1. SI H DEGRE DE LIBERTE
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| NBOR           |-->| CORRESPONDANCE ENTRE NUMEROTATION DES
 !|                |   | POINTS FRONTIERES ET NUMEROTATION GLOBALE
@@ -89,8 +89,8 @@
 !|                |   | CONDITIONS AUX LIMITES PHYSIQUES:
 !| THOMFR         |-->| TRAITEMENT PAR CARACTERISTIQUES DES FRONTIERES
 !|                |   | LIQUIDES
-!| XNEBOR         |---| 
-!| YNEBOR         |---| 
+!| XNEBOR         |---|
+!| YNEBOR         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

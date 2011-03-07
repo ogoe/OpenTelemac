@@ -16,21 +16,21 @@
 !+                UA(1,IS) = H;  UA(2,IS)=U;  UA(3,IS)=V.
 !
 !history  INRIA
-!+        
+!+
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CE             |<->| FLUX
@@ -39,7 +39,7 @@
 !| DTHAUT         |-->| UTILISE POUR CONDITION CFL
 !| FLBOR          |<--| FLUX MASSE ENTREE ET SORTIE
 !| FLUENT,FLUSORT |<--| FLUX MASSE ENTREE ET SORTIE
-!| FLUHBTEMP      |---| 
+!| FLUHBTEMP      |---|
 !| G              |-->| CONSTANTE DE GRAVITE
 !| HBOR           |-->| VALEURS IMPOSEES DE H
 !| KDIR           |-->| CONVENTION POUR LES POINTS DIRICHLET
@@ -48,7 +48,7 @@
 !| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
 !| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
 !| UBOR           |-->| VALEURS IMPOSEES DE U
 !| VBOR           |-->| VALEURS IMPOSEES DE V

@@ -18,24 +18,24 @@
 !history  J-M HERVOUET (LNH)
 !+        27/11/1992
 !+        V5P5
-!+   
+!+
 !
 !history  L. VAN HAREN (LNH)
 !+        30/05/1994
-!+        
-!+   
+!+
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<--| ENERGIE TURBULENTE AU TEMPS T(N+1)
@@ -55,8 +55,8 @@
 !| ICONV          |-->| TYPE OF ADVECTION ON K AND EPSILON
 !|                |   | 1 : CHARACTERISTICS
 !|                |   | 2 : SUPG
-!| IELME          |---| 
-!| IELMK          |---| 
+!| IELME          |---|
+!| IELMK          |---|
 !| INFOKE         |-->| LOGIQUE INDIQUANT SI LES INFORMATIONS SUR LE
 !|                |   | SOLVEUR SONT A RESTITUER
 !| KBOR,EBOR      |-->| K ET EPSILON IMPOSES AU BORD
@@ -68,7 +68,7 @@
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
 !| MASKPT         |-->| MASQUES PAR POINTS.
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
 !| OPTSUP         |-->| SUPG OPTION
@@ -80,14 +80,14 @@
 !| SLVK           |-->| STRUCTURE WITH SOLVER OPTIONS FOR K
 !| SME            |---| SECOND MEMBRE DU SYSTEME A RESOUDRE POUR E
 !| SMK            |---| SECOND MEMBRE DU SYSTEME A RESOUDRE POUR K
-!| T2             |---| 
-!| T3             |---| 
-!| TB             |---| 
-!| TE1            |---| 
-!| TE2            |---| 
+!| T2             |---|
+!| T3             |---|
+!| TB             |---|
+!| TE1            |---|
+!| TE2            |---|
 !| TM1            |---| MATRICE DE DIFFUSION
-!| UCONV          |---| 
-!| VCONV          |---| 
+!| UCONV          |---|
+!| VCONV          |---|
 !| VISC           |-->| DIFFUSION TURBULENTE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

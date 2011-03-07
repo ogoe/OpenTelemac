@@ -14,49 +14,49 @@
 !
 !history  F. HUVELIN
 !+        20/04/2004
-!+        
-!+   WRITTEN FROM COEFRO.F 
+!+
+!+   WRITTEN FROM COEFRO.F
 !
 !history  J-M HERVOUET (LNHE)
-!+        
+!+
 !+        V5P5
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---| 
-!| CFBOR          |---| 
-!| CHBORD         |---| 
-!| CHESTR         |---| 
-!| DP             |---| 
-!| GRAV           |---| 
-!| H              |---| 
-!| ITURB          |---| 
-!| KARMAN         |---| 
-!| KFROT          |---| 
-!| LINDNER        |---| 
-!| LISRUG         |---| 
-!| MESH           |---| 
-!| NDEF           |---| 
-!| S              |---| 
-!| SB             |---| 
-!| SP             |---| 
-!| T1             |---| 
-!| T2             |---| 
-!| U              |---| 
-!| V              |---| 
-!| VK             |---| 
+!| CF             |---|
+!| CFBOR          |---|
+!| CHBORD         |---|
+!| CHESTR         |---|
+!| DP             |---|
+!| GRAV           |---|
+!| H              |---|
+!| ITURB          |---|
+!| KARMAN         |---|
+!| KFROT          |---|
+!| LINDNER        |---|
+!| LISRUG         |---|
+!| MESH           |---|
+!| NDEF           |---|
+!| S              |---|
+!| SB             |---|
+!| SP             |---|
+!| T1             |---|
+!| T2             |---|
+!| U              |---|
+!| V              |---|
+!| VK             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_FRICTION_UNIF => FRICTION_UNIF

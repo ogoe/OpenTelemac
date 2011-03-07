@@ -14,35 +14,35 @@
 !
 !history  V. GUINOT (LHF)
 !+        19/04/1996
-!+        
-!+   
+!+
+!+
 !
 !history  J.-M. HERVOUET (LNH)
 !+        03/10/1996
-!+        
-!+   
+!+
+!+
 !
 !history  E. DAVID (SOGREAH)
 !+        **/03/2000
-!+        
-!+   
+!+
+!+
 !
 !history  J-M HERVOUET (LNH)
 !+        16/02/2009
 !+        V5P9
-!+   CORRECTED 03/2000 CORRECTION (IN PARALLEL MODE) 
+!+   CORRECTED 03/2000 CORRECTION (IN PARALLEL MODE)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTSCE         |-->| COTE DES BUSES.
@@ -53,16 +53,16 @@
 !|                |   | LORS D'UN FONCTIONNEMENT EN SORTIE.
 !| DELSCE         |-->| ANGLE DES BUSES AVEC LA VERTICALE
 !| DSCE           |<--| DEBIT DES SOURCES.
-!| ENTET          |---| 
+!| ENTET          |---|
 !| ENTSIP         |-->| NUMERO DE L'ENTREE D'UNE BUSE DANS LA
 !|                |   | NUMEROTATION DES SOURCES.
 !| GRAV           |-->| PESANTEUR.
 !| H              |---| HAUTEUR D'EAU.
 !| ISCE           |-->| NUMERO GLOBAL DES POINTS SOURCES.
 !| LSCE           |<--| PERTE DE CHARGE LINEAIRE DE LA CONDUITE.
-!| MAXSCE         |---| 
-!| NSIPH          |---| 
-!| NTRAC          |---| 
+!| MAXSCE         |---|
+!| NSIPH          |---|
+!| NTRAC          |---|
 !| RELAXS         |-->| COEFFICIENT DE RELAXATION.
 !| SECSCE         |-->| SECTION DES BUSES.
 !| SORSIP         |-->| NUMERO DE LA SORTIE D'UNE BUSE DANS LA

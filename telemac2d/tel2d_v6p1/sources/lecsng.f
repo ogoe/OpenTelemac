@@ -13,28 +13,28 @@
 !
 !history  V. GUINOT (LHF)
 !+        19/04/1996
-!+        
-!+   
+!+
+!+
 !
 !history  J.-M. HERVOUET (LNH)
 !+        03/10/1996
 !+        V5P2
-!+   MODIFIED 
+!+   MODIFIED
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFIC           |---| 
+!| IFIC           |---|
 !| IOPTAN         |<--| OPTION DE TRAITEMENT DES VITESSES TANGENTES
 !| NPOIN          |-->| NOMBRE DE NOEUDS DU MAILLAGE
 !|                |   | LES POINTEURS POUR ZDIG, NUMDIG ET PHIDIG

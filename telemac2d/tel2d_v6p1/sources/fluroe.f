@@ -15,49 +15,49 @@
 !history  N.GOUTAL
 !+        19/08/1994
 !+        V5P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| AIRES DES CELLULES DU MAILLAGE.
-!| DDMIN          |---| 
-!| EPS            |---| 
-!| FLUENT         |---| 
-!| FLUSCE         |---| 
-!| FLUSORT        |---| 
+!| DDMIN          |---|
+!| EPS            |---|
+!| FLUENT         |---|
+!| FLUSCE         |---|
+!| FLUSORT        |---|
 !| FLUX           |<--| TABLEAU DES FLUX DE TYPE ROE
-!| G              |---| 
-!| KDDL           |---| 
-!| KDIR           |---| 
-!| KNEU           |---| 
-!| LIMPRO         |---| 
-!| NBOR           |---| 
-!| NELEM          |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
+!| G              |---|
+!| KDDL           |---|
+!| KDIR           |---|
+!| KNEU           |---|
+!| LIMPRO         |---|
+!| NBOR           |---|
+!| NELEM          |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
 !| NSEG           |-->| NOMBRE TOTAL DE SEGMENTS DU MAILLAGE
-!| NUBO           |---| 
+!| NUBO           |---|
 !| VNOIN          |-->| NORMALE DU SEGMENT INTERNE
 !|                |   | (2 PREMIERES COMPOSANTES) ET
 !|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
 !| W              |-->| VARIABLES CONSERVATIVES DU PB A L'INSTANT N
 !| WINF           |-->| FLUX FRONTIERE ENTREE-SORTIE SI STAT.
 !|                |   | WINF INITIAL SI INSTAT.
-!| X              |---| 
-!| XNEBOR         |---| 
-!| Y              |---| 
-!| YNEBOR         |---| 
+!| X              |---|
+!| XNEBOR         |---|
+!| Y              |---|
+!| YNEBOR         |---|
 !| ZF             |---| FOND.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

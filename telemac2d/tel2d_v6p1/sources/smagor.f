@@ -21,30 +21,30 @@
 !history  ADRIAN KLINGS (ENPC)
 !+        06/10/1997
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| COEFFICIENT DE FROTTEMENT POUR K-EPSILON
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| PROPNU         |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
+!| PROPNU         |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
 !| VISC           |-->| DIFFUSION TURBULENTE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

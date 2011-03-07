@@ -14,21 +14,21 @@
 !+            COMPUTES THE Z VARIATIONS (2ND ORDER).
 !
 !history  INRIA
-!+        
+!+
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| AIRES DES CELLULES
@@ -38,7 +38,7 @@
 !| CMI            |-->| COORDONNEES DES POINTS MILIEUX D'INTERFACE
 !| DPX,DPY        |-->| GRADIENT DES FONCTIONS DE BASE P1
 !|                |   | PAR TRIANGLE
-!| DSM,CORR       |---| 
+!| DSM,CORR       |---|
 !| DSZ            |<--| VARIATION DE Z POUR ORDRE 2
 !| DXIZ,DYIZ,DSP  |---| TABLEAUX DE TRAVAIL
 !| JV             |-->| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE

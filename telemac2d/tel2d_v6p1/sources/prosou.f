@@ -66,19 +66,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        08/04/2008
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
@@ -94,9 +94,9 @@
 !| HWIND          |-->| MINIMUM DEPTH FOR TAKING WIND INTO ACCOUNT
 !| ISCE,DSCE      |-->| POINTS SOURCES, DEBITS DE LA SOURCE
 !| LT             |-->| TIME STEP NUMBER
-!| MARDAT         |---| 
-!| MAREE          |---| 
-!| MARTIM         |---| 
+!| MARDAT         |---|
+!| MAREE          |---|
+!| MARTIM         |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
 !| MESH           |-->| MAILLAGE
@@ -108,18 +108,18 @@
 !| NREJEU         |-->| NOMBRE DE VITESSES DES SOURCES DONNEES
 !|                |   | SI NREJEU=0 ON CONSIDERE QUE LA VITESSE DES
 !|                |   | SOURCES EST EGALE A CELLE DU COURANT.
-!| NVARCL         |---| 
-!| OPTSOU         |---| 
-!| PHI0           |---| 
+!| NVARCL         |---|
+!| OPTSOU         |---|
+!| PHI0           |---|
 !| SINLAT         |-->| SIN DE LA LATITUDE EN COORDONNEES SPHERIQUES
 !| SMH            |<--| TERME SOURCE DANS L'EQUATION DE CONTINUITE
 !| SPHERI         |-->| =TRUE : COORDONNEES SPHERIQUES
 !| T1             |-->| TABLEAU DE TRAVAIL
-!| UNSV2D         |---| 
-!| VARCL          |---| 
-!| VARCLA         |---| 
+!| UNSV2D         |---|
+!| VARCL          |---|
+!| VARCLA         |---|
 !| VENT           |-->| PRISE EN COMPTE DES EFFORTS DUS AU VENT .
-!| WINDY          |---| 
+!| WINDY          |---|
 !| YASMH          |<->| =TRUE SI SMH NON NUL. AJOUTE UN TERME SOURCE
 !|                |   | IMPLICITE DANS L'EQUATION DU TRACEUR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

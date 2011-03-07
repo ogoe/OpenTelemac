@@ -13,19 +13,19 @@
 !history  J-M HERVOUET (LNH)
 !+        31/08/2007
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AKEP           |-->| LOGIQUE QUI INDIQUE S'IL FAUT INITIALISER K
@@ -33,7 +33,7 @@
 !| H              |<--| HAUTEUR.
 !| ITURB          |-->| MODELE DE TURBULENCE.
 !| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| S              |<--| SURFACE LIBRE.
 !| T              |<--| TRACEUR.
 !| TRAC0          |-->| VALEUR INITIALE DU TRACEUR.

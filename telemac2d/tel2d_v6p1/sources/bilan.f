@@ -11,48 +11,48 @@
 !
 !brief    CALCULATES THE BALANCE OF THE MASS OF WATER.
 !
-!history  
+!history
 !+        14/01/2005
-!+        
-!+   COMPATIBLE COMPUTATION OF FLUXES AT EXITS 
+!+
+!+   COMPATIBLE COMPUTATION OF FLUXES AT EXITS
 !
 !history  J-M HERVOUET (LNHE)
 !+        27/03/2008
 !+        V5P9
-!+   PRINTS FLUXES PER BOUNDARY INSTEAD OF FREE AND IMPOSED FLUX 
+!+   PRINTS FLUXES PER BOUNDARY INSTEAD OF FREE AND IMPOSED FLUX
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS
 !| DT             |-->| PAS DE TEMPS
-!| EQUA           |---| 
-!| FLBOR          |---| 
-!| FLUX_BOUNDARIES|---| 
-!| H              |---| 
+!| EQUA           |---|
+!| FLBOR          |---|
+!| FLUX_BOUNDARIES|---|
+!| H              |---|
 !| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
 !| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
-!| MASK           |---| 
+!| MASK           |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
 !| MASSES         |-->| MASSE APPORTEE PAR TERME SOURCE.
-!| MESH           |---| 
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NFRLIQ         |---| 
-!| NPTFR          |---| 
-!| NUMLIQ         |---| 
-!| OPTBAN         |---| 
-!| POROS          |---| 
+!| NFRLIQ         |---|
+!| NPTFR          |---|
+!| NUMLIQ         |---|
+!| OPTBAN         |---|
+!| POROS          |---|
 !| WORK           |-->| TABLEAU DE TRAVAIL.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

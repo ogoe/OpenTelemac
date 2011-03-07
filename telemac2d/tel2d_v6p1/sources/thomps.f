@@ -24,50 +24,50 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        01/09/2008
-!+        
-!+   POINTS GROUPED REGARDLESS OF THEIR BOUNDARY NUMBER. 
+!+
+!+   POINTS GROUPED REGARDLESS OF THEIR BOUNDARY NUMBER.
 !
 !history  E DAVID (LHF)
 !+        05/09/2008
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| TABLEAU DE TRAVAIL : CELERITE DES ONDES
-!| CF             |---| 
-!| CORIOL         |---| 
-!| COUROU         |---| 
+!| CF             |---|
+!| CORIOL         |---|
+!| COUROU         |---|
 !| DEBLIQ         |-->| TABLEAU D'INDICES DE DEBUT DE FRONTIERE LIQ.
-!| DSCE           |---| 
+!| DSCE           |---|
 !| DT             |-->| PAS DE TEMPS
-!| FAIR           |---| 
-!| FCOR           |---| 
+!| FAIR           |---|
+!| FCOR           |---|
 !| FINLIQ         |-->| TABLEAU D'INDICES DE FIN DE FRONTIERE LIQUI.
 !| FRTYPE         |-->| TYPE DE FRONTIERES LIQUIDES
 !| FU,FV          |-->| TABLEAU DE TRAVAIL : TERMES SOURCES
 !| GRAV           |-->| GRAVITE
 !| H              |-->| HAUTEUR AU TEMPS N
 !| HBOR           |<--| HAUTEUR IMPOSEE.
-!| HBTIL          |---| 
-!| HFROT          |---| 
-!| HWIND          |---| 
-!| IELM           |---| 
-!| IFABOR         |---| 
-!| IKLE           |---| 
-!| ISCE           |---| 
-!| ITRAV2         |---| 
+!| HBTIL          |---|
+!| HFROT          |---|
+!| HWIND          |---|
+!| IELM           |---|
+!| IFABOR         |---|
+!| IKLE           |---|
+!| ISCE           |---|
+!| ITRAV2         |---|
 !| KP1BOR         |-->| NUMERO DU POINT FRONTIERE SUIVANT
 !| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
 !| LISPFR         |-->| LISTE DES POINTS FRONTIERES CONTIGUS TRAITES
@@ -76,67 +76,67 @@
 !| LITBOR         |-->| CONDITIONS AUX LIMITES SUR LE TRACEUR
 !| LIUBOR,LIVBOR  |-->| CONDITIONS AUX LIMITES SUR U ET V
 !| LT             |-->| NUMERO DE L'ITERATION EN COURS
-!| LV             |---| 
-!| MARDAT         |---| 
-!| MAREE          |---| 
-!| MARTIM         |---| 
+!| LV             |---|
+!| MARDAT         |---|
+!| MAREE          |---|
+!| MARTIM         |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
 !|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKPT         |---| 
-!| MESH           |---| 
+!| MASKPT         |---|
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
 !| NBOR           |-->| ADRESSES DES POINTS DE BORD
 !| NELBOR         |-->| NUMEROS DES ELEMENTS ADJACENTS AUX BORDS
-!| NELEM          |---| 
+!| NELEM          |---|
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
 !| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
-!| NIT            |---| 
-!| NORD           |---| 
+!| NIT            |---|
+!| NORD           |---|
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
-!| NPTH           |---| 
-!| NTRAC          |---| 
-!| NULONE         |---| 
-!| NUMLIQ         |---| 
-!| NVARCL         |---| 
-!| OPTPRO         |---| 
-!| OPTSOU         |---| 
-!| PHI0           |---| 
-!| SHP            |---| 
-!| SMH            |---| 
-!| SPHERI         |---| 
-!| SURDET         |---| 
+!| NPTH           |---|
+!| NTRAC          |---|
+!| NULONE         |---|
+!| NUMLIQ         |---|
+!| NVARCL         |---|
+!| OPTPRO         |---|
+!| OPTSOU         |---|
+!| PHI0           |---|
+!| SHP            |---|
+!| SMH            |---|
+!| SPHERI         |---|
+!| SURDET         |---|
 !| T              |-->| TRACEUR AU TEMPS N
-!| T5             |---| 
-!| T6             |---| 
-!| T8             |---| 
+!| T5             |---|
+!| T6             |---|
+!| T8             |---|
 !| TBOR           |<--| TRACEUR IMPOSE AU BORD
-!| TBTIL          |---| 
+!| TBTIL          |---|
 !| TEMPS          |-->| TEMPS
 !| U,V            |-->| COMPOSANTES DE LA VITESSE AU TEMPS N
 !| UBOR           |<--| VITESSE U IMPOSEE.
-!| UBTIL          |---| 
+!| UBTIL          |---|
 !| UCONV,VCONV    |-->| TABLEAU DE TRAVAIL : CHAMPS DE VITESSE
 !|                |   | CONVECTEUR DES INVARIANTS DE RIEMANN
 !| UNA            |-->| TABLEAU DE TRAVAIL
-!| UNSV2D         |---| 
-!| USCE           |---| 
-!| VARCL          |---| 
-!| VARCLA         |---| 
+!| UNSV2D         |---|
+!| USCE           |---|
+!| VARCL          |---|
+!| VARCLA         |---|
 !| VBOR           |<--| VITESSE V IMPOSEE.
-!| VBTIL          |---| 
-!| VENT           |---| 
-!| VSCE           |---| 
-!| W1             |---| 
-!| W1R            |---| 
-!| W2R            |---| 
-!| W3R            |---| 
-!| W4R            |---| 
-!| WINDX          |---| 
-!| WINDY          |---| 
+!| VBTIL          |---|
+!| VENT           |---|
+!| VSCE           |---|
+!| W1             |---|
+!| W1R            |---|
+!| W2R            |---|
+!| W3R            |---|
+!| W4R            |---|
+!| WINDX          |---|
+!| WINDY          |---|
 !| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
 !| XNEBOR,YNEBOR  |-->| NORMALES EXTERIEURES AUX POINTS.
-!| ZBTIL          |---| 
+!| ZBTIL          |---|
 !| ZF             |-->| FOND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

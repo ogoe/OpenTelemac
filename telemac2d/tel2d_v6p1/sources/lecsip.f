@@ -13,25 +13,25 @@
 !
 !history  V. GUINOT   (LHF)
 !+        19/04/1996
-!+        
-!+   
+!+
+!+
 !
 !history  J.-M. HERVOUET (LNH)
 !+        03/10/1996
 !+        V5P2
-!+   MODIFIED 
+!+   MODIFIED
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTSCE         |<--| COTE DES ENTREES ET SORTIES DE BUSES
@@ -42,10 +42,10 @@
 !|                |   | LORS D'UN FONCTIONNEMENT EN SORTIE.
 !| DELSCE         |<--| ANGLE DES BUSES AVEC LA VERTICALE
 !| ENTSIP         |<--| INDICES DANS LA NUMEROTATION DES SOURCES
-!| IFIC           |---| 
+!| IFIC           |---|
 !| LSCE           |<--| PERTE DE CHARGE LINEAIRE DE LA CONDUITE.
 !| MAXSCE         |-->| NOMBRE MAXIMUM DE POINTS SOURCES.
-!| NSIPH          |---| 
+!| NSIPH          |---|
 !| RELAXS         |<--| COEFFICIENT DE RELAXATION.
 !| SECSCE         |<--| SECTION DES SIPHONS (NUMEROTATION DES SOURCES)
 !| SORSIP         |<--| INDICES DANS LA NUMEROTATION DES SOURCES

@@ -11,35 +11,35 @@
 !brief    COMPUTES THE SECOND MEMBER FOR THE TRACER.
 !
 !history  INRIA
-!+        
+!+
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS
 !| DIMT           |-->| DIMENSION DU TRACEUR
 !| DT             |-->| PAS DE TEMPS HYDRO
 !| ISCE           |-->| NUMEROS GLOBAUX DES POINTS SOURCES
-!| ITRAC          |---| 
-!| MAXSCE         |---| 
-!| MAXTRA         |---| 
+!| ITRAC          |---|
+!| MAXSCE         |---|
+!| MAXTRA         |---|
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NREJET         |-->| NOMBRE DE SOURCES/PUITS
 !| SMH            |-->| TERMES SOURCES DE L'EQUATION DE CONTINUITE
 !| SMTR           |---| TERMES SOURCES DU TRACEUR
-!| TSCE2          |---| 
+!| TSCE2          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

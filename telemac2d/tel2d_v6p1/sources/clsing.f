@@ -15,25 +15,25 @@
 !
 !history  V. GUINOT (LHF)
 !+        19/04/1996
-!+        
-!+   
+!+
+!+
 !
 !history  J.-M. HERVOUET (LNH)
 !+        23/11/2005
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |-->| COEFFICIENTS DE FROTTEMENT SUR LE FOND.
@@ -42,10 +42,10 @@
 !| IOPTAN         |-->| OPTION DE CALCUL DES VITESSES TANGENTIELLES.
 !| KARMAN         |-->| CONSTANTE DE KARMAN.
 !| NBOR           |-->| NUMEROTATION GLOBALE DES POINTS DE BORD.
-!| NKFROT         |---| 
+!| NKFROT         |---|
 !| NPSMAX         |-->| NOMBRE MAXIMUM DE POINTS POUR UN COTE D'UNE
 !|                |   | SINGULARITE.
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| NWEIRS         |-->| NOMBRE DE SINGULARITES LINEIQUES.
 !| T              |-->| TRACEUR AU PAS DE TEMPS COURANT.
 !| X,Y            |-->| COORDONNEES DES NOUEDS.

@@ -17,32 +17,32 @@
 !history  J-M HERVOUET (LNHE)
 !+        19/09/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KLOG           |---| 
-!| KP1BOR         |---| 
+!| KLOG           |---|
+!| KP1BOR         |---|
 !| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
-!| MESH           |---| 
+!| MESH           |---|
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
-!| T1             |---| 
-!| T2             |---| 
-!| XNEBOR         |---| 
-!| XSGBOR         |---| 
-!| YNEBOR         |---| 
-!| YSGBOR         |---| 
+!| T1             |---|
+!| T2             |---|
+!| XNEBOR         |---|
+!| XSGBOR         |---|
+!| YNEBOR         |---|
+!| YSGBOR         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

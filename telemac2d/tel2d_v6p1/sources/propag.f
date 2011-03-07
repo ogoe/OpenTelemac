@@ -59,76 +59,76 @@
 !note     BM* REPRESENT DIVERGENCE MATRICES;
 !+            BM1: DERIVATION RELATIVE TO X;
 !+            BM2: DERIVATION RELATIVE TO Y.
-!note 
+!note
 !+THE TRANSPOSE OF MATRICES BM* IS EQUAL TO THE OPPOSITE
 !+            OF GRADIENT. SOME SIGNS ARE THEREFORE OPPOSITE IN
 !+            THE EQUATIONS OF SPEED.
-!note 
+!note
 !+THE LAPLACIAN MATRIX (TM1) HAS BEEN INTEGRATED IN PART.
 !+            THE SIGN IS THEREFORE OPPOSITE IN THE EQUATIONS OF
 !+            SPEED.
 !
 !history  JMH
 !+        07/05/2007
-!+        
-!+   MODIFICATION ON THE SOURCES IN CASE OF MASS-LUMPING 
+!+
+!+   MODIFICATION ON THE SOURCES IN CASE OF MASS-LUMPING
 !
-!history  
+!history
 !+        10/06/2008
-!+        
-!+   FINITE VOLUME ADVECTION FOR SPEEDS 
+!+
+!+   FINITE VOLUME ADVECTION FOR SPEEDS
 !
-!history  
+!history
 !+        02/10/2008
-!+        
-!+   CALL TO CVTRVF (ONE MORE WORKING ARRAY) 
+!+
+!+   CALL TO CVTRVF (ONE MORE WORKING ARRAY)
 !
-!history  
+!history
 !+        20/07/2009
-!+        
-!+   ICONVF (2) = 5 MANDATORY, ALL OTHER CASES ERASED 
+!+
+!+   ICONVF (2) = 5 MANDATORY, ALL OTHER CASES ERASED
 !
-!history  
+!history
 !+        22/07/2009
-!+        
-!+   EQUALITY OF FLUXES IMPOSED ON EITHER SIDE OF A WEIR 
+!+
+!+   EQUALITY OF FLUXES IMPOSED ON EITHER SIDE OF A WEIR
 !
 !history  J-M HERVOUET (LNHE)
 !+        09/10/2009
 !+        V6P0
-!+   PARAMETERISED ADVECTION OPTIONS 
+!+   PARAMETERISED ADVECTION OPTIONS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23,A32        |<->| MATRICES
 !| ADJO           |-->| IF YES : ADJOINT MODE
 !| AGGLOH         |-->| COEFFICIENT DE MASS-LUMPING SUR H
 !| AGGLOU         |-->| COEFFICIENT DE MASS-LUMPING SUR U
-!| AM2            |---| 
-!| AM3            |---| 
+!| AM2            |---|
+!| AM3            |---|
 !| ATMOS          |-->| LOGIQUE INDIQUANT SI PATMOS EST REMPLI.
 !| AUBOR          |-->| CONDITIONS AUX LIMITES SUR LE FROTTEMENT.
-!| BD             |---| 
+!| BD             |---|
 !| BILMAS         |-->| INDIQUE SI ON FAIT LE BILAN DE MASSE
-!| BM1S           |---| 
-!| BM2            |---| 
-!| BM2S           |---| 
+!| BM1S           |---|
+!| BM2            |---|
+!| BM2S           |---|
 !| C0             |-->| CELERITE DE REFERENCE
-!| CF             |---| 
-!| CFLMAX         |---| 
-!| CM1            |---| 
-!| CM2            |---| 
+!| CF             |---|
+!| CFLMAX         |---|
+!| CM1            |---|
+!| CM2            |---|
 !| CONVV          |-->| LOGIQUES INDIQUANT LES VARIABLES QUE L'ON
 !|                |   | VEUT CONVECTER
 !|                |   | CONVV(1):U,V CONVV(2):H
@@ -136,24 +136,24 @@
 !|                |   | HAUTEUR IMPOSEE (ON CORRIGE LES VITESSES)
 !| COTOND         |<--| EXPRESSION DE CU/G DANS LA THEORIE DE L'ONDE
 !|                |   | INCIDENTE
-!| COUPLING       |---| 
+!| COUPLING       |---|
 !| CV1,CV2,CV3    |<->| SECONDS MEMBRES DU SYSTEME.
-!| CV1S           |---| 
+!| CV1S           |---|
 !| DH,DHN         |<--| STOCKAGE DE LA VARIABLE DH  (DHN AU TEMPS N)
 !| DIFVIT         |-->| INDIQUE S'IL FAUT FAIRE LA DIFFUSION DE U,V
-!| DIRBOR         |---| 
-!| DM1            |---| 
+!| DIRBOR         |---|
+!| DM1            |---|
 !| DU,DV          |<--| STOCKAGE DES QCCROISSEMENTS EN U ET V
-!| EQUA           |---| 
-!| FLBOR          |---| 
+!| EQUA           |---|
+!| FLBOR          |---|
 !| FLULIM         |-->| FLUX LIMITATION
 !| FU,FV          |<->| TERMES SOURCES TRAITES EN P1
 !| GRAV           |-->| CONSTANTE DE GRAVITE .
-!| H0             |---| 
+!| H0             |---|
 !| HBOR           |-->| CONDITIONS AUX LIMITES SUR H.
-!| HFROT          |---| 
+!| HFROT          |---|
 !| HPROP          |-->| HAUTEUR DE PROPAGATION
-!| HTILD          |---| 
+!| HTILD          |---|
 !| ICONVF         |-->| FORME DE LA CONVECTION
 !|                |   | TABLEAU DE 4 VALEURS ENTIERES POUR :
 !|                |   | ICONVF(1) : U ET V
@@ -182,71 +182,71 @@
 !| MASKPT         |-->| MASQUES PAR POINTS.
 !| MASSES         |-->| MASSE CREEE PAR TERME SOURCE PENDANT
 !|                |   | LE PAS DE TEMPS.
-!| MAT            |---| 
-!| MBOR           |---| 
-!| MESH           |---| 
+!| MAT            |---|
+!| MBOR           |---|
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NFRLIQ         |---| 
-!| NPSING         |---| 
-!| NUMDIG         |---| 
-!| NWEIRS         |---| 
-!| OPDVIT         |---| 
+!| NFRLIQ         |---|
+!| NPSING         |---|
+!| NUMDIG         |---|
+!| NWEIRS         |---|
+!| OPDVIT         |---|
 !| OPTBAN         |-->| OPTION DE TRAITEMENT DES BANCS DECOUVRANTS
 !|                |   | NON UTILISE POUR L'INSTANT :
-!| OPTSOU         |---| 
-!| OPTSUP         |---| 
+!| OPTSOU         |---|
+!| OPTSUP         |---|
 !| PATMOS         |-->| TABLEAU DE VALEURS DE LA PRESSION ATMOSPHER.
-!| PRECCU         |---| 
+!| PRECCU         |---|
 !| PRIVE          |-->| TABLEAU DE TRAVAIL DEFINI DANS PRINCI
-!| RHS            |---| 
+!| RHS            |---|
 !| RO             |-->| MASSE VOLUMIQUE SI ELLE VARIABLE
 !| ROEAU          |-->| MASSE VOLUMIQUE DE L'EAU.
 !| ROVAR          |-->| OUI SI LA MASSE VOLUMIQUE EST VARIABLE.
 !| S              |-->| STRUCTURE BIDON
-!| SLVPRO         |---| 
+!| SLVPRO         |---|
 !| SMH            |-->| TERMES SOURCES DE L'EQUATION DE CONTINUITE
-!| SOLSYS         |---| 
-!| T1             |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| TB             |---| 
-!| TE1            |---| 
-!| TE2            |---| 
-!| TE3            |---| 
-!| TE4            |---| 
-!| TE5            |---| 
+!| SOLSYS         |---|
+!| T1             |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| TB             |---|
+!| TE1            |---|
+!| TE2            |---|
+!| TE3            |---|
+!| TE4            |---|
+!| TE5            |---|
 !| TETAD          |-->| IMPLICITATION SUR LA DIFFUSION
 !| TETAH          |-->| IMPLICITATION SUR H DANS L'EQUATION SUR U
 !| TETAHC         |-->| IMPLICITATION SUR H DANS LA CONTINUITE
 !| TETAU          |-->| IMPLICITATION SUR U ET V
-!| TETAZCOMP      |---| 
+!| TETAZCOMP      |---|
 !| TM1            |<->| MATRICE
 !| UBOR           |-->| CONDITIONS AUX LIMITES SUR U.
 !| UCONV,VCONV    |-->| CHAMP CONVECTEUR
-!| UDEL           |---| 
+!| UDEL           |---|
 !| UN,VN,HN       |-->| VALEURS A L' ETAPE N.
-!| UNK            |---| 
-!| UNSV2D         |---| 
-!| UTILD          |---| 
-!| V2DPAR         |---| 
+!| UNK            |---|
+!| UNSV2D         |---|
+!| UTILD          |---|
+!| V2DPAR         |---|
 !| VBOR           |-->| CONDITIONS AUX LIMITES SUR V.
-!| VDEL           |---| 
-!| VERTIC         |---| 
+!| VDEL           |---|
+!| VERTIC         |---|
 !| VISC           |-->| VISCOSITE TURBULENTE .
-!| VISC_S         |---| 
-!| VOLU2D         |---| 
-!| VTILD          |---| 
+!| VISC_S         |---|
+!| VOLU2D         |---|
+!| VTILD          |---|
 !| W1             |<->| TABLEAU DE TRAVAIL.
 !| YAFLULIM       |-->| IF, YES, FLULIM TAKEN INTO ACCOUNT
 !| YASMH          |-->| INDIQUE SI ON PREND EN COMPTE SMH
-!| ZCONV          |---| 
+!| ZCONV          |---|
 !| ZF             |-->| COTE DU FONT AU NOEUD DE MAILLAGE .
-!| ZFLATS         |---| 
+!| ZFLATS         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -19,24 +19,24 @@
 !history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
 !+        23/02/2009
 !+        V6P0
-!+   
+!+
 !
 !history  J-M HERVOUET (LNHE)
 !+        01/10/2009
-!+        
-!+   MODIFIED TEST ON ICONVF(3) 
+!+
+!+   MODIFIED TEST ON ICONVF(3)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS.
@@ -47,19 +47,19 @@
 !| HPROP          |-->| HAUTEUR DE PROPAGATION
 !| ISCE           |-->| POINTS LES PLUS PROCHES DES REJETS.
 !| MASSOU         |---| MASSE DE TRACEUR AJOUTEE.
-!| MAXSCE         |---| 
-!| MAXTRA         |---| 
+!| MAXSCE         |---|
+!| MAXTRA         |---|
 !| NREJTR         |-->| NOMBRE DE REJETS DE TRACEUR.
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| TETAT          |-->| IMPLICITATION DU TRACEUR.
 !| TEXP           |-->| TERME SOURCE EXPLICITE.
-!| TIMP           |---| 
+!| TIMP           |---|
 !| TN             |-->| TRACEUR AU PAS DE TEMPS PRECEDENT.
 !| TSCE           |-->| VALEURS DES TRACEURS AUX REJETS
 !| TSCEXP         |<--| TERME EXPLICITE VENANT DES SOURCES
 !|                |   | PONCTUELLES DE L'EQUATION DU TRACEUR
 !|                |   | EGAL A TSCE - ( 1 - TETAT ) TN
-!| YASMI          |---| 
+!| YASMI          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

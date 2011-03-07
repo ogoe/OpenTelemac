@@ -13,21 +13,21 @@
 !brief    COMPUTES THE FLUXES FOR THE INTERNAL INTERFACES.
 !
 !history  INRIA
-!+        
+!+
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| AIRES DES CELLULES
@@ -51,7 +51,7 @@
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
 !| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| NUBO           |-->| NUMEROS GLOBAUX DES EXTREMITES DES ARETES
 !| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
 !| VNOCL          |-->| NORMALE A L'INTERFACE

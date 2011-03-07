@@ -41,55 +41,55 @@
 !history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
 !+        24/04/1997
 !+        V5P5
-!+   
+!+
 !
 !history  A LEOPARDI (UNINA)
 !+        18/09/2000
-!+        
-!+   
+!+
+!+
 !
-!history  
+!history
 !+        13/11/2000
-!+        
-!+   COMPLETE VERSION 
+!+
+!+   COMPLETE VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23,A32        |<->| MATRICES
-!| ADJDIR         |---| 
-!| ADJO           |---| 
+!| ADJDIR         |---|
+!| ADJO           |---|
 !| AGGLOC         |-->| COEFFICIENT DE MASS-LUMPING SUR H
 !| AGGLOU         |-->| COEFFICIENT DE MASS-LUMPING SUR U
-!| ALIRE          |---| 
-!| ALPHA1         |---| 
-!| ALPHA2         |---| 
-!| ALPHA3         |---| 
-!| AM2            |---| 
-!| AM3            |---| 
+!| ALIRE          |---|
+!| ALPHA1         |---|
+!| ALPHA2         |---|
+!| ALPHA3         |---|
+!| AM2            |---|
+!| AM3            |---|
 !| ATMOS          |-->| LOGIQUE INDIQUANT SI PATMOS EST REMPLI.
 !| AUBOR          |-->| CONDITIONS AUX LIMITES SUR LE FROTTEMENT.
-!| BD             |---| 
+!| BD             |---|
 !| BILMAS         |-->| INDIQUE SI ON FAIT LE BILAN DE MASSE
-!| BM2            |---| 
+!| BM2            |---|
 !| C0             |-->| CELERITE DE REFERENCE
-!| CF             |---| 
-!| CFBOR          |---| 
-!| CFLMAX         |---| 
-!| CHBORD         |---| 
+!| CF             |---|
+!| CFBOR          |---|
+!| CFLMAX         |---|
+!| CHBORD         |---|
 !| CHESTR         |-->| COEFFICIENT DE FROTTEMENT AU FOND.
-!| CM1            |---| 
-!| CM2            |---| 
+!| CM1            |---|
+!| CM2            |---|
 !| CONVV          |-->| LOGIQUES INDIQUANT LES VARIABLES QUE L'ON
 !|                |   | VEUT CONVECTER
 !|                |   | CONVV(1):U,V CONVV(2):H
@@ -99,21 +99,21 @@
 !| CV1,CV2,CV3    |<->| SECONDS MEMBRES DU SYSTEME.
 !| DH,DHN         |<--| STOCKAGE DE LA VARIABLE DH  (DHN AU TEMPS N)
 !| DIFVIT         |-->| INDIQUE S'IL FAUT FAIRE LA DIFFUSION DE U,V
-!| DIRBOR         |---| 
-!| DP             |---| 
+!| DIRBOR         |---|
+!| DP             |---|
 !| DU,DV          |<--| STOCKAGE DES QCCROISSEMENTS EN U ET V
-!| EQUA           |---| 
-!| ESTIME         |---| 
+!| EQUA           |---|
+!| ESTIME         |---|
 !| FU,FV          |<->| TERMES SOURCES TRAITES EN P1
 !| GRAV           |-->| CONSTANTE DE GRAVITE .
-!| H0             |---| 
+!| H0             |---|
 !| HBOR           |-->| CONDITIONS AUX LIMITES SUR H.
-!| HD             |---| 
-!| HFROT          |---| 
-!| HH             |---| 
-!| HIT1           |---| 
+!| HD             |---|
+!| HFROT          |---|
+!| HH             |---|
+!| HIT1           |---|
 !| HPROP          |-->| HAUTEUR DE PROPAGATION
-!| HTILD          |---| 
+!| HTILD          |---|
 !| ICONVF         |-->| FORME DE LA CONVECTION
 !|                |   | TABLEAU DE 4 VALEURS ENTIERES POUR :
 !|                |   | ICONVF(1) : U ET V
@@ -125,13 +125,13 @@
 !| IORDRU         |-->| ORDRE DU TIR INITIAL POUR U
 !| ISOUSI         |-->| NUMERO DE LA SOUS-ITERATION DANS LE PAS
 !|                |   | DE TEMPS.
-!| ITURB          |---| 
+!| ITURB          |---|
 !| KARMAN         |-->| CONSTANTE DE KARMAN.
 !| KDIR           |-->| CONDITION A LA LIMITE DE TYPE DIRICHLET
 !| KFROT          |-->| LOI DE FROTTEMENT SUR LE FOND
 !| LIMPRO         |-->| TYPES DE CONDITIONS AUX LIMITES
-!| LINDNER        |---| 
-!| LISRUG         |---| 
+!| LINDNER        |---|
+!| LISRUG         |---|
 !| LT,AT,DT       |-->| NUMERO D'ITERATION, TEMPS, PAS DE TEMPS
 !| MASK           |-->| BLOC DE MASQUES POUR LES SEGMENTS :
 !|                |   | MASK(MSK1): 1. SI KDIR SUR U 0. SINON
@@ -146,96 +146,96 @@
 !| MASKPT         |-->| MASQUES PAR POINTS.
 !| MASSES         |-->| MASSE CREEE PAR TERME SOURCE PENDANT
 !|                |   | LE PAS DE TEMPS.
-!| MAT            |---| 
-!| MATADJ         |---| 
-!| MAXVAR         |---| 
-!| MBOR           |---| 
-!| MESH           |---| 
+!| MAT            |---|
+!| MATADJ         |---|
+!| MAXVAR         |---|
+!| MBOR           |---|
+!| MESH           |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NDEF           |---| 
-!| NFRLIQ         |---| 
-!| NIT            |---| 
-!| NREF           |---| 
-!| NRES           |---| 
-!| NVARRES        |---| 
-!| OPDVIT         |---| 
+!| NDEF           |---|
+!| NFRLIQ         |---|
+!| NIT            |---|
+!| NREF           |---|
+!| NRES           |---|
+!| NVARRES        |---|
+!| OPDVIT         |---|
 !| OPTBAN         |-->| OPTION DE TRAITEMENT DES BANCS DECOUVRANTS
 !|                |   | NON UTILISE POUR L'INSTANT :
-!| OPTCOST        |---| 
-!| OPTSOU         |---| 
-!| OPTSUP         |---| 
-!| OUTINI         |---| 
+!| OPTCOST        |---|
+!| OPTSOU         |---|
+!| OPTSUP         |---|
+!| OUTINI         |---|
 !| PATMOS         |-->| TABLEAU DE VALEURS DE LA PRESSION ATMOSPHER.
-!| PP             |---| 
-!| PRECCU         |---| 
+!| PP             |---|
+!| PRECCU         |---|
 !| PRIVE          |-->| TABLEAU DE TRAVAIL DEFINI DANS PRINCI
-!| QQ             |---| 
-!| RHS            |---| 
+!| QQ             |---|
+!| RHS            |---|
 !| RO             |-->| MASSE VOLUMIQUE SI ELLE VARIABLE
 !| ROEAU          |-->| MASSE VOLUMIQUE DE L'EAU.
 !| ROVAR          |-->| OUI SI LA MASSE VOLUMIQUE EST VARIABLE.
-!| RR             |---| 
+!| RR             |---|
 !| S              |-->| STRUCTURE BIDON
-!| SB             |---| 
-!| SLVPRO         |---| 
+!| SB             |---|
+!| SLVPRO         |---|
 !| SMH            |-->| TERMES SOURCES DE L'EQUATION DE CONTINUITE
-!| SOLSYS         |---| 
-!| SP             |---| 
-!| T1             |---| 
-!| T10            |---| 
-!| T11            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| T9             |---| 
-!| TAM1           |---| 
-!| TAM2           |---| 
-!| TAM3           |---| 
-!| TB             |---| 
-!| TBM1           |---| 
-!| TBM2           |---| 
-!| TCM1           |---| 
-!| TCM2           |---| 
-!| TE1            |---| 
-!| TE2            |---| 
-!| TE3            |---| 
-!| TE4            |---| 
-!| TE5            |---| 
+!| SOLSYS         |---|
+!| SP             |---|
+!| T1             |---|
+!| T10            |---|
+!| T11            |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| T9             |---|
+!| TAM1           |---|
+!| TAM2           |---|
+!| TAM3           |---|
+!| TB             |---|
+!| TBM1           |---|
+!| TBM2           |---|
+!| TCM1           |---|
+!| TCM2           |---|
+!| TE1            |---|
+!| TE2            |---|
+!| TE3            |---|
+!| TE4            |---|
+!| TE5            |---|
 !| TETAD          |-->| IMPLICITATION SUR LA DIFFUSION (=1.)
 !| TETAH          |-->| IMPLICITATION SUR H DANS L'EQUATION SUR U
 !| TETAHC         |-->| IMPLICITATION SUR H DANS LA CONTINUITE
 !| TETAU          |-->| IMPLICITATION SUR U ET V
-!| TEXREF         |---| 
-!| TEXRES         |---| 
-!| TEXTE          |---| 
+!| TEXREF         |---|
+!| TEXRES         |---|
+!| TEXTE          |---|
 !| TM1            |<->| MATRICE
-!| TROUVE         |---| 
+!| TROUVE         |---|
 !| UBOR           |-->| CONDITIONS AUX LIMITES SUR U.
 !| UCONV,VCONV    |-->| CHAMP CONVECTEUR
-!| UD             |---| 
-!| UIT1           |---| 
+!| UD             |---|
+!| UIT1           |---|
 !| UN,VN,HN       |-->| VALEURS A L' ETAPE N.
-!| UNK            |---| 
-!| UNKADJ         |---| 
-!| UNSV2D         |---| 
-!| UTILD          |---| 
-!| UU             |---| 
-!| VARCL          |---| 
-!| VARCLA         |---| 
-!| VARSOR         |---| 
+!| UNK            |---|
+!| UNKADJ         |---|
+!| UNSV2D         |---|
+!| UTILD          |---|
+!| UU             |---|
+!| VARCL          |---|
+!| VARCLA         |---|
+!| VARSOR         |---|
 !| VBOR           |-->| CONDITIONS AUX LIMITES SUR V.
-!| VD             |---| 
-!| VERTIC         |---| 
+!| VD             |---|
+!| VERTIC         |---|
 !| VISC           |-->| VISCOSITE TURBULENTE .
-!| VISC_S         |---| 
-!| VIT1           |---| 
-!| VTILD          |---| 
-!| VV             |---| 
-!| W              |---| 
+!| VISC_S         |---|
+!| VIT1           |---|
+!| VTILD          |---|
+!| VV             |---|
+!| W              |---|
 !| W1             |<->| TABLEAU DE TRAVAIL.
 !| YASMH          |-->| INDIQUE SI ON PREND EN COMPTE SMH
 !| ZF             |-->| COTE DU FONT AU NOEUD DE MAILLAGE .

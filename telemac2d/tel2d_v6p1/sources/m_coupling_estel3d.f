@@ -74,21 +74,21 @@
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE INFILTRATION_INIT
-
+!
       SUBROUTINE INFILTRATION_FINISH()
 !-----------------------------------------------------------------------
 ! DE-ALLOCATES THE COUPLING ARRAYS
 !-----------------------------------------------------------------------
       IMPLICIT NONE
 !-----------------------------------------------------------------------
-
+!
       DEALLOCATE( FLUX_FROM_ESTEL3D )
       DEALLOCATE( DEPTH_FROM_T2D )
-
+!
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE INFILTRATION_FINISH
-
+!
       SUBROUTINE INFILTRATION_FILL(ARRAY1,ARRAY2,COEFF)
 !-----------------------------------------------------------------------
 ! FILLS THE ARRAY FLUX_FROM_ESTEL3D WITH THE VALUES FROM THE ARGUMENTS
@@ -106,7 +106,7 @@
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE INFILTRATION_FILL
-
+!
       SUBROUTINE DEPTH_FILL(ARRAY_FROM_T2D)
 !-----------------------------------------------------------------------
 ! FILLS THE ARRAY DEPTH_FROM_T2D WITH THE VALUES FROM THE ARGUMENT
@@ -121,7 +121,7 @@
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE DEPTH_FILL
-
+!
       SUBROUTINE DEPTH_GET(ARRAY_FROM_ESTEL3D)
 !-----------------------------------------------------------------------
 ! BASICALLY READS THE ARRAY DEPTH_FROM_T2D SO THAT ESTEL-3D CAN
@@ -137,7 +137,7 @@
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE DEPTH_GET
-
+!
       SUBROUTINE INFILTRATION_GET(SMH,UNSV2D,YASMH)
 !-----------------------------------------------------------------------
 ! ADDS THE INFILTRATION TERM TO THE SOURCE TERM SMH AND SWITCHES YASMH TO
@@ -160,6 +160,6 @@
 !-----------------------------------------------------------------------
       RETURN
       END SUBROUTINE INFILTRATION_GET
-
+!
 !-----------------------------------------------------------------------
       END MODULE M_COUPLING_ESTEL3D

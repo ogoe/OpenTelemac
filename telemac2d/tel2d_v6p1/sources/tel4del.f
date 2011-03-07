@@ -27,114 +27,114 @@
 !+               ARE ORIENTED FROM TOP TO BOTTOM, SO A POSITIVE
 !+               VALUE REPRESENTS A FLUX GOING DOWNWARD.
 !
-!history  
+!history
 !+        **/11/2004
-!+        
-!+   ORIGINAL VERSION 
+!+
+!+   ORIGINAL VERSION
 !
 !history  LEO POSTMA
 !+        07/03/2005
-!+        
-!+   MODIFIED 
+!+
+!+   MODIFIED
 !
 !history  LEO POSTMA
 !+        14/11/2005
-!+        
-!+   MODIFIED, MAKING IT ONLINE 
+!+
+!+   MODIFIED, MAKING IT ONLINE
 !
-!history  
+!history
 !+        22/02/2007
-!+        
-!+   MODIFIED DURING LEO'S VISIT IN LNHE 
+!+
+!+   MODIFIED DURING LEO'S VISIT IN LNHE
 !
-!history  
+!history
 !+        18/05/2007
-!+        
-!+   LAST VERTICAL FLOWS LOOP 
+!+
+!+   LAST VERTICAL FLOWS LOOP
 !
 !history  JMH
 !+        11/09/2007
-!+        
-!+   SALINITY AND TEMPERATURE ADDED 
+!+
+!+   SALINITY AND TEMPERATURE ADDED
 !
 !history  JMH
 !+        20/12/2007
-!+        
-!+   RESFIL CHANGED TO NOMGEO, CLIFIL TO NOMLIM 
+!+
+!+   RESFIL CHANGED TO NOMGEO, CLIFIL TO NOMLIM
 !
-!history  
+!history
 !+        20/05/2008
-!+        
-!+   FLOW IS NOW AN ARGUMENT AND IS INITIALISED ONLY IF INIFLOW 
+!+
+!+   FLOW IS NOW AN ARGUMENT AND IS INITIALISED ONLY IF INIFLOW
 !
 !history  JMH
 !+        24/09/2008
-!+        
-!+   F AND G VARIABLE IN TIME AND SPACE FOR GENERALISED SIGMA TRANSFORMATION 
+!+
+!+   F AND G VARIABLE IN TIME AND SPACE FOR GENERALISED SIGMA TRANSFORMATION
 !
-!history  
+!history
 !+        25/09/2008
-!+        
-!+   FLUXES NOW RECEIVED IN ARRAY W(NELEM,*) AND COMPUTED BEFORE BY 
-!+   TELEMAC-2D OR 3D 
+!+
+!+   FLUXES NOW RECEIVED IN ARRAY W(NELEM,*) AND COMPUTED BEFORE BY
+!+   TELEMAC-2D OR 3D
 !
 !history  JMH
 !+        27/03/2009
-!+        
-!+   EXCHANGE AREAS, BUG CORRECTED, LOOK FOR 'JMH 27/03/2009' 
+!+
+!+   EXCHANGE AREAS, BUG CORRECTED, LOOK FOR 'JMH 27/03/2009'
 !
 !history  LEO POSTMA
 !+        05/04/2009
-!+        
-!+   BOUNDARY CELLS IN MODEL GRID , LOOK FOR 'LP 05/04/2009' 
+!+
+!+   BOUNDARY CELLS IN MODEL GRID , LOOK FOR 'LP 05/04/2009'
 !
 !history  CHI-TUAN PHAM
 !+        15/06/2009
-!+        
-!+   V2DPAR AND KNOLG ADDED, ADAPTED FOR PARALLELISM 
+!+
+!+   V2DPAR AND KNOLG ADDED, ADAPTED FOR PARALLELISM
 !
-!history  
+!history
 !+        03/09/2009
-!+        
-!+   CALLS FLUX_EF_VF TO COMPUTE THE FLUXES 
+!+
+!+   CALLS FLUX_EF_VF TO COMPUTE THE FLUXES
 !
 !history  LEO POSTMA (DELFT HYDRAULICS); CHARLES MOULINEC (LNHE)
 !+        25/11/2009
 !+        V6P0
-!+   WRITTEN IN FORTRAN 95 (CM) 
+!+   WRITTEN IN FORTRAN 95 (CM)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AAT,DDT        |-->| CURRENT TIME, TIME STEP
-!| DIFF_DEL       |---| 
+!| DIFF_DEL       |---|
 !| ELTSEG         |-->| SEGMENTS COMPOSING AN ELEMENT
-!| FLOW           |---| 
-!| FLULIM         |---| 
+!| FLOW           |---|
+!| FLULIM         |---|
 !| GLOSEG         |-->| GLOBAL NUMBERS OF POINTS OF A SEGMENT
 !| HNEW           |-->| DEPTH AT NEW TIME (2D) ELEVATION Z (3D)
 !| HPROP          |-->| DEPTH IN THE DIV(HU) TERM
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INFOGR         |-->| IF YES, INFORMATION PRINTED ON LISTING
-!| INIFLOW        |---| 
+!| INIFLOW        |---|
 !| KNOLG          |-->| GLOBAL NUMBERS OF LOCAL POINTS IN PARALLEL
 !| LIHBOR         |-->| TYPE OF 2D BOUNDARIES FOR DEPTH
 !| LLT,NNIT       |-->| ITERATION NUMBER,NUMBER OF ITERATIONS
-!| MARDAT         |---| 
-!| MARTIM         |---| 
-!| MAXSEG         |---| 
-!| MESH2D         |---| 
-!| MESH3D         |---| 
+!| MARDAT         |---|
+!| MARTIM         |---|
+!| MAXSEG         |---|
+!| MESH2D         |---|
+!| MESH3D         |---|
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY NODES
 !| NCOB,NOMCOB    |-->| DELWAQ STEERING FILE CANAL AND FILE
 !| NCOU,NOMCOU    |-->| FLUX CANAL AND FILE
@@ -146,8 +146,8 @@
 !| NOLAY          |-->| NUMBER OF PLANES
 !| NOMGEO         |-->| RESULT FILE OF THE SIMULATION
 !| NOMLIM         |-->| BOUNDARY FILE OF THE SIMULATION
-!| NOMVEL         |---| 
-!| NOMVIS         |---| 
+!| NOMVEL         |---|
+!| NOMVIS         |---|
 !| NPOIN          |-->| NUMBER OF 3D POINTS IN THE MESH
 !| NPOIN2         |-->| NUMBER OF 2D POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF 3D BOUNDARY POINTS
@@ -157,21 +157,21 @@
 !| NSTEPA         |-->| NUMBER OF TIME-STEPS FOR TIME AGGREGATION
 !| NTEM,NOMTEM    |-->| TEMPERATURE FOR DELWAQ, CANAL AND FILE
 !| NVEB,NOMVEB    |-->| NODE EXCHANGE CANAL AND FILE
-!| NVEL           |---| 
-!| NVIS           |---| 
-!| ORISEG         |---| 
+!| NVEL           |---|
+!| NVIS           |---|
+!| ORISEG         |---|
 !| SALI,TEMP      |-->| SALINITY, TEMPERATURE (IF SALI_DEL, IF TEMP_DEL)
 !| SALI_DEL       |-->| IF YES, THERE IS SALINITY
 !| TEMP_DEL       |-->| IF YES, THERE IS TEMPERATURE
 !| TITRE          |-->| TITLE OF STUDY
 !| U,V            |-->| COMPONENTS OF HORIZONTAL VELOCITY
-!| V2DPAR         |---| 
-!| VELO_DEL       |---| 
-!| VISC           |---| 
-!| W              |---| 
+!| V2DPAR         |---|
+!| VELO_DEL       |---|
+!| VISC           |---|
+!| W              |---|
 !| X,Y            |-->| COORDINATES OF HORIZONTAL MESH
-!| YAFLULIM       |---| 
-!| ZNEW           |---| 
+!| YAFLULIM       |---|
+!| ZNEW           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -20,25 +20,25 @@
 !history  E. DAVID (LHF)
 !+        05/09/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS
 !| ELT            |---| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES
 !|                |   | CARACTERISTIQUES.
-!| H              |---| 
+!| H              |---|
 !| HBTIL,UBTIL    |---| ..
 !|                |   | DE H,U,V,T
 !| IELM           |-->| TYPE D'ELEMENT : 11 : TRIANGLE P1
@@ -61,22 +61,22 @@
 !| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU MAILLAGE.
 !| NPT            |-->| NOMBRE DE POINTS FRONTIERES A TRAITER
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NTRAC          |---| 
+!| NTRAC          |---|
 !| NULONE         |-->| NUMERO LOCAL D'UN POINT DE BORD DANS
 !|                |   | L'ELEMENT ADJACENT DONNE PAR NELBOR.
 !| SHP            |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
 !|                |   | COURBES CARACTERISTIQUES.
 !| SURDET         |-->| 1/DETERMINANT POUR LES ELEMENTS 2D.
-!| T              |---| 
-!| T5             |---| 
-!| TBTIL          |---| 
+!| T              |---|
+!| T5             |---|
+!| TBTIL          |---|
 !| U              |-->| VARIABLES A L'ETAPE N .
 !| UCONV,VCONV    |-->| COMPOSANTES DES VITESSES DU CONVECTEUR.
-!| V              |---| 
-!| VBTIL          |---| 
+!| V              |---|
+!| VBTIL          |---|
 !| X,Y            |-->| COORDONNEES DU MAILLAGE .
-!| ZBTIL          |---| 
-!| ZF             |---| 
+!| ZBTIL          |---|
+!| ZF             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

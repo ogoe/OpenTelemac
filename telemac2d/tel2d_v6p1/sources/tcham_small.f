@@ -2,7 +2,7 @@
                      SUBROUTINE TCHAM_SMALL
 !                    **********************
 !
-     *(HI,HJ,ETAI,ETAJ,UI,UJ,VI,VJ,G,FLX)
+     &(HI,HJ,ETAI,ETAJ,UI,UJ,VI,VJ,G,FLX)
 !
 !***********************************************************************
 ! TELEMAC2D

@@ -21,30 +21,30 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        27/11/1992
-!+        
-!+   
+!+
+!+
 !
 !history  L. VAN HAREN (LNH)
 !+        30/05/1994
 !+        V5P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<--| ENERGIE TURBULENTE
 !| C2             |-->| CONSTANTE DU MODELE K-EPSILON
-!| CF             |---| 
+!| CF             |---|
 !| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
 !| EMIN           |-->| EPSILON MINIMUM EN CAS DE CLIPPING
 !| EP             |<--| DISSIPATION TURBULENTE

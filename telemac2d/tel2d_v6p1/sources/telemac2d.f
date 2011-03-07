@@ -14,135 +14,135 @@
 !+
 !+            ADJO = .FALSE. : ADJOINT MODE
 !
-!history  
+!history
 !+        07/04/2008
-!+        
-!+   SOURCES VARY IN TIME 
+!+
+!+   SOURCES VARY IN TIME
 !
-!history  
+!history
 !+        05/05/2008
-!+        
-!+   USIS AND VSIS IN CALL TO SISYPHE 
+!+
+!+   USIS AND VSIS IN CALL TO SISYPHE
 !
-!history  
+!history
 !+        14/05/2008
-!+        
-!+   HN INITIALISED BEFORE CALL TO SISYPHE 
+!+
+!+   HN INITIALISED BEFORE CALL TO SISYPHE
 !
-!history  
+!history
 !+        20/05/2008
-!+        
-!+   FLUXES DUE TO SMOOTHING OF NEGATIVE VALUES (NEW FILTER_H) PASSED 
-!+   TO TEL4DEL 
+!+
+!+   FLUXES DUE TO SMOOTHING OF NEGATIVE VALUES (NEW FILTER_H) PASSED
+!+   TO TEL4DEL
 !
-!history  
+!history
 !+        06/06/2008
-!+        
-!+   OPTIONAL ARGUMENT BOUNDARY_COLOUR ADDED TO LECLIM 
+!+
+!+   OPTIONAL ARGUMENT BOUNDARY_COLOUR ADDED TO LECLIM
 !
-!history  
+!history
 !+        16/06/2008
-!+        
-!+   SECOND CALL TO PROPIN FOLLOWING CALL TO BORD 
+!+
+!+   SECOND CALL TO PROPIN FOLLOWING CALL TO BORD
 !
-!history  
+!history
 !+        25/06/2008
-!+        
-!+   DIFFIN2 RENAMED DIFFIN + ARGUMENT MESH 
+!+
+!+   DIFFIN2 RENAMED DIFFIN + ARGUMENT MESH
 !
-!history  
+!history
 !+        27/06/2008
-!+        
-!+   ARGUMENTS OF PROPIN_TELEMAC2D : MESH ADDED TO THE END 
+!+
+!+   ARGUMENTS OF PROPIN_TELEMAC2D : MESH ADDED TO THE END
 !
-!history  
+!history
 !+        29/07/2008
-!+        
-!+   ADDED CALL TO FLUSEC BEFORE THE 1ST CALL PRERES 
+!+
+!+   ADDED CALL TO FLUSEC BEFORE THE 1ST CALL PRERES
 !
-!history  
+!history
 !+        13/08/2008
-!+        
-!+   CHANGED CALL AND CALL CONDITIONS TO CHARAC 
+!+
+!+   CHANGED CALL AND CALL CONDITIONS TO CHARAC
 !
-!history  
+!history
 !+        20/08/2008
-!+        
-!+   LIST_PTS MODIFIED IN PARALLEL 
+!+
+!+   LIST_PTS MODIFIED IN PARALLEL
 !
-!history  
+!history
 !+        02/09/2008
-!+        
-!+   CALL TO MODIFIED TEL4DEL (ADDED VELOCITY AND DIFFUSION) 
+!+
+!+   CALL TO MODIFIED TEL4DEL (ADDED VELOCITY AND DIFFUSION)
 !
-!history  
+!history
 !+        25/09/2008
-!+        
-!+   CALL TO MODIFIED TEL4DEL (FLUXES SENT THRU MESH%W%R) 
+!+
+!+   CALL TO MODIFIED TEL4DEL (FLUXES SENT THRU MESH%W%R)
 !
-!history  
+!history
 !+        21/10/2008
-!+        
-!+   CALL TO MODIFIED MASKTO (PARALLEL VERSION OF MASKTO) 
+!+
+!+   CALL TO MODIFIED MASKTO (PARALLEL VERSION OF MASKTO)
 !
-!history  
+!history
 !+        09/02/2009
-!+        
-!+   IF H CLIPPED, USES HMIN INSTEAD OF 0.D0 
+!+
+!+   IF H CLIPPED, USES HMIN INSTEAD OF 0.D0
 !
-!history  
+!history
 !+        16/02/2009
-!+        
-!+   CALL TO POSITIVE_DEPTHS 
+!+
+!+   CALL TO POSITIVE_DEPTHS
 !
-!history  
+!history
 !+        19/02/2009
-!+        
-!+   H CLIPPED IN CASE OF COMPUTATION CONTINUED 
+!+
+!+   H CLIPPED IN CASE OF COMPUTATION CONTINUED
 !
-!history  
+!history
 !+        02/04/2009
-!+        
-!+   NEW FILE STRUCTURE T2D_FILES AND MED FORMAT 
+!+
+!+   NEW FILE STRUCTURE T2D_FILES AND MED FORMAT
 !
-!history  
+!history
 !+        09/07/2009
-!+        
-!+   ARGUMENT NPTFR2 ADDED TO LECLIM 
+!+
+!+   ARGUMENT NPTFR2 ADDED TO LECLIM
 !
-!history  
+!history
 !+        20/07/2009
-!+        
-!+   1 OUT OF 3 CALLS TO TEL4DEL REMOVED (THANKS TO A 
+!+
+!+   1 OUT OF 3 CALLS TO TEL4DEL REMOVED (THANKS TO A
 !
-!history  
+!history
 !+        22/07/2009
-!+        
-!+   3 NEW ARGUMENTS IN PROPAG 
+!+
+!+   3 NEW ARGUMENTS IN PROPAG
 !
 !history  J-M HERVOUET (LNHE)
 !+        25/11/2009
 !+        V6P0
-!+   VERSION WITH MULTIPLE TRACERS 
+!+   VERSION WITH MULTIPLE TRACERS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
-!| DOPRINT        |---| 
-!| DTDEP          |---| 
-!| NEWTIME        |---| 
+!| DOPRINT        |---|
+!| DTDEP          |---|
+!| NEWTIME        |---|
 !| NITER          |-->| NUMBER OF ITERATIONS WHEN CALLED FOR COUPLING
 !| PASS           |-->| -1 : ALL STEPS
 !|                |   | 0 : ONLY INITIALISATION

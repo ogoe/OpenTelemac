@@ -16,26 +16,26 @@
 !history  ALGIANE FROEHLY (MATMECA PLACEMENT)
 !+        23/10/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATBOR,BTBOR    |<->| COEFFICIENTS D'ECHANGE THERMIQUE.
 !| AUBOR          |<->| COEFFICIENT DE FROTTEMENT AU BORD
-!| IELMT          |---| 
-!| IELMU          |---| 
-!| IELMV          |---| 
+!| IELMT          |---|
+!| IELMU          |---|
+!| IELMV          |---|
 !| KADH           |-->| TYPE DE CONDITION LIMITE DE PAROI (ADHERENCE)
 !| KENT           |-->| TYPE DE CONDITION LIMITE D'ENTREE.
 !| KENTU          |-->| TYPE DE CONDITION LIMITE : VITESSES IMPOSEES
@@ -46,9 +46,9 @@
 !|                |   | TURE POUR LES POINTS DE BORD.
 !| LIUBOR,LIVBOR  |<->| TYPES DE CONDITIONS AUX LIMITES POUR LES
 !|                |   | POINTS DE BORD.
-!| MESH           |---| 
-!| NBOR           |---| 
-!| NPOIN          |---| 
+!| MESH           |---|
+!| NBOR           |---|
+!| NPOIN          |---|
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
 !| TBOR           |<->| TRACEUR AUX BORDS
 !| TRAC           |-->| INDICATEUR DE TRACEUR .

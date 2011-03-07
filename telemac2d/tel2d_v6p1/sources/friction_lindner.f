@@ -13,34 +13,34 @@
 !
 !history  MICHAEL SCHROEDER, BAW
 !+        **/11/1992
-!+        
-!+   THE ALGORITHM WAS DEVELOPED BY LINDNER (1982) AND PASCHE 
+!+
+!+   THE ALGORITHM WAS DEVELOPED BY LINDNER (1982) AND PASCHE
 !
 !history  F. HUVELIN
 !+        20/04/2004
-!+        
-!+   WRITTEN FROM THE C++ PROGRAM: RISMO2D OF THE BAW 
+!+
+!+   WRITTEN FROM THE C++ PROGRAM: RISMO2D OF THE BAW
 !
 !history  J-M HERVOUET (LNHE)
-!+        
+!+
 !+        V5P5
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| FRICTION COEFFICIENT FOR BOTTOM ROUGHNESS    C
-!| CP             |---| 
+!| CP             |---|
 !| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT                C
 !| G              |-->| GRAVITY ACCELERATION                         C
 !| HA             |-->| FLOW DEPTH                                   C
@@ -204,7 +204,7 @@
                ENDIF
             ENDIF
          ENDDO !ICWR = 1, KMAXITER
-
+!
          IF (LCWR) THEN
             ITERR = ITERR + 1
             CP = -1.D0
