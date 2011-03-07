@@ -25,19 +25,19 @@
 !history  F MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| PAS DE TEMPS.
@@ -50,7 +50,7 @@
 !| IFABOR         |-->| NUMEROS 2D DES ELEMENTS AYANT UNE FACE COMMUNE
 !|                |   | AVEC L'ELEMENT .  SI IFABOR
 !|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
-!| IFF            |---| 
+!| IFF            |---|
 !| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
 !|                |   | ET GLOBALE DU MAILLAGE 2D.
 !| ISO            |<->| INDIQUE PAR BIT LA FACE DE SORTIE DE L'ELEMEN
@@ -63,16 +63,16 @@
 !| SENS           |-->| DESCENTE OU REMONTEE DES CARACTERISTIQUES.
 !| SHP1           |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
 !|                |   | COURBES CARACTERISTIQUES.
-!| SHP2           |---| 
-!| SHP3           |---| 
+!| SHP2           |---|
+!| SHP3           |---|
 !| SHZ            |<->| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
 !|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
 !| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
 !| U,V,W          |-->| COMPOSANTE DE LA VITESSE DU CONVECTEUR
 !| X,Y,TETA       |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XPLOT          |---| 
-!| YPLOT          |---| 
-!| ZPLOT          |---| 
+!| XPLOT          |---|
+!| YPLOT          |---|
+!| ZPLOT          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

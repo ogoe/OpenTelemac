@@ -2,8 +2,8 @@
                      SUBROUTINE WAC
 !                    **************
 !
-     *(PART, U_TEL, V_TEL, H_TEL, FX_WAC, FY_WAC, UV_WAC, VV_WAC,
-     * CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC)
+     &(PART, U_TEL, V_TEL, H_TEL, FX_WAC, FY_WAC, UV_WAC, VV_WAC,
+     & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC)
 !
 !***********************************************************************
 ! TOMAWAC

@@ -16,40 +16,40 @@
 !history  P. THELIIER; M. BENOIT
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
 !history  M. BENOIT
 !+        05/07/96
 !+        V1P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COSMOY         |---| 
-!| COSTET         |---| 
-!| DFREQ          |---| 
-!| F              |---| 
-!| FREQ           |---| 
+!| COSMOY         |---|
+!| COSTET         |---|
+!| DFREQ          |---|
+!| F              |---|
+!| FREQ           |---|
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!| SINMOY         |---| 
-!| SINTET         |---| 
+!| SINMOY         |---|
+!| SINTET         |---|
 !| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
-!| TAUXC          |---| 
-!| TAUXS          |---| 
-!| TETAM          |---| 
+!| TAUXC          |---|
+!| TAUXS          |---|
+!| TETAM          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

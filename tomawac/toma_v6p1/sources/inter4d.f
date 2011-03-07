@@ -14,19 +14,19 @@
 !history  F MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| FACTEUR DE PROPORTIONNALITE
@@ -35,18 +35,18 @@
 !| ETA            |-->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
 !| ETAP1          |-->| TABLEAU DES ETAGES SUPERIEURS
 !| F              |<->| DENSITE SPECTRALE D'ACTION D'ONDE
-!| FRE            |---| 
+!| FRE            |---|
 !| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
 !|                |   | ET GLOBALE
 !| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
-!| NF             |---| 
+!| NF             |---|
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| SHF            |---| 
+!| SHF            |---|
 !| SHP1           |-->| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
 !|                |   | LEURS ELEMENTS 2D "ELT" ASSOCIES.
-!| SHP2           |---| 
-!| SHP3           |---| 
+!| SHP2           |---|
+!| SHP3           |---|
 !| SHZ            |-->| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
 !|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
 !| TRA01          |<->| TABLEAU DE TRAVAIL
@@ -116,7 +116,7 @@
 10    CONTINUE
 !
        IF (NCSIZE.GT.1) THEN
-
+!
        DO IFF = 1,NF
        IF (.NOT.ALLOCATED(F_SEND_4D)) ALLOCATE(F_SEND_4D(SUM(
      &                                      RECVCOUNTS(:,IFF))))
@@ -184,7 +184,7 @@
            IF (F(IP2,IPLAN,IFREQ).LT.0.D0) THEN
               F(IP2,IPLAN,IFREQ) = 0.D0
            ENDIF
-
+!
 110     CONTINUE
        DEALLOCATE(F_SEND_4D,F_RECV_4D)
          DO IPLAN=1,NPLAN

@@ -64,9 +64,9 @@
             GOODELT(:,:) = 1103
           END WHERE
        END SUBROUTINE CORRECT_GOODELT
-       
-       
-
+!
+!
+!
        SUBROUTINE ALLOC_LOCAL(NARRIV,FREQ,NF,NLOSTAGAIN,
      &                      NUMBERLOST,NARRSUM)
          USE BIEF
@@ -76,11 +76,11 @@
      &                            NF,NARRSUM,FREQ
          INTEGER P_ISUM,P_IMAX
          EXTERNAL P_ISUM,P_IMAX
-
+!
         NARRIV = SUM(RECVCOUNTS(:,FREQ))
         NLOSTAGAIN = COUNT(RECVCHAR(1:NARRIV,FREQ)%NEPID/=-1)
         NUMBERLOST = P_ISUM(NLOSTAGAIN)
-
+!
            NARRSUM = P_ISUM(NARRIV)
            IF (.NOT.ALLOCATED(SH_LOC)) ALLOCATE(SH_LOC(NF))
 !            IF (.NOT.ALLOCATED(SH_LOC(FREQ)%SHP1)) ALLOCATE(
@@ -99,10 +99,10 @@
        SH_LOC(FREQ)%SHZ=0.D0
        SH_LOC(FREQ)%ETA=0
        SH_LOC(FREQ)%ELT=0
-
-
+!
+!
        END SUBROUTINE ALLOC_LOCAL
-
+!
        SUBROUTINE ALLOC_LOCAL_4D(NARRIV,FREQ,NF,NLOSTAGAIN,
      &                      NUMBERLOST,NARRSUM)
          USE BIEF
@@ -112,11 +112,11 @@
      &                            NF,NARRSUM,FREQ
          INTEGER P_ISUM,P_IMAX
          EXTERNAL P_ISUM,P_IMAX
-
+!
         NARRIV = SUM(RECVCOUNTS(:,FREQ))
         NLOSTAGAIN = COUNT(RECVCHAR_4D(1:NARRIV,FREQ)%NEPID/=-1)
         NUMBERLOST = P_ISUM(NLOSTAGAIN)
-
+!
            NARRSUM = P_ISUM(NARRIV)
            IF (.NOT.ALLOCATED(SH_LOC_4D)) ALLOCATE(SH_LOC_4D(NF))
 !            IF (.NOT.ALLOCATED(SH_LOC_4D(FREQ)%SHP1)) ALLOCATE(
@@ -140,10 +140,10 @@
        SH_LOC_4D(FREQ)%ELT=0
        SH_LOC_4D(FREQ)%ETA=0
        SH_LOC_4D(FREQ)%FRE=0
-
-
+!
+!
        END SUBROUTINE ALLOC_LOCAL_4D
-
+!
        SUBROUTINE ALLOC_AGAIN(NARRIV,FREQ,NLOSTAGAIN,NUMBERLOST,NUMBER)
         USE BIEF
         USE TOMAWAC_MPI
@@ -153,7 +153,7 @@
         INTEGER P_ISUM,P_IMAX
         EXTERNAL P_ISUM,P_IMAX
         INTEGER :: I
-
+!
         IF (.NOT.ALLOCATED(SENDCOUNTS_AGAIN))
      &                          ALLOCATE(SENDCOUNTS_AGAIN(NCSIZE))
         IF (.NOT.ALLOCATED(RECVCOUNTS_AGAIN))
@@ -178,7 +178,7 @@
            ENDIF
          ENDDO
        END SUBROUTINE ALLOC_AGAIN
-
+!
        SUBROUTINE ALLOC_AGAIN_4D(NARRIV,FREQ,NLOSTAGAIN,NUMBERLOST,
      &                                                       NUMBER)
         USE BIEF
@@ -189,7 +189,7 @@
         INTEGER P_ISUM,P_IMAX
         EXTERNAL P_ISUM,P_IMAX
         INTEGER :: I
-
+!
         IF (.NOT.ALLOCATED(SENDCOUNTS_AGAIN))
      &                          ALLOCATE(SENDCOUNTS_AGAIN(NCSIZE))
         IF (.NOT.ALLOCATED(RECVCOUNTS_AGAIN))
@@ -214,13 +214,13 @@
            ENDIF
          ENDDO
        END SUBROUTINE ALLOC_AGAIN_4D
-
+!
        SUBROUTINE ORGANIZE_SENDAGAIN
         USE BIEF
         USE TOMAWAC_MPI
         IMPLICIT NONE
         INTEGER :: I,I1,I2,I3
-
+!
         I2 = 0
         DO I=1,NCSIZE
            DO I1=1,SENDCOUNTS_AGAIN(I)
@@ -235,13 +235,13 @@
            ENDDO
         ENDDO
        END SUBROUTINE ORGANIZE_SENDAGAIN
-
+!
        SUBROUTINE ORGANIZE_SENDAGAIN_4D
         USE BIEF
         USE TOMAWAC_MPI
         IMPLICIT NONE
         INTEGER :: I,I1,I2,I3
-
+!
         I2 = 0
         DO I=1,NCSIZE
            DO I1=1,SENDCOUNTS_AGAIN(I)
@@ -256,7 +256,7 @@
            ENDDO
         ENDDO
        END SUBROUTINE ORGANIZE_SENDAGAIN_4D
-
+!
        SUBROUTINE ENVOI_AGAIN(NRECV)
 !
 ! |      NRECV     |<-- | SUM DES CARACTERISTIQUUES RECU SUR CHAQUE PROC
@@ -266,12 +266,12 @@
           IMPLICIT NONE
           INTEGER :: I,IER
           INTEGER , INTENT(INOUT) :: NRECV
-
-
+!
+!
           CALL P_MPI_ALLTOALL(SENDCOUNTS_AGAIN(:),1,MPI_INTEGER,
      &          RECVCOUNTS_AGAIN(:),1,MPI_INTEGER,
      &          MPI_COMM_WORLD,IER)
-
+!
           SDISPLS_AGAIN(1) = 0 ! CONTIGUOUS DATA MARKER
           DO I=2,NCSIZE
              SDISPLS_AGAIN(I) = SDISPLS_AGAIN(I-1)+SENDCOUNTS_AGAIN(I-1)
@@ -281,7 +281,7 @@
             RDISPLS_AGAIN(I) = RDISPLS_AGAIN(I-1)+RECVCOUNTS_AGAIN(I-1)
           END DO
            NRECV = SUM(RECVCOUNTS_AGAIN(:))
-
+!
          IF(.NOT.ALLOCATED(RECVAGAIN))
      &           ALLOCATE(RECVAGAIN(MAX(NRECV,1)))
           CALL P_MPI_ALLTOALLV_TOMA1
@@ -290,19 +290,19 @@
      &       RECVAGAIN(:),RECVCOUNTS_AGAIN(:),RDISPLS_AGAIN(:),
      &       CHARACTERISTIC,
      &       MPI_COMM_WORLD,IER)
-
+!
            IF (.NOT.ASSOCIATED(SH_AGAIN%SHP1)) ALLOCATE(
      &      SH_AGAIN%SHP1(NRECV),SH_AGAIN%SHP2(NRECV),
      &      SH_AGAIN%SHP3(NRECV),SH_AGAIN%SHZ(NRECV),
      &      SH_AGAIN%ELT(NRECV),SH_AGAIN%ETA(NRECV))
-
+!
            SH_AGAIN%SHP1 = 0.D0
            SH_AGAIN%SHP2 = 0.D0
            SH_AGAIN%SHP3 = 0.D0
            SH_AGAIN%SHZ = 0.D0
-
+!
         END SUBROUTINE ENVOI_AGAIN
-
+!
        SUBROUTINE ENVOI_AGAIN_4D(NRECV)
 !
 ! |      NRECV     |<-- | SUM DES CARACTERISTIQUUES RECU SUR CHAQUE PROC
@@ -312,12 +312,12 @@
           IMPLICIT NONE
           INTEGER :: I,IER
           INTEGER , INTENT(INOUT) :: NRECV
-
-
+!
+!
           CALL P_MPI_ALLTOALL(SENDCOUNTS_AGAIN(:),1,MPI_INTEGER,
      &          RECVCOUNTS_AGAIN(:),1,MPI_INTEGER,
      &          MPI_COMM_WORLD,IER)
-
+!
           SDISPLS_AGAIN(1) = 0 ! CONTIGUOUS DATA MARKER
           DO I=2,NCSIZE
              SDISPLS_AGAIN(I) = SDISPLS_AGAIN(I-1)+SENDCOUNTS_AGAIN(I-1)
@@ -327,7 +327,7 @@
             RDISPLS_AGAIN(I) = RDISPLS_AGAIN(I-1)+RECVCOUNTS_AGAIN(I-1)
           END DO
            NRECV = SUM(RECVCOUNTS_AGAIN(:))
-
+!
          IF(.NOT.ALLOCATED(RECVAGAIN_4D))
      &           ALLOCATE(RECVAGAIN_4D(MAX(NRECV,1)))
           CALL P_MPI_ALLTOALLV_TOMA2
@@ -336,21 +336,21 @@
      &       RECVAGAIN_4D(:),RECVCOUNTS_AGAIN(:),RDISPLS_AGAIN(:),
      &       CHARACTER_4D,
      &       MPI_COMM_WORLD,IER)
-
+!
            IF (.NOT.ASSOCIATED(SH_AGAIN_4D%SHP1)) ALLOCATE(
      &      SH_AGAIN_4D%SHP1(NRECV),SH_AGAIN_4D%SHP2(NRECV),
      &      SH_AGAIN_4D%SHP3(NRECV),SH_AGAIN_4D%SHZ(NRECV),
      &      SH_AGAIN_4D%ELT(NRECV),SH_AGAIN_4D%ETA(NRECV),
      &      SH_AGAIN_4D%FRE(NRECV),SH_AGAIN_4D%SHF(NRECV))
-
+!
            SH_AGAIN_4D%SHP1 = 0.D0
            SH_AGAIN_4D%SHP2 = 0.D0
            SH_AGAIN_4D%SHP3 = 0.D0
            SH_AGAIN_4D%SHZ = 0.D0
            SH_AGAIN_4D%SHF = 0.D0
-
+!
         END SUBROUTINE ENVOI_AGAIN_4D
-
+!
         SUBROUTINE SUPP_ENVOI_AGAIN(FREQ,NUMBER)
          USE BIEF
          USE TOMAWAC_MPI
@@ -384,9 +384,9 @@
             ENDDO
          ENDDO
          NARRV(FREQ) = NUMBER
-
+!
          END SUBROUTINE SUPP_ENVOI_AGAIN
-
+!
         SUBROUTINE SUPP_ENVOI_AGAIN_4D(FREQ,NUMBER)
          USE BIEF
          USE TOMAWAC_MPI
@@ -420,14 +420,14 @@
      &                            SH_LOC_4D(FREQ)%ETA(I+1:NARRV(FREQ))
               SH_LOC_4D(FREQ)%FRE(I:NARRV(FREQ)-1) =
      &                            SH_LOC_4D(FREQ)%FRE(I+1:NARRV(FREQ))
-
+!
               NARRV(FREQ) = NARRV(FREQ)-1
             ENDDO
          ENDDO
          NARRV(FREQ) = NUMBER
-
+!
          END SUBROUTINE SUPP_ENVOI_AGAIN_4D
-
+!
          SUBROUTINE INCREM_ENVOI_RECV(IFREQ2,NUMBER,NLOSTAGAIN,
      &              NUMBERLOST,NRECV)
          USE BIEF
@@ -438,8 +438,8 @@
      &                             NRECV
          INTEGER P_ISUM,P_IMAX
          EXTERNAL P_ISUM,P_IMAX
-
-
+!
+!
         DO I2=1,NCSIZE
            RECVCOUNTS(I2,IFREQ2) = COUNT(RECVCHAR(1:NUMBER,IFREQ2)
      &                                                %MYPID==I2-1)
@@ -449,7 +449,7 @@
            RDISPLS(I,IFREQ2) = RDISPLS(I-1,IFREQ2)+
      &                                        RECVCOUNTS(I-1,IFREQ2)
          END DO
-
+!
         NUMBER = SUM(RECVCOUNTS(:,IFREQ2))
         NLOSTAGAIN = 0
         SENDCOUNTS_AGAIN(:)=0
@@ -490,9 +490,9 @@
         DEALLOCATE(SH_AGAIN%SHP1,SH_AGAIN%SHP2,SH_AGAIN%SHP3,
      &             SH_AGAIN%SHZ,SH_AGAIN%ETA,SH_AGAIN%ELT)
         DEALLOCATE(RECVAGAIN)
-
+!
        END SUBROUTINE INCREM_ENVOI_RECV
-
+!
          SUBROUTINE INCREM_ENVOI_RECV_4D(IFREQ2,NUMBER,NLOSTAGAIN,
      &              NUMBERLOST,NRECV)
          USE BIEF
@@ -503,8 +503,8 @@
      &                             NRECV
          INTEGER P_ISUM,P_IMAX
          EXTERNAL P_ISUM,P_IMAX
-
-
+!
+!
         DO I2=1,NCSIZE
            RECVCOUNTS(I2,IFREQ2) = COUNT(RECVCHAR_4D(1:NUMBER,IFREQ2)
      &                                                %MYPID==I2-1)
@@ -514,7 +514,7 @@
            RDISPLS(I,IFREQ2) = RDISPLS(I-1,IFREQ2)+
      &                                        RECVCOUNTS(I-1,IFREQ2)
          END DO
-
+!
         NUMBER = SUM(RECVCOUNTS(:,IFREQ2))
         NLOSTAGAIN = 0
         SENDCOUNTS_AGAIN(:)=0
@@ -568,28 +568,28 @@
      &             SH_AGAIN_4D%SHZ,SH_AGAIN_4D%ETA,SH_AGAIN_4D%ELT,
      &             SH_AGAIN_4D%SHF,SH_AGAIN_4D%FRE)
         DEALLOCATE(RECVAGAIN_4D)
-
+!
        END SUBROUTINE INCREM_ENVOI_RECV_4D
-
-
+!
+!
        SUBROUTINE FINAL_ORGA_RECV(NARRIV,FREQ)
         USE BIEF
         USE TOMAWAC_MPI
         IMPLICIT NONE
         INTEGER, INTENT(INOUT) :: NARRIV,FREQ
         INTEGER :: I,IER
-
+!
          NARRIV = SUM(RECVCOUNTS(:,FREQ))
          DO I=1,NCSIZE
             RECVCOUNTS(I,FREQ) = COUNT(RECVCHAR(1:NARRIV,FREQ)
      &                          %MYPID==I-1)
          ENDDO
-
+!
          RDISPLS(1,FREQ) = 0 ! SAVES THE RECEIVED DATA CONTIGUOUSLY
          DO I=2,NCSIZE
            RDISPLS(I,FREQ) = RDISPLS(I-1,FREQ)+RECVCOUNTS(I-1,FREQ)
          END DO
-
+!
          CALL P_MPI_ALLTOALL(RECVCOUNTS(:,FREQ),1,MPI_INTEGER,
      &          SENDCOUNTS(:,FREQ),1,MPI_INTEGER,
      &          MPI_COMM_WORLD,IER)
@@ -598,27 +598,27 @@
             SDISPLS(I,FREQ) = SDISPLS(I-1,FREQ)+SENDCOUNTS(I-1,FREQ)
           END DO
           DEALLOCATE(SENDAGAIN)
-
+!
          END SUBROUTINE FINAL_ORGA_RECV
-
+!
        SUBROUTINE FINAL_ORGA_RECV_4D(NARRIV,FREQ)
         USE BIEF
         USE TOMAWAC_MPI
         IMPLICIT NONE
         INTEGER, INTENT(INOUT) :: NARRIV,FREQ
         INTEGER :: I,IER
-
+!
          NARRIV = SUM(RECVCOUNTS(:,FREQ))
          DO I=1,NCSIZE
             RECVCOUNTS(I,FREQ) = COUNT(RECVCHAR_4D(1:NARRIV,FREQ)
      &                          %MYPID==I-1)
          ENDDO
-
+!
          RDISPLS(1,FREQ) = 0 ! SAVES THE RECEIVED DATA CONTIGUOUSLY
          DO I=2,NCSIZE
            RDISPLS(I,FREQ) = RDISPLS(I-1,FREQ)+RECVCOUNTS(I-1,FREQ)
          END DO
-
+!
          CALL P_MPI_ALLTOALL(RECVCOUNTS(:,FREQ),1,MPI_INTEGER,
      &          SENDCOUNTS(:,FREQ),1,MPI_INTEGER,
      &          MPI_COMM_WORLD,IER)
@@ -627,9 +627,9 @@
             SDISPLS(I,FREQ) = SDISPLS(I-1,FREQ)+SENDCOUNTS(I-1,FREQ)
           END DO
           DEALLOCATE(SENDAGAIN_4D)
-
+!
          END SUBROUTINE FINAL_ORGA_RECV_4D
-
+!
          SUBROUTINE RESET_COUNT(FREQ)
           USE BIEF
           USE TOMAWAC_MPI
@@ -638,7 +638,7 @@
              RECVCOUNTS(:,FREQ) = 0
              SENDCOUNTS(:,FREQ) = 0
          END SUBROUTINE RESET_COUNT
-
+!
          SUBROUTINE SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
      &                           NRECV_LEO)
           USE BIEF
@@ -676,12 +676,12 @@
                 ENDIF
              ENDIF
           ENDDO
-
+!
           NSPE_SEND(1) = SPE_SEND
           CALL P_MPI_ALLTOALL(NSPE_SEND(:),1,MPI_INTEGER,
      &          NSPE_RECV(:),1,MPI_INTEGER,
      &          MPI_COMM_WORLD,IER)
-
+!
           II = 0
           DO I=1,NLEO
             IF (ISLEO(I)) THEN
@@ -720,7 +720,7 @@
              NRECV_LEO = NRECV_LEO2
           ENDIF
           END SUBROUTINE SPECTRE_SEND
-
+!
           SUBROUTINE BVARSOR_SENDRECV(BVARSOR,NLEO,NPOIN,ISLEO,
      &                                            NRECV_LEO)
           USE BIEF
@@ -742,7 +742,7 @@
      &                                                      (REQ(I),1)
           ENDDO
           END SUBROUTINE BVARSOR_SENDRECV
-
+!
           SUBROUTINE TEXTE_SENDRECV(TEXT,NLEO,NPOIN,ISLEO,
      &                                            NRECV_LEO)
           USE BIEF

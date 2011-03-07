@@ -15,28 +15,28 @@
 !history  F MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS
 !| BINR3D         |-->| BINAIRE DU FICHIER DES RESULTATS GLOBAUX
 !| COURAN         |-->| LOGIQUE INDIQUANT SI IL YA UN COURANT
-!| DEPTH          |---| 
+!| DEPTH          |---|
 !| F              |<--| DENSITE SPECTRALE D'ENERGIE
 !| FREQ           |-->| DISTRIBUTION DES FREQUENCES
-!| MAREE          |---| 
+!| MAREE          |---|
 !| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
 !| NF             |-->| NOMBRE DE FREQUENCES
 !| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS

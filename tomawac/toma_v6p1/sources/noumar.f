@@ -15,39 +15,39 @@
 !+
 !+           (INSPIRED FROM SUBROUTINE FOND IN TELEMAC2D)
 !
-!history  
-!+        
+!history
+!+
 !+        V5P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS
 !| BINDON         |-->| BINAIRE DU FICHIER DE DONNEES
 !| DDC            |-->| DATE DU DEBUT DU CALCUL
-!| DZHDT          |---| 
-!| IDHMA          |---| 
+!| DZHDT          |---|
+!| IDHMA          |---|
 !| INDIM          |-->| TYPE DE FORMAT DE LECTURE
 !| NBOR           |-->| NUMEROTATION DES POINTS FRONTIERE
 !| NDON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DE DONNEES
 !| NP             |<->| NOMBRE DE POINTS DU MAILLAGE DES DONNEES
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NPTFR          |-->| NOMBRE DE  POINTS FRONTIERE
-!| NVHMA          |---| 
+!| NVHMA          |---|
 !| TM1            |<->| TEMPS DU CHAMPS DE DONNEES 1
 !| TM2            |<->| TEMPS DU CHAMPS DE DONNEES 2
-!| TRA            |---| 
+!| TRA            |---|
 !| X,Y            |-->| COORDONNEES DU MAILLAGE
 !| XRELV          |<--| TABLEAU DES ABSCISSES DES POINTS RELEVES
 !| YRELV          |<--| TABLEAU DES ORDONNEES DES POINTS RELEVES

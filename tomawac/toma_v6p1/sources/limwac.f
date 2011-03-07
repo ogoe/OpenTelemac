@@ -21,42 +21,42 @@
 !history  F. MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| APHILL         |---| 
+!| APHILL         |---|
 !| AT             |-->| TEMPS
 !| BINBI1         |-->| BINAIRE DU FICHIER BINAIRE UTILISATEUR
 !| DDC            |-->| DATE DU DEBUT DU CALCUL
-!| DEPTH          |---| 
-!| DEUPI          |---| 
+!| DEPTH          |---|
+!| DEUPI          |---|
 !| F              |-->| DENSITE SPECTRALE
 !| FBOR           |<->| DENSITE SPECTRALE AU BORD
-!| FETCHL         |---| 
-!| FPICL          |---| 
-!| FPMAXL         |---| 
-!| FRA            |---| 
-!| FRABL          |---| 
+!| FETCHL         |---|
+!| FPICL          |---|
+!| FPMAXL         |---|
+!| FRA            |---|
+!| FRABL          |---|
 !| FREQ           |-->| FREQUENCES DISCRETISEES
-!| GAMMAL         |---| 
-!| GRAVIT         |---| 
-!| HM0L           |---| 
+!| GAMMAL         |---|
+!| GRAVIT         |---|
+!| HM0L           |---|
 !| KENT           |-->| C.L. INDIQUANT UNE FRONTIERE MARITIME
 !| KSORT          |-->| C.L. INDIQUANT UNE FRONTIERE SOLIDE
 !| LIFBOR         |-->| TYPE DE CONDITION LIMITE SUR F
-!| LIMSPE         |---| 
+!| LIMSPE         |---|
 !| LT             |-->| NUMERO DU PAS DE TEMPS
 !| NBI1           |-->| NUMERO DU FICHIER BINAIRE UTILISATEUR
 !| NBOR           |-->| NUMEROTATION DES POINTS DE BORD 2D
@@ -67,21 +67,21 @@
 !| NPRIV          |-->| DIMENSION DU TABLEAU PRIVE
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE 2D
 !| PRIVE          |-->| TABLEAU DE L'UTILISATEUR
-!| SIGMAL         |---| 
-!| SIGMBL         |---| 
-!| SPEC           |---| 
-!| SPEULI         |---| 
-!| SPRE1L         |---| 
-!| SPRE2L         |---| 
+!| SIGMAL         |---|
+!| SIGMBL         |---|
+!| SPEC           |---|
+!| SPEULI         |---|
+!| SPRE1L         |---|
+!| SPRE2L         |---|
 !| TETA           |-->| DIRECTIONS DE PROPAGATION
-!| TETA1L         |---| 
-!| TETA2L         |---| 
-!| UV             |---| 
-!| VENSTA         |---| 
-!| VENT           |---| 
-!| VV             |---| 
+!| TETA1L         |---|
+!| TETA2L         |---|
+!| UV             |---|
+!| VENSTA         |---|
+!| VENT           |---|
+!| VV             |---|
 !| X              |-->| ABSCISSES DES POINTS 2D
-!| XLAMDL         |---| 
+!| XLAMDL         |---|
 !| Y              |-->| ORDONNEES DES POINTS 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

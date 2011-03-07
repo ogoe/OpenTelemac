@@ -20,19 +20,19 @@
 !history  F MARCOS (LNH)
 !+        01/02/93
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |<--| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
@@ -41,20 +41,20 @@
 !| FCONV          |<--| POSITION INITIALE DES DERIVANT EN F
 !| FRE            |<--| NUMEROS DES FREQ. CHOISIES POUR CHAQUE NOEUD.
 !| FREQ           |-->| FREQUENCES DE PROPAGATION
-!| GOODELT        |---| 
-!| IFABOR         |---| 
-!| IFF            |---| 
+!| GOODELT        |---|
+!| IFABOR         |---|
+!| IFF            |---|
 !| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
 !|                |   | ET GLOBALE
 !| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
 !| NF             |-->| NOMBRE DE FREQUENCES
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| SHF            |---| 
+!| SHF            |---|
 !| SHP1           |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
 !|                |   | LEURS ELEMENTS 2D "ELT" ASSOCIES.
-!| SHP2           |---| 
-!| SHP3           |---| 
+!| SHP2           |---|
+!| SHP3           |---|
 !| SHT            |<--| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
 !|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
 !| TCONV          |<--| POSITION INITIALE DES DERIVANT EN TETA
@@ -176,7 +176,7 @@
           ENDIF
 !
 450       CONTINUE
-
+!
         DO 50 IELEM=1,NELEM2
           N1=IKLE2(IELEM,1)
           N2=IKLE2(IELEM,2)
@@ -257,7 +257,7 @@
           IF (IFABOR(IELEM,3)==-2) GOODELT(N3,IPLAN)=
      &                                       GOODELT(N3,IPLAN)+1000
 230      CONTINUE
-
+!
 !
 !-----------------------------------------------------------------------
 !  FILLS IN THE SHT, ETA, SHF AND FRE, POINT BY POINT

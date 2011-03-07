@@ -22,19 +22,19 @@
 !history  F. MARCOS (LNH)
 !+        04/12/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CG             |-->| VITESSE DE GROUPE DISCRETISEE
@@ -47,7 +47,7 @@
 !| DT             |-->| TEMPS
 !| DUX,DUY        |-->| GRADIENT DU COURANT SELON X SELON X,Y
 !| DVX,DVY        |-->| GRADIENT DU COURANT SELON Y SELON X,Y
-!| DZHDT          |---| 
+!| DZHDT          |---|
 !| DZX            |-->| GRADIENT DE FOND SELON X
 !| DZY            |-->| GRADIENT DE FOND SELON Y
 !| ELT            |<->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
@@ -63,7 +63,7 @@
 !| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
 !|                |   | ET GLOBALE DU MAILLAGE 2D.
 !| ITR01          |<->| TABLEAU DE TRAVAIL ENTIER
-!| MESH           |---| 
+!| MESH           |---|
 !| NELEM2         |-->| NOMBRE D ELEMENTS DU MAILLAGE 2D
 !| NF             |-->| NOMBRE DE FREQUENCES
 !| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS
@@ -71,14 +71,14 @@
 !| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
 !| NRK            |-->| NOMBRE DE SOUS PAS DE RUNGE KUTTA
 !| PROINF         |-->| LOGIQUE INDIQUANT SI ON EST EN PROF INFINIE
-!| PROMIN         |---| 
+!| PROMIN         |---|
 !| SHF            |<->| COORDONNEES BARYCENTRIQUES SUIVANT F DES
 !|                |   | NOEUDS DANS LEURS FREQUENCES "FRE" ASSOCIEES.
 !| SHP1           |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
 !|                |   | COURBES CARACTERISTIQUES.
-!| SHP2           |---| 
-!| SHP3           |---| 
-!| SHZ            |---| 
+!| SHP2           |---|
+!| SHP3           |---|
+!| SHZ            |---|
 !| SINTET         |-->| SINUS TETA
 !| SPHE           |-->| LOGIQUE INDIQUANT SI ON EST EN COORD. SPHER.
 !| SURDET         |-->| INVERSE DU DETERMINANT DES ELEMENTS
@@ -202,7 +202,7 @@
      &( CY , CX , CT , XK , CG , COSF,TGF , DEPTH ,
      &  DZY   , DZX   , FREQ  , COSTET, SINTET, NPOIN2, NPLAN , JF    ,
      &  NF    , PROINF, SPHE  , PROMIN, TRA01 , TRA01(1,2)    )
-
+!
           CALL INIPIE
      &( CX,CY,CT,X,Y,SHP1(1,JF),SHP2(1,JF),
      &  SHP3(1,JF),SHZ(1,JF),
@@ -238,7 +238,7 @@
         IF ((DEPTH(I3).LT.PROMIN).AND.(DEPTH(I1).LT.PROMIN).AND.
      &      (IFABOR(IEL,3).EQ.-2)) IFABOR(IEL,3)=-1
       ENDDO
-
+!
          CALL CORRECT_GOODELT(GOODELT(1,1,JF),NPOIN2,NPLAN,MESH)
 !
          IF (.NOT.ALLOCATED(NCHARA)) ALLOCATE(NCHARA(NF),NLOSTCHAR(NF),
@@ -299,7 +299,7 @@
 ! CREATES THE ARRAY 'SDISP' AND ORDERS THE DATA (ASCENDING)
           CALL GLOB_CHAR_COMM ()
 ! SENDS SENDCHAR AND WRITES TO RECVCHAR
-
+!
 !
          IF(.NOT.ALLOCATED(ISPDONE)) ALLOCATE(ISPDONE(NPOIN3,NF))
          IF(.NOT.ALLOCATED(NARRV)) ALLOCATE(NARRV(NF))
@@ -409,7 +409,7 @@
            ENDIF
            LAST_NOMB = 1
          ENDIF
-
+!
          CALL CORRECT_GOODELT(GOODELT(1,1,JF),NPOIN2,NPLAN,MESH)
 !
          IF (.NOT.ALLOCATED(NCHARA)) ALLOCATE(NCHARA(NF),NLOSTCHAR(NF),
@@ -419,7 +419,7 @@
 !
          IF(.NOT.ALLOCATED(TEST)) ALLOCATE(TEST(NPOIN3,NF))
          IFREQ=JF
-
+!
            CALL PIED4D_TOMAWAC
      &(CX,CY,CT,CF,DT,NRK,X,Y,TETA,FREQ,IKLE2,IFABOR,
      &  ETAP1,TRA01,TRA01(1,2),
@@ -478,7 +478,7 @@
          IF(.NOT.ALLOCATED(NARRV)) ALLOCATE(NARRV(NF))
          CALL ALLOC_LOCAL_4D(NARRV(IFREQ),IFREQ,NF,NLOSTAGAIN,
      &                      NUMBERLOST,NARRSUM)
-
+!
          IF (NUMBERLOST>0) THEN
        CALL PIEDS4D_TOMAWAC_MPI
      &(CX,CY,CT,CF,DT,NRK,X,Y,TETA,FREQ,IKLE2,IFABOR,ETAP1,

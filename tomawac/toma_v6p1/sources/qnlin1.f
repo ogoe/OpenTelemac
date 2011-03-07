@@ -37,46 +37,46 @@
 !history  M. BENOIT
 !+        07/06/95
 !+        V1P0
-!+   CREATED 
+!+   CREATED
 !
 !history  M. BENOIT
 !+        26/06/96
 !+        V1P2
-!+   MODIFIED 
+!+   MODIFIED
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COEFNL         |---| 
-!| DEPTH          |---| 
-!| DFINI          |---| 
-!| F              |---| 
+!| COEFNL         |---|
+!| DEPTH          |---|
+!| DFINI          |---|
+!| F              |---|
 !| F1             |-->| PREMIERE FREQUENCE DE DISCRETISATION
-!| IANGNL         |---| 
+!| IANGNL         |---|
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
 !| PROINF         |-->| INDICATEUR DE PROFONDEUR INFINIE
 !| RAISF          |-->| RAISON FREQUENTIELLE DE DISCRETISATION
 !| TAILF          |-->| FACTEUR DE QUEUE
-!| TAUX1          |---| 
-!| TAUX2          |---| 
-!| TAUX3          |---| 
-!| TAUX4          |---| 
-!| TAUX5          |---| 
-!| TSDER          |---| 
-!| TSTOT          |---| 
-!| XKMOY          |---| 
+!| TAUX1          |---|
+!| TAUX2          |---|
+!| TAUX3          |---|
+!| TAUX4          |---|
+!| TAUX5          |---|
+!| TSDER          |---|
+!| TSTOT          |---|
+!| XKMOY          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

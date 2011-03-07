@@ -18,23 +18,23 @@
 !history  F.MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
-!| CHDON          |---| 
+!| CHDON          |---|
 !| COURAN         |-->| LOGIQUE INDIQUANT LA PRESENCE DE DONNEES
 !| DONTEL         |-->| LOGIQUE INDIQUANT SI ON RECUPERE
 !|                |   | UNE VARIABLE TELEMAC
@@ -45,7 +45,7 @@
 !| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NPTFR          |-->| NOMBRE DE  POINTS FRONTIERE
-!| NPTT           |---| 
+!| NPTT           |---|
 !| TRA01          |<->| TABLEAU DE TRAVAIL
 !| TRA02          |<->| TABLEAU DE TRAVAIL
 !| TRA03          |<->| TABLEAU DE TRAVAIL

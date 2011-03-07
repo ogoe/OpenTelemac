@@ -20,40 +20,40 @@
 !history  F MARCOS (LNH)
 !+        01/02/93
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELI            |---| 
+!| ELI            |---|
 !| ELT            |<--| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
 !|                |   | NOEUD.
 !| ETA            |<--| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
-!| GOODELT        |---| 
-!| IFABOR         |---| 
+!| GOODELT        |---|
+!| IFABOR         |---|
 !| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
 !|                |   | ET GLOBALE
-!| KNI            |---| 
-!| KNOGL          |---| 
-!| NELE2L         |---| 
+!| KNI            |---|
+!| KNOGL          |---|
+!| NELE2L         |---|
 !| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPOI2L         |---| 
+!| NPOI2L         |---|
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
 !| SHP1           |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
 !|                |   | LEURS ELEMENTS 2D "ELT" ASSOCIES.
-!| SHP2           |---| 
-!| SHP3           |---| 
+!| SHP2           |---|
+!| SHP3           |---|
 !| SHZ            |<--| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
 !|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
 !| TETA           |-->| DIRECTIONS DE PROPAGATION
@@ -324,7 +324,7 @@
       ENDIF
 !
 150       CONTINUE
-
+!
          DO 230 IELEM = 1,NELEM2
             N1G=IKLE2(IELEM,1)
             N2G=IKLE2(IELEM,2)

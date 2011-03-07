@@ -30,73 +30,73 @@
 !history  M. BENOIT
 !+        26/03/95
 !+        V1P0
-!+   CREATED 
+!+   CREATED
 !
 !history  M. BENOIT
 !+        07/11/96
 !+        V1P2
-!+   MODIFIED 
+!+   MODIFIED
 !
-!history  
+!history
 !+        25/08/2000
 !+        V5P0
-!+   MODIFIED 
+!+   MODIFIED
 !
 !history  JMH
 !+        16/12/2008
 !+        V5P9
-!+   BETA HAS BEEN ADDED TO THE LIST OF ARGUMENTS AND 
+!+   BETA HAS BEEN ADDED TO THE LIST OF ARGUMENTS AND
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| MODELE DEFERLEMENT BJ : CONSTANTE ALPHA
 !| ALFARO         |-->| MODELE DEFERLEMENT RO : CONSTANTE ALPHA
-!| ALFLTA         |---| 
+!| ALFLTA         |---|
 !| ALPHA          |-->| CONSTANTE DE LA LOI DE CHARNOCK
-!| BDISPB         |---| 
-!| BDSSPB         |---| 
-!| BETA           |---| 
+!| BDISPB         |---|
+!| BDSSPB         |---|
+!| BETA           |---|
 !| BETAIH         |-->| MODELE DEFERLEMENT IH : CONSTANTE BETA
 !| BETAM          |-->| CONSTANTE BETAMAX DE LA FORMULE DU VENT
 !| BINVEN         |-->| BINAIRE DU FICHIER DE VENT EN ENTREE
 !| BORETG         |-->| MODELE DEFERLEMENT TG : CONSTANTE B
 !| CDRAG          |-->| COEFFICIENT DE TRAINEE
 !| CFROT1         |-->| CONSTANTE POUR LE TERME DE FROTTEMENT
-!| CIMPLI         |---| 
+!| CIMPLI         |---|
 !| CMOUT1         |-->| CONSTANTE 1 POUR LE TERME DE MOUTONNEMENT
 !| CMOUT2         |-->| CONSTANTE 2 POUR LE TERME DE MOUTONNEMENT
 !| COEFHS         |-->| COEFFICIENT LIMITATEUR DE LA HAUTEUR HS
-!| COEFNL         |---| 
-!| COSTET         |---| 
+!| COEFNL         |---|
+!| COSTET         |---|
 !| DDC            |-->| DATE DE DEBUT DU CALCUL
 !| DECAL          |-->| CONSTANTE DE DECALAGE DE CROISSANCE VENT
-!| DEPTH          |---| 
-!| DFREQ          |---| 
-!| DF_LIM         |---| 
+!| DEPTH          |---|
+!| DFREQ          |---|
+!| DF_LIM         |---|
 !| DTSI           |-->| PAS DE TEMPS D'INTEGRATION (SECONDES)
 !| EM2SIH         |-->| MODELE DEFERLEMENT IH : CONSTANTE M2*
-!| F              |---| 
+!| F              |---|
 !| F1             |-->| PREMIERE FREQUENCE DE DISCRETISATION
-!| FMOY           |---| 
-!| FREQ           |---| 
+!| FMOY           |---|
+!| FREQ           |---|
 !| GAM2RO         |-->| MODELE DEFERLEMENT RO : CONSTANTE GAMMA2
 !| GAMARO         |-->| MODELE DEFERLEMENT RO : CONSTANTE GAMMA
 !| GAMATG         |-->| MODELE DEFERLEMENT TG : CONSTANTE GAMMA
 !| GAMBJ1         |-->| MODELE DEFERLEMENT BJ : CONSTANTE GAMMA1
 !| GAMBJ2         |-->| MODELE DEFERLEMENT BJ : CONSTANTE GAMMA2
 !| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| IANGNL         |---| 
+!| IANGNL         |---|
 !| IDISRO         |-->| MODELE DEFERLEMENT RO : DISTRIBUTION HOULE
 !| IEXPRO         |-->| MODELE DEFERLEMENT RO : EXPOSANT N
 !| IFRBJ          |-->| MODELE DEFERLEMENT BJ : MODE CALCUL DE FREQ
@@ -107,77 +107,77 @@
 !| INDIC          |-->| TYPE DE FORMAT DE LECTURE
 !| IQBBJ          |-->| MODELE DEFERLEMENT BJ : MODE CALCUL DE QB
 !| IWHTG          |-->| MODELE DEFERLEMENT TG : MODE CALCUL DE W(H)
-!| KSPB           |---| 
-!| LIMIT          |---| 
-!| NBD            |---| 
-!| NBOR           |---| 
+!| KSPB           |---|
+!| LIMIT          |---|
+!| NBD            |---|
+!| NBOR           |---|
 !| NDTBRK         |-->| NOMBRE DE SOUS-PAS DE TEMPS DE DEFERLEMENT
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NOMVEB         |---| 
-!| NOMVEF         |---| 
+!| NOMVEB         |---|
+!| NOMVEF         |---|
 !| NP             |-->| NOMBRE DE POINTS DU CHAMP DE VENT
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
 !| NSITS          |-->| NOMBRE DE PAS DE TEMPS D'INTEGRATION
-!| NVEB           |---| 
-!| NVEF           |---| 
+!| NVEB           |---|
+!| NVEF           |---|
 !| PROINF         |-->| INDICATEUR DE PROFONDEUR INFINIE
-!| QINDI          |---| 
+!| QINDI          |---|
 !| RAISF          |-->| RAISON FREQUENTIELLE POUR DISCRETISATION
-!| RFMLTA         |---| 
+!| RFMLTA         |---|
 !| ROAIR          |-->| MASSE VOLUMIQUE DE L AIR
 !| ROEAU          |-->| MASSE VOLUMIQUE DE L EAU
 !| SBREK          |-->| INDICATEUR DE TYPE DE TERME DEFERLEMENT
 !| SFROT          |-->| INDICATEUR DE TYPE DE TERME FROTTEMENT
-!| SINTET         |---| 
+!| SINTET         |---|
 !| SMOUT          |-->| INDICATEUR DE TYPE DE TERME MOUTONNEMENT
-!| STRIA          |---| 
+!| STRIA          |---|
 !| STRIF          |-->| INDICATEUR DE TYPE DE TERME INTERACTIONS
 !| SVENT          |-->| INDICATEUR DE TYPE DE TERME INPUT PAR VENT
 !| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
-!| TAUWAV         |---| 
-!| TAUX1          |---| 
-!| TAUX2          |---| 
-!| TAUX3          |---| 
-!| TAUX4          |---| 
-!| TAUX5          |---| 
-!| TAUX6          |---| 
-!| TAUX7          |---| 
-!| TETA           |---| 
-!| TNEW           |---| 
-!| TOLD           |---| 
+!| TAUWAV         |---|
+!| TAUX1          |---|
+!| TAUX2          |---|
+!| TAUX3          |---|
+!| TAUX4          |---|
+!| TAUX5          |---|
+!| TAUX6          |---|
+!| TAUX7          |---|
+!| TETA           |---|
+!| TNEW           |---|
+!| TOLD           |---|
 !| TPROP          |-->| DATE DE FIN DE L'ETAPE D'INTEGRATION
-!| TRA01          |---| 
-!| TSDER          |---| 
-!| TSTOT          |---| 
+!| TRA01          |---|
+!| TSDER          |---|
+!| TSTOT          |---|
 !| TV1            |<->| DATE DU CHAMP DE CHAMP 1
 !| TV2            |<->| DATE DU CHAMP DE CHAMP 2
-!| TWNEW          |---| 
-!| TWOLD          |---| 
-!| U1             |---| 
-!| U2             |---| 
-!| USNEW          |---| 
-!| USOLD          |---| 
-!| V1             |---| 
-!| V2             |---| 
-!| VARIAN         |---| 
-!| VENSTA         |---| 
+!| TWNEW          |---|
+!| TWOLD          |---|
+!| U1             |---|
+!| U2             |---|
+!| USNEW          |---|
+!| USOLD          |---|
+!| V1             |---|
+!| V2             |---|
+!| VARIAN         |---|
+!| VENSTA         |---|
 !| VENT           |-->| INDICATEUR DE PRISE EN COMPTE DE VENT
-!| VENTX          |---| 
-!| VENTY          |---| 
-!| VX_CTE         |---| 
-!| VY_CTE         |---| 
-!| X              |---| 
+!| VENTX          |---|
+!| VENTY          |---|
+!| VX_CTE         |---|
+!| VY_CTE         |---|
+!| X              |---|
 !| XDTBRK         |-->| PAS DE TEMPS POUR LE DEFERLEMENT
-!| XK             |---| 
+!| XK             |---|
 !| XKAPPA         |-->| CONSTANTE DE VON KARMAN
-!| XKMOY          |---| 
-!| XRELV          |---| 
-!| Y              |---| 
-!| YRELV          |---| 
-!| Z0NEW          |---| 
-!| Z0OLD          |---| 
+!| XKMOY          |---|
+!| XRELV          |---|
+!| Y              |---|
+!| YRELV          |---|
+!| Z0NEW          |---|
+!| Z0OLD          |---|
 !| ZVENT          |-->| COTE A LAQUELLE EST MESURE LE VENT (M)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

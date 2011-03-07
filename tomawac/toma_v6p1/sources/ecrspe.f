@@ -17,57 +17,57 @@
 !history  OPTIMER
 !+        28/08/2000
 !+        V5P0
-!+   CREATED 
+!+   CREATED
 !
-!history  
+!history
 !+        07/06/2001
 !+        V5P2
-!+   
+!+
 !
 !history  M. BENOIT
 !+        13/07/2004
 !+        V5P5
-!+   CORRECTED A BUG IN THE DECLARATION OF IPOBO WHEN PASSED 
+!+   CORRECTED A BUG IN THE DECLARATION OF IPOBO WHEN PASSED
 !
-!history  
-!+        
+!history
+!+
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| DATE COURANTE DU CALCUL
-!| AUXIL          |---| 
-!| B              |---| 
+!| AUXIL          |---|
+!| B              |---|
 !| BINSCO         |-->| BINAIRE DU FICHIER DE SORTIE DES SPECTRES
-!| DATE           |---| 
+!| DATE           |---|
 !| DEBRES         |-->| INDICATEUR DE PREMIERE DATE A SAUVER
-!| F              |---| 
-!| FREQ           |---| 
-!| INUTIL         |---| 
-!| ISLEO          |---| 
-!| KNOLG          |---| 
+!| F              |---|
+!| FREQ           |---|
+!| INUTIL         |---|
+!| ISLEO          |---|
+!| KNOLG          |---|
 !| LT             |-->| NUMERO D IMRPESSION
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NK             |---| 
+!| NK             |---|
 !| NLEO           |-->| NOMBRE DE POINTS DE SORTIE
-!| NOLEO          |---| 
+!| NOLEO          |---|
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
 !| NSCO           |-->| NUM. DU FICHIER DE SORTIE DES SPECTRES
-!| TETA           |---| 
-!| TIME           |---| 
+!| TETA           |---|
+!| TIME           |---|
 !| TITCAS         |-->| TITRE DU CAS DE CALCUL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

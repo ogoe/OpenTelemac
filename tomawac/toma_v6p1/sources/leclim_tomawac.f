@@ -14,40 +14,40 @@
 !
 !history  J-M HERVOUET (LNH)
 !+        24/04/97
-!+        
-!+   
+!+
+!+
 !
 !history  OPTIMER
 !+        25/08/00
 !+        V5P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BOUNDARY_COLOUR|---| 
+!| BOUNDARY_COLOUR|---|
 !| HBOR           |<--| CONDITIONS AUX LIMITES SUR H
-!| ISEG           |---| 
+!| ISEG           |---|
 !| LIHBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
 !|                |   | POUR LES POINTS DE BORD.
-!| MESH           |---| 
-!| NACHB          |---| 
+!| MESH           |---|
+!| NACHB          |---|
 !| NBOR           |<--| ADRESSES DES POINTS DE BORD.
 !| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
 !| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
-!| XSEG           |---| 
-!| YSEG           |---| 
+!| XSEG           |---|
+!| YSEG           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

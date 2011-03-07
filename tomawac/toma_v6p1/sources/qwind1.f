@@ -24,52 +24,52 @@
 !history  P. THELLIER; M. BENOIT (EDF/DER/LNH)
 !+        11/04/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETAM          |-->| PARAMETRE D'APPORT DU AU VENT
-!| BETAN          |---| 
-!| BETAO          |---| 
-!| CIMPLI         |---| 
-!| CPHAS          |---| 
+!| BETAN          |---|
+!| BETAO          |---|
+!| CIMPLI         |---|
+!| CPHAS          |---|
 !| DECAL          |-->| CONSTANTE DE DECALAGE DE COURBE CROISSANCE
-!| F              |---| 
-!| FREQ           |---| 
+!| F              |---|
+!| FREQ           |---|
 !| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| OMNEW          |---| 
-!| OMOLD          |---| 
+!| OMNEW          |---|
+!| OMOLD          |---|
 !| ROAIR          |-->| DENSITE DE L'AIR
 !| ROEAU          |-->| DENSITE DE L'EAU
-!| TETA           |---| 
-!| TNEW           |---| 
-!| TOLD           |---| 
-!| TSDER          |---| 
-!| TSTOT          |---| 
-!| TWNEW          |---| 
-!| TWOLD          |---| 
-!| USN            |---| 
-!| USNEW          |---| 
-!| USO            |---| 
-!| USOLD          |---| 
-!| XK             |---| 
+!| TETA           |---|
+!| TNEW           |---|
+!| TOLD           |---|
+!| TSDER          |---|
+!| TSTOT          |---|
+!| TWNEW          |---|
+!| TWOLD          |---|
+!| USN            |---|
+!| USNEW          |---|
+!| USO            |---|
+!| USOLD          |---|
+!| XK             |---|
 !| XKAPPA         |-->| CONSTANTE DE VON KARMAN
-!| Z0NEW          |---| 
-!| Z0OLD          |---| 
+!| Z0NEW          |---|
+!| Z0OLD          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

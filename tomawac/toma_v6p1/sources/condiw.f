@@ -14,34 +14,34 @@
 !history  F.MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
-!history  
+!history
 !+        25/08/2000
 !+        V5P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |<--| TEMPS DU CALCUL
-!| DPI            |---| 
-!| LT             |---| 
+!| DPI            |---|
+!| LT             |---|
 !| NPC            |-->| NOMBRE DE POINTS DU FICHIER DES COURANTS
 !| NPM            |-->| NOMBRE DE POINTS DU FICHIER DES HAUTEURS
 !| NPV            |-->| NOMBRE DE POINTS DU FICHIER DES VENTS
-!| NVCOU          |---| 
-!| NVHMA          |---| 
+!| NVCOU          |---|
+!| NVHMA          |---|
 !| TC1            |<--| TEMPS CORRESPONDANT AU COURANT 1
 !| TC2            |<--| TEMPS CORRESPONDANT AU COURANT 2
 !| TM1            |<--| TEMPS CORRESP. A LA HAUTEUR DE LA MAREE 1

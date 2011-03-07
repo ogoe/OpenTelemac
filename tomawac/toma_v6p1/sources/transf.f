@@ -17,42 +17,42 @@
 !history  M. BENOIT (LNHE)
 !+        12/01//2006
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COSTET         |---| 
-!| DFREQ          |---| 
-!| FA             |---| 
-!| FR             |---| 
-!| FREQ           |---| 
-!| GRADEB         |---| 
-!| GRAPRD         |---| 
-!| KNEW           |---| 
-!| LT             |---| 
-!| NEWF           |---| 
-!| NEWF1          |---| 
+!| COSTET         |---|
+!| DFREQ          |---|
+!| FA             |---|
+!| FR             |---|
+!| FREQ           |---|
+!| GRADEB         |---|
+!| GRAPRD         |---|
+!| KNEW           |---|
+!| LT             |---|
+!| NEWF           |---|
+!| NEWF1          |---|
 !| NF             |-->| NOMBRE DE FREQUENCES
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE PROPAGATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
 !| RAISF          |-->| RAISON FREQUENTIELLE
-!| SINTET         |---| 
-!| TAUX1          |---| 
-!| TAUX2          |---| 
-!| UC             |---| 
-!| VC             |---| 
-!| XK             |---| 
+!| SINTET         |---|
+!| TAUX1          |---|
+!| TAUX2          |---|
+!| UC             |---|
+!| VC             |---|
+!| XK             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

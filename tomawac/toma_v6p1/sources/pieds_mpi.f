@@ -14,43 +14,43 @@
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CT             |---| 
-!| CX             |---| 
-!| CY             |---| 
-!| DT             |---| 
-!| ELT            |---| 
-!| ETA            |---| 
-!| ETAP1          |---| 
-!| GOODELT        |---| 
-!| IFABOR         |---| 
-!| IKLE2          |---| 
-!| ITR01          |---| 
-!| JF             |---| 
-!| MESH           |---| 
-!| NELEM2         |---| 
-!| NF             |---| 
-!| NPLAN          |---| 
-!| NPOIN2         |---| 
-!| NPOIN3         |---| 
-!| NRK            |---| 
-!| SHP1           |---| 
-!| SHP2           |---| 
-!| SHP3           |---| 
-!| SHZ            |---| 
-!| TETA           |---| 
-!| TRA01          |---| 
-!| X              |---| 
-!| Y              |---| 
+!| CT             |---|
+!| CX             |---|
+!| CY             |---|
+!| DT             |---|
+!| ELT            |---|
+!| ETA            |---|
+!| ETAP1          |---|
+!| GOODELT        |---|
+!| IFABOR         |---|
+!| IKLE2          |---|
+!| ITR01          |---|
+!| JF             |---|
+!| MESH           |---|
+!| NELEM2         |---|
+!| NF             |---|
+!| NPLAN          |---|
+!| NPOIN2         |---|
+!| NPOIN3         |---|
+!| NRK            |---|
+!| SHP1           |---|
+!| SHP2           |---|
+!| SHP3           |---|
+!| SHZ            |---|
+!| TETA           |---|
+!| TRA01          |---|
+!| X              |---|
+!| Y              |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -85,7 +85,7 @@
       DOUBLE PRECISION :: TEST2(NPOIN3,NF)
 !      DOUBLE PRECISION :: TES(NPOIN2,NPLAN)
       TYPE(BIEF_MESH)  ::  MESH
-
+!
          CALL CORRECT_GOODELT(GOODELT,NPOIN2,NPLAN,MESH)
 !
          IF (.NOT.ALLOCATED(NCHARA)) ALLOCATE(NCHARA(NF),NLOSTCHAR(NF),
@@ -146,7 +146,7 @@
 ! CREATES THE ARRAY 'SDISP' AND ORDERS THE DATA (ASCENDING)
           CALL GLOB_CHAR_COMM ()
 ! SENDS SENDCHAR AND WRITES TO RECVCHAR
-
+!
 !
          IF(.NOT.ALLOCATED(ISPDONE)) ALLOCATE(ISPDONE(NPOIN3,NF))
          IF(.NOT.ALLOCATED(NARRV)) ALLOCATE(NARRV(NF))
@@ -207,23 +207,23 @@
 !history  F. MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITE NOEUD ELEMENTS
-!| ISLEO          |---| 
+!| ISLEO          |---|
 !| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
 !| NLEO           |-->| NOMBRE DE POINTS DE SORTIE
 !| NOLEO          |<->| TABLEAU DES NUMERO DES POINTS CHOISIS

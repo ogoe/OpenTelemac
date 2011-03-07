@@ -15,19 +15,19 @@
 !history  F. MARCOS (LNH)
 !+        05/12/95
 !+        V1P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| B              |-->| FACTEUR B
@@ -50,9 +50,9 @@
 !|                |   | NOEUDS DANS LEURS FREQUENCES "FRE" ASSOCIEES.
 !| SHP1           |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
 !|                |   | COURBES CARACTERISTIQUES.
-!| SHP2           |---| 
-!| SHP3           |---| 
-!| SHZ            |---| 
+!| SHP2           |---|
+!| SHP3           |---|
+!| SHZ            |---|
 !| TRA01          |<->| TABLEAU DE TRAVAIL
 !| TRA02          |<->| TABLEAU DE TRAVAIL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

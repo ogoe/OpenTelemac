@@ -66,7 +66,7 @@
           DOUBLE PRECISION :: BP
           DOUBLE PRECISION :: F(12) ! FUNCTION VALUES AT THE 6 POINT OF THE PRISM
         END TYPE FONCTION_TYPE_4D
-
+!
         ! ARRAY OF BLOCKLENGTHS OF TYPE COMPONENTS, NOTE THE BASKET INITIALISED TO 1
         INTEGER, DIMENSION(15) :: CH_BLENGTH=
      &                               (/1,1,1,1,1,1,1,1,1,1,1,1,1,1,1/)
@@ -83,7 +83,7 @@
      &                         (/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/)
         ! ARRAY OF COMPONENT TYPES IN TERMS OF THE MPI COMMUNICATION
         INTEGER, DIMENSION(18) :: CH_TYPES_4D
-
+!
         ! ARRAY OF BLOCKLENGTHS OF TYPE COMPONENTS, NOTE THE BASKET INITIALISED TO 1
         INTEGER, DIMENSION(17) :: FC_BLENGTH=
      &                     (/1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1/)
@@ -128,7 +128,7 @@
      &                                             RDISPLS_AGAIN
         TYPE (CHARAC_TYPE), SAVE :: TEMPO
         TYPE (CHARAC_TYPE_4D), SAVE :: TEMPO_4D
-
+!
         ! IF SET TO TRUE, EVERY DETAILED DEBUGGING IS SWITCHED ON
         LOGICAL :: TRACE=.FALSE.
         ! WORK FIELD FOR COUNTING OCCURANCES PRO RANK / SORTING SENDCHAR
@@ -148,17 +148,17 @@
      &                                               SHZ,SHF
           INTEGER,POINTER,DIMENSION(:) :: ELT,ETA,FRE
         END TYPE SH_LOCAL_4D
-
+!
         TYPE (SH_LOCAL_4D), ALLOCATABLE, DIMENSION(:),SAVE :: SH_LOC
         TYPE (SH_LOCAL_4D), ALLOCATABLE, DIMENSION(:),SAVE :: SH_LOC_4D
-
+!
         TYPE (FONCTION_TYPE), ALLOCATABLE, DIMENSION(:), SAVE ::
      &                                               F_SEND,F_RECV
         TYPE (SH_LOCAL) ,SAVE   :: SH_AGAIN
         TYPE (FONCTION_TYPE_4D), ALLOCATABLE, DIMENSION(:), SAVE ::
      &                                             F_SEND_4D,F_RECV_4D
         TYPE (SH_LOCAL_4D) ,SAVE   :: SH_AGAIN_4D
-
+!
         CONTAINS
   !---------------------------------------------------------------------
   ! MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS / INIT, ETC.
@@ -252,7 +252,7 @@
           IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
           RETURN
         END SUBROUTINE ORG_CHARAC_TYPE
-
+!
         SUBROUTINE DEORG_CHARAC_TYPE
           IMPLICIT NONE
           INTEGER IER
@@ -260,7 +260,7 @@
           CALL P_MPI_TYPE_FREE (FONCTION,IER)
           RETURN
         END SUBROUTINE DEORG_CHARAC_TYPE
-
+!
         SUBROUTINE ORG_FONCTION_TYPE(NOMB)
           IMPLICIT NONE
           INTEGER, INTENT(IN) :: NOMB
@@ -287,7 +287,7 @@
           CALL P_MPI_ADDRESS2(CH%SHZ,    FC_DELTA(14), IER)
           CALL P_MPI_ADDRESS2(CH%BP,     FC_DELTA(15), IER)
           CALL P_MPI_ADDRESS3(CH%F,      FC_DELTA(16), IER)
-
+!
 !
 !         ORIGINAL CODE:
 !
@@ -352,7 +352,7 @@
           IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
           RETURN
         END SUBROUTINE ORG_FONCTION_TYPE
-
+!
         SUBROUTINE ORG_CHARAC_TYPE_4D(NOMB)
           IMPLICIT NONE
           INTEGER, INTENT(IN) :: NOMB
@@ -414,7 +414,7 @@
           CH_TYPES_4D(16)=MPI_REAL8
           CH_TYPES_4D(17)=MPI_REAL8
           CH_TYPES_4D(18)=MPI_UB       ! THE TYPE UPPER BOUND MARKER
-
+!
           CALL P_MPI_TYPE_STRUCT(18,CH_BLENGTH_4D,CH_DELTA_4D,
      &                         CH_TYPES_4D,CHARACTER_4D,IER)
           CALL P_MPI_TYPE_COMMIT(CHARACTER_4D,IER)
@@ -433,7 +433,7 @@
           IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
           RETURN
         END SUBROUTINE ORG_CHARAC_TYPE_4D
-
+!
         SUBROUTINE DEORG_CHARAC_TYPE_4D
           IMPLICIT NONE
           INTEGER IER
@@ -441,7 +441,7 @@
           CALL P_MPI_TYPE_FREE (FONCTION_4D,IER)
           RETURN
         END SUBROUTINE DEORG_CHARAC_TYPE_4D
-
+!
         SUBROUTINE ORG_FONCTION_TYPE_4D(NOMB)
           IMPLICIT NONE
           INTEGER, INTENT(IN) :: NOMB
@@ -471,7 +471,7 @@
           CALL P_MPI_ADDRESS2(CH%SHF,    FC_DELTA_4D(17), IER)
           CALL P_MPI_ADDRESS2(CH%BP,     FC_DELTA_4D(18), IER)
           CALL P_MPI_ADDRESS3(CH%F,      FC_DELTA_4D(19), IER)
-
+!
 !
           CALL P_MPI_TYPE_EXTENT(MPI_REAL8,INTEX,IER)
           ! MARKING THE END OF THE TYPE
@@ -525,10 +525,10 @@
           IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
           RETURN
         END SUBROUTINE ORG_FONCTION_TYPE_4D
-
-
-
-
+!
+!
+!
+!
         SUBROUTINE COLLECT_CHAR(MYPID,IOR,MYII,IFACE,KNE,
      &                          ISP,NSP,XP,YP,ZP,DX,DY,DZ,IFAPAR,
      &                          NCHDIM,NCHARA,JF)
@@ -575,8 +575,8 @@
           !
           RETURN
         END SUBROUTINE COLLECT_CHAR
-
-
+!
+!
         SUBROUTINE COLLECT_CHAR_4D(MYPID,IOR,MYII,IFACE,KNE,FNE,
      &                          ISP,NSP,XP,YP,ZP,FP,DX,DY,DZ,DF,
      &                          IFAPAR,NCHDIM,NCHARA,JF)
@@ -626,8 +626,8 @@
           !
           RETURN
         END SUBROUTINE COLLECT_CHAR_4D
-
-
+!
+!
         SUBROUTINE INIT_TOMAWAC(NCHARA,NCHDIM,NOMB,NPOIN,LAST_NOMB)
       USE BIEF
 !
@@ -654,9 +654,9 @@
       INTEGER NPOIN
 !
       SAVE
-
-
-
+!
+!
+!
       IF(INIT) THEN ! CHECKS THINGS ONCE AND FOREVER
 !
 !       SEE IN LIBRARY PARALLEL OR PARAVOID (AND INCLUDE 'MPIF.H' OR NOT)
@@ -669,7 +669,7 @@
 !
         IF(NCSIZE>1) CALL ORGANISE_CHARS(NPOIN,NOMB,NCHDIM)
 !
-
+!
       ENDIF
 !
 !     CASE OF A CALL FROM DIFFERENT PROGRAMS WITH DIFFERENT NOMB
@@ -687,10 +687,10 @@
         NCHARA=0
 !
       ENDIF
-
+!
       END SUBROUTINE INIT_TOMAWAC
-
-
+!
+!
         SUBROUTINE INIT_TOMAWAC_4D(NCHARA,NCHDIM,NOMB,NPOIN,LAST_NOMB)
       USE BIEF
 !
@@ -717,9 +717,9 @@
       INTEGER NPOIN
 !
       SAVE
-
-
-
+!
+!
+!
       IF(INIT) THEN ! CHECKS THINGS ONCE AND FOREVER
 !
 !       SEE IN LIBRARY PARALLEL OR PARAVOID (AND INCLUDE 'MPIF.H' OR NOT)
@@ -732,7 +732,7 @@
 !
         IF(NCSIZE>1) CALL ORGANISE_CHARS_4D(NPOIN,NOMB,NCHDIM)
 !
-
+!
       ENDIF
 !
 !     CASE OF A CALL FROM DIFFERENT PROGRAMS WITH DIFFERENT NOMB
@@ -750,10 +750,10 @@
         NCHARA=0
 !
       ENDIF
-
+!
       END SUBROUTINE INIT_TOMAWAC_4D
-
-
+!
+!
         SUBROUTINE ORGANISE_CHARS(NPARAM,NOMB,NCHDIM) ! WATCH OUT
           USE BIEF_DEF, ONLY: NCSIZE
           IMPLICIT NONE
@@ -786,8 +786,8 @@
           CALL ORG_FONCTION_TYPE(6)
           RETURN
         END SUBROUTINE ORGANISE_CHARS
-
-
+!
+!
         SUBROUTINE ORGANISE_CHARS_4D(NPARAM,NOMB,NCHDIM) ! WATCH OUT
           USE BIEF_DEF, ONLY: NCSIZE
           IMPLICIT NONE
@@ -823,8 +823,8 @@
           CALL ORG_FONCTION_TYPE_4D(12)
           RETURN
         END SUBROUTINE ORGANISE_CHARS_4D
-
-
+!
+!
 !                       *****************
                         SUBROUTINE PIEDS_TOMAWAC
 !                       *****************
@@ -986,7 +986,7 @@
 !
          NSP(IPLOT)= MAX(INT(NRK*DT*ABS(DZP/(TETA(IET)-TETA(IET+1)))),
      &         INT(NRK*DT*SQRT((DXP*DXP+DYP*DYP)*SURDET(IEL))) )
-
+!
 ! CHECKS WHETHER THE CORRECT ELEMENT HAS BEEN FOUND (NOT A BOUNDARY ELEMENT
 ! WHICH WILL BE IGNORED AT A LATER DATE; SEE SUBROUTINE 'INIPIE'
          IF (GOODELT(IPLOT).EQ.0) NSP(IPLOT) = 1
@@ -997,7 +997,7 @@
 !      *       NSP(IPLOT)=1
          IF ((1000*(GOODELT(IPLOT)/1000)-GOODELT(IPLOT)).EQ.0)
      &       NSP(IPLOT) = 1
-
+!
             NSP(IPLOT) = MAX (1,NSP(IPLOT))
 !
             NSPMAX = MAX ( NSPMAX , NSP(IPLOT) )
@@ -1030,7 +1030,7 @@
      &     '   FREQUENCY',IFF,', NUMBER OF RUNGE KUTTA SUB TIME-STEP
      &S :',NSPMAX
       ENDIF
-
+!
 !
 !-----------------------------------------------------------------------
 !  LOOP ON NUMBER OF SUB-ITERATIONS
@@ -1054,7 +1054,7 @@
                I2 = IKLE2(IEL,2)
                I3 = IKLE2(IEL,3)
                PAS = SENS * DT / NSP(IPLOT)
-
+!
 !
                DX(IPLOT) =
      & ( U(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
@@ -1091,7 +1091,7 @@
                SHP3(IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
      &                        -(Y(I2)-Y(I1))*(XP-X(I1))) * SURDET(IEL)
                SHZ(IPLOT) = (ZP-TETA(IET)) / (TETA(IET+1)-TETA(IET))
-
+!
                IF (SHP1(IPLOT).LT.EPSILO)
      &              ISO(IPLOT)=IBSET(ISO(IPLOT),2)
                IF (SHP2(IPLOT).LT.EPSILO)
@@ -1259,7 +1259,7 @@
 !
             ENDIF
 !BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
-
+!
                   DXP = DX(IPLOT)
                   DYP = DY(IPLOT)
                   I1  = IKLE2(ELT(IPLOT),IFA)
@@ -1370,7 +1370,7 @@
 !         WRITE(LU,*)'SHZ',SHZ(IPLOT)
 !         WRITE(LU,*)'DXYZ',DX(IPLOT),DY(IPLOT),DZ(IPLOT)
 !         WRITE(LU,*)'XYZ',XPLOT(IPLOT),YPLOT(IPLOT),ZPLOT(IPLOT)
-
+!
                   STOP
                   ENDIF
                ENDIF
@@ -1386,14 +1386,14 @@
 !
       RETURN
       END SUBROUTINE PIEDS_TOMAWAC
-
+!
   !---------------------------------------------------------------------
   ! PREPARES THE INITIAL SEND OF THE LOST CHARACTERISTICS.
   ! THE FIELDS ARE PREPARED ACCORDING THE MPI_ALLTOALL(V) REQUIREMENTS.
   !---------------------------------------------------------------------
-
+!
         SUBROUTINE PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA)
-
+!
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -1423,9 +1423,9 @@
           NCHARA(IFREQ)=0
           RETURN
         END SUBROUTINE PREP_INITIAL_SEND
-
+!
         SUBROUTINE PREP_INITIAL_SEND_4D(NSEND,NLOSTCHAR,NCHARA)
-
+!
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -1469,7 +1469,7 @@
           INTEGER LNG,LU
           COMMON/INFO/LNG,LU
           INTEGER :: I,IER
-
+!
           CALL P_MPI_ALLTOALL(SENDCOUNTS(:,IFREQ),1,MPI_INTEGER,
      &          RECVCOUNTS(:,IFREQ),1,MPI_INTEGER,
      &          MPI_COMM_WORLD,IER)
@@ -1496,14 +1496,14 @@
           ENDIF
           RETURN
         END SUBROUTINE GLOB_CHAR_COMM
-
+!
         SUBROUTINE GLOB_CHAR_COMM_4D ()
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
           INTEGER LNG,LU
           COMMON/INFO/LNG,LU
           INTEGER :: I,IER
-
+!
           CALL P_MPI_ALLTOALL(SENDCOUNTS(:,IFREQ),1,MPI_INTEGER,
      &          RECVCOUNTS(:,IFREQ),1,MPI_INTEGER,
      &          MPI_COMM_WORLD,IER)
@@ -1528,11 +1528,11 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-
+!
           RETURN
         END SUBROUTINE GLOB_CHAR_COMM_4D
-
-
+!
+!
         SUBROUTINE GLOB_FONCTION_COMM ()
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
@@ -1553,7 +1553,7 @@
           ENDIF
           RETURN
         END SUBROUTINE GLOB_FONCTION_COMM
-
+!
         SUBROUTINE GLOB_FONCTION_COMM_4D ()
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE
@@ -1574,7 +1574,7 @@
           ENDIF
           RETURN
         END SUBROUTINE GLOB_FONCTION_COMM_4D
-
+!
 !-----------------------------------------------------------------------
 ! 3D STREAMLINE TRACKING FOR ADDITIONAL CHARACTERISTICS ARRIVED FROM
 ! NEIGHBOUR PARTITIONS - THERE'S NPLOT=NARRV OF THEM
@@ -1594,7 +1594,7 @@
      &    , SHZ , ELT , ETA,
      &   NPLOT , NPOIN2 , NELEM2 , NPLAN , IFF,
      &   SURDET , SENS , IFAPAR, NOMB,NARRV,CHARAC2)
-
+!
       USE BIEF
 !
       IMPLICIT NONE
@@ -1634,7 +1634,7 @@
       DOUBLE PRECISION DELTAZ,EPSDZ,PAS2,EPM1,EPSI,EPSILO2
 !
       INTRINSIC ABS
-
+!
       INTEGER P_IMAX
       EXTERNAL P_IMAX
 !
@@ -1749,7 +1749,7 @@
 !
                ENDIF
 !
-
+!
                IEL = IFABOR(IEL,IFA)
 !
                IF (IFA.LE.3) THEN
@@ -1806,7 +1806,7 @@
                  CHARAC2(IPLOT)%NEPID=IPROC
                  CHARAC2(IPLOT)%INE=ILOC
                  CHARAC2(IPLOT)%KNE=ETA(IPLOT)
-
+!
                    TEST3(IPLOT)=0.D0
                  EXIT
 !
@@ -2000,14 +2000,14 @@
      &                                .AND.TEST3(IPLOT)>0.5D0 ) THEN
 !               IF (NEPID==-1) THEN
 !
-
+!
 !
                IEL = ELT(IPLOT)
                IET = ETA(IPLOT)
                I1 = IKLE2(IEL,1)
                I2 = IKLE2(IEL,2)
                I3 = IKLE2(IEL,3)
-
+!
 !
                DX(IPLOT) = ( U(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
      &                     + U(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT))
@@ -2029,7 +2029,7 @@
      &                     + W(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT)
      &                     + W(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT)
      &                     + W(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT))*PAS
-
+!
 !
                XP = XPLOT(IPLOT) + DX(IPLOT)
                YP = YPLOT(IPLOT) + DY(IPLOT)
@@ -2047,14 +2047,14 @@
                YPLOT(IPLOT) = YP
                ZPLOT(IPLOT) = ZP
 !
-C                ISO = 0
+!                ISO = 0
                IF(SHP1(IPLOT).LT.EPSILO) ISO=IBSET(ISO,2)
                IF(SHP2(IPLOT).LT.EPSILO) ISO=IBSET(ISO,3)
                IF(SHP3(IPLOT).LT.EPSILO) ISO=IBSET(ISO,4)
 ! !
                IF(SHZ(IPLOT).LT.     EPSILO) ISO=IBSET(ISO,0)
                IF(SHZ(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,1)
-
+!
 !
            ! CONTINUOUS SETTING OF THE REACHED POSITION FOR IPLOT
            ! AND THE NUMBER OF STEPS DONE ALREADY
@@ -2068,7 +2068,7 @@ C                ISO = 0
                CHARAC2(IPLOT)%KNE=ETA(IPLOT)
                CHARAC2(IPLOT)%NSP=NSP(IPLOT)
                CHARAC2(IPLOT)%INE=ELT(IPLOT)
-
+!
             ENDIF
 !
 !-----------------------------------------------------------------------
@@ -2078,7 +2078,7 @@ C                ISO = 0
 !
 50          CONTINUE
 !
-
+!
 !            IF (RECVCHAR(IPLOT,IFF)%NEPID==-1.AND.ISO.NE.0) THEN
 !            IF (NEPID==-1.AND.ISO.NE.0) THEN
              IF ((ISO.NE.0).AND.(TEST3(IPLOT)>0.5D0)) THEN
@@ -2095,9 +2095,9 @@ C                ISO = 0
                XP = XPLOT(IPLOT)
                YP = YPLOT(IPLOT)
                ZP = ZPLOT(IPLOT)
-
-
-
+!
+!
+!
 !
                IF (ISOH.NE.0) THEN
 !
@@ -2186,7 +2186,7 @@ C                ISO = 0
 !
                  IPROC=IFAPAR(IFA,ELT(IPLOT))
                  ILOC=IFAPAR(IFA+3,ELT(IPLOT))
-
+!
                    CHARAC2(IPLOT)%XP=XPLOT(IPLOT)
                    CHARAC2(IPLOT)%YP=YPLOT(IPLOT)
                    CHARAC2(IPLOT)%ZP=ZPLOT(IPLOT)
@@ -2200,7 +2200,7 @@ C                ISO = 0
                    ISPDONE(IPLOT) = ISP
 !
                   TEST3(IPLOT) = 0.D0
-
+!
                  EXIT ! LOOP ON NSP
 !
                ENDIF
@@ -2252,7 +2252,7 @@ C                ISO = 0
 !
 !>>>>
                  A1 = (DXP*(YP-Y(I1))-DYP*(XP-X(I1)))/(DXP*DY1-DYP*DX1)
-
+!
                   IF (A1.GT.EPM1) A1 = 1.D0
                   IF (A1.LT.EPSI) A1 = 0.D0
                   IF (IFA.EQ.1) THEN
@@ -2368,7 +2368,7 @@ C                ISO = 0
 !
       RETURN
       END SUBROUTINE PIEDS_TOMAWAC_MPI
-
+!
         SUBROUTINE WIPE_HEAPED_CHAR(RTEST,NPOIN,DOIT,NSEND,NLOSTCHAR,
      &                              NCHDIM,NCHARA)
           IMPLICIT NONE
@@ -2406,7 +2406,7 @@ C                ISO = 0
      &            NSEND, NLOSTCHAR, NCHARA, SUM(HEAPCOUNTS(:,IFREQ))
           RETURN
         END SUBROUTINE WIPE_HEAPED_CHAR
-
+!
         SUBROUTINE WIPE_HEAPED_CHAR_4D(RTEST,NPOIN,DOIT,NSEND,
      &                              NLOSTCHAR,NCHDIM,NCHARA)
           IMPLICIT NONE
@@ -2444,7 +2444,7 @@ C                ISO = 0
      &            NSEND, NLOSTCHAR, NCHARA, SUM(HEAPCOUNTS(:,IFREQ))
           RETURN
         END SUBROUTINE WIPE_HEAPED_CHAR_4D
-
+!
       SUBROUTINE HEAP_FOUND(NLOSTAGAIN,NARRV,NCHARA)
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -2473,7 +2473,7 @@ C                ISO = 0
      &                 ' LOST-AGAIN: ',NLOSTAGAIN
           RETURN
         END SUBROUTINE HEAP_FOUND
-
+!
       SUBROUTINE HEAP_FOUND_4D(NLOSTAGAIN,NARRV,NCHARA)
           IMPLICIT NONE
           INTEGER LNG,LU
@@ -2502,7 +2502,7 @@ C                ISO = 0
      &                 ' LOST-AGAIN: ',NLOSTAGAIN
           RETURN
         END SUBROUTINE HEAP_FOUND_4D
-
+!
 !                       *****************
                         SUBROUTINE PIED4D_TOMAWAC
 !                       *****************
@@ -2774,7 +2774,7 @@ C                ISO = 0
 !
             ISO(IPLOT) = 0
             IF (ISP.LE.NSP(IPLOT)) THEN
-
+!
 !
                IEL = ELT(IPLOT)
                IET = ETA(IPLOT)
@@ -3180,7 +3180,7 @@ C                ISO = 0
         WRITE(LU,*) 'SHT',SHT(IPLOT)
         WRITE(LU,*) 'DXYZ',DX(IPLOT),DY(IPLOT),DW(IPLOT)
         WRITE(LU,*) 'XYZ',XPLOT(IPLOT),YPLOT(IPLOT),TPLOT(IPLOT)
-
+!
         STOP
       ENDIF
 !
@@ -3242,7 +3242,7 @@ C                ISO = 0
 !
       RETURN
       END SUBROUTINE PIED4D_TOMAWAC
-
+!
 !                       *********************
                         SUBROUTINE PIEDS4D_TOMAWAC_MPI
 !                       *********************
@@ -3252,7 +3252,7 @@ C                ISO = 0
      &   SHP3 , SHT, SHF , ELT , ETA, FRE,
      &   NPLOT , NPOIN2 , NELEM2 , NPLAN , NF, IFF,
      &   SURDET , SENS , IFAPAR, NOMB,NARRV,CHARAC2)
-
+!
       USE BIEF
 !
       IMPLICIT NONE
@@ -3291,10 +3291,10 @@ C                ISO = 0
       INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
       INTEGER IPROC,ILOC,NEPID,ITE,MYPID,IORI,ISOT,ISOF,IFR
 !
-
+!
 !
       INTRINSIC ABS
-
+!
       INTEGER P_IMAX
       EXTERNAL P_IMAX
 !
@@ -3356,10 +3356,10 @@ C                ISO = 0
                SHT(IPLOT) = (TP-TETA(IET)) / (TETA(IET+1)-TETA(IET))
                SHF(IPLOT) = (FP-FREQ(IFR)) / (FREQ(IFR+1)-FREQ(IFR))
 !       ASSUMES ALL ARE LOCALISED, IT WILL BE SET OTHERWISE IF LOST-AGAIN
-
+!
           CHARAC2(IPLOT)%NEPID=-1
-
-
+!
+!
 !
 !
 ! IF SOME OF THE SHP FUNCTIONS ARE NEGATIVE, WE ARE IN A WRONG ELEMENT
@@ -3377,12 +3377,12 @@ C                ISO = 0
                IF (SHT(IPLOT).GT.1.D0-EPSILO)  ISO=IBSET(ISO,1)
                IF (SHF(IPLOT).LT.EPSILO)  ISO=IBSET(ISO,2)
                IF  (SHF(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,3)
-
+!
               ISOT = IAND(ISO, 3)
               ISOF = IAND(ISO,12)/4
               ISOV = IAND(ISO,15)
               ISOH = IAND(ISO,112)
-
+!
                IEL = ELT(IPLOT)
                IET = ETA(IPLOT)
                IFR = FRE(IPLOT)
@@ -3470,7 +3470,7 @@ C                ISO = 0
 !
 !     ENDIF
            IEL = IFABOR(IEL,IFA)
-
+!
 !
            IF (IFA.LE.3) THEN
 !
@@ -3530,7 +3530,7 @@ C                ISO = 0
                  CHARAC2(IPLOT)%INE=ILOC
                  CHARAC2(IPLOT)%KNE=ETA(IPLOT)
                  CHARAC2(IPLOT)%FNE=FRE(IPLOT)
-
+!
                    TEST3(IPLOT)=0.D0
                  EXIT
 !
@@ -3640,7 +3640,7 @@ C                ISO = 0
                   FPLOT(IPLOT) = FP - A1*DF(IPLOT)
                   SHF(IPLOT) = (FPLOT(IPLOT)-FREQ(IFR))
      &                       / (FREQ(IFR+1)-FREQ(IFR))
-
+!
                   ISPDONE(IPLOT) = NSP(IPLOT)+1   ! THIS WILL FORBID ENTERING FURTHER LOOPS
                    CHARAC2(IPLOT)%INE = ELT(IPLOT)
                    CHARAC2(IPLOT)%KNE = ETA(IPLOT)
@@ -3849,7 +3849,7 @@ C                ISO = 0
      &      + W(I1,ETAS(IET),IFR+1)*SHP1(IPLOT)*SHT(IPLOT)
      &      + W(I2,ETAS(IET),IFR+1)*SHP2(IPLOT)*SHT(IPLOT)
      &      + W(I3,ETAS(IET),IFR+1)*SHP3(IPLOT)*SHT(IPLOT)) )*PAS
-
+!
 !
                XP = XPLOT(IPLOT) + DX(IPLOT)
                YP = YPLOT(IPLOT) + DY(IPLOT)
@@ -3879,7 +3879,7 @@ C                ISO = 0
 !
                IF  (SHF(IPLOT).LT.EPSILO) ISO=IBSET(ISO,2)
                IF  (SHF(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,3)
-
+!
 !
            ! CONTINUOUS SETTING OF THE REACHED POSITION FOR IPLOT
            ! AND THE NUMBER OF STEPS DONE ALREADY
@@ -3896,7 +3896,7 @@ C                ISO = 0
                CHARAC2(IPLOT)%NSP=NSP(IPLOT)
                CHARAC2(IPLOT)%INE=ELT(IPLOT)
                CHARAC2(IPLOT)%FNE=FRE(IPLOT)
-
+!
             ENDIF
 !
 !-----------------------------------------------------------------------
@@ -3906,8 +3906,8 @@ C                ISO = 0
 !
 50          CONTINUE
 !
-
-
+!
+!
              IF ((ISO.NE.0).AND.(TEST3(IPLOT)>0.5D0)) THEN
 !
 !-----------------------------------------------------------------------
@@ -4041,7 +4041,7 @@ C                ISO = 0
 !
                  IPROC=IFAPAR(IFA,ELT(IPLOT))
                  ILOC=IFAPAR(IFA+3,ELT(IPLOT))
-
+!
                    CHARAC2(IPLOT)%XP=XPLOT(IPLOT)
                    CHARAC2(IPLOT)%YP=YPLOT(IPLOT)
                    CHARAC2(IPLOT)%ZP=TPLOT(IPLOT)
@@ -4058,7 +4058,7 @@ C                ISO = 0
                    ISPDONE(IPLOT) = ISP
 !
                   TEST3(IPLOT) = 0.D0
-
+!
                  EXIT ! LOOP ON NSP
 !
                ENDIF

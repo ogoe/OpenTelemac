@@ -22,41 +22,41 @@
 !history  F. BECQ; M. BENOIT (EDF/DER/LNH)
 !+        14/02/96
 !+        V1P1
-!+   
+!+
 !
 !history  OPTIMER
 !+        14/06/2001
 !+        V5P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| CONSTANTE ALPHA DU MODELE BJ
-!| BETA           |---| 
-!| DEPTH          |---| 
-!| F              |---| 
-!| FCAR           |---| 
-!| GAMBJ1         |---| 
+!| BETA           |---|
+!| DEPTH          |---|
+!| F              |---|
+!| FCAR           |---|
+!| GAMBJ1         |---|
 !| GAMBJ2         |-->| CONSTANTE GAMMA DU MODELE BJ
 !| IHMBJ          |-->| TYPE DE HAUTEUR DE HOULE MAX POUR MODELE BJ
 !| IQBBJ          |-->| MODE DE CALCUL DE QB POUR MODELE BJ
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TSDER          |---| 
-!| TSTOT          |---| 
-!| VARIAN         |---| 
+!| TSDER          |---|
+!| TSTOT          |---|
+!| VARIAN         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

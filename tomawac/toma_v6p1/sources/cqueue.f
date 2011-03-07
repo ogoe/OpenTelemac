@@ -18,23 +18,23 @@
 !history  M. BENOIT
 !+        26/06/96
 !+        V1P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COEF1          |---| 
-!| JBIS           |---| 
+!| COEF1          |---|
+!| JBIS           |---|
 !| JFRE           |-->| INDICE FREQUENTIEL DE LA COMPOSANTE FREQ.
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
 !| RAISF          |-->| RAISON FREQUENTIELLE DE DISCRETISATION

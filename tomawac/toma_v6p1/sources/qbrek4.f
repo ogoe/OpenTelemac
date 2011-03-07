@@ -22,34 +22,34 @@
 !history  F. BECQ; M. BENOIT (EDF/DER/LNH)
 !+        26/03/96
 !+        V1P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---| 
+!| BETA           |---|
 !| BETAIH         |-->| CONSTANTE BETA0 DU MODELE IH
-!| DEPTH          |---| 
+!| DEPTH          |---|
 !| EM2SIH         |-->| CONSTANTE M2*   DU MODELE IH
-!| F              |---| 
-!| FCAR           |---| 
-!| GRAVIT         |---| 
+!| F              |---|
+!| FCAR           |---|
+!| GRAVIT         |---|
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TSDER          |---| 
-!| TSTOT          |---| 
-!| VARIAN         |---| 
+!| TSDER          |---|
+!| TSTOT          |---|
+!| VARIAN         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

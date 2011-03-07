@@ -15,23 +15,23 @@
 !history  M. BENOIT (EDF LNHE)
 !+        19/01/2004
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEPTH          |---| 
-!| F              |---| 
+!| DEPTH          |---|
+!| F              |---|
 !| NF             |-->| NOMBRE DE FREQUENCES
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS
 !| NPOIN2         |-->| NOMBRE DE POINTS 2D
