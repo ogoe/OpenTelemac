@@ -1,227 +1,117 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
-!>  @code
-!>                    /                D(FU)    D(FV)
-!>      V  =  XMUL   /       PSII  * (   --  +    -- )   D(OMEGA)
-!>       I          /OMEGA               DX       DY<br><br>
-!>    PSI(I) IS A BASE OF TYPE P1 TRIANGLE
-!>  @endcode
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @warning  THE JACOBIAN MUST BE POSITIVE
-
-!>  @warning  THE RESULT IS IN W IN NOT ASSEMBLED FORM
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> F, IKLE1, IKLE2, IKLE3, IKLE4, NELEM, NELMAX, SF, SU, SV, U, V, W1, W2, W3, XEL, XMUL, YEL
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> F1, F2, F3, IELEM, IELMF, IELMU, IELMV, U1, U2, U3, U4, V1, V2, V3, V4, X2, X3, XSU216, XSUR24, Y2, Y3
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>VECTOS()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.1                                       </center>
-!> </td><td> 09/12/94
-!> </td><td> J-M HERVOUET (LNH) 30 87 80 18; F LEPEINTRE (LNH) 30 87 78 54
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>F,G,H
-!></td><td>--></td><td>FONCTIONS INTERVENANT DANS LA FORMULE.
-!>    </td></tr>
-!>          <tr><td>FORMUL
-!></td><td>--></td><td>FORMULE DE CALCUL (ARGUMENT DE VECTOR).
-!>                  (NON UTILISE, SERVIRA A CHOISIR ENTRE
-!>                  DIFFERENTS SCHEMAS DE CALCUL).
-!>    </td></tr>
-!>          <tr><td>IKLE1,
-!></td><td>--></td><td>PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE.
-!>    </td></tr>
-!>          <tr><td>IKLE2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IKLE3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IKLE4
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NELEM
-!></td><td>--></td><td>NOMBRE D'ELEMENTS DU MAILLAGE.
-!>    </td></tr>
-!>          <tr><td>NELMAX
-!></td><td>--></td><td>NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!>                  (CAS D'UN MAILLAGE ADAPTATIF)
-!>    </td></tr>
-!>          <tr><td>SF,SG,SH
-!></td><td>--></td><td>STRUCTURES DES FONCTIONS F,G ET H
-!>    </td></tr>
-!>          <tr><td>SU,SV,SW
-!></td><td>--></td><td>STRUCTURES DES FONCTIONS U,V ET W
-!>    </td></tr>
-!>          <tr><td>SURFAC
-!></td><td>--></td><td>SURFACE DES ELEMENTS.
-!>    </td></tr>
-!>          <tr><td>U,V,W
-!></td><td>--></td><td>COMPOSANTES D'UN VECTEUR
-!>                  INTERVENANT DANS LA FORMULE.
-!>    </td></tr>
-!>          <tr><td>W1,2,3
-!></td><td><--</td><td>VECTEUR RESULTAT SOUS FORME NON ASSEMBLEE.
-!>    </td></tr>
-!>          <tr><td>W2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>W3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XEL,YEL,
-!></td><td>--></td><td>COORDONNEES DES POINTS DANS L'ELEMENT
-!>    </td></tr>
-!>          <tr><td>XMUL
-!></td><td>--></td><td>COEFFICIENT MULTIPLICATEUR.
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE VC15AA
+!                    *****************
+                     SUBROUTINE VC15AA
+!                    *****************
+!
      &( XMUL,SF,SU,SV,F,U,V,
      &  XEL,YEL,
      &  IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,
      &  W1,W2,W3)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE.
-C| FORMUL         |-->| FORMULE DE CALCUL (ARGUMENT DE VECTOR).
-C|                |   | (NON UTILISE, SERVIRA A CHOISIR ENTRE
-C|                |   | DIFFERENTS SCHEMAS DE CALCUL).
-C| IKLE1,         |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE.
-C| IKLE2          |---| 
-C| IKLE3          |---| 
-C| IKLE4          |---| 
-C| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-C| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-C|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-C| SF,SG,SH       |-->| STRUCTURES DES FONCTIONS F,G ET H
-C| SU,SV,SW       |-->| STRUCTURES DES FONCTIONS U,V ET W
-C| SURFAC         |-->| SURFACE DES ELEMENTS.
-C| U,V,W          |-->| COMPOSANTES D'UN VECTEUR
-C|                |   | INTERVENANT DANS LA FORMULE.
-C| W1,2,3         |<--| VECTEUR RESULTAT SOUS FORME NON ASSEMBLEE.
-C| W2             |---| 
-C| W3             |---| 
-C| XEL,YEL,       |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-C| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! BIEF   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
+!code
+!+                    /                D(FU)    D(FV)
+!+      V  =  XMUL   /       PSII  * (   --  +    -- )   D(OMEGA)
+!+       I          /OMEGA               DX       DY
+!+
+!+
+!+    PSI(I) IS A BASE OF TYPE P1 TRIANGLE
+!
+!warning  THE JACOBIAN MUST BE POSITIVE
+!warning  THE RESULT IS IN W IN NOT ASSEMBLED FORM
+!
+!history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
+!+        09/12/94
+!+        V5P1
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| IKLE2          |---| 
+!| IKLE3          |---| 
+!| IKLE4          |---| 
+!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
+!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
+!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
+!| W2             |---| 
+!| W3             |---| 
+!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF !, EX_VC15AA => VC15AA
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: NELEM,NELMAX
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX)
       INTEGER, INTENT(IN) :: IKLE3(NELMAX),IKLE4(NELMAX)
-C
+!
       DOUBLE PRECISION, INTENT(IN) :: XEL(NELMAX,*),YEL(NELMAX,*)
       DOUBLE PRECISION, INTENT(INOUT) ::W1(NELMAX),W2(NELMAX),W3(NELMAX)
       DOUBLE PRECISION, INTENT(IN) :: XMUL
-C
-C     STRUCTURES OF F, G, H, U, V, W AND REAL DATA
-C
+!
+!     STRUCTURES OF F, G, H, U, V, W AND REAL DATA
+!
       TYPE(BIEF_OBJ), INTENT(IN) :: SF,SU,SV
       DOUBLE PRECISION, INTENT(IN) :: F(*),U(*),V(*)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IELEM,IELMF,IELMU,IELMV
       DOUBLE PRECISION X2,Y2,X3,Y3,F1,F2,F3,U1,U2,U3,U4,V1,V2,V3,V4
       DOUBLE PRECISION XSUR24,XSU216
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       XSUR24 = XMUL/24.D0
       XSU216 = XMUL/216.D0
-C
+!
       IELMF=SF%ELM
       IELMU=SU%ELM
       IELMV=SV%ELM
-C
-C-----------------------------------------------------------------------
-C
-C     FUNCTION F AND VECTOR U ARE LINEAR
-C
+!
+!-----------------------------------------------------------------------
+!
+!     FUNCTION F AND VECTOR U ARE LINEAR
+!
       IF(IELMF.EQ.11.AND.IELMU.EQ.11.AND.IELMV.EQ.11) THEN
-C
+!
       DO 3 IELEM = 1 , NELEM
-C
+!
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
          Y2 = YEL(IELEM,2)
          Y3 = YEL(IELEM,3)
-C
+!
          F1 = F(IKLE1(IELEM))
          F2 = F(IKLE2(IELEM))
          F3 = F(IKLE3(IELEM))
-C
+!
          U1 = U(IKLE1(IELEM))
          U2 = U(IKLE2(IELEM))
          U3 = U(IKLE3(IELEM))
          V1 = V(IKLE1(IELEM))
          V2 = V(IKLE2(IELEM))
          V3 = V(IKLE3(IELEM))
-C
+!
          W1(IELEM)=(((2*F3+F2+F1)*V3+(F3-F2-4*F1)*V1+(F3-F1)*V2)*X2-((
      &          F3+2*F2+F1)*V2-(F3-F2+4*F1)*V1+(F2-F1)*V3)*X3-((Y3+Y2)*
      &          F3-(Y3+Y2)*F2+4*(Y3-Y2)*F1)*U1+((Y3+Y2)*F1+(Y3-Y2)*F3+2
@@ -234,27 +124,27 @@ C
      &          *((F3+F2)*V2-(F3+F1)*V1+(F2-F1)*V3)*X3-((2*Y3-Y2)*F3+2*
      &           (Y3-Y2)*F1-F2*Y2)*U1+((2*Y3-Y2)*F3+2*F2*Y3+F1*Y2)*U2+((
      &             2*Y3-Y2)*F2-(2*Y3-Y2)*F1-4*F3*Y2)*U3)*XSUR24
-C
+!
 3     CONTINUE
-C
-C-----------------------------------------------------------------------
-C
-C     FUNCTION F IS LINEAR AND VECTOR U IS QUASI-BUBBLE
-C
+!
+!-----------------------------------------------------------------------
+!
+!     FUNCTION F IS LINEAR AND VECTOR U IS QUASI-BUBBLE
+!
       ELSEIF(IELMF.EQ.11.AND.IELMU.EQ.12.AND.IELMU.EQ.12) THEN
-C
-C
+!
+!
       DO 44 IELEM = 1 , NELEM
-C
+!
          X2 = XEL(IELEM,2)
          X3 = XEL(IELEM,3)
          Y2 = YEL(IELEM,2)
          Y3 = YEL(IELEM,3)
-C
+!
          F1 = F(IKLE1(IELEM))
          F2 = F(IKLE2(IELEM))
          F3 = F(IKLE3(IELEM))
-C
+!
          U1 = U(IKLE1(IELEM))
          U2 = U(IKLE2(IELEM))
          U3 = U(IKLE3(IELEM))
@@ -263,7 +153,7 @@ C
          V2 = V(IKLE2(IELEM))
          V3 = V(IKLE3(IELEM))
          V4 = V(IKLE4(IELEM))
-C
+!
          W1(IELEM)=((14*X2*V3+12*X2*V4+5*X2*V2+5*X2*V1+4*X3*V3-
      &     12*X3*V4-5*X3*V2+13*X3*V1-4*U3*Y3-14*U3*Y2+12*U4*Y3-
      &     12*U4*Y2+5*U2*Y3-5*U2*Y2-13*U1*Y3-5*U1*Y2)*F3+(5*X2*
@@ -291,15 +181,15 @@ C
      &     *U2*Y3*F3+18*U2*Y3*F2-13*U2*Y2*F3-4*U2*Y2*F2+5*U2*Y2*
      &     F1-18*U1*Y3*F3-18*U1*Y3*F1+5*U1*Y2*F3+5*U1*Y2*F2+14*
      &     U1*Y2*F1)*XSU216
-C
+!
 44    CONTINUE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       ELSE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
        IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
        IF (LNG.EQ.1) WRITE(LU,300)
@@ -320,15 +210,10 @@ C
 301    FORMAT(1X,'CASE NOT IMPLEMENTED')
        CALL PLANTE(1)
        STOP
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-
-
-C
-C#######################################################################
-C

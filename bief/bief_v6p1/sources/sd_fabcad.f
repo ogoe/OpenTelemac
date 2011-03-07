@@ -1,151 +1,63 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       BUILDS A COMPACT STORAGE
-!>               (INX,IPX) STRUCTURE WITH THE DIAGONAL
-!>                VIA (IN,IP) = (XADJ, ADJNCY) OF EXTRADIAGONAL TERMS
-!>                AND THE SEGMENT STORAGE (ISEGIP, XA, DA).
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @note  IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> AC, ACTRI, DA, IN, INDTRI, INX, IP, IPX, ISEGIP, ISTRI, NPBLK, NSEGBLK, XA1, XA2
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> I, ISEG, J, J1, J2, JN, ND
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_SD_FABCAD
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> SD_STRTRI()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>SD_SOLVE_1()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.7                                       </center>
-!> </td><td> 20/11/06
-!> </td><td> E. RAZAFINDRAKOTO (LNH) 01 30 87 74 03
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>AC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ACTRI
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>INDTRI
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>INX
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IP
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IPX
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ISEGIP
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>ISTRI
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPBLK
-!></td><td>--></td><td>
-!>    </td></tr>
-!>          <tr><td>NSEGBLK
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XA1
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>XA2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE SD_FABCAD
+!                    ********************
+                     SUBROUTINE SD_FABCAD
+!                    ********************
+!
      &(NPBLK,NSEGBLK,IN,IP,ISEGIP,
      & INDTRI,ISTRI,INX,IPX,ACTRI,XA1,XA2,DA,AC)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AC             |---| 
-C| ACTRI          |---| 
-C| DA             |---| 
-C| IN             |---| 
-C| INDTRI         |---| 
-C| INX            |---| 
-C| IP             |---| 
-C| IPX            |---| 
-C| ISEGIP         |---| 
-C| ISTRI          |---| 
-C| NPBLK          |-->| 
-C| NSEGBLK        |---| 
-C| XA1            |---| 
-C| XA2            |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! BIEF   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    BUILDS A COMPACT STORAGE
+!+               (INX,IPX) STRUCTURE WITH THE DIAGONAL
+!+                VIA (IN,IP) = (XADJ, ADJNCY) OF EXTRADIAGONAL TERMS
+!+                AND THE SEGMENT STORAGE (ISEGIP, XA, DA).
+!
+!note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
+!
+!history  E. RAZAFINDRAKOTO (LNH)
+!+        20/11/06
+!+        V5P7
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AC             |---| 
+!| ACTRI          |---| 
+!| DA             |---| 
+!| IN             |---| 
+!| INDTRI         |---| 
+!| INX            |---| 
+!| IP             |---| 
+!| IPX            |---| 
+!| ISEGIP         |---| 
+!| ISTRI          |---| 
+!| NPBLK          |-->| 
+!| NSEGBLK        |---| 
+!| XA1            |---| 
+!| XA2            |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF, EX_SD_FABCAD => SD_FABCAD
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)             :: NPBLK,NSEGBLK
       INTEGER, INTENT(IN)             :: IN(NPBLK+1),IP(NSEGBLK*2+1)
       INTEGER, INTENT(IN)             :: ISEGIP(NSEGBLK*2+1)
@@ -157,15 +69,15 @@ C
       DOUBLE PRECISION, INTENT(IN)    :: XA1(NSEGBLK),XA2(NSEGBLK)
       DOUBLE PRECISION, INTENT(IN)    :: DA(NPBLK)
       DOUBLE PRECISION, INTENT(INOUT) :: AC(NSEGBLK*2+NPBLK+1)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER I,J,J1,J2,JN,ISEG,ND
-C
-C-----------------------------------------------------------------------
-C
-C---> COMPACT STORAGE WITH THE DIAGONAL : (XADJ, ADJNCY) = (INX,IPX)
-C
+!
+!-----------------------------------------------------------------------
+!
+!---> COMPACT STORAGE WITH THE DIAGONAL : (XADJ, ADJNCY) = (INX,IPX)
+!
       DO I = 1, NPBLK+1
         INX(I) = IN(I)+I-1
       ENDDO
@@ -196,11 +108,8 @@ C
             AC(INX(I)+J-1) = ACTRI(J1)
          ENDDO
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

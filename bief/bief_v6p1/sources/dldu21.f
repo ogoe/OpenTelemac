@@ -1,181 +1,86 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       L D U FACTORISATION OF THE ELEMENTARY MATRICES
-!>                IN MATRIX A
-!>                FOR Q1 QUADRILATERALS.
-!><br>            REQUIRES THAT THE DIAGONAL OF A BE THE IDENTITY.
-!>  @code
-!>            EACH ELEMENTARY MATRIX IS DECOMPOSED IN THE FORM:
-!>
-!>            LE * DE * UE
-!>
-!>            LE : LOWER TRIANGULAR WITH 1S ON THE DIAGONAL
-!>            DE : DIAGONAL
-!>            UE : UPPER TRIANGULAR WITH 1S ON THE DIAGONAL
-!>
-!>                                                   T
-!>            IF THE MATRIX IS SYMMETRICAL : LE =  UE
-!>
-!>            "DE" MATRICES ARE CONSIDERED LIKE DIAGONALS OF SIZE
-!>            NPOIN X NPOIN, WHICH ARE FILLED WITH 1S FOR THE POINTS
-!>            WHICH DO NOT BELONG TO THE CONSIDERED ELEMENT
-!>
-!>            THEN PERFORMS THE PRODUCT OF ALL THESE DIAGONALS
-!>            YIELDING DIAGONAL DB
-!>  @endcode
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @warning  FOR NONSYMMETRICAL MATRICES: UE  LE
-!><br>  UE (THE BETAS) IS STORED IN XB (. , 1 TO  6)
-!><br>  LE (THE ALFAS) IS STORED IN XB (. , 7 TO 12)
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> COPY, DB, IKLE, LV, NELEM, NELMAX, NPOIN, TYPDIA, TYPEXA, W, XA, XB
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> A12, A13, A14, A21, A22, A23, A24, A31, A32, A33, A34, A41, A42, A43, A44, ALFA21, ALFA31, ALFA32, ALFA41, ALFA42, ALFA43, BETA12, BETA13, BETA14, BETA22, BETA23, BETA24, BETA33, BETA34, BETA44, C, IELEM, Z
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_DLDU21
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> ASMVEC(), OV(), PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>DECLDU()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.1                                       </center>
-!> </td><td> 24/04/97
-!> </td><td> J-M HERVOUET (LNH) 30 87 80 18; F LEPEINTRE (LNH) 30 87 78 54
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>COPY
-!></td><td>--></td><td>SI .TRUE. A EST COPIEE DANS B
-!>                  SINON ON CONSIDERE QUE B EST DEJA REMPLIE
-!>    </td></tr>
-!>          <tr><td>DB
-!></td><td><--</td><td>DIAGONALE DE LA MATRICE RESULTAT
-!>    </td></tr>
-!>          <tr><td>IKLE
-!></td><td>--></td><td>PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!>    </td></tr>
-!>          <tr><td>LV
-!></td><td>--></td><td>LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!>    </td></tr>
-!>          <tr><td>NELEM
-!></td><td>--></td><td>NOMBRE D'ELEMENTS DU MAILLAGE
-!>    </td></tr>
-!>          <tr><td>NELMAX
-!></td><td>--></td><td>NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!>                  (CAS D'UN MAILLAGE ADAPTATIF)
-!>    </td></tr>
-!>          <tr><td>NPOIN
-!></td><td>--></td><td>DIMENSION DES TABLEAU
-!>    </td></tr>
-!>          <tr><td>SURFAC
-!></td><td>--></td><td>SURFACE DES TRIANGLES.
-!>    </td></tr>
-!>          <tr><td>TYPDIA
-!></td><td>--></td><td>TYPE DE DIAGONALE ( 'Q', 'I' , OU '0' )
-!>    </td></tr>
-!>          <tr><td>TYPEXA
-!></td><td>--></td><td>TYPE DE TERMES EXTRADIAGONAUX ('Q','S',OU'0')
-!>    </td></tr>
-!>          <tr><td>W
-!></td><td><-></td><td>TABLEAU CONTENANT DB NON ASSEMBLEE
-!>    </td></tr>
-!>          <tr><td>X,Y,Z
-!></td><td>--></td><td>COORDONNEES DU MAILLAGE.
-!>    </td></tr>
-!>          <tr><td>XA
-!></td><td>--></td><td>TERMES EXTRADIAGONAUX DE LA MATRICE A
-!>    </td></tr>
-!>          <tr><td>XB
-!></td><td><--</td><td>TERMES EXTRADIAGONAUX DE LA MATRICE RESULTAT
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE DLDU21
+!                    *****************
+                     SUBROUTINE DLDU21
+!                    *****************
+!
      &(DB,XB,TYPDIA,XA,TYPEXA,
      & IKLE,NELEM,NELMAX,NPOIN,W,COPY,LV)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| COPY           |-->| SI .TRUE. A EST COPIEE DANS B
-C|                |   | SINON ON CONSIDERE QUE B EST DEJA REMPLIE
-C| DB             |<--| DIAGONALE DE LA MATRICE RESULTAT
-C| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-C| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-C| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-C| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-C|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-C| NPOIN          |-->| DIMENSION DES TABLEAU
-C| SURFAC         |-->| SURFACE DES TRIANGLES.
-C| TYPDIA         |-->| TYPE DE DIAGONALE ( 'Q', 'I' , OU '0' )
-C| TYPEXA         |-->| TYPE DE TERMES EXTRADIAGONAUX ('Q','S',OU'0')
-C| W             |<->| TABLEAU CONTENANT DB NON ASSEMBLEE
-C| X,Y,Z          |-->| COORDONNEES DU MAILLAGE.
-C| XA             |-->| TERMES EXTRADIAGONAUX DE LA MATRICE A
-C| XB             |<--| TERMES EXTRADIAGONAUX DE LA MATRICE RESULTAT
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! BIEF   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    L D U FACTORISATION OF THE ELEMENTARY MATRICES
+!+                IN MATRIX A
+!+                FOR Q1 QUADRILATERALS.
+!+
+!+            REQUIRES THAT THE DIAGONAL OF A BE THE IDENTITY.
+!code
+!+            EACH ELEMENTARY MATRIX IS DECOMPOSED IN THE FORM:
+!+
+!+            LE * DE * UE
+!+
+!+            LE : LOWER TRIANGULAR WITH 1S ON THE DIAGONAL
+!+            DE : DIAGONAL
+!+            UE : UPPER TRIANGULAR WITH 1S ON THE DIAGONAL
+!+
+!+                                                   T
+!+            IF THE MATRIX IS SYMMETRICAL : LE =  UE
+!+
+!+            "DE" MATRICES ARE CONSIDERED LIKE DIAGONALS OF SIZE
+!+            NPOIN X NPOIN, WHICH ARE FILLED WITH 1S FOR THE POINTS
+!+            WHICH DO NOT BELONG TO THE CONSIDERED ELEMENT
+!+
+!+            THEN PERFORMS THE PRODUCT OF ALL THESE DIAGONALS
+!+            YIELDING DIAGONAL DB
+!
+!warning  FOR NONSYMMETRICAL MATRICES: UE  LE
+!+
+!+  UE (THE BETAS) IS STORED IN XB (. , 1 TO  6)
+!+
+!+  LE (THE ALFAS) IS STORED IN XB (. , 7 TO 12)
+!
+!history  J-M HERVOUET (LNH)    ; F LEPEINTRE (LNH)
+!+        24/04/97
+!+        V5P1
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| COPY           |-->| SI .TRUE. A EST COPIEE DANS B
+!|                |   | SINON ON CONSIDERE QUE B EST DEJA REMPLIE
+!| DB             |<--| DIAGONALE DE LA MATRICE RESULTAT
+!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
+!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
+!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
+!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
+!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
+!| NPOIN          |-->| DIMENSION DES TABLEAU
+!| TYPDIA         |-->| TYPE DE DIAGONALE ( 'Q', 'I' , OU '0' )
+!| TYPEXA         |-->| TYPE DE TERMES EXTRADIAGONAUX ('Q','S',OU'0')
+!| W              |<->| TABLEAU CONTENANT DB NON ASSEMBLEE
+!| XA             |-->| TERMES EXTRADIAGONAUX DE LA MATRICE A
+!| XB             |<--| TERMES EXTRADIAGONAUX DE LA MATRICE RESULTAT
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF, EX_DLDU21 => DLDU21
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)           :: NELEM,NELMAX,LV,NPOIN
       DOUBLE PRECISION, INTENT(OUT) :: DB(NPOIN),XB(NELMAX,*)
       DOUBLE PRECISION, INTENT(IN)  :: XA(NELMAX,*)
@@ -183,13 +88,13 @@ C
       INTEGER, INTENT(IN)           :: IKLE(NELMAX,*)
       DOUBLE PRECISION, INTENT(OUT) :: W(NELMAX,4)
       LOGICAL, INTENT(IN)           :: COPY
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IELEM
-C
+!
       DOUBLE PRECISION Z(1),C
-C
+!
       DOUBLE PRECISION     A12,A13,A14
       DOUBLE PRECISION A21,A22,A23,A24
       DOUBLE PRECISION A31,A32,A33,A34
@@ -198,11 +103,11 @@ C
       DOUBLE PRECISION ALFA21,BETA22,BETA23,BETA24
       DOUBLE PRECISION ALFA31,ALFA32,BETA33,BETA34
       DOUBLE PRECISION ALFA41,ALFA42,ALFA43,BETA44
-C
-C-----------------------------------------------------------------------
-C
-C REQUIRES THAT THE DIAGONAL OF A BE THE IDENTITY
-C
+!
+!-----------------------------------------------------------------------
+!
+! REQUIRES THAT THE DIAGONAL OF A BE THE IDENTITY
+!
       IF(TYPDIA(1:1).NE.'I'.AND.NCSIZE.LE.1) THEN
          IF (LNG.EQ.1) WRITE(LU,1000) TYPDIA(1:1)
          IF (LNG.EQ.2) WRITE(LU,1001) TYPDIA(1:1)
@@ -211,143 +116,143 @@ C
          CALL PLANTE(0)
          STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF(TYPEXA(1:1).EQ.'S') THEN
-C
+!
         IF(COPY) CALL OV('X=Y     ' , XB , XA , Z , C  , NELMAX*6 )
-C
+!
         DO 100 IELEM=1,NELEM
-C
-C MATRIX TO FACTORISE (SYMMETRICAL WITH 1S ON THE DIAGONAL)
-C
-C LINE 1
-C          A11 = 1.D0
+!
+! MATRIX TO FACTORISE (SYMMETRICAL WITH 1S ON THE DIAGONAL)
+!
+! LINE 1
+!          A11 = 1.D0
            A12 = XA(IELEM,1)
            A13 = XA(IELEM,2)
            A14 = XA(IELEM,3)
-C LINE 2
+! LINE 2
            A22 = 1.D0
            A23 = XA(IELEM,4)
            A24 = XA(IELEM,5)
-C LINE 3
+! LINE 3
            A33 = 1.D0
            A34 = XA(IELEM,6)
-C LINE 4
+! LINE 4
            A44 = 1.D0
-C
-C CROUT L*U FACTORISATION
-C
+!
+! CROUT L*U FACTORISATION
+!
            ALFA21 = A12
            ALFA31 = A13
            ALFA41 = A14
-C
+!
            BETA12 =  A12
            BETA22 =  A22 - ALFA21*BETA12
            ALFA32 = (A23 - ALFA31*BETA12)/BETA22
            ALFA42 = (A24 - ALFA41*BETA12)/BETA22
-C
+!
            BETA13 =  A13
            BETA23 =  A23 - ALFA21*BETA13
            BETA33 =  A33 - ALFA31*BETA13 - ALFA32*BETA23
            ALFA43 = (A34 - ALFA41*BETA13 - ALFA42*BETA23)/BETA33
-C
+!
            BETA14 =  A14
            BETA24 =  A24 - ALFA21*BETA14
            BETA34 =  A34 - ALFA31*BETA14 - ALFA32*BETA24
            BETA44 =  A44 - ALFA41*BETA14 - ALFA42*BETA24 - ALFA43*BETA34
-C
-C STORES IN XB AND W2,...,W4
-C
+!
+! STORES IN XB AND W2,...,W4
+!
            XB(IELEM,1 ) = ALFA21
            XB(IELEM,2 ) = ALFA31
            XB(IELEM,3 ) = ALFA41
            XB(IELEM,4 ) = ALFA32
            XB(IELEM,5 ) = ALFA42
            XB(IELEM,6 ) = ALFA43
-C
+!
            W(IELEM,2)    = BETA22
            W(IELEM,3)    = BETA33
            W(IELEM,4)    = BETA44
-C
+!
 100     CONTINUE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       ELSEIF(TYPEXA(1:1).EQ.'Q') THEN
-C
+!
         IF(COPY) CALL OV('X=Y     ' , XB , XA , Z , C  , NELMAX*12 )
-C
+!
         DO 200 IELEM=1,NELEM
-C
-C MATRIX TO FACTORISE (WITH 1S ON THE DIAGONAL)
-C
-C          A11 = 1.D0
+!
+! MATRIX TO FACTORISE (WITH 1S ON THE DIAGONAL)
+!
+!          A11 = 1.D0
            A22 = 1.D0
            A33 = 1.D0
            A44 = 1.D0
-C
+!
            A12 = XA(IELEM,1 )
            A13 = XA(IELEM,2 )
            A14 = XA(IELEM,3 )
            A23 = XA(IELEM,4 )
            A24 = XA(IELEM,5 )
            A34 = XA(IELEM,6 )
-C
+!
            A21 = XA(IELEM,7 )
            A31 = XA(IELEM,8 )
            A41 = XA(IELEM,9 )
            A32 = XA(IELEM,10)
            A42 = XA(IELEM,11)
            A43 = XA(IELEM,12)
-C
-C CROUT L*U FACTORISATION
-C
+!
+! CROUT L*U FACTORISATION
+!
            ALFA21 = A21
            ALFA31 = A31
            ALFA41 = A41
-C
+!
            BETA12 =  A12
            BETA22 =  A22 - ALFA21*BETA12
            ALFA32 = (A32 - ALFA31*BETA12)/BETA22
            ALFA42 = (A42 - ALFA41*BETA12)/BETA22
-C
+!
            BETA13 =  A13
            BETA23 =  A23 - ALFA21*BETA13
            BETA33 =  A33 - ALFA31*BETA13 - ALFA32*BETA23
            ALFA43 = (A43 - ALFA41*BETA13 - ALFA42*BETA23)/BETA33
-C
+!
            BETA14 =  A14
            BETA24 =  A24 - ALFA21*BETA14
            BETA34 =  A34 - ALFA31*BETA14 - ALFA32*BETA24
            BETA44 =  A44 - ALFA41*BETA14 - ALFA42*BETA24 - ALFA43*BETA34
-C
-C STORES IN XB AND W2,...,W4
-C L D U FACTORISATION AT THE SAME TIME
-C
+!
+! STORES IN XB AND W2,...,W4
+! L D U FACTORISATION AT THE SAME TIME
+!
            XB(IELEM,1 ) = BETA12
            XB(IELEM,2 ) = BETA13
            XB(IELEM,3 ) = BETA14
            XB(IELEM,4 ) = BETA23/BETA22
            XB(IELEM,5 ) = BETA24/BETA22
            XB(IELEM,6 ) = BETA34/BETA33
-C
+!
            XB(IELEM,07) = ALFA21
            XB(IELEM,08) = ALFA31
            XB(IELEM,09) = ALFA41
            XB(IELEM,10) = ALFA32
            XB(IELEM,11) = ALFA42
            XB(IELEM,12) = ALFA43
-C
+!
            W(IELEM,2)    = BETA22
            W(IELEM,3)    = BETA33
            W(IELEM,4)    = BETA44
-C
+!
 200     CONTINUE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       ELSE
          IF (LNG.EQ.1) WRITE(LU,2000) TYPEXA(1:1)
          IF (LNG.EQ.2) WRITE(LU,2001) TYPEXA(1:1)
@@ -356,24 +261,19 @@ C
          CALL PLANTE(0)
          STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C  MULTIPLICATIVE ASSEMBLY OF THE DIAGONAL WITH INITIALISATION OF DB TO 1
-C  SKIPS IKLE1 BECAUSE W1 = 1
-C
+!
+!-----------------------------------------------------------------------
+!
+!  MULTIPLICATIVE ASSEMBLY OF THE DIAGONAL WITH INITIALISATION OF DB TO 1
+!  SKIPS IKLE1 BECAUSE W1 = 1
+!
       CALL ASMVEC(DB,IKLE(1,2),NPOIN,NELEM,NELMAX,3,W(1,2),.TRUE.,LV)
-C
-C  INVERTS DB
-C
+!
+!  INVERTS DB
+!
       CALL OV( 'X=1/Y   ' , DB , DB , Z , C , NPOIN )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-
-
-C
-C#######################################################################
-C

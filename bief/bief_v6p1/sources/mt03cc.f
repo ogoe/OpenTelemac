@@ -1,237 +1,7 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
-!>  @code
-!>                 /  -->   - -->          -->  --->
-!> A(I,J) = XMUL  /   KEL . GRAD(PSI1(I)) * U . GRAD(PSI2(J)) D(OMEGA)
-!>               /OMEGA
-!>         -->
-!>         KEL CONSTANT VECTOR ON THE ELEMENT, WITH COMPONENTS F AND G<br>
-!>         PSI1 OF P2 DISCRETISATION
-!>         PSI2 OF P2 DISCRETISATION
-!>  @endcode
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @warning  THE JACOBIAN MUST BE POSITIVE
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> A11, A12, A13, A14, A15, A16, A21, A22, A23, A24, A25, A26, A31, A32, A33, A34, A35, A36, A41, A42, A43, A44, A45, A46, A51, A52, A53, A54, A55, A56, A61, A62, A63, A64, A65, A66, F, G, IKLE1, IKLE2, IKLE3, IKLE4, IKLE5, IKLE6, NELEM, NELMAX, SF, SG, SU, SV, U, V, XEL, XMUL, YEL
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> ANS1, ANS2, IELEM, IELMF, IELMG, IELMU, IELMV, KXEL, KYEL, U1, U2, U3, U4, U5, U6, V1, V2, V3, V4, V5, V6, X2, X3, Y2, Y3
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>MATRIY()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 19/06/08
-!> </td><td> ALGIANE FROEHLY (MATMECA) 01 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>A11,A12
-!></td><td><--</td><td>ELEMENTS DE LA MATRICE
-!>    </td></tr>
-!>          <tr><td>A13
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A14
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A15
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A16
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A21
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A22
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A23
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A24
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A25
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A26
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A31
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A32
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A33
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A34
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A35
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A36
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A41
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A42
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A43
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A44
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A45
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A46
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A51
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A52
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A53
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A54
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A55
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A56
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A61
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A62
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A63
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A64
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A65
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>A66
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>F,G,H
-!></td><td>--></td><td>FONCTIONS INTERVENANT DANS LE CALCUL DE LA
-!>                  MATRICE.
-!>    </td></tr>
-!>          <tr><td>IKLE1
-!></td><td>--></td><td>PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!>    </td></tr>
-!>          <tr><td>IKLE2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IKLE3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IKLE4
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IKLE5
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IKLE6
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NELEM
-!></td><td>--></td><td>NOMBRE D'ELEMENTS DU MAILLAGE
-!>    </td></tr>
-!>          <tr><td>NELMAX
-!></td><td>--></td><td>NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!>                  (CAS D'UN MAILLAGE ADAPTATIF)
-!>    </td></tr>
-!>          <tr><td>SF,SG,SH
-!></td><td>--></td><td>STRUCTURES DE F,G ET H.
-!>    </td></tr>
-!>          <tr><td>SU,SV,SW
-!></td><td>--></td><td>STRUCTURES DE U,V ET W.
-!>    </td></tr>
-!>          <tr><td>SURFAC
-!></td><td>--></td><td>SURFACE DES TRIANGLES.
-!>    </td></tr>
-!>          <tr><td>U,V,W
-!></td><td>--></td><td>COMPOSANTES D'UN VECTEUR INTERVENANT DANS LE
-!>                  CALCUL DE LA MATRICE.
-!>    </td></tr>
-!>          <tr><td>XEL,YEL,ZEL
-!></td><td>--></td><td>COORDONNEES DES POINTS DANS L'ELEMENT
-!>    </td></tr>
-!>          <tr><td>XMUL
-!></td><td>--></td><td>FACTEUR MULTIPLICATIF
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE MT03CC
+!                    *****************
+                     SUBROUTINE MT03CC
+!                    *****************
+!
      &( A11 , A12 , A13 , A14 , A15 , A16 ,
      &  A21 , A22 , A23 , A24 , A25 , A26 ,
      &  A31 , A32 , A33 , A34 , A35 , A36 ,
@@ -241,76 +11,102 @@ C
      &  XMUL,SF,SG,SU,SV,F,G,U,V,
      &  XEL,YEL,IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,
      &  NELEM,NELMAX)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| A11,A12        |<--| ELEMENTS DE LA MATRICE
-C| A13            |---| 
-C| A14            |---| 
-C| A15            |---| 
-C| A16            |---| 
-C| A21            |---| 
-C| A22            |---| 
-C| A23            |---| 
-C| A24            |---| 
-C| A25            |---| 
-C| A26            |---| 
-C| A31            |---| 
-C| A32            |---| 
-C| A33            |---| 
-C| A34            |---| 
-C| A35            |---| 
-C| A36            |---| 
-C| A41            |---| 
-C| A42            |---| 
-C| A43            |---| 
-C| A44            |---| 
-C| A45            |---| 
-C| A46            |---| 
-C| A51            |---| 
-C| A52            |---| 
-C| A53            |---| 
-C| A54            |---| 
-C| A55            |---| 
-C| A56            |---| 
-C| A61            |---| 
-C| A62            |---| 
-C| A63            |---| 
-C| A64            |---| 
-C| A65            |---| 
-C| A66            |---| 
-C| F,G,H          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
-C|                |   | MATRICE.
-C| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-C| IKLE2          |---| 
-C| IKLE3          |---| 
-C| IKLE4          |---| 
-C| IKLE5          |---| 
-C| IKLE6          |---| 
-C| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-C| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-C|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-C| SF,SG,SH       |-->| STRUCTURES DE F,G ET H.
-C| SU,SV,SW       |-->| STRUCTURES DE U,V ET W.
-C| SURFAC         |-->| SURFACE DES TRIANGLES.
-C| U,V,W          |-->| COMPOSANTES D'UN VECTEUR INTERVENANT DANS LE
-C|                |   | CALCUL DE LA MATRICE.
-C| XEL,YEL,ZEL    |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-C| XMUL           |-->| FACTEUR MULTIPLICATIF
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! BIEF   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
+!code
+!+                 /  -->   - -->          -->  --->
+!+ A(I,J) = XMUL  /   KEL . GRAD(PSI1(I)) * U . GRAD(PSI2(J)) D(OMEGA)
+!+               /OMEGA
+!+         -->
+!+         KEL CONSTANT VECTOR ON THE ELEMENT, WITH COMPONENTS F AND G
+!+
+!+         PSI1 OF P2 DISCRETISATION
+!+         PSI2 OF P2 DISCRETISATION
+!
+!warning  THE JACOBIAN MUST BE POSITIVE
+!
+!history  ALGIANE FROEHLY (MATMECA)
+!+        19/06/08
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| A11,A12        |<--| ELEMENTS DE LA MATRICE
+!| A13            |---| 
+!| A14            |---| 
+!| A15            |---| 
+!| A16            |---| 
+!| A21            |---| 
+!| A22            |---| 
+!| A23            |---| 
+!| A24            |---| 
+!| A25            |---| 
+!| A26            |---| 
+!| A31            |---| 
+!| A32            |---| 
+!| A33            |---| 
+!| A34            |---| 
+!| A35            |---| 
+!| A36            |---| 
+!| A41            |---| 
+!| A42            |---| 
+!| A43            |---| 
+!| A44            |---| 
+!| A45            |---| 
+!| A46            |---| 
+!| A51            |---| 
+!| A52            |---| 
+!| A53            |---| 
+!| A54            |---| 
+!| A55            |---| 
+!| A56            |---| 
+!| A61            |---| 
+!| A62            |---| 
+!| A63            |---| 
+!| A64            |---| 
+!| A65            |---| 
+!| A66            |---| 
+!| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
+!| IKLE2          |---| 
+!| IKLE3          |---| 
+!| IKLE4          |---| 
+!| IKLE5          |---| 
+!| IKLE6          |---| 
+!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
+!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
+!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
+!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF!, EX_MT03CC => MT03CC
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN) :: NELEM,NELMAX
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX)
       INTEGER, INTENT(IN) :: IKLE3(NELMAX),IKLE4(NELMAX)
       INTEGER, INTENT(IN) :: IKLE5(NELMAX),IKLE6(NELMAX)
-C
+!
       DOUBLE PRECISION, INTENT(INOUT) :: A11(*),A12(*),A13(*)
       DOUBLE PRECISION, INTENT(INOUT) :: A14(*),A15(*),A16(*)
       DOUBLE PRECISION, INTENT(INOUT) :: A21(*),A22(*),A23(*)
@@ -323,143 +119,143 @@ C
       DOUBLE PRECISION, INTENT(INOUT) :: A54(*),A55(*),A56(*)
       DOUBLE PRECISION, INTENT(INOUT) :: A61(*),A62(*),A63(*)
       DOUBLE PRECISION, INTENT(INOUT) :: A64(*),A65(*),A66(*)
-C
+!
       DOUBLE PRECISION, INTENT(IN) :: XMUL
       DOUBLE PRECISION, INTENT(IN) :: F(*),G(*),U(*),V(*)
-C
-C     STRUCTURES OF      F, G, U, V
+!
+!     STRUCTURES OF      F, G, U, V
       TYPE(BIEF_OBJ), INTENT(IN) :: SF,SG,SU,SV
-C
+!
       DOUBLE PRECISION, INTENT(IN) :: XEL(NELMAX,3),YEL(NELMAX,3)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
-C     DECLARATIONS SPECIFIC TO THIS SUBROUTINE
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     DECLARATIONS SPECIFIC TO THIS SUBROUTINE
+!
       INTEGER IELEM,IELMF,IELMG,IELMU,IELMV
-C
+!
       DOUBLE PRECISION X2,X3,Y2,Y3,U1,U2,U3,U4,U5,U6,V1,V2,V3,V4,V5,V6
       DOUBLE PRECISION KXEL,KYEL,ANS1,ANS2
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IELMF = SF%ELM
       IELMG = SG%ELM
       IELMU = SU%ELM
       IELMV = SV%ELM
-C
-C-----------------------------------------------------------------------
-C CASE WHERE U IS OF P1 DISCRETISATION
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+! CASE WHERE U IS OF P1 DISCRETISATION
+!-----------------------------------------------------------------------
+!
       IF(IELMF.EQ.10.AND.IELMG.EQ.10.AND.
      &   IELMU.EQ.11.AND.IELMV.EQ.11) THEN
-C
-C   LOOP ON THE ELEMENTS
-C
+!
+!   LOOP ON THE ELEMENTS
+!
       DO 1 IELEM = 1 , NELEM
-C
+!
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
       Y2  =   YEL(IELEM,2)
       Y3  =   YEL(IELEM,3)
-C
+!
       U1   =  U(IKLE1(IELEM))
       U2   =  U(IKLE2(IELEM))
       U3   =  U(IKLE3(IELEM))
       V1   =  V(IKLE1(IELEM))
       V2   =  V(IKLE2(IELEM))
       V3   =  V(IKLE3(IELEM))
-C
+!
       KXEL =  F(IELEM)
       KYEL =  G(IELEM)
-C
-C  COMPUTES 30 OF THE 36 TERMS (SELECTED AMONG THE LEAST COMPLEX)
-C
+!
+!  COMPUTES 30 OF THE 36 TERMS (SELECTED AMONG THE LEAST COMPLEX)
+!
       A11(IELEM)= ( KXEL * (Y3-Y2) - KYEL * (X3-X2) ) *
      &            ((X2-X3)*(V3+3.D0*V1+V2) + (Y3-Y2)*(U2+3.D0*U1+U3)) *
      &              XMUL/((X2*Y3-Y2*X3)*10.D0)
-C
+!
       A12(IELEM)= ( KXEL * (Y3-Y2) - KYEL * (X3-X2) ) *
      &            ( X3 * (V3+2.D0*(V1+V2)) -  Y3 * (U3+2.D0*(U1+U2))) *
      &             XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A13(IELEM)= ( KXEL * (Y3-Y2) - KYEL * (X3-X2) ) *
      &            ( X2 * (V2+2.D0*(V1+V3)) -  Y2 * (U2+2.D0*(U1+U3))) *
      &             XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A14(IELEM)= ( KXEL * (Y3-Y2) - KYEL * (X3-X2) ) *
      &            ( X2   *( -   V3+ 3.D0*V1- 2.D0*V2) +
      &              X3   *(4.D0*V3+11.D0*V1+ 5.D0*V2) +
      &              Y2   *(     U3+ 2.D0*U2- 3.D0*U1) -
      &              Y3   *(11.D0*U1+5.D0*U2+ 4.D0*U3))*
      &              XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A15(IELEM)= ( KXEL * (Y3-Y2) - KYEL * (X3-X2) ) *
      &            ( X3   *(     V2+2.D0*V3-  3.D0*V1) +
      &              X2   *(3.D0*V1-     V3-  2.D0*V2) +
      &              Y3   *(3.D0*U1-     U2-  2.D0*U3) +
      &              Y2   *(-3.D0*U1+2.D0*U2+      U3))*
      &              XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A21(IELEM)= ( KYEL * X3      - KXEL *    Y3  ) *
      &            ( (X2-X3) * ( V3 + 2.D0*(V1+V2) )  +
      &              (Y3-Y2) * ( U3 + 2.D0*(U1+U2) )) *
      &               XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A22(IELEM)= ( KYEL * X3      - KXEL *    Y3  ) *
      &            ( X3 * (V3+V1+3.D0*V2) - Y3*(U3+U1+3.D0*U2)) *
      &              XMUL/((X2*Y3-Y2*X3)*10.D0)
-C
+!
       A23(IELEM)= ( KYEL * X3      - KXEL *    Y3 ) *
      &            ( X2 * (V1+2.D0*(V2+V3)) - Y2 * (U1+2.D0*(U2+U3))) *
      &              XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A24(IELEM)= ( KYEL * X3      - KXEL *    Y3 ) *
      &            ( -X3*(4.D0*V3+ 5.D0*V1+11.D0*V2) +
      &               X2*(3.D0*V1+14.D0*V2+ 3.D0*V3) +
      &               Y3*(5.D0*U1+11.D0*U2+ 4.D0*U3) -
      &               Y2*(3.D0*U1+14.D0*U2+ 3.D0*U3))*
      &               XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A26(IELEM)= ( KXEL *    Y3  -  KYEL * X3    ) *
      &            (X3*(2.D0*V3 +      V1 - 3.D0*V2) +
      &             X2*(V1-V3)  + Y2*(U3-U1)         +
      &             Y3*(3.D0*U2 -      U1 - 2.D0*U3))*
      &             XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A31(IELEM)= ( KYEL * X2      - KXEL *    Y2 ) *
      &            ( (X2-X3) * (2.D0*(V1+V3) + V2  ) +
      &              (Y3-Y2) * (2.D0*(U1+U3) + U2 )) *
      &               XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A32(IELEM)= ( KYEL * X2      - KXEL *    Y2 ) *
      &            ( X3*(2.D0*(V3+V2)+V1)-Y3*(U1+2.D0*(U2+U3))) *
      &              XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A33(IELEM)= ( KYEL*X2        - KXEL *    Y2 ) *
      &            (X2*(V1+3.D0*V3+V2)-Y2*(U1+3.D0*U3+U2)) *
      &             XMUL/(10.D0*(X2*Y3-Y2*X3))
-C
+!
       A34(IELEM)= ( KYEL*X2        - KXEL *    Y2 ) *
      &            (X3*(V1-V2)+X2*(V1+2.D0*V2-3.D0*V3) +
      &             Y3*(U2-U1)+Y2*(3.D0*U3-U1-2.D0*U2))*
      &             XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A35(IELEM)=  ( KXEL*Y2       - KYEL *    X2 ) *
      &             (X3*(14.D0*V3+3.D0*(V2+V1)) +
      &              X2*(      V1-3.D0*V3+2.D0*V2) -
      &              Y3*(3.D0*(U1+U2)+14.D0*U3) +
      &              Y2*( 3.D0*U3-     U1- 2.D0*U2 ))*
      &              XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A36(IELEM)= ( KYEL*X2        - KXEL *    Y2 ) *
      &            ( X3*(-14.D0*V3-3.D0*(V1+V2)) +
      &              X2*(  5.D0*V1+4.D0*V2+11.D0*V3) +
      &              Y3*(3.D0*(U1+U2)+14.D0*U3) -
      &              Y2*(5.D0*U1+4.D0*U2+11.D0*U3)) *
      &              XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A42(IELEM)=(-5.D0*KXEL*Y3**2*U1+11.D0*KYEL*X3*Y3*U2+
      &            5.D0*KYEL*X3*Y3*U1+3.D0*KYEL*X3*X2*V1+
      &            5.D0*KXEL*Y3*X3*V1+3.D0*KXEL*Y3*Y2*U1-
@@ -473,7 +269,7 @@ C
      &            11.D0*KYEL*X3**2*V2-11.D0*KXEL*Y3**2*U2-
      &            3.D0*KYEL*X2*Y3*U1-3.D0*KXEL*Y2*X3*V1)*
      &            XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A43(IELEM)=(KYEL*X3*X2*V1-KYEL*X3*Y2*U1-KXEL*Y3*X2*V1+
      &            KXEL*Y3*Y2*U1+KYEL*X2**2*V1+3.D0*KYEL*X2*Y2*U3+
      &            3.D0*KXEL*Y2*X2*V3-3.D0*KYEL*X2**2*V3-
@@ -483,7 +279,7 @@ C
      &            KYEL*X3*Y2*U2-KYEL*X3*X2*V2+KXEL*Y2**2*U1-
      &            KYEL*X2*Y2*U1-KXEL*Y2*X2*V1)*
      &            XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A44(IELEM)=(-4.D0*KYEL*X3*Y3*U2-4.D0*KYEL*X3*Y3*U1-
      &            4.D0*KXEL*Y3*X3*V1-2.D0*KYEL*X2*Y2*U3+
      &            KXEL*Y2*X3*V3-2.D0*KXEL*Y2*X2*V3+KYEL*X2*Y3*U3+
@@ -503,7 +299,7 @@ C
      &            2.D0*KYEL*X3**2*V3-2.D0*KYEL*X3*Y3*U3-
      &            2.D0*KXEL*Y3*X3*V3)*
      &             XMUL/(15.D0*(X2*Y3-Y2*X3)/2.D0)
-C
+!
       A45(IELEM)=(-KYEL*X3*Y3*U2+KYEL*X3*Y3*U1-KYEL*X3*X2*V1+
      &            KXEL*Y3*X3*V1-KXEL*Y3*Y2*U1-2.D0*KYEL*X2*Y2*U3+
      &            2.D0*KXEL*Y2*X3*V3-2.D0*KXEL*Y2*X2*V3+
@@ -518,7 +314,7 @@ C
      &            2.D0*KYEL*X2*Y2*U1-2.D0*KXEL*Y2*X2*V1+KYEL*X3**2*V2+
      &            2.D0*KXEL*Y2**2*U1+KXEL*Y3**2*U2+KYEL*X2*Y3*U1+
      &            KXEL*Y2*X3*V1)*XMUL/(15.D0*(X3*Y2-Y3*X2)/2.D0)
-C
+!
       A46(IELEM)=(KYEL*X3*Y3*U2-KYEL*X3*Y3*U1+4.D0*KYEL*X3*X2*V1-
      &            3.D0*KYEL*X3*Y2*U1-3.D0*KXEL*Y3*X2*V1-KXEL*Y3*X3*V1+
      &            4.D0*KXEL*Y3*Y2*U1+KYEL*X2*Y2*U3-
@@ -532,7 +328,7 @@ C
      &            KYEL*X2*Y2*U1-KXEL*Y2*X2*V1-KYEL*X3**2*V2+
      &            KXEL*Y2**2*U1-KXEL*Y3**2*U2-KYEL*X2*Y3*U1-
      &            KXEL*Y2*X3*V1)*XMUL/(15.D0*(X3*Y2-Y3*X2)/2.D0)
-C
+!
       A52(IELEM)=(KXEL*Y3**2*U1+3.D0*KYEL*X3*Y3*U2-KYEL*X3*Y3*U1+
      &            3.D0*KYEL*X3*X2*V1-KXEL*Y3*X3*V1+3.D0*KXEL*Y3*Y2*U1+
      &            KYEL*X3**2*V1-3.D0*KXEL*Y2*X3*V3-3.D0*KYEL*X2*Y3*U3-
@@ -544,7 +340,7 @@ C
      &            14.D0*KYEL*X3*X2*V2-3.D0*KYEL*X3**2*V2-
      &            3.D0*KXEL*Y3**2*U2-3.D0*KYEL*X2*Y3*U1-
      &            3.D0*KXEL*Y2*X3*V1)*XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A53(IELEM)=(3.D0*KYEL*X3*X2*V1-3.D0*KYEL*X3*Y2*U1-
      &            3.D0*KXEL*Y3*X2*V1+3.D0*KXEL*Y3*Y2*U1+
      &            KYEL*X2**2*V1+3.D0*KYEL*X2*Y2*U3+3.D0*KXEL*Y2*X2*V3-
@@ -557,7 +353,7 @@ C
      &            3.D0*KYEL*X3*Y2*U2+3.D0*KYEL*X3*X2*V2+
      &            KXEL*Y2**2*U1-KYEL*X2*Y2*U1-KXEL*Y2*X2*V1)*
      &            XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A54(IELEM)=(-KYEL*X3*Y3*U2+KYEL*X3*Y3*U1-KYEL*X3*X2*V1+
      &            KYEL*X3*Y2*U1+KXEL*Y3*X2*V1+KXEL*Y3*X3*V1-
      &            KXEL*Y3*Y2*U1-2.D0*KYEL*X2*Y2*U3+KXEL*Y2*X3*V3-
@@ -573,7 +369,7 @@ C
      &            2.D0*KYEL*X2*Y2*U1-2.D0*KXEL*Y2*X2*V1+
      &            KYEL*X3**2*V2+2.D0*KXEL*Y2**2*U1+KXEL*Y3**2*U2)
      &            *XMUL/(15.D0*(X3*Y2-Y3*X2)/2.D0)
-C
+!
       A56(IELEM)=(2.D0*KYEL*X3*Y3*U2+2.D0*KYEL*X3*Y3*U1+KYEL*X3*X2*V1+
      &            2.D0*KXEL*Y3*X3*V1+KXEL*Y3*Y2*U1+KYEL*X2*Y2*U3-
      &            2.D0*KXEL*Y2*X3*V3+KXEL*Y2*X2*V3-2.D0*KYEL*X2*Y3*U3-
@@ -589,7 +385,7 @@ C
      &            6.D0*KYEL*X3*Y3*U3+6.D0*KXEL*Y3*X3*V3-
      &            KYEL*X2*Y3*U1-KXEL*Y2*X3*V1)*
      &            XMUL/(15.D0*(X2*Y3-Y2*X3)/2.D0)
-C
+!
       A62(IELEM)=(KXEL*Y3**2*U1+3.D0*KYEL*X3*Y3*U2-KYEL*X3*Y3*U1+
      &            KYEL*X3*X2*V1-KXEL*Y3*X3*V1+KXEL*Y3*Y2*U1+
      &            KYEL*X3**2*V1+KXEL*Y2*X3*V3+KYEL*X2*Y3*U3-
@@ -599,7 +395,7 @@ C
      &            3.D0*KYEL*X3**2*V2-3.D0*KXEL*Y3**2*U2-
      &            KYEL*X2*Y3*U1-KXEL*Y2*X3*V1)
      &            *XMUL/((X2*Y3-Y2*X3)*30.D0)
-C
+!
       A63(IELEM)=(-3.D0*KYEL*X3*X2*V1+3.D0*KYEL*X3*Y2*U1+
      &            3.D0*KXEL*Y3*X2*V1-3.D0*KXEL*Y3*Y2*U1+
      &            5.D0*KYEL*X2**2*V1-11.D0*KYEL*X2*Y2*U3-
@@ -613,7 +409,7 @@ C
      &            3.D0*KYEL*X3*X2*V2+5.D0*KXEL*Y2**2*U1-
      &            5.D0*KYEL*X2*Y2*U1-5.D0*KXEL*Y2*X2*V1)*
      &            XMUL/((X3*Y2-Y3*X2)*30.D0)
-C
+!
       A64(IELEM)=(KYEL*X3*Y3*U2-KYEL*X3*Y3*U1+4.D0*KYEL*X3*X2*V1-
      &            KYEL*X3*Y2*U1-KXEL*Y3*X2*V1-KXEL*Y3*X3*V1+
      &            4.D0*KXEL*Y3*Y2*U1+KYEL*X2*Y2*U3-KXEL*Y2*X3*V3+
@@ -628,7 +424,7 @@ C
      &            KXEL*Y2**2*U1-KXEL*Y3**2*U2-3.D0*KYEL*X2*Y3*U1-
      &            3.D0*KXEL*Y2*X3*V1)*
      &            XMUL/(15.D0*(X3*Y2-Y3*X2)/2.D0)
-C
+!
       A65(IELEM)=(2.D0*KYEL*X3*Y3*U2+2.D0*KYEL*X3*Y3*U1+KYEL*X3*X2*V1-
      &            KYEL*X3*Y2*U1-KXEL*Y3*X2*V1+2.D0*KXEL*Y3*X3*V1+
      &            KXEL*Y3*Y2*U1+KYEL*X2*Y2*U3-4.D0*KXEL*Y2*X3*V3+
@@ -643,7 +439,7 @@ C
      &            2.D0*KXEL*Y3**2*U2-6.D0*KXEL*Y3**2*U3-
      &            6.D0*KYEL*X3**2*V3+6.D0*KYEL*X3*Y3*U3+
      &            6.D0*KXEL*Y3*X3*V3)*XMUL/(15.D0*(X2*Y3-Y2*X3)/2.D0)
-C
+!
       A66(IELEM)=(-2.D0*KYEL*X3*Y3*U2-2.D0*KYEL*X3*Y3*U1-
      &            2.D0*KXEL*Y3*X3*V1-4.D0*KYEL*X2*Y2*U3+
      &            4.D0*KXEL*Y2*X3*V3-4.D0*KXEL*Y2*X2*V3+
@@ -662,10 +458,10 @@ C
      &            2.D0*KXEL*Y3**2*U2+6.D0*KXEL*Y3**2*U3+
      &            6.D0*KYEL*X3**2*V3-6.D0*KYEL*X3*Y3*U3-
      &            6.D0*KXEL*Y3*X3*V3)*XMUL/(15.D0*(X2*Y3-Y2*X3)/2.D0)
-C
-C USES HERE THE 'MAGIC SQUARE' PROPERTIES
-C (SUM OF EACH LINE = SUM OF EACH COLUMN = 0)
-C
+!
+! USES HERE THE 'MAGIC SQUARE' PROPERTIES
+! (SUM OF EACH LINE = SUM OF EACH COLUMN = 0)
+!
       A16(IELEM) = - A11(IELEM) - A12(IELEM) - A13(IELEM)
      &             - A14(IELEM) - A15(IELEM)
       A25(IELEM) = - A21(IELEM) - A22(IELEM) - A23(IELEM)
@@ -678,26 +474,25 @@ C
      &             - A41(IELEM) - A61(IELEM)
       A55(IELEM) = - A51(IELEM) - A52(IELEM) - A53(IELEM)
      &             - A54(IELEM) - A56(IELEM)
-
-C
+!
 1     CONTINUE
-C
-C-----------------------------------------------------------------------
-C CASE WHERE U IS OF P2 DISCRETISATION
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+! CASE WHERE U IS OF P2 DISCRETISATION
+!-----------------------------------------------------------------------
+!
       ELSEIF(IELMF.EQ.10.AND.IELMG.EQ.10.AND.
      &       IELMU.EQ.13.AND.IELMV.EQ.13) THEN
-C
-C   LOOP ON THE ELEMENTS
-C
+!
+!   LOOP ON THE ELEMENTS
+!
       DO 2 IELEM = 1 , NELEM
-C
+!
       X2  =   XEL(IELEM,2)
       X3  =   XEL(IELEM,3)
       Y2  =   YEL(IELEM,2)
       Y3  =   YEL(IELEM,3)
-C
+!
       U1   =  U(IKLE1(IELEM))
       U2   =  U(IKLE2(IELEM))
       U3   =  U(IKLE3(IELEM))
@@ -710,12 +505,12 @@ C
       V4   =  V(IKLE4(IELEM))
       V5   =  V(IKLE5(IELEM))
       V6   =  V(IKLE6(IELEM))
-C
+!
       KXEL =  F(IELEM)
       KYEL =  G(IELEM)
-C
-C  COMPUTES 30 OF THE 36 TERMS (SELECTED AMONG THE LEAST COMPLEX)
-C
+!
+!  COMPUTES 30 OF THE 36 TERMS (SELECTED AMONG THE LEAST COMPLEX)
+!
       A11(IELEM)=(KXEL*(Y2-Y3)+KYEL*(X3-X2))*(12.D0*X3*V1+
      &            12.D0*Y2*U1-12.D0*Y3*U1-12.D0*X2*V1+2.D0*Y3*U3+
      &            2.D0*X2*V3+15.D0*X3*V6-2.D0*Y2*U3+15.D0*Y2*U6-
@@ -724,17 +519,17 @@ C
      &            7.D0*Y2*U5+7.D0*X3*V5-7.D0*X2*V5-2.D0*Y2*U2+
      &            2.D0*X2*V2-2.D0*X3*V2+2.D0*Y3*U2)*
      &            XMUL/(X2*Y3-Y2*X3)/90.D0
-C
+!
       A12(IELEM)=(KXEL*(Y3-Y2)+KYEL*(X2-X3))*(3.D0*X3*V1-
      &            3.D0*Y3*U1+2.D0*Y3*U3+5.D0*X3*V6-5.D0*Y3*U6-
      &            2.D0*X3*V3-5.D0*Y3*U5+X3*V4-Y3*U4+5.D0*X3*V5+
      &            3.D0*X3*V2-3.D0*Y3*U2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A13(IELEM)=(KXEL*(Y3-Y2)+KYEL*(X2-X3))*(3.D0*Y2*U1-
      &            3.D0*X2*V1-3.D0*X2*V3+3.D0*Y2*U3+Y2*U6-X2*V6+
      &            5.D0*Y2*U4-5.D0*X2*V4+5.D0*Y2*U5-5.D0*X2*V5-
      &            2.D0*Y2*U2+2.D0*X2*V2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A14(IELEM)=(KXEL*(Y2-Y3)+KYEL*(X3-X2))*(15.D0*X3*V1-
      &            3.D0*Y2*U1-15.D0*Y3*U1+3.D0*X2*V1+4.D0*Y3*U3-
      &            X2*V3+20.D0*X3*V6+Y2*U3-4.D0*Y2*U6+4.D0*X2*V6-
@@ -742,7 +537,7 @@ C
      &            16.D0*X3*V4+8.D0*X2*V4-16.D0*Y3*U4+8.D0*Y2*U5+
      &            12.D0*X3*V5-8.D0*X2*V5+6.D0*Y2*U2-6.D0*X2*V2+
      &            X3*V2-Y3*U2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A15(IELEM)=(KXEL*(Y2-Y3)+KYEL*(X3-X2))*(3.D0*X3*V1+
      &            3.D0*Y2*U1-3.D0*Y3*U1-3.D0*X2*V1+6.D0*Y3*U3+
      &            X2*V3+8.D0*X3*V6-Y2*U3+4.D0*Y2*U6-4.D0*X2*V6-
@@ -750,7 +545,7 @@ C
      &            4.D0*X3*V4-8.D0*X2*V4-4.D0*Y3*U4-8.D0*Y2*U5-
      &            8.D0*X3*V5+8.D0*X2*V5-6.D0*Y2*U2+6.D0*X2*V2-
      &            X3*V2+Y3*U2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A21(IELEM)=(-KXEL*Y3+KYEL*X3)*(3.D0*X3*V1+3.D0*Y2*U1-
      &            3.D0*Y3*U1-3.D0*X2*V1+2.D0*Y3*U3+2.D0*X2*V3+
      &            5.D0*X3*V6-2.D0*Y2*U3+5.D0*Y2*U6-5.D0*X2*V6-
@@ -758,18 +553,18 @@ C
      &            X3*V4-X2*V4-Y3*U4+5.D0*Y2*U5+5.D0*X3*V5-
      &            5.D0*X2*V5+3.D0*Y2*U2-3.D0*X2*V2+3.D0*X3*V2-
      &            3.D0*Y3*U2)*XMUL/(X2*Y3-Y2*X3)/90.D0
-C
+!
       A22(IELEM)=(-KXEL*Y3+KYEL*X3)*(-2.D0*X3*V1+2.D0*Y3*U1+
      &            2.D0*Y3*U3+7.D0*X3*V6-7.D0*Y3*U6-2.D0*X3*V3-
      &            15.D0*Y3*U5+15.D0*X3*V4-15.D0*Y3*U4+
      &            15.D0*X3*V5+12.D0*X3*V2-12.D0*Y3*U2)
      &            *XMUL/(X2*Y3-Y2*X3)/90.D0
-C
+!
       A23(IELEM)=(-KXEL*Y3+KYEL*X3)*(2.D0*Y2*U1-2.D0*X2*V1+
      &            3.D0*X2*V3-3.D0*Y2*U3-5.D0*Y2*U6+5.D0*X2*V6-
      &            5.D0*Y2*U4+5.D0*X2*V4-Y2*U5+X2*V5-3.D0*Y2*U2+
      &            3.D0*X2*V2)*XMUL/(X2*Y3-Y2*X3)/90.D0
-C
+!
       A24(IELEM)=(-KXEL*Y3+KYEL*X3)*(X3*V1-5.D0*Y2*U1-Y3*U1+
      &            5.D0*X2*V1+4.D0*Y3*U3+5.D0*X2*V3+12.D0*X3*V6-
      &            5.D0*Y2*U3+4.D0*Y2*U6-4.D0*X2*V6-12.D0*Y3*U6-
@@ -777,14 +572,14 @@ C
      &            24.D0*X2*V4-16.D0*Y3*U4+24.D0*Y2*U5+20.D0*X3*V5-
      &            24.D0*X2*V5+18.D0*Y2*U2-18.D0*X2*V2+15.D0*X3*V2-
      &            15.D0*Y3*U2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A26(IELEM)=(-KXEL*Y3+KYEL*X3)*(-X3*V1+5.D0*Y2*U1+Y3*U1-
      &            5.D0*X2*V1+6.D0*Y3*U3+5.D0*X2*V3-8.D0*X3*V6-
      &            5.D0*Y2*U3+8.D0*Y3*U6-6.D0*X3*V3-4.D0*Y2*U4-
      &            8.D0*Y3*U5+4.D0*X3*V4+4.D0*X2*V4-4.D0*Y3*U4+
      &            4.D0*Y2*U5+8.D0*X3*V5-4.D0*X2*V5+3.D0*X3*V2-
      &            3.D0*Y3*U2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A31(IELEM)=(KXEL*Y2-KYEL*X2)*(3.D0*X3*V1+3.D0*Y2*U1-
      &            3.D0*Y3*U1-3.D0*X2*V1-3.D0*Y3*U3-3.D0*X2*V3+
      &            X3*V6+3.D0*Y2*U3+Y2*U6-X2*V6-Y3*U6+3.D0*X3*V3+
@@ -792,24 +587,24 @@ C
      &            5.D0*Y3*U4+5.D0*Y2*U5+5.D0*X3*V5-5.D0*X2*V5-
      &            2.D0*Y2*U2+2.D0*X2*V2-2.D0*X3*V2+2.D0*Y3*U2)
      &            *XMUL/(X2*Y3-Y2*X3)/90.D0
-C
+!
       A32(IELEM)=(KXEL*Y2-KYEL*X2)*(-2.D0*X3*V1+2.D0*Y3*U1-
      &            3.D0*Y3*U3+5.D0*X3*V6-5.D0*Y3*U6+3.D0*X3*V3-
      &            Y3*U5+5.D0*X3*V4-5.D0*Y3*U4+X3*V5+3.D0*X3*V2-
      &            3.D0*Y3*U2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A33(IELEM)=(KXEL*Y2-KYEL*X2)*(2.D0*Y2*U1-2.D0*X2*V1+
      &            12.D0*X2*V3-12.D0*Y2*U3-15.D0*Y2*U6+15.D0*X2*V6-
      &            7.D0*Y2*U4+7.D0*X2*V4-15.D0*Y2*U5+15.D0*X2*V5+
      &            2.D0*Y2*U2-2.D0*X2*V2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A34(IELEM)=(KXEL*Y2-KYEL*X2)*(5.D0*X3*V1-Y2*U1-5.D0*Y3*U1+
      &            X2*V1-3.D0*X2*V3-4.D0*X3*V6+3.D0*Y2*U3+
      &            4.D0*Y2*U6-4.D0*X2*V6+4.D0*Y3*U6-8.D0*Y2*U4-
      &            4.D0*Y3*U5+8.D0*X2*V4+8.D0*Y2*U5+4.D0*X3*V5-
      &            8.D0*X2*V5-6.D0*Y2*U2+6.D0*X2*V2-5.D0*X3*V2+
      &            5.D0*Y3*U2)*XMUL/(-X2*Y3+Y2*X3)/90.D0
-C
+!
       A35(IELEM)=(KXEL*Y2-KYEL*X2)*(-5.D0*X3*V1-Y2*U1+5.D0*Y3*U1+
      &            X2*V1-18.D0*Y3*U3-3.D0*X2*V3+24.D0*X3*V6+
      &            3.D0*Y2*U3+4.D0*Y2*U6-4.D0*X2*V6-24.D0*Y3*U6+
@@ -817,7 +612,7 @@ C
      &            8.D0*X2*V4-4.D0*Y3*U4+8.D0*Y2*U5+24.D0*X3*V5-
      &            8.D0*X2*V5-6.D0*Y2*U2+6.D0*X2*V2-5.D0*X3*V2+
      &            5.D0*Y3*U2)*XMUL/(X2*Y3-Y2*X3)/90.D0
-C
+!
       ANS1 = KYEL*X3*Y2*U2-6.D0*KYEL*X2*Y2*U2-6.D0*KXEL*Y2*X2*V2-
      &       4.D0*KYEL*X2**2*V6+15.D0*KXEL*Y3**2*U1-
      &       12.D0*KXEL*Y3*Y2*U1+15.D0*KXEL*Y3*X2*V1+
@@ -856,7 +651,7 @@ C
      &       4.D0*KXEL*Y2*X2*V6-4.D0*KYEL*X3*Y2*U3+
      &       4.D0*KYEL*X2*Y2*U6-4.D0*KXEL*Y3*X2*V3
       A41(IELEM)= (ANS1+ANS2)*XMUL/(90.D0*(-X2*Y3+Y2*X3))
-C
+!
       ANS1 = KXEL*Y3**2*U1+5.D0*KXEL*Y3*Y2*U1-15.D0*KXEL*Y3*X3*V2+
      &       16.D0*KXEL*Y3**2*U4-24.D0*KXEL*Y3*Y2*U4-KYEL*X3*Y3*U1+
      &       5.D0*KYEL*X3*X2*V1-16.D0*KXEL*Y3*X3*V4-
@@ -881,7 +676,7 @@ C
      &       18.D0*KXEL*Y2*X3*V2+24.D0*KYEL*X2*Y3*U4+
      &       24.D0*KXEL*Y2*X3*V4
       A42(IELEM)= (ANS1+ANS2)*XMUL/(90.D0*(-X2*Y3+Y2*X3))
-C
+!
       ANS1 = 6.D0*KYEL*X3*Y2*U2-6.D0*KYEL*X2*Y2*U2-
      &       6.D0*KXEL*Y2*X2*V2+4.D0*KYEL*X2**2*V6+
      &       4.D0*KXEL*Y3**2.D0*U1+4.D0*KXEL*Y3*Y2*U1-
@@ -922,7 +717,7 @@ C
      &       4.D0*KXEL*Y2*X2*V6-KYEL*X3*Y2*U3-
      &       4.D0*KYEL*X2*Y2*U6-KXEL*Y3*X2*V3
       A44(IELEM)= (ANS1+ANS2)*2.D0*XMUL/(45.D0*(X2*Y3-Y2*X3))
-C
+!
       ANS1 = 6.D0*KYEL*X3*Y2*U2-6.D0*KYEL*X2*Y2*U2-
      &       6.D0*KXEL*Y2*X2*V2+4.D0*KYEL*X2**2*V6-
      &       KXEL*Y3**2*U1+3.D0*KXEL*Y3*Y2*U1-2.D0*KXEL*Y3*X2*V1+
@@ -955,7 +750,7 @@ C
      &       4.D0*KXEL*Y2*X2*V6-KYEL*X3*Y2*U3-
      &       4.D0*KYEL*X2*Y2*U6-KXEL*Y3*X2*V3
       A45(IELEM)=  (ANS1+ANS2)*2.D0*XMUL/(45.D0*(-X2*Y3+Y2*X3))
-C
+!
       ANS1 = -KYEL*X3*Y2*U2-KXEL*Y3**2*U1-4.D0*KXEL*Y3*Y2*U1+
      &       5.D0*KXEL*Y3*X2*V1-KXEL*Y3*X3*V2+4.D0*KXEL*Y3*X2*V4-
      &       8.D0*KXEL*Y3*Y2*U4+5.D0*KYEL*X3*Y2*U1+KYEL*X3*Y3*U1-
@@ -980,7 +775,7 @@ C
      &       4.D0*KYEL*X3*Y2*U5-KXEL*Y3*X2*V2+4.D0*KYEL*X2*Y3*U4+
      &       4.D0*KXEL*Y2*X3*V4-KYEL*X3*Y2*U3-KXEL*Y3*X2*V3
       A46(IELEM)=  (ANS1+ANS2)*2.D0*XMUL/(45.D0*(X2*Y3-Y2*X3))
-C
+!
       ANS1 = -KYEL*X3*Y2*U2+6.D0*KYEL*X2*Y2*U2+6.D0*KXEL*Y2*X2*V2+
      &       4.D0*KYEL*X2**2*V6+3.D0*KXEL*Y3**2*U1-
      &       6.D0*KXEL*Y3*Y2*U1+3.D0*KXEL*Y3*X2*V1-
@@ -1019,7 +814,7 @@ C
      &       4.D0*KXEL*Y2*X2*V6-6.D0*KYEL*X3*Y2*U3-
      &       4.D0*KYEL*X2*Y2*U6-6.D0*KXEL*Y3*X2*V3
       A51(IELEM) = (ANS1+ANS2)*XMUL/(90.D0*(-X2*Y3+Y2*X3))
-C
+!
       ANS1 = -KXEL*Y3**2*U1+5.D0*KXEL*Y3*Y2*U1-3.D0*KXEL*Y3*X3*V2+
      &       4.D0*KXEL*Y3**2*U4-24.D0*KXEL*Y3*Y2*U4+KYEL*X3*Y3*U1+
      &       5.D0*KYEL*X3*X2*V1-4.D0*KXEL*Y3*X3*V4-
@@ -1044,7 +839,7 @@ C
      &       18.D0*KXEL*Y2*X3*V2+24.D0*KYEL*X2*Y3*U4+
      &       24.D0*KXEL*Y2*X3*V4
       A52(IELEM)= (ANS1+ANS2)*XMUL/(90.D0*(X2*Y3-Y2*X3))
-C
+!
       ANS1 = 5.D0*KYEL*X3*Y2*U2-6.D0*KYEL*X2*Y2*U2-
      &       6.D0*KXEL*Y2*X2*V2-4.D0*KYEL*X2**2*V6-
      &       5.D0*KXEL*Y3*Y2*U1+5.D0*KXEL*Y3*X2*V1+
@@ -1069,7 +864,7 @@ C
      &       4.D0*KXEL*Y2*X2*V6-18.D0*KYEL*X3*Y2*U3+
      &       4.D0*KYEL*X2*Y2*U6-18.D0*KXEL*Y3*X2*V3
       A53(IELEM)= (ANS1+ANS2)*XMUL/(90.D0*(-X2*Y3+Y2*X3))
-C
+!
       ANS1 = -6.D0*KYEL*X2*Y2*U2-6.D0*KXEL*Y2*X2*V2+
      &       4.D0*KYEL*X2**2*V6-KXEL*Y3**2*U1+3.D0*KXEL*Y3*Y2*U1-
      &       KXEL*Y3*X2*V1+6.D0*KYEL*X2**2*V2-KXEL*Y3*X3*V2+
@@ -1102,7 +897,7 @@ C
      &       4.D0*KYEL*X2*Y3*U4+4.D0*KXEL*Y2*X3*V4-
      &       4.D0*KXEL*Y2*X2*V6-4.D0*KYEL*X2*Y2*U6
       A54(IELEM)= (ANS1+ANS2)*2.D0*XMUL/(45.D0*(-X2*Y3+Y2*X3))
-C
+!
        ANS1 = -KYEL*X3*Y2*U2-2.D0*KXEL*Y3**2*U1+3.D0*KXEL*Y3*Y2*U1-
      &        2.D0*KXEL*Y3*X2*V1+2.D0*KXEL*Y3*X3*V2+
      &        4.D0*KXEL*Y3**2*U4-4.D0*KXEL*Y3*Y2*U4-
@@ -1135,7 +930,7 @@ C
      &       8.D0*KYEL*X3*Y2*U5-KXEL*Y3*X2*V2+4.D0*KYEL*X2*Y3*U4+
      &       4.D0*KXEL*Y2*X3*V4+6.D0*KYEL*X3*Y2*U3+6.D0*KXEL*Y3*X2*V3
       A56(IELEM)= (ANS1+ANS2)*2.D0*XMUL/(45.D0*(-X2*Y3+Y2*X3))
-C
+!
       ANS1 = -KYEL*X3*Y2*U2-4.D0*KYEL*X2*Y2*U2-4.D0*KXEL*Y2*X2*V2-
      &       16.D0*KYEL*X2**2*V6+3.D0*KXEL*Y3**2*U1+
      &       12.D0*KXEL*Y3*Y2*U1+3.D0*KXEL*Y3*X2*V1+
@@ -1174,7 +969,7 @@ C
      &       16.D0*KXEL*Y2*X2*V6-6.D0*KYEL*X3*Y2*U3+16.D0*KYEL*X2*
      &       Y2*U6-6.D0*KXEL*Y3*X2*V3
       A61(IELEM)= (ANS1+ANS2)*XMUL/(90.D0*(X2*Y3-Y2*X3))
-C
+!
       ANS1 = -KXEL*Y3**2*U1-5.D0*KXEL*Y3*Y2*U1-
      &       3.D0*KXEL*Y3*X3*V2+4.D0*KXEL*Y3**2*U4+
      &       4.D0*KXEL*Y3*Y2*U4+KYEL*X3*Y3*U1-5.D0*KYEL*X3*X2*V1-
@@ -1195,7 +990,7 @@ C
      &       4.D0*KYEL*X3*X2*V5-8.D0*KYEL*X3*Y3*U5-
      &       4.D0*KYEL*X2*Y3*U4-4.D0*KXEL*Y2*X3*V4
       A62(IELEM)= ANS1*XMUL/(90.D0*(-X2*Y3+Y2*X3))
-C
+!
       ANS1 = 5.D0*KYEL*X3*Y2*U2-4.D0*KYEL*X2*Y2*U2-
      &       4.D0*KXEL*Y2*X2*V2-16.D0*KYEL*X2**2*V6-
      &       5.D0*KXEL*Y3*Y2*U1+5.D0*KXEL*Y3*X2*V1+
@@ -1221,7 +1016,7 @@ C
      &       18.D0*KYEL*X3*Y2*U3+16.D0*KYEL*X2*Y2*U6-
      &       18.D0*KXEL*Y3*X2*V3
       A63(IELEM)= (ANS1+ANS2)*XMUL/(90.D0*(X2*Y3-Y2*X3))
-C
+!
       ANS1 = -KXEL*Y3**2*U1-4.D0*KXEL*Y3*Y2*U1-KXEL*Y3*X2*V1-
      &       KXEL*Y3*X3*V2+4.D0*KXEL*Y3*X2*V4-8.D0*KXEL*Y3*Y2*U4-
      &       KYEL*X3*Y2*U1+KYEL*X3*Y3*U1-4.D0*KYEL*X3*X2*V1+
@@ -1247,7 +1042,7 @@ C
      &       8.D0*KYEL*X3*Y2*U5-KYEL*X2*Y3*U2-KXEL*Y2*X3*V2+
      &       4.D0*KYEL*X2*Y3*U4+4.D0*KXEL*Y2*X3*V4
       A64(IELEM)= (ANS1+ANS2)*XMUL*2.D0/(45.D0*(X2*Y3-Y2*X3))
-C
+!
       ANS1 = -2.D0*KXEL*Y3**2*U1+3.D0*KXEL*Y3*Y2*U1-KXEL*Y3*X2*V1+
      &       2.D0*KXEL*Y3*X3*V2+4.D0*KXEL*Y3*X2*V4+
      &       4.D0*KXEL*Y3**2*U4-4.D0*KXEL*Y3*Y2*U4-
@@ -1280,10 +1075,10 @@ C
      &       12.D0*KYEL*X3*Y3*U5+8.D0*KYEL*X3*Y2*U5-KYEL*X2*Y3*U2-
      &       KXEL*Y2*X3*V2
       A65(IELEM)= (ANS1+ANS2)*XMUL*2.D0/(45.D0*(-X2*Y3+Y2*X3))
-C
-C USES HERE THE 'MAGIC SQUARE' PROPERTIES
-C (SUM OF EACH LINE = SUM OF EACH COLUMN = 0)
-C
+!
+! USES HERE THE 'MAGIC SQUARE' PROPERTIES
+! (SUM OF EACH LINE = SUM OF EACH COLUMN = 0)
+!
       A16(IELEM) = - A11(IELEM) - A12(IELEM) - A13(IELEM)
      &             - A14(IELEM) - A15(IELEM)
       A25(IELEM) = - A21(IELEM) - A22(IELEM) - A23(IELEM)
@@ -1296,15 +1091,15 @@ C
      &             - A54(IELEM) - A56(IELEM)
       A66(IELEM) = - A61(IELEM) - A62(IELEM) - A63(IELEM)
      &             - A64(IELEM) - A65(IELEM)
-C
+!
 2     CONTINUE
-C
-C     OTHER TYPES OF FUNCTIONS F AND G
-C
-C-----------------------------------------------------------------------
-C
+!
+!     OTHER TYPES OF FUNCTIONS F AND G
+!
+!-----------------------------------------------------------------------
+!
       ELSE
-C
+!
        IF (LNG.EQ.1) WRITE(LU,100) IELMF,SF%NAME
        IF (LNG.EQ.1) WRITE(LU,110) IELMG,SG%NAME
        IF (LNG.EQ.1) WRITE(LU,200) IELMU,SU%NAME
@@ -1331,13 +1126,10 @@ C
 301    FORMAT(1X,'CASE NOT IMPLEMENTED')
        CALL PLANTE(1)
        STOP
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,189 +1,70 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE MASS BALANCE FOR THE TRACER.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> AGGLOT, DT, FLBOR, FLBORTRA, H, INFO, LT, MASKEL, MASSOU, MASTEN, MASTOU, MASTR0, MASTR2, MESH, MSK, NAMETRAC, NFRLIQ, NIT, NPTFR, NUMLIQ, T, WORK2, WORK3
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> DENOM, ERREUT, FLT_BOUND, FLUXT, I, IELMH, IELMT, IFRLIQ, MASBOR, MASTR1, PERDUE, RELATI
-!>   </td></tr>
-!>     <tr><th> Alias(es)
-!>    </th><td> EX_BILANT
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> DOTS(), OS(), P_DSUM(), VECTOR()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>TELEMAC2D()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.9                                       </center>
-!> </td><td> 10/06/08
-!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18; C MOULIN (LNH) 01 30 87 83 81
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>AGGLOT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DT
-!></td><td>--></td><td>PAS DE TEMPS
-!>    </td></tr>
-!>          <tr><td>FLBOR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>FLBORTRA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>H
-!></td><td>--></td><td>VALEURS DE H A L' ETAPE N+1.
-!>    </td></tr>
-!>          <tr><td>INFO
-!></td><td>--></td><td>LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
-!>    </td></tr>
-!>          <tr><td>LT,NIT
-!></td><td>--></td><td>NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
-!>    </td></tr>
-!>          <tr><td>MASKEL
-!></td><td>--></td><td>TABLEAU DE MASQUAGE DES ELEMENTS
-!>                  =1. : NORMAL   =0. : ELEMENT MASQUE
-!>    </td></tr>
-!>          <tr><td>MASSOU
-!></td><td>--></td><td>QUANTITE DE TRACEUR APPORTEE PAR LE TERME
-!>                  SOURCE
-!>    </td></tr>
-!>          <tr><td>MASTEN
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASTOU
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASTR0
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MASTR2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MESH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MSK
-!></td><td>--></td><td>SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!>    </td></tr>
-!>          <tr><td>NAMETRAC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NFRLIQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NUMLIQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>T
-!></td><td>--></td><td>TRACEUR AU TEMPS T(N+1)
-!>    </td></tr>
-!>          <tr><td>TETAT
-!></td><td>--></td><td>SEMI-IMPLICITATION DU TRACEUR.
-!>    </td></tr>
-!>          <tr><td>WORK2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>WORK3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE BILANT
+!                    *****************
+                     SUBROUTINE BILANT
+!                    *****************
+!
      &(H,WORK2,WORK3,DT,LT,NIT,INFO,
      & T,AGGLOT,MASSOU,MASTR0,MASTR2,MASTEN,
      & MASTOU,MSK,MASKEL,MESH,
      & FLBOR,NUMLIQ,NFRLIQ,NPTFR,NAMETRAC,FLBORTRA)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AGGLOT         |---| 
-C| DT             |-->| PAS DE TEMPS
-C| FLBOR          |---| 
-C| FLBORTRA       |---| 
-C| H             |-->| VALEURS DE H A L' ETAPE N+1.
-C| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
-C| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
-C| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-C|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-C| MASSOU         |-->| QUANTITE DE TRACEUR APPORTEE PAR LE TERME
-C|                |   | SOURCE
-C| MASTEN         |---| 
-C| MASTOU         |---| 
-C| MASTR0         |---| 
-C| MASTR2         |---| 
-C| MESH           |---| 
-C| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-C| NAMETRAC       |---| 
-C| NFRLIQ         |---| 
-C| NPTFR          |---| 
-C| NUMLIQ         |---| 
-C| T             |-->| TRACEUR AU TEMPS T(N+1)
-C| TETAT          |-->| SEMI-IMPLICITATION DU TRACEUR.
-C| WORK2          |---| 
-C| WORK3          |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! BIEF   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE MASS BALANCE FOR THE TRACER.
+!
+!history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
+!+        10/06/08
+!+        V5P9
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AGGLOT         |---| 
+!| DT             |-->| PAS DE TEMPS
+!| FLBOR          |---| 
+!| FLBORTRA       |---| 
+!| H              |-->| VALEURS DE H A L' ETAPE N+1.
+!| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
+!| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
+!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
+!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
+!| MASSOU         |-->| QUANTITE DE TRACEUR APPORTEE PAR LE TERME
+!|                |   | SOURCE
+!| MASTEN         |---| 
+!| MASTOU         |---| 
+!| MASTR0         |---| 
+!| MASTR2         |---| 
+!| MESH           |---| 
+!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
+!| NAMETRAC       |---| 
+!| NFRLIQ         |---| 
+!| NPTFR          |---| 
+!| NUMLIQ         |---| 
+!| T              |-->| TRACEUR AU TEMPS T(N+1)
+!| WORK2          |---| 
+!| WORK3          |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF, EX_BILANT => BILANT
-C
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER, INTENT(IN)            :: LT,NIT,NFRLIQ,NPTFR
       INTEGER, INTENT(IN)            :: NUMLIQ(NFRLIQ)
       DOUBLE PRECISION, INTENT(IN)   :: DT,MASSOU,AGGLOT
@@ -194,68 +75,68 @@ C
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
       DOUBLE PRECISION, INTENT(INOUT):: MASTR0,MASTR2,MASTEN,MASTOU
       CHARACTER(LEN=32), INTENT(IN)  :: NAMETRAC
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
-C
+!
       INTEGER I,IFRLIQ,IELMT,IELMH
-C
+!
       DOUBLE PRECISION ERREUT,PERDUE,FLUXT,MASBOR,RELATI,DENOM,MASTR1
-C     300 IS HERE MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
+!     300 IS HERE MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
       DOUBLE PRECISION FLT_BOUND(300)
-C
+!
       INTRINSIC ABS,MAX
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IELMT = T%ELM
       IELMH = H%ELM
-C
-C-----------------------------------------------------------------------
-C
-C  COMPATIBLE COMPUTATION OF THE TRACER QUANTITY AT TIME N+1:
-C  TAKES MASS-LUMPING INTO ACCOUNT BUT REQUIRES AGGLOC=AGGLOT
-C
+!
+!-----------------------------------------------------------------------
+!
+!  COMPATIBLE COMPUTATION OF THE TRACER QUANTITY AT TIME N+1:
+!  TAKES MASS-LUMPING INTO ACCOUNT BUT REQUIRES AGGLOC=AGGLOT
+!
       IF(LT.NE.0) MASTR1 = MASTR2
-C
+!
       CALL VECTOR(WORK2,'=','MASVEC          ',IELMT,
      &            1.D0-AGGLOT,T,T,T,T,T,T,MESH,MSK,MASKEL)
-C     H IS GIVEN HERE FOR A DUMMY STRUCTURE
+!     H IS GIVEN HERE FOR A DUMMY STRUCTURE
       CALL VECTOR(WORK3,'=','MASBAS          ',IELMT,
      &                 AGGLOT,H,H,H,H,H,H,MESH,MSK,MASKEL)
-C
+!
       CALL OS('X=X+YZ  ',X=WORK2,Y=WORK3,Z=T)
-C
+!
       MASTR2 = DOTS(WORK2,H)
       IF(NCSIZE.GT.1) MASTR2=P_DSUM(MASTR2)
-C
+!
       IF(LT.EQ.0) THEN
         MASTR0 = MASTR2
         MASTR1 = MASTR2
         MASTEN = 0.D0
         MASTOU = 0.D0
       ENDIF
-C
-C=======================================================================
-C
-C   COMPUTES THE FLUXES (MISSES THE DIFFUSION FLUX,... INVESTIGATE)
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
+!   COMPUTES THE FLUXES (MISSES THE DIFFUSION FLUX,... INVESTIGATE)
+!
+!=======================================================================
+!
       FLUXT=0.D0
-C
+!
       IF(LT.GT.0.AND.NFRLIQ.GT.0) THEN
         DO IFRLIQ=1,NFRLIQ
           FLT_BOUND(IFRLIQ)=0.D0
         ENDDO
         IF(NPTFR.GT.0) THEN
           DO I=1,NPTFR
-C           NOTE: COULD DEFINE FLUX_BOUNDARIES BETWEEN 0 AND NFRLIQ
+!           NOTE: COULD DEFINE FLUX_BOUNDARIES BETWEEN 0 AND NFRLIQ
             IFRLIQ=NUMLIQ(I)
             IF(IFRLIQ.GT.0) THEN
-C             FLBORTRA MUST NOT BE ASSEMBLED IN PARALLEL MODE
+!             FLBORTRA MUST NOT BE ASSEMBLED IN PARALLEL MODE
               FLT_BOUND(IFRLIQ)=FLT_BOUND(IFRLIQ)+FLBORTRA%R(I)
             ENDIF
           ENDDO
@@ -269,37 +150,37 @@ C             FLBORTRA MUST NOT BE ASSEMBLED IN PARALLEL MODE
           FLUXT=FLUXT+FLT_BOUND(IFRLIQ)
         ENDDO
       ENDIF
-C
-C=======================================================================
-C
-C     COMPUTES THE FLUXES AT THE LIQUID BOUNDARIES
-C
+!
+!=======================================================================
+!
+!     COMPUTES THE FLUXES AT THE LIQUID BOUNDARIES
+!
       MASTEN = MASTEN - FLUXT * DT
       MASTOU = MASTOU + MASSOU
-C
-C=======================================================================
-C
-C     COMPUTES THE TRACER FLUXES THRU THE WALLS (FLUX LAW)
-C
-C     TEMPORARY, TO BE CODED UP
+!
+!=======================================================================
+!
+!     COMPUTES THE TRACER FLUXES THRU THE WALLS (FLUX LAW)
+!
+!     TEMPORARY, TO BE CODED UP
       MASBOR = 0.D0
-C
-C=======================================================================
-C
-C     COMPUTES THE ERROR ON THE MASS FOR THIS TIMESTEP
-C
+!
+!=======================================================================
+!
+!     COMPUTES THE ERROR ON THE MASS FOR THIS TIMESTEP
+!
       ERREUT = MASTR1 + MASSOU - MASTR2 - DT*FLUXT
-C
-C=======================================================================
-C
-C     PRINTOUTS :
-C
+!
+!=======================================================================
+!
+!     PRINTOUTS :
+!
       IF(INFO) THEN
-C
-C-----------------------------------------------------------------------
-C
-C     PRINTOUTS FOR THE TRACER
-C
+!
+!-----------------------------------------------------------------------
+!
+!     PRINTOUTS FOR THE TRACER
+!
         WRITE(LU,*)
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) '                      BILAN DE QUANTITE DE ',
@@ -309,14 +190,14 @@ C
           WRITE(LU,*) '                           BALANCE OF ',
      &    TRIM(NAMETRAC(1:16)),' (UNIT: ',TRIM(NAMETRAC(17:32)),')'
         ENDIF
-C
+!
         IF(LT.EQ.0) THEN
-C
+!
           IF(LNG.EQ.1) WRITE(LU,1090) MASTR0
           IF(LNG.EQ.2) WRITE(LU,2090) MASTR0
-C
+!
         ELSE
-C
+!
           IF(LNG.EQ.1) WRITE(LU,1100) MASTR2
           IF(LNG.EQ.2) WRITE(LU,2100) MASTR2
           IF(NFRLIQ.GT.0) THEN
@@ -338,17 +219,17 @@ C
             IF(LNG.EQ.1) WRITE(LU,1130) ERREUT
             IF(LNG.EQ.2) WRITE(LU,2130) ERREUT
           ENDIF
-C
+!
         ENDIF
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C  FINAL MASS BALANCE
-C
+!
+!-----------------------------------------------------------------------
+!
+!  FINAL MASS BALANCE
+!
       IF(LT.EQ.NIT) THEN
-C
+!
         WRITE(LU,*)
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) '                BILAN FINAL DE QUANTITE DE ',
@@ -358,7 +239,7 @@ C
           WRITE(LU,*) '                     FINAL BALANCE OF ',
      &    TRIM(NAMETRAC(1:16)),' (UNIT: ',TRIM(NAMETRAC(17:32)),')'
         ENDIF
-C
+!
           PERDUE = MASTR0+MASTEN+
      &             MASBOR+MASTOU-MASTR2
           DENOM = MAX(MASTR0,MASTR2,ABS(MASTEN),ABS(MASTOU))
@@ -383,15 +264,15 @@ C
             IF(ABS(MASTOU).GT.1.D-8) WRITE(LU,2164) MASTOU
             WRITE(LU,2165) PERDUE
           ENDIF
-C
+!
        ENDIF
-C
-C  END OF THE PRINTOUTS :
-C
-C=======================================================================
-C
-C  FORMATS :
-C
+!
+!  END OF THE PRINTOUTS :
+!
+!=======================================================================
+!
+!  FORMATS :
+!
 1090  FORMAT(5X,'QUANTITE INITIALE DE TRACEUR :',G16.7)
 2090  FORMAT(5X,'INITIAL QUANTITY OF TRACER:',G16.7)
 1100  FORMAT(/,5X,'QUANTITE DE TRACEUR :',G16.7)
@@ -422,11 +303,8 @@ C
      &            '  ( IF <0 EXIT )')
 2164  FORMAT(  5X,'QUANTITY CREATED BY SOURCE TERM   : ',G16.7)
 2165  FORMAT(  5X,'TOTAL QUANTITY LOST               : ',G16.7)
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       RETURN
       END
-C
-C#######################################################################
-C
