@@ -1,0 +1,53 @@
+/
+/ HP C3700 : 31 s    5.5 22/11/2004
+/ HP C3700 compilateur HP  : 23 s    5.7 17/04/2007
+/ HP C3700 compilateur Nag : 60 s    5.7 17/04/2007
+/ Dell compilateur pgi     : 18 s    5.7 19/04/2007
+/
+/ HP C3700 compilateur HP  : 24 s    5.8 13/11/2007
+/ HP C3700 compilateur Nag : 62 s    5.8 20/12/2007
+/ Dell compilateur pgi     : 20 s    5.8 22/11/2007
+/
+/ HP C3700 compilateur HP  : 25 s    5.9 15/10/2008 
+/ HP C3700 compilateur Nag : 58 s    5.9 16/10/2008
+/ Dell compilateur pgi     : 18 s    5.9 15/10/2008
+/
+/ HP C3700 compilateur HP  : 23 s    6.0 23/11/2009
+/ HP C3700 compilateur Nag : 53 s    6.0 25/11/2009 
+/ Dell compilateur Intel   : 11 s    6.0 23/11/2009
+/
+FICHIER FORTRAN                    : t2d_bj78_run15_v1p0.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_bj78_run15_v1p0.cli
+FICHIER DE GEOMETRIE               : geo_bj78_run15_v1p0.slf
+FICHIER DE REFERENCE               : f2d_bj78_run15_v1p0.slf
+FICHIER DES RESULTATS              : r2d_bj78_run15_v1p0.slf
+FICHIER DE DONNEES BINAIRE 1       : art_bj78_run15_v1p0.slf
+/----------------------------------------------------------------------/ 
+/                     OPTIONS GENERALES                                  
+/----------------------------------------------------------------------/ 
+TITRE = 'TELEMAC 2D : COURANTS DE HOULE - CAS BJ78_RUN15'              
+SUITE DE CALCUL : NON                                                    
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'S,U,V,H,T'                        
+VARIABLES A IMPRIMER : ''                                                
+PAS DE TEMPS = 0.1     NOMBRE DE PAS DE TEMPS = 2000                         
+PERIODE POUR LES SORTIES GRAPHIQUES : 50
+PERIODE DE SORTIE LISTING = 100
+/
+COURANTS DE HOULE : OUI
+/
+LOI DE FROTTEMENT SUR LE FOND : 3
+COEFFICIENT DE FROTTEMENT = 45.     
+/
+FORME DE LA CONVECTION = 1;5
+/OPTION DE SUPG        = 2;2  
+/
+MODELE DE TURBULENCE : 1
+COEFFICIENT DE DIFFUSION DES VITESSES = 0.001
+SOLVEUR : 7  OPTION DU SOLVEUR : 2
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100
+PRECISION DU SOLVEUR = 1.E-5      
+BILAN DE MASSE : OUI     VALIDATION : OUI                               
+CONDITIONS INITIALES = 'COTE CONSTANTE'  COTE INITIALE = 0.                                                        
+/
+
+ 
