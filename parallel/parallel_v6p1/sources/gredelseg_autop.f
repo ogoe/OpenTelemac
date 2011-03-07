@@ -12,29 +12,29 @@
 !
 !history  JAJ
 !+        2001/2
-!+        
-!+   SLIGHTLY CHANGED TO DEAL WITH: 
+!+
+!+   SLIGHTLY CHANGED TO DEAL WITH:
 !
 !history  HW, BAW-HAMBURG
 !+        20/02/2003
-!+        
-!+   IMPROVED READING OF DATASETS 
+!+
+!+   IMPROVED READING OF DATASETS
 !
 !history  JAJ
 !+        14/03/2003
-!+        
-!+   ADDED EXIT CODES 
+!+
+!+   ADDED EXIT CODES
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
+!+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,7 +98,7 @@
       CHARACTER*7  FILETYPE
       EXTERNAL    EXTENS
       INTRINSIC MAXVAL
-
+!
       LI=5
       LU=6
       LNG=2
@@ -691,8 +691,8 @@
         !!!FABS
       STOP
       END PROGRAM GREDELSEG_AUTOP
-
-
+!
+!
 !                       ****************************
                         CHARACTER*11 FUNCTION EXTENS
 !                       ****************************
@@ -772,7 +772,7 @@
 !
       RETURN
       END
-
+!
 !                         ***********************
                           SUBROUTINE READ_DATASET
 !                         ***********************
@@ -824,8 +824,8 @@
 !
  999  RETURN
       END
-
-
+!
+!
 !     *****************************
       SUBROUTINE ALLOER (N, CHFILE)
 !     *****************************
@@ -860,8 +860,8 @@
       CALL PLANTE(-1)
       STOP
       END SUBROUTINE ALLOER
-
-
+!
+!
 !     ***********************
       SUBROUTINE PLANTE(IVAL)
 !     ***********************
@@ -901,9 +901,9 @@
       CALL EXIT(ICODE)
       STOP    ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
       END SUBROUTINE PLANTE
-
-
-
+!
+!
+!
 !                       *****************
                         SUBROUTINE VOISIN
 !                       *****************
@@ -1127,9 +1127,9 @@
 !
       RETURN
       END
-
-
-
+!
+!
+!
 !                       ****************
                         SUBROUTINE ELEBD
 !                       ****************
@@ -1367,8 +1367,8 @@
 !
       RETURN
       END
-
-
+!
+!
 !                       *****************
                         SUBROUTINE STOSEG
 !                       *****************

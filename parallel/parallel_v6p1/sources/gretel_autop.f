@@ -22,30 +22,30 @@
 !
 !history  JAJ
 !+        2001/2
-!+        
-!+   SLIGHTLY CHANGED TO DEAL WITH: 
+!+
+!+   SLIGHTLY CHANGED TO DEAL WITH:
 !
 !history  HW, BAW-HAMBURG
 !+        20/02/2003
-!+        
-!+   IMPROVED READING OF DATASETS 
+!+
+!+   IMPROVED READING OF DATASETS
 !
 !history  JAJ
 !+        14/03/2003
-!+        
-!+   ADDED EXIT CODES 
+!+
+!+   ADDED EXIT CODES
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
+!+   Translation of French comments within the FORTRAN sources into
 !+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,12 +130,12 @@
 !|                                                                  |
 !|==================================================================|
 !
-
+!
       ENDIF
       STOP
       END PROGRAM GRETEL_AUTOP
-
-
+!
+!
 !         *******************************************
           SUBROUTINE RECOMPOSITION_PARTICULAIRE (GEO)
 !         *******************************************
@@ -195,7 +195,7 @@
       INTEGER, DIMENSION(:)  , ALLOCATABLE :: NPOIN,IPOBO,VERIF,IPOBO3D
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: KNOLG
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLESA,IKLE3D
-
+!
       !FABS------------------------------------------------------!
       INTEGER, DIMENSION(:)    , ALLOCATABLE   :: PART
 !=>FABS : NAG BUG
@@ -223,7 +223,7 @@
 !=>FABS
       CHARACTER*32 GEOM
 !<=FABS
-
+!
       CHARACTER*32 RUB,RUBENS
       CHARACTER*32 TEXTLU(200)
       CHARACTER*72 TITRE
@@ -257,15 +257,15 @@
         WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PROCESSORS: '')')
         READ (LI,*) NPROC
         WRITE (LU,*) NPROC
-
+!
         !!!!FABS: NEED TO CHECK  WHETHER THE FILES ARE SERAPHIN OR VOLFIN OR SCP
         !!!!    : BECAUSE THE MERGING METHODS DEPEND ON THE TYPE OF FILES.
-
+!
         IF ((RUBENS.EQ.'E2DSERA').OR.(RUBENS.EQ.'E2DVOL')) THEN
 !
 !     COMPUTATION GEOMETRY FILE, READ UNTIL THE 10 PARAMETERS:
 !
-
+!
 !!!!FABS: ONLY IF GEO FILE IS DECLARED IN PARAL IN THE DICTIONARY
 !FABS-----------------------------------------!
 ! I_S  = LEN (GEO)
@@ -279,7 +279,7 @@
 !!!!FABS: OTHERWISE TAKE THE ROOT E2DGEO
         GEOM = GEO
 !FABS-----------------------------------------!
-
+!
       OPEN(2,FILE=GEOM,FORM='UNFORMATTED',STATUS='OLD',ERR=9990)
       READ(2,ERR=9990)
       READ(2,ERR=9990) NBV1,NBV2
@@ -360,11 +360,11 @@
       DO 5500 I=1,NBV1
         READ(4) TEXTLU(I)
         WRITE(LU,*) 'VARIABLE ',I,' : ',TEXTLU(I)
-
+!
         !!!!FABS: IDENTIFIES THE NUMBER OF THE VARIABLES TO SUM UP
         !!!!      FOR PART_INS => PART(1)
         !!!!      FOR PART_CUM => PART(2)
-
+!
       IF (RUBENS.EQ.'E2DVOL') THEN
         IF ( (TEXTLU(I).EQ.'PARTICULES INST. -')
      &  .OR.(TEXTLU(I).EQ.'PARTICLES INST. -') ) THEN
@@ -377,7 +377,7 @@
        ENDIF
       ENDIF
       WRITE(3) TEXTLU(I)
-
+!
 5500  CONTINUE
 !
 !      IF ((RUBENS.EQ.'E2DVOL').AND.
@@ -400,9 +400,9 @@
         READ(4)  (PARAM(I),I=1,6)
         WRITE(3) (PARAM(I),I=1,6)
       ENDIF
-
+!
       CLOSE(4)
-
+!
 !
 !  5: READS THE VARIABLES NELEM: 4 PARAMETERS
 !
@@ -486,7 +486,7 @@
 !
       READ(2)  (XORIG(I),I=1,NPOIN2)
       READ(2)  (YORIG(I),I=1,NPOIN2)
-
+!
 !
 !------------------------------------------------------------------------------
 !
@@ -606,12 +606,12 @@
 !
 !
       IF (RUBENS.EQ.'E2DSERA') THEN
-
+!
                 !!! FABS: THE FILE IS A SERAFIN FILE.
                 !!!     : THE VALUES ARE CONSIDERED AT THE NODES.
                 !!!     : ONLY ONE PROCESSOR IS CONSIDERED BECAUSE
                 !!!     : THE VALUES ARE THE SAME ON EACH PROCESSOR
-
+!
                 !!! READS THE DATA FROM THE LAST OPEN FILE
                 CALL READ_DATASET
      &   (LOCAL_VALUE,NPOINMAX,NPOIN(1),NBV1,AT,FU,ENDE)
@@ -628,7 +628,7 @@
                         ENDIF
                 END DO
                 GO TO 20000
-
+!
         ELSE
           IF (RUBENS.EQ.'E2DVOL') THEN
             !!! FABS:
@@ -636,7 +636,7 @@
             !!! ARE MODIFIED BY THE PARALLELISATION.
             !!! THE VALUES ARE CONSIDERED AT THE CELLS.
             !!! DEPENDING ON THE CASE, ONE OR ALL PROCESSORS ARE CONSIDERED.
-
+!
             DO IPID = 0,NPROC-1
               !!!! FABS:
               !!!! READS THE DATA AT EACH TIMESTEP
@@ -693,7 +693,7 @@
       !!!!FABS: CLOSES THE INPUT FILE (2)
       !!!!    : AND THE FINAL MERGED FILE (3)
       !!!!    : AS WELL AS THE TEMPORARY FILES ON EACH PROC.
-
+!
       !FABS--------------!
       CLOSE(2)
       CLOSE(3)
@@ -707,9 +707,9 @@
       DEALLOCATE (PART)
       DEALLOCATE (LOCAL_VALUELEM)
 !
-
+!
       ELSE !!!! IF (RUBENS.EQ.'E2DVOL').OR.(RUBENS.EQ.'E2DSERA')
-
+!
       !!!!FABS: THE FILE TO BE READ IS A SCALAR RESULTS FILE.
 !
       OPEN(3,FILE=RUBENS,FORM='FORMATTED',ERR=99991)
@@ -775,7 +775,7 @@
              IF (TITLE.EQ."NBPART_OUT_AT   -'" ) PART_REP(6)=NBVAR-3
              IF (TITLE.EQ."NBPART_NEW_AT   -'" ) PART_REP(7)=NBVAR-3
              IF (TITLE.EQ."NBPART_LOST_AT  -'" ) PART_REP(8)=NBVAR-3
-
+!
            ELSE
              !!!!FABS: FOUND THE NUMBER OF VARIABLES TO COPY
              !!!!      GOES BACK TO THE TOP OF THE FILE TO WRITE THEM OUT
@@ -796,25 +796,25 @@
          !!!!! THERE ARE 3 TITLE LINES !!!!
          !!!!! MAYBE MODIFY TO CONSIDER FROM TIME?
          !!!!! MIGHT NOT NEED IT SINCE THE 3 LINES ARE IN THE CODE: H2D_RESSCP.F
-
+!
          !!!! HAS TO STORE DEPENDING ON THE TIMESTEP
-
+!
 10190    TEMPS = 0
          !!!! COUNTS THE NUMBER OF TIMESTEPS
          DO WHILE (.NOT.ENDEOFFILE)
            READ(FU,*,END=6996) TITLE
            TEMPS = TEMPS + 1
          ENDDO
-
+!
 6996     TEMPS = TEMPS - NBLINE
          WRITE(LU,*) 'NUMBER OF TIME STEPS', TEMPS
-
+!
          IF (IPID.EQ.0) THEN
          ALLOCATE (VALUESCP(1:TEMPS+1,0:NPROC-1,1:NBVAR-3))
          ALLOCATE (SOMMERESU(1:8))
          VALUESCP=0.
          ENDIF
-
+!
          !!!!TO PASS THE TITLE LINES AND COME TO THE SCALAR VALUES
          REWIND(FU)
          DO LINE=1,NBLINE
@@ -860,11 +860,11 @@
        ENDDO
        ENDDO
        GO TO 97909
-
+!
 9799    PRINT*, 'ERROR'
         CALL PLANTE(-1)
         STOP
-
+!
 97909   PRINT*, 'DATA SETS FOUND'
         DO IPID = 0,NPROC-1
         FU = IPID +10
@@ -875,15 +875,15 @@
 !
 1981    FORMAT (A1,A70)
 1010    FORMAT(E14.6,1X,30(E14.6,1X))
-
+!
       END IF !!!! IF (RUBENS.EQ.'E2DVOL').OR.(RUBENS.EQ.'E2DSERA')
 !
       STOP
 !
       END SUBROUTINE RECOMPOSITION_PARTICULAIRE
 !
-
-
+!
+!
          SUBROUTINE RECOMPOSITION_DECOMP_DOMAINE (GEO)
 !
 !***********************************************************************
@@ -916,7 +916,7 @@
 !=>FABS
       CHARACTER(LEN=30), INTENT(IN) :: GEO
 !<=FABS
-
+!
       INTEGER IPID,ERR,FU
       INTEGER NELEM,ECKEN,NDUM,I,J,K,NBV1,NBV2,PARAM(10)
       INTEGER NPLAN,NPOIN2,NPOIN2LOC
@@ -963,7 +963,7 @@
       WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PROCESSORS: '')')
       READ (LI,*) NPROC
       WRITE (LU,*) ' '
-
+!
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
@@ -977,7 +977,7 @@
          IF(RES(I_SP-I:I_SP-I) .NE. ' ') EXIT
       ENDDO
       I_LEN=I_SP - I
-
+!
 !
 !     COMPUTATION GEOMETRY FILE, READ UNTIL THE 10 PARAMETERS:
 !
@@ -1385,11 +1385,11 @@
       END DO
 !
         !!!FABS
-
+!
       END SUBROUTINE RECOMPOSITION_DECOMP_DOMAINE
-
-
-
+!
+!
+!
 !                       ****************************
                         CHARACTER*11 FUNCTION EXTENS
 !                       ****************************
@@ -1469,8 +1469,8 @@
 !
       RETURN
       END
-
-
+!
+!
 !        **********************
          SUBROUTINE SKIP_HEADER
 !        **********************
@@ -1546,8 +1546,8 @@
 !
  999  RETURN
       END
-
-
+!
+!
 !                         ***********************
                           SUBROUTINE READ_DATASET
 !                         ***********************
@@ -1602,9 +1602,9 @@
 !
  999  RETURN
       END
-
-
-
+!
+!
+!
 !                         ****************************
                           SUBROUTINE READ_DATASET_ELEM
 !                         ****************************
@@ -1661,8 +1661,8 @@
 !
  9099  RETURN
       END
-
-
+!
+!
 !                       ******************
                         SUBROUTINE CPIKLE2
 !                       ******************
@@ -1745,8 +1745,8 @@
 !
       RETURN
       END
-
-
+!
+!
 !     *****************************
       SUBROUTINE ALLOER (N, CHFILE)
 !     *****************************
@@ -1781,9 +1781,9 @@
       CALL PLANTE(-1)
       STOP
       END SUBROUTINE ALLOER
-
-
-
+!
+!
+!
 !     ***********************
       SUBROUTINE PLANTE(IVAL)
 !     ***********************

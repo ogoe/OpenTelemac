@@ -26,102 +26,102 @@
 !+        FORTRAN EXTENSION. IT WILL NOT WORK WITH SOME COMPILERS,
 !+        LIKE NAG
 !
-!history  
-!+        
-!+        
-!+   PARTIALLY BASED ON PROGRAM HANSEL, DATED 12TH JULY 1995, 
+!history
+!+
+!+
+!+   PARTIALLY BASED ON PROGRAM HANSEL, DATED 12TH JULY 1995,
 !
 !history  REBEKKA KOPMANN REBEKKA.KOPMANN@BAW.DE;
-!+        
+!+
 !+        V5P1 - 5
-!+   JACEK A. JANKOWSKI JACEK.JANKOWSKI@BAW.DE; 
+!+   JACEK A. JANKOWSKI JACEK.JANKOWSKI@BAW.DE;
 !
 !history  RK
 !+        01-03/2000
 !+        1ST RELEASE
-!+   SEL_METIS & METIS_SEL 
+!+   SEL_METIS & METIS_SEL
 !
 !history  JAJ PINXIT
 !+        12/12/2000
 !+        2ND RELEASE
-!+   PARTITIONING OF GEOMETRY AND 2D RESULT FILES POSSIBLE 
+!+   PARTITIONING OF GEOMETRY AND 2D RESULT FILES POSSIBLE
 !
 !history  JAJ PINXIT
 !+        22/02/2002
 !+        3RD RELEASE
-!+   ERRORS IN BC VALUES IN DECOMPOSED BC FILES REMOVED. 
+!+   ERRORS IN BC VALUES IN DECOMPOSED BC FILES REMOVED.
 !
-!history  
+!history
 !+        17/04/2002
 !+        4TH RELEASE
-!+   PARTITIONING FOR 3D RESULT FILES DONE BY JMH. 
+!+   PARTITIONING FOR 3D RESULT FILES DONE BY JMH.
 !
 !history  JMH
 !+        21/01/2002
 !+        5TH RELEASE
-!+   CORRECTED A WRONG DIMENSION OF THE ARRAY CUT, AN ERROR 
+!+   CORRECTED A WRONG DIMENSION OF THE ARRAY CUT, AN ERROR
 !
 !history  JAJ; MATTHIEU GONZALES DE LINARES
 !+        17/01/2003
 !+        6TH RELEASE
-!+   CORRECTED A WRONG DIMENSION OF THE ARRAY ALLVAR 
+!+   CORRECTED A WRONG DIMENSION OF THE ARRAY ALLVAR
 !
 !history  J-M HERVOUET
 !+        12/03/2003
 !+        7TH RELEASE
-!+   ALGORITHM CHANGED : A SEGMENT IS IN A SUBDOMAIN IF IT BELONGS 
+!+   ALGORITHM CHANGED : A SEGMENT IS IN A SUBDOMAIN IF IT BELONGS
 !
 !history  J-M HERVOUET
 !+        **/09/2003
 !+        8TH RELEASE
-!+   UBOR AND VBOR INVERTED LINE 613 WHEN READING THE CLI FILE 
+!+   UBOR AND VBOR INVERTED LINE 613 WHEN READING THE CLI FILE
 !
 !history  CHARLES MOULINEC
 !+        05/12/2006
-!+        
-!+   MODIFIED TO AVOID THE PATHOLOGICAL CASE 
+!+
+!+   MODIFIED TO AVOID THE PATHOLOGICAL CASE
 !
 !history  OLIVIER BOITEAU (SINETICS)
 !+        19/02/2008
-!+        
-!+   PARAMETERISATION OF ARRAY DIMENSIONS LIKE NACHB 
+!+
+!+   PARAMETERISATION OF ARRAY DIMENSIONS LIKE NACHB
 !
 !history  PASCAL VEZOLLE (IBM)
 !+        15/05/2008
-!+        
-!+   INCREASED THE NUMBER OF MAXIMAL PARTITIONS FROM 1000 TO 100000 
+!+
+!+   INCREASED THE NUMBER OF MAXIMAL PARTITIONS FROM 1000 TO 100000
 !
 !history  JEAN-MICHEL HERVOUET (LNHE)
 !+        16/06/2008
-!+        
-!+   ADAPTING VOISIN_PARTEL FOR MESHES WHICH ARE NOT REALLY 
+!+
+!+   ADAPTING VOISIN_PARTEL FOR MESHES WHICH ARE NOT REALLY
 !
 !history  JAJ PINXIT
 !+        03/07/2008
-!+        
-!+   HALO ELEMENTS NEIGHBOURHOOD DESCRIPTION ADDED. 
+!+
+!+   HALO ELEMENTS NEIGHBOURHOOD DESCRIPTION ADDED.
 !
 !history  JAJ
 !+        12/08/2008
-!+        
-!+   APPENDING PARTITIONED BC FILES WITH ELEMENTAL INTERFACE DESCRIPTION 
+!+
+!+   APPENDING PARTITIONED BC FILES WITH ELEMENTAL INTERFACE DESCRIPTION
 !
 !history  CHRISTOPHE DENIS (EDF SINETICS)
 !+        29/01/2009
-!+        
-!+   DECREASES THE COMPUTING TIME. 
+!+
+!+   DECREASES THE COMPUTING TIME.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -282,7 +282,7 @@
       LNG=2 ! I DO NOT SPEAK FRENCH, I AM BARBARIEN
       LU=6  ! FORTRAN STANDARD OUPUT CHANNEL
       LI=5  ! FORTRAN STANDARD INPUT CHANNEL
-
+!
 !----------------------------------------------------------------------
 ! NAMES OF THE INPUT FILE TO EVENTUALLY GUIDE TO PARES3D
 ! IF PARALLEL COMPUTATION WITH ESTEL3D
@@ -430,7 +430,7 @@
         END IF
       END DO
       IF (I==1) WITH_SECTIONS=.TRUE.
-
+!
       IF (WITH_SECTIONS) THEN
         DO
           WRITE(LU, ADVANCE='NO', FMT=
@@ -943,7 +943,7 @@
         WRITE(LU,*) ' RUNTIME OF METIS ',
      &            (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
       ENDIF
-
+!
 !======================================================================
 ! STEP 3 : ALLOCATES THE GLOBAL ARRAYS NOT DEPENDING OF THE PARTITION
 !
@@ -994,7 +994,7 @@
 !     BELONGING TO SUBMESH I
 !
 !======================================================================
-
+!
 !     FIRSTLY, ALL MPI PROCESSES  WORK ON THE WHOLE MESH
 !     ----------------------------------------------
 !
@@ -1018,7 +1018,7 @@
          END DO
       END DO
       DO I=1,NPARTS
-
+!
 !     LOOP OVER THE FINITE ELEMENT OF THE MESH TO COMPUTE
 !     THE NUMBER OF THE FINITE ELEMENT AND POINTS BELONGING
 !     TO SUBMESH I
@@ -1044,7 +1044,7 @@
  !     WRITE(LU,*) 'AFTER THE FIRST LOOP'
       MAX_NELEM_P=MAXVAL(NELEM_P)
       MAX_NPOIN_P=MAXVAL(NPOIN_P)
-
+!
 !     ELEGL(E) => GLOBAL LABEL OF THE FINITE ELEMENT E
 !     E IS THE LOCAL LABEL ON SUBMESH I
       ALLOCATE (ELELG(MAX_NELEM_P,NPARTS),STAT=ERR)
@@ -1070,7 +1070,7 @@
 !     EF_II(E) IS THE LOCAL LABEL OF THE INTERFACE FINITE ELEMENT NUMBER E
       ALLOCATE (EF_II(MAX_NELEM_P),STAT=ERR)
       IF (ERR.NE.0) CALL ALLOER (LU, 'EF_II')
-
+!
 !======================================================================
 !     STEP 5 : INITIALISES LOCAL ARRAYS
 !                  (GELELG AND ELELG, NBRE_EF_LOC)
@@ -1162,14 +1162,14 @@
             END IF
          END DO
  ! FIRST LOOP TO COMPUTE THE NUMBER OF HALO TO ALLOCATE IFAPAR
-
+!
 !     FILLS IFAPAR
          NHALO(I)=0
          DO J=1,NBRE_EF_I       ! ONLY GOES THRU INTERFACIAL FINITE ELEMENTS TO DETERMINE HALO
             EF=EF_I(J)
             HALO=.FALSE.
             IFALOC(:)=IFABOR(EF,:)
-
+!
             WHERE (IFALOC .GT. 0)
                IFALOC=EPART(IFALOC)
             END WHERE
@@ -1186,7 +1186,7 @@
                IFAPAR(I,5:7,NHALO(I))=IFABOR(EF_I(J),:)
             END IF
          END DO
-
+!
                                 !
 !       WRITE(LU,*) 'SOUS DOMAINE ',I,'NBRE POINTS',NPOIN_P(I),
 !     C        'NBRE NOEUD INTE',NBRE_NOEUD_INTERNE,'INTERFACE',
@@ -1418,7 +1418,7 @@
       DEALLOCATE(CUT)
       DEALLOCATE(CUT_P)
       DEALLOCATE(SORT)
-
+!
       IF (ERR.NE.0) CALL ALLOER (LU, 'F_P')
       ALLOCATE(IKLES_P(MAX_NELEM_P*3),STAT=ERR)
       IF(NPLAN.GT.1) THEN
@@ -1488,7 +1488,7 @@
            WRITE(NOUT)
      &          ((IKLES_P((J-1)*3+K),K=1,3),J=1,NELEM_P(I))
         ELSE
-
+!
            WRITE(NOUT)
      &         (((IKLES3D_P(L,J,K),L=1,6),J=1,NELEM_P(I)),K=1,NPLAN-1)
         ENDIF
@@ -1509,7 +1509,7 @@
           WRITE(NOUT) (F_P(J,1,I),J=1,NPOIN_P(I))
           WRITE(NOUT) (F_P(J,2,I),J=1,NPOIN_P(I))
         ELSE
-
+!
           WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,1),J=1,NPOIN_P(I)),
      &          L=1,NPLAN)
           WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,2),J=1,NPOIN_P(I)),
@@ -1528,7 +1528,7 @@
           ELSE
              WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,K),J=1,NPOIN_P(I)),
      &            L=1,NPLAN)
-
+!
           ENDIF
         END DO
 !
@@ -1935,9 +1935,9 @@
       CALL PLANTE2(-1)
  999  STOP
       END PROGRAM PARTEL
-
-
-
+!
+!
+!
 !     *****************************
       SUBROUTINE ALLOER (N, CHFILE)
 !     *****************************
@@ -1972,8 +1972,8 @@
       CALL PLANTE2(-1)
       STOP
       END SUBROUTINE ALLOER
-
-
+!
+!
 !     ****************************
       SUBROUTINE ALLOER2(N,CHFILE)
 !     ****************************
@@ -2008,8 +2008,8 @@
       CALL PLANTE2(-1)
       STOP
       END SUBROUTINE ALLOER2
-
-
+!
+!
 !     *************************
       SUBROUTINE PLANTE2 (IVAL)
 !     *************************
@@ -2050,8 +2050,8 @@
       CALL EXIT(ICODE)
       STOP    ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
       END SUBROUTINE PLANTE2
-
-
+!
+!
 !                       *********************************
                         CHARACTER(LEN=11) FUNCTION EXTENS
 !                       *********************************
@@ -2088,15 +2088,15 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER IPID,N
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF(N.GT.0) THEN
-C
+!
         EXTENS='00000-00000'
-C
+!
         IF(N.LT.10) THEN
           WRITE(EXTENS(05:05),'(I1)') N
         ELSEIF(N.LT.100) THEN
@@ -2108,7 +2108,7 @@ C
         ELSE
           WRITE(EXTENS(01:05),'(I5)') N
         ENDIF
-C
+!
         IF(IPID.LT.10) THEN
           WRITE(EXTENS(11:11),'(I1)') IPID
         ELSEIF(IPID.LT.100) THEN
@@ -2120,19 +2120,19 @@ C
         ELSE
           WRITE(EXTENS(07:11),'(I5)') IPID
         ENDIF
-C
+!
       ELSE
-C
+!
         EXTENS='       '
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-
-
+!
+!
 !                       ************************
                         SUBROUTINE FRONT2_PARTEL
 !                       ************************
@@ -2445,7 +2445,7 @@ C
       IF(NFRLIQ.NE.0) THEN
         IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,70) NFRLIQ
         IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,170) NFRLIQ
-
+!
         DO 80 K = 1, NFRLIQ
 !
 !  LIQUID BOUNDARIES ARE NUMBERED
@@ -2474,7 +2474,7 @@ C
       IF(NFRSOL.NE.0) THEN
         IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,100) NFRSOL
         IF(LISTIN.AND.LNG.EQ.2) WRITE(LU,101) NFRSOL
-
+!
         DO 110 K = 1, NFRSOL
 !
 !  MARKS SOLID BOUNDARIES (WHY NOT?)
@@ -2555,8 +2555,8 @@ C
 !
       RETURN
       END
-
-
+!
+!
 !                       ************************
                         SUBROUTINE VOISIN_PARTEL
 !                       ************************
@@ -2769,7 +2769,7 @@ C
 !
       RETURN
       END
-
+!
 !                       ***********************
                         SUBROUTINE ELEBD_PARTEL
 !                       ***********************
@@ -3009,7 +3009,7 @@ C
         IKLBOR(K,2) = KP1BOR(K,1)
 !
 80    CONTINUE
-
+!
 ! -----
 !      DO K=1,NPTFR
 !         WRITE(89,*) KP1BOR(K,1)
@@ -3027,7 +3027,7 @@ C
 !
       RETURN
       END
-
+!
 !                       ******************
                         SUBROUTINE PARES3D
 !                       ******************
@@ -3104,14 +3104,14 @@ C
       CHARACTER(LEN=80)  :: TITRE      ! MESH TITLE IN THE FILE
       CHARACTER(LEN=2)   :: MOINS1     ! "-1"
       CHARACTER(LEN=4)   :: BLANC      ! WHITE SPACE
-
+!
       ! ADDITION JP RENAUD 15/02/2007
       CHARACTER(LEN=200) :: LINE       ! ONE LINE, 200 CHARACTERS MAXADDCH
       INTEGER            :: POS        ! POSITION OF A CHARACTER IN THE LINE
       INTEGER            :: IOS        ! STATUS INTEGER
       ! END ADDITION JP RENAUD
       CHARACTER(LEN=72) :: THEFORMAT
-
+!
       CHARACTER(LEN=80), ALLOCATABLE :: LOGFAMILY(:)  ! LOG INFORMATIONS
       INTEGER            :: NSEC       ! TYPE OF THE SECTION READ
       INTEGER, PARAMETER :: NSEC1=151  ! MESH TITLE SECTION ID
@@ -3235,8 +3235,8 @@ C
 !D********************************************************
       INTEGER SOMFAC(3,4)
       DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /
-
-
+!
+!
 !-----------------------------------------------------------------------
 ! 1. PREAMBLE
 !---------------
@@ -3277,8 +3277,8 @@ C
           EXIT
         ENDIF
       ENDDO
-
-
+!
+!
 ! FINDS THE INPUT FILES CORE NAME LENGTH
       I_S  = LEN(NAMEINP)
       I_SP = I_S + 1
@@ -3302,7 +3302,7 @@ C
       REWIND(NINP)
       OPEN(NLOG,FILE=NAMELOG,STATUS='OLD',FORM='FORMATTED',ERR=130)
       REWIND(NLOG)
-
+!
 !----------------------------------------------------------------------
 ! 2A. READS .LOG FILE
 !---------------
@@ -3316,9 +3316,9 @@ C
         READ(NLOG,50,ERR=111,END=120)LOGFAMILY(I)
       ENDDO
       NBCOLOR=0
-
+!
 !      READ(NLOG,531,ERR=110,END=120)NBCOLOR
-
+!
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
       IF (IOS .NE. 0) THEN
          !         '!----------------------------------!'
@@ -3332,7 +3332,7 @@ C
          !         '!-------------------------------!'
          TEXTERROR='! PROBLEM WITH THE NUMBER COLOR !'
       ENDIF
-
+!
       ALLOCATE(PRIORITY(NBCOLOR),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,' PRIORITY')
       WRITE(LU,92) NPOINT
@@ -3343,7 +3343,7 @@ C
         CALL PLANTE2(-1)
         STOP
       ENDIF
-
+!
       ! MODIFICATION JP RENAUD 15/02/2007
       ! SOME TEXT HAS BEEN ADDED BEFORE THE LIOST OF PRIORITIES.
       ! READS A 200 CHARACTER LINE, FINDS THE ':' AND THEN
@@ -3369,7 +3369,7 @@ C
 !
 ! 2B. ALLOCATES ASSOCIATED MEMORY
 !---------------
-
+!
 !D    ****************************** ALLOCATION MEMORY ADDED BY CD
       ALLOCATE(NELEM_P(NPARTS),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,'NELEM_P')
@@ -3378,7 +3378,7 @@ C
       ALLOCATE(NODELG(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,'NODELG')
 !D    *******************************
-
+!
       ALLOCATE(X1(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,' X1')
       ALLOCATE(Y1(NPOINT),STAT=IERR)
@@ -3409,7 +3409,7 @@ C
       IF (IERR.NE.0) CALL ALLOER(LU,' NELEMSD')
       ALLOCATE(NPOINTISD(NPARTS),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,' NPOINTISD')
-
+!
 !F.D
       ALLOCATE(NBOR2(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,' NBOR2')
@@ -3421,56 +3421,56 @@ C
       IF (IERR.NE.0) CALL ALLOER(LU,' GLOB_2_LOC')
       ALLOCATE(IKLES(NELEMTOTAL,4),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,' IKLES')
-
-
+!
+!
       READ_SEC1 = .TRUE.
       READ_SEC2 = .TRUE.
       READ_SEC3 = .TRUE.
-
+!
       DO WHILE ( READ_SEC1 .OR. READ_SEC2 .OR. READ_SEC3 )
-
+!
           MOINS1 = '  '
           BLANC  = '1111'
           DO WHILE (MOINS1/='-1' .OR. BLANC/='    ')
               READ(NINP,2000, ERR=1100, END=1200) BLANC, MOINS1
           END DO
-
+!
  2000     FORMAT(A4,A2)
-
+!
           NSEC = -1
-
+!
           DO WHILE (NSEC == -1)
               READ(NINP,*, ERR=1100, END=1200) NSEC
           END DO
-
+!
  2100     FORMAT(I10)
-
+!
           SELECT CASE (NSEC)
-
+!
           CASE ( NSEC1 )
-
+!
               READ_SEC1 = .FALSE.
-
+!
               READ(NINP,25,ERR=1100, END=1200) TITRE
-
+!
  25           FORMAT(A80)
-
+!
           CASE ( NSEC2 )
-
+!
               READ_SEC2 = .FALSE.
               NCOLOR(:) = -1
               TEMPO(:)  =  0
-
+!
               DO IELEM = 1, NPOINT
                  READ(NINP,*,ERR=1100,END=1200) N, N1, N2, NCOLOR(IELEM)
           READ(NINP,*,ERR=1100,END=1200) X1(IELEM), Y1(IELEM), Z1(IELEM)
                  TEMPO(N) = IELEM
               END DO
-
+!
           CASE (NSEC3 )
-
+!
              READ_SEC3 = .FALSE.
-
+!
              NBTET         = 0  ! NUMBER OF TETRA ELEMENTS TO 0
              NBTRI         = 0  ! NUMBER OF BORDER ELEMENTS TO 0
              NPTFR         = 0  ! NUMBER OF BORDER NODES TO 0
@@ -3478,7 +3478,7 @@ C
              SIZE_FLUX     = 0  ! NUMBER OF USER SURFACES TO 0
              NBOR2(:)      = 0  ! LOCAL TO GLOBAL NUMBERING
              GLOB_2_LOC(:) = 0  ! GLOBAL TO LOCAL NUMBERING
-
+!
 !OB'S STUFF
              ECOLOR(:)    = -1
              IKLESTET(:)  = -1
@@ -3488,7 +3488,7 @@ C
              CONVTET(:)   = -1
 !
              IKLESTRIN(:,:) = -1
-
+!
              FACE_CHECK(:) = .FALSE.
              !
              COLOR_PRIO(:)  = 0
@@ -3497,28 +3497,28 @@ C
              DO K = 1, NBCOLOR
                 COLOR_PRIO(PRIORITY(K)) = K
              END DO
-
+!
              DO IELEM = 1, NELEMTOTAL
-
+!
             READ(NINP,*,ERR=1100,END=1200) NSEC,ELEM,N1,N2,NSOLS,N3
-
+!
                 IF (NSEC == -1) EXIT
-
+!
                 SELECT CASE ( ELEM )
-
+!
                 CASE ( 111 )
-
+!
                    NBTET        = NBTET + 1
-
+!
                    ECOLOR(IELEM) = NSOLS
-
+!
                READ(NINP,*, ERR=1100, END=1200) IKLE1,IKLE2,IKLE3,IKLE4
-
+!
                    IKLES(IELEM, 1) = TEMPO(IKLE1)
                    IKLES(IELEM, 2) = TEMPO(IKLE2)
                    IKLES(IELEM, 3) = TEMPO(IKLE3)
                    IKLES(IELEM, 4) = TEMPO(IKLE4)
-
+!
 !OB'S STUFF
                    N=4*(NBTET-1)+1
                    IKLESTET(N)=IKLE1    ! CONNECTIVITY VECTOR
@@ -3528,37 +3528,37 @@ C
                    TYPELEM(IELEM,1)=ELEM    ! TO SORT THE ELEMENTS
                    TYPELEM(IELEM,2)=NBTET   ! POUR CONRELEASE NUM ELT> NUM TETRA
                    CONVTET(NBTET)=IELEM     ! THE OPPOSITE
-
+!
                 CASE ( 91 )
-
+!
                    IF (NSOLS.GT.0) THEN
-
+!
                       IF ( NSOLS > NCOL ) THEN
                          WRITE(LU,*) 'COLOR ID POUR SURFACES EXTERNES ',
      &                        ' TROP GRAND. LA LIMITE EST : ',NCOL
                       END IF
-
+!
                       PRIO_NEW = COLOR_PRIO(NSOLS)
-
+!
                       IF ( PRIO_NEW .EQ. 0 ) THEN
                          WRITE(LU,*) ' NUMERO DE FACE NON DECLARE',
      &                        'DANS LE TABLEAU UTILISATEUR LOGFAMILY ',
      &                        'VOIR LE FICHIER DES PARAMETRES '
                          CALL PLANTE2(1)
                       END IF
-
+!
                       FACE_CHECK(PRIO_NEW) = .TRUE.
-
+!
                       NBTRI = NBTRI + 1
-
+!
                       ECOLOR(IELEM) = NSOLS
-
+!
                      READ(NINP,*, ERR=1100, END=1200) IKLE1, IKLE2,IKLE3
-
+!
                       IKLES(IELEM, 1) = TEMPO(IKLE1)
                       IKLES(IELEM, 2) = TEMPO(IKLE2)
                       IKLES(IELEM, 3) = TEMPO(IKLE3)
-
+!
 !OB'S STUFF
                       N=3*(NBTRI-1)+1
                       IKLESTRI(N)=IKLE1
@@ -3567,31 +3567,31 @@ C
                       TYPELEM(IELEM,1)=ELEM    ! SAME AS FOR TETRA
                       TYPELEM(IELEM,2)=NBTRI
                       CONVTRI(NBTRI)=IELEM
-
+!
                       DO J=1,3
-
+!
                          IKL = IKLES(IELEM,J)
-
+!
                          IPTFR = GLOB_2_LOC(IKL)
-
+!
                          IF ( IPTFR .EQ. 0 ) THEN
-
+!
                             NPTFR           = NPTFR+1
                             NBOR2(NPTFR)    = IKL
                             GLOB_2_LOC(IKL) = NPTFR
                             IPTFR           = NPTFR
-
+!
                          END IF
-
+!
                     ENDDO  ! LOOP OVER THE NODES OF THE ELEMENT
-
+!
                  ELSE IF (NSOLS.LT.0) THEN
                     !
                     ! USER-DEFINED SURFACE FOR FLUXES COMPUTATION
                     !
                     ! NELIN IS THE COUNTER FOR THE INTERNAL ELEMENTS.
                     ! ACTUALLY, WE ARE READING THE NEXT INTERNAL ELEMENT.
-
+!
                     ! NSOLS_OLD IS USED FOR SAVING USE OF A NEW VARIABLE
                     NSOLS_OLD = -NSOLS
                     !
@@ -3613,45 +3613,45 @@ C
                          IKLESTRIN(NELIN,4) = TEMPO(IKLE3)
                     !
                  ELSE           ! THIS IS AN INNER SURFACE, JUST READS THE LINE
-
+!
                     READ(NINP,*, ERR=1100, END=1200) IKLE1, IKLE2,IKLE3
-
+!
                  END IF
-
+!
               CASE DEFAULT      ! THIS IS AN UNKNOWN ELEMENT
-
+!
                  WRITE(LU,*) 'ELEMENT INCONNU DANS LE MAILLAGE'
-
+!
               END SELECT        ! THE TYPE OF THE MESH ELEMENT
-
+!
            END DO               ! LOOP OVER ELEMENTS TO READ
-
+!
            DO K=1,NBCOLOR
               IF ( .NOT. FACE_CHECK(K)) THEN
                  WRITE(LU,*) ' LA COULEUR DE FACE ',LOGFAMILY(K),
      &                ' N''APPARAIT PAS DANS LE MAILLAGE.'
               END IF
            END DO
-
+!
 !-----------------------------------------------------------------------
-
+!
       END SELECT                ! TYPE OF THE SECTION
-
+!
       END DO                    ! WHILE LOOP OVER SECTIONS TO READ
-
+!
 !------------------------------------------------------- FIN VERSION F.D
-
+!
 ! CORRECTS THE TOTAL NUMBER OF ELEMENTS BECAUSE THAT IN THE .LOG
 ! INCLUDES ELEMENTS NOT TAKEN INTO ACCOUNT IN AN ESTEL STUDY
       NELEMTOTAL=NBTET+NBTRI
-
+!
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(2),COUNT_RATE=PARSEC)
       WRITE(LU,*)' TEMPS DE LECTURE FICHIERS LOG & UNV',
      &           (1.0*(TEMPS_SC(2)-TEMPS_SC(1)))/(1.0*PARSEC),' SECONDS'
 !----------------------------------------------------------------------
 ! 3A. BUILDS TETTRI/TETTRI2: CORRESPONDENCE TETRA > TRIA
 !---------------
-
+!
       ALLOCATE(NELBOR(NBTRI),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,' NELBOR')
       ALLOCATE(NULONE(NBTRI,3),STAT=IERR)
@@ -3699,7 +3699,7 @@ C
 !        ENDDO  ! TETRAHEDRONS LOOP
 !      ENDDO ! BOUNDARY TRIANGLES LOOP
 !------------------------------------------------------- FIN VERSION O. BOITEAU
-
+!
 !------------------------------------------------------- DEBUT VERSION F.D
       ALLOCATE(TETTRI(4*NBTET),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,' TETTRI')
@@ -3740,22 +3740,22 @@ C
       DEALLOCATE(NBOR2)
 !
       WRITE(LU,*) 'VOISIN31'
-
+!
       CALL VOISIN31_PARTEL (IFABOR, NBTET, NBTET,
      &              IKLE,NBTET,NPOINT,NBOR,NPTFR)
-
+!
       WRITE(LU,*) 'FIN DE VOISIN31'
-
+!
       ALLOCATE(IPOBO(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,'IPOBO')
-
+!
       CALL ELEBD31_PARTEL( NELBOR, NULONE, IKLBOR,
      &              IFABOR, NBOR, IKLE,
      &              NBTET, NBTRI, NBTET, NPOINT,
      &              NPTFR,IPOBO)
-
+!
       DEALLOCATE(IPOBO)
-
+!
       WRITE(LU,*) 'FIN DE ELEBD31'
       ALLOCATE(NUMBER_TRIA(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL ALLOER(LU,'NUMBER_TRIA')
@@ -3791,8 +3791,8 @@ C
          POS=TRI_REF(THE_TRI,0)
          TRI_REF(THE_TRI,POS)=J
       END DO
-
-
+!
+!
       DO IELEB = 1,NBTRI
          IELEM = NELBOR(IELEB)
          IKLE1 = NBOR(IKLBOR(IELEB,1))
@@ -3860,7 +3860,7 @@ C
 !
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(3),COUNT_RATE=PARSEC)
 !------------------------------------------------------- FIN VERSION F.D
-
+!
 ! 3B. BUILDS NODES1/NODES2/NODES3: REVERSE CONNECTIVITY NODE > TETRA
 !     TO WRITE ON THE FLY IN LOCAL UNV
 !---------------
@@ -3909,7 +3909,7 @@ C
           ENDIF
         ENDDO
       ENDDO
-
+!
 ! 3C. BUILDS NODES1T/NODES2T/NODES3T: REVERSE CONNECTIVITY NODE > TRIA
 !     FOR THE NODE COLOUR (DIRICHLET ON THE INTERFACE)
 !---------------
@@ -3956,18 +3956,18 @@ C
       WRITE(LU,*)' TEMPS CONNECTIVITE INVERSE PART1/ PART2',
      &          (1.0*(TEMPS_SC(3)-TEMPS_SC(2)))/(1.0*PARSEC),'/',
      &          (1.0*(TEMPS_SC(4)-TEMPS_SC(3)))/(1.0*PARSEC),' SECONDS'
-
+!
 !----------------------------------------------------------------------
 ! 4. PARTITIONS
 !---------------
-
+!
 !        DO I=1,4*NBTET
 !                WRITE(LU,*) 'TETTRIALPHA',TETTRI(I)
 !        ENDDO
 !        DO I=1,NBTET
 !                WRITE(LU,*) 'TETTRIBETA',TETTRI2(I)
 !        ENDDO
-
+!
       WRITE(LU,*)' '
       WRITE(LU,*)' STARTING METIS MESH PARTITIONING------------------+'
       ALLOCATE(EPART(NBTET),STAT=IERR)
@@ -4053,7 +4053,7 @@ C
 ! 5A. ALLOCATIONS TO WRITE THE FILES .UNV/.LOG ASSOCIATING A
 !     SUB-DOMAIN BY PROC
 !------------
-
+!
       NAMEINP2=NAMEINP
       NAMELOG2=NAMELOG
       BLANC='    '
@@ -4107,17 +4107,17 @@ C
           ENDIF
         ENDDO
       ENDDO
-
+!
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(7),COUNT_RATE=PARSEC)
-
+!
 !      DO IELEM = 1, NPOINT
 !         WRITE(LU,*) 'NCOLOR2',NCOLOR2(IELEM)
 !      ENDDO
-
+!
 !      DO IELEM = 1, NBCOLOR
 !         WRITE(LU,*) 'PRIOR',PRIORITY(IELEM)
 !      ENDDO
-
+!
 ! OB START
 !--------------
 ! ADDITION TO TAKE THE NODE COLOURS FOR THE TETRAS LINKED TO
@@ -4200,7 +4200,7 @@ C
      &            (1.0*(TEMPS_SC(7)-TEMPS_SC(6)))/(1.0*PARSEC),'/',
      &           (1.0*(TEMPS_SC(8)-TEMPS_SC(7)))/(1.0*PARSEC),' SECONDS'
 !$$$      WRITE(LU,*)'IDEM RELEASE DE REFERENCE'
-
+!
 ! 5C. EFFECTIVELY FILLS IN UNV BY SD
 !---------------
       IBID = 1
@@ -4210,7 +4210,7 @@ C
       DEJA_TROUVE(:)=.FALSE.
 !
       DO IDD=1,NPARTS  ! LOOP ON THE SUB-DOMAINS
-
+!
 ! NUMBER OF TRIANGLES FOR THIS SUBDOMAIN
         NBTRIIDD=0
 ! NAME OF UNV FILE BY SUBDOMAIN
@@ -4218,13 +4218,13 @@ C
         OPEN(NINP2,FILE=NAMEINP2,STATUS='UNKNOWN',FORM='FORMATTED',
      &       ERR=132)
         REWIND(NINP2)
-
+!
 ! NAME OF THE LOG FILE BY SUBDOMAIN
         NAMELOG2(I_LENLOG+1:I_LENLOG+11) = EXTENS(NPARTS-1,IDD-1)
         OPEN(NLOG2,FILE=NAMELOG2,STATUS='UNKNOWN',FORM='FORMATTED',
      &       ERR=133)
         REWIND(NLOG2)
-
+!
 ! TITLE (UNV BY SD)
         WRITE(NINP2,60,ERR=112)BLANC,MOINS1
         WRITE(NINP2,61,ERR=112)NSEC1
@@ -4281,7 +4281,7 @@ C
 !      ENDDO
         NPOINTSD(IDD)=COMPT-1  ! NUMBER OF NODES IN SUBDOMAIN IDD
         WRITE(NINP2,60,ERR=112)BLANC,MOINS1
-
+!
 ! BLOCK CONNECTIVITIES/MESH COLOUR (UNV BY SD)
         WRITE(NINP2,60,ERR=112)BLANC,MOINS1
         WRITE(NINP2,61,ERR=112)NSEC3
@@ -4344,7 +4344,7 @@ C
         !    ENDIF  ! OVER EPART
       !    ENDIF  ! OVER TYPELEM
         ENDDO ! OVER J
-
+!
 ! CAN NOW RECOPY THE BLOCK OF TRIANGLES
         ELEM=91
         DO J=1,NBTRIIDD
@@ -4379,7 +4379,7 @@ C
 !        WRITE(NINP2,68,ERR=112) 1,0,0,0,0,0,0,0
         CLOSE(NINP2)
         NELEMSD(IDD)=COMPT-1  ! NUMBER OF CELLS IN SUBDOMAIN IDD
-
+!
 ! 5D. EFFECTIVELY FILLS IN LOG BY SD
 !---------------
 ! STANDARD ELEMENT OF THE LOG FILE (LOG BY SD)
@@ -4390,14 +4390,14 @@ C
         DO J=1,NBFAMILY
           WRITE(NLOG2,50,ERR=113)LOGFAMILY(J)
         ENDDO
-
+!
         ! ADDITION BY JP RENAUD ON 15/02/2007
         ! AS THE LIST OF PRIORITIES HAS MOVED IN ESTEL-3D FROM
         ! THE STEERING FILE TO THE LOG FILE, WE NEED TO WRITE "A"
         ! NUMBER OF EXTERNAL FACES + PRIORITY LIST HERE. AS THESE
         ! ARE NOT USED IN PARALLEL MODE, WE MERELY COPY THE LIST
         ! FROM THE ORIGINAL LOG FILE.
-
+!
         WRITE(NLOG2,531,ERR=113) NBCOLOR
         WRITE(UNIT=THEFORMAT,FMT=1000) NBCOLOR
 1000    FORMAT('(''PRIORITY :'',',I3,'(X,I3,))')
@@ -4405,9 +4405,9 @@ C
 !        WRITE(LU,*) 'FORMATT =',THEFORMAT
         WRITE (NLOG2,FMT=THEFORMAT(1:LEN(THEFORMAT)-1))
      &  (PRIORITY(I), I=1, NBCOLOR)
-
+!
         ! END ADDITION BY JP RENAUD
-
+!
 ! KNOLG (LOG BY SD)
         NT=NPOINTSD(IDD)
         NI=NT/6
@@ -4431,7 +4431,7 @@ C
                     ! MESH TO ALLOCATE KNOGL IN ESTEL
 !
       ENDDO  ! LOOP ON THE SUB-DOMAINS
-
+!
 ! 5E. ADDITIONAL WORK TO DETERMINE NACHB BEFORE IT IS WRITTEN
 !      TO THE LOG
 !---------------
@@ -4452,7 +4452,7 @@ C
           ENDIF
         ENDDO              ! END LOOP OVER POINTS
         NPOINTISD(IDD)=COMPT ! NUMBER OF INTERFACE POINTS FOR IDD
-
+!
 ! 5F. RESUMES WRITING TO THE .LOG FILE
 !-------------
         NAMELOG2(I_LENLOG+1:I_LENLOG+11) = EXTENS(NPARTS-1,IDD-1)
@@ -4507,7 +4507,7 @@ C
 !----------------------------------------------------------------------
 ! 6. PRINTS OUT TO PARTEL.LOG AND TESTS COMPLETION OF PARTITIONING
 !------------
-
+!
       WRITE(LU,*)' '
       COMPT1=0
       COMPT2=0
@@ -4527,11 +4527,11 @@ C
       WRITE(LU,*)' '
       WRITE(LU,*)' WRITING GEOMETRY FILE FOR EACH PROCESSOR'
       WRITE(LU,*)' WRITING LOG FILE FOR EACH PROCESSOR'
-
+!
 !----------------------------------------------------------------------
 ! 7. MISCELLANEOUS
 !---------------
-
+!
 ! 7.A LOG FORMAT
 !---------------
    50 FORMAT(A80)         ! OTHER LINES
@@ -4542,35 +4542,35 @@ C
    53 FORMAT(' TOTAL NO. OF FAMILIES                :    ',I10)
   531 FORMAT(' TOTAL NUMBER OF EXTERNAL FACES       :    ',I10)
    54 FORMAT(' DEBUT DE KNOLG: ',I10,' ',I10)
-
+!
  5401 FORMAT(6I5)              ! PRIORITY
  5411 FORMAT(I5)               !
  5421 FORMAT(2I5)              !
  5431 FORMAT(3I5)              !
  5441 FORMAT(4I5)              !
  5451 FORMAT(5I5)              !
-
+!
   540 FORMAT(6I10)        ! LINE OF BLOCK KNOLG AND PRIORITY
   541 FORMAT(I10)         ! LAST LINE OF BLOCK KNOLG
   542 FORMAT(2I10)        ! LAST LINE OF BLOCK KNOLG
   543 FORMAT(3I10)        ! LAST LINE OF BLOCK KNOLG
   544 FORMAT(4I10)        ! LAST LINE OF BLOCK KNOLG
   545 FORMAT(5I10)        ! LAST LINE OF BLOCK KNOLG
-
+!
   641 FORMAT(I7)         ! LAST LINE OF BLOCK NACHB
   642 FORMAT(2I7)        ! LAST LINE OF BLOCK NACHB
   643 FORMAT(3I7)        ! LAST LINE OF BLOCK NACHB
   644 FORMAT(4I7)        ! LAST LINE OF BLOCK NACHB
   645 FORMAT(5I7)        ! LAST LINE OF BLOCK NACHB
   640 FORMAT(6I7)        ! LAST LINE OF BLOCK NACHB
-
-
-
+!
+!
+!
    55 FORMAT(' FIN DE KNOLG: ',I10)
    56 FORMAT(' DEBUT DE NACHB: ',I10)
   561 FORMAT(10I10)        ! LINE OF BLOCK NACHB
    57 FORMAT(' FIN DE NACHB: ')
-
+!
 ! 7B. UNV FORMAT
 !---------------
    60 FORMAT(A4,A2)       ! '    -1'
@@ -4583,7 +4583,7 @@ C
    67 FORMAT(3I10)        ! LINE 2 OF BLOCK CONNECTIVITY IF TRIANGLE
    68 FORMAT(8I10)        ! DUMMY BLOCK TO INDICATE END OF BLOCK
                           ! CONNECTIVITY
-
+!
 ! 7.C PRINTOUTS TO PARTEL.LOG
 !---------------
    80 FORMAT(' #NUMBER TOTAL OF ELEMENTS: ',I8,
@@ -4605,7 +4605,7 @@ C
    92 FORMAT('  NUMBER OF NODES:',I10)
    93 FORMAT('  NUMBER OF ELEMENTS:',I10)
    94 FORMAT('  NUMBER OF COLORS:',I5)
-
+!
 ! 7.D DEALLOCATES
 !---------------
       DEALLOCATE(X1,Y1,Z1)
@@ -4622,7 +4622,7 @@ C
       DEALLOCATE(NELEM_P)
       DEALLOCATE(NPOIN_P)
       RETURN
-
+!
 ! 7.E ERROR MESSAGES
 !---------------
   110 TEXTERROR='! UNEXPECTED FILE FORMAT: '//NAMELOG//' !'
@@ -4700,13 +4700,13 @@ C
  1200 TEXTERROR='ERREUR DE FIN DE LECTURE DU FICHIER UNV '//
      &  'VIA MESH_CONNECTIVITY'
       GOTO 999
-
+!
   999 CALL ALLOER2(LU,TEXTERROR)
 !
       END SUBROUTINE PARES3D
-
-
-
+!
+!
+!
 !                       *************************
                         SUBROUTINE ELEBD31_PARTEL
 !                       *************************
@@ -4779,22 +4779,22 @@ C
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-
+!
 ! CREATES IPOBO, WHICH MAKES IT POSSIBLE TO GO FROM GLOBAL TO LOCAL NUMBER
-
+!
       DO IPOIN=1,NPOINT
         IPOBO(IPOIN) = 0
       ENDDO
-
+!
       DO K = 1, NPTFR
          IPOBO(NBOR(K)) = K
       ENDDO
-
-
+!
+!
 ! BUILDS NELBOR, NULONE, IKLBORD
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IELEB = 0
-
+!
       DO IELEM = 1,NBTET
          DO J = 1,4
             IF (IFABOR(IELEM,J)== 0) THEN
@@ -4814,18 +4814,18 @@ C
                IKLBOR(IELEB,1) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(1,J)))
                IKLBOR(IELEB,2) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(2,J)))
                IKLBOR(IELEB,3) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(3,J)))
-
+!
             END IF
          END DO
       END DO
-
+!
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END SUBROUTINE ELEBD31_PARTEL
-
-
+!
+!
 !                       **************************
                         SUBROUTINE VOISIN31_PARTEL
 !                       **************************
@@ -4893,36 +4893,36 @@ C
 !
 ! LOCAL VARIABLES
 !-----------------------------------------------------------------------
-
+!
       ! REVERSE ARRAY FROM NBOR
       ! (FOR EACH DOMAIN NODE, GIVES THE BOUNDARY NODE NUMBER
       ! OR 0 IF THE NODE IS INTERIOR)
 !$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
-
+!
       ! ARRAY DEFINING THE NUMBER OF ELEMENTS (TETRAHEDRONS)
       ! NEIGHBOURING A NODE
       INTEGER, DIMENSION(:  ), ALLOCATABLE  :: NVOIS
       ! ARRAY DEFINING THE IDENTIFIERS OF THE ELEMENTS NEIGHBOURING
       ! EACH NODE
       INTEGER, DIMENSION(:  ), ALLOCATABLE :: NEIGH
-
+!
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLE_TRI
-
+!
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: VOIS_TRI
-
+!
       ! ARRAY DEFINING THE ADDRESSES OF DIFFERENT ENTRIES IN
       ! ARRAY NEIGH
       INTEGER, DIMENSION(NPOIN)            :: IADR
       ! VALUE OF AN ENTRY IN THIS ARRAY
       INTEGER                              :: ADR
-
+!
       ! MAXIMUM NUMBER OF ELEMENTS NEIGHBOURING A NODE
       INTEGER :: NMXVOISIN
       INTEGER :: IMAX       ! SIZE OF ARRAY IADR
-
+!
       INTEGER :: NFACE      ! NUMBER OF ELEMENT SIDES (TETRA: 4)
       INTEGER :: NB_TRI     ! NUMBER OF DEFINED TRIANGLES
-
+!
       INTEGER :: IELEM      ! ELEMENTS COUNTER
       INTEGER :: IELEM2     ! ELEMENTS COUNTER
       INTEGER :: IPOIN      ! DOMAIN NODES COUNTER
@@ -4932,21 +4932,21 @@ C
       INTEGER :: ITRI       ! TRIANGLES COUNTER
       INTEGER :: IVOIS      ! NEIGHBOURS COUNTER
       INTEGER :: NV         ! NUMBER OF NEIGHBOURS
-
+!
       INTEGER :: ERR        ! MEMORY ALLOCATION ERROR CODE
-
+!
       LOGICAL :: FOUND      ! FOUND OR NOT ...
-
+!
       INTEGER :: I1, I2, I3 ! THE 3 NODES OF A TRIANGLE
       INTEGER :: M1, M2, M3 ! SAME THING, ORDERED
-
+!
       INTEGER :: I,J,K      ! ARE USED ...
-
+!
       !????
       INTEGER :: IR1,IR2,IR3,IR4,IR5,IR6,COMPT
       LOGICAL :: BORD
-
-
+!
+!
 !   ~~~~~~~~~~~~~~~~~~~~~~~
 !     DEFINES THE 4 TRIANGLES OF THE TETRAHEDRON: THE 1ST ARRAY
 !     DIMENSION IS THE NUMBER OF THE TRIANGLE; THE 2ND GIVES
@@ -4964,10 +4964,10 @@ C
 ! COMPUTES THE NUMBER OF ELEMENTS NEIGHBOURING EACH NODE OF THE MESH.
 ! RESULT: NVOIS(INOEUD) GIVES THE NUMBER OF ELEMENTS NEIGHBOURING
 ! NODE INOEUD
-
+!
       ! INITIALISES THE NEIGHBOURING ELEMENT COUNTER TO 0
       !
-
+!
       NFACE = 4
 !
       ALLOCATE(NVOIS(NPOIN),STAT=ERR)
@@ -4979,7 +4979,7 @@ C
       ! COUNTS THE NEIGHBOURING ELEMENTS
       ! USING THE CONNECTIVITY TABLE, THE COUNTER IS INCREMENTED
       ! EACH TIME THAT AN ELEMENT REFERENCES NODE IPOIN
-
+!
       ! LOOP ON THE 4 NODES OF THE ELEMENT
       DO INOEUD = 1, 4
         ! LOOP ON THE ELEMENTS
@@ -4990,7 +4990,7 @@ C
           NVOIS(IPOIN) = NVOIS(IPOIN) + 1
         END DO
       END DO
-
+!
 !-----------------------------------------------------------------------
 ! STEP 2: DETERMINES THE SIZE OF ARRAY NEIGH() AND OF AUXILIARY
 ! ARRAY TO INDEX NEIGH. ALLOCATES NEIGH
@@ -5002,14 +5002,14 @@ C
 ! ADDRESS OF THE ENTRIES FOR A GIVEN NODE. THIS ARRAY HAS AS MANY
 ! ENTRIES AS THERE ARE NODES.
 ! WILL ALSO COMPUTE THE MAXIMUM NUMBER OF NEIGHBOURS, SOME TIME.
-
+!
       ! THE FIRST ENTRY IN THE ID OF THE NEIGHBOURS ARRAY IS 1
       ADR       = 1
       IADR(1)   = ADR
       ! THE MAX NUMBER OF NEIGHBOURING ELEMENTS
       NV        = NVOIS(1)
       NMXVOISIN = NV
-
+!
       DO IPOIN = 2,NPOIN
           ! ADDRESS FOR THE OTHER ENTRIES:
           ADR         = ADR + NV
@@ -5018,12 +5018,12 @@ C
           ! IDENTIFIES THE MAX. NUMBER OF NEIGHBOURS
           NMXVOISIN   = MAX(NMXVOISIN,NV)
       END DO
-
+!
       ! THE TOTAL NUMBER OF NEIGHBOURING ELEMENTS FOR ALL THE NODES
       ! GIVES THE SIZE OF THE NEIGHBOURS ARRAY:
-
+!
       IMAX = IADR(NPOIN) + NVOIS(NPOIN)
-
+!
       ! ALLOCATES THE ARRAY CONTAINING THE IDENTIFIERS OF THE ELEMENTS
       ! NEIGHBOURING EACH NODE
       ALLOCATE(NEIGH(IMAX),STAT=ERR)
@@ -5040,7 +5040,7 @@ C
       ! RE-INITIALISES THE COUNTER OF THE NEIGHBOURING ELEMENTS TO 0,
       ! TO KNOW WHERE WE ARE AT
       NVOIS(:) = 0
-
+!
       ! FOR EACH NODE OF THE ELEMENTS, STORES THE IDENTIFIER
       DO INOEUD = 1, 4  ! LOOP ON THE ELEMENT NODES
         DO IELEM=1,NBTET ! LOOP ON THE ELEMENTS
@@ -5052,7 +5052,7 @@ C
           NEIGH(IADR(IPOIN)+NV) = IELEM
         END DO ! END OF LOOP ELEMENTS
       END DO  ! END OF LOOP NODES
-
+!
 !
 !-----------------------------------------------------------------------
 ! STEP 4: IDENTIFIES COMMON FACES OF THE TETRAHEDRONS AND FILLS IN
@@ -5100,7 +5100,7 @@ C
       IF(ERR.NE.0) GOTO 999
       ALLOCATE(VOIS_TRI(NB_TRI,2),STAT=ERR)
       IF(ERR.NE.0) GOTO 999
-
+!
       IFABOR(:,:) = 0
 !
       ! LOOP ON ALL THE NODES IN THE MESH
@@ -5146,7 +5146,7 @@ C
                   ! M2 AND M3. IF THAT'S THE CASE, HAS FOUND A NEIGHBOUR.
                   ! OTHERWISE, A NEW TRIANGLE ENTRY IS CREATED.
                   !
-
+!
                   FOUND = .FALSE.
                   DO ITRI = 1, NB_TRI
                       IF ( IKLE_TRI(ITRI,1) .EQ. M1 ) THEN
@@ -5242,8 +5242,8 @@ C
 !
 !      ENDIF
 !
-C100    CONTINUE
-C90    CONTINUE
+!100    CONTINUE
+!90    CONTINUE
 !
 !-----------------------------------------------------------------------
 !

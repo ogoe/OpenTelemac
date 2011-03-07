@@ -502,7 +502,7 @@
 !
       STOP
       END PROGRAM GREDELMET_AUTOP
-
+!
 !                       ****************************
                         CHARACTER*11 FUNCTION EXTENS
 !                       ****************************
@@ -584,8 +584,8 @@
 !
       RETURN
       END
-
-
+!
+!
 !     *****************************
       SUBROUTINE ALLOER (N, CHFILE)
 !     *****************************
@@ -620,8 +620,8 @@
       CALL PLANTE(-1)
       STOP
       END SUBROUTINE ALLOER
-
-
+!
+!
 !     ***********************
       SUBROUTINE PLANTE(IVAL)
 !     ***********************
@@ -662,8 +662,8 @@
       CALL EXIT(ICODE)
       STOP    ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
       END SUBROUTINE PLANTE
-
-
+!
+!
 !                       *****************
                         SUBROUTINE VOISIN
 !                       *****************
@@ -887,7 +887,7 @@
 !
       RETURN
       END
-
+!
 !                       ****************
                         SUBROUTINE ELEBD
 !                       ****************
@@ -1039,7 +1039,7 @@
 10    CONTINUE
 20    CONTINUE
 !
-CPARA
+!PARA
 !
 ! NELBOR IS 0 WHEN THE ELEMENT BELONGS TO ANOTHER
 ! SUB-DOMAIN
@@ -1126,7 +1126,7 @@ CPARA
 !
       RETURN
       END
-
+!
 !                       *****************
                         SUBROUTINE STOSEG
 !                       *****************
@@ -1365,7 +1365,7 @@ CPARA
 !
       RETURN
       END
-
+!
 !                       *****************
                         SUBROUTINE FDNRST
 !                       *****************
