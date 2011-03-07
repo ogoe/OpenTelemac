@@ -1,115 +1,115 @@
-C                        *******************
+!                        *******************
                           SUBROUTINE ENTPAR
-C                        *******************
-C
-     .   (NFLUIDMAX, NPARF, NPART, NPMAX, IT     , KENT ,
-     .    KFLUID   , KLIST, KPAR , KTURB, KPARMOB, CK1  , 
-     .    CMU      , DR   , EPS  , LM   , MASS   , NUT  , 
-     .    P        , RHO  , RHO0 , S    , TKE    , VITC0,
-     .    VX       , VZ   , X    , Z                    )
-C
-C----------------------------------------------------------------------
-C                         MAIN VARIABLES
-C .________________.___._______________________________________________
-C !           !      !                                                !
-C !   NAME    ! MODE !                MEANING                         !
-C !___________!______!________________________________________________!
-C !           !      !                                                !
-C ! CK1, CMU  ! -->  ! K-EPSILON MODEL COEFFICIENTS                   !
-C ! DR        ! -->  ! INITIAL INTERPARTICLE SPACING                  !
-C ! EPS       ! <--> ! DISSIPATION RATE                               !
-C ! IT        ! -->  ! INDEX OF THE CURRENT TIME STEP                 !
-C ! KENT      ! <--> ! CONDITION TYPE AT FLUID BOUNDARIES             !
-C ! KFLUID    ! <--> ! FLUID TYPE                                     !
-C ! KLIST     ! -->  ! LOGICAL FOR LISTING PRINTOUT                   !
-C ! KPAR      ! <--> ! PARTICLE  TYPE                                 !
-C ! KPARMOB   ! <-->  ! MOVING WALL OR EDGE PARTICLE TYPE             !
-C ! KTURB     ! -->  ! CHOICE INDEX FOR THE TURBULENCE MODEL          !
-C ! LM        ! <--> ! MIXING LENGTH                                  !
-C ! MASS      ! <--> ! PARTICLE MASS                                  !
-C ! NFLUIDMAX ! -->  ! MAXIMUM NUMBER OF FLUIDS                       !
-C ! NPARF     ! <--> ! NUMBER OF FLUID PARTICLES                      !
-C ! NPART     ! <--> ! TOTAL PARTICLE NUMBER                          !
-C ! NPMAX     ! -->  ! MAXIMUM PARTICLE NUMBER                        !
-C ! NUT       ! <--> ! EDDY VISCOSITY                                 !
-C ! P         ! <--> ! PRESSURE                                       !
-C ! RHO       ! <--> ! DENSITY                                        !
-C ! RHO0      ! <--> ! REFERENCE DENSITIES                            !
-C ! S         ! <--> ! RATE OF STRAIN                                 !
-C ! TKE       ! <--> ! TURBULENT KINETIC ENERGY                       !
-C ! VITC0     ! -->  ! SPEED OF SOUND                                 !
-C ! VX, VZ    ! <--> ! VELOCITY COMPONENTS                            ! 
-C ! X, Z      ! <--> ! PARTICLE POSITION                              !
-C !___________!______!________________________________________________!
-C
-C MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
-C----------------------------------------------------------------------
-C
-C SPARTACUS2D V5P9
-C D. Violeau           & R. Issa
-C +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28 
-C LNHE - 2008
-C
-C FONCTION : gere les entrees de particules en cas de profil de vitesse impose
-C FUNCTION : deals with ingoing particles when velocity profile prescribed
-C
-C PROGRAMMES APPELANT : SPARTACUS2D
-C CALLED BY
-C
-C PROGRAMMES APPELES  : -
-C CALLED PROGRAMS
-C
-C----------------------------------------------------------------------
-C
-C Variables
-C==========
-C
+!                        *******************
+!
+     &   (NFLUIDMAX, NPARF, NPART, NPMAX, IT     , KENT ,
+     &    KFLUID   , KLIST, KPAR , KTURB, KPARMOB, CK1  ,
+     &    CMU      , DR   , EPS  , LM   , MASS   , NUT  ,
+     &    P        , RHO  , RHO0 , S    , TKE    , VITC0,
+     &    VX       , VZ   , X    , Z                    )
+!
+!----------------------------------------------------------------------
+!                         MAIN VARIABLES
+! .________________.___._______________________________________________
+! !           !      !                                                !
+! !   NAME    ! MODE !                MEANING                         !
+! !___________!______!________________________________________________!
+! !           !      !                                                !
+! ! CK1, CMU  ! -->  ! K-EPSILON MODEL COEFFICIENTS                   !
+! ! DR        ! -->  ! INITIAL INTERPARTICLE SPACING                  !
+! ! EPS       ! <--> ! DISSIPATION RATE                               !
+! ! IT        ! -->  ! INDEX OF THE CURRENT TIME STEP                 !
+! ! KENT      ! <--> ! CONDITION TYPE AT FLUID BOUNDARIES             !
+! ! KFLUID    ! <--> ! FLUID TYPE                                     !
+! ! KLIST     ! -->  ! LOGICAL FOR LISTING PRINTOUT                   !
+! ! KPAR      ! <--> ! PARTICLE  TYPE                                 !
+! ! KPARMOB   ! <-->  ! MOVING WALL OR EDGE PARTICLE TYPE             !
+! ! KTURB     ! -->  ! CHOICE INDEX FOR THE TURBULENCE MODEL          !
+! ! LM        ! <--> ! MIXING LENGTH                                  !
+! ! MASS      ! <--> ! PARTICLE MASS                                  !
+! ! NFLUIDMAX ! -->  ! MAXIMUM NUMBER OF FLUIDS                       !
+! ! NPARF     ! <--> ! NUMBER OF FLUID PARTICLES                      !
+! ! NPART     ! <--> ! TOTAL PARTICLE NUMBER                          !
+! ! NPMAX     ! -->  ! MAXIMUM PARTICLE NUMBER                        !
+! ! NUT       ! <--> ! EDDY VISCOSITY                                 !
+! ! P         ! <--> ! PRESSURE                                       !
+! ! RHO       ! <--> ! DENSITY                                        !
+! ! RHO0      ! <--> ! REFERENCE DENSITIES                            !
+! ! S         ! <--> ! RATE OF STRAIN                                 !
+! ! TKE       ! <--> ! TURBULENT KINETIC ENERGY                       !
+! ! VITC0     ! -->  ! SPEED OF SOUND                                 !
+! ! VX, VZ    ! <--> ! VELOCITY COMPONENTS                            !
+! ! X, Z      ! <--> ! PARTICLE POSITION                              !
+! !___________!______!________________________________________________!
+!
+! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
+!----------------------------------------------------------------------
+!
+! SPARTACUS2D V5P9
+! D. Violeau           & R. Issa
+! +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28
+! LNHE - 2008
+!
+! FONCTION : gere les entrees de particules en cas de profil de vitesse impose
+! FUNCTION : deals with ingoing particles when velocity profile prescribed
+!
+! PROGRAMMES APPELANT : SPARTACUS2D
+! CALLED BY
+!
+! PROGRAMMES APPELES  : -
+! CALLED PROGRAMS
+!
+!----------------------------------------------------------------------
+!
+! Variables
+!==========
+!
       IMPLICIT NONE
-C
+!
       INTEGER NPMAX, NPARF , NPART
       INTEGER NPARE, NPARET, NFLUIDMAX
       INTEGER I    , J     , IT
       INTEGER KTURB, LNG   , LU
-      COMMON/INFO/LNG,LU      
-C
+      COMMON/INFO/LNG,LU
+!
       LOGICAL KLIST
-C
+!
       DOUBLE PRECISION DR, VITC0, CMU, CK1
-C 
+!
       INTEGER KPAR    (NPMAX), KENT(NPMAX), KFLUID(NPMAX)
       INTEGER KPARMOB (NPMAX)
-C
+!
       DOUBLE PRECISION X   (NPMAX), Z  (NPMAX), RHO(NPMAX)
       DOUBLE PRECISION VX  (NPMAX), VZ (NPMAX), P  (NPMAX)
       DOUBLE PRECISION MASS(NPMAX), TKE(NPMAX), S  (NPMAX)
       DOUBLE PRECISION EPS (NPMAX), NUT(NPMAX), LM (NPMAX)
       DOUBLE PRECISION RHO0(NFLUIDMAX)
-C     
+!
       SAVE NPARET
-C     
-C Particules entrantes
-C=====================
-C Ingoing particles
-C==================
-C     
+!
+! Particules entrantes
+!=====================
+! Ingoing particles
+!==================
+!
       IF (IT.EQ.1) THEN
         NPARET=0
       ENDIF
-C     
+!
       NPARE=0
       DO 668 I=1,NPARF
         IF (KENT(I).EQ.1) THEN
-C
-C Definition du critere d'apparition de nouvelles particules
-C (a modifier par l'utilisateur)
-C-----------------------------------------------------------
-C The user has to define a criterion relative to new particles
-C-------------------------------------------------------------
-C
+!
+! Definition du critere d'apparition de nouvelles particules
+! (a modifier par l'utilisateur)
+!-----------------------------------------------------------
+! The user has to define a criterion relative to new particles
+!-------------------------------------------------------------
+!
           IF (X(I).GT.0.D0+2.D0*DR) THEN
-C
-C-----------------------------------------------------------
-C
+!
+!-----------------------------------------------------------
+!
             KENT(I)=0
             NPARF=NPARF+1
             NPART=NPART+1
@@ -117,7 +117,7 @@ C
               KENT   (J)=KENT   (J-1)
               KPAR   (J)=KPAR   (J-1)
               KFLUID (J)=KFLUID (J-1)
-              KPARMOB(J)=KPARMOB(J-1)	      
+              KPARMOB(J)=KPARMOB(J-1)
               X      (J)=X      (J-1)
               Z      (J)=Z      (J-1)
               VX     (J)=VX     (J-1)
@@ -130,16 +130,16 @@ C
               S      (J)=S      (J-1)
               LM     (J)=LM     (J-1)
  669        CONTINUE
-C
+!
             KENT (I)=1
             KPAR (I)=0
-C
-C Definition des caracteristiques des nouvelles particules
-C (a modifier par l'utilisateur)
-C---------------------------------------------------------
-C New particle characteristic definition
-C---------------------------------------
-C
+!
+! Definition des caracteristiques des nouvelles particules
+! (a modifier par l'utilisateur)
+!---------------------------------------------------------
+! New particle characteristic definition
+!---------------------------------------
+!
             X     (I)=0.D0
             Z     (I)=Z(I+1)
             VX    (I)=1.D0
@@ -158,22 +158,22 @@ C
               EPS (I) = 0.D0
               NUT (I) = 0.D0
             ENDIF
-C
-C---------------------------------------------------------
-C
+!
+!---------------------------------------------------------
+!
             MASS  (I)=RHO(I)*DR*DR
             NPARE=NPARE+1
-C
+!
           ENDIF
-C
+!
         ENDIF
  668  CONTINUE
-C     
+!
       NPARET=NPARET+NPARE
-C     
-C Impressions
-C============
-C     
+!
+! Impressions
+!============
+!
       IF (KLIST) THEN
         IF (LNG.EQ.1) THEN
           PRINT*,NPARE,' particules entrees'
@@ -182,10 +182,10 @@ C
         ELSEIF (LNG.EQ.2) THEN
           PRINT*,NPARE,' ingoing particles'
           PRINT*,'Total number of ingoing particles : ',NPARET
-          PRINT*,'Number of fluid particles         : ',NPARF	
+          PRINT*,'Number of fluid particles         : ',NPARF
         ENDIF
       ENDIF
-C     
+!
       IF (NPART.GT.NPMAX) THEN
         IF (LNG.EQ.1) THEN
           PRINT*,'Erreur : NPMAX trop petit !'
@@ -194,6 +194,6 @@ C
         ENDIF
         STOP
       ENDIF
-C     
+!
       RETURN
       END

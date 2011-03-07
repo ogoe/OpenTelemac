@@ -1,111 +1,111 @@
-C                        *******************
+!                        *******************
                           SUBROUTINE KERNEL
-C                        *******************
-C
-     .  (NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, KKERNEL,
-     .   GKERX, GKERZ   , H    , PI   , RAB  , XAB    ,
-     .   ZAB                                          )
-C
-C----------------------------------------------------------------------
-C                         MAIN VARIABLES
-C .________________.___._______________________________________________
-C !           !      !                                                !
-C !   NAME    ! MODE !                MEANING                         !
-C !___________!______!________________________________________________!
-C !           !      !                                                !
-C ! GKERX,                                                            !
-C ! GKERZ     ! <--  ! KERNEL DERIVATIVE COMPONENTS                   !
-C ! H         ! -->  ! SMOOTHING LENGTH                               !
-C ! ILIEN     ! -->  ! PARTICLE LINK LIST                             !
-C ! KKERNEL   ! -->  ! CHOICE INDEX FOR KERNEL                        !
-C ! NLIEN     ! -->  ! NUMBER OF LINKS RELATIVE TO A PARTICLE         !
-C ! NLIENMAX  ! -->  ! MAXIMUM NUMBER OF LINKS RELATIVE TO A PARTICLE !
-C ! NPART     ! -->  ! TOTAL PARTICLE NUMBER                          !
-C ! NPMAX     ! -->  ! MAXIMUM PARTICLE NUMBER                        !
-C ! PI        ! -->  ! ARCHIMEDE'S NUMBER                             !
-C ! RAB       ! -->  ! INTERPARTICLE DISTANCE                         !
-C ! XAB, ZAB  ! -->  ! COORDINATE DIFFERENCES BETWEEN PARTICLES       !
-C !___________!______!________________________________________________!
-C
-C MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
-C-----------------------------------------------------------------------
-C
-C SPARTACUS2D V5P9
-C D. Violeau           & R. Issa
-C +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28 
-C LNHE - 2008
-C
-C FONCTION : calcule le gradient du noyau
-C FUNCTION : computes the kernel derivative
-C
-C PROGRAMMES APPELANT : SPARTACUS2D
-C CALLED BY 
-C
-C PROGRAMMES APPELES  : KERNEL3, KERNEL4, KERNEL5
-C CALLED PROGRAMS     
-C
-C-----------------------------------------------------------------------
-C
-C Variables
-C==========
-C
+!                        *******************
+!
+     &  (NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, KKERNEL,
+     &   GKERX, GKERZ   , H    , PI   , RAB  , XAB    ,
+     &   ZAB                                          )
+!
+!----------------------------------------------------------------------
+!                         MAIN VARIABLES
+! .________________.___._______________________________________________
+! !           !      !                                                !
+! !   NAME    ! MODE !                MEANING                         !
+! !___________!______!________________________________________________!
+! !           !      !                                                !
+! ! GKERX,                                                            !
+! ! GKERZ     ! <--  ! KERNEL DERIVATIVE COMPONENTS                   !
+! ! H         ! -->  ! SMOOTHING LENGTH                               !
+! ! ILIEN     ! -->  ! PARTICLE LINK LIST                             !
+! ! KKERNEL   ! -->  ! CHOICE INDEX FOR KERNEL                        !
+! ! NLIEN     ! -->  ! NUMBER OF LINKS RELATIVE TO A PARTICLE         !
+! ! NLIENMAX  ! -->  ! MAXIMUM NUMBER OF LINKS RELATIVE TO A PARTICLE !
+! ! NPART     ! -->  ! TOTAL PARTICLE NUMBER                          !
+! ! NPMAX     ! -->  ! MAXIMUM PARTICLE NUMBER                        !
+! ! PI        ! -->  ! ARCHIMEDE'S NUMBER                             !
+! ! RAB       ! -->  ! INTERPARTICLE DISTANCE                         !
+! ! XAB, ZAB  ! -->  ! COORDINATE DIFFERENCES BETWEEN PARTICLES       !
+! !___________!______!________________________________________________!
+!
+! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
+!-----------------------------------------------------------------------
+!
+! SPARTACUS2D V5P9
+! D. Violeau           & R. Issa
+! +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28
+! LNHE - 2008
+!
+! FONCTION : calcule le gradient du noyau
+! FUNCTION : computes the kernel derivative
+!
+! PROGRAMMES APPELANT : SPARTACUS2D
+! CALLED BY
+!
+! PROGRAMMES APPELES  : KERNEL3, KERNEL4, KERNEL5
+! CALLED PROGRAMS
+!
+!-----------------------------------------------------------------------
+!
+! Variables
+!==========
+!
       IMPLICIT NONE
-C
+!
       INTEGER NPMAX, NPART, NLIENMAX, KKERNEL
       INTEGER LNG, LU
       COMMON/INFO/LNG,LU
-C
+!
       DOUBLE PRECISION H, PI
-C
+!
       INTEGER NLIEN(NPMAX)
       INTEGER ILIEN(NPMAX,NLIENMAX)
-C
+!
       DOUBLE PRECISION RAB  (NPMAX,NLIENMAX)
       DOUBLE PRECISION GKERX(NPMAX,NLIENMAX), GKERZ (NPMAX,NLIENMAX)
       DOUBLE PRECISION XAB  (NPMAX,NLIENMAX), ZAB   (NPMAX,NLIENMAX)
-C     
-C Calcul du gradient du noyau
-C============================
-C Kernel derivative computation
-C==============================
-C
+!
+! Calcul du gradient du noyau
+!============================
+! Kernel derivative computation
+!==============================
+!
       IF (KKERNEL.EQ.1) THEN
-C
-C Kernel d'ordre 3
-C-----------------
-C Third order spline kernel
-C--------------------------
-C
+!
+! Kernel d'ordre 3
+!-----------------
+! Third order spline kernel
+!--------------------------
+!
         CALL KERNEL3
-C
-     .   (NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, GKERX,
-     .    GKERZ, H       , PI   , RAB  , XAB  , ZAB  )
-C
+!
+     &   (NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, GKERX,
+     &    GKERZ, H       , PI   , RAB  , XAB  , ZAB  )
+!
       ELSE IF (KKERNEL.EQ.2) THEN
-C
-C Kernel d'ordre 4
-C-----------------
-C Fourth order spline kernel
-C---------------------------
-C
+!
+! Kernel d'ordre 4
+!-----------------
+! Fourth order spline kernel
+!---------------------------
+!
         CALL KERNEL4
-C
-     .   (NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, GKERX,
-     .    GKERZ, H       , RAB  , XAB  , ZAB         )
-C
+!
+     &   (NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, GKERX,
+     &    GKERZ, H       , RAB  , XAB  , ZAB         )
+!
       ELSE IF (KKERNEL.EQ.3) THEN
-C
-C Kernel d'ordre 5
-C-----------------
-C Fifth order spline kernel
-C--------------------------
-C
+!
+! Kernel d'ordre 5
+!-----------------
+! Fifth order spline kernel
+!--------------------------
+!
         CALL KERNEL5
-C
-     .(NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, GKERX,
-     . GKERZ, H       , PI   , RAB  , XAB  , ZAB  )
-C
-      ENDIF  
-C     
+!
+     &(NLIEN, NLIENMAX, NPART, NPMAX, ILIEN, GKERX,
+     & GKERZ, H       , PI   , RAB  , XAB  , ZAB  )
+!
+      ENDIF
+!
       RETURN
       END

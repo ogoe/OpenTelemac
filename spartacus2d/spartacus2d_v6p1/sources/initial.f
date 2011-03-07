@@ -1,164 +1,164 @@
-C                        ********************
+!                        ********************
                           SUBROUTINE INITIAL
-C                        ********************
-C
-     .  (NBMAX, NFLUIDMAX, NPARB  , NPARF  , NPART, NPMAX ,
-     .   CT   , KENT     , KFLUID , KKERNEL, KPAR , KSUITE,
-     .   KTURB, CK1      , KPARMOB, CMU    , CR   , CTHETA, 
-     .   DEB  , DELTA    , DELTADR, DR     , DT   , EPS   , 
-     .   ETA2 , FMOT     , GRAV   , H      , HDR  , KAPPA , 
-     .   LM   , MASS     , NUT    , P      , PI   , PRIV  , 
-     .   R0   , RHO      , RHO0   , STHETA , SUPP , TEMPS ,
-     .   THETA, TKE      , VITC0  , VX     , VZ   , X     , 
-     .   Z    , S                                         )
-C
-C----------------------------------------------------------------------
-C                         MAIN VARIABLES
-C .________________.___._______________________________________________
-C !           !      !                                                !
-C !   NAME    ! MODE !                MEANING                         !
-C !___________!______!________________________________________________!
-C !           !      !                                                !
-C ! CK1, CMU  ! <--  ! K-EPSILON MODEL COEFFICIENTS                   !
-C ! CR        ! <--  ! COEFFICIENT RELATIVE TO A ROUGH LOG LAW        !
-C ! CT        ! <--  ! TECPLOT CURRENT ZONE NUMBER                    !
-C ! CTHETA,                                                           !
-C ! STHETA    ! <--  ! COMPONENTS OF WALL NORMAL VECTORS              !
-C ! DEB       ! <--  ! COMPUTED MEAN BULK VELOCITY                    !
-C ! DELTA     ! <--  ! EDGE PARTICLE DISTANCE TO REAL WALLS           !
-C ! DELTADR   ! -->  ! RATIO DELTA/DR                                 !
-C ! DR        ! <--  ! INITIAL INTERPARTICLE SPACING                  !
-C ! EPS       ! <--  ! DISSIPATION RATE                               !
-C ! DT        ! <--  ! TIME STEP                                      !
-C ! ETA2      ! <--  ! CORRECTION TERM FOR DIFFUSION                  !
-C ! FMOT      ! <--  ! AXIAL DRIVING FORCE                            !
-C ! GRAV      ! <--  ! GRAVITY                                        !
-C ! H         ! <--  ! SMOOTHING LENGTH                               !
-C ! HDR       ! -->  ! RATIO H/DR                                     !
-C ! KAPPA     ! <--  ! VON KARMAN CONSTANT                            !
-C ! KENT      ! <--  ! CONDITION TYPE AT FLUID BOUNDARIES             !
-C ! KFLUID    ! <--  ! FLUID TYPE                                     !
-C ! KKERNEL   ! -->  ! CHOICE INDEX FOR KERNEL                        !
-C ! KPAR      ! <--  ! PARTICLE  TYPE                                 !
-C ! KPARMOB   ! <--  ! MOVING WALL OR EDGE PARTICLE TYPE              !
-C ! KSUITE    ! -->  ! LOGICAL FOR CALCULATION CONTINUED              !
-C ! KTURB     ! -->  ! CHOICE INDEX FOR THE TURBULENCE MODEL          !
-C ! LM        ! <--  ! MIXING LENGTH                                  !
-C ! LNG       ! -->  ! CHOICE INDEX FOR LANGUAGE                      !
-C ! MASS      ! <--  ! PARTICLE MASS                                  !
-C ! NBMAX     ! -->  ! MAXIMUM NUMBER OF EDGE PARTICLES               !
-C ! NFLUIDMAX ! -->  ! MAXIMUM NUMBER OF FLUIDS                       !
-C ! NPARB     ! <--  ! NUMBER OF EDGE PARTICLES                       !
-C ! NPARF     ! <--  ! NUMBER OF FLUID PARTICLES                      !
-C ! NPART     ! <--  ! TOTAL PARTICLE NUMBER                          !
-C ! NPMAX     ! -->  ! MAXIMUM PARTICLE NUMBER                        !
-C ! NUT       ! <--  ! EDDY VISCOSITY                                 !
-C ! P         ! <--  ! PRESSURE                                       !
-C ! PI        ! <--  ! ARCHIMEDE'S NUMBER                             !
-C ! PRIV      ! <--  ! PRIVATE PRINTOUT VARIABLE FOR THE USER         !
-C ! R0        ! <--  ! WALL ACTION DISTANCE                           !
-C ! RHO       ! <--  ! DENSITY                                        !
-C ! RHO0      ! -->  ! REFERENCE DENSITIES                            !
-C ! S         ! <--  ! RATE OF STRAIN                                 !
-C ! SUPP      ! <--  ! KERNEL SUPPORT                                 !
-C ! TEMPS     ! <--  ! PHYSICAL TIME                                  !
-C ! THETA     ! <--  ! ANGLE BETWEEN WALL NORMAL VECTOR AND X-AXIS    !
-C ! TKE       ! <--  ! TURBULENT KINETIC ENERGY                       !
-C ! VITC0     ! -->  ! SPEED OF SOUND                                 !
-C ! VX, VZ    ! <--  ! VELOCITY COMPONENTS                            ! 
-C ! X, Z      ! <--  ! PARTICLE POSITION                              !
-C !___________!______!________________________________________________!
-C
-C MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
-C----------------------------------------------------------------------
-C
-C SPARTACUS2D V5P9
-C D. Violeau           & R. Issa
-C +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28 
-C LNHE - 2008
-C
-C FONCTION : effectue les initialisations
-C FUNCTION : achieved all initializations
-C
-C PROGRAMMES APPELANT : SPARTACUS2D
-C CALLED BY         
-C
-C PROGRAMMES APPELES  : LECINIT, LECSUIT, MELANGE
-C CALLED PROGRAMS     
-C
-C----------------------------------------------------------------------
-C
-C Variables
-C==========
-C
+!                        ********************
+!
+     &  (NBMAX, NFLUIDMAX, NPARB  , NPARF  , NPART, NPMAX ,
+     &   CT   , KENT     , KFLUID , KKERNEL, KPAR , KSUITE,
+     &   KTURB, CK1      , KPARMOB, CMU    , CR   , CTHETA,
+     &   DEB  , DELTA    , DELTADR, DR     , DT   , EPS   ,
+     &   ETA2 , FMOT     , GRAV   , H      , HDR  , KAPPA ,
+     &   LM   , MASS     , NUT    , P      , PI   , PRIV  ,
+     &   R0   , RHO      , RHO0   , STHETA , SUPP , TEMPS ,
+     &   THETA, TKE      , VITC0  , VX     , VZ   , X     ,
+     &   Z    , S                                         )
+!
+!----------------------------------------------------------------------
+!                         MAIN VARIABLES
+! .________________.___._______________________________________________
+! !           !      !                                                !
+! !   NAME    ! MODE !                MEANING                         !
+! !___________!______!________________________________________________!
+! !           !      !                                                !
+! ! CK1, CMU  ! <--  ! K-EPSILON MODEL COEFFICIENTS                   !
+! ! CR        ! <--  ! COEFFICIENT RELATIVE TO A ROUGH LOG LAW        !
+! ! CT        ! <--  ! TECPLOT CURRENT ZONE NUMBER                    !
+! ! CTHETA,                                                           !
+! ! STHETA    ! <--  ! COMPONENTS OF WALL NORMAL VECTORS              !
+! ! DEB       ! <--  ! COMPUTED MEAN BULK VELOCITY                    !
+! ! DELTA     ! <--  ! EDGE PARTICLE DISTANCE TO REAL WALLS           !
+! ! DELTADR   ! -->  ! RATIO DELTA/DR                                 !
+! ! DR        ! <--  ! INITIAL INTERPARTICLE SPACING                  !
+! ! EPS       ! <--  ! DISSIPATION RATE                               !
+! ! DT        ! <--  ! TIME STEP                                      !
+! ! ETA2      ! <--  ! CORRECTION TERM FOR DIFFUSION                  !
+! ! FMOT      ! <--  ! AXIAL DRIVING FORCE                            !
+! ! GRAV      ! <--  ! GRAVITY                                        !
+! ! H         ! <--  ! SMOOTHING LENGTH                               !
+! ! HDR       ! -->  ! RATIO H/DR                                     !
+! ! KAPPA     ! <--  ! VON KARMAN CONSTANT                            !
+! ! KENT      ! <--  ! CONDITION TYPE AT FLUID BOUNDARIES             !
+! ! KFLUID    ! <--  ! FLUID TYPE                                     !
+! ! KKERNEL   ! -->  ! CHOICE INDEX FOR KERNEL                        !
+! ! KPAR      ! <--  ! PARTICLE  TYPE                                 !
+! ! KPARMOB   ! <--  ! MOVING WALL OR EDGE PARTICLE TYPE              !
+! ! KSUITE    ! -->  ! LOGICAL FOR CALCULATION CONTINUED              !
+! ! KTURB     ! -->  ! CHOICE INDEX FOR THE TURBULENCE MODEL          !
+! ! LM        ! <--  ! MIXING LENGTH                                  !
+! ! LNG       ! -->  ! CHOICE INDEX FOR LANGUAGE                      !
+! ! MASS      ! <--  ! PARTICLE MASS                                  !
+! ! NBMAX     ! -->  ! MAXIMUM NUMBER OF EDGE PARTICLES               !
+! ! NFLUIDMAX ! -->  ! MAXIMUM NUMBER OF FLUIDS                       !
+! ! NPARB     ! <--  ! NUMBER OF EDGE PARTICLES                       !
+! ! NPARF     ! <--  ! NUMBER OF FLUID PARTICLES                      !
+! ! NPART     ! <--  ! TOTAL PARTICLE NUMBER                          !
+! ! NPMAX     ! -->  ! MAXIMUM PARTICLE NUMBER                        !
+! ! NUT       ! <--  ! EDDY VISCOSITY                                 !
+! ! P         ! <--  ! PRESSURE                                       !
+! ! PI        ! <--  ! ARCHIMEDE'S NUMBER                             !
+! ! PRIV      ! <--  ! PRIVATE PRINTOUT VARIABLE FOR THE USER         !
+! ! R0        ! <--  ! WALL ACTION DISTANCE                           !
+! ! RHO       ! <--  ! DENSITY                                        !
+! ! RHO0      ! -->  ! REFERENCE DENSITIES                            !
+! ! S         ! <--  ! RATE OF STRAIN                                 !
+! ! SUPP      ! <--  ! KERNEL SUPPORT                                 !
+! ! TEMPS     ! <--  ! PHYSICAL TIME                                  !
+! ! THETA     ! <--  ! ANGLE BETWEEN WALL NORMAL VECTOR AND X-AXIS    !
+! ! TKE       ! <--  ! TURBULENT KINETIC ENERGY                       !
+! ! VITC0     ! -->  ! SPEED OF SOUND                                 !
+! ! VX, VZ    ! <--  ! VELOCITY COMPONENTS                            !
+! ! X, Z      ! <--  ! PARTICLE POSITION                              !
+! !___________!______!________________________________________________!
+!
+! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
+!----------------------------------------------------------------------
+!
+! SPARTACUS2D V5P9
+! D. Violeau           & R. Issa
+! +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28
+! LNHE - 2008
+!
+! FONCTION : effectue les initialisations
+! FUNCTION : achieved all initializations
+!
+! PROGRAMMES APPELANT : SPARTACUS2D
+! CALLED BY
+!
+! PROGRAMMES APPELES  : LECINIT, LECSUIT, MELANGE
+! CALLED PROGRAMS
+!
+!----------------------------------------------------------------------
+!
+! Variables
+!==========
+!
       IMPLICIT NONE
-C
+!
       INTEGER NPMAX    , NPARF, NPART, NPARB
       INTEGER NFLUIDMAX, NBMAX, KTURB, KKERNEL
       INTEGER I        , CT
       INTEGER LNG      , LU
-      COMMON/INFO/LNG,LU      
-C
+      COMMON/INFO/LNG,LU
+!
       LOGICAL KSUITE
-C
+!
       DOUBLE PRECISION ETA2   , CR   , GRAV
       DOUBLE PRECISION H      , DR   , TEMPS
       DOUBLE PRECISION R0     , HDR  , DT
       DOUBLE PRECISION DEB    , SUPP , CK1
       DOUBLE PRECISION CMU    , VITC0, DELTA
       DOUBLE PRECISION DELTADR, PI   , KAPPA
-C
+!
       INTEGER KFLUID(NPMAX), KPAR   (NPMAX)
       INTEGER KENT  (NPMAX), KPARMOB(NPMAX)
-C
+!
       DOUBLE PRECISION X     (NPMAX), Z    (NPMAX), RHO   (NPMAX)
       DOUBLE PRECISION P     (NPMAX), VX   (NPMAX), VZ    (NPMAX)
       DOUBLE PRECISION MASS  (NPMAX), FMOT (NPMAX), RHO0  (NFLUIDMAX)
       DOUBLE PRECISION LM    (NPMAX), EPS  (NPMAX), TKE   (NPMAX)
-      DOUBLE PRECISION NUT   (NPMAX), PRIV (NPMAX), S     (NPMAX) 
+      DOUBLE PRECISION NUT   (NPMAX), PRIV (NPMAX), S     (NPMAX)
       DOUBLE PRECISION THETA (NBMAX), CTHETA(NBMAX),STHETA(NBMAX)
-C
-C Initialisations
-C================
-C Initializations
-C================
-C
-C Constantes
-C-----------
-C Constants
-C ---------
-
+!
+! Initialisations
+!================
+! Initializations
+!================
+!
+! Constantes
+!-----------
+! Constants
+! ---------
+!
       PI    = 3.141592653589793D0
       KAPPA = 0.41D0
       CR    = 8.50D0
       CMU   = 0.09D0
       CK1   = 0.16D0
       GRAV  = 9.807D0
-C
+!
       IF (.NOT.KSUITE) THEN
-C
-C Nouveau calcul
-C---------------
-C New calculation
-C----------------
-C
+!
+! Nouveau calcul
+!---------------
+! New calculation
+!----------------
+!
         CALL LECINIT
-C     
-     .  (NPARB , NPARF  , NPART, NPMAX, NBMAX, KENT, 
-     .   KFLUID, KPARMOB, KPAR , DR   , THETA, X   , 
-     .   Z                                         )
-C
+!
+     &  (NPARB , NPARF  , NPART, NPMAX, NBMAX, KENT,
+     &   KFLUID, KPARMOB, KPAR , DR   , THETA, X   ,
+     &   Z                                         )
+!
         IF (KTURB.NE.0) THEN
-C
+!
           CALL MELANGE
-C
-     .    (NPART, NPMAX, DR, LM, X, Z, DELTA, KPAR)
-C
+!
+     &    (NPART, NPMAX, DR, LM, X, Z, DELTA, KPAR)
+!
         ENDIF
-C	
+!
         TEMPS=0.D0
         CT   =0
-C
+!
         DO 447 I=1,NPART
           VX  (I) = 0.D0
           VZ  (I) = 0.D0
@@ -177,48 +177,48 @@ C
             NUT (I) = 0.D0
           ENDIF
  447    CONTINUE
-C
+!
       ELSE
-C
-C Suite de calcul
-C----------------
-C Calculation continued
-C----------------------
-C
+!
+! Suite de calcul
+!----------------
+! Calculation continued
+!----------------------
+!
         CALL LECSUIT
-C
-     .  (NPARB, NPARF , NPART, NPMAX  , NBMAX, CT   , 
-     .   KENT , KFLUID, KPAR , KPARMOB, DR   , EPS  , 
-     .   MASS , NUT   , P    , RHO    , TEMPS, THETA,  
-     .   TKE  , VX    , VZ   , X      , Z           ) 
-C
+!
+     &  (NPARB, NPARF , NPART, NPMAX  , NBMAX, CT   ,
+     &   KENT , KFLUID, KPAR , KPARMOB, DR   , EPS  ,
+     &   MASS , NUT   , P    , RHO    , TEMPS, THETA,
+     &   TKE  , VX    , VZ   , X      , Z           )
+!
         IF (KTURB.EQ.1.OR.KTURB.EQ.2) THEN
-C
+!
           CALL MELANGE
-C
-     .    (NPART, NPMAX, DR, LM, X, Z, DELTA, KPAR)
-C
+!
+     &    (NPART, NPMAX, DR, LM, X, Z, DELTA, KPAR)
+!
           DO 647 I=1,NPARF+NPARB
               TKE (I) = MAX(TKE(I),1.0D-5)
               EPS (I) = MAX(EPS(I),1.0D-5)
  647      CONTINUE
-C
+!
         ELSE IF (KTURB.EQ.3) THEN
-C
+!
           DO 547 I=1,NPARF+NPARB
               TKE (I) = MAX(TKE(I),1.0D-5)
-              EPS (I) = MAX(EPS(I),1.0D-5)              
+              EPS (I) = MAX(EPS(I),1.0D-5)
  547      CONTINUE
-C  
+!
         ENDIF
-C
+!
       ENDIF
-C
-C Parametres divers
-C------------------
-C Miscellaneous parameters
-C -----------------------
-C
+!
+! Parametres divers
+!------------------
+! Miscellaneous parameters
+! -----------------------
+!
       H    = DR*HDR
       ETA2 = 0.01D0*H*H
       R0   = DR
@@ -231,17 +231,17 @@ C
       ELSE IF (KKERNEL.EQ.3) THEN
         SUPP = 3.D0
       ENDIF
-C
+!
       DEB  = 0.D0
       DO 448 I=1,NPART
         FMOT(I) = 0.D0
  448  CONTINUE
-C
+!
       DO 449 I=1,NPARB
         CTHETA(I)=COS(THETA(I)*PI/180.D0)
         STHETA(I)=SIN(THETA(I)*PI/180.D0)
  449  CONTINUE
-C     
+!
       IF (LNG.EQ.1) THEN
         PRINT*,'Nombre de particules'
         PRINT*,'===================='
@@ -255,10 +255,10 @@ C
         PRINT900,NPARF            ,'fluid  particles'
         PRINT900,NPARB            ,'edge   particles'
         PRINT900,NPART-NPARF-NPARB,'mirror particles'
-        PRINT900,NPART            ,'       particles'      
+        PRINT900,NPART            ,'       particles'
       ENDIF
-C      
+!
  900  FORMAT('    ',I6,' ',A)
-C
+!
       RETURN
       END

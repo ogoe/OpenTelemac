@@ -1,117 +1,117 @@
-C                        **********************
+!                        **********************
                           SUBROUTINE OUVERTURE
-C                        **********************
-C
-     .   (NELEM, NPOIN, NVARSOR,NVARSORMAX, KVISU, 
-     .    XINT , XMIN , XMAX   ,ZINT      , ZMIN , 
-     .    ZMAX , DR                              )
-C
-C----------------------------------------------------------------------
-C                         MAIN VARIABLES
-C .________________.___._______________________________________________
-C !           !      !                                                !
-C !   NAME    ! MODE !                MEANING                         !
-C !___________!______!________________________________________________!
-C !           !      !                                                !
-C ! DR        ! -->  ! INITIAL INTERPARTICLE SPACING                  !
-C ! KVISU     ! -->  ! CHOICE INDEX FOR THE POSTPROCESSOR             !
-C ! NELEM     ! -->  ! NUMBER OF MESH ELEMENTS FOR RUBENS             !
-C ! NPOIN     ! -->  ! NUMBER OF MESH POINTS FOR RUBENS               !
-C ! NVARSOR   ! -->  ! PRINTOUT VARIABLE NUMBER                       !
-C ! NVARSORMAX! -->  ! MAXIMUM NUMBER OF PRINTOUT VARIABLES           !
-C ! XINT, ZINT! -->  ! COORDINATES OF MESH POINTS                     !
-C ! XMIN, XMAX! -->  ! MINIMUM AND MAXIMUM X OF THE DOMAIN            !
-C ! ZMIN, ZMAX! -->  ! MINIMUM AND MAXIMUM Z OF THE DOMAIN            !
-C !___________!______!________________________________________________!
-C
-C MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
-C----------------------------------------------------------------------
-C
-C SPARTACUS2D V5P9
-C D. Violeau           & R. Issa
-C +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28 
-C LNHE - 2008
-C
-C FONCTION : ouvre les fichiers sorties et ecrit les entetes
-C FUNCTION : opens the printout files and writes their headlines
-C
-C PROGRAMMES APPELANT : SPARTACUS2D
-C CALLED BY           
-C
-C PROGRAMMES APPELES  : -
-C CALLED PROGRAMS     
-C
-C----------------------------------------------------------------------
-C
-C Variables
-C==========
-C
+!                        **********************
+!
+     &   (NELEM, NPOIN, NVARSOR,NVARSORMAX, KVISU,
+     &    XINT , XMIN , XMAX   ,ZINT      , ZMIN ,
+     &    ZMAX , DR                              )
+!
+!----------------------------------------------------------------------
+!                         MAIN VARIABLES
+! .________________.___._______________________________________________
+! !           !      !                                                !
+! !   NAME    ! MODE !                MEANING                         !
+! !___________!______!________________________________________________!
+! !           !      !                                                !
+! ! DR        ! -->  ! INITIAL INTERPARTICLE SPACING                  !
+! ! KVISU     ! -->  ! CHOICE INDEX FOR THE POSTPROCESSOR             !
+! ! NELEM     ! -->  ! NUMBER OF MESH ELEMENTS FOR RUBENS             !
+! ! NPOIN     ! -->  ! NUMBER OF MESH POINTS FOR RUBENS               !
+! ! NVARSOR   ! -->  ! PRINTOUT VARIABLE NUMBER                       !
+! ! NVARSORMAX! -->  ! MAXIMUM NUMBER OF PRINTOUT VARIABLES           !
+! ! XINT, ZINT! -->  ! COORDINATES OF MESH POINTS                     !
+! ! XMIN, XMAX! -->  ! MINIMUM AND MAXIMUM X OF THE DOMAIN            !
+! ! ZMIN, ZMAX! -->  ! MINIMUM AND MAXIMUM Z OF THE DOMAIN            !
+! !___________!______!________________________________________________!
+!
+! MODE : -->(NON MODIFIED DATA), <--(RESULT), <-->(MODIFIED DATA)
+!----------------------------------------------------------------------
+!
+! SPARTACUS2D V5P9
+! D. Violeau           & R. Issa
+! +33(0)1-30-87-78-31 // +33(0)1-30-87-84-28
+! LNHE - 2008
+!
+! FONCTION : ouvre les fichiers sorties et ecrit les entetes
+! FUNCTION : opens the printout files and writes their headlines
+!
+! PROGRAMMES APPELANT : SPARTACUS2D
+! CALLED BY
+!
+! PROGRAMMES APPELES  : -
+! CALLED PROGRAMS
+!
+!----------------------------------------------------------------------
+!
+! Variables
+!==========
+!
       IMPLICIT NONE
-C
+!
       INTEGER NVARSORMAX, NVARSOR, NPOIN
-      INTEGER NELEM     , KVISU  , I   
-C
+      INTEGER NELEM     , KVISU  , I
+!
       DOUBLE PRECISION X1MAIL, X2MAIL, Z1MAIL, Z2MAIL
       DOUBLE PRECISION XMIN  , ZMIN  , XMAX  , ZMAX
       DOUBLE PRECISION DR
-C
+!
       INTEGER NBV (2)      , IPARAM(10)   , NPV(4)
       INTEGER IKLE(3,NELEM), IPOBO (NPOIN)
-C
+!
       REAL XINT(NPOIN), ZINT(NPOIN)
-C
+!
       CHARACTER*32  TEXTL (NVARSORMAX)
       CHARACTER*80  TITRE
       CHARACTER*60  TITRE2
       CHARACTER*18  VARIABLE
       CHARACTER*191 VARIABLE2
       CHARACTER*10  VARIABLE2P
-C
-C Ouvertures et ecritures en-tetes
-C=================================
-C Opening and headline writing
-C=============================
-C
+!
+! Ouvertures et ecritures en-tetes
+!=================================
+! Opening and headline writing
+!=============================
+!
       IF (KVISU.EQ.1) THEN
-C
-C Format Rubens
-C--------------
-C
-C Fichier positions
-C..................
-C Position file
-C..............
-C
+!
+! Format Rubens
+!--------------
+!
+! Fichier positions
+!..................
+! Position file
+!..............
+!
         OPEN (47,FORM='FORMATTED',FILE='FORT.47')
-C
+!
         WRITE (47,*) '2'
         WRITE (47,902) 'Xa'
         WRITE (47,902) 'Za'
         WRITE (47,*) '0 0 0 0 0 0 0 0 0 0'
-C
-C Fichiers maillage et champs
-C............................
-C Mesh and field files
-C.....................
-C
-C Nombre de variables de sorties
-C ++++++++++++++++++++++++++++++
-C
+!
+! Fichiers maillage et champs
+!............................
+! Mesh and field files
+!.....................
+!
+! Nombre de variables de sorties
+! ++++++++++++++++++++++++++++++
+!
         NVARSOR = 9
-C
+!
         OPEN (11,FORM='UNFORMATTED',FILE='FORT.11')
         OPEN (48,FORM='UNFORMATTED',FILE='FORT.48')
-C
+!
         READ  (11) TITRE
         WRITE (48) TITRE
-C
+!
         READ  (11) NBV
         DO 10 I=1,NBV(1)
           READ (11) TEXTL(I)
   10    CONTINUE
         NBV(1) = NVARSOR
         WRITE (48) NBV
-C
+!
         TEXTL(1)='VX'
         TEXTL(2)='VZ'
         TEXTL(3)='RHO'
@@ -121,33 +121,33 @@ C
         TEXTL(7)='NUT'
         TEXTL(8)='S'
         TEXTL(9)='PRIV'
-C
+!
         DO 11 I=1,NBV(1)
           WRITE (48) TEXTL(I)
-  11    CONTINUE        
-C
+  11    CONTINUE
+!
         READ  (11) IPARAM
         WRITE (48) IPARAM
-C
+!
         READ  (11) NPV
         WRITE (48) NPV
-C
+!
         READ  (11) IKLE
         WRITE (48) IKLE
-C
+!
         READ  (11) IPOBO
         WRITE (48) IPOBO
-C
+!
         READ (11) XINT
-        READ (11) ZINT      
-C
+        READ (11) ZINT
+!
         CLOSE (11)
-C
-C Mise a l'echelle du maillage
-C.............................
-C Mesh scaling
-C.............
-C
+!
+! Mise a l'echelle du maillage
+!.............................
+! Mesh scaling
+!.............
+!
         X1MAIL= 1.E9
         X2MAIL=-1.E9
         Z1MAIL= 1.E9
@@ -160,65 +160,65 @@ C
  401    CONTINUE
         DO 402 I=1,NPOIN
           XINT(I)=(XINT(I)-X1MAIL)/(X2MAIL-X1MAIL)
-     .           *(XMAX-XMIN)+XMIN
+     &           *(XMAX-XMIN)+XMIN
           ZINT(I)=(ZINT(I)-Z1MAIL)/(Z2MAIL-Z1MAIL)
-     .           *(ZMAX-ZMIN)+ZMIN
+     &           *(ZMAX-ZMIN)+ZMIN
  402    CONTINUE
-C
+!
         WRITE (48) XINT
         WRITE (48) ZINT
-C
+!
       ELSE
-C
-C Format Tecplot
-C---------------
-C
-C Fichier positions
-C..................
-C Position file
-C..............
-C
+!
+! Format Tecplot
+!---------------
+!
+! Fichier positions
+!..................
+! Position file
+!..............
+!
         TITRE     = 'TITLE="position des particules"'
         VARIABLE  = 'VARIABLES="X" "Z"'
-C
+!
         OPEN(47,FILE='FORT.47',FORM='FORMATTED')
-C
+!
         WRITE(47,130) TITRE
         WRITE(47,131) VARIABLE
-C
-C Fichier champs
-C...............
-C Field file
-C...........
-C
+!
+! Fichier champs
+!...............
+! Field file
+!...........
+!
         TITRE2    = 'TITLE="resultats"'
         VARIABLE2 = 'VARIABLES="X(m)"  "Z(m)"
-     . "Vx(m/s)" "Vz(m/s)" "rho(kg/m3)" "P(Pa)" "k(m2/s2)"
-     . "eps(m2/s3)" "nut(m2/s)" "S(s-1)" "kpar" "kfluid"'
+     & "Vx(m/s)" "Vz(m/s)" "rho(kg/m3)" "P(Pa)" "k(m2/s2)"
+     & "eps(m2/s3)" "nut(m2/s)" "S(s-1)" "kpar" "kfluid"'
         VARIABLE2P = ' "priv"'
-C
+!
         OPEN(48,FILE='FORT.48',FORM='FORMATTED')
-C
+!
         WRITE(48,130) TITRE2
         WRITE(48,132) VARIABLE2,VARIABLE2P
-C
+!
       ENDIF
-C
-C Fichier suite de calcul
-C------------------------
-C Continued calculation file
-C---------------------------
-C
+!
+! Fichier suite de calcul
+!------------------------
+! Continued calculation file
+!---------------------------
+!
       OPEN(49,FILE='FORT.49',FORM='FORMATTED')
-C
+!
       WRITE(49,134) DR
-C
+!
  900  FORMAT(30(' ',D16.8))
  902  FORMAT(A)
  130  FORMAT(A60)
  131  FORMAT(A18)
  132  FORMAT(A190,A10)
- 134  FORMAT(D16.8) 
-C
+ 134  FORMAT(D16.8)
+!
       RETURN
       END
