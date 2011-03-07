@@ -1,53 +1,49 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       ALLOCATES MEMORY.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 06/12/2004
-!> </td><td> MICHEL BENOIT (EDF R&D LNHE)
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE POINT_TOMAWAC
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ************************
+                     SUBROUTINE POINT_TOMAWAC
+!                    ************************
+!
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    ALLOCATES MEMORY.
+!
+!history  MICHEL BENOIT (EDF R&D LNHE)
+!+        06/12/2004
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TOMAWAC
-C
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
+!
       INTEGER MEMT5,ITAMP,IELBT,IELM0,IELB1,CFG(2),NC,NS,I
       INTEGER  P_IMAX
       EXTERNAL P_IMAX
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+!
       IF (LNG.EQ.1) WRITE(LU,20)
       IF (LNG.EQ.2) WRITE(LU,40)
 20    FORMAT(1X,///,21X,'*******************************',/,
@@ -56,51 +52,51 @@ C
 40    FORMAT(1X,///,21X,'*******************************',/,
      &21X,              '*     MEMORY ORGANISATION     *',/,
      &21X,              '*******************************',/)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IELM0  = 10
       IELM2  = 11
       IELB1 = IELBOR(IELM2,1)
       CFG(1) = 1
       CFG(2) = 1
-C
-C-----------------------------------------------------------------------
-C
-C     ALLOCATES THE MESH STRUCTURE
-C
+!
+!-----------------------------------------------------------------------
+!
+!     ALLOCATES THE MESH STRUCTURE
+!
       CALL ALMESH(MESH,'MESH  ',IELM2,SPHE,CFG,WAC_FILES(WACGEO)%LU,
      &            EQUA)
-C
-C     ALIAS FOR CERTAIN COMPONENTS OF MESH
-C
+!
+!     ALIAS FOR CERTAIN COMPONENTS OF MESH
+!
       IKLE2  => MESH%IKLE%I
       IFABOR => MESH%IFABOR%I
       NBOR   => MESH%NBOR%I
-C
+!
       X     => MESH%X%R
       Y     => MESH%Y%R
       XEL   => MESH%XEL%R
       YEL   => MESH%YEL%R
       SURDET=> MESH%SURDET%R
-C
+!
       NELEM2=>MESH%NELEM
       NPOIN2=>MESH%NPOIN
       NPTFR =>MESH%NPTFR
-C
+!
       IELBT = IELBOR(IELM2,1)
-C
+!
       NPOIN3=NPOIN2*NPLAN
-C
-C-----------------------------------------------------------------------
-C
-C JMH 05/01/2011 : COMPUTING NPOIN2_G, THE ORIGINAL NUMBER OF POINTS IN
-C                  THE MESH (AS THE MAXIMUM OF ALL GLOBAL NUMBERS)
-C                  THIS NUMBER IS USED TO DIMENSION ARRAYS LIKE SXRELV,
-C                  ETC., THOUGH IT IS ONLY AN ESTIMATION OF THE MAXIMUM
-C                  NUMBER OF POINTS GIVEN IN THE VARIOUS DATA FILES,
-C                  SUCH AS WIND, ETC. 
-C
+!
+!-----------------------------------------------------------------------
+!
+! JMH 05/01/2011 : COMPUTING NPOIN2_G, THE ORIGINAL NUMBER OF POINTS IN
+!                  THE MESH (AS THE MAXIMUM OF ALL GLOBAL NUMBERS)
+!                  THIS NUMBER IS USED TO DIMENSION ARRAYS LIKE SXRELV,
+!                  ETC., THOUGH IT IS ONLY AN ESTIMATION OF THE MAXIMUM
+!                  NUMBER OF POINTS GIVEN IN THE VARIOUS DATA FILES,
+!                  SUCH AS WIND, ETC.
+!
       NPOIN2_G=NPOIN2
       IF(NCSIZE.GT.1) THEN
         DO I=1,NPOIN2
@@ -108,26 +104,26 @@ C
         ENDDO
         NPOIN2_G=P_IMAX(NPOIN2_G)
       ENDIF
-      NPOIN3_G=NPOIN2_G*NPLAN                                                          
-C
-C-----------------------------------------------------------------------
-C
-C     VARIABLES 4D TO ADVECT
+      NPOIN3_G=NPOIN2_G*NPLAN
+!
+!-----------------------------------------------------------------------
+!
+!     VARIABLES 4D TO ADVECT
       CALL BIEF_ALLVEC(1,SF,'SF    ',NPOIN3*NF , 1 , 0 ,MESH)
-C
-C     COEFFICIENT B FOR ADVECTION
+!
+!     COEFFICIENT B FOR ADVECTION
       CALL BIEF_ALLVEC(1,SB,'SB    ',NPOIN2*NF , 1 , 0 ,MESH)
-C
-C     ARRAY OF DISCRETISED FREQUENCIES, AND OF DELTA F
+!
+!     ARRAY OF DISCRETISED FREQUENCIES, AND OF DELTA F
       CALL BIEF_ALLVEC(1,SFR,'SFR   ' ,NF , 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SDFR,'SDFR  ',NF , 1 , 0 ,MESH)
       FREQ     =>SFR%R
       DFREQ    =>SDFR%R
-C
-C     "PHYSICAL" VARIABLES OF SIZE NPOIN3
+!
+!     "PHYSICAL" VARIABLES OF SIZE NPOIN3
       CALL BIEF_ALLVEC(1,SXK,'SXK   ',NPOIN2*NF, 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SCG,'SCG   ',NPOIN2*NF, 1 , 0 ,MESH)
-C
+!
       IF (TSOU) THEN
         CALL BIEF_ALLVEC(1,STSDER,'STSDER',NF*NPOIN3 , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,STSTOT,'STSTOT',NF*NPOIN3 , 1 , 0 ,MESH)
@@ -140,19 +136,19 @@ C
       TSDER   => STSDER%R
       TSTOT   => STSTOT%R
       DF_LIM  => SDF_LIM%R
-C
-C     POINTERS FOR THE BOUNDARY CONDITIONS
+!
+!     POINTERS FOR THE BOUNDARY CONDITIONS
       CALL BIEF_ALLVEC(1,SFBOR,'SFBOR ',IELBT, NPLAN*NF , 2 ,MESH)
-C
-C     ARRAYS FOR NON-LINEAR INTERACTIONS
+!
+!     ARRAYS FOR NON-LINEAR INTERACTIONS
       IF (STRIF.NE.0) THEN
         CALL BIEF_ALLVEC(1,SCOEF,'SCOEF ',16   , 1 , 0 ,MESH)
       ELSE
         CALL BIEF_ALLVEC(1,SCOEF ,'SCOEF ', 1, 1, 0 ,MESH)
       ENDIF
       COEFNL   =>SCOEF%R
-C
-C     ADVECTION FIELD
+!
+!     ADVECTION FIELD
       IF(COUSTA .OR. MAREE.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
         NC=NPOIN3*NF
         NS=NPOIN3*NF
@@ -160,24 +156,24 @@ C     ADVECTION FIELD
         NS=NPOIN3*NF
         NC=NPOIN3
       ENDIF
-C
+!
       F     =>SF%R
       B     =>SB%R
       XK    =>SXK%R
       CG    =>SCG%R
       FBOR  =>SFBOR%R
-C
+!
       IF(PROP) THEN
-C       FOOT OF THE CHARACTERISTICS
+!       FOOT OF THE CHARACTERISTICS
         CALL BIEF_ALLVEC(1,SSHP1,'SSHP1 ',NS , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SSHP2,'SSHP2 ',NS , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SSHP3,'SSHP3 ',NS , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SSHZ ,'SSHZ  ',NS , 1 , 0 ,MESH)
-C
+!
         CALL BIEF_ALLVEC(1,SCX,'SCX   ',NC , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SCY,'SCY   ',NC , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SCT,'SCT   ',NC , 1 , 0 ,MESH)
-C
+!
         IF(COURAN.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
           CALL BIEF_ALLVEC(1,SSHF,'SSHF  ',NS , 1 , 0 ,MESH)
           CALL BIEF_ALLVEC(1,SCF ,'SCF   ',NC , 1 , 0 ,MESH)
@@ -205,21 +201,21 @@ C
       CT    =>SCT%R
       SHF   =>SSHF%R
       CF    =>SCF%R
-C
-C ARRAYS OF SIZE NPOIN2
-C
+!
+! ARRAYS OF SIZE NPOIN2
+!
       CALL BIEF_ALLVEC(1,SZF,'SZF   ',IELM2 , 1 , 2 ,MESH)
       ZF    =>SZF%R
       CALL BIEF_ALLVEC(1,SDEPTH,'SDEPTH',IELM2 , 1 , 2 ,MESH)
       DEPTH =>SDEPTH%R
-C
-C     ADDED BY JMH 16/12/2008 (MAYBE NOT ALWAYS USED)
-C
+!
+!     ADDED BY JMH 16/12/2008 (MAYBE NOT ALWAYS USED)
+!
       CALL BIEF_ALLVEC(1,SBETA,'SBETA ',IELM2,1,2,MESH)
       BETA => SBETA%R
-C
-C     END OF JMH ADDITION
-C
+!
+!     END OF JMH ADDITION
+!
       IF (.NOT.PROINF) THEN
         CALL BIEF_ALLVEC(1,SDZX  ,'SDZX  ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,SDZY  ,'SDZY  ',IELM2 , 1 , 2 ,MESH)
@@ -229,10 +225,10 @@ C
       ENDIF
       DZX     =>SDZX%R
       DZY     =>SDZY%R
-C
-C     NAMECODE IS IN DECLARATIONS_TELEMAC AND IS MONITORED BY
-C     SUBROUTINE CONFIG_CODE
-C
+!
+!     NAMECODE IS IN DECLARATIONS_TELEMAC AND IS MONITORED BY
+!     SUBROUTINE CONFIG_CODE
+!
       IF(COURAN.OR.DONTEL.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
          CALL BIEF_ALLVEC(1,SUC ,'SUC   ',IELM2 , 1 , 2 ,MESH)
          CALL BIEF_ALLVEC(1,SVC ,'SVC   ',IELM2 , 1 , 2 ,MESH)
@@ -268,7 +264,7 @@ C
       DVY     =>SDVY%R
       XRELC   =>SXRELC%R
       YRELC   =>SYRELC%R
-C
+!
       IF (MAREE.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
          IF (WAC_FILES(WACCOB)%NAME.NE.' '.OR.
      &       WAC_FILES(WACCOF)%NAME.NE.' ') THEN
@@ -311,7 +307,7 @@ C
       ZM2     =>SZM2%R
       XRELM   =>SXRELM%R
       YRELM   =>SYRELM%R
-C
+!
       IF (VENT) THEN
          CALL BIEF_ALLVEC(1,SUV,'SUV   ',IELM2 , 1 , 2 ,MESH)
          CALL BIEF_ALLVEC(1,SVV,'SVV   ',IELM2 , 1 , 2 ,MESH)
@@ -349,10 +345,10 @@ C
       UV2     =>SUV2%R
       XRELV   =>SXRELV%R
       YRELV   =>SYRELV%R
-C
-C
-C
-C
+!
+!
+!
+!
       IF (SPHE) THEN
          CALL BIEF_ALLVEC(1,SCOSF,'SCOSF ',IELM2 , 1 , 2 ,MESH)
          CALL BIEF_ALLVEC(1,STGF,'STGF  ',IELM2 , 1 , 2 ,MESH)
@@ -362,22 +358,22 @@ C
       ENDIF
       COSF    =>SCOSF%R
       TGF     =>STGF%R
-C
-C
-C
-C
-C     ARRAYS WITH THE RELATIVE POSITIONS OF THE DIRECTION PLANES,
-C     AND WITH THE COS AND SIN TETA
+!
+!
+!
+!
+!     ARRAYS WITH THE RELATIVE POSITIONS OF THE DIRECTION PLANES,
+!     AND WITH THE COS AND SIN TETA
       CALL BIEF_ALLVEC(1,STETA,'STETA ',NPLAN+1 , 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SCOSTE,'SCOSTE',NPLAN , 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SSINTE,'SSINTE',NPLAN , 1 , 0 ,MESH)
       TETA     =>STETA%R
       COSTET   =>SCOSTE%R
       SINTET   =>SSINTE%R
-C
-C
-C
-C     POINTERS FOR WORKING ARRAYS (BY POINTS AND ELEMENTS)
+!
+!
+!
+!     POINTERS FOR WORKING ARRAYS (BY POINTS AND ELEMENTS)
       CALL BIEF_ALLVEC(1,ST0, 'ST0   ',IELM2 , 1 , 2 ,MESH)
       CALL BIEF_ALLVEC(1,ST1, 'ST1   ',IELM2 , 1 , 2 ,MESH)
       CALL BIEF_ALLVEC(1,ST2, 'ST2   ',IELM2 , 1 , 2 ,MESH)
@@ -388,15 +384,15 @@ C     POINTERS FOR WORKING ARRAYS (BY POINTS AND ELEMENTS)
       T2      =>ST2%R
       T3      =>ST3%R
       T4      =>ST4%R
-C
-C
-C
-C     POINTERS FOR MATRICES, AM1 SYMMETRICAL MATRIX
+!
+!
+!
+!     POINTERS FOR MATRICES, AM1 SYMMETRICAL MATRIX
       CALL BIEF_ALLMAT(AM1,'AM1   ',IELM2,IELM2,CFG,'Q','S',MESH)
-C
-C
-C
-C     VARIOUS WORKING ARRAYS
+!
+!
+!
+!     VARIOUS WORKING ARRAYS
       CALL BIEF_ALLVEC(1,SW1,   'SW1   ',NELEM2 , 4 , 0 ,MESH)
       W1      =>SW1%R
       CALL BIEF_ALLVEC(1,STRA31,'STRA31',NPOIN2 , 1 , 0 ,MESH)
@@ -423,20 +419,20 @@ C     VARIOUS WORKING ARRAYS
       TRA40   => STRA40%R
       TRA41   => STRA41%R
       TRA42   => STRA42%R
-C
-C
-C
+!
+!
+!
         CALL BIEF_ALLVEC(1,STRA02,'STRA02',NPOIN3*NF,2, 0 ,MESH)
         TRA02 =>STRA02%R
-C
-C.......VARIOUS WORKING ARRAYS
-C
+!
+!.......VARIOUS WORKING ARRAYS
+!
         CALL BIEF_ALLVEC(1,STRA01,'STRA01',NPOIN3_G,8,0,MESH)
-C
+!
         CALL BIEF_ALLVEC(1,STRAB1,'STRAB1', 1, 1, 0 ,MESH)
         TRA01   =>STRA01%R
         TRAB1   =>STRAB1%R
-C
+!
         IF (TSOU) THEN
           CALL BIEF_ALLVEC(1,STOLD,'STOLD ',NPOIN3 , 1 , 0 ,MESH)
           CALL BIEF_ALLVEC(1,STNEW,'STNEW ',NPOIN3 , 1 , 0 ,MESH)
@@ -446,12 +442,12 @@ C
         ENDIF
         TOLD    => STOLD%R
         TNEW    => STNEW%R
-C
+!
         CALL BIEF_ALLVEC(1,STRA43,'STRA43',NPOIN2 , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,STRA44,'STRA44',NPOIN2 , 1 , 0 ,MESH)
         TRA43   => STRA43%R
         TRA44   => STRA44%R
-C
+!
         IF (SORLEO(22).OR.SORLEO(32)) THEN
           CALL BIEF_ALLVEC(1,STRA56,'STRA56',NPOIN2 , 1 , 0 ,MESH)
         ELSE
@@ -546,17 +542,17 @@ C
         TRA64   => STRA64%R
         TRA65   => STRA65%R
         TRA66   => STRA66%R
-C
-C...... USER DEDICATED ARRAY
+!
+!...... USER DEDICATED ARRAY
         CALL BIEF_ALLVEC(1,SPRIVE,'SPRIVE',
-     *                   NPOIN3*NPRIV*NF, 1 , 0 ,MESH)
+     &                   NPOIN3*NPRIV*NF, 1 , 0 ,MESH)
         PRIVE   => SPRIVE%R
-C
-C.......NOT USED
+!
+!.......NOT USED
         CALL BIEF_ALLVEC(1,STRA15,'STRA15', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(1,STRA16,'STRA16', 1, 1, 0 ,MESH)
-C
-C.......BLOCK FOR GRAPHICAL OUTPUTS: VARSOR
+!
+!.......BLOCK FOR GRAPHICAL OUTPUTS: VARSOR
         CALL ALLBLO(VARSOR,'VARSOR')
         CALL ADDBLO(VARSOR,STRA37)
         CALL ADDBLO(VARSOR,STRA38)
@@ -592,32 +588,32 @@ C.......BLOCK FOR GRAPHICAL OUTPUTS: VARSOR
         CALL ADDBLO(VARSOR,STRA65)
         CALL ADDBLO(VARSOR,STRA66)
         CALL ADDBLO(VARSOR,STRA60)
-C       VARIABLE 35
+!       VARIABLE 35
         CALL ADDBLO(VARSOR,SBETA)
-C
-C
-C.....BLOCK FOR VALIDATION
-C
+!
+!
+!.....BLOCK FOR VALIDATION
+!
       IF (VALID) THEN
-C
-C       POINTERS FOR WORKING ARRAYS (BY POINTS AND ELEMENTS)
+!
+!       POINTERS FOR WORKING ARRAYS (BY POINTS AND ELEMENTS)
         CALL BIEF_ALLVEC(1,ST5, 'ST5   ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,ST6, 'ST6   ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,ST7, 'ST7   ',IELM2 , 1 , 2 ,MESH)
         T5      =>ST5%R
         T6      =>ST6%R
         T7      =>ST7%R
-C
-C       MAKE SURE THIS IS CONSISTENT WITH THE ALIRE VECTOR
-C       DECLARED IN DECLARATIONS_TOMAWAC.F
-C       7 VARIABLES HAVE BEEN USED FOR VALIDATION
-C          SIGNIFICANT WAVE HEIGHT    HM0       ( 2)
-C          MEAN DIRECTION             DMOY      ( 3)
-C          DIRECTIONAL SPREADING      SPD       ( 4)
-C          DRIVING FORCE ALONG X      FX        (11)
-C          DRIVING FORCE ALONG Y      FY        (12)
-C          MEAN FREQUENCY FM-10       FMOY      (18)
-C          MEAN FREQUENCY FM01        FM01      (19)
+!
+!       MAKE SURE THIS IS CONSISTENT WITH THE ALIRE VECTOR
+!       DECLARED IN DECLARATIONS_TOMAWAC.F
+!       7 VARIABLES HAVE BEEN USED FOR VALIDATION
+!          SIGNIFICANT WAVE HEIGHT    HM0       ( 2)
+!          MEAN DIRECTION             DMOY      ( 3)
+!          DIRECTIONAL SPREADING      SPD       ( 4)
+!          DRIVING FORCE ALONG X      FX        (11)
+!          DRIVING FORCE ALONG Y      FY        (12)
+!          MEAN FREQUENCY FM-10       FMOY      (18)
+!          MEAN FREQUENCY FM01        FM01      (19)
         CALL ALLBLO(BST1,'BST1  ')
         CALL ADDBLO(BST1,ST0)
         CALL ADDBLO(BST1,ST1)
@@ -643,24 +639,24 @@ C          MEAN FREQUENCY FM01        FM01      (19)
         CALL BIEF_ALLVEC(1,ST6   ,'ST6   ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(1,ST7   ,'ST7   ', 1, 1, 0 ,MESH)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C                     **********************
-C                     * POINTER: ARRAY IA*
-C                     **********************
-C
-C-----------------------------------------------------------------------
-C
-C
+!
+!-----------------------------------------------------------------------
+!
+!                     **********************
+!                     * POINTER: ARRAY IA*
+!                     **********************
+!
+!-----------------------------------------------------------------------
+!
+!
       CALL BIEF_ALLVEC(2,SLIFBR,'SLIFBR',IELB1, 1 , 1 ,MESH)
       CALL BIEF_ALLVEC(2,SIBOR,'SIBOR ',NELEM2, 7 , 0 ,MESH)
       CALL BIEF_ALLVEC(2,BOUNDARY_COLOUR,'BNDCOL',IELB1,1,1,MESH)
       LIFBOR  => SLIFBR%I
       IBOR    => SIBOR%I
-C
-C FOOT OF THE CHARACTERISTICS
-C
+!
+! FOOT OF THE CHARACTERISTICS
+!
       IF (PROP) THEN
         CALL BIEF_ALLVEC(2,SELT,'SELT  ',NS , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(2,SETA,'SETA  ',NS , 1 , 0 ,MESH)
@@ -677,41 +673,41 @@ C
       ELT   => SELT%I
       ETA   => SETA%I
       FRE   => SFRE%I
-C
-C USEFUL ARRAY FOR THE CHARACTERISTICS
-C
+!
+! USEFUL ARRAY FOR THE CHARACTERISTICS
+!
       CALL BIEF_ALLVEC(2,SETAP1,'SETAP1',NPLAN, 1 , 0 ,MESH)
       ETAP1  => SETAP1%I
-C
-C WORKING ARRAYS USED IN THE CALL TO INBIEF AND INIPIE
-C
+!
+! WORKING ARRAYS USED IN THE CALL TO INBIEF AND INIPIE
+!
       CALL BIEF_ALLVEC(2,SITR31,'SITR31',IELM0 , 1 , 1 ,MESH)
       CALL BIEF_ALLVEC(2,SITR32,'SITR32',IELM0 , 1 , 1 ,MESH)
       CALL BIEF_ALLVEC(2,SITR33,'SITR33',IELM0 , 1 , 1 ,MESH)
       ITR31   => SITR31%I
       ITR32   => SITR32%I
       ITR33   => SITR33%I
-C
-C
-C
-C.......WORKING ARRAYS OF INTEGERS
+!
+!
+!
+!.......WORKING ARRAYS OF INTEGERS
         CALL BIEF_ALLVEC(2,SITR03,'SITR03', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(2,SITRB1,'SITRB1', 1, 1, 0 ,MESH)
         ITR03 => SITR03%I
         ITRB1 => SITRB1%I
         CALL BIEF_ALLVEC(2,SITR01,'SITR01',NPOIN3 ,3,0,MESH)
         ITR01 => SITR01%I
-C
-C.......NON-LINEAR INTERACTIONS
-C
+!
+!.......NON-LINEAR INTERACTIONS
+!
         IF (STRIF.NE.0) THEN
           CALL BIEF_ALLVEC(2,SIAGNL,'SIAGNL',8*NPLAN,1,0,MESH)
         ELSE
           CALL BIEF_ALLVEC(2,SIAGNL,'SIAGNL',1,1,0,MESH)
         ENDIF
         IANGNL => SIAGNL%I
-C
-C.......RELATIVE SPECTRUM ->  ABSOLUTE SPECTRUM (TRANSF)
+!
+!.......RELATIVE SPECTRUM ->  ABSOLUTE SPECTRUM (TRANSF)
         IF (COUSTA .OR. MAREE.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
           CALL BIEF_ALLVEC(2,SITR11,'SITR11',NPOIN2,1,0,MESH)
           CALL BIEF_ALLVEC(2,SITR12,'SITR12',NPOIN2,1,0,MESH)
@@ -724,7 +720,7 @@ C.......RELATIVE SPECTRUM ->  ABSOLUTE SPECTRUM (TRANSF)
         ITR11   => SITR11%I
         ITR12   => SITR12%I
         ITR13   => SITR13%I
-C
+!
         CALL BIEF_ALLVEC(2,SKNI  ,'SKNI  ', 1, 1, 0,MESH )
         CALL BIEF_ALLVEC(2,SKNOGL,'SKNOGL', 1, 1, 0,MESH )
         CALL BIEF_ALLVEC(2,SELI  ,'SELI  ', 1, 1, 0,MESH )
@@ -733,11 +729,11 @@ C
         KNOGL => SKNOGL%I
         ELI   => SELI%I
         KELGL => SKELGL%I
-C
-C***********************************************************************
-C
-C CHECKS AND WRITES OUT
-C
+!
+!***********************************************************************
+!
+! CHECKS AND WRITES OUT
+!
       IF (LNG.EQ.1) WRITE(LU,22)
       IF (LNG.EQ.2) WRITE(LU,23)
    22 FORMAT(1X,///,21X,'****************************************',/,
@@ -746,9 +742,6 @@ C
    23 FORMAT(1X,///,21X,'*************************************',/,
      &21X,              '*    END OF MEMORY ORGANIZATION:    *',/,
      &21X,              '*************************************',/)
-C
+!
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,279 +1,60 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       READS THE STEERING FILE THROUGH A DAMOCLES CALL.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, DECLARATIONS_TELEMAC, DECLARATIONS_TOMAWAC
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> CODE, FILE_DESC, NCAR, PATH
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> DECLARATIONS_TOMAWAC :<br>
-!> @link DECLARATIONS_TOMAWAC::ALFABJ ALFABJ@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ALFARO ALFARO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ALFLTA ALFLTA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ALPHA ALPHA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ALPHIL ALPHIL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::APHILL APHILL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BDISPB BDISPB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BDSSPB BDSSPB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BETAIH BETAIH@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BETAM BETAM@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINBI1 BINBI1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINCOU BINCOU@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINGEO BINGEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINLEO BINLEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINMAR BINMAR@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINPRE BINPRE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINRBI BINRBI@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINRES BINRES@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BINVEN BINVEN@endlink, 
-!> @link DECLARATIONS_TOMAWAC::BORETG BORETG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::CDRAG CDRAG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::CFROT1 CFROT1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::CIMPLI CIMPLI@endlink, 
-!> @link DECLARATIONS_TOMAWAC::CMOUT1 CMOUT1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::CMOUT2 CMOUT2@endlink, 
-!> @link DECLARATIONS_TOMAWAC::COEFHS COEFHS@endlink, 
-!> @link DECLARATIONS_TOMAWAC::COURAN COURAN@endlink, 
-!> @link DECLARATIONS_TOMAWAC::COUSTA COUSTA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::DDC DDC@endlink, 
-!> @link DECLARATIONS_TOMAWAC::DEBUG DEBUG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::DECAL DECAL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::DONTEL DONTEL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::DT DT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::E2FMIN E2FMIN@endlink, 
-!> @link DECLARATIONS_TOMAWAC::EM2SIH EM2SIH@endlink, 
-!> @link DECLARATIONS_TOMAWAC::EQUA EQUA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::F1 F1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FETCH FETCH@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FETCHL FETCHL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FPIC FPIC@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FPICL FPICL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FPMAXL FPMAXL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FRABI FRABI@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FRABL FRABL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::FREMAX FREMAX@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GAM2RO GAM2RO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GAMARO GAMARO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GAMATG GAMATG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GAMBJ1 GAMBJ1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GAMBJ2 GAMBJ2@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GAMMA GAMMA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GAMMAL GAMMAL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GLOB GLOB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GRADEB GRADEB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::GRAPRD GRAPRD@endlink, 
-!> @link DECLARATIONS_TOMAWAC::HM0 HM0@endlink, 
-!> @link DECLARATIONS_TOMAWAC::HM0L HM0L@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IDHMA IDHMA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IDISRO IDISRO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IDTEL IDTEL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IEXPRO IEXPRO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IFRBJ IFRBJ@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IFRIH IFRIH@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IFRRO IFRRO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IFRTG IFRTG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IHMBJ IHMBJ@endlink, 
-!> @link DECLARATIONS_TOMAWAC::INDIC INDIC@endlink, 
-!> @link DECLARATIONS_TOMAWAC::INDIM INDIM@endlink, 
-!> @link DECLARATIONS_TOMAWAC::INDIV INDIV@endlink, 
-!> @link DECLARATIONS_TOMAWAC::INISPE INISPE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IQBBJ IQBBJ@endlink, 
-!> @link DECLARATIONS_TOMAWAC::IWHTG IWHTG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::I_ORIG I_ORIG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::J_ORIG J_ORIG@endlink, 
-!> @link DECLARATIONS_TOMAWAC::KSPB KSPB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::LAM LAM@endlink, 
-!> @link DECLARATIONS_TOMAWAC::LIMIT LIMIT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::LIMSPE LIMSPE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::LISFON LISFON@endlink, 
-!> @link DECLARATIONS_TOMAWAC::LISPRD LISPRD@endlink, 
-!> @link DECLARATIONS_TOMAWAC::LVMAC LVMAC@endlink, 
-!> @link DECLARATIONS_TOMAWAC::MAREE MAREE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::MAXLU_WAC MAXLU_WAC@endlink, 
-!> @link DECLARATIONS_TOMAWAC::MAXVAR MAXVAR@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NDTBRK NDTBRK@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NF NF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NIT NIT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NPLAN NPLAN@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NPLEO NPLEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NPRIV NPRIV@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NPTT NPTT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::NSITS NSITS@endlink, 
-!> @link DECLARATIONS_TOMAWAC::PROINF PROINF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::PROMIN PROMIN@endlink, 
-!> @link DECLARATIONS_TOMAWAC::PROP PROP@endlink, 
-!> @link DECLARATIONS_TOMAWAC::RAISF RAISF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::RFMLTA RFMLTA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ROAIR ROAIR@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ROEAU ROEAU@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SBREK SBREK@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SFROT SFROT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SIGMAA SIGMAA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SIGMAB SIGMAB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SIGMAL SIGMAL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SIGMBL SIGMBL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SMOUT SMOUT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SORIMP SORIMP@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SORLEO SORLEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SORT2D SORT2D@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SPEULI SPEULI@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SPHE SPHE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SPRE1L SPRE1L@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SPRE2L SPRE2L@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SPRED1 SPRED1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SPRED2 SPRED2@endlink, 
-!> @link DECLARATIONS_TOMAWAC::STDGEO STDGEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::STRIA STRIA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::STRIF STRIF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SUIT SUIT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::SVENT SVENT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TAILF TAILF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TETA1 TETA1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TETA1L TETA1L@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TETA2 TETA2@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TETA2L TETA2L@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TEXTE TEXTE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TEXTPR TEXTPR@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TITCAS TITCAS@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TRIGO TRIGO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::TSOU TSOU@endlink, 
-!> @link DECLARATIONS_TOMAWAC::VALID VALID@endlink, 
-!> @link DECLARATIONS_TOMAWAC::VENSTA VENSTA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::VENT VENT@endlink, 
-!> @link DECLARATIONS_TOMAWAC::VERS VERS@endlink, 
-!> @link DECLARATIONS_TOMAWAC::VX_CTE VX_CTE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::VY_CTE VY_CTE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACBI1 WACBI1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACCAS WACCAS@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACCLI WACCLI@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACCOB WACCOB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACCOF WACCOF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACFO1 WACFO1@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACFON WACFON@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACGEO WACGEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACLEO WACLEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACMAB WACMAB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACMAF WACMAF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACPAR WACPAR@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACPRE WACPRE@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACRBI WACRBI@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACREF WACREF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACRES WACRES@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACVEB WACVEB@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WACVEF WACVEF@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WAC_FILES WAC_FILES@endlink, 
-!> @link DECLARATIONS_TOMAWAC::XDTBRK XDTBRK@endlink, 
-!> @link DECLARATIONS_TOMAWAC::XKAPPA XKAPPA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::XLAMD XLAMD@endlink, 
-!> @link DECLARATIONS_TOMAWAC::XLAMDA XLAMDA@endlink, 
-!> @link DECLARATIONS_TOMAWAC::XLAMDL XLAMDL@endlink, 
-!> @link DECLARATIONS_TOMAWAC::XLEO XLEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::YLEO YLEO@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ZREPOS ZREPOS@endlink, 
-!> @link DECLARATIONS_TOMAWAC::ZVENT ZVENT@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> ADRESS, DEGRAD, DIMEN, DOC, I, K, MNEMO, MOTCAR, MOTCLE, MOTINT, MOTLOG, MOTREA, NMAX, NOM_CAS, NOM_DIC, PIS2, TROUVE
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> DAMOCLE(), MAJUS(), NOMVAR_TOMAWAC(), READ_SUBMIT(), SORTIE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>HOMERE_TOMAWAC()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 06/12/2004
-!> </td><td> MICHEL BENOIT (EDF R&D LNHE)
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>CODE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>FILE_DESC
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NCAR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>PATH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE LECDON_TOMAWAC
+!                    *************************
+                     SUBROUTINE LECDON_TOMAWAC
+!                    *************************
+!
      & (FILE_DESC,PATH,NCAR,CODE)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| CODE           |---| 
-C| FILE_DESC      |---| 
-C| NCAR           |---| 
-C| PATH           |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
+!
+!history  MICHEL BENOIT (EDF R&D LNHE)
+!+        06/12/2004
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CODE           |---| 
+!| FILE_DESC      |---| 
+!| NCAR           |---| 
+!| PATH           |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TOMAWAC
-C
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C DEGRAD = CONVERSION FACTOR FROM DEGREES TO RADIANS
+!
+! DEGRAD = CONVERSION FACTOR FROM DEGREES TO RADIANS
       DOUBLE PRECISION DEGRAD, PIS2
       PARAMETER(DEGRAD=0.01745329252D0, PIS2=1.570796327D0)
       CHARACTER*8      MNEMO(MAXVAR)
       INTEGER          K
-C
-C-----------------------------------------------------------------------
-C
-C ARRAYS USED IN THE DAMOCLES CALL
-C
+!
+!-----------------------------------------------------------------------
+!
+! ARRAYS USED IN THE DAMOCLES CALL
+!
       INTEGER, PARAMETER :: NMAX = 300
-C
+!
       INTEGER          ADRESS(4,NMAX),DIMEN(4,NMAX)
       DOUBLE PRECISION MOTREA(NMAX)
       INTEGER          MOTINT(NMAX)
@@ -284,18 +65,18 @@ C
       LOGICAL          DOC
       CHARACTER(LEN=250) :: NOM_CAS
       CHARACTER(LEN=250) :: NOM_DIC
-C ARGUMENTS
+! ARGUMENTS
       CHARACTER(LEN=24), INTENT(IN)     :: CODE
       CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,NMAX)
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
       INTEGER :: I
-C
-C END OF DECLARATIONS FOR DAMOCLES CALL
-C
-C
-C***********************************************************************
-C
+!
+! END OF DECLARATIONS FOR DAMOCLES CALL
+!
+!
+!***********************************************************************
+!
       IF (LNG.EQ.1) WRITE(LU,1)
       IF (LNG.EQ.2) WRITE(LU,2)
 1     FORMAT(1X,/,19X, '********************************************',/,
@@ -310,58 +91,58 @@ C
      &            19X, '*        VERIFICATION OF READ DATA         *',/,
      &            19X, '*            ON STEERING FILE              *',/,
      &            19X, '********************************************',/)
-C
-C-----------------------------------------------------------------------
-C
-C INITIALISES THE VARIABLES FOR DAMOCLES CALL :
-C
+!
+!-----------------------------------------------------------------------
+!
+! INITIALISES THE VARIABLES FOR DAMOCLES CALL :
+!
       DO K=1,NMAX
-C       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
-C       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
+!       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
+!       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
         MOTCAR(K)(1:1)=' '
-C
+!
         DIMEN(1,K) = 0
         DIMEN(2,K) = 0
         DIMEN(3,K) = 0
         DIMEN(4,K) = 0
       ENDDO
-C
-C     WRITES OUT INFO
+!
+!     WRITES OUT INFO
       DOC = .FALSE.
-C
-C-----------------------------------------------------------------------
-C     OPENS DICTIONNARY AND STEERING FILES
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!     OPENS DICTIONNARY AND STEERING FILES
+!-----------------------------------------------------------------------
+!
       IF(NCAR.GT.0) THEN
-C
+!
         NOM_DIC=PATH(1:NCAR)//'WACDICO'
         NOM_CAS=PATH(1:NCAR)//'WACCAS'
-C
+!
       ELSE
-C
+!
         NOM_DIC='WACDICO'
         NOM_CAS='WACCAS'
-C
+!
       ENDIF
-C
+!
       OPEN(2,FILE=NOM_DIC,FORM='FORMATTED',ACTION='READ')
       OPEN(3,FILE=NOM_CAS,FORM='FORMATTED',ACTION='READ')
-C
+!
       CALL DAMOCLE
      &( ADRESS, DIMEN , NMAX  , DOC    , LNG   , LU    , MOTINT,
      &  MOTREA, MOTLOG, MOTCAR, MOTCLE , TROUVE, 2  , 3  ,
      &  .FALSE.,FILE_DESC)
-C
-C     DECODES 'SUBMIT' CHAINS
-C
+!
+!     DECODES 'SUBMIT' CHAINS
+!
       CALL READ_SUBMIT(WAC_FILES,MAXLU_WAC,CODE,FILE_DESC,300)
-C
-C-----------------------------------------------------------------------
-C
-C     RETRIEVES FILE NUMBERS FROM TOMAWAC FORTRAN PARAMETERS
-C     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
-C
+!
+!-----------------------------------------------------------------------
+!
+!     RETRIEVES FILE NUMBERS FROM TOMAWAC FORTRAN PARAMETERS
+!     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
+!
       DO I=1,MAXLU_WAC
         IF(WAC_FILES(I)%TELNAME.EQ.'WACGEO') THEN
           WACGEO=I
@@ -401,15 +182,15 @@ C
           WACMAF=I
         ENDIF
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
-C   ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
-C
-C-----------------------------------------------------------------------
-C
-C INTEGER KEYWORDS
-C
+!
+!-----------------------------------------------------------------------
+!
+!   ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
+!
+!-----------------------------------------------------------------------
+!
+! INTEGER KEYWORDS
+!
       GRAPRD = MOTINT( ADRESS(1,  1) )
       LISPRD = MOTINT( ADRESS(1,  2) )
       NIT    = MOTINT( ADRESS(1,  3) )
@@ -440,9 +221,9 @@ C
       IFRIH  = MOTINT( ADRESS(1, 28) )
       NDTBRK = MOTINT( ADRESS(1, 29) )
       LIMIT  = MOTINT( ADRESS(1, 30) )
-C
-C         NPRIV     = MOTINT( ADRESS(1, 32?) ) 'ADD TO DICO FILE'
-C
+!
+!         NPRIV     = MOTINT( ADRESS(1, 32?) ) 'ADD TO DICO FILE'
+!
       STRIA  = MOTINT( ADRESS(1, 32) )
       LIMSPE = MOTINT( ADRESS(1, 33) )
       LAM    = MOTINT( ADRESS(1, 34) )
@@ -451,17 +232,17 @@ C
       FRABI  = MOTINT( ADRESS(1, 37) )
       NPRIV  = MOTINT( ADRESS(1, 38) )
       FRABL  = MOTINT( ADRESS(1, 39) )
-C     COORDINATES OF THE ORIGIN IN (X, Y)
+!     COORDINATES OF THE ORIGIN IN (X, Y)
       I_ORIG = MOTINT( ADRESS(1, 40) )
       J_ORIG = MOTINT( ADRESS(1, 40)+1 )
-C     DEBUG KEYWORD
+!     DEBUG KEYWORD
       DEBUG  = MOTINT( ADRESS(1, 41) )
-C
-C     GEOMETRY FILE STANDARD
+!
+!     GEOMETRY FILE STANDARD
       STDGEO = 3
-C
-C REAL KEYWORDS
-C
+!
+! REAL KEYWORDS
+!
       DT     = MOTREA( ADRESS(2,  1) )
       F1     = MOTREA( ADRESS(2,  2) )
       RAISF  = MOTREA( ADRESS(2,  3) )
@@ -535,9 +316,9 @@ C
       VX_CTE = MOTREA( ADRESS(2, 66) )
       VY_CTE = MOTREA( ADRESS(2, 67) )
       CIMPLI = MOTREA( ADRESS(2, 68) )
-C
-C LOGICAL KEYWORDS
-C
+!
+! LOGICAL KEYWORDS
+!
       TSOU   = MOTLOG( ADRESS(3,  1) )
       SPHE   = MOTLOG( ADRESS(3,  2) )
       GLOB   = MOTLOG( ADRESS(3,  3) )
@@ -552,17 +333,17 @@ C
       MAREE  = MOTLOG( ADRESS(3, 12) )
       TRIGO  = MOTLOG( ADRESS(3, 13) )
       SPEULI = MOTLOG( ADRESS(3, 14) )
-C
-C STRING KEYWORDS
-C
+!
+! STRING KEYWORDS
+!
       TITCAS = MOTCAR( ADRESS(4, 1) ) (1:72)
       SORT2D = MOTCAR( ADRESS(4, 2) ) (1:72)
-C
-C FILES IN THE STEERING FILE
-C
+!
+! FILES IN THE STEERING FILE
+!
       WAC_FILES(WACGEO)%NAME=MOTCAR( ADRESS(4,3) )
-C     NOMFOR = MOTCAR( ADRESS(4, 4) )
-C     NOMCAS = MOTCAR( ADRESS(4, 5) )
+!     NOMFOR = MOTCAR( ADRESS(4, 4) )
+!     NOMCAS = MOTCAR( ADRESS(4, 5) )
       WAC_FILES(WACCLI)%NAME=MOTCAR( ADRESS(4,6) )
       WAC_FILES(WACFON)%NAME=MOTCAR( ADRESS(4,7) )
       WAC_FILES(WACRES)%NAME=MOTCAR( ADRESS(4,8) )
@@ -580,9 +361,9 @@ C     NOMCAS = MOTCAR( ADRESS(4, 5) )
       BINRBI = MOTCAR( ADRESS(4,20) )(1:3)
       BINPRE = MOTCAR( ADRESS(4,21) )(1:3)
       VERS   = MOTCAR( ADRESS(4,22) )(1:4)
-C
-C     FROM 23 TO 28 : FOR CRAY, NOT USEFUL HERE
-C
+!
+!     FROM 23 TO 28 : FOR CRAY, NOT USEFUL HERE
+!
       BINVEN = MOTCAR( ADRESS(4,29) )(1:3)
       BINBI1 = MOTCAR( ADRESS(4,30) )(1:3)
       WAC_FILES(WACVEB)%NAME=MOTCAR( ADRESS(4,31) )
@@ -594,26 +375,26 @@ C
       BINMAR = MOTCAR( ADRESS(4,37) )(1:3)
       EQUA   = 'TOMAWAC-COWADIS'
 !BD_INCKA FILE FORMATS
-C     RESULTS FILE FORMAT
+!     RESULTS FILE FORMAT
       WAC_FILES(WACRES)%FMT = MOTCAR( ADRESS(4,40) )(1:8)
       CALL MAJUS(WAC_FILES(WACRES)%FMT)
-C     INITIAL RESULTS FILE FORMAT (< PREVIOUS COMPUTATION)
-C     SEDIMENT...
+!     INITIAL RESULTS FILE FORMAT (< PREVIOUS COMPUTATION)
+!     SEDIMENT...
       WAC_FILES(WACPRE)%FMT = MOTCAR( ADRESS(4,41) )(1:8)
       CALL MAJUS(WAC_FILES(WACPRE)%FMT)
-C     REFERENCE FILE FORMAT
+!     REFERENCE FILE FORMAT
       WAC_FILES(WACREF)%FMT = MOTCAR( ADRESS(4,42) )(1:8)
       CALL MAJUS(WAC_FILES(WACREF)%FMT)
-C     BINARY FILE 1 FORMAT
+!     BINARY FILE 1 FORMAT
       WAC_FILES(WACBI1)%FMT = MOTCAR( ADRESS(4,43) )(1:8)
       CALL MAJUS(WAC_FILES(WACBI1)%FMT)
-C     SPECTRAL FILE FORMAT
+!     SPECTRAL FILE FORMAT
       WAC_FILES(WACLEO)%FMT = MOTCAR( ADRESS(4,44) )(1:8)
       CALL MAJUS(WAC_FILES(WACLEO)%FMT)
-C
-C  CORRECTS OR COMPUTES OTHER PARAMETERS FROM THOSE THAT
-C  HAVE JUST BEEN READ
-C
+!
+!  CORRECTS OR COMPUTES OTHER PARAMETERS FROM THOSE THAT
+!  HAVE JUST BEEN READ
+!
       IF(COUSTA.OR.MAREE) THEN
         COURAN=.TRUE.
       ELSE
@@ -663,27 +444,27 @@ C
         ENDIF
         CIMPLI=0.5D0
       ENDIF
-C
-C
-C-----------------------------------------------------------------------
-C  NAME OF THE VARIABLES FOR THE RESULTS AND GEOMETRY FILES:
-C-----------------------------------------------------------------------
-C
-C LOGICAL ARRAY FOR OUTPUT
-C
+!
+!
+!-----------------------------------------------------------------------
+!  NAME OF THE VARIABLES FOR THE RESULTS AND GEOMETRY FILES:
+!-----------------------------------------------------------------------
+!
+! LOGICAL ARRAY FOR OUTPUT
+!
       CALL NOMVAR_TOMAWAC(TEXTE,TEXTPR,MNEMO,MAXVAR)
-C
-C$DC$ BUG : ARRAYS MNEMO AND SORLEO OF SIZE MAXVAR
-C             MUCH LESS THAN 100 !
+!
+!$DC$ BUG : ARRAYS MNEMO AND SORLEO OF SIZE MAXVAR
+!             MUCH LESS THAN 100 !
       CALL SORTIE(SORT2D , MNEMO , MAXVAR , SORLEO )
-C
-C.....IF NO WIND, THERE SHOULD BE NO INFORMATION WRITTEN ABOUT WINDS
+!
+!.....IF NO WIND, THERE SHOULD BE NO INFORMATION WRITTEN ABOUT WINDS
       IF (.NOT.VENT) THEN
         SORLEO( 9)=.FALSE.
         SORLEO(10)=.FALSE.
       ENDIF
-C
-C.....IF INFINITE DEPTH, THE RADIATION STRESSES ARE NOT COMPUTED
+!
+!.....IF INFINITE DEPTH, THE RADIATION STRESSES ARE NOT COMPUTED
       IF (PROINF) THEN
         IF (SORLEO(11) .OR. SORLEO(12) .OR. SORLEO(13) .OR.
      &      SORLEO(14) .OR. SORLEO(15) ) THEN
@@ -704,21 +485,18 @@ C.....IF INFINITE DEPTH, THE RADIATION STRESSES ARE NOT COMPUTED
            ENDDO
         ENDIF
       ENDIF
-C
+!
       DO K=1,MAXVAR
         SORIMP(K)=.FALSE.
       ENDDO
-C
-C
+!
+!
  1001 FORMAT('*** INCOMPATIBILITE DES MOTS CLES ***
      &                ARRET DU PROGRAMME')
  1002 FORMAT('*** INCOMPATIBILITY OF THE KEY WORDS ***
      &                   PROGRAM STOP')
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

@@ -1,97 +1,60 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
-!>                FILES (TEXTE) AND FOR THE PREVIOUS COMPUTATION
-!>                RESULTS FILE (TEXTPR).<br>
-!><br>            TEXTE AND TEXTPR ARE GENERALLY EQUAL EXCEPT IF THE
-!>                PREVIOUS COMPUTATION COMES FROM ANOTHER SOFTWARE.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> MAXVAR, MNEMO, TEXTE, TEXTPR
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>LECDON_TOMAWAC()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.5                                       </center>
-!> </td><td> 06/12/2004
-!> </td><td> MICHEL BENOIT (EDF R&D LNHE)
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>MAXVAR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MNEMO
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TEXTE
-!></td><td><--</td><td>NOM DES VARIABLES
-!>    </td></tr>
-!>          <tr><td>TEXTPR
-!></td><td><--</td><td>NOM DES VARIABLES DU CALCUL PRECEDENT
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE NOMVAR_TOMAWAC
+!                    *************************
+                     SUBROUTINE NOMVAR_TOMAWAC
+!                    *************************
+!
      &(TEXTE,TEXTPR,MNEMO,MAXVAR)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| MAXVAR         |---| 
-C| MNEMO          |---| 
-C| TEXTE          |<--| NOM DES VARIABLES
-C| TEXTPR         |<--| NOM DES VARIABLES DU CALCUL PRECEDENT
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
+!+                FILES (TEXTE) AND FOR THE PREVIOUS COMPUTATION
+!+                RESULTS FILE (TEXTPR).
+!+
+!+
+!+            TEXTE AND TEXTPR ARE GENERALLY EQUAL EXCEPT IF THE
+!+                PREVIOUS COMPUTATION COMES FROM ANOTHER SOFTWARE.
+!
+!history  MICHEL BENOIT (EDF R&D LNHE)
+!+        06/12/2004
+!+        V5P5
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| MAXVAR         |---| 
+!| MNEMO          |---| 
+!| TEXTE          |<--| NOM DES VARIABLES
+!| TEXTPR         |<--| NOM DES VARIABLES DU CALCUL PRECEDENT
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER      MAXVAR
       CHARACTER*32 TEXTE(MAXVAR),TEXTPR(MAXVAR)
       CHARACTER*8  MNEMO(MAXVAR)
-C
-C-----------------------------------------------------------------------
-C
-C  ENGLISH
-C
+!
+!-----------------------------------------------------------------------
+!
+!  ENGLISH
+!
       IF (LNG.EQ.2) THEN
-C
+!
       TEXTE (1 ) = 'VARIANCE M0     M2              '
       TEXTE (2 ) = 'WAVE HEIGHT HM0 M               '
       TEXTE (3 ) = 'MEAN DIRECTION  DEG             '
@@ -127,12 +90,12 @@ C
       TEXTE (33) = 'PEAK PERIOD TPR8S               '
       TEXTE (34) = 'WAVE POWER      KW/M            '
       TEXTE (35) = 'BETA                            '
-C
-C TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
-C IN GENERAL TEXTPR=TEXTE UNLESS ANOTHER CODE WAS USED TO
-C GENERATE THE PREVIOUS RESULT, IN WHICH CASE THE OUTPUT
-C VARIABLE NAMES HAVE TO BE WRITTEN HERE.
-C
+!
+! TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
+! IN GENERAL TEXTPR=TEXTE UNLESS ANOTHER CODE WAS USED TO
+! GENERATE THE PREVIOUS RESULT, IN WHICH CASE THE OUTPUT
+! VARIABLE NAMES HAVE TO BE WRITTEN HERE.
+!
       TEXTPR (1 ) = 'VARIANCE M0     M2              '
       TEXTPR (2 ) = 'WAVE HEIGHT HM0 M               '
       TEXTPR (3 ) = 'MEAN DIRECTION  DEG             '
@@ -168,13 +131,13 @@ C
       TEXTPR (33) = 'PEAK PERIOD TPR8S               '
       TEXTPR (34) = 'WAVE POWER      KW/M            '
       TEXTPR (35) = 'BETA                            '
-C
-C-----------------------------------------------------------------------
-C
-C  FRENCH OR OTHER
-C
+!
+!-----------------------------------------------------------------------
+!
+!  FRENCH OR OTHER
+!
       ELSE
-C
+!
       TEXTE (1 ) = 'VARIANCE M0     M2              '
       TEXTE (2 ) = 'HAUTEUR HM0     M               '
       TEXTE (3 ) = 'DIRECTION MOY   DEG             '
@@ -210,11 +173,11 @@ C
       TEXTE (33) = 'PERIODE PIC TPR8S               '
       TEXTE (34) = 'PUISSANCE HOULE KW/M            '
       TEXTE (35) = 'BETA                            '
-C
-C TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
-C A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
-C DE CALCUL A PARTIR D'UN AUTRE CODE.
-C
+!
+! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
+! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
+! DE CALCUL A PARTIR D'UN AUTRE CODE.
+!
       TEXTPR (1 ) = 'VARIANCE M0     M2              '
       TEXTPR (2 ) = 'HAUTEUR HM0     M               '
       TEXTPR (3 ) = 'DIRECTION MOY   DEG             '
@@ -250,13 +213,13 @@ C
       TEXTPR (33) = 'PERIODE PIC TPR8S               '
       TEXTPR (34) = 'PUISSANCE HOULE KW/M            '
       TEXTPR (35) = 'BETA                            '
-C
+!
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   ALIASES FOR THE VARIABLES IN THE STEERING FILE
-C
+!
+!-----------------------------------------------------------------------
+!
+!   ALIASES FOR THE VARIABLES IN THE STEERING FILE
+!
       MNEMO(1)    = 'M0      '
       MNEMO(2)    = 'HM0     '
       MNEMO(3)    = 'DMOY    '
@@ -292,11 +255,8 @@ C
       MNEMO(33)   = 'TPR8    '
       MNEMO(34)   = 'POW     '
       MNEMO(35)   = 'BETA    '
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

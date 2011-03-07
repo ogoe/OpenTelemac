@@ -1,199 +1,113 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       READS THE BOUNDARY CONDITION FILE AND
-!>                STORES THE DATA READ IN ARRAYS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> BOUNDARY_COLOUR, HBOR, ISEG, LIHBOR, MESH, NACHB, NBOR, NLIM, NPTFR, STDGEO, XSEG, YSEG
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NBMAXNSHARE NBMAXNSHARE@endlink, 
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink, 
-!> @link BIEF_DEF::NHALO NHALO@endlink, 
-!> @link BIEF_DEF::NPTIR NPTIR@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> BID, I, IBID, IF1, IF2, IF3, IF4, IF5, IF6, IF7, K, KFICH, NLIG, NUMLIQ, PTIR
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PLANTE()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>WAC()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.0                                       </center>
-!> </td><td> 25/08/00
-!> </td><td> OPTIMER   02 98 44 24 51
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center>                                           </center>
-!> </td><td> 24/04/97
-!> </td><td> J-M HERVOUET (LNH) 30 87 80 18
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>BOUNDARY_COLOUR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>HBOR
-!></td><td><--</td><td>CONDITIONS AUX LIMITES SUR H
-!>    </td></tr>
-!>          <tr><td>ISEG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LIHBOR
-!></td><td><--</td><td>TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
-!>                  POUR LES POINTS DE BORD.
-!>    </td></tr>
-!>          <tr><td>MESH
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NACHB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NBOR
-!></td><td><--</td><td>ADRESSES DES POINTS DE BORD.
-!>    </td></tr>
-!>          <tr><td>NLIM
-!></td><td>--></td><td>NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>--></td><td>NOMBRE DE POINTS FRONTIERES.
-!>    </td></tr>
-!>          <tr><td>STDGEO
-!></td><td>--></td><td>STANDARD DU FICHIER DE GEOMETRIE.
-!>    </td></tr>
-!>          <tr><td>XSEG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>YSEG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE LECLIM_TOMAWAC
+!                    *************************
+                     SUBROUTINE LECLIM_TOMAWAC
+!                    *************************
+!
      &(LIHBOR, HBOR , NPTFR, NBOR  , STDGEO, NLIM,
      & ISEG  , XSEG , YSEG , NACHB , MESH,BOUNDARY_COLOUR)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| BOUNDARY_COLOUR|---| 
-C| HBOR           |<--| CONDITIONS AUX LIMITES SUR H
-C| ISEG           |---| 
-C| LIHBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
-C|                |   | POUR LES POINTS DE BORD.
-C| MESH           |---| 
-C| NACHB          |---| 
-C| NBOR           |<--| ADRESSES DES POINTS DE BORD.
-C| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
-C| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-C| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
-C| XSEG           |---| 
-C| YSEG           |---| 
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    READS THE BOUNDARY CONDITION FILE AND
+!+                STORES THE DATA READ IN ARRAYS.
+!
+!history  J-M HERVOUET (LNH)
+!+        24/04/97
+!+        
+!+   
+!
+!history  OPTIMER
+!+        25/08/00
+!+        V5P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| BOUNDARY_COLOUR|---| 
+!| HBOR           |<--| CONDITIONS AUX LIMITES SUR H
+!| ISEG           |---| 
+!| LIHBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
+!|                |   | POUR LES POINTS DE BORD.
+!| MESH           |---| 
+!| NACHB          |---| 
+!| NBOR           |<--| ADRESSES DES POINTS DE BORD.
+!| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
+!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
+!| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
+!| XSEG           |---| 
+!| YSEG           |---| 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-C
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER NPTFR
 !BD_INCKA MODIFICATION FOR PARALLEL MODE
-C      INTEGER ISEG(NPTFR),NACHB(5,*),PTIR,I
+!      INTEGER ISEG(NPTFR),NACHB(5,*),PTIR,I
       INTEGER ISEG(NPTFR),PTIR,I
       INTEGER NACHB(NBMAXNSHARE*NPTIR)
       INTEGER IF1,IF2,IF3,IF4,IF5,IF6,IF7
       TYPE(BIEF_MESH)  MESH
 !BD_INCKA END OF MODIFICATION
       DOUBLE PRECISION XSEG(NPTFR),YSEG(NPTFR)
-C
+!
       INTEGER IBID,KFICH
       INTEGER STDGEO,NLIM,K
       INTEGER LIHBOR(NPTFR)
       INTEGER NBOR(NPTFR)
-C
+!
       DOUBLE PRECISION HBOR(NPTFR)
       DOUBLE PRECISION BID
 !BD_INCKA TO READ NUMLIQ
       INTEGER NUMLIQ
       INTEGER NLIG
       INTEGER BOUNDARY_COLOUR(NPTFR)
-
 !BD_INCKA END
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       REWIND NLIM
-C
-C-----------------------------------------------------------------------
-C
-C READS ALL THE LINES IN THE FILE DYNAM.
-C
-C NO TRACER IN DYNAM
-C
+!
+!-----------------------------------------------------------------------
+!
+! READS ALL THE LINES IN THE FILE DYNAM.
+!
+! NO TRACER IN DYNAM
+!
       DO 20 K=1,NPTFR
-C
+!
         IF(STDGEO.EQ.3.AND.NCSIZE.LE.1) THEN
-C
+!
         READ(NLIM,*) LIHBOR(K), IBID, IBID,
      &                 HBOR(K), BID , BID , BID ,
      &                 IBID   , BID , BID , BID ,
      &                 NBOR(K)            , KFICH
-C
+!
         ELSEIF(STDGEO.EQ.3.AND.NCSIZE.GT.1) THEN
-C
+!
         READ(NLIM,*) LIHBOR(K), IBID, IBID,
      &                 HBOR(K), BID , BID , BID  ,
      &                 IBID   , BID , BID , BID  ,
      &                 NBOR(K)            , KFICH,
      &                 MESH%ISEG%I(K),MESH%XSEG%R(K),
      &                 MESH%YSEG%R(K),IBID
-C
+!
         ELSE
           IF(LNG.EQ.1) WRITE(LU,21) STDGEO
           IF(LNG.EQ.2) WRITE(LU,22) STDGEO
@@ -206,10 +120,10 @@ C
      &           1X,'         CONDITIONS FILE DEPENDS ON IT !')
           STOP
         ENDIF
-C
+!
           BOUNDARY_COLOUR(K)=KFICH
-C
-C
+!
+!
 !BD_INCKA
         IF (NCSIZE.LE.1) THEN
 !BD_INCKA
@@ -227,13 +141,13 @@ C
 !BD_INCKA
       ENDIF
 !BD_INCKA
-C
+!
 20    CONTINUE
-C
-C-----------------------------------------------------------------------
-C
-C  IN PARALLEL MODE : READS NPTIR AND NACHB
-C
+!
+!-----------------------------------------------------------------------
+!
+!  IN PARALLEL MODE : READS NPTIR AND NACHB
+!
       IF(NCSIZE.GT.1) THEN
         READ(NLIM,*) PTIR
         IF(NPTIR.NE.PTIR) THEN
@@ -250,7 +164,7 @@ C
         ENDIF
         DO 153 K=1,NPTIR
 !BD_INCKA MODIFICATION FOR PARALLEL MODE
-C          READ(NLIM,*) (NACHB(I,K),I=1,5)
+!          READ(NLIM,*) (NACHB(I,K),I=1,5)
           READ(NLIM,*,ERR=900) (MESH%NACHB%I((K-1)*NBMAXNSHARE+I),
      &                          I=1,NBMAXNSHARE)
 !BD_INCKA END OF MODIFICATION
@@ -263,14 +177,14 @@ C          READ(NLIM,*) (NACHB(I,K),I=1,5)
           STOP
         ENDIF
          DO K=1,NHALO
-C !         READ(NLIM,*,ERR=901) (MESH%IFAPAR%I(7*(K-1)+I),I=1,7)
+! !         READ(NLIM,*,ERR=901) (MESH%IFAPAR%I(7*(K-1)+I),I=1,7)
            READ(NLIM,*,ERR=901) IF1,IF2,IF3,IF4,IF5,IF6,IF7
 ! !
-C          CORRECTING A BUG (IN IFAPAR THERE IS A CONFUSION BETWEEN PROCESSOR 0
-C                            AND LIQUID BOUNDARY BUT
-C                            IN CASE OF LIQUID BOUNDARY, THE ELEMENT BEHIND
-C                            IS GIVEN AS 0, SO BOTH CASES MAY BE DISTINGUISHED
-C                           HERE ALL BOUNDARIES (LIQUID OR SOLID) ARE PUT AT -1
+!          CORRECTING A BUG (IN IFAPAR THERE IS A CONFUSION BETWEEN PROCESSOR 0
+!                            AND LIQUID BOUNDARY BUT
+!                            IN CASE OF LIQUID BOUNDARY, THE ELEMENT BEHIND
+!                            IS GIVEN AS 0, SO BOTH CASES MAY BE DISTINGUISHED
+!                           HERE ALL BOUNDARIES (LIQUID OR SOLID) ARE PUT AT -1
 ! !
            IF(IF5.EQ.0) IF2=-1
            IF(IF6.EQ.0) IF3=-1
@@ -287,13 +201,13 @@ C                           HERE ALL BOUNDARIES (LIQUID OR SOLID) ARE PUT AT -1
       ENDIF
 !BD_INCKA MODIFICATION FOR PARALLEL MODE
       GO TO 1000
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
 900   CONTINUE
-C
-C     READS ERRORS
-C
+!
+!     READS ERRORS
+!
       NLIG=1
       IF(LNG.EQ.1) WRITE(LU,251) NLIG
       IF(LNG.EQ.2) WRITE(LU,252) NLIG
@@ -311,21 +225,18 @@ C
      &          '2) INFORMATIONS ON PARALLELISM MISSING ?')
       CALL PLANTE(1)
       STOP
-CJAJ //// BE PRECISE IN THE CASE OF THE BC FILE APPENDIX
+!JAJ //// BE PRECISE IN THE CASE OF THE BC FILE APPENDIX
 901   CONTINUE
       WRITE (LU,*) 'LECLIM: ',
      &             'ERROR IN READING IFAPAR IN THE BC CONDITIONS FILE'
       CALL PLANTE(1)
       STOP
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
 1000  CONTINUE
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

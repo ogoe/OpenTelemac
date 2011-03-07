@@ -1,233 +1,86 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       WRITES OUT THE DIRECTIONAL VARIANCE SPECTRUM
-!>                AT SELECTED NODES.
-!>                (SERAPHIN BINARY FORMAT).
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, TOMAWAC_MPI, TOMAWAC_MPI_TOOLS
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> AT, AUXIL, B, BINSCO, DATE, DEBRES, F, FREQ, INUTIL, ISLEO, KNOLG, LT, NF, NK, NLEO, NOLEO, NPLAN, NPOIN2, NSCO, TETA, TIME, TITCAS
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> TOMAWAC_MPI :<br>
-!> @link TOMAWAC_MPI::MPI_COMM_WORLD MPI_COMM_WORLD@endlink, 
-!> @link TOMAWAC_MPI::MPI_INTEGER MPI_INTEGER@endlink, 
-!> @link TOMAWAC_MPI::MPI_REAL8 MPI_REAL8@endlink, 
-!> @link TOMAWAC_MPI::MPI_SUCCESS MPI_SUCCESS@endlink, 
-!> @link TOMAWAC_MPI::MPI_UB MPI_UB@endlink<hr>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> ECRSPE_MPI : SPE_SEND
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> AAT, BVARSOR, C, C0, C1, C2, C3, C4, C5, C6, CC, I, IB, IBID, IER, II, IKLE, ILEO, ISTAT, JF, K, KAMP1, KAMP2, KAMP3, KAMP4, KAMP5, KAMP6, MESHF, NELEM, NPSPE, NRECV_LEO, NSPE_RECV, NUM, SORLEO, TEXTE
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> BVARSOR_SENDRECV(), CREATE_DATASET(), GET_MPI_PARAMETERS(), SPECTRE_SEND(), TEXTE_SENDRECV(), WRITE_DATA(), WRITE_MESH()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>WAC()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td>
-!> </td><td>
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.5                                       </center>
-!> </td><td> 13/07/2004
-!> </td><td> M. BENOIT
-!> </td><td> CORRECTED A BUG IN THE DECLARATION OF IPOBO WHEN PASSED
-!>           AS ARGUMENT. THE PASSED ARRAY IS NO LONGER USED AND IS
-!>           RENAMED INUTIL. IPOBO IS DECLARED AS ALLOCATABLE IN THE
-!>           SUBROUTINE.
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.2                                       </center>
-!> </td><td> 07/06/2001
-!> </td><td>
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.0                                       </center>
-!> </td><td> 28/08/2000
-!> </td><td> OPTIMER  02 98 44 24 51
-!> </td><td> CREATED
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>AT
-!></td><td>--></td><td>DATE COURANTE DU CALCUL
-!>    </td></tr>
-!>          <tr><td>AUXIL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>AUXIL(
-!></td><td>---</td><td>TABLEAU DE TRAVAIL POUR SPECTRE DIRECT.
-!>    </td></tr>
-!>          <tr><td>B
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>BINSCO
-!></td><td>--></td><td>BINAIRE DU FICHIER DE SORTIE DES SPECTRES
-!>    </td></tr>
-!>          <tr><td>DATE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DEBRES
-!></td><td>--></td><td>INDICATEUR DE PREMIERE DATE A SAUVER
-!>    </td></tr>
-!>          <tr><td>F
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>F(
-!></td><td>--></td><td>SPECTRE DIRECTIONNEL DE VARIANCE
-!>    </td></tr>
-!>          <tr><td>FREQ
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>FREQ(
-!></td><td>--></td><td>TABLEAU DES FREQUENCES DE DISCRETISATION
-!>    </td></tr>
-!>          <tr><td>INUTIL
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>INUTIL(
-!></td><td>---</td><td>TABLEAU NON-UTILISE (ANCIEN IPOBO)
-!>    </td></tr>
-!>          <tr><td>ISLEO
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>KNOLG
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LT
-!></td><td>--></td><td>NUMERO D IMRPESSION
-!>    </td></tr>
-!>          <tr><td>NF
-!></td><td>--></td><td>NOMBRE DE FREQUENCES DE DISCRETISATION
-!>    </td></tr>
-!>          <tr><td>NK
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NLEO
-!></td><td>--></td><td>NOMBRE DE POINTS DE SORTIE
-!>    </td></tr>
-!>          <tr><td>NOLEO
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NOLEO(
-!></td><td>--></td><td>NUMEROS DE NOEUD DES POINTS DE SORTIE
-!>    </td></tr>
-!>          <tr><td>NPLAN
-!></td><td>--></td><td>NOMBRE DE DIRECTIONS DE DISCRETISATION
-!>    </td></tr>
-!>          <tr><td>NPOIN2
-!></td><td>--></td><td>NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!>    </td></tr>
-!>          <tr><td>NSCO
-!></td><td>--></td><td>NUM. DU FICHIER DE SORTIE DES SPECTRES
-!>    </td></tr>
-!>          <tr><td>TETA
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TETA(
-!></td><td>--></td><td>VECTEUR DES DIRECTIONS DE DISCRETISATION
-!>    </td></tr>
-!>          <tr><td>TIME
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TITCAS
-!></td><td>--></td><td>TITRE DU CAS DE CALCUL
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE ECRSPE
+!                    *****************
+                     SUBROUTINE ECRSPE
+!                    *****************
+!
      &( F     , B     , TETA  , NPLAN , FREQ  , NF    , NK    ,
      &  NPOIN2, AT    , LT    , AUXIL , INUTIL, NOLEO , NLEO  , NSCO  ,
      &  BINSCO, DEBRES, TITCAS, DATE  , TIME ,ISLEO ,KNOLG)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AT             |-->| DATE COURANTE DU CALCUL
-C| AUXIL          |---| 
-C| AUXIL(         |---| TABLEAU DE TRAVAIL POUR SPECTRE DIRECT.
-C| B             |---| 
-C| BINSCO         |-->| BINAIRE DU FICHIER DE SORTIE DES SPECTRES
-C| DATE           |---| 
-C| DEBRES         |-->| INDICATEUR DE PREMIERE DATE A SAUVER
-C| F             |---| 
-C| F(             |-->| SPECTRE DIRECTIONNEL DE VARIANCE
-C| FREQ           |---| 
-C| FREQ(          |-->| TABLEAU DES FREQUENCES DE DISCRETISATION
-C| INUTIL         |---| 
-C| INUTIL(        |---| TABLEAU NON-UTILISE (ANCIEN IPOBO)
-C| ISLEO          |---| 
-C| KNOLG          |---| 
-C| LT             |-->| NUMERO D IMRPESSION
-C| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-C| NK             |---| 
-C| NLEO           |-->| NOMBRE DE POINTS DE SORTIE
-C| NOLEO          |---| 
-C| NOLEO(         |-->| NUMEROS DE NOEUD DES POINTS DE SORTIE
-C| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-C| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-C| NSCO           |-->| NUM. DU FICHIER DE SORTIE DES SPECTRES
-C| TETA           |---| 
-C| TETA(          |-->| VECTEUR DES DIRECTIONS DE DISCRETISATION
-C| TIME           |---| 
-C| TITCAS         |-->| TITRE DU CAS DE CALCUL
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    WRITES OUT THE DIRECTIONAL VARIANCE SPECTRUM
+!+                AT SELECTED NODES.
+!+                (SERAPHIN BINARY FORMAT).
+!
+!history  OPTIMER
+!+        28/08/2000
+!+        V5P0
+!+   CREATED 
+!
+!history  
+!+        07/06/2001
+!+        V5P2
+!+   
+!
+!history  M. BENOIT
+!+        13/07/2004
+!+        V5P5
+!+   CORRECTED A BUG IN THE DECLARATION OF IPOBO WHEN PASSED 
+!
+!history  
+!+        
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT             |-->| DATE COURANTE DU CALCUL
+!| AUXIL          |---| 
+!| B              |---| 
+!| BINSCO         |-->| BINAIRE DU FICHIER DE SORTIE DES SPECTRES
+!| DATE           |---| 
+!| DEBRES         |-->| INDICATEUR DE PREMIERE DATE A SAUVER
+!| F              |---| 
+!| FREQ           |---| 
+!| INUTIL         |---| 
+!| ISLEO          |---| 
+!| KNOLG          |---| 
+!| LT             |-->| NUMERO D IMRPESSION
+!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
+!| NK             |---| 
+!| NLEO           |-->| NOMBRE DE POINTS DE SORTIE
+!| NOLEO          |---| 
+!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
+!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
+!| NSCO           |-->| NUM. DU FICHIER DE SORTIE DES SPECTRES
+!| TETA           |---| 
+!| TIME           |---| 
+!| TITCAS         |-->| TITRE DU CAS DE CALCUL
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE TOMAWAC_MPI
       USE TOMAWAC_MPI_TOOLS
-C
+!
       IMPLICIT NONE
-
       COMMON/ECRSPE_MPI/SPE_SEND
       INTEGER ::SPE_SEND
-C
-C.....VARIABLES IN ARGUMENT
-C     """"""""""""""""""""
+!
+!.....VARIABLES IN ARGUMENT
+!     """"""""""""""""""""
       INTEGER  NPOIN2, NLEO  , NSCO  , NF , NK , NPLAN
       INTEGER  NOLEO(NLEO)   , INUTIL(1)
       INTEGER  DATE(3),TIME(3)
@@ -235,13 +88,13 @@ C     """"""""""""""""""""
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF) , TETA(NPLAN), FREQ(NF)
       DOUBLE PRECISION B(NPOIN2,NPLAN)
       INTEGER  LT
-C
+!
       LOGICAL DEBRES
       CHARACTER*72 TITCAS
       CHARACTER(LEN=*)   BINSCO
-C
-C.....LOCAL VARIABLES
-C     """""""""""""""""
+!
+!.....LOCAL VARIABLES
+!     """""""""""""""""
       INTEGER  ISTAT , II    , JF    , K     , IB(10)
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
       INTEGER  IBID(1), NELEM, NPSPE
@@ -253,7 +106,6 @@ C     """""""""""""""""
 !BD_INCKA ADDS A GRID ON THE FREQUENCIES AND PLANES
       TYPE(BIEF_MESH) :: MESHF
       LOGICAL         :: SORLEO(99)
-
       INTEGER :: I,IER
       INTEGER, ALLOCATABLE :: IKLE(:) ! GLOBAL CONNECTIVITY
       TYPE(BIEF_OBJ)  :: BVARSOR
@@ -264,7 +116,7 @@ C     """""""""""""""""
       INTEGER :: KNOLG(NPOIN2)
 !BD_INCKA
 !BD_INCKA END OF MODIFICATION
-C
+!
       NPSPE=NF*NPLAN
       NELEM=(NF-1)*NPLAN
       SORLEO = .FALSE.
@@ -276,12 +128,12 @@ C
           KAMP4=MOD(KAMP3,1000)
           KAMP5=MOD(KAMP4,100)
           KAMP6=MOD(KAMP5,10)
-C          IF(ILEO.GT.9) THEN
-C            C0='1'
-C          ELSE
-C            C0='0'
-C          ENDIF
-C          CC=C0//CHAR(48+MOD(ILEO,10))
+!          IF(ILEO.GT.9) THEN
+!            C0='1'
+!          ELSE
+!            C0='0'
+!          ENDIF
+!          CC=C0//CHAR(48+MOD(ILEO,10))
           CC=CHAR(48+INT(ILEO/10))//CHAR(48+MOD(ILEO,10))
           C1=CHAR(48+INT(KAMP1/100000))
           C2=CHAR(48+INT(KAMP2/10000))
@@ -295,16 +147,16 @@ C          CC=C0//CHAR(48+MOD(ILEO,10))
      &     'POINT HORS MAILLAGE             '
           SORLEO(ILEO) = .TRUE.
       ENDDO
-C
-C=====C
-C  1  C FOR THE FIRST PRINTED TIME STEP, WRITES OUT THE HEADER TO THE FILE
-C=====C================================================================
+!
+!=====C
+!  1  C FOR THE FIRST PRINTED TIME STEP, WRITES OUT THE HEADER TO THE FILE
+!=====C================================================================
       IF (DEBRES) THEN
-C
-C.......2.1 NAME OF THE VARIABLES
-C       """""""""""""""""""""""""""""""""""""
+!
+!.......2.1 NAME OF THE VARIABLES
+!       """""""""""""""""""""""""""""""""""""
 !BD_INCKA CREATES MESHF, MESH ASSOCIATED WITH DISCRETISATION
-C         IN FREQUENCY AND DIRECTION
+!         IN FREQUENCY AND DIRECTION
         ALLOCATE(MESHF%TYPELM)
         ALLOCATE(MESHF%NELEM)
         ALLOCATE(MESHF%NPOIN)
@@ -337,12 +189,12 @@ C         IN FREQUENCY AND DIRECTION
           IKLE(II+3*NELEM)=IKLE(II)+NPLAN
         ENDDO
         MESHF%IKLE%I=IKLE
-C
-C        DEALLOCATE(IKLE)
-C        DEALLOCATE(IPOBO)
-C
-C.......2.9 WRITES OUT THE ARRAYS X AND Y
-C       """"""""""""""""""""""""""""""""
+!
+!        DEALLOCATE(IKLE)
+!        DEALLOCATE(IPOBO)
+!
+!.......2.9 WRITES OUT THE ARRAYS X AND Y
+!       """"""""""""""""""""""""""""""""
         ALLOCATE(MESHF%X%R(NPLAN*NF))
         ALLOCATE(MESHF%Y%R(NPLAN*NF))
         MESHF%NPTFR = 2*NPLAN!+2*(NF-2)
@@ -370,7 +222,7 @@ C       """"""""""""""""""""""""""""""""
      &                          MPI_COMM_WORLD,MPI_SUCCESS)
 !BD_INCKA END OF MODIFICATION
 !BD_INCKA IN PARALLEL MODE, ASSOCIATES THE SUB-DOMAIN NODE NUMBERS
-C WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
+! WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
         IF (NCSIZE.GT.1) THEN
         CALL SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
      &                           NRECV_LEO)
@@ -401,22 +253,22 @@ C WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
      &                  TIME,   ! START TIME
      &                  0,0)    ! COORDINATES OF THE ORIGIN.
         ENDIF
-C
+!
       ENDIF
 !BD_INCKA IN PARALLEL MODE, ASSOCIATES THE SUB-DOMAIN NODE NUMBERS
-C WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
+! WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
         IF (NCSIZE.GT.1) THEN
         CALL SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
      &                           NRECV_LEO)
         CALL TEXTE_SENDRECV(TEXTE,NLEO,NPSPE,ISLEO,NRECV_LEO)
         ENDIF
 !BD_INCKA END OF MODIFICATION
-C=====C
-C  3  C RECORDS THE CURRENT TIME STEP
-C=====C========================================
-C
-C.....3.1 WRITES OUTPUT AT TIME 'AT'
-C     """"""""""""""""""""""""
+!=====C
+!  3  C RECORDS THE CURRENT TIME STEP
+!=====C========================================
+!
+!.....3.1 WRITES OUTPUT AT TIME 'AT'
+!     """"""""""""""""""""""""
       AAT(1) = AT
       ALLOCATE(BVARSOR%ADR(NLEO))
       DO II=1,NLEO
@@ -447,6 +299,3 @@ C     """"""""""""""""""""""""
 !
       RETURN
       END
-C
-C#######################################################################
-C

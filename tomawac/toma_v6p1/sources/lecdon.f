@@ -1,205 +1,101 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       THIS SUBROUTINE PROJECTS THE CURRENTS / WINDS ON THE
-!>                COMPUTATION MESH.
-!><br>           (INSPIRED FROM SUBROUTINE FOND IN TELEMAC2D)
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, DECLARATIONS_TOMAWAC
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> BINDON, CHDON, COURAN, DONTEL, IDTEL, INDIC, NBOR, NDON, NPMAX, NPOIN2, NPTFR, NPTT, TRA01, TRA02, TRA03, U, UR, V, VR, X, XRELV, Y, YRELV
-!>   </td></tr>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> DECLARATIONS_TOMAWAC :<br>
-!> @link DECLARATIONS_TOMAWAC::MESH MESH@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> ATT, BDX, BID, C, DX, DY, I, IB, ID, ISTAT, J, NCOL, NLIG, NP, NVAR, TEXTE, TITCAS, W, XMAX, XMIN, YMAX, YMIN
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> COUUTI(), FASP(), LIT(), PLANTE(), VENUTI()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>CONDIW()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 1.0                                       </center>
-!> </td><td> 01/02/95
-!> </td><td> F.MARCOS (LNH) 30 87 72 66
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>BINDON
-!></td><td>--></td><td>BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
-!>    </td></tr>
-!>          <tr><td>CHDON
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>COURAN
-!></td><td>--></td><td>LOGIQUE INDIQUANT LA PRESENCE DE DONNEES
-!>    </td></tr>
-!>          <tr><td>DONTEL
-!></td><td>--></td><td>LOGIQUE INDIQUANT SI ON RECUPERE
-!>                  UNE VARIABLE TELEMAC
-!>    </td></tr>
-!>          <tr><td>IDTEL
-!></td><td>--></td><td>RANG DE LA VARIABLE TELEMAC A RECUPERER
-!>    </td></tr>
-!>          <tr><td>INDIC
-!></td><td>--></td><td>TYPE DE FORMAT DE LECTURE
-!>    </td></tr>
-!>          <tr><td>NBOR
-!></td><td>--></td><td>NUMEROTATION DES POINTS FRONTIERE
-!>    </td></tr>
-!>          <tr><td>NDON
-!></td><td>--></td><td>NUMERO D'UNITE LOGIQUE DU FICHIER
-!>    </td></tr>
-!>          <tr><td>NPMAX
-!></td><td>--></td><td>NOMBRE DE POINTS RELEVES MAXIMUM
-!>    </td></tr>
-!>          <tr><td>NPOIN2
-!></td><td>--></td><td>NOMBRE DE POINTS DU MAILLAGE
-!>    </td></tr>
-!>          <tr><td>NPTFR
-!></td><td>--></td><td>NOMBRE DE  POINTS FRONTIERE
-!>    </td></tr>
-!>          <tr><td>NPTT
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TRA01
-!></td><td><-></td><td>TABLEAU DE TRAVAIL
-!>    </td></tr>
-!>          <tr><td>TRA02
-!></td><td><-></td><td>TABLEAU DE TRAVAIL
-!>    </td></tr>
-!>          <tr><td>TRA03
-!></td><td><-></td><td>TABLEAU DE TRAVAIL
-!>    </td></tr>
-!>          <tr><td>U,V
-!></td><td><--</td><td>COURANT OU VENT AUX NOEUDS DU MAILLAGE
-!>    </td></tr>
-!>          <tr><td>UR,VR
-!></td><td><-></td><td>TABLEAU DES COURANTS RELEVES
-!>    </td></tr>
-!>          <tr><td>X,Y
-!></td><td>--></td><td>COORDONNEES DU MAILLAGE
-!>    </td></tr>
-!>          <tr><td>XRELV
-!></td><td><-></td><td>TABLEAU DES ABSCISSES DES POINTS RELEVES
-!>    </td></tr>
-!>          <tr><td>YRELV
-!></td><td><-></td><td>TABLEAU DES ORDONNEES DES POINTS RELEVES
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE LECDON
+!                    *****************
+                     SUBROUTINE LECDON
+!                    *****************
+!
      &( U , V , X, Y, NPOIN2, NDON, BINDON, NBOR, NPTFR, XRELV, YRELV,
      &  UR, VR, TRA01,TRA02,TRA03,IDTEL,NPTT,DONTEL,COURAN,INDIC,NPMAX,
      &  CHDON)
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
-C| CHDON          |---| 
-C| COURAN         |-->| LOGIQUE INDIQUANT LA PRESENCE DE DONNEES
-C| DONTEL         |-->| LOGIQUE INDIQUANT SI ON RECUPERE
-C|                |   | UNE VARIABLE TELEMAC
-C| IDTEL          |-->| RANG DE LA VARIABLE TELEMAC A RECUPERER
-C| INDIC          |-->| TYPE DE FORMAT DE LECTURE
-C| NBOR           |-->| NUMEROTATION DES POINTS FRONTIERE
-C| NDON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER
-C| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-C| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE
-C| NPTFR          |-->| NOMBRE DE  POINTS FRONTIERE
-C| NPTT           |---| 
-C| TRA01          |<->| TABLEAU DE TRAVAIL
-C| TRA02          |<->| TABLEAU DE TRAVAIL
-C| TRA03          |<->| TABLEAU DE TRAVAIL
-C| U,V            |<--| COURANT OU VENT AUX NOEUDS DU MAILLAGE
-C| UR,VR          |<->| TABLEAU DES COURANTS RELEVES
-C| X,Y            |-->| COORDONNEES DU MAILLAGE
-C| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-C| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    THIS SUBROUTINE PROJECTS THE CURRENTS / WINDS ON THE
+!+                COMPUTATION MESH.
+!+
+!+           (INSPIRED FROM SUBROUTINE FOND IN TELEMAC2D)
+!
+!history  F.MARCOS (LNH)
+!+        01/02/95
+!+        V1P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
+!| CHDON          |---| 
+!| COURAN         |-->| LOGIQUE INDIQUANT LA PRESENCE DE DONNEES
+!| DONTEL         |-->| LOGIQUE INDIQUANT SI ON RECUPERE
+!|                |   | UNE VARIABLE TELEMAC
+!| IDTEL          |-->| RANG DE LA VARIABLE TELEMAC A RECUPERER
+!| INDIC          |-->| TYPE DE FORMAT DE LECTURE
+!| NBOR           |-->| NUMEROTATION DES POINTS FRONTIERE
+!| NDON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER
+!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
+!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE
+!| NPTFR          |-->| NOMBRE DE  POINTS FRONTIERE
+!| NPTT           |---| 
+!| TRA01          |<->| TABLEAU DE TRAVAIL
+!| TRA02          |<->| TABLEAU DE TRAVAIL
+!| TRA03          |<->| TABLEAU DE TRAVAIL
+!| U,V            |<--| COURANT OU VENT AUX NOEUDS DU MAILLAGE
+!| UR,VR          |<->| TABLEAU DES COURANTS RELEVES
+!| X,Y            |-->| COORDONNEES DU MAILLAGE
+!| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
+!| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TOMAWAC ,ONLY : MESH
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
+!
       INTEGER NP,NDON,NPOIN2,NPTFR,INDIC,NCOL,NLIG,BID,I,J
-C
+!
       INTEGER NPMAX,NBOR(NPTFR,2)
-C
+!
       DOUBLE PRECISION X(NPOIN2),Y(NPOIN2),U(NPOIN2),V(NPOIN2)
       DOUBLE PRECISION TRA01(NPMAX),TRA02(NPMAX),TRA03(NPOIN2)
       DOUBLE PRECISION XRELV(NPMAX),YRELV(NPMAX),UR(NPMAX),VR(NPMAX)
       DOUBLE PRECISION XMAX,XMIN,YMAX,YMIN,DX,DY,ATT,BDX(2)
-C
+!
       INTEGER NVAR,IB(10),ISTAT,NPTT,ID(3),IDTEL
-C
+!
       CHARACTER*3  BINDON,C
       CHARACTER*7  CHDON
       CHARACTER*32 TEXTE(20)
       CHARACTER*72 TITCAS
-C
+!
       LOGICAL DONTEL,COURAN
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPMAX))
-C
-C-----------------------------------------------------------------------
-C        READS THE POINTS FROM LOGICAL UNIT NDON
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!        READS THE POINTS FROM LOGICAL UNIT NDON
+!-----------------------------------------------------------------------
+!
       IF (INDIC.EQ.1) THEN
-C
-C     ------------------------------------------------------------------
-C     WAM-LIKE FORMAT - FINITE DIFFERENCES
-C     ------------------------------------------------------------------
-C
+!
+!     ------------------------------------------------------------------
+!     WAM-LIKE FORMAT - FINITE DIFFERENCES
+!     ------------------------------------------------------------------
+!
          READ(NDON,10,END=100,ERR=100)
      &      NCOL,NLIG,YMIN,YMAX,XMIN,XMAX,BID,BID
          DX=(XMAX-XMIN)/REAL(NCOL-1)
@@ -260,14 +156,14 @@ C
                 YRELV((I-1)*NLIG+J)=YMIN+DY*(J-1)
 40       CONTINUE
 30       CONTINUE
-C
-C
+!
+!
       ELSEIF (INDIC.EQ.2) THEN
-C
-C     ------------------------------------------------------------------
-C     SINUSX-LIKE FORMAT - SCATTER OF POINTS
-C     ------------------------------------------------------------------
-C
+!
+!     ------------------------------------------------------------------
+!     SINUSX-LIKE FORMAT - SCATTER OF POINTS
+!     ------------------------------------------------------------------
+!
           DO 50 I=1,100000
             READ(NDON,*,END=60,ERR=100)
             NP=I
@@ -310,28 +206,28 @@ C
           DO I=1,NP
             READ(NDON,*,ERR=100) XRELV(I),YRELV(I),UR(I),VR(I)
           ENDDO
-C
+!
       ELSEIF (INDIC.EQ.3) THEN
-C
-C     ------------------------------------------------------------------
-C     TELEMAC-LIKE FORMAT - MESH CAN BE DIFFERENT
-C          (BINARY)                 FROM COWADIS MESH
-C     ------------------------------------------------------------------
-C
-C      READS TITLE
-C
+!
+!     ------------------------------------------------------------------
+!     TELEMAC-LIKE FORMAT - MESH CAN BE DIFFERENT
+!          (BINARY)                 FROM COWADIS MESH
+!     ------------------------------------------------------------------
+!
+!      READS TITLE
+!
           CALL LIT(X,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
-C
-C      READS NUMBER OF VARIABLES AND THEIR NAMES
-C
+!
+!      READS NUMBER OF VARIABLES AND THEIR NAMES
+!
           CALL LIT(X,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
           NVAR=IB(1)
           DO I=1,NVAR
             CALL LIT(X,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
           ENDDO
-C
-C      FORMAT AND GEOMETRY
-C
+!
+!      FORMAT AND GEOMETRY
+!
           READ(NDON)
           CALL LIT(X,W,IB,C,4,'I ',NDON,BINDON,ISTAT)
           NP=IB(2)
@@ -369,24 +265,24 @@ C
            ENDIF
           READ(NDON)
           READ(NDON)
-C
-C      X AND Y
-C
+!
+!      X AND Y
+!
           CALL LIT(XRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
           CALL LIT(YRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-C
-C      TIME STEP AND VARIABLES
-C
+!
+!      TIME STEP AND VARIABLES
+!
           DO 110 J=1,(NPTT-1)*(NVAR+1)
              READ(NDON)
 110       CONTINUE
-C
+!
           IF (DONTEL) ID(3)=IDTEL
           IF (COURAN) THEN
              ID(1)=1
              ID(2)=2
           ENDIF
-C
+!
           CALL LIT(BDX(1),W,IB,C,1,'R4',NDON,BINDON,ISTAT)
           ATT=BDX(1)
           DO 90 I=1,NVAR
@@ -400,9 +296,9 @@ C
                READ(NDON)
             ENDIF
 90        CONTINUE
-C
-C      WRITES TO THE LISTING
-C
+!
+!      WRITES TO THE LISTING
+!
           IF (LNG.EQ.1) THEN
             WRITE(LU,*)'         TITRE DU CAS TELEMAC : '
             WRITE(LU,*)'           ',TITCAS
@@ -422,20 +318,20 @@ C
      &            WRITE(LU,*)'           ',TEXTE(ID(3))
           WRITE(LU,*)
      &        '-----------------------------------------------------'
-C
-C
+!
+!
       ELSEIF (INDIC.EQ.4) THEN
-C
-C     ------------------------------------------------------------------
-C       READS A USER-DEFINED FORMAT
-C     ------------------------------------------------------------------
+!
+!     ------------------------------------------------------------------
+!       READS A USER-DEFINED FORMAT
+!     ------------------------------------------------------------------
         IF(CHDON(1:1).EQ.'C') THEN
-C         READS A CURRENT FIELD
+!         READS A CURRENT FIELD
               CALL COUUTI
      &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.,0.,0.,0.,
      &     NP,XRELV,YRELV,UR,VR,TRA03,TRA03,TRA03,TRA03,NPMAX)
         ELSEIF(CHDON(1:1).EQ.'V' .OR. CHDON(1:1).EQ.'W') THEN
-C         READS A WIND FIELD
+!         READS A WIND FIELD
           CALL VENUTI
      &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.,0.,0.,0.,
      &     NP,XRELV,YRELV,UR,VR,TRA03,TRA03,TRA03,TRA03,NPMAX)
@@ -448,7 +344,7 @@ C         READS A WIND FIELD
             CALL PLANTE(1)
             STOP
          ENDIF
-C
+!
       ELSE
         WRITE(LU,*)'***********************************************'
         IF (LNG.EQ.1) THEN
@@ -462,12 +358,12 @@ C
         CALL PLANTE(1)
         STOP
       ENDIF
-C
-C-----------------------------------------------------------------------
-C   THE CURRENTS ARE INTERPOLATED ONTO ALL THE INTERIOR POINTS
-C                         TO THE DOMAIN
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!   THE CURRENTS ARE INTERPOLATED ONTO ALL THE INTERIOR POINTS
+!                         TO THE DOMAIN
+!-----------------------------------------------------------------------
+!
       IF(COURAN) THEN
         CALL FASP(X,Y,U,NPOIN2,XRELV,YRELV,UR,NP,NBOR,MESH%KP1BOR%I,
      &                                                    NPTFR,1.D-6)
@@ -478,20 +374,20 @@ C
         CALL FASP(X,Y,TRA03,NPOIN2,XRELV,YRELV,TRA01,NP,NBOR,
      &            MESH%KP1BOR%I,NPTFR,1.D-6)
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C     FORMATS
-C
+!
+!-----------------------------------------------------------------------
+!
+!     FORMATS
+!
 10    FORMAT (2I4,4F9.3,2I2)
 20    FORMAT (10F6.2)
-C
+!
       DEALLOCATE(W)
-C
+!
       RETURN
-C
-C     IF FAILED TO READ THE FILE ...
-C
+!
+!     IF FAILED TO READ THE FILE ...
+!
 100   CONTINUE
       WRITE(LU,*)'*********************************************'
       IF (LNG.EQ.1) THEN
@@ -503,9 +399,6 @@ C
       ENDIF
       WRITE(LU,*)'*********************************************'
       CALL PLANTE(1)
-C
+!
       RETURN
       END
-C
-C#######################################################################
-C

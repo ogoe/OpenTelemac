@@ -1,92 +1,40 @@
-!>  @par Use(s)
-!><br>BIEF, TOMAWAC_MPI
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> TOMAWAC_MPI :<br>
-!> @link TOMAWAC_MPI::CHARACTERISTIC CHARACTERISTIC@endlink, 
-!> @link TOMAWAC_MPI::CHARACTER_4D CHARACTER_4D@endlink, 
-!> @link TOMAWAC_MPI::MPI_COMM_WORLD MPI_COMM_WORLD@endlink, 
-!> @link TOMAWAC_MPI::MPI_INTEGER MPI_INTEGER@endlink, 
-!> @link TOMAWAC_MPI::NARRV NARRV@endlink, 
-!> @link TOMAWAC_MPI::RDISPLS RDISPLS@endlink, 
-!> @link TOMAWAC_MPI::RDISPLS_AGAIN RDISPLS_AGAIN@endlink, 
-!> @link TOMAWAC_MPI::RECVAGAIN RECVAGAIN@endlink, 
-!> @link TOMAWAC_MPI::RECVAGAIN_4D RECVAGAIN_4D@endlink, 
-!> @link TOMAWAC_MPI::RECVCHAR RECVCHAR@endlink, 
-!> @link TOMAWAC_MPI::RECVCHAR_4D RECVCHAR_4D@endlink, 
-!> @link TOMAWAC_MPI::RECVCOUNTS RECVCOUNTS@endlink, 
-!> @link TOMAWAC_MPI::RECVCOUNTS_AGAIN RECVCOUNTS_AGAIN@endlink, 
-!> @link TOMAWAC_MPI::SDISPLS SDISPLS@endlink, 
-!> @link TOMAWAC_MPI::SDISPLS_AGAIN SDISPLS_AGAIN@endlink, 
-!> @link TOMAWAC_MPI::SENDAGAIN SENDAGAIN@endlink, 
-!> @link TOMAWAC_MPI::SENDAGAIN_4D SENDAGAIN_4D@endlink, 
-!> @link TOMAWAC_MPI::SENDCOUNTS SENDCOUNTS@endlink, 
-!> @link TOMAWAC_MPI::SENDCOUNTS_AGAIN SENDCOUNTS_AGAIN@endlink, 
-!> @link TOMAWAC_MPI::SH_AGAIN SH_AGAIN@endlink, 
-!> @link TOMAWAC_MPI::SH_AGAIN_4D SH_AGAIN_4D@endlink, 
-!> @link TOMAWAC_MPI::SH_LOC SH_LOC@endlink, 
-!> @link TOMAWAC_MPI::SH_LOC_4D SH_LOC_4D@endlink, 
-!> @link TOMAWAC_MPI::TEMPO TEMPO@endlink, 
-!> @link TOMAWAC_MPI::TEMPO_4D TEMPO_4D@endlink<hr>
-!> BIEF_DEF :<br>
-!> @link BIEF_DEF::IPID IPID@endlink, 
-!> @link BIEF_DEF::NCSIZE NCSIZE@endlink
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> I, I1, I2, I3, IDLEO, IER, II, IPLAN, NBLEO, NPID_RECV, NPID_SEND, NRECV_LEO2, NSEND_LEO, NSPE_SEND, REQ, REQ2, R_DISP, SPE_SEND, S_DISP, TAG, TES
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> PARCOM2(), P_IMAX(), P_IREAD(), P_IREAD_C(), P_ISUM(), P_IWRIT(), P_IWRIT_C(), P_MPI_ALLTOALL(), P_MPI_ALLTOALLV(), P_MPI_ALLTOALLV_TOMA1(), P_MPI_ALLTOALLV_TOMA2(), P_WAIT_PARACO()
-!>   </td></tr>
-!>     <tr><th> Unknown(s)
-!>    </th><td> P_ISUM, P_ISUM, P_ISUM, P_ISUM, P_ISUM, P_ISUM
-!>   </td></tr>
-!>     </table>
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-C
-C#######################################################################
-C
-      MODULE TOMAWAC_MPI_TOOLS
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ************************
+                     MODULE TOMAWAC_MPI_TOOLS
+!                    ************************
+!
+!
+!***********************************************************************
+! TOMAWAC
+!***********************************************************************
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
        IMPLICIT NONE
        CONTAINS
        SUBROUTINE CORRECT_GOODELT(GOODELT,NPOIN2,NPLAN,MESH)
-C THIS SUBROUTINE IDENTIFIES THE POINTS AT THE EDGE OF SUB-DOMAINS
-C AND THOSE AT THE EDGE OF THE WHOLE DOMAIN. IF THEY ARE NOT LOCATED IN
-C THE CORRECT ELEMENTS (ON EITHER PROCESSOR) THEY ARE ASSUMED TO BE
-C LOCATED THE CORRECT ELEMENT. THIS IS NECESSARY IN THE CASE OF A
-C 'PARCOM' ON THE NUMBER OF SUB-ITERATIONS IN PIED_TOMAWAC_MPI
-C
-C |      GOODELT   || IDENTIFIANT D'UNE CARACTERISTIQUE
-C |                |    | = 1 BON ELEMENT POUR REMONTEE DES CARACT.
-C |                |    | = 2001 BON ELEMENT A LA FRONTIERE 2 PROCS
-C |                |    | = 2000 BAD ELEMENT FRONTIERE 2 PROCS
-C |                |    | = 1101 BON ELEMENT FRONTIERE 2 PROCS +
-C |                |    |   FRONTIERE SOLIDE
-C |                |    | = 1100 BAD ELEMENT FRONTIERE 2 PROCS +
-C |                |    |   FRONTIERE SOLIDE
-C |                |    | = 1011 BON ELEMENT FRONTIERE 2 PROCS +
-C |                |    |   FRONTIERE LIQUIDE
-C |                |    | = 1010 BAD ELEMENT FRONTIERE 2 PROCS +
-C |                |    |   FRONTIERE LIQUIDE
-C |      NPOIN2    | -->| NOMBRE DE POINTS 2D
-C |      NPLAN     | -->| NOMBRE DE PLAN POUR DEFINIR LE 3D
-C |      MESH      | -->| MAILLAGE.
-C
+! THIS SUBROUTINE IDENTIFIES THE POINTS AT THE EDGE OF SUB-DOMAINS
+! AND THOSE AT THE EDGE OF THE WHOLE DOMAIN. IF THEY ARE NOT LOCATED IN
+! THE CORRECT ELEMENTS (ON EITHER PROCESSOR) THEY ARE ASSUMED TO BE
+! LOCATED THE CORRECT ELEMENT. THIS IS NECESSARY IN THE CASE OF A
+! 'PARCOM' ON THE NUMBER OF SUB-ITERATIONS IN PIED_TOMAWAC_MPI
+!
+! |      GOODELT   || IDENTIFIANT D'UNE CARACTERISTIQUE
+! |                |    | = 1 BON ELEMENT POUR REMONTEE DES CARACT.
+! |                |    | = 2001 BON ELEMENT A LA FRONTIERE 2 PROCS
+! |                |    | = 2000 BAD ELEMENT FRONTIERE 2 PROCS
+! |                |    | = 1101 BON ELEMENT FRONTIERE 2 PROCS +
+! |                |    |   FRONTIERE SOLIDE
+! |                |    | = 1100 BAD ELEMENT FRONTIERE 2 PROCS +
+! |                |    |   FRONTIERE SOLIDE
+! |                |    | = 1011 BON ELEMENT FRONTIERE 2 PROCS +
+! |                |    |   FRONTIERE LIQUIDE
+! |                |    | = 1010 BAD ELEMENT FRONTIERE 2 PROCS +
+! |                |    |   FRONTIERE LIQUIDE
+! |      NPOIN2    | -->| NOMBRE DE POINTS 2D
+! |      NPLAN     | -->| NOMBRE DE PLAN POUR DEFINIR LE 3D
+! |      MESH      | -->| MAILLAGE.
+!
          USE BIEF
          IMPLICIT NONE
          INTEGER,INTENT(IN) :: NPOIN2,NPLAN
@@ -102,9 +50,8 @@ C
      &      TES(:,IPLAN) ,
      &      NPOIN2 , 1 , 2 , 1 , MESH )
          ENDDO
-
          WHERE(TES(:,:)==2200.D0)
-C            GOODELT(:,:) = 1101
+!            GOODELT(:,:) = 1101
              GOODELT(:,:) = 1102
           END WHERE
           WHERE(TES(:,:)==2020.D0)
@@ -117,7 +64,8 @@ C            GOODELT(:,:) = 1101
             GOODELT(:,:) = 1103
           END WHERE
        END SUBROUTINE CORRECT_GOODELT
-
+       
+       
 
        SUBROUTINE ALLOC_LOCAL(NARRIV,FREQ,NF,NLOSTAGAIN,
      &                      NUMBERLOST,NARRSUM)
@@ -135,10 +83,10 @@ C            GOODELT(:,:) = 1101
 
            NARRSUM = P_ISUM(NARRIV)
            IF (.NOT.ALLOCATED(SH_LOC)) ALLOCATE(SH_LOC(NF))
-C            IF (.NOT.ALLOCATED(SH_LOC(FREQ)%SHP1)) ALLOCATE(
-C      *      SH_LOC(FREQ)%SHP1(NARRSUM),SH_LOC(FREQ)%SHP2(NARRSUM),
-C      *      SH_LOC(FREQ)%SHP3(NARRSUM),SH_LOC(FREQ)%SHZ(NARRSUM),
-C      *      SH_LOC(FREQ)%ELT(NARRSUM),SH_LOC(FREQ)%ETA(NARRSUM))
+!            IF (.NOT.ALLOCATED(SH_LOC(FREQ)%SHP1)) ALLOCATE(
+!      *      SH_LOC(FREQ)%SHP1(NARRSUM),SH_LOC(FREQ)%SHP2(NARRSUM),
+!      *      SH_LOC(FREQ)%SHP3(NARRSUM),SH_LOC(FREQ)%SHZ(NARRSUM),
+!      *      SH_LOC(FREQ)%ELT(NARRSUM),SH_LOC(FREQ)%ETA(NARRSUM))
        ALLOCATE(SH_LOC(FREQ)%SHP1(NARRSUM))
        ALLOCATE(SH_LOC(FREQ)%SHP2(NARRSUM))
        ALLOCATE(SH_LOC(FREQ)%SHP3(NARRSUM))
@@ -171,11 +119,11 @@ C      *      SH_LOC(FREQ)%ELT(NARRSUM),SH_LOC(FREQ)%ETA(NARRSUM))
 
            NARRSUM = P_ISUM(NARRIV)
            IF (.NOT.ALLOCATED(SH_LOC_4D)) ALLOCATE(SH_LOC_4D(NF))
-C            IF (.NOT.ALLOCATED(SH_LOC_4D(FREQ)%SHP1)) ALLOCATE(
-C      *      SH_LOC_4D(FREQ)%SHP1(NARRSUM),SH_LOC_4D(FREQ)%SHP2(NARRSUM),
-C      *      SH_LOC_4D(FREQ)%SHP3(NARRSUM),SH_LOC_4D(FREQ)%SHZ(NARRSUM),
-C      *      SH_LOC_4D(FREQ)%ELT(NARRSUM),SH_LOC_4D(FREQ)%ETA(NARRSUM),
-C      *      SH_LOC_4D(FREQ)%FRE(NARRSUM),SH_LOC_4D(FREQ)%SHF(NARRSUM))
+!            IF (.NOT.ALLOCATED(SH_LOC_4D(FREQ)%SHP1)) ALLOCATE(
+!      *      SH_LOC_4D(FREQ)%SHP1(NARRSUM),SH_LOC_4D(FREQ)%SHP2(NARRSUM),
+!      *      SH_LOC_4D(FREQ)%SHP3(NARRSUM),SH_LOC_4D(FREQ)%SHZ(NARRSUM),
+!      *      SH_LOC_4D(FREQ)%ELT(NARRSUM),SH_LOC_4D(FREQ)%ETA(NARRSUM),
+!      *      SH_LOC_4D(FREQ)%FRE(NARRSUM),SH_LOC_4D(FREQ)%SHF(NARRSUM))
        ALLOCATE(SH_LOC_4D(FREQ)%SHP1(NARRSUM))
        ALLOCATE(SH_LOC_4D(FREQ)%SHP2(NARRSUM))
        ALLOCATE(SH_LOC_4D(FREQ)%SHP3(NARRSUM))
@@ -311,8 +259,8 @@ C      *      SH_LOC_4D(FREQ)%FRE(NARRSUM),SH_LOC_4D(FREQ)%SHF(NARRSUM))
 
        SUBROUTINE ENVOI_AGAIN(NRECV)
 !
-C |      NRECV     |<-- | SUM DES CARACTERISTIQUUES RECU SUR CHAQUE PROC
-C
+! |      NRECV     |<-- | SUM DES CARACTERISTIQUUES RECU SUR CHAQUE PROC
+!
           USE BIEF
           USE TOMAWAC_MPI
           IMPLICIT NONE
@@ -358,7 +306,7 @@ C
        SUBROUTINE ENVOI_AGAIN_4D(NRECV)
 !
 ! |      NRECV     |<-- | SUM DES CARACTERISTIQUUES RECU SUR CHAQUE PROC
-C
+!
           USE BIEF
           USE TOMAWAC_MPI
           IMPLICIT NONE
@@ -415,7 +363,7 @@ C
      &             .AND.(RECVCHAR(1:NARRV(FREQ),FREQ)%MYPID==I2-1))
          ENDDO
          NUMBER = SUM(RECVCOUNTS(:,FREQ))
-C THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
+! THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
          DO I=1,NUMBER
             DO WHILE (RECVCHAR(I,FREQ)%NEPID.NE.-1)
               RECVCHAR(I:NARRV(FREQ)-1,FREQ) =
@@ -451,7 +399,7 @@ C THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
      &             .AND.(RECVCHAR_4D(1:NARRV(FREQ),FREQ)%MYPID==I2-1))
          ENDDO
          NUMBER = SUM(RECVCOUNTS(:,FREQ))
-C THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
+! THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
          DO I=1,NUMBER
             DO WHILE (RECVCHAR_4D(I,FREQ)%NEPID.NE.-1)
               RECVCHAR_4D(I:NARRV(FREQ)-1,FREQ) =
@@ -785,7 +733,6 @@ C THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
           INTEGER :: I
           INTEGER TAG,REQ(NLEO),REQ2
           DATA TAG/5001/
-
           DO I=1,NLEO
              IF ((ISLEO(I)).AND.IPID/=0) CALL P_IWRIT(
      &                 BVARSOR%ADR(I)%P%R,NPOIN*8,0,TAG,REQ2)
@@ -794,7 +741,6 @@ C THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
              IF ((IPID==0).AND.NRECV_LEO(I)/=0) CALL P_WAIT_PARACO
      &                                                      (REQ(I),1)
           ENDDO
-
           END SUBROUTINE BVARSOR_SENDRECV
 
           SUBROUTINE TEXTE_SENDRECV(TEXT,NLEO,NPOIN,ISLEO,
@@ -819,13 +765,5 @@ C THE EXCESS DATA ARE DELETED IN RECVCHAR (LIKE SHP1..
               CALL P_WAIT_PARACO(REQ(I),1)
             ENDIF
           ENDDO
-
           END SUBROUTINE TEXTE_SENDRECV
-
-
-
-
       END MODULE TOMAWAC_MPI_TOOLS
-C
-C#######################################################################
-C

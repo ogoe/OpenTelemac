@@ -1,101 +1,65 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       MAIN PROGRAM FOR TOMAWAC.
-!>                SOLVES THE EQUATION FOR THE
-!>                MULTIDIRECTIONAL WAVE SPECTRUM.
-!><br>     1) READS IN THE NECESSARY INFORMATION FOR MEMORY ALLOCATION,
-!><br>     2) ALLOCATES THE MEMORY,
-!><br>     3) CALLS THE REAL MAIN PROGRAM WAC.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF, DECLARATIONS_TELEMAC, DECLARATIONS_TOMAWAC
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Use(s)
-!>    </th><td>
-!> DECLARATIONS_TOMAWAC :<br>
-!> @link DECLARATIONS_TOMAWAC::MAXLU_WAC MAXLU_WAC@endlink, 
-!> @link DECLARATIONS_TOMAWAC::WAC_FILES WAC_FILES@endlink
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> CODE, FILE_DESC, IFLOT, NCAR, PATH
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> BIEF_CLOSE_FILES(), BIEF_INIT(), BIEF_OPEN_FILES(), LECDON_TOMAWAC(), POINT_TOMAWAC(), WAC()
-!>   </td></tr>
-!>     </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 12/01/01
-!> </td><td> OPTIMER  02 98 44 24 51
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        PROGRAM HOMERE_TOMAWAC
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    **********************
+                     PROGRAM HOMERE_TOMAWAC
+!                    **********************
+!
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    MAIN PROGRAM FOR TOMAWAC.
+!+                SOLVES THE EQUATION FOR THE
+!+                MULTIDIRECTIONAL WAVE SPECTRUM.
+!+
+!+     1) READS IN THE NECESSARY INFORMATION FOR MEMORY ALLOCATION,
+!+
+!+     2) ALLOCATES THE MEMORY,
+!+
+!+     3) CALLS THE REAL MAIN PROGRAM WAC.
+!
+!history  OPTIMER
+!+        12/01/01
+!+        V6P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TOMAWAC
       USE INTERFACE_TOMAWAC
-C
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
+!
       INTEGER NCAR,IFLOT
-C
+!
       CHARACTER(LEN=24), PARAMETER :: CODE='TOMAWAC                '
-C
+!
       CHARACTER(LEN=250) PATH
       CHARACTER(LEN=144) FILE_DESC(4,300)
-C
+!
       CALL BIEF_INIT(CODE,PATH,NCAR,.TRUE.)
-C
-C-----------------------------------------------------------------------
-C     EN TETE   -  HEADING
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!     EN TETE   -  HEADING
+!-----------------------------------------------------------------------
+!
       WRITE(LU,100)
       WRITE(LU,110)
 100   FORMAT(100(1H-),////////,
@@ -129,51 +93,48 @@ C
      &,/,15X,
      &'             ^^^^      ^^^                 '
      &,///)
-C
-C-----------------------------------------------------------------------
-C    
-C     READS THE STEERING FILE
-C
+!
+!-----------------------------------------------------------------------
+!
+!     READS THE STEERING FILE
+!
       CALL LECDON_TOMAWAC(FILE_DESC,PATH,NCAR,CODE)
-C
-C-----------------------------------------------------------------------
-C     
-C     OPENS THE FILES
-C
+!
+!-----------------------------------------------------------------------
+!
+!     OPENS THE FILES
+!
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE,WAC_FILES,MAXLU_WAC,PATH,NCAR,
-     *                     .FALSE.,IFLOT,1)
-C
-C-----------------------------------------------------------------------
-C     
-C     ALLOCATES MEMORY
-C
+     &                     .FALSE.,IFLOT,1)
+!
+!-----------------------------------------------------------------------
+!
+!     ALLOCATES MEMORY
+!
       CALL POINT_TOMAWAC
-C
-C-----------------------------------------------------------------------
-C     
-C     CALLS THE REAL MAIN PROGRAM
-C
+!
+!-----------------------------------------------------------------------
+!
+!     CALLS THE REAL MAIN PROGRAM
+!
       CALL WAC(-1,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,
-     *         CODE,0.D0,0.D0,0,1)
-C
-C-----------------------------------------------------------------------
-C     
-C     CLOSES THE FILES
-C
+     &         CODE,0.D0,0.D0,0,1)
+!
+!-----------------------------------------------------------------------
+!
+!     CLOSES THE FILES
+!
       CALL BIEF_CLOSE_FILES(CODE,WAC_FILES,MAXLU_WAC,.TRUE.)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       IF (LNG.EQ.1) WRITE(LU,10)
       IF (LNG.EQ.2) WRITE(LU,20)
 10    FORMAT(1X,////,1X,'FIN NORMALE DU PROGRAMME',/////)
 20    FORMAT(1X,////,1X,'CORRECT END OF RUN',/////)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       STOP
       END
-C
-C#######################################################################
-C

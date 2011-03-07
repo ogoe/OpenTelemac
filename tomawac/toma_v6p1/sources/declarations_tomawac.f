@@ -1,127 +1,49 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       DECLARES BIEF STRUCTURES IN TOMAWAC.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Use(s)
-!><br>BIEF_DEF
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Internal(s)
-!>    </th><td> ALF1, ALFABJ, ALFARO, ALFLTA, ALIRE, ALPHA, ALPHIL,
-!>    </th><td> AM1, APHILL, B, BDISPB, BDSSPB, BETA, BETAIH, BETAM,
-!>    </th><td> BINBI1, BINCOU, BINGEO, BINLEO, BINMAR, BINPRE, BINRBI,
-!>    </th><td> BINRES, BINVEN, BORETG, BOUNDARY_COLOUR, BST1, CDRAG,
-!>    </th><td> CF, CFROT1, CG, CIMPLI, CMOUT1, CMOUT2, COEFHS, COEFNL,
-!>    </th><td> COSF, COSTET, COURAN, COUSTA, CT, CX, CY, DDC, DEBUG,
-!>    </th><td> DECAL, DEPTH, DFREQ, DF_LIM, DONTEL, DT, DUX, DUY, DVX,
-!>    </th><td> DVY, DZHDT, DZX, DZY, E2FMIN, ELI, ELT, EM2SIH, EQUA,
-!>    </th><td> ETA, ETAP1, F, F1, FBOR, FETCH, FETCHL, FPIC, FPICL,
-!>    </th><td> FPMAXL, FRABI, FRABL, FRE, FREMAX, FREQ, GAM1, GAM2,
-!>    </th><td> GAM2RO, GAMARO, GAMATG, GAMBJ1, GAMBJ2, GAMMA, GAMMAL,
-!>    </th><td> GLOB, GRADEB, GRAPRD, GRAVIT, HIST, HM0, HM0L, IANGNL,
-!>    </th><td> IBOR, IDHMA, IDISRO, IDTEL, IELM2, IEXPRO, IFABOR,IFRBJ,
-!>    </th><td> IFRIH, IFRRO, IFRTG, IHMBJ, IKLE2, INDIC, INDIM, INDIV,
-!>    </th><td> INISPE, IQBBJ, ITR01, ITR03, ITR11, ITR12, ITR13, ITR31,
-!>    </th><td> ITR32, ITR33, ITRB1, IWHTG, I_ORIG, J_ORIG, KELGL, KNI,
-!>    </th><td> KNOGL, KSPB, LAM, LIFBOR, LIMIT, LIMSPE, LISFON, LISPRD,
-!>    </th><td> LVMAC, MAREE, MAXLU_WAC, MAXVAR, MESH, NBOR, NDP,
-!>    </th><td> NDTBRK, NELEM2, NF, NIT, NPLAN, NPLEO, NPOIN2, NPOIN3,
-!>    </th><td> NPRIV, NPTFR, NPTT, NSITS, NUMLIQ, PRIVE, PROINF,
-!>    </th><td> PROMIN, PROP, RAISF, RFMLTA, ROAIR, ROEAU, SB, SBETA,
-!>    </th><td> SBREK, SCF, SCG, SCOEF, SCOSF, SCOSTE, SCT, SCX, SCY,
-!>    </th><td> SDEPTH, SDFR, SDF_LIM, SDUX, SDUY, SDVX, SDVY, SDZHDT,
-!>    </th><td> SDZX, SDZY, SELI, SELT, SETA, SETAP1, SF, SFBOR, SFR,
-!>    </th><td> SFRE, SFROT, SHF, SHP1, SHP2, SHP3, SHZ, SIAGNL, SIBOR,
-!>    </th><td> SIGMAA, SIGMAB, SIGMAL, SIGMBL, SINTET, SITR01, SITR03,
-!>    </th><td> SITR11, SITR12, SITR13, SITR31, SITR32, SITR33, SITRB1,
-!>    </th><td> SKELGL, SKNI, SKNOGL, SLIFBR, SLIQ, SMOUT, SORG2D,
-!>    </th><td> SORIMP, SORLEO, SORT2D, SPEULI, SPHE, SPRE1L, SPRE2L,
-!>    </th><td> SPRED1, SPRED2, SPRIVE, SSHF, SSHP1, SSHP2, SSHP3,
-!>    </th><td> SSHZ, SSINTE, SSURDE, ST0, ST00, ST1, ST2, ST3, ST4,
-!>    </th><td> ST5, ST6, ST7, STDGEO, STETA, STGF, STNEW, STOLD,
-!>    </th><td> STRA01, STRA02, STRA15, STRA16, STRA31, STRA32, STRA33,
-!>    </th><td> STRA34, STRA35, STRA36, STRA37, STRA38, STRA39, STRA40,
-!>    </th><td> STRA41, STRA42, STRA43, STRA44, STRA51, STRA52, STRA53,
-!>    </th><td> STRA54, STRA55, STRA56, STRA57, STRA58, STRA59, STRA60,
-!>    </th><td> STRA61, STRA62, STRA63, STRA64, STRA65, STRA66, STRAB1,
-!>    </th><td> STRIA, STRIF, STSDER, STSTOT, SUC, SUC1, SUC2, SUIT,
-!>    </th><td> SURDET, SUV, SUV1, SUV2, SVC, SVC1, SVC2, SVENT, SVV,
-!>    </th><td> SVV1, SVV2, SW1, SXK, SXRELC, SXRELM, SXRELV, SYRELC,
-!>    </th><td> SYRELM, SYRELV, SZF, SZM1, SZM2, T0, T00, T1, T2, T3,
-!>    </th><td> T4, T5, T6, T7, TAILF, TETA, TETA1, TETA1L, TETA2,
-!>    </th><td> TETA2L, TEXTE, TEXTPR, TGF, TITCAS, TNEW, TOLD, TRA01,
-!>    </th><td> TRA02, TRA15, TRA16, TRA31, TRA32, TRA33, TRA34, TRA35,
-!>    </th><td> TRA36, TRA37, TRA38, TRA39, TRA40, TRA41, TRA42, TRA43,
-!>    </th><td> TRA44, TRA51, TRA52, TRA53, TRA54, TRA55, TRA56, TRA57,
-!>    </th><td> TRA58, TRA59, TRA60, TRA61, TRA62, TRA63, TRA64, TRA65,
-!>    </th><td> TRA66, TRAB1, TRIGO, TSDER, TSOU, TSTOT, UC, UC1, UC2,
-!>    </th><td> UV, UV1, UV2, VALID, VARCLA, VARSOR, VC, VC1, VC2,
-!>    </th><td> VENSTA, VENT, VERS, VV, VV1, VV2, VX_CTE, VY_CTE, W1,
-!>    </th><td> WACBI1, WACCAS, WACCLI, WACCOB, WACCOF, WACFO1, WACFON,
-!>    </th><td> WACGEO, WACLEO, WACMAB, WACMAF, WACPAR, WACPRE, WACRBI,
-!>    </th><td> WACREF, WACRES, WACVEB, WACVEF, WAC_FILES, X, XDTBRK,
-!>    </th><td> XEL, XK, XKAPPA, XLAMD, XLAMDA, XLAMDL, XLEO, XMESH,
-!>    </th><td> XRELC, XRELM, XRELV, Y, YEL, YLEO, YRELC, YRELM, YRELV,
-!>    </th><td> ZF, ZM1, ZM2, ZREPOS, ZVENT
-!>   </td></tr>
-!>     </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 6.0                                       </center>
-!> </td><td> 25/08/00
-!> </td><td> OPTIMER  02 98 44 24 51
-!> </td><td> D. VIOLEAU, LEAD FOR EDF
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 5.2                                       </center>
-!> </td><td> 14/06/00
-!> </td><td> OPTIMER  02 98 44 24 51
-!> </td><td> M. BENOIT / J.M HERVOUET, LEADS FOR EDF
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                         MODULE DECLARATIONS_TOMAWAC
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!                    ***************************
+                     MODULE DECLARATIONS_TOMAWAC
+!                    ***************************
+!
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    DECLARES BIEF STRUCTURES IN TOMAWAC.
+!
+!history  OPTIMER
+!+        14/06/00
+!+        V5P2
+!+   M. BENOIT / J.M HERVOUET, LEADS FOR EDF 
+!
+!history  OPTIMER
+!+        25/08/00
+!+        V6P0
+!+   D. VIOLEAU, LEAD FOR EDF 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF_DEF
-C
-C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-C
-C     DECLARES BIEF STRUCTURES
-C
-C-----------------------------------------------------------------------
-C     OLD ARGUMENTS FOR WAC (VECTORS AND MATRICES)
-C-----------------------------------------------------------------------
-C
+!
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!
+!     DECLARES BIEF STRUCTURES
+!
+!-----------------------------------------------------------------------
+!     OLD ARGUMENTS FOR WAC (VECTORS AND MATRICES)
+!-----------------------------------------------------------------------
+!
 !> @brief
 C variables 4d a convecter
       TYPE (BIEF_OBJ), TARGET :: SF
@@ -1003,6 +925,3 @@ C
       SAVE
 C
       END MODULE DECLARATIONS_TOMAWAC
-C
-C#######################################################################
-C

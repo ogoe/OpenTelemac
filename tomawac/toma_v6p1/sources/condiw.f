@@ -1,132 +1,73 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       INITIALISES THE ARRAYS WITH PHYSICAL PARAMETERS.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 5.0                                       </center>
-!> </td><td> 25/08/2000
-!> </td><td>
-!> </td><td>
-!> </td></tr>
-!>      <tr>
-!>      <td><center> 1.0                                       </center>
-!> </td><td> 01/02/95
-!> </td><td> F.MARCOS (LNH) 30 87 72 66
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C
-C#######################################################################
-C
-                        SUBROUTINE CONDIW
+!                    *****************
+                     SUBROUTINE CONDIW
+!                    *****************
+!
      &( AT, LT , DPI, TC1, TC2, NPC , TV1, TV2, NPV, TM1, TM2 , NPM ,
      &  NVHMA  , NVCOU )
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| ALPHIL         |-->| CONSTANTE DE PHILLIPS (ALPHA)
-C| AT             |<--| TEMPS DU CALCUL
-C| BINCOU         |-->| BINAIRE DU FICHIER DES COURANTS
-C| BINMAR         |-->| BINAIRE DU FICHIER DES HAUTEURS DE LA MAREE
-C| BINVEN         |-->| BINAIRE DU FICHIER DES VENTS
-C| COUSTA         |-->| LOGIQUE INDIQUANT UN COURANT STATIONNAIRE
-C| DDC            |-->| DATE DE DEBUT DU CALCUL
-C| DONTEL         |-->| LOGIQUE INDIQUANT SI ON RECUPERE UNE DON.TEL.
-C| DPI            |---| 
-C| E2FMIN         |-->| VALEUR MINIMALE D'ENERGIE
-C| F             |<--| DENSITE SPECTRALE D'ENERGIE
-C| F1             |-->| FREQUENCE MINIMALE
-C| FETCH          |-->| FETCH MOYEN
-C| FPIC           |-->| FREQUENCE DE PIC JONSWAP
-C| FREMAX         |-->| VALEUR MAXIMUM DE LA FREQUENCE DE PIC
-C| FREQ           |<--| FREQUENCES DISCRETISEES
-C| GAMMA          |-->| FACTEUR DE FORME DE PIC JONSWAP
-C| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-C| HM0            |-->| HAUTEUR SIGNIFICATIVE JONSWAP
-C| IDTEL          |-->| RANG DE LA DONNEE TELEMAC A RECUPERER
-C| INDIC          |-->| FORMAT DU FICHIER DES COURANTS
-C| INDIV          |-->| FORMAT DU FICHIER DES HAUTEURS
-C| INISPE         |-->| INDICATEUR D'INITIALISATION DU SPECTRE
-C| LT             |---| 
-C| MAREE          |-->| LOGIQUE INDIQUANT SI ON CONSIDERE LA MAREE
-C| NBOR           |-->| NUMERO GLOBAUX DES POINTS DE BORD
-C| NF             |-->| NOMBRE DE FREQUENCES
-C| NPC            |-->| NOMBRE DE POINTS DU FICHIER DES COURANTS
-C| NPLAN          |-->| NOMBRE DE DIRECTIONS DE PROPAGATION
-C| NPM            |-->| NOMBRE DE POINTS DU FICHIER DES HAUTEURS
-C| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-C| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-C| NPRIV          |---| NPOIN3*NPRIV
-C| NPTFR          |-->| NOMBRE DE POINTS DE BORD
-C| NPTT           |-->| NUMERO DU PAS DE TEMPS DU FICHIER TELEMAC
-C| NPV            |-->| NOMBRE DE POINTS DU FICHIER DES VENTS
-C| NVCOU          |---| 
-C| NVHMA          |---| 
-C| PRIVE          |-->| TABLEAU POUR L'UTILISATEUR DE DIMENSION
-C| RAISF          |-->| RAISON FREQUENTIELLE
-C| SIGMAA         |-->| VALEUR DE SIGMA JONSWAP POUR F
-C| SIGMAB         |-->| VALEUR DE SIGMA JONSWAP POUR F > FP
-C| SPRED1         |-->| ETALEMENT DIRECTIONNEL 1 POUR FRA
-C| SPRED2         |-->| ETALEMENT DIRECTIONNEL 2 POUR FRA
-C| TC1            |<--| TEMPS CORRESPONDANT AU COURANT 1
-C| TC2            |<--| TEMPS CORRESPONDANT AU COURANT 2
-C| TETA           |<--| DIRECTIONS DE PROPAGATION
-C| TETA1          |-->| DIRECTION PRINCIPALE 1 POUR FRA
-C| TETA2          |-->| DIRECTION PRINCIPALE 2 POUR FRA
-C| TM1            |<--| TEMPS CORRESP. A LA HAUTEUR DE LA MAREE 1
-C| TM2            |<--| TEMPS CORRESP. A LA HAUTEUR DE LA MAREE 2
-C| TRA31          |<->| TABLEAUX DE TRAVAIL REELS
-C| TV1            |<--| TEMPS CORRESPONDANT AU VENT 1
-C| TV2            |<--| TEMPS CORRESPONDANT AU VENT 2
-C| UC,VC          |<--| COMPOSANTES DU CHAMP DE COURANT
-C| UC1,VC1        |<--| COMPOSANTES DU CHAMP DE COURANT INFERIEUR
-C| UC2,VC2        |<--| COMPOSANTES DU CHAMP DE COURANT SUPERIEUR
-C| UV,VV          |<--| COMPOSANTES DU CHAMP DE VENT INITIAL
-C| UV1,VV1        |<--| COMPOSANTES DU CHAMP DE VENT INFERIEUR
-C| UV2,VV2        |<--| COMPOSANTES DU CHAMP DE VENT SUPERIEUR
-C| VENT           |-->| LOGIQUE INDIQUANT SI ON CONSIDERE UN VENT
-C| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE 2D
-C| XLAMDA         |-->| FACTEUR DE PONDERATION POUR LA FRA
-C| XRELC,YRELC    |-->| COORDONNEES DES POINTS DES COURANTS RELEVES
-C| XRELM,YRELM    |-->| COORDONNEES DES POINTS DES HAUTEURS RELEVEES
-C| XRELV,YRELV    |-->| COORDONNEES DES POINTS DES VENTS RELEVES
-C| ZM             |<--| HAUTEUR DE LA MAREE INITIALE
-C| ZM1,ZM2        |<--| HAUTEURS DE LA MAREE INFERIEURE ET SUPERIEURE
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    INITIALISES THE ARRAYS WITH PHYSICAL PARAMETERS.
+!
+!history  F.MARCOS (LNH)
+!+        01/02/95
+!+        V1P0
+!+   
+!
+!history  
+!+        25/08/2000
+!+        V5P0
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT             |<--| TEMPS DU CALCUL
+!| DPI            |---| 
+!| LT             |---| 
+!| NPC            |-->| NOMBRE DE POINTS DU FICHIER DES COURANTS
+!| NPM            |-->| NOMBRE DE POINTS DU FICHIER DES HAUTEURS
+!| NPV            |-->| NOMBRE DE POINTS DU FICHIER DES VENTS
+!| NVCOU          |---| 
+!| NVHMA          |---| 
+!| TC1            |<--| TEMPS CORRESPONDANT AU COURANT 1
+!| TC2            |<--| TEMPS CORRESPONDANT AU COURANT 2
+!| TM1            |<--| TEMPS CORRESP. A LA HAUTEUR DE LA MAREE 1
+!| TM2            |<--| TEMPS CORRESP. A LA HAUTEUR DE LA MAREE 2
+!| TV1            |<--| TEMPS CORRESPONDANT AU VENT 1
+!| TV2            |<--| TEMPS CORRESPONDANT AU VENT 2
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TOMAWAC
       USE INTERFACE_TOMAWAC, EX_CONDIW=> CONDIW
       USE BIEF
-C
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
+!
       DOUBLE PRECISION AT , DPI, TC1, TC2, TV1, TV2, TM1, TM2
       INTEGER          NPC,NPV,NPM,LT,NP0,NP1,NP2,NP3,NP4,NP5
       INTEGER          IPLAN, IFREQ , NVHMA, NVCOU, IBID
-C
+!
       CHARACTER*7   CHDON
-C
-C***********************************************************************
-C
+!
+!***********************************************************************
+!
       AT  = 0.D0
       NP0 = NPOIN3_G+1
       NP1 = 2*NPOIN3_G
@@ -134,18 +75,18 @@ C
       NP3 = 3*NPOIN3_G
       NP4 = NP3+1
       NP5 = 4*NPOIN3_G
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISES THE TIDAL CURRENT AND WATER LEVEL
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISES THE TIDAL CURRENT AND WATER LEVEL
+!
       IF (MAREE) THEN
         IF(LNG.EQ.1) THEN
           CHDON='COURANT'
         ELSE
           CHDON='CURRENT'
         ENDIF
-C       READS IN THE TIDAL CURRRENT
+!       READS IN THE TIDAL CURRRENT
         IF((WAC_FILES(WACCOF)%NAME(1:1).EQ.' ').AND.
      &                (WAC_FILES(WACCOB)%NAME(1:1).EQ.' ')) THEN
           WRITE(LU,*) 'FICHIER ANALYTIQUE POUR COURANT'
@@ -168,7 +109,7 @@ C       READS IN THE TIDAL CURRRENT
           ENDIF
         ELSE
           IF (WAC_FILES(WACCOF)%NAME(1:1).NE.' ') THEN
-C           READS IN THE TIDAL CURRENTS FROM FORMATTED DATA FILE
+!           READS IN THE TIDAL CURRENTS FROM FORMATTED DATA FILE
             CALL LECDOI
      &      ( SUC%R  , SVC%R   , MESH%X%R, MESH%Y%R ,
      &        NPOIN2, WAC_FILES(WACCOF)%LU , BINCOU, NBOR , NPTFR,
@@ -178,7 +119,7 @@ C           READS IN THE TIDAL CURRENTS FROM FORMATTED DATA FILE
      &        SUC1%R , SVC1%R, SUC2%R, SVC2%R,
      &        INDIC , NPOIN3_G, CHDON, NVCOU)
           ELSE
-C           READS IN THE TIDAL CURRENT FROM BINARY FILE
+!           READS IN THE TIDAL CURRENT FROM BINARY FILE
             CALL LECDOI
      &      ( SUC%R  , SVC%R   , MESH%X%R, MESH%Y%R ,
      &        NPOIN2, WAC_FILES(WACCOB)%LU , BINCOU, NBOR , NPTFR,
@@ -189,9 +130,9 @@ C           READS IN THE TIDAL CURRENT FROM BINARY FILE
      &        INDIC , NPOIN3_G, CHDON, NVCOU )
           ENDIF
         ENDIF
-C
-C       READS IN THE TIDAL WATER LEVEL
-C
+!
+!       READS IN THE TIDAL WATER LEVEL
+!
         IF((WAC_FILES(WACMAF)%NAME(1:1).EQ.' ').AND.
      &                       (WAC_FILES(WACMAB)%NAME(1:1).EQ.' ')) THEN
           IF((WAC_FILES(WACCOF)%NAME.NE.' ').OR.
@@ -232,10 +173,10 @@ C
         ENDIF
         CALL OV('X=X+Y   ',SDEPTH%R,STRA31%R,ST1%R,0.D0,NPOIN2)
       ENDIF
-C
-C   INITIALISES THE CURRENT
-C   AND READS IN A TELEMAC VARIABLE (OPTIONAL)
-C
+!
+!   INITIALISES THE CURRENT
+!   AND READS IN A TELEMAC VARIABLE (OPTIONAL)
+!
       IF ((COUSTA).OR.(DONTEL)) THEN
         IF ((WAC_FILES(WACCOF)%NAME(1:1).EQ.' ').AND.
      &                 (WAC_FILES(WACCOB)%NAME(1:1).EQ.' ')) THEN
@@ -287,18 +228,18 @@ C
         ENDIF
         DZHDT = 0.D0
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISES THE WIND
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISES THE WIND
+!
       IF (VENT) THEN
         IF(LNG.EQ.1) THEN
           CHDON='VENT   '
         ELSE
           CHDON='WIND   '
         ENDIF
-C
+!
         IF ((WAC_FILES(WACVEF)%NAME(1:1).EQ.' ').AND.
      &                 (WAC_FILES(WACVEB)%NAME(1:1).EQ.' ')) THEN
           CALL ANAVEN
@@ -352,41 +293,38 @@ C
           ENDIF
          ENDIF
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C   INITIALISES TETA
-C     BY DEFAULT THE DIRECTIONS OF PROPAGATION ARE EVENLY DISTRIBUTED
-C
+!
+!-----------------------------------------------------------------------
+!
+!   INITIALISES TETA
+!     BY DEFAULT THE DIRECTIONS OF PROPAGATION ARE EVENLY DISTRIBUTED
+!
       DO IPLAN = 1,NPLAN+1
          TETA(IPLAN) = (IPLAN-1)*DPI/NPLAN
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
-C
-C     INITIALISES FREQ AND DFREQ, THE FREQUENCIES OF PROPAGATION
-C     ARE DISTRIBUTED USING AN EXPONENTIAL LAW
-C
+!
+!-----------------------------------------------------------------------
+!
+!
+!     INITIALISES FREQ AND DFREQ, THE FREQUENCIES OF PROPAGATION
+!     ARE DISTRIBUTED USING AN EXPONENTIAL LAW
+!
       DO IFREQ = 1,NF
         FREQ(IFREQ) = F1*RAISF**(IFREQ-1)
       ENDDO
-C
-C-----------------------------------------------------------------------
-C
-C     INITIALISES F
-C
+!
+!-----------------------------------------------------------------------
+!
+!     INITIALISES F
+!
       CALL SPEINI
      &  ( SF%R  , TRA01(1:NF)   , TRA01(NP0:NP1),
      &    SUV%R , SVV%R      , SFR%R  , STETA%R  , GRAVIT,
      &    FREMAX   , FETCH , SIGMAA, SIGMAB , GAMMA  , FPIC  , HM0   ,
      &    ALPHIL   , TETA1 , SPRED1, TETA2  , SPRED2 , XLAMDA, NPOIN2,
      &    NPLAN    , NF    , INISPE, E2FMIN , DEPTH  , FRABI  )
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################
-C

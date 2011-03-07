@@ -1,118 +1,63 @@
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @brief       COMPUTES THE INTEGRATION BOUNDS FOR THE INTEGRATION
-!>                OF  THE FUNCTION "FONCRO", USING GAUSS QUADRATURES.
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> A, B, N, X0, X1, XM
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     <tr><th> Internal(s)
-!>    </th><td> DX, EPS, EPS1, I0, I1, II, IMAX, INP, JJ, X, Y
-!>   </td></tr>
-!>     </table>
-
-!>  @par Call(s)
-!>  <br><table>
-!>     <tr><th> Known(s)
-!>    </th><td> FONCRO()
-!>   </td></tr>
-!>     </table>
-
-!>  @par Called by
-!><br>QGAUSS()
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>      <tr>
-!>      <td><center> 1.1                                       </center>
-!> </td><td> 26/03/96
-!> </td><td> F. BECQ (EDF/DER/LNH)
-!> </td><td>
-!> </td></tr>
-!>  </table>
-
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>A
-!></td><td>--></td><td>PARAMETRE A DE LA FONCTION A INTEGRER
-!>    </td></tr>
-!>          <tr><td>B
-!></td><td>--></td><td>PARAMETRE B DE LA FONCTION A INTEGRER
-!>    </td></tr>
-!>          <tr><td>N
-!></td><td>--></td><td>EXPOSANT N  DE LA FONCTION A INTEGRER
-!>    </td></tr>
-!>          <tr><td>X0
-!></td><td><--</td><td>BORNE INFERIEURE DE L'INTERVALLE
-!>    </td></tr>
-!>          <tr><td>X1
-!></td><td><--</td><td>BORNE SUPERIEURE DE L'INTERVALLE
-!>    </td></tr>
-!>          <tr><td>XM
-!></td><td>--></td><td>PARAMETRE M DE LA FONCTION A INTEGRER
-!>    </td></tr>
-!>     </table>
-C
-C#######################################################################
-C
-                        SUBROUTINE BORNES
+!                    *****************
+                     SUBROUTINE BORNES
+!                    *****************
+!
      &( B     , N     , A     , XM    , X0    , X1    )
-C
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| A             |-->| PARAMETRE A DE LA FONCTION A INTEGRER
-C| B             |-->| PARAMETRE B DE LA FONCTION A INTEGRER
-C| N             |-->| EXPOSANT N  DE LA FONCTION A INTEGRER
-C| X0             |<--| BORNE INFERIEURE DE L'INTERVALLE
-C| X1             |<--| BORNE SUPERIEURE DE L'INTERVALLE
-C| XM             |-->| PARAMETRE M DE LA FONCTION A INTEGRER
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!
+!***********************************************************************
+! TOMAWAC   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE INTEGRATION BOUNDS FOR THE INTEGRATION
+!+                OF  THE FUNCTION "FONCRO", USING GAUSS QUADRATURES.
+!
+!history  F. BECQ (EDF/DER/LNH)
+!+        26/03/96
+!+        V1P1
+!+   
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into 
+!+   English comments 
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and 
+!+   cross-referencing of the FORTRAN sources 
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| A              |-->| PARAMETRE A DE LA FONCTION A INTEGRER
+!| B              |-->| PARAMETRE B DE LA FONCTION A INTEGRER
+!| N              |-->| EXPOSANT N  DE LA FONCTION A INTEGRER
+!| X0             |<--| BORNE INFERIEURE DE L'INTERVALLE
+!| X1             |<--| BORNE SUPERIEURE DE L'INTERVALLE
+!| XM             |-->| PARAMETRE M DE LA FONCTION A INTEGRER
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
-C
-C     VARIABLES IN ARGUMENT
-C     """""""""""""""""""""
+!
+!     VARIABLES IN ARGUMENT
+!     """""""""""""""""""""
       INTEGER  N
       DOUBLE PRECISION B     , A     , XM    , X0    , X1
-C
-C     LOCAL VARIABLES
-C     """"""""""""""""""
+!
+!     LOCAL VARIABLES
+!     """"""""""""""""""
       INTEGER  I0    , I1    , II    , JJ    , IMAX  , INP
       DOUBLE PRECISION X(11) , Y(11) , EPS   , EPS1  , DX
-C
-C.....EXTERNAL FUNCTIONS
-C     """"""""""""""""""
+!
+!.....EXTERNAL FUNCTIONS
+!     """"""""""""""""""
       DOUBLE PRECISION  FONCRO
       EXTERNAL          FONCRO
-C
-C
+!
+!
       I1  = 11
       I0  = 1
       X(I0)= 0.D0
@@ -121,7 +66,7 @@ C
       EPS1 = 0.01D0
       EPS  = 0.0001D0
       INP  = 0
-C
+!
       DO 10 II=1,20
          DX = (X(I1)-X(I0))/10.D0
          X(1) = X(I0)
@@ -156,14 +101,11 @@ C
             GOTO 20
          END IF
    10 CONTINUE
-C
+!
    20 CONTINUE
-C
+!
       X0 = X(I0)
       X1 = X(I1)
-C
+!
       RETURN
       END
-C
-C#######################################################################
-C
