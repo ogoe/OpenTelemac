@@ -1,80 +1,80 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE LECADC
-C                       *****************
-C
-     *( X , Y , ZF , IKLE , NGEO )
-C
-C***********************************************************************
-C PROGICIEL : STBTEL V5.2         13/08/01    J-M HERVOUET  (LNH)
-C
-C***********************************************************************
-C
-C     FONCTION  :  LECTURE DU FICHIER DE LA GEOMETRIE CREE PAR ADCIRC
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |   X,Y          |<-- | COORDONNEES DU MAILLAGE .
-C |   X1,Y1        |<-- | COORDONNEES DU MAILLAGE LUES EN SIMPLE
-C |                |    | PRECISION DANS LE FICHIER SIMAIL
-C |   IKLE         |<-- | LISTE DES POINTS DE CHAQUE ELEMENT
-C |   TITRE        |<-- | TITRE DU MAILLAGE
-C |________________|____|______________________________________________
-C | COMMON:        |    |
-C |  GEO:          |    |
-C |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
-C |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
-C |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
-C |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
-C |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
-C |                |    | (NPMAX = NPOIN + 0.1*NELEM)
-C |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
-C |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
-C |  FICH:         |    |
-C |    NRES        | -->| NUMERO DU CANAL DU FICHIER DE SERAFIN
-C |    NGEO       | -->| NUMERO DU CANAL DU FICHIER MAILLEUR
-C |    NLIM      | -->| NUMERO DU CANAL DU FICHIER DYNAM DE TELEMAC
-C |    NFO1      |--> | NUMERO DU CANAL DU FICHIER TRIANGLE TRIGRID
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C----------------------------------------------------------------------
-C APPELE PAR : STBTEL
-C APPEL DE : -
-C***********************************************************************
-C
-C    LISTE DES ENREGISTREMENTS DU FICHIER GEOMETRIQUE:
-C             (DOCUMENTION: NOTICE SIMAIL)
-C
-C***********************************************************************
-C
+!                       *****************
+!
+     &( X , Y , ZF , IKLE , NGEO )
+!
+!***********************************************************************
+! PROGICIEL : STBTEL V5.2         13/08/01    J-M HERVOUET  (LNH)
+!
+!***********************************************************************
+!
+!     FONCTION  :  LECTURE DU FICHIER DE LA GEOMETRIE CREE PAR ADCIRC
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! |      NOM       |MODE|                   ROLE
+! |________________|____|______________________________________________
+! |   X,Y          |<-- | COORDONNEES DU MAILLAGE .
+! |   X1,Y1        |<-- | COORDONNEES DU MAILLAGE LUES EN SIMPLE
+! |                |    | PRECISION DANS LE FICHIER SIMAIL
+! |   IKLE         |<-- | LISTE DES POINTS DE CHAQUE ELEMENT
+! |   TITRE        |<-- | TITRE DU MAILLAGE
+! |________________|____|______________________________________________
+! | COMMON:        |    |
+! |  GEO:          |    |
+! |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
+! |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
+! |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
+! |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
+! |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
+! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
+! |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
+! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
+! |  FICH:         |    |
+! |    NRES        | -->| NUMERO DU CANAL DU FICHIER DE SERAFIN
+! |    NGEO       | -->| NUMERO DU CANAL DU FICHIER MAILLEUR
+! |    NLIM      | -->| NUMERO DU CANAL DU FICHIER DYNAM DE TELEMAC
+! |    NFO1      |--> | NUMERO DU CANAL DU FICHIER TRIANGLE TRIGRID
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!----------------------------------------------------------------------
+! APPELE PAR : STBTEL
+! APPEL DE : -
+!***********************************************************************
+!
+!    LISTE DES ENREGISTREMENTS DU FICHIER GEOMETRIQUE:
+!             (DOCUMENTION: NOTICE SIMAIL)
+!
+!***********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER NGEO , NPOIN , IBID
       INTEGER NELEM , MESH , NDP , NELMAX , NPMAX
       INTEGER IKLE(NELMAX,4)
       INTEGER I,J
-C
+!
       DOUBLE PRECISION X(*) , Y(*),ZF(*)
-C
-C COMMON
-C
+!
+! COMMON
+!
       COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
-C
-C=======================================================================
-C   INITIALISATION
-C=======================================================================
-C
-C     REWIND NGEO
-C
-C
-C=======================================================================
-C LECTURE SEQUENTIELLE DES COORDONNEES
-C=======================================================================
-C
+!
+!=======================================================================
+!   INITIALISATION
+!=======================================================================
+!
+!     REWIND NGEO
+!
+!
+!=======================================================================
+! LECTURE SEQUENTIELLE DES COORDONNEES
+!=======================================================================
+!
       DO I=1,NPOIN
         READ(NGEO,*) J,X(I),Y(I),ZF(I)
         IF(I.NE.J) THEN
@@ -82,16 +82,16 @@ C
           STOP
         ENDIF
       ENDDO
-C
-C=======================================================================
-C LECTURE SEQUENTIELLE DU TABLEAU IKLE
-C=======================================================================
-C
+!
+!=======================================================================
+! LECTURE SEQUENTIELLE DU TABLEAU IKLE
+!=======================================================================
+!
       DO I=1,NELEM
         READ(NGEO,*) J,IBID,IKLE(I,1),IKLE(I,2),IKLE(I,3)
       ENDDO
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       RETURN
       END

@@ -1,71 +1,71 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE VERIFS
-C                       *****************
-C
-     *(IFABOR,IKLE,TRAV1,NPTFR,NUMPB,NBPB)
-C
-C***********************************************************************
-C  PROGICIEL : STBTEL V5.2        10/02/93    J.M. JANIN   (LNH)
-C                                 25/02/99    P. LANG      (SOGREAH)
-C***********************************************************************
-C
-C    FONCTION : REPERAGE DES POINTS APPARTENANT A PLUS DE TROIS
-C               SEGMENTS FRONTIERES APRES ELIMINATION DES ELEMENTS SECS
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |    NBOR        |<-- | TABLEAU DES POINTS DE BORD                   |
-C |    IFABOR      | -->| TABLEAU DES VOISINS DES FACES.               |
-C |    IKLE        | -->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT |
-C |    TRAV1       |<-->| TABLEAU DE TRAVAIL                           |
-C |    NPTFR       |<-- | NOMBRE DE POINTS DE BORD                     |
-C |    X,Y         |--> | COORDONNEES DES POINTS DU MAILLAGE           |
-C |    NUMPB       |<-- | NUMEROS DES POINTS POSANT PROBLEME           |
-C |    NBPB        |<-- | NOMBRE DE POINTS POSANT PROBLEME             |
-C |________________|____|______________________________________________
-C | COMMON:        |    |
-C |  GEO:          |    |
-C |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
-C |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
-C |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
-C |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
-C |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
-C |                |    | (NPMAX = NPOIN + 0.1*NELEM)
-C |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
-C |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
-C |________________|____|______________________________________________|
-C  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C APPELE PAR : STBTEL
-C APPEL DE : -
-C***********************************************************************
-C
+!                       *****************
+!
+     &(IFABOR,IKLE,TRAV1,NPTFR,NUMPB,NBPB)
+!
+!***********************************************************************
+!  PROGICIEL : STBTEL V5.2        10/02/93    J.M. JANIN   (LNH)
+!                                 25/02/99    P. LANG      (SOGREAH)
+!***********************************************************************
+!
+!    FONCTION : REPERAGE DES POINTS APPARTENANT A PLUS DE TROIS
+!               SEGMENTS FRONTIERES APRES ELIMINATION DES ELEMENTS SECS
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________.
+! |      NOM       |MODE|                   ROLE                       |
+! |________________|____|______________________________________________|
+! |    NBOR        |<-- | TABLEAU DES POINTS DE BORD                   |
+! |    IFABOR      | -->| TABLEAU DES VOISINS DES FACES.               |
+! |    IKLE        | -->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT |
+! |    TRAV1       |<-->| TABLEAU DE TRAVAIL                           |
+! |    NPTFR       |<-- | NOMBRE DE POINTS DE BORD                     |
+! |    X,Y         |--> | COORDONNEES DES POINTS DU MAILLAGE           |
+! |    NUMPB       |<-- | NUMEROS DES POINTS POSANT PROBLEME           |
+! |    NBPB        |<-- | NOMBRE DE POINTS POSANT PROBLEME             |
+! |________________|____|______________________________________________
+! | COMMON:        |    |
+! |  GEO:          |    |
+! |    MESH        | -->| TYPE DES ELEMENTS DU MAILLAGE
+! |    NDP         | -->| NOMBRE DE NOEUDS PAR ELEMENTS
+! |    NPOIN       | -->| NOMBRE TOTAL DE NOEUDS DU MAILLAGE
+! |    NELEM       | -->| NOMBRE TOTAL D'ELEMENTS DU MAILLAGE
+! |    NPMAX       | -->| DIMENSION EFFECTIVE DES TABLEAUX X ET Y
+! |                |    | (NPMAX = NPOIN + 0.1*NELEM)
+! |    NELMAX      | -->| DIMENSION EFFECTIVE DES TABLEAUX CONCERNANT
+! |                |    | LES ELEMENTS (NELMAX = NELEM + 0.2*NELEM)
+! |________________|____|______________________________________________|
+!  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+! APPELE PAR : STBTEL
+! APPEL DE : -
+!***********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER MESH , NDP , NELEM , I, J
       INTEGER NELMAX , NPOIN , NPMAX
       INTEGER IFABOR(NELMAX,*) , IKLE(NELMAX,4)
       INTEGER TRAV1(NPOIN,2)
       INTEGER ISUIV , IELEM , IFACE , NPTFR
-      INTEGER SOMSUI(4) , I1 , I2 
+      INTEGER SOMSUI(4) , I1 , I2
       INTEGER NUMPB(100), NBPB
-C
+!
       LOGICAL EXIST
-C 
+!
       COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
-C
+!
       DATA SOMSUI / 2 , 3 , 4 , 0 /
-C
-C=======================================================================
-C INITIALISATION
-C=======================================================================
-C
-      IF (LNG.EQ.1) WRITE(LU,1010) 
+!
+!=======================================================================
+! INITIALISATION
+!=======================================================================
+!
+      IF (LNG.EQ.1) WRITE(LU,1010)
       IF (LNG.EQ.2) WRITE(LU,1020)
       NBPB = 0
       SOMSUI(NDP) = 1
@@ -76,11 +76,11 @@ C
 4000     FORMAT(/,1X,'RANBO : MESH NOT ALLOWED , MESH = ',I4,/)
          STOP
       ENDIF
-C
-C=======================================================================
-C RECHERCHE DES ARETES DE BORD,NUMEROTEES DE 1 A NPTFR
-C=======================================================================
-C
+!
+!=======================================================================
+! RECHERCHE DES ARETES DE BORD,NUMEROTEES DE 1 A NPTFR
+!=======================================================================
+!
       NPTFR = 0
       DO 10 IELEM=1,NELEM
          DO 20 IFACE=1,NDP
@@ -91,12 +91,12 @@ C
             ENDIF
 20       CONTINUE
 10    CONTINUE
-C
-C=======================================================================
-C ON VERIFIE QUE CHAQUE POINT N'APPARAIT QUE DEUX FOIS
-C ( UNE FOIS COMME NOEUD 1 , UNE FOIS COMME NOEUD 2 )
-C=======================================================================
-C
+!
+!=======================================================================
+! ON VERIFIE QUE CHAQUE POINT N'APPARAIT QUE DEUX FOIS
+! ( UNE FOIS COMME NOEUD 1 , UNE FOIS COMME NOEUD 2 )
+!=======================================================================
+!
       DO 50 I=1,NPTFR
         I1 = 1
         I2 = 1
@@ -116,7 +116,7 @@ C
             IF (.NOT.EXIST) THEN
               NBPB = NBPB + 1
               IF (NBPB.GT.100) THEN
-                IF (LNG.EQ.1) WRITE(LU,9000) 
+                IF (LNG.EQ.1) WRITE(LU,9000)
                 IF (LNG.EQ.2) WRITE(LU,9001)
                 STOP
               ENDIF
@@ -136,7 +136,7 @@ C
             IF (.NOT.EXIST) THEN
               NBPB = NBPB + 1
               IF (NBPB.GT.100) THEN
-                IF (LNG.EQ.1) WRITE(LU,9000) 
+                IF (LNG.EQ.1) WRITE(LU,9000)
                 IF (LNG.EQ.2) WRITE(LU,9001)
                 STOP
               ENDIF
@@ -145,21 +145,21 @@ C
           ENDIF
         ENDIF
 50    CONTINUE
-C
+!
       RETURN
-C
-C -------------------------FORMATS------------------------------------------
+!
+! -------------------------FORMATS------------------------------------------
  1010 FORMAT (//,1X,'RECHERCHE DES ILES CONNECTEES',/,
-     +          1X,'-----------------------------')
+     &          1X,'-----------------------------')
  1020 FORMAT (//,1X,'SEARCHING ABOUT CONNECTED ISLANDS',/,
-     +          1X,'---------------------------------')
+     &          1X,'---------------------------------')
  9000 FORMAT (1X,'******************************************',/,
-     +        1X,'ERREUR - ROUTINE VERIFS',/,
-     +        1X,'NB DE POINT DE CONNECTION SUPERIEUR A 100',/,
-     +        1X,'******************************************')
+     &        1X,'ERREUR - ROUTINE VERIFS',/,
+     &        1X,'NB DE POINT DE CONNECTION SUPERIEUR A 100',/,
+     &        1X,'******************************************')
  9001 FORMAT (1X,'*****************************************',/,
-     +        1X,'ERROR - ROUTINE VERIFS',/,
-     +        1X,'NB OF CONNECTION POINTS GREATHER THAN 100',/,
-     +        1X,'*****************************************')
-    
+     &        1X,'ERROR - ROUTINE VERIFS',/,
+     &        1X,'NB OF CONNECTION POINTS GREATHER THAN 100',/,
+     &        1X,'*****************************************')
+!
       END

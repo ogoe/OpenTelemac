@@ -1,62 +1,62 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE EXTRAC
-C                       *****************
-C
-     *(X,Y,SOM,IKLE,INDIC,NELEM,NELMAX,NPOIN,NSOM,PROJEC)
-C
-C***********************************************************************
-C PROGICIEL : STBTEL V5.2    07/12/88    J-M HERVOUET (LNH) 30 87 80 18
-C                            19/02/93    J-M JANIN    (LNH) 30 87 72 84
-C                                        A   WATRIN
-C***********************************************************************
-C
-C  FONCTION  :  PREPARATION DE DONNEES AVANT L'APPEL DE FMTSEL
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C !      NOM       !MODE!                   ROLE
-C !________________!____!______________________________________________
-C !________________!____!______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C APPELE PAR : PREDON
-C APPEL DE : -
-C
-C***********************************************************************
-C
+!                       *****************
+!
+     &(X,Y,SOM,IKLE,INDIC,NELEM,NELMAX,NPOIN,NSOM,PROJEC)
+!
+!***********************************************************************
+! PROGICIEL : STBTEL V5.2    07/12/88    J-M HERVOUET (LNH) 30 87 80 18
+!                            19/02/93    J-M JANIN    (LNH) 30 87 72 84
+!                                        A   WATRIN
+!***********************************************************************
+!
+!  FONCTION  :  PREPARATION DE DONNEES AVANT L'APPEL DE FMTSEL
+!
+!-----------------------------------------------------------------------
+!                             ARGUMENTS
+! .________________.____.______________________________________________
+! !      NOM       !MODE!                   ROLE
+! !________________!____!______________________________________________
+! !________________!____!______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
+!-----------------------------------------------------------------------
+!
+! APPELE PAR : PREDON
+! APPEL DE : -
+!
+!***********************************************************************
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INTEGER NELEM,NELMAX,NPOIN,NSOM,IELEM,IPOIN,ISOM,IDP,I1,I2,I3
       INTEGER IKLE(NELMAX,3),INDIC(NPOIN)
-C
+!
       DOUBLE PRECISION X(NPOIN),Y(NPOIN),SOM(10,2),DX,DY,A1,A2,A3
-C
+!
       LOGICAL PROJEC,FLAG,F1,F2,F3
-C
-C=======================================================================
-C BOUCLE SUR TOUS LES PLANS DE COUPE      
-C=======================================================================
-C
+!
+!=======================================================================
+! BOUCLE SUR TOUS LES PLANS DE COUPE
+!=======================================================================
+!
       DO 5 ISOM = 1,NSOM
-C
+!
          DX = SOM(ISOM+1,1) - SOM(ISOM,1)
          DY = SOM(ISOM+1,2) - SOM(ISOM,2)
-C
-C=======================================================================
-C POUR UN DEMI PLAN DE COUPE DONNE :      
-C      RECHERCHE DES POINTS EXT.(=0) , INT.(=1) , SUR LE BORD (=2)
-C=======================================================================
-C
+!
+!=======================================================================
+! POUR UN DEMI PLAN DE COUPE DONNE :
+!      RECHERCHE DES POINTS EXT.(=0) , INT.(=1) , SUR LE BORD (=2)
+!=======================================================================
+!
          DO 10 IPOIN = 1,NPOIN
             INDIC(IPOIN) = 0
             IF (DX*(Y(IPOIN)-SOM(ISOM,2)).GE.DY*(X(IPOIN)-SOM(ISOM,1)))
-     *          INDIC(IPOIN) = 1
+     &          INDIC(IPOIN) = 1
 10       CONTINUE
-C
+!
          IELEM = 1
 20       CONTINUE
          I1 = INDIC(IKLE(IELEM,1))
@@ -74,12 +74,12 @@ C
             IELEM = IELEM + 1
          ENDIF
          IF (IELEM.NE.NELEM+1) GOTO 20
-C
-C=======================================================================
-C POUR UN DEMI PLAN DE COUPE DONNE :      
-C      ELIMINATION DES ELEMENTS DEGENERES
-C=======================================================================
-C
+!
+!=======================================================================
+! POUR UN DEMI PLAN DE COUPE DONNE :
+!      ELIMINATION DES ELEMENTS DEGENERES
+!=======================================================================
+!
 30       CONTINUE
          IELEM = 1
          FLAG = .FALSE.
@@ -118,16 +118,16 @@ C
          ENDIF
          IF (IELEM.NE.NELEM+1) GOTO 35
          IF (FLAG) GOTO 30
-C
-C=======================================================================
-C POUR UN DEMI PLAN DE COUPE DONNE :      
-C      PROJECTION DES NOUVEAUX POINTS DE BORD
-C=======================================================================
-C
+!
+!=======================================================================
+! POUR UN DEMI PLAN DE COUPE DONNE :
+!      PROJECTION DES NOUVEAUX POINTS DE BORD
+!=======================================================================
+!
          IF (PROJEC) THEN
             A1 = 1.D0 / (DX*DX + DY*DY)
             A2 = A1 * (SOM(ISOM,1)*SOM(ISOM+1,2) -
-     *                 SOM(ISOM,2)*SOM(ISOM+1,1) )
+     &                 SOM(ISOM,2)*SOM(ISOM+1,1) )
             DO 40 IDP = 1,3
                DO 50 IELEM = 1,NELEM
                   IPOIN = IKLE(IELEM,IDP)
@@ -139,10 +139,10 @@ C
 50             CONTINUE
 40          CONTINUE
          ENDIF
-C
+!
 5     CONTINUE
-C
-C=======================================================================
-C
+!
+!=======================================================================
+!
       RETURN
       END
