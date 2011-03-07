@@ -12,72 +12,72 @@
 !
 !history  M. GONZALES DE LINARES
 !+        2002
-!+        
-!+   
+!+
+!+
 !
 !history  C.VILLARET
 !+        **/10/2003
-!+        
-!+   * READS KFROT, HOULE 
+!+
+!+   * READS KFROT, HOULE
 !
 !history  F. HUVELIN
 !+        **/12/2003
-!+        
-!+   * INITIALISES F90 TO FDM IF NOT IN THE STEERING FILE 
+!+
+!+   * INITIALISES F90 TO FDM IF NOT IN THE STEERING FILE
 !
 !history  CV
 !+        **/03/06
-!+        
-!+   ADDED NEW KEYWROD: TASS 
+!+
+!+   ADDED NEW KEYWROD: TASS
 !
 !history  JMH
 !+        11/04/2008
-!+        
-!+   DEBUG IS A KEYWORD: DEBUGGER 
+!+
+!+   DEBUG IS A KEYWORD: DEBUGGER
 !
 !history  CV+JMH
 !+        29/07/2008
-!+        
-!+   READS CBOR_CLASSE 
+!+
+!+   READS CBOR_CLASSE
 !
 !history  JMH
 !+        17/10/2008
-!+        
-!+   CHECKS NCSIZE (FOR CONSISTENCY WITH TELEMAC-2D WHEN COUPLING) 
+!+
+!+   CHECKS NCSIZE (FOR CONSISTENCY WITH TELEMAC-2D WHEN COUPLING)
 !
 !history  JMH
 !+        23/12/2008
-!+        
-!+   KEYWORDS FOR COUPLING WITH DREDGESIM 
+!+
+!+   KEYWORDS FOR COUPLING WITH DREDGESIM
 !
 !history  BD+JMH
 !+        09/04/2009
-!+        
-!+   MED FORMAT 
+!+
+!+   MED FORMAT
 !
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        03/11/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CODE           |---| 
-!| FILE_DESC      |---| 
-!| MOTCAR         |---| 
-!| NCAR           |---| 
-!| PATH           |---| 
+!| CODE           |---|
+!| FILE_DESC      |---|
+!| MOTCAR         |---|
+!| NCAR           |---|
+!| PATH           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC
@@ -442,7 +442,7 @@
          AVA0(K)  = MOTREA( ADRESS(2,258) + K-1 )
       ENDDO
       ELAY0       = MOTREA( ADRESS(2,259) )
-
+!
       ! ################## !
       ! LOGICAL KEYWORDS !
       ! ################## !
@@ -452,7 +452,7 @@
       ! SPHERICAL EQUATIONS HARD-CODED
       ! ----------------------------------
       SPHERI       = .FALSE.
-
+!
       ! COMPUTATION OF FALL VELOCITIES
       ! ------------------------------------------
       CALWC = .FALSE.
@@ -466,7 +466,7 @@
       ! IF TROUVE
       ! ~~~~~~~~~~~~~
       IF (TROUVE(2, 6).EQ.2) CALAC = .TRUE.
-
+!
       BILMA        = MOTLOG( ADRESS(3,  1) )
       PERMA        = MOTLOG( ADRESS(3,  2) )
       BANDEC       = MOTLOG( ADRESS(3,  3) )

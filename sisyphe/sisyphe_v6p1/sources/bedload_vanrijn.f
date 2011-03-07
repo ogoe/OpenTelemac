@@ -13,35 +13,35 @@
 !history  BUI MINH DUC
 !+        **/10/2001
 !+        V5P2
-!+   
+!+
 !
 !history  C. VILLARET
 !+        **/**/2004
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| DENS           |---| 
-!| DM             |---| 
-!| DSTAR          |---| 
-!| GRAV           |---| 
-!| MU             |---| 
-!| NPOIN          |---| 
-!| QSC            |---| 
-!| TETAP          |---| 
+!| AC             |---|
+!| DENS           |---|
+!| DM             |---|
+!| DSTAR          |---|
+!| GRAV           |---|
+!| MU             |---|
+!| NPOIN          |---|
+!| QSC            |---|
+!| TETAP          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_VANRIJN => BEDLOAD_VANRIJN
@@ -75,7 +75,7 @@
          ELSE
             T = (TETAP%R(I)-AC)/MAX(AC,1.D-06)
          ENDIF
-
+!
          ! ***************************** !
          ! II - BEDLOAD TRANSPORT RATE   !
          ! ***************************** !

@@ -20,70 +20,70 @@
 !history  E. PELTIER;C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
 !+        V5P1
-!+   
+!+
 !
 !history  B. MINH DUC
 !+        **/**/2002
 !+        V5P3
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        14/09/2004
 !+        V5P5
-!+   
+!+
 !
 !history  J.-M. HERVOUET
 !+        29/10/2007
 !+        V5P8
-!+   
+!+
 !
 !history  J.-M. HERVOUET
 !+        05/09/2009
 !+        V6P0
-!+   NEW METHOD 
+!+   NEW METHOD
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIMGLO         |---| 
-!| DT             |---| 
-!| EBOR           |---| 
-!| ENTET          |---| 
-!| FLODEL         |---| 
-!| FLULIM         |---| 
-!| GLOSEG         |---| 
+!| DIMGLO         |---|
+!| DT             |---|
+!| EBOR           |---|
+!| ENTET          |---|
+!| FLODEL         |---|
+!| FLULIM         |---|
+!| GLOSEG         |---|
 !| HZ             |<--| NEW AVAILABLE LAYER OF SEDIMENT
 !| HZN            |-->| OLD AVAILABLE LAYER OF SEDIMENT
-!| IELMT          |---| 
-!| KDIR           |---| 
-!| KENT           |---| 
-!| LIMTEC         |---| 
-!| MASK           |---| 
-!| MASKEL         |---| 
-!| MESH           |---| 
-!| MSK            |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
-!| NSEG           |---| 
-!| QSX            |---| 
-!| QSY            |---| 
-!| S              |---| 
-!| T1             |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T8             |---| 
-!| UNSV2D         |---| 
+!| IELMT          |---|
+!| KDIR           |---|
+!| KENT           |---|
+!| LIMTEC         |---|
+!| MASK           |---|
+!| MASKEL         |---|
+!| MESH           |---|
+!| MSK            |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
+!| NSEG           |---|
+!| QSX            |---|
+!| QSY            |---|
+!| S              |---|
+!| T1             |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T8             |---|
+!| UNSV2D         |---|
 !| ZFCL           |<--| ZFCL=HZ-HZN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

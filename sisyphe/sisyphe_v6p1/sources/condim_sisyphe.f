@@ -52,35 +52,35 @@
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/95
 !+        V5P3
-!+   
+!+
 !
-!history  
+!history
 !+        **/05/2006
-!+        
-!+   THE VARIABLES U AND V, H, MUST BE DEFINED; THE OTHER ONES ARE OPTIONAL 
+!+
+!+   THE VARIABLES U AND V, H, MUST BE DEFINED; THE OTHER ONES ARE OPTIONAL
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| ESOMT          |<->| TOTAL BED EVOLUTION
 !| H              |<->| WATER DEPTH
-!| HWR            |---| 
+!| HWR            |---|
 !| NPOIN          |-->| NUMBER OF 2D POINTS
 !| PMAREE         |-->| TIDAL PERIOD
 !| Q              |<->| FLOW RATE
-!| THETAWR        |---| 
-!| TWR            |---| 
+!| THETAWR        |---|
+!| TWR            |---|
 !| X,Y            |-->| COORDINATES
 !| Z              |<->| FREE SURFACE
 !| ZF             |<->| BED ELEVATION

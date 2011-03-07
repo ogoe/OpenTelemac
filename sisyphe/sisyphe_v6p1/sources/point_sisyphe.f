@@ -11,45 +11,45 @@
 !
 !history  C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
-!+        
-!+   
+!+
+!+
 !
 !history  C. MACHET
 !+        10/06/2002
-!+        
-!+   
+!+
+!+
 !
 !history  JMH
 !+        16/06/2008
-!+        
-!+   ADDED BOUNDARY_COLOUR 
+!+
+!+   ADDED BOUNDARY_COLOUR
 !
 !history  JMH
 !+        16/09/2009
-!+        
-!+   AVAIL(NPOIN,10,NSICLA) 
+!+
+!+   AVAIL(NPOIN,10,NSICLA)
 !
 !history  JMH
 !+        18/09/2009
 !+        V6P0
-!+   SEE AVAI AND LAYTHI 
+!+   SEE AVAI AND LAYTHI
 !
 !history  JMH
 !+        19/08/2010
 !+        V6P0
-!+   SEE MS_VASE (FOR MIXED SEDIMENTS) 
+!+   SEE MS_VASE (FOR MIXED SEDIMENTS)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,7 +59,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ LOCAL VARIABLES
       ! ------------------
       INTEGER :: I,K,NTR,IELM0,IELM1,IELBT,IELM0_SUB
@@ -101,7 +101,7 @@
       MXPTVS=> MESH%MXPTVS
       MXELVS=> MESH%MXELVS
       LV    => MESH%LV
-
+!
       ! ******************** !
       ! III - REAL ARRAYS    !
       ! ******************** !
@@ -324,17 +324,17 @@
       CALL BIEF_ALLVEC_IN_BLOCK(CTILD ,NSICLA,1,'CTILD ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(CST   ,NSICLA,1,'CST   ',IELMT,1,2,MESH)
       !================================================================!
-
+!
       ! ************* !
       ! VI - MATRICES !
       ! ************* !
-
+!
       !================================================================!
       CALL BIEF_ALLMAT(AM1_S,'AM1_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
       CALL BIEF_ALLMAT(AM2_S,'AM2_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
       CALL BIEF_ALLMAT(MBOR ,'MBOR  ',IELBT,IELBT,CFGBOR,'Q','Q',MESH) ! SUSPENSION BOUNDRAY MATRIX
       !================================================================!
-
+!
       ! ****************** !
       ! VII - OTHER ARRAYS !
       ! ****************** !

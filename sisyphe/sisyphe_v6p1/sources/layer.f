@@ -19,50 +19,50 @@
 !
 !history  MATTHIEU GONZALES DE LINARES
 !+        2002
-!+        
-!+   
+!+
+!+
 !
 !history  JMH
 !+        16/09/2009
-!+        
-!+   AVAIL(NPOIN,10,NSICLA) 
+!+
+!+   AVAIL(NPOIN,10,NSICLA)
 !
 !history  JMH
 !+        10/05/2010
 !+        V6P0
-!+   CASE WITH DEPOSITION REWRITTEN, TESTS CHANGED. 
+!+   CASE WITH DEPOSITION REWRITTEN, TESTS CHANGED.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---| 
+!| ACLADM         |---|
 !| AVAIL          |<--| SEDIMENT FRACTION FOR EACH LAYER, CLASS, POINT
-!| CONST_ALAYER   |---| 
-!| DTS            |---| 
+!| CONST_ALAYER   |---|
+!| DTS            |---|
 !| ELAY           |<--| ACTIVE LAYER THICKNESS FOR EACH POINT
-!| ELAY0          |---| 
-!| ES             |---| 
+!| ELAY0          |---|
+!| ES             |---|
 !| ESTRAT         |<--| ACTIVE STRATUM THICKNESS FOR EACH POINT
-!| ESTRATNEW      |---| 
-!| MASBAS         |---| 
+!| ESTRATNEW      |---|
+!| MASBAS         |---|
 !| NLAYER         |<--| NUMBER OF LAYER FOR EACH POINT
-!| NLAYNEW        |---| 
-!| NPOIN          |---| 
-!| NSICLA         |---| 
-!| VOLTOT         |---| 
-!| ZF             |---| 
+!| NLAYNEW        |---|
+!| NPOIN          |---|
+!| NSICLA         |---|
+!| VOLTOT         |---|
+!| ZF             |---|
 !| ZFCL_W         |-->| EVOLUTION FOR EACH SEDIMENT CLASS
-!| ZR             |---| 
+!| ZR             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

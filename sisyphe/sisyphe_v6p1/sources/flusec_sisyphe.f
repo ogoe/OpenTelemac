@@ -17,35 +17,35 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/12/2006
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHARR          |---| 
+!| CHARR          |---|
 !| CTRLSC         |-->| DONNEES SUR LES SECTIONS DE CONTROLE.
 !| DT             |-->| PAS DE TEMPS.
 !| H              |-->| HAUTEUR D'EAU
 !| IKLE           |-->| TABLEAUX DE CONNECTIVITE LOCAL-GLOBAL
 !| INFO           |-->| SI OUI : IMPRESSIONS.
-!| KNOGL          |---| 
+!| KNOGL          |---|
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
 !| NELEM          |-->| NOMBRE D'ELEMENTS.
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| QSXC           |---| 
-!| QSXS           |---| 
-!| QSYC           |---| 
-!| QSYS           |---| 
+!| QSXC           |---|
+!| QSXS           |---|
+!| QSYC           |---|
+!| QSYS           |---|
 !| SUSP           |-->| LOGIQUE INDIQUANT DE PRENDRE EN COMPTE
 !|                |   | LE BLOC DE TRACEURS EN SUSPENSION
 !| TPS            |-->| TEMPS

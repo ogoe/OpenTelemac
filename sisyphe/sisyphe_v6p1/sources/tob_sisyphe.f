@@ -16,25 +16,25 @@
 !
 !history  CV
 !+        **/04/05
-!+        
-!+   CORRECTION WHEN SISYPHE IS RUN ALONE: DO NOT MODIFY 
+!+
+!+   CORRECTION WHEN SISYPHE IS RUN ALONE: DO NOT MODIFY
 !
 !history  C. VILLARET (LNHE)
 !+        29/11/06
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| DIAMETRE MOYEN  DU SEDIMENT
@@ -44,15 +44,15 @@
 !| CODE           |-->| CALLING PROGRAM IN COUPLING
 !| FW             |<--| COEFFICIENT DE FROTTEMENT QUADRATIQUE DE LA HOULE
 !| GRAV           |-->| GRAVITE
-!| HMIN           |---| 
+!| HMIN           |---|
 !| HN             |-->| HAUTEUR D'EAU AU TEMPS N
 !| HOULE          |-->| PRISE EN COMPTE DE LA HOULE
 !| ICR            |-->| PREDICTEUR DE RIDE POUR LE FROTTEMENT DE PEAU
-!| KARMAN         |---| 
+!| KARMAN         |---|
 !| KFROT          |-->| LOI     DE FROTTEMENT
 !| KS             |<--| RUGOSITE TOTALE
 !| KSP            |<--| RUGOSITE DE PEAU
-!| KSPRATIO       |---| 
+!| KSPRATIO       |---|
 !| KSR            |<--| RUGOSITE DE RIDE
 !| KS_TEL         |<--| RUGOSITE TOTALE
 !| MU             |<--| RAPPORT ENTRE LA CONTRAINTE DE FROTTEMENT DE PEAU ET
@@ -64,7 +64,7 @@
 !| UNORM          |-->| INTENSITE DU COURANT
 !| VCE            |-->| VISCOSITE DE L'EAU
 !| XMVE,XMVS      |-->| MASSE VOLUMIQUE DE L'EAU, DU SEDIMENT
-!| ZERO           |---| 
+!| ZERO           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

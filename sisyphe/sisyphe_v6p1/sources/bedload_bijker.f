@@ -14,53 +14,53 @@
 !history  C. MACHET; T. BOULET; E. BEN SLAMA
 !+        26/11/2001
 !+        V5P1
-!+   
+!+
 !
 !history  C. VILLARET
 !+        10/03/2004
 !+        V5P4
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        **/12/2004
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BIJK           |---| 
-!| DENS           |---| 
-!| DM             |---| 
-!| GRAV           |---| 
-!| HN             |---| 
-!| HOULE          |---| 
-!| KARMAN         |---| 
-!| KSP            |---| 
-!| KSR            |---| 
-!| MU             |---| 
-!| NPOIN          |---| 
-!| QSC            |---| 
-!| QSS            |---| 
-!| T4             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| T9             |---| 
-!| TOB            |---| 
-!| TOBW           |---| 
-!| XMVE           |---| 
-!| XWC            |---| 
-!| ZERO           |---| 
+!| BIJK           |---|
+!| DENS           |---|
+!| DM             |---|
+!| GRAV           |---|
+!| HN             |---|
+!| HOULE          |---|
+!| KARMAN         |---|
+!| KSP            |---|
+!| KSR            |---|
+!| MU             |---|
+!| NPOIN          |---|
+!| QSC            |---|
+!| QSS            |---|
+!| T4             |---|
+!| T7             |---|
+!| T8             |---|
+!| T9             |---|
+!| TOB            |---|
+!| TOBW           |---|
+!| XMVE           |---|
+!| XWC            |---|
+!| ZERO           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_BIJKER => BEDLOAD_BIJKER
@@ -78,7 +78,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T4
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T7, T8, T9
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: QSC, QSS
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER                      :: I

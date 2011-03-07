@@ -15,40 +15,40 @@
 !history  C. VILLARET
 !+        14/04/2004
 !+        V5P5
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        04/01/2005
 !+        V5P6
-!+   
+!+
 !
 !history  JMH
 !+        13/06/2008
-!+        
-!+   FORMULATION OPTIMISED WITH AUX 
+!+
+!+   FORMULATION OPTIMISED WITH AUX
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| ACLADM         |-->| 
-!| CSTAEQ         |---| 
-!| GRAV           |-->| 
-!| NPOIN          |-->| 
-!| TAUP           |---| 
-!| XMVE           |-->| 
-!| XMVS           |-->| 
-!| ZERO           |---| 
+!| AC             |---|
+!| ACLADM         |-->|
+!| CSTAEQ         |---|
+!| GRAV           |-->|
+!| NPOIN          |-->|
+!| TAUP           |---|
+!| XMVE           |-->|
+!| XMVS           |-->|
+!| ZERO           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_FREDSOE => SUSPENSION_FREDSOE
@@ -56,7 +56,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, TAUP
@@ -64,7 +64,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: GRAV, XMVE, XMVS
       DOUBLE PRECISION, INTENT(IN)    :: ZERO,AC
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: CSTAEQ
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER            :: I

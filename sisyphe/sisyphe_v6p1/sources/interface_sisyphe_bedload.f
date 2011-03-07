@@ -19,7 +19,7 @@
              !  INTERFACE FOR THE SISYPHE SUBROUTINE   !
              !         FOR BEDLOAD TRANSPORT           !
              ! ======================================= !
-
+!
 ! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
 !**********************************************************************C
 !                                                                      C
@@ -54,10 +54,10 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: QSC, QSS
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_BAILARD
-
+!
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_BIJKER
       !----------------------------------------------------------------!
@@ -78,8 +78,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_BIJKER
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_CALCDW
       !----------------------------------------------------------------!
@@ -94,19 +94,19 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_CALCDW
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_DIBWAT !
       !----------------------------------------------------------------!
-
+!
      &  (U2D,V2D,UCMOY, CF, TOB, TOBW, UW, TW, FW, THETAW, NPOIN,
      &   XMVE, DENS, GRAV, DM, XWC, PI, ALPHAW, T2, T3, UCW, UCN,
      &   UW1, UW2, TW1, TW2, THETAC, FCW, QSC,HOULE)
-
+!
       USE BIEF_DEF
       IMPLICIT NONE
-
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D,V2D,UCMOY, CF, TOB, TOBW
       TYPE(BIEF_OBJ),   INTENT(IN)    :: UW, TW, FW
       TYPE(BIEF_OBJ),   INTENT(IN)    :: THETAW
@@ -122,8 +122,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_DIBWAT
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_DIFFIN
       !----------------------------------------------------------------!
@@ -143,8 +143,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_DIFFIN
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_DIRECTION
       !----------------------------------------------------------------!
@@ -159,21 +159,21 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_DIRECTION
       !================================================================!
-
-
-
+!
+!
+!
       !================================================================!
         SUBROUTINE BEDLOAD_EFFPNT !
       !----------------------------------------------------------------!
-
+!
      &(MASKEL,LIQBOR,S,ZF,U2D,V2D,UCMOY,NPOIN,NPTFR,IELMT,
      & KENT,BETA,PI,MSK,MESH,DZFDX,DZFDY,EPSIX,EPSIY,
      & COEF,CALFA,SALFA,SLOPEFF,PHISED,DEVIA,BETA2,
      & TOB,XMVS,XMVE,DM,GRAV,UNSV2D)
-
+!
       USE BIEF_DEF
       IMPLICIT NONE
-
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL,LIQBOR,S,UNSV2D
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ZF,U2D,V2D,UCMOY,TOB
       INTEGER,          INTENT(IN)    :: NPOIN,NPTFR,IELMT,KENT
@@ -185,12 +185,12 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: DZFDX,DZFDY
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: EPSIX,EPSIY
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: COEF,CALFA,SALFA
-!      
+!
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_EFFPNT
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_EINST
       !----------------------------------------------------------------!
@@ -205,8 +205,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_EINST
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_ENGEL
       !----------------------------------------------------------------!
@@ -221,8 +221,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_ENGEL
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_ENGEL_OLD
       !----------------------------------------------------------------!
@@ -230,7 +230,7 @@
       !----------------------------------------------------------------!
       USE BIEF_DEF
       IMPLICIT NONE
-
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TETAP, CF
       INTEGER,          INTENT(IN)    :: NPOIN
       DOUBLE PRECISION, INTENT(IN)    :: GRAV, DM, DENS
@@ -239,12 +239,12 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_ENGEL_OLD
       !================================================================!
-
-
+!
+!
       !================================================================!
         SUBROUTINE BEDLOAD_EVOL !
       !----------------------------------------------------------------!
-
+!
      &(HN,Q,S,ELAY,ACLADM, AVA,COEFPN,CALFA,SALFA,LIMTEC,EBOR,
      & MASKEL,MASK,MASBAS,UNSV2D,DEBUG,NPOIN,NPTFR,
      & IELMT,KENT,KDIR,KDDL,LOADMETH,
@@ -273,23 +273,23 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8, T9, T10, T11, T12, T13
       DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH, QSX, QSY, ZFCL
-
+!
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_EVOL
       !================================================================!
-
-
+!
+!
       !============================!
         SUBROUTINE BEDLOAD_FORMULA !
       !----------------------------------------------------------------!
-
+!
      &  (U2D, V2D,UCMOY, HN, CF, MU,TOB, TOBW, UW, TW, THETAW, FW,
      &   ACLADM, UNLADM,KSP,KSR, AVA,  NPOIN, ICF, HIDFAC, XMVS, XMVE,
      &   DM, GRAV, VCE, XKV, HMIN, XWC, D90, KARMAN, ZERO,
      &   PI, SUSP, AC, HIDING, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,
      &   T11,CFP, QSC, QSS,IELMT,SECCURRENT,SLOPEFF,
      &   COEFPN, BIJK,HOULE)
-
+!
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D, V2D, UCMOY,HN, CF, TOB
@@ -309,12 +309,12 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) ::  COEFPN
       INTEGER,          INTENT(IN)    :: SLOPEFF
       DOUBLE PRECISION, INTENT (IN)   :: BIJK,AVA(NPOIN)
-
+!
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_FORMULA
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_HIDING_FACTOR
       !----------------------------------------------------------------!
@@ -329,8 +329,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_HIDING_FACTOR
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_HUNZ_MEYER
       !----------------------------------------------------------------!
@@ -348,8 +348,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_HUNZ_MEYER
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_INTERACT
       !----------------------------------------------------------------!
@@ -365,12 +365,12 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_INTERACT
       !================================================================!
-
-
+!
+!
       !================================================================!
         SUBROUTINE BEDLOAD_MAIN !
       !----------------------------------------------------------------!
-
+!
      &  (ACLADM,KSP,KSR, MASBAS,UNSV2D,CF,EBOR,FW,HN,LIQBOR,
      &   MASK, MASKEL, MASKPT, Q, QBOR, U2D,
      &   V2D, S,UNLADM,UW,THETAW,MU,TOB,TOBW,TW,ZF,
@@ -389,10 +389,10 @@
      &   ENTETS, SECCURRENT, SLOPEFF,
      &   PHISED, DEVIA, BETA2, BIJK,SEDCO,HOULE,
      &   U3D,V3D,CODE)
-
+!
       USE BIEF_DEF
       IMPLICIT NONE
-
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, KSR,MASBAS,UNSV2D
       TYPE(BIEF_OBJ),   INTENT(IN)    :: CF,FW,KSP,HN,LIQBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASK, MASKEL, MASKPT
@@ -439,21 +439,21 @@
 !RK
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
-      
+!
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_MAIN
       !================================================================!
-
-
+!
+!
       !================================================================!
         SUBROUTINE BEDLOAD_MEYER !
       !----------------------------------------------------------------!
      &  (TETAP, HIDING, HIDFAC, DENS, GRAV, DM, AC,
      &   ACP, QSC, SLOPEFF, COEFPN)
-
+!
       USE BIEF_DEF
       IMPLICIT NONE
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       ! -------------------
@@ -465,16 +465,16 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_MEYER
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_NEQ_BED_LOAD !
       !----------------------------------------------------------------!
-
+!
      &  (HN, Q, S, CALFA, SALFA, MASK,LOADMETH, NPOIN, IELMT,
      &   LS0, DM, XMVE, XMVS, GRAV, VCE, D90, MESH, QSLO, T1, T2, T3,
      &   T4, T5, T6, T7, T8, T9, T10,MSK,MASKEL)
-
+!
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE (BIEF_OBJ),   INTENT(IN)    :: HN, Q, S, CALFA, SALFA, MASK
@@ -490,8 +490,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_NEQ_BED_LOAD
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_NERBED_VF   !
       !----------------------------------------------------------------!
@@ -511,8 +511,8 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_NERBED_VF
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_POSTREATMENT   !
       !----------------------------------------------------------------!
@@ -537,12 +537,12 @@
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_POSTREATMENT
       !================================================================!
-
-
+!
+!
       !================================================================!
         SUBROUTINE BEDLOAD_SOLIDISCHARGE !
       !----------------------------------------------------------------!
-
+!
      &  (MESH, U2D, V2D, UNORM, HN,  TW, UW, MU,TOB, CF, TOBW, FW,
      &   THETAW, AVA,  MASKPT, MASKEL, ACLADM, UNLADM,KSP, KSR,LIQBOR,
      &   QBOR, DEBUG, NPOIN, NPTFR, IELMT, ICF, KENT, OPTBAN,
@@ -555,7 +555,7 @@
      &   U3D,V3D,CODE)
       USE BIEF_DEF
       IMPLICIT NONE
-
+!
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D, V2D,  HN, TW, UW
       TYPE(BIEF_OBJ),   INTENT(IN)    :: UNORM,MU,TOB
@@ -579,16 +579,16 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ZF_C,S,UNSV2D
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: CALFA,SALFA,COEFPN
       DOUBLE PRECISION, INTENT(IN)    :: BIJK,AVA(NPOIN)
-C
+!
 !RK
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
-      
+!
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOLIDISCHARGE
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_SOULSBY !
       !----------------------------------------------------------------!
@@ -604,8 +604,8 @@ C
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOULSBY
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_SOLVS_FE   !
       !----------------------------------------------------------------!
@@ -630,8 +630,8 @@ C
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOLVS_FE
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_SOLVS_VF   !
       !----------------------------------------------------------------!
@@ -650,26 +650,26 @@ C
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOLVS_VF
       !================================================================!
-
-
+!
+!
       !================================================================!
       SUBROUTINE BEDLOAD_VANRIJN
      &  (TOB,MU, NPOIN, DM, DENS, GRAV, DSTAR, AC, QSC)
-
+!
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)  :: TOB,MU
       INTEGER,          INTENT(IN)  :: NPOIN
       DOUBLE PRECISION, INTENT(IN)  :: DM, DENS, GRAV, DSTAR, AC
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC
-
+!
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_VANRIJN
       !================================================================!
-
-
+!
+!
 !======================================================================!
 !======================================================================!
-
+!
       END INTERFACE
       END MODULE INTERFACE_SISYPHE_BEDLOAD

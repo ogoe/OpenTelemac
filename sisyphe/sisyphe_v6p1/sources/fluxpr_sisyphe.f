@@ -19,38 +19,38 @@
 !history  J-M HERVOUET (LNHE)
 !+        27/12/2006
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHARR          |---| 
+!| CHARR          |---|
 !| CTRLSC         |-->| NUMBERS OF POINTS IN THE CONTROL SECTIONS
 !| FLX            |-->| FLUXES THROUGH CONTROL SECTIONS
-!| FLXC           |---| 
-!| FLXS           |---| 
+!| FLXC           |---|
+!| FLXS           |---|
 !| INFO           |-->| IF YES : INFORMATION IS PRINTED
-!| NCSIZE         |---| 
+!| NCSIZE         |---|
 !| NSEC           |-->| NUMBER OF CONTROL SECTIONS
-!| NSEG           |---| 
-!| SUSP           |---| 
-!| TPS            |---| 
+!| NSEG           |---|
+!| SUSP           |---|
+!| TPS            |---|
 !| VOLNEG         |-->| CUMULATED NEGATIVE VOLUME THROUGH SECTIONS
-!| VOLNEGC        |---| 
-!| VOLNEGS        |---| 
+!| VOLNEGC        |---|
+!| VOLNEGS        |---|
 !| VOLPOS         |-->| CUMULATED POSITIVE VOLUME THROUGH SECTIONS
-!| VOLPOSC        |---| 
-!| VOLPOSS        |---| 
+!| VOLPOSC        |---|
+!| VOLPOSS        |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY: IPID

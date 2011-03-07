@@ -13,33 +13,33 @@
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
 !+        V5P1
-!+   
+!+
 !
 !history  C.VILLARET
 !+        **/10/2003
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DENS           |---| 
-!| DM             |---| 
-!| DSTAR          |---| 
-!| GRAV           |---| 
-!| NPOIN          |---| 
-!| QSC            |---| 
-!| TETAP          |---| 
+!| DENS           |---|
+!| DM             |---|
+!| DSTAR          |---|
+!| GRAV           |---|
+!| NPOIN          |---|
+!| QSC            |---|
+!| TETAP          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,
@@ -48,25 +48,25 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TETAP
       INTEGER,          INTENT(IN)    :: NPOIN
       DOUBLE PRECISION, INTENT(IN)    :: DENS, GRAV, DM, DSTAR
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: QSC
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER          :: I
       DOUBLE PRECISION :: CEINST
-
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
-
+!
       ! **************************** !
       ! II - BEDLOAD TRANSPORT       ! (_IMP_)
       ! **************************** !

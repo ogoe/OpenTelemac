@@ -13,43 +13,43 @@
 !
 !history  C. VILLARET (LNHE)
 !+        01/08/2006
-!+        
-!+   
+!+
+!+
 !
-!history  
+!history
 !+        02/05/2008
 !+        V6P0
-!+   ADDED ALPHA IN ARGUMENT, TO KEEP A RECORD OF THE 
+!+   ADDED ALPHA IN ARGUMENT, TO KEEP A RECORD OF THE
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHA          |---| 
-!| HMIN           |---| 
-!| HN             |---| 
-!| KARMAN         |---| 
-!| KSR            |---| 
+!| ALPHA          |---|
+!| HMIN           |---|
+!| HN             |---|
+!| KARMAN         |---|
+!| KSR            |---|
 !| NPOIN          |-->| NUMBER OF POINTS
-!| T1             |---| 
+!| T1             |---|
 !| TOB            |-->| SHEAR STRESS
-!| U2D            |---| 
-!| UCONV          |---| 
-!| V2D            |---| 
-!| VCONV          |---| 
+!| U2D            |---|
+!| UCONV          |---|
+!| V2D            |---|
+!| VCONV          |---|
 !| XMVE           |-->| WATER DENSITY
-!| XWC            |---| 
-!| ZERO           |---| 
-!| ZREF           |---| 
+!| XWC            |---|
+!| ZERO           |---|
+!| ZREF           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

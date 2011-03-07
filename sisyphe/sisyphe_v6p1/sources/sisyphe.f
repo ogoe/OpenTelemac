@@ -15,53 +15,53 @@
 !brief
 !
 !history  C. LENORMANT; J.-M. HERVOUET; S. HADJI; C. MACHET; C. VILLARET
-!+        
+!+
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF_TEL         |---| 
-!| CHARR_TEL      |---| 
+!| CF_TEL         |---|
+!| CHARR_TEL      |---|
 !| CODE           |---| NAME OF CALLING PROGRAMME
-!| CONSTFLOW      |---| 
-!| DM1            |---| 
-!| DT_TEL         |---| 
-!| FLBOR_TEL      |---| 
+!| CONSTFLOW      |---|
+!| DM1            |---|
+!| DT_TEL         |---|
+!| FLBOR_TEL      |---|
 !| GRAFCOUNT      |-->| PERIODE DE SORTIE GRAPHIQUE
-!| HN_TEL         |---| 
-!| H_TEL          |-->| 
+!| HN_TEL         |---|
+!| H_TEL          |-->|
 !| LISTCOUNT      |-->| PERIODE DE SORTIE LISTING
 !| LOOPCOUNT      |-->| NUMERO DE L'ITERATION
-!| NSIS_CFD       |---| 
+!| NSIS_CFD       |---|
 !| PART           |-->| SI -1, PAS DE COUPLAGE : ON PASSE TOUTE LA
 !|                |   | SUBROUTINE. SINON, INDIQUE LA PARTIE DE LA
 !|                |   | SUBROUTINE DANS LAQUELLE ON PASSE
 !| PERICOU        |-->| COUPLING PERIOD
-!| SISYPHE_CFD    |---| 
-!| SOLSYS         |---| 
-!| SUSP_TEL       |---| 
+!| SISYPHE_CFD    |---|
+!| SOLSYS         |---|
+!| SUSP_TEL       |---|
 !| TELNIT         |-->| NOMBRE D'ITERATION
 !| T_TEL          |-->| CURRENT TIME IN CALLING PROGRAMME
 !| U3D,V3D        |-->| 3D VELOCITY SENT BY TELEMAC 3D
-!| UCONV_TEL      |---| 
+!| UCONV_TEL      |---|
 !| UETCAR         |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
-!| U_TEL          |-->| 
-!| VCONV_TEL      |---| 
-!| VISC_TEL       |---| 
+!| U_TEL          |-->|
+!| VCONV_TEL      |---|
+!| VISC_TEL       |---|
 !| V_TEL          |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
-!| ZCONV          |---| 
+!| ZCONV          |---|
 !| ZF_SIS         |<--| FOND ENVOYE A TELEMAC 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

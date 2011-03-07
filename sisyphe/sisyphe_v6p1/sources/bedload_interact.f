@@ -14,36 +14,36 @@
 !history  C. VILLARET (LNHE)
 !+        01/10/2003
 !+        V5P7
-!+   
+!+
 !
 !history  C. VILLARET (LNHE)
 !+        23/09/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHAW         |---| 
-!| CF             |---| 
-!| FCW            |---| 
-!| FW             |---| 
-!| NPOIN          |---| 
-!| TOB            |---| 
-!| TOBW           |---| 
-!| UCMOY          |---| 
-!| UW             |---| 
-!| XMVE           |---| 
+!| ALPHAW         |---|
+!| CF             |---|
+!| FCW            |---|
+!| FW             |---|
+!| NPOIN          |---|
+!| TOB            |---|
+!| TOBW           |---|
+!| UCMOY          |---|
+!| UW             |---|
+!| XMVE           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_INTERACT => BEDLOAD_INTERACT

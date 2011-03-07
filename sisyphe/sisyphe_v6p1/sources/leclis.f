@@ -16,56 +16,56 @@
 !+               IDENTIFYING THE DIFFERENCES : COPY FOR THE CLASSES ?
 !
 !history  C. LENORMANT; C. MACHET; JACEK.JANKOWSKI@BAW.DE
-!+        
-!+        
-!+   
+!+
+!+
+!+
 !
 !history  JMH
 !+        16/06/2008
-!+        
-!+   ADDED ARGUMENT BOUNDARY_COLOUR 
+!+
+!+   ADDED ARGUMENT BOUNDARY_COLOUR
 !
 !history  JMH
 !+        12/08/2008
-!+        
-!+   READS NHALO AND IFAPAR (CHARACTERISTICS IN PARALLEL MODE) 
+!+
+!+   READS NHALO AND IFAPAR (CHARACTERISTICS IN PARALLEL MODE)
 !
 !history  JMH
 !+        01/10/2008
 !+        V5P9
-!+   CORRECTED IFAPAR (FINITE VOLUME IN PARALLEL MODE) 
+!+   CORRECTED IFAPAR (FINITE VOLUME IN PARALLEL MODE)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AFBOR          |---| 
-!| BFBOR          |---| 
-!| BOUNDARY_COLOUR|---| 
+!| AFBOR          |---|
+!| BFBOR          |---|
+!| BOUNDARY_COLOUR|---|
 !| EBOR           |<--| EVOLUTION AUX BORDS
-!| ISEG           |---| 
+!| ISEG           |---|
 !| KENT           |-->| TYPE DE CONDITION LIMITE D'ENTREE.
 !| LIEBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN TEMPERA-
 !|                |   | TURE POUR LES POINTS DE BORD.
-!| MESH           |---| 
-!| NACHB          |---| 
+!| MESH           |---|
+!| NACHB          |---|
 !| NBOR           |<--| ADRESSES DES POINTS DE BORD.
 !| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NSICLA         |---| 
-!| NUMLIQ         |---| 
+!| NSICLA         |---|
+!| NUMLIQ         |---|
 !| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
-!| XSEG           |---| 
-!| YSEG           |---| 
+!| XSEG           |---|
+!| YSEG           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

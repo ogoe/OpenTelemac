@@ -16,53 +16,53 @@
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---| 
-!| BETA2          |---| 
-!| CALFA          |---| 
-!| COEF           |---| 
-!| CTETA          |---| 
-!| DEVIA          |---| 
-!| DM             |---| 
-!| DZFDX          |---| 
-!| DZFDY          |---| 
-!| GRAV           |---| 
-!| IELMT          |---| 
-!| KENT           |---| 
-!| LIQBOR         |---| 
-!| MASKEL         |---| 
-!| MESH           |---| 
-!| MSK            |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
-!| PHISED         |---| 
-!| PI             |---| 
-!| S              |---| 
-!| SALFA          |---| 
-!| SLOPEFF        |---| 
-!| STETA          |---| 
-!| TOB            |---| 
-!| U2D            |---| 
-!| UCMOY          |---| 
-!| UNSV2D         |---| 
-!| V2D            |---| 
-!| XMVE           |---| 
-!| XMVS           |---| 
-!| ZF             |---| 
+!| BETA           |---|
+!| BETA2          |---|
+!| CALFA          |---|
+!| COEF           |---|
+!| CTETA          |---|
+!| DEVIA          |---|
+!| DM             |---|
+!| DZFDX          |---|
+!| DZFDY          |---|
+!| GRAV           |---|
+!| IELMT          |---|
+!| KENT           |---|
+!| LIQBOR         |---|
+!| MASKEL         |---|
+!| MESH           |---|
+!| MSK            |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
+!| PHISED         |---|
+!| PI             |---|
+!| S              |---|
+!| SALFA          |---|
+!| SLOPEFF        |---|
+!| STETA          |---|
+!| TOB            |---|
+!| U2D            |---|
+!| UCMOY          |---|
+!| UNSV2D         |---|
+!| V2D            |---|
+!| XMVE           |---|
+!| XMVS           |---|
+!| ZF             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_EFFPNT => BEDLOAD_EFFPNT
@@ -70,7 +70,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL,LIQBOR,S,UNSV2D
@@ -84,7 +84,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: DZFDX, DZFDY
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: CTETA,STETA
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: COEF, CALFA, SALFA
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER          :: I, K

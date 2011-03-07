@@ -19,30 +19,30 @@
 !
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
-!+        
-!+   
+!+
+!+
 !
 !history  C. MACHET
 !+        07/06/2002
-!+        
-!+   
+!+
+!+
 !
 !history  CV
 !+        19/06/2008
 !+        V5P9
-!+   TAKES INTO ACCOUNT CBOR_VASE AND CBOR_SABLE 
+!+   TAKES INTO ACCOUNT CBOR_VASE AND CBOR_SABLE
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINT

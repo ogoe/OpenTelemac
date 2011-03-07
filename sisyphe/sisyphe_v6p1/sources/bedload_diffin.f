@@ -15,42 +15,42 @@
 !history  FRANCOIS MENARD (PLACEMENT @ LNHE)
 !+        17/08/2004
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CLT            |---| 
-!| KDDL           |---| 
-!| KDIR           |---| 
-!| KENT           |---| 
-!| KINC           |---| 
-!| KLOG           |---| 
-!| KNEU           |---| 
-!| KP1BOR         |---| 
-!| KSORT          |---| 
-!| LIMTRA         |---| 
-!| LITBOR         |---| 
-!| MASKEL         |---| 
-!| MASKTR         |---| 
-!| MSK            |---| 
-!| NBOR           |---| 
-!| NELBOR         |---| 
-!| NPTFR          |---| 
-!| U              |---| 
-!| V              |---| 
-!| XNEBOR         |---| 
-!| YNEBOR         |---| 
+!| CLT            |---|
+!| KDDL           |---|
+!| KDIR           |---|
+!| KENT           |---|
+!| KINC           |---|
+!| KLOG           |---|
+!| KNEU           |---|
+!| KP1BOR         |---|
+!| KSORT          |---|
+!| LIMTRA         |---|
+!| LITBOR         |---|
+!| MASKEL         |---|
+!| MASKTR         |---|
+!| MSK            |---|
+!| NBOR           |---|
+!| NELBOR         |---|
+!| NPTFR          |---|
+!| U              |---|
+!| V              |---|
+!| XNEBOR         |---|
+!| YNEBOR         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_DIFFIN => BEDLOAD_DIFFIN
@@ -58,7 +58,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ), INTENT(IN)    :: U, V, NBOR, XNEBOR, YNEBOR
@@ -68,7 +68,7 @@
       LOGICAL,        INTENT(IN)    :: MSK
       TYPE(BIEF_OBJ), INTENT(INOUT) :: CLT
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: LITBOR, MASKTR, LIMTRA
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER            :: K, K1, K2
@@ -77,7 +77,7 @@
       INTEGER, PARAMETER :: DDL = 2
       INTEGER, PARAMETER :: NEU = 3
       INTEGER, PARAMETER :: OND = 4
-
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
@@ -106,7 +106,7 @@
             IF (USCALN <= 0.D0) CLT%I(K) = KENT
          ENDIF
       ENDDO
-
+!
       ! **************************************************************** !
       ! II - MASKTR ARRAY DEFINED AS A FUNCTION OF CLT                   ! (_IMP_)
       !      EQUALS 1 FOR A SEGMENT OF NEUMANN TYPE, AND 0 OTHERWISE     ! (_IMP_)
@@ -140,7 +140,7 @@
             CALL PLANTE(1)
          ENDIF
       ENDDO
-
+!
       ! *********************** !
       ! III - POTENTIAL MASKING !
       ! *********************** !
@@ -153,7 +153,7 @@
           MASKTR%ADR(OND)%P%R(K1) = MASKTR%ADR(OND)%P%R(K1)*C
         ENDDO
       ENDIF
-
+!
       ! ************************************************************** !
       ! IV - FROM PHYSICAL CONDITION TO TECHNICAL CONDITIONS           !
       ! ************************************************************** !
@@ -184,7 +184,7 @@
 102   FORMAT(' DIFFIN_SISYPHE: UNEXPECTED CASE')
 12    FORMAT(' DIFFIN_SISYPHE : POINT ',1I8,' LITBOR= ',1I8,' ?')
       !----------------------------------------------------------------!
-
+!
 !======================================================================!
 !======================================================================!
       RETURN

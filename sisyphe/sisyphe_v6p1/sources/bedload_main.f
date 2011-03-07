@@ -29,147 +29,147 @@
 !
 !history  F. HUVELIN
 !+        14/09/2004
-!+        
-!+   
+!+
+!+
 !
 !history  JMH
 !+        21/12/2006
 !+        V6P0
-!+   BEDLOAD_TIMESTEP NO LONGER EXISTS 
+!+   BEDLOAD_TIMESTEP NO LONGER EXISTS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| ACLADM         |---| 
-!| AT0            |---| 
-!| AVAIL          |---| 
-!| BETA           |---| 
-!| BETA2          |---| 
-!| BIJK           |---| 
-!| BREACH         |---| 
-!| CALFA          |---| 
-!| CF             |---| 
-!| CODE           |---| 
-!| COEFPN         |---| 
-!| CONST_ALAYER   |---| 
-!| DEBUG          |---| 
-!| DEVIA          |---| 
-!| DTS            |---| 
-!| DZF_GF         |---| 
-!| EBOR           |---| 
-!| ELAY           |---| 
-!| ELAY0          |---| 
-!| ENTET          |---| 
-!| ENTETS         |---| 
-!| FD90           |---| 
-!| FDM            |---| 
-!| FRACSED_GF     |---| 
-!| FW             |---| 
-!| GRAV           |---| 
-!| HIDFAC         |---| 
-!| HIDI           |---| 
-!| HIDING         |---| 
-!| HMIN           |---| 
-!| HN             |---| 
-!| HOULE          |---| 
-!| ICF            |---| 
-!| IELMT          |---| 
-!| ISOUS          |---| 
-!| IT1            |---| 
-!| KARMAN         |---| 
-!| KDDL           |---| 
-!| KDIR           |---| 
-!| KENT           |---| 
-!| KINC           |---| 
-!| KLOG           |---| 
-!| KNEU           |---| 
-!| KSORT          |---| 
-!| KSP            |---| 
-!| KSR            |---| 
-!| LCONDIS        |---| 
-!| LGRAFED        |---| 
-!| LIEBOR         |---| 
-!| LIMTEC         |---| 
-!| LIQBOR         |---| 
-!| LOADMETH       |---| 
-!| LS0            |---| 
-!| LT             |---| 
-!| MASK           |---| 
-!| MASKEL         |---| 
-!| MASKPT         |---| 
-!| MASKTR         |---| 
-!| MESH           |---| 
-!| MSK            |---| 
-!| MU             |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
-!| NSICLA         |---| 
-!| NSOUS          |---| 
-!| OPTBAN         |---| 
-!| PHISED         |---| 
-!| PI             |---| 
-!| Q              |---| 
-!| QBOR           |---| 
-!| QSCLXC         |---| 
-!| QSCLYC         |---| 
-!| QSCL_C         |---| 
-!| QSCL_S         |---| 
-!| QSXC           |---| 
-!| QSYC           |---| 
-!| QS_C           |---| 
-!| S              |---| 
-!| SALFA          |---| 
-!| SECCURRENT     |---| 
-!| SEDCO          |---| 
-!| SLOPEFF        |---| 
-!| SUSP           |---| 
-!| T1             |---| 
-!| T10            |---| 
-!| T11            |---| 
-!| T12            |---| 
-!| T13            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| T9             |---| 
-!| THETAW         |---| 
-!| TOB            |---| 
-!| TOBW           |---| 
-!| TW             |---| 
-!| U2D            |---| 
-!| U3D            |---| 
-!| UNLADM         |---| 
-!| UNORM          |---| 
-!| UNSV2D         |---| 
-!| UW             |---| 
-!| V2D            |---| 
-!| V2DPAR         |---| 
-!| V3D            |---| 
-!| VCE            |---| 
-!| VF             |---| 
-!| XKV            |---| 
-!| XMVE           |---| 
-!| XMVS           |---| 
-!| XWC            |---| 
-!| ZERO           |---| 
-!| ZF             |---| 
-!| ZFCL_C         |---| 
-!| ZF_C           |---| 
+!| AC             |---|
+!| ACLADM         |---|
+!| AT0            |---|
+!| AVAIL          |---|
+!| BETA           |---|
+!| BETA2          |---|
+!| BIJK           |---|
+!| BREACH         |---|
+!| CALFA          |---|
+!| CF             |---|
+!| CODE           |---|
+!| COEFPN         |---|
+!| CONST_ALAYER   |---|
+!| DEBUG          |---|
+!| DEVIA          |---|
+!| DTS            |---|
+!| DZF_GF         |---|
+!| EBOR           |---|
+!| ELAY           |---|
+!| ELAY0          |---|
+!| ENTET          |---|
+!| ENTETS         |---|
+!| FD90           |---|
+!| FDM            |---|
+!| FRACSED_GF     |---|
+!| FW             |---|
+!| GRAV           |---|
+!| HIDFAC         |---|
+!| HIDI           |---|
+!| HIDING         |---|
+!| HMIN           |---|
+!| HN             |---|
+!| HOULE          |---|
+!| ICF            |---|
+!| IELMT          |---|
+!| ISOUS          |---|
+!| IT1            |---|
+!| KARMAN         |---|
+!| KDDL           |---|
+!| KDIR           |---|
+!| KENT           |---|
+!| KINC           |---|
+!| KLOG           |---|
+!| KNEU           |---|
+!| KSORT          |---|
+!| KSP            |---|
+!| KSR            |---|
+!| LCONDIS        |---|
+!| LGRAFED        |---|
+!| LIEBOR         |---|
+!| LIMTEC         |---|
+!| LIQBOR         |---|
+!| LOADMETH       |---|
+!| LS0            |---|
+!| LT             |---|
+!| MASK           |---|
+!| MASKEL         |---|
+!| MASKPT         |---|
+!| MASKTR         |---|
+!| MESH           |---|
+!| MSK            |---|
+!| MU             |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
+!| NSICLA         |---|
+!| NSOUS          |---|
+!| OPTBAN         |---|
+!| PHISED         |---|
+!| PI             |---|
+!| Q              |---|
+!| QBOR           |---|
+!| QSCLXC         |---|
+!| QSCLYC         |---|
+!| QSCL_C         |---|
+!| QSCL_S         |---|
+!| QSXC           |---|
+!| QSYC           |---|
+!| QS_C           |---|
+!| S              |---|
+!| SALFA          |---|
+!| SECCURRENT     |---|
+!| SEDCO          |---|
+!| SLOPEFF        |---|
+!| SUSP           |---|
+!| T1             |---|
+!| T10            |---|
+!| T11            |---|
+!| T12            |---|
+!| T13            |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| T9             |---|
+!| THETAW         |---|
+!| TOB            |---|
+!| TOBW           |---|
+!| TW             |---|
+!| U2D            |---|
+!| U3D            |---|
+!| UNLADM         |---|
+!| UNORM          |---|
+!| UNSV2D         |---|
+!| UW             |---|
+!| V2D            |---|
+!| V2DPAR         |---|
+!| V3D            |---|
+!| VCE            |---|
+!| VF             |---|
+!| XKV            |---|
+!| XMVE           |---|
+!| XMVS           |---|
+!| XWC            |---|
+!| ZERO           |---|
+!| ZF             |---|
+!| ZFCL_C         |---|
+!| ZF_C           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -178,7 +178,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, KSR,V2DPAR,UNSV2D

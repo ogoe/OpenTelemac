@@ -14,48 +14,48 @@
 !history  M. GONZALES DE LINARES
 !+        07/05/2002
 !+        V5P3
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        14/09/2004
-!+        
-!+   
+!+
+!+
 !
 !history  JMH
 !+        31/01/2008
 !+        V6P0
-!+   CORRECTED INITIALISATION ERROR FOR T1 AND T2 
+!+   CORRECTED INITIALISATION ERROR FOR T1 AND T2
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AVA            |---| 
-!| BREACH         |---| 
-!| DT             |---| 
-!| ELAY           |---| 
-!| KSORT          |---| 
-!| LIEBOR         |---| 
-!| MESH           |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
-!| NSEG           |---| 
-!| QS             |---| 
-!| QSX            |---| 
-!| QSY            |---| 
-!| T1             |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| V2DPAR         |---| 
+!| AVA            |---|
+!| BREACH         |---|
+!| DT             |---|
+!| ELAY           |---|
+!| KSORT          |---|
+!| LIEBOR         |---|
+!| MESH           |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
+!| NSEG           |---|
+!| QS             |---|
+!| QSX            |---|
+!| QSY            |---|
+!| T1             |---|
+!| T2             |---|
+!| T3             |---|
+!| V2DPAR         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_NERBED_VF => BEDLOAD_NERBED_VF

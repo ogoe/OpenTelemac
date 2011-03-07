@@ -14,52 +14,52 @@
 !history  M. GONZALES DE LINARES
 !+        07/05/2002
 !+        V5P5
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        14/09/2004
 !+        V5P5
-!+   
+!+
 !
 !history  J-M HERVOUET
 !+        30/10/2007
 !+        V5P8
-!+   UNSV2D +DIRICL DELETED 
+!+   UNSV2D +DIRICL DELETED
 !
 !history  JMH
 !+        15/09/2009
-!+        
-!+   KENT KSORT ADDED (WERE HARD-CODED BEFORE !!!) 
+!+
+!+   KENT KSORT ADDED (WERE HARD-CODED BEFORE !!!)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BREACH         |---| 
-!| DT             |---| 
-!| EBOR           |---| 
-!| FLUX           |---| 
-!| KENT           |---| 
-!| KSORT          |---| 
-!| LIEBOR         |---| 
-!| MESH           |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
-!| NSEG           |---| 
-!| QSX            |---| 
-!| QSY            |---| 
-!| T10            |---| 
-!| UNSV2D         |---| 
-!| ZFCL           |---| 
+!| BREACH         |---|
+!| DT             |---|
+!| EBOR           |---|
+!| FLUX           |---|
+!| KENT           |---|
+!| KSORT          |---|
+!| LIEBOR         |---|
+!| MESH           |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
+!| NSEG           |---|
+!| QSX            |---|
+!| QSY            |---|
+!| T10            |---|
+!| UNSV2D         |---|
+!| ZFCL           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_SOLVS_VF => BEDLOAD_SOLVS_VF
@@ -67,7 +67,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -78,7 +78,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER          :: ISEGIN, K

@@ -18,86 +18,86 @@
 !history  BUI MINH DUC
 !+        **/01/2002
 !+        V5P2
-!+   
+!+
 !
 !history  C. VILLARET
 !+        **/10/2003
 !+        V5P4
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        12/01/2005
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| ACLADM         |---| 
-!| AVA            |---| 
-!| BIJK           |---| 
-!| CF             |---| 
-!| COEFPN         |---| 
-!| D90            |---| 
-!| DM             |---| 
-!| FW             |---| 
-!| GRAV           |---| 
-!| HIDFAC         |---| 
-!| HIDING         |---| 
-!| HMIN           |---| 
-!| HN             |---| 
-!| HOULE          |---| 
-!| ICF            |---| 
-!| IELMT          |---| 
-!| KARMAN         |---| 
-!| KSP            |---| 
-!| KSR            |---| 
-!| MU             |---| 
-!| NPOIN          |---| 
-!| PI             |---| 
-!| QSC            |---| 
-!| QSS            |---| 
-!| SECCURRENT     |---| 
-!| SLOPEFF        |---| 
-!| SUSP           |---| 
-!| T1             |---| 
-!| T10            |---| 
-!| T11            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| T9             |---| 
-!| TETAP          |---| 
-!| THETAW         |---| 
-!| TOB            |---| 
-!| TOBW           |---| 
-!| TW             |---| 
-!| U2D            |---| 
-!| UCMOY          |---| 
-!| UNLADM         |---| 
-!| UW             |---| 
-!| V2D            |---| 
-!| VCE            |---| 
-!| XKV            |---| 
-!| XMVE           |---| 
-!| XMVS           |---| 
-!| XWC            |---| 
-!| ZERO           |---| 
+!| AC             |---|
+!| ACLADM         |---|
+!| AVA            |---|
+!| BIJK           |---|
+!| CF             |---|
+!| COEFPN         |---|
+!| D90            |---|
+!| DM             |---|
+!| FW             |---|
+!| GRAV           |---|
+!| HIDFAC         |---|
+!| HIDING         |---|
+!| HMIN           |---|
+!| HN             |---|
+!| HOULE          |---|
+!| ICF            |---|
+!| IELMT          |---|
+!| KARMAN         |---|
+!| KSP            |---|
+!| KSR            |---|
+!| MU             |---|
+!| NPOIN          |---|
+!| PI             |---|
+!| QSC            |---|
+!| QSS            |---|
+!| SECCURRENT     |---|
+!| SLOPEFF        |---|
+!| SUSP           |---|
+!| T1             |---|
+!| T10            |---|
+!| T11            |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| T9             |---|
+!| TETAP          |---|
+!| THETAW         |---|
+!| TOB            |---|
+!| TOBW           |---|
+!| TW             |---|
+!| U2D            |---|
+!| UCMOY          |---|
+!| UNLADM         |---|
+!| UW             |---|
+!| V2D            |---|
+!| VCE            |---|
+!| XKV            |---|
+!| XMVE           |---|
+!| XMVS           |---|
+!| XWC            |---|
+!| ZERO           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_FORMULA => BEDLOAD_FORMULA
@@ -105,7 +105,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D, V2D, UCMOY,HN, CF, TOB
@@ -132,13 +132,13 @@
       DOUBLE PRECISION            :: DENS,DSTAR,ALPHA
       DOUBLE PRECISION, PARAMETER :: ZERO_LOCAL = 1.D-6
       DOUBLE PRECISION            :: C1
-
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
-
+!
       ! *************************** !
       ! I - ADIMENSIONAL PARAMETERS !
       ! *************************** !

@@ -10,12 +10,12 @@
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |<->| 
-!| ACLADM         |-->| 
-!| GRAV           |-->| 
-!| NPOIN          |-->| 
-!| XMVE           |-->| 
-!| XMVS           |-->| 
+!| AC             |<->|
+!| ACLADM         |-->|
+!| GRAV           |-->|
+!| NPOIN          |-->|
+!| XMVE           |-->|
+!| XMVS           |-->|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -23,7 +23,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, TAUP,ZREF
@@ -31,7 +31,7 @@
       DOUBLE PRECISION, INTENT(IN)    ::  GRAV,  XMVE, XMVS
       DOUBLE PRECISION, INTENT(IN)    :: ZERO,AC
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: CSTAEQ
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER            :: I

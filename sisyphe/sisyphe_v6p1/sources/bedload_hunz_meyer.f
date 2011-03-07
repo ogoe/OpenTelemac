@@ -18,46 +18,46 @@
 !history  BUI MINH DUC
 !+        **/01/2002
 !+        V5P2
-!+   
+!+
 !
 !history  C. VILLARET
 !+        **/10/2003
 !+        V5P4
-!+   
+!+
 !
-!history  
-!+        
+!history
+!+
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| ACLADM         |---| 
-!| ACP            |---| 
-!| AHUNZI         |---| 
-!| DENS           |---| 
-!| DM             |---| 
-!| GRAV           |---| 
-!| HIDING         |---| 
-!| MU             |---| 
-!| NPOIN          |---| 
-!| QSC            |---| 
-!| TETAP          |---| 
-!| TOB            |---| 
-!| UNLADM         |---| 
-!| XMVE           |---| 
+!| AC             |---|
+!| ACLADM         |---|
+!| ACP            |---|
+!| AHUNZI         |---|
+!| DENS           |---|
+!| DM             |---|
+!| GRAV           |---|
+!| HIDING         |---|
+!| MU             |---|
+!| NPOIN          |---|
+!| QSC            |---|
+!| TETAP          |---|
+!| TOB            |---|
+!| UNLADM         |---|
+!| XMVE           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,
@@ -66,7 +66,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOB, MU, ACLADM, UNLADM
@@ -75,7 +75,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: TETAP, AHUNZI ! WORK ARRAY T1, T2
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: ACP           ! WORK ARRAY T3
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: HIDING, QSC
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER          :: I

@@ -13,26 +13,26 @@
 !history  C. VILLARET
 !+        01/10/2003
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPOIN          |---| 
-!| PI             |---| 
-!| QU             |---| 
-!| QV             |---| 
-!| THETAC         |---| 
+!| NPOIN          |---|
+!| PI             |---|
+!| QU             |---|
+!| QV             |---|
+!| THETAC         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,
@@ -41,19 +41,19 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),  INTENT(IN)  :: QU, QV
       INTEGER,          INTENT(IN)  :: NPOIN
       DOUBLE PRECISION, INTENT(IN)  :: PI
       TYPE(BIEF_OBJ),  INTENT(INOUT) :: THETAC
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER                     :: I
       DOUBLE PRECISION, PARAMETER :: LOCAL_ZERO = 1.D-6
-
+!
 !======================================================================!
 !======================================================================!
 !                    DECLARES TYPES AND DIMENSIONS                     !

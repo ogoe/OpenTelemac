@@ -14,44 +14,44 @@
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
 !+        V5P1
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        05/01/2004
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT0            |---| 
-!| BINRESSIS      |---| 
-!| EMAX           |---| 
-!| ESM            |---| 
-!| FMTRES         |---| 
-!| HIST           |---| 
-!| HN             |---| 
-!| MAXVAR         |---| 
-!| MN             |---| 
-!| NPOIN          |---| 
-!| NRES           |---| 
-!| RC             |---| 
-!| SORIMP         |---| 
-!| SORLEO         |---| 
-!| T1             |---| 
-!| T2             |---| 
-!| TEXTE          |---| 
-!| VARSOR         |---| 
+!| AT0            |---|
+!| BINRESSIS      |---|
+!| EMAX           |---|
+!| ESM            |---|
+!| FMTRES         |---|
+!| HIST           |---|
+!| HN             |---|
+!| MAXVAR         |---|
+!| MN             |---|
+!| NPOIN          |---|
+!| NRES           |---|
+!| RC             |---|
+!| SORIMP         |---|
+!| SORLEO         |---|
+!| T1             |---|
+!| T2             |---|
+!| TEXTE          |---|
+!| VARSOR         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SIS_ARRET => SIS_ARRET
@@ -122,7 +122,7 @@
             WRITE(LU,*) ' '
             WRITE(LU,*) 'LAST RESULT SAVED'
          ENDIF
-
+!
          ! IV.2 - SAVES THE LAST RESULT
          ! -----------------------------
          CALL PREDES(1,AT0)
@@ -131,7 +131,7 @@
          CALL PLANTE(1)
          STOP
       ENDIF
-
+!
       !----------------------------------------------------------------!
 400   FORMAT(1X,/,' EVOLUTION TROP FORTE AU CALCUL  : ',1I6)
 402   FORMAT(' NOEUD NUMERO                    : ',1I6)

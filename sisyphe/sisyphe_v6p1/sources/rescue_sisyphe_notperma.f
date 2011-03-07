@@ -18,40 +18,40 @@
 !+        (SISYPHE) AND THE FREE SURFACE ELEVATION (HYDRO FILE).
 !
 !history  C.VILLARET
-!+        
+!+
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALIRE          |---| TABLEAU DES VARIABLES A LIRE
-!| ENTET          |---| 
+!| ENTET          |---|
 !| H              |<--| HAUTEUR.
-!| HW             |---| 
-!| ICF            |---| 
+!| HW             |---|
+!| ICF            |---|
 !| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| Q              |---| 
-!| QU             |---| 
-!| QV             |---| 
+!| Q              |---|
+!| QU             |---|
+!| QV             |---|
 !| S              |<--| SURFACE LIBRE.
-!| THETAW         |---| 
+!| THETAW         |---|
 !| TROUVE         |-->| LOGIQUE INDIQUANT LES VARIABLES TROUVEES
 !|                |   | DANS LE SOUS-PROGRAMME SUITE
-!| TW             |---| 
-!| U              |---| 
-!| V              |---| 
+!| TW             |---|
+!| U              |---|
+!| V              |---|
 !| ZF             |<--| COTE DES POINTS DU FOND.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

@@ -17,47 +17,47 @@
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| ACLADM         |---| 
-!| AVAIL          |---| 
-!| CHARR          |---| 
-!| CS             |---| 
-!| CSTAEQ         |---| 
-!| DEBUG          |---| 
-!| DT             |---| 
-!| ES             |---| 
-!| FLUER_SABLE    |---| 
-!| FLUER_VASE     |---| 
-!| GRAV           |---| 
-!| HMIN           |---| 
-!| HN             |---| 
-!| ICQ            |---| 
-!| KARMAN         |---| 
-!| MS_SABLE       |---| 
-!| MS_VASE        |---| 
-!| NCOUCH_TASS    |---| 
-!| NPOIN          |---| 
-!| NSICLA         |---| 
-!| PARTHENIADES   |---| 
-!| QSC            |---| 
-!| TAUP           |---| 
-!| TOCE_MIXTE     |---| 
-!| TOCE_VASE      |---| 
-!| XMVE           |---| 
-!| XMVS           |---| 
-!| XWC            |---| 
-!| ZERO           |---| 
-!| ZREF           |---| 
+!| AC             |---|
+!| ACLADM         |---|
+!| AVAIL          |---|
+!| CHARR          |---|
+!| CS             |---|
+!| CSTAEQ         |---|
+!| DEBUG          |---|
+!| DT             |---|
+!| ES             |---|
+!| FLUER_SABLE    |---|
+!| FLUER_VASE     |---|
+!| GRAV           |---|
+!| HMIN           |---|
+!| HN             |---|
+!| ICQ            |---|
+!| KARMAN         |---|
+!| MS_SABLE       |---|
+!| MS_VASE        |---|
+!| NCOUCH_TASS    |---|
+!| NPOIN          |---|
+!| NSICLA         |---|
+!| PARTHENIADES   |---|
+!| QSC            |---|
+!| TAUP           |---|
+!| TOCE_MIXTE     |---|
+!| TOCE_VASE      |---|
+!| XMVE           |---|
+!| XMVS           |---|
+!| XWC            |---|
+!| ZERO           |---|
+!| ZREF           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_FLUX_MIXTE=>SUSPENSION_FLUX_MIXTE
@@ -66,7 +66,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP,HN,ACLADM,CS

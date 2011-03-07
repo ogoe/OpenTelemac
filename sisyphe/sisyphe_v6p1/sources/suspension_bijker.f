@@ -15,36 +15,36 @@
 !history  C. VILLARET
 !+        14/04/2004
 !+        V5P5
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        04/01/2005
 !+        V5P6
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHARR          |-->| 
-!| CSTAEQ         |---| 
-!| HMIN           |-->| 
-!| HN             |---| 
-!| NPOIN          |-->| 
-!| QSC            |---| 
-!| TAUP           |---| 
-!| XMVE           |-->| 
-!| ZERO           |---| 
-!| ZREF           |---| 
+!| CHARR          |-->|
+!| CSTAEQ         |---|
+!| HMIN           |-->|
+!| HN             |---|
+!| NPOIN          |-->|
+!| QSC            |---|
+!| TAUP           |---|
+!| XMVE           |-->|
+!| ZERO           |---|
+!| ZREF           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BIJKER => SUSPENSION_BIJKER
@@ -52,7 +52,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TAUP,QSC,HN
@@ -62,7 +62,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: HMIN,ZERO,XMVE
 !
       TYPE(BIEF_OBJ),   INTENT(INOUT)   ::  CSTAEQ
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER                     :: I

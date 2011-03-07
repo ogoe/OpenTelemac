@@ -13,38 +13,38 @@
 !
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/95
-!+        
-!+   
+!+
+!+
 !
 !history  M. GONZALES DE LINARES; C.VILLARET
 !+        2003
-!+        
-!+   
+!+
+!+
 !
 !history  JMH
 !+        03/11/2009
 !+        V6P0
-!+   MODIFIED AFTER JACEK JANKOWSKI DEVELOPMENTS 
+!+   MODIFIED AFTER JACEK JANKOWSKI DEVELOPMENTS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MNEMO          |<--| SYMBOLS TO SPECIFY THE VARIABLES FOR OUTPUT
 !|                |   | IN THE STEERING FILE
-!| NSICLA         |---| 
+!| NSICLA         |---|
 !| TEXTE          |<--| NAMES OF VARIABLES (PRINTOUT)
 !| TEXTPR         |<--| NAMES OF VARIABLES (INPUT)
-!| UNIT           |---| 
+!| UNIT           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SISYPHE, ONLY : MAXVAR,NSICLM,NLAYMAX,NOMBLAY,

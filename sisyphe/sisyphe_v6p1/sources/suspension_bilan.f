@@ -17,80 +17,80 @@
 !history  C. MOULIN (LNH)
 !+        13/12/2000
 !+        V5P1
-!+   
+!+
 !
 !history  M. GONZALES DE LINARES
 !+        **/05/2003
 !+        V5P4
-!+   
+!+
 !
 !history  F. HUVELIN
 !+        22/12/2004
 !+        V5P6
-!+   
+!+
 !
 !history  J-M HERVOUET
 !+        29/10/2007
 !+        V5P8
-!+   CORRECTIONS IN PARALLEL MODE 
+!+   CORRECTIONS IN PARALLEL MODE
 !
-!history  
+!history
 !+        05/05/2008
-!+        
-!+   COMPUTES THE MASS ACCOUNTING FOR MASS-LUMPING 
+!+
+!+   COMPUTES THE MASS ACCOUNTING FOR MASS-LUMPING
 !
-!history  
+!history
 !+        28/05/2008
-!+        
-!+   FLUX GIVEN BY BOUNDARIES 
+!+
+!+   FLUX GIVEN BY BOUNDARIES
 !
-!history  
+!history
 !+        10/06/2008
-!+        
-!+   TRACER FLUX GIVEN BY FLBORTRA (FROM CVDFTR) 
+!+
+!+   TRACER FLUX GIVEN BY FLBORTRA (FROM CVDFTR)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AGGLOT         |---| 
-!| CSF            |---| 
-!| CST            |---| 
-!| DT             |---| 
-!| ENTET          |---| 
-!| FLBORTRA       |---| 
-!| HN             |---| 
-!| IELMT          |---| 
-!| ITRA           |---| 
-!| LT             |---| 
-!| MASDEP         |---| 
-!| MASDEPT        |---| 
-!| MASED0         |---| 
-!| MASFIN         |---| 
-!| MASINI         |---| 
-!| MASKEL         |---| 
-!| MASSOU         |---| 
-!| MASTEN         |---| 
-!| MASTOU         |---| 
-!| MESH           |---| 
-!| MSK            |---| 
-!| NFRLIQ         |---| 
-!| NIT            |---| 
-!| NPTFR          |---| 
-!| NUMLIQ         |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| VOLU2D         |---| 
-!| ZFCL_S         |---| 
+!| AGGLOT         |---|
+!| CSF            |---|
+!| CST            |---|
+!| DT             |---|
+!| ENTET          |---|
+!| FLBORTRA       |---|
+!| HN             |---|
+!| IELMT          |---|
+!| ITRA           |---|
+!| LT             |---|
+!| MASDEP         |---|
+!| MASDEPT        |---|
+!| MASED0         |---|
+!| MASFIN         |---|
+!| MASINI         |---|
+!| MASKEL         |---|
+!| MASSOU         |---|
+!| MASTEN         |---|
+!| MASTOU         |---|
+!| MESH           |---|
+!| MSK            |---|
+!| NFRLIQ         |---|
+!| NIT            |---|
+!| NPTFR          |---|
+!| NUMLIQ         |---|
+!| T2             |---|
+!| T3             |---|
+!| VOLU2D         |---|
+!| ZFCL_S         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN => SUSPENSION_BILAN

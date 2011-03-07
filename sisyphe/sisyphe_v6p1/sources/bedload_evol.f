@@ -19,79 +19,79 @@
 !history  F. HUVELIN
 !+        14/09/2004
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---| 
-!| AVA            |---| 
-!| BREACH         |---| 
-!| CALFA          |---| 
-!| COEFPN         |---| 
-!| CONST_ALAYER   |---| 
-!| D90            |---| 
-!| DEBUG          |---| 
-!| DM             |---| 
-!| DTS            |---| 
-!| EBOR           |---| 
-!| ELAY           |---| 
-!| ELAY0          |---| 
-!| ENTET          |---| 
-!| GRAV           |---| 
-!| HMIN           |---| 
-!| HN             |---| 
-!| IELMT          |---| 
-!| KDDL           |---| 
-!| KDIR           |---| 
-!| KENT           |---| 
-!| LCONDIS        |---| 
-!| LIMTEC         |---| 
-!| LOADMETH       |---| 
-!| LS0            |---| 
-!| MASK           |---| 
-!| MASKEL         |---| 
-!| MESH           |---| 
-!| MSK            |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
-!| Q              |---| 
-!| QS             |---| 
-!| QSX            |---| 
-!| QSY            |---| 
-!| S              |---| 
-!| SALFA          |---| 
-!| SLOPEFF        |---| 
-!| T1             |---| 
-!| T10            |---| 
-!| T11            |---| 
-!| T12            |---| 
-!| T13            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| T9             |---| 
-!| UNSV2D         |---| 
-!| V2DPAR         |---| 
-!| VCE            |---| 
-!| VF             |---| 
-!| XMVE           |---| 
-!| XMVS           |---| 
-!| ZFCL           |---| 
+!| ACLADM         |---|
+!| AVA            |---|
+!| BREACH         |---|
+!| CALFA          |---|
+!| COEFPN         |---|
+!| CONST_ALAYER   |---|
+!| D90            |---|
+!| DEBUG          |---|
+!| DM             |---|
+!| DTS            |---|
+!| EBOR           |---|
+!| ELAY           |---|
+!| ELAY0          |---|
+!| ENTET          |---|
+!| GRAV           |---|
+!| HMIN           |---|
+!| HN             |---|
+!| IELMT          |---|
+!| KDDL           |---|
+!| KDIR           |---|
+!| KENT           |---|
+!| LCONDIS        |---|
+!| LIMTEC         |---|
+!| LOADMETH       |---|
+!| LS0            |---|
+!| MASK           |---|
+!| MASKEL         |---|
+!| MESH           |---|
+!| MSK            |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
+!| Q              |---|
+!| QS             |---|
+!| QSX            |---|
+!| QSY            |---|
+!| S              |---|
+!| SALFA          |---|
+!| SLOPEFF        |---|
+!| T1             |---|
+!| T10            |---|
+!| T11            |---|
+!| T12            |---|
+!| T13            |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| T9             |---|
+!| UNSV2D         |---|
+!| V2DPAR         |---|
+!| VCE            |---|
+!| VF             |---|
+!| XMVE           |---|
+!| XMVS           |---|
+!| ZFCL           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_EVOL => BEDLOAD_EVOL
@@ -99,7 +99,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HN,Q,S,UNSV2D,ELAY,ACLADM
@@ -117,11 +117,11 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8, T9, T10, T11, T12, T13
       DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH, QSX, QSY, ZFCL
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER          :: J
-
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !

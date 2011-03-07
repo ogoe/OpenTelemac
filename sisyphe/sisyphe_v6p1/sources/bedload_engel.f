@@ -13,34 +13,34 @@
 !history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
 !+        V5P1
-!+   
+!+
 !
 !history  C.VILLARET
 !+        **/10/2003
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---| 
-!| DENS           |---| 
-!| DM             |---| 
-!| GRAV           |---| 
-!| QSC            |---| 
-!| TETA           |---| 
-!| TOB            |---| 
-!| XMVE           |---| 
+!| CF             |---|
+!| DENS           |---|
+!| DM             |---|
+!| GRAV           |---|
+!| QSC            |---|
+!| TETA           |---|
+!| TOB            |---|
+!| XMVE           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,
@@ -49,18 +49,18 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOB, CF
       DOUBLE PRECISION, INTENT(IN)    :: DENS, GRAV, DM, XMVE
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: TETA ! WORK ARRAY T1
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       DOUBLE PRECISION :: CENGEL, C1
-
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
@@ -72,7 +72,7 @@
       C1 = 1.D0/(DENS*XMVE*GRAV*DM)
       CALL OS('X=CY    ', X=TETA, Y=TOB , C=C1)
       CALL OS('X=Y**C  ', X=TETA, Y=TETA, C=5.D0/2.D0)
-
+!
       ! *************************** !
       ! II - BEDLOAD TRANSPORT      ! (_IMP_)
       ! *************************** !

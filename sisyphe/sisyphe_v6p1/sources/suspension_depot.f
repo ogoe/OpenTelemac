@@ -17,37 +17,37 @@
 !history  J-M HERVOUET + C VILLARET
 !+        31/07/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---| 
-!| DEBUG          |---| 
-!| FLUDPT         |---| 
-!| HMIN           |---| 
+!| ACLADM         |---|
+!| DEBUG          |---|
+!| FLUDPT         |---|
+!| HMIN           |---|
 !| HN             |-->| HAUTEUR D'EAU
-!| KARMAN         |---| 
-!| NPOIN          |---| 
-!| SEDCO          |---| 
-!| T1             |---| 
-!| T2             |---| 
-!| TOB            |---| 
-!| VITCD          |---| 
-!| XMVE           |---| 
-!| XWC            |---| 
-!| ZERO           |---| 
-!| ZREF           |---| 
+!| KARMAN         |---|
+!| NPOIN          |---|
+!| SEDCO          |---|
+!| T1             |---|
+!| T2             |---|
+!| TOB            |---|
+!| VITCD          |---|
+!| XMVE           |---|
+!| XWC            |---|
+!| ZERO           |---|
+!| ZREF           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_DEPOT => SUSPENSION_DEPOT
@@ -82,11 +82,11 @@
       ! HAS BEEN REPLACED BY USTARP (SKIN FRICTION VELOCITY)!
       ! FOR EROSION FLUX IN V6P0                            !
       ! ****************************************            !
-
+!
       CALL OS('X=CY    ', X=T1, Y=TOB, C=1.D0/XMVE)
       CALL OS('X=+(Y,C)', X=T1, Y=T1, C=ZERO)
       CALL OS('X=SQR(Y)', X=T1, Y=T1)
-
+!
       IF(SEDCO) THEN
 !
       ! ************************************************ !

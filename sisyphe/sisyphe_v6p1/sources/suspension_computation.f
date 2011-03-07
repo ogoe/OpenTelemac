@@ -38,214 +38,214 @@
 !
 !history  F. HUVELIN
 !+        22/12/2004
-!+        
-!+   
+!+
+!+
 !
 !history  JMH:
 !+        10/11/2010
-!+        
-!+   ENTET CHANGED INTO ENTETS IN THE CALL TO CVDFTR 
+!+
+!+   ENTET CHANGED INTO ENTETS IN THE CALL TO CVDFTR
 !
-!history  
+!history
 !+        05/05/2008
-!+        
-!+   ADAPTED FOR FINITE VOLUME ADVECTION 
+!+
+!+   ADAPTED FOR FINITE VOLUME ADVECTION
 !
-!history  
+!history
 !+        09/05/2008
-!+        
-!+   FLUDP REMOVED FROM SUSPENSION_FLUX, SUSPENSION_NERBED DELETED 
+!+
+!+   FLUDP REMOVED FROM SUSPENSION_FLUX, SUSPENSION_NERBED DELETED
 !
-!history  
+!history
 !+        28/05/2008
-!+        
-!+   NEW SUSPENSION_BILAN WITH FLUXES THROUGH BOUNDARIES 
+!+
+!+   NEW SUSPENSION_BILAN WITH FLUXES THROUGH BOUNDARIES
 !
-!history  
+!history
 !+        09/06/2008
-!+        
-!+   NEW SUSPENSION_BILAN WITH FLBORTRA GIVEN BY CVDFTR 
+!+
+!+   NEW SUSPENSION_BILAN WITH FLBORTRA GIVEN BY CVDFTR
 !
-!history  
+!history
 !+        12/06/2008
-!+        
-!+   SECTIONS "TREATING SMALL DEPTHS" AND 
+!+
+!+   SECTIONS "TREATING SMALL DEPTHS" AND
 !
-!history  
+!history
 !+        25/06/2008
-!+        
-!+   CALLS DIFFIN (USED TO BE IN SUSPENSION_MAIN) 
+!+
+!+   CALLS DIFFIN (USED TO BE IN SUSPENSION_MAIN)
 !
-!history  
+!history
 !+        31/07/2008
-!+        
-!+   CALLS SUSPENSION_FLUX SPLIT IN 2 : DEPOSITION + EROSION 
+!+
+!+   CALLS SUSPENSION_FLUX SPLIT IN 2 : DEPOSITION + EROSION
 !
-!history  
+!history
 !+        16/09/2009
-!+        
-!+   AVAIL(NPOIN,10,NSICLA) 
+!+
+!+   AVAIL(NPOIN,10,NSICLA)
 !
-!history  
+!history
 !+        05/04/2010
 !+        V6P0
-!+   CSTAEQ TAKES INTO ACCOUNT THE % OF LAYER QQ OR THE SELECTED FORMULATION 
+!+   CSTAEQ TAKES INTO ACCOUNT THE % OF LAYER QQ OR THE SELECTED FORMULATION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| ACLADM         |---| 
-!| AFBOR          |---| 
-!| AM1_S          |---| 
-!| AM2_S          |---| 
-!| AVA            |---| 
-!| AVAIL          |---| 
-!| BFBOR          |---| 
-!| BILMA          |---| 
-!| CBOR           |---| 
-!| CF             |---| 
-!| CHARR          |---| 
-!| CLT            |---| 
-!| CODE           |---| 
-!| CONC_VASE      |---| 
-!| CORR_CONV      |---| 
-!| CS             |---| 
-!| CSF_SABLE      |---| 
-!| CSF_VASE       |---| 
-!| CST            |---| 
-!| CSTAEQ         |---| 
-!| CTILD          |---| 
-!| DEBUG          |---| 
-!| DIFT           |---| 
-!| DISP           |---| 
-!| DISP_C         |---| 
-!| DM1            |---| 
-!| DT             |---| 
-!| ELAY           |---| 
-!| ENTET          |---| 
-!| ENTETS         |---| 
-!| ES             |---| 
-!| FLBORTRA       |---| 
-!| FLBOR_SIS      |---| 
-!| FLBOR_TEL      |---| 
-!| FLUDP          |---| 
-!| FLUDPT         |---| 
-!| FLUER          |---| 
-!| FLUER_VASE     |---| 
-!| GRAV           |---| 
-!| HMIN           |---| 
-!| HN             |---| 
-!| HN_TEL         |---| 
-!| HPROP          |---| 
-!| ICQ            |---| 
-!| IELMT          |---| 
-!| IFAMAS         |---| 
-!| IMP_INFLOW_C   |---| 
-!| IT1            |---| 
-!| IT2            |---| 
-!| IT3            |---| 
-!| IT4            |---| 
-!| ITRA           |---| 
-!| KARMAN         |---| 
-!| KDDL           |---| 
-!| KDIR           |---| 
-!| KENT           |---| 
-!| KINC           |---| 
-!| KLOG           |---| 
-!| KNEU           |---| 
-!| KSORT          |---| 
-!| KSP            |---| 
-!| KSR            |---| 
-!| LICBOR         |---| 
-!| LIMDIF         |---| 
-!| LT             |---| 
-!| MASDEP         |---| 
-!| MASDEPT        |---| 
-!| MASED0         |---| 
-!| MASFIN         |---| 
-!| MASINI         |---| 
-!| MASKEL         |---| 
-!| MASKPT         |---| 
-!| MASKTR         |---| 
-!| MASSOU         |---| 
-!| MASTEN         |---| 
-!| MASTOU         |---| 
-!| MBOR           |---| 
-!| MESH           |---| 
-!| MIXTE          |---| 
-!| MSK            |---| 
-!| MS_SABLE       |---| 
-!| MS_VASE        |---| 
-!| MU             |---| 
-!| NCOUCH_TASS    |---| 
-!| NFRLIQ         |---| 
-!| NIT            |---| 
-!| NPOIN          |---| 
-!| NPTFR          |---| 
-!| NSICLA         |---| 
-!| NUMLIQ         |---| 
-!| OPDTRA         |---| 
-!| OPTBAN         |---| 
-!| OPTSUP         |---| 
-!| PARTHENIADES   |---| 
-!| QS_C           |---| 
-!| RESOL          |---| 
-!| S              |---| 
-!| SEDCO          |---| 
-!| SLVTRA         |---| 
-!| SOLSYS         |---| 
-!| T1             |---| 
-!| T10            |---| 
-!| T11            |---| 
-!| T12            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| T9             |---| 
-!| TASS           |---| 
-!| TB             |---| 
-!| TE1            |---| 
-!| TE2            |---| 
-!| TE3            |---| 
-!| TETA_SUSP      |---| 
-!| TOB            |---| 
-!| TOCE_MIXTE     |---| 
-!| TOCE_VASE      |---| 
-!| U2D            |---| 
-!| UCONV          |---| 
-!| UCONV_TEL      |---| 
-!| UNSV2D         |---| 
-!| V2D            |---| 
-!| V2DPAR         |---| 
-!| VCONV          |---| 
-!| VCONV_TEL      |---| 
-!| VITCD          |---| 
-!| VITCE          |---| 
-!| VOLU2D         |---| 
-!| W1             |---| 
-!| XMVE           |---| 
-!| XMVS           |---| 
-!| XWC            |---| 
-!| ZCONV          |---| 
-!| ZERO           |---| 
-!| ZF             |---| 
-!| ZFCL_S         |---| 
-!| ZREF           |---| 
+!| AC             |---|
+!| ACLADM         |---|
+!| AFBOR          |---|
+!| AM1_S          |---|
+!| AM2_S          |---|
+!| AVA            |---|
+!| AVAIL          |---|
+!| BFBOR          |---|
+!| BILMA          |---|
+!| CBOR           |---|
+!| CF             |---|
+!| CHARR          |---|
+!| CLT            |---|
+!| CODE           |---|
+!| CONC_VASE      |---|
+!| CORR_CONV      |---|
+!| CS             |---|
+!| CSF_SABLE      |---|
+!| CSF_VASE       |---|
+!| CST            |---|
+!| CSTAEQ         |---|
+!| CTILD          |---|
+!| DEBUG          |---|
+!| DIFT           |---|
+!| DISP           |---|
+!| DISP_C         |---|
+!| DM1            |---|
+!| DT             |---|
+!| ELAY           |---|
+!| ENTET          |---|
+!| ENTETS         |---|
+!| ES             |---|
+!| FLBORTRA       |---|
+!| FLBOR_SIS      |---|
+!| FLBOR_TEL      |---|
+!| FLUDP          |---|
+!| FLUDPT         |---|
+!| FLUER          |---|
+!| FLUER_VASE     |---|
+!| GRAV           |---|
+!| HMIN           |---|
+!| HN             |---|
+!| HN_TEL         |---|
+!| HPROP          |---|
+!| ICQ            |---|
+!| IELMT          |---|
+!| IFAMAS         |---|
+!| IMP_INFLOW_C   |---|
+!| IT1            |---|
+!| IT2            |---|
+!| IT3            |---|
+!| IT4            |---|
+!| ITRA           |---|
+!| KARMAN         |---|
+!| KDDL           |---|
+!| KDIR           |---|
+!| KENT           |---|
+!| KINC           |---|
+!| KLOG           |---|
+!| KNEU           |---|
+!| KSORT          |---|
+!| KSP            |---|
+!| KSR            |---|
+!| LICBOR         |---|
+!| LIMDIF         |---|
+!| LT             |---|
+!| MASDEP         |---|
+!| MASDEPT        |---|
+!| MASED0         |---|
+!| MASFIN         |---|
+!| MASINI         |---|
+!| MASKEL         |---|
+!| MASKPT         |---|
+!| MASKTR         |---|
+!| MASSOU         |---|
+!| MASTEN         |---|
+!| MASTOU         |---|
+!| MBOR           |---|
+!| MESH           |---|
+!| MIXTE          |---|
+!| MSK            |---|
+!| MS_SABLE       |---|
+!| MS_VASE        |---|
+!| MU             |---|
+!| NCOUCH_TASS    |---|
+!| NFRLIQ         |---|
+!| NIT            |---|
+!| NPOIN          |---|
+!| NPTFR          |---|
+!| NSICLA         |---|
+!| NUMLIQ         |---|
+!| OPDTRA         |---|
+!| OPTBAN         |---|
+!| OPTSUP         |---|
+!| PARTHENIADES   |---|
+!| QS_C           |---|
+!| RESOL          |---|
+!| S              |---|
+!| SEDCO          |---|
+!| SLVTRA         |---|
+!| SOLSYS         |---|
+!| T1             |---|
+!| T10            |---|
+!| T11            |---|
+!| T12            |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| T9             |---|
+!| TASS           |---|
+!| TB             |---|
+!| TE1            |---|
+!| TE2            |---|
+!| TE3            |---|
+!| TETA_SUSP      |---|
+!| TOB            |---|
+!| TOCE_MIXTE     |---|
+!| TOCE_VASE      |---|
+!| U2D            |---|
+!| UCONV          |---|
+!| UCONV_TEL      |---|
+!| UNSV2D         |---|
+!| V2D            |---|
+!| V2DPAR         |---|
+!| VCONV          |---|
+!| VCONV_TEL      |---|
+!| VITCD          |---|
+!| VITCE          |---|
+!| VOLU2D         |---|
+!| W1             |---|
+!| XMVE           |---|
+!| XMVS           |---|
+!| XWC            |---|
+!| ZCONV          |---|
+!| ZERO           |---|
+!| ZF             |---|
+!| ZFCL_S         |---|
+!| ZREF           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

@@ -12,7 +12,7 @@
      & ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,
      & CMAX,CS,CS0,UCONV,VCONV,CORR_CONV,SECCURRENT,BIJK,
      & IELMT,MESH,FDM,XWC,FD90,SEDCO,VITCE,PARTHENIADES,VITCD,
-     * U3D,V3D,CODE)
+     & U3D,V3D,CODE)
 !
 !***********************************************************************
 ! SISYPHE   V6P0                                   21/08/2010
@@ -22,123 +22,123 @@
 !
 !history  JMH
 !+        24/01/2008
-!+        
-!+   TEST 'IF(CHARR.OR.SUSP)' ADDED AT THE END 
+!+
+!+   TEST 'IF(CHARR.OR.SUSP)' ADDED AT THE END
 !
 !history  JMH
 !+        16/09/2009
-!+        
-!+   AVAIL(NPOIN,10,NSICLA) 
+!+
+!+   AVAIL(NPOIN,10,NSICLA)
 !
 !history  JMH
 !+        07/12/2009
-!+        
-!+   MODIFICATIONS FOR RESTART WITH WARNINGS WHEN A VARIABLE 
+!+
+!+   MODIFICATIONS FOR RESTART WITH WARNINGS WHEN A VARIABLE
 !
 !history  C. VILLARET (LNHE)
-!+        
+!+
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| ACLADM         |---| 
-!| AVAIL          |---| 
-!| BIJK           |---| 
-!| CALFA          |---| 
-!| CF             |---| 
-!| CHARR          |-->| 
-!| CMAX           |---| 
-!| COEFPN         |---| 
-!| CORR_CONV      |---| 
-!| CS             |---| 
-!| CS0            |---| 
-!| CSTAEQ         |---| 
-!| DEBU           |-->| 
-!| FD90           |---| 
-!| FDM            |---| 
-!| FW             |---| 
-!| GRAV           |---| 
-!| HIDFAC         |---| 
-!| HIDING         |-->| 
-!| HMIN           |---| 
+!| AC             |---|
+!| ACLADM         |---|
+!| AVAIL          |---|
+!| BIJK           |---|
+!| CALFA          |---|
+!| CF             |---|
+!| CHARR          |-->|
+!| CMAX           |---|
+!| COEFPN         |---|
+!| CORR_CONV      |---|
+!| CS             |---|
+!| CS0            |---|
+!| CSTAEQ         |---|
+!| DEBU           |-->|
+!| FD90           |---|
+!| FDM            |---|
+!| FW             |---|
+!| GRAV           |---|
+!| HIDFAC         |---|
+!| HIDING         |-->|
+!| HMIN           |---|
 !| HN             |-->| WATER DEPTH
-!| HOULE          |---| 
-!| ICF            |---| 
-!| ICQ            |---| 
-!| IELMT          |---| 
-!| IMP_INFLOW_C   |---| 
-!| KARMAN         |---| 
-!| KS             |---| 
-!| KSP            |---| 
-!| KSR            |---| 
-!| MESH           |---| 
-!| MU             |---| 
-!| NPOIN          |---| 
+!| HOULE          |---|
+!| ICF            |---|
+!| ICQ            |---|
+!| IELMT          |---|
+!| IMP_INFLOW_C   |---|
+!| KARMAN         |---|
+!| KS             |---|
+!| KSP            |---|
+!| KSR            |---|
+!| MESH           |---|
+!| MU             |---|
+!| NPOIN          |---|
 !| NSICLA         |-->| NUMBER OF SEDIMENT CLASSES
-!| PARTHENIADES   |---| 
-!| PI             |---| 
-!| QS             |---| 
-!| QSCL           |---| 
-!| QSCLXS         |---| 
-!| QSCLYS         |---| 
-!| QSCL_C         |---| 
-!| QSCL_S         |---| 
-!| QSXC           |---| 
-!| QSYC           |---| 
-!| QS_C           |---| 
-!| QS_S           |---| 
-!| SALFA          |---| 
-!| SECCURRENT     |---| 
-!| SEDCO          |---| 
-!| SLOPEFF        |---| 
-!| SUSP           |---| 
-!| T1             |---| 
-!| T10            |---| 
-!| T11            |---| 
-!| T12            |---| 
-!| T14            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| T4             |---| 
-!| T5             |---| 
-!| T6             |---| 
-!| T7             |---| 
-!| T8             |---| 
-!| T9             |---| 
-!| THETAW         |---| 
-!| TOB            |---| 
-!| TOBW           |---| 
-!| TROUVE         |-->| 
-!| TW             |---| 
-!| U2D            |---| 
-!| UCONV          |---| 
-!| UNLADM         |---| 
-!| UNORM          |---| 
-!| UW             |---| 
-!| V2D            |---| 
-!| VCE            |---| 
-!| VCONV          |---| 
-!| VITCD          |---| 
-!| VITCE          |---| 
-!| XKV            |---| 
-!| XMVE           |---| 
-!| XMVS           |---| 
-!| XWC            |---| 
-!| ZERO           |---| 
-!| ZREF           |---| 
+!| PARTHENIADES   |---|
+!| PI             |---|
+!| QS             |---|
+!| QSCL           |---|
+!| QSCLXS         |---|
+!| QSCLYS         |---|
+!| QSCL_C         |---|
+!| QSCL_S         |---|
+!| QSXC           |---|
+!| QSYC           |---|
+!| QS_C           |---|
+!| QS_S           |---|
+!| SALFA          |---|
+!| SECCURRENT     |---|
+!| SEDCO          |---|
+!| SLOPEFF        |---|
+!| SUSP           |---|
+!| T1             |---|
+!| T10            |---|
+!| T11            |---|
+!| T12            |---|
+!| T14            |---|
+!| T2             |---|
+!| T3             |---|
+!| T4             |---|
+!| T5             |---|
+!| T6             |---|
+!| T7             |---|
+!| T8             |---|
+!| T9             |---|
+!| THETAW         |---|
+!| TOB            |---|
+!| TOBW           |---|
+!| TROUVE         |-->|
+!| TW             |---|
+!| U2D            |---|
+!| UCONV          |---|
+!| UNLADM         |---|
+!| UNORM          |---|
+!| UW             |---|
+!| V2D            |---|
+!| VCE            |---|
+!| VCONV          |---|
+!| VITCD          |---|
+!| VITCE          |---|
+!| XKV            |---|
+!| XMVE           |---|
+!| XMVS           |---|
+!| XWC            |---|
+!| ZERO           |---|
+!| ZREF           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

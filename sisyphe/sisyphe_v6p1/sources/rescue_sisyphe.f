@@ -13,41 +13,41 @@
 !+                AND/OR SEDIMENTOLOGICAL CONTINUATION RUN.
 !
 !history  C. LENORMANT
-!+        
+!+
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALIRE          |---| TABLEAU DES VARIABLES A LIRE
 !| H              |<--| HAUTEUR.
-!| HW             |---| 
-!| ICF            |---| 
+!| HW             |---|
+!| ICF            |---|
 !| LISTI          |-->| LOGIQUE VRAI SI ON IMPRIME DES MESSAGES
 !| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
 !| PASS           |-->| LOGIQUE VRAI SI ON EST EN DEBUT DE CALCUL
-!| Q              |---| 
-!| QU             |---| 
-!| QV             |---| 
+!| Q              |---|
+!| QU             |---|
+!| QV             |---|
 !| S              |<--| SURFACE LIBRE.
-!| THETAW         |---| 
+!| THETAW         |---|
 !| TROUVE         |-->| LOGIQUE INDIQUANT LES VARIABLES TROUVEES
 !|                |   | DANS LE SOUS-PROGRAMME SUITE
-!| TW             |---| 
-!| U              |---| 
-!| V              |---| 
+!| TW             |---|
+!| U              |---|
+!| V              |---|
 !| ZF             |<--| COTE DES POINTS DU FOND.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

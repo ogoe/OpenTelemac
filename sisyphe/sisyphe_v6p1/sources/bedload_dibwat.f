@@ -14,57 +14,57 @@
 !
 !history  C. VILLARET (LNHE)
 !+        15/11/2003
-!+        
-!+   
+!+
+!+
 !
 !history  JMH
 !+        09/05/2007
 !+        V5P7
-!+   CHECKS FOR GAMMA=0 DIVISION 
+!+   CHECKS FOR GAMMA=0 DIVISION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHAW         |---| 
-!| CF             |---| 
-!| DENS           |---| 
-!| DM             |---| 
-!| FCW            |---| 
-!| FW             |---| 
-!| GRAV           |---| 
-!| HOULE          |---| 
-!| NPOIN          |---| 
-!| PI             |---| 
-!| QSC            |---| 
-!| T2             |---| 
-!| T3             |---| 
-!| THETAC         |---| 
-!| THETAW         |---| 
-!| TOB            |---| 
-!| TOBW           |---| 
-!| TW             |---| 
-!| TW1            |---| 
-!| TW2            |---| 
-!| U2D            |---| 
-!| UCMOY          |---| 
-!| UCN            |---| 
-!| UCW            |---| 
-!| UW             |---| 
-!| UW1            |---| 
-!| UW2            |---| 
-!| V2D            |---| 
-!| XMVE           |---| 
-!| XWC            |---| 
+!| ALPHAW         |---|
+!| CF             |---|
+!| DENS           |---|
+!| DM             |---|
+!| FCW            |---|
+!| FW             |---|
+!| GRAV           |---|
+!| HOULE          |---|
+!| NPOIN          |---|
+!| PI             |---|
+!| QSC            |---|
+!| T2             |---|
+!| T3             |---|
+!| THETAC         |---|
+!| THETAW         |---|
+!| TOB            |---|
+!| TOBW           |---|
+!| TW             |---|
+!| TW1            |---|
+!| TW2            |---|
+!| U2D            |---|
+!| UCMOY          |---|
+!| UCN            |---|
+!| UCW            |---|
+!| UW             |---|
+!| UW1            |---|
+!| UW2            |---|
+!| V2D            |---|
+!| XMVE           |---|
+!| XWC            |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_DIBWAT => BEDLOAD_DIBWAT
@@ -72,7 +72,7 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D,V2D,UCMOY, CF, TOB, TOBW
@@ -87,7 +87,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: UW1, UW2, TW1   ! WORK ARRAY T7, T8, T9
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: TW2, THETAC     ! WORK ARRAY T10, T11
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: FCW, QSC        ! WORK ARRAY T12
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER                     :: I

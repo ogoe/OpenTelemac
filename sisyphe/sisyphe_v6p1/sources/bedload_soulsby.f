@@ -14,38 +14,38 @@
 !history  SOGREAH
 !+        22/05/2001
 !+        V5P2
-!+   
+!+
 !
 !history  C.VILLARET
 !+        **/11/2003
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| D90            |---| 
-!| DENS           |---| 
-!| DM             |---| 
-!| DSTAR          |---| 
-!| GRAV           |---| 
-!| HMIN           |---| 
-!| HN             |---| 
-!| NPOIN          |---| 
-!| QSC            |---| 
-!| QSS            |---| 
-!| UCMOY          |---| 
-!| UW             |---| 
+!| D90            |---|
+!| DENS           |---|
+!| DM             |---|
+!| DSTAR          |---|
+!| GRAV           |---|
+!| HMIN           |---|
+!| HN             |---|
+!| NPOIN          |---|
+!| QSC            |---|
+!| QSS            |---|
+!| UCMOY          |---|
+!| UW             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_SOULSBY => BEDLOAD_SOULSBY
@@ -59,14 +59,14 @@
       INTEGER,          INTENT(IN)  :: NPOIN
       DOUBLE PRECISION, INTENT(IN)  :: DENS, GRAV, DM, DSTAR, HMIN, D90
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC, QSS
-
+!
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER                     :: I
       DOUBLE PRECISION            :: COEF, ASS, ASB, CD
       DOUBLE PRECISION            :: UCR, VTOT, TRA
       DOUBLE PRECISION, PARAMETER :: Z0=0.006D0
-
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
@@ -77,20 +77,20 @@
       ! ************************* !
       COEF = (DENS *GRAV*DM)**1.2D0
       ASS  = 0.012D0*DM*(DSTAR**(-0.6D0))/COEF
-
+!
       DO I = 1, NPOIN
-
+!
          ! *************************** !
          ! III - BEDLOAD COEFFICIENT   !
          ! *************************** !
          ASB = 0.005D0*HN%R(I)*(DM/MAX(HN%R(I),DM))**1.2D0 / COEF
-
+!
          ! ********************************** !
          ! IV - ROUGHNESS COEFFICIENT CD      !
          !      SOULSBY: Z0=0.006 --> KS=18CM !
          ! ********************************** !
          CD = (0.4D0 / (LOG(MAX(HN%R(I),Z0)/Z0)-1.D0))**2
-
+!
          ! ************************************************ !
          ! V - CRTITICAL CURRENT SPEED UCR                  !
          ! ************************************************ !
@@ -99,12 +99,12 @@
          ELSE
             UCR = 8.50D0*(DM**0.6D0)*LOG10(4.D0*MAX(HN%R(I),D90)/D90)
          ENDIF
-
+!
          ! ************************************************* !
          ! VI - SPEED INDUCED BY THE CURRENT AND WAVES       !
          ! ************************************************* !
          VTOT = SQRT(UCMOY%R(I)**2+(0.018D0/CD)*UW%R(I)**2)
-
+!
          ! *********************************************** !
          ! VII - SUSPENDED AND BEDLOAD TRANSPORT           !
          ! *********************************************** !
