@@ -13,35 +13,35 @@
 !
 !history  VINCENT BOYER
 !+        01/02/01
-!+        
-!+   
+!+
+!+
 !
 !history  OLIVER GOETHEL
 !+        18/03/04
-!+        
-!+   
+!+
+!+
 !
 !history  J-M HERVOUET(LNH)
 !+        14/12/09
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHA          |---| 
-!| BETA           |---| 
-!| BETAS          |---| 
+!| ALPHA          |---|
+!| BETA           |---|
+!| BETAS          |---|
 !| C1             |<--| K-EPSILON CONSTANT
 !| C2             |<--| K-EPSILON CONSTANT
 !| CMU            |<--| K-EPSILON CONSTANT
@@ -51,7 +51,7 @@
 !| KARMAN         |<--| VON KARMAN CONSTANT
 !| KMAX           |<--| K MAXIMUM
 !| KMIN           |<--| K MINIMUM
-!| OMSTAR         |---| 
+!| OMSTAR         |---|
 !| PRANDTL        |<--| PRANDTL NUMBER
 !| SCHMIT         |<--| SCHMIT NUMBER
 !| SIGMAE         |<--| K-EPSILON CONSTANT

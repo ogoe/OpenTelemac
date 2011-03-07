@@ -15,41 +15,41 @@
 !
 !history  CAMILLE LEQUETTE
 !+        **/06/2003
-!+        
-!+   
+!+
+!+
 !
 !history  J.-M. HERVOUET
 !+        12/09/2007
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---| 
-!| CF             |---| 
+!| AC             |---|
+!| CF             |---|
 !| CFDEP          |-->| CONCENTRATION DES DEPOTS FRAIS
 !| CREF           |<->| CONCENTRATION DEQUILIBRE
-!| DMOY           |---| 
+!| DMOY           |---|
 !| DT             |-->| PAS DE TEMPS HYDRAULIQUE
 !| FLUER          |<--| VALEUR DU FLUX D'EROSION
 !| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
 !| HDEP           |<->| EPAISSEUR DE LA COUCHE DES DEPOTS FRAIS
 !| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
-!| KSPRATIO       |---| 
+!| KSPRATIO       |---|
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE2D
-!| NPOIN3         |---| 
-!| RHO0           |---| 
+!| NPOIN3         |---|
+!| RHO0           |---|
 !| RHOS           |-->| DENSITE DU SEDIMENT
 !| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
 !| WC             |-->| VITESSE DE CHUTE DU SEDIMENT

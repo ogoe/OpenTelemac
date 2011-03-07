@@ -14,25 +14,25 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  JMH (LNHE)     ; J-M JANIN (LNH)    ; F LEPEINTRE (LNH)
 !+        21/10/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS DU PAS DE TEMPS
@@ -42,11 +42,11 @@
 !| IFABOR3D       |<--| TABLEAU DES ELEMENTS ADJACENTS AUX FACES(3D)
 !| ITRA01         |-->| TABLEAUX DE TRAVAIL D'ENTIERS
 !| LT             |-->| NUMERO DU PAS DE TEMPS
-!| MASKBR         |---| 
+!| MASKBR         |---|
 !| MASKEL         |<--| MASQUAGE DES ELEMENTS
 !| MASKPT         |-->| MASQUAGE DES POINTS
-!| MESH2D         |---| 
-!| NELBO3         |---| 
+!| MESH2D         |---|
+!| NELBO3         |---|
 !| NELEM2         |-->| NOMBRE D'ELEMENTS EN 2D
 !| NELMA2         |-->| NOMBRE MAXIMAL D'ELEMENTS EN 2D
 !| NETAGE         |-->| NPLAN - 1

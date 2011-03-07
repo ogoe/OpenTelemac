@@ -27,41 +27,41 @@
 !
 !history  JACEK A. JANKOWSKI - UNIVERSITAET HANNOVER
 !+        12/98 - 04/99
-!+        
-!+   NON-HYDROSTATIC VERSION 
+!+
+!+   NON-HYDROSTATIC VERSION
 !
 !history  JM HERVOUET (LNHE)
 !+        21/05/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DP             |-->| HYDRODYNAMIC PRESSURE, TIMESTEP N+1
-!| IELM3          |---| 
-!| IPBOT          |---| 
+!| IELM3          |---|
+!| IPBOT          |---|
 !| MASKEL         |-->| ELEMENT MASKING
-!| MESH3D         |---| 
+!| MESH3D         |---|
 !| MSK            |-->| MASKING LOGICAL FLAG
-!| NPLAN          |---| 
-!| NPOIN2         |---| 
-!| NPOIN3         |---| 
-!| OPTBAN         |---| 
+!| NPLAN          |---|
+!| NPOIN2         |---|
+!| NPOIN3         |---|
+!| OPTBAN         |---|
 !| PX,PY,PZ       |<->| H-DYN. PRESSURE PARTIAL DERIVATIVES
-!| S              |---| 
-!| SIGMAG         |---| 
-!| UNSV3D         |---| 
+!| S              |---|
+!| SIGMAG         |---|
+!| UNSV3D         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

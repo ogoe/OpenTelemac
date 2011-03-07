@@ -21,38 +21,38 @@
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
 !+        V1P2
-!+   FORTRAN95 VERSION 
+!+   FORTRAN95 VERSION
 !
 !history  JM HERVOUET (LNHE)
 !+        29/02/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| KADH           |-->| CONVENTION POUR LES PAROIS AVEC ADHERENCE
-!| KDEB           |---| 
+!| KDEB           |---|
 !| KENT           |-->| CONVENTION POUR LES VALEURS IMPOSEES (ENT.)
 !| KLOG           |-->| CONVENTION POUR LES PAROIS AVEC GLISSEMENT
-!| KP1BOR         |---| 
-!| LIHBOR         |---| 
+!| KP1BOR         |---|
+!| LIHBOR         |---|
 !| LIUBOF,LIVBOF  |-->| TYPES DE C.L. SUR U ET V AU FOND
 !| LIUBOL,LIVBOL  |-->| TYPES DE C.L. SUR U ET V SUR LES PAROIS LAT.
 !| LIUBOS,LIVBOS  |-->| TYPES DE C.L. SUR U ET V EN SURFACE
-!| LIWBOF         |---| 
-!| LIWBOL         |---| 
-!| LIWBOS         |---| 
+!| LIWBOF         |---|
+!| LIWBOL         |---|
+!| LIWBOS         |---|
 !| NBOR           |-->| CORRESPONDANCE NUMEROTATION FRONTIERE ET
 !|                |   | NUMEROTATION GLOBALE EN 2D
 !| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
@@ -61,11 +61,11 @@
 !| UBORF,VBORF    |-->| VITESSES U ET V IMPOSEES AU FOND
 !| UBORL,VBORL    |-->| VITESSES U ET V IMPOSEES SUR LES PAROIS LAT.
 !| UBORS,VBORS    |-->| VITESSES U ET V IMPOSEES EN SURFACE
-!| VELPROLAT      |---| 
-!| W              |---| 
-!| WBORF          |---| 
-!| WBORL          |---| 
-!| WBORS          |---| 
+!| VELPROLAT      |---|
+!| W              |---|
+!| WBORF          |---|
+!| WBORL          |---|
+!| WBORS          |---|
 !| XNEBOR,YNEBOR  |-->| COMPOSANTES VECTEUR NORMAL POINTS FRONTIERES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

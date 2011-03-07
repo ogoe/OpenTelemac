@@ -27,19 +27,19 @@
 !history  J-M HERVOUET (LNHE)
 !+        19/04/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
@@ -59,24 +59,24 @@
 !| MESH3          |-->| 3D MESH
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
 !| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-!| NPLAN          |---| 
+!| NPLAN          |---|
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NSCE           |---| 
-!| NSEG           |---| 
-!| OPTBAN         |---| 
+!| NSCE           |---|
+!| NSEG           |---|
+!| OPTBAN         |---|
 !| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
 !| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
-!| RMASS          |---| 
+!| RMASS          |---|
 !| S0F            |-->| TERME SOURCE EXPLICITE
 !| SCHCF          |-->| SCHEMA DE CONVECTION DE F
-!| SOURCES        |---| 
-!| STRA01         |---| 
-!| STRA02         |---| 
-!| STRA03         |---| 
-!| SVOLU          |---| 
-!| SVOLU2         |---| 
-!| SVOLUN         |---| 
+!| SOURCES        |---|
+!| STRA01         |---|
+!| STRA02         |---|
+!| STRA03         |---|
+!| SVOLU          |---|
+!| SVOLU2         |---|
+!| SVOLUN         |---|
 !| TRA01          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
 !|                |   | EQUIVALENT DE VOLU2 POUR LE TEMPS FINAL COURANT
 !| TRA02          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3

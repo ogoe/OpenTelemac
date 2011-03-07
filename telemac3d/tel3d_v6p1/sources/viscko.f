@@ -15,29 +15,29 @@
 !history  HOLGER WEILBEER   ISEB/UHA
 !+        25/11/97
 !+        V5P3
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  HOLGER WEILBEER   ISEB/UHA
 !+        **/02/01
-!+        
-!+   K-OMEGA 
+!+
+!+   K-OMEGA
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| ENERGIE TURBULENTE
@@ -48,7 +48,7 @@
 !| DNUVIV         |-->| COEFFICIENT DE DIFFUSION VERTICALE POUR U
 !| EP             |-->| DISSIPATION TURBULENTE
 !| NTRAC          |-->| NOMBRE DE TRACEURS
-!| ROTAT          |---| 
+!| ROTAT          |---|
 !| VISCTA         |<--| DIFFUSION TURBULENTE POUR LES TRACEURS ACTIFS
 !| VISCVI         |<--| DIFFUSION TURBULENTE POUR LES VITESSES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

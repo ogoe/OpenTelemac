@@ -13,44 +13,44 @@
 !
 !history  JMH
 !+        23/01/2009
-!+        
-!+   SUMS FRICTION TERMS IN T3_04 ; 
+!+
+!+   SUMS FRICTION TERMS IN T3_04 ;
 !
 !history  JMH
 !+        27/07/2009
-!+        
-!+   MODIFIED TREATMENT OF FRICTION TERMS ON DRY ZONES ; 
+!+
+!+   MODIFIED TREATMENT OF FRICTION TERMS ON DRY ZONES ;
 !
 !history  JMH
 !+        18/08/2009
-!+        
-!+   COMPUTES UCONVC AND VCONVC AT THE END (SEE PRECON) 
+!+
+!+   COMPUTES UCONVC AND VCONVC AT THE END (SEE PRECON)
 !
 !history  JMH
 !+        20/08/2009
-!+        
-!+   NOW COMPUTES UNSV3D IN MESH_PROP 
+!+
+!+   NOW COMPUTES UNSV3D IN MESH_PROP
 !
 !history  J.M. HERVOUET (LNHE)
 !+        05/05/2010
 !+        V6P0
-!+   MODIFIED CASE DPWAVEQ (SECOND COMPUTATION OF 
+!+   MODIFIED CASE DPWAVEQ (SECOND COMPUTATION OF
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ISOUSI         |---| 
-!| LT             |---| 
+!| ISOUSI         |---|
+!| LT             |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

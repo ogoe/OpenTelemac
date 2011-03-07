@@ -22,35 +22,35 @@
 !
 !history  JACEK A. JANKOWSKI - UNIVERSITAET HANNOVER
 !+        **/12/98
-!+        
-!+   NON-HYDROSTATIC VERSION 
+!+
+!+   NON-HYDROSTATIC VERSION
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  JMH
 !+        15/09/2008
-!+        
-!+   TREATS KP1BOR IN PARALLEL 
+!+
+!+   TREATS KP1BOR IN PARALLEL
 !
 !history  JMH (LNHE)
 !+        15/11/08
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LIMPRP         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA

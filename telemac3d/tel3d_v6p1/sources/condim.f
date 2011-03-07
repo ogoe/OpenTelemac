@@ -11,40 +11,40 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
-!history  
+!history
 !+        20/04/2007
-!+        
-!+   ADDED INITIALISATION OF DPWAVE 
+!+
+!+   ADDED INITIALISATION OF DPWAVE
 !
-!history  
+!history
 !+        23/01/2009
-!+        
-!+   ADDED CHECK OF ZSTAR 
+!+
+!+   ADDED CHECK OF ZSTAR
 !
-!history  
+!history
 !+        16/03/2010
-!+        
-!+   NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW 
+!+
+!+   NEW OPTIONS FOR BUILDING THE MESH IN CONDIM, SEE BELOW
 !
 !history  J-M HERVOUET(LNHE)
 !+        05/05/2010
 !+        V6P0
-!+   SUPPRESSED INITIALISATION OF DPWAVE 
+!+   SUPPRESSED INITIALISATION OF DPWAVE
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

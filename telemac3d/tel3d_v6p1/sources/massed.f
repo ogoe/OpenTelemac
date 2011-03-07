@@ -17,24 +17,24 @@
 !history  C.LE NORMANT(LNH)
 !+        26/08/92
 !+        V5P1
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
@@ -43,14 +43,14 @@
 !|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+IVIDE))
 !| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
 !| HDEP           |-->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
-!| IELM3          |---| 
+!| IELM3          |---|
 !| IKLE2          |-->| TABLE DE CONNECTIVITE POUR LES POINTS DU FOND
 !| IVIDE          |-->| INDICE DES VIDES AUX POINTS DU MAILLAGE
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS SECS
-!| MASSE          |---| 
-!| MESH3          |---| 
-!| MSK            |---| 
-!| NCOUCH         |---| 
+!| MASSE          |---|
+!| MESH3          |---|
+!| MSK            |---|
+!| NCOUCH         |---|
 !| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
 !| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
 !| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
@@ -60,13 +60,13 @@
 !| NPOIN2         |-->| NOMBRE DE POINTS 2D
 !| NPOIN3         |-->| NOMBRE DE POINTS 3D
 !| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| NVBIL          |---| 
+!| NVBIL          |---|
 !| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
-!| S              |---| 
+!| S              |---|
 !| SURFAC         |-->| SURFACES DES ELEMENTS.
 !| TA             |-->| CONCENTRATION DU SEDIMENT EN SUSPENSION
 !| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-!| TRA02          |---| 
+!| TRA02          |---|
 !| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

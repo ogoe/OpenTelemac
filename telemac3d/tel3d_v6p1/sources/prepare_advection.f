@@ -14,29 +14,29 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  J.M. HERVOUET (LNHE)
 !+        18/12/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
-!| DIRFLU         |---| 
+!| DIRFLU         |---|
 !| FBORL          |-->| CONDITIONS AUX LIMITES DIRICHLET
 !| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
 !| FLUXF          |<->| FLUX GLOBAL A INCREMENTER
@@ -44,12 +44,12 @@
 !| IELM3          |-->| TYPE DE DISCRETISATION 3D
 !| LIFBOL         |-->| TYPE DE CONDITIONS LIMITES PHYSIQUES
 !| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3D         |---| 
+!| MESH3D         |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
 !| NBOR3          |-->| NUMEROS GLOBAUX DES POINTS FRONTIERES 3D
-!| NFRLIQ         |---| 
+!| NFRLIQ         |---|
 !| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE BORDS LATERAUX
-!| NUMLIQ         |---| 
+!| NUMLIQ         |---|
 !| S0F            |-->| TERME SOURCE EXPLICITE (DIM=F/T)
 !| SCHCF          |-->| SCHEMA DE CONVECTION DE F
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

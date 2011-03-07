@@ -15,24 +15,24 @@
 !history  F LEPEINTRE (LNH)
 !+        25/11/97
 !+        V5P1
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FONCTION A INTERPOLER
@@ -47,7 +47,7 @@
 !| SURFAC         |-->| SURFACE DES ELEMENTS DU MAILLAGE 2D
 !| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
 !| X1,Y1,Z1       |-->| COORDONNEES DES EXTREMITES DU SEGMENT
-!| X2,Y2,Z2       |---| 
+!| X2,Y2,Z2       |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

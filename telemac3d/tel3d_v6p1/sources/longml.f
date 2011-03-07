@@ -16,30 +16,30 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN 95 VERSION 
+!+
+!+   FORTRAN 95 VERSION
 !
 !history  C. VILLARET (LNHE) ; J.-M. HERVOUET (LNHE) ; C. GUILBAUD (SOGREAH)
 !+        25/02/03
 !+        V5P4
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| HN             |-->| HAUTEUR D'EAU
 !| KARMAN         |-->| KARMAN CONSTANT
-!| LM2            |---| 
+!| LM2            |---|
 !| MIXING         |-->| MODELE DE LONGUEUR DE MELANGE
 !| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D

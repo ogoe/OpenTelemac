@@ -21,38 +21,38 @@
 !history  J.M. JANIN  (LNH)
 !+        25/11/97
 !+        V5P1
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LISFON         |-->| NUMBER OF SMOOTHINGS REQUIRED
 !| MASKEL         |-->| MASK OF ELEMENTS
-!| MATR2D         |---| 
-!| MESH2D         |---| 
+!| MATR2D         |---|
+!| MESH2D         |---|
 !| MSK            |-->| IF YES, THERE ARE MASKED ELEMENTS
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
 !| PRIVE          |-->| BLOCK OF PRIVATE ARRAYS
-!| S              |---| 
-!| ST1            |---| 
-!| ST2            |---| 
-!| SZF            |---| 
-!| T2             |---| 
+!| S              |---|
+!| ST1            |---|
+!| ST2            |---|
+!| SZF            |---|
+!| T2             |---|
 !| X,Y            |-->| MESH COORDINATES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

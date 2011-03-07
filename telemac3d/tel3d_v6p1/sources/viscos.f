@@ -13,36 +13,36 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  J-M HERVOUET (LNH)
 !+        14/12/00
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DNUTAH         |---| 
-!| DNUTAV         |---| 
-!| DNUVIH         |---| 
-!| DNUVIV         |---| 
-!| ITURBH         |---| 
-!| ITURBV         |---| 
-!| NTRAC          |---| 
-!| VISCTA         |---| 
-!| VISCVI         |---| 
+!| DNUTAH         |---|
+!| DNUTAV         |---|
+!| DNUVIH         |---|
+!| DNUVIV         |---|
+!| ITURBH         |---|
+!| ITURBV         |---|
+!| NTRAC          |---|
+!| VISCTA         |---|
+!| VISCVI         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

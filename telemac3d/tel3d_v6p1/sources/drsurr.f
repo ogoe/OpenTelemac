@@ -18,36 +18,36 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   
+!+
+!+
 !
 !history  JMH   AG - LNHE
 !+        **/11/2000
 !+        V5P2
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETAC          |-->| -(1/RHO)*(DRHO/DT) FOR TRACERS WHEN CONSTANT
 !| DELTAR         |<--| (RHO-RHO0)/RHO0
 !| DENLAW         |-->| CHOICE OF DENSITY LAW (SEE ABOVE)
-!| IND_S          |---| 
-!| IND_T          |---| 
+!| IND_S          |---|
+!| IND_T          |---|
 !| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
 !| RHO            |-->| WATER DENSITY
 !| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
-!| RHOS           |---| 
+!| RHOS           |---|
 !| SEDI           |-->| IF YES, THERE IS SEDIMENT
 !| T0AC           |-->| REFERENCE CONCENTRATION OF TRACERS
 !| TA             |-->| TRACERS

@@ -2,7 +2,7 @@
                      SUBROUTINE BIL3D
 !                    ****************
 !
-     *(LT,IKLBORL,IKLE2L,NPTFR,NETAG,NELEM)
+     &(LT,IKLBORL,IKLE2L,NPTFR,NETAG,NELEM)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P0                                   21/08/2010
@@ -14,32 +14,32 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  J-M HERVOUET (LNHE)
 !+        17/06/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLBORL        |---| 
-!| IKLE2L         |---| 
+!| IKLBORL        |---|
+!| IKLE2L         |---|
 !| LT             |-->| NUMERO DU PAS DE TEMPS EN COURS
-!| NELEM          |---| 
-!| NETAG          |---| 
+!| NELEM          |---|
+!| NETAG          |---|
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

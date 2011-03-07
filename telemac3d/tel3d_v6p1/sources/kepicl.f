@@ -19,39 +19,39 @@
 !history  L. VAN HAREN (LNH)
 !+        25/11/97
 !+        V6P0
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| KADH           |-->| CONVENTION POUR UNE PAROI AVEC ADHERENCE
 !| KENT           |-->| CONVENTION POUR UN POINT A VALEUR IMPOSEE
 !| KLOG           |-->| CONVENTION POUR UNE PAROI LOGARITHMIQUE
 !| KSORT          |-->| CONVENTION POUR UN POINT A VALEUR LIBRE
-!| LIEBOF         |---| 
-!| LIEBOL         |---| 
-!| LIEBOS         |---| 
-!| LIKBOF         |---| 
-!| LIKBOL         |---| 
-!| LIKBOS         |---| 
-!| LIUBOF         |---| 
-!| LIUBOL         |---| 
-!| LIUBOS         |---| 
+!| LIEBOF         |---|
+!| LIEBOL         |---|
+!| LIEBOS         |---|
+!| LIKBOF         |---|
+!| LIKBOL         |---|
+!| LIKBOS         |---|
+!| LIUBOF         |---|
+!| LIUBOL         |---|
+!| LIUBOS         |---|
 !| NPLAN          |-->| NOMBRE DE PLANS  DU MAILLAGE 3D
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES DU MAILLAGE 2D

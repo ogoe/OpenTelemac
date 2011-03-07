@@ -25,24 +25,24 @@
 !history  F LEPEINTRE (LNH)
 !+        25/11/97
 !+        V5P1
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS DU PAS DE TEMPS
@@ -61,8 +61,8 @@
 !| NSCO           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER POUR SCOPE
 !| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
 !| SURFAC         |-->| SURFACE DES ELEMENTS DU MAILLAGE 2D
-!| TRA02          |---| 
-!| TRA03          |---| 
+!| TRA02          |---|
+!| TRA03          |---|
 !| U,V,W          |-->| VITESSE 3D
 !| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
 !| ZF             |-->| COTE DU FOND

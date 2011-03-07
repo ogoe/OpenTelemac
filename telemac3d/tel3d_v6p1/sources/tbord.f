@@ -16,57 +16,57 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  V. BOYER UMIST
 !+        26/06/2008
 !+        V5P9
-!+   PARALLELISM 
+!+   PARALLELISM
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AUBORL         |---| 
+!| AUBORL         |---|
 !| DISBOR         |-->| DISTANCE AU BORD DES POINTS VOISINS DU BORD
 !| DNUVIH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE
 !| DNUVIV         |-->| COEFFICIENT DE DIFFUSION VERTICALE
-!| IKLE           |---| 
+!| IKLE           |---|
 !| KADH           |-->| CONVENTION POUR UNE PAROI AVEC ADHERENCE
 !| KARMAN         |-->| CONSTANTE DE KARMAN
 !| KENT           |-->| CONVENTION POUR UN POINT A VALEUR IMPOSEE
-!| KENTU          |---| 
+!| KENTU          |---|
 !| KFROTL         |-->| LOI DE FROTTEMENT
 !| KLOG           |-->| CONVENTION POUR UNE PAROI LOGARITHMIQUE
 !| KSORT          |-->| CONVENTION POUR UN POINT A VALEUR LIBRE
 !| LISRUL         |-->| REGIME DE TURBULENCE 1: LISSE
 !|                |   | DES BORDS            2: RUGUEUX
-!| LIUBOL         |---| 
-!| MESH2D         |---| 
+!| LIUBOL         |---|
+!| MESH2D         |---|
 !| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NELBOR         |---| 
-!| NELEM2         |---| 
-!| NONHYD         |---| 
+!| NELBOR         |---|
+!| NELEM2         |---|
+!| NONHYD         |---|
 !| NPLAN          |-->| NOMBRE DE PLANS  DU MAILLAGE 3D
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES DU MAILLAGE 2D
-!| NULONE         |---| 
-!| RUGOL          |---| 
+!| NULONE         |---|
+!| RUGOL          |---|
 !| U              |-->| COMPOSANTES X DE LA VITESSE AU TEMPS N
-!| UETCAL         |---| 
-!| UTANG          |---| 
+!| UETCAL         |---|
+!| UTANG          |---|
 !| V              |-->| COMPOSANTES Y DE LA VITESSE AU TEMPS N
-!| W              |---| 
+!| W              |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

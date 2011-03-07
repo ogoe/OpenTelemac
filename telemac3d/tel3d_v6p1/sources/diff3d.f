@@ -23,75 +23,75 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  JMH
 !+        14/12/2009
-!+        
-!+   DIRICHLET POINTS ON THE BOTTOM 
+!+
+!+   DIRICHLET POINTS ON THE BOTTOM
 !
 !history  J.M. HERVOUET (LNHE)
 !+        18/03/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AFBORF         |---| 
-!| AFBORS         |---| 
+!| AFBORF         |---|
+!| AFBORS         |---|
 !| AGGLOD         |-->| MASS-LUMPING DE LA DIFFUSION
-!| BFBORF         |---| 
-!| BFBORS         |---| 
-!| CLIMAX         |---| 
+!| BFBORF         |---|
+!| BFBORS         |---|
+!| CLIMAX         |---|
 !| DT             |-->| PAS DE TEMPS
-!| FBORF          |---| 
-!| FBORS          |---| 
+!| FBORF          |---|
+!| FBORS          |---|
 !| FC             |-->| VARIABLE APRES CONVECTION
 !| FD             |<--| VARIABLE APRES DIFFUSION
 !| FMIN,FMAX      |-->| VALEURS DE CLIPPING
 !| FN             |-->| VARIABLE AU TEMPS N
-!| FSCE           |---| 
-!| H              |---| 
+!| FSCE           |---|
+!| H              |---|
 !| IELM2H         |-->| TYPE DE DISCRETISATION 2DH
 !| IELM2V         |-->| TYPE DE DISCRETISATION 2DV
 !| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| INCHYD         |---| 
+!| INCHYD         |---|
 !| INFO           |-->| INFORMATIONS SUR LES SOLVEURS
-!| IPBOT          |---| 
-!| IT1            |---| 
-!| LIFBOF         |---| 
-!| LIFBOS         |---| 
-!| MASKBR         |---| 
+!| IPBOT          |---|
+!| IT1            |---|
+!| LIFBOF         |---|
+!| LIFBOS         |---|
+!| MASKBR         |---|
 !| MASKEL         |-->| MASQUAGE DES ELEMENTS
 !| MASKPT         |-->| MASQUAGE DES POINTS
 !| MATR2H         |<->| MATRICE DE TRAVAIL 2DH
-!| MDIFF          |---| 
-!| MESH2D         |---| 
-!| MESH3D         |---| 
+!| MDIFF          |---|
+!| MESH2D         |---|
+!| MESH3D         |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| MSUPG          |---| 
+!| MSUPG          |---|
 !| MTRA1          |<->| MATRICE DE TRAVAIL
 !| MTRA2          |<->| MATRICE DE TRAVAIL
 !| NBOR3          |-->| NUMEROS GLOBAUX DES POINTS FRONTIERES 3D
 !| NEWDIF         |-->| RECALCULE OU NON LA MATRICE DE DIFFUSION
-!| NPLAN          |---| 
+!| NPLAN          |---|
 !| NPOIN2         |-->| NOMBRE DE POINTS 2D
 !| NPOIN3         |-->| NOMBRE DE POINTS 3D
 !| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE BORDS LATERAUX
-!| NSCE           |---| 
-!| OPTBAN         |---| 
+!| NSCE           |---|
+!| OPTBAN         |---|
 !| OPTDIF         |-->| OPTION DE DIFFUSION DE F
 !| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
 !| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
@@ -102,35 +102,35 @@
 !| SEM3D          |<->| SECOND MEMBRE
 !| SIGMAF         |-->| COEFFICIENT DE REDUCTION DE LA VISCOSITE
 !|                |   | UTILISE SEULEMENT POUR K ET EPSILON
-!| SIGMAG         |---| 
-!| SLVDIF         |---| 
-!| SOURCES        |---| 
+!| SIGMAG         |---|
+!| SLVDIF         |---|
+!| SOURCES        |---|
 !| SVIDE          |-->| STRUCTURE VIDE
-!| T2_01          |---| 
-!| T2_02          |---| 
-!| T2_03          |---| 
-!| T3_02          |---| 
-!| T3_03          |---| 
-!| T3_04          |---| 
+!| T2_01          |---|
+!| T2_02          |---|
+!| T2_03          |---|
+!| T3_02          |---|
+!| T3_03          |---|
+!| T3_04          |---|
 !| TETADI         |-->| COEF D'IMPLICITATION DE LA DIAGONALE DE LA
 !|                |   | DIFFUSION SI  OPTDIF = 2
 !|                |   | COEF D'IMPLICITATION DE LA DIFFUSION
 !|                |   | SI  OPTDIF =1
-!| TETASUPG       |---| 
+!| TETASUPG       |---|
 !| TRAV3          |<->| STRUCTURE DE TABLEAUX DE TRAVAIL 3D
-!| TRBAF          |---| 
-!| VELOCITY       |---| 
+!| TRBAF          |---|
+!| VELOCITY       |---|
 !| VISCF          |-->| COEFFICIENTS DE VISCOSITE
 !|                |   | VISCF(*,1 OU 2) VISCOSITE HORIZONTALE
 !|                |   | VISCF(*,3)      VISCOSITE VERTICALE
-!| VOLU           |---| 
-!| WCC            |---| 
-!| YAS0F          |---| 
-!| YAS1F          |---| 
-!| YASCE          |---| 
+!| VOLU           |---|
+!| WCC            |---|
+!| YAS0F          |---|
+!| YAS1F          |---|
+!| YASCE          |---|
 !| YASEM3D        |-->| IF TRUE, RIGHT HAND SIDE HAS BEEN PARTLY
 !|                |   | COMPUTED BEFORE CALLING DIFF3D
-!| YAWCC          |---| 
+!| YAWCC          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

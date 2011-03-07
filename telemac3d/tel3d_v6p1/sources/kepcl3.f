@@ -19,25 +19,25 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  J-M HERVOUET (LNHE)     ; V. BOYER UMIST
 !+        04/01/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| ENERGIE TURBULENTE
@@ -45,44 +45,44 @@
 !| DISBOR         |-->| DISTANCE AU BORD DES POINTS VOISINS DU BORD
 !| DNUVIH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE
 !| DNUVIV         |-->| COEFFICIENT DE DIFFUSION VERTICALE
-!| EBORF          |---| 
-!| EBORL          |---| 
-!| EBORS          |---| 
+!| EBORF          |---|
+!| EBORL          |---|
+!| EBORS          |---|
 !| EMIN,EMAX      |-->| EPSILON MINIMUM ET MAXIMUM EN CAS DE CLIPPING
 !| H              |-->| HAUTEUR D'EAU AU TEMPS N
 !| KADH           |-->| CONVENTION POUR UNE PAROI AVEC ADHERENCE
 !| KARMAN         |-->| CONSTANTE DE KARMAN
-!| KBORF          |---| 
-!| KBORL          |---| 
-!| KBORS          |---| 
+!| KBORF          |---|
+!| KBORL          |---|
+!| KBORS          |---|
 !| KENT           |-->| CONVENTION POUR UN POINT A VALEUR IMPOSEE
-!| KENTU          |---| 
+!| KENTU          |---|
 !| KLOG           |-->| CONVENTION POUR UNE PAROI LOGARITHMIQUE
 !| KMIN,KMAX      |-->| K MINIMUM ET MAXIMUM EN CAS DE CLIPPING
 !| KSORT          |-->| CONVENTION POUR UN POINT A VALEUR LIBRE
-!| LIEBOF         |---| 
-!| LIEBOL         |---| 
-!| LIEBOS         |---| 
-!| LIKBOF         |---| 
-!| LIKBOL         |---| 
-!| LIKBOS         |---| 
+!| LIEBOF         |---|
+!| LIEBOL         |---|
+!| LIEBOS         |---|
+!| LIKBOF         |---|
+!| LIKBOL         |---|
+!| LIKBOS         |---|
 !| LISRUF         |-->| REGIME DE TURBULENCE 1: LISSE
 !|                |   | POUR LE FOND         2: RUGUEUX
 !|                |   | 3: RUGUEUX (CHEZY)
 !| LISRUL         |-->| REGIME DE TURBULENCE 1: LISSE
 !|                |   | DES BORDS            2: RUGUEUX
 !|                |   | 3: RUGUEUX (CHEZY)
-!| LIUBOF         |---| 
-!| LIUBOL         |---| 
-!| LIUBOS         |---| 
+!| LIUBOF         |---|
+!| LIUBOL         |---|
+!| LIUBOS         |---|
 !| NBOR           |-->| ADRESSES DES POINTS DE BORD
 !| NPLAN          |-->| NOMBRE DE PLANS  DU MAILLAGE 3D
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES DU MAILLAGE 2D
-!| RUGOL          |---| 
+!| RUGOL          |---|
 !| U              |-->| COMPOSANTES X DE LA VITESSE AU TEMPS N
-!| UETCAL         |---| 
-!| UETCAR         |---| 
+!| UETCAL         |---|
+!| UETCAR         |---|
 !| V              |-->| COMPOSANTES Y DE LA VITESSE AU TEMPS N
 !| VIRT           |-->| ORIGIN VIRTUEL POUR EPSILON (TELEMAC 3D)
 !| Z              |-->| COTES DES POINTS DU MAILLAGE 3D REEL

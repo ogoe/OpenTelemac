@@ -17,24 +17,24 @@
 !history  C.LE NORMANT(LNH)
 !+        26/08/92
 !+        V5P1
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS
@@ -60,12 +60,12 @@
 !| NPOIN2         |-->| NOMBRE DE POINTS 2D
 !| NPOIN3         |-->| NOMBRE DE POINTS 3D
 !| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| NVBIL          |---| 
+!| NVBIL          |---|
 !| PDEPOT         |-->| PROBABILITE DE DEPOT EN CHAQUE POINT 2D
 !| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
 !| SURFAC         |-->| SURFACES DES ELEMENTS.
 !| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-!| TRA02          |---| 
+!| TRA02          |---|
 !| U,V,W          |-->| VITESSE AU PAS DE TEMPS PRESENT
 !| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
 !| X,Y,Z          |-->| COORDONNEES DU MAILLAGE

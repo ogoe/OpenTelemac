@@ -24,119 +24,119 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
-!history  
+!history
 !+        16/06/05
-!+        
-!+   SOURCES MODIFIED FOR INTAKES 
+!+
+!+   SOURCES MODIFIED FOR INTAKES
 !
-!history  
+!history
 !+        10/11/05
-!+        
-!+   SOURCES TAKEN INTO ACCOUNT IN MONOTONICITY CRITERION 
+!+
+!+   SOURCES TAKEN INTO ACCOUNT IN MONOTONICITY CRITERION
 !
-!history  
+!history
 !+        12/06/07
-!+        
-!+   SOURCES IN PARALLEL LOOK AT THE USE OF IIS 
+!+
+!+   SOURCES IN PARALLEL LOOK AT THE USE OF IIS
 !
-!history  
+!history
 !+        28/08/07
-!+        
-!+   PSI SCHEME RE-WRITTEN, NO THEORETICAL CHANGES BUT 
+!+
+!+   PSI SCHEME RE-WRITTEN, NO THEORETICAL CHANGES BUT
 !
-!history  
+!history
 !+        19/11/07
-!+        
-!+   RAIN HAD BEEN LEFT OUT IN THE PART WITH ALFA 
+!+
+!+   RAIN HAD BEEN LEFT OUT IN THE PART WITH ALFA
 !
-!history  
+!history
 !+        19/12/07
-!+        
-!+   CHANGED MONOTONICITY CRITERION 
+!+
+!+   CHANGED MONOTONICITY CRITERION
 !
-!history  
+!history
 !+        29/07/08
-!+        
-!+   TIDAL FLATS WITH OPTBAN=2 
+!+
+!+   TIDAL FLATS WITH OPTBAN=2
 !
-!history  
+!history
 !+        04/08/08
-!+        
-!+   DIMENSIONS OF XA AND XB INVERTED (SEE ALSO MT14PP) 
+!+
+!+   DIMENSIONS OF XA AND XB INVERTED (SEE ALSO MT14PP)
 !
-!history  
+!history
 !+        22/06/09
-!+        
-!+   FINITE VOLUME SCHEME ADDED 
+!+
+!+   FINITE VOLUME SCHEME ADDED
 !
-!history  
+!history
 !+        11/08/09
-!+        
-!+   FINITE VOLUME SCHEME OPTIMISED 
+!+
+!+   FINITE VOLUME SCHEME OPTIMISED
 !
 !history  J.M. JANIN  (LNH)
-!+        
+!+
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
 !| DA,XA          |-->| MATRICE MURD NON SYMETRIQUE OPTION N
 !| DB,XB          |<->| MATRICE MURD NON SYMETRIQUE OPTION N
 !|                |   | EVENTUELLEMENT TRANSFORME EN OPTION PSI
-!| DIMGLO         |---| 
+!| DIMGLO         |---|
 !| DT             |-->| PAS DE TEMPS
 !| FC             |<--| VARIABLE APRES CONVECTION
 !| FLODEL         |-->| FLUX PAR SEGMENTS DU MAILLAGE
-!| FLOPAR         |---| 
+!| FLOPAR         |---|
 !| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
 !| FLUX           |<->| FLUX GLOBAL A INCREMENTER
 !| FN             |-->| VARIABLE AU TEMPS N
-!| FSCE           |---| 
-!| GLOSEG         |---| 
+!| FSCE           |---|
+!| GLOSEG         |---|
 !| IKLE3          |-->| CORRESPONDANCE NUMEROTATION LOCALE ET GLOBALE
 !| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
 !| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
 !| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MASKPT         |---| 
-!| MAXFC          |---| 
-!| MESH3          |---| 
-!| MINFC          |---| 
+!| MASKPT         |---|
+!| MAXFC          |---|
+!| MESH3          |---|
+!| MINFC          |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
 !| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-!| NPLAN          |---| 
+!| NPLAN          |---|
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NSCE           |---| 
-!| NSEG           |---| 
-!| OPTBAN         |---| 
+!| NSCE           |---|
+!| NSEG           |---|
+!| OPTBAN         |---|
 !| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
 !| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
 !| S0F            |-->| TERME SOURCE EXPLICITE
 !| SCHCF          |-->| SCHEMA DE CONVECTION DE F
-!| SOURCES        |---| 
-!| STRA01         |---| 
-!| STRA02         |---| 
-!| STRA03         |---| 
-!| SVOLU2         |---| 
+!| SOURCES        |---|
+!| STRA01         |---|
+!| STRA02         |---|
+!| STRA03         |---|
+!| SVOLU2         |---|
 !| TRA01          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
 !|                |   | EQUIVALENT DE VOLU2 POUR LE TEMPS FINAL COURANT
-!| TRA03          |---| 
+!| TRA03          |---|
 !| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
 !| VOLU2          |-->| COMME VOLU MAIS ASSEMBLE EN PARALLELISME
 !| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N

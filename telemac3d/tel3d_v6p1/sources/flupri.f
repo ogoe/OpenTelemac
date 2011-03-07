@@ -25,36 +25,36 @@
 !history  J.-M. HERVOUET (LNHE)
 !+        14/03/06
 !+        V5P7
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE.
 !| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELEM2D        |---| 
+!| NELEM2D        |---|
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
 !|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN2         |---| 
-!| NPOIN3         |---| 
-!| T2             |---| 
-!| T3             |---| 
+!| NPOIN2         |---|
+!| NPOIN3         |---|
+!| T2             |---|
+!| T3             |---|
 !| U,V,W          |-->| COMPOSANTES D'UN VECTEUR
 !|                |   | INTERVENANT DANS LA FORMULE.
-!| VEC            |---| 
+!| VEC            |---|
 !| X,Y            |-->| COORDONNEES DES POINTS
 !| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| Z              |---| 
+!| Z              |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

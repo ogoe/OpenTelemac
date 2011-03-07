@@ -23,41 +23,41 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  CAMILLE LEQUETTE
 !+        **/06/03
-!+        
-!+   
+!+
+!+
 !
 !history  C LE NORMANT (LNH)
 !+        12/09/07
 !+        V5P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |-->| 
-!| ATABOF         |---| 
-!| ATABOS         |---| 
-!| BTABOF         |---| 
-!| BTABOS         |---| 
-!| CF             |---| 
+!| AC             |-->|
+!| ATABOF         |---|
+!| ATABOS         |---|
+!| BTABOF         |---|
+!| BTABOS         |---|
+!| CF             |---|
 !| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
 !| CONC           |-->| CONCENTRATIONS DES COUCHES DU FOND VASEUX
-!| CREF           |---| 
+!| CREF           |---|
 !| DELTAR         |-->| DELTA RHO SUR RHO0 = (RHO-RHO0)/RHO0
 !| DENSI          |-->| DENSITE DE L'EAU
 !| DMOY           |-->| DIAMETRE MOYEN DES GRAINS
@@ -66,10 +66,10 @@
 !|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+IVIDE))
 !| FLUER          |<--| FLUX D'EROSION EN CHAQUE POINT 2D
 !| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
-!| GRADZFX        |---| 
-!| GRADZFY        |---| 
-!| GRADZSX        |---| 
-!| GRADZSY        |---| 
+!| GRADZFX        |---|
+!| GRADZFY        |---|
+!| GRADZSX        |---|
+!| GRADZSY        |---|
 !| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
 !| HDEP           |<->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
 !| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
@@ -77,15 +77,15 @@
 !| IVIDE          |<->| INDICE DES VIDES AUX POINTS DU MAILLAGE
 !| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
 !| KSPRATIO       |-->| RATIO RUGOSITE DE PEAU / DIAMETRE DES GRAINS
-!| LITABF         |---| 
-!| LITABS         |---| 
+!| LITABF         |---|
+!| LITABS         |---|
 !| MPART          |-->| COEFFICIENT D'EROSION (LOI DE PARTHENIADES)
 !| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
 !|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
 !| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
 !| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
 !|                |   | DISCRETISANT LE FOND VASEUX(MODELE DE GIBSON)
-!| NPLAN          |---| 
+!| NPLAN          |---|
 !| NPOIN2         |-->| NOMBRE DE POINTS 2D
 !| NPOIN3         |-->| NOMBRE DE POINTS 3D
 !| PDEPOT         |<--| PROBABILITE DE DEPOT EN CHAQUE POINT 2D

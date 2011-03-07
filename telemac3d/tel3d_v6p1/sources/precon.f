@@ -13,57 +13,57 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  JMH
 !+        07/08/2008
-!+        
-!+   CALLS CHARAC INSTEAD OF CARACT 
+!+
+!+   CALLS CHARAC INSTEAD OF CARACT
 !
 !history  JMH
 !+        13/08/2008
-!+        
-!+   IMMEDIATE INTERPOLATION IN CHARAC 
+!+
+!+   IMMEDIATE INTERPOLATION IN CHARAC
 !
 !history  JMH
 !+        29/06/2009
-!+        
-!+   POINT TO POINT FLUXES COMPUTED IN FLODEL 
+!+
+!+   POINT TO POINT FLUXES COMPUTED IN FLODEL
 !
 !history  JMH
 !+        18/08/2009
-!+        
-!+   UCONVC AND VCONVC FOR ADVECTION FIELD 
+!+
+!+   UCONVC AND VCONVC FOR ADVECTION FIELD
 !
 !history  JMH
 !+        16/02/2010
-!+        
-!+   COMPUTES ZCHAR TO CALL CHARAC 
+!+
+!+   COMPUTES ZCHAR TO CALL CHARAC
 !
 !history  JM HERVOUET (LNHE)     ; JM JANIN (LNH)
 !+        26/04/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANG DE LA SOUS-ITERATION EN COURS
-!| LT             |---| 
-!| WP             |---| 
+!| LT             |---|
+!| WP             |---|
 !| WPS            |-->| VITESSE W DANS LE MAILLAGE TRANSFORME
-!| ZPROPS         |---| 
+!| ZPROPS         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

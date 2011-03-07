@@ -19,25 +19,25 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  J-M JANIN (LNH)
 !+        10/03/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBFLO         |-->| NUMEROS DES PAS DE TEMPS DE LARGAGE DE
@@ -73,8 +73,8 @@
 !| U,V,W          |-->| COMPOSANTE DE LA VITESSE
 !| X,Y,ZFLOT      |<->| POSITIONS SUCCESSIVES DES FLOTTEURS.
 !| X,Y,ZSTAR,Z    |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XFLOT          |---| 
-!| YFLOT          |---| 
+!| XFLOT          |---|
+!| YFLOT          |---|
 !| ZSFLOT         |<->| Z DES FLOTTEURS DANS LE MAILLAGE TRANSFORME
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

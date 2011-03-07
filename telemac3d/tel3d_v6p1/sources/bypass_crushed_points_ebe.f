@@ -23,26 +23,26 @@
 !history  J-M HERVOUET (LNHE)
 !+        20/04/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FLUX           |<->| FLUXES TO BE CHANGED
-!| IKLE           |---| 
-!| MESH3          |---| 
-!| NELEM2         |---| 
-!| NELEM3         |---| 
+!| IKLE           |---|
+!| MESH3          |---|
+!| NELEM2         |---|
+!| NELEM3         |---|
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| SVOLU          |-->| BIEF_OBJ STRUCTURE, WITH SVOLU%R=VOLU

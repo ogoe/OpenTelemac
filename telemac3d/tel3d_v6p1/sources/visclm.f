@@ -16,41 +16,41 @@
 !
 !history  C. VILLARET, P. TASSI, J.-M. HERVOUET
 !+        02/02/2011
-!+        
-!+   
+!+
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  AG (LNHE)
 !+        **/01/01
 !+        V5P8
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DAMPING        |---| 
+!| DAMPING        |---|
 !| DELTAR         |-->| (RHO-RHO0)/RHO0
-!| DNUTAV         |---| 
-!| DNUVIV         |---| 
+!| DNUTAV         |---|
+!| DNUVIV         |---|
 !| GRAV           |-->| GRAVITE
 !| HN             |-->| HAUTEUR D'EAU
 !| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| IND_T          |---| 
-!| KARMAN         |---| 
+!| IND_T          |---|
+!| KARMAN         |---|
 !| MASKEL         |-->| MASQUAGE DES ELEMENTS
 !| MESH3D         |-->| MAILLAGE 3D
 !| MIXING         |-->| MODELE DE LONGUEUR DE MELANGE
@@ -64,14 +64,14 @@
 !| RUGOF          |-->| FRICTION COEFFICIENT
 !| SVIDE          |-->| STRUCTURE VIDE
 !| TA             |-->| CONCENTRATION DES TRACEURS ACTIFS
-!| TRAV2          |---| 
-!| TRAV3          |---| 
-!| TRAV4          |---| 
-!| TRAV5          |---| 
-!| TRAV6          |---| 
-!| TRAV7          |---| 
+!| TRAV2          |---|
+!| TRAV3          |---|
+!| TRAV4          |---|
+!| TRAV5          |---|
+!| TRAV6          |---|
+!| TRAV7          |---|
 !| U,V            |-->| COMPOSANTES HORIZONTALES DE LA VITESSE
-!| UETCAR         |---| 
+!| UETCAR         |---|
 !| VISCTA         |<--| VISCOSITE DYNAMIQUE DES TRACEURS
 !| VISCVI         |<--| VISCOSITE DYNAMIQUE DE LA VITESSE
 !| X,Y,Z          |-->| COORDONNEES DU MAILLAGE

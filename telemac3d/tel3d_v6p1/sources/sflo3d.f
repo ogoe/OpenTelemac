@@ -17,29 +17,29 @@
 !history  J-M JANIN (LNH)
 !+        27/11/92
 !+        V5P1
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  JMH
 !+        26/08/99
-!+        
-!+   CALL TO FMTSEL REPLACED BY ECRGEO (NOT TESTED) 
+!+
+!+   CALL TO FMTSEL REPLACED BY ECRGEO (NOT TESTED)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BINRES         |-->| TYPE DE BINAIRE DU FICHIER DE RESULTATS
@@ -51,8 +51,8 @@
 !|                |   | DES POSITIONS SUCCESSIVES DES FLOTTEURS.
 !| IKLFLO         |---| TABLE DE CONNECTIVITE BIDON UTILISEE POUR LA
 !|                |   | SORTIE DES TRAJECTOIRES SOUS FORME DE MAILLAGE
-!| I_ORIG         |---| 
-!| J_ORIG         |---| 
+!| I_ORIG         |---|
+!| J_ORIG         |---|
 !| LISTIN         |-->| SORTIES SUR LISTING OU NON
 !| NFLOT          |-->| NOMBRE DE FLOTTEURS.
 !| NIT            |-->| NOMBRE DE PAS DE TEMPS
@@ -64,7 +64,7 @@
 !| TITCAS         |-->| TITRE DU FICHIER CAS
 !| TRAFLO         |---| TABLEAU DE TRAVAIL UTILISE DANS FMTSEL
 !| XFLOT,YFLOT    |-->| POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| ZFLOT          |---| 
+!| ZFLOT          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

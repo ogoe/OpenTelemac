@@ -26,25 +26,25 @@
 !
 !history  JMH
 !+        02/09/2002
-!+        
-!+   TIDAL FLATS 
+!+
+!+   TIDAL FLATS
 !
 !history  J-M HERVOUET (LNHE)     ; JACEK A. JANKOWSKI - UNIVERSITAET HANNOVER
 !+        21/05/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BC             |-->| LOGICAL, IF YES, BOUNDARY CONDITIONS

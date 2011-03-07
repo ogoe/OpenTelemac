@@ -17,35 +17,35 @@
 !
 !history  C LE NORMANT (LNH)
 !+        12/06/92
-!+        
-!+   
+!+
+!+
 !
-!history  
+!history
 !+        6/05/93
-!+        
-!+   MODIFIED 
+!+
+!+   MODIFIED
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  S.E.BOURBAN AND N.DURAND (NRC-CHC)
 !+        27/03/06
 !+        V5P7
-!+   SELAFIN IMPLEMENTATION 
+!+   SELAFIN IMPLEMENTATION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BIRSED         |-->| BINAIRE DU FICHIER DES RESULTATS SEDIMENTO
@@ -56,7 +56,7 @@
 !| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
 !| GRADEB         |-->| PREMIER PAS DE TEMPS A PARTIR DUQUEL ON
 !|                |   | ECRIT LES RESULTATS.
-!| GRAPRD         |---| 
+!| GRAPRD         |---|
 !| HDEP           |<--| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
 !| IVIDE          |<--| INDICE DES VIDES AUX POINTS DU MAILLAGE
 !| LT             |-->| NUMERO DU PAS DE TEMPS

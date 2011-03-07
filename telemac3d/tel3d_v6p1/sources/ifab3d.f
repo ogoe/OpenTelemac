@@ -15,33 +15,33 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN 95 VERSION 
+!+
+!+   FORTRAN 95 VERSION
 !
 !history  J-M HERVOUET (LNHE)     ; J-M JANIN (LNH)    ; F LEPEINTRE (LNH)
 !+        22/07/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFABOR         |-->| CORRESPONDANCE FACE DE BORD - ELEMENT 2D
 !| IKLE2          |-->| CORRESPONDANCE LOCALE - GLOGALE EN 2D
 !| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
 !| KP1BOR         |-->| PT FRONT. SUIVANT LE PT FRONT. CONSIDERE
-!| LIUBOL         |---| 
-!| LIUBOS         |---| 
+!| LIUBOL         |---|
+!| LIUBOS         |---|
 !| NELBOR         |-->| NUMERO GLOBAUX DES ELEMENTS DE BORD
 !| NELEM2         |-->| NOMBRE D'ELEMENTS EN 2D
 !| NETAGE         |-->| NPLAN - 1
@@ -51,7 +51,7 @@
 !| NPTFR          |-->| NOMBRE DE POINTS DE BORD 2D
 !| NULONE         |-->| ASSOCIE LA NUMEROTATION LOCALE DE BORD A LA
 !|                |   | NUMEROTATION LOCALE 3D
-!| TRANSF         |---| 
+!| TRANSF         |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

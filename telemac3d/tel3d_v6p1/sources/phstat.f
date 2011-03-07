@@ -23,31 +23,31 @@
 !history  JACEK A. JANKOWSKI - UNIVERSITAET HANNOVER
 !+        **/04/99
 !+        V5P1
-!+   FORTRAN95 VERSION 
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DELTAR         |-->| RELATIVE DENSITY DELTAR = (RHO-RHO0)/RHO0
-!| GRAV           |---| 
+!| GRAV           |---|
 !| NPLAN          |-->| NUMBER OF MESH PLANES
 !| NPOIN2         |-->| NUMBER OF 2D-POINTS
 !| NPOIN3         |-->| NUMBER OF 3D-POINTS
 !| PH             |<--| HYDROSTATIC PRESSURE
-!| PRIVE          |---| 
-!| RHO0           |---| 
+!| PRIVE          |---|
+!| RHO0           |---|
 !| TRA01          |<->| WORK FIELDS
-!| TRA02          |---| 
+!| TRA02          |---|
 !| Z              |-->| Z-COORDINATES OF NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

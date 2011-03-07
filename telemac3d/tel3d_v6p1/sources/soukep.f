@@ -16,30 +16,30 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  A. GARAPON  & V. BOYER LNHE
 !+        **/02/2001
-!+        
-!+   REVISITED 
+!+
+!+   REVISITED
 !
 !history  J-M HERVOUET (LNHE)
 !+        24/12/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK,EP          |-->| K ET EPSILON
@@ -48,36 +48,36 @@
 !| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
 !| CV1,CV2        |<--| TERMES SOURCE POUR K ET EPSILON
 !| DELTAR         |-->| DELTA(RO)/RO
-!| DT             |---| 
+!| DT             |---|
 !| DTADZ          |-->| DERIVEE EN Z DU TRACEUR N0 1
-!| DUDY           |---| 
-!| DUDZ           |---| 
-!| DVDX           |---| 
-!| DVDY           |---| 
-!| DVDZ           |---| 
-!| DWDX           |---| 
-!| DWDY           |---| 
-!| DWDZ           |---| 
-!| EBORS          |---| 
-!| EMIN           |---| 
+!| DUDY           |---|
+!| DUDZ           |---|
+!| DVDX           |---|
+!| DVDY           |---|
+!| DVDZ           |---|
+!| DWDX           |---|
+!| DWDY           |---|
+!| DWDZ           |---|
+!| EBORS          |---|
+!| EMIN           |---|
 !| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| H              |---| 
-!| IELM3          |---| 
-!| KMIN           |---| 
+!| H              |---|
+!| IELM3          |---|
+!| KMIN           |---|
 !| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3D         |---| 
+!| MESH3D         |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NPOIN2         |---| 
+!| NPOIN2         |---|
 !| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| PRANDTL        |---| 
-!| RI             |---| 
-!| S              |---| 
-!| S1E            |---| 
-!| S1K            |---| 
+!| PRANDTL        |---|
+!| RI             |---|
+!| S              |---|
+!| S1E            |---|
+!| S1K            |---|
 !| TR             |-->| TABLEAU DE TRAVAIL PAR POINTS
 !| U,V,W          |-->| COMPOSANTES DE LA VITESSE
-!| VENT           |---| 
-!| WIND           |---| 
+!| VENT           |---|
+!| WIND           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -20,43 +20,43 @@
 !history  C LE NORMANT
 !+        01/08/97
 !+        V5P4
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| HN             |-->| HAUTEUR D'EAU
 !| IELM3          |-->| TYPE DE DISCRETISATION
 !| LISRUF         |-->| REGIME DE TURBULENCE POUR LE FOND
 !| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3          |---| 
+!| MESH3          |---|
 !| MSK            |-->| LOGIQUE POUR LE MASQUAGE
 !| NPLAN          |-->| NOMBRE DE PLANS
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
 !| RUGOF          |-->| COEFFICIENT DE RUGOSITE DES FONDS
 !| S              |-->| STRUCTURE VIDE
-!| TRAV2          |---| 
-!| TRAV3          |---| 
-!| TURBB          |---| 
+!| TRAV2          |---|
+!| TRAV3          |---|
+!| TURBB          |---|
 !| U,V,W          |-->| COMPOSANTES DE LA VITESSE
-!| UETCAR         |---| 
+!| UETCAR         |---|
 !| WC             |<--| VITESSE DE CHUTE DU SEDIMENT
-!| WCHU0          |---| 
+!| WCHU0          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -17,24 +17,24 @@
 !history  C LE NORMANT (LNH)
 !+        13/05/92
 !+        V5P1
-!+   
+!+
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DSIG1          |-->| DERIVEE DE LA CONTRAINTE EFFECTIVE
@@ -45,7 +45,7 @@
 !| IMAX           |-->| NOMBRE DE POINTS DU MAILLAGE
 !| IVIDE          |-->| INDICE DES VIDES AUX POINTS DU MAILLAGE
 !|                |   | (MAILLAGE SELON UNE VERTICALE)
-!| NDEB           |---| 
+!| NDEB           |---|
 !| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
 !|                |   | DISCRETISANT LE FOND VASEUX
 !| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT

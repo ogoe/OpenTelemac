@@ -19,70 +19,70 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  J-M HERVOUET(LNHE)
 !+        26/04/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BYPASS         |---| 
-!| DM1            |---| 
-!| DT             |---| 
-!| FLBOR          |---| 
-!| FLODEL         |---| 
-!| FLOPAR         |---| 
+!| BYPASS         |---|
+!| DM1            |---|
+!| DT             |---|
+!| FLBOR          |---|
+!| FLODEL         |---|
+!| FLOPAR         |---|
 !| FLUEXT         |<--| FLUX EXTERIEUR PAR NOEUD
 !| FLUINT         |<--| FLUX INTERIEUR PAR NOEUD
-!| FLULIM         |---| 
-!| GRAPRD         |---| 
-!| IELM2H         |---| 
+!| FLULIM         |---|
+!| GRAPRD         |---|
+!| IELM2H         |---|
 !| IELM2V         |-->| TYPE DE DISCRETISATION 2DV
 !| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| KDIR           |---| 
-!| LIMPRO         |---| 
-!| LT             |---| 
+!| KDIR           |---|
+!| LIMPRO         |---|
+!| LT             |---|
 !| MASK8          |-->| TABLEAU DE MASQUAGE DES FACES DE BORD 2D
-!| MASKBR         |---| 
+!| MASKBR         |---|
 !| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS 3D
-!| MESH2          |---| 
-!| MESH3          |---| 
+!| MESH2          |---|
+!| MESH3          |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NELEM3         |---| 
+!| NELEM3         |---|
 !| NETAGE         |-->| NOMBRE D'ETAGES SUR LA VERTICALE
-!| NPLAN          |---| 
-!| NPOIN2         |---| 
-!| NPOIN3         |---| 
-!| NPTFR          |---| 
-!| OPT_HNEG       |---| 
-!| PLUIE          |---| 
-!| RAIN           |---| 
-!| SIGMAG         |---| 
+!| NPLAN          |---|
+!| NPOIN2         |---|
+!| NPOIN3         |---|
+!| NPTFR          |---|
+!| OPT_HNEG       |---|
+!| PLUIE          |---|
+!| RAIN           |---|
+!| SIGMAG         |---|
 !| SVIDE          |-->| STRUCTURE VIDE
-!| TRA02          |---| 
-!| TRA03          |---| 
-!| TRAV2          |---| 
-!| VCONV          |---| 
-!| VOLU           |---| 
-!| VOLUN          |---| 
-!| W1             |---| 
+!| TRA02          |---|
+!| TRA03          |---|
+!| TRAV2          |---|
+!| VCONV          |---|
+!| VOLU           |---|
+!| VOLUN          |---|
+!| W1             |---|
 !| YACVVF         |-->| THERE IS AN ADVECTION WITH FINITE VOLUMES
 !|                |   | (HENCE COMPUTATION OF FLUXES REQUIRED)
-!| ZCONV          |---| 
+!| ZCONV          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

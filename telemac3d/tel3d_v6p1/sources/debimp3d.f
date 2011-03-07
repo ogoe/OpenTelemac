@@ -40,40 +40,40 @@
 !history  AG
 !+        **/07/02
 !+        V5P5
-!+   3D VERSION OF THE 2D DEBIMP 
+!+   3D VERSION OF THE 2D DEBIMP
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FORMUL         |---| 
-!| IELM2V         |---| 
-!| IFRLIQ         |---| 
-!| MASK           |---| 
-!| MASKBR         |---| 
-!| MESH           |---| 
-!| NETAGE         |---| 
-!| NPOIN2         |---| 
+!| FORMUL         |---|
+!| IELM2V         |---|
+!| IFRLIQ         |---|
+!| MASK           |---|
+!| MASKBR         |---|
+!| MESH           |---|
+!| NETAGE         |---|
+!| NPOIN2         |---|
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
-!| NUMLIQ         |---| 
+!| NUMLIQ         |---|
 !| Q              |-->| VALEUR DU DEBIT IMPOSE
-!| SIGMAG         |---| 
-!| SVIDE          |---| 
-!| T3_01          |---| 
-!| T3_02          |---| 
-!| T3_03          |---| 
+!| SIGMAG         |---|
+!| SVIDE          |---|
+!| T3_01          |---|
+!| T3_02          |---|
+!| T3_03          |---|
 !| UBOR,VBOR      |<--| VALEURS DE U ET V DIRICHLET A L'ENTREE
-!| WBOR           |---| 
-!| ZPROP          |---| 
+!| WBOR           |---|
+!| ZPROP          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

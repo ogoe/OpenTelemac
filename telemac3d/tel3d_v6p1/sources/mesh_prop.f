@@ -17,42 +17,42 @@
 !history  J-M HERVOUET (LNHE)
 !+        20/05/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| H              |<--| HAUTEUR
 !| HAULIN         |-->| PROFONDEUR MOYENNE POUR LA LINEARISATION
 !| HN             |<--| HAUTEUR AU PAS DE TEMPS PRECEDENT
 !| HPROP          |<--| HAUTEUR DE PROPAGATION
-!| IELM3          |---| 
-!| IPBOT          |---| 
-!| MASKEL         |---| 
-!| MDIFF          |---| 
-!| MESH3D         |---| 
-!| MSK            |---| 
-!| NPLAN          |---| 
-!| NPOIN2         |---| 
+!| IELM3          |---|
+!| IPBOT          |---|
+!| MASKEL         |---|
+!| MDIFF          |---|
+!| MESH3D         |---|
+!| MSK            |---|
+!| NPLAN          |---|
+!| NPOIN2         |---|
 !| NSOUSI         |-->| NOMBRE DE SOUS ITERATIONS
-!| OPTBAN         |---| 
-!| OPT_HNEG       |---| 
+!| OPTBAN         |---|
+!| OPT_HNEG       |---|
 !| PROLIN         |-->| CORRESPOND AU MOT CLE:"PROPAGATON LINEARISEE"
-!| SIGMAG         |---| 
+!| SIGMAG         |---|
 !| TETA           |-->| SEMI-IMPLICITATION SUR H.
-!| UNSV3D         |---| 
-!| VOLU3D         |---| 
-!| ZPROP          |---| 
+!| UNSV3D         |---|
+!| VOLU3D         |---|
+!| ZPROP          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

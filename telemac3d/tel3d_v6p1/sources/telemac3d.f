@@ -11,35 +11,35 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/1999
-!+        
-!+   FORTRAN95 VERSION 
+!+
+!+   FORTRAN95 VERSION
 !
 !history  JMH
 !+        26/08/2009
-!+        
-!+   VOLU3D INSTEAD OF VOLU AND VOLUN IN THE CALLS TO CVDF3D 
+!+
+!+   VOLU3D INSTEAD OF VOLU AND VOLUN IN THE CALLS TO CVDF3D
 !
 !history  JMH
 !+        16/02/2010
-!+        
-!+   ZCHAR INSTEAD OF ZSTAR IN CALL TO DERI3D 
+!+
+!+   ZCHAR INSTEAD OF ZSTAR IN CALL TO DERI3D
 !
 !history  J-M HERVOUET (LNHE)
 !+        05/05/2010
 !+        V6P0
-!+   K-OMEGA MODEL BY HOLGER WEILBEER (ISEB/UHA) 
+!+   K-OMEGA MODEL BY HOLGER WEILBEER (ISEB/UHA)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,9 +61,10 @@
 !-----------------------------------------------------------------------
 ! DECLARES VARIABLES FOR PARALLEL MODE LOCALLY
 !
-      DOUBLE PRECISION P_TIME
+!      DOUBLE PRECISION P_TIME
       INTEGER P_IMAX
-      EXTERNAL P_TIME,P_IMAX
+!      EXTERNAL P_TIME,P_IMAX
+      EXTERNAL P_IMAX
 !
 !-----------------------------------------------------------------------
 ! DECLARES LOCAL VARIABLES FOR TELEMAC3D

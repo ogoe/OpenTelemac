@@ -18,100 +18,100 @@
 !brief    SOURCE TERMS FOR U & V MOMENTUM EQUATIONS.
 !
 !history  CGD/SOGREAH
-!+        
-!+        
-!+   CORIOLIS FORCE ADDED 
+!+
+!+
+!+   CORIOLIS FORCE ADDED
 !
 !history  AG (LNHE)
-!+        
-!+        
-!+   BUOYANCY TERMS COMPUTED IN PHYSICAL SPACE 
+!+
+!+
+!+   BUOYANCY TERMS COMPUTED IN PHYSICAL SPACE
 !
 !history  JMH
 !+        19/12/2008
-!+        
-!+   WAVE DRIVEN CURRENTS ADDED. SEE IF(COUROU) 
+!+
+!+   WAVE DRIVEN CURRENTS ADDED. SEE IF(COUROU)
 !
 !history  J-M HERVOUET (LNHE)
 !+        29/06/2009
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS DU PAS DE TEMPS
 !| CORIOL         |-->| LOGIQUE INDIQUANT SI FORCE DE CORIOLIS
 !| CV1,CV2        |<--| TERMES SOURCES SUR U ET V
 !| DELTAR         |-->| DENSITE RELATIVE
-!| DENLAW         |---| 
+!| DENLAW         |---|
 !| DT             |-->| PAS DE TEMPS
 !| FCOR           |-->| COEFFICIENT DE CORIOLIS
-!| FU2            |---| 
-!| GRADZSX        |---| 
-!| GRADZSY        |---| 
+!| FU2            |---|
+!| GRADZSX        |---|
+!| GRADZSY        |---|
 !| GRAV           |-->| GRAVITE
-!| IELM2H         |---| 
-!| IELM3          |---| 
+!| IELM2H         |---|
+!| IELM3          |---|
 !| IKLE3          |-->| CORRESPONDANCE ENTRE LA NUMEROTATION LOCALE
 !|                |   | ET GLOBALE 3D
-!| INCHYD         |---| 
-!| ISCE           |---| 
-!| KSCE           |---| 
-!| LATIT          |---| 
-!| LONGIT         |---| 
+!| INCHYD         |---|
+!| ISCE           |---|
+!| KSCE           |---|
+!| LATIT          |---|
+!| LONGIT         |---|
 !| LT             |-->| NUMERO DU PAS DE TEMPS
 !| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
 !| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH2D         |---| 
-!| MESH3          |---| 
+!| MESH2D         |---|
+!| MESH3          |---|
 !| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
 !| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D
 !| NELEM3         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 3D
 !| NETAGE         |-->| NOMBRE D'ETAGES SUR LA VERTICALE
-!| NORD           |---| 
+!| NORD           |---|
 !| NPLAN          |-->| NOMBRE DE PLANS SUR LA VERTICALE
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
 !| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| NREJEU         |---| 
+!| NREJEU         |---|
 !| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
 !| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
-!| QSCE           |---| 
+!| QSCE           |---|
 !| SCHCVI         |-->| ADVECTION SCHEME ON VELOCITY
 !| SCV1,SCV2      |<--| STRUCTURES ASSOCIEES
 !| SEDI           |-->| LOGIQUE INDIQUANT LA PRESENCE D'UN SEDIMENT
-!| SMASKEL        |---| 
-!| SMU            |---| 
-!| SMV            |---| 
+!| SMASKEL        |---|
+!| SMU            |---|
+!| SMV            |---|
 !| ST1            |-->| STRUCTURE ASSOCIEE
-!| ST2            |---| 
-!| ST3            |---| 
+!| ST2            |---|
+!| ST3            |---|
 !| SURFAC         |-->| SURFACE DES ELEMENTS 2D
-!| SVIDE          |---| 
-!| SVOLU          |---| 
+!| SVIDE          |---|
+!| SVOLU          |---|
 !| T1             |-->| TABLEAU DE TRAVAIL PAR POINTS
-!| T2             |---| 
-!| T3             |---| 
+!| T2             |---|
+!| T3             |---|
 !| TA             |-->| TRACEURS
-!| TRAV2          |---| 
+!| TRAV2          |---|
 !| UN3,VN3        |-->| COMPOSANTES HORIZONTALES DE LA VITESSE A TN
-!| USCE           |---| 
-!| VOLU           |---| 
-!| VSCE           |---| 
+!| USCE           |---|
+!| VOLU           |---|
+!| VSCE           |---|
 !| W1,W2,W3       |-->| TABLEAUX DE TRAVAIL PAR ELEMENTS 3D
 !| X,Y,Z          |-->| COORDONNEES DU MAILLAGE 3D
-!| YASEM3D        |---| 
-!| Z3             |---| 
+!| YASEM3D        |---|
+!| Z3             |---|
 !| ZS             |-->| COTE PAR RAPPORT A LA SURFACE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

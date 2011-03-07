@@ -14,48 +14,48 @@
 !
 !history  V. BOYER UMIST
 !+        **/01/2001
-!+        
-!+   REICHARD LAW 
+!+
+!+   REICHARD LAW
 !
 !history  J-M HERVOUET (LNHE)
 !+        21/06/2010
 !+        V6P0
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AUBOR          |<--| COEFFICIENT DE FROTTEMENT SUR LES PAROIS
 !| CF             |-->| COEFFICIENT DE FROTTEMENT POUR K-EPSILON
 !| GRAV           |-->| ACCELERATION DE LA PESANTEUR
 !| HN             |-->| HAUTEUR D'EAU AU TEMPS N
-!| IPBOT          |---| 
+!| IPBOT          |---|
 !| KARMAN         |-->| CONSTANTE DE KARMAN
 !| KFROT          |-->| LAW OF BOTTOM FRICTION
 !| LISRUG         |-->| REGIME DE TURBULENCE 1: LISSE 2: RUGUEUX
-!| NONHYD         |---| 
-!| NPLAN          |---| 
-!| NPOIN          |---| 
-!| OPTBAN         |---| 
+!| NONHYD         |---|
+!| NPLAN          |---|
+!| NPOIN          |---|
+!| OPTBAN         |---|
 !| PROPNU         |-->| COEFFICIENT DE DIFFUSION MOLECULAIRE
 !| RUGOF          |-->| FRICTION COEFFICIENT
-!| U2D            |---| 
-!| U3D            |---| 
+!| U2D            |---|
+!| U3D            |---|
 !| UETCAR         |<--| (FRICTION VELOCITY)**2
-!| V2D            |---| 
-!| V3D            |---| 
-!| W3D            |---| 
-!| Z              |---| 
+!| V2D            |---|
+!| V3D            |---|
+!| W3D            |---|
+!| Z              |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
