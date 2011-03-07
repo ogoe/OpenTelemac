@@ -17,25 +17,25 @@
 !
 !history  O. QUIQUEMPOIX (LNH)
 !+        15/12/1993
-!+        
-!+   
+!+
+!+
 !
 !history  J.M. HERVOUET (LNH); A. YESSAYAN
 !+        16/08/1994
 !+        V5P1
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CAR1,CAR2,CAR3 |-->| CARACTERES RECHERCHES DANS LA LIGNE

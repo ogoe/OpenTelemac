@@ -21,25 +21,25 @@
 !
 !history  O. QUIQUEMPOIX (LNH)
 !+        14/12/1993
-!+        
-!+   
+!+
+!+
 !
 !history  J-M HERVOUET (LNH); A. YESSAYAN; L. LEGUE
 !+        10/11/2008
 !+        V5P9
-!+   
+!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into 
-!+   English comments 
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and 
-!+   cross-referencing of the FORTRAN sources 
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ADRESS         |<--| TABLEAU DES ADRESSES DES MOTS CLES
@@ -70,7 +70,7 @@
 !| NFICDA         |-->| NUMERO DE CANAL DU FICHIER DES DONNEES
 !| NFICMO         |-->| NUMERO DE CANAL DU FICHIER DES MOTS-CLES
 !| NMAX           |-->| TAILLE MAXIMALE AUTORISEE POUR LES TABLEAUX
-!| RETRY          |---| 
+!| RETRY          |---|
 !| SIZE           |<--| TABLEAU DES LONGUEURS DES MOTS CLES
 !| TROUVE         |<--| INDICATEUR D'ETAT DES MOTS CLES
 !|                |   | = 0 : AUCUNE VALEUR TROUVEE
