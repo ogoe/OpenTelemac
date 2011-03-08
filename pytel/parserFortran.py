@@ -316,7 +316,7 @@ def parseDeclarations(lines):
    return core,{ 'cmn':listCommon, 'dec':listDeclar, 'itz':listIntrinsic, 'xtn':listExternal, 'als':[] }
 
 def parseUses(lines):
-   listUses = {}; listAlias = {}; core = []; core.extend(lines)
+   listUses = {}; core = []; core.extend(lines)
    for line in lines :
       proc = re.match(use_title,line)
       if proc :
@@ -382,7 +382,7 @@ def parsePrincipalWrap(lines):
       if ( type != '' ):
          if not re.match(typ_name,type):
             print 'Invalid header type ' + type + ' ' + objt + ' ' + name
-            return [],[],[],lines
+            return [],[],[],[],lines
       proc = re.match(argnames,name)
       if proc :
          name = proc.group('name')
@@ -429,7 +429,8 @@ def parsePrincipalWrap(lines):
                return core[1:count+ctain],[ objt[0:1], name, args, resu ],face,core[count+ctain+1:count],core[count+1:]
          if debug: print 'Could not find END ' + objt + ' ' + name
       # wrong syntax if stops at this level
-   return [],[],[],lines
+   print 'Not used to this location \n' + '\n'.join(lines[0:3])
+   return [],[],[],[],lines
 
 def parsePrincipalMain(lines,who,type,name,args,resu):
    core = []; core.extend(lines)
@@ -536,6 +537,16 @@ def delComments(lines):
             proc = re.match(f90comment,cmd)
             if proc: line = proc.group('line').rstrip()
             if cmd == line: break
+      if cmd != '' :
+         proc = re.match(emptyline,cmd)
+         if not proc:
+            cmds.append(cmd.replace('\n','').replace('\r','').upper())
+   return cmds
+
+def parseLines(lines):
+   # ~~ Also removes end lines and sets to UPPERCASE ~~~~~~~~~~~~~~~
+   cmds = []
+   for cmd in lines :
       if cmd != '' :
          proc = re.match(emptyline,cmd)
          if not proc:
@@ -746,9 +757,11 @@ def parseDoxyTags(core):
 #
 
 varcomment = re.compile(r'[C!#*]\s*?[|!]\s*?(?P<vars>[\s\w,()]*)(?P<inout>(|[|!->=<\s]*[|!]))(?P<after>(|[^|!]*))\s*[|!]?\s*\Z',re.I)
+endtype = '(END|END\s*?PROGRAM\s*?\S*|END\s*?MODULE\s*?\S*|END\s*?SUBROUTINE\s*?\S*|END\s*?FUNCTION\s*?\S*)'
+eoroutine = re.compile(r'\s*(%s)\s*\Z'%(endtype),re.I)
 
 def parseFortHeader(core):
-   docs = []; title = []; vars = {}
+   docs = []; vars = {}
    while 1:
       line = delComments([core[0]])
       if line == []:
@@ -760,10 +773,8 @@ def parseFortHeader(core):
                val = proc.group('after').strip()
                ino = proc.group('inout').strip()
                if ino == '!!' or ino == '||': ino = '<>'
-               #print val
                vars.update({var:[ino,[val]]})
             elif proc.group('after').strip() != '':
-               #print vars
                vars[var][1].append(proc.group('after').strip())
             #print '##'+proc.group('vars')+'##','@@'+proc.group('inout')+'@@','>>'+proc.group('after')+'<<'
             #print var,vars[var]
@@ -830,27 +841,25 @@ def parseDoxyHeader(core):
    while count < len(tags):
       if tags[count][0] == 'file':
          file.extend(tags[count][2])
-      elif tags[count][0] == 'par' and tags[count][1] == 'Development history:':
+      elif tags[count][0] == 'par' and tags[count][1] == 'Development history':
          hist.extend(tags[count][2])
-         hist.extend(tags[count+1][2])        # /!\ assumes par follows
-         count = count + 1
       elif tags[count][0] == 'brief':
          fcts.extend(tags[count][2])
-         if len(tags) < count+2: print 'brief',name
+         if len(tags) < count+2: break
          if tags[count+1][0] == 'code':
             fcts.extend(tags[count+1][2])
             fcts.extend(tags[count+2][2])
             count = count + 2           # /!\ assumes endcode follows
       elif tags[count][0] == 'warning':
          warn.extend(tags[count][2])
-         if len(tags) < count+2: print 'warning',name
+         if len(tags) < count+2: break
          if tags[count+1][0] == 'code':
             warn.extend(tags[count+1][2])
             warn.extend(tags[count+2][2])
             count = count + 2           # /!\ assumes endcode follows
       elif tags[count][0] == 'note':
          note.extend(tags[count][2])
-         if len(tags) < count+2: print 'note',name
+         if len(tags) < count+2: break
          if tags[count+1][0] == 'code':
             note.extend(tags[count+1][2])
             note.extend(tags[count+2][2])
@@ -864,6 +873,7 @@ def parseDoxyHeader(core):
          code.extend(tags[count+1][2])
          count = count + 1              # /!\ assumes endcode follows
       elif tags[count][0] == 'internal':
+         if len(tags) < count+2: break
          if tags[count+1][0] == 'result':
             resu.extend(tags[count][2])
             resu.extend(tags[count+1][2])
@@ -887,12 +897,26 @@ def parseDoxyHeader(core):
    - icount is the number of entities included (functions, subroutines, etc.)
 """
 def parseDoxyWrap(lines,icount):
-   core = []; core.extend(lines)
    wrap = []; count = -1
+   liness = []
+
+   i0 = 0; i = 0
+   while i < len(lines) :
+      proc = re.match(eoroutine, lines[i])
+      if proc :
+         while i0 < i :
+            if lines[i0] == '\n' or lines[i0] == 'C\n' or lines[i0] == 'C'+71*'#'+ '\n' :
+               i0 = i0+1
+            else :
+               break
+         liness.append(lines[i0:i+1])
+         i0 = i+1
+      i = i+1
 
    while count+1 < icount:
 
       count = count + 1
+      core = []; core.extend(liness[count])
       wrap.extend([[[],[],[],[],{}]])
       wrap[count][0],wrap[count][1],core = parseDoxyHeader(core)
       wrap[count][2],wrap[count][4],core = parseFortHeader(core)
@@ -901,7 +925,7 @@ def parseDoxyWrap(lines,icount):
       block = 0
       ctain = 0; ltain = False; lface = False
       while core != []:
-         line = delComments([core[0]])
+         line = parseLines([core[0]])
          if line == []:
             wrap[count][3].append(core[0].rstrip())
             core.pop(0)
@@ -945,6 +969,152 @@ def parseDoxyWrap(lines,icount):
             #   if debug: print 'Different name at END ' + objt + ' ' + name
             #if proc.group('object') != objt:
             #   if debug: print 'Different type at END ' + objt
+            break
+      while core != []:
+         proc = re.match(doxycomment,core[0])
+         if proc: break
+         wrap[count][3].append(core[0].rstrip())
+         core.pop(0)
+
+   return wrap
+
+# _____                  ___________________________________________
+# ____/ Template parse  /__________________________________________/
+#
+
+temp_tag = re.compile(r'!%s\s*(?P<after>.*)\s*\Z'%('(file|history|brief|warning|note|reference|bug|code|internal|result|param)'),re.I)
+temp_comment = re.compile(r'!\+[^\-]\s*(?P<after>.*)\s*\Z',re.I)
+
+def parseTemplateHeader(core):
+   tags = {}
+   doxy_char = '!>  @'; doxy_cont_char = '!>'
+   temp_char = '!'    ; cont_char = '!+'     ; code_char = '!code'   #template header is formatted with '!'
+
+   # ~~ Parse Template Tags ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   k = -1; index = []
+   i = 0
+   while i < len(core) :
+      if re.match(temp_tag,core[i]) :
+         if k != -1 :
+            if (doxy_char+'code\n') in v : v.append('!>  @endcode\n')
+            tags.update({k:v})
+         k = k+1
+         v = [core[i][:len(temp_char)].replace(temp_char, doxy_char)+core[i][len(temp_char):]]
+         index.append(i)
+         if core[i+1][:len(code_char)] == code_char :
+            v.append(core[i+1][:len(code_char)].replace(code_char, doxy_char+'code')+core[i+1][len(code_char):])
+            index.append(i+1)
+            i = i+1
+      if re.match(temp_comment,core[i]) :
+         v.append(core[i][:len(cont_char)].replace(cont_char, doxy_cont_char)+core[i][len(cont_char):])
+         index.append(i)
+         if core[i+1][:len(code_char)] == code_char :
+            v.append(core[i+1][:len(code_char)].replace(code_char, doxy_char+'code')+core[i+1][len(code_char):])
+            index.append(i+1)
+            i = i+1
+      i = i+1
+   if k > 0 :
+      tags.update({k:v})
+
+   for i in range(len(index)-1,-1,-1) :
+      core.pop(index[i])
+
+   # ~~ Sort Them Accordingly ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   file = []; hist = []; fcts = []; bugs = []; warn = []; note = []; refs = []; code = []; para = []; resu = []
+   for i in range(len(tags)):
+      if 'file' in tags[i][0] :
+         file.append(tags[i])
+      elif 'history' in tags[i][0] :
+         hist.append(tags[i])
+      elif 'brief' in tags[i][0] :
+         fcts.append(tags[i])
+      elif 'warning' in tags[i][0] :
+         warn.append(tags[i])
+      elif 'note' in tags[i][0] :
+         note.append(tags[i])
+      elif 'reference' in tags[i][0] :
+         refs.append(tags[i])
+      elif 'bug' in tags[i][0] :
+         bugs.append(tags[i])
+      elif 'code' in tags[i][0] :
+         code.append(tags[i])
+      # may not recognize 'internal' / 'result' / 'param'
+
+   # ~~ Identifies Routine Name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for line in core :
+      proc = re.match(pcl_title,line)
+      if proc :
+         proc = re.match(var_word,proc.group('after'))
+         if proc : name = proc.group('word')
+         break
+
+   return name,{'file':file, 'fcts':fcts, 'code':code, 'hist':hist, 'note':note, 'bugs':bugs, 'warn':warn, 'refs':refs, 'para':para, 'resu':resu },core
+
+def parseTemplateWrap(lines,icount):
+   wrap = []; count = -1
+   liness = []
+
+   i0 = 0; i = 0
+   while i < len(lines) :
+      proc = re.match(eoroutine, lines[i])
+      if proc :
+         liness.append(lines[i0:i+1])
+         i0 = i+1
+      i = i+1
+
+   while count+1 < icount:
+
+      core = []; core.extend(liness[count])
+
+      count = count + 1
+      wrap.extend([[[],[],[],[],{}]])
+      wrap[count][0],wrap[count][1],core = parseTemplateHeader(core)
+      wrap[count][2],wrap[count][4],core = parseFortHeader(core)
+      wrap[count][3] = []
+
+      block = 0
+      ctain = 0; ltain = False; lface = False
+      while core != []:
+         line = parseLines([core[0]])
+         if line == []:
+            wrap[count][3].append(core[0].rstrip())
+            core.pop(0)
+            continue
+         line = line[0].rstrip()
+         #~~> interface
+         if lface:
+            proc = re.match(itf_close,line)
+            if proc:
+               lface = False
+            wrap[count][3].append(core[0].rstrip())
+            core.pop(0)
+            continue
+         else:
+            proc = re.match(itf_title,line)
+            if proc :
+               lface = True
+               wrap[count][3].append(core[0].rstrip())
+               core.pop(0)
+               continue
+         #~~> contains
+         if ltain: ctain = ctain - 1
+         if re.match(ctn_title,line) : ltain = True
+         proc = re.match(pcl_close,line)
+         if proc :
+            block = block - 1
+         else:
+            proc = re.match(pcl_title,line)
+            if proc :
+               t = proc.group('type').strip()
+               if ( t != '' ):
+                  if not re.match(typ_name,t):
+                     wrap[count][3].append(core[0].rstrip())
+                     core.pop(0)
+                     continue
+               block = block + 1
+         wrap[count][3].append(core[0].rstrip())
+         core.pop(0)
+         if block < 0 :
             break
       while core != []:
          proc = re.match(doxycomment,core[0])
