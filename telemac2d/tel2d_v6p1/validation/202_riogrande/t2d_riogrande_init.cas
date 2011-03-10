@@ -1,0 +1,60 @@
+/DEBUGGER=1
+/
+/  FICHIERS
+/ ----------
+/
+FICHIER DES CONDITIONS AUX LIMITES : geo_riogrande.cli
+FICHIER DE GEOMETRIE               : geo_riogrande.slf
+/FICHIER DES FRONTIERES LIQUIDES   : t2d_riogrande.lqd
+/
+/ initialisation sans couplage
+/
+FICHIER FORTRAN                    : t2d_riogrande_init.f
+FICHIER DES RESULTATS              : ini_riogrande.slf
+/
+TITRE :' Telemac2d-Sisyphe'                                      
+/                                                                               
+NOMBRE DE PAS DE TEMPS = 5000
+PERIODE POUR LES SORTIES GRAPHIQUES = 1000
+PERIODE DE SORTIE LISTING = 1000         
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B,US,Q,L                  
+BILAN DE MASSE = VRAI
+PAS DE TEMPS = 5. 
+/
+/ PARAMETRES NUMERIQUES
+/ ---------------------
+BANCS DECOUVRANTS = NON
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
+MASS-LUMPING SUR H : 1.                                                        
+FORME DE LA CONVECTION = 1;5                                                    
+OPTION DE SUPG         = 1;1                                                                                        
+SOLVEUR : 7 
+OPTION DU SOLVEUR : 3      
+PRECISION DU SOLVEUR = 1.E-6    
+/                                                
+/ TURBULENCE - LOI DE FROTTEMENT
+/---------------------------------
+LOI DE FROTTEMENT SUR LE FOND = 2    
+COEFFICIENT DE FROTTEMENT = 55           
+MODELE DE TURBULENCE = 1
+COEFFICIENT DE DIFFUSION DES VITESSES = 0.0001                                                                   
+/
+/ CONDITIONS INITIALES - AUX LIMITES
+/ ----------------------------------
+DEBITS IMPOSES = 0;15.43        
+COTES IMPOSEES = 7.62;0.                                                       
+COTE INITIALE = 13  
+CONDITIONS INITIALES = 'COTE CONSTANTE'     
+PROFILS DE VITESSE =4;4                 
+/OPTION POUR LES FRONTIERES LIQUIDES : 1;1 
+/
+DISCRETISATIONS EN ESPACE : 11;11
+STOCKAGE DES MATRICES : 3   
+PRODUIT MATRICE-VECTEUR : 1
+PROCESSEURS PARALLELES : 0    
+/
+/ equation d'onde
+TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1
+/
+/            
+&ETA                                                                            
