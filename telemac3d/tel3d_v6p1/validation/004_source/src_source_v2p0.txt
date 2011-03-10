@@ -1,0 +1,24 @@
+#
+#  TIME-DEPENDENT DISCHARGES AND TRACERS AT SOURCES 1 AND 2
+#
+#  T IS TIME
+#
+#  Q(1) IS DISCHARGE AT SOURCE 1
+#  Q(2) IS DISCHARGE AT SOURCE 2
+#
+#  TR(1) IS TRACER 1 AT SOURCE 1
+#  TR(2) IS TRACER 1 AT SOURCE 2
+#  TR(3) IS TRACER 2 AT SOURCE 1
+#  TR(4) IS TRACER 2 AT SOURCE 2
+#  TR(5) IS TRACER 3 AT SOURCE 1
+#  TR(6) IS TRACER 3 AT SOURCE 2
+#
+#  GENERAL FORMULA FOR TRACERS : TR(I) FOR 
+#  I=RANK OF SOURCE + NUMBER OF SOURCES * (RANK OF TRACER - 1)
+#
+T        Q(1)     TR(1)    TR(2)  TR(3)  Q(2)    TR(4)   TR(5)   TR(6)
+s        m3/s      °C       °C     °C     m3/s    °C     °C       °C
+0.        1.       10.      10.    0.     1.       0.     10.     10.    
+500.      1.       10.      10.    0.     1.       0.     10.     10.
+1000.     1.       10.      10.    0.     1.       0.     10.     10.
+
