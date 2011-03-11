@@ -2,6 +2,10 @@
 """
 """@author Sebastien E. Bourban, Noemie Durand and Alain Weisgerber
 """
+"""@history 10/03/2011 -- Chris Cawthorn: Amended to enable listing
+                          file in addition to output to stdout.
+"""
+
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
@@ -12,6 +16,7 @@ from parserKeywords import scanCAS,scanDICO,getKeyWord,getIOFilesSubmit
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 import sys
 import shutil
+import threading
 from time import gmtime, strftime
 
 # _____                   __________________________________________
@@ -85,7 +90,7 @@ def processLIT(cas,iFiles,TMPDir):
 
    return True
 
-def processECR(cas,oFiles,CASDir):
+def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
 
    # ~~ copy output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
@@ -99,6 +104,28 @@ def processECR(cas,oFiles,CASDir):
          shutil.copy(crun,cref)
          print ' copying: ', path.basename(cref)
 
+   # ~~~ CCW: copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if options.sortieFile:
+      crun = path.join(TMPDir,sortiefile)
+      if not path.isfile(crun):
+         print '... did not create listing file',cref,' (',crun,')'
+      cref = path.join(CASDir,sortiefile)
+      shutil.copy(crun,cref)
+      print ' copying: ', path.basename(cref)
+
+      # ~~~ If in parallel, also copy the slave log files     ~~~~~~
+      # ~~~ called PEnnnnn_xxxxx.LOG for slave x of n         ~~~~~~
+      # ~~~ Note that n=ncsize-1; output from the Master goes ~~~~~~
+      # ~~~ directly in to the sortie file                    ~~~~~~
+      if ncsize > 1:
+         for i in range(ncsize-1):
+            slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
+            slogfile  = sortiefile.rstrip('.log')+'{0:05d}.log'.format(i+1)
+            crun = path.join(TMPDir,slavefile)
+            cref = path.join(CASDir,slogfile)
+            shutil.copy(crun,cref)
+            print ' copying: ',path.basename(cref)            
+   # ~~~ CCW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    return True
 
 def processCONFIG(lang):
@@ -121,9 +148,9 @@ def processPARALLEL(ncsize,wdir):
 
    # ~~ parallel case ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if ncsize >= 0:
-      putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir])
+      putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir,''])
    elif ncsize > 1:
-      putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir])
+      putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir,''])
 
    return
 
@@ -194,16 +221,56 @@ def runPARTEL(partel,file,conlim,ncsize):
    if not failure: return True
    return False
 
-def runCode(exe):
+# ~~~ CCW: amended runCode to include optional listing file        ~~~
+# ~~~      print_twice echos the listing output to the sortie file ~~~
+def print_twice(pipe,ofile,lastlineempty):
 
-   failure = system(exe)
-#   failure = system(exe + ' >> sortie.txt')
-   #p = Popen(["exe"], stdout=PIPE, stderr=PIPE ,shell=True)
-   #print p.communicate()[0]
-   #failure = False
-   #if p.communicate()[1] != '': failure = True
-   if not failure: return True
+   # Utility subroutine to print listing data both to stdout 
+   # and to the listing file, accessed via the ofile handle
+   for line in iter(pipe.readline,''):
+      dat = line.rstrip()
+      # This IF statement just avoid printing a lot of blank lines 
+      # at the end of the run, before Python realises that the process
+      # has stopped. 
+      if (dat == ''):
+         if not lastlineempty:
+            print dat
+            if ofile != None:
+               ofile.write(dat+'\n')
+            lastlineempty = True
+      else:
+         lastlineempty = False
+         print dat
+         if ofile != None:
+            ofile.write(dat+'\n')
+
+def runCode(exe,sortiefile):
+   if options.sortieFile:
+      ofile = open(sortiefile,"w")
+   else:
+      ofile = None
+   lastlineempty=False
+   proc = Popen(exe,bufsize=1024,stdout=PIPE,stderr=PIPE,shell=True)
+   t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile,lastlineempty,))
+   t1.start()
+   t1.join()
+   if options.sortieFile:
+      ofile.close()
+   proc.wait()
+   if proc.returncode == 0: return True
    return False
+# ~~~CCW~~~
+
+# === OLD AND/OR BROKEN VERSIONS OF runCode ===
+#   failure = system(exe)
+#   failure = system(exe + ' >> sortie.txt')
+#   #p = Popen(["exe"], stdout=PIPE, stderr=PIPE ,shell=True)
+#   #print p.communicate()[0]
+#   #failure = False
+#   #if p.communicate()[1] != '': failure = True
+#   if not failure: return True
+#   return False
+# ======
 
 def runRecollection(gretel,cas,glogeo,oFiles,ncsize):
 
@@ -254,6 +321,12 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
    TMPDir = processTMP(casFile)
+
+   # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if options.sortieFile:
+      sortiefile =  'sortie_'+strftime("%Y-%m-%d-%Hh%Mmin%Ss",gmtime())+'.log'
+   else:
+      sortiefile = None
 
    # ~~ Handling all input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Placing yourself where the CAS File is
@@ -335,18 +408,18 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
 
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print runCmd
-      if not runCode(runCmd): sys.exit()
+      if not runCode(runCmd,sortiefile): sys.exit()
 
       # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if ncsize > 1:
          # ~~> GRETEL Executable
-         exeCmd = path.join(PARDir,'gretel'+cfg['SYSTEM']['SFX_EXE'])
+         exeCmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['SFX_EXE'])
          # ~~> Run GRETEL
          GLOGEO = getGLOGEO(cas,iFS)      # no check on existence
          runRecollection(exeCmd,cas,GLOGEO,oFS,ncsize)
 
    # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if not processECR(cas,oFS,CASDir): sys.exit()
+      if not processECR(cas,oFS,CASDir,TMPDir,sortiefile,ncsize): sys.exit()
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    chdir(CASDir)
