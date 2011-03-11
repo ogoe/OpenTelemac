@@ -3254,7 +3254,7 @@
 !
 !       CALLS THE SUBROUTINE TRACING THE CHARATERISTIC CURVES BACK IN TIME
 !
-         IF(NCSIZE>1) CALL OV('X=!     ',TEST,Y,Z,1.D0,NPOINT)
+         IF(NCSIZE>1) CALL OV('X=C     ',TEST,Y,Z,1.D0,NPOINT)
          CALL SCHAR11( UCONV , VCONV , DT , NRK , X , Y , IKLE, IFABOR,
      &                 XCONV%R,YCONV%R,DX,DY,SHP,ELT,ITRAV1,
      &                 NPOINT, NPOINT2, NELEM , NELMAX , SURDET , -1 ,
@@ -3293,7 +3293,7 @@
 !         FOR A BETTER COMPUTATION OF CHARACTERISTICS
 !         CALL CHAR13( UCONV , VCONV , DT    , NRK , X , Y ,
 !
-          IF(NCSIZE>1) CALL OV('X=!     ',TEST,Y,Z,1.D0,NPOINT)
+          IF(NCSIZE>1) CALL OV('X=C     ',TEST,Y,Z,1.D0,NPOINT)
           CALL SCHAR11( UCONV   , VCONV , DT    , NRK , X , Y ,
      &                  IKLE    , IFABOR  ,
      &                  XCONV%R , YCONV%R , DX , DY ,SHP,ELT ,ITRAV1,
@@ -3313,7 +3313,7 @@
          NPOINT2 = NPOIN2
 !
          DO I=1,NPLAN
-           CALL OV('X=!     ' ,ZCONV(1,I),Y,Z,ZSTAR(I),NPOIN2)
+           CALL OV('X=C     ' ,ZCONV(1,I),Y,Z,ZSTAR(I),NPOIN2)
          ENDDO
 !
 !      FILLS SHP AND ELT (OPTIMISED)
@@ -3326,7 +3326,7 @@
 !
 !      CALLS THE SUBROUTINE TRACING THE CHARATERISTIC CURVES BACK IN TIME
 !
-         IF(NCSIZE>1) CALL OV('X=!     ',TEST,Y,Z,1.D0,NPOINT)
+         IF(NCSIZE>1) CALL OV('X=C     ',TEST,Y,Z,1.D0,NPOINT)
          CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR,
      &                Z,IKLE,IFABOR,XCONV%R,YCONV%R,ZCONV,DX,
      &                DY,DZ,SHP,SHZ,ELT,ETA,ITRAV1,NPOINT,
