@@ -221,7 +221,7 @@
 !
       DO K=1,NPTFR2
 !
-!     PRESCRIBED ELEVATION GIVEN IN STEERING FILE (NCOTE0)
+!     PRESCRIBED ELEVATION GIVEN IN STEERING FILE (NCOTE<>0)
 !     -------------------------------------------------------
 !
       IF(LIHBOR%I(K).EQ.KENT.AND.NCOTE.NE.0) THEN
@@ -258,7 +258,7 @@
 !
       ENDDO
 !
-!     PRESCRIBED DISCHARGE GIVEN IN STEERING FILE (NDEBIT0)
+!     PRESCRIBED DISCHARGE GIVEN IN STEERING FILE (NDEBIT<>0)
 !     --------------------------------------------------------
 !
       DO K=1,NPTFR2
@@ -321,7 +321,7 @@
 !
       ENDDO
 !
-!     PRESCRIBED VELOCITY GIVEN IN STEERING FILE (NVIT0)
+!     PRESCRIBED VELOCITY GIVEN IN STEERING FILE (NVIT<>0)
 !     -----------------------------------------------------
 !
       DO K=1,NPTFR2
