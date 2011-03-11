@@ -83,7 +83,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ::I,IS,IP,I2,OPTHNEG,IWS,NSEG3D,IPLAN
+      INTEGER ::I,IS,IP,OPTHNEG,IWS,NSEG3D,IPLAN,OPT_TRID
       CHARACTER(LEN=16) FORMUL
       CHARACTER(LEN=8) OPER
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
@@ -108,37 +108,68 @@
       IF(LT.EQ.0) OPTHNEG=0
 !
       CALL FLUX3D
-     & (FLUINT,FLUEXT,UCONV,VCONV,T3_01,T3_02,T3_03,MESH3D%W,
+     & (FLUINT,FLUEXT,FLUEXTPAR,UCONV,VCONV,T3_01,T3_02,T3_03,MESH3D%W,
      &  NETAGE,NPLAN,NELEM3,IELM3,IELM2H,IELM2V,SVIDE,MESH3D,
      &  MASK%ADR(8)%P,MSK,MASKEL,MASKBR,
      &  LIMPRO%I,KDIR,NPTFR2,DT,VOLU,VOLUN,MESH2D,
-     &  GRAPRD,SIGMAG,T2_01,NPOIN2,NPOIN3,FLUX%R,DM1,ZCONV,FLBOR,
+     &  GRAPRD,SIGMAG,T2_01,NPOIN2,NPOIN3,DM1,ZCONV,FLBOR,
      &  PLUIE,RAIN,FLODEL,FLOPAR,OPTHNEG,FLULIM,
-     &  CONV(ADV_LPO).OR.CONV(ADV_LPO_TF),LT,BYPASS)
+     &  (N_ADV(ADV_LPO).GT.0.OR.N_ADV(ADV_LPO_TF).GT.0),
+     &  LT,BYPASS,N_ADV,MTRA1)
 !
 !=======================================================================
 !   COMPUTES (DZW*)JH,IV+1/2 AND ACCUMULATES IN WSCONV
 !=======================================================================
 !
-      CALL TRIDW2(WSCONV)
+!     HARDCODED OPTION !!!!!!!!!!!!
+!
+!     2: DIVERGENCE-FREE FLUXES OBTAINED BY MODIFYING VERTICAL FLUXES
+!
+!     3: DIVERGENCE-FREE FLUXES OBTAINED BY MODIFYING ALL FLUXES
+!        WITH THE HELP OF WCONV AND A PRESSURE EQUATION
+!
+      OPT_TRID=2
+!
+      IF(OPT_TRID.EQ.2) THEN
+        CALL TRIDW2(WSCONV)
+      ELSEIF(OPT_TRID.EQ.3) THEN
+!       OTHERWISE WCONV DONE IN WAVE_EQUATION
+        IF(LT.EQ.0) CALL OS('X=Y     ',X=WCONV,Y=W)
+        CALL TRIDW3(WSCONV,T3_01,T3_02,T3_03,T3_04,T3_05,MTRA1%D,LT)
+      ENDIF
+!
+!=======================================================================
+!     FOR DEBUGGING: SUMMARY OF ADVECTED VARIABLES AND THEIR SCHEME
+!=======================================================================
+!
+!     DO I=1,15
+!       IF(N_ADV(I).GT.0) THEN
+!         DO IS=1,N_ADV(I)
+!           WRITE(LU,*) 'ADVECTION OF ',
+!    &                  BL_FN%ADR(LIST_ADV(IS,I))%P%NAME,
+!    &                  ' BY SCHEME ',I
+!         ENDDO
+!       ENDIF
+!     ENDDO
 !
 !=======================================================================
 !     PREPARES ADVECTION BY MURD METHOD
 !     STORAGE IS ALWAYS EBE
 !=======================================================================
 !
-      IF(CONV(ADV_NSC).OR.CONV(ADV_PSI)) THEN
+      IF(N_ADV(ADV_NSC).GT.0.OR.N_ADV(ADV_PSI).GT.0) THEN
 !
 !       NOTE: THE MATRIX IS THE SAME IN BOTH CASES BUT
 !             WITH PSI SCHEME THE DIAGONAL IS NOT ASSEMBLED BECAUSE
 !             IT IS ASSEMBLED IN MURD3D
-        IF(CONV(ADV_NSC).AND..NOT.(OPT_HNEG.EQ.2.OR.SIGMAG)) THEN
+        IF(N_ADV(ADV_NSC).GT.0.AND..NOT.(OPT_HNEG.EQ.2.OR.SIGMAG)) THEN
           FORMUL = 'MAMURD 2     N  '
         ELSE
           FORMUL = 'MAMURD 2     PSI'
         ENDIF
         CALL MATRIX
-     &  (MMURD,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,SVIDE,
+!                                                           !!!!!!!
+     &  (MMURD,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,MTRA1%X,
      &   UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
 !       HERE THE BYPASS IS NOT OPTIONAL, OTHERWISE
 !       THE SCHEMES ARE NOT MASS-CONSERVATIVE
@@ -148,7 +179,7 @@
      &                                   MMURD%X%R,T3_01,MESH2D,MESH3D,
      &                                   NPOIN3,NELEM2,NELEM3,NPLAN,
      &                                   MESH3D%IKLE%I)
-          IF(CONV(ADV_NSC)) THEN
+          IF(N_ADV(ADV_NSC).GT.0) THEN
             CALL DIAG_MURD(MMURD%D%R,MMURD%X%R,NELEM3,MESH3D%NELMAX,
      &                     NPOIN3,MESH3D%IKLE%I)
           ENDIF
@@ -162,14 +193,15 @@
 !     STORAGE IS ALWAYS EDGE-BASED
 !=======================================================================
 !
-      IF(CONV(ADV_NSC_TF)) THEN
+      IF(N_ADV(ADV_NSC_TF).GT.0) THEN
 !
 !       NOTE: THE MATRIX IS THE SAME IN BOTH CASES BUT
 !             WITH PSI SCHEME THE DIAGONAL IS NOT ASSEMBLED
 !             IT IS WHAT WE WANT HERE
         FORMUL = 'MAMURD 2     PSI'
         CALL MATRIX
-     &  (MURD_TF,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,SVIDE,
+!                                                             !!!!!!!
+     &  (MURD_TF,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,MTRA1%X,
      &   UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
 !
 !       FROM 30 SEGMENTS WITH POSITIVE FLUXES, WE GO TO 15 WITH
@@ -193,7 +225,7 @@
           CALL OV('X=Y     ',MURD_TF%X%R(NSEG3D+1:2*NSEG3D),
      &                       MURD_TF%X%R(       1:  NSEG3D),
      &                       MURD_TF%X%R(       1:  NSEG3D),
-     &                                              0.D0,NSEG3D)
+     &                       0.D0,NSEG3D)
           CALL PARCOM2_SEG(MURD_TF%X%R(NSEG3D+1:2*NSEG3D),
      &                     MURD_TF%X%R(NSEG3D+1:2*NSEG3D),
      &                     MURD_TF%X%R(NSEG3D+1:2*NSEG3D),
@@ -211,7 +243,7 @@
 !     THE HORIZONTAL FLUXES (THERE ARE NSEG*NPLAN HORIZONTAL FLUXES)
 !     USEFUL SIZE OF WSCONV IS (NPOIN2,NPLAN-1)
 !
-      IF(CONV(ADV_LPO).OR.CONV(ADV_LPO_TF)) THEN
+      IF(N_ADV(ADV_LPO).GT.0.OR.N_ADV(ADV_LPO_TF).GT.0) THEN
         IS=MESH2D%NSEG*NPLAN
         DO IP=1,NPLAN-1
           DO I=1,NPOIN2
@@ -236,12 +268,15 @@
      &                                   MESH2D%NSEG,NPLAN)
         ENDIF
       ENDIF
+!
 !     FLOPAR = FLODEL ASSEMBLED IN PARALLEL MODE
-      IF(OPTHNEG.EQ.2.OR.CONV(ADV_LPO).OR.CONV(ADV_LPO_TF)) THEN
+!
+      IF(OPTHNEG.EQ.2.OR.N_ADV(ADV_LPO)   .GT.0
+     &               .OR.N_ADV(ADV_LPO_TF).GT.0) THEN
         IF(NCSIZE.GT.1) THEN
           CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
           CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,
-     *                     MESH2D%NSEG,NPLAN,2,1,MESH2D,1)
+     &                     MESH2D%NSEG,NPLAN,2,1,MESH2D,1)
         ELSE
           FLOPAR%R=>FLODEL%R
         ENDIF
@@ -251,7 +286,7 @@
 !     PREPARES ADVECTION BY SUPG METHOD
 !=======================================================================
 !
-      IF(CONV(ADV_SUP)) THEN
+      IF(N_ADV(ADV_SUP).GT.0) THEN
 !
          IF(OPTSUP(1).EQ.2) THEN
 !          HORIZONTAL UPWIND (HERE UPWIND COEFFICIENT=CFL)
@@ -330,17 +365,15 @@
 !
 !=======================================================================
 !
-      IF(CONV(ADV_CAR)) THEN
+      IF(N_ADV(ADV_CAR).GT.0) THEN
 !
-!       NOTES: 1) IN BLOCK FN3D THERE IS U,V,W INSTEAD OF UN,VN,WN
-!              BECAUSE ADVECTION IS DONE FOR THE NEXT TIME STEP
-!        
-!              2) TRACERS IN BLOCK TAN WILL BE USED AND ARE NOT
-!              INITIALISED IN THE FIRST CALL TO PRECON
+!       NOTES:
 !
-        IF(NTRAC.NE.0.AND.LT.EQ.0.AND.SCHCTA.EQ.ADV_CAR) THEN
-          CALL OS ('X=Y     ',X=TAN,Y=TA)
-        ENDIF
+!       IN BLOCK FN3D THERE IS U,V,W INSTEAD OF UN,VN,WN
+!       BECAUSE ADVECTION IS DONE FOR THE NEXT TIME STEP
+!
+!       FN3D%ADR(ADV_CAR)%P IS THE BLOCK OF VARIABLES ADVECTED WITH
+!       SCHEME ADV_CAR (SEE POINT_TELEMAC3D)
 !
         CALL CHARAC(FN3D,FC3D,FC3D%N,UCONVC,VCONVC,WPS,ZCHAR,
      &              DT,MESH3D%IFABOR,IELM3,NPOIN2,NPLAN,NPLINT,
