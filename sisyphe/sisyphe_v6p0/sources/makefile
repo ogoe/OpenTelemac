@@ -110,7 +110,7 @@ bedload_main.f             qsform.f\
 sis_arret.f                bedload_meyer.f            rescue_sisyphe.f\
 bedload_bailard.f          diricl.f     ride.f\
 bedload_bijker.f           entete_sisyphe.f\
-bedload_nerbed_vf.f        gf_user.f                  suspension_bilan.f\
+bedload_nerbed_vf.f        suspension_bilan.f\
 bedload_calcdw.f           suspension_computation.f  \
 bedload_dibwat.f           init_avai.f                suspension_dispersion.f \
 bedload_diffin.f           bedload_solidischarge.f    init_compo.f\
