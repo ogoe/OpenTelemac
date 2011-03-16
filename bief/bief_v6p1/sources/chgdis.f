@@ -5,13 +5,13 @@
      &(X,OLDELT,NEWELT,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   16/03/2011
 !***********************************************************************
 !
 !brief    CHANGES THE DISCRETISATION OF A VECTOR.
 !
 !history  J-M HERVOUET (LNH)
-!+        13/02/08
+!+        13/02/2008
 !+        V5P9
 !+
 !
@@ -26,6 +26,15 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        16/03/2011
+!+        V6P1
+!+        SEQUENCE: X%DIM1 = NEWDIM1
+!+                  X%ELM  = NEWELT
+!+        MOVED AT THE END, CHGDIS MAY BE CALLED WITH X%ELM BEING OLDELT
+!+        THEN IT MAKES OLDELT=NEWELT WHEREAS OLDELT WAS INTENT(IN) AND
+!+        SHOULD NOT BE CHANGED BEFORE TESTS ON IT.  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MESH           |-->| STRUCTURE DE MAILLAGE
@@ -43,7 +52,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE(BIEF_OBJ), INTENT(INOUT) :: X
-      INTEGER, INTENT(IN)           :: OLDELT,NEWELT
+      INTEGER, INTENT(IN)           :: NEWELT
+      INTEGER, INTENT(INOUT)        :: OLDELT
       TYPE(BIEF_MESH), INTENT(IN)   :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -61,9 +71,6 @@
 201     FORMAT(1X,'CHGDIS (BIEF) : EXTENSION IMPOSSIBLE FOR ',A6)
         CALL PLANTE(1)
         STOP
-      ELSE
-        X%DIM1 = NEWDIM1
-        X%ELM  = NEWELT
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -93,6 +100,11 @@
         STOP
 !
       ENDIF
+!
+      X%DIM1 = NEWDIM1
+!     THIS MAY BE A HIDDEN MODIFICATION OF OLDELT, IF X%ELM IS SENT AS
+!     OLDELT, HENCE THE INTENT(INOUT) FOR OLDELT.
+      X%ELM  = NEWELT
 !
 !-----------------------------------------------------------------------
 !
