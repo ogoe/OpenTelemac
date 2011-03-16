@@ -20,7 +20,7 @@ VERSION    = v6p0
 
 DIRINC    = $(PROJECT)\parallel\para_$(VERSION)\$(DIRLIB)
 
-DIRINC_MPI    = "D:\private\Ubuntu\systel\mpi\include"
+DIRINC_MPI    = $(PROJECT)\..\mpi\include
 #
 FCO       = $(FC_OPT_COMPIL)
 F90       = $(FC_NAM)
@@ -47,7 +47,7 @@ GREDELHYD     = gredelhyd.exe
 DIFFSEL       = diffsel.exe
 DEST          = $(PROJECT)\PARALLEL\PARALLEL_$(VERSION)\$(DIRLIB)
 
-LKLIB         = $(PROJECT)\parallel\parallel_$(VERSION)\$(DIRLIB)\libmetis32.lib \
+LKLIB         = $(PROJECT)\..\lib\libmetis32.lib \
                 parallel$(MODE)$(VERSION).lib
 
 #------------------------ Liste des fichiers
@@ -94,11 +94,11 @@ SRCS	      = \
 		build_global_bound.f
 
 SRCS_PARTEL= partel.f
-SRCS_GRETEL= gretel_autop.f
-SRCS_GREDELPTS= gredelpts_autop.f
-SRCS_GREDELSEG= gredelseg_autop.f
-SRCS_GREDELMET= gredelmet_autop.f
-SRCS_GREDELHYD= gredelhyd_autop.f
+SRCS_GRETEL= gretel.f
+SRCS_GREDELPTS= gredelpts.f
+SRCS_GREDELSEG= gredelseg.f
+SRCS_GREDELMET= gredelmet.f
+SRCS_GREDELHYD= gredelhyd.f
 SRCS_DIFFSEL=diffsel.f
 
 #
