@@ -120,7 +120,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       if ncsize > 1:
          for i in range(ncsize-1):
             slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
-            slogfile  = sortiefile.rstrip('.log')+'{0:05d}.log'.format(i+1)
+            slogfile  = sortiefile.rstrip('.sortie')+'{0:05d}.sortie'.format(i+1)
             crun = path.join(TMPDir,slavefile)
             cref = path.join(CASDir,slogfile)
             shutil.copy(crun,cref)
@@ -324,7 +324,7 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
 
    # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.sortieFile:
-      sortiefile =  'sortie_'+strftime("%Y-%m-%d-%Hh%Mmin%Ss",gmtime())+'.log'
+      sortiefile =  path.basename(TMPDir)+'.sortie'
    else:
       sortiefile = None
 
