@@ -77,7 +77,7 @@ C
       INTRINSIC LEN,INDEX
 C
       DATA STMAJ /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
-      DATA STMIN /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+      DATA STMIN /'abcdefghijklmnopqrstuvwxyz'/
 C
 C----------------------------------------------------------------------
 C

@@ -48,7 +48,7 @@
       INTRINSIC LEN,INDEX
 !
       DATA STMAJ /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
-      DATA STMIN /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
+      DATA STMIN /'abcdefghijklmnopqrstuvwxyz'/
 !
 !----------------------------------------------------------------------
 !
