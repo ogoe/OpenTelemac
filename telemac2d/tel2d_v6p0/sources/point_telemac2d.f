@@ -268,6 +268,13 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !>  @par Development history
 !>   <br><table>
 !> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
+!>      <tr>
+!>      <td><center> 6.0                                       </center>
+!> </td><td> 21/03/2011
+!> </td><td> J-M HERVOUET (LNHE) 01 30 87 80 18
+!> </td><td> Allocation of KFRO_B as an integer instead of a real BIEF_OBJ
+!>           An overlooked bug for a long time!
+!> </td></tr>
 !>  <tr><td><center> 6.0                                       </center>
 !>    </td><td> 21/08/2010
 !>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -910,14 +917,14 @@ C
            CALL ALLVEC(1,LINDSP,'LINDSP',0,1,0)
          ENDIF
          CALL ALLVEC(1,NDEF_B,'NDEF_B',IELBT,1,1)
-         CALL ALLVEC(1,KFRO_B,'KFRO_B',IELBT,1,1)
+         CALL ALLVEC(2,KFRO_B,'KFRO_B',IELBT,1,1)
       ELSE
          CALL ALLVEC(2,KFROPT,'KFROPT',0,1,0)
          CALL ALLVEC(1,NDEFMA,'NDEFMA',0,1,0)
          CALL ALLVEC(1,LINDDP,'LINDDP',0,1,0)
          CALL ALLVEC(1,LINDSP,'LINDSP',0,1,0)
          CALL ALLVEC(1,NDEF_B,'NDEF_B',0,1,0)
-         CALL ALLVEC(1,KFRO_B,'KFRO_B',0,1,0)
+         CALL ALLVEC(2,KFRO_B,'KFRO_B',0,1,0)
       ENDIF
 C
 C  END OF DATA FOR FRICTION SET PER ZONE
