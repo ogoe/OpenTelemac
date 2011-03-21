@@ -5,7 +5,7 @@
      &(A,B)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES AN ARC TANGENT BETWEEN 0 AND 2 PI.
@@ -28,14 +28,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| ANGLE DONT ON CHERCHE L'ARC TANGENTE.
-!| B              |-->| ANGLE PROCHE DE A
+!| A              |-->| TANGENT OF THE ANGLE
+!| B              |-->| AN ANGLE CLOSE TO THE RESULT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
-!
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

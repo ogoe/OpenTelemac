@@ -5,7 +5,7 @@
      &(X,A,B,MESH, G,G0,P,K,H,AHPK,CFG,INFOGR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE LINEAR SYSTEM A X = B
@@ -105,18 +105,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE DU SYSTEME
-!| AHPK           |---|
-!| B              |-->| SECOND MEMBRE DU SYSTEME.
-!| CFG            |---|
-!| G              |<->| GRADIENT DE DESCENTE.
-!| G0             |---|
-!| H              |---|
-!| INFOGR         |-->| SI OUI, ON IMPRIME UN COMPTE-RENDU
-!| K              |---|
-!| MESH           |---|
-!| P              |---|
-!| X              |<--| VALEUR INITIALE, PUIS SOLUTION
+!| A              |-->| MATRIX OF THE SYSTEM
+!| AHPK           |<->| WORK STRUCTURE
+!| B              |-->| RIGHT-HAND SIDE OF SYSTEM
+!| CFG            |-->| CFG(1): STORAGE OF MATRIX 
+!|                |   | CFG(2): MATRIX VECTOR PRODUCT
+!| G              |<->| GRADIENT.
+!| G0             |<->| INITIAL GRADIENT
+!| H              |<->| WORK STRUCTURE
+!| INFOGR         |-->| IF YES, INFORMATION PRINTED
+!| K              |<->| WORK STRUCTURE
+!| MESH           |-->| MESH STRUCTURE
+!| P              |<->| WORK STRUCTURE
+!| X              |<--| INITIAL VALUE, THEN SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CGSQUA => CGSQUA
@@ -150,11 +151,11 @@
 !
       XL = P_DOTS(B,B,MESH)
 !
-      IF( XL.LT.1.D0) THEN
-            XL = 1.D0
-            RELAT = .FALSE.
-        ELSE
-            RELAT = .TRUE.
+      IF(XL.LT.1.D0) THEN
+        XL = 1.D0
+        RELAT = .FALSE.
+      ELSE
+        RELAT = .TRUE.
       ENDIF
 !
       M = 0

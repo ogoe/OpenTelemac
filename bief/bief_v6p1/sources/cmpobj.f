@@ -5,7 +5,7 @@
      &( OBJ1 , OBJ2 )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPARES 2 OBJECTS.
@@ -28,7 +28,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| OBJ2           |---|
+!| OBJ1           |-->| BIEF_OBJ STRUCTURE TO BE COMPARED WITH THE OTHER
+!| OBJ2           |-->| BIEF_OBJ STRUCTURE TO BE COMPARED WITH THE OTHER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CMPOBJ => CMPOBJ

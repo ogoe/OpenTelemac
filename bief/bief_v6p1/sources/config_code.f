@@ -5,7 +5,7 @@
      &(ICODE)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) RESETS CORRESPONDING LOGICAL UNITS AND FILE NAMES
@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ICODE          |---| NUMERO DU CODE EN CAS DE COUPLAGE
+!| ICODE          |-->| CODE NUMBER IN CASE OF COUPLING
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CONFIG_CODE => CONFIG_CODE

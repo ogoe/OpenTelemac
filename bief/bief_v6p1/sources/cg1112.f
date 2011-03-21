@@ -5,7 +5,7 @@
      &(X,DIM1,DIM2,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CHANGES THE DISCRETISATION OF A VECTOR
@@ -29,12 +29,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIM1           |---|
-!| DIM2           |---|
-!| IKLE           |-->| TABLE DE CONNECTIVITE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| X              |<--| VECTEUR A MODIFIER.
+!| DIM1           |-->| FIRST DIMENSION OF X
+!| DIM2           |-->| SECOND DIMENSION OF X
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
+!| X              |<--| VECTOR TO BE MODIFIED.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

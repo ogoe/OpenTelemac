@@ -6,7 +6,7 @@
      & MAXTAB,NP,IT,MAXIT,ACOMPARER)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    VALIDATES THE RESULTS AGAINST AN ANALYTICAL SOLUTION
@@ -37,20 +37,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACOMPARER      |-->| TABLEAU DES VARIABLE A LIRE DANS LE FICHIER
-!|                |   | DES RESULTATS DU CLCUL PRECEDENT
-!| IT             |-->| NUMERO DU PAS DE TEMPS
-!| MAXIT          |-->| NOMBRE MAXIMUM D'ITERATIONS DU PRESENT CALCUL
-!| MAXTAB         |---|
-!| NP             |-->| NOMBRE DE POINTS A VERIFIER.
-!| REFFORMAT      |---|
-!| RESFORMAT      |---|
-!| TEXTREF        |---|
-!| TEXTRES        |---|
-!| UREF           |-->| UNITE LOGIQUE DU FICHIER DE REFERENCE
-!| URES           |---|
-!| VARREF         |---|
-!| VARRES         |---|
+!| ACOMPARER      |-->| INDICATES WHICH VARIABLE TO COMPARE
+!| IT             |-->| TIME STEP NUMBER
+!| MAXIT          |-->| MAXIMUM NUMBER OF ITERATIONS
+!| MAXTAB         |-->| TOTAL NUMBER OF VARIABLES
+!| NP             |-->| NUMBER OF POINTS TO BE CHECKED
+!| REFFORMAT      |-->| FORMAT OF REFERENCE FILE
+!| RESFORMAT      |-->| FORMAT OF RESULTS FILE
+!| TEXTREF        |-->| NAMES & UNITS OF VARIABLES IN THE REFERENCE FILE
+!| TEXTRES        |-->| NAMES & UNITS OF VARIABLES IN THE RESULTS FILE
+!| UREF           |-->| LOGICAL UNIT OF REFERENCE FILE
+!| URES           |-->| LOGICAL UNIT OF RESULTS FILE
+!| VARREF         |-->| BLOCK OF VARIABLES IN REFERENCE FILE 
+!| VARRES         |-->| BLOCK OF VARIABLES IN RESULTS FILE 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_VALIDA => VALIDA

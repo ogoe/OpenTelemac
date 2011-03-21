@@ -37,10 +37,10 @@
 !+        SHOULD NOT BE CHANGED BEFORE TESTS ON IT.  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MESH           |-->| STRUCTURE DE MAILLAGE
-!| NEWELT         |-->| NOUVEAU TYPE
-!| OLDELT         |-->| ANCIEN TYPE
-!| X              |<--| VECTOR A MODIFIER
+!| MESH           |-->| MESH STRUCTURE
+!| NEWELT         |-->| NEW TYPE FOR X
+!| OLDELT         |-->| OLD TYPE OF X
+!| X              |<--| VECTOR TO BE MODIFIED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CHGDIS => CHGDIS

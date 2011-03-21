@@ -6,7 +6,7 @@
      &                                   ELTSEG4,ELTSEG5,ELTSEG6)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLES MATRICES EXTRA-DIAGONAL TERMS
@@ -33,19 +33,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG1        |---|
-!| ELTSEG2        |---|
-!| ELTSEG3        |---|
-!| ELTSEG4        |---|
-!| ELTSEG5        |---|
-!| ELTSEG6        |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| PREMIERE DIMENSION DE IKLE ET W.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NSEG11         |---|
-!| NSEG12         |---|
-!| XM             |---|
-!| XMT            |---|
+!| ELTSEG1        |-->| FIRST SEGMENT OF A TRIANGLE
+!| ELTSEG2        |-->| SECOND SEGMENT OF A TRIANGLE
+!| ELTSEG3        |-->| THIRD SEGMENT OF A TRIANGLE
+!| ELTSEG4        |-->| FOURTH SEGMENT OF A QUADRATIC TRIANGLE
+!| ELTSEG5        |-->| FIFTH SEGMENT OF A QUADRATIC TRIANGLE
+!| ELTSEG6        |-->| SIXTH SEGMENT OF A QUADRATIC TRIANGLE
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
+!| NSEG11         |-->| NUMBER OF SEGMENTS (HERE JOINING LINEAR POINTS)
+!| NSEG12         |-->| NUMBER OF SEGMENTS (HERE QUADRATIC)
+!| XM             |<--| ASSEMBLED OFF-DIAGONAL TERMS XA12,23,31
+!| XMT            |-->| ELEMENT BY ELEMENT STORAGE OF MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &(FLOW,F,NPOIN3,NPLAN,NSEG2D,GLOSEG,SIZGLO,INIFLO)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLES HORIZONTAL EDGE BY EDGE FLUXES ON POINTS.

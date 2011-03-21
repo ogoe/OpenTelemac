@@ -5,7 +5,7 @@
      &( MAT , NOM , IELM1 , IELM2 , CFG , TYPDIA , TYPEXT , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A REAL MATRIX STRUCTURE.
@@ -28,12 +28,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM1          |-->| TYPE D'ELEMENT PAR LIGNES
-!| IELM2          |-->| TYPE D'ELEMENT PAR COLONNES
-!| MAT            |-->| MATRICE A ALLOUER
-!| NOM            |-->| NOM FORTRAN DU TABLEAU
-!| TYPDIA         |-->| TYPE DE DIAGONALE ('Q', 'I' OU '0')
-!| TYPEXT         |-->| TYPE DE TERMES EXTRA-DIAGONAUX:'Q','S' OU '0'
+!| CFG            |-->| INFORMATION ON STORAGE OF MATRIX
+!|                |   | CFG(1): STORAGE   CFG(2): MATRIX-VECTOR PRODUCT
+!| IELM1          |-->| TYPE OF ELEMENT PER LINE
+!| IELM2          |-->| TYPE OF ELEMENT PER COLUMN
+!| MAT            |<->| THE MATRIX TO BE ALLOCATED
+!| MESH           |-->| MESH STRUCTURE
+!| NOM            |-->| FORTRAN NAME OF MATRIX
+!| TYPDIA         |-->| TYPE OF DIAGONAL ('Q', 'I' OU '0')
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS :'Q','S' OU '0'
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_ALLMAT => BIEF_ALLMAT

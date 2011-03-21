@@ -5,7 +5,7 @@
      &( X )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SUMS UP THE COMPONENTS OF A VECTOR.
@@ -36,7 +36,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| X              |-->| LA STRUCTURE DONT ON VEUT LA SOMME
+!| X              |-->| BIEF_OBJ STRUCTURE OF WHICH X%R WILL BE SUMMED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_SUM => BIEF_SUM

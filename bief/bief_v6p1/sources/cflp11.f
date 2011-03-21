@@ -5,7 +5,7 @@
      &(U,V,X,Y,IKLE,NELEM,NELMAX,W1)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COURANT NUMBER AT EACH POINT OF THE MESH
@@ -14,15 +14,9 @@
 !+            THE STABILITY CRITERION OF THE DISTRIBUTIVE SCHEME N
 !+                IS HERE USED TO EVALUATE THE COURANT NUMBER.
 !
-!history  C MOULIN   (LNH)
-!+
-!+
-!+
-!
 !history  JMH
 !+        17/08/94
 !+        V5P1
-!+   MODIFICATIONS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -37,15 +31,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| NUMEROS DES NOEUDS DE CHAQUE ELEMENT.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE D'ELEMENTS MAXIMUM DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF).
-!| U              |-->| VITESSE SUIVANT X.
-!| V              |-->| VITESSE SUIVANT Y.
-!| W1             |-->| RESULTAT PARTIEL
-!| X              |-->| ABSCISSES DES POINTS DU MAILLAGE PAR ELEMENTS
-!| Y              |-->| ORDONNEES DES POINTS DU MAILLAGE PAR ELEMENTS
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| FIRST DIMENSION OF IKLE, MAXIMUM NUMBER OF ELEMENTS
+!|                |   | IN THE MESH
+!| U              |-->| VELOCITY ALONG X.
+!| V              |-->| VELOCITY ALONG Y.
+!| W1             |-->| RESULT IN NON ASSEMBLED FORM
+!| X              |-->| ABSCISSAE OF POINTS GIVEN PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS GIVEN PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -71,7 +65,6 @@
       INTRINSIC MAX,MIN
 !
 !-----------------------------------------------------------------------
-!
 !
       SUR6 = 1.D0 / 6.D0
 !

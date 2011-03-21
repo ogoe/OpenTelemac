@@ -5,7 +5,7 @@
      &( BLO , N , NAT , NOMGEN , IELM , NDIM , STATUT , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR N VECTORS, WHICH WILL BE PART
@@ -38,19 +38,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BLO            |<->| BLOC OU ON VA ALLOUER LES VECTEURS
-!| IELM           |-->| TYPE D'ELEMENT DU VECTEUR, OU DIMENSION
-!|                |   | (SUIVANT LE STATUT, VOIR PLUS BAS)
-!| N              |-->| NOMBRE DE VECTEURS A ALLOUER
-!| NAT            |<--| 1: VECTEUR REEL   2:VECTEUR ENTIER
-!| NDIM           |-->| DEUXIEME DIMENSION DU VECTEUR
-!| NOMGEN         |-->| NOM GENERIQUE FORTRAN DES VECTEURS
-!| STATUT         |-->| STATUT DU VECTEUR :
-!|                |   | 0 : VECTEUR LIBRE, IELM EST ALORS SA DIMENSION
-!|                |   | 1 : VECTEUR DEFINI SUR LE MAILLAGE
-!|                |   | IELM EST ALORS LE TYPE D'ELEMENT
-!|                |   | CHANGEMENT DE DISCRETISATION INTERDIT
-!|                |   | 2 : COMME 1 MAIS CHANGEMENTS AUTORISES
+!| BLO            |<->| BLOCK WHERE THE VECTORS WILL BE ALLOCATED
+!| IELM           |-->| TYPE OF ELEMENT OF VECTORS, OR DIMENSION
+!|                |   | (DEPENDING ON 'STATUT', SEE BELOW)
+!| N              |-->| NUMBER OF VECTORS TO BE ALLOCATED
+!| NAT            |<--| 1: REAL VECTOR   2:VECTOR OF INTEGERS
+!| NDIM           |-->| SECOND DIMENSION OF VECTORS
+!| NOMGEN         |-->| GENERIC NAME OF VECTORS
+!|                |   | WILL BE COMPLETED WITH RANK
+!| STATUT         |-->| VECTOR STATUS:
+!|                |   | 0 : FREE VECTOR, IELM IS ITS DIMENSION
+!|                |   | 1 : VECTOR DEFINED ON A MESH
+!|                |   | IELM IS THEN THE ELEMENT TYPE
+!|                |   | CHANGING DISCRETISATION FORBIDDEN
+!|                |   | 2 : LIKE 1 BUT CHANGING DISCRETISATION ALLOWED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_ALLVEC_IN_BLOCK => BIEF_ALLVEC_IN_BLOCK

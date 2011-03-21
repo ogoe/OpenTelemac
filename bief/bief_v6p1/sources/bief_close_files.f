@@ -5,7 +5,7 @@
      &(CODE,FILES,NFILES,PEXIT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -28,10 +28,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CODE           |---|
-!| FILES          |---|
-!| NFILES         |---|
-!| PEXIT          |---|
+!| CODE           |-->| THE CALLING PROGRAM
+!| FILES          |-->| ARRAY OF BIEF_FILE STRUCTURES
+!| NFILES         |-->| TOTAL NUMBER OF FILES
+!| PEXIT          |-->| LOGICAL, IF YES, P_EXIT WILL BE CALLED
+!|                |   | TO STOP PARALLELISM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_CLOSE_FILES => BIEF_CLOSE_FILES

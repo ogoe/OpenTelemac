@@ -5,7 +5,7 @@
      &(X, IKLE,W, NELEM,NELMAX,LV,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLY LOOP FOR A VECTOR.
@@ -28,17 +28,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| CORRESPONDANCE NUMEROTATION LOCALE-GLOBALE
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| PREMIERE DIMENSION DE IKLE ET W.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W              |-->| TABLEAUX DE TRAVAIL CONTENANT LE VECTEUR SOUS
-!|                |   | FORME NON ASSEMBLEE
-!| X              |<->| VECTEUR ASSEMBLE
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER 
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
+!| W              |-->| WORK ARRAY WITH A NON ASSEMBLED FORM OF THE
+!|                |   | RESULT
+!| X              |<->| ASSEMBLED VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

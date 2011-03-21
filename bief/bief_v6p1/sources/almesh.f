@@ -6,7 +6,7 @@
      & I3,I4)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALLOCATES A BIEF_MESH MESH STRUCTURE.
@@ -34,18 +34,18 @@
 !|                |   | "SAINT-VENANT EF"
 !|                |   | "SAINT-VENANT VF"
 !|                |   | "BOUSSINESQ"
-!| I3             |---|
-!| I4             |---|
-!| IELM           |-->| ELEMENT QUI CONTIENT LE PLUS GRAND NOMBRE
-!|                |   | DE POINTS QUI SERA UTILISE.
-!| MESH           |-->| STRUCTURE A ALLOUER
-!| NELMAX         |---|
-!| NFIC           |---|
+!| I3             |-->| ABSCISSA IN METERS OF ORIGIN POINT (OPTIONAL)
+!| I4             |-->| ORDINATE IN METERS OF ORIGIN POINT (OPTIONAL)
+!| IELM           |-->| ELEMENT TYPE WITH THE LARGET NUMBER OF DEGREES
+!|                |   | OF FREEDOM THAT WILL BE USED
+!| MESH           |-->| MESH STRUCTURE TO BE ALLOCATED
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN THE MESH
+!| NFIC           |-->| LOGICAL UNIT WHERE TO READ THE MESH
 !| NOM            |-->| NAME OF THE MESH
-!| NPLAN          |---|
-!| NPMAX          |---|
-!| NPTFRX         |---|
-!| SPHERI         |-->| LOGIQUE, SI OUI : COORDONNEES SPHERIQUES
+!| NPLAN          |-->| NUMBER OF PLANES (OPTIONAL,3D MESHES OF PRISMS)
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS IN THE MESH
+!| NPTFRX         |-->| MAXIMUM NUMBER OF BOUNDARY NODES
+!| SPHERI         |-->| LOGICAL, IF YES : SPHERICAL COORDINATES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ALMESH => ALMESH

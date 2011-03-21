@@ -5,7 +5,7 @@
      &( BLO , N , NOMGEN )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR N BLOCKS, WHICH WILL BE PART
@@ -29,9 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BLO            |<->| BLOC OU ON VA ALLOUER LES VECTEURS
-!| N              |-->| NOMBRE DE VECTEURS A ALLOUER
-!| NOMGEN         |-->| NOM GENERIQUE FORTRAN DES VECTEURS
+!| BLO            |<->| BLOCK WHERE TO ALLOCATE THE BLOCK STRUCTURES
+!| N              |-->| NUMBER OF BLOCKS TO BE ADDED IN BLO
+!| NOMGEN         |-->| GENERIC FORTRAN NAME OF THE BLOCKS
+!|                |   | IT WILL BE COMPLETED WITH THEIR RANK
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ALLBLO_IN_BLOCK => ALLBLO_IN_BLOCK

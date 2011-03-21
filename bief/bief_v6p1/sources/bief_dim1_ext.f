@@ -5,7 +5,7 @@
      &(IELM1,IELM2,STO,TYPEXT,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE FIRST DIMENSION OF A MATRICE'S EXTRA-DIAGONAL
@@ -29,10 +29,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM1          |-->| TYPE DE L'ELEMENT DE LIGNE
-!| IELM2          |-->| TYPE DE L'ELEMENT DE COLONNE
-!| STO            |-->| TYPE DE STOCKAGE
-!| TYPEXT         |-->| TYPE DES TERMES EXTRA-DIAGONAUX
+!| IELM1          |-->| TYPE OF LINE ELEMENT 
+!| IELM2          |-->| TYPE OF COLUMN ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| STO            |-->| TYPE OF STORAGE
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_DIM1_EXT => BIEF_DIM1_EXT

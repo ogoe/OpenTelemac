@@ -5,7 +5,7 @@
      &(NELEM,NELMAX,IELM,IKLE,GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPLETES THE DATA STRUCTURE FOR EDGE-BASED STORAGE
@@ -57,7 +57,7 @@
 !| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
 !|                |   | (CAS DES MAILLAGES ADAPTATIFS)
 !| NSEG           |<--| NUMBER OF SEGMENTS OF THE MESH.
-!| ORISEG         |---|
+!| ORISEG         |-->| ORIENTATION OF SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_COMP_SEG => COMP_SEG

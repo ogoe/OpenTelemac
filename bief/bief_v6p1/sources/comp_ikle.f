@@ -5,7 +5,7 @@
      &(IKLE,IKLBOR,ELTSEG,NBOR,IELM,NELEM,NELMAX,NPOIN,NPTFR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLES AND ARRAY NBOR.

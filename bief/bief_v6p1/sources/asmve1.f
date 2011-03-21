@@ -5,7 +5,7 @@
      &(X, IKLE,W, NPOIN,NELEM,NELMAX,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MULTIPLICATIVE ASSEMBLY LOOP FOR A VECTOR.
@@ -31,15 +31,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| CORRESPONDANCE NUMEROTATION LOCALE-GLOBALE
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| PREMIERE DIMENSION DE IKLE ET W.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DU TABLEAU X
-!| W              |-->| TABLEAUX DE TRAVAIL CONTENANT LE VECTEUR SOUS
-!|                |   | FORME NON ASSEMBLEE
-!| X              |<->| VECTEUR ASSEMBLE
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER 
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
+!| NPOIN          |-->| NUMBER OF POINTS IN X
+!| W              |-->| WORK ARRAY WITH A NON ASSEMBLED FORM OF THE
+!|                |   | RESULT
+!| X              |<->| ASSEMBLED VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

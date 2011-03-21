@@ -5,10 +5,10 @@
      &( BLOC , OBJ )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    ADDS AN OBJECT TO A BLOCK STRUCTURE.
+!brief    ADDS AN OBJECT TO A BLOCK STRUCTURE (WHICH IS A LIST)
 !
 !history  J-M HERVOUET (LNH)
 !+        01/03/95
@@ -28,8 +28,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BLOC           |<->| NOM FORTRAN DU BLOC
-!| OBJ            |-->| NOUVEL OBJET.
+!| BLOC           |<->| FORTRAN NAME OF BLOCK
+!| OBJ            |-->| BIEF_OBJ STRUCTURE TO BE ADDED IN THE BLOCK
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ADDBLO => ADDBLO

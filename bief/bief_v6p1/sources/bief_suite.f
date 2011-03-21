@@ -7,7 +7,7 @@
      & TROUVE,ALIRE,LISTIN,FIN,MAXVAR,NPLAN,DT,NDT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE RESULTS WRITTEN TO A RESULTS FILE.
@@ -35,36 +35,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALIRE          |-->| VARIABLES QU'IL FAUT LIRE (POUR LES AUTRES ON
-!|                |   | SAUTE L'ENREGISTREMENT CORRESPONDANT)
-!|                |   | LES VARIABLES CLANDESTI-NES SONT LUES
-!|                |   | SYSTEMATIQUEMENT.
-!| AT             |-->| TEMPS
-!| CLAND          |<--| BLOC DES VARIABLES CLANDESTI-NES
-!| DT             |---|
-!| FIN            |-->| VOIR LE TROISIEME ARGUMENT NUMDEB
-!| HIST           |-->| TABLEAU DE VALEURS MISES DANS L'ENREGISTREMENT
-!|                |   | DU TEMPS.
-!| LISTIN         |-->| SI OUI, IMPRESSION D'INFORMATIONS SUR LISTING
-!| MAXVAR         |-->| DIMENSION DES TABLEAUX DES VARIABLES : ALIRE, ETC
-!| NDT            |---|
-!| NHIST          |-->| NOMBRE DE VALEURS DANS LE TABLEAU HIST.
-!| NPLAN          |---|
-!| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| NPRE           |-->| NUMERO DE CANAL DU FICHIER
-!| NUMDEB         |<->| FIN = .TRUE. NUMERO DU DERNIER ENREGISTREMENT
-!|                |   | FIN = .FALSE. : NUMERO DE L'ENREGISTREMENT
-!|                |   | QUE L'ON VEUT LIRE.
-!| NVARCL         |-->| NOMBRE DE VARIABLES CLANDESTI-NES.
-!| STD            |-->| BINAIRE DU FICHIER : STD, IBM OU I3E
-!| TEXTPR         |-->| NOMS ET UNITES DES VARIABLES.
-!| TROUVE         |<--| INDIQUE (TROUVE(K)=1) LES VARIABLES TROUVEES
-!|                |   | DANS LE FICHIER.
-!|                |   | DE K =  1 A 26 VARIABLES NORMALES
-!|                |   | DE K = 27 A 36 VARIABLES CLANDESTI-NES.
-!| VARCLA         |-->| TABLEAU OU L'ON RANGE LES VARIABLES
-!|                |   | CLANDESTIINES.
-!| VARSOR         |<--| BLOC DES TABLEAUX CONTENANT LES VARIABLES
+!| ALIRE          |-->| VARIABLES TO BE READ (FOR OTHERS RECORD SKIPPED)
+!|                |   | CLANDESTINE VARIABLES ARE SYSTEMATICALLY READ
+!| AT             |-->| TIME
+!| CLAND          |<--| BLOCK OF CLANDESTINE VARIABLES
+!| DT             |-->| TIME STEP
+!| FIN            |-->| LOGICAL, SEE NUMDEB
+!| HIST           |-->| CONTAINS TIME AND POSSIBLY OTHER VALUES
+!| LISTIN         |-->| IF YES, INFORMATIONS PRINTED ON LISTING
+!| MAXVAR         |-->| DIMENSION OF ARRAY RELATED TO VARIABLES: ALIRE,..
+!| NDT            |-->| OPTIONAL, IF PRESENT THE NUMBER OF TIME STEPS
+!|                |   | WILL BE RETURNED
+!| NHIST          |-->| NUMBER OF VALUES IN HIST HIST.
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| NPRE           |-->| LOGICAL UNIT OF FILE
+!| NUMDEB         |<->| FIN = .TRUE. LAST RECORD TAKEN
+!|                |   | FIN = .FALSE. : RECORD NUMBED TAKEN
+!| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES
+!| STD            |-->| FILE BINARY : STD, IBM OU I3E
+!| TEXTPR         |-->| NAMES AND UNITS OF VARIABLES.
+!| TROUVE         |<--| GIVES (TROUVE(K)=1) VARIABLES PRESENT IN THE FILE
+!| VARCLA         |-->| BLOCK FOR CLANDESTINE VARIABLES
+!| VARSOR         |<--| BLOCK OF NORMAL VARIABLES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_SUITE => BIEF_SUITE

@@ -5,7 +5,7 @@
      &(X, IKLE,NPOIN,NELEM,NELMAX,IELM,W,INIT,LV,MSK,MASKEL,NDP)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    VECTOR ASSEMBLY.
@@ -30,23 +30,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM           |-->| TYPE D'ELEMENT (VOIR CI-DESSUS)
-!| IKLE           |-->| CORRESPONDANCES NUMEROTATION LOCALE-GLOBALE
-!| INIT           |-->| LOGIQUE : SI VRAI : X EST INITIALISE A 0
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
+!| IELM           |-->| ELEMENT TYPE 
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| INIT           |-->| LOGICAL : IF TRUE X IS INITIALISED TO 0.
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER 
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| PREMIERE DIMENSION DE IKLE ET W.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DU TABLEAU X
-!| W              |-->| TABLEAUX DE TRAVAIL CONTENANT LE VECTEUR SOUS
-!|                |   | FORME NON ASSEMBLEE
-!|                |   | W EST DE DIMENSION NELMAX * NDP(IELM)
-!|                |   | NDP EST LE NOMBRE DE POINTS DE L'ELEMENT
-!| X              |<->| VECTEUR ASSEMBLE
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
+!| NPOIN          |-->| NUMBER OF POINTS IN X
+!| W              |-->| WORK ARRAY WITH A NON ASSEMBLED FORM OF THE
+!|                |   | RESULT
+!|                |   | W HAS DIMENSION NELMAX * NDP(IELM)
+!|                |   | NDP IS THE NUMBER OF POINTS IN THE ELEMENT
+!| X              |<->| ASSEMBLED VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ASSVEC => ASSVEC

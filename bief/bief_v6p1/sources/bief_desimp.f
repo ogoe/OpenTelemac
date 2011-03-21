@@ -6,7 +6,7 @@
      & SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES TO RESULT OR LISTING FILE.
@@ -29,22 +29,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FORMAT_RES     |---|
-!| HIST           |---|
-!| LEOPRD         |-->| PERIODE DE SORTIE SUR LE FICHIER DE RESULTAT
-!| LISPRD         |-->| PERIODE DE SORTIE SUR LISTING.
-!| MAXVAR         |---|
-!| N              |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NHIST          |-->| NOMBRE DE VALEURS DANS HIST
-!| NRES           |-->| UNITE LOGIQUE DU FICHIER DE RESULTATS.
-!| PTINIG         |-->| 1ER PAS DE TEMPS POUR LES SORTIES GRAPHIQUES
-!| PTINIL         |-->| 1ER PAS DE TEMPS POUR LES SORTIES LISTING
-!| SORIMP         |---|
-!| SORLEO         |---|
-!| STD            |-->| BINAIRE DU FICHIER DE RESULTATS (IBM,I3E,STD)
-!| TEXTE          |-->| NOMS ET UNITES DES VARIABLES.
-!| VARSOR         |-->| BLOC CONTENANT LES VARIABLES A METTRE DANS LES
-!|                |   | RESULTATS
+!| FORMAT_RES     |-->| FORMAT OF RESULT FILE
+!| HIST           |-->| A SEQUENCE OF NHIST VALUES BEGINNING BY TIME
+!| LEOPRD         |-->| GRAPHIC PRINTOUT PERIOD
+!| LISPRD         |-->| LISTING PRINTOUT PERIOD
+!| MAXVAR         |-->| MAXIMUM OF VARIABLES IN THE FILE
+!| N              |-->| NUMBER OF POINTS IN THE MESH
+!| NHIST          |-->| NUMBER OF VALUES IN HIST (OBSOLETE)
+!| NRES           |-->| LOGICAL UNIT OF THE RESULTS FILE
+!| PTINIG         |-->| NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS
+!| PTINIL         |-->| NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS
+!| SORIMP         |-->| ARRAY OF LOGICAL SAYING IF VARIABLES MUST BE PUT
+!|                |   | IN THE LISTING
+!| SORLEO         |-->| ARRAY OF LOGICAL SAYING IF VARIABLES MUST BE PUT
+!|                |   | IN THE RESULTS FILE
+!| STD            |-->| BINARY OF RESULTS FILE (IBM,I3E,STD)
+!| TEXTE          |-->| NAMES AND UNITS OF VARIABLES
+!| VARSOR         |-->| BLOCK WITH VARIABLES TO BE PRINTED OR COPIED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

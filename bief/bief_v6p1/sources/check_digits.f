@@ -5,7 +5,7 @@
      &(F,T1,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IN PARALLEL MODE, CHECKS THAT PROCESSORS SHARING AN
@@ -29,9 +29,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |-->| TABLEAU A VERIFIER
-!| MESH           |-->| STRUCTURE DE MAILLAGE
-!| T1             |<->| TABLEAU DE TRAVAIL
+!| F              |-->| BIEF_OBJ STRUCTURE TO BE CHECKED
+!| MESH           |-->| MESH STRUCTURE
+!| T1             |<->| WORK BIEF STRUCTURE, SIMILAR TO F
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -82,7 +82,12 @@
 !
       IF(NCSIZE.GT.1) ISTOP=P_IMAX(ISTOP)
       IF(ISTOP.GT.0) THEN
-        WRITE(LU,*) 'CHECK_DIGITS : ERREUR SUR VECTEUR ',F%NAME
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CHECK_DIGITS : ERREUR SUR VECTEUR ',F%NAME
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CHECK_DIGITS : ERROR ON VECTOR ',F%NAME
+        ENDIF
         CALL PLANTE(1)
         STOP
       ENDIF

@@ -5,7 +5,7 @@
      &(X, A,B , MESH, P,Q,R,S,T,V, CFG,INFOGR,AUX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE LINEAR SYSTEM A X = B
@@ -45,13 +45,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE DU SYSTEME
-!| AUX            |-->| MATRICE DE PRECONDITIONNEMENT.
-!| B              |-->| SECOND MEMBRE DU SYSTEME.
-!| CFG            |---|
-!| INFOGR         |-->| SI OUI, ON IMPRIME UN COMPTE-RENDU
-!| MESH           |---|
-!| P,Q,R,S,T,V    |<->| TABLEAUX DE TRAVAIL
+!| A              |-->| MATRIX OF THE SYSTEM
+!| AUX            |-->| PRECONDITIONING MATRIX
+!| B              |-->| RIGHT-HAND SIDE OF SYSTEM
+!| CFG            |-->| CFG(1): STORAGE OF MATRIX 
+!|                |   | CFG(2): MATRIX VECTOR PRODUCT
+!| INFOGR         |-->| IF YES, INFORMATION PRINTED
+!| MESH           |-->| MESH STRUCTURE
+!| P              |<->| WORK STRUCTURE
+!| Q              |<->| WORK STRUCTURE
+!| R              |<->| WORK STRUCTURE
+!| S              |<->| WORK STRUCTURE
+!| T              |<->| WORK STRUCTURE
+!| V              |<->| WORK STRUCTURE
 !| X              |<--| VALEUR INITIALE, PUIS SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

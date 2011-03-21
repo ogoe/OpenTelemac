@@ -5,7 +5,7 @@
      &( BLO , NOM )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A BLOCK STRUCTURE.
@@ -28,8 +28,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BLO            |-->| BLOC RESULTAT
-!| NOM            |-->| NOM FORTRAN DU TABLEAU
+!| BLO            |-->| THE BLOCK TO BE ALLOCATED
+!| NOM            |-->| FORTRAN NAME OF THIS BLOCK
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ALLBLO => ALLBLO

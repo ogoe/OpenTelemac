@@ -5,7 +5,7 @@
      &(NPOIN,NPTFR,NELEM,NPMAX,NPTFX,NELMAX,NPLAN,NSEGBOR,NDS,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAY NDS, WHICH IS USED BY
@@ -49,15 +49,15 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NDS            |<--| ARRAY IN BIEF_MESH STRUCTURE FOR STORING
 !|                |   | NUMBERS
-!| NELEB          |-->| NOMBRE D'ELEMENTS DE BORD 3D NON STRUCTURE
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN THE MESH
 !| NPLAN          |-->| NUMBER OF PLANES
-!| NPMAX          |-->| NOMBRE MAXIMUM DE SOMMETS DU MAILLAGE
-!| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE 2D
-!|                |   | (SAUF TETRAEDRES OU C'EST LE NOMBRE TOTAL)
-!| NPTFR          |-->| NOMBRE DE SOMMETS DE FRONTIERE
-!| NPTFX          |-->| NOMBRE MAXIMUM DE SOMMETS DE FRONTIERE
+!| NPMAX          |-->| MAXIMUM NUMBER OF NODES IN THE MESH
+!| NPOIN          |-->| NUMBER OF NODES IN THE 2D MESH
+!|                |   | (EXCEPT TETRAHEDRA WHERE IT IS THE TOTAL NUMBER)
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NPTFX          |-->| MAXIMUM NUMBER OF BOUNDARY POINTS
 !| NSEGBOR        |-->| NUMBER OF BOUNDARY SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

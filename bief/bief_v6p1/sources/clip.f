@@ -5,7 +5,7 @@
      &(F,XMIN,CLPMIN,XMAX,CLPMAX,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CAPS THE VALUES IN ARRAY F.
@@ -36,12 +36,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CLPMAX         |-->| LOGIQUE QUI DECIDE DU CLIPPING
-!| CLPMIN         |-->| LOGIQUE QUI DECIDE DU CLIPPING
-!| F              |<->| TABLEAU DES VALEURS
-!| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE
-!| XMAX           |-->| VALEUR MAX
-!| XMIN           |-->| VALEUR MIN
+!| CLPMAX         |-->| LOGICAL, IF YES, CLIPPING OF MAXIMUM VALUE
+!| CLPMIN         |-->| LOGICAL, IF YES, CLIPPING OF MINIMUM VALUE
+!| F              |<->| ATTAY OF VALUES TO BE CHECKED
+!| NPOIN          |-->| NUMBER OF POINTS IN THE DOMAIN
+!| XMAX           |-->| MAXIMUM THRESHOLD VALUE 
+!| XMIN           |-->| MINIMUM THRESHOLD VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CLIP => CLIP

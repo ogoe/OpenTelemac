@@ -5,7 +5,7 @@
      &(CODE,FILES,NFILES,PATH,NCAR,FLOT,IFLOT,ICODE)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPENS FILES DECLARED IN THE STEERING FILE.

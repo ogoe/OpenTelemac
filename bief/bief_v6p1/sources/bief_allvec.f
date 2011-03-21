@@ -5,7 +5,7 @@
      &( NAT , VEC , NOM , IELM , DIM2 , STATUT , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY FOR A VECTOR STRUCTURE.
@@ -28,18 +28,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIM2           |-->| DEUXIEMME DIMENSION DU VECTEUR
-!| IELM           |-->| TYPE D'ELEMENT DU VECTEUR, OU DIMENSION
-!|                |   | (SUIVANT LE STATUT, VOIR PLUS BAS)
-!| NAT            |<--| 1: VECTEUR REEL   2:VECTEUR ENTIER
-!| NOM            |-->| NOM FORTRAN DU TABLEAU
-!| STATUT         |-->| STATUT DU VECTEUR :
-!|                |   | 0 : VECTEUR LIBRE, IELM EST ALORS SA DIMENSION
-!|                |   | 1 : VECTEUR DEFINI SUR LE MAILLAGE
-!|                |   | IELM EST ALORS LE TYPE D'ELEMENT
-!|                |   | CHANGEMENT DE DISCRETISATION INTERDIT
-!|                |   | 2 : COMME 1 MAIS CHANGEMENTS AUTORISES
-!| VEC            |<--| VECTEUR A ALLOUER
+!| DIM2           |-->| SECOND DIMENSION OF VECTOR
+!| IELM           |-->| TYPE OF ELEMENT, OR DIMENSION
+!|                |   | (DEPENDING ON 'STATUT')
+!| NAT            |<--| 1: REAL VECTOR   2:VECTOR OF INTEGERS
+!| NOM            |-->| FORTRAN NAME
+!| STATUT         |-->| VECTOR STATUS:
+!|                |   | 0 : FREE VECTOR, IELM IS ITS DIMENSION
+!|                |   | 1 : VECTOR DEFINED ON A MESH
+!|                |   | IELM IS THEN THE ELEMENT TYPE
+!|                |   | CHANGING DISCRETISATION FORBIDDEN
+!|                |   | 2 : LIKE 1 BUT CHANGING DISCRETISATION ALLOWED
+!| VEC            |<--| VECTOR TO BE ALLOCATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_ALLVEC => BIEF_ALLVEC

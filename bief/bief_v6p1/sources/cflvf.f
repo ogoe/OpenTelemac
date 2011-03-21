@@ -6,7 +6,7 @@
      & NPOIN,NPTFR,GLOSEG,SIZGLO,MESH,MSK,MASKPT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM TIMESTEP THAT ENABLES
@@ -54,9 +54,9 @@
 !| H              |-->| H AT THE END OF FULL TIME STEP
 !| HSTART         |-->| H AT BEGINNING OF SUB TIME STEP
 !| MAS            |-->| INTEGRAL OF TEST FUNCTIONS (=AREA AROUND POINTS)
-!| MASKPT         |---|
+!| MASKPT         |-->| ARRAY FOR MASKING POINTS
 !| MESH           |-->| MESH STRUCTURE
-!| MSK            |---|
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS

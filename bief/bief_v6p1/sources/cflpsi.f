@@ -5,7 +5,7 @@
      &(SYGMA,U,V,DT,IELM,MESH,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COURANT NUMBER AT EACH POINT OF THE MESH
@@ -36,14 +36,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS DU CALCUL.
-!| IELM           |-->| TYPE D'ELEMENT.
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| SYGMA          |<--| NOMBRE DE COURANT.
-!| U              |-->| VITESSE SUIVANT X.
-!| V              |-->| VITESSE SUIVANT Y.
+!| DT             |-->| TIME STEP.
+!| IELM           |-->| TYPE OF ELEMENT.
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| SYGMA          |<--| COURANT NUMBER.
+!| U              |-->| VELOCITY ALONG X.
+!| V              |-->| VELOCITY ALONG Y.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CFLPSI => CFLPSI

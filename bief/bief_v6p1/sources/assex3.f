@@ -6,7 +6,7 @@
      & MESH,NELMAX,ELTSEG,ORISEG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLES MATRICES EXTRA-DIAGONAL TERMS
@@ -32,19 +32,19 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1XMT        |-->| FIRST DIMENSION OF XMT
 !| DIM2XMT        |-->| SECOND DIMENSION OF XMT
-!| ELTSEG         |---|
-!| IELM1          |---|
-!| IELM2          |---|
-!| MESH           |---|
-!| NAME           |---|
-!| NELMAX         |---|
-!| ORISEG         |---|
+!| ELTSEG         |-->| SEGMENTS IN AN ELEMENT
+!| IELM1          |-->| ELEMENT OF LINES IN THE MATRIX
+!| IELM2          |-->| ELEMENT OF ROWS IN THE MATRIX
+!| MESH           |-->| MESH-STRUCTURE
+!| NAME           |-->| FORTRAN NAME OF THE MATRIX
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN THE MESH
+!| ORISEG         |-->| ORIENTATION OF SEGMENTS
 !| STO            |-->| STORAGE REQUIRED IN XM 1: EBE  3: EDGE-BASED
 !| STOXMT         |-->| STORAGE OF OFF-DIAGONAL TERMS
 !|                |   | 1: XMT(NELMAX,*)  2: XMT(*,NELMAX)
-!| TYPEXT         |---|
-!| XM             |-->| ASSEMBLED OFF-DIAGONAL TERMS
-!| XMT            |-->| OFF-DIAGONAL TERMS OF THE WORK MATRIX
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!| XM             |<->| ASSEMBLED OFF-DIAGONAL TERMS
+!| XMT            |<->| OFF-DIAGONAL TERMS OF THE WORK MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ASSEX3 => ASSEX3

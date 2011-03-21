@@ -8,7 +8,7 @@
      & FLBOR,NUMLIQ,NFRLIQ,NPTFR,NAMETRAC,FLBORTRA)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MASS BALANCE FOR THE TRACER.
@@ -31,30 +31,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AGGLOT         |---|
-!| DT             |-->| PAS DE TEMPS
-!| FLBOR          |---|
-!| FLBORTRA       |---|
-!| H              |-->| VALEURS DE H A L' ETAPE N+1.
-!| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
-!| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASSOU         |-->| QUANTITE DE TRACEUR APPORTEE PAR LE TERME
-!|                |   | SOURCE
-!| MASTEN         |---|
-!| MASTOU         |---|
-!| MASTR0         |---|
-!| MASTR2         |---|
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NAMETRAC       |---|
-!| NFRLIQ         |---|
-!| NPTFR          |---|
-!| NUMLIQ         |---|
-!| T              |-->| TRACEUR AU TEMPS T(N+1)
-!| WORK2          |---|
-!| WORK3          |---|
+!| AGGLOT         |-->| MASS-LUMPING ON TRACER
+!| DT             |-->| TIME-STEP
+!| FLBOR          |-->| WATER FLUXES AT BOUNDARIES
+!| FLBORTRA       |-->| TRACER FLUXES AT BOUNDARIES
+!| H              |-->| DEPTH AT TIME N+1.
+!| INFO           |-->| LOGICAL, IF YES, PRINTING INFORMATION ON LISTING
+!| LT,NIT         |-->| TIME STEP NUMBER, TOTAL NUMBER OF STEPS.
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASSOU         |<--| MASS OF TRACER BROUGTH BY SOURCE TERM
+!| MASTEN         |<--| WATER MASS ENTERED THROUGH BOUNDARIES
+!| MASTOU         |<--| WATER MASS CREATED BY SOURCE TERMS
+!| MASTR0         |<--| INITIAL TRACER MASS
+!| MASTR2         |<--| CURRENT TRACER MASS
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NAMETRAC       |-->| NAMES OF TRACERS
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NUMLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| T              |-->| TRACER AT TIME T(N+1)
+!| WORK2          |<->| WORK ARRAY
+!| WORK3          |<->| WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BILANT => BILANT

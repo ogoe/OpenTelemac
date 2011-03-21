@@ -5,7 +5,7 @@
      &(XM,NSEG11,NSEG13,XMT,NELMAX,NELEM,ELTSEG,ORISEG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLES EXTRA-DIAGONAL TERMS OF MATRICES (XMT)
@@ -67,18 +67,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG         |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| PREMIERE DIMENSION DE IKLE ET W.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
+!| ELTSEG         |-->| SEGMENT OF A TRIANGLE
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| FIRST DIMENSION OF IKLE AND W.
 !| NSEG11         |-->| NUMBER OF LINEAR SEGMENTS
 !| NSEG13         |-->| NUMBER OF QUADRATIC SEGMENTS -
 !|                |   | THE NUMBER OF PURELY QUADRATIC SEGMENTS
 !|                |   | (THEY ARE NOT CONSIDERED IN RECTANGULAR
 !|                |   | MATRICES)
-!| ORISEG         |---|
-!| XM             |<--| TERMES EXTRA-DIAGONAUX ASSEMBLES XA12,23,31
-!| XMT            |---|
+!| ORISEG         |-->| ORIENTATION OF SEGMENTS
+!| XM             |<--| ASSEMBLED OFF-DIAGONAL TERMS XA12,23,31
+!| XMT            |-->| ELEMENT BY ELEMENT STORAGE OF MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
