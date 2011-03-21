@@ -249,29 +249,29 @@
       READ(4,'(I6)')NPLAN
 !
       WRITE(3, '(A)' )
-     &    "TASK      FULL-COUPLING                              "
+     &    "task      full-coupling                              "
       WRITE(3, '(A)' )
      &    "                                                     "
       WRITE(3, '(A)' )
      &    "#                                                    "
       WRITE(3, '(A)' )
-     &    "# TELEMAC DATA                                       "
+     &    "# telemac data                                       "
       WRITE(3, '(A)' )
      &    "#                                                    "
       WRITE(3, '(A)' )
      &    "                                                     "
       WRITE(3, '(A)' )
-     &    "GEOMETRY  FINITE-ELEMENTS                            "
+     &    "geometry  finite-elements                            "
       WRITE(3, '(A)' )
      &    "                                                     "
       WRITE(3, '(A)' )
-     &    "HORIZONTAL-AGGREGATION       NO                      "
+     &    "horizontal-aggregation       no                      "
       WRITE(3, '(A)' )
-     &    "MINIMUM-VERT-DIFFUSION-USED  NO                      "
+     &    "minimum-vert-diffusion-used  no                      "
       WRITE(3, '(A)' )
-     &    "VERTICAL-DIFFUSION           CALCULATED              "
+     &    "vertical-diffusion           calculated              "
       WRITE(3, '(A)' )
-     &    "DESCRIPTION                                          "
+     &    "description                                          "
       WRITE(3, '(A,A,A)' )
      &    "   '",TITRE(1:J),"'"
       WRITE(3, '(A)' )
@@ -279,143 +279,143 @@
       WRITE(3, '(A)' )
      &    "   '                                    '            "
       WRITE(3, '(A)' )
-     &    "END-DESCRIPTION                                      "
+     &    "end-description                                      "
       WRITE(3, '(A,I4,I2,I2,I2,I2,I2,A)' )
-     &"REFERENCE-TIME           '",MARDAT(1),MARDAT(2),MARDAT(3),
+     &"reference-time           '",MARDAT(1),MARDAT(2),MARDAT(3),
      &                             MARTIM(1),MARTIM(2),MARTIM(3),"'"
       WRITE(3, '(A,I14,A)' )
-     &    "HYDRODYNAMIC-START-TIME  '",ITSTRT,"'"
+     &    "hydrodynamic-start-time  '",ITSTRT,"'"
       WRITE(3, '(A,I14,A)' )
-     &    "HYDRODYNAMIC-STOP-TIME   '",ITSTOP,"'"
+     &    "hydrodynamic-stop-time   '",ITSTOP,"'"
       WRITE(3, '(A,I14,A)' )
-     &    "HYDRODYNAMIC-TIMESTEP    '",NSTEPA,"'"
+     &    "hydrodynamic-timestep    '",NSTEPA,"'"
       WRITE(3, '(A,I14,A)' )
-     &    "CONVERSION-REF-TIME      '",ITSTRT,"'"
+     &    "conversion-ref-time      '",ITSTRT,"'"
       WRITE(3, '(A,I14,A)' )
-     &    "CONVERSION-START-TIME    '",ITSTRT,"'"
+     &    "conversion-start-time    '",ITSTRT,"'"
       WRITE(3, '(A,I14,A)' )
-     &    "CONVERSION-STOP-TIME     '",ITSTOP,"'"
+     &    "conversion-stop-time     '",ITSTOP,"'"
       WRITE(3, '(A,I14,A)' )
-     &    "CONVERSION-TIMESTEP      '",NSTEPA,"'"
+     &    "conversion-timestep      '",NSTEPA,"'"
       WRITE(3, '(A,I6)'  )
-     &    "GRID-CELLS-FIRST-DIRECTION ",NPOIN2
+     &    "grid-cells-first-direction ",NPOIN2
       WRITE(3, '(A,I6,A)')
-     &    "GRID-CELLS-SECOND-DIRECTION",NSEG2+MBND," # NR OF EXCHANGES!"
+     &    "grid-cells-second-direction",NSEG2+MBND," # nr of exchanges!"
       WRITE(3, '(A,I6)' )
-     &    "NUMBER-HYDRODYNAMIC-LAYERS ",NPLAN
+     &    "number-hydrodynamic-layers ",NPLAN
       WRITE(3, '(A,I6)' )
-     &    "NUMBER-WATER-QUALITY-LAYERS",NPLAN
+     &    "number-water-quality-layers",NPLAN
       READ(4,'(I3)')J
       READ(4,'(A)')NOMGEO(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "HYDRODYNAMIC-FILE        '",NOMGEO(1:J),"'"
+     &    "hydrodynamic-file        '",NOMGEO(1:J),"'"
       WRITE(3, '(A)' )
-     &    "AGGREGATION-FILE         NONE                        "
+     &    "aggregation-file         none                        "
       WRITE(3, '(A,A,A)' )
-     &    "GRID-INDICES-FILE        '",NOMGEO(1:J),"'"
+     &    "grid-indices-file        '",NOMGEO(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMLIM(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "GRID-COORDINATES-FILE    '",NOMLIM(1:J),"'"
+     &    "grid-coordinates-file    '",NOMLIM(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMSOU(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "VOLUMES-FILE             '",NOMSOU(1:J),"'"
+     &    "volumes-file             '",NOMSOU(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMMAB(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "AREAS-FILE               '",NOMMAB(1:J),"'"
+     &    "areas-file               '",NOMMAB(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMCOU(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "FLOWS-FILE               '",NOMCOU(1:J),"'"
+     &    "flows-file               '",NOMCOU(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMVEB(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "POINTERS-FILE            '",NOMVEB(1:J),"'"
+     &    "pointers-file            '",NOMVEB(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMMAF(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "LENGTHS-FILE             '",NOMMAF(1:J),"'"
+     &    "lengths-file             '",NOMMAF(1:J),"'"
       READ(4,'(L)')SALI_DEL
       IF(SALI_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)')NOMSAL(1:J)
         WRITE(3, '(A,A,A)' )
-     &    "SALINITY-FILE            '",NOMSAL(1:J),"'"
+     &    "salinity-file            '",NOMSAL(1:J),"'"
       ELSE
         WRITE(3, '(A)' )
-     &    "SALINITY-FILE            NONE                        "
+     &    "salinity-file            none                        "
       ENDIF
       READ(4,'(L)')TEMP_DEL
       IF(TEMP_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)')NOMTEM(1:J)
         WRITE(3, '(A,A,A)' )
-     &    "TEMPERATURE-FILE         '",NOMTEM(1:J),"'"
+     &    "temperature-file         '",NOMTEM(1:J),"'"
       ELSE
         WRITE(3, '(A)' )
-     &    "TEMPERATURE-FILE         NONE                        "
+     &    "temperature-file         none                        "
       ENDIF
       READ(4,'(L)')DIFF_DEL
       IF(DIFF_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)')NOMVIS(1:J)
         WRITE(3, '(A,A,A)' )
-     &    "VERT-DIFFUSION-FILE      '",NOMVIS(1:J),"'"
+     &    "vert-diffusion-file      '",NOMVIS(1:J),"'"
       ELSE
         WRITE(3, '(A)' )
-     &    "VERT-DIFFUSION-FILE      NONE                        "
+     &    "vert-diffusion-file      none                        "
       ENDIF
       READ(4,'(L)')VELO_DEL
       IF(VELO_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)')NOMVEL(1:J)
         WRITE(3, '(A,A,A)' )
-     &    "VELOCITY-FILE            '",NOMVEL(1:J),"'"
+     &    "velocity-file            '",NOMVEL(1:J),"'"
       ELSE
         WRITE(3, '(A)' )
-     &    "VELOCITY-FILE            NONE                        "
+     &    "velocity-file            none                        "
       ENDIF
       READ(4,'(I3)')J
       READ(4,'(A)')NOMINI(1:J)
       WRITE(3, '(A,A,A)' )
-     &    "SURFACES-FILE            '",NOMINI(1:J),"'"
+     &    "surfaces-file            '",NOMINI(1:J),"'"
 !
       WRITE(3, '(A)' )
-     &    "TOTAL-GRID-FILE          NONE                        "
+     &    "total-grid-file          none                        "
       WRITE(3, '(A)' )
-     &    "DISCHARGES-FILE          NONE                        "
+     &    "discharges-file          none                        "
       WRITE(3, '(A)' )
-     &    "CHEZY-COEFFICIENTS-FILE  NONE                        "
+     &    "chezy-coefficients-file  none                        "
       WRITE(3, '(A)' )
-     &    "SHEAR-STRESSES-FILE      NONE                        "
+     &    "shear-stresses-file      none                        "
       WRITE(3, '(A)' )
-     &    "WALKING-DISCHARGES-FILE  NONE                        "
+     &    "walking-discharges-file  none                        "
       IF ( NPLAN .GT. 1 ) THEN
          WRITE(3, '(A)' )
-     &       "MINIMUM-VERT-DIFFUSION                            "
+     &       "minimum-vert-diffusion                            "
          WRITE(3, '(A)' )
-     &       "   UPPER-LAYER       0.0000E+00                   "
+     &       "   upper-layer       0.0000E+00                   "
          WRITE(3, '(A)' )
-     &       "   LOWER-LAYER       0.0000E+00                   "
+     &       "   lower-layer       0.0000E+00                   "
          WRITE(3, '(A)' )
-     &       "   INTERFACE-DEPTH   0.0000E+00                   "
+     &       "   interface-depth   0.0000E+00                   "
          WRITE(3, '(A)' )
-     &       "END-MINIMUM-VERT-DIFFUSION                        "
+     &       "end-minimum-vert-diffusion                        "
       ENDIF
       WRITE(3, '(A)' )
-     &    "CONSTANT-DISPERSION                                  "
+     &    "constant-dispersion                                  "
       WRITE(3, '(A)' )
-     &    "   FIRST-DIRECTION    0.0000                         "
+     &    "   first-direction    0.0000                         "
       WRITE(3, '(A)' )
-     &    "   SECOND-DIRECTION   0.0000                         "
+     &    "   second-direction   0.0000                         "
       WRITE(3, '(A)' )
-     &    "   THIRD-DIRECTION    0.0000                         "
+     &    "   third-direction    0.0000                         "
       WRITE(3, '(A)' )
-     &    "END-CONSTANT-DISPERSION                              "
+     &    "end-constant-dispersion                              "
       WRITE(3, '(A)' )
-     &    "HYDRODYNAMIC-LAYERS                               "
+     &    "hydrodynamic-layers                               "
       DO I=1,NPLAN
         READ(4,'(F10.4)')F(I)
       ENDDO
@@ -423,18 +423,18 @@
          WRITE(3, '(F10.4)' ) F(I)
       ENDDO
       WRITE(3, '(A)' )
-     &    "END-HYDRODYNAMIC-LAYERS                           "
+     &    "end-hydrodynamic-layers                           "
       WRITE(3, '(A)' )
-     &    "WATER-QUALITY-LAYERS                              "
+     &    "water-quality-layers                              "
       DO I=1,NPLAN
          WRITE(3, '(F10.4)' ) 1.0
       ENDDO
       WRITE(3, '(A)' )
-     &    "END-WATER-QUALITY-LAYERS                          "
+     &    "end-water-quality-layers                          "
       WRITE(3, '(A)' )
-     &    "DISCHARGES                                           "
+     &    "discharges                                           "
       WRITE(3, '(A)' )
-     &    "END-DISCHARGES                                       "
+     &    "end-discharges                                       "
 !
       WRITE(LU,*) 'END OF PROGRAM '
 !
