@@ -1,3 +1,13 @@
+/ 26/02/2010
+/
+/ CV: ICQ et ICR reprise des mêmes mots cles pour SISYPHE que pour TELEMAC3D
+/ Seule la valeur par defaut de ICR es tdifférente
+/ SISYPHE : ICR=1: KSP=KSPRATIO *D50
+/TEL3D      ICR=0: TAUP=TOB
+/ ICR: CORRECTION FROTTEMENT DE PEAU
+/ ICQ: FORMULE POUR LA CONCENTRATION DE REFERENCE
+/la formule 3: utiliser seulement si frottement de Nikuradse (KFROT=5)
+/
 &DYN
 /
 /---SYSTEME-TELEMAC-V6P1------------------------------TELEMAC-3D-------------
@@ -5291,8 +5301,8 @@ at the end of time loop'
 /
 /  V6P1
 /
-NOM = 'FROTTEMENT DE PEAU'
-NOM1 = 'SKIN FRICTION'    
+NOM = 'CORRECTION FROTTEMENT DE PEAU'
+NOM1 = 'SKIN FRICTION CORRECTION'     
 TYPE = ENTIER
 INDEX = 107
 MNEMO = 'ICR'
@@ -5306,9 +5316,26 @@ AIDE = 'prise en compte du frottement de peau
        1 : fond plat (KSP= KSPRATIO * D50)
        2 : prise en compte des rides (non programme)'
 AIDE1= 'formula to predict the skin bed roughness 
-       0 : NO correction (TAUP= TOB)  see also KSPRATIO
-       1 : Flat bed (KSP= KSPRATIO * D50)
-       2 : Ripple correction factor (not yet implemented)' 
+       0: NO correction (TAUP= TOB)  see also KSPRATIO
+       1: Flat bed (KSP= KSPRATIO * D50)
+       2: Ripple correction factor (not yet implemented)' 
+       
+NOM = 'FORMULE POUR LA CONCENTRATION DE REFERENCE' 
+NOM1 = 'REFERENCE CONCENTRATION FORMULA' 
+TYPE = ENTIER 
+INDEX = 108
+MNEMO = 'ICQ' 
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 2 
+AIDE = '1 : formule de Zyserman et Fredsoe 
+        2 :    
+        3 : formule de Van Rijn (1987)'        
+AIDE1 = '1: Zysderman and Fredsoe, equilibrium formula
+         2: 
+         3: Van Rijn formula'
        
 NOM = 'FICHIER DES PARAMETRES DE TOMAWAC'
 NOM1 = 'TOMAWAC STEERING FILE'
