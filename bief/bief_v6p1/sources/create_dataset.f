@@ -5,7 +5,7 @@
      &(FFORMAT,NRES,TITLE,NVAR,NOMVAR,OUTVAR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CREATES A DATA SET FOR A GIVEN FILE FORMAT IN THE FILE

@@ -5,7 +5,7 @@
      &(NEWSL,OLDSL,ZF,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CORRECTS THE FREE SURFACE COMPUTATION BY ELEMENTS
@@ -29,10 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MESH           |-->| STRUCTURE DE MAILLAGE
-!| NEWSL          |---| SURFACE LIBRE MODIFIEE, PAR ELEMENTS
-!| OLDSL          |-->| SURFACE LIBRE REELLE.
-!| ZF             |-->| COTE DU FOND
+!| MESH           |-->| MESH STRUCTURE
+!| NEWSL          |<->| MODIFIED FREE SURFACE, GIVEN PER ELEMENT
+!| OLDSL          |-->| ORIGINAL FREE SURFACE
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CORRSL => CORRSL

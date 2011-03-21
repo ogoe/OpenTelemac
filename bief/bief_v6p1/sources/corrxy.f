@@ -5,7 +5,7 @@
      & (X,Y,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE COORDINATES OF THE POINTS IN THE MESH.
@@ -40,8 +40,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| X,Y            |-->| COORDONNEES DU MAILLAGE .
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| X              |<->| ABSCISSAE OF POINTS IN THE MESH
+!| X,Y            |<->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CORRXY => CORRXY

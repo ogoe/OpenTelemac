@@ -5,7 +5,7 @@
      &(IKLE3,IKLES,NELEM2,NELMAX2,NPOIN2,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLE.
@@ -156,12 +156,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE3          |---|
-!| IKLES          |---|
-!| NELEM2         |---|
-!| NELMAX2        |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
+!| IKLE3          |<->| 3D CONNECTIVITY TABLE
+!| IKLES          |-->| 2D CONNECTIVITY TABLE WITH DIMENSION (3,NELEM2)
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

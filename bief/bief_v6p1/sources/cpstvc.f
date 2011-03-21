@@ -5,7 +5,7 @@
      &( X , Y )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COPIES A VECTOR STRUCTURE ONTO ANOTHER.
@@ -28,8 +28,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| X              |-->| STRUCTURE COPIEE.
-!| Y              |<--| STRUCTURE SUR LAQUELLE ON COPIE.
+!| X              |-->| STRUCTURE TO BE COPIED
+!| Y              |<--| STRUCTURE THAT RECEIVES X ATTRIBUTES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CPSTVC => CPSTVC

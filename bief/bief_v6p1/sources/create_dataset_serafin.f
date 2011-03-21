@@ -36,11 +36,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NFIC           |---|
-!| NOMVAR         |---|
-!| NVAR           |---|
-!| OUTVAR         |---|
-!| TITRE          |---|
+!| NFIC           |-->| LOGICAL UNIT OF THE FILE
+!| NOMVAR         |-->| NAMES AND UNITS OF VARIABLES
+!| NVAR           |-->| NUMBER OF VARIABLES
+!| OUTVAR         |-->| LOGICAL ARRAY SAYING IF A VARIABLE HAS TO BE
+!|                |   | PRINTED IN THE FILE.
+!| TITRE          |-->| TITLE TO BE PRINTED IN THE FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -76,8 +77,8 @@
       CALL ECRI2(XBID,IBID,TITSEL,80,'CH',NFIC,'STD',ISTAT)
 !
 !   LEC/ECR 2   : NUMBER OF DISCRETISATION FUNCTIONS 1 AND 2
-! NOTA : THIS FUNCTIONALITY OF SERAFIN FILES IS NOT USED. ALL THE
-!        VARIABLES HAVE THE SAME (NODAL) DISCRETISATION.
+!   NOTA : THIS FUNCTIONALITY OF SERAFIN FILES IS NOT USED. ALL THE
+!          VARIABLES HAVE THE SAME (NODAL) DISCRETISATION.
 !
       IB(1)=0
       IB(2)=0

@@ -13,7 +13,7 @@
      & FLULIM,YAFLULIM)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION, ADVECTION AND SOURCE TERMS FOR A TRACER.
@@ -96,23 +96,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AFBOR,BFBOR    |-->| COEFFICIENTS DES CONDITIONS DE NEUMANN
+!| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
-!|                |   | SINON DONNE PAR POINT DE BORD
-!| AGGLOT         |-->| COEFFICIENT DE MASS-LUMPING DE T.
+!|                |   | GIVEN FOR EVERY BOUNDARY POINT
+!| AGGLOT         |-->| MASS-LUMPING COEFFICIENT FOR T.
 !| AM1            |<->| MATRIX.
 !| AM2            |<->| MATRIX.
-!| BILAN          |-->| LOGIQUE INDIQUANT SI ON DOIT FAIRE UN BILAN
-!|                |   | DE MASSE. DANS CE CAS IL FAUT RETOURNER LA
-!|                |   | VALEUR DE L'APPORT DES TERMES SOURCES.
+!| BILAN          |-->| LOGICAL, IF YES A BALANCE OF MASS EXCHANGES HAS
+!|                |   | TO BE DONE.
 !| CONV           |-->| IF YES ADVECTION OF F
 !| DIFT           |-->| IF YES, DIFFUSION IS DONE
-!| DM1,ZCONV      |-->| SEE BELOW
-!| DT             |-->| PAS DE TEMPS
-!| ENTET          |-->| LOGIQUE INDIQUANT SI ON IMPRIME DES INFOS
-!|                |   | SUR LE BILAN DE MASSE DE TRACEUR
+!| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
+!| DT             |-->| TIME STEP
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
+!|                |   | CONSERVATION.
 !| F              |<--| F AT TIME T(N+1)
-!| FBOR           |-->| CONDITIONS DE DIRICHLET SUR F.
+!| FBOR           |-->| DIRICHLET CONDITIONS ON F.
 !| FLBOR          |-->| FLUXES AT BOUNDARIES
 !| FLBORTRA       |<->| TRACER FLUXES AT BOUNDARIES
 !| FN             |-->| F AT TIME T(N)
@@ -131,62 +131,64 @@
 !|                |   | ICONVF = 7 : NON CONSERVATIVE N SCHEME.
 !|                |   | ICONVF =13 : EDGE BY EDGE FORM OF 3
 !|                |   | ICONVF =14 : IDEM
-!| INFOGT         |-->| LOGIQUE INDIQUANT SI ON IMPRIME DES INFOS
-!|                |   | SUR LE SOLVEUR.
-!| ISOUSI         |-->| NUMERO DE LA SOUS-ITERATION
-!| KDDL           |-->| CONVENTION POUR LES DEGRES DE LIBERTE
-!| KDIR           |-->| CONVENTION POUR LES POINTS DE DIRICHLET
-!| KENT           |-->|
-!| LIMTRA         |-->| TYPES DE CONDITIONS AUX LIMITES SUR LES
-!|                |   | POINTS DE BORD.
-!| LT,NIT         |-->| NUMERO DU PAS DE TEMPS,NOMBRE TOTAL DE PAS.
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKPT         |-->| TABLEAU DE MASQUES PAR POINTS.
-!| MASSOU         |-->| MASSE DE TRACEUR AJOUTEE PAR TERME SOURCE
-!|                |   | VOIR DIFSOU
-!| MBOR           |-->| MATRICE DE BORD
-!| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| OPDTRA         |-->| MOT-CLE : OPTION POUR LA DIFFUSION DU TRACEUR
-!| OPTBAN         |-->| OPTION DE TRAITEMENT DES BANCS DECOUVRANTS
-!|                |   | 1:CLASSIQUE   2:AVEC MASQUAGE.
-!| OPTSOU         |-->| OPTION DE TRAITEMENT DES TERMES SOURCES.
-!|                |   | 1 : NORMAL
-!|                |   | 2 : DIRAC
-!| OPTSUP         |---|
-!|                |   | 1 : SUPG CLASSIQUE
-!|                |   | 2 : SUPG MODIFIE
-!| OPTVF          |-->| OPTIONS POUR LES VOLUMES FINIS (VOIR CVTRVF)
-!| S              |-->| STRUCTURE BIDON
-!| SLVTRA         |-->| SLVCFG STRUCTURE CONTAINING DATA FOR CALLING SOLVE
-!| SM             |-->| TERMES SOURCES .
-!| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE
+!| INFOGT         |-->| LOGICAL, IF YES INFORMATION ON SOLVER WILL BE 
+!|                |   | PRINTED.
+!| ISOUSI         |-->| SUB-ITERATION NUMBER
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR INFLOW POINT
+!| LIMTRA         |-->| BOUNDARY CONDITIONS ON BOOUNDARY POINTS
+!| LT,NIT         |-->| CURRENT TIME-STEP, TOTAL NUMBER OF STEPS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!| MASSOU         |-->| MASS OF TRACER ADDED BY SOURCE TERM
+!|                |   | SEE DIFSOU
+!| MBOR           |-->| BOUNDARY MATRIX
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
+!| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
+!|                |   | 1:NORMAL   2:WITH MASKING
+!| OPTSOU         |-->| TYPE OF SOURCES
+!|                |   | 1: NORMAL
+!|                |   | 2: DIRAC
+!| OPTSUP         |-->| SUPG OPTION
+!|                |   | 1: CLASSIC SUPG
+!|                |   | 2: MODIFIED SUPG
+!| OPTVF          |-->| OPTIONS FOR FINITE VOLUMES (SEE CVTRVF)
+!| S              |-->| VOID STRUCTURE
+!| SLVTRA         |-->| SOLVER CONFIGURATION (SLVCFG) STRUCTURE 
+!|                |   | CONTAINING DATA FOR CALLING SOLVE
+!| SM             |-->| SOURCE TERMS.
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
 !| SMI            |-->| IMPLICIT SOURCE TERM
 !| SOLSYS         |-->| 1 OR 2. IF 2 ADVECTION FIELD IS UCONV + DM1*GRAD(ZCONV)
-!| T1             |---|
-!| T10            |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| T5             |---|
-!| T6             |---|
-!| T7             |---|
-!| TB             |-->| BLOC DE TABLEAUX DE TRAVAIL (CONTIENT T1,...)
-!| TE1,TE2,TE3    |<->| TABLEAUX DE TRAVAIL SUR LES ELEMENTS
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T10            |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T5             |<->| WORK BIEF_OBJ STRUCTURE
+!| T6             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| TB             |<->| BLOCK OF WORK BIEF_OBJ STRUCTURES (CONTAINS T1,...)
+!| TE1,TE2,TE3    |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
 !| TETAH          |-->| IMPLICITATION BETWEEN H AND HN
-!| TETAT          |-->| COEFFICIENT D'IMPLICITATION DE LA CONVECTION
+!| TETAT          |-->| IMPLICITATION COEFFICIENT OF ADVECTION
 !| UCONV,VCONV    |-->| ADVECTION VELOCITY FIELD
 !| UNSV2D         |-->| =1/V2DPAR
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS (ASSEMBLED IN PARALLEL)
-!| VISC           |-->| COEFFICIENTS DE VISCOSITE SUIVANT X,Y ET Z .
-!|                |   | SI P0 : VISCOSITE DONNEE PAR ELEMENT
-!|                |   | SINON : VISCOSITE DONNEE PAR POINT
+!| VISC           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z .
+!|                |   | IF P0 : PER ELEMENT
+!|                |   | IF P1 : PERR POINT
 !| VISC_S         |<->| WORK ARRAY FOR SAVING VISC
-!| W              |-->| TABLEAU DE TRAVAIL DE DIMENSION :
-!|                |   | NELMAX * (NOMBRE DE POINTS DANS L'ELEMENT)
+!| W              |-->| WORK ARRAY OF DIMENSION :
+!|                |   | NELMAX * (NOMBER OF POINTS IN AN ELEMENT)
 !| YASMH          |-->| IF YES SMH TAKEN INTO ACCOUNT
 !| YASMI          |-->| IF YES SMI TAKEN INTO ACCOUNT
+!| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
 !| ZF             |-->| BOTTOM ELEVATION.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

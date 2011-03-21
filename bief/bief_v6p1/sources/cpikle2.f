@@ -5,7 +5,7 @@
      &(IKLE3,KLEI3,IKLES,NELEM2,NELMAX2,NPOIN2,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLE.
@@ -30,13 +30,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE3          |---|
-!| IKLES          |---|
-!| KLEI3          |---|
-!| NELEM2         |---|
-!| NELMAX2        |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
+!| IKLE3          |<->| 3D CONNECTIVITY TABLE
+!| IKLES          |-->| 2D CONNECTIVITY TABLE WITH DIMENSION (3,NELEM2)
+!| KLEI3          |<--| LIKE IKLE3 BUT WITH SWAPPED DIMENSIONS
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -46,7 +46,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: NELEM2,NELMAX2,NPOIN2,NPLAN
-      INTEGER, INTENT(INOUT) :: IKLES(3,NELEM2)
+      INTEGER, INTENT(IN)    :: IKLES(3,NELEM2)
       INTEGER, INTENT(INOUT) :: IKLE3(NELMAX2,NPLAN-1,6)
       INTEGER, INTENT(INOUT) :: KLEI3(6,NELMAX2,NPLAN-1)
 !

@@ -5,7 +5,7 @@
      &(X,Y,XR,YR,XMAIL,YMAIL,NPMAX,NBOR,KP1BOR,NPTFR,DM,OK)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WANT TO INTERPOLATE THE BOTTOM ELEVATION FOR A POINT
@@ -37,16 +37,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DM             |-->| DISTANCE MINIMALE A LA FRONTIERE
-!| KP1BOR         |---|
-!| NBOR           |-->| NUMEROTATION DES ELEMENTS DE BORD
-!| NPMAX          |-->| NOMBRE MAX DE POINTS DU MAILLAGE
-!| NPTFR          |---|
-!| OK             |---|
-!|                |   | .FALSE: SINON
-!| X,Y            |-->| COORDONNEES DU POINT OU L'ON VEUT INTERPOLER
-!| XMAIL,YMAIL    |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| XR,YR          |-->| COORDONNEES DU POINT SITUE DANS LE CADRAN R
+!| DM             |-->| MINIMUM DISTANCE TO THE BOUNDARY
+!| KP1BOR         |-->| RANK OF THE NEXT POINT ALONG THE BOUNDARY
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY NODES
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS IN THE MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY NODES
+!| OK             |<--| IF YES, NO CROSSING OF BOUNDARY
+!|                |   | IF NO, POINT OUTSIDE THE DOMAIN
+!| X              |-->| ABSCISSA OF POINT WHERE TO INTERPOLATE
+!| Y              |   | ORDINATE OF POINT WHERE TO INTERPOLATE
+!| XMAIL          |-->| ABSCISSAE OF POINTS IN THE MESH
+!| YMAIL          |-->| ORDINATES OF POINTS IN THE MESH
+!| XR             |-->| ABSCISSA OF POINT TO BE USED FOR INTERPOLATION
+!| XR,YR          |-->| ORDINATE OF POINT TO BE USED FOR INTERPOLATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &( X , Y , TRANS )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COPIES A MATRIX STRUCTURE ONTO ANOTHER.
@@ -29,9 +29,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| TRANS          |---|
-!| X              |-->| STRUCTURE COPIEE.
-!| Y              |<--| STRUCTURE SUR LAQUELLE ON COPIE.
+!| TRANS          |-->| IF YES, Y WILL BE CONSIDERED TRANSPOSED OF X 
+!| X              |-->| THE STRUCTURE OF X WILL BE COPIED ON Y
+!| Y              |<->| THE MODIFIED MATRIX STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CPSTMT => CPSTMT

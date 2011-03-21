@@ -5,7 +5,7 @@
      &(IKLE,NELEM,NELMAX,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLE.
@@ -29,10 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |<->| TABLEAU DES CONNECTIVITES
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE
+!| IKLE           |<->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

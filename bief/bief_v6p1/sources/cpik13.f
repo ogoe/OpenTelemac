@@ -5,7 +5,7 @@
      &(IKLE,IKLBOR,ELTSEG,NBOR,NELEM,NELMAX,NPOIN,NPTFR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLE.
@@ -29,14 +29,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG         |---|
-!| IKLBOR         |---|
-!| IKLE           |<->| TABLEAU DES CONNECTIVITES
-!| NBOR           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE
-!| NPTFR          |---|
+!| ELTSEG         |-->| SEGMENTS NUMBERS IN EVERY ELEMENT
+!| IKLBOR         |-->| CONNECTIVITY TABLE OF BOUNDARY ELEMENTS
+!| IKLE           |<->| CONNECTIVITY TABLE
+!| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

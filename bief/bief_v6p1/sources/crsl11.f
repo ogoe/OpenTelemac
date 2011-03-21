@@ -5,7 +5,7 @@
      &(NEWSL,OLDSL,ZF,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CORRECTS THE FREE SURFACE COMPUTATION BY ELEMENTS
@@ -29,12 +29,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| TABLES DE CONNECTIVITE
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NEWSL          |---| SURFACE LIBRE MODIFIEE, PAR ELEMENTS
-!| OLDSL          |-->| SURFACE LIBRE REELLE.
-!| ZF             |-->| COTE DU FOND
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NEWSL          |<->| MODIFIED FREE SURFACE, PER ELEMENT
+!| OLDSL          |-->| REAL FREE SURFACE, PER POINT
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
