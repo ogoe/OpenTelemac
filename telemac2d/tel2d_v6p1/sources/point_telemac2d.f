@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALLOCATES THE STRUCTURES.
@@ -45,6 +45,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        21/03/2011
+!+        V6P1
+!+   Allocation of KFRO_B as an integer instead of a real BIEF_OBJ
+!+   An overlooked bug for a long time!
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -660,14 +666,14 @@
            CALL BIEF_ALLVEC(1,LINDSP,'LINDSP',0,1,0,MESH)
          ENDIF
          CALL BIEF_ALLVEC(1,NDEF_B,'NDEF_B',IELBT,1,1,MESH)
-         CALL BIEF_ALLVEC(1,KFRO_B,'KFRO_B',IELBT,1,1,MESH)
+         CALL BIEF_ALLVEC(2,KFRO_B,'KFRO_B',IELBT,1,1,MESH)
       ELSE
          CALL BIEF_ALLVEC(2,KFROPT,'KFROPT',0,1,0,MESH)
          CALL BIEF_ALLVEC(1,NDEFMA,'NDEFMA',0,1,0,MESH)
          CALL BIEF_ALLVEC(1,LINDDP,'LINDDP',0,1,0,MESH)
          CALL BIEF_ALLVEC(1,LINDSP,'LINDSP',0,1,0,MESH)
          CALL BIEF_ALLVEC(1,NDEF_B,'NDEF_B',0,1,0,MESH)
-         CALL BIEF_ALLVEC(1,KFRO_B,'KFRO_B',0,1,0,MESH)
+         CALL BIEF_ALLVEC(2,KFRO_B,'KFRO_B',0,1,0,MESH)
       ENDIF
 !
 !  END OF DATA FOR FRICTION SET PER ZONE
