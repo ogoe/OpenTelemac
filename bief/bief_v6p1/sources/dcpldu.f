@@ -5,7 +5,7 @@
      &(B,A,MESH,COPY,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    L D U FACTORISATION OF THE ELEMENTARY MATRICES
@@ -55,12 +55,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |<--| MATRICE A.
-!| B              |<--| MATRICE RESULTAT.
-!| COPY           |-->| SI .TRUE. A EST COPIEE DANS B.
-!|                |   | SINON ON CONSIDERE QUE B EST DEJA REMPLIE.
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION.
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
+!| A              |<--| MATRIX A.
+!| B              |<--| MATRICE B, THE RESULT.
+!| COPY           |-->| IF .TRUE. A IS COPIED INTO B.
+!|                |   | IF .FALSE. B IS CONSIDERED ALREADY INITIALISED
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER
+!| MESH           |-->| MESH STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_DCPLDU => DCPLDU

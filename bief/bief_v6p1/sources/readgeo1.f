@@ -5,7 +5,7 @@
      &(NPOIN,NELEM,NPTFR,NDP,IB,NFIC,NELEBD)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS OR COMPUTES THE VALUES OF NPOIN, NELEM, NPTFR,
@@ -32,12 +32,12 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IB             |<--| 10 INTEGERS, SEE SELAFIN FILE STANDARD
-!| NDP            |<--| NOMBRE DE NOEUD PAR ELEMENT
-!| NELEBD         |<--| NOMBRE D'ELEMENTS DE BORD
-!| NELEM          |<--| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NFIC           |-->| UNITE LOGIQUE FICHIER GEO
-!| NPOIN          |<--| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |<--| NOMBRE DE POINTS FRONTIERE DU DOMAINE.
+!| NDP            |<--| NUMBER OF NODES PER ELEMENT
+!| NELEBD         |<--| NUMBER OF BOUNDARY ELEMENTS
+!| NELEM          |<--| NUMBER OF ELEMENTS IN THE MESH
+!| NFIC           |-->| LOGICAL UNIT FOR GEOMETRY FILE
+!| NPOIN          |<--| NUMBER OF POINTS IN THE MESH
+!| NPTFR          |<--| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_READGEO1 => READGEO1
@@ -127,11 +127,11 @@
         STOP
       ENDIF
 !
-23    FORMAT(1X,'READGEO1 : NOMBRE DE POINTS DU MAILLAGE : ',1I6,/,1X,
-     &          '           NOMBRE DE POINTS DE FRONTIERE: ',1I6,/,1X,
+23    FORMAT(1X,'READGEO1 : NOMBRE DE POINTS DU MAILLAGE : ',1I9,/,1X,
+     &          '           NOMBRE DE POINTS DE FRONTIERE: ',1I8,/,1X,
      &          '           DONNEES ERRONEES, ARRET DU PROGRAMME')
-24    FORMAT(1X,'READGEO1 : NUMBER OF POINTS IN THE MESH: ',1I6,/,1X,
-     &          '           NUMBER OF BOUNDARY POINTS: ',1I6,/,1X,
+24    FORMAT(1X,'READGEO1 : NUMBER OF POINTS IN THE MESH: ',1I9,/,1X,
+     &          '           NUMBER OF BOUNDARY POINTS: ',1I8,/,1X,
      &          '           WRONG DATA, PROGRAMME STOPPED')
 300   FORMAT(1X,//,1X,'READGEO1 : TITRE= ',A72,/)
 301   FORMAT(1X,//,1X,'READGEO1: TITLE= ',A72,/)

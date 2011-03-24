@@ -5,7 +5,7 @@
      &(TETA,SL,ZF,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES TIDAL FLATS.
@@ -37,11 +37,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---|
-!| NELEM          |---|
-!| NELMAX         |---|
-!| SL,ZF          |-->| SURFACE LIBRE ET FOND
-!| TETA           |<--| INDICATEUR (PAR ELEMENT)
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN THE MESH
+!| SL             |-->| FREE SURFACE
+!| TETA           |<--| STATES IF AN ELEMENT IS DRY OR NOT
+!| ZF             |-->| BOTTOM ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

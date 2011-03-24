@@ -5,7 +5,7 @@
      & ( OP , X , Y , Z , C , IOPT , INFINI , ZERO )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON STRUCTURES.
@@ -83,15 +83,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| INFINI         |---|
-!| IOPT           |---|
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
-!| X              |<--| STRUCTURE RESULTAT
-!| Y              |-->| STRUCTURE OPERANDE
-!| Z              |-->| STRUCTURE OPERANDE
-!| ZERO           |---|
+!| C              |-->| A GIVEN CONSTANT
+!| INFINI         |-->| PRESCRIBED VALUE IN CASE OF DIVISION BY 0.
+!| IOPT           |-->| OPTION FOR DIVISIONS BY ZERO
+!|                |   | 1: NO TEST DONE (WILL CRASH IF DIVISION BY 0.).
+!|                |   | 2: INFINITE TERMS REPLACED BY CONSTANT INFINI.
+!|                |   | 3: STOP IF DIVISION BY ZERO.
+!|                |   | 4: DIVISIONS BY 0. REPLACED BY DIVISIONS/ZERO
+!|                |   |    ZERO BEING AN OPTIONAL ARGUMENT
+!| OP             |-->| STRING INDICATING THE OPERATION TO BE DONE
+!| X              |<--| RESULT (A BIEF_OBJ STRUCTURE)
+!| Y              |-->| TO BE USED IN THE OPERATION
+!| Z              |-->| TO BE USED IN THE OPERATION
+!| ZERO           |-->| A THRESHOLD MINIMUM VALUE FOR DIVISIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_OS => OS
@@ -341,10 +345,12 @@
 !
       ELSE
 !
-        IF (LNG.EQ.1) WRITE(LU,1000) X%TYPE
-        IF (LNG.EQ.2) WRITE(LU,1001) X%TYPE
-1000    FORMAT(1X,'OS (BIEF) : TYPE D''OBJET NON TRAITE: ',1I3)
-1001    FORMAT(1X,'OS (BIEF) : TYPE OF OBJECT NOT IMPLEMENTED: ',1I3)
+        IF (LNG.EQ.1) WRITE(LU,1000) X%TYPE,X%NAME
+        IF (LNG.EQ.2) WRITE(LU,1001) X%TYPE,X%NAME
+1000    FORMAT(1X,'OS (BIEF) : TYPE D''OBJET NON TRAITE: ',1I3,/,
+     *         1X,'NOM : ',1A6)
+1001    FORMAT(1X,'OS (BIEF): OBJECT TYPE NOT IMPLEMENTED: ',1I3,/,
+     *         1X,'NAME: ',1A6)
         CALL PLANTE(1)
         STOP
 !

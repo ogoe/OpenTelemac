@@ -11,7 +11,7 @@
      & OPTION,FLULIM,YAFLULIM)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT AND MONOTONIC
@@ -41,65 +41,91 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
-!| BILAN          |-->| LOGIQUE INDIQUANT SI ON DOIT FAIRE UN BILAN
-!|                |   | DE MASSE. DANS CE CAS IL FAUT RETOURNER LA
-!|                |   | VALEUR DE L'APPORT DES TERMES SOURCES.
-!| CONV           |-->| LOGIQUE INDIQUANT S'IL Y A CONVECTION DE F
-!| DIFT           |-->| LOGIQUE INDIQUANT S'IL Y A DIFFUSION DE F
-!| DM1            |---|
-!| DT             |-->| PAS DE TEMPS
-!| ENTET          |-->| LOGIQUE INDIQUANT SI ON IMPRIME DES INFOS
-!|                |   | SUR LE BILAN DE MASSE DE TRACEUR
-!| FLBOR          |---|
-!| GLOSEG1        |---|
-!| GLOSEG2        |---|
-!| HNT,HT         |<--| TABLEAUX DE TRAVAIL (HAUTEURS MODIFIEES POUR
-!|                |   | TENIR COMPTE DU MASS-LUMPING)
-!| HPROP          |-->| HAUTEUR DE PROPAGATION (FAITE DANS CVDFTR).
-!| IOPT           |---| OPTIONS DE CALCUL
-!|                |   | CHIFFRE DES DIZAINES (IOPT2):
-!|                |   | 0 : UCONV RESPECTE L'EQUATION DE CONTINUITE
-!|                |   | 1 : UCONV NE RESPECTE PAS LA CONTINUITE
-!|                |   | CHIFFRE DES UNITES (IOPT1):
-!|                |   | 0 : CONSTANTE PAR ELEMENT NULLE
-!|                |   | 1 : CONSTANTE DE CHI-TUAN PHAM
-!|                |   | 2 : CONSTANTE DE LEO POSTMA
-!| KDDL           |-->| CONVENTION POUR LES DEGRES DE LIBERTE
-!| KDIR           |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKPT         |---|
-!| MASSOU         |-->| MASSE DE TRACEUR AJOUTEE PAR TERME SOURCE
-!|                |   | VOIR DIFSOU
-!| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NBOR           |---|
-!| NPTFR          |---|
-!| OPDTRA         |-->| MOT-CLE : OPTION POUR LA DIFFUSION DU TRACEUR
+!| BILAN          |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION
+!| CONV           |-->| LOGICAL, IF YES THERE IS ADVECTION OF F
+!| DIFT           |-->| LOGICAL, IF YES THERE IS DIFFUSION OF F
+!| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
+!| DT             |-->| TIME STEP
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
+!|                |   | CONSERVATION.
+!| F1             |<--| F1 AT TIME T(N+1)
+!| F2             |<--| F2 AT TIME T(N+1)
+!| F1BOR          |-->| DIRICHLET CONDITIONS ON F1.
+!| F2BOR          |-->| DIRICHLET CONDITIONS ON F2.
+!| FLBOR          |-->| FLUXES AT BOUNDARIES
+!| FLBORTRA       |<->| TRACER FLUXES AT BOUNDARIES
+!| F1N            |-->| F1 AT TIME T(N)
+!| F2N            |-->| F2 AT TIME T(N)
+!| F1SCEXP        |-->| EXPLICIT PART OF THE F1 SOURCE TERM
+!|                |   | EQUAL TO ZERO EVERYWHERE BUT ON SOURCES
+!|                |   | WHERE THERE IS FSCE - (1-TETAT) FN
+!|                |   | SEE DIFSOU
+!| F2SCEXP        |-->| EXPLICIT PART OF THE F1 SOURCE TERM
+!| GLOSEG1        |-->| FIRST POINT OF SEGMENTS
+!| GLOSEG2        |-->| SECOND POINT OF SEGMENTS
+!| HNT,HT         |<--| WORK ARRAYS (MODIFIED DEPTHS TO TAKE MASS-LUMPING
+!|                |   | INTO ACCOUNT)
+!| HPROP          |-->| PROPAGATION DEPTH (DONE IN CVDFTR).
+!| IOPT           |-->| OPTIONS FOR COMPUTATION (NUMBER BETWEEN 0 AND 13)
+!|                |   | THE TENS (IOPT2, I.E. 0 OR 1):
+!|                |   | 0: UCONV OBEYS THE CONTINUITY EQUATION
+!|                |   | 1: UCONV DOES NOT OBEY THE CONTINUITY EQUATION
+!|                |   | THE UNITS (IOPT1, I.E. 0 TO 3): VARIANT FOR FLUXES
+!|                |   | 0: CONSTANT PER ELEMENT = 0
+!|                |   | 1: CHI-TUAN PHAM'S CONSTANT
+!|                |   | 2: N SCHEME
+!|                |   | 3: PSI SCHEME
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| LIMTRA1        |-->| BOUNDARY CONDITIONS OF F1 ON BOUNDARY POINTS
+!| LIMTRA2        |-->| BOUNDARY CONDITIONS OF F2 ON BOUNDARY POINTS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!| MASSOU         |-->| MASS OF TRACER ADDED BY SOURCE TERM
+!|                |   | SEE DIFSOU
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTION         |-->| OPTION OF ALGORITHM FOR EDGE-BASED ADVECTION
 !|                |   | 1: FAST BUT SENSITIVE TO SEGMENT NUMBERING
 !|                |   | 2: INDEPENDENT OF SEGMENT NUMBERING
-!| OPTSOU         |-->| OPTION DE TRAITEMENT DES TERMES SOURCES.
-!|                |   | 1 : NORMAL
-!|                |   | 2 : DIRAC
-!| S              |-->| DUMMY STRUCTURE
-!| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE
-!| SOLSYS         |---|
-!| T5,T6,T7       |<->| TABLEAUX DE TRAVAIL
-!| T8             |---|
-!| TE1            |<->| TABLEAU DE TRAVAIL SUR LES ELEMENTS
-!| UDEL           |---|
-!| UNSV2D         |---|
-!| V2DPAR         |---|
-!| VDEL           |---|
-!| VISC           |-->| COEFFICIENTS DE VISCOSITE SUIVANT X,Y ET Z .
-!|                |   | SI P0 : VISCOSITE DONNEE PAR ELEMENT
-!|                |   | SINON : VISCOSITE DONNEE PAR POINT
-!| VISC_S         |---|
-!| YAFLBOR        |---|
-!| YASMH          |-->| LOGIQUE INDIQUANT DE PRENDRE EN COMPTE SMH
-!| YASMI          |---|
-!| ZCONV          |---|
+!| OPTSOU         |-->| TYPE OF SOURCES
+!|                |   | 1: NORMAL
+!|                |   | 2: DIRAC
+!| S              |-->| VOID STRUCTURE
+!| SM1            |-->| SOURCE TERMS OF F1.
+!| SM2            |-->| SOURCE TERMS OF F2.
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| SMI1           |-->| IMPLICIT SOURCE TERM OF F1.
+!| SMI2           |-->| IMPLICIT SOURCE TERM OF F2.
+!| SOLSYS         |-->| 1 OR 2. IF 2 ADVECTION FIELD IS UCONV + DM1*GRAD(ZCONV)
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T5             |<->| WORK BIEF_OBJ STRUCTURE
+!| T6             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| TE1            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| UDEL           |-->| X-COMPONENT OF ADVECTION VELOCITY
+!| UNSV2D         |-->| INVERSE OF V2DPAR
+!| V2DPAR         |-->| INTEGRAL OF 2D TEST FUNCTIONS, ASSEMBLED
+!|                |   | IN PARALLEL.
+!| VDEL           |-->| X-COMPONENT OF ADVECTION VELOCITY
+!| VISC           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z .
+!|                |   | IF P0 : PER ELEMENT
+!|                |   | IF P1 : PERR POINT
+!| VISC_S         |<->| WORK ARRAY FOR SAVING VISC
+!| YAFLBOR        |-->| IF YES FLBOR IS GIVEN
+!| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
+!| YASMI          |-->| IF YES, SMI MUST BE TAKEN INTO ACCOUNT
+!| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CVTRVF_POS => CVTRVF_POS

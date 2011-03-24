@@ -5,7 +5,7 @@
      &(TETA,SL,ZF,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES TIDAL FLATS.
@@ -37,9 +37,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MESH           |-->| STRUCTURE DE MAILLAGE
-!| SL,ZF          |-->| SURFACE LIBRE ET FOND
-!| TETA           |<--| INDICATEUR (PAR ELEMENT)
+!| MESH           |-->| MESH STRUCTURE
+!| SL             |-->| FREE SURFACE
+!| TETA           |<--| STATES IF AN ELEMENT IS DRY OR NOT
+!| ZF             |-->| BOTTOM ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DECVRT => DECVRT
