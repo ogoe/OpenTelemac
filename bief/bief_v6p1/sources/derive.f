@@ -7,7 +7,7 @@
      &  SHPFLO , DEBFLO , FINFLO , ELTFLO , NFLOT , NITFLO,FLOPRD,T8)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    - COMPUTES THE BARYCENTRIC COORDINATES OF A FLOAT
@@ -35,37 +35,37 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBFLO         |-->| NUMEROS DES PAS DE TEMPS DE LARGAGE DE
-!|                |   | CHAQUE FLOTTEUR.
-!| DT             |-->| PAS DE TEMPS.
-!| ELTFLO         |<->| NUMEROS DES ELEMENTS DANS LESQUELS SE TROUVE
-!|                |   | A CET INSTANT CHACUN DES FLOTTEURS.
-!| FINFLO         |<->| NUMEROS DES PAS DE TEMPS DE FIN DE CALCUL DE
-!|                |   | DERIVE POUR CHAQUE FLOTTEUR.
-!|                |   | FORCE ICI SI UN FLOTTEUR SORT PAR UNE FR. LIQ.
-!| FLOPRD         |-->| NOMBRE DE PAS DE TEMPS ENTRE 2 ENREGITREMENTS
-!|                |   | DES POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| IELM           |-->| TYPE D'ELEMENT.
-!| IFABOR         |-->| NUMEROS DES ELEMENTS AYANT UNE FACE COMMUNE
-!|                |   | AVEC L'ELEMENT .  SI IFABOR
-!|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
-!| IKLE           |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE.
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |-->| NOMBRE MAXIMAL D'ELEMENTS DANS LE MAILLAGE 2D
-!| NFLOT          |-->| NOMBRE DE FLOTTEURS.
-!| NITFLO         |-->| NOMBRE MAXIMAL D'ENREGISTREMENTS DES
-!|                |   | POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| SHPFLO         |<->| COORDONNEES BARYCENTRIQUES INSTANTANNEES DES
-!|                |   | FLOTTEURS DANS LEURS ELEMENTS RESPECTIFS.
-!| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
-!| T8             |---| TABLEAU DE TRAVAIL
-!| U,V            |-->| COMPOSANTE DE LA VITESSE
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XFLOT,YFLOT    |<->| POSITIONS SUCCESSIVES DES FLOTTEURS.
+!| DEBFLO         |-->| TIME STEP FOR THE RELEASE OF FLOATS
+!| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| FINFLO         |<->| TIME STEP FOR ENDING THE TREATMENT OF A FLOAT
+!|                |   | CAN BE CHANGED IF A FLOAT EXITS BY A FREE EXIT
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
+!|                |   | FOR FLOATS POSITIONS.
+!| IELM           |-->| TYPE OF ELEMENT.
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF ANOTHER ELEMENT
+!|                |   | IF IFABOR NEGATIVE OR 0, THE EDGE IS A
+!|                |   | LIQUID OR PERIODIC BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LT             |-->| TIME STEP NUMBER.
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NFLOT          |-->| NOMBER OF FLOATS.
+!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDS FOR POSITIONS
+!|                |   | OF FLOATS.
+!| NPOIN          |-->| NUMBER OF POINTS
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!|                |   | ELEMENTS.
+!| SURDET         |-->| 1/DETERMINANT, USED IN ISOPARAMETRIC
+!|                |   | TRANSFORMATION.
+!| T8             |<->| WORK ARRAY
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XFLOT          |<->| ABSCISSAE OF FLOATS
+!| YFLOT          |<->| ORDINATES OF FLOATS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DERIVE => DERIVE

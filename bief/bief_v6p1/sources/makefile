@@ -115,7 +115,7 @@ os.f         osbd.f         osdb.f \
 osdbif.f     ov.f           ovbd.f        ovd.f \
 ovdb.f       ovd_2.f        ov_2.f        paraco.f \
 paragl.f     parcom.f       parcom2.f     parcom2_seg.f parcom_bord.f parini.f  parmoy.f \
-plante.f     positive_depths.f  \
+plante.f     positive_depths.f  pre_scaract_maillage.f  pre_scaract_thompson.f \
 prebd4.f     prebd9.f       prebdt.f \
 precd1.f     precd4.f       precd9.f      precdt.f  preverseg.f  preverebe.f \
 proxim.f     ptel11.f       pttoel.f      puog.f \

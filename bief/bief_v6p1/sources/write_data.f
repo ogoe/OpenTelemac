@@ -48,7 +48,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE M_MED
-      USE BIEF, EX_WRITE_DATA => WRITE_DATA
+      USE BIEF     !, EX_WRITE_DATA => WRITE_DATA
 !
       IMPLICIT NONE
 !

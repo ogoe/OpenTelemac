@@ -135,9 +135,8 @@
 !
 !      FILLS THE SHP AND ELT (OPTIMISED)
 !
-            CALL GTSH11(XLAG(1,ILAG),YLAG(1,ILAG),X,Y,SHPLAG(1,1,ILAG),
-     &                  ELTLAG(1,ILAG),IKLE,NSP,NSP,NPOIN,
-     &                  NELEM,NELMAX,1,MSK,MASKEL)
+            CALL GTSH11(SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),IKLE,NPOIN,
+     &                  NELEM,NELMAX,MSK,MASKEL)
 !
           ELSE
            IF(LNG.EQ.1) THEN

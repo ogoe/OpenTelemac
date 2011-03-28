@@ -2,11 +2,10 @@
                      SUBROUTINE GTSH41
 !                    *****************
 !
-     &(U,V,WS,X,Y,SHP,SHZ,ELT,ETA,IKLE2,INDIC,NLOC,NPOIN2,NELEM2,NPLAN,
-     & LV,MSK,MASKEL)
+     &(WS,SHP,SHZ,ELT,ETA,IKLE2,NPOIN2,NELEM2,NPLAN,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FIXES THE BARYCENTRIC COORDINATES OF ALL THE MESH
@@ -33,25 +32,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELT            |<--| NUMEROS DES ELEMENTS CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
+!| ELT            |<--| ELEMENT CHOSEN FOR EVERY POINT
 !| ETA            |---|
-!| IKLE2          |---|
-!| INDIC          |---|
-!| LV             |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NELEM2         |---|
-!| NLOC           |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| SHP            |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
-!|                |   | LEURS ELEMENTS "ELT" ASSOCIES.
-!| SHZ            |---|
-!| U,V            |-->| COMPOSANTES DE LA VITESSE
-!| WS             |---|
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
+!| IKLE2          |-->| 2D CONNECTIVITY TABLE
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| SHP            |<--| HORIZONTAL BARYCENTRIC COORDINATES OF NODES IN 
+!|                |   | THEIR ASSOCIATED ELEMENT "ELT".
+!| SHZ            |-->| VERTICAL BARYCENTRIC COORDINATES
+!| WS             |-->| VERTICAL VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -60,14 +53,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NPOIN2,NELEM2,NPLAN,LV
+      INTEGER, INTENT(IN)    :: NPOIN2,NELEM2,NPLAN
       INTEGER, INTENT(IN)    :: IKLE2(NELEM2,3)
       INTEGER, INTENT(INOUT) :: ELT(NPOIN2,NPLAN),ETA(NPOIN2,NPLAN)
-      INTEGER, INTENT(INOUT) :: INDIC(NPOIN2),NLOC(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN) :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN) :: WS(NPOIN2,NPLAN)
-      DOUBLE PRECISION, INTENT(IN) :: X(NPOIN2),Y(NPOIN2),MASKEL(NELEM2)
+      DOUBLE PRECISION, INTENT(IN) :: MASKEL(NELEM2)
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: SHZ(NPOIN2,NPLAN)
 !

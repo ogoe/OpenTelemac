@@ -167,8 +167,7 @@
         NPOINT  = NPOIN
         NPOINT2 = NPOIN
         IF(INITLOC) THEN
-          CALL GTSH11(UCONV,VCONV,X,Y,SHP,ELT,IKLE,
-     &                ITRAV1,ITRAV2,NPOINT,NELEM,NELMAX,LV,MSK,MASKEL)
+          CALL GTSH11(SHP,ELT,IKLE,NPOINT,NELEM,NELMAX,MSK,MASKEL)
         ENDIF
 !
 !       CALLS THE SUBROUTINE TRACING THE CHARATERISTIC CURVES BACK IN TIME
@@ -200,9 +199,8 @@
           ENDIF
 !
           IF(INITLOC) THEN
-            CALL GTSH13( UCONV , VCONV , X , Y, SHP , ELT , IKLE,
-     &                   ITRAV1  , ITRAV2  , NPOINT2, NELEM ,
-     &                   NELMAX  , LV ,MSK , MASKEL )
+            CALL GTSH13(SHP,ELT,IKLE,NPOINT2,NELEM ,
+     &                   NELMAX  , MSK , MASKEL )
           ENDIF
 !
 !         CALLS THE SUBROUTINE TRACING THE CHARACTERISTIC CURVES BACK IN TIME
@@ -233,9 +231,9 @@
 !      FILLS SHP AND ELT (OPTIMISED)
 !
         IF(INITLOC) THEN
-          CALL GTSH41( UCONV , VCONV , WCONV , X , Y , SHP , SHZ ,
-     &                 ELT , ETA , IKLE , ITRAV1 , ITRAV2 , NPOINT2 ,
-     &                 NELEM , NPLAN , LV , MSK , MASKEL )
+          CALL GTSH41( WCONV , SHP , SHZ ,
+     &                 ELT , ETA , IKLE , NPOINT2 ,
+     &                 NELEM , NPLAN , MSK , MASKEL )
         ENDIF
 !
 !      CALLS THE SUBROUTINE TRACING THE CHARATERISTIC CURVES BACK IN TIME

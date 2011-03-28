@@ -2,11 +2,10 @@
                      SUBROUTINE GTSH13
 !                    *****************
 !
-     &(U,V,X,Y,SHP,ELT,IKLE,INDIC,NLOC,NPOIN,
-     & NELEM,NELMAX,LV,MSK,MASKEL)
+     &(SHP,ELT,IKLE,NPOIN,NELEM,NELMAX,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FIXES THE BARYCENTRIC COORDINATES OF ALL THE MESH
@@ -33,23 +32,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELT            |<--| NUMEROS DES ELEMENTS CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| IKLE           |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE.
-!| INDIC          |---|
-!| LV             |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |-->| NOMBRE MAXIMAL D'ELEMENTS DANS LE MAILLAGE 2D
-!| NLOC           |---|
-!| NPOIN          |-->| NOMBRE DE POINTS.
-!| SHP            |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
-!|                |   | LEURS ELEMENTS "ELT" ASSOCIES.
-!| U,V            |-->| COMPOSANTES DE LA VITESSE
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
+!| ELT            |<--| ELEMENT CHOSEN FOR EVERY POINT
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS.
+!| SHP            |<--| BARYCENTRIC COORDINATES OF NODES IN THEIR
+!|                |   | ASSOCIATED ELEMENT "ELT".
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GTSH13 => GTSH13
@@ -60,12 +52,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NPOIN,NELEM,NELMAX,LV
+      INTEGER, INTENT(IN)    :: NPOIN,NELEM,NELMAX
       INTEGER, INTENT(IN)    :: IKLE(NELMAX,6)
-      INTEGER, INTENT(INOUT) :: ELT(NPOIN),INDIC(NPOIN),NLOC(NPOIN)
+      INTEGER, INTENT(INOUT) :: ELT(NPOIN)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*)
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELMAX)
 !
