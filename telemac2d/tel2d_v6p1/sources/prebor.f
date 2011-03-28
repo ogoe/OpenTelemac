@@ -2,11 +2,11 @@
                      SUBROUTINE PREBOR
 !                    *****************
 !
-     &(HBOR,UBOR,VBOR,TBOR,U,V,H,HN,T,NBOR,KP1BOR,NPOIN,NPTFR,
-     & NTRAC,DEBLIQ,FINLIQ,NFRLIQ)
+     &(HBOR,UBOR,VBOR,TBOR,U,V,H,HN,T,NBOR,NPOIN,NPTFR,NTRAC,NFRLIQ,
+     & FRTYPE,NUMLIQ)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE BOUNDARY CONDITIONS FOR TREATMENT BY THOMPSON.
@@ -36,12 +36,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBLIQ         |-->| TABLEAU D'INDICES DE DEBUT DE FRONTIERE LIQ.
-!| FINLIQ         |-->| TABLEAU D'INDICES DE FIN DE FRONTIERE LIQUI.
 !| H              |-->| HAUTEUR AU TEMPS N
 !| HBOR           |<--| HAUTEUR IMPOSEE.
 !| HN             |-->| HAUTEUR DE PROPAGATION (OPTION H-U)
-!| KP1BOR         |-->| NUMERO DU POINT FRONTIERE SUIVANT
 !| NBOR           |-->| ADRESSES DES POINTS DE BORD
 !| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
 !| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
@@ -63,8 +60,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,NPTFR,NFRLIQ,NTRAC
-      INTEGER, INTENT(IN)             :: DEBLIQ(NFRLIQ),FINLIQ(NFRLIQ)
-      INTEGER, INTENT(IN)             :: NBOR(NPTFR),KP1BOR(NPTFR,2)
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR)
+      INTEGER, INTENT(IN)             :: NUMLIQ(NPTFR),FRTYPE(NFRLIQ)
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),H(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: HBOR(NPTFR),UBOR(NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: VBOR(NPTFR)
@@ -74,11 +71,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,IFRLIQ,ITRAC
+      INTEGER K,ITRAC,IFRLIQ
 !
       DOUBLE PRECISION C
-!
-      LOGICAL DEP
 !
 !-----------------------------------------------------------------------
 !
@@ -86,29 +81,21 @@
 !
       IF(NFRLIQ.NE.0) THEN
 !
-      DO 10 IFRLIQ = 1 , NFRLIQ
-!
-        DEP = .FALSE.
-        K = DEBLIQ(IFRLIQ)
-11      CONTINUE
-        UBOR(K)=U(NBOR(K))
-        VBOR(K)=V(NBOR(K))
-        HBOR(K)=H(NBOR(K))
-        IF(NTRAC.GT.0) THEN
-          DO ITRAC=1,NTRAC
-            TBOR%ADR(ITRAC)%P%R(K)=T%ADR(ITRAC)%P%R(NBOR(K))
-          ENDDO
+      DO K= 1 , NPTFR
+        IFRLIQ=NUMLIQ(K)
+        IF(IFRLIQ.NE.0) THEN
+          IF(FRTYPE(IFRLIQ).EQ.2) THEN
+            UBOR(K)=U(NBOR(K))
+            VBOR(K)=V(NBOR(K))
+            HBOR(K)=H(NBOR(K))
+            IF(NTRAC.GT.0) THEN
+              DO ITRAC=1,NTRAC
+                TBOR%ADR(ITRAC)%P%R(K)=T%ADR(ITRAC)%P%R(NBOR(K))
+              ENDDO
+            ENDIF
+          ENDIF
         ENDIF
-        IF(K.EQ.FINLIQ(IFRLIQ).AND.DEP) THEN
-          GO TO 12
-        ELSE
-          DEP=.TRUE.
-          K = KP1BOR(K,1)
-          GO TO 11
-        ENDIF
-12      CONTINUE
-!
-10    CONTINUE
+      ENDDO
 !
       ENDIF
 !
