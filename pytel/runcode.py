@@ -5,6 +5,12 @@
 """@history 10/03/2011 -- Chris Cawthorn: Amended to enable listing
                           file in addition to output to stdout.
 """
+"""@history 04/04/2011 -- Sebastien Bourban: Correction for POSTEL3D
+                          Use of key 'MULTI' for output file recollection.
+"""
+"""@history 05/04/2011 -- Sebastien Bourban: Correction, adding an empty line
+                          at the end of all ASCII files (bug reported with CONFIG).
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -82,10 +88,10 @@ def processLIT(cas,iFiles,TMPDir):
             return False
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
          if iFiles[k].split(';')[3] == 'ASC':
-            putFileContent(crun,getFileContent(cref))
+            putFileContent(crun,getFileContent(cref)+[''])
             print ' copying: ', path.basename(cref)
          else:
-            shutil.copy(cref,crun)
+            shutil.copy2(cref,crun)
             print ' copying: ', path.basename(cref)
 
    return True
@@ -95,16 +101,41 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
    # ~~ copy output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
       if oFiles.has_key(k):
-         cref = path.join(CASDir,cas[k][0])
-         if path.isfile(cref): shutil.copy(cref,cref+'.old')
-         crun = oFiles[k].split(';')[1]
-         if not path.isfile(crun):
-            print '... did not create outfile ',cref,' (',crun,')'
-            return False
-         shutil.copy(crun,cref)
-         print ' copying: ', path.basename(cref)
+         if oFiles[k].split(';')[5] == 'MULTI':   # POSTEL3D
+            npsize = 1
+            while 1:                              # HORIZONTAL SECTION FILES
+               cref = path.join(CASDir,cas[k][0]+'_{0:03d}'.format(npsize))
+               if path.isfile(cref): shutil.copy2(cref,cref+'.old')
+               crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
+               if not path.isfile(crun): break
+               shutil.copy2(crun,cref)
+               print ' copying: ', path.basename(cref)
+               npsize = npsize + 1
+            npsize = 1
+            while 1:                              # VERTICAL SECTION FILES
+               nptime = 1
+               if not path.isfile(oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)): break
+               while 1:
+                  cref = path.join(CASDir,cas[k][0]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
+                  if path.isfile(cref): shutil.copy2(cref,cref+'.old')
+                  crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
+                  if not path.isfile(crun): break
+                  shutil.copy2(crun,cref)
+                  print ' copying: ', path.basename(cref)
+                  nptime = nptime + 1
+               npsize = npsize + 1
+         else:
+            cref = path.join(CASDir,cas[k][0])
+            if path.isfile(cref): shutil.copy2(cref,cref+'.old')
+            crun = oFiles[k].split(';')[1]
+            if not path.isfile(crun):
+               print '... did not create outfile ',cref,' (',crun,')'
+               return False
+            shutil.copy2(crun,cref)
+            print ' copying: ', path.basename(cref)
+   sys.exit()
 
-   # ~~~ CCW: copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.sortieFile:
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
@@ -125,13 +156,13 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             cref = path.join(CASDir,slogfile)
             shutil.copy(crun,cref)
             print ' copying: ',path.basename(cref)            
-   # ~~~ CCW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    return True
 
 def processCONFIG(lang):
 
    # ~~ create CONFIG ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   putFileContent('CONFIG',[str(lang),'6'])
+   putFileContent('CONFIG',[str(lang),'6',''])
    return True
 
 def getNCSIZE(cas,dico,frgb):
@@ -174,10 +205,10 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
    
    else:
    # ~~ default executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      shutil.copy(useName,path.basename(useName))
+      shutil.copy2(useName,path.basename(useName))
 
    # ~~ save a copy for future uses ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   shutil.copy(path.basename(useName),path.join(CASDir,path.basename(useName)))
+   shutil.copy2(path.basename(useName),path.join(CASDir,path.basename(useName)))
 
    return True
 
@@ -210,13 +241,13 @@ def runPartition(partel,cas,conlim,iFiles,ncsize):
             runPARTEL(partel,crun,conlim,ncsize)
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             print ' duplicating: ', path.basename(crun)    # path.basename(cas[k][0])
-            for n in range(ncsize): shutil.copy(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
+            for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
 
 def runPARTEL(partel,file,conlim,ncsize):
 
-   putFileContent('partel_'+file+'.par',[file,conlim,str(ncsize),str(1),str(0)]) # option 1, without sections 0
+   putFileContent('partel_'+file+'.par',[file,conlim,str(ncsize),str(1),str(0),'']) # option 1, without sections 0
    failure = system(partel+' < partel_'+file+'.par >> partel_'+file+'.log')
    if not failure: return True
    return False
@@ -258,19 +289,8 @@ def runCode(exe,sortiefile):
       ofile.close()
    proc.wait()
    if proc.returncode == 0: return True
-   return False
-# ~~~CCW~~~
 
-# === OLD AND/OR BROKEN VERSIONS OF runCode ===
-#   failure = system(exe)
-#   failure = system(exe + ' >> sortie.txt')
-#   #p = Popen(["exe"], stdout=PIPE, stderr=PIPE ,shell=True)
-#   #print p.communicate()[0]
-#   #failure = False
-#   #if p.communicate()[1] != '': failure = True
-#   if not failure: return True
-#   return False
-# ======
+   return False
 
 def runRecollection(gretel,cas,glogeo,oFiles,ncsize):
 
