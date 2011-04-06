@@ -3,13 +3,16 @@
 """@author Sebastien E. Bourban, Noemie Durand and Alain Weisgerber
 """
 """@history 10/03/2011 -- Chris Cawthorn: Amended to enable listing
-                          file in addition to output to stdout.
+         file in addition to output to stdout.
 """
 """@history 04/04/2011 -- Sebastien Bourban: Correction for POSTEL3D
-                          Use of key 'MULTI' for output file recollection.
+         Use of key 'MULTI' for output file recollection.
 """
 """@history 05/04/2011 -- Sebastien Bourban: Correction, adding an empty line
-                          at the end of all ASCII files (bug reported with CONFIG).
+         at the end of all ASCII files (bug reported with CONFIG).
+"""
+"""@history 05/04/2011 -- Sebastien Bourban: Amended to support reccursively
+          coupled CAS Files, using "COUPLAGE AVEC".
 """
 
 # _____          ___________________________________________________
@@ -133,10 +136,9 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
                return False
             shutil.copy2(crun,cref)
             print ' copying: ', path.basename(cref)
-   sys.exit()
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if options.sortieFile:
+   if options.sortieFile and sortiefile != '':
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
@@ -330,9 +332,14 @@ def runGREDEL(gredel,file,geom,type,ncsize):
    
    return
 
-def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
+def runCAS(cfgName,cfg,codeName,casFile,options):
 
-   # ~~ Read the CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   dicoFile = path.join(path.join(cfg['MODULES'][codeName]['path'],'lib'),codeName+cfg['TELVER']+'.dico')
+   frgb,dico = scanDICO(dicoFile)
+   iFS,oFS = getIOFilesSubmit(frgb,dico)
+
+   # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cas,lang = processCAS(casFile,frgb)
    if not checkConsistency(cas,dico,frgb,cfg):
       print '... inconsistent CAS file: ',casFile
@@ -341,6 +348,36 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
    TMPDir = processTMP(casFile)
+
+   # ~~ Read the included CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
+   #/!\ having done the loop this way it will not check for DELWAQ
+   COUPLAGE = {}
+   for cplage in cplages:
+      for mod in cfg['MODULES'].keys():
+         if mod in cplage.lower():
+
+            # ~~~~ Extract the CAS File name ~~~~~~~~~~~~~~~~~~~~~~~
+            casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
+            if casFilePlage == []: casFilePlage = defaut
+            casFilePlage = path.join(CASDir,casFilePlage[0])
+            if not path.isfile(casFilePlage):
+               print '... missing coupling CAS file for',mod,': ',casFilePlage
+               return    # /!\ should you stop or carry on ?
+
+            # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            dicoFilePlage = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['TELVER']+'.dico')
+            frgbPlage,dicoPlage = scanDICO(dicoFilePlage)
+            iFSPlage,oFSPlage = getIOFilesSubmit(frgbPlage,dicoPlage)
+
+            # ~~ Read the coupled CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~
+            casPlage,lang = processCAS(casFilePlage,frgbPlage)
+            if not checkConsistency(casPlage,dicoPlage,frgbPlage,cfg):
+               print '... inconsistent CAS file: ',casFilePlage
+               return    # /!\ should you stop or carry on ?
+
+            COUPLAGE.update({mod:{}})
+            COUPLAGE[mod].update({'cas':casPlage,'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage})
 
    # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.sortieFile:
@@ -353,6 +390,8 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
    chdir(CASDir)
    # >>> Copy INPUT files into TMPDir
    if not processLIT(cas,iFS,TMPDir): sys.exit()
+   for mod in COUPLAGE.keys():
+      if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],TMPDir): sys.exit()
    # >>> Placing yourself into the TMPDir
    chdir(TMPDir)
    # >>> Creating LNG file
@@ -362,6 +401,12 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
    # >>> Names for the executable set
       #> names within TMPDir
    f90File = iFS['FICHIER FORTRAN'].split(';')[1]
+      #> aggregation of PRINCI files
+   for mod in COUPLAGE.keys():
+      f90FilePlage = COUPLAGE[mod]['iFS']['FICHIER FORTRAN'].split(';')[1]
+      if path.isfile(f90FilePlage):
+         putFileContent(f90File,getFileContent(f90File)+['']+getFileContent(f90FilePlage))
+         remove(f90FilePlage)
    objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['SFX_OBJ']
       #> default executable name
    exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+cfg['SYSTEM']['SFX_EXE'])
@@ -425,6 +470,9 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
          # ~~> Run PARTEL
          CONLIM = getCONLIM(cas,iFS)      # no check on existence
          runPartition(exeCmd,cas,CONLIM,iFS,ncsize)
+         for mod in COUPLAGE.keys():
+            CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
+            runPartition(exeCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
 
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print runCmd
@@ -437,9 +485,14 @@ def runCAS(cfgName,cfg,codeName,casFile,dico,frgb,iFS,oFS,options):
          # ~~> Run GRETEL
          GLOGEO = getGLOGEO(cas,iFS)      # no check on existence
          runRecollection(exeCmd,cas,GLOGEO,oFS,ncsize)
+         for mod in COUPLAGE.keys():
+            GLOGEO = getGLOGEO(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
+            runRecollection(exeCmd,COUPLAGE[mod]['cas'],GLOGEO,COUPLAGE[mod]['oFS'],ncsize)
 
    # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if not processECR(cas,oFS,CASDir,TMPDir,sortiefile,ncsize): sys.exit()
+      for mod in COUPLAGE.keys():
+         if not processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,TMPDir,'',ncsize): sys.exit()
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    chdir(CASDir)
@@ -530,13 +583,7 @@ if __name__ == "__main__":
       print '... reading module dictionary'
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      dicoFile = path.join(path.join(cfg['MODULES'][codeName]['path'],'lib'),codeName+cfg['TELVER']+'.dico')
-      frgb,dico = scanDICO(dicoFile)
-      iFS,oFS = getIOFilesSubmit(frgb,dico)
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      runCAS(cfgname,cfg,codeName,casFile,dico,frgb,iFS,oFS,options)
+      runCAS(cfgname,cfg,codeName,casFile,options)
 
    sys.exit()
