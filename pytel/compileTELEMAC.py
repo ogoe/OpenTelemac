@@ -114,7 +114,7 @@ def createObjFiles(oname,oprog,odict,ocfg):
       else :
          print '   - created ' + ObjFile
          shutil.move(Root.lower()+cfg['SYSTEM']['SFX_OBJ'],ObjDir)
-      #change time
+      odict['time'] = 1
       #and remove .f from objList
       return True
    else: return False
