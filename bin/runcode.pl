@@ -1286,7 +1286,7 @@ if ($NCSIZE > 0 )   #cas parallèle : MPIlink
     $dolink =~ s/a\.exe/$EXEFILE/;       # nom de l'exe = "out####.exe"
     $dolink = "$dolink @FicToLink $BIBLI";
   }
-  $dolink = "$dolink $PROJECT\\XDMF\\XdmfUtils.lib";
+  #$dolink = "$dolink $PROJECT\\XDMF\\XdmfUtils.lib";
 
 #Lancement LINK
 #print "SA-dolink = $dolink\n";
@@ -1460,28 +1460,28 @@ foreach (@FDESC)
 $Directory_tmp=join "",$REP;
 chdir($Directory_tmp) or die "## Error : chdir \"$Directory_tmp\" impossible :$!";
 
-print "#################################> $Directory_tmp\n";
+#print "#################################> $Directory_tmp\n";
 
-copy ("$PROJECT\\XDMF\\vtkexoIIc.dll", "$Directory_tmp".$ps."vtkexoIIc.dll") || erreurresti("D:\\TELEMAC\\ubuntu\\lib\\vtkexoIIc.dll"); ;
-copy ("$PROJECT\\XDMF\\vtkexoIIc.dll", "$Directory_tmp".$ps."vtkexoIIc.dll");
-copy ("$PROJECT\\XDMF\\vtkexoIIc.lib", "$Directory_tmp".$ps."vtkexoIIc.lib");
-copy ("$PROJECT\\XDMF\\vtkhdf5.dll", "$Directory_tmp".$ps."vtkhdf5.dll");
-copy ("$PROJECT\\XDMF\\vtkhdf5.lib", "$Directory_tmp".$ps."vtkhdf5.lib");
-copy ("$PROJECT\\XDMF\\vtklibxml2.dll", "$Directory_tmp".$ps."vtklibxml2.dll");
-copy ("$PROJECT\\XDMF\\vtklibxml2.lib", "$Directory_tmp".$ps."vtklibxml2.lib");
-copy ("$PROJECT\\XDMF\\vtkNetCDF.dll", "$Directory_tmp".$ps."vtkNetCDF.dll");
-copy ("$PROJECT\\XDMF\\vtkNetCDF.lib", "$Directory_tmp".$ps."vtkNetCDF.lib");
-copy ("$PROJECT\\XDMF\\vtkzlib.dll", "$Directory_tmp".$ps."vtkzlib.dll");
-copy ("$PROJECT\\XDMF\\vtkzlib.lib", "$Directory_tmp".$ps."vtkzlib.lib");
-copy ("$PROJECT\\XDMF\\Xdmf.dll", "$Directory_tmp".$ps."Xdmf.dll");
-copy ("$PROJECT\\XDMF\\Xdmf.lib", "$Directory_tmp".$ps."Xdmf.lib");
-copy ("$PROJECT\\XDMF\\XdmfCSharp.dll", "$Directory_tmp".$ps."XdmfCSharp.dll");
-copy ("$PROJECT\\XDMF\\XdmfDiff.lib", "$Directory_tmp".$ps."XdmfDiff.lib");
-copy ("$PROJECT\\XDMF\\XdmfExodusConverter.lib", "$Directory_tmp".$ps."XdmfExodusConverter.lib");
-copy ("$PROJECT\\XDMF\\XdmfPartitioner.lib", "$Directory_tmp".$ps."XdmfPartitioner.lib");
-copy ("$PROJECT\\XDMF\\XdmfUtils.dll", "$Directory_tmp".$ps."XdmfUtils.dll");
-copy ("$PROJECT\\XDMF\\XdmfUtils.lib", "$Directory_tmp".$ps."XdmfUtils.lib");
-copy ("$PROJECT\\XDMF\\XmdfCSharpBindings.dll", "$Directory_tmp".$ps."XmdfCSharpBindings.dll");
+#copy ("$PROJECT\\XDMF\\vtkexoIIc.dll", "$Directory_tmp".$ps."vtkexoIIc.dll") || erreurresti("D:\\TELEMAC\\ubuntu\\lib\\vtkexoIIc.dll"); ;
+#copy ("$PROJECT\\XDMF\\vtkexoIIc.dll", "$Directory_tmp".$ps."vtkexoIIc.dll");
+#copy ("$PROJECT\\XDMF\\vtkexoIIc.lib", "$Directory_tmp".$ps."vtkexoIIc.lib");
+#copy ("$PROJECT\\XDMF\\vtkhdf5.dll", "$Directory_tmp".$ps."vtkhdf5.dll");
+#copy ("$PROJECT\\XDMF\\vtkhdf5.lib", "$Directory_tmp".$ps."vtkhdf5.lib");
+#copy ("$PROJECT\\XDMF\\vtklibxml2.dll", "$Directory_tmp".$ps."vtklibxml2.dll");
+#copy ("$PROJECT\\XDMF\\vtklibxml2.lib", "$Directory_tmp".$ps."vtklibxml2.lib");
+#copy ("$PROJECT\\XDMF\\vtkNetCDF.dll", "$Directory_tmp".$ps."vtkNetCDF.dll");
+#copy ("$PROJECT\\XDMF\\vtkNetCDF.lib", "$Directory_tmp".$ps."vtkNetCDF.lib");
+#copy ("$PROJECT\\XDMF\\vtkzlib.dll", "$Directory_tmp".$ps."vtkzlib.dll");
+#copy ("$PROJECT\\XDMF\\vtkzlib.lib", "$Directory_tmp".$ps."vtkzlib.lib");
+#copy ("$PROJECT\\XDMF\\Xdmf.dll", "$Directory_tmp".$ps."Xdmf.dll");
+#copy ("$PROJECT\\XDMF\\Xdmf.lib", "$Directory_tmp".$ps."Xdmf.lib");
+#copy ("$PROJECT\\XDMF\\XdmfCSharp.dll", "$Directory_tmp".$ps."XdmfCSharp.dll");
+#copy ("$PROJECT\\XDMF\\XdmfDiff.lib", "$Directory_tmp".$ps."XdmfDiff.lib");
+#copy ("$PROJECT\\XDMF\\XdmfExodusConverter.lib", "$Directory_tmp".$ps."XdmfExodusConverter.lib");
+#copy ("$PROJECT\\XDMF\\XdmfPartitioner.lib", "$Directory_tmp".$ps."XdmfPartitioner.lib");
+#copy ("$PROJECT\\XDMF\\XdmfUtils.dll", "$Directory_tmp".$ps."XdmfUtils.dll");
+#copy ("$PROJECT\\XDMF\\XdmfUtils.lib", "$Directory_tmp".$ps."XdmfUtils.lib");
+#copy ("$PROJECT\\XDMF\\XmdfCSharpBindings.dll", "$Directory_tmp".$ps."XmdfCSharpBindings.dll");
 
 
 #######################################
