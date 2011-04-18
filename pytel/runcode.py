@@ -138,7 +138,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             print ' copying: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if options.sortieFile and sortiefile != '':
+   if sortiefile != None:
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
@@ -278,17 +278,14 @@ def print_twice(pipe,ofile,lastlineempty):
             ofile.write(dat+'\n')
 
 def runCode(exe,sortiefile):
-   if options.sortieFile:
-      ofile = open(sortiefile,"w")
-   else:
-      ofile = None
+   ofile = None
+   if sortiefile != None: ofile = open(sortiefile,"w")
    lastlineempty=False
    proc = Popen(exe,bufsize=1024,stdout=PIPE,stderr=PIPE,shell=True)
    t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile,lastlineempty,))
    t1.start()
    t1.join()
-   if options.sortieFile:
-      ofile.close()
+   if ofile != None: ofile.close()
    proc.wait()
    if proc.returncode == 0: return True
 
@@ -584,6 +581,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      print options
       runCAS(cfgname,cfg,codeName,casFile,options)
 
    sys.exit()

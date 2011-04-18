@@ -2,12 +2,14 @@
 """
 """@author Sebastien E. Bourban and Noemie Durand
 """
+"""@history 17/04/2011 -- Sebastien Bourban: Updated to the latest runcode,
+      which includes POSTEL and COUPLAGE
+"""
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
-from parserKeywords import scanDICO,getIOFilesSubmit
-from runcode import processCAS,checkConsistency,runCAS
+from runcode import runCAS
 from os import path,environ
 import sys
 
@@ -73,22 +75,19 @@ if __name__ == "__main__":
 
       cfg = parseConfig_ValidateTELEMAC(cfgname)[cfgname]
 
-      for mod in cfg['VALIDATION'].keys():
+      for codeName in cfg['VALIDATION'].keys():
 # ~~ Scans all CAS files to launch validation ~~~~~~~~~~~~~~~~~~~~~~
-         print '\n\nConfiguration ' + cfgname + ', Module '+ mod + '\n\
+         print '\n\nConfiguration ' + cfgname + ', Module '+ codeName + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         print '... reading module dictionary'
-         dicoFile = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['TELVER']+'.dico')
-         frgb,dico = scanDICO(dicoFile)
-         iFS,oFS = getIOFilesSubmit(frgb,dico)
 
-         for casFile in cfg['VALIDATION'][mod]:
+         for casFile in cfg['VALIDATION'][codeName]:
+            casFile = path.realpath(casFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+            print '\n\nRunning ' + path.basename(casFile) + ' with '+ codeName + ' under ' + path.dirname(casFile) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+            print '... reading module dictionary'
 
-            cas,lang = processCAS(casFile,frgb)
-            if not checkConsistency(cas,dico,frgb,cfg):
-               print '... inconsistent CAS file: ',casFile
-               continue
-
-            runCAS(cfgname,cfg,mod,casFile,dico,frgb,iFS,oFS,options)
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            runCAS(cfgname,cfg,codeName,casFile,options)
 
    sys.exit()
