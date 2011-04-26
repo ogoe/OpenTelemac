@@ -5,7 +5,7 @@
      &(LT,IKLBORL,IKLE2L,NPTFR,NETAG,NELEM)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE RELATIVE BALANCE OF THE MASSES OF
@@ -34,13 +34,20 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/03/2011
+!+        V6P1
+!+   Mass-lumping taken into account in computation of diffusive fluxes,
+!+   like in diff3d.f (messages on mass-conservation of sediment were
+!+   wrong).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLBORL        |---|
-!| IKLE2L         |---|
-!| LT             |-->| NUMERO DU PAS DE TEMPS EN COURS
-!| NELEM          |---|
-!| NETAG          |---|
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE 2D
+!| IKLBORL        |-->| CONNECTIVITY TABLE OF LATERAL BOUNDARIES
+!| IKLE2L         |-->| CONNECTIVITY TABLE OF 2D MESH
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE 2D MESH
+!| NETAG          |-->| NUMBER OF LAYERS (I.E. NPLAN-1)
+!| NPTFR          |-->| NUMBER OF 2D BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -182,123 +189,35 @@
 !           BOTTOM AND FREE SURFACE
 !
             IF(ATABOF%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-            DO IELEM2=1,NELEM
-               L1 = IKLE2L(IELEM2,1)
-               L2 = IKLE2L(IELEM2,2)
-               L3 = IKLE2L(IELEM2,3)
-               L4 = NETAG*NPOIN2
-!
-!              COMPUTES (AREA OF THE TRIANGLE)
-!
-               X_2 = X(L2) - X(L1)
-               X_3 = X(L3) - X(L1)
-               Y_2 = Y(L2) - Y(L1)
-               Y_3 = Y(L3) - Y(L1)
-               Z_2 = ZPROP%R(L2) - ZPROP%R(L1)
-               Z_3 = ZPROP%R(L3) - ZPROP%R(L1)
-               Z_5 = ZPROP%R(L2+L4) - ZPROP%R(L1+L4)
-               Z_6 = ZPROP%R(L3+L4) - ZPROP%R(L1+L4)
-               A1 = Y_2*Z_3 - Z_2*Y_3
-               A2 = Z_2*X_3 - X_2*Z_3
-               A3 = X_2*Y_3 - Y_2*X_3
-!
-                    FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &                        + SQRT(A1*A1+A2*A2+A3*A3)/6.D0 *
-     &            ( ATABOF%ADR(ITRAC)%P%R(L1)*TA%ADR(ITRAC)%P%R(L1)
-     &             +ATABOF%ADR(ITRAC)%P%R(L2)*TA%ADR(ITRAC)%P%R(L2)
-     &             +ATABOF%ADR(ITRAC)%P%R(L3)*TA%ADR(ITRAC)%P%R(L3) )
-!
-            ENDDO
+!             WITH MASS-LUMPING LIKE IN DIFF3D
+              DO I=1,NPOIN2
+                FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &          + ATABOF%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+     &                                    *TA%ADR(ITRAC)%P%R(I)
+              ENDDO
             ENDIF
 !
             IF(ATABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-            DO IELEM2=1,NELEM
-               L1 = IKLE2L(IELEM2,1)
-               L2 = IKLE2L(IELEM2,2)
-               L3 = IKLE2L(IELEM2,3)
-               L4 = NETAG*NPOIN2
-!
-!         COMPUTES (AREA OF THE TRIANGLE)
-!
-               X_2 = X(L2) - X(L1)
-               X_3 = X(L3) - X(L1)
-               Y_2 = Y(L2) - Y(L1)
-               Y_3 = Y(L3) - Y(L1)
-               Z_2 = ZPROP%R(L2) - ZPROP%R(L1)
-               Z_3 = ZPROP%R(L3) - ZPROP%R(L1)
-               Z_5 = ZPROP%R(L2+L4) - ZPROP%R(L1+L4)
-               Z_6 = ZPROP%R(L3+L4) - ZPROP%R(L1+L4)
-               A3 = X_2*Y_3 - Y_2*X_3
-               A4 = Y_2*Z_6 - Z_5*Y_3
-               A5 = Z_5*X_3 - X_2*Z_6
-!
-                    FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &                        + SQRT(A3*A3+A4*A4+A5*A5)/6.D0 *
-     &            ( ATABOS%ADR(ITRAC)%P%R(L1)*TA%ADR(ITRAC)%P%R(L1+L4)
-     &             +ATABOS%ADR(ITRAC)%P%R(L2)*TA%ADR(ITRAC)%P%R(L2+L4)
-     &             +ATABOS%ADR(ITRAC)%P%R(L3)*TA%ADR(ITRAC)%P%R(L3+L4) )
-!
-            ENDDO
+!             WITH MASS-LUMPING LIKE IN DIFF3D
+              DO I=1,NPOIN2
+                FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &          + ATABOS%ADR(ITRAC)%P%R(I)*VOLU2D%R(I)
+     &          * TA%ADR(ITRAC)%P%R(I+NETAG*NPOIN2)
+              ENDDO
             ENDIF
 !
             IF(BTABOF%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-            DO IELEM2=1,NELEM
-               L1 = IKLE2L(IELEM2,1)
-               L2 = IKLE2L(IELEM2,2)
-               L3 = IKLE2L(IELEM2,3)
-               L4 = NETAG*NPOIN2
-!
-!         COMPUTES (AREA OF THE TRIANGLE)
-!
-               X_2 = X(L2) - X(L1)
-               X_3 = X(L3) - X(L1)
-               Y_2 = Y(L2) - Y(L1)
-               Y_3 = Y(L3) - Y(L1)
-               Z_2 = ZPROP%R(L2) - ZPROP%R(L1)
-               Z_3 = ZPROP%R(L3) - ZPROP%R(L1)
-               Z_5 = ZPROP%R(L2+L4) - ZPROP%R(L1+L4)
-               Z_6 = ZPROP%R(L3+L4) - ZPROP%R(L1+L4)
-               A1 = Y_2*Z_3 - Z_2*Y_3
-               A2 = Z_2*X_3 - X_2*Z_3
-               A3 = X_2*Y_3 - Y_2*X_3
-!
-                    FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &                        + SQRT(A1**2+A2**2+A3**2)/6.D0 *
-     &            ( BTABOF%ADR(ITRAC)%P%R(L1)
-     &             +BTABOF%ADR(ITRAC)%P%R(L2)
-     &             +BTABOF%ADR(ITRAC)%P%R(L3) )
-!
-            ENDDO
+              DO I=1,NPOIN2
+                FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &          + VOLU2D%R(I)*BTABOF%ADR(ITRAC)%P%R(I)
+              ENDDO
             ENDIF
 !
             IF(BTABOS%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-            DO IELEM2=1,NELEM
-               L1 = IKLE2L(IELEM2,1)
-               L2 = IKLE2L(IELEM2,2)
-               L3 = IKLE2L(IELEM2,3)
-               L4 = NETAG*NPOIN2
-!
-!         COMPUTES (AREA OF THE TRIANGLE)
-!
-               X_2 = X(L2) - X(L1)
-               X_3 = X(L3) - X(L1)
-               Y_2 = Y(L2) - Y(L1)
-               Y_3 = Y(L3) - Y(L1)
-               Z_2 = ZPROP%R(L2) - ZPROP%R(L1)
-               Z_3 = ZPROP%R(L3) - ZPROP%R(L1)
-               Z_5 = ZPROP%R(L2+L4) - ZPROP%R(L1+L4)
-               Z_6 = ZPROP%R(L3+L4) - ZPROP%R(L1+L4)
-               A3 = X_2*Y_3 - Y_2*X_3
-               A4 = Y_2*Z_6 - Z_5*Y_3
-               A5 = Z_5*X_3 - X_2*Z_6
-!
-                    FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
-     &                        + SQRT(A3*A3+A4*A4+A5*A5)/6.D0 *
-     &            ( BTABOS%ADR(ITRAC)%P%R(L1)
-     &            + BTABOS%ADR(ITRAC)%P%R(L2)
-     &            + BTABOS%ADR(ITRAC)%P%R(L3) )
-!
-            ENDDO
+              DO I=1,NPOIN2
+                FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
+     &          +VOLU2D%R(I)*BTABOS%ADR(ITRAC)%P%R(I)
+              ENDDO
             ENDIF
 !
 !        LATERAL BOUNDARIES
@@ -306,7 +225,7 @@
             DO IETAGE=1,NETAG
 !
                IF(ATABOL%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-               DO IPTFR=1,NPTFR
+                 DO IPTFR=1,NPTFR
 !
                   L1 = IKLBORL(IPTFR,IETAGE,1)
                   L2 = IKLBORL(IPTFR,IETAGE,2)
@@ -323,11 +242,11 @@
      &            + ATABOL%ADR(ITRAC)%P%R(L3)*TA%ADR(ITRAC)%P%R(N3)
      &            + ATABOL%ADR(ITRAC)%P%R(L4)*TA%ADR(ITRAC)%P%R(N4) )
 !
-               ENDDO
+                 ENDDO
                ENDIF
 !
                IF(BTABOL%ADR(ITRAC)%P%TYPR.NE.'0') THEN
-               DO IPTFR=1,NPTFR
+                 DO IPTFR=1,NPTFR
 !
                   L1 = IKLBORL(IPTFR,IETAGE,1)
                   L2 = IKLBORL(IPTFR,IETAGE,2)
@@ -349,7 +268,7 @@
      &             +BTABOL%ADR(ITRAC)%P%R(L3)*A2
      &             +BTABOL%ADR(ITRAC)%P%R(L4)*A1)
 !
-               ENDDO
+                 ENDDO
                ENDIF
 !
             ENDDO
@@ -391,36 +310,36 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF (NTRAC.GT.0) THEN
+      IF(NTRAC.GT.0) THEN
 !
-         DO IVBIL=6,5+NTRAC
+        DO IVBIL=6,5+NTRAC
 !
-            FLUTOT = FLUX%R(IVBIL) - FLUDI(IVBIL) + FLUS1(IVBIL)
-            FLUCUM%R(IVBIL) = FLUCUM%R(IVBIL) + FLUTOT
+          FLUTOT = FLUX%R(IVBIL) - FLUDI(IVBIL) + FLUS1(IVBIL)
+          FLUCUM%R(IVBIL) = FLUCUM%R(IVBIL) + FLUTOT
 !
-            IF(INFOGR) THEN
-             IF(SEDI.AND.(IVBIL.EQ.NTRAC+5)) THEN
+          IF(INFOGR) THEN
+            IF(SEDI.AND.(IVBIL.EQ.NTRAC+5)) THEN
                IF(LNG.EQ.1) WRITE(LU,611) FLUX%R(IVBIL),
      &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
      &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
                IF(LNG.EQ.2) WRITE(LU,612) FLUX%R(IVBIL),
      &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
      &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
-             ELSE
-               IF(LNG.EQ.1) THEN
-                 WRITE(LU,621) IVBIL-5,FLUX%R(IVBIL),
+            ELSE
+              IF(LNG.EQ.1) THEN
+               WRITE(LU,621) IVBIL-5,FLUX%R(IVBIL),
      &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
      &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
-               ENDIF
-               IF(LNG.EQ.2) THEN
+              ENDIF
+              IF(LNG.EQ.2) THEN
                  WRITE(LU,622) IVBIL-5,FLUX%R(IVBIL),
      &         -FLUDI(IVBIL),MASSEN%R(IVBIL),MASSE%R(IVBIL),DT*FLUTOT,
      &                       MASSEN%R(IVBIL)-MASSE%R(IVBIL)-DT*FLUTOT
-               ENDIF
-             ENDIF
+              ENDIF
             ENDIF
+          ENDIF
 !
-         ENDDO
+        ENDDO
 !
       ENDIF
 !

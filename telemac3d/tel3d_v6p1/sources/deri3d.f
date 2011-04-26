@@ -231,8 +231,6 @@
 !
           IF(ELTFLO(IFLOT).LE.0) FINFLO(IFLOT) = LT
 !
-        ENDIF
-!
 !       COMPUTES THE REAL Z COORDINATE
 !
         IELEM=ELTFLO(IFLOT)
@@ -247,6 +245,8 @@
      &     + Z(N3,NPLAN) * SHPFLO(3,IFLOT)
 !
         ZFLOT(LTT,IFLOT) = ZF+ZSFLOT(LTT,IFLOT)*(ZS-ZF)
+!
+        ENDIF
 !
       END DO FLOTBOUCLE
 !

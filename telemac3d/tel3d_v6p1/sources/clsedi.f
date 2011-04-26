@@ -11,8 +11,8 @@
      &  NPFMAX , NCOUCH , NPF    , ITURBV , DT     , RHO0   ,
      &  RHOS   , CFDEP  , TOCD   , MPART  , TOCE   , TASSE  ,
      &  GIBSON , PRIVE  , UETCAR ,
-     &  GRAV   , SEDCO  , DMOY   , CREF   , CF,
-     &  AC     , KSPRATIO,ICR)
+     &  GRAV   , SEDCO  , DMOY   , CREF   ,ZREF, CF,
+     &  AC     , KSPRATIO,ICR,ICQ,RUGOF)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P0                                   21/08/2010
@@ -73,6 +73,7 @@
 !| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
 !| HDEP           |<->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
 !| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
+!| ICQ            |-->| 
 !| ITURBV         |-->| MODELE DE TURBULENCE  VERTICAL
 !| IVIDE          |<->| INDICE DES VIDES AUX POINTS DU MAILLAGE
 !| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
@@ -92,6 +93,7 @@
 !| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
 !| RHO0           |-->| DENSITE DE REFERENCE DE L'EAU
 !| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
+!| RUGOF          |-->| 
 !| SEDCO          |-->| LOGIQUE POUR SEDIMENT COHESIF
 !| TA             |-->| CONCENTRATION EN SEDIMENT
 !| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
@@ -109,10 +111,10 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN) :: NPOIN2,NPOIN3,KLOG,NPFMAX
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
+      INTEGER, INTENT(IN) :: NPOIN2,NPOIN3,KLOG,NPFMAX,ICQ
       INTEGER, INTENT(IN) :: NCOUCH,ITURBV,NPLAN,ICR
 !
       DOUBLE PRECISION, INTENT(INOUT) :: ATABOF(NPOIN2), BTABOF(NPOIN2)
@@ -122,7 +124,7 @@
       DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3)
       DOUBLE PRECISION, INTENT(IN) :: WC(NPOIN3), DELTAR(NPOIN3)
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: PRIVE,TOB,CREF
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: PRIVE,TOB,CREF,ZREF,RUGOF
       TYPE(BIEF_OBJ), INTENT(IN)    :: DMOY,HN,CF
 !
       DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPFMAX-1,NPOIN2)
@@ -136,18 +138,18 @@
       DOUBLE PRECISION, INTENT(IN) :: GRADZFX(NPOIN2),GRADZFY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: GRADZSX(NPOIN2),GRADZSY(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN) :: DT    , RHO0   , RHOS
-      DOUBLE PRECISION, INTENT(IN) :: CFDEP , TOCD   , GRAV
+      DOUBLE PRECISION, INTENT(IN) :: DT    , RHO0 , RHOS
+      DOUBLE PRECISION, INTENT(IN) :: CFDEP , TOCD , GRAV
       DOUBLE PRECISION, INTENT(IN) :: MPART , TOCE
 !
       INTEGER, INTENT(INOUT) :: LITABF(NPOIN2), LITABS(NPOIN2)
       INTEGER, INTENT(INOUT) :: NPF(NPOIN2)
 !
-      LOGICAL, INTENT(IN)             :: TASSE , GIBSON , SEDCO
-      DOUBLE PRECISION, INTENT(IN)    :: AC, KSPRATIO
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
+      LOGICAL, INTENT(IN)          :: TASSE , GIBSON , SEDCO
+      DOUBLE PRECISION, INTENT(IN) :: AC, KSPRATIO
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C 
       DOUBLE PRECISION KSP,A,C,ZERO,HCLIP,MU
       INTEGER IPOIN,I
 !
@@ -156,16 +158,16 @@
       ZERO = 1.D-6
 !
       DO IPOIN=1,NPOIN2
-!       COMPUTES THE FLUID DENSITY
+C       COMPUTES THE FLUID DENSITY
         DENSI(IPOIN) = (DELTAR(IPOIN)+1.D0)*RHO0
-!       COMPUTES THE STRESS AT THE BOTTOM
+C       COMPUTES THE STRESS AT THE BOTTOM
         TOB%R(IPOIN) = DENSI(IPOIN)*UETCAR(IPOIN)
       ENDDO
 !
       IF(ICR.EQ.1) THEN
 !
         DO IPOIN=1,NPOIN2
-!         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
+C         CORRECTION FOR SKIN FRICTION (SEE TOB_SISYPHE)
           KSP=KSPRATIO *DMOY%R(IPOIN)
           IF(CF%R(IPOIN) > ZERO.AND.HN%R(IPOIN).GT.KSP) THEN
             HCLIP=MAX(HN%R(IPOIN),KSP)
@@ -179,7 +181,7 @@
 !
       ENDIF
 !
-!      -----COMPUTES THE EXPLICIT EROSION FLUX-----
+C      -----COMPUTES THE EXPLICIT EROSION FLUX-----
 !
       IF(SEDCO) THEN
 !
@@ -195,16 +197,17 @@
      &               CFDEP,RHOS,DT,GIBSON)
 !
         ENDIF
+
       ELSE
 !
           CALL ERODNC(CFDEP,WC,HDEP,FLUER,TOB,DT,
      &                NPOIN2,NPOIN3,KSPRATIO,AC,RHOS,RHO0,HN,
-     &                GRAV,DMOY,CREF,CF)
+     &                GRAV,DMOY,CREF,ZREF,CF,ICQ,RUGOF)
 !
       ENDIF
 !
-!      -----WRITES THE BOUNDARY CONDITIONS AT THE BOTTOM / SURFACE-----
-!      -----                FOR THE SEDIMENT                      -----
+C      -----WRITES THE BOUNDARY CONDITIONS AT THE BOTTOM / SURFACE-----
+C      -----                FOR THE SEDIMENT                      -----
 !
       CALL FLUSED(ATABOF , BTABOF , ATABOS , BTABOS ,
      &            LITABF , LITABS , TA     , WC     ,

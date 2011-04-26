@@ -2,7 +2,7 @@
                      SUBROUTINE TFOND
 !                    ****************
 !
-     &(AUBOR,CF,U2D,V2D,U3D,V3D,W3D,KARMAN,LISRUG,PROPNU,Z,NPOIN,KFROT,
+     &(AUBOR,CF,U2D,V2D,U3D,V3D,W3D,KARMAN,LISRUF,PROPNU,Z,NPOIN,KFROT,
      & RUGOF,UETCAR,NONHYD,OPTBAN,HN,GRAV,IPBOT,NPLAN)
 !
 !***********************************************************************
@@ -42,7 +42,7 @@
 !| IPBOT          |---|
 !| KARMAN         |-->| CONSTANTE DE KARMAN
 !| KFROT          |-->| LAW OF BOTTOM FRICTION
-!| LISRUG         |-->| REGIME DE TURBULENCE 1: LISSE 2: RUGUEUX
+!| LISRUF         |-->| REGIME DE TURBULENCE 1: LISSE 2: RUGUEUX
 !| NONHYD         |---|
 !| NPLAN          |---|
 !| NPOIN          |---|
@@ -64,7 +64,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: LISRUG,NPOIN,KFROT,OPTBAN,NPLAN
+      INTEGER, INTENT(IN) :: LISRUF,NPOIN,KFROT,OPTBAN,NPLAN
       INTEGER, INTENT(IN) :: IPBOT(NPOIN)
 !
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN,PROPNU,GRAV
@@ -95,7 +95,7 @@
 !     SMOOTH FRICTION REGIME :
 !
 !     ********************
-      IF(LISRUG.EQ.1) THEN
+      IF(LISRUF.EQ.1) THEN
 !     ********************
 !
         DO N=1,NPOIN
@@ -123,7 +123,7 @@
         ENDDO
 !
 !     ***************************************
-      ELSEIF(LISRUG.EQ.2.OR.LISRUG.EQ.3) THEN
+      ELSEIF(LISRUF.EQ.2.OR.LISRUF.EQ.3) THEN
 !     ***************************************
 !
 !       ROUGH FRICTION REGIME
@@ -168,8 +168,8 @@
       ELSE
 !     ****
 !
-        IF(LNG.EQ.1) WRITE(LU,400) LISRUG
-        IF(LNG.EQ.2) WRITE(LU,401) LISRUG
+        IF(LNG.EQ.1) WRITE(LU,400) LISRUF
+        IF(LNG.EQ.2) WRITE(LU,401) LISRUF
 400     FORMAT(1X,'TFOND : REGIME DE TURBULENCE INCONNU : ',1I6)
 401     FORMAT(1X,'TFOND : UNKNOWN TURBULENCE MODEL : ',1I6)
         CALL PLANTE(1)

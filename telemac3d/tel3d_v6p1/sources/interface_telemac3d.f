@@ -1,17 +1,17 @@
-!
+C
       MODULE INTERFACE_TELEMAC3D
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
+C
+C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C
       USE BIEF_DEF
-!
-!-----------------------------------------------------------------------
-!
-!     DEFINITION OF INTERFACES
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
+C     DEFINITION OF INTERFACES
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE ACTUZF(IVIDE,EPAI,ZF,NPOIN2,NPFMAX,NPF)
        IMPLICIT NONE
@@ -22,9 +22,9 @@
        INTEGER, INTENT(IN)             :: NPF(NPOIN2)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE AIRWIK1
      &(LIHBOR,UBORF,VBORF,LIUBOF,LIVBOF,UBORL,VBORL,LIUBOL,LIVBOL,
@@ -60,9 +60,9 @@
       LOGICAL, INTENT(IN)             :: DELWAQ
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE AIRWIK2
      &(LIHBOR,UBORF,VBORF,WBORF,LIUBOF,LIVBOF,LIWBOF,UBORL,VBORL,WBORL,
@@ -92,9 +92,9 @@
       LOGICAL, INTENT(IN)             :: VELPROLAT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE AIRWIK3
      & (LIHBOR,U,V,XNEBOR,YNEBOR,NBOR,NPTFR,NPLAN,NPOIN2,KLOG)
@@ -105,9 +105,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE BIL3D(LT,IKLBORL,IKLE2L,NPTFR,NETAG,NELEM)
           USE BIEF_DEF
@@ -117,9 +117,9 @@
           INTEGER, INTENT(IN) :: IKLE2L(NELEM,3)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE BISSEL(IVIDE,TRA01,NPFMAX,IMAX,NDEB)
           IMPLICIT NONE
@@ -128,9 +128,9 @@
           DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPFMAX,6)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE BORD3D(AAT,LT,IINFOGR,NPTFR2_DIM,NFRLIQ)
           IMPLICIT NONE
@@ -141,9 +141,9 @@
           INTEGER         , INTENT(IN)    :: NFRLIQ
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE BYPASS_CRUSHED_POINTS
      & (VOLU,SVOLU,VOLUN,SVOLUN,FLUX,TRA01,MESH2,MESH3,
@@ -160,9 +160,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: FLUX(*)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CALCG(TRAV2,TRAV3,U,V,UETCAR,NPOIN2,NPLAN)
           IMPLICIT NONE
@@ -173,9 +173,9 @@
           DOUBLE PRECISION, INTENT(INOUT) :: TRAV3(NPOIN2*NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CALCOT(ZZ,HH)
           USE DECLARATIONS_TELEMAC3D
@@ -184,9 +184,9 @@
           DOUBLE PRECISION, INTENT(INOUT) :: ZZ(NPOIN2,NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CHECK
      &(IKLE2,NBOR,NELBOR,IKLBOR,IKLE3,NELBO3,NULONE,NBOR3,NELEM2,NPOIN2,
@@ -203,9 +203,9 @@
           LOGICAL, INTENT(IN) :: INFO
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CLSEDI
      &( ATABOF , BTABOF , ATABOS , BTABOS , TA     ,
@@ -217,18 +217,18 @@
      &  NPFMAX , NCOUCH , NPF    , ITURBV , DT     , RHO0   ,
      &  RHOS   , CFDEP  , TOCD   , MPART  , TOCE   , TASSE  ,
      &  GIBSON , PRIVE  , UETCAR ,
-     &  GRAV   , SEDCO  , DMOY   , CREF   , CF,
-     &  AC     , KSPRATIO,ICR)
+     &  GRAV   , SEDCO  , DMOY   , CREF   , ZREF,CF,
+     &  AC     , KSPRATIO,ICR,ICQ,RUGOF)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: NPOIN2, NPOIN3, KLOG , NPFMAX
-      INTEGER, INTENT(IN) :: NCOUCH, ITURBV, NPLAN, ICR
+      INTEGER, INTENT(IN) :: NCOUCH, ITURBV, NPLAN, ICR,ICQ
       DOUBLE PRECISION, INTENT(INOUT) :: ATABOF(NPOIN2), BTABOF(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ATABOS(NPOIN2), BTABOS(NPOIN2)
       DOUBLE PRECISION, INTENT(IN) :: X(NPOIN3), Y(NPOIN3), Z(NPOIN3)
       DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3)
       DOUBLE PRECISION, INTENT(IN) :: WC(NPOIN3), DELTAR(NPOIN3)
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: PRIVE,TOB,CREF
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: PRIVE,TOB,CREF,ZREF,RUGOF
       TYPE(BIEF_OBJ), INTENT(IN)    :: DMOY,HN,CF
       DOUBLE PRECISION, INTENT(INOUT) :: EPAI(NPFMAX-1,NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: IVIDE(NPFMAX,NPOIN2)
@@ -248,9 +248,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: AC, KSPRATIO
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE COEF
      &     (IVIDE , EPAI , TRA01 ,
@@ -263,17 +263,17 @@
          DOUBLE PRECISION, INTENT(IN) :: RHOS , GRAV ,DTC , DSIG1
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CONDIM
           IMPLICIT NONE
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CONDIS
      &(IVIDE, EPAI  , TREST , CONC , TEMP   , HDEP   ,
@@ -296,9 +296,9 @@
           LOGICAL, INTENT(IN)             :: TASSE,GIBSON,CONSOL
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CORFON
      &(SZF, ST1, ST2, ZF, T1, T2, X, Y, PRIVE, NPOIN2,
@@ -317,9 +317,9 @@
           TYPE (BIEF_OBJ),  INTENT(IN)    :: S
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CORPAR(FVERT,FHORI,PHILATI)
           IMPLICIT NONE
@@ -327,9 +327,9 @@
           DOUBLE PRECISION, INTENT(IN)    :: PHILATI
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CORRECTION_DEPTH_3D(W2D,W3D,GLOSEG,DIMGLO)
         USE DECLARATIONS_TELEMAC3D
@@ -339,9 +339,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: W2D(NELEM2,3),W3D(NELEM3,6)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE COUPE
      & (F,FINT,SCURV,NPOIN,IKLE3,IFABOR,X,Y,Z,SURFAC,NELEM2,NPOIN3,
@@ -358,9 +358,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: X1,Y1,Z1,X2,Y2,Z2
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CSTKEP
      & (KARMAN,CMU,C1,C2,SIGMAK,SIGMAE,VIRT,SCHMIT,
@@ -375,9 +375,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: ALPHA,BETA,BETAS,OMSTAR
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE CVDF3D
      & (FD,FC,FN,VISCF,SIGMAF,S0F,YAS0F,S1F,YAS1F,
@@ -436,9 +436,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: FSCE(NSCE)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DEBIMP3D
      &(Q,UBOR,VBOR,WBOR,U,V,H,NUMLIQ,IFRLIQ,
@@ -463,9 +463,9 @@
       TYPE(BIEF_OBJ) , INTENT(INOUT) :: SVIDE
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DERI3D
      &(U,V,W,DT,X,Y,ZSTAR,Z,IKLE2,IBOR,LT,NPOIN2,NELEM2,NPLAN,NPLINT,
@@ -493,9 +493,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DESSED
      & (NPF,IVIDE,EPAI,HDEP,CONC,TEMP,ZR,NPOIN2,NPFMAX,NCOUCH,
@@ -515,9 +515,9 @@
       CHARACTER(LEN=3), INTENT(IN) :: BIRSED
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DIFF3D
      & (FD,FC,FN,VISCF,SIGMAF,S0F,YAS0F,S1F,YAS1F,
@@ -563,9 +563,9 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: MATR2H
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DRIALG(FRV,FRT,RI,NPOIN3)
           IMPLICIT NONE
@@ -574,9 +574,9 @@
           DOUBLE PRECISION, INTENT(INOUT) :: RI(NPOIN3)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DRICV(FRI,FRT,RI,NPOIN3)
           IMPLICIT NONE
@@ -585,9 +585,9 @@
           DOUBLE PRECISION, INTENT(IN)    :: RI(NPOIN3)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DRIUTI(FRI,RI,ITYP,ITRAC,NPOIN3)
           IMPLICIT NONE
@@ -596,9 +596,9 @@
           DOUBLE PRECISION, INTENT(INOUT) :: RI(NPOIN3)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE DRSURR
      & (DELTAR, TA, BETAC,T0AC,RHO,RHO0,RHOS,DENLAW,SEDI,NTRAC,
@@ -614,9 +614,9 @@
       LOGICAL, INTENT(IN)           :: SEDI
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE ERODC( CONC  , EPAI   , FLUER  , TOB    , DENSI  ,
      &                    MPART , DT     , NPOIN2 , NCOUCH )
@@ -629,28 +629,28 @@
       DOUBLE PRECISION, INTENT(IN)    :: MPART, DT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE ERODNC
      &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
      & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
-     & GRAV   , DMOY   , CREF     , CF )
+     & GRAV   , DMOY   , CREF     ,ZREF, CF,ICQ ,RUGOF)
       USE BIEF_DEF
       IMPLICIT NONE
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3
+      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3,ICQ
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: WC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: DT,CFDEP,GRAV,RHOS,RHO0
       DOUBLE PRECISION, INTENT(IN)    :: KSPRATIO,AC
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
-      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF
+      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE EXTMSK(MASKBR,MASK,NPTFR,NETAGE)
           USE BIEF_DEF
@@ -660,9 +660,9 @@
           TYPE(BIEF_OBJ), INTENT(INOUT) :: MASKBR
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FINDKSCE(NPOIN2,NPLAN,Z,NSCE,ISCE,ZSCE,KSCE,INFO)
           IMPLICIT NONE
@@ -674,9 +674,9 @@
           LOGICAL, INTENT(IN) :: INFO
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FLOT3D
      &(XFLOT,YFLOT,ZFLOT,NFLOT,NITFLO,FLOPRD,X,Y,Z,NPOIN,DEBFLO,FINFLO,
@@ -690,9 +690,9 @@
       DOUBLE PRECISION, INTENT(IN)  :: X(NPOIN), Y(NPOIN), Z(NPOIN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FLUSED
      & (ATABOF , BTABOF , ATABOS , BTABOS ,
@@ -718,9 +718,9 @@
       DOUBLE PRECISION, INTENT(IN) :: TOCD
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FLUPRI(VEC,XMUL,U,V,W,X,Y,Z,IKLE,
      &                    NELEM,NELMAX,NELEM2D,NPOIN2,NPOIN3,T1,T2,T3)
@@ -734,12 +734,12 @@
       DOUBLE PRECISION, INTENT(INOUT) :: T2(NELEM2D)
       DOUBLE PRECISION, INTENT(INOUT) :: T3(NELEM2D)
       DOUBLE PRECISION, INTENT(IN) :: U(*),V(*),W(*)
-!
+C
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FLUVER_2
      &(FLUVER2,UP,VP,WP,GRADZF,VOLU2D,DSSUDT,NPLAN,NPOIN2)
@@ -750,9 +750,9 @@
       TYPE(BIEF_OBJ), INTENT(IN)    :: UP,VP,WP,GRADZF,VOLU2D,DSSUDT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FLUX3D
      &(FLUINT,FLUEXT,FLUEXTPAR,UCONV,VCONV,TRA01,TRA02,TRA03,
@@ -780,9 +780,9 @@
       LOGICAL, INTENT(IN)             :: MSK,SIGMAG,RAIN,YACVVF,BYPASS
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FONVAS
      &(IVIDE  , EPAI   , CONC  , TREST  , TEMP   , HDEP  ,
@@ -810,9 +810,9 @@
       LOGICAL, INTENT(IN) :: TASSE, GIBSON
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE FSGRAD
      &(GRADZS,ZFLATS,Z,ZF,IELM2H,MESH2D,MSK,MASKEL,UNSV2D,T2_01,
@@ -825,12 +825,12 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)        :: GRADZS,ZFLATS,T2_01
       TYPE(BIEF_OBJ), INTENT(IN)           :: ZF,UNSV2D,S,MASKEL
       TYPE(BIEF_MESH), INTENT(INOUT)       :: MESH2D
-!
+C
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE GESTDP( IVIDE  , EPAI   , HDEP    ,
      &                     NPOIN2 , NPFMAX , NPF     ,
@@ -845,9 +845,9 @@
           INTEGER, INTENT(INOUT) :: NPF(NPOIN2)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE GRAD2D
      &(DFDX,DFDY,FU,NPLAN,S,UNSV2D,FU2,FU3,FU4,IELM2,MESH2D,MSK,MASKEL)
@@ -864,9 +864,9 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: FU2,FU3,FU4
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE IFAB3D
      &(IFABOR,LIUBOF,LIUBOL,LIUBOS,KP1BOR,NELBOR,NULONE,
@@ -883,9 +883,9 @@
       INTEGER, INTENT(IN)          :: KLOG
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE IMPSED
      &(IVIDE , EPAI  , CONC  , TEMP  , HDEP  , PDEPOT,
@@ -912,9 +912,9 @@
           LOGICAL, INTENT(IN) :: TASSE , GIBSON
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE KEPCL3
      & (KBORF,EBORF,LIKBOF,LIEBOF,LIUBOF,
@@ -949,9 +949,9 @@
       DOUBLE PRECISION, INTENT(IN) :: KMIN, KMAX, EMIN, EMAX
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE KEPICL
      & (LIKBOF,LIEBOF,LIUBOF,LIKBOL,LIEBOL,LIUBOL,LIKBOS,LIEBOS,LIUBOS,
@@ -967,9 +967,9 @@
           INTEGER, INTENT(INOUT) :: LIEBOL(NPTFR,NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE KEPINI
      &(AK,EP,U,V,Z,ZF,NPOIN2,NPLAN,DNUVIH,DNUVIV,KARMAN,CMU,KMIN,EMIN)
@@ -985,9 +985,9 @@
       DOUBLE PRECISION, INTENT(IN)   :: KMIN, EMIN
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE KOMCL3
      & (KBORF,EBORF,LIKBOF,LIEBOF,LIUBOF,
@@ -1025,9 +1025,9 @@
       DOUBLE PRECISION, INTENT(IN) :: KMIN, KMAX, EMIN, EMAX
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE LECDON_TELEMAC3D(MOTCAR,FILE_DESC,PATH,NCAR)
           IMPLICIT NONE
@@ -1037,9 +1037,9 @@
           INTEGER, INTENT(IN) :: NCAR
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE LICHEK(LIMPRP, NPTFR)
           IMPLICIT NONE
@@ -1047,9 +1047,9 @@
           INTEGER, INTENT(INOUT) :: LIMPRP(NPTFR,6)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE LIMTEL
      &(UBOR2D,VBOR2D,UBORL,VBORL,Z,TRA01,TRA02,TRA03,TRA04,NBOR,
@@ -1067,9 +1067,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: TRA04(NPTFR,NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE LONGMB
      &(LM,Z,HN,NPOIN3,NPOIN2,NPLAN,U,V,X,Y,P1,P2,P3,NTRAC,TA,KARMAN,ZF)
@@ -1084,9 +1084,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: TA(NPOIN3),ZF(NPOIN2)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE LONGML
      & (LM2,Z,HN,NPOIN3,NPOIN2,NPLAN,MIXING,KARMAN,ZF)
@@ -1097,9 +1097,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN2)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MASK3D
      &(IFABOR3D,MASKEL,MASKPT,MASKBR,
@@ -1123,9 +1123,9 @@
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: MASKPT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MASS3D(INFO,LT)
           IMPLICIT NONE
@@ -1133,39 +1133,29 @@
           INTEGER, INTENT(IN) :: LT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MASSED
-     & (MASSE, TA, X, Y, Z, IVIDE, EPAI, CONC, HDEP,
-     & SURFAC, TRAV1, TRA02, S, IKLE2, MESH3, IELM3,
-     & NPLAN, NELEM2, NELEM3, NPOIN2, NPOIN3, NTRAC, NVBIL,
-     & NPFMAX, NCOUCH, NPF, TASSE, GIBSON, RHOS, CFDEP, MSK, MASKEL)
+     &(MASSE,EPAI,CONC,HDEP,TRA02,NPOIN2,  
+     & NPFMAX,NCOUCH,NPF,TASSE,GIBSON,RHOS,CFDEP,VOLU2D)
       USE BIEF_DEF
       IMPLICIT NONE
-      INTEGER, INTENT(IN)    :: NPFMAX, NELEM2, NELEM3, NPOIN2, NPOIN3
-      INTEGER, INTENT(IN)    :: IELM3, NPLAN, NCOUCH
-      INTEGER, INTENT(IN)    :: NTRAC, NVBIL
-      INTEGER, INTENT(IN)    :: IKLE2(NELEM2,3), NPF(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: MASSE
-      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN3) ,Y(NPOIN3) ,Z(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: IVIDE(NPFMAX,NPOIN2)
+      INTEGER, INTENT(IN)             :: NPFMAX,NPOIN2,NCOUCH
+      INTEGER, INTENT(IN)             :: NPF(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: MASSE
       DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: HDEP(NPOIN2), CONC(NCOUCH)
-      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELEM2)
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN3)
-      TYPE(BIEF_OBJ), INTENT(IN)      :: TA   ! CALLED AS TA%ADR(NTRAC)%
-      TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TRAV1, S
-      TYPE(BIEF_MESH), INTENT(IN)     :: MESH3
-      DOUBLE PRECISION, INTENT(IN)    :: RHOS, CFDEP
-      LOGICAL, INTENT(IN)             :: MSK, TASSE, GIBSON
+      DOUBLE PRECISION, INTENT(IN)    :: VOLU2D(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: HDEP(NPOIN2),CONC(NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: RHOS,CFDEP
+      LOGICAL, INTENT(IN)             :: TASSE,GIBSON
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MESH_PROP
      &(HPROP ,HN,H,PROLIN,HAULIN,TETA,NSOUSI,ZPROP,
@@ -1183,9 +1173,9 @@
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MITCL2
      & (H,LIHBOR,NBOR,HBOR,AT,NPOIN2,NPTFR,KENT,KSORT,KADH,KLOG,KDEB)
@@ -1196,9 +1186,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),AT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MITTIT(IETAPE,AT,LT)
           IMPLICIT NONE
@@ -1206,9 +1196,9 @@
           DOUBLE PRECISION, INTENT(IN) :: AT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MURD3D
      &(FC,FN,VOLU,VOLUN,VOLU2,SVOLU2,DA,XA,DB,XB,
@@ -1238,14 +1228,14 @@
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3
       DOUBLE PRECISION, INTENT(INOUT) :: DA(NPOIN3),XA(30,NELEM3)
       DOUBLE PRECISION, INTENT(INOUT) :: DB(NPOIN3),XB(30,NELEM3)
-!     DIMENSION OF FLODEL AND FLOPAR=NSEG2D*NPLAN+NPOIN2*NETAGE
+C     DIMENSION OF FLODEL AND FLOPAR=NSEG2D*NPLAN+NPOIN2*NETAGE
       DOUBLE PRECISION, INTENT(IN)    :: FLODEL(*),FLOPAR(*)
       LOGICAL, INTENT(IN)             :: MSK,INFOR,CALFLU,RAIN
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE MURD3D_POS
      &(FC,FN,VOLU,SVOLU,VOLUN,SVOLUN,VOLU2,SVOLU2,RMASS,
@@ -1280,9 +1270,9 @@
       LOGICAL, INTENT(IN)             :: MSK,INFOR,CALFLU,RAIN
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE NOMVAR_2D_IN_3D(TEXTE,TEXTPR,MNEMO,NTRAC,NAMETRAC)
           IMPLICIT NONE
@@ -1292,9 +1282,9 @@
           INTEGER, INTENT(IN) :: NTRAC
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE NOMVAR_TELEMAC3D(TEXT3,TEXTP3,MNEMO,NTRAC,NAMETRAC)
           IMPLICIT NONE
@@ -1304,9 +1294,9 @@
           CHARACTER(LEN=8), INTENT(INOUT)  :: MNEMO(100)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE NUWAVE_P0
      &(NUWAVE,DM1,Z,DZ,IKLE,NPOIN2,NPLAN,NELMAX,NELEM2,XMUL)
@@ -1319,9 +1309,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN2,NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE PHSTAT
      &   (PH, DELTAR, Z, TRA01, TRA02, RHO0, GRAV,
@@ -1336,9 +1326,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: RHO0, GRAV
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE PRECON(WP,WPS,ZPROPS,ISOUSI,LT)
           USE BIEF_DEF
@@ -1348,9 +1338,9 @@
           INTEGER, INTENT(IN) :: ISOUSI,LT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE PREDIV(PD,UP,VP,WP,INFO,BC,OPT,DIRSUR,DIRBOT,DIRLAT)
           USE BIEF_DEF
@@ -1362,9 +1352,9 @@
           LOGICAL, INTENT(IN)             :: DIRSUR,DIRBOT,DIRLAT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE PREPARE_ADVECTION(FN,S0F,FBORL,LIFBOL,FLUXF,
      &  SCHCF,CALFLU,MESH3D,MASKEL,NPTFR3,VOLUNPAR,FLUEXT,FLUEXTPAR,
@@ -1382,18 +1372,18 @@
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3D
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE PRERES_TELEMAC3D(LT)
           IMPLICIT NONE
           INTEGER, INTENT(IN) :: LT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION Q3( I , AT , INFOGR )
           IMPLICIT NONE
@@ -1402,13 +1392,13 @@
           LOGICAL          , INTENT(IN) :: INFOGR
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE RHS_PRESSURE
      &(DIVU,UP,VP,WP,IELM3,DM1,ZCONV,SVIDE,MESH3D,MSK,MASKEL,FLUEXT,
-     & NSCE,RAIN,PLUIE,SOURCES,GRADZF,VOLU2D,DSSUDT,NPOIN2,NPOIN3,NPLAN)
+     & NSCE,RAIN,PLUIE,SOURCES,GRADZF,VOLU2D,DSSUDT,NPOIN2,NPOIN3,NPLAN)  
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER,         INTENT(IN)    :: IELM3,NSCE,NPOIN2,NPOIN3,NPLAN
@@ -1417,12 +1407,12 @@
       TYPE(BIEF_OBJ),  INTENT(IN)    :: UP,VP,WP,PLUIE,SOURCES,GRADZF
       TYPE(BIEF_OBJ),  INTENT(IN)    :: DM1,ZCONV,SVIDE,MASKEL,FLUEXT
       TYPE(BIEF_OBJ),  INTENT(IN)    :: VOLU2D,DSSUDT
-      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D
+      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D   
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SCOPE
      & (U,V,W,HN,ZF,X,Y,Z,TRA01,TRA02,TRA03,SURFAC,IKLE3,IFABOR,NELEM3,
@@ -1442,38 +1432,32 @@
       DOUBLE PRECISION, INTENT(IN) :: DT,AT
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SED3D
-     & (MASSE1,U,V,W,WC,TA,X,Y,Z,
-     &  IVIDE,EPAI,HDEP,CONC,FLUER,PDEPOT,SURFAC,TRA01,TRA02,
-     &  IKLE2,NELEM2,NPOIN2,NPOIN3,NTRAC,NVBIL,NPFMAX,NCOUCH,
-     &  NPF,LT,AT,DT,INFO,TASSE,GIBSON,RHOS,CFDEP)
+     &(MASSE1,WC,TA,EPAI,HDEP,CONC,FLUER,PDEPOT,TRA02,
+     & NELEM2,NPOIN2,NPOIN3,NPFMAX,NCOUCH,
+     & NPF,DT,TASSE,GIBSON,RHOS,CFDEP,VOLU2D)
+      USE BIEF_DEF
       IMPLICIT NONE
-      INTEGER, INTENT(IN) :: NPFMAX, NCOUCH, NELEM2, NPOIN2
-      INTEGER, INTENT(IN) :: NPOIN3, NTRAC, LT, NVBIL
-      INTEGER, INTENT(IN) :: IKLE2(NELEM2,3)
+      INTEGER, INTENT(IN) :: NPFMAX,NCOUCH,NELEM2,NPOIN2,NPOIN3
       INTEGER, INTENT(IN) :: NPF(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: MASSE1
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN3), V(NPOIN3), W(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: WC(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: TA(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN3), Y(NPOIN3), Z(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: IVIDE(NPFMAX,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: HDEP(NPOIN2), FLUER(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: PDEPOT(NPOIN2), CONC(NCOUCH)
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN3), TRA02(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELEM2)
-      DOUBLE PRECISION, INTENT(IN)    :: DT,AT,RHOS,CFDEP
-      LOGICAL, INTENT(IN)             :: INFO , TASSE , GIBSON
+      DOUBLE PRECISION, INTENT(IN) :: MASSE1
+      DOUBLE PRECISION, INTENT(IN) :: WC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3),VOLU2D(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: EPAI(NPFMAX-1,NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: HDEP(NPOIN2),FLUER(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: PDEPOT(NPOIN2),CONC(NCOUCH)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: DT,RHOS,CFDEP
+      LOGICAL, INTENT(IN)             :: TASSE , GIBSON
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SFLO3D
      &(XFLOT,YFLOT,ZFLOT,IKLFLO,TRAFLO,DEBFLO,FINFLO,NFLOT,NITFLO,
@@ -1493,9 +1477,9 @@
       LOGICAL, INTENT(IN) :: LISTIN
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION SL3( I , AT , N , INFOGR )
           IMPLICIT NONE
@@ -1504,9 +1488,9 @@
           LOGICAL          , INTENT(IN) :: INFOGR
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SMAGO3D
      &(U,V,W,TRAV1,TRAV2,TRAV3,TRAV4,TRAV5,TRAV6,
@@ -1523,9 +1507,9 @@
       TYPE (BIEF_MESH)               :: MESH3
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SMAGO(U,V,T1,T2,T3,T4,NUSMAG,MESH3,IELM3,MSK,MASKEL)
           USE BIEF_DEF
@@ -1539,9 +1523,9 @@
           TYPE (BIEF_MESH), INTENT(INOUT):: MESH3
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SOUKEP
      &(CV1,CV2,S1K,S1E,U,V,W,DELTAR,RI,
@@ -1564,9 +1548,9 @@
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH3D
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SOUKOM(CV1,CV2,S1K,S1E,U,V,W,DELTAR,
      & DUDX,DUDY,DUDZ,DVDX,DVDY,DVDZ,DWDX,DWDY,DWDZ,DTADZ,
@@ -1592,9 +1576,9 @@
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3D
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SOURCE
      & (S0U,S0V,S0W,S1U,S1V,S1W,
@@ -1619,9 +1603,9 @@
       DOUBLE PRECISION, INTENT(IN)  :: VSCE(NSCE)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SUISED
      &(IVIDE,EPAI,HDEP,CONC,TEMP,FLUER,PDEPOT,ZR,ZF,NPF,
@@ -1641,9 +1625,9 @@
       LOGICAL, INTENT(IN)             :: TASSE, GIBSON
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE SUMVER(FINT,F,NPOIN2,NPLAN,NPTFR)
           IMPLICIT NONE
@@ -1652,9 +1636,9 @@
           DOUBLE PRECISION, INTENT(IN)    :: F(NPTFR,NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE TASSEC
      &( CONC   , EPAI , TREST , TEMP , DTC , NPOIN2 , NCOUCH )
@@ -1666,9 +1650,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: DTC
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE TASSEM
      & ( IVIDE , EPAI , NPOIN2, NPFMAX, NPF  ,
@@ -1684,9 +1668,9 @@
           DOUBLE PRECISION, INTENT(IN)    :: RHOS,GRAV,DTC,CFMAX
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE TBORD
      & (AUBORL,LIUBOL,
@@ -1713,9 +1697,9 @@
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH2D
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE TFOND
      &(AUBOR,CF,U2D,V2D,U3D,V3D,W3D,KARMAN,LISRUG,PROPNU,Z,NPOIN,KFROT,
@@ -1731,9 +1715,9 @@
       LOGICAL, INTENT(IN) :: NONHYD
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE TRANSF_ZCHAR(TRANSF,ZCHAR,ZSTAR,TRANSF_PLANE,NPLAN)
       USE BIEF_DEF
@@ -1744,9 +1728,9 @@
       TYPE(BIEF_OBJ), INTENT(IN)    :: ZSTAR
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION TR3( I , ITRAC , N , AT , INFOGR )
           IMPLICIT NONE
@@ -1755,9 +1739,9 @@
           LOGICAL, INTENT(IN)          :: INFOGR
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION TRA_PROF_Z
      &                          (I,IPOIN2,AT,LT,IPLAN,INFOGR,IOPT,ITRAC)
@@ -1768,9 +1752,9 @@
         LOGICAL          , INTENT(IN) :: INFOGR
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE TRIDW2(WSS)
           USE BIEF_DEF
@@ -1778,9 +1762,9 @@
           TYPE(BIEF_OBJ), INTENT(INOUT) :: WSS
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE TRISOU
      & (CV1, CV2, SCV1, SCV2, UN3, VN3, TA, X, Y, Z, ZS,
@@ -1823,7 +1807,7 @@
       TYPE (BIEF_OBJ), INTENT(INOUT)  :: SVIDE
       TYPE (BIEF_OBJ), INTENT(INOUT)  :: TRAV2, FU2
       TYPE(BIEF_OBJ),  INTENT(INOUT)  :: SVOLU,SMU,SMV
-!                                 * = NSCE
+C                                 * = NSCE
       INTEGER, INTENT(IN) :: ISCE(*),KSCE(*)
       DOUBLE PRECISION, INTENT(IN) :: QSCE(*),USCE(*),VSCE(*)
       DOUBLE PRECISION, INTENT(IN) :: GRAV, DT, AT, FCOR
@@ -1832,9 +1816,9 @@
       TYPE(BIEF_FILE), INTENT(IN) :: T3D_FILES(*)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION T3D_DEBSCE( TIME , I , DISCE )
           IMPLICIT NONE
@@ -1842,9 +1826,9 @@
           INTEGER         , INTENT(IN) :: I
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION T3D_TRSCE( TIME , I , ITRAC )
           IMPLICIT NONE
@@ -1852,9 +1836,9 @@
           INTEGER         , INTENT(IN) :: I,ITRAC
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE UPWIND(M,WCC,DELTA,MESH2D,MESH3D,NPLAN)
         USE BIEF_DEF
@@ -1866,9 +1850,9 @@
         INTEGER, INTENT(IN)            :: NPLAN
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE UPWINDEBE
      &    (D,X,IKLE,NELMAX,NELEM3,NELEM2,SURFAC,NPLAN,WCC,DELTA)
@@ -1880,9 +1864,9 @@
           DOUBLE PRECISION, INTENT(INOUT) :: D(*),X(NELMAX,30)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE UPWINDSEG
      &  (D,X,IKLE,NELMAX,NELEM3,NELEM2,SURFAC,NPLAN,WCC,NSEG2D,DELTA)
@@ -1894,9 +1878,9 @@
         DOUBLE PRECISION, INTENT(INOUT) :: D(*),X(*)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE UTIMP(LT,AT,GRADEBL,GRAPRDL,LISDEBL,LISPRDL)
           IMPLICIT NONE
@@ -1904,9 +1888,9 @@
           INTEGER, INTENT(IN) :: LT,GRADEBL,GRAPRDL,LISDEBL,LISPRDL
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION VEL_PROF_Z
      &( I , IPOIN2 , AT , LT , IPLAN , INFOGR , IOPT )
@@ -1916,9 +1900,9 @@
           LOGICAL          , INTENT(IN) :: INFOGR
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VELRES
      &(U,V,W,DP,PX,PY,PZ,MSK,MASKEL,MESH3D,S,IELM3,NPLAN,OPTBAN,
@@ -1935,9 +1919,9 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: MASKEL
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VERMOY
      & (FINT1,FINT2,F1,F2,NFONC,Z,TRA01,TRA02,TRA03,
@@ -1953,9 +1937,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: TRA03(NPOIN2,NPLAN)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VISCKE
      & (VISCVI,VISCTA,AK,EP,NTRAC,CMU,
@@ -1970,9 +1954,9 @@
           TYPE(BIEF_OBJ), INTENT(IN)   :: AK,EP
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VISCKO
      & (VISCVI, VISCTA, ROTAT, AK, EP, NTRAC, CMU,
@@ -1987,9 +1971,9 @@
           TYPE(BIEF_OBJ), INTENT(IN)   :: ROTAT, AK, EP
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VISCLIP
      & (VISCVI,VISCTA,H,NPLAN,NPOIN3,NPOIN2,NTRAC)
@@ -2001,9 +1985,9 @@
           TYPE (BIEF_OBJ), INTENT(IN)    :: H
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VISCLM
      & (VISCVI,VISCTA,RI,U,V,DELTAR,X,Y,Z,HN,TRAV1,TRAV2,TRAV3,
@@ -2030,9 +2014,9 @@
       TYPE (BIEF_MESH)               :: MESH3D
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VISCOS
      &(VISCVI,VISCTA,DNUTAV,DNUTAH,DNUVIV,DNUVIH,
@@ -2046,9 +2030,9 @@
           DOUBLE PRECISION, INTENT(IN)   :: DNUTAH, DNUTAV
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VISSMA
      & (VISCVI,VISCTA,DNUTAH,DNUVIH,DNUVIV,DNUTAV,
@@ -2070,9 +2054,9 @@
       DOUBLE PRECISION, INTENT(IN)   :: DNUVIH,DNUTAH,DNUVIV,DNUTAV
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         DOUBLE PRECISION FUNCTION VIT3( I , AT , N , INFOGR )
           IMPLICIT NONE
@@ -2081,9 +2065,9 @@
           LOGICAL          , INTENT(IN) :: INFOGR
         END FUNCTION
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE VITCHU(W_SED, WCHU_CONST)
           USE BIEF_DEF
@@ -2092,18 +2076,18 @@
           TYPE(BIEF_OBJ), INTENT(INOUT) :: W_SED
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE WAVE_EQUATION(LT,ISOUSI)
           IMPLICIT NONE
           INTEGER, INTENT(IN) :: LT,ISOUSI
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE WCTURB
      &(WC, WCHU0, U, V, W, HN, RUGOF, LISRUF, TRAV1, TRAV2, TRAV3,
@@ -2122,9 +2106,9 @@
       LOGICAL, INTENT(IN) :: MSK
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE WSTARW(WW,WSS,WUP,WDOWN,SOMMEW)
           USE BIEF_DEF
@@ -2134,9 +2118,9 @@
           DOUBLE PRECISION,INTENT(INOUT) :: WUP(*),WDOWN(*),SOMMEW(*)
         END SUBROUTINE
       END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       INTERFACE
         SUBROUTINE WSTAR(WS,HWSTAR,Z,NPOIN2,NPLAN)
           USE BIEF_DEF
@@ -2147,10 +2131,7 @@
           INTEGER,           INTENT(IN   ) :: NPOIN2,NPLAN
         END SUBROUTINE
       END INTERFACE
-!
-!=======================================================================
-!
+C
+C=======================================================================
+C
       END MODULE INTERFACE_TELEMAC3D
-!
-!#######################################################################
-!

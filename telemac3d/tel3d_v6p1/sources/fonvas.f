@@ -110,7 +110,7 @@
 !
       DOUBLE PRECISION C
       INTEGER IPOIN, IC
-      INTRINSIC DMOD
+      INTRINSIC MOD
 !
 !=======================================================================
 !
@@ -137,7 +137,7 @@
 !     -----CHECKS THE TIMESTEP TO TAKE CONSOLIDATION-----
 !     -----              INTO ACCOUNT               -----
 !
-         IF (DMOD(LT*DT,DTC).LT.1.D-8) THEN
+         IF (MOD(LT*DT,DTC).LT.1.D-8) THEN
 !
 !     -----MANAGES THE DEPOSITED QUANTITY : CREATES-----
 !     -----     NEW LAYERS NEAR THE MUDDY BED      -----
@@ -164,7 +164,7 @@
 !
 !     -----MODELS CONSOLIDATION (SIMPLE)-----
 !
-         IF (DMOD(LT*DT,DTC).LT.1.D-8)
+         IF (MOD(LT*DT,DTC).LT.1.D-8)
      &    CALL TASSEC( CONC   , EPAI , TREST , TEMP , DTC ,
      &                 NPOIN2 , NCOUCH )
 !

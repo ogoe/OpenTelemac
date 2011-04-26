@@ -5,7 +5,7 @@
      &(INFO,LT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES MASSES.
@@ -73,8 +73,14 @@
       IF(NCSIZE.GT.1) MASSE_WATER = P_DSUM(MASSE_WATER)
 !
       IF(INFO.AND.LT.EQ.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,101) MASSE_WATER
-        IF(LNG.EQ.2) WRITE(LU,102) MASSE_WATER
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'MASSE D''EAU INITIALE DANS LE DOMAINE :',
+     &                MASSE_WATER
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'INITIAL MASS OF WATER IN THE DOMAIN :',
+     &                MASSE_WATER
+        ENDIF
       ENDIF
 !
 !   TRACERS MASS
@@ -116,8 +122,8 @@
 !
 !-----------------------------------------------------------------------
 !
-101   FORMAT(' MASSE D''EAU INITIALE DANS LE DOMAINE : ',20X, G16.7)
-102   FORMAT(' INITIAL MASS OF WATER IN THE DOMAIN :',20X,G16.7)
+101   FORMAT(' MASSE D''EAU INITIALE DANS LE DOMAINE : ',3X, G16.7)
+102   FORMAT(' INITIAL MASS OF WATER IN THE DOMAIN :',3X,G16.7)
 !
 !-----------------------------------------------------------------------
 !

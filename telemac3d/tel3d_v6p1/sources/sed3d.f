@@ -2,13 +2,12 @@
                      SUBROUTINE SED3D
 !                    ****************
 !
-     & (MASSE1,U,V,W,WC,TA,X,Y,Z,
-     &  IVIDE,EPAI,HDEP,CONC,FLUER,PDEPOT,SURFAC,TRA01,TRA02,
-     &  IKLE2,NELEM2,NPOIN2,NPOIN3,NTRAC,NVBIL,NPFMAX,NCOUCH,
-     &  NPF,LT,AT,DT,INFO,TASSE,GIBSON,RHOS,CFDEP)
+     &(MASSE1,WC,TA,EPAI,HDEP,CONC,FLUER,PDEPOT,TRA02,
+     & NELEM2,NPOIN2,NPOIN3,NPFMAX,NCOUCH,
+     & NPF,DT,TASSE,GIBSON,RHOS,CFDEP,VOLU2D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE RELATIVE MASS BALANCE FOR THE
@@ -36,6 +35,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        18/03/2011
+!+        V6P1
+!+   Call to massed replaces the old (and duplicated) formula.
+!
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TEMPS
 !| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
@@ -47,10 +52,9 @@
 !| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
 !| HDEP           |-->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
 !| IKLE2          |-->| TABLE DE CONNECTIVITE POUR LES POINTS DU FOND
-!| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
 !| IVIDE          |-->| INDICE DES VIDES AUX POINTS DU MAILLAGE
 !| LT             |-->| NUMERO DU PAS DE TEMPS
-!| MASSE1         |<->| MASSE DU SEDIMENTEN SUSPENSION
+!| MASSE1         |<->| MASSE DU SEDIMENT EN SUSPENSION
 !| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
 !|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
 !| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
@@ -71,43 +75,38 @@
 !| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPFMAX, NCOUCH, NELEM2, NPOIN2
-      INTEGER, INTENT(IN) :: NPOIN3, NTRAC, LT, NVBIL
-!
-      INTEGER, INTENT(IN) :: IKLE2(NELEM2,3)
+      INTEGER, INTENT(IN) :: NPFMAX,NCOUCH,NELEM2,NPOIN2,NPOIN3
       INTEGER, INTENT(IN) :: NPF(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(INOUT) :: MASSE1
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN3), V(NPOIN3), W(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: WC(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: TA(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN3), Y(NPOIN3), Z(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: IVIDE(NPFMAX,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: EPAI(NPFMAX-1,NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: HDEP(NPOIN2), FLUER(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: PDEPOT(NPOIN2), CONC(NCOUCH)
+      DOUBLE PRECISION, INTENT(IN) :: MASSE1
+      DOUBLE PRECISION, INTENT(IN) :: WC(NPOIN3)
+      DOUBLE PRECISION, INTENT(IN) :: TA(NPOIN3),VOLU2D(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: EPAI(NPFMAX-1,NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: HDEP(NPOIN2),FLUER(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: PDEPOT(NPOIN2),CONC(NCOUCH)
 !
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN3), TRA02(NPOIN3)
-      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELEM2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA02(NPOIN2)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: DT,AT,RHOS,CFDEP
+      DOUBLE PRECISION, INTENT(IN)    :: DT,RHOS,CFDEP
 !
-      LOGICAL, INTENT(IN)             :: INFO , TASSE , GIBSON
+      LOGICAL, INTENT(IN)             :: TASSE , GIBSON
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION MASSE3, MASSE4, MASSE5, MASSE6
-      DOUBLE PRECISION FLUX, MTOTAL
+      DOUBLE PRECISION MASSE3,MASSE4,MASSE5,FLUX
 !
-      INTEGER IPTFR, IPLAN, L1, L2, L3, IPOIN, IPF, IELEM2
+      INTEGER I
 !
-      INTRINSIC SQRT
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM
 !
 !=======================================================================
 !
@@ -118,16 +117,12 @@
 !
       FLUX=0.D0
 !
-      DO IELEM2=1,NELEM2
+      DO I=1,NPOIN2
+        FLUX=FLUX+FLUER(I)*VOLU2D(I)
+      ENDDO
 !
-        L1=IKLE2(IELEM2,1)
-        L2=IKLE2(IELEM2,2)
-        L3=IKLE2(IELEM2,3)
-        FLUX=FLUX+SURFAC(IELEM2)*(FLUER(L1)+FLUER(L2)+FLUER(L3))/3.D0
-!
-       ENDDO
-!
-       MASSE3=FLUX*DT
+      MASSE3=FLUX*DT
+      IF(NCSIZE.GT.1) MASSE3=P_DSUM(MASSE3)
 !
 !=======================================================================
 !
@@ -137,21 +132,12 @@
 !
       FLUX=0.D0
 !
-      DO IELEM2=1,NELEM2
-!
-        L1=IKLE2(IELEM2,1)
-        L2=IKLE2(IELEM2,2)
-        L3=IKLE2(IELEM2,3)
-        FLUX=FLUX-SURFAC(IELEM2)*(PDEPOT(L1)*WC(L1)*TA(L1)+
-     &                            PDEPOT(L2)*WC(L2)*TA(L2)+
-     &                            PDEPOT(L3)*WC(L3)*TA(L3))/3.D0
+      DO I=1,NPOIN2
+        FLUX=FLUX-PDEPOT(I)*WC(I)*TA(I)*VOLU2D(I)
       ENDDO
 !
       MASSE4=FLUX*DT
-!
-!            IF (INFO) WRITE(LU,*)
-!     &      'MASSE DE SEDIMENTS DEPOSEE AU COURS DU PAS DE TEMPS:     '
-!     &                MASSE4
+      IF(NCSIZE.GT.1) MASSE4=P_DSUM(MASSE4)
 !
 !=======================================================================
 !
@@ -160,68 +146,33 @@
 !
 !=======================================================================
 !
-! MASSE5=MASSE4-MASSE3
-!
       MASSE5=MASSE4-MASSE3
-      IF(INFO) THEN
-        IF(MASSE5.LE.1.D-8) THEN
-              WRITE(LU,*)
-     &      'MASSE NETTE DE SEDIMENTS QUI PART EN SUSPENSION:         ',
-     &             -MASSE5
-        ELSE
-              WRITE(LU,*)
-     &      'MASSE NETTE DE SEDIMENTS QUI SE DEPOSENT       :         ',
-     &              MASSE5
+      IF(MASSE5.LE.1.D-8) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'MASSE NETTE DE SEDIMENT ERODE        : ',-MASSE5
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'NET MASS OF ERODED SEDIMENT          : ',-MASSE5
+        ENDIF
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'MASSE NETTE DE SEDIMENTS DEPOSES     : ',MASSE5
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'NET MASS OF DEPOSIT                  : ',MASSE5
         ENDIF
       ENDIF
 !
 !=======================================================================
 !
-! COMPUTES THE MASS OF MUDDY DEPOSITS ON THE RIGID BOTTOM (MASSE6)
+! COMPUTES THE MASS OF MUDDY DEPOSITS ON THE RIGID BOTTOM AND PRINTS IT
 !
 !=======================================================================
 !
-      CALL OV('X=CY    ', TRA02 , HDEP , Z , CFDEP , NPOIN2)
-!
-      IF(TASSE) THEN
-        DO IPOIN=1,NPOIN2
-          TRA02(IPOIN)=0.D0
-          DO IPF=1,NCOUCH
-            TRA02(IPOIN)=TRA02(IPOIN)+CONC(IPF)*EPAI(IPF,IPOIN)
-          ENDDO
-        ENDDO
-      ELSEIF (GIBSON) THEN
-        DO IPOIN=1,NPOIN2
-          DO IPF=1,NPF(IPOIN)-1
-            TRA02(IPOIN)=TRA02(IPOIN)+RHOS*EPAI(IPF,IPOIN)
-          ENDDO
-        ENDDO
-      ENDIF
-      MASSE6=0.D0
-      DO IELEM2=1,NELEM2
-        L1=IKLE2(IELEM2,1)
-        L2=IKLE2(IELEM2,2)
-        L3=IKLE2(IELEM2,3)
-        MASSE6=MASSE6+SURFAC(IELEM2)
-     &                            *(TRA02(L1)+TRA02(L2)+TRA02(L3))/3.D0
-      ENDDO
-      IF (INFO) WRITE(LU,*)
-     &      'MASSE TOTALE DES DEPOTS VASEUX:                          ',
-     &                MASSE6
-!
-!=======================================================================
-!
-! TOTAL MASS OF SEDIMENTS IN THE DOMAIN (MTOTAL)
-!
-!=======================================================================
-!
-      MTOTAL=MASSE1+MASSE6
-            IF(INFO) WRITE(LU,*)
-     &      'MASSE TOTALE DE SEDIMENTS DANS LE DOMAINE:               ',
-     &                MTOTAL
-!
+      CALL MASSED(MASSE1,EPAI,CONC,HDEP,TRA02,NPOIN2,NPFMAX,NCOUCH,
+     &            NPF,TASSE,GIBSON,RHOS,CFDEP,VOLU2D)
 !
 !=======================================================================
 !
       RETURN
-      END SUBROUTINE SED3D
+      END

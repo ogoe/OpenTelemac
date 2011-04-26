@@ -10,7 +10,7 @@
      &  NPOIN3 , NPOIN2 , NPLAN  , KLOG   , SEDCO)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES THE FLUXES AT THE BOTTOM AND FREE SURFACE
@@ -159,11 +159,15 @@
 !
 !         COMPONENT ALONG Z OF THE OUTGOING NORMAL VECTOR
 !
-          NZ = 1.D0+GRADZFX(I)**2+GRADZFY(I)**2
-          NZ = -1.D0/SQRT(NZ)
+!         NZ = 1.D0+GRADZFX(I)**2+GRADZFY(I)**2
+!         NZ = -1.D0/SQRT(NZ)
 !         WC
-          ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
-          BTABOF(I) = - FLUER(I) * NZ
+!         ATABOF(I) = - WC(I) * PDEPOT(I) * NZ
+!         BTABOF(I) = - FLUER(I) * NZ
+!         JMH: BEWARE, IN DIFF3D NZ IS CONSIDERED AS -1. 
+!              HENCE WRONG FORMULA BELOW IS ACTUALLY CORRECT
+          ATABOF(I) = WC(I) * PDEPOT(I)  
+          BTABOF(I) = FLUER(I)  
 !
         ENDIF
 !
@@ -184,5 +188,5 @@
 !
 !-----------------------------------------------------------------------
 !
-        RETURN
-        END
+      RETURN
+      END

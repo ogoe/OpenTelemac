@@ -4,7 +4,7 @@
 !
      &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
      & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
-     & GRAV   , DMOY   , CREF     , CF )
+     & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P0                                   21/08/2010
@@ -46,27 +46,30 @@
 !| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
 !| HDEP           |<->| EPAISSEUR DE LA COUCHE DES DEPOTS FRAIS
 !| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
+!| ICQ            |-->| 
 !| KSPRATIO       |---|
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE2D
 !| NPOIN3         |---|
 !| RHO0           |---|
 !| RHOS           |-->| DENSITE DU SEDIMENT
+!| RUGOF          |-->| 
 !| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
 !| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
+!| ZREF           |-->| 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_ERODNC => ERODNC
 !     TRIGGERS A PGI COMPILER ERROR
-!     USE INTERFACE_SISYPHE, ONLY : SUSPENSION_FREDSOE
+      USE INTERFACE_SISYPHE,ONLY:SUSPENSION_FREDSOE,SUSPENSION_VANRIJN
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
+      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3, ICQ
 !
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
 !
@@ -76,10 +79,10 @@
       DOUBLE PRECISION, INTENT(IN)    :: KSPRATIO,AC
 !
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
-      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
+      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
       INTEGER I
       DOUBLE PRECISION QS
 !
@@ -93,18 +96,19 @@
 !
 !
 !     ZYSERMAN & FREDSOE (1994) (BY DEFAULT)
+! 
+!     SO FAR DMOY IS A CONSTANT
 !
-!     SUBROUTINE FROM SISYPHE LIBRARY
-! MODIF V6P0
-! CORRECTION FOR SKIN FRICTION (CF)
-! HERE TAKES TAUP = TOB
-!      CALL SUSPENSION_FREDSOE(DMOY,CF, TOB,HN,NPOIN2,KSPRATIO,
-!     &                        GRAV,RHO0,RHOS,1.D-6,AC,CREF,1.D-3)
-!                                            ZERO          HMIN
-!                                  TAUP
-      CALL SUSPENSION_FREDSOE(DMOY,TOB, NPOIN2,
+      IF(ICQ.EQ.1) THEN             
+        CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
+        CALL SUSPENSION_FREDSOE(DMOY%R(1),TOB, NPOIN2,
      &                        GRAV,RHO0,RHOS,1.D-6,AC,CREF)
-!                                            ZERO
+        CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
+      ELSEIF(ICQ.EQ.3) THEN
+         CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)      
+         CALL SUSPENSION_VANRIJN(DMOY%R(1),TOB,NPOIN2,
+     &                 GRAV,RHO0,RHOS,1.D-06,1.D-06,AC,CREF,ZREF)
+      ENDIF
 !
 !     UNITS FOR CREF G/L, NOT LIKE IN SISYPHE
 !
