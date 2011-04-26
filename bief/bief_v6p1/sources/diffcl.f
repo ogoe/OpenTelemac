@@ -5,7 +5,7 @@
      &(LITBOR,TTILD,TBOR,NBOR,ICONV,NPOIN,NPTFR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE VALUE OF THE TRACER FOR BOUNDARY
@@ -29,14 +29,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ICONV          |---|
-!| LITBOR         |-->| TYPES DE CONDITIONS AUX LIMITES DU TRACEUR.
-!| NBOR           |-->| ADRESSES DES POINTS FRONTIERES.
-!|                |   | CONDITIONS AUX LIMITES (PHYSIQUE) .
-!| NPOIN          |-->| NOMBRE DE POINTS TOTAL .
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES .
-!| TBOR           |<->| CONDITIONS AUX LIMITES SUR T.
-!| TTILD          |-->| TRACEUR.
+!| ICONV          |-->| THE CONVENTION FOR THE ADVECTION SCHEME
+!|                |   | E.G. 1 FOR CHARACTERISTICS
+!| LITBOR         |-->| TYPES OF BOUNDARY CONDITIONS FOR THE TRACER
+!| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| TBOR           |<->| PRESCRIBED BOUNDARY CONDITIONS ON T.
+!| TTILD          |-->| TRACER AFTER ADVECTION.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC

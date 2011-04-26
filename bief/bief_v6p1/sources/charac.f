@@ -8,7 +8,7 @@
      &  NELEM2,NELMAX2,IKLE2,SURDET2   , INILOC)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS THE METHOD OF CHARACTERISTICS
@@ -32,35 +32,36 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS
-!| FN             |-->| VARIABLES A L'ETAPE N .
-!| FTILD          |<--| VARIABLES APRES LA CONVECTION .
-!| IELM           |-->| TYPE D'ELEMENT : 11 : TRIANGLE P1
-!|                |   | 41 : PRISME DE TEL3D
-!| IFAMAS         |-->| IFABOR MODIFIE QUAND DES ELEMENTS SONT MASQUES
-!| IKLE2          |---|
-!| INILOC         |---|
-!| IT1            |---|
-!| IT2            |---|
-!| IT3            |---|
-!| IT4            |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NELEM2         |---|
-!| NELMAX2        |---|
-!| NOMB           |-->| NOMBRE DE VARIABLES A CONVECTER.
-!| NPLAN          |-->| NOMBRE DE PLAN SUIVANT Z (POUR TEL3D).
-!| NPLINT         |-->| PLAN DE REFERENCE INTERMEDIAIRE (POUR TEL3D).
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D (POUR TEL3D).
-!| SHP            |---|
-!| SHZ            |---|
-!| SURDET2        |---|
-!| TB             |-->| BLOC DE TABLEAUX DE TRAVAIL (AU MOINS 8)
-!| UCONV,VCONV    |-->| COMPOSANTES DES VITESSES DU CONVECTEUR.
-!| WCONV          |---|
-!| ZSTAR          |-->| COORDONNEES VERTICALES EN 3D.
+!| DT             |-->| TIME STEP
+!| FN             |-->| VARIABLES AT TIME N .
+!| FTILD          |<--| VARIABLES AFTER ADVECTION .
+!| IELM           |-->| TYPE OF ELEMENT : 11 : TRIANGLE P1
+!|                |   |                   41 : PRISM IN TELEMAC3D
+!| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
+!| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
+!| INILOC         |-->| IF YES, INITIAL POSITIONS OF POINTS (SHP) TO BE DONE
+!| IT1            |<->| INTEGER WORK ARRAY
+!| IT2            |<->| INTEGER WORK ARRAY
+!| IT3            |<->| INTEGER WORK ARRAY
+!| IT4            |<->| INTEGER WORK ARRAY
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NOMB           |-->| NUMBER OF VARIABLES TO BE ADVECTED
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPLINT         |---| NOT USED
+!| NPOIN2         |-->| NUMBER OF POINTS IN THE 2D MESH
+!| SHP            |<->| BARYCENTRIC COORDINATES OF POINTS IN TRIANGLES
+!| SHZ            |<->| BARYCENTRIC COORDINATES ON VERTICAL
+!| SURDET2        |-->| GEOMETRIC COEFFICIENT USED IN PARAMETRIC TRANSFORMATION
+!| TB             |<->| BLOCK CONTAINING THE BIEF_OBJ WORK ARRAYS
+!| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
+!| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD
+!| WCONV          |-->| Z-COMPONENT OF ADVECTION FIELD IN THE TRANSFORMED MESH
+!| ZSTAR          |-->| TRANSFORMED VERTICAL COORDINATES IN 3D 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CHARAC => CHARAC
@@ -95,10 +96,11 @@
 !
       TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7
       INTEGER, DIMENSION(:), POINTER :: IFA
-      INTEGER I,J,K
-!
+      INTEGER I,J,K,NPLOT
+      LOGICAL QUAD
+!    
 !-----------------------------------------------------------------------
-!  WORKING ARRAYS FROM BLOCK TB
+!  TABLEAUX DE TRAVAIL PRIS DANS LE BLOC TB
 !-----------------------------------------------------------------------
 !
       T1 =>TB%ADR( 1)%P
@@ -110,7 +112,7 @@
       T7 =>TB%ADR( 7)%P
 !
 !-----------------------------------------------------------------------
-!  INITIALISES THE LOCATION OF POINTS, OR NOT
+!  INITIALISING THE LOCATION OF POINTS OR NOT
 !-----------------------------------------------------------------------
 !
       IF(PRESENT(INILOC)) THEN
@@ -120,14 +122,14 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!  DEPLOYS THE MESH STRUCTURE
+!  DEPLOIEMENT DE LA STRUCTURE DE MAILLAGE
 !-----------------------------------------------------------------------
 !
       NPOIN = MESH%NPOIN
       IELMU = UCONV%ELM
 !
 !-----------------------------------------------------------------------
-!     CHECKS SHP SIZE (ONCE A BUG...)
+!     CHECKING SHP SIZE (ONCE A BUG...)
 !-----------------------------------------------------------------------
 !
       IF(3*NPOIN.GT.SHP%MAXDIM1*SHP%MAXDIM2) THEN
@@ -143,17 +145,17 @@
         ENDIF
         CALL PLANTE(1)
         STOP
-      ENDIF
+      ENDIF   
 !
 !-----------------------------------------------------------------------
-!  CALLS CARACT
+!  APPEL DE CARACT
 !-----------------------------------------------------------------------
 !
       IF(MSK) THEN
-!       CALL WITH IFAMAS
+!       APPEL AVEC IFAMAS
         IFA=>IFAMAS%I
       ELSE
-!       CALL WITH IFABOR
+!       APPEL AVEC IFABOR
         IFA=>MESH%IFABOR%I
       ENDIF
 !
@@ -163,26 +165,32 @@
       IF(NCSIZE.EQ.0) THEN
 !
         CALL CARACT( FN , FTILD , UCONV%R , VCONV%R , WCONV%R ,
-     &               MESH%X%R,MESH%Y%R,ZSTAR%R,
-     &               T1,T2,T3%R,T4%R,T5%R,T6%R,
-     &               MESH%Z%R,SHP%R,SHZ%R,
-     &               SURDET2%R,DT,IKLE2%I,IFA,
-     &               IT1,IT2,IT3,IT4,
-     &               IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     &               3,NPLAN,MESH%LV,
-     &               MSK,MASKEL%R,MESH,MESH%FAC%R,T7%R,T7,INITLOC)
+     *               MESH%X%R,MESH%Y%R,ZSTAR%R,
+     *               T1,T2,T3%R,T4%R,T5%R,T6%R,
+     *               MESH%Z%R,SHP%R,SHZ%R,SURDET2%R,DT,IKLE2%I,IFA,
+     *               IT1,IT2,IT3,IT4,
+     *               IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
+     *               3,NPLAN,MESH%LV,
+     *               MSK,MASKEL%R,MESH,MESH%FAC%R,T7%R,T7,INITLOC)
 !
       ELSEIF(NCSIZE.GE.1) THEN
-!
-        CALL SCARACT( FN , FTILD , UCONV%R , VCONV%R , WCONV%R ,
+!     
+        CALL PRE_SCARACT_MAILLAGE(FN,FTILD,UCONV%R,VCONV%R,WCONV%R,
      &                MESH%X%R,MESH%Y%R,ZSTAR%R,
-     &                T1,T2,T3%R,T4%R,T5%R,T6%R,
-     &                MESH%Z%R,SHP%R,SHZ%R,
-     &                SURDET2%R,DT,IKLE2%I,IFA,
-     &                IT1,IT2,IT3,IT4,
+     &                T1,T2,T3%R,MESH%Z%R,SHP%R,SHZ%R,
+     &                SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
      &                IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
      &                3,NPLAN,MESH%LV,MSK,MASKEL%R,
-     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC)
+     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD)
+!        
+        CALL SCARACT( FN , FTILD , UCONV%R , VCONV%R , WCONV%R ,
+     &                MESH%X%R,MESH%Y%R,ZSTAR%R,
+     &                T1%R,T2%R,T3%R,T4%R,T5%R,T6%R,
+     &                MESH%Z%R,SHP%R,SHZ%R,
+     &                SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
+     &                IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
+     &                3,NPLAN,MESH%LV,MSK,MASKEL%R,
+     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPOIN2)
 !
       ENDIF
 !

@@ -18,7 +18,8 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |---| 
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH 
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN THE MESH 
 !|                |---|
 !|                |---|
 !|                |---|
@@ -45,7 +46,7 @@
       INTEGER                      :: LISPFR(*)
       DOUBLE PRECISION, INTENT(OUT):: XCONV(*)
       DOUBLE PRECISION, INTENT(OUT):: YCONV(*)
-      DOUBLE PRECISION, INTENT(OUT)         :: SHPT(NDP,NPTFR)
+      DOUBLE PRECISION, INTENT(OUT):: SHPT(NDP,NPTFR)
       INTEGER, INTENT(OUT)         :: ELT(*)
       DOUBLE PRECISION, INTENT(IN) :: X(*)
       DOUBLE PRECISION, INTENT(IN) :: Y(*)
@@ -54,7 +55,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER :: IFR,IPT
+      INTEGER IFR,IPT
 !  
 !-----------------------------------------------------------------------   
 !

@@ -2,11 +2,10 @@
                      SUBROUTINE DLDU21
 !                    *****************
 !
-     &(DB,XB,TYPDIA,XA,TYPEXA,
-     & IKLE,NELEM,NELMAX,NPOIN,W,COPY,LV)
+     &(DB,XB,TYPDIA,XA,TYPEXA,IKLE,NELEM,NELMAX,NPOIN,W,COPY,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    L D U FACTORISATION OF THE ELEMENTARY MATRICES
@@ -57,20 +56,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COPY           |-->| SI .TRUE. A EST COPIEE DANS B
-!|                |   | SINON ON CONSIDERE QUE B EST DEJA REMPLIE
-!| DB             |<--| DIAGONALE DE LA MATRICE RESULTAT
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DES TABLEAU
-!| TYPDIA         |-->| TYPE DE DIAGONALE ( 'Q', 'I' , OU '0' )
-!| TYPEXA         |-->| TYPE DE TERMES EXTRADIAGONAUX ('Q','S',OU'0')
-!| W              |<->| TABLEAU CONTENANT DB NON ASSEMBLEE
-!| XA             |-->| TERMES EXTRADIAGONAUX DE LA MATRICE A
-!| XB             |<--| TERMES EXTRADIAGONAUX DE LA MATRICE RESULTAT
+!| COPY           |-->| IF .TRUE. A IS COPIED INTO B.
+!|                |   | IF .FALSE. B IS CONSIDERED ALREADY INITIALISED
+!| DB             |<--| DIAGONAL OF MATRIX B
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| LV             |-->| VECTOR LENGTH OF THE COMPUTER
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TYPDIA         |<--| TYPE OF DIAGONAL ( 'Q', 'I' , OR '0' )
+!| TYPEXA         |<--| TYPE OF OFF-DIAGONAL TERMS ('Q','S',OR '0')
+!| W              |-->| WORK ARRAY OF DIMENSION (NELMAX,3)
+!| XA             |<--| OFF-DIAGONAL TERMS OF MATRIX A
+!| XB             |<--| OFF-DIAGONAL TERMS OF MATRIX B
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DLDU21 => DLDU21

@@ -52,7 +52,7 @@
 !| YNOR           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_VC05OO => VC05OO
+      USE BIEF    !, EX_VC05OO => VC05OO
 !
       IMPLICIT NONE
       INTEGER LNG,LU

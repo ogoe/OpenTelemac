@@ -2,8 +2,7 @@
                      SUBROUTINE VC13PP
 !                    *****************
 !
-     &(XMUL,SF,F,X,Y,Z,
-     & IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
+     &(XMUL,SF,F,X,Y,Z,IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
      & W1,W2,W3,W4,W5,W6,ICOORD,FORMUL)
 !
 !***********************************************************************

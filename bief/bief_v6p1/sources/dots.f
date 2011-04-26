@@ -5,7 +5,7 @@
      &( X , Y )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SCALAR PRODUCT OF TWO OBJECTS, WHICH CAN BE:
@@ -36,8 +36,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| X              |---|
-!| Y              |---|
+!| X              |-->| FIRST VECTOR OR BLOCK
+!| Y              |-->| SECOND VECTOR OR BLOCK
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DOTS => DOTS
@@ -56,19 +56,19 @@
 !
 !-----------------------------------------------------------------------
 !
-!  CASE WHERE THE STRUCTURES ARE BLOCKS
+!     CASE WHERE THE STRUCTURES ARE BLOCKS
 !
       IF(X%TYPE.EQ.4) THEN
 !
-       DOTS = 0.D0
-       DO IBL = 1 , X%N
-         DOTS=DOTS+DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,Y%ADR(IBL)%P%R)
-       ENDDO
+        DOTS = 0.D0
+        DO IBL = 1 , X%N
+          DOTS=DOTS+DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,Y%ADR(IBL)%P%R)
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !
-!  CASE WHERE THE STRUCTURES ARE NOT BLOCKS
-!  (ASSUMES THAT Y HAS THE SAME TYPE AS X)
+!       CASE WHERE THE STRUCTURES ARE NOT BLOCKS
+!       IT ASSUMES THAT Y HAS THE SAME TYPE AS X
 !
       ELSEIF(X%TYPE.EQ.2) THEN
 !
@@ -76,24 +76,24 @@
 !
 !-----------------------------------------------------------------------
 !
-!  ERROR
+!     ERROR
 !
       ELSE
 !
-         IF (LNG.EQ.1) WRITE(LU,50) X%NAME,X%TYPE
-         IF (LNG.EQ.1) WRITE(LU,51) Y%NAME,Y%TYPE
-         IF (LNG.EQ.1) WRITE(LU,53)
-         IF (LNG.EQ.2) WRITE(LU,60) X%NAME,X%TYPE
-         IF (LNG.EQ.2) WRITE(LU,61) Y%NAME,Y%TYPE
-         IF (LNG.EQ.2) WRITE(LU,63)
-50       FORMAT(1X,'DOTS (BIEF) : NOM DE X : ',A6,'  TYPE : ',1I6)
-51       FORMAT(1X,'              NOM DE Y : ',A6,'  TYPE : ',1I6)
-53       FORMAT(1X,'              CAS NON PREVU')
-60       FORMAT(1X,'DOTS (BIEF) : NAME OF X : ',A6,'  TYPE : ',1I6)
-61       FORMAT(1X,'              NAME OF Y : ',A6,'  TYPE : ',1I6)
-63       FORMAT(1X,'              NOT IMPLEMENTED')
-         CALL PLANTE(1)
-         STOP
+        IF(LNG.EQ.1) WRITE(LU,50) X%NAME,X%TYPE
+        IF(LNG.EQ.1) WRITE(LU,51) Y%NAME,Y%TYPE
+        IF(LNG.EQ.1) WRITE(LU,53)
+        IF(LNG.EQ.2) WRITE(LU,60) X%NAME,X%TYPE
+        IF(LNG.EQ.2) WRITE(LU,61) Y%NAME,Y%TYPE
+        IF(LNG.EQ.2) WRITE(LU,63)
+50      FORMAT(1X,'DOTS (BIEF) : NOM DE X : ',A6,'  TYPE : ',1I6)
+51      FORMAT(1X,'              NOM DE Y : ',A6,'  TYPE : ',1I6)
+53      FORMAT(1X,'              CAS NON PREVU')
+60      FORMAT(1X,'DOTS (BIEF) : NAME OF X : ',A6,'  TYPE : ',1I6)
+61      FORMAT(1X,'              NAME OF Y : ',A6,'  TYPE : ',1I6)
+63      FORMAT(1X,'              NOT IMPLEMENTED')
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !

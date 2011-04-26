@@ -197,10 +197,30 @@
 !
       NPOIN=H%DIM1
 !
-!     EXTRACTION DES OPTIONS
+!     EXTRACTING OPTIONS, AND CONTROL
 !
       IOPT2=IOPT/10
       IOPT1=IOPT-10*IOPT2
+      IF(IOPT1.LT.0.OR.IOPT1.GT.3) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF_POS : OPTION IOPT1 INCONNUE : ',IOPT1
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF_POS: OPTION IOPT1 UNKNOWN: ',IOPT1
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      IF(IOPT2.NE.0.AND.IOPT2.NE.1) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF_POS : OPTION IOPT2 INCONNUE : ',IOPT2
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF_POS: OPTION IOPT2 UNKNOWN: ',IOPT2
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -536,7 +556,7 @@
         IF(FXMAT(I).GT.EPS_FLUX) THEN
 !         SHARING ON DEMAND: FRACTION OF DEPTH TAKEN
 !         T4 IS THE STORED DEPTH
-          IF(T4%R(I1).GT.0.D0) THEN
+          IF(T4%R(I1).GT.1.D-20) THEN
             HSEG1=T4%R(I1)*FXMAT(I)/T1%R(I1)
 !           END OF SHARING ON DEMAND
             HFL1= DT*UNSV2D%R(I1)*FXMAT(I)
@@ -583,7 +603,7 @@
           ENDIF
         ELSEIF(FXMAT(I).LT.-EPS_FLUX) THEN
 !         SHARING ON DEMAND
-          IF(T4%R(I2).GT.0.D0) THEN
+          IF(T4%R(I2).GT.1.D-20) THEN
             HSEG2=-T4%R(I2)*FXMAT(I)/T1%R(I2)
 !           END OF SHARING ON DEMAND
             HFL2=-DT*UNSV2D%R(I2)*FXMAT(I)
@@ -741,8 +761,8 @@
 !
       IF(YASMI) THEN
         DO I = 1,MESH%NPOIN
-          F1%R(I) = F1%R(I)/(1.D0-DT*SMI1%R(I)/MAX(H%R(I),1.D-4))
-          F2%R(I) = F2%R(I)/(1.D0-DT*SMI2%R(I)/MAX(H%R(I),1.D-4))
+          F1%R(I) = F1%R(I)/(1.D0-DT*SMI1%R(I)/MAX(H%R(I),1.D-15))
+          F2%R(I) = F2%R(I)/(1.D0-DT*SMI2%R(I)/MAX(H%R(I),1.D-15))
         ENDDO
       ENDIF
 !

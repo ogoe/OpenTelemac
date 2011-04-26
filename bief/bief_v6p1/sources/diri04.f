@@ -2,14 +2,11 @@
                      SUBROUTINE DIRI04
 !                    *****************
 !
-     &(X1,X2,
-     & A11,A12,A21,A22,
-     & SM1,SM2,T1,T2,T3,T4,
-     & XBOR1,XBOR2,LIDIR1,LIDIR2,
-     & MESH,KDIR,MSK,MASKPT)
+     &(X1,X2,A11,A12,A21,A22,SM1,SM2,T1,T2,T3,T4,
+     & XBOR1,XBOR2,LIDIR1,LIDIR2,MESH,KDIR,MSK,MASKPT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    TREATS THE DIRICHLET POINTS FOR THE FOLLOWING
@@ -37,18 +34,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A12            |---|
-!| A21            |---|
-!| A22            |---|
-!| KDIR           |-->| CONDITION A LA LIMITE DE TYPE DIRICHLET
-!| LIDIR2         |---|
-!| MASKPT         |-->| TABLEAU DE MASQUAGE DES POINTS
-!|                |   | =1. : NORMAL   =0. : POINT MASQUE.
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| SM1,SM2        |-->| SECONDS MEMBRES DU SYSTEME.
-!| T1,T2,T3,T4    |-->| TABLEAUX DE TRAVAIL DU SYSTEME
-!| XBOR2          |---|
+!| A12            |<->| MATRIX IN THE 2x2 LINEAR SYSTEM
+!| A12            |<->| MATRIX IN THE 2x2 LINEAR SYSTEM
+!| A21            |<->| MATRIX IN THE 2x2 LINEAR SYSTEM
+!| A22            |<->| MATRIX IN THE 2x2 LINEAR SYSTEM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET BOUNDARY CONDITIONS
+!| LIDIR1         |-->| TYPES OF BOUNDARY CONDITIONS FOR VARIABLE 1
+!|                |   | IF LIMDIR(K) = KDIR THE KTH BOUNDARY POINT 
+!|                |   | IS OF DIRICHLET TYPE.
+!| LIDIR2         |-->| TYPES OF BOUNDARY CONDITIONS FOR VARIABLE 2
+!|                |   | IF LIMDIR(K) = KDIR THE KTH BOUNDARY POINT 
+!|                |   | IS OF DIRICHLET TYPE.
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| SM1            |-->| FIRST RIGHT-HAND SIDE OF THE SYSTEM.
+!| SM2            |-->| SECOND RIGHT-HAND SIDE OF THE SYSTEM.
+!| T1             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ 
+!| T2             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ
+!| T3             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ
+!| T4             |<->| WORK DOUBLE PRECISION ARRAY IN A BIEF_OBJ
+!| XBOR1          |-->| DIRICHLET BOUNDARY CONDITIONS OF VARIABLE 1
+!| XBOR2          |-->| DIRICHLET BOUNDARY CONDITIONS OF VARIABLE 2
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DIRI04 => DIRI04

@@ -5,7 +5,7 @@
      & ( X , Y , Z , W , F , INDIC , CRITER , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    HELPS PREPARE A LINEAR SYSTEM WITH DIRICHLET CONDITIONS.
@@ -58,14 +58,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CRITER         |-->| CRITERE POUR FAIRE L'OPERATION.
-!| F              |-->| INCONNUE MISE A SA VALEUR DIRICHLET
-!| INDIC          |-->| TABLEAU D'INDICATEURS.
-!| MESH           |-->| STRUCTURE DU MAILLAGE
-!| W              |-->| TABLEAU DE TRAVAIL
-!| X              |<--| VECTEUR RESULTAT
-!| Y              |-->| VECTEUR OPERANDE
-!| Z              |-->| VECTEUR OPERANDE
+!| CRITER         |-->| INTEGER, CONVENTION FOR DIRICHLET
+!| F              |-->| VARIABLE THAT WILL BE GIVEN ITS DIRICHLET VALUE
+!|                |   | TAKEN IN Z
+!| INDIC          |-->| BOUNDARY CONDITIONS AT VALUE CRITER OR NOT
+!| MESH           |-->| MESH STRUCTURE
+!| W              |<->| WORK ARRAY
+!| X              |<--| Y MULTIPLIED BY Z IF INDIC(K) = CRITER
+!| Y              |-->| VECTOR, A DATA
+!| Z              |-->| DIRICHLET VALUES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DIRAUX => DIRAUX

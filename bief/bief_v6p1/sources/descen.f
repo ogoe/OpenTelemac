@@ -5,7 +5,7 @@
      &(X, XA,TYPEXA,B,IKLE,NELEM,NELMAX,NPOIN,IELM,DITR,COPY,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SYSTEM L X = B (ELEMENT BY ELEMENT).
@@ -62,20 +62,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |<--| SECOND MEMBRE DU SYSTEME A RESOUDRE.
-!| COPY           |-->| SI .TRUE. B EST RECOPIE DANS X AU PREALABLE
-!| DITR           |-->| CARACTERE  'D' : ON CALCULE AVEC A
-!|                |   | 'T' : ON CALCULE AVEC A TRANSPOSEE
-!| IELM           |-->| TYPE D'ELEMENT
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| TYPEXA         |---|
-!| X              |<--| SOLUTION DU SYSTEME AX = B
-!| XA             |<--| TERMES EXTRADIAGONAUX DE LA MATRICE A
+!| B              |<--| RIGHT-HAND SIDE OF THE LINEAR SYSTEM TO BE SOLVED
+!| COPY           |-->| IF .TRUE. B IS COPIED INTO X TO START WITH
+!| DITR           |-->| CHARACTER, IF  'D' : DIRECT MATRIX A CONSIDERED
+!|                |   |                'T' : TRANSPOSED MATRIX A CONSIDERED
+!| IELM           |-->| TYPE OF ELEMENT
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TYPEXA         |-->| TYPE OF OFF-DIAGONAL TERMS IN THE MATRIX
+!| X              |<--| SOLUTION OF THE SYSTEM AX = B
+!| XA             |<--| OFF-DIAGONAL TERMS OF THE MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DESCEN => DESCEN

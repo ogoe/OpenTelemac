@@ -9,7 +9,7 @@
      &    NELEM,NELMAX,NPOIN,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SYSTEM L X = B (ELEMENT: P1 PRISM).
@@ -48,31 +48,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| IKLE5          |---|
-!| IKLE6          |---|
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| X              |---|
-!| XA10           |---|
-!| XA11           |---|
-!| XA12           |---|
-!| XA13           |---|
-!| XA14           |---|
-!| XA15           |---|
-!| XA2            |---|
-!| XA3            |---|
-!| XA4            |---|
-!| XA5            |---|
-!| XA6            |---|
-!| XA7            |---|
-!| XA8            |---|
-!| XA9            |---|
+!| IKLE1          |-->| GLOBAL NUMBER OF THE FIRST POINT OF PRISMS
+!| IKLE2          |-->| GLOBAL NUMBER OF THE SECOND POINT OF PRISMS
+!| IKLE3          |-->| GLOBAL NUMBER OF THE THIRD POINT OF PRISMS
+!| IKLE4          |-->| GLOBAL NUMBER OF THE FOURTH POINT OF PRISMS
+!| IKLE5          |-->| GLOBAL NUMBER OF THE FIFTH POINT OF PRISMS
+!| IKLE6          |-->| GLOBAL NUMBER OF THE SIXTH POINT OF PRISMS
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| X              |<->| AT THE BEGINNING : B
+!|                |   | AT THE END       : THE RESULT
+!| XA1            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA2            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA3            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA4            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA5            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA6            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA7            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA8            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA9            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA10           |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA11           |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA12           |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA13           |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA14           |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA15           |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &(F, S, SM , FBOR,LIMDIR,WORK,MESH,KDIR,MSK,MASKPT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    TAKES INTO ACCOUNT POINTS OF TYPE DIRICHLET IN A SYSTEM
@@ -40,21 +40,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |<->| VALEURS A L'ETAPE N+1 ET INITIALISATION
-!| FBOR           |-->| CONDITIONS AUX LIMITES DES POINTS DIRICHLET.
-!| KDIR           |-->| CONVENTION POUR LES CONDITIONS DE DIRICHLET
-!| LIMDIR         |-->| TYPES DE CONDITIONS AUX LIMITES .
-!|                |   | SI LIMDIR(K) = KDIR LE KIEME POINT DE BORD
-!|                |   | EST DE TYPE DIRICHLET.
-!|                |   | DIMENSION LIMDIR(LIMDIM,6)
-!|                |   | LIMDIM EST NPTFR OU 2*NPTFR (EN QUADRATIQUE)
-!| MASKPT         |-->| TABLEAU DE MASQUAGE DES POINTS
-!|                |   | =1. : NORMAL   =0. : POINT MASQUE.
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| S              |<->| MATRICE DU SYSTEME
-!| SM             |-->| SECOND MEMBRE DU SYSTEME.
-!| WORK           |-->| BLOC DE TABLEAUX DE TRAVAIL.
+!| F              |-->| VARIABLE THAT WILL BE GIVEN ITS DIRICHLET VALUE
+!| FBOR           |-->| DIRICHLET BOUNDARY CONDITIONS
+!| KDIR           |-->| CONVENTION FOR DIRICHLET BOUNDARY CONDITIONS
+!| LIMDIR         |-->| TYPES OF BOUNDARY CONDITIONS
+!|                |   | IF LIMDIR(K) = KDIR LE KTH BOUNDARY POINT 
+!|                |   | IS OF DIRICHLET TYPE.
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| S              |<->| MATRIX OF THE LINEAR SYSTEM
+!| SM             |-->| RIGHT HAND SIDE
+!| WORK           |-->| BLOCK OF WORK ARRAYS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DIRICH => DIRICH

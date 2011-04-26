@@ -76,7 +76,7 @@
 !     IF(DEBUG) CALL PROC_BEGIN('WRITE_MESH_SERAFIN')
 !***********************************************************************
 !
-      IF(FFORMAT.EQ.'SERAFIND') THEN
+      IF(FFORMAT.EQ.'SERAFIND'.OR.FFORMAT.EQ.'SELAFIND') THEN
         RF = 'R8'
       ELSE
         RF = 'R4'
@@ -233,13 +233,16 @@
       ENDIF
 !
 !   LEC/ECR 8 AND 9: X AND Y COORDINATES OF THE MESH POINTS
+!
       CALL ECRI2(MESH%X%R ,IBID,CBID,MESH%NPOIN,RF,NFIC,'STD',ISTAT)
       CALL ECRI2(MESH%Y%R ,IBID,CBID,MESH%NPOIN,RF,NFIC,'STD',ISTAT)
 !
       IF(YA_IPOBO) DEALLOCATE(IPOBO)
       IF(YA_IKLES) DEALLOCATE(IKLES)
+!
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_END('WRITE_MESH_SERAFIN')
 !***********************************************************************
+!
       RETURN
       END

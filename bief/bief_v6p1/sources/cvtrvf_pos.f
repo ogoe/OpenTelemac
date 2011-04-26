@@ -20,6 +20,11 @@
 !+            WITH NO FRICTION
 !warning  DISCRETISATION OF VISC
 !
+!warning  SEE BELOW FOR DEFIITION OF IOPT1 AND IOPT2, RETRIEVED FROM IOPT  
+!+        IOPT2=1 NOT TREATED HERE, MASS-CONSERVATION WILL BE DOWNGRADED
+!+        IN THIS CASE (A CORRECT TREATMENT MAY RESULT IN INFINITE F)
+!+        THE PROGRAM WILL NOT STOP IF IOPT2=1
+!
 !history  J-M HERVOUET   (LNHE)
 !+        19/11/2010
 !+        V6P0
@@ -36,6 +41,17 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET   (LNHE)
+!+        20/04/2011
+!+        V6P1
+!+   Option IOPT2=1 taken into account when there is an implicit source
+!+   term. In other cases mass-conservation is not ensured (risk of 
+!+   division by 0). The implicit source must be negative, like settling
+!+   velocity in Sisyphe. It is impossible to have mass conservation and
+!+   monotonicity when the advection field does not obey the continuity
+!+   equation. The only known application so far is Sisyphe.
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -185,10 +201,30 @@
 !
       NPOIN=H%DIM1
 !
-!     EXTRACTION DES OPTIONS
+!     EXTRACTING OPTIONS, AND CONTROL
 !
       IOPT2=IOPT/10
       IOPT1=IOPT-10*IOPT2
+      IF(IOPT1.LT.0.OR.IOPT1.GT.3) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF_POS : OPTION IOPT1 INCONNUE : ',IOPT1
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF_POS: OPTION IOPT1 UNKNOWN: ',IOPT1
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      IF(IOPT2.NE.0.AND.IOPT2.NE.1) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CVTRVF_POS : OPTION IOPT2 INCONNUE : ',IOPT2
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CVTRVF_POS: OPTION IOPT2 UNKNOWN: ',IOPT2
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -492,7 +528,9 @@
         IF(FXMAT(I).GT.EPS_FLUX) THEN
 !         SHARING ON DEMAND: FRACTION OF DEPTH TAKEN
 !         T4 IS THE STORED DEPTH
-          IF(T4%R(I1).GT.0.D0) THEN
+!         1.D-20 ADDED HERE OTHERWISE IT OCCURED THAT THE PRODUCT OF 2
+!         STRICTLY POSITIVE NUMBERS GAVE 0.D0
+          IF(T4%R(I1).GT.1.D-20) THEN
             HSEG1=T4%R(I1)*FXMAT(I)/T1%R(I1)
 !           END OF SHARING ON DEMAND
             HFL1= DT*UNSV2D%R(I1)*FXMAT(I)
@@ -533,7 +571,9 @@
           ENDIF
         ELSEIF(FXMAT(I).LT.-EPS_FLUX) THEN
 !         SHARING ON DEMAND
-          IF(T4%R(I2).GT.0.D0) THEN
+          IF(T4%R(I2).GT.1.D-20) THEN
+!         1.D-20 ADDED HERE OTHERWISE IT OCCURED THAT THE PRODUCT OF 2
+!         STRICTLY POSITIVE NUMBERS GAVE 0.D0
             HSEG2=-T4%R(I2)*FXMAT(I)/T1%R(I2)
 !           END OF SHARING ON DEMAND
             HFL2=-DT*UNSV2D%R(I2)*FXMAT(I)
@@ -657,18 +697,35 @@
 !
 !-----------------------------------------------------------------------
 !
-!     EXPLICIT SOURCE TERM
-!
-      DO I = 1,MESH%NPOIN
-        F%R(I) = F%R(I)+DT*SM%R(I)
-      ENDDO
-!
-!     IMPLICIT SOURCE TERM
+!     SOURCE TERMS
 !
       IF(YASMI) THEN
+!
+!       IMPLICIT AND EXPLICIT SOURCE TERM
+!
+        IF(IOPT2.EQ.0) THEN
+          DO I = 1,MESH%NPOIN
+            F%R(I)=(F%R(I)+DT*SM%R(I))/
+     &           (1.D0-DT*SMI%R(I)/MAX(H%R(I),1.D-15))
+!           COULD BE DONE LIKE THIS...
+!           F%R(I)=H%R(I)*(F%R(I)+DT*SM%R(I))/(H%R(I)-DT*SMI%R(I))
+          ENDDO
+        ELSEIF(IOPT2.EQ.1) THEN
+!         HERE WE ASSUME THAT SMI WILL PREVENT A DIVISION BY ZERO
+!         THIS IS THE CASE WITH SETTLING VELOCITY IN SISYPHE
+          DO I = 1,MESH%NPOIN
+          F%R(I)=(F%R(I)*HT%R(I)+DT*SM%R(I)*H%R(I))/(H%R(I)-DT*SMI%R(I))
+          ENDDO
+        ENDIF            
+!
+      ELSE
+!
+!       EXPLICIT SOURCE TERM ONLY (AND IOPT2=1 NOT TREATED !!!)
+!
         DO I = 1,MESH%NPOIN
-          F%R(I) = F%R(I)/(1.D0-DT*SMI%R(I)/MAX(H%R(I),1.D-4))
+          F%R(I) = F%R(I)+DT*SM%R(I)
         ENDDO
+!      
       ENDIF
 !
 !-----------------------------------------------------------------------

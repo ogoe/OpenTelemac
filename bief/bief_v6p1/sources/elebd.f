@@ -9,16 +9,16 @@
 ! BIEF   V6P0                                   21/08/2010
 !***********************************************************************
 !
-!brief    PRISMS SPLIT IN TETRAHEDRONS.
+!brief    BUILDING DATA STRUCTURES TO NAVIGATE IN A 2D MESH.
 !+
-!+            1) BUILDS ARRAYS NELBOR AND NULONE,
+!+            1) ARRAYS NELBOR AND NULONE,
 !+
-!+            2) BUILDS ARRAY KP1BOR,
+!+            2) ARRAY KP1BOR,
 !+
 !+            3) DISTINGUISHES IN THE ARRAY IFABOR FOR
 !+                   SOLID BOUNDARY FACES OR LIQUID FACES,
 !+
-!+            4) COMPUTES IKLBOR.
+!+            4) IKLBOR, CONNECTIVITY TABLE OF BOUNDARY ELEMENTS
 !
 !history  J-M HERVOUET (LNHE)
 !+        23/06/2008

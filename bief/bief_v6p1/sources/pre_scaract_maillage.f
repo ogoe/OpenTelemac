@@ -135,12 +135,12 @@
             CALL PLANTE(1)
             STOP
           ENDIF
+!      
+	  IF(INITLOC) THEN  		
+            CALL GTSH13(SHP,ELT,IKLE,NPOINT2,NELEM,NELMAX,MSK,MASKEL)
+     	  ENDIF
 !
         ENDIF
-!      
-	IF(INITLOC) THEN  		
-          CALL GTSH13(SHP,ELT,IKLE,NPOINT2,NELEM,NELMAX,MSK,MASKEL)
-     	ENDIF
 !
       ELSEIF (IELM==41) THEN
 !     

@@ -5,7 +5,7 @@
      &(DB,XB,TYPDIA,XA,TYPEXA,GLOSEG,NSEG,NPOIN,COPY)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    L D U FACTORISATION OF THE ELEMENTARY MATRICES BY SEGMENT
@@ -55,16 +55,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COPY           |-->| SI .TRUE. A EST COPIEE DANS B
-!|                |   | SINON ON CONSIDERE QUE B EST DEJA REMPLIE
-!| DB             |<--| DIAGONALE DE LA MATRICE RESULTAT
-!| GLOSEG         |-->| PASSAGE DE LA NUMEROTATION SEGMENT A GLOBALE
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| NSEG           |-->| NOMBRE DE SEGMENTS
-!| TYPDIA         |<--| TYPE DE DIAGONALE ( 'Q', 'I' , OU '0' )
-!| TYPEXA         |<--| TYPE DE TERMES EXTRADIAGONAUX ('Q','S',OU'0')
-!| XA             |<--| TERMES EXTRADIAGONAUX DE LA MATRICE A
-!| XB             |<--| TERMES EXTRADIAGONAUX DE LA MATRICE RESULTAT
+!| COPY           |-->| IF .TRUE. A IS COPIED INTO B.
+!|                |   | IF .FALSE. B IS CONSIDERED ALREADY INITIALISED
+!| DB             |<--| DIAGONAL OF MATRIX B
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| TYPDIA         |<--| TYPE OF DIAGONAL ( 'Q', 'I' , OR '0' )
+!| TYPEXA         |<--| TYPE OF OFF-DIAGONAL TERMS ('Q','S',OR '0')
+!| XA             |<--| OFF-DIAGONAL TERMS OF MATRIX A
+!| XB             |<--| OFF-DIAGONAL TERMS OF MATRIX B
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DLDUSEG => DLDUSEG

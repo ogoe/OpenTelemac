@@ -6,7 +6,7 @@
      & NELEM,NELMAX,NPOIN,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SYSTEM L X = B (ELEMENT: Q1 QUADRILATERAL).
@@ -45,20 +45,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| X              |---|
-!| XA2            |---|
-!| XA3            |---|
-!| XA4            |---|
-!| XA5            |---|
-!| XA6            |---|
+!| IKLE1          |-->| GLOBAL NUMBER OF THE FIRST POINT OF QUADRILATERALS
+!| IKLE2          |-->| GLOBAL NUMBER OF THE SECOND POINT OF QUADRILATERALS
+!| IKLE3          |-->| GLOBAL NUMBER OF THE THIRD POINT OF QUADRILATERALS
+!| IKLE4          |-->| GLOBAL NUMBER OF THE FOURTH POINT OF QUADRILATERALS
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| X              |<->| AT THE BEGINNING : B
+!|                |   | AT THE END       : THE RESULT
+!| XA1            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA2            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA3            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA4            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA5            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA6            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

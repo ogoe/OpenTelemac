@@ -8,19 +8,15 @@
      &  NBOR , NELBOR , NULONE , NPTFR , MSK,MASKEL,MASKPT,T8)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    - SETS THE BARYCENTRIC COORDINATES IN THE MESH,
-!+                  AT THE START OF COMPUTATION FOR EACH FLOAT.
+!+                  AT THE START OF COMPUTATION FOR EACH DRIFTING FLOAT.
+!+                  HERE WE COMPUTE THE LAGRANGIAN DRIFT.
 !+
 !+            - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
 !+                 (SUBSEQUENT TIMESTEPS).
-!
-!history  J-M JANIN (LNH)
-!+        02/09/08
-!+        V5P9
-!+   CALLS GTSH11 INSTEAD OF GTSHP11
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -35,46 +31,49 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBLAG         |-->| NUMEROS DES PAS DE TEMPS DE DEBUT DE CALCUL
-!|                |   | DES DERIVES.
-!| DT             |-->| PAS DE TEMPS.
-!| DX,DY          |---| STOCKAGE DES SOUS-PAS .
-!| ELTLAG         |<->| NUMEROS DES ELEMENTS DANS LESQUELS SE TROUVE
-!|                |   | A CET INSTANT CHACUNE DES DERVIES.
-!| FINLAG         |-->| NUMEROS DES PAS DE TEMPS DE FIN DE CALCUL DES
-!|                |   | DERIVES.
-!| IELM           |-->| TYPE DE MAILLAGE.
-!| IFABOR         |-->| NUMEROS DES ELEMENTS AYANT UNE FACE COMMUNE
-!|                |   | AVEC L'ELEMENT .  SI IFABOR
-!|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
-!| IKLE           |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE.
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKPT         |-->| TABLEAU DE MASQUAGE DES POINTS.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD.
-!| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT
-!| NELBOR         |-->| NUMERO DE L'ELEMENT ADJACENT AU K IEME
-!|                |   | SEGMENT DE BORD.
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |-->| NOMBRE MAXIMAL D'ELEMENTS DANS LE MAILLAGE 2D
-!| NLAG           |-->| NOMBRE DE DERIVES.
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NSP            |---| NOMBRE DE SOUS PAS DE RUNGE KUTTA.
-!| NULONE         |-->| NUMERO LOCAL D'UN POINT DE BORD DANS
-!|                |   | L'ELEMENT ADJACENT DONNE PAR NELBOR.
-!| RESUX,RESUY    |<--| RESULTAT POUR ECRITURE SUR FICHIER DE LA
-!|                |   | DERNIERE DERIVE ACHEVEE.
-!| SHPLAG         |<->| COORDONNEES BARYCENTRIQUES INSTANTANNEES DES
-!|                |   | DERIVES DANS LEURS ELEMENTS RESPECTIFS.
-!| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
-!| T8             |---|
-!| U,V            |-->| COMPOSANTE DE LA VITESSE
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XLAG,YLAG      |<->| POSITIONS INSTANTANNEES DES DERIVES.
+!| DEBLAG         |-->| TIME STEP FOR STARTING THE COMPUTATION
+!| DT             |-->| TIME STEP
+!| DX             |<->| WORK ARRAY
+!| DY             |<->| WORK ARRAY
+!| ELTLAG         |<->| ELEMENT NUMBERS OF FLOATS
+!| FINLAG         |-->| TIME STEP FOR ENDING THE COMPUTATION
+!| IELM           |-->| TYPE OF ELEMENT IN THE MESH
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LT             |-->| TIME STEP NUMBER.
+!| MASKEL         |-->| MASKING OF ELEMENTS.
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
+!|                |   | ELEMENT.
+!| NELEM          |-->| NUMBER OF ELEMENTS.
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS.
+!| NLAG           |-->| NOMBER OF FLOATS.
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSP            |-->| NUMBER OF SUB-STEPS IN THE RUNGE-KUTTA METHOD
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
+!|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
+!|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
+!| RESUX          |<--| ARRAY WITH SUCCESSIVE ABSCISSAE OF FLOATS
+!| RESUY          |<--| ARRAY WITH SUCCESSIVE ORDINATES OF FLOATS
+!| SHPLAG         |<->| BARYCENTRIC COORDINATES OF FLOATS
+!|                |   | IN THEIR ELEMENTS.
+!| SURDET         |-->| GEOMETRIC COEFFICIENT USED IN THE ISOPARAMETRIC
+!|                |   | TRANSFORMATION.
+!| T8             |-->| BLOCK OF WORK BIEF_OBJ STRUCTURES.
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XLAG           |<->| INSTANTANEOUS X POSITIONS OF FLOATS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YLAG           |<->| INSTANTANEOUS Y POSITIONS OF FLOATS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF   !, EX_DERLAG => DERLAG
@@ -125,9 +124,6 @@
 !
 !-----------------------------------------------------------------------
 !
-          CALL OV( 'X=CY    ' , XLAG(1,ILAG) , U , Z , -1.D0 , NPOIN )
-          CALL OV( 'X=CY    ' , YLAG(1,ILAG) , V , Z , -1.D0 , NPOIN )
-!
           IF(IELM.EQ.11) THEN
 !
 !  P1 TRIANGLES
@@ -139,13 +135,16 @@
      &                  NELEM,NELMAX,MSK,MASKEL)
 !
           ELSE
-           IF(LNG.EQ.1) THEN
-             WRITE(LU,*) IELM,' : ELEMENT NON PREVU DANS DERLAG'
-           ENDIF
-           IF(LNG.EQ.2) THEN
-             WRITE(LU,*) IELM,': ELEMENT NOT IMPLEMENTED IN DERLAG'
-           ENDIF
-           STOP
+!
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) IELM,' : ELEMENT NON PREVU DANS DERLAG'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) IELM,': ELEMENT NOT IMPLEMENTED IN DERLAG'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+!
           ENDIF
 !
           CALL OV( 'X=Y     ' , XLAG(1,ILAG) , X , Z , C , NPOIN )

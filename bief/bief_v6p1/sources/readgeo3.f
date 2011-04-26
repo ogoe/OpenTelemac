@@ -2,7 +2,7 @@
                      SUBROUTINE READGEO3
 !                    *******************
 !
-     &(KNOLG,X,Y,NPOIN,NFIC,IB,Z)
+     &(KNOLG,X,Y,NPOIN,NFIC,IB,FFORMAT,Z)
 !
 !***********************************************************************
 ! BIEF   V6P0                                   21/08/2010
@@ -36,6 +36,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FFORMAT        |-->| FILE FORMAT
 !| IB             |---|
 !| KNOLG          |---|
 !| NFIC           |---|
@@ -58,6 +59,7 @@
       INTEGER, INTENT(OUT)          :: KNOLG(NPOIN)
       DOUBLE PRECISION, INTENT(OUT) :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(OUT), OPTIONAL :: Z(NPOIN)
+      CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -66,6 +68,15 @@
       REAL RBID(1)
       INTEGER ISTAT,ERR
       CHARACTER(LEN=1)  :: CB
+      CHARACTER(LEN=2)  :: RF
+!
+!-----------------------------------------------------------------------
+!
+      IF(FFORMAT.EQ.'SERAFIND') THEN
+        RF = 'R8'
+      ELSE
+        RF = 'R4'
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -94,18 +105,18 @@
         STOP
       ENDIF
 !
-      CALL LIT(X   ,RB,IB,CB,NPOIN,'R4',NFIC,'STD',ISTAT)
-      CALL LIT(Y   ,RB,IB,CB,NPOIN,'R4',NFIC,'STD',ISTAT)
+      CALL LIT(X   ,RB,IB,CB,NPOIN,RF,NFIC,'STD',ISTAT)
+      CALL LIT(Y   ,RB,IB,CB,NPOIN,RF,NFIC,'STD',ISTAT)
 !
-!     SPECIAL FORMAT FOR TETRAHEDRONS : Z AFTER X AND Y
+!     SPECIAL FORMAT FOR 3D : Z AFTER X AND Y
 !     A RECORD FOR TIME IS PRESENT WITH THE SELAFIN FORMAT
 !     WHEN Z IS GIVEN AS VARIABLE IN TIME, BUT THIS IS NEVER USED.
 !
       IF(PRESENT(Z)) THEN
 !       RECORD FOR TIME
-!       CALL LIT(Z,RB,IB,CB,1,'R4',NFIC,'STD',ISTAT)
+!       CALL LIT(Z,RB,IB,CB,1,RF,NFIC,'STD',ISTAT)
 !       RECORD FOR Z (FIRST VARIABLE IN SELAFIN FORMAT)
-        CALL LIT(Z,RB,IB,CB,NPOIN,'R4',NFIC,'STD',ISTAT)
+        CALL LIT(Z,RB,IB,CB,NPOIN,RF,NFIC,'STD',ISTAT)
       ENDIF
 !
 !-----------------------------------------------------------------------

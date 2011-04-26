@@ -5,7 +5,7 @@
      &( F , C , XSOM , YSOM , NSOM , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    THE POINTS OF VECTOR F, WHICH ARE INSIDE OF THE
@@ -32,10 +32,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE IMPOSEE A L'INTERIEUR DU POLYGONE.
-!| F              |<->| VECTEUR RESULTAT.
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
-!| NSOM           |-->| NOMBRE DE SOMMETS.
+!| C              |-->| CONSTANT TO BE PRESCRIBED INSIDE THE POLYGON.
+!| F              |<->| THE RESULT (VECTOR)
+!| MESH           |-->| MESH STRUCTURE
+!| NSOM           |-->| NUMBER OF VERTICES IN THE POLYGON
+!| XSOM           |-->| ABSCISSAE OF VERTICES IN THE POLYGON
+!| YSOM           |-->| ORDINATES OF VERTICES IN THE POLYGON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FILPOL => FILPOL
@@ -87,7 +89,7 @@
         IF (LNG.EQ.2) WRITE(LU,101) IELM
 100     FORMAT(1X,'FILPOL (BIEF) : IELM = ',1I6,' ELEMENT NON PREVU')
 101     FORMAT(1X,'FILPOL (BIEF): IELM = ',1I6,' ELEMENT NOT AVAILABLE')
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
 !
       ENDIF

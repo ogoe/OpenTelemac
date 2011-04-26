@@ -378,7 +378,7 @@
 !
       IF(YASMI) THEN
         DO I = 1,MESH%NPOIN
-          F%R(I) = F%R(I)/(1.D0-DT*SMI%R(I)/MAX(H%R(I),1.D-4))
+          F%R(I) = F%R(I)/(1.D0-DT*SMI%R(I)/MAX(H%R(I),1.D-15))
         ENDDO
       ENDIF
 !
