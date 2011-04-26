@@ -101,7 +101,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'W="hauteur de houle"';
 'X="periode de houle"';
 'KS="coefficient de Rugosité totale (m)"';
-'TOB="frottement moyen (N/m2)"';
+'TOB="Contrainte de frottement(N/m2)"';
 'MU = "Coefficient de correction pour frottement de peau"';
 'D50 = "Diametre moyen du sediment"';
 'THETAW="angle entre la houle et l''axe Oy (deg)"';
@@ -134,7 +134,7 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 'E="bottom evolution (m)"';
 'R="non erodable bottom"';
 'KS="total bed roughness (m)"';
-'TOB="Bed friction (N/m2)"';
+'TOB="Bed Shear stress (Totalfriction) (N/m2)"';
 'MU = "Skin friction correction factor"';
 'D50 = "Mean grain diameter"';
 'THETAW="wave angle with axis Oy (deg)"';
@@ -710,8 +710,8 @@ RUBRIQUE1 = 'NUMERICAL'
 NIVEAU = 2                                                            
 AIDE = 'Si oui, on effectue du mass-lumping sur la cote du fond.
 Ceci revient a ramener toute la matrice de masse sur sa 
-diagonale lors de la resolution du systeme.Cette technique permet 
-d''accelerer le code et de le rendre egalement plus stable.Cependant,
+diagonale lors de la resolution du systeme. Cette technique permet 
+d''accelerer le code et de le rendre egalement plus stable. Cependant,
 les solutions obtenues se trouvent lissees.'
 AIDE1 = 'If this key word is equal to yes, the mass matrix is then
 condensed on its diagonal.This technique is used to accelerate the
@@ -1250,27 +1250,28 @@ AIDE = 'Fixe la valeur de la masse volumique du sediment
 AIDE1 = 'sets the value of the sediment density
            en Kg/m3'
 
-NOM = 'COEFFICIENT FONCTION DE LA POROSITE'
-NOM1 = 'COEFFICIENT FUNCTION OF THE POROSITY'
+/NOM = 'COEFFICIENT FONCTION DE LA POROSITE'
+/NOM1 = 'COEFFICIENT FUNCTION OF THE POROSITY'
+NOM = 'POROSITE DU LIT NON COHESIF'
+NOM1 = 'NON COHESIVE BED POROSITY'
 TYPE = REEL
 INDEX = 5
 TAILLE = 1
 MNEMO = 'XKV'
-DEFAUT = 1.6
-DEFAUT1 = 1.6
+DEFAUT = 0.4
+DEFAUT1 = 0.4
 RUBRIQUE = 'PHYSIQUE'
 RUBRIQUE1 = 'PHYSICS'
 NIVEAU = 1
-AIDE = 'Determine un coefficient fonction de la porosite :
-                     coef = 1/(1-porosite)
-Ce coefficient est utilise dans toutes les formules de
-transport par charriage pour les sediments non-cohesifs.'
-AIDE1 = 'Determines a coefficient function of the porosity :
-coef = 1/(1-porosity). This coefficient is used with all 
-the non cohesive sand transport formula.'
+AIDE = 'la concentration volumique  du lit est definie par 
+	CSF= (1-porosite)
+Ce paramètre est utilisé  pour les sediments non-cohesifs.'
+AIDE1 = 'The bed volume concentration CSF=(1-porosity) is used to calculate 
+the bed evolution of non-cohesive sand transport.'
 
-NOM = 'PARAMETRE DE SHIELDS'
-NOM1 = 'SHIELDS PARAMETER'            
+
+NOM = 'PARAMETRES DE SHIELDS'
+NOM1 = 'SHIELDS PARAMETERS'            
 TYPE = REEL
 INDEX = 6
 DEFAUT = 0.047
@@ -1489,25 +1490,9 @@ AIDE1 = 'Utilise par la procedure de lancement sur station de travail'
 
 / NOUVEAUTES 5.2
 
-NOM = 'PERIODE DE COUPLAGE'
-NOM1 = 'COUPLING PERIOD'
-TYPE = INTEGER
-INDEX = 22
-MNEMO = 'PERCOU'
-TAILLE = 0
-DEFAUT = 1
-DEFAUT1 = 1
-RUBRIQUE = 'GENERAL'
-RUBRIQUE1 = 'GENERAL'
-NIVEAU = 1
-AIDE = 'Pour eviter de faire le couplage a chaque pas de temps.
-En cas de couplage interne, doit etre egal a 1.
-Ce mot cle est abandonne et doit etre specifie 
-dans le fichier cas Telemac'
-AIDE1 = 'To avoid coupling at every time-step 
-In case of internal coupling it must be equal to 1.
-This key word is no longer used and must be 
-specified in the Telemac steering file'
+/
+/ KEYWORD COUPLING PERIOD REMOVED ON 18/04/2011 BY JMH+PT
+/
 
 NOM = 'NOMBRE DE TABLEAUX PRIVES'
 NOM1 = 'NUMBER OF PRIVATE ARRAYS'
@@ -2448,33 +2433,22 @@ dans le format Selafin mais pas d''autre traitement pour l''instant'
 AIDE1 = 'Value in metres, used to avoid large real numbers, 
 added in Selafin format, but so far no other treatment'
 /
-NOM = 'CONCENTRATION VOLUMIQUE DU LIT COHESIF'
-NOM1 = 'VOLUME CONCENTRATION OF THE COHESIVE BED'
-TYPE = REEL
-INDEX = 29
-TAILLE = 1
-MNEMO = 'CSF_VASE'
-DEFAUT = 0.08
-DEFAUT1 = 0.08
-RUBRIQUE = 'SUSPENSION'
-RUBRIQUE1 = 'SUSPENSION'
-NIVEAU = 1
-AIDE = 'Pour la suspension, 
-l evolution du lit est calculee par la formule :
-                     DZ = DT/CSF_VASE (D-E)
-Pour les sediments non cohesifs, la concentration du lit est calculee
-en fonction du facteur de porosite : CSF= 1/XKV
-Pour le modele de tassement multicouche, la valeur du depot frais correspond
-e la concentration volumique de la premiere couche'
+/NOM = 'CONCENTRATION VOLUMIQUE DU LIT COHESIF'
+/NOM1 = 'VOLUME CONCENTRATION OF THE COHESIVE BED'
+/TYPE = REEL
+/INDEX = 29
+/TAILLE = 1
+/MNEMO = 'CSF_VASE'
+/DEFAUT = 0.08
+/DEFAUT1 = 0.08
+/RUBRIQUE = 'SUSPENSION'
+/RUBRIQUE1 = 'SUSPENSION'
+/NIVEAU = 1
+/suppressed keyword
+/'CONCENTRATIONS DE VASE PAR COUCHE'
+/'MUD CONCENTRATION PER LAYER'
 /
-AIDE1 = 'for the suspended load, the bed evolution is calculated by
-                     DZ = DT/CSF_VASE (D-E)
-For non-cohesive sediments, the volume concentration is proportional to the 
-porosity factor: CSF = 1/XKV
-This value is not accounted for in the multilayer consolidation model, where 
-the volume concentration of the mud deposit  corresponds to the first layer, 
-as specified by the keyword MUD CONCENTRATION PER LAYER'
-/
+
 NOM  = 'GLISSEMENT DU SEDIMENT'
 NOM1 = 'SEDIMENT SLIDE'
 TYPE = LOGIQUE
@@ -2608,6 +2582,10 @@ NIVEAU = 1
 AIDE = 'Melange sable vase: 2 classes seulement'
 AIDE1 = 'Mixture of cohesive and non cohesive sediment : 2 class only'
 /
+/ COHESIVE SEDIMENT BED STRUCTURE
+/ GENERAL CASE : NCOUCH_TASS =1
+/ ONLY THE TOP LAYER NEEDS TO BE DEFINED 
+/
 NOM = 'NOMBRE DE COUCHES POUR LE TASSEMENT'
 NOM1 = 'NUMBER OF LAYERS OF THE CONSOLIDATION MODEL' 
 TYPE = ENTIER   
@@ -2623,7 +2601,7 @@ COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
 AIDE = ' '
 AIDE1 = ' '
 /
-NOM = 'CONCENTRATIONS DE VASE PAR COUCHE'
+NOM = 'CONCENTRATIONS DU LIT DE VASE'
 NOM1 = 'MUD CONCENTRATION PER LAYER'
 TYPE = REEL
 INDEX = 32
@@ -2631,12 +2609,30 @@ TAILLE = 2
 MNEMO = 'CONC_VASE'
 DEFAUT  = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
 DEFAUT1  = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
-RUBRIQUE = 'TASSEMENT'
-RUBRIQUE1 = 'CONSOLIDATION'
+RUBRIQUE = 'COHESIVE SEDIMENT'
+RUBRIQUE1 = 'COHESIVE SEDIMENT'
 NIVEAU = 2
-AIDE = 'Concentration du modele de tassement multi-couches en g par l'
-AIDE1 = 'Concentrations of the mud-bed in the multi layer consolidation model 
-consolidation model in g per l'
+AIDE = 'Concentration du lit de vase en g/ l - défini par couches'
+AIDE1 = 'Concentrations of the mud-bed in g per l (per layer)'
+/
+/
+NOM = 'CONTRAINTE CRITIQUE D''EROSION DE LA VASE'
+NOM1 = 'CRITICAL EROSION SHEAR STRESS OF THE MUD'
+TYPE = REEL
+INDEX = 34
+TAILLE = 10
+MNEMO = 'TOCE_VASE'
+DEFAUT  = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
+DEFAUT1 = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
+RUBRIQUE = 'COHESIVE SEDIMENT'
+RUBRIQUE1 = 'COHESIVE SEDIMENT'
+NIVEAU = 2
+COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
+AIDE = 'Taux critique d erosion de la vase needs to be defined 
+        for each layer (N par m2)'
+AIDE1 = 'Critical erosion shear stress of the mud per layer (N per m2)'
+/
+/ FOR SIMPLE MULTI-LAYER ALGORITHM
 /
 NOM = 'TRANSFERT DE MASSE PAR COUCHE'
 NOM1 = 'MASS TRANSFER PER LAYER'
@@ -2655,23 +2651,6 @@ AIDE = 'Mass transfert coefficients of
 the multilayer consolidation model in s-1'
 AIDE1= 'Coefficients de transfert de masse du modele 
 de tassement multicouche en s-1'
-/
-NOM = 'CONTRAINTE CRITIQUE D''EROSION DE LA VASE PAR COUCHE'
-NOM1 = 'CRITICAL EROSION SHEAR STRESS OF THE MUD PER LAYER'
-TYPE = REEL
-INDEX = 34
-TAILLE = 10
-MNEMO = 'TOCE_VASE'
-DEFAUT  = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
-DEFAUT1 = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
-RUBRIQUE = 'TASSEMENT'
-RUBRIQUE1 = 'CONSOLIDATION'
-NIVEAU = 2
-COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
-AIDE = 'Taux critique d erosion de la vase du modele
-multi-couche (N par m2)'
-AIDE1 = 'Critical erosion shear stress of the mud inthe multi layer 
-consolidation model (N per m2)'
 /
 /  FOR COUPLING WITH DREDGESIM
 /
@@ -2837,22 +2816,25 @@ AIDE1= 'formula to predict the skin bed roughness (see also KSPRATIO)
        1 : Flat bed (KSP= KSPRATIO * D50)
        2 : Ripple correction factor'
 /
-NOM = 'VITESSE CRITIQUE D''EROSION DE LA VASE'
-NOM1 = 'CRITICAL EROSION SHEAR VELOCITY OF THE MUD'
-TYPE = REEL
-INDEX = 35
-TAILLE = 1
-MNEMO = 'VITCE'
-DEFAUT  = 0.01
-DEFAUT1 = 0.01
-RUBRIQUE = 'SUSPENSION'
-RUBRIQUE1 = 'SUSPENSION'
-NIVEAU = 2
-COMPORT = 'DISPLAY %SUSPENSION% = OUI'
-AIDE = 'Vitesse critique d erosion de la vase pour un lit uniforme (m/s), 
-utilisé seulement si pas de consolidation '
-AIDE1 = 'Critical erosion shear velocity of the uniform mud without
-consolidation model (m/s)'     
+/NOM = 'VITESSE CRITIQUE D''EROSION DE LA VASE'
+/NOM1 = 'CRITICAL EROSION SHEAR VELOCITY OF THE MUD'
+/TYPE = REEL
+/INDEX = 35
+/TAILLE = 1
+/MNEMO = 'VITCE'
+/DEFAUT  = 0.01
+/DEFAUT1 = 0.01
+/RUBRIQUE = 'SUSPENSION'
+/RUBRIQUE1 = 'SUSPENSION'
+/NIVEAU = 2
+/COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+/AIDE = 'Vitesse critique d erosion de la vase pour un lit uniforme (m/s), 
+/utilisé seulement si pas de consolidation '
+/AIDE1 = 'Critical erosion shear velocity of the uniform mud without
+/consolidation model (m/s)'     
+/ 
+/ use TOCE_VASE instead (see keywords'CONTRAINTE CRITIQUE D''EROSION DE LA VASE'
+/ 'CRITICAL EROSION SHEAR STRESS OF THE MUD'
 /
 NOM = 'VITESSE CRITIQUE DE DEPOT DE LA VASE'
 NOM1 = 'CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION'
@@ -2968,6 +2950,27 @@ AIDE = '1 : Fond plat ks=KSPRATIO D50,
 3: Dunes et megarides (methode de Van Rijn)'
 AIDE1 ='1: Flat bed, 2: Rippled bed, 
 3: Dunes and mega ripples (Method of Van Rijn)'
+
+NOM = 'TRAITEMENT DES FLUX AUX FRONTIERES'
+NOM1 = 'TREATMENT OF FLUXES AT THE BOUNDARIES'
+TYPE = INTEGER
+INDEX = 22
+MNEMO = 'DIRFLU'
+TAILLE = 0
+DEFAUT = 1 
+DEFAUT1= 1
+CHOIX='1="Priorite aux valeurs imposees"';'2="Priorite aux flux"'
+CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Utilise pour les schemas PSI et N, avec option 2, on ne retrouve
+pas exactement les valeurs imposees des traceurs,
+mais le flux est correct'
+AIDE1= 'Used so far only with the PSI and N schemes.
+With option 2, Dirichlet prescribed values are not obeyed,
+but the fluxes are correct'
+
 /
 /
 / FOR PERL OR PYTHON SCRIPTS
