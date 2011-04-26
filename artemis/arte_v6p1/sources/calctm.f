@@ -69,7 +69,7 @@
 ! COMPUTES M0 MOMENTUM AND STORES IT IN T2
 !=======================================================================
 !
-      CALL OS( 'X=Y**C  ', T1 , HHO  , SBID  , 2.D0 )
+      CALL OS( 'X=YZ    ', X=T1 , Y=HHO  , Z=HHO )
       CALL OS( 'X=CX    ', T1 , SBID  , SBID  , PONDER )
       CALL OS( 'X=Y+Z   ', T2 , HALE , T1   , BID )
 !

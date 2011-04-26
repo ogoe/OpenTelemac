@@ -74,7 +74,7 @@
 !
 ! OMEGA**2 * H / GRAV
 !
-      CALL OS( 'X=Y**C  ', T2 , T1 , SBID , 2.D0 )
+      CALL OS( 'X=YZ    ', X=T2 , Y=T1 , Z=T1 )
       CALL OS( 'X=CXY   ', T2 , H  , SBID , 1.D0/GRAV )
 !
 !     INITIALISES DHTEST
@@ -83,10 +83,10 @@
 !
       DO 100 I=1,NPOIN
          T1%R(I) = 1.D0 + T2%R(I) *( 0.6522D0 +
-     &                  T2%R(I) *( 0.4622D0 +
-     &                  T2%R(I) *
-     &                  T2%R(I) *( 0.0864D0 +
-     &                  T2%R(I) *( 0.0675D0 ) )))
+     &                    T2%R(I) *( 0.4622D0 +
+     &                    T2%R(I) *
+     &                    T2%R(I) *( 0.0864D0 +
+     &                    T2%R(I) *( 0.0675D0 ) )))
          T1%R(I) = SQRT( T2%R(I)*(T2%R(I) + 1.D0/T1%R(I)) )
          K%R(I)  = T1%R(I)/H%R(I)
          DHTEST  = MIN( DHTEST , H%R(I) )

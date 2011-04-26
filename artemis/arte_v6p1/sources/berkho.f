@@ -119,11 +119,7 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-!
-      INTEGER I,LT
-      INTEGER ITERMU
-      DOUBLE PRECISION MAX_ECRHMU
-      DOUBLE PRECISION MAX_MODHMU
+      INTEGER I,LT,ITERMU
       DOUBLE PRECISION HM,HMUE,HEFF,ECRHMU,MODHMU
       DOUBLE PRECISION Q1,Q2,Q3
 !
@@ -510,7 +506,6 @@
 !
       IF (DEFERL .OR. FROTTE) THEN
          ECRHMU = 0.D0
-         MODHMU = 0.D0
 !
 !     --------------------------------------------
 !     INITIALISES MU2 AND T3: SET TO 0
@@ -527,7 +522,6 @@
 !
          CALL OS( 'X=N(Y,Z)', T1  , PHIR , PHII , CBID )
          CALL OS( 'X=CY    ', HMU , T1   , SBID , 2.D0*OMEGA/GRAV )
-!
 !
 !        --------------
 !        IF BREAKING
@@ -551,7 +545,7 @@
                   HEFF=MIN(HMUE,HM)
                   HEFF=MAX(HEFF,1.D-5)
                   Q1 = 1.D-10
-                  Q2 = (HEFF/HM)**2.D0
+                  Q2 = (HEFF/HM)**2
 !     ADDED BY JMH BECAUSE OF THE LOG FUNCTION, LATER ON
                   Q2 = MAX(Q2,1.D-9)
 !
@@ -597,7 +591,7 @@
                      HEFF=MIN(HMU%R(I),HM)
                      HEFF=MAX(HEFF,1.D-5)
                      MU2%R(I)=T3%R(I)*KDALLY*
-     &                    (1.D0-(GDALLY*H%R(I)/HEFF)**2.D0)/H%R(I)
+     &                    (1.D0-(GDALLY*H%R(I)/HEFF)**2)/H%R(I)
  30               CONTINUE
                ENDIF
 !
@@ -609,6 +603,7 @@
                   DO 40 I = 1,NPOIN
                    HM = 0.88D0/K%R(I)*TANH(GAMMAS*K%R(I)*H%R(I)/0.88D0)
                      HEFF=MIN(HMU%R(I),HM)
+                     HEFF=MAX(HEFF,1.D-5)
                      MU2%R(I) = T3%R(I)*2.D0*HEFF/(H%R(I)*CG%R(I)*PER)
  40               CONTINUE
                ENDIF
@@ -624,11 +619,11 @@
 !
 !     HMUE = HMU/SQRT (2)
 !
-                  HMUE = HMU%R(I)/1.4142D0
+               HMUE = HMU%R(I)/1.4142D0
                HEFF=MIN(HMUE,HM)
                HEFF=MAX(HEFF,1.D-5)
                Q1 = 1.D-10
-               Q2 = (HEFF/HM)**2.D0
+               Q2 = (HEFF/HM)**2
 !     ADDED BY JMH BECAUSE OF THE LOG FUNCTION, LATER ON
                Q2 = MAX(Q2,1.D-9)
 !
@@ -644,8 +639,9 @@
 !              -------------------------
 !
                HEFF = MIN((HMU%R(I)/1.4142D0),HM)
-               MU2%R(I)=ALFABJ*OMEGA*T3%R(I)*((HM/HEFF)**2.D0)/
-     &                (3.14159D0*CG%R(I))
+               HEFF=MAX(HEFF,1.D-5)
+               MU2%R(I)=ALFABJ*OMEGA*T3%R(I)*((HM/HEFF)**2)/
+     &                (3.141592653589D0*CG%R(I))
  50         CONTINUE
 !
          END IF
@@ -698,7 +694,7 @@
 !
 !           ---------------------------------------------------
 !           COMPUTES AN EFFECTIVE SPEED
-!           UE = 1.2*(0.5*((DPHIR/DX)**2 + (DPHIR/DY)**2
+!           UE = 1.2D0*(0.5*((DPHIR/DX)**2 + (DPHIR/DY)**2
 !                         +(DPHII/DX)**2 + (DPHII/DY)**2))**0.5
 !           UE IS STORED IN T4 HERE
 !           ---------------------------------------------------
@@ -741,7 +737,8 @@
 !        -------------------------------------------------------
 !
 !
-         DO 60 I = 1,NPOIN
+         MODHMU = 1.D-9
+         DO I = 1,NPOIN
 !
 !           --------------------------
 !           MU = MU_DEFERL + MU_FROTTE
@@ -754,10 +751,9 @@
 !           ----------
 !
             MU2%R(I) = MU%R(I) + RELDIS * (MU2%R(I) - MU%R(I))
-            IF (ITERMU.EQ.0) THEN
+            IF(ITERMU.EQ.0) THEN
                HMUANC%R(I) = HMU%R(I)
-               ECRHMU = 1000000.D0
-               MODHMU = 1.D0
+               ECRHMU = 1.D0
                MU%R(I) = MU2%R(I)
             ELSE
                ECRHMU = MAX(ECRHMU,ABS(HMU%R(I)-HMUANC%R(I)))
@@ -765,7 +761,7 @@
                MU%R(I) = MU2%R(I)
                HMUANC%R(I) = HMU%R(I)
             ENDIF
- 60      CONTINUE
+         ENDDO
 !
 !
 !        RELAXES THE RELAXATION AT EACH SUB-ITERATION
@@ -795,7 +791,7 @@
 !        ECRHMU/MODHMU TO 10 % OF EPSDIS
 !        -----------------------------------------------------------
 !
-         IF (ITERMU.GE.NITDIS) THEN
+         IF(ITERMU.GE.NITDIS) THEN
             IF (LNG.EQ.1) WRITE(LU,100) ITERMU
             IF (LNG.EQ.2) WRITE(LU,101) ITERMU
  100        FORMAT(/,1X,'BERKHO (ARTEMIS): NOMBRE DE SOUS-ITERATIONS',

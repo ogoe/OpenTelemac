@@ -67,7 +67,7 @@
 ! M1 = INTEGRAL OF ( F * S(F) * DF )
 !=======================================================================
 !
-      CALL OS( 'X=Y**C  ', T1, HHO , SBID , 2.D0 )
+      CALL OS( 'X=YZ    ', X=T1 , Y=HHO  , Z=HHO )
       CALL OS( 'X=CY    ', T2, T1  , SBID , FREQ )
       CALL OS( 'X=CX    ', T2, SBID , SBID , PONDER )
       CALL OS( 'X=X+Y   ', T01, T2 , SBID , 1.D0 )
