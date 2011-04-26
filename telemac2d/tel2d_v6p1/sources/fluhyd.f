@@ -1,15 +1,15 @@
-!                    *****************
-                     SUBROUTINE FLUHYD
-!                    *****************
-!
-     &(NS,NT,NSEG,NPTFR,NUBO,G,DT,X,Y,AIRS,NU,AIRE,
-     & UA,ZF,VNOIN,CE,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     & KDDL,HBOR,UBOR,VBOR,FLUENT,FLUSORT,NORDRE,CMI,JMI,
-     & DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
-     & DPX,DPY,IVIS,CVIS,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,NTRAC)
+C                       *****************
+                        SUBROUTINE FLUHYD
+C                       *****************
+C
+     *(NS,NT,NSEG,NPTFR,NUBO,G,DT,X,Y,AIRS,NU,AIRE,
+     * UA,ZF,VNOIN,CE,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
+     * KDDL,HBOR,UBOR,VBOR,FLUENT,FLUSORT,NORDRE,CMI,JMI,
+     * DJX,DJY,DX,DY,DTHAUT,CFLWTD,FLBOR,
+     * DPX,DPY,IVIS,CVIS,FLUHBTEMP,BETA,DSZ,AIRST,HC,FLUXTEMP,NTRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   03/15/2011
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES AT TIME N.
@@ -30,6 +30,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  R. ATA (EDF-LNHE)
+!+        03/15/2011
+!+        V6P1
+!+    INTRODUCTION OF FLBOR AND MASS BALANCE
+!+    CHANGE CE(3,NS) TO CE(NS,3)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRE           |-->| AIRES DES TRIANGLES
@@ -82,6 +88,8 @@
       USE INTERFACE_TELEMAC2D, EX_FLUHYD => FLUHYD
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -94,37 +102,41 @@
       DOUBLE PRECISION, INTENT(IN) :: AIRST(2,*),CVIS
       DOUBLE PRECISION, INTENT(IN) :: X(NS),Y(NS),AIRS(NS),AIRE(NT)
       DOUBLE PRECISION, INTENT(INOUT) :: BETA,DT,HC(2,*)
-      DOUBLE PRECISION, INTENT(INOUT) :: CE(3,NS),FLUENT,FLUSORT
+      DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       DOUBLE PRECISION, INTENT(IN) :: UA(3,NS),ZF(NS),VNOIN(3,NSEG)
       DOUBLE PRECISION, INTENT(IN) :: DSZ(2,*),DPX(3,NT),DPY(3,NT)
       DOUBLE PRECISION, INTENT(INOUT) :: DJX(3,*),DJY(3,*)
       DOUBLE PRECISION, INTENT(INOUT) :: DX(3,*),DY(3,*)
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: FLUXTEMP,FLUHBTEMP,FLBOR
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: FLUXTEMP,FLUHBTEMP,FLBOR 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
+!  
       INTEGER IS,IVAR
 !
 !-----------------------------------------------------------------------
 !
-!     EXPLICIT RESOLUTION
-!
+!     INITIALIZATION OF CE
+! 
       DO IS=1,NS
         DO IVAR=1,3
-          CE(IVAR,IS) = 0.D0
+          CE(IS,IVAR) = 0.D0
         ENDDO
       ENDDO
 !
-!   COMPUTES GRADIENTS AT NODES AS WELL AS DIFFUSION TERMS
+!-----------------------------------------------------------------------
 !
-      IF(NORDRE.EQ.2.OR.IVIS.EQ.1) CALL GRADNOD(NS,NT,NU,AIRE,AIRS,
-     &                        UA,DPX,DPY,DJX,DJY,DX,DY,IVIS,CVIS,CE,ZF)
+!     COMPUTES GRADIENTS AT NODES AS WELL AS DIFFUSION TERMS
+!
+      IF(NORDRE.EQ.2.OR.IVIS.EQ.1) THEN
+        CALL GRADNOD(NS,NT,NU,AIRE,AIRS,
+     &               UA,DPX,DPY,DJX,DJY,DX,DY,IVIS,CVIS,CE,ZF)
+      ENDIF
 !
       CALL FLUCIN(NS,NSEG,NUBO,G,X,Y,CFLWTD,DT,UA,ZF,VNOIN,CE,NORDRE,
      &            CMI,JMI,DJX,DJY,DX,DY,BETA,DSZ,AIRS,
      &            AIRST,HC,FLUXTEMP,NPTFR,NBOR,XNEBOR,YNEBOR,NTRAC)
 !
-!        BOUNDARY CONDITIONS TREATMENT
+!     BOUNDARY CONDITIONS TREATMENT
 !
       CALL CDL(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
      &         G,HBOR,UBOR,VBOR,UA,CE,FLUENT,FLUSORT,FLBOR,

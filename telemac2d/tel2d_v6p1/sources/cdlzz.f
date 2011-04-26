@@ -1,36 +1,50 @@
-!                    ****************
-                     SUBROUTINE CDLZZ
-!                    ****************
+!                      ****************** 
+                        SUBROUTINE CDLZZ
+!                      ******************
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
      & HBOR,UBOR,VBOR,W,CE,FLUENT,FLUSORT,
      & FLBOR,DTHAUT,DT,CFL,EPS,ZF,WINF)
 !
 !***********************************************************************
-! TELEMAC2D
+! TELEMAC 2D VERSION 6.1                                     03/15/2011
 !***********************************************************************
 !
+!brief  COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES FOR TCHAMEN ZOKA
+!
+!    UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
+!
+!history  R. ATA (EDF-LNHE)
+!+
+!+        V6P1
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CE             |<->| FLUX
-!| CFL            |-->| NOMBRE DE CFL
-!| DT             |<->| PAS DE TEMPS
-!| FLUENT,FLUSORT |<--| FLUX MASSE ENTREE ET SORTIE
-!| G              |-->| CONSTANTE DE GRAVITE
-!| HBOR           |-->| VALEURS IMPOSEES DE H
-!| KDIR           |-->| CONVENTION POUR LES POINTS DIRICHLET
-!| KNEU           |-->| CONVENTION POUR LES POINTS NEUMANN
-!| LIMPRO         |-->| TYPES DE CONDITIONS AUX LIMITES
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| UBOR           |-->| VALEURS IMPOSEES DE U
-!| VBOR           |-->| VALEURS IMPOSEES DE V
-!| W              |-->| W(1,IS) = H,  W(2,IS)=QU  ,W(3,IS)=QV
-!| XNEBOR,YNEBOR  |-->| NORMALE AUX POINTS FRONTIERE
+!|  NS            |-->|  TOTAL NUMNER OF NODES
+!|  NPTFR         |-->|  TOTAL NUMBER OF BOUNDARY NODES
+!|  NBOR          |-->|  GLOBAL NUMBERS OF BOUNDARY POINTS
+!|  LIMPRO        |-->|  TYPES OF BOUNDARY CONDITION
+!|  XNEBOR,YNEBOR |-->|  UNIT OUTWARD NORMAL COMPONENTS AT BOUNDARY POINTS
+!|  KDIR          |-->|  CONVENTION FOR DIRICHLET POINTS
+!|  KNEU          |-->|  CONVENTION FOR NEUMANN POINTS
+!|  G             |-->|  GRAVITY CONSTANT
+!|  HBOR          |-->|  IMPOSED VALUES FOR H
+!|  UBOR          |-->|  IMPOSED VALUES FOR U
+!|  VBOR          |-->|  IMPOSED VALUES FOR V
+!|  W             |-->|  UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
+!|  CE            |<->|  FLUX 
+!|  FLUENT,FLUSORT|<--|  IN AND OUT MASS FLUX
+!|  FLBOR         |<--|  IN AND OUT WATER MASS FLUX
+!|  DTHAUT        |-->|  CHARACTERISTIC LENGTH (DX) FOR CFL
+!|  DT            |<->|  TIME STEP
+!|  CFL           |-->|  CFL NUMBER
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
+!|  ZF            |-->|  BATHYMETRY
+!|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-!
+!  
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -49,10 +63,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,K,NIT,IDRY
-!
+      INTEGER IS,K,NIT,IDRY    
+!    
       DOUBLE PRECISION VNX,VNY,XNN,YNN,VNL
-      DOUBLE PRECISION :: FLX(3),H1,U10,U1,V1,ETA1,FLUIJ_20
+      DOUBLE PRECISION :: FLXI(3),FLXJ(3),H1,U10,U1,V1,ETA1,FLUIJ_20
       DOUBLE PRECISION :: H2,ETA2,U2,V2
       DOUBLE PRECISION :: INFLOW,OUTFLOW
 !
@@ -65,12 +79,15 @@
        FLUSORT = 0.0D0
        INFLOW  = 0.0D0
        OUTFLOW = 0.0D0
-       FLX(1)  = 0.0D0
-       FLX(2)  = 0.0D0
-       FLX(3)  = 0.0D0
+       FLXI(1)  = 0.0D0
+       FLXI(2)  = 0.0D0
+       FLXI(3)  = 0.0D0
+       FLXJ(1)  = 0.0D0
+       FLXJ(2)  = 0.0D0
+       FLXJ(3)  = 0.0D0
 ! INDICATOR FOR DRY CELLS
        IDRY=0
-!   NORMALIZED NORMAL
+!   NORMALIZED NORMAL    
        XNN=XNEBOR(K)
        YNN=YNEBOR(K)
 !   NON NORMALIZED NORMAL
@@ -89,36 +106,42 @@
           IDRY=IDRY+1
        ENDIF
 !**************************************************
-!         PAROIS SOLIDES
+!       WALL BOUNDARIES
 !**************************************************
-!===============================
-!    CONDITION DE GLISSEMENT
-!===============================
 !
-       IF(LIMPRO(K,1).EQ.KNEU) THEN
+!   PERFECT SLIPPING CONDITION 
+!====================================
 !
-! DEFINITION DE L'ETAT Ue
+       IF(LIMPRO(K,1).EQ.KNEU) THEN 
+!
+! DEFINITION OF THE GOST STATE Ue
          H2=H1
          ETA2=ETA1
-!        ROTATION SUIVANT LA NORMALE
+!        ROTATION 
          U10 = U1
          U1  = XNN*U10+YNN*V1
          V1  =-YNN*U10+XNN*V1
-!
+! PUT NORMAL COMPONENT = 0        
          U1 =  0.0D0
          U2 =  U1
          V2 =  V1
-         CALL ZOKA_SMALL(H1,H2,ETA1,ETA2,U1,U2,V1,V2,G,FLX)
-!        ROTATION INVERSE
-         FLUIJ_20 = FLX(2)
-         FLX(2)  = XNN*FLUIJ_20-YNN*FLX(3)
-         FLX(3)  = YNN*FLUIJ_20+XNN*FLX(3)
+!        INVERSE ROTATION
+         U10 = U1
+         U1  = -YNN*V1
+         V1  =  XNN*V1
+! 
+         U2  = -YNN*V2
+         V2  =  XNN*V2
+
+         CALL FLU_ZOKAGOA(H1,H2,ETA1,ETA2,U1,U2,
+     &                       V1,V2,XNN,YNN,FLXI,FLXJ,G)
+
 !**************************************************
-!         PAROIS LIQUIDES
+!     LIQUID BOUNDARY
 !**************************************************
-       ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN
-!===============================
-!    SI H EST IMPOSEE
+       ELSEIF((LIMPRO(K,1).EQ.KDIR).OR.(LIMPRO(K,1).EQ.KDDL))THEN 
+!
+!   CASE1: H  IMPOSED
 !===============================
 !
         IF(LIMPRO(K,1).EQ.KDIR) THEN
@@ -137,21 +160,20 @@
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLU_ZOKAGOA(H1,H2,ETA1,ETA2,U1,U2,
-     &                       V1,V2,XNN,YNN,FLX,G)
-          ELSE
-            FLX(1)=0.0D0
-            FLX(2)=0.0D0
-            FLX(3)=0.0D0
-          ENDIF
-          OUTFLOW    = FLX(1)*VNL
+     &                       V1,V2,XNN,YNN,FLXI,FLXJ,G)
+          ENDIF 
+          OUTFLOW    = FLXI(1)*VNL
           FLUSORT    = FLUSORT + OUTFLOW
           FLBOR%R(K) = OUTFLOW
-!       LIMPRO(K,1).NE.KDIR
-        ELSE
+
+!       LIMPRO(K,1).NE.KDIR    
+        ELSE 
+
           H2 = H1
           U2 = U1
           V2 = V1
           ETA2=ETA1
+
           H1 = WINF(1,K)
           ETA1=H1+ZF(IS)
           IF(H1.GT.EPS)THEN
@@ -166,27 +188,24 @@
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLU_ZOKAGOA(H2,H1,ETA2,ETA1,U2,U1,
-     &                       V2,V1,XNN,YNN,FLX,G)
-          ELSE
-            FLX(1)=0.0D0
-            FLX(2)=0.0D0
-            FLX(3)=0.0D0
-          ENDIF
-          INFLOW     = FLX(1)*VNL
+     &                       V2,V1,XNN,YNN,FLXI,FLXJ,G)
+          ENDIF 
+          INFLOW     = FLXI(1)*VNL
           FLUENT     = FLUENT + INFLOW
-          FLBOR%R(K) = INFLOW
+          FLBOR%R(K) = INFLOW  
+
       ENDIF
       ENDIF
-!
 !
 100    CONTINUE
-       CE(IS,1)  = CE(IS,1) - VNL*FLX(1)
-       CE(IS,2)  = CE(IS,2) - VNL*FLX(2)
-       CE(IS,3)  = CE(IS,3) - VNL*FLX(3)
+
+       CE(IS,1)  = CE(IS,1) - VNL*FLXI(1)
+       CE(IS,2)  = CE(IS,2) - VNL*FLXI(2)
+       CE(IS,3)  = CE(IS,3) - VNL*FLXI(3)
 !
        ENDDO
 !
 !-----------------------------------------------------------------------
-!
+C
        RETURN
        END

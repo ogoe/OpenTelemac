@@ -52,7 +52,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: AIRT(NT),AIRS(NS),CVIS
       DOUBLE PRECISION, INTENT(INOUT) :: DJX(3,NT),DJY(3,NT)
       DOUBLE PRECISION, INTENT(INOUT) :: DX(3,NS),DY(3,NS)
-      DOUBLE PRECISION, INTENT(INOUT) :: CE(3,NS)
+      DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3)
       DOUBLE PRECISION, INTENT(IN)    :: UA(3,NS),ZF(NS)
       DOUBLE PRECISION, INTENT(IN)    :: DPX(3,NT),DPY(3,NT)
 !
@@ -132,16 +132,16 @@
 !  COMPUTES THE VELOCITY DIFFUSION TERMS
 !
       IF(IVIS.EQ.0.OR.CVIS.EQ.0.) GOTO 10
-         CE(2,NUBO1)       = CE(2,NUBO1) -AUX*
+         CE(NUBO1,2)       = CE(NUBO1,2) -AUX*
      &  (DJX(2,JT)*DPX(1,JT)+DJY(2,JT)*DPY(1,JT))
-         CE(2,NUBO2)       = CE(2,NUBO2) -AUX*
+         CE(NUBO2,2)       = CE(NUBO2,2) -AUX*
      &  (DJX(2,JT)*DPX(2,JT)+DJY(2,JT)*DPY(2,JT))
-         CE(2,NUBO3)       = CE(2,NUBO3) -AUX*
+         CE(NUBO3,2)       = CE(NUBO3,2) -AUX*
      &  (DJX(2,JT)*DPX(3,JT)+DJY(2,JT)*DPY(3,JT))
 !
-         CE(3,NUBO1)       = CE(3,NUBO1) -AUX*
+         CE(NUBO1,3)       = CE(NUBO1,3) -AUX*
      &  (DJX(3,JT)*DPX(1,JT)+DJY(3,JT)*DPY(1,JT))
-         CE(3,NUBO2)       = CE(3,NUBO2) -AUX*
+         CE(NUBO2,3)       = CE(NUBO2,3) -AUX*
      &  (DJX(3,JT)*DPX(2,JT)+DJY(3,JT)*DPY(2,JT))
          CE(3,NUBO3)       = CE(3,NUBO3) -AUX*
      &  (DJX(3,JT)*DPX(3,JT)+DJY(3,JT)*DPY(3,JT))
@@ -152,12 +152,12 @@
 !
       DO IS=1,NS
 !
-         AIS = 1.D0/(3.D0*AIRS(IS))
+        AIS = 1.D0/(3.D0*AIRS(IS))
 !
-         DO IVAR=1,3
-           DX(IVAR,IS) = DX(IVAR,IS)*AIS
-           DY(IVAR,IS) = DY(IVAR,IS)*AIS
-         ENDDO
+        DO IVAR=1,3
+          DX(IVAR,IS) = DX(IVAR,IS)*AIS
+          DY(IVAR,IS) = DY(IVAR,IS)*AIS
+        ENDDO
 !
       ENDDO
 !

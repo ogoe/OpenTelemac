@@ -134,9 +134,9 @@ friction_unif.f friction_zones.f friction_user.f \
 friction_read.f friction_scan.f friction_init.f friction_choice.f \
 gestio.f  gradnod.f gradnodt.f gradz.f \
 homere_adj_t2d.f hpropa.f interpol.f  \
-href.f   incide.f   initstr.f intemp.f isitok.f  \
+href.f   incide.f   init_kin.f initstr.f intemp.f isitok.f  \
 kepscl.f kepsil.f   kepsin.f lagran.f  \
-lecsip.f lecsng.f   loiden.f loinoy.f  maj.f majtrac.f majzz.f \
+lecsip.f lecsng.f   loiden.f loinoy.f  majtrac.f majzz.f \
 marast.f masbas2d.f maskob.f   matbou.f mesures.f meteo.f  metgra.f \
 newstr.f nomvar_telemac2d.f output_telemac2d.f point_telemac2d.f point_adj_t2d.f  \
 oil_spill.f poros.f poro11.f \
@@ -144,10 +144,10 @@ prebor.f preres_telemac2d.f  propag.f propag_adj.f propin_telemac2d.f  \
 prosou.f q.f  read_fic_curves.f read_fic_sources.f read_sections_telemac2d.f \
 reinit.f rescue.f resolu.f  read_fic_frliq.f \
 rotne0.f siphon.f sl.f smagor.f smoothing_flux.f smtrac.f \
-sorflo.f source_telemac2d.f  spectre.f sta_dis_cur.f steady.f tcham_small.f tel4del.f telemac2d.f  testeur.f \
+sorflo.f source_telemac2d.f  spectre.f sta_dis_cur.f steady.f tel4del.f telemac2d.f  testeur.f \
 thomps.f tr.f trsce.f  utimp_telemac2d.f \
 valro.f  vistur.f vit.f     \
-volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f  zoka_small.f
+volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f  
 
 
 

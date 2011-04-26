@@ -7,7 +7,7 @@
      & XNEBOR,YNEBOR,NTRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUXES FOR THE INTERNAL INTERFACES.
@@ -76,7 +76,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG),AIRS(*)
       DOUBLE PRECISION, INTENT(IN)    :: G,CFL,UA(3,NS),AIRST(2,*)
       DOUBLE PRECISION, INTENT(IN)    :: DSZ0(2,*),CMI(2,*)
-      DOUBLE PRECISION, INTENT(INOUT) :: BETA,DT,CE(3,NS),HC(2,*)
+      DOUBLE PRECISION, INTENT(INOUT) :: BETA,DT,CE(NS,3),HC(2,*)
       DOUBLE PRECISION, INTENT(IN)    :: DJX(3,*),DJY(3,*)
       DOUBLE PRECISION, INTENT(IN)    :: DX(3,*),DY(3,*)
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUXTEMP
@@ -244,8 +244,8 @@
          ILIM=1
          BETA=1.D0
 !
-         DSH(1,NSG)  = EXLIM (ILIM,BETA,GRADI(1),GRADIJ(1))
-         DSH(2,NSG)  = EXLIM (ILIM,BETA,GRADJ(1),GRADJI(1))
+         DSH(1,NSG) = EXLIM(ILIM,BETA,GRADI(1),GRADIJ(1))
+         DSH(2,NSG) = EXLIM(ILIM,BETA,GRADJ(1),GRADJI(1))
          IF(DSH(1,NSG).GE.0.D0) THEN
          DSP(NUBO1) = DSP(NUBO1) + AIRST(1,NSG)*DSH(1,NSG)
          ELSE
@@ -260,23 +260,22 @@
          ILIM=2
          BETA=0.3333D0
 !
-         DSU(1,NSG)  = EXLIM (ILIM,BETA,GRADI(2),GRADIJ(2))
-         DSU(2,NSG)  = EXLIM (ILIM,BETA,GRADJ(2),GRADJI(2))
+         DSU(1,NSG) = EXLIM(ILIM,BETA,GRADI(2),GRADIJ(2))
+         DSU(2,NSG) = EXLIM(ILIM,BETA,GRADJ(2),GRADJI(2))
 !
-         DSV(1,NSG)  = EXLIM (ILIM,BETA,GRADI(3),GRADIJ(3))
-         DSV(2,NSG)  = EXLIM (ILIM,BETA,GRADJ(3),GRADJI(3))
+         DSV(1,NSG) = EXLIM(ILIM,BETA,GRADI(3),GRADIJ(3))
+         DSV(2,NSG) = EXLIM(ILIM,BETA,GRADJ(3),GRADJI(3))
 !
        ENDIF
        ENDDO
 !
 !  ONE CALCULATES THE CORRECTIONS TO ENSURE THE CONSERVATION OF H
-!                 ***********                 *****************
 !
       DO IS=1,NS
-       CORR(IS) =  DSM(IS) - DSP(IS)
-       AMDS =MAX(DSP(IS),DSM(IS))
+        CORR(IS) =  DSM(IS) - DSP(IS)
+        AMDS =MAX(DSP(IS),DSM(IS))
         IF(AMDS.GT.0.D0) THEN
-        CORR(IS) = CORR(IS)/AMDS
+          CORR(IS) = CORR(IS)/AMDS
         ENDIF
       ENDDO
  12       CONTINUE
@@ -467,36 +466,34 @@
          HDXZ2  = G*XNN*HGZJ
          HDYZ2  = G*YNN*HGZJ
 !
-         CE(1,NUBO1) = CE(1,NUBO1) - FLU11
-         CE(2,NUBO1) = CE(2,NUBO1) - FLU21 + HDXZ1
-         CE(3,NUBO1) = CE(3,NUBO1) - FLU31 + HDYZ1
+         CE(NUBO1,1) = CE(NUBO1,1) - FLU11
+         CE(NUBO1,2) = CE(NUBO1,2) - FLU21 + HDXZ1
+         CE(NUBO1,3) = CE(NUBO1,3) - FLU31 + HDYZ1
 !
-         CE(1,NUBO2) = CE(1,NUBO2) + FLU11
-         CE(2,NUBO2) = CE(2,NUBO2) + FLU21 - HDXZ2
-         CE(3,NUBO2) = CE(3,NUBO2) + FLU31 - HDYZ2
+         CE(NUBO2,1) = CE(NUBO2,1) + FLU11
+         CE(NUBO2,2) = CE(NUBO2,2) + FLU21 - HDXZ2
+         CE(NUBO2,3) = CE(NUBO2,3) + FLU31 - HDYZ2
 !
 500   CONTINUE
 !
       IF(NORDRE.EQ.2) THEN
 !
-!    LIMITATION OF THE TIME STEP FOR THE BOUNDARY NODES
+!       LIMITATION OF THE TIME STEP FOR THE BOUNDARY NODES
 !
         DO K=1,NPTFR
-         IS=NBOR(K)
-         VNX=XNEBOR(K+NPTFR)
-         VNY=YNEBOR(K+NPTFR)
-         VNL=SQRT(VNX**2+VNY**2)
+          IS=NBOR(K)
+          VNX=XNEBOR(K+NPTFR)
+          VNY=YNEBOR(K+NPTFR)
+          VNL=SQRT(VNX**2+VNY**2)
+          SIGMAX= SQRT(UA(1,IS))
+          UNORM=SQRT(UA(2,IS)*UA(2,IS) + UA(3,IS)*UA(3,IS))
+          SIGMAX=MAX( 1.D-2, RA3*SIGMAX +UNORM )
+          DTL    = CFL*AIRS(IS)/(VNL*SIGMAX)
+          AUX = DTL/DTLL(IS)
+          AUX1=AUX/(1.D0+AUX)
+          DT =MIN(DT, AUX1*DTLL(IS))
+        ENDDO
 !
-            SIGMAX= SQRT(UA(1,IS))
-            UNORM=SQRT(UA(2,IS)*UA(2,IS) + UA(3,IS)*UA(3,IS))
-            SIGMAX=MAX( 1.D-2, RA3*SIGMAX +UNORM )
-               DTL    = CFL*AIRS(IS)/(VNL*SIGMAX)
-!
-         AUX = DTL/DTLL(IS)
-         AUX1=AUX/(1.D0+AUX)
-         DT =MIN(DT, AUX1*DTLL(IS))
-!
-      ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------

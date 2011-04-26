@@ -5,7 +5,7 @@
      &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SAINT-VENANT EQUATIONS FOR U,V,H.
@@ -137,6 +137,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        19/04/2011
+!+        V6P1
+!+   SECOND CALL TO SISYPHE MOVED AT THE END OF THE TIME LOOP SO THAT
+!+   A CORRECT CONTINUITY EQUATION CAN BE SENT EVEN AT THE FIRST TIME
+!+   STEP (H, HN, USIS, VSIS, DM1, ZCONV COMPATIBLE)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -202,7 +209,7 @@
 ! LOGICALS
 !
       LOGICAL AKEP,INFOGS,INFOGT,ARRET1,ARRET2,YASMH,ARRET3,CORBOT
-      LOGICAL CHARR,SUSP,SUSP1,NON,INIFLOW,YAFLODEL,YAFLULIM
+      LOGICAL CHARR,SUSP,CHARR_TEL,SUSP1,INIFLOW,YAFLODEL,YAFLULIM
       LOGICAL YASMI(MAXTRA)
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
@@ -263,7 +270,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      NON=.FALSE.
+      CHARR_TEL=.FALSE.
       CHARR=.FALSE.
       SUSP=.FALSE.
 !
@@ -811,8 +818,8 @@
      &              MESH%NBOR%I,MESH%KP1BOR%I,NPTFR,
      &              KENT,KSORT,KLOG,KINC,KNEU,KDIR,KDDL,
      &              ICONVF(3),MESH%NELBOR%I,NPOIN,NELMAX,MSK,MASKEL%R,
-     &              NFRLIQ,THOMFR,DEBLIQ,FINLIQ,FRTYPE,
-     &              TN%ADR(ITRAC)%P,TBOR%ADR(ITRAC)%P,MESH)
+     &              NFRLIQ,THOMFR,FRTYPE,
+     &              TN%ADR(ITRAC)%P,TBOR%ADR(ITRAC)%P,MESH,NUMLIQ%I)
         ENDDO
       ENDIF
 !
@@ -992,9 +999,6 @@
       CALL CHPCON(UCONV,VCONV,U,V,U,V,TETAU)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CHPCON'
       IF(SOLSYS.EQ.2) THEN
-!       INITIALISES UDEL AND VDEL ONLY AT FIRST CALL TO SISYPHE
-        CALL OS('X=Y     ',X=UDEL,Y=UCONV)
-        CALL OS('X=Y     ',X=VDEL,Y=VCONV)
         USIS=>UDEL
         VSIS=>VDEL
       ELSE
@@ -1220,44 +1224,6 @@
 !
 !=======================================================================
 !
-!     COUPLING WITH SISYPHE
-!
-      IF(INCLUS(COUPLING,'SISYPHE')) THEN
-!
-        CALL CONFIG_CODE(2)
-!       HN NOT DEFINED HERE AT FIRST ITERATION
-        IF(LT.EQ.1) CALL OS('X=Y     ',X=HN,Y=H)
-!
-        SUSP1=SUSP.AND.PERCOU.EQ.1
-        IF(SUSP1.OR.(CHARR.AND.(PERCOU*((LT-1)/PERCOU).EQ.LT-1))) THEN
-!
-          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE, CHARRIAGE'
-          CALL SISYPHE(1,LT,LEOPRD_CHARR,LISPRD,NIT,U,V,H,HN,ZF,
-     &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
-     &                 CODE1,PERCOU,U,V,AT,VISC,DT*PERCOU,CHARR,SUSP1,
-     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
-          IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL SISYPHE, CHARRIAGE'
-!
-        ENDIF
-!
-        IF(SUSP.AND.PERCOU.NE.1) THEN
-!
-          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE, SUSPENSION'
-          CALL SISYPHE(1,LT,LEOPRD,LISPRD,NIT,U,V,H,HN,ZF,
-     &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
-     &                 CODE1,1,U,V,AT,VISC,
-     &                 DT,NON,SUSP,
-     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
-          IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL DE SISYPHE, SUSPENSION'
-!
-        ENDIF
-!
-        CALL CONFIG_CODE(1)
-!
-      ENDIF
-!
-!=======================================================================
-!
 !     COUPLING WITH TOMAWAC
 !
       IF(INCLUS(COUPLING,'TOMAWAC').AND.
@@ -1339,8 +1305,8 @@
 !  MASKING SPECIFIED BY USER
 !
       IF(MSKUSE) THEN
-      CALL MASKOB (MASKEL%R,MESH%X%R,MESH%Y%R,
-     &             MESH%IKLE%I,NELEM,NELMAX,NPOIN,AT,LT)
+        CALL MASKOB(MASKEL%R,MESH%X%R,MESH%Y%R,
+     &              MESH%IKLE%I,NELEM,NELMAX,NPOIN,AT,LT)
       ENDIF
 !
 ! CREATES THE MASK OF THE POINTS FROM THE MASK OF THE ELEMENTS
@@ -1437,8 +1403,8 @@
      &              MESH%NBOR%I,MESH%KP1BOR%I,NPTFR,
      &              KENT,KSORT,KLOG,KINC,KNEU,KDIR,KDDL,
      &              ICONVF(3),MESH%NELBOR%I,NPOIN,NELMAX,MSK,MASKEL%R,
-     &              NFRLIQ,THOMFR,DEBLIQ,FINLIQ,FRTYPE,
-     &              TN%ADR(ITRAC)%P,TBOR%ADR(ITRAC)%P,MESH)
+     &              NFRLIQ,THOMFR,FRTYPE,
+     &              TN%ADR(ITRAC)%P,TBOR%ADR(ITRAC)%P,MESH,NUMLIQ%I)
         ENDDO
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DIFFIN'
       ENDIF
@@ -1608,23 +1574,20 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE THOMPS'
       CALL THOMPS(HBOR%R,UBOR%R,VBOR%R,TBOR,U,V,T9,
      &            T,ZF,MESH%X%R,MESH%Y%R,MESH%NBOR%I,
-     &            FRTYPE,T1,T2,T3,T4,T6,FU,FV,
-     &            LIHBOR%I,LIUBOR%I,LIVBOR%I,LITBOR,IT1%I,
-     &            T8,W1,IT2%I,
-     &            CV2%R,CV3%R,TE1%R,TE2%R,HTILD%R,UTILD%R,VTILD%R,
-     &            TTILD,TE3%R,
-     &            MESH%SURDET%R,MESH%IKLE%I,CF,SMH,
-     &            MESH%IFABOR%I,MESH%NULONE%I,NELEM,MESH,
-     &            MESH%KP1BOR%I,MESH%XNEBOR%R,MESH%YNEBOR%R,
-     &            NPOIN,NPTFR,
-     &            LT,NIT,AT,DT,GRAV,DEBLIQ,FINLIQ,NTRAC,
-     &            NFRLIQ,KSORT,MESH%LV,
-     &            MSK,MASKEL,MASKPT,MESH%NELBOR%I,
+     &            FRTYPE,T1,T2,T3,T4,T6,T7,T10,T11,FU,FV,
+     &            LIHBOR%I,LIUBOR%I,LIVBOR%I,LITBOR,IT1%I(1:NPTFR),
+     &            T8,IT2%I,CV2%R,CV3%R,TE1%R,HTILD,UTILD,VTILD,
+     &            TTILD,T15,MESH%SURDET%R,MESH%IKLE%I,CF,SMH,
+     &            MESH%IFABOR%I,NELEM,MESH,
+     &            MESH%XNEBOR%R,MESH%YNEBOR%R,
+     &            NPOIN,NPTFR,LT,AT,DT,GRAV,NTRAC,
+     &            NFRLIQ,KSORT,MESH%LV,MSK,MASKEL,
      &            NELMAX,IELM,NORD,FAIR,WINDX,WINDY,VENT,HWIND,
-     &            CORIOL,FCOR,SPHERI,OPTPRO,MAREE,MARDAT,MARTIM,
-     &            PHI0,OPTSOU,ISCE,DSCE2,USCE,VSCE,T5%R,COUROU,NPTH,
+     &            CORIOL,FCOR,SPHERI,MAREE,MARDAT,MARTIM,
+     &            PHI0,OPTSOU,ISCE,DSCE2,T5%R,COUROU,NPTH,
      &            VARCL,NVARCL,VARCLA,NUMLIQ%I,BM1%X%R,UNSV2D,HFROT,
-     &            FXWAVE,FYWAVE)
+     &            FXWAVE,FYWAVE,T12%R,T13%R,T14%R,
+     &            IT1%I(NPTFR+1:2*NPTFR),IT3,IT4)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE THOMPS'
 !
       ENDIF
@@ -1823,7 +1786,7 @@
      &      HSTOK%R,HCSTOK%R,LOGFR%I,DSZ%R,FLUXT,FLUHBOR,
      &      FLBOR,DTN,FLUSORTN,FLUENTN,
      &      LTT,FLUXTEMP,FLUHBTEMP,HC%R,SMTR,MESH%AIRST%R,
-     &      TMAX,DTT)
+     &      TMAX,DTT,GAMMA,FLUX_OLD)
        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VOLFIN'
 !
        AT = AT + DT
@@ -1950,7 +1913,7 @@
      &            ISOUSI,LT,NIT,OPDTRA,OPTBAN,
      &            MSK,MASKEL,MASKPT,MBOR,S,MASSOU(ITRAC),
      &            OPTSOU,SLVTRA,FLBOR,V2DPAR,UNSV2D,2,FLBORTRA,
-     &            FLULIM,YAFLULIM)
+     &            FLULIM,YAFLULIM,DIRFLU)
 !
       ELSE
       CALL CVDFTR(T%ADR(ITRAC)%P,TTILD%ADR(ITRAC)%P,TN%ADR(ITRAC)%P,
@@ -1967,7 +1930,7 @@
      &            ISOUSI,LT,NIT,OPDTRA,OPTBAN,
      &            MSK,MASKEL,MASKPT,MBOR,S,MASSOU(ITRAC),
      &            OPTSOU,SLVTRA,FLBOR,V2DPAR,UNSV2D,2,FLBORTRA,
-     &            FLULIM,YAFLULIM)
+     &            FLULIM,YAFLULIM,DIRFLU)
       ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CVDFTR'
 !
@@ -2164,8 +2127,41 @@
 888   CONTINUE
       IF (SISYPHE_CFD) CONSTFLOW_SIS = .TRUE.
 999   CONTINUE
-!=============================================
-! FH-BMD
+!
+!=======================================================================
+!
+!     COUPLING WITH SISYPHE
+!
+      IF(INCLUS(COUPLING,'SISYPHE')) THEN
+!
+        CALL CONFIG_CODE(2)
+!
+        SUSP1=SUSP.AND.PERCOU.EQ.1
+        IF(SUSP1.OR.(CHARR.AND.(PERCOU*((LT-1)/PERCOU).EQ.LT-1))) THEN
+!
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE, CHARRIAGE'
+          CALL SISYPHE(1,LT,LEOPRD_CHARR,LISPRD,NIT,U,V,H,HN,ZF,
+     &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
+     &                 CODE1,PERCOU,U,V,AT,VISC,DT*PERCOU,CHARR,SUSP1,
+     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL SISYPHE, CHARRIAGE'
+!
+        ENDIF
+!
+        IF(SUSP.AND.PERCOU.NE.1) THEN
+!
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SISYPHE, SUSPENSION'
+          CALL SISYPHE(1,LT,LEOPRD,LISPRD,NIT,U,V,H,HN,ZF,
+     &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
+     &                 CODE1,1,U,V,AT,VISC,DT,CHARR_TEL,SUSP,
+     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL DE SISYPHE, SUSPENSION'
+!
+        ENDIF
+!
+        CALL CONFIG_CODE(1)
+!
+      ENDIF
 !
 !=======================================================================
 !                      WRITES OUT THE RESULTS

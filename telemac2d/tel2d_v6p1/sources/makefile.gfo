@@ -15,13 +15,13 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION	  = V6P0
-V_SISYPHE     = V6P0
-V_BIEF 	  = V6P0
-V_DAMOCLES    = V6P0
-V_PARAVOID    = V6P0
-V_PARALLEL    = V6P0
-V_SPECIAL     = V6P0
+VERSION	  = V6P1
+V_SISYPHE     = V6P1
+V_BIEF 	  = V6P1
+V_DAMOCLES    = V6P1
+V_PARAVOID    = V6P1
+V_PARALLEL    = V6P1
+V_SPECIAL     = V6P1
 
 
 DIRINC           = $(PROJECT)\telemac2d\tel2d_$(VERSION)\$(DIRLIB)
@@ -108,7 +108,7 @@ friction_unif.f friction_zones.f friction_user.f \
 friction_read.f friction_scan.f friction_init.f friction_choice.f \
 gestio.f  gradnod.f gradnodt.f gradz.f \
 homere_adj_t2d.f hpropa.f interpol.f  \
-href.f   incide.f   initstr.f intemp.f isitok.f  \
+href.f   incide.f   init_kin.f initstr.f intemp.f isitok.f  \
 kepscl.f kepsil.f   kepsin.f lagran.f  \
 lecsip.f lecsng.f   loiden.f loinoy.f  maj.f majtrac.f \
 marast.f masbas2d.f maskob.f   matbou.f mesures.f meteo.f  metgra.f \

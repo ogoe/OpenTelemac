@@ -9,17 +9,11 @@
 ! TELEMAC2D   V6P0                                   21/08/2010
 !***********************************************************************
 !
-!brief    COMPUTES KBOR, EBOR AND AUBOR WHEN THE TURBULENCE
-!+                MODEL IS K-EPSILON.
+!brief    COMPUTES AUBOR, FRICTION ON BOUNDARIES.
 !
 !history  J-M HERVOUET (LNH)
 !+        27/11/1992
 !+
-!+
-!
-!history  L. VAN HAREN (LNH)
-!+        26/04/1994
-!+        V5P2
 !+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -148,6 +142,8 @@
 !
       DO K=1,NPTFR
         IF(LIMPRO(K,5).EQ.KNEU) THEN
+          N     = NBOR(K)
+          UTANG = SQRT(UN(N)**2+VN(N)**2)
           AUBOR(K) = - UTANG * UETUTA(K)**2
         ELSE
           AUBOR(K) = 0.D0

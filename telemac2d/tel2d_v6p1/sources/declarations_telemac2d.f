@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINICIPAL TELEMAC2D VARIABLES
@@ -55,20 +55,20 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief COMPONENTS OF VELOCITY
-! composantes de la vitesse au temps n+1
-      TYPE(BIEF_OBJ), TARGET :: U
-!brief COMPONENTS OF VELOCITY
-! composantes de la vitesse au temps n+1
-      TYPE(BIEF_OBJ), TARGET :: V
-!brief DEPTH AT NEW TIME-STEP
-! hauteur d'eau au temps n+1
+!     COMPONENTS OF VELOCITY
+! 
+      TYPE(BIEF_OBJ), TARGET :: U,V
+!
+!     DEPTH AT NEW TIME-STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: H
-!brief TRACER AT NEW TIME-STEP
-! traceur au temps n+1
+!
+!     TRACERS AT NEW TIME-STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: T
-!brief K AT NEW TIME-STEP
-! dissipation turbulente au temps n+1
+!
+!     K AT NEW TIME-STEP
+!  
       TYPE(BIEF_OBJ), TARGET :: AK
 !brief EPSILON AT NEW TIME-STEP
 ! energie turbulents au temps n+1
@@ -195,61 +195,48 @@
 !brief FREE SURFACE ELEVATION OF INCIDENT WAVE
 ! onde resultat
       TYPE(BIEF_OBJ), TARGET :: COTOND
-!brief ATMOSPHERIC PRESSURE
-! pression atmospherique
+!
+!     ATMOSPHERIC PRESSURE
+! 
       TYPE(BIEF_OBJ), TARGET :: PATMOS
-!brief COMPONENTS OF WIND VELOCITY
-! vitesse du vent en surface
-      TYPE(BIEF_OBJ), TARGET :: WINDX
-!brief COMPONENTS OF WIND VELOCITY
-! vitesse du vent en surface
-      TYPE(BIEF_OBJ), TARGET :: WINDY
-!brief DENSITY
-! masse volumique si elle est variable
+!
+!     COMPONENTS OF WIND VELOCITY
+!  
+      TYPE(BIEF_OBJ), TARGET :: WINDX,WINDY
+!
+!     DENSITY
+! 
       TYPE(BIEF_OBJ), TARGET :: RO
-!brief INTEGRAL OF BASES
 !
-      TYPE(BIEF_OBJ), TARGET :: VOLU2D
-!brief INTEGRAL OF BASES IN PARALLEL
+!     INTEGRAL OF BASES, AND THE SAME AFTER ASSEMBLING IN PARALLEL
 !
-      TYPE(BIEF_OBJ), TARGET :: V2DPAR
-!brief INVERSE OF INTEGRAL OF BASES
+      TYPE(BIEF_OBJ), TARGET :: VOLU2D,V2DPAR
+!
+!     INVERSE OF INTEGRAL OF BASES
 !
       TYPE(BIEF_OBJ), TARGET :: UNSV2D
-!brief RIGHT HAND SIDE OF LINEAR SYSTEM
-! second membre du systeme
-      TYPE(BIEF_OBJ), TARGET :: CV1
-!brief RIGHT HAND SIDE OF LINEAR SYSTEM
-! second membre du systeme
-      TYPE(BIEF_OBJ), TARGET :: CV2
-!brief RIGHT HAND SIDE OF LINEAR SYSTEM
-! second membre du systeme
-      TYPE(BIEF_OBJ), TARGET :: CV3
-!brief RIGHT HAND SIDE OF LINEAR SYSTEM
-! second membre du systeme
-      TYPE(BIEF_OBJ), TARGET :: CV1S
-!brief RIGHT HAND SIDE OF CONTINUITY EQUATION
-! termes sources de l'equation de continuite
+!
+!     RIGHT HAND SIDES OF LINEAR SYSTEMS
+! 
+      TYPE(BIEF_OBJ), TARGET :: CV1,CV2,CV3,CV1S
+!
+!     RIGHT HAND SIDE OF CONTINUITY EQUATION
+! 
       TYPE(BIEF_OBJ), TARGET :: SMH
-!brief P0 WORKING ARRAY
 !
-      TYPE(BIEF_OBJ), TARGET :: TE1
-!brief P0 WORKING ARRAY
+!     P0 WORKING ARRAYS
 !
-      TYPE(BIEF_OBJ), TARGET :: TE2
-!brief P0 WORKING ARRAY
+      TYPE(BIEF_OBJ), TARGET :: TE1,TE2,TE3
 !
-      TYPE(BIEF_OBJ), TARGET :: TE3
-!brief P0 WORKING ARRAY, FOR OPTION 3 OF TREATMENT OF TIDAL FLATS
+!     WORKING ARRAYS FOR OPTION 3 OF TREATMENT OF TIDAL FLATS
 !
-      TYPE(BIEF_OBJ), TARGET :: TE4
-!brief P0 WORKING ARRAY, FOR OPTION 3 OF TREATMENT OF TIDAL FLATS
+      TYPE(BIEF_OBJ), TARGET :: TE4,TE5
+! 
+!     WORKING ARRAY (SIZE MULTIPLE OF NELMAX)
 !
-      TYPE(BIEF_OBJ), TARGET :: TE5
-!brief
-! tableau de travail
       TYPE(BIEF_OBJ), TARGET :: W1
-!brief FOR FLUXES ACCROSS SECTIONS
+!
+!     FOR FLUXES ACCROSS SECTIONS
 !
       TYPE(BIEF_OBJ), TARGET :: MSKSEC
 !brief
@@ -435,15 +422,22 @@
 !brief FOR DELWAQ
 !
       TYPE(BIEF_OBJ),TARGET :: FLULIM
-!brief EXPLICIT SOURCE TERMS FOR TRACERS
-! terme source explicite
+!
+!     EXPLICIT SOURCE TERMS FOR TRACERS
+! 
       TYPE(BIEF_OBJ),TARGET :: TEXP
-!brief EXPLICIT SOURCE TERMS FOR TRACERS
-! terme explicite venant des sources ponctuelles de l'equation du traceur
+!
+!     TERMS DUE TO SOURCES FOR TRACERS
+! 
       TYPE(BIEF_OBJ),TARGET :: TSCEXP
-!brief IMPLICIT SOURCE TERMS FOR TRACERS
+!
+!     IMPLICIT SOURCE TERMS FOR TRACERS
 !
       TYPE(BIEF_OBJ),TARGET :: TIMP
+!
+!     FLUXES FOR FINITE VOLUMES
+!
+      TYPE(BIEF_OBJ),TARGET :: FLUX_OLD
 !
 !-----------------------------------------------------------------------
 !
@@ -864,29 +858,38 @@
 !brief ORIGIN OF THE COORDINATE SYSTEM
 ! coordonnees de l'origine
       INTEGER J_ORIG
-!brief NUMBER OF TRACERS
-! nombre de traceurs
+!
+!     NUMBER OF TRACERS
+! 
       INTEGER NTRAC
-!brief INDEX FOR TEMPERATURE
 !
-      INTEGER IND_T
-!brief INDEX FOR SALINITY
+!     INDEX FOR TEMPERATURE, FOR SALINITY
 !
-      INTEGER IND_S
-!brief NUMBER OF POINTS GIVEN FOR EACH DISCHARGE-ELEVATIONS CURVES
+      INTEGER IND_T,IND_S
+!
+!     NUMBER OF POINTS GIVEN FOR EACH DISCHARGE-ELEVATIONS CURVES
 !
       INTEGER PTS_CURVES(MAXFRO)
-!brief OPTION FOR TREATING STAGE-DISCHARGE CURVES
-! courbes de tarage
+!
+!     OPTION FOR TREATING STAGE-DISCHARGE CURVES
+! 
       INTEGER STA_DIS_CURVES(MAXFRO)
-!brief KEYWORD DEBUGGER
-! debugger
+!
+!     DEBUGGER
+!  
       INTEGER DEBUG
-!brief KEYWORD 'DEPTH IN FRICTION TERMS'
-! hauteur dans les termes de frottement
+!
+!     DEPTH IN FRICTION TERMS
+!  
       INTEGER HFROT
-!brief KEYWORD 'LAW OF FRICTION ON LATERAL BOUNDARIES'
+!
+!     LAW OF FRICTION ON LATERAL BOUNDARIES
+!
       INTEGER KFROTL
+!
+!     TREATMENT OF FLUXES At THE BOUNDARIES
+!
+      INTEGER DIRFLU
 !
 !-----------------------------------------------------------------------
 !
@@ -1212,10 +1215,16 @@
 !brief ARRAY OF REALS TO READ INTO SELAFIN FILES
 !
       REAL, ALLOCATABLE :: W(:)
-!brief TOLERANCES FOR IDENTIFICATION
-! precisions pour l'identification
+!
+!     TOLERANCES FOR IDENTIFICATION
+!  
       DOUBLE PRECISION TOLEST(4)
-!brief ARRAY WITH STAGE-DISCHARGE CURVES
+!
+!     NEWMARK TIME INTEGRATION COEFFICIENT
+!  
+      DOUBLE PRECISION GAMMA
+!
+!     ARRAY WITH STAGE-DISCHARGE CURVES
 !
       DOUBLE PRECISION, ALLOCATABLE :: QZ(:,:,:)
 !
@@ -1288,68 +1297,30 @@
 !
 !-----------------------------------------------------------------------
 !
-!       DECLARATION OF POINTERS FOR ALIASES.
-!       TARGETS ARE DEFINED IN POINT_TELEMAC2D.
+!     DECLARATION OF POINTERS FOR ALIASES.
+!     TARGETS ARE DEFINED IN POINT_TELEMAC2D.
 !
-!brief ALIAS FOR WORKING VECTOS IN TB
+!     ALIASES FOR WORKING VECTORS IN TB
 !
-      TYPE(BIEF_OBJ),POINTER :: T1
-!brief ALIAS FOR WORKING VECTOS IN TB
+      TYPE(BIEF_OBJ),POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11
+      TYPE(BIEF_OBJ),POINTER :: T12,T13,T14,T15,T16,T17,T18,T19,T20
+      TYPE(BIEF_OBJ),POINTER :: T21,T22
 !
-      TYPE(BIEF_OBJ),POINTER :: T2
-!brief ALIAS FOR WORKING VECTOS IN TB
+!     ALIASES FOR VECTOR IN BLOCK PRIVE
 !
-      TYPE(BIEF_OBJ),POINTER :: T3
-!brief ALIAS FOR WORKING VECTOS IN TB
+      DOUBLE PRECISION,POINTER :: PRIVE1(:),PRIVE2(:)
+      DOUBLE PRECISION,POINTER :: PRIVE3(:),PRIVE4(:)
 !
-      TYPE(BIEF_OBJ),POINTER :: T4
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T5
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T6
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T7
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T8
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T9
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T10
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T11
-!brief ALIAS FOR WORKING VECTOS IN TB
-!
-      TYPE(BIEF_OBJ),POINTER :: T12
-!brief ALIAS FOR VECTOR IN BLOCK PRIVE
-!
-      DOUBLE PRECISION,POINTER :: PRIVE1(:)
-!brief ALIAS FOR VECTOR IN BLOCK PRIVE
-!
-      DOUBLE PRECISION,POINTER :: PRIVE2(:)
-!brief ALIAS FOR VECTOR IN BLOCK PRIVE
-!
-      DOUBLE PRECISION,POINTER :: PRIVE3(:)
-!brief ALIAS FOR VECTOR IN BLOCK PRIVE
-!
-      DOUBLE PRECISION,POINTER :: PRIVE4(:)
-!brief CONNECTIVITY TABLE
-! numeros globaux des points des elements 2d
+!     CONNECTIVITY TABLE
+! 
       TYPE(BIEF_OBJ), POINTER :: IKLE
-!brief COORDINATES OF POINTS IN THE MESH
-! coordonnees du maillage
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: X
-!brief COORDINATES OF POINTS IN THE MESH
-! coordonnees du maillage
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: Y
-!brief NUMBER OF ELEMENTS IN THE MESH
-! nombre total d'elements dans le maillage 2d
+!
+!     COORDINATES OF POINTS IN THE MESH
+! 
+      DOUBLE PRECISION, DIMENSION(:), POINTER :: X,Y
+!
+!     NUMBER OF ELEMENTS IN THE MESH
+! 
       INTEGER, POINTER:: NELEM
 !brief MAXIMUM NUMBER OF ELEMENTS IN THE MESH
 ! nombre maximal d'elements dans le maillage 2d

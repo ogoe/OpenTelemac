@@ -1,66 +1,58 @@
-!                    **************
-                     SUBROUTINE CDL
-!                    **************
+!                       **************
+                        SUBROUTINE CDL
+!                       **************
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,G,HBOR,
      & UBOR,VBOR,UA,CE,FLUENT,FLUSORT,FLBOR,
      & DTHAUT,DT,CFL,FLUHBTEMP,NTRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC 2D VERSION 6.1                                          INRIA
 !***********************************************************************
 !
-!brief    SAINT VENANT-KINETIC.
-!+
-!+            COMPUTES THE ADVECTIVE FLUXES AT BOUNDARIES.
-!+                UA(1,IS) = H;  UA(2,IS)=U;  UA(3,IS)=V.
+!brief  COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES
 !
-!history  INRIA
+!    UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
+!
+!history  INRIA 
 !+
 !+        V5P8
 !+
 !
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
+!history  R. ATA (EDF-LNHE) BALANCE OF WATER
+!+        15/03/2010
+!+        V6P1
 !+   Translation of French comments within the FORTRAN sources into
 !+   English comments
 !
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CE             |<->| FLUX
-!| CFL            |-->| NOMBRE DE CFL
-!| DT             |<->| PAS DE TEMPS
-!| DTHAUT         |-->| UTILISE POUR CONDITION CFL
-!| FLBOR          |<--| FLUX MASSE ENTREE ET SORTIE
-!| FLUENT,FLUSORT |<--| FLUX MASSE ENTREE ET SORTIE
-!| FLUHBTEMP      |---|
-!| G              |-->| CONSTANTE DE GRAVITE
-!| HBOR           |-->| VALEURS IMPOSEES DE H
-!| KDIR           |-->| CONVENTION POUR LES POINTS DIRICHLET
-!| KNEU           |-->| CONVENTION POUR LES POINTS NEUMANN
-!| LIMPRO         |-->| TYPES DE CONDITIONS AUX LIMITES
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NTRAC          |---|
-!| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
-!| UBOR           |-->| VALEURS IMPOSEES DE U
-!| VBOR           |-->| VALEURS IMPOSEES DE V
-!| XNEBOR,YNEBOR  |-->| NORMALE AUX POINTS FRONTIERE
+!|  NS            |-->|  TOTAL NUMNER OF NODES
+!|  NPTFR         |-->|  TOTAL NUMBER OF BOUNDARY NODES
+!|  NBOR          |-->|  GLOBAL NUMBERS OF BOUNDARY POINTS
+!|  LIMPRO        |-->|  TYPES OF BOUNDARY CONDITION
+!|  XNEBOR,YNEBOR |-->|  UNIT OUTWARD NORMAL COMPONENTS AT BOUNDARY POINTS
+!|  KDIR          |-->|  CONVENTION FOR DIRICHLET POINTS
+!|  KNEU          |-->|  CONVENTION FOR NEUMANN POINTS
+!|  G             |-->|  GRAVITY CONSTANT
+!|  HBOR          |-->|  IMPOSED VALUES FOR H
+!|  UBOR          |-->|  IMPOSED VALUES FOR U
+!|  VBOR          |-->|  IMPOSED VALUES FOR V
+!|  UA            |-->|  UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
+!|  CE            |<->|  FLUX 
+!|  FLUENT,FLUSORT|<--|  IN AND OUT MASS FLUX
+!|  DTHAUT        |-->|  CHARACTERISTIC LENGTH (DX) FOR CFL
+!|  DT            |<->|  TIME STEP
+!|  CFL           |-->|  CFL NUMBER
+!|  FLUHBTEMP     |<--|  BOUNDARY FLUX FOR THE TRACER
+!|  TRAC          |-->|  LOGICAL: TO INDICATE THE PRESENCE OF A TRACER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
-!
+      USE BIEF 
       IMPLICIT NONE
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,NTRAC
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
@@ -68,21 +60,21 @@
       DOUBLE PRECISION, INTENT(IN)    :: UBOR(NPTFR),VBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: G,CFL
       DOUBLE PRECISION, INTENT(INOUT) :: DT
-      DOUBLE PRECISION, INTENT(INOUT) :: CE(3,NS),FLUENT,FLUSORT
+      DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLUHBTEMP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLBOR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,K,NIT,ITRAC
+      INTEGER IS,K,NIT,ITRAC      
 !
-      DOUBLE PRECISION RA3,RA32,RA33, ALP,ALP2,ALP3,SG,SQ2
+      DOUBLE PRECISION RA3,RA32,RA33, ALP,ALP2,ALP3,SG,SQ2      
       DOUBLE PRECISION VNX,VNY,VNX1,VNY1,VNL,H,U,V,RUN
       DOUBLE PRECISION FLUH,FLUU,FLUV,AUX,FLUTMP,RH,HRH,UNN,VNN
-      DOUBLE PRECISION FHPLUS,FUPLUS,FHMOINS,FUMOINS
+      DOUBLE PRECISION FHPLUS,FUPLUS,FHMOINS,FUMOINS 
       DOUBLE PRECISION A,A1,A2,A3,ALPHA0,ALPHA1,ALPHA2,C,VP1,VP2 ,VP3
       DOUBLE PRECISION HG ,RHG,HRHG,UG,VG,DEST,RVG,CA1,AM
-      DOUBLE PRECISION UIN,VIN,HUIN,HVIN,SIGMAX,DTL,UNORM
+      DOUBLE PRECISION UIN,VIN,HUIN,HVIN,SIGMAX,DTL,UNORM 
 !
       SQ2   = SQRT(2.D0)
       SG    = SQRT(G)
@@ -109,11 +101,11 @@
        U   = UA(2,IS)
        V   = UA(3,IS)
 !
-!         SOLID WALLS
-!         **************
-!
-!      SLIP CONDITIONS
-!      ***********************
+!        SOLID WALLS
+!        **************
+
+!     PERFECT SLIPPING CONDITION 
+!     **************************
 !
        IF(LIMPRO(K,1).EQ.KNEU) THEN
 !
@@ -123,10 +115,10 @@
          FLUV = AUX*VNY
        ELSE
 !
-!        LIQUID BOUNDARIES
-!        *******************
+!       LIQUID BOUNDARY
+!       *******************
 !
-!     CALCULATES F+(H,U,V)
+!    CALCULATION OF F+(H,U,V)
 !
        HRH = RH * H
 !
@@ -150,14 +142,14 @@
 !
          FHPLUS = H*UNN*ALPHA0 + HRH*ALPHA1
          FUPLUS = UNN*(FHPLUS+HRH*ALPHA1) + H*H*ALPHA2
-      ENDIF
+       ENDIF
 !
 !
-!     CALCULATES THE FICTITIOUS STATE (HG,UG,VG)
-!     ----------------------------------
+!    CALCULATION OF FICTIVE STATE (HG,UG,VG)
 !
-!     H PROVIDED
-!     ########
+!
+!    H GIVEN 
+!    ########
 !
         IF(LIMPRO(K,1).EQ.KDIR) THEN
 !
@@ -180,21 +172,21 @@
            SIGMAX=1.D-2
          ELSE
 !
-!    FLUVIAL REGIME
-!    --------------
+!   FLUVIAL REGIME
+!   --------------
 !
           IF (VP2*VP3.LE.0.D0) THEN
 !
            UG=UNN+2.D0*SG*(RH-RHG)
            VG=VNN
 !
-!    TORRENTIAL REGIME
-!    -----------------
+!   TORRENTIAL REGIME 
+!   -----------------
 !
           ELSE
 !
-!   FLUX IMPOSED
-!   -----------
+!  IMPOSED FLUX
+!  -----------
           IF(LIMPRO(K,2).EQ.KDIR) THEN
 !
             UIN = UBOR(K)
@@ -212,10 +204,10 @@
             UG= AM*SG*RHG
             VG=RVG/HG
 !
-          ELSE
+          ELSE  
 !
-!   DATA MISSING, ONE SUPPOSES STILL WATER
-!
+!  ONE DATUM IS MISSING, WE SUPPOSE "THE LAKE AT REST"
+
             UG= 0.D0
             VG= 0.D0
 !
@@ -227,8 +219,7 @@
       ENDIF
       GOTO 200
 !
-!  THE DOWNSTREAM IS IN FACT TORRENTIAL, ONE CANNOT MAINTAIN
-!   THE CONDITION OF H IMPOSED
+! THE OUTFLOW IS TORRENTIAL SO WE HAVE NO NEED FOR THE GIVEN H
 !
        ELSE
        GOTO 100
@@ -236,8 +227,8 @@
       ENDIF
 !
 !
-!     VELOCITY IMPOSED
-!     ################
+!    GIVEN VELOCITY 
+!    ################
 !
         ELSE IF(LIMPRO(K,2).EQ.KDIR) THEN
 !
@@ -248,13 +239,13 @@
 !
          DEST=HUIN*VNX1+HVIN*VNY1
          RVG =-HUIN*VNY1+HVIN*VNX1
-!     ATTENTION: MODIFICATION OF THE SIGN / INRIA REPORT
+!    WARNING: SIGN CHANGE / INRIA REPORT
             A1 = -DEST+FHPLUS
             A2 = -UNN - 2.D0*SG*RH
 !
          IF (A1.LE.0.D0) THEN
 !
-!     FH- =-A1 CANNOT BE SATISFIED
+!    FH- =-A1 CANNOT BE SATISFIED
 !
          FHMOINS = 0.D0
          FUMOINS = 0.D0
@@ -282,7 +273,7 @@
       ENDIF
         GOTO 200
 !
-!   NO CONDITION
+! NO CONDITION 
 !
         ELSE
 !
@@ -292,7 +283,7 @@
        GOTO 1000
 !
 !
-!     CALCULATES F-(HG,UG,VG)
+!   CALCULATION OF F-(HG,UG,VG)
 !
  220   CONTINUE
 !
@@ -304,30 +295,30 @@
          ALPHA2=ALP3*(A3+RA33)
 !
          FHMOINS = HG*UG*ALPHA0 + HRHG*ALPHA1
-         FUMOINS = UG*(FHMOINS + HRHG*ALPHA1)
+         FUMOINS = UG*(FHMOINS + HRHG*ALPHA1) 
      &  + HG*HG*ALPHA2
 !
             SIGMAX= RHG
             UNORM=SQRT(UG *UG + VG*VG)
             SIGMAX=MAX( 1.D-2, RA3 *SIGMAX +UNORM )
 !
-!     CALCULATES FLUXES AND OPPOSITE ROTATION
+!    CALCUL DES FLUX ET ROTATION INVERSE
 !
  200   CONTINUE
          FLUH=(FHPLUS +FHMOINS)*VNL
          FLUU=(FUPLUS +FUMOINS)*VNL
 !
-         IF (FLUH.GE.0.D0) THEN
-         FLUV= VNN*FLUH
+         IF (FLUH.GE.0.D0) THEN 
+         FLUV= VNN*FLUH 
          ELSE
-         FLUV= VG*FLUH
+         FLUV= VG*FLUH 
          ENDIF
 !
       FLUTMP=FLUU
       FLUU = +VNX1*FLUTMP-VNY1*FLUV
       FLUV = +VNY1*FLUTMP+VNX1*FLUV
 !
-!       CORRECTION OF THE TIME STEP
+!      CORRECTION OF THE TIME STEP
 !
        DTL = CFL*DTHAUT(IS)/SIGMAX
        DT  = MIN(DT, DTL)
@@ -345,20 +336,20 @@
 !
        IF(LIMPRO(K,1).EQ.KDIR)  FLUSORT = FLUSORT + FLUH
        IF(LIMPRO(K,2).EQ.KDIR)  FLUENT = FLUENT +FLUH
+
+!RA
+       FLBOR%R(K)=FLUH       
 !
-! RA
-       FLBOR%R(K)=FLUH
-!
-       CE(1,IS)  = CE(1,IS) - FLUH
-       CE(2,IS)  = CE(2,IS) - FLUU
-       CE(3,IS)  = CE(3,IS) - FLUV
+       CE(IS,1)  = CE(IS,1) - FLUH
+       CE(IS,2)  = CE(IS,2) - FLUU
+       CE(IS,3)  = CE(IS,3) - FLUV
 !
        IF(NTRAC.GT.0) THEN
          DO ITRAC=1,NTRAC
            FLUHBTEMP%ADR(ITRAC)%P%R(K)=FLUH
          ENDDO
        ENDIF
-!
+! 
        ENDDO
 !
 !-----------------------------------------------------------------------

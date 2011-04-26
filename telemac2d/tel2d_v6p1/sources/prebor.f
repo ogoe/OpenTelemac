@@ -79,7 +79,7 @@
 !
 !  LOOP ON THE LIQUID BOUNDARIES
 !
-      IF(NFRLIQ.NE.0) THEN
+      IF(NFRLIQ.GT.0) THEN
 !
       DO K= 1 , NPTFR
         IFRLIQ=NUMLIQ(K)

@@ -1,15 +1,31 @@
-!                    **********************
-                     SUBROUTINE FLU_ZOKAGOA
-!                    **********************
-!
-     &(H1,H2,ETA1,ETA2,U1,U2,V1,V2,
-     & XNN,YNN,FLX,G)
+C                       **********************
+                        SUBROUTINE FLU_ZOKAGOA
+C                       **********************
+
+     *(H1,H2,ETA1,ETA2,U1,U2,V1,V2,XNN,YNN,FLXI,FLXJ,G)
 !
 !***********************************************************************
-! TELEMAC2D
+! TELEMAC 2D VERSION 6.1                                     03/15/2011
 !***********************************************************************
+!
+!brief  COMPUTES ZOKAGOA FLUX AT THE INERNAL INTERFACES 
+!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS 
+!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304 
+!
+!history  R. ATA (EDF-LNHE)
+!+
+!+        V6P1
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  H1,H2         |-->|  LEFT AND RIGHT WATER DEPTHS
+!|  ETA1,ETA2     |-->|  LEFT AND RIGHT FREE SURFACES
+!|  U1,U2         |-->|  LEFT AND RIGHT VELOCITY X-COMPONENTS
+!|  V1,V2         |-->|  LEFT AND RIGHT VELOCITY Y-COMPONENTS
+!|  XNN,YNN       |-->|  X AND Y COMPONENTS OF THE OUTWARD UNIT NORMAL
+!|  FLXI,FLXJ     |<--|  RIGHT AND LEFT CONTRIBUTIONS TO THE FLUX
+!|  G             |-->|  GRAVITY CONSTANT
+!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -22,113 +38,143 @@
 !
       DOUBLE PRECISION, INTENT(IN)    :: G,H1,H2,ETA1,ETA2,U1,U2
       DOUBLE PRECISION, INTENT(IN)    :: V1,V2,XNN,YNN
-      DOUBLE PRECISION, INTENT(INOUT) :: FLX(3)
-!***********************************************************************
+      DOUBLE PRECISION, INTENT(INOUT) :: FLXI(3),FLXJ(3)
 !
-      INTEGER NSG,J,IVAR,IS,K,ILIM,ERR
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER NSG,J,IVAR,IS,K,ILIM    
 !
       DOUBLE PRECISION VNX,VNY,VNL,ZF1,ZF2
       DOUBLE PRECISION FLUIJ_20
       DOUBLE PRECISION SIGMAX,UNORM
 !
       INTEGER CHOICE_D
+      DOUBLE PRECISION GSUR2,DIJS2
       DOUBLE PRECISION ALPHA,FLUIJ_1,EPS
       DOUBLE PRECISION UI,UJ,VI,VJ
       DOUBLE PRECISION U_IJ,D_IJ,C_IJ,C_I,C_J,UI0,UJ0
-      DOUBLE PRECISION  FLUIJ_2,FLUIJ_3
-!-----------------------------------------------------------------------
-!**************************************************************
-! VOIR SON EFFET
-         ALPHA=1.D0
-         CHOICE_D=1
-         EPS=1.E-6
-!**************************************************************
-! INITIALISATION DE FLX
-         DO IVAR=1,3
-           FLX(IVAR) = 0.D0
-         ENDDO
+      DOUBLE PRECISION FLUIJ_2I,FLUIJ_2J
+      DOUBLE PRECISION FLUIJ_3,FLUIJ_3I,FLUIJ_3J
+!
+!***********************************************************************
+!
+      ALPHA=1.D0
+      CHOICE_D=1
+      EPS=1.E-6
+      GSUR2=G/2.0D0
+!
+!***********************************************************************
+!
+!     INITIALIZATION OF FLXI AND FLXJ
+! 
+      DO IVAR=1,3
+        FLXI(IVAR) = 0.D0
+        FLXJ(IVAR) = 0.D0
+      ENDDO
 !
 !-----------------------------------------------------------------------
-! BATHYMETRIES
-         ZF1   =    ETA1-H1
-         ZF2   =    ETA2-H2
-! VELOCITIES
-         UI=U1
-         VI=V1
-         UJ=U2
-         VJ=V2
 !
-! ROTATION
+!     BATHYMETRIES
 !
-         UI0 = UI
-         UI  = XNN*UI0+YNN*VI
-         VI  =-YNN*UI0+XNN*VI
+      ZF1   =    ETA1-H1
+      ZF2   =    ETA2-H2
 !
-         UJ0 = UJ
-         UJ  = XNN*UJ0+YNN*VJ
-         VJ  =-YNN*UJ0+XNN*VJ
+!     VELOCITIES
 !
-! WET/DRY TREATMENT
+      UI=U1
+      VI=V1
+      UJ=U2
+      VJ=V2
 !
-!        CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
+!     ROTATION
 !
-1234   CONTINUE
+      UI0 = UI
+      UI  = XNN*UI0+YNN*VI
+      VI  =-YNN*UI0+XNN*VI
 !
-! LET'S COMPUTE D_IJ
+      UJ0 = UJ
+      UJ  = XNN*UJ0+YNN*VJ
+      VJ  =-YNN*UJ0+XNN*VJ
 !
-        IF(CHOICE_D.EQ.1)THEN
-! ZOKAGOA'S CHOICE
+!     WET/DRY TREATMENT
+!
+      CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
+!
+!     LET'S COMPUTE D_IJ
+!
+      IF(CHOICE_D.EQ.1) THEN
+!
+!       ZOKAGOA'S CHOICE
+!
         U_IJ=0.5D0*(UI+UJ)
-        C_IJ=SQRT(0.5*G*(H1+H2))
+        C_IJ=SQRT(GSUR2*(H1+H2))
         D_IJ=ALPHA*MAX(ABS(U_IJ-C_IJ),MAX(ABS(U_IJ),ABS(U_IJ+C_IJ)))
-        ELSEIF(CHOICE_D.EQ.2)THEN
-! TORO'S CHOICE
+!
+      ELSEIF(CHOICE_D.EQ.2) THEN
+!
+!       TORO'S CHOICE
+!
         C_I=SQRT(G*H1)
         C_J=SQRT(G*H2)
         D_IJ=MAX(ABS(UI)+C_I,ABS(UJ)+C_J)
-        ELSE
 !
-! ERROR MESSAGE
+      ELSE
 !
-        IF(LNG.EQ.1) WRITE(LU,4010) ERR
-        IF(LNG.EQ.2) WRITE(LU,4020) ERR
-4010    FORMAT(1X,'FLU_AZZ : ERREUR DANS LE CHOIX DE L UPWIND : ',/,1X,
-     &         'CODE D''ERREUR : ',1I6)
-4020    FORMAT(1X,'FLU_AZZ: ERROR IN THE UPWIND CHOICE: ',/,1X,
-     &        'ERROR CODE: ',1I6)
+!       ERROR MESSAGE        
+!
+        IF(LNG.EQ.1) WRITE(LU,4010) CHOICE_D
+        IF(LNG.EQ.2) WRITE(LU,4020) CHOICE_D
+4010    FORMAT(1X,'FLU_AZZ : ERREUR DANS LE CHOIX DE L''UPWIND : ',1I6)
+4020    FORMAT(1X,'FLU_AZZ: ERROR IN THE UPWIND CHOICE: ',1I6)
         CALL PLANTE(1)
         STOP
-       ENDIF
-5000   CONTINUE
 !
-! CENTERED FLUX COMPUTATION
+      ENDIF
+
+5000  CONTINUE
 !
-! ZOKAOA FLUX
-           FLUIJ_1=0.5D0*(H1*UI+H2*UJ)
-           FLUIJ_2=0.5D0*(H1*(UI*UI)+H2*(UJ*UJ) +
-     &             0.5D0*G*((ETA1*ETA1)+(ETA2*ETA2))-
-     &              G*ZF1*(ETA1+ETA2) )
-           FLUIJ_3=0.5D0*(H1*UI*VI+H2*UJ*VJ)
+!     CENTERED FLUX COMPUTATION
 !
-! UPWIND ADDING
+!     ZOKAOA FLUX
 !
-          FLUIJ_1=FLUIJ_1-0.5D0*D_IJ*(ETA2-ETA1)
-          FLUIJ_2=FLUIJ_2-0.5D0*D_IJ*(H2*UJ-H1*UI)
-          FLUIJ_3=FLUIJ_3-0.5D0*D_IJ*(H2*VJ-H1*VI)
+      FLUIJ_1 = 0.5D0*(H1*UI+H2*UJ) 
+      FLUIJ_2I= 0.5D0*(H1*(UI*UI)+H2*(UJ*UJ) +
+     &               GSUR2*((ETA1*ETA1)+(ETA2*ETA2))-
+     &               G*ZF1*(ETA1+ETA2) )
+      FLUIJ_2J= FLUIJ_2I+GSUR2*(ETA1+ETA2)*(ZF1-ZF2) 
+      FLUIJ_3 = 0.5D0*(H1*UI*VI+H2*UJ*VJ) 
 !
-! INVERSE ROTATION
+!     UPWIND ADDING
+! 
+      DIJS2=0.5D0*D_IJ
+      FLUIJ_1  = FLUIJ_1 - DIJS2*(ETA2-ETA1)
+      FLUIJ_2I = FLUIJ_2I- DIJS2*(H2*UJ-H1*UI)
+      FLUIJ_2J = FLUIJ_2J- DIJS2*(H2*UJ-H1*UI)
+      FLUIJ_3  = FLUIJ_3 - DIJS2*(H2*VJ-H1*VI)
 !
-         FLUIJ_20 = FLUIJ_2
-         FLUIJ_2  = XNN*FLUIJ_20-YNN*FLUIJ_3
-         FLUIJ_3  = YNN*FLUIJ_20+XNN*FLUIJ_3
+!     INVERSE ROTATION
 !
-! FINAL FLUX
+      FLUIJ_20  = FLUIJ_2I
+      FLUIJ_3I  = FLUIJ_3
+      FLUIJ_2I  = XNN*FLUIJ_20-YNN*FLUIJ_3I
+      FLUIJ_3I  = YNN*FLUIJ_20+XNN*FLUIJ_3I
 !
-         FLX(1) =  FLUIJ_1
-         FLX(2) =  FLUIJ_2
-         FLX(3) =  FLUIJ_3
+      FLUIJ_20  = FLUIJ_2J
+      FLUIJ_3J  = FLUIJ_3
+      FLUIJ_2J  = XNN*FLUIJ_20-YNN*FLUIJ_3J
+      FLUIJ_3J  = YNN*FLUIJ_20+XNN*FLUIJ_3J
 !
-5500   CONTINUE
+!     FINAL FLUX 
+!
+      FLXI(1) =  FLUIJ_1
+      FLXI(2) =  FLUIJ_2I 
+      FLXI(3) =  FLUIJ_3I 
+!
+      FLXJ(1) =  FLUIJ_1
+      FLXJ(2) =  FLUIJ_2J 
+      FLXJ(3) =  FLUIJ_3J 
+!
+5500  CONTINUE
 !
 !-----------------------------------------------------------------------
 !
