@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CONC_VASE      |---|
+!| CONC_VASE      |---|  INPUT CONCENTRATION OF EACH LAYER (IN KG/M3)
 !| CSF            |---|
 !| DT             |---|
 !| FLUDP          |---|
@@ -59,8 +59,7 @@
       ! ------------------
       INTEGER :: I,J
 !
-      DOUBLE PRECISION ZERO
-      DOUBLE PRECISION CONC,MER
+      DOUBLE PRECISION ZERO, MER
 !
 !======================================================================!
 !======================================================================!
@@ -69,21 +68,26 @@
 !======================================================================!
 !
        ZERO = 1.D-08
-!
-! COMPUTES THE SEDIMENT FLUX AT EACH TIMESTEP
-!
+! 
+! COMPUTES THE SEDIMENT FLUX DURING EACH TIMESTEP
+!  A revoir : QFLUX est en KG/M2 
+! 
            CALL OS('X=Y-Z   ', X=QFLUX, Y=FLUDP, Z=FLUER)
            CALL OS('X=CX    ', X=QFLUX, C=DT)
-           IF(NCOUCH_TASS.EQ.1)   CALL OS('X=CY    ',
-     &         X=ZFCL_S, Y= QFLUX, C=1.D0/CSF)
-           IF(NCOUCH_TASS.GT.1) THEN
+           CALL OS('X=CX    ', X=QFLUX, C=XMVS)
+C
+         IF(NCOUCH_TASS.EQ.1)  THEN
+              CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX, 
+     &             C=1.D0/CONC_VASE(1))
+!
+         ELSE
              DO I = 1, NPOIN
 !
 ! DEPOSITION IN THE FIRST LAYER
 !
              IF (QFLUX%R(I).GT.ZERO) THEN
-                ZFCL_S%R(I) = QFLUX%R(I) / CSF
-                MS(I,1) = MS (I,1) +QFLUX%R(I)*XMVS
+                ZFCL_S%R(I) = QFLUX%R(I) / CONC_VASE(1)
+                MS(I,1) = MS (I,1) +QFLUX%R(I)
 !
               ELSEIF(QFLUX%R(I).LT.ZERO) THEN
 !
@@ -91,16 +95,19 @@
 !
 !
                 ZFCL_S%R(I) = 0.D0
-                MER = - QFLUX%R(I) *XMVS
+                MER = - QFLUX%R(I)
 !
                 DO J = 1, NCOUCH_TASS
 !
-                 IF(.NOT.SEDCO) CONC= XMVS * CSF
-                 IF(SEDCO) CONC=XMVS*CONC_VASE(J)
+!... needs to be checkked                 IF(.NOT.SEDCO) CONC= XMVS * CSF_SABLE
+!                 IF(SEDCO) CONC=XMVS*CONC_VASE(J)
+! CONC ARE IN KG/M3
+!
+!                 CONC= CONC_VASE(J)
 !
                  IF (MER.LE.MS(I,J)) THEN
                    MS(I,J)= MS(I,J) - MER
-                   ZFCL_S%R(I)= ZFCL_S%R(I) - MER/CONC
+                   ZFCL_S%R(I)= ZFCL_S%R(I) - MER/CONC_VASE(J)
                    GO TO 40
 !
                 ELSE
@@ -109,7 +116,7 @@
 !
                    MER= MER - MS(I,J)
                    ZFCL_S%R(I)= ZFCL_S%R(I) -
-     &                MS(I,J)/CONC
+     &                MS(I,J)/CONC_VASE(J)
                    MS(I,J)=0.D0
 !
                ENDIF

@@ -3,7 +3,7 @@
 !                    ******************************
 !
      &(MESH,LIEBOR,KSORT,ELAY,V2DPAR,QSX,QSY,AVA,NPOIN,NSEG,NPTFR,
-     & DT,QS,T1,T2,T3,BREACH)
+     & DT,QS,T1,T2,T3,BREACH,CSF_SABLE)
 !
 !***********************************************************************
 ! SISYPHE   V6P0                                   21/08/2010
@@ -56,6 +56,7 @@
 !| T2             |---|
 !| T3             |---|
 !| V2DPAR         |---|
+!| CSF_SABLE      |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_NERBED_VF => BEDLOAD_NERBED_VF
@@ -74,7 +75,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS, T1, T2, T3
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH
       DOUBLE PRECISION, INTENT(IN)    :: ELAY(NPOIN),V2DPAR(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN), CSF_SABLE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -189,7 +190,7 @@
 !
       DO I = 1, NPOIN
 !
-         T3%R(I)=ELAY(I)*V2DPAR(I)*AVA(I)*(1.D0-1.D-6)/DT
+         T3%R(I)=ELAY(I)*V2DPAR(I)*AVA(I)* CSF_SABLE/DT
          IF (T3%R(I) < 0.D0) T3%R(I) = 0.D0
 !
          ! IF THE OUTGOING FLUX IS TOO LARGE, QS IS CAPPED AT THE NODE

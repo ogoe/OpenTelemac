@@ -1,5 +1,5 @@
 !                    ****************************
-                     SUBROUTINE BEDLOAD_ENGEL_OLD
+                     SUBROUTINE BEDLOAD_ENGEL_CC
 !                    ****************************
 !
      &(TETAP,CF,NPOIN,GRAV,DM,DENS,TETA,QSC)
@@ -50,7 +50,7 @@
 !| TETAP          |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE INTERFACE_SISYPHE,EX_BEDLOAD_ENGEL_OLD => BEDLOAD_ENGEL_OLD
+      USE INTERFACE_SISYPHE,EX_BEDLOAD_ENGEL_CC => BEDLOAD_ENGEL_CC
       USE BIEF
 !
       IMPLICIT NONE

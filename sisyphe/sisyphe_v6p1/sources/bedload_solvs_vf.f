@@ -3,7 +3,7 @@
 !                    *****************************
 !
      &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,
-     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX)
+     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE)
 !
 !***********************************************************************
 ! SISYPHE   V6P0                                   21/08/2010
@@ -75,7 +75,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: LIEBOR,UNSV2D, EBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH
       INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KSORT
-      DOUBLE PRECISION, INTENT(IN)    :: DT
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
 !
@@ -161,7 +161,9 @@
 !
       DO K=1,NPTFR
         IF(LIEBOR%I(K).EQ.KENT) THEN
-          ZFCL%R(MESH%NBOR%I(K)) = EBOR%R(K)
+!         ZFCL WILL BE DIVIDED BY CSF_SABLE AFTER, AND THEN IT WILL
+!         BE EBOR...
+          ZFCL%R(MESH%NBOR%I(K)) = EBOR%R(K)*CSF_SABLE
         ENDIF
       ENDDO
 !

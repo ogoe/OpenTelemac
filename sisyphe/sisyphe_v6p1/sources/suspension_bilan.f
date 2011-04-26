@@ -2,8 +2,7 @@
                      SUBROUTINE SUSPENSION_BILAN
 !                    ***************************
 !
-     &(MESH,CST,HN,ZFCL_S,MASKEL,
-     & IELMT,ITRA,LT,NIT,DT,CSF,
+     &(MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,CSF,
      & MASSOU,MASED0,MSK,ENTET,MASTEN,MASTOU,MASINI,T2,
      & T3,MASFIN,MASDEPT,MASDEP,AGGLOT,
      & VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
@@ -114,17 +113,19 @@
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER IFRLIQ,I
-      DOUBLE PRECISION            :: ERREUR, PERDUE, RELATI, FLUXT
+      DOUBLE PRECISION            :: ERREUR, PERDUE, FLUXT
 !     HERE 300 IS MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
       DOUBLE PRECISION FLT_BOUND(300)
       ! 4/ EXTERNAL FUNCTION
       ! --------------------
       DOUBLE PRECISION, EXTERNAL :: P_DSUM
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
+!
       ! ************************************** !
       ! I - QUANTITY OF SEDIMENT IN SUSPENSION !
       ! ************************************** !
@@ -134,10 +135,8 @@
         CALL OS('X=YZ    ',X=T2,Y=VOLU2D,Z=CST)
       ELSE
         CALL VECTOR(T2,'=','MASVEC          ',IELMT,
-     &              1.D0-AGGLOT,CST,T3,T3,T3,T3,T3,MESH,MSK,MASKEL)
-        CALL VECTOR(T3,'=','MASBAS          ',IELMT,
-     &                   AGGLOT,T2,T2,T2,T2,T2,T2,MESH,MSK,MASKEL)
-        CALL OS('X=X+YZ  ',X=T2,Y=T3,Z=CST)
+     &             1.D0-AGGLOT,CST,T3,T3,T3,T3,T3,MESH,MSK,MASKEL)
+        CALL OS('X=X+CYZ ',X=T2,Y=VOLU2D,Z=CST,C=AGGLOT)
       ENDIF
 !
       MASFIN = DOTS(T2,HN)
@@ -145,8 +144,18 @@
       ! ************************** !
       ! II - TOTAL MASS OF DEPOSIT !
       ! ************************** !
-      CALL VECTOR(T2, '=', 'MASVEC          ', IELMT, CSF, ZFCL_S, HN,
-     &            HN, HN, HN, HN, MESH, MSK, MASKEL)
+!     CALL VECTOR(T2, '=', 'MASVEC          ',IELMT,CSF,ZFCL_S,HN,
+!    &            HN,HN,HN,HN,MESH,MSK,MASKEL)
+     
+      IF(AGGLOT.GT.0.999999D0) THEN
+!       ASSUMES HERE THAT AGGLOT=1.D0
+        CALL OS('X=CYZ   ',X=T2,Y=VOLU2D,Z=ZFCL_S,C=CSF)
+      ELSE
+        CALL VECTOR(T2,'=','MASVEC          ',IELMT,
+     &             1.D0-AGGLOT,ZFCL_S,T3,T3,T3,T3,T3,MESH,MSK,MASKEL)
+        CALL OS('X=X+CYZ ',X=T2,Y=VOLU2D,Z=ZFCL_S,C=AGGLOT)
+        CALL OS('X=CX    ',X=T2,C=CSF)
+      ENDIF        
       MASDEPT = BIEF_SUM(T2)
       IF(NCSIZE.GT.1) MASDEPT = P_DSUM(MASDEPT)
       ! *************************************************** !
@@ -156,7 +165,7 @@
 !
 !=======================================================================
 !
-!   COMPUTES THE FLUXES (NO DIFFUSIVE FLUX,...TO INVESTIGATE)
+!     COMPUTES THE FLUXES (NO DIFFUSIVE FLUX,...TO INVESTIGATE)
 !
 !=======================================================================
 !
@@ -192,15 +201,14 @@
       ! VIII - QUANTITY CREATED BY SOURCE TERM !
       ! ************************************** !
       MASTOU = MASTOU + MASSOU
-      ! ***************************** !
-      ! IX - RELATIVE ERROR ON VOLUME !
-      ! ***************************** !
+      ! ******************** !
+      ! IX - ERROR ON VOLUME !
+      ! ******************** !
 !
-! CORRECTION JMH 17/03/05 : MISSING TERM
+!     CORRECTION JMH 17/03/05 : MISSING TERM
 !                                         - MASDEPT
       ERREUR = MASINI + MASSOU - DT*FLUXT - MASDEPT - MASFIN
 !
-      IF (MASFIN > 1.D-8) ERREUR = ERREUR / MASFIN
       ! *********** !
       ! X - LISTING !
       ! *********** !
@@ -234,13 +242,8 @@
       ! ************************************** !
       IF(LT.EQ.NIT.AND.ENTET) THEN
          PERDUE = MASED0 + MASTEN + MASTOU - MASFIN - MASDEP
-         RELATI = PERDUE
-         IF(MAX(MASED0,MASFIN) > 1.D-10) THEN
-           RELATI = RELATI / MAX(MASED0,MASFIN)
-         ENDIF
          IF(LNG.EQ.1) THEN
             WRITE(LU,3000) ITRA
-            WRITE(LU,1140) RELATI
             WRITE(LU,1160) ITRA, MASED0, MASFIN
             IF(ABS(MASTEN) > 1.D-8) WRITE(LU,1161) MASTEN
             IF(ABS(MASTOU) > 1.D-8) WRITE(LU,1164) MASTOU
@@ -248,7 +251,6 @@
             WRITE(LU,1166) PERDUE
          ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,3100) ITRA
-            WRITE(LU,2140) RELATI
             WRITE(LU,2160) ITRA,MASED0, MASFIN
             IF(ABS(MASTEN) > 1.D-8) WRITE(LU,2161) MASTEN
             IF(ABS(MASTOU) > 1.D-8) WRITE(LU,2164) MASTOU
@@ -259,9 +261,9 @@
       ! *************************** !
       ! XII - UPDATES INITIAL MASS  !
       ! *************************** !
-      MASINI = MASFIN
+      MASINI = MASFIN  
       !----------------------------------------------------------------!
-1005  FORMAT(1X,'QUANTITE DE LA CLASSE    ',I2
+1005  FORMAT(/,1X,'QUANTITE DE LA CLASSE    ',I2
      &         ,' EN SUSPENSION AU TEMPS T    : ',G16.7,' M3')
 1100  FORMAT(1X,'QUANTITE DE LA CLASSE    ',I2
      &         ,' EN SUSPENSION AU TEMPS T+DT : ',G16.7,' M3')
@@ -273,23 +275,21 @@
      &         ,'                             : ',G16.7,' M3/S')
 1114  FORMAT(1X,'FLUX DE LA CLASSE        ',I2
      &         ,' PAR ONDE INCIDENTE          : ',G16.7,' M3/S')
-1115  FORMAT(1X,'VOLUME DEPOSE SUR LE FOND  '
-     &         ,'                             : ',G16.7,' M3')
+1115  FORMAT(1X,'VOLUME DEPOSE SUR LE FOND  : ',G16.7,' M3')
 1116  FORMAT(1X,'VOLUME CREE PAR TERME SOURCE  '
      &         ,   '                          : ',G16.7,' M3')
-1120  FORMAT(1X,'ERREUR RELATIVE SUR LE VOLUME  '
-     &         ,    '                         : ', G16.7)
-1140  FORMAT(1X,'ERREUR RELATIVE CUMULEE SUR LE VOLUME : ', G16.7)
+1120  FORMAT(1X,'ERREUR SUR LE VOLUME       : ',G16.7)
 1160  FORMAT(1X,'QUANTITE INITIALE DE ',I2,'               : ',G16.7
      &         ,' M3',
-     &     /,1X,'QUANTITE FINALE                       : ', G16.7,' M3')
-1161  FORMAT(1X,'QUANTITE ENTREE AUX FRONT. LIQUID.    : ', G16.7,' M3')
-1164  FORMAT(1X,'QUANTITE CREEE PAR TERME SOURCE       : ', G16.7,' M3')
-1166  FORMAT(1X,'QUANTITE TOTALE PERDUE                : ', G16.7,' M3')
-1167  FORMAT(1X,'VOLUME TOTAL DEPOSE SUR LE FOND       : ', G16.7,' M3')
+     &     /,1X,'QUANTITE FINALE                       : ',G16.7,' M3')
+1161  FORMAT(1X,'QUANTITE ENTREE AUX FRONT. LIQUID.    : ',G16.7,' M3')
+1164  FORMAT(1X,'QUANTITE CREEE PAR TERME SOURCE       : ',G16.7,' M3')
+1166  FORMAT(1X,'QUANTITE TOTALE PERDUE                : ',G16.7,' M3',
+     &                                                                /)
+1167  FORMAT(1X,'VOLUME TOTAL DEPOSE SUR LE FOND       : ',G16.7,' M3')
 3000  FORMAT(/,1X,'        *** ','BILAN FINAL DE LA CLASSE ',I2,' ***')
       !----------------------------------------------------------------!
-2005  FORMAT(1X,'QUANTITY OF CLASS                 ',I2
+2005  FORMAT(/,1X,'QUANTITY OF CLASS                 ',I2
      &         ,' IN SUSPENSION AT TIME T    : ',G16.7,' M3')
 2100  FORMAT(1X,'QUANTITY OF CLASS                 ',I2
      &         ,' IN SUSPENSION AT TIME T+DT : ',G16.7,' M3')
@@ -301,23 +301,21 @@
      &         ,'                            : ',G16.7,' M3/S')
 2114  FORMAT(1X,'FLUX OF SEDIMENT CLASS            ',I2
      &         ,' ADDED BY INCIDENT WAVE     : ',G16.7,' M3/S')
-2115  FORMAT(1X,'VOLUME OF DEPOSIT                   '
-     &         ,'                            : ',G16.7, ' M3')
+2115  FORMAT(1X,'VOLUME OF DEPOSIT           : ',G16.7,' M3')
 2116  FORMAT(1X,'VOLUME CREATED BY SOURCE TERM       '
-     &         ,'                            : ',G16.7, ' M3')
-2120  FORMAT(1X,'RELATIVE ERROR ON VOLUME            '
-     &         ,'                            : ',G16.7)
-2140  FORMAT(1X,'RELATIVE ERROR CUMULATED ON VOLUME : ', G16.7       )
-2160  FORMAT(1X,'INITIAL QUANTITY OF ',I2,'           : '  , G16.7
+     &         ,'                            : ',G16.7,' M3')
+2120  FORMAT(1X,'ERROR ON VOLUME             : ',G16.7)
+2160  FORMAT(1X,'INITIAL QUANTITY OF ',I2,'           : ',G16.7
      &         ,' M3',
-     &     /,1X,'FINAL QUANTITY                     : ', G16.7, ' M3')
-2161  FORMAT(1X,'QUANTITY ENTERED THROUGH LIQ. BND. : ', G16.7, ' M3')
-2164  FORMAT(1X,'QUANTITY CREATED BY SOURCE TERM    : ', G16.7, ' M3')
-2166  FORMAT(1X,'TOTAL QUANTITY LOST                : ', G16.7, ' M3')
-2167  FORMAT(1X,'TOTAL MASS OF DEPOSIT              : ', G16.7, ' M3')
-3100  FORMAT(/,1X,'      *** ','FINAL BALANCE FOR TRACER',I2,' ***')
-      !----------------------------------------------------------------!
+     &     /,1X,'FINAL QUANTITY                     : ',G16.7, ' M3')
+2161  FORMAT(1X,'QUANTITY ENTERED THROUGH LIQ. BND. : ',G16.7, ' M3')
+2164  FORMAT(1X,'QUANTITY CREATED BY SOURCE TERM    : ',G16.7, ' M3')
+2166  FORMAT(1X,'TOTAL QUANTITY LOST                : ',G16.7, ' M3',/)
+2167  FORMAT(1X,'TOTAL MASS OF DEPOSIT              : ',G16.7, ' M3')
+3100  FORMAT(/,1X,'      *** ','FINAL BALANCE FOR TRACER',I2,' ***')!
+!
 !======================================================================!
 !======================================================================!
+!
       RETURN
       END

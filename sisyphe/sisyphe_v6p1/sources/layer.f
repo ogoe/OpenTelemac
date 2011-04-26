@@ -13,7 +13,7 @@
 !+                NEW STRATUM THICKNESS ESTRAT.
 !+
 !+            ACTIVE LAYER IS LAYER 1, IT IS KEPT AT A PRESCRIBED
-!+                HEIGHT OF ELAY0.
+!+                HEIGHT OF ELAY0  PROVIDED IT IS POSSIBLE
 !+
 !+            STRATUM IS LAYER 2 OF HEIGHT ESTRAT.
 !
@@ -43,6 +43,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        12/04/2011
+!+        V6P0
+!+   One bug corrected in case of restart, and a formula made clearer
+!+   Look for 12/04/2011...
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |---|
@@ -101,7 +107,10 @@
 !     TO CHECK FRACTIONS IN THE RANGE [-ZERO,1+ZERO]
 !
       DOUBLE PRECISION ZERO
-      DATA             ZERO/1.D-10/
+!     DATA             ZERO/1.D-10/
+!     IN CASE OF RESTART, THE FIRST TIME STEP IS A BIT HARD BECAUSE OF
+!     SINGLE PRECISION, WITHOUT RESTART 1.D-10 IS OK
+      DATA             ZERO/1.D-7/
 !
 !-----------------------------------------------------------------------
 !
@@ -110,6 +119,15 @@
 !-----------------------------------------------------------------------
 !
       DO J=1,NPOIN
+!
+!       ACTIVATE BEFORE INVESTIGATING PROBLEMS IN LAYER...
+!       LOOK FOR 'ACTIVATE' TO SEE OTHER LINES LIKE THIS BELOW
+!           
+!       IF(ELAY%R(J).LT.0.D0) THEN
+!         WRITE(LU,*) 'NEGATIVE ELAY IN LAYER J=',J,' ELAY=',ELAY%R(J)
+!         CALL PLANTE(1)
+!         STOP
+!       ENDIF      
 !
         IF(.NOT.CONST_ALAYER) ELAY0 = 3.D0 * ACLADM%R(J)
 !
@@ -120,9 +138,18 @@
 !               ELAY(J) = ES(J,1) WHY IS IT AN EXTRA ARRAY ??
 !
 !
-        EVOL  = 0.D0
         HEIGH = ZF%R(J)-ZR%R(J)
+!
+!       ACTIVATE BEFORE INVESTIGATING PROBLEMS IN LAYER...
+!        
+!       IF(HEIGH.LT.0.D0) THEN
+!         WRITE(LU,*) 'BAD DATA IN LAYER J=',J,' HEIGH=',HEIGH
+!         CALL PLANTE(1)
+!         STOP
+!       ENDIF        
+!                       
 !       HERE ELAY.NE.HEIGH BECAUSE ELAY IS THE ACTIVE LAYER THICKNESS
+        EVOL  = 0.D0
         DO I=1,NSICLA
           EVOL = EVOL + ZFCL_W%ADR(I)%P%R(J)
         ENDDO
@@ -166,11 +193,11 @@
 !             AVAIL(J,1,I)=( AVAIL(J,1,I)*(ELAY0-EVOL)
 !    &                       +ZFCL_W%ADR(I)%P%R(J)     )/ELAY0
 !
-!             IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-!    *           AVAIL(J,1,I).LT.-ZERO) THEN
-!               WRITE(LU,*) 'ERROR IN LAYER CASE 1'
-!               STOP
-!             ENDIF
+              IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
+     *           AVAIL(J,1,I).LT.-ZERO) THEN
+                WRITE(LU,*) 'ERROR IN LAYER CASE 1'
+                STOP
+              ENDIF
             ENDDO
 !           NEW HEIGHT OF LAYER 1
             ELAY%R(J) = ELAY0
@@ -197,11 +224,11 @@
      &                            + AVAIL(J,2,I)*ESTRAT%R(J)
      &                            - AVAIL(J,3,I)*(EVOL+ESTRAT%R(J))
      &                           )/ ELAY0
-!                 IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-!    &               AVAIL(J,1,I).LT.-ZERO) THEN
-!                   WRITE(LU,*) 'ERROR IN LAYER CASE 2'
-!                   STOP
-!                 ENDIF
+                  IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
+     &               AVAIL(J,1,I).LT.-ZERO) THEN
+                    WRITE(LU,*) 'ERROR IN LAYER CASE 2'
+                    STOP
+                  ENDIF
                   AVAIL(J,2,I) = AVAIL(J,3,I)
                   DO K=3,MIN(9,NLAYER%I(J))
                     AVAIL(J,K,I) = AVAIL(J,K+1,I)
@@ -214,7 +241,7 @@
                   ES(J,K) = ES(J,K+1)
                 ENDDO
 !
-!             ONLY ONE LAYER LEFT (NOTE JMH : 1 OR 2 ?)
+!             HERE NLAYER.GT.1 AND NOT .GT.2, SO 2 !
 !
               ELSE
                 DO I=1,NSICLA
@@ -222,12 +249,24 @@
                     AVAIL(J,1,I) = (  AVAIL(J,1,I)*ELAY0
      &                              + ZFCL_W%ADR(I)%P%R(J)
      &                              + ESTRAT%R(J)*AVAIL(J,2,I)
-     &                              )/(ELAY%R(J)+EVOL+ESTRAT%R(J))
-!                   IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-!    &                 AVAIL(J,1,I).LT.-ZERO) THEN
-!                     WRITE(LU,*) 'ERROR IN LAYER CASE 3'
-!                     STOP
-!                   ENDIF
+     &                              )/(ELAY0+EVOL+ESTRAT%R(J))
+!                   MODIF JMH 12/04/2011, WITH 2 LAYERS, LAYER 1
+!                   HAS ELAY%R(J)=ELAY0, SO WHY ELAY IN DENOMINATOR
+!                   AND ELAY0 IN NUMERATOR ? (VICIOUS!!)
+!    &                              )/(ELAY%R(J)+EVOL+ESTRAT%R(J))
+                    IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
+     &                 AVAIL(J,1,I).LT.-ZERO) THEN
+                      WRITE(LU,*) 'J=',J,' NLAYER%I(J)=',NLAYER%I(J)
+                      WRITE(LU,*) 'AVAIL(J,1,I)=',AVAIL(J,1,I)
+                      WRITE(LU,*) 'AVAIL(J,2,I)=',AVAIL(J,2,I)
+                      WRITE(LU,*) 'ZFCL=',ZFCL_W%ADR(I)%P%R(J)
+                      WRITE(LU,*) 'HEIGH=',HEIGH,' ELAY0=',ELAY0
+                      WRITE(LU,*) 'ESTRAT%R(J)=',ESTRAT%R(J)
+                      WRITE(LU,*) 'ELAY%R(J)=',ELAY%R(J)
+                      WRITE(LU,*) 'EVOL=',EVOL
+                      WRITE(LU,*) 'ERROR IN LAYER CASE 3'
+                      STOP
+                    ENDIF
                   ELSE
                     AVAIL(J,1,I) = 0.D0
                   ENDIF
@@ -245,11 +284,11 @@
                 AVAIL(J,1,I) = (  AVAIL(J,1,I) * ELAY0
      &                          + ZFCL_W%ADR(I)%P%R(J)
      &                          - EVOL*AVAIL(J,2,I)    )/ELAY0
-!               IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-!    &             AVAIL(J,1,I).LT.-ZERO) THEN
-!                 WRITE(LU,*) 'ERROR IN LAYER CASE 4'
-!                 STOP
-!               ENDIF
+                IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
+     &             AVAIL(J,1,I).LT.-ZERO) THEN
+                  WRITE(LU,*) 'ERROR IN LAYER CASE 4'
+                  STOP
+                ENDIF
               ENDDO
               ELAY%R(J) = ELAY0
               ESTRATNEW(J) = ESTRAT%R(J) + EVOL
@@ -291,11 +330,11 @@
               AVAIL(J,2,I) = AVAIL(J,1,I)
               AVAIL(J,1,I) = (AVAIL(J,1,I) * (ELAY0-EVOL)
      &                     + ZFCL_W%ADR(I)%P%R(J) )/ELAY0
-!             IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-!    &           AVAIL(J,1,I).LT.-ZERO) THEN
-!                WRITE(LU,*) 'ERROR IN LAYER CASE 5'
-!                STOP
-!             ENDIF
+              IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
+     &           AVAIL(J,1,I).LT.-ZERO) THEN
+                 WRITE(LU,*) 'ERROR IN LAYER CASE 5'
+                 STOP
+              ENDIF
             ENDDO
 !
 ! IF THERE REMAINS ONLY ONE LAYER
@@ -311,20 +350,21 @@
                 AVAIL(J,1,I) = (AVAIL(J,1,I)*ELAY%R(J)+
      &                          ZFCL_W%ADR(I)%P%R(J))
      &                          / (ELAY%R(J)+EVOL)
-!               IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
-!    &            AVAIL(J,1,I).LT.-ZERO) THEN
-!                 WRITE(LU,*) 'ERROR IN LAYER CASE 6'
-!                 WRITE(LU,*) 'INITIAL AVAIL=',AUX
-!                 WRITE(LU,*) 'J=',J,' CLASS ',I
-!                 WRITE(LU,*) 'EVOL=',EVOL,' ELAY=',ELAY%R(J)
-!                 WRITE(LU,*) 'ZFCL=',ZFCL_W%ADR(I)%P%R(J)
-!                 WRITE(LU,*) 'DENOMINATOR=',ELAY%R(J)+EVOL
-!                 WRITE(LU,*) 'NUMERATOR=',AUX*ELAY%R(J)+
-!    &                                     ZFCL_W%ADR(I)%P%R(J)
-!               ENDIF
+C               IF(AVAIL(J,1,I).GT.1.D0+ZERO.OR.
+C    &            AVAIL(J,1,I).LT.-ZERO) THEN
+C                 WRITE(LU,*) 'ERROR IN LAYER CASE 6'
+C                 WRITE(LU,*) 'INITIAL AVAIL=',AUX
+C                 WRITE(LU,*) 'J=',J,' CLASS ',I
+C                 WRITE(LU,*) 'EVOL=',EVOL,' ELAY=',ELAY%R(J)
+C                 WRITE(LU,*) 'EVOL+ELAY=',EVOL+ELAY%R(J)
+C                 WRITE(LU,*) 'ZFCL=',ZFCL_W%ADR(I)%P%R(J)
+C                 WRITE(LU,*) 'DENOMINATOR=',ELAY%R(J)+EVOL
+C                 WRITE(LU,*) 'NUMERATOR=',AUX*ELAY%R(J)+
+C    &                                     ZFCL_W%ADR(I)%P%R(J)
+C               ENDIF
                 AVAIL(J,2,I) = 0.D0
               ENDDO
-              IF(ELAY%R(J)+EVOL.LT.1.D-7) THEN
+              IF(ELAY%R(J)+EVOL.LT.1.D-5) THEN
 !               PLAYING WITH ZEROES, RISK OF SUM NOT EQUAL TO 1
 !               ONLY BECAUSE OF TRUNCATION ERRORS, WE NORMALISE
                 TEST1=0.D0
@@ -339,7 +379,11 @@
                 ENDIF
               ENDIF
             ELSE
-              DO I=1,NSICLA
+!             JMH 11/04/2011
+!             ACLADM BEING RECOMPUTED WITH AVAIL
+              AVAIL(J,1,1)=1.D0
+              AVAIL(J,2,1)=1.D0
+              DO I=2,NSICLA
                 AVAIL(J,1,I) = 0.D0
                 AVAIL(J,2,I) = 0.D0
               ENDDO
@@ -353,7 +397,11 @@
       NLAYER%I(J) = NLAYNEW(J)
       ESTRAT%R(J) = ESTRATNEW(J)
       ES(J,1) = ELAY%R(J)
-      IF(NLAYER%I(J).GT.1) ES(J,2) = ESTRAT%R(J)
+!     CORRECTION JMH 12/04/2011: IN CASE OF RESTART, ES(J,2)
+!     WILL BE STORED IN A FILE AND LOOKED AT TO COUNT THE
+!     NUMBER OF LAYERS
+!     IF(NLAYER%I(J).GT.1) ES(J,2) = ESTRAT%R(J) 
+      ES(J,2) = ESTRAT%R(J)    
 !
       TEST1 = 0.D0
       TEST2 = 0.D0

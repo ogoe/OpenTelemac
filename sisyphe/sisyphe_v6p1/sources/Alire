@@ -49,3 +49,59 @@ rajout de
 
 Bug sur init_avai.f
 vider les couches non definies
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+01/03/2011
++++++++++
+ICQ = 3 : formule de concentration Ã  l'Ã©quilibre de Van Rijn (1987)
+
+
+suspension_Vanrijn
+suspension_computation
+suspension_erosion
+init_transport 
+interface_sisyphe
+suspension_main 
+
+Envoi la viscosit (VCE) a suspension_VAnrijn
+VCE--> SUSPENSION_MAIN---> SUSP_COMPUTATION --->SUSP_EROSION---> SUSPENSION_VR
+appel de suspension_Van RIJN aussi dans suspension_flux_mixte
+-----------------------------      dans init_transport
+
+restructuration de suspension_computation
+DÃƒÂ©placer le calcul d'ÃƒÂ©rosion avant le dÃƒÂ©pÃƒÅ½t (pour regrouper le calcul du ZREF etdu CSTAEQ qui dÃƒÂ©pendent du ICQ
+Regrouper le calcul de la vitesse de convection avec la rÃ©solution numÃ©rique 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+04/03/2011 : BUG
+++++++++++
+envoyer le FDM(I) dans suspension_main et l'utiliser pour le calcul du trnansport 
+(jusqu'Ã  prÃ©sent c'est le diamÃ¨tre moyen qui est utilisÃ©!!!)
+
+suspension_main
+remplacer ACLADM par FDM(I)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+15/03/2011
+++++++++++
+changement du BAW
+dico : ajouts des mots clÃ©s: MP, ALPHA,MOFAC
+declarations_sisyphe
+bedload_seccurrent.f
+bedload_meyer
+suspension_fredsoe
+lecdon_sisyphe
+sisyphe.f
+init_transport
+
+31/03/2011
++++++++++++
+on remplace la variable XKV par la porosité XKV = N porosité
+	- dico changé 
+	- lecdon : CSF_SABLE = (1-porosité)  
+	- changement de bedload_solidischarge: XKV eliminé
+	- bedload_main: après evol: ZFCL =ZFCL/CSF_SABLE
+	- bedload_evol: 
+	 avant appel à bedload_solvs_fe 
+	 le tableau T13 : ELAY multiplié par CSF_SABLE
+	 - bedload_nerbed_vf tableau T3 changé 
+	 envoyer CSF_SABLE = (1-porosité) en argument? 

@@ -8,7 +8,7 @@
      &   DEBUG, HIDFAC, ICF, IELMT, ISOUS, KDDL, KDIR,
      &   KENT, KINC, KLOG, KNEU, KSORT, LOADMETH, LT,
      &   NPOIN, NPTFR, NSICLA, OPTBAN, LS0, BETA, FD90, FDM,
-     &   GRAV, HIDI, HMIN, VCE, XKV, XMVE, XMVS, XWC,
+     &   GRAV, HIDI, HMIN, VCE, CSF_SABLE, XMVE, XMVS, XWC,
      &   PI, KARMAN, ZERO, KARIM_HOLLY_YANG,MSK, SUSP, VF,
      &   ENTET, CONST_ALAYER, LCONDIS, LGRAFED, MESH,
      &   ELAY, LIEBOR, LIMTEC, MASKTR,
@@ -162,7 +162,7 @@
 !| V3D            |---|
 !| VCE            |---|
 !| VF             |---|
-!| XKV            |---|
+!| CSF_SABLE      |---|
 !| XMVE           |---|
 !| XMVS           |---|
 !| XWC            |---|
@@ -197,7 +197,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: LS0, BETA, FD90(NSICLA)
       DOUBLE PRECISION, INTENT(IN)    :: FDM(NSICLA),GRAV
       DOUBLE PRECISION, INTENT(IN)    :: HIDI(NSICLA),HMIN,VCE
-      DOUBLE PRECISION, INTENT(IN)    :: XKV,XMVE,XMVS,XWC(NSICLA)
+      DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE,XMVE,XMVS,XWC(NSICLA)
       DOUBLE PRECISION, INTENT(IN)    :: PI,KARMAN,ZERO
       DOUBLE PRECISION, INTENT(IN)    :: KARIM_HOLLY_YANG
       LOGICAL,          INTENT(IN)    :: MSK, SUSP, VF
@@ -254,21 +254,19 @@
          IF(.NOT.SEDCO(I)) THEN
            IF (DEBUG > 0) WRITE(LU,*)
      &       'BEDLOAD_SOLIDISCHARGE : ',I,'/',NSICLA
-!
            CALL BEDLOAD_SOLIDISCHARGE
      &        (MESH, U2D, V2D, UNORM,HN, TW, UW, MU,TOB,CF,
      &          TOBW,FW,THETAW,AVAIL(1:NPOIN,1,I),
      &          MASKPT, MASKEL, ACLADM,
      &          UNLADM,KSP,KSR, LIQBOR, QBOR%ADR(I)%P, DEBUG, NPOIN,
      &          NPTFR, IELMT, ICF, KENT, OPTBAN, HIDFAC, GRAV,
-     &          FDM(I), FD90(I), XWC(I), XMVE, XMVS, XKV, VCE, HMIN,
+     &          FDM(I), FD90(I), XWC(I), XMVE, XMVS, VCE, HMIN,
      &          HIDI(I),KARMAN,ZERO,PI,
      &          KARIM_HOLLY_YANG,SUSP,MSK,T1,T2,
      &          T3, T4, T5, T6, T7, T8, T9, T10, T11,T12, AC(I),
      &          HIDING,QSCL_C%ADR(I)%P,QSCL_S%ADR(I)%P,
      &          SLOPEFF,COEFPN,PHISED,CALFA,SALFA,BETA,ZF,S,
      &          DEVIA, BETA2 , SECCURRENT, BIJK,HOULE,UNSV2D,
-!RK
      &          U3D,V3D,CODE)
           IF(DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_SOLIDISCHARGE'
         ELSE
@@ -297,9 +295,13 @@
      &                      VCE,VF,ENTETS,MSK,CONST_ALAYER,
      &                      LCONDIS,MESH,QSCL_C%ADR(I)%P,
      &                      T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,
-     &                      T13,ELAY0,BREACH,QSCLXC%ADR(I)%P,
+     &                      T13,CSF_SABLE,BREACH,QSCLXC%ADR(I)%P,
      &                      QSCLYC%ADR(I)%P,ZFCL_C%ADR(I)%P,SLOPEFF)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_EVOL'
+!
+!         NOW DIVIDING BY CSF_SABLE TO GET THE EVOLUTION OF BED
+!         INCLUDING VOIDS
+          CALL OS('X=CX    ',X= ZFCL_C%ADR(I)%P,C=1.D0/CSF_SABLE)     
 !
         ELSE
 !
@@ -322,18 +324,14 @@
       CALL OS('X=0     ', X=ZF_C)
       ! II.2 - ADDS THE CLASSES
       ! ----------------------
-      DO I=1,NSICLA
-         ! CORRECTS THE SOLID TRANSPORT TO NOT TAKE INTO ACCOUNT THE
-         ! POROSITY COEFFICIENT (MUST BE A NON-ZERO VALUE...)
-         ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        IF(.NOT.SEDCO(I)) THEN
-          CALL OS('X=CX    ', X=QSCL_C%ADR(I)%P, C=1.D0/XKV)
-          CALL OS('X=CX    ', X=QSCLXC%ADR(I)%P, C=1.D0/XKV)
-          CALL OS('X=CX    ', X=QSCLYC%ADR(I)%P, C=1.D0/XKV)
-          CALL OS('X=X+Y   ', X=QS_C, Y=QSCL_C%ADR(I)%P)
-          CALL OS('X=X+Y   ', X=ZF_C, Y=ZFCL_C%ADR(I)%P)
-        ENDIF
-      ENDDO
+      !
+      DO I=1,NSICLA      
+! V6P1 inutile decorriger les taux de transport !
+         IF(.NOT.SEDCO(I)) THEN
+           CALL OS('X=X+Y   ', X=QS_C, Y=QSCL_C%ADR(I)%P)
+           CALL OS('X=X+Y   ', X=ZF_C, Y=ZFCL_C%ADR(I)%P)
+         ENDIF
+       ENDDO
 !
 !     TIDAL FLATS WITH MASKING     JMH ON 27/07/2006
 !

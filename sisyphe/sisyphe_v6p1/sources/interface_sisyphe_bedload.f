@@ -224,7 +224,7 @@
 !
 !
       !================================================================!
-      SUBROUTINE BEDLOAD_ENGEL_OLD
+      SUBROUTINE BEDLOAD_ENGEL_CC
       !----------------------------------------------------------------!
      &   (TETAP,CF,NPOIN,GRAV,DM,DENS,TETA,QSC)
       !----------------------------------------------------------------!
@@ -237,7 +237,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: TETA ! WORK ARRAY T1, T2
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC
       !----------------------------------------------------------------!
-      END SUBROUTINE BEDLOAD_ENGEL_OLD
+      END SUBROUTINE BEDLOAD_ENGEL_CC
       !================================================================!
 !
 !
@@ -251,7 +251,7 @@
      & DTS,DM,D90,HMIN,LS0,GRAV,XMVS,XMVE,VCE,
      & VF,ENTET,MSK,CONST_ALAYER,LCONDIS,MESH,
      & QS,T1, T2, T3, T4, T5, T6, T7, T8, T9,
-     & T10, T11, T12, T13, ELAY0, BREACH, QSX, QSY, ZFCL,SLOPEFF)
+     & T10, T11, T12, T13, CSF_SABLE, BREACH, QSX, QSY, ZFCL,SLOPEFF)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HN,Q,S,UNSV2D
@@ -271,7 +271,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS,EBOR
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T1, T2, T3, T4, T5, T6, T7
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8, T9, T10, T11, T12, T13
-      DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
+      DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH, QSX, QSY, ZFCL
 !
       !----------------------------------------------------------------!
@@ -285,7 +285,7 @@
 !
      &  (U2D, V2D,UCMOY, HN, CF, MU,TOB, TOBW, UW, TW, THETAW, FW,
      &   ACLADM, UNLADM,KSP,KSR, AVA,  NPOIN, ICF, HIDFAC, XMVS, XMVE,
-     &   DM, GRAV, VCE, XKV, HMIN, XWC, D90, KARMAN, ZERO,
+     &   DM, GRAV, VCE,  HMIN, XWC, D90, KARMAN, ZERO,
      &   PI, SUSP, AC, HIDING, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,
      &   T11,CFP, QSC, QSS,IELMT,SECCURRENT,SLOPEFF,
      &   COEFPN, BIJK,HOULE)
@@ -297,7 +297,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, UNLADM, KSP,KSR
       INTEGER,          INTENT(IN)    :: NPOIN, ICF, HIDFAC,IELMT
       DOUBLE PRECISION, INTENT(IN)    :: XMVS, XMVE, DM, GRAV, VCE
-      DOUBLE PRECISION, INTENT(IN)    :: XKV, HMIN, XWC, D90
+      DOUBLE PRECISION, INTENT(IN)    :: HMIN, XWC, D90
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN, ZERO, PI
       LOGICAL,          INTENT(IN)    :: SUSP,SECCURRENT,HOULE
       DOUBLE PRECISION, INTENT(INOUT) :: AC
@@ -377,7 +377,7 @@
      &   DEBUG, HIDFAC, ICF, IELMT, ISOUS, KDDL, KDIR,
      &   KENT, KINC, KLOG, KNEU, KSORT, LOADMETH, LT,
      &   NPOIN, NPTFR, NSICLA, OPTBAN, LS0, BETA, FD90, FDM,
-     &   GRAV, HIDI, HMIN, VCE, XKV, XMVE, XMVS, XWC,
+     &   GRAV, HIDI, HMIN, VCE, CSF_SABLE, XMVE, XMVS, XWC,
      &   PI, KARMAN, ZERO, KARIM_HOLLY_YANG,MSK, SUSP, VF,
      &   ENTET, CONST_ALAYER, LCONDIS, LGRAFED, MESH,
      &   ELAY, LIEBOR, LIMTEC, MASKTR,
@@ -409,7 +409,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: LS0, BETA, FD90(NSICLA)
       DOUBLE PRECISION, INTENT(IN)    :: FDM(NSICLA),GRAV
       DOUBLE PRECISION, INTENT(IN)    :: HIDI(NSICLA),HMIN,VCE
-      DOUBLE PRECISION, INTENT(IN)    :: XKV,XMVE,XMVS,XWC(NSICLA)
+      DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE,XMVE,XMVS,XWC(NSICLA)
       DOUBLE PRECISION, INTENT(IN)    :: PI,KARMAN,ZERO
       DOUBLE PRECISION, INTENT(IN)    :: KARIM_HOLLY_YANG
       LOGICAL,          INTENT(IN)    :: MSK, SUSP, VF
@@ -496,7 +496,7 @@
       SUBROUTINE BEDLOAD_NERBED_VF   !
       !----------------------------------------------------------------!
      &(MESH,LIEBOR,KSORT,ELAY,MASBAS,QSX,QSY,AVA,NPOIN,NSEG,NPTFR,
-     & DT,QS,T1,T2,T3,BREACH)
+     & DT,QS,T1,T2,T3,BREACH, CSF_SABLE)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -507,35 +507,9 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS, T1, T2, T3
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH
       DOUBLE PRECISION, INTENT(IN)    :: ELAY(NPOIN),MASBAS(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN),CSF_SABLE
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_NERBED_VF
-      !================================================================!
-!
-!
-      !================================================================!
-      SUBROUTINE BEDLOAD_POSTREATMENT   !
-      !----------------------------------------------------------------!
-     & (ACLADM, CALFA, SALFA, DEBUG,
-     &  NPOIN, NSICLA, AT0, DTS, XKV,LGRAFED,
-     &  CONST_ALAYER, ZFCL_C, ZF_C, QSCL_C,
-     &  ELAY0, FRACSED_GF, QSCLXC, QSCLYC, DZF_GF,
-     &  QS_C, QSXC, QSYC,OPTBAN,MASKPT,SEDCO)
-      USE BIEF_DEF
-      IMPLICIT NONE
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM,CALFA,SALFA,MASKPT
-      INTEGER,          INTENT(IN)    :: DEBUG,OPTBAN
-      INTEGER,          INTENT(IN)    :: NPOIN, NSICLA
-      DOUBLE PRECISION, INTENT(IN)    :: AT0, DTS, XKV
-      LOGICAL,          INTENT(IN)    :: LGRAFED, CONST_ALAYER
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ZFCL_C, ZF_C,QSCL_C
-      DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
-      DOUBLE PRECISION, INTENT(INOUT) :: FRACSED_GF(NSICLA)
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSCLXC, QSCLYC
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: DZF_GF, QS_C, QSXC, QSYC
-      LOGICAL, 		INTENT(IN)    :: SEDCO(NSICLA)
-      !----------------------------------------------------------------!
-      END SUBROUTINE BEDLOAD_POSTREATMENT
       !================================================================!
 !
 !
@@ -546,7 +520,7 @@
      &  (MESH, U2D, V2D, UNORM, HN,  TW, UW, MU,TOB, CF, TOBW, FW,
      &   THETAW, AVA,  MASKPT, MASKEL, ACLADM, UNLADM,KSP, KSR,LIQBOR,
      &   QBOR, DEBUG, NPOIN, NPTFR, IELMT, ICF, KENT, OPTBAN,
-     &   HIDFAC, GRAV, DM, D90, XWC, XMVE, XMVS, XKV, VCE, HMIN,
+     &   HIDFAC, GRAV, DM, D90, XWC, XMVE, XMVS, VCE, HMIN,
      &   HIDI,KARMAN, ZERO, PI, KARIM_HOLLY_YANG,
      &   SUSP, MSK,T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,
      &   T11,T12, AC,HIDING, QSC, QSS,
@@ -566,7 +540,7 @@
       INTEGER,          INTENT(IN)    :: NPOIN, NPTFR, IELMT, ICF
       INTEGER,          INTENT(IN)    :: KENT, OPTBAN,HIDFAC
       DOUBLE PRECISION, INTENT(IN)    :: GRAV, DM, D90, XWC, XMVE, XMVS
-      DOUBLE PRECISION, INTENT(IN)    :: XKV, VCE, HMIN,HIDI
+      DOUBLE PRECISION, INTENT(IN)    ::  VCE, HMIN,HIDI
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN, ZERO, PI
       DOUBLE PRECISION, INTENT(IN)    :: KARIM_HOLLY_YANG
       LOGICAL,          INTENT(IN)    :: SUSP, MSK,SECCURRENT,HOULE
@@ -612,7 +586,7 @@
      &(MESH,S,EBOR,MASKEL,MASK,
      & QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,LIMTEC,DT,
      & MSK, ENTET, T1,T2,T3,T4, T8,
-     & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D)
+     & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
@@ -620,7 +594,7 @@
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
       INTEGER,          INTENT(IN)    :: DIMGLO,NSEG
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
-      DOUBLE PRECISION, INTENT(IN)    :: DT
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)
       LOGICAL,          INTENT(IN)    :: MSK,ENTET
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: FLODEL,T1,T2,T3,T4,T8
@@ -636,7 +610,7 @@
       SUBROUTINE BEDLOAD_SOLVS_VF   !
       !----------------------------------------------------------------!
      &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,
-     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX)
+     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -644,7 +618,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: LIEBOR,UNSV2D, EBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH
       INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KSORT
-      DOUBLE PRECISION, INTENT(IN)    :: DT
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
       !----------------------------------------------------------------!

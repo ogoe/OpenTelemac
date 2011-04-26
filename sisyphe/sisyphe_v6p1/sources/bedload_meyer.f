@@ -33,6 +33,10 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!!history  U.MERKEL R.KOPMAN
+!+        15/03/2011
+!+        V6P1
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |---|
 !| ACP            |---|
@@ -50,10 +54,12 @@
       USE INTERFACE_SISYPHE,
      &    EX_BEDLOAD_MEYER => BEDLOAD_MEYER
       USE BIEF
+      USE DECLARATIONS_SISYPHE, only : MPM_ARAY
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
+
+
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TETAP, HIDING
@@ -61,43 +67,56 @@
       DOUBLE PRECISION, INTENT(IN)    :: DENS, GRAV, DM, AC
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: ACP ! WORK ARRAY T1
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: QSC, COEFPN
-!
+
+
       ! 3/ LOCAL VARIABLES
       ! ------------------
       DOUBLE PRECISION :: C2
-!
+
+
 !======================================================================!
 !======================================================================!
-!                               PROGRAM                                !
+C                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
+
       CALL CPSTVC(QSC,ACP)
       CALL OS('X=C     ', X=ACP, C=AC)
+
       ! **************************************** !
       ! 0 - SLOPE EFFECT: SOULBY FORMULATION     ! (_IMP_)
       ! **************************************** !
       IF(SLOPEFF == 2) THEN
         CALL OS('X=XY    ', X=ACP, Y=COEFPN )
       ENDIF
+
       ! **************************************** !
       ! III - BEDLOAD TRANSPORT CORRECTED        ! (_IMP_)
       !       FOR EXTENDED GRAIN SIZE            ! (_IMP_)
+	  !       WITH VARIABLE MPM_COEFFICIENT      !
       ! **************************************** !
-      C2 = 8.D0 * SQRT(GRAV*DENS*DM**3)
+      C2 = SQRT(GRAV*DENS*DM**3)
       IF ((HIDFAC == 1) .OR. (HIDFAC == 2) ) THEN
          CALL OS('X=XY    ', X=ACP, Y=HIDING)
          CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
          CALL OS('X=+(Y,C)', X=QSC, Y=QSC , C=0.D0)
          CALL OS('X=Y**C  ', X=QSC, Y=QSC , C=1.5D0)
          CALL OS('X=CX    ', X=QSC, C=C2)
+         CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
       ELSE
           CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
           CALL OS('X=+(Y,C)', X=QSC, Y=QSC, C=0.D0)
          CALL OS('X=Y**C  ', X=QSC, Y=QSC, C=1.5D0)
          CALL OS('X=CX    ', X=QSC, C=C2)
          CALL OS('X=XY    ', X=QSC, Y=HIDING)
+         CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
       ENDIF
+
 !======================================================================!
 !======================================================================!
+
       RETURN
       END SUBROUTINE BEDLOAD_MEYER
+C
+C#######################################################################
+C

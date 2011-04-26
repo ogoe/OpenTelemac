@@ -2,7 +2,7 @@
                      SUBROUTINE SUSPENSION_DEPOT  !
 !                    ******************************
 !
-     &(TOB,HN, ACLADM,NPOIN, HMIN,XWC,VITCD,
+     &(TOB,HN, NPOIN, HMIN,XWC,VITCD,
      & ZERO,KARMAN,XMVE, T1,T2,ZREF,FLUDPT,DEBUG,SEDCO)
 !
 !***********************************************************************
@@ -32,7 +32,6 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---|
 !| DEBUG          |---|
 !| FLUDPT         |---|
 !| HMIN           |---|
@@ -58,7 +57,7 @@
 !
       ! 2/ GLOBAL VARIABLES
       ! -------------------
-      TYPE (BIEF_OBJ),  INTENT(IN)    ::  HN, ACLADM,TOB
+      TYPE (BIEF_OBJ),  INTENT(IN)    ::  HN,TOB
       INTEGER,          INTENT(IN)    ::  NPOIN,DEBUG
       LOGICAL,          INTENT(IN)    :: SEDCO
       DOUBLE PRECISION, INTENT(IN)    ::  HMIN

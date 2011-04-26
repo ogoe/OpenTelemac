@@ -1,19 +1,18 @@
-!                    *********************************
-                     SUBROUTINE SUSPENSION_FLUX_MIXTE!
-!                    *********************************
+        SUBROUTINE SUSPENSION_FLUX_MIXTE!
 !
-     &  (TAUP,HN,ACLADM,CS,NPOIN,
-     &   CHARR,XMVE,XMVS,GRAV,HMIN,XWC,
-     &   ZERO,KARMAN,PARTHENIADES,FLUER_SABLE,FLUER_VASE,ZREF,
+     &  (TAUP,HN,FDM,NPOIN,
+     &   CHARR,XMVE,XMVS,VCE,GRAV,HMIN,XWC,
+     &   ZERO,PARTHENIADES,FLUER_SABLE,FLUER_VASE,ZREF,
      &   AC,CSTAEQ,QSC,ICQ,DEBUG,AVAIL,NSICLA,ES,
-     &   TOCE_VASE,NCOUCH_TASS,DT,TOCE_MIXTE,MS_SABLE,MS_VASE)
-!
-!***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+     &   TOCE_VASE,TOCE_SABLE,
+     &   NCOUCH_TASS,DT,TOCE_MIXTE,MS_SABLE,MS_VASE)!***********************************************************************
+! SISYPHE   V6P1                                   15/03/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION.
-!
+! 
+!history C. VILLARET + JMH 2008
+! 
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
@@ -26,9 +25,14 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history C. VILLARET 20/03/2011
+!   Change of arguments FDM insteam of ACLADM
+!   KARMAN suppressed
+!   Added TOCE _ SABLE + VCE 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |---|
-!| ACLADM         |---|
+!| FDM         |---|
 !| AVAIL          |---|
 !| CHARR          |---|
 !| CS             |---|
@@ -42,7 +46,6 @@
 !| HMIN           |---|
 !| HN             |---|
 !| ICQ            |---|
-!| KARMAN         |---|
 !| MS_SABLE       |---|
 !| MS_VASE        |---|
 !| NCOUCH_TASS    |---|
@@ -52,7 +55,9 @@
 !| QSC            |---|
 !| TAUP           |---|
 !| TOCE_MIXTE     |---|
+!| TOCE_SABLE     |---|CRITICAL SHEAR STRESS FOR SAND
 !| TOCE_VASE      |---|
+!| VCE            |---|FLUID VISCOSITY
 !| XMVE           |---|
 !| XMVS           |---|
 !| XWC            |---|
@@ -62,20 +67,21 @@
 !
       USE INTERFACE_SISYPHE, EX_FLUX_MIXTE=>SUSPENSION_FLUX_MIXTE
       USE BIEF
-      USE DECLARATIONS_SISYPHE, ONLY : FDM
+C 
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
+
+
       ! 2/ GLOBAL VARIABLES
       ! -------------------
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP,HN,ACLADM,CS
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP,HN
       INTEGER,          INTENT(IN)    :: NPOIN,DEBUG,NSICLA
       INTEGER,          INTENT(IN)    :: NCOUCH_TASS
       LOGICAL,          INTENT(IN)    :: CHARR
-      DOUBLE PRECISION, INTENT(IN)    :: XMVE, XMVS, GRAV, HMIN
+      DOUBLE PRECISION, INTENT(IN)    :: XMVE, XMVS, VCE,GRAV, HMIN
       DOUBLE PRECISION, INTENT(IN)    :: XWC
-      DOUBLE PRECISION, INTENT(IN)    :: ZERO, KARMAN, PARTHENIADES
+      DOUBLE PRECISION, INTENT(IN)    :: ZERO, PARTHENIADES
       TYPE (BIEF_OBJ),  INTENT(IN)    :: ZREF
       DOUBLE PRECISION, INTENT(INOUT) :: AC,AVAIL(NPOIN,10,NSICLA)
       DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10)
@@ -84,43 +90,42 @@
       DOUBLE PRECISION,  INTENT(INOUT) :: MS_SABLE(NPOIN,10)
       DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,10)
       DOUBLE PRECISION,  INTENT(INOUT) ::TOCE_MIXTE(NPOIN,10)
-!
-      DOUBLE PRECISION, INTENT(IN)      :: DT
-!
+C
+      DOUBLE PRECISION, INTENT(IN)      :: DT, FDM
+C
+
       TYPE(BIEF_OBJ),   INTENT(IN)       ::  QSC
       INTEGER,          INTENT (IN)      :: ICQ
-!
+C
       DOUBLE PRECISION, INTENT(IN)     :: TOCE_VASE(10)
-!
+      DOUBLE PRECISION, INTENT(IN)     :: TOCE_SABLE
+C
       ! 3/ LOCAL VARIABLES
       ! ------------------
-      INTEGER I, J,N
+      INTEGER I, J
       DOUBLE PRECISION FLUERSABLE,FLUERVASE,FLUER_LOC(10)
+C
+      DOUBLE PRECISION QE_MOY,TEMPS,QER_VASE,QER_SABLE
+
+!======================================================================!
+!======================================================================!
+C                               PROGRAM                                !
+!======================================================================!
+!======================================================================!
 !
-      DOUBLE PRECISION QE_MOY,TOCE_SABLE,TEMPS,QER_VASE,QER_SABLE
-!
-!======================================================================!
-!======================================================================!
-!                               PROGRAM                                !
-!======================================================================!
-!======================================================================!
-!
+
       ! ******************************************** !
       ! I - COMPUTES THE CRITICAL SHEAR STRESS
       !    --> TOCE_SABLE
       ! ******************************************** !
-!
-! COMPUTES TOCE_SABLE VIA THE SHIELDS PARAMETER
-         TOCE_SABLE= AC*(XMVS-XMVE)*GRAV*FDM(1)
-!
       ! **************************************** !
 !        II-COMPUTES EROSION
       ! **************************************** !
-!---------DOES THE EROSION COMPUTATION ONLY ONCE (SAND FOR EXAMPLE
-!         BECAUSE THE COMPUTED FLUX IS A GLOBAL FLUX COMMON TO THE 2 SEDIMENTS)
-!---------COMPUTES THE THEORETICAL FLUX OF EROSION FOR EACH (SEDIMENT INFINITELY AVAILABLE IN EACH LAYER)
-!
-!---------COMPUTES THE CRITICAL STRESS FOR EACH LAYER AS A FUNCTION OF THE PROPORTION OF MUD
+C---------DOES THE EROSION COMPUTATION ONLY ONCE (SAND FOR EXAMPLE
+C         BECAUSE THE COMPUTED FLUX IS A GLOBAL FLUX COMMON TO THE 2 SEDIMENTS)
+C---------COMPUTES THE THEORETICAL FLUX OF EROSION FOR EACH (SEDIMENT INFINITELY C               AVAILABLE IN EACH LAYER)
+C
+C---------COMPUTES THE CRITICAL STRESS FOR EACH LAYER AS A FUNCTION OF THE C                 PROPORTION OF MUD
       DO J=1,NCOUCH_TASS
         DO I=1,NPOIN
           IF(AVAIL(I,J,2).LE.0.3D0)THEN
@@ -133,48 +138,65 @@
           ENDIF
         ENDDO
       ENDDO
-! CV MODIFICATIONS: INTRODUCE TOCE IN ARGUMENT
-!         AC(I) = TOCE_MIXTE(I,J)/((XMVS-XMVE)*GRAV*ACLADM%R(I))
-!
+C
+C CV MODIFICATIONS: INTRODUCE TOCE IN ARGUMENT
+C         AC(I) = TOCE_MIXTE(I,J)/((XMVS-XMVE)*GRAV*ACLADM%R(I))
+C
         IF(ICQ.EQ.1) THEN
           IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_FREDSOE'
-!
-           CALL SUSPENSION_FREDSOE(ACLADM,TAUP,NPOIN,
+C
+           CALL SUSPENSION_FREDSOE(FDM,TAUP,NPOIN,
      &         GRAV,XMVE,XMVS,ZERO,AC,CSTAEQ)
-!
+C
           IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_FREDSOE'
-!
+C
+          DO I=1,NPOIN
+            CSTAEQ%R(I)=CSTAEQ%R(I)*AVAIL(I,1,1)
+          ENDDO
+C          
         ELSEIF(ICQ.EQ.2) THEN
-!
+C
           IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BIJKER'
-!
+C
                CALL SUSPENSION_BIJKER(TAUP,HN,NPOIN,CHARR,QSC,ZREF,
      &                                ZERO,HMIN,CSTAEQ,XMVE)
-!
+C
           IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BIJKER'
-!
-        ENDIF
-!
-!      DO J=NCOUCH_TASS,1,-1
-!        DO I=1,NPOIN
-!           CSTAEQ_COUCHE(I,J)=CSTAEQ%R(I)
-!        ENDDO
-!      ENDDO
-!
+C
+C CV mars 2011
+C
+        ELSEIF(ICQ.EQ.3) THEN
+         IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_VANRIJN'
+ 
+         CALL SUSPENSION_VANRIJN(FDM,TAUP,NPOIN,
+     &                      GRAV,XMVE,XMVS,VCE,ZERO,AC,CSTAEQ,ZREF)
+         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_VANRIJN'
+          DO I=1,NPOIN
+            CSTAEQ%R(I)=CSTAEQ%R(I)*AVAIL(I,1,1)
+          ENDDO
+C        fin modif CV
+        ENDIF 
+C
+C      DO J=NCOUCH_TASS,1,-1
+C        DO I=1,NPOIN
+C           CSTAEQ_COUCHE(I,J)=CSTAEQ%R(I)
+C        ENDDO
+C      ENDDO
+C
       DO I=1,NPOIN
-!
+C
         DO J=1,NCOUCH_TASS
-!
-!-----------COMPUTES FLUER_SABLE_VASE AS A FUNCTION OF THE PROPORTION OF MUD
-!
+C
+C-----------COMPUTES FLUER_SABLE_VASE AS A FUNCTION OF THE PROPORTION OF MUD
+C
           IF(AVAIL(I,J,2).LE.0.3D0)THEN
-!-------------PROPORTION OF MUD < 30%, FLUXES ARE SIMILAR TO THOSE FOR SAND ONLY
+C-------------PROPORTION OF MUD < 30%, FLUXES ARE SIMILAR TO THOSE FOR SAND ONLY
             IF(TAUP%R(I).GT.TOCE_MIXTE(I,J))THEN
                  FLUER_LOC(J)=CSTAEQ%R(I)*XWC
             ELSE
                FLUER_LOC(J)=0.D0
             ENDIF
-!-------------PROPORTION OF MUD > 50%, FLUXES ARE SIMILAR TO THOSE FOR MUD ONLY
+C-------------PROPORTION OF MUD > 50%, FLUXES ARE SIMILAR TO THOSE FOR MUD ONLY
           ELSEIF(AVAIL(I,J,2).GE.0.5D0)THEN
             IF(TAUP%R(I).GT.TOCE_MIXTE(I,J))THEN
                FLUER_LOC(J)=PARTHENIADES*
@@ -182,8 +204,8 @@
             ELSE
                FLUER_LOC(J)=0.D0
             ENDIF
-!-------------PROPORTION OF MUD >30% AND <50%, INTERPOLATES THE FLUXES
-!             AND CRITICAL SHEAR STRESS
+C-------------PROPORTION OF MUD >30% AND <50%, INTERPOLATES THE FLUXES
+C             AND CRITICAL SHEAR STRESS
           ELSE
             IF(TAUP%R(I).GT.TOCE_MIXTE(I,J))THEN
                FLUERSABLE=CSTAEQ%R(I)*XWC
@@ -197,35 +219,36 @@
      &           (0.5D0-0.3D0)*(FLUERVASE-FLUERSABLE)+FLUERSABLE
           ENDIF
         ENDDO
-!
-! COMPUTES THE EROSION DEPTH ZER_MOY
-! AND ERODED MASSES
+
+C
+C COMPUTES THE EROSION DEPTH ZER_MOY
+C AND ERODED MASSES
           QER_VASE = 0.D0
           QER_SABLE = 0.D0
-!
+C
           TEMPS= DT
-!
+C
           DO J= 1, NCOUCH_TASS
            IF(ES(I,J).GE.1.D-6) THEN
-!
-! COMPUTES THE MASS POTENTIALLY ERODABLE IN LAYER J (KG/M2)
-!
+C
+C COMPUTES THE MASS POTENTIALLY ERODABLE IN LAYER J (KG/M2)
+C
              QE_MOY= FLUER_LOC(J) *XMVS * TEMPS
-!
+C
              IF(QE_MOY.LT.(MS_SABLE(I,J)
      &            +MS_VASE(I,J))) THEN
-!
+C
                   QER_VASE = QER_VASE
      &                  + QE_MOY*MS_VASE(I,J)/
      &                      (MS_VASE(I,J)+MS_SABLE(I,J))
                   QER_SABLE = QER_SABLE
      &                    + QE_MOY*MS_SABLE(I,J)
      &                      /(MS_VASE(I,J)+MS_SABLE(I,J))
-!V
+CV
                  GO TO 10
-!
+C
               ELSE
-!
+C
                   QER_VASE = QER_VASE + MS_VASE(I,J)
                   QER_SABLE = QER_SABLE + MS_SABLE(I,J)
                  TEMPS= TEMPS -
@@ -233,25 +256,26 @@
      &                      /FLUER_LOC(J)/XMVS
               ENDIF
           ENDIF
-!
+C
          ENDDO
           WRITE(LU,*) 'ATTENTION TOUTES LES COUCHES SONT VIDES'
-!          STOP
+C          STOP
+
   10    CONTINUE
-!
+C
       ! ************************************************ !
       ! II-COMPUTES THE FLUX OF EROSION FOR SAND/MUD     !
       ! ************************************************ !
-!
-! Q_VASE REPRESENTS THE SURFACE MASS OF MUD TO BE ERODED TO REACH ZER_MOY
-! Q_SABLE REPRESENTS THE SURFACE MASS OF SAND TO BE ERODED TO REACH ZER_MOY
-!
+C
+C Q_VASE REPRESENTS THE SURFACE MASS OF MUD TO BE ERODED TO REACH ZER_MOY
+C Q_SABLE REPRESENTS THE SURFACE MASS OF SAND TO BE ERODED TO REACH ZER_MOY
+C
         FLUER_VASE%R(I)  = QER_VASE /(DT*XMVS)
         FLUER_SABLE%R(I) = QER_SABLE/(DT*XMVS)
-!
+C
       ENDDO
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       RETURN
       END

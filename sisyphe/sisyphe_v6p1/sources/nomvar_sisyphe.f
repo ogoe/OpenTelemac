@@ -157,7 +157,7 @@
         TEXTE(08) = 'FLOWRATE QY     M3/S/M          '
         TEXTE(09) = 'RIGID BED       M               '
         TEXTE(10) = 'FRICTION COEFT                  '
-        TEXTE(11) = 'BOTTOM FRICTION N/M2            '
+        TEXTE(11) = 'BED SHEAR STRESSN/M2        '
         TEXTE(12) = 'WAVE HEIGHT HM0 M               '
         TEXTE(13) = 'PEAK PERIOD TPR5S               '
         TEXTE(14) = 'MEAN DIRECTION  DEG             '

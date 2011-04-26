@@ -1,11 +1,8 @@
-!                    ********************************
-                     SUBROUTINE SUSPENSION_EROSION  !
-!                    ********************************
-!
-     &(TAUP,HN,ACLADM,AVA,NPOIN,CHARR,XMVE,XMVS,GRAV,HMIN,XWC,
+
+        SUBROUTINE SUSPENSION_EROSION  !
+     &(TAUP,HN,FDM,AVA,NPOIN,CHARR,XMVE,XMVS,VCE,GRAV,HMIN,XWC,
      & ZERO,ZREF,AC,FLUER,CSTAEQ,QSC,ICQ,DEBUG)
-!
-!***********************************************************************
+***********************************************************************
 ! SISYPHE   V6P0                                   21/08/2010
 !***********************************************************************
 !
@@ -48,6 +45,7 @@
 !| NPOIN          |---|
 !| QSC            |---|
 !| TAUP           |---|
+!| VCE            |---|
 !| XMVE           |---|
 !| XMVS           |---|
 !| XWC            |---|
@@ -55,77 +53,85 @@
 !| ZREF           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+C
       USE INTERFACE_SISYPHE, EX_SUSPENSION_EROSION=>SUSPENSION_EROSION
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
+
       ! 2/ GLOBAL VARIABLES
       ! -------------------
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP,HN,ACLADM,ZREF,QSC
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP,HN,ZREF,QSC
       INTEGER,          INTENT(IN)    :: NPOIN,DEBUG,ICQ
       LOGICAL,          INTENT(IN)    :: CHARR
-      DOUBLE PRECISION, INTENT(IN)    :: XMVE,XMVS,GRAV,HMIN,XWC,ZERO
-      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: XMVE,XMVS,GRAV,HMIN,XWC,VCE
+      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN),ZERO,FDM
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUER,CSTAEQ
       DOUBLE PRECISION, INTENT(INOUT) :: AC
+
       ! 3/ LOCAL VARIABLES
       ! -------------------
+
       INTEGER I
 !
 !======================================================================!
 !======================================================================!
-!                               PROGRAM                                !
+C                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
 !
 !
-!  COMPUTES THE NEAR BED EQUILIBRIUM CONCENTRATION --> CSTAEQ (MEAN DIAMETER)
+C  COMPUTES THE NEAR BED EQUILIBRIUM CONCENTRATION --> CSTAEQ (MEAN DIAMETER)
 !
       IF(ICQ.EQ.1) THEN
-!
+C
         IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_FREDSOE'
-        CALL SUSPENSION_FREDSOE(ACLADM,TAUP,NPOIN,
+        CALL SUSPENSION_FREDSOE(FDM,TAUP,NPOIN,
      &                          GRAV,XMVE,XMVS,ZERO,AC,CSTAEQ)
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_FREDSOE'
-!
-!       CALL OS('X=CYZ   ', X=FLUER, Y=CSTAEQ, Z=AVA, C=XWC)
-! 04/05/2010
-! START OF CV MODIFICATIONS ...
-!V        DO I=1,NPOIN
-!V          FLUER%R(I)=XWC*CSTAEQ%R(I)*AVA(I)
-!V        ENDDO
+C
+C       CALL OS('X=CYZ   ', X=FLUER, Y=CSTAEQ, Z=AVA, C=XWC)
+C 04/05/2010
+C START OF CV MODIFICATIONS ...
+CV        DO I=1,NPOIN
+CV          FLUER%R(I)=XWC*CSTAEQ%R(I)*AVA(I)
+CV        ENDDO
           DO I=1,NPOIN
             CSTAEQ%R(I)=CSTAEQ%R(I)*AVA(I)
           ENDDO
           CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC)
-! ... END OF CV MODIFICATIONS
-!
+C ... END OF CV MODIFICATIONS
+C
       ELSEIF(ICQ.EQ.2) THEN
-!
+C
         IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BIJKER'
         CALL SUSPENSION_BIJKER(TAUP,HN,NPOIN,CHARR,QSC,ZREF,
      &                         ZERO,HMIN,CSTAEQ,XMVE)
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BIJKER'
-!       NO MULTIPLICATION BY AVA BECAUSE AVA HAS ALREADY BEEN TAKEN
-!       INTO ACCOUNT IN THE BEDLOAD TRANSPORT RATE
+C       NO MULTIPLICATION BY AVA BECAUSE AVA HAS ALREADY BEEN TAKEN
+C       INTO ACCOUNT IN THE BEDLOAD TRANSPORT RATE
         CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC)
-!
-! Modified by Nicolas Huybrechts
-! oct 2010
+C
+C Modified by Nicolas Huybrechts
+C oct 2010
       ELSEIF(ICQ.EQ.3) THEN
          IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_VANRIJN'
-         CALL SUSPENSION_VANRIJN(ACLADM,TAUP,NPOIN,
-     &                          GRAV,XMVE,XMVS,ZERO,AC,CSTAEQ,ZREF)
+ 
+         CALL SUSPENSION_VANRIJN(FDM,TAUP,NPOIN,
+     &                     GRAV,XMVE,XMVS,VCE,ZERO,AC,CSTAEQ,ZREF)
          IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_VANRIJN'
           DO I=1,NPOIN
             CSTAEQ%R(I)=CSTAEQ%R(I)*AVA(I)
           ENDDO
-          CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC)
-!        fin modif nh
-         ENDIF
+          CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC) 
+C        fin modif nh
+         ENDIF 
 !======================================================================!
 !======================================================================!
 !
       RETURN
       END
+C
+C#######################################################################
+C

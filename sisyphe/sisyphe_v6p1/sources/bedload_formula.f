@@ -1,10 +1,11 @@
+! CV :XKV not used - à supprimer
 !                    **************************
                      SUBROUTINE BEDLOAD_FORMULA
 !                    **************************
 !
      &(U2D,V2D,UCMOY,HN,CF,MU,TOB,TOBW,UW,TW,THETAW,FW,
      & ACLADM, UNLADM,KSP,KSR,AVA,NPOIN,ICF,HIDFAC,XMVS,XMVE,
-     & DM,GRAV,VCE,XKV,HMIN,XWC,D90,KARMAN,ZERO,
+     & DM,GRAV,VCE,HMIN,XWC,D90,KARMAN,ZERO,
      & PI,SUSP, AC, HIDING, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,
      & T11,TETAP, QSC, QSS,IELMT,SECCURRENT,SLOPEFF,
      & COEFPN,BIJK,HOULE)
@@ -93,7 +94,6 @@
 !| UW             |---|
 !| V2D            |---|
 !| VCE            |---|
-!| XKV            |---|
 !| XMVE           |---|
 !| XMVS           |---|
 !| XWC            |---|
@@ -113,7 +113,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM,UNLADM,KSR,KSP
       INTEGER,          INTENT(IN)    :: NPOIN, ICF, HIDFAC,IELMT
       DOUBLE PRECISION, INTENT(IN)    :: XMVS, XMVE, DM, GRAV, VCE
-      DOUBLE PRECISION, INTENT(IN)    :: XKV, HMIN, XWC, D90
+      DOUBLE PRECISION, INTENT(IN)    :: HMIN, XWC, D90
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN, ZERO, PI
       LOGICAL,          INTENT(IN)    :: SUSP,SECCURRENT,HOULE
       DOUBLE PRECISION, INTENT(INOUT) :: AC
@@ -185,7 +185,7 @@
           CALL BEDLOAD_MEYER(TETAP,HIDING,HIDFAC,DENS,GRAV,DM,AC,
      &                       T1,QSC,SLOPEFF,COEFPN)
           DO I=1,NPOIN
-            QSC%R(I)=XKV*QSC%R(I)*AVA(I)
+            QSC%R(I)=QSC%R(I)*AVA(I)
           ENDDO
           ALPHA = -3.D0
       ! =========================== !
@@ -195,7 +195,7 @@
       ELSEIF(ICF == 2) THEN
          CALL BEDLOAD_EINST(TETAP,NPOIN,DENS,GRAV,DM,DSTAR,QSC)
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -6.D0
       ! =================================== !
@@ -210,7 +210,7 @@
          CALL BEDLOAD_ENGEL(TOB,CF,DENS,GRAV,DM,XMVE,T1,QSC)
 !        ARBITRARY DISTRIBUTION
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -5.D0
       ! ======================================== !
@@ -220,11 +220,11 @@
       ! ======================================== !
       ELSEIF(ICF == 3) THEN
 !        KSP IS USED INSTEAD OF CFP
-         CALL BEDLOAD_ENGEL_OLD
+         CALL BEDLOAD_ENGEL_CC
      &        (TETAP,CF,NPOIN,GRAV,DM,DENS,T1,QSC)
 !        ARBITRARY DISTRIBUTION
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -5.D0
       ! ============================== !
@@ -236,8 +236,8 @@
      &    (TOBW,TOB,MU,KSP,KSR,HN,NPOIN,DM,DENS,XMVE,GRAV,
      &     XWC,KARMAN,ZERO,T4,T7,T8,T9,QSC,QSS,BIJK,HOULE)
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=XKV*QSS%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -1.D0
       ! ============================== !
@@ -249,8 +249,8 @@
      &        (UCMOY,HN,UW,NPOIN,DENS,GRAV,DM,DSTAR,HMIN,
      &         D90,QSC,QSS)
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=XKV*QSS%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -4.6D0
       ! ================================================== !
@@ -262,7 +262,7 @@
      &        (TOB, MU, ACLADM, UNLADM, NPOIN, DENS, XMVE, GRAV,
      &         DM, AC, T1, T2, T3, HIDING, QSC)
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)
          ENDDO
          ALPHA = -3.D0
       ! =========================== !
@@ -275,7 +275,7 @@
 !     &        (TOB,MU,NPOIN,DM,DENS,GRAV,DSTAR,AC,QSC)
      &        (TETAP,MU,NPOIN,DM,DENS,GRAV,DSTAR,AC,QSC)
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -4.2D0
       ! ============================== !
@@ -289,8 +289,8 @@
      &         PI,XMVE,GRAV,DENS,XWC,T1,T2,T3,T4,T5,T6,T7,
      &         T8,T9,T10,T11,QSC,QSS,HOULE)
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=XKV*QSS%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -3.D0
       ! ======================================= !
@@ -305,7 +305,7 @@
      &         T5, T6, T7, T8, T9, T10, T11, QSC,HOULE)
 !        ARBITRARY DISTRIBUTION
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
          ALPHA = -3.D0
       ! ============================================ !
@@ -315,8 +315,8 @@
          ALPHA = -1.D0 ! INITIALISES ALPHA
          CALL QSFORM
          DO I=1,NPOIN
-           QSC%R(I)=XKV*QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=XKV*QSS%R(I)*AVA(I)*HIDING%R(I)
+           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
       ! ================= !
       ! IV(ELSE) - ERROR  !

@@ -1,12 +1,11 @@
 !                    *******************************
                      SUBROUTINE SUSPENSION_FREDSOE !
 !                    *******************************
-!
-     &  (ACLADM, TAUP, NPOIN, GRAV,
+     &  (DM, TAUP, NPOIN, GRAV,
      &   XMVE, XMVS, ZERO, AC,  CSTAEQ)
-!
+C
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   20/03/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE REFERENCE CONCENTRATION AT Z= 2*D50
@@ -38,10 +37,14 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
-!
+!+
+!+ 
+!history  C. VILLARET : V6P1
+!+        20/03/2011: send DM instead of array ACLADM
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |-->|
+!|  AC             |---|
+!|  DM            |-->|
 !| CSTAEQ         |---|
 !| GRAV           |-->|
 !| NPOIN          |-->|
@@ -56,44 +59,53 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
+
+
       ! 2/ GLOBAL VARIABLES
       ! -------------------
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM, TAUP
+      TYPE(BIEF_OBJ),   INTENT(IN)    ::  TAUP
       INTEGER,          INTENT(IN)    :: NPOIN
       DOUBLE PRECISION, INTENT(IN)    :: GRAV, XMVE, XMVS
-      DOUBLE PRECISION, INTENT(IN)    :: ZERO,AC
+      DOUBLE PRECISION, INTENT(IN)    :: ZERO,AC,DM
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: CSTAEQ
-!
+
+
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER            :: I
       DOUBLE PRECISION   ::  TETAP,AUX
-!
+C
       DOUBLE PRECISION   :: CMAX
-!
-!     MAXIMUM CONCENTRATION CORRESPONDING TO DENSE PACKING
-!
+C
+C     MAXIMUM CONCENTRATION CORRESPONDING TO DENSE PACKING
+C
       DATA CMAX/0.6D0/
       INTRINSIC MAX
+
 !======================================================================!
 !======================================================================!
-!                               PROGRAM                                !
+C                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
+
       ! ******************************** !
       !    I - CRITICAL SHIELDS PARAMETER!
       ! ******************************** !
+
       DO I=1,NPOIN
+
          ! ****************** !
          ! II - SKIN FRICTION !
          ! ****************** !
-         TETAP = TAUP%R(I) / (GRAV*(XMVS-XMVE)*ACLADM%R(I))
+
+         TETAP = TAUP%R(I) / (GRAV*(XMVS-XMVE)*DM)
+
          ! ***************** !
          ! IV - EROSION FLUX ! (_IMP_)
          ! ***************** !
          ! CONCENTRATION INCREASED BY AVA BECAUSE IT IS COMPUTED
          ! ONLY WITH ONE CLASS OF SEDIMENT (ASSUMPTION)
+
          IF(TETAP.GT.AC) THEN
            AUX=(TETAP-AC)**1.75D0
            CSTAEQ%R(I) = 0.331D0*AUX/(1.D0+0.72D0*AUX)
@@ -101,8 +113,14 @@
          ELSE
            CSTAEQ%R(I) = 0.D0
          ENDIF
+
       ENDDO
+
 !======================================================================!
 !======================================================================!
+
       RETURN
       END SUBROUTINE SUSPENSION_FREDSOE
+C
+C#######################################################################
+C

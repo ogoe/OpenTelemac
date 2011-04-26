@@ -52,23 +52,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
       USE BIEF
       USE DECLARATIONS_SISYPHE
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
+
+
       ! 2/ LOCAL VARIABLES
       ! ------------------
       INTEGER :: I,K,NTR,IELM0,IELM1,IELBT,IELM0_SUB
       INTEGER :: CFG(2),CFGBOR(2)
-!-----------------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
+
+C-----------------------------------------------------------------------
+C
+C-----------------------------------------------------------------------
+
       IF (LNG == 1) WRITE(LU,11)
       IF (LNG == 2) WRITE(LU,12)
+
       ! ************************************** !
       ! I - DISCRETISATION AND TYPE OF STORAGE !
       ! ************************************** !
@@ -77,16 +79,21 @@
       IELM1     = 11
       IELBT     = IELBOR(IELMT,1)
       IELM0_SUB = 10*(IELMT/10)
+
       CFG(1)    = OPTASS
       CFG(2)    = PRODUC
       CFGBOR(1) = 1 ! CFG IMPOSED FOR BOUNDARY MATRICES
       CFGBOR(2) = 1 ! CFG IMPOSED FOR BOUNDARY MATRICES
+
       IF(VF) EQUA(1:15)='SAINT-VENANT VF'
+
       ! ******************************************* !
       ! II - ALLOCATES THE MESH STRUCTURE           !
       ! ******************************************* !
       CALL ALMESH(MESH,'MESH_S',IELMT,SPHERI,CFG,
-     &            SIS_FILES(SISGEO)%LU,EQUA)
+     &            SIS_FILES(SISGEO)%LU,EQUA,
+     &            FILE_FORMAT=SIS_FILES(SISGEO)%FMT)
+
       IKLE  => MESH%IKLE
       X     => MESH%X%R
       Y     => MESH%Y%R
@@ -101,7 +108,8 @@
       MXPTVS=> MESH%MXPTVS
       MXELVS=> MESH%MXELVS
       LV    => MESH%LV
-!
+
+
       ! ******************** !
       ! III - REAL ARRAYS    !
       ! ******************** !
@@ -169,7 +177,7 @@
       CALL BIEF_ALLVEC(1,AFBOR , 'AFBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,BFBOR , 'BFBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBOR , 'FLBOR ', IELBT, 1, 1,MESH)
-!     BOUNDARY FLUX FOR CALL TO CVDFTR
+C     BOUNDARY FLUX FOR CALL TO CVDFTR
       CALL BIEF_ALLVEC(1,FLBOR_SIS , 'FLBORS', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBORTRA  , 'FLBTRA', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,CSTAEQ, 'CSTAEQ', IELMT, 1, 2,MESH)
@@ -179,6 +187,7 @@
       CALL BIEF_ALLVEC(1,VOLU2D, 'VOLU2D', IELMH_SIS, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,V2DPAR, 'V2DPAR', IELMH_SIS, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,UNSV2D, 'UNSV2D', IELMH_SIS, 1, 1,MESH)
+      CALL BIEF_ALLVEC(1,MPM_ARAY, 'MPMARAY', IELMT, 1, 2,MESH)   ! MPM Array
 !
       IF(MSK) THEN
         CALL BIEF_ALLVEC(1,MASKEL,'MASKEL', IELM0 , 1 , 2 ,MESH)
@@ -190,7 +199,7 @@
         CALL BIEF_ALLVEC(1,MASKPT,'MASKPT', 0 , 1 , 0 ,MESH)
       ENDIF
 !
-!     FOR MIXED SEDIMENTS
+C     FOR MIXED SEDIMENTS
 !
       IF(SEDCO(1).OR.SEDCO(2)) THEN
 !      IF(MIXTE.OR.TASS) THEN
@@ -227,22 +236,26 @@
       CALL BIEF_ALLVEC(2, IT3   , 'IT3   ', IELM1          , 1, 2,MESH)
       CALL BIEF_ALLVEC(2, IT4   , 'IT4   ', IELM1          , 1, 2,MESH)
       CALL BIEF_ALLVEC(2, NLAYER, 'NLAYE ', IELMT          , 1, 2,MESH) ! NUMBER OF LAYERS
+
       IF(VF) THEN
         CALL BIEF_ALLVEC(2,BREACH,'BREACH',IELM1,1,2,MESH)
       ELSE
         CALL BIEF_ALLVEC(2,BREACH,'BREACH',0,1,0,MESH)
       ENDIF
+
       IF(MSK) THEN
         CALL BIEF_ALLVEC(2,IFAMAS,'IFAMAS',
-     &                   IELM0,BIEF_NBFEL(IELM0,MESH),1,MESH)
+     *                   IELM0,BIEF_NBFEL(IELM0,MESH),1,MESH)
       ELSE
         CALL BIEF_ALLVEC(2,IFAMAS,'IFAMAS',0,1,0,MESH)
       ENDIF
+
       ! ******************* !
       ! V - BLOCK OF ARRAYS !
       ! ******************* !
       ALLOCATE(AVAIL(NPOIN,10,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
       ALLOCATE(ES(NPOIN,10))           ! THICKNESS OF EACH CLASS ???
+
       !================================================================!
       CALL ALLBLO(MASKTR, 'MASKTR') ! MASK OF THE BOUNDARY CONDITIONS
       CALL ALLBLO(EBOR  , 'EBOR  ') ! BOUNDARY CONDITIONS
@@ -277,12 +290,12 @@
       CALL BIEF_ALLVEC_IN_BLOCK(EBOR  ,NSICLA,1,'EBOR  ',IELBT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QBOR  ,NSICLA,1,'QBOR  ',IELBT,1,2,MESH)
 !
-!     JMH 18/09/09 AVAI ALLOCATED WITH SIZE 0 AND POINTING TO
-!                  RELEVANT SECTIONS OF AVAIL
-!     CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
-!    *                          1,'AVAI  ',IELMT,1,2,MESH)
+C     JMH 18/09/09 AVAI ALLOCATED WITH SIZE 0 AND POINTING TO
+C                  RELEVANT SECTIONS OF AVAIL
+C     CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
+C    *                          1,'AVAI  ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
-     &                          1,'AVAI  ',    0,1,0,MESH)
+     *                          1,'AVAI  ',    0,1,0,MESH)
       DO I=1,NSICLA
         DO K=1,NOMBLAY
           AVAI%ADR(K+(I-1)*NOMBLAY)%P%R=>AVAIL(1:NPOIN,K,I)
@@ -290,11 +303,11 @@
           AVAI%ADR(K+(I-1)*NOMBLAY)%P%DIM1=NPOIN
         ENDDO
       ENDDO
-!     LAYTHI ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
-!     CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,
-!    *                          1, 'LAYTHI', IELMT, 1, 2,MESH)
+C     LAYTHI ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
+C     CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,
+C    *                          1, 'LAYTHI', IELMT, 1, 2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,
-     &                          1, 'LAYTHI',     0, 1, 0,MESH)
+     *                          1, 'LAYTHI',     0, 1, 0,MESH)
       DO K=1,NOMBLAY
         LAYTHI%ADR(K)%P%R=>ES(1:NPOIN,K)
         LAYTHI%ADR(K)%P%MAXDIM1=NPOIN
@@ -324,31 +337,34 @@
       CALL BIEF_ALLVEC_IN_BLOCK(CTILD ,NSICLA,1,'CTILD ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(CST   ,NSICLA,1,'CST   ',IELMT,1,2,MESH)
       !================================================================!
-!
+
+
       ! ************* !
       ! VI - MATRICES !
       ! ************* !
-!
+
+
       !================================================================!
       CALL BIEF_ALLMAT(AM1_S,'AM1_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
       CALL BIEF_ALLMAT(AM2_S,'AM2_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
       CALL BIEF_ALLMAT(MBOR ,'MBOR  ',IELBT,IELBT,CFGBOR,'Q','Q',MESH) ! SUSPENSION BOUNDRAY MATRIX
       !================================================================!
-!
+
+
       ! ****************** !
       ! VII - OTHER ARRAYS !
       ! ****************** !
 !
-!     NTR SHOULD AT LEAST BE THE NUMBER OF VARIABLES IN VARSOR THAT WILL BE READ IN
-!     VALIDA. HERE UP TO THE LAYER THICKNESSES
-!V 2010 +1
+C     NTR SHOULD AT LEAST BE THE NUMBER OF VARIABLES IN VARSOR THAT WILL BE READ IN
+C     VALIDA. HERE UP TO THE LAYER THICKNESSES
+CV 2010 +1
       NTR   = 27+(NOMBLAY+4)*NSICLA+NOMBLAY+NPRIV
       IF(SLVSED%SLV == 7) NTR = MAX(NTR,2+2*SLVSED%KRYLOV)
       IF(SLVTRA%SLV == 7) NTR = MAX(NTR,2+2*SLVTRA%KRYLOV)
       IF(3*(SLVSED%PRECON/3) == SLVSED%PRECON) NTR = NTR + 2 ! IF PRECOND. BLOC-DIAG (+2 DIAG)
       IF(3*(SLVTRA%PRECON/3) == SLVTRA%PRECON) NTR = NTR + 2 ! IF PRECOND. BLOC-DIAG (+2 DIAG)
 !
-!     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
+C     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
       CALL BIEF_ALLVEC(1, W1 , 'W1    ', IELM0    , 1,1,MESH) ! WORK ARRAY
       CALL BIEF_ALLVEC(1, TE1, 'TE1   ', IELM0_SUB, 1,1,MESH) ! WORK ARRAY BY ELEMENT
       CALL BIEF_ALLVEC(1, TE2, 'TE2   ', IELM0_SUB, 1,1,MESH) ! WORK ARRAY BY ELEMENT
@@ -362,12 +378,12 @@
       CALL BIEF_ALLVEC_IN_BLOCK(VARCL,NVARCL,1,'CL    ',IELMT,1,2,MESH)
       IF(NPRIV.GT.0) THEN
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,MAX(NPRIV,4),
-     &                            1,'PRIV  ',IELMT,1, 2,MESH)
+     *                            1,'PRIV  ',IELMT,1, 2,MESH)
       ELSE
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,4           ,
-     &                            1,'PRIV  ',    0,1, 0,MESH)
+     *                            1,'PRIV  ',    0,1, 0,MESH)
       ENDIF
-!     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
+C     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
       CALL OS('X=0     ',X=PRIVE)
 !
       ! ************ !
@@ -414,55 +430,55 @@
       CALL ADDBLO(VARSOR, ESOMT )             ! 18
       CALL ADDBLO(VARSOR, KS)                 ! 19
       CALL ADDBLO(VARSOR, MU)                 ! 20
-!V 2010
+CV 2010
       CALL ADDBLO(VARSOR, ACLADM)             ! 21
-! CV +1
-!     AVAI: FROM 22 TO 21+NOMBLAY*NSICLA
-!
+C CV +1
+C     AVAI: FROM 22 TO 21+NOMBLAY*NSICLA
+C
       DO I = 1,NOMBLAY*NSICLA
         CALL ADDBLO(VARSOR, AVAI%ADR(I)%P)
       ENDDO
-! CV +1
-!     QSCL: FROM 22+NOMBLAY*NSICLA TO 21+(NOMBLAY+1)*NSICLA
-!
+C CV +1
+C     QSCL: FROM 22+NOMBLAY*NSICLA TO 21+(NOMBLAY+1)*NSICLA
+C
       DO I = 1, NSICLA
         CALL ADDBLO(VARSOR, QSCL%ADR(I)%P)
       ENDDO
-!
-!     CS: FROM 22+(NOMBLAY+1)*NSICLA TO 21+(NOMBLAY+2)*NSICLA
-!
+C
+C     CS: FROM 22+(NOMBLAY+1)*NSICLA TO 21+(NOMBLAY+2)*NSICLA
+C
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR, CS%ADR(I)%P)
       ENDDO
-!V 2010 ! +1
+CV 2010 ! +1      
       CALL ADDBLO(VARSOR,QS_C)               ! 22+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSXC)               ! 23+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSYC)               ! 24+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QS_S)               ! 25+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSXS)               ! 26+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSYS)               ! 27+(NOMBLAY+2)*NSICLA
-!
-!     QSCL_C: FROM 28+(NOMBLAY+2)*NSICLA TO 27+(NOMBLAY+3)*NSICLA
-!
+C
+C     QSCL_C: FROM 28+(NOMBLAY+2)*NSICLA TO 27+(NOMBLAY+3)*NSICLA
+C
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR,QSCL_C%ADR(I)%P)
       ENDDO
-!
-!     QSCL_S: FROM 28+(NOMBLAY+3)*NSICLA TO 27+(NOMBLAY+4)*NSICLA
-!
+C
+C     QSCL_S: FROM 28+(NOMBLAY+3)*NSICLA TO 27+(NOMBLAY+4)*NSICLA
+C
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR,QSCL_S%ADR(I)%P)
       ENDDO
-!
-!     LAYTHI: FROM 28+(NOMBLAY+4)*NSICLA TO 27+(NOMBLAY+4)*NSICLA+NOMBLAY
-!
+C
+C     LAYTHI: FROM 28+(NOMBLAY+4)*NSICLA TO 27+(NOMBLAY+4)*NSICLA+NOMBLAY
+C
       DO I=1,NOMBLAY
         CALL ADDBLO(VARSOR,LAYTHI%ADR(I)%P) ! 27+(NOMBLAY+4)*NSICLA+NOMBLAY
       ENDDO
-!
-!     PRIVE: FROM 28+(NOMBLAY+4)*NSICLA+NOMBLAY TO
-!                 27+(NOMBLAY+4)*NSICLA+MAX(4,NPRIV)+NOMBLAY
-!
+C
+C     PRIVE: FROM 28+(NOMBLAY+4)*NSICLA+NOMBLAY TO
+C                 27+(NOMBLAY+4)*NSICLA+MAX(4,NPRIV)+NOMBLAY
+C
       DO I=1,MAX(4,NPRIV)
         CALL ADDBLO(VARSOR,PRIVE%ADR(I)%P)
       ENDDO
@@ -470,15 +486,15 @@
       IF(VARCL%N.GT.0) THEN
         DO I=1,VARCL%N
           CALL ADDBLO(VARSOR,VARCL%ADR(I)%P)
-! CV 2010 +1
+! CV 2010 +1         
           SORLEO(27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY+I)=.TRUE.
         ENDDO
       ENDIF
 !
 !
 !-----------------------------------------------------------------------
-! !JAJ #### IF REQUIRED, HERE WE CAN READ THE INPUT SECTIONS FILE
-!      AND MODIFY NCP AND CTRLSC(1:NCP) ACCORDINGLY IN READ_SECTIONS
+C !JAJ #### IF REQUIRED, HERE WE CAN READ THE INPUT SECTIONS FILE
+C      AND MODIFY NCP AND CTRLSC(1:NCP) ACCORDINGLY IN READ_SECTIONS
 !
       IF(TRIM(SIS_FILES(SISSEC)%NAME).NE.'') THEN
         IF(LNG.EQ.1) THEN
@@ -510,14 +526,17 @@
 21    FORMAT(1X,///,21X,'****************************************',/,
      &21X,              '* FIN DE L''ALLOCATION DE LA MEMOIRE  : *',/,
      &21X,              '****************************************',/)
+
 12    FORMAT(1X,///,21X,'*******************************',/,
      &21X,              '*     MEMORY ORGANISATION     *',/,
      &21X,              '*******************************',/)
 22    FORMAT(1X,///,21X,'*************************************',/,
      &21X,              '*    END OF MEMORY ORGANIZATION:    *',/,
      &21X,              '*************************************',/)
-!
-!-----------------------------------------------------------------------
-!
+C
+C-----------------------------------------------------------------------
+C
       RETURN
       END
+C
+C######################################################################

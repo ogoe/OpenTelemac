@@ -1,14 +1,13 @@
-!                    **************************
-                     SUBROUTINE SUSPENSION_MAIN
-!                    **************************
+!                       **************************
+                        SUBROUTINE SUSPENSION_MAIN
+!                       **************************
 !
-     &(SLVTRA,HN,HN_TEL,MU,TOB,ACLADM,KSP,KSR,KS,
-     & CF,VOLU2D,V2DPAR,UNSV2D,AFBOR,
-     & BFBOR,ZF,LICBOR,IFAMAS,MASKEL,MASKPT,U2D,V2D,NSICLA,NPOIN,
+     &(SLVTRA,HN,HN_TEL,MU,TOB,FDM,KSP,KSR,KS,VOLU2D,V2DPAR,UNSV2D,
+     & AFBOR,BFBOR,ZF,LICBOR,IFAMAS,MASKEL,MASKPT,U2D,V2D,NSICLA,NPOIN,
      & NPTFR,IELMT,OPTDIF,RESOL,LT,NIT,OPTBAN,OPTSUP,OPDTRA,
-     & KENT,KSORT,KLOG,KINC,KNEU,KDIR,KDDL,ISOUS,NSOUS,DEBUG,
+     & KENT,KSORT,KLOG,KINC,KNEU,KDIR,KDDL,DEBUG,
      & DTS,CSF_VASE,CSF_SABLE,ZERO,GRAV,XKX,XKY,KARMAN,
-     & XMVE,XMVS,HMIN,XWC,VITCD,VITCE,PARTHENIADES,ENTET,BILMA,MSK,
+     & XMVE,XMVS,VCE,HMIN,XWC,VITCD,VITCE,PARTHENIADES,BILMA,MSK,
      & CHARR,IMP_INFLOW_C,MESH,ZF_S,CS,CST,CTILD,CBOR,DISP,
      & IT1,IT2,IT3,IT4,TB,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,W1,
      & TE1,CLT,TE2,TE3,S,AM1_S,AM2_S,MBOR,ELAY,LIMDIF,
@@ -20,10 +19,11 @@
      & CORR_CONV,ZREF,SEDCO,VISC_TEL,CODE,
      & DIFT,DM1,UCONV_TEL,VCONV_TEL,ZCONV,SOLSYS,FLBOR_TEL,FLBOR_SIS,
      & FLBORTRA,NUMLIQ,NFRLIQ,MIXTE,NCOUCH_TASS,CONC_VASE,
-     & TOCE_VASE,FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS)
+     & TOCE_VASE,TOCE_SABLE,FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS,
+     & DIRFLU)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   20/03/2011
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR THE SUSPENDED-LOAD TRANSPORT.
@@ -32,7 +32,6 @@
 !+        22/12/2004
 !+
 !+
-!
 !history  JMH
 !+        25/06/2008
 !+        V5P9
@@ -49,6 +48,19 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!+
+!history  C. VILLARET
+!+        20/03/2011
+!+        V6P1
+!+        BUG CORRECTION : SEND FDM(I) instead of ACLADM
+!+        suppression of NSOUS, ISOUS
+!+        adding VCE, TOCE_SABLE
+!+ 
+!history  J.-M. HERVOUET
+!+        19/04/2011
+!+        V6P1
+!+        COMPUTATION OF INITIAL MASS CHANGED
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |---|
@@ -98,7 +110,6 @@
 !| IELMT          |---|
 !| IFAMAS         |---|
 !| IMP_INFLOW_C   |---|
-!| ISOUS          |---|
 !| IT1            |---|
 !| IT2            |---|
 !| IT3            |---|
@@ -145,7 +156,6 @@
 !| NPOIN          |---|
 !| NPTFR          |---|
 !| NSICLA         |---|
-!| NSOUS          |---|
 !| NUMLIQ         |---|
 !| OPDTRA         |---|
 !| OPTBAN         |---|
@@ -184,6 +194,7 @@
 !| TE3            |---|
 !| TETA_SUSP      |---|
 !| TOB            |---|
+!| TOBE_SABLE     |---| 
 !| TOCE_MIXTE     |---|
 !| TOCE_VASE      |---|
 !| U2D            |---|
@@ -192,6 +203,7 @@
 !| UNSV2D         |---|
 !| V2D            |---|
 !| V2DPAR         |---|
+!| VCE          |---|
 !| VCONV          |---|
 !| VCONV_TEL      |---|
 !| VISC_TEL       |---|
@@ -221,9 +233,9 @@
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE (SLVCFG),    INTENT(INOUT) :: SLVTRA
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: HN,HN_TEL,MU,TOB,ACLADM
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: HN,HN_TEL,MU,TOB
       TYPE (BIEF_OBJ),  INTENT(IN)    :: KSP,KSR,KS
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: CF,VOLU2D,AFBOR,BFBOR,ZF
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: VOLU2D,AFBOR,BFBOR,ZF
       TYPE (BIEF_OBJ),  INTENT(IN)    :: V2DPAR,UNSV2D
       TYPE (BIEF_OBJ),  INTENT(IN)    :: LICBOR, IFAMAS, MASKEL, MASKPT
       TYPE (BIEF_OBJ),  INTENT(IN)    :: U2D, V2D,DM1,ZCONV,FLBOR_TEL
@@ -231,16 +243,16 @@
       INTEGER,          INTENT(IN)    :: OPTDIF, RESOL,LT, NIT
       INTEGER,          INTENT(IN)    :: OPTBAN,OPTSUP,OPDTRA,NFRLIQ
       INTEGER,          INTENT(IN)    :: KENT, KSORT, KLOG, KINC, KNEU
-      INTEGER,          INTENT(IN)    :: KDIR,KDDL,ISOUS,NSOUS
+      INTEGER,          INTENT(IN)    :: KDIR,KDDL
       INTEGER,          INTENT(IN)    :: DEBUG,SOLSYS,NCOUCH_TASS
       INTEGER,          INTENT(IN)    :: NUMLIQ(NFRLIQ)
       DOUBLE PRECISION, INTENT(IN)    :: DTS,CSF_VASE,CSF_SABLE
-      DOUBLE PRECISION, INTENT(IN)    :: ZERO,GRAV
-      DOUBLE PRECISION, INTENT(IN)    :: XKX,XKY,KARMAN
+      DOUBLE PRECISION, INTENT(IN)    :: ZERO,GRAV,FDM(NSICLA)
+      DOUBLE PRECISION, INTENT(IN)    :: XKX,XKY,KARMAN,VCE
       DOUBLE PRECISION, INTENT(IN)    :: XMVE, XMVS, HMIN, XWC(NSICLA)
       DOUBLE PRECISION, INTENT(IN)    :: VITCD, VITCE
       DOUBLE PRECISION, INTENT(IN)    :: PARTHENIADES
-      LOGICAL,          INTENT(IN)    :: ENTET, BILMA, MSK, CHARR
+      LOGICAL,          INTENT(IN)    :: BILMA, MSK, CHARR
       LOGICAL,          INTENT(IN)    :: IMP_INFLOW_C
       LOGICAL,          INTENT(IN)    :: SEDCO(NSICLA),MIXTE,TASS
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -254,8 +266,8 @@
       DOUBLE PRECISION, INTENT(INOUT) :: TETA_SUSP, AC(NSICLA)
       DOUBLE PRECISION, INTENT(INOUT) :: MASED0(NSICLA), MASINI(NSICLA)
       DOUBLE PRECISION, INTENT(INOUT) :: MASTEN(NSICLA), MASTOU(NSICLA)
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10)
-      DOUBLE PRECISION, INTENT(INOUT) :: TOCE_VASE(10),CONC_VASE(10)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10),CONC_VASE(10)
+      DOUBLE PRECISION, INTENT(INOUT) :: TOCE_VASE(10),TOCE_SABLE
       DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,10,NSICLA)
       LOGICAL,          INTENT(INOUT) :: ENTETS, PASS
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: ZFCL_S,HPROP,ZREF
@@ -271,7 +283,7 @@
       DOUBLE PRECISION, INTENT(OUT)   :: MASTCP(NSICLA),MASFIN(NSICLA)
       DOUBLE PRECISION, INTENT(OUT)   :: MASDEPT(NSICLA),MASDEP(NSICLA)
       DOUBLE PRECISION, INTENT(OUT)   :: MASSOU
-      INTEGER, INTENT(IN)             :: ICQ
+      INTEGER, INTENT(IN)             :: ICQ,DIRFLU
       LOGICAL, INTENT (IN)            :: CORR_CONV,DIFT
       CHARACTER(LEN=24), INTENT(IN)   :: CODE
 !
@@ -287,18 +299,31 @@
 !======================================================================!
 !
       IF(PASS) THEN
+!
       ! *************************  !
       ! III - INITIAL MASS-BALANCE !
       ! *************************  !
 !
       IF(BILMA) THEN
          DO I = 1,NSICLA
+!           JMH 18/04/2011: MUST BE DONE LIKE IN SUSPENSION_BILAN
+!                           I.E. WITH MASS-LUMPING AGGLOT=1. WHICH IS
+!                           SET LATER IN SUSPENSION_COMPUTATION...
+            CALL OS('X=YZ    ',X=T1,Y=VOLU2D,Z=CS%ADR(I)%P)
+!           CALL VECTOR(T1, '=', 'MASVEC          ', IELMT, 1.D0,
+!    &                  CS%ADR(I)%P, T1, T1, T1, T1, T1, MESH, MSK,
+!    &                  MASKEL)
 !
-            CALL VECTOR(T1, '=', 'MASVEC          ', IELMT, 1.D0,
-     &                  CS%ADR(I)%P, T1, T1, T1, T1, T1, MESH, MSK,
-     &                  MASKEL)
-!
-            MASED0(I) = DOTS(T1,HN)
+!           JMH 19/04/2011
+            IF(CODE(1:7).EQ.'TELEMAC') THEN
+!             WITH COUPLING, HN-TEL IS THE OLD DEPTH
+!                            HN     IS THE NEW DEPTH
+              MASED0(I) = DOTS(T1,HN_TEL) 
+            ELSE
+!             SISYPHE WITHOUT COUPLING, MASS CONSERVATION 
+!             DIFFICULT TO CHECK...
+              MASED0(I) = DOTS(T1,HN) 
+            ENDIF         
             IF(NCSIZE.GT.1) MASED0(I)=P_DSUM(MASED0(I))
             MASINI(I) = MASED0(I)
             MASTEN(I) = 0.D0
@@ -318,7 +343,9 @@
       !----------------------------------------------------------------!
 !     END OF IF(PASS)
       ENDIF
+!
       PASS = .FALSE.
+!
       ! ********************************* !
       ! V - COMPUTES THE DISPERSION       !
       ! ********************************* !
@@ -327,23 +354,22 @@
      &     (TOB,XMVE,HN,OPTDIF,NPOIN,XKX,XKY,T1,T2,T3,KX,KY,KZ,DISP,
      &      U2D,V2D,VISC_TEL,CODE)
       IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_DISPERSION'
+
       ! ************************************************ !
       ! VI  - COMPUTES THE CONCENTRATION AND EVOLUTION   !
       ! ************************************************ !
        CALL OS('X=Y     ', X=HPROP, Y=HN)
-!      CALL OS('X=+(Y,C)', X=HCLIP, Y=HN, C=HMIN)
        DO I = 1, NSICLA
          CALL OS('X=0     ', X=ZFCL_S%ADR(I)%P)
          IF(DEBUG > 0) WRITE(LU,*)
      &                'SUSPENSION_COMPUTATION : ',I,'/',NSICLA
          CALL SUSPENSION_COMPUTATION(SLVTRA,HN,HN_TEL,UCONV,
-     & VCONV,CF,MU,TOB,ACLADM,KSP,KSR,KS,ELAY,AVAIL(1:NPOIN,1,I),
-     & AFBOR,BFBOR,LIMDIF,
-     & CLT,MASKEL,MASKTR,MASKPT,IFAMAS,NPOIN,IELMT,NPTFR,I,LT,NIT,
-     & RESOL,OPTBAN,KENT,KDDL,KDIR,KSORT,KLOG,KINC,KNEU,OPTSUP,
-     & OPDTRA,DEBUG,CSF_VASE, CSF_SABLE, TETA_SUSP,DTS,MASED0(I),ZERO,
-     & XWC(I),KARMAN,XMVE,XMVS,GRAV,HMIN,VITCD,VITCE,
-     & PARTHENIADES,ENTETS,ENTET,BILMA,
+     & VCONV,MU,TOB,FDM(I),KSP,KSR,KS,ELAY,AVAIL(1:NPOIN,1,I),
+     & AFBOR,BFBOR,LIMDIF,CLT,MASKEL,MASKTR,MASKPT,IFAMAS,NPOIN,IELMT,
+     & NPTFR,I,LT,NIT,RESOL,OPTBAN,KENT,KDDL,KDIR,KSORT,KLOG,KINC,KNEU,
+     & OPTSUP,OPDTRA,DEBUG,CSF_VASE, CSF_SABLE, TETA_SUSP,DTS,
+     & MASED0(I),ZERO,XWC(I),KARMAN,XMVE,XMVS,VCE,GRAV,HMIN,VITCD,
+     & VITCE,PARTHENIADES,ENTETS,BILMA,
      & MSK,CHARR,IMP_INFLOW_C,MESH,ZF,CS%ADR(I)%P,
      & CST%ADR(I)%P,CTILD%ADR(I)%P,CBOR%ADR(I)%P,DISP,IT1,IT2,
      & IT3,IT4,TB,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,
@@ -354,20 +380,10 @@
      & CORR_CONV,U2D,V2D,SEDCO(I),DIFT,DM1,ZCONV,UCONV_TEL,
      & VCONV_TEL,SOLSYS,FLBOR_TEL,FLBOR_SIS,FLBORTRA,CODE,VOLU2D,
      & V2DPAR,UNSV2D,NUMLIQ,NFRLIQ,LICBOR,MIXTE,AVAIL,NSICLA,ES,
-     & NCOUCH_TASS,CONC_VASE,TOCE_VASE,
-     & FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS)
+     & NCOUCH_TASS,CONC_VASE,TOCE_VASE,TOCE_SABLE,
+     & FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS,DIRFLU,
+     & QSCLXS%ADR(I)%P,QSCLYS%ADR(I)%P)
          IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_COMPUTATION'
-!
-!        CV MODIFICATIONS : 03/2006
-!        TAKES INTO ACCOUNT ADVECTION VELOCITY
-         CALL OS('X=YZ    ', X=T1, Y=UCONV, Z=HN)
-         CALL OS('X=YZ    ', X=T2, Y=VCONV, Z=HN)
-!        JMH MODIFICATION : 25/06/2008 WHAT WAS THIS ?
-!        CALL OS('X=ABS(Y)', X=T1, Y=T1)
-!        CALL OS('X=ABS(Y)', X=T2, Y=T2)
-         CALL OS('X=Y     ', X=CS%ADR(I)%P, Y=CST%ADR(I)%P)
-         CALL OS('X=YZ    ', X=QSCLXS%ADR(I)%P, Y=CS%ADR(I)%P, Z=T1)
-         CALL OS('X=YZ    ', X=QSCLYS%ADR(I)%P, Y=CS%ADR(I)%P, Z=T2)
 !
       ENDDO
 !
@@ -376,6 +392,8 @@
       ! *********************************************************** !
 !
       IF (DEBUG > 0) WRITE(LU,*) 'UPDATING_DATA'
+!
+!     COULD BE OPTIMISED: FIRST CLASS ON ZF_S, THEN ADDING OTHERS...
 !
       CALL OS('X=0     ', X=QSXS)
       CALL OS('X=0     ', X=QSYS)
@@ -389,7 +407,9 @@
       CALL OS('X=N(Y,Z)', X=QSCL_S, Y=QSCLXS, Z=QSCLYS)
       CALL OS('X=N(Y,Z)', X=QS_S, Y=QSXS, Z=QSYS)
       IF (DEBUG > 0) WRITE(LU,*) 'END_UPDATING_DATA'
+!
 !======================================================================!
 !======================================================================!
+!
       RETURN
       END
