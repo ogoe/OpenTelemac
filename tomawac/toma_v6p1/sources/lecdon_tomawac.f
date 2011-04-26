@@ -5,7 +5,7 @@
      & (FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -246,6 +246,22 @@
       DT     = MOTREA( ADRESS(2,  1) )
       F1     = MOTREA( ADRESS(2,  2) )
       RAISF  = MOTREA( ADRESS(2,  3) )
+      IF(DIMEN(2,4).NE.DIMEN(2,5)) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'ABSCISSES ET ORDONNEES DES POINTS DE SORTIE'
+          WRITE(LU,*) 'DU SPECTRE DOIVENT ETRE DONNEES EN NOMBRE'
+          WRITE(LU,*) 'EGAL, OR IL Y A ',DIMEN(2,4),' ABSCISSES ET '
+          WRITE(LU,*) DIMEN(2,5),' ORDONNEES'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'ABSCISSAE AND ORDINATES OF SPECTRUM PRINTOUT'
+          WRITE(LU,*) 'POINTS MUST BE GIVEN IN EQUAL NUMBERS'
+          WRITE(LU,*) 'THERE ARE HERE',DIMEN(2,4),' ABCISSAE AND '
+          WRITE(LU,*) DIMEN(2,5),' ORDINATES'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
       NPLEO  = DIMEN(2,4)
       DO K=1,DIMEN(2,4)
         XLEO(K)= MOTREA( ADRESS(2,  4) + K-1)

@@ -71,8 +71,6 @@
 ! 20      CONTINUE
 ! 10    CONTINUE
        SPE_SEND = 0
-       ISLEO = .FALSE.
-       NOLEO = 1
        DO ILEO = 1,NLEO
           NOLEO(ILEO) = 1
           ISLEO(ILEO) = .FALSE.
