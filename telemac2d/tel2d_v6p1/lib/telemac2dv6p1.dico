@@ -4752,7 +4752,28 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES';'DUREE DU CALCUL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'DURATION' 
 NIVEAU = 1 
 AIDE = '1. : Euler explicite 0.5 : ordre 2 en temps' 
-AIDE1 = '1. : Euler explicit 0.5 : order 2 in time'  
+AIDE1 = '1. : Euler explicit 0.5 : order 2 in time' 
+
+NOM = 'TRAITEMENT DES FLUX AUX FRONTIERES'
+NOM1 = 'TREATMENT OF FLUXES AT THE BOUNDARIES'
+TYPE = INTEGER
+INDEX = 74
+MNEMO = 'DIRFLU'
+TAILLE = 0
+DEFAUT = 1 
+DEFAUT1= 1  
+CHOIX='1="Priorite aux valeurs imposees"';'2="Priorite aux flux"'
+CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Utilise pour les schemas SUPG, PSI et N, avec option 2, on ne retrouve
+pas exactement les valeurs imposees des traceurs,
+mais le flux est correct'
+AIDE1= 'Used so far only with the SUPG, PSI and N schemes.
+With option 2, Dirichlet prescribed values are not obeyed,
+but the fluxes are correct'
+ 
 / 
 / POUR LES LANCEURS PERL : 
 / 
