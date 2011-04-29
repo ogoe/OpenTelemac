@@ -286,7 +286,7 @@ C     FOR MIXED SEDIMENTS
       CALL ALLBLO(CST   , 'CST   ') ! CONCENTRATION AT TIME N+1   (=> RESULT)
       !================================================================!
       !================================================================!
-      CALL BIEF_ALLVEC_IN_BLOCK(MASKTR,4     ,1,'MSKTR ',IELBT,1,2,MESH)
+      CALL BIEF_ALLVEC_IN_BLOCK(MASKTR,5     ,1,'MSKTR ',IELBT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(EBOR  ,NSICLA,1,'EBOR  ',IELBT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QBOR  ,NSICLA,1,'QBOR  ',IELBT,1,2,MESH)
 !

@@ -19,7 +19,7 @@
 !history
 !+        02/05/2008
 !+        V6P0
-!+   ADDED ALPHA IN ARGUMENT, TO KEEP A RECORD OF THE
+!+   ADDED ALPHA IN ARGUMENT, TO KEEP A RECORD OF THIS COEFFICIENT
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -69,11 +69,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION :: R1,I1,I2,A,B,AUX,LAUX,LL,USTAR,ROUSE
+      DOUBLE PRECISION R1,I1,I2,A,B,AUX,LAUX,LL,USTAR,ROUSE
 !
-      INTEGER :: I
+      INTEGER I
 !
-      CALL OS('X=N(Y,Z)', X=T1, Y=U2D, Z=V2D)
+!-----------------------------------------------------------------------
+!
+!     JMH 28/04/2011 (USELESS)
+!     CALL OS('X=N(Y,Z)', X=T1, Y=U2D, Z=V2D)
 !
       LL=LOG(30.D0)
 !

@@ -459,7 +459,7 @@
 !
           IF(.NOT.TASS) THEN
             DO I=1,NPOIN
-!              FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*CONC_VASE(1)/DT/XMVS)
+!           FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*CONC_VASE(1)/DT/XMVS)
             FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*CONC_VASE(1)/DT/XMVS)
             ENDDO
           ENDIF
@@ -512,7 +512,8 @@
 !     ELSEIF(OPTBAN.EQ.2) THEN
       IF(OPTBAN.EQ.2) THEN
         CALL OS('X=XY    ',X=FLUER ,Y=MASKPT)
-        CALL OS('X=XY    ',X=FLUDPT,Y=MASKPT)
+!       JMH 27/04/2011 FLUDPT HELPS TO DECREASE C
+!       CALL OS('X=XY    ',X=FLUDPT,Y=MASKPT)
       ENDIF
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -559,7 +560,11 @@
               IF(MIXTE) CBOR%R(K) = FLUER%R(I)/T2%R(I)/XWC
             ELSE
               CBOR%R(K) = FLUER%R(I)/XWC
-            ENDIF
+            ENDIF              
+!           THIS IS THE CONDITION TO HAVE NO EVOLUTION
+!           CS%R(I) MAY BE DIFFERENT FROM CBOR%R(K) IF UNSTEADY FLOW
+!           OR IF DIRFLU.EQ.2 (CASE OF PRIORITY TO FLUXES)            
+            FLUER%R(I)=FLUDPT%R(I)*CS%R(I)                           
           ENDIF
         ENDDO
 !
@@ -623,13 +628,15 @@
         CALL VECTOR(FLBOR_SIS,'=','FLUBDF          ',IELBOR(IELMT,1),
 !                        HPROP (HERE HPROP=HN, INVESTIGATE)
      &              1.D0,HN   ,HN,HN,UCONV,VCONV,VCONV,
-     &              MESH,.FALSE.,MASKPT)
+     &              MESH,.TRUE.,MASKTR%ADR(5)%P)
+!                                          5: MASK OF LIQUID BOUNDARIES
+!                                             SEE DIFFIN IN BIEF 6.1
         IF (DEBUG > 0) WRITE(LU,*) 'FIN VECTOR'
       ELSE
         CALL OS('X=Y     ',X=FLBOR_SIS,Y=FLBOR_TEL)
 !       MUST ALSO CHANGE BOUNDARY FLUXES IF THE ADVECTION
 !       FIELD IS CORRECTED (T12 MUST HAVE BEEN KEPT SINCE
-!       CALL TO SUSPENSION_CONV)
+!                           CALL TO SUSPENSION_CONV)
         IF(CORR_CONV.AND..NOT.SEDCO) THEN
           CALL OSBD('X=CXY   ',FLBOR_SIS,T12,T12,1.D0,MESH)
         ENDIF

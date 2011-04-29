@@ -130,7 +130,7 @@ bedload_formula.f          leclis.f                   suspension_rouse.f\
 tobw_sisyphe.f\
 coefro_sisyphe.f           maskab.f                         tob_sisyphe.f\
 bedload_hiding_factor.f    condim_sisyphe.f           mean_grain_size.f\
-ride_VR.f\
+ride_vr.f\
 bedload_hunz_meyer.f       condim_susp.f              noerod.f\
 suspension_evol.f\
 condis_sisyphe.f           nomvar_sisyphe.f           vitchu_sisyphe.f\

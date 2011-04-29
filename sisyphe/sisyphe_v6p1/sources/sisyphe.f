@@ -529,7 +529,7 @@
           CALL OV( 'X=Y     ', U2D%R, U_TEL%R, U_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', V2D%R, V_TEL%R, V_TEL%R, 0.D0, NPOIN)
           CALL OV( 'X=Y     ', HN%R , H_TEL%R, H_TEL%R, 0.D0, NPOIN)
-          CALL OS('X=Y     ', X=ZF,Y=ZF_SIS)
+          CALL OS( 'X=Y     ', X=ZF,Y=ZF_SIS)
 !
 !         CLIPS NEGATIVE DEPTHS
 !

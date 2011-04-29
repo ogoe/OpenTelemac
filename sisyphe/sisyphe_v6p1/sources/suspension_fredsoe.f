@@ -1,9 +1,9 @@
-!                    *******************************
-                     SUBROUTINE SUSPENSION_FREDSOE !
-!                    *******************************
-     &  (DM, TAUP, NPOIN, GRAV,
-     &   XMVE, XMVS, ZERO, AC,  CSTAEQ)
-C
+!                    *****************************
+                     SUBROUTINE SUSPENSION_FREDSOE
+!                    *****************************
+!
+     &(DM,TAUP,NPOIN,GRAV,XMVE,XMVS,ZERO,AC,CSTAEQ)
+!
 !***********************************************************************
 ! SISYPHE   V6P1                                   20/03/2011
 !***********************************************************************
@@ -59,8 +59,8 @@ C
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
-
+!
+!
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE(BIEF_OBJ),   INTENT(IN)    ::  TAUP
@@ -74,38 +74,38 @@ C
       ! ------------------
       INTEGER            :: I
       DOUBLE PRECISION   ::  TETAP,AUX
-C
+!
       DOUBLE PRECISION   :: CMAX
-C
-C     MAXIMUM CONCENTRATION CORRESPONDING TO DENSE PACKING
-C
+!
+!     MAXIMUM CONCENTRATION CORRESPONDING TO DENSE PACKING
+!
       DATA CMAX/0.6D0/
       INTRINSIC MAX
-
+!
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
-
+!
       ! ******************************** !
       !    I - CRITICAL SHIELDS PARAMETER!
       ! ******************************** !
-
+!
       DO I=1,NPOIN
-
+!
          ! ****************** !
          ! II - SKIN FRICTION !
          ! ****************** !
-
+!
          TETAP = TAUP%R(I) / (GRAV*(XMVS-XMVE)*DM)
-
+!
          ! ***************** !
          ! IV - EROSION FLUX ! (_IMP_)
          ! ***************** !
          ! CONCENTRATION INCREASED BY AVA BECAUSE IT IS COMPUTED
          ! ONLY WITH ONE CLASS OF SEDIMENT (ASSUMPTION)
-
+!
          IF(TETAP.GT.AC) THEN
            AUX=(TETAP-AC)**1.75D0
            CSTAEQ%R(I) = 0.331D0*AUX/(1.D0+0.72D0*AUX)
@@ -113,14 +113,11 @@ C                               PROGRAM                                !
          ELSE
            CSTAEQ%R(I) = 0.D0
          ENDIF
-
+!
       ENDDO
-
+!
 !======================================================================!
 !======================================================================!
-
+!
       RETURN
-      END SUBROUTINE SUSPENSION_FREDSOE
-C
-C#######################################################################
-C
+      END
