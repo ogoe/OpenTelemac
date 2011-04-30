@@ -105,6 +105,11 @@
    first 4 letters, are incs, libs, or mods and define how the
    compiler should link to include, library and module files.
 """
+"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to
+         parseConfig_CompileTELEMAC, which does not use the GLOBAL
+         variable anymore. The configuration is passed in argument.
+         This will have to be done for the other parsers as well.
+"""
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
@@ -193,61 +198,61 @@ def getConfigKey(cfg,key,there,empty):
    Optional: mods_, incs_, libs_, ... and options
 """
 def parseConfig_CompileTELEMAC(cfg):
-   #  cfg is either  wintel32s wintel32p wing9532s wing9532p ...
-   cfgTELEMAC = {cfg:{}}
+   #  cfg is the dictionary of either  wintel32s wintel32p wing9532s wing9532p ...
+   cfgTELEMAC = {}
    # Get teldir: ...
    # or the absolute path to the TELEMAC root
-   get = getConfigKey(CONFIGS[cfg],'root',True,True)
+   get = getConfigKey(cfg,'root',True,True)
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC[cfg].update({'TELDIR':get})
+   cfgTELEMAC.update({'TELDIR':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
-   get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
-   cfgTELEMAC[cfg].update({'TELVER':get})
+   get = getConfigKey(cfg,'version',True,True).lower()
+   cfgTELEMAC.update({'TELVER':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['TELDIR'],cfgTELEMAC['TELVER'])})
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
-   for mod in cfgTELEMAC[cfg]['MODULES'].keys():
-      cfgTELEMAC[cfg]['MODULES'][mod].update({'mods':getEXTERNALs(CONFIGS[cfg],'mods',mod)})
-      cfgTELEMAC[cfg]['MODULES'][mod].update({'incs':getEXTERNALs(CONFIGS[cfg],'incs',mod)})
-      cfgTELEMAC[cfg]['MODULES'][mod].update({'libs':getEXTERNALs(CONFIGS[cfg],'libs',mod)})
+   for mod in cfgTELEMAC['MODULES'].keys():
+      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod)})
+      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod)})
+      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod)})
 
-   cfgTELEMAC[cfg].update({'COMPILER':{}})
+   cfgTELEMAC.update({'COMPILER':{}})
    # Get modules: user list of module
    # in which 'system' means all existing modules,
    # and in which 'update' means a rebuild of the lib and exe
    # and in which 'clean' means a rebuild of the obj, lib and exe
    # and Get options: for the switches such as parallel, openmi, mumps, etc.
-   get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
-   cfgTELEMAC[cfg]['COMPILER'].update({'MODULES':get.split()})
-   cfgTELEMAC[cfg]['COMPILER'].update({'REBUILD':tbd})
+   get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
+   cfgTELEMAC['COMPILER'].update({'MODULES':get.split()})
+   cfgTELEMAC['COMPILER'].update({'REBUILD':tbd})
    for mod in get.split():
-      if mod not in cfgTELEMAC[cfg]['MODULES'].keys(): del cfgTELEMAC[cfg]['COMPILER']['MODULES'][mod]
+      if mod not in cfgTELEMAC['MODULES'].keys(): del cfgTELEMAC['COMPILER']['MODULES'][mod]
    # Get cmd_obj: ... cmd_lib: ... cmd_exe: ...
    # the compiler dependent command lines to create obj, lib and exe
    # respectively
-   get = getCOMPILER(CONFIGS[cfg])
-   cfgTELEMAC[cfg]['COMPILER'].update(get)
+   get = getCOMPILER(cfg)
+   cfgTELEMAC['COMPILER'].update(get)
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
-   cfgTELEMAC[cfg].update({'ZIPPER':getConfigKey(CONFIGS[cfg],'sfx_zip',True,False)[1:]})
+   cfgTELEMAC.update({'ZIPPER':getConfigKey(cfg,'sfx_zip',True,False)[1:]})
 
    # Get system's suffixes for obj, lib, mod, and exe
    system = {}
-   system.update({'SFX_OBJ':getConfigKey(CONFIGS[cfg],'sfx_obj',True,False).lower()})
-   system.update({'SFX_EXE':getConfigKey(CONFIGS[cfg],'sfx_exe',True,False).lower()})
-   system.update({'SFX_LIB':getConfigKey(CONFIGS[cfg],'sfx_lib',True,False).lower()})
-   system.update({'SFX_MOD':getConfigKey(CONFIGS[cfg],'sfx_mod',True,False).lower()})
-   cfgTELEMAC[cfg].update({'SYSTEM':system})
+   system.update({'SFX_OBJ':getConfigKey(cfg,'sfx_obj',True,False).lower()})
+   system.update({'SFX_EXE':getConfigKey(cfg,'sfx_exe',True,False).lower()})
+   system.update({'SFX_LIB':getConfigKey(cfg,'sfx_lib',True,False).lower()})
+   system.update({'SFX_MOD':getConfigKey(cfg,'sfx_mod',True,False).lower()})
+   cfgTELEMAC.update({'SYSTEM':system})
 
    return cfgTELEMAC
 
