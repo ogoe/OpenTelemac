@@ -2,6 +2,16 @@
 """
 """@author Sebastien E. Bourban, Noemie Durand and Alain Weisgerber
 """
+"""@history 28/04/2011 -- Sebastien Bourban: Now supports SYSTELCFG
+         as a directory (old Perl version, to which systel.cfg is added)
+         or as a file.
+"""
+"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to config parsing
+         to include the option to reset the version and the root from the
+         command line option:
+         -v <version>, reset the version read in the config file with this
+         -r <root>, reset the root path read in the config file with this
+"""
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
@@ -121,5 +131,4 @@ __author__="Sebastien Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
-   print zip('win9532s',"D:\\telemac\\club",'zip')
    sys.exit()

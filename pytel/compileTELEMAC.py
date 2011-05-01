@@ -303,7 +303,6 @@ if __name__ == "__main__":
       if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
-      print cfg.keys()
 
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
       print '\n\nScanning the source code\n\
