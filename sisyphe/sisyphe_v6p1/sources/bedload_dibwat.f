@@ -2,9 +2,9 @@
                      SUBROUTINE BEDLOAD_DIBWAT !
 !                    ***************************
 !
-     &  (U2D,V2D,UCMOY, CF, TOB, TOBW, UW, TW, FW, THETAW, NPOIN,
-     &   XMVE, DENS, GRAV, DM, XWC, PI, ALPHAW, T2, T3, UCW, UCN,
-     &   UW1, UW2, TW1, TW2, THETAC, FCW, QSC,HOULE)
+     &(U2D,V2D,UCMOY, CF, TOB, TOBW, UW, TW, FW, THETAW, NPOIN,
+     & XMVE, DENS, GRAV, DM, XWC, PI, ALPHAW, T2, T3, UCW, UCN,
+     & UW1, UW2, TW1, TW2, THETAC, FCW, QSC,HOULE)
 !
 !***********************************************************************
 ! SISYPHE   V6P0                                   21/08/2010
@@ -182,8 +182,7 @@
          IF ((UW2%R(I)*TW2%R(I) + UW1%R(I)*TW1%R(I)) > 0.D0 ) THEN
             GAMMAW = (  UW1%R(I) * TW1%R(I) * (W1**3+WP2**3)
      &                - UW2%R(I) * TW2%R(I) * (W2**3+WP1**3))
-     &             / ( (UW1%R(I)+UW2%R(I)) * TW%R(I) )
-! AFTER CAMENEN / ((UW1(I)*TW1(I)+UW2(I)*TW2(I)) ??
+     &             / ( UW1%R(I)*TW1%R(I)+UW2%R(I)*TW2%R(I)) 
          ELSE
             GAMMAW = (2.D0 * UCW%R(I)**2 / DENS / GRAV / DM)**3
          ENDIF

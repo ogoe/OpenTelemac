@@ -394,17 +394,17 @@
 !
       IF(CORR_CONV.AND.(.NOT.SEDCO)) THEN
 !
-         SOLSYS_SIS=1
-         CALL CPSTVC(U2D,T12)
-         CALL SUSPENSION_CONV(TOB,XMVE, KSR,NPOIN,ZREF,U2D,V2D,HN,HMIN,
-     &                        UCONV,VCONV,KARMAN,ZERO,XWC,T1,T12)
-!        ADVECTION FORM WHICH ACCEPTS AN ADVECTION FIELD
-!        THAT DOES NOT SATISFY CONTINUITY + LEO-POSTMA CONSTANT
-         OPTVF=12
+        SOLSYS_SIS=1
+        CALL CPSTVC(U2D,T12)
+        CALL SUSPENSION_CONV(TOB,XMVE, KSR,NPOIN,ZREF,U2D,V2D,HN,HMIN,
+     &                       UCONV,VCONV,KARMAN,ZERO,XWC,T1,T12)
+!       ADVECTION FORM WHICH ACCEPTS AN ADVECTION FIELD
+!       THAT DOES NOT SATISFY CONTINUITY + LEO-POSTMA CONSTANT
+        OPTVF=12
 !     
-!        OPTVF=2 IS POSSIBLE BUT WITH MASS CONSERVATION SPOILED
-!        THE UNIT (HERE 2) IS REDONE IN CVDFTR ACCORDING TO THE
-!        VALUE OF RESOL, SO IT IS NOT IMPORTANT HERE.
+!       OPTVF=2 IS POSSIBLE BUT WITH MASS CONSERVATION SPOILED
+!       THE UNIT (HERE 2) IS REDONE IN CVDFTR ACCORDING TO THE
+!       VALUE OF RESOL, SO IT IS NOT IMPORTANT HERE.
 !
       ELSE
 !
@@ -439,9 +439,9 @@
       IF(.NOT.MIXTE) THEN
         IF(.NOT.SEDCO) THEN
          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_EROSION'
-          CALL SUSPENSION_EROSION(T4,HN,FDM,AVA,
-     &     NPOIN,CHARR,XMVE,XMVS,VCE,GRAV,HMIN,XWC,ZERO,
-     &     ZREF,AC,FLUER,CSTAEQ,QS_C,ICQ,DEBUG)
+          CALL SUSPENSION_EROSION(T4,HN,FDM,AVA,NPOIN,CHARR,XMVE,XMVS,
+     &                            VCE,GRAV,HMIN,XWC,ZERO,
+     &                            ZREF,AC,FLUER,CSTAEQ,QS_C,ICQ,DEBUG)
          IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_EROSION'
 !
 !        NOTE JMH : THIS SHOULD BE INCLUDED IN SUSPENSION_EROSION
@@ -453,9 +453,10 @@
 !       MUD ONLY 
 !
         ELSE
-          CALL SUSPENSION_EROSION_COH (T4,NPOIN,
-     &       XMVE,XMVS,GRAV, VITCE, PARTHENIADES,ZERO, DEBUG,
-     &      FLUER, ES, TOCE_VASE, NCOUCH_TASS, DT, MS_VASE%R,TASS)
+          CALL SUSPENSION_EROSION_COH(T4,NPOIN,XMVE,XMVS,GRAV,VITCE,
+     &                                PARTHENIADES,ZERO, DEBUG,
+     &                                FLUER,ES,TOCE_VASE,NCOUCH_TASS,
+     &                                DT,MS_VASE%R,TASS)
 !
           IF(.NOT.TASS) THEN
             DO I=1,NPOIN
@@ -472,12 +473,14 @@
 !        CSF=CSF_VASE DEFINED IN MIXED SEDIMENT
          IF(.NOT.SEDCO) THEN
           IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_FLUX_MIXTE'
-          CALL SUSPENSION_FLUX_MIXTE(T4,HN,FDM,
-     &         NPOIN,CHARR,XMVE,XMVS,VCE,GRAV,HMIN,XWC,
-     &         ZERO,PARTHENIADES,FLUER,
-     &         FLUER_VASE,ZREF,AC,CSTAEQ,QS_C,ICQ,DEBUG,
-     &        AVAIL,NSICLA,ES,TOCE_VASE,TOCE_SABLE,NCOUCH_TASS,
-     &         DT,TOCE_MIXTE%R,MS_SABLE%R,MS_VASE%R)
+          CALL SUSPENSION_FLUX_MIXTE(T4,HN,FDM,NPOIN,CHARR,XMVE,XMVS,
+     &                               VCE,GRAV,HMIN,XWC,ZERO,
+     &                               PARTHENIADES,FLUER,FLUER_VASE,
+     &                               ZREF,AC,CSTAEQ,QS_C,ICQ,DEBUG,
+     &                               AVAIL,NSICLA,ES,TOCE_VASE,
+     &                               TOCE_SABLE,NCOUCH_TASS,
+     &                               DT,TOCE_MIXTE%R,MS_SABLE%R,
+     &                               MS_VASE%R)
           IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_FLUX_MOY'
         ENDIF
         IF(SEDCO) CALL OS('X=Y     ',X=FLUER, Y=FLUER_VASE)
@@ -496,28 +499,7 @@
      &                      XMVE,T1,T2,ZREF,FLUDPT,DEBUG,SEDCO)
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!  5. TREATS SMALL DEPTHS : 
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!
-!     IF(OPTBAN.EQ.1) THEN
-!       DO I = 1, NPOIN
-!         JMH 20/04/2011 IF HMIN=0.D0 THIS TEST SHOULD DO NOTHING
-!         IF(HN%R(I).LE.HMIN) THEN (IT SHOULD BE : IF(HN%R(I).LT.HMIN))
-!           JMH 20/04/2011 THIS TERM STABILISES, IT MUST BE KEPT
-!           FLUDPT%R(I)=0.D0
-!           THIS ONE IS CANCELLED LATER
-!           FLUER%R(I) =0.D0
-!         ENDIF
-!       ENDDO
-!     ELSEIF(OPTBAN.EQ.2) THEN
-      IF(OPTBAN.EQ.2) THEN
-        CALL OS('X=XY    ',X=FLUER ,Y=MASKPT)
-!       JMH 27/04/2011 FLUDPT HELPS TO DECREASE C
-!       CALL OS('X=XY    ',X=FLUDPT,Y=MASKPT)
-      ENDIF
-!
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!  6. DIFFIN A SPECIFIC TREATMENT IS DONE IF THE ADVECTION METHOD
+!  5. DIFFIN A SPECIFIC TREATMENT IS DONE IF THE ADVECTION METHOD
 !     IS THE CHARACTERISTICS: FREE OUTPUTS ARE TREATED LIKE DIRICHLET.
 !     THIS SPECIFIC TREATMENT IS CANCELLED HERE BY SENDING A MODIFIED
 !     VALUE FOR RESOL : RESOL_MOD (IN DIFFIN THE ONLY TEST IS:
@@ -539,7 +521,7 @@
       IF (DEBUG > 0) WRITE(LU,*) 'END DIFFIN'
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!  7. BOUNDARY CONDITIONS : CBOR
+!  6. BOUNDARY CONDITIONS : CBOR
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 !     IMPOSES THE EQUILIBRIUM CONCENTRATION FOR THE INFLOW NODES  !
@@ -572,7 +554,7 @@
       IF (DEBUG > 0) WRITE(LU,*) 'FIN IMP_INFLOW_C'
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!  8. SOLVING TRANSPORT EQUATION IF METHOD OF CHARACTERISTICS
+!  7. SOLVING TRANSPORT EQUATION IF METHOD OF CHARACTERISTICS
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
       IF(RESOL == 1) THEN
@@ -586,10 +568,16 @@
       ENDIF
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-!  9. SOURCE AND SINKS
+!  8. SOURCE AND SINKS
 !     IMPLICIT SOURCE TERM FOR THE DEPOSITION 	    : T9
 !     EXPLICIT SOURCE TERM WITHOUT PUNCTUAL SOURCES : T11
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!
+      IF(OPTBAN.EQ.2) THEN
+        CALL OS('X=XY    ',X=FLUER ,Y=MASKPT)
+!       JMH 27/04/2011 FLUDPT HELPS TO DECREASE C
+!       CALL OS('X=XY    ',X=FLUDPT,Y=MASKPT)
+      ENDIF
 !
       CALL OS('X=-Y    ',X=T9,Y=FLUDPT)
       CALL OS('X=Y     ',X=T11,Y=FLUER)
@@ -606,7 +594,7 @@
       ENDDO
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! 10. ADVECTION-DISPERSION STEP
+!  9. ADVECTION-DISPERSION STEP
 !     CONFIGURATION OF ADVECTION
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -685,7 +673,7 @@
       IF (DEBUG > 0) WRITE(LU,*) 'END_CVDFTR'
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-! 11. BED EVOLUTION DUE TO NET EROSION/DEPOSITUON FLUX
+! 10. BED EVOLUTION DUE TO NET EROSION/DEPOSITUON FLUX
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
       DO I=1,NPOIN

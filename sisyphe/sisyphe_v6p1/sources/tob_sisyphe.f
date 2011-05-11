@@ -110,12 +110,13 @@
 !  KSR: ripple roughness
 !  KS : total bed roughness
 !  initialisation
-        CALL OS('X=CY    ', X=KSP, Y=ACLADM, C=KSPRATIO)
-        CALL OS('X=CY    ', X=KSR, Y=ACLADM, C=KSPRATIO)
+!
+      CALL OS('X=CY    ', X=KSP, Y=ACLADM, C=KSPRATIO)
+      CALL OS('X=CY    ', X=KSR, Y=ACLADM, C=KSPRATIO)
 !
       IF(KSPRED) THEN
 !
-! bed roughness predictor
+!        bed roughness predictor
 !
          CALL KS_SISYPHE(IKS,KS,KSP,KSR,KSPRATIO,HOULE,
      &                   GRAV,XMVE,XMVS,VCE,
@@ -124,10 +125,11 @@
          IF(CODE(1:7).EQ.'TELEMAC') CALL OS('X=Y     ', X=KS_TEL, Y=KS)
 !
       ELSE
+!
 ! here the total bed roughness is calculated as a function of friction coefficient
 ! -- > issued from Telemac if coupling
 ! -- > from the steering file of Sisyphe
-!  l
+!  
         IF(CODE(1:7).EQ.'TELEMAC') THEN
           CALL OV('X=Y     ',CF%R,CF_TEL%R,CF_TEL%R,0.D0,CF%DIM1)
         ELSE
@@ -136,6 +138,7 @@
         DO I =1,NPOIN
           A = -KARMAN*SQRT(2.D0/MAX(CF%R(I),ZERO))
           KS%R(I)=12.D0*HN%R(I)*EXP(A)
+          KS%R(I)=MAX(KS%R(I),KSP%R(I))
         ENDDO
 !
       ENDIF
@@ -160,8 +163,7 @@
 !  --> TOBW
 !
       IF(HOULE) THEN
-        CALL TOBW_SISYPHE
-     &          (TOBW%R,CF%R,FW%R,UW%R,TW%R,HN%R,NPOIN,XMVE)
+        CALL TOBW_SISYPHE(TOBW%R,CF%R,FW%R,UW%R,TW%R,HN%R,NPOIN,XMVE)
       ENDIF
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -178,9 +180,9 @@
         CALL OS('X=C     ', X=MU, C=1.D0)
       ELSEIF(ICR.EQ.1) THEN
         DO I= 1, NPOIN
-          IF((CF%R(I) > ZERO).AND.(HN%R(I).GT.KSP%R(I))) THEN
+          IF(CF%R(I).GT.ZERO.AND.HN%R(I).GT.KSP%R(I)) THEN
             HCLIP=MAX(HN%R(I),KSP%R(I))
-            A = 2.5D0*LOG(12.D0*HCLIP/ KSP%R(I))
+            A = 2.5D0*LOG(12.D0*HCLIP/KSP%R(I))
             C =2.D0/A**2
             MU%R(I) = C/CF%R(I)
           ELSE
@@ -189,18 +191,19 @@
         ENDDO
       ELSEIF(ICR.EQ.2) THEN
         DO I= 1, NPOIN
-           KSMAX=MAX(KSR%R(I),KSP%R(I))
-           IF(HN%R(I).GT.KSMAX.AND.CF%R(I).GT.ZERO)THEN
-             HCLIP=MAX(HN%R(I),KSMAX)
-             A = LOG(12.D0*HCLIP/KSP%R(I))
-             B = LOG(12.D0*HCLIP/KSR%R(I))
-             C =0.32D0/CF%R(I)
-             MU%R(I) = C/SQRT(B*A**3)
-           ELSE
-             MU%R(I) = 0.D0
-           ENDIF
+          KSMAX=MAX(KSR%R(I),KSP%R(I))
+          IF(HN%R(I).GT.KSMAX.AND.CF%R(I).GT.ZERO)THEN
+            HCLIP=MAX(HN%R(I),KSMAX)
+            A = LOG(12.D0*HCLIP/KSP%R(I))
+            B = LOG(12.D0*HCLIP/KSR%R(I))
+            C = 0.32D0/CF%R(I)
+            MU%R(I) = C/SQRT(B*A**3)
+          ELSE
+            MU%R(I) = 0.D0
+          ENDIF
         ENDDO
       ENDIF
+!
 !------------------------------------------------------------
 !
       RETURN

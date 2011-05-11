@@ -278,7 +278,7 @@
 1115  FORMAT(1X,'VOLUME DEPOSE SUR LE FOND  : ',G16.7,' M3')
 1116  FORMAT(1X,'VOLUME CREE PAR TERME SOURCE  '
      &         ,   '                          : ',G16.7,' M3')
-1120  FORMAT(1X,'ERREUR SUR LE VOLUME       : ',G16.7)
+1120  FORMAT(1X,'ERREUR SUR LE VOLUME       : ',G16.7,/)
 1160  FORMAT(1X,'QUANTITE INITIALE DE ',I2,'               : ',G16.7
      &         ,' M3',
      &     /,1X,'QUANTITE FINALE                       : ',G16.7,' M3')
@@ -304,7 +304,7 @@
 2115  FORMAT(1X,'VOLUME OF DEPOSIT           : ',G16.7,' M3')
 2116  FORMAT(1X,'VOLUME CREATED BY SOURCE TERM       '
      &         ,'                            : ',G16.7,' M3')
-2120  FORMAT(1X,'ERROR ON VOLUME             : ',G16.7)
+2120  FORMAT(1X,'ERROR ON VOLUME             : ',G16.7,/)
 2160  FORMAT(1X,'INITIAL QUANTITY OF ',I2,'           : ',G16.7
      &         ,' M3',
      &     /,1X,'FINAL QUANTITY                     : ',G16.7, ' M3')
