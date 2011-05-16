@@ -185,7 +185,8 @@
       DATA TSI   /.FALSE./
       DATA HMIN  /2.D-2/
 !      
-      LOGICAL, SAVE :: INIT=.TRUE.
+      LOGICAL :: INIT
+      DATA INIT /.TRUE./
       TYPE(BIEF_OBJ) :: FNCAR1,FTILD1
       SAVE
 !
