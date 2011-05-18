@@ -1,0 +1,143 @@
+#!/bin/bash
+#
+# Generation of scripts based on the telemac's architecture and
+# on the PBS system. Those scripts are inspired by scripts
+# written by Hugues Prisker and Tanguy Courau.
+# The principle looks like: a file called $jobname is created and
+# submitted by the following command: qsub $jobname
+#
+# Inputs are:
+#   -the name of the job (jobname),
+#   -the number of processors (and not the number of nodes),
+#   -the code to be used (codename),
+#   -and the name of the case (casename)
+#   -and the name of the queue (queuename)
+#
+########################################################################
+#
+# C. Moulinec. EDF R&D LNHE. 07/02/06 (script cluster de Chatou)
+# F. Decung. EDF R&D LNHE. 29/01/2010 (script cluster Clamart2)
+#
+########################################################################
+#
+if [ $# -ge 5 ]
+then
+ jobname=$1
+ nbprocs=$2
+ codename=$3
+ casename=$4
+ queuename=$5
+ walltime=168:00:00 # Deafult Clamart2
+# if [ $# = 6 ]
+# then
+#  walltime=$6
+# fi
+ if [ $# = 6 ]
+ then
+  sourcefile=$6
+ fi
+else
+  echo  "Stop     : Erreur dans les arguments"
+  echo  "Syntaxe  : RunScript jobname nbprocs codename casename queuename [walltime] "
+  echo  "Exemple  : RunScript_queue Berre 8 telemac3d cas_berre parall_8 168:00:00 "
+  echo  "Warning  : Walltime optionnel. 6 heures seulement par defaut (Clamart2)"
+  exit
+fi
+let RP=$nbprocs%8
+let nbnodes=$nbprocs/8
+if [ $RP -gt 0 ]
+then
+  let nbnodes+=1
+#  echo 'je suis ici'
+fi
+#echo "nbnode = $nbnodes"
+#
+# The script $jobname starts here and looks as follows:
+#
+# 1- PBS commands to assign the name and the number of processors
+#    (in this case, it is possible to send jobs on only one processor).
+#    Activation of the walltime in case of long jobs on 1 processor.
+# 2- Definition/prompt of the Working Directory.
+# 3- Evaluation of NP as the processor number. It is obtained by counting
+#    the number of lines in the file containing the processor list.
+# 4- Deletion of mpirun.txt and mpi_telemac.conf.
+# 5- Copy of the file containing the processor name list ($PBS_NODEFILE),
+#    into mpirun.txt.
+# 6- Construction of mpi_telemac.conf by concatenation of the file
+#    containing the number of processors and mpirun.txt.
+# 7- Deletion of intermediate files.
+# 8- Start of the computation.
+#
+cat > $jobname << TAG
+#!/bin/bash
+# To start this job : qsub $jobname
+# Job description
+#PBS -N "$jobname"
+# Queue used
+#PBS -q $queuename
+#
+#PBS -l "nodes=$nbnodes:ppn=8"
+#
+# Walltime used
+#PBS -l walltime=$walltime
+#
+### Note that in this example nbnodes the number of processors
+### and not the number of nodes which should be given by $nbnodes:ppn=2.
+#
+# Use the following command to go to your working directory (default is home)
+cd \$PBS_O_WORKDIR
+#
+# NP=number of processors. Found by counting the number of lines
+# in \$PBS_NODEFILE
+#
+export NP=\$(cat "\$PBS_NODEFILE" | wc -l)
+# F.Decung : Nouvelle release de PBS -> NP : nombre de noeuds alloues * 8 coeurs
+let NP=NP
+#
+# Deletion of old mpirun.txt and mpi_telemac.conf and auxiliary file
+#
+rm -rf mpirun.txt mpi_telemac.conf mpitmp.conf
+#
+# mpirun.txt is copied from the file PBS_NODEFILE, created by the
+# system and which gives the processors to be in used by the current job.
+#
+cp \$PBS_NODEFILE mpiini.txt
+LIMIT="\$NP"
+#
+# mpi_telemac.conf is obtained by concatenation of two files (a temporary
+# file (mpitmp.conf) which contains the number of processors and mpiini.txt)
+#
+cat >> mpitmp.conf << TAG1
+\$NP
+TAG1
+cat mpitmp.conf mpiini.txt > mpi_telemac.conf
+#for ((i = 1; i <= 8; i++))
+#do
+cat mpiini.txt >> mpitmp.conf
+#done
+sort mpitmp.conf >> mpirun.txt
+#
+# Deletion of the auxiliary file mpitmp.conf
+#
+rm -rf mpitmp.conf mpiini.txt
+#
+# Code running
+#
+source $sourcefile
+$codename $casename
+#
+# End of the Script
+echo "fin"
+TAG
+#
+# End of the script $jobname
+#
+#########################################################################
+#
+# Change of priority and submission of the job.
+#
+chmod 755 $jobname
+qsub $jobname
+#
+# END of THE JOB.
+#

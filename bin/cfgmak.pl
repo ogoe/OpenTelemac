@@ -13,15 +13,15 @@
 use File::Basename;
 
 sub getSystelIni
-#Definition : Determine le systel.ini valide (soit par defaut dans 
-#            systel/config/systel.ini soit si elle existe 
-#            la variable d'environnement SYSTELCFG qui contient 
+#Definition : Determine le systel.ini valide (soit par defaut dans
+#            systel/config/systel.ini soit si elle existe
+#            la variable d'environnement SYSTELCFG qui contient
 #            le chemine complet du fichier)
 #Return     : Le chemin complet du systel.ini valide.
 {
     my ($systelIni,$ps);
 
-    if($ENV{"OS"} eq "Windows_NT") 
+    if($ENV{"OS"} eq "Windows_NT")
     {
 	#Cas du systeme Windows NT
 	$ps="\\";
@@ -41,7 +41,7 @@ sub getSystelIni
     }
     else
     {
-	#Recupere le premier argument envoye par le shell pour determiner 
+	#Recupere le premier argument envoye par le shell pour determiner
 	#le chemin racine du projet et le nom du repertoire d'ou est lancer
 	#install pour connaitre la plateforme.
 	$systelIni=dirname($0);
@@ -54,10 +54,10 @@ sub getSystelIni
 sub clearLine
 #$_[0]      : La ligne a nettoyer
 #Definition : Enleve le commentaire, les espaces et tab et le new line.
-#Return     : La ligne nettoye. 
+#Return     : La ligne nettoye.
 {
     $_[0]=~s/#.*//;         #Enleve un eventuelle commentaire.
-    
+
     chomp($_[0]);           #Enleve le \n a la fin.
     return $_[0];
 }
@@ -65,10 +65,10 @@ sub clearLine
 sub fillHashFromBloc
 #$_[0]      : Le chemin complet du fichier a lire.
 #$_[1]      : Le nom du bloc a considerer.
-#$_[2]      : La "hashe table" ou seront stocker comme cles 
-#            les variables lues et comme valeurs leurs valeurs lues. 
+#$_[2]      : La "hashe table" ou seront stocker comme cles
+#            les variables lues et comme valeurs leurs valeurs lues.
 #Definition : Lit le bloc $_[1] du fichier systelIni.
-#Return     : La nouvelle "hashe table". 
+#Return     : La nouvelle "hashe table".
 {
     my ($systelIni,$blocName,%hash);
     ($systelIni,$blocName,%hash)=@_;
@@ -106,17 +106,17 @@ sub fillHashFromBloc
 	}
 	if($intline=~/.+=.*/)
 	{
-	   
+
  #Le bloc est bien de la forme "variable=valeur", donc on traite.
- 
+
 	    my $int2lin=$line;
             $int2lin=~s/#.*//;         #Enleve un eventuelle commentaire.
             chomp($_[0]);              #Enleve le \n a la fin.
-            
+
 	    $_ = $int2lin;             #Decomposer (mot_clef, valeur)
 	    ($var, $val) = /^\s*(.*?)\s*=\s*(.*).*$/;
 
-	     
+
 	    $var=~s/ \t//g;            #Eliminer spaces + tabs
 
 	    if($val=~/".+"/)
@@ -140,7 +140,7 @@ sub fillHashFromBloc
 {
     my ($curDir,$cfgmak);
 
-    if($ENV{"OS"} eq "Windows_NT") 
+    if($ENV{"OS"} eq "Windows_NT")
     {
 	#Cas du systeme Windows NT
 	$ps="\\";
@@ -180,7 +180,8 @@ sub fillHashFromBloc
     {
       my $val=$hash{$key};
       $val =~ s/<TELEMAC_HOME>/$hash{"PROJECT"}/;
-      $val =~ s/<DIRLIB>/$hash{"HOSTTYPE"}/;
+      $val =~ s/<DIRLIB>/$hash{"DIRLIB"}/;
+      $val =~ s/<VERSARTE>/$hash{"VERSARTE"}/;
 
       printf F "$key = $val\n\n";
     }

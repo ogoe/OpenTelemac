@@ -1,47 +1,45 @@
 #!perl
 #____________________________________________________________
 #
-# Recompile les librairies et executables par lancement des
-# Makefile de tous les composants de l'arborescence TELEMAC90
-# decrits dans le tableau "dirs" ci-dessous.
+# Generation a scalar version of the TELEMAC system
+# See makeallpar90.pl for parallel version
 #
-# DeltaCAD/SA - Mars 1999
+# Mis a jour pour TELEMAC V6P0 - F. Decung - 23/02/2010
+# Update for scalar version only - P. LANG - 01/07/2010
+#
+# Original version : DeltaCAD/SA - Mars 1999
 #____________________________________________________________
 
 
 #--------------------Tableau de description des repertoires
 
 @dirs=(
-#Libs : Bief, Damocles, Paravoid, Special
-	"damocles|damo_v5p6|sources",
-	"paravoid|paravoid_v5p6|sources",
-	"parallel|parallel_v5p6|sources",
-	"bief|bief_v5p6|sources",
-	"special|special_v5p6|sources",
+#Libs : Bief, Damocles, Paravoid, Special, MumpsVoid
+	"damocles|damo_v6p0|sources",
+	"mumpsvoid|mumpsvoid_v6p0|sources",
+	"paravoid|paravoid_v6p0|sources",
+	"bief|bief_v6p0|sources",
+	"special|special_v6p0|sources",
 #Sisyphe
-	"sisyphe|sisyphe_v5p6|sources",
+	"sisyphe|sisyphe_v6p0|sources",
 #T2d
-	"telemac2d|tel2d_v5p6|sources",
+	"telemac2d|tel2d_v6p0|sources",
 #T3d
-	"telemac3d|tel3d_v5p6|sources",
+	"telemac3d|tel3d_v6p0|sources",
 #Artemis
-	"artemis|arte_v5p6|sources",
-#Subief2d
-	"subief2d|subief2d_v5p6|sources",
-#Subief3d
-	"subief3d|subief3d_v5p6|sources",
+	"artemis|arte_v6p0|sources",
 #Estel2d
-	"estel2d|estel2d_v5p6|sources",
+	"estel2d|estel2d_v6p0|sources",
 #Estel3d
-	"estel3d|estel3d_v5p6|sources",
+	"estel3d|estel3d_v6p0|sources",
 #Postel3d
-	"postel3d|postel3d_v5p6|sources",
+	"postel3d|postel3d_v6p0|sources",
 #Stbtel
-	"stbtel|stbtel_v5p6|sources",
+	"stbtel|stbtel_v6p0|sources",
 #Tomawac
-	"tomawac|toma_v5p6|sources",
+	"tomawac|toma_v6p0|sources",
 #Spartacus2d
-	"spartacus2d|spartacus2d_v1p1|sources",
+	"spartacus2d|spartacus2d_v6p0|sources",
 
 );
 
@@ -81,20 +79,20 @@ sub RunMake
     if($make==1)
     	{
  	system ("maktel menage");
- 	system ("maktel all install menage");
-        printf "===== $curdir : maktel all install menage\n";
+ 	system ("maktel install");
+        printf "===== $curdir : maktel install\n";
 #
 # Pour les libs faire en plus les libs Debug et Profile
-#
-       	if  ( ! ( $curdir =~ /share/ ) )
-       	{
-                   printf "===== $curdir : maktel libdebug menage\n";
-                   system ("maktel libdebug");
-                   system ("maktel menage");
+# Commente, peu utilise...
+#       	if  ( ! ( $curdir =~ /share/ ) )
+#       	{
+#                   printf "===== $curdir : maktel libdebug menage\n";
+#                   system ("maktel libdebug");
+#                   system ("maktel menage");
 #                   printf "===== $curdir : maktel libprofile menage\n";
 #                   system ("maktel libprofile");
 #                   system ("maktel menage");
-		}
+#		}
 	printf "\n\n";
     	}
 }
