@@ -135,10 +135,10 @@
      &          '           WRONG DATA, PROGRAMME STOPPED')
 300   FORMAT(1X,//,1X,'READGEO1 : TITRE= ',A72,/)
 301   FORMAT(1X,//,1X,'READGEO1: TITLE= ',A72,/)
-500   FORMAT(1X,'NOMBRE D''ELEMENTS:',1I6,/,
-     &       1X,'NOMBRE REEL DE POINTS:',1I6)
-501   FORMAT(1X,'NUMBER OF ELEMENTS:',1I6,/,
-     &       1X,'NUMBER OF POINTS:',1I6)
+500   FORMAT(1X,'NOMBRE D''ELEMENTS:',1I9,/,
+     &       1X,'NOMBRE REEL DE POINTS:',1I9)
+501   FORMAT(1X,'NUMBER OF ELEMENTS:',1I9,/,
+     &       1X,'NUMBER OF POINTS:',1I9)
 !
 !-----------------------------------------------------------------------
 !

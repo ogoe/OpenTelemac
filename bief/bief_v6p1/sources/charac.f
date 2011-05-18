@@ -190,7 +190,8 @@
      &                SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
      &                IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
      &                3,NPLAN,MESH%LV,MSK,MASKEL%R,
-     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPOIN2)
+     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPOIN2,
+     &                .TRUE.,.TRUE.)
 !
       ENDIF
 !

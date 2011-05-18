@@ -428,6 +428,18 @@
           H%R(I)=H%R(I)-HFL1
         ENDIF
         IF(LIMPRO(IPTFR).EQ.KDIR) THEN
+          IF(HBOR(IPTFR).LT.0.D0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'HAUTEUR NEGATIVE IMPOSEE A UNE FRONTIERE'
+              WRITE(LU,*) 'VERIFIER VOTRE SOUS-PROGRAMME BORD3D'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'NEGATIVE DEPTH PRESCRIBED ON BOUNDARY'
+              WRITE(LU,*) 'CHECK YOUR SPECIFIC SUBROUTINE BORD3D'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           FLBOR%R(IPTFR)=FLBOR%R(IPTFR)
      &                  +(H%R(I)-HBOR(IPTFR))/(DT*UNSV2D%R(I))
           H%R(I)= HBOR(IPTFR)

@@ -30,6 +30,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNH)
+!+        28/046/2011
+!+        V6P1
+!+   LIQUID BOUNDARIES MASK ADDED
+!+   CALL PARCOM_BORD DELETED (NOT USEFUL, WE DEAL HERE WITH SEGMENTS
+!+   WHICH BELONG TO A SINGLE PROCESSOR)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLT            |<--| A MODIFIED COPY OF LITBOR.
 !| FRTYPE         |-->| TYPE OF BOUNDARY CONDITIONS
@@ -94,7 +101,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,K1,K2,IELEM,DIR,DDL,NEU,OND,IFRLIQ
+      INTEGER K,K1,K2,IELEM,DIR,DDL,NEU,OND,NONEU,IFRLIQ
       DOUBLE PRECISION USCALN
 !
 !-----------------------------------------------------------------------
@@ -103,6 +110,7 @@
       DDL=2
       NEU=3
       OND=4
+      NONEU=5
 !
 !     CLT CONTAINS ARRAY LITBOR, POSSIBLY MODIFIED ACCORDING TO THE SIGN
 !     OF U.N ON THE LIQUID BOUNDARIES, WHERE N IS THE OUTGOING NORMAL.
@@ -168,15 +176,15 @@
         ENDIF
       ENDDO
 !
-!     IN PARALLEL MODE, RETRIEVES THE 1S GIVEN BY ANOTHER
+!     IN PARALLEL MODE, RETRIEVES THE 1 GIVEN BY ANOTHER
 !     SUB-DOMAIN (I.E. TAKES THE MAX OF EACH POINT)
 !
-      IF(NCSIZE.GT.1) THEN
-        CALL PARCOM_BORD(MASKTR%ADR(NEU)%P%R,3,MESH)
-        CALL PARCOM_BORD(MASKTR%ADR(DDL)%P%R,3,MESH)
-        CALL PARCOM_BORD(MASKTR%ADR(DIR)%P%R,3,MESH)
-        CALL PARCOM_BORD(MASKTR%ADR(OND)%P%R,3,MESH)
-      ENDIF
+C     IF(NCSIZE.GT.1) THEN
+C       CALL PARCOM_BORD(MASKTR%ADR(NEU)%P%R,3,MESH)
+C       CALL PARCOM_BORD(MASKTR%ADR(DDL)%P%R,3,MESH)
+C       CALL PARCOM_BORD(MASKTR%ADR(DIR)%P%R,3,MESH)
+C       CALL PARCOM_BORD(MASKTR%ADR(OND)%P%R,3,MESH)
+C     ENDIF
 !
 !  POSSIBLE MASKING
 !
@@ -198,13 +206,23 @@
 !       IN PARALLEL MODE, RETRIEVES THE 0S GIVEN BY ANOTHER
 !       SUB-DOMAIN (I.E. TAKES THE MIN OF EACH POINT)
 !
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM_BORD(MASKTR%ADR(NEU)%P%R,4,MESH)
-          CALL PARCOM_BORD(MASKTR%ADR(DDL)%P%R,4,MESH)
-          CALL PARCOM_BORD(MASKTR%ADR(DIR)%P%R,4,MESH)
-          CALL PARCOM_BORD(MASKTR%ADR(OND)%P%R,4,MESH)
-        ENDIF
+C       IF(NCSIZE.GT.1) THEN
+C         CALL PARCOM_BORD(MASKTR%ADR(NEU)%P%R,4,MESH)
+C         CALL PARCOM_BORD(MASKTR%ADR(DDL)%P%R,4,MESH)
+C         CALL PARCOM_BORD(MASKTR%ADR(DIR)%P%R,4,MESH)
+C         CALL PARCOM_BORD(MASKTR%ADR(OND)%P%R,4,MESH)
+C       ENDIF
+!
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     LIQUID BOUNDARIES MASK
+!
+      DO K=1,NPTFR
+        K2=KP1BOR(K)
+        IF(K2.NE.K) MASKTR%ADR(NONEU)%P%R(K)=1.D0-MASKTR%ADR(NEU)%P%R(K)
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

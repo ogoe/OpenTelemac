@@ -39,7 +39,7 @@
 !|                |   | CLANDESTINE VARIABLES ARE SYSTEMATICALLY READ
 !| AT             |-->| TIME
 !| CLAND          |<--| BLOCK OF CLANDESTINE VARIABLES
-!| DT             |-->| TIME STEP
+!| DT             |<--| TIME STEP
 !| FIN            |-->| LOGICAL, SEE NUMDEB
 !| HIST           |-->| CONTAINS TIME AND POSSIBLY OTHER VALUES
 !| LISTIN         |-->| IF YES, INFORMATIONS PRINTED ON LISTING

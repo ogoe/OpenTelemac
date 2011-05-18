@@ -51,7 +51,8 @@
 !+   velocity in Sisyphe. It is impossible to have mass conservation and
 !+   monotonicity when the advection field does not obey the continuity
 !+   equation. The only known application so far is Sisyphe.
-!+
+!+  
+!+   Limitation of fluxes now programmed (see YAFLULIM and FLULIM)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -263,6 +264,16 @@
       CALL FLUX_EF_VF(FXMAT,MESH%W%R,MESH%NSEG,MESH%NELEM,
      &                MESH%ELTSEG%I,MESH%ORISEG%I,
      &                MESH%IKLE%I,.TRUE.,IOPT1)
+!
+!-----------------------------------------------------
+! LIMITATION OF FLUXES (IF REQUESTED, USED BY SISYPHE)
+!-----------------------------------------------------
+!
+      IF(YAFLULIM) THEN
+        DO I=1,MESH%NSEG
+          FXMAT(I)=FXMAT(I)*FLULIM(I)
+        ENDDO  
+      ENDIF
 !
 !----------------------------------------
 !
