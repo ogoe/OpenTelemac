@@ -67,15 +67,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)           :: NPOIN2, NPLAN, IELM3, LISRUF
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: WC
-      TYPE(BIEF_OBJ), INTENT(IN)    :: U, V, W
+      INTEGER, INTENT(IN)           :: NPOIN2,NPLAN,IELM3,LISRUF
+      DOUBLE PRECISION, INTENT(IN)  :: WCHU0,TURBA,TURBB
+      LOGICAL, INTENT(IN)           :: MSK
       TYPE(BIEF_MESH), INTENT(INOUT):: MESH3
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: TRAV1, TRAV2, TRAV3
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: MASKEL, S
-      TYPE(BIEF_OBJ), INTENT(IN)    :: HN, RUGOF ,UETCAR
-      DOUBLE PRECISION, INTENT(IN)  :: WCHU0, TURBA, TURBB
-      LOGICAL, INTENT(IN) :: MSK
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: WC,TRAV1,TRAV2,TRAV3
+      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,S,HN,RUGOF,UETCAR,U,V,W
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -133,4 +130,4 @@
 !=======================================================================
 !
       RETURN
-      END SUBROUTINE WCTURB
+      END
