@@ -1,0 +1,5 @@
+PERL5LIB=`getperl5lib`
+export PERL5LIB
+
+
+perl -w -x -S makeallclean.pl $1 $2 $3 $4 $5 

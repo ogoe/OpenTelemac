@@ -8,39 +8,38 @@ C
 C    S. Aunay  - Aout 1998
 C
 C------------------------DIFFSEL------------------DeltaCAD--
-
+C
 c	IMPLICIT NONE 
-	integer nvar,i
-
-
+      integer nvar,i
+C
       dimension itab(100000)
       dimension jtab(100000)
-	dimension it1(10), it2(10)
+      dimension it1(10), it2(10)
       real  xtab(100000)
       real  ytab(100000)
-	real r1, r2, epsilon, epsref, epsmax
-
+      real r1, r2, epsilon, epsref, epsmax
+C
       CHARACTER*72 TITRE,tit1,tit2
-	integer i1,i2,j1,j2
-
+      integer i1,i2,j1,j2
+C
       character*32 c1_32,c2_32
       character*40 ficnam1, ficnam2
-
+C
 C------ Nom des 2 fichiers à comparer (SELAFIN)
-
+C
       print*,'Nom du fichier selafin num 1 '
       read(5,5000) ficnam1
 5000  format(A)
-
+C
       ficnam2='                                '
-	print*,'Nom du fichier selafin num 2 '
+      print*,'Nom du fichier selafin num 2 '
       read(5,5000) ficnam2
-	if ( ficnam2(1:1) .eq. '=' ) then
-	  ficnam2= 'lnh/' // ficnam1
-	endif
-
-	epsref = 1.E-10
-	epsmax = 0.
+      if ( ficnam2(1:1) .eq. '=' ) then
+       ficnam2= 'lnh/' // ficnam1
+      endif
+C
+      epsref = 1.E-10
+      epsmax = 0.
       print*,'                    Fichiers SELAFIN : '
       print*,'      - ', ficnam1
       print*,'      - ', ficnam2
@@ -79,19 +78,19 @@ C------ #2 : NBV_1 et NBV_2
 
 C------ #3 : Noms et unités
 
-	nvar = i1 + i2
+      nvar = i1 + i2
       do 100 i=1, nvar
       read(1) C1_32
       read(2) C2_32
 
-	if (c1_32 .ne. c2_32) then
-          print*, ' #3 ... ERREUR C1_32=',c1_32,
+      if (c1_32 .ne. c2_32) then
+        print*, ' #3 ... ERREUR C1_32=',c1_32,
      2                      ', C2_32=',c2_32
-	    stop
-	                      endif
+        stop
+      endif
 
 100   continue
-	print *, ' #3 ... OK,   nvar=',nvar
+      print *, ' #3 ... OK,   nvar=',nvar
 
 
 C------ #4 : 1,0,0,0,0,0,0,0,0,0,0
@@ -103,7 +102,7 @@ C------ #4 : 1,0,0,0,0,0,0,0,0,0,0
 	  print*, ' #4 ... ERREUR it1=',it1(k),
      1                     ',   it2=',it2(k)
 	stop
-	                       endif
+        endif
 20	continue
 C
       if (it1(10) .eq. 1) then
@@ -114,10 +113,10 @@ C
 	  print*, ' #4 ... ERREUR it1=',it1(k),
      1                     ',   it2=',it2(k)
 	stop
-	                       endif
+        endif
 30	continue
-					  endif
-	print *, ' #4 ... OK'
+      endif
+      print *, ' #4 ... OK'
 
 C------ #5 : NELEM, NPOIN, NDP, 1
 

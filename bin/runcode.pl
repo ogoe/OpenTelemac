@@ -7,7 +7,7 @@
 #
 # Lanceur generique de niveau 2 des codes sur Systeme TELEMAC.
 #
-# Ce script est exploité par le lanceur de niveau 1 "runtel.pl"
+# Ce script est exploite par le lanceur de niveau 1 "runtel.pl"
 # pour construire le script de conduite d'une execution d'un code.
 #
 # AUTEUR : DeltaCAD - 1999
@@ -40,7 +40,7 @@
 #
 #          date    : 26/06/2000
 #          objet   : On utilise les chemins complets pour le fichier
-#                    de paramÉtres
+#                    de parametres
 #
 #          date    : 22/06/2000
 #          objet   : On renomme les anciens fichiers de resultats : *.old
@@ -53,7 +53,7 @@
 #          objet   : Remplacement de PVM par MPI
 #
 #          date    : Septembre 2001 - DeltaCAD
-#          objet   : Amélioration de la gestion des versions
+#          objet   : Amelioration de la gestion des versions
 #                    Localisation des modules fortran90 dans les branches des codes
 #
 #          date    : Mai 2008- Pascal Vezolle (IBM)
@@ -63,15 +63,16 @@
 #          date    : 15 Juin 2009- Chi-Tuan Pham (EDF)
 #          object  : modifications for coupling with Delwaq in parallel mode.
 #
+#          date    : Avril 2010 - BAW Karlsruhe (jaj) et Sinetics (C. Denis)
+#          objet   : Prise en compte des sections de controles en // (jaj)
+#                  : Ajout des cibles pour Mumps (C. Denis)
+#
 #------------------------Systeme TELEMAC V5P2--------------------------
 #
 use File::Copy;
 use File::Path;
 use File::Basename;
 use Benchmark;
-###> SEB @ NRC-CHC: Correction for UNC PATH on new Windows and MICH2
-use Win32::NetResource;
-###< SEB @ NRC-CHC
 
 #############################################################################
 #    LIBRAIRIES LIEES AU CODE LANCE
@@ -103,16 +104,15 @@ $MPI_ROOT  = join "",$PROJECT,$ps,"mpi",$ps,$dirlib;
 if ($NCSIZE < 1 && $CALCIUM ne "OUI" )
   {    #scalaire
   $LIBPARALL  = "";
+  $LIBMUMPS=$libmumpsseq;
   $LIB_SYS = "";
-###> SEB @ NRC-CHC: Correction for Intel FORTRAN 9.1
-#  if($ENV{"OS"} eq "Windows_NT")  {$LIB_SYS = "advapi32.lib netapi32.lib";}
-  if($ENV{"OS"} eq "Windows_NT")  {$LIB_SYS = "";}
-###< SEB @ NRC-CHC
+# PLG INGEROP  if($ENV{"OS"} eq "Windows_NT")  {$LIB_SYS = "advapi32.lib netapi32.lib";}
   $LIB_CALCIUM = "";
   }
 else { #parallele
   $INCDIR     = $INCDIR." $cmdInc$MPI_ROOT$ps"."include";
   $LIBPARALL  = $libsmpi;
+  $LIBMUMPS=$libmumpspar;
 
   if ($CALCIUM eq "OUI")   #ajout libs du coupleur Calcium
   {
@@ -130,19 +130,16 @@ else { #parallele
   #Cas WindowsNT
   if($ENV{"OS"} eq "Windows_NT")     # Librairies pour WindowsNT
     {
-###> SEB @ NRC-CHC: Correction for Intel FORTRAN 9.1
-     $LIB_SYS = "";
-#     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
-#                " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
-#                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
-###< SEB @ NRC-CHC
+     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
+                " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
+                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
     }
 
 } #($NCSIZE < 2 && $CALCIUM ne "OUI" )
 
 #Bilan des librairies a considerer : BIBLI
 # special lib added
-$BIBLI="$BIBLI  $LIB_SYS $LIBSPECIAL $LIBCALCIUM $LIBPARALL";
+$BIBLI="$BIBLI  $LIB_SYS $LIBSPECIAL $LIBCALCIUM $LIBPARALL  $LIBMUMPS " ;
 
 #############################################################################
 #    EXECUTABLE PAR DEFAUT
@@ -362,8 +359,8 @@ sub acquihpextens {
                                 }   #while
 } #acquihpextens
 
-
-sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar)
+#jaj number of parameters changed, added secFIC
+sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, secFICname)
 #_______________________________________________________________________
 #
 #  Acquisition des fichiers en mode PARALLEL  ($NCSIZE > 1)
@@ -372,9 +369,11 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar)
 {#acquihpPARAL
  my $FIL1 = @_[0];      #nom utilisateur du fichier
  my $FIL2 = @_[1];      #nom (de base) du fichier pour le code apres acquisition
- my $modepar =@_[2];    #type d'acquisition parallèle : SCAL, SELAFIN ou PARAL
+ my $modepar =@_[2];    #type d'acquisition parallÃ¨le : SCAL, SELAFIN ou PARAL
  my $conlimFIC =@_[3];  #nom du fichier des CONDITIONS LIMITES (pour PARTEL)
  my $autopar =@_[4];    #mode parallelisme automatique ou non
+ my $secFIC=@_[5];      #the sections input file workdir name #jaj
+ my $secFICname=@_[6];  #the sections input file real name #jaj
 #
  my @lfic=();
 #
@@ -400,7 +399,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar)
 #
 #---- Les fichiers "SELAFIN" sont a decouper avec PARTEL en
 #      mode "autopar"
-#     Sinon, les utiliser comme pré-découpés avec les fonctions
+#     Sinon, les utiliser comme prÃ©-dÃ©coupÃ©s avec les fonctions
 #     "extens"
   if ( ($modepar =~ /SELAFIN/)  )
    {
@@ -411,7 +410,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar)
    	  else
    	    { acquihp   ( $FIL1, $FIL2);
    	      chdir($REP);
-   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE);
+   	      $rcp = RunPartel ($FIL2, $conlimFIC, $NCSIZE, $secFIC, $secFICname); #jaj
               if ( $rcp != 0 )  
                 {
                   open(F, ">>$REPLANCE$ps"."$PARA$WORKING"."_error.log");
@@ -419,6 +418,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar)
                   printf F "Partitioning into $NCSIZE subdomains with files: \n";
                   printf F "$FIL2 \n";
                   printf F "$conlimFIC \n";
+                  printf F "$secFIC \n";   #jaj
                   printf F "returns with error code $rcp \n";
                   printf F "Probably corrupt input files. \n";
                   close(F);
@@ -449,7 +449,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar)
    {
       @lfic=list_extens_file_names($FIL1, $NCSIZE);
 #
-#------- En manuel, copier les fichiers qui doivent pré-exister
+#------- En manuel, copier les fichiers qui doivent prÃ©-exister
 #
    	  if ($autopar eq "0")    
    	    { foreach (@lfic)
@@ -679,7 +679,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
  my $FIL1 = @_[0];      #nom (de base) du fichier pour le code apres acquisition
  my $FIL2 = @_[1];      #nom utilisateur du fichier
  my $ficGEOM = @_[2];   #nom du fichier GEOMETRIE du code
- my $modepar =@_[3];    #type de gestion parallèle : SCAL, SELAFIN ou PARAL
+ my $modepar =@_[3];    #type de gestion parallÃ¨le : SCAL, SELAFIN ou PARAL
  my $autopar =@_[4];    #mode parallelisme automatique ou non 
 
 #
@@ -928,7 +928,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
 
 
 
-sub RunPartel       # (geo, cli, NCSIZE);
+sub RunPartel       # (geo, cli, NCSIZE, sec, secname); #jaj added sec, secname)
 #_______________________________________________________________________
 #
 #  Partitionnement automatique avec PARTEL
@@ -939,7 +939,9 @@ sub RunPartel       # (geo, cli, NCSIZE);
  #Arguments de PARTEL dans "partel.par"
   open(FPAR,">partel.par") or die "File \'partel.par\' cannot be opened!";
  #PARTEL parameters (METIS_PartMeshDual method always choosen [=1])
-  print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n";
+  #print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n0\n\n";           #jaj without sec
+  if (@_[4] eq "") {$ifsec=0;} else {$ifsec=1;}          #jaj
+  print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n$ifsec\n@_[3]\n";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
  #Lancement PARTEL, append outputs
   $command=join "",$PathParall,"partel < partel.par >> partel.log";
@@ -1084,19 +1086,13 @@ while ($LIGNE=<F>)
 #----- Nombre de processeurs
 
     if ($ideb == 0)
-###> SEB @ NRC-CHC: Correction for UNC PATH on new Windows and MICH2
-#      { $MPI_NPROC=$LIGNE; $ideb++;}
-    { $MPI_NPROC=$LIGNE; $ideb++; $MPI_LINE="-hosts ".$MPI_NPROC; }
-###< SEB @ NRC-CHC
+      { $MPI_NPROC=$LIGNE; $ideb++;}
     else
-#----- Traitement de l'info (Host, NbProc)
+#----- Traitement de l'info (Host, NbProc)   
       {
         my ($hostmpi, $nbprochost)=($LIGNE=~/^\s*(\S*)\s*(\S*)\s*$/);
-        if($ENV{"OS"} eq "Windows_NT")
-###> SEB @ NRC-CHC: Correction for UNC PATH on new Windows and MICH2
-#                { print F2 "$hostmpi $nbprochost\n";} #MPICH.NT specific
-{ print F2 "$hostmpi $nbprochost\n"; $MPI_LINE=$MPI_LINE." ".$hostmpi." ".$nbprochost} #MPICH2 specific
-###< SEB @ NRC-CHC
+        if($ENV{"OS"} eq "Windows_NT")                
+                { print F2 "$hostmpi $nbprochost\n";} #MPICH.NT specific
         else    { for ($k=0;$k<$nbprochost;$k++)
                      { print F2 "$hostmpi\n";}       #MPICH.Unix
                 }
@@ -1133,7 +1129,7 @@ open (FIC, ">err$WORKING.err"); close (FIC);
 
 
 if( $COMPILE_LINK eq "1" ) # copy only the fortran file 
-  {
+  { 
     genereligne();
     ecrire("*** ONLY COMPILATION AND LINKING REQUIRED ***", 
            "*** ONLY COMPILATION AND LINKING REQUIRED ***");
@@ -1147,7 +1143,7 @@ chdir($Directory_tmp) or die "## Error : chdir \"$Directory_tmp\" impossible :$!
    @FicFortToCompile=();
    foreach $FORTFIC (@FORTRANS)
    {
-   ($FORTRAN,$FORAC)=split (/§/,$FORTFIC);
+   ($FORTRAN,$FORAC)=split (/;/,$FORTFIC);
     if ($FORTRAN ne "DEFAUT")
       { acquihp($FORTRAN, $FORAC);        #mot clef "FICHIER FORTRAN"
         ecrire_FicTitrVal("FICHIER FORTRAN","FORTRAN FILE", $FORTRAN);
@@ -1156,13 +1152,13 @@ chdir($Directory_tmp) or die "## Error : chdir \"$Directory_tmp\" impossible :$!
 #On ajoute les fichiers Fortran inclus (FORTINC)
       foreach $FORTFIC (@FORTINC)
       {
-      ($FORTR,$FORAC)=split (/§/,$FORTFIC);
+      ($FORTR,$FORAC)=split (/;/,$FORTFIC);
       acquihp($FORTR, $FORAC);        #mot clef "FICHIER FORTRAN"
       ecrire_FicTitrVal("FICHIER FORTRAN INCLU","FORTRAN INCLUDE FILE", $FORTR);
       }
    }#foreach FORTFIC
    $FORTRAN=@FORTRANS[0];                #pour le nom de l'exe local
-   ($FORTRAN,$TMP)=split (/§/,$FORTRAN); #sur la base du premier FORTRAN
+   ($FORTRAN,$TMP)=split (/;/,$FORTRAN); #sur la base du premier FORTRAN
 
 # now do all the compilation and link actions  
 
@@ -1199,7 +1195,7 @@ if ($FORTRAN ne "DEFAUT")                        # Executable par defaut ?
     my @lisf=@FORTRANS; push(@lisf,@FORTINC);
     foreach $FORTFIC (@lisf)
       {
-      ($FORTR,$FORAC)=split (/§/,$FORTFIC);
+      ($FORTR,$FORAC)=split (/;/,$FORTFIC);
        if (-e "$REPLANCE"."$ps$FORTR")
           {
            ($z,$z,$z,$z,$z,$z,$z,$z,$z,$m2time,$z,$z,$z) = 
@@ -1274,7 +1270,7 @@ printf "\n";
 ecrire("*** EDITION DE LIENS ***", "*** LINKING ***");
 print "\n";
 
-if ($NCSIZE > 0 )   #cas parallèle : MPIlink
+if ($NCSIZE > 0 )   #cas parallÃ¨le : MPIlink
   {
     $dolink=$lkmpi;
     $dolink=~s/<EXE>/$EXEFILE/;
@@ -1286,7 +1282,6 @@ if ($NCSIZE > 0 )   #cas parallèle : MPIlink
     $dolink =~ s/a\.exe/$EXEFILE/;       # nom de l'exe = "out####.exe"
     $dolink = "$dolink @FicToLink $BIBLI";
   }
-  #$dolink = "$dolink $PROJECT\\XDMF\\XdmfUtils.lib";
 
 #Lancement LINK
 #print "SA-dolink = $dolink\n";
@@ -1322,7 +1317,6 @@ if  ( ( ! -x "$EXEFILE" ) || ($TMP=~/error|erreur/i) )
 #jaj orig
 #copy ("$EXEFILE", "..$ps"."$localexe");  # le garder pour le reutiliser
 copy ("$EXEFILE", "$REPLANCE".$ps."$localexe");  # le garder pour le reutiliser
-
 
   }   # if uselocal
 }     # if FORTRAN <> DEFAUT
@@ -1415,7 +1409,7 @@ print "\n";
 #sa7   acquihp($DICO, "FORT.2");
 #sa7 
 
-# les fichiers CONDITIONS LIMITES pour le parallélisme doivent être "acqui" par
+# les fichiers CONDITIONS LIMITES pour le parallelisme doivent etre "acqui" par
 # avance pour pouvoir utiliser PARTEL
   if ( ( $NCSIZE > 1) && (scalar(@conlimDSC) >=1 )  )
     {
@@ -1427,16 +1421,39 @@ print "\n";
                               else {acquihpextens( $$f, $conlimF);}
         }
     }
+
+#jaj similar procedure for sections input file
+  if ( ( $NCSIZE > 1) && (scalar(@sectionDSC) >=1 )  )
+    {
+     foreach $seDSC (@sectionDSC)
+        { my @v=split(";", $seDSC);
+          my $f=$v[0]; 
+          $sectionF=$v[1]; push (@seF, $sectionF);
+          push (@seF2, $$f);
+          if ($$f ne "")
+          {
+            if ($AUTOPAR eq "1") {acquihp( $$f, $sectionF);}
+                            else {acquihpextens( $$f, $sectionF);}
+          }
+        }
+    }
+
 # Autres fichiers decrits dans le dictionnaire du code :
 $i=0; 
 $iclCOD=0; $conlimF=@clF[$iclCOD];
+$iseCOD=0; $sectionF=@seF[$iseCOD]; #jaj
+           $sectionFname=@seF2[$iseCOD]; #jaj
+
 foreach (@FDESC)
 {
     ($varnam,$ficnamcod,$oblig,$fictyp,$ficmod,$modepar) = split (/;/,$_);
 
-#detecter le changement de code (couplage) et changer de fichier C.L.
+#detecter le changement de code (couplage) et changer de fichier C.L. et sections #jaj
     if ($varnam eq "NEWCODE") 
-       {$iclCOD++; $conlimF=@clF[$iclCOD]; 
+       {$iclCOD++; 
+        $conlimF=@clF[$iclCOD]; 
+        $sectionF=@seF[$iclCOD];  #jaj
+        $sectionFname=@seF2[$iclCOD]; #jaj
         next;
        }
     
@@ -1447,7 +1464,7 @@ foreach (@FDESC)
       ecrire_FicTitrVal($FLNG1[$i],$FLNG2[$i], $$varnam);
 #
       if ( $NCSIZE > 1)
-        { acquihpPARAL  ( $$varnam, "$ficnamcod", $modepar, $conlimF, $AUTOPAR);}
+        { acquihpPARAL  ( $$varnam, "$ficnamcod", $modepar, $conlimF, $AUTOPAR, $sectionF, $sectionFname);} #jaj
       else
         { acquihp       ( $$varnam, "$ficnamcod");}
 
@@ -1459,29 +1476,6 @@ foreach (@FDESC)
 #$Directory_tmp=join "", $REPLANCE,$ps,$REP;
 $Directory_tmp=join "",$REP;
 chdir($Directory_tmp) or die "## Error : chdir \"$Directory_tmp\" impossible :$!";
-
-#print "#################################> $Directory_tmp\n";
-
-#copy ("$PROJECT\\XDMF\\vtkexoIIc.dll", "$Directory_tmp".$ps."vtkexoIIc.dll") || erreurresti("D:\\TELEMAC\\ubuntu\\lib\\vtkexoIIc.dll"); ;
-#copy ("$PROJECT\\XDMF\\vtkexoIIc.dll", "$Directory_tmp".$ps."vtkexoIIc.dll");
-#copy ("$PROJECT\\XDMF\\vtkexoIIc.lib", "$Directory_tmp".$ps."vtkexoIIc.lib");
-#copy ("$PROJECT\\XDMF\\vtkhdf5.dll", "$Directory_tmp".$ps."vtkhdf5.dll");
-#copy ("$PROJECT\\XDMF\\vtkhdf5.lib", "$Directory_tmp".$ps."vtkhdf5.lib");
-#copy ("$PROJECT\\XDMF\\vtklibxml2.dll", "$Directory_tmp".$ps."vtklibxml2.dll");
-#copy ("$PROJECT\\XDMF\\vtklibxml2.lib", "$Directory_tmp".$ps."vtklibxml2.lib");
-#copy ("$PROJECT\\XDMF\\vtkNetCDF.dll", "$Directory_tmp".$ps."vtkNetCDF.dll");
-#copy ("$PROJECT\\XDMF\\vtkNetCDF.lib", "$Directory_tmp".$ps."vtkNetCDF.lib");
-#copy ("$PROJECT\\XDMF\\vtkzlib.dll", "$Directory_tmp".$ps."vtkzlib.dll");
-#copy ("$PROJECT\\XDMF\\vtkzlib.lib", "$Directory_tmp".$ps."vtkzlib.lib");
-#copy ("$PROJECT\\XDMF\\Xdmf.dll", "$Directory_tmp".$ps."Xdmf.dll");
-#copy ("$PROJECT\\XDMF\\Xdmf.lib", "$Directory_tmp".$ps."Xdmf.lib");
-#copy ("$PROJECT\\XDMF\\XdmfCSharp.dll", "$Directory_tmp".$ps."XdmfCSharp.dll");
-#copy ("$PROJECT\\XDMF\\XdmfDiff.lib", "$Directory_tmp".$ps."XdmfDiff.lib");
-#copy ("$PROJECT\\XDMF\\XdmfExodusConverter.lib", "$Directory_tmp".$ps."XdmfExodusConverter.lib");
-#copy ("$PROJECT\\XDMF\\XdmfPartitioner.lib", "$Directory_tmp".$ps."XdmfPartitioner.lib");
-#copy ("$PROJECT\\XDMF\\XdmfUtils.dll", "$Directory_tmp".$ps."XdmfUtils.dll");
-#copy ("$PROJECT\\XDMF\\XdmfUtils.lib", "$Directory_tmp".$ps."XdmfUtils.lib");
-#copy ("$PROJECT\\XDMF\\XmdfCSharpBindings.dll", "$Directory_tmp".$ps."XmdfCSharpBindings.dll");
 
 
 #######################################
@@ -1545,26 +1539,8 @@ if ($NCSIZE > 0 )
 {
   $cmd_runmpi=$runmpi;
   $cmd_runmpi=~s/<EXE>/$EXEFILE/;
-###> SEB @ NRC-CHC: Correction for UNC PATH on new Windows and MICH2
-#        Note that you do not need the uncpath option anymore
-#        Note also that you do not need the mpirun file anymore
-  if($ENV{"OS"} eq "Windows_NT")
-  {
-     Win32::NetResource::GetUNCName( $TM_UNCPATH, $Directory_tmp );
-     if( $TM_UNCPATH ne "" ) {
-        $TM_UNCPATH = "-wdir \"".$TM_UNCPATH."\"";
-        $cmd_runmpi=~s/<DIR>/$TM_UNCPATH/;
-        $cmd_runmpi=~s/<N>/$MPI_LINE/;
-     } else {
-        $cmd_runmpi=~s/<DIR>/-localonly/;
-        $cmd_runmpi=~s/<N>/-n $NCSIZE/;
-     }
-  } else {
-     $cmd_runmpi=~s/<DIR>//;
-     $cmd_runmpi=~s/<N>/$NCSIZE/;  #< This is part of the original runcode.pl
-  }
-###< SEB @ NRC-CHC
-
+  $cmd_runmpi=~s/<N>/$NCSIZE/;
+  
   ecrire(" lancement MPI : $cmd_runmpi",
          " MPI launcher  : $cmd_runmpi");
  

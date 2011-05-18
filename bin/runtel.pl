@@ -1,9 +1,9 @@
 #!perl
 #line 8
-#------------------------Systeme TELEMAC V5P9-------------runtel.pl----
+#------------------------Systeme TELEMAC V5P3-------------runtel.pl----
 #
 #	Procedures de lancement simplifie d'un code
-#           du syst�me TELEMAC
+#           du systeme TELEMAC
 #
 # SYNTAXE
 #	runtel.pl nom_code [-D] [-C|-F] [-s|b|n|d heure] [cas]
@@ -42,7 +42,7 @@
 #               delete_$PARA$WORKING pour effacer le calcul lance en batch
 #
 #      14) Allocation des fichiers sur des canaux predefinis (FORT.xx)
-#	   dans le repertoire de travail apres contr�le de leur existence.
+#	   dans le repertoire de travail apres contrÃÂle de leur existence.
 #      15) Compilation du programme principal fournis par l'utilisateur
 #	   et edition de liens avec les bibliotheques ad-hoc.
 #      16) Lancement de TELEMAC
@@ -210,39 +210,40 @@
 #
 #          date    : 26/06/2000 A. Bas (Steria)
 #          objet   : On ne cree plus le repertoire core sur le fuji car ca ne passe pas
-#                  : On utilise les chemins complets des fichiers de param�tres (REPLANCE)
+#                  : On utilise les chemins complets des fichiers de paramÃÂtres (REPLANCE)
 #
 #          date    : Juillet 2000 - DeltaCAD
 #          objet   : Introduction de la protection sous WindowsNT
 #
 #          date    : Septembre 2001 - DeltaCAD
-#          objet   : Am�lioration de la gestion des versions
+#          objet   : AmÃ©lioration de la gestion des versions
 #                    Suppression des branches "share" (executables damo)
 #                    Exploitation du dictionnaire et fichier cas par modules Perl
 #
 #          date    : Mars 2003 - BAW Karlsruhe (jaj)
 #          objet   : Nouvelles fonctionnalites :
 #                     - localisation du repertoire temporaire
-#                     - option de suppression ou non du r�pertoire temporaire apr�s calcul
-#                     - compilation/link pr�alable � l'acquisition des fichiers et
+#                     - option de suppression ou non du rÃ©pertoire temporaire aprÃ¨s calcul
+#                     - compilation/link prÃ©alable Ã  l'acquisition des fichiers et
 #                       option de compilation/link seul "-cl"
-#                     - am�lioration de la d�tection et gestion des erreurs
-#                     - mot clef LK_LIB_SPECIAL pour des librairies sp�cifiques
+#                     - amÃ©lioration de la dÃ©tection et gestion des erreurs
+#                     - mot clef LK_LIB_SPECIAL pour des librairies spÃ©cifiques
 #                     - fichier global "mpi_telemac.conf"
 #
 #          date    : Juin 2003 - DeltaCAD
 #          objet   : Couplage des codes TELEMAC2D et SISYPHE
 #
-#------------------------Systeme TELEMAC V5P9--------------------------
+#          date    : Avril 2010 - BAW Karlsruhe (jaj) et SINETICS (C. Denis)
+#          objet   : Prise en compte des sections de contrÃ´les en // (jaj)
+#                  : Ajout des cibles pour Mumps (C. Denis)
+#
+#------------------------Systeme TELEMAC V5P3--------------------------
 
 #-- Modules perls
 use File::Basename;
 use File::Copy;
 use File::Path;
 use Time::Local;
-###> SEB @ NRC-CHC: Correction for UNC PATH on new Windows and MICH2
-use Win32::NetResource;
-###< SEB @ NRC-CHC
 
 #---- INITIALISATIONS vitales
 BEGIN
@@ -251,7 +252,7 @@ BEGIN
   if($ENV{"OS"} eq "Windows_NT") {$ps="\\";}   #Windows NT
                             else {$ps="/"; }   #Unix/Linux
 
-#Localiser les modules dans le r�pertoire 'bin'
+#Localiser les modules dans le rÃ©pertoire 'bin'
   $project=`getproject`;  unshift (@INC, "$project$ps"."bin");
 
 #Verification des modules
@@ -352,7 +353,7 @@ sub fillHashFromBloc
 #$_[0]      : Le chemin complet du fichier a lire.
 #$_[1]      : Le nom du bloc a considerer.
 #$_[2]      : La "hashe table" ou seront stockees comme cles
-#             En cas d'erreur, une entree de de type est retourn�e :
+#             En cas d'erreur, une entree de de type est retournÃ©e :
 #              ("H_ERROR","Error msg")
 #--------------------
 #
@@ -410,7 +411,8 @@ sub fillHashFromBloc
 	    }
 #Traduire les marqueurs : <TELEMAC_HOME>, <DIRLIB>
         $val =~ s/<TELEMAC_HOME>/$hash{"PROJECT"}/g;
-        $val =~ s/<DIRLIB>/$hash{"HOSTTYPE"}/g;
+# PLG INGEROP        $val =~ s/<DIRLIB>/$hash{"HOSTTYPE"}/g;
+        $val =~ s/<DIRLIB>/$hash{"DIRLIB"}/g;
 
 	    $hash{$var}=$val;
 	}
@@ -520,7 +522,7 @@ sub suitvalid {
 		"PREVIOUS COMPUTATION FILE", $PRECEDENT);
 	print "\n"; }
 
-    if ($VALIDATION eq "T") {         # CORRECTION ($VALIDA)   $DCSA$ � verif
+    if ($VALIDATION eq "T") {         # CORRECTION ($VALIDA)   $DCSA$ ÃÂ  verif
 	print "\n";
 	ecrire ("IL EXISTE UNE VALIDATION POUR VOTRE CALCUL", "VALIDATION IS ASKED");
 	print "\n";
@@ -537,6 +539,7 @@ sub heure_plusun() {
 	if ($hour eq 24) { $hour = 0; }
     }
 }
+
 #-------------
 sub ecrire_variable_fichier
 #-------------
@@ -568,9 +571,9 @@ sub ecrire_variable_fichier
 sub desc_fichiers_acqui_resti
 #-------------
 #--- Ecriture des descriptions des fichiers a acquerir/restituer
-#        ("LISTE DES FICHIERS"/"LIST OF FILES" les �num�re)
+#        ("LISTE DES FICHIERS"/"LIST OF FILES" les ÃÂ©numÃÂ¨re)
 #  - FH        : handle du fichier
-#  - %motsdic  : mots clefs � consid�rer (reference)
+#  - %motsdic  : mots clefs Ã  considÃ©rer (reference)
 #  - i0        : numero du premier fichier
 #  - DICO      : DICTIONNAIRE
 #  - CAS       : CAS
@@ -588,7 +591,7 @@ sub desc_fichiers_acqui_resti
    }
 #
 #--- Ecriture des descriptions des fichiers a acquerir/restituer
-#        ("LISTE DES FICHIERS"/"LIST OF FILES" les �num�re)
+#        ("LISTE DES FICHIERS"/"LIST OF FILES" les Ã©numÃ¨re)
 #
 my @vals   = tm_casdico::recup_valeur_mot($refMots, "LISTE DES FICHIERS");   #fr
 my @valsgb = tm_casdico::recup_valeur_mot($refMots, "LIST OF FILES");        #gb
@@ -612,28 +615,32 @@ for($i=0;$i<@vals;$i++)
     @vals2 = tm_casdico::recup_valeur_mot($refMots,$vals[$i]); 
     @vals2[0]=~s/^\s*$//;
         
-#Cas d'un fichier de type FORTRAN : le rep�rer pour compilation avec son nom
+#Cas d'un fichier de type FORTRAN : le repÃÂ©rer pour compilation avec son nom
 #d'acquisition (valable pour plusieurs FORTRANs)
     if (@valsd[0]=~/;FORTRAN/) 
       {my @items=split (/;/,@valsd[0]);
-       my  $fn=join "�",@vals2[0],@items[1];
+       my  $fn=join ";",@vals2[0],@items[1];
        printf $FH "push(\@FORTRANS,\"$fn\");\n";
        next;
       }
-#Cas d'un fichier de type FORTINC : le rep�rer pour l'acqu�rir en m�me
+#Cas d'un fichier de type FORTINC : le repÃÂ©rer pour l'acquÃÂ©rir en mÃÂªme
 #temps que les Fortrans
     if (@valsd[0]=~/;FORTINC/) 
       {my @items=split (/;/,@valsd[0]);
-       my  $fn=join "�",@vals2[0],@items[1];
+       my  $fn=join ";",@vals2[0],@items[1];
        printf $FH "push(\@FORTINC,\"$fn\");\n";
        next;
       }
 
-#Cas d'un fichier de type CONLIM : le rep�rer pour PARTEL
+#Cas d'un fichier de type CONLIM : le repÃÂ©rer pour PARTEL
     if (@valsd[0]=~/;CONLIM/) 
      {printf $FH "push(\@conlimDSC,\"@valsd[0]\");\n"; }
+
+#Cas d'un fichier de type SECTION : le repÃÂ©rer pour PARTEL #### !jaj
+    if (@valsd[0]=~/;SECTION/) 
+     {printf $FH "push(\@sectionDSC,\"@valsd[0]\");\n"; }
     
-#Cas d'un fichier de type SELAFIN-GEOM : le rep�rer pour GRETEL
+#Cas d'un fichier de type SELAFIN-GEOM : le repÃÂ©rer pour GRETEL
     if (@valsd[0]=~/;SELAFIN-GEOM/) 
      {printf $FH "push(\@selgeomDSC,\"@valsd[0]\");\n"; }
     
@@ -645,7 +652,7 @@ for($i=0;$i<@vals;$i++)
 #Cas d'un fichier de type DICO : valeur dans $mDICO
     if (@valsd[0]=~/;DICO/)   { @vals2[0]=$mDICO; }
 
-#Ecriture des donn�es du fichier pour son acquisition/restitution par 'runcode'   
+#Ecriture des donnÃÂ©es du fichier pour son acquisition/restitution par 'runcode'   
     printf $FH "\@FLNG1=(\@FLNG1,\"@vals[$i]\"".");\n"; 
     printf $FH "\@FLNG2=(\@FLNG2,\"@valsgb[$i]\"".");\n"; 
     printf $FH "\@FDESC=(\@FDESC,\"@valsd[0]\"".");\n"; 
@@ -668,7 +675,7 @@ sub get_code_params
 #  - lng      
 #  - versdef  
 #-------------
-#Definition : Retourne les caract�ristiques d'un code 
+#Definition : Retourne les caractÃÂ©ristiques d'un code 
 {
 #Initialisations/recup arguments
   my $refH  = @_[0];
@@ -691,22 +698,6 @@ if ($NOMCOD eq "stbtel")    {    $$refCH    = "STBTEL$ps"."STBTEL_";
                                  $$refRAC   = "STBTEL";
                                  $$refLNG   = $$refH{"LNGSTB"};
                                  $$refVER   = $$refH{"VERSSTB"};            }
-if ($NOMCOD eq "tsef")      {    $$refCH    = "TSEF$ps"."TSE_";
-                                 $$refRAC   = "TSEF";
-                                 $$refLNG   = $ENV{"LNGTSE"};
-                                 $$refVER   = $$refH{"VERSTSE"};            }
-if ($NOMCOD eq "subief2d")  {    $$refCH    = "subief2d$ps"."subief2d_";
-                                 $$refRAC   = "SUBIEF2D";
-                                 $$refLNG   = $$refH{"LNGSUB"};
-                                 $$refVER   = $$refH{"VERSSUB"};            }
-if ($NOMCOD eq "trapes")    {    $$refCH    = "trapes$ps"."trapes_";
-                                 $$refRAC   = "TRAPES";
-                                 $$refLNG   = $$refH{"LNGSUB"};
-                                 $$refVER   = $$refH{"VERSSUB"};            }
-if ($NOMCOD eq "subief3d")  {    $$refCH    = "subief3d$ps"."subief3d_";
-                                 $$refRAC   = "SUBIEF3D";
-                                 $$refLNG   = $$refH{"LNGSUB"};
-                                 $$refVER   = $$refH{"VERSSUB"};            }
 if ($NOMCOD eq "postel3d")  {    $$refCH    = "POSTEL3D$ps"."POSTEL3D_";
                                  $$refRAC   = "POSTEL3D";
                                  $$refLNG   = $$refH{"LNGPOSTE"};
@@ -748,7 +739,7 @@ $$refCH=~tr/A-Z/a-z/;
 #-------------
 sub get_mots
 #-------------
-#--- Acquisition des mots cl� � partir des fichiers
+#--- Acquisition des mots clÃÂ© ÃÂ  partir des fichiers
 #    cas et dico
 #E:
 #  - NOMCOD  : nom du code
@@ -851,7 +842,7 @@ sub jajbanner
   #return; # ...ehm, we love banners indicating which versions WE use, don't WE?
   printf "\n";
   printf "=========================================================\n";
-  printf " Telemac System 6.0 - Perl scripts version 6.0    \n";
+  printf " Telemac System 5.6 to 6.1 - Perl scripts version 6.1    \n";
   printf "=========================================================\n";
   printf "$_[0]\n";
   printf "\n";
@@ -885,7 +876,7 @@ $FFLAGS       = " ";
 $MPICONF       = "mpi_telemac.conf";
 
 @FORTRANS=(); @FORTINC=();
-@conlimDSC=(); @selgeomDSC=();
+@conlimDSC=(); @selgeomDSC=(); @sectionDSC=();
 $i0fic=1; #numero du premier fichier acqui/resti
 
 $CRAY         = "";
@@ -1046,7 +1037,8 @@ if ($PARA eq "") { $PARA = "cas"; }  # Valeur par defaut
 $REPLANCE  = dirname($PARA);
 $PARA      = basename($PARA);
 $REP       = "$PARA$WORKING"."_tmp";
-$dirlib    =$hash{"HOSTTYPE"};
+# PLG INGEROP $dirlib    =$hash{"HOSTTYPE"};
+$dirlib    =$hash{"DIRLIB"};
 $PROJECT   =$hash{"PROJECT"};
 $PERLPATH  =$hash{"PERLPATH"};
 $libExt    =$hash{"LIB_OPT_LIBEXT"};
@@ -1056,6 +1048,8 @@ $runprofile=$hash{"RUN_PROFILE"};
 $rundebug  =$hash{"RUN_DEBUG"};
 $runmpi    =$hash{"RUN_MPI"};
 $libsmpi   =$hash{"LIBS_MPI"};
+$libmumpsseq  =$hash{"LIBMUMPSSEQ"};
+$libmumpspar  =$hash{"LIBMUMPSPAR"};
 $lkmpi     =$hash{"LK_MPI"};
 
 #Parametrage en fonction du syteme (UNIX ou NT)
@@ -1105,13 +1099,7 @@ else
 #    or set the name given in the parameter line
 
 if ($WORKPATH eq "") { $WORKPATH = $REPLANCE; }     # Valeur par defaut 
-# RBR 05-04-2005 - debut
-if (($ENV{"OS"} eq "Windows_NT")and($WORKPATH =~ /\\$/))
-{$REP = "$WORKPATH$REP";}
-else
-{$REP = "$WORKPATH$ps$REP";}
-#$REP = "$WORKPATH$ps$REP";
-# RBR 05-04-2005 - fin
+$REP = "$WORKPATH$ps$REP";
 
 #jaj
 jajbanner("starting...");
@@ -1155,9 +1143,6 @@ if ($st == 0)
            "The steering file does not exist");
     usage();
   }
-#PLG
-# Verification et gestion des protection mise apr�s le traitement couplage
-# Telemac/Sisyphe
 
 ######################################################
 #   /  DEBUT DES TACHES DE GESTION DE FICHIERS
@@ -1189,12 +1174,6 @@ if ($NCSIZE eq "")  {$NCSIZE=0;}          #Le mot clef n'existe pas
 #jaj orig:
 #$Directory_tmp=join "",$REPLANCE,$ps,$REP,$ps;
 $Directory_tmp =join "",$REP,$ps;
-###> SEB @ NRC-CHC: Correction for UNC PATH on new Windows and MICH2
-      Win32::NetResource::GetUNCName( $TM_UNCPATH, $Directory_tmp );
-      if( $TM_UNCPATH ne "" ) {
-        $Directory_tmp=join "", $TM_UNCPATH;
-      }
-###< SEB @ NRC-CHC
 $filename=join "", $Directory_tmp,"PARAL";
 $NCAR = length ($Directory_tmp);
 
@@ -1202,15 +1181,13 @@ open (F, ">$filename") or die "## Error : Open the $filename file is impossible\
 printf F "$NCSIZE\n";
 
 #- Traitement de l'option UNCPATH dans le fichier PARALL
-###> SEB @ NRC-CHC: Correction for UNC PATH on new Windows and MICH2
-###jaj orig
-###$Directory_tmp=join "",$REPLANCE,$ps,$REP,$ps;
-#$Directory_tmp=join "",$REP,$ps;
-#if ( ($UNCPATH eq "oui") && ($TM_UNCPATH ne "") )
-#  { $Directory_tmp =~s/^[A-Za-z]:/$TM_UNCPATH/; }
+#jaj orig
+#$Directory_tmp=join "",$REPLANCE,$ps,$REP,$ps;
+$Directory_tmp=join "",$REP,$ps;
+if ( ($UNCPATH eq "oui") && ($TM_UNCPATH ne "") )
+  { $Directory_tmp =~s/^[A-Za-z]:/$TM_UNCPATH/; }
 
-#$NCAR = length ($Directory_tmp);
-###< SEB @ NRC-CHC
+$NCAR = length ($Directory_tmp);
 printf F "$NCAR\n";
 printf F "$Directory_tmp\n";
 close (F)  or die "## Error : Close the $filename file is impossible\n";
@@ -1277,6 +1254,8 @@ ecrire_variable_fichier(F,"rundebug");
 ecrire_variable_fichier(F,"runmpi");    
 ecrire_variable_fichier(F,"libsmpi");   
 ecrire_variable_fichier(F,"lkmpi");     
+ecrire_variable_fichier(F,"libmumpsseq");  
+ecrire_variable_fichier(F,"libmumpspar");   
 ecrire_variable_fichier(F,"ps");        
 #SAinutile ecrire_variable_fichier(F,"BASE");      
 #SA ecrire_variable_fichier(F,"DICO");      
@@ -1334,7 +1313,7 @@ if (scalar(@vals) == 0)
   {  ecrire("ERREUR : Mot clef du dictionnaire 'NUMERO DE VERSION' non defini",
             "ERROR : undefined dictionary parameter 'NUMERO DE VERSION'");
      exit 1;}
-$vs=@vals[0];          #traitement sp�cifique pour accepter la forme
+$vs=@vals[0];          #traitement specifique pour accepter la forme
 if (@vals > 1)         #         V5P2;V5P2;V5P1;V5P1
   { for ($i=1;$i<@vals;$i++)  { $vs=$vs.",@vals[i]";}
   }
@@ -1357,14 +1336,14 @@ if ($ier != 0)
 #
 if ($GENERIQUE eq "telemac2d" || $GENERIQUE eq "telemac3d")
   { 
-     @vals = tm_casdico::recup_valeur_mot(\%motsEtude, "FICHIER DES PARAMETRES DE SISYPHE"); 
-     if ((scalar(@vals) != 0) && (@vals[0] ne "") )
-       { 
 #print "COUPLAGE T2D OU T3D /SISYPHE ! \n";
 #PLG
+     @vals = tm_casdico::recup_valeur_mot(\%motsEtude,"FICHIER DES PARAMETRES DE SISYPHE"); 
+     if ((scalar(@vals) != 0) && (@vals[0] ne "") )
+       { 
        if ($GENERIQUE eq "telemac2d") {$GENERIQUE1 = "TEL2DSIS"};
        if ($GENERIQUE eq "telemac3d") {$GENERIQUE1 = "TEL3DSIS"};
-#       print "COUPLAGE T2D OU T3D /SISYPHE $GENERIQUE1! \n";
+#      printf "COUPLAGE T2D OU T3D /SISYPHE $GENERIQUE1! \n";
          $sCAS ="$REPLANCE"."$ps"."@vals[0]";
          get_code_params (\%hash,"sisyphe",\$sCHEMIN,
                           \$sRACINE,\$sLNG,\$sVERSDEF);
@@ -1377,6 +1356,29 @@ if ($GENERIQUE eq "telemac2d" || $GENERIQUE eq "telemac3d")
          if ($ier != 0)
            {  ecrire("ERREUR : Probleme dans l'analyse des fichiers SISYPHE",
                      "ERROR : problem during SISYPHE files analysis");
+              exit 1;
+           }
+       }
+#print "COUPLAGE T2D /TOMAWAC ! \n";
+#PLG
+     @vals = tm_casdico::recup_valeur_mot(\%motsEtude,"FICHIER DES PARAMETRES DE TOMAWAC"); 
+     if ((scalar(@vals) != 0) && (@vals[0] ne "") )
+       { 
+       if ($GENERIQUE eq "telemac2d") {$GENERIQUE1 = "TEL2DTOM"};
+       if ($GENERIQUE eq "telemac3d") {$GENERIQUE1 = "TEL3DTOM"};
+#       printf "COUPLAGE T2D OU T3D /TOMAWAC $GENERIQUE1! \n";
+         $sCAS ="$REPLANCE"."$ps"."@vals[0]";
+         get_code_params (\%hash,"tomawac",\$sCHEMIN,
+                          \$sRACINE,\$sLNG,\$sVERSDEF);
+  
+         %smotsEtude=get_mots ("tomawac",$PROJECT,$sCHEMIN,$sVERSDEF,
+                               $sCAS,\$sDICO,\$sVERS);
+# marquer le changement de code
+         printf F "\@FDESC=(\@FDESC,\"NEWCODE;.;.;.;.;.\");\n"; 
+         $ier=desc_fichiers_acqui_resti (F, \%smotsEtude, \$i0fic, $sDICO, $sCAS);
+         if ($ier != 0)
+           {  ecrire("ERREUR : Probleme dans l'analyse des fichiers TOMAWAC",
+                     "ERROR : problem during TOMAWAC files analysis");
               exit 1;
            }
        }
@@ -1409,24 +1411,6 @@ if ($GENERIQUE eq "estel3d")
               exit 1;
            }
        }
-  }
-
-
-#####################################################################
-#   / Gestion/Verification des protections sous WindowsNT /
-#####################################################################
-#PLG
-
-if($ENV{"OS"} eq "Windows_NT")
-  {      #r�instancier les variable d'environnement de protection
-###> SEB@HRW: Removing Protections
-#    printf F "\$ENV{\"STELP1\"}   = \"$ENV{\"STELP1\"}\";\n";
-#    printf F "\$ENV{\"STELP2\"}   = \"$ENV{\"STELP2\"}\";\n";
-#    printf F "\$ENV{\"STELP3\"}   = \"$ENV{\"STELP3\"}\";\n";
-###< SEB@HRW
-         #transmettre les info UNCPATH
-    ecrire_variable_fichier (F,"UNCPATH");
-    ecrire_variable_fichier (F,"TM_UNCPATH");
   }
 
 #--- DESCRIPTION DES LIBRAIRIES
@@ -1541,7 +1525,7 @@ printf F "    if ( \$pid ne \"\" ) \n";
 printf F "      { \$ret=`kill -9 \$pid`; \n";
 printf F "        print \"job  \$pid  killed\\n\"; \n";
 printf F "      } \n";
-# RBR 09-07/2004 Modif pour g�stion UNIX et WIN
+# RBR 09-07/2004 Modif pour gÃÂ©stion UNIX et WIN
 #RBR printf F "  } \n";
 
 printf F "if ( chdir(\"$REP\") )\n";
@@ -1742,8 +1726,8 @@ if ( $errorexe eq "1" )
   if ( ($errcomplink ne "1") && ($errorexe ne "1") &&
        ($MODE ne "p") && ($DELWORKDIR ne "0") ) {
 ########moulinec
-    $command=join "", "delete_",$PARA,$WORKING,$fileToDelete;
-#    $command=join "","./", "delete_",$PARA,$WORKING,$fileToDelete;
+####    $command=join "", "delete_",$PARA,$WORKING,$fileToDelete;
+    $command=join "","./", "delete_",$PARA,$WORKING,$fileToDelete;
 ########moulinec
     $Lret=CatchError($command,"","");
     if ( $Lret eq "False" ) {
