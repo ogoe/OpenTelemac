@@ -2,11 +2,12 @@
                      SUBROUTINE SUSPENSION_CONV
 !                    **************************
 !
-     &(TOB, XMVE, KSR, NPOIN, ZREF, U2D, V2D, HN, HMIN,
-     & UCONV, VCONV, KARMAN, ZERO, XWC,T1,ALPHA)
+     &(TOB,XMVE,KSR,NPOIN,ZREF,U2D,V2D,HN,HMIN,
+     & UCONV,VCONV,KARMAN,ZERO,XWC,T1,ALPHA,RESOL,GLOSEG1,GLOSEG2,NSEG,
+     & FLULIM,YAFLULIM,SOLSYS_SIS,SOLSYS,UCONV_TEL,VCONV_TEL)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CORRECTS U2D, V2D VELOCITIES.
@@ -61,11 +62,14 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE (BIEF_OBJ),  INTENT(IN)    :: HN,U2D,V2D,ZREF,KSR
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: UCONV,VCONV,T1,ALPHA
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: TOB
-      INTEGER,          INTENT(IN)    :: NPOIN
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: UCONV,VCONV,T1,ALPHA,FLULIM
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: TOB,UCONV_TEL,VCONV_TEL
+      INTEGER,          INTENT(IN)    :: NPOIN,RESOL,NSEG,SOLSYS
+      INTEGER,          INTENT(IN)    :: GLOSEG1(NSEG),GLOSEG2(NSEG)
+      INTEGER,          INTENT(INOUT) :: SOLSYS_SIS
       DOUBLE PRECISION, INTENT(IN)    :: ZERO,XWC,HMIN
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN,XMVE
+      LOGICAL, INTENT(INOUT)          :: YAFLULIM
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -74,9 +78,6 @@
       INTEGER I
 !
 !-----------------------------------------------------------------------
-!
-!     JMH 28/04/2011 (USELESS)
-!     CALL OS('X=N(Y,Z)', X=T1, Y=U2D, Z=V2D)
 !
       LL=LOG(30.D0)
 !
@@ -126,10 +127,40 @@
         ALPHA%R(I)=MIN(ALPHA%R(I),1.D0)
         ALPHA%R(I)=MAX(ALPHA%R(I),0.D0)
 !
-        UCONV%R(I) = ALPHA%R(I)*U2D%R(I)
-        VCONV%R(I) = ALPHA%R(I)*V2D%R(I)
-!
       ENDDO
+!
+!     DEPENDING ON ADVECTION SCHEME : LIMITATION OF VELOCITY OR FLUXES
+!
+      IF(RESOL.EQ.13.OR.RESOL.EQ.14) THEN
+!
+!       LIMITATION OF FLUXES WITH FLULIM
+!
+        SOLSYS_SIS=SOLSYS
+        IF(SOLSYS_SIS.EQ.1) THEN
+          UCONV%R=>U2D%R
+          VCONV%R=>V2D%R
+        ELSE
+!         HERE UCONV_TEL IS PASSED ON
+          UCONV%R=>UCONV_TEL%R
+          VCONV%R=>VCONV_TEL%R
+        ENDIF
+        DO I=1,NSEG
+          FLULIM%R(I)=0.5D0*(ALPHA%R(GLOSEG1(I))+ALPHA%R(GLOSEG2(I)))
+        ENDDO
+        YAFLULIM=.TRUE.
+!
+      ELSE
+!
+!       LIMITATION OF VELOCITY
+!
+        SOLSYS_SIS=1
+        DO I = 1,NPOIN
+          UCONV%R(I) = ALPHA%R(I)*U2D%R(I)
+          VCONV%R(I) = ALPHA%R(I)*V2D%R(I)
+        ENDDO
+        YAFLULIM=.FALSE.
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

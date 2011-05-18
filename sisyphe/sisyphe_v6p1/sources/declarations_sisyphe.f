@@ -489,7 +489,11 @@ C
       TYPE(BIEF_OBJ), TARGET :: ZFCL_S
 !> @brief MEYER PETER MUELLER factor
 C	  
-      TYPE(BIEF_OBJ), TARGET :: MPM_ARAY	  
+      TYPE(BIEF_OBJ), TARGET :: MPM_ARAY
+C
+C     FLUX LIMITATION PER SEGMENT
+C
+      TYPE(BIEF_OBJ), TARGET :: FLULIM	  
 C
 C-----------------------------------------------------------------------
 C

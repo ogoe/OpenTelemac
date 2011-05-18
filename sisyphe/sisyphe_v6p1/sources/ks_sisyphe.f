@@ -6,13 +6,27 @@
      & HMIN,HN,ACLADM,UNORM,UW,TW,NPOIN)
 !
 !***********************************************************************
-! SISYPHE
+! SISYPHE   V6P0                                   21/08/2010
 !***********************************************************************
 !
+!brief    BED ROUGHNESS PREDICTOR
+!
+!history  C. VILLARET & N. HUYBRECHTS
+!+        21/08/2010
+!+
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| IKS            |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      IMPLICIT NONE
+!
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER,            INTENT(IN)  :: NPOIN,IKS
       LOGICAL,            INTENT(IN)  :: HOULE
@@ -23,13 +37,16 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: KS,KSP,KSR
       TYPE(BIEF_OBJ), INTENT(IN)      :: ACLADM
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 !
 ! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !  BED ROUGHNESS PREDICTOR
-!                         SKIN   : KSP
-!                         TOTAL  : KS
-!                         RIPPLES : KSR
-!                         KS PUT IN CHESTR IF NO COUPLING, RE-COMPUTED OTHERWISE
+!  SKIN   : KSP
+!  TOTAL  : KS
+!  RIPPLES : KSR
+!  KS PUT IN CHESTR IF NO COUPLING, RE-COMPUTED OTHERWISE
+!
 !  NOTE: IT IS RECOMMENDED TO USE FRICTION LAW NO 3 WHEN COUPLING TO
 !        AVOID UNNECESSARY COMPUTATION
 ! +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -43,33 +60,50 @@
 !       IKS= 0: FLAT BED     KS=KSP
 !       IKS = 1: RIPPLED BED KS= KSP + KSR
 !       IKS=3 :  DUNED BED   KS= KSP +KSR +KSMR +KSD
-      IF(IKS.EQ.0) THEN
-        CALL OS('X=Y     ', X=KS, Y=KSP)
-      ENDIF
 !
-      IF(IKS.EQ.1) THEN
+      IF(IKS.EQ.0) THEN
+!
+        CALL OS('X=Y     ', X=KS, Y=KSP)
+!
+      ELSEIF(IKS.EQ.1) THEN
 !
         IF(HOULE) THEN
-! WIBERG AND HARRIS: KSR (RIPPLES)
+!         WIBERG AND HARRIS: KSR (RIPPLES)
 !                    KS (RIPPLES + SKIN)
           CALL RIDE(KSR%R, TW%R, UW%R, UNORM%R, GRAV, XMVE,
      &              XMVS, VCE, NPOIN, KSPRATIO, ACLADM%R)
           CALL OS('X=Y+Z   ', X=KS, Y=KSP, Z=KSR)
         ELSE
-! VR PREDICTOR : KSR (RIPPLES)
+!         VR PREDICTOR : KSR (RIPPLES)
           CALL RIDE_VR(KSR%R,KS%R,UNORM%R,HN%R,GRAV,XMVE,
      &                 XMVS,NPOIN,ACLADM%R)
           CALL OS('X=Y+Z   ', X=KS, Y=KSP, Z=KSR)
         ENDIF
 !
-      ENDIF
+      ELSEIF(IKS.EQ.3) THEN
 !
-      IF(IKS.EQ.3) THEN
-! VR PREDICTOR : KSR (RIPPLES)
+!       VR PREDICTOR : KSR (RIPPLES)
+!
         CALL RIDE_VR(KSR%R,KS%R,UNORM%R,HN%R,GRAV,XMVE,
      &               XMVS,NPOIN,ACLADM%R)
         CALL OS('X=X+Y   ', X=KS, Y=KSP)
+!
+      ELSE
+!
+        IF(LNG.EQ.1) WRITE(LU,200) IKS
+        IF(LNG.EQ.2) WRITE(LU,201) IKS
+200     FORMAT(1X,'KS_SISYPHE :',/,1X,
+     &            'OPTION DU PREDICTEUR DE RUGOSITE',/,1X,
+     &            'VALEUR NON PREVUE : ',1I6)
+201     FORMAT(1X,'KS_SISYPHE:',/,1X,
+     &            'BED ROUGHNESS PREDICTOR OPTION',/,1X,
+     &            'UNEXPECTED VALUE:',1I6)
+        CALL PLANTE(1)
+        STOP
+!      
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

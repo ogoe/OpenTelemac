@@ -131,18 +131,21 @@
       !================================================================!
 
       !================================================================!
-        SUBROUTINE SUSPENSION_CONV !
-      !================================================================!
-     & (TOB,XMVE,CF,NPOIN,ZREF,U2D,V2D,HN,HMIN,
-     &     UCONV,VCONV,KARMAN,ZERO,XWC,T1,ALPHA)
+        SUBROUTINE SUSPENSION_CONV
+     &(TOB,XMVE,KSR,NPOIN,ZREF,U2D,V2D,HN,HMIN,
+     & UCONV,VCONV,KARMAN,ZERO,XWC,T1,ALPHA,RESOL,GLOSEG1,GLOSEG2,NSEG,
+     & FLULIM,YAFLULIM,SOLSYS_SIS,SOLSYS,UCONV_TEL,VCONV_TEL)
       USE BIEF_DEF
       IMPLICIT NONE
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: HN,U2D,V2D,ZREF
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: UCONV, VCONV,T1,ALPHA
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: CF, TOB
-      INTEGER,          INTENT(IN)    :: NPOIN
-      DOUBLE PRECISION, INTENT(IN)    :: ZERO, XWC,HMIN
-      DOUBLE PRECISION, INTENT(IN)    :: KARMAN, XMVE
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: HN,U2D,V2D,ZREF,KSR
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: UCONV,VCONV,T1,ALPHA,FLULIM
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: TOB,UCONV_TEL,VCONV_TEL
+      INTEGER,          INTENT(IN)    :: NPOIN,RESOL,NSEG,SOLSYS
+      INTEGER,          INTENT(IN)    :: GLOSEG1(NSEG),GLOSEG2(NSEG)
+      INTEGER,          INTENT(INOUT) :: SOLSYS_SIS
+      DOUBLE PRECISION, INTENT(IN)    :: ZERO,XWC,HMIN
+      DOUBLE PRECISION, INTENT(IN)    :: KARMAN,XMVE
+      LOGICAL, INTENT(INOUT)          :: YAFLULIM
       !----------------------------------------------------------------!
       END SUBROUTINE SUSPENSION_CONV
       !================================================================!
