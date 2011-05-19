@@ -144,6 +144,11 @@
 !+   A CORRECT CONTINUITY EQUATION CAN BE SENT EVEN AT THE FIRST TIME
 !+   STEP (H, HN, USIS, VSIS, DM1, ZCONV COMPATIBLE)
 !
+!history  J-M HERVOUET (LNHE)
+!+        19/05/2011
+!+        V6P1
+!+   NEW THOMPSON THEORY, THAT WORKS ALSO IN PARALLEL
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -1581,13 +1586,14 @@
      &            MESH%IFABOR%I,NELEM,MESH,
      &            MESH%XNEBOR%R,MESH%YNEBOR%R,
      &            NPOIN,NPTFR,LT,AT,DT,GRAV,NTRAC,
-     &            NFRLIQ,KSORT,MESH%LV,MSK,MASKEL,
+     &            NFRLIQ,KSORT,KINC,KENT,KENTU,MESH%LV,MSK,MASKEL,
      &            NELMAX,IELM,NORD,FAIR,WINDX,WINDY,VENT,HWIND,
      &            CORIOL,FCOR,SPHERI,MAREE,MARDAT,MARTIM,
      &            PHI0,OPTSOU,ISCE,DSCE2,T5%R,COUROU,NPTH,
      &            VARCL,NVARCL,VARCLA,NUMLIQ%I,BM1%X%R,UNSV2D,HFROT,
      &            FXWAVE,FYWAVE,T12%R,T13%R,T14%R,
-     &            IT1%I(NPTFR+1:2*NPTFR),IT3,IT4)
+     &            IT1%I(NPTFR+1:2*NPTFR),IT3,IT4,
+     &            T17,T18,T19,T20,T21,T22)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE THOMPS'
 !
       ENDIF
