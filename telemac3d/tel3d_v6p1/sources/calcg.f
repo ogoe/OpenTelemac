@@ -5,7 +5,7 @@
      & (TRAV2,TRAV3,U,V,UETCAR,NPOIN2,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLED WHEN MODELLING THE INFLUENCE OF
@@ -33,12 +33,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        23/05/2011
+!+        V6P1
+!+   Coefficient UQUA removed in formula (after discussion with Thomas
+!+   Benson (HRW) who pointed out a problem).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPLAN          |-->| NOMBRE DE PLANS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| TRAV2,TRAV3    |<--| TABLEAUX DE TRAVAIL    NOTE JMH ?????
-!| U,V            |-->| COMPOSANTES DE LA VITESSE
-!| UETCAR         |---|
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN2         |-->| NOMBER OF POINTS IN THE 2D MESH
+!| TRAV2,TRAV3    |<->| WORK ARRAYS
+!| U,V            |-->| COMPONENTS OF VELOCITY
+!| UETCAR         |-->| USTAR**2
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -54,24 +60,25 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPOIN2,IPLAN
-      DOUBLE PRECISION UQUA
 !
 !=======================================================================
 !
-! COMPUTES AUBORF IN TRAV1
+!     COMPUTES AUBORF IN TRAV1
 !
       DO IPOIN2 = 1,NPOIN2
 !
-         UQUA = SQRT( (U(IPOIN2))**2 + (V(IPOIN2))**2 )
+!        ACCORDING TO RICHARD SOULSBY (HRW):
+!        G=SQRT(EPSILON/NU) AND EPSILON=(TAU/RHO)*(DU/DZ)
+!        THEN G COULD BE ALSO SQRT(NUZ/NU)*DU/DZ 
 !
-!                              AUBORF * U_B * DU/DZ
+!
+!                              USTAR**2 * DU/DZ
 !        COMPUTES  G  =  SQRT( --------------------- ) : TRAV3
 !                                     NU
 !
         DO IPLAN = 1,NPLAN
-         TRAV3(IPOIN2+(IPLAN-1)*NPOIN2) =
-     &        SQRT(UETCAR(IPOIN2) * UQUA * 1.D06
-     &        * TRAV2(IPOIN2+(IPLAN-1)*NPOIN2))
+          TRAV3(IPOIN2+(IPLAN-1)*NPOIN2) =
+     &        SQRT(UETCAR(IPOIN2)*1.D06*TRAV2(IPOIN2+(IPLAN-1)*NPOIN2))
 !
         ENDDO
 !

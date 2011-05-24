@@ -5,7 +5,7 @@
      &(TRANSF,ZCHAR,ZSTAR,TRANSF_PLANE,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DETERMINES THE TYPE OF TRANSFORMATION.
@@ -64,7 +64,7 @@
 !     2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
 !     3: GENERALISED SIGMA TRANSFORMATION
 !
-      IF(TRANSF.NE.0) THEN
+      IF(TRANSF.NE.0.AND.TRANSF.NE.5) THEN
         TRANSF=1
         DO IPLAN=2,NPLAN
           IF(TRANSF_PLANE%I(IPLAN).EQ.2) THEN
@@ -81,7 +81,7 @@
 !     BUILDS ZCHAR (USED ONLY BY CHARACTERISTICS)
 !     ZCHAR IS THE VERTICAL COORDINATE OF THE TRANSFORMED MESH
 !
-      IF(TRANSF.EQ.0.OR.TRANSF.EQ.1.OR.TRANSF.EQ.3) THEN
+      IF(TRANSF.EQ.0.OR.TRANSF.EQ.1.OR.TRANSF.EQ.3.OR.TRANSF.EQ.5) THEN
         DO IPLAN = 1,NPLAN
           ZCHAR%R(IPLAN) = DBLE(IPLAN-1)/DBLE(NPLAN-1)
         ENDDO

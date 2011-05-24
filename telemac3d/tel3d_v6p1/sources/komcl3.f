@@ -11,7 +11,7 @@
      &  UETCAR,UETCAL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES KBOR, EBOR AND AUBOR WHEN THE TURBULENCE
@@ -33,6 +33,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J.-M. HERVOUET (LNHE)
+!+        20/05/2011
+!+        V6P1
+!+   Case of distance to bottom=0 treated with array IPBOT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |-->| ENERGIE TURBULENTE
@@ -87,6 +92,8 @@
 !| W              |---|
 !| Z              |-->| COTES DES POINTS DU MAILLAGE 3D REEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -181,12 +188,24 @@
 !        -------------------------------
 !
           IF(LIUBOF(IPOIN2).EQ.KLOG) THEN
-!
-!           VINCENT BOYER CHOSE 3.7D0
-            DIST  = (Z(IPOIN2,2)-Z(IPOIN2,1)) / 3.7D0
-            EBORF(IPOIN2) = MAX(SBETAS*SQRT(UETCAR(IPOIN2))
+            IF(IPBOT%I(IPOIN2).EQ.0) THEN
+!             NORMAL CASE
+              DIST  = (Z(IPOIN2,2)-Z(IPOIN2,1)) / FICTIFUET
+              EBORF(IPOIN2) = MAX(SBETAS*SQRT(UETCAR(IPOIN2))
      &                                 /(KARMAN*DIST),EMIN)
-!
+            ELSE
+!             RISK OF SMASHED PLANES OR TIDAL FLATS
+              IPLAN=IPBOT%I(IPOIN2)+1
+              IF(IPLAN.EQ.NPLAN) THEN
+!               CASE OF TIDAL FLATS
+                EBORF(IPOIN2)=EMIN
+              ELSE
+!               CASE OF SMASHED PLANES : DIST COMPUTED ON FIRST FREE LAYER
+                DIST =(Z(IPOIN2,IPLAN+1)-Z(IPOIN2,IPLAN)) / FICTIFUET
+                EBORF(IPOIN2) = MAX(SBETAS*SQRT(UETCAR(IPOIN2))
+     &                                             /(KARMAN*DIST),EMIN)
+              ENDIF
+            ENDIF
           ENDIF
 !
          ENDIF
@@ -209,7 +228,7 @@
          IF(LIEBOS(IPOIN2).EQ.KENT) THEN
 !        -------------------------------
 !
-           EBORS(IPOIN2) = OMSTAR*AK(IPOIN2,NPLAN)**0.5D0/HAUT
+           EBORS(IPOIN2) = OMSTAR*SQRT(AK(IPOIN2,NPLAN))/HAUT
 !
          ENDIF
 !
@@ -233,10 +252,10 @@
          DO IPLAN=1,NPLAN
 !
 !BOY COMPUTES THE DISTANCE TO THE BOTTOM
-            IF (IPLAN .EQ. 1) THEN
-              DISTFOND =  (Z(IPOIN2,2)-Z(IPOIN2,1)) / FICTIFUET
+            IF(IPLAN .EQ. 1) THEN
+              DISTFOND = (Z(IPOIN2,2)-Z(IPOIN2,1)) / FICTIFUET
             ELSE
-              DISTFOND =  (Z(IPOIN2,IPLAN)-Z(IPOIN2,1))
+              DISTFOND = (Z(IPOIN2,IPLAN)-Z(IPOIN2,1))
             ENDIF
 ! COMPUTES THE TANGENTIAL SPEED
             UTANG = SQRT(U(IPOIN2,IPLAN)**2+V(IPOIN2,IPLAN)**2)
@@ -304,7 +323,7 @@
 ! AUXILIARY RELATION EPSILON=BETAS*K*OMEGA LEADS TO:
 !
                   EBORL(IPTFR,IPLAN)=BETAS**(-0.25)*SQRT(KBORL(IPTFR,1))
-     &                              /KARMAN/DISTFOND
+     &                              /KARMAN/MAX(DISTFOND,1.D-4)
                   EBORL(IPTFR,IPLAN)= MAX(EBORL(IPTFR,IPLAN),EMIN)
 !
 !              ****************************************
@@ -361,4 +380,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE KOMCL3
+      END
