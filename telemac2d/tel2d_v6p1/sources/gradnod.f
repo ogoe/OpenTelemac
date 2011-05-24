@@ -143,7 +143,7 @@
      &  (DJX(3,JT)*DPX(1,JT)+DJY(3,JT)*DPY(1,JT))
          CE(NUBO2,3)       = CE(NUBO2,3) -AUX*
      &  (DJX(3,JT)*DPX(2,JT)+DJY(3,JT)*DPY(2,JT))
-         CE(3,NUBO3)       = CE(3,NUBO3) -AUX*
+         CE(NUBO3,3)       = CE(NUBO3,3) -AUX*
      &  (DJX(3,JT)*DPX(3,JT)+DJY(3,JT)*DPY(3,JT))
  10       CONTINUE
          ENDDO

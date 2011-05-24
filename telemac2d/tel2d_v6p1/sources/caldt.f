@@ -110,7 +110,7 @@ C
       ELSEIF(DTVARI.AND.CFL.GE.1.D0) THEN
         DT=0.5D0*DT/CFL
         IF(LISTIN.AND.LNG.EQ.1) THEN 
-          WRITE(LU,*) 'ATTENTION CFL DEMANDÉ > 1 !...!'
+          WRITE(LU,*) 'ATTENTION CFL DEMANDE > 1 !...!'
           WRITE(LU,*) 'PAS DE TEMPS (AVEC CFL = 0.5) : ',DT
         ELSEIF(LISTIN.AND.LNG.EQ.2) THEN 
           WRITE(LU,*) 'WARNING: WANTED CFL >1 !...! '
