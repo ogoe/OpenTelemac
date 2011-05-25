@@ -122,7 +122,7 @@ SRCS= \
 declarations_telemac3d.f   interface_telemac3d.f \
 homere_telemac3d.f lecdon_telemac3d.f \
 point_telemac3d.f  preres_telemac3d.f    actuzf.f \
-airwik2.f          airwik3.f  bil3d.f    bissel.f \
+airwik2.f          airwik3.f  amr_plan.f bil3d.f    bissel.f \
 bord3d.f           bypass_crushed_points_seg.f    bypass_crushed_points_ebe.f  calcg.f  calcot.f  check.f \
 clsedi.f           coef.f     complete_ebe_fluint.f    condim.f   condis.f   corfon.f \
 corpar.f           correction_depth_3d.f    coupe.f    cstkep.f   cvdf3d.f \

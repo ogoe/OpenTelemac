@@ -37,6 +37,7 @@
 !| ZZ             |<--| COTES DES POINTS DU MAILLAGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D
 !
@@ -44,16 +45,16 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)    :: HH(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: ZZ(NPOIN2,NPLAN)
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION RPLS,RPLI,ZFP,ZSP,DISBOT,DISSUR
       DOUBLE PRECISION DISMIN_BOT,DISMIN_SUR
-      INTEGER IPOIN,IPLAN,I1,I2
+      INTEGER IPOIN,IPLAN,I1,I2,ITRAC
 !
 !***********************************************************************
 !
@@ -72,6 +73,8 @@
         ENDDO
       ENDIF
 !
+!-----------------------------------------------------------------------
+!
 !     HERE IMPLEMENTATION BY USER
 !
       IF(TRANSF.EQ.0) THEN
@@ -82,6 +85,19 @@
 82      FORMAT('CALCOT: TRANSFORMATION TO BE PROGRAMMED BY USER')
         CALL PLANTE(1)
         STOP
+!
+!-----------------------------------------------------------------------
+!
+!     ADAPTIVE MESH REFINEMENT (BY CHRISTOPHER CAWTHORN)
+!
+      ELSEIF(TRANSF.EQ.5.AND.AT.GT.1.D-4) THEN
+!
+!       ITRAC: CHOICE OF TRACER FOR ADAPTIVE MESH
+        ITRAC=1
+        CALL AMR_PLAN(ZZ,TA%ADR(ITRAC)%P%R,'A',NPOIN2,NPLAN,
+     &                MESH2D%NSEG,MESH2D%GLOSEG%I,MESH2D%GLOSEG%DIM1,
+     &                T3_01%R,T3_02%R,T3_03%R,T3_04%R,T3_05%R,T3_06,
+     &                T3_06%R,IT1%I,T2_01,T2_01%R,IT3%I,MESH2D,MESH3D)
 !
 !-----------------------------------------------------------------------
 !
