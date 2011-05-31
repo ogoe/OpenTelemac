@@ -5,7 +5,7 @@
      &(X1,X2,ERR,IERR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES MAX DIFFERENCES BETWEEN 2 COMPUTED ARRAYS.
@@ -35,7 +35,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ERR            |<--| MAXIMUM ABSOLUTE DIFFERENCE
 !| IERR           |<--| POINT WHERE THE DIFFERENCE OCCURS
-!| X1,X2          |-->| ARRAYS TO COMPARE
+!| X1             |-->| ARRAY TO COMPARE WITH X2
+!| X2             |-->| ARRAY TO COMPARE WITH X1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF

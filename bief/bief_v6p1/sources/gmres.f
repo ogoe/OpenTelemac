@@ -5,7 +5,7 @@
      & (X,A,B,MESH,R0,V,AV,CFG,INFOGR,AUX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES A LINEAR SYSTEM A X = B
@@ -127,17 +127,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE DU SYSTEME
-!| AUX            |-->| MATRICE DE TRAVAIL UTILISEE AVEC LES
-!|                |   | PRECONDITIONNEMENTS DE TYPE CROUT.
-!| AV             |-->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN
-!| B              |-->| SECOND MEMBRE DU SYSTEME.
-!| CFG            |---|
-!| INFOGR         |-->| SI OUI, ON IMPRIME UN COMPTE-RENDU
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
-!| R0             |-->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN
-!| V              |-->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN
-!| X              |<--| VALEUR INITIALE, PUIS SOLUTION
+!| A              |-->| MATRIX OF THE SYSTEM
+!| AUX            |-->| MATRIX FOR PRECONDITIONING.
+!| AV             |<->| WORK ARRAY
+!| B              |-->| RIGHT-HAND SIDE OF THE SYSTEM
+!| CFG            |-->| STRUCTURE OF SOLVER CONFIGURATION
+!| INFOGR         |-->| IF YES, PRINT A LOG.
+!| MESH           |-->| MESH STRUCTURE.
+!| R              |<->| RESIDUAL
+!| V              |<->| WORK ARRAY 
+!| X              |<->| INITIAL VALUE, THEN SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GMRES => GMRES

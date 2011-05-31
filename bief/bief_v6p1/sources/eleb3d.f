@@ -2,11 +2,11 @@
                      SUBROUTINE ELEB3D
 !                    *****************
 !
-     &(IKLE3 , NBOR , KP1BOR , NELBOR, IKLBOR, NULONE,
-     & NELEM2, NPOIN2, NPLAN, NETAGE, NPTFR )
+     &(IKLE3,NBOR,KP1BOR,NELBOR,IKLBOR,NULONE,
+     & NELEM2,NPOIN2,NPLAN,NETAGE,NPTFR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE 3D MESH.
@@ -34,19 +34,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLBOR         |<--| TABLE DE CONNECTIVITE ELEMENTS DE BORD
-!| IKLE3          |<--| CORRESPONDANCE LOCALE - GLOBALE EN 3D
-!| KP1BOR         |-->| PT FRONT. SUIVANT LE PT FRONT. CONSIDERE
-!| NBOR           |-->| CORRESPONDANCE ENTRE LA NUMEROTATION DE BORD
-!|                |   | ET LA NUMEROTATION GLOBALE (2D)
-!| NELBOR         |-->| NUMERO GLOBAUX DES ELEMENTS DE BORD
-!| NELEM2         |-->| NOMBRE D'ELEMENTS EN 2D
-!| NETAGE         |-->| NPLAN - 1
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD 2D
-!| NULONE         |<--| ASSOCIE LA NUMEROTATION LOCALE DE BORD A LA
-!|                |   | NUMEROTATION LOCALE 3D
+!| IKLBOR         |-->| CONNECTIVITY TABLE OF BOUNDARY ELEMENTS
+!| IKLE3          |<--| CONNECTIVITY TABLE IN 3D
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS IN 2D
+!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
+!|                |   | ELEMENT.
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
+!|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
+!|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_ELEB3D => ELEB3D

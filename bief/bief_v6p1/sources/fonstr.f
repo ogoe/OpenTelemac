@@ -5,7 +5,7 @@
      &(H,ZF,Z,CHESTR,NGEO,NFON,NOMFON,MESH,FFON,LISTIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    LOOKS FOR 'BOTTOM' IN THE GEOMETRY FILE.
@@ -35,16 +35,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHESTR         |<--| COEFFICIENT DE FROTTEMENT.
-!| FFON           |-->|
-!| H              |<--| HAUTEUR D'EAU
-!| LISTIN         |-->|
-!| MESH           |-->|
-!| NFON           |-->| NUMERO DU CANAL DU FICHIER DES FONDS
-!| NGEO           |-->| NUMERO DU CANAL DU FICHIER DE GEOMETRIE
-!| NOMFON         |-->| NOM DU FICHIER DES FONDS
-!| Z              |<--| COTE DE LA SURFACE LIBRE
-!| ZF             |<--| FOND
+!| CHESTR         |<--| FRICTION COEFFICIENT (DEPENDING ON FRICTION LAW)
+!| FFON           |-->| FRICTION COEFFICIENT IF CONSTANT
+!| H              |<--| WATER DEPTH
+!| LISTIN         |-->| IF YES, WILL GIVE A REPORT
+!| MESH           |-->| MESH STRUCTURE
+!| NFON           |-->| LOGICAL UNIT OF BOTTOM FILE
+!| NGEO           |-->| LOGICAL UNIT OF GEOMETRY FILE
+!| NOMFON         |-->| NAME OF BOTTOM FILE
+!| Z              |<--| FREE SURFACE ELEVATION
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FONSTR => FONSTR

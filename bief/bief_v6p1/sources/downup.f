@@ -5,7 +5,7 @@
      &(X, A,B ,DITR,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SYSTEM A X = B.
@@ -78,12 +78,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |---|
-!| B              |<--| SECOND MEMBRE DU SYSTEME A RESOUDRE.
-!| DITR           |-->| CARACTERE  'D' : ON CALCULE AVEC A
-!|                |   | 'T' : ON CALCULE AVEC A TRANSPOSEE
-!| MESH           |---|
-!| X              |<--| SOLUTION DU SYSTEME AX = B
+!| A              |-->| MATRIX A
+!| B              |<--| RIGHT-HAND SIDE OF THE SYSTEM
+!| DITR           |-->| OPTION  'D' : MATRIX A IS TAKEN
+!|                |   |         'T' : MATRIX TRANSPOSED(A)
+!| MESH           |-->| MESH STRUCTURE
+!| X              |<--| SOLUTION OF SYSTEM AX = B
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DOXNUP => DOWNUP
@@ -123,7 +123,7 @@
         IF (LNG.EQ.2) WRITE(LU,400) A%TYPE
 300     FORMAT(1X,'DOWNUP (BIEF) :',1I6,' TYPE DE A NON PREVU.')
 400     FORMAT(1X,'DOWNUP (BIEF) :',1I6,' UNEXPECTED TYPE FOR A.')
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -174,7 +174,7 @@
         IF (LNG.EQ.2) WRITE(LU,401)
 301     FORMAT(1X,'DOWNUP (BIEF) : CAS NON PREVU')
 401     FORMAT(1X,'DOWNUP (BIEF) : UNEXPECTED CASE')
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

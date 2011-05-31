@@ -5,7 +5,7 @@
      &(RES,NAME,NFIC,W,OK,RECORD,NP,TIME)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    LOOKS FOR A RESULT ARRAY IN A SELAFIN FILE.
@@ -30,12 +30,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NAME           |-->| NAME OF VARIABLE (16 CHARACTERS)
 !| NFIC           |-->| NUMERO DU CANAL DU FICHIER
-!| NP             |---|
+!| NP             |<--| NUMBER OF POINTS (OPTIONAL)
 !| OK             |<--| TRUE IF ARRAY IS FOUND
 !| RECORD         |-->| NUMBER OF THE REQUESTED RECORD
 !| RES            |<--| WHERE TO PUT THE RESULT
-!| TIME           |---|
-!| W              |---| TABLEAU DE TRAVAIL REEL DE DIMENSION NPOIN.
+!| TIME           |<--| TIME OF RECORD (OPTIONAL)
+!| W              |<->| REAL WORK ARRAY OF DIMENSION AT LEAST NPOIN.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FIND_IN_SEL => FIND_IN_SEL

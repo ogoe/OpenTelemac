@@ -6,7 +6,7 @@
      & X,Y,NBOR,KP1BOR,DEJAVU,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ,MAXFRO)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES AND NUMBERS THE LIQUID AND SOLID BOUNDARIES.
@@ -34,24 +34,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBLIQ         |<--| DEBUTS DES FRONTIERES LIQUIDES
-!| DEBSOL         |<--| DEBUTS DES FRONTIERES SOLIDES
-!| DEJAVU         |---| TABLEAU DE TRAVAIL
-!| FINLIQ         |<--| FINS DES FRONTIERES LIQUIDES
-!| FINSOL         |<--| FINS DES FRONTIERES SOLIDES
-!| KLOG           |-->| LIHBOR(K)=KLOG : FRONTIERE SOLIDE
-!| KP1BOR         |-->| NUMEROS DES EXTREMITES DES SEGMENTS DE BORD
-!|                |   | DANS LA NUMEROTATION DES POINTS DE BORD
-!| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
-!| LISTIN         |-->| IMPRESSIONS SUR LISTING (OU NON)
-!| LIUBOR         |---|
-!| MAXFRO         |---|
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
-!| NFRLIQ         |<--| NOMBRE DE FRONTIERES LIQUIDES
-!| NFRSOL         |<--| NOMBRE DE FRONTIERES SOLIDES
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NUMLIQ         |---|
+!| DEBLIQ         |<--| BEGINNING OF LIQUID BOUNDARIES
+!| DEBSOL         |<--| BEGINNING OF SOLID BOUNDARIES
+!| DEJAVU         |<->| WORK ARRAY
+!| FINLIQ         |<--| END OF LIQUID BOUNDARIES
+!| FINSOL         |<--| END OF SOLID BOUNDARIES
+!| KLOG           |-->| LIHBOR(K)=KLOG : SOLID BOUNDARY
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LISTIN         |-->| IF YES, PRINTING ON LISTING
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| MAXFRO         |-->| MAXIMUM NUMBER OF LIQUID OR SOLID BOUNDARIES
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NFRLIQ         |<--| NUMBER OF LIQUID BOUNDARIES
+!| NFRSOL         |<--| NUMBER OF SOLID BOUNDARIES
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NUMLIQ         |-->| BOUNDARY NOMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,11 +5,20 @@
      &(N,IIPID)
 !
 !***********************************************************************
-! BIEF
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
+!brief    GIVES THE EXTENSION FOR NAMING FILES IN PARALLEL
+!+
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/07/2008
+!+        V5P9
+!+  
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| N              |-->| NOMBRE DE PROCESSEURS MOINS UN = NCSIZE-1
+!| N              |-->| TOTAL NUMBER OF PROCESSORS
+!| IIPID          |-->| RANK OF THE PROCESSOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -28,17 +28,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRS           |-->| AIRES DES CELLULES DU MAILLAGE.
-!| DTHAUT         |---|
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS FRONTIERE
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NUBO           |-->| NUMEROS GLOBAUX DES EXTREMITES D'UNE ARETE
-!| VNOCL          |-->| NORMALE A L'INTERFACE
-!|                |   | (2 PREMIERES COMPOSANTES) ET
-!|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
-!| XNEBOR,YNEBOR  |-->| NORMALE AUX POINTS FRONTIERE
+!| AIRS           |-->| AREAS OF CELLS IN THE MESH.
+!| DTHAUT         |<--| SPACE STEP
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| NUBO           |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| VNOCL          |-->| NORMAL VECTOR TO INTERFACE
+!|                |   | (2 FIRST COMPONENTS) AND
+!|                |   | SEGMENT LENGTH (3RD COMPONENT)
+!| XNEBOR         |-->| X-COMPONENT OF NORMAL VECTOR AT BOUNDARY POINT
+!| YNEBOR         |-->| Y-COMPONENT OF NORMAL VECTOR AT BOUNDARY POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

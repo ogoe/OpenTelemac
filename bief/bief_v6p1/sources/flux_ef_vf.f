@@ -5,7 +5,7 @@
      &(FLOW,PHIEL,NSEG,NELEM,ELTSEG,ORISEG,IKLE,INIFLO,IOPT,FN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE FLUXES FOR THE FINITE VOLUME SCHEME.
@@ -15,12 +15,12 @@
 !history  JMH
 !+        06/05/2009
 !+
-!+   OPTIMISATION
+!+   Optimisation
 !
 !history  JMH
 !+        01/10/2009
 !+
-!+   OPTION -1 ADDED, ARGUMENT FN ADDED, PSI SCHEME ADDED
+!+   Option -1 added, Argument FN added, PSI SCHEME ADDED
 !
 !history  LEO POSTMA (DELTARES)
 !+        27/10/2009
@@ -40,19 +40,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG         |-->| SEGMENTS OF EVERY TRIANGLE.
+!| ELTSEG         |-->| SEGMENTS OF EVERY TRIANGLE
 !| FLOW           |<--| FLUXES PER SEGMENTS
-!| FN             |---|
-!| IKLE           |---|
-!| INIFLO         |-->| IF(YES) FLOW WILL BE INITIALISED AT 0.
+!| FN             |-->| OPTIONAL ARGUMENT FOR PSI SCHEME
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| INIFLO         |-->| IF(YES) FLOW WILL BE INITIALISED AT 0
 !| IOPT           |-->| OPTION FOR THE CONSTANT PER ELEMENT
-!| NELEM          |---|
-!| NSEG           |-->| NOMBRE DE SEGMENTS DANS LE MAILLAGE.
-!| ORISEG         |-->| ORIENTATION OF SEGMENTS OF EVERY TRIANGLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| ORISEG         |-->| ORIENTATION OF SEGMENTS OF EVERY TRIANGLE
 !| PHIEL          |-->| PER ELEMENT, FLUXES LEAVING POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FLUX_EF_VF => FLUX_EF_VF
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU

@@ -5,7 +5,7 @@
      &(ZF  ,X,Y,NPOIN,NFON,NBOR,KP1BOR,NPTFR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE BOTTOM ELEVATION.
@@ -28,13 +28,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KP1BOR         |---|
-!| NBOR           |-->| NUMEROS GLOBAUX DES NOEUDS DE BORD.
-!| NFON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DES FONDS.
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| X,Y            |-->| COORDONNEES DU MAILLAGE.
-!| ZF             |<--| COTE DU FOND AUX NOEUDS DU MAILLAGE.
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NFON           |-->| LOGICAL UNIT OF FILE FOR BOTTOM BATHYMETRY
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FOND => FOND

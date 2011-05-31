@@ -5,7 +5,7 @@
      &(X,Y,ZF,NPOIN,XRELV,YRELV,ZRELV,NP,NBOR,KP1BOR,NPTFR,DM)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INTERPOLATES THE BOTTOM ELEVATIONS FROM A SET OF
@@ -29,18 +29,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DM             |-->| DISTANCE MINIMUM A LA COTE TOLEREE POUR
-!|                |   | ACCEPTER UN POINT RELEVE.
-!| KP1BOR         |---|
-!| NBOR           |-->| NUMEROTATION GLOBALE DES POINTS DE BORD
-!| NP             |-->| NOMBRE DE POINTS RELEVES
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD.
-!| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |-->| ABCISSES DES POINTS RELEVES
-!| YRELV          |-->| ORDONNEES DES POINTS RELEVES
-!| ZF             |---|
-!| ZRELV          |-->| COTES DU FOND DES POINTS RELEVES
+!| DM             |-->| MINIMUM DISTANCE TO BOUNDARY TO ACCEPT A POINT
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NP             |-->| NUMBER OF BATHYMETRY POINTS
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| X,Y            |-->| MESH COORDINATES
+!| XRELV          |-->| ABCISSAE OF BATHYMETRY POINTS
+!| YRELV          |-->| ORDINATES OF BATHYMETRY POINTS
+!| ZF             |<--| INTERPOLATED BATHYMETRY 
+!| ZRELV          |-->| ELEVATIONS OF BATHYMETRY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FASP => FASP

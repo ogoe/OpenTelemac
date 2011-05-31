@@ -7,7 +7,7 @@
      & GLOSEG,SIZGLO,NSEG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ARRAYS GIVING ADRESSES FOR
@@ -31,25 +31,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GLOSEG         |---|
-!| IELM           |-->| TYPE D'ELEMENT.
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| IELM           |-->| TYPE OF ELEMENT.
 !|                |   | 11 : TRIANGLES.
-!|                |   | 21 : QUADRILATERES.
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| IKLEM1         |---|
-!| LIMVOI         |---|
-!| MXPTVS         |-->| NOMBRE MAXIMUM DE VOISINS D'UN POINT
-!| NBOR           |-->| NUMERO GLOBAL DU POINT DE BORD K.
-!| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |---|
-!| NPMAX          |---|
-!| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NSEG           |---|
-!| OPTASS         |---|
-!| PRODUC         |---|
-!| SIZGLO         |---|
-!| T1             |-->| TABLEAUX DE TRAVAIL ENTIERS.
+!|                |   | 21 : QUADRANGLES.
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| IKLEM1         |<--| VARIOUS ADDRESSES IN OFF-DIAGONAL PART
+!|                |   | OF A MATRIX
+!| LIMVOI         |<--| LIMVOI(K,1) : BEGINNING OF SERIES WITH K NEIGHBOURS
+!|                |   | LIMVOI(K,2) : END       OF SERIES WITH K NEIGHBOURS
+!| MXPTVS         |-->| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| OPTASS         |-->| OPTION OF MATRIX STORAGE 
+!|                |   | 1: ELEMENT PER ELEMENT 3: EDGE-BASED 
+!| PRODUC         |-->| CHOICE OF MATRIX-VECTOR PRODUCT
+!|                |   | 1: NORMAL 2: FRONTAL
+!| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
+!| T1             |-->| INTEGER WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FROPRO => FROPRO

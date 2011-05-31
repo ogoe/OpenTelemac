@@ -5,7 +5,7 @@
      &(NSEC,CTRLSC,FLX,VOLNEG,VOLPOS,INFO,TPS,NSEG,NCSIZE,CUMFLO)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -34,13 +34,13 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CTRLSC         |-->| NUMBERS OF POINTS IN THE CONTROL SECTIONS
-!| CUMFLO         |---|
+!| CUMFLO         |-->| KEY-WORD: PRINTING CUMULATED FLOWRATES
 !| FLX            |-->| FLUXES THROUGH CONTROL SECTIONS
 !| INFO           |-->| IF YES : INFORMATION IS PRINTED
-!| NCSIZE         |---|
+!| NCSIZE         |-->| NUMBER OF PROCESSORS
 !| NSEC           |-->| NUMBER OF CONTROL SECTIONS
-!| NSEG           |---|
-!| TPS            |-->| TEMPS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| TPS            |-->| TIME
 !| VOLNEG         |-->| CUMULATED NEGATIVE VOLUME THROUGH SECTIONS
 !| VOLPOS         |-->| CUMULATED POSITIVE VOLUME THROUGH SECTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

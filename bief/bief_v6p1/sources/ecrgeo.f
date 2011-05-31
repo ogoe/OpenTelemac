@@ -7,7 +7,7 @@
      & NCSIZE,NPTIR,KNOLG,NPLAN,I3,I4)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES THE GEOMETRY FILE TO SELAFIN FORMAT.
@@ -50,31 +50,30 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DATE,TIME      |-->| DATE (3 INTEGERS) AND TIME (3 INTEGERS)
+!| DATE           |-->| DATE (3 INTEGERS) 
 !| I3,I4          |-->| INTEGERS, WILL BE PUT IN FILE IN POSITION 3
 !|                |   | AND 4 OF THE ARRAY OF 10 INTEGERS
-!| IKLE           |<->| TABLE DE CONNECTIVITE (I.E. PASSAGE DE LA
-!|                |   | NUMEROTATION LOCALE DES POINTS D'UN ELEMENT
-!|                |   | A LA NUMEROTATION GLOBALE
-!| KNOLG          |-->| GLOBAL NUMBERS OF LOCAL POONTS IN PARALLEL
-!| NBOR           |-->| NUMEROTAION GLOBALE DES POINTS DE BORD.
+!| IKLE           |<->| CONNECTIVITY TABLE
+!| KNOLG          |-->| GLOBAL NUMBERS OF LOCAL POINTS IN PARALLEL
+!| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS.
 !| NCSIZE         |-->| NUMBER OF PROCESSORS
-!| NDP            |<->| NOMBRE DE SOMMETS PAR ELEMENT.
-!| NELEM          |<->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NFIC           |-->| NUMERO DE CANAL DU FICHIER A LIRE OU ECRIRE.
+!| NDP            |<->| NUMBER OF NODES PER ELEMENT
+!| NELEM          |<->| NUMBER OF ELEMENTS IN THE MESH
+!| NFIC           |-->| LOGICAL UNIT OF FILE TO BE READ
 !| NPLAN          |-->| NUMBER OF PLANES (3D MESHES IN PRISMS)
-!| NPOIN          |<->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |<->| NOMBRE DE POINTS FRONTIERE DU DOMAINE.
+!| NPOIN          |<->| NUMBER OF POINTS IN THE MESH
+!| NPTFR          |<->| NUMBER OF BOUNDARY POINTS IN THE MESH
 !| NPTIR          |-->| NUMBER OF INTERFACE POINTS IN PARALLEL
-!| NSOR           |-->| DIMENSION DE SORLEO ET SORIMP
-!| NVAR           |<->| NOMBRE DE VARIABLES DANS LE FICHIER
-!| NVARCL         |-->| NOMBRE DE VARIABLES CLANDESTINES.
-!| SORLEO         |-->| VARIABLES QUE L'ON SOUHAITE ECRIRE DANS LE
-!|                |   | FICHIER (TABLEAU DE 26 LOGIQUES)
-!| TEXTE          |<->| NOMS ET UNITES DES VARIABLES.
-!| TITRE          |<->| TITRE DU FICHIER.
-!| VARCLA         |-->| TABLEAU AVEC LES NOMS DES VARIABLES CLANDESTINES.
-!| X,Y            |<->| COORDONNEES DU MAILLAGE.
+!| NSOR           |-->| DIMENSION OF SORLEO AND SORIMP
+!| NVAR           |<->| NUMBER OF VARIABLES IN THE MESH
+!| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES.
+!| SORLEO         |-->| SAYS WHICH VARIABLES TO BE WRITTEN IN THE FILE
+!|                |   | (ARRAY OF LOGICAL)
+!| TEXTE          |<->| NAMES AND UNITS OF VARIABLES.
+!| TIME           |-->| TIME (3 INTEGERS)
+!| TITRE          |<->| TITLE OF FILE
+!| VARCLA         |-->| ARRAY WITH NAMES OF CLANDESTINE VARIABLES
+!| X,Y            |<->| MESH COORDINATES.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

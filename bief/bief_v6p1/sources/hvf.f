@@ -6,11 +6,11 @@
      & SIZGLO,NBOR,OPTSOU,T7,MESH,MSK)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    COMPUTES AN INTERMEDIATE DEPTH IF THERE ARE
-!+                SUB-ITERATIONS.
+!brief    FOR FINITE VOLUMES ADVECTION, COMPUTES AN INTERMEDIATE DEPTH
+!+                IF THERE ARE SUB-ITERATIONS.
 !
 !history  CHI-TUAN PHAM (LNHE)
 !+        09/02/2009
@@ -30,26 +30,26 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS.
-!| FXBOR          |-->| FLUX AU BORD (DEFINI SUR TOUT LE DOMAINE
-!|                |   | ET ASSEMBLE EN PARALLELE)
-!| FXMAT          |-->| MATRICE DE STOCKAGE DES FLUX.
+!| DT             |-->| TIME STEP
+!| FXBOR          |-->| FLUX ON BOUNDARIES (DEFINED ON ALL DOMAIN
+!|                |   | AND ASSEMBLED IN PARALLEL)
+!| FXMAT          |-->| MATRIX FOR STORING FLUXES.
 !| GLOSEG         |-->| GLOBAL NUMBER OF THE 2 POINTS OF A SEGMENT
-!| H              |<--| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N+1.
-!| HN             |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N.
-!| MESH           |---|
+!| H              |-->| WATER DEPTH AT TIME N+1
+!| HN             |-->| WATER DEPTH AT TIME N
+!| MESH           |-->| MESh STRUCTURE
 !| MSK            |-->| MSK : IF YES, MASKING OF DRY ELEMENTS
-!| NBOR           |-->| TABLEAU D'INDICES DE NOEUDS SUR LE BORD.
-!| NPOIN          |-->| NOMBRE DE NOEUDS DANS LE MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE NOEUDS SUR LA FRONTIERE.
-!| NSEG           |-->| NOMBRE DE SEGMENTS DANS LE MAILLAGE.
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
 !| OPTSOU         |-->| OPTION FOR THE TREATMENT OF SOURCES
 !|                |   | 1: NORMAL  2: DIRAC
 !|                |   | SEE PROPAG IN TELEMAC-2D
-!| SIZGLO         |---|
-!| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE.
-!| T7             |---|
-!| UNSV2D         |---|
+!| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

@@ -5,7 +5,7 @@
      &(XAUX,AD,AX,TETA,IKLE,NPOIN,NELEM,NELMAX,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GETS THE TRIDIAGONAL PART OF A DIFFUSION MATRIX ON
@@ -37,15 +37,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AD             |---|
-!| AX             |---|
-!| IKLE           |---|
-!| MESH           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!| NPOIN          |---|
-!| TETA           |---|
-!| XAUX           |---|
+!| AD             |-->| DIAGONAL TERMS OF MATRIX
+!| AX             |-->| OFF-DIAGONAL TERMS OF MATRIX
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| MESH           |-->| MESH STRUCTURE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TETA           |-->| COEFFICIENT USED IN THE RESULT
+!| XAUX           |<--| THE RESULTING MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GETTRIEBE => GETTRIEBE

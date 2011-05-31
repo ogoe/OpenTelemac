@@ -5,7 +5,7 @@
      &(M,MDIFF,TETA,MESH3D,NPLAN,NPOIN2,NSEG2D)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GETS THE TRIDIAGONAL PART OF A DIFFUSION MATRIX ON
@@ -37,13 +37,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| M              |---|
-!| MDIFF          |---|
-!| MESH3D         |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| NSEG2D         |---|
-!| TETA           |---|
+!| M              |<--| TRIDIAGONAL MATRIX
+!| MDIFF          |-->| ORIGINAL DIFFUSION MATRIX
+!| MESH3D         |-->| 3D MESh STRUCTURE
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS OF 2D MESH
+!| NSEG2D         |-->| NUMBER OF SEGMENTS IN 2D
+!| TETA           |-->| COEFFICIENT USED IN THE RESULT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GETTRI => GETTRI
@@ -57,7 +57,7 @@
       INTEGER, INTENT(IN) :: NPLAN,NPOIN2,NSEG2D
 !
       DOUBLE PRECISION, INTENT(IN)    :: TETA
-      DOUBLE PRECISION, INTENT(INOUT) :: M(NPOIN2,*)
+      DOUBLE PRECISION, INTENT(INOUT) :: M(NPOIN2*NPLAN,*)
 !
       TYPE(BIEF_OBJ),  INTENT(INOUT)  :: MDIFF
       TYPE(BIEF_MESH), INTENT(IN)     :: MESH3D

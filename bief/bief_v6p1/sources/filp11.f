@@ -5,7 +5,7 @@
      &( F , C , XSOM , YSOM , NSOM , X , Y , NPOIN )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES A FUNCTION TO A CONSTANT VALUE
@@ -29,14 +29,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |---|
-!| F              |---|
-!| NPOIN          |---|
-!| NSOM           |---|
-!| X              |---|
-!| XSOM           |---|
-!| Y              |---|
-!| YSOM           |---|
+!| C              |-->| THE CONSTANT VALUE
+!| F              |<->| THE FUNCTION
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSOM           |-->| NUMBER OF VERTICES IN THE POLYGON
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XSOM           |-->| ABSCISSAE OF POINTS IN THE POLYGON
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YSOM           |-->| ORDINATES OF POINTS IN THE POLYGON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FILP11 => FILP11
@@ -58,11 +58,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 10 I = 1 , NPOIN
+      DO I = 1 , NPOIN
 !
         IF(INPOLY(X(I),Y(I),XSOM,YSOM,NSOM)) F(I) = C
 !
-10    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

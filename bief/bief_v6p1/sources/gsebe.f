@@ -5,7 +5,7 @@
      &(B,A,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FACTORISES THE ELEMENTARY MATRICES IN MATRIX A
@@ -34,9 +34,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |<--| MATRICE A.
-!| B              |<--| MATRICE RESULTAT.
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
+!| A              |<--| MATRIX A.
+!| B              |<--| RESULTING MATRIX.
+!| MESH           |-->| MESH STRUCTURE.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GSEBE => GSEBE
@@ -68,7 +68,7 @@
         IF (LNG.EQ.2) WRITE(LU,400) A%TYPE
 300     FORMAT(1X,'GSEBE (BIEF) :',1I6,' TYPE DE A NON PREVU.')
 400     FORMAT(1X,'GSEBE (BIEF) :',1I6,' UNEXPECTED TYPE FOR A.')
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !

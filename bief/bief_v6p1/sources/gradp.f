@@ -2,10 +2,10 @@
                      SUBROUTINE GRADP
 !                    ****************
 !
-     &(NS,NT,NU,AIRT,X,Y,DPX,DPY)
+     &(NS,NT,IKLE,AIRT,X,Y,DPX,DPY)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE BASES FUNCTIONS GRADIENTS.
@@ -28,12 +28,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRT           |-->| AIRES DES TRIANGLES
-!| DPX,DPY        |<--| GRADIENT DES FONCTIONS DE BASE P1
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NT             |-->| NOMBRE DE TRIANGLES DU MAILLAGE
-!| NU             |-->| NUMEROS DES NOEUDS PAR TRIANGLE
-!| X,Y            |-->| COORDONNEES DES NOEUDS DU MAILLAGE
+!| AIRT           |-->| AREA OF TRIANGLES
+!| DPX            |<--| GRADIENT OF BASES FUNCTIONS WITH RESPECT TO X
+!| DPY            |<--| GRADIENT OF BASES FUNCTIONS WITH RESPECT TO Y
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NS             |-->| NUMBER OF POINTS IN THE MESH
+!| NT             |-->| NUMBER OF TRIANGLES IN THE MESH
+!| X              |-->| ABSCISSAE OF NODES IN THE MESH
+!| Y              |-->| ORDINATES OF NODES IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -42,22 +44,22 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)           :: NS,NT,NU(NT,3)
+      INTEGER, INTENT(IN)           :: NS,NT,IKLE(NT,3)
       DOUBLE PRECISION, INTENT(IN)  :: X(NS),Y(NS),AIRT(NT)
       DOUBLE PRECISION, INTENT(OUT) :: DPX(3,NT),DPY(3,NT)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER JT ,NUBO1,NUBO2,NUBO3
+      INTEGER JT,NUBO1,NUBO2,NUBO3
       DOUBLE PRECISION AIRJI,X1,X2,X3,Y1,Y2,Y3
 !
 !-----------------------------------------------------------------------
 !
       DO JT=1,NT
 !
-         NUBO1 = NU(JT,1)
-         NUBO2 = NU(JT,2)
-         NUBO3 = NU(JT,3)
+         NUBO1 = IKLE(JT,1)
+         NUBO2 = IKLE(JT,2)
+         NUBO3 = IKLE(JT,3)
 !
          AIRJI = 0.5D0/AIRT(JT)
 !

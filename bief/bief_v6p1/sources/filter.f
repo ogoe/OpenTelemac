@@ -8,7 +8,7 @@
      & MESH,MSK,MASKEL,N)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FILTERS A VECTOR USING A MATRIX.
@@ -36,19 +36,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |<->| MATRICE (DONNEE OU CONSTRUITE SUIVANT BLDMAT)
-!| BLDMAT         |-->| LOGIQUE : ON CONSTRUIT LA MATRICE OU PAS.
-!| F,G,H,U,V,W    |-->| FONCTIONS INTERVENANT DANS LA MATRICE
-!| FORMUL         |-->| FORMULE DECRIVANT LA MATRICE
-!|                |   | (MEMES CONVENTIONS QUE DANS MATRIX)
-!| MSK,MASKEL     |-->| LOGIQUE ET TABLEAU POUR LE MASQUAGE
-!| N              |-->| NOMBRE DE FOIS OU ON FAIT L'OPERATION.
-!| T1             |-->| TABLEAU DE TRAVAIL.
-!| T2             |<->| TABLEAU DE TRAVAIL. MATRICE A MASS-LUMPEE
-!|                |   | EN SORTIE (VOIR AUSSI XMUL)
-!| VEC            |<->| VECTEUR A FILTRER
-!| XMUL           |-->| FACTEUR MULTIPLICATIF NON NUL
-!|                |   | N'A AUCUNE INFLUENCE SAUF SUR T2.
+!| A              |<->| MATRIX (GIVEN OR BUILT DEPENDING ON BLDMAT)
+!| BLDMAT         |-->| IF YES : MATRIX BUILT ACCORDING TO FORMUL
+!| F,G,H,U,V,W    |-->| FUNCTIONS THAT MAY BE USED FOR BUILDING A
+!| FORMUL         |-->| FORMULA DESCRIBING THE MATRIX (AS IN MATRIX)
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| N              |-->| FILTERING WILL BE DONE N TIMES
+!| T1             |<->| WORK ARRAY
+!| T2             |<->| WORK ARRAY. MATRIX A LUMPED AT THE END
+!| VEC            |<->| VECTOR TO BE FILTERED
+!| XMUL           |-->| MULTIPLICATION FACTOR
+!|                |   | NO INFLUENCE EXCEPT ON T2.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FILTER => FILTER

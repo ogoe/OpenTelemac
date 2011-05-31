@@ -5,7 +5,7 @@
      &(X , I , C , NVAL , TYPE , CANAL , STD , ISTAT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES OUT VALUES ACCORDING TO VARIOUS STANDARDS.
@@ -36,16 +36,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CHAINE DE CARACTERES A ECRIRE
-!| CANAL          |-->| UNITE LOGIQUE POUR L'ECRITURE
-!| I              |-->| TABLEAU A ECRIRE S'IL EST ENTIER
-!| ISTAT          |<--| ENTIER EN CAS D'ERREUR
-!| NVAL           |-->| NOMBRE DE VALEURS DANS LE TABLEAU
-!|                |   | OU NOMBRE DE CARACTERES DE LA CHAINE
-!| STD            |-->| STANDARD D'ECRITURE : STD , IBM OU I3E
-!| TYPE           |-->| TYPE DES DONNEES A ECRIRE :
-!|                |   | 'I' , 'CH' , 'R4' , 'R8'
-!| X              |-->| TABLEAU A ECRIRE S'IL EST REEL
+!| C              |-->| CHARACTER STRING TO BE WRITTEN
+!| CANAL          |-->| LOGICAL UNIT FOR WRITING
+!| I              |-->| INTEGER ARRAY TO BE WRITTEN
+!| ISTAT          |<--| ERROR NUMBER
+!| NVAL           |-->| NUMBER OF VALUES (INTEGER, CHARACTER, ETC.)
+!|                |   | TO BE WRITTEN
+!| STD            |-->| OUTPUT STANDARD : STD , IBM OU I3E, ETC.
+!| TYPE           |-->| TYPE OF DATA : 'I' , 'CH' , 'R4' , 'R8'
+!| X              |-->| DOUBLE PRECISION ARRAY TO BE WRITTEN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

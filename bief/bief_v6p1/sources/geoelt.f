@@ -5,7 +5,7 @@
      &(SURDET,SURFAC,XEL,YEL,NELEM,NELMAX,IELM)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES DETERMINANTS AND SOME OTHER VALUES FOR
@@ -29,12 +29,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM           |-->| TYPE D'ELEMENT
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |---|
-!| SURDET         |<--| INVERSE DU DETERMINANT DE LA TRANSFORMEE
-!| SURFAC         |<--| SURFACES DES ELEMENTS
-!| XEL,YEL        |-->| COORDONNEES DES NOEUDS PAR ELEMENT
+!| IELM           |-->| TYPE OF ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SURDET         |<--| 1.D0/DETERMINANT(TRANSFORMATION)
+!| SURFAC         |<--| AREA OF ELEMENTS
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GEOELT => GEOELT
@@ -45,9 +46,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: IELM,NELEM,NELMAX
+      INTEGER, INTENT(IN)           :: IELM,NELEM,NELMAX
       DOUBLE PRECISION, INTENT(OUT) :: SURDET(NELEM),SURFAC(NELEM)
-      DOUBLE PRECISION, INTENT(IN) :: XEL(NELMAX,*),YEL(NELMAX,*)
+      DOUBLE PRECISION, INTENT(IN)  :: XEL(NELMAX,*),YEL(NELMAX,*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -63,7 +64,7 @@
 !
       IF(IELM.EQ.11) THEN
 !
-         DO 400 IELEM = 1 , NELEM
+         DO IELEM = 1 , NELEM
 !
          XSOM(1,1) = XEL(IELEM,1)
          XSOM(2,1) = XEL(IELEM,2)
@@ -89,15 +90,17 @@
 !
          SURDET(IELEM) = 1.D0/DET
 !
-400      CONTINUE
+         ENDDO
 !
       ELSE
-            IF(LNG.EQ.1) WRITE(LU,10) IELM
-            IF(LNG.EQ.2) WRITE(LU,11) IELM
-10          FORMAT(1X,'GEOELT: TYPE D''ELEMENT INCONNU :',1I6)
-11          FORMAT(1X,'GEOELT: UNKNOWN TYPE OF ELEMENT :',1I6)
-            CALL PLANTE(1)
-            STOP
+!
+        IF(LNG.EQ.1) WRITE(LU,10) IELM
+        IF(LNG.EQ.2) WRITE(LU,11) IELM
+10      FORMAT(1X,'GEOELT: TYPE D''ELEMENT INCONNU :',1I6)
+11      FORMAT(1X,'GEOELT: UNKNOWN TYPE OF ELEMENT :',1I6)
+        CALL PLANTE(1)
+        STOP
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

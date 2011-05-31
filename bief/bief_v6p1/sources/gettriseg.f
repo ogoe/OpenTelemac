@@ -5,7 +5,7 @@
      &(XAUX,AD,AX,TETA,NPOIN,MESH,NSEG3D,NSEG2D,NPLAN,NPOIN2)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GETS THE TRIDIAGONAL PART OF A DIFFUSION MATRIX ON
@@ -39,17 +39,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AD             |---|
-!| AX             |-->| TERMES EXTRA-DIAGONAUX PAR SEGMENTS
-!|                |   | (ICI DIMENSION 1 CAR SYMETRIQUE)
-!| MESH           |---|
-!| NPLAN          |---|
-!| NPOIN          |---|
-!| NPOIN2         |---|
-!| NSEG2D         |---|
-!| NSEG3D         |---|
-!| TETA           |---|
-!| XAUX           |---|
+!| AD             |-->| DIAGONAL TERMS OF MATRIX
+!| AX             |-->| OFF-DIAGONAL TERMS OF MATRIX 
+!|                |   | HERE DIMENSION 1 BECAUSE SYMMETRY
+!| MESH           |-->| MESH STRUCTURE
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPOIN2         |-->| NUMBER OF POINTS OF 2D MESH
+!| NSEG2D         |-->| NUMBER OF SEGMENTS IN 2D
+!| NSEG3D         |-->| NUMBER OF SEGMENTS IN 3D
+!| TETA           |-->| COEFFICIENT USED IN THE RESULT
+!| XAUX           |<--| THE RESULTING MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GETTRISEG => GETTRISEG

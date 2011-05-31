@@ -5,7 +5,7 @@
      &(FXMAT,NSEG,GLOSEG,SIZGLO,MASKPT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MASKS THE FLUXES BY SEGMENT USING THE MASKS OF
@@ -29,11 +29,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FXMAT          |<--| MATRICE DE STOCKAGE DES FLUX.
-!| GLOSEG         |---|
-!| MASKPT         |---|
-!| NSEG           |-->| NOMBRE DE SEGMENTS DANS LE MAILLAGE.
-!| SIZGLO         |---|
+!| FXMAT          |<--| MATRIX FOR STORING THE FLUXES.
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FLUX_MASK => FLUX_MASK

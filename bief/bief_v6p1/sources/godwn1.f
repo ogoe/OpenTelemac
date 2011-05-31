@@ -55,14 +55,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |<--| MATRICE A SOUS FORME LDU
-!| B              |<--| SECOND MEMBRE DU SYSTEME A RESOUDRE.
-!| COPY           |-->| SI .TRUE. B EST RECOPIE SUR X.
-!|                |   | AU PREALABLE.
-!| DITR           |-->| CARACTERE  'D' : ON CALCULE AVEC A
-!|                |   | 'T' : ON CALCULE AVEC A TRANSPOSEE
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
-!| X              |<--| SOLUTION DU SYSTEME AX = B
+!| A              |-->| MATRIX A IN LDU FORM
+!| B              |<--| RIGHT-HAND SIDE OF THE SYSTEM
+!| COPY           |-->| IF YES. B IS FIRST COPIED ON X.
+!| DITR           |-->| OPTION  'D' : MATRIX A IS TAKEN
+!|                |   |         'T' : MATRIX TRANSPOSED(A)
+!| MESH           |-->| MESH STRUCTURE
+!| X              |<--| SOLUTION OF SYSTEM AX = B
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GODWN1 => GODWN1

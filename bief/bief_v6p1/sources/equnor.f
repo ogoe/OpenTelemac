@@ -5,7 +5,7 @@
      &(X, A,B , MESH, D,AD,AG,G,R, CFG,INFOGR,AUX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE LINEAR SYSTEM A X = B
@@ -50,19 +50,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE DU SYSTEME
-!| AD             |<->| MATRICE A MULTIPLIEE PAR D.
-!| AG             |<->| A X (GRADIENT DE DESCENTE).
-!| AUX            |-->| MATRICE POUR LE PRECONDITIONNEMENT.
-!| B              |-->| SECOND MEMBRE DU SYSTEME.
-!| CFG            |---|
-!| D              |<->| DIRECTION DE DESCENTE.
-!| G              |<->| GRADIENT DE DESCENTE.
-!| INFOGR         |-->| SI OUI, IMPRESSION D'UN COMPTE-RENDU.
-!| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE.
-!| R              |<->| RESIDU (CONFONDU AVEC LE GRADIENT SI IL N'Y A
-!|                |   | PAS DE PRECONDITIONNEMENT DANS SOLGRA)
-!| X              |<--| VALEUR INITIALE, PUIS SOLUTION
+!| A              |-->| MATRIX OF THE SYSTEM
+!| AD             |<->| WORK ARRAY: MATRICE A MULTIPLIED BY D.
+!| AG             |<->| WORK ARRAY: A MULTIPLIED BY DESCENT GRADIENT
+!| AUX            |-->| MATRIX FOR PRECONDITIONING.
+!| B              |-->| RIGHT-HAND SIDE OF THE SYSTEM
+!| CFG            |-->| STRUCTURE OF SOLVER CONFIGURATION
+!| D              |<->| WORK ARRAY: DIRECTION OF DESCENT.
+!| G              |<->| DESCENT GRADIENT.
+!| INFOGR         |-->| IF YES, PRINT A LOG.
+!| MESH           |-->| MESH STRUCTURE.
+!| R              |<->| RESIDUAL (MAY BE IN THE SAME MEMORY SPACE AS
+!|                |   | GRADIENT DEPENDING ON CONDITIONING)
+!| X              |<--| INITIAL VALUE, THEN SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_EQUNOR => EQUNOR

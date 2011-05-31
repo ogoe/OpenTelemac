@@ -6,7 +6,7 @@
      & KNOGL,MSKSEC,BM1,BM2,T1,HPROP,MESH,S,CV1,IFABOR,COMFLU,CUMFLO)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -32,30 +32,34 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BM1            |---|
-!| BM2            |---|
-!| COMFLU         |---|
-!| CTRLSC         |-->| DONNEES SUR LES SECTIONS DE CONTROLE.
-!| CUMFLO         |---|
-!| CV1            |---|
-!| DT             |-->| PAS DE TEMPS.
-!| H              |-->| HAUTEUR D'EAU
-!| HPROP          |---|
-!| IFABOR         |---|
-!| IKLE           |-->| TABLEAUX DE CONNECTIVITE LOCAL-GLOBAL
-!| INFO           |-->| SI OUI : IMPRESSIONS.
-!| KNOGL          |---|
-!| MESH           |---|
-!| MSKSEC         |---|
+!| BM1            |<->| WORK MATRIX
+!| BM2            |<->| WORK MATRIX
+!| COMFLU         |-->| KEY-WORD: COMPATIBLE COMPUTATION OF FLUXES
+!| CTRLSC         |-->| DATA ON CONTROL SECTIONS.
+!| CUMFLO         |-->| KEY-WORD: PRINTING CUMULATED FLOWRATES
+!| CV1            |-->| WORK ARRAY
+!| DT             |-->| TIME STEP.
+!| H              |-->| WATER DEPTH
+!| HPROP          |-->| WATER DEPTH IN DIV(HPROP U) TERM.
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| INFO           |-->| IF YES : PRINT RESULTS
+!| KNOGL          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
+!| MESH           |-->| MESH STRUCTURE
+!| MSKSEC         |<->| WORK ARRAY THAT WILL BE USED AS A MASK
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| S              |---|
-!| T1             |---|
-!| TPS            |-->| TEMPS
-!| U,V            |-->| CHAMP DE VITESSE
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| XEL,YEL        |-->| COORDONNEES DES POINTS PAR ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| S              |-->| VOID BIEF_OBJ STRUCTURE
+!| T1             |<->| WORK ARRAY
+!| TPS            |-->| TIME
+!| U,V            |-->| VELOCITY FIELD
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH (PER ELEMENT)
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH (PER ELEMENT)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FLUSEC => FLUSEC
@@ -68,13 +72,13 @@
 !
       INTEGER, INTENT(IN) :: NELMAX,NELEM,NCP
       INTEGER, INTENT(IN) :: IKLE(NELMAX,*),CTRLSC(NCP),KNOGL(*)
-      INTEGER, INTENT(IN) :: IFABOR(NELMAX,*)
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),TPS,DT
-      DOUBLE PRECISION, INTENT(IN) :: XEL(NELMAX,*),YEL(NELMAX,*)
-      LOGICAL, INTENT(IN) :: INFO,COMFLU,CUMFLO
-      TYPE(BIEF_OBJ), INTENT(IN)    :: HPROP,S,U,V,H
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: BM1,BM2,T1,MSKSEC,CV1
-      TYPE(BIEF_MESH) :: MESH
+      INTEGER, INTENT(IN)            :: IFABOR(NELMAX,*)
+      DOUBLE PRECISION, INTENT(IN)   :: X(*),Y(*),TPS,DT
+      DOUBLE PRECISION, INTENT(IN)   :: XEL(NELMAX,*),YEL(NELMAX,*)
+      LOGICAL, INTENT(IN)            :: INFO,COMFLU,CUMFLO
+      TYPE(BIEF_OBJ), INTENT(IN)     :: HPROP,S,U,V,H
+      TYPE(BIEF_OBJ), INTENT(INOUT)  :: BM1,BM2,T1,MSKSEC,CV1
+      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

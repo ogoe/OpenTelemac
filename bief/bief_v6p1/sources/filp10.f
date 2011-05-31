@@ -5,7 +5,7 @@
      &( F , C , XSOM , YSOM , NSOM , X , Y , NELEM , NELMAX , IKLE )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES A FUNCTION TO A CONSTANT VALUE
@@ -29,16 +29,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |---|
-!| F              |---|
-!| IKLE           |---|
-!| NELEM          |---|
-!| NELMAX         |---|
-!| NSOM           |---|
-!| X              |---|
-!| XSOM           |---|
-!| Y              |---|
-!| YSOM           |---|
+!| C              |-->| THE CONSTANT VALUE
+!| F              |<->| THE FUNCTION
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NSOM           |-->| NUMBER OF VERTICES IN THE POLYGON
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XSOM           |-->| ABSCISSAE OF POINTS IN THE POLYGON
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YSOM           |-->| ORDINATES OF POINTS IN THE POLYGON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_FILP10 => FILP10
@@ -49,11 +49,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NSOM , NELEM , NELMAX
+      INTEGER, INTENT(IN)             :: NSOM,NELEM,NELMAX
       DOUBLE PRECISION, INTENT(INOUT) :: F(*)
-      DOUBLE PRECISION, INTENT(IN) :: X(*) , Y(*)
-      DOUBLE PRECISION, INTENT(IN) :: XSOM(NSOM) , YSOM(NSOM) , C
-      INTEGER, INTENT(IN) :: IKLE(NELMAX,3)
+      DOUBLE PRECISION, INTENT(IN)    :: X(*) , Y(*)
+      DOUBLE PRECISION, INTENT(IN)    :: XSOM(NSOM) , YSOM(NSOM) , C
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

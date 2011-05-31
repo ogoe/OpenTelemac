@@ -5,7 +5,7 @@
      &(TDEB,TFIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRINTS THE DURATION BETWEEN TWO TIMES GIVEN BY THE
@@ -29,7 +29,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| TDEB,TFIN      |-->| TIMES OF BEGINNING AND END
+!| TDEB           |-->| TIME OF BEGINNING
+!| TFIN           |-->| TIME OF END
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
