@@ -6,7 +6,7 @@
      &   IELM , IKLE , NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INTERPOLATES THE VALUES OF A FUNCTION AT SOME OF THE
@@ -36,23 +36,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELT            |-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES
-!|                |   | CARACTERISTIQUES.
-!| ETA            |---|
-!| IELM           |-->| TYPE D'ELEMENT.
-!| IKLE           |-->| TABLE DE CONNECTIVITE.
-!| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT POUR LA FONCTION
-!|                |   | U
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| NP             |-->| NOMBRE DE POINTS A INTERPOLER
-!| NPLAN          |-->| NOMBRE DE PLANS EN 3D
-!| NPOIN2         |-->| NOMBRE DE POINTS EN 2D (MEME POUR LE 3D)
-!| SHP            |-->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
-!|                |   | COURBES CARACTERISTIQUES.
-!| SHZ            |-->| COORDONNEES BARYCENTRIQUES SUIVANT Z AU PIED
-!|                |   | DES COURBES CARACTERISTIQUES (POUR TEL3D)
-!| U              |-->| VALEURS AUX NOEUDS.
-!| UTILD          |<--| VALEURS INTERPOLEES.
+!| ELT            |-->| 2D ELEMENT AT THE FOOT OF CHARACTERISTIC LINES.
+!| ETA            |-->| LAYER NUMBER AT THE FOOT OF CHARACTERISTIC LINES.
+!| IELM           |-->| TYPE OF ELEMENT.
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT FOR U.
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NP             |-->| NOMBER OF POINTS TO BE INTERPOLATED.
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| SHP            |-->| 2D BARYCENTRIC COORDINATES AT THE FOOT OF
+!|                |   | CHARACTERISTIC LINES.
+!| SHZ            |-->| BARYCENTRIC COORDINATES ALONG Z AT THE FOOT OF
+!|                |   | CHARACTERISTIC LINES (FOR TELEMAC-3D)
+!| U              |-->| VALUES AT NODES FOR INTERPOLATION.
+!| UTILD          |<--| INTERPOLATED VALUES.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_INTERP => INTERP

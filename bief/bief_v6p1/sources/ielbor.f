@@ -5,7 +5,7 @@
      &( IELM , I )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE BOUNDARY ELEMENT TYPE CORRESPONDING TO
@@ -32,8 +32,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I              |-->| CAS DE PLUSIEURS TYPES D'ELEMENTS DE BORD
-!| IELM           |-->| TYPE D'ELEMENT SUR LE DOMAINE.
+!| I              |-->| CASE OF SEVERAL BOUNDARY ELEMENTS
+!| IELM           |-->| TYPE OF ELEMENT IN THE DOMAIN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

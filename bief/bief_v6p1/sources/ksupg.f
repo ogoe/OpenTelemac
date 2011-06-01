@@ -5,7 +5,7 @@
      &(KX,KY,XMUL,U,V,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES A VECTOR, USED BY THE METHOD:
@@ -38,10 +38,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KX,KY          |-->| COORDONNEES DU VECTEUR UNITAIRE.
-!| MESH           |-->| MAILLAGE.
-!| U,V            |-->| COMPOSANTES DE LA VITESSE.
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| KX             |-->| FIRST COMPONENT OF RESULTING VECTOR
+!| KY             |-->| SECOND COMPONENT OF RESULTING VECTOR
+!| MESH           |-->| MESH STRUCTURE
+!| U              |-->| FIRST COMPONENT OF VELOCITY
+!| V              |-->| SECOND COMPONENT OF VELOCITY
+!| XMUL           |-->| MULTIPLICATION COEFICIENT 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_KSUPG => KSUPG

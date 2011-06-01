@@ -8,7 +8,7 @@
      & NELEM,NELMAX,IELM1,IELM2,S,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN MATRICES.
@@ -61,28 +61,36 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE
-!| FORMUL         |-->| FORMULE DECRIVANT LA MATRICE
-!| IELM1          |-->| TYPE D'ELEMENT POUR LES LIGNES
-!| IELM2          |-->| TYPE D'ELEMENT POUR LES COLONNES
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| LEGO           |-->| LOGIQUE : POUR ASSEMBLER LA DIAGONALE
-!| NBOR           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS DU MAILLAGE ADAPTATIF)
-!| S              |-->| TYPE DE STOCKAGE DE LA MATRICE
-!| SF,SG,SH       |-->| STRUCTURES DES FONCTIONS F,G,H ET
-!| SU,SV,SW       |-->| U,V,H CI-DESSOUS.
-!| SURFAC         |-->| SURFACE DES ELEMENTS.
-!| T              |-->| TABLEAU DE TRAVAIL DE DIMENSION QUI
-!|                |   | CONTIENDRA LA DIAGONALE NON ASSEMBLEE
-!| TYPDIA         |---|
-!| TYPEXT         |---|
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR U DANS LA FORMULE
-!| XEL,YEL,ZEL    |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |<->| TERMES EXTRA-DIAGONAUX
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR DU RESULTAT
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
+!| G              |-->| FUNCTION USED IN THE FORMULA
+!| H              |-->| FUNCTION USED IN THE FORMULA
+!| IELM1          |-->| TYPE OF ELEMENT FOR LINES
+!| IELM2          |-->| TYPE OF ELEMENT FOR COLUMNS
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LEGO           |-->| IF YES: ASSEMBLE THE DIAGONAL
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| S              |-->| TYPE OF MATRIX STORAGE
+!| SF             |-->| STRUCTURE OF FUNCTIONS F
+!| SG             |-->| STRUCTURE OF FUNCTIONS G
+!| SH             |-->| STRUCTURE OF FUNCTIONS H
+!| SU             |-->| STRUCTURE OF FUNCTIONS U
+!| SV             |-->| STRUCTURE OF FUNCTIONS V
+!| SW             |-->| STRUCTURE OF FUNCTIONS W
+!| SURFAC         |-->| AREA OF 2D ELEMENTS
+!| T              |<->| WORK ARRAY FOR NON ELEMENT BY ELEMENT DIAGONAL
+!| TYPDIA         |<--| TYPE OF DIAGONAL
+!| TYPEXT         |<--| TYPE OF OFF-DIAGONAL TERMS
+!| U              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)
+!| V              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)
+!| W              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)
+!| XEL            |-->| ABSCISSAE OF POINTS, PER ELEMENT
+!| YEL            |-->| ORDINATES OF POINTS, PER ELEMENT
+!| ZEL            |-->| ELEVATIONS OF POINTS, PER ELEMENT
+!| XM             |<->| OFF-DIAGONAL TERMS
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATRIY => MATRIY

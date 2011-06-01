@@ -5,7 +5,7 @@
      &( C1 , C2 )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CHECKS IF A CHARACTER STRING IS COMPRISED IN ANOTHER.
@@ -29,8 +29,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C1             |-->| CHAINE CENSEE CONTENIR C2
-!| C2             |-->| CHAINE RECHERCHEE DANS C1
+!| C1             |-->| CHARACTER STRING WHERE C2 IS LOOKED FOR 
+!| C2             |-->| CHARACTER STRING LOOKED FOR INTO C1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

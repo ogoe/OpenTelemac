@@ -5,7 +5,7 @@
      &( T,XM,XMUL,Z,SURFAC,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MASS MATRIX FOR P1 PRISMS.
@@ -40,15 +40,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| T              |---|
-!| XM             |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
-!| Z              |-->| COORDONNEES DES POINTS DANS L'ELEMENT
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| T              |<--| NON ASSEMBLED DIAGONAL
+!| XM             |<--| NON ASSEMBLED OFF-DIAGONAL TERMS
+!| XMUL           |-->| MULTIPLICATION FACTOR
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT01PP => MT01PP

@@ -5,7 +5,7 @@
      &(MASKEL,ZFE,ZF,HN,HMIN,IKLE,IFABOR,ITRA01,NELEM,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MASKS DRY OR PARTIALLY DRY ELEMENTS.
@@ -49,17 +49,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HMIN           |---|
-!| HN             |---|
-!| IFABOR         |-->| NUMEROS DES ELEMENTS VOISINS.
-!| IKLE           |-->| TABLE DE CONNECTIVITE.
-!| ITRA01         |-->| TABLEAU DE TRAVAIL D'ENTIERS.
-!| MASKEL         |<--| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NPOIN          |-->| NOMBRE DE NOEUDS.
-!| ZF             |-->| COTE DU FOND PAR NOEUD.
-!| ZFE            |-->| COTE DU FOND PAR ELEMENT.
+!| HMIN           |-->| MINIMUM VALUE OF DEPTH
+!| HN             |-->| WATER DEPTH AT TIME N
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| ITRA01         |-->| WORK ARRAY OF INTEGERS
+!| MASKEL         |<--| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZFE            |-->| ELEVATION OF BOTTOM, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

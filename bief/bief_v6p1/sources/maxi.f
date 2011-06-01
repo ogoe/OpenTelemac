@@ -5,7 +5,7 @@
      &( XMAX , IMAX , X , NPOIN )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    LOOKS FOR THE GREATEST VALUE IN ARRAY X
@@ -29,10 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IMAX           |<--| INDICE DU MAXIMUM
-!| NPOIN          |-->| DIMENSION DU TABLEAU
-!| X              |-->| TABLEAU DES VALEURS
-!| XMAX           |<--| MAXIMUM TROUVE
+!| IMAX           |<--| INDEX OF MAXIMUM
+!| NPOIN          |-->| DIMENSION OF ARRAY X
+!| X              |-->| ARRAY WITH VALUES TO LOOK AT
+!| XMAX           |<--| THE MAXIMUM 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &(MASKEL,HN,HMIN,IKLE,NELEM,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MASKS DRY ELEMENTS (MASKS TIDAL FLATS).
@@ -35,13 +35,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HMIN           |---|
-!| HN             |---|
-!| IKLE           |-->| TABLE DE CONNECTIVITE.
-!| MASKEL         |<--| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NPOIN          |-->| NOMBRE DE NOEUDS.
+!| HMIN           |-->| MINIMUM VALUE OF DEPTH
+!| HN             |-->| WATER DEPTH AT TIME N
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| MASKEL         |<--| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

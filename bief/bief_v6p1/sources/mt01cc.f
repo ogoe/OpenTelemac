@@ -11,7 +11,7 @@
      &  XMUL,SURFAC,NELEM,NELMAX )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MASS MATRIX FOR P2 TRIANGLES.
@@ -36,31 +36,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A14            |---|
-!| A15            |---|
-!| A16            |---|
-!| A22            |---|
-!| A23            |---|
-!| A24            |---|
-!| A25            |---|
-!| A26            |---|
-!| A33            |---|
-!| A34            |---|
-!| A35            |---|
-!| A36            |---|
-!| A44            |---|
-!| A45            |---|
-!| A46            |---|
-!| A55            |---|
-!| A56            |---|
-!| A66            |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| A12            |<--| ELEMENTS OF MATRIX
+!| A13            |<--| ELEMENTS OF MATRIX
+!| A14            |<--| ELEMENTS OF MATRIX
+!| A15            |<--| ELEMENTS OF MATRIX
+!| A16            |<--| ELEMENTS OF MATRIX
+!| A22            |<--| ELEMENTS OF MATRIX
+!| A23            |<--| ELEMENTS OF MATRIX
+!| A24            |<--| ELEMENTS OF MATRIX
+!| A25            |<--| ELEMENTS OF MATRIX
+!| A26            |<--| ELEMENTS OF MATRIX
+!| A33            |<--| ELEMENTS OF MATRIX
+!| A34            |<--| ELEMENTS OF MATRIX
+!| A35            |<--| ELEMENTS OF MATRIX
+!| A36            |<--| ELEMENTS OF MATRIX
+!| A44            |<--| ELEMENTS OF MATRIX
+!| A45            |<--| ELEMENTS OF MATRIX
+!| A46            |<--| ELEMENTS OF MATRIX
+!| A55            |<--| ELEMENTS OF MATRIX
+!| A56            |<--| ELEMENTS OF MATRIX
+!| A66            |<--| ELEMENTS OF MATRIX
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_MT01CC => MT01CC

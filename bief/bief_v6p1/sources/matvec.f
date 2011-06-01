@@ -5,7 +5,7 @@
      &( OP , X , A , Y , C , MESH , LEGO )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS.
@@ -67,13 +67,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| STRUCTURE DE MATRICE.
-!| C              |-->| CONSTANTE DONNEE
-!| LEGO           |-->| SI PRESENT ET .FALSE. : PAS D'ASSEMBLAGE
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE
-!| OP             |-->| OPERATION A EFFECTUER
-!| X              |<--| VECTEUR IMAGE
-!| Y              |-->| VECTEUR OPERANDE
+!| A              |-->| MATRIX
+!| C              |-->| A GIVEN CONSTANT
+!| LEGO           |-->| IF PRESENT AND FALSE, NO ASSEMBLY
+!| MESH           |-->| MESH STRUCTURE
+!| OP             |-->| OPERATION TO BE DONE
+!| X              |<--| RESULTING VECTOR
+!| Y              |-->| A GIVEN VECTOR USED IN OPERATION OP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATVEC => MATVEC

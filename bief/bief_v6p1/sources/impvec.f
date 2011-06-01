@@ -5,7 +5,7 @@
      &(VEC,NOM,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRINTS OUT A VECTOR ON THE LISTING.
@@ -30,9 +30,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NOM            |-->| NOM DU VECTEUR OU COMMENTAIRE
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| VEC            |-->| VECTEUR A IMPRIMER.
+!| NOM            |-->| NAME OF VECTOR (OR SIMPLY A COMMENT).
+!| NPOIN          |-->| NUMBER OF POINTS.
+!| VEC            |-->| VECTOR TO BE PRINTED.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

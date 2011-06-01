@@ -5,7 +5,7 @@
      &( T,XM,XMUL,X,Y,Z,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MASS MATRIX FOR TETRAHEDRONS.
@@ -37,13 +37,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| T,XM           |<--| ELEMENTS DE LA MATRICE
-!| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| T              |<--| NON ASSEMBLED DIAGONAL
+!| XM             |<--| NON ASSEMBLED OFF-DIAGONAL TERMS
+!| XMUL           |-->| MULTIPLICATION FACTOR
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT01TT => MT01TT

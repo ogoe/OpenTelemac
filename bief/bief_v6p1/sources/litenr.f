@@ -8,7 +8,7 @@
      & NPOIN_PREV,NPLAN_PREV,WD)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS A TIME RECORD FROM A SELAFIN FILE.
@@ -35,37 +35,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALIRE          |-->| VARIABLES QU'IL FAUT LIRE (POUR LES AUTRES ON
-!|                |   | SAUTE L'ENREGISTREMENT CORRESPONDANT)
-!|                |   | LES VARIABLES CLANDESTINES SONT LUES
-!|                |   | SYSTEMATIQUEMENT.
-!| AT             |-->| TEMPS
-!| CLAND          |<--| VARIABLES CLANDESTI-NES
-!| HIST           |-->| TABLEAU DE VALEURS MISES DANS L'ENREGISTREMENT
-!|                |   | DU TEMPS.
-!| LISTIN         |-->| SI OUI, IMPRESSION D'INFORMATIONS SUR LISTING
-!| MAXVAR         |-->| NOMBRE MAXIMUM DE VARIABLES
-!| NHIST          |-->| NOMBRE DE VALEURS DANS LE TABLEAU HIST.
-!| NPLAN_PREV     |---|
-!| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| NPOIN_PREV     |---|
-!| NPRE           |-->| NUMERO DE CANAL DU FICHIER
-!| NVAR           |-->| NOMBRE DE VARIABLES NORMALES
-!| NVARCL         |-->| NOMBRE DE VARIABLES CLANDESTINES.
-!|                |   | NVAR + NVARCL FERA LE NOMBRE TOTAL.
-!| STD            |-->| FORMAT DU FICHIER
-!| TEXTLU         |-->| NOMS ET UNITES DES VARIABLES LUES DANS LE
-!|                |   | FICHIER ET VARIABLES CLANDEST.
-!| TEXTPR         |-->| NOMS ET UNITES DES VARIABLES DANS LE LOGICIEL
-!| TROUVE         |<--| INDIQUE (TROUVE(K)=1) LES VARIABLES TROUVEES
-!|                |   | DANS LE FICHIER.
-!|                |   | DE K =  1 A MAXVAR VARIABLES NORMALES
-!|                |   | DE K = MAXVAR+1 A MAXVAR+10 VARIABLES CLANDESTINES.
-!| VARCLA         |-->| TABLEAU OU L'ON RANGE LES VARIABLES
-!|                |   | CLANDESTINES.
-!| VARSOR         |<--| BLOC DES TABLEAUX CONTENANT LES VARIABLES
-!| W              |-->| TABLEAU DE TRAVAIL REEL, DE TAILLE NPOIN.
-!| WD             |---|
+!| ALIRE          |-->| INTEGERS, IF 1 VARIABLE TO BE READ 
+!|                |   | CLANDESTINE VARIABLES ARE SYSTEMATICALLY READ
+!| AT             |-->| TIME
+!| CLAND          |<--| CLANDESTINE VARIABLES
+!| HIST           |-->| ARRAY OF VALUES PUT IN THE RECORD OF TIME
+!| LISTIN         |-->| IF YES, PRINTS A LOG.
+!| MAXVAR         |-->| MAXIMUM NUMBER OF VARIABLES
+!| NHIST          |-->| NUMBER OF VALUES IN HIST.
+!| NPLAN_PREV     |-->| NUMBER OF PLANES IN SELAFIN FILE OF LOGICAL UNIT 
+!|                |   | NPRE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPOIN_PREV     |-->| NUMBER OF POINTS IN SELAFIN FILE OF LOGICAL UNIT 
+!|                |   | NPRE
+!| NPRE           |-->| LOGICAL UNIT OF PREVIOUS RESULTS FILE
+!| NVAR           |-->| NUMBER OF VARIABLES IN FILE
+!| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES.
+!|                |   | NVAR + NVARCL WILL BE THE TOTAL NUMBER.
+!| STD            |-->| FILE FORMAT
+!| TEXTLU         |-->| NAMES AND UNITS OF VARIABLES IN FILE
+!| TEXTPR         |-->| NAMES AND UNITS OF VARIABLES IN PROGRAM
+!| TROUVE         |<--| SAYS (TROUVE(K)=1) IF VARIABLES HAVE BEEN FOUND
+!|                |   | FROM K =  1 TO MAXVAR NORMAL VARIABLES 
+!|                |   | FROM K = MAXVAR+1 TO MAXVAR+10 CLANDESTINES VAR.
+!| VARCLA         |-->| BLOCK WHERE TO PUT THE CLANDESTINE VARIABLES
+!| VARSOR         |<--| BLOCK WHERE TO PUT THE VARIABLES
+!| W              |-->| REAL WORK ARRAY, OF SIZE NPOIN
+!| WD             |<--| OPTIONAL REAL WORK ARRAY, OF SIZE NPOIN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF

@@ -9,7 +9,7 @@
      &    NELEM,NELMAX,NPOIN,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRODUCT X = U B (BEWARE: ELEMENT BY ELEMENT).
@@ -51,31 +51,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| IKLE5          |---|
-!| IKLE6          |---|
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| X              |---|
-!| XA10           |---|
-!| XA11           |---|
-!| XA12           |---|
-!| XA13           |---|
-!| XA14           |---|
-!| XA15           |---|
-!| XA2            |---|
-!| XA3            |---|
-!| XA4            |---|
-!| XA5            |---|
-!| XA6            |---|
-!| XA7            |---|
-!| XA8            |---|
-!| XA9            |---|
+!| IKLE1          |-->| FIRST POINTS OF PRISMS
+!| IKLE2          |-->| SECOND POINTS OF PRISMS
+!| IKLE3          |-->| THIRD POINTS OF PRISMS
+!| IKLE4          |-->| FOUTH POINTS OF PRISMS
+!| IKLE5          |-->| FIFTH POINTS OF PRISMS
+!| IKLE6          |-->| SIXTH POINTS OF PRISMS
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| X              |<--| RESULTING VECTOR
+!| XA10           |-->| OFF-DIAGONAL TERM
+!| XA11           |-->| OFF-DIAGONAL TERM
+!| XA12           |-->| OFF-DIAGONAL TERM
+!| XA13           |-->| OFF-DIAGONAL TERM
+!| XA14           |-->| OFF-DIAGONAL TERM
+!| XA15           |-->| OFF-DIAGONAL TERM
+!| XA2            |-->| OFF-DIAGONAL TERM
+!| XA3            |-->| OFF-DIAGONAL TERM
+!| XA4            |-->| OFF-DIAGONAL TERM
+!| XA5            |-->| OFF-DIAGONAL TERM
+!| XA6            |-->| OFF-DIAGONAL TERM
+!| XA7            |-->| OFF-DIAGONAL TERM
+!| XA8            |-->| OFF-DIAGONAL TERM
+!| XA9            |-->| OFF-DIAGONAL TERM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

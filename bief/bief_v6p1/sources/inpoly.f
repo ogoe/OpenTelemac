@@ -5,7 +5,7 @@
      &( X , Y , XSOM , YSOM , NSOM )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INDICATES IF A POINT WITH COORDINATES X AND Y IS
@@ -55,10 +55,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NSOM           |---| : -->: NOMBRE DE SOMMETS
-!| X,Y            |---| :: COORDONNEES DU POINT.
-!| XSOM           |---| : -->: TABLEAU DES ABSCISSES DES SOMMETS DU POLYGONE
-!| YSOM           |---| : -->: TABLEAU DES ORDONNEES DES SOMMETS DU POLYGONE
+!| NSOM           |-->| NUMBER OF APICES OF POLYGON
+!| X              |-->| ABSCISSA OF POINT
+!| Y              |-->| ORDINATE OF POINT
+!| XSOM           |-->| ABSCISSAE OF POLYGON APICES
+!| YSOM           |-->| ORDINATES OF POLYGON APICES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -68,8 +69,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NSOM
-      DOUBLE PRECISION, INTENT(IN) :: X , Y
-      DOUBLE PRECISION, INTENT(IN) :: XSOM(NSOM) , YSOM(NSOM)
+      DOUBLE PRECISION, INTENT(IN) :: X,Y
+      DOUBLE PRECISION, INTENT(IN) :: XSOM(NSOM),YSOM(NSOM)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

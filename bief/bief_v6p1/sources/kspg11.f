@@ -5,7 +5,7 @@
      &(KX,KY,XEL,YEL,U,V,IKLE,NELEM,NELMAX,XMUL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES A VECTOR, USED BY THE METHOD:
@@ -48,12 +48,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE.
-!| KX,KY          |-->| COORDONNEES DU VECTEUR UNITAIRE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| XMUL           |-->| COEFICIENT MULTIPLICATEUR
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| KX             |-->| FIRST COMPONENT OF RESULTING VECTOR
+!| KY             |-->| SECOND COMPONENT OF RESULTING VECTOR
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| U              |-->| FIRST COMPONENT OF VELOCITY
+!| V              |-->| SECOND COMPONENT OF VELOCITY
+!| XMUL           |-->| MULTIPLICATION COEFICIENT 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

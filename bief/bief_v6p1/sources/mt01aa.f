@@ -8,7 +8,7 @@
      &  XMUL,SURFAC,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MASS MATRIX FOR P1 TRIANGLES.
@@ -43,16 +43,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A22            |---|
-!| A23            |---|
-!| A33            |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| A12            |<--| ELEMENTS OF MATRIX
+!| A13            |<--| ELEMENTS OF MATRIX
+!| A22            |<--| ELEMENTS OF MATRIX
+!| A23            |<--| ELEMENTS OF MATRIX
+!| A33            |<--| ELEMENTS OF MATRIX
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT01AA => MT01AA

@@ -5,7 +5,7 @@
      &( XMIN , IMIN , X , NPOIN )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    LOOKS FOR THE LOWEST VALUE IN ARRAY X
@@ -29,10 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IMIN           |<--| INDICE DU MINIMUM
-!| NPOIN          |-->| DIMENSION DU TABLEAU
-!| X              |-->| TABLEAU DES VALEURS
-!| XMIN           |<--| MINIMUM TROUVE
+!| IMIN           |<--| INDEX OF MINIMUM
+!| NPOIN          |-->| DIMENSION OF X
+!| X              |-->| ARRAY WITH VALUES TO LOOK AT
+!| XMIN           |<--| THE MINIMUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

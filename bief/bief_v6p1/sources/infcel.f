@@ -6,7 +6,7 @@
      &   NVMAX , NELEM , NELMAX , NSEG ,CMI ,JMI ,AIRST)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES NUBO, VNOIN, AIRS, JMI, CMI, AIRST.
@@ -29,23 +29,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRST          |<--| AIRES DES SOUS-TRIANGLES D'UNE CELLULE
-!| CMI            |<--| COORDONNEES DES POINTS MILIEUX D'INTERFACE
-!| IKLE           |-->| TABLE DE CONNECTIVITE.
-!| JMI            |<--| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE
-!|                |   | POINT MILIEU D'UNE INTERFACE
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |---|
-!| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE.
-!| NSEG           |-->| NOMBRE DE SEGMENTS DU MAILLAGE.
-!| NUBO           |<--| NUMEROS DES DEUX SOMMETS D'UNE ARETE
-!| NVMAX          |-->| NOMBRE MAXIMUM DE VOISINS D'UN POINT
-!|                |   | (MXPTVS DANS TELEMAC)
-!| VNOIN          |<--| NORMALE A L'INTERFACE
-!|                |   | (2 PREMIERES COMPOSANTES) ET
-!|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
-!| XX             |---|
-!| YY             |---|
+!| AIRST          |<--| AREAS OF CELLS
+!| CMI            |<--| COORDINATES OF MID-INTERFACE POINTS
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| JMI            |<--| NUMBER OF TRIANGLE TO WHICH BELONGS THE 
+!|                |   | MID-INTERFACE POINT.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| NUBO           |<--| FIRST AND SECOND POINT OF SEGMENTS (GLOSEG ?)
+!| NVMAX          |-->| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT.
+!|                |   | (MXPTVS IN THE REST OF TELEMAC)
+!| VNOIN          |<--| NORMAL TO THE INTERFACE
+!|                |   | (2 FIRST COMPONENTS) AND
+!|                |   | SEGMENT LENGTH (3RD COMPONENT)
+!| XX             |-->| ABSCISSAE OF POINTS IN THE MESH
+!| YY             |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT  NONE

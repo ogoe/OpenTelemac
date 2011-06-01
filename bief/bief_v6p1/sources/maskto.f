@@ -6,7 +6,7 @@
      & NELEM,NPOIN,IELM,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLED AFTER MASKEL HAS BEEN FILLED IN.
@@ -39,19 +39,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELTSEG         |---|
-!| IELM           |-->| TYPE D'ELEMENTS.
-!| IFABOR         |-->| NUMERO DES ELEMENTS VOISINS SANS MASQUE.
-!| IFAMAS         |<--| NUMERO DES ELEMENTS VOISINS AVEC MASQUE.
-!| IKLE           |-->| TABLE DE CONNECTIVITE.
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| MASKPT         |<--| TABLEAU DE MASQUAGE DES POINTS
-!|                |   | =1. : NORMAL   =0. : POINT MASQUE.
-!| MESH           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NPOIN          |-->| NOMBRE DE POINTS.
-!| NSEG           |---|
+!| ELTSEG         |-->| SEGMENTS GIVEN PER ELEMENT
+!| IELM           |-->| TYPE OF ELEMENT.
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IFAMAS         |<--| LIKE IFABOR BUT WITH MASK
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MESH           |-->| MESH STRUCTURE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MASKTO => MASKTO

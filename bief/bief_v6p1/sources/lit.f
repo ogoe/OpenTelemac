@@ -5,7 +5,7 @@
      &( X , W , I , C , NVAL , TYPE , CANAL , STD2 , ISTAT )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS VALUES ACCORDING TO VARIOUS STANDARDS.
@@ -32,20 +32,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |<--| CHAINE DE CARACTERES A LIRE
-!| CANAL          |-->| UNITE LOGIQUE POUR L'ECRITURE
-!| I              |<--| TABLEAU A LIRE S'IL EST ENTIER
-!| ISTAT          |<--| ENTIER EN CAS D'ERREUR
-!| NVAL           |-->| NOMBRE DE VALEURS DANS LE TABLEAU
-!|                |   | OU NOMBRE DE CARACTERES DE LA CHAINE
-!| STD2           |---|
-!| TYPE           |-->| TYPE DES DONNEES A LIRE
-!| W              |<--| TABLEAU DE TRAVAIL (UTILISE EN CAS DE
-!|                |   | CONVERSION DE SIMPLE EN DOUBLE PRECISION)
-!| X              |<--| TABLEAU A LIRE S'IL EST REEL
+!| C              |<--| CHARACTER STRING TO BE READ
+!| CANAL          |-->| LOGICAL UNIT FOR READING
+!| I              |-->| INTEGER ARRAY TO BE READ
+!| ISTAT          |<--| ERROR NUMBER
+!| NVAL           |-->| NUMBER OF VALUES (INTEGER, CHARACTER, ETC.)
+!|                |   | TO BE READ
+!| STD2           |-->| INPUT STANDARD : STD , IBM OU I3E, ETC.
+!| TYPE           |-->| TYPE OF DATA : 'I' , 'CH' , 'R4' , 'R8'
+!| W              |<--| REAL WORK ARRAY (IN CASE OF
+!|                |   | CONVERSION FROM SIMPLE TO DOUBLE PRECISION)
+!| X              |-->| DOUBLE PRECISION ARRAY TO BE READ
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+      
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !

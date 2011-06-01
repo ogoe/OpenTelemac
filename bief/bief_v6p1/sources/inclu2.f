@@ -5,7 +5,7 @@
      &( C1 , C2 )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CHECKS IF A WORD IS COMPRISED IN A LIST OF WORDS.
@@ -29,9 +29,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C1             |-->| LISTE DE MOTS SEPARES PAR AUTRE CHOSE QUE
-!|                |   | A-Z ET 0-9
-!| C2             |-->| MOT RECHERCHE DANS C1
+!| C1             |-->| LIST OF WORDS SEPARATED BY A CHARACTER ELSE THAN 
+!|                |   | A-Z AND 0-9
+!| C2             |-->| WORD LOOKED FOR IN C1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

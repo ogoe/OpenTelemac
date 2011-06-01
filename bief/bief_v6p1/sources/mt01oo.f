@@ -5,7 +5,7 @@
      &(A11,A12,A22,XMUL,LGSEG,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MASS MATRIX FOR P1 SEGMENTS.
@@ -40,14 +40,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11            |---|
-!| A12            |---|
-!| A22            |---|
-!| LGSEG          |-->| LONGUEUR DES SEGMENTS.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| A12            |<--| ELEMENTS OF MATRIX
+!| A22            |<--| ELEMENTS OF MATRIX
+!| LGSEG          |-->| LENGTH OF SEGMENTS.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT01OO => MT01OO

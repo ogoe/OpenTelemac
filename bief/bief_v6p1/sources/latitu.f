@@ -5,7 +5,7 @@
      &(COSLAT,SINLAT,LAMBD0,  Y,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ARRAYS THAT DEPEND ON THE LATITUDE
@@ -29,11 +29,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COSLAT         |<--| COS(LAMBDA)
-!| LAMBD0         |-->| LATITUDE DU POINT ORIGINE
-!| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| SINLAT         |<--| SIN(LAMBDA)
-!| Y              |-->| COORDONNEES DES POINTS DU MAILLAGE
+!| COSLAT         |<--| COSINUS OF LAMBDA0
+!| LAMBD0         |-->| LATITUDE OF ORIGIN POINT 
+!| NPOIN          |-->| NUMBER OF POINTS
+!| SINLAT         |<--| SINUS OF LAMBDA0
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

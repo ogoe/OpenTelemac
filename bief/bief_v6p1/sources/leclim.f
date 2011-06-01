@@ -8,7 +8,7 @@
      & NPTFR2)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE BOUNDARY CONDITIONS FILE AND
@@ -32,34 +32,30 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATBOR,BTBOR    |<--| COEFFICIENTS D'ECHANGE THERMIQUE.
-!| BOUNDARY_COLOUR|<--| COULEUR DU POINT DE BORD
-!|                |   | (PAR DEFAUT SON NUMERO)
-!| CHBORD         |<--| COEFFICIENT DE FROTTEMENT AU BORD
-!| HBOR           |<--| CONDITIONS AUX LIMITES SUR H
-!| KADH           |-->| TYPE DE CONDITION LIMITE DE PAROI (ADHERENCE)
-!| KENT           |-->| TYPE DE CONDITION LIMITE D'ENTREE.
-!| KENTU          |-->| TYPE DE CONDITION LIMITE : VITESSES IMPOSEES
-!| KINC           |-->| TYPE DE CONDITION LIMITE D'ONDE INCIDENTE
-!| KLOG           |-->| TYPE DE CONDITION LIMITE DE PAROI (PAROI)
-!| KSORT          |-->| TYPE DE CONDITION LIMITE DE SORTIE LIBRE
-!| LIHBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
-!|                |   | POUR LES POINTS DE BORD.
-!| LITBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN TEMPERA-
-!|                |   | TURE POUR LES POINTS DE BORD.
-!| LIUBOR,LIVBOR  |<--| TYPES DE CONDITIONS AUX LIMITES POUR LES
-!|                |   | POINTS DE BORD.
-!| MESH           |---|
-!| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NPTFR2         |---|
-!| NUMLIQ         |---|
-!| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
-!| TBOR           |<--| TRACEUR AUX BORDS
-!| TRAC           |-->| INDICATEUR DE TRACEUR .
-!| UBOR           |<--| CONDITIONS AUX LIMITES SUR U
-!| VBOR           |<--| CONDITIONS AUX LIMITES SUR V
-!|                |   | (COEFFICIENTS DE LA LOI LOG)
+!| ATBOR,BTBOR    |<--| THERMAL EXCHANGE COEFFICIENTS.
+!| BOUNDARY_COLOUR|<--| COLOUR OF BOUNDARY POINT (DEFAULT: ITS RANK)
+!| CHBORD         |<--| FRICTION COEFFICIENT AT BOUNDARY
+!| HBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON DEPTH
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LITBOR         |-->| PHYSICAL BOUNDARY CONDITIONS FOR TRACERS
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON V
+!| MESH           |-->| MESH STRUCTURE
+!| NLIM           |-->| LOGICAL UNIT OF BOUNDARY CONDITIONS FILE
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NPTFR2         |-->| NUMBER OF QUADRATIC BOUNDARY POINTS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| STDGEO         |-->| STANDARD OF GEOMETRY FILE.
+!| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
+!| TRAC           |-->| IF YES, THERE ARE TRACERS
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_LECLIM => LECLIM

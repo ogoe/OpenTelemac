@@ -6,7 +6,7 @@
      & LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE DATA STRUCTURE FOR BIEF.
@@ -51,20 +51,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EQUA           |-->| IDENTIFICATION DU CODE OU DES EQUATIONS
-!| IELMX          |-->| TYPE DE L'ELEMENT LE PLUS COMPLEXE UTILISE
-!| IT1            |---|
-!| IT2            |---|
-!| IT3            |---|
-!| KLOG           |-->| CONVENTION POUR LA CONDITION LIMITE DE PAROI
-!| LAMBD0         |-->| LATITUDE ORIGINE (COORDONNEES SPHERIQUES)
-!| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
-!| LVMAC          |-->| LONGUEUR DU VECTEUR SI MACHINE VECTORIELLE
-!| MESH           |-->| BLOCS DES TABLEAUX DU MAILLAGE
-!| OPTASS         |-->| OPTION D'ASSEMBLAGE.
-!| PRODUC         |-->| OPTION DU PRODUIT MATRICE X VECTEUR
-!| SPHERI         |-->| LOGIQUE, SI OUI : COORDONNEES SPHERIQUES
-!| T2             |---|
+!| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
+!| IELMX          |-->| THE MORE COMPLEX ELEMENT USED (FOR MEMORY)
+!| IT1            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| IT2            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| IT3            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| LAMBD0         |-->| LATITUDE OF ORIGIN POINT (SPHERICAL COORDINATES)
+!| LIHBOR         |-->| TYPES OF BOUNDARY CONDITIONS ON DEPTH
+!| LVMAC          |-->| VECTOR LENGTH (IF VECTOR MACHINE)
+!| MESH           |-->| MESH STRUCTURE
+!| OPTASS         |-->| OPTION FOR MATRIX STORAGE.
+!| PRODUC         |-->| OPTION FOR MATRIX x VECTOR PRODUCT.
+!| SPHERI         |-->| LOGICAL, IF YES : SPHERICAL COORDINATES.
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_INBIEF => INBIEF

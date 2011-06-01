@@ -5,7 +5,7 @@
      &( OP , X , A , Y , C , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS.
@@ -48,12 +48,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |---|
-!| C              |-->| CONSTANTE DONNEE
-!| MESH           |---|
-!| OP             |-->| OPERATION A EFFECTUER
-!| X              |<--| VECTEUR IMAGE
-!| Y              |-->| VECTEUR OPERANDE
+!| A              |-->| MATRIX OR BLOCK OF MATRICES
+!| C              |-->| A GIVEN CONSTANT
+!| MESH           |-->| MESH STRUCTURE
+!| OP             |-->| THE OPERATION TO BE DONE
+!| X              |<--| RESULTING VECTOR OR BLOCK OF VECTORS
+!| Y              |-->| GIVEN VECTOR OR BLOCK OF VECTORS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATRBL => MATRBL

@@ -37,10 +37,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |---|
-!| INDX           |---|
-!| N              |---|
-!| NP             |---|
+!| A              |-->| MATRIX OF THE SYSTEM
+!| INDX           |-->| ADDRESS IN RIGHT-HAND SIDE
+!| N              |-->| SIZE OF B
+!| NP             |-->| RANK OF MATRIX A
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

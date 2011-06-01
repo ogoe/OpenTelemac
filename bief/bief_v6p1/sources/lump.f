@@ -5,14 +5,14 @@
      &(DIAG,A,MESH,XMUL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SUMS UP THE TERMS OF MATRIX A, BY LINE.
 !+
 !+            MULTIPLIES THE RESULT BY XMUL.
 !+
-!+            SIMPLY DOES DIAG = A X (VECTOR EQUAL TO XMUL).
+!+            TO DO SO SIMPLY DOES DIAG = A X (X VECTOR EQUAL TO XMUL).
 !
 !history  J-M HERVOUET (LNH)
 !+        08/12/94
@@ -32,10 +32,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE
-!| DIAG           |<--| VECTEUR RESULTAT.
-!| MESH           |-->| BLOC DES TABLEAUX ENTIERS DU MAILLAGE.
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR
+!| A              |-->| MATRIX
+!| DIAG           |<--| RESULTING VECTOR
+!| MESH           |-->| MESH STRUCTURE
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_LUMP => LUMP

@@ -8,7 +8,7 @@
      & GLOSEG,SIZGLO,SIZXA,NDP,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS.
@@ -56,48 +56,44 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DA             |-->| DIAGONALE DE LA MATRICE.
-!| DIMIKM         |-->| PREMIERE DIMENSION DE IKLEM1.
-!| GLOSEG         |---|
-!| IELM1          |-->| TYPE D'ELEMENT (LIGNES DE LA MATRICE).
-!| IELM2          |-->| TYPE D'ELEMENT (COLONNES DE LA MATRICE).
-!| IELMX          |-->| TYPE D'ELEMENT DU RESULTAT
-!|                |   | EGAL A IELM1 OU IELM2 SUIVANT L'OPERATION.
-!| IKLE           |-->| CORRESPONDANCE NUMEROTATIONS LOCALE ET GLOBALE
-!| IKLEM1         |-->| TABLEAU DE CONNECTIVITE UTILISE POUR LE
-!|                |   | STOCKAGE DE TYPE 2.
-!| LEGO           |-->| = .TRUE. W1,2,... SONT ASSEMBLES SUR X
-!|                |   | =.FALSE. W1,2,... SONT LAISSES TELS QUELS.
-!| LIMVOI         |-->| TABLEAU UTILISE POUR LE STOCKAGE 2.
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION.
-!| MXPTVS         |-->| PREMIERE DIMENSION DE LIMVOI.
-!|                |   | NOMBRE MAXIMUM DE VOISINS D'UN POINT
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NPMAX          |-->| NOMBRE MAXIMUM DE POINTS DU MAILLAGE.
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPT            |-->| DIMENSION DE LA DIAGONALE
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD.
-!| OP             |-->| OPERATION A EFFECTUER
-!| P              |-->| TYPE DE PRODUIT MATRICE X VECTEUR.
-!| S              |-->| TYPE DE STOCKAGE.
-!| SIZGLO         |---|
+!| C              |-->| A GIVEN CONSTANT
+!| DA             |-->| MATRIX DIAGONAL
+!| DIMIKM         |-->| FIRST DIMENSION OF IKLEM1.
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| IELM1          |-->| TYPE OF ELEMENT FOR LINES
+!| IELM2          |-->| TYPE OF ELEMENT FOR COLUMNS
+!| IELMX          |-->| TYPE OF ELEMENT OF RESULT
+!|                |   | CAN BE IELM1 OR IELM2 DEPENDING ON OP
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| IKLEM1         |-->| CONNECTIVITY TABLE USED FOR MATRIX-VECTOR 2
+!| LEGO           |-->| = .TRUE. W1,2,... ARE ASSEMBLED ON X
+!|                |   | =.FALSE. W1,2,... ARE NOT ASSEMBLED
+!| LIMVOI         |-->| ARRAY USED FOR MATRIX-VECTOR 2
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| MXPTVS         |-->| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS IN THE MESH
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPT            |-->| DIMENSION OF DIAGONAL
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| OP             |-->| OPERATION TO BE DONE
+!| P              |-->| TYPE OF MATRIX X VECTOR PRODUCT.
+!| S              |-->| TYPE OF STORAGE.
+!| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| SIZXA          |-->| FIRST DIMENSION OF ARRAY XA
-!| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
-!|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE
-!|                |   | TYPDIA = 'I' : DIAGONALE IDENTITE.
-!|                |   | TYPDIA = '0' : DIAGONALE NULLE.
-!| TYPEXT         |-->| TYPE DES TERMES EXTRADIAGONAUX
-!|                |   | TYPEXT = 'Q' : QUELCONQUES.
-!|                |   | TYPEXT = 'S' : SYMETRIQUES.
-!|                |   | TYPEXT = '0' : NULS.
-!| W              |<--| TABLEAUX DE TRAVAIL QUI CONTIENNENT UNE PARTIE
-!|                |   | DU RESULTAT SI L'ON CHOISIT LE MODE NON
-!|                |   | ASSEMBLE ( LEGO = .FALSE. )
-!| X              |<--| VECTEUR IMAGE
-!| XA             |-->| TERMES EXTRA-DIAGONAUX DE LA MATRICE
-!| Y              |-->| VECTEUR OPERANDE
+!| TYPDIA         |-->| TYPE OF DIAGONAL:
+!|                |   | TYPDIA = 'Q' : ANY VALUE
+!|                |   | TYPDIA = 'I' : IDENTITY
+!|                |   | TYPDIA = '0' : ZERO
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
+!| W              |<--| WORK ARRAY WITH NON ASSEMBLED RESULT 
+!| X              |<--| RESULTING VECTOR
+!| XA             |-->| OFF-DIAGONAL TERMS IN THE MATRIX A
+!| Y              |-->| A GIVEN VECTOR USED IN OPERATION OP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATVCT => MATVCT

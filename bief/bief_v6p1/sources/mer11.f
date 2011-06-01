@@ -5,7 +5,7 @@
      &(X, XA1,XA2,XA3,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,NPOIN,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRODUCT X = U B (BEWARE: ELEMENT BY ELEMENT).
@@ -47,16 +47,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| X              |<--| VECTEUR RESULTAT.
-!| XA2            |---|
-!| XA3            |---|
+!| IKLE1          |-->| FIRST POINTS OF TRIANGLES
+!| IKLE2          |-->| SECOND POINTS OF TRIANGLES
+!| IKLE3          |-->| THIRD POINTS OF TRIANGLES
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| X              |<--| RESULTING VECTOR
+!| XA1            |-->| OFF-DIAGONAL TERM
+!| XA2            |-->| OFF-DIAGONAL TERM
+!| XA3            |-->| OFF-DIAGONAL TERM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

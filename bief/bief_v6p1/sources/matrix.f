@@ -5,7 +5,7 @@
      &(M,OP,FORMUL,IELM1,IELM2,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN MATRICES.
@@ -65,18 +65,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE
-!| FORMUL         |-->| FORMULE DECRIVANT LA MATRICE
-!| IELM1          |-->| TYPE D'ELEMENT POUR LES LIGNES
-!| IELM2          |-->| TYPE D'ELEMENT POUR LES COLONNES
-!| M              |<->| MATRICE A REMPLIR OU MODIFIER
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| OP             |-->| VOIR PLUS HAUT.
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR U DANS LA FORMULE
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR DU RESULTAT
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
+!| G              |-->| FUNCTION USED IN THE FORMULA
+!| H              |-->| FUNCTION USED IN THE FORMULA
+!| IELM1          |-->| TYPE OF ELEMENT FOR LINES
+!| IELM2          |-->| TYPE OF ELEMENT FOR COLUMNS
+!| M              |<->| MATRIX TO BE BUILT OR MODIFIED
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| OP             |-->| OPERATION TO BE DONE. IF '=' THEN M=... 
+!|                |   |                       IF '+' THEN M=M+
+!| U              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)
+!| V              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)
+!| W              |-->| FUNCTION USED IN THE FORMULA (COMPONENT OF VECTOR)
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MATRIX => MATRIX

@@ -5,7 +5,7 @@
      &(A,N,NP,INDX,B)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SET OF N LINEAR EQUATIONS A \ DELTA X = B
@@ -38,11 +38,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |---|
-!| B              |---|
-!| INDX           |---|
-!| N              |---|
-!| NP             |---|
+!| A              |-->| MATRIX OF THE SYSTEM
+!| B              |<->| RIGHT-HAND SIDE, THEN SOLUTION
+!| INDX           |-->| ADDRESS IN RIGHT-HAND SIDE
+!| N              |-->| SIZE OF B
+!| NP             |-->| RANK OF MATRIX A
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
