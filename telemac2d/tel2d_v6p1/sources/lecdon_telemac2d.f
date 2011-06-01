@@ -258,6 +258,12 @@
           T2DSEO=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DMIG') THEN
           T2DMIG=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DHAR') THEN
+          T2DHAR=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DTID') THEN
+          T2DTID=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBDD') THEN
+          T2DBDD=I
         ENDIF
       ENDDO
 !
@@ -279,13 +285,15 @@
          ENDIF
 !
          NIT              = MOTINT( ADRESS(1, 3) )
-         ICONVC           = MOTINT( ADRESS(1, 4) )
+!        FREE KEYWORD
+!        ??????           = MOTINT( ADRESS(1, 4) )
          IF(DIMEN(1,5).NE.0) THEN
            DO 20 K=1,DIMEN(1,5)
             ICONVF(K)     = MOTINT( ADRESS(1,5) + K-1 )
 20         CONTINUE
          ENDIF
-         ICONVI           = MOTINT( ADRESS(1, 6) )
+!        FREE KEYWORD
+!        ??????           = MOTINT( ADRESS(1, 6) )
          ITURB            = MOTINT( ADRESS(1, 7) )
          KFROT            = MOTINT( ADRESS(1, 8) )
          SLVTRA%NITMAX    = MOTINT( ADRESS(1, 9) )
@@ -441,6 +449,8 @@
          PERCOU_WAC = MOTINT(ADRESS(1,73))
 !        TREATMENT OF FLUXES AT THE BOUNDARIES
          DIRFLU     = MOTINT(ADRESS(1,74))
+!        OPTION FOR TIDAL BOUNDARY CONDITIONS
+         TIDALTYPE  = MOTINT(ADRESS(1,75))
 !
 ! REAL KEYWORDS:
 !
@@ -822,6 +832,12 @@
          T2D_FILES(T2DMIG)%NAME=MOTCAR( ADRESS(4,81) )
 !        82 : TOMAWAC STEERING FILE (READ BY PERL SCRIPTS)
 !
+!        HARMONIC CONSTANTS FILE
+         T2D_FILES(T2DHAR)%NAME=MOTCAR( ADRESS(4,83) )
+!        TIDAL MODEL FILE
+         T2D_FILES(T2DTID)%NAME=MOTCAR( ADRESS(4,84) )
+!        TIDE DATA BASE FILE
+         T2D_FILES(T2DBDD)%NAME=MOTCAR( ADRESS(4,85) )
       IF(LISTIN) THEN
          IF(LNG.EQ.1) WRITE(LU,1000)
          IF(LNG.EQ.2) WRITE(LU,1001)

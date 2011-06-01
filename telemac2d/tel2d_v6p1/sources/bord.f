@@ -71,8 +71,8 @@
 !
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_BORD => BORD
-      USE DECLARATIONS_TELEMAC2D, ONLY : STA_DIS_CURVES,PTS_CURVES,QZ,
-     &                                   FLUX_BOUNDARIES,MAXFRO
+      USE DECLARATIONS_TELEMAC2D, ONLY: STA_DIS_CURVES,PTS_CURVES,QZ,
+     &                                  FLUX_BOUNDARIES,MAXFRO,TIDALTYPE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -82,8 +82,7 @@
 !
       INTEGER, INTENT(IN) :: NPOIN,NPTFR,NDEBIT,NCOTE,NVITES,NTRACE
       INTEGER, INTENT(IN) :: KENT,KENTU,NFRLIQ,NTRAC,NPTFR2
-      INTEGER, INTENT(IN) :: PROVEL(*)
-      INTEGER, INTENT(IN) :: LIHBOR(NPTFR),LIUBOR(NPTFR2)
+      INTEGER, INTENT(IN) :: PROVEL(*),LIHBOR(NPTFR),LIUBOR(NPTFR2)
       INTEGER, INTENT(IN) :: NUMLIQ(NPTFR),NBOR(NPTFR2)
       DOUBLE PRECISION, INTENT(IN) :: TEMPS
       DOUBLE PRECISION, INTENT(IN) :: ZF(NPOIN)
@@ -141,6 +140,8 @@
           YADEB(K)=0
         ENDDO
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
 !  LOOP ON ALL BOUNDARY POINTS
 !
@@ -247,6 +248,14 @@
       ENDIF
 !
 5     CONTINUE
+!
+!-----------------------------------------------------------------------
+!
+!     AUTOMATIC TIDAL BOUNDARY CONDITIONS
+!
+      IF(TIDALTYPE.GE.1) CALL TIDAL_MODEL_T2D()
+!
+!-----------------------------------------------------------------------
 !
 !  QUADRATIC VELOCITIES
 !

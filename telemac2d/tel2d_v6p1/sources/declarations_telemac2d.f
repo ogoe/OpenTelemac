@@ -439,6 +439,10 @@
 !
       TYPE(BIEF_OBJ),TARGET :: FLUX_OLD
 !
+!     FOR TIDAL BOUNDARY CONDITIONS
+!
+      TYPE(BIEF_OBJ),TARGET :: HBTIDE,UBTIDE,VBTIDE,NUMTIDE
+!
 !-----------------------------------------------------------------------
 !
 !       2) MATRICES
@@ -622,50 +626,69 @@
 !brief FRICTION DATA FILE NUMBER
 ! fichier de donnees pour le frottement
       INTEGER T2DCOF
-!brief
 !
-      INTEGER T2DDL1,T2DDL2,T2DDL3,T2DDL4,T2DDL5,T2DDL6,T2DDL7,T2DDL8,
-     & T2DDL9,T2DL10,T2DL11
-!brief STAGE-DISCHARGE CURVES FILE NUMBER
-! fichier des courbes de tarage
+!     DELWAQ FILES NUMBERS
+!
+      INTEGER T2DDL1,T2DDL2,T2DDL3,T2DDL4,T2DDL5,T2DDL6,T2DDL7,T2DDL8
+      INTEGER T2DDL9,T2DL10,T2DL11
+!
+!     STAGE-DISCHARGE CURVES FILE NUMBER
+! 
       INTEGER T2DMAB
-!brief SOURCES FILE NUMBER
-! fichier des sources
-      INTEGER T2DVEF
-!brief SECTIONS INPUT FILE NUMBER
-! fichier des sections de controle
-      INTEGER T2DSEC
-!brief SECTIONS OUTPUT FILE NUMBER
-! fichier de sortie des sections de controle
-      INTEGER T2DSEO
-!brief MIGRHYCAR STEERING FILE NUMBER
-! fichier de commandes migrhycar
-      INTEGER T2DMIG
-!brief GRAPHIC PRINTOUT PERIOD
-! periode pour les sorties graphiques
-      INTEGER LEOPRD
-!brief LISTING PRINTOUT PERIOD
-! periode de sortie listing
-      INTEGER LISPRD
-!brief NUMBER OF TIME STEPS
-! nombre de pas de temps
-      INTEGER NIT
-!brief
 !
-      INTEGER ICONVC
-!brief TYPE OF ADVECTION
-! forme de la convection (1:u et v, 2:h, 3:traceur, 4:k et epsilon)
+!     SOURCES FILE NUMBER
+! 
+      INTEGER T2DVEF
+!
+!     SECTIONS INPUT FILE NUMBER
+! 
+      INTEGER T2DSEC
+!
+!     SECTIONS OUTPUT FILE NUMBER
+! 
+      INTEGER T2DSEO
+!
+!     MIGRHYCAR STEERING FILE NUMBER
+! 
+      INTEGER T2DMIG
+!
+!     HARMONIC CONSTANTS FILE NUMBER
+! 
+      INTEGER T2DHAR
+!
+!     TIDAL MODEL FILE NUMBER
+! 
+      INTEGER T2DTID
+!
+!     TIDAL MODEL DATA BASE FILE NUMBER
+! 
+      INTEGER T2DBDD
+!
+!     GRAPHIC PRINTOUT PERIOD
+! 
+      INTEGER LEOPRD
+!
+!     LISTING PRINTOUT PERIOD
+! 
+      INTEGER LISPRD
+!
+!     NUMBER OF TIME STEPS
+! 
+      INTEGER NIT
+!
+!     TYPE OF ADVECTION (1:u and v, 2:h, 3:tracers, 4:k and epsilon)
+!
       INTEGER ICONVF(4)
-!brief INTERPOLATION
-! interpolation
-      INTEGER ICONVI
-!brief TURBULENCE MODEL
-! modele de turbulence
+!
+!     TURBULENCE MODEL
+! 
       INTEGER ITURB
-!brief LAW OF BOTTOM FRICTION
-! loi de frottement sur le fond
+!
+!     LAW OF BOTTOM FRICTION
+! 
       INTEGER KFROT
-!brief NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES
+!
+!     NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES
 !
       INTEGER NSOUI
 !brief NOT USED (PROPAGATION OPTION)
@@ -890,6 +913,10 @@
 !     TREATMENT OF FLUXES At THE BOUNDARIES
 !
       INTEGER DIRFLU
+!
+!     OPTION FOR TIDAL BOUNDARY CONDITIONS
+!
+      INTEGER TIDALTYPE
 !
 !-----------------------------------------------------------------------
 !
