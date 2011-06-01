@@ -258,12 +258,13 @@ These coefficients are applied respectively to
 3:  
 4:  
 5: On h only (mass conservative scheme without sub-iterations) 
-6: PSI scheme (explicit with stability criterion)' 
-NOM = 'INTERPOLATION' 
-NOM1 = 'INTERPOLATION' 
+6: PSI scheme (explicit with stability criterion)'
+ 
+NOM = 'free integer 6' 
+NOM1 = 'free integer 6' 
 TYPE = ENTIER 
 INDEX = 6 
-MNEMO = 'ICONVI' 
+MNEMO = '??????' 
 TAILLE = 0 
 DEFAUT = 1 
 DEFAUT1 = 1 
@@ -273,10 +274,8 @@ COMPORT =
 'Foreground ("PARAMETRES NUMERIQUES*GENERAL") 
 IS VALEUR (blue)' 
 NIVEAU = -13 
-AIDE = 'Interpolation dans la methode des caracteristiques 
-Non active pour l''instant' 
-AIDE1 = 'Interpolation in the method of characteristics 
-Not yet implemented' 
+AIDE = ' ' 
+AIDE1 = ' ' 
  
 NOM = 'PRECONDITIONNEMENT' 
 NOM1 = 'PRECONDITIONING' 
@@ -4773,7 +4772,65 @@ mais le flux est correct'
 AIDE1= 'Used so far only with the SUPG, PSI and N schemes.
 With option 2, Dirichlet prescribed values are not obeyed,
 but the fluxes are correct'
- 
+
+NOM = 'OPTION POUR LES CONDITIONS AUX LIMITES DE MAREE'
+NOM1 = 'OPTION FOR TIDAL BOUNDARY CONDITIONS'
+TYPE = INTEGER
+INDEX = 75
+MNEMO = 'TIDALTYPE'
+TAILLE = 0
+DEFAUT = 0 
+DEFAUT1= 0 
+CHOIX='1="Priorite aux valeurs imposees"';'2="Priorite aux flux"'
+CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = ' '
+AIDE1= ' ' 
+
+NOM = 'FICHIER DES CONSTANTES HARMONIQUES' 
+NOM1 = 'HARMONIC CONSTANTS FILE' 
+TYPE = CARACTERE 
+INDEX = 83 
+MNEMO = 'T2D_FILES(T2DHAR)' 
+SUBMIT = 'NHAR-READWRITE-13;T2DHAR;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Constantes harmoniques extraites du fichier du modele de maree' 
+AIDE1 = 'Harmonic constants extracted from the tidalmodel file' 
+
+NOM = 'FICHIER DU MODELE DE MAREE' 
+NOM1 = 'TIDAL MODEL FILE' 
+TYPE = CARACTERE 
+INDEX = 84 
+MNEMO = 'T2D_FILES(T2DTID)' 
+SUBMIT = 'NTID-READ-14;T2DTID;FACUL;BIN;LIT;SELAFIN' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Constantes harmoniques extraites du fichier du modele de maree' 
+AIDE1 = 'Harmonic constants extracted from the tidalmodel file' 
+
+NOM = 'BASE DE DONNEES DE MAREE' 
+NOM1 = 'TIDE DATA BASE' 
+TYPE = CARACTERE 
+INDEX = 85 
+MNEMO = 'T2D_FILES(T2DBDD)' 
+SUBMIT = 'NBDD-READ-15;T2DBDD;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Base de donnees tiree du fichier du modele de maree' 
+AIDE1 = 'Tide data base extracted from the tidal model file' 
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
@@ -4782,7 +4839,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 33 
+TAILLE = 36 
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -4815,7 +4872,10 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DES SOURCES'; 
          'FICHIER DES SECTIONS DE CONTROLE'; 
          'FICHIER DE SORTIE DES SECTIONS DE CONTROLE'; 
-         'FICHIER DE COMMANDES MIGRHYCAR' 
+         'FICHIER DE COMMANDES MIGRHYCAR';
+         'FICHIER DES CONSTANTES HARMONIQUES';
+         'FICHIER DU MODELE DE MAREE';
+         'BASE DE DONNEES DE MAREE' 
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -4848,7 +4908,10 @@ DEFAUT1 ='STEERING FILE';
          'SOURCES FILE'; 
          'SECTIONS INPUT FILE'; 
          'SECTIONS OUTPUT FILE'; 
-         'MIGRHYCAR STEERING FILE' 
+         'MIGRHYCAR STEERING FILE';
+         'HARMONIC CONSTANTS FILE';
+         'TIDAL MODEL FILE';
+         'TIDE DATA BASE' 
 RUBRIQUE  = 'FICHIERS' 
 RUBRIQUE1 = 'FILES' 
 NIVEAU = 1 
