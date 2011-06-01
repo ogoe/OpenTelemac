@@ -5,7 +5,7 @@
      &( T,XM,XMUL,SF,F,X,Y,Z,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FMATMA MATRIX FOR TETRAHEDRONS.
@@ -39,16 +39,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |---|
-!| IKLE           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SF             |---|
-!| T              |---|
-!| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| STRUCTURE OF FUNCTIONS F
+!| SURFAC         |-->| AREA OF 2D ELEMENTS
+!| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
+!| Z              |-->| ELEVATIONS OF POINTS
+!| XM             |<->| OFF-DIAGONAL TERMS
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT06TT => MT06TT

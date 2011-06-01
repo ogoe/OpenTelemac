@@ -50,7 +50,11 @@
 !| IKLE3          |-->| THIRD POINTS OF TRIANGLES
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
 !| SURFAC         |-->| AREA OF TRIANGLES
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| U              |-->| FUNCTION U USED IN THE FORMULA
+!| V              |-->| FUNCTION V USED IN THE FORMULA
 !| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
 !| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !| XMUL           |-->| MULTIPLICATION FACTOR

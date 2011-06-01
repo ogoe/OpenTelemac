@@ -91,7 +91,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K1,K2,N1,N2,I,IELEM
+      INTEGER K1,K2,N1,N2,IELEM
       DOUBLE PRECISION X12,Y12,XNORM,X1,X2,Y1,Y2,Z(1)
 !
       INTRINSIC SQRT

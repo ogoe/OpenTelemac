@@ -5,7 +5,7 @@
      &( T,XM,XMUL,SU,SV,SW,U,V,W,X,Y,Z,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MATVGR MATRIX.
@@ -37,20 +37,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SU             |---|
-!| SV             |---|
-!| SW             |---|
-!| T              |---|
-!| U              |---|
-!| V              |---|
-!| W              |---|
-!| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SU             |-->| STRUCTURE OF FUNCTIONS U
+!| SV             |-->| STRUCTURE OF FUNCTIONS V
+!| SW             |-->| STRUCTURE OF FUNCTIONS W
+!| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
+!| U              |-->| FUNCTION USED IN THE FORMULA
+!| V              |-->| FUNCTION USED IN THE FORMULA
+!| W              |-->| FUNCTION USED IN THE FORMULA
+!| X              |-->| ABSCISSAE OF POINTS
+!| Y              |-->| ORDINATES OF POINTS
+!| Z              |-->| ELEVATIONS OF POINTS
+!| XM             |<->| OFF-DIAGONAL TERMS
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT05TT => MT05TT

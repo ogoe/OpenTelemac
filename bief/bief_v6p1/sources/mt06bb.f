@@ -9,7 +9,7 @@
      &  XMUL,SF,F,SURFAC,IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE FOLLOWING MATRIX:
@@ -40,24 +40,26 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A14            |---|
-!| A22            |---|
-!| A23            |---|
-!| A24            |---|
-!| A33            |---|
-!| A34            |---|
-!| A44            |---|
-!| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| A12            |<--| ELEMENTS OF MATRIX
+!| A13            |<--| ELEMENTS OF MATRIX
+!| A14            |<--| ELEMENTS OF MATRIX
+!| A22            |<--| ELEMENTS OF MATRIX
+!| A23            |<--| ELEMENTS OF MATRIX
+!| A24            |<--| ELEMENTS OF MATRIX
+!| A33            |<--| ELEMENTS OF MATRIX
+!| A34            |<--| ELEMENTS OF MATRIX
+!| A44            |<--| ELEMENTS OF MATRIX
+!| F              |-->| FUNCTION F USED IN THE FORMULA
+!| IKLE1          |-->| FIRST POINTS OF TRIANGLES
+!| IKLE2          |-->| SECOND POINTS OF TRIANGLES
+!| IKLE3          |-->| THIRD POINTS OF TRIANGLES
+!| IKLE4          |-->| QUASI-BUBBLE POINT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT06BB => MT06BB

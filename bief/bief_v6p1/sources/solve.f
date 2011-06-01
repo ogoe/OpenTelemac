@@ -145,17 +145,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER PRESTO,IG,LV,S,NBL,I
+      INTEGER PRESTO,IG,LV,S,NBL
       INTEGER IT1,IT2,IT3,IT4,IT5,IT6,IT7,IBL1,IBL2,K,IAD,ITB,ITBB
 !
       DOUBLE PRECISION C
-      DOUBLE PRECISION TDEB1, TFIN1
 !
       LOGICAL DIADON,PREXSM
-      INTEGER NPOIN_TOT,DIFF1,DIFF2,NPOIN_TEMP,NPLAN
+      INTEGER NPOIN_TOT
       EXTERNAL P_ISUM
       INTEGER P_ISUM
-      INTEGER NPOIN2
 !
 !-----------------------------------------------------------------------
 !

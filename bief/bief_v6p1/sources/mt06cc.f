@@ -12,7 +12,7 @@
      &  IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE FOLLOWING MATRIX:
@@ -43,37 +43,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A14            |---|
-!| A15            |---|
-!| A16            |---|
-!| A22            |---|
-!| A23            |---|
-!| A24            |---|
-!| A25            |---|
-!| A26            |---|
-!| A33            |---|
-!| A34            |---|
-!| A35            |---|
-!| A36            |---|
-!| A44            |---|
-!| A45            |---|
-!| A46            |---|
-!| A55            |---|
-!| A56            |---|
-!| A66            |---|
-!| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| IKLE5          |---|
-!| IKLE6          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| ...            |<--| ELEMENTS OF MATRIX
+!| A66            |<--| ELEMENTS OF MATRIX
+!| F              |-->| FUNCTION F USED IN THE FORMULA
+!| IKLE1          |-->| FIRST POINTS OF TRIANGLES
+!| IKLE2          |-->| SECOND POINTS OF TRIANGLES
+!| IKLE3          |-->| THIRD POINTS OF TRIANGLES
+!| IKLE4          |-->| FOURTH POINTS OF TRIANGLES (QUADRATIC)
+!| IKLE5          |-->| FIFTH POINTS OF TRIANGLES (QUADRATIC)
+!| IKLE6          |-->| SIXTH POINTS OF TRIANGLES (QUADRATIC)
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF!, EX_MT06CC => MT06CC

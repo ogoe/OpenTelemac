@@ -6,7 +6,7 @@
      & X,Y,Z,IKLE,NELEM,NELMAX,SURFAC,SIGMAG,SPECAD,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MATVGR MATRIX.
@@ -48,23 +48,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
-!|                |   | MATRICE.
-!| IKLE           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SF,SG,SH       |-->| STRUCTURES DE F,G ET H.
-!| SIGMAG         |---|
-!| SPECAD         |---|
-!| SU,SV,SW       |-->| STRUCTURES DE U,V ET W.
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| T              |---|
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR INTERVENANT DANS LE
-!|                |   | CALCUL DE LA MATRICE.
-!| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| G              |-->| FUNCTION USED IN THE FORMULA
+!| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
+!| H              |-->| FUNCTION USED IN THE FORMULA
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| STRUCTURE OF FUNCTIONS F
+!| SG             |-->| STRUCTURE OF FUNCTIONS G
+!| SH             |-->| STRUCTURE OF FUNCTIONS H
+!| SIGMAG         |-->| IF YES, GENERALISED SIGMA TRANSFORMATION
+!| SPECAD         |-->| IF YES, SPECIAL ADVECTION FIELD (SEE IMPLEMENTATION)
+!| SU             |-->| STRUCTURE OF FUNCTIONS U
+!| SV             |-->| STRUCTURE OF FUNCTIONS V
+!| SW             |-->| STRUCTURE OF FUNCTIONS W
+!| SURFAC         |-->| AREA OF 2D ELEMENTS
+!| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
+!| U              |-->| FUNCTION USED IN THE FORMULA
+!| V              |-->| FUNCTION USED IN THE FORMULA
+!| W              |-->| FUNCTION USED IN THE FORMULA
+!| X              |-->| ABSCISSAE OF POINTS
+!| Y              |-->| ORDINATES OF POINTS
+!| Z              |-->| ELEVATIONS OF POINTS
+!| XM             |<->| OFF-DIAGONAL TERMS
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT05PP => MT05PP

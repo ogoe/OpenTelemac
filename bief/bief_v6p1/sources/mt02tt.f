@@ -6,7 +6,7 @@
      &  X,Y,Z,IKLE,NELEM,NELMAX,INCHYD)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DIFFUSION MATRIX FOR TETRAHEDRONS.
@@ -41,18 +41,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
-!|                |   | MATRICE.
-!| IKLE           |---|
-!| INCHYD         |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SF,SG,SH       |-->| STRUCTURES DE F,G ET H.
-!| T              |---|
-!| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
+!| G              |-->| FUNCTION USED IN THE FORMULA
+!| H              |-->| FUNCTION USED IN THE FORMULA
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| INCHYD         |-->| IF YES, TREATS HYDROSTATIC INCONSISTENCIES
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPLAN          |-->| NUMBER OF PLANES IN THE MESH OF PRISMS
+!| SF             |-->| STRUCTURE OF FUNCTIONS F
+!| SG             |-->| STRUCTURE OF FUNCTIONS G
+!| SH             |-->| STRUCTURE OF FUNCTIONS H
+!| SURFAC         |-->| AREA OF 2D ELEMENTS
+!| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
+!| X              |-->| ABSCISSAE OF POINTS
+!| Y              |-->| ORDINATES OF POINTS
+!| Z              |-->| ELEVATIONS OF POINTS
+!| XM             |<->| OFF-DIAGONAL TERMS
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT02TT => MT02TT

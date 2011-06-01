@@ -9,7 +9,7 @@
      &  XEL,YEL,SURFAC,IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
@@ -40,24 +40,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11            |---|
-!| A12            |---|
-!| A13            |---|
-!| A21            |---|
-!| A22            |---|
-!| A23            |---|
-!| A31            |---|
-!| A32            |---|
-!| A33            |---|
-!| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS DU MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| A11            |<--| ELEMENTS OF MATRIX
+!| A12            |<--| ELEMENTS OF MATRIX
+!| A13            |<--| ELEMENTS OF MATRIX
+!| A21            |<--| ELEMENTS OF MATRIX
+!| A22            |<--| ELEMENTS OF MATRIX
+!| A23            |<--| ELEMENTS OF MATRIX
+!| A31            |<--| ELEMENTS OF MATRIX
+!| A32            |<--| ELEMENTS OF MATRIX
+!| A33            |<--| ELEMENTS OF MATRIX
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| G              |-->| FUNCTION USED IN THE FORMULA
+!| IKLE1          |-->| FIRST POINTS OF TRIANGLES
+!| IKLE2          |-->| SECOND POINTS OF TRIANGLES
+!| IKLE3          |-->| THIRD POINTS OF TRIANGLES
+!| IKLE4          |-->| QUASI-BUBBLE POINT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| STRUCTURE OF FUNCTIONS F
+!| SG             |-->| STRUCTURE OF FUNCTIONS G
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| U              |-->| FUNCTION U USED IN THE FORMULA
+!| V              |-->| FUNCTION V USED IN THE FORMULA
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT03AA => MT03AA

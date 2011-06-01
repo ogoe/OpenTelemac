@@ -8,11 +8,10 @@
      &                    A44 , A45, A46,
      &                          A55, A56,
      &                               A66,
-     &  XMUL,SU,U,XEL,YEL,SURFAC,IKLE1,
-     &  IKLE2,IKLE3,NELEM,NELMAX)
+     &  XMUL,SU,U,XEL,YEL,SURFAC,IKLE1,IKLE2,IKLE3,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE DIFFUSION MATRIX FOR P2 TRIANGLES.
@@ -40,34 +39,38 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A14            |---|
-!| A15            |---|
-!| A16            |---|
-!| A22            |---|
-!| A23            |---|
-!| A24            |---|
-!| A25            |---|
-!| A26            |---|
-!| A33            |---|
-!| A34            |---|
-!| A35            |---|
-!| A36            |---|
-!| A44            |---|
-!| A45            |---|
-!| A46            |---|
-!| A55            |---|
-!| A56            |---|
-!| A66            |---|
-!| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| A12            |<--| ELEMENTS OF MATRIX
+!| A13            |<--| ELEMENTS OF MATRIX
+!| A14            |<--| ELEMENTS OF MATRIX
+!| A15            |<--| ELEMENTS OF MATRIX
+!| A16            |<--| ELEMENTS OF MATRIX
+!| A22            |<--| ELEMENTS OF MATRIX
+!| A23            |<--| ELEMENTS OF MATRIX
+!| A24            |<--| ELEMENTS OF MATRIX
+!| A25            |<--| ELEMENTS OF MATRIX
+!| A26            |<--| ELEMENTS OF MATRIX
+!| A33            |<--| ELEMENTS OF MATRIX
+!| A34            |<--| ELEMENTS OF MATRIX
+!| A35            |<--| ELEMENTS OF MATRIX
+!| A36            |<--| ELEMENTS OF MATRIX
+!| A44            |<--| ELEMENTS OF MATRIX
+!| A45            |<--| ELEMENTS OF MATRIX
+!| A46            |<--| ELEMENTS OF MATRIX
+!| FORMUL         |-->| FORMULA DESCRIBING THE MATRIX
+!| IKLE1          |-->| FIRST POINTS OF TRIANGLES
+!| IKLE2          |-->| SECOND POINTS OF TRIANGLES
+!| IKLE3          |-->| THIRD POINTS OF TRIANGLES
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| U              |-->| FUNCTION U USED IN THE FORMULA
+!| V              |-->| FUNCTION V USED IN THE FORMULA
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF!, EX_MT02CC => MT02CC
