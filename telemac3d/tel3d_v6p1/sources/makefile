@@ -2,7 +2,7 @@
 #
 # Makefile de TELEMAC3D pour Unix.
 #
-# ATTENTION : doit être lancé dans le répertoire adéquat :
+# ATTENTION : doit ï¿½tre lancï¿½ dans le rï¿½pertoire adï¿½quat :
 #                   telemac3d*/.../sources.
 #
 # Modes supportes :
@@ -66,7 +66,7 @@ FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) \
                 $(FC_OPT_INCLUDE)$(DIRINC_SISYPHE)\
                 $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES)\
                 $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID)\
-                $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL) 
+                $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
 
 FFLAGSPARA    = $(FCO) $(FC_OPT_OTHERS) \
                 $(FC_OPT_INCLUDE)$(DIRINC)\
@@ -76,7 +76,7 @@ FFLAGSPARA    = $(FCO) $(FC_OPT_OTHERS) \
                 $(FC_OPT_INCLUDE)$(DIRINC_SISYPHE)\
                 $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES)\
                 $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL)\
-                $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL) 
+                $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
 
 MODE          =
 
