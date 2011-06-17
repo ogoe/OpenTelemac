@@ -5,7 +5,7 @@
      & (FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   31/05/2011
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -194,6 +194,8 @@
 !        ORIGIN COORDINATES
          I_ORIG    = MOTINT( ADRESS(1,25)   )
          J_ORIG    = MOTINT( ADRESS(1,25)+1 )
+         IPENTCO   = MOTINT( ADRESS(1,26) )
+
 ! FOR THE MOMENT WTITES TO FILE FROM THE START OF SIMULATION
          PTINIG    = 0
          PTINIL    = 0

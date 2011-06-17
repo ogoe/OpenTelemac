@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   31/05/2011
 !***********************************************************************
 !
 !brief    ALLOCATES STRUCTURES.
@@ -47,8 +47,7 @@
 !
       INTEGER ISYM,MEMW1,INOSYM,ISTOP,NTR,NTRBD
       INTEGER, TARGET :: TMP=1029
-      INTEGER CFG(2),CFGBOR(2),I,J
-      DOUBLE PRECISION :: DBID
+      INTEGER CFG(2),CFGBOR(2),I
 !-----------------------------------------------------------------------
 !
       IF(LISTIN) THEN
@@ -138,8 +137,6 @@
       Y     => MESH%Y%R
 !
       TMP=MESH%NPTFR
-!      MESH%NPTFR=1029
-!      MESH%NPTFRX=1029
       NELEM => MESH%NELEM
       NELMAX=> MESH%NELMAX
       NPTFR => MESH%NPTFR
@@ -278,10 +275,19 @@
 !
 !     ALIASES FOR THE FIRST 4 WORKING ARRAYS IN THE BLOCK TB
 !
+! 12 WORKING ARRAYS
       T1 =>TB%ADR( 1)%P
       T2 =>TB%ADR( 2)%P
       T3 =>TB%ADR( 3)%P
       T4 =>TB%ADR( 4)%P
+      T5 =>TB%ADR( 5)%P
+      T6 =>TB%ADR( 6)%P
+      T7 =>TB%ADR( 7)%P
+      T8 =>TB%ADR( 8)%P
+      T9 =>TB%ADR( 9)%P
+      T10 =>TB%ADR( 10)%P
+      T11 =>TB%ADR( 11)%P
+      T12 =>TB%ADR( 12)%P
 !
 ! WORKING ARRAY (SIZE NPTFR)
 !
@@ -511,3 +517,4 @@
 !
       RETURN
       END
+

@@ -5,7 +5,7 @@
      &(LT)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   31/05/2011
 !***********************************************************************
 !
 !brief    SOLVES THE BERKHOFF EQUATION MODIFIED BY
@@ -166,8 +166,10 @@
 !     ---------------------------
 !     DIFFUSION MATRIX FOR AM1
 !     ---------------------------
-!
-98      CALL OS( 'X=YZ    ' , T1 , C , CG , CBID )
+! CER
+98    CONTINUE
+! CER
+      CALL OS( 'X=YZ    ' , T1 , C , CG , CBID )
       CALL MATRIX(AM1,'M=N     ','MATDIF          ',IELM,IELM,
      &            1.D0,S,S,S,T1,T1,S,MESH,MSK,MASKEL)
 !
@@ -192,6 +194,16 @@
 !
 !
       CALL OS( 'X=Y/Z   ' , T1 , CG , C , CBID )
+!
+! SECOND ORDER BOTTOM EFFECTS ? (IPENTCO > 0 --> T1 = T1*(1+F) )
+! 0 : NO EFFECT /  1 : GRADIENT / 2 : CURVATURE /  3 : GRADIENT+CURVATURE
+      IF ( (IPENTCO.GT.(0.5)).AND.(IPENTCO.LT.(3.5)) ) THEN
+!       on modifie T2 T4 T5 T6 T7 T9 T8 T11 T12
+        CALL PENTCO(IPENTCO)
+!       T3 = 1+F  
+        CALL OS( 'X=YZ    ' , T1 , T1 , T3 , CBID )
+      ENDIF
+!
       CALL MATRIX(AM2,'M=N     ','FMATMA          ', IELM , IELM ,
      &            OMEGA**2 , T1,S,S,S,S,S,MESH,MSK,MASKEL)
 !

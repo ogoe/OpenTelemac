@@ -327,23 +327,21 @@
 !
 ! CALLS THE USER SUBROUTINE
 !
-!
-!
-      IF (NCSIZE .GT. 1) THEN
+      IF(NCSIZE.GT.1) THEN
          CALL BUILD_GLOBAL_BOUND(MESH%KNOLG%I,MESH%NPOIN,NPOIN_TOT,
      &        MESH%NPTFR,NPTFR_TOT,
      &        X,Y,K%R,C%R,CG%R,LIHBOR%I,XT,
      &        YT,KT,CTT,CGT,LIHBORT,MESH%NBOR%I,NBOR_TOT)
-         ELSE
+      ELSE
             DO I=1,NPOIN
                XT(I)=X(I)
                YT(I)=Y(I)
-            END DO
+            ENDDO
             DO I=1,NPTFR
                NBOR_TOT(I)=MESH%NBOR%I(I)
                LIHBORT(I)=LIHBOR%I(I)
-            END DO
-      END IF
+            ENDDO
+      ENDIF
       CALL BORH
 !
 ! MASKING FOR THE BOUNDARY CONDITIONS

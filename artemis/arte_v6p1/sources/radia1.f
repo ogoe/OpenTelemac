@@ -57,13 +57,13 @@
 !
 ! INTERNAL VARIABLES FOR RADIA1
 !
-      DOUBLE PRECISION COE , COCO, COSI, SISI , Z(1)
+      DOUBLE PRECISION COE , COCO, COSI, SISI 
       DOUBLE PRECISION OMEG2
       INTEGER          IRADIA , LISRAD
 !
       LOGICAL MAS
 !
-      INTRINSIC SQRT, ATAN2, DMOD, ABS, COS, SIN
+      INTRINSIC COS, SIN
 !
 !-----------------------------------------------------------------------
 !

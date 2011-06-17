@@ -116,6 +116,24 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        DOUBLE PRECISION FUNCTION FCTE1(KH)
+       IMPLICIT NONE
+       DOUBLE PRECISION KH
+        END FUNCTION
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        DOUBLE PRECISION FUNCTION FCTE2(KH)
+       IMPLICIT NONE
+       DOUBLE PRECISION KH
+        END FUNCTION
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE FWSPEC
      &(FW,FWCOEF,X,Y,NPOIN,PRIVE,ZF)
        USE BIEF_DEF
@@ -167,6 +185,17 @@
        IMPLICIT NONE
        CHARACTER*32 TEXTE(26),TEXTPR(26)
        CHARACTER*8  MNEMO(26)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE PENTCO(II)
+       USE BIEF_DEF
+       IMPLICIT NONE
+       INTEGER II
+       TYPE(BIEF_OBJ) :: PRIVE
         END SUBROUTINE
       END INTERFACE
 !

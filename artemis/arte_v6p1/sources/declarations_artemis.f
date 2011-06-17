@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   31/05/2011
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINICIPAL ARTEMIS VARIABLES
@@ -512,7 +512,9 @@
 !brief
 !
       INTEGER FINSOL(MAXFRO)
-!
+!brief
+! prise en compte des effets de pente/courbure
+      INTEGER IPENTCO
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -894,3 +896,4 @@
       SAVE
 !
       END MODULE DECLARATIONS_ARTEMIS
+

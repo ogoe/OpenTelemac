@@ -326,7 +326,7 @@
             APHI2BT(I)  = - KT(IG) * CTT(IG) * CGT(IG)
      &                   * COS(TETAPT(I)*DEGRAD)
 !
-             BPHI2BT(I)  = 0.D0
+            BPHI2BT(I)  = 0.D0
 !
             CPHI2BT(I)  = 0.D0
 !
@@ -336,7 +336,7 @@
             APHI2BT(I)  = - KT(IG) * CTT(IG) * CGT(IG)
      &                   * COS(TETAPT(KP1BOR_TOT(I))*DEGRAD)
 !
-             BPHI2BT(I)  = 0.D0
+            BPHI2BT(I)  = 0.D0
 !
             CPHI2BT(I)  = 0.D0
 !
@@ -646,12 +646,12 @@
 !                               /
 !                                MDEB
 !
-!           WHERE MDEB IF THE BEGINNING (NODE) OF AN INCIDENT WAVE SEGMENT,
+!           WHERE MDEB IS THE BEGINNING (NODE) OF AN INCIDENT WAVE SEGMENT,
 !           FROM WHICH THE PHASE IS COMPUTED. THE ABOVE INTEGRAL IS
 !           COMPUTED BY LINEAR APPROXIMATION.
 !
 !           THE POSSIBLE DEPHASING ALFAP IS ADDED TO ENSURE COHERENCE
-!           BETWEEN THE PHASES OF THE DIFFERENT WAVE  CRESTS IF SEVERAL
+!           BETWEEN THE PHASES OF THE DIFFERENT WAVE CRESTS IF SEVERAL
 !           NONCONTINUOUS INCIDENT WAVE BOUNDARIES EXIST
 !
       PHASOI = PHASOI + K%R(IG)*AUXIC*(X(IG) - X(IG0))
