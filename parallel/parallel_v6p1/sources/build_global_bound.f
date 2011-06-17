@@ -2,7 +2,7 @@
                      SUBROUTINE BUILD_GLOBAL_BOUND
 !                    *****************************
 !
-     &     (KNOLG,NPOIN,NPOIN_TOT,X,Y,K,C,CG,XT,YT,KT,CTT,CGT)
+     &(KNOLG,NPOIN,NPOIN_TOT,X,Y,K,C,CG,XT,YT,KT,CTT,CGT)
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
@@ -61,11 +61,11 @@
       DOUBLE PRECISION, ALLOCATABLE :: TEMP3(:)
       DOUBLE PRECISION :: TMP
       ALLOCATE(TEMP3(NPOIN_TOT))
-      YT(:)=0.0
-      XT(:)=0.0
-      CTT(:)=0.0
-      CGT(:)=0.0
-      KT(:)=0.0
+      YT(:)=0.D0
+      XT(:)=0.D0
+      CTT(:)=0.D0
+      CGT(:)=0.D0
+      KT(:)=0.D0
 !     XT MERGING
       TEMP3(:)=-HUGE(TMP)
       DO I=1,NPOIN
@@ -117,4 +117,5 @@
          KT=0.0
       END WHERE
       DEALLOCATE(TEMP3)
+      RETURN
       END
