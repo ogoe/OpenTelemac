@@ -6,7 +6,7 @@
      & NBOR,KP1BOR,NELBOR,LGSEG,NPTFR,X,Y,MESH,T1)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) COMPUTES THE COMPONENTS OF THE OUTGOING NORMAL VECTOR
@@ -52,22 +52,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DISBOR         |<--| DISTANCE DU BORD AU PREMIER POINT INTERIEUR.
-!| KP1BOR         |-->| NUMERO DE L'EXTREMITE DES SEGMENTS DE BORD
-!| LGSEG          |<--| LONGUEUR DES SEGMENTS DE BORD
-!| MESH           |<->| STRUCTURE DE MAILLAGE
-!| NBOR           |-->| ADRESSES DES POINTS FRONTIERES.
-!| NELBOR         |-->| NUMERO DE L'ELEMENT DE BORD
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
-!| SURFAC         |-->| SURFACE DES TRIANGLES
-!| T1             |<->| STRUCTURE BIEF_OBJ POUR TABLEAU DE TRAVAIL
-!| X,Y            |-->| COORDONNEES X,Y DONNEES PAR POINT.
-!| XNEBOR         |<--| COMPOSANTE SUIVANT X DE LA NORMALE AU POINT.
-!| XSGBOR         |<--| COMPOSANTE SUIVANT X DE LA NORMALE DU SEGMENT
-!| YNEBOR         |<--| COMPOSANTE SUIVANT Y DE LA NORMALE AU POINT.
-!| YSGBOR         |<--| COMPOSANTE SUIVANT Y DE LA NORMALE DU SEGMENT
-!|                |   | (SEGMENT COMPRIS ENTRE LES POINTS K ET K+1)
+!| DISBOR         |<--| DISTANCE FROM BOUNDARY POINT TO CLOSER 
+!|                |   | INNER POINT
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| LGSEG          |<--| LENGTH OF BOUNDARY SEGMENTS
+!| MESH           |-->| MESH STRUCTURE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
+!|                |   | ELEMENT.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| T1             |<->| BIEF_OBJ STRUCTURE FOR WORK ARRAY
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XNEBOR         |<--| COMPONANT ALONG X OF VECTOR NORMAL TO POINT
+!| XSGBOR         |<--| COMPONANT ALONG X OF VECTOR NORMAL TO SEGMENT
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XNEBOR         |<--| COMPONANT ALONG Y OF VECTOR NORMAL TO POINT
+!| YSGBOR         |<--| COMPONANT ALONG Y OF VECTOR NORMAL TO SEGMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_NORMAB => NORMAB

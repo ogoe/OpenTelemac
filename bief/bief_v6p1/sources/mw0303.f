@@ -6,10 +6,10 @@
      & IKLEM1,DIMIKM,LIMVOI,MXPTVS,NPMAX,NPOIN,TRAV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    MATRIX VECTOR PRODUCT FOR P1 TRIANGLES.
+!brief    FRONTAL MATRIX VECTOR PRODUCT FOR P1 TRIANGLES.
 !code
 !+   OP IS A STRING OF 8 CHARACTERS, WHICH INDICATES THE OPERATION TO BE
 !+   PERFORMED ON VECTORS X,Y AND MATRIX M.
@@ -50,27 +50,36 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DA             |-->| DIAGONALE DE LA MATRICE
-!| DIMIKM         |-->| PREMIERE DIMENSION DE IKLEM1
-!| IKLEM1         |-->|
+!| C              |-->| A GIVEN CONSTANT
+!| DA             |-->| MATRIX DIAGONAL
+!| DIMIKM         |-->| FIRST DIMENSION OF IKLEM1
+!| IKLEM1         |-->| DATA STRUCTURE FOR MATRIX-VECTOR PRODUCT
+!|                |   | GIVES THE ADRESSES OF OFF-DIAGONAL TERMS
+!|                |   | IN XAS AND NEIGHBOUR POINTS IN Y.
+!|                |   | IKLEM1(*,*,1) : NON SYMMETRIC MATRIX
+!|                |   | IKLEM1(*,*,2) : SYMMETRIC MATRIX
+!|                |   | FIRST DIMENSION: NPMAX
+!|                |   | 2ND DIM.: 1 : DIRECT PRODUCT, ADDRESS IN XAS
+!|                |   |           2 : DIRECT PRODUCT, ADDRESS IN Y
+!|                |   |           3 : TRANSPOSED PRODUCT, ADDRESS IN XAS
+!|                |   |           4 : TRANSPOSED PRODUCT, ADDRESS IN Y
 !| LIMVOI         |-->|
-!| MXPTVS         |-->|
-!| NPMAX          |-->| NOMBRE MAXIMUM DE POINTS.
-!| NPOIN          |-->| NOMBRE DE POINTS.
-!| OP             |-->| OPERATION A EFFECTUER
-!| TRAV           |-->| TABLEAU DE TRAVAIL.
-!| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
-!|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE
-!|                |   | TYPDIA = 'I' : DIAGONALE IDENTITE.
-!|                |   | TYPDIA = '0' : DIAGONALE NULLE.
-!| TYPEXT         |-->| TYPE DES TERMES EXTRADIAGONAUX
-!|                |   | TYPEXT = 'Q' : QUELCONQUES.
-!|                |   | TYPEXT = 'S' : SYMETRIQUES.
-!|                |   | TYPEXT = '0' : NULS.
-!| X              |<--| VECTEUR IMAGE
-!| XAS            |-->| TERMES EXTRA-DIAGONAUX DE LA MATRICE
-!| Y              |-->| VECTEUR OPERANDE
+!| MXPTVS         |-->| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS.
+!| NPOIN          |-->| NUMBER OF POINTS
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| TRAV           |-->| WORK ARRAY
+!| TYPDIA         |-->| TYPE OF DIAGONAL:
+!|                |   | TYPDIA = 'Q' : ANY VALUE
+!|                |   | TYPDIA = 'I' : IDENTITY
+!|                |   | TYPDIA = '0' : ZERO
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
+!| X              |<->| RESULT IN ASSEMBLED FORM
+!| XAS            |-->| OFF-DIAGONAL TERMS OF MATRIX
+!| Y              |-->| VECTOR USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MW0303 => MW0303
@@ -125,7 +134,7 @@
         ELSEIF(TYPDIA(1:1).NE.'0') THEN
           IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
           IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-          CALL PLANTE(0)
+          CALL PLANTE(1)
           STOP
         ENDIF
 !
@@ -140,7 +149,7 @@
          ELSE
             IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
             IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-            CALL PLANTE(0)
+            CALL PLANTE(1)
             STOP
          ENDIF
 !
@@ -148,7 +157,7 @@
 !
          IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
          IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-         CALL PLANTE(0)
+         CALL PLANTE(1)
          STOP
 !
       ENDIF
@@ -172,7 +181,7 @@
       ELSE
          IF (LNG.EQ.1) WRITE(LU,3000) OP
          IF (LNG.EQ.2) WRITE(LU,3001) OP
-         CALL PLANTE(0)
+         CALL PLANTE(1)
          STOP
       ENDIF
 !

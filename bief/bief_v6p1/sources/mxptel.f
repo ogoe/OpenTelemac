@@ -5,7 +5,7 @@
      &(MXPTVS,MXELVS,IKLES,IELM,NPOIN,NELEM,NDP,IPOBO,LISTIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM NUMBER OF POINTS AND ELEMENTS
@@ -34,17 +34,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM           |---|
-!| IKLES          |-->| TABLE DE CONNECTIVITE (DU FORMAT SELAFIN)
-!| IPOBO          |-->| TABLEEAU QUI VAUT 0 POUR LES POINTS INTERIEURS
-!|                |   | ET NON NUL POUR LES POINTS DE BORD.
-!|                |   | POUR SE PLACER SUR LES ENREGISTREMENTS DES
-!| LISTIN         |-->| LOGIQUE : IMPRESSION DE MXELVS ET MXPTVS
-!| MXELVS         |<--| NOMBRE MAXIMUM D'ELEMENTS VOISINS.
-!| MXPTVS         |<--| NOMBRE MAXIMUM DE POINTS VOISINS.
-!| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
+!| IELM           |-->| TYPE OF ELEMENT
+!| IKLES          |-->| LIKE CONNECTIVITY TABLE BUT IN SELAFIN FORMAT
+!|                |   | IKLES(3,NELEM) INSTEAD OF IKLE(NELEM,3)
+!| IPOBO          |-->| 0 FOR INNER POINTS
+!|                |   | NOT 0 FOR BOUNDARY POINTS (THEIR RANK ACTUALLY)
+!| LISTIN         |-->| IF YES : MXELVS AND MXPTVS WILL BE PRINTED
+!| MXELVS         |-->| MAXIMUM NUMBER OF NEIGHBOURING ELEMENTS
+!| MXPTVS         |-->| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -67,24 +67,24 @@
 !
 ! 1) INITIALISES THE NUMBER OF NEIGHBOURING ELEMENTS TO 0:
 !
-      DO 10 I = 1 , NPOIN
+      DO I = 1 , NPOIN
         ITRAV(I) = 0
-10    CONTINUE
+      ENDDO
 !
 ! 2) COUNTS THE NUMBER OF NEIGHBOURING ELEMENTS PER ASSEMBLY OPERATION:
 !
-      DO 22 J = 1, NDP
-        DO 20 IELEM = 1 , NELEM
+      DO J = 1, NDP
+        DO IELEM = 1 , NELEM
           ITRAV(IKLES(J,IELEM)) = ITRAV(IKLES(J,IELEM)) + 1
-20      CONTINUE
-22    CONTINUE
+        ENDDO
+      ENDDO
 !
 ! 3) LOOKS FOR THE MAXIMUM :
 !
       MXELVS = ITRAV(1)
-      DO 30 I = 2 , NPOIN
+      DO I = 2 , NPOIN
         MXELVS = MAX(MXELVS,ITRAV(I))
-30    CONTINUE
+      ENDDO
 !
 ! 4) NUMBER OF NEIGHBOURING POINTS: NEED TO ADD 1 TO THIS NUMBER
 !                                   FOR BOUNDARY NODES.
@@ -94,9 +94,9 @@
         CALL MXPTEL31(NELEM,NPOIN,MXELVS,IKLES,MXPTVS)
       ELSE
         MXPTVS = MXELVS
-        DO 40 I = 1 , NPOIN
+        DO I = 1 , NPOIN
           IF(IPOBO(I).NE.0) MXPTVS = MAX(MXPTVS,ITRAV(I)+1)
-40      CONTINUE
+        ENDDO
       ENDIF
 !
 !-----------------------------------------------------------------------

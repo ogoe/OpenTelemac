@@ -6,7 +6,7 @@
      & NB_NEIGHB_PT_SEG,XMUL,NSEG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MULTIPLIES BY A CONSTANT THE INTERFACE VALUES OF A
@@ -30,12 +30,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIM1NHCOM      |-->| FIRST DIMENSION OF NH_COM_SEG
-!| FSEG           |<->| THE FUNCTION DEFINED ON SEGMENTS
-!| NB_NEIGHB_SEG  |-->| NUMBER OF NEIGHBOUR PROCESSOR (FOR SEGMENTS)
-!| NH_COM_SEG     |-->| ADDRESSES OF INTERFACE SEGMENTS
-!| NSEG           |-->| NUMBER OF SEGMENTS
-!| XMUL           |-->| THE CONSTANT
+!| DIM1NHCOM       |-->| FIRST DIMENSION OF NH_COM_SEG
+!| FSEG            |<->| THE FUNCTION DEFINED ON SEGMENTS
+!| NB_NEIGHB_PT_SEG|-->| NUMBER OF SEGMENTS SHARED WITH A NEIGHBOUR  
+!|                 |   | PROCESSOR 
+!| NB_NEIGHB_SEG   |-->| NUMBER OF NEIGHBOUR PROCESSORS (FOR SEGMENTS)
+!| NH_COM_SEG      |-->| ADDRESSES OF INTERFACE SEGMENTS
+!| NSEG            |-->| NUMBER OF SEGMENTS
+!| XMUL            |-->| THE CONSTANT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -63,6 +65,7 @@
 !     LOOP ON ALL NEIGHBOURING SUB-DOMAINS
 !
       DO IPROC=1,NB_NEIGHB_SEG
+!
         IKA = NB_NEIGHB_PT_SEG(IPROC)
 !
 !       LOOP ON ALL SEGMENTS SHARED WITH THIS SUB-DOMAIN
@@ -73,6 +76,7 @@
           IADSEG=NH_COM_SEG(ISEG,IPROC)
           FSEG(IADSEG)=FSEG(IADSEG)*XMUL
         ENDDO
+!
       ENDDO
 !
       ENDIF

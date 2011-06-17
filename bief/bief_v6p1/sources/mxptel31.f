@@ -5,10 +5,10 @@
      & (NELEM,NPOIN,MXELVS,IKLES,MXPTVS)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    GIVES THE MAXIMUM NUMBER OF NEIGHBOURS
+!brief    FOR TETRAHEDRA, GIVES THE MAXIMUM NUMBER OF NEIGHBOURS
 !+                FOR A GIVEN MESH NODE.
 !
 !history  LAM MINH-PHUONG; F. DECUNG
@@ -29,11 +29,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLES          |-->| TABLE DE CONNECTIVITE (DU FORMAT SELAFIN)
-!| MXELVS         |-->| NOMBRE MAXIMUM D'ELEMENTS VOISINS.
-!| MXPTVS         |<--| NOMBRE MAXIMUM DE POINTS VOISINS.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
+!| IKLES          |-->| LIKE CONNECTIVITY TABLE BUT IN SELAFIN FORMAT
+!|                |   | IKLES(4,NELEM) INSTEAD OF IKLE(NELEM,4)
+!| MXELVS         |-->| MAXIMUM NUMBER OF NEIGHBOURING ELEMENTS
+!| MXPTVS         |<--| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MXPTEL31 => MXPTEL31
@@ -122,6 +123,8 @@
 !
       DEALLOCATE (VOIS)
       DEALLOCATE (IND_ELEM)
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

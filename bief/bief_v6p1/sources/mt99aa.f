@@ -9,7 +9,7 @@
      &  SURFAC,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,FORMUL,TDIA,TEXT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
@@ -42,25 +42,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A21            |---|
-!| A22            |---|
-!| A23            |---|
-!| A31            |---|
-!| A32            |---|
-!| A33            |---|
-!| FORMUL         |---|
-!| IKLE1          |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| TDIA           |---|
-!| TEXT           |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| A12            |<--| ELEMENTS OF MATRIX
+!| A13            |<--| ELEMENTS OF MATRIX
+!| A21            |<--| ELEMENTS OF MATRIX
+!| A22            |<--| ELEMENTS OF MATRIX
+!| A23            |<--| ELEMENTS OF MATRIX
+!| A31            |<--| ELEMENTS OF MATRIX
+!| A32            |<--| ELEMENTS OF MATRIX
+!| A33            |<--| ELEMENTS OF MATRIX
+!| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
+!| IKLE1          |-->| FIRST POINTS OF TRIANGLES
+!| IKLE2          |-->| SECOND POINTS OF TRIANGLES
+!| IKLE3          |-->| THIRD POINTS OF TRIANGLES
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| TDIA           |<--| TYPE OF DIAGONAL
+!| TEXT           |<--| TYPE OF OFF-DIAGONAL TERMS
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT99AA => MT99AA
@@ -111,7 +111,7 @@
         IF (LNG.EQ.2) WRITE(LU,2001) SF%ELM
 2000    FORMAT(1X,'MT99AA (BIEF) : TYPE DE F : ',I6,' NON PREVU')
 2001    FORMAT(1X,'MT99AA (BIEF) : TYPE OF F:',I6,' NOT IMPLEMENTED')
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
 !
       ENDIF
@@ -578,7 +578,7 @@
         IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
 1000    FORMAT(1X,'MT99AA (BIEF) : MATRICE NON PREVUE : ',A16)
 1001    FORMAT(1X,'MT99AA (BIEF) : MATRIX NOT IMPLEMENTED:',A16)
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
 !
       ENDIF

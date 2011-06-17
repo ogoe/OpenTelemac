@@ -9,7 +9,7 @@
      & NPOIN,NELEM,W1,W2,W3,W4)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS FOR Q1 QUADRILATERALS.
@@ -53,34 +53,37 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DA             |-->| DIAGONALE DE LA MATRICE
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NPOIN          |-->| NOMBRE DE POINTS.
-!| OP             |-->| OPERATION A EFFECTUER
-!| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
-!|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE
-!|                |   | TYPDIA = 'I' : DIAGONALE IDENTITE.
-!|                |   | TYPDIA = '0' : DIAGONALE NULLE.
-!| TYPEXT         |-->| TYPEXT = 'Q' : QUELCONQUES.
-!|                |   | TYPEXT = 'S' : SYMETRIQUES.
-!|                |   | TYPEXT = '0' : NULS.
-!| W2             |---|
-!| W3             |---|
-!| W4             |---|
-!| X              |<--| VECTEUR IMAGE
-!| XA13           |---|
-!| XA21           |---|
-!| XA23           |---|
-!| XA31           |---|
-!| XA32           |---|
-!| XA41           |---|
-!| XA42           |---|
-!| XA43           |---|
-!| Y              |-->| VECTEUR OPERANDE
+!| C              |-->| A GIVEN CONSTANT
+!| DA             |-->| MATRIX DIAGONAL
+!| IKLE1          |-->| FIRST POINTS OF ELEMENTS
+!| IKLE2          |-->| SECOND POINTS OF ELEMENTS
+!| IKLE3          |-->| THIRD POINTS OF ELEMENTS
+!| IKLE4          |-->| FOURTH POINTS OF ELEMENTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF LINEAR POINTS
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| TYPDIA         |-->| TYPE OF DIAGONAL:
+!|                |   | TYPDIA = 'Q' : ANY VALUE
+!|                |   | TYPDIA = 'I' : IDENTITY
+!|                |   | TYPDIA = '0' : ZERO
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
+!| W1             |<->| RESULT IN NON ASSEMBLED FORM
+!| W2             |<->| RESULT IN NON ASSEMBLED FORM
+!| W3             |<->| RESULT IN NON ASSEMBLED FORM
+!| W4             |<->| RESULT IN NON ASSEMBLED FORM
+!| X              |<->| RESULT IN ASSEMBLED FORM
+!| XA13           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA21           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA23           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA31           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA32           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA41           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA42           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA43           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| Y              |-->| VECTOR USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MV0403 => MV0403

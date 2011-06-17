@@ -3,11 +3,10 @@
 !                    *****************
 !
      &(OP, X , DA,TYPDIA,XA12,XA21,TYPEXT, Y,C,
-     & IKLE1,IKLE2,
-     & NPOIN,NELEM,W1,W2)
+     & IKLE1,IKLE2,NPOIN,NELEM,W1,W2)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MATRIX VECTOR OPERATIONS FOR P1 SEGMENTS.
@@ -51,23 +50,27 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DA             |-->| DIAGONALE DE LA MATRICE
-!| IKLE2          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NPOIN          |-->| NOMBRE DE POINTS.
-!| OP             |-->| OPERATION A EFFECTUER
-!| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
-!|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE
-!|                |   | TYPDIA = 'I' : DIAGONALE IDENTITE.
-!|                |   | TYPDIA = '0' : DIAGONALE NULLE.
-!| TYPEXT         |-->| TYPEXT = 'Q' : QUELCONQUES.
-!|                |   | TYPEXT = 'S' : SYMETRIQUES.
-!|                |   | TYPEXT = '0' : NULS.
-!| W2             |---|
-!| X              |<--| VECTEUR IMAGE
-!| XA21           |---|
-!| Y              |-->| VECTEUR OPERANDE
+!| C              |-->| A GIVEN CONSTANT
+!| DA             |-->| MATRIX DIAGONAL
+!| IKLE1          |-->| FIRST POINT OF SEGMENT
+!| IKLE2          |-->| SECOND POINT OF SEGMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| TYPDIA         |-->| TYPE OF DIAGONAL:
+!|                |   | TYPDIA = 'Q' : ANY VALUE
+!|                |   | TYPDIA = 'I' : IDENTITY
+!|                |   | TYPDIA = '0' : ZERO
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
+!| W1             |<->| RESULT IN NON ASSEMBLED FORM
+!| W2             |<->| RESULT IN NON ASSEMBLED FORM
+!| X              |<->| RESULT IN ASSEMBLED FORM
+!| XA12           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA21           |-->| OFF-DIAGONAL TERM OF MATRIX
+!| Y              |-->| VECTOR USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MV0202 => MV0202
@@ -123,7 +126,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -139,7 +142,7 @@
          ELSE
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -172,7 +175,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -188,7 +191,7 @@
          ELSE
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -216,7 +219,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -230,7 +233,7 @@
          ELSEIF(TYPDIA(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -258,7 +261,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -347,7 +350,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -363,7 +366,7 @@
          ELSE
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -396,7 +399,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -412,7 +415,7 @@
          ELSE
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -440,7 +443,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -454,7 +457,7 @@
          ELSEIF(TYPDIA(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -482,7 +485,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -496,7 +499,7 @@
          ELSEIF(TYPDIA(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -524,7 +527,7 @@
 !
            IF (LNG.EQ.1) WRITE(LU,1000) TYPEXT
            IF (LNG.EQ.2) WRITE(LU,1001) TYPEXT
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
 !
          ENDIF
@@ -538,7 +541,7 @@
          ELSEIF(TYPDIA(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,2000) TYPDIA
            IF (LNG.EQ.2) WRITE(LU,2001) TYPDIA
-           CALL PLANTE(0)
+           CALL PLANTE(1)
            STOP
          ENDIF
 !
@@ -548,7 +551,7 @@
 !
         IF (LNG.EQ.1) WRITE(LU,3000) OP
         IF (LNG.EQ.2) WRITE(LU,3001) OP
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
 !
 !-----------------------------------------------------------------------

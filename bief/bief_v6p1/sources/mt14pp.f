@@ -6,7 +6,7 @@
      &  X,Y,Z,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS COEFFICIENTS LAMBDA(I,J) FOR N-TYPE MURD SCHEME.
@@ -56,25 +56,32 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LE CALCUL DE LA
-!|                |   | MATRICE.
-!| IKLE           |---|
-!| LEGO           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| PPQ            |---|
-!| SF,SG,SH       |-->| STRUCTURES DE F,G ET H.
-!| SIGMAG         |---|
-!| SPECAD         |---|
-!| SU,SV,SW       |-->| STRUCTURES DE U,V ET W.
-!| SURFAC         |-->| SURFACE DES TRIANGLES.
-!| T              |---|
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR INTERVENANT DANS LE
-!|                |   | CALCUL DE LA MATRICE.
-!| X,Y,Z          |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XM             |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| G              |-->| FUNCTION USED IN THE FORMULA
+!| H              |-->| FUNCTION USED IN THE FORMULA
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| LEGO           |-->| LOGICAL. IF YES RESULT ASSEMBLED.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| PPQ            |-->| STORAGE IN XM OF OFF-DIAGONAL ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SG             |-->| BIEF_OBJ STRUCTURE OF G
+!| SH             |-->| BIEF_OBJ STRUCTURE OF H
+!| SIGMAG         |-->| IF YES, GENERALISED SIGMA TRANSFORMATION
+!| SPECAD         |-->| IF YES, SPECIAL FORM OF ADVECTION FIELD
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| SW             |-->| BIEF_OBJ STRUCTURE OF W
+!| SURFAC         |-->| AREA OF 2D ELEMENTS
+!| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
+!| U              |-->| FUNCTION USED IN THE FORMULA
+!| V              |-->| FUNCTION USED IN THE FORMULA
+!| W              |-->| FUNCTION USED IN THE FORMULA
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
+!| XM             |<->| OFF-DIAGONAL TERMS
+!| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT14PP => MT14PP

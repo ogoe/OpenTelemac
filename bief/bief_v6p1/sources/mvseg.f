@@ -6,7 +6,7 @@
      & TYPEXT, Y,C,NPOIN,NELEM,NSEG1,NSEG2,GLOSEG1,GLOSEG2,IELM1,IELM2)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MATRIX VECTOR PRODUCT FOR EDGE-BASED STORAGE.
@@ -51,28 +51,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DA             |-->| DIAGONALE DE LA MATRICE
-!| GLOSEG1        |---|
-!| GLOSEG2        |---|
-!| IELM1          |---|
-!| IELM2          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NPOIN          |-->| NOMBRE DE POINTS.
-!| NSEG1          |---|
-!| NSEG2          |---|
-!| OP             |-->| OPERATION A EFFECTUER
-!| TYPDIA         |-->| TYPE DE LA DIAGONALE (CHAINE DE CARACTERES)
-!|                |   | TYPDIA = 'Q' : DIAGONALE QUELCONQUE
-!|                |   | TYPDIA = 'I' : DIAGONALE IDENTITE.
-!|                |   | TYPDIA = '0' : DIAGONALE NULLE.
-!| TYPEXT         |-->| TYPEXT = 'Q' : QUELCONQUES.
-!|                |   | TYPEXT = 'S' : SYMETRIQUES.
-!|                |   | TYPEXT = '0' : NULS.
-!| X              |<--| VECTEUR IMAGE
-!| XA1            |---|
-!| XA2            |---|
-!| Y              |-->| VECTEUR OPERANDE
+!| C              |-->| A GIVEN CONSTANT
+!| DA             |-->| MATRIX DIAGONAL
+!| GLOSEG1        |-->| FIRST POINT OF SEGMENTS
+!| GLOSEG2        |-->| SECOND POINT OF SEGMENTS
+!| IELM1          |-->| TYPE OF LINE ELEMENT.
+!| IELM2          |-->| TYPE OF COLUMN ELEMENT.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF LINEAR POINTS
+!| NSEG1          |-->| NUMBER OF SEGMENTS OF THE LINE ELEMENT
+!| NSEG2          |-->| NUMBER OF SEGMENTS OF THE COLUMN ELEMENT
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| TYPDIA         |-->| TYPE OF DIAGONAL:
+!|                |   | TYPDIA = 'Q' : ANY VALUE
+!|                |   | TYPDIA = 'I' : IDENTITY
+!|                |   | TYPDIA = '0' : ZERO
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
+!| X              |<->| RESULT IN ASSEMBLED FORM
+!| XA1            |-->| OFF-DIAGONAL TERM OF MATRIX
+!| XA2            |-->| OFF-DIAGONAL TERM OF MATRIX
+!| Y              |-->| VECTOR USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF,EX_MVSEG => MVSEG

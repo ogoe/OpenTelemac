@@ -15,8 +15,8 @@
 !
 !brief    BUILDS THE FOLLOWING MATRIX FOR QUASI-BUBBLE TRIANGLES:
 !code
-!+    ->--->
-!+    U.GRAD
+!+    ->  --->
+!+    U . GRAD
 !
 !history  J-M HERVOUET (LNH)    ; C   MOULIN (LNH)
 !+        10/01/95

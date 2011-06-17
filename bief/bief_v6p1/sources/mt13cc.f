@@ -11,7 +11,7 @@
      &   XMUL,XEL,YEL,NELEM,NELMAX,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
@@ -47,46 +47,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A14            |---|
-!| A15            |---|
-!| A16            |---|
-!| A21            |---|
-!| A22            |---|
-!| A23            |---|
-!| A24            |---|
-!| A25            |---|
-!| A26            |---|
-!| A31            |---|
-!| A32            |---|
-!| A33            |---|
-!| A34            |---|
-!| A35            |---|
-!| A36            |---|
-!| A41            |---|
-!| A42            |---|
-!| A43            |---|
-!| A44            |---|
-!| A45            |---|
-!| A46            |---|
-!| A51            |---|
-!| A52            |---|
-!| A53            |---|
-!| A54            |---|
-!| A55            |---|
-!| A56            |---|
-!| A61            |---|
-!| A62            |---|
-!| A63            |---|
-!| A64            |---|
-!| A65            |---|
-!| A66            |---|
-!| ICOORD         |-->| 1: DERIVEE SUIVANT X, 2:SUIVANT Y
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| ...            |<--| ELEMENTS OF MATRIX
+!| A66            |<--| ELEMENTS OF MATRIX
+!| ICOORD         |-->| 1: DERIVATIVE ALONG X, 2: ALONG Y
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF!, EX_MT13CC => MT13CC

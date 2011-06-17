@@ -11,7 +11,7 @@
      &  XMUL,SF,F,SURFAC,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE FOLLOWING MATRIX
@@ -43,31 +43,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12        |<--| ELEMENTS DE LA MATRICE
-!| A13            |---|
-!| A14            |---|
-!| A15            |---|
-!| A16            |---|
-!| A22            |---|
-!| A23            |---|
-!| A24            |---|
-!| A25            |---|
-!| A26            |---|
-!| A33            |---|
-!| A34            |---|
-!| A35            |---|
-!| A36            |---|
-!| A44            |---|
-!| A45            |---|
-!| A46            |---|
-!| A55            |---|
-!| A56            |---|
-!| A66            |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |---|
-!| XMUL           |-->| FACTEUR MULTIPLICATIF
+!| A11            |<--| ELEMENTS OF MATRIX
+!| ...            |<--| ELEMENTS OF MATRIX
+!| A66            |<--| ELEMENTS OF MATRIX
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| STRUCTURE OF FUNCTIONS F
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF!, EX_MT07CC => MT07CC
