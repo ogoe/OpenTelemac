@@ -63,11 +63,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !     
-      INTEGER                         :: IFR
-      INTEGER                         :: IPT
       DOUBLE PRECISION                :: C
-      INTEGER                         :: NPOINT,NPOINT2 
-      INTEGER                         ::  I
+      INTEGER                         :: NPOINT,NPOINT2,I
 !       
 !-----------------------------------------------------------------------
 !     
@@ -136,9 +133,9 @@
             STOP
           ENDIF
 !      
-	  IF(INITLOC) THEN  		
+          IF(INITLOC) THEN  		
             CALL GTSH13(SHP,ELT,IKLE,NPOINT2,NELEM,NELMAX,MSK,MASKEL)
-     	  ENDIF
+          ENDIF
 !
         ENDIF
 !
@@ -159,7 +156,7 @@
         IF(INITLOC) THEN  
           CALL GTSH41(WCONV,SHP,SHZ,ELT,ETA,IKLE,NPOINT2,
      &                NELEM,NPLAN,MSK,MASKEL)  
-     	ENDIF
+        ENDIF
 !       
 !-----------------------------------------------------------------------
 !

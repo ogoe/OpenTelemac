@@ -7,7 +7,7 @@
      & MESH,PREXSM,DIADON)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BLOCK-DIAGONAL PRECONDITIONING OF A SYSTEM A X = B.
@@ -30,27 +30,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A12            |---|
-!| A13            |---|
-!| A21            |---|
-!| A22            |---|
-!| A23            |---|
-!| A31            |---|
-!| A32            |---|
-!| A33            |---|
-!| B1,B2,B3       |-->| SECONDS MEMBRES DU SYSTEME.
-!| D12            |---|
-!| D13            |---|
-!| D21            |---|
-!| D22            |---|
-!| D23            |---|
-!| D31            |---|
-!| D32            |---|
-!| D33            |---|
-!| DIADON         |-->| .TRUE. : LES DIAGONALES SONT DONNEES.
-!| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE.
-!| PREXSM         |-->| .TRUE. : ON PRECONDITIONNE X,X2,X3 ET SM
-!| X1,X2,X3       |<->| VALEURS A L' ETAPE N+1.
+!| A11            |<->| TERM (1,1) OF MATRIX
+!| ...            |<->| ...
+!| A33            |<->| TERM (3,3) OF MATRIX
+!| B1             |<->| FIRST RIGHT-HAND SIDE
+!| B2             |<->| SECOND RIGHT-HAND SIDE
+!| B3             |<->| THIRD RIGHT-HAND SIDE
+!| D11            |<--| DIAGONAL MATRIX
+!| ...            |<--| ...
+!| D33            |<--| DIAGONAL MATRIX
+!| DIADON         |-->| .TRUE. : DIAGONALS ARE GIVEN
+!| MESH           |-->| MESH STRUCTURE
+!| PREXSM         |-->| .TRUE. : PRECONDITIONING X1,X2 AND B1,B2
+!| X1             |<->| FIRST INITIAL GUESS
+!| X2             |-->| SECOND INITIAL GUESS
+!| X3             |-->| THIRD INITIAL GUESS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PREBD9 => PREBD9
@@ -103,7 +97,7 @@
      &  'PRECONDITIONNEMENT BLOC-DIAGONAL IMPOSSIBLE DANS CE CAS')
 200     FORMAT(1X,'PREBD9 (BIEF) : RECTANGULAR MATRICES',/,1X,
      &  'BLOCK-DIAGONAL PRECONDITIONING IMPOSSIBLE IN THIS CASE')
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -146,18 +140,18 @@
 !     ONLY D11 INVERTED IS NOW USED
       CALL OS( 'X=1/Y   ' , D11 , D11 , D11 , C )
 !
-      DO 10 I = 1,NPOIN1
+      DO I = 1,NPOIN1
 !
         D21%R(I) =  D21%R(I) * D11%R(I)
         D31%R(I) =  D31%R(I) * D11%R(I)
         D22%R(I) =  D22%R(I) - D21%R(I) * D12%R(I)
 !
-10    CONTINUE
+      ENDDO
 !
 !     ONLY D22 INVERTED IS NOW USED
       CALL OS( 'X=1/Y   ' , D22 , D22 , D22 , C )
 !
-      DO 11 I = 1,NPOIN1
+      DO I = 1,NPOIN1
 !
         D32%R(I) = (D32%R(I) - D31%R(I) * D12%R(I)) * D22%R(I)
         D23%R(I) =  D23%R(I) - D21%R(I) * D13%R(I)
@@ -167,7 +161,7 @@
         D13%R(I) =  D13%R(I) * D11%R(I)
         D23%R(I) =  D23%R(I) * D22%R(I)
 !
-11    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -238,10 +232,10 @@
 !
       IF(PREXSM) THEN
 !
-      DO 21 I = 1,NPOIN1
+      DO I = 1,NPOIN1
         B2%R(I) = B2%R(I)-D21%R(I)*B1%R(I)
         B3%R(I) = B3%R(I)-D31%R(I)*B1%R(I)-D32%R(I)*B2%R(I)
-21    CONTINUE
+      ENDDO
 !
       ENDIF
 !

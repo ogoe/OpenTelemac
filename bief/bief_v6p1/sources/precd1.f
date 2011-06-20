@@ -5,7 +5,7 @@
      &(X,A,B,D,MESH,PRECON,PREXSM,DIADON)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIAGONAL PRECONDITIONING OF A SYSTEM A X = B
@@ -31,14 +31,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE
-!| B              |-->| SECONDS MEMBRES DU SYSTEME.
-!| D              |---|
-!| DIADON         |-->| .TRUE. : LES DIAGONALES SONT DONNEES.
-!| MESH           |-->| MAILLAGE.
-!| PRECON         |-->| VARIANTE DE PRECONDITIONNEMENT
-!| PREXSM         |-->| .TRUE. : ON PRECONDITIONNE X,X2,X3 ET SM
-!| X              |<->| VALEURS A L' ETAPE N+1.
+!| A              |-->| BLOCK OF MATRICES
+!| B              |-->| BLOCK OF RIGHT-HAND SIZES
+!| D              |<--| BLOCK OF DIAGONALS
+!| DIADON         |-->| .TRUE. : DIAGONALS ARE GIVEN
+!| MESH           |-->| MESH STRUCTURE
+!| PRECON         |-->| CHOICE OF PRECONDITIONING
+!| PREXSM         |-->| .TRUE. : PRECONDITIONING X AND B
+!| X              |<->| BLOCK OF UNKNOWN VECTORS IN THE SYSTEM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PRECD1 => PRECD1

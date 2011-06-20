@@ -5,7 +5,7 @@
      &(OP,X,W,IW,Y,IY,LIMVOI,MXPTVS,NPMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FRONTAL MATRIX-VECTOR PRODUCT FOR ELEMENT 11-11.
@@ -30,16 +30,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IW             |---|
-!| IY             |---|
-!| LIMVOI         |---|
-!| MXPTVS         |---|
-!| NPMAX          |---|
-!| OP             |---|
-!| W              |-->| TABLEAUX DE TRAVAIL CONTENANT LE VECTEUR SOUS
-!|                |   | FORME NON ASSEMBLEE
-!| X              |<->| VECTEUR ASSEMBLE
-!| Y              |---|
+!| IW             |-->| ADDRESSES IN W
+!| IY             |-->| ADDRESSES IN Y
+!| LIMVOI         |-->| LIMVOI(N,1): LOWER RANK OF POINTS WITH N NEIGHBOURS
+!|                |   | LIMVOI(N,2): UPPER RANK OF POINTS WITH N NEIGHBOURS
+!| MXPTVS         |-->| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| W              |-->| OFF-DIAGONAL TERMS OF MATRIX
+!| X              |<->| FINAL ASSEMBLED VECTOR
+!| Y              |-->| X=AY WHERE OFF-DIAGONAL TERMS OF A ARE HERE W
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

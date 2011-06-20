@@ -5,7 +5,7 @@
      &( OP , M , N , D , C , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON MATRICES.
@@ -55,13 +55,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| D              |-->| MATRICE DIAGONALE : PEUT ETRE UNE STRUCTURE
-!|                |   | OU UN TABLEAU PROVISOIREMENT (VOIR TEST SUR D)
-!| M              |---|
-!| MESH           |---|
-!| N              |---|
-!| OP             |-->| OPERATION A EFFECTUER
+!| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
+!| D              |-->| A DIAGONAL MATRIX
+!| M              |<->| RESULTING MATRIX
+!| MESH           |-->| MESH STRUCTURE
+!| N              |-->| MATRIX USED IN FORMULA OP
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_OM => OM

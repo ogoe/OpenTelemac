@@ -5,7 +5,7 @@
      & ( OP , X , Y , Z , C , NPOIN )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON VECTORS.
@@ -80,13 +80,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| NPOIN          |-->| DIMENSION DES VECTEURS
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
-!| X              |<--| VECTEUR RESULTAT
-!| Y              |-->| VECTEUR OPERANDE
-!| Z              |-->| VECTEUR OPERANDE
+!| C              |-->| A GIVEN CONSTANT
+!| NPOIN          |-->| SIZE OF VECTORS
+!| OP             |-->| STRING INDICATING THE OPERATION TO BE DONE
+!| X              |<--| RESULTING VECTOR 
+!| Y              |-->| TO BE USED IN THE OPERATION
+!| Z              |-->| TO BE USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

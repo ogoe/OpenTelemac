@@ -5,7 +5,7 @@
      &(KNOGL,DIM1_KNOGL,KNOLG,NBOR,NACHB,NPTFR,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS ARRAY KNOGL.
@@ -30,17 +30,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIM1_KNOGL     |---|
-!| KNOGL          |<--| PASSAGE DES NUMEROS GLOBAUX AUX LOCAUX.
-!| KNOLG          |<--| PASSAGE DES NUMEROS LOCAUX  AUX GLOBAUX.
+!| DIM1_KNOGL     |-->| FIRST DIMENSION OF KNOGL
+!| KNOGL          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
+!| KNOLG          |<--| LOCAL NUMBER OF A GLOBAL POINT IN PARALLEL
 !| NACHB          |<->| NACHB(1,I) : GLOBAL (INPUT) OR LOCAL (OUTPUT)
 !|                |   | NUMBER OF INTERFACE POINT.
 !|                |   | NACHB(2 TO 5,I) : NUMBER OF OTHER SUB-DOMAINS
 !|                |   | CONTAINING THE POINT I.
 !|                |   | I IS A NUMBERING OF INTERFACE POINTS.
-!| NBOR           |<->| NUMEROS GLOBAUX DES POINTS DE BORD.
-!| NPOIN          |-->| NUMBER OF POINTS IN THE DOMAIN.
-!| NPTFR          |---|
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARAGL => PARAGL

@@ -6,7 +6,7 @@
      &   IOPT , INFINI, ZERO )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BETWEEN OS AND OVD WHEN 2-DIMENSION VECTORS ARE INVOLVED.
@@ -29,14 +29,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DIM1           |---|
-!| INFINI         |---|
-!| IOPT           |---|
-!| NPOIN          |---|
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
-!| ZERO           |---|
+!| C              |-->| A GIVEN CONSTANT
+!| DIM1           |-->| FIRST DIMENSION OF X, Y AND Z
+!| DIMX           |-->| SECOND DIMENSION OF X
+!| DIMY           |-->| SECOND DIMENSION OF Y
+!| DIMZ           |-->| SECOND DIMENSION OF Z
+!| INFINI         |-->| VALUE TO PUT INSTEAD OF 1/0
+!| IOPT           |-->| OPTION FOR DIVISIONS BY ZERO
+!|                |   | 1: NO TEST DONE (WILL CRASH IF DIVISION BY 0.).
+!|                |   | 2: INFINITE TERMS REPLACED BY CONSTANT INFINI.
+!|                |   | 3: STOP IF DIVISION BY ZERO.
+!|                |   | 4: DIVISIONS BY 0. REPLACED BY DIVISIONS/ZERO
+!|                |   |    ZERO BEING AN OPTIONAL ARGUMENT
+!| NPOIN          |-->| SIZE OF VECTORS
+!| OP             |-->| STRING INDICATING THE OPERATION TO BE DONE
+!| X              |<--| RESULTING VECTOR 
+!| Y              |-->| TO BE USED IN THE OPERATION
+!| Z              |-->| TO BE USED IN THE OPERATION
+!| ZERO           |-->| CRITERION FOR DIVISION BY ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

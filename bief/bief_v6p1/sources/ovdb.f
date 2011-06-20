@@ -5,7 +5,7 @@
      & ( OP , X , Y , Z , C , NBOR , NPTFR )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON VECTORS.
@@ -44,14 +44,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| NBOR           |-->| NUMEROTATION GLOBALE DES POINTS DE BORD.
-!| NPTFR          |---|
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
-!| X              |<--| VECTEUR RESULTAT
-!| Y              |-->| VECTEUR OPERANDE
-!| Z              |-->| VECTEUR OPERANDE
+!| C              |-->| A GIVEN CONSTANT
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| OP             |-->| STRING INDICATING THE OPERATION TO BE DONE
+!| X              |<--| RESULT (A BIEF_OBJ STRUCTURE)
+!| Y              |-->| TO BE USED IN THE OPERATION
+!| Z              |-->| TO BE USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

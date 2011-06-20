@@ -6,7 +6,7 @@
      & NB_NEIGHB_SEG,NELEM2,IFAPAR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAYS USED IN PARALLEL MODE.
@@ -34,14 +34,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FAC            |<--| FELD FUER FAKTOR QUADRATNORM
-!|                |   | (WITH QUADRATIC ELEMENTS WILL BE COMPLETED
-!|                |   | LATER IN SUBROUTINE COMP_FAC)
+!| FAC            |<--| 1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
 !| IFAPAR         |-->| IFAPAR(1:3,IELEM)=PROCESSOR NUMBERS BEHIND THE
 !|                |   | 3 ELEMENT EDGES  (NUMBERS FROM 0 TO NCSIZE-1)
 !|                |   | IFAPAR(4:6,IELEM): -LOCAL- ELEMENT NUMBERS
 !|                |   | BEHIND THE 3 EDGES
-!| INDPU          |<--| INDEXTABELLE FUER PUFFER IN KOMMUNIKATION
+!| INDPU          |<--| INDEX TABLE : IF 0: NOT AN INTERFACE POINT
+!|                |   |               IF NOT 0: ADDRESS IN THE LIST
+!|                |   |               OF BOUNDARY POINTS.
 !| MESH           |-->| MESH STRUCTURE
 !| NACHB          |-->| IF 'IL' IS THE LOCAL RANK OF A NEIGHBOURING
 !|                |   | SUB-DOMAIN AND 'IP' ONE INTERFACE POINT
@@ -54,12 +54,10 @@
 !| NB_NEIGHB      |<--| NUMBER OF NEIGHBOURING SUB-DOMAINS (FOR POINTS)
 !| NB_NEIGHB_SEG  |<--| NUMBER OF NEIGHBOURING SUB-DOMAINS (FOR EDGES)
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
-!| NHM            |<--| GEMEINSAME KNOTENNUMMERN ZU
-!|                |   | KLEINEREN NACHBARPROZESSOREN
-!| NHP            |<--| GEMEINSAME KNOTENNUMMERN ZU
-!|                |   | GROESSEREN NACHBARPROZESSOREN
+!| NHM            |<--| NODE NUMBERS OF PROCESSORS WITH SMALLER RANK
+!| NHP            |<--| NODE NUMBERS OF PROCESSORS WITH LARGER RANK
 !| NPLAN          |-->| NUMBER OF PLANES IN 3D
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARINI => PARINI

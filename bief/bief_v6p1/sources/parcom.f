@@ -5,7 +5,7 @@
      &( X , ICOM , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPLEMENTS A VECTOR AT THE INTERFACES BETWEEN
@@ -45,8 +45,8 @@
 !|                |   | = 2 : CONTRIBUTIONS ADDED
 !|                |   | = 3 : MAXIMUM CONTRIBUTION RETAINED
 !|                |   | = 4 : MINIMUM CONTRIBUTION RETAINED
-!| MESH           |-->| MAILLAGE.
-!| X              |<->| VECTEUR OU BLOC DE VECTEURS.
+!| MESH           |-->| MESH STRUCTURE
+!| X              |<->| VECTOR OR BLOCK OF VECTORS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARCOM => PARCOM

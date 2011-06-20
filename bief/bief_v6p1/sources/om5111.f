@@ -6,7 +6,7 @@
      & SIZDN,SZMDN,SIZXN,SZMXN,NETAGE, NELMAX3D)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON MATRICES.
@@ -52,20 +52,34 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DM,TYPDIM      |<->| DIAGONALE ET TYPE DE DIAGONALE DE M
-!| DN,TYPDIN      |-->| DIAGONALE ET TYPE DE DIAGONALE DE N
-!| NELMAX3D       |---|
-!| NETAGE         |-->| NOMBRE D'ETAGES DU MAILLAGE 3D
-!| OP             |-->| OPERATION A EFFECTUER
-!| SIZDN          |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| SIZXN          |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D
-!| SZMDN          |-->| NOMBRE MAXIMUM DE POINTS DU MAILLAGE 2D
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SZMXN          |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE 2D
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| XM,TYPEXM      |-->| TERMES EXTRA-DIAG. ET TYPE POUR M
-!| XN,TYPEXN      |-->| TERMES EXTRA-DIAG. ET TYPE POUR N
+!| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
+!| DM             |<->| DIAGONAL OF M
+!| DN             |-->| DIAGONAL OF N
+!| NELMAX3D       |-->| MAXIMUM NUMBER OF 3D ELEMENTS
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| SIZDN          |-->| SIZE OF DIAGONAL DN
+!| SIZXN          |-->| SIZE OF OFF-DIAGONAL TERMS XN
+!| SZMDN          |-->| MAXIMUM SIZE OF DIAGONAL DN
+!| SZMXN          |-->| MAXIMUM SIZE OF OFF-DIAGONAL TERMS XN
+!| TYPDIM         |<->| TYPE OF DIAGONAL OF M:
+!|                |   | TYPDIM = 'Q' : ANY VALUE
+!|                |   | TYPDIM = 'I' : IDENTITY
+!|                |   | TYPDIM = '0' : ZERO
+!| TYPDIN         |<->| TYPE OF DIAGONAL OF N:
+!|                |   | TYPDIN = 'Q' : ANY VALUE
+!|                |   | TYPDIN = 'I' : IDENTITY
+!|                |   | TYPDIN = '0' : ZERO
+!| TYPEXM         |-->| TYPE OF OFF-DIAGONAL TERMS OF M:
+!|                |   | TYPEXM = 'Q' : ANY VALUE
+!|                |   | TYPEXM = 'S' : SYMMETRIC
+!|                |   | TYPEXM = '0' : ZERO
+!| TYPEXN         |-->| TYPE OF OFF-DIAGONAL TERMS OF N:
+!|                |   | TYPEXN = 'Q' : ANY VALUE
+!|                |   | TYPEXN = 'S' : SYMMETRIC
+!|                |   | TYPEXN = '0' : ZERO
+!| XM             |-->| OFF-DIAGONAL TERMS OF M
+!| XN             |-->| OFF-DIAGONAL TERMS OF N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      & ( OP , X , Y , INDIC , CRITER , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CONDITIONAL OPERATIONS ON VECTORS.
@@ -45,13 +45,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CRITER         |-->| CRITERE POUR FAIRE L'OPERATION.
-!| INDIC          |-->| TABLEAU D'INDICATEURS.
-!| MESH           |-->| STRUCTURE DU MAILLAGE
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
-!| X              |<--| VECTEUR RESULTAT
-!| Y              |-->| VECTEUR OPERANDE
+!| CRITER         |-->| OPERATION DONE FOR I IF INDIC(I)=CRITER
+!| INDIC          |-->| INTEGER ARRAY WHERE TO LOOK FOR CRITER
+!| MESH           |-->| MESH STRUCTURE
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| X              |<--| RESULTING VECTOR
+!| Y              |-->| VECTOR USED IN OPERATION OP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

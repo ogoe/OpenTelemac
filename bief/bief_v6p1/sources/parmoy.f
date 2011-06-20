@@ -5,7 +5,7 @@
      &( X , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    AVERAGE OF A VECTOR AT THE INTERFACES BETWEEN
@@ -35,8 +35,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MESH           |-->| MAILLAGE.
-!| X              |<->| VECTEUR OU BLOC DE VECTEURS.
+!| MESH           |-->| MESH STRUCTURE
+!| X              |<->| VECTOR OR BLOCK OF VECTORS.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARMOY => PARMOY

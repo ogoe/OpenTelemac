@@ -6,7 +6,7 @@
      & NDIAG,NSEG1,NSEG2,GLOSEG,SIZGLO)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON MATRICES WITH AN EDGE-BASED STORAGE.
@@ -57,18 +57,32 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| D              |-->| MATRICE DIAGONALE
-!| DM,TYPDIM      |<->| DIAGONALE ET TYPE DE DIAGONALE DE M
-!| DN,TYPDIN      |-->| DIAGONALE ET TYPE DE DIAGONALE DE N
-!| GLOSEG         |---|
-!| NDIAG          |-->| NOMBRE DE VALEURS DE LA DIAGONALE.
-!| NSEG1          |---|
-!| NSEG2          |---|
-!| OP             |-->| OPERATION A EFFECTUER
-!| SIZGLO         |---|
-!| XM,TYPEXM      |-->| TERMES EXTRA-DIAG. ET TYPE POUR M
-!| XN,TYPEXN      |-->| TERMES EXTRA-DIAG. ET TYPE POUR N
+!| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
+!| D              |-->| A DIAGONAL MATRIX
+!| DM             |<->| DIAGONAL OF M
+!| DN             |-->| DIAGONAL OF N
+!| NDIAG          |-->| NUMBER OF TERMS IN THE DIAGONAL
+!| NSEG1          |-->| NUMBER OF SEGMENTS OF LINE ELEMENT
+!| NSEG2          |-->| NUMBER OF SEGMENTS OF COLUMN ELEMENT
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| TYPDIM         |<->| TYPE OF DIAGONAL OF M:
+!|                |   | TYPDIM = 'Q' : ANY VALUE
+!|                |   | TYPDIM = 'I' : IDENTITY
+!|                |   | TYPDIM = '0' : ZERO
+!| TYPDIN         |<->| TYPE OF DIAGONAL OF N:
+!|                |   | TYPDIN = 'Q' : ANY VALUE
+!|                |   | TYPDIN = 'I' : IDENTITY
+!|                |   | TYPDIN = '0' : ZERO
+!| TYPEXM         |-->| TYPE OF OFF-DIAGONAL TERMS OF M:
+!|                |   | TYPEXM = 'Q' : ANY VALUE
+!|                |   | TYPEXM = 'S' : SYMMETRIC
+!|                |   | TYPEXM = '0' : ZERO
+!| TYPEXN         |-->| TYPE OF OFF-DIAGONAL TERMS OF N:
+!|                |   | TYPEXN = 'Q' : ANY VALUE
+!|                |   | TYPEXN = 'S' : SYMMETRIC
+!|                |   | TYPEXN = '0' : ZERO
+!| XM             |-->| OFF-DIAGONAL TERMS OF M
+!| XN             |-->| OFF-DIAGONAL TERMS OF N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_OMSEG => OMSEG

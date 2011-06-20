@@ -6,7 +6,7 @@
      & MESH,PREXSM,DIADON)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BLOCK-DIAGONAL PRECONDITIONING OF A SYSTEM A X = B.
@@ -29,13 +29,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12,A21,A22|-->| MATRICE
-!| B2             |---|
-!| D11,D12,D21,D22|<--| STOCKAGE DE MATRICES DIAGONALES
-!| DIADON         |-->| .TRUE. : LES DIAGONALES SONT DONNEES.
-!| MESH           |-->| BLOC DES ENTIERS DU MAILLAGE.
-!| PREXSM         |-->| .TRUE. : ON PRECONDITIONNE X,X2,X3 ET SM
-!| X1,X2          |<->| VALEURS A L' ETAPE N+1.
+!| A11            |<->| TERM (1,1) OF MATRIX
+!| A12            |<->| TERM (1,2) OF MATRIX
+!| A21            |<->| TERM (2,1) OF MATRIX
+!| A22            |<->| TERM (2,2) OF MATRIX
+!| B1             |<->| FIRST RIGHT-HAND SIDE
+!| B2             |<->| SECOND RIGHT-HAND SIDE
+!| D11            |<--| DIAGONAL MATRIX
+!| D12            |<--| DIAGONAL MATRIX
+!| D21            |<--| DIAGONAL MATRIX
+!| D22            |<--| DIAGONAL MATRIX
+!| DIADON         |-->| .TRUE. : DIAGONALS ARE GIVEN
+!| MESH           |-->| MESH STRUCTURE
+!| PREXSM         |-->| .TRUE. : PRECONDITIONING X1,X2 AND B1,B2
+!| X1             |<->| FIRST INITIAL GUESS
+!| X2             |-->| SECOND INITIAL GUESS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PREBD4 => PREBD4
@@ -84,7 +92,7 @@
      &  'PRECONDITIONNEMENT BLOC-DIAGONAL IMPOSSIBLE DANS CE CAS')
 200     FORMAT(1X,'PREBD4 (BIEF) : RECTANGULAR MATRICES',/,1X,
      &  'BLOCK-DIAGONAL PRECONDITIONING IMPOSSIBLE IN THIS CASE')
-        CALL PLANTE(0)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
@@ -115,13 +123,13 @@
 !     ONLY D11 INVERTED IS NOW USED
       CALL OS( 'X=1/Y   ' , D11 , D11 , D11 , C)
 !
-      DO 10 I = 1,NPOIN1
+      DO I = 1,NPOIN1
 !
         D21%R(I) = D21%R(I) * D11%R(I)
         D22%R(I) = D22%R(I) - D21%R(I) * D12%R(I)
         D12%R(I) = D12%R(I) * D11%R(I)
 !
-10    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -166,9 +174,9 @@
 !
       IF(PREXSM) THEN
 !
-      DO 21 I = 1,NPOIN1
+      DO I = 1,NPOIN1
         B2%R(I) = B2%R(I) - D21%R(I) * B1%R(I)
-21    CONTINUE
+      ENDDO
 !
       ENDIF
 !

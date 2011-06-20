@@ -5,7 +5,7 @@
      & ( OP , X , Y , Z , C , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON VECTORS.
@@ -45,13 +45,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| MESH           |---|
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
-!| X              |<--| VECTEUR RESULTAT
-!| Y              |-->| VECTEUR OPERANDE
-!| Z              |-->| VECTEUR OPERANDE
+!| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
+!| MESH           |-->| MESH STRUCTURE
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| X              |<--| RESULTING VECTOR
+!| Y              |-->| VECTOR USED IN OPERATION OP
+!| Z              |-->| VECTOR USED IN OPERATION OP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_OSDB => OSDB
@@ -100,7 +99,8 @@
 !
       NPTFR = Y%DIM1
 !
-!C 3D MESH
+!     3D MESH
+!
       IF(IELMX.EQ.11.OR.IELMX.EQ.21.OR.IELMX.EQ.31.OR.IELMX.EQ.61.OR.
      &   IELMX.EQ.12.OR.IELMX.EQ.41.OR.IELMX.EQ.51.OR.IELMX.EQ.81) THEN
 !       ARRAY NBOR

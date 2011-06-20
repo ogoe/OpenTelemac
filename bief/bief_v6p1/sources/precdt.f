@@ -5,7 +5,7 @@
      &(X,A,B,D,MESH,PRECON,PREXSM,DIADON,S)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIAGONAL PRECONDITIONING OF A SYSTEM A X = B
@@ -98,20 +98,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE OU BLOC DE MATRICES
-!| B              |-->| SECONDS MEMBRES DU SYSTEME.
-!| D              |<--| STOCKAGE DE MATRICES DIAGONALES
-!|                |   | (TOUJOURS DANS UN BLOC)
-!| DIADON         |-->| .TRUE. : LES DIAGONALES SONT DONNEES.
-!| MESH           |-->| MAILLAGE.
-!| PRECON         |-->| VARIANTE DE PRECONDITIONNEMENT
-!|                |   | ICI PRECON DOIT ETRE MULTIPLE DE 2,3 OU 5
-!| PREXSM         |-->| .TRUE. : ON PRECONDITIONNE X1,X2,X3 ET SM
-!| S              |-->| 0 : SYSTEME NORMAL
-!|                |   | 1 : BLOC A UNE MATRICE
-!|                |   | 2 : BLOC A 4   MATRICES
-!|                |   | 3 : BLOC A 9   MATRICES
-!| X              |<->| VALEURS A L' ETAPE N+1.
+!| A              |-->| BLOCK OF MATRICES
+!| B              |-->| BLOCK OF RIGHT-HAND SIZES
+!| D              |<--| BLOCK OF DIAGONALS
+!| DIADON         |-->| .TRUE. : DIAGONALS ARE GIVEN
+!| MESH           |-->| MESH STRUCTURE
+!| PRECON         |-->| CHOICE OF PRECONDITIONING
+!| PREXSM         |-->| .TRUE. : PRECONDITIONING X1,X2 AND B1,B2
+!| S              |-->| 0 : A NORMAL SYSTEM       (FORBIDDEN HERE)
+!|                |   | 1 : BLOCK OF ONE MATRIX   (FORBIDDEN HERE)
+!|                |   | 2 : BLOCK OF 4 MATRICES
+!|                |   | 3 : BLOCK OF 9 MATRICES
+!| X              |<->| BLOCK OF UNKNOWN VECTORS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PRECDT => PRECDT

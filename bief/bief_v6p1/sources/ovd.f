@@ -5,7 +5,7 @@
      & ( OP , X , Y , Z , C , NPOIN , IOPT , D , EPS )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON VECTORS INCLUDING DIVISIONS
@@ -48,20 +48,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| D              |---|
-!| EPS            |-->| CRITERE DE DIVISION PAR ZERO
-!| IOPT           |-->| OPTION : 1 ON NE FAIT PAS DE TEST
-!|                |   | 2 LES TERMES INFINIS SONT REMPLACES
-!|                |   | PAR LA CONSTANTE D.
-!|                |   | 3 ARRET EN CAS DE DIVISION PAR ZERO
-!|                |   | 4 LES TERMES INFINIS SONT TRONQUES
-!| NPOIN          |-->| DIMENSION DES VECTEURS
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
-!| X              |<--| VECTEUR RESULTAT
-!| Y              |-->| VECTEUR OPERANDE
-!| Z              |-->| VECTEUR OPERANDE
+!| C              |-->| A GIVEN CONSTANT
+!| D              |-->| A DIAGONAL MATRIX
+!| EPS            |-->| THRESHOLD TO AVOID DIVISIONS BY ZERO
+!| IOPT           |-->| OPTION FOR DIVISIONS BY ZERO
+!|                |   | 1: NO TEST DONE (WILL CRASH IF DIVISION BY 0.).
+!|                |   | 2: INFINITE TERMS REPLACED BY CONSTANT INFINI.
+!|                |   | 3: STOP IF DIVISION BY ZERO.
+!|                |   | 4: DIVISIONS BY 0. REPLACED BY DIVISIONS/ZERO
+!|                |   |    ZERO BEING AN OPTIONAL ARGUMENT
+!| NPOIN          |-->| SIZE OF VECTORS
+!| OP             |-->| STRING INDICATING THE OPERATION TO BE DONE
+!| X              |<--| RESULTING VECTOR 
+!| Y              |-->| TO BE USED IN THE OPERATION
+!| Z              |-->| TO BE USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &( X1 , X2 , X3 , NSEG , NPLAN , ICOM , IAN , MESH , OPT )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPLEMENTS A VECTOR OF SEGMENT AT THE INTERFACES
@@ -45,12 +45,14 @@
 !|                |   | = 2 : CONTRIBUTIONS ADDED
 !|                |   | = 3 : MAXIMUM CONTRIBUTION RETAINED
 !|                |   | = 4 : MINIMUM CONTRIBUTION RETAINED
-!| MESH           |-->| MAILLAGE 2D
+!| MESH           |-->| MESH STRUCTURE
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NSEG           |-->| NUMBER OF 2D SEGMENTS
 !| OPT            |-->| 1 : HORIZONTAL AND VERTICAL SEGMENTS ONLY
 !|                |   | 2 : ALL SEGMENTS
-!| X1,X2,X3       |<->| 3 VECTORS CAN BE TREATED, SEE IAN
+!| X1             |<->| VECTOR TO BE COMPLETED, SEE IAN
+!| X2             |<->| VECTOR TO BE COMPLETED, SEE IAN
+!| X3             |<->| VECTOR TO BE COMPLETED, SEE IAN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARCOM2_SEG => PARCOM2_SEG

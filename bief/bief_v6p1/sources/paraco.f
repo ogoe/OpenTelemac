@@ -6,7 +6,7 @@
      & NH_COM,DIMNHCOM,BUF_SEND,BUF_RECV,DIMBUF)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLES DATA SHARED BY SEVERAL PROCESSORS.
@@ -48,7 +48,9 @@
 !|                |   | WHOSE REAL NUMBER IS LIST_SEND(IL)
 !| NPLAN          |-->| SECOND DIMENSION OF V1,V2,V3
 !| NPOIN          |-->| FIRST DIMENSION OF V1,V2,V3
-!| V1,V2,V3       |<->| VECTORS TO BE COMPLETED
+!| V1             |<->| VECTOR TO BE COMPLETED
+!| V2             |<->| VECTOR TO BE COMPLETED
+!| V3             |<->| VECTOR TO BE COMPLETED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF

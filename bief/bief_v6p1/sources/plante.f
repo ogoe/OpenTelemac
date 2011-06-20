@@ -5,7 +5,7 @@
      &(IVAL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CAUSES A DIVIDE CHECK IF IVAL = 0 SUCH THAT THE CALL TREE
@@ -39,7 +39,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IVAL           |-->| VALEUR ENTIERE
+!| IVAL           |-->| INTEGER VALUE, OPTION, SEE CODE BELOW
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -76,9 +76,9 @@
 !JAJ SETTING EXIT VALUES ACCORDING TO THE IVAL VALUE
 !    IN CODE IVAL=0 OR IVAL=1 ARE USED NON-CONSEQUENTLY
 !
-      IF(IVAL < 0) THEN
+      IF(IVAL.LT.0) THEN
         ICODE = 0      ! JUST ASSUMED FOR NON-ERROR STOP
-      ELSE IF ((IVAL==0) .OR. (IVAL==1)) THEN
+      ELSEIF(IVAL.EQ.0.OR.IVAL.EQ.1) THEN
         ICODE = 2      ! EXIT CODE 1 INDICATING A "CONTROLLED" ERROR
       ELSE
         ICODE = 1     ! SOMETHING ELSE? BUT AN ERROR!

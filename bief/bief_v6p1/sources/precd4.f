@@ -6,7 +6,7 @@
      & B1,B2,D1,D2,MESH,PRECON,PREXSM,DIADON)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIAGONAL PRECONDITIONING OF A SYSTEM A X = B
@@ -32,14 +32,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11,A12,A21,A22|-->| MATRICES COMPOSANT LE BLOC A
-!| B1,B2          |-->| SECONDS MEMBRES DU SYSTEME.
-!| D1,D2          |<--| STOCKAGE DE MATRICES DIAGONALES
-!| DIADON         |-->| .TRUE. : LES DIAGONALES SONT DONNEES.
-!| MESH           |-->| MAILLAGE.
-!| PRECON         |-->| VARIANTE DE PRECONDITIONNEMENT
-!| PREXSM         |-->| .TRUE. : ON PRECONDITIONNE X1,X2 ET SM
-!| X1,X2          |<->| VALEURS A L' ETAPE N+1.
+!| A11            |<->| TERM (1,1) OF MATRIX
+!| A12            |<->| TERM (1,2) OF MATRIX
+!| A21            |<->| TERM (2,1) OF MATRIX
+!| A22            |<->| TERM (2,2) OF MATRIX
+!| B1             |<->| FIRST RIGHT-HAND SIDE
+!| B2             |<->| SECOND RIGHT-HAND SIDE
+!| D1             |<--| DIAGONAL MATRIX
+!| D2             |<--| DIAGONAL MATRIX
+!| DIADON         |-->| .TRUE. : DIAGONALS ARE GIVEN
+!| MESH           |-->| MESH STRUCTURE
+!| PRECON         |-->| CHOICE OF PRECONDITIONING
+!| PREXSM         |-->| .TRUE. : PRECONDITIONING X1,X2 AND B1,B2
+!| X1             |<->| FIRST INITIAL GUESS
+!| X2             |-->| SECOND INITIAL GUESS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PRECD4 => PRECD4

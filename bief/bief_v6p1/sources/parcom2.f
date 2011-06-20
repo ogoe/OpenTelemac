@@ -5,7 +5,7 @@
      &( X1 , X2 , X3 , NPOIN , NPLAN , ICOM , IAN , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPLEMENTS A VECTOR AT THE INTERFACES BETWEEN
@@ -40,18 +40,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IAN            |---|
+!| IAN            |-->| NUMBER OF VECTORS TO BE CONDIDERED (1, 2 OR 3)
 !| ICOM           |-->| COMMUNICATION MODE
 !|                |   | = 1 : VALUE WITH MAXIMUM ABSOLUTE VALUE TAKEN
 !|                |   | = 2 : CONTRIBUTIONS ADDED
 !|                |   | = 3 : MAXIMUM CONTRIBUTION RETAINED
 !|                |   | = 4 : MINIMUM CONTRIBUTION RETAINED
-!| MESH           |-->| MAILLAGE.
-!| NPLAN          |---|
-!| NPOIN          |---|
-!| X1             |---|
-!| X2             |---|
-!| X3             |---|
+!| MESH           |-->| MESH STRUCTURE
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| X1             |<->| VECTOR TO BE COMPLETED
+!| X2             |<->| VECTOR TO BE COMPLETED
+!| X3             |<->| VECTOR TO BE COMPLETED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARCOM2 => PARCOM2

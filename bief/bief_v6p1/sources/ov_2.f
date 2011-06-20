@@ -5,7 +5,7 @@
      & ( OP , X , DIMX , Y , DIMY , Z , DIMZ , C , DIM1 , NPOIN )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    BETWEEN OS AND OV WHEN 2-DIMENSION VECTORS ARE INVOLVED.
@@ -28,11 +28,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| DIM1           |---|
-!| NPOIN          |---|
-!| OP             |-->| CHAINE DE CARACTERES INDIQUANT L'OPERATION
-!|                |   | A EFFECTUER.
+!| C              |-->| A GIVEN CONSTANT
+!| DIM1           |-->| FIRST DIMENSION OF X, Y AND Z
+!| DIMX           |-->| SECOND DIMENSION OF X
+!| DIMY           |-->| SECOND DIMENSION OF Y
+!| DIMZ           |-->| SECOND DIMENSION OF Z
+!| NPOIN          |-->| SIZE OF VECTORS
+!| OP             |-->| STRING INDICATING THE OPERATION TO BE DONE
+!| X              |<--| RESULTING VECTOR 
+!| Y              |-->| TO BE USED IN THE OPERATION
+!| Z              |-->| TO BE USED IN THE OPERATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

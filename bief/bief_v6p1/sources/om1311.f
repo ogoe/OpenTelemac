@@ -6,7 +6,7 @@
      & IKLE,NELEM,NELMAX,NDIAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS ON RECTANGULAR MATRICES
@@ -35,15 +35,15 @@
 !code
 !+  CONVENTION FOR THE STORAGE OF EXTRA-DIAGONAL TERMS:
 !+
-!+     XM(IELEM, 1)  ---->  M(1,2)
-!+     XM(IELEM, 2)  ---->  M(1,3)
-!+     XM(IELEM, 3)  ---->  M(2,1)
-!+     XM(IELEM, 4)  ---->  M(2,3)
-!+     XM(IELEM, 5)  ---->  M(3,1)
-!+     XM(IELEM, 6)  ---->  M(3,2)
-!+     XM(IELEM, 7)  ---->  M(4,1)
-!+     XM(IELEM, 8)  ---->  M(4,2)
-!+     XM(IELEM, 9)  ---->  M(4,3)
+!+     XM(IELEM, 1)   ---->  M(1,2)
+!+     XM(IELEM, 2)   ---->  M(1,3)
+!+     XM(IELEM, 3)   ---->  M(2,1)
+!+     XM(IELEM, 4)   ---->  M(2,3)
+!+     XM(IELEM, 5)   ---->  M(3,1)
+!+     XM(IELEM, 6)   ---->  M(3,2)
+!+     XM(IELEM, 7)   ---->  M(4,1)
+!+     XM(IELEM, 8)   ---->  M(4,2)
+!+     XM(IELEM, 9)   ---->  M(4,3)
 !+     XM(IELEM, 10)  ---->  M(5,1)
 !+     XM(IELEM, 11)  ---->  M(5,2)
 !+     XM(IELEM, 12)  ---->  M(5,3)
@@ -69,18 +69,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| CONSTANTE DONNEE
-!| D              |-->| MATRICE DIAGONALE
-!| DM,TYPDIM      |<->| DIAGONALE ET TYPE DE DIAGONALE DE M
-!| DN,TYPDIN      |-->| DIAGONALE ET TYPE DE DIAGONALE DE N
-!| IKLE           |-->| CORRESPONDANCE NUMEROTATIONS LOCALE ET GLOBALE
-!| NDIAG          |-->| NOMBRE DE VALEURS DE LA DIAGONALE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| OP             |-->| OPERATION A EFFECTUER
-!| XM,TYPEXM      |-->| TERMES EXTRA-DIAG. ET TYPE POUR M
-!| XN,TYPEXN      |-->| TERMES EXTRA-DIAG. ET TYPE POUR N
+!| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
+!| D              |-->| A DIAGONAL MATRIX
+!| DM             |<->| DIAGONAL OF M
+!| DN             |-->| DIAGONAL OF N
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NDIAG          |-->| NUMBER OF TERMS IN THE DIAGONAL
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| TYPDIM         |<->| TYPE OF DIAGONAL OF M:
+!|                |   | TYPDIM = 'Q' : ANY VALUE
+!|                |   | TYPDIM = 'I' : IDENTITY
+!|                |   | TYPDIM = '0' : ZERO
+!| TYPDIN         |<->| TYPE OF DIAGONAL OF N:
+!|                |   | TYPDIN = 'Q' : ANY VALUE
+!|                |   | TYPDIN = 'I' : IDENTITY
+!|                |   | TYPDIN = '0' : ZERO
+!| TYPEXM         |-->| TYPE OF OFF-DIAGONAL TERMS OF M:
+!|                |   | TYPEXM = 'Q' : ANY VALUE
+!|                |   | TYPEXM = 'S' : SYMMETRIC
+!|                |   | TYPEXM = '0' : ZERO
+!| TYPEXN         |-->| TYPE OF OFF-DIAGONAL TERMS OF N:
+!|                |   | TYPEXN = 'Q' : ANY VALUE
+!|                |   | TYPEXN = 'S' : SYMMETRIC
+!|                |   | TYPEXN = '0' : ZERO
+!| XM             |-->| OFF-DIAGONAL TERMS OF M
+!| XN             |-->| OFF-DIAGONAL TERMS OF N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_OM1311 => OM1311
