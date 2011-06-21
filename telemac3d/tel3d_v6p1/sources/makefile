@@ -2,7 +2,7 @@
 #
 # Makefile de TELEMAC3D pour Unix.
 #
-# ATTENTION : doit �tre lanc� dans le r�pertoire ad�quat :
+# ATTENTION : doit �tre lanc� dans le repertoire adequat :
 #                   telemac3d*/.../sources.
 #
 # Modes supportes :
@@ -134,7 +134,7 @@ kepicl.f           kepini.f   komcl3.f   lichek.f \
 limi3d.f           longmb.f   longml.f   mask3d.f \
 mass3d.f           massed.f   mesh_prop.f mittit.f \
 murd3d.f           murd3d_pos.f          nomvar_telemac3d.f  nomvar_2d_in_3d.f  \
-nuwave_p0.f        phstat.f   plane_bottom.f  precon.f   prediv.f  prepare_advection.f q3.f \
+nuwave_p0.f        oil_spill_3d.f phstat.f   plane_bottom.f  precon.f   prediv.f  prepare_advection.f q3.f \
 rhs_pressure.f     scope.f    sed3d.f    sflo3d.f   sl3.f      smago.f    smago3d.f \
 soukep.f           soukom.f   source.f   sources_sinks.f source_trac.f stress.f suised.f sumver.f \
 tassec.f           tassem.f   tbord.f    telemac3d.f t3d_debsce.f t3d_read_fic_curves.f t3d_trsce.f \

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINCIPAL TELEMAC3D VARIABLES
@@ -1004,9 +1004,6 @@ C
 !> @brief REFERENCE FILE NUMBER
 C fichier de reference
       INTEGER T3DREF
-!> @brief RESULT FILE NUMBER FOR SUBIEF-3D
-C fichier des resultats pour subief-3d
-      INTEGER T3DLEO
 !
 !     LIQUID BOUNDARIES FILE NUMBER
 !
@@ -1032,6 +1029,10 @@ C fichier des resultats pour subief-3d
 !     FORMATTED RESULTS FILE NUMBER
 !
       INTEGER T3DRFO
+!
+!     MIGRHYCAR STEERING FILE
+!
+      INTEGER T3DMIG
 !
 !     NUMBER OF VARIABLES TO BE ADVECTED BY A GIVEN SCHEME
 !     AND THEIR LIST IN THE LIST OF ADVECTED VARIABLES
@@ -1203,37 +1204,45 @@ C si oui, pression dynamique dans l'equation d'onde
 !     FOR TAKING INTO ACCOUNT RAIN IN ADVECTION OF VARIABLES
 !
       LOGICAL CALCRAIN(5+MAXTRA)
-C
-C-----------------------------------------------------------------------
-C (6) REALS
-C-----------------------------------------------------------------------
-C
-!> @brief TIME
-C valeur du temps en cours
+!
+!     OIL SPILL MODEL
+!
+      LOGICAL SPILL_MODEL
+!
+!-----------------------------------------------------------------------
+! (6) REALS
+!-----------------------------------------------------------------------
+!
+!     TIME
+!
       DOUBLE PRECISION AT
-!> @brief TIMESTEP
-C pas de temps
+!
+!     TIMESTEP
+!
       DOUBLE PRECISION DT
-!> @brief DURATION
-C duree du calcul
+!
+!     DURATION
+!
       DOUBLE PRECISION DUREE
-!> @brief GRAVITY ACCELERATION
-C acceleration de la pesanteur
+!
+!     GRAVITY ACCELERATION
+!
       DOUBLE PRECISION GRAV
-!> @brief CORIOLIS COEFFICIENT
-C coefficient de coriolis
+!
+!     CORIOLIS COEFFICIENT
+!
       DOUBLE PRECISION FCOR
-!> @brief DRAG COEFFICIENT OF WIND
-C coefficient d'influence du vent
+!
+!     DRAG COEFFICIENT OF WIND
+!
       DOUBLE PRECISION FAIR
-!> @brief WIND VELOCITY ALONG X
-C vitesse du vent suivant x
-      DOUBLE PRECISION FUAIR
-!> @brief WIND VELOCITY ALONG Y
-C vitesse du vent suivant y
-      DOUBLE PRECISION FVAIR
-!> @brief AIR TEMPERATURE
-C temperature de l'air
+!
+!     WIND VELOCITY ALONG X, AND Y
+!
+      DOUBLE PRECISION FUAIR,FVAIR
+!
+!     AIR TEMPERATURE
+!
       DOUBLE PRECISION TAIR
 !> @brief WATER DENSITY AT REFERENCE CONCENTRATION
 C masse volumique de reference de l'eau
