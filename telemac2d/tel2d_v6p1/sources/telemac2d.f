@@ -2060,7 +2060,7 @@
 !
       IF(SPILL_MODEL) THEN
 !
-        CALL OIL_SPILL
+        CALL OIL_SPILL_2D
 !
       ENDIF
 !

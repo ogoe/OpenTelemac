@@ -140,7 +140,7 @@ kepscl.f kepsil.f   kepsin.f lagran.f  \
 lecsip.f lecsng.f   loiden.f loinoy.f  majtrac.f majzz.f \
 marast.f masbas2d.f maskob.f   matbou.f mesures.f meteo.f  metgra.f \
 newstr.f nodalf_pugh.f nodalupv_pugh.f nomvar_telemac2d.f output_telemac2d.f point_telemac2d.f point_adj_t2d.f  \
-oil_spill.f poros.f poro11.f \
+oil_spill_2d.f poros.f poro11.f \
 prebor.f preres_telemac2d.f  propag.f propag_adj.f propin_telemac2d.f  \
 prosou.f q.f  read_fic_curves.f read_fic_sources.f read_sections_telemac2d.f \
 reinit.f rescue.f resolu.f  read_fic_frliq.f \

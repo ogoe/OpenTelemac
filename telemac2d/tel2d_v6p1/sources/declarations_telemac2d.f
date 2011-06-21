@@ -70,47 +70,53 @@
 !     K AT NEW TIME-STEP
 !  
       TYPE(BIEF_OBJ), TARGET :: AK
-!brief EPSILON AT NEW TIME-STEP
-! energie turbulents au temps n+1
+!
+!     EPSILON AT NEW TIME-STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: EP
-!brief U AFTER ADVECTION BY CHARACTERISTICS
-! vitesse apres la convection
-      TYPE(BIEF_OBJ), TARGET :: UTILD
-!brief V AFTER ADVECTION BY CHARACTERISTICS
-! vitesse apres la convection
-      TYPE(BIEF_OBJ), TARGET :: VTILD
-!brief H AFTER ADVECTION BY CHARACTERISTICS
-! hauteur d'eau apres la convection
+!
+!     U AND V AFTER ADVECTION BY CHARACTERISTICS
+! 
+      TYPE(BIEF_OBJ), TARGET :: UTILD,VTILD
+!
+!     H AFTER ADVECTION BY CHARACTERISTICS
+! 
       TYPE(BIEF_OBJ), TARGET :: HTILD
-!brief T AFTER ADVECTION BY CHARACTERISTICS
-! traceur avant l'etape traitee
+!
+!     T AFTER ADVECTION BY CHARACTERISTICS
+! 
       TYPE(BIEF_OBJ), TARGET :: TTILD
-!brief AK AFTER ADVECTION BY CHARACTERISTICS
-! dissipation turbulente avant l'etape traitee
+!
+!     AK AFTER ADVECTION BY CHARACTERISTICS
+! 
       TYPE(BIEF_OBJ), TARGET :: AKTILD
-!brief EP AFTER ADVECTION BY CHARACTERISTICS
-! energie turbulente avant l'etape traitee
+!
+!     EP AFTER ADVECTION BY CHARACTERISTICS
+! 
       TYPE(BIEF_OBJ), TARGET :: EPTILD
-!brief U AT OLD TIME-STEP
-! composantes de la vitesse au temps n
-      TYPE(BIEF_OBJ), TARGET :: UN
-!brief V AT OLD TIME-STEP
-! composantes de la vitesse au temps n
-      TYPE(BIEF_OBJ), TARGET :: VN
-!brief H AT OLD TIME-STEP
-! hauteur d'eau au temps n
+!
+!     U AND V AT OLD TIME-STEP
+!
+      TYPE(BIEF_OBJ), TARGET :: UN,VN
+!
+!     H AT OLD TIME-STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: HN
-!brief T AT OLD TIME-STEP
-! traceur au temps n
+!
+!     T AT OLD TIME-STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: TN
-!brief AK AT OLD TIME-STEP
-! dissipation turbulente au temps n
+!
+!     AK AT OLD TIME-STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: AKN
-!brief EP AT OLD TIME-STEP
-! energie turbulente au temps n
+!
+!     EP AT OLD TIME-STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: EPN
-!brief INCREMENT OF H IN ONE TIME STEP
-! accriossements en h
+!
+!     INCREMENT OF H IN ONE TIME STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: DH
 !brief INCREMENT OF U IN ONE TIME STEP
 ! accriossements en u
@@ -572,14 +578,17 @@
 !brief ARRAY CONTAINING THE GLOBAL NUMBER OF POINTS IN THE CONTROL SECTIONS
 ! donnees sur les sections de controle
       INTEGER, ALLOCATABLE :: CTRLSC(:)
-!brief MAXIMUM RANK OF LOGICAL UNITS AS DECLARED IN SUBMIT STRINGS IN THE DICTIONARY
+!
+!     MAXIMUM RANK OF LOGICAL UNITS AS DECLARED IN SUBMIT STRINGS IN THE DICTIONARY
 !
       INTEGER, PARAMETER :: MAXLU_T2D = 47
-!brief MAXIMUM NUMBER OF POINTS ON ONE SIDE OF A SINGULARITY (READ IN THE DATA)
-! nombre maximum de points pour un cote d'une singularite
+!
+!     MAXIMUM NUMBER OF POINTS ON ONE SIDE OF A SINGULARITY (READ IN THE DATA)
+! 
       INTEGER NPSMAX
-!brief MAXIMUM NUMBER OF SINGULARITIES
-! nombre maximum de singularites prevues
+!
+!     MAXIMUM NUMBER OF SINGULARITIES
+! 
       INTEGER, PARAMETER :: NWRMAX = 10
 !brief
 ! nombre de points de chaque cote de chaque singularite
@@ -587,14 +596,17 @@
 !brief GEOMETRY FILE NUMBER
 ! fichier de geometrie
       INTEGER T2DGEO
-!brief BOUNDARY CONDITIONS FILE NUMBER
-! fichier des conditions aux limites
+!
+!     BOUNDARY CONDITIONS FILE NUMBER
+! 
       INTEGER T2DCLI
-!brief PREVIOUS COMPUTATION FILE NUMBER
-! fichier du calcul precedent
+!
+!     PREVIOUS COMPUTATION FILE NUMBER
+!
       INTEGER T2DPRE
-!brief RESULTS FILE NUMBER
-! fichier des resultats
+!
+!     RESULTS FILE NUMBER
+! 
       INTEGER T2DRES
 !brief BOTTOM TOPOGRAPHY FILE NUMBER
 ! fichier des fonds
