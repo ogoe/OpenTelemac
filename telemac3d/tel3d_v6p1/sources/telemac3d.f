@@ -1795,6 +1795,16 @@
 !
       ENDIF
 !
+!=======================================================================
+!     OIL SPILL MODEL (UNDER DEVELOPMENT IN MYGRHYCAR PROJECT)
+!=======================================================================
+!
+      IF(SPILL_MODEL) THEN
+!
+        CALL OIL_SPILL_3D
+!
+      ENDIF
+!
 !-----------------------------------------------------------------------
 ! ADVECTION-DIFFUSION OF TRACERS
 !
@@ -1983,16 +1993,6 @@
      &               SHPFLO%R,SHZFLO%R,DEBFLO%I,FINFLO%I,ELTFLO%I,
      &               ETAFLO%I,NFLOT,NITFLO,FLOPRD)
          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DERI3D'
-!
-      ENDIF
-!
-!=======================================================================
-!       OIL SPILL MODEL (UNDER DEVELOPMENT IN MYGRHYCAR PROJECT)
-!=======================================================================
-!
-      IF(SPILL_MODEL) THEN
-!
-        CALL OIL_SPILL_3D
 !
       ENDIF
 !
