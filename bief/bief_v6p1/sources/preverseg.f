@@ -5,7 +5,7 @@
      &(XAUX,AD,AX,TYPDIA,TYPEXT,NPOIN,MESH,NSEG3D)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS TRIDIAGONAL SYSTEMS FOR EVERY VERTICAL,
@@ -36,14 +36,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AD             |---|
-!| AX             |---|
-!| MESH           |---|
-!| NPOIN          |---|
-!| NSEG3D         |---|
-!| TYPDIA         |---|
-!| TYPEXT         |---|
-!| XAUX           |---|
+!| AD             |-->| MATRIX DIAGONAL
+!| AX             |-->| MATRIX OFF-DIAGONAL TERMS
+!| MESH           |-->| MESH STRUCTURE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG3D         |-->| NUMBER OF SEGMENTS IN 3D MESH
+!| TYPDIA         |-->| TYPE OF DIAGONAL:
+!|                |   | TYPDIA = 'Q' : ANY VALUE
+!|                |   | TYPDIA = 'I' : IDENTITY
+!|                |   | TYPDIA = '0' : ZERO
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
+!| XAUX           |<--| TRIDIAGONAL MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PREVERSEG => PREVERSEG
@@ -56,8 +62,8 @@
 !
       INTEGER, INTENT(IN) :: NPOIN,NSEG3D
 !
-      DOUBLE PRECISION, INTENT(IN)    :: AD(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*),AX(NSEG3D,2)
+      DOUBLE PRECISION, INTENT(IN)    :: AD(NPOIN),AX(NSEG3D,2)
+      DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*)
 !
       CHARACTER(LEN=1), INTENT(IN) :: TYPDIA,TYPEXT
 !

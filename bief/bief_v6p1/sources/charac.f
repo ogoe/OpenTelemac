@@ -175,13 +175,13 @@
 !
       ELSEIF(NCSIZE.GE.1) THEN
 !     
-        CALL PRE_SCARACT_MAILLAGE(FN,FTILD,UCONV%R,VCONV%R,WCONV%R,
-     &                MESH%X%R,MESH%Y%R,ZSTAR%R,
-     &                T1,T2,T3%R,MESH%Z%R,SHP%R,SHZ%R,
-     &                SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
-     &                IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     &                3,NPLAN,MESH%LV,MSK,MASKEL%R,
-     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD)
+        CALL PRE_SCARACT_MAILLAGE(FN,FTILD,WCONV%R,
+     &                            MESH%X%R,MESH%Y%R,ZSTAR%R,
+     &                            T1,T2,T3%R,MESH%Z%R,SHP%R,SHZ%R,
+     &                            IKLE2%I,IT1,IT2,IELM,IELMU,NELEM2,
+     &                            NELMAX2,NPOIN,NPOIN2,
+     &                            3,NPLAN,MSK,MASKEL%R,
+     &                            MESH,T7,INITLOC,QUAD)
 !        
         CALL SCARACT( FN , FTILD , UCONV%R , VCONV%R , WCONV%R ,
      &                MESH%X%R,MESH%Y%R,ZSTAR%R,

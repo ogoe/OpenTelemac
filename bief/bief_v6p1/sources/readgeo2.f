@@ -5,7 +5,7 @@
      &(NPOIN,NELEM,NPTFR,NDP,IKLES,IPOBO,IB,NFIC)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS OR COMPUTES THE VALUES OF NPOIN, NELEM, NPTFR.
@@ -32,14 +32,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IB             |-->|
-!| IKLES          |<--| TABLE DE CONNECTIVITE
-!| IPOBO          |<--| TABLE NUEROS NOEUDS DE BORD
-!| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NFIC           |-->| UNITE LOGIQUE DU FICHIER GEO
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE DU DOMAINE.
+!| IB             |-->| SERIES OF 10 INTEGERS IN THE SELAFIN FORMAT
+!| IKLES          |-->| LIKE CONNECTIVITY TABLE BUT IN SELAFIN FORMAT
+!|                |   | IKLES(3,NELEM) INSTEAD OF IKLE(NELEM,3)
+!| IPOBO          |<--| INTEGER ARRAY. WHEN 0: INNER POINT
+!|                |   | IF NOT 0, BOUNDARY POINT NUMBER
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NFIC           |-->| LOGICAL UNIT OF GEOMETRY FILE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_READGEO2 => READGEO2

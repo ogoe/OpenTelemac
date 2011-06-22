@@ -5,7 +5,7 @@
      &(N,P,D,IJU,JU,IU,U,Z,B,TMP)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLUTION OF SPARSE SYMMETRICAL POSITIVE
@@ -76,10 +76,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |---| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
+!| B              |-->| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | RIGHT-HAND SIDE B; B AND Z CAN BE THE SAME ARRAY;
 !|                |   | DIMENSION = N
-!| D              |---| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
+!| D              |<--| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | RECIPROCALS OF THE DIAGONAL ENTRIES OF THE
 !|                |   | MATRIX D;  DIMENSION = N
 !| IJU            |-->| INTEGER ONE-DIMENSIONAL ARRAY CONTAINING
@@ -94,11 +94,11 @@
 !|                |   | THE PERMUTATION OF THE ROWS AND COLUMNS OF M
 !|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;
 !|                |   | DIMENSION = N
-!| TMP            |---| REAL ONE-DIMENSIONAL WORK ARRAY; DIMENSION N
-!| U              |---| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
+!| TMP            |<--| REAL ONE-DIMENSIONAL WORK ARRAY; DIMENSION N
+!| U              |<--| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | NONZERO ENTRIES IN THE STRICT UPPER TRIANGLE
 !|                |   | OF U, STORED BY ROWS; DIMENSION = UMAX
-!| Z              |---| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
+!| Z              |<--| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | SOLUTION X;  Z AND B CAN BE THE SAME ARRAY;
 !|                |   | DIMENSION = N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

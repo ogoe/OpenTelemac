@@ -5,7 +5,7 @@
      &(XEL,X,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GOES FROM A VECTOR BY POINTS TO A VECTOR BY ELEMENTS.
@@ -28,9 +28,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MESH           |---|
-!| X              |-->| VECTEUR PAR POINTS
-!| XEL            |<--| VECTEUR SUR LES ELEMENTS
+!| MESH           |-->| MESH STRUCTURE
+!| X              |-->| VECTOR DEFINED PER POINT
+!| XEL            |<--| SAME VECTOR DEFINED PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PTTOEL => PTTOEL

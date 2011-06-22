@@ -31,16 +31,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AD             |---|
-!| AX             |---|
-!| IKLE           |---|
-!| MESH           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!| NPOIN          |---|
-!| TYPDIA         |---|
-!| TYPEXT         |---|
-!| XAUX           |---|
+!| AD             |-->| MATRIX DIAGONAL
+!| AX             |-->| MATRIX OFF-DIAGONAL TERMS
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| MESH           |-->| MESH STRUCTURE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TYPDIA         |-->| TYPE OF DIAGONAL:
+!|                |   | TYPDIA = 'Q' : ANY VALUE
+!|                |   | TYPDIA = 'I' : IDENTITY
+!|                |   | TYPDIA = '0' : ZERO
+!| TYPEXT         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
+!| XAUX           |<--| TRIDIAGONAL MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PREVEREBE => PREVEREBE
@@ -54,8 +60,8 @@
       INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN
       INTEGER, INTENT(IN) :: IKLE(NELMAX,6)
 !
-      DOUBLE PRECISION, INTENT(IN) :: AD(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*),AX(NELMAX,*)
+      DOUBLE PRECISION, INTENT(IN) :: AD(NPOIN),AX(NELMAX,*)
+      DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*)
 !
       CHARACTER(LEN=1), INTENT(IN) :: TYPDIA,TYPEXT
 !
@@ -77,8 +83,12 @@
 !     INITIALISES THE DIAGONAL AND OFF-DIAGONAL TERMS
 !-----------------------------------------------------------------------
 !
+!     OFF-DIAGONAL
+!
       CALL OV('X=C     ',XAUX(1,1),AD,AD,0.D0,NPOIN)
       CALL OV('X=C     ',XAUX(1,3),AD,AD,0.D0,NPOIN)
+!
+!     DIAGONAL
 !
       IF(TYPDIA(1:1).EQ.'0') THEN
         CALL OV('X=C     ',XAUX(1,2),AD,AD,0.D0,NPOIN)

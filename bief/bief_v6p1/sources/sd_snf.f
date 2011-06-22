@@ -5,7 +5,7 @@
      &(N,P,IP,IA,JA,A,D,IJU,JU,IU,U,UMAX,IL,JL,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    NUMERICAL UT-D-U FACTORISATION OF SPARSE SYMMETRICAL
@@ -79,7 +79,7 @@
 !|                |   | NONZERO ENTRIES IN (THE UPPER TRIANGLE OF) M,
 !|                |   | STORED BY ROWS;  DIMENSION =NUMBER OF NONZERO
 !|                |   | ENTRIES IN (THE UPPER TRIANGLE OF) M
-!| D              |---| (D(I),I=K,N) CONTAINS THE K-TH ROW OF U (EXPANDED)
+!| D              |<--| (D(I),I=K,N) CONTAINS THE K-TH ROW OF U (EXPANDED)
 !| FLAG           |<--| LOGICAL VARIABLE;  IF DFLAG = .TRUE., THEN
 !|                |   | STORE NONZERO DIAGONAL ELEMENTS AT THE
 !|                |   | BEGINNING OF THE ROW
@@ -88,7 +88,7 @@
 !|                |   | DIMENSION = N+1
 !| IJU            |-->| INTEGER ONE-DIMENSIONAL ARRAY CONTAINING
 !|                |   | POINTERS TO THE START OF EACH ROW IN JU;  DIMENSION = N
-!| IL             |---| IL(I) POINTS TO THE FIRST NONZERO ELEMENT IN
+!| IL             |<--| IL(I) POINTS TO THE FIRST NONZERO ELEMENT IN
 !|                |   | COLUMNS K,...,N OF ROW I OF U
 !| IP             |<--| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN
 !|                |   | THE INVERSE OF THE PERMUTATION RETURNED IN P;
@@ -117,10 +117,10 @@
 !|                |   | THE PERMUTATION OF THE ROWS AND COLUMNS OF M
 !|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;
 !|                |   | DIMENSION = N
-!| U              |---| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
+!| U              |<--| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | NONZERO ENTRIES IN THE STRICT UPPER TRIANGLE
 !|                |   | OF U, STORED BY ROWS; DIMENSION = UMAX
-!| UMAX           |---| DECLARED DIMENSION OF THE ONE-DIMENSIONAL
+!| UMAX           |-->| DECLARED DIMENSION OF THE ONE-DIMENSIONAL
 !|                |   | ARRAY U;  UMAX MUST BE AT LEAST THE NUMBER
 !|                |   | OF NONZERO ENTRIES IN THE STRICT UPPER TRIANGLE
 !|                |   | OF M PLUS FILLIN (IU(N+1)-1 AFTER THE CALL TO SSF)

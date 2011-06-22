@@ -5,7 +5,7 @@
      &(X, XA1,XA2,XA3,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,NPOIN,LV)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SYSTEM U X = B (ELEMENT P1 TRIANGLE)
@@ -43,16 +43,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| X              |<->| VECTEUR DONNEE ET RESULTAT
-!| XA2            |---|
-!| XA3            |---|
+!| IKLE1          |-->| GLOBAL NUMBER OF THE FIRST POINT OF TRIANGLES
+!| IKLE2          |-->| GLOBAL NUMBER OF THE SECOND POINT OF TRIANGLES
+!| IKLE3          |-->| GLOBAL NUMBER OF THE THIRD POINT OF TRIANGLES
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| X              |<->| AT THE BEGINNING : B
+!|                |   | AT THE END       : THE RESULT
+!| XA1            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA2            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
+!| XA3            |<--| OFF-DIAGONAL TERMS OF THE LOWER PART OF MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

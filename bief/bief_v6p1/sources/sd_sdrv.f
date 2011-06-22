@@ -5,7 +5,7 @@
      &(N,P,IP,IA,JA,A,B,Z,NSP,ISP,RSP,ESP,PATH,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DRIVER FOR SPARSE MATRIX REORDERING ROUTINE.
@@ -122,10 +122,10 @@
 !|                |   | NONZERO ENTRIES IN (THE UPPER TRIANGLE OF) M,
 !|                |   | STORED BY ROWS;  DIMENSION =NUMBER OF NONZERO
 !|                |   | ENTRIES IN (THE UPPER TRIANGLE OF) M
-!| B              |---| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
+!| B              |-->| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | RIGHT-HAND SIDE B; B AND Z CAN BE THE SAME ARRAY;
 !|                |   | DIMENSION = N
-!| ESP            |---| INTEGER VARIABLE;  IF SUFFICIENT STORAGE WAS
+!| ESP            |<--| INTEGER VARIABLE;  IF SUFFICIENT STORAGE WAS
 !|                |   | AVAILABLE TO PERFORM THE SYMBOLIC
 !|                |   | FACTORIZATION (SSF), THEN ESP IS SET TO
 !|                |   | THE AMOUNT OF EXCESS STORAGE PROVIDED
@@ -175,10 +175,10 @@
 !|                |   | 6  PERFORM SNF ONLY (ISP/RSP IS ASSUMED TO
 !|                |   | HAVE BEEN SET UP IN AN EARLIER CALL TO
 !|                |   | SDRV (FOR SSF))
-!| RSP            |---| REAL ONE-DIMENSIONAL ARRAY USED FOR WORKING
+!| RSP            |<--| REAL ONE-DIMENSIONAL ARRAY USED FOR WORKING
 !|                |   | STORAGE;  RSP AND ISP SHOULD BE EQUIVALENCED;
 !|                |   | DIMENSION = NSP
-!| Z              |---| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
+!| Z              |<--| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | SOLUTION X;  Z AND B CAN BE THE SAME ARRAY;
 !|                |   | DIMENSION = N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

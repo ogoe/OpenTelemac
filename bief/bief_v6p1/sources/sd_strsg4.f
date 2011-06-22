@@ -5,10 +5,11 @@
      &(NPOIN,NSEG,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    BUILDS THE SEGMENTS OF THE MATRIX IN A SINGLE BLOCK.
+!brief    TRANSFORMS THE SEGMENTS OF A 4-MATRIX SYSTEM INTO 
+!          THE SEGMENTS OF A SINGLE BLOCK.
 !
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        20/11/06
@@ -28,12 +29,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GLOSEG4        |<--| IF, YES INFORMATIONS ON LISTING
-!| GLOSEGB        |-->| NUMEROS GLOBAUX DES POINTS DES SEGMENTS
-!| NPBLK          |-->| COMME NPOIN MAIS POUR LE BLOC
-!| NPOIN          |-->| NOMBRE D'INCONNUES D'UNE MATRICE DU BLOC
-!| NSEG           |-->| NOMBRE DE SEGMENTS
-!| NSEGBLK        |-->| COMME NSEG MAIS POUR LE BLOC
+!| GLOSEG4        |<--| FIRST AND SECOND POINT OF SEGMENTS IN BLOCK
+!| GLOSEGB        |-->| FIRST AND SECOND POINT OF SEGMENTS 
+!| NPBLK          |-->| FINAL NUMBER OF UNKNOWNS IN THE BLOCK
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| NSEGBLK        |-->| NUMBER OF SEGMENTS IN THE FINAL BLOCK
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_STRSG4 => SD_STRSG4

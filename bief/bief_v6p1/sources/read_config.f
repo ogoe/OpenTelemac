@@ -5,10 +5,11 @@
      &(LNG,LU,CHAINE,NCAR)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief
+!brief    READS LANGUAGE AND LOGICAL UNIT OF OUTPUTS IN A FILE WRITTEN
+!         BY PERL OR PYTHON LAUNCHING SCRIPTS
 !
 !history  J-M HERVOUET (LNH)
 !+
@@ -28,10 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHAINE         |---|
-!| LNG            |---|
-!| LU             |---|
-!| NCAR           |---|
+!| CHAINE         |-->| FULL ADDRESS OF TEMPORARY DIRECTORY
+!| LNG            |<--| LANGUAGE (1: FRENCH, 2: ENGLISH)
+!| LU             |<--| LOGICAL UNIT OF OUTPUTS
+!| NCAR           |-->| LENGTH OF STRING CHAINE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -65,7 +66,7 @@
         OPEN(40,FILE=CONFIG(1:NC), FORM='FORMATTED')
         READ(40,*) LNG
 !
-!$DC$:  DO NOT OVERLOAD LU IN PARALLEL MODE (WINNT)
+!       DO NOT OVERLOAD LU IN PARALLEL MODE (WINNT)
 !       (KEEP THE REDIRECTION ON CHANNEL 95 MADE BY P_INIT)
         IF(LU.NE.95) READ(40,*) LU
         CLOSE(40)

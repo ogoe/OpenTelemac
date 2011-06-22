@@ -5,7 +5,7 @@
      &(X, XA,TYPEXA,B,GLOSEG,NSEG,NPOIN,DITR,COPY)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SYSTEM U X = B (SEGMENT BY SEGMENT).
@@ -42,16 +42,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |<--| SECOND MEMBRE DU SYSTEME A RESOUDRE.
-!| COPY           |-->| SI .TRUE. B EST RECOPIE DANS X AU PREALABLE
-!| DITR           |-->| CARACTERE  'D' : ON CALCULE AVEC A
-!|                |   | 'T' : ON CALCULE AVEC A TRANSPOSEE
-!| GLOSEG         |-->| PASSAGE DE LA NUMEROTATION SEGMENT A GLOBALE
-!| NPOIN          |-->| DIMENSION DES TABLEAUX
-!| NSEG           |-->| NOMBRE DE SEGMENTS DU MAILLAGE
-!| TYPEXA         |---|
-!| X              |<--| SOLUTION DU SYSTEME AX = B
-!| XA             |<--| TERMES EXTRADIAGONAUX DE LA MATRICE A
+!| B              |<--| RIGHT-HAND SIDE OF THE LINEAR SYSTEM TO BE SOLVED
+!| COPY           |-->| IF .TRUE. B IS COPIED INTO X TO START WITH
+!| DITR           |-->| CHARACTER, IF  'D' : DIRECT MATRIX A CONSIDERED
+!|                |   |                'T' : TRANSPOSED MATRIX A CONSIDERED
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| TYPEXA         |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXA = 'Q' : ANY VALUE
+!|                |   | TYPEXA = 'S' : SYMMETRIC
+!|                |   | TYPEXA = '0' : ZERO
+!| X              |<--| SOLUTION OF THE SYSTEM AX = B
+!| XA             |<--| OFF-DIAGONAL TERMS OF THE MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_REMSEG => REMSEG

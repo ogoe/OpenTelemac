@@ -5,7 +5,7 @@
      &(COEF,Z,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENT 1 / COS(ALFA)
@@ -34,9 +34,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COEF           |<--| RESULTAT
-!| MESH           |-->| MAILLAGE
-!| Z              |-->| COTE DU FOND
+!| COEF           |<--| RESULT
+!| MESH           |-->| MESH STRUCTURE
+!| Z              |-->| BOTTOM ELEVATIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SLOPES => SLOPES

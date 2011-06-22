@@ -6,10 +6,10 @@
      &  NPBLK,NSEGBLK,DA,XA)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    BUILDS THE MATRIX IN A SINGLE BLOCK.
+!brief    TRANSFORMS A 4-MATRIX SYSTEM INTO A SINGLE BLOCK.
 !
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        20/11/06
@@ -29,20 +29,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DA,XA          |-->| DIAGONALES ET TERMES EXTRA-DIAGONAUX DES
-!|                |   | MATRICES
-!| DAB1           |---|
-!| DAB2           |---|
-!| DAB3           |---|
-!| DAB4           |---|
-!| NPBLK          |---|
-!| NPOIN          |-->| NOMBRE D'INCONNUES D'UNE MATRICE DU BLOC
-!| NSEG           |-->| NOMBRE DE SEGMENTS
-!| NSEGBLK        |---|
-!| XAB1           |---|
-!| XAB2           |---|
-!| XAB3           |---|
-!| XAB4           |---|
+!| DA             |<--| RESULTING MATRIX DIAGONAL
+!| DAB1           |-->| MATRIX DIAGONAL IN THE ORIGINAL SYSTEM
+!| DAB2           |-->| MATRIX DIAGONAL IN THE ORIGINAL SYSTEM
+!| DAB3           |-->| MATRIX DIAGONAL IN THE ORIGINAL SYSTEM
+!| DAB4           |-->| MATRIX DIAGONAL IN THE ORIGINAL SYSTEM
+!| NPBLK          |-->| RANK OF FINAL BLOCK MATRIX
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| NSEGBLK        |-->| NUMBER OF SEGMENTS IN FINAL BLOCK
+!| XA             |<--| RESULTING OFF-DIAGONAL TERMS OF MATRIX
+!| XAB1           |-->| OFF-DIAGONAL TERMS IN ORIGINAL SYSTEM
+!| XAB2           |-->| OFF-DIAGONAL TERMS IN ORIGINAL SYSTEM
+!| XAB3           |-->| OFF-DIAGONAL TERMS IN ORIGINAL SYSTEM
+!| XAB4           |-->| OFF-DIAGONAL TERMS IN ORIGINAL SYSTEM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_FABSG4 => SD_FABSG4

@@ -5,10 +5,11 @@
      &(FILES,NFILES,CODE,SUBMIT,NMOT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    OPENS THE FILES DECLARED IN THE STEERING FILE.
+!brief    READS THE FILES CHARACTERISTICS DECLARED IN THE STEERING FILE
+!         AND STORES THEM IN BIEF_FILE STRUCTURE CALLED FILES
 !
 !note     THE STEERING AND DICTIONNARY FILES ARE OPENED AND
 !+         CLOSED IN LECDON.
@@ -32,7 +33,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
-!| FILES          |-->| FILES STRUCTURES
+!| FILES          |<--| FILES STRUCTURES
 !| NFILES         |-->| NUMBER OF FILES IN ARRAY FILES
 !| NMOT           |-->| SECOND DIMENSION OF SUBMIT AND MOTCAR
 !| SUBMIT         |-->| CHARACTER STRINGS STEMMING FROM DICTIONARY

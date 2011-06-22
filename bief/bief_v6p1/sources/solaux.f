@@ -5,7 +5,7 @@
      &(IPT, TB,TBB,ITB,ITBB,S)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    TB IS A BLOCK OF VECTORS AND TBB A BLOCK OF BLOCKS.
@@ -34,12 +34,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IPT            |<--| POINTEUR DE TBB VERS L'OBJET RENDU
-!| ITB            |-->| PREMIER VECTEUR LIBRE DE TB
-!| ITBB           |-->| PREMIER BLOC LIBRE DE TBB
-!| S              |---|
-!| TB             |-->| BLOC DE TABLEAUX DE TRAVAIL
-!| TBB            |-->| BLOC DE BLOCS DE TRAVAIL
+!| IPT            |<--| POINTER IN TBB OF THE BIEF_OBJ STRUCTURE ASKED
+!| ITB            |-->| FIRST FREE VECTOR IN TB
+!| ITBB           |-->| FIRST FREE BLOCK IN TBB
+!| S              |-->| SIZE OF SYSTEM 1: 1 MATRIX
+!|                |   |                2: 4 MATRICES
+!|                |   |                3: 9 MATRICES
+!| TB             |-->| BLOCK OF WORKING BIEF_OBJ STRUCTURES
+!| TBB            |-->| BLOCK OF BLOCKS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SOLAUX => SOLAUX

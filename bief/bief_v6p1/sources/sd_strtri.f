@@ -31,9 +31,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IND            |---|
-!| IS             |---|
-!| N              |-->| LONGUEUR DE IS
+!| IND            |<--|
+!| IS             |-->|
+!| N              |-->| LENGTH OF IS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_STRTRI => SD_STRTRI

@@ -5,7 +5,7 @@
      &(NFIC,TITFIC,NPOIN,NVAR,TEXTLU,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SKIPS THE GEOMETRY IN A SELAFIN FILE.
@@ -43,7 +43,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NFIC           |-->| LOGICAL UNIT OF FILE TO READ
-!| NPLAN          |---|
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN          |<--| NUMBER OF POINTS IN THE MESH
 !| NVAR           |<--| NUMBER OF VARIABLES IN THE FILE
 !| TEXTLU         |<--| NAMES OF VARIABLES (32 CHARACTERS FOR EACH)

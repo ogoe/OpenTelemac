@@ -5,7 +5,7 @@
      &( X , Y , MESH )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SAME AS DOTS BUT TAKING PARALLELISM INTO ACCOUNT.
@@ -38,9 +38,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MESH           |-->| MAILLAGE.
-!| X              |---|
-!| Y              |---|
+!| MESH           |-->| MESH STRUCTURE
+!| X              |-->| BIEF_OBJ STRUCTURE (MAY BE A BLOCK)
+!| Y              |-->| BIEF_OBJ STRUCTURE (MAY BE A BLOCK)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_P_DOTS => P_DOTS
@@ -74,16 +74,16 @@
        P_DOTS = 0.D0
 !
        IF(NCSIZE.LE.1.OR.NPTIR.EQ.0) THEN
-         DO 99 IBL = 1 , X%N
+         DO IBL = 1 , X%N
            P_DOTS=P_DOTS+DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
      &                                         Y%ADR(IBL)%P%R)
-99       CONTINUE
+         ENDDO
        ELSE
-         DO 100 IBL = 1 , X%N
+         DO IBL = 1 , X%N
            P_DOTS=P_DOTS+P_DOT(X%ADR(IBL)%P%DIM1,X%ADR(IBL)%P%R,
      &                                           Y%ADR(IBL)%P%R,
      &                                           MESH%FAC%R)
-100      CONTINUE
+         ENDDO
        ENDIF
 !
 !-----------------------------------------------------------------------

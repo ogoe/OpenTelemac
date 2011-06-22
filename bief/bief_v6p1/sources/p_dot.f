@@ -5,7 +5,7 @@
      &(NPOIN,X,Y,FAC)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SCALAR PRODUCT OF VECTORS X AND Y (SIZE NPOIN)
@@ -34,8 +34,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FAC            |-->| FAC=1/(NOMBRE DE DOMAINES VOISINS DU POINT)
-!| NPOIN          |-->| TAILLE DE X ET Y
+!| FAC            |-->| FAC=1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
+!| NPOIN          |-->| SIZE OF X AND Y
+!| X              |-->| VECTOR
+!| Y              |-->| VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_P_DOT => P_DOT

@@ -5,7 +5,7 @@
      &(KNOLG,X,Y,NPOIN,NFIC,IB,FFORMAT,Z)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS OR COMPUTES THE VALUES OF NPOIN, NELEM, NPTFR,
@@ -37,13 +37,13 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FILE FORMAT
-!| IB             |---|
-!| KNOLG          |---|
-!| NFIC           |---|
-!| NPOIN          |<--| NOMBRE DE POINTS DU MAILLAGE.
-!| X              |---|
-!| Y              |---|
-!| Z              |---|
+!| IB             |-->| SERIES OF 10 INTEGERS IN THE SELAFIN FORMAT
+!| KNOLG          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
+!| NFIC           |-->| LOGICAL UNIT OF SELAFIN FILE
+!| NPOIN          |<--| NUMBER OF POINTS IN THE MESH
+!| X              |<--| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |<--| ORDINATES OF POINTS IN THE MESH
+!| Z              |<--| ELEVATIONS OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_READGEO3 => READGEO3

@@ -5,7 +5,7 @@
      &(X, A,B ,DITR,MESH,COPY)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE VECTOR X = U B     (ELEMENT BY ELEMENT).
@@ -55,14 +55,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |<--| MATRICE A SOUS FORME LDU
-!| B              |<--| SECOND MEMBRE DU SYSTEME A RESOUDRE.
-!| COPY           |-->| SI .TRUE. B EST RECOPIE SUR X.
-!|                |   | AU PREALABLE.
-!| DITR           |-->| CARACTERE  'D' : ON CALCULE AVEC A
-!|                |   | 'T' : ON CALCULE AVEC A TRANSPOSEE
-!| MESH           |-->| BLOC DES TABLEAUX D'ENTIERS DU MAILLAGE.
-!| X              |<--| SOLUTION DU SYSTEME AX = B
+!| A              |<--| MATRIX IN LDU FORM
+!| B              |<--| RIGHT-HAND SIDE OF THE LINEAR SYSTEM TO BE SOLVED
+!| COPY           |-->| IF .TRUE. B IS COPIED INTO X TO START WITH
+!| DITR           |-->| CHARACTER, IF  'D' : DIRECT MATRIX A CONSIDERED
+!|                |   |                'T' : TRANSPOSED MATRIX A CONSIDERED
+!| MESH           |-->| MESH STRUCTURE
+!| X              |<--| SOLUTION OF THE SYSTEM AX = B
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PUOG1 => PUOG1

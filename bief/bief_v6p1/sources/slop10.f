@@ -5,7 +5,7 @@
      &(COEF,XEL,YEL,Z,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENT 1 / COS(ALFA)
@@ -34,13 +34,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COEF           |<--| RESULTAT
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| XEL,YEL        |-->| COORDONNEES DES POINTS DES ELEMENTS
-!| Z              |-->| COTES DU FOND (DONNEES PAR POINT)
+!| COEF           |<--| RESULT
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| Z              |-->| BOTTOM ELEVATIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -36,7 +36,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |---|
 !| ACTRI          |---|
-!| DA             |---|
+!| DA             |-->| MATRIX DIAGONAL
 !| IN             |---|
 !| INDTRI         |---|
 !| INX            |---|
@@ -44,10 +44,10 @@
 !| IPX            |---|
 !| ISEGIP         |---|
 !| ISTRI          |---|
-!| NPBLK          |-->|
-!| NSEGBLK        |---|
-!| XA1            |---|
-!| XA2            |---|
+!| NPBLK          |-->| SIZE OF MATRIX DIAGONAL
+!| NSEGBLK        |-->| NUMBER OF SEGMENTS IN ORIGINAL MATRIX
+!| XA1            |-->| OFF-DIAGONAL TERM OF MATRIX A
+!| XA2            |-->| OFF-DIAGONAL TERM OF MATRIX A
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_FABCAD => SD_FABCAD

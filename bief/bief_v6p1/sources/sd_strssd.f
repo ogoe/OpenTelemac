@@ -32,14 +32,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GLOSEG1        |---|
-!| GLOSEG2        |---|
-!| IN             |---|
+!| GLOSEG1        |-->| FIRST POINT OF SEGMENTS
+!| GLOSEG2        |-->| SECOND POINT OF SEGMENTS
+!| IN             |<--| ADDRESSES OF NEIGHBOURS
 !| IP             |---|
 !| ISEGIP         |---|
-!| IW             |---|
-!| NPBLK          |---|
-!| NSEGBLK        |---|
+!| IW             |<--| NUMBER OF NEIGHBOURS OF POINTS
+!| NPBLK          |-->| NUMBER OF POINTS
+!| NSEGBLK        |-->| NUMBER OF SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF,EX_SD_STRSSD => SD_STRSSD

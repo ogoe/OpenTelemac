@@ -66,7 +66,7 @@
 !| COPY           |-->| IF .TRUE. B IS COPIED INTO X TO START WITH
 !| DITR           |-->| CHARACTER, IF  'D' : DIRECT MATRIX A CONSIDERED
 !|                |   |                'T' : TRANSPOSED MATRIX A CONSIDERED
-!| IELM           |-->| TYPE OF ELEMENT
+!| IELM           |-->| TYPE OF ELEMENT (SEE ABOVE)
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| LV             |-->| VECTOR LENGTH OF THE MACHINE
 !| NELEM          |-->| NUMBER OF ELEMENTS

@@ -5,7 +5,7 @@
      &(XEL,X,IKLE,NELMAX,NELEM)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GOES FROM A VECTOR BY POINTS TO A VECTOR BY ELEMENTS.
@@ -29,11 +29,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---|
-!| NELEM          |---|
-!| NELMAX         |---|
-!| X              |-->| VECTEUR PAR POINTS
-!| XEL            |<--| VECTEUR SUR LES ELEMENTS
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| X              |-->| VECTOR DEFINED PER POINT
+!| XEL            |<--| SAME VECTOR DEFINED PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -57,13 +57,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO 10 IELEM = 1,NELEM
+      DO IELEM = 1,NELEM
 !
         XEL(IELEM,1)=X(IKLE(IELEM,1))
         XEL(IELEM,2)=X(IKLE(IELEM,2))
         XEL(IELEM,3)=X(IKLE(IELEM,3))
 !
-10    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

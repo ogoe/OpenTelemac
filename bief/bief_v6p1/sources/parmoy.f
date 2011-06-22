@@ -70,9 +70,9 @@
 !
       IF(TYPX.EQ.4) THEN
 !
-        DO 10 I=1,X%N
+        DO I=1,X%N
           CALL OS('X=XY    ',X=X%ADR(I)%P,Y=MESH%FAC)
-10      CONTINUE
+        ENDDO
 !
 !-----------------------------------------------------------------------
 !

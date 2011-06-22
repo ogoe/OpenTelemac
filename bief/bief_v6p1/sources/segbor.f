@@ -5,7 +5,7 @@
      &(NSEGBOR,IKLES,NELEM,NELMAX,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DETERMINES THE NUMBER OF BOUNDARY SEGMENTS OF THE MESH
@@ -32,11 +32,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLES          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NPOIN          |-->| NOMBRE DE POINTS
-!| NSEGBOR        |<--| NOMBRE DE SEGMENTS DE BORD
+!| IKLES          |-->| LIKE CONNECTIVITY TABLE BUT IN SELAFIN FORMAT
+!|                |   | IKLES(3,NELEM) INSTEAD OF IKLE(NELEM,3)
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEGBOR        |<--| NUMBER OF BOUNDARY SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SEGBOR => SEGBOR

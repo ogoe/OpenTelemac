@@ -5,7 +5,7 @@
      &(IP,XP,YP,X,Y,NP,NPOIN,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES THE POINTS OF THE MESH CLOSEST TO A SET
@@ -29,14 +29,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---|
-!| IP             |<--| ADRESSES DES POINTS TROUVES.
-!| NELEM          |---|
-!| NELMAX         |---|
-!| NP             |-->| NOMBRE DE POINTS DONNES.
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| XP,YP          |-->| COORDONNEES DES POINTS DONNES.
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| IP             |<--| ADDRESSES OF NEAREST POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NP             |-->| NUMBER OF POINTS IN THE SET
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XP             |-->| ABSCISSAE OF POINTS IN THE SET
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YP             |-->| ORDINATES OF POINTS IN THE SET
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PROXIM => PROXIM

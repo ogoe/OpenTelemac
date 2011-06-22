@@ -5,7 +5,7 @@
      &(N,P,IP,IA,JA,IJU,JU,IU,JUMAX,Q,MARK,JL,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SYMBOLIC UT-D-U FACTORISATION OF SPARSE SYMMETRIC MATRIX.
