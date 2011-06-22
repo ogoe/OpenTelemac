@@ -1896,6 +1896,20 @@
      &            MESH%FAC%R)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DIFSOU'
 !
+!=======================================================================
+!     OIL SPILL MODEL (UNDER DEVELOPMENT IN MYGRHYCAR PROJECT)
+!=======================================================================
+!
+      IF(SPILL_MODEL) THEN
+!
+        CALL OIL_SPILL_2D
+!
+      ENDIF
+!
+!=======================================================================
+!     ADVECTION-DIFFUSION OF TRACERS
+!=======================================================================
+!
       DO ITRAC=1,NTRAC
 !
 !  CALLS THE STANDARD DIFFUSER. (CV1 IS THE SECOND MEMBER)
@@ -2051,16 +2065,6 @@
           CALL OS('X=XY    ',UCONV,MESH%COSLAT,S,C)
           CALL OS('X=XY    ',VCONV,MESH%COSLAT,S,C)
         ENDIF
-!
-      ENDIF
-!
-!=======================================================================
-!       OIL SPILL MODEL (UNDER DEVELOPMENT IN MYGRHYCAR PROJECT)
-!=======================================================================
-!
-      IF(SPILL_MODEL) THEN
-!
-        CALL OIL_SPILL_2D
 !
       ENDIF
 !
