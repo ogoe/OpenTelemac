@@ -95,6 +95,7 @@
 !-----------------------------------------------------------------------
 !
       DOUBLE PRECISION FCTE1, FCTE2, XX
+      EXTERNAL FCTE1, FCTE2
 
 ! MASS MATRIX
       CALL VECTOR(T2 , '=' , 'MASBAS          ' , IELM ,
