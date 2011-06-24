@@ -5,7 +5,7 @@
      &(XAUX,X,B,NPOIN,NPOIN2)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES TRIDIAGONAL SYSTEMS FOR EVERY VERTICAL
@@ -29,11 +29,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |---|
-!| NPOIN          |---|
-!| NPOIN2         |---|
-!| X              |---|
-!| XAUX           |---|
+!| B              |-->| RIGHT-HAND SIDE OF SYSTEM
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| X              |<--| SOLUTION OF SYSTEM
+!| XAUX           |-->| TRI-DIAGONAL MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_TRID3D => TRID3D

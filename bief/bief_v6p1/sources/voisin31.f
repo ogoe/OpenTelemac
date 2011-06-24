@@ -6,7 +6,7 @@
      & NPOIN,NACHB,NBOR,NPTFR,LIHBOR,KLOG,IKLESTR,NELEMTOTAL,NELEB2)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE ARRAY IFABOR, WHERE IFABOR(IELEM, IFACE) IS
@@ -32,21 +32,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM           |-->| 31: TETRAEDRES NON STRUCTURES
-!| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
-!|                |   | (CAS DES MAILLAGES ADAPTATIFS)
-!| IKLE           |-->| TABLE DE CONNECTIVITE DOMAINE
-!| IKLESTR        |---|
-!| KLOG           |-->| ????
-!| LIHBOR         |-->| TYPE DE CL PAR NOEUD
-!| NACHB          |-->| TABLEAU DE VOISINAGE POUR PARALLELISME
-!| NBOR           |-->| CORRESPONDANCE NO NOEUD DE BORD/NO GLOBAL
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELEMTOTAL     |---|
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
-!| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD
-!| SIZIKL         |---|
+!| IELM           |-->| 31: TETRAHEDRA
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| IKLESTR        |-->| CONNECTIVITY TABLE OF BOUNDARY TRIANGLES ?
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| NACHB          |-->| IN PARALLELISM ,INFORMATION ON NEIGHBOURS
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELEMTOTAL     |-->| NUMBER OF BOUNDARY TRIANGLES ?
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| SIZIKL         |-->| FIRST DIMENSION OF IKLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VOISIN31 => VOISIN31
@@ -65,8 +66,8 @@
       INTEGER, INTENT(IN   ) :: SIZIKL
       INTEGER, INTENT(IN   ) :: NBOR(NPTFR)
       INTEGER, INTENT(IN   ) :: NACHB(NBMAXNSHARE,NPTIR)
-      ! NOTE: THE SECOND DIMENSION OF IFABOR AND IKLE ARE
-      ! EXPLICITLY GIVEN, BECAUSE WE'RE DEALING WITH TETRAHEDRONS!
+!     NOTE: THE SECOND DIMENSION OF IFABOR AND IKLE ARE
+!     EXPLICITLY GIVEN, BECAUSE WE'RE DEALING WITH TETRAHEDRONS
       INTEGER, INTENT(INOUT) :: IFABOR(NELMAX,4)
       INTEGER, INTENT(IN   ) :: IKLE(SIZIKL,4)
       INTEGER, INTENT(IN   ) :: LIHBOR(NPTFR)
@@ -75,8 +76,10 @@
       INTEGER, INTENT(IN   ) :: IKLESTR(NELEMTOTAL,3)
       INTEGER, INTENT(IN   ) :: NELEB2
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 ! LOCAL VARIABLES
-!-----------------------------------------------------------------------
+!
       ! ARRAY WHICH IS THE REVERSE OF NBOR
       ! (GIVES FOR EACH NODE IN THE DOMAIN THE BOUNDARY NODE NUMBER E,
       ! OR 0 IF IT IS AN INTERIOR NODE)

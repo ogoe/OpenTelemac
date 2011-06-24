@@ -2,11 +2,11 @@
                      SUBROUTINE VC09AA
 !                    *****************
 !
-     &( XMUL,SF,SG,SU,SV,F,G,U,V,
-     &  XEL,YEL,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3 )
+     &(XMUL,SF,SG,SU,SV,F,G,U,V,
+     & XEL,YEL,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3 )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -38,14 +38,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---|
-!| W3             |---|
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| FORMUL         |-->| STRING WITH FORMULA OF VECTOR
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SG             |-->| BIEF_OBJ STRUCTURE OF G
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_VC09AA => VC09AA

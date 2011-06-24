@@ -6,7 +6,7 @@
      &  IKLE1,IKLE2,IKLE3,IKLE4,NBOR,NELEM,NELMAX,W1,W2,W3,W4)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -38,18 +38,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| NBOR           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---|
-!| W3             |---|
-!| W4             |---|
-!| X,Y,Z          |-->| COORDONNEES DES POINTS
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| IKLE1          |-->| FIRST POINT OF QUADRILATERAL
+!| IKLE2          |-->| SECOND POINT OF QUADRILATERAL
+!| IKLE3          |-->| THIRD POINT OF QUADRILATERAL
+!| IKLE4          |-->| FOURTH POINT OF QUADRILATERAL
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| W4             |<--| RESULT IN NON ASSEMBLED FORM
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_VC05FF => VC05FF

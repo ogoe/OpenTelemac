@@ -2,11 +2,11 @@
                      SUBROUTINE VC04AA
 !                    *****************
 !
-     &( XMUL,SU,SV,U,V,XEL,YEL,
-     &  IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3,SPECAD)
+     &(XMUL,SU,SV,U,V,XEL,YEL,
+     & IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W1,W2,W3,SPECAD)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -46,15 +46,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SPECAD         |---|
-!| W2             |---|
-!| W3             |---|
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| IKLE1          |-->| FIRST POINT OF TRIANGLES
+!| IKLE2          |-->| SECOND POINT OF TRIANGLES
+!| IKLE3          |-->| THIRD POINT OF TRIANGLES
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SPECAD         |-->| IF YES, SPECIAL ADVECTION FIELD, SEE ABOVE
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_VC04AA => VC04AA

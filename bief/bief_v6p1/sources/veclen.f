@@ -5,7 +5,7 @@
      & (LV,NDP,IKLE,NELEM,NELMAX,NPOIN,V)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DETERMINES THE LENGTH OF A VECTOR WITHOUT BACK
@@ -38,13 +38,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| TABLE DE CONNECTIVITE
-!| LV             |<--| LONGUEUR DE VECTEUR ADMISSIBLE
-!| NDP            |-->| NOMBRE DE SOMMETS PAR ELEMENT
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |-->| NOMBRE TOTAL D'ELEMENTS
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| V              |-->| TABLEAU DE TRAVAIL REEL, DE DIMENSION NPOIN
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| V              |-->| ARRAY OF SIZE NPOIN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VECLEN => VECLEN

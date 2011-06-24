@@ -7,7 +7,7 @@
      & NELEM2,NPTFR2,NPOIN2,NPLAN,KNOLG,NSEG2D)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE DATA STRUCTURE FOR EDGE-BASED STORAGE
@@ -70,25 +70,25 @@
 !| ELTSEG         |<--| SEGMENTS OF EVERY TRIANGLE.
 !| GLOSEG         |<--| GLOBAL NUMBERS OF POINTS OF SEGMENTS.
 !| IELM           |-->| 11: TRIANGLES.
-!|                |   | 21: QUADRILATERES.
-!| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
-!| KNOLG          |---|
-!| KP1BOR         |-->| NUMBER OF POINT FOLLOWING BOUNDARY POINT K
-!|                |   | (I.E. K+1 MOST OF THE TIME BUT NOT ALWAYS).
+!|                |   | 21: QUADRILATERALS.
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| KNOLG          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| MAXSEG         |<--| 1st DIMENSION OF MAXSEG.
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS.
 !| NELBOR         |-->| NUMBER OF ELEMENT CONTAINING SEGMENT K OF
 !|                |   | THE BOUNDARY.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELEM2         |---|
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
-!|                |   | (CAS DES MAILLAGES ADAPTATIFS)
-!| NELMAX2        |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS.
-!| NPTFR2         |---|
+!| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 3D
+!| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NPTFR2         |-->| NUMBER OF BOUNDARY POINTS IN 2D
 !| NSEG           |<--| NUMBER OF SEGMENTS OF THE MESH.
 !| NULONE         |-->| LOCAL NUMBER OF BOUNDARY POINTS IN A BOUNDARY
 !|                |   | ELEMENT.

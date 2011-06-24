@@ -7,7 +7,7 @@
      &  W1,W2,W3,W4,W5,W6 )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -39,24 +39,32 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| IKLE5          |---|
-!| IKLE6          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SU,SV,SW       |-->| STRUCTURES DES FONCTIONS U,V ET W
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR
-!|                |   | INTERVENANT DANS LA FORMULE.
-!| W2             |---|
-!| W3             |---|
-!| W4             |---|
-!| W5             |---|
-!| W6             |---|
-!| X,Y,Z          |-->| COORDONNEES DES POINTS
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| IKLE1          |-->| FIRST POINT OF PRISMS
+!| IKLE2          |-->| SECOND POINT OF PRISMS
+!| IKLE3          |-->| THIRD POINT OF PRISMS
+!| IKLE4          |-->| FOURTH POINT OF PRISMS
+!| IKLE5          |-->| FIFTH POINT OF PRISMS
+!| IKLE6          |-->| SIXTH POINT OF PRISMS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| SW             |-->| BIEF_OBJ STRUCTURE OF W
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| W4             |<--| RESULT IN NON ASSEMBLED FORM
+!| W5             |<--| RESULT IN NON ASSEMBLED FORM
+!| W6             |<--| RESULT IN NON ASSEMBLED FORM
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| Z              |-->| ELEVATIONS OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF   !, EX_VC08PP => VC08PP

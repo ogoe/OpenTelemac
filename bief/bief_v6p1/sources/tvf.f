@@ -8,7 +8,7 @@
      & IOPT2,FLBORTRA,SURNIT,MESH,SF)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TRACER FOR FINITE VOLUME SCHEME.
@@ -32,46 +32,44 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS.
-!| F              |<--| VALEURS DU TRACEUR A L'ETAPE N+1
-!|                |   | DE LA SOUS-ITERATION
-!| FBOR           |-->| VALEURS DU TRACEUR SUR LE BORD.
-!| FC             |-->| VALEURS DU TRACEUR A L'ETAPE N
-!|                |   | DE LA SOUS-ITERATION
-!| FLBORTRA       |---|
-!| FN             |-->| VALEURS DU TRACEUR A L'ETAPE N
-!| FSCEXP         |-->| FSCE-(1-TETAT)*FN, SEE DIFSOU
-!|                |   | SO HERE FSCE-FN, THIS IS NOT VERY CONVENIENT
-!|                |   | AS WE NEED HERE FSCE-FC (LOOK UNDER IF(YASMH))
-!| FXBOR          |-->| FLUX SUR LE BORD (DEFINI SUR LE BORD)
-!|                |   | NON ASSEMBLE
-!| FXBORPAR       |-->| FLUX SUR LE BORD (DEFINI SUR TOUT LE DOMAINE
-!|                |   | ET ASSEMBLE EN PARALLELE)
-!| FXMAT          |-->| MATRICE DE STOCKAGE DES FLUX.
-!| FXMATPAR       |-->| IDEM, ASSEMBLE EN PARALLELE.
+!| DT             |-->| TIME-STEP
+!| F              |<--| VALUES OF F AT TIME N+1 OF SUB-ITERATION
+!| FBOR           |-->| VALUES OF F AT THE PRESCRIBED BOUNDARIES
+!| FC             |-->| VALUES OF F AT TIME N OF SUB-ITERATION
+!| FLBORTRA       |<->| FLUX OF TRACER AT THE BOUNDARIES
+!| FN             |-->| VALEURS DU TRACEUR A L'ETAPE N.
+!| FSCEXP         |-->| EXPLICIT SOURCE TERM FOR F
+!| FXBOR          |-->| FLUXES ON BOUNDARIES
+!| FXBORPAR       |-->| FLUXES ON BOUNDARIES (DEFINED ON ALL DOMAIN
+!|                |   | AND ASSEMBLED IN PARALLEL)
+!| FXMAT          |-->| FLUXES (NON ASSEMBLED IN PARALLEL)
+!| FXMATPAR       |-->| FLUXES (ASSEMBLED IN PARALLEL)
 !| GLOSEG         |-->| GLOBAL NUMBER OF THE 2 POINTS OF A SEGMENT.
-!| H              |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N+1.
-!|                |   | EN SUPPOSANT LA CONTINUITE RESOLUE
-!| HLIN           |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N+1.
-!|                |   | AVEC INTERPOLATION LINEAIRE EN TEMPS
-!|                |   | ENTRE HN ET H
-!| IOPT2          |---|
-!| KDDL           |---|
-!| KDIR           |---|
-!| LIMTRA         |---|
-!| MESH           |---|
-!| NBOR           |-->| TABLEAU D'INDICES DE NOEUDS SUR LE BORD.
-!| NPOIN          |-->| NOMBRE DE NOEUDS DANS LE MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE NOEUDS SUR LA FRONTIERE.
-!| NSEG           |-->| NOMBRE DE SEGMENTS DANS LE MAILLAGE.
-!| OPTSOU         |---|
-!| SF             |---|
-!| SIZGLO         |---|
-!| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE.
-!| SURNIT         |---|
-!| T7             |---|
-!| UNSV2D         |---|
-!| YASMH          |-->| IF YES, SOURCE TERMS IN SMH
+!| H              |-->| WATER DEPTH AT TIME N+1
+!|                |   | (VALUE COMPATIBLE WITH CONTINUITY)
+!| HLIN           |-->| WATER DEPTH AT TIME N+1
+!|                |   | (WITH LINEAR INTERPOLATION IN TIME BETWEEN
+!|                |   | HN AND H)
+!| IOPT2          |-->| 0: CONSERVATIVE ADVECTION FIELD
+!|                |   | 1: NON CONSERVATIVE ADVECTION FIELD
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| LIMTRA         |-->| TECHNICAL BOUNDARY CONDITIONS FOR TRACERS
+!| MESH           |-->| MESH STRUCTURE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| OPTSOU         |-->| TYPE OF SOURCES
+!|                |   | 1: NORMAL
+!|                |   | 2: DIRAC
+!| SF             |<->| BIEF_OBJ SUTRUCTURE OF F
+!| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| SURNIT         |-->| SURNIT=1/NIT
+!| T7             |<->| BIEF_OBJ STRUCTURE FOR A WORK ARRAY
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_TVF => TVF
@@ -175,8 +173,8 @@
         ENDIF
       ENDIF
 !
-! ON THE DIRICHLET BOUNDARIES, FLUX TERMS TAKEN INTO ACCOUNT
-! ON OTHERS, FBOR IS TAKEN AS FN, SO NO CONTRIBUTION
+!     ON THE DIRICHLET BOUNDARIES, FLUX TERMS TAKEN INTO ACCOUNT
+!     ON OTHERS, FBOR IS TAKEN AS FN, SO NO CONTRIBUTION
 !
       DO I=1,NPTFR
         IF(LIMTRA(I).EQ.KDIR) THEN

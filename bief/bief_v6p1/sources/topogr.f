@@ -6,7 +6,7 @@
      & ITRA05,ITRA02,ITRA03,NELEM,NPTFR,NPOIN,MXPTVS)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINELY ANALYSES THE TOPOGRAPHY AND BUILDS ZFE.
@@ -33,23 +33,27 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFABOR         |-->| NUMERO DES ELEMENTS VOISINS
-!| IKLE           |-->| TABLE DE CONNECTIVITE
-!| ITRA02         |---|
-!| ITRA03         |---|
-!| ITRA05         |---|
-!| MXPTVS         |-->| NOMBRE MAXIMUM DE POINTS VOISINS D'UN POINT
-!|                |   | (A VERIFIER, LE NOMBRE D'ELEMENTS SUFFIT
-!|                |   | VRAISEMBLABLEMENT)
-!| NBOR           |-->| NUMERO GLOBAL DES POINTS DE BORD
-!| NELBOR         |-->| NUMERO DES ELEMENTS DE BORD
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NPOIN          |-->| NOMBRE DE POINTS
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NULONE         |-->| NUMERO LOCAL DES NOEUDS AU BORD
-!| ZF             |-->| COTE DU FOND AUX NOEUDS
-!| ZFE            |<--| COTE DU FOND PAR ELEMENT
-!| ZREF           |---| CORRECTIF DE ZFE
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| ITRA02         |<--| INTEGER WORK ARRAY
+!| ITRA03         |<--| INTEGER WORK ARRAY
+!| ITRA05         |<--| INTEGER WORK ARRAY
+!| MXPTVS         |-->| MAXIMUM NUMBER OF NEIGHBOURS OF A POINT
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
+!|                |   | ELEMENT.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
+!|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
+!|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
+!| ZF             |-->| ELEVATION OF BOTTOM, PER POINT
+!| ZFE            |<--| ELEVATION OF BOTTOM, PER ELEMENT
+!| ZREF           |<--| CORRECTED BOTTOM ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

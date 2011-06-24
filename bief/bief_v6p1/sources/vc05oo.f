@@ -5,7 +5,7 @@
      &(XMUL,SU,SV,U,V,XNOR,YNOR,LGSEG,IKLE,NBOR,NELEM,NELMAX,W1,W2 )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -41,15 +41,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---|
-!| LGSEG          |-->| LONGUEUR DES SEGMENTS.
-!| NBOR           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---|
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| YNOR           |---|
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| LGSEG          |-->| LENGTH OF SEGMENTS
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| XNOR           |-->| FIRST COMPONENT OF NORMAL TO ELEMENT
+!| YNOR           |-->| SECOND COMPONENT OF NORMAL TO ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_VC05OO => VC05OO

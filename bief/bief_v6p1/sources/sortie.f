@@ -5,7 +5,7 @@
      &( CHAINE , MNEMO , NBRE , SORLEO )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SETS VARIABLES SORLEO AND SORIMP.
@@ -28,10 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHAINE         |<->| CHAINE DES VARIABLES DE SORTIE
-!| MNEMO          |<->| MNEMONIQUE DES VARIABLES
-!| NBRE           |<->| NOMBRE MAXIMAL DE VARIABLES A IMPRIMER
-!| SORLEO         |<->| TABLEAU DE LOGIQUES POUR IMPRESSION
+!| CHAINE         |<->| STRING OF VARIABLES FOR GRAPHIC OUTPUTS
+!| MNEMO          |<->| MNEMO OF VARIABLES
+!| NBRE           |-->| NUMBER OF VARIABLES
+!| SORLEO         |<->| LOGICAL ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

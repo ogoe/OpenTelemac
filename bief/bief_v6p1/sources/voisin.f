@@ -6,7 +6,7 @@
      & NPOIN,NACHB,NBOR,NPTFR,IADR,NVOIS)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE ARRAY IFABOR, WHERE IFABOR(IELEM, IFACE) IS
@@ -37,20 +37,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IADR           |---|
+!| IADR           |<->| WORK ARRAY
 !| IELM           |-->| 11: TRIANGLES
-!|                |   | 21: QUADRILATERES
-!| IFABOR         |<--| TABLEAU DES VOISINS DES FACES.
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT
-!| NACHB          |---|
-!| NBOR           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DANS LE MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DANS LE MAILLAGE.
-!|                |   | (CAS DES MAILLAGES ADAPTATIFS)
-!| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU DOMAINE
-!| NPTFR          |---|
-!| NVOIS          |---|
-!| SIZIKL         |---|
+!|                |   | 21: QUADRILATERALS
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NACHB          |-->| SUB-DOMAINS NEIGHBOURS OF INTERFACE POINTS IN PARALLEL
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NVOIS          |<--| NUMBER OF NEIGHBOURS OF POINTS
+!| SIZIKL         |-->| FIRST DIMENSION OF IKLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VOISIN => VOISIN

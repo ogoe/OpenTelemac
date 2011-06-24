@@ -5,7 +5,7 @@
      &( X , NPX )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SUMS THE COMPONENTS OF A VECTOR WHILE MINIMISING
@@ -38,8 +38,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPX            |-->| NOMBRE DE VALEURS A ADDITIONNER
-!| X              |-->| TABLEAU FORTRAN
+!| NPX            |-->| SIZE OF X
+!| X              |-->| ARRAY TO SUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

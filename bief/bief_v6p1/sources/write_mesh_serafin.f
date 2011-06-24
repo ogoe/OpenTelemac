@@ -5,7 +5,7 @@
      &(NFIC,MESH,NPLAN,DATE,TIME,I_ORIG,J_ORIG,FFORMAT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES HEADER DATA IN A SERAFIN FORMAT FILE
@@ -29,11 +29,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DATE           |-->| 3 INTEGERS (YEAR, MONTH, DAY)
 !| FFORMAT        |-->| FILE FORMAT
-!| I_ORIG,J_ORIG  |-->| COORDINATES OF ORIGIN OF MESH (IN METRES)
+!| I_ORIG         |-->| ABSCISSAE OF ORIGIN OF MESH (IN METRES)
+!| J_ORIG         |-->| ORDINATES OF ORIGIN OF MESH (IN METRES)
 !| MESH           |-->| MESH STRUCTURE
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| NPLAN          |-->| NUMBER OF PLANES IN 3D, 1 IN 2D
+!| TIME           |-->| 3 INTEGERS (HOUR, MINUTE, SECOND)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

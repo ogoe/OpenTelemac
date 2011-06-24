@@ -5,7 +5,7 @@
      & (YEAR,MONTH,DAY,HOUR,MINUTE,SEC,AT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE LOCAL SIDEREAL TIME IN RADIAN FOR
@@ -46,13 +46,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| DAY            |-->| JOUR.
-!| HOUR           |-->| HEURE EN TEMPS UNIVERSEL.
-!| MINUTE         |---|
-!| MONTH          |-->| MOIS.
-!| SEC            |-->| SECONDE EN TEMPS UNIVERSEL.
-!| YEAR           |-->| ANNEE.
+!| AT             |-->| TIME IN SECONDS
+!| DAY            |-->| DAY
+!| HOUR           |-->| HOUR IN UNIVERSAL TIME
+!| MINUTE         |-->| MINUTE IN UNIVERSAL TIME
+!| MONTH          |-->| MONTH
+!| SEC            |-->| SECOND IN UNIVERSAL TIME
+!| YEAR           |-->| YEAR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_TSLOC => TSLOC

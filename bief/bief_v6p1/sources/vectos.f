@@ -9,7 +9,7 @@
      & XNOR,YNOR,ZNOR,NPT,NELEM,NELMAX,IELM1,LV,MSK,MASKEL,MESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -32,11 +32,6 @@
 !+  40 : TELEMAC-3D P0 PRISMS   1
 !+  41 : TELEMAC-3D P1 PRISMS   6
 !
-!history  REGINA NEBAUER
-!+        22/09/05
-!+
-!+
-!
 !history  JM HERVOUET (LNHE)
 !+        16/07/07
 !+        V6P0
@@ -55,32 +50,42 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE
-!| FORMUL         |-->| FORMULE DECRIVANT LE VECTEUR
-!| IELM1          |-->| TYPE D'ELEMENT
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE
-!| LEGO           |-->| LOGIQUE : POUR ASSEMBLER LE VECTEUR
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NBOR           |-->| NUMEROTATION GLOBALE DES POINTS DE BORD
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!|                |   | (CAS DU MAILLAGE ADAPTATIF)
-!| NPT            |-->| NOMBRE DE POINTS DU VECTEUR.
-!| OP             |-->| OPERATION A EFFECTUER.01TT0
-!| SF,SG,SH       |-->| STRUCTURES DE F,G ET H
-!| SU,SV,SW       |-->| STRUCTURES DE U,V ET W
-!| SURFAC         |-->| SURFACE DES ELEMENTS.
-!| T              |-->| TABLEAU DE TRAVAIL QUI
-!|                |   | CONTIENDRA LE VECTEUR NON ASSEMBLE
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR U DANS LA FORMULE
-!| VEC            |<->| VECTEUR A REMPLIR OU MODIFIER
-!| XEL,YEL,ZEL    |-->| COORDONNEES DES POINTS DANS L'ELEMENT
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR DU RESULTAT
-!| XNOR,YNOR,ZNOR |-->| COMPOSANTES DES NORMALES.
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
+!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| H              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| IELM1          |-->| TYPE OF ELEMENT
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LEGO           |-->| IF YES : THE VECTOR WILL BE ASSEMBLED
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPT            |-->| NOMBRE OF POINTS OF VECTOR.
+!| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SG             |-->| BIEF_OBJ STRUCTURE OF G
+!| SH             |-->| BIEF_OBJ STRUCTURE OF H
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| SW             |-->| BIEF_OBJ STRUCTURE OF W
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| T              |-->| WORK ARRAY WITH THE NON ASSEMBLED VECTOR
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| W              |-->| FUNCTION USED IN THE VECTOR FORMULA 
+!| VEC            |<->| RESULTING VECTOR
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| ZEL            |-->| ELEVATIONS OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| XNOR           |-->| X-COMPONENT OF NORMAL VECTOR
+!| YNOR           |-->| Y-COMPONENT OF NORMAL VECTOR
+!| ZNOR           |-->| Z-COMPONENT OF NORMAL VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VECTOS => VECTOS

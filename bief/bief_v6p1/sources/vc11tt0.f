@@ -6,7 +6,7 @@
      &  W,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -47,14 +47,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ICOORD         |-->| COORDONNEE SUIVANT LAQUELLE ON DERIVE.
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| W              |<--| VECTEUR RESULTAT
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| ICOORD         |-->| 1: DERIVATIVE ALONG X, 2: ALONG Y
+!| IKLE1          |-->| FIRST POINT OF TETRAHEDRA
+!| IKLE2          |-->| SECOND POINT OF TETRAHEDRA
+!| IKLE3          |-->| THIRD POINT OF TETRAHEDRA
+!| IKLE4          |-->| FOURTH POINT OF TETRAHEDRA
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SG             |-->| BIEF_OBJ STRUCTURE OF G
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| W              |<--| RESULT IN NON ASSEMBLED FORM
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

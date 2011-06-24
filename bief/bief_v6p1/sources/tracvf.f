@@ -4,10 +4,10 @@
 !
      &(F,FN,FSCEXP,H,HN,FXMAT,FXMATPAR,
      & V2DPAR,UNSV2D,DDT,FXBOR,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
-     & MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,IT,DT,TDT)
+     & MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TRACER FOR FINITE VOLUME SCHEME.
@@ -31,39 +31,39 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DDT            |---|
-!| DT             |-->| PAS DE TEMPS.
-!| F              |<--| VALEURS DU TRACEUR A L'ETAPE N+1.
-!| FBOR           |-->| VALEURS DU TRACEUR SUR LE BORD.
-!| FLBORTRA       |---|
+!| DDT            |-->| SUB TIME-STEP
+!| DT             |-->| TIME-STEP
+!| F              |<--| VALUES OF F AT TIME N+1.
+!| FBOR           |-->| VALUES OF F AT THE PRESCRIBED BOUNDARIES
+!| FLBORTRA       |<->| FLUX OF TRACER AT THE BOUNDARIES
 !| FN             |-->| VALEURS DU TRACEUR A L'ETAPE N.
-!| FSCEXP         |---|
-!| FXBOR          |-->| MATRICE DES FLUX SUR LE BORD.
-!| FXMAT          |-->| MATRICE DE STOCKAGE DES FLUX.
-!| FXMATPAR       |---|
-!| H              |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N+1.
-!| HN             |-->| VALEURS DE LA HAUTEUR D'EAU A L'ETAPE N.
-!| IOPT2          |-->| 0 : UCONV RESPECTE LA CONTINUITE
-!|                |   | 1 : UCONV NE RESPECTE PAS LA CONTINUITE
-!| IT             |---|
-!| KDDL           |---|
-!| KDIR           |---|
-!| LIMTRA         |---|
-!| MESH           |-->| STRUCTURE DE MAILLAGE.
+!| FSCEXP         |-->| EXPLICIT SOURCE TERM FOR F
+!| FXBOR          |-->| FLUXES ON BOUNDARIES
+!| FXMAT          |-->| FLUXES (NON ASSEMBLED IN PARALLEL)
+!| FXMATPAR       |-->| FLUXES (ASSEMBLED IN PARALLEL)
+!| H              |-->| WATER DEPTH AT TIME N+1
+!| HN             |-->| WATER DEPTH AT TIME N
+!| IOPT2          |-->| 0 : UCONV OBEYS CONTINUITY EQUATION
+!|                |   | 1 : UCONV DOES NOT OBEY CONTINUITY EQUATION
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| LIMTRA         |-->| TECHNICAL BOUNDARY CONDITIONS FOR TRACERS
+!| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, MASKING OF DRY ELEMENTS
-!| OPTSOU         |---|
-!| SMH            |-->| TERME SOURCE DE L'EQUATION DE CONTINUITE.
-!| T1             |---|
-!| T2             |---|
-!| T4             |---|
-!| T5             |---|
-!| T6             |---|
-!| T7             |---|
-!| T8             |---|
-!| TDT            |---|
-!| UNSV2D         |---|
-!| V2DPAR         |---|
-!| YASMH          |---|
+!| OPTSOU         |-->| TYPE OF SOURCES
+!|                |   | 1: NORMAL
+!|                |   | 2: DIRAC
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| T1             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| T2             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| T4             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| T5             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| T6             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| T7             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| T8             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
+!| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_TRACVF => TRACVF
@@ -75,8 +75,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)           :: KDIR,KDDL,OPTSOU,LIMTRA(*)
-      INTEGER, INTENT(IN)           :: IOPT2,IT
-      DOUBLE PRECISION, INTENT(IN)  :: DDT,DT,TDT
+      INTEGER, INTENT(IN)           :: IOPT2
+      DOUBLE PRECISION, INTENT(IN)  :: DDT,DT
       TYPE(BIEF_OBJ), INTENT(INOUT) :: F,T1,T2,T4,T5,T6,T7,T8,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: FN,H,HN,V2DPAR,SMH,FBOR,FSCEXP
       TYPE(BIEF_OBJ), INTENT(IN)    :: FXBOR,UNSV2D

@@ -46,24 +46,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |---|
-!| FORMUL         |---|
-!| G              |---|
-!| H              |-->| FONCTIONS INTERVENANT DANS LA FORMULE.
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SF             |-->| STRUCTURE DE LA FONCTION H
-!| SG             |---|
-!| SH             |---|
-!| SU,SV          |-->| STRUCTURES DES FONCTIONS U ET V
-!| SURFAC         |-->| SURFACE DES ELEMENTS.
-!| U,V            |-->| COMPOSANTES D'UN VECTEUR
-!|                |   | INTERVENANT DANS LA FORMULE.
-!| W1,W2,W3       |<--| VECTEUR RESULTAT SOUS FORME NON ASSEMBLEE.
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
+!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| H              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| IKLE1          |-->| FIRST POINT OF TRIANGLES
+!| IKLE2          |-->| SECOND POINT OF TRIANGLES
+!| IKLE3          |-->| THIRD POINT OF TRIANGLES
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SG             |-->| BIEF_OBJ STRUCTURE OF G
+!| SH             |-->| BIEF_OBJ STRUCTURE OF H
+!| SU             |-->| BIEF_OBJ STRUCTURE OF U
+!| SV             |-->| BIEF_OBJ STRUCTURE OF V
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VC19AA => VC19AA

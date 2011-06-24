@@ -2,11 +2,11 @@
                      SUBROUTINE VC00TT
 !                    *****************
 !
-     &( XMUL,X,Y,Z,SURFAC,IKLE1,IKLE2,IKLE3,IKLE4,
-     &  NELEM,NELMAX,W1,W2,W3,W4)
+     &(XMUL,X,Y,Z,SURFAC,IKLE1,IKLE2,IKLE3,IKLE4,
+     & NELEM,NELMAX,W1,W2,W3,W4)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -38,20 +38,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES ELEMENTS.
-!| W2             |---|
-!| W3             |---|
-!| W4             |---|
-!| X              |---|
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| Y              |---|
-!| Z              |-->| COORDONNEES DES POINTS DANS L'ELEMENT
+!| IKLE1          |-->| FIRST POINT OF TETRAHEDRA
+!| IKLE2          |-->| SECOND POINT OF TETRAHEDRA
+!| IKLE3          |-->| THIRD POINT OF TETRAHEDRA
+!| IKLE4          |-->| FOURTH POINT OF TETRAHEDRA
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| W4             |<--| RESULT IN NON ASSEMBLED FORM
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -83,7 +84,7 @@
 !
 !   LOOP ON THE ELEMENTS
 !
-      DO 3 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -108,7 +109,7 @@
          W3(IELEM) = W1(IELEM)
          W4(IELEM) = W1(IELEM)
 !
-3     CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

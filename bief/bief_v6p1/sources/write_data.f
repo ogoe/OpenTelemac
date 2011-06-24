@@ -5,7 +5,7 @@
      &(FFORMAT,FILERES,NVARS,TIME,TIMESTEP,OUTVAR,NOMVAR,BVARSOR,N)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES DATA VALUES ON A MESH INTO THE DATA FILE OF THE
@@ -41,10 +41,10 @@
 !|                |   | QUADRATIC ELEMENTS ONLY THE LINEAR VALUES
 !|                |   | ARE EXITED)
 !| NOMVAR         |-->| NAME OF VARIABLES
-!| NVARS          |---|
+!| NVARS          |-->| NUMBER OF VARIABLES
 !| OUTVAR         |-->| VARIABLES TO BE PUT IN THE FILE
-!| TIME           |---|
-!| TIMESTEP       |---|
+!| TIME           |-->| TIME
+!| TIMESTEP       |-->| TIME STEP (INTEGER), NOT DT.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE M_MED
@@ -71,6 +71,7 @@
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_BEGIN('WRITE_DATA')
 !***********************************************************************
+!
       SELECT CASE (FFORMAT)
         CASE ('SERAFIN ','SERAFIND')
           CALL WRITE_DATA_SERAFIN(FILERES,NVARS,TIME,TIMESTEP,
@@ -88,8 +89,10 @@
           CALL PLANTE(1)
           STOP
       END SELECT
+!
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_END('WRITE_DATA')
 !***********************************************************************
+!
       RETURN
       END

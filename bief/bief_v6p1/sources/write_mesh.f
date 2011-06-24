@@ -5,7 +5,7 @@
      &(FFORMAT,NFILE,MESH,NPLAN,DATE,TIME,I_ORIG,J_ORIG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES THE MESH, DESCRIBED BY THE BIEF_MESH STRUCTURE
@@ -32,14 +32,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DATE           |---|
+!| DATE           |-->| 3 INTEGERS (YEAR, MONTH, DAY)
 !| FFORMAT        |-->| FILE FORMAT
-!| I_ORIG         |---|
-!| J_ORIG         |---|
+!| I_ORIG         |-->| OFFSET OF ABSCISSAE IN METRES
+!| J_ORIG         |-->| OFFSET OF ORDINATES IN METRES
 !| MESH           |-->| MESH STRUCTURE
 !| NFILE          |-->| LOGICAL UNIT OF FILE
 !| NPLAN          |-->| NUMBER OF PLANES (3D)
-!| TIME           |---|
+!| TIME           |-->| 3 INTEGERS (HOUR, MINUTE, SECOND)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -63,6 +63,7 @@
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_BEGIN('WRITE_MESH')
 !***********************************************************************
+!
       SELECT CASE (FFORMAT)
         CASE ('SERAFIN','SERAFIND')
            CALL WRITE_MESH_SERAFIN(NFILE,
@@ -84,8 +85,10 @@
           CALL PLANTE(1)
           STOP
       END SELECT
+!
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_END('WRITE_MESH')
 !***********************************************************************
+!
       RETURN
       END

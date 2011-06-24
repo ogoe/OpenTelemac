@@ -5,7 +5,7 @@
      & (DOSSIER,FICHIER)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    'FICHIER' IS THE NAME OF A FILE EXPECTED IN THE DIRECTORY.
@@ -33,8 +33,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DOSSIER        |-->| DOSSIER OU SE TROUVENT LES FICHIERS A LIRE
-!| FICHIER        |-->| FICHIER A LIRE
+!| DOSSIER        |-->| DIRECTORY WHERE IS THE FILE TO BE READ
+!| FICHIER        |-->| FILE TO BE READ
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

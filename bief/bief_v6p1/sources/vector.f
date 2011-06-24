@@ -5,7 +5,7 @@
      &(VEC,OP,FORMUL,IELM1,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -55,18 +55,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE
-!| FORMUL         |-->| FORMULE DECRIVANT LE VECTEUR
-!| IELM1          |-->| TYPE D'ELEMENT DU VECTEUR.
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |-->| STRUCTURE DE MAILLAGE : BLOC DES ENTIERS.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| OP             |-->| '=' : ON FAIT VEC= LE VECTEUR
-!|                |   | '+' : ON FAIT VEC=VEC+ LE VECTEUR
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR U DANS LA FORMULE
-!| VEC            |<->| VECTEUR A REMPLIR OU MODIFIER
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR DU RESULTAT
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
+!| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
+!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
+!| H              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
+!| IELM1          |-->| TYPE OF ELEMENT
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| OP             |-->| '=' : WE DO VEC= THE VECTOR
+!|                |   | '+' : WE DO VEC=VEC+ THE VECTOR
+!| U              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
+!| V              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
+!| W              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
+!| VEC            |<->| RESULTING VECTOR
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_VECTOR => VECTOR

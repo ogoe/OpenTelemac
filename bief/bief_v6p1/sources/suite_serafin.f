@@ -6,7 +6,7 @@
      & NVARCL,TROUVE,ALIRE,LISTIN,FIN,MAXVAR,NPLAN,DT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE OUTPUT FROM A SERAFIN RESULT FILE.
@@ -42,33 +42,28 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALIRE          |-->| VARIABLES QU'IL FAUT LIRE (POUR LES AUTRES ON
-!|                |   | SAUTE L'ENREGISTREMENT CORRESPONDANT)
-!|                |   | LES VARIABLES CLANDESTI-NES SONT LUES
-!|                |   | SYSTEMATIQUEMENT.
-!| AT             |-->| TEMPS
-!| CLAND          |<--| BLOC DES VARIABLES CLANDESTINES
+!| ALIRE          |-->| VARIABLES TO BE READ (FOR OTHERS THE RECORD IS
+!|                |   | SKIPPED). CLANDESTINE VARIABLES ARE READ
+!|                |   | SYSTEMATICALLY.
+!| AT             |-->| TIME
+!| CLAND          |<--| BLOCK OF CLANDESTINE VARIABLES
 !| DT             |<->| TIME STEP BETWEEN 2 RECORDS (OPTIONAL)
-!| FIN            |-->| VOIR LE TROISIEME ARGUMENT NUMDEB
-!| HIST           |-->| TABLEAU DE VALEURS MISES DANS L'ENREGISTREMENT
-!|                |   | DU TEMPS.
-!| LISTIN         |-->| SI OUI, IMPRESSION D'INFORMATIONS SUR LISTING
-!| MAXVAR         |-->| DIMENSION DES TABLEAUX DES VARIABLES : ALIRE, ETC
-!| NHIST          |-->| NOMBRE DE VALEURS DANS LE TABLEAU HIST.
+!| FIN            |-->| SEE NUMDEB
+!| HIST           |-->| ARRAY OF VALUES THAT MAY BE PUT IN THE TIME RECORD
+!| LISTIN         |-->| IF YES,  PRINTING INFORMATIONS ON LISTING
+!| MAXVAR         |-->| SIZE OF ARRAYS OF VARIABLES : ALIRE, ETC
+!| NHIST          |-->| NUMBER OF VALUES IN HIST
 !| NPLAN          |-->| NUMBER OF PLANES IN 3D (OPTIONAL)
-!| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| NPRE           |-->| NUMERO DE CANAL DU FICHIER
-!| NUMDEB         |<->| FIN = .TRUE. NUMERO DU DERNIER ENREGISTREMENT
-!|                |   | FIN = .FALSE. : NUMERO DE L'ENREGISTREMENT
-!|                |   | QUE L'ON VEUT LIRE.
-!| NVARCL         |-->| NOMBRE DE VARIABLES CLANDESTI-NES.
-!| STD            |-->| BINAIRE DU FICHIER : STD, IBM OU I3E
-!| TEXTPR         |-->| NOMS ET UNITES DES VARIABLES.
-!| TROUVE         |<--| INDIQUE (TROUVE(K)=1) LES VARIABLES TROUVEES
-!|                |   | DANS LE FICHIER.
-!| VARCLA         |-->| TABLEAU OU L'ON RANGE LES VARIABLES
-!|                |   | CLANDESTINES.
-!| VARSOR         |<--| BLOC DES TABLEAUX CONTENANT LES VARIABLES
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPRE           |-->| LOGICAL UNIT OF FILE
+!| NUMDEB         |<->| FIN = .TRUE. WILL BE THE LAST RECORD NUMBER
+!|                |   | FIN = .FALSE. : PRESCRIBED RECORD TO BE READ
+!| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES.
+!| STD            |-->| FILE BINARY: STD, IBM OR I3E
+!| TEXTPR         |-->| NAMES AND UNITS OF VARIABLES.
+!| TROUVE         |<--| GIVES (TROUVE(K)=1) VARIABLES FOUND IN THE FILE
+!| VARCLA         |-->| BLOCK WHERE TO PUT CLANDESTINE VARIABLES
+!| VARSOR         |<--| BLOCK CONTAINING VARIABLES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SUITE_SERAFIN => SUITE_SERAFIN

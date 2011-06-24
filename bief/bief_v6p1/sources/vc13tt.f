@@ -2,12 +2,11 @@
                      SUBROUTINE VC13TT
 !                    *****************
 !
-     &( XMUL,SF,F,X,Y,Z,
-     &  IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,
+     &( XMUL,SF,F,X,Y,Z,IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,
      &  W1,W2,W3,W4,ICOORD , FORMUL )
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -51,21 +50,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FORMUL         |---|
-!| ICOORD         |-->| COORDONNEE SUIVANT LAQUELLE ON DERIVE.
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| IKLE4          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| W2             |---|
-!| W3             |---|
-!| W4             |---|
-!| X              |---|
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| Y              |---|
-!| Z              |---|
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| FORMUL         |-->| SEE AT THE END OF THE SUBROUTINE
+!| ICOORD         |-->| 1: DERIVATIVE ALONG X, 2: ALONG Y
+!| IKLE1          |-->| FIRST POINT OF TETRAHEDRA
+!| IKLE2          |-->| SECOND POINT OF TETRAHEDRA
+!| IKLE3          |-->| THIRD POINT OF TETRAHEDRA
+!| IKLE4          |-->| FOURTH POINT OF TETRAHEDRA
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| W4             |<--| RESULT IN NON ASSEMBLED FORM
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VC13TT => VC13TT

@@ -5,7 +5,7 @@
      &(RES,IELM,U,V,F,DT,XMUL,CFLMAX,T1,T2,MESH,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SAME AS VGRADF BUT WITH THE PSI SCHEME AND
@@ -29,18 +29,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CFLMAX         |---|
-!| DT             |---|
-!| F              |-->| FONCTION F.
-!| IELM           |-->| TYPE D'ELEMENT DU RESULTAT.
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| RES            |<--| VECTEUR RESULTAT.
-!| T1             |---|
-!| T2             |---|
-!| U,V            |-->| COMPOSANTES DU CHAMP CONVECTEUR.
-!| XMUL           |---|
+!| CFLMAX         |<--| MAXIMUM CFL NUMBER
+!| DT             |-->| TIME-STEP
+!| F              |-->| FUNCTION F
+!| IELM           |-->| TYPE OF ELEMENT OF RESULT
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| RES            |<--| RESULTING VECTOR
+!| T1             |<->| WORK ARRAY IN BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK ARRAY IN BIEF_OBJ STRUCTURE
+!| U              |-->| X-COMPONENT OF ADVECTION FIELD
+!| V              |-->| Y-COMPONENT OF ADVECTION FIELD
+!| XMUL           |-->| MULTIPLICATION FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VGFPSI => VGFPSI

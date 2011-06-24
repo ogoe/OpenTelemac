@@ -7,17 +7,44 @@
      &  W1,W2,W3,W4,W5,W6,FORMUL)
 !
 !***********************************************************************
-! BIEF
+! BIEF   V6P1                                         23/06/2011
 !***********************************************************************
 !
+!brief    COMPUTES THE PRODUCT OF THE DIFFUSION MATRIX BY FUNCTION U
+!         CORRESPONDS TO MATRIX COMPUTED IN MT02PP_STAR
+!         F, G AND H ARE THE DIFFUSION COEFFICIENTS ALONG X, Y AND Z
+!
+!
+!history  J-M HERVOUET (LNHE)    
+!+        23/06/2011
+!+        V6P1
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F,G,H          |-->| FONCTIONS INTERVENANT DANS LA FORMULE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SF,SG,SH       |-->| STRUCTURES DES FONCTIONS F,G ET H
-!| SURFAC         |-->| SURFACE DES ELEMENTS.
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| G              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| H              |-->| FUNCTION USED IN THE VECTOR FORMULA
+!| IKLE1          |-->| FIRST POINT OF PRISMS
+!| IKLE2          |-->| SECOND POINT OF PRISMS
+!| IKLE3          |-->| THIRD POINT OF PRISMS
+!| IKLE4          |-->| FOURTH POINT OF PRISMS
+!| IKLE5          |-->| FIFTH POINT OF PRISMS
+!| IKLE6          |-->| SIXTH POINT OF PRISMS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SG             |-->| BIEF_OBJ STRUCTURE OF G
+!| SH             |-->| BIEF_OBJ STRUCTURE OF H
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| W1             |<--| RESULT IN NON ASSEMBLED FORM
+!| W2             |<--| RESULT IN NON ASSEMBLED FORM
+!| W3             |<--| RESULT IN NON ASSEMBLED FORM
+!| W4             |<--| RESULT IN NON ASSEMBLED FORM
+!| W5             |<--| RESULT IN NON ASSEMBLED FORM
+!| W6             |<--| RESULT IN NON ASSEMBLED FORM
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT
+!| Z              |-->| ELEVATIONS OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF  !  , EX_VC04PP => VC04PP

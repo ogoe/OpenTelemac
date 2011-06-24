@@ -5,7 +5,7 @@
      &(X,D,S)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    END OF THE OPERATIONS FOR DIAGONAL PRECONDITIONING
@@ -46,10 +46,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| D              |<--| BLOC DE MATRICES DIAGONALES
-!| S              |-->| 2 : BLOC A 4   MATRICES
-!|                |   | 3 : BLOC A 9   MATRICES
-!| X              |<->| X ET X' (TRANSFORMATION SUR PLACE)
+!| D              |<--| BLOCK OF DIAGONAL MATRICES
+!| S              |-->| 2 : BLOCK WITH 4 MATRICES
+!|                |   | 3 : BLOCK WITH 9 MATRICES
+!| X              |<->| X AND X' (IN SITU TRANSFORMATION)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_UM1X => UM1X

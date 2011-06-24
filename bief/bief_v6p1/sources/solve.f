@@ -5,7 +5,7 @@
      &(X, A,B,TB,CFG,INFOGR,MESH,AUX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES A LINEAR SYSTEM OF THE FORM A X = B
@@ -100,21 +100,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| MATRICE DU SYSTEME
-!| AUX            |-->| MATRICE DE TRAVAIL DE MEME STRUCTURE QUE A
-!|                |   | (UTILISEE SEULEMENT POUR CERTAINS PRECONDI-
-!|                |   | TIONNEMENTS : 7 , 11 , 13)
-!| B              |-->| SECOND MEMBRE DU SYSTEME.
-!| CFG            |---|
-!| INFOGR         |-->| SI OUI, ON IMPRIME UN COMPTE-RENDU
-!| MESH           |-->| MAILLAGE.
-!| TB             |-->| BLOC DE VECTEURS DE TRAVAIL AVEC AU MOINS
-!|                |   | MAX(7,2+2*CFG%KRYLOV)*S VECTEURS, S VALANT 1
-!|                |   | SI A EST UNE MATRICE, 2 SI C'EST UN BLOC DE 4
-!|                |   | ET 3 SI C'EST UN BLOC DE 9.
-!|                |   | CFG%KRYLOV N'EST PRIS EN COMPTE QUE SI
-!|                |   | CFG%SLV = 7 (GMRES)
-!| X              |<--| VALEUR INITIALE, PUIS SOLUTION
+!| A              |-->| MATRIX OF THE SYSTEM (OR BLOCK OF MATRICES)
+!| AUX            |-->| MATRIX FOR PRECONDITIONING.
+!| B              |-->| RIGHT-HAND SIDE OF THE SYSTEM
+!| CFG            |-->| STRUCTURE OF SOLVER CONFIGURATION
+!|                |   | CFG%KRYLOV IS USED ONLY IF CFG%SLV = 7 (GMRES)
+!| INFOGR         |-->| IF YES, PRINT A LOG.
+!| MESH           |-->| MESH STRUCTURE.
+!| TB             |-->| BLOCK OF VECTORS WITh AT LEAST
+!|                |   | MAX(7,2+2*CFG%KRYLOV)*S VECTORS, S IS 1
+!|                |   | IF A IS A MATRIX, 2 IF A BLOCK OF 4 MATRICES
+!|                |   | AND 3 IF A BLOCK OF 9.
+!| X              |<->| INITIAL VALUE, THEN SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SOLVE => SOLVE

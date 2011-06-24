@@ -5,7 +5,7 @@
      &(NFIC,NVARS,TIME,TIMESTEP,OUTVAR,BVARSOR,FFORMAT,N)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES RECORDS OF RESULTS IN A SERAFIN FORMAT FILE.
@@ -39,7 +39,7 @@
 !| OUTVAR         |-->| INDICATES FOR EACH VARIABLE IF WE SHOULD
 !|                |   | PRINT IT OUT OR NOT
 !| TIME           |-->| LOGICAL UNIT OF FILE
-!| TIMESTEP       |-->|
+!| TIMESTEP       |-->| TIME STEP (INTEGER, NOT DT)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
