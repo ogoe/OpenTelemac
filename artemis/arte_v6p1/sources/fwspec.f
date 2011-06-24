@@ -41,12 +41,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FW             |<--| COEFFICIENT DE FROTTEMENT
-!| FWCOEF         |-->| COEFFICIENT DE FROTTEMENT CONSTANT IMPOSE
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| PRIVE          |-->| TABLEAU DE TRAVAIL DEFINI DANS PRINCI
-!| X,Y            |-->| COORDONNEE DU MAILLAGE .
-!| ZF             |-->| COTE DU FOND
+!| FW             |<--| BOTTOM FRICTION FACTOR
+!| FWCOEF         |-->| CONSTANT FRICTION FACTOR IMPOSED
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PRIVE          |-->| PRIVATE TABLE DEFINED IN PRINCI
+!| X,Y            |-->| MESH COORDINATES
+!| ZF             |-->| BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

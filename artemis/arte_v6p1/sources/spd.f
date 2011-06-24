@@ -44,7 +44,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| TETA           |-->| ANGLE DE PROPAGATION DE LA HOULE D'ENERGIE
+!| TETA           |-->| ANGLE FOR CONSIDERED WAVE PROPAGATION 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -37,14 +37,13 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFAPAR         |---|
 !| ISEG           |---|
-!| LIHBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
-!|                |   | POUR LES POINTS DE BORD.
+!| LIHBOR         |<--| TYPE OF BOUNDARY CONDITIONS ON DEPTH
 !| NACHB          |---|
-!| NBOR           |<--| ADRESSES DES POINTS DE BORD.
-!| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
+!| NBOR           |<--| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NLIM           |-->| NUMBER OF THE BOUDARY CONDITION FILE.
+!| NPTFR          |-->| NUMBER OF BOURDARY POINTS.
 !| NUMLIQ         |---|
-!| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
+!| STDGEO         |-->| STANDARDFOR GEOMETRY FILE.
 !| XSEG           |---|
 !| YSEG           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

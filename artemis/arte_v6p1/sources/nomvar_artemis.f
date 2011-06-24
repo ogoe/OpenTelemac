@@ -34,8 +34,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MNEMO          |---|
-!| TEXTE          |<--| NOM DES VARIABLES
-!| TEXTPR         |<--| NOM DES VARIABLES DU CALCUL PRECEDENT
+!| TEXTE          |<--| NAME OF VARIABLES
+!| TEXTPR         |<--| VARIABLES NAME OF PREVIOUS CALCULATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_NOMVAR_ARTEMIS => NOMVAR_ARTEMIS

@@ -34,14 +34,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALEMON         |-->| VRAI SI HOULE ALEATOIRE MONODIRECTIONNELLE
-!| ALEMUL         |-->| VRAI SI HOULE ALEATOIRE MULTIDIRECTIONNELLE
-!| BALAYE         |-->| VRAI SI BALAYAGE EN PERIODES
-!| ITITRE         |-->| TYPE DE TITRE A IMPRIMER
-!| LT             |-->| NUMERO DU CALCUL
-!| NBR            |-->| NUMERO DE LA PERIODE OU DIRECTION EN COURS
-!| NBRTOT         |-->| NOMBRES TOTAL DES PERIODES OU DIRECTIONS
-!| X              |-->| REEL A IMPRIMER
+!| ALEMON         |-->| TRUE IF MONODIRECTIONAL RANDOM WAVES 
+!| ALEMUL         |-->| TRUE IF MULTIDIRECTIONAL RANDOM WAVES
+!| BALAYE         |-->| TRUE IF PERIOD SCANNING
+!| ITITRE         |-->| TYPE OF TITLE TO PRINT
+!| LT             |-->| INDICE OF THE CURRENT CALCULATION
+!| NBR            |-->| NUMBER OF CURRENT PERIOD OR DIRECTION
+!| NBRTOT         |-->| TOTAL NUMBER OF PERIOD OR DIRECTION
+!| X              |-->| REAL TO PRINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_ENTART => ENTART

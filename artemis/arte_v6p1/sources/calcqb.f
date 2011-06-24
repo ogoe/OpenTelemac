@@ -30,9 +30,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| Q1             |-->| EXTREMITE GAUCHE INITIALE DE LA CORDE
-!| Q2             |-->| EXTREMITE DROITE INITIALE DE LA CORDE
-!| Q3             |<--| SOLUTION APPROCHEE DE QB
+!| Q1             |-->| INITIAL LEFT EXTREMITY OF THE SEGMENT
+!| Q2             |-->| INITIAL RIGTH EXTREMITY OF THE SEGMENT
+!| Q3             |<--| APPROXIMATION FOR QB
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

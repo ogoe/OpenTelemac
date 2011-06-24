@@ -37,7 +37,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| LISHHO         |<->| NOMBRE DE LISSAGES POUR LA HAUTEUR DE HOULE
+!| LISHHO         |<--| SMOOTHING FOR THE WAVE HEIGTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

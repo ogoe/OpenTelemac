@@ -40,16 +40,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DALE           |<--| DIRECTIONS DE DISCRETISATION DU SPECTRE
-!| EXPOS          |-->| COEFFICIENT DANS LA FORMULE DU SPECTRE
-!| NDALE          |-->| NOMBRE DE BANDES DE DISCRETISATION
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPRIV          |<->| NOMBRE DE TABLEAUX PRIVES
-!| PRIVE          |<->| TABLEAU PRIVE DE L'UTILISATEUR
-!| TETAH          |-->| DIRECTION PRINCIPALE DE PROPAGATION
-!| TETMAX         |-->| VALEUR MAXIMUM DE L'ANGLE DE PROPAGATION
-!| TETMIN         |-->| VALEUR MINIMUM DE L'ANGLE DE PROPAGATION
-!| TRA01          |<->| TABLEAU DE TRAVAIL
+!| DALE           |<--| DIRECTIONS FOR SPECTRUM DISCRETISATION
+!| EXPOS          |-->| COEFFICIENT FOR THE SPECTRUM FORMULA
+!| NDALE          |-->| NUMBER OF DISCRETISATION BAND
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPRIV          |<->| NUMBER OF PRIVATE TABLES
+!| PRIVE          |<->| PRIVATE TABLE
+!| TETAH          |-->| MAIN DIRECTION OF THE PROPAGATION
+!| TETMAX         |-->| MAXIMUM VALUE FOR THE PROPAGATION ANGLE
+!| TETMIN         |-->| MAXIMUM VALUE FOR THE PROPAGATION ANGLE
+!| TRA01          |<->| WORK STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

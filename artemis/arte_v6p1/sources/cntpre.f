@@ -49,10 +49,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DAM            |-->| DIAGONALE DE LA MATRICE
-!| IPREC2         |<--| PRECONDITIONNEMENT UTILISE
-!| IPRECO         |-->| PRECONDITIONNEMENT DEMANDE PAR L'UTILISATEUR
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
+!| DAM            |-->| DIAGONALE OF THE MATRIX
+!| IPREC2         |<--| PRECONDITIONNING USED
+!| IPRECO         |-->| PRECONDITIONNING REQUIRED BY USER
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

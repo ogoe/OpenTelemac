@@ -40,7 +40,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |---|
 !| K              |---|
-!| LISHHO         |<--| NOMBRE DE LISSAGES SUR HHO
+!| LISHHO         |<--| NUMBER OF SMOOTHING FOR HHO
 !| NELEM          |---|
 !| NPOIN          |---|
 !| X              |---|

@@ -36,7 +36,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |-->| FREQUENCE OU L'ON CALCULE LA DENSITE D'ENERGIE
+!| F              |-->| FREQUENCY FOR WHICH ENERGY DENSITY IS CALCULATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

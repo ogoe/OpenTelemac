@@ -67,33 +67,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C,CG           |-->| VITESSE DE PHASE ET DE GROUPE
-!| GRAV           |-->| GRAVITE
-!| H              |-->| HAUTEUR D'EAU AU REPOS
-!| HHO            |-->| HAUTEUR DE LA HOULE
-!| IELM           |-->| TYPE D'ELEMENT
-!| IELMB          |-->| TYPE D'ELEMENT DE BORD
-!| IKLE           |-->| TABLE DE CONNECTIVITE
-!| INCI           |-->| INCIDENCE DE LA HOULE
-!| K              |-->| NOMBRE D'ONDE
-!| KP1BOR         |-->| NUMERO DE BORD DU POINT SUIVANT
-!| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NELEM          |-->| NOMBRE D'ELEMENTS
+!| C,CG           |-->| PHASE AND GROUP VELOCITIES
+!| GRAV           |-->| GRAVITY
+!| H              |-->| WATER HEIGHT
+!| HHO            |-->| WAVE HEIGHT
+!| IELM           |-->| ELEMENT TYPE
+!| IELMB          |-->| BOUNDARY ELEMENT TYPE
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| INCI           |-->| WAVE INCIDENCE
+!| K              |-->| WAVE NUMBER
+!| KP1BOR         |-->| BOUNDARY NUMBER OF THE NEXT POINT 
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |---|
-!| NPOIN          |-->| NOMBRE DE POINTS
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| OMEGA          |-->| PULSATION DE LA HOULE
-!| PER            |-->| PERIODE DE LA HOULE
-!| PHAS           |-->| PHASE DE LA HOULE
-!| PHIR,PHII      |-->| COMPOSANTES DU POTENTIEL
-!| PRIVE          |<->| TABLEAUX RESERVE A L'UTILISATEUR
-!| S              |-->| COTE DE LA SURFACE LIBRE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS 
+!| OMEGA          |-->| WAVE PULSATION
+!| PER            |-->| WAVE PERIOD
+!| PHAS           |-->| WAVE PHASE
+!| PHIR,PHII      |-->| POTENTIAL (REAL & IMAGINARY)
+!| PRIVE          |<->| USER PRIVATE TABLE
+!| S              |-->| FREE SURFACE ELEVATION
 !| TRA02          |---|
 !| TRA03          |---|
 !| TRA04          |---|
-!| U0,V0          |-->| VITESSES EN SURFACE (A T=0)
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| ZF             |-->| COTE DU FOND
+!| U0,V0          |-->| VELOCITIES AT FREE SURFACE (AT T=0)
+!| X,Y            |-->| MESH COORDINATES
+!| ZF             |-->| BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_UTIMP=> UTIMP

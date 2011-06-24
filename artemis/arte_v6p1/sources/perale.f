@@ -35,16 +35,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GAMMA          |-->| COEFFICIENT DANS LA FORMULE DU SPECTRE
-!| NPALE          |-->| NOMBRE DE PERIODES DE DISCRETISATION
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPRIV          |<->| NOMBRE DE TABLEAUX PRIVES
-!| PALE           |<--| PERIODES DE DISCRETISATION DU SPECTRE
-!| PERPIC         |-->| PERIODE DU PIC DU SPECTRE
-!| PMAX           |-->| FREQUENCE MAXIMUM DU SPECTRE
-!| PMIN           |-->| FREQUENCE MINIMUM DU SPECTRE
-!| PRIVE          |<->| TABLEAU PRIVE DE L'UTILISATEUR
-!| TRA01          |<->| TABLEAU DE TRAVAIL
+!| GAMMA          |-->| COEFFICIENT IN THE SPECTRUM FORMULA
+!| NPALE          |-->| NUMBER OF DISCRETISATION PERIOD
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPRIV          |<->| NUMBER OF PRIVATE TABLES
+!| PALE           |<--| PERIODS FOR SPECTRUM DISCRETISATION
+!| PERPIC         |-->| PEAK PERIOD FOR SPECTRUM
+!| PMAX           |-->| MAXIMUM FREQUENCY FOR SPECTRUM
+!| PMIN           |-->| MINIMUM FREQUENCY FOR SPECTRUM
+!| PRIVE          |<->| USER PRIVATE TABLE
+!| TRA01          |<->| WORK STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_PERALE=> PERALE

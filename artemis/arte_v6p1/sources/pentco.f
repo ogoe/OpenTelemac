@@ -64,7 +64,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|     H          | <--|  WATER DEPTH                                 |
 !|     K          | <--|  WAVE NUMBER                                 |
-!|    IPENTCO     | <--|  OPTION                                      |
+!|    II          | -->|  OPTION                                      |
 !|    T3 = 1+F    | -->|  CORRECTION FOR EXTENDED MILD-SLOPE EQUATION |
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -72,18 +72,21 @@
 ! SOUS-PROGRAMMES APPELES      :  FCTE1 et FCTE2
 ! TABLEAUX DE TRAVAIL UTILISES :  T2 T3 T4 T5 T6 T7 T9 T8 T11 T12
 !
-!
 !-----------------------------------------------------------------------
+!
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_ARTEMIS
 !
       IMPLICIT NONE
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,II
-      
+      INTEGER, INTENT(IN) :: II      
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
       DOUBLE PRECISION CBID,FFW
       DOUBLE PRECISION PI,DEGRAD,RADDEG
 !
@@ -96,64 +99,59 @@
 !
       DOUBLE PRECISION FCTE1, FCTE2, XX
       EXTERNAL FCTE1, FCTE2
-
+!
 ! MASS MATRIX
+!
       CALL VECTOR(T2 , '=' , 'MASBAS          ' , IELM ,
      *            1.D0 , C , C , C , C , C , C ,
      *            MESH , MSK  , MASKEL )
-
-
-
-
-
-      IF( (II.EQ.1).OR.(II.EQ.3) ) THEN
+!
+      IF(II.EQ.1.OR.II.EQ.3) THEN
 ! --------------
 ! GRADIENT EFFECTS
 ! --------------
-
+!
 !--->  E1*GRAD(H)**2 ---> IN T4
-
-!   DX
+!
+!  DX
+!
       CALL VECTOR(T7 , '=' , 'GRADF          X' , IELM ,
      *            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
      *            MESH , MSK , MASKEL)
       CALL OS( 'X=YZ    ' , T4,T7,T7,0.D0) 
-
-!  DY        
+!
+!  DY 
+!       
       CALL VECTOR(T7 , '=' , 'GRADF          Y' , IELM ,
      *            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
      *            MESH , MSK , MASKEL)
       CALL OS( 'X=YZ    ' , T5,T7,T7,0.D0)
-
-! GRAD(H)**2         
+!
+! GRAD(H)**2  
+!       
       CALL OS( 'X=X+Y   ', T4,T5,SBID,0.D0)
-
+!
 ! SQUARE MASS
+!
       CALL OS( 'X=YZ    ' , T8,T2,T2,0.D0)
-
-
-! COEFF GRAD(H)**2      
+!
+! COEFF GRAD(H)**2 
+!     
       CALL OS( 'X=Y/Z   ' , T4,T4,T8,0.D0)     
-      
-  
-      
-!---> FUNCTION E1                                                                            
+!           
+!---> FUNCTION E1   
+!                                                                         
       DO I=1,NPOIN
         T11%R(I)=FCTE1(  K%R(I)*H%R(I) )
       END DO
-
- 
-      
+!    
 !--->  E1*GRAD(H)**2 ---> IN T4
+!
       CALL OS( 'X=YZ    ' , T4,T4,T11,0.D0)
-
 ! END OF GRADIENT EFFECTS
       ENDIF
-
-
-
-
-      IF( (II.EQ.2).OR.(II.EQ.3) ) THEN
+!
+      IF(II.EQ.2.OR.II.EQ.3) THEN
 ! ------------------
 ! CURVATURE EFFECTS
 ! ------------------
@@ -167,59 +165,64 @@
       CALL VECTOR(T5 , '=' , 'GRADF          X' , IELM ,
      *            1.D0 , T7 , T1 , T1 , T1 , T1 , T1 ,
      *            MESH , MSK , MASKEL)
-
+!
 ! COEFF DX
-      CALL OS( 'X=Y/Z    ' , T5,T5,T2,0.D0)  
-      
-      
+!
+      CALL OS( 'X=Y/Z    ' , T5,T5,T2,0.D0)       
+!      
 !  DY
+!
       CALL VECTOR(T7 , '=' , 'GRADF          Y' , IELM ,
      *            1.D0 , H , T1 , T1 , T1 , T1 , T1 ,
      *            MESH , MSK , MASKEL)
       CALL OS( 'X=Y/Z    ' , T7,T7,T2,0.D0) 
-       
+!       
       CALL VECTOR(T6 , '=' , 'GRADF          Y' , IELM ,
      *            1.D0 , T7 , T1 , T1 , T1 , T1 , T1 ,
      *            MESH , MSK , MASKEL)
+!
 ! COEFF DY
+!
       CALL OS( 'X=Y/Z    ' , T6,T6,T2,0.D0)   
-
+!
       CALL OS( 'X=Y+Z   ', T9,T5,T6,0.D0)
-
+!
 !---> FUNCTION E2 * 2 H 
+!
       DO I=1,NPOIN
        T12%R(I)=2.*H%R(I) * FCTE2(K%R(I)*H%R(I))
       END DO
-      
+!      
 !---> E2/K0*LAPLACIAN(H)
+!
       CALL OS( 'X=YZ    ' , T9,T9,T12,0.D0)
-        
+!        
 ! END OF CURVATURE EFFECTS
       ENDIF
-
-
-
+!
 ! SUM OF GRADIENT AND CURVTURE EFFECTS, DEPENDING OF OPTION "IPENTCO"
+!
       IF(II.EQ.1)  THEN
 !      F= E1*GRAD(H)**2      
        CALL OS( 'X=Y      ' , T3,T4,SBID,0.D0)
       ENDIF
-
+!
       IF(II.EQ.2)  THEN
 !      F= E2/K0*LAPLACIAN(H)  
        CALL OS( 'X=Y      ' , T3,T9,SBID,0.D0)
       ENDIF
-      
+!      
       IF(II.EQ.3)  THEN
 !      F =  E1*grad(H)**2 + E2/K0*LAPLACIEN(H)
        CALL OS( 'X=Y+Z    ' , T3,T4,T9,0.D0)
       ENDIF
-
-
+!
 ! ADD 1.,  T3 = 1 + F
+!
       CALL OS( 'X=X+C   ', T3,SBID,SBID,1.D0)
-
-
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
 
