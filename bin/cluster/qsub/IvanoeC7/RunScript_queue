@@ -75,7 +75,7 @@ def create_run_slurm():
 #SBATCH --error=%(jobname)s.%(time)s.err
 #SBATCH --time=%(walltime)s
 #SBATCH --ntasks=%(ncsize)s
-###SBATCH --partition=%(queue)s
+#SBATCH --partition=%(queue)s
 srun hostname -s | sort -u > mpid.conf
 for line in $(echo | cat mpid.conf)
 do
