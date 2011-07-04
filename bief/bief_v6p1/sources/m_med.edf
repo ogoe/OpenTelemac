@@ -1,5 +1,4 @@
       MODULE M_MED
-!
 !***********************************************************************
 ! THIS FILE IS PART OF BIEF
 ! COPYRIGHT (C) EDF 2008
@@ -18,26 +17,24 @@
 !
 ! FOR MORE INFORMATION: HTTP://WWW.CODE-ASTER.ORG/OUTILS/MED/
 !-----------------------------------------------------------------------
-!
+
       IMPLICIT NONE
-!      
-!     PLACE PUBLIC DECLARATIONS HERE ...
-!
+      
+      ! PLACE PUBLIC DECLARATIONS HERE ...
+
       PUBLIC OPEN_FILE_MED
       PUBLIC CLOSE_FILE_MED
       PUBLIC WRITE_MESH_MED
       PUBLIC CREATE_DATASET_MED
       PUBLIC WRITE_DATA_MED
       PUBLIC SUITE_MED
-!
+
 !-----------------------------------------------------------------------
 !   DECLARATIONS DES VARIABLES MED
 !-----------------------------------------------------------------------
-!
+
 !     INCLUDE 'med.hf'
-!
-!     INCLUDE REPLACED BY IN EXTENSO TEXT OF FILE:
-!
+
       INTEGER MED_FULL_INTERLACE,MED_NO_INTERLACE
       INTEGER MED_NO_PFLMOD, MED_GLOBAL, MED_COMPACT
       INTEGER MED_LECTURE,MED_LECTURE_ECRITURE
@@ -64,7 +61,7 @@
       INTEGER MED_NONOR,MED_DIM1,MED_ALL
       CHARACTER*32 MED_NOPFL,MED_NOGAUSS, MED_NOREF
       CHARACTER*32 MED_GAUSS_ELNO
-!
+
       PARAMETER (MED_MAILLE=0,MED_FACE=1,MED_ARETE=2,MED_NOEUD=3)
       PARAMETER (MED_NOEUD_MAILLE=4)
       PARAMETER (MED_FULL_INTERLACE=0, MED_NO_INTERLACE=1)
@@ -96,18 +93,18 @@
       PARAMETER (MED_NOGAUSS='                                ')
       PARAMETER (MED_NOREF='                                ')
       PARAMETER (MED_GAUSS_ELNO='MED_GAUSS_ELNO                  ')
-!
+
       INTEGER MED_NBR_GEOMETRIE_MAILLE
       INTEGER MED_NBR_GEOMETRIE_FACE
       INTEGER MED_NBR_GEOMETRIE_ARETE
       PARAMETER (MED_NBR_GEOMETRIE_MAILLE=15,MED_NBR_GEOMETRIE_FACE=4)
       PARAMETER (MED_NBR_GEOMETRIE_ARETE = 2)
-!
+
       INTEGER MED_MAILLAGE
       INTEGER MED_CHAMP
       PARAMETER (MED_MAILLAGE= 0)
       PARAMETER (MED_CHAMP= 1)
-!
+
 !-----------------------------------------------------------------------
 !   INTERFACE MED
 !-----------------------------------------------------------------------
@@ -116,24 +113,24 @@
 !-----------------------------------------------------------------------
 !   INTERFACE MED
 !-----------------------------------------------------------------------
-!
+
       INTERFACE
-!    
+    
 !   INTERFACE MED FICHIER
-!
+
 ! CETTE ROUTINE PERMET DE TESTER SI UN FICHIER EST AU FORMAT HDF V5
       SUBROUTINE EFFOCO(NOM,CRET)
         IMPLICIT NONE
         INTEGER CRET
         CHARACTER*(*) NOM
       END SUBROUTINE EFFOCO
-!    
+    
 ! CETTE ROUTINE PERMET DE FERMER UN FICHIER MED
       SUBROUTINE EFFERM (FID,CRET)
         IMPLICIT NONE
         INTEGER FID,CRET
       END SUBROUTINE EFFERM
-!
+
 ! CETTE ROUTINE PERMET D'ASSOCIER UNE DESCRIPTION A UN FICHIER :
 ! LA DESCRIPTION EST ECRITE DANS LE FICHIER
       SUBROUTINE EFFIDE (FID,DES,CRET)
@@ -141,7 +138,7 @@
         INTEGER FID,CRET
         CHARACTER*(*) DES
       END SUBROUTINE EFFIDE
-!
+
 ! CETTE ROUTINE PERMET DE LIRE DANS UN FICHIER MED EXISTANT SELON LES
 ! PARAMETRES UTILISES 
       SUBROUTINE EFFIEN (FID,QUOI,STR,CRET)
@@ -149,14 +146,14 @@
         INTEGER FID,QUOI,CRET
         CHARACTER*(*) STR
       END SUBROUTINE EFFIEN
-!
+
 ! RETOURNE LA LONGUEUR DE LA DESCRIPTION ASSOCIEE A UN FICHIER MED SI
 ! CETTE DESCRIPTION EXISTE
       SUBROUTINE EFLFDE (FID,LON,CRET)
         IMPLICIT NONE
         INTEGER FID,CRET,LON
       END SUBROUTINE EFLFDE
-!
+
 ! CETTE ROUTINE PERMET DE CREER OU D'OUVRIR UN FICHIER AU FORMAT MED
 ! SELON LE MODE D'ACCES SOUHAITE
       SUBROUTINE EFOUVR(FID, NOM, ACCES, CRET)
@@ -164,7 +161,7 @@
         CHARACTER *(*) NOM
         INTEGER ACCES, FID, CRET
       END SUBROUTINE EFOUVR
-!
+
 ! CETTE ROUTINE PERMET DE TESTER SI UN FICHIER QUE L'ON VEUT LIRE A ETE
 ! CREE AVEC LA MEME VERSION DE LA BIBLIOTHEQUE MED QUE CELLE UTILISEE
 ! POUR LIRE CE FICHIER
@@ -173,14 +170,14 @@
         INTEGER CRET
         CHARACTER* (*) NOM
       END SUBROUTINE EFVECO
-!
+
 ! CETTE ROUTINE RENVOIE LES ENTIERS COMPOSANT LE NUMERO DE VERSION DE LA
 ! BIBLIOTHEQUE 
       SUBROUTINE EFVEDO(MAJ,MIN,REL,CRET)
         IMPLICIT NONE
         INTEGER MAJ,MIN,REL,CRET
       END SUBROUTINE EFVEDO
-!    
+    
 ! CETTE ROUTINE DONNE LES ENTIERS COMPOSANT LE NUMERO DE VERSION DE LA
 ! BIBLIOTHEQUE MED-FICHIER QUI A ETE UTILISEE POUR CREER LE FICHIER
 ! AUQUEL ON ACCEDE VIE L'ID FID
@@ -1177,7 +1174,7 @@ c$$$      END SUBROUTINE efcool
 
       !CREATION DE LA FAMILLE 0
       NUMFAM = 0
-      NOMFAM="FAMILLE_0"
+      NOMFAM="FAMILLE_ZERO"
       CALL EFFAMC(RES_FILE,TITRE,nomfam,numfam,0,0,' ',
      *          0,' ',0,cret)
       CALL MED_CHECK_CRET(CRET,'EFFAMC')
@@ -1499,7 +1496,7 @@ C
         IF (.NOT. OUTVAR(IVAR)) CYCLE
         TYP_DISC = MED_NOEUD
         LME = BVARSOR%ADR(IVAR)%P%ELM
-	IF ((LME.GT.0) .and. ((LME-(LME/10)*10)==0)) 
+        IF ((LME.GT.0) .and. ((LME-(LME/10)*10)==0)) 
      *                            TYP_DISC = MED_MAILLE 
  
           NB_VAR = NB_VAR+1
@@ -1514,27 +1511,48 @@ C
           if (IDDIM == 1) allocate(DATAVAR(1:DIMMESH*NDATA))
           if (IDDIM == 1) allocate(IDATAVAR(1:DIMMESH*NDATA))
           if (BVARSOR%ADR(IVAR)%P%NAT == 1) then         !real
-	    if (ISVECTOR)then
-	        DATAVAR((IDDIM-1)*NDATA+1:(IDDIM)*NDATA)=
+          if (ISVECTOR)then
+            DATAVAR((IDDIM-1)*NDATA+1:(IDDIM)*NDATA)=
      *                            BVARSOR%ADR(IVAR)%P%R(1:NDATA)
             elseif (.not.ISVECTOR) then
-	        allocate(DATAVAR(1:NDATA))
-                allocate(IDATAVAR(1:NDATA))
-                DATAVAR(1:NDATA)=BVARSOR%ADR(IVAR)%P%R(1:NDATA)
+              allocate(DATAVAR(1:NDATA))
+              allocate(IDATAVAR(1:NDATA))
+              DATAVAR(1:NDATA)=BVARSOR%ADR(IVAR)%P%R(1:NDATA)
             endif
           elseif (BVARSOR%ADR(IVAR)%P%NAT == 2) then    ! integer
-	    IF (ISVECTOR)THEN
-	        IDATAVAR((IDDIM-1)*NDATA+1:(IDDIM)*NDATA)=
+            IF (ISVECTOR)THEN
+              IDATAVAR((IDDIM-1)*NDATA+1:(IDDIM)*NDATA)=
      *                            BVARSOR%ADR(IVAR)%P%I(1:NDATA)
             ELSEIF (.not.ISVECTOR)THEN
-	        allocate(DATAVAR(1:NDATA))
+                allocate(DATAVAR(1:NDATA))
                 allocate(IDATAVAR(1:NDATA))
                 IDATAVAR(1:NDATA) = BVARSOR%ADR(IVAR)%P%I(1:NDATA)
                 DATAVAR(1:NDATA) = dble(IDATAVAR(1:NDATA))
             ENDIF
-	  endif
+          endif
+          write(lu,*) 'var : ',nomchamed
+          write(lu,*) 'taille : ',size(datavar)
+          write(lu,*) 'ndata : ',ndata
+          write(lu,*) 'test : ',bvarsor%adr(ivar)%p%elm
 
           if ((IDDIM==DIMMESH).or.(.not.ISVECTOR)) then
+          select case (TYP_MED)
+          case(MED_TRIA3)
+            write(lu,*) 'type : MED_TRIA3'
+          case(MED_QUAD4)
+            write(lu,*) 'type : MED_QUAD4'
+          case(MED_TETRA4)
+            write(lu,*) 'type : MED_TETRA4'
+          case(MED_PENTA6)
+            write(lu,*) 'type : MED_PENTA6'
+          end select
+          select case (TYP_DISC)
+          case(MED_NOEUD)
+            write(lu,*) 'type : MED_NOEUD'
+          case(MED_MAILLE)
+            write(lu,*) 'type : MED_MAILLE'
+          end select
+                  
           CALL EFCHAE(FILERES,           ! ID FICHIER
      *                TITRE,             ! TITLE OF ASSOCIATED MESH
      *                NOMCHAMED,         ! NAME OF THE DATA FIELD
@@ -1565,10 +1583,12 @@ C
 !deformation du maillage
 !les 3 premieres composantes correspondnant au vecteur deformation du 
 !maillage (pas de deformation = (0,0,0)
-!les autres composantes correspondnant aux différents champs ecrit dans
+!les autres composantes correspondnant aux diffÃ©rents champs ecrit dans
 ! le fichier med il s'agit d une surdefintion qui peut etre couteuse en 
 !espace memoire suivant le nombre de variable et le type de cas de calcu
-      IF (NNAMECODE(1) == 'TELEMAC3D               ' ) THEN
+! This function is also called for the 2d mesh in telemac3d
+      IF (NNAMECODE(1) == 'TELEMAC3D               '
+     * .AND. dimmesh.EQ.3)THEN
           NOMVAR2   = 'MODIF FIELD'
           CALL BLANC2_(NOMVAR2)
           NOMCHAMED = NOMVAR2(1:16)//CHAR(0)
@@ -1588,6 +1608,7 @@ C
               DATAVAR((2+NB_VAR)*NDATA+1:(3+NB_VAR)*NDATA)= 
      *                                BVARSOR%ADR(IVAR)%P%R(1:NDATA)
           ENDDO
+          write(lu,*) 'writing 3d var : ',nomchamed
           CALL EFCHAE(FILERES,           ! ID FICHIER
      *                TITRE,             ! TITLE OF ASSOCIATED MESH
      *                NOMCHAMED,         ! NAME OF THE DATA FIELD
@@ -1713,9 +1734,10 @@ C     DUMMY OUTPUT ARGUMENT NEED FOR CALCUL
       CHARACTER(LEN=16) :: LOCNAME,PROFIL
       DOUBLE PRECISION  :: DT
       CHARACTER(LEN=32) :: CHA,CHA2
-      CHARACTER(LEN=16) :: COMP,UNIT,DTUNIT
+      CHARACTER(LEN=160) :: COMP,UNIT
+      character(len=16)DTUNIT
       LOGICAL :: OK,LOCAL
-      INTEGER :: ISFIRST,DIMVEC
+      INTEGER :: ISFIRST,DIMVEC,ncomp2
 
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_BEGIN('SUITE_MED')
@@ -1768,14 +1790,17 @@ C     DUMMY OUTPUT ARGUMENT NEED FOR CALCUL
 ! DE LECTURE => TROUVE = 1 ON UTILISERA CETTE VALEUR PAR LA SUITE
 !PB DANS LE CAS DE VECTEUR, LA PREMIERE LECTURE NOUS RETOURNE UN NOM VIDE
 ! ON LE REFAIT UNE DEUXIEME FOIS DANS CE CAS LA
+!YA_ Comming from the fact that comp and unit must a character length of 
+! 16*ncomp and for a vector ncomp>1      
       CALL EFNCHA(FILERES,0,NCOMP,CRET)
       CALL MED_CHECK_CRET(CRET,'EFNCHA')
       TROUVE = 0
       DIMVEC = 1
       DO I=1,NCOMP
-      CALL EFCHAI(FILERES,I,CHA,TYP,COMP,UNIT,0,CRET)
-      CALL EFCHAI(FILERES,I,CHA2,TYP,COMP,UNIT,0,CRET)
-      IF (CHA(1:1) == ' ') CHA=CHA2
+      call efncha(fileres,i,ncomp2,cret)
+      CALL MED_CHECK_CRET(CRET,'EFNCHA')
+      CALL EFCHAI(FILERES,I,CHA,TYP,COMP,UNIT,ncomp2,CRET)
+      CALL MED_CHECK_CRET(CRET,'EFCHAI')
       DO IVAR = 1,MAXVAR
         NOMVAR2   = TEXTPR(IVAR)
         CALL BLANC2_(NOMVAR2)
@@ -1783,7 +1808,6 @@ C     DUMMY OUTPUT ARGUMENT NEED FOR CALCUL
         DIMVEC = MAX(DIMVEC,ISFIRST)
         IF (NOMVAR2(1:16) == CHA(1:16)) TROUVE(IVAR)=1
       ENDDO
-      CALL MED_CHECK_CRET(CRET,'EFCHAI')
       ENDDO
 !CHARGE LE DERNIER CHAMP DU FICHIER MED DANS DATAVAR POUR LES VARIABLES TROUVEES
 ! DANS LE TABLEAU DE LECTURE ET DANS LE FICHIER RESULTAT MED PRECEDENT
