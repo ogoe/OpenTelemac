@@ -93,6 +93,12 @@ def copyFiles(pi,po):
       if path.isfile(path.join(pi,f)): shutil.copy(path.join(pi,f),po)
    return
 """
+"""
+def copyFile(fi,po):
+   if path.isfile(fi): shutil.copy(fi,po)
+   return
+
+"""
    Walk through the directory structure available from the root
    and removes everything in it, including the root
 """

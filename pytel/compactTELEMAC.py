@@ -17,12 +17,15 @@
          linux calls. This is a temporary solution as "/usr/bin/env" is not
          strickly portable cross operating systems
 """
+"""@history 05/07/2011 -- Sebastien Bourban: copy only the relevant CFG file
+"""
+
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
 from os import path, environ
-from utils import createDirectories,removeDirectories,zip,copyFiles
+from utils import createDirectories,removeDirectories,zip,copyFiles,copyFile
 import sys
 
 # _____             ________________________________________________
@@ -111,13 +114,18 @@ if __name__ == "__main__":
                po = pid.replace(pt,pc)
                createDirectories(po)
                copyFiles(pid,po)
-      dirs = ['bin','config','pytel']
+      dirs = ['bin','pytel']
       for d in dirs:
          pid = path.join(pt,d)
          if path.exists(pid) :
             po = pid.replace(pt,pc)
             createDirectories(po)
             copyFiles(pid,po)
+      pid = path.join(pt,'config')
+      if path.exists(pid):
+         po = pid.replace(pt,pc)
+         createDirectories(po)
+         copyFile(options.configFile,po)
 
       print '\n... now zipping ' + cfgname
       zip(cfgname,pc,cfg['ZIPPER'])
