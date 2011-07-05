@@ -19,6 +19,17 @@
 """
 """@history 05/07/2011 -- Sebastien Bourban: copy only the relevant CFG file
 """
+"""@history 05/07/2011 -- Sebastien Bourban: Addition of a new option:
+          -a archive_name
+ - if the -a option is not present, the archive files are named after each
+   available configuration
+ - if the -a option is present, and it is just a name, then the archives
+   files are named after each available configuration and further packaged
+   within archive_name
+ - if the -a option is present, and it is a name including a path, then the
+   archives files are named after each available configuration and further
+   packaged within the archive_name (at the defined location)
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
