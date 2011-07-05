@@ -117,7 +117,6 @@ def zip(zname,bname,form):
    cpath = getcwd()
    chdir(path.dirname(bname))
    zipfile = make_archive(zname,form,base_dir=path.basename(bname))
-   #zipfile = make_zipfile(zname,path.basename(bname))
    chdir(cpath)
    return zipfile
 
