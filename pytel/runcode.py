@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """@brief
 """
 """@author Sebastien E. Bourban, Noemie Durand and Alain Weisgerber
@@ -13,6 +14,20 @@
 """
 """@history 05/04/2011 -- Sebastien Bourban: Amended to support reccursively
           coupled CAS Files, using "COUPLAGE AVEC".
+"""
+"""@history 28/04/2011 -- Sebastien Bourban: Now supports SYSTELCFG
+         as a directory (old Perl version, to which systel.cfg is added)
+         or as a file.
+"""
+"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to config parsing
+         to include the option to reset the version and the root from the
+         command line option:
+         -v <version>, reset the version read in the config file with this
+         -r <root>, reset the root path read in the config file with this
+"""
+"""@history 05/07/2011 -- Sebastien Bourban: python interpreter added for
+         linux calls. This is a temporary solution as "/usr/bin/env" is not
+         strickly portable cross operating systems
 """
 
 # _____          ___________________________________________________
@@ -138,7 +153,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             print ' copying: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if options.sortieFile and sortiefile != '':
+   if sortiefile != None:
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
@@ -278,17 +293,14 @@ def print_twice(pipe,ofile,lastlineempty):
             ofile.write(dat+'\n')
 
 def runCode(exe,sortiefile):
-   if options.sortieFile:
-      ofile = open(sortiefile,"w")
-   else:
-      ofile = None
+   ofile = None
+   if sortiefile != None: ofile = open(sortiefile,"w")
    lastlineempty=False
    proc = Popen(exe,bufsize=1024,stdout=PIPE,stderr=PIPE,shell=True)
    t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile,lastlineempty,))
    t1.start()
    t1.join()
-   if options.sortieFile:
-      ofile.close()
+   if ofile != None: ofile.close()
    proc.wait()
    if proc.returncode == 0: return True
 
@@ -515,8 +527,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    CFGNAME = ''
-   SYSTELCFG = 'systel.cfg'
+   PWD = path.dirname(path.dirname(sys.argv[0]))
+   SYSTELCFG = path.join(PWD,'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
                       type="string",
@@ -528,6 +542,16 @@ if __name__ == "__main__":
                       dest="configFile",
                       default=SYSTELCFG,
                       help="specify configuration file, default is systel.cfg" )
+   parser.add_option("-r", "--rootdir",
+                      type="string",
+                      dest="rootDir",
+                      default='',
+                      help="specify the root, default is taken from config file" )
+   parser.add_option("-v", "--version",
+                      type="string",
+                      dest="version",
+                      default='',
+                      help="specify the version number, default is taken from config file" )
    parser.add_option("-s", "--sortiefile",
                       action="store_true",
                       dest="sortieFile",
@@ -546,6 +570,13 @@ if __name__ == "__main__":
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
+      dircfg = path.dirname(options.configFile)
+      if path.isdir(dircfg) :
+         print ' ... in directory: ' + dircfg + '\n ... use instead: '
+         for dirpath,dirnames,filenames in walk(dircfg) : break
+         for file in filenames :
+            head,tail = path.splitext(file)
+            if tail == '.cfg' : print '    +> ',file
       sys.exit()
    if len(args) < 2:
       print '\nThe name of the module to run and one CAS file at least are required\n'
@@ -558,14 +589,22 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cfgs = parseConfigFile(options.configFile)
+   cfgnames = cfgs.keys()
    cfgname = options.configName
    if options.configName == '':
-      cfgname = parseConfigFile(options.configFile).keys()[0]
-   if cfgname not in parseConfigFile(options.configFile).keys():
+      cfgname = cfgnames[0]
+   if cfgname not in cfgnames:
       print '\nNot able to get to find your configurtaion in the configuration file: ' + options.configFile + '\n'
+      print ' ... use instead:'
+      for cfgname in cfgnames : print '    +> ',cfgname
       sys.exit()
 
-   cfg = parseConfig_RunningTELEMAC(cfgname)[cfgname]
+   # still in lower case
+   if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
+   if options.version != '': cfgs[cfgname]['version'] = options.version
+   # parsing for proper naming
+   cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
 
 # >>> Check wether the config has been compiled for the runcode
    if options.compileonly: cfg['REBUILD'] = 2

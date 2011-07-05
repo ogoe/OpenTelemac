@@ -1,6 +1,11 @@
+#!/usr/bin/env python
 """@brief
 """
 """@author Sebastien E. Bourban and Noemie Durand
+"""
+"""@history 05/07/2011 -- Sebastien Bourban: python interpreter added for
+         linux calls. This is a temporary solution as "/usr/bin/env" is not
+         strickly portable cross operating systems
 """
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -454,7 +459,8 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    CFGNAME = ''
-   SYSTELCFG = 'systel.cfg'
+   PWD = path.dirname(path.dirname(sys.argv[0]))
+   SYSTELCFG = path.join(PWD,'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",

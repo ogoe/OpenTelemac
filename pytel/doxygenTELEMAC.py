@@ -1,6 +1,21 @@
+#!/usr/bin/env python
 """@brief
 """
 """@author Sebastien E. Bourban and Noemie Durand
+"""
+"""@history 28/04/2011 -- Sebastien Bourban: Now supports SYSTELCFG
+         as a directory (old Perl version, to which systel.cfg is added)
+         or as a file.
+"""
+"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to config parsing
+         to include the option to reset the version and the root from the
+         command line option:
+         -v <version>, reset the version read in the config file with this
+         -r <root>, reset the root path read in the config file with this
+"""
+"""@history 05/07/2011 -- Sebastien Bourban: python interpreter added for
+         linux calls. This is a temporary solution as "/usr/bin/env" is not
+         strickly portable cross operating systems
 """
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -447,8 +462,10 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    CFGNAME = ''
-   SYSTELCFG = 'systel.cfg'
+   PWD = path.dirname(path.dirname(sys.argv[0]))
+   SYSTELCFG = path.join(PWD,'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
+   if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    parser.add_option("-c", "--configname",
                       type="string",
@@ -460,21 +477,46 @@ if __name__ == "__main__":
                       dest="configFile",
                       default=SYSTELCFG,
                       help="specify configuration file, default is systel.cfg" )
+   parser.add_option("-r", "--rootdir",
+                      type="string",
+                      dest="rootDir",
+                      default='',
+                      help="specify the root, default is taken from config file" )
+   parser.add_option("-v", "--version",
+                      type="string",
+                      dest="version",
+                      default='',
+                      help="specify the version number, default is taken from config file" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
+      dircfg = path.dirname(options.configFile)
+      if path.isdir(dircfg) :
+         print ' ... in directory: ' + dircfg + '\n ... use instead: '
+         for dirpath,dirnames,filenames in walk(dircfg) : break
+         for file in filenames :
+            head,tail = path.splitext(file)
+            if tail == '.cfg' : print '    +> ',file
       sys.exit()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cfgs = parseConfigFile(options.configFile)
+   cfgnames = cfgs.keys()
    cfgname = options.configName
    if options.configName == '':
-      cfgname = parseConfigFile(options.configFile).keys()[0]
-   if cfgname not in parseConfigFile(options.configFile).keys():
+      cfgname = cfgnames[0]
+   if cfgname not in cfgnames:
       print '\nNot able to get to find your configurtaion in the configuration file: ' + options.configFile + '\n'
+      print ' ... use instead:'
+      for cfgname in cfgnames : print '    +> ',cfgname
       sys.exit()
 
-   cfg = parseConfig_DoxygenTELEMAC(cfgname)[cfgname]
+   # still in lower case
+   if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
+   if options.version != '': cfgs[cfgname]['version'] = options.version
+   # parsing for proper naming
+   cfg = parseConfig_DoxygenTELEMAC(cfgs[cfgname])
 
    debug = False
 
