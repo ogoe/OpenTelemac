@@ -19,12 +19,23 @@
 """
 """@history 05/07/2011 -- Sebastien Bourban: copy only the relevant CFG file
 """
+"""@history 05/07/2011 -- Sebastien Bourban: Addition of a new option:
+          -a archive_name
+ - if the -a option is not present, the archive files are named after each
+   available configuration
+ - if the -a option is present, and it is just a name, then the archives
+   files are named after each available configuration and further packaged
+   within archive_name
+ - if the -a option is present, and it is a name including a path, then the
+   archives files are named after each available configuration and further
+   packaged within the archive_name (at the defined location)
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
-from os import path, environ
+from os import path,remove, environ
 from utils import createDirectories,removeDirectories,zip,copyFiles,copyFile
 import sys
 
@@ -67,6 +78,11 @@ if __name__ == "__main__":
                       dest="version",
                       default='',
                       help="specify the version number, default is taken from config file" )
+   parser.add_option("-a", "--archiveName",
+                      type="string",
+                      dest="archiveName",
+                      default='',
+                      help="specify the archive name, default is taken as the config name" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -94,6 +110,9 @@ if __name__ == "__main__":
    for cfgname in cfgnames:
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
+      if not path.exists(cfgs[cfgname]['root']):
+         print '\nNot able to find your root directory: ' + cfgs[cfgname]['root'] + '\n'
+         sys.exit()
       if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
       cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
@@ -101,38 +120,67 @@ if __name__ == "__main__":
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
       print '\n\nConfiguration ' + cfgname + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-
+      if cfg['MODULES'].keys() == []:
+         print '\nNot able to find any modules within your root directory ' + cfgs[cfgname]['root'] + '\n'
+         sys.exit()
+      
       pt = cfg['TELDIR']
       pc = path.join(pt,cfgname)
+      if options.archiveName != '':
+         if path.dirname(options.archiveName) != '':
+            pc = path.join(options.archiveName,cfgname)
+            archive = options.archiveName
+         else:
+            pc = path.join(path.join(pt,options.archiveName),cfgname)
+            archive = path.join(pt,options.archiveName)
+
       dirs = ['sources','lib',cfgname]
       for mod in cfg['MODULES'].keys():
          print '... now extracting ' + mod
          pi = cfg['MODULES'][mod]['path']
+         if not path.exists(pi):
+            print '\nNot able to find the path: ' + pi + '\n'
+            sys.exit()
          for d in dirs:
             pid = path.join(pi,d)
             if path.exists(pid) :
                po = pid.replace(pt,pc)
                createDirectories(po)
                copyFiles(pid,po)
+               print '    +> '+pid
+
       dirs = ['bin','pytel']
       for d in dirs:
+         print '... now extracting ' + d
          pid = path.join(pt,d)
          if path.exists(pid) :
             po = pid.replace(pt,pc)
             createDirectories(po)
             copyFiles(pid,po)
+            print '    +> '+pid
+
       pid = path.join(pt,'config')
       if path.exists(pid):
          po = pid.replace(pt,pc)
          createDirectories(po)
          copyFile(options.configFile,po)
+         print '... finally copying ' + options.configFile
 
-      print '\n... now zipping ' + cfgname
+      print '\n... now packaging ' + cfgname
       zip(cfgname,pc,cfg['ZIPPER'])
 
       print '\n... now cleaning '
       removeDirectories(pc)
-         
-      #print '... now publishing ' ... Jenkins does this
+
+   if options.archiveName != '':
+      print '\n... now packaging ' + cfgname + ' into ' + archive
+      zip(path.basename(archive),archive,cfg['ZIPPER']) # /!\ use the last cfg value
+
+      print '\n... now cleaning ' + archive
+      removeDirectories(archive)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
 
    sys.exit()
