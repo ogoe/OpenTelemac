@@ -6,7 +6,7 @@
      &  NF    , NPLAN , NPOIN2, TSTOT , TSDER , FTOT  , FMOY  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   27/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE NON-LINEAR
@@ -29,22 +29,27 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        27/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALFLTA         |---|
-!| DEPTH          |---|
-!| F              |---|
-!| FMOY           |---|
-!| FREQ           |---|
-!| FTOT           |---|
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| RAISF          |-->| RAISON FREQUENTIELLE POUR DISCRETISATION
-!| RFMLTA         |---|
-!| TSDER          |---|
-!| TSTOT          |---|
-!| XK             |---|
+!| ALFLTA         |-->| COEFFICIENT ALPHA OF LTA TRIAD INTERACTION MODEL
+!| DEPTH          |-->| WATER DEPTH
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FMOY           |-->| MEAN FREQUENCIES F-10
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| FTOT           |-->| SPECTRUM VARIANCE
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| RAISF          |-->| FREQUENTIAL RATIO
+!| RFMLTA         |-->| COEFFICIENT OF LTA TRIAD INTERACTION MODEL
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

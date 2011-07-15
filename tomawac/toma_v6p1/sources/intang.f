@@ -5,7 +5,7 @@
      &( LAVANT, LAPRES, IPLAN , NPLAN , DELTAD)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   17/06/2011
 !***********************************************************************
 !
 !brief    GETS THE ANGULAR INDICES AROUND A GIVEN DIRECTION
@@ -43,12 +43,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        17/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DELTAD         |-->| DEVIATION PAR RAPPORT A LA DIRECTION DEPART
-!| IPLAN          |-->| INDICE DE LA DIRECTION DE DEPART
-!| LAPRES         |<--| INDICE ANGULAIRE SUIVANT   LA DIR. ARRIVEE
-!| LAVANT         |<--| INDICE ANGULAIRE PRECEDANT LA DIR. ARRIVEE
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
+!| DELTAD         |-->| ANGULAR DEVIATION FROM THE STARTING DIRECTION
+!| IPLAN          |-->| STARTING DIRECTION INDEX
+!| LAPRES         |<--| ANGULAR INDEX FOLLOWING THE DIRECTION
+!| LAVANT         |<--| ANGULAR INDEX PRECEDING THE DIRECTION
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

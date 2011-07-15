@@ -6,7 +6,7 @@
      &   IKLE2 , ETAP1, NPOIN2 , NELEM2 , NPLAN , NF , TRA01)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   17/06/2011
 !***********************************************************************
 !
 !brief    INTERPOLATES AT THE FOOT OF THE CHARACTERISTICS.
@@ -28,28 +28,34 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        17/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |-->| FACTEUR DE PROPORTIONNALITE
-!| ELT            |-->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| ETA            |-->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
-!| ETAP1          |-->| TABLEAU DES ETAGES SUPERIEURS
-!| F              |<->| DENSITE SPECTRALE D'ACTION D'ONDE
-!| FRE            |---|
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE
-!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
-!| NF             |---|
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| SHF            |---|
-!| SHP1           |-->| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
-!|                |   | LEURS ELEMENTS 2D "ELT" ASSOCIES.
-!| SHP2           |---|
-!| SHP3           |---|
-!| SHZ            |-->| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
-!|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
-!| TRA01          |<->| TABLEAU DE TRAVAIL
+!| B              |-->| JACOBIAN TO TRANSFORM N(KX,KY) INTO F(FR,TETA)
+!| ELT            |-->| NUMBERS OF THE ELEMENTS 2D OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETA            |-->| NUMBERS OF THE LAYERS OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETAP1          |-->| HIGHER LAYERS TABLE
+!| F              |<->| WAVE ACTION DENSITY DIRECTIONAL SPECTRUM
+!| FRE            |-->| NUMBER OF THE FREQUENCIES OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| IKLE2          |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
+!|                |   | OF THE 2D MESH
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| SHF            |-->| BARYCENTRIC COORDINATES ALONG F OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED FREQUENCIES "FRE"
+!| SHP1,SHP2,SHP3 |-->| BARYCENTRIC COORDINATES OF THE NODES IN
+!|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
+!| SHZ            |-->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
+!| TRA01          |<->| WORK TABLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC ,ONLY : MESH

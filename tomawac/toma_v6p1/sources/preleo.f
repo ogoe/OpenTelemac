@@ -5,7 +5,7 @@
      &(XLEO,YLEO,NLEO,X,Y,NPOIN2,NOLEO)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   22/06/2011
 !***********************************************************************
 !
 !brief    SELECTS THE COMPUTATION NODES CLOSEST
@@ -28,14 +28,19 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        22/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NLEO           |-->| NOMBRE DE POINTS DE SORTIE
-!| NOLEO          |<--| TABLEAU DES NUMERO DES POINTS CHOISIS
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| X              |-->| ABSCISSES DES POINTS
-!| XLEO           |-->| TABLEAU DES ABSCISSES DES POINTS DE SORTIE
-!| Y              |-->| ORDONNEES DES POINTS
-!| YLEO           |-->| TABLEAU DES ORDONNEES DES POINTS DE SORTIE
+!| NLEO           |-->| NUMBER OF SPECTRUM PRINTOUT POINTS
+!| NOLEO          |<--| NUMBERS OF THE SPECTRUM PRINTOUT POINTS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XLEO           |-->| ABSCISSAE OF SPECTRUM PRINTOUT POINTS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YLEO           |-->| ORDINATES OF SPECTRUM PRINTOUT POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

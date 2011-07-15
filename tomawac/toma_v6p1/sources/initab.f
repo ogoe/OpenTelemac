@@ -2,10 +2,10 @@
                      SUBROUTINE INITAB
 !                    *****************
 !
-     & (IBOR1,IFABOR1,NELEM2_DIM)
+     & (IBOR1,IFABOR1,NELEM2_DIM,PART)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES USEFUL ARRAYS.
@@ -32,10 +32,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        05/2011
+!+        V6P1
+!+   Modification for direct coupling with TELEMAC
+!+   Initialisation of the variabel BETA
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IBOR1          |---|
-!| IFABOR1        |---|
-!| NELEM2_DIM     |---|
+!| IBOR1          |<--| WORK TABLE
+!| IFABOR1        |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID,
+!|                |   | SOLID OR PERIODIC BOUNDARY
+!| NELEM2_DIM     |---| NUMBER OF ELEMENTS IN 2D
+!| PART           |-->| FLAG FOR DIRECT COUPLING WITH TELEMAC
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -54,6 +68,9 @@
       INTEGER          IPLAN, IPOIN, IELEM2, IFREQ
       DOUBLE PRECISION AUXI
 !
+!GM V6P1 - COUPLING WITH TELEMAC
+      INTEGER PART
+!GM Fin
 !-----------------------------------------------------------------------
 !
       DO IPLAN = 1,NPLAN
@@ -112,7 +129,9 @@
      &CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDEPTH,
      & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
 !
-      IF (COURAN) THEN
+!GM V6P1 - COUPLING WITH TELEMAC
+      IF (COURAN.OR.PART.EQ.0) THEN
+!GM Fin
       CALL VECTOR(ST2,'=','GRADF          X',IELM2,1.D0,SUC,
      & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
 !
@@ -127,7 +146,9 @@
        IF(NCSIZE.GT.1) THEN
           IF (.NOT.PROINF) CALL PARCOM(ST1,2,MESH)
           CALL PARCOM(ST4,2,MESH)
-          IF (COURAN) THEN
+!GM V6P1 - COUPLING WITH TELEMAC
+          IF (COURAN.OR.PART.EQ.0) THEN
+!GM Fin
             CALL PARCOM(ST2,2,MESH)
             CALL PARCOM(ST3,2,MESH)
           ENDIF
@@ -135,7 +156,9 @@
 !BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
       IF (.NOT.PROINF)
      & CALL OV('X=Y/Z   ',SDZX%R,ST1%R,ST4%R,C,NPOIN2)
-      IF (COURAN) THEN
+!GM V6P1 - COUPLING WITH TELEMAC
+      IF (COURAN.OR.PART.EQ.0) THEN
+!GM Fin
        CALL OV('X=Y/Z   ',SDUX%R,ST2%R,ST4%R,C,NPOIN2)
        CALL OV('X=Y/Z   ',SDVX%R,ST3%R,ST4%R,C,NPOIN2)
       ENDIF
@@ -144,7 +167,9 @@
      & CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
      &  ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
 !
-      IF (COURAN) THEN
+!GM V6P1 - COUPLING WITH TELEMAC
+      IF (COURAN.OR.PART.EQ.0) THEN
+!GM Fin
        CALL VECTOR(ST2,'=','GRADF          Y',IELM2,1.D0,SUC,
      &  ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
 !
@@ -159,7 +184,9 @@
        IF(NCSIZE.GT.1) THEN
           IF (.NOT.PROINF) CALL PARCOM(ST1,2,MESH)
           CALL PARCOM(ST4,2,MESH)
-          IF (COURAN) THEN
+!GM V6P1 - COUPLING WITH TELEMAC
+          IF (COURAN.OR.PART.EQ.0) THEN
+!GM Fin
             CALL PARCOM(ST2,2,MESH)
             CALL PARCOM(ST3,2,MESH)
           ENDIF
@@ -167,7 +194,9 @@
 !BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
       IF (.NOT.PROINF)
      & CALL OV('X=Y/Z   ',SDZY%R,ST1%R,ST4%R,C,NPOIN2)
-      IF (COURAN) THEN
+!GM V6P1 - COUPLING WITH TELEMAC
+      IF (COURAN.OR.PART.EQ.0) THEN
+!GM Fin
        CALL OV('X=Y/Z   ',SDUY%R,ST2%R,ST4%R,C,NPOIN2)
        CALL OV('X=Y/Z   ',SDVY%R,ST3%R,ST4%R,C,NPOIN2)
       ENDIF

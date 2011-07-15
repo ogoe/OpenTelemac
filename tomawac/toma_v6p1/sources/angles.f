@@ -5,7 +5,7 @@
      &( XLAMD , DTPLUS, DTMOIN)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   08/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE ANGLES OF RESONANT VECTORS IN THE CASE
@@ -42,10 +42,15 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        08/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DTMOIN         |---|
-!| DTPLUS         |---|
-!| XLAMD          |-->| COEFFICIENT LAMBDA DE LA CONFIGUARTION STD
+!| DTMOIN         |<--| ANGLE ASSOCIATED TO THE FREQUENCY (1-XLAMD).FREQ
+!| DTPLUS         |<--| ANGLE ASSOCIATED TO THE FREQUENCY (1+XLAMD).FREQ
+!| XLAMD          |-->| DIA STANDARD CONFIGURATION LAMBDA COEFFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

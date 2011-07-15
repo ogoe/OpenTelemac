@@ -7,7 +7,7 @@
      &  CIMPLI, CPHAS , USN   , USO   , BETAN , BETAO )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   27/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE WAVE GENERATION
@@ -43,29 +43,34 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        27/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETAN          |---|
-!| BETAO          |---|
-!| CIMPLI         |---|
-!| CPHAS          |---|
-!| F              |---|
-!| FREQ           |---|
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| ROAIR          |-->| DENSITE DE L'AIR
-!| ROEAU          |-->| DENSITE DE L'EAU
-!| TETA           |---|
-!| TSDER          |---|
-!| TSTOT          |---|
-!| TWNEW          |---|
-!| TWOLD          |---|
-!| USN            |---|
-!| USNEW          |---|
-!| USO            |---|
-!| USOLD          |---|
-!| XK             |---|
+!| BETAN          |<--| WORK TABLE
+!| BETAO          |<--| WORK TABLE
+!| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERMS
+!| CPHAS          |<--| WORK TABLE
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| ROAIR          |-->| AIR DENSITY
+!| ROEAU          |-->| WATER DENSITY
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| TWNEW          |-->| WIND DIRECTION AT TIME N+1
+!| TWOLD          |-->| WIND DIRECTION AT TIME N
+!| USN            |<--| WORK TABLE
+!| USNEW          |-->| FRICTION VELOCITY AT TIME N+1
+!| USO            |<--| WORK TABLE
+!| USOLD          |-->| FRICTION VELOCITY AT TIME N
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &(LISPRD,LT,AT,ISITS,ICOD)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    WRITES OUT TO THE LISTING.
@@ -32,12 +32,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS DU CALCUL
-!| ICOD           |-->| CODE POUR LES SORTIES
-!| ISITS          |-->| NOMBRE DE SOUS ITERATION DES TERMES SOURCE
-!| LISPRD         |-->| PERIODE DE SORTIE LISTING
-!| LT             |-->| NUMERO DU PAS DE TEMPS
+!| AT             |-->| COMPUTATION TIME
+!| ICOD           |-->| CODE FOR OUTPUTS
+!| ISITS          |-->| NUMBER OF ITERATIONS FOR THE SOURCE TERMS
+!| LISPRD         |-->| PERIOD FOR LISTING PRINTOUTS
+!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -7,7 +7,7 @@
      & COURAN,NPRE,BINPRE,DEPTH,TC1,TC2,ZM1,ZM2,DZHDT,TM1,TM2,MAREE)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    READS THE DATA FOR A CONTINUATION OF COMPUTATION.
@@ -29,41 +29,41 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| BINPRE         |-->| BINAIRE DU FICHIER DU CALCUL PRECEDENT
-!| COURAN         |-->| LOGIQUE INDIQUANT SI IL YA UN COURANT
-!| DEPTH          |---|
-!| DZHDT          |---|
-!| F              |<--| DENSITE SPECTRALE D'ENERGIE
-!| FREQ           |<--| DISTRIBUTION DES FREQUENCES
-!| MAREE          |---|
-!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPRE           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DU CALCUL
-!|                |   | PRECEDENT
-!| TC1            |---|
-!| TC2            |---|
-!| TETA           |<--| DISTRIBUTION DES DIRECTIONS
-!| TM1            |---|
-!| TM2            |---|
-!| TV2            |---|
-!| UC             |---|
-!| UC1            |---|
-!| UC2            |---|
-!| UV,VV          |<--| COMPOSANTES DU VENT
-!| UV1            |---|
-!| UV2            |---|
-!| VC             |---|
-!| VC1            |---|
-!| VC2            |---|
-!| VENT           |-->| LOGIQUE INDIQUANT SI IL YA UN VENT
-!| VV1            |---|
-!| VV2            |---|
-!| ZM1            |---|
-!| ZM2            |---|
+!| AT             |-->| COMPUTATION TIME
+!| BINPRE         |-->| PREVIOUS COMPUTATION FILE BINARY
+!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
+!| DEPTH          |<--| WATER DEPTH
+!| DZHDT          |<--| WATER DEPTH DERIVATIVE WITH RESPECT TO T
+!| F              |<--| DIRECTIONAL SPECTRUM
+!| FREQ           |<--| DISCRETIZED FREQUENCY
+!| MAREE          |-->| LOGICAL INDICATING CONSIDERATION OF TIDE
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPRE           |-->| LOIGCAL UNIT NUMBER OF PREVIOUS COMPUTATION FILE
+!| TC1            |<--| TIME T1 OF CURRENT IN PREVIOUS COMPUTATION FILE
+!| TC2            |<--| TIME T2 OF CURRENT IN PREVIOUS COMPUTATION FILE
+!| TETA           |<--| DISCRETIZED DIRECTIONS
+!| TM1            |<--| TIME T1 OF TIDE IN PREVIOUS COMPUTATION FILE
+!| TM2            |<--| TIME T2 OF TIDE IN PREVIOUS COMPUTATION FILE
+!| TV1            |<--| TIME T1 OF WIND IN PREVIOUS COMPUTATION FILE
+!| TV2            |<--| TIME T2 OF WIND IN PREVIOUS COMPUTATION FILE
+!| UC, VC         |<--| CURRENT VELOCITY COMPONENTS
+!| UC1, VC1       |<--| CURRENT VELOCITY COMPONENTS AT TC1
+!| UC2, VC2       |<--| CURRENT VELOCITY COMPONENTS AT TC2
+!| UV,VV          |<--| WIND VELOCITY COMPONENTS
+!| UV1, VV1       |<--| WIND VELOCITY COMPONENTS AT TV1
+!| UV2, VV2       |<--| WIND VELOCITY COMPONENTS AT TV2
+!| VENT           |-->| LOGICAL INDICATING IF THERE IS A WIND
+!| ZM1            |<--| WATER DEPTH AT TM1
+!| ZM2            |<--| WATER DEPTH AT TM2
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

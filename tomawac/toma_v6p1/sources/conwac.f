@@ -7,7 +7,7 @@
      &  NF    , PROINF, SPHE  , PROMIN, TRA01 , TRA02 )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   14/068/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE ADVECTION FIELD (3D WITHOUT CURRENT).
@@ -33,28 +33,34 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        14/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CG             |-->| VITESSE DE GROUPE DISCRETISEE
-!| COSF           |-->| COSINUS DES LATITUDES DES POINTS 2D
-!| COSTET         |-->| COSINUS TETA
-!| CX,CY,CT       |<--| CHAMP CONVECTEUR SELON X(OU PHI),
-!|                |   | Y(OU LAMBDA) ET TETA
-!| DEPTH          |-->| PROFONDEUR
-!| DZX            |-->| GRADIENT DE FOND SELON X
-!| DZY            |-->| GRADIENT DE FOND SELON Y
-!| FREQ           |-->| FREQUENCES DISCRETISEES
-!| JF             |-->| FREQUENCES COURANTE
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| PROINF         |-->| LOGIQUE INDIQUANT SI ON EST EN PROF INFINIE
-!| PROMIN         |-->| VALEUR MINIMALE DE LA PROFONDEUR D'EAU
-!| SINTET         |-->| SINUS TETA
-!| SPHE           |-->| LOGIQUE INDIQUANT SI ON EST EN COORD. SPHER.
-!| TGF            |-->| TANGENTES DES LATITUDES DES POINTS 2D
-!| TRA01          |<->| TABLEAU DE TRAVAIL
-!| TRA02          |<->| TABLEAU DE TRAVAIL
-!| XK             |-->| NOMBRE D'ONDE DISCRETISE
+!| CG             |-->| DISCRETIZED GROUP VELOCITY
+!| COSF           |-->| COSINE OF THE LATITUDES OF THE POINTS 2D
+!| COSTET         |-->| COSINE OF TETA ANGLE
+!| CX             |<--| ADVECTION FIELD ALONG X(OR PHI)
+!| CY             |<--| ADVECTION FIELD ALONG Y(OR LAMBDA)
+!| CT             |<--| ADVECTION FIELD ALONG TETA
+!| DEPTH          |-->| WATER DEPTH
+!| DZX            |-->| SEA BOTTOM SLOPE ALONG X
+!| DZY            |-->| SEA BOTTOM SLOPE ALONG Y
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| JF             |-->| INDEX OF THE FREQUENCY
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| PROMIN         |-->| MINIMUM VALUE OF WATER DEPTH
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| SPHE           |-->| LOGICAL INDICATING SPHERICAL COORD ASSUMPTION
+!| TGF            |-->| TANGENT OF THE LATITUDES OF THE POINTS 2D
+!| TRA01          |<->| WORK TABLE
+!| TRA02          |<->| WORK TABLE
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

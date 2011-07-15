@@ -6,7 +6,7 @@
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES A JONSWAP FREQUENCY SPECTRUM BASED
@@ -29,19 +29,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AL             |-->| CONSTANTE DE PHILLIPS (ALPHA)
+!| AL             |-->| PHILLIPS CONSTANT (ALPHA)
 !| DEUPI          |-->| 2.PI
-!| E2FMIN         |-->| SEUIL MINIMUM DE SPECTRE CONSIDERE
-!| FP             |-->| FREQUENCE DE PIC DU SPECTRE JONSWAP
-!| FPMIN          |-->| VALEUR MINIMUM DE LA FREQUENCE DE PIC
-!| FREQ           |---|
-!| GAMMA          |-->| FACTEUR DE FORME DE PIC JONSWAP
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| SIGMAA         |-->| VALEUR DE SIGMA JONSWAP POUR F
-!| SIGMAB         |-->| VALEUR DE SIGMA JONSWAP POUR F > FP
-!| SPEC           |---|
+!| E2FMIN         |-->| SPECTRUM ENERGY THRESHOLD
+!| FP             |-->| JONSWAP SPECTRUM PEAK FREQUENCY 
+!| FPMIN          |-->| MINIMUM PEAK FREQUENCY VALUE
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GAMMA          |-->| JONSWAP SPECTRUM PEAK FACTOR
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| SIGMAA         |-->| VALUE OF SIGMA FOR JONSWAP SPECTRUM (F<FP)
+!| SIGMAB         |-->| VALUE OF SIGMA FOR JONSWAP SPECTRUM (F>FP)
+!| SPEC           |<--| JONSWAP VARIANCE DENSITY FREQUENCY SPECTRUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

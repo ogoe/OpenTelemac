@@ -6,7 +6,7 @@
      &      GRAVIT, BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   29/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM ORBITAL VELOCITY NEAR THE BOTTOM
@@ -29,17 +29,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        29/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---|
-!| DEPTH          |---|
-!| DFREQ          |---|
-!| F              |---|
-!| GRAVIT         |---|
-!| NF             |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| UWBM           |---|
-!| XK             |---|
+!| BETA           |<->| WORK TABLE
+!| DEPTH          |-->| WATER DEPTH
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| UWBM           |<--| MAXIMUM ORBITAL VELOCITY NEAR THE BOTTOM
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

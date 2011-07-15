@@ -6,7 +6,7 @@
      &  GAMBJ2, IQBBJ , IHMBJ , NF    , NPLAN , NPOIN2, BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE DEPTH-INDUCED
@@ -41,22 +41,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALFABJ         |-->| CONSTANTE ALPHA DU MODELE BJ
-!| BETA           |---|
-!| DEPTH          |---|
-!| F              |---|
-!| FCAR           |---|
-!| GAMBJ1         |---|
-!| GAMBJ2         |-->| CONSTANTE GAMMA DU MODELE BJ
-!| IHMBJ          |-->| TYPE DE HAUTEUR DE HOULE MAX POUR MODELE BJ
-!| IQBBJ          |-->| MODE DE CALCUL DE QB POUR MODELE BJ
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TSDER          |---|
-!| TSTOT          |---|
-!| VARIAN         |---|
+!| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ MODEL
+!| BETA           |<--| BREAKING WAVES COEFFICIENT
+!| DEPTH          |-->| WATER DEPTH
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FCAR           |-->| CHARACTERISTIC FREQUENCY
+!| GAMBJ1         |-->| GAMMA1 CONSTANT OF WAVE BREAKING BJ MODEL
+!| GAMBJ2         |-->| GAMMA2 CONSTANT OF WAVE BREAKING BJ MODEL
+!| IHMBJ          |-->| DEPTH-INDUCED BREAKING CRITERIUM GIVING THE
+!|                |   | BREAKING WAVE HEIGHT
+!| IQBBJ          |-->| SELECTED QB COMPUTATION METHOD FOR BJ MODEL
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

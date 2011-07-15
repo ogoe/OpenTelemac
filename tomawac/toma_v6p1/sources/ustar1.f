@@ -6,7 +6,7 @@
      &  ZVENT , GRAVIT, NPOIN2)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   29/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FRICTION VELOCITY AND ROUGHNESS LENGTH
@@ -39,17 +39,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        29/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHA          |-->| CONSTANTE DE LA LOI DE CHARNOCK
-!| CDRAG          |-->| COEFFICIENT DE TRAINEE
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TAUWAV         |---|
-!| USTAR          |---|
-!| UV             |---|
-!| VV             |---|
-!| XKAPPA         |-->| CONSTANTE DE VON KARMAN
-!| Z0             |---|
+!| ALPHA          |-->| CHARNOCK CONSTANT
+!| CDRAG          |-->| WIND DRAG COEFFICIENT
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TAUWAV         |-->| STRESS DUE TO WAVES
+!| USTAR          |<--| FRICTION VELOCITY
+!| UV             |-->| WIND VELOCITY ALONG X AT THE MESH POINTS
+!| VV             |-->| WIND VELOCITY ALONG Y AT THE MESH POINTS
+!| XKAPPA         |-->| VON KARMAN CONSTANT
+!| Z0             |<--| SURFACE ROUGHNESS LENGTH
 !| ZVENT          |-->| COTE A LAQUELLE EST MESURE LE VENT (M)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

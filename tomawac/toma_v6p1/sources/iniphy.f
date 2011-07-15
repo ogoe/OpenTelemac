@@ -6,7 +6,7 @@
      &  PROINF, SPHE  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE WAVE PARAMETERS THAT ARE TIME-INDEPENDENT
@@ -31,17 +31,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |---|
-!| CG             |---|
-!| COSPHI         |---|
-!| DEPTH          |---|
-!| FREQ           |---|
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!| PROINF         |-->| INDICATEUR CALCUL EN PROFONDEUR INFINIE
-!| SPHE           |-->| INDICATEUR CALCUL EN SPHERIQUE
-!| XK             |---|
+!| B              |<--| JACOBIAN TO TRANSFORM N(KX,KY) INTO F(FR,TETA)
+!| CG             |<--| DISCRETIZED GROUP VELOCITY
+!| COSPHI         |-->| COSINE OF THE LATITUDES OF THE POINTS 2D
+!| DEPTH          |-->| WATER DEPTH
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| SPHE           |-->| LOGICAL INDICATING SPHERICAL COORD ASSUMPTION
+!| XK             |<--| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

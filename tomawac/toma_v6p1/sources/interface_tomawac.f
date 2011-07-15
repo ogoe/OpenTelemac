@@ -1,5 +1,5 @@
 !
-!  INTERFACES OF ARTEMIS SUBROUTINES
+!  INTERFACES OF TOMAWAC SUBROUTINES
 !
       MODULE INTERFACE_TOMAWAC
 !
@@ -74,16 +74,19 @@
 !
 !-----------------------------------------------------------------------
 !
+!V6P1 new arguments
       INTERFACE
         SUBROUTINE CONDIW
      &( AT, LT , DPI, TC1, TC2, NPC , TV1, TV2, NPV, TM1, TM2 , NPM ,
-     &  NVHMA  , NVCOU )
+     &  NVHMA  , NVCOU , PART , U_TEL, V_TEL , H_TEL )
       USE BIEF_DEF
       IMPLICIT NONE
       DOUBLE PRECISION AT , DPI, TC1, TC2, TV1, TV2, TM1, TM2
       INTEGER          NPC, NPV, NPM
       INTEGER          LT
       INTEGER          NVHMA, NVCOU
+      INTEGER,           INTENT(IN)      :: PART
+      TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
         END SUBROUTINE
       END INTERFACE
 !
@@ -134,15 +137,30 @@
 !
 !-----------------------------------------------------------------------
 !
+!V6P1 new arguments
       INTERFACE
         SUBROUTINE CORMAR
      &( AT    , LT    , TC1   , TC2   , TV1   , TV2   , TM1   , TM2   ,
-     &  NPC   , NPM   , NVHMA , NVCOU )
+     &  NPC   , NPM   , NVHMA , NVCOU , PART, U_TEL, V_TEL , H_TEL )
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER          NPC , NPM, NVHMA, NVCOU,LT
       DOUBLE PRECISION AT, TC1, TC2 , TV1, TV2, TM1 , TM2
+      INTEGER,           INTENT(IN)      :: PART
+      TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
         END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+! 
+      INTERFACE
+        FUNCTION COUPLE
+     &( XK1   , YK1   , XK2   , YK2   , XK3   , YK3   , XK4   , YK4   ,
+     &  GRAVIT, PI    )
+      IMPLICIT NONE
+      DOUBLE PRECISION XK1   , YK1   , XK2   , YK2   , XK3   , YK3
+      DOUBLE PRECISION XK4   , YK4   , GRAVIT, PI    , COUPLE
+        END FUNCTION
       END INTERFACE
 !
 !-----------------------------------------------------------------------
@@ -224,6 +242,18 @@
       LOGICAL         :: ISLEO(NLEO) !
       CHARACTER*72 TITCAS
       CHARACTER(LEN=*)   BINSCO
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE F1F1F1
+     &( F1SF  , NF1   , IQ_OM1)
+      IMPLICIT NONE
+      INTEGER          NF1   , IQ_OM1
+      DOUBLE PRECISION F1SF(*)
         END SUBROUTINE
       END INTERFACE
 !
@@ -359,6 +389,18 @@
       END INTERFACE
 !
 !-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE GAULEG
+     &( W_LEG , X_LEG , NPOIN )
+      IMPLICIT NONE
+      INTEGER           NPOIN
+      DOUBLE PRECISION  W_LEG(NPOIN) , X_LEG(NPOIN)
+        END SUBROUTINE 
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
 !
       INTERFACE
         SUBROUTINE IMPR
@@ -431,31 +473,15 @@
 !
 !-----------------------------------------------------------------------
 !
+!V6P1 New arguments
       INTERFACE
         SUBROUTINE INITAB
-     & (IBOR1,IFABOR1,NELEM2_DIM)
+     & (IBOR1 , IFABOR1 , NELEM2_DIM , PART)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER NELEM2_DIM
       INTEGER IBOR1(NELEM2_DIM,7),IFABOR1(NELEM2_DIM,3)
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-      INTERFACE
-        SUBROUTINE INIVEN
-     &(UV,VV,X,Y,NPOIN,NVEN, BINVEN,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     & NP,XRELV,YRELV,U1,V1,U2,V2,INDIC,NPMAX,ITR01)
-      IMPLICIT NONE
-      INTEGER NP,NVEN,NPOIN,NPTFR,INDIC,NPMAX
-      INTEGER ITR01(*), NBOR(NPTFR,2)
-      DOUBLE PRECISION X(NPOIN),Y(NPOIN)
-      DOUBLE PRECISION UV(NPOIN),VV(NPOIN)
-      DOUBLE PRECISION XRELV(NPMAX),YRELV(NPMAX)
-      DOUBLE PRECISION U1(NPMAX),V1(NPMAX),U2(NPMAX),V2(NPMAX)
-      DOUBLE PRECISION AT,TV1,TV2,DDC
-      CHARACTER*3 BINVEN
+      INTEGER,           INTENT(IN)      :: PART
         END SUBROUTINE
       END INTERFACE
 !
@@ -880,6 +906,54 @@
       END INTERFACE
 !
 !-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE PRENL2
+     &( IANGNL, COEFNL, NPLAN , NF    , RAISF , XLAMD , XMU   )
+      IMPLICIT NONE
+      INTEGER  NPLAN , NF
+      INTEGER  IANGNL(NPLAN,16)
+      DOUBLE PRECISION RAISF , XLAMD , XMU
+      DOUBLE PRECISION COEFNL(32)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE PRENL3
+     &( NF    , NT    , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
+     &  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
+     &  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
+     &  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
+     &  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
+     &  NCONFM, IDCONF)
+      IMPLICIT NONE
+      INTEGER           NF    , NT
+      DOUBLE PRECISION  RAISF , TAILF , FREQ(NF)
+      INTEGER           LBUF  , DIMBUF
+      INTEGER           F_POIN(DIMBUF), T_POIN(DIMBUF)
+      DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
+      INTEGER           IQ_OM1 , NQ_TE1, NQ_OM2
+      INTEGER           NF1   , NT1
+      INTEGER           K_IF1(NF1), K_1P(NT1,NF1), K_1M(NT1,NF1)
+      DOUBLE PRECISION  TB_V14(NF1)
+      INTEGER           K_IF2 (NQ_OM2,NT1,NF1), K_IF3 (NQ_OM2,NT1,NF1)
+      INTEGER           K_1P2P(NQ_OM2,NT1,NF1), K_1P3M(NQ_OM2,NT1,NF1)
+      INTEGER           K_1P2M(NQ_OM2,NT1,NF1), K_1P3P(NQ_OM2,NT1,NF1)
+      INTEGER           K_1M2P(NQ_OM2,NT1,NF1), K_1M3M(NQ_OM2,NT1,NF1)
+      INTEGER           K_1M2M(NQ_OM2,NT1,NF1), K_1M3P(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION  TB_V24(NQ_OM2,NT1,NF1), TB_V34(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION  TB_TPM(NQ_OM2,NT1,NF1), TB_TMP(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION  TB_FAC(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION  SEUIL1, SEUIL2, ELIM
+      INTEGER           NCONF , NCONFM, IDCONF(NCONFM,3)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
 !
       INTERFACE
         SUBROUTINE PREPRO
@@ -1062,6 +1136,31 @@
       END INTERFACE
 !
 !-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE QMOUT2
+     &( TSTOT , TSDER , F     , XK    , ENRJ  , FREQ  , FMOY  , XKMOY , 
+     &  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
+     &  GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , BETA  , BETAO ,
+     &  BETAN , BETOTO, BETOTN)
+      IMPLICIT NONE
+      INTEGER   NF  , NPLAN , NPOIN2
+      DOUBLE PRECISION CMOUT3, CMOUT4, GRAVIT
+      DOUBLE PRECISION CMOUT5, CMOUT6, CIMPLI
+      DOUBLE PRECISION USNEW (NPOIN2), USOLD (NPOIN2)
+      DOUBLE PRECISION FREQ  (NF)    , DEPTH (NPOIN2), FMOY(NPOIN2) 
+      DOUBLE PRECISION ENRJ  (NPOIN2), XKMOY (NPOIN2)
+      DOUBLE PRECISION BETAN (NPOIN2), BETAO (NPOIN2)
+      DOUBLE PRECISION BETA  (NPOIN2), TAUX1 (NPOIN2)
+      DOUBLE PRECISION BETOTO(NPOIN2), BETOTN(NPOIN2)
+      DOUBLE PRECISION TSTOT (NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION F     (NPOIN2,NPLAN,NF), XK   (NPOIN2,NF)
+      LOGICAL PROINF
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
 !
       INTERFACE
         SUBROUTINE QNLIN1
@@ -1078,6 +1177,60 @@
       DOUBLE PRECISION TAUX4(NPOIN2), TAUX5(NPOIN2), XKMOY(NPOIN2)
       DOUBLE PRECISION DFINI(NPOIN2), DEPTH(NPOIN2)
       LOGICAL  PROINF
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE QNLIN2
+     &( TSTOT , TSDER , IANGNL, COEFNL, NF    , NPLAN , F1    , RAISF ,
+     &  TAILF , PROINF, NPOIN2, F     , DEPTH , XKMOY , TAUX1 , DFINI ,
+     &  XCOEF )
+      IMPLICIT NONE
+      INTEGER  NPOIN2, NPLAN , NF
+      INTEGER  IANGNL(NPLAN,16)
+      DOUBLE PRECISION F1  , RAISF , TAILF
+      DOUBLE PRECISION F(NPOIN2,NPLAN,NF), COEFNL(32), XCOEF
+      DOUBLE PRECISION TSTOT(NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION TAUX1(NPOIN2), DFINI(NPOIN2), DEPTH(NPOIN2)
+      DOUBLE PRECISION XKMOY(NPOIN2)
+      LOGICAL  PROINF
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE QNLIN3
+     &( TSTOT , TSDER , F     , NB_NOD, FREQ  , TETA  , NT    , NF    ,
+     &  RAISF , TAILF , SEUIL , FSEUIL, LBUF  , DIMBUF, F_POIN, F_COEF,
+     &  F_PROJ, T_POIN, TB_SCA, NQ_TE1, NQ_OM2, NF1   , NT1   , DFREQ ,
+     &  K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , K_1M  ,
+     &  K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M, K_1M3P,
+     &  TB_TPM, TB_TMP, TB_FAC, NCONF , NCONFM, IDCONF)
+      IMPLICIT NONE
+      INTEGER           NF    , NT    , NB_NOD
+      DOUBLE PRECISION  TAILF , RAISF , SEUIL
+      DOUBLE PRECISION  FREQ(NF), DFREQ(NF), TETA(NT), FSEUIL(NB_NOD)
+      DOUBLE PRECISION  F(NB_NOD,NT,NF), TSTOT(NB_NOD,NT,NF)
+      DOUBLE PRECISION  TSDER(NB_NOD,NT,NF)
+      INTEGER           LBUF  , DIMBUF
+      INTEGER           F_POIN(DIMBUF), T_POIN(DIMBUF)
+      DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
+      INTEGER           NQ_TE1, NQ_OM2, NF1   , NT1
+      INTEGER           K_IF1(NF1), K_1P(NT1,NF1), K_1M(NT1,NF1)
+      INTEGER           K_IF2 (NQ_OM2,NT1,NF1), K_IF3 (NQ_OM2,NT1,NF1)
+      INTEGER           K_1P2P(NQ_OM2,NT1,NF1), K_1P3M(NQ_OM2,NT1,NF1)
+      INTEGER           K_1P2M(NQ_OM2,NT1,NF1), K_1P3P(NQ_OM2,NT1,NF1)
+      INTEGER           K_1M2P(NQ_OM2,NT1,NF1), K_1M3M(NQ_OM2,NT1,NF1)
+      INTEGER           K_1M2M(NQ_OM2,NT1,NF1), K_1M3P(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION  TB_V14(NF1)           , TB_FAC(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION  TB_V24(NQ_OM2,NT1,NF1), TB_V34(NQ_OM2,NT1,NF1)
+      DOUBLE PRECISION  TB_TPM(NQ_OM2,NT1,NF1), TB_TMP(NQ_OM2,NT1,NF1)
+      INTEGER           NCONF , NCONFM, IDCONF(NCONFM,3)
         END SUBROUTINE
       END INTERFACE
 !
@@ -1157,6 +1310,47 @@
       END INTERFACE
 !
 !-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE QWIND3
+     &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
+     &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
+     &  COEFWE, COEFWF, COEFWH, BETAN , BETAO , DIRN  , DIRO  )
+      IMPLICIT NONE
+      INTEGER    NF  , NPLAN        , NPOIN2
+      DOUBLE PRECISION GRAVIT       , CIMPLI
+      DOUBLE PRECISION FREQ(NF)     , TETA(NPLAN)
+      DOUBLE PRECISION TWOLD(NPOIN2), TWNEW(NPOIN2), USNEW(NPOIN2)
+      DOUBLE PRECISION BETAO(NPOIN2), BETAN(NPOIN2), USOLD(NPOIN2)
+      DOUBLE PRECISION DIRO(NPOIN2) , DIRN(NPOIN2)
+      DOUBLE PRECISION TSTOT(NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION F(NPOIN2,NPLAN,NF)    , XK(NPOIN2,NF)
+      DOUBLE PRECISION COEFWD , COEFWE , COEFWF , COEFWH
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+! 
+!V6P1 New subroutine
+      INTERFACE
+        SUBROUTINE QWINDL
+     &( TSTOT , FREQ  , USOLD , USNEW , TWOLD , TWNEW , TETA  , GRAVIT,
+     &  NF    , NPLAN , NPOIN2, CIMPLI, USN   , USO   , ALPHAN, ALPHAO, 
+     &  FPMO  , FPMN )
+      IMPLICIT NONE
+      INTEGER     NF ,  NPLAN         , NPOIN2
+      DOUBLE PRECISION  GRAVIT        , CIMPLI
+      DOUBLE PRECISION  FREQ(NF)      , TETA(NPLAN)
+      DOUBLE PRECISION  FPMO(NPOIN2)  , FPMN(NPOIN2)
+      DOUBLE PRECISION  TWOLD(NPOIN2) , TWNEW(NPOIN2) , USNEW(NPOIN2)
+      DOUBLE PRECISION  ALPHAO(NPOIN2), ALPHAN(NPOIN2), USOLD(NPOIN2)
+      DOUBLE PRECISION  USO(NPOIN2)   , USN(NPOIN2)
+      DOUBLE PRECISION  TSTOT(NPOIN2,NPLAN,NF) 
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
 !
       INTERFACE
         SUBROUTINE RADIAT
@@ -1179,29 +1373,36 @@
 !
 !-----------------------------------------------------------------------
 !
+!V6P1 New arguments
       INTERFACE
-        SUBROUTINE SEMIMP
-     &( F     , XK    , FREQ  , DFREQ , DEPTH , VENTX , VENTY , X     ,
-     &  Y     , NVEB  , NVEF  , NBOR  , NPTFR , DDC   , TV1   , TV2   ,
-     &  NP    , XRELV , YRELV , U1    , V1    , U2    , V2    , TETA  ,
-     &  SINTET, COSTET, INDIC , TAILF , RAISF , GRAVIT, CFROT1, CMOUT1,
-     &  CMOUT2, TPROP , DTSI  , ROAIR , ROEAU , XKAPPA, BETAM , DECAL ,
-     &  CDRAG , ALPHA , ZVENT , NF    , NPLAN , NPOIN2, IANGNL, COEFNL,
-     &  F1    , NSITS , SMOUT , SFROT , SVENT , STRIF , VENT  , VENSTA,
-     &  VX_CTE, VY_CTE, SBREK , ALFABJ, GAMBJ1, GAMBJ2, IQBBJ , IHMBJ ,
-     &  IFRBJ , BORETG, GAMATG, IWHTG , IFRTG , ALFARO, GAMARO, GAM2RO,
-     &  IDISRO, IEXPRO, IFRRO , BETAIH, EM2SIH, IFRIH , COEFHS, XDTBRK,
-     &  NDTBRK, STRIA , ALFLTA, RFMLTA, KSPB  , BDISPB, BDSSPB, PROINF,
-     &  DF_LIM, LIMIT , CIMPLI, NOMVEB, NOMVEF, BINVEN, NBD   , QINDI ,
-     &  TAUWAV, USOLD , TWOLD , Z0OLD , TSTOT , TSDER , TOLD  , TNEW  ,
-     &  VARIAN, FMOY  , XKMOY , USNEW , Z0NEW , TWNEW , TAUX1 , TAUX2 ,
-     &  TAUX3 , TAUX4 , TAUX5 , TAUX6 , TAUX7 , TRA01 , BETA)
+        SUBROUTINE SEMIMP 
+     &( F     ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
+     &  NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,NP    ,XRELV ,
+     &  YRELV ,U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
+     &  TAILF ,RAISF ,GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,
+     &  CMOUT6,TPROP ,DTSI  ,ROAIR ,ROEAU ,XKAPPA,BETAM ,DECAL ,CDRAG ,
+     &  ALPHA ,ZVENT ,NF    ,NPLAN ,NPOIN2,IANGNL,COEFNL,F1    ,NSITS ,
+     &  SMOUT ,SFROT ,SVENT ,LVENT ,STRIF ,VENT  ,VENSTA,VX_CTE,VY_CTE,
+     &  SBREK ,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ ,IHMBJ ,IFRBJ ,BORETG,GAMATG, 
+     &  IWHTG ,IFRTG ,ALFARO,GAMARO,GAM2RO,IDISRO,IEXPRO,IFRRO ,BETAIH,
+     &  EM2SIH,IFRIH ,COEFHS,XDTBRK,NDTBRK,STRIA ,ALFLTA,RFMLTA,KSPB  ,
+     &  BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT ,CIMPLI,COEFWD,COEFWE,COEFWF,
+     &  COEFWH,NOMVEB,NOMVEF,BINVEN,NBD   ,QINDI ,TAUWAV,USOLD ,TWOLD ,
+     &  Z0OLD ,TSTOT ,TSDER ,TOLD  ,TNEW  ,VARIAN,FMOY  ,XKMOY ,USNEW ,
+     &  Z0NEW ,TWNEW ,TAUX1 ,TAUX2 ,TAUX3 ,TAUX4 ,TAUX5 ,TAUX6 ,TAUX7 ,
+     &  TRA01 ,BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
+     &  SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
+     &  K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
+     &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP, 
+     &  TB_FAC,MDIA  ,IANMDI,COEMDI) 
       IMPLICIT NONE
-      INTEGER NPOIN2, NPLAN , NF    , NSITS , NPTFR , NVEB  ,NVEF  ,
-     & LIMIT ,SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC ,IQBBJ ,
-     & IHMBJ ,IFRBJ , IWHTG , IFRTG , IFRRO , IEXPRO, IFRIH , NDTBRK,
-     & NP    ,IDISRO, STRIA , NBD
-      INTEGER NBOR(NPTFR)   , IANGNL(NPLAN,8),QINDI(NBD)
+      INTEGER          NPOIN2, NPLAN , NF    , NSITS , NPTFR , NVEB  ,
+     &                 NVEF  , LIMIT ,
+     &                 SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC ,
+     &                 IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO ,
+     &                 IEXPRO, IFRIH , NDTBRK, NP    , IDISRO, STRIA ,
+     &                 NBOR(NPTFR)   , IANGNL(NPLAN,8)
+      INTEGER          NBD   , QINDI(NBD)
       DOUBLE PRECISION TAILF , CFROT1, GRAVIT, RAISF , DTSI  , TPROP ,
      &                 CMOUT1, CMOUT2, DDC   , TV1   , TV2   , ZVENT ,
      &                 ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG ,
@@ -1229,6 +1430,31 @@
       CHARACTER*144 NOMVEB, NOMVEF
       CHARACTER*3 BINVEN
       LOGICAL  PROINF, VENT , VENSTA
+      INTEGER           LVENT 
+      DOUBLE PRECISION  CMOUT3, CMOUT4, CMOUT5, CMOUT6
+      DOUBLE PRECISION  COEFWD, COEFWE, COEFWF, COEFWH
+      INTEGER           MDIA
+      INTEGER           IANMDI(NPLAN,16,MDIA)
+      DOUBLE PRECISION  COEMDI(32,MDIA)
+      INTEGER  NQ_TE1, NQ_OM2, NF1, NF2 , NT1
+      INTEGER  NCONF , NCONFM
+      DOUBLE PRECISION SEUIL
+      INTEGER  LBUF  , DIMBUF
+      INTEGER           F_POIN(DIMBUF), T_POIN(DIMBUF)
+      DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
+      INTEGER K_IF1 (1:NF1) 
+      INTEGER K_1P  (1:NT1,1:NF1), K_1M(1:NT1,1:NF1)
+      INTEGER K_IF2 (1:NF2,1:NT1,1:NF1), K_IF3 (1:NF2,1:NT1,1:NF1),
+     &        K_1P2P(1:NF2,1:NT1,1:NF1), K_1P2M(1:NF2,1:NT1,1:NF1),
+     &        K_1P3P(1:NF2,1:NT1,1:NF1), K_1P3M(1:NF2,1:NT1,1:NF1),
+     &        K_1M2P(1:NF2,1:NT1,1:NF1), K_1M2M(1:NF2,1:NT1,1:NF1),
+     &        K_1M3P(1:NF2,1:NT1,1:NF1), K_1M3M(1:NF2,1:NT1,1:NF1)
+      INTEGER IDCONF(1:NCONFM,1:3)
+      DOUBLE PRECISION TB_V14(1:NF1)
+      DOUBLE PRECISION 
+     &        TB_V24(1:NF2,1:NT1,1:NF1), TB_V34(1:NF2,1:NT1,1:NF1),
+     &        TB_TPM(1:NF2,1:NT1,1:NF1), TB_TMP(1:NF2,1:NT1,1:NF1),
+     &        TB_FAC(1:NF2,1:NT1,1:NF1)
         END SUBROUTINE
       END INTERFACE
 !
@@ -1823,6 +2049,7 @@
 !
 !-----------------------------------------------------------------------
 !
+!V6P1 New arguments
       INTERFACE
         SUBROUTINE WAC
      &(PART, U_TEL, V_TEL, H_TEL, FX_WAC, FY_WAC, UV_WAC, VV_WAC,

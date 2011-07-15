@@ -5,7 +5,7 @@
      &( UC    , VC    , X     , Y     , NPOIN2 )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   09/06/2011
 !***********************************************************************
 !
 !brief    SPECIFIES A ! STATIONARY ! ANALYTICAL CURRENT.
@@ -37,10 +37,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        08/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| UC,VC          |<--| COMPOSANTES DU CHAMP DE COURANT
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE 2D
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| UC             |<--| CURRENT VELOCITY ALONG X AT THE MESH POINTS
+!| VC             |<--| CURRENT VELOCITY ALONG Y AT THE MESH POINTS
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

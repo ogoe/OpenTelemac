@@ -7,7 +7,7 @@
      &  NF    , RAISF , LT    , GRADEB, GRAPRD)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    CONVERTS A SPECTRUM SPECIFIED IN RELATIVE
@@ -31,28 +31,33 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COSTET         |---|
-!| DFREQ          |---|
-!| FA             |---|
-!| FR             |---|
-!| FREQ           |---|
-!| GRADEB         |---|
-!| GRAPRD         |---|
-!| KNEW           |---|
-!| LT             |---|
-!| NEWF           |---|
-!| NEWF1          |---|
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE PROPAGATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
+!| COSTET         |-->| COSINE OF TETA ANGLE
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| FA             |<--| DIRECTIONAL SPECTRUM IN ABSOLUTE FREQUENCIES
+!| FR             |-->| DIRECTIONAL SPECTRUM IN RELATIVE FREQUENCIES
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GRADEB         |-->| N.OF FIRST ITERATION FOR GRAPHICS PRINTOUTS
+!| GRAPRD         |-->| PERIOD FOR GRAPHIC PRINTOUTS
+!| KNEW           |<->| WORK TABLE
+!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
+!| NEWF           |<->| WORK TABLE
+!| NEWF1          |<->| WORK TABLE
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| RAISF          |-->| RAISON FREQUENTIELLE
-!| SINTET         |---|
-!| TAUX1          |---|
-!| TAUX2          |---|
-!| UC             |---|
-!| VC             |---|
-!| XK             |---|
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| TAUX1          |<->| WORK TABLE
+!| TAUX2          |<->| WORK TABLE
+!| UC             |-->| CURRENT VELOCITY ALONG X AT THE MESH POINTS
+!| VC             |-->| CURRENT VELOCITY ALONG Y AT THE MESH POINTS
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

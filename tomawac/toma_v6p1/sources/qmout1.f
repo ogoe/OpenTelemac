@@ -7,7 +7,7 @@
      &  BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE WHITECAPPING
@@ -37,24 +37,29 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---|
-!| CMOUT1         |-->| CONSTANTE DE L'EXPRESSION DE MOUTONEMENT
-!| CMOUT2         |-->| CONSTANTE DE L'EXPRESSION DE MOUTONEMENT
-!| ENRJ           |---|
-!| F              |---|
-!| FMOY           |---|
-!| FREQ           |---|
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| PROINF         |-->| INDICATEUR DE PROFONDEUR INFINIE
-!| TAUX1          |---|
-!| TSDER          |---|
-!| TSTOT          |---|
-!| XK             |---|
-!| XKMOY          |---|
+!| BETA           |<--| WORK TABLE
+!| CMOUT1         |-->| WHITE CAPPING DISSIPATION COEFFICIENT
+!| CMOUT2         |-->| WHITE CAPPING WEIGHTING COEFFICIENT
+!| ENRJ           |-->| SPECTRUM VARIANCE
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FMOY           |-->| MEAN SPECTRAL FRQUENCY FMOY
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| TAUX1          |<--| WORK TABLE
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| XK             |-->| DISCRETIZED WAVE NUMBER
+!| XKMOY          |-->| AVERAGE WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

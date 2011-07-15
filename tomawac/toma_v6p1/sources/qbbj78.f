@@ -5,7 +5,7 @@
      &( B     , IQBBJ )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FRACTION OF BREAKING WAVES: QB.
@@ -36,9 +36,14 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |-->| (HE/HM)
-!| IQBBJ          |-->| INDICE DE LA METHODE UTILISEE
+!| B              |-->| (H_RMS/H_MAX)
+!| IQBBJ          |-->| INDEX OF THE SLECTED COMPUTATION METHOD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

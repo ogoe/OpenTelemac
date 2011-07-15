@@ -5,7 +5,7 @@
      &( B     , N     , A     , XM    , X0    , X1    )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   08/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE INTEGRATION BOUNDS FOR THE INTEGRATION
@@ -28,13 +28,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        08/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| PARAMETRE A DE LA FONCTION A INTEGRER
-!| B              |-->| PARAMETRE B DE LA FONCTION A INTEGRER
-!| N              |-->| EXPOSANT N  DE LA FONCTION A INTEGRER
-!| X0             |<--| BORNE INFERIEURE DE L'INTERVALLE
-!| X1             |<--| BORNE SUPERIEURE DE L'INTERVALLE
-!| XM             |-->| PARAMETRE M DE LA FONCTION A INTEGRER
+!| A              |-->| PARAMETER A OF THE FUNCTION TO INTGRATE
+!| B              |-->| PARAMETER B OF THE FUNCTION TO INTGRATE
+!| N              |-->| EXPONENT N OF THE FUNCTION TO INTGRATE
+!| X0             |<--| LOWER BOUND OF THE INTERVAL
+!| X1             |<--| UPPER BOUND OF THE INTERVAL
+!| XM             |-->| PARAMETER XM OF THE FUNCTION TO INTGRATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

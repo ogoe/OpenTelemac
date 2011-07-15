@@ -3,10 +3,10 @@
 !                    *****************
 !
      &( AT    , LT    , TC1   , TC2   , TV1   , TV2   , TM1   , TM2   ,
-     &  NPC   , NPM   , NVHMA , NVCOU )
+     &  NPC   , NPM   , NVHMA , NVCOU , PART  , U_TEL , V_TEL , H_TEL )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   14/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES ARRAYS OF PHYSICAL PARAMETERS.
@@ -28,19 +28,33 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        05/2011
+!+        V6P1
+!+   Modification for direct coupling with TELEMAC
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        14/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |---|
-!| LT             |---|
-!| NPC            |---|
-!| NPM            |---|
-!| NVCOU          |---|
-!| NVHMA          |---|
-!| TC1            |---|
-!| TC2            |---|
-!| TM1            |---|
-!| TM2            |---|
-!| TV1            |---|
-!| TV2            |---|
+!| AT             |-->| COMPUTATION TIME
+!| H_TEL          |-->| TELEMAC WATER DEPTH
+!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
+!| NPC            |-->| NUMBER OF POINTS OF THE CURRENT FILE
+!| NPM            |-->| NUMBER OF POINTS OF THE WATER HEIGHT FILE
+!| NVCOU          |<--| NUMBER OF VARIABLES OF THE FORMATTED CURRENT FILE
+!| NVHMA          |<--| N.OF VARIABLES OF THE FORMATTED WATER LEVEL FILE
+!| PART           |-->| FLAG FOR DIRECT COUPLING WITH TELEMAC
+!| TC1            |<--| TIME T1 IN THE CURRENT FILE
+!| TC2            |<--| TIME T2 IN THE CURRENT FILE
+!| TM1            |<--| TIME T1 IN THE WATER LEVEL FILE
+!| TM2            |<--| TIME T2 IN THE WATER LEVEL FILE
+!| TV1            |<--| TIME T1 IN THE WIND FILE
+!| TV2            |<--| TIME T2 IN THE WIND FILE
+!| U_TEL          |-->| X-AXIS TELEMAC CURRENT SPEED
+!| V_TEL          |-->| Y-AXIS TELEMAC CURRENT SPEED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -59,6 +73,11 @@
 !
 !     LOCAL VARIABLES
       INTEGER N1,N2,N3,N4
+!
+!GM V6P1 - DIRECT COUPLING WITH TELEMAC
+      INTEGER           :: PART, IP
+      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: U_TEL,V_TEL,H_TEL
+!GM Fin
 !
 !-----------------------------------------------------------------------
 !         UPDATES THE TIDAL CURRENT AND WATER LEVEL ARRAYS
@@ -95,6 +114,12 @@
      &   NPOIN2     , AT   , DDC , LT )
       ENDIF
 !
+!GM V6P1-Direct coupling TELEMAC-TOMAWAC : current speed is updated
+      IF(PART.EQ.1) THEN
+        CALL OV('X=Y     ',SUC%R,U_TEL%R,U_TEL%R,0.D0,NPOIN2)
+        CALL OV('X=Y     ',SVC%R,V_TEL%R,V_TEL%R,0.D0,NPOIN2)
+      ENDIF
+!GM Fin
 !            UPDATES THE WATER DEPTH AT TIME 'AT'
 !         ------------------------------------------------------
 !
@@ -120,9 +145,22 @@
        ENDIF
       ENDIF
 !
-      CALL OV('X=X+Y   ', SDEPTH%R , TRA01(1:NPOIN2) , ST0%R ,
+!GM V6P1 - DIRECT COUPLING WITH TELEMAC
+      IF(PART.LT.0) THEN
+        CALL OV('X=X+Y   ', SDEPTH%R , TRA01(1:NPOIN2) , ST0%R ,
      &         0.D0 , NPOIN2)
+      ENDIF
 !
+      IF(PART.EQ.1) THEN
+!..... water depth time gradient is updated
+!     (SDEPTH has still water depth values of the previous time step)
+        DO IP=1,NPOIN2
+          DZHDT(IP)=(H_TEL%R(IP)-DEPTH(IP))/DT
+        ENDDO
+!......water depth is updated
+        CALL OV('X=Y     ',SDEPTH%R,H_TEL%R,H_TEL%R,0.D0,NPOIN2)
+      ENDIF
+!GM Fin
 !
 !            UPDATES THE CURRENT AND WATER DEPTH
 !                GRADIENTS AT TIME 'AT'

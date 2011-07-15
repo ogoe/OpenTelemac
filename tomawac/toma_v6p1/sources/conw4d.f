@@ -7,7 +7,7 @@
      & COURAN,TRA01,TRA02)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   14/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE ADVECTION FIELD.
@@ -33,34 +33,42 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        14/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CG             |-->| VITESSE DE GROUPE DISCRETISEE
-!| COSF           |-->| COSINUS DES LATITUDES DES POINTS 2D
-!| COSTET         |-->| COSINUS TETA
-!| COURAN         |-->| LOGIQUE INDIQUANT SI ON A UN COURANT
-!| CX,CY,CT,CF    |<--| CHAMP CONVECTEUR SELON X(OU PHI),
-!|                |   | Y(OU LAMBDA) ET TETA  ET FREQ
-!| DEPTH          |-->| PROFONDEUR
-!| DUX            |-->| GRADIENT DE COURANT U SELON X
-!| DUY            |-->| GRADIENT DE COURANT U SELON Y
-!| DVX            |-->| GRADIENT DE COURANT V SELON X
-!| DVY            |-->| GRADIENT DE COURANT V SELON Y
-!| DZHDT          |-->| GRADIENT DE FOND SELON T
-!| DZX            |-->| GRADIENT DE FOND SELON X
-!| DZY            |-->| GRADIENT DE FOND SELON Y
-!| FREQ           |-->| FREQUENCES DISCRETISEES
-!| JF             |-->| FREQUENCES COURANTE
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| PROINF         |-->| LOGIQUE INDIQUANT SI ON EST EN PROF INFINIE
-!| SINTET         |-->| SINUS TETA
-!| SPHE           |-->| LOGIQUE INDIQUANT SI ON EST EN COORD. SPHER.
-!| TGF            |-->| TANGENTES DES LATITUDES DES POINTS 2D
-!| TRA01          |<->| TABLEAU DE TRAVAIL
-!| TRA02          |<->| TABLEAU DE TRAVAIL
-!| U,V            |-->| COMPOSANTES DU CHAMP DE COURANT
-!| XK             |-->| NOMBRE D'ONDE DISCRETISE
+!| CG             |-->| DISCRETIZED GROUP VELOCITY
+!| COSF           |-->| COSINE OF THE LATITUDES OF THE POINTS 2D
+!| COSTET         |-->| COSINE OF TETA ANGLE
+!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
+!| CT             |<--| ADVECTION FIELD ALONG TETA
+!| CX             |<--| ADVECTION FIELD ALONG X(OR PHI)
+!| CY             |<--| ADVECTION FIELD ALONG Y(OR LAMBDA)
+!| CF             |<--| ADVECTION FIELD ALONG FREQUENCY
+!| DEPTH          |-->| WATER DEPTH
+!| DUX            |-->| DERIVATIVE OF CURRENT SPEED DU/DX
+!| DUY            |-->| DERIVATIVE OF CURRENT SPEED DU/DY
+!| DVX            |-->| DERIVATIVE OF CURRENT SPEED DV/DX
+!| DVY            |-->| DERIVATIVE OF CURRENT SPEED DV/DY
+!| DZHDT          |-->| WATER DEPTH DERIVATIVE WITH RESPECT TO T
+!| DZX            |-->| SEA BOTTOM SLOPE ALONG X
+!| DZY            |-->| SEA BOTTOM SLOPE ALONG Y
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| JF             |-->| INDEX OF THE FREQUENCY
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| SPHE           |-->| LOGICAL INDICATING SPHERICAL COORD ASSUMPTION
+!| TGF            |-->| TANGENT OF THE LATITUDES OF THE POINTS 2D
+!| TRA01          |<->| WORK TABLE
+!| TRA02          |<->| WORK TABLE
+!| U              |-->| CURRENT SPEED ALONG X
+!| V              |-->| CURRENT SPEED ALONG Y
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

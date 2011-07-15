@@ -5,7 +5,7 @@
      &( SS    , DEUPI )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   14/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENT THAT NORMALISES THE DIRECTIONAL
@@ -37,9 +37,14 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEUPI          |-->| 2.PI
-!| SS             |-->| EXPOSANT DE LA FONCTION DE REPARTITION ANG.
+!| SS             |-->| EXPONENT OF THE DIRECTIONAL SPREADING FUNCTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -7,7 +7,7 @@
      &  GRAVIT, NPOIN2, NPLAN , NF    , XTAUW , YTAUW , TAUHF )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE WAVE STRESSES FOR ALL THE NODES
@@ -33,30 +33,35 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETAM          |-->| CONSTANTE BETAMAX DE LA FORMULE DU VENT
-!| COSTET         |---|
-!| DECAL          |-->| CONSTANTE DE DECALAGE DE CROISSANCE VENT
-!| DFREQ          |---|
-!| F              |---|
-!| FREQ           |---|
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| ROAIR          |-->| MASSE VOLUMIQUE DE L AIR
-!| ROEAU          |-->| MASSE VOLUMIQUE DE L EAU
-!| SINTET         |---|
-!| TAUHF          |---|
-!| TAUWAV         |---|
-!| TETA           |---|
-!| TSTOT          |---|
-!| TWNEW          |---|
-!| USNEW          |---|
-!| XKAPPA         |-->| CONSTANTE DE VON KARMAN
-!| XTAUW          |---|
-!| YTAUW          |---|
-!| Z0NEW          |---|
+!| BETAM          |-->| WIND GENERATION COEFFICIENT
+!| COSTET         |-->| COSINE OF TETA ANGLE
+!| DECAL          |-->| SHIFT GROWING CURVE DUE TO WIND
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| ROAIR          |-->| AIR DENSITY
+!| ROEAU          |-->| WATER DENSITY
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| TAUHF          |<->| WORK TABLE
+!| TAUWAV         |<--| STRESS DUE TO THE WAVES
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TSTOT          |-->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| TWNEW          |-->| WIND DIRECTION
+!| USNEW          |-->| FRICTION VELOCITY
+!| XKAPPA         |-->| VON KARMAN CONSTANT
+!| XTAUW          |<->| WORK TABLE
+!| YTAUW          |<->| WORK TABLE
+!| Z0NEW          |-->| SURFACE ROUGHNESS LENGTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

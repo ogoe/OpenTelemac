@@ -6,7 +6,7 @@
      &  NPLAN , NPOIN2, BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE BOTTOM FRICTION
@@ -43,18 +43,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---|
-!| CFROT1         |-->| CONSTANTE DE L'EXPRESSION DE FROTTEMENT
-!| DEPTH          |---|
-!| F              |---|
+!| BETA           |<--| WORK TABLE
+!| CFROT1         |-->| BOTTOM FRICTION COEFFICIENT
+!| DEPTH          |-->| WATER DEPTH
+!| F              |-->| DIRECTIONAL SPECTRUM
 !| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
 !| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TSDER          |---|
-!| TSTOT          |---|
-!| XK             |---|
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

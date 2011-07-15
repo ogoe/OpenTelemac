@@ -6,7 +6,7 @@
      & COURAN,MAREE,TITRE,NR3D,BINR3D)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    WRITES DATA NECESSARY TO RESUME COMPUTATION
@@ -29,25 +29,31 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| BINR3D         |-->| BINAIRE DU FICHIER DES RESULTATS GLOBAUX
-!| COURAN         |-->| LOGIQUE INDIQUANT SI IL YA UN COURANT
-!| DEPTH          |---|
-!| F              |<--| DENSITE SPECTRALE D'ENERGIE
-!| FREQ           |-->| DISTRIBUTION DES FREQUENCES
-!| MAREE          |---|
-!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NR3D           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DES
-!|                |   | RESULTATS GLOBAUX
-!| TETA           |-->| DISTRIBUTION DES DIRECTIONS
-!| TITRE          |-->| TITRE DU CAS
-!| U,V            |-->| COMPOSANTES DU COURANT
-!| UV,VV          |-->| COMPOSANTES DU VENT
-!| VENT           |-->| LOGIQUE INDIQUANT SI IL YA UN VENT
+!| AT             |-->| COMPUTATION TIME
+!| BINR3D         |-->| GLOBAL RESULT FILE BINARY
+!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
+!| DEPTH          |-->| WATER DEPTH
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| MAREE          |-->| LOGICAL INDICATING CONSIDERATION OF TIDE
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NR3D           |-->| LOGICAL UNIT NUMBER OF GLOBAL RESULT FILE
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TITRE          |-->| TITLE
+!| U              |-->| CURRENT SPEED ALONG X
+!| UV             |-->| WIND SPEED ALONG X
+!| V              |-->| CURRENT SPEED ALONG Y
+!| VV             |-->| WIND SPEED ALONG Y
+!| VENT           |-->| INDICATES IF WIND IS TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

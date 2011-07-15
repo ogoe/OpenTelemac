@@ -6,7 +6,7 @@
      &  GRAVIT, ITR   , ITRMIN, ITRMAX)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE TOTAL STRESS FROM THE WIND VELOCITY
@@ -43,19 +43,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHA          |-->| CONSTANTE DE LA LOI DE CHARNOCK
-!| CDRAG          |-->| COEFFICIENT DE TRAINEE
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
+!| ALPHA          |-->| CHARNOCK CONSTANT
+!| CDRAG          |-->| WIND DRAG COEFFICIENT
+!| GRAVIT         |-->| GRAVITY ACCELERATION
 !| ITR            |<--| NOMBRE D'ITERATIONS EFFECTUES
-!| ITRMAX         |-->| NOMBRE MAXIMAL D'ITERATIONS SOUHAITE
-!| ITRMIN         |-->| NOMBRE MINIMAL D'ITERATIONS SOUHAITE
-!| SEUIL          |-->| SEUIL DE CONVERGENCE METHODE DE NEWTON
-!| TAUT           |<--| CONTRAINTE TOTALE
-!| TAUW           |-->| CONTRAINTE DUE A LA HOULE
-!| UVENT          |-->| VITESSE DU VENT A LA COTE ZVENT (M/S)
-!| XKAPPA         |-->| CONSTANTE DE VON KARMAN
-!| ZVENT          |-->| COTE A LAQUELLE EST MESURE LE VENT (M)
+!| ITRMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
+!| ITRMIN         |-->| MINIMUM NUMBER OF ITERATIONS
+!| SEUIL          |-->| CONVERGENCY THRESHOLD - NEWTON METHOD
+!| TAUT           |<--| TOTAL STRESS
+!| TAUW           |-->| STRESS DUE TO THE WAVES
+!| UVENT          |-->| WIND SPEED AT HEIGHT ZVENT
+!| XKAPPA         |-->| VON KARMAN CONSTANT
+!| ZVENT          |-->| WIND MEASUREMENT LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

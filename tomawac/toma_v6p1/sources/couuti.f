@@ -6,7 +6,7 @@
      & NP,XRELC,YRELC,UR,VR,UC1,VC1,UC2,VC2,NPMAX)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   14/06/2011
 !***********************************************************************
 !
 !brief    READS IN THE CURRENTS USING A USER-DEFINED FORMAT.
@@ -48,24 +48,30 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        14/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| BINCOU         |-->| BINAIRE DU FICHIER DES COURANTS
-!| DDC            |-->| DATE DE DEBUT DU CALCUL
-!| NBOR           |-->| NUMERO GLOBAUX DES POINTS DE BORD
-!| NCOU           |-->| NO D'UNITE LOGIQUE DU FICHIER DES COURANTS
-!| NP             |-->| NOMBRE DE POINTS RELEVES
-!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD
-!| TC1            |-->| DATE CORRESPONDANT AU COURANT (UC1,VC1)
-!| TC2            |-->| DATE CORRESPONDANT AU COURANT (UC2,VC2)
-!| UC1,VC1        |<->| TABLEAU DES COURANTS RELEVES AU TEMPS 1
-!| UC2,VC2        |<->| TABLEAU DES COURANTS RELEVES AU TEMPS 2
-!| UR,VR          |<->| TABLEAU DES COURANTS RELEVES
-!| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELC          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-!| YRELC          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
+!| AT             |-->| COMPUTATION TIME
+!| BINCOU         |-->| CURRENTS FILE BINARY
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NCOU           |-->| LOGICAL UNIT NUMBER OF THE CURRENTS FILE
+!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
+!| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| TC1            |-->| TIME T1 IN THE CURRENT FILE
+!| TC2            |-->| TIME T2 IN THE CURRENT FILE
+!| UC1,VC1        |<->| CURRENTS VALUES AT TIME T1 IN THE CURRENTS FILE
+!| UC2,VC2        |<->| CURRENTS VALUES AT TIME T2 IN THE CURRENTS FILE
+!| UR,VR          |<->| TABLE OF THE VALUES READ IN THE CURRENT FILE
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XRELC          |<->| TABLE OF THE ABSCISSES OF CURRENTS FILE POINTS
+!| YRELC          |<->| TABLE OF THE ORDINATES OF CURRENTS FILE POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TOMAWAC, EX_COUUTI => COUUTI

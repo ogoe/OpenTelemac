@@ -5,7 +5,7 @@
      &(TV ,DAT,DDC)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE TIME IN SECOND BETWEEN THE DATES
@@ -28,10 +28,15 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DAT            |-->| DATE D'UN ENREGISTREMENT DES VENTS
-!| DDC            |-->| DATE DU DEBUT DU CALCUL
-!| TV             |<--| ECART DE TEMPS EN SECONDES
+!| DAT            |-->| TIME T IN THE WIND FILE
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| TV             |<--| TIME DIFFERENCE (SECONDS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

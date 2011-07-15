@@ -8,7 +8,7 @@
      &   IFF , SURDET , SENS , ISO )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   22/06/2011
 !***********************************************************************
 !
 !brief    TRACES IN TIME THE CHARACTERISTICS CURVES FOR TELEMAC-3D
@@ -39,40 +39,47 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        21/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS.
-!| DX,DY,DZ       |---| STOCKAGE DES SOUS-PAS .
-!| ELT            |<->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| ETA            |<->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
-!| ETAS           |<->| TABLEAU DE TRAVAIL DONNANT LE NUMERO DE
-!|                |   | L'ETAGE SUPERIEUR
-!| IFABOR         |-->| NUMEROS 2D DES ELEMENTS AYANT UNE FACE COMMUNE
-!|                |   | AVEC L'ELEMENT .  SI IFABOR
-!|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
-!| IFF            |---|
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE DU MAILLAGE 2D.
-!| ISO            |<->| INDIQUE PAR BIT LA FACE DE SORTIE DE L'ELEMEN
-!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPLOT          |-->| NOMBRE DE DERIVANTS.
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| NRK            |-->| NOMBRE DE SOUS-PAS DE RUNGE-KUTTA.
-!| NSP            |---| NOMBRE DE SOUS-PAS DE RUNGE KUTTA.
+!| DT             |-->| TIME STEP
+!| DX,DY,DZ       |<--| STORED SUB-INCREMENTS TIME STEPS
+!| ELT            |<->| NUMBERS OF THE ELEMENTS 2D OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETA            |<->| NUMBERS OF THE LAYERS OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETAS           |<->| WORK TABLE INDICATING THE NUMBER OF THE HIGHER
+!|                |   | LAYER
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID,
+!|                |   | SOLID OR PERIODIC BOUNDARY
+!| IFF            |-->| FREQUENCY INDEX
+!| IKLE2          |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
+!|                |   | OF THE 2D MESH
+!| ISO            |<->| BINARY STORING OF THE EXIT FACE OF THE ELEMENT
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPLOT          |-->| NUMBER OF POINTS TO BE ADVECTED
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NRK            |-->| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
+!| NSP            |<--| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
 !| SENS           |-->| DESCENTE OU REMONTEE DES CARACTERISTIQUES.
-!| SHP1           |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
-!|                |   | COURBES CARACTERISTIQUES.
-!| SHP2           |---|
-!| SHP3           |---|
-!| SHZ            |<->| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
-!|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
-!| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
-!| U,V,W          |-->| COMPOSANTE DE LA VITESSE DU CONVECTEUR
-!| X,Y,TETA       |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XPLOT          |---|
-!| YPLOT          |---|
-!| ZPLOT          |---|
+!| SHP1,SHP2,SHP3 |<->| BARYCENTRIC COORDINATES OF THE NODES IN
+!|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
+!| SHZ            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
+!| SURDET         |-->| 1/DET. OF ELEMENTS 2D FOR ISOPARAM. TRANSF.
+!| U,V,W          |-->| COMPONENTS OF THE ADVECTION VELOCITY
+!| X,Y,TETA       |-->| COORDINATES OF THE MESH
+!| XPLOT          |<->| STARTING ABSCISSAE OF THE POINTS TO BE
+!|                |   | ADVECTED
+!| YPLOT          |<->| STARTING ORDINATES OF THE POINTS TO BE
+!|                |   | ADVECTED
+!| ZPLOT          |<->| STARTING DIRECTIONS OF THE POINTS TO BE
+!|                |   | ADVECTED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

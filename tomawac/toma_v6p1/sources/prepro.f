@@ -11,7 +11,7 @@
      &  PROINF, PROMIN, MESH)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    PREPARES ADVECTION.
@@ -36,58 +36,69 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CG             |-->| VITESSE DE GROUPE DISCRETISEE
-!| COSF           |-->| COSINUS DES LATITUDES DES POINTS 2D
-!| COSTET         |-->| COSINUS TETA
-!| COURAN         |-->| LOGIQUE INDIQUANT SI ON A UN COURANT
-!| CX,CY,CT,CF    |<->| CHAMP CONVECTEUR SELON X(OU PHI),
-!|                |   | Y(OU LAMBDA) TETA ET F
-!| DEPTH          |-->| PROFONDEUR
-!| DT             |-->| TEMPS
-!| DUX,DUY        |-->| GRADIENT DU COURANT SELON X SELON X,Y
-!| DVX,DVY        |-->| GRADIENT DU COURANT SELON Y SELON X,Y
-!| DZHDT          |---|
-!| DZX            |-->| GRADIENT DE FOND SELON X
-!| DZY            |-->| GRADIENT DE FOND SELON Y
-!| ELT            |<->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| ETA            |<->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
-!| ETAP1          |<->| TABLEAU DE TRAVAIL DONNANT LE NUMERO DE
-!|                |   | L'ETAGE SUPERIEUR
-!| FRE            |<->| NUMEROS DES FREQ. CHOISIES POUR CHAQUE NOEUD.
-!| FREQ           |-->| FREQUENCES DISCRETISEES
-!| IFABOR         |-->| NUMEROS 2D DES ELEMENTS AYANT UNE FACE COMMUNE
-!|                |   | AVEC L'ELEMENT .  SI IFABOR
-!|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE DU MAILLAGE 2D.
-!| ITR01          |<->| TABLEAU DE TRAVAIL ENTIER
-!| MESH           |---|
-!| NELEM2         |-->| NOMBRE D ELEMENTS DU MAILLAGE 2D
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| NRK            |-->| NOMBRE DE SOUS PAS DE RUNGE KUTTA
-!| PROINF         |-->| LOGIQUE INDIQUANT SI ON EST EN PROF INFINIE
-!| PROMIN         |---|
-!| SHF            |<->| COORDONNEES BARYCENTRIQUES SUIVANT F DES
-!|                |   | NOEUDS DANS LEURS FREQUENCES "FRE" ASSOCIEES.
-!| SHP1           |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
-!|                |   | COURBES CARACTERISTIQUES.
-!| SHP2           |---|
-!| SHP3           |---|
-!| SHZ            |---|
-!| SINTET         |-->| SINUS TETA
-!| SPHE           |-->| LOGIQUE INDIQUANT SI ON EST EN COORD. SPHER.
-!| SURDET         |-->| INVERSE DU DETERMINANT DES ELEMENTS
-!| TETA           |-->| DIRECTIONS DISCRETISEES
-!| TGF            |-->| TANGENTES DES LATITUDES DES POINTS 2D
-!| TRA01          |<->| TABLEAU DE TRAVAIL
-!| U,V            |-->| COURANT SELON X,Y
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| XK             |-->| NOMBRE D'ONDE DISCRETISE
+!| CF             |<->| ADVECTION FIELD ALONG FREQUENCY
+!| CG             |-->| DISCRETIZED GROUP VELOCITY
+!| COSF           |-->| COSINE OF THE LATITUDES OF THE POINTS 2D
+!| COSTET         |-->| COSINE OF TETA ANGLE
+!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
+!| CX             |<->| ADVECTION FIELD ALONG X(OR PHI)
+!| CY             |<->| ADVECTION FIELD ALONG Y(OR LAMBDA)
+!| CT             |<->| ADVECTION FIELD ALONG TETA
+!| DEPTH          |-->| WATER DEPTH
+!| DT             |-->| TIME STEP
+!| DUX            |-->| DERIVATIVE OF CURRENT SPEED DU/DX
+!| DUY            |-->| DERIVATIVE OF CURRENT SPEED DU/DY
+!| DVX            |-->| DERIVATIVE OF CURRENT SPEED DV/DX
+!| DVY            |-->| DERIVATIVE OF CURRENT SPEED DV/DY
+!| DZHDT          |-->| WATER DEPTH DERIVATIVE WITH RESPECT TO T
+!| DZX            |-->| BOTTOM SLOPE ALONG X
+!| DZY            |-->| BOTTOM SLOPE ALONG Y
+!| ELT            |<->| NUMBERS OF THE ELEMENTS 2D OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETA            |<->| NUMBERS OF THE LAYERS OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETAP1          |<->| HIGHER LAYERS TABLE
+!| FRE            |<->| NUMBER OF THE FREQUENCIES OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID,
+!|                |   | SOLID OR PERIODIC BOUNDARY
+!| IKLE2          |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
+!|                |   | OF THE 2D MESH
+!| ITR01          |<->| WORK TABLE
+!| MESH           |-->| BIEF OBJECT
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPOIN3         |-->| NPOIN2*NPLAN
+!| NRK            |-->| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| PROMIN         |-->| MINIMUM VALUE OF WATER DEPTH
+!| SHF            |<->| BARYCENTRIC COORDINATES ALONG F OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED FREQUENCIES "FRE"
+!| SHP1,SHP2,SHP3 |<->| BARYCENTRIC COORDINATES OF THE NODES IN
+!|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
+!| SHZ            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| SPHE           |-->| LOGICAL INDICATING SPHERICAL COORD ASSUMPTION
+!| SURDET         |-->| 1/DET. OF ELEMENTS 2D FOR ISOPARAM. TRANSF.
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TGF            |-->| TANGENT OF THE LATITUDES OF THE POINTS 2D
+!| TRA01          |<->| WORK TABLE
+!| U              |-->| CURRENT SPEED ALONG X
+!| V              |-->| CURRENT SPEED ALONG Y
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XK             |-->| DISCRETIZED WAVE NUMBER
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -7,7 +7,7 @@
      &  Z1 , Z2   , INDIM, NPMAX , IDHMA, NVAR  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    THIS SUBROUTINE PROJECTS THE TIDE DATA ON THE
@@ -32,28 +32,40 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        05/2011
+!+        V6P1
+!+   Bug correction in the reading of the TELEMAC format file
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES
-!| DDC            |-->| DATE DU DEBUT DU CALCUL
-!| DZHDT          |---|
-!| IDHMA          |---|
-!| INDIM          |-->| TYPE DE FORMAT DE LECTURE
-!| NBOR           |-->| NUMEROTATION DES POINTS FRONTIERE
-!| NDON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DE DONNEES
-!| NP             |<->| NOMBRE DE POINTS RELEVES
-!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE  POINTS FRONTIERE
-!| NVAR           |---|
-!| TM1            |<->| TEMPS DU CHAMPS DE DONNEES 1
-!| TM2            |<->| TEMPS DU CHAMPS DE DONNEES 2
-!| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-!| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
-!| Z1,Z2          |<->| DONNEES AUX NOEUDS DU MAILLAGE A TM1 ET TM2
-!| ZM             |<--| DONNEE AUX NOEUDS DU MAILLAGE
-!| ZR             |<->| TABLEAU DES DONNEES RELEVEES
+!| AT             |-->| COMPUTATION TIME
+!| BINDON         |-->| DATA FILE BINARY
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| DZHDT          |-->| WATER DEPTH DERIVATIVE WITH RESPECT TO T
+!| IDHMA          |-->| RANK OF THE WATER LEVEL DATA IN THE TELEMAC FILE
+!| INDIM          |-->| FILE FORMAT
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
+!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NVAR           |<--| NUMBER OF VARIABLES READ FROM THE DATA FILE
+!| TM1            |<--| TIME T1 IN THE DATA FILE
+!| TM2            |<--| TIME T2 IN THE DATA FILE
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YRELV          |<->| TABLE OF THE ORDINATES OF DATA FILE POINTS
+!| Z1             |<->| DATA AT TIME TM1 AT THE MESH POINTS
+!| Z2             |<->| DATA AT TIME TM2 AT THE MESH POINTS
+!| ZM             |<--| DATA AT TIME AT, AT THE MESH POINTS
+!| ZR             |<->| TABLE OF THE VALUES READ IN THE DATA FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -205,6 +217,9 @@
 !      FORMAT AND GEOMETRY
 !
        CALL LIT(X,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
+       IF (IB(10).EQ.1) THEN
+          CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
+       ENDIF
        CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
        NP=IB(2)
        NI=IB(1)*IB(3)

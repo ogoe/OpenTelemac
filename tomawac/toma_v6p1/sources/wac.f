@@ -6,10 +6,29 @@
      & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC)
 !
 !***********************************************************************
-! TOMAWAC
+! TOMAWAC   V6P1                                   29/06/2011
 !***********************************************************************
 !
+!brief    MAIN SUBROUTINE OF TOMAWAC
+!+               SOLVES THE EQUATION FOR THE
+!+               DIRECTIONAL WAVE SPECTRUM
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CODE           |-->| CALLING PROGRAM (IF COUPLING)
+!| DT_TEL         |-->| TELEMAC MODEL TIME STEP
+!| FX_WAC         |<--| DRIVING FORCE ALONG X PASSED TO TELEMAC
+!| FY_WAC         |<--| DRIVING FORCE ALONG Y PASSED TO TELEMAC
+!| H_TEL          |-->| TELEMAC MODEL WATER DEPTH
+!| NIT_TEL        |-->| NUMBER OF TELEMAC TIME STEPS
+!| PART           |-->| -1: NO COUPLING
+!|                |   |  0: COUPLING WITH TELEMAC (INITIALISATION) 
+!|                |   |  1: COUPLING WITH TELEMAC (LOOP OVER TIME STEPS) 
+!| PERCOU_WAC     |   | VARIABLE CURRENTLY NOT USED
+!| T_TEL          |-->| COMPUTATION TIME OF TELEMAC MODEL
+!| U_TEL          |-->| CURRENT VELOCITY ALONG X IN TELEMAC MODEL
+!| V_TEL          |-->| CURRENT VELOCITY ALONG Y IN TELEMAC MODEL
+!| UV_WAC         |<--| WIND VELOCITY ALONG X IN TOMAWAC MODEL
+!| VV_WAC         |<--| WIND VELOCITY ALONG Y IN TOMAWAC MODEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -48,12 +67,13 @@
       DOUBLE PRECISION AT    ,TV1,TV2,TC1,TC2,TM1,TM2
       DOUBLE PRECISION VITVEN, VITMIN
       INTEGER  ADC , MDC , JDC , HDC, I1, I2, NVHMA,NVCOU
-!COUPLAGE
       INTEGER NBD
-!Fin COUPLAGE
       LOGICAL IMPRES, DEBRES
 !
       INTEGER, ALLOCATABLE :: QINDI(:)
+!V6P1 Variable declaree localement pour les termes source
+      INTEGER K
+!Fin V6P1
       LOGICAL DEJA
       DATA DEJA/.FALSE./
 !
@@ -183,11 +203,14 @@
 ! CORRECTION EVENTUELLE DES VALEURS DU FOND (OU CALCUL DU FOND SI CELA
 ! N'A PAS ETE FAIT DANS FONSTR)
 ! EN STANDARD, CORFON NE FAIT RIEN (ATTENTION, ALLER CHERCHER LE CORFON
-! DE TOMAWAC)
-!
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORFON'
-      CALL CORFON
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORFON'
+! DE TOMAWAC).
+! DANS LE CAS DE COUPLAGE AVEC TELEMAC, ON LIT LE FOND A PARTIR DU
+! MODELE TELEMAC ET CORFON N EST PAS UTILISE
+      IF(PART.LT.0)THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORFON'
+        CALL CORFON
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORFON'
+      ENDIF
 !
 !.....CALCUL DE LA PROFONDEUR D'EAU (TABLEAU DEPTH)
 !
@@ -258,16 +281,14 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECSUI'
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CONDIW'
+! COUPLAGE TELEMAC-TOMAWAC : si PART=0, courants et hauteur d'eau
+!  passes par TELEMAC
         CALL CONDIW
      &( AT, LT , DEUPI , TC1 , TC2 , NPC, TV1, TV2, NPV, TM1, TM2, NPM,
-     &  NVHMA  , NVCOU )
+     &  NVHMA  , NVCOU , PART , U_TEL, V_TEL, H_TEL )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
-!COUPLAGE TELEMAC-TOMAWAC : courants et hauteur d'eau
-!  passes par TELEMAC
+!
         IF(PART.EQ.0) THEN
-          CALL OS('X=Y     ',X=SDEPTH,Y=H_TEL)
-          CALL OV('X=Y     ',SUC%R,U_TEL%R,U_TEL%R,0.D0,NPOIN2)
-          CALL OV('X=Y     ',SVC%R,V_TEL%R,V_TEL%R,0.D0,NPOIN2)
           DO IP=1,NPOIN2
             SDZHDT%R(IP)=0.D0
 !           IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
@@ -319,11 +340,43 @@
 !=====C
 !  4  C CALCULS PREPARATOIRES POUR INTERACTIONS NON-LINEAIRES.
 !=====C=======================================================
+!.....DIA method (Hasselmann et al., 1985)
       IF(STRIF.EQ.1) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL1'
         CALL PRENL1( IANGNL, COEFNL, NPLAN , NF , RAISF , XLAMD )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL1'
-      ENDIF
+!.....MDIA method (Tolman, 2004)
+      ELSEIF (STRIF.EQ.2) THEN
+!.....Setting parametres for MDIA
+        XLAMDI(1)=0.075D0
+        XMUMDI(1)=0.023D0
+        XLAMDI(2)=0.219D0
+        XMUMDI(2)=0.127D0
+        XLAMDI(3)=0.299D0
+        XMUMDI(3)=0.184D0
+        XLAMDI(4)=0.394D0
+        XMUMDI(4)=0.135D0
+!        
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL2'
+        DO K=1,MDIA
+          CALL PRENL2
+     *( IANMDI(1,1,K) , COEMDI(1,K), NPLAN , NF , RAISF ,
+     *  XLAMDI(K), XMUMDI(K))
+        ENDDO
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL2'
+!        
+!.....GQM method (Lavrenov, 2001)   
+      ELSEIF(STRIF.EQ.3) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL3'
+        CALL PRENL3
+     *( NF    , NPLAN , RAISF , TAILF , FREQ  , TB_SCA, LBUF  , DIMBUF,
+     *  F_POIN, F_COEF, T_POIN, F_PROJ, IQ_OM1, NQ_TE1, NQ_OM2, NF1   ,
+     *  NT1   , K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , 
+     *  K_1M  , K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M,
+     *  K_1M3P, TB_TPM, TB_TMP, TB_FAC, SEUIL1, SEUIL2, ELIM  , NCONF ,
+     *  NCONFM, IDCONF)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL3'
+      ENDIF       
 !
       IF (STRIA.EQ.2) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREQT2'
@@ -350,10 +403,20 @@
      &  CDRAG    , ALPHA    , XKAPPA   , ZVENT , GRAVIT,
      &  NPOIN2   )
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR1'
-        ELSEIF (SVENT.EQ.2) THEN
+!V6P1 termes source
+        ELSEIF (SVENT.GE.2) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
           CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2'
+        ELSEIF ((SVENT.EQ.0).AND.(LVENT.EQ.1)) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
+          CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2' 
+        ELSEIF ((SVENT.EQ.0).AND.(LVENT.EQ.0).AND.(SMOUT.EQ.2)) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
+          CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2'    
+!V6P1 Fin
         ELSE
           IF (LNG.EQ.1) THEN
             WRITE(LU,*)
@@ -386,20 +449,14 @@
 !=====C
 !  6  C INITIALISATION DE CERTAINS TABLEAUX UTILES.
 !=====C============================================
-!COUPLAGE TELEMAC-TOMAWAC
-      IF(PART.EQ.0) COURAN=.TRUE.
-!Fin COUPLAGE
+!COUPLAGE TELEMAC-TOMAWAC si PART=0
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INITAB'
-      CALL INITAB( SIBOR%I, MESH%IFABOR%I, NELEM2)
+      CALL INITAB( SIBOR%I, MESH%IFABOR%I, NELEM2, PART)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE INITAB'
-!COUPLAGE TELEMAC-TOMAWAC
-      IF(PART.EQ.0) COURAN=.FALSE.
-!Fin COUPLAGE
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE IMPR'
       CALL IMPR(LISPRD,LT,AT,LT,3)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE IMPR'
-!
 !
 !
 !=====C
@@ -588,103 +645,33 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE ECRETE'
       ENDIF
 !
-!COUPLAGE TELEMAC-TOMAWAC : en cas de couplage, actualisation
-!         des courants et de l'hauteur d'eau (et de leurs gradients)
-!         tous les DT_TEL
-      IF(PART.EQ.1.AND.LT_WAC.EQ.1) THEN
-!Mise a jour des vitesses
-        CALL OV('X=Y     ',SUC%R,U_TEL%R,U_TEL%R,0.D0,NPOIN2)
-        CALL OV('X=Y     ',SVC%R,V_TEL%R,V_TEL%R,0.D0,NPOIN2)
-!SDEPTH contient encore la hauteur d'eau du pas de temps precedent
-! de Telemac
-        DO IP=1,NPOIN2
-          DZHDT(IP)=(H_TEL%R(IP)-DEPTH(IP))/DT
-        ENDDO
-!Mise a jour de la hauteur d'eau
-        CALL OV('X=Y     ',SDEPTH%R,H_TEL%R,H_TEL%R,0.D0,NPOIN2)
-        DO IP=1,NPOIN2
-          IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9*PROMIN
-        ENDDO
-!MISE A JOUR DES GRADIENTS DE COURANT ET DE PROFONDEUR D'EAU
-        WRITE(LU,*)'MISE A JOUR DES GRADIENTS DE COURANT'
-! Le code est repris de la subroutine CORMAR
-!
-! W1 ( ex MASKEL) EST MIS A 1 POUR GRADF
-        CALL OV ( 'X=C     ' , SW1%R , ST0%R , ST1%R ,
-     &            1.D0 , NELEM2 )
-        CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDEPTH,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-        CALL VECTOR(ST2,'=','GRADF          X',IELM2,1.D0,SUC,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-        CALL VECTOR(ST3,'=','GRADF          X',IELM2,1.D0,SVC,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-        CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-!BD_INCKA modif //
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST2,2,MESH)
-          CALL PARCOM(ST3,2,MESH)
-          CALL PARCOM(ST4,2,MESH)
-        ENDIF
-!BD_INCKA fin modif //
-        CALL OV('X=Y/Z   ',SDZX%R,ST1%R,ST4%R,0.D0,NPOIN2)
-        CALL OV('X=Y/Z   ',SDUX%R,ST2%R,ST4%R,0.D0,NPOIN2)
-        CALL OV('X=Y/Z   ',SDVX%R,ST3%R,ST4%R,0.D0,NPOIN2)
-!
-        CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-        CALL VECTOR(ST2,'=','GRADF          Y',IELM2,1.D0,SUC,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-        CALL VECTOR(ST3,'=','GRADF          Y',IELM2,1.D0,SVC,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-        CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
-     &   ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
-!BD_INCKA modif //
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST2,2,MESH)
-          CALL PARCOM(ST3,2,MESH)
-          CALL PARCOM(ST4,2,MESH)
-        ENDIF
-!BD_INCKA fin modif //
-        CALL OV('X=Y/Z   ',SDZY%R,ST1%R,ST4%R,0.D0,NPOIN2)
-        CALL OV('X=Y/Z   ',SDUY%R,ST2%R,ST4%R,0.D0,NPOIN2)
-        CALL OV('X=Y/Z   ',SDVY%R,ST3%R,ST4%R,0.D0,NPOIN2)
-!Fin mise a jour des gradients de courant et de profondeur
-      ENDIF
-!Fin COUPLAGE : actualisation des courants et hauteur d eau
-!  (et de leurs gradients) tous les DT_TEL
-!
       IF (MAREE) THEN
        LT1=MAX((LT/LAM)*LAM,2)
        IF (LT.EQ.LT1) THEN
         DO IP=1,NPOIN2
           DEPTH(IP)=ZREPOS-ZF(IP)
         ENDDO
+       ENDIF
+      ENDIF
 !
 !......11.3 A JOUR DE LA BATHY ET DES COURANTS
 !      """"""""""""""""""""""""""""""""""""""""
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORMAR'
+!COUPLAGE TELEMAC-TOMAWAC : en cas de couplage, actualisation
+!         des courants et de l'hauteur d'eau (et de leurs gradients)
+!         tous les DT_TEL
+      IF((MAREE.AND.LT.EQ.LT1).OR.
+     &   (PART.EQ.1.AND.LT_WAC.EQ.1)) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORMAR'       
         CALL CORMAR
      &( AT    , LT    , TC1   , TC2   , TV1   , TV2   , TM1   , TM2   ,
-     &  NPC   , NPM   , NVHMA , NVCOU )
+     &  NPC   , NPM   , NVHMA , NVCOU , PART, U_TEL, V_TEL , H_TEL  )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORMAR'
         DO IP=1,NPOIN2
           IF (DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
         ENDDO
-!COUPLAGE TELEMAC-TOMAWAC : fermeture cycle IF(MAREE)
-       ENDIF
-      ENDIF
-!Fin COUPLAGE
 !
-!......11.4 PREPARATION DE LA PROPAGATION (REMONTEE DES CARACTERISTIQUES).
+!......11.3.1 PREPARATION DE LA PROPAGATION (REMONTEE DES CARACTERISTIQUES).
 !      """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-!COUPLAGE TELEMAC-TOMAWAC : reprise cycle IF(MAREE) et prise en compte
-!       eventuelle du couplage
-      IF((MAREE.AND.LT.EQ.LT1).OR.
-     &   (PART.EQ.1.AND.LT_WAC.EQ.1)) THEN
-!Fin COUPLAGE
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INIPHY'
         CALL INIPHY
      & ( SXK%R  , SCG%R , SB%R , SDEPTH%R , SFR%R  ,
@@ -709,16 +696,14 @@
      &   SVC%R    , SDUX%R    , SDUY%R   , SDVX%R  ,
      &   SDVY%R   , SXK%R     , SCG%R    , SCOSF%R ,
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
-!     *   NPLAN    , NF        , MESH%SURDET%R, COURAN,
+!     &   NPLAN    , NF        , MESH%SURDET%R, COURAN,
      &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
      &   SPHE     , PROINF    , PROMIN   , MESH)
 !Fin COUPLAGE
          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 2'
         ENDIF
-!COUPLAGE TELEMAC-TOMAWAC
-!       ENDIF
-!Fin COUPLAGE
       ENDIF
+!Fin cycle IF((MAREE.AND.LT.EQ.LT1).OR.(PART.EQ.1.AND.LT_WAC.EQ.1))
 !
 !.....11.3 PROPAGATION (INTERPOLATION AU PIED DES CARACTERISTIQUES).
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -743,26 +728,26 @@
       IF (TSOU) THEN
         CALL IMPR(LISPRD,LT,AT,NSITS,4)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SEMIMP'
-        CALL SEMIMP(SF%R,SXK%R,SFR%R,SDFR%R,SDEPTH%R,SUV%R,SVV%R ,
-     &  MESH%X%R      , MESH%Y%R      ,
-     &  WAC_FILES(WACVEB)%LU  , WAC_FILES(WACVEF)%LU  , NBOR  , NPTFR ,
-     &  DDC   , TV1   , TV2   , NPV   , SXRELV%R      , SYRELV%R      ,
-     &  SUV1%R, SVV1%R, SUV2%R, SVV2%R, STETA%R       , SSINTE%R      ,
-     &  SCOSTE%R      , INDIV , TAILF , RAISF , GRAVIT, CFROT1, CMOUT1,
-     &  CMOUT2, AT    , DTSI  , ROAIR , ROEAU , XKAPPA, BETAM , DECAL ,
-     &  CDRAG , ALPHA , ZVENT , NF    , NPLAN , NPOIN2, IANGNL, COEFNL,
-     &  F1    , NSITS , SMOUT , SFROT , SVENT , STRIF , VENT  , VENSTA,
-     &  VX_CTE, VY_CTE, SBREK , ALFABJ, GAMBJ1, GAMBJ2, IQBBJ , IHMBJ ,
-     &  IFRBJ , BORETG, GAMATG, IWHTG , IFRTG , ALFARO, GAMARO, GAM2RO,
-     &  IDISRO, IEXPRO, IFRRO , BETAIH, EM2SIH, IFRIH , COEFHS, XDTBRK,
-     &  NDTBRK, STRIA , ALFLTA, RFMLTA, KSPB  , BDISPB, BDSSPB, PROINF,
-     &  DF_LIM, LIMIT , CIMPLI,
-     &  WAC_FILES(WACVEB)%NAME, WAC_FILES(WACVEF)%NAME, BINVEN, NBD   ,
-     &  QINDI,STRA41%R,STRA42%R,STRA43%R,STRA44%R,STSTOT%R,
-     &  STSDER%R      , STOLD%R       , STNEW%R       , STRA31%R      ,
-     &  STRA32%R      , STRA33%R      , STRA34%R      , STRA35%R      ,
-     &  STRA36%R      , STRA37%R      , STRA38%R      , STRA39%R      ,
-     &  ST1%R , ST2%R , ST3%R , ST4%R , STRA01%R      , SBETA%R  )
+        CALL SEMIMP(SF%R, SXK%R, SFR%R, SDFR%R, SDEPTH%R, SUV%R, SVV%R ,
+     &  MESH%X%R, MESH%Y%R, WAC_FILES(WACVEB)%LU, WAC_FILES(WACVEF)%LU ,
+     &  NBOR, NPTFR, DDC,TV1,TV2,NPV, SXRELV%R, SYRELV%R, SUV1%R,SVV1%R,
+     &  SUV2%R,SVV2%R,STETA%R,SSINTE%R,SCOSTE%R,INDIV,TAILF,RAISF      ,
+     &  GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,CMOUT6,AT,DTSI,
+     &  ROAIR,ROEAU,XKAPPA,BETAM,DECAL,CDRAG,ALPHA,ZVENT,NF,NPLAN      ,
+     &  NPOIN2,IANGNL,COEFNL,F1,NSITS,SMOUT,SFROT,SVENT,LVENT,STRIF    ,
+     &  VENT,VENSTA,VX_CTE,VY_CTE,SBREK,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ     ,
+     &  IHMBJ,IFRBJ,BORETG,GAMATG,IWHTG,IFRTG,ALFARO,GAMARO,GAM2RO     ,
+     &  IDISRO,IEXPRO,IFRRO,BETAIH,EM2SIH,IFRIH,COEFHS,XDTBRK,NDTBRK   ,
+     &  STRIA,ALFLTA,RFMLTA,KSPB,BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT     , 
+     &  CIMPLI,COEFWD,COEFWE,COEFWF,COEFWH,WAC_FILES(WACVEB)%NAME      ,
+     &  WAC_FILES(WACVEF)%NAME,BINVEN,NBD,QINDI,STRA41%R,STRA42%R      ,
+     &  STRA43%R,STRA44%R,STSTOT%R,STSDER%R,STOLD%R,STNEW%R,STRA31%R   ,
+     &  STRA32%R,STRA33%R,STRA34%R,STRA35%R,STRA36%R,STRA37%R,STRA38%R ,
+     &  STRA39%R,ST1%R,ST2%R,ST3%R,ST4%R,STRA01%R,SBETA%R,NQ_TE1,NQ_OM2,
+     &  NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,F_POIN, T_POIN,
+     &  F_COEF,F_PROJ,TB_SCA,K_IF1,K_1P,K_1M,K_IF2,K_IF3,K_1P2P,K_1P2M,
+     &  K_1P3P,K_1P3M,K_1M2P,K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,
+     &  TB_V34, TB_TPM, TB_TMP ,TB_FAC, MDIA  , IANMDI, COEMDI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SEMIMP'
       ENDIF
 !

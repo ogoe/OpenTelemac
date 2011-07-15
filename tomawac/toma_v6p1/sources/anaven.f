@@ -6,7 +6,7 @@
      &  VY_CTE)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   08/06/2011
 !***********************************************************************
 !
 !brief    SPECIFIES AN ANALYTICAL WIND
@@ -36,14 +36,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        08/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS DU CALCUL
-!| DDC            |-->| DATE DE DEBUT DU CALCUL
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| UV,VV          |<--| COMPOSANTES DU CHAMP DE VENT INITIAL
-!| VX_CTE         |---|
-!| VY_CTE         |---|
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE 2D
+!| AT             |-->| COMPUTATION TIME
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| UV             |<--| WIND VELOCITY ALONG X AT THE MESH POINTS
+!| VV             |<--| WIND VELOCITY ALONG Y AT THE MESH POINTS
+!| VX_CTE         |-->| WIND ALONG X (CONSTANT VALUE IN STEERING FILE)
+!| VY_CTE         |-->| WIND ALONG Y (CONSTANT VALUE IN STEERING FILE)
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

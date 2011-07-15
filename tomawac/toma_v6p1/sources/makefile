@@ -101,23 +101,24 @@ SRCS= \
 declarations_tomawac.f interface_tomawac.f tomawac_mpi.f tomawac_mpi_tools.f\
 anacos.f anamar.f anaven.f angles.f bornes.f \
 condiw.f conw4d.f conwac.f corfon.f \
-cormar.f couuti.f cqueue.f \
+cormar.f couple.f couuti.f cqueue.f \
 delfra.f dump2d.f \
-ecrete.f ecrspe.f \
+ecrete.f ecrspe.f f1f1f1.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f fsprd1.f \
 fsprd2.f fsprd3.f \
-gammln.f \
+gammln.f gauleg.f\
 homere_tomawac.f \
 impr.f inip4d.f iniphy.f inipie.f  initab.f \
-iniven.f intang.f inter4d.f interp_tomawac.f \
+intang.f inter4d.f interp_tomawac.f \
 kerbou.f kmoyen.f \
 lecdoi.f lecdon.f lecdon_tomawac.f lecham.f leclim_tomawac.f lecsui.f \
 lecuti.f limwac.f  preleo_mpi.f \
 maruti.f nomvar_tomawac.f noudon.f noumar.f \
-pied4d.f pieds.f point_tomawac.f preleo.f prenl1.f \
-prepro.f preqt2.f propa.f \
-qbbj78.f qbrek1.f qbrek2.f qbrek3.f qbrek4.f qfrot1.f qgauss.f qmout1.f qnlin1.f \
-qtria1.f qtria2.f qwind1.f qwind2.f \
+pied4d.f pieds.f point_tomawac.f preleo.f \
+prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \
+qbbj78.f qbrek1.f qbrek2.f qbrek3.f qbrek4.f qfrot1.f qgauss.f \
+qmout1.f qmout2.f qnlin1.f qnlin2.f qnlin3.f \
+qtria1.f qtria2.f qwind1.f qwind2.f qwind3.f qwindl.f \
 radiat.f \
 semimp.f sor3d.f speini.f spejon.f spetma.f spread.f stress.f \
 tautot.f temp.f tetmoy.f totnrj.f transf.f \

@@ -10,7 +10,7 @@
      & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    BOUNDARY CONDITIONS.
@@ -35,54 +35,60 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| APHILL         |---|
-!| AT             |-->| TEMPS
-!| BINBI1         |-->| BINAIRE DU FICHIER BINAIRE UTILISATEUR
-!| DDC            |-->| DATE DU DEBUT DU CALCUL
-!| DEPTH          |---|
-!| DEUPI          |---|
-!| F              |-->| DENSITE SPECTRALE
-!| FBOR           |<->| DENSITE SPECTRALE AU BORD
-!| FETCHL         |---|
-!| FPICL          |---|
-!| FPMAXL         |---|
-!| FRA            |---|
-!| FRABL          |---|
-!| FREQ           |-->| FREQUENCES DISCRETISEES
-!| GAMMAL         |---|
-!| GRAVIT         |---|
-!| HM0L           |---|
-!| KENT           |-->| C.L. INDIQUANT UNE FRONTIERE MARITIME
-!| KSORT          |-->| C.L. INDIQUANT UNE FRONTIERE SOLIDE
-!| LIFBOR         |-->| TYPE DE CONDITION LIMITE SUR F
-!| LIMSPE         |---|
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| NBI1           |-->| NUMERO DU FICHIER BINAIRE UTILISATEUR
-!| NBOR           |-->| NUMEROTATION DES POINTS DE BORD 2D
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NFO1           |-->| NUMERO DU FICHIER FORMATE UTILISATEUR
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPRIV          |-->| DIMENSION DU TABLEAU PRIVE
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE 2D
-!| PRIVE          |-->| TABLEAU DE L'UTILISATEUR
-!| SIGMAL         |---|
-!| SIGMBL         |---|
-!| SPEC           |---|
-!| SPEULI         |---|
-!| SPRE1L         |---|
-!| SPRE2L         |---|
-!| TETA           |-->| DIRECTIONS DE PROPAGATION
-!| TETA1L         |---|
-!| TETA2L         |---|
-!| UV             |---|
-!| VENSTA         |---|
-!| VENT           |---|
-!| VV             |---|
-!| X              |-->| ABSCISSES DES POINTS 2D
-!| XLAMDL         |---|
-!| Y              |-->| ORDONNEES DES POINTS 2D
+!| APHILL         |-->| BOUNDARY PHILLIPS CONSTANT
+!| AT             |-->| COMPUTATION TIME
+!| BINBI1         |-->| BINARY FILE 1 BINARY
+!| BOUNDARY_COLOUR|-->| COLOUR OF BOUNDARY POINT (DEFAULT: ITS RANK)
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| DEPTH          |-->| WATER DEPTH
+!| DEUPI          |-->| 2.PI
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FBOR           |<->| SPECTRAL VARIANCE DENSITY AT THE BOUNDARIES
+!| FETCHL         |-->| BOUNDARY MEAN FETCH VALUE
+!| FPICL          |-->| BOUNDARY PEAK FREQUENCY
+!| FPMAXL         |-->| BOUNDARY MAXIMUM PEAK FREQUENCY
+!| FRA            |<--| DIRECTIONAL SPREADING FUNCTION VALUES
+!| FRABL          |-->| BOUNDARY ANGULAR DISTRIBUTION FUNCTION
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GAMMAL         |-->| BOUNDARY PEAK FACTOR
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| HM0L           |-->| BOUNDARY SIGNIFICANT WAVE HEIGHT
+!| KENT           |-->| B.C.: A SPECTRUM IS PRESCRIBED AT THE BOUNDARY
+!| KSORT          |-->| B.C.: FREE BOUNDARY: NO ENERGY ENTERING THE DOMAIN
+!| LIFBOR         |-->| TYPE OF BOUNDARY CONDITION ON F
+!| LIMSPE         |-->| TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
+!| NBI1           |-->| LOGICAL UNIT NUMBER OF THE USER BINARY FILE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NFO1           |-->| LOGICAL UNIT NUMBER OF THE USER FORMATTED FILE
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPRIV          |-->| NUMBER OF PRIVATE ARRAYS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| PRIVE          |-->| USER WORK TABLE
+!| SIGMAL         |-->| BOUNDARY SPECTRUM VALUE OF SIGMA-A
+!| SIGMBL         |-->| BOUNDARY SPECTRUM VALUE OF SIGMA-B
+!| SPEC           |<--| VARIANCE DENSITY FREQUENCY SPECTRUM
+!| SPEULI         |-->| INDICATES IF B.C. SPECTRUM IS MODIFIED BY USER
+!| SPRE1L         |-->| BOUNDARY DIRECTIONAL SPREAD 1
+!| SPRE2L         |-->| BOUNDARY DIRECTIONAL SPREAD 2
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TETA1L         |-->| BOUNDARY MAIN DIRECTION 1
+!| TETA2L         |-->| BOUNDARY MAIN DIRECTION 2
+!| UV, VV         |-->| WIND VELOCITIES AT THE MESH POINTS
+!| VENSTA         |-->| INDICATES IF THE WIND IS STATIONARY
+!| VENT           |-->| INDICATES IF WIND IS TAKEN INTO ACCOUNT
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XLAMDL         |-->| BOUNDARY WEIGHTING FACTOR FOR ANGULAR
+!|                |   | DISTRIBUTION FUNCTION
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TOMAWAC, EX_LIMWAC => LIMWAC
@@ -186,7 +192,7 @@
      &  TETA  , GRAVIT, FPMAXL , FETCHL, SIGMAL, SIGMBL, GAMMAL, FPICL,
      &  HM0L  , APHILL, TETA1L , SPRE1L, TETA2L, SPRE2L, XLAMDL,
      &  NPB   , NPLAN , NF     , LIMSPE, E2FMIN, PROF  , FRABL )
-	ENDIF
+        ENDIF
 !
 !     ===========================================================
 !     TO BE MODIFIED BY USER - RESU CAN BE CHANGED

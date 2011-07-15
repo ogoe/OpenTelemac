@@ -2,26 +2,28 @@
                      SUBROUTINE SEMIMP
 !                    *****************
 !
-     &( F     , XK    , FREQ  , DFREQ , DEPTH , VENTX , VENTY , X     ,
-     &  Y     , NVEB  , NVEF  , NBOR  , NPTFR , DDC   , TV1   , TV2   ,
-     &  NP    ,
-     &  XRELV , YRELV , U1    , V1    , U2    , V2    , TETA  , SINTET,
-     &  COSTET, INDIC , TAILF , RAISF , GRAVIT, CFROT1, CMOUT1, CMOUT2,
-     &  TPROP , DTSI  , ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG ,
-     &  ALPHA , ZVENT , NF    , NPLAN , NPOIN2, IANGNL, COEFNL, F1    ,
-     &  NSITS , SMOUT , SFROT , SVENT , STRIF , VENT  , VENSTA, VX_CTE,
-     &  VY_CTE, SBREK , ALFABJ,
-     &  GAMBJ1, GAMBJ2, IQBBJ , IHMBJ , IFRBJ , BORETG, GAMATG, IWHTG ,
-     &  IFRTG , ALFARO, GAMARO, GAM2RO, IDISRO, IEXPRO, IFRRO , BETAIH,
-     &  EM2SIH, IFRIH , COEFHS, XDTBRK, NDTBRK, STRIA , ALFLTA, RFMLTA,
-     &  KSPB  , BDISPB, BDSSPB, PROINF, DF_LIM, LIMIT , CIMPLI,
-     &  NOMVEB, NOMVEF, BINVEN, NBD   , QINDI , TAUWAV,
-     &  USOLD , TWOLD , Z0OLD , TSTOT , TSDER , TOLD  , TNEW  , VARIAN,
-     &  FMOY  , XKMOY , USNEW , Z0NEW , TWNEW , TAUX1 , TAUX2 , TAUX3 ,
-     &  TAUX4 , TAUX5 , TAUX6 , TAUX7 , TRA01 , BETA)
+     &( F     ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
+     &  NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,NP    ,XRELV ,
+     &  YRELV ,U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
+     &  TAILF ,RAISF ,GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,
+     &  CMOUT6,TPROP ,DTSI  ,ROAIR ,ROEAU ,XKAPPA,BETAM ,DECAL ,CDRAG ,
+     &  ALPHA ,ZVENT ,NF    ,NPLAN ,NPOIN2,IANGNL,COEFNL,F1    ,NSITS ,
+     &  SMOUT ,SFROT ,SVENT ,LVENT ,STRIF ,VENT  ,VENSTA,VX_CTE,VY_CTE,
+     &  SBREK ,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ ,IHMBJ ,IFRBJ ,BORETG,GAMATG, 
+     &  IWHTG ,IFRTG ,ALFARO,GAMARO,GAM2RO,IDISRO,IEXPRO,IFRRO ,BETAIH,
+     &  EM2SIH,IFRIH ,COEFHS,XDTBRK,NDTBRK,STRIA ,ALFLTA,RFMLTA,KSPB  ,
+     &  BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT ,CIMPLI,COEFWD,COEFWE,COEFWF,
+     &  COEFWH,NOMVEB,NOMVEF,BINVEN,NBD   ,QINDI ,TAUWAV,USOLD ,TWOLD ,
+     &  Z0OLD ,TSTOT ,TSDER ,TOLD  ,TNEW  ,VARIAN,FMOY  ,XKMOY ,USNEW ,
+     &  Z0NEW ,TWNEW ,TAUX1 ,TAUX2 ,TAUX3 ,TAUX4 ,TAUX5 ,TAUX6 ,TAUX7 ,
+     &  TRA01 ,BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
+     &  SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
+     &  K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
+     &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP, 
+     &  TB_FAC,MDIA  ,IANMDI,COEMDI) 
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   27/06/2011
 !***********************************************************************
 !
 !brief    SOLVES THE INTEGRATION STEP OF THE SOURCE TERMS USING
@@ -59,126 +61,200 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  E.G.RENOU (EDF), G.MATTAROLO (EDF)
+!+        12/05/2011
+!+        V6P1
+!+   MODIFIED: integration of new source terms, developed by
+!+   E.G. Renou.
+!+     - modification of the variables in argument list
+!+     - modification of the local variable declarations
+!+     - modification concerning friction velocity and roughness
+!+       length calculation
+!+     - calls to subroutines QWINDL, QWIND3, QMOUT2, QNLIN2,
+!+       QNLIN3
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        27/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALFABJ         |-->| MODELE DEFERLEMENT BJ : CONSTANTE ALPHA
-!| ALFARO         |-->| MODELE DEFERLEMENT RO : CONSTANTE ALPHA
-!| ALFLTA         |---|
-!| ALPHA          |-->| CONSTANTE DE LA LOI DE CHARNOCK
-!| BDISPB         |---|
-!| BDSSPB         |---|
-!| BETA           |---|
-!| BETAIH         |-->| MODELE DEFERLEMENT IH : CONSTANTE BETA
-!| BETAM          |-->| CONSTANTE BETAMAX DE LA FORMULE DU VENT
-!| BINVEN         |-->| BINAIRE DU FICHIER DE VENT EN ENTREE
-!| BORETG         |-->| MODELE DEFERLEMENT TG : CONSTANTE B
-!| CDRAG          |-->| COEFFICIENT DE TRAINEE
-!| CFROT1         |-->| CONSTANTE POUR LE TERME DE FROTTEMENT
-!| CIMPLI         |---|
-!| CMOUT1         |-->| CONSTANTE 1 POUR LE TERME DE MOUTONNEMENT
-!| CMOUT2         |-->| CONSTANTE 2 POUR LE TERME DE MOUTONNEMENT
-!| COEFHS         |-->| COEFFICIENT LIMITATEUR DE LA HAUTEUR HS
-!| COEFNL         |---|
-!| COSTET         |---|
-!| DDC            |-->| DATE DE DEBUT DU CALCUL
-!| DECAL          |-->| CONSTANTE DE DECALAGE DE CROISSANCE VENT
-!| DEPTH          |---|
-!| DFREQ          |---|
-!| DF_LIM         |---|
-!| DTSI           |-->| PAS DE TEMPS D'INTEGRATION (SECONDES)
-!| EM2SIH         |-->| MODELE DEFERLEMENT IH : CONSTANTE M2*
-!| F              |---|
-!| F1             |-->| PREMIERE FREQUENCE DE DISCRETISATION
-!| FMOY           |---|
-!| FREQ           |---|
-!| GAM2RO         |-->| MODELE DEFERLEMENT RO : CONSTANTE GAMMA2
-!| GAMARO         |-->| MODELE DEFERLEMENT RO : CONSTANTE GAMMA
-!| GAMATG         |-->| MODELE DEFERLEMENT TG : CONSTANTE GAMMA
-!| GAMBJ1         |-->| MODELE DEFERLEMENT BJ : CONSTANTE GAMMA1
-!| GAMBJ2         |-->| MODELE DEFERLEMENT BJ : CONSTANTE GAMMA2
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| IANGNL         |---|
-!| IDISRO         |-->| MODELE DEFERLEMENT RO : DISTRIBUTION HOULE
-!| IEXPRO         |-->| MODELE DEFERLEMENT RO : EXPOSANT N
-!| IFRBJ          |-->| MODELE DEFERLEMENT BJ : MODE CALCUL DE FREQ
-!| IFRIH          |-->| MODELE DEFERLEMENT IH : MODE CALCUL DE FREQ
-!| IFRRO          |-->| MODELE DEFERLEMENT RO : MODE CALCUL DE FREQ
-!| IFRTG          |-->| MODELE DEFERLEMENT TG : MODE CALCUL DE FREQ
-!| IHMBJ          |-->| MODELE DEFERLEMENT BJ : MODE CALCUL DE HM
-!| INDIC          |-->| TYPE DE FORMAT DE LECTURE
-!| IQBBJ          |-->| MODELE DEFERLEMENT BJ : MODE CALCUL DE QB
-!| IWHTG          |-->| MODELE DEFERLEMENT TG : MODE CALCUL DE W(H)
-!| KSPB           |---|
-!| LIMIT          |---|
-!| NBD            |---|
-!| NBOR           |---|
-!| NDTBRK         |-->| NOMBRE DE SOUS-PAS DE TEMPS DE DEFERLEMENT
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NOMVEB         |---|
-!| NOMVEF         |---|
-!| NP             |-->| NOMBRE DE POINTS DU CHAMP DE VENT
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
-!| NSITS          |-->| NOMBRE DE PAS DE TEMPS D'INTEGRATION
-!| NVEB           |---|
-!| NVEF           |---|
-!| PROINF         |-->| INDICATEUR DE PROFONDEUR INFINIE
-!| QINDI          |---|
-!| RAISF          |-->| RAISON FREQUENTIELLE POUR DISCRETISATION
-!| RFMLTA         |---|
-!| ROAIR          |-->| MASSE VOLUMIQUE DE L AIR
-!| ROEAU          |-->| MASSE VOLUMIQUE DE L EAU
-!| SBREK          |-->| INDICATEUR DE TYPE DE TERME DEFERLEMENT
-!| SFROT          |-->| INDICATEUR DE TYPE DE TERME FROTTEMENT
-!| SINTET         |---|
-!| SMOUT          |-->| INDICATEUR DE TYPE DE TERME MOUTONNEMENT
-!| STRIA          |---|
-!| STRIF          |-->| INDICATEUR DE TYPE DE TERME INTERACTIONS
-!| SVENT          |-->| INDICATEUR DE TYPE DE TERME INPUT PAR VENT
-!| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
-!| TAUWAV         |---|
-!| TAUX1          |---|
-!| TAUX2          |---|
-!| TAUX3          |---|
-!| TAUX4          |---|
-!| TAUX5          |---|
-!| TAUX6          |---|
-!| TAUX7          |---|
-!| TETA           |---|
-!| TNEW           |---|
-!| TOLD           |---|
-!| TPROP          |-->| DATE DE FIN DE L'ETAPE D'INTEGRATION
-!| TRA01          |---|
-!| TSDER          |---|
-!| TSTOT          |---|
-!| TV1            |<->| DATE DU CHAMP DE CHAMP 1
-!| TV2            |<->| DATE DU CHAMP DE CHAMP 2
-!| TWNEW          |---|
-!| TWOLD          |---|
-!| U1             |---|
-!| U2             |---|
-!| USNEW          |---|
-!| USOLD          |---|
-!| V1             |---|
-!| V2             |---|
-!| VARIAN         |---|
-!| VENSTA         |---|
-!| VENT           |-->| INDICATEUR DE PRISE EN COMPTE DE VENT
-!| VENTX          |---|
-!| VENTY          |---|
-!| VX_CTE         |---|
-!| VY_CTE         |---|
-!| X              |---|
-!| XDTBRK         |-->| PAS DE TEMPS POUR LE DEFERLEMENT
-!| XK             |---|
-!| XKAPPA         |-->| CONSTANTE DE VON KARMAN
-!| XKMOY          |---|
-!| XRELV          |---|
-!| Y              |---|
-!| YRELV          |---|
-!| Z0NEW          |---|
-!| Z0OLD          |---|
-!| ZVENT          |-->| COTE A LAQUELLE EST MESURE LE VENT (M)
+!| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
+!| ALFARO         |-->| CONSTANTE ALPHA OF RO WAVE BREAKING MODEL
+!| ALFLTA         |-->| COEFFICIENT ALPHA OF LTA TRIAD INTERACTION MODEL
+!| ALPHA          |-->| CHARNOCK CONSTANT
+!| BDISPB         |-->| LOWER DIRECTIONAL BOUND. OF SPB TRIAD MODEL
+!| BDSSPB         |-->| UPPER DIRECTIONAL BOUND. OF SPB TRIAD MODEL
+!| BETA           |<--| BREAKING WAVES COEFFICIENT
+!| BETAIH         |-->| BETA0 CONSTANT OF BREAKING WAVES IH MODEL
+!| BETAM          |-->| WIND GENERATION COEFFICIENT
+!| BINVEN         |-->| WIND FILE BINARY
+!| BORETG         |-->| COEFFICIENT B OF BREAKING WAVE TG MODEL
+!| CDRAG          |-->| WIND DRAG COEFFICIENT
+!| CFROT1         |-->| BOTTOM FRICTION COEFFICIENT
+!| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERM INTEG.
+!| CMOUT1         |-->| WHITE CAPPING DISSIPATION COEFFICIENT
+!| CMOUT2         |-->| WHITE CAPPING WEIGHTING COEFFICIENT
+!| CMOUT3         |-->| WESTHUYSEN WHITE CAPPING DISSIPATION COEFFICIENT
+!| CMOUT4         |-->| WESTHUYSEN SATURATION THRES. FOR THE DISSIPATION
+!| CMOUT5         |-->| WESTHUYSEN WHITE CAPPING DISSIPATION COEFFICIENT
+!| CMOUT6         |-->| WESTHUYSEN WHITE CAPPING WEIGHTING COEFFICIENT
+!| COEFHS         |-->| MAXIMUM VALUE OF THE RATIO HM0 ON D
+!| COEFNL         |-->| COEFFICIENTS USED FOR DIA METHOD
+!| COEFWD         |-->| COEFFICIENT D OF YAN WIND GENERATION MODEL
+!| COEFWE         |-->| COEFFICIENT E OF YAN WIND GENERATION MODEL
+!| COEFWF         |-->| COEFFICIENT F OF YAN WIND GENERATION MODEL
+!| COEFWH         |-->| COEFFICIENT H OF YAN WIND GENERATION MODEL
+!| COEMDI         |-->| COEFFICIENTS USED FOR DIA METHOD
+!| COSTET         |-->| COSINE OF TETA ANGLE
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| DECAL          |-->| SHIFT GROWING CURVE DUE TO WIND
+!| DEPTH          |-->| WATER DEPTH
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| DF_LIM         |<--| WORK TABLE
+!| DIMBUF         |-->| VARIABLE FOR SPECTRUM INTERPOLATION
+!| DTSI           |-->| INTEGRATION TIME STEP (SECONDS)
+!| EM2SIH         |-->| M2* CONSTANT OF BREAKING WAVES IH MODEL
+!| F              |<->| DIRECTIONAL SPECTRUM
+!| F1             |-->| MINIMAL DISCRETIZED FREQUENCY
+!| F_COEF         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
+!| F_POIN         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
+!| F_PROJ         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
+!| FMOY           |<--| MEAN FREQUENCIES F-10
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GAM2RO         |-->| GAMMA2 CONSTANT OF WAVE BREAKING RO MODEL
+!| GAMARO         |-->| GAMMA CONSTANT OF WAVE BREAKING RO MODEL
+!| GAMATG         |-->| GAMMA CONSTANT OF WAVE BREAKING TG MODEL
+!| GAMBJ1         |-->| GAMMA1 CONSTANT OF WAVE BREAKING  BJ MODEL
+!| GAMBJ2         |-->| GAMMA2 CONSTANT OF WAVE BREAKING BJ MODEL
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| IANGNL         |-->| ANGULAR INDICES TABLE
+!| IANMDI         |-->| ANGULAR INDICES TABLE FOR MDIA
+!| IDCONF         |-->| WORK TABLE
+!| IDISRO         |-->| WAVE HEIGHT DISTRIBUTION SLECTION FOR RO MODEL
+!| IEXPRO         |-->| EXPONENT OF WAVE HEIGHT DISTR. FOR RO MODEL
+!| IFRBJ          |-->| CHARACTERISTIC FREQUENCY BJ WAVE BREKING MODEL
+!| IFRIH          |-->| CHARACTERISTIC FREQUENCY IH WAVE BREKING MODEL
+!| IFRRO          |-->| CHARACTERISTIC FREQUENCY RO WAVE BREKING MODEL
+!| IFRTG          |-->| CHARACTERISTIC FREQUENCY TG WAVE BREKING MODEL
+!| IHMBJ          |-->| DEPTH-INDUCED BREAKING CRITERIUM GIVING THE
+!|                |   | BREAKING WAVE HEIGHT (BJ MODEL)
+!| INDIC          |-->| FILE FORMAT
+!| IQBBJ          |-->| SELECTED QB COMPUTATION METHOD FOR BJ MODEL
+!| IWHTG          |-->| WEIGHT. FUN.SELECTION OF WAVE BREAKING TG MODEL
+!| K_IF1          |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1P           |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1M           |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_IF2          |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_IF3          |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1P2P         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1P2M         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1P3P         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1P3M         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1M2P         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1M2M         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1M3P         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| K_1M3M         |-->| WORK TABLE FOR GQM QNL4 METHOD
+!| KSPB           |-->| COEFFICIENT K OF SPB TRIAD INTERACTION MODEL
+!| LIMIT          |-->| TYPE OF WAVE GROWTH LIMITER MODEL SELECTED
+!| LBUF           |-->| VARIABLE FOR SPECTRUM INTERPOLATION
+!| LVENT          |-->| LINEAR WAVE GROWTH MODEL SELECTION
+!| MDIA           |-->| NUMBER OF CONFIGURATIONS FOR MDIA METHOD
+!| NBD            |-->| NUMBER OF TRIAD CONFIGURATIONS
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NCONF          |-->| NUMBER OF RETAINED CONFIGURATIONS (GQM METHOD)
+!| NCONFM         |-->| MAXIMUM NUMBER OF CONFIGURATIONS (GQM METHOD)
+!| NDTBRK         |-->| NUMBER OF TIME STEPS FOR BREAKING SOURCE TERM
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NF1            |-->| NUMBER OF INTEGRATION POINT ON OMEGA1
+!| NF2            |-->| NUMBER OF INTEGRATION POINT ON OMEGA2
+!| NOMVEB         |-->| NAME OF BINARY WIND DATA FILE
+!| NOMVEF         |-->| NAME OF FORMATTED WIND DATA FILE
+!| NP             |<->| NUMBER OF POINTS READ FROM THE WIND FILE
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NQ_TE1         |-->| SETTING FOR INTEGRATION ON THETA1 (GQM)
+!| NQ_OM2         |-->| NUMBER OF INTEGRATION POINT ON OMEGA2
+!| NSITS          |-->| NUMBER OF ITERATIONS FOR THE SOURCE TERMS
+!| NT1            |-->| NUMBER OF INTEGRATION POINT ON TETA1
+!| NVEB           |-->| LOGICAL UNIT N. OF BINARY WIND DATA FILE
+!| NVEF           |-->| LOGICAL UNIT N. OF FORMATTED WIND DATA FILE
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| QINDI          |-->| CONFIGURATION INDEX
+!| RAISF          |-->| FREQUENTIAL RATIO
+!| RFMLTA         |-->| COEFFICIENT OF LTA TRIAD INTERACTION MODEL
+!| ROAIR          |-->| AIR DENSITY
+!| ROEAU          |-->| WATER DENSITY
+!| SBREK          |-->| DEPTH-INDUCED BREAKING DISSIPATION MODEL
+!| SEUIL          |-->| THRESHOLD0 FOR CONFIGURATIONS ELIMINATION (GQM)
+!| SFROT          |-->| SELECTION OF THE BOTTOM FRICTION DISSIPATION
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| SMOUT          |-->| SELECTIO OF WHITE CAPPING SOURCE TERM MODEL
+!| STRIA          |-->| SELECTION OF THE TRIAD INTERACTION MODEL
+!| STRIF          |-->| SELECTION OF QUADRUPLET INTERACTION MODEL
+!| SVENT          |-->| SELECTION OF THE WIND GENERATION MODEL
+!| T_POIN         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
+!| TAILF          |-->| SPECTRUM QUEUE FACTOR
+!| TAUWAV         |<->| STRESS DUE TO THE WAVES
+!| TAUX1          |<->| WORK TABLE
+!| TAUX2          |<->| WORK TABLE
+!| TAUX3          |<->| WORK TABLE
+!| TAUX4          |<->| WORK TABLE
+!| TAUX5          |<->| WORK TABLE
+!| TAUX6          |<->| WORK TABLE
+!| TAUX7          |<->| WORK TABLE
+!| TB_FAC         |-->| WORK TABLE (GQM)
+!| TB_SCA         |-->| SCALE COEFFICIENT
+!| TB_V14         |-->| WORK TABLE (GQM)
+!| TB_V24         |-->| WORK TABLE (GQM)
+!| TB_V34         |-->| WORK TABLE (GQM)
+!| TB_TMP         |-->| WORK TABLE (GQM)
+!| TB_TPM         |-->| WORK TABLE (GQM)
+!| TETA           |---| DISCRETIZED DIRECTIONS
+!| TNEW           |<->| WORK TABLE
+!| TOLD           |<->| WORK TABLE
+!| TPROP          |-->| COMPUTATION TIME
+!| TRA01          |<->| WORK TABLE
+!| TSDER          |<--| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<--| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| TV1            |<->| TIME T1 IN THE WIND FILE
+!| TV2            |<->| TIME T2 IN THE WIND FILE
+!| TWNEW          |<->| WIND DIRECTION AT TIME N+1
+!| TWOLD          |<->| WIND DIRECTION AT TIME N
+!| U1,V1          |<->| WIND SPEED AT TIME T1 IN THE WIND FILE
+!| U2,V2          |<->| WIND SPEED AT TIME T2 IN THE WIND FILE
+!| USNEW          |<->| FRICTION VELOCITY AT TIME N+1
+!| USOLD          |<->| FRICTION VELOCITY AT TIME N
+!| VARIAN         |-->| SPECTRUM VARIANCE
+!| VENSTA         |-->| INDICATES IF THE WIND IS STATIONARY
+!| VENT           |-->| INDICATES IF WIND IS TAKEN INTO ACC
+!| VENTX,VENTY    |<->| WIND DATA INTERPOLATED OVER 2D MESH
+!| VX_CTE         |---| WIND ALONG X (CONSTANT VALUE IN STEERING FILE)
+!| VY_CTE         |---| WIND ALONG Y (CONSTANT VALUE IN STEERING FILE)
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XDTBRK         |-->| COEFFICIENT OF TIME SUB-INCREMENTS FOR BREAKING
+!| XK             |-->| DISCRETIZED WAVE NUMBER
+!| XKAPPA         |-->| VON KARMAN CONSTANT
+!| XKMOY          |<--| AVERAGE WAVE NUMBER
+!| XRELV          |<->| TABLE OF THE ABSCISSES OF WIND FILE POINTS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YRELV          |<->| TABLE OF THE ORDINATES OF WIND FILE POINTS
+!| Z0NEW          |<->| SURFACE ROUGHNESS LENGTH AT TIME N+1
+!| Z0OLD          |<->| SURFACE ROUGHNESS LENGTH AT TIME N
+!| ZVENT          |-->| WIND MEASUREMENT LEVEL
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+!  APPELS :    - PROGRAMME(S) APPELANT  :  WAC                    
+!  ********    - PROGRAMME(S) APPELE(S) :  USTAR1, TOTNRJ, ANAVEN,
+!                                          FREMOY, KMOYEN, OV    ,
+!                                          QWIND1, STRESS, QNLIN1,
+!                                          QMOUT1, QFROT1, NOUDON,
+!                                          QWIND2, USTAR2, QBREK1,
+!                                          QBREK2, QBREK3, QBREK4,
+!                                          FPREAD, FREM01, FREM02,
+!                                          FPEPIC, QWINDL, QWIND3,
+!                                          QMOUT2, QNLIN2, QNLIN3 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -222,6 +298,38 @@
       CHARACTER*144 NOMVEB, NOMVEF
       CHARACTER*3 BINVEN
       LOGICAL  PROINF, VENT , VENSTA
+!GM V6P1 - NEW SOURCE TERMS
+!....Linear wind growth declaration
+      INTEGER           LVENT 
+!....Yan expression declarations
+      DOUBLE PRECISION  CMOUT3, CMOUT4, CMOUT5, CMOUT6
+!....Westhuysen expression decalaration
+      DOUBLE PRECISION  COEFWD, COEFWE, COEFWF, COEFWH
+!....MDIA method declarations
+      INTEGER           MDIA
+      INTEGER           IANMDI(NPLAN,16,MDIA)
+      DOUBLE PRECISION  COEMDI(32,MDIA)
+!....GQM method declarations
+      INTEGER  NQ_TE1, NQ_OM2, NF1, NF2 , NT1
+      INTEGER  NCONF , NCONFM
+      DOUBLE PRECISION SEUIL
+      INTEGER  LBUF  , DIMBUF
+      INTEGER           F_POIN(DIMBUF), T_POIN(DIMBUF)
+      DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
+      INTEGER K_IF1 (1:NF1) 
+      INTEGER K_1P  (1:NT1,1:NF1), K_1M(1:NT1,1:NF1)
+      INTEGER K_IF2 (1:NF2,1:NT1,1:NF1), K_IF3 (1:NF2,1:NT1,1:NF1),
+     &        K_1P2P(1:NF2,1:NT1,1:NF1), K_1P2M(1:NF2,1:NT1,1:NF1),
+     &        K_1P3P(1:NF2,1:NT1,1:NF1), K_1P3M(1:NF2,1:NT1,1:NF1),
+     &        K_1M2P(1:NF2,1:NT1,1:NF1), K_1M2M(1:NF2,1:NT1,1:NF1),
+     &        K_1M3P(1:NF2,1:NT1,1:NF1), K_1M3M(1:NF2,1:NT1,1:NF1)
+      INTEGER IDCONF(1:NCONFM,1:3)
+      DOUBLE PRECISION TB_V14(1:NF1)
+      DOUBLE PRECISION 
+     &        TB_V24(1:NF2,1:NT1,1:NF1), TB_V34(1:NF2,1:NT1,1:NF1),
+     &        TB_TPM(1:NF2,1:NT1,1:NF1), TB_TMP(1:NF2,1:NT1,1:NF1),
+     &        TB_FAC(1:NF2,1:NT1,1:NF1) 
+!GM Fin
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
@@ -232,13 +340,16 @@
      &                 VITMIN, HM0   , HM0MAX, DTN   , SUM   , AUXI  ,
      &                 USMIN
       CHARACTER*7      CHDON
-!
+!GM V6P1 - NEW SOURCE TERMS
+!    MDIA method local declarations
+      INTEGER           K      
+      DOUBLE PRECISION  XCCMDI(MDIA) 
+!GM Fin
 !
       NPOIN3=NPOIN2*NPLAN
       NPOIN4=NPOIN3*NF
       DEUPI=2.D0*3.141592654D0
       VITMIN=1.D-3
-!
 !
 !     -----------------------------------------------------------------
 !     CHOPS THE SPECTRUM IN ACCORDANCE WITH THE BATHYMETRY
@@ -282,7 +393,9 @@
         DO IP=1,NPOIN2
           TWNEW(IP)=TWOLD(IP)
         ENDDO
-        IF (SVENT.EQ.2) THEN
+!
+        IF ((SVENT.GE.2).OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
+     &                                (SMOUT.EQ.2.AND.SVENT.NE.1)) THEN
           DO IP=1,NPOIN2
             USNEW(IP)=USOLD(IP)
             Z0NEW(IP)=Z0OLD(IP)
@@ -343,10 +456,12 @@
 !
 !         2.3 COMPUTES THE FRICTION VELOCITIES AND ROUGHNESS LENGTHS
 !         ------------------------------------------------------------
-          IF (SVENT.EQ.2) CALL USTAR2
-     &( USNEW , VENTX , VENTY , NPOIN2)
-!
+!GM V6P1 - NEW SOURCE TERMS
+          IF ((SVENT.GE.2).OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
+     &                                    (SMOUT.EQ.2.AND.SVENT.NE.1))
+     &                    CALL USTAR2( USNEW , VENTX , VENTY , NPOIN2)
         ENDIF
+!GM Fin
 !
         IF (VENT) THEN
           IF (SVENT.EQ.1) CALL USTAR1
@@ -404,12 +519,31 @@
      &( TAUWAV, TSTOT , F     , USNEW , TWNEW , Z0NEW , FREQ  , DFREQ ,
      &  TETA  , SINTET, COSTET, ROAIR , ROEAU , XKAPPA, BETAM , DECAL ,
      &  GRAVIT, NPOIN2, NPLAN , NF    , TAUX1 , TAUX2 , TAUX3 )
-          ELSE
+          ELSEIF (SVENT.EQ.2) THEN
             CALL QWIND2
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
      &  TWNEW , TETA  , ROAIR , ROEAU , GRAVIT, NF    , NPLAN , NPOIN2,
      &  CIMPLI, TAUX1 , TAUX2 , TAUX3 , TAUX4 , TAUX5 )
+!GM V6P1 - NEW SOURCE TERMS
+          ELSEIF (SVENT.EQ.3) THEN
+            CALL QWIND3
+     &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
+     &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD, 
+     &  COEFWE, COEFWF, COEFWH, TAUX1 , TAUX2 , TAUX3 , TAUX4 )
+!GM Fin
           ENDIF
+!          
+!       ADDS THE LINEAR WIND GROWTH SOURCE TERME
+!       """""""""""""""""""""""""""""""""""""""
+!GM V6P1 - NEW SOURCE TERMS
+          IF (LVENT.EQ.1) THEN
+            CALL QWINDL
+     &( TSTOT , FREQ  , USOLD , USNEW , TWOLD , TWNEW , TETA  , GRAVIT,
+     &  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX3 , TAUX4 , 
+     &  TAUX5 , TAUX6 )
+          ENDIF   
+!GM Fin
+!
         ELSE
           DO IP=1,NPOIN2
             USNEW(IP)=0.D0
@@ -418,18 +552,57 @@
 !
 !       4.3 NON-LINEAR INTERACTIONS BETWEEN QUADRUPLETS
 !       --------------------------------------------------------------
-        IF (STRIF.EQ.1) CALL QNLIN1
+        IF (STRIF.EQ.1) THEN
+          CALL QNLIN1
      &( TSTOT , TSDER , IANGNL, COEFNL, NF    , NPLAN , F1    , RAISF ,
      &  TAILF , PROINF, NPOIN2, F     , DEPTH , XKMOY , TAUX1 , TAUX2 ,
      &  TAUX3 , TAUX4 , TAUX5 , TAUX6 )
+!GM V6P1 - NEW SOURCE TERMS
+        ELSEIF (STRIF.EQ.2) THEN
+!.....sets XCCMDI values for MDIA method
+          XCCMDI(1)=8.360D7
+          XCCMDI(2)=7.280D7
+          XCCMDI(3)=3.340D7
+          XCCMDI(4)=2.570D6
+          DO K=1,MDIA
+            XCCMDI(K)=XCCMDI(K)/DBLE(MDIA)
+          ENDDO
+!....calls MDIA method        
+          DO K=1,MDIA
+            CALL QNLIN2
+     &( TSTOT , TSDER , IANMDI(1,1,K) , COEMDI(1,K) , NF    , NPLAN,
+     &  F1    , RAISF , TAILF , PROINF, NPOIN2, F   , DEPTH , XKMOY ,
+     &  TAUX1 , TAUX2 , XCCMDI(K))
+          ENDDO
+!....calls GQM method
+        ELSEIF (STRIF.EQ.3) THEN
+          CALL QNLIN3
+     &( TSTOT , TSDER , F     , NPOIN2, FREQ  , TETA  , NPLAN , NF    ,
+     &  RAISF , TAILF , SEUIL , TAUX1 , LBUF  , DIMBUF, F_POIN, F_COEF,
+     &  F_PROJ, T_POIN, TB_SCA, NQ_TE1, NQ_OM2, NF1   , NT1   , DFREQ ,
+     &  K_IF1 , K_IF2 , K_IF3 , TB_V14, TB_V24, TB_V34, K_1P  , K_1M  ,
+     &  K_1P2P, K_1P3M, K_1P2M, K_1P3P, K_1M2P, K_1M3M, K_1M2M, K_1M3P,
+     &  TB_TPM, TB_TMP, TB_FAC, NCONF , NCONFM, IDCONF)
+!GM Fin
+        ENDIF
 !
 !
 !       4.4 WHITE-CAPPING DISSIPATION
 !       -------------------------------------------------
-        IF (SMOUT.EQ.1) CALL QMOUT1
+        IF (SMOUT.EQ.1) THEN
+          CALL QMOUT1
      &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY ,
      &  PROINF, CMOUT1, CMOUT2, GRAVIT, NF    , NPLAN , NPOIN2, TAUX1 ,
      &  TAUX2 )
+!GM V6P1 - NEW SOURCE TERMS
+        ELSEIF (SMOUT.EQ.2) THEN
+          CALL QMOUT2
+     &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY , 
+     &  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
+     &  GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX3 ,
+     &  TAUX4 , TAUX5 , TAUX6 )        
+!GM Fin
+        ENDIF
 !
 !       4.5 BOTTOM FRICTION DISSIPATION
 !       -------------------------------------------

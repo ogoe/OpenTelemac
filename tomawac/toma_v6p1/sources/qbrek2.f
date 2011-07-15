@@ -6,7 +6,7 @@
      &  IWHTG , NF    , NPLAN , NPOIN2, BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE DEPTH-INDUCED
@@ -35,20 +35,25 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---|
-!| BORETG         |-->| MODELE DEFERLEMENT TG : CONSTANTE B
-!| DEPTH          |---|
-!| F              |---|
-!| FCAR           |---|
-!| GAMATG         |-->| MODELE DEFERLEMENT TG : CONSTANTE GAMMA
-!| IWHTG          |-->| MODELE DEFERLEMENT TG : MODE CALCUL DE W(H)
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TSDER          |---|
-!| TSTOT          |---|
-!| VARIAN         |---|
+!| BETA           |<--| BREAKING WAVES COEFFICIENT
+!| BORETG         |-->| COEFFICIENT B OF WAVE BREAKING TG MODEL
+!| DEPTH          |-->| WATER DEPTH
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FCAR           |-->| CHARACTERISTIC FREQUENCY
+!| GAMATG         |-->| GAMMA CONSTANT OF WAVE BREAKING TG MODEL
+!| IWHTG          |-->| WEIGHT. FUN.SELECTION OF WAVE BREAKING TG MODEL
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

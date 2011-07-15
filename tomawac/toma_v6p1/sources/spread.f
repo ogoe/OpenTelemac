@@ -6,7 +6,7 @@
      &  NPOIN2, TAILF , COSMOY, SINMOY, VARIAN, TAUXC , TAUXS , TAUXE )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE MEAN DIRECTIONAL SPREAD (=DIRECTIONAL
@@ -34,23 +34,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COSMOY         |---|
-!| COSTET         |---|
-!| DFREQ          |---|
-!| DIRSPR         |---|
-!| F              |---|
-!| FREQ           |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!| SINMOY         |---|
-!| SINTET         |---|
-!| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
-!| TAUXC          |---|
-!| TAUXE          |---|
-!| TAUXS          |---|
-!| VARIAN         |---|
+!| COSMOY         |<--| WORK TABLE
+!| COSTET         |<--| WORK TABLE
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| DIRSPR         |<--| MEAN DIRECTIONAL SPREAD
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| SINMOY         |<--| WORK TABLE
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| TAILF          |-->| SPECTRUM QUEUE FACTOR
+!| TAUXC          |<--| WORK TABLE
+!| TAUXE          |<--| WORK TABLE
+!| TAUXS          |<--| WORK TABLE
+!| VARIAN         |<--| WORK TABLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

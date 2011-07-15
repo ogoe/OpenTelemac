@@ -7,7 +7,7 @@
      &  BINSCO, DEBRES, TITCAS, DATE  , TIME ,ISLEO ,KNOLG)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   15/06/2011
 !***********************************************************************
 !
 !brief    WRITES OUT THE DIRECTIONAL VARIANCE SPECTRUM
@@ -46,29 +46,34 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| DATE COURANTE DU CALCUL
-!| AUXIL          |---|
-!| B              |---|
-!| BINSCO         |-->| BINAIRE DU FICHIER DE SORTIE DES SPECTRES
-!| DATE           |---|
-!| DEBRES         |-->| INDICATEUR DE PREMIERE DATE A SAUVER
-!| F              |---|
-!| FREQ           |---|
-!| INUTIL         |---|
-!| ISLEO          |---|
-!| KNOLG          |---|
-!| LT             |-->| NUMERO D IMRPESSION
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NK             |---|
-!| NLEO           |-->| NOMBRE DE POINTS DE SORTIE
-!| NOLEO          |---|
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!| NSCO           |-->| NUM. DU FICHIER DE SORTIE DES SPECTRES
-!| TETA           |---|
-!| TIME           |---|
-!| TITCAS         |-->| TITRE DU CAS DE CALCUL
+!| AT             |-->| COMPUTATION TIME
+!| AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
+!| B              |-->| JACOBIAN TO TRANSFORM N(KX,KY) INTO F(FR,TETA)
+!| BINSCO         |-->| SPECTRUM FILE FORMAT
+!| DATE           |-->| START DATE
+!| DEBRES         |-->| LOGICAL INDICATING THE FIRST TIME STEP TO PRINT
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| INUTIL         |<->| WORK TABLE
+!| ISLEO          |-->| ARRAY OF LOGICAL
+!| KNOLG          |-->| ARRAY LINKING LOCAL TO GLOBAL INDEXES IN PARALL
+!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NK             |-->| DUMMY VARIABLE
+!| NLEO           |-->| NUMBER OF SPECTRUM PRINTOUT POINTS
+!| NOLEO          |-->| INDEX ARRAY OF SPECTRUM PRINTOUT POINTS
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NSCO           |-->| LOGICAL UNIT NUMBER OF THE PUNCTUAL RESULTS FILE
+!| TETA           |-->| DISRETIZED DIRECTION
+!| TIME           |-->| START TIME
+!| TITCAS         |-->| TITLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

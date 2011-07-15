@@ -3434,8 +3434,9 @@
                     ENDIF
                  ELSE
                     A1 = (TP-TETA(IET+ISOT-1)) / DW(IPLOT)
+!CD CORRECTION V6P1
                     IF ((X(I2)-X(I1))*(YP-A1*DY(IPLOT)-Y(I1)).GT.
-     &                   (Y(I2)-Y(I1))*(XP-A1*DX(IPLOT)-X(I1))) IFA=ISOT+3
+     &                 (Y(I2)-Y(I1))*(XP-A1*DX(IPLOT)-X(I1))) IFA=ISOT+3
                  ENDIF
               ENDIF
 !

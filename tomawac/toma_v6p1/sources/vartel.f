@@ -5,7 +5,7 @@
      &( VAR, X, Y, DEPTH, UC, VC, ZREPOS, TRA01, F, NPLAN, NF, NPOIN2)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   29/06/2011
 !***********************************************************************
 !
 !brief    ALLOWS THE USE OF A VARIABLE READ FROM A TELEMAC FILE.
@@ -27,17 +27,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        29/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEPTH          |<->| HAUTEUR D'EAU
-!| F              |<->| SPECTRE DE VARIANCE
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| TRA01          |<->| TABLEAU DE TRAVAIL
-!| UC,VC          |<->| CHAMPS DE COURANT
-!| VAR            |-->| VARIABLE RECUPEREE DANS LE FICHIER TELEMAC
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE 2D
-!| ZREPOS         |<->| COTE INITIALE DU PLAN D'EAU AU REPOS
+!| DEPTH          |<->| WATER DEPTH
+!| F              |<->| DIRECTIONAL SPECTRUM
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TRA01          |<->| WORK TABLE
+!| UC             |-->| CURRENT VELOCITY ALONG X AT THE MESH POINTS
+!| VC             |-->| CURRENT VELOCITY ALONG Y AT THE MESH POINTS
+!| VAR            |-->| VARIABLE VALUES READ FROM TELEMAC FILE
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| ZREPOS         |<->| INITIAL STILL WATER LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

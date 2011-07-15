@@ -6,7 +6,7 @@
      &  NPOIN2, ROEAU , GRAVIT)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   29/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE VARIANCE OF THE DIRECTIONAL SPECTRUM FOR
@@ -35,17 +35,27 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        29/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        29/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CG             |---|
-!| DFREQ          |---|
-!| F              |---|
-!| FREQ           |---|
-!| GRAVIT         |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!| POWER          |---|
-!| ROEAU          |---|
+!| CG             |-->| DISCRETIZED GROUP VELOCITY
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| POWER          |<--| WAVE POWER PER METER ALONG WAVE CREST
+!| ROEAU          |-->| WATER DENSITY
 !| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

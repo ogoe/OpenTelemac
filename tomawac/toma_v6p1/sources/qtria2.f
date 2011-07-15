@@ -7,7 +7,7 @@
      &  NBD   , INDI  , TSTOT , TSDER )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   27/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE NON-LINEAR
@@ -31,27 +31,32 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        27/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BDISPB         |---|
-!| BDSSPB         |---|
-!| COSTET         |---|
-!| DEPTH          |---|
-!| DFREQ          |---|
-!| F              |---|
-!| FREQ           |---|
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| INDI           |---|
-!| KSPB           |---|
-!| NBD            |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
+!| BDISPB         |-->| LOWER DIRECTIONAL BOUND. OF SPB TRIAD MODEL
+!| BDSSPB         |-->| UPPER DIRECTIONAL BOUND. OF SPB TRIAD MODEL
+!| COSTET         |-->| CPSINE OF TETA ANGLE
+!| DEPTH          |-->| WATER DEPTH
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| INDI           |-->| WORK TABLE
+!| KSPB           |-->| COEFFICIENT K OF SPB TRIAD INTERACTION MODEL
+!| NBD            |-->| NUMBER OF TRIAD CONFIGURATIONS
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| RAISF          |-->| RAISON FREQUENTIELLE POUR DISCRETISATION
-!| SINTET         |---|
-!| TETA           |---|
-!| TSDER          |---|
-!| TSTOT          |---|
-!| XK             |---|
+!| SINTET         |-->| SINE OF TETA ANGLE
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

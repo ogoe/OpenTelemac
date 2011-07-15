@@ -6,7 +6,7 @@
      & NP,XRELV,YRELV,ZR,Z1,Z2,NPMAX)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    READS THE TIDES IN A USER-DEFINED FILE FORMAT.
@@ -46,24 +46,29 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| BINMAR         |-->| BINAIRE DU FICHIER DES MAREES
-!| DDC            |-->| DATE DE DEBUT DU CALCUL
-!| NBOR           |-->| NUMERO GLOBAUX DES POINTS DE BORD
-!| NMAR           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DES MAREES
-!| NP             |-->| NOMBRE DE POINTS RELEVES
-!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD
-!| TV1            |-->| DATE CORRESPONDANT A LA MAREE Z1
-!| TV2            |-->| DATE CORRESPONDANT A LA MAREE Z2
+!| AT             |-->| COMPUTATION TIME
+!| BINMAR         |-->| TIDAL WATER LEVEL FILE BINARY
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NMAR           |-->| LOGICAL UNIT NUMBER OF TIDAL WATER LEVEL FILE 
+!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
+!| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| TV1            |-->| TIME T1 IN THE TIDAL WATER LEVEL FILE
+!| TV2            |-->| TIME T2 IN THE TIDAL WATER LEVEL FILE
 !| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-!| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
-!| Z1             |<->| TABLEAU DES MAREES RELEVEES AU TEMPS 1
-!| Z2             |<->| TABLEAU DES MAREES RELEVEES AU TEMPS 2
-!| ZR             |<->| TABLEAU DES MAREES RELEVEES
+!| XRELV          |<->| ABSCISSES OF TIDAL WATER LEVEL FILE POINTS
+!| YRELV          |<->| ORDINATES OF TIDAL WATER LEVEL FILE POINTS
+!| Z1             |<->| TIDAL LEVEL AT TV1 IN TIDAL WATER LEVEL FILE
+!| Z2             |<->| TIDAL LEVEL AT TV2 IN TIDAL WATER LEVEL FILE
+!| ZR             |<->| TABLE OF VALUES READ IN TIDAL WATER LEVEL FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC ,ONLY : MESH

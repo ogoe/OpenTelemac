@@ -5,7 +5,7 @@
      &( CK2   , FREQ  , DEPTH )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   29/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE WAVE NUMBER.
@@ -37,10 +37,15 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        29/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CK2            |<--| NOMBRE D'ONDE
-!| DEPTH          |-->| PROFONDEUR
-!| FREQ           |-->| FREQUENCE
+!| CK2            |<--| WAVE NUMBER
+!| DEPTH          |-->| WATER DEPTH
+!| FREQ           |-->| DISCRETIZED FREQUENCY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

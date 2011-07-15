@@ -5,7 +5,7 @@
      &( B     , N     , A     , XM    )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE INTEGRAL (0 TO INFINITY) OF THE FUNCTION
@@ -28,11 +28,16 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| PARAMETRE A DE LA FONCTION A INTEGRER
-!| B              |-->| PARAMETRE B DE LA FONCTION A INTEGRER
-!| N              |-->| EXPOSANT N  DE LA FONCTION A INTEGRER
-!| XM             |-->| PARAMETRE M DE LA FONCTION A INTEGRER
+!| A              |-->| PARAMETER A OF THE FUNCTION TO BE INTEGRATED
+!| B              |-->| PARAMETER B OF THE FUNCTION TO BE INTEGRATED
+!| N              |-->| EXPONENT N OF THE FUNCTION TO BE INTEGRATED
+!| XM             |-->| PARAMETER M OF THE FUNCTION TO BE INTEGRATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

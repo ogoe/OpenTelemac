@@ -8,7 +8,7 @@
      &  CPHAS , USN   , USO   , OMNEW , OMOLD , BETAN , BETAO )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   27/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE WAVE GENERATION
@@ -38,38 +38,43 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        27/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETAM          |-->| PARAMETRE D'APPORT DU AU VENT
-!| BETAN          |---|
-!| BETAO          |---|
-!| CIMPLI         |---|
-!| CPHAS          |---|
-!| DECAL          |-->| CONSTANTE DE DECALAGE DE COURBE CROISSANCE
-!| F              |---|
-!| FREQ           |---|
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| OMNEW          |---|
-!| OMOLD          |---|
-!| ROAIR          |-->| DENSITE DE L'AIR
-!| ROEAU          |-->| DENSITE DE L'EAU
-!| TETA           |---|
-!| TNEW           |---|
-!| TOLD           |---|
-!| TSDER          |---|
-!| TSTOT          |---|
-!| TWNEW          |---|
-!| TWOLD          |---|
-!| USN            |---|
-!| USNEW          |---|
-!| USO            |---|
-!| USOLD          |---|
-!| XK             |---|
-!| XKAPPA         |-->| CONSTANTE DE VON KARMAN
-!| Z0NEW          |---|
-!| Z0OLD          |---|
+!| BETAM          |-->| WIND GENERATION COEFFICIENT
+!| BETAN          |<--| WORK TABLE
+!| BETAO          |<--| WORK TABLE
+!| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERMS
+!| CPHAS          |<--| WORK TABLE
+!| DECAL          |-->| SHIFT GROWING CURVE DUE TO WIND
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| OMNEW          |<--| WORK TABLE
+!| OMOLD          |<--| WORK TABLE
+!| ROAIR          |-->| AIR DENSITY
+!| ROEAU          |-->| WATER DENSITY
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TNEW           |<--| WORK TABLE
+!| TOLD           |<--| WORK TABLE
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| TWNEW          |-->| WIND DIRECTION AT TIME N+1
+!| TWOLD          |-->| WIND DIRECTION AT TIME N
+!| USN            |<--| WORK TABLE
+!| USNEW          |-->| FRICTION VELOCITY AT TIME N+1
+!| USO            |<--| WORK TABLE
+!| USOLD          |-->| FRICTION VELOCITY AT TIME N
+!| XK             |-->| DISCRETIZED WAVE NUMBER
+!| XKAPPA         |-->| VON KARMAN CONSTANT
+!| Z0NEW          |-->| SURFACE ROUGHNESS LENGTH AT TIME N+1
+!| Z0OLD          |-->| SURFACE ROUGHNESS LENGTH AT TIME N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

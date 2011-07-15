@@ -7,7 +7,7 @@
      &  TRA, U1  , V1 , U2 , V2   , INDIC, NPMAX , CHDON, NVAR )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    THIS SUBROUTINE PROJECTS THE CURRENTS / WINDS ON THE
@@ -32,28 +32,40 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        05/2011
+!+        V6P1
+!+   Bug correction in the reading of the TELEMAC format file
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES
-!| CHDON          |---|
-!| DDC            |-->| DATE DU DEBUT DU CALCUL
-!| INDIC          |-->| TYPE DE FORMAT DE LECTURE
-!| NBOR           |-->| NUMEROTATION DES POINTS FRONTIERE
-!| NDON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DE DONNEES
-!| NP             |<->| NOMBRE DE POINTS RELEVES
-!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE  POINTS FRONTIERE
-!| NVAR           |---|
-!| TRA            |---|
-!| TV1            |<->| TEMPS DU CHAMPS DE DONNEES 1
-!| TV2            |<->| TEMPS DU CHAMPS DE DONNEES 2
-!| U1,V1,U2,V2    |<->| DONNEES AUX NOEUDS DU MAILLAGE A TV1 ET TV2
-!| UD,VD          |<--| DONNEE AUX NOEUDS DU MAILLAGE
-!| UR,VR          |<->| TABLEAU DES DONNEES RELEVEES
-!| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-!| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
+!| AT             |-->| COMPUTATION TIME
+!| BINDON         |-->| DATA FILE BINARY
+!| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| INDIC          |-->| FILE FORMAT
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
+!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NVAR           |<--| NUMBER OF VARIABLES READ
+!| TRA            |-->| WORK TABLE
+!| TV1            |<->| DATA TIME T1
+!| TV2            |<->| DATA TIME T2
+!| U1,V1          |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE
+!| U2,V2          |<->| DATA VALUES AT TIME TV2 IN THE DATA FILE
+!| UD,VD          |<--| DATA VALUES INTERPOLATED OVEER THE MESH NODES
+!| UR,VR          |<->| TABLE OF THE VALUES READ IN THE DATA FILE
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
+!| X              |-->| ORDINATES OF POINTS IN THE MESH
+!| YRELV          |<->| TABLE OF THE ORDINATES OF DATA FILE POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -223,6 +235,9 @@
 !      FORMAT AND GEOMETRY
 !
        CALL LIT(X,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
+       IF (IB(10).EQ.1) THEN
+          CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
+       ENDIF
        CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
        NP=IB(2)
        WRITE(LU,*) '--------------------------------------------'

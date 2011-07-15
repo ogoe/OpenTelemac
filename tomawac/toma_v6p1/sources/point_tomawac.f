@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   16/05/2011
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY.
@@ -26,6 +26,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        16/05/2011
+!+        V6P1
+!+   Memory allocation for new variables defined by
+!+       E. GAGNAIRE-RENOU for solving non linear source terms models
+!+       (MDIA and GQM methods)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -141,7 +147,9 @@
       CALL BIEF_ALLVEC(1,SFBOR,'SFBOR ',IELBT, NPLAN*NF , 2 ,MESH)
 !
 !     ARRAYS FOR NON-LINEAR INTERACTIONS
-      IF (STRIF.NE.0) THEN
+!GM V6P1 - NEW SOURCE TERMS
+      IF (STRIF.EQ.1) THEN
+!GM Fin
         CALL BIEF_ALLVEC(1,SCOEF,'SCOEF ',16   , 1 , 0 ,MESH)
       ELSE
         CALL BIEF_ALLVEC(1,SCOEF ,'SCOEF ', 1, 1, 0 ,MESH)
@@ -699,13 +707,79 @@
         ITR01 => SITR01%I
 !
 !.......NON-LINEAR INTERACTIONS
-!
-        IF (STRIF.NE.0) THEN
+!GM V6P1 - NEW SOURCE TERMS
+        IF (STRIF.EQ.1) THEN
+!GM Fin
           CALL BIEF_ALLVEC(2,SIAGNL,'SIAGNL',8*NPLAN,1,0,MESH)
         ELSE
           CALL BIEF_ALLVEC(2,SIAGNL,'SIAGNL',1,1,0,MESH)
         ENDIF
         IANGNL => SIAGNL%I
+!GM V6P1 - NEW SOURCE TERMS
+!............MDIA method
+        IF (STRIF.EQ.2) THEN
+          ALLOCATE(XLAMDI(1:MDIA))
+          ALLOCATE(XMUMDI(1:MDIA))
+          ALLOCATE(IANMDI(1:NPLAN,1:16,1:MDIA))
+          ALLOCATE(COEMDI(1:32,1:MDIA))
+        ELSE
+          ALLOCATE(XLAMDI(1))
+          ALLOCATE(XMUMDI(1))
+          ALLOCATE(IANMDI(1,1,1))
+          ALLOCATE(COEMDI(1,1))
+        ENDIF
+!............GQM method
+        IF (STRIF.EQ.3) THEN
+          IF (IQ_OM1.EQ.1) THEN
+            NF1=14
+          ELSEIF (IQ_OM1.EQ.2) THEN
+            NF1=26
+          ELSEIF (IQ_OM1.EQ.3) THEN
+            NF1=11
+          ELSEIF (IQ_OM1.EQ.4) THEN
+            NF1=40
+          ELSEIF (IQ_OM1.EQ.5) THEN
+            WRITE(6,*) 'Progression geometrique : Donnez NF1 : '
+            READ(5,*) NF1
+          ELSEIF (IQ_OM1.EQ.6) THEN
+            WRITE(6,*) 'Progression arithmetique : Donnez NF1 : '
+            READ(5,*) NF1
+          ELSEIF (IQ_OM1.EQ.7) THEN
+            NF1=20
+          ELSE
+            WRITE(6,*) 'ARRET DANS PRINCI : VALEUR INCORRECTE DE IQ_OM1'
+          ENDIF
+          NT1=2*NQ_TE1
+          NF2=NQ_OM2
+          NCONFM=NQ_OM2*NT1*NF1
+          ALLOCATE(K_IF1 (1:NF1))
+          ALLOCATE(K_IF2 (1:NF2,1:NT1,1:NF1),K_IF3 (1:NF2,1:NT1,1:NF1))
+          ALLOCATE(K_1P  (1:NT1,1:NF1)      ,K_1M  (1:NT1,1:NF1))
+          ALLOCATE(K_1P2P(1:NF2,1:NT1,1:NF1),K_1P3M(1:NF2,1:NT1,1:NF1))
+          ALLOCATE(K_1P2M(1:NF2,1:NT1,1:NF1),K_1P3P(1:NF2,1:NT1,1:NF1))
+          ALLOCATE(K_1M2P(1:NF2,1:NT1,1:NF1),K_1M3M(1:NF2,1:NT1,1:NF1))
+          ALLOCATE(K_1M2M(1:NF2,1:NT1,1:NF1),K_1M3P(1:NF2,1:NT1,1:NF1))
+          ALLOCATE(TB_V14(1:NF1))
+          ALLOCATE(TB_V24(1:NF2,1:NT1,1:NF1),TB_V34(1:NF2,1:NT1,1:NF1))
+          ALLOCATE(TB_TPM(1:NF2,1:NT1,1:NF1),TB_TMP(1:NF2,1:NT1,1:NF1))
+          ALLOCATE(TB_FAC(1:NF2,1:NT1,1:NF1))
+          ALLOCATE(IDCONF(1:NCONFM,1:3))
+        ELSE
+          ALLOCATE(K_IF1 (1))
+          ALLOCATE(K_IF2 (1,1,1),K_IF3 (1,1,1))
+          ALLOCATE(K_1P  (1,1)  ,K_1M  (1,1))
+          ALLOCATE(K_1P2P(1,1,1),K_1P3M(1,1,1))
+          ALLOCATE(K_1P2M(1,1,1),K_1P3P(1,1,1))
+          ALLOCATE(K_1M2P(1,1,1),K_1M3M(1,1,1))
+          ALLOCATE(K_1M2M(1,1,1),K_1M3P(1,1,1))
+          ALLOCATE(TB_V14(1))
+          ALLOCATE(TB_V24(1,1,1),TB_V34(1,1,1))
+          ALLOCATE(TB_TPM(1,1,1),TB_TMP(1,1,1))
+          ALLOCATE(TB_FAC(1,1,1))
+          ALLOCATE(IDCONF(1,1))
+        ENDIF	
+!.......END NON LINEAR INTERACTIONS
+!GM Fin
 !
 !.......RELATIVE SPECTRUM ->  ABSOLUTE SPECTRUM (TRANSF)
         IF (COUSTA .OR. MAREE.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN

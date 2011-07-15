@@ -7,7 +7,7 @@
      &  TAUX3 , TAUX4 , TAUX5 , DFINI )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   24/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE NON-LINEAR INTERACTIONS
@@ -56,27 +56,32 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        24/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COEFNL         |---|
-!| DEPTH          |---|
-!| DFINI          |---|
-!| F              |---|
-!| F1             |-->| PREMIERE FREQUENCE DE DISCRETISATION
-!| IANGNL         |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| PROINF         |-->| INDICATEUR DE PROFONDEUR INFINIE
-!| RAISF          |-->| RAISON FREQUENTIELLE DE DISCRETISATION
-!| TAILF          |-->| FACTEUR DE QUEUE
-!| TAUX1          |---|
-!| TAUX2          |---|
-!| TAUX3          |---|
-!| TAUX4          |---|
-!| TAUX5          |---|
-!| TSDER          |---|
-!| TSTOT          |---|
-!| XKMOY          |---|
+!| COEFNL         |-->| COEFFICIENTS USED FOR DIA METHOD
+!| DEPTH          |-->| WATER DEPTH
+!| DFINI          |<->| WORK TABLE
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| F1             |-->| FIRST DISCRETIZED FREQUENCY
+!| IANGNL         |-->| ANGULAR INDICES TABLE
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| RAISF          |-->| FREQUENTIAL RATIO
+!| TAILF          |-->| SPECTRUM QUEUE FACTOR
+!| TAUX1          |<->| WORK TABLE
+!| TAUX2          |<->| WORK TABLE
+!| TAUX3          |<->| WORK TABLE
+!| TAUX4          |<->| WORK TABLE
+!| TAUX5          |<->| WORK TABLE
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| XKMOY          |-->| AVERAGE WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

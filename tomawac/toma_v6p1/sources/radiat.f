@@ -6,7 +6,7 @@
      &  DEPTH1, CGSUC1, DSXXDX, DSXYDX, DSXYDY, DSYYDY, NPOIN2_DIM    )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   27/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE RADIATION STRESSES AND DRIVING FORCES
@@ -38,22 +38,27 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        27/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CG1            |---|
-!| CGSUC1         |---|
-!| DEPTH1         |---|
-!| DSXXDX         |---|
-!| DSXYDX         |---|
-!| DSXYDY         |---|
-!| DSYYDY         |---|
-!| FS             |---|
-!| FX             |---|
-!| FY             |---|
-!| NPOIN2_DIM     |---|
-!| SXX            |---|
-!| SXY            |---|
-!| SYY            |---|
-!| XK1            |---|
+!| CG1            |-->| DISCRETIZED GROUP VELOCITY
+!| CGSUC1         |<--| WORK TABLE
+!| DEPTH1         |-->| WATER DEPTH
+!| DSXXDX         |<->| WORK TABLE
+!| DSXYDX         |<->| WORK TABLE
+!| DSXYDY         |<->| WORK TABLE
+!| DSYYDY         |<->| WORK TABLE
+!| FS             |-->| DIRECTIONAL SPECTRUM
+!| FX             |<--| DRIVING FORCE ALONG X
+!| FY             |<--| DRIVING FORCE ALONG Y
+!| NPOIN2_DIM     |-->| NUMBER OF POINTS IN 2D MESH
+!| SXX            |<--| RADIATION STRESS ALONG XX
+!| SXY            |<--| RADIATION STRESS ALONG XY
+!| SYY            |<--| RADIATION STRESS ALONG YY
+!| XK1            |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

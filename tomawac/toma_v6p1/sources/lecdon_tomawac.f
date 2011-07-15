@@ -5,7 +5,7 @@
      & (FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -27,11 +27,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        16/05/2011
+!+        V6P1
+!+   Declaration of new keywords defined by
+!+       E. GAGNAIRE-RENOU for solving new source terms models.
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CODE           |---|
-!| FILE_DESC      |---|
-!| NCAR           |---|
-!| PATH           |---|
+!| CODE           |-->| NAME OF CALLING PROGRAMME
+!| FILE_DESC      |-->| STORES THE FILES 'SUBMIT' ATTRIBUTES
+!|                |   | IN DICTIONARIES. IT IS FILLED BY DAMOCLES.
+!| NCAR           |-->| LENGTH OF PATH
+!| PATH           |-->| NAME OF CURRENT DIRECTORY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -221,9 +233,9 @@
       IFRIH  = MOTINT( ADRESS(1, 28) )
       NDTBRK = MOTINT( ADRESS(1, 29) )
       LIMIT  = MOTINT( ADRESS(1, 30) )
-!
-!         NPRIV     = MOTINT( ADRESS(1, 32?) ) 'ADD TO DICO FILE'
-!
+!GM V6P1 - NEW SOURCE TERMS
+      LVENT  = MOTINT( ADRESS(1, 31) )
+!GM Fin
       STRIA  = MOTINT( ADRESS(1, 32) )
       LIMSPE = MOTINT( ADRESS(1, 33) )
       LAM    = MOTINT( ADRESS(1, 34) )
@@ -237,7 +249,11 @@
       J_ORIG = MOTINT( ADRESS(1, 40)+1 )
 !     DEBUG KEYWORD
       DEBUG  = MOTINT( ADRESS(1, 41) )
-!
+!GM V6P1 - NEW SOURCE TERMS
+      IQ_OM1 = MOTINT( ADRESS(1, 42) )
+      NQ_TE1 = MOTINT( ADRESS(1, 43) )
+      NQ_OM2 = MOTINT( ADRESS(1, 44) )
+!GM Fin
 !     GEOMETRY FILE STANDARD
       STDGEO = 3
 !
@@ -332,6 +348,19 @@
       VX_CTE = MOTREA( ADRESS(2, 66) )
       VY_CTE = MOTREA( ADRESS(2, 67) )
       CIMPLI = MOTREA( ADRESS(2, 68) )
+!GM V6P1 - NEW SOURCE TERMS
+      COEFWD = MOTREA( ADRESS(2, 69) )
+      COEFWE = MOTREA( ADRESS(2, 70) )
+      COEFWF = MOTREA( ADRESS(2, 71) )
+      COEFWH = MOTREA( ADRESS(2, 72) )
+      CMOUT3 = MOTREA( ADRESS(2, 73) )
+      CMOUT4 = MOTREA( ADRESS(2, 74) )
+      CMOUT5 = MOTREA( ADRESS(2, 75) )
+      CMOUT6 = MOTREA( ADRESS(2, 76) )
+      SEUIL  = MOTREA( ADRESS(2, 77) )
+      SEUIL1 = MOTREA( ADRESS(2, 78) )
+      SEUIL2 = MOTREA( ADRESS(2, 79) )
+!GM Fin
 !
 ! LOGICAL KEYWORDS
 !
@@ -460,6 +489,19 @@
         ENDIF
         CIMPLI=0.5D0
       ENDIF
+!GM V6P1 - NEW SOURCE TERMS
+      IF(.NOT.PROINF.AND.STRIF.EQ.3) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'INCOHERENCE DE LA PROFONDEUR ET DU' 
+          WRITE(LU,*) 'TERME DE TRANSFERT NON LINEAIRE' 
+        ENDIF  
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'INCOMPATIBILITY OF DEPTH AND'
+          WRITE(LU,*) 'NON-LINEAR TRANSFER TERM'
+        ENDIF
+        STOP
+      ENDIF
+!GM Fin
 !
 !
 !-----------------------------------------------------------------------

@@ -5,7 +5,7 @@
      &( FPIC  , F     , FREQ  , NF    , NPLAN , NPOIN2, EMAX  , E     )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   15/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE PEAK FREQUENCY FOR ALL THE NODES IN THE
@@ -29,15 +29,20 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| E              |---|
-!| EMAX           |---|
-!| F              |---|
-!| FPIC           |---|
-!| FREQ           |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
+!| E              |<->| WORK TABLE
+!| EMAX           |<->| WORK TABLE
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FPIC           |<--| PEAK FREQUENCIES
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

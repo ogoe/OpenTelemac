@@ -7,7 +7,7 @@
      &  CHDON)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    THIS SUBROUTINE PROJECTS THE CURRENTS / WINDS ON THE
@@ -32,28 +32,34 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
-!| CHDON          |---|
-!| COURAN         |-->| LOGIQUE INDIQUANT LA PRESENCE DE DONNEES
-!| DONTEL         |-->| LOGIQUE INDIQUANT SI ON RECUPERE
-!|                |   | UNE VARIABLE TELEMAC
-!| IDTEL          |-->| RANG DE LA VARIABLE TELEMAC A RECUPERER
-!| INDIC          |-->| TYPE DE FORMAT DE LECTURE
-!| NBOR           |-->| NUMEROTATION DES POINTS FRONTIERE
-!| NDON           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER
-!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE  POINTS FRONTIERE
-!| NPTT           |---|
-!| TRA01          |<->| TABLEAU DE TRAVAIL
-!| TRA02          |<->| TABLEAU DE TRAVAIL
-!| TRA03          |<->| TABLEAU DE TRAVAIL
-!| U,V            |<--| COURANT OU VENT AUX NOEUDS DU MAILLAGE
-!| UR,VR          |<->| TABLEAU DES COURANTS RELEVES
-!| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-!| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
+!| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
+!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
+!| DONTEL         |-->| LOGICAL INDICATING RECOVERY OF TELEMAC DATA ITEM
+!| IDTEL          |-->| RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED
+!| INDIC          |-->| FILE FORMAT
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NPTT           |-->| TIME STEP NUMBER IN TELEMAC FILE
+!| TRA01          |<->| WORK TABLE
+!| TRA02          |<->| WORK TABLE
+!| TRA03          |<->| WORK TABLE
+!| U              |<--| CURRENT OR WIND ALONG X AT THE MESH POINTS
+!| UR,VR          |<->| TABLE OF THE VALUES READ IN THE DATA FILE
+!| V              |<--| CURRENT OR WIND ALONG Y AT THE MESH POINTS
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
+!| YRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

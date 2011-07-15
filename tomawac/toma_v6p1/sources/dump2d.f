@@ -5,7 +5,7 @@
      &( LT , DEUPI , XF1 , NP1 )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   15/06/2011
 !***********************************************************************
 !
 !brief    WRITES OUT WAVE, WIND, CURRENT, BATHYMETRY, ...
@@ -34,11 +34,16 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEUPI          |-->| 2.PI
-!| LT             |---|
-!| NP1            |---|
-!| XF1            |---|
+!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
+!| NP1            |-->| NPOIN2.NPLAN.NF
+!| XF1            |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC

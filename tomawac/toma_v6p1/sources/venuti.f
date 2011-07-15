@@ -6,7 +6,7 @@
      & NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NPMAX)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   29/06/2011
 !***********************************************************************
 !
 !brief    READS THE WINDS FROM A USED-DEFINED FILE FORMAT.
@@ -48,24 +48,30 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        29/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| BINVEN         |-->| BINAIRE DU FICHIER DES VENTS
-!| DDC            |-->| DATE DE DEBUT DU CALCUL
-!| NBOR           |-->| NUMERO GLOBAUX DES POINTS DE BORD
-!| NP             |-->| NOMBRE DE POINTS RELEVES
-!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD
-!| NVEN           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DES VENTS
-!| TV1            |-->| DATE CORRESPONDANT AU CHAMP DE VENT U1,V1
-!| TV2            |-->| DATE CORRESPONDANT AU CHAMP DE VENT U2,V2
-!| U1,V1          |<->| TABLEAU DES VENTS RELEVES AU TEMPS 1
-!| U2,V2          |<->| TABLEAU DES VENTS RELEVES AU TEMPS 2
-!| UR,VR          |<->| TABLEAU DES VENTS RELEVES
-!| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-!| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
+!| AT             |-->| COMPUTATION TIME
+!| BINVEN         |-->| WIND FILE BINARY
+!| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NP             |-->| NUMBER OF POINTS READ FROM THE FILE
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
+!| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NVEN           |-->| LOGICAL UNIT NUMBER OF THE WIND DATA FILE
+!| TV1            |-->| TIME T1 IN THE WIND FILE
+!| TV2            |-->| TIME T2 IN THE WIND FILE
+!| U1,V1          |<->| WIND VALUES AT TIME T1 IN THE CURRENTS FILE
+!| U2,V2          |<->| WIND VALUES AT TIME T2 IN THE CURRENTS FILE
+!| UR,VR          |<->| TABLE OF THE VALUES READ IN THE CURRENT FILE
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XRELV          |<->| TABLE OF THE ABSCISSES OF WIND FILE POINTS
+!| YRELV          |<->| TABLE OF THE ORDINATES OF WIND FILE POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

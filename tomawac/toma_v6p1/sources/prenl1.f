@@ -5,7 +5,7 @@
      &( IANGNL, COEFNL, NPLAN , NF    , RAISF , XLAMD )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   22/06/2011
 !***********************************************************************
 !
 !brief    PREPARES THE COMPUTATION FOR THE NON-LINEAR INTERACTION
@@ -49,13 +49,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        22/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COEFNL         |---|
-!| IANGNL         |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| RAISF          |-->| RAISON FREQUENTIELLE DE DISCRETISATION
-!| XLAMD          |-->| COEFFICIENT LAMBDA DE LA CONFIGUARTION STD
+!| COEFNL         |<--| COEFFICIENTS USED FOR DIA METHOD
+!| IANGNL         |<--| ANGULAR INDICES TABLE
+!| NF             |-->| NUNMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| RAISF          |-->| FREQUENTIAL RATIO
+!| XLAMD          |-->| DIA STANDARD CONFIGURATION LAMBDA COEFFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TOMAWAC, EX_PRENL1 => PRENL1

@@ -5,7 +5,7 @@
      &( XK1   , XK2   , FREQ1  , FREQ2  , DEPTH , TETA1 , TETA2 )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE COUPLING COEFFICIENT.
@@ -27,14 +27,19 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEPTH          |-->| PROFONDEUR
-!| FREQ1          |-->| FREQUENCE DE L'ONDE 1
-!| FREQ2          |-->| FREQUENCE DE L'ONDE 2
-!| TETA1          |-->| PLAN DE L'ONDE 1
-!| TETA2          |-->| PLAN DE L'ONDE 2
-!| XK1            |-->| NOMBRE D'ONDE DE 1
-!| XK2            |-->| NOMBRE D'ONDE DE 2
+!| DEPTH          |-->| WATER DEPTH
+!| FREQ1          |-->| FREQUENCY OF COMPONENT 1
+!| FREQ2          |-->| FREQUENCE OF COMPONENT 2
+!| TETA1          |-->| DIRECTION OF COMPONENT 1
+!| TETA2          |-->| DIRECTION OF COMPONENT 2
+!| XK1            |-->| WAVE NUMBER OF COMPONENT 1
+!| XK2            |-->| WAVE NUMBER OF COMPONENT 2
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

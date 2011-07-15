@@ -6,7 +6,7 @@
      & ISEG  , XSEG , YSEG , NACHB , MESH,BOUNDARY_COLOUR)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    READS THE BOUNDARY CONDITION FILE AND
@@ -34,20 +34,27 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BOUNDARY_COLOUR|---|
-!| HBOR           |<--| CONDITIONS AUX LIMITES SUR H
-!| ISEG           |---|
-!| LIHBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN HAUTEUR
-!|                |   | POUR LES POINTS DE BORD.
-!| MESH           |---|
-!| NACHB          |---|
-!| NBOR           |<--| ADRESSES DES POINTS DE BORD.
-!| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
+!| BOUNDARY_COLOUR|<--| COLOUR OF BOUNDARY POINT (DEFAULT: ITS RANK)
+!| HBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON DEPTH
+!| ISEG           |<--| GLOBAL NUMBER OF FOLLOWING OR PRECEDING POINT
+!|                |   | IN THE BOUNDARY IF IT IS IN ANOTHER SUB-DOMAIN
+!| LIHBOR         |<--| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| MESH           |<--| BIEF OBJECT
+!| NACHB          |<--| NUMBERS OF PROCESSORS CONTAINING A GIVEN POINT
+!| NBOR           |<--| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NLIM           |-->| LOGICAL UNIT NUMBER OF BOUNDARY CONDITIONS FILE
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
-!| XSEG           |---|
-!| YSEG           |---|
+!| XSEG           |<--| X COORDINATE OF FOLLOWING OR PRECEDING POINT
+!|                |   | IN THE BOUNDARY IF IT IS IN ANOTHER SUB-DOMAIN
+!| YSEG           |<--| Y COORDINATE OF FOLLOWING OR PRECEDING POINT
+!|                |   | IN THE BOUNDARY IF IT IS IN ANOTHER SUB-DOMAIN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

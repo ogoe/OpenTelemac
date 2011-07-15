@@ -7,7 +7,7 @@
      & ELI , KNOGL , KNI , NELE2L , NPOI2L ,IFABOR,GOODELT)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    FOR COWADIS "PRISMS", AND BEFORE TRACING BACK IN TIME
@@ -34,34 +34,51 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELI            |---|
-!| ELT            |<--| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| ETA            |<--| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
-!| GOODELT        |---|
-!| IFABOR         |---|
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE
-!| KNI            |---|
-!| KNOGL          |---|
-!| NELE2L         |---|
-!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPOI2L         |---|
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| SHP1           |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
-!|                |   | LEURS ELEMENTS 2D "ELT" ASSOCIES.
-!| SHP2           |---|
-!| SHP3           |---|
-!| SHZ            |<--| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
-!|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
-!| TETA           |-->| DIRECTIONS DE PROPAGATION
-!| U,V,W          |-->| COMPOSANTES DU CHAMP CONVECTEUR
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XCONV          |<--| POSITION INITIALE DES DERIVANT EN X
-!| YCONV          |<--| POSITION INITIALE DES DERIVANT EN Y
-!| ZCONV          |<--| POSITION INITIALE DES DERIVANT EN Z
+!| ELI            |-->| WORK TABLE
+!| ELT            |<--| NUMBERS OF THE ELEMENTS 2D OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETA            |<--| NUMBERS OF THE LAYERS OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| GOODELT        |<->| CHARACTERISTIC IDENTIFIER
+!|                |   | = 1 CORRECT ELEMENT FOR TRACING BACK THE CHARACT.
+!|                |   | = 2001 CORRECT ELEMENT AT 2 PROCS BOUNDARY
+!|                |   | = 2000 WRONG ELEMENT AT 2 PROCS BOUNDARY
+!|                |   | = 1101 CORRECT ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   SOLID BOUNDARY
+!|                |   | = 1100 WRONG ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   SOLID BOUNDARY
+!|                |   | = 1011 CORRECT ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   LIQUID BOUNDARY
+!|                |   | = 1010 WRONG ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   LIQUID BOUNDARY
+!| IFABOR1        |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID,
+!|                |   | SOLID OR PERIODIC BOUNDARY
+!| IKLE2          |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
+!|                |   | OF THE 2D MESH
+!| KNI            |-->| WORK TABLE
+!| KNOGL          |-->| ARRAY LINKING GLOBAL TO LOCAL INDEXES IN PARALL
+!| NELE2L         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOI2L         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| SHP1,SHP2,SHP3 |<--| BARYCENTRIC COORDINATES OF THE NODES IN
+!|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
+!| SHZ            |<--| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| U,V,W          |-->| ADVECTION FIELD COMPONENTS
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| XCONV,YCONV,   |<--| COORDINATES OF THE INITIAL POINT OF THE
+!|       ZCONV    |   | CHARACETRISTIC
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

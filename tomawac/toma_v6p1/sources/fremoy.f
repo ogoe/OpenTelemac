@@ -6,7 +6,7 @@
      &  AUX1  , AUX2  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   15/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE MEAN SPECTRAL FREQUENCY FMOY FOR ALL
@@ -37,17 +37,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AUX1           |---|
-!| AUX2           |---|
-!| DFREQ          |---|
-!| F              |---|
-!| FMOY           |---|
-!| FREQ           |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
+!| AUX1           |<->| WORK TABLE
+!| AUX2           |<->| WORK TABLE
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FMOY           |<--| MEAN FREQUENCIES F-10
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TAILF          |-->| SPECTRUM QUEUE FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

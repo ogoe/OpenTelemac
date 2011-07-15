@@ -5,7 +5,7 @@
      &(XLEO,YLEO,NLEO,X,Y,IKLE,SURDET,NPOIN2,NELEM2,NOLEO,ISLEO)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   22/06/2011
 !***********************************************************************
 !
 !brief    SELECTS THE COMPUTATION NODES CLOSEST
@@ -28,18 +28,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        22/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        22/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| CONNECTIVITE NOEUD ELEMENTS
-!| ISLEO          |---|
-!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-!| NLEO           |-->| NOMBRE DE POINTS DE SORTIE
-!| NOLEO          |<->| TABLEAU DES NUMERO DES POINTS CHOISIS
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| SURDET         |-->| 1/SUPERFICIE ELEMENTS
-!| X              |-->| ABSCISSES DES POINTS
-!| XLEO           |-->| TABLEAU DES ABSCISSES DES POINTS DE SORTIE
-!| Y              |-->| ORDONNEES DES POINTS
-!| YLEO           |-->| TABLEAU DES ORDONNEES DES POINTS DE SORTIE
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| ISLEO          |<--| ARRAY OF LOGICAL
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NLEO           |-->| NUMBER OF SPECTRUM PRINTOUT POINTS
+!| NOLEO          |---| NUMBERS OF THE SPECTRUM PRINTOUT POINTS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| SURDET         |-->| 1/DET. OF ELEMENTS 2D FOR ISOPARAM. TRANSF.
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XLEO           |-->| ABSCISSAE OF SPECTRUM PRINTOUT POINTS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YLEO           |-->| ORDINATES OF SPECTRUM PRINTOUT POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &(X,Y,NPOIN,NCOU,XRELV,YRELV,UR,VR,TRA01,NP,NPMAX)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    READS THE CURRENTS / WINDS IN A USER-DEFINED FILE FORMAT.
@@ -38,16 +38,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NCOU           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DES COURA.
-!| NP             |<--| NOMBRE DE POINTS RELEVES
-!| NPMAX          |-->| NOMBRE DE POINTS RELEVES MAXIMUM
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| TRA01          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPMAX
-!| UR,VR          |<->| TABLEAU DES COURANTS OU VENTS RELEVES
-!| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |<->| TABLEAU DES ABSCISSES DES POINTS RELEVES
-!| YRELV          |<->| TABLEAU DES ORDONNEES DES POINTS RELEVES
+!| NCOU           |-->| LOGICAL UNIT NUMBER OF THE CURRENTS/WIND FILE
+!| NP             |<--| NUMBER OF POINTS READ FROM THE FILE
+!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
+!| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
+!| TRA01          |<->| WORK TABLE
+!| UR,VR          |<->| TABLE OF VALUES READ IN THE CURRENT/WIND FILE
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XRELV          |<->| TABLE OF THE ABSCISSES OF THE FILE POINTS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YRELV          |<->| TABLE OF THE ORDINATES OF THE FILE POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

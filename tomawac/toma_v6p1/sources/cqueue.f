@@ -5,7 +5,7 @@
      &( NF    , RAISF , TAILF , JFRE  , JBIS  , COEF1 )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   14/06/2011
 !***********************************************************************
 !
 !brief    ADJUSTS FREQUENCY INDICES AND COMPUTES TAIL
@@ -32,13 +32,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        14/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COEF1          |---|
-!| JBIS           |---|
-!| JFRE           |-->| INDICE FREQUENTIEL DE LA COMPOSANTE FREQ.
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| RAISF          |-->| RAISON FREQUENTIELLE DE DISCRETISATION
-!| TAILF          |-->| FACTEUR DE QUEUE
+!| COEF1          |---| MULTIPLYING COEF. F(JFRE)=COEF1*F(JBIS)
+!| JBIS           |---| ADJUSTED INDEX IN THE INTERVAL [1;NF]
+!| JFRE           |-->| FREQUENCY INDEX
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| RAISF          |-->| FREQUENTIAL RATIO
+!| TAILF          |-->| SPECTRUM QUEUE FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

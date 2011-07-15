@@ -7,7 +7,7 @@
      & NPOIN2 , NELEM2 , NPLAN  , IFF , NF  ,IFABOR,GOODELT)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    FOR TOMAWAC "HYPER PRISMS", AND BEFORE TRACING BACK IN
@@ -34,35 +34,52 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ELT            |<--| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| ETA            |<--| NUMEROS DES DIREC. CHOISIS POUR CHAQUE NOEUD.
-!| FCONV          |<--| POSITION INITIALE DES DERIVANT EN F
-!| FRE            |<--| NUMEROS DES FREQ. CHOISIES POUR CHAQUE NOEUD.
-!| FREQ           |-->| FREQUENCES DE PROPAGATION
-!| GOODELT        |---|
-!| IFABOR         |---|
-!| IFF            |---|
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE
-!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| SHF            |---|
-!| SHP1           |<--| COORDONNEES BARYCENTRIQUES DES NOEUDS DANS
-!|                |   | LEURS ELEMENTS 2D "ELT" ASSOCIES.
-!| SHP2           |---|
-!| SHP3           |---|
-!| SHT            |<--| COORDONNEES BARYCENTRIQUES SUIVANT Z DES
-!|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
-!| TCONV          |<--| POSITION INITIALE DES DERIVANT EN TETA
-!| TETA           |-->| DIRECTIONS DE PROPAGATION
-!| U,V,T,W        |-->| COMPOSANTES DU CHAMP CONVECTEUR
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XCONV          |<--| POSITION INITIALE DES DERIVANT EN X
-!| YCONV          |<--| POSITION INITIALE DES DERIVANT EN Y
+!| ELT            |<--| NUMBERS OF THE ELEMENTS 2D OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETA            |<--| NUMBERS OF THE LAYERS OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| FCONV,TCONV,   |<--| COORDINATES OF THE INITIAL POINT OF THE
+!|   XCONV,YCONV  |   | CHARACETRISTIC
+!| FRE            |<--| NUMBER OF THE FREQUENCIES OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GOODELT        |<->| CHARACTERISTIC IDENTIFIER
+!|                |   | = 1 CORRECT ELEMENT FOR TRACING BACK THE CHARACT.
+!|                |   | = 2001 CORRECT ELEMENT AT 2 PROCS BOUNDARY
+!|                |   | = 2000 WRONG ELEMENT AT 2 PROCS BOUNDARY
+!|                |   | = 1101 CORRECT ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   SOLID BOUNDARY
+!|                |   | = 1100 WRONG ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   SOLID BOUNDARY
+!|                |   | = 1011 CORRECT ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   LIQUID BOUNDARY
+!|                |   | = 1010 WRONG ELEMENT AT 2 PROCS BOUNDARY + 
+!|                |   |   LIQUID BOUNDARY
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID,
+!| IFF            |-->| FREQUENCY INDEX
+!| IKLE2          |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
+!|                |   | OF THE 2D MESH
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| SHF            |-->| BARYCENTRIC COORDINATES ALONG F OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED FREQUENCIES "FRE"
+!| SHP1,SHP2,SHP3 |<--| BARYCENTRIC COORDINATES OF THE NODES IN
+!|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
+!| SHT            |<--| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| U,V,T,W        |-->| ADVECTION FIELD COMPONENTS
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

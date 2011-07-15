@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DECLARES BIEF STRUCTURES IN TOMAWAC.
@@ -31,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        16/05/2011
+!+        V6P1
+!+   Declaration of new variables defined by
+!+       E. GAGNAIRE-RENOU for solving new source terms models.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -225,12 +230,28 @@
 !> @brief
 ! indicateur de sortie des variables 2d
       INTEGER SORG2D
-!> @brief COORDINATS OF THE ORIGIN IN (X, Y)
+!> @brief COORDINATES OF THE ORIGIN IN (X, Y)
 ! coordonnes de l'origine
       INTEGER I_ORIG
-!> @brief COORDINATE OF THE ORIGIN IN (X, Y)
+!> @brief COORDINATES OF THE ORIGIN IN (X, Y)
 ! coordonnee de l'origine
       INTEGER J_ORIG
+!> @brief LINEAR WAVE GROWTH
+!
+!GM V6P1 - NEW SOURCE TERMS
+! croissance lineaire des vagues
+      INTEGER LVENT
+!> @brief SETTING FOR INTEGRATION ON OMEGA1
+! reglage pour integration sur omega1 - QNL4 methode GQM
+      INTEGER IQ_OM1
+!> @brief SETTING FOR INTEGRATION ON THETA1
+! reglage pour integration sur theta1 - QNL4 methode GQM
+      INTEGER NQ_TE1
+!> @brief SETTING FOR INTEGRATION ON OMEGA2
+! Nombre point d integration sur omega2 - QNL4 methode GQM
+      INTEGER NQ_OM2
+!GM Fin
+!
 !> @brief TIME STEP
 ! pas de temps
       DOUBLE PRECISION DT
@@ -441,6 +462,43 @@
 !> @brief ORDINATES OF SPECTRUM PRINTOUT POINTS
 ! ordonnees des points de sortie du spectre
       DOUBLE PRECISION YLEO (99)
+!
+!GM V6P1 - NEW SOURCE TERMS
+!> @brief YAN GENERATION COEFFICIENT D
+! constante utilisee pour la generation  par le vent de Yan
+      DOUBLE PRECISION COEFWD
+!> @brief YAN GENERATION COEFFICIENT E
+! constante utilisee pour la generation  par le vent de Yan
+      DOUBLE PRECISION COEFWE
+!> @brief YAN GENERATION COEFFICIENT F
+! constante utilisee pour la generation  par le vent de Yan
+      DOUBLE PRECISION COEFWF
+!> @brief YAN GENERATION COEFFICIENT H
+! constante utilisee pour la generation  par le vent de Yan
+      DOUBLE PRECISION COEFWH
+!> @brief WESTHUYSEN DISSIPATION COEFFICIENT
+! coefficient de dissipation par moutonnement - Westhuysen
+      DOUBLE PRECISION CMOUT3
+!> @brief SATURATION THRESHOLD FOR THE DISSIPATION
+! dissipation par moutonnement, seuil de saturation - Westhuysen
+      DOUBLE PRECISION CMOUT4
+!> @brief WESTHUYSEN WHITE CAPPING DISSIPATION
+! coefficient de dissipation par moutonnement - Westhuysen
+      DOUBLE PRECISION CMOUT5
+!> @brief WESTHUYSEN WEIGHTING COEFFICIENT
+! coefficient de ponderation de Westhuysen
+      DOUBLE PRECISION CMOUT6
+!> @brief QNL4 - THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
+! seuil0 pour elimination des configurations - QNL4, methode GQM
+      DOUBLE PRECISION SEUIL
+!> @brief QNL4 - THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
+! seuil1 pour elimination des configurations - QNL4, methode GQM
+      DOUBLE PRECISION SEUIL1
+!> @brief QNL4 - THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
+! seuil2 pour elimination des configurations - QNL4, methode GQM
+      DOUBLE PRECISION SEUIL2
+!GM Fin
+!
 !> @brief CONSIDERATION OF SOURCE TERMS
 ! si oui, prise en compte des termes sources
       LOGICAL TSOU
@@ -535,6 +593,52 @@
       INTEGER NPOIN3
 !> @brief NPOIN2 OF MESH BEFORE PARTITIONING, NPOIN3_G=NPOIN2_G*NPLAN
       INTEGER NPOIN2_G,NPOIN3_G
+!
+!GM V6P1 - NEW SOURCE TERMS
+!> @brief
+! declaration for QNL4 - MDIA method
+      INTEGER, PARAMETER :: MDIA = 4
+!> @brief
+! declaration for QNL4 - MDIA method
+      INTEGER         , ALLOCATABLE ::  IANMDI(:,:,:)
+!> @brief
+! declaration for QNL4 - MDIA method
+      DOUBLE PRECISION,ALLOCATABLE :: COEMDI(:,:),XMUMDI(:),XLAMDI(:)
+!> @brief
+! declaration for QNL4 - GQM method
+      INTEGER  NCONF , NCONFM , NF1 , NF2 , NT1
+!> @brief
+! declaration for QNL4 - GQM method
+      DOUBLE PRECISION ELIM
+!> @brief
+! declaration for QNL4 - GQM method
+      INTEGER, ALLOCATABLE :: K_IF1(:) , K_1P(:,:) , K_1M(:,:),
+     *                        K_IF2 (:,:,:), K_IF3 (:,:,:),
+     *                        K_1P2P(:,:,:), K_1P2M(:,:,:),
+     *                        K_1P3P(:,:,:), K_1P3M(:,:,:),
+     *                        K_1M2P(:,:,:), K_1M2M(:,:,:),
+     *                        K_1M3P(:,:,:), K_1M3M(:,:,:),
+     *                        IDCONF(:,:)
+!> @brief
+! declaration for QNL4 - GQM method
+      DOUBLE PRECISION, ALLOCATABLE :: TB_V24(:,:,:), TB_V34(:,:,:),
+     *                                 TB_TPM(:,:,:), TB_TMP(:,:,:),
+     *                                 TB_FAC(:,:,:),
+     *                                 TB_V14(:)
+!> @brief
+! declaration for QNL4 - GQM method
+      INTEGER, PARAMETER :: LBUF = 500
+!> @brief
+! declaration for QNL4 - GQM method
+      INTEGER, PARAMETER :: DIMBUF = 2*LBUF+200
+!> @brief
+! declaration for QNL4 - GQM method
+      INTEGER F_POIN(DIMBUF) , T_POIN(DIMBUF)
+!> @brief
+! declaration for QNL4 - GQM method
+      DOUBLE PRECISION F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
+!GM Fin
+!
 !> @brief
       INTEGER, PARAMETER :: MAXVAR = 35
 !> @brief

@@ -5,7 +5,7 @@
      &( TETA  , NPLAN , BDISPB, BDSSPB, NBD , INDI )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    SOURCE TERM RELATED TO NON-LINEAR INTERACTIONS
@@ -29,13 +29,20 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BDISPB         |---|
-!| BDSSPB         |---|
-!| INDI           |---|
-!| NBD            |---|
+!| BDISPB         |-->| LOWER DIRECTIONAL BOUNDARY OF THE SPB MODEL
+!|                |   | (TRIADS INTERACTION)
+!| BDSSPB         |-->| UPPER DIRECTIONAL BOUNDARY OF THE SPB MODEL
+!|                |   | (TRIADS INTERACTION)
+!| INDI           |<--| CONFIGURATION INDEX
+!| NBD            |<--| NUMBER OF CONFIGURATIONS
 !| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| TETA           |---|
+!| TETA           |-->| DISCRETIZED DIRECTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

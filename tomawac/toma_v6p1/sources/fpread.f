@@ -6,7 +6,7 @@
      &  TAILF , DENOM , E     )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   15/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE PEAK FREQUENCY OF THE VARIANCE SPECTRUM
@@ -34,18 +34,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DENOM          |---|
-!| DFREQ          |---|
-!| E              |---|
-!| EXPO           |-->| EXPOSANT DE LA METHODE DE READ
-!| F              |---|
-!| FREAD          |---|
-!| FREQ           |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL 2D
-!| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
+!| DENOM          |<->| WORK TABLE
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| E              |<->| WORK TABLE
+!| EXPO           |-->| EXPONENT OF READ METHOD
+!| F              |---| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FREAD          |<--| PEAK FREQUENCY (READ METHOD)
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TAILF          |-->| SPECTRUM QUEUE FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

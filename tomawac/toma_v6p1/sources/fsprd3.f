@@ -6,7 +6,7 @@
      &  DEUPI )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   15/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE BIMODAL DIRECTIONAL SPREADING FUNCTION
@@ -32,16 +32,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEUPI          |-->| 2.PI
-!| DIREC          |---|
-!| FRA            |---|
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| SPRED1         |-->| ETALEMENT DIRECTIONNEL 1 POUR FRA
-!| SPRED2         |-->| ETALEMENT DIRECTIONNEL 2 POUR FRA
-!| TETA1          |-->| DIRECTION PRINCIPALE 1 POUR FRA
-!| TETA2          |-->| DIRECTION PRINCIPALE 2 POUR FRA
-!| XLAMDA         |-->| FACTEUR DE PONDERATION POUR LA FRA
+!| DIREC          |-->| DISCRETIZED DIRECTION
+!| FRA            |<--| DIRECTIONAL SPREADING FUNCTION VALUES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| SPRED1         |-->| DIRECTIONAL SPREAD 1
+!| SPRED2         |-->| DIRECTIONAL SPREAD 1
+!| TETA1          |-->| MAIN DIRECTION 1
+!| TETA2          |-->| MAIN DIRECTION 2
+!| XLAMDA         |-->| WEIGHTING FACTOR FOR FRA
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

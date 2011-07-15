@@ -9,7 +9,7 @@
      &   ISO )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    TRACES IN TIME THE CHARACTERISTICS CURVES FOR TOMAWAC
@@ -40,44 +40,54 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        21/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS.
-!| DX,DY,DW,DF    |---| STOCKAGE DES SOUS-PAS .
-!| ELT            |<->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| ETA            |<->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
-!| ETAS           |<->| TABLEAU DE TRAVAIL DONNANT LE NUMERO DE
-!|                |   | L'ETAGE SUPERIEUR
-!| FPLOT          |---|
-!| FRE            |<->| NUMEROS DES FREQ. CHOISIES POUR CHAQUE NOEUD.
-!| IFABOR         |-->| NUMEROS 2D DES ELEMENTS AYANT UNE FACE COMMUNE
-!|                |   | AVEC L'ELEMENT .  SI IFABOR
-!|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE DU MAILLAGE 2D.
-!| ISO            |<->| INDIQUE PAR BIT LA FACE DE SORTIE DE L'ELEMEN
-!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPLOT          |-->| NOMBRE DE DERIVANTS.
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| NRK            |-->| NOMBRE DE SOUS-PAS DE RUNGE-KUTTA.
-!| NSP            |---| NOMBRE DE SOUS-PAS DE RUNGE KUTTA.
-!| SENS           |-->| DESCENTE OU REMONTEE DES CARACTERISTIQUES.
-!| SHF            |<->| COORDONNEES BARYCENTRIQUES SUIVANT F DES
-!|                |   | NOEUDS DANS LEURS FREQUENCES "FRE" ASSOCIEES.
-!| SHP1           |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
-!|                |   | COURBES CARACTERISTIQUES.
-!| SHP2           |---|
-!| SHP3           |---|
-!| SHT            |<->| COORDONNEES BARYCENTRIQUES SUIVANT TETA DES
-!|                |   | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.
-!| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
-!| TPLOT          |---|
-!| U,V,T,W        |-->| COMPOSANTE DE LA VITESSE DU CONVECTEUR
-!| X,Y,TETA,FREQ  |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XPLOT          |---|
-!| YPLOT          |---|
+!| DT             |-->| TIME STEP
+!| DX,DY,DW,DF    |<--| STORED SUB-INCREMENT TIME STEPS
+!| ELT            |<->| NUMBERS OF THE ELEMENTS 2D OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETA            |<->| NUMBERS OF THE LAYERS OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETAS           |<->| WORK TABLE INDICATING THE NUMBER OF THE HIGHER
+!|                |   | LAYER
+!| FPLOT          |<->| STARTING FREQUENCIES OF THE POINTS TO BE 
+!|                |   | ADVECTED
+!| FRE            |<->| NUMBER OF THE FREQUENCIES OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID,
+!|                |   | SOLID OR PERIODIC BOUNDARY
+!| IKLE2          |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
+!|                |   | OF THE 2D MESH
+!| ISO            |<->| BINARY STORING OF THE EXIT FACE OF THE ELEMENT
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPLOT          |-->| NUMBER OF POINTS TO BE ADVECTED
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NRK            |-->| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
+!| NSP            |<--| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
+!| SENS           |-->| INDICATES TRACE-DOWN OR TRACE-BACK
+!|                |   | OF THE CHARACTERISTICS
+!| SHF            |<->| BARYCENTRIC COORDINATES ALONG F OF THE
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "FRE"
+!| SHP1,SHP2,SHP3 |<->| BARYCENTRIC COORDINATES OF THE NODES IN
+!|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
+!| SHT            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
+!| SURDET         |-->| 1/DET. OF ELEMENTS 2D FOR ISOPARAM. TRANSF.
+!| TPLOT          |<->| STARTING DIRECTIONS OF THE POINTS TO BE
+!|                |   | ADVECTED
+!| U,V,T,W        |-->| COMPONENTS OF THE ADVECTION VELOCITY
+!| X,Y,TETA,FREQ  |-->| COORDINATES OF THE MESH
+!| XPLOT          |<->| STARTING ABSCISSAE OF THE POINTS TO BE
+!|                |   | ADVECTED
+!| YPLOT          |<->| STARTING ORDINATES OF THE POINTS TO BE
+!|                |   | ADVECTED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

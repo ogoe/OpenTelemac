@@ -5,7 +5,7 @@
      &( F     , DEPTH , NPOIN2, NPLAN , NF    , PROMIN)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   15/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES THE VARIANCE SPECTRUM (SETS IT TO 0) AT
@@ -29,13 +29,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEPTH          |---|
-!| F              |---|
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| PROMIN         |-->| PROFONDEUR MINIMALE
+!| DEPTH          |-->| WATER DEPTH
+!| F              |<->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| PROMIN         |-->| MINIMUM VALUE OF WATER DEPTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

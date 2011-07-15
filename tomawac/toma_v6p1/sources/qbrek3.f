@@ -6,7 +6,7 @@
      &  GAM2RO, IEXPRO, IDISRO, NF    , NPLAN , NPOIN2, BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE DEPTH-INDUCED
@@ -36,22 +36,27 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALFARO         |-->| CONSTANTE ALPHA  DU MODELE RO
-!| BETA           |---|
-!| DEPTH          |---|
-!| F              |---|
-!| FCAR           |---|
-!| GAM2RO         |-->| CONSTANTE GAMMA2 DU MODELE RO
-!| GAMARO         |-->| CONSTANTE GAMMA  DU MODELE RO
-!| IDISRO         |-->| CHOIX DE LA DISTRIBUTION DES HAUTEURS
-!| IEXPRO         |-->| EXPOSANT N DU MODELE RO
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TSDER          |---|
-!| TSTOT          |---|
-!| VARIAN         |---|
+!| ALFARO         |-->| COEFFICIENT ALPHA OF RO WAVE BREAKING MODEL
+!| BETA           |<--| BREAKING WAVES COEFFICIENT
+!| DEPTH          |-->| WATER DEPTH
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FCAR           |-->| CHARACTERISTIC FREQUENCY
+!| GAM2RO         |-->| GAMMA2 CONSTANT OF WAVE BREAKING RO MODEL
+!| GAMARO         |-->| GAMMA CONSTANT OF WAVE BREAKING RO MODEL
+!| IDISRO         |-->| WAVE HEIGHT DISTRIBUTION SLECTION FOR RO MODEL
+!| IEXPRO         |-->| EXPONENT OF WAVE HEIGHT DISTR. FOR RO MODEL
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

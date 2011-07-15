@@ -3,10 +3,10 @@
 !                    *****************
 !
      &( AT, LT , DPI, TC1, TC2, NPC , TV1, TV2, NPV, TM1, TM2 , NPM ,
-     &  NVHMA  , NVCOU )
+     &  NVHMA  , NVCOU, PART , U_TEL, V_TEL , H_TEL )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   10/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAYS WITH PHYSICAL PARAMETERS.
@@ -33,21 +33,35 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF)
+!+        05/2011
+!+        V6P1
+!+   Modification for direct coupling with TELEMAC
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        08/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |<--| TEMPS DU CALCUL
-!| DPI            |---|
-!| LT             |---|
-!| NPC            |-->| NOMBRE DE POINTS DU FICHIER DES COURANTS
-!| NPM            |-->| NOMBRE DE POINTS DU FICHIER DES HAUTEURS
-!| NPV            |-->| NOMBRE DE POINTS DU FICHIER DES VENTS
-!| NVCOU          |---|
-!| NVHMA          |---|
-!| TC1            |<--| TEMPS CORRESPONDANT AU COURANT 1
-!| TC2            |<--| TEMPS CORRESPONDANT AU COURANT 2
-!| TM1            |<--| TEMPS CORRESP. A LA HAUTEUR DE LA MAREE 1
-!| TM2            |<--| TEMPS CORRESP. A LA HAUTEUR DE LA MAREE 2
-!| TV1            |<--| TEMPS CORRESPONDANT AU VENT 1
-!| TV2            |<--| TEMPS CORRESPONDANT AU VENT 2
+!| AT             |<--| COMPUTATION TIME
+!| DPI            |---| 2*PI
+!| H_TEL          |-->| TELEMAC WATER DEPTH
+!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
+!| NPC            |-->| NUMBER OF POINTS OF THE CURRENT FILE
+!| NPM            |-->| NUMBER OF POINTS OF THE WATER HEIGHT FILE
+!| NPV            |-->| NUMBER OF POINTS OF THE WIND FILE
+!| NVCOU          |---| NUMBER OF VARIABLES OF THE FORMATTED CURRENT FILE
+!| NVHMA          |<--| N.OF VARIABLES OF THE FORMATTED WATER LEVEL FILE
+!| PART           |-->| FLAG FOR DIRECT COUPLING WITH TELEMAC
+!| TC1            |<--| TIME T1 IN THE CURRENT FILE
+!| TC2            |<--| TIME T2 IN THE CURRENT FILE
+!| TM1            |<--| TIME T1 IN THE WATER LEVEL FILE
+!| TM2            |<--| TIME T2 IN THE WATER LEVEL FILE
+!| TV1            |<--| TIME T1 IN THE WIND FILE
+!| TV2            |<--| TIME T2 IN THE WIND FILE
+!| U_TEL          |-->| X-AXIS TELEMAC CURRENT SPEED
+!| V_TEL          |-->| Y-AXIS TELEMAC CURRENT SPEED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC
@@ -65,6 +79,11 @@
       INTEGER          IPLAN, IFREQ , NVHMA, NVCOU, IBID
 !
       CHARACTER*7   CHDON
+!
+!GM V6P1 - COUPLING WITH TELEMAC
+      INTEGER,           INTENT(IN)      :: PART
+      TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
+!GM Fin
 !
 !***********************************************************************
 !
@@ -228,6 +247,14 @@
         ENDIF
         DZHDT = 0.D0
       ENDIF
+!
+!GM V6P1 - DIRECT COUPLING WITH TELEMAC
+      IF(PART.EQ.0) THEN
+        CALL OS('X=Y     ',X=SDEPTH,Y=H_TEL)
+        CALL OV('X=Y     ',SUC%R,U_TEL%R,U_TEL%R,0.D0,NPOIN2)
+        CALL OV('X=Y     ',SVC%R,V_TEL%R,V_TEL%R,0.D0,NPOIN2)
+      ENDIF
+!GM Fin
 !
 !-----------------------------------------------------------------------
 !

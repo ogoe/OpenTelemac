@@ -6,7 +6,7 @@
      &  NPOIN2, AUX1  , AUX2  , AUX3  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   20/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE AVERAGE WAVE NUMBER FOR ALL THE NODES
@@ -32,19 +32,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AUX1           |---|
-!| AUX2           |---|
-!| AUX3           |---|
-!| DFREQ          |---|
-!| F              |---|
-!| FREQ           |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TAILF          |-->| FACTEUR DE QUEUE (TAILF = 4 OU 5)
-!| XK             |---|
-!| XKMOY          |---|
+!| AUX1           |<->| WORK TABLE
+!| AUX2           |<->| WORK TABLE
+!| AUX3           |<->| WORK TABLE
+!| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
+!| F              |---| VARIANCE DENSITY DIRECTIONAL SPECTRUM
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TAILF          |-->| SPECTRUM QUEUE FACTOR
+!| XK             |-->| DISCRETIZED WAVE NUMBER
+!| XKMOY          |<--| AVERAGE WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

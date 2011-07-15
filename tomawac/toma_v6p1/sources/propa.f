@@ -6,7 +6,7 @@
      &    NPOIN3,NPOIN2,NELEM2,NPLAN,NF,COURAN,TRA01,TRA02)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    ADVECTION STEP.
@@ -29,32 +29,38 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |-->| FACTEUR B
-!| COURAN         |-->| LOGIQUE INDIQUANT SI IL Y A DU COURANT
-!| ELT            |<->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE
-!|                |   | NOEUD.
-!| ETA            |<->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.
-!| ETAP1          |<->| TABLEAU DE TRAVAIL DONNANT LE NUMERO DE
-!|                |   | L'ETAGE SUPERIEUR
-!| F              |<->| FONCTION A CONVECTER
-!| FRE            |<->| NUMEROS DES FREQ. CHOISIES POUR CHAQUE NOEUD.
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE DU MAILLAGE 2D.
-!| NELEM2         |-->| NOMBRE D ELEMENTS DU MAILLAGE 2D
-!| NF             |-->| NOMBRE DE FREQUENCES
-!| NPLAN          |-->| NOMBRE DE PLANS OU DE DIRECTIONS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| SHF            |<->| COORDONNEES BARYCENTRIQUES SUIVANT F DES
-!|                |   | NOEUDS DANS LEURS FREQUENCES "FRE" ASSOCIEES.
-!| SHP1           |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
-!|                |   | COURBES CARACTERISTIQUES.
-!| SHP2           |---|
-!| SHP3           |---|
-!| SHZ            |---|
-!| TRA01          |<->| TABLEAU DE TRAVAIL
-!| TRA02          |<->| TABLEAU DE TRAVAIL
+!| B              |-->| JACOBIAN TO TRANSFORM N(KX,KY) INTO F(FR,TETA)
+!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
+!| ELT            |-->| NUMBERS OF THE ELEMENTS 2D OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETA            |-->| NUMBERS OF THE LAYERS OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| ETAP1          |<->| HIGHER LAYERS TABLE
+!| F              |<->| WAVE ACTION DENSITY OR VARIANCE DENSITY
+!|                |   | DIRECTIONAL SPECTRUM
+!| FRE            |-->| NUMBER OF THE FREQUENCIES OF THE
+!|                |   | POINTS TO BE ADVECTED
+!| IKLE2          |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
+!|                |   | OF THE 2D MESH
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| NPOIN3         |-->| NPOIN2*NPLAN
+!| SHF            |-->| BARYCENTRIC COORDINATES ALONG F OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED FREQUENCIES "FRE"
+!| SHP1,SHP2,SHP3 |-->| BARYCENTRIC COORDINATES OF THE NODES IN
+!|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
+!| SHZ            |-->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
+!|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
+!| TRA01          |<->| WORK TABLE
+!| TRA02          |<->| WORK TABLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

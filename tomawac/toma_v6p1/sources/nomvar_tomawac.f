@@ -5,7 +5,7 @@
      &(TEXTE,TEXTPR,MNEMO,MAXVAR)
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   21/06/2011
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -33,11 +33,16 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        20/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MAXVAR         |---|
-!| MNEMO          |---|
-!| TEXTE          |<--| NOM DES VARIABLES
-!| TEXTPR         |<--| NOM DES VARIABLES DU CALCUL PRECEDENT
+!| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
+!| MNEMO          |<--| ALIASES FOR THE VARIABLES IN THE STEERING FILE
+!| TEXTE          |<--| NAMES OF VARIABLES
+!| TEXTPR         |<--| NAMES OF VARIABLES OF THE PREVIOUS COMPUTATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

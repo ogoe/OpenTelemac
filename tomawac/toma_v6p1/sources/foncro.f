@@ -5,7 +5,7 @@
      &( X     , B     , N     , A     , XM    )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   14/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE VALUE OF THE FUNCTION TO BE INTEGRATED
@@ -28,12 +28,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        15/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| PARAMETRE A DE LA FONCTION A EVALUER
-!| B              |-->| PARAMETRE B DE LA FONCTION A EVALUER
-!| N              |-->| EXPOSANT N  DE LA FONCTION A EVALUER
-!| X              |-->| VALEUR A LAQUELLE LA FONCTION EST EVALUEE
-!| XM             |-->| PARAMETRE M DE LA FONCTION A EVALUER
+!| A              |-->| PARAMETER A OF THE FUNCTION TO BE INTEGRATED
+!| B              |-->| PARAMETER B OF THE FUNCTION TO BE INTEGRATED
+!| N              |-->| EXPONENT N OF THE FUNCTION TO BE INTEGRATED
+!| X              |-->| VALUE AT WHICH THE FUNCTION IS EVALUATED
+!| XM             |-->| PARAMETER M OF THE FUNCTION TO BE INTEGRATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

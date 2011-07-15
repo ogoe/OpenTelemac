@@ -6,7 +6,7 @@
      &  GRAVIT, NF    , NPLAN , NPOIN2, BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE DEPTH-INDUCED
@@ -36,20 +36,25 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---|
-!| BETAIH         |-->| CONSTANTE BETA0 DU MODELE IH
-!| DEPTH          |---|
-!| EM2SIH         |-->| CONSTANTE M2*   DU MODELE IH
-!| F              |---|
-!| FCAR           |---|
-!| GRAVIT         |---|
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIONS DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| TSDER          |---|
-!| TSTOT          |---|
-!| VARIAN         |---|
+!| BETA           |<--| BREAKING WAVES COEFFICIENT
+!| BETAIH         |-->| BETA0 CONSTANT OF WAVE BREAKING IH MODEL
+!| DEPTH          |-->| WATER DEPTH
+!| EM2SIH         |-->| M2* CONSTANT OF WAVE BREAKING IH MODEL
+!| F              |-->| DIRECTIONAL SPECTRUM
+!| FCAR           |-->| CHARACTERISTIC FREQUENCY
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| TSDER          |<->| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
+!| TSTOT          |<->| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
+!| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

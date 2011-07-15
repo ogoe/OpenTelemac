@@ -8,7 +8,7 @@
      &  INISPE, E2FMIN, DEPTH , FRABI )
 !
 !***********************************************************************
-! TOMAWAC   V6P0                                   21/08/2010
+! TOMAWAC   V6P1                                   28/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES THE VARIANCE SPECTRUM.
@@ -43,35 +43,42 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        28/06/2011
+!+        V6P1
+!+   Translation of French names of the variables in argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHIL         |-->| CONSTANTE DE PHILLIPS (ALPHA)
-!| DEPTH          |---|
-!| E2FMIN         |-->| SEUIL MINIMUM DE VARIANCE CONSIDERE
-!| F              |---|
-!| FETCH          |-->| FETCH MOYEN
-!| FPIC           |-->| FREQUENCE DE PIC JONSWAP
-!| FRA            |---|
-!| FRABI          |---|
-!| FREMAX         |-->| VALEUR MAXIMUM DE LA FREQUENCE DE PIC
-!| FREQ           |---|
-!| GAMMA          |-->| FACTEUR DE FORME DE PIC JONSWAP
-!| GRAVIT         |-->| ACCELERATION DE LA PESANTEUR
-!| HM0            |-->| HAUTEUR SIGNIFICATIVE JONSWAP
-!| INISPE         |-->| INDICATEUR D'INITIALISATION DU SPECTRE
-!| NF             |-->| NOMBRE DE FREQUENCES DE DISCRETISATION
-!| NPLAN          |-->| NOMBRE DE DIRECTIOSN DE DISCRETISATION
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE SPATIAL
-!| SIGMAA         |-->| VALEUR DE SIGMA JONSWAP POUR F
-!| SIGMAB         |-->| VALEUR DE SIGMA JONSWAP POUR F > FP
-!| SPEC           |---|
-!| SPRED1         |-->| ETALEMENT DIRECTIONNEL 1 POUR FRA
-!| SPRED2         |-->| ETALEMENT DIRECTIONNEL 2 POUR FRA
-!| TETA           |---|
-!| TETA1          |-->| DIRECTION PRINCIPALE 1 POUR FRA
-!| TETA2          |-->| DIRECTION PRINCIPALE 2 POUR FRA
-!| UV             |---|
-!| VV             |---|
-!| XLAMDA         |-->| FACTEUR DE PONDERATION POUR LA FRA
+!| ALPHIL         |-->| INITIAL PHILLIPS CONSTANT (ALPHA)
+!| DEPTH          |-->| WATER DEPTH
+!| E2FMIN         |-->| SPECTRUM ENERGY THRESHOLD
+!| F              |<--| VARIANCE DENSITY DIRECTIONAL SPETCRUM
+!| FETCH          |-->| INITIAL MEAN FETCH VALUE
+!| FPIC           |-->| INITIAL PEAK FREQUENCY
+!| FRA            |<--| DIRECTIONAL SPREADING FUNCTION VALUES
+!| FRABI          |-->| INITIAL ANGULAR DISTRIBUTION FUNCTION
+!| FREMAX         |-->| INITIAL MAXIMUM PEAK FREQUENCY
+!| FREQ           |-->| DISCRETIZED FREQUENCIES
+!| GAMMA          |-->| INITIAL JONSWAP SPECTRUM PEAK FACTOR
+!| GRAVIT         |-->| GRAVITY ACCELERATION
+!| HM0            |-->| INITIAL SIGNIFICANT WAVE HEIGHT
+!| INISPE         |-->| TYPE OF INITIAL DIRECTIONAL SPECTRUM
+!| NF             |-->| NUMBER OF FREQUENCIES
+!| NPLAN          |-->| NUMBER OF DIRECTIONS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
+!| SIGMAA         |-->| INITIAL VALUE OF SIGMA FOR JONSWAP SPECTRUM
+!|                |   | (F<FP)
+!| SIGMAB         |-->| INITIAL VALUE OF SIGMA FOR JONSWAP SPECTRUM
+!|                |   | (F>FP)
+!| SPEC           |<--| VARIANCE DENSITY FREQUENCY SPECTRUM
+!| SPRED1         |-->| INITIAL DIRECTIONAL SPREAD 1
+!| SPRED2         |-->| INITIAL DIRECTIONAL SPREAD 2
+!| TETA           |-->| DISCRETIZED DIRECTIONS
+!| TETA1          |-->| MAIN DIRECTION 1
+!| TETA2          |-->| MAIN DIRECTION 2
+!| UV             |-->| WIND VELOCITY ALONG X AT THE MESH POINTS
+!| VV             |-->| WIND VELOCITY ALONG Y AT THE MESH POINTS
+!| XLAMDA         |-->| WEIGHTING FACTOR FOR FRA
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
