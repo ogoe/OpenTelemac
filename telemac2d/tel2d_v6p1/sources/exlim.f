@@ -62,15 +62,15 @@
 !
       ELSEIF (ILIM.EQ.2) THEN
 !
-!    VAN ALBADA
+!       VAN ALBADA
 !
-      E2 = 1.D-12
+        E2 = 1.D-12
 !
-         AUX1 = 0.5D0*(1.D0+DSIGN(1.D0,GRI1*GRIJ))
-         GRI2  = GRI1*GRI1  + E2
-         GRIJ2 = GRIJ*GRIJ  + E2
+        AUX1 = 0.5D0*(1.D0+DSIGN(1.D0,GRI1*GRIJ))
+        GRI2  = GRI1*GRI1  + E2
+        GRIJ2 = GRIJ*GRIJ  + E2
 !
-         EXLIM  = AUX1*(GRI2*GRIJ+GRIJ2*GRI)/(GRI2+GRIJ2)
+        EXLIM  = AUX1*(GRI2*GRIJ+GRIJ2*GRI)/(GRI2+GRIJ2)
 !
       ENDIF
 !

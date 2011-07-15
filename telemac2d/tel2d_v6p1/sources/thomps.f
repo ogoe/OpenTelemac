@@ -192,7 +192,7 @@
 !
 !-----------------------------------------------------------------------
 ! 
-      IF(INIT.EQV..TRUE.) THEN
+      IF(INIT) THEN
         CALL ALLBLO(FNCAR1,'FNCAR1')
         CALL ALLBLO(FTILD1,'FTILD1')
         CALL ADDBLO(FNCAR1,UFIELD)

@@ -19,9 +19,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LAMBDATAB      |<--| LONGITUDE
 !| NUMZONE        |-->| NUMBER OF LAMBERT ZONE
-!| NTAB           |-->| 
+!| NTAB           |-->| NUMBER OF COORDINATES 
 !| PHITAB         |<--| LATITUDE
-!| XTAB,YTAB      |-->| METRIC COORDINATES (LAMBERT)
+!| XTAB           |-->| METRIC COORDINATES (LAMBERT)
+!| YTAB           |-->| METRIC COORDINATES (LAMBERT)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
