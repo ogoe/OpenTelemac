@@ -717,9 +717,11 @@
 ! BUT ALLOCATE FIRST
 !
 !     NPTFRMAX MUST BE GREATER OR EQUAL TO NPFTR
-!     JMH 16/06/2011 SEE RELEASE NOTES 6.1
 !
-      NPTFRMAX = 2*NPOIN2-NELEM2-2
+      NPTFRMAX = NPOIN2
+!
+!     IT COULD BE THAT (TO BE PROVEN, BUT NILES MAY BE LARGE)
+!     NPTFRMAX = 2*NPOIN2-NELEM2-2+2*NILES
 !
       ALLOCATE (LIHBOR(NPTFRMAX),STAT=ERR)
       IF (ERR.NE.0) CALL ALLOER (LU, 'LIHBOR')
@@ -1138,12 +1140,13 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
       IF (ERR.NE.0) CALL ALLOER (LU, 'EF_II')
 
       
-
+!
 !======================================================================
 !     STEP 5 : INITIALISATION  OF LOCAL ARRAYS 
 !                  (GELELG AND ELELG, NBRE_EF_LOC)
 !              
-!======================================================================   
+!======================================================================
+!   
       DO I=1,NPARTS
          NELEM_P(I)=0
          DO EF=1,NELEM2
@@ -1156,12 +1159,12 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
          DO J=1,NPOIN_P(I)
             NBRE_EF_LOC(J)=0
          END DO
-        
+!        
 !======================================================================
 !     STEP 5 : COMPUTE THE NUMBER OF BOUNDARY AND INTERFACE POINTS
 !              INITIALISATION OF NBRE_EF_LOC AND F_P 
 !======================================================================   
-         
+!         
          NPOIN_P(I)=0
          NPTFR_P(I)=0
          NBRE_NOEUD_INTERNE=0
@@ -1172,7 +1175,7 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
             DO K=1,3
                NOEUD=IKLES((EF-1)*3+K)
                NBRE_EF_LOC(KNOGL(NOEUD,I))=
-     C              NBRE_EF_LOC(KNOGL(NOEUD,I))+1 
+     &              NBRE_EF_LOC(KNOGL(NOEUD,I))+1 
                IF (NBRE_EF_LOC(KNOGL(NOEUD,I)) .EQ. 1) THEN
 !     THE POINT NOEUD IS ENCOUNTERED FOR THE FIRST TIME 
                   NPOIN_P(I)=NPOIN_P(I)+1    
@@ -1205,11 +1208,11 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
             DO K=1,NDP_2D
                NOEUD=IKLES((EF-1)*3+K)
                IF (ABS(NBRE_EF_LOC(KNOGL(NOEUD,I))) .NE. NBRE_EF(NOEUD))
-     C          THEN
+     &          THEN
                   INTERFACE=.TRUE.
                END IF
                IF (NBRE_EF_LOC(KNOGL(NOEUD,I)) .NE.  NBRE_EF(NOEUD).AND. 
-     C              NBRE_EF_LOC(KNOGL(NOEUD,I)) .GT. 0) THEN
+     &              NBRE_EF_LOC(KNOGL(NOEUD,I)) .GT. 0) THEN
 !     NOEUD EST INTERFACE CAR IL RESTE DES ELEMENTS FINIS HORS DE SDI QUI LE CONTIENT
                   INTERFACE=.TRUE.
                   NPTIR_P(I)=NPTIR_P(I)+1
@@ -1224,63 +1227,42 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
                    ENDIF
                    PART_P(NOEUD,POS)=I
                    NBRE_EF_LOC(KNOGL(NOEUD,I))=
-     C                  -1*NBRE_EF_LOC(KNOGL(NOEUD,I))
+     &                  -1*NBRE_EF_LOC(KNOGL(NOEUD,I))
                END IF
             END DO 
-            IF (INTERFACE .EQV. .TRUE.) THEN 
-               NBRE_EF_I=NBRE_EF_I+1 ! L'ELEMENT FINI EST DONC AUSSI INTERFACE
-               EF_I(NBRE_EF_I)=EF
-               EF_II(NBRE_EF_I)=J
-            END IF
+            IF(INTERFACE) THEN 
+              NBRE_EF_I=NBRE_EF_I+1 ! L'ELEMENT FINI EST DONC AUSSI INTERFACE
+              EF_I(NBRE_EF_I)=EF
+              EF_II(NBRE_EF_I)=J
+            ENDIF
          END DO
-         
- ! FIRST LOOP TO COMPUTE THE NUMBER OF HALO TO ALLOCATE IFAPAR 
-        
-
+!         
+! FIRST LOOP TO COMPUTE THE NUMBER OF HALO TO ALLOCATE IFAPAR 
+!        
 !     FILLING OF  IFAPAR
          NHALO(I)=0
          DO J=1,NBRE_EF_I       ! ON PARCOURS JUSTE LES ELEMENTS FINIS INTERFACES POUR                             ! DETERMINER DES HALO
             EF=EF_I(J)
             HALO=.FALSE.
             IFALOC(:)=IFABOR(EF,:)
-            
-            
-
             WHERE (IFALOC .GT. 0) 
                IFALOC=EPART(IFALOC)
             END WHERE
             HALO=ANY(IFALOC .GT. 0 .AND. IFALOC .NE. I)
-            IF (HALO .EQV. .TRUE.) THEN
+            IF(HALO) THEN
                NHALO(I)=NHALO(I)+1
-               IF (NHALO(I) > NBMAXHALO) THEN
-                  WRITE(LU,*)  'ERROR : NBMAXHALO TOO SMALL'
-                  CALL PLANTE2(-1)
-                  STOP 
+               IF(NHALO(I) > NBMAXHALO) THEN
+                 WRITE(LU,*)  'ERROR : NBMAXHALO TOO SMALL'
+                 CALL PLANTE2(-1)
+                 STOP 
                ENDIF
                IFAPAR(I,1,NHALO(I))=EF_II(J)
                IFAPAR(I,2:4,NHALO(I))=IFALOC(:)
                IFAPAR(I,5:7,NHALO(I))=IFABOR(EF_I(J),:)
-            END IF
-         END DO 
-         
-         
-                                !     
-C       WRITE(LU,*) 'SOUS DOMAINE ',I,'NBRE POINTS',NPOIN_P(I),
-C     C        'NBRE NOEUD INTE',NBRE_NOEUD_INTERNE,'INTERFACE',
-C     C        NPTIR_P(I),'NBRE FRONT',NPTFR_P(I), 'HALO',NHALO(I),
-C     C        'NBRE_EFRONT',NBRE_EF_I
-       
-C        IF (.NOT. ALLOCATED(NBOR_P)) THEN 
-C            ALLOCATE(NBOR_P(NPOIN2),STAT=ERR)
-C           IF (ERR.NE.0) CALL ALLOER (LU, 'NBOR_P')
-C        END IF 
-      END DO
-C      DEALLOCATE(IFABOR)
-C      DEALLOCATE(NBRE_EF)
-C     DEALLOCATE(NBRE_EF_LOC)
-C      DEALLOCATE(EF_I)
-C      DEALLOCATE(EF_II)
-         
+            ENDIF
+         ENDDO 
+      ENDDO
+!         
       MAX_N_NEIGH=MAXVAL(PART_P(:,0))
       IF ( MAX_N_NEIGH > NBMAXNSHARE-1 ) THEN 
          WRITE(LU,*) 'SERIOUS WARNING: ' 
@@ -1306,16 +1288,11 @@ C      DEALLOCATE(EF_II)
       NAMEOUT = NAMEINP    ! CORE NAME LENGTH IS I_LENINP
 !
 !----------------------------------------------------------------------
-
-!----------------------------------------------------------------------
 !     WORK ON THE BOUNDARIES WRITING THE BC FILES SIMULTANEOUSLY...
 !     
-         NAMECLM(I_LENCLI+1:I_LENCLI+11) = EXTENS(NPARTS-1,I-1)
-!         WRITE (LU,*) 'WORKING ON BC FILE ',NAMECLM
-
-         OPEN(NCLM,FILE=NAMECLM,
-     C        STATUS='UNKNOWN',FORM='FORMATTED')
-         REWIND(NCLM)
+        NAMECLM(I_LENCLI+1:I_LENCLI+11) = EXTENS(NPARTS-1,I-1)
+        OPEN(NCLM,FILE=NAMECLM,STATUS='UNKNOWN',FORM='FORMATTED')
+        REWIND(NCLM)
 !     
 ! FILE OPENED, NOW WORK ON BOUNDARIES 
 ! -----------------------------------
@@ -1452,7 +1429,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
             DO K=1,MAX_N_NEIGH
               
                IF (PART_P(CUT_P(SORT(J),I),K) .NE. I .AND. 
-     C        PART_P(CUT_P(SORT(J),I),K) .NE. 0) THEN
+     &        PART_P(CUT_P(SORT(J),I),K) .NE. 0) THEN
                   L=L+1
                TAB_TMP(L)=PART_P(CUT_P(SORT(J),I),K)
             END IF
@@ -1465,7 +1442,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
             DO M=0,2
                IF (IFAPAR(I,2+M,J)>0) THEN
                   IFAPAR(I,5+M,J)=GELEGL(IFAPAR(I,5+M,J),
-     C                 IFAPAR(I,2+M,J))
+     &                 IFAPAR(I,2+M,J))
                END IF
             END DO
          END DO
@@ -1525,9 +1502,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !
       NAMEOUT(I_LENINP+1:I_LENINP+11) = EXTENS(NPARTS-1,I-1)
 !      WRITE(LU,*) 'WRITING GEOMETRY FILE: ',NAMEOUT      
-      OPEN(NOUT,FILE=NAMEOUT,FORM='UNFORMATTED'
-     C     ,STATUS='UNKNOWN')
-      
+      OPEN(NOUT,FILE=NAMEOUT,FORM='UNFORMATTED',STATUS='UNKNOWN')      
       REWIND(NOUT)
 !     
 !     TITLE, THE NUMBER OF VARIABLES
