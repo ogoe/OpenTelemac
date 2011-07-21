@@ -86,7 +86,7 @@ if __name__ == "__main__":
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
-      dircfg = path.dirname(options.configFile)
+      dircfg = path.abspath(path.dirname(options.configFile))
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
          for dirpath,dirnames,filenames in walk(dircfg) : break
@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
    for cfgname in cfgnames:
       # still in lower case
-      if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
+      if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
