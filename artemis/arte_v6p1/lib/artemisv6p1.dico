@@ -2108,7 +2108,7 @@ DIAM50 represente le diametre maximum de 50% en poids des
 sediments. En general, on a DIAM90 = 1.5 * DIAM50 
 DIAM50 est plus souvent donne dans des tables' 
 AIDE1 = ' 
-DIAM90 is the maximum grain diameter, in m, which defines 50% of 
+DIAM50 is the maximum grain diameter, in m, which defines 50% of 
 the total weight of sediment. Usually, we have 
 DIAM90 = 1.5 * DIAM50. DIAM50 is a more common value used.' 
  
@@ -2566,6 +2566,158 @@ AIDE = 'Fichier de resultats de reference pour la validation.
 Les resultats a placer dans ce fichier seront a ecrire sur le canal 22.' 
 AIDE1 = 'Binary-coded result file for validation.  
 The results to be entered into this file shall be written on channel' 
+
+
+/V6P1 AJOUT ART_FILES 
+ 
+NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
+NOM1 = 'GEOMETRY FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 29 
+MNEMO = 'ART_FILES(ARTGEO)%FMT' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+NIVEAU = 2 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de geometrie. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Geometry file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+ 
+NOM = 'FORMAT DU FICHIER DE RESULTATS' 
+NOM1 = 'RESULTS FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 30 
+MNEMO = '?????' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 2 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de resultats. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Results file format. Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+ 
+ 
+NOM = 'FORMAT DU FICHIER DE REFERENCE' 
+NOM1 = 'REFERENCE FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 31 
+MNEMO = '?????' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 2 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+ 
+ 
+NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 1' 
+NOM1 = 'BINARY DATA FILE 1 FORMAT' 
+TYPE = CARACTERE 
+INDEX = 32 
+MNEMO = 'ART_FILES(ARTBI1)%FMT' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 2 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+ 
+NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 2' 
+NOM1 = 'BINARY DATA FILE 2 FORMAT' 
+TYPE = CARACTERE 
+INDEX = 33 
+MNEMO = 'ART_FILES(ARTBI2)%FMT' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+NIVEAU = 2 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de resultats du calcul precedent. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Previous computation results file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+ 
+/ VERSION 6.1
+
+NOM  = 'VARIATION RAPIDE DE LA BATHYMETRIE' 
+ NOM1 = 'RAPIDLY VARYING TOPOGRAPHY' 
+ TYPE = ENTIER 
+ INDEX = 26 
+ MNEMO = 'IPENTCO' 
+ TAILLE = 0 
+ DEFAUT = 0 
+ DEFAUT1 = 0 
+ RUBRIQUE  = 'EFFET DE BATHYMETRIE,EXTENSION BERKHOFF' 
+ RUBRIQUE1 = 'TOPOGRAPHY EFFECTS,EXTENDED MILD-SLOPE EQUATION' 
+ COMPORT = 'Foreground 
+ ("VARIATION BATHYMETRIE")  
+ IS VALEUR (Blue)' 
+ NIVEAU = 1 
+ CHOIX =
+   ' 0="0=> BERKHOFF SIMPLE                                "';
+   ' 1="1=> PRISE EN COMPTE TERME DE PENTE                 "';
+   ' 2="2=> PRISE EN COMPTE TERME DE COURBURE              "'; 
+   ' 3="3=> PRISE EN COMPTE DES TERMES DE PENTE ET COURBURE"'
+ AIDE = 
+ 'PRISE EN COMPTE DES FORTES PENTES ET COURBURES DANS BERKHOFF
+   0=> BERKHOFF SIMPLE
+   1=> PRISE EN COMPTE TERME PENTE en grad(H) **2
+   2=> PRISE EN COMPTE TERME COURBURE en laplacien(H)
+   3=> PRISE EN COMPTE DES TERMES PENTE ET COURBURE      
+   Modele retenu pour les fonctions E1 et E2 : Chamberlain
+   et Porter (1995)'
+ AIDE1 = 'EXTENSION OF MILD-SLOPE EQUATION WITH SECOND 
+          ORDER BOTTOM EFFECTS
+   0=> MILD-SLOPE EQUATION
+   1=> GRADIENT SECOND ORDER TERM  : grad(H) **2
+   2=> CURVATURE SECOND ORDER TERM : laplacian(H)
+   3=> GRADIENT + CURVATURE SECOND ORDER TERMS      
+   Model used for functions E1 and E2 expression : Chamberlain
+   et Porter 1995'
  
 NOM = 'DICTIONNAIRE' 
 NOM1 = 'DICTIONARY' 
@@ -2688,119 +2840,3 @@ NIVEAU = 1
 AIDE  = 'Executable parallele par defaut de Artemis' 
 AIDE1 = 'Default parallel executable for Artemis' 
  
-/V6P1 AJOUT ART_FILES 
- 
-NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
-NOM1 = 'GEOMETRY FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 29 
-MNEMO = 'ART_FILES(ARTGEO)%FMT' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-NIVEAU = 2 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de geometrie. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Geometry file format. 
-Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
- 
-NOM = 'FORMAT DU FICHIER DE RESULTATS' 
-NOM1 = 'RESULTS FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 30 
-MNEMO = '?????' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 2 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de resultats. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Results file format. Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
- 
- 
-NOM = 'FORMAT DU FICHIER DE REFERENCE' 
-NOM1 = 'REFERENCE FILE FORMAT' 
-TYPE = CARACTERE 
-INDEX = 31 
-MNEMO = '?????' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 2 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
-Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
- 
- 
-NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 1' 
-NOM1 = 'BINARY DATA FILE 1 FORMAT' 
-TYPE = CARACTERE 
-INDEX = 32 
-MNEMO = 'ART_FILES(ARTBI1)%FMT' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 2 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
-Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
- 
-NOM = 'FORMAT DU FICHIER DE DONNEES BINAIRE 2' 
-NOM1 = 'BINARY DATA FILE 2 FORMAT' 
-TYPE = CARACTERE 
-INDEX = 33 
-MNEMO = 'ART_FILES(ARTBI2)%FMT' 
-DEFAUT = 'SERAFIN ' 
-DEFAUT1 = 'SERAFIN ' 
-CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
-NIVEAU = 2 
-RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
-RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
-AIDE = 'Format du fichier de resultats du calcul precedent. 
-Les valeurs possibles sont : 
-- SERAFIN : format standard simple precision pour Telemac;  
-- SERAFIND: format standard double precision pour Telemac; 
-- MED     : format MED base sur HDF5' 
-AIDE1 = 'Previous computation results file format. 
-Possible values are: 
-- SERAFIN : classical single precision format in Telemac;  
-- SERAFIND: classical double precision format in Telemac; 
-- MED     : MED format based on HDF5' 
- 
- 
- 
-          
