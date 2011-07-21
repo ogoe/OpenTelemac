@@ -5,7 +5,7 @@
      &(ITITRE,X,LT,NBR,NBRTOT,ALEMON,ALEMUL,BALAYE)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES HEADER LINES FOR VARIOUS AGITATION COMPUTATIONS

@@ -2,7 +2,7 @@
                      SUBROUTINE LECDON_ARTEMIS
 !                    *************************
 !
-     & (FILE_DESC,PATH,NCAR,CODE)
+     &(FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
 ! ARTEMIS   V6P1                                   31/05/2011
@@ -33,10 +33,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CODE           |---|
-!| FILE_DESC      |---|
-!| NCAR           |---|
-!| PATH           |---|
+!| CODE           |-->| CALLING CODE
+!| FILE_DESC      |<--| STORES SSSSSSTRINGS 'SUBMIT' OF DICTIONARY
+!| NCAR           |-->| NUMBER OF LETTERS IN STRING PATH
+!| PATH           |-->| FULL PATH TO CODE DICTIONARY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC

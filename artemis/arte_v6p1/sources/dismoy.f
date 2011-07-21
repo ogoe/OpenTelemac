@@ -5,7 +5,7 @@
      &(NPOIN,NELEM,X,Y,IKLE,K,LISHHO)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALCULATES THE NUMBER OF SMOOTHINGS ON THE WAVE
@@ -38,13 +38,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |---|
-!| K              |---|
+!| IKLE           |---| CONNECTIVITY TABLE
+!| K              |-->| WAVE NUMBER
 !| LISHHO         |<--| NUMBER OF SMOOTHING FOR HHO
-!| NELEM          |---|
-!| NPOIN          |---|
-!| X              |---|
-!| Y              |---|
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINT
+!| X,Y            |-->| MESH COORDINATES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_DISMOY => DISMOY

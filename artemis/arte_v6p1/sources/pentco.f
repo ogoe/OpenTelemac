@@ -1,9 +1,7 @@
 !                       *****************
                         SUBROUTINE PENTCO
 !                       *****************
-     &(II)
-!
-!     
+     &(II)   
 !
 !***********************************************************************
 !  ARTEMIS V6P1                                       31/05/11    
@@ -62,10 +60,18 @@
 !        31/05/11
 !        V6P1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|     H          | <--|  WATER DEPTH                                 |
-!|     K          | <--|  WAVE NUMBER                                 |
-!|    II          | -->|  OPTION                                      |
-!|    T3 = 1+F    | -->|  CORRECTION FOR EXTENDED MILD-SLOPE EQUATION |
+!|    II          |-->|  OPTION FOR GRADIENT AND CURVATURE EFFECTS  
+!|    T2          |---|  WORK TABLE
+!|    T4          |---|  WORK TABLE 
+!|    T5          |---|  WORK TABLE 
+!|    T6          |---|  WORK TABLE 
+!|    T7          |---|  WORK TABLE 
+!|    T9          |---|  WORK TABLE 
+!|    T8          |---|  WORK TABLE 
+!|    T11         |---|  WORK TABLE 
+!|    T12         |---|  WORK TABLE    
+!|    T3          |<--|  OUTPUT WORK TABLE WITH CORRECTION TERMS FOR 
+!|                |   |  GRADIENT AND CURVATURE EFFECTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 ! APPELE PAR                   :  BERKHO

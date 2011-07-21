@@ -5,7 +5,7 @@
      &(DAM,NPOIN,IPRECO,IPREC2)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INHIBITS THE DIAGONAL PRECONDITIONING IF ONE OF THE

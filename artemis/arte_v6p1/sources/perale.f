@@ -5,7 +5,7 @@
      &(PALE,GAMMA,PERPIC,NPALE,TRA01,NPOIN,PRIVE,NPRIV,PMIN,PMAX)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DISCRETISES AN ENERGY SPECTRUM IN NPALE BANDS

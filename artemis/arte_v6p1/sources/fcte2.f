@@ -1,39 +1,46 @@
-! -------------------- FUNCTION FCTE2.f      
-  
-      FUNCTION FCTE2(XX)
+!                 *******************************  
+                  DOUBLE PRECISION FUNCTION FCTE2
+!                 *******************************  
+!                  
+     *(XX)
+!
 !***********************************************************************
 ! ARTEMIS   V6P1                                   31/05/2011
 !***********************************************************************
 !
 !brief    EVALUATE FUNCTION E2(KH) FOR SECOND  
 !+        ORDER BOTTOM EFFECTS (CURVATURE)
-
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!   IN:   XX         = K*H
 !
-!                                   (TH(X)-X)* CH(X)
-!   OUT :  E2(KH)/K0 * 1/2H  =  ------------------------     (IN PENTECO, WE WRITE 2*H*E2(KH)*LAPLACIAN(H)
-!                                   X ( SH(X) + X )**2
-!          given X=2KH
-!         
-!      
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !history  C.PEYRARD 
 !+        31/05/2011
 !+        V6P1
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| XX             |-->| K*H
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-       DOUBLE PRECISION  XX , SHHX , THHX , FCTE2
-       INTRINSIC         SINH, COSH
-
-       XX      = 2.*XX
-       
-       IF ( XX.LT.(0.001) ) THEN
-         FCTE2=-1./12.
-        ELSE
-         SHHX    = SINH(XX)
-         CHHX    = COSH(XX)
-         THHX    = SHHX/CHHX
-	 
-         FCTE2=(THHX-XX)*CHHX/(XX*(SHHX+XX)**2.) 
-       ENDIF
+      IMPLICIT NONE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION, INTENT(IN) :: XX  
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION  CHHX,SHHX , THHX,XXX
+      INTRINSIC         SINH, COSH
+!
+      XXX = 2.D0*XX
+!       
+      IF(XXX.LT.0.001D0) THEN
+        FCTE2=-1.D0/12.D0
+      ELSE
+        SHHX = SINH(XXX)
+        CHHX = COSH(XXX)
+        THHX = SHHX/CHHX	 
+        FCTE2=(THHX-XXX)*CHHX/(XXX*(SHHX+XXX)**2) 
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
       END

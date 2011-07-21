@@ -5,7 +5,7 @@
      &(TEXTE,TEXTPR,MNEMO)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -33,7 +33,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MNEMO          |---|
+!| MNEMO          |---| ALIASES FOR VARIALBLES
 !| TEXTE          |<--| NAME OF VARIABLES
 !| TEXTPR         |<--| VARIABLES NAME OF PREVIOUS CALCULATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

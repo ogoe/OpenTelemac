@@ -1,16 +1,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!>  @brief       INTERFACES FOR ARTEMIS SUBROUTINES
+!                  INTERFACES FOR ARTEMIS SUBROUTINES
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!>  @par Use(s)
-!><br>BIEF_DEF
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
 !
 !#######################################################################
 !

@@ -8,7 +8,7 @@
      & NELEM,NELMAX,IELM,IELMB,NPTFR,NPOIN,PRIVE)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ALMOST ALL THE COMPUTATION VARIABLES ARE AVAILABLE
@@ -20,7 +20,6 @@
 !+     EXAMPLE : U1 AND V1
 !+              (HORIZONTAL VELOCITIES AT T/4)
 !+               ARE TRANSFERRED TO PRIVE(I,1) AND PRIVE(I,2)
-!+------------------------------------------------------------------
 !+
 !+      CALL VECTOR(TRA02, '=' , 'GRADF          X' , IELM ,
 !+     *            1.D0 , PHII , BID , BID , BID , BID , BID ,
@@ -79,7 +78,7 @@
 !| KP1BOR         |-->| BOUNDARY NUMBER OF THE NEXT POINT 
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
-!| NELMAX         |---|
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS 
 !| OMEGA          |-->| WAVE PULSATION
@@ -88,9 +87,9 @@
 !| PHIR,PHII      |-->| POTENTIAL (REAL & IMAGINARY)
 !| PRIVE          |<->| USER PRIVATE TABLE
 !| S              |-->| FREE SURFACE ELEVATION
-!| TRA02          |---|
-!| TRA03          |---|
-!| TRA04          |---|
+!| TRA02          |<->| WORK ARRAY
+!| TRA03          |<->| WORK ARRAY
+!| TRA04          |<->| WORK ARRAY
 !| U0,V0          |-->| VELOCITIES AT FREE SURFACE (AT T=0)
 !| X,Y            |-->| MESH COORDINATES
 !| ZF             |-->| BOTTOM

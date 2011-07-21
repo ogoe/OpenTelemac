@@ -5,7 +5,7 @@
      &(DALE,EXPOS,TETAH,TETMIN,TETMAX,NDALE,TRA01,NPOIN,PRIVE,NPRIV)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DISCRETISES A DIRECTIONAL ENERGY SPECTRUM IN

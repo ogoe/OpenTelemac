@@ -6,7 +6,7 @@
      & ISEG , XSEG , YSEG , NACHB , NUMLIQ,IFAPAR)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE BOUNDARY CONDITION FILE AND
@@ -35,17 +35,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFAPAR         |---|
-!| ISEG           |---|
+!| IFAPAR         |---| TABLE (1: HALO ELEMENT NUMBER, 
+!|                |   |  2-4 : PROCESSOR NUMBER, 5-7 : ELEMENT NUMBER)
+!| ISEG           |---| BOUNDARY SEGMENT NUMBER
 !| LIHBOR         |<--| TYPE OF BOUNDARY CONDITIONS ON DEPTH
-!| NACHB          |---|
+!| NACHB          |-->| NACHB(1,I) : GLOBAL (INPUT) OR LOCAL (OUTPUT)
+!|                |   | NUMBER OF INTERFACE POINT.
+!|                |   | NACHB(2 TO 5,I) : NUMBER OF OTHER SUB-DOMAINS
+!|                |   | CONTAINING THE POINT I.
+!|                |   | I IS A NUMBERING OF INTERFACE POINTS.
 !| NBOR           |<--| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NLIM           |-->| NUMBER OF THE BOUDARY CONDITION FILE.
 !| NPTFR          |-->| NUMBER OF BOURDARY POINTS.
-!| NUMLIQ         |---|
-!| STDGEO         |-->| STANDARDFOR GEOMETRY FILE.
-!| XSEG           |---|
-!| YSEG           |---|
+!| NUMLIQ         |-->| BOUNDARY NUMBER OF BOUNDARY POINTS
+!| STDGEO         |-->| STANDARD FOR GEOMETRY FILE.
+!| XSEG, YSEG     |---| COORDINATES OF THE BOUNDARY SEGMENT 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

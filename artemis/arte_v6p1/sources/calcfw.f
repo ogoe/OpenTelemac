@@ -9,7 +9,7 @@
      & ENTREG,ENTRUG,FFW)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE BOTTOM FRICTION COEFFICIENT FW
@@ -38,26 +38,30 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |---|
-!| CG             |---|
-!| DIAM50         |---|
-!| DIAM90         |---|
-!| ENTREG         |---|
-!| ENTRUG         |---|
-!| FFW            |---|
-!| FORMFR         |---|
-!| GRAV           |---|
-!| H              |---|
-!| HMU            |---|
-!| I              |---|
-!| K              |---|
-!| MVEAU          |---|
-!| MVSED          |---|
-!| NPOIN          |---|
-!| OMEGA          |---|
-!| REGIDO         |---|
-!| RICOEF         |---|
-!| VISCO          |---|
+!| C              |-->| PHASE VELOCITY
+!| CG             |-->| GROUP VELOCITY
+!| DIAM50         |-->| MAXIMUM GRAIN DIAMETER WHICH DEFINES 50% OF THE 
+!|                |   | TOTAL WEIGTH OF SEDIMENT
+!| DIAM90         |-->| MAXIMUM GRAIN DIAMETER WHICH DEFINES 90% OF THE 
+!|                |   | TOTAL WEIGTH OF SEDIMENT
+!| ENTREG         |-->| LOGICAL USED TO IMPOSE THE HYDRAULIC REGIME 
+!|                |   | (FOR FRICTION CALCULATION) 
+!| ENTRUG         |-->| LOGICAL USED TO RESTRICT THE TOTAL ROUGHNESS TO 
+!|                |   | THE SKIN ROUGHNESS (FOR FRICTION CALCULATION)
+!| FFW            |<--| FRICTION FACTOR
+!| FORMFR         |-->| FRICTION LAW 
+!| GRAV           |-->| GRAVITY
+!| H              |-->| WATER HEIGHT
+!| HMU            |-->| WAVE HEIGHT
+!| I              |-->| CURRENT POINT NUMBER
+!| K              |-->| WAVE NUMBER
+!| MVEAU          |-->| FLUID SPECIFIC WEIGTH
+!| MVSED          |-->| SEDIMENT SPECIFIC WEIGTH 
+!| NPOIN          |-->| NUMBER OF POINT
+!| OMEGA          |-->| WAVE PULSATION
+!| REGIDO         |-->| TYPE OF HYDRAULIC REGIME
+!| RICOEF         |-->| RIPPLES COEFFICIENT 
+!| VISCO          |-->| KINEMATIC VISCOSITY OF THE FLUID
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &(F)
 !
 !***********************************************************************
-! ARTEMIS   V6P0                                   21/08/2010
+! ARTEMIS   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ENERGY DENSITY BASED ON GODA.
@@ -36,7 +36,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |-->| FREQUENCY FOR WHICH ENERGY DENSITY IS CALCULATED
+!| F             |-->| FREQUENCY FOR WHICH ENERGY DENSITY IS CALCULATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
