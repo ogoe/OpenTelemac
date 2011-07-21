@@ -571,7 +571,7 @@ def scanSources(cfgdir,cfg):
 
          if not fic.has_key(mod): update({mod:{}})
          fic[mod].update({File:[]})
-         who = { 'path':path.dirname(File), \
+         who = { 'path':path.abspath(path.dirname(File)), \
             'file':path.basename(File), \
             'libname':mod,   \
             'type':'',       \
@@ -806,87 +806,66 @@ def parseFortHeader(core):
 
    return docs,vars,core
 
+# Note that the spaces are kept in the 'after' text for possible formatting
+doxytags = '(brief|note|warning|history|bug|code)'
+doxycomment = re.compile(r'\s*!(?P<name>%s\b)(?P<after>.*?)\s*\Z'%(doxytags),re.I)
+doxycommentadd = re.compile(r"\s*!\+(?P<after>.*?)\s*\Z",re.I)
+
 def parseDoxyHeader(core):
-   doxy = []; found = False
+   # It is now assumed that doxytags could be part of the main
+   # core of the Fortran.
+   tags = []; found = False; count = -1
    # ~~ Parse Doxygen Tags ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   while 1:
+   while core != []:
       line = core[0].rstrip()
-      proc = re.match(emptyline,line)
-      if proc and found:  # here you do not allow for duplicated empty lines
-         if doxy[len(doxy)-1] != '': doxy.append('')
-         core.pop(0)
-         continue
+
+      # ~~> parsing the tags
       proc = re.match(doxycomment,line)
       if proc:
-         doxy.append(core[0].rstrip())
+         count = count + 1
+         tags.extend([[]])
+         tags[count].append(proc.group('name'))
+         tags[count].append([proc.group('after')])
          found = True
          core.pop(0)
          continue
-      line = delComments([line])
-      if line == []:
+      proc = re.match(doxycommentadd,line)
+      if proc and found:
+         tags[count][1].append(proc.group('after'))
          core.pop(0)
          continue
-      line = line[0].rstrip()
+      found = False
+
+      # ~~> parsing the name of the program for later reference
       proc = re.match(pcl_title,line)
       if proc :
          proc = re.match(var_word,proc.group('after'))
          if proc : name = proc.group('word')
-         break
-   tags = parseDoxyTags(doxy)
+      core.pop(0)
 
    # ~~ Extract Known Tags ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   count = 0
-   file = []; hist = []; fcts = []; bugs = []; warn = []; note = []; refs = []; code = []; para = []; resu = []
-   while count < len(tags):
-      if tags[count][0] == 'file':
-         file.extend(tags[count][2])
-      elif tags[count][0] == 'par' and tags[count][1] == 'Development history:':
-         hist.extend(tags[count][2])
-         hist.extend(tags[count+1][2])        # /!\ assumes par follows
-         count = count + 1
-      elif tags[count][0] == 'brief':
-         fcts.extend(tags[count][2])
-         if len(tags) < count+2: print 'brief',name
-         if tags[count+1][0] == 'code':
-            fcts.extend(tags[count+1][2])
-            fcts.extend(tags[count+2][2])
-            count = count + 2           # /!\ assumes endcode follows
-      elif tags[count][0] == 'warning':
-         warn.extend(tags[count][2])
-         if len(tags) < count+2: print 'warning',name
-         if tags[count+1][0] == 'code':
-            warn.extend(tags[count+1][2])
-            warn.extend(tags[count+2][2])
-            count = count + 2           # /!\ assumes endcode follows
-      elif tags[count][0] == 'note':
-         note.extend(tags[count][2])
-         if len(tags) < count+2: print 'note',name
-         if tags[count+1][0] == 'code':
-            note.extend(tags[count+1][2])
-            note.extend(tags[count+2][2])
-            count = count + 2           # /!\ assumes endcode follows
-      elif tags[count][0] == 'reference':
-         refs.extend(tags[count][2])
-      elif tags[count][0] == 'bug':
-         bugs.extend(tags[count][2])
-      elif tags[count][0] == 'code':
-         code.extend(tags[count][2])
-         code.extend(tags[count+1][2])
-         count = count + 1              # /!\ assumes endcode follows
-      elif tags[count][0] == 'internal':
-         if tags[count+1][0] == 'result':
-            resu.extend(tags[count][2])
-            resu.extend(tags[count+1][2])
-            count = count + 1
-         if tags[count+1][0][0:5] == 'param':
-            para.extend(tags[count][2])
-            para.extend(tags[count+1][2])
-            para.extend(tags[count+2][2])
-            para.extend(tags[count+3][2])
-            count = count + 3
-      count = count + 1
+   #count = 0
+   #file = []; hist = []; fcts = []; bugs = []; warn = []; note = []; refs = []; code = []; para = []; resu = []
+   #while count < len(tags):
+   #   if tags[count][0] == 'file':
+   #      file.extend(tags[count][1])
+   #   elif tags[count][0] == 'history':
+   #      hist.extend(tags[count][1])
+   #   elif tags[count][0] == 'brief':
+   #      fcts.extend(tags[count][1])
+   #   elif tags[count][0] == 'warning':
+   #      warn.extend(tags[count][1])
+   #   elif tags[count][0] == 'note':
+   #      note.extend(tags[count][1])
+   #   elif tags[count][0] == 'reference':
+   #      refs.extend(tags[count][1])
+   #   elif tags[count][0] == 'bug':
+   #      bugs.extend(tags[count][1])
+   #   elif tags[count][0] == 'code':
+   #      code.extend(tags[count][1])
+   #   count = count + 1
 
-   return name,{'file':file, 'fcts':fcts, 'code':code, 'hist':hist, 'note':note, 'bugs':bugs, 'warn':warn, 'refs':refs, 'para':para, 'resu':resu },core
+   return name,tags #{'file':file, 'fcts':fcts, 'code':code, 'hist':hist, 'note':note, 'bugs':bugs, 'warn':warn, 'refs':refs }
 
 """
    Split a set of lines (content of a file) into a Doxygen header
@@ -896,73 +875,42 @@ def parseDoxyHeader(core):
    - lines contains the content of the file
    - icount is the number of entities included (functions, subroutines, etc.)
 """
-def parseDoxyWrap(lines,icount):
+def parseDoxyWrap(lines):
    core = []; core.extend(lines)
-   wrap = []; count = -1
+   wrap = []; wrap.extend([[]])
+   blevel = 0; bcount = 0
 
-   while count+1 < icount:
+   # ~~ Split the content of the file by blocks ~~~~~~~~~~~~~~~~~~~~
+   while core != []:
+      line = core[0].rstrip()
+      wrap[bcount].append(line)
+      core.pop(0)
 
-      count = count + 1
-      wrap.extend([[[],[],[],[],{}]])
-      wrap[count][0],wrap[count][1],core = parseDoxyHeader(core)
-      wrap[count][2],wrap[count][4],core = parseFortHeader(core)
-      wrap[count][3] = []
-      
-      block = 0
-      ctain = 0; ltain = False; lface = False
-      while core != []:
-         line = delComments([core[0]])
-         if line == []:
-            wrap[count][3].append(core[0].rstrip())
-            core.pop(0)
-            continue
-         line = line[0].rstrip()
-         #~~> interface
-         if lface:
-            proc = re.match(itf_close,line)
-            if proc:
-               lface = False
-            wrap[count][3].append(core[0].rstrip())
-            core.pop(0)
-            continue
-         else:
-            proc = re.match(itf_title,line)
-            if proc :
-               lface = True
-               wrap[count][3].append(core[0].rstrip())
-               core.pop(0)
-               continue
-         #~~> contains
-         if ltain: ctain = ctain - 1
-         if re.match(ctn_title,line) : ltain = True
-         proc = re.match(pcl_close,line)
-         if proc :
-            block = block - 1
-         else:
-            proc = re.match(pcl_title,line)
-            if proc :
-               t = proc.group('type').strip()
-               if ( t != '' ):
-                  if not re.match(typ_name,t):
-                     wrap[count][3].append(core[0].rstrip())
-                     core.pop(0)
-                     continue
-               block = block + 1
-         wrap[count][3].append(core[0].rstrip())
-         core.pop(0)
-         if block < 0 :
-            #if proc.group('name') != name:
-            #   if debug: print 'Different name at END ' + objt + ' ' + name
-            #if proc.group('object') != objt:
-            #   if debug: print 'Different type at END ' + objt
-            break
-      while core != []:
-         proc = re.match(doxycomment,core[0])
-         if proc: break
-         wrap[count][3].append(core[0].rstrip())
-         core.pop(0)
+      proc = re.match(pcl_close,line)
+      if proc:
+         blevel = blevel - 1
+         if blevel == 0:
+            bcount = bcount + 1
+            wrap.extend([[]])
+         continue
+      proc = re.match(pcl_title,line)
+      if proc:
+         blevel = blevel + 1
+         continue
 
-   return wrap
+   # ~~ Clean the wrap ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # remove the the last item of the wrap,
+   # which is empty since it gets set just after the pcl_close
+   wrap.pop(len(wrap)-1)
+
+   # ~~ Parse the DOXYGEN tags ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   doxy = []; name = ''
+   for w in wrap:
+      n,d = parseDoxyHeader(w)
+      if name == '': name = n   #/!\ here takes the first name fo the file
+      doxy.extend([(name,n,d,w)])
+
+   return doxy
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
