@@ -5,7 +5,7 @@
      &(CF,H,U,V,KARMAN,KFROT,CHESTR,GRAV,MESH,T1)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FRICTION COEFFICIENT CF.
@@ -28,17 +28,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |<--| COEFFICIENT DE FROTTEMENT POUR K-EPSILON
-!| CHESTR         |-->| TABLEAU DES COEFFICIENTS DE FROTTEMENT SUR LE
-!|                |   | FOND.
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| H              |-->| HAUTEUR D'EAU
-!| KARMAN         |-->| CONSTANTE DE KARMAN
-!| KFROT          |-->| LOI DE FROTTEMENT SUR LE FOND
-!| MESH           |---|
-!| T1             |---|
-!| U              |---|
-!| V              |---|
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
+!| CHESTR         |-->| FRICTION COEFFICIENTS
+!| GRAV           |-->| GRAVITY
+!| H              |-->| WATER DEPTH
+!| KARMAN         |-->| VON KARMAN CONSTANT
+!| KFROT          |-->| FRICTION LAW ON BOTTOM
+!| MESH           |-->| MESH STRUCTURE
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

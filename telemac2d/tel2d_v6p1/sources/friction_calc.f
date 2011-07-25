@@ -6,7 +6,7 @@
      & KARMAN, CHESTR, DW_MESH, HC, VRES, CF)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SETS THE FRICTION COEFFICIENT.
@@ -48,7 +48,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---|
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
 !| CHESTR         |-->| FRICTION PARAMETER
 !| DW_MESH        |-->| DISTANCE TO THE BOUNDARY
 !| GRAV           |-->| GRAVITY ACCELERATION

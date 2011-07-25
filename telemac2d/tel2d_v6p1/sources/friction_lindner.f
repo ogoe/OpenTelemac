@@ -2,10 +2,10 @@
                      SUBROUTINE FRICTION_LINDNER
 !                    ***************************
 !
-     & (VA,HA,CF,VK,G,DP,SP,CP)
+     &(VA,HA,CF,VK,G,DP,SP,CP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FRICTION COEFFICIENT FOR NON-SUBMERGED
@@ -39,14 +39,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |-->| FRICTION COEFFICIENT FOR BOTTOM ROUGHNESS    C
-!| CP             |---|
-!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT                C
-!| G              |-->| GRAVITY ACCELERATION                         C
-!| HA             |-->| FLOW DEPTH                                   C
-!| SP             |-->| SPACING OF ROUGHHNESS ELEMENT                C
-!| VA             |-->| VELOCITY                                     C
-!| VK             |-->| KINEMTIC VISCOSITY                           C
+!| CF             |-->| FRICTION COEFFICIENT FOR BOTTOM ROUGHNESS   
+!| CP             |<--| FRICTION COEFFICIENT FOR NON-SUBMERGED VEGETATION
+!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT              
+!| G              |-->| GRAVITY ACCELERATION                        
+!| HA             |-->| FLOW DEPTH                                  
+!| SP             |-->| SPACING OF ROUGHNESS ELEMENT               
+!| VA             |-->| VELOCITY                                    
+!| VK             |-->| KINEMTIC VISCOSITY                           
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -224,4 +224,4 @@
 !=======================================================================!
 !
       RETURN
-      END SUBROUTINE FRICTION_LINDNER
+      END

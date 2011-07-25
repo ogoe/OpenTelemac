@@ -35,28 +35,28 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---|
-!| CFBOR          |---|
-!| CHBORD         |---|
-!| CHESTR         |---|
-!| DP             |---|
-!| GRAV           |---|
-!| H              |---|
-!| ITURB          |---|
-!| KARMAN         |---|
-!| KFROT          |---|
-!| LINDNER        |---|
-!| LISRUG         |---|
-!| MESH           |---|
-!| NDEF           |---|
-!| S              |---|
-!| SB             |---|
-!| SP             |---|
-!| T1             |---|
-!| T2             |---|
-!| U              |---|
-!| V              |---|
-!| VK             |---|
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
+!| CFBORD         |<--| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
+!| CHBORD         |-->| DEFAULT'S MANNING ON BOUNDARY
+!| CHESTR         |-->| FRICTION COEFFICIENTS
+!| DP             |-->| DIAMETER OF ROUGHNESS ELEMENT  
+!| GRAV           |-->| GRAVITY
+!| H              |-->| WATER DEPTH
+!| ITURB          |---| NOT USED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!| KARMAN         |-->| VON KARMAN CONSTANT
+!| KFROT          |-->| LAW OF BOTTOM FRICTION
+!| LINDNER        |-->| IF YES, THERE IS NON-SUBMERGED VEGETATION FRICTION
+!| LISRUG         |-->| TURBULENCE REGIME (1: SMOOTH 2: ROUGH)
+!| MESH           |-->| MESH STRUCTURE
+!| NDEF           |-->| DEFAULT'S MANNING
+!| S              |-->| VOID BIEF_OBJ STRUCTURE
+!| SB             |---| NOT USED !!!!!!!!!!!!!!!!!!!!!!
+!| SP             |-->| SPACING OF ROUGHNESS ELEMENT 
+!| T1             |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| VK             |-->| KINEMATIC VISCOSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_FRICTION_UNIF => FRICTION_UNIF
@@ -118,7 +118,7 @@
 !
       ! RESULTANT VELOCITY IN T2
       ! ------------------------
-      IF ((KFROT==1).OR.(KFROT==6).OR.(KFROT==7)) THEN
+      IF (KFROT.EQ.1.OR.KFROT.EQ.6.OR.KFROT.EQ.7) THEN
          CALL CPSTVC(CF,T2)
          CALL OS('X=N(Y,Z)', T2,  U, V, C)
          CALL OS('X=+(Y,C)', T2, T2, S, 1.D-6)

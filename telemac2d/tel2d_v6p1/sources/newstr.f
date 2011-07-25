@@ -5,7 +5,7 @@
      &(SETSTR,SETSTR2,DESC,RO,RSTART,NPARAM,ESTIME,KFROT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE NEW SET OF FRICTION COEFFICIENTS.
@@ -38,13 +38,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DESC           |-->|
-!| ESTIME         |---|
-!| KFROT          |---|
-!| NPARAM         |---|
+!| DESC           |-->| DIRECTION OF DESCENT
+!| ESTIME         |---| ???????? NOT USED
+!| KFROT          |-->| LAW OF FRICTION
+!| NPARAM         |-->| NUMBER OF PARAMETERS TO ESTIMATE
 !| RO             |-->| SETSTR=SETSTR2+RO*DESC
 !| RSTART         |-->| LOGICAL, RESTART COMPUTATION BECAUSE OUT OF LIMITS
-!| SETSTR         |---|
+!| SETSTR         |-->| SET OF FRICTION COEFFICIENTS IN A BIEF_OBJ STRUCTURE
 !| SETSTR2        |-->| OLD SET
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

@@ -38,7 +38,7 @@
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
 !| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NTRAC          |---|
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| SMTR           |<--| TERMES SOURCES DU TRACEUR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

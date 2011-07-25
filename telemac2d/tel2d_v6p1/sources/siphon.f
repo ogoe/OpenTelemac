@@ -7,7 +7,7 @@
      & NTRAC,T,TSCE,USCE,VSCE,U,V,ENTET,MAXSCE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    TREATS SIPHONS.
@@ -45,35 +45,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALTSCE         |-->| COTE DES BUSES.
-!| ANGSCE         |-->| ANGLE DES BUSES AVEC L'AXE OX.
-!| CESCE          |<--| COEFFICIENTS DE PERTE DE CHARGE
-!|                |   | LORS D'UN FONCTIONNEMENT EN ENTREE.
-!| CSSCE          |<--| COEFFICIENTS DE PERTE DE CHARGE
-!|                |   | LORS D'UN FONCTIONNEMENT EN SORTIE.
-!| DELSCE         |-->| ANGLE DES BUSES AVEC LA VERTICALE
-!| DSCE           |<--| DEBIT DES SOURCES.
-!| ENTET          |---|
-!| ENTSIP         |-->| NUMERO DE L'ENTREE D'UNE BUSE DANS LA
-!|                |   | NUMEROTATION DES SOURCES.
-!| GRAV           |-->| PESANTEUR.
-!| H              |---| HAUTEUR D'EAU.
-!| ISCE           |-->| NUMERO GLOBAL DES POINTS SOURCES.
-!| LSCE           |<--| PERTE DE CHARGE LINEAIRE DE LA CONDUITE.
-!| MAXSCE         |---|
-!| NSIPH          |---|
-!| NTRAC          |---|
-!| RELAXS         |-->| COEFFICIENT DE RELAXATION.
-!| SECSCE         |-->| SECTION DES BUSES.
-!| SORSIP         |-->| NUMERO DE LA SORTIE D'UNE BUSE DANS LA
-!|                |   | NUMEROTATION DES SOURCES.
-!| T              |-->| TRACEUR.
-!| TSCE           |-->| VALEUR DU TRACEUR AUX SOURCES.
-!| U              |-->| VITESSE U.
-!| USCE           |-->| VITESSE U DU COURANT AUX SOURCES.
-!| V              |-->| VITESSE V.
-!| VSCE           |-->| VITESSE V DU COURANT AUX SOURCES.
-!| ZF             |---| COTES DU FOND.
+!| ALTSCE         |-->| ELEVATIONS OF PIPES
+!| ANGSCE         |-->| ANGLE OF PIPES WITH AXIS OX.
+!| CESCE          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
+!| CSSCE          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
+!| DELSCE         |<--| ANGLE OF PIPES WITH VERTICAL
+!| DSCE           |<--| DISCHARGE OF SOURCES.
+!| ENTET          |-->| IF YES, PRINTING INFORMATION ON LISTING
+!| ENTSIP         |<--| INDICES OF ENTRY OF PIPE IN POINT SOURCES NUMBERING
+!| GRAV           |-->| GRAVITY
+!| H              |-->| DEPTH
+!| ISCE           |-->| GLOBAL NUMBER OF POINT SOURCES.
+!| LSCE           |<--| LINEAR HEAD LOSS OF PIPE
+!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
+!| NSIPH          |-->| NUMBER OF CULVERTS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| RELAXS         |-->| RELAXATION COEFFICIENT
+!| SECSCE         |-->| CROSS SECTION OF CULVERTS (NUMBERED AS SOURCES)
+!| SORSIP         |-->| INDICES OF PIPES EXITS IN SOURCES NUMBERING
+!| T              |-->| BLOCK OF TRACERS
+!| TSCE           |-->| VALUES OF TRACERS AT SOURCES
+!| U              |<->| X-COMPONENT OF VELOCITY
+!| USCE           |-->| VELOCITY U OF THE SOURCES
+!| V              |<->| Y-COMPONENT OF VELOCITY
+!| VSCE           |-->| VELOCITY V OF THE SOURCES
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

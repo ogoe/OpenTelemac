@@ -5,7 +5,7 @@
      &(IETAPE,AT,LT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES ON THE LISTING HEADINGS FOR THE VARIOUS STAGES
@@ -29,7 +29,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IETAPE         |-->| INDICATEUR D'AVANCEMENT DANS LE PROGRAMME.
+!| AT             |-->| TIME IN SECONDS
+!| IETAPE         |-->| FRACTIONAL STEP IN THE ALGORITHM
+!| LT             |-->| TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

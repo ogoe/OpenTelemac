@@ -12,7 +12,7 @@
      & MESH2D,MESH3D)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    COUPLES LNH-TELEMAC-3D TO DELFT-WAQ ONLINE.
@@ -116,62 +116,75 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AAT,DDT        |-->| CURRENT TIME, TIME STEP
-!| DIFF_DEL       |---|
+!| AAT            |-->| CURRENT TIME
+!| DDT            |-->| TIME STEP
+!| DIFF_DEL       |-->| IF YES, WRITES DIFFUSION FILE FOR DELWAQ
 !| ELTSEG         |-->| SEGMENTS COMPOSING AN ELEMENT
-!| FLOW           |---|
-!| FLULIM         |---|
+!| FLOW           |<->| FLOW
+!| FLULIM         |-->| FLUX LIMITATION
 !| GLOSEG         |-->| GLOBAL NUMBERS OF POINTS OF A SEGMENT
 !| HNEW           |-->| DEPTH AT NEW TIME (2D) ELEVATION Z (3D)
 !| HPROP          |-->| DEPTH IN THE DIV(HU) TERM
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INFOGR         |-->| IF YES, INFORMATION PRINTED ON LISTING
-!| INIFLOW        |---|
+!| INIFLOW        |-->| IF YES, INITIALISES FLOWS
 !| KNOLG          |-->| GLOBAL NUMBERS OF LOCAL POINTS IN PARALLEL
 !| LIHBOR         |-->| TYPE OF 2D BOUNDARIES FOR DEPTH
 !| LLT,NNIT       |-->| ITERATION NUMBER,NUMBER OF ITERATIONS
-!| MARDAT         |---|
-!| MARTIM         |---|
-!| MAXSEG         |---|
-!| MESH2D         |---|
-!| MESH3D         |---|
+!| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
+!| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
+!| MAXSEG         |-->| DIMENSION OF GLOSEG
+!| MESH2D         |<->| 2D MESH
+!| MESH3D         |<->| 3D MESH
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY NODES
-!| NCOB,NOMCOB    |-->| DELWAQ STEERING FILE CANAL AND FILE
-!| NCOU,NOMCOU    |-->| FLUX CANAL AND FILE
+!| NCOB           |-->| DELWAQ STEERING FILE CANAL
+!| NCOU           |-->| FLUX CANAL
 !| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
-!| NINI,NOMINI    |-->| HORIZONTAL SURFACE CANAL AND FILE
-!| NMAB,NOMMAB    |-->| AREA CANAL AND FILE
-!| NMAF,NOMMAF    |-->| NODE DISTANCE CANAL AND FILE
+!| NINI           |-->| HORIZONTAL SURFACE CANAL
+!| NMAB           |-->| AREA CANAL
+!| NMAF           |-->| NODE DISTANCE CANAL
 !| NOLAY          |-->| NUMBER OF PLANES
+!| NOMCOB         |-->| DELWAQ STEERING FILE
+!| NOMCOU         |-->| FLUX FILE
 !| NOMGEO         |-->| RESULT FILE OF THE SIMULATION
 !| NOMLIM         |-->| BOUNDARY FILE OF THE SIMULATION
-!| NOMVEL         |---|
-!| NOMVIS         |---|
+!| NOMINI         |-->| HORIZONTAL SURFACE FILE
+!| NOMMAB         |-->| AREA FILE
+!| NOMMAF         |-->| NODE DISTANCE FILE
+!| NOMSAL         |-->| SALINITY FOR DELWAQ FILE
+!| NOMSOU         |-->| VOLUME FILE
+!| NOMTEM         |-->| TEMPERATURE FOR DELWAQ FILE
+!| NOMVEB         |-->| NODE EXCHANGE FILE
+!| NOMVEL         |-->| VELOCITY FILE
+!| NOMVIS         |-->| DIFFUSION FILE
 !| NPOIN          |-->| NUMBER OF 3D POINTS IN THE MESH
 !| NPOIN2         |-->| NUMBER OF 2D POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF 3D BOUNDARY POINTS
-!| NSAL,NOMSAL    |-->| SALINITY FOR DELWAQ, CANAL AND FILE
+!| NSAL           |-->| SALINITY FOR DELWAQ CANAL
 !| NSEG           |-->| NUMBER OF 2D SEGMENTS IN THE MESH
-!| NSOU,NOMSOU    |-->| VOLUME CANAL AND FILE
-!| NSTEPA         |-->| NUMBER OF TIME-STEPS FOR TIME AGGREGATION
-!| NTEM,NOMTEM    |-->| TEMPERATURE FOR DELWAQ, CANAL AND FILE
-!| NVEB,NOMVEB    |-->| NODE EXCHANGE CANAL AND FILE
-!| NVEL           |---|
-!| NVIS           |---|
-!| ORISEG         |---|
-!| SALI,TEMP      |-->| SALINITY, TEMPERATURE (IF SALI_DEL, IF TEMP_DEL)
+!| NSOU           |-->| VOLUME CANAL
+!| NSTEPA         |<->| NUMBER OF TIME-STEPS FOR TIME AGGREGATION
+!| NTEM           |-->| TEMPERATURE FOR DELWAQ CANAL
+!| NVEB           |-->| NODE EXCHANGE CANAL
+!| NVEL           |-->| VELOCITY CANAL
+!| NVIS           |-->| DIFFUSION CANAL
+!| ORISEG         |-->| ORIENTATION OF SEGMENTS FORMING AN ELEMENT
+!| SALI           |-->| SALINITY (IF SALI_DEL)
 !| SALI_DEL       |-->| IF YES, THERE IS SALINITY
+!| TEMP           |-->| TEMPERATURE (IF TEMP_DEL)
 !| TEMP_DEL       |-->| IF YES, THERE IS TEMPERATURE
 !| TITRE          |-->| TITLE OF STUDY
-!| U,V            |-->| COMPONENTS OF HORIZONTAL VELOCITY
-!| V2DPAR         |---|
-!| VELO_DEL       |---|
-!| VISC           |---|
-!| W              |---|
-!| X,Y            |-->| COORDINATES OF HORIZONTAL MESH
-!| YAFLULIM       |---|
-!| ZNEW           |---|
+!| U              |-->| COMPONENT OF HORIZONTAL VELOCITY
+!| V              |-->| COMPONENT OF HORIZONTAL VELOCITY
+!| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
+!| VELO_DEL       |-->| IF YES, WRITES VELOCITY FILE FOR DELWAQ
+!| VISC           |-->| DIFFUSION COEFFICIENT
+!| W              |<->| COMPONENT OF HORIZONTAL VELOCITY
+!| X              |-->| COORDINATES OF HORIZONTAL MESH
+!| Y              |-->| COORDINATES OF HORIZONTAL MESH
+!| YAFLULIM       |-->| IF YES, FLUX LIMITATION
+!| ZNEW           |-->| COORDINATE OF Z
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -473,10 +486,18 @@
 !
 !        WRITES ALL HORIZONTAL 'FROM' 'TO' HALF LENGTHS
 !
-         WRITE(NMAF) 0
-         DO NLAY = 1, NOLAY
-           WRITE(NMAF) ((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND)     ! LP 05/04/2009
-         ENDDO
+!        WRITE(NMAF) 0
+!        DO NLAY = 1, NOLAY
+!          WRITE(NMAF) ((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND)     ! LP 05/04/2009
+!        ENDDO
+!
+! LP 27/02/2011: BECAUSE OF UNFORMATTED FILES. ALL NOW IN 1 RECORD
+!
+         WRITE(NMAF) 0, (((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG+MBND),     ! LP 27/02/2011
+     &                     NLAY=1,NOLAY), ((1.0,1.0), K=NOQ1+1,NOQ)     ! BECAUSE OF
+!                                                                       ! UNFORMATTED FILES
+!                                                                       ! ALL NOW IN 1 RECORD
+!
 !
 !        DERIVES THE FROM-TO EXCHANGE TABLE FOR COMPUTATIONAL ELEMENTS
 !        VERTICALLY FOR ALL LAYERS. THE LAYERS DIFFER NPOIN2 IN
@@ -496,7 +517,7 @@
                WRITE ( NVEB ) IFROM,ITO,IFRM1,ITOP1
 !        THE WRITING OF EXCHANGE POINTERS IS CHANGED       **END**     LP 05/04/2009
             ENDDO
-            WRITE(NMAF) (1.0, I=1,NPOIN2*2) ! VERTICAL LENGTHS AT A DUMMY 1.0
+!           WRITE(NMAF) (1.0, I=1,NPOIN2*2) ! VERTICAL LENGTHS AT A DUMMY 1.0
          ENDDO                  ! WAQ COMPUTES THEM ON THE FLY FROM VOLUMES
 !
 !        FILLS IN THE HORIZONTAL AREA IN THE LAST DIRECTION EXCHANGE AREA

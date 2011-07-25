@@ -5,7 +5,7 @@
      &(NWEIRS,NPSING,NPSMAX,NUMDIG,ZF,ZDIG,H,T,NBOR,LITBOR,TBOR,NTRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MANAGES THE BOUNDARY CONDITIONS FOR TRACER.
@@ -34,15 +34,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| H              |-->| HAUTEUR D'EAU.
-!| NBOR           |-->| NUMEROTATION GLOBALE DES POINTS DE BORD.
-!| NPSMAX         |-->| NOMBRE MAXIMUM DE POINTS POUR UN COTE D'UNE
-!|                |   | SINGULARITE.
-!| NTRAC          |---|
-!| NWEIRS         |-->| NOMBRE DE SINGULARITES LINEIQUES.
-!| T              |-->| TRACEUR.
-!| ZDIG           |-->| COTE DES POINTS DES SEUILS.
-!| ZF             |-->| COTE DU FOND.
+!| H              |-->| WATER DEPTH
+!| LITBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON TRACERS
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPSMAX         |-->| MAXIMUM NUMBER OF POINTS FOR ONE SIDE OF A
+!|                |   | SINGULARITY.
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| NPSING         |-->| NUMBER OF POINTS FOR EVERY SINGULARITY.
+!| NUMDIG         |-->| NUMDIG(K,I,NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF SIDE K OF WEIR I.
+!| NWEIRS         |-->| NUMBER OF SINGULARITIES
+!| T              |-->| BLOCK OF TRACERS
+!| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
+!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS 
+!| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

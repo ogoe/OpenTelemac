@@ -5,7 +5,7 @@
      &(VISC,AK,EP,NPOIN,CMU,PROPNU)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TURBULENT VISCOSITY ACCORDING TO K AND EPSILON.
@@ -28,12 +28,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |-->| ENERGIE TURBULENTE
-!| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
-!| EP             |-->| DISSIPATION TURBULENTE
-!| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| PROPNU         |-->| VISCOSITE LAMINAIRE
-!| VISC           |<--| DIFFUSION TURBULENTE
+!| AK             |-->| TURBULENT KINETIC ENERGY
+!| CMU            |-->| CONSTANT OF K-EPSILON MODEL
+!| EP             |-->| DISSIPATION OF TURBULENT KINETIC ENERGY
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| PROPNU         |-->| LAMINAR VISCOSITY
+!| VISC           |<--| TURBULENT DIFFUSION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

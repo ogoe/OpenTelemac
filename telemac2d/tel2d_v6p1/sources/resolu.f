@@ -109,8 +109,8 @@
 !| LTT            |<->| NUMBER OF TIME STEP FOR TRACER
 !| MASSES         |<--| ADDED MASS BY SOURCE TERMS
 !| MASSOU         |<--| ADDED TRACER MASS BY SOURCE TERM
-!| MAXSCE         |---|
-!| MAXTRA         |---|
+!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
+!| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
 !| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
@@ -119,7 +119,7 @@
 !| NPTFR          |-->| TOTAL NUMBER OF BOUNDARY NODES
 !| NREJET         |-->| NUMBER OF SOURCE/SINK
 !| NSEG           |-->| NUMBER OF EDGES
-!| NTRAC          |---|
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
@@ -132,7 +132,7 @@
 !| T1,T2,T3,T4,T5 |---| WORKING TABLES
 !| TBOR           |-->| BC FOR T
 !| TMAX           |-->| FINAL TIME
-!| TSCE2          |---|
+!| TSCE2          |-->| VALUES OF TRACERS AT SOURCES
 !| U,V            |<--| VELOCITY COMPONENTS AT TIME N+1
 !| UBOR           |-->| IMPOSED VALUES FOR U
 !| VBOR           |-->| IMPOSED VALUES FOR V
@@ -140,7 +140,7 @@
 !|                |   | (2 FIRS COMPOSANTES) AND 
 !|                |   | SEGMENT LENGTH (3RD COMPONENT)
 !| W              |<->| WORKING TABLE
-!| WINF           |---|
+!| WINF           |---| ???? NOT USED
 !| X,Y            |-->| COORDINATES FOR MESH NODES
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH

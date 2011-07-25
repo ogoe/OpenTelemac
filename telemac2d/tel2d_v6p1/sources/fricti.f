@@ -6,7 +6,7 @@
      & UNSV2D,MSK,MASKEL,HFROT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FRICTION TERMS IN THEIR IMPLICIT FORM.
@@ -36,19 +36,20 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| COEFFICIENT DE FROTTEMENT VARIABLE EN ESPACE
-!| FUDRAG         |---|
-!| FU_IMP         |---|
-!| FVDRAG         |---|
-!| FV_IMP         |---|
-!| HFROT          |---|
-!| HN             |-->| HAUTEURS D'EAU A TN
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| T1             |---|
-!| T2             |---|
-!| UNSV2D         |---|
-!| VERTIC         |---|
+!| FUDRAG         |<--| DRAG FORCE ALONG X
+!| FU_IMP         |<--| IMPLICIT SOURCE TERM DUE TO FRICTION, ALONG X
+!| FVDRAG         |<--| DRAG FORCE ALONG Y
+!| FV_IMP         |<--| IMPLICIT SOURCE TERM DUE TO FRICTION, ALONG Y
+!| HFROT          |-->| KEY-WORD 'DEPTH IN FRICTION TERMS'
+!| HN             |-->| WATER DEPTH AT TIME TN
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| VERTIC         |-->| IF YES TAKE INTO ACCOUNT VERTICAL STRUCTURES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

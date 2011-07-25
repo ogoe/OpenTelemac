@@ -5,7 +5,7 @@
      &(U,V,H,S,ZF,T,TRAC0,NTRAC,ITURB,NPOIN,AKEP,TROUVE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES MISSING DATA/VARIABLES (WHEN RESUMING SIMULATION).
@@ -28,18 +28,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AKEP           |-->| LOGIQUE QUI INDIQUE S'IL FAUT INITIALISER K
-!|                |   | ET EPSILON.
-!| H              |<--| HAUTEUR.
-!| ITURB          |-->| MODELE DE TURBULENCE.
-!| NPOIN          |-->| NOMBRE DE POINTS DANS LE MAILLAGE
-!| NTRAC          |---|
-!| S              |<--| SURFACE LIBRE.
-!| T              |<--| TRACEUR.
-!| TRAC0          |-->| VALEUR INITIALE DU TRACEUR.
-!| TROUVE         |-->| TABLEAU INDIQUANT LES VARIABLES TROUVEES DANS
-!|                |   | LE FICHIER DES RESULTATS DU CALCUL PRECEDENT
-!| ZF             |<--| COTE DES POINTS DU FOND.
+!| AKEP           |-->| IF YES, K AND EPSILON TO BE INITIALISED
+!| H              |<--| WATER DEPTH
+!| ITURB          |-->| TURBULENCE MODEL
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| S              |<--| FREE SURFACE
+!| T              |<--| BLOCK OF TRACERS
+!| TRAC0          |-->| INITIAL VALUES OF TRACERS
+!| TROUVE         |-->| INTEGER ARRAY SAYING IF VARIABLES HAVE BEEN FOUND
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

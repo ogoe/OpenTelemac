@@ -17,6 +17,8 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
+!| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
 !| UPVM2          |<--| U+V (ORIGIN + NODAL PHASE) FOR WAVE M2
 !| UPVN2          |<--| U+V (ORIGIN + NODAL PHASE) FOR WAVE N2
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

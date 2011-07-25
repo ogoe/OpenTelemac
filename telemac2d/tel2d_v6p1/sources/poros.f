@@ -5,7 +5,7 @@
      &(TETA,ZF,HN,MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES TIDAL FLATS.
@@ -42,9 +42,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN,ZF          |-->| HAUTEUR ET FOND
-!| MESH           |-->| STRUCTURE DE MAILLAGE
-!| TETA           |<--| NU (PAR ELEMENT)
+!| HN             |-->| WATER DEPTH AT TIME T(N)
+!| MESH           |-->| MESH STRUCTURE
+!| TETA           |<--| POROSITY PER ELEMENT
+!| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -2,10 +2,10 @@
                      SUBROUTINE LOIDEN
 !                    *****************
 !
-     & (YAM,YS,PHI,DEB,G)
+     &(YAM,YS,PHI,DEB,G)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DISCHARGE LAW FOR A DRY WEIR.
@@ -33,11 +33,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEB            |<--| DEBIT DU SEUIL.
-!| G              |-->| GRAVITE.
-!| PHI            |-->| COEFFICIENT DE DEBIT DU SEUIL.
-!| YAM            |-->| COTE AMONT.
-!| YS             |-->| COTE DU SEUIL.
+!| DEB            |<--| DISCHARGE OF WEIR
+!| G              |-->| GRAVITY.
+!| PHI            |-->| DISCHARGE COEFFICIENT OF WEIR.
+!| YAM            |-->| UPSTREAM ELEVATION
+!| YS             |-->| ELEVATION OF WEIR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

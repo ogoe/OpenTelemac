@@ -5,7 +5,7 @@
      &(JCOUT,OPTION,MODE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PARTIALLY COMPUTES (ONE TIMESTEP) THE COST FUNCTION.
@@ -34,8 +34,11 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| JCOUT          |<->| COST FUNCTION
-!| MODE           |---|
-!| OPTION         |---|
+!| MODE           |-->| FCT: COST FUNCTION
+!|                |   | GRD: GRADIENT COST FUNCTION
+!|                |   | RHS: RIGHT HAND SIDE
+!| OPTION         |-->| 1: COST FUNCTION COMPUTED WITH DEPTH
+!|                |   | 2: COST FUNCTION COMPUTED WITH CELERITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

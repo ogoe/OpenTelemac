@@ -5,10 +5,10 @@
      &(NFIC,NFRLIQ,STA_DIS_CURVES,PTS_CURVES)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    READS STAGE-DISCHARGE CURVES IN THEIR FILE.
+!brief    READS STAGE-DISCHARGE CURVES IN THEIR FILE (STORED IN QZ)
 !
 !history  J-M HERVOUET (LNHE)
 !+        27/03/2008
@@ -28,10 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NFIC           |---|
-!| NFRLIQ         |---|
-!| PTS_CURVES     |---|
-!| STA_DIS_CURVES |---|
+!| NFIC           |-->| LOGICAL UNIT OF FILE
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| PTS_CURVES     |<--| NUMBER OF POINTS OF EVERY CURVE
+!| STA_DIS_CURVES |-->| KEYWORD: 'STAGE-DISCHARGE CURVES' 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC2D, ONLY : QZ

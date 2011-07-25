@@ -5,7 +5,7 @@
      &(NWEIRS,NWRMAX,NPSING,NUMDIG,ZDIG,PHIDIG,IOPTAN,NPSMAX,NPOIN,IFIC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE DATA DEFINING SINGULARITIES
@@ -34,19 +34,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFIC           |---|
-!| IOPTAN         |<--| OPTION DE TRAITEMENT DES VITESSES TANGENTES
-!| NPOIN          |-->| NOMBRE DE NOEUDS DU MAILLAGE
-!|                |   | LES POINTEURS POUR ZDIG, NUMDIG ET PHIDIG
-!|                |   | SONT FAITS DANS POINT EN SUPPOSANT QUE :
-!|                |   | NPOIN >= NWEIRS * NPSMAX.
-!| NPSING         |<--| NOMBRE DE POINTS POUR 1 COTE DE SINGULARITE
-!| NPSMAX         |---| NOMBRE MAXIMUM DE POINTS POUR UN COTE
-!|                |   | D'UNE SINGULARITE.
-!| NWEIRS         |-->| NOMBRE DE SINGULARITES LINEIQUES
-!| NWRMAX         |-->| NOMBRE MAXIMUM DE SINGULARITES PREVUES
-!| PHIDIG         |<--| COEFFICIENT DE DEBIT DES POINTS DES DIGUES
-!| ZDIG           |<--| COTE DES POINTS DES DIGUES
+!| IFIC           |-->| LOGICAL UNIT OF FORMATED DATA FILE 1
+!| IOPTAN         |<--| OPTION FOR TANGENTIAL VELOCITIES
+!| NPOIN          |-->| NUMBER OF NODES IN THE MESH
+!|                |   | ZDIG, NUMDIG AND PHIDIG ARE ALLOCATED ASSUMING:
+!|                |   | NPOIN .GE. NWEIRS * NPSMAX.
+!| NPSING         |<--| NUMBER OF POINTS FOR ONE SIDE OF A SINGULARITY
+!| NPSMAX         |-->| MAXIMUM FOR NPSING
+!| NWEIRS         |-->| NUMBER OF LINEAR SINGULARITIES (WEIRS, ETC.)
+!| NWRMAX         |-->| MAXIMUM FOR NWEIRS
+!| PHIDIG         |<--| DISCHARGE COEFFICIENT FOR POINTS ON WEIRS
+!| ZDIG           |<--| ELEVATION OF POINTS ON WEIRS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

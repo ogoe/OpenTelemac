@@ -5,7 +5,7 @@
      &(FRICTION_PASS,KARMAN)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR FRICTION COMPUTATION.
@@ -33,8 +33,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FRICTION_PASS  |---|
-!| KARMAN         |---|
+!| FRICTION_PASS  |-->| IF 0, INITIALISATION
+!| KARMAN         |-->| VON KARMAN CONSTANT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

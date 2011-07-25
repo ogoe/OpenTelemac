@@ -2,11 +2,10 @@
                      SUBROUTINE KEPSIN
 !                    *****************
 !
-     &(LIMKEP,LIUBOR,NPTFR,
-     & KENT,KENTU,KSORT,KADH,KLOG,KINC,KNEU,KDIR)
+     &(LIMKEP,LIUBOR,NPTFR,KENT,KENTU,KSORT,KADH,KLOG,KINC,KNEU,KDIR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE BOUNDARY CONDITIONS FOR THE DIFFUSION STEP
@@ -32,17 +31,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KADH           |-->| INDICATEUR DE POINT DIRICHLET.
-!| KDIR           |-->| INDICATEUR DE POINT DE DIRICHLET
-!| KENT           |-->| INDICATEUR DE POINT D'ENTREE FLUIDE .
-!| KENTU          |-->| INDICATEUR DE VITESSES IMPOSEES.
-!| KINC           |-->| INDICATEUR POUR L'ONDE INCIDENTE.
-!| KLOG           |-->| INDICATEUR DE PAROI SOLIDE .
-!| KNEU           |-->| INDICATEUR DE POINT DE NEUMANN
-!| KSORT          |-->| INDICATEUR DE POINT DE SORTIE FLUIDE .
-!| LIMKEP         |---|
-!| LIUBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR U.
-!| NPTFR          |-->| DIMENSION DES TABLEAUX .
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| LIMKEP         |-->| BOUNDARY CONDITIONS FOR K AND EPSILON
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &(VOLU2D,V2DPAR,UNSV2D,IELM,MESH,MSK,MASKEL,T1,S)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VARIOUS VOLUMES OF 2D BASIS AND THE INVERSE.
@@ -30,7 +30,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE OF ELEMENT (11 FOR LINEAR)
 !| MASKEL         |-->| ARRAY OF MASKS, PER ELEMENT
-!| MESH           |<->| MESH
+!| MESH           |<->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKING, MASKEL IS TO BE USED
 !| S              |-->| EMPTY BIEF_OBJ STRUCTURE
 !| T1             |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK

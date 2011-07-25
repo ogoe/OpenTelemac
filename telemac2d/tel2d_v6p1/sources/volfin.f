@@ -67,21 +67,21 @@ C                       *****************
 !| DIFT           |-->| LOGICAL: DIFFUSION FOR TRACER OR NOT
 !| DIFVIT         |-->|  LOGICAL: DIFFUSION FOR VELOCITY OR NOT
 !| DIMT           |-->| DIMENSION OF TRACER
-!| DJXT,DJYT      |---| WORKING TABLES FOR TRACER
+!| DJXT,DJYT      |<->| WORKING TABLES FOR TRACER
 !| DLIMT          |-->| DIMENSION OF TRACER ON THE BOUNDARY
 !| DSZ            |<->| VARIATION OF Z FOR ORDER 2
 !| DTHAUT         |-->| CHARACTERISTIC LENGTH (DX) USED FOR CFL
 !| DTN            |<->| TIME STEP   FROM TN+1 TO TN+2
 !| DTT            |<->| TIME STEP FOR TRACER
 !| DTVARI         |-->| DT VARIALE OR NOT
-!| DX,DY          |---| WORKING TABLES
-!| DXT,DYT        |---| WORKING TABLES FOR TRACER
+!| DX,DY          |<->| WORKING TABLES
+!| DXT,DYT        |<->| WORKING TABLES FOR TRACER
 !| FLUENT,FLUSORT |<--| MASS FLUX MASSE INLET AND OUTLET FROM TN TO TN+1
 !| FLUHBTEMP      |<->| BORD FLUX FOR TRACER
 !| FLUSCE         |-->| SOURCE FLUXES
 !| FLUSORTN,FLUENT|<->| MASS FLUX MASSE INLET AND OUTLET FROM TN+1 TO TN+2
 !| FLUTENT,FLUTSOR|<--| FLUX TRACER INLET AND OUTLET
-!| FLUX           |---| FLUX
+!| FLUX           |<--| FLUX
 !| FLUXT,FLUHBOR  |<->| FLUX, FLUX BORD FOR TRACER
 !| FLUXTEMP       |<->| FLUX POUR TRACER
 !| FLUX_OLD       |<->| FLUX OF OLD TIME STEP
@@ -109,8 +109,8 @@ C                       *****************
 !| LTT            |<->| NUMBER OF TIME STEP FOR TRACER
 !| MASSES         |<--| ADDED MASS BY SOURCE TERMS
 !| MASSOU         |<--| ADDED TRACER MASS BY SOURCE TERM
-!| MAXSCE         |---|
-!| MAXTRA         |---|
+!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
+!| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
 !| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
@@ -119,7 +119,7 @@ C                       *****************
 !| NPTFR          |-->| TOTAL NUMBER OF BOUNDARY NODES
 !| NREJET         |-->| NUMBER OF SOURCE/SINK
 !| NSEG           |-->| NUMBER OF EDGES
-!| NTRAC          |---|
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
@@ -127,20 +127,19 @@ C                       *****************
 !| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION 
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION
-!| SMTR           |---| SOURCE TERMS FOR TRACEUR
+!| SMTR           |<--| SOURCE TERMS FOR TRACERS
 !| T              |<--| TRACER UPDATED
-!| T1,T2,T3,T4,T5 |---| WORKING TABLES
-!| TBOR           |-->| BC FOR T
+!| TBOR           |-->| PRESCRIBED BOUNDARY CONDITIONS FOR T
 !| TMAX           |-->| FINAL TIME
-!| TSCE2          |---|
+!| TSCE2          |-->| VALUES OF TRACERS AT SOURCES
 !| U,V            |<--| VELOCITY COMPONENTS AT TIME N+1
 !| UBOR           |-->| IMPOSED VALUES FOR U
 !| VBOR           |-->| IMPOSED VALUES FOR V
 !| VNOIN          |-->| NORMAL TO THE INTERFACE
-!|                |   | (2 FIRS COMPOSANTES) AND 
+!|                |   | (2 FIRST COMPONENTS) AND 
 !|                |   | SEGMENT LENGTH (3RD COMPONENT)
 !| W              |<->| WORKING TABLE
-!| WINF           |---|
+!| WINF           |---| ???????  NOT USED
 !| X,Y            |-->| COORDINATES FOR MESH NODES
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH

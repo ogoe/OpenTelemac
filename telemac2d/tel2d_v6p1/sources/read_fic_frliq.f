@@ -5,7 +5,7 @@
      &( Q , WHAT , AT , NFIC , LISTIN , STAT )
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VALUES FROM THE LIQUID BOUNDARY FILE.
@@ -33,11 +33,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TIME
-!| LISTIN         |---|
-!| NFIC           |---|
-!| Q              |---|
-!| STAT           |---|
+!| AT             |-->| TIME IN SECONDS
+!| LISTIN         |-->| IF YES, PRINTS INFORMATION
+!| NFIC           |-->| LOGICAL UNIT OF FILE
+!| Q              |<--| VARIABLE READ AND INTERPOLATED
+!| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
 !| WHAT           |-->| VARIABLE TO LOOK FOR IN 8 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

@@ -10,7 +10,7 @@
      & UNSV2D,FXWAVE,FYWAVE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCE TERMS IN THE CONTINUITY EQUATION
@@ -82,46 +82,49 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
-!| CORIOL         |-->| PRISE EN COMPTE DES EFFORTS DE CORIOLIS .
-!| COSLAT         |-->| COS DE LA LATITUDE EN COORDONNEES SPHERIQUES
+!| CORIOL         |-->| IF YES, CORIOLIS FORCE
+!| COSLAT         |-->| COSINUS OF LATITUDE (SPHERICAL COORDINATES)
 !| COUROU         |-->| IF YES, WAVE DRIVEN CURRENTS TAKEN INTO ACCOUNT
-!| FAIR           |-->| COEFFICIENT DE FROTTEMENT DE L'AIR.
-!| FCOR           |-->| PARAMETRE DE CORIOLIS.
-!| FU             |<--| TERMES SOURCE TRAITE EN P1 SUR L'EQUATION EN U
-!| FV             |<--| TERMES SOURCE TRAITE EN P1 SUR L'EQUATION EN V
-!| GRAV           |-->| PESANTEUR.
-!| HN             |-->| HAUTEURS D'EAU A TN .
+!| DSCE           |-->| DISCHARGE OF POINT SOURCES
+!| FAIR           |-->| FRICTION COEFFICIENT FOR WIND
+!| FCOR           |-->| CORIOLIS PARAMETER
+!| FU             |<->| SOURCE TERMS ON VELOCITY U
+!| FV             |<->| SOURCE TERMS ON VELOCITY V
+!| FXWAVE         |<->| FORCING OF WAVES ALONG X
+!| FYWAVE         |<->| FORCING OF WAVES ALONG Y
+!| GRAV           |-->| GRAVITY
+!| HN             |-->| DEPTH AT TIME T(N)
 !| HWIND          |-->| MINIMUM DEPTH FOR TAKING WIND INTO ACCOUNT
-!| ISCE,DSCE      |-->| POINTS SOURCES, DEBITS DE LA SOURCE
+!| ISCE           |-->| NEAREST POINTS TO SOURCES
 !| LT             |-->| TIME STEP NUMBER
-!| MARDAT         |---|
-!| MAREE          |---|
-!| MARTIM         |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |-->| MAILLAGE
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NORD           |-->| DIRECTION DU NORD EN DEGRES PAR RAPPORT A
-!|                |   | L'AXE DES Y (SENS TRIGONOMETRIQUE)
+!| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
+!| MAREE          |-->| IF YES, TAKES THE TIDAL FORCE INTO ACCOUNT
+!| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NORD           |-->| DIRECTION OF NORTH WITH RESPECT TO Y AXIS
+!|                |   | (TRIGONOMETRIC SENSE) IN DEGREES.
 !| NPTH           |-->| RECORD NUMBER IN THE WAVE CURRENTS FILE
-!| NREJET         |-->| NOMBRE DE POINTS SOURCES
-!| NREJEU         |-->| NOMBRE DE VITESSES DES SOURCES DONNEES
-!|                |   | SI NREJEU=0 ON CONSIDERE QUE LA VITESSE DES
-!|                |   | SOURCES EST EGALE A CELLE DU COURANT.
-!| NVARCL         |---|
-!| OPTSOU         |---|
-!| PHI0           |---|
-!| SINLAT         |-->| SIN DE LA LATITUDE EN COORDONNEES SPHERIQUES
-!| SMH            |<--| TERME SOURCE DANS L'EQUATION DE CONTINUITE
-!| SPHERI         |-->| =TRUE : COORDONNEES SPHERIQUES
-!| T1             |-->| TABLEAU DE TRAVAIL
-!| UNSV2D         |---|
-!| VARCL          |---|
-!| VARCLA         |---|
-!| VENT           |-->| PRISE EN COMPTE DES EFFORTS DUS AU VENT .
-!| WINDY          |---|
-!| YASMH          |<->| =TRUE SI SMH NON NUL. AJOUTE UN TERME SOURCE
-!|                |   | IMPLICITE DANS L'EQUATION DU TRACEUR
+!| NREJET         |-->| NUMBER OF POINT SOURCES
+!| NREJEU         |-->| NUMBER OF POINT SOURCES WITH GIVEN VELOCITY
+!|                |   | IF NREJEU=0 VELOCITY OF SOURCES IS TAKEN EQUAL
+!|                |   | TO VELOCITY.
+!| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES
+!| OPTSOU         |-->| OPTION FOR THE TREATMENT OF SOURCES
+!| PHI0           |-->| LATITUDE OF ORIGIN POINT
+!| SINLAT         |-->| SINUS OF LATITUDE (SPHERICAL COORDINATES)
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| SPHERI         |-->| IF TRUE : SPHERICAL COORDINATES
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| VARCL          |<->| BLOCK OF CLANDESTINE VARIABLES
+!| VARCLA         |-->| NAMES OF CLANDESTINE VARIABLES
+!| VENT           |-->| IF YES, WIND IS TAKEN INTO ACCOUNT
+!| WINDX          |-->| FIRST COMPONENT OF WIND VELOCITY
+!| WINDY          |-->| SECOND COMPONENT OF WIND VELOCITY
+!| YASMH          |<->| IF TRUE SMH IS TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &(NLAG,DEBLAG,FINLAG)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES FIRST AND FINAL TIMESTEPS FOR THE LAGRANGIAN DRIFTS.

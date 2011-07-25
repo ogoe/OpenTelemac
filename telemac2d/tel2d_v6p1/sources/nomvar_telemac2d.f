@@ -5,7 +5,7 @@
      &(TEXTE,TEXTPR,MNEMO,NPERIAF,NTRAC,NAMETRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -33,10 +33,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MNEMO          |---|
-!| NAMETRAC       |---|
-!| NPERIAF        |---|
-!| NTRAC          |---|
+!| MNEMO          |<--| MNEMONIC FOR 'VARIABLES FOR GRAPHIC OUTPUTS'
+!| NAMETRAC       |-->| NAME OF TRACERS (GIVEN BY KEYWORDS)
+!| NPERIAF        |-->| NUMBER OF PERIODS FOR FOURRIER ANALYSIS
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| TEXTE          |<--| SEE ABOVE
 !| TEXTPR         |<--| SEE ABOVE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

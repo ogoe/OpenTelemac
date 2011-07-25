@@ -5,18 +5,11 @@
      &(MESH,M1,A11,A12,A21,A22,SMU,SMV,UN,VN,H0,MSK,MASKEL,S,DT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MATRICES SOLVING HELMHOLTZ EQUATIONS
 !+               (STEPS 1 AND 3 OF BOUSSINESQ ALGORITHM).
-!
-!note     A11 IS THE MATRIX WHICH MULTIPLIES U IN THE EQUATION FOR U
-!note     A12 IS THE MATRIX WHICH MULTIPLIES V IN THE EQUATION FOR U
-!note     A21 IS THE MATRIX WHICH MULTIPLIES U IN THE EQUATION FOR V
-!note     A22 IS THE MATRIX WHICH MULTIPLIES V IN THE EQUATION FOR V
-!note     SMU IS THE SECOND MEMBER IN THE EQUATION FOR U
-!note     SMV IS THE SECOND MEMBER IN THE EQUATION FOR V
 !
 !history  J-M HERVOUET (LNH)     ; C MOULIN (LNH)
 !+        17/08/1994
@@ -36,17 +29,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11            |---|
-!| A12            |---|
-!| A21            |---|
-!| A22            |---|
-!| H0             |---|
-!| M1             |---|
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| S              |---|
-!| SMU,SMV        |<--| SECONDS MEMBRES DU SYSTEME.
+!| A11            |<--| MATRIX WHICH MULTIPLIES U IN THE EQUATION FOR U
+!| A12            |<--| MATRIX WHICH MULTIPLIES V IN THE EQUATION FOR U
+!| A21            |<--| MATRIX WHICH MULTIPLIES U IN THE EQUATION FOR V
+!| A22            |<--| MATRIX WHICH MULTIPLIES V IN THE EQUATION FOR V
+!| H0             |-->| REFERENCE DEPTH
+!| M1             |<->| WORK MATRIX
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| S              |-->| VOID STRUCTURE
+!| SMU            |<--| SECOND MEMBER IN THE EQUATION FOR U
+!| SMV            |<--| SECOND MEMBER IN THE EQUATION FOR V
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

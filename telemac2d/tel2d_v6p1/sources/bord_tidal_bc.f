@@ -19,17 +19,25 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KENT           |---|
-!| KENTU          |---|
+!| BOUNDARY_COLOUR|-->| AN INTEGER LINKED TO BOUNDARY POINTS
+!|                |   | BY DEFAULT THE LAST LINE OF BOUNDARY CONDITIONS 
+!|                |   | FILE, HENCE THE GLOBAL BOUNDARY NUMBER, BUT CAN 
+!|                |   | BE CHANGED BY USER.
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
 !| GEOSYST        |-->| TYPE OF GEOGRAPHIC SYSTEM (WGS84 LONG/LAT, UTM OR LAMBERT)
-!| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
-!| LIUBOR         |-->| CONDITIONS AUX LIMITES SUR U
-!| MESH           |---|
-!| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| MAXFRO         |-->| MAXIMUM NUMBER OF BOUNDARIES
+!| MESH           |-->| MESH STRUCTURE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NFO2           |-->| LOGICAL UNIT OF TIDE DATA BASE FILE
+!| NBI2           |-->| LOGICAL UNIT OF TIDAL MODEL FILE
+!| NRFO           |-->| LOGICAL UNIT OF HARMONIC CONSTANTS FILE
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NUMZONE        |-->| NUMBER OF ZONE WHEN PLANE PROJECTION (UTM OR LAMBERT)
 !| TIDALTYPE      |-->| TYPE OF TIDE TO MODEL
-!| ZF             |-->| FOND
+!| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_BORD_TIDAL_BC => BORD_TIDAL_BC 
@@ -130,9 +138,6 @@
 !  VELOCITY IMPOSED: ONE USES THE OUTGOING DIRECTION
 !                    PROVIDED BY THE USER.
 !
-c$$$      IF(    (LIHBOR(K).EQ.KENT .AND.LIUBOR(K).EQ.KSORT)
-c$$$     1   .OR.(LIHBOR(K).EQ.KENT .AND.LIUBOR(K).EQ.KENTU)
-c$$$     1   .OR.(LIHBOR(K).EQ.KSORT.AND.LIUBOR(K).EQ.KENTU)) THEN
         IF(LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU) THEN
           I = I + 1
 !

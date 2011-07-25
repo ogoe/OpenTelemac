@@ -5,7 +5,7 @@
      &(NCOF,NOMCOF,TYP,LINE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS FRICTION FILE.
@@ -33,10 +33,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| LINE           |---|
-!| NCOF           |---|
-!| NOMCOF         |---|
-!| TYP            |---|
+!| LINE           |<--| LINE READ IN THE FRICTION FILE
+!| NCOF           |-->| LOGICAL UNIT OF FRICTION FILE
+!| NOMCOF         |-->| NAME OF FRICTION FILE
+!| TYP            |<--| 2: STARTING LINE
+!|                |   | 3: ENDING LINE
+!|                |   | 1: CURRENT LINE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -61,21 +63,19 @@
 !=======================================================================!
 !
       DO
-         READ(NCOF,*,END=989,ERR=988) C
-         LINE = LINE + 1
-         IF (C(1:1) /= '*') EXIT
+        READ(NCOF,*,END=989,ERR=988) C
+        LINE = LINE + 1
+        IF (C(1:1).NE.'*') EXIT
       ENDDO
 !
       CALL MAJUS(C)
 !
-      IF ((C(1:4) == 'FROM').OR.(C(1:3) == 'VON').OR.
-     &    (C(1:2) == 'DE')) THEN
-         TYP = 2
-      ELSE IF ((C(1:3) == 'END').OR.(C(1:4) == 'ENDE').OR.
-     &    (C(1:3) == 'FIN')) THEN
-         TYP = 3
+      IF(C(1:4).EQ.'FROM'.OR.C(1:3).EQ.'VON'.OR.C(1:2).EQ.'DE') THEN
+        TYP = 2
+      ELSEIF(C(1:3).EQ.'END'.OR.C(1:3).EQ.'FIN') THEN
+        TYP = 3
       ELSE
-         TYP = 1
+        TYP = 1
       ENDIF
 !
       BACKSPACE(NCOF)
@@ -107,7 +107,7 @@
       IF (LNG.EQ.2) THEN
          WRITE(LU,*) 'FRICTION DATA FILE : ',NOMCOF
          WRITE(LU,*) 'READ ERROR'
-         WRITE(LU,*) 'ERROR FOR THE READING OF : ',C
+         WRITE(LU,*) 'ERROR WHEN READING: ',C
       ENDIF
       CALL PLANTE(1)
       STOP

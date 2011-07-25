@@ -10,7 +10,7 @@
      & INFOKE,KDIR,MSK,MASKEL,MASKPT,S,SLVK,SLVEP,ICONV,OPTSUP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION STEP FOR SOURCE TERMS (K-EPSILON MODEL).
@@ -38,57 +38,62 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |<--| ENERGIE TURBULENTE AU TEMPS T(N+1)
-!| AKN            |-->| ENERGIE TURBULENTE AU TEMPS T(N)
-!| AKTILD         |-->| ENERGIE TURBULENTE APRES CONVECTION
-!| C1,C2          |-->| CONSTANTES DU MODELE K-EPSILON
-!| CF             |-->| COEFFICIENT DE FROTTEMENT POUR K-EPSILON
-!| CM2            |---| MATRIX
-!| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
-!| DT             |-->| PAS DE TEMPS
-!| EMIN,EMAX      |-->| EPSILON MINIMUM ET MAXIMUM EN CAS DE CLIPPING
-!| EP             |<--| DISSIPATION TURBULENTE AU TEMPS T(N+1)
-!| EPN            |-->| DISSIPATION TURBULENTE AU TEMPS T(N)
-!| EPTILD         |-->| DISSIPATION TURBULENTE APRES CONVECTION
-!| ESTAR          |-->| CONSTANTE DU MODELE K-EPSILON
-!| HN             |-->| HAUTEUR AU TEMPS N
+!| AK             |<--| TURBULENT KINETIC ENERGY K AT TIME T(N+1)
+!| AKN            |-->| TURBULENT KINETIC ENERGY K AT TIME T(N)
+!| AKTILD         |-->| TURBULENT KINETIC ENERGY AFTER ADVECTION
+!| C1             |-->| CONSTANT OF K-EPSILON MODEL
+!| C2             |-->| CONSTANT OF K-EPSILON MODEL
+!| CF             |-->| ADIMENSIONAL FRICTION COEFFICIENT
+!| CM2            |<->| MATRIX
+!| CMU            |-->| CONSTANT OF K-EPSILON MODEL
+!| DT             |-->| TIME STEP
+!| EBOR           |<--| TURBULENT ENERGY DISSIPATION AT BOUNDARY
+!| EMIN           |-->| MINIMUM EPSILON IF CLIPPING
+!| EMAX           |-->| MAXIMUM EPSILON IF CLIPPING
+!| EP             |<--| TURBULENT ENERGY DISSIPATION AT TIME T(N+1)
+!| EPN            |-->| TURBULENT ENERGY DISSIPATION AT TIME T(N)
+!| EPTILD         |-->| TURBULENT ENERGY DISSIPATION AFTER ADVECTION
+!| ESTAR          |-->| CONSTANT OF K-EPSILON MODEL
+!| HN             |-->| WATER DEPTH AT TIME T(N)
 !| ICONV          |-->| TYPE OF ADVECTION ON K AND EPSILON
 !|                |   | 1 : CHARACTERISTICS
-!|                |   | 2 : SUPG
-!| IELME          |---|
-!| IELMK          |---|
-!| INFOKE         |-->| LOGIQUE INDIQUANT SI LES INFORMATIONS SUR LE
-!|                |   | SOLVEUR SONT A RESTITUER
-!| KBOR,EBOR      |-->| K ET EPSILON IMPOSES AU BORD
-!| KDIR           |-->| CONDITION A LA LIMITE DE TYPE DIRICHLET
-!| KMIN,KMAX      |-->| K MINIMUM ET MAXIMUM EN CAS DE CLIPPING
-!| LIMKEP         |-->| CONDITIONS AUX LIMITES SUR K ET EPSILON
-!| MAE            |---| MATRICE DU SYSTEME A RESOUDRE POUR E
-!| MAK            |---| MATRICE DU SYSTEME A RESOUDRE POUR K
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKPT         |-->| MASQUES PAR POINTS.
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
+!|                |   | 2 : SUPG, ...
+!| IELME          |-->| TYPE OF ELEMENT FOR K
+!| IELMK          |-->| TYPE OF ELEMENT FOR EPSILON
+!| INFOKE         |-->| IF YES, INFORMATION ON LINEAR SYSTEMS
+!| KBOR           |<--| TURBULENTE KINETIC ENERGY ON BOUNDARIES
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KMIN           |-->| MINIMUM K IF CLIPPING
+!| KMAX           |-->| K MINIMUM ET MAXIMUM EN CAS DE CLIPPING
+!| LIMKEP         |-->| BOUNDARY CONDITIONS ON K AND EPSILON
+!| MAE            |<->| MATRIX FOR EPSILON EQUATION
+!| MAK            |<->| MATRIX FOR K EQUATION
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPTSUP         |-->| SUPG OPTION
-!| S              |-->| STRUCTURE BIDON
-!| SCHMIT         |-->| CONSTANTE DU MODELE K-EPSILON
-!| SIGMAE         |-->| CONSTANTE DU MODELE K-EPSILON
-!| SIGMAK         |-->| CONSTANTE DU MODELE K-EPSILON
+!| S              |-->| VOID STRUCTURE
+!| SCHMIT         |-->| CONSTANT OF K-EPSILON MODEL
+!| SIGMAE         |-->| CONSTANT OF K-EPSILON MODEL
+!| SIGMAK         |-->| CONSTANT OF K-EPSILON MODEL
 !| SLVEP          |-->| STRUCTURE WITH SOLVER OPTIONS FOR E
 !| SLVK           |-->| STRUCTURE WITH SOLVER OPTIONS FOR K
-!| SME            |---| SECOND MEMBRE DU SYSTEME A RESOUDRE POUR E
-!| SMK            |---| SECOND MEMBRE DU SYSTEME A RESOUDRE POUR K
-!| T2             |---|
-!| T3             |---|
-!| TB             |---|
-!| TE1            |---|
-!| TE2            |---|
-!| TM1            |---| MATRICE DE DIFFUSION
-!| UCONV          |---|
-!| VCONV          |---|
-!| VISC           |-->| DIFFUSION TURBULENTE
+!| SME            |<--| RIGHT-HAND SIDE OF EPSILON EQUATION
+!| SMK            |<--| RIGHT-HAND SIDE OF K EQUATION
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| TB             |<->| BLOCK OF WORK ARRAYS
+!| TE1            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TE2            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TM1            |<->| DIFFUSION MATRIX
+!| UCONV          |-->| X-COMPONENT OF ADVECTION VELOCITY FIELD
+!| VCONV          |-->| Y-COMPONENT OF ADVECTION VELOCITY FIELD
+!| VISC           |-->| TURBULENT DIFFUSION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

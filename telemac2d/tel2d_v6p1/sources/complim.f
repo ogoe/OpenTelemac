@@ -7,7 +7,7 @@
      & KENT,KENTU,KSORT,KADH,KLOG,KINC,IELMU,IELMV,IELMT,MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SUPPLEMENTS THE BOUNDARY CONDITION FILE
@@ -31,30 +31,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATBOR,BTBOR    |<->| COEFFICIENTS D'ECHANGE THERMIQUE.
+!| ATBOR          |<->| BOUNDARY CONDITIONS FOR TRACERS
+!|                |   | NU*DT/DN=ATBOR*T+BTBOR
+!| BTBOR          |<->| BOUNDARY CONDITIONS FOR TRACERS
+!|                |   | NU*DT/DN=ATBOR*T+BTBOR
 !| AUBOR          |<->| COEFFICIENT DE FROTTEMENT AU BORD
-!| IELMT          |---|
-!| IELMU          |---|
-!| IELMV          |---|
-!| KADH           |-->| TYPE DE CONDITION LIMITE DE PAROI (ADHERENCE)
-!| KENT           |-->| TYPE DE CONDITION LIMITE D'ENTREE.
-!| KENTU          |-->| TYPE DE CONDITION LIMITE : VITESSES IMPOSEES
-!| KINC           |-->| TYPE DE CONDITION LIMITE D'ONDE INCIDENTE
-!| KLOG           |-->| TYPE DE CONDITION LIMITE DE PAROI (PAROI)
-!| KSORT          |-->| TYPE DE CONDITION LIMITE DE SORTIE LIBRE
-!| LITBOR         |<->| TYPES DE CONDITIONS AUX LIMITES EN TEMPERA-
-!|                |   | TURE POUR LES POINTS DE BORD.
-!| LIUBOR,LIVBOR  |<->| TYPES DE CONDITIONS AUX LIMITES POUR LES
-!|                |   | POINTS DE BORD.
-!| MESH           |---|
-!| NBOR           |---|
-!| NPOIN          |---|
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| TBOR           |<->| TRACEUR AUX BORDS
-!| TRAC           |-->| INDICATEUR DE TRACEUR .
-!| UBOR           |<->| CONDITIONS AUX LIMITES SUR U
-!| VBOR           |<->| CONDITIONS AUX LIMITES SUR V
-!|                |   | (COEFFICIENTS DE LA LOI LOG)
+!| IELMT          |-->| TYPE OF ELEMENT OF TRACERS
+!| IELMU          |-->| TYPE OF ELEMENT OF VELOCITY U
+!| IELMV          |-->| TYPE OF ELEMENT OF VELOCITY V
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY V
+!| LITBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON TRACERS
+!| MESH           |-->| MESH STRUCTURE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
+!| TRAC           |-->| LOGICAL SAYING IF THERE ARE TRACERS
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

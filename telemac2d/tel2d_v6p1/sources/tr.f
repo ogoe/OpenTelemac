@@ -5,7 +5,7 @@
      &( I , ITRAC , N , IERR )
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRESCRIBES THE TRACER VALUES FOR TRACER IMPOSED
@@ -29,12 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I              |-->| RANG DE LA FRONTIERE A DEBIT IMPOSE
-!|                |   | (1 S'IL N'Y EN A QU'UNE)
-!| IERR           |---|
-!| ITRAC          |---|
-!| N              |-->| NUMERO GLOBAL DU POINT
-!|                |   | (LU DANS LE FICHIER DES PARAMETRES)
+!| I              |-->| BOUNDARY RANK
+!| IERR           |<--| IF 0, OK, IF 1: PROBLEM
+!| ITRAC          |-->| TRACER RANK
+!| N              |-->| GLOBAL NUMBER OF POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

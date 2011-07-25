@@ -5,7 +5,7 @@
      &(COTOND,H,C0,PATMOS,ATMOS,ZF,MESH,LT,AT,GRAV,ROEAU,PRIVE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE INCIDENT WAVE IMPOSED AT THE BOUNDARY.
@@ -41,17 +41,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATMOS          |-->| LOGIQUE INDIQUANT SI PATMOS EST REMPLI.
-!| C0             |-->| CELERITE DE REFERENCE
-!| COTOND         |<--| ONDE RESULTAT.
-!| GRAV           |-->| PESANTEUR
-!| H              |-->| HAUTEUR D'EAU.
-!| LT,AT          |-->| NUMERO DE L'ITERATION,TEMPS
-!| MESH           |-->| STRUCTURE DU MAILLAGE
-!| PATMOS         |-->| PRESSION ATMOSPHERIQUE
-!| PRIVE          |-->| TABLEAU DE TRAVAIL DEFINI DANS PRINCI
-!| ROEAU          |-->| MASSE VOLUMIQUE DE L'EAU
-!| ZF             |-->| FOND
+!| AT             |-->| TIME IN SECONDS
+!| ATMOS          |-->| IF YES, ATMOSPHERIC PRESSURE IN PATMOS
+!| C0             |-->| REFERENCE CELERITY
+!| COTOND         |<--| ELEVATION OF RESULTING WAVE
+!| GRAV           |-->| GRAVITY
+!| H              |-->| WATER DEPTH
+!| LT             |-->| TIME STEP
+!| MESH           |-->| MESH STRUCTURE
+!| PATMOS         |-->| ATMOSPHERIC PRESSURE
+!| PRIVE          |-->| BLOCK OF PRIVATE ARRAYS
+!| ROEAU          |-->| WATER DENSITY
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

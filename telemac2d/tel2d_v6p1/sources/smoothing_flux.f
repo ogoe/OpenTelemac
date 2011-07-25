@@ -5,7 +5,7 @@
      &(XMUL,SF,F,SURFAC,IKLE1,IKLE2,IKLE3,NELEM,NELMAX,W)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS.
@@ -40,14 +40,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE2          |---|
-!| IKLE3          |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| SURFAC         |-->| SURFACE DES ELEMENTS.
-!| W              |<->| VECTEUR RESULTAT SOUS FORME NON ASSEMBLEE.
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
+!| F              |-->| FUNCTION USED IN THE FORMULA
+!| IKLE1          |-->| FIRST POINT IN TRIANGLE
+!| IKLE2          |-->| SECOND POINT IN TRIANGLE
+!| IKLE3          |-->| THIRD POINT IN TRIANGLE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SF             |-->| BIEF_OBJ STRUCTURE OF F
+!| SURFAC         |-->| AREA OF ELEMENTS
+!| W              |<->| RESULT IN NON ASSEMBLED FORM
+!| XMUL           |-->| MULTIPLICATION COEFFICIENT 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

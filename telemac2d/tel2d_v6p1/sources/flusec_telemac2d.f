@@ -6,7 +6,7 @@
      & KNOGL,MSKSEC,BM1,BM2,T1,HPROP,MESH,S,CV1,IFABOR,COMFLU,CUMFLO)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -37,30 +37,34 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BM1            |---|
-!| BM2            |---|
-!| COMFLU         |---|
-!| CTRLSC         |-->| DONNEES SUR LES SECTIONS DE CONTROLE.
-!| CUMFLO         |---|
-!| CV1            |---|
-!| DT             |-->| PAS DE TEMPS.
-!| H              |-->| HAUTEUR D'EAU
-!| HPROP          |---|
-!| IFABOR         |---|
-!| IKLE           |-->| TABLEAUX DE CONNECTIVITE LOCAL-GLOBAL
-!| INFO           |-->| SI OUI : IMPRESSIONS.
-!| KNOGL          |---|
-!| MESH           |---|
-!| MSKSEC         |---|
+!| BM1            |<->| WORK MATRIX
+!| BM2            |<->| WORK MATRIX
+!| COMFLU         |-->| KEYWORD: COMPATIBLE COMPUTATION OF FLUXES
+!| CTRLSC         |-->| DATA ON CONTROL SECTIONS
+!| CUMFLO         |-->| KEYWORD: PRINTING CUMULATED FLOWRATES
+!| CV1            |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| DT             |-->| TIME STEP
+!| H              |-->| WATER DEPTH
+!| HPROP          |-->| PROPAGATION DEPTH
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| INFO           |-->| IF YES, PRINT
+!| KNOGL          |-->| FROM GLOBAL TO LOCAL NUMBERING IN PARALLEL
+!| MESH           |-->| MESH STRUCTURE
+!| MSKSEC         |<->| BLOCK OF WORK ARRAYS, PER SECTION
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| S              |---|
-!| T1             |---|
-!| TPS            |-->| TEMPS
-!| U,V            |-->| CHAMP DE VITESSE
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| XEL,YEL        |-->| COORDONNEES DES POINTS PAR ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| S              |-->| VOID STRUCTURE
+!| T1             |<->| WOR kARRAY IN A BIEF_OBJ STRUCTURE
+!| TPS            |-->| TIME IN SECONDS
+!| U,V            |-->| VELOCITY FIELD COMPONENTS
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -21,7 +21,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  NS            |-->|  TOTAL NUMNER OF NODES
+!|  NS            |-->|  TOTAL NUMBER OF NODES
 !|  NPTFR         |-->|  TOTAL NUMBER OF BOUNDARY NODES
 !|  NBOR          |-->|  GLOBAL NUMBERS OF BOUNDARY POINTS
 !|  LIMPRO        |-->|  TYPES OF BOUNDARY CONDITION

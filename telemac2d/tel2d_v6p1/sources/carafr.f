@@ -2,15 +2,15 @@
                      SUBROUTINE CARAFR
 !                    *****************
 !
-     & ( U,V,H,T,UCONV,VCONV,X , Y , SHP ,
-     &   SURDET , DT , IKLE , IFABOR , ELT ,
-     &   NBOR , NELBOR , NULONE , IELM , NELEM , NELMAX ,
-     &   NPOIN , NDP , NPTFR ,
-     &   MSK , MASKEL , MASKPT , NPT , LISPFR, NTRAC ,
-     &   HBTIL , UBTIL , VBTIL , TBTIL , ZBTIL , ZF, T5  )
+     &(U,V,H,T,UCONV,VCONV,X,Y,SHP,
+     & SURDET,DT,IKLE , IFABOR , ELT ,
+     & NBOR , NELBOR , NULONE , IELM , NELEM , NELMAX ,
+     & NPOIN , NDP , NPTFR ,
+     & MSK , MASKEL , MASKPT , NPT , LISPFR, NTRAC ,
+     & HBTIL , UBTIL , VBTIL , TBTIL , ZBTIL , ZF, T5  )
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE ADVECTION EQUATIONS BY THE METHOD OF
@@ -35,48 +35,53 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS
-!| ELT            |---| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES
-!|                |   | CARACTERISTIQUES.
-!| H              |---|
-!| HBTIL,UBTIL    |---| ..
-!|                |   | DE H,U,V,T
-!| IELM           |-->| TYPE D'ELEMENT : 11 : TRIANGLE P1
-!|                |   | 21 : QUADRANGLE P1
-!|                |   | 41 : PRISME DE TEL3D
-!| IFABOR         |-->| NUMEROS DES ELEMENTS VOISINS (ATTENTION, POUR
-!|                |   | TEL3D, IFABOR EST LE TABLEAU IBOR DE MITRID).
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 2D.
-!| LISPFR         |-->| LISTE DES POINTS FRONTIERES A TRAITER
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE.
-!| MASKPT         |-->| TABLEAU DE MASQUAGE DES POINTS
-!|                |   | =1. : NORMAL   =0. : POINT MASQUE.
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD.
-!| NDP            |-->| NOMBRE DE POINTS PAR ELEMENT 2D.
-!| NELBOR         |-->| NUMEROS DES ELEMENTS ADJACENTS AU BORD.
-!| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 2D.
-!| NELMAX         |-->| NOMBRE MAXIMAL D'ELEMENTS DANS LE MAILLAGE 2D
-!| NPOIN          |-->| NOMBRE TOTAL DE POINTS DU MAILLAGE.
-!| NPT            |-->| NOMBRE DE POINTS FRONTIERES A TRAITER
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NTRAC          |---|
-!| NULONE         |-->| NUMERO LOCAL D'UN POINT DE BORD DANS
-!|                |   | L'ELEMENT ADJACENT DONNE PAR NELBOR.
-!| SHP            |---| COORDONNEES BARYCENTRIQUES 2D AU PIED DES
-!|                |   | COURBES CARACTERISTIQUES.
-!| SURDET         |-->| 1/DETERMINANT POUR LES ELEMENTS 2D.
-!| T              |---|
-!| T5             |---|
-!| TBTIL          |---|
-!| U              |-->| VARIABLES A L'ETAPE N .
-!| UCONV,VCONV    |-->| COMPOSANTES DES VITESSES DU CONVECTEUR.
-!| V              |---|
-!| VBTIL          |---|
-!| X,Y            |-->| COORDONNEES DU MAILLAGE .
-!| ZBTIL          |---|
-!| ZF             |---|
+!| DT             |-->| TIME STEP
+!| ELT            |<->| ELEMENT NUMBERS AT THE FOOT OF CHARACTERISTICS
+!| H              |-->| WATER DEPTH
+!| HBTIL          |<--| RESULT OF ADVECTION OF H
+!| IELM           |-->| TYPE OF ELEMENT
+!|                |   | 11 : LINEAR TRIANGLE
+!|                |   | 41 : TELEMAC-3D PRISM
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| LISPFR         |-->| LIST OF POINTS TO BE DEALT WITH
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
+!|                |   | ELEMENT.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPT            |-->| NUMBER OF POINTS TO BE DEALT WITH
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
+!|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
+!|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
+!| SHP            |<->| BARYCENTRIC COORDINATES AT THE FOOT OF 
+!|                |   | CHARACTERISTICS
+!| SURDET         |-->| 1/DETERMINANT(2D ELEMENTS)
+!| T              |-->| BLOCK OF TRACERS
+!| T5             |<->| WORK ARRAY
+!| TBTIL          |<--| RESULT OF ADVECTION OF T (A BLOCK)
+!| U              |-->| X-COMPONENT OF VELOCITY AT TIME N.
+!| UBTIL          |<--| RESULT OF ADVECTION OF U.
+!| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD.
+!| V              |-->| Y-COMPONENT OF VELOCITY AT TIME N.
+!| VBTIL          |<--| RESULT OF ADVECTION OF V.
+!| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD.
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH.
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH.
+!| ZBTIL          |<--| BOTTOM TOPOGRAPHY AFTER ADVECTION
+!| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

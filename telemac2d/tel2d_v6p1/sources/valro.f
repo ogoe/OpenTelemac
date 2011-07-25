@@ -5,7 +5,7 @@
      &(RO,S,ROEAU)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DENSITY ACCORDING TO SALINITY.
@@ -28,10 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| RO             |<--| TABLEAU DE LA MASSE VOLUMIQUE.
-!| ROEAU          |-->| MASSE VOLUMIQUE DE L'EAU A LA TEMPERATURE.
-!|                |   | MOYENNE, QUAND LA SALINITE EST NULLE.
-!| S              |-->| BLOC DES TRACEURS.
+!| RO             |<--| WATER DENSITY
+!| ROEAU          |-->| WATER DENSITY AT AVERAGE TEMPERATURE
+!|                |   | WHEN SALINITY IS ZERO
+!| S              |-->| BLOCK OF TRACERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

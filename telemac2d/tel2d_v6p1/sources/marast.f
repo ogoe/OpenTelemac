@@ -5,7 +5,7 @@
      &(MARDAT,MARTIM,PHI0,NPOIN,AT,FU1,FV1,X,SINLAT,COSLAT,GRAV)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TIDAL FORCE.
@@ -28,16 +28,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| COSLAT         |-->| COS DE LA LATITUDE EN COORD SPHERIQUE
-!| FU1,FV1        |<--| FORCES GENERATRICES CALCULEES
-!| GRAV           |-->| PESANTEUR
-!| MARDAT         |-->| TABLEAU CONTENANT LES INFOS DE DATE
-!| MARTIM         |-->| TABLEAU CONTENANT LES INFOS DE TEMPS (TU)
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| PHI0           |-->| LONGITUDE DU POINT ORIGINE
-!| SINLAT         |-->| SIN DE LA LATITUDE EN COORD SPHERIQUE
-!| X              |-->| ABSCISSES DU MAILLAGE
+!| AT             |-->| TIME IN SECONDS
+!| COSLAT         |-->| COSINUS OF LATITUDE (IN SPHERICAL COORDINATES)
+!| FU1            |<--| X-COMPONENT OF TIDE GENERATING FORCE
+!| FV1            |<--| Y-COMPONENT OF TIDE GENERATING FORCE
+!| GRAV           |-->| GRAVITY
+!| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
+!| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PHI0           |-->| LONGITUDE OF ORIGIN POINT
+!| SINLAT         |-->| SINUS OF DE LATITUDE (IN SPHERICAL COORDINATES)
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_MARAST => MARAST

@@ -5,8 +5,16 @@
      &(ETA1,Z1,H1,U1,V1,ETA2,Z2,H2,U2,V2,EPS)
 !
 !***********************************************************************
-! TELEMAC2D 6.0
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
+!
+!brief    TREATS WETTING AND DRYING IN FINITE VOLUMES ALGORITHMS
+!
+!
+!history  RIADH ATA (LNHE)
+!+        21/08/2010
+!+
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EPS            |-->| TOLERANCE FOR WATER DEPTH
@@ -31,13 +39,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      ENG = 0.0D0
+      ENG = 0.D0
 !
 !     FIRST CASE
 !
       IF(ETA1.LT.Z2) THEN
-        IF(H1.GT.EPS.AND.H2.LT.EPS)THEN
-           IF(U1.NE.0.0D0)THEN
+        IF(H1.GT.EPS.AND.H2.LT.EPS) THEN
+           IF(U1.NE.0.D0) THEN
 !             COMPUTE THE ENERGY:U^2/2g + H + Z
               ENG = (U1**2/DEUG) + ETA1
 !             ENG MUST BE > Z2
@@ -55,7 +63,7 @@
 !     SECOND CASE
 !
       IF(ETA2.LT.Z1) THEN
-        IF(H1.LT.EPS.AND.H2.GT.EPS)THEN
+        IF(H1.LT.EPS.AND.H2.GT.EPS) THEN
            IF(U2.NE.0.0D0)THEN
 !             COMPUTE THE ENERGY:U^2/2g + H + Z
               ENG = (U2**2/DEUG) + ETA2

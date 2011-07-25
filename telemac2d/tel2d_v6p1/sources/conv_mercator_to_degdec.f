@@ -17,12 +17,14 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| LAMBDATAB      |<--| LONGITUDE
-!| NTAB           |-->| 
-!| GEOSYST        |-->| TYPE OF GEOGRAPHIC SYSTEM (FOR UTM: NORTH OR SOUTH)
+!| LAMBDATAB      |<--| LONGITUDE (DECIMAL DEGREES)
+!| NTAB           |-->| NUMBER OF COORDINATES
+!| GEOSYST        |-->| TYPE OF GEOGRAPHIC SYSTEM
+!|                |   | 2: UTM NORTH     3: UTM SOUTH
 !| NUMZONE        |-->| NUMBER OF UTM ZONE
-!| PHITAB         |<--| LATITUDE
-!| XTAB,YTAB      |-->| METRIC COORDINATES (LAMBERT)
+!| PHITAB         |<--| LATITUDE (DECIMAL DEGREES)
+!| XTAB           |-->| METRIC COORDINATES (WGS84 UTM)
+!| YTAB           |-->| METRIC COORDINATES (WGS84 UTM)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

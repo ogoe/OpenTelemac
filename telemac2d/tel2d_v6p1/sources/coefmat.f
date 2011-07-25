@@ -5,7 +5,7 @@
      &(PERIAF,DT,M,AM,NPERIAF)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ESTABLISHES THE COEFFICIENT MATRICE USED FOR SPECTRUM

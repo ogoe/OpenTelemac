@@ -5,7 +5,7 @@
      &(H1,H2,NPH,U1,U2,NPU,V1,V2,NPV,NTRAC,T1,T2,NPT,CRIPER,ARRET)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CHECKS IF A STEADY STATE IS REACHED.
@@ -30,15 +30,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ARRET          |<--| LOGIQUE MIS A TRUE SI PERMANENT ATTEINT
-!| CRIPER         |-->| CRITERES D'ARRET
-!|                |   | DANS L'ORDRE SUIVANT : H , U , V , T
-!| H1,H2,NPH      |-->| HAUTEURS A COMPARER ET NOMBRE DE POINTS
-!| NPV            |---|
-!| NTRAC          |---|
-!| T1,T2,NPT      |-->| TRACEURS A COMPARER ET NOMBRE DE POINTS
-!| U1,U2,NPU      |-->| VITESSES A COMPARER ET NOMBRE DE POINTS
-!| V1,V2,NPU      |-->| VITESSES A COMPARER ET NOMBRE DE POINTS
+!| ARRET          |<--| .TRUE. IF STEADY STATE REACHED
+!| CRIPER         |-->| STOP CRITERIA IN FOLLOWING ORDER:
+!|                |   | H , U , V , T
+!| H1             |-->| DEPTH TO BE COMPARED WITH H2
+!| H2             |-->| DEPTH TO BE COMPARED WITH H1
+!| NPH            |-->| NUMBER OF POINTS FOR DEPTH
+!| NPT            |-->| NUMBER OF POINTS FOR TRACERS
+!| NPU            |-->| NUMBER OF POINTS FOR VELOCITY U
+!| NPV            |-->| NUMBER OF POINTS FOR VELOCITY V
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| T1             |-->| TRACERS TO BE COMPARED WITH T2
+!| T2             |-->| TRACERS TO BE COMPARED WITH T1
+!| U1             |-->| VELOCITY U TO BE COMPARED WITH U2
+!| U2             |-->| VELOCITY U TO BE COMPARED WITH U1
+!| V1             |-->| VELOCITY V TO BE COMPARED WITH V2
+!| V2             |-->| VELOCITY V TO BE COMPARED WITH V1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -63,27 +70,27 @@
 !
 !-----------------------------------------------------------------------
 !
-!  CHECKS THE WATER DEPTH
+!     CHECKS THE WATER DEPTH
 !
-      DO 10 I = 1 , NPH
+      DO I = 1 , NPH
         IF(ABS(H1(I)-H2(I)).GT.CRIPER(1)) GO TO 1000
-10    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
-!  CHECKS U
+!     CHECKS U
 !
-      DO 20 I = 1 , NPU
+      DO I = 1 , NPU
         IF(ABS(U1(I)-U2(I)).GT.CRIPER(2)) GO TO 1000
-20    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
-!  CHECKS V
+!     CHECKS V
 !
-      DO 30 I = 1 , NPV
+      DO I = 1 , NPV
         IF(ABS(V1(I)-V2(I)).GT.CRIPER(2)) GO TO 1000
-30    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

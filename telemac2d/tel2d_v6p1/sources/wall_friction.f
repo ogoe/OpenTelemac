@@ -6,7 +6,7 @@
      & KARMAN,PROPNU,LISRUG,KNEU,KDIR,KENT,KENTU,KADH,KLOG,IELMU,KP1BOR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES AUBOR, FRICTION ON BOUNDARIES.
@@ -29,21 +29,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AUBOR          |<--| COEFFICIENT DE FROTTEMENT SUR LES PAROIS
-!| CFBOR          |---|
-!| DISBOR         |-->| DISTANCE AU BORD DES POINTS VOISINS DU BORD
-!| KADH           |-->| CONVENTION POUR UNE PAROI AVEC ADHERENCE
-!| KARMAN         |-->| CONSTANTE DE KARMAN
-!| KDIR           |-->| CONDITION A LA LIMITE DE TYPE DIRICHLET
-!| KENT           |-->| CONVENTION POUR UNE ENTREE LIQUIDE
-!| KENTU          |-->| CONVENTION POUR DES VITESSES IMPOSEES
-!| KLOG           |-->| CONVENTION POUR UNE PAROI LOGARITHMIQUE
-!| KNEU           |-->| CONDITION A LA LIMITE DE TYPE NEUMANN
-!| LIMPRO         |-->| CONDITIONS AUX LIMITES EN PROPAGATION
-!| LISRUG         |-->| REGIME DE TURBULENCE 1: LISSE 2: RUGUEUX
-!| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
-!| PROPNU         |-->| COEFFICIENT DE DIFFUSION MOLECULAIRE
+!| AUBOR          |<--| LAW OF FRICTION ON BOUNDARIES
+!|                |   | NUT*DU/DN=AUBOR*U+BUBOR
+!| CFBOR          |<--| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
+!| DISBOR         |-->| DISTANCE BETWEEN BOUNDARY AND NEAREST POINTS INSIDE
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KARMAN         |-->| VON KARMAN CONSTANT
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
+!| LIMPRO         |-->| BOUNDARY CONDITIONS FOR PROPAGATION (SEE PROPIN)
+!| LISRUG         |-->| TURBULENCE REGIME (1: SMOOTH 2: ROUGH)
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| PROPNU         |-->| LAMINAR DIFFUSION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

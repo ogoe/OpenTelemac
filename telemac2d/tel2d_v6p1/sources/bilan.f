@@ -6,7 +6,7 @@
      & OPTBAN,NPTFR,FLBOR,FLUX_BOUNDARIES,NUMLIQ,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALCULATES THE BALANCE OF THE MASS OF WATER.
@@ -34,26 +34,28 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| DT             |-->| PAS DE TEMPS
-!| EQUA           |---|
-!| FLBOR          |---|
-!| FLUX_BOUNDARIES|---|
-!| H              |---|
-!| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
-!| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
-!| MASK           |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASSES         |-->| MASSE APPORTEE PAR TERME SOURCE.
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NFRLIQ         |---|
-!| NPTFR          |---|
-!| NUMLIQ         |---|
-!| OPTBAN         |---|
-!| POROS          |---|
-!| WORK           |-->| TABLEAU DE TRAVAIL.
+!| AT             |-->| TIME IN SECONDS
+!| DT             |-->| TIME STEP IN SECONDS
+!| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
+!| FLBOR          |-->| FLUXES AT BOUNDARY POINTS
+!| FLUX_BOUNDARIES|-->| FLUXES OF LIQUID BOUNDARIES
+!| H              |-->| DEPTH AT TIME N+1.
+!| INFO           |-->| IF YES, PRINTING INFORMATIONS
+!| LT             |-->| TIME STEP NUMBER
+!| MASK           |-->| BLOCK OF MASKS FOR DIFFERENT BOUNDARY CONDITIONS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASSES         |-->| MASS OF TRACER ADDED BY SOURCE TERM
+!|                |   | SEE DIFSOU
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NIT            |-->| TOTAL NUMBER OF TIME STEPS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
+!| POROS          |-->| POROSITY, PER ELEMENT.
+!| WORK           |-->| WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

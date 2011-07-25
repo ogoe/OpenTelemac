@@ -5,7 +5,7 @@
      &(RO,R02,R03,JCOUT1,JCOUT2,JCOUT3)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES RO = -B/2A, MINIMUM OF THE FUNCTION :
@@ -35,11 +35,11 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| JCOUT1         |-->| J(RO)
-!| JCOUT2         |-->| J(R02)
-!| JCOUT3         |-->| J(R03)
-!| R02            |-->| COEFFICIENT
-!| R03            |-->| COEFFICIENT
-!| RO             |<--| COEFFICIENT OF DESC
+!| JCOUT2         |-->| COST FUNCTION AT R02
+!| JCOUT3         |-->| COST FUNCTION AT R03
+!| R02            |-->| COEFFICIENT CORRESPONDING TO JCOUT2
+!| R03            |-->| COEFFICIENT CORRESPONDING TO JCOUT3
+!| RO             |<--| COEFFICIENT OF DESCENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &( VISC , U , V , H , CF , ELDER , PROPNU )
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TENSORIAL DISPERSION COEFFICIENTS
@@ -30,12 +30,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |-->| COEFFICIENT DE FROTTEMENT
-!| ELDER          |-->| COEFFICIENTS ADIMENSIONNELS DE DISPERSION
-!| H              |-->| HAUTEUR D'EAU
-!| PROPNU         |-->| VISCOSITE LAMINAIRE
-!| U,V            |-->| COMPOSANTES DE LA VITESSE
-!| VISC           |<--| COEFF DU TENSEUR  DE DISPERSION (DIM. NPOIN)
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
+!| ELDER          |-->| ADIMENSIONAL DISPERSION COEFFICIENTS
+!| H              |-->| WATER DEPTH
+!| PROPNU         |-->| LAMINAR VISCOSITY
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| VISC           |<--| COEFFICIENTS OF DISPERSION TENSOR VISC(NPOIN,3)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

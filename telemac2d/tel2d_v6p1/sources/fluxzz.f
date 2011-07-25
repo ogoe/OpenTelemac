@@ -5,7 +5,7 @@
      *(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.1                                     03/15/2011
+! TELEMAC-2D VERSION 6.1                                     03/15/2011
 !***********************************************************************
 !
 !brief  COMPUTES ZOKAGOA/TCHAMEN FLUX AT THE INERNAL INTERFACES 

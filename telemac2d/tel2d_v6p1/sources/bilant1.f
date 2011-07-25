@@ -7,7 +7,7 @@
      & ITRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALCULATES THE BALANCE OF THE TRACER MASS.
@@ -30,30 +30,35 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS
-!| EQUA           |---|
-!| FLUENT         |---|
-!| FLUSOR         |---|
-!| H              |-->| VALEURS DE H A L' ETAPE N+1.
-!| HPROP          |-->| HAUTEUR DE PROPAGATION
-!| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
-!| ITRAC          |---|
-!| LT,NIT         |-->| NUMERO DU PAS DE TEMPS, NOMBRE TOTAL DE PAS.
-!| LTT            |-->| NUMERO DU PAS DE TEMPS TRACEUR
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKTR         |---|
-!| MASSOU         |-->| QUANTITE DE TRACEUR APPORTEE PAR LE TERME
-!|                |   | SOURCE
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| T,TN           |-->| TRACEUR AU TEMPS T(N+1) ET T(N)
+!| DT             |-->| TIME STEP IN SECONDS
+!| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
+!| FLUENT         |-->| ENTERING FLUX
+!| FLUSOR         |-->| EXITING FLUX
+!| H              |-->| DEPTH AT TIME N+1.
+!| HPROP          |-->| PROPAGATION DEPTH.
+!| INFO           |-->| IF YES, PRINTING INFORMATIONS
+!| ITRAC          |-->| TRACER INDEX
+!| LT             |-->| TIME STEP NUMBER
+!| LTT            |-->| NOT USED !!!!!!!!!!!!!!
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKTR         |-->| MASKING OF TRACERS, PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MASSOU         |-->| MASS OF TRACER ADDED BY SOURCE TERM
+!|                |   | SEE DIFSOU
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NIT            |-->| TOTAL NUMBER OF TIME STEPS
+!| T              |-->| TRACER AT TIME T(N+1) 
 !| TETAT          |-->| SEMI-IMPLICITATION DU TRACEUR.
-!| UCONV,VCONV    |-->| CHAMP CONVECTEUR
-!| WORK2          |---|
-!| WORK3          |---|
-!| WORK4          |---|
-!| WORK5          |---|
+!| TN             |-->| TRACER AT TIME T(N) 
+!| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
+!| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD
+!| WORK1          |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| WORK2          |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| WORK3          |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| WORK4          |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| WORK5          |<->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

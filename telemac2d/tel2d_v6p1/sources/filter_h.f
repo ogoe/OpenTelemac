@@ -5,7 +5,7 @@
      &(VEC,T1,MESH,MSK,MASKEL,N,FLODEL,YAFLODEL,DT,W1,UNSV2D)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SMOOTHES NEGATIVE DEPTHS AND COMPUTES CORRESPONDING
@@ -29,15 +29,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |---|
-!| FLODEL         |---|
-!| MSK,MASKEL     |-->| LOGIQUE ET TABLEAU POUR LE MASQUAGE
-!| N              |-->| NOMBRE DE FOIS OU ON FAIT L'OPERATION.
-!| T1             |-->| TABLEAU DE TRAVAIL.
-!| UNSV2D         |---|
-!| VEC            |<->| VECTEUR A FILTRER
-!| W1             |---|
-!| YAFLODEL       |---|
+!| DT             |-->| TIME STEP IN SECONDS
+!| FLODEL         |<->| FLUXES ALONG SEGMENTS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| N              |-->| OPERATION WILL BE REPEATED N TIMES.
+!| T1             |-->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| UNSV2D         |-->| 1/(INTEGRAL OF TEST FUNCTIONS)
+!| VEC            |<->| VECTOR TO BE FILTERED
+!| W1             |<->| WORK ARRAY
+!| YAFLODEL       |-->| LOGICAL INDICATING IF FLODEL MUST BE UPDATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

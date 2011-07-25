@@ -31,7 +31,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |---|
 !| AIRST          |---|
-!| DT             |---|
+!| DT             |-->| TIME STEP
 !| FLUHBOR        |---|
 !| FLUHBTEMP      |---|
 !| FLUXT          |---|
@@ -39,12 +39,12 @@
 !| HCSTOK         |---|
 !| HSTOK          |---|
 !| LOGFR          |---|
-!| NBOR           |---|
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NORDRE         |---|
-!| NPTFR          |---|
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NS             |---|
-!| NSEG           |---|
-!| NTRAC          |---|
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| NUBO           |---|
 !| TEST           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

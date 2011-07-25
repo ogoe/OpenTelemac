@@ -4,8 +4,8 @@
 !
      &(TITRE , ITSTRT , ITSTOP , ITSTEP , NPOIN2 , MBND   ,
      & NSEG  , NOLAY  , NOMGEO , NOMLIM ,
-     & F     , NSTEPA , NOMSOU , NOSUIS , NOMCOU ,
-     & NOMINI, NOMVEB , NORSED , NOMSAL , NOMTEM , NOMVEL , NOMVIS ,
+     & F     , NSTEPA , NOMSOU , NOMMAB , NOMCOU ,
+     & NOMINI, NOMVEB , NOMMAF , NOMSAL , NOMTEM , NOMVEL , NOMVIS ,
      & NHYD,
      & SALI_DEL,TEMP_DEL,VELO_DEL,DIFF_DEL,MARDAT,MARTIM)
 !
@@ -33,35 +33,35 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIFF_DEL       |---|
-!| F              |---|
-!| ITSTEP         |---|
-!| ITSTOP         |---|
-!| ITSTRT         |---|
-!| MARDAT         |---|
-!| MARTIM         |---|
-!| MBND           |---|
-!| NHYD           |---|
-!| NOLAY          |---|
-!| NOMCOU         |---|
-!| NOMGEO         |---|
-!| NOMINI         |---|
-!| NOMLIM         |---|
-!| NOMSAL         |---|
-!| NOMSOU         |---|
-!| NOMTEM         |---|
-!| NOMVEB         |---|
-!| NOMVEL         |---|
-!| NOMVIS         |---|
-!| NORSED         |---|
-!| NOSUIS         |---|
-!| NPOIN2         |---|
-!| NSEG           |---|
-!| NSTEPA         |---|
-!| SALI_DEL       |---|
-!| TEMP_DEL       |---|
-!| TITRE          |---|
-!| VELO_DEL       |---|
+!| DIFF_DEL       |-->| IF YES, WRITES DIFFUSION FILE FOR DELWAQ
+!| F              |-->| ARRAY TO STORE FRACTION OF DEPTH PER LAYER
+!| ITSTEP         |-->| TIME STEP
+!| ITSTOP         |-->| STOP TIME
+!| ITSTRT         |-->| START TIME
+!| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
+!| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
+!| MBND           |-->| SEQUENTIAL COUNTER OPEN BOUNDARIES
+!| NHYD           |-->| DELWAQ STEERING FILE CANAL
+!| NOLAY          |-->| NUMBER OF PLANES
+!| NOMCOU         |-->| FLUX FILE
+!| NOMGEO         |-->| RESULT FILE OF THE SIMULATION
+!| NOMINI         |-->| HORIZONTAL SURFACE FILE
+!| NOMLIM         |-->| BOUNDARY FILE OF THE SIMULATION
+!| NOMMAB         |-->| AREA FILE
+!| NOMMAF         |-->| NODE DISTANCE FILE
+!| NOMSAL         |-->| SALINITY FOR DELWAQ FILE
+!| NOMSOU         |-->| VOLUME FILE
+!| NOMTEM         |-->| TEMPERATURE FOR DELWAQ FILE
+!| NOMVEB         |-->| NODE EXCHANGE FILE
+!| NOMVEL         |-->| VELOCITY FILE
+!| NOMVIS         |-->| DIFFUSION FILE
+!| NPOIN2         |-->| NUMBER OF 2D POINTS IN THE MESH
+!| NSEG           |-->| NUMBER OF 2D SEGMENTS IN THE MESH
+!| NSTEPA         |-->| NUMBER OF TIME-STEPS FOR TIME AGGREGATION
+!| SALI_DEL       |-->| IF YES, THERE IS SALINITY
+!| TEMP_DEL       |-->| IF YES, THERE IS TEMPERATURE
+!| TITRE          |-->| TITLE OF STUDY
+!| VELO_DEL       |-->| IF YES, WRITES VELOCITY FILE FOR DELWAQ
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -72,8 +72,8 @@
       INTEGER,          INTENT(IN) :: NSEG,NOLAY,NSTEPA,MBND
       INTEGER,          INTENT(IN) :: MARDAT(3),MARTIM(3)
       CHARACTER(*),     INTENT(IN) :: TITRE,NOMGEO,NOMLIM
-      CHARACTER(*),     INTENT(IN) :: NOMSOU,NOSUIS,NOMCOU,NOMSAL,NOMTEM
-      CHARACTER(*),     INTENT(IN) :: NOMINI,NOMVEB,NORSED,NOMVEL,NOMVIS
+      CHARACTER(*),     INTENT(IN) :: NOMSOU,NOMMAB,NOMCOU,NOMSAL,NOMTEM
+      CHARACTER(*),     INTENT(IN) :: NOMINI,NOMVEB,NOMMAF,NOMVEL,NOMVIS
       DOUBLE PRECISION, INTENT(IN) :: F(NPOIN2,NOLAY)
       LOGICAL,          INTENT(IN) :: SALI_DEL,TEMP_DEL
       LOGICAL,          INTENT(IN) :: VELO_DEL,DIFF_DEL
@@ -155,18 +155,18 @@
       IWAQ = LEN_TRIM(NOMSOU)
       WRITE ( NHYD, '(A,A,A)' )
      &    "volumes-file             '",NOMSOU(1:IWAQ),"'"
-      IWAQ = LEN_TRIM(NOSUIS)
+      IWAQ = LEN_TRIM(NOMMAB)
       WRITE ( NHYD, '(A,A,A)' )
-     &    "areas-file               '",NOSUIS(1:IWAQ),"'"
+     &    "areas-file               '",NOMMAB(1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMCOU)
       WRITE ( NHYD, '(A,A,A)' )
      &    "flows-file               '",NOMCOU(1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMVEB)
       WRITE ( NHYD, '(A,A,A)' )
      &    "pointers-file            '",NOMVEB(1:IWAQ),"'"
-      IWAQ = LEN_TRIM(NORSED)
+      IWAQ = LEN_TRIM(NOMMAF)
       WRITE ( NHYD, '(A,A,A)' )
-     &    "lengths-file             '",NORSED(1:IWAQ),"'"
+     &    "lengths-file             '",NOMMAF(1:IWAQ),"'"
       IF(SALI_DEL) THEN
         IWAQ = LEN_TRIM(NOMSAL)
         WRITE ( NHYD, '(A,A,A)' )

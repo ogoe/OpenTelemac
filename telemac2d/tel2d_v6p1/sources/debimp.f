@@ -6,7 +6,7 @@
      & KP1BOR,EQUA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IMPOSES FLUX BOUNDARY CONDITIONS,
@@ -31,16 +31,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EQUA           |---|
-!| IFRLIQ         |---|
-!| KP1BOR         |---|
-!| MASK           |---|
-!| MESH           |---|
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
-!| NUMLIQ         |---|
-!| Q              |-->| VALEUR DU DEBIT IMPOSE
-!| UBOR,VBOR      |<--| VALEURS DE U ET V DIRICHLET A L'ENTREE
-!| WORK1,WORK2    |-->| TABLEAUX DE TRAVAIL.
+!| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
+!| IFRLIQ         |-->| RANK OF LIQUID BOUNDARY
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| MASK           |-->| BLOCK OF MASKS FOR BOUNDARY CONDITIONS
+!| MESH           |-->| MESH STRUCTURE
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| Q              |-->| PRESCRIBED VALUE OF DISCHARGE
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| H              |-->| WATER DEPTH
+!| WORK1          |<->| WORK BIEF_OBJ STRUCTURE
+!| WORK2          |<->| WORK BIEF_OBJ STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

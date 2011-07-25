@@ -5,7 +5,7 @@
      &(CHESTR,SETSTR,PZONE,NZONE,NPOIN,T1)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSIGNS INITIAL VALUES OF STRICKLERS PER ZONE.
@@ -28,12 +28,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHESTR         |---|
+!| CHESTR         |-->| FRICTION COEFFICIENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NZONE          |-->| NUMBER OF ZONES
 !| PZONE          |-->| TABLE OF ZONES
-!| SETSTR         |-->| SET OF STRICKLERS' (ZONES)
-!| T1             |---|
+!| SETSTR         |-->| SET OF STRICKLERS (ZONES)
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -60,7 +60,7 @@
 !
 !       ZONATION : SETSTR=AVERAGE PER ZONE OF CHESTR
 !
-        CALL OS('X=C     ',X=SETSTR,C=0.D0)
+        CALL OS('X=0     ',X=SETSTR)
         CALL OS('X=Y     ',X=T1    ,Y=SETSTR)
         DO J=1,NZONE
           DO I=1,NPOIN

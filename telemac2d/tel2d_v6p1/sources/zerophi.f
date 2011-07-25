@@ -54,8 +54,8 @@
 !
       SQ3 =SQRT(3.D0)
       SQ32=SQRT(1.5D0)
-      EPS=1.E-12
-      EPSX=1.E-12
+      EPS=1.D-12
+      EPSX=1.D-12
       NIT=0
       NITEPS=0
       X=X0

@@ -5,7 +5,7 @@
      & (ACOF, BCOF, CCOF, DCOF, REALS, X)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -46,8 +46,8 @@
 !| BCOF           |-->| CONSTANT FOR X**2
 !| CCOF           |-->| CONSTANT FOR X
 !| DCOF           |-->| CONSTANT OF THE EQUATION
-!| REALS          |---|
-!| X              |---|
+!| REALS          |<--| NUMBER OF REAL SOLUTIONS
+!| X              |<--| THE SOLUTIONS (1 OR 3)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -76,6 +76,7 @@
       Q2P3 = Q**2 + P**3
 !
       IF (Q2P3 > 0.D0) THEN
+!
          REALS = 1
          EXPO  = 1.D0/3.D0
          TMP   = -Q + SQRT(Q2P3)

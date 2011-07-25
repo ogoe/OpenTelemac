@@ -7,7 +7,7 @@
      & UBOR,VBOR,TBOR,LIHBOR,LIUBOR,LIVBOR,LITBOR,GRAV)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MANAGES THE COMPUTATION OF DISCHARGES AND
@@ -36,20 +36,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHESTR         |-->| COEFFICIENTS DE FROTTEMENT SUR LE FOND.
-!| GRAV           |-->| GRAVITE.
-!| H              |-->| HAUTEUR AU PAS DE TEMPS COURANT.
-!| IOPTAN         |-->| OPTION DE CALCUL DES VITESSES TANGENTIELLES.
-!| KARMAN         |-->| CONSTANTE DE KARMAN.
-!| NBOR           |-->| NUMEROTATION GLOBALE DES POINTS DE BORD.
-!| NKFROT         |---|
-!| NPSMAX         |-->| NOMBRE MAXIMUM DE POINTS POUR UN COTE D'UNE
-!|                |   | SINGULARITE.
-!| NTRAC          |---|
-!| NWEIRS         |-->| NOMBRE DE SINGULARITES LINEIQUES.
-!| T              |-->| TRACEUR AU PAS DE TEMPS COURANT.
-!| X,Y            |-->| COORDONNEES DES NOUEDS.
-!| ZF             |-->| COTE DU FOND.
+!| CHESTR         |-->| FRICTION COEFFICIENT
+!| GRAV           |-->| GRAVITY
+!| H              |-->| WATER DEPTH
+!| IOPTAN         |-->| OPTION FOR TANGENTIAL VELOCITIES.
+!| KARMAN         |-->| VON KARMAN CONSTANT.
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
+!| LITBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON TRACERS
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NKFROT         |-->| FRICTION LAW, PER POINT
+!| NPSING         |-->| NUMBER OF POINTS FOR EVERY SINGULARITY.
+!| NPSMAX         |-->| MAXIMUM NUMBER OF POINTS FOR ONE SIDE OF A
+!|                |   | SINGULARITY.
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| NUMDIG         |-->| NUMDIG(K,I,NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF SIDE K OF WEIR I.
+!| NWEIRS         |-->| NUMBER OF SINGULARITIES
+!| PHIDIG         |-->| DISCHARGE COEFFICIENT OF THE WEIR
+!| T              |-->| BLOCK OF TRACERS
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
+!| UNORM          |-->| NORM OF VELOCITY 
+!| X              |-->| ABSCISSAE OF NODES
+!| Y              |-->| ORDINATES OF NODES
+!| ZDIG           |-->| ELEVATIONS OF POINTS OF WEIRS 
+!| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

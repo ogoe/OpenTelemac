@@ -8,8 +8,7 @@
      & HBTIL,UBTIL,VBTIL,TBTIL,ZBTIL,SURDET,IKLE,CF,SMH,IFABOR,NELEM,
      & MESH,XNEBOR,YNEBOR,NPOIN,NPTFR,LT,TEMPS,DT,GRAV,
      & NTRAC,NFRLIQ,KSORT,KINC,KENT,KENTU,LV,MSK,MASKEL,
-     & NELMAX,IELM,NORD,FAIR,WINDX,WINDY,
-     & VENT,HWIND,CORIOL,FCOR,SPHERI,
+     & NELMAX,IELM,NORD,FAIR,WINDX,WINDY,VENT,HWIND,CORIOL,FCOR,SPHERI,
      & MAREE,MARDAT,MARTIM,PHI0,OPTSOU,ISCE,DSCE,SHPP,
      & COUROU,NPTH,VARCL,NVARCL,VARCLA,NUMLIQ,SHP,UNSV2D,HFROT,
      & FXWAVE,FYWAVE,DX_T,DY_T,DZ_T,ELT_T,IT3,IT4,HFIELD,UFIELD,VFIELD,
@@ -45,87 +44,115 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |-->| TABLEAU DE TRAVAIL : CELERITE DES ONDES
-!| CF             |---|
-!| CORIOL         |---|
-!| COUROU         |---|
-!| DSCE           |---|
-!| DT             |-->| PAS DE TEMPS
-!| FAIR           |---|
-!| FCOR           |---|
-!| FRTYPE         |-->| TYPE DE FRONTIERES LIQUIDES
-!| FU,FV          |-->| TABLEAU DE TRAVAIL : TERMES SOURCES
-!| GRAV           |-->| GRAVITE
-!| H              |-->| HAUTEUR AU TEMPS N
-!| HBOR           |<--| HAUTEUR IMPOSEE.
-!| HBTIL          |---|
-!| HFROT          |---|
-!| HWIND          |---|
-!| IELM           |---|
-!| IFABOR         |---|
-!| IKLE           |---|
-!| ISCE           |---|
-!| ITRAV2         |---|
-!| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
-!| LISPFR         |-->| LISTE DES POINTS FRONTIERES CONTIGUS TRAITES
-!|                |   | ENSEMBLES PAR LES CARACTERISTIQUES
-!|                |   | CARACTERISTIQUES
-!| LITBOR         |-->| CONDITIONS AUX LIMITES SUR LE TRACEUR
-!| LIUBOR,LIVBOR  |-->| CONDITIONS AUX LIMITES SUR U ET V
-!| LT             |-->| NUMERO DE L'ITERATION EN COURS
-!| LV             |---|
-!| MARDAT         |---|
-!| MAREE          |---|
-!| MARTIM         |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NELEM          |---|
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
-!| NORD           |---|
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
-!| NPTH           |---|
-!| NTRAC          |---|
-!| NUMLIQ         |---|
-!| NVARCL         |---|
-!| OPTSOU         |---|
-!| PHI0           |---|
-!| SHP            |---|
-!| SHPP           |---|
-!| SMH            |---|
-!| SPHERI         |---|
-!| SURDET         |---|
-!| T              |-->| TRACEUR AU TEMPS N
-!| T6             |---|
-!| T8             |---|
-!| TBOR           |<--| TRACEUR IMPOSE AU BORD
-!| TBTIL          |---|
-!| TEMPS          |-->| TEMPS
-!| U,V            |-->| COMPOSANTES DE LA VITESSE AU TEMPS N
-!| UBOR           |<--| VITESSE U IMPOSEE.
-!| UBTIL          |---|
-!| UCONV,VCONV    |-->| TABLEAU DE TRAVAIL : CHAMPS DE VITESSE
-!|                |   | CONVECTEUR DES INVARIANTS DE RIEMANN
-!| UNA            |-->| TABLEAU DE TRAVAIL
-!| UNSV2D         |---|
-!| VARCL          |---|
-!| VARCLA         |---|
-!| VBOR           |<--| VITESSE V IMPOSEE.
-!| VBTIL          |---|
-!| VENT           |---|
-!| W1R            |---|
-!| W2R            |---|
-!| W3R            |---|
-!| WINDX          |---|
-!| WINDY          |---|
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| XNEBOR,YNEBOR  |-->| NORMALES EXTERIEURES AUX POINTS.
-!| ZBTIL          |---|
-!| ZF             |-->| FOND
+!| C              |-->| WORK ARRAY: CELERITY OF WAVES
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
+!| CORIOL         |-->| IF YES, CORIOLIS FORCE
+!| COUROU         |-->| IF YES, WAVE DRIVEN CURRENTS
+!| DSCE           |-->| DISCHARGE OF SOURCES
+!| DT             |-->| TIME STEP
+!| DX_T           |<->| WORK ARRAY
+!| DY_T           |<->| WORK ARRAY
+!| DZ_T           |<->| WORK ARRAY
+!| ELT_T          |<->| WORK ARRAY
+!| FAIR           |-->| COEFFICIENT OF WIND INFLUENCE
+!| FCOR           |-->| CORIOLIS COEFFICIENT
+!| FRTYPE         |-->| TYPE OF LIQUID BOUNDARIES
+!| FU             |-->| SOURCE TERMS ON U
+!| FV             |-->| SOURCE TERMS ON V
+!| FXWAVE         |<->| FORCING OF WAVES ALONG X
+!| FYWAVE         |<->| FORCING OF WAVES ALONG Y
+!| GRAV           |-->| GRAVITY
+!| GZSX           |<--| FREE SURFACE GRADIENT ALONG X
+!| GZSY           |<--| FREE SURFACE GRADIENT ALONG Y
+!| H              |-->| WATER DEPTH AT TIME N
+!| HBOR           |<--| PRESCRIBED DEPTH AT BOUNDARIES
+!| HBTIL          |<->| WORK ARRAY, DEPTH AT BOUNDARIES AFTER ADVECTION
+!| HFIELD         |<->| WORK ARRAY, DEPTH WITH RELAXATION
+!| HFROT          |-->| KEYWORD : 'DEPTH IN FRICTION TERM'
+!| HWIND          |-->| THRESHOLD DEPTH FOR WIND
+!| IELM           |-->| TYPE OF ELEMENT
+!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
+!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
+!|                |   | BOUNDARY
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| ISCE           |-->| GLOBAL NUMBER OF POINT SOURCES
+!| ITRAV2         |-->| INTEGER WORK ARRAY
+!| IT3            |<->| INTEGER WORK ARRAY
+!| IT3            |<->| INTEGER WORK ARRAY
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LISPFR         |-->| LIST OF BOUNDARY POINTS TO BE DEALT WITH
+!| LITBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON TRACERS
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON V
+!| LT             |-->| CURRENT TIME-STEP
+!| LV             |-->| VECTOR LENGTH (FOR VECTOR MACHINES)
+!| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
+!| MAREE          |-->| IF YES, TIDE GENERATING FORCE
+!| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NORD           |-->| ANGLE OF NORTH WITH VERTICAL AXIS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NPTH           |-->| RECORD NUMBER IN THE WAVE CURRENTS FILE
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES
+!| OPTSOU         |-->| TYPE OF SOURCES
+!|                |   | 1: NORMAL
+!|                |   | 2: DIRAC
+!| PHI0           |-->| LATITUDE OF ORIGIN POINT
+!| SHP            |<--| BARYCENTRIC COORDINATES AT THE FOOT
+!|                |   | OF CHARACTERISTICS
+!| SHPP           |<--| BARYCENTRIC COORDINATES AT THE FOOT
+!|                |   | OF CHARACTERISTICS, FOR BOUNDARY POINTS
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| SPHERI         |-->| IF TRUE : SPHERICAL COORDINATES
+!| SURDET         |-->| 1/(DETERMINANT OF ISOPARAMETRIC TRANSFORMATION)
+!| T              |-->| BLOCK OF TRACERS AT TIME N
+!| T6             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| TBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON TRACER
+!| TBTIL          |<--| BLOCK OF WORK ARRAYS, TRACERS AFTER ADVECTION
+!| TEMPS          |-->| TIME IN SECONDS
+!| U              |<->| X-COMPONENT OF VELOCITY
+!| UBOR           |<--| PRESCRIBED VELOCITY U.
+!| UBTIL          |<--| WORK ARRAY, U AT BOUNDARIES AFTER ADVECTION
+!| UCONV          |-->| WORK ARRAY: ADVECTION FIELDS
+!| UFIELD         |<->| WORK ARRAY, U WITH RELAXATION
+!| UNA            |<->| WORK ARRAY
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| V              |<->| Y-COMPONENT OF VELOCITY
+!| VARCL          |-->| BLOCK OF CLANDESTINE VARIABLES
+!| VARCLA         |-->| NAMES OF CLANDESTINE VARIABLES
+!| UBOR           |<--| PRESCRIBED VELOCITY V.
+!| VBTIL          |<--| WORK ARRAY, V AT BOUNDARIES AFTER ADVECTION
+!| VCONV          |-->| WORK ARRAY: ADVECTION FIELDS
+!| VENT           |-->| IF YES, WIND TAKEN INTO ACCOUNT
+!| VFIELD         |<->| WORK ARRAY, V WITH RELAXATION
+!| W1R            |<->| WORK ARRAY
+!| W2R            |<->| WORK ARRAY
+!| W3R            |<->| WORK ARRAY
+!| WINDX          |-->| VELOCITY OF WIND ALONG X
+!| WINDY          |-->| VELOCITY OF WIND ALONG Y
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XNEBOR         |-->| X-COMPONENT OF NORMAL AT NODES
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YNEBOR         |-->| Y-COMPONENT OF NORMAL AT NODES
+!| ZBTIL          |<--| WORK ARRAY, BOTTOM AT BOUNDARIES AFTER ADVECTION
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZS             |<--| FREE SURFACE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

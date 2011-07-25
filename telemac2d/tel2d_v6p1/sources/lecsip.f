@@ -2,11 +2,11 @@
                      SUBROUTINE LECSIP
 !                    *****************
 !
-     & (RELAXS,NSIPH,ENTSIP,SORSIP,SECSCE,
-     &  ALTSCE,CSSCE,CESCE,DELSCE,ANGSCE,LSCE,MAXSCE,IFIC)
+     &(RELAXS,NSIPH,ENTSIP,SORSIP,SECSCE,
+     & ALTSCE,CSSCE,CESCE,DELSCE,ANGSCE,LSCE,MAXSCE,IFIC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE DATA FOR SIPHONS.
@@ -34,21 +34,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALTSCE         |<--| COTE DES ENTREES ET SORTIES DE BUSES
-!| ANGSCE         |<--| ANGLE DES BUSES AVEC L'AXE OX.
-!| CESCE          |<--| COEFFICIENTS DE PERTE DE CHARGE
-!|                |   | LORS D'UN FONCTIONNEMENT EN ENTREE.
-!| CSSCE          |<--| COEFFICIENTS DE PERTE DE CHARGE
-!|                |   | LORS D'UN FONCTIONNEMENT EN SORTIE.
-!| DELSCE         |<--| ANGLE DES BUSES AVEC LA VERTICALE
-!| ENTSIP         |<--| INDICES DANS LA NUMEROTATION DES SOURCES
-!| IFIC           |---|
-!| LSCE           |<--| PERTE DE CHARGE LINEAIRE DE LA CONDUITE.
-!| MAXSCE         |-->| NOMBRE MAXIMUM DE POINTS SOURCES.
-!| NSIPH          |---|
-!| RELAXS         |<--| COEFFICIENT DE RELAXATION.
-!| SECSCE         |<--| SECTION DES SIPHONS (NUMEROTATION DES SOURCES)
-!| SORSIP         |<--| INDICES DANS LA NUMEROTATION DES SOURCES
+!| ALTSCE         |<--| ELEVATION OF ENTRY AND EXIT OF PIPES
+!| ANGSCE         |<--| ANGLE OF PIPES WITH AXIS OX.
+!| CESCE          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
+!| CSSCE          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
+!| DELSCE         |<--| ANGLE OF PIPES WITH VERTICAL
+!| ENTSIP         |<--| INDICES OF ENTRY OF PIPE IN POINT SOURCES NUMBERING
+!| IFIC           |-->| LOGICAL UNIT OF FORMATTED DATA FILE 1
+!| LSCE           |<--| LINEAR HEAD LOSS OF PIPE
+!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
+!| NSIPH          |<--| NUMBER OF CULVERTS
+!| RELAXS         |<--| RELAXATION COEFFICIENT.
+!| SECSCE         |<--| CROSS SECTION OF CULVERTS (NUMBERED AS SOURCES)
+!| SORSIP         |<--| INDICES OF PIPES EXITS IN SOURCES NUMBERING
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

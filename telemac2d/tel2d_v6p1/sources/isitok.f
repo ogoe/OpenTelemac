@@ -5,7 +5,7 @@
      &(H,NPH,U,NPU,V,NPV,NTRAC,T,NPT,X,Y,BORNES,ARRET)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CHECKS THAT THE PHYSICAL PARAMETERS ARE CREDIBLE.
@@ -30,15 +30,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ARRET          |<--| LOGIQUE MIS A TRUE SI BORNES SONT DEPASSEES
-!| BORNES         |-->| VALEURS LIMITES DES TABLEAUX H,U,V,T
-!|                |   | DANS L'ORDRE SUIVANT : HMIN,HMAX,UMIN,UMAX,...
-!| H,NPH          |-->| HAUTEUR ET NOMBRE DE POINTS DE HAUTEUR.
-!| NTRAC          |-->| NOMBRE DE TRACEURS.
-!| T,NPT          |-->| TRACEUR ET NOMBRE DE POINTS DE TRACEUR.
-!| U,NPU          |-->| VITESSE U ET NOMBRE DE POINTS DE VITESSE U.
-!| V,NPV          |-->| VITESSE V ET NOMBRE DE POINTS DE VITESSE V.
-!| X,Y            |-->| COORDONNEES
+!| ARRET          |<--| WILL BE TRUE IF LIMITS TRESPASSED
+!| BORNES         |-->| LIMIT VALUES OF H,U,V,T
+!|                |   | IN FOLLOWING ORDER: HMIN,HMAX,UMIN,UMAX,...
+!| H              |-->| WATER DEPTH
+!| NPH            |-->| NUMBER OF POINTS OF DEPTH
+!| NPT            |-->| NUMBER OF POINTS FOR TRACERS
+!| NPU            |-->| NUMBER OF POINTS FOR U
+!| NPV            |-->| NUMBER OF POINTS FOR V
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| T              |-->| BLOCK OF TRACERS ET NOMBRE DE POINTS DE TRACEUR.
+!| U              |<->| X-COMPONENT OF VELOCITY
+!| V              |<->| Y-COMPONENT OF VELOCITY
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

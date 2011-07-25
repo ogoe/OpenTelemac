@@ -5,7 +5,7 @@
      &(LTL,ATL,GRADEBL,GRAPRDL,LISDEBL,LISPRDL)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES OUT ADDITIONAL OUTPUT REQUIRED BY THE USER.
@@ -38,12 +38,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATL            |-->| TEMPS DU PAS DE TEMPS
-!| GRADEBL        |-->| 1ER PAS DE TEMPS POUR LES SORTIES GRAPHIQUES
-!| GRAPRDL        |-->| PERIODE DE SORTIE SUR LE FICHIER DE RESULTAT
-!| LISDEBL        |-->| 1ER PAS DE TEMPS POUR LES SORTIES LISTING
-!| LISPRDL        |-->| PERIODE DE SORTIE LISTING
-!| LTL            |-->| NUMERO DU PAS DE TEMPS
+!| ATL            |-->| TIME OF TIME STEP, IN SECONDS
+!| GRADEBL        |-->| FIRST TIME STEP FOR GRAPHIC OUTPUTS
+!| GRAPRDL        |-->| PERIOD OF GRAPHIC OUTPUTS
+!| LISDEBL        |-->| FIRST TIME STEP FOR LISTING OUTPUTS
+!| LISPRDL        |-->| PERIOD OF LISTING OUTPUTS
+!| LTL            |-->| CURRENT TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

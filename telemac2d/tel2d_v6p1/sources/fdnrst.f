@@ -5,7 +5,7 @@
      &(IFRM,ITO,X,Y,NODENRS,NPOIN2,IFRM1,ITOP1)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINDS THE NEAREST FROM -1 AND TO +1 POINTER.
@@ -28,10 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFRM           |-->|
-!| IFRM1          |---|
-!| ITO            |-->|
-!| ITOP1          |---|
+!| IFRM           |-->| ????
+!| IFRM1          |<--| ????
+!| ITO            |-->| ????
+!| ITOP1          |<--| ????
 !| NODENRS        |-->| IF > 0 : NODE NUMBER
 !|                |   | IF
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D

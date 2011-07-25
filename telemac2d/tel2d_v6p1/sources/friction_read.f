@@ -2,10 +2,10 @@
                      SUBROUTINE FRICTION_READ
 !                    ************************
 !
-     & (NCOF, NZONMX, ITURB, LISRUG, LINDNER, NOMCOF, NZONES, FRTAB)
+     &(NCOF,NZONMX,ITURB,LISRUG,LINDNER,NOMCOF,NZONES,FRTAB)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FRICTION FILE READ.
@@ -33,14 +33,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FRTAB          |---|
-!| ITURB          |---|
-!| LINDNER        |---|
-!| LISRUG         |---|
-!| NCOF           |---|
-!| NOMCOF         |---|
-!| NZONES         |---|
-!| NZONMX         |---|
+!| FRTAB          |-->| FRICTION_OBJ STRUCTURE WITH DATA ON FRICTION
+!| ITURB          |-->| TURBULENCE MODEL
+!| LINDNER        |-->| IF YES, THERE IS NON-SUBMERGED VEGETATION FRICTION
+!| LISRUG         |-->| TURBULENCE REGIME (1: SMOOTH 2: ROUGH)
+!| NCOF           |-->| LOGICAL UNIT OF FRICTION FILE
+!| NOMCOF         |-->| NAME OF FRICTION FILE
+!| NZONES         |-->| NUMBER OF FRICTION ZONES
+!| NZONMX         |-->| MAXIMUM NUMBER OF FRICTION ZONES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE FRICTION_DEF
@@ -98,10 +98,10 @@
       ! K-EPSILON : READ PARAMETERS FOR 2 LAWS (BOTTOM AND BOUNDARY CONDITIONS)
       ! ELSE      : READ PARAMETERS FOR 1 LAW  (BOTTOM)
       ! ----------------------------------------------------------------------
-      IF ((ITURB == 3).AND.(LISRUG == 2)) THEN
-         NLOOP=2
+      IF(ITURB.EQ.3.AND.LISRUG.EQ.2) THEN
+        NLOOP=2
       ELSE
-         NLOOP=1
+        NLOOP=1
       ENDIF
 !
       ! LISTING

@@ -5,7 +5,7 @@
      &(MESH,M1,M2,A11,A12,A21,A22,SMU,SMV,VR,VS,H0,MSK,MASKEL,S)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MATRICES FOR THE RESOLUTION OF HELMHOLTZ
@@ -23,6 +23,9 @@
 !+      SMU IS THE SECOND MEMBER IN THE EQUATION FOR U
 !+
 !+      SMV IS THE SECOND MEMBER IN THE EQUATION FOR V.
+!
+!warning   THIS SUBROUTINE IS NOT CURRENTLY USED
+!+               
 !
 !history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
 !+        17/08/1994
@@ -42,20 +45,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A11            |---|
-!| A12            |---|
-!| A21            |---|
-!| A22            |---|
-!| H0             |---|
-!| M1             |---|
-!| M2             |---|
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| S              |---|
-!| SMU,SMV        |<--| SECONDS MEMBRES DU SYSTEME.
-!| VR             |---|
-!| VS             |---|
+!| A11            |<->| WORK MATRIX STRUCTURE
+!| A12            |<->| WORK MATRIX STRUCTURE
+!| A21            |<->| WORK MATRIX STRUCTURE
+!| A22            |<->| WORK MATRIX STRUCTURE
+!| H0             |-->| REFERENCE DEPTH
+!| M1             |<->| WORK MATRIX STRUCTURE
+!| M2             |<->| WORK MATRIX STRUCTURE
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| S              |-->| VOID STRUCTURE
+!| SMU            |<--| RIGHT-HAND SIDE OF U EQUATION
+!| SMV            |<--| RIGHT-HAND SIDE OF V EQUATION
+!| VR             |<->| ADDITIONAL VARIABLE IN BOUSSINESQ COIMBRA MODEL 
+!| VS             |<->| ADDITIONAL VARIABLE IN BOUSSINESQ COIMBRA MODEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -1,10 +1,11 @@
-!                    *********************************
-                     SUBROUTINE OUTPUT_TELEMAC2D(TIME)
-!                    *********************************
+!                    ***************************
+                     SUBROUTINE OUTPUT_TELEMAC2D
+!                    ***************************
 !
+     &(TIME)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    "WRAPPER" FOR DESIMP SO THAT OUTPUTS CAN BE DONE
@@ -30,7 +31,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| TIME           |---|
+!| TIME           |-->| TIME IN SECONDS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -40,20 +41,25 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!-----------------------------------------------------------------------
-!  TIME: TIME TO PRINTOUT IN RECORD
-!-----------------------------------------------------------------------
-! ARGUMENTS
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION, INTENT(IN) :: TIME
-!-----------------------------------------------------------------------
-! LOCAL VARIABLES (REQUIRED BY DESIMP, NO IDEA WHY...)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     REQUIRED BY DESIMP, NO IDEA WHY...
       DOUBLE PRECISION :: HIST(1)
       DATA HIST /9999.D0/
-!-----------------------------------------------------------------------
+!
+!----------------------------------------------------------------------
+!
 !     PREPARES THE RESULTS
+!
       CALL PRERES_TELEMAC2D
 !
 !     OUTPUTS A STANDARD TIME STEP
+!
       CALL BIEF_DESIMP(T2D_FILES(T2DRES)%FMT,VARSOR,
      &                 HIST,0,NPOIN,T2D_FILES(T2DRES)%LU,'STD',
      &                 TIME,1,1,1,
@@ -62,4 +68,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE OUTPUT_TELEMAC2D
+      END

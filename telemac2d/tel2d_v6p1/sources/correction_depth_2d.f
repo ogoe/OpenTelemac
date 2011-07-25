@@ -5,7 +5,7 @@
      &(GLOSEG,DIMGLO,YAFLODEL,YASMH,YAFLULIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    APPLIES VARIOUS TECHNIQUES TO TREAT NEGATIVE DEPTHS.

@@ -5,7 +5,7 @@
      &(CHESTR,SETSTR,PZONE,NZONE,NPOIN)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSIGNS STRICKLER VALUES.
@@ -33,7 +33,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHESTR         |---|
+!| CHESTR         |<--| FRICTION COEFFICIENT
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NZONE          |-->| NUMBER OF ZONES
 !| PZONE          |-->| TABLE OF ZONES

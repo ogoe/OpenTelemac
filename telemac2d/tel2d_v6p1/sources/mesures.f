@@ -5,7 +5,7 @@
      &(ITER,TT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS MEASURED H, U AND V AT TIME AT.
@@ -31,8 +31,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ITER           |---|
-!| TT             |---|
+!| ITER           |-->| ITERATION WHERE TO LOOK FOR THE MEASUREMENTS
+!| TT             |-->| CORRESPONDING TIME (TO CHECK)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

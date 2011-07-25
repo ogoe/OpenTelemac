@@ -5,7 +5,7 @@
      &(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT,ARL,ARS,DL,DS,AL,AS)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ASTRONOMICAL TERMS NECESSARY FOR THE
@@ -14,45 +14,53 @@
 !+ DESCRIPTION OF THE ASTRONOMICAL PARAMETERS:
 !+
 !+  NOTE: "PERIODE" IS THE PERIOD OF THE PARAMETER EXPRESSED IN
-!+          JOUR/ANNEE/ CENTURY JULIENS
+!+          DAY/YEAR/ JULIAN CENTURIES
+!+
+!+
+!+  THE FOLLOWING TABLE GIVES THE CORRESPONDANCE WITH NOTATIONS IN THE BOOK
+!+  "HYDRODYNAMICS OF FREE SURFACE FLOWS"
 !+
 !+ .____.__________________________________________.________.___________.
 !+ |CODE|                   ROLE                   |NOTATION| PERIOD    |
+!+ |    |                                          |IN BOOK |           |
 !+ |____|__________________________________________|________|___________|
-!+ |    |             FONCTION DU TEMPS            |        |           |
-!+ | H  |   LONGITUDE SOLAIRE MOYENNE              |   H,L  | 365,25  J |
-!+ | S  |   LONGITUDE LUNAIRE MOYENNE              |    S   | 27,32   J |
-!+ | P  |   LONGITUDE DU PERIGEE LUNAIRE MOYENNE   |    P   | 8,85    A |
-!+ | O  |   LONGITUDE DU NOEUD LUNAIRE ASCENDANT   | N,OMEGA| 18,61   A |
-!+ | OM |   INCLINAISON DE L'EQUATEUR SUR          |  OMEGA | 27665,7 S |
-!+ |    |     L'ECLIPTIQUE                         |        |           |
-!+ | L  |   LONGITUDE VRAIE DE LA LUNE             |    L   |           |
-!+ | CR |   PARALLAXE VRAIE DE LA LUNE             |   C/R  |           |
-!+ | DL |   DECLINAISON DE LA LUNE                 |  DELTA |           |
-!+ | AL |   ASCENSION DROITE DE LA LUNE            |  ALPHA |           |
-!+ | NU |   ASCENSION DROITE DE G (EQUATEUR-ORBITE)|    NU  |           |
-!+ | ET |   EXCENTRICITE DE L'ORBITE TERRESTRE     |    E   |           |
-!+ | MA |   ANOMALIE MOYENNE DU SOLEIL             |    M   | 365,26  J |
-!+ | EA |   ANOMALIE EXCENTRIQUE DU SOLEIL         |    E   |           |
-!+ | TS |   DISTANCE TERRE-SOLEIL (UA)             |    R   |           |
-!+ | TL |   DISTANCE TERRE-LUNE   (KM)             |    R   |           |
-!+ | ARL|   RAPPORT RT / TL                        |   A/R  |           |
-!+ | ARS|   RAPPORT RT / TS                        |   A/R  |           |
-!+ | VS |   ANOMALIE VRAIE DU SOLEIL               |    V   |           |
-!+ | LS |   LONGITUDE VRAIE DU SOLEIL              |  TETA  |           |
-!+ | AS |   ASCENSION DROITE DU SOLEIL             |  ALPHA |           |
-!+ | DS |   DECLINAISON DU SOLEIL                  |  DELTA |           |
 !+ |    |                                          |        |           |
-!+ |    |               CONSTANTES                 |        |           |
-!+ | I0 |   INCLINAISON DE L'ORBITE LUNAIRE        |   I    |           |
-!+ |    |     SUR L'ECLIPTIQUE                     |        |           |
-!+ | E  |   EXENTRICITE DE L'ORBITE LUNAIRE        |   E    |           |
-!+ | M  |   RAPPORT DU MOUVEMENT MOYEN DU SOLEIL   |   M    |           |
-!+ |    |     AU MOUVEMENT MOYEN DE LA LUNE        |        |           |
-!+ | UA |   UNITE ASTRONOMIQUE EN KM               |   UA   |           |
-!+ | RT |   RAYON MOYEN DE LA TERRE                |   A    |           |
-!+ | C  |   DEMI GRAND AXE DE L'ORBITE LUNAIRE (KM)|  C,C   |           |
-!+ | AC |   RAPPORT RT / C                         |  A/C   |           |
+!+ |    |        WITH VARIATIONS IN TIME           |        |           |
+!+ |    |                                          |        |           |
+!+ | H  |   MEAN LONGITUDE OF THE MOON             |    H   | 365,25  J |
+!+ | S  |   MEAN LONGITUDE OF THE SUN              |    S   | 27,32   J |
+!+ | P  |   MEAN LONGITUDE OF MOON PERIGEE         |    P   | 8,85    A |
+!+ | O  |   LONGITUDE OF THE MOON ASCENDING NODE   | N,OMEGA| 18,61   A |
+!+ | OM |   INCLINITAION OF THE EQUATOR ON THE     |  OMEGA | 27665,7 S |
+!+ |    |   ECLIPTIC                               |        |           |
+!+ | L  |   REAL LONGITUDE OF MOON                 |    L   |           |
+!+ | CR |   REAL PARALLAX OF MOON                  |   C/R  |           |
+!+ | DL |   DECLINATION OF MOON                    |  DELTA |           |
+!+ | AL |   RIGHT ASCENSION OF MOON                |  ALPHA |           |
+!+ | NU |   RIGHT ASCENSION OF G (EQUATOR-ORBIT)   |    NU  |           |
+!+ | ET |   ECCENTRIC ANOMALY OF EARTH             |    e   |           |
+!+ | MA |   MEAN ANOMALY OF SUN                    |    M   | 365,26  J |
+!+ | EA |   ECCENTRIC ANOMALY OF SUN               |    E   |           |
+!+ | TS |   DISTANCE EARTH-SUN (UA)                |    R   |           |
+!+ | TL |   DISTANCE EARTH-MOON (KM)               |    R   |           |
+!+ | ARL|   RATIO   RT / TL                        |   A/R  |           |
+!+ | ARS|   RATIO   RT / TS                        |   A/R  |           |
+!+ | VS |   REAL ANOMALY OF THE SUN                |    V   |           |
+!+ | LS |   REAL LONGITUDE OF THE SUN              |  TETA  |           |
+!+ | AS |   RIGHT ASCENSION OF SUN                 |  ALPHA |           |
+!+ | DS |   SUN DECLINATION                        |  DELTA |           |
+!+ |    |                                          |        |           |
+!+ |    |               CONSTANTS                  |        |           |
+!+ |    |                                          |        |           |
+!+ | I0 |   INCLINATION OF MOON ORBIT ON THE       |   I    |           |
+!+ |    |   ECLIPTIC                               |        |           |
+!+ | E  |   ECCENTRICITY OF MOON                   |   E    |           |
+!+ | M  |   RATIO OF THE AVERAGE MOVEMENT OF SUN   |   M    |           |
+!+ |    |   ON AVERAGE MOVEMENT OF MOON            |        |           |
+!+ | UA |   ASTRONOMICAL UNIT IN  KM               |   UA   |           |
+!+ | RT |   MEAN RADIUS OF EARTH                   |   A    |           |
+!+ | C  |   SEMI-MAJOR AXIS OF MOON (KM)           |   C    |           |
+!+ | AC |   RATIO   RT / C                         |  A/C   |           |
 !+ |____|__________________________________________|________|___________|
 !+
 !+ OTHER CONSTANTS:
@@ -84,15 +92,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AL             |---|
-!| ARS            |---|
-!| AS             |---|
-!| AT             |-->| TEMPS
-!| DS             |---|
-!| HOUR           |---|
-!| MIN            |---|
-!| SEC            |---|
-!| YEAR,MONTH,DAY |-->| DATE DU CALCUL DES TERMES ASTROS
+!| AL             |<--| MOON RIGHT ASCENSION
+!| ARL            |<--| RATIO RT/TL
+!| ARS            |<--| RATIO RT/TS
+!| AS             |<--| SUN RIGHT ASCENSION
+!| AT             |-->| TIME IN SECONDS
+!| DAY            |-->| DAY
+!| DL             |<--| MOON DECLINATION
+!| DS             |<--| SUN DECLINATION
+!| HOUR           |-->| HOUR
+!| MIN            |-->| MINUTE
+!| MONTH          |-->| DATE DU CALCUL DES TERMES ASTROS
+!| SEC            |-->| SECOND
+!| YEAR           |-->| DATE DU CALCUL DES TERMES ASTROS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

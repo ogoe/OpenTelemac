@@ -6,7 +6,7 @@
      & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION
@@ -39,27 +39,27 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS.
-!| DSCE           |-->| DEBITS DES REJETS
-!| DT             |-->| PAS DE TEMPS.
+!| AT             |-->| TIME IN SECONDS
+!| DSCE           |-->| DISCHARGE OF POINT SOURCES
+!| DT             |-->| TIME STEP
 !| FAC            |-->| IN PARALLEL :
 !|                |   | 1/(NUMBER OF SUB-DOMAINS OF THE POINT)
-!| HPROP          |-->| HAUTEUR DE PROPAGATION
-!| ISCE           |-->| POINTS LES PLUS PROCHES DES REJETS.
-!| MASSOU         |---| MASSE DE TRACEUR AJOUTEE.
-!| MAXSCE         |---|
-!| MAXTRA         |---|
-!| NREJTR         |-->| NOMBRE DE REJETS DE TRACEUR.
-!| NTRAC          |---|
-!| TETAT          |-->| IMPLICITATION DU TRACEUR.
-!| TEXP           |-->| TERME SOURCE EXPLICITE.
-!| TIMP           |---|
-!| TN             |-->| TRACEUR AU PAS DE TEMPS PRECEDENT.
-!| TSCE           |-->| VALEURS DES TRACEURS AUX REJETS
-!| TSCEXP         |<--| TERME EXPLICITE VENANT DES SOURCES
-!|                |   | PONCTUELLES DE L'EQUATION DU TRACEUR
-!|                |   | EGAL A TSCE - ( 1 - TETAT ) TN
-!| YASMI          |---|
+!| HPROP          |-->| PROPAGATION DEPTH
+!| ISCE           |-->| NEAREST POINTS OF DISCHARGES
+!| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
+!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
+!| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
+!| NREJTR         |-->| NUMBER OF POINT SOURCES AS GIVEN BY TRACERS KEYWORDS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| TETAT          |-->| COEFFICIENT OF IMPLICITATION FOR TRACERS.
+!| TEXP           |-->| EXPLICIT SOURCE TERM.
+!| TIMP           |-->| IMPLICIT SOURCE TERM.
+!| TN             |-->| TRACERS AT TIME N
+!| TSCE           |-->| PRESCRIBED VALUES OF TRACERS AT POINT SOURCES
+!| TSCEXP         |<--| EXPLICIT SOURCE TERM OF POINT SOURCES
+!|                |   | IN TRACER EQUATION, EQUAL TO:
+!|                |   | TSCE - ( 1 - TETAT ) TN
+!| YASMI          |<--| IF YES, THERE ARE IMPLICIT SOURCE TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

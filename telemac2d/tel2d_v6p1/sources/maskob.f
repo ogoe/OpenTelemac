@@ -5,7 +5,7 @@
      &(MASKEL,X,Y,IKLE,NELEM,NELMAX,NPOIN,AT,LT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FORMALLY REMOVES ELEMENTS FROM THE MESH,
@@ -35,15 +35,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |---|
-!| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS
-!| LT             |---|
-!| MASKEL         |<->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |---|
-!| NPOIN          |-->| NOMBRE DE POINTS
-!| X,Y            |-->| COORDONNEES DES POINTS
+!| AT             |-->| TIME IN SECONDS
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LT             |-->| CURRENT TIME STEP
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

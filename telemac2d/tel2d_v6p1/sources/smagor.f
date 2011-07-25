@@ -5,7 +5,7 @@
      &(VISC,CF,U,V,MESH,T1,T2,T3,T4,MSK,MASKEL,PROPNU)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VISCOSITY USING SMAGORINSKY'S MODEL.
@@ -36,16 +36,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |-->| COEFFICIENT DE FROTTEMENT POUR K-EPSILON
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| PROPNU         |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| VISC           |-->| DIFFUSION TURBULENTE
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| PROPNU         |-->| MOLECULAR DIFFUSION
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| VISC           |-->| TURBULENT DIFFUSION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

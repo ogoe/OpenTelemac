@@ -9,7 +9,7 @@
      & NOMIMP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE BOUNDARY CONDITIONS ARRAYS
@@ -37,36 +37,42 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EQUA           |---|
-!| H              |-->| HAUTEUR AU TEMPS N
-!| HBOR           |<--| HAUTEUR IMPOSEE.
-!| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
-!| LITBOR         |-->| CONDITIONS AUX LIMITES SUR LE TRACEUR
-!| LIUBOR         |-->| CONDITIONS AUX LIMITES SUR U
-!| MASK           |---|
-!| MESH           |---|
-!| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NCOTE          |-->| NOMBRE DE FRONTIERES A COTE IMPOSEE
-!| NDEBIT         |-->| NOMBRE DE FRONTIERES A DEBIT IMPOSE
-!| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
-!| NOMIMP         |---|
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
-!| NPTFR2         |---|
-!| NTRAC          |---|
-!| NTRACE         |-->| NOMBRE DE FRONTIERES A TRACEUR IMPOSE
-!| NUMLIQ         |---|
-!| NVITES         |-->| NOMBRE DE FRONTIERES A VITESSE IMPOSEE
-!| PROVEL         |-->| OPTION POUR LES PROFILS DE VITESSE
-!| TBOR           |<--| TRACEUR IMPOSE AU BORD
-!| TEMPS          |-->| TEMPS
-!| TRA05,TRA06    |-->| TABLEAUX DE TRAVAIL
-!| U,V            |-->| COMPOSANTES DE LA VITESSE AU TEMPS N
-!| UBOR           |<--| VITESSE U IMPOSEE.
-!| VBOR           |<--| VITESSE V IMPOSEE.
-!| XNEBOR         |---|
-!| YNEBOR         |---|
-!| ZF             |-->| FOND
+!| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
+!| H              |-->| DEPTH AT TIME N
+!| HBOR           |<->| PRESCRIBED DEPTH
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LITBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON TRACERS
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
+!| MASK           |-->| BLOCK OF MASKS FOR DIFFERENT BOUNDARY CONDITIONS
+!| MESH           |-->| MESH STRUCTURE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NCOTE          |-->| NUMBER OF BOUNDARIES WITH PRESCRIBED ELEVATION
+!|                |   | AS GIVEN IN THE PARAMETER FILE
+!| NDEBIT         |-->| NUMBER OF BOUNDARIES WITH PRESCRIBED DISCHARGE
+!|                |   | AS GIVEN IN THE PARAMETER FILE
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NOMIMP         |-->| NAME OF LIQUID BOUNDARIES FILE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NPTFR2         |-->| NUMBER OF QUADRATIC BOUNDARY POINTS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| NTRACE         |-->| NUMBER OF BOUNDARIES WITH TRACER PRESCRIBED
+!|                |   | AS GIVEN IN THE PARAMETER FILE
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| NVITES         |-->| NUMBER OF BOUNDARIES WITH VELOCITY PRESCRIBED
+!|                |   | AS GIVEN IN THE PARAMETER FILE
+!| PROVEL         |-->| OPTION FOR VELOCITY PROFILES
+!| TBOR           |<--| BLOCK WITH PRESCRIBED VALUES OF TRACERS
+!| TEMPS          |-->| TIME IN SECONDS
+!| TRA05          |-->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| TRA06          |-->| WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| U              |-->| X-COMPONENT OF VELOCITY AT TIME N
+!| V              |-->| Y-COMPONENT OF VELOCITY AT TIME N
+!| UBOR           |<->| X-COMPONENT OF PRESCRIBED VELOCITY
+!| VBOR           |<->| Y-COMPONENT OF PRESCRIBED VELOCITY
+!| XNEBOR         |-->| X-COMPONENT OF NORMAL VECTOR AT BOUNDARY NODES
+!| YNEBOR         |-->| Y-COMPONENT OF NORMAL VECTOR AT BOUNDARY NODES
+!| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

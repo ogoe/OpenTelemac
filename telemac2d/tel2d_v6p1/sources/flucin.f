@@ -32,7 +32,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| AIRES DES CELLULES
 !| AIRST          |-->| AIRES DES SOUS-TRIANGLES DANS CELLULES
-!| BETA           |---| COEFFICIENT EXTRAPOLATION POUR ORDRE 2
+!| BETA           |<--| COEFFICIENT EXTRAPOLATION POUR ORDRE 2
 !| CE             |<->| FLUX  INCREMENTES DES FLUX
 !|                |   | AUX INTERFACES INTERNES
 !| CFL            |-->| NOMBRE DE CFL
@@ -43,7 +43,7 @@
 !| DX,DY          |-->| GRADIENTS PAR NOEUDS
 !| FLUXTEMP       |<--| FLUX DE MASSE POUR TRACEUR
 !| G              |-->| CONSTANTE DE GRAVITE
-!| HC             |<--| H RECONSTRUIT ORDRE 2   CORRIGE
+!| HC             |<--| H RECONSTRUIT ORDRE 2 CORRIGE
 !| JMI            |-->| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE
 !|                |   | POINT MILIEU DE L'INTERFACE
 !| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
@@ -51,15 +51,16 @@
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
 !| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NTRAC          |---|
+!| NTRAC          |-->| NUMBER OF TRACERS
 !| NUBO           |-->| NUMEROS GLOBAUX DES EXTREMITES DES ARETES
 !| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
 !| VNOCL          |-->| NORMALE A L'INTERFACE
 !|                |   | (2 PREMIERES COMPOSANTES) ET
 !|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
 !| X,Y            |-->| COORDONNEES DES NOEUDS DU MAILLAGE
-!| XNEBOR,YNEBOR  |-->| NORMALE AUX POINTS FRONTIERE
-!| ZF             |-->| COTES DU FOND
+!| XNEBOR         |<--| X-COMPONENT OF NORMAL AT NODES
+!| YNEBOR         |<--| Y-COMPONENT OF NORMAL AT NODES
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &(FUDRAG,FVDRAG)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADDS THE DRAG FORCE OF VERTICAL STRUCTURES IN THE
@@ -37,8 +37,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FUDRAG         |---|
-!| FVDRAG         |---|
+!| FUDRAG         |<--| DRAG FORCE ALONG X
+!| FVDRAG         |<--| DRAG FORCE ALONG Y
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

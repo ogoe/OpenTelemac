@@ -5,7 +5,7 @@
      &(UCONV,VCONV,U,V,UN,VN,TETAU)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ADVECTION VECTOR FIELD UCONV,VCONV.
@@ -28,10 +28,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| TETAU          |-->| IMPLICITATION SUR U.
-!| U,V            |-->| COMPOSANTES DE LA VITESSE.
-!| UCONV,VCONV    |-->| COMPOSANTES DU CHAMP CONVECTEUR.
-!| UN,VN          |-->| COMPOSANTES DE LA VITESSE A L'ETAPE N.
+!| TETAU          |-->| IMPLICITATION COEFFICIENT ON VELOCITY
+!| U              |-->| X-COMPONENT OF VELOCITY AT TIME N+1
+!| V              |-->| Y-COMPONENT OF VELOCITY AT TIME N+1
+!| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
+!| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD
+!| UN             |-->| X-COMPONENT OF VELOCITY AT TIME N
+!| VN             |-->| Y-COMPONENT OF VELOCITY AT TIME N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -48,7 +51,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!  CREATES CONVECTION ARRAYS UCONV AND VCONV
+!     CREATES CONVECTION ARRAYS UCONV AND VCONV
 !
       CALL OS( 'X=CY    ' , UCONV , UN , U , 1.D0-TETAU )
       CALL OS( 'X=X+CY  ' , UCONV , U  , U ,      TETAU )

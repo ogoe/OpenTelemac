@@ -5,7 +5,7 @@
      &(ALIRE,NRES,TROUVE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE PHYSICAL PARAMETERS TO START
@@ -29,9 +29,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALIRE          |---|
-!| NRES           |---|
-!| TROUVE         |---|
+!| ALIRE          |-->| ARRAY FOR ALL VARIABLES 0:VARIABLE DISCARDED
+!|                |   |                         1:VARIABLE TO BE READ
+!| NRES           |-->| LOGICAL UNIT OF RESULTS FILE
+!| TROUVE         |<--| ARRAY FOR ALL VARIABLES 0:VARIABLE NOT FOUND
+!|                |   |                         1:VARIABLE FOUND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

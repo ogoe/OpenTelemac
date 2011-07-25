@@ -5,7 +5,7 @@
      & (V, D, VK, CW)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DRAG COEFFICIENT BEHIND A CYLINDER.
@@ -28,7 +28,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CW             |---|
+!| CW             |<--| DRAG COEFFICIENT BEHIND A CYLINDER
 !| D              |-->| DIAMETER
 !| V              |-->| VELOCITY UPSTREAM
 !| VK             |-->| LAMINAR VISCOSITY

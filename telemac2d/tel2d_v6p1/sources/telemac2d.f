@@ -15,27 +15,6 @@
 !+            ADJO = .FALSE. : ADJOINT MODE
 !
 !history
-!+        07/04/2008
-!+
-!+   SOURCES VARY IN TIME
-!
-!history
-!+        05/05/2008
-!+
-!+   USIS AND VSIS IN CALL TO SISYPHE
-!
-!history
-!+        14/05/2008
-!+
-!+   HN INITIALISED BEFORE CALL TO SISYPHE
-!
-!history
-!+        20/05/2008
-!+
-!+   FLUXES DUE TO SMOOTHING OF NEGATIVE VALUES (NEW FILTER_H) PASSED
-!+   TO TEL4DEL
-!
-!history
 !+        06/06/2008
 !+
 !+   OPTIONAL ARGUMENT BOUNDARY_COLOUR ADDED TO LECLIM
@@ -152,9 +131,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
-!| DOPRINT        |---|
-!| DTDEP          |---|
-!| NEWTIME        |---|
+!| DOPRINT        |-->| FOR OVERWRITING THE KEYWORD ON LISTING
+!| DTDEP          |-->| TIME STEP TO USE WHEN COUPLING WITH ESTEL-3D
+!| NEWTIME        |-->| ARE WE STARTING A NEW TIME STEP OR JUST ITERATING?
+!|                |   | THIS IS FOR COUPLING WITH ESTEL-3D
 !| NITER          |-->| NUMBER OF ITERATIONS WHEN CALLED FOR COUPLING
 !| PASS           |-->| -1 : ALL STEPS
 !|                |   | 0 : ONLY INITIALISATION

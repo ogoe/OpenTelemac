@@ -6,7 +6,7 @@
      & TRAC,PROPA,CONVV,ITURB,IETAPE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MANAGES THE ALLOCATION OF ARRAYS
@@ -33,24 +33,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |<->| ENERGIE TURBULENTE A LA FIN DE L'ETAPE TRAITEE
-!| AKTILD         |-->| ENERGIE TURBULENTE AVANT L'ETAPE TRAITEE
-!| C              |<->| CELERITE A LA FIN DE L'ETAPE TRAITEE.
-!| CONVV          |-->| LOGIQUES INDIQUANT LES VARIABLES QU'ON NE
-!|                |   | VEUT PAS CONVECTER.
-!| CTILD          |-->| CELERITE AVANT L'ETAPE TRAITEE.
-!| EP             |<->| DISSIPASSION A FIN DE L'ETAPE TRAITEE.
-!| EPTILD         |-->| DISSIPASSION AVANT L'ETAPE TRAITEE.
-!| IETAPE         |-->| INDICATEUR D'AVANCEMENT DANS LE PROGRAMME .
-!| ITURB          |-->| MODELE DE TURBULENCE  1 : LAMINAIRE
-!|                |   | 2 : LONGUEUR DE MELANGE
-!|                |   | 3 : K-EPSILON
-!| PROPA          |-->| SI PROPA=.FALSE. : PAS DE PROPAGATION.
-!| T              |<->| TRACEUR A LA FIN DE L'ETAPE TRAITEE.
-!| TRAC           |-->| LOGIQUE INDIQUANT LA PRESENCE D'UN TRACEUR
-!| TTILD          |-->| TRACEUR AVANT L'ETAPE TRAITEE.
-!| U,V            |<->| VITESSE A LA FIN DE L'ETAPE TRAITEE.
-!| UTILD,VTILD    |-->| VITESSE AVANT L'ETAPE TRAITEE.
+!| AK             |<->| TURBULENT KINETIC ENERGY
+!| AKTILD         |-->| TURBULENT KINETIC BEFORE CURRENT STEP
+!| C              |<->| CELERITY
+!| CONVV          |-->| LOGICAL ARRAY SAYING IF A VARIABLE IS ADVECTED OR NOT
+!| CTILD          |-->| CELERITY BEFORE CURRENT STEP
+!| EP             |<->| TURBULENT ENERGY DISSIPASSION 
+!| EPTILD         |-->| TURBULENT ENERGY DISSIPASSION BEFORE CURRENT STEP
+!| IETAPE         |-->| FRACTIONAL STEP NUMBER
+!| ITURB          |-->| TURBULENCE MODEL 1: LAMINAR, CONSTANT COEFFICIENT
+!|                |   |                  2: MIXING LENGTH
+!|                |   |                  3: K-EPSILON
+!| PROPA          |-->| IF PROPA=.FALSE. : NO PROPAGATION STEP.
+!| T              |<->| BLOCK OF TRACERS 
+!| TRAC           |-->| LOGICAL, YES IF THERE ARE TRACERS
+!| TTILD          |-->| BLOCK OF TRACERS BEFORE CURRENT STEP
+!| U              |<->| X-COMPONENT OF VELOCITY
+!| V              |<->| Y-COMPONENT OF VELOCITY
+!| UTILD          |-->| X-COMPONENT OF VELOCITY BEFORE CURRENT STEP 
+!| VTILD          |-->| Y-COMPONENT OF VELOCITY BEFORE CURRENT STEP 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

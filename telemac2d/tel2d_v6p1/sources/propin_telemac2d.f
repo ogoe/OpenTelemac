@@ -8,7 +8,7 @@
      & NFRLIQ,THOMFR,NUMLIQ,FRTYPE,XNEBOR,YNEBOR,ENTET)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) CHECKS THE COMPATIBILITY OF BOUNDARY CONDITIONS.
@@ -33,64 +33,60 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CLH,CLU,CLV    |<->| TYPES DE CONDITIONS AUX LIMITES SUR H,U,V
-!|                |   | RECOPIES DE LIHBOR,LIUBOR,LIVBOR
-!| DEBLIQ         |-->| NUMERO DU PREMIER POINT DE LA FRONTIERE LIQUID
-!| ENTET          |-->| SI OUI : MESSAGES IMPRIMES
-!|                |   | SAUF MESSAGES D'ERREURS QUI TOUJOURS IMPRIMES
-!| FINLIQ         |-->| NUMERO DU DERNIER POINT DE LA FRONTIERE LIQUID
-!| FRTYPE         |-->| TYPE DE TRAITEMENT POUR LES FRONTIERES LIQUIDE
-!| GRAV           |-->| PESANTEUR
-!| IELMU          |---|
-!| KADH           |-->| INDICATEUR DE POINT DIRICHLET
-!| KDDL           |-->| INDICATEUR DE DEGRE DE LIBERTE AU BORD
-!| KDIR           |-->| INDICATEUR DE POINT DE DIRICHLET
-!| KENT           |-->| INDICATEUR DE POINT D'ENTREE FLUIDE
-!| KENTU          |-->| INDICATEUR DE VITESSE IMPOSEE.
-!| KINC           |-->| INDICATEUR D'ONDE INCIDENTE
-!|                |   | CONDITIONS AUX LIMITES TECHNIQUES:
-!| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
-!| KNEU           |-->| INDICATEUR DE POINT DE NEUMANN
-!| KOND           |-->| INDICATEUR D'ONDE INCIDENTE
-!| KP1BOR         |-->| POINT SUIVANT SUR LA FRONTIERE.
-!| KSORT          |-->| INDICATEUR DE POINT DE SORTIE FLUIDE
-!| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
-!| LIMDIM         |---|
-!| LIMPRO         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA
-!|                |   | PROPAGATION
-!|                |   | PAR POINTS   :    .1:H  .2:U  .3:V
-!|                |   | PAR SEGMENTS :    .4:H  .5:U  .6:V
-!| LIUBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR U
-!| LIVBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR V
-!| LT             |-->| NUMERO DE L'ITERATION COURANTE.
-!| MASK           |<--| MASQUES POUR LES SEGMENTS
-!|                |   | MASK(NPTFR,1) : 1. SI KDIR SUR U 0. SINON
-!|                |   | MASK(NPTFR,2) : 1. SI KDIR SUR V 0. SINON
-!|                |   | MASK(NPTFR,3) : 1. SI KDDL SUR U 0. SINON
-!|                |   | MASK(NPTFR,4) : 1. SI KDDL SUR V 0. SINON
-!|                |   | MASK(NPTFR,5) : 1. SI KNEU SUR U 0. SINON
-!|                |   | MASK(NPTFR,6) : 1. SI KNEU SUR V 0. SINON
-!|                |   | MASK(NPTFR,7) : 1. SI KOND 0. SINON
+!| CLH            |<->| COPY OF LIHBOR
+!| CLU            |<->| COPY OF LIUBOR
+!| CLV            |<->| COPY OF LIVBOR
+!| ENTET          |-->| IF YES, MESSAGES PRINTED
+!| FRTYPE         |-->| TYPE OF TREATMENT FOR LIQUID BOUNDARIES
+!| GRAV           |-->| GRAVITY
+!| IELMU          |-->| TYPE OF ELEMENT FOR U
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
+!| KOND           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!|                |   | (TECHNICAL BOUNDARY CONDITIONS, AS OPPOSED
+!|                |   |  TO KINC: PHYSICAL BOUNDARY CONDITION)
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIMDIM         |-->| FIRST DIMENSION OF LIMPRO
+!| LIMPRO         |<--| TYPES OF BOUNDARY CONDITIONS FOR PROPAGATION
+!|                |   | PER POINT   :    .1:H  .2:U  .3:V
+!|                |   | PER SEGMENT :    .4:H  .5:U  .6:V
+!| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
+!| LIVBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON V
+!| LT             |-->| CURRENT TIME STEP
+!| MASK           |<--| BLOCK OF MASKS FOR SEGMENTS :
+!|                |   | MASK(NPTFR,1) : 1. IF KDIR ON U 0. SINON
+!|                |   | MASK(NPTFR,2) : 1. IF KDIR ON V 0. SINON
+!|                |   | MASK(NPTFR,3) : 1. IF KDDL ON U 0. SINON
+!|                |   | MASK(NPTFR,4) : 1. IF KDDL ON V 0. SINON
+!|                |   | MASK(NPTFR,5) : 1. IF KNEU ON U 0. SINON
+!|                |   | MASK(NPTFR,6) : 1. IF KNEU ON V 0. SINON
+!|                |   | MASK(NPTFR,7) : 1. IF KOND 0. SINON
 !|                |   | MASK(NPTFR,8) : 1. - MASK( ,5)
-!|                |   | MASK(NPTFR,9) : 1. SI H DIRICHLET
-!|                |   | MASK(NPTFR,10): 1. SI H NEUMANN
-!|                |   | MASK(NPTFR,11): 1. SI H DEGRE DE LIBERTE
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NBOR           |-->| CORRESPONDANCE ENTRE NUMEROTATION DES
-!|                |   | POINTS FRONTIERES ET NUMEROTATION GLOBALE
-!| NELBOR         |-->| NUMEROS DES ELEMENTS ADJACENTS AUX BORDS.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
-!| NPOIN          |-->| NOMBRE DE NOEUD DU MAILLAGE
-!| NPTFR          |-->| DIMENSION DES TABLEAUX.
-!|                |   | CONDITIONS AUX LIMITES PHYSIQUES:
-!| THOMFR         |-->| TRAITEMENT PAR CARACTERISTIQUES DES FRONTIERES
-!|                |   | LIQUIDES
-!| XNEBOR         |---|
-!| YNEBOR         |---|
+!|                |   | MASK(NPTFR,9) : 1. IF H DIRICHLET
+!|                |   | MASK(NPTFR,10): 1. IF H NEUMANN
+!|                |   | MASK(NPTFR,11): 1. IF H DEGREE OF FREEDOM
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
+!|                |   | ELEMENT.
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| THOMFR         |-->| IF YES, THOMPSON BOUNDARY CONDITIONS
+!| XNEBOR         |<--| X-COMPONENT OF NORMAL AT NODES
+!| YNEBOR         |<--| Y-COMPONENT OF NORMAL AT NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

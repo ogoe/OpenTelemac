@@ -34,12 +34,13 @@
 !| CE             |<--| TERMES DE DIFFUSION
 !| CVIS           |-->| COEFFICIENT DE DIFFUSION DES VITESSES
 !| DJX,DJY        |<--| GRADIENTS PAR TRIANGLES
+!| DPX,DPY        |-->| 
 !| DX,DY          |<--| GRADIENTS PAR NOEUDS
 !| IVIS           |-->| OPTION DIFFUSION DES VITESSES
 !| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
 !| NT             |-->| NOMBRE D'ELEMENTS DU MAILLAGE
 !| NU             |-->| NUMEROS DES NOEUDS PAR TRIANGLE
-!| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
+!| UA             |-->| UA(1,IS) = H,  UA(2,IS) = U  ,UA(3,IS) = V
 !| ZF             |-->| COTES DU FOND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -87,17 +88,17 @@
 !        COMPUTES THE P1-GRADIENTS
 !
 !
-!   COMPUTES THE H+Z GRADIENT
+!        COMPUTES THE H+Z GRADIENT
 !
-       IVAR=1
-           UA1=UA(IVAR,NUBO1) + ZF(NUBO1)
-           UA2=UA(IVAR,NUBO2) + ZF(NUBO2)
-           UA3=UA(IVAR,NUBO3) + ZF(NUBO3)
+         IVAR=1
+         UA1=UA(IVAR,NUBO1) + ZF(NUBO1)
+         UA2=UA(IVAR,NUBO2) + ZF(NUBO2)
+         UA3=UA(IVAR,NUBO3) + ZF(NUBO3)
 !
-            DJX(IVAR,JT)      = UA1*DPX(1,JT) +
-     &               UA2*DPX(2,JT) + UA3*DPX(3,JT)
-            DJY(IVAR,JT)      = UA1*DPY(1,JT) +
-     &               UA2*DPY(2,JT) + UA3*DPY(3,JT)
+         DJX(IVAR,JT)      = UA1*DPX(1,JT) +
+     &                       UA2*DPX(2,JT) + UA3*DPX(3,JT)
+         DJY(IVAR,JT)      = UA1*DPY(1,JT) +
+     &                       UA2*DPY(2,JT) + UA3*DPY(3,JT)
 !
          DX(IVAR,NUBO1)    = DX(IVAR,NUBO1) + AIRJ*DJX(IVAR,JT)
          DX(IVAR,NUBO2)    = DX(IVAR,NUBO2) + AIRJ*DJX(IVAR,JT)
@@ -107,7 +108,7 @@
          DY(IVAR,NUBO2)    = DY(IVAR,NUBO2) + AIRJ*DJY(IVAR,JT)
          DY(IVAR,NUBO3)    = DY(IVAR,NUBO3) + AIRJ*DJY(IVAR,JT)
 !
-!    COMPUTES THE VELOCITY GRADIENTS
+!        COMPUTES THE VELOCITY GRADIENTS
 !
          DO IVAR=2,3
 !
@@ -115,18 +116,19 @@
            UA2=UA(IVAR,NUBO2)
            UA3=UA(IVAR,NUBO3)
 !
-            DJX(IVAR,JT)      = UA1*DPX(1,JT) +
-     &               UA2*DPX(2,JT) + UA3*DPX(3,JT)
-            DJY(IVAR,JT)      = UA1*DPY(1,JT) +
-     &               UA2*DPY(2,JT) + UA3*DPY(3,JT)
+           DJX(IVAR,JT) = UA1*DPX(1,JT) +
+     &                    UA2*DPX(2,JT) + UA3*DPX(3,JT)
+           DJY(IVAR,JT) = UA1*DPY(1,JT) +
+     &                    UA2*DPY(2,JT) + UA3*DPY(3,JT)
 !
-         DX(IVAR,NUBO1)    = DX(IVAR,NUBO1) + AIRJ*DJX(IVAR,JT)
-         DX(IVAR,NUBO2)    = DX(IVAR,NUBO2) + AIRJ*DJX(IVAR,JT)
-         DX(IVAR,NUBO3)    = DX(IVAR,NUBO3) + AIRJ*DJX(IVAR,JT)
+           DX(IVAR,NUBO1) = DX(IVAR,NUBO1) + AIRJ*DJX(IVAR,JT)
+           DX(IVAR,NUBO2) = DX(IVAR,NUBO2) + AIRJ*DJX(IVAR,JT)
+           DX(IVAR,NUBO3) = DX(IVAR,NUBO3) + AIRJ*DJX(IVAR,JT)
 !
-         DY(IVAR,NUBO1)    = DY(IVAR,NUBO1) + AIRJ*DJY(IVAR,JT)
-         DY(IVAR,NUBO2)    = DY(IVAR,NUBO2) + AIRJ*DJY(IVAR,JT)
-         DY(IVAR,NUBO3)    = DY(IVAR,NUBO3) + AIRJ*DJY(IVAR,JT)
+           DY(IVAR,NUBO1) = DY(IVAR,NUBO1) + AIRJ*DJY(IVAR,JT)
+           DY(IVAR,NUBO2) = DY(IVAR,NUBO2) + AIRJ*DJY(IVAR,JT)
+           DY(IVAR,NUBO3) = DY(IVAR,NUBO3) + AIRJ*DJY(IVAR,JT)
+!
          ENDDO
 !
 !  COMPUTES THE VELOCITY DIFFUSION TERMS

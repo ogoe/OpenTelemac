@@ -36,19 +36,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| H              |-->| HAUTEUR AU TEMPS N
-!| HBOR           |<--| HAUTEUR IMPOSEE.
-!| HN             |-->| HAUTEUR DE PROPAGATION (OPTION H-U)
-!| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NFRLIQ         |-->| NOMBRE DE FRONTIERES LIQUIDES
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NTRAC          |-->| NOMBRE DE TRACEURS
-!| T              |-->| TRACEUR AU TEMPS N
-!| TBOR           |<--| TRACEUR IMPOSE AU BORD
-!| U,V            |-->| COMPOSANTES DE LA VITESSE AU TEMPS N
-!| UBOR           |<--| VITESSE U IMPOSEE.
-!| VBOR           |<--| VITESSE V IMPOSEE.
+!| H              |-->| WATER DEPTH AT TIME N
+!| HBOR           |<--| PRESCRIBED DEPTH
+!| HN             |-->| PROPAGATION DEPTH (OPTION H-U)
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| T              |-->| BLOCK OF TRACERS AT TIME N
+!| TBOR           |<--| BLOCK OF IMPOSED TRACERS AT BOUNDARIES
+!| U              |<->| X-COMPONENT OF VELOCITY
+!| V              |<->| Y-COMPONENT OF VELOCITY
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

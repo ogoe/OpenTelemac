@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -28,10 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FILE_DESC      |---|
-!| MOTCAR         |---|
-!| NCAR           |---|
-!| PATH           |---|
+!| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
+!| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
+!| NCAR           |-->| NUMBER OF LETTERS IN STRING PATH
+!| PATH           |-->| FULL PATH TO CODE DICTIONARY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -2,11 +2,11 @@
                      SUBROUTINE FRICTION_QUAD
 !                    ************************
 !
-     & (IKLE, NPOIN, NELEM, NELMAX, LINDNER, NKFROT, CHESTR, NDEFMA,
-     &  LINDDP, LINDSP)
+     &(IKLE, NPOIN, NELEM, NELMAX, LINDNER, NKFROT, CHESTR, NDEFMA,
+     & LINDDP, LINDSP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FRICTION VECTOR FOR THE QUADRATIC ELEMENT.
@@ -34,16 +34,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHESTR         |---|
-!| IKLE           |---|
-!| LINDDP         |---|
-!| LINDNER        |---|
-!| LINDSP         |---|
-!| NDEFMA         |---|
-!| NELEM          |---|
-!| NELMAX         |---|
-!| NKFROT         |---|
-!| NPOIN          |---|
+!| CHESTR         |<->| FRICTION COEFFICIENTS
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| LINDDP         |<--| DIAMETER OF ROUGHNESS ELEMENT IN LINDNER CASE
+!| LINDNER        |-->| IF YES, THERE IS NON-SUBMERGED VEGETATION FRICTION
+!| LINDSP         |<--| SPACING OF ROUGHNESS ELEMENT IN LINDNER CASE
+!| NDEFMA         |<--| DEFAULT MANNING COEFFICIENT
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NKFROT         |<->| LAW OF BOTTOM FRICTION FOR EVERY POINT
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

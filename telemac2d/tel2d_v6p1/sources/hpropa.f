@@ -5,10 +5,11 @@
      &(HPROP ,HN,H,PROLIN,HAULIN,TETA,NSOUSI)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    COMPUTES PROPAGATION DEPTH.
+!brief    COMPUTES PROPAGATION DEPTH, I.E. DEPTH IN DIVERGENCE TERM
+!         OF CONTINUITY EQUATION.
 !
 !history  J-M HERVOUET (LNHE)
 !+        16/07/2007
@@ -28,13 +29,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| H              |<--| HAUTEUR
-!| HAULIN         |-->| PROFONDEUR MOYENNE POUR LA LINEARISATION
-!| HN             |<--| HAUTEUR AU PAS DE TEMPS PRECEDENT
-!| HPROP          |<--| HAUTEUR DE PROPAGATION
-!| NSOUSI         |-->| NOMBRE DE SOUS ITERATIONS
-!| PROLIN         |-->| CORRESPOND AU MOT CLE:"PROPAGATON LINEARISEE"
-!| TETA           |-->| SEMI-IMPLICITATION SUR H.
+!| H              |<--| WATER DEPTH AT TIME T(N+1)
+!| HAULIN         |-->| MEAN DEPTH FOR LINEARISATION
+!| HN             |<--| WATER DEPTH AT TIME T(N)
+!| HPROP          |<--| WATER DEPTH FOR PROPAGATION
+!| NSOUSI         |-->| NUMBER OF SUB-ITERATIONS
+!| PROLIN         |-->| KEY-WORD "LINEARISED PROPAGATON"
+!| TETA           |-->| IMPLICITATION COEFFICIENT ON DEPTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

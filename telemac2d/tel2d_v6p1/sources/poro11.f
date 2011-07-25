@@ -5,7 +5,7 @@
      &(TETA,ZF,HN,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES TIDAL FLATS.
@@ -42,11 +42,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN             |---|
-!| IKLE           |---|
-!| NELEM          |---|
-!| NELMAX         |---|
-!| TETA           |<--| NU (PAR ELEMENT)
+!| HN             |-->| WATER DEPTH AT TIME T(N)
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| TETA           |<--| POROSITY PER ELEMENT
+!| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

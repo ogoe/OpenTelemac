@@ -18,7 +18,7 @@
      & NUMDIG,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PROPAGATION - DIFFUSION - SOURCE TERMS STEP TO SOLVE
@@ -111,142 +111,157 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A23,A32        |<->| MATRICES
+!| A23            |<->| MATRIX
+!| A32            |<->| MATRIX
 !| ADJO           |-->| IF YES : ADJOINT MODE
-!| AGGLOH         |-->| COEFFICIENT DE MASS-LUMPING SUR H
-!| AGGLOU         |-->| COEFFICIENT DE MASS-LUMPING SUR U
-!| AM2            |---|
-!| AM3            |---|
-!| ATMOS          |-->| LOGIQUE INDIQUANT SI PATMOS EST REMPLI.
-!| AUBOR          |-->| CONDITIONS AUX LIMITES SUR LE FROTTEMENT.
-!| BD             |---|
-!| BILMAS         |-->| INDIQUE SI ON FAIT LE BILAN DE MASSE
-!| BM1S           |---|
-!| BM2            |---|
-!| BM2S           |---|
-!| C0             |-->| CELERITE DE REFERENCE
-!| CF             |---|
-!| CFLMAX         |---|
-!| CM1            |---|
-!| CM2            |---|
-!| CONVV          |-->| LOGIQUES INDIQUANT LES VARIABLES QUE L'ON
-!|                |   | VEUT CONVECTER
+!| AGGLOH         |-->| KEYWORD: 'MASS-LUMPING ON H'
+!| AGGLOU         |-->| KEYWORD: 'MASS-LUMPING ON VELOCITY'
+!| AM1            |<->| MATRIX APPLYING TO H
+!| AM2            |<->| MATRIX APPLYING TO U
+!| AM3            |<->| MATRIX APPLYING TO V
+!| AT             |-->| TIME IN SECONDS
+!| ATMOS          |-->| IF YES, ATMOSPHERIC PRESSURE IN PATMOS
+!| AUBOR          |<--| LAW OF FRICTION ON BOUNDARIES
+!|                |   | NUT*DU/DN=AUBOR*U+BUBOR
+!| BD             |---| ??????  NOT USED
+!| BILMAS         |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION
+!| BM1S           |<->| MATRIX
+!| BM2            |<->| MATRIX
+!| BM2S           |<->| MATRIX
+!| C0             |-->| REFERENCE CELERITY
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
+!| CFLMAX         |<--| MAXIMUM CFL NUMBER (OBSERVED IN CURRENT TIME STEP)
+!| CM1            |<->| MATRIX
+!| CM2            |<->| MATRIX
+!| CONVV          |-->| ARRAY OF LOGICAL GIVING THE VARIABLES TO BE
+!|                |   | ADVECTED
 !|                |   | CONVV(1):U,V CONVV(2):H
-!| CORCON         |-->| CORRECTION DE CONTINUITE SUR LES POINTS A
-!|                |   | HAUTEUR IMPOSEE (ON CORRIGE LES VITESSES)
-!| COTOND         |<--| EXPRESSION DE CU/G DANS LA THEORIE DE L'ONDE
-!|                |   | INCIDENTE
-!| COUPLING       |---|
-!| CV1,CV2,CV3    |<->| SECONDS MEMBRES DU SYSTEME.
-!| CV1S           |---|
-!| DH,DHN         |<--| STOCKAGE DE LA VARIABLE DH  (DHN AU TEMPS N)
-!| DIFVIT         |-->| INDIQUE S'IL FAUT FAIRE LA DIFFUSION DE U,V
-!| DIRBOR         |---|
-!| DM1            |---|
-!| DU,DV          |<--| STOCKAGE DES QCCROISSEMENTS EN U ET V
-!| EQUA           |---|
-!| FLBOR          |---|
+!| CORCON         |-->| CONTINUITY CORRECTION ON POINTS WITH
+!|                |   | IMPOSED DEPTH (COMPATIBLE FLUX IS COMPUTED)
+!| COTOND         |<--| ELEVATION USED FOR INCIDENT WAVES CONDITIONS
+!| COUPLING       |-->| STRING WITH THE LIST OF COUPLED PROGRAMMES
+!| CV1            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
+!| CV2            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
+!| CV3            |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
+!| CV1S           |<->| RIGHT-HAND SIDE OF LINEAR SYSTEM
+!| DH             |<--| H(N+1)-H(N)
+!| DHN            |<--| H(N)-H(N-1)
+!| DIFVIT         |-->| IF YES, DIFFUSION OF VELOCITY
+!| DIRBOR         |<--| BLOCK WITH DIRICHLET BOUNDARY CONDITIONS
+!| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
+!| DT             |-->| TIME STEP
+!| DU             |<--| U(N+1)-U(N)
+!| DV             |<--| V(N+1)-V(N)
+!| EQUA           |-->| KEYWORD: 'EQUATIONS'
+!| FLBOR          |<--| FLUXES AT BOUNDARY POINTS
 !| FLULIM         |-->| FLUX LIMITATION
-!| FU,FV          |<->| TERMES SOURCES TRAITES EN P1
-!| GRAV           |-->| CONSTANTE DE GRAVITE .
-!| H0             |---|
-!| HBOR           |-->| CONDITIONS AUX LIMITES SUR H.
-!| HFROT          |---|
-!| HPROP          |-->| HAUTEUR DE PROPAGATION
-!| HTILD          |---|
-!| ICONVF         |-->| FORME DE LA CONVECTION
-!|                |   | TABLEAU DE 4 VALEURS ENTIERES POUR :
-!|                |   | ICONVF(1) : U ET V
+!| FU             |<->| SOURCE TERMS ON VELOCITY U
+!| FV             |<->| SOURCE TERMS ON VELOCITY V
+!| GRAV           |-->| GRAVITY
+!| H0             |-->| REFERENCE DEPTH
+!| HBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON DEPTH
+!| HN             |-->| DEPTH AT TIME T(N)
+!| HFROT          |-->| KEYWORD: 'DEPTH IN FRICTION TERMS'
+!| HPROP          |-->| PROPAGATION DEPTH
+!| HTILD          |-->| DEPTH AFTER ADVECTION
+!| ICONVF         |-->| TYPE OF ADVECTION: 4 INTEGERS
+!|                |   | ICONVF(1) : U AND V
 !|                |   | ICONVF(2) : H (MANDATORY VALUE = 5)
-!|                |   | ICONVF(3) : TRACEUR
-!|                |   | ICONVF(4) : K ET EPSILON
-!| INFOGR         |-->| INFORMATIONS SUR LE GRADIENT (LOGIQUE)
-!| IORDRH         |-->| ORDRE DU TIR INITIAL POUR H
-!| IORDRU         |-->| ORDRE DU TIR INITIAL POUR U
-!| ISOUSI         |-->| NUMERO DE LA SOUS-ITERATION DANS LE PAS
-!|                |   | DE TEMPS.
-!| KDIR           |-->| CONDITION A LA LIMITE DE TYPE DIRICHLET
-!| KFROT          |-->| LOI DE FROTTEMENT SUR LE FOND
-!| LIMPRO         |-->| TYPES DE CONDITIONS AUX LIMITES
-!| LT,AT,DT       |-->| NUMERO D'ITERATION, TEMPS, PAS DE TEMPS
-!| MASK           |-->| BLOC DE MASQUES POUR LES SEGMENTS :
-!|                |   | MASK(MSK1): 1. SI KDIR SUR U 0. SINON
-!|                |   | MASK(MSK2): 1. SI KDIR SUR V 0. SINON
-!|                |   | MASK(MSK3): 1. SI KDDL SUR U 0. SINON
-!|                |   | MASK(MSK4): 1. SI KDDL SUR V 0. SINON
-!|                |   | MASK(MSK6): 1. SI KNEU SUR V 0. SINON
-!|                |   | MASK(MSK7): 1. SI KOND 0. SINON
-!|                |   | MASK(MSK9): 1. SI KDIR SUR H (POINT)
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS
-!|                |   | =1. : NORMAL   =0. : ELEMENT MASQUE
-!| MASKPT         |-->| MASQUES PAR POINTS.
-!| MASSES         |-->| MASSE CREEE PAR TERME SOURCE PENDANT
-!|                |   | LE PAS DE TEMPS.
-!| MAT            |---|
-!| MBOR           |---|
-!| MESH           |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES.
-!| NFRLIQ         |---|
-!| NPSING         |---|
-!| NUMDIG         |---|
-!| NWEIRS         |---|
-!| OPDVIT         |---|
-!| OPTBAN         |-->| OPTION DE TRAITEMENT DES BANCS DECOUVRANTS
-!|                |   | NON UTILISE POUR L'INSTANT :
-!| OPTSOU         |---|
-!| OPTSUP         |---|
-!| PATMOS         |-->| TABLEAU DE VALEURS DE LA PRESSION ATMOSPHER.
-!| PRECCU         |---|
-!| PRIVE          |-->| TABLEAU DE TRAVAIL DEFINI DANS PRINCI
-!| RHS            |---|
-!| RO             |-->| MASSE VOLUMIQUE SI ELLE VARIABLE
-!| ROEAU          |-->| MASSE VOLUMIQUE DE L'EAU.
-!| ROVAR          |-->| OUI SI LA MASSE VOLUMIQUE EST VARIABLE.
-!| S              |-->| STRUCTURE BIDON
-!| SLVPRO         |---|
-!| SMH            |-->| TERMES SOURCES DE L'EQUATION DE CONTINUITE
-!| SOLSYS         |---|
-!| T1             |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| T5             |---|
-!| T6             |---|
-!| T7             |---|
-!| T8             |---|
-!| TB             |---|
-!| TE1            |---|
-!| TE2            |---|
-!| TE3            |---|
-!| TE4            |---|
-!| TE5            |---|
-!| TETAD          |-->| IMPLICITATION SUR LA DIFFUSION
-!| TETAH          |-->| IMPLICITATION SUR H DANS L'EQUATION SUR U
-!| TETAHC         |-->| IMPLICITATION SUR H DANS LA CONTINUITE
-!| TETAU          |-->| IMPLICITATION SUR U ET V
-!| TETAZCOMP      |---|
-!| TM1            |<->| MATRICE
-!| UBOR           |-->| CONDITIONS AUX LIMITES SUR U.
-!| UCONV,VCONV    |-->| CHAMP CONVECTEUR
-!| UDEL           |---|
-!| UN,VN,HN       |-->| VALEURS A L' ETAPE N.
-!| UNK            |---|
-!| UNSV2D         |---|
-!| UTILD          |---|
-!| V2DPAR         |---|
+!|                |   | ICONVF(3) : TRACERS
+!|                |   | ICONVF(4) : K AND EPSILON
+!| INFOGR         |-->| IF YES, INFORMATION ON GRADIENT
+!| IORDRH         |-->| ORDER OF INITIAL GUESS OF H
+!| IORDRU         |-->| ORDER OF INITIAL GUESS OF U
+!| ISOUSI         |-->| NUMBER OF SUB-ITERATION IN THE TIME-STEP
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KFROT          |-->| KEYWORD: 'LAW OF BOTTOM FRICTION'
+!| LIMPRO         |-->| BOUNDARY CONDITIONS FOR H, U V PER POINTS
+!|                |   | AND SEGMENTS
+!| LT             |-->| ITERATION NUMBER
+!| MASK           |-->| BLOCK OF MASKS FOR SEGMENTS :
+!|                |   | MASK(MSK1): 1. IF KDIR ON U 0. ELSE
+!|                |   | MASK(MSK2): 1. IF KDIR ON V 0. ELSE
+!|                |   | MASK(MSK3): 1. IF KDDL ON U 0. ELSE
+!|                |   | MASK(MSK4): 1. IF KDDL ON V 0. ELSE
+!|                |   | MASK(MSK6): 1. IF KNEU ON V 0. ELSE
+!|                |   | MASK(MSK7): 1. IF KOND 0. ELSE
+!|                |   | MASK(MSK9): 1. IF KDIR ON H (POINT)
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MASSES         |-->| MASS OF WATER ADDED BY SOURCE TERM
+!| MAT            |<--| BLOCK OF MATRICES
+!| MBOR           |<--| BOUNDARY MATRIX
+!| MESH           |-->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPSING         |-->| NUMBER OF POINTS FOR EVERY SINGULARITY.
+!| NUMDIG         |-->| NUMDIG(K,I,NP) : BOUNDARY NUMBER OF POINT NP
+!|                |   | OF SIDE K OF WEIR I.
+!| NWEIRS         |-->| NUMBER OF SINGULARITIES
+!| OPDVIT         |-->| OPTION FOR DIFFUSION OF VELOCITIES
+!| OPTBAN         |-->| KEYWORD: 'OPTION FOR THE TREATMENT OF TIDAL FLATS' 
+!| OPTSOU         |-->| KEYWORD: 'TYPE OF SOURCES'
+!| OPTSUP         |-->| KEYWORD: 'SUPG OPTION'
+!| PATMOS         |-->| ATMOSPHERIC PRESSURE
+!| PRECCU         |-->| KEYWORD: 'C-U PRECONDITIONING' 
+!| PRIVE          |-->| BLOCK OF WORK BIEF_OBJ STRUCTURES
+!| RHS            |<->| BLOCK OF PRIVATE BIEF_OBJ STRUCTURES
+!| RO             |-->| WATER DENSITY IF VARIABLE
+!| ROEAU          |-->| WATER DENSITY
+!| ROVAR          |-->| IF YES, VARIABLE WATER DENSITY.
+!| S              |-->| VOID STRUCTURE
+!| SLVPRO         |-->| SOLVER STRUCTURE FOR PROPAGATION
+!| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| SOLSYS         |-->| KEYWORD: 'TREATMENT OF THE LINEAR SYSTEM' 
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T5             |<->| WORK BIEF_OBJ STRUCTURE
+!| T6             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| TB             |<->| BLOCK WITH T1,T2,...
+!| TE1            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TE2            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TE3            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TE4            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TE5            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TETAD          |-->| IMPLICITATION ON DIFFUSION
+!| TETAH          |-->| IMPLICITATION OF H IN U EQUATION 
+!| TETAHC         |-->| IMPLICITATION OF H IN CONTINUITY
+!| TETAU          |-->| IMPLICITATION OF U AND
+!| TM1            |<->| MATRIX
+!| UBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<--| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!| UCONV          |-->| X-COMPONENT OF ADVECTION VELOCITY FIELD
+!| VCONV          |-->| Y-COMPONENT OF ADVECTION VELOCITY FIELD
+!| UDEL           |<--| COMPATIBLE X-COMPONENT OF ADVECTION VELOCITY FIELD
+!| UN             |<->| X-COMPONENT OF VELOCITY AT TIME T(N)
+!| VN             |<->| Y-COMPONENT OF VELOCITY AT TIME T(N)
+!| UNK            |<->| BLOCK OF UNKNOWNS
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| UTILD          |-->| VELOCITY U IF ADVECTED BY CHARACTERISTICS
+!| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
 !| VBOR           |-->| CONDITIONS AUX LIMITES SUR V.
-!| VDEL           |---|
-!| VERTIC         |---|
-!| VISC           |-->| VISCOSITE TURBULENTE .
-!| VISC_S         |---|
-!| VOLU2D         |---|
-!| VTILD          |---|
-!| W1             |<->| TABLEAU DE TRAVAIL.
+!| VDEL           |<--| COMPATIBLE Y-COMPONENT OF ADVECTION VELOCITY FIELD
+!| VERTIC         |-->| IF YES, THERE ARE VERTICAL STRUCTURES
+!| VISC           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z .
+!|                |   | IF P0 : PER ELEMENT
+!|                |   | IF P1 : PERR POINT
+!| VISC_S         |<->| WORK ARRAY FOR SAVING VISC
+!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS, NOT ASSEMBLED IN PARALLEL
+!| VTILD          |-->| VELOCITY V IF ADVECTED BY CHARACTERISTICS
+!| W1             |<->| WORK ARRAY
 !| YAFLULIM       |-->| IF, YES, FLULIM TAKEN INTO ACCOUNT
-!| YASMH          |-->| INDIQUE SI ON PREND EN COMPTE SMH
-!| ZCONV          |---|
-!| ZF             |-->| COTE DU FONT AU NOEUD DE MAILLAGE .
-!| ZFLATS         |---|
+!| YASMH          |-->| IF YES, SMH TAKEN INTO ACCOUNT
+!| ZCONV          |<--| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZFLATS         |<--| ELEVATION OF BOTTOM, MODIFIED FOR TIDAL FLATS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

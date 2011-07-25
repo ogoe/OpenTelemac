@@ -7,11 +7,12 @@
      & I_ORIG,J_ORIG)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES OUT THE BINARY RESULTS FILE (SELAFIN FORMAT) WITH
-!+                THE DATA ON TRAJECTORY OF THE FLOATING BODIES.
+!+                THE DATA ON TRAJECTORY OF THE FLOATING BODIES, HERE
+!+                CALLED DROGUES (A KIND OF FLOATING BUOY)
 !
 !history  J-M JANIN (LNH)
 !+        08/03/2007
@@ -31,30 +32,27 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BINRES         |-->| TYPE DE BINAIRE DU FICHIER DE RESULTATS
-!| DATE           |---|
-!| DEBFLO         |-->| NUMEROS DES PAS DE TEMPS DE LARGAGE DE
-!|                |   | CHAQUE FLOTTEUR.
-!| FINFLO         |-->| NUMEROS DES PAS DE TEMPS DE FIN DE CALCUL DE
-!|                |   | DERIVE POUR CHAQUE FLOTTEUR.
-!| FLOPRD         |-->| NOMBRE DE PAS DE TEMPS ENTRE 2 ENREGITREMENTS
-!|                |   | DES POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| IKLFLO         |---| TABLE DE CONNECTIVITE BIDON UTILISEE POUR LA
-!|                |   | SORTIE DES TRAJECTOIRES SOUS FORME DE MAILLAGE
-!| I_ORIG         |---|
-!| J_ORIG         |---|
-!| MAXVAR         |---|
-!| MESH           |---|
-!| NFLOT          |-->| NOMBRE DE FLOTTEURS.
-!| NIT            |-->| NOMBRE DE PAS DE TEMPS
-!| NITFLO         |-->| NOMBRE MAXIMAL D'ENREGISTREMENTS DES
-!|                |   | POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| NOMRBI         |-->| NOM DU FICHIER DE RESULTATS BINAIRE SUP.
-!| NRBI           |-->| FICHIER DE RESULTATS BINAIRE SUPPLEMENTAIRE
-!|                |   | POUR STOCKER LES TRAJECTOIRES DE FLOTTEURS
-!| TIME           |---|
-!| TITCAS         |-->| TITRE DU FICHIER CAS
-!| XFLOT,YFLOT    |-->| POSITIONS SUCCESSIVES DES FLOTTEURS.
+!| BINRES         |-->| TYPE OF BINARY CODING OF THE RESULTS FILE
+!| DATE           |-->| YEAR, MONTH, DAY
+!| DEBFLO         |-->| TIME STEP NUMBER OF RELEASE FOR EVERY DROGUE
+!| FINFLO         |-->| TIME STEP OF END OF COMPUTATION FOR EVERY DROGUE
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEN TWO RECORDS
+!| IKLFLO         |-->| CONNECTIVITY TABLE USED FOR EXITING THE
+!|                |   | TRAJECTORIES AS A MESH
+!| I_ORIG         |-->| REAL ABSCISSA (IN M) OF POINT (0,0) IN THE MESH
+!| J_ORIG         |-->| REAL ORDINATE (IN M) OF POINT (0,0) IN THE MESH
+!| MAXVAR         |-->| MAXIMUM NUMBER OF VARIABLES
+!| MESH           |-->| MESH STRUCTURE
+!| NFLOT          |-->| NUMBER OF DROGUES
+!| NIT            |-->| NUMBER OF TIME STEPS
+!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDS OF DROGUES POSTIONS
+!| NOMRBI         |-->| LOGICAL UNIT OF BINARY RESULTS FILE
+!| NRBI           |-->| LOGICAL UNIT OF FILE FOR STORING THE
+!|                |   | TRAJECTORIES OF DROGUES
+!| TIME           |-->| HOUR, MINUTE, SECOND
+!| TITCAS         |-->| TITLE IN PARAMETER FILE
+!| XFLOT          |-->| ABSCISSAE OF DROGUES
+!| YFLOT          |-->| ORDINATES OF DROGUES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

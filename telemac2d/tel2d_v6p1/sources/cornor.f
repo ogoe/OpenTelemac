@@ -6,7 +6,7 @@
      & LIHBOR,T1,T2,MESH)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CORRECTS THE NORMALS TO THE NODES IN ACCORDANCE WITH
@@ -32,17 +32,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KLOG           |---|
-!| KP1BOR         |---|
-!| LIHBOR         |-->| CONDITIONS AUX LIMITES SUR H
-!| MESH           |---|
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
-!| T1             |---|
-!| T2             |---|
-!| XNEBOR         |---|
-!| XSGBOR         |---|
-!| YNEBOR         |---|
-!| YSGBOR         |---|
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| MESH           |-->| MESH STRUCTURE
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| XNEBOR         |<--| X-COMPONENT OF NORMAL AT NODES
+!| XSGBOR         |-->| X-COMPONENT OF NORMAL TO SEGMENTS
+!| YNEBOR         |<--| Y-COMPONENT OF NORMAL AT NODES
+!| YSGBOR         |-->| Y-COMPONENT OF NORMAL TO SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

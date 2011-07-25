@@ -2,12 +2,12 @@
                      SUBROUTINE FRICTION_ZONES
 !                    *************************
 !
-     & (MESH, H, U, V, S, CHESTR, CHBORD, NKFROT, NDEFMA, LINDDP,
-     &  LINDSP, KFRO_B, NDEF_B, ITURB, LISRUG, LINDNER, VK,
-     &  KARMAN, GRAV, T1, T2, CF, CFBOR)
+     &(MESH, H, U, V, S, CHESTR, CHBORD, NKFROT, NDEFMA, LINDDP,
+     & LINDSP, KFRO_B, NDEF_B, ITURB, LISRUG, LINDNER, VK,
+     & KARMAN, GRAV, T1, T2, CF, CFBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FRICTION FOR EACH NODE AND ZONE.
@@ -35,29 +35,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---|
-!| CFBOR          |---|
-!| CHBORD         |---|
-!| CHESTR         |---|
-!| GRAV           |---|
-!| H              |---|
-!| ITURB          |---|
-!| KARMAN         |---|
-!| KFRO_B         |---|
-!| LINDDP         |---|
-!| LINDNER        |---|
-!| LINDSP         |---|
-!| LISRUG         |---|
-!| MESH           |---|
-!| NDEFMA         |---|
-!| NDEF_B         |---|
-!| NKFROT         |---|
-!| S              |---|
-!| T1             |---|
-!| T2             |---|
-!| U              |---|
-!| V              |---|
-!| VK             |---|
+!| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
+!| CFBOR          |<--| ADIMENSIONAL FRICTION COEFFICIENT ON BOUNDARIES
+!| CHBORD         |-->| FRICTION COEFFICIENTS ON BOUNDARIES
+!| CHESTR         |-->| FRICTION COEFFICIENTS
+!| GRAV           |-->| GRAVITY
+!| H              |-->| WATER DEPTH
+!| ITURB          |-->| TURBULENCE MODEL
+!| KARMAN         |-->| VON KARMAN CONSTANT
+!| KFRO_B         |-->| LAW OF BOTTOM FRICTION FOR BOUNDARIES
+!| LINDDP         |-->| DIAMETER OF ROUGHNESS ELEMENT IN LINDNER CASE
+!| LINDNER        |-->| IF YES, THERE IS NON-SUBMERGED VEGETATION FRICTION
+!| LINDSP         |-->| SPACING OF ROUGHNESS ELEMENT IN LINDNER CASE
+!| LISRUG         |-->| TURBULENCE REGIME (1: SMOOTH 2: ROUGH)
+!| MESH           |-->| MESH STRUCTURE
+!| NDEFMA         |-->| DEFAULT MANNING COEFFICIENT
+!| NDEF_B         |-->| DEFAULT MANNING COEFFICIENT OF BOUNDARIES
+!| NKFROT         |-->| LAW OF BOTTOM FRICTION FOR EVERY POINT
+!| S              |-->| VOID STRUCTURE
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| VK             |-->| KINEMATIC VISCOSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

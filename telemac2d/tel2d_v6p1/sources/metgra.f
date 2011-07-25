@@ -5,7 +5,7 @@
      &(RO,ESTIME,GRADJ,GRADJN,JCOUT1,DESC,NPARAM,OPTID,RSTART,R02,R03)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ONE STEP OF GRADIENT METHOD.
@@ -34,16 +34,16 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DESC           |<--| VECTOR USED TO CHANGE THE SET OF STRICKLERS'
-!| ESTIME         |---|
+!| ESTIME         |---| ?????? NOT USED
 !| GRADJ          |-->| GRADIENT OF COST FUNCTION (ITERATION K)
 !| GRADJN         |-->| GRADIENT OF COST FUNCTION (ITERATION K-1)
-!| JCOUT1         |---|
+!| JCOUT1         |-->| COST FUNCTION
 !| NPARAM         |-->| TOTAL NUMBER OF PARAMETERS TO ESTIMATE
 !| OPTID          |-->| METHOD 1=GRADIENT, 2=GRADIENT CONJUGUE, 3=LAGRANGE)
-!| R02            |---|
-!| R03            |---|
+!| R02            |<--| COEFFICIENT IN THE GRADIENT METHOD
+!| R03            |<--| COEFFICIENT IN THE GRADIENT METHOD
 !| RO             |<->| COEFFICIENT OF THE GRADIENT
-!| RSTART         |---|
+!| RSTART         |-->| IF YES, STARTING FROM SCRATCH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

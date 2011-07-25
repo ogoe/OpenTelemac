@@ -24,9 +24,10 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NS             |-->| TOTAL NUMBER OF NODES 
-!| G              |-->| GAVITY
+!| G              |-->| GRAVITY
 !| H              |-->| WATER DEPTHS
-!| U,V            |-->| X AND Y VELOCITY COMPONENTS
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
 !| DTHAUT         |-->| CHARACTERISTIC LENTH FOR CFL (DX)
 !| DT             |<--| TIME STEP 
 !| CFL            |-->| CFL

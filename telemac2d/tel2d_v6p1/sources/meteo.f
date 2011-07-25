@@ -6,7 +6,7 @@
      & HN,TRA01,GRAV,ROEAU,NORD,PRIVE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
@@ -34,7 +34,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT,LT          |-->| TIME, ITERATION NUMBER
 !| ATMOS          |-->| YES IF PRESSURE TAKEN INTO ACCOUNT
-!| FUAIR,FVAIR    |-->| IDEM IF WIND CONSTANT.
+!| FUAIR          |-->| VELOCITY OF WIND ALONG X, IF CONSTANT
+!| FVAIR          |-->| VELOCITY OF WIND ALONG Y, IF CONSTANT
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| HN             |-->| DEPTH
 !| NORD           |-->| DIRECTION OF NORTH, COUNTER-CLOCK-WISE
@@ -45,8 +46,8 @@
 !| ROEAU          |-->| WATER DENSITY
 !| TRA01          |-->| WORKING ARRAY
 !| VENT           |-->| YES IF WIND TAKEN INTO ACCOUNT
-!| WINDX,Y        |<--| TWO COMPONENTS OF WIND VELOCITY
-!| WINDY          |---|
+!| WINDX          |<--| FIRST COMPONENT OF WIND VELOCITY
+!| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

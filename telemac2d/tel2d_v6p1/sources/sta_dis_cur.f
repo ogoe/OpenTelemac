@@ -5,7 +5,7 @@
      &(IFRLIQ,FLUX,PTS,QZ,NFRLIQ,ZN)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRESCRIBES THE FREE SURFACE ELEVATION AS A FUNCTION OF

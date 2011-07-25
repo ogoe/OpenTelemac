@@ -5,7 +5,7 @@
      &(KARMAN,CMU,C1,C2,SIGMAK,SIGMAE,ESTAR,SCHMIT,KMIN,KMAX,EMIN,EMAX)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SETS THE CONSTANTS FOR THE K-EPSILON MODEL.
@@ -28,18 +28,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C1             |<--| CONSTANTE DU MODELE K-EPSILON
-!| C2             |<--| CONSTANTE DU MODELE K-EPSILON
-!| CMU            |<--| CONSTANTE DU MODELE K-EPSILON
-!| EMAX           |<--| EPSILON MAXIMUM EN CAS DE CLIPPING
-!| EMIN           |<--| EPSILON MINIMUM EN CAS DE CLIPPING
-!| ESTAR          |<--| CONSTANTE DU MODELE K-EPSILON
-!| KARMAN         |<--| CONSTANTE DE KARMAN
-!| KMAX           |<--| K MAXIMUM EN CAS DE CLIPPING
-!| KMIN           |<--| K MINIMUM EN CAS DE CLIPPING
-!| SCHMIT         |---|
-!| SIGMAE         |<--| CONSTANTE DU MODELE K-EPSILON
-!| SIGMAK         |<--| CONSTANTE DU MODELE K-EPSILON
+!| C1             |<--| CONSTANT IN K-EPSILON MODEL
+!| C2             |<--| CONSTANT IN K-EPSILON MODEL
+!| CMU            |<--| CONSTANT IN K-EPSILON MODEL
+!| EMAX           |<--| MAXIMUM EPSILON IF CLIPPING
+!| EMIN           |-->| MINIMUM EPSILON IF CLIPPING
+!| ESTAR          |-->| CONSTANT IN K-EPSILON MODEL
+!| KARMAN         |-->| VON KARMAN CONSTANT
+!| KMAX           |<--| MAXIMUM K IF CLIPPING
+!| KMIN           |<--| MINIMUM K IF CLIPPING
+!| SCHMIT         |-->| SCHMITT NUMBER
+!| SIGMAE         |<--| K-EPSILON CONSTANT FOR DIFFUSION OF EPSILON
+!| SIGMAK         |<--| K-EPSILON CONSTANT FOR DIFFUSION OF K
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

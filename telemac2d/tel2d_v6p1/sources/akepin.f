@@ -5,7 +5,7 @@
      &(AK,EP,U,V,H,NPOIN,KFROT,CMU,C2,ESTAR,SCHMIT,KMIN,EMIN,CF)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES K AND EPSILON.
@@ -42,20 +42,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |<--| ENERGIE TURBULENTE
-!| C2             |-->| CONSTANTE DU MODELE K-EPSILON
-!| CF             |---|
-!| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
-!| EMIN           |-->| EPSILON MINIMUM EN CAS DE CLIPPING
-!| EP             |<--| DISSIPATION TURBULENTE
-!| ESTAR          |-->| CONSTANTE DU MODELE K-EPSILON
-!| H              |-->| HAUTEUR D'EAU
-!| KFROT          |-->| CORRESPOND AU MOT CLE: "LOI DE FROTTEMENT SUR
-!|                |   | LE FOND"  (1:CHEZY 2:LINEAIRE 3:STRICKLER).
-!| KMIN           |-->| K MINIMUM EN CAS DE CLIPPING
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE.
-!| SCHMIT         |-->| NOMBRE DE SCHMITT
-!| U,V            |-->| COMPOSANTES DE LA VITESSE
+!| AK             |<--| TURBULENT KINETIC ENERGY
+!| C2             |-->| CONSTANT IN K-EPSILON MODEL
+!| CF             |-->| ADIMENSIONAL FRICTION COEFFICIENT
+!| CMU            |-->| CONSTANT IN K-EPSILON MODEL
+!| EMIN           |-->| MINIMUM EPSILON IF CLIPPING
+!| EP             |<--| TURBULENT DISSIPATION
+!| ESTAR          |-->| CONSTANT IN K-EPSILON MODEL
+!| H              |-->| WATER DEPTH
+!| KFROT          |-->| KEY-WORD: "LAW OF BOTTOM FRICTION"
+!|                |   | 1:CHEZY 2:LINEAIRE 3:STRICKLER
+!| KMIN           |-->| MINIMUM K IF CLIPPING
+!| NPOIN          |-->| NUMBER OF POINTS
+!| SCHMIT         |-->| SCHMITT NUMBER
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -81,7 +82,7 @@
 !
       TIERS = 1.D0/3.D0
 !
-!  INITIALISATION OF K AND EPSILON
+!     INITIALISATION OF K AND EPSILON
 !
 !     *******************
       IF(KFROT.EQ.0) THEN
@@ -98,13 +99,13 @@
       ELSE
 !     ****
 !
-        DO 20 K=1,NPOIN
+        DO K=1,NPOIN
            HAUT  = MAX(H(K),1.D-4)
            USTAR = SQRT( 0.5D0 * CF(K) * ( U(K)**2 + V(K)**2 ) )
            CEPS  = C2*SQRT(CMU)/SQRT(ESTAR*SCHMIT)/(0.5D0*CF(K))**0.75D0
            AK(K) = C2*USTAR**2/(0.5D0*CF(K)*CEPS)
            EP(K) = MAX( USTAR**3/(HAUT*SQRT(0.5D0*CF(K))) , EMIN )
-20      CONTINUE
+        ENDDO
 !
 !     *****
       ENDIF
