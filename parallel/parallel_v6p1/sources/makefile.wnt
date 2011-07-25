@@ -1,7 +1,7 @@
 #------------------------------makefile.wnt----------------------------
-#     Système TELEMAC Version 6.0     PLG / INGEROP
+#     Système TELEMAC Version 6.0     CCT - MHL
 #
-# Makefile de PARALLEL pour WindowsNT (GFORTRAN/G95).
+# Makefile de PARALLEL pour WindowsNT (avec Intel).
 #
 # ATTENTION : doit être lancé dans le répertoire adéquat :
 #                   parallel*/.../sources.
@@ -24,12 +24,12 @@ DIRINC_MPI    = $(PROJECT)\..\mpi\include
 #
 FCO       = $(FC_OPT_COMPIL)
 F90       = $(FC_NAM)
-F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE) $(DIRINC_MPI)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_MPI)
 LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.o:
+.f.obj:
     $(F90) $(F90_PROJ) $<
 #
 #----- Paramétrage Telemac
@@ -105,13 +105,13 @@ SRCS_DIFFSEL=diffsel.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
-OBJS_PARTEL = $(SRCS_PARTEL:.f=.o)
-OBJS_GRETEL = $(SRCS_GRETEL:.f=.o)
-OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.o)
-OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.o)
-OBJS_GREDELMET = $(SRCS_GREDELMET:.f=.o)
-OBJS_GREDELHYD = $(SRCS_GREDELHYD:.f=.o)
+OBJS = $(SRCS:.f=.obj)
+OBJS_PARTEL = $(SRCS_PARTEL:.f=.obj)
+OBJS_GRETEL = $(SRCS_GRETEL:.f=.obj)
+OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.obj)
+OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.obj)
+OBJS_GREDELMET = $(SRCS_GREDELMET:.f=.obj)
+OBJS_GREDELHYD = $(SRCS_GREDELHYD:.f=.obj)
 OBJS_DIFFSEL= $(SRCS_DIFFSEL:.f=.obj)
 #
 #------------------------ Cibles
@@ -122,7 +122,7 @@ all: $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GRE
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie.
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
 
 "$(PARTEL)" : $(OBJS_PARTEL) $(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(OBJS_GREDELMET) $(OBJS_GREDELHYD) $(OBJS_DIFFSEL)
 	@echo  -
@@ -140,7 +140,7 @@ all: $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GRE
 menage:  $(SRCS) $(SRCS_PARTEL) $(SRCS_GRETEL) $(SRCS_GREDELPTS) $(SRCS_GREDELSEG) $(SRCS_GREDELMET) $(SRCS_GREDELHYD) $(SRCS_DIFSEL)
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
-	!@if EXIST $(**B).o del /q  $(**B).o
+	!@if EXIST $(**B).obj del /q  $(**B).obj
 	@echo ---------------------Destruction de la librarie $(LIBRARY).
 	!@if EXIST $(LIBRARY) del /q  $(LIBRARY)
 	@echo ---------------------Destruction des utilitaires GRETEL et PARTEL et autres
@@ -171,12 +171,12 @@ parallel: $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) 
 libdebug:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
-	nmake /f makefile.gfo install  "MODE=d"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
+	nmake /f makefile.wnt install  "MODE=d"
 
 #--- Librairie en PROFILE
 libprofile:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
-	nmake /f makefile.gfo install  "MODE=p"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
+	nmake /f makefile.wnt install  "MODE=p"
