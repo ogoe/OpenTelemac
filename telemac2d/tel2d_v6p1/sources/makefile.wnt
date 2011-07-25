@@ -1,13 +1,13 @@
 #------------------------------makefile.wnt----------------------------
-#     Système TELEMAC Version 6.0     PLG / INGEROP
+#     Système TELEMAC Version 6.0     CCT - MHL
 #
-# Makefile de TELEMAC2D pour WindowsNT (GFORTRAN/G95).
+# Makefile de TELEMAC2D pour WindowsNT (avec DVF).
 #
 # ATTENTION : doit être lancé dans le répertoire adéquat :
 #                   TELEMAC2D*/.../sources.
 #
 # Modes supportes :
-#        % maktel
+#        % maktel 
 #        % maktel  [all] [install] [menage]
 #        % maktel  libdebug
 #        % maktel  libprofile
@@ -60,8 +60,8 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.o:
- $(F90) $(F90_PROJ) $<
+.f.obj:
+ $(F90) $(F90_PROJ) $<  
 #
 #----- Paramétrage Telemac
 #
@@ -73,9 +73,9 @@ DEST          = $(PROJECT)\telemac2d\tel2d_$(VERSION)\$(DIRLIB)
 EXEDEF	        = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 EXEDEFPARA    = $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe
 #SYSLIB        = netapi32.lib advapi32.lib
-LKLIB         = $(PROJECT)\sisyphe\sisyphe_$(V_SISYPHE)\$(DIRLIB)\sisyphe$(MODE)$(V_SISYPHE).lib \
+LKLIB         = $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\sisyphe\sisyphe_$(V_SISYPHE)\$(DIRLIB)\sisyphe$(MODE)$(V_SISYPHE).lib \
                 $(PROJECT)\tomawac\toma_$(V_TOMAWAC)\$(DIRLIB)\tomawac$(MODE)$(V_TOMAWAC).lib \
-                $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\damocles\damo_$(VERSION)\$(DIRLIB)\damo$(MODE)$(VERSION).lib \
                 $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib \
                 $(PROJECT)\paravoid\paravoid_$(VERSION)\$(DIRLIB)\paravoid$(MODE)$(VERSION).lib \
@@ -134,7 +134,7 @@ volfin.f vusce.f vvsce.f wall_friction.f wetdry.f wrihyd.f zeropsi.f zerophi.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+OBJS = $(SRCS:.f=.obj)
 
 #
 # ------------------------ Cibles
@@ -148,7 +148,7 @@ exedefpara:     $(EXEDEFPARA)
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie.
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
 
 "$(EXEDEF)":	$(OBJS)
 	@echo  -
@@ -163,17 +163,17 @@ exedefpara:     $(EXEDEFPARA)
 	echo "Termine."
 
 #--- Suppression des ".obj" (existants) + ".lib"
-menage:  $(SRCS)
+menage:  $(SRCS) 
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
-	!@if EXIST $(**B).o del /q  $(**B).o
+	!@if EXIST $(**B).obj del /q  $(**B).obj
 	@echo ---------------------Destruction des librairies
 	!@if EXIST *.lib del /q  *.lib
 	@echo ---------------------Destruction des executables
 	!@if EXIST *.exe del /q  *.exe
 
 
-#--- Scalar version
+#--- Installation de la librairie
 install: $(LIBRARY) $(EXEDEF)
 	@echo  -
 	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
@@ -182,7 +182,7 @@ install: $(LIBRARY) $(EXEDEF)
 	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
 	copy $(EXEDEF)  $(DEST)\$(EXEDEF)
 
-#--- Parallel version
+#--- Installation de la librairie
 parallel: $(LIBRARY) $(EXEDEFPARA)
 	@echo  -
 	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
@@ -195,40 +195,40 @@ parallel: $(LIBRARY) $(EXEDEFPARA)
 libdebug:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
-	nmake /f makefile.gfo install  "MODE=d"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d" 
+	nmake /f makefile.wnt install  "MODE=d" 
 
 #--- Librairie en PROFILE
 libprofile:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
-	nmake /f makefile.gfo install  "MODE=p"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
+	nmake /f makefile.wnt install  "MODE=p" 
 
 #------- Modules
 #
-MODS = *.o
+MODS = *.obj
 
-declarations_telemac2d.o:
-    $(F90) $(F90_PROJ) declarations_telemac2d.f
+declarations_telemac2d.obj:
+    $(F90) $(F90_PROJ) declarations_telemac2d.f  
     if EXIST $(DIRINC)\declarations_telemac2d.mod del /f $(DIRINC)\declarations_telemac2d.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move declarations_telemac2d.mod $(DIRINC)
 
-friction_def.o:
-    $(F90) $(F90_PROJ) friction_def.f
+friction_def.obj:
+    $(F90) $(F90_PROJ) friction_def.f  
     if EXIST $(DIRINC)\friction_def.mod del /f $(DIRINC)\friction_def.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move friction_def.mod $(DIRINC)
-
-interface_telemac2d.o:
-    $(F90) $(F90_PROJ) interface_telemac2d.f
+    
+interface_telemac2d.obj:
+    $(F90) $(F90_PROJ) interface_telemac2d.f  
     if EXIST $(DIRINC)\interface_telemac2d.mod del /f $(DIRINC)\interface_telemac2d.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move interface_telemac2d.mod $(DIRINC)
-
-m_coupling_estel3d.o:
-    $(F90) $(F90_PROJ) m_coupling_estel3d.f
+    
+m_coupling_estel3d.obj:
+    $(F90) $(F90_PROJ) m_coupling_estel3d.f  
     if EXIST $(DIRINC)\m_coupling_estel3d.mod del /f $(DIRINC)\m_coupling_estel3d.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move m_coupling_estel3d.mod $(DIRINC)
