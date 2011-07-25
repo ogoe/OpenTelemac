@@ -39,7 +39,7 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER, INTENT(IN) :: I1,I2
+      INTEGER, INTENT(IN) :: I1,I2,I3
 !
 !-----------------------------------------------------------------------
 !
