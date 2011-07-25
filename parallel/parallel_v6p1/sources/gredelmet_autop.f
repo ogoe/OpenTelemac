@@ -408,13 +408,17 @@
         WRITE(3) NPOIN2,0,NPOIN2,NPOIN2,NPOIN2,0
         WRITE(3) (REAL(AREA(I)),I=1,NPOIN2)
       ELSEIF(FILETYPE(1:6).EQ.'LENGTH') THEN
-        WRITE(3) 0
-        DO K=1,NPLAN
-          WRITE(3) ((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG2+MBND)
-        ENDDO
-        DO K=1,NPLAN-1
-          WRITE(3) (1.0, I=1,NPOIN2*2)
-        ENDDO
+!        WRITE(3) 0
+!        DO K=1,NPLAN
+!          WRITE(3) ((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG2+MBND)
+!        ENDDO
+!        DO K=1,NPLAN-1
+!          WRITE(3) (1.0, I=1,NPOIN2*2)
+!        ENDDO
+        WRITE(3) 0,(((REAL(LENGTH(I,J)),I=1,2),J=1,NSEG2+MBND),     ! LP 27/02/2011
+     &                K=1,NPLAN), ((1.0,1.0), K=1,(NPLAN-1)*NPOIN2) ! BECAUSE OF
+!                                                                   ! UNFORMATTED FILES
+!                                                                   ! ALL NOW IN 1 RECORD
       ELSEIF(FILETYPE(1:6).EQ.'IFRMTO') THEN
         DO K=1,NPLAN
           DO ISEG=1,NSEG2
