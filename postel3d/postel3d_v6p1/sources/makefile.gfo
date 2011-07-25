@@ -1,0 +1,138 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 5.8     R. BALLESTER - ADMIn Informatique
+#
+# Makefile de POSTEL3D pour WindowsNT (avec Intel).
+#
+# ATTENTION : doit etre lance dans le repertoire adequat :
+#                   POSTEL3D*/.../sources.
+#
+# Modes supportes :
+#        % maktel 
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#----------------------------------------------------Aout-1999-DeltaCAD
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+#
+#----- ParamÅtrage Telemac
+#
+NOM_GENERIQUE = postel3d
+VERSION	      = v6p1
+V_BIEF        = v6p1
+V_DAMOCLES    = v6p1
+V_PARAVOID    = v6p1
+V_SPECIAL     = v6p1
+MODE          =
+LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
+DEST          = $(PROJECT)\postel3d\postel3d_$(VERSION)\$(DIRLIB)
+
+EXEDEF	      = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
+LKLIB         = $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)\bief$(MODE)$(VERSION).lib \
+                $(PROJECT)\damocles\damo_$(VERSION)\$(DIRLIB)\damo$(MODE)$(VERSION).lib \
+                $(PROJECT)\paravoid\paravoid_$(VERSION)\$(DIRLIB)\paravoid$(MODE)$(VERSION).lib \
+                $(PROJECT)\special\special_$(VERSION)\$(DIRLIB)\special$(MODE)$(VERSION).lib
+
+
+DIRINC            = $(PROJECT)\postel3d\postel3d_$(VERSION)\$(DIRLIB)
+DIRINC_BIEF       = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)
+DIRINC_DAMOCLES   = $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)
+DIRINC_PARAVOID   = $(PROJECT)\paravoid\paravoid_$(V_PARAVOID)\$(DIRLIB)
+DIRINC_SPECIAL    = $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)
+#
+FCO       = $(FC_OPT_COMPIL)
+LKO       = $(LK_OPT_OTHERS)
+FC        = $(FC_NAM)
+FFLAGS	  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) \
+                                    $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
+                                    $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
+                                    $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID) \
+                                    $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
+#
+# ----- Règles de compilation Fortran
+#
+.f.o:
+ $(FC) $(FFLAGS) $<  
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS= \
+declarations_postel3d.f \
+coupeh.f                 exten1.f                 exten2.f          lecdon_postel3d.f        postel3d.f        \
+coupev.f                 lecr3d.f                 pre2dh.f          \
+pre2dv.f                 ecrdeb.f                 nomtra.f          \
+homere_postel3d.f        point_postel3d.f
+
+#
+#------- Objets
+#
+OBJS = $(SRCS:.f=.o)
+
+#
+# ------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+
+exedef:         $(EXEDEF)
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+
+"$(EXEDEF)":	$(OBJS)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
+	echo "Termine."
+
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS) 
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).o del /q  $(**B).o
+	@echo ---------------------Destruction des librairies
+	!@if EXIST *.lib del /q  *.lib
+	@echo ---------------------Destruction des executables
+	!@if EXIST *.exe del /q  *.exe
+	@echo ---------------------Destruction des modules
+	!@if EXIST *.mod del /q  *.mod
+	!@if EXIST *.MOD del /q  *.MOD
+
+#--- Installation de la librairie
+install: $(LIBRARY) $(EXEDEF)
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	copy $(LIBRARY) $(DEST)\$(LIBRARY)
+	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
+	copy $(EXEDEF)  $(DEST)\$(EXEDEF)
+
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)" LKO="$(LK_OPT_DEBUG)" "MODE=d" 
+	nmake /f makefile.gfo install  "FCO=$(FC_OPT_DEBUG)" LKO="$(LK_OPT_DEBUG)" "MODE=d" 
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p" 
+	nmake /f makefile.gfo install  "FCO=$(FC_OPT_PROFILE)" LKO="$(LK_OPT_OPT_PROFILE)" "MODE=p"
+
+#------- Modules
+#
+MODS = declarations_postel3d.o
+
+declarations_postel3d.o:
+	$(FC) $(FFLAGS) declarations_postel3d.f  
+	if EXIST $(DEST)\declarations_postel3d.mod del /f $(DEST)\declarations_postel3d.mod
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	move declarations_postel3d.mod $(DEST)
