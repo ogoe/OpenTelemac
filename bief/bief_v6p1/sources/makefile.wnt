@@ -1,13 +1,13 @@
 #------------------------------makefile.wnt----------------------------
-#     Système TELEMAC Version 6.0     PLG / INGEROP
+#     Système TELEMAC Version 6.0     CCT - MHL
 #
-# Makefile de BIEF pour WindowsNT (avec GFORTRAN/G95).
+# Makefile de BIEF pour WindowsNT (avec Intel).
 #
 # ATTENTION : doit être lancé dans le répertoire adéquat :
 #                   BIEF*/.../sources.
 #
 # Modes supportes :
-#        % maktel
+#        % maktel 
 #        % maktel  [all] [install] [menage]
 #        % maktel  libdebug
 #        % maktel  libprofile
@@ -26,8 +26,8 @@ F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC)
 #
 # ----- Règles de compilation Fortran
 #
-.f.o:
-    $(F90) $(F90_PROJ) $<
+.f.obj:
+    $(F90) $(F90_PROJ) $<  
 #
 #----- Paramétrage Telemac
 #
@@ -131,7 +131,7 @@ voisin.f     voisin31.f     waitfor.f     write_data.f write_data_serafin.f   wr
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+OBJS = $(SRCS:.f=.obj) 
 
 #
 # ------------------------ Cibles
@@ -142,13 +142,13 @@ ALL: $(MODS) $(LIBRARY)
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie.
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
 
 #--- Suppression des ".obj" (existants) + ".lib"
-menage:  $(SRCS)
+menage:  $(SRCS) 
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
-	!@if EXIST $(**B).o del /q  $(**B).o
+	!@if EXIST $(**B).obj del /q  $(**B).obj
 	@echo ---------------------Destruction des librairies
 	!@if EXIST *.lib del /q  *.lib
 	@echo ---------------------Destruction des executables
@@ -165,46 +165,46 @@ install: $(LIBRARY)
 libdebug:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  MODE=d
-	nmake /f makefile.gfo install  "MODE=d"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  MODE=d
+	nmake /f makefile.wnt install  "MODE=d" 
 
 #--- Librairie en PROFILE
 libprofile:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  MODE=p
-	nmake /f makefile.gfo install  "MODE=p"
-
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  MODE=p 
+	nmake /f makefile.wnt install  "MODE=p" 
+ 
 #------- Modules
 #
-MODS = *.o
+MODS = *.obj
 
-bief_def.o:
+bief_def.obj:
     $(F90) $(F90_PROJ) bief_def.f
     if EXIST $(DEST)\bief_def.mod del /f $(DEST)\bief_def.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move bief_def.mod $(DEST)
 
-declarations_telemac.o:
-    $(F90) $(F90_PROJ) declarations_telemac.f
+declarations_telemac.obj:
+    $(F90) $(F90_PROJ) declarations_telemac.f  
     if EXIST $(DEST)\declarations_telemac.mod del /f $(DEST)\declarations_telemac.mod
   	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move declarations_telemac.mod $(DEST)
-
-bief.o:
-    $(F90) $(F90_PROJ) bief.f
+    
+bief.obj:
+    $(F90) $(F90_PROJ) bief.f  
     if EXIST $(DEST)\bief.mod del /f $(DEST)\bief.mod
   	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move bief.mod $(DEST)
 
-m_med.o:
-    $(F90) $(F90_PROJ) m_med.f
+m_med.obj:
+    $(F90) $(F90_PROJ) m_med.f  
     if EXIST $(DEST)\m_med.mod del /f $(DEST)\m_med.mod
   	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move m_med.mod $(DEST)
 
-streamline.o:
-    $(F90) $(F90_PROJ) streamline.f
+streamline.obj:
+    $(F90) $(F90_PROJ) streamline.f  
     if EXIST $(DEST)\streamline.mod del /f $(DEST)\streamline.mod
   	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move streamline.mod $(DEST)
