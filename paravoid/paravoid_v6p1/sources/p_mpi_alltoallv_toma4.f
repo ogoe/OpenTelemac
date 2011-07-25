@@ -1,87 +1,33 @@
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!                    *********************************
+                     SUBROUTINE  P_MPI_ALLTOALLV_TOMA4
+!                    *********************************
 !
-!>  @brief       CALLS MPI_ALLTOALLV.
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> I1, I10, I2, I3, I4, I5, I6, I7, I8, I9
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
-!
-!>  @par Called by
-!><br>TOMAWAC_MPI()
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  <tr>
-!>    <td><center> 6.0                                    </center></td>
-!>    <td> 27/10/2009                                              </td>
-!>    <td> C. DENIS (SINETICS)                                     </td>
-!>    <td>                                                         </td>
-!>  </table>
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>I1
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I10
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I4
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I5
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I6
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I7
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I8
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I9
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-!
-!#######################################################################
-!
-                        SUBROUTINE  P_MPI_ALLTOALLV_TOMA4
      &(I1,I2,I3,I4,I5,I6,I7,I8,I9,I10)
+!
+!***********************************************************************
+! PARALLEL   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    CALLS FUNCTION MPI_ALLTOALLV.
+!
+!warning  EMPTY SHELL IN SCALAR MODE FOR PARALLEL COMPATIBILITY
+!
+!history  C. DENIS (SINETICS)
+!+        27/10/2009
+!+        V6P0
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I1             |---|
@@ -132,6 +78,3 @@
 !
       RETURN
       END
-!
-!#######################################################################
-!

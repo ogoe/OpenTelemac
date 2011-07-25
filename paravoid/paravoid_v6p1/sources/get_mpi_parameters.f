@@ -1,67 +1,33 @@
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!                    *****************************
+                     SUBROUTINE GET_MPI_PARAMETERS
+!                    *****************************
 !
-!>  @brief
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> P_COMM_WORLD, P_INTEGER, P_REAL8, P_SUCCESS, P_UB
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
-!
-!>  @par Called by
-!><br>ECRSPE(), STREAMLINE(), STREAMLINE_TOMAWAC(), TOMAWAC_MPI()
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  </table>
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>P_COMM_WORLD
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>P_INTEGER
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>P_REAL8
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>P_SUCCESS
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>P_UB
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-!
-!#######################################################################
-!
-                        SUBROUTINE GET_MPI_PARAMETERS
      &(P_INTEGER,P_REAL8,P_UB,P_COMM_WORLD,P_SUCCESS)
+!
+!***********************************************************************
+! PARALLEL   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief
+!
+!warning  EMPTY SHELL IN SCALAR MODE FOR PARALLEL COMPATIBILITY
+!
+!history  J-M HERVOUET (LNHE)
+!+        02/02/2009
+!+        V6P0
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| P_COMM_WORLD   |---|
@@ -95,6 +61,3 @@
 !
       RETURN
       END
-!
-!#######################################################################
-!

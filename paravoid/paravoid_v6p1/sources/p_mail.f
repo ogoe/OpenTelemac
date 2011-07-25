@@ -1,68 +1,47 @@
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!                    *****************
+                     SUBROUTINE P_MAIL
+!                    *****************
 !
-!>  @brief       PASSES A CHARACTER STRING (OF LENGTH NCAR)
-!>                FROM THE MASTER TO THE SLAVES.
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> CHAINE, NCAR
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  <tr>
-!>    <td><center> 5.1                                    </center></td>
-!>    <td> 08/01/1997                                              </td>
-!>    <td> J-M HERVOUET (LNH) 01.30.87.80.18                       </td>
-!>    <td>                                                         </td>
-!>  </table>
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>CHAINE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>MYPART
-!></td><td>--></td><td>CONTRIBUTION DU PROCESSEUR APPELANT.
-!>    </td></tr>
-!>          <tr><td>NCAR
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-!
-!#######################################################################
-!
-                        SUBROUTINE P_MAIL
      &(CHAINE,NCAR)
+!
+!***********************************************************************
+! PARALLEL   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    PASSES A CHARACTER STRING (OF LENGTH NCAR)
+!+                FROM THE MASTER TO THE SLAVES.
+!
+!warning  EMPTY SHELL IN SCALAR MODE FOR PARALLEL COMPATIBILITY
+!
+!history  RAINER JOHANNI (SGI MUNICH)
+!+        **/10/1999
+!+
+!+   ADAPTED FOR MPI
+!
+!history  J.A. JANKOWSKI (BAW KARLSRUHE)
+!+        28/12/1999
+!+
+!+   RELEASE 5.0 MODIFIED
+!
+!history  J.-M. HERVOUET (LNHE)
+!+        23/06/2008
+!+        V5P9
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHAINE         |---|
-!| MYPART         |-->| CONTRIBUTION DU PROCESSEUR APPELANT.
 !| NCAR           |---|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -83,7 +62,3 @@
 !
       RETURN
       END
-!
-!
-!#######################################################################
-!

@@ -1,62 +1,46 @@
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!                    *****************
+                     SUBROUTINE ERRPVM
+!                    *****************
 !
-!>  @brief
+     &(ERROR_NUMBER)
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!***********************************************************************
+! PARALLEL   V6P0                                   21/08/2010
+!***********************************************************************
 !
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
+!brief    WRITES OUT THE ERROR MESSAGES FOR PVM.
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!warning  EMPTY SHELL IN SCALAR MODE FOR PARALLEL COMPATIBILITY
 !
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  <tr>
-!>    <td><center>                                        </center></td>
-!>    <td> 17/12/1996                                              </td>
-!>    <td> J-M HERVOUET (LNH)                                      </td>
-!>    <td> MODIFIED                                                </td>
-!>  <tr>
-!>    <td><center>                                        </center></td>
-!>    <td> 08/06/1996                                              </td>
-!>    <td> REINHARD HINKELMANN (HANOVER)                           </td>
-!>    <td> MODIFIED                                                </td>
-!>  <tr>
-!>    <td><center> 5.1                                    </center></td>
-!>    <td> **/06/1996                                              </td>
-!>    <td> HANS HERRMANN (HANOVER)                                 </td>
-!>    <td>                                                         </td>
-!>  </table>
+!history  RAINER JOHANNI (SGI MUNICH)
+!+        **/10/1999
+!+
+!+   ADAPTED FOR MPI
+!
+!history  J.A. JANKOWSKI (BAW KARLSRUHE)
+!+        28/12/1999
+!+
+!+   RELEASE 5.0 MODIFIED
+!
+!history  J-M HERVOUET (LNHE)
+!+        23/06/2008
+!+        V5P9
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>     </table>
-!
-!#######################################################################
-!
-                        SUBROUTINE ERRPVM
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ERROR_NUMBER   |-->| RETOUR D'UN APPEL A MPI
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -70,7 +54,3 @@
 !
       STOP
       END
-!
-!
-!#######################################################################
-!

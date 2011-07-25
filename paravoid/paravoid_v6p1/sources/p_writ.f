@@ -1,82 +1,70 @@
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!                    *****************
+                     SUBROUTINE P_WRIT
+!                    *****************
 !
-!>  @brief
+     &(BUFFER,NBYTES,DEST,TYPE)
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!***********************************************************************
+! PARALLEL   V6P0                                   21/08/2010
+!***********************************************************************
 !
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> BUFFER, DEST, NBYTES, TYPE
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
+!brief    EXCHANGES VALUES BETWEEN PROCESSORS.
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!warning  EMPTY SHELL IN SCALAR MODE FOR PARALLEL COMPATIBILITY
 !
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  <tr>
-!>    <td><center>                                        </center></td>
-!>    <td> 17/12/1996                                              </td>
-!>    <td> J-M HERVOUET (LNH)                                      </td>
-!>    <td> MODIFIED                                                </td>
-!>  <tr>
-!>    <td><center>                                        </center></td>
-!>    <td> 08/06/1996                                              </td>
-!>    <td> REINHARD HINKELMANN (HANOVER)                           </td>
-!>    <td> MODIFIED                                                </td>
-!>  <tr>
-!>    <td><center> 5.6                                    </center></td>
-!>    <td> **/06/1996                                              </td>
-!>    <td> HANS HERRMANN (HANOVER)                                 </td>
-!>    <td>                                                         </td>
-!>  </table>
+!history  REINHARD HINKELMANN (HANOVER)
+!+        08/06/1996
+!+
+!+   MODIFIED
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!history  J-M HERVOUET (LNH)
+!+        17/12/1996
+!+
+!+   MODIFIED
 !
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>BUFFER
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>DEST
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>NBYTES
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>TYPE
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
+!history  RAINER JOHANNI (SGI MUNICH)
+!+        **/10/1999
+!+
+!+   ADAPTED FOR MPI
 !
-!#######################################################################
+!history  J.A. JANKOWSKI (BAW KARLSRUHE)
+!+        28/12/1999
+!+
+!+   RELEASE 5.0 MODIFIED
 !
-                        SUBROUTINE P_WRIT
-     &(BUFFER, NBYTES, DEST, TYPE)
+!history  HANS HERRMANN (HANOVRE)
+!+        23/06/2008
+!+        V5P9
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BUFFER         |---|
-!| DEST           |---|
-!| NBYTES         |---|
-!| TYPE           |---|
+!| BUFFER         |-->| ZONE TAMPON POUR LES DONNEES
+!|                |   | BUFFER / PUFFERFELD
+!| DEST           |-->| DESTINATION DES DONNEES
+!|                |   | TID OF THE DEST.  / KNOTEN-ID DES EMPFAENGERS
+!| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
+!|                |   | LENGTH IN BYTES / LAENGE IN BYTES
+!| TYPE           |-->| TYPE DES DONNEES (MSGTAG DE PVM)
+!|                |   | 0 - STRING
+!|                |   | 1 - BYTE1
+!|                |   | 2 - INTEGER2
+!|                |   | 3 - INTEGER4
+!|                |   | 4 - REAL4
+!|                |   | 5 - COMPLEX8
+!|                |   | 6 - REAL8
+!|                |   | 7 - COMPLEX16
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -95,7 +83,3 @@
 !
       STOP
       END
-!
-!
-!#######################################################################
-!

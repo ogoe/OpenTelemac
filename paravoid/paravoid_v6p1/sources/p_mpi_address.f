@@ -1,66 +1,33 @@
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!                    ************************
+                     SUBROUTINE P_MPI_ADDRESS
+!                    ************************
 !
-!>  @brief       CALLS FUNCTION MPI_ADDRESS.
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> ADDRESS, IER, LOCATION
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
-!
-!>  @par Called by
-!><br>STREAMLINE_TOMAWAC(), TOMAWAC_MPI()
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  <tr>
-!>    <td><center> 5.9                                    </center></td>
-!>    <td> 23/06/2008                                              </td>
-!>    <td> J-M HERVOUET (LNH) 01.30.87.80.18                       </td>
-!>    <td>                                                         </td>
-!>  </table>
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>ADDRESS
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>IER
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>LOCATION
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-!
-!#######################################################################
-!
-                        SUBROUTINE P_MPI_ADDRESS
      &(LOCATION,ADDRESS,IER)
+!
+!***********************************************************************
+! PARALLEL   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    CALLS FUNCTION MPI_ADDRESS.
+!
+!warning  EMPTY SHELL IN SCALAR MODE FOR PARALLEL COMPATIBILITY
+!
+!history  J.-M. HERVOUET (LNHE)
+!+        23/06/2008
+!+        V5P9
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ADDRESS        |---|
@@ -84,6 +51,3 @@
 !
       RETURN
       END
-!
-!#######################################################################
-!

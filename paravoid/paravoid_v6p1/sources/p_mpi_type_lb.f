@@ -1,66 +1,33 @@
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!                    *************************
+                     SUBROUTINE  P_MPI_TYPE_LB
+!                    *************************
 !
-!>  @brief       DUMMY CALL TO FUNCTION MPI_TYPE_LB.
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Variable(s)
-!>  <br><table>
-!>     <tr><th> Argument(s)
-!>    </th><td> I1, I2, I3
-!>   </td></tr>
-!>     <tr><th> Common(s)
-!>    </th><td>
-!> INFO : LNG, LU
-!>   </td></tr>
-!>     </table>
-!
-!>  @par Called by
-!><br>STREAMLINE(), TOMAWAC_MPI()
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Development history
-!>   <br><table>
-!> <tr><th> Release </th><th> Date </th><th> Author </th><th> Notes </th></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 21/08/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Creation of DOXYGEN tags for automated documentation and cross-referencing of the FORTRAN sources
-!>   </td></tr>
-!>  <tr><td><center> 6.0                                       </center>
-!>    </td><td> 13/07/2010
-!>    </td><td> N.DURAND (HRW), S.E.BOURBAN (HRW)
-!>    </td><td> Translation of French comments within the FORTRAN sources into English comments
-!>   </td></tr>
-!>  <tr>
-!>    <td><center> 6.0                                    </center></td>
-!>    <td> 27/10/2009                                              </td>
-!>    <td> C. DENIS (SINETICS)                                     </td>
-!>    <td>                                                         </td>
-!>  </table>
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!>  @par Details of primary variable(s)
-!>  <br><table>
-!>
-!>     <tr><th>Name(s)</th><th>(in-out)</th><th>Description</th></tr>
-!>          <tr><td>I1
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I2
-!></td><td>---</td><td>
-!>    </td></tr>
-!>          <tr><td>I3
-!></td><td>---</td><td>
-!>    </td></tr>
-!>     </table>
-!
-!#######################################################################
-!
-                        SUBROUTINE  P_MPI_TYPE_LB
      &(I1,I2,I3)
+!
+!***********************************************************************
+! PARALLEL   V6P0                                   21/08/2010
+!***********************************************************************
+!
+!brief    CALLS FUNCTION MPI_TYPE_LB.
+!
+!warning  EMPTY SHELL IN SCALAR MODE FOR PARALLEL COMPATIBILITY
+!
+!history  C. DENIS (SINETICS)
+!+        27/10/2009
+!+        V5P6
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I1             |---|
@@ -83,7 +50,3 @@
 !
       STOP
       END
-!
-!
-!#######################################################################
-!
