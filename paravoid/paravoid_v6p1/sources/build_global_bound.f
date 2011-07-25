@@ -51,16 +51,11 @@
 !
       INTEGER, INTENT(IN) :: NPOIN_TOT
       INTEGER, INTENT(IN) :: NPOIN
-      INTEGER, INTENT(IN) :: NPTFR
-      INTEGER, INTENT(IN) :: NPTFR_TOT
 !
       INTEGER, INTENT(IN), DIMENSION(NPOIN) :: KNOLG
       DOUBLE PRECISION, INTENT(IN), DIMENSION(NPOIN)  :: X, Y, K, C,CG
       DOUBLE PRECISION , INTENT(IN), DIMENSION(NPOIN_TOT) :: XT,YT,KT,
      &                                                       CTT,CGT
-      INTEGER, INTENT(IN) :: LIHBOR(NPTFR)
-      INTEGER, INTENT(IN) :: LIHBORT(NPTFR_TOT)
-      INTEGER, INTENT(IN) :: NBOR(NPTFR), NBOR_TOT(NPTFR_TOT)
 !
 !-----------------------------------------------------------------------
 !
