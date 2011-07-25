@@ -34,7 +34,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING CODE
-!| FILE_DESC      |<--| STORES SSSSSSTRINGS 'SUBMIT' OF DICTIONARY
+!| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| NCAR           |-->| NUMBER OF LETTERS IN STRING PATH
 !| PATH           |-->| FULL PATH TO CODE DICTIONARY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
