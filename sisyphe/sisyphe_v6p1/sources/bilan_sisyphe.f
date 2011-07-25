@@ -82,7 +82,7 @@
       LOGICAL,          INTENT(IN)    :: LGRAFED
       DOUBLE PRECISION, INTENT(INOUT) :: MASS_GF,VCUMU
       DOUBLE PRECISION, INTENT(IN)    :: VOLTOT(10)
-!LGRAFED
+!
 !-----------------------------------------------------------------------
 !
 !     VECTOR STRUCTURES
@@ -161,7 +161,7 @@
 !
 !     BALANCE IN EXTENDED GRANULOMETRY
 !
-      IF(NSICLA.GT.1) THENINFO
+      IF(NSICLA.GT.1) THEN
 !
         DO I=1,NSICLA
 !

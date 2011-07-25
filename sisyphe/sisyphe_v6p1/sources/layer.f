@@ -128,12 +128,12 @@
 !
 !       ACTIVATE BEFORE INVESTIGATING PROBLEMS IN LAYER...
 !       LOOK FOR 'ACTIVATE' TO SEE OTHER LINES LIKE THIS BELOW
-!           
+!
 !       IF(ELAY%R(J).LT.0.D0) THEN
 !         WRITE(LU,*) 'NEGATIVE ELAY IN LAYER J=',J,' ELAY=',ELAY%R(J)
 !         CALL PLANTE(1)
 !         STOP
-!       ENDIF      
+!       ENDIF
 !
         IF(.NOT.CONST_ALAYER) ELAY0 = 3.D0 * ACLADM%R(J)
 !
@@ -147,13 +147,13 @@
         HEIGH = ZF%R(J)-ZR%R(J)
 !
 !       ACTIVATE BEFORE INVESTIGATING PROBLEMS IN LAYER...
-!        
-!       IF(HEIGH.LT.0.D0) THEN<->|
+!
+!       IF(HEIGH.LT.0.D0) THEN
 !         WRITE(LU,*) 'BAD DATA IN LAYER J=',J,' HEIGH=',HEIGH
 !         CALL PLANTE(1)
 !         STOP
-!       ENDIF        
-!                       
+!       ENDIF
+!
 !       HERE ELAY.NE.HEIGH BECAUSE ELAY IS THE ACTIVE LAYER THICKNESS
         EVOL  = 0.D0
         DO I=1,NSICLA
