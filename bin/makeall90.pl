@@ -132,7 +132,10 @@ sub RunMake
     {
         $path =~ s/\|/$ps/g;                      # mettre le separateur de path
         $default_path = $path;
-        $path = "$path"."_"."$host";
+#~~~> SBO@HRW: sources are now within $ps.sources, not $ps."sources_"."$host"
+#        $path = "$path"."_"."$host";
+        $path = "$path";
+#~~~<
 
         if ( ! chdir("$path") )
            {
