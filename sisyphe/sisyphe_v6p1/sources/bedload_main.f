@@ -22,7 +22,7 @@
      &   U3D,V3D,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR THE BEDLOAD TRANSPORT.
@@ -49,127 +49,134 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |---|
-!| AT0            |---|
-!| AVAIL          |---|
-!| BETA           |---|
-!| BETA2          |---|
-!| BIJK           |---|
-!| BREACH         |---|
-!| CALFA          |---|
-!| CF             |---|
-!| CODE           |---|
-!| COEFPN         |---|
-!| CONST_ALAYER   |---|
-!| DEBUG          |---|
-!| DEVIA          |---|
-!| DTS            |---|
-!| DZF_GF         |---|
-!| EBOR           |---|
-!| ELAY           |---|
-!| ELAY0          |---|
-!| ENTET          |---|
-!| ENTETS         |---|
-!| FD90           |---|
-!| FDM            |---|
-!| FRACSED_GF     |---|
-!| FW             |---|
-!| GRAV           |---|
-!| HIDFAC         |---|
-!| HIDI           |---|
-!| HIDING         |---|
-!| HMIN           |---|
-!| HN             |---|
-!| HOULE          |---|
-!| ICF            |---|
-!| IELMT          |---|
-!| ISOUS          |---|
-!| IT1            |---|
-!| KARMAN         |---|
-!| KDDL           |---|
-!| KDIR           |---|
-!| KENT           |---|
-!| KINC           |---|
-!| KLOG           |---|
-!| KNEU           |---|
-!| KSORT          |---|
-!| KSP            |---|
-!| KSR            |---|
-!| LCONDIS        |---|
-!| LGRAFED        |---|
-!| LIEBOR         |---|
-!| LIMTEC         |---|
-!| LIQBOR         |---|
-!| LOADMETH       |---|
-!| LS0            |---|
-!| LT             |---|
-!| MASK           |---|
-!| MASKEL         |---|
-!| MASKPT         |---|
-!| MASKTR         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| MU             |---|
-!| NPOIN          |---|
-!| NPTFR          |---|
-!| NSICLA         |---|
-!| NSOUS          |---|
-!| OPTBAN         |---|
-!| PHISED         |---|
-!| PI             |---|
-!| Q              |---|
-!| QBOR           |---|
-!| QSCLXC         |---|
-!| QSCLYC         |---|
-!| QSCL_C         |---|
-!| QSCL_S         |---|
-!| QSXC           |---|
-!| QSYC           |---|
-!| QS_C           |---|
-!| S              |---|
-!| SALFA          |---|
-!| SECCURRENT     |---|
-!| SEDCO          |---|
-!| SLOPEFF        |---|
-!| SUSP           |---|
-!| T1             |---|
-!| T10            |---|
-!| T11            |---|
-!| T12            |---|
-!| T13            |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| T5             |---|
-!| T6             |---|
-!| T7             |---|
-!| T8             |---|
-!| T9             |---|
-!| THETAW         |---|
-!| TOB            |---|
-!| TOBW           |---|
-!| TW             |---|
-!| U2D            |---|
-!| U3D            |---|
-!| UNLADM         |---|
-!| UNORM          |---|
-!| UNSV2D         |---|
-!| UW             |---|
-!| V2D            |---|
-!| V2DPAR         |---|
-!| V3D            |---|
-!| VCE            |---|
-!| VF             |---|
-!| CSF_SABLE      |---|
-!| XMVE           |---|
-!| XMVS           |---|
-!| XWC            |---|
-!| ZERO           |---|
-!| ZF             |---|
-!| ZFCL_C         |---|
-!| ZF_C           |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| AT0            |<->| TIME IN S
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| BETA           |-->| COEFFICIENT FOR SLOPING BED EFFECT ( KOCH AND FLOKSTRA) 
+!| BETA2          |-->| COEFFICIENT FOR THE DEVIATION  (TALMON ET AL.)
+!| BIJK           |-->| COEFFICIENT OF THE BIJKER FORMULA
+!| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED (FINITE VOLUMES SHEMES)
+!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT 
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| CODE           |-->| HYDRODYNAMIC CODE IN CASE OF COUPLING
+!| COEFPN         |<->| CORRECTION OF TRANSORT FOR SLOPING BED EFFECT
+!| CONST_ALAYER   |-->| CONSTANT ACTIVE LAYER THICKNESS OR NOT
+!| DEBUG          |-->| FLAG FOR DEBUGGING
+!| DEVIA          |-->| SLOPE EFFECT FORMULA FOR DEVIATION 
+!| DTS            |<->| TIME STEP FOR SUSPENSION
+!| DZF_GF         |<->| (A SUPPRIMER)
+!| EBOR           |<->| IMPOSED BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
+!| ELAY           |<->| THICKNESS OF SURFACE LAYER
+!| ELAY0          |<->| ACTIVE LAYER THICKNESS 
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
+!| ENTETS         |<->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION FOR SUSPENSION 
+!| FD90           |-->| DIAMETER D90 
+!| FDM            |-->| DIAMETER DM FOR EACH CLASS 
+!| FRACSED_GF     |<->| (A SUPPRIMER)
+!| FW             |-->| WAVE FRICTION FACTOR
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HIDFAC         |-->| HIDING FACTOR FORMULAS
+!| HIDI           |-->| HIDING FACTOR FOR PARTICULAR SIZE CLASS (HIDFAC =0)
+!| HIDING         |-->| HIDING FACTOR CORRECTION  
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
+!| ICF            |-->| BED-LOAD OR TOTAL LOAD TRANSPORT FORMULAS
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| ISOUS          |-->| SUB-ITERATIONS
+!| IT1            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
+!| KSP            |-->| BED SKIN ROUGHNESS
+!| KSR            |-->| RIPPLE BED ROUGHNESS
+!| LCONDIS        |-->| LOGICAL, CONSTANT FLOW DISCHARGE
+!| LGRAFED        |-->| (A SUPPRIMER)
+!| LIEBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR BED EVOLUTION
+!| LIMTEC         |<->| TECHNICAL BOUNDARY CONDITION (NEUMAN...)
+!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR QS 
+!| LOADMETH       |-->| (A SUPPRIMER)
+!| LS0            |-->| (A SUPPRIMER)
+!| LT             |-->| ITERATION 
+!| MASK           |-->| BLOCK OF MASKS, EVERY ONE FOR A TYPE OF BOUNDARY
+!|                |   | SEE DIFFIN.F IN LIBRARY BIEF.
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MASKPT         |-->| MASKING PER POINT 
+!| MASKTR         |<->| MASKING FOR TRACERS, PER POINT
+!| MESH           |<->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| NSOUS          |<->| NUMBER OF SUB-ITERATIONS 
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS
+!| PHISED         |-->| ANGLE OF REPOSE OF THE SEDIMENT
+!| PI             |-->| PI
+!| Q              |-->| FLOW DISCHARGE 
+!| QBOR           |-->| BOUNDARY CONDITION FOR TRANSPORT RATE
+!| QSCLXC         |<->| TRANSPORT RATE FOR EACH CLASS X-DIRECTION
+!| QSCLYC         |<->| TRANSPORT RATE FOR EACH CLASS Y-DIRECTION
+!| QSCL_C         |<->| BEDLOAD TRANSPORT RATE
+!| QSCL_S         |<->| SUSPENDED LOAD TRANSPORT RATE
+!| QSXC           |<->| BEDLOAD TRANSPORT RATE X-DIRECTION
+!| QSYC           |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
+!| QS_C           |<->| BEDLOAD TRANSPORT RATE
+!| S              |-->| VOID STRUCTURE
+!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND CURRENT 
+!| SECCURRENT     |-->| LOGICAL, PARAMETRISATION FOR SECONDARY CURRENTS
+!| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
+!| SUSP           |-->| LOGICAL, SUSPENSION 
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T10            |<->| WORK BIEF_OBJ STRUCTURE
+!| T11            |<->| WORK BIEF_OBJ STRUCTURE
+!| T12            |<->| WORK BIEF_OBJ STRUCTURE
+!| T13            |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T5             |<->| WORK BIEF_OBJ STRUCTURE
+!| T6             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| T9             |<->| WORK BIEF_OBJ STRUCTURE
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOBW           |-->| WAVE INDUCED SHEAR STRESS
+!| TW             |-->| WAVE PERIOD
+!| U2D            |<->| MEAN FLOW VELOCITY X-DIRECTION
+!| U3D            |-->| THREE-DIMENSIONAL VELOCITY X-DIRECTION
+!| UNLADM         |-->| MEAN DIAMETER OF ACTIVE STRATUM LAYER
+!| UNORM          |<->| NORM OF THE MEAN FLOW VELOCITY
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
+!| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
+!| V3D            |-->| THREE-DIMENSIONAL VELOCITY Y-DIRECTION
+!| VCE            |-->| WATER VISCOSITY
+!| VF             |-->| LOGICAL, FINITE VOLUMES OR NOT
+!| CSF_SABLE      |-->| BED VOLUME CONCENTRATION CSF = (1-POROSITY)
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| SEDIMENT DENSITY 
+!| XWC            |-->| SETTLING VELOCITY
+!| ZERO           |-->| ZERO
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZFCL_C         |<->| BEDLOAD EVOLUTION FOR EACH SEDIMENT CLASS
+!| ZF_C           |<->| BEDLOAD EVOLUTION 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

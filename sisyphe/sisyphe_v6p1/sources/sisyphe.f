@@ -9,7 +9,7 @@
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -32,37 +32,40 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF_TEL         |---| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
-!| CHARR_TEL      |---| 
-!| CODE           |---| NAME OF CALLING PROGRAMME
-!| CONSTFLOW      |---| SUPRESSED ??
-!| DM1            |---| ??
-!| DT_TEL         |---| TIME STEP FROM TELEMAC
-!| FLBOR_TEL      |---| ??
-!| GRAFCOUNT      |-->| PERIODE DE SORTIE GRAPHIQUE
-!| HN_TEL         |---| WATER DEPTH FROM TEL 
-!| H_TEL          |-->| ???                 
+!| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
+!| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D  
+!| CODE           |-->| NAME OF CALLING PROGRAMME (TELEMAC2D OR 3D)
+!| CONSTFLOW      |<->| LOGICAL, CONSTANT FLOW DISCHARGE OR NOT (A SUPPRIMER) 
+!| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV)
+!| DT_TEL         |-->| TIME STEP FROM TELEMAC
+!| FLBOR_TEL      |-->| FLOW FLUXES AT BOUNDARIES 
+!| GRAFCOUNT      |-->| PERIOD OF GRAPHICAL OUTPUTS 
+!| HN_TEL         |-->| WATER DEPTH FROM TEL HN 
+!| H_TEL          |-->| WATER DEPTH FROM TEL H (N+1)
+!| KS_TEL         |-->| BED ROUGHNESS SENT TO TELEMAC                 
 !| LISTCOUNT      |-->| PERIODE DE SORTIE LISTING
 !| LOOPCOUNT      |-->| NUMERO DE L'ITERATION
-!| NSIS_CFD       |---| TO BE SUPRESSED
-!| PART           |-->| SI -1, PAS DE COUPLAGE : ON PASSE TOUTE LA
+!| NSIS_CFD       |---| NUMBER OF ITERATIONS FOR TELEMAC (CONSTANT FLOW DISCHARGE OPTION-TO BE SUPRESSED)
+!| PART           |-->| IF -1, NOT COUPLING : ON PASSE TOUTE LA
 !|                |   | SUBROUTINE. SINON, INDIQUE LA PARTIE DE LA
 !|                |   | SUBROUTINE DANS LAQUELLE ON PASSE
 !| PERICOU        |-->| COUPLING PERIOD FOR BEDLOAD
-!| SISYPHE_CFD    |---| ???
-!| SOLSYS         |---| ???
-!| SUSP_TEL       |---|
-!| TELNIT         |-->| NOMBRE D'ITERATION
+!| SISYPHE_CFD    |<->| LOGICAL, CONSTANT FLOW DISCHARGE OR NOT
+!| SOLSYS         |-->|1 OR 2. IF 2 ADVECTION FIELD IS UCONV + DM1*GRAD(ZCONV)
+!| SUSP_TEL       |<->|LOGICAL, SUSPENDED LOAD OR NOT: Sent to TELEMAC-2D  
+!| TELNIT         |-->| NUMBER OF TELEMAC ITERATIONS
 !| T_TEL          |-->| CURRENT TIME IN CALLING PROGRAMME
 !| U3D,V3D        |-->| 3D VELOCITY SENT BY TELEMAC 3D
-!| UCONV_TEL      |---| ???
-!| UETCAR         |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
+!| UCONV_TEL      |-->| ADVECTION VELOCITY FROM TELEMAC2D (X-DIRECTION)
+!| UETCAR         |<->| SQUARE OF THE FRICTION VELOCITY (COUPLING WITH TEL 3D)
 !| U_TEL          |-->| U VELOCITY FROM TELEMAC
-!| VCONV_TEL      |---| V VELOCITY FROM TEL 
-!| VISC_TEL       |---| ??
-!| V_TEL          |-->| VARIABLES HYDRO ENVOYEES PAR TELEMAC 2D
-!| ZCONV          |---| ??
-!| ZF_SIS         |<--| FOND ENVOYE A TELEMAC 2D
+!| VCONV_TEL      |-->| ADVECTION VELOCITY FROM TELEMAC2D (Y-DIRECTION) 
+!| VISC_TEL       |-->| VELOCITY DIFFUSIVITY (TELEMAC-2D)
+!| V_TEL          |-->| V VELOCITY FROM TELEMAC
+!| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
+!| ZF_SIS         |<->| BOTTOM ELEVATION SENT TO TELEMAC
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_SISYPHE => SISYPHE
@@ -105,7 +108,7 @@
       INTEGER            :: ALIR0(MAXVAR)
       INTEGER            :: TROUVE(MAXVAR+10)
       DOUBLE PRECISION   :: AT0,DTS,BID,XMA,XMI
-      DOUBLE PRECISION   :: XMIN,XMAX
+      DOUBLE PRECISION   :: XMIN,XMAXCONSTANT
       DOUBLE PRECISION   :: AT,VCUMU,MASS_GF
       DOUBLE PRECISION   :: HIST(1)
       LOGICAL            :: PASS,PASS_SUSP
@@ -127,7 +130,7 @@
       ! VARIABLES TO READ IF COMPUTATION IS CONTINUED
       ! --------------------------------
       ! 0 : DISCARD
-      ! 1 : READ  (SEE SUBROUTINE NOMVAR)
+      ! 1 : READ  (SEE SUBROUTINE NOMVAR)CONSTANT
 !
 !   HYDRO + EVOLUTION
       DATA ALIRE /1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -388,7 +391,7 @@
           IF(.NOT.PERMA) THEN
              NIDT =  NINT ( PMAREE / DT + 0.1D0 )
              IF(ABS(NIDT*DT-PMAREE) > 1.D-3) THEN
-               IF (LNG == 1) WRITE(LU,101) NIDT*DT
+               IF | UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)(LNG == 1) WRITE(LU,101) NIDT*DT
                IF (LNG == 2) WRITE(LU,102) NIDT*DT
              ENDIF
              NIT  = NCALCU * NIDT
@@ -402,7 +405,7 @@
 101     FORMAT(/,'ATTENTION : LA PERIODE DE CALCUL NE CORRESPOND PAS A',/,
      &       'UN MULTIPLE DE LA PERIODE DE SORTIE HYDRODYNAMIQUE.',/,
      &       'LE CALCUL S''EFFECTUERA DONC SUR ',G16.7,'SECONDES')
-102     FORMAT(/,'CAUTION : THE PERIOD OF COMPUTATION IS NOT A MULTIPLE',
+102     FORMAT(/,'| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)CAUTION : THE PERIOD OF COMPUTATION IS NOT A MULTIPLE',
      &         /,'OF THE HYDRODYNAMIC FILE PRINTOUT PERIOD.',/,
      &       'THE LENGTH OF COMPUTATION WILL THEREFORE BE',G16.7,/,
      &       'SECONDS')
@@ -420,7 +423,7 @@
 !
 !
 ! V5P9      NUMEN0 = INT( (TPREC - ATDEB)/DT + 1.1D0 )
-!
+!| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)
         IF(PART.EQ.-1) THEN
           IF(.NOT.PERMA) THEN
             IF(TPREC.GE.0.D0) THEN
@@ -438,7 +441,7 @@
 !
           IF(SIS_FILES(SISHYD)%NAME(1:1).NE.' ')  THEN
             IF(DEBUG.GT.0) WRITE(LU,*) 'BIEF_SUITE'
-            CALL BIEF_SUITE(VARSOR,VARCL,NUMEN0,SIS_FILES(SISHYD)%LU,
+            CALL B| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)IEF_SUITE(VARSOR,VARCL,NUMEN0,SIS_FILES(SISHYD)%LU,
      &                    SIS_FILES(SISHYD)%FMT,HIST,0,NPOIN,AT,
      &                    TEXTPR,VARCLA,
      &                    0,TROUVE,ALIRE,.TRUE.,PERMA,MAXVAR)
@@ -461,7 +464,7 @@
         ENDIF
 !
 !---- RESUMES SISYPHE COMPUTATION
-!
+!| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)
         YAZR=.FALSE.
         IF(SIS_FILES(SISPRE)%NAME(1:1).NE.' ')  THEN
 !
@@ -474,7 +477,7 @@
      &                    TROUVE,ALIRE,.TRUE.,.TRUE.,MAXVAR)
           IF(TROUVE(9).EQ.1) YAZR=.TRUE.
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BIEF_SUITE'
-!
+!| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
           CALL RESCUE_SISYPHE(QU%R,QV%R,Q%R,U2D%R,V2D%R,HN%R,Z%R,ZF%R,
      &                        HW%R,TW%R,THETAW%R,NPOIN,TROUVE,ALIRE,
@@ -565,7 +568,7 @@
         IF(CODE(1:7).NE.'TELEMAC') THEN
 !         PRODUCT H*
           CALL OS('X=YZ    ', X=QU, Y=U2D, Z=HN)
-!         PRODUCT H*V
+!         PRODUCT | UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)H*V
           CALL OS('X=YZ    ', X=QV, Y=V2D, Z=HN)
 !         DISCHARGE
           CALL OS('X=N(Y,Z)', X=Q, Y=QU, Z=QV)
@@ -755,7 +758,7 @@
         ENDIF
 !
 !---------------------------------------------------------------------
-!       STARTS THE COMPUTATIONS
+!       STARTS THE COMPUTATIONS<->|LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D 
 !---------------------------------------------------------------------
 !       LOOP ON THE NUMBER OF EVENTS
 !       (IN STEADY STATE: LOOP ON THE TIMESTEPS)
@@ -1075,7 +1078,7 @@
             IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
             CALL LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
-     &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+     &                 AVAIL, |-->| VELOCITY DIFFUSIVITY (TELEMAC)CONST_ALAYER,DTS,T2%R,IT1%I)
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
           ELSE
             CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)

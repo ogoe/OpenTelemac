@@ -6,7 +6,7 @@
      & ELAY0,VOLTOT,ES,AVAIL,CONST_ALAYER,DTS,ESTRATNEW,NLAYNEW)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES AVAIL FOR EACH CLASS AND EACH LAYER;
@@ -50,25 +50,31 @@
 !+   One bug corrected in case of restart, and a formula made clearer
 !+   Look for 12/04/2011...
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---|
-!| AVAIL          |<--| SEDIMENT FRACTION FOR EACH LAYER, CLASS, POINT
-!| CONST_ALAYER   |---|
-!| DTS            |---|
-!| ELAY           |<--| ACTIVE LAYER THICKNESS FOR EACH POINT
-!| ELAY0          |---|
-!| ES             |---|
-!| ESTRAT         |<--| ACTIVE STRATUM THICKNESS FOR EACH POINT
-!| ESTRATNEW      |---|
-!| MASBAS         |---|
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| AVAIL          |<->| SEDIMENT FRACTION FOR EACH LAYER, CLASS, POINT
+!| CONST_ALAYER   |-->| CONSTANT ACTIVE LAYER THICKNESS OR NOT
+!| DTS            |-->| TIME STEP FOR SUSPENSION
+!| ELAY           |<->| ACTIVE LAYER THICKNESS FOR EACH POINT
+!| ELAY0          |<->| ACTIVE LAYER THICKNESS 
+!| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| ESTRAT         |<->| ACTIVE STRATUM THICKNESS FOR EACH POINT
+!| ESTRATNEW      |<->| ACTIVE STRATUM THICKNESS AT TIME T+DT
+!| MASBAS         |-->| INTEGRAL OF TEST FUNCTIONS
 !| NLAYER         |<--| NUMBER OF LAYER FOR EACH POINT
-!| NLAYNEW        |---|
-!| NPOIN          |---|
-!| NSICLA         |---|
-!| VOLTOT         |---|
-!| ZF             |---|
-!| ZFCL_W         |-->| EVOLUTION FOR EACH SEDIMENT CLASS
-!| ZR             |---|
+!| NLAYNEW        |<->| NUMBER OF LAYER AT TIME T+DT
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| VOLTOT         |<->| TOTAL VOLUME OF SEDIMENT IN THE BED
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZFCL_W         |-->| BED EVOLUTION FOR EACH SEDIMENT CLASS
+!| ZR             |-->| NON ERODABLE BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -142,7 +148,7 @@
 !
 !       ACTIVATE BEFORE INVESTIGATING PROBLEMS IN LAYER...
 !        
-!       IF(HEIGH.LT.0.D0) THEN
+!       IF(HEIGH.LT.0.D0) THEN<->|
 !         WRITE(LU,*) 'BAD DATA IN LAYER J=',J,' HEIGH=',HEIGH
 !         CALL PLANTE(1)
 !         STOP

@@ -5,7 +5,7 @@
      & ( UW, H, HW, TW, GRAV ,NPOIN)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE WAVE ORBITAL VELOCITY.
@@ -27,13 +27,19 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GRAV           |-->| GRAVITE
-!| H              |-->| HAUTEUR D'EAU
-!| HW             |-->| HAUTEUR DE HOULE
-!| NPOIN          |-->| NOMBRE DE POINTS
-!| TW             |-->| PERIODE DE LA HOULE
-!| UW             |<--| VITESSE ORBITALE DE LA HOULE
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| H              |-->| WATER DEPTH
+!| HW             |-->| WAVE DEPTH
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TW             |-->| WAVE PERIOD
+!| UW             |<--| ORBITAL VELOCITY (WAVE)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

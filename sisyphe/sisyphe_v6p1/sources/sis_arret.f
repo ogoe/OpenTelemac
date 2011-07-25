@@ -6,7 +6,7 @@
      & BINRESSIS,TEXTE,SORLEO,SORIMP,T1,T2)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    STOP TEST IN CASE EVOLUTION BECOMES TOO IMPORTANT.
@@ -33,25 +33,33 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT0            |---|
-!| BINRESSIS      |---|
-!| EMAX           |---|
-!| ESM            |---|
-!| FMTRES         |---|
-!| HIST           |---|
-!| HN             |---|
-!| MAXVAR         |---|
-!| MN             |---|
-!| NPOIN          |---|
-!| NRES           |---|
-!| RC             |---|
-!| SORIMP         |---|
-!| SORLEO         |---|
-!| T1             |---|
-!| T2             |---|
-!| TEXTE          |---|
-!| VARSOR         |---|
+!| AT0            |-->|TIME 
+!| BINRESSIS      |-->| BINARY OF RESULTS FILE (IBM,I3E,STD)
+!| EMAX           |-->|MAXIMUM BED EVOLUTION
+!| ESM            |-->|CUMULATED BED EVOLUTION
+!| FMTRES         |-->|FORMAT OF RESULT FILE
+!| HIST           |-->| SEQUENCE OF VALUES BEGINNING BY TIME
+!| HN             |-->| WATER DEPTH
+!| MAXVAR         |-->| MAXIMUM NUMBER OF VARIABLES
+!| MN             |-->| NUMBER OF TIME STEP
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NRES           |-->| LOGICAL UNIT OF THE RESULTS FILE
+!| RC             |-->| CRITICAL EVOLUTION RATIO
+!| SORIMP         |-->| ARRAY OF LOGICAL SAYING IF VARIABLES MUST BE PUT
+!|                |   | IN THE LISTING
+!| SORLEO         |-->| ARRAY OF LOGICAL SAYING IF VARIABLES MUST BE PUT
+!|                |   | IN THE RESULTS FILE
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| TEXTE          |-->| NAMES AND UNITS OF VARIABLES
+!| VARSOR         |-->| BLOCK WITH VARIABLES TO BE PRINTED OR COPIED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SIS_ARRET => SIS_ARRET
@@ -64,7 +72,7 @@
 !
       TYPE(BIEF_OBJ),    INTENT(IN)    :: ESM, EMAX, HN, VARSOR
       INTEGER,           INTENT(IN)    :: NPOIN, MN, NRES, MAXVAR
-      DOUBLE PRECISION,  INTENT(IN)    :: AT0, RC, HIST(1)
+      DOUBLE PRECISION,  INTENT(IN)    :: AT0, RC, HISTBIN(1)
       CHARACTER(LEN=3),  INTENT(IN)    :: BINRESSIS
       CHARACTER(LEN=32), INTENT(IN)    :: TEXTE(MAXVAR)
       CHARACTER(LEN=8),  INTENT(IN)    :: FMTRES

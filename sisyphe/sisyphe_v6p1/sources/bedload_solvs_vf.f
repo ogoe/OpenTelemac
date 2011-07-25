@@ -6,7 +6,7 @@
      & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    SOLVES EXNER EQUATION WITH THE FINITE VOLUME METHOD.
@@ -43,23 +43,29 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BREACH         |---|
-!| DT             |---|
-!| EBOR           |---|
-!| FLUX           |---|
-!| KENT           |---|
-!| KSORT          |---|
-!| LIEBOR         |---|
-!| MESH           |---|
-!| NPOIN          |---|
-!| NPTFR          |---|
-!| NSEG           |---|
-!| QSX            |---|
-!| QSY            |---|
-!| T10            |---|
-!| UNSV2D         |---|
-!| ZFCL           |---|
+!| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED (FINITE VOLUMES SHEMES)
+!| DT             |-->| TIME STEP
+!| EBOR           |<->| BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
+!| FLUX           |<->| SEDIMENT FLUX  
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
+!| LIEBOR         |<->| PHYSICAL BOUNDARY CONDITIONS FOR BED EVOLUTION
+!| MESH           |<->| MESH STRUCTURE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| QSX            |<->| BEDLOAD TRANSPORT RATE X-DIRECTION
+!| QSY            |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
+!| T10            |<->| WORK BIEF_OBJ STRUCTURE
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| ZFCL           |<->| BEDLOAD EVOLUTION FOR EACH SEDIMENT CLASS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_SOLVS_VF => BEDLOAD_SOLVS_VF

@@ -5,7 +5,7 @@
      &(MESH,CST,ZFCL_S,UCONV,VCONV,MASKEL,IELMT,DT,MSK,T1)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    WRITES OUT MIN/MAX VALUES.
@@ -27,17 +27,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CST            |---|
-!| DT             |---|
-!| IELMT          |---|
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| T1             |---|
-!| UCONV          |---|
-!| VCONV          |---|
-!| ZFCL_S         |---|
+!| CST            |<->| CONCENTRATION AT TIME T(N+1)
+!| DT             |-->| TIME STEP IN SECONDS
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MESH           |<->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| UCONV          |<->| X-COMPONENT ADVECTION FIELD (TELEMAC)
+!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD 
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

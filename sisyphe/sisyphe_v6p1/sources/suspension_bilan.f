@@ -8,7 +8,7 @@
      & VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    MASS-BALANCE FOR THE SUSPENSION.
@@ -60,36 +60,42 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AGGLOT         |---|
-!| CSF            |---|
-!| CST            |---|
-!| DT             |---|
-!| ENTET          |---|
-!| FLBORTRA       |---|
-!| HN             |---|
-!| IELMT          |---|
-!| ITRA           |---|
-!| LT             |---|
-!| MASDEP         |---|
-!| MASDEPT        |---|
-!| MASED0         |---|
-!| MASFIN         |---|
-!| MASINI         |---|
-!| MASKEL         |---|
-!| MASSOU         |---|
-!| MASTEN         |---|
-!| MASTOU         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| NFRLIQ         |---|
-!| NIT            |---|
-!| NPTFR          |---|
-!| NUMLIQ         |---|
-!| T2             |---|
-!| T3             |---|
-!| VOLU2D         |---|
-!| ZFCL_S         |---|
+!| AGGLOT         |-->| COEFFICIENT OF MASS-LUMPING
+!| CSF            |-->| VOLUME CONCENTRATION OF THE SEDIMENT BED
+!| CST            |<->| CONCENTRATION AT TIME T(N+1)
+!| DT             |-->| TIME STEP IN SECONDS
+!| ENTET          |<->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
+!| FLBORTRA       |<->| FLUXES AT BOUNDARIES TRACER
+!| HN             |-->| WATER DEPTH
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| ITRA           |-->| TRACER INDEX
+!| LT             |-->| ITERATION 
+!| MASDEP         |<--| TOTAL DEPOSITED MASS
+!| MASDEPT        |<--| DEPOSITED MASS DURING THE TIME STEP
+!| MASED0         |<->| SUSPENDED MASS BALANCE
+!| MASFIN         |<--| MASS AT THE END
+!| MASINI         |<->| INITIAL MASS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
+!| MASTEN         |<->| MASS ENTERED THROUGH LIQUID BOUNDARY
+!| MASTOU         |<->| MASS CREATED BY SOURCE TERM
+!| MESH           |<->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NIT            |-->| TOTAL NUMBER OF ITERATIONS 
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| VOLU2D         |-->| INTEGRAL OF BASES
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BILAN => SUSPENSION_BILAN

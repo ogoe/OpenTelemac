@@ -7,7 +7,7 @@
      & UC3X,UC3Y,US4X,US4Y,THETAC,FCW,QSC,QSS,HOULE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    BAILARD FORMULATION.
@@ -34,36 +34,42 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHAW         |---|
-!| CF             |---|
-!| DENS           |---|
-!| FCW            |---|
-!| FW             |---|
-!| GRAV           |---|
-!| HOULE          |---|
-!| NPOIN          |---|
-!| PI             |---|
-!| QSC            |---|
-!| QSCX           |---|
-!| QSCY           |---|
-!| QSS            |---|
-!| QSSX           |---|
-!| QSSY           |---|
-!| THETAC         |---|
-!| THETAW         |---|
-!| TOB            |---|
-!| TOBW           |---|
-!| U2D            |---|
-!| UC3X           |---|
-!| UC3Y           |---|
-!| UCMOY          |---|
-!| US4X           |---|
-!| US4Y           |---|
-!| UW             |---|
-!| V2D            |---|
-!| XMVE           |---|
-!| XWC            |---|
+!| ALPHAW         |<->| ANGLE OF WAVES WITH OX
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| DENS           |-->| RELATIVE SENSITY OF SEDIMENT
+!| FCW            |---| WAVE-CURRENT FRICTION ANGLE
+!| FW             |-->| WAVE FRICTION FACTOR
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PI             |-->| PI
+!| QSC            |<->| BEDLOAD TRANSPORT RATE
+!| QSCX           |<->| BEDLOAD TRANSPORT RATE IN THE X-DIRECTION
+!| QSCY           |<->| BEDLOAD TRANSPORT RATE IN THE Y-DIRECTION
+!| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE 
+!| QSSX           |<->| SUSPENDED LOAD TRANSPORT RATE IN THE X-DIRECTION
+!| QSSY           |<->| SUSPENDED LOAD TRANSPORT RATE IN THE Y-DIRECTION
+!| THETAC         |<->| CURRENT ANGLE TO THE X DIRECTION
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOBW           |-->| WAVE INDUCED SHEAR STRESS
+!| U2D            |<->| MEAN FLOW VELOCITY X-DIRECTION
+!| UC3X           |<->| WORK ARRAY
+!| UC3Y           |<->| WORK ARRAY
+!| UCMOY          |-->| MEAN CURRENT 
+!| US4X           |<->| WORK ARRAY
+!| US4Y           |<->| WORK ARRAY
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
+!| XMVE           |-->| FLUID DENSITY 
+!| XWC            |-->| SETTLING VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_BAILARD => BEDLOAD_BAILARD

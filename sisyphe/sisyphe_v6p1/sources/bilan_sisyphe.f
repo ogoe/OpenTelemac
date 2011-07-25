@@ -8,7 +8,7 @@
      &  VOLTOT , DZF_GF , MASS_GF, LGRAFED, NUMLIQ , NFRLIQ)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE MASS BALANCE.
@@ -32,32 +32,38 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |---|
-!| DZF_GF         |---|
-!| E              |---|
-!| ESOMT          |---|
-!| IELMU          |---|
-!| INFO           |---|
-!| LGRAFED        |---|
-!| MASKEL         |---|
-!| MASS_GF        |---|
-!| MESH           |---|
-!| MSK            |---|
-!| NFRLIQ         |---|
-!| NPTFR          |---|
-!| NSICLA         |---|
-!| NUMLIQ         |---|
-!| QSCLXC         |---|
-!| QSCLYC         |---|
-!| QSX            |---|
-!| QSY            |---|
-!| S              |---|
-!| T1             |---|
-!| T2             |---|
-!| VCUMU          |---|
-!| VOLTOT         |---|
-!| ZFCL_C         |---|
+!| DT             |-->| TIME STEP
+!| DZF_GF         |---| A SUPPRIMER
+!| E              |-->| BED EVOLUTION AT A GIVEN TIME STEP
+!| ESOMT          |-->| CUMULATED BED EVOLUTION
+!| IELMU          |-->| NUMER OF ELEMENTS 
+!| INFO           |-->| IF YES : INFORMATION IS PRINTED
+!| LGRAFED        |---| A SUPPRIMER
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MASS_GF        |---|A SUPPRIMER
+!| MESH           |<->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPTFR          |-->| NUMBER OF BOUNDARY NODES
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| QSCLXC         |<->| TRANSPORT RATE FOR EACH CLASS X-DIRECTION
+!| QSCLYC         |<->| TRANSPORT RATE FOR EACH CLASS Y-DIRECTION
+!| QSX            |<->| BEDLOAD TRANSPORT RATE X-DIRECTION
+!| QSY            |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
+!| S              |-->| VOID STRUCTURE
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| VCUMU          |<->| VOLUME OF SEDIMENT ENTERING THE DOMAIN
+!| VOLTOT         |-->| VOLUME TOTAL PER CLASS OF SEDIMENT 
+!| ZFCL_C         |<->| BEDLOAD EVOLUTION FOR EACH SEDIMENT CLASS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -76,7 +82,7 @@
       LOGICAL,          INTENT(IN)    :: LGRAFED
       DOUBLE PRECISION, INTENT(INOUT) :: MASS_GF,VCUMU
       DOUBLE PRECISION, INTENT(IN)    :: VOLTOT(10)
-!
+!LGRAFED
 !-----------------------------------------------------------------------
 !
 !     VECTOR STRUCTURES
@@ -155,7 +161,7 @@
 !
 !     BALANCE IN EXTENDED GRANULOMETRY
 !
-      IF(NSICLA.GT.1) THEN
+      IF(NSICLA.GT.1) THENINFO
 !
         DO I=1,NSICLA
 !

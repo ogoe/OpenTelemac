@@ -6,7 +6,7 @@
      & MS_SABLE,MS_VASE,ZF,ZR,AVA0)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -28,20 +28,26 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AVA0           |---|
-!| AVAIL          |---|
-!| CONC_VASE      |---|
-!| ELAY           |---|
-!| ES             |---|
-!| MS_SABLE       |---|
-!| MS_VASE        |---|
-!| NCOUCH_TASS    |---|
-!| NPOIN          |---|
-!| NSICLA         |---|
-!| XMVS           |---|
-!| ZF             |---|
-!| ZR             |---|
+!| AVA0           |-->| VOLUME PERCENT 
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
+!| ELAY           |<->| THICKNESS OF SURFACE LAYER
+!| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
+!| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
+!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| XMVS           |-->| WATER DENSITY 
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZR             |-->| NON ERODABLE BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

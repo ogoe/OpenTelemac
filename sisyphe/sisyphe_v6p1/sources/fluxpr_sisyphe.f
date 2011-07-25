@@ -6,7 +6,7 @@
      & FLXS,VOLNEGS,VOLPOSS,SUSP,FLXC,VOLNEGC,VOLPOSC,CHARR)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -34,23 +34,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHARR          |---|
+!| CHARR          |-->| LOGICAL, BEDLOAD OR NOT
 !| CTRLSC         |-->| NUMBERS OF POINTS IN THE CONTROL SECTIONS
 !| FLX            |-->| FLUXES THROUGH CONTROL SECTIONS
-!| FLXC           |---|
-!| FLXS           |---|
+!| FLXC           |-->| BEDLOAD DISCHARGE
+!| FLXS           |-->| SUSPENDED LOAD DISCHARGE
 !| INFO           |-->| IF YES : INFORMATION IS PRINTED
-!| NCSIZE         |---|
+!| NCSIZE         |-->| NUMBER OF PROCESSORS (PARALLEL)
 !| NSEC           |-->| NUMBER OF CONTROL SECTIONS
-!| NSEG           |---|
-!| SUSP           |---|
-!| TPS            |---|
+!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION 
+!| SUSP           |-->| LOGICAL, SUSPENSION OR NOT
+!| TPS            |-->| TIME 
 !| VOLNEG         |-->| CUMULATED NEGATIVE VOLUME THROUGH SECTIONS
-!| VOLNEGC        |---|
-!| VOLNEGS        |---|
+!| VOLNEGC        |-->| CUMULATED NEGATIVE VOLUME FOR THE BEDLOAD
+!| VOLNEGS        |-->| CUMULATED NEGATIVE VOLUME FOR THE SUSPENSION
 !| VOLPOS         |-->| CUMULATED POSITIVE VOLUME THROUGH SECTIONS
-!| VOLPOSC        |---|
-!| VOLPOSS        |---|
+!| VOLPOSC        |-->| CUMULATED POSITIVE VOLUME FOR THE BEDLOAD
+!| VOLPOSS        |-->| CUMULATED POSITIVE VOLUME FOR THE SUSPENDED LOAD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY: IPID

@@ -6,7 +6,7 @@
      & XKV,TRANS_MASS,CONC_VASE,NCOUCH_TASS,MS_SABLE,MS_VASE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -23,24 +23,30 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AVAIL          |---|
-!| CONC_VASE      |---|
-!| DTS            |---|
-!| DZF_TASS       |---|
-!| ELAY           |---|
-!| ES             |---|
-!| LT             |---|
-!| MS_SABLE       |---|
-!| MS_VASE        |---|
-!| NCOUCH_TASS    |---|
-!| NPOIN          |---|
-!| NSICLA         |---|
-!| T2             |---|
-!| TRANS_MASS     |---|
-!| XKV            |---|
-!| XMVS           |---|
-!| ZF             |---|
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
+!| DTS            |-->| TIME STEP FOR SUSPENSION
+!| DZF_TASS       |-->| BED EVOLUTION DUE TO CONSOLIDATION
+!| ELAY           |<->| THICKNESS OF EACH LAYER
+!| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| LT             |-->| ITERATION 
+!| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
+!| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
+!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| TRANS_MASS     |-->| TRANSFER OF MASS PER LAYER (CONSOLIDATION ALGORITHM)
+!| XKV            |-->| BED POROSITY
+!| XMVS           |-->| SEDIMENT DENSITY
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

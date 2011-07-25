@@ -5,7 +5,7 @@
      &(DM,TAUP,NPOIN,GRAV,XMVE,XMVS,ZERO,AC,CSTAEQ)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   20/03/2011
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE REFERENCE CONCENTRATION AT Z= 2*D50
@@ -41,17 +41,23 @@
 !+ 
 !history  C. VILLARET : V6P1
 !+        20/03/2011: send DM instead of array ACLADM
-!+
+!
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  AC             |---|
-!|  DM            |-->|
-!| CSTAEQ         |---|
-!| GRAV           |-->|
-!| NPOIN          |-->|
-!| TAUP           |---|
-!| XMVE           |-->|
-!| XMVS           |-->|
-!| ZERO           |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TAUP           |-->| CRITICAL SHEAR STRESS
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| WATER DENSITY
+!| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_FREDSOE => SUSPENSION_FREDSOE

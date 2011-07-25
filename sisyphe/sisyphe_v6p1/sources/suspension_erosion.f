@@ -6,7 +6,7 @@
      & ZERO,ZREF,AC,FLUER,CSTAEQ,QSC,ICQ,DEBUG)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION.
@@ -33,27 +33,33 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |---|
-!| AVA            |---|
-!| CHARR          |---|
-!| CSTAEQ         |---|
-!| DEBUG          |---|
-!| FLUER          |---|
-!| GRAV           |---|
-!| HMIN           |---|
-!| HN             |-->| HAUTEUR D'EAU
-!| ICQ            |---|
-!| NPOIN          |---|
-!| QSC            |---|
-!| TAUP           |---|
-!| VCE            |---|
-!| XMVE           |---|
-!| XMVS           |---|
-!| XWC            |---|
-!| ZERO           |---|
-!| ZREF           |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER (SHOULD BE INPUT ONLY)
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| AVA            |-->| VOLUME PERCENT OF SEDIMENT CLASS IN THE TOP ACTIVE LAYER
+!| CHARR          |-->| LOGICAL, IF BEDLOAD OR NOT
+!| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| DEBUG          |-->| FLAG FOR DEBUGGING
+!| FLUER          |<->| EROSION FLUX
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| ICQ            |-->| REFERENCE CONCENTRATION FORMULA
+!| NPOIN          |-->| NUMBER OF POINTS
+!| QSC            |-->| BED LOAD TRANSPORT RATE
+!| TAUP           |-->| SKIN FRICTION
+!| VCE            |-->| FLOW VISCOSITY
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| WATER DENSITY
+!| XWC            |-->| SETTLING VELOCITIES 
+!| ZERO           |-->| ZERO
+!| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_SUSPENSION_EROSION=>SUSPENSION_EROSION

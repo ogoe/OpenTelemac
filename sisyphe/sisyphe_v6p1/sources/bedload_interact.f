@@ -5,7 +5,7 @@
      &(UCMOY,TOBW,TOB,ALPHAW,FW,CF,UW,NPOIN,XMVE,FCW)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FRICTION COEFFICIENT UNDER
@@ -33,17 +33,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHAW         |---|
-!| CF             |---|
-!| FCW            |---|
-!| FW             |---|
-!| NPOIN          |---|
-!| TOB            |---|
-!| TOBW           |---|
-!| UCMOY          |---|
-!| UW             |---|
-!| XMVE           |---|
+!| ALPHAW         |-->| ANGLE OF WAVES WITH OX
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| FCW            |<->| WAVE-CURRENT FRICTION FACTOR
+!| FW             |-->| WAVE FRICTION FACTOR
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOBW           |-->| WAVE INDUCED SHEAR STRESS
+!| UCMOY          |-->| MEAN CURRENT
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| XMVE           |-->| FLUID DENSITY 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_INTERACT => BEDLOAD_INTERACT

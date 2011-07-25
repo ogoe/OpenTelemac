@@ -7,7 +7,7 @@
      &  X      , Y       , NPOIN , AT   , PMAREE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    INITIALISES THE VARIABLES NOT READ FROM THE RESULTS
@@ -75,12 +75,12 @@
 !| AT             |-->| TIME
 !| ESOMT          |<->| TOTAL BED EVOLUTION
 !| H              |<->| WATER DEPTH
-!| HWR            |---|
+!| HWR            |<->| WAVE HEIGHT
 !| NPOIN          |-->| NUMBER OF 2D POINTS
 !| PMAREE         |-->| TIDAL PERIOD
 !| Q              |<->| FLOW RATE
-!| THETAWR        |---|
-!| TWR            |---|
+!| THETAWR        |<->| WAVE DIRECTION (WRT OY AXIS)
+!| TWR            |<->| WAVE PERIOD
 !| X,Y            |-->| COORDINATES
 !| Z              |<->| FREE SURFACE
 !| ZF             |<->| BED ELEVATION

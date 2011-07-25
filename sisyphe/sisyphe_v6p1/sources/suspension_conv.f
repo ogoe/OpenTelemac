@@ -7,7 +7,7 @@
      & FLULIM,YAFLULIM,SOLSYS_SIS,SOLSYS,UCONV_TEL,VCONV_TEL)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    CORRECTS U2D, V2D VELOCITIES.
@@ -34,23 +34,29 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHA          |---|
-!| HMIN           |---|
-!| HN             |---|
-!| KARMAN         |---|
-!| KSR            |---|
+!| ALPHA          |<->| RATIO BETWEEN CONVECTION VELOCITY FOR SEDIMENT AND MEAN FLOW  VELOCITY
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KSR            |-->| RIPPLE BED ROUGHNESS
 !| NPOIN          |-->| NUMBER OF POINTS
-!| T1             |---|
-!| TOB            |-->| SHEAR STRESS
-!| U2D            |---|
-!| UCONV          |---|
-!| V2D            |---|
-!| VCONV          |---|
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| TOB            |-->| BED SHEAR STRESS
+!| U2D            |-->| MEAN FLOW VELOCITY X-DIRECTION
+!| UCONV          |<->| X-COMPONENT ADVECTION FIELD (TELEMAC)
+!| V2D            |-->| MEAN FLOW VELOCITY Y-DIRECTION
+!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD 
 !| XMVE           |-->| WATER DENSITY
-!| XWC            |---|
-!| ZERO           |---|
-!| ZREF           |---|
+!| XWC            |-->| SETTLING VELOCITIES 
+!| ZERO           |-->| ZERO
+!| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &(ACLADM, HIDFAC, NPOIN, HIDI, DM, KARIM_HOLLY_YANG, HIDING)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    HIDING FACTOR FOR EACH NODE, SEDIMENT CLASS
@@ -38,13 +38,19 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---|
-!| DM             |---|
-!| HIDFAC         |---|
-!| HIDI           |---|
-!| HIDING         |---|
-!| NPOIN          |---|
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| HIDFAC         |-->| HIDING FACTOR FORMULAS
+!| HIDI           |-->| HIDING FACTOR FOR PARTICULAR SIZE CLASS (HIDFAC =0)
+!| HIDING         |-->| HIDING FACTOR CORRECTION  
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

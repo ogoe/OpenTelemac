@@ -6,7 +6,7 @@
      & NACHB,NUMLIQ,NSICLA,AFBOR,BFBOR,BOUNDARY_COLOUR,MESH)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    READS THE BOUNDARY CONDITION FILE AND
@@ -48,24 +48,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AFBOR          |---|
-!| BFBOR          |---|
-!| BOUNDARY_COLOUR|---|
-!| EBOR           |<--| EVOLUTION AUX BORDS
-!| ISEG           |---|
-!| KENT           |-->| TYPE DE CONDITION LIMITE D'ENTREE.
-!| LIEBOR         |<--| TYPES DE CONDITIONS AUX LIMITES EN TEMPERA-
-!|                |   | TURE POUR LES POINTS DE BORD.
-!| MESH           |---|
-!| NACHB          |---|
-!| NBOR           |<--| ADRESSES DES POINTS DE BORD.
+!| AFBOR          |<->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
+!| BFBOR          |<->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
+!| BOUNDARY_COLOUR|<->| COLOUR OF BOUNDARY POINT (DEFAULT: ITS RANK)
+!| EBOR           |<->| PRESCRIBED EVOLUTION ON THE BOUNDARY 
+!| ISEG           |<->| NUMBER OF SEGMENTS ON THE BOUNDARY 
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| LIEBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR BED EVOLUTION
+!| MESH           |<->| MESH STRUCTURE
+!| NACHB          |<->| NUMBER OF NEIGHBOUR POINT **** 
+!| NBOR           |<->| ADRESSES DES POINTS DE BORD.
 !| NLIM           |-->| NUMERO DE CANAL DU FICHIER DES CONDITIONS LIM.
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES.
-!| NSICLA         |---|
-!| NUMLIQ         |---|
-!| STDGEO         |-->| STANDARD DU FICHIER DE GEOMETRIE.
-!| XSEG           |---|
-!| YSEG           |---|
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| STDGEO         |-->| STANDARD OF GEOMETRY FILE
+!| XSEG           |---| A SUPPRIMER
+!| YSEG           |---| A SUPPRIMER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

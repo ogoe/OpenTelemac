@@ -5,7 +5,7 @@
      &(TOBW ,CF, FW, UW,TW,HN,NPOIN,XMVE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE WAVE FRICTION STRESS. THE FRICTION
@@ -28,15 +28,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |-->| COEFFICIENT DE FROTTEMENT QUADRATIQUE (COURAN
-!| FW             |<--| COEFFICIENT DE FROTTEMENT quadratique (houle)
-!| HN             |-->| HAUTEUR D'EAU AU TEMPS N
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| TOBW           |<--| CONTRAINTE TOTALE AU FOND
-!| TW             |-->| PERIODEE DE LA HOULE
-!| UW             |-->| VITESSE ORBITALE DE LA HOULE
-!| XMVE           |-->| MASSE VOLUMIQUE DE L'EAU
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| FW             |-->| QUADRATIC FRICTION COEFFICIENT (WAVE)
+!| HN             |-->| WATER DEPTH AT TIME N
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TOBW           |-->| TOTAL BED SHEAR STRESS 
+!| TW             |-->| WAVE PERIOD 
+!| UW             |-->| ORBITAL VELOCITY (WAVE)
+!| XMVE           |-->| FLUID DENSITY 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

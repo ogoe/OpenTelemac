@@ -6,7 +6,7 @@
      & ICF,LISTI,MAXVAR)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES MISSING DATA/VARIABLES FOR HYDRODYNAMIC
@@ -30,25 +30,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALIRE          |---| TABLEAU DES VARIABLES A LIRE
-!| H              |<--| HAUTEUR.
-!| HW             |---|
-!| ICF            |---|
-!| LISTI          |-->| LOGIQUE VRAI SI ON IMPRIME DES MESSAGES
+!| ALIRE          |-->| LIST VARIABLES TO BE READ
+!| H              |<->| WATER DEPTH
+!| HW             |<->| WAVE DEPTH
+!| ICF            |-->| BED-LOAD OR TOTAL LOAD TRANSPORT FORMULAS
+!| LISTI          |-->| LOGICAL, IF YES PRINT MESSAGES
 !| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| PASS           |-->| LOGIQUE VRAI SI ON EST EN DEBUT DE CALCUL
-!| Q              |---|
-!| QU             |---|
-!| QV             |---|
-!| S              |<--| SURFACE LIBRE.
-!| THETAW         |---|
+!| NPOIN          |-->| NUMBER OF MESH NODES
+!| PASS           |-->| LOGICAL, IF YES BEGIN OF COMPUTATION
+!| Q              |<->| LIQUID DISCHARGE
+!| QU             |<->| LIQUID DISCHARGE X
+!| QV             |<->| LIQUID DISCHARGE Y
+!| S              |<->| WATER SURFACE ELEVATION
+!| THETAW         |<->| ANGLE BETWEEN WAVE AND CURRENT
 !| TROUVE         |-->| LOGIQUE INDIQUANT LES VARIABLES TROUVEES
 !|                |   | DANS LE SOUS-PROGRAMME SUITE
-!| TW             |---|
-!| U              |---|
-!| V              |---|
-!| ZF             |<--| COTE DES POINTS DU FOND.
+!| TW             |<->| WAVE PERIOD
+!| U              |<->| VELOCITY COMPONENT X
+!| V              |<->| VELOCITY COMPONENT Y
+!| ZF             |<->| BED LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

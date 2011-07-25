@@ -6,7 +6,7 @@
      & IKLE,NELMAX,NELEM,X,Y,DT,NCP,CTRLSC,INFO,TPS,KNOGL)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -32,25 +32,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHARR          |---|
-!| CTRLSC         |-->| DONNEES SUR LES SECTIONS DE CONTROLE.
-!| DT             |-->| PAS DE TEMPS.
-!| H              |-->| HAUTEUR D'EAU
-!| IKLE           |-->| TABLEAUX DE CONNECTIVITE LOCAL-GLOBAL
-!| INFO           |-->| SI OUI : IMPRESSIONS.
-!| KNOGL          |---|
+!| CHARR          |-->| LOGICAL, BEDLOAD
+!| CTRLSC         |-->| CONTROL SECTION
+!| DT             |-->| TIME STEP
+!| H              |-->| WATER DEPTH 
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| INFO           |-->| IF YES, PRINT
+!| KNOGL          |-->| FROM GLOBAL TO LOCAL NUMBERING IN PARALLEL
 !| NCP            |-->| TWO TIMES THE NUMBER OF CONTROL SECTIONS
-!| NELEM          |-->| NOMBRE D'ELEMENTS.
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS.
-!| QSXC           |---|
-!| QSXS           |---|
-!| QSYC           |---|
-!| QSYS           |---|
-!| SUSP           |-->| LOGIQUE INDIQUANT DE PRENDRE EN COMPTE
-!|                |   | LE BLOC DE TRACEURS EN SUSPENSION
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| QSXC           |<->| BEDLOAD TRANSPORT RATE X-DIRECTION 
+!| QSXS           |<->| SUSPENSION TRANSPORT RATE X-DIRECTION 
+!| QSYC           |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
+!| QSYS           |<->| SUSPENSION TRANSPORT RATE Y-DIRECTION 
+!| SUSP           |-->| LOGICAL, SUSPENSION 
 !| TPS            |-->| TEMPS
-!| U,V            |-->| CHAMP DE VITESSE
-!| X,Y            |-->| COORDONNEES DES POINTS DU MAILLAGE
+!| U,V            |-->| VELOCITY FIELD COMPONENTS
+!| X,Y            |-->| NODES COORDINATES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &(USTAR,HN,NPOIN,KARMAN,HMIN,ZERO,XWC,ZREF,T2)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE DEPOSITION FLUX AND
@@ -38,16 +38,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HMIN           |-->|
-!| HN             |-->|
-!| KARMAN         |-->|
-!| NPOIN          |-->|
-!| T2             |---|
-!| USTAR          |---| (WORK ARRAY)
-!| XWC            |-->|
-!| ZERO           |-->|
-!| ZREF           |---|
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| NPOIN          |-->| NUMBER OF POINTS
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| USTAR          |-->| SHEAR VELOCITY 
+!| XWC            |-->| SETTLING VELOCITIES 
+!| ZERO           |-->| ZERO
+!| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_ROUSE => SUSPENSION_ROUSE

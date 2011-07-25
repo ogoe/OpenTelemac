@@ -5,8 +5,9 @@
      &   ZERO,PARTHENIADES,FLUER_SABLE,FLUER_VASE,ZREF,
      &   AC,CSTAEQ,QSC,ICQ,DEBUG,AVAIL,NSICLA,ES,
      &   TOCE_VASE,TOCE_SABLE,
-     &   NCOUCH_TASS,DT,TOCE_MIXTE,MS_SABLE,MS_VASE)!***********************************************************************
-! SISYPHE   V6P1                                   15/03/2011
+     &   NCOUCH_TASS,DT,TOCE_MIXTE,MS_SABLE,MS_VASE)
+!***********************************************************************
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION.
@@ -30,39 +31,45 @@
 !   KARMAN suppressed
 !   Added TOCE _ SABLE + VCE 
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| FDM         |---|
-!| AVAIL          |---|
-!| CHARR          |---|
-!| CS             |---|
-!| CSTAEQ         |---|
-!| DEBUG          |---|
-!| DT             |---|
-!| ES             |---|
-!| FLUER_SABLE    |---|
-!| FLUER_VASE     |---|
-!| GRAV           |---|
-!| HMIN           |---|
-!| HN             |---|
-!| ICQ            |---|
-!| MS_SABLE       |---|
-!| MS_VASE        |---|
-!| NCOUCH_TASS    |---|
-!| NPOIN          |---|
-!| NSICLA         |---|
-!| PARTHENIADES   |---|
-!| QSC            |---|
-!| TAUP           |---|
-!| TOCE_MIXTE     |---|
-!| TOCE_SABLE     |---|CRITICAL SHEAR STRESS FOR SAND
-!| TOCE_VASE      |---|
-!| VCE            |---|FLUID VISCOSITY
-!| XMVE           |---|
-!| XMVS           |---|
-!| XWC            |---|
-!| ZERO           |---|
-!| ZREF           |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| FDM            |-->| DIAMETER DM FOR EACH CLASS
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| CHARR          |-->| BEDLOAD
+!| CS             |<->| CONCENTRATION AT TIME N
+!| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| DEBUG          |-->| FLAG FOR DEBUGGING
+!| DT             |-->| TIME STEP
+!| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| FLUER_SABLE    |<->| EROSION FLUX FOR MIXED SEDIMENTS
+!| FLUER_VASE     |<->| EROSION FLUX FOR MIXED SEDIMENTS
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| ICQ            |-->| REFERENCE CONCENTRATION FORMULA
+!| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
+!| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
+!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| PARTHENIADES   |-->| CONSTANT OF THE KRONE AND PARTHENIADES EROSION LAW (KG/M2/S)
+!| QSC            |<->| BEDLOAD TRANSPORT RATE
+!| TAUP           |-->| CRITICAL SHEAR STRESS
+!| TOCE_MIXTE     |<->| CRITICAL SHEAR STRESS FOR MIXED SEDIMENTS
+!| TOCE_SABLE     |<->| CRITICAL SHEAR STRESS FOR SAND
+!| TOCE_VASE      |<->| CRITICAL EROSION SHEAR STRESS OF THE MUD PER LAYER (N/M2)
+!| VCE            |-->| FLOW VISCOSITY
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| WATER DENSITY
+!| XWC            |-->| SETTLING VELOCITIES 
+!| ZERO           |-->| ZERO
+!| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_FLUX_MIXTE=>SUSPENSION_FLUX_MIXTE

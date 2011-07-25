@@ -5,7 +5,7 @@
      &(TAUP,HN,NPOIN,CHARR,QSC,ZREF,ZERO,HMIN,CSTAEQ,XMVE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE REFERENCE CONCENTRATION AT Z= 2*D50
@@ -33,17 +33,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHARR          |-->|
-!| CSTAEQ         |---|
-!| HMIN           |-->|
-!| HN             |---|
-!| NPOIN          |-->|
-!| QSC            |---|
-!| TAUP           |---|
-!| XMVE           |-->|
-!| ZERO           |---|
-!| ZREF           |---|
+!| CHARR          |-->| BEDLOAD
+!| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| NPOIN          |-->| NUMBER OF POINTS
+!| QSC            |-->| BED LOAD TRANSPPORT RATE
+!| TAUP           |-->| SKIN FROCTION
+!| XMVE           |-->| FLUID DENSITY 
+!| ZERO           |-->| ZERO
+!| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_BIJKER => SUSPENSION_BIJKER

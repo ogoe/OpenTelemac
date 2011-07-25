@@ -5,7 +5,7 @@
      &  (TOB, CF, DENS, GRAV, DM, XMVE, TETA, QSC)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    ENGELUND-HANSEN BEDLOAD TRANSPORT FORMULATION.
@@ -32,15 +32,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---|
-!| DENS           |---|
-!| DM             |---|
-!| GRAV           |---|
-!| QSC            |---|
-!| TETA           |---|
-!| TOB            |---|
-!| XMVE           |---|
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| QSC            |<->| BED LOAD TRANSPORT
+!| TETA           |<->| DIMENSIONLESS BED SHEAR STRESS 
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| XMVE           |-->| FLUID DENSITY 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

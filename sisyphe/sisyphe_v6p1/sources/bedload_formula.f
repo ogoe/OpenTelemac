@@ -11,7 +11,7 @@
      & COEFPN,BIJK,HOULE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE BED-LOAD TRANSPORT.
@@ -43,61 +43,67 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |---|
-!| AVA            |---|
-!| BIJK           |---|
-!| CF             |---|
-!| COEFPN         |---|
-!| D90            |---|
-!| DM             |---|
-!| FW             |---|
-!| GRAV           |---|
-!| HIDFAC         |---|
-!| HIDING         |---|
-!| HMIN           |---|
-!| HN             |---|
-!| HOULE          |---|
-!| ICF            |---|
-!| IELMT          |---|
-!| KARMAN         |---|
-!| KSP            |---|
-!| KSR            |---|
-!| MU             |---|
-!| NPOIN          |---|
-!| PI             |---|
-!| QSC            |---|
-!| QSS            |---|
-!| SECCURRENT     |---|
-!| SLOPEFF        |---|
-!| SUSP           |---|
-!| T1             |---|
-!| T10            |---|
-!| T11            |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| T5             |---|
-!| T6             |---|
-!| T7             |---|
-!| T8             |---|
-!| T9             |---|
-!| TETAP          |---|
-!| THETAW         |---|
-!| TOB            |---|
-!| TOBW           |---|
-!| TW             |---|
-!| U2D            |---|
-!| UCMOY          |---|
-!| UNLADM         |---|
-!| UW             |---|
-!| V2D            |---|
-!| VCE            |---|
-!| XMVE           |---|
-!| XMVS           |---|
-!| XWC            |---|
-!| ZERO           |---|
+!| AC             |<->| SHIELDS PARAMETER
+!| ACLADM         |-->| MEAN DIAMETER
+!| AVA            |-->| PERCENT AVAILABLE
+!| BIJK           |-->| EMPIRICAL COEFFICIENT
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| COEFPN         |-->| COEFFICIENT FOR SLOPING BED EFFECTS
+!| D90            |-->| D90
+!| DM             |-->| DIAMETER OF THE CLASS
+!| FW             |-->| WAVE FRICTION COEFFICIENT
+!| GRAV           |-->| GRAVITY
+!| HIDFAC         |-->| HIDING FACTOR FORMULA
+!| HIDING         |<->| HIDING FACTOR 
+!| HMIN           |-->| MININMUM WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| HOULE          |-->| EFFECT OF WAVE 
+!| ICF            |-->| CHOICE OF FORMULA
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| KARMAN         |-->| VON KARMAN COEFFICIENT
+!| KSP            |-->| SKIN BED ROUGHNESS (M)
+!| KSR            |-->| RIPPLE BED ROUGHNESS (M)
+!| MU             |-->| CORRECTION FOR SKIN FRICTION
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PI             |-->| PI
+!| QSC            |<->| BED LOAD TRANSPORT RATE (m2/S)
+!| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE (M2/S)
+!| SECCURRENT     |-->| EFFECT OF SECUNDARY CURRENTS 
+!| SLOPEFF        |-->| FORMULA FOR SLOPING BED EFFECTS
+!| SUSP           |-->| SUSPENSION TREATMENT 
+!| T1             |<->| WORKING ARRAYS
+!| T10            |<->| --
+!| T11            |<->| --
+!| T2             |<->| --
+!| T3             |<->| --
+!| T4             |<->| --
+!| T5             |<->| --
+!| T6             |<->| --
+!| T7             |<->| --
+!| T8             |<->| --
+!| T9             |<->| --
+!| TETAP          |<->| ADIMENSIONAL SKIN FRICTION 
+!| THETAW         |-->| WAVE/CURRENT ANGLE 
+!| TOB            |-->| TOTAL BED SHEAR STRESS (N/M2)
+!| TOBW           |-->| WAVE INDUCED BED SHEAR STRESS (N/M2)
+!| TW             |-->| WAVE PERIOD (S)
+!| U2D            |-->| LONGITUDINAL VELOCITY (m/S)
+!| UCMOY          |-->| CURRENT INTENSITY (M/S)
+!| UNLADM         |-->| DIAMETER OF LAYER 2 (M)
+!| UW             |-->| WAVE ORBITAL VELOCITY (M/S)
+!| V2D            |-->| TRANSVERSAL VELOCITY (M/S)
+!| VCE            |-->| FLUID KINEMATIC VISCOSITY (M2/S)
+!| XMVE           |-->| FLUID DENSITY (KG/M3)
+!| XMVS           |-->| SEDIMENT DENSITY (KG/M3)
+!| XWC            |-->| SETTLING VELOCITY (M/S)
+!| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_FORMULA => BEDLOAD_FORMULA

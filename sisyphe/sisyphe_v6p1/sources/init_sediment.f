@@ -9,7 +9,7 @@
 C
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -36,70 +36,41 @@ C
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |---|
-!| AVA0           |-->|
-!| AVAIL          |-->|
-!| CALAC          |---|
-!| CALWC          |-->|
-!| CONC_VASE      |---|
-!| ELAY           |-->|
-!| ES             |---|
-!| FDM            |-->|
-!| FRACSED_GF     |-->|
-!| GRAV           |-->| GRAVITY ACCELERATION
-!| LGRAFED        |-->|
-!| MS_SABLE       |---|
-!| MS_VASE        |---|
-!| NCOUCH_TASS    |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| AT0            |<->| TIME IN S
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| CALAC          |---| ****
+!| CALWC          |-->| ****
+!| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
+!| ELAY           |<->| THICKNESS OF SURFACE LAYER
+!| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| FDM            |-->| DIAMETER DM FOR EACH CLASS 
+!| FRACSED_GF     |-->|(A SUPPRIMER)
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| LGRAFED        |-->|(A SUPPRIMER)
+!| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
+!| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
+!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SEDIMENT CLASSES
-!| SEDCO          |---|
-!| UNLADM         |---|
-!| VCE            |-->|
-!| XMVE           |-->|
-!| XMVS           |-->|
-!| XWC            |-->|
-!| ZF             |-->| BOTTOM
+!| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
+!| UNLADM         |-->| MEAN DIAMETER OF ACTIVE STRATUM LAYER
+!| VCE            |-->| WATER VISCOSITY
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| WATER DENSITY 
+!| XWC            |-->| SETTLING VELOCITY
+!| ZF             |-->| ELEVATION OF BOTTOM
 !| ZR             |-->| NON ERODABLE BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C| AC             |---| 
-C| ACLADM         |---| 
-C| AVA0           |-->| 
-C| AVAI           |-->| 
-C| AVAIL          |-->| 
-C| CALAC          |---| 
-C| CALWC          |-->| 
-C| CHOIX          |-->| 
-C| CONC_VASE      |---| 
-C| ELAY           |-->| 
-C| ES             |---| 
-C| FDM            |-->| 
-C| FRACSED_GF     |-->| 
-C| GRAV           |-->| GRAVITY ACCELERATION
-C| HN             |-->| WATER DEPTH
-C| LGRAFED        |-->| 
-C| MESH           |-->| 
-C| MS_SABLE       |---| 
-C| MS_VASE        |---| 
-C| NCOUCH_TASS    |---| 
-C| NPOIN          |-->| NUMBER OF POINTS
-C| NSICLA         |-->| NUMBER OF SEDIMENT CLASSES
-C| SEDCO          |---| 
-C| UNLADM         |---| 
-C| VCE            |-->| 
-C| TOCE_SABLE     |<--| CRITICERAl ERIOSION RATE OF SAND  
-C| XMVE           |-->| 
-C| XMVS           |-->| 
-C| XWC            |-->| 
-C| Z             |-->| 
-C| ZF             |-->| BOTTOM
-C| ZR             |-->| NON ERODABLE BED
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
-C
+
       USE BIEF
       USE INTERFACE_SISYPHE, EX_INIT_SEDIMENT => INIT_SEDIMENT
 !

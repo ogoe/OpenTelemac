@@ -5,7 +5,7 @@
      &(CF,H,KFROT,CHESTR,GRAV,NPOIN,HMIN,KARMAN)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE QUADRATIC FRICTION COEFFICIENT CF.
@@ -28,14 +28,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---|
-!| CHESTR         |-->| COEFFICIENTS DE FROTTEMENT SUR LE  FOND.
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| H              |-->| HAUTEUR D'EAU
-!| HMIN           |-->| HAUTEUR D'EAU MINIMALE
-!| KARMAN         |-->| CONSTANTE DE KARMAN
-!| KFROT          |-->| LOI DE FROTTEMENT SUR LE FOND
-!| NPOIN          |-->| NOMBRE DE POINTS
+!| CF             |<->| FRICTION COEFFICIENT
+!| CHESTR         |-->| FRICTION COEFFICIENTS (BED)
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KFROT          |-->| FRICTION LAW (BED)
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

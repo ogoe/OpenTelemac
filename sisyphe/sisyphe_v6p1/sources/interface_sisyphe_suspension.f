@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -442,16 +442,16 @@
         SUBROUTINE SUSPENSION_EVOL
       ! ************************** !
 
-     &  (ZFCL_S,FLUDP,FLUER,DT, NPOIN,CSF,XMVS, QFLUX,MS,
-     &   SEDCO,CONC_VASE,NCOUCH_TASS)
+     &  (ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES,
+     &   CONC_VASE,NCOUCH_TASS)
        USE BIEF
        IMPLICIT NONE
        TYPE (BIEF_OBJ),  INTENT(INOUT) :: ZFCL_S,FLUDP,FLUER,QFLUX
-       DOUBLE PRECISION, INTENT(IN)    :: DT, XMVS, CSF
+       DOUBLE PRECISION, INTENT(IN)    :: DT, XMVS
        INTEGER, INTENT(IN) :: NPOIN,NCOUCH_TASS
-       LOGICAL, INTENT(IN) :: SEDCO
        DOUBLE PRECISION, INTENT(IN) :: CONC_VASE(NCOUCH_TASS)
-       DOUBLE PRECISION,  INTENT(INOUT) :: MS(NPOIN,NCOUCH_TASS)
+       DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
+       DOUBLE PRECISION,  INTENT(INOUT) :: ES(NPOIN,NCOUCH_TASS)
 
       END SUBROUTINE SUSPENSION_EVOL
       ! ***************************** !

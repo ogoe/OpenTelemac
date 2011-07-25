@@ -6,7 +6,7 @@
      & HMIN,HN,ACLADM,UNORM,UW,TW,NPOIN)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    BED ROUGHNESS PREDICTOR
@@ -15,9 +15,29 @@
 !+        21/08/2010
 !+
 !+
-!
+!history  C. VILLARET & P. TASSI
+!+        24/07/2011
+!+        name of variables
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKS            |---|
+!| IKS            |-->| FLAG, CHOICE OF BED ROUGHNESS PREDICTOR
+!| KS             |<->| TOTAL BED ROUGHNESS
+!| KSP            |<->| SKIN  BED ROUGHNESS
+!| KSR            |<->| RIPPLE BED ROUGHNESS
+!| KSPRATIO       |-->| RATIO BETWEEN SKIN BED ROUGHNESS AND GRAIN DIAMETER
+!| HOULE          |-->| LOGICAL, WAVE EFFECT OR NOT
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| SEDIMENT DENSITY 
+!| VCE            |-->| WATER VISCOSITY
+!| HMIN           |-->| MINIMUM WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| ACLADM         |-->| MEAN GRAIN SIZE
+!| UNORM          |-->| NORM OF THE MEAN FLOW VELOCITY
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| TW             |-->| WAVE PERIOD
+!| NPOIN          |-->| NUMBER OF POINTS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

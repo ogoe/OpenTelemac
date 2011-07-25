@@ -5,7 +5,7 @@
      &(KARIM_HOLLY_YANG,KARMAN,PI)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    SETS THE CONSTANTS USED BY SISYPHE.
@@ -28,8 +28,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KARMAN         |---|
-!| PI             |---|
+!| KARIM_HOLLY_YAN|-->| KARIM, HOLLY & YANG CONSTANT
+!| KARMAN         |-->| VON KARMAN CONSTANT
+!| PI             |-->| PI 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

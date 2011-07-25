@@ -7,7 +7,7 @@
      & UW1, UW2, TW1, TW2, THETAC, FCW, QSC,HOULE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    DIBAJNIA & WATANABE FORMULATION (1992).
@@ -34,37 +34,43 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHAW         |---|
-!| CF             |---|
-!| DENS           |---|
-!| DM             |---|
-!| FCW            |---|
-!| FW             |---|
-!| GRAV           |---|
-!| HOULE          |---|
-!| NPOIN          |---|
-!| PI             |---|
-!| QSC            |---|
-!| T2             |---|
-!| T3             |---|
-!| THETAC         |---|
-!| THETAW         |---|
-!| TOB            |---|
-!| TOBW           |---|
-!| TW             |---|
-!| TW1            |---|
-!| TW2            |---|
-!| U2D            |---|
-!| UCMOY          |---|
-!| UCN            |---|
-!| UCW            |---|
-!| UW             |---|
-!| UW1            |---|
-!| UW2            |---|
-!| V2D            |---|
-!| XMVE           |---|
-!| XWC            |---|
+!| ALPHAW         |<->| ANGLE BETWEEN WAVE AND CURRENT
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| FCW            |-->| WAVE-CURRENT FRICTION FACTOR
+!| FW             |-->| WAVE FRICTION FACTOR
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PI             |-->| PI
+!| QSC            |<->| BED LOAD TRANSPORT
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| THETAC         |<->| CURRENT ANGLE TO THE X AXIS
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOBW           |-->| WAVE INDUCED SHEAR STRESS
+!| TW             |-->| WAVE PERIOD
+!| TW1            |<->| MID PERIOD (U(T)>0)
+!| TW2            |<->| MID PERIOD (U(T)<0)
+!| U2D            |<->| MEAN FLOW VELOCITY X-DIRECTION
+!| UCMOY          |-->| MEAN CURRENT
+!| UCN            |<->| MEAN CURRENT AT AN ANGLE TO THE WAVE
+!| UCW            |<->| MEAN CURRENT PROJECTED IN THE WAVE DIRECTION
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| UW1            |<->| MEAN CURRENT IN THE WAVE DIRECTION
+!| UW2            |<->| MEAN CURRENT IN THE OPPOSITE DIRECTION
+!| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
+!| XMVE           |-->| FLUID DENSITY 
+!| XWC            |-->| SETTLING VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_DIBWAT => BEDLOAD_DIBWAT

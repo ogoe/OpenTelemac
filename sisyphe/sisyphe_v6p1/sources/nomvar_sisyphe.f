@@ -5,7 +5,7 @@
      &( TEXTE ,TEXTPR , MNEMO , NSICLA , UNIT )
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND
@@ -41,10 +41,10 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MNEMO          |<--| SYMBOLS TO SPECIFY THE VARIABLES FOR OUTPUT
 !|                |   | IN THE STEERING FILE
-!| NSICLA         |---|
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !| TEXTE          |<--| NAMES OF VARIABLES (PRINTOUT)
 !| TEXTPR         |<--| NAMES OF VARIABLES (INPUT)
-!| UNIT           |---|
+!| UNIT           |-->| LOGICAL, FILE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SISYPHE, ONLY : MAXVAR,NSICLM,NLAYMAX,NOMBLAY,

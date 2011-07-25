@@ -5,7 +5,7 @@
      & ( WS , DENS , DM , GRAV , VCE )
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FALL VELOCITY.
@@ -27,12 +27,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DENS           |-->| POIDS DEJAUGE
-!| DM             |-->| DIAMETRE MOYEN DU SEDIMENT
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| VCE            |-->| VISCOSITE DE L'EAU
-!| WS             |-->| VITESSE DE CHUTE DES PARTICULES
+!| DM             |-->| MEAN DIAMETER OF THE SEDIMENT
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| VCE            |-->| FLOW VISCOSITY
+!| WS             |-->| SETTLING/FALL VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

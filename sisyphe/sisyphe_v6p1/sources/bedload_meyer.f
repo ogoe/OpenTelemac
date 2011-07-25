@@ -6,7 +6,7 @@
      &   ACP, QSC, SLOPEFF, COEFPN)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    MEYER-PETER BEDLOAD TRANSPORT FORMULATION.
@@ -37,18 +37,25 @@
 !+        15/03/2011
 !+        V6P1
 !+
+!
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACP            |---|
-!| COEFPN         |---|
-!| DENS           |---|
-!| DM             |---|
-!| GRAV           |---|
-!| HIDFAC         |---|
-!| HIDING         |---|
-!| QSC            |---|
-!| SLOPEFF        |---|
-!| TETAP          |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| ACP            |<->| MODIFIED SHIELDS PARAMETER
+!| COEFPN         |<->| CORRECTION OF TRANSORT FOR SLOPING BED EFFECT
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HIDFAC         |-->| HIDING FACTOR FORMULAS
+!| HIDING         |-->| HIDING FACTOR CORRECTION 
+!| QSC            |<->| BED LOAD TRANSPORT 
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
+!| TETAP          |-->| ADIMENSIONAL SKIN FRICTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

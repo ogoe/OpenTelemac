@@ -6,7 +6,7 @@
      &   T1, T2, T3, KX, KY, KZ, DISP,U2D,V2D,VISC_TEL,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE DISPERSION PARAMETERS.
@@ -28,25 +28,35 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CODE           |---|
-!| DISP           |---|
-!| HN             |---|
-!| KX             |---|
-!| KY             |---|
-!| KZ             |---|
-!| NPOIN          |---|
-!| OPTDIF         |---|
-!| T1             |---|
-!| T2             |---|
-!| T3             |---|
-!| TOB            |---|
-!| U2D            |---|
-!| V2D            |---|
-!| VISC_TEL       |---|
-!| XKX            |---|
-!| XKY            |---|
-!| XMVE           |---|
+!| CODE           |-->| HYDRODYNAMIC CODE IN CASE OF COUPLING
+!| DISP           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z 
+!|                |   | IF P0 : PER ELEMENT
+!|                |   | IF P1 : PER POINT
+!| HN             |-->| WATER DEPTH
+!| KX             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
+!| KY             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
+!| KZ             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
+!| NPOIN          |-->| NUMBER OF POINTS
+!| OPTDIF         |-->| OPTION FOR THE DISPERSION 
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
+!| U2D            |-->| MEAN FLOW VELOCITY X-DIRECTION
+!| V2D            |-->| MEAN FLOW VELOCITY Y-DIRECTION
+!| VISC_TEL       |-->| VELOCITY DIFFUSIVITY (TELEMAC)
+!| XKX            |-->| COEFFICIENT USED FOR COMPUTING THE DISPERSION
+!|                |   | DEPENDS OF OPTIONS
+!| XKY            |-->| COEFFICIENT USED FOR COMPUTING THE DISPERSION
+!|                |   | DEPENDS OF OPTIONS
+!| XMVE           |-->| FLUID DENSITY 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

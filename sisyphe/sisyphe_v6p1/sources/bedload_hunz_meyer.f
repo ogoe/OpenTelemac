@@ -6,7 +6,7 @@
      &    TETAP, AHUNZI, ACP, HIDING, QSC)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    HUNZIKER BEDLOAD FORMULATION (1995)
@@ -42,22 +42,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |---|
-!| ACP            |---|
-!| AHUNZI         |---|
-!| DENS           |---|
-!| DM             |---|
-!| GRAV           |---|
-!| HIDING         |---|
-!| MU             |---|
-!| NPOIN          |---|
-!| QSC            |---|
-!| TETAP          |---|
-!| TOB            |---|
-!| UNLADM         |---|
-!| XMVE           |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| ACP            |<->| MODIFIED SHIELDS PARAMETER 
+!| AHUNZI         |<->| COEFFICIENT OF HUNZIKER FORMULA
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HIDING         |-->| HIDING FACTOR CORRECTION
+!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS  
+!| NPOIN          |-->| NUMBER OF POINTS
+!| QSC            |<->| BED LOAD TRANSPORT
+!| TETAP          |<->| DIMENSIONLESS BED SHEAR STRESS 
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| UNLADM         |-->| MEAN DIAMETER OF ACTIVE STRATUM LAYER
+!| XMVE           |-->| FLUID DENSITY 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

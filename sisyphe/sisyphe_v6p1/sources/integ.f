@@ -5,7 +5,7 @@
      &( A , B , IEIN , NPOIN)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE EINSTEIN INTEGRAL
@@ -42,11 +42,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| NOMBRE DE ROUSE
-!| B              |-->| RAPPORT ENTRE L'EPAISSEUR DE LA COUCHE DE
-!|                |   | CHARRIAGE ET DE LA HAUTEUR D'EAU
-!| IEIN           |<--| VALEUR DE L'INTEGRALE I
-!| NPOIN          |-->| NOMBRE DE POINTS
+!| A              |-->| ROUSE NUMBER
+!| B              |-->| RATIO BEDLOAD LAYER/WATER DEPTH 
+!| IEIN           |<--| INTEGRAL VALUE I
+!| NPOIN          |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

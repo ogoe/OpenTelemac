@@ -5,7 +5,7 @@
      & (KS,TW,UW,UNORM,GRAV,XMVE,XMVS,VCE,NPOIN,KSPRATIO,ACLADM)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE DIMENSIONS OF EQUILIBRIUM RIPPLES.
@@ -31,28 +31,38 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---|
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| KS             |<--| COEFFICIENT DE RUGOSITE
-!| KSPRATIO       |---|
-!| NPOIN          |-->| NOMBRE DE POINTS
-!| TW             |-->| PERIODE DE HOULE
-!| UNORM          |---|
-!| UW             |-->| COURANT ORBITAL
-!| VCE            |-->| VISCOSITE DE L'EAU
-!| XMVE           |-->| MASSE VOLUMIQUE DE L'EAU
-!| XMVS           |-->| MASSE VOLUMIQUE DU SEDIMENT
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| KS             |<--| WAVE INDUCE RIPPLE ROUGHNESS
+!| KSPRATIO       |-->| RATIO BETWEEN SKIN BED ROUGHESS AND GRAIN SIZE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TW             |-->| WAVE PERIOD
+!| UNORM          |-->| NORM OF THE MEAN FLOW VELOCITY
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| VCE            |-->| WATER VISCOSITY
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| SEDIMENT DENSITY 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
       INTEGER I,NPOIN
-      DOUBLE PRECISION KS(NPOIN)
-!     IF EXTENDED GRANULOMETRY DM(NPOIN)
-      DOUBLE PRECISION  GRAV,XMVE,XMVS, VCE
-      DOUBLE PRECISION UNORM(NPOIN), UW(NPOIN), TW(NPOIN)
+      DOUBLE PRECISION, INTENT (INOUT) :: KS(NPOIN)
 !
+      DOUBLE PRECISION, INTENT (IN) ::  GRAV,XMVE,XMVS, VCE
+      DOUBLE PRECISION, INTENT (IN) :: UNORM(NPOIN), UW(NPOIN), TW(NPOIN)
+!
+      DOUBLE PRECISION, INTENT(IN) :: KSPRATIO
+      DOUBLE PRECISION, INTENT(IN) :: ACLADM(NPOIN)
+!---------------------------------------------------------------------
+! LOCAL VARIABLES
       DOUBLE PRECISION PI, ZERO,AI
 !
       DOUBLE PRECISION ETA, LAMBDA
@@ -62,9 +72,6 @@
       DOUBLE PRECISION WH1,WH2,WH3
       DOUBLE PRECISION VAR1,DHRA,LRA,HRA,LRO
       DOUBLE PRECISION UC,KSP
-      DOUBLE PRECISION, INTENT(IN) :: KSPRATIO
-      DOUBLE PRECISION, INTENT(IN) :: ACLADM(NPOIN)
-!
 !---------------------------------------------------------------------
 !
       PI=4.D0*DATAN(1.D0)

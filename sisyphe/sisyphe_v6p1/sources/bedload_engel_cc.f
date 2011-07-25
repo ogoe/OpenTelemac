@@ -5,7 +5,7 @@
      &(TETAP,CF,NPOIN,GRAV,DM,DENS,TETA,QSC)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    ENGELUND-HANSEN BEDLOAD TRANSPORT FORMULATION.
@@ -39,15 +39,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---|
-!| DENS           |---|
-!| DM             |---|
-!| GRAV           |---|
-!| NPOIN          |---|
-!| QSC            |---|
-!| TETA           |---|
-!| TETAP          |---|
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| NPOIN          |-->| NUMBER OF POINTS
+!| QSC            |<->| BED LOAD TRANSPORT
+!| TETA           |<->| DIMENSIONLESS BED SHEAR STRESS
+!| TETAP          |-->| ADIMENSIONAL SKIN FRICTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_ENGEL_CC => BEDLOAD_ENGEL_CC

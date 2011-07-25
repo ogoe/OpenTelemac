@@ -7,7 +7,7 @@
      & FLUER, ES, TOCE_VASE, NCOUCH_TASS, DT, MS_VASE,TASS)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION
@@ -33,22 +33,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBUG          |---|
-!| DT             |---|
-!| ES             |---|
-!| FLUER          |---|
-!| GRAV           |---|
-!| MS_VASE        |---|
-!| NCOUCH_TASS    |---|
-!| NPOIN          |---|
-!| PARTHENIADES   |---|
-!| TASS           |---|
-!| TAUP           |---|
-!| TOCE_VASE      |---|
-!| VITCE          |---|
-!| XMVE           |---|
-!| XMVS           |---|
-!| ZERO           |---|
+!| DEBUG          |-->| DEBUG FLAG
+!| DT             |-->| TIME STEP
+!| ES             |<->| THICKNESS OF EACH LAYER (Not modified here)
+!| FLUER          |<->| EROSION RATE
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| MS_VASE        |<->| MASS OF MUD PER LAYER (not modified here)
+!| NCOUCH_TASS    |-->| NUMBER OF LAYERS OF THE CONSOLIDATION MODEL
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PARTHENIADES   |-->| PARTHENIADES CONSTANT (M/S)
+!| TASS           |-->| A SUPPRIMER
+!| TAUP           |-->| SKIN FRICTION
+!| TOCE_VASE      |-->| CRITICAL BED SHEAR STRESS OF THE MUDPER LAYER
+!| VITCE          |-->| A REMPLACER PAR SQRT(TOCE_VASE(1)/XMVS)
+!| XMVE           |-->| DENSITY OF FLUID
+!| XMVS           |-->| DENSITY OF SOLID
+!| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_SUSPENSION_EROSION_COH=>
@@ -86,7 +86,7 @@
       ! IA - FORMULATION FOR COHESIVE SEDIMENTS            !
       !      (WITHOUT CONSOLIDATION: UNIFORM SEDIMENT BED) !                                   !
       ! ******************************************* *****  !
-      IF(.NOT.TASS) THEN
+      IF(NCOUCH_TASS.EQ.1) THEN
         DO I = 1, NPOIN
           USTARP =SQRT(TAUP%R(I)/XMVE)
           IF(VITCE.GT.1.D-8) THEN
@@ -101,12 +101,13 @@
       ! IB - FORMULATION FOR COHESIVE SEDIMENTS  + CONSOLIDATION !
       !      (WITH BEDLOAD)                                  !
       ! **************************************************** !
+!      BEWARE: HERE PARTHENIADES IS IN M/S 
         DO I=1,NPOIN
 !
           DO J=1,NCOUCH_TASS
             IF(TAUP%R(I).GT.TOCE_VASE(J))THEN
               FLUER_LOC(J)=PARTHENIADES*
-     &              ((TAUP%R(I)/TOCE_VASE(J))-1.D0)
+     &              ((TAUP%R(I)/MAX(TOCE_VASE(J),1.D-08))-1.D0)
             ELSE
               FLUER_LOC(J)=0.D0
             ENDIF
@@ -129,16 +130,17 @@
             ENDIF
           ENDDO
 !
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'ATTENTION TOUTES LES COUCHES SONT VIDES'
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'BEWARE, ALL LAYERS EMPTY'
-          ENDIF
-          CALL PLANTE(1)
-          STOP
+!          IF(LNG.EQ.1) THEN
+!            WRITE(LU,*) 'ATTENTION TOUTES LES COUCHES SONT VIDES'
+!          ENDIF
+!          IF(LNG.EQ.2) THEN
+!            WRITE(LU,*) 'BEWARE, ALL LAYERS EMPTY'
+!          ENDIF
+!          CALL PLANTE(1)
+!          STOP
 10        CONTINUE
-!         BEWARE: PARTHENIADES HAS ALREADY BEEN DEVIDED BY XMVS?
+!   
+
           FLUER%R(I) = QER_VASE/DT/XMVS
 !
         ENDDO

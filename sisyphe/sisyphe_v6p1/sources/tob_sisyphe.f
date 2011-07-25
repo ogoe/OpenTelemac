@@ -8,7 +8,7 @@
      &  ZERO,HMIN,HN, ACLADM, UNORM,UW, TW, NPOIN,KSPRED,IKS)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE TOTAL STRESS AT THE BOTTOM DEPENDING
@@ -36,35 +36,44 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |-->| DIAMETRE MOYEN  DU SEDIMENT
-!| CF             |<--| COEFFICIENT DE FROTTEMENT QUADRATIQUE DU COURANT
-!| CF_TEL         |-->| COEFFICIENT DE FROTTMT CF      SI COUPL. T2D
-!| CHESTR         |-->| COEFFICIENT DE FROTTEMENT (MOT CLE)
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| CF_TEL         |-->| QUADRATIC FRICTION COEFFICIENT (COUPLED T2D)
+!| CHESTR         |-->| FRICTION COEFFICIENT (KEYWORD)
 !| CODE           |-->| CALLING PROGRAM IN COUPLING
-!| FW             |<--| COEFFICIENT DE FROTTEMENT QUADRATIQUE DE LA HOULE
-!| GRAV           |-->| GRAVITE
-!| HMIN           |---|
-!| HN             |-->| HAUTEUR D'EAU AU TEMPS N
-!| HOULE          |-->| PRISE EN COMPTE DE LA HOULE
-!| ICR            |-->| PREDICTEUR DE RIDE POUR LE FROTTEMENT DE PEAU
-!| KARMAN         |---|
-!| KFROT          |-->| LOI     DE FROTTEMENT
+!| FW             |-->| QUADRATIC FRICTION COEFFICIENT (WAVE)
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| HOULE          |-->| INCLUDE WAVES COMPUTATIONS
+!| ICR            |-->| ICR=0: MU=1
+!|                |   | ICR=1: SKIN FRICTION CORRECTION USE KSP
+!|                |   | ICR=2: RIPPLE ROUGHNESS USE KSR, KSR
+!| KARMAN         |-->| VON KARMAN CONSTANT  
+!| KFROT          |-->| FRICTION LAW
 !| KS             |<--| RUGOSITE TOTALE
 !| KSP            |<--| RUGOSITE DE PEAU
-!| KSPRATIO       |---|
+!| KSPRATIO       |-->| RATIO BETWEEN SKIN BED ROUGHNESS AND GRAIN DIAMETER
 !| KSR            |<--| RUGOSITE DE RIDE
 !| KS_TEL         |<--| RUGOSITE TOTALE
-!| MU             |<--| RAPPORT ENTRE LA CONTRAINTE DE FROTTEMENT DE PEAU ET
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| TOB            |<--| CONTRAINTE DE FROTTEMENT TOTAL EN COURANT SEUL
-!| TOBW           |<--| CONTRAINTE DE FROTTEMENT  EN HOULE SEULE
-!| TW,UW          |-->| PERIODE DE LA HOULE ET VITESSE ORBITALE
-!| UETCAR         |-->| VITESSE DE FROTTEMENT AU CARRE SI COUPL. T3D
+!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOBW           |-->| WAVE INDUCED SHEAR STRESS
+!| TW,UW          |-->| WAVE PERIOD AND ORBITAL VELOCITY
+!| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY (COUPLED T3D)
 !| UNORM          |-->| INTENSITE DU COURANT
-!| VCE            |-->| VISCOSITE DE L'EAU
-!| XMVE,XMVS      |-->| MASSE VOLUMIQUE DE L'EAU, DU SEDIMENT
-!| ZERO           |---|
+!| VCE            |-->| WATER VISCOSITY
+!| XMVE           |-->| FLUID DENSITY (MASS) 
+!| XMVS           |-->| SEDIMENT DENSITY (MASS) 
+!| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

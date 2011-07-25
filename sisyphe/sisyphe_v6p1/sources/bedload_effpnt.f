@@ -8,7 +8,7 @@
      &  TOB,XMVS,XMVE,DM,GRAV,UNSV2D)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE PARAMETERS OF THE SLOPE EFFECT.
@@ -30,39 +30,45 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |---|
-!| BETA2          |---|
-!| CALFA          |---|
-!| COEF           |---|
-!| CTETA          |---|
-!| DEVIA          |---|
-!| DM             |---|
-!| DZFDX          |---|
-!| DZFDY          |---|
-!| GRAV           |---|
-!| IELMT          |---|
-!| KENT           |---|
-!| LIQBOR         |---|
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| NPOIN          |---|
-!| NPTFR          |---|
-!| PHISED         |---|
-!| PI             |---|
-!| S              |---|
-!| SALFA          |---|
-!| SLOPEFF        |---|
-!| STETA          |---|
-!| TOB            |---|
-!| U2D            |---|
-!| UCMOY          |---|
-!| UNSV2D         |---|
-!| V2D            |---|
-!| XMVE           |---|
-!| XMVS           |---|
-!| ZF             |---|
+!| BETA           |-->| COEFFICIENT FOR SLOPING BED EFFECT ( KOCH AND FLOKSTRA) 
+!| BETA2          |-->| COEFFICIENT FOR THE DEVIATION  (TALMON ET AL.)
+!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND X-AXIS 
+!| COEF           |<->| CORRECTION COEFFICIENT FOR THE INTENSITY OF BEDLOAD TRANSPORT
+!| CTETA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND X-AXIS
+!| DEVIA          |-->| SLOPE EFFECT FORMULA FOR DEVIATION 
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| DZFDX          |<->| BOTTOM SLOPE IN THE X-DIRECTION
+!| DZFDY          |<->| BOTTOM SLOPE IN THE Y-DIRECTION
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION FOR QS 
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MESH           |<->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| PHISED         |-->| ANGLE OF REPOSE OF THE SEDIMENT
+!| PI             |-->| PI
+!| S              |-->| VOID STRUCTURE
+!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND X-AXIS 
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
+!| STETA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND Y-AXIS
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| U2D            |<->| MEAN FLOW VELOCITY X-DIRECTION
+!| UCMOY          |-->| MEAN CURRENT 
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| WATER DENSITY 
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_EFFPNT => BEDLOAD_EFFPNT

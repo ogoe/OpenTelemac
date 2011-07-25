@@ -6,7 +6,7 @@
      & DT,QS,T1,T2,T3,BREACH,CSF_SABLE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    NON ERODABLE METHOD FOR FINITE VOLUMES.
@@ -38,25 +38,31 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AVA            |---|
-!| BREACH         |---|
-!| DT             |---|
-!| ELAY           |---|
-!| KSORT          |---|
-!| LIEBOR         |---|
-!| MESH           |---|
-!| NPOIN          |---|
-!| NPTFR          |---|
-!| NSEG           |---|
-!| QS             |---|
-!| QSX            |---|
-!| QSY            |---|
-!| T1             |---|
-!| T2             |---|
-!| T3             |---|
-!| V2DPAR         |---|
-!| CSF_SABLE      |---|
+!| AVA            |-->| PERCENT AVAILABLE
+!| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED (FINITE VOLUMES SCHEMES)
+!| DT             |-->| TIME STEP
+!| ELAY           |<->| THICKNESS OF SURFACE LAYER
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
+!| LIEBOR         |<->| PHYSICAL BOUNDARY CONDITIONS FOR BED EVOLUTION
+!| MESH           |<->| MESH STRUCTURE
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION 
+!| QS             |<->| BEDLOAD TRANSPORT RATE
+!| QSX            |-->| SOLID DISCHARGE X 
+!| QSY            |-->| SOLID DISCHARGE Y 
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
+!| CSF_SABLE      |-->| VOLUME CONCENTRATION OF SAND (1-POROSITY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_NERBED_VF => BEDLOAD_NERBED_VF

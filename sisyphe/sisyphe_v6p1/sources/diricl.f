@@ -5,7 +5,7 @@
      &( ZF1 , ZF , EBOR , LIEBOR , NBOR , NPOIN  , NPTFR  , KENT )
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    DETERMINES THE BOUNDARY CONDITIONS ON E
@@ -29,15 +29,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EBOR           |<->| EVOLUTION AUX POINTS DE BORD
-!| KENT           |-->| TYPE DE CONDITION LIMITE
-!| LIEBOR         |<->| TYPES DE CONDITIONS AUX LIMITES SUR E
-!| NBOR           |-->| TABLEAU DES NUMEROS GLOBAUX DES POINTS
-!|                |   | DE BORD
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES
-!| ZF             |-->| COTE DU FOND
-!| ZF1            |<->| COTE DU FOND
+!| EBOR           |<->| EVOLUTION OF BOUNDARY POINTS
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| LIEBOR         |<->| BOUNDARY CONDITION TYPE OVER E
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINT
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZF1            |<->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

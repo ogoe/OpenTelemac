@@ -6,7 +6,7 @@
      &   KARMAN,ZERO,T4,T7,T8,T9,QSC,QSS,BIJK,HOULE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    BIJKER BEDLOAD TRANSPORT FORMULATION.
@@ -38,29 +38,35 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BIJK           |---|
-!| DENS           |---|
-!| DM             |---|
-!| GRAV           |---|
-!| HN             |---|
-!| HOULE          |---|
-!| KARMAN         |---|
-!| KSP            |---|
-!| KSR            |---|
-!| MU             |---|
-!| NPOIN          |---|
-!| QSC            |---|
-!| QSS            |---|
-!| T4             |---|
-!| T7             |---|
-!| T8             |---|
-!| T9             |---|
-!| TOB            |---|
-!| TOBW           |---|
-!| XMVE           |---|
-!| XWC            |---|
-!| ZERO           |---|
+!| BIJK           |-->| COEFFICIENT OF THE BIJKER FORMULA
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HN             |-->| WATER DEPTH
+!| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
+!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KSP            |-->| BED SKIN ROUGHNESS
+!| KSR            |-->| RIPPLE BED ROUGHNESS
+!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| QSC            |<->| BED LOAD TRANSPORT
+!| QSS            |<->| SUSPENDED LOAD TRANSPORT
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| T9             |<->| WORK BIEF_OBJ STRUCTURE
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOBW           |-->| WAVE INDUCED SHEAR STRESS
+!| XMVE           |-->| FLUID DENSITY 
+!| XWC            |-->| SETTLING VELOCITY
+!| ZERO           |-->| ZERO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_BIJKER => BEDLOAD_BIJKER

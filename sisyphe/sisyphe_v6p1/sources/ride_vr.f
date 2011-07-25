@@ -5,7 +5,7 @@
      & (KSR,KS,UNORM,HN,GRAV,XMVE,XMVS,NPOIN,ACLADM)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE DIMENSIONS OF EQUILIBRIUM RIPPLES.
@@ -28,16 +28,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ACLADM         |---|
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| HN             |-->| HAUTEUR D'EAU
-!| KS             |<--| COEFFICIENT DE RUGOSITE TOTALE
-!| KSR            |<--| COEFFICIENT DE RUGOSITE DE PEAU
-!| NPOIN          |-->| NOMBRE DE POINTS
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HN             |-->| WATER DEPTH
+!| KS             |-->| TOTAL ROUGHNESS
+!| KSP            |-->| BED SKIN ROUGHNESS
+!| NPOIN          |-->| NUMBER OF POINTS
 !| UNORM          |-->| INTENSITE DU COURANT
-!| XMVE           |-->| MASSE VOLUMIQUE DE L'EAU
-!| XMVS           |-->| MASSE VOLUMIQUE DU SEDIMENT
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| SEDIMENT DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

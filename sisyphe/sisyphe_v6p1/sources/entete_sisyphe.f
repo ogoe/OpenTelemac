@@ -5,7 +5,7 @@
      &(IETAPE,AT,LT)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    WRITES HEADINGS TO THE LISTING
@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IETAPE         |-->| INDICATEUR D'AVANCEMENT DANS LE PROGRAMME.
+!| IETAPE         |-->| SHOW COMPUTATION STEPS 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &  (QU, QV, NPOIN, PI, THETAC)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE THETAC ANGLE (FLOW DIRECTION).
@@ -27,12 +27,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPOIN          |---|
-!| PI             |---|
-!| QU             |---|
-!| QV             |---|
-!| THETAC         |---|
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PI             |-->| PI
+!| QU             |-->| DISCHARGE X 
+!| QV             |-->| DISCHARGE Y 
+!| THETAC         |<->| CURRENT ANGLE TO THE X AXIS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,

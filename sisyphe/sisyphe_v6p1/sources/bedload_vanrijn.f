@@ -5,7 +5,7 @@
      &  (TETAP,MU, NPOIN, DM, DENS, GRAV, DSTAR, AC, QSC)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    VAN RIJN BEDLOAD TRANSPORT FORMULATION.
@@ -32,16 +32,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| DENS           |---|
-!| DM             |---|
-!| DSTAR          |---|
-!| GRAV           |---|
-!| MU             |---|
-!| NPOIN          |---|
-!| QSC            |---|
-!| TETAP          |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| DSTAR          |-->| NON-DIMENSIONAL DIAMETER
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| QSC            |<->| BEDLOAD TRANSPORT RATE
+!| TETAP          |-->| ADIMENSIONAL SKIN FRICTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_VANRIJN => BEDLOAD_VANRIJN

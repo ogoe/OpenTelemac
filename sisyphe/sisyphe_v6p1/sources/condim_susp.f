@@ -5,7 +5,7 @@
      &(CS,CS0,NSICLA,X,Y,AT,NPOIN)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    INITIALISES THE SUSPENDED SEDIMENT CONCENTRATION
@@ -28,14 +28,20 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |---|
-!| CS             |---|
-!| CS0            |---|
-!| NPOIN          |---|
-!| NSICLA         |---|
-!| X              |---|
-!| Y              |---|
+!| AT             |-->| TIME 
+!| CS             |<->| SUSPENDED SEDIMENT CONCENTRATION
+!| CS0            |-->| INITIAL CONCENTRATIONS (CONSTANT VALUES)/CLASS  
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| X              |-->| X-COORDINATE
+!| Y              |-->| Y-COORDINATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

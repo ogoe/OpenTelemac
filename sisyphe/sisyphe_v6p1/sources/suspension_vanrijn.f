@@ -5,17 +5,24 @@
      &(FDM,TAUP,NPOIN,GRAV,XMVE,XMVS,VCE,ZERO,AC,CSTAEQ,ZREF)
 !
 !***********************************************************************
-! SISYPHE V6P1 20 03 2011
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 ! NEW SUBROUTINE C. VILLARET N. HUYBRECHTS 
+!
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |<->|
-!| ACLADM         |-->|
-!| GRAV           |-->|
-!| NPOIN          |-->|
-!| VCE            |-->|
-!| XMVE           |-->|
-!| XMVS           |-->|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| NPOIN          |-->| NUMBER OF POINTS
+!| VCE            |-->| FLOW VISCOSITY
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| SEDIMENT DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -8,7 +8,7 @@
      & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    SOLVES:
@@ -54,36 +54,43 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |---|
-!| DT             |---|
-!| EBOR           |---|
-!| ENTET          |---|
+!| DT             |-->| TIME STEP
+!| EBOR           |<->| BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
 !| FLODEL         |---|
 !| FLULIM         |---|
 !| GLOSEG         |---|
 !| HZ             |<--| NEW AVAILABLE LAYER OF SEDIMENT
 !| HZN            |-->| OLD AVAILABLE LAYER OF SEDIMENT
-!| IELMT          |---|
-!| KDIR           |---|
-!| KENT           |---|
-!| LIMTEC         |---|
-!| MASK           |---|
-!| MASKEL         |---|
-!| MESH           |---|
-!| MSK            |---|
-!| NPOIN          |---|
-!| NPTFR          |---|
-!| NSEG           |---|
-!| QSX            |---|
-!| QSY            |---|
-!| S              |---|
-!| T1             |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| T8             |---|
-!| UNSV2D         |---|
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| LIMTEC         |<->| TYPE OF BOUNDARY CONDITION ***
+!| MASK           |-->| BLOCK OF MASKS, EVERY ONE FOR A TYPE OF BOUNDARY
+!|                |   | SEE DIFFIN.F IN LIBRARY BIEF.
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MESH           |<->| MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION 
+!| QSX            |-->| SOLID DISCHARGE X
+!| QSY            |-->| SOLID DISCHARGE Y
+!| S              |-->| VOID STRUCTURE
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !| ZFCL           |<--| ZFCL=HZ-HZN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

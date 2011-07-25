@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE BY CALL TO DAMOCLES.
@@ -76,12 +76,18 @@
 !+        20/03/2011
 !+        V6P1
 !+
+!
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CODE           |---|
-!| FILE_DESC      |---|
-!| MOTCAR         |---|
-!| NCAR           |---|
-!| PATH           |---|
+!| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
+!| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
+!| NCAR           |-->| NUMBER OF LETTERS IN STRING PATH
+!| PATH           |-->| FULL PATH TO CODE DICTIONARY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 

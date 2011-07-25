@@ -5,7 +5,7 @@
      &  (UCW, UW, TW, NPOIN, PI, UW1, UW2, TW1, TW2)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES QUADRATIC VELOCITIES AND PERIODS
@@ -28,16 +28,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPOIN          |---|
-!| PI             |---|
-!| TW             |---|
-!| TW1            |---|
-!| TW2            |---|
-!| UCW            |---|
-!| UW             |---|
-!| UW1            |---|
-!| UW2            |---|
+!| NPOIN          |-->| NUMBER OF POINTS
+!| PI             |-->| PI
+!| TW             |-->| WAVE PERIOD
+!| TW1            |<->| MID WAVE PERIOD, CURRENT IN THE WAVE DIRECTION
+!| TW2            |<->| MID WAVE PERIOD, CURRENT IN THE OPPOSITE DIRECTION
+!| UCW            |-->| CURRENT PROJECTED IN THE WAVE DIRECTION
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| UW1            |<->| WORK ARRAY
+!| UW2            |<->| WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_CALCDW => BEDLOAD_CALCDW

@@ -7,7 +7,7 @@
      &   MASKTR, LIMTRA)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    INITIALISES THE BOUNDARY CONDITIONS.
@@ -29,28 +29,34 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CLT            |---|
-!| KDDL           |---|
-!| KDIR           |---|
-!| KENT           |---|
-!| KINC           |---|
-!| KLOG           |---|
-!| KNEU           |---|
-!| KP1BOR         |---|
-!| KSORT          |---|
-!| LIMTRA         |---|
-!| LITBOR         |---|
-!| MASKEL         |---|
-!| MASKTR         |---|
-!| MSK            |---|
-!| NBOR           |---|
-!| NELBOR         |---|
-!| NPTFR          |---|
-!| U              |---|
-!| V              |---|
-!| XNEBOR         |---|
-!| YNEBOR         |---|
+!| CLT            |<->| TYPE OF BOUNDARY CONDITIONS FOR TRACER (MODIFIED LITBOR)
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
+!| KP1BOR         |-->| NEXT POINT ON THE BOUNDARY 
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
+!| LIMTRA         |<->| TYPE OF BOUNDARY CONDITION FOR TRACER
+!| LITBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR TRACER (***)
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MASKTR         |<->| MASKING FOR TRACERS, PER POINT
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
+!| NBOR           |-->| NUMBER OF BOUDARY POINTS
+!| NELBOR         |-->| NUMBER OF BOUDARY ELEMENTS
+!| NPTFR          |-->| NUMBER OF BOUDARIES
+!| U              |-->| FLOW VELOCITY IN THE X DIRECTION
+!| V              |-->| FLOW VELOCITY IN THE Y DIRECTION
+!| XNEBOR         |-->| X-COORDINATES OF THE BOUNDARY POINT
+!| YNEBOR         |-->| Y-COORDINATES OF THE BOUNDARY POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE, EX_BEDLOAD_DIFFIN => BEDLOAD_DIFFIN

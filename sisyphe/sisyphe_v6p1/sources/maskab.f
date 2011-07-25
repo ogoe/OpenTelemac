@@ -5,7 +5,7 @@
      &(HN , Q , QU , QV , NPOIN)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    ELIMINATES NEGATIVE WATER DEPTHS.
@@ -30,9 +30,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN             |<->| HAUTEUR D' EAU
-!| NPOIN          |-->| NOMBRE DE POINTS
-!| Q              |-->| DEBIT LIQUIDE
+!| HN             |<->| WATER DEPTH
+!| NPOIN          |-->| NUMBER OF POINTS
+!| Q              |-->| LIQUID DISCHARGE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

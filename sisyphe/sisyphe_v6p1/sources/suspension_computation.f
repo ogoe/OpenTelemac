@@ -22,7 +22,7 @@
      & FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS,DIRFLU,QSCLXS,QSCLYS)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR THE COMPUTATION OF THE
@@ -108,150 +108,180 @@
 !+   Adaptation to the new call of Sisyphe in Telemac-2D, and various
 !+   modifications for mass-conservation.   
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |---|
-!| AFBOR          |---|
-!| AM1_S          |---|
-!| AM2_S          |---|
-!| AVA            |---|
-!| AVAIL          |---|
-!| BFBOR          |---|
-!| BILMA          |---|
-!| CBOR           |---|
-!| CF             |---|
-!| CHARR          |---|
-!| CLT            |---|
-!| CODE           |---|
-!| CONC_VASE      |---|
-!| CORR_CONV      |---|
-!| CS             |---|
-!| CSF_SABLE      |---|
-!| CSF_VASE       |---|
-!| CST            |---|
-!| CSTAEQ         |---|
-!| CTILD          |---|
-!| DEBUG          |---|
-!| DIFT           |---|
-!| DISP           |---|
-!| DISP_C         |---|
-!| DM1            |---|
-!| DT             |---|
-!| ELAY           |---|
-!| ENTET          |---|
-!| ENTETS         |---|
-!| ES             |---|
-!| FLBORTRA       |---|
-!| FLBOR_SIS      |---|
-!| FLBOR_TEL      |---|
-!| FLUDP          |---|
-!| FLUDPT         |---|
-!| FLUER          |---|
-!| FLUER_VASE     |---|
-!| GRAV           |---|
-!| HMIN           |---|
-!| HN             |---|
-!| HN_TEL         |---|
-!| HPROP          |---|
-!| ICQ            |---|
-!| IELMT          |---|
-!| IFAMAS         |---|
-!| IMP_INFLOW_C   |---|
-!| IT1            |---|
-!| IT2            |---|
-!| IT3            |---|
-!| IT4            |---|
-!| ITRA           |---|
-!| KARMAN         |---|
-!| KDDL           |---|
-!| KDIR           |---|
-!| KENT           |---|
-!| KINC           |---|
-!| KLOG           |---|
-!| KNEU           |---|
-!| KSORT          |---|
-!| KSP            |---|
-!| KSR            |---|
-!| LICBOR         |---|
-!| LIMDIF         |---|
-!| LT             |---|
-!| MASDEP         |---|
-!| MASDEPT        |---|
-!| MASED0         |---|
-!| MASFIN         |---|
-!| MASINI         |---|
-!| MASKEL         |---|
-!| MASKPT         |---|
-!| MASKTR         |---|
-!| MASSOU         |---|
-!| MASTEN         |---|
-!| MASTOU         |---|
-!| MBOR           |---|
-!| MESH           |---|
-!| MIXTE          |---|
-!| MSK            |---|
-!| MS_SABLE       |---|
-!| MS_VASE        |---|
-!| MU             |---|
-!| NCOUCH_TASS    |---|
-!| NFRLIQ         |---|
-!| NIT            |---|
-!| NPOIN          |---|
-!| NPTFR          |---|
-!| NSICLA         |---|
-!| NUMLIQ         |---|
-!| OPDTRA         |---|
-!| OPTBAN         |---|
-!| OPTSUP         |---|
-!| PARTHENIADES   |---|
-!| QS_C           |---|
-!| RESOL          |---|
-!| S              |---|
-!| SEDCO          |---|
-!| SLVTRA         |---|
-!| SOLSYS         |---|
-!| T1             |---|
-!| T10            |---|
-!| T11            |---|
-!| T12            |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| T5             |---|
-!| T6             |---|
-!| T7             |---|
-!| T8             |---|
-!| T9             |---|
-!| TASS           |---|
-!| TB             |---|
-!| TE1            |---|
-!| TE2            |---|
-!| TE3            |---|
-!| TETA_SUSP      |---|
-!| TOB            |---|
-!| TOCE_MIXTE     |---|
-!| TOCE_VASE      |---|
-!| U2D            |---|
-!| UCONV          |---|
-!| UCONV_TEL      |---|
-!| UNSV2D         |---|
-!| V2D            |---|
-!| V2DPAR         |---|
-!| VCE            |---|
-!| VCONV          |---|
-!| VCONV_TEL      |---|
-!| VITCD          |---|
-!| VITCE          |---|
-!| VOLU2D         |---|
-!| W1             |---|
-!| XMVE           |---|
-!| XMVS           |---|
-!| XWC            |---|
-!| ZCONV          |---|
-!| ZERO           |---|
-!| ZF             |---|
-!| ZFCL_S         |---|
-!| ZREF           |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| AFBOR          |-->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
+!| AM1_S          |<->| MATRIX OBJECT
+!| AM2_S          |<->| MATRIX OBJECT
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| BFBOR          |-->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
+!| BILMA          |-->| MASS BALANCE
+!| CBOR           |<->| IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY 
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| CHARR          |-->| LOGICAL, BEDLOAD OR NOT
+!| CLT            |<->| BOUNDARY CONDITIONS FOR TRACER (MODIFIED LITBOR)
+!| CODE           |-->| HYDRODYNAMIC CODE IN CASE OF COUPLING
+!| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
+!| CORR_CONV      |-->| CORRECTION ON CONVECTION VELOCITY
+!| CS             |<->| CONCENTRATION AT TIME N
+!| CSF_SABLE      |-->| VOLUME CONCENTRATION OF THE SAND BED
+!| CSF_VASE       |-->| VOLUME CONCENTRATION OF THE COHESIVE BED
+!| CST            |<->| CONCENTRATION AT TIME T(N+1)
+!| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| CTILD          |<->| CONCENTRATION AFTER ADVECTION
+!| DEBUG          |-->| FLAG FOR DEBUGGING
+!| DIFT           |-->| DIFFUSION OF SUSPENDED SEDIMENT CONCENTRATION
+!| DISP           |-->| VISCOSITY COEFFICIENTS ALONG X,Y AND Z .
+!|                |   | IF P0 : PER ELEMENT
+!|                |   | IF P1 : PERR POINT
+!| DISP_S         |<->| WORK ARRAY FOR SAVING DISPC
+!| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV)
+!| DTS            |-->| TIME STEP FOR SUSPENSION
+!| ELAY           |<->| THICKNESS OF EACH LAYER
+!| ENTET          |<->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
+!| ENTETS         |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION FOR SUSPENSION 
+!| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| FLBORTRA       |<->| FLUXES AT BOUNDARIES TRACER
+!| FLBOR_SIS      |<->| FLUXES AT BOUNDARIES SISYPHE
+!| FLBOR_TEL      |-->| FLUXES AT BOUNDARIES TELEMAC
+!| FLUDP          |<->| DEPOSITION FLUX
+!| FLUDPT         |<->| DEPOSITION FLUX (IMPLICIT)
+!| FLUER          |<->| EROSION FLUX
+!| FLUER_VASE     |<->| FOR MIXED SEDIMENTS
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| HN_TEL         |-->| WATER DEPTH AS SENT BY TELEMAC OR CALLING CODE
+!| HPROP          |<->| PROPAGATION DEPTH (DONE IN CVDFTR)
+!| ICQ            |-->| REFERENCE CONCENTRATION FORMULA
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
+!| IMP_INFLOW_C   |-->| IMPOSED CONCENTRATION IN INFLOW
+!| IT1            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| IT2            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| IT3            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| IT4            |<->| INTEGER WORK ARRAY IN A BIEF_OBJ STRUCTURE
+!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KINC           |-->| CONVENTION FOR INCIDENT WAVE BOUNDARY CONDITION 
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KNEU           |-->| CONVENTION FOR NEUMANN CONDITION
+!| KS             |-->| TOTAL BED ROUGHNESS
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| KSP            |-->| SKIN BED ROUGHNESS
+!| KSR            |-->| RIPPLE BED ROUGHNESS
+!| KX             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
+!| KY             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
+!| KZ             |<->| COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
+!| LICBOR         |-->| BOUNDARY CONDITIONS FOR SEDIMENT
+!| LIMDIF         |<->| BOUNDARY CONDITIONS FOR DIFFUSION
+!| LT             |-->| ITERATION 
+!| MASDEP         |<--| TOTAL DEPOSITED MASS
+!| MASDEPT        |<--| DEPOSITED MASS DURING THE TIME STEP
+!| MASED0         |<->| SUSPENDED MASS BALANCE
+!| MASFIN         |<--| MASS AT THE END
+!| MASINI         |<->| INITIAL MASS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!| MASKPT         |-->| MASKING PER POINT 
+!| MASKTR         |<->| MASKING FOR TRACERS, PER POINT
+!| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
+!|                |   | SEE DIFSOU
+!| MASTCP         |<--| ??? NE SERT A RIEN, A SUPPRIMER 
+!| MASTEN         |<->| MASS ENTERED THROUGH LIQUID BOUNDARY
+!| MASTOU         |<->| MASS CREATED BY SOURCE TERM
+!| MBOR           |<->| MATRIX OBJECT
+!| MESH           |<->| MESH STRUCTURE
+!| MIXTE          |-->| MIXTURE OF COHESIVE AND NON COHESIVE SEDIMENT
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS 
+!| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
+!| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
+!| MU             |-->| CORRECTION FACTOR FOR BED ROUGHNESS
+!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NIT            |-->| TOTAL NUMBER OF ITERATIONS 
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
+!| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
+!| OPTDIF         |-->| OPTION FOR THE DISPERSION 
+!| OPTSUP         |-->| SUPG OPTION
+!| PARTHENIADES   |-->| CONSTANT OF THE KRONE AND PARTHENIADES EROSION LAW (M/S)
+!| PASS           |<->| IN FACT PASS_SUSP IN SISYPHE.F, ARRIVES AS .TRUE.
+!|                |   | AT FIRST CALL AND IS CHANGED INTO .FALSE. BELOW
+!| QSCLXS         |<->| TRANSPORT RATE FOR EACH CLASS X-DIRECTION
+!| QSCLYS         |<->| TRANSPORT RATE FOR EACH CLASS Y-DIRECTION
+!| QSCL_S         |<->| SUSPENDED LOAD TRANSPORT RATE
+!| QSXS           |<->| SOLID DISCHARGE X (SUSPENSION)
+!| QSYS           |<->| SOLID DISCHARGE Y (SUSPENSION)
+!| QS_C           |-->| BEDLOAD TRANSPORT RATE
+!| QS_S           |<->| SUSPENDED TRANSPORT RATE
+!| RESOL          |-->| CHOICE OF ADVECTION SCHEME
+!| S              |<->| VOID STRUCTURE 
+!| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
+!| SLVTRA         |<->| SLVCFG STRUCTURE
+!| SOLSYS         |-->| SLVCFG STRUCTURE
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T10            |<->| WORK BIEF_OBJ STRUCTURE
+!| T11            |<->| WORK BIEF_OBJ STRUCTURE
+!| T12            |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T5             |<->| WORK BIEF_OBJ STRUCTURE
+!| T6             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| T9             |<->| WORK BIEF_OBJ STRUCTURE
+!| TASS           |-->| CONSOLIDATION TAKEN INTO ACCOUNT
+!| TB             |-->| BLOCK OF WORKING ARRAYS
+!| TE1            |<->| WORKING ARRAY FOR ELEMENTS
+!| TE2            |<->| WORKING ARRAY FOR ELEMENTS
+!| TE3            |<->| WORKING ARRAY FOR ELEMENTS
+!| TETA_SUSP      |<->| IMPLICITATION FACTOR FOR THE DEPOSITION FLUX AND DIFFUSION
+!| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOCE_SABLE     |<->| CRITICAL BED SHEAR STRESS OF SAND
+!| TOCE_MIXTE     |<->| CRITICAL BED SHEAR STRESS OF THE MIXED SEDUIMENT PER LAYER 
+!| TOCE_VASE      |<->| CRITICAL EROSION SHEAR STRESS OF THE MUD PER LAYER (N/M2)
+!| U2D            |-->| MEAN FLOW VELOCITY X-DIRECTION
+!| UCONV          |<->| X-COMPONENT ADVECTION FIELD (SISYPHE)
+!| UCONV_TEL      |-->| X-COMPONENT ADVECTION FIELD (TELEMAC)
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| V2D            |-->| MEAN FLOW VELOCITY Y-DIRECTION
+!| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
+!| VCE            |-->| FLOW VISCOSITY
+!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD (SISYPHE)
+!| VCONV_TEL      |-->| Y-COMPONENT ADVECTION FIELD (TELEMAC)
+!| VISC_TEL       |-->| VELOCITY DIFFUSIVITY (TELEMAC)
+!| VITCD          |-->| CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
+!| VITCE          |-->| CRITICAL EROSION SHEAR VELOCITY OF THE MUD
+!| VOLU2D         |-->| INTEGRAL OF BASES
+!| W1             |<->| WORKING ARRAY
+!| XKX            |-->| COEFFICIENT USED FOR COMPUTING THE DISPERSION
+!|                |   | DEPENDS OF OPTIONS
+!| XKY            |-->| COEFFICIENT USED FOR COMPUTING THE DISPERSION
+!|                |   | DEPENDS OF OPTIONS
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| SEDIMENT DENSITY
+!| XWC            |-->| SETTLING VELOCITIES 
+!| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV)
+!| ZERO           |-->| ZERO
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
+!| ZF_S           |<->| ACCUMULATED BED EVOLUTION DUE TO SUSPENDED SEDIMENT 
+!| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,
@@ -468,11 +498,10 @@
      &                                PARTHENIADES,ZERO, DEBUG,
      &                                FLUER,ES,TOCE_VASE,NCOUCH_TASS,
      &                                DT,MS_VASE%R,TASS)
-!
+! attention only Good if NCOUCH_TASS = 1
           IF(.NOT.TASS) THEN
             DO I=1,NPOIN
-!           FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*CONC_VASE(1)/DT/XMVS)
-            FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*CONC_VASE(1)/DT/XMVS)
+              FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*CONC_VASE(1)/DT/XMVS)
             ENDDO
           ENDIF
         ENDIF
@@ -531,7 +560,7 @@
      &            .FALSE.,BID,    CS,CBOR,MESH,NUMLIQ)
       IF (DEBUG > 0) WRITE(LU,*) 'END DIFFIN'
 !
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!+++++++++++++++++++++++++++++++++++ELEVATION OF BOTTOM++++++++++++++++++++++++++++++++++++
 !  6. BOUNDARY CONDITIONS : CBOR
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
@@ -553,7 +582,7 @@
               IF(MIXTE) CBOR%R(K) = FLUER%R(I)/T2%R(I)/XWC
             ELSE
               CBOR%R(K) = FLUER%R(I)/XWC
-            ENDIF              
+            ENDIF     
 !           THIS IS THE CONDITION TO HAVE NO EVOLUTION
 !           CS%R(I) MAY BE DIFFERENT FROM CBOR%R(K) IF UNSTEADY FLOW
 !           OR IF DIRFLU.EQ.2 (CASE OF PRIORITY TO FLUXES)            
@@ -696,9 +725,14 @@
          CALL OS('X=Y-Z   ', X=ZFCL_S, Y=FLUDP, Z=FLUER)
          CALL OS('X=CX    ', X=ZFCL_S, C=DT/CSF_SABLE)
        ELSE
+!!! Erreur!
+!         CALL SUSPENSION_EVOL(ZFCL_S, FLUDP, FLUER,DT,
+!     &                 NPOIN,CSF_SABLE, XMVS,T3,MS_SABLE%R,
+!     &                 SEDCO,CONC_VASE,NCOUCH_TASS)
          CALL SUSPENSION_EVOL(ZFCL_S, FLUDP, FLUER,DT,
-     &                 NPOIN,CSF_SABLE, XMVS,T3,MS_SABLE%R,
-     &                 SEDCO,CONC_VASE,NCOUCH_TASS)
+     &                 NPOIN, XMVS,T3,MS_VASE%R,ES,
+     &                 CONC_VASE,NCOUCH_TASS)
+!
        ENDIF
 !
 !     WRITES OUT THE MIN/MAX VALUES TO THE LISTING

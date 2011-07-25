@@ -6,7 +6,7 @@
      & ZERO,KARMAN,XMVE, T1,T2,ZREF,FLUDPT,DEBUG,SEDCO)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION.
@@ -31,22 +31,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+   Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBUG          |---|
-!| FLUDPT         |---|
-!| HMIN           |---|
-!| HN             |-->| HAUTEUR D'EAU
-!| KARMAN         |---|
-!| NPOIN          |---|
-!| SEDCO          |---|
-!| T1             |---|
-!| T2             |---|
-!| TOB            |---|
-!| VITCD          |---|
-!| XMVE           |---|
-!| XWC            |---|
-!| ZERO           |---|
-!| ZREF           |---|
+!| DEBUG          |-->| FLAG FOR DEBUGGING
+!| FLUDPT         |<->| IMPLICIT DEPOSITION FLUX
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| KARMAN         |-->| VON KARMAN CONSTANT
+!| NPOIN          |-->| NUMBER OF POINTS 
+!| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
+!| VITCD          |-->| CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
+!| XMVE           |-->| FLUID DENSITY 
+!| XWC            |-->| SETTLING VELOCITIES 
+!| ZERO           |-->| ZERO
+!| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_SUSPENSION_DEPOT => SUSPENSION_DEPOT

@@ -15,7 +15,7 @@
      & U3D,V3D,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 ! simplified calculation of transport rates for initalization
 !***********************************************************************
 !
@@ -57,92 +57,98 @@
 !+
 !+        20/03/2011   
 !+        V6P1
+!
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACLADM         |---|
-!| AVAIL          |---|
-!| BIJK           |---|
-!| CALFA          |---|
-!| CF             |---|
-!| CHARR          |-->|
-!| CMAX           |---|
-!| COEFPN         |---|
-!| CORR_CONV      |---|
-!| CS             |---|
-!| CS0            |---|
-!| CSTAEQ         |---|
-!| DEBU           |-->|
-!| FD90           |---|
-!| FDM            |---|
-!| FW             |---|
-!| GRAV           |---|
-!| HIDFAC         |---|
-!| HIDING         |-->|
-!| HMIN           |---|
+!| AC             |<->| CRITICAL SHIELDS PARAMETER
+!| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| BIJK           |-->| COEFFICIENT OF THE BIJKER FORMULA
+!| CALFA          |<->| COSINUS OF THE ANGLE BETWEEN MEAN FLOW AND TRANSPORT 
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| CHARR          |-->| BEDLOAD
+!| CMAX           |---| MAX(PARTHENIADES/SETTLING VELOCITY)
+!| COEFPN         |<->| CORRECTION OF TRANSORT FOR SLOPING BED EFFECT
+!| CORR_CONV      |-->| CORRECTION ON CONVECTION VELOCITY
+!| CS             |<->| CONCENTRATION AT TIME N
+!| CS0            |-->| CONCENTRATION AT TIME 0
+!| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| DEBUG          |-->| FLAG FOR DEBUGGING
+!| FD90           |-->| DIAMETER D90
+!| FDM            |-->| DIAMETER DM FOR EACH CLASS 
+!| FW             |-->| WAVE FRICTION FACTOR
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HIDFAC         |-->| HIDING FACTOR FORMULAS
+!| HIDING         |-->| HIDING FACTOR CORRECTION  
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
-!| HOULE          |---|
-!| ICF            |---|
-!| ICQ            |---|
-!| IELMT          |---|
-!| IMP_INFLOW_C   |---|
-!| KARMAN         |---|
-!| KS             |---|
-!| KSP            |---|
-!| KSR            |---|
-!| MESH           |---|
-!| MU             |---|
-!| NPOIN          |---|
+!| HOULE          |-->| LOGICAL, FOR WAVE EFFECTS
+!| ICF            |-->| BED-LOAD OR TOTAL LOAD TRANSPORT FORMULAS
+!| ICQ            |-->| REFERENCE CONCENTRATION FORMULA
+!| IELMT          |-->| NUMBER OF ELEMENTS
+!| IMP_INFLOW_C   |-->| IMPOSED CONCENTRATION IN INFLOW
+!| KARMAN         |-->| VON KARMAN CONSTANT 
+!| KS             |-->| BED ROUGHNESS
+!| KSP            |-->| BED SKIN ROUGHNESS
+!| KSR            |-->| RIPPLE BED ROUGHNESS
+!| MESH           |<->| MESH STRUCTURE
+!| MU             |<->| CORRECTION FACTOR FOR BED ROUGHNESS
+!| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SEDIMENT CLASSES
-!| PARTHENIADES   |---|
-!| PI             |---|
-!| QS             |---|
-!| QSCL           |---|
-!| QSCLXS         |---|
-!| QSCLYS         |---|
-!| QSCL_C         |---|
-!| QSCL_S         |---|
-!| QSXC           |---|
-!| QSYC           |---|
-!| QS_C           |---|
-!| QS_S           |---|
-!| SALFA          |---|
-!| SECCURRENT     |---|
-!| SEDCO          |---|
-!| SLOPEFF        |---|
-!| SUSP           |---|
-!| T1             |---|
-!| T10            |---|
-!| T11            |---|
-!| T12            |---|
-!| T14            |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| T5             |---|
-!| T6             |---|
-!| T7             |---|
-!| T8             |---|
-!| T9             |---|
-!| THETAW         |---|
-!| TOB            |---|
-!| TOBW           |---|
-!| TROUVE         |-->|
-!| TW             |---|
-!| U2D            |---|
-!| UCONV          |---|
-!| UNLADM         |---|
-!| UNORM          |---|
-!| UW             |---|
-!| V2D            |---|
-!| VCE            |---|
-!| VCONV          |---|
-!| VITCD          |---|
-!| VITCE          |---|
-!| XMVE           |---|
-!| XMVS           |---|
-!| XWC            |---|
-!| ZERO           |---|
-!| ZREF           |---|
+!| PARTHENIADES   |-->| CONSTANT OF THE KRONE AND PARTHENIADES EROSION LAW (KG/M2/S)
+!| PI             |-->| PI
+!| QS             |<->| BEDLOAD TRANSPORT RATE
+!| QSCL           |<->| SUSPENDED LOAD TRANSPORT RATE
+!| QSCLXS         |<->| SUSPENDED LOAD TRANSPORT RATE FOR EACH CLASS X-DIRECTION
+!| QSCLYS         |<->| SUSPENDED LOAD TRANSPORT RATE FOR EACH CLASS Y-DIRECTION
+!| QSCL_C         |<->| BEDLOAD TRANSPORT RATE
+!| QSCL_S         |<->| SUSPENDED LOAD TRANSPORT RATE
+!| QSXS           |<->| SOLID DISCHARGE X (SUSPENSION)
+!| QSYS           |<->| SOLID DISCHARGE Y (SUSPENSION)
+!| QS_C           |-->| BEDLOAD TRANSPORT RATE
+!| QS_S           |<->| SUSPENDED LOAD TRANSPORT RATE
+!| SALFA          |<->| SINUS OF THE ANGLE BETWEEN TRANSPORT RATE AND CURRENT 
+!| SECCURRENT     |-->| LOGICAL, PARAMETRISATION FOR SECONDARY CURRENTS
+!| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
+!| SLOPEFF        |-->| LOGICAL, SLOPING BED EFFECT OR NOT 
+!| SUSP           |-->| LOGICAL, SUSPENSION 
+!| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T10            |<->| WORK BIEF_OBJ STRUCTURE
+!| T11            |<->| WORK BIEF_OBJ STRUCTURE
+!| T12            |<->| WORK BIEF_OBJ STRUCTURE
+!| T13            |<->| WORK BIEF_OBJ STRUCTURE
+!| T2             |<->| WORK BIEF_OBJ STRUCTURE
+!| T3             |<->| WORK BIEF_OBJ STRUCTURE
+!| T4             |<->| WORK BIEF_OBJ STRUCTURE
+!| T5             |<->| WORK BIEF_OBJ STRUCTURE
+!| T6             |<->| WORK BIEF_OBJ STRUCTURE
+!| T7             |<->| WORK BIEF_OBJ STRUCTURE
+!| T8             |<->| WORK BIEF_OBJ STRUCTURE
+!| T9             |<->| WORK BIEF_OBJ STRUCTURE
+!| THETAW         |-->| ANGLE BETWEEN WAVE AND CURRENT 
+!| TOB            |<->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOBW           |-->| WAVE INDUCED SHEAR STRESS
+!| TW             |-->| WAVE PERIOD
+!| U2D            |<->| MEAN FLOW VELOCITY X-DIRECTION
+!| UCONV          |<->| X-COMPONENT ADVECTION FIELD (TELEMAC)
+!| UNLADM         |-->| MEAN DIAMETER OF ACTIVE STRATUM LAYER
+!| UNORM          |<->| NORM OF THE MEAN FLOW VELOCITY
+!| UW             |-->| ORBITAL WAVE VELOCITY
+!| V2D            |<->| MEAN FLOW VELOCITY Y-DIRECTION
+!| VCE            |-->| WATER VISCOSITY
+!| VCONV          |<->| Y-COMPONENT ADVECTION FIELD 
+!| VITCD          |-->| CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
+!| VITCE          |-->| CRITICAL EROSION SHEAR VELOCITY OF THE MUD
+!| XMVE           |-->| FLUID DENSITY 
+!| XMVS           |-->| WATER DENSITY 
+!| XWC            |-->| SETTLING VELOCITY
+!| ZERO           |-->| ZERO
+!| ZREF           |-->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

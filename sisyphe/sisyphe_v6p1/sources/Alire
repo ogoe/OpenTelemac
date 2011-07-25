@@ -1,54 +1,54 @@
-Modif CV 01/11
-+++++++++++++
-
-Predicteurd de rides 
---------------------
-Declarations_sisyphe.f
-logical
-	KSPRED: nouveau mot clé
-Integer
-        IKS : IKS= 3 VAn Rijn
-
-Sisyphe.f : appel de Tob_sisyphe
-Tob_siysphe.f
-Lecdon.f: KFROT = 5 imposé dans lecdon.f
-
-Integration modif BAW
----------------------
-- Couplage Telemac 3D
-- Effet de pente
-
-
-Modifs JMH 02/12/2010
-+++++++++++++++++++++
-bedloadsolidischarge.f : appel a effet de pente, Calfa et Salfa
-                         toujours faits
-bedload_effpnt.f : calcul de Calfa et Salfa enleve.
-
-Modifs CV Tassement
-+++++++++++++++++++++
-Modele de Tassement : ITASS
-ITASS=1: Modele de walther Multicouches
-ITASS = 2 ...
-
-+++++++++++++++++++
-Janvier 2011
-
-Ajout de ACLADM en sortie (variabble 22)
- ---> modif des subroutines nomvar.f, point_sisyphe.f, et dans lecdon.f
- --> modif des variables alire et trouve dans sisyphe.f
- --->                                         init_transport.f
-Bugs correction cas permanent sisyphe.f
-
-
-+++++++++++++++++
-Sisyphe.f pb de temps initial en cas de suite de calcul
-rajout de 
-          AT0=T_TEL
+Modif CV 01/11 
++++++++++++++ 
  
-
-Bug sur init_avai.f
-vider les couches non definies
+Predicteurd de rides  
+-------------------- 
+Declarations_sisyphe.f 
+logical 
+	KSPRED: nouveau mot clé 
+Integer 
+        IKS : IKS= 3 VAn Rijn 
+ 
+Sisyphe.f : appel de Tob_sisyphe 
+Tob_siysphe.f 
+Lecdon.f: KFROT = 5 imposé dans lecdon.f 
+ 
+Integration modif BAW 
+--------------------- 
+- Couplage Telemac 3D 
+- Effet de pente 
+ 
+ 
+Modifs JMH 02/12/2010 
++++++++++++++++++++++ 
+bedloadsolidischarge.f : appel a effet de pente, Calfa et Salfa 
+                         toujours faits 
+bedload_effpnt.f : calcul de Calfa et Salfa enleve. 
+ 
+Modifs CV Tassement 
++++++++++++++++++++++ 
+Modele de Tassement : ITASS 
+ITASS=1: Modele de walther Multicouches 
+ITASS = 2 ... 
+ 
++++++++++++++++++++ 
+Janvier 2011 
+ 
+Ajout de ACLADM en sortie (variabble 22) 
+ ---> modif des subroutines nomvar.f, point_sisyphe.f, et dans lecdon.f 
+ --> modif des variables alire et trouve dans sisyphe.f 
+ --->                                         init_transport.f 
+Bugs correction cas permanent sisyphe.f 
+ 
+ 
++++++++++++++++++ 
+Sisyphe.f pb de temps initial en cas de suite de calcul 
+rajout de  
+          AT0=T_TEL 
+  
+ 
+Bug sur init_avai.f 
+vider les couches non definies 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 01/03/2011

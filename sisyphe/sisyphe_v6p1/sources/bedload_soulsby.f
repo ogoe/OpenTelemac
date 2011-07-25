@@ -6,7 +6,7 @@
      &   QSS)
 !
 !***********************************************************************
-! SISYPHE   V6P0                                   21/08/2010
+! SISYPHE   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    SOULSBY & VAN RIJN BEDLOAD TRANSPORT FORMULATION.
@@ -33,19 +33,25 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!+        19/07/2011
+!+        V6P1
+!+  Name of variables   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| D90            |---|
-!| DENS           |---|
-!| DM             |---|
-!| DSTAR          |---|
-!| GRAV           |---|
-!| HMIN           |---|
-!| HN             |---|
-!| NPOIN          |---|
-!| QSC            |---|
-!| QSS            |---|
-!| UCMOY          |---|
-!| UW             |---|
+!| D90            |-->| D90
+!| DENS           |-->| RELATIVE DENSITY
+!| DM             |-->| SEDIMENT GRAIN DIAMETER
+!| DSTAR          |-->| NON-DIMENSIONAL DIAMETER
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
+!| HN             |-->| WATER DEPTH
+!| NPOIN          |-->| NUMBER OF POINTS
+!| QSC            |<->| BED LOAD TRANSPORT 
+!| QSS            |<->| SUSPENDED LOAD TRANSPORT RATE
+!| UCMOY          |-->| CURRENT INTENSITY (M/S)
+!| UW             |-->| ORBITAL WAVE VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_SISYPHE,EX_BEDLOAD_SOULSBY => BEDLOAD_SOULSBY
