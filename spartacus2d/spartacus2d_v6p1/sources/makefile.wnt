@@ -1,0 +1,203 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     CCT - MHL
+#
+# Makefile de SISYPHE pour WindowsNT (avec Intel).
+#
+# ATTENTION : doit être lancé dans le répertoire adéquat :
+#                   sisyphe*/.../sources.
+#
+# Modes supportes :
+#        % maktel 
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#-----------------------------------------------------Juin-1999-DeltaCAD
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = spartacus2d
+VERSION	  = v6p1
+VERSION	      = v6p1
+V_DAMOCLES    = v6p1
+V_BIEF        = v6p1
+V_PARAVOID    = v6p1
+V_PARALLEL    = v6p1
+V_SPECIAL     = v6p1
+
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+DIRINC           = $(PROJECT)\spartacus2d\spartacus2d_$(VERSION)\$(DIRLIB)
+DIRINC_DAMOCLES  = $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)
+DIRINC_BIEF      = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)
+DIRINC_PARAVOID  = $(PROJECT)\paravoid\paravoid_$(V_PARAVOID)\$(DIRLIB)
+DIRINC_PARALLEL  = $(PROJECT)\parallel\parallel_$(V_PARALLEL)\$(DIRLIB)
+DIRINC_SPECIAL   = $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)
+
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+            $(FC_OPT_INCLUDE)$(DIRINC)\
+            $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
+            $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
+            $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID) \
+            $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)  
+
+F90_PARA  = $(FCO) $(FC_OPT_OTHERS) \
+            $(FC_OPT_INCLUDE)$(DIRINC)\
+            $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
+            $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
+            $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL) \
+            $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
+
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.obj:
+    $(F90) $(F90_PROJ) $<  
+#
+
+MODE          =
+LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
+DEST          = $(PROJECT)\spartacus2d\spartacus2d_$(VERSION)\$(DIRLIB)
+
+EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
+EXEDEFPARA	  = $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe
+LKLIB         = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)\bief$(MODE)$(V_BIEF).lib \
+                $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)\damo$(MODE)$(V_DAMOCLES).lib \
+                $(PROJECT)\paravoid\paravoid_$(V_PARAVOID)\$(DIRLIB)\paravoid$(MODE)$(V_PARAVOID).lib \
+                $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib \
+                $(LK_LIB_SPECIAL) $(LIBMUMPSPAR)#\
+#                $(SYSLIB)
+LKLIBPARA     = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)\bief$(MODE)$(V_BIEF).lib \
+                $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)\damo$(MODE)$(V_DAMOCLES).lib \
+                $(PROJECT)\parallel\parallel_$(V_PARALLEL)\$(DIRLIB)\parallel$(MODE)$(V_PARALLEL).lib \
+                $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI) $(LIBMUMPSPAR)#\
+#                $(SYSLIB)
+
+
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS= continuite.f \
+		ecrit.f \
+		entpar.f \
+		epsilon.f \
+		etat.f \
+		fluxpres.f \
+		fluxvisq.f \
+		forcext.f \
+		forcparois.f \
+		frottement.f \
+		gradvit.f \
+		impulsion.f \
+		initial.f \
+		interpol.f \
+		kequation.f \
+		kernel.f \
+		kernel3.f \
+		kernel4.f \
+		kernel4_val.f \
+		kernel5.f \
+		lecdon_spartacus2d.f \
+		lecinit.f \
+		lecparam.f \
+		lecsuit.f \
+		melange.f \
+		mouvement.f \
+		ouverture.f \
+		paroimobile.f \
+		pastemps.f \
+		privee.f \
+		sorpar.f \
+		spartacus2d.f \
+		tablien.f \
+		tauxdef.f \
+		viscturb.f
+
+#
+#------- Objets
+#
+OBJS = $(SRCS:.f=.obj)
+
+#
+# ------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(MODS) $(LIBRARY) $(EXEDEF)
+
+exedef:      $(EXEDEF)
+exedefpara:	$(EXEDEFPARA)
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
+
+"$(EXEDEF)":	$(OBJS)
+	@echo  -
+	@echo ---------------------Link executable par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
+	echo "Termine."
+
+"$(EXEDEFPARA)":	$(OBJS)
+	@echo  -
+	@echo ---------------------Link executable parallele par defaut
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe $(OBJS) $(LKLIBPARA)
+	echo "Termine."
+
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS) 
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).obj del /q  $(**B).obj
+	@echo ---------------------Destruction des librairies
+	!@if EXIST *.lib del /q  *.lib
+	@echo ---------------------Destruction des executables
+	!@if EXIST *.exe del /q  *.exe
+
+#--- Installation de la librairie
+install: $(LIBRARY) $(EXEDEF)
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	copy $(LIBRARY) $(DEST)\$(LIBRARY)
+	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
+	copy $(EXEDEF)  $(DEST)\$(EXEDEF)
+
+#--- Installation de la librairie
+parallel: $(LIBRARY) $(EXEDEFPARA)
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	copy $(LIBRARY) $(DEST)\$(LIBRARY)
+	@echo ---------------------Installe $(EXEDEFPARA) dans $(DEST).
+	copy $(EXEDEFPARA)  $(DEST)\$(EXEDEFPARA)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d" 
+	nmake /f makefile.wnt install  "MODE=d" 
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
+	nmake /f makefile.wnt install  "MODE=p" 
+
+#------- Modules
+#
+#MODS = *.obj
+
+#declarations_sisyphe.obj:
+#    $(F90) $(F90_PROJ) declarations_sisyphe.f  
+#    if EXIST $(DEST)\declarations_sisyphe.mod del /f $(DEST)\declarations_sisyphe.mod
+#	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+#    move declarations_sisyphe.mod $(DIRINC)
