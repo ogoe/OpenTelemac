@@ -3239,7 +3239,7 @@ C
 ! LOCAL WORK ARRAYS
       INTEGER :: NBSDOMVOIS = NBMAXNSHARE + 2
 !
-      INTEGER, PARAMETER :: MAX_SIZE_FLUX = 100
+      INTEGER, PARAMETER :: MAX_SIZE_FLUX = 200
 ! NUMBER OF INNER SURFACE (SAME AS SIZE_FLUX AT THE END)
       INTEGER, DIMENSION(MAX_SIZE_FLUX) :: SIZE_FLUXIN
 ! VECTEUR POUR PROFILING
@@ -3326,7 +3326,7 @@ CD********************************************************
         READ(LI,*)NPARTS
         IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
           WRITE(LU,
-     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')') 
+     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I9,'']'')') 
      &      MAXNPROC
         ELSE
           WRITE(LU,91)NPARTS
@@ -3587,7 +3587,7 @@ CD    *******************************
                    
                 CASE ( 91 )
              
-                   IF (NSOLS.GT.0) THEN
+                   IF (NSOLS.GT.0.AND.NSOLS.LT.100) THEN
 
                       IF ( NSOLS > NCOL ) THEN
                          WRITE(LU,*) 'COLOR ID POUR SURFACES EXTERNES ', 
@@ -3610,6 +3610,13 @@ CD    *******************************
                       ECOLOR(IELEM) = NSOLS
 
                      READ(NINP,*, ERR=1100, END=1200) IKLE1, IKLE2,IKLE3
+                     !
+                     PRIO_NEW = SIZE_FLUXIN(NSOLS)
+                     !
+                     IF (PRIO_NEW.EQ.0) THEN 
+                        SIZE_FLUX = SIZE_FLUX + 1
+                        SIZE_FLUXIN(NSOLS) = 1
+                     ENDIF
 
                       IKLES(IELEM, 1) = TEMPO(IKLE1)
                       IKLES(IELEM, 2) = TEMPO(IKLE2)
@@ -3641,7 +3648,7 @@ CD    *******************************
                          
                     ENDDO  ! LOOP OVER THE NODES OF THE ELEMENT
 
-                 ELSE IF (NSOLS.LT.0) THEN
+                 ELSE IF (NSOLS.GT.100) THEN
                     !
                     ! USER-DEFINED SURFACE FOR FLUXES COMPUTATION
                     !                      
@@ -3649,12 +3656,12 @@ CD    *******************************
                     ! ACTUALLY, WE ARE READING THE NEXT INTERNAL ELEMENT.
 
                     ! NSOLS_OLD IS USED FOR SAVING USE OF A NEW VARIABLE
-                    NSOLS_OLD = -NSOLS
+                    NSOLS_OLD = NSOLS
                     !
                     ! PRIO_NEW IS USED FOR SAVING USE OF A NEW VARIABLE
                     PRIO_NEW = SIZE_FLUXIN(NSOLS_OLD)
                     !
-                    IF (PRIO_NEW.EQ.0) THEN 
+                    IF (PRIO_NEW.EQ.0) THEN
                        SIZE_FLUX = SIZE_FLUX + 1
                        SIZE_FLUXIN(NSOLS_OLD) = 1
                     ENDIF
@@ -3797,8 +3804,8 @@ CD    *******************************
 !
       WRITE(LU,*) 'VOISIN31'
 
-      CALL VOISIN31_PARTEL (IFABOR, NBTET, NBTET,
-     &              IKLE,NBTET,NPOINT,NBOR,NPTFR)
+      CALL VOISIN31_PARTEL (NBTET, NBTET,NBTET,
+     &  NPOINT,NPTFR,IKLE,IFABOR,NBOR)
 
       WRITE(LU,*) 'FIN DE VOISIN31'
       
@@ -4633,7 +4640,7 @@ C OB F
 ! 7B. FORMAT DU UNV
 !---------------
    60 FORMAT(A4,A2)       ! '    -1'   
-   61 FORMAT(I6)          ! LECTURE NSEC
+   61 FORMAT(I9)          ! LECTURE NSEC
    62 FORMAT(A80)         ! LECTURE TITRE      
    63 FORMAT(4I10)        ! LIGNE 1 BLOC COORD      
    64 FORMAT(3D25.16)     ! LIGNE 2 BLOC COORD      
@@ -4684,13 +4691,13 @@ C OB F
 
 ! 7.E MESSAGES D'ERREURS
 !---------------
-  110 TEXTERROR='! UNEXPECTED FILE FORMAT: '//NAMELOG//' !'
+  110 TEXTERROR='! UNEXPECTED FILE FORMAT1: '//NAMELOG//' !'
       GOTO 999
-  111 TEXTERROR='! UNEXPECTED FILE FORMAT: '//NAMEINP//' !'
+  111 TEXTERROR='! UNEXPECTED FILE FORMAT2: '//NAMEINP//' !'
       GOTO 999
-  112 TEXTERROR='! UNEXPECTED FILE FORMAT: '//NAMEINP2//' !'
+  112 TEXTERROR='! UNEXPECTED FILE FORMAT3: '//NAMEINP2//' !'
       GOTO 999
-  113 TEXTERROR='! UNEXPECTED FILE FORMAT: '//NAMELOG2//' !'
+  113 TEXTERROR='! UNEXPECTED FILE FORMAT4: '//NAMELOG2//' !'
       GOTO 999
   120 TEXTERROR='! UNEXPECTED EOF WHILE READING: '//NAMELOG//' !'
       GOTO 999
@@ -4787,7 +4794,7 @@ C OB F
 ! |    IKLBOR      |<-- | NUMERO LOCAL DES NOEUDS A PARTIR D'UN ELEMENT
 ! |                |    |  DE BORD
 ! |    IFABOR      | -->| TABLEAU DES VOISINS DES FACES.
-! |    NBOR        | -->| NUMERO GLOBAL D'UN NOEUD A PARTIR DU N�Â��ÂĂÂĂÂ� LOCAL
+! |    NBOR        | -->| NUMERO GLOBAL D'UN NOEUD A PARTIR DU NÃÃÂÂÃÃÂÃÂÃÂÃÂÃÂÂ° LOCAL
 ! |    IKLE        | -->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
 ! |    NBTET       | -->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
 ! |    NPOINT      | -->| NOMBRE TOTAL DE POINTS DU DOMAINE.
@@ -4886,8 +4893,8 @@ C |    NBTRI       | -->| NOMBRE D'ELEMENTS DE BORD.
                         SUBROUTINE VOISIN31_PARTEL
 !                       **************************
 !
-     *(IFABOR,NBTET,NELMAX,IKLE,SIZIKL,
-     * NPOIN,NBOR,NPTFR)
+     *(NBTET,NELMAX,SIZIKL,
+     * NPOIN,NPTFR,IKLE,IFABOR,NBOR)
 !
 !***********************************************************************
 ! BIEF VERSION 5.6      02/03/06    REGINA NEBAUER (LNHE) 01 30 87 83 93
@@ -4927,16 +4934,16 @@ C |    NBTRI       | -->| NOMBRE D'ELEMENTS DE BORD.
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
-      INTEGER, INTENT(IN   ) :: NPTFR
       INTEGER, INTENT(IN   ) :: NBTET
       INTEGER, INTENT(IN   ) :: NELMAX
-      INTEGER, INTENT(IN   ) :: NPOIN
       INTEGER, INTENT(IN   ) :: SIZIKL
-      INTEGER, INTENT(IN), DIMENSION(NPTFR) :: NBOR
+      INTEGER, INTENT(IN   ) :: NPOIN
+      INTEGER, INTENT(IN   ) :: NPTFR
       ! NOTE : ON DONNE EXPLICITEMENT LA DEUXIEME DIMENSION DE IFABOR ET
       ! IKLE, CAR IL S'AGIT ICI TOUJOURS DE TETRAEDRES!
-      INTEGER, INTENT(OUT), DIMENSION(NELMAX,4) :: IFABOR
       INTEGER, INTENT(IN), DIMENSION(SIZIKL,4)  :: IKLE
+      INTEGER, INTENT(OUT), DIMENSION(NELMAX,4) :: IFABOR
+      INTEGER, INTENT(IN), DIMENSION(NPTFR) :: NBOR
 !
 ! VARIABLES LOCALES 
 !-----------------------------------------------------------------------
@@ -4959,7 +4966,7 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
 
       ! UN TABLEAU DEFINISSANT LES ADRESSES DES DIFFERENTS ENTREES DANS
       ! LE TABLEAU NEIGH
-      INTEGER, DIMENSION(NPOIN)            :: IADR
+      INTEGER, DIMENSION(:), ALLOCATABLE   :: IADR
       ! LA VALEUR D'UNE ENTREE DANS CE TABLEAU.
       INTEGER                              :: ADR
 
@@ -5018,6 +5025,8 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
       NFACE = 4
 !
       ALLOCATE(NVOIS(NPOIN),STAT=ERR)
+      IF(ERR.NE.0) GOTO 999
+      ALLOCATE(IADR(NPOIN),STAT=ERR)
       IF(ERR.NE.0) GOTO 999
 !
       DO I = 1, NPOIN
@@ -5208,9 +5217,9 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
                                IF ( IELEM2 .EQ. IELEM ) THEN
                                   IF(LNG.EQ.1) WRITE(LU,908) 31
                                   IF(LNG.EQ.2) WRITE(LU,909) 31
-908                               FORMAT(1X,'VOISIN: IELM=',1I6,', 
+908                               FORMAT(1X,'VOISIN: IELM=',1I9,', 
      &                            PROBLEME DE VOISIN')
-909                               FORMAT(1X,'VOISIN: IELM=',1I6,',
+909                               FORMAT(1X,'VOISIN: IELM=',1I9,',
      &                            NEIGHBOUR PROBLEM')
                                   CALL PLANTE2(1)
                                   STOP
@@ -5221,9 +5230,9 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
                                 IF(LNG.EQ.1) WRITE(LU,918) IELEM2,IFACE2
                                 IF(LNG.EQ.2) WRITE(LU,919) IELEM2,IFACE2
 918                            FORMAT(1X,'VOISIN31:TRIANGLE NON DEFINI,
-     &                         IELEM=',1I6,'IFACE=',1I6)
+     &                         IELEM=',1I9,'IFACE=',1I9)
 919                            FORMAT(1X,'VOISIN31:UNDEFINED TRIANGLE,
-     &                         IELEM=',1I6,'IFACE=',1I6)
+     &                         IELEM=',1I9,'IFACE=',1I9)
                                 CALL PLANTE2(1)
                                 STOP
                                END IF
@@ -5301,9 +5310,9 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
 999   IF(LNG.EQ.1) WRITE(LU,1000) ERR
       IF(LNG.EQ.2) WRITE(LU,2000) ERR
 1000  FORMAT(1X,'VOISIN31 : ERREUR A L''ALLOCATION DE MEMOIRE :',/,1X,
-     *            'CODE D''ERREUR : ',1I6)
+     *            'CODE D''ERREUR : ',1I9)
 2000  FORMAT(1X,'VOISIN31: ERROR DURING ALLOCATION OF MEMORY: ',/,1X,
-     *            'ERROR CODE: ',1I6)
+     *            'ERROR CODE: ',1I9)
       CALL PLANTE2(1)
       STOP
 !
