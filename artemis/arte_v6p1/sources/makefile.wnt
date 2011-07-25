@@ -1,13 +1,13 @@
-#------------------------------makefile.gfo----------------------------
-#     Système TELEMAC Version 6.0     PLG / INGEROP
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     CCT - MHL
 #
-# Makefile de ARTEMIS pour WindowsNT (GFORTRAN/G95).
+# Makefile de ARTEMIS pour WindowsNT (avec Intel fortran).
 #
 # ATTENTION : doit être lancé dans le répertoire adéquat :
 #                   ARTEMIS*/.../sources.
 #
 # Modes supportes :
-#        % maktel
+#        % maktel 
 #        % maktel  [all] [install] [menage]
 #        % maktel  libdebug
 #        % maktel  libprofile
@@ -52,8 +52,8 @@ LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
 # ----- Règles de compilation Fortran
 #
-.f.o:
-    $(F90) $(F90_PROJ) $<
+.f.obj:
+    $(F90) $(F90_PROJ) $<  
 #
 #----- Paramétrage Telemac
 #
@@ -93,7 +93,7 @@ utimp.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+OBJS = $(SRCS:.f=.obj)
 
 #
 # ------------------------ Cibles
@@ -107,32 +107,32 @@ exedefpara:     $(EXEDEFPARA)
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
 	@echo ---------------------Création de la librairie.
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
 
 "$(EXEDEF)":	$(OBJS)
 	@echo  -
 	@echo ---------------------Link executable par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
 	echo "Termine."
 
 "$(EXEDEFPARA)":	$(OBJS)
 	@echo  -
 	@echo ---------------------Link executable parallele par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe $(OBJS)  $(LKLIBPARA)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe $(OBJS)  $(LKLIBPARA)
 	echo "Termine."
 
 
 #--- Suppression des ".obj" (existants) + ".lib"
-menage:  $(SRCS)
+menage:  $(SRCS) 
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
-	!@if EXIST $(**B).o del /q  $(**B).o
+	!@if EXIST $(**B).obj del /q  $(**B).obj
 	@echo ---------------------Destruction des librairies
 	!@if EXIST *.lib del /q  *.lib
 	@echo ---------------------Destruction des executables
 	!@if EXIST *.exe del /q  *.exe
 
-#--- Scalar version
+#--- Installation de la librairie
 install: $(LIBRARY) $(EXEDEF)
 	@echo  -
 	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
@@ -154,28 +154,28 @@ parallel: $(LIBRARY) $(EXEDEFPARA)
 libdebug:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
-	nmake /f makefile.gfo install  "MODE=d"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d" 
+	nmake /f makefile.wnt install  "MODE=d" 
 
 #--- Librairie en PROFILE
 libprofile:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
-	nmake /f makefile.gfo install  "MODE=p"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
+	nmake /f makefile.wnt install  "MODE=p" 
 
 #------- Modules
 #
-MODS = declarations_artemis.o interface_artemis.o
+MODS = declarations_artemis.obj interface_artemis.obj
 
-declarations_artemis.o:
-    $(F90) $(F90_PROJ) declarations_artemis.f
+declarations_artemis.obj:
+    $(F90) $(F90_PROJ) declarations_artemis.f  
     if EXIST $(DEST)\declarations_artemis.mod del /f $(DEST)\declarations_artemis.mod
   	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move declarations_artemis.mod $(DEST)
 
-interface_artemis.o:
-    $(F90) $(F90_PROJ) interface_artemis.f
+interface_artemis.obj:
+    $(F90) $(F90_PROJ) interface_artemis.f  
     if EXIST $(DEST)\interface_artemis.mod del /f $(DEST)\interface_artemis.mod
   	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move interface_artemis.mod $(DEST)
