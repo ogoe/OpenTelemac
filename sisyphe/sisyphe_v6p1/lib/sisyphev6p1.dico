@@ -2598,8 +2598,10 @@ RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
 NIVEAU = 2
 COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
-AIDE = ' '
-AIDE1 = ' '
+AIDE = 'Structure verticale du lit cohesif- le nombre de couche doit 
+       etre inferieur à 10'
+AIDE1 = 'Vertical bed structure - The number of layers should be less
+       than 10'
 /
 NOM = 'CONCENTRATIONS DU LIT DE VASE'
 NOM1 = 'MUD CONCENTRATION PER LAYER'
