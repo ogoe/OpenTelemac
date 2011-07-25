@@ -70,7 +70,7 @@
       LOGICAL COURAN,VENT,MAREE
 !
       CHARACTER*3 BINR3D,CAR
-      CHARACTER*72 TITRE
+      CHARACTER*80 TITRE
 !
 !***********************************************************************
 !
