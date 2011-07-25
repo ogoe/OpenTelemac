@@ -5,7 +5,7 @@
      &(TEXT3,TEXTP3,MNEMO,NTRAC,NAMETRAC)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -33,11 +33,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MNEMO          |---|
-!| NAMETRAC       |---|
-!| NTRAC          |---|
-!| TEXT3          |---|
-!| TEXTP3         |---|
+!| MNEMO          |<->| MNEMOTECHNIC NAME
+!| NAMETRAC       |-->| NAME OF TRACERS
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| TEXT3          |<->| SEE ABOVE
+!| TEXTP3         |<->| SEE ABOVE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

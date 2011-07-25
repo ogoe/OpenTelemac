@@ -5,7 +5,7 @@
      &(WSS)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES AN AVERAGED VALUE OF H * WSTAR IN A WAY
@@ -70,7 +70,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| WSS            |<--| COMPOSANTE WSTAR DE LA VITESSE A N+1
+!| WSS            |<->| VERTICAL VELOCITY COMPONENT WSTAR
+!|                |---| IN TRANSFORMED MESH AT TIME N+1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

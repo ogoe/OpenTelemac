@@ -5,7 +5,7 @@
      &( I , IPOIN2 , TIME , LT , IPLAN , ENTET , IOPT , ITRAC )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE VERTICAL PROFILE FOR TRACERS.
@@ -28,16 +28,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ENTET          |---|
-!| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS PRINTED: NOT USED
+!| I              |-->| NUMBER OF THE LIQUID BOUNDARY
 !| IOPT           |-->| OPTION : 0 : USER DEFINED
 !|                |   | 2 : ROUSE PROFILE FOR SEDIMENT
 !|                |   | 3 : MODIFIED ROUSE PROFILE (VISCOSITY)
-!| IPLAN          |-->| NUMERO DU PLAN
+!| IPLAN          |-->| PLAN NUMBER
 !| IPOIN2         |-->| 2D GLOBAL NUMBER OF POINT CONSIDERED
 !| ITRAC          |-->| TRACER NUMBER
 !| LT             |-->| ITERATION NUMBER
-!| TIME           |---|
+!| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

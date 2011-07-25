@@ -7,7 +7,7 @@
      & NELMA2,NELEM2,NPOIN2,NPTFR,NPLAN,NETAGE,IELM3,MESH2D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -35,26 +35,30 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS DU PAS DE TEMPS
-!| H              |-->| HAUTEUR D'EAU
-!| HMIN           |-->| HAUTEUR D'EAU MINIMALE ACCEPTABLE
-!| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| IFABOR3D       |<--| TABLEAU DES ELEMENTS ADJACENTS AUX FACES(3D)
-!| ITRA01         |-->| TABLEAUX DE TRAVAIL D'ENTIERS
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| MASKBR         |---|
-!| MASKEL         |<--| MASQUAGE DES ELEMENTS
-!| MASKPT         |-->| MASQUAGE DES POINTS
-!| MESH2D         |---|
-!| NELBO3         |---|
-!| NELEM2         |-->| NOMBRE D'ELEMENTS EN 2D
-!| NELMA2         |-->| NOMBRE MAXIMAL D'ELEMENTS EN 2D
+!| AT             |-->| TIME OF TIME STEP
+!| H              |-->| WATER DEPTH
+!| HMIN           |-->| ACCEPTABLE MINIMUM VALUE OF DEPTH
+!| IELM3          |-->| 3D DISCRETISATION TYPE
+!| IFABOR3D       |<->| ARRAY OF ELEMENT ADJACENT TO EDGES (3D)
+!| ITRA01         |<->| WORK ARRAY OF INTEGERS
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| MASKBR         |<->| 3D MASK ON LATERAL BOUNDARIES
+!| MASKEL         |<->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |<->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MESH2D         |<->| 2D MESH
+!| NELBO3         |-->| ELEMENTS OF THE BORDER
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELMA2         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NETAGE         |-->| NPLAN - 1
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD 2D
-!| ZF             |-->| COTES DU FOND
-!| ZFE            |-->| COTE DU FOND PAR ELEMENT.
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
+!| X              |-->| COORDINATE
+!| Y              |-->| COORDINATE
+!| ZF             |-->| ELEVATION OF BOTTOM
+!| ZFE            |-->| ELEVATION OF BOTTOM PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -6,7 +6,7 @@
      &  NPTFR,NPLAN,NPOIN2,KENT,KSORT,KADH,KLOG)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE BOUNDARY CONDITIONS FOR THE DIFFUSION
@@ -39,22 +39,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KADH           |-->| CONVENTION POUR UNE PAROI AVEC ADHERENCE
-!| KENT           |-->| CONVENTION POUR UN POINT A VALEUR IMPOSEE
-!| KLOG           |-->| CONVENTION POUR UNE PAROI LOGARITHMIQUE
-!| KSORT          |-->| CONVENTION POUR UN POINT A VALEUR LIBRE
-!| LIEBOF         |---|
-!| LIEBOL         |---|
-!| LIEBOS         |---|
-!| LIKBOF         |---|
-!| LIKBOL         |---|
-!| LIKBOS         |---|
-!| LIUBOF         |---|
-!| LIUBOL         |---|
-!| LIUBOS         |---|
-!| NPLAN          |-->| NOMBRE DE PLANS  DU MAILLAGE 3D
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES DU MAILLAGE 2D
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KLOG           |-->| CONVENTION FOR LOGARITHMIC SOLID BOUNDARY
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| LIEBOF         |<->| TYPE OF BOUNDARY CONDITIONS ON EPSILON AT THE BOTTOM
+!| LIEBOL         |<->| TYPE OF BOUNDARY CONDITIONS ON EPSILON ON THE LATERAL WALLS
+!| LIEBOS         |<->| TYPE OF BOUNDARY CONDITIONS ON EPSILON AT THE SURFACE
+!| LIKBOF         |<->| TYPE OF BOUNDARY CONDITIONS ON K AT THE BOTTOM
+!| LIKBOL         |<->| TYPE OF BOUNDARY CONDITIONS ON K ON THE LATERAL WALLS
+!| LIKBOS         |<->| TYPE OF BOUNDARY CONDITIONS ON K AT THE SURFACE
+!| LIUBOF         |-->| TYPE OF BOUNDARY CONDITIONS ON U AT THE BOTTOM
+!| LIUBOL         |-->| TYPE OF BOUNDARY CONDITIONS ON U ON THE LATERAL WALLS
+!| LIUBOS         |-->| TYPE OF BOUNDARY CONDITIONS ON U AT THE SURFACE
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

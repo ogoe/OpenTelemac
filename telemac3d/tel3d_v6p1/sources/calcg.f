@@ -40,11 +40,13 @@
 !+   Benson (HRW) who pointed out a problem).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NPLAN          |-->| NUMBER OF PLANES
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NOMBER OF POINTS IN THE 2D MESH
-!| TRAV2,TRAV3    |<->| WORK ARRAYS
-!| U,V            |-->| COMPONENTS OF VELOCITY
+!| TRAV2          |-->| WORK ARRAYS
+!| TRAV3          |<->| WORK ARRAYS
+!| U              |-->| COMPONENT OF VELOCITY
 !| UETCAR         |-->| USTAR**2
+!| V              |-->| COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

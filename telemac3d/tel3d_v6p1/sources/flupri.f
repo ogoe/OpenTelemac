@@ -6,7 +6,7 @@
      &  NELEM,NELMAX,NELEM2D,NPOIN2,NPOIN3,T1,T2,T3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FLUX THROUGH THE BOTTOM AND THE FREE SURFACE IN 3D:
@@ -40,21 +40,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLE           |-->| PASSAGE DE LA NUMEROTATION LOCALE A GLOBALE.
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE.
-!| NELEM2D        |---|
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE.
-!|                |   | (CAS D'UN MAILLAGE ADAPTATIF)
-!| NPOIN2         |---|
-!| NPOIN3         |---|
-!| T2             |---|
-!| T3             |---|
-!| U,V,W          |-->| COMPOSANTES D'UN VECTEUR
-!|                |   | INTERVENANT DANS LA FORMULE.
-!| VEC            |---|
-!| X,Y            |-->| COORDONNEES DES POINTS
-!| XMUL           |-->| COEFFICIENT MULTIPLICATEUR.
-!| Z              |---|
+!| IKLE           |-->| CONNECTIVITY TABLE (LOCAL TO GLOBAL)
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELEM2D        |-->| NUMBER OF ELEMENTS IN 2D
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!|                |   | (ADAPTATIVE MESH CASE)
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| T1             |<->| WORKING ARRAY (METRIC)
+!| T2             |<->| WORKING ARRAY (METRIC)
+!| T3             |<->| WORKING ARRAY (METRIC)
+!| U              |-->| VECTOR COMPONENT PRESENT IN THE FORMULA
+!| V              |-->| VECTOR COMPONENT PRESENT IN THE FORMULA
+!| VEC            |<->| RESULT VECTOR
+!| W              |-->| VECTOR COMPONENT PRESENT IN THE FORMULA
+!| X              |-->| COORDINATE
+!| XMUL           |-->| MULTIPLYING COEFFICIENT
+!| Y              |-->| COORDINATE
+!| Z              |-->| COORDINATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

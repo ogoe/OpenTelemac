@@ -5,7 +5,7 @@
      & (WS,HWSTAR,Z,NPOIN2,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES HW* AT EACH NODE WITH THE HELP OF HW*
@@ -29,11 +29,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HWSTAR         |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| WS             |---|
-!| Z              |---|
+!| HWSTAR         |-->| DELTAZ * WSTAR GIVEN PER LAYER
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| WS             |<--| DEPTH * WSTAR GIVEN PER POINT
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

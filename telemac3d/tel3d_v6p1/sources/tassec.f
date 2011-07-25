@@ -6,7 +6,7 @@
      &  NPOIN2 , NCOUCH )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MULTI-LAYER MODEL FOR CONSOLIDATION OF THE MUDDY BED.
@@ -43,14 +43,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CONC           |-->| CONCENTRATION DES COUCHES DU FOND VASEUX
-!| DTC            |-->| PAS DE TEMPS DU TASSEMENT
-!| EPAI           |-->| TAILLE DES MAILLES DU FOND
+!| CONC           |-->| CONCENTRATION OF MUD BED LAYERS
+!| DTC            |-->| TIME STEP FOR CONSOLIDATION PHENOMENON
+!| EPAI           |<->| THICKNESS OF MESH ELEMENTS DISCRETISING THE BED
+!| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE MUD BED
 !| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| TEMP           |<->| COMPTEUR DE TEMPS DANS LE CAS D'UN
-!|                |   | MODELE DE TASSEMENT MULTICOUCHES
-!| TREST          |-->| TEMPS DE RESIDENCE DE LA VASE DANS LES COUCHES
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| TEMP           |<->| TIME COUNTER FOR CONSOLIDATION MODEL
+!|                |   | (MULTILAYER MODEL)
+!| TREST          |-->| CONSOLIDATION TIME SCALE
+!|                |   | (ONLY FOR MULTILAYER MODEL)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

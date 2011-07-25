@@ -42,29 +42,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ATABOF         |---|
-!| ATABOS         |---|
-!| BTABOF         |---|
-!| BTABOS         |---|
-!| FLUER          |-->| FLUX D'EROSION EN CHAQUE POINT 2D
-!| GRADZFX        |---|
-!| GRADZFY        |---|
-!| GRADZSX        |---|
-!| GRADZSY        |---|
-!| HN             |-->| HAUTEUR D'EAU
-!| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
-!| LITABF         |---|
-!| LITABS         |---|
-!| NPLAN          |-->| NOMBRE DE PLANS DISCRETISANT LA VERTICALE
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| PDEPOT         |<--| PROBABILITE DE DEPOT EN CHAQUE POINT 2D
-!| SEDCO          |-->| LOGIQUE POUR SEDIMENT COHESIF
-!| TA             |-->| CONCENTRATION EN SEDIMENTS
-!| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
-!| TOCD           |-->| CONTRAINTE CRITIQUE DE DEPOT
-!| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
-!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
+!| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| ATABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
+!| BTABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| BTABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) NOT USED
+!| FLUER          |<->| EROSION  FLUX FOR EACH 2D POINT
+!| GRADZFX        |-->| NOT USED
+!| GRADZFY        |-->| NOT USED
+!| GRADZSX        |-->| NOT USED
+!| GRADZSY        |-->| NOT USED
+!| HN             |-->| WATER DEPTH AT TIME N
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| LITABF         |-->| FOR BOUNDARY CONDITION BOTTOM 
+!| LITABS         |<->| FOR BOUNDARY CONDITION SURFACE (NOT USED)
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| PDEPOT         |<->| PROBABILITY OF DEPOSIT FOR EACH 2D POINT
+!| SEDCO          |-->| LOGICAL FOR COHESIVE SEDIMENT
+!| TA             |-->| CONCENTRATION OF SEDIMENTS
+!| TOB            |<->| BOTTOM FRICTION
+!| TOCD           |-->| CRITICAL SHEAR STRESS FOR SEDIMENT DEPOSITION 
+!| WC             |-->| SETTLING VELOCITY
+!| X              |-->| COORDINATE
+!| Y              |-->| COORDINATE
+!| Z              |-->| COORDINATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

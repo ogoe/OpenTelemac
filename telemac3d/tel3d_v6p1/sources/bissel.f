@@ -5,7 +5,7 @@
      &(IVIDE,TRA01,NPFMAX,IMAX,NDEB)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES A SYSTEM OF IMAX EQUATIONS WITH UNKNOWN E
@@ -36,13 +36,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IMAX           |-->| NOMBRE DE POINTS DU MAILLAGE DU FOND
-!| IVIDE          |<--| INDICE DES VIDES AUX POINTS DU MAILLAGE
-!|                |   | (MAILLAGE SELON UNE VERTICALE)
-!| NDEB           |---|
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX
-!| TRA01          |-->| TABLEAU DE TRAVAIL
+!| IMAX           |-->| NUMBER OF POINTS AT THE BOTTOM MESH
+!| IVIDE          |<->| INDEX OF EMPTY SPACES AT MESH POINTS
+!| NDEB           |-->| INDEX LIMITING THE RANGE OF THE RESOLUTION
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
+!|                |   | DISCRETISE MUDDY BOTTOM
+!| TRA01          |<->| WORKING ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

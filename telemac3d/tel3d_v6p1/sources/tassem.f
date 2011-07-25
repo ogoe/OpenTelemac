@@ -8,7 +8,7 @@
      &   TRA01 , SIGMA , CHARGE)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS CONSOLIDATION OF THE MUDDDY BED.
@@ -42,8 +42,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CFMAX          |-->| CONCENTRATION(G/L) OF CONSOLIDATED MUD
-!| CHARGE         |<--| WEIGHT SUPPORTED BY SOLID SKELETON
+!| CFMAX          |-->| CONCENTRATION OF CONSOLIDATED MUD (G/L)
+!| CHARGE         |<->| WEIGHT SUPPORTED BY SOLID SKELETON
 !| DTC            |-->| TIME STEP OF CONSOLIDATION  MODEL
 !| EPAI           |-->| THICKNESS OF SOLID FRACTION OF THE BED LAYER
 !|                |   | (EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS)
@@ -54,8 +54,8 @@
 !|                |   | WITHIN THE BED
 !| NPOIN2         |-->| NUMBER OF POINTS OF 2D MESH
 !| RHOS           |-->| SEDIMENT DENSITY
-!| SIGMA          |<--| EFFECTIVE STRESS
-!| TRA01          |<--| WORK ARRAY
+!| SIGMA          |<->| EFFECTIVE STRESS
+!| TRA01          |<->| WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
        USE INTERFACE_TELEMAC3D, EX_TASSEM => TASSEM

@@ -40,57 +40,59 @@
 !+   Case of distance to bottom=0 treated with array IPBOT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |-->| ENERGIE TURBULENTE
-!| ALPHA          |---|
-!| BETA           |---|
-!| BETAS          |---|
-!| DISBOR         |-->| DISTANCE AU BORD DES POINTS VOISINS DU BORD
-!| DNUVIH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE
-!| DNUVIV         |-->| COEFFICIENT DE DIFFUSION VERTICALE
-!| EBORF          |---|
-!| EBORL          |---|
-!| EBORS          |---|
-!| EMIN,EMAX      |-->| EPSILON MINIMUM ET MAXIMUM EN CAS DE CLIPPING
-!| EP             |---|
+!| AK             |-->| TURBULENT ENERGY
+!| ALPHA          |-->| K-OMEGA CONSTANT NOT USED
+!| BETA           |-->| K-OMEGA CONSTANT NOT USED
+!| BETAS          |-->| K-OMEGA CONSTANT
+!| DISBOR         |-->| DISTANCE TO BOUNDARY OF POINTS CLOSE TO BOUNDARY
+!| DNUVIH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
+!| EBORF          |<->| EPSILON ON BOTTOM
+!| EBORL          |<->| EPSILON ON LATERAL SOLID BOUNDARIES
+!| EBORS          |<->| EPSILON AT SURFACE
+!| EMAX           |-->| MAXIMUM VALUE FOR EPSILON WHEN CLIPPING
+!| EMIN           |-->| MINIMUM VALUE FOR EPSILON WHEN CLIPPING
+!| EP             |-->| TURBULENT DISSIPATION
 !| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| H              |-->| HAUTEUR D'EAU AU TEMPS N
-!| KADH           |-->| CONVENTION POUR UNE PAROI AVEC ADHERENCE
-!| KARMAN         |-->| CONSTANTE DE KARMAN
-!| KBORF          |---|
-!| KBORL          |---|
-!| KBORS          |---|
-!| KLOG           |-->| CONVENTION POUR UNE PAROI LOGARITHMIQUE
-!| KMIN,KMAX      |-->| K MINIMUM ET MAXIMUM EN CAS DE CLIPPING
-!| KSORT          |-->| CONVENTION POUR UN POINT A VALEUR LIBRE
-!| LIEBOF         |---|
-!| LIEBOL         |---|
-!| LIEBOS         |---|
-!| LIKBOF         |---|
-!| LIKBOL         |---|
-!| LIKBOS         |---|
-!| LISRUF         |-->| REGIME DE TURBULENCE 1: LISSE
-!|                |   | POUR LE FOND         2: RUGUEUX
-!|                |   | 3: RUGUEUX (CHEZY)
-!| LISRUL         |-->| REGIME DE TURBULENCE 1: LISSE
-!|                |   | DES BORDS            2: RUGUEUX
-!|                |   | 3: RUGUEUX (CHEZY)
-!| LIUBOF         |---|
-!| LIUBOL         |---|
-!| LIUBOS         |---|
-!| NBOR           |-->| ADRESSES DES POINTS DE BORD
-!| NPLAN          |-->| NOMBRE DE PLANS  DU MAILLAGE 3D
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES DU MAILLAGE 2D
-!| OMSTAR         |---|
-!| RUGOL          |---|
-!| SCHMIT         |-->| CONSTANTE DU MODELE K-EPSILON
-!| U              |-->| COMPOSANTES X DE LA VITESSE AU TEMPS N
-!| UETCAL         |---|
-!| UETCAR         |---|
-!| V              |-->| COMPOSANTES Y DE LA VITESSE AU TEMPS N
-!| VIRT           |-->| ORIGIN VIRTUEL POUR EPSILON (TELEMAC 3D)
-!| W              |---|
-!| Z              |-->| COTES DES POINTS DU MAILLAGE 3D REEL
+!| H              |-->| WATER DEPTH AT TIME N
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KARMAN         |-->| KARMAN CONSTANT
+!| KBORF          |<->| K ON BOTTOM
+!| KBORL          |<->| K ON LATERAL SOLID BOUNDARIES
+!| KBORS          |<->| K AT SURFACE
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| KLOG           |-->| CONVENTION FOR LOGARITHMIC SOLID BOUNDARY
+!| KMAX           |-->| MAXIMUM VALUE FOR K WHEN CLIPPING
+!| KMIN           |-->| MINIMUM VALUE FOR K WHEN CLIPPING
+!| KSORT          |-->| CONVENTION FOR FREE OUTPUT
+!| LIEBOF         |<->| TYPE OF BOUNDARY CONDITIONS ON EPSILON AT THE BOTTOM
+!| LIEBOL         |<->| TYPE OF BOUNDARY CONDITIONS ON EPSILON ON THE LATERAL WALLS
+!| LIEBOS         |<->| TYPE OF BOUNDARY CONDITIONS ON EPSILON AT THE SURFACE
+!| LIKBOF         |<->| TYPE OF BOUNDARY CONDITIONS ON K AT THE BOTTOM
+!| LIKBOL         |<->| TYPE OF BOUNDARY CONDITIONS ON K ON THE LATERAL WALLS
+!| LIKBOS         |<->| TYPE OF BOUNDARY CONDITIONS ON K AT THE SURFACE
+!| LISRUF         |-->| TURBULENCE MODEL FOR BOTTOM
+!|                |   | 1: SMOOTH  2: ROUGH  3: ROUGH (CHEZY)
+!| LISRUL         |-->| TURBULENCE MODEL FOR SOLID BOUNDARIES
+!|                |   | 1: SMOOTH  2: ROUGH  3: ROUGH (CHEZY)
+!| LIUBOF         |<->| TYPE OF BOUNDARY CONDITIONS ON U AT THE BOTTOM
+!| LIUBOL         |<->| TYPE OF BOUNDARY CONDITIONS ON U ON THE LATERAL WALLS
+!| LIUBOS         |<->| TYPE OF BOUNDARY CONDITIONS ON U AT THE SURFACE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
+!| OMSTAR         |-->| K-OMEGA CONSTANT
+!| RUGOL          |---| NOT USED
+!| SCHMIT         |-->| K-EPSILON MODEL CONSTANT
+!| U              |-->| X COMPONENT OF VELOCITY AT TIME N
+!| UETCAL         |-->| (UETUTA*UTANG(IPTFR))**2
+!| UETCAR         |-->| USTAR**2
+!| V              |-->| Y COMPONENT OF VELOCITY AT TIME N
+!| VIRT           |-->| VIRTUAL ORIGIN FOR EPSILON (TELEMAC 3D): NOT USED
+!| W              |-->| Z COMPONENT OF VELOCITY
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT

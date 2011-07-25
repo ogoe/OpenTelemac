@@ -42,37 +42,43 @@
 !
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
-!| CONC           |-->| CONCENTRATION DES COUCHES DU FOND
-!| DT             |-->| PAS DE TEMPS
-!| EPAI           |-->| TAILLE DES MAILLES DU FOND EN
-!|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+IVIDE))
-!| FLUER          |-->| FLUX D'EROSION EN CHAQUE POINT 2D
-!| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
-!| HDEP           |-->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
-!| IKLE2          |-->| TABLE DE CONNECTIVITE POUR LES POINTS DU FOND
-!| IVIDE          |-->| INDICE DES VIDES AUX POINTS DU MAILLAGE
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| MASSE1         |<->| MASSE DU SEDIMENT EN SUSPENSION
-!| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
-!|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
-!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-!| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX(MODELE DE GIBSON
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| NVBIL          |---|
-!| PDEPOT         |-->| PROBABILITE DE DEPOT EN CHAQUE POINT 2D
-!| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
-!| SURFAC         |-->| SURFACES DES ELEMENTS.
-!| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-!| TRA02          |---|
-!| U,V,W          |-->| VITESSE AU PAS DE TEMPS PRESENT
-!| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
-!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
+!| AT             |-->| TIME
+!| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
+!| CONC           |-->| CONCENTRATION OF MUD BED LAYER
+!|                |   | (MULTILAYER MODEL)
+!| DT             |-->| TIME STEP
+!| EPAI           |-->| THICKNESS OF SOLID BED LAYER
+!|                |   | (EPAI=DZ/(1+IVIDE), DZ TOTAL BED THICKNESS)
+!| FLUER          |-->| EROSION FLUX AT EACH 2D POINT
+!| GIBSON         |-->| LOGICAL FOR GIBSON SETTLING MODEL
+!| HDEP           |---| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
+!| IKLE2          |-->| GLOBAL NUMBERS OF POINTS IN 2D ELEMENTS
+!| IVIDE          |-->| VOID INDEX OF MESH POINTS
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| MASSE1         |-->| MASS OF SUSPENDED SEDIMENT
+!| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
+!|                |   | (MULTILAYER GIBSON SETTLING MODEL)
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NPF            |-->| NUMBER OF POINTS OF THE BOTTOM ON ONE VERTICAL
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
+!|                |   | DISCRETISE MUD BED
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| PDEPOT         |-->| PROBABILITY OF DEPOSITION FOR EACH 2D POINT
+!| RHOS           |-->| SEDIMENT DENSITY
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| TA             |-->| TRACERS
+!| TASSE          |-->| MULTILAYER SETTLING MODEL LOGICAL
+!| TRA02          |<->| WORK ARRAY (RESULT)
+!| U              |-->| VELOCITY COMPONENT AT CURRENT TIME STEP N
+!| V              |-->| VELOCITY COMPONENT AT CURRENT TIME STEP N
+!| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS IN 2D
+!| W              |-->| VELOCITY COMPONENT AT CURRENT TIME STEP N
+!| WC             |-->| SETTLING VELOCITY
+!| X              |-->| MESH COORDONINATES
+!| Y              |-->| MESH COORDONINATES
+!| Z              |-->| MESH COORDONINATES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

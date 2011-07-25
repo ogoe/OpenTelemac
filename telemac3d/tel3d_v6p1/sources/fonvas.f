@@ -9,7 +9,7 @@
      & CFMAX  , CFDEP  , EPAI0 , TASSE  , GIBSON )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS THE MUD BED EVOLUTION.
@@ -37,38 +37,38 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
-!| CFMAX          |-->| CONCENTRATION(G/L) DE LA VASE TASSEE
+!| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
+!| CFMAX          |<->| CONCENTRATION OF CONSOLIDATED MUD (G/L)
 !| CONC           |-->| MUD BED LAYER CONCENTRATION
 !|                |   | (MULTILAYER MODEL)
-!| DT             |-->| PAS DE TEMPS HYDRAULIQUE
-!| DTC            |-->| PAS DE TEMPS DU PHENOMENE DE CONSOLIDATION
-!| EPAI           |-->| THICKNESS OF SOLID FRACTION OF THE BED LAYER
+!| DT             |-->| HYDRAULIC TIME STEP
+!| DTC            |-->| TIME STEP FOR CONSOLIDATION PHENOMENON
+!| EPAI           |<->| THICKNESS OF SOLID FRACTION OF THE BED LAYER
 !|                |   | (EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS
-!| EPAI0          |-->| EPAISSEUR DE REFERENCE POUR CREER
-!|                |   | DE NOUVELLES MAILLES
-!| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT(FLUID MUD LAYER)
+!| EPAI0          |<->| REFERENCE THICKNESS TP CREATE NEW ELEMENTS
+!| GIBSON         |-->| LOGICAL FOR GIBSON SETTLING MODEL
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
 !| IVIDE          |<->| VOID RATIO
 !|                |   | (GIBSON MODEL ONLY)
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
-!|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
-!| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
+!|                |   | (GIBSON MULTILAYER SETTLING MODEL)
+!| NPF            |-->| NUMBER OF POINTS OF THE BOTTOM ON ONE VERTICAL
 !| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES
 !|                |   | DISCRETIZATION OF MUD BED (GIBSON MODEL)
 !| NPOIN2         |-->| NUMBER OF POINTS  (2D MESH)
 !| NPOIN3         |-->| NUMBER OF POINTS  (3D MESH)
-!| PDEPOT         |<--| PROBABILITY OF DEPOSIT
-!| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
+!| PDEPOT         |<->| PROBABILITY OF DEPOSIT
+!| RHOS           |-->| SEDIMENT DENSITY
 !| TA             |-->| ACTIVE TRACOR
-!| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
+!| TASSE          |-->| MULTILAYER SETTLING MODEL LOGICAL
 !| TEMP           |<->| TIME COUNTER FOR CONSOLIDATION MODEL
 !|                |   | (MULTILAYER MODEL)
-!| TRA02          |---|
-!| TRA03          |---|
-!| TREST          |-->| CONSOLIDATION TIME SCALE
+!| TRA01          |<->| WORK ARRAY
+!| TRA02          |<->| WORK ARRAY
+!| TRA03          |<->| WORK ARRAY
+!| TREST          |<->| CONSOLIDATION TIME SCALE
 !|                |   | (ONLY FOR MULTILAYER MODEL)
 !| WC             |-->| SETTLING VELOCITY
 !| ZF             |<->| BOTTOM ELEVATION

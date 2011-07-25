@@ -6,7 +6,7 @@
      & NPOIN2,NPOIN3,NPFMAX,NCOUCH,TASSE,GIBSON,NSUIS,BISUIS)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS SEDIMENTOLOGICAL DATA
@@ -42,31 +42,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BISUIS         |-->| BINAIRE DU FICHIER DU CALCUL
-!|                |   | SEDIMENTOLOGIQUE PRECEDENT.
-!| CONC           |<--| CONCENTRATIONS DES COUCHES DE VASE
-!|                |   | (MODELE MULTICOUCHES)
-!| EPAI           |<--| TAILLE DES MAILLES DU FOND
-!|                |   | EN COORDONNEES MATERIELLES (=DZ/(1+IVIDE))
-!|                |   | AVEC LE MODELE DE GIBSON
-!| FLUER          |<--| FLUX DE DEPOT EN CHAQUE POINT 2D
-!| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
-!| HDEP           |<--| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
-!| IVIDE          |<--| INDICE DES VIDES AUX POINTS DU MAILLAGE
-!| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
-!|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
-!| NPF            |<--| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX(MODELE DE GIBSON)
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NSUIS          |-->| NUMERO D'UNITE LOGIQUE DU FICHIER DU CALCUL
-!|                |   | SEDIMENTOLOGIQUE PRECEDENT.
-!| PDEPOT         |<--| PROBABILITE DE DEPOT EN CHAQUE POINT 2D
-!| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-!| TEMP           |<--| COMPTEUR DE TEMPS POUR LE TASSEMENT
-!| ZF             |<--| COTE DU FOND VASEUX
-!| ZR             |<--| COTE DU FOND RIGIDE
+!| BISUIS         |-->| BINARY OF PREVIOUS SEDIMENT COMPUTATION FILE
+!| CONC           |<--| CONCENTRATION OF MUD BED LAYER
+!|                |   | (MULTILAYER MODEL)
+!| EPAI           |<--| THICKNESS OF SOLID BED LAYER
+!|                |   | (EPAI=DZ/(1+IVIDE), DZ TOTAL BED THICKNESS)
+!|                |   | WITH GIBSON MODEL
+!| FLUER          |<--| EROSION FLUX FOR EACH 2D POINT
+!| GIBSON         |-->| LOGICAL FOR GIBSON SETTLING MODEL
+!| HDEP           |<--| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
+!| IVIDE          |<--| VOID INDEX OF MESH POINTS
+!| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
+!|                |   | (GIBSON MODEL)
+!| NPF            |<--| NUMBER OF POINTS OF THE BOTTOM ON ONE VERTICAL
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
+!|                |   | DISCRETISE MUD BED (GIBSON MODEL)
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NSUIS          |-->| LOGICAL UNIT NUMBER OF THE PREVIOUS SEDIMENT
+!|                |   | COMPUTATION FILE
+!| PDEPOT         |<--| PROBABILITY OF DEPOSITION FOR EACH 2D POINT
+!| TASSE          |-->| MULTILAYER SETTLING MODEL LOGICAL
+!| TEMP           |<->| TIME COUNTER FOR CONSOLIDATION MODEL
+!|                |   | (MULTILAYER MODEL)
+!| ZF             |<--| ELEVATION OF MUD BOTTOM
+!| ZR             |<--| ELEVATION OF RIDIG BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

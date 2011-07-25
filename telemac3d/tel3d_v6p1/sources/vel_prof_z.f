@@ -5,7 +5,7 @@
      &( I , IPOIN2 , TIME , LT , IPLAN , ENTET , IOPT )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE VELOCITY VERTICAL PROFILE AT ENTRANCES.
@@ -33,11 +33,11 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| IF YES, LISTING PRINTOUTS ALLOWED
 !| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
-!| IOPT           |---|
-!| IPLAN          |-->| NUMERO DU PLAN
+!| IOPT           |-->| OPTION FOR THE VELOCITY PROFILE
+!| IPLAN          |-->| PLAN NUMBER
 !| IPOIN2         |-->| 2D GLOBAL NUMBER OF POINT CONSIDERED
 !| LT             |-->| ITERATION NUMBER
-!| TIME           |---|
+!| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -6,7 +6,7 @@
      & RUGOF,UETCAR,NONHYD,OPTBAN,HN,GRAV,IPBOT,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES AUBOR, COEFFICIENT FOR THE LOG LAW
@@ -35,27 +35,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AUBOR          |<--| COEFFICIENT DE FROTTEMENT SUR LES PAROIS
-!| CF             |-->| COEFFICIENT DE FROTTEMENT POUR K-EPSILON
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| HN             |-->| HAUTEUR D'EAU AU TEMPS N
-!| IPBOT          |---|
-!| KARMAN         |-->| CONSTANTE DE KARMAN
+!| AUBOR          |<->| FRICTION COEFFICIENT FOR THE LOG LAW ON WALLS
+!| CF             |-->| FRICTION COEFFICIENT FOR K-EPSILON
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HN             |-->| WATER DEPTH AT TIME N
+!| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
+!| KARMAN         |-->| KARMAN CONSTANT
 !| KFROT          |-->| LAW OF BOTTOM FRICTION
-!| LISRUF         |-->| REGIME DE TURBULENCE 1: LISSE 2: RUGUEUX
-!| NONHYD         |---|
-!| NPLAN          |---|
-!| NPOIN          |---|
-!| OPTBAN         |---|
-!| PROPNU         |-->| COEFFICIENT DE DIFFUSION MOLECULAIRE
+!| LISRUF         |-->| TURBULENCE MODEL FOR BOTTOM
+!|                |   | 1: SMOOTH  2: ROUGH
+!| NONHYD         |-->| LOGICAL FOR NON-HYDROSTATIC OPTION
+!| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
+!| NPOIN          |-->| NUMBER OF POINTS
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
+!| PROPNU         |-->| MOLECULAR VISCOSITY COEFFICIENT
 !| RUGOF          |-->| FRICTION COEFFICIENT
-!| U2D            |---|
-!| U3D            |---|
-!| UETCAR         |<--| (FRICTION VELOCITY)**2
-!| V2D            |---|
-!| V3D            |---|
-!| W3D            |---|
-!| Z              |---|
+!| U2D            |-->| 2D (VERTICALLY INTEGRATED) VELOCITY COMPONENT
+!| U3D            |-->| 3D VELOCITY COMPONENT
+!| UETCAR         |<->| (FRICTION VELOCITY)**2
+!| V2D            |-->| 2D (VERTICALLY INTEGRATED) VELOCITY COMPONENT
+!| V3D            |-->| 3D VELOCITY COMPONENT
+!| W3D            |-->| 3D VELOCITY COMPONENT
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -49,61 +49,60 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |-->|
-!| ATABOF         |---|
-!| ATABOS         |---|
-!| BTABOF         |---|
-!| BTABOS         |---|
-!| CF             |---|
-!| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
-!| CONC           |-->| CONCENTRATIONS DES COUCHES DU FOND VASEUX
-!| CREF           |---|
-!| DELTAR         |-->| DELTA RHO SUR RHO0 = (RHO-RHO0)/RHO0
-!| DENSI          |-->| DENSITE DE L'EAU
+!| AC             |-->| CRITICAL SHIELDS PARAMETER
+!| ATABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| ATABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) 
+!| BTABOF         |<->| FOR BOUNDARY CONDITION (BOTTOM) 
+!| BTABOS         |<->| FOR BOUNDARY CONDITION (SURFACE) 
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT
+!| CFDEP          |-->| MUD DEPOSITION CONCENTRATION (G/L) 
+!| CONC           |-->| MUD CONCENTRATION FOR EACH LAYER
+!| CREF           |<->| EQUILIBRIUM NEAR-BED CONCENTRATION
+!| DELTAR         |-->| DELTA RHO / RHO0 = (RHO-RHO0)/RHO0
+!| DENSI          |-->| WATER DENSITY
 !| DMOY           |-->| DIAMETRE MOYEN DES GRAINS
-!| DT             |-->| PAS DE TEMPS HYDRAULIQUE
-!| EPAI           |<->| TAILLE DES MAILLES DU FOND EN
-!|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+IVIDE))
-!| FLUER          |<--| FLUX D'EROSION EN CHAQUE POINT 2D
-!| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
-!| GRADZFX        |---|
-!| GRADZFY        |---|
-!| GRADZSX        |---|
-!| GRADZSY        |---|
-!| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
-!| HDEP           |<->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
-!| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
-!| ICQ            |-->| 
-!| ITURBV         |-->| MODELE DE TURBULENCE  VERTICAL
-!| IVIDE          |<->| INDICE DES VIDES AUX POINTS DU MAILLAGE
-!| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
-!| KSPRATIO       |-->| RATIO RUGOSITE DE PEAU / DIAMETRE DES GRAINS
-!| LITABF         |---|
-!| LITABS         |---|
-!| MPART          |-->| COEFFICIENT D'EROSION (LOI DE PARTHENIADES)
-!| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
-!|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
-!| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX(MODELE DE GIBSON)
-!| NPLAN          |---|
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| PDEPOT         |<--| PROBABILITE DE DEPOT EN CHAQUE POINT 2D
-!| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
-!| RHO0           |-->| DENSITE DE REFERENCE DE L'EAU
+!| DT             |-->| HYDRODYNAMICS TIME STEP 
+!| EPAI           |<->| THICKNESS OF BOTTOM LAYERS IN 
+!|                |   | MATERIAL COORDINATES (EPAI=DZ/(1+IVIDE))
+!| FLUER          |<--| EROSION FLUX FOR POINTS IN 2D
+!| GIBSON         |-->| LOGICAL, FOR GIBSON'S MODEL
+!| GRADZFX        |-->| GRADIENT-X OF BOTTOM 
+!| GRADZFY        |-->| GRADIENT-Y OF BOTTOM 
+!| GRADZSX        |-->| GRADIENT-X OF SURFACE  
+!| GRADZSY        |-->| GRADIENT-Y OF SURFACE   
+!| GRAV           |-->| ACCELERATION OF GRAVITY
+!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER) 
+!| HN             |-->| WATER DEPTH AT TIME N
+!| ICQ            |-->| FLAG FOR THE REFERENCE CONCENTRATION FORMULA
+!| ITURBV         |-->| VERTICAL TURBULENCE MODEL
+!| IVIDE          |<->| VOID RATIO
+!| KLOG           |-->| CONVENTION FOR LOGARITHMIC WALL
+!| KSPRATIO       |-->| RELATION BETWEEN SKIN BED ROUGHNESS AND SEDIMENT DIAMETER
+!| LITABF         |<->| FOR BOUNDARY CONDITION BOTTOM 
+!| LITABS         |<->| FOR BOUNDARY CONDITION SURFACE
+!| MPART          |-->| EROSION COEFFICIENT (PARTHENIADES'S LAW)
+!| NCOUCH         |-->| NUMBER OF LAYERS FOR THE COHESIVE MULTILAYER MODEL 
+!| NPF            |-->| NUMBER OF POINTS WITHIN THE BED
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES 
+!|                |   | FOR THE GIBSON'S MODEL
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS 
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF POINTS IN 3D
+!| PDEPOT         |<--| PROBABILITY OF DEPOSITION FOR EVERY POINT 2D
+!| PRIVE          |-->| BLOCK OF PRIVATE ARRAYS FOR USER 
+!| RHO0           |-->| WATER DENSITY (REFERENCE)
 !| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
-!| RUGOF          |-->| 
-!| SEDCO          |-->| LOGIQUE POUR SEDIMENT COHESIF
-!| TA             |-->| CONCENTRATION EN SEDIMENT
-!| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-!| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
-!| TOCD           |-->| CONTRAINTE CRITIQUE DE DEPOT
-!| TOCE           |-->| CONTRAINTE CRITIQUE D'EROSION
-!| TRA03          |<->| TABLEAU DE TRAVAIL
-!| UETCAR         |-->| U ETOILE CARRE
-!| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
-!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
+!| RUGOF          |-->| FRICTION COEFFICIENT
+!| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT 
+!| TA             |-->| SEDIMENT CONCENTRATION
+!| TASSE          |-->| LOGICAL, CONSOLIDATION TAKEN INTO ACCOUNT OR NOT
+!| TOB            |-->| BED SHEAR STRESS (TOTAL FRICTION)
+!| TOCD           |-->| CRITICAL DEPOSITION SHEAR STRESS 
+!| TOCE           |-->| CRITICAL EROSION SHEAR STRESS 
+!| TRA03          |<->| WORK STRUCTURE FOR USER
+!| UETCAR         |-->| SQUARE OF THE FRICTION VELOCITY
+!| WC             |-->| SETTLING VELOCITY OF SEDIMENT
+!| X,Y,Z          |-->| NODE COORDINATES 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

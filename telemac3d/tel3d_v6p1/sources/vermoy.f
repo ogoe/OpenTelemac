@@ -6,7 +6,7 @@
      &  IPLAN1,IPLAN2,NPOIN2,NPLAN,OPTBAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE AVERAGE OF A 3D VARIABLE ON THE VERTICAL.
@@ -34,17 +34,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F1,F2          |-->| VARIABLES A MOYENNER
-!| FINT1,FINT2    |<--| VARIABLES MOYENNEES
-!| IPLAN1,IPLAN2  |-->| PLANS ENTRE LESQUELS ON PROCEDE A
-!|                |   | L'INTEGRATION
-!| NFONC          |-->| NOMBRE DE VARIABLES
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS PAR PLANS HORIZONTAUX
-!| OPTBAN         |-->| OPTION DE TRAITEMENT DES BANCS DECOUVRANTS
-!| TRA01,TRA02    |-->| TABLEAUX DE TRAVAIL
-!| TRA03          |---|
-!| Z              |-->| COTES DES NOEUDS DU MAILLAGE
+!| F1             |-->| VARIABLES TO AVERAGE
+!| F2             |-->| VARIABLES TO AVERAGE
+!| FINT1          |<->| AVERAGED VARIABLES
+!| FINT2          |<->| AVERAGED VARIABLES
+!| IPLAN1         |-->| PLAN IN WHICH INTEGRATION IS DONE
+!| IPLAN2         |-->| PLAN IN WHICH INTEGRATION IS DONE
+!| NFONC          |-->| VARIABLES NUMBER
+!| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
+!| TRA01          |<->| WORK ARRAY
+!| TRA02          |<->| WORK ARRAY
+!| TRA03          |<->| WORK ARRAY
+!| Z              |-->| ELEVATION OF 3D MESH NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

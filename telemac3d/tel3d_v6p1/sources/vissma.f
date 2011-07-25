@@ -7,7 +7,7 @@
      & SVIDE,MESH3,IELM3,NTRAC,MSK,MASKEL,ITURBV)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES VISCOSITIES
@@ -36,28 +36,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DNUTAH         |---|
-!| DNUTAV         |---|
-!| DNUVIH         |---|
-!| DNUVIV         |---|
-!| IELM3          |---|
-!| ITURBV         |---|
-!| MASKEL         |---|
-!| MESH3          |---|
-!| MSK            |---|
-!| NTRAC          |---|
-!| SVIDE          |---|
-!| TRAV1          |---|
-!| TRAV2          |---|
-!| TRAV3          |---|
-!| TRAV4          |---|
-!| TRAV5          |---|
-!| TRAV6          |---|
-!| U              |---|
-!| V              |---|
-!| VISCTA         |---|
-!| VISCVI         |---|
-!| W              |---|
+!| DNUTAH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACER
+!| DNUTAV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF TRACER
+!| DNUVIH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
+!| IELM3          |-->| TYPE OF ELEMENT
+!| ITURBV         |-->| VERTICAL TURBULENCE MODEL
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3          |---| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| SVIDE          |<->| VOID STRUCTURE
+!| TRAV1          |<->| WORK ARRAY
+!| TRAV2          |<->| WORK ARRAY
+!| TRAV3          |<->| WORK ARRAY
+!| TRAV4          |<->| WORK ARRAY
+!| TRAV5          |<->| WORK ARRAY
+!| TRAV6          |<->| WORK ARRAY
+!| U              |-->| COMPONENT OF VELOCITY
+!| V              |-->| COMPONENT OF VELOCITY
+!| VISCTA         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR TRACERS
+!| VISCVI         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR VELOCITIES
+!| W              |-->| COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

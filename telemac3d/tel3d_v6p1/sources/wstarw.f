@@ -5,7 +5,7 @@
      & (WW,WSS,WUP,WDOWN,SOMMEW)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ENSURES THE TRANSFER OF THE AVERAGE PER LAYER
@@ -87,11 +87,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| SOMMEW         |---|
-!| WDOWN          |---|
-!| WSS            |<--| MOYENNE DE DZ*WSTAR PAR COUCHE A N+1
-!| WUP            |---|
-!| WW             |---|
+!| SOMMEW         |<->|
+!| WDOWN          |<->|
+!| WSS            |-->| AVERAGE OF DZ*WSTAR PER LAYER AT N+1
+!| WUP            |<->|
+!| WW             |<->|
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

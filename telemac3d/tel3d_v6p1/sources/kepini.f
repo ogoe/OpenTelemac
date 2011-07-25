@@ -5,7 +5,7 @@
      &(AK,EP,U,V,Z,ZF,NPOIN2,NPLAN,DNUVIH,DNUVIV,KARMAN,CMU,KMIN,EMIN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES K AND EPSILON.
@@ -33,19 +33,20 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |<--| ENERGIE TURBULENTE
-!| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
-!| DNUVIH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE
-!| DNUVIV         |-->| COEFFICIENT DE DIFFUSION VERTICALE
-!| EMIN           |-->| EPSILON MINIMUM EN CAS DE CLIPPING
-!| EP             |<--| DISSIPATION TURBULENTE
-!| KARMAN         |-->| CONSTANTE DE KARMAN
-!| KMIN           |-->| K MINIMUM EN CAS DE CLIPPING
-!| NPLAN          |-->| NOMBRE DE PLANS  DU MAILLAGE 3D
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| U,V            |-->| COMPOSANTES DE LA VITESSE
-!| Z              |-->| COTES DES POINTS DU MAILLAGE 3D REEL
-!| ZF             |---|
+!| AK             |<->| TURBULENT ENERGY
+!| CMU            |-->| CONSTANT FOR MODELE K-EPSILON MODEL
+!| DNUVIH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
+!| EMIN           |-->| MINIMUM VALUE FOR EPSILON WHEN CLIPPING
+!| EP             |<->| TURBULENT DISSIPATION
+!| KARMAN         |-->| KARMAN CONSTANT
+!| KMIN           |-->| MINIMUM VALUE FOR K WHEN CLIPPING
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| U              |-->| COMPONENT OF VELOCITY
+!| V              |-->| COMPONENT OF VELOCITY
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

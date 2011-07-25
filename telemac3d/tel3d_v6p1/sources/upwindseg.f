@@ -6,7 +6,7 @@
      & DELTA)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    UPWINDS THE ADVECTION TERM OF VERTICAL VELOCITY.
@@ -38,14 +38,17 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| D              |<->| MATRIX DIAGONAL
 !| DELTA          |-->| UPWIND COEFFICIENT (BETWEEN 0 AND 1)
-!| EXT            |---|
+!| EXT            |-->| TYPE OF OFF-DIAGONAL TERMS
+!|                |   | TYPEXT = 'Q' : ANY VALUE
+!|                |   | TYPEXT = 'S' : SYMMETRIC
+!|                |   | TYPEXT = '0' : ZERO
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
 !| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D MESH
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPLAN          |-->| NUMBER OF PLANES ON THE VERTICAL
-!| NSEG2D         |---|
-!| NSEG3D         |---|
+!| NSEG2D         |---| NUMBER OF SEGMENTS IN 2D MESH
+!| NSEG3D         |---| NUMBER OF SEGMENTS IN 3D MESH
 !| SURFAC         |-->| AREA OF TRIANGLES
 !| WCC            |-->| VELOCITY (NEGATIVE IF SETTLING VELOCITY)
 !|                |   | CAN BE ALSO WSCONV IN THE TRANSFORMED MESH

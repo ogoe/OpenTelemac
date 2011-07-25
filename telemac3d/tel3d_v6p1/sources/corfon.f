@@ -6,7 +6,7 @@
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE BOTTOM TOPOGRAPHY.
@@ -43,17 +43,20 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LISFON         |-->| NUMBER OF SMOOTHINGS REQUIRED
 !| MASKEL         |-->| MASK OF ELEMENTS
-!| MATR2D         |---|
-!| MESH2D         |---|
+!| MATR2D         |<->| WORK MATRIX IN 2DH
+!| MESH2D         |<->| 2D MESH
 !| MSK            |-->| IF YES, THERE ARE MASKED ELEMENTS
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
-!| PRIVE          |-->| BLOCK OF PRIVATE ARRAYS
-!| S              |---|
-!| ST1            |---|
-!| ST2            |---|
-!| SZF            |---|
-!| T2             |---|
-!| X,Y            |-->| MESH COORDINATES
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| S              |-->| VOID STRUCTURE
+!| ST1            |<->| STRUCTURE OF T1
+!| ST2            |<->| STRUCTURE OF T2
+!| SZF            |<->| STRUCTURE OF ZF
+!| T1             |<->| WORK ARRAY
+!| T2             |<->| WORK ARRAY
+!| X              |-->| MESH COORDINATE
+!| Y              |-->| MESH COORDINATE
+!| ZF             |<->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

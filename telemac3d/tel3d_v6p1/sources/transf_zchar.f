@@ -32,11 +32,11 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
-!| TRANSF         |<--| TYPE OF TRANSFORMATION
-!| TRANSF_PLANE   |---|
-!| ZCHAR          |<--| COORDINATES IN THE TRANSFORMED MESH
+!| TRANSF         |<->| TYPE OF MESH TRANSFORMATION
+!| TRANSF_PLANE   |<->| TYPE OF MESH TRANSFORMATION FOR EACH PLANE
+!| ZCHAR          |<->| COORDINATES IN THE TRANSFORMED MESH
 !|                |   | FOR THE METHOD OF CHARACTERISTICS
-!| ZSTAR          |---|
+!| ZSTAR          |-->| PERCENTUAL MESH PLANES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

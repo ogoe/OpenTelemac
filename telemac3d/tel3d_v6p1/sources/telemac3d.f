@@ -60,9 +60,8 @@
 ! DECLARATIONS
 !-----------------------------------------------------------------------
 !
-!      DOUBLE PRECISION P_TIME
-      INTEGER P_IMAX
-      EXTERNAL P_IMAX  !,P_TIME
+      INTEGER  P_IMAX
+      EXTERNAL P_IMAX  
 !
 !-----------------------------------------------------------------------
 ! DECLARES LOCAL VARIABLES FOR TELEMAC3D

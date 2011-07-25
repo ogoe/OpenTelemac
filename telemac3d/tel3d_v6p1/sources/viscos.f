@@ -6,7 +6,7 @@
      & NTRAC,ITURBH,ITURBV)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES VISCOSITIES.
@@ -34,15 +34,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DNUTAH         |---|
-!| DNUTAV         |---|
-!| DNUVIH         |---|
-!| DNUVIV         |---|
-!| ITURBH         |---|
-!| ITURBV         |---|
-!| NTRAC          |---|
-!| VISCTA         |---|
-!| VISCVI         |---|
+!| DNUTAH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACER
+!| DNUTAV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF TRACER
+!| DNUVIH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
+!| ITURBH         |-->| HORIZONTAL TURBULENCE MODEL (3= K-EPSILON)
+!| ITURBV         |-->| VERTICAL TURBULENCE MODEL (3= K-EPSILON)
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| VISCTA         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR TRACERS
+!| VISCVI         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR VELOCITIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -7,7 +7,7 @@
      &          EPAI0  , CFDEP  , RHOS    )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MANAGES THE DEPOSITED QUANTITY.
@@ -40,17 +40,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
-!| EPAI           |<->| TAILLES DES MAILLES DU FOND EN
-!|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+E)
-!| EPAI0          |-->| EPAISSEUR DE REFERENCE POUR CREER UNE MAILLE
-!| HDEP           |<->| HAUTEUR DES DEPOTS FRAIS  (COUCHE TAMPON)
-!| IVIDE          |<->| INDICE DES VIDES AUX POINTS DU FOND
-!| NPF            |<->| NOMBRE DE POINTS DU FOND SUR UNE VERTICALE
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX
-!| NPOIN2         |<->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
+!| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
+!| EPAI           |<->| THICKNESS OF SOLID BED LAYER
+!|                |   | (EPAI=DZ/(1+IVIDE), DZ TOTAL BED THICKNESS)
+!| EPAI0          |<->| REFERENCE THICKNESS CREATE NEW ELEMENTS
+!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
+!| IVIDE          |<->| VOID INDEX OF BOTTOM POINTS
+!| NPF            |-->| NUMBER OF POINTS OF THE BOTTOM ON ONE VERTICAL
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
+!|                |   | DISCRETISE MUD BED
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| RHOS           |-->| SEDIMENT DENSITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

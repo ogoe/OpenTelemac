@@ -40,22 +40,24 @@
 !+   Rewritten (formula changed, parallelism,...)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CFDEP          |-->| CONCENTRATION(G/L) DE LA VASE QUI SE DEPOSE
-!| CONC           |-->| CONCENTRATIONS DES COUCHES DU FOND VASEUX
-!| EPAI           |-->| TAILLE DES MAILLES DU FOND EN
-!|                |   | COORDONNEES MATERIELLES (EPAI=DZ/(1+IVIDE))
+!| CFDEP          |-->| CONCENTRATION OF MUD DEPOSIT (G/L)
+!| CONC           |-->| CONCENTRATION OF MUD BED LAYER
+!|                |   | (MULTILAYER MODEL)
+!| EPAI           |-->| THICKNESS OF SOLID BED LAYER
+!|                |   | (EPAI=DZ/(1+IVIDE), DZ TOTAL BED THICKNESS)
 !| GIBSON         |-->| LOGICAL FOR GIBSON MODEL
-!| HDEP           |-->| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
+!| HDEP           |-->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
 !| MASSE          |-->| MASS OF SUSPENDED SEDIMENT
-!| NCOUCH         |---|
+!| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
+!|                |   | (GIBSON MODEL)
 !| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
-!| NPF            |-->| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX
+!| NPF            |-->| NUMBER OF POINTS OF THE BOTTOM ON ONE VERTICAL
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
+!|                |   | DISCRETISE MUD BED
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| RHOS           |-->| DENSITY OF SEDIMENT
-!| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-!| TRA02          |-->| WORK ARRAY
+!| TASSE          |-->| MULTILAYER SETTLING MODEL LOGICAL
+!| TRA02          |<->| WORK ARRAY
 !| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

@@ -9,7 +9,7 @@
      &  KENT,KENTU,KSORT,KADH,KLOG,UETCAL,NONHYD,UTANG,MESH2D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES U STAR AND AUBOR.

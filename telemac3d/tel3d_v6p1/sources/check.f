@@ -6,7 +6,7 @@
      & NPTFR,NETAGE,NELEM3,NPTFR3,NTRAC,INFO)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CHECKS FOR COMMON ERRORS.
@@ -29,25 +29,27 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IKLBOR         |-->| TABLE DE CONNECTIVITE ELEMENTS DE BORD
-!| IKLE2          |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 2D
-!| IKLE3          |-->| NUMEROS GLOBAUX DES POINTS DES ELEMENTS 3D
-!| INFO           |---|
-!| NBOR           |-->| ADRESSES GLOBALES DES POINTS FRONTIERES 2D
-!| NBOR3          |-->| ADRESSES GLOBALES DES POINTS FRONTIERES 3D
-!| NELBO3         |-->| ASSOCIE A CHAQUE FACE DE BORD L'ELEMENT 3D
-!|                |   | AUQUEL ELLE APPARTIENT
-!| NELBOR         |-->| NUMERO DE L'ELEMENT ADJACENT AU K IEME
-!|                |   | SEGMENT DE BORD
-!| NELEM2         |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 2D
-!| NELEM3         |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE 3D
-!| NETAGE         |-->| NOMBRE D'ETAGES
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE 2D
-!| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE 3D
-!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| NULONE         |-->| ASSOCIE LA NUMEROTATION LOCALE DE BORD A LA
-!|                |   | NUMEROTATION LOCALE 3D
+!| IKLBOR         |-->| CONNECTIVITY TABLE OF BOUNDARY ELEMENTS
+!| IKLE2          |-->| GLOBAL NUMBERS OF POINTS IN 2D ELEMENTS
+!| IKLE3          |-->| GLOBAL NUMBERS OF POINTS IN 3D ELEMENTS
+!| INFO           |-->| LISTING PRINTOUT OR NOT
+!| NBOR           |-->| GLOBAL NUMBER OF 2D BOUNDARY POINTS
+!| NBOR3          |-->| GLOBAL NUMBER OF 3D BOUNDARY POINTS
+!| NELBO3         |-->| ASSOCIATION OF EACH BOUNDARY EDGE
+!|                |   | TO THE CORRESPONDING 3D ELEMENT
+!| NELBOR         |-->| NUMBER OF THE ADJACENT ELEMENT AT THE K TH
+!|                |   | BOUNDARY SEGMENT
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D MESH
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
+!| NPTFR3         |-->| NUMBER OF BOUNDARY POINTS IN 3D
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
+!|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
+!|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

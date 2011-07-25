@@ -5,7 +5,7 @@
      &(VISCVI,VISCTA,ROTAT,AK,EP,NTRAC,CMU,DNUVIH,DNUVIV,DNUTAH,DNUTAV)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TURBULENT VISCOSITY
@@ -40,17 +40,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |-->| ENERGIE TURBULENTE
-!| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
-!| DNUTAH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE POUR TA
-!| DNUTAV         |-->| COEFFICIENT DE DIFFUSION VERTICALE POUR TA
-!| DNUVIH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE POUR U
-!| DNUVIV         |-->| COEFFICIENT DE DIFFUSION VERTICALE POUR U
-!| EP             |-->| DISSIPATION TURBULENTE
-!| NTRAC          |-->| NOMBRE DE TRACEURS
-!| ROTAT          |---|
-!| VISCTA         |<--| DIFFUSION TURBULENTE POUR LES TRACEURS ACTIFS
-!| VISCVI         |<--| DIFFUSION TURBULENTE POUR LES VITESSES
+!| AK             |-->| TURBULENT ENERGY
+!| CMU            |-->| CONSTANT FOR K-EPSILON MODEL
+!| DNUTAH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACER
+!| DNUTAV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF TRACER
+!| DNUVIH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
+!| EP             |-->| TURBULENT DISSIPATION
+!| NTRAC          |-->| NUMBER OF TRACERS
+!| ROTAT          |-->| KIND OF L1 NORM OF VORTICITY
+!| VISCTA         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR TRACERS
+!| VISCVI         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR VELOCITIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

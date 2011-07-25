@@ -5,7 +5,7 @@
      &(NFIC,NFRLIQ,STA_DIS_CURVES,PTS_CURVES)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS STAGE-DISCHARGE CURVES IN THEIR FILE.
@@ -32,10 +32,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NFIC           |---|
-!| NFRLIQ         |---|
-!| PTS_CURVES     |---|
-!| STA_DIS_CURVES |---|
+!| NFIC           |-->| NUMBER OF CHANNEL OF STAGE-DISCHARGE CURVES FILE
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| PTS_CURVES     |<->| NUMBER OF POINTS GIVEN
+!|                |---| FOR EACH DISCHARGE-ELEVATIONS CURVES
+!| STA_DIS_CURVES |-->| STAGE-DISCHARGE CURVES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TELEMAC3D, ONLY : QZ

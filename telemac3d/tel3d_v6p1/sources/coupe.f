@@ -6,7 +6,7 @@
      &  NETAGE,X1,Y1,Z1,X2,Y2,Z2)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTRACTS A SLICE FROM THE DOMAIN FOLLOWING THE SEGMENT
@@ -35,19 +35,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |-->| FONCTION A INTERPOLER
-!| FINT           |<--| FONCTION INTERPOLEE LE LONG DU PROFIL
-!| IFABOR         |-->| CORRESPONDANCE FACE DE BORD - ELEMENT 2D
-!| IKLE3          |-->| TABLE DE CONNECTIVITE 3D
-!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-!| NETAGE         |-->| NOMBRE D'ETAGES
-!| NPOIN          |-->| NOMBRE DE POINTS LE LONG DU PROFIL
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| SCURV          |<--| ABCISSE DES POINTS D'INTERPOLATION DU PROFIL
-!| SURFAC         |-->| SURFACE DES ELEMENTS DU MAILLAGE 2D
-!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
-!| X1,Y1,Z1       |-->| COORDONNEES DES EXTREMITES DU SEGMENT
-!| X2,Y2,Z2       |---|
+!| F              |-->| FUNCTION TO INTERPOLATE
+!| FINT           |<->| INTERPOLATED FUNCTION ALONG THE PROFILE
+!| IFABOR         |-->| CORRESPONDENCE BETWEEN BOUNDARY EDGE AND 2D ELEMENT
+!| IKLE3          |-->| GLOBAL 3D CONNECTIVITY
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| NPOIN          |-->| NUMBER OF POINTS ALONG THE PROFILE
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| SCURV          |<->| ABCISSAE OF INTERPOLATING POINTS ON THE PROFILE
+!| SURFAC         |-->| AREA OF TRIANGLES IN 2D
+!| X              |-->| MESH COORDINATE
+!| X1             |-->| COORDINATE OF THE VERTICES OF THE SEGMENT
+!| X2             |-->| COORDINATE OF THE VERTICES OF THE SEGMENT
+!| Y              |-->| MESH COORDINATE
+!| Y1             |-->| COORDINATE OF THE VERTICES OF THE SEGMENT
+!| Y2             |-->| COORDINATE OF THE VERTICES OF THE SEGMENT
+!| Z              |-->| MESH COORDINATE
+!| Z1             |-->| COORDINATE OF THE VERTICES OF THE SEGMENT
+!| Z2             |-->| COORDINATE OF THE VERTICES OF THE SEGMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

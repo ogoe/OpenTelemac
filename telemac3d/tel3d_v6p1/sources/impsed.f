@@ -9,7 +9,7 @@
      & TASSE , GIBSON, PRIVE , LISPRD)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    GENERATES A RESULT FILE THAT REPRESENTS GRAPHICALLY
@@ -38,8 +38,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CFDEP          |-->| CONCENTRATION(G/L) OF FRESH DEPOSIT
-!| CFMAX          |-->| CONCENTRATION( G/L) OF CONSOLIDATED MUD
+!| CFDEP          |-->| CONCENTRATION (G/L) OF FRESH DEPOSIT
+!| CFMAX          |-->| CONCENTRATION (G/L) OF CONSOLIDATED MUD
 !| CONC           |-->| CONCENTRATION OF MUD BED LAYER
 !|                |   | (ONLY FOR MULTILAYER MODEL)
 !| EPAI           |-->| THICKNESS OF SOLID BED LAYER
@@ -47,27 +47,28 @@
 !|                |   | FOR NEW GRID POINTS GENERATION
 !| FLUER          |-->| EROSION FLUX
 !| GIBSON         |-->| LOGICAL FOR GIBSON MODEL
-!| HDEP           |-->| THICKNESS OF FRESH DEPOSIT(FLUID MUD LAYER)
+!| HDEP           |-->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
 !| IVIDE          |-->| VOID RATIO
 !|                |   | (GIBSON MODEL ONLY)
 !| LISPRD         |-->| TIME STEP FOR GRAPHICAL PRINTOUTS
 !| LT             |-->| NUMBER OF TIME STEP
 !| NCOUCH         |-->| NUMBER OF BED LAYERS
-!|                |   | (MULTILAYE CONSOLIDATION MODEL)
+!|                |   | (MULTILAYER CONSOLIDATION MODEL)
 !| NPF            |-->| NUMBER OF POINTS WITHIN THE BED ALONG THE VERTICAL
 !| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES
 !|                |   | WITHIN THE MUD BED (GIBSON MODEL)
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF POINTS IN 3D
 !| PDEPOT         |-->| PROBABILITY OF DEPOSITION
-!| PRIVE          |-->| PRIVATE ARRAYS FOR USERS
+!| PRIVE          |<->| PRIVATE ARRAYS FOR USERS
 !| RHOS           |-->| SEDIMENT DENSITY
 !| TA             |-->| SUSPENDED SEDIMENT CONCENTRATION (G/L)
 !| TASSE          |-->| LOGICAL FOR MULTILAYER CONSOLIDATION MODEL
 !| TEMP           |-->| TIME COUNTER FOR CONSOLIDATION MODEL
 !|                |   | (MULTILAYER MODEL ONLY)
 !| WC             |-->| SETTLING VELOCITY (M/S)
-!| X,Y            |-->| COORDINATES OF 2D MESH
+!| X              |-->| COORDINATES OF 2D MESH
+!| Y              |-->| COORDINATES OF 2D MESH
 !| ZF             |-->| BOTTOM LEVEL
 !| ZR             |-->| RIGID BED LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

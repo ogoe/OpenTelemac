@@ -8,7 +8,7 @@
      & NPTFR,NPLAN,NPOIN2,KENT,KADH,KLOG,KDEB,KP1BOR,VELPROLAT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ENSURES THE CONDITION U . N = 0  (U AND N ARE VECTORS).
@@ -41,32 +41,49 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KADH           |-->| CONVENTION POUR LES PAROIS AVEC ADHERENCE
-!| KDEB           |---|
-!| KENT           |-->| CONVENTION POUR LES VALEURS IMPOSEES (ENT.)
-!| KLOG           |-->| CONVENTION POUR LES PAROIS AVEC GLISSEMENT
-!| KP1BOR         |---|
-!| LIHBOR         |---|
-!| LIUBOF,LIVBOF  |-->| TYPES DE C.L. SUR U ET V AU FOND
-!| LIUBOL,LIVBOL  |-->| TYPES DE C.L. SUR U ET V SUR LES PAROIS LAT.
-!| LIUBOS,LIVBOS  |-->| TYPES DE C.L. SUR U ET V EN SURFACE
-!| LIWBOF         |---|
-!| LIWBOL         |---|
-!| LIWBOS         |---|
-!| NBOR           |-->| CORRESPONDANCE NUMEROTATION FRONTIERE ET
-!|                |   | NUMEROTATION GLOBALE EN 2D
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES 2D
-!| UBORF,VBORF    |-->| VITESSES U ET V IMPOSEES AU FOND
-!| UBORL,VBORL    |-->| VITESSES U ET V IMPOSEES SUR LES PAROIS LAT.
-!| UBORS,VBORS    |-->| VITESSES U ET V IMPOSEES EN SURFACE
-!| VELPROLAT      |---|
-!| W              |---|
-!| WBORF          |---|
-!| WBORL          |---|
-!| WBORS          |---|
-!| XNEBOR,YNEBOR  |-->| COMPOSANTES VECTEUR NORMAL POINTS FRONTIERES
+!| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
+!| KDEB           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| LIUBOF         |-->| TYPE OF BOUNDARY CONDITIONS ON U AT THE BOTTOM
+!| LIUBOL         |-->| TYPE OF BOUNDARY CONDITIONS ON U ON LATERAL WALLS
+!| LIUBOS         |-->| TYPE OF BOUNDARY CONDITIONS ON U AT THE SURFACE
+!| LIVBOF         |-->| TYPE OF BOUNDARY CONDITIONS ON V AT THE BOTTOM
+!| LIVBOL         |-->| TYPE OF BOUNDARY CONDITIONS ON V ON LATERAL WALLS
+!| LIVBOS         |-->| TYPE OF BOUNDARY CONDITIONS ON V AT THE SURFACE
+!| LIVBOF         |-->| TYPE OF BOUNDARY CONDITIONS ON W AT THE BOTTOM
+!| LIVBOL         |-->| TYPE OF BOUNDARY CONDITIONS ON W ON LATERAL WALLS
+!| LIVBOS         |-->| TYPE OF BOUNDARY CONDITIONS ON W AT THE SURFACE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS IN 2D
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
+!| U              |<->| X COMPONENT OF VELOCITY
+!| UBORF          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!|                |   | AT THE BOTTOM
+!| UBORL          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!|                |   | ON LATERAL WALLS
+!| UBORS          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!|                |   | AT THE SURFACE
+!| V              |<->| Y COMPONENT OF VELOCITY
+!| VBORF          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!|                |   | AT THE BOTTOM
+!| VBORL          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!|                |   | ON LATERAL WALLS
+!| VBORS          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!|                |   | AT THE SURFACE
+!| VELPROLAT      |-->| PROJECTION OF VELOCITY ON LATERAL SOLID BOUNDARIES
+!| W              |<->| Z COMPONENT OF VELOCITY
+!| WBORF          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY W
+!|                |   | AT THE BOTTOM
+!| WBORL          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY W
+!|                |   | ON LATERAL WALLS
+!| WBORS          |-->| PRESCRIBED BOUNDARY CONDITION ON VELOCITY W
+!|                |   | AT THE SURFACE
+!| XNEBOR         |-->| X COMPONENT OF NORMAL VECTOR FOR BOUNDARY POINTS
+!| YNEBOR         |-->| Y COMPONENT OF NORMAL VECTOR FOR BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

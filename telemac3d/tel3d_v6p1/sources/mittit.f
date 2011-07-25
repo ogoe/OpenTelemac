@@ -5,7 +5,7 @@
      & (IETAPE,AT,LT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES HEADERS TO THE LISTING AT THE VARIOUS STAGES
@@ -36,7 +36,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IETAPE         |-->| INDICATEUR D'AVANCEMENT DANS LE PROGRAMME.
+!| AT             |-->| TIME OF TIME STEP
+!| IETAPE         |-->| ADVANCING GAUGE IN THE PROGRAMME
+!| LT             |-->| CURRENT TIME STEP NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

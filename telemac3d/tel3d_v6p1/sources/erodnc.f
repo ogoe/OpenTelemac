@@ -7,7 +7,7 @@
      & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS EROSION
@@ -36,26 +36,26 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| CF             |---|
-!| CFDEP          |-->| CONCENTRATION DES DEPOTS FRAIS
-!| CREF           |<->| CONCENTRATION DEQUILIBRE
-!| DMOY           |---|
-!| DT             |-->| PAS DE TEMPS HYDRAULIQUE
-!| FLUER          |<--| VALEUR DU FLUX D'EROSION
-!| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
-!| HDEP           |<->| EPAISSEUR DE LA COUCHE DES DEPOTS FRAIS
-!| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
-!| ICQ            |-->| 
-!| KSPRATIO       |---|
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE2D
-!| NPOIN3         |---|
-!| RHO0           |---|
-!| RHOS           |-->| DENSITE DU SEDIMENT
-!| RUGOF          |-->| 
-!| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
-!| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
-!| ZREF           |-->| 
+!| AC             |-->| CRITICAL SHIELDS PARAMETER
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT (NOT USED)
+!| CFDEP          |-->| CONCENTRATION OF FRESH DEPOSIT DES DEPOTS FRAIS
+!| CREF           |<->| EQUILIBRIUM CONCENTRATION
+!| DMOY           |-->| MEAN DIAMETER OF GRAINS
+!| DT             |-->| TIME STEP
+!| FLUER          |<->| EROSION  FLUX
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
+!| HN             |-->| WATER DEPTH AT TIME N
+!| ICQ            |-->| FLAG FOR REFERENCE CONCENTRATION FORMULA
+!| KSPRATIO       |-->| NOT USED
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
+!| RHOS           |-->| SEDIMENT DENSITY
+!| RUGOF          |<->| FRICTION COEFFICIENT ON THE BOTTOM
+!| TOB            |-->| BOTTOM FRICTION
+!| WC             |-->| SETTLING VELOCITY
+!| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

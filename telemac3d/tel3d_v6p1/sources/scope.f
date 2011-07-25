@@ -6,7 +6,7 @@
      &  NELEM2,NPOIN2,NPOIN3,NETAGE,NPLAN,LT,AT,DT,NIT,NSCO,PRIVE)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTRACTS SPECIFIC CROSS-SECTIONS, WHICH WILL BE
@@ -45,27 +45,32 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS DU PAS DE TEMPS
-!| DT             |-->| PAS DE TEMPS
-!| HN             |-->| HAUTEUR D'EAU
-!| IFABOR         |-->| CORRESPONDANCE FACE DE BORD - ELEMENT 2D
-!| IKLE3          |-->| TABLE DE CONNECTIVITE 3D
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-!| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-!| NETAGE         |-->| NOMBRE D'ETAGES
-!| NIT            |-->| NOMBRE TOTAL DE PAS DE TEMPS
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NSCO           |-->| NUMERO D'UNITE LOGIQUE DU FICHIER POUR SCOPE
-!| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
-!| SURFAC         |-->| SURFACE DES ELEMENTS DU MAILLAGE 2D
-!| TRA02          |---|
-!| TRA03          |---|
-!| U,V,W          |-->| VITESSE 3D
-!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
-!| ZF             |-->| COTE DU FOND
+!| AT             |-->| TIME OF TIME STEP
+!| DT             |-->| TIME STEP
+!| HN             |-->| WATER DEPTH AT TIME N
+!| IFABOR         |-->| BOUNDARY FACE - 2D ELEMENT CORRESPONDANCE
+!| IKLE3          |-->| GLOBAL 3D CONNECTIVITY
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NETAGE         |-->| NUMBER OF LAYERS (I.E. NPLAN-1)
+!| NIT            |-->| TOTAL NUMBER OF TIME STEPS
+!| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NSCO           |-->| LOGICAL UNIT NUMBER OF THE FILE FOR SCOPE
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| SURFAC         |-->| AREA OF TRIANGLES IN 2D
+!| TRA01          |<->| WORK ARRAY
+!| TRA02          |<->| WORK ARRAY: NOT USED
+!| TRA03          |<->| WORK ARRAY: NOT USED
+!| U              |-->| COMPONENT OF VELOCITY
+!| V              |-->| COMPONENT OF VELOCITY
+!| W              |-->| COMPONENT OF VELOCITY
+!| X              |-->| MESH COORDINATES
+!| Y              |-->| MESH COORDINATES
+!| Z              |-->| MESH COORDINATES
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &( I , ITRAC , N , TIME , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRESCRIBES THE TRACER  FOR TRACER IMPOSED
@@ -29,11 +29,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ENTET          |---|
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS PRINTED
 !| I              |-->| LIQUID BOUNDARY NUMBER
 !| ITRAC          |-->| TRACER NUMBER
 !| N              |-->| GLOBAL NUMBER OF POINT
-!| TIME           |---|
+!| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

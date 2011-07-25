@@ -10,7 +10,7 @@
      & N_ADV,MTRA1)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES RELATIVE WATER AND TRACER MASS BALANCES
@@ -40,49 +40,55 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BYPASS         |---|
-!| DM1            |---|
-!| DT             |---|
-!| FLBOR          |---|
-!| FLODEL         |---|
-!| FLOPAR         |---|
-!| FLUEXT         |<--| FLUX EXTERIEUR PAR NOEUD
-!| FLUINT         |<--| FLUX INTERIEUR PAR NOEUD
-!| FLULIM         |---|
-!| GRAPRD         |---|
-!| IELM2H         |---|
+!| BYPASS         |---| IF YES, BYPASS VOID VOLUMES
+!| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
+!| DT             |-->| TIME STEP
+!| FLBOR          |<->| FLUXES AT BOUNDARIES
+!| FLODEL         |<->| FLUXES BY SEGMENT
+!| FLOPAR         |<->| FLUXES BY SEGMENT, ASSEMBLED IN PARALLEL
+!| FLUEXT         |<--| OUTPUT FLUX BY NODE
+!| FLUEXTPAR      |<--| OUTPUT FLUX BY NODE, IN PARALLEL
+!| FLUINT         |<--| INPUT FLUX BY NODE
+!| FLULIM         |<->| LIMITATION OF FLUXES
+!| GRAPRD         |-->| GRAPHIC PRINTOUT PERIOD
+!| IELM2H         |-->| TYPE OF ELEMENT
 !| IELM2V         |-->| TYPE DE DISCRETISATION 2DV
 !| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| KDIR           |---|
-!| LIMPRO         |---|
-!| LT             |---|
-!| MASK8          |-->| TABLEAU DE MASQUAGE DES FACES DE BORD 2D
-!| MASKBR         |---|
-!| MASKEL         |-->| TABLEAU DE MASQUAGE DES ELEMENTS 3D
-!| MESH2          |---|
-!| MESH3          |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NELEM3         |---|
-!| NETAGE         |-->| NOMBRE D'ETAGES SUR LA VERTICALE
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| NPOIN3         |---|
-!| NPTFR          |---|
-!| OPT_HNEG       |---|
-!| PLUIE          |---|
-!| RAIN           |---|
-!| SIGMAG         |---|
-!| SVIDE          |-->| STRUCTURE VIDE
-!| TRA02          |---|
-!| TRA03          |---|
-!| TRAV2          |---|
-!| VCONV          |---|
-!| VOLU           |---|
-!| VOLUN          |---|
-!| W1             |---|
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
+!| LIMPRO         |---| PROPAGATION BC TYPES (TELEMAC2D'S PROPAG)
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| MASK8          |<->| 2D BOUNDARY MASK
+!| MASKBR         |<->| 3D MASK ON LATERAL BOUNDARIES
+!| MASKEL         |<->| MASKING OF 3D ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH2          |<->| 2D MESH
+!| MESH3          |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| MTRA1          |<->| 3D WORK MATRIX
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NETAGE         |-->| NUMBER OF LAYERS I.E. NUMBER OF PLANES - 1
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| OPT_HNEG       |---| OPTION FOR NEGATIVE DEPTHS
+!| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
+!| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
+!| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
+!| SVIDE          |<->| VOID STRUCTURE
+!| TRA01          |<->| WORK ARRAY
+!| TRA02          |<->| WORK ARRAY
+!| TRA03          |<->| WORK ARRAY
+!| TRAV2          |<->| WORK ARRAY
+!| VCONV          |-->| ADVECTION VELOCITY FIELD
+!| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
+!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N
+!| W1             |<->| WORK ARRAY IN 3D
 !| YACVVF         |-->| THERE IS AN ADVECTION WITH FINITE VOLUMES
 !|                |   | (HENCE COMPUTATION OF FLUXES REQUIRED)
-!| ZCONV          |---|
+!| ZCONV          |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

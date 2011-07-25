@@ -5,7 +5,7 @@
      &  (FVERT,FHORI,PHILATI)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VERTICAL AND HORIZONTAL CORIOLIS PARAMETERS.
@@ -31,9 +31,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FHORI          |---|
-!| FVERT          |---|
-!| PHILATI        |---|
+!| FHORI          |<->| HORIZONTAL CORIOLIS PARAMETER
+!| FVERT          |<->| VERTICAL CORIOLIS PARAMETER
+!| PHILATI        |-->| LATITUDE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -9,7 +9,7 @@
      & PRANDTL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION OF
@@ -38,40 +38,47 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK,EP          |-->| K ET OMEGA
-!| ALPHA          |---|
-!| BETA           |---|
-!| BETAS          |---|
-!| CV1,CV2        |<--| TERMES SOURCE POUR K ET EPSILON
-!| DELTAR         |-->| DELTA(RO)/RO
-!| DKDX           |---|
-!| DKDY           |---|
-!| DKDZ           |---|
-!| DODX           |---|
-!| DODY           |---|
-!| DODZ           |---|
-!| DTADZ          |-->| DERIVEE EN Z DU TRACEUR N0 1
-!| DUDY           |---|
-!| DUDZ           |---|
-!| DVDX           |---|
-!| DVDY           |---|
-!| DVDZ           |---|
-!| DWDX           |---|
-!| DWDY           |---|
-!| DWDZ           |---|
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| IELM3          |---|
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3D         |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| PRANDTL        |---|
-!| ROTAT          |---|
-!| S              |---|
-!| S1E            |---|
-!| S1K            |---|
-!| TR             |-->| TABLEAU DE TRAVAIL PAR POINTS
-!| U,V,W          |-->| COMPOSANTES DE LA VITESSE
+!| AK             |-->| TURBULENT ENERGY K
+!| ALPHA          |-->| K-OMEGA CONSTANT
+!| BETA           |-->| K-OMEGA CONSTANT
+!| BETAS          |-->| K-OMEGA CONSTANT
+!| CV1            |<->| SOURCE TERM FOR K AND OMEGA
+!| CV2            |<->| SOURCE TERM FOR K AND OMEGA
+!| DELTAR         |-->| DELTA(RHO)/RHO
+!| DKDX           |<->| DK/DX
+!| DKDY           |<->| DK/DY
+!| DKDZ           |<->| DK/DZ
+!| DODX           |<->| DOMEGA/DX
+!| DODY           |<->| DOMEGA/DY
+!| DODZ           |<->| DOMEGA/DZ
+!| DT             |-->| TIME STEP
+!| DTADZ          |<->| DERIVATIVE OF TRACEUR N0 1 WITH RESPECT TO Z
+!| DUDX           |<->| DU/DX
+!| DUDY           |<->| DU/DY
+!| DUDZ           |<->| DU/DZ
+!| DVDX           |<->| DV/DX
+!| DVDY           |<->| DV/DY
+!| DVDZ           |<->| DV/DZ
+!| DWDX           |<->| DW/DX
+!| DWDY           |<->| DW/DY
+!| DWDZ           |<->| DW/DZ
+!| EP             |-->| OMEGA
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| IELM3          |---| TYPE OF ELEMENT
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3D         |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| PRANDTL        |-->| PRANDTL NUMBER
+!| ROTAT          |<->| KIND OF L1 NORM OF VORTICITY
+!| S              |-->| BIEF_OBJ
+!| S1E            |<->| BETA*OMEGA
+!| S1K            |<->| BETAS*OMEGA
+!| TR             |<->| TABLEAU DE TRAVAIL PAR POINTS
+!| U              |-->| VELOCITY COMPONENT
+!| V              |-->| VELOCITY COMPONENT
+!| W              |-->| VELOCITY COMPONENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

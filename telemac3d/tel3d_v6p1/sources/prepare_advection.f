@@ -7,7 +7,7 @@
      &  NBOR3,DT,MSK,IELM3,NUMLIQ,DIRFLU,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES ADVECTION FOR ADVECTED VARIABLES
@@ -35,23 +35,27 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
-!| DIRFLU         |---|
-!| FBORL          |-->| CONDITIONS AUX LIMITES DIRICHLET
-!| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
-!| FLUXF          |<->| FLUX GLOBAL A INCREMENTER
-!| FN             |-->| VARIABLE AU TEMPS N
-!| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| LIFBOL         |-->| TYPE DE CONDITIONS LIMITES PHYSIQUES
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3D         |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NBOR3          |-->| NUMEROS GLOBAUX DES POINTS FRONTIERES 3D
-!| NFRLIQ         |---|
-!| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE BORDS LATERAUX
-!| NUMLIQ         |---|
-!| S0F            |-->| TERME SOURCE EXPLICITE (DIM=F/T)
-!| SCHCF          |-->| SCHEMA DE CONVECTION DE F
+!| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
+!| DIRFLU         |-->|
+!| DT             |-->| TIME STEP
+!| FBORL          |<->| DIRICHLET CONDITIONS
+!| FLUEXT         |-->| OUTPUT FLUX BY NODE
+!| FLUEXTPAR      |-->| OUTPUT FLUX BY NODE IN PARALLEL
+!| FLUXF          |<->| GLOBAL FLUX GLOBAL TO UPDATE
+!| FN             |<->| VARIABLE F AT TIME N
+!| IELM3          |-->| TYPE OF 3D DISCRETISATION
+!| LIFBOL         |<->| PHYSICAL BOUNDARY CONDITIONS TYPE
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3D         |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBOR3          |-->| GLOBAL NUMBER OF 3D BOUNDARY POINTS
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPTFR3         |-->| NUMBER OF LATERAL BOUNDARY POINTS IN 3D
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| S0F            |<->| EXPLICIT SOURCE TERM (DIM=F/T)
+!| SCHCF          |-->| ADVECTION SCHEME FOR F
+!| VOLUNPAR       |-->| VOLUME AROUND POINTS AT TIME N IN PARALLEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &( I , TIME , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRESCRIBES THE DISCHARGE FOR FLOW IMPOSED
@@ -29,9 +29,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ENTET          |---|
-!| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
-!| TIME           |---|
+!| ENTET          |-->| IF YES, LISTING PRINTOUTS ALLOWED
+!| I              |-->| NUMBER OF THE LIQUID BOUNDARY
+!| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

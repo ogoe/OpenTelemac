@@ -5,7 +5,7 @@
      & (LT,TIME,GRADEBL,GRAPRDL,LISDEBL,LISPRDL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRINTS OUT SPECIFIC RESULTS
@@ -37,12 +37,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GRADEBL        |---|
-!| GRAPRDL        |---|
-!| LISDEBL        |---|
-!| LISPRDL        |---|
+!| GRADEBL        |-->| NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS
+!| GRAPRDL        |-->| GRAPHIC PRINTOUT PERIOD
+!| LISDEBL        |-->| NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS
+!| LISPRDL        |-->| LISTING PRINTOUT PERIOD
 !| LT             |-->| ITERATION NUMBER
-!| TIME           |---|
+!| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

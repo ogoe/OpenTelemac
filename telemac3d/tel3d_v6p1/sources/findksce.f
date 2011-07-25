@@ -5,7 +5,7 @@
      &(NPOIN2,NPLAN,Z,NSCE,ISCE,ZSCE,KSCE,INFO)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINDS THE CLOSEST GRID POINTS AMONGST THE PLANES
@@ -34,14 +34,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| INFO           |---|
-!| ISCE           |-->| ADRESSES DES POINTS DANS LE MAILLAGE 2D.
-!| KSCE           |---|
-!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE 3D.
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D.
-!| NSCE           |-->| NOMBRE DE POINTS DONNES.
-!| Z              |-->| COORDONNEES DES POINTS DU MAILLAGE
-!| ZSCE           |-->| COORDONNEES DES POINTS DONNES.
+!| INFO           |-->| IF YES, LISTING PRINTOUT
+!| ISCE           |-->| NODE ADRESSES IN 2D MESH FOR SOURCES
+!| KSCE           |<->| NUMBER OF PLANE FOR SOURCES
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
+!| Z              |-->| Z COORDINATES
+!| ZSCE           |-->| COORDINATES OF GIVEN POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -8,7 +8,7 @@
      & VENT,WIND,H,EBORS,NPOIN2,KMIN,EMIN,PRANDTL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCE TERMS IN THE DIFFUSION EQUATION OF
@@ -42,42 +42,48 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK,EP          |-->| K ET EPSILON
-!| C1             |-->| CONSTANTE DU MODELE K-EPSILON
-!| C2             |-->| CONSTANTE DU MODELE K-EPSILON
-!| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
-!| CV1,CV2        |<--| TERMES SOURCE POUR K ET EPSILON
-!| DELTAR         |-->| DELTA(RO)/RO
-!| DT             |---|
-!| DTADZ          |-->| DERIVEE EN Z DU TRACEUR N0 1
-!| DUDY           |---|
-!| DUDZ           |---|
-!| DVDX           |---|
-!| DVDY           |---|
-!| DVDZ           |---|
-!| DWDX           |---|
-!| DWDY           |---|
-!| DWDZ           |---|
-!| EBORS          |---|
-!| EMIN           |---|
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| H              |---|
-!| IELM3          |---|
-!| KMIN           |---|
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3D         |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NPOIN2         |---|
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| PRANDTL        |---|
-!| RI             |---|
-!| S              |---|
-!| S1E            |---|
-!| S1K            |---|
-!| TR             |-->| TABLEAU DE TRAVAIL PAR POINTS
-!| U,V,W          |-->| COMPOSANTES DE LA VITESSE
-!| VENT           |---|
-!| WIND           |---|
+!| AK             |<->| TURBULENT ENERGY K
+!| C1             |-->| CONSTANT FOR K-EPSILON MODEL
+!| C2             |-->| CONSTANT FOR K-EPSILON MODEL
+!| CMU            |-->| CONSTANT FOR K-EPSILON MODEL
+!| CV1            |<->| SOURCE TERM FOR K AND EPSILON
+!| CV2            |<->| SOURCE TERM FOR K AND EPSILON
+!| DELTAR         |-->| DELTA(RHO)/RHO
+!| DT             |-->| TIME STEP
+!| DTADZ          |<->| DERIVATIVE OF TRACEUR N0 1 WITH RESPECT TO Z
+!| DUDX           |<->| DU/DX
+!| DUDY           |<->| DU/DY
+!| DUDZ           |<->| DU/DZ
+!| DVDX           |<->| DV/DX
+!| DVDY           |<->| DV/DY
+!| DVDZ           |<->| DV/DZ
+!| DWDX           |<->| DW/DX
+!| DWDY           |<->| DW/DY
+!| DWDZ           |<->| DW/DZ
+!| EBORS          |<->| EPSILON AT SURFACE
+!| EMIN           |-->| MINIMUM VALUE FOR EPSILON WHEN CLIPPING
+!| EP             |<->| TURBULENT DISSIPATION EPSILON
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| H              |-->| WATER DEPTH
+!| IELM3          |---| TYPE OF ELEMENT
+!| KMIN           |-->| MINIMUM VALUE FOR K WHEN CLIPPING
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3D         |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| PRANDTL        |-->| PRANDTL NUMBER
+!| RI             |<->| RICHARDSON NUMBER
+!| S              |-->| BIEF_OBJ
+!| S1E            |<->| C2*EPSILON/K
+!| S1K            |<->| EPSILON/K
+!| TR             |<->| TABLEAU DE TRAVAIL PAR POINTS
+!| U              |-->| VELOCITY COMPONENT
+!| V              |-->| VELOCITY COMPONENT
+!| VENT           |-->| LOGICAL FOR WIND
+!| W              |-->| VELOCITY COMPONENT
+!| WIND           |-->| STRUCTURE FOR WIND
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

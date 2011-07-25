@@ -5,7 +5,7 @@
      &(WP,WPS,ZPROPS,ISOUSI,LT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE ADVECTION STEP BY COMPUTING THE
@@ -59,11 +59,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ISOUSI         |-->| RANG DE LA SOUS-ITERATION EN COURS
-!| LT             |---|
-!| WP             |---|
-!| WPS            |-->| VITESSE W DANS LE MAILLAGE TRANSFORME
-!| ZPROPS         |---|
+!| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| WP             |<->| W VELOCITY
+!| WPS            |<->| W VELOCITY IN TRANSFORMED MESH
+!| ZPROPS         |<->| TRANSFORMED ZPROP, TEMPORARILY PUT IN MESH3D%Z
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -6,7 +6,7 @@
      &  KMIN,KMAX,EMIN,EMAX,PRANDTL,ALPHA,BETA,BETAS,OMSTAR,ITURBV)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SETS CONSTANTS OF K-EPSILON AND K-OMEGA MODELS.
@@ -39,24 +39,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHA          |---|
-!| BETA           |---|
-!| BETAS          |---|
-!| C1             |<--| K-EPSILON CONSTANT
-!| C2             |<--| K-EPSILON CONSTANT
-!| CMU            |<--| K-EPSILON CONSTANT
-!| EMAX           |<--| EPSILON MAXIMUM
-!| EMIN           |<--| EPSILON MINIMUM
+!| ALPHA          |<->| K-OMEGA CONSTANT
+!| BETA           |<->| K-OMEGA CONSTANT
+!| BETAS          |<->| K-OMEGA CONSTANT
+!| C1             |<->| K-EPSILON CONSTANT
+!| C2             |<->| K-EPSILON CONSTANT
+!| CMU            |<->| K-EPSILON CONSTANT
+!| EMAX           |<->| EPSILON MAXIMUM
+!| EMIN           |<->| EPSILON MINIMUM
 !| ITURBV         |-->| TURBULENCE MODEL (3:K-EPSILON 7:K-OMEGA)
-!| KARMAN         |<--| VON KARMAN CONSTANT
-!| KMAX           |<--| K MAXIMUM
-!| KMIN           |<--| K MINIMUM
-!| OMSTAR         |---|
-!| PRANDTL        |<--| PRANDTL NUMBER
-!| SCHMIT         |<--| SCHMIT NUMBER
-!| SIGMAE         |<--| K-EPSILON CONSTANT
-!| SIGMAK         |<--| K-EPSILON CONSTANT
-!| VIRT           |<--| VIRTUAL ORIGIN FOR EPSILON
+!| KARMAN         |<->| VON KARMAN CONSTANT
+!| KMAX           |<->| K MAXIMUM
+!| KMIN           |<->| K MINIMUM
+!| OMSTAR         |<->| K-OMEGA CONSTANT
+!| PRANDTL        |<->| PRANDTL NUMBER
+!| SCHMIT         |<->| SCHMIT NUMBER
+!| SIGMAE         |<->| K-EPSILON OR K-OMEGA CONSTANT
+!| SIGMAK         |<->| K-EPSILON OR K-OMEGA CONSTANT
+!| VIRT           |<->| VIRTUAL ORIGIN FOR EPSILON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

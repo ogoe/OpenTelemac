@@ -5,7 +5,7 @@
      & (LIMPRP, NPTFR)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    HARMONISES THE BOUNDARY CONDITIONS, INITIALISES 'IBOR'.
@@ -53,11 +53,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| LIMPRP         |<--| TYPES DE CONDITIONS AUX LIMITES POUR LA
-!|                |   | PROPAGATION
-!|                |   | PAR POINTS   :    .1:H  .2:U  .3:V
-!|                |   | PAR SEGMENTS :    .4:H  .5:U  .6:V
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD 2D
+!| LIMPRP         |<->| TYPES OF BOUNDARY CONDITIONS FOR PROPAGATION
+!|                |   | BY  POINTS   :    .1:H  .2:U  .3:V
+!|                |   | BY  EDGES    :    .4:H  .5:U  .6:V
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

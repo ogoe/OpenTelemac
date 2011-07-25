@@ -6,7 +6,7 @@
      & SVIDE,MESH3,IELM3,MSK,MASKEL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES TURBULENT VISCOSITY USING
@@ -33,20 +33,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM3          |---|
-!| MASKEL         |---|
-!| MESH3          |---|
-!| MSK            |---|
-!| SVIDE          |---|
-!| TRAV1          |---|
-!| TRAV2          |---|
-!| TRAV3          |---|
-!| TRAV4          |---|
-!| TRAV5          |---|
-!| TRAV6          |---|
-!| U              |---|
-!| V              |---|
-!| W              |---|
+!| IELM3          |-->| TYPE OF ELEMENT
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3          |-->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| SVIDE          |<->| VOID STRUCTURE
+!| TRAV1          |<->| WORK ARRAY
+!| TRAV2          |<->| WORK ARRAY
+!| TRAV3          |<->| WORK ARRAY
+!| TRAV4          |<->| WORK ARRAY
+!| TRAV5          |<->| WORK ARRAY
+!| TRAV6          |<->| WORK ARRAY
+!| U              |-->| COMPONENT OF VELOCITY
+!| V              |-->| COMPONENT OF VELOCITY
+!| W              |-->| COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

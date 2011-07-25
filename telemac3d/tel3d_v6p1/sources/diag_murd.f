@@ -5,7 +5,7 @@
      &(DIAG,XM,NELEM,NELMAX,NPOIN3,IKLE)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE DIAGONAL OF THE MURD MATRIX.
@@ -30,11 +30,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIAG           |---|
-!| IKLE           |---|
-!| NELEM          |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS DU MAILLAGE
-!| NPOIN3         |---|
+!| DIAG           |<->| DIAGONAL OF THE MURD MATRIX
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| XM             |-->| OFF-DIAGONAL TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

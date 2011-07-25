@@ -7,7 +7,7 @@
      & ELTFLO,ETAFLO,NFLOT,NITFLO,FLOPRD)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    - COMPUTES THE BARYCENTRIC COORDINATES OF A FLOAT
@@ -40,42 +40,45 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBFLO         |-->| NUMEROS DES PAS DE TEMPS DE LARGAGE DE
-!|                |   | CHAQUE FLOTTEUR.
-!| DT             |-->| PAS DE TEMPS.
-!| ELTFLO         |<->| NUMEROS DES ELEMENTS 2DH DANS LESQUELS SE
-!|                |   | TROUVE A CET INSTANT CHACUN DES FLOTTEURS.
-!| ETAFLO         |<->| NUMEROS DES PLANS DANS LESQUELS SE
-!|                |   | TROUVE A CET INSTANT CHACUN DES FLOTTEURS.
-!| FINFLO         |<->| NUMEROS DES PAS DE TEMPS DE FIN DE CALCUL DE
-!|                |   | DERIVE POUR CHAQUE FLOTTEUR.
-!|                |   | FORCE ICI SI UN FLOTTEUR SORT PAR UNE FR. LIQ.
-!| FLOPRD         |-->| NOMBRE DE PAS DE TEMPS ENTRE 2 ENREGITREMENTS
-!|                |   | DES POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| IBOR           |-->| NUMEROS DES ELEMENTS AYANT UNE FACE COMMUNE
-!|                |   | AVEC L'ELEMENT .  SI IBOR
-!|                |   | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE
-!| IKLE2          |-->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE
-!|                |   | ET GLOBALE DU MAILLAGE 2D
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D
-!| NFLOT          |-->| NOMBRE DE FLOTTEURS.
-!| NITFLO         |-->| NOMBRE MAXIMAL D'ENREGISTREMENTS DES
-!|                |   | POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| NPLAN          |-->| NOMBRE DE PLANS
-!| NPLINT         |-->| NUMERO DU PLAN INTERMEDIAIRE
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| SHPFLO         |<->| COORDONNEES BARYCENTRIQUES INSTANTANNEES DES
-!|                |   | FLOTTEURS EN 2DH
-!| SHZFLO         |<->| COORDONNEES BARYCENTRIQUES INSTANTANNEES DES
-!|                |   | FLOTTEURS EN 1DV
-!| SURDET         |-->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM.
-!| U,V,W          |-->| COMPOSANTE DE LA VITESSE
-!| X,Y,ZFLOT      |<->| POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| X,Y,ZSTAR,Z    |-->| COORDONNEES DES POINTS DU MAILLAGE.
-!| XFLOT          |---|
-!| YFLOT          |---|
-!| ZSFLOT         |<->| Z DES FLOTTEURS DANS LE MAILLAGE TRANSFORME
+!| DEBFLO         |<->| NUMBERS OF TIME STEPS FOR DROPPING OF EACH DROGUE
+!| DT             |-->| TIME STEP
+!| ELTFLO         |<->| NUMBERS OF 2DH ELEMENTS IN WHICH EACH DROGUE
+!|                |   | ARE AT CURRENT TIME
+!| ETAFLO         |<->| NUMBERS OF PLANES IN WHICH EACH DROGUE
+!|                |   | ARE AT CURRENT TIME
+!| FINFLO         |<->| NUMBERS OF TIME STEPS OF END OF COMPUTATION OF
+!|                |   | DRIFT FOR EACH DROGUE
+!|                |   | FORCES HERE IF A DROGUE GOES OUT BY A LIQUID BOUNDARY
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEN 2 RECORDINGS
+!|                |   | OF SUCCESSIVE POSITIONS OF DROGUES
+!| IBOR           |-->| NUMBERS OF ELEMENTS HAVING A COMMON FACE WITH
+!|                |   | THE ELEMENT.  IF IBOR
+!|                |   | THERE IS A LIQUID, SOLID OR PERIODIC FACE
+!| IKLE2          |-->| GLOBAL NUMBERS OF POINTS IN 2D ELEMENTS
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NFLOT          |-->| NUMBER OF DROGUES
+!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDINGS OF SUCCESSIVE
+!|                |   | POSITIONS OF DROGUES
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPLINT         |-->| NUMBER OF INTERMEDIATE PLANE
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| SHPFLO         |<->| INSTANTANEOUS BARYCENTRIC COORDINATES
+!|                |   | OF DROGUES IN 2DH
+!| SHZFLO         |<->| INSTANTANEOUS BARYCENTRIC COORDINATES
+!|                |   | OF DROGUES IN 1DV
+!| SURDET         |-->| VARIABLE USED FOR ISOPARAM. TRANSFORMATION
+!| U              |-->| COMPONENT OF VELOCITY
+!| V              |-->| COMPONENT OF VELOCITY
+!| W              |-->| COMPONENT OF VELOCITY
+!| X              |-->| X MESH COORDINATES
+!| XFLOT          |<->| SUCCESSIVE X POSITIONS OF DROGUES
+!| Y              |-->| Y MESH COORDINATES
+!| YFLOT          |<->| SUCCESSIVE Y POSITIONS OF DROGUES
+!| Z              |-->| Z MESH COORDINATES
+!| ZFLOT          |<->| SUCCESSIVE Z POSITIONS OF DROGUES
+!| ZSFLOT         |<->| Z COORDINATE OF DROGUES IN TRANSFORMED MESH
+!| ZSTAR          |-->| Z COORDINATE IN TRANSFORMED MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

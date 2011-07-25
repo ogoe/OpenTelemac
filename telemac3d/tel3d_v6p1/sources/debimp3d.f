@@ -8,7 +8,7 @@
      & IELM2V,SIGMAG,SVIDE,MASKBR,ZPROP)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    IMPOSES FLUX BOUNDARY CONDITIONS,
@@ -55,25 +55,28 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FORMUL         |---|
-!| IELM2V         |---|
-!| IFRLIQ         |---|
-!| MASK           |---|
-!| MASKBR         |---|
-!| MESH           |---|
-!| NETAGE         |---|
-!| NPOIN2         |---|
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE.
-!| NUMLIQ         |---|
-!| Q              |-->| VALEUR DU DEBIT IMPOSE
-!| SIGMAG         |---|
-!| SVIDE          |---|
-!| T3_01          |---|
-!| T3_02          |---|
-!| T3_03          |---|
-!| UBOR,VBOR      |<--| VALEURS DE U ET V DIRICHLET A L'ENTREE
-!| WBOR           |---|
-!| ZPROP          |---|
+!| FORMUL         |---| 'FLUBOR          ' ONLY IN PRACTICE
+!| IELM2V         |-->| DISCRETISATION TYPE FOR 2D VERTICAL MESH
+!| IFRLIQ         |-->| NUMBER OF LIQUID BOUNDARY
+!| MASK           |-->| MASK
+!| MASKBR         |<->| MASK OF DIRICHLETS SEGMENTS RESTRICTED
+!|                |<->| TO A FEW LIQUID BOUNDARIES
+!| MESH           |---| MESH
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| Q              |-->| VALUE OF PRESCRIBED FLOWRATE DU DEBIT IMPOSE
+!| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
+!|                |   | NOT USED
+!| SVIDE          |<->| DUMMY
+!| T3_01          |<->| WORK ARRAY: NOT USED
+!| T3_02          |<->| WORK ARRAY
+!| T3_03          |<->| WORK ARRAY: NOT USED
+!| UBOR           |<->| INLET PRESCRIBED BOUNDARY CONDITION ON VELOCITY U
+!| VBOR           |<->| INLET PRESCRIBED BOUNDARY CONDITION ON VELOCITY V
+!| WBOR           |<->| INLET PRESCRIBED BOUNDARY CONDITION ON VELOCITY W
+!| ZPROP          |<->| VERTICAL COORDINATES FOR PROPAGATION STEP: NOT USED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

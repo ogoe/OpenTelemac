@@ -9,7 +9,7 @@
      &  RUGOF,ZF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES VISCOSITIES.
@@ -42,40 +42,46 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DAMPING        |---|
+!| DAMPING        |-->| NUMBER FOR CHOICE OF DAMPING FUNCION
 !| DELTAR         |-->| (RHO-RHO0)/RHO0
-!| DNUTAV         |---|
-!| DNUVIV         |---|
-!| GRAV           |-->| GRAVITE
-!| HN             |-->| HAUTEUR D'EAU
-!| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| IND_T          |---|
-!| KARMAN         |---|
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3D         |-->| MAILLAGE 3D
-!| MIXING         |-->| MODELE DE LONGUEUR DE MELANGE
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE 3D
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| PRANDTL        |-->| NOMBRE DE PRANDTL
-!| RI             |<--| NOMBRE DE RICHARDSON
+!| DNUTAV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF TRACER
+!| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HN             |-->| WATER DEPTH
+!| IELM3          |-->| TYPE OF 3D DISCRETISATION
+!| IND_T          |-->| INDEX FOR TEMPERATURE
+!| KARMAN         |-->| KARMAN CONSTANT
+!| KFROT          |-->| LAW OF BOTTOM FRICTION
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3D         |---| 3D MESH
+!| MIXING         |-->| MIXING LENGTH MODEL
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| PRANDTL        |-->| PRANDTL NUMBER
+!| RI             |<->| RICHARDSON NUMBER
 !| RUGOF          |-->| FRICTION COEFFICIENT
-!| SVIDE          |-->| STRUCTURE VIDE
-!| TA             |-->| CONCENTRATION DES TRACEURS ACTIFS
-!| TRAV2          |---|
-!| TRAV3          |---|
-!| TRAV4          |---|
-!| TRAV5          |---|
-!| TRAV6          |---|
-!| TRAV7          |---|
-!| U,V            |-->| COMPOSANTES HORIZONTALES DE LA VITESSE
-!| UETCAR         |---|
-!| VISCTA         |<--| VISCOSITE DYNAMIQUE DES TRACEURS
-!| VISCVI         |<--| VISCOSITE DYNAMIQUE DE LA VITESSE
-!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE
-!| ZF             |-->| BOTTOM
+!| SVIDE          |<->| VOID STRUCTURE
+!| TA             |-->| ACTIVE TRACERS CONCENTRATION
+!| TRAV1          |<->| WORK ARRAY
+!| TRAV2          |<->| WORK ARRAY
+!| TRAV3          |<->| WORK ARRAY
+!| TRAV4          |<->| WORK ARRAY
+!| TRAV5          |<->| WORK ARRAY
+!| TRAV6          |<->| WORK ARRAY
+!| TRAV7          |<->| WORK ARRAY
+!| U              |-->| HORIZONTAL COMPONENT OF VELOCITY
+!| UETCAR         |-->| USTAR**2 FOR BOTTOM
+!| V              |-->| HORIZONTAL COMPONENT OF VELOCITY
+!| VISCTA         |<->| DYNAMIC VISCOSITY COEFFICIENTS FOR TRACERS
+!| VISCVI         |<->| DYNAMIC VISCOSITY COEFFICIENTS FOR VELOCITIES
+!| X              |-->| MESH COORDINATES
+!| Y              |-->| MESH COORDINATES
+!| Z              |-->| MESH COORDINATES
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

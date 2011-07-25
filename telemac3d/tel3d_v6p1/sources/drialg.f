@@ -5,7 +5,7 @@
      & (FRV, FRT, RI, NPOIN3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DAMPING FUNCTION ACCORDING TO THE
@@ -72,10 +72,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FRT            |---|
-!| FRV            |---|
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| RI             |-->| NOMBRE DE RICHARDSON
+!| FRT            |<->| DAMPING FUNCTION FOR TRACERS
+!| FRV            |<->| DAMPING FUNCTION FOR VELOCITIES
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| RI             |<->| RICHARDSON NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

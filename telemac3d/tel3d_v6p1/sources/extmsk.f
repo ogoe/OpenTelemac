@@ -5,7 +5,7 @@
      &(MASKBR,MASK,NPTFR,NETAGE)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTRUDES THE 2D MASK ON THE VERTICAL FOR LATERAL
@@ -29,10 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MASK           |-->| MASQUE 2D
-!| MASKBR         |<--| MASQUE 3D SUR LES BORDS LATERAUX
-!| NETAGE         |-->| NOMBRE D'ETAGES
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD EN 2D
+!| MASK           |-->| 2D MASK
+!| MASKBR         |<->| 3D MASK ON LATERAL BOUNDARIES
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

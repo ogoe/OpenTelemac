@@ -7,7 +7,7 @@
      & MDIFF,MESH3D,VOLU3D,VOLU3DPAR,UNSV3D,MSK,MASKEL,IELM3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE MESH FOR THE PROPAGATION STEP.
@@ -32,27 +32,30 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| H              |<--| HAUTEUR
-!| HAULIN         |-->| PROFONDEUR MOYENNE POUR LA LINEARISATION
-!| HN             |<--| HAUTEUR AU PAS DE TEMPS PRECEDENT
-!| HPROP          |<--| HAUTEUR DE PROPAGATION
-!| IELM3          |---|
-!| IPBOT          |---|
-!| MASKEL         |---|
-!| MDIFF          |---|
-!| MESH3D         |---|
-!| MSK            |---|
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| NSOUSI         |-->| NOMBRE DE SOUS ITERATIONS
-!| OPTBAN         |---|
-!| OPT_HNEG       |---|
-!| PROLIN         |-->| CORRESPOND AU MOT CLE:"PROPAGATON LINEARISEE"
-!| SIGMAG         |---|
-!| TETA           |-->| SEMI-IMPLICITATION SUR H.
-!| UNSV3D         |---|
-!| VOLU3D         |---|
-!| ZPROP          |---|
+!| H              |-->| WATER DEPTH
+!| HAULIN         |-->| MEAN DEPTH FOR LINEARISATION
+!| HN             |-->| WATER DEPTH AT TIME N
+!| HPROP          |<->| PROPAGATION DEPTH (DONE IN CVDFTR)
+!| IELM3          |-->| TYPE OF ELEMENT
+!| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MDIFF          |<->| MASS MATRIX
+!| MESH3D         |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NSOUSI         |-->| SUB-ITERATIONS NUMBER
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
+!| OPT_HNEG       |-->| OPTION FOR NEGATIVE DEPTHS
+!| PROLIN         |-->| CORRESPOND TO KEYWORD "LINEARIZED PROPAGATON"
+!| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
+!| TETA           |-->| SEMI-IMPLICITATION FOR H
+!| UNSV3D         |<->| INVERSE OF VOLUME OF BASIS FUNCTIONS 
+!| VOLU3D         |<->| INTEGRAL OF TEST FUNCTIONS IN 3D
+!| VOLU3DPAR      |<->| VOLU3D FOR EACH DOMAIN IN PARALLEL MODE
+!| ZPROP          |<->| Z DURING PROPAGATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

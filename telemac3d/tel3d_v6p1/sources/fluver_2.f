@@ -5,11 +5,29 @@
      &(FLUVER2,UP,VP,WP,GRADZF,VOLU2D,DSSUDT,NPLAN,NPOIN2)
 !
 !***********************************************************************
-! TELEMAC3D
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
+!brief    COMPUTES THE VERTICAL FLUXES IN THE REAL MESH
+!+                WE HAVE FLUVER=FLUVER2+(VOLU-VOLUN)/DT
+!+                SEE RELEASE NOTES 6.1
+!
+!
+!history  J-M HERVOUET (LNHE)
+!+        21/08/2010
+!+        V6P1
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| UP,VP,WP       |-->| INTERMEDIATE VELOCITY FIELD
+!| DSSUDT         |-->| (H-HN)/DT
+!| FLUVER2        |<->| RESULT
+!| GRADZF         |-->| BOTTOM GRADIENT
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| VOLU2D         |-->| 2D VOLUME
+!| UP             |-->| INTERMEDIATE VELOCITY FIELD
+!| VP             |-->| INTERMEDIATE VELOCITY FIELD
+!| WP             |-->| INTERMEDIATE VELOCITY FIELD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

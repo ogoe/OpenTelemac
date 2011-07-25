@@ -8,7 +8,7 @@
      &  NPOIN2,NSCE,ISCE,KSCE,QSCE,USCE,VSCE,MAXSCE)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES SOURCE TERMS FOR DIFFUSION OF TRACERS.
@@ -38,28 +38,32 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
 !| DT             |-->| TIME STEP
-!| ISCE           |---|
-!| KSCE           |---|
+!| ISCE           |-->| NODE ADRESSES IN 2D MESH FOR SOURCES
+!| KSCE           |<->| NUMBER OF PLANE FOR SOURCES
 !| LT             |-->| ITERATION NUMBER
-!| MAXSCE         |---|
-!| NONHYD         |---|
-!| NPOIN2         |---|
+!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
+!| NONHYD         |-->| LOGICAL FOR NON-HYDROSTATIC OPTION
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF POINTS IN THE MESH
-!| NSCE           |---|
+!| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| PRIVE          |-->| BLOCK OF ARRAYS FOR USER
-!| QSCE           |---|
-!| S0U,S0V        |<--| EXPLICIT SOURCE TERMS ON VELOCITIES U AND V
-!| S0W            |---|
-!| S1U,S1V        |<--| IMPLICIT SOURCE TERMS ON VELOCITIES U AND V
-!| S1W            |---|
-!| T3             |---|
-!| UN3,VN3,WSN3   |-->| COMPONENTS OF VELOCITY AT PREVIOUS TIME STEP
-!| USCE           |---|
-!| VOLU           |---|
-!| VOLUN          |---|
-!| VSCE           |---|
-!| WN3            |---|
+!| QSCE           |-->| WATER DISCHARGE OF SOURCES
+!| S0U            |<->| EXPLICIT SOURCE TERMS ON VELOCITIES U
+!| S0V            |<->| EXPLICIT SOURCE TERMS ON VELOCITIES V
+!| S0W            |<->| EXPLICIT SOURCE TERMS ON VELOCITIES W
+!| S1U            |<->| IMPLICIT SOURCE TERMS ON VELOCITIES U
+!| S1V            |<->| IMPLICIT SOURCE TERMS ON VELOCITIES V
+!| S1W            |<->| IMPLICIT SOURCE TERMS ON VELOCITIES W
+!| T3             |<->| WORK ARRAY: NOT USED
+!| UN3            |-->| COMPONENTS OF VELOCITY AT PREVIOUS TIME STEP
+!| USCE           |-->| VELOCITY FOR SOURCE
+!| VN3            |-->| COMPONENTS OF VELOCITY AT PREVIOUS TIME STEP
+!| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
+!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N
+!| VSCE           |-->| VELOCITY FOR SOURCE
+!| WN3            |-->| COMPONENTS OF VELOCITY AT PREVIOUS TIME STEP
+!| WSN3           |-->| SIGMA-TRANSFORMED VERTICAL VELOCITY COMPONENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

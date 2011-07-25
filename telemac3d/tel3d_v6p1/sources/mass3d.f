@@ -33,8 +33,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| INFO           |-->| LOGIQUE INDIQUANT SI ON FAIT LES IMPRESSIONS
-!| LT             |---|
+!| INFO           |-->| LOGICAL TO INDICATE IF PRINTINGS MUST BE DONE
+!| LT             |-->| CURRENT TIME STEP NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

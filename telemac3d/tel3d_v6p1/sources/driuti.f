@@ -5,7 +5,7 @@
      & (FRI, RI, ITYP, ITRAC, NPOIN3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    USER DEFINED DAMPING FUNCTIONS.
@@ -38,12 +38,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FRI            |<--| DAMPING FUNCTION
+!| FRI            |<->| DAMPING FUNCTION
 !| ITRAC          |-->| TRACER NUMBER
 !| ITYP           |-->| =1 FOR VELOCITIES
 !|                |   | =2 FOR TRACERS
 !| NPOIN3         |-->| NUMBER OF POINTS IN THE 3D MESH
-!| RI             |-->| RICHARDSON NUMBER
+!| RI             |<->| RICHARDSON NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

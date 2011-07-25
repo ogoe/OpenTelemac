@@ -12,7 +12,7 @@
      &  COUROU,NPTH,T3D_FILES,T3DBI1)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    SOURCE TERMS FOR U & V MOMENTUM EQUATIONS.
@@ -50,69 +50,83 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS DU PAS DE TEMPS
-!| CORIOL         |-->| LOGIQUE INDIQUANT SI FORCE DE CORIOLIS
-!| CV1,CV2        |<--| TERMES SOURCES SUR U ET V
-!| DELTAR         |-->| DENSITE RELATIVE
-!| DENLAW         |---|
-!| DT             |-->| PAS DE TEMPS
-!| FCOR           |-->| COEFFICIENT DE CORIOLIS
-!| FU2            |---|
-!| GRADZSX        |---|
-!| GRADZSY        |---|
-!| GRAV           |-->| GRAVITE
-!| IELM2H         |---|
-!| IELM3          |---|
-!| IKLE3          |-->| CORRESPONDANCE ENTRE LA NUMEROTATION LOCALE
-!|                |   | ET GLOBALE 3D
-!| INCHYD         |---|
-!| ISCE           |---|
-!| KSCE           |---|
-!| LATIT          |---|
-!| LONGIT         |---|
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH2D         |---|
-!| MESH3          |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NELEM2         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 2D
-!| NELEM3         |-->| NOMBRE D'ELEMENTS DU MAILLAGE 3D
-!| NETAGE         |-->| NOMBRE D'ETAGES SUR LA VERTICALE
-!| NORD           |---|
-!| NPLAN          |-->| NOMBRE DE PLANS SUR LA VERTICALE
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| NREJEU         |---|
-!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| PRIVE          |-->| TABLEAUX RESERVES A L'UTILISATEUR
-!| QSCE           |---|
+!| AT             |-->| TIME OF TIME STEP
+!| CORIOL         |-->| LOGICAL IF CORIOLIS FORCE OR NOT
+!| COUROU         |-->| LOGICAL FOR WAVE DRIVEN CURRENTS
+!| CV1            |<->| SOURCE TERMS ON U
+!| CV2            |<->| SOURCE TERMS ON V
+!| DELTAR         |<->| (RHO-RHO0)/RHO0
+!| DENLAW         |-->| CHOICE OF DENSITY LAW (SEE ABOVE)
+!| DT             |-->| TIME STEP
+!| FCOR           |-->| CORIOLIS COEFFICIENT
+!| FU2            |<->| NOT USED
+!| FXH            |<->| WAVE STRESSES FROM ARTEMIS OR TOMAWAC
+!| FYH            |<->| WAVE STRESSES FROM ARTEMIS OR TOMAWAC
+!| GRADZSX        |<->| FREE SURFACE GRADIENT
+!| GRADZSY        |<->| FREE SURFACE GRADIENT
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| IELM2H         |-->| TYPE OF ELEMENT
+!| IELM3          |-->| CORRESPONDENCE BETWEEN LOCAL AND 3D GLOBAL
+!|                |---| NUMBER
+!| INCHYD         |-->| IF YES, HYDROSTATIC INCONSISTENCY FILTER
+!| ISCE           |-->| NODE ADRESSES IN 2D MESH FOR SOURCES
+!| KSCE           |-->| NUMBER OF PLANE FOR SOURCES
+!| LATIT          |-->| LATITUDE OF THE ORIGIN POINT
+!| LONGIT         |-->| LONGITUDE OF THE ORIGIN POINT: NOT USED
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| LV             |-->| VECTOR LENGTH FOR VECTORISATION
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH2D         |<->| 2D MESH
+!| MESH3          |---| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| NORD           |-->| NORTH
+!| NPTH           |-->| RECORD NUMBER IN THE WAVE DRIVEN CURRENTS FILE
+!| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF POINTS IN 3D
+!| NREJEU         |---| NUMBER OF VELOCITY INFORMATION FOR SOURCE
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| QSCE           |---| WATER DISCHARGE OF SOURCES
 !| SCHCVI         |-->| ADVECTION SCHEME ON VELOCITY
-!| SCV1,SCV2      |<--| STRUCTURES ASSOCIEES
-!| SEDI           |-->| LOGIQUE INDIQUANT LA PRESENCE D'UN SEDIMENT
-!| SMASKEL        |---|
-!| SMU            |---|
-!| SMV            |---|
-!| ST1            |-->| STRUCTURE ASSOCIEE
-!| ST2            |---|
-!| ST3            |---|
-!| SURFAC         |-->| SURFACE DES ELEMENTS 2D
-!| SVIDE          |---|
-!| SVOLU          |---|
-!| T1             |-->| TABLEAU DE TRAVAIL PAR POINTS
-!| T2             |---|
-!| T3             |---|
-!| TA             |-->| TRACEURS
-!| TRAV2          |---|
-!| UN3,VN3        |-->| COMPOSANTES HORIZONTALES DE LA VITESSE A TN
-!| USCE           |---|
-!| VOLU           |---|
-!| VSCE           |---|
-!| W1,W2,W3       |-->| TABLEAUX DE TRAVAIL PAR ELEMENTS 3D
-!| X,Y,Z          |-->| COORDONNEES DU MAILLAGE 3D
-!| YASEM3D        |---|
-!| Z3             |---|
-!| ZS             |-->| COTE PAR RAPPORT A LA SURFACE
+!| SCV1           |<->| ASSOCIATED STRUCTURES
+!| SCV2           |<->| ASSOCIATED STRUCTURES
+!| SEDI           |-->| IF YES, THERE IS SEDIMENT
+!| SMASKEL        |-->| ASSOCIATED STRUCTURES
+!| SMU            |<->| RIGHT-HAND SIDE ON VELOCITIES EQUATIONS
+!| SMV            |<->| RIGHT-HAND SIDE ON VELOCITIES EQUATIONS
+!| ST1            |<->| ASSOCIATED STRUCTURE
+!| ST2            |<->| ASSOCIATED STRUCTURE
+!| ST3            |<->| ASSOCIATED STRUCTURE
+!| SURFAC         |-->| AREA OF TRIANGLES
+!| SVIDE          |<->| VOID VECTOR STRUCTURE
+!| SVOLU          |<->| ASSOCIATED STRUCTURE: NOT USED
+!| T1             |<->| WORK ARRAY BY POINTS
+!| T2             |<->| WORK ARRAY
+!| T3             |<->| WORK ARRAY
+!| T3D_FILES      |-->| DATA STRUCTURE WITH DATA ON FILES
+!| T3DBI1         |-->| BINARY DATA FILE 1
+!| TA             |<->| TRACERS
+!| TRAV2          |<->| WORK ARRAYS
+!| UN3            |-->| COMPONENTS OF VELOCITY AT PREVIOUS TIME STEP N
+!| USCE           |-->| VELOCITIES OF THE SOURCES ALONG X
+!| VN3            |-->| COMPONENTS OF VELOCITY AT PREVIOUS TIME STEP N
+!| VOLU           |<->| VOLUME AROUND POINTS AT TIME N+1
+!| VSCE           |-->|VELOCITIES OF THE SOURCES ALONG Y
+!| W1             |<->| WORK ARRY BY 3D ELEMENTS
+!| W2             |<->| WORK ARRY BY 3D ELEMENTS
+!| W3             |<->| WORK ARRY BY 3D ELEMENTS
+!| X              |-->| 3D MESH COORDINATES
+!| Y              |-->| 3D MESH COORDINATES
+!| YASEM3D        |<->| IF TRUE, RIGHT HAND SIDE HAS BEEN PARTLY
+!|                |   | COMPUTED BEFORE CALLING DIFF3D
+!| Z              |-->| 3D MESH COORDINATES
+!| Z3             |---| 3D NODE COORDINATES: NOT USED
+!| ZS             |<->| COTE PAR RAPPORT A LA SURFACE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

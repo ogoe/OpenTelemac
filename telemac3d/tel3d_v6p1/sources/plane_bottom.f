@@ -5,7 +5,7 @@
      &(IPBOT,Z,NPOIN2,NPLAN,SIGMAG,OPTBAN,HN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FOR EVERY 2D POINT, FINDS THE LAST PLANE WITH NO
@@ -35,11 +35,12 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| HN             |-->| WATER DEPTH
-!| IPBOT          |<--| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
+!| IPBOT          |<->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
 !| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
-!| OPTBAN         |-->|
-!| SIGMAG         |-->|
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
+!| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
 !| Z              |-->| ELEVATION OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

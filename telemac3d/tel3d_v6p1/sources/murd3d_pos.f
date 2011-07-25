@@ -10,7 +10,7 @@
      & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
@@ -42,48 +42,54 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
+!| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DIMGLO         |-->| FIRST DIMENSION OF ARRAY GLOSEG
-!| DT             |-->| PAS DE TEMPS
-!| FC             |<--| VARIABLE APRES CONVECTION
+!| DT             |-->| TIME STEP
+!| FC             |<->| VARIABLE AFTER CONVECTION
 !| FLODEL         |-->| FLUXES BY SEGMENT
 !| FLOPAR         |-->| FLUXES BY SEGMENT, ASSEMBLED IN PARALLEL
-!| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
-!| FLUX           |<->| FLUX GLOBAL A INCREMENTER
-!| FN             |-->| VARIABLE AU TEMPS N
+!| FLUEXT         |-->| OUTPUT FLUX BY NODE
+!| FLUX_REMOVED   |<->| TOTAL FLUX REMOVED OF EACH POINT
+!| FLUX           |<->| GLOBAL FLUXES TO BE CHANGED
+!| FN             |-->| VARIABLE AT TIME N
 !| FSCE           |-->| DIRICHLET BOUNDARY CONDITIONS OF F
-!| GLOSEG         |-->| GLOBAL NUMBERS OF POINTS, PER SEGMENT
-!| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH2          |-->| 2D MESH
-!| MESH3          |-->| 3D MESH
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-!| NPLAN          |---|
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| INFOR          |-->| INFORMATIONS FOR SOLVERS
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH2          |<->| 2D MESH
+!| MESH3          |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NSCE           |---|
-!| NSEG           |---|
-!| OPTBAN         |---|
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
 !| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
 !| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
-!| RMASS          |---|
-!| S0F            |-->| TERME SOURCE EXPLICITE
-!| SCHCF          |-->| SCHEMA DE CONVECTION DE F
-!| SOURCES        |---|
-!| STRA01         |---|
-!| STRA02         |---|
-!| STRA03         |---|
-!| SVOLU          |---|
-!| SVOLU2         |---|
-!| SVOLUN         |---|
-!| TRA01          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
-!|                |   | EQUIVALENT DE VOLU2 POUR LE TEMPS FINAL COURANT
-!| TRA02          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
-!| TRA03          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
-!| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
-!| VOLU2          |-->| COMME VOLU MAIS ASSEMBLE EN PARALLELISME
-!| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N
+!| RMASS          |<->| REMAINING MASSES
+!| S0F            |-->| EXPLICIT SOURCE TERM
+!| SAVED_F        |<->| TRACER SAVED
+!| SAVED_VOLU2    |<->| VOLUME VOLU2 SAVED
+!| SCHCF          |-->| ADVECTION SCHEME FOR F
+!| SOURCES        |-->| SOURCES
+!| STRA01         |<->| STRUCTURE OF TRA01
+!| STRA02         |<->| STRUCTURE OF TRA02
+!| STRA03         |<->| STRUCTURE OF TRA03
+!| SVOLU          |-->| STRUCTURE OF VOLU
+!| SVOLU2         |<->| STRUCTURE OF VOLU2
+!| SVOLUN         |-->| STRUCTURE OF VOLUN
+!| T5             |<->| WORK ARRAY
+!| TRA01          |<->| WORK ARRAY OF DIMENSION NPOIN3 EQUIVALENT TO
+!|                |   | VOLU2 FOR CURRENT FINAL TIME
+!| TRA02          |<->| WORK ARRAY OF DIMENSION NPOIN3
+!| TRA03          |<->| WORK ARRAY OF DIMENSION NPOIN3
+!| VOLU           |-->| CONTROL VOLUME AT TIME N+1
+!| VOLU2          |<->| LIKE VOLU, BUT ASSEMBLED IN PARALLEL
+!| VOLUN          |-->| CONTROL VOLUME AT TIME N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -5,7 +5,7 @@
      &(DFDX,DFDY,FU,NPLAN,S,UNSV2D,FU2,FU3,FU4,IELM2,MESH2D,MSK,MASKEL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE 2D GRADIENT OF FUNCTION F.
@@ -33,18 +33,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DFDX           |<--| DF/DX
-!| DFDY           |<--| DF/DY
-!| FU             |-->| FONCTION A DERIVER
-!| FU2            |---|
-!| FU3            |---|
-!| FU4            |---|
-!| IELM2          |-->| TYPE DE DISCRETISATION 2D
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH2D         |-->| BLOC DU MAILLAGE 2D
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| S              |---|
-!| UNSV2D         |-->| INVERSE DU VOLUME DES BASES EN 2D
+!| DFDX           |<->| DF/DX
+!| DFDY           |<->| DF/DY
+!| FU             |-->| FUNCTION TO DIFFERENTIATE
+!| FU2            |<->| POINTER ON FU
+!| FU3            |<->| POINTER ON DF/DX
+!| FU4            |<->| POINTER ON DF/DY
+!| IELM2          |-->| TYPE OF 2D DISCRETISATION
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH2D         |<->| 2D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| S              |<->| VOID STRUCTURE
+!| UNSV2D         |<->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!|                |   | (VOLUME OF BASES)IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

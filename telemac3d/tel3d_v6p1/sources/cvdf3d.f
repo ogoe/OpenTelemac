@@ -18,7 +18,7 @@
      &  VOLUT,ZT,ZPROP,RAIN,PLUIE,PARAPLUIE,FLODEL,FLOPAR,SIGMAG,IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE ADVECTION-DIFFUSION STEP.
@@ -46,98 +46,125 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AFBORF         |---|
-!| AFBORS         |---|
-!| AGGLOD         |-->| MASS-LUMPING DANS LA DIFFUSION
-!| BFBORF         |---|
-!| BFBORS         |---|
-!| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
-!| CLIMAX         |---|
-!| DIRFLU         |---|
-!| DT             |-->| PAS DE TEMPS
-!| FBORF          |---|
-!| FBORS          |---|
-!| FC             |<--| VARIABLE APRES CONVECTION
-!| FD             |<--| VARIABLE APRES DIFFUSION
-!| FLODEL         |---|
-!| FLOPAR         |---|
-!| FLUEXT         |---|
-!| FLUXF          |---|
-!| FMIN,FMAX      |-->| VALEURS DE CLIPPING
-!| FN             |-->| VARIABLE AU TEMPS N
-!| FSCE           |---|
-!| H              |---|
-!| IELM2H         |-->| TYPE DE DISCRETISATION 2DH
-!| IELM2V         |-->| TYPE DE DISCRETISATION 2DV
-!| IELM3          |-->| TYPE DE DISCRETISATION 3D
-!| IKLE3          |-->| CORRESPONDANCE NUMEROTATION LOCALE ET GLOBALE
-!| INCHYD         |---|
-!| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
-!| IPBOT          |---|
-!| IT1            |---|
-!| IT2            |---|
-!| LIFBOF         |---|
-!| LIFBOS         |---|
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| MASKBR         |---|
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MASKPT         |-->| MASQUAGE DES POINTS
-!| MATR2H         |<->| MATRICE DE TRAVAIL 2DH
-!| MDIFF          |---|
-!| MESH2D         |---|
-!| MESH3D         |---|
-!| MMURD          |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| MSUPG          |---|
-!| MTRA1          |---|
-!| MTRA2          |---|
-!| MURD_TF        |---|
-!| NBOR3          |-->| NUMEROS GLOBAUX DES POINTS FRONTIERES 3D
-!| NELEM2         |-->| NOMBRE D'ELEMENTS 2D
-!| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-!| NEWDIF         |-->| RECALCULE OU NON LA MATRICE DE DIFFUSION
-!| NFRLIQ         |---|
-!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE 3D
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NPTFR3         |-->| NOMBRE DE POINTS FRONTIERE BORDS LATERAUX
-!| NSCE           |---|
-!| NUMLIQ         |---|
-!| OPTBAN         |---|
-!| OPTDIF         |---|
-!| PARAPLUIE      |-->| RAIN (IN ASSEMBLED MODE IN PARALLEL)
-!| PLUIE          |-->| RAIN
-!| RAIN           |---|
-!| SCHCF          |-->| SCHEMA DE CONVECTION DE F
-!| SCHDF          |-->| SCHEMA DE DIFFUSION DE F
-!| SEM3D          |---|
-!| SIGMAF         |-->| COEFFICIENT DE REDUCTION DE LA VISCOSITE
-!| SIGMAG         |---|
-!| SLVDIF         |---|
-!| SOURCES        |---|
-!| SVIDE          |-->| STRUCTURE VIDE
-!| T2_01          |---|
-!| T2_02          |---|
-!| T2_03          |---|
-!| T3_01          |---|
-!| T3_02          |---|
-!| T3_03          |---|
-!| T3_04          |---|
-!| TETADI         |---|
-!| TRAV3          |<->| STRUCTURE DE TABLEAUX DE TRAVAIL 3D
-!| TRBAF          |---|
-!| VISCF          |-->| COEFFICIENTS DE VISCOSITE
-!|                |   | VISCF(*,1 OU 2) VISCOSITE HORIZONTALE
-!|                |   | VISCF(*,3)      VISCOSITE VERTICALE
-!| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
-!| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N
-!| VOLUT          |---|
-!| W1             |<->| TABLEAU DE TRAVAIL (CALCUL DES MATRICES...)
-!| WCC            |---|
-!| YASEM3D        |---|
-!| YAWCC          |---|
-!| ZPROP          |---|
-!| ZT             |---|
+!| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
+!|                |   |  NU*DF/DN = AFBORF*U + BFBORF
+!| AFBORL         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE
+!|                |   | LATERAL BOUNDARIES:
+!|                |   | NU*DF/DN = AFBORL*U + BFBORL
+!| AFBORS         |-->| LOGARITHMIC LAW FOR COMPONENT AT THE SURFACE:
+!|                |   | NU*DF/DN = AFBORS*U + BFBORS
+!| AGGLOD         |-->| MASS-LUMPING IN DIFFUSION
+!| BFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
+!|                |   |  NU*DF/DN = AFBORF*U + BFBORF
+!| BFBORL         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE
+!|                |   | LATERAL BOUNDARIES:
+!|                |   | NU*DF/DN = AFBORL*U + BFBORL
+!| BFBORS         |-->| LOGARITHMIC LAW FOR COMPONENT AT THE SURFACE:
+!|                |   | NU*DF/DN = AFBORS*U + BFBORS
+!| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
+!| CLIMAX         |-->| LOGICAL FOR CLIPPING (MAX VALUE)
+!| CLIMIN         |-->| LOGICAL FOR CLIPPING (MIN VALUE)
+!| DIRFLU         |-->| TREATMENT OF FLUXES AT THE BOUNDARIES
+!| DT             |-->| TIME STEP
+!| FBORF          |<->| DIRICHLET CONDITIONS ON F AT THE BOTTOM
+!| FBORL          |<->| DIRICHLET CONDITIONS ON F ON LATERAL BOUNDARIES
+!| FBORS          |<->| DIRICHLET CONDITIONS ON F AT THE SURFACE
+!| FC             |<->| VARIABLE AFTER CONVECTION
+!| FD             |<->| VARIABLE AFTER DIFFUSION
+!| FLODEL         |-->| FLUXES BY SEGMENT
+!| FLOPAR         |-->| FLUXES BY SEGMENT, ASSEMBLED IN PARALLEL
+!| FLUEXT         |-->| OUTPUT FLUX BY NODE
+!| FLUEXTPAR      |-->| OUTPUT FLUX BY NODE IN PARALLEL
+!| FLUXF          |<->| FLUX FOR F
+!| FMAX           |-->| MAX CLIPPING VALUE
+!| FMIN           |-->| MIN CLIPPING VALUE
+!| FN             |<->| VARIABLE F AT TIME N
+!| FSCE           |-->| SOURCE TERM OF F
+!| H              |-->| WATER DEPTH AT TIME
+!| IELM2H         |-->| DISCRETISATION TYPE FOR 2D HORIZONTAL MESH
+!| IELM2V         |-->| DISCRETISATION TYPE FOR 2D VERTICAL MESH
+!| IELM3          |-->| DISCRETISATION TYPE FOR 3D
+!| IKLE3          |-->| GLOBAL 3D CONNECTIVITY
+!| INCHYD         |-->| IF YES, HYDROSTATIC INCONSISTENCY FILTER
+!| INFOR          |-->| INFORMATIONS FOR SOLVERS
+!| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
+!| IT1            |<->| BIEF_OBJ STRUCTURES FOR INTEGER ARRAYS
+!| IT2            |<->| BIEF_OBJ STRUCTURES FOR INTEGER ARRAYS
+!| LIFBOF         |<->| TYPE OF BOUNDARY CONDITIONS AT THE BOTTOM
+!| LIFBOL         |<->| TYPE OF BOUNDARY CONDITIONS ON LATERAL BOUNDARIES
+!| LIFBOS         |<->| TYPE OF BOUNDARY CONDITIONS AT THE SURFACE
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| MASKBR         |-->| 3D MASK ON LATERAL BOUNDARIES
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MATR2H         |<->| WORK MATRIX 2DH
+!| MDIFF          |<->| DIFFUSION MATRIX
+!| MESH2D         |<->| 2D MESH
+!| MESH3D         |<->| 3D MESH
+!| MMURD          |<->| NON SYMMETRIC MURD MATRIX
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| MSUPG          |<->| NON SYMMETRIC SUPG MATRIX
+!| MTRA1          |<->| 3D WORK MATRIX
+!| MTRA2          |<->| 3D WORK MATRIX
+!| MURD_TF        |<->| MURD MATRIX FOR TIDAL FLAT
+!| NBOR3          |-->| GLOBAL NUMBER OF 3D BOUNDARY POINTS
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NEWDIF         |-->| RECALCULATE OR NOT DIFFUSION MATRIX
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NPTFR3         |-->| NUMBER OF LATERAL BOUNDARY POINTS IN 3D
+!| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
+!| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
+!| OPTDIF         |-->| OPTION FOR THE DIFFUSION
+!| PARAPLUIE      |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
+!|                |   | (IN ASSEMBLED MODE IN PARALLEL)
+!| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
+!| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
+!| S0F            |<->| EXPLICIT SOURCE TERM (DIM=F/T)
+!| S1F            |<->| IMPLICIT SOURCE TERM (DIM=1/T)
+!| SCHCF          |-->| ADVECTION SCHEME OF F
+!| SCHDF          |-->| DIFFUSION SCHEME OF F
+!| SEM3D          |<->| SECOND MEMBERS (RIGHT HAND SIDE)
+!|                |   | FOR THE LINEAR EQUATIONS 3D
+!| SIGMAF         |-->| COEFFICIENT OF VISCOSITY REDUCTION
+!| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
+!| SLVDIF         |-->| SOLVER FOR DIFFUSION OF VELOCITIES
+!| SOURCES        |-->| RIGHT HAND SIDE OF CONTINUITY EQUATION WHEN SOURCES
+!| SVIDE          |-->| VOID STRUCTURE
+!| T2_01          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| T2_02          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| T2_03          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| T3_01          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| T3_02          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| T3_03          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| T3_04          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
+!| TETADI         |<->| IMPLICITATION RATE FOR DIFFUSION
+!| TRAV3          |<->| 3D WORK ARRAYS
+!| TRBAF          |-->| TREATMENT ON TIDAL FLATS FOR F
+!| VISCF          |<->| VISCOSITY COEFFICIENTS
+!|                |   | VISCF(*,1 OR 2) HORIZONTAL VISCOSITY
+!|                |   | VISCF(*,3)      VERTICAL VISCOSITY
+!| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
+!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N
+!| VOLUNPAR       |-->| VOLUME AROUND POINTS AT TIME N, IN PARALLEL
+!| VOLUPAR        |-->| VOLUME AROUND POINTS AT TIME N+1, IN PARALLEL
+!| VOLUT          |<->| VOLUME AFTER SEMI-IMPLICITATION FOR TRACER
+!| W1             |<->| WORK ARRAY (MATRICES COMPUTATION...)
+!| WCC            |-->| VELOCITY (NEGATIVE IF SEDIMENT SETTLING VELOCITY)
+!| YASEM3D        |-->| IF TRUE, RIGHT HAND SIDE HAS BEEN PARTLY
+!|                |   | COMPUTED BEFORE CALLING DIFF3D
+!| YAS0F          |-->| LOGICAL TO TAKE INTO ACCOUNT S0F TERM IN DIFF3D
+!| YAS1F          |-->| LOGICAL TO TAKE INTO ACCOUNT S1F TERM IN DIFF3D
+!| YAWCC          |-->| LOGICAL TO TAKE INTO ACCOUNT WCC FOR SEDIMENT
+!| ZPROP          |-->| VERTICAL COORDINATES FOR PROPAGATION STEP
+!| ZT             |<->| Z: DISTRIBUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

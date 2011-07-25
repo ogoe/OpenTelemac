@@ -6,7 +6,7 @@
      &    NPOIN3, NPOIN2, NPLAN, PRIVE )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE HYDROSTATIC PRESSURE FIELD PH [PA]
@@ -39,15 +39,15 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DELTAR         |-->| RELATIVE DENSITY DELTAR = (RHO-RHO0)/RHO0
-!| GRAV           |---|
+!| GRAV           |-->| GRAVITY ACCELERATION
 !| NPLAN          |-->| NUMBER OF MESH PLANES
 !| NPOIN2         |-->| NUMBER OF 2D-POINTS
 !| NPOIN3         |-->| NUMBER OF 3D-POINTS
-!| PH             |<--| HYDROSTATIC PRESSURE
-!| PRIVE          |---|
-!| RHO0           |---|
+!| PH             |<->| HYDROSTATIC PRESSURE
+!| PRIVE          |<->| BLOCK OF PRIVATE ARRAYS FOR USER
+!| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
 !| TRA01          |<->| WORK FIELDS
-!| TRA02          |---|
+!| TRA02          |<->| WORK FIELDS
 !| Z              |-->| Z-COORDINATES OF NODES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

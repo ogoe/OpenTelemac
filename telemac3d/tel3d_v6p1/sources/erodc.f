@@ -6,7 +6,7 @@
      &  MPART , DT     , NPOIN2 , NCOUCH )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS EROSION
@@ -41,12 +41,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CONC           |-->| CONCENTRATION  OF BED LAYER
+!| CONC           |-->| CONCENTRATION OF BED LAYER
 !| DENSI          |-->| FLUID DENSITY
 !| DT             |-->| TIME STEP
-!| EPAI           |<--| THICKNESS OF SOLID BED LAYER
+!| EPAI           |<->| THICKNESS OF SOLID BED LAYER
 !|                |   | (EPAI=DZ/(1+IVIDE), DZ total bed thickness)
-!| FLUER          |<--| EROSION  FLUX
+!| FLUER          |<->| EROSION  FLUX
 !| MPART          |-->| EMPIRICAL COEFFICIENT (PARTHENIADES)
 !| NCOUCH         |-->| NUMBER OF LAYERS WITHIN THE BED
 !|                |   | (GIBSON MODEL)

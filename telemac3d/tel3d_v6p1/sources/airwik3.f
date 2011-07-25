@@ -5,7 +5,7 @@
      & (LIHBOR,U,V,XNEBOR,YNEBOR,NBOR,NPTFR,NPLAN,NPOIN2,KLOG)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ENSURES THE CONDITION U . N = 0  (U AND N ARE VECTORS).
@@ -33,14 +33,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KLOG           |-->| CONVENTION POUR LES PAROIS AVEC GLISSEMENT
-!| LIHBOR         |---|
-!| NBOR           |-->| CORRESPONDANCE NUMEROTATION FRONTIERE ET
-!|                |   | NUMEROTATION GLOBALE EN 2D
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES 2D
-!| XNEBOR,YNEBOR  |-->| COMPOSANTES VECTEUR NORMAL POINTS FRONTIERES
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
+!| XNEBOR         |-->| X COMPONENT OF NORMAL VECTOR FOR BOUNDARY POINTS
+!| YNEBOR         |-->| Y COMPONENT OF NORMAL VECTOR FOR BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

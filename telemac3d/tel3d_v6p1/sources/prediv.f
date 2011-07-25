@@ -2,10 +2,10 @@
                      SUBROUTINE PREDIV
 !                    *****************
 !
-     & ( PD, UP, VP, WP, INFO , BC , OPT, DIRSUR,DIRBOT,DIRLAT)
+     & ( PD, UP, VP, WP, INFO , BC , OPT, DIRSUR, DIRBOT, DIRLAT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE PRESSURE POISSON EQUATION
@@ -52,6 +52,9 @@
 !|                |   | AND DIRICHLET VALUES ARE CONSIDERED
 !|                |   | IF NO, DIRICHLET VALUES ARE SET TO 0
 !|                |   | AND BOUNDARY CONDITIONS ARE DISCARDED
+!| DIRBOT         |-->| LOGICAL FOR DIRICHLET VALUES ON THE BOTTOM
+!| DIRLAT         |-->| LOGICAL FOR DIRICHLET VALUES ON LATERAL BOUNDARIES
+!| DIRSUR         |-->| LOGICAL FOR DIRICHLET VALUES AT THE SURFACE
 !| INFO           |-->| INFORMATION ASKED ON SOLVER ITERATIONS
 !| OPT            |-->| OPTION 1: DIVERGENCE IN THE REAL MESH
 !|                |   | 2: DIVERGENCE OBTAINED BY SUM OF FLUXES
@@ -61,7 +64,9 @@
 !|                |   | VERTICAL FLUXES AND FLUXES TANGENT
 !|                |   | TO PLANES
 !| PD             |<->| DYNAMIC PRESSURE
-!| UP,VP,WP       |-->| INTERMEDIATE VELOCITY FIELD
+!| UP             |-->| INTERMEDIATE VELOCITY FIELD
+!| VP             |-->| INTERMEDIATE VELOCITY FIELD
+!| WP             |-->| INTERMEDIATE VELOCITY FIELD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

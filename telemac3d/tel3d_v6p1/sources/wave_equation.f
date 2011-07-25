@@ -5,7 +5,7 @@
      &(LT,ISOUSI)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
@@ -49,8 +49,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ISOUSI         |---|
-!| LT             |---|
+!| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
+!| LT             |-->| CURRENT TIME STEP NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

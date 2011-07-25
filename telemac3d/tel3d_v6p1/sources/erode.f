@@ -8,7 +8,7 @@
      &  TOCE   , CFDEP  , RHOS  , DT   , GIBSON)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS EROSION.
@@ -46,11 +46,11 @@
 !| DENSI          |-->| FLUID DENSITY
 !| DT             |-->| TIME STEP
 !| EPAI           |<->| THICKNESS OF SOLID BED LAYER
-!| FLUER          |<--| EROSION FLUX
+!| FLUER          |<->| EROSION FLUX
 !| GIBSON         |-->| LOGICAL FOR SETTLING MODEL
 !|                |   | (GIBSON MODEL)
-!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT(FLUID MUD LAYER)
-!| IVIDE          |-->| VOID RATIO
+!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
+!| IVIDE          |<->| VOID RATIO
 !| MPART          |-->| EMPIRICAL COEFFICIENT PARTHENIADES
 !| NPF            |<->| NUMBER OF POINTS WITHIN THE BED
 !| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES WITHIN THE BED

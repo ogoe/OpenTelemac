@@ -7,7 +7,7 @@
      & I_ORIG,J_ORIG)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES THE BINARY RESULTS FILE TO SELAFIN FORMAT
@@ -42,29 +42,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BINRES         |-->| TYPE DE BINAIRE DU FICHIER DE RESULTATS
-!| DEBFLO         |-->| NUMEROS DES PAS DE TEMPS DE LARGAGE DE
-!|                |   | CHAQUE FLOTTEUR.
-!| FINFLO         |-->| NUMEROS DES PAS DE TEMPS DE FIN DE CALCUL DE
-!|                |   | DERIVE POUR CHAQUE FLOTTEUR.
-!| FLOPRD         |-->| NOMBRE DE PAS DE TEMPS ENTRE 2 ENREGITREMENTS
-!|                |   | DES POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| IKLFLO         |---| TABLE DE CONNECTIVITE BIDON UTILISEE POUR LA
-!|                |   | SORTIE DES TRAJECTOIRES SOUS FORME DE MAILLAGE
-!| I_ORIG         |---|
-!| J_ORIG         |---|
-!| LISTIN         |-->| SORTIES SUR LISTING OU NON
-!| NFLOT          |-->| NOMBRE DE FLOTTEURS.
-!| NIT            |-->| NOMBRE DE PAS DE TEMPS
-!| NITFLO         |-->| NOMBRE MAXIMAL D'ENREGISTREMENTS DES
-!|                |   | POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| NOMRBI         |-->| NOM DU FICHIER DE RESULTATS BINAIRE SUP.
-!| NREBI          |-->| FICHIER DE RESULTATS BINAIRE SUPPLEMENTAIRE
-!|                |   | POUR STOCKER LES TRAJECTOIRES DE FLOTTEURS
-!| TITCAS         |-->| TITRE DU FICHIER CAS
-!| TRAFLO         |---| TABLEAU DE TRAVAIL UTILISE DANS FMTSEL
-!| XFLOT,YFLOT    |-->| POSITIONS SUCCESSIVES DES FLOTTEURS.
-!| ZFLOT          |---|
+!| BINRES         |-->| TYPE OF BINARY FOR RESULTS FILE
+!| DEBFLO         |<->| NUMBERS OF TIME STEPS FOR DROPPING OF EACH DROGUE
+!| FINFLO         |<->| NUMBERS OF TIME STEPS OF END OF COMPUTATION OF
+!|                |   | DRIFT FOR EACH DROGUE
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEN 2 RECORDINGS
+!|                |   | OF SUCCESSIVE POSITIONS OF DROGUES
+!| IKLFLO         |<->| FAKE CONNECTIVY TABLE BIDON USED FOR PATHS 
+!|                |   | UNDER MESH FORMAT
+!| I_ORIG         |-->| COORDINATE OF THE ORIGIN
+!| J_ORIG         |-->| COORDINATE OF THE ORIGIN
+!| LISTIN         |-->| LISTING PRINTOUT OR NOT
+!| NFLOT          |-->| NUMBER OF DROGUES
+!| NIT            |-->| NUMBER OF TIME STEPS
+!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDINGS OF SUCCESSIVE
+!|                |   | POSITIONS OF DROGUES
+!| NOMRBI         |-->| NAME OF BINARY RESULTS FILE SUP.
+!| NREBI          |-->| EXTRA BINARY RESULT FILE TO STORE
+!|                |---| TRAJECTORIES OF DROGUES
+!| TITCAS         |-->| TITLE OF TEST CASE
+!| TRAFLO         |<->| WORK ARRAY USED IN FMTSEL
+!| XFLOT          |<->| SUCCESSIVE X POSITIONS OF DROGUES
+!| YFLOT          |<->| SUCCESSIVE Y POSITIONS OF DROGUES
+!| ZFLOT          |<->| SUCCESSIVE Z POSITIONS OF DROGUES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

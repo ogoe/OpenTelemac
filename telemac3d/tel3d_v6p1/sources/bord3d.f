@@ -5,7 +5,7 @@
      &(TIME,LT,ENTET,NPTFR2_DIM,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SPECIFIC BOUNDARY CONDITIONS.
@@ -42,11 +42,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ENTET          |---|
-!| LT             |-->| CURRENT NUMBER OF TIME-STEP
-!| NFRLIQ         |---|
-!| NPTFR2_DIM     |---|
-!| TIME           |---|
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
+!|                |   | CONSERVATION.
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| NFRLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
+!| NPTFR2_DIM     |-->| NPTFR2? NOT USED
+!| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

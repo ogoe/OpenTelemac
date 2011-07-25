@@ -5,7 +5,7 @@
      &( I , TIME , N , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PRESCRIBES THE VELOCITY FOR VEL IMPOSED
@@ -29,10 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ENTET          |---|
+!| ENTET          |-->| LOGICAL, IF YES INFORMATION IS PRINTED
 !| I              |-->| NUMBER OF LIQUID BOUNDARY
 !| N              |-->| GLOBAL NUMBER OF POINT
-!| TIME           |---|
+!| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

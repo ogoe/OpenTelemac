@@ -7,7 +7,7 @@
      & NPF  , NPFMAX, NCOUCH, TASSE, GIBSON , PRIVE  , CONSOL )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE SEDIMENT VARIABLES.
@@ -37,7 +37,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC           |<--| CONCENTRATION OF MUD BED LAYER
 !|                |   | (MULTILAYER MODEL)
-!| CONSOL         |---|
+!| CONSOL         |-->|
 !| EPAI           |<--| THICKNESS OF SOLID FRACTION oF THE BED LAYER
 !|                |   | (EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS)
 !| GIBSON         |-->| GIBSON SETTLING MODEL
@@ -55,7 +55,7 @@
 !| TASSE          |-->| MULTILAYER SETTLING MODEL
 !| TEMP           |<--| TIME COUNTER FOR CONSOLIDATION MODEL
 !|                |   | (MULTILAYER MODEL)
-!| TREST          |<--| CONSOLIDATION TIME SCALE
+!| TREST          |<->| CONSOLIDATION TIME SCALE
 !|                |   | (ONLY FOR MULTILAYER MODEL)
 !| X,Y            |-->| COORDINATES OF 2D MESH
 !| ZF             |-->| BOTTOM ELEVATION

@@ -5,7 +5,7 @@
      &(ZZ,HH)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE ARRAY OF THE ELEVATIONS OF THE MESH.
@@ -33,8 +33,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HH             |-->| HAUTEURS D'EAU
-!| ZZ             |<--| COTES DES POINTS DU MAILLAGE
+!| HH             |-->| WATER DEPTH
+!| ZZ             |<->| ELEVATION OF MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

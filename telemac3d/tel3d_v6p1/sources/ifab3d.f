@@ -6,7 +6,7 @@
      & IKLE2,NELEM2,NPOIN2,NPTFR,NPLAN,NPLINT,NETAGE,KLOG,TRANSF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FILLS 'IFABOR' OF MESH3D.
@@ -36,22 +36,26 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IFABOR         |-->| CORRESPONDANCE FACE DE BORD - ELEMENT 2D
-!| IKLE2          |-->| CORRESPONDANCE LOCALE - GLOGALE EN 2D
-!| KLOG           |-->| INDICATEUR DE PAROI SOLIDE
-!| KP1BOR         |-->| PT FRONT. SUIVANT LE PT FRONT. CONSIDERE
-!| LIUBOL         |---|
-!| LIUBOS         |---|
-!| NELBOR         |-->| NUMERO GLOBAUX DES ELEMENTS DE BORD
-!| NELEM2         |-->| NOMBRE D'ELEMENTS EN 2D
-!| NETAGE         |-->| NPLAN - 1
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPLINT         |-->| NUMERO DU PLAN INTERMEDIAIRE
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD 2D
-!| NULONE         |-->| ASSOCIE LA NUMEROTATION LOCALE DE BORD A LA
-!|                |   | NUMEROTATION LOCALE 3D
-!| TRANSF         |---|
+!| IFABOR         |<->| CORRESPONDENCE BOUNDARY FACE - 2D ELEMENT 2D
+!| IKLE2          |-->| GLOBAL NUMBERS OF POINTS IN 2D ELEMENTS FROM LOCAL
+!| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
+!| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
+!| LIUBOF         |-->| TYPE OF BOUNDARY CONDITIONS ON U AT THE BOTTOM
+!| LIUBOL         |-->| TYPE OF BOUNDARY CONDITIONS ON U ON THE LATERAL WALLS
+!| LIUBOS         |-->| TYPE OF BOUNDARY CONDITIONS ON U AT THE SURFACE
+!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
+!|                |   | ELEMENT.
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NETAGE         |-->| NUMBER OF PLANES - 1
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPLINT         |-->| NUMBER OF INTERMEDIATE PLANE
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPTFR          |-->| NUMBER OF 2D BOUNDARY POINTS
+!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
+!|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
+!|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
+!|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
+!| TRANSF         |-->| TRANSFORMATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

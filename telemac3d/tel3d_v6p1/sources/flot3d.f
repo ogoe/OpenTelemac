@@ -6,7 +6,7 @@
      & NIT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    THE USER MUST SPECIFY:
@@ -41,18 +41,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBFLO         |<--| TIME STEP OF INITIAL RELEASE
-!| FINFLO         |<--| TIME STEP FOR END OF FOLLOW UP
-!| FLOPRD         |-->| NUMBER OF TIME-STEPS BETWEEN 2 RECORDS OF
-!|                |   | SUCCESSIVE POSITIONS OF FLOATING BODIES.
-!| NFLOT          |-->| NOMBRE DE FLOTTEURS.
+!| DEBFLO         |<->| TIME STEP OF INITIAL RELEASE
+!| FINFLO         |<->| TIME STEP FOR END OF FOLLOW UP
+!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEN 2 RECORDINGS
+!|                |   | OF SUCCESSIVE POSITIONS OF DROGUES
+!| NFLOT          |-->| NUMBER OF DROGUES
 !| NIT            |-->| NUMBER OF TIME STEPS
-!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDS OF SUCCESIVE
-!|                |   | POSITIONS OF FLOATING BODIES.
+!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDINGS OF SUCCESSIVE
+!|                |   | POSITIONS OF DROGUES
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| X,Y,ZFLOT      |<--| POSITIONS OF FLOATING BODIES
-!| XFLOT          |---|
-!| YFLOT          |---|
+!| X              |-->| COORDINATE
+!| XFLOT          |<->| SUCCESSIVE X POSITIONS OF DROGUES
+!| Y              |-->| COORDINATE
+!| YFLOT          |<->| SUCCESSIVE Y POSITIONS OF DROGUES
+!| Z              |-->| COORDINATE
+!| ZFLOT          |<->| SUCCESSIVE Z POSITIONS OF DROGUES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

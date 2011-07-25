@@ -5,7 +5,7 @@
      &(NUWAVE,DM1,Z,DZ,IKLE,NPOIN2,NPLAN,NELMAX,NELEM2,XMUL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    FOR WAVE EQUATION, COMPUTES THE PSEUDO-VISCOSITY
@@ -35,15 +35,15 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DM1            |-->| D**-1 (SEE BOOK)
-!| DZ             |<--| DELTA(Z) : HEIGHT OF PRISMS
+!| DZ             |<->| DELTA(Z) : HEIGHT OF PRISMS
 !| IKLE           |-->| CONNECTIVITY TABLE IN 2D MESH
 !| NELEM2         |-->| NUMBER OF 2D ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF 2D ELEMENTS
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS PAR PLANS HORIZONTAUX
-!| NUWAVE         |<--| PSEUDO-VISCOSITY IN WAVE EQUATION
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NUWAVE         |<->| PSEUDO-VISCOSITY IN WAVE EQUATION
 !| XMUL           |-->| MULTIPLICATIVE CONSTANT
-!| Z              |-->| COTES DES NOEUDS DU MAILLAGE
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

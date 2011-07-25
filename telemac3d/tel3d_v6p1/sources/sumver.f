@@ -5,7 +5,7 @@
      &(FINT,F,NPOIN2,NPLAN,NPTFR)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE SUM ON THE VERTICAL OF A 3D VARIABLE
@@ -31,11 +31,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| F              |-->| VARIABLES A MOYENNER
-!| FINT           |<--| VARIABLE MOYENNEE
-!| NPLAN          |-->| NOMBRE DE PLANS HORIZONTAUX
-!| NPOIN2         |-->| NOMBRE DE POINTS PAR PLANS HORIZONTAUX
-!| NPTFR          |-->| NOMBRE DE POINTS DE BORD
+!| F              |-->| VARIABLES TO AVERAGE
+!| FINT           |<->| MEAN VARIABLE
+!| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS PER HORIZONTAL PLANE
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -5,7 +5,7 @@
      &(W2D,W3D,GLOSEG,DIMGLO)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    APPLIES VARIOUS TECHNIQUES TO TREAT NEGATIVE DEPTHS.
@@ -28,10 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DIMGLO         |---|
-!| GLOSEG         |---|
-!| W2D            |---|
-!| W3D            |---|
+!| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| W2D            |<->| WORK ARRAY IN 2D
+!| W3D            |<->| WORK ARRAY IN 3D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

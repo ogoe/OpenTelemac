@@ -5,7 +5,7 @@
      &(M,WCC,DELTA,MESH2D,MESH3D,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    UPWINDS THE ADVECTION TERM OF VERTICAL VELOCITY.
@@ -40,7 +40,7 @@
 !| M              |<->| MATRIX
 !| MESH2D         |-->| 2D MESH
 !| MESH3D         |-->| 3D MESH
-!| NPLAN          |---|
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| WCC            |-->| VERTICAL VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

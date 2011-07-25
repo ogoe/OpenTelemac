@@ -5,7 +5,7 @@
      & (W_SED, WCHU_CONST)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE SETTLING VELOCITY AS A FUNCTION
@@ -35,8 +35,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| WCHU_CONST     |---|
-!| W_SED          |---|
+!| WCHU_CONST     |-->| CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
+!| W_SED          |<->| SEDIMENT SETTLING VELOCITY (M/S)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

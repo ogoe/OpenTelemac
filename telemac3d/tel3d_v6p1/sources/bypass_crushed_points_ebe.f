@@ -6,7 +6,7 @@
      & NPOIN3,NELEM2,NELEM3,NPLAN,IKLE)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BYPASSES FLUXES TO POINTS THAT WILL REMAIN WITH
@@ -39,17 +39,18 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FLUX           |<->| FLUXES TO BE CHANGED
-!| IKLE           |---|
-!| MESH3          |---|
-!| NELEM2         |---|
-!| NELEM3         |---|
-!| NPLAN          |-->| NUMBER OF PLANES
+!| IKLE           |-->| CONNECTIVITY TABLE
+!| MESH2          |<->| 2D MESH
+!| MESH3          |<->| 3D MESH
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| SVOLU          |-->| BIEF_OBJ STRUCTURE, WITH SVOLU%R=VOLU
 !| SVOLUN         |-->| BIEF_OBJ STRUCTURE, WITH SVOLUN%R=VOLUN
 !| TRA01          |<->| WORK BIEF_OBJ STRUCTURE
 !| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
-!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N+1
+!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

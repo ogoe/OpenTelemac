@@ -6,7 +6,7 @@
      & UNSV3D,NPOIN3,NPOIN2,SIGMAG,IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FINAL, SOLENOIDAL VELOCITY FIELD (UE, VE, WE)
@@ -49,19 +49,27 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DP             |-->| HYDRODYNAMIC PRESSURE, TIMESTEP N+1
-!| IELM3          |---|
-!| IPBOT          |---|
-!| MASKEL         |-->| ELEMENT MASKING
-!| MESH3D         |---|
+!| IELM3          |-->| TYPE OF ELEMENT
+!| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
+!| MASKEL         |<->| ELEMENT MASKING
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3D         |<->| 3D MESH
 !| MSK            |-->| MASKING LOGICAL FLAG
-!| NPLAN          |---|
-!| NPOIN2         |---|
-!| NPOIN3         |---|
-!| OPTBAN         |---|
-!| PX,PY,PZ       |<->| H-DYN. PRESSURE PARTIAL DERIVATIVES
-!| S              |---|
-!| SIGMAG         |---|
-!| UNSV3D         |---|
+!|                |   | IF YES, THERE IS MASKED ELEMENTS
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
+!| PX             |<->| H-DYN. PRESSURE PARTIAL DERIVATIVES
+!| PY             |<->| H-DYN. PRESSURE PARTIAL DERIVATIVES
+!| PZ             |<->| H-DYN. PRESSURE PARTIAL DERIVATIVES
+!| S              |-->|
+!| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
+!| U              |<->| COMPONENT OF VELOCITY
+!| UNSV3D         |-->| INVERSE OF VOLUME OF BASIS FUNCTIONS 
+!| V              |<->| COMPONENT OF VELOCITY
+!| W              |<->| COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

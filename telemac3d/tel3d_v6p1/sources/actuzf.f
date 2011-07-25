@@ -5,7 +5,7 @@
      & ( IVIDE , EPAI , ZF , NPOIN2, NPFMAX , NPF )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    UPDATES THE BOTTOM ELEVATION.
@@ -38,13 +38,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EPAI           |-->| EPAISSEURS DES MAILLES DISCRETISANT LE LIT
-!| IVIDE          |-->| INDICE DES VIDES AUX POINTS DU MAILLAGE
-!| NPF            |-->| NOMBRE DE POINTS DU FOND SUR UNE VERTICALE
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| ZF             |<->| COTE DU FOND
+!| EPAI           |-->| THICKNESS OF MESH ELEMENTS DISCRETISING THE BED
+!| IVIDE          |-->| INDEX OF EMPTY SPACES AT MESH POINTS
+!| NPF            |-->| NUMBER OF POINTS OF THE BOTTOM ON ONE VERTICAL
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
+!|                |   | DISCRETISE MUDDY BOTTOM
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| ZF             |<->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
        IMPLICIT NONE

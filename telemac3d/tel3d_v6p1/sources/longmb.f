@@ -5,7 +5,7 @@
      &(LM,Z,HN,NPOIN3,NPOIN2,NPLAN,U,V,X,Y,P1,P2,P3,NTRAC,TA,KARMAN,ZF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE SQUARE OF THE MIXING LENGTH
@@ -34,20 +34,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN             |-->| HAUTEUR D'EAU
-!| KARMAN         |---|
-!| LM             |---|
-!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| P1             |---|
-!| P2             |---|
-!| P3             |---|
-!| TA             |-->| CONCENTRATIONS DES TRACEURS ACTIFS
-!| U,V            |-->| VITESSE HORIZONTALE
-!| X,Y            |-->| COORDONNEES HORIZONTALES
-!| Z              |-->| COTES DU MAILLAGE
+!| HN             |-->| WATER DEPTH AT TIME N
+!| KARMAN         |-->| KARMAN CONSTANT
+!| LM             |<->| MIXING LENGTH
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| P1             |<->| WORK ARRAY
+!| P2             |<->| WORK ARRAY
+!| P3             |<->| WORK ARRAY
+!| TA             |-->| ACTIVE TRACERS CONCENTRATIONS
+!| U              |-->| HORIZONTAL COMPONENT OF VELOCITY
+!| V              |-->| HORIZONTAL COMPONENT OF VELOCITY
+!| X              |-->| HORIZONTAL COORDINATE
+!| Y              |-->| HORIZONTAL COORDINATE
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

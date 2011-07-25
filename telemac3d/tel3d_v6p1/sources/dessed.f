@@ -6,7 +6,7 @@
      &  NIT,GRAPRD,LT,DTC,TASSE,GIBSON,NRSED,TITCAS,BIRSED,GRADEB)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PROVIDES GRAPHICAL OUTPUTS
@@ -48,30 +48,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BIRSED         |-->| BINAIRE DU FICHIER DES RESULTATS SEDIMENTO
-!| CONC           |<--| CONCENTRATIONS DES COUCHES DE VASE
-!|                |   | (TASSEMENT MULTICOUCHES)
-!| DTC            |-->| PAS DE TEMPS POUR LA CONSOLIDATION
-!| EPAI           |<--| TAILLE DES MAILLES DU FOND VASEUX
-!| GIBSON         |-->| LOGIQUE POUR MODELE DE GIBSON
-!| GRADEB         |-->| PREMIER PAS DE TEMPS A PARTIR DUQUEL ON
-!|                |   | ECRIT LES RESULTATS.
-!| GRAPRD         |---|
-!| HDEP           |<--| HAUTEUR DES DEPOTS FRAIS (COUCHE TAMPON)
-!| IVIDE          |<--| INDICE DES VIDES AUX POINTS DU MAILLAGE
-!| LT             |-->| NUMERO DU PAS DE TEMPS
-!| NCOUCH         |-->| NOMBRE DE COUCHES DISCRETISANT LE FOND VASEUX
-!|                |   | (MODELE DE TASSEMENT MULTICOUCHES)
-!| NIT            |-->| NOMBRE DE PAS DE TEMPS
-!| NPF            |<--| NOMBRE DE POINTS DU FOND  SUR UNE VERTICALE
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX(MODELE DE GIBSON)
-!| NPOIN2         |-->| NOMBRE DE POINTS 2D
-!| NRSED          |-->| NUMERO D'UNITE LOGIQUE DU FICHIER RESULTAT
-!| TASSE          |-->| LOGIQUE POUR MODELE DE TASSEMENT MULTICOUCHES
-!| TEMP           |<--| COMPTEUR DE TEMPS (TASSEMENT MULTICOUCHES)
-!| TITCAS         |-->| TITRE DU CAS TEST
-!| ZR             |<--| COTE DU FOND RIGIDE
+!| BIRSED         |-->| BINARY OF FILE OF SEDIMENT TRANSPORT RESULTS
+!| CONC           |<--| CONCENTRATION OF MUD BED LAYER
+!|                |   | (MULTILAYER MODEL)
+!| DTC            |-->| TIME STEP FOR CONSOLIDATION PHENOMENON
+!| EPAI           |<--| THICKNESS OF SOLID FRACTION OF THE BED LAYER
+!| GIBSON         |-->| GIBSON SETTLING MODEL
+!| GRADEB         |-->| FIRST TIME STEP TO WRITE RESULTS
+!| GRAPRD         |-->| KEYWORD 'GRAPHIC PRINTOUT PERIOD'
+!| HDEP           |<--| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
+!| IVIDE          |<--| VOID INDEX OF MESH POINTS
+!| LT             |-->| CURRENT TIME STEP NUMBER
+!| NCOUCH         |-->| NUMBER OF LAYERS DISCRETISING THE MUD BED
+!|                |   | (MULTILAYER CONSOLIDATION MODEL)
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NIT            |-->| NUMBER OF TIME STEP
+!| NPF            |<--| NUMBER OF POINTS WITHIN THE BED ALONG THE VERTICAL
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES DISCRETISING
+!|                |   | WITHIN THE MUDDY BED (GIBSON MODEL)
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NRSED          |-->| NUMBER OF LOGICAL UNIT OF RESULT FILE
+!| TASSE          |-->| MULTILAYER SETTLING MODEL LOGICAL
+!| TEMP           |<--| TIME COUNTER FOR CONSOLIDATION MODEL
+!|                |   | (MULTILAYER MODEL)
+!| TITCAS         |-->| TITLE OF TEST CASE
+!| ZR             |<--| ELEVATION OF RIDIG BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, ONLY: NCSIZE,NPTIR

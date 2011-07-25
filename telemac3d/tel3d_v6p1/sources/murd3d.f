@@ -9,7 +9,7 @@
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH THE DISTRIBUTIVE SCHEME
@@ -95,52 +95,59 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CALFLU         |-->| INDIQUE SI ON CALCULE LE FLUX POUR LE BILAN
-!| DA,XA          |-->| MATRICE MURD NON SYMETRIQUE OPTION N
-!| DB,XB          |<->| MATRICE MURD NON SYMETRIQUE OPTION N
-!|                |   | EVENTUELLEMENT TRANSFORME EN OPTION PSI
-!| DIMGLO         |---|
-!| DT             |-->| PAS DE TEMPS
-!| FC             |<--| VARIABLE APRES CONVECTION
-!| FLODEL         |-->| FLUX PAR SEGMENTS DU MAILLAGE
-!| FLOPAR         |---|
-!| FLUEXT         |-->| FLUX EXTERIEUR PAR NOEUD
-!| FLUX           |<->| FLUX GLOBAL A INCREMENTER
-!| FN             |-->| VARIABLE AU TEMPS N
-!| FSCE           |---|
-!| GLOSEG         |---|
-!| IKLE3          |-->| CORRESPONDANCE NUMEROTATION LOCALE ET GLOBALE
-!| INFOR          |-->| INFORMATIONS SUR LES SOLVEURS
-!| LV             |-->| LONGUEUR DU VECTEUR POUR LA VECTORISATION
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MASKPT         |---|
-!| MAXFC          |---|
-!| MESH3          |---|
-!| MINFC          |---|
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
-!| NELEM3         |-->| NOMBRE D'ELEMENTS 3D
-!| NPLAN          |---|
+!| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
+!| DA             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
+!| DB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
+!|                |   | POSSIBLY TRANSFORMED IN OPTION PSI
+!| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
+!| DT             |-->| TIME STEP
+!| FC             |<->| VARIABLE AFTER CONVECTION
+!| FLODEL         |-->| FLUX BY MESH EDGES
+!| FLOPAR         |-->| FLUXES BY SEGMENT, ASSEMBLED IN PARALLEL
+!| FLUEXT         |-->| OUTPUT FLUX BY NODE
+!| FLUX           |<->| FLUXES TO BE CHANGED
+!| FN             |-->| VARIABLE AT TIME N
+!| FSCE           |-->| SOURCE
+!| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| IKLE3          |-->| GLOBAL 3D CONNECTIVITY
+!| INFOR          |-->| INFORMATIONS FOR SOLVERS
+!| LV             |-->| VECTOR LENGTH OF THE MACHINE
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!|                |   | =1. : NORMAL   =0. : MASKED
+!| MAXFC          |<->| MAXIMUM VALUE FOR FC
+!| MESH3          |<->| 3D MESH
+!| MINFC          |<->| MINIMUM VALUE FOR FC
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS 3D
-!| NSCE           |---|
-!| NSEG           |---|
-!| OPTBAN         |---|
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NSCE           |-->| NUMBER OF GIVEN POINTS FOR SOURCES
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
+!|                |   | MODIFIED AND PIECE-WISE LINEAR
 !| PLUIE          |-->| RAIN IN M/S MULTIPLIED BY VOLU2D
 !| RAIN           |-->| IF YES, THERE IS RAIN OR EVAPORATION
-!| S0F            |-->| TERME SOURCE EXPLICITE
-!| SCHCF          |-->| SCHEMA DE CONVECTION DE F
-!| SOURCES        |---|
-!| STRA01         |---|
-!| STRA02         |---|
-!| STRA03         |---|
-!| SVOLU2         |---|
-!| TRA01          |<->| TABLEAU DE TRAVAIL DE DIMENSION NPOIN3
-!|                |   | EQUIVALENT DE VOLU2 POUR LE TEMPS FINAL COURANT
-!| TRA03          |---|
-!| VOLU           |-->| VOLUME DE CONTROLE A L'INSTANT N+1
-!| VOLU2          |-->| COMME VOLU MAIS ASSEMBLE EN PARALLELISME
-!| VOLUN          |-->| VOLUME DE CONTROLE A L'INSTANT N
-!| W1             |<->| TABLEAU DE TRAVAIL (CALCUL DES MATRICES...)
+!| S0F            |-->| EXPLICIT SOURCE TERM
+!| SCHCF          |-->| ADVECTION SCHEME FOR F
+!| SOURCES        |-->| SOURCES
+!| STRA01         |<->| STRUCTURE OF TRA01
+!| STRA02         |<->| STRUCTURE OF TRA02
+!| STRA03         |<->| STRUCTURE OF TRA03
+!| SVOLU2         |-->| STRUCTURE OF VOLU2
+!| TRA01          |<->| WORK ARRAY OF DIMENSION NPOIN3 EQUIVALENT TO
+!|                |   | VOLU2 FOR CURRENT FINAL TIME
+!| TRA02          |<->| WORK ARRAY
+!| TRA03          |<->| WORK ARRAY
+!| VOLU           |-->| CONTROL VOLUME AT TIME N+1
+!| VOLU2          |<->| LIKE VOLU, BUT ASSEMBLED IN PARALLEL
+!| VOLUN          |-->| CONTROL VOLUME AT TIME N
+!| W1             |<->| WORK ARRAY (CALCULATION OF MATRICES...)
+!| XA             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
+!| XB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
+!|                |   | POSSIBLY TRANSFORMED IN OPTION PSI
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

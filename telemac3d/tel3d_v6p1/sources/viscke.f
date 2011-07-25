@@ -6,7 +6,7 @@
      & DNUVIH,DNUVIV,DNUTAH,DNUTAV,KMIN,EMIN,ITURBH,ITURBV,PRANDTL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TURBULENT VISCOSITY
@@ -36,21 +36,21 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AK             |-->| ENERGIE TURBULENTE
-!| CMU            |-->| CONSTANTE DU MODELE K-EPSILON
-!| DNUTAH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE POUR TA
-!| DNUTAV         |-->| COEFFICIENT DE DIFFUSION VERTICALE POUR TA
-!| DNUVIH         |-->| COEFFICIENT DE DIFFUSION HORIZONTALE POUR U
-!| DNUVIV         |-->| COEFFICIENT DE DIFFUSION VERTICALE POUR U
+!| AK             |-->| TURBULENT ENERGY
+!| CMU            |-->| CONSTANT FOR K-EPSILON MODEL
+!| DNUTAH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACER
+!| DNUTAV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF TRACER
+!| DNUVIH         |-->| COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!| DNUVIV         |-->| COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
 !| EMIN           |-->| MINIMUM VALUE OF EPSILON FOR CLIPPING
-!| EP             |-->| DISSIPATION TURBULENTE
+!| EP             |-->| TURBULENT DISSIPATION
 !| ITURBH         |-->| HORIZONTAL TURBULENCE MODEL (3= K-EPSILON)
 !| ITURBV         |-->| VERTICAL TURBULENCE MODEL (3= K-EPSILON)
 !| KMIN           |-->| MINIMUM VALUE OF K FOR CLIPPING
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| PRANDTL        |-->| PRANDTL CONSTANT
-!| VISCTA         |<--| DIFFUSION TURBULENTE POUR LES TRACEURS
-!| VISCVI         |<--| DIFFUSION TURBULENTE POUR LES VITESSES
+!| VISCTA         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR TRACERS
+!| VISCVI         |<->| TURBULENT VISCOSITY COEFFICIENTS FOR VELOCITIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -6,7 +6,7 @@
      & NPOIN3,SCHCF,NPOIN2,GLOSEG,DIMGLO,NSEG,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    BYPASSES FLUXES TO POINTS THAT WILL REMAIN WITH
@@ -42,8 +42,9 @@
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| FLUX           |<->| FLUXES TO BE CHANGED
 !| GLOSEG         |-->| 3D LIST OF SEGMENTS POINTS
-!| MESH3          |---|
-!| NPLAN          |-->| NUMBER OF PLANES
+!| MESH2          |<->| 2D MESH
+!| MESH3          |<->| 3D MESH
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS IN 2D
@@ -52,7 +53,7 @@
 !| SVOLUN         |-->| BIEF_OBJ STRUCTURE, WITH SVOLUN%R=VOLUN
 !| TRA01          |<->| WORK BIEF_OBJ STRUCTURE
 !| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
-!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N+1
+!| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

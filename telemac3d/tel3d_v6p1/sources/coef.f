@@ -7,7 +7,7 @@
      &      RHOS  , GRAV , DTC   , DSIG1    )
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENTS RESULTING FROM THE
@@ -37,19 +37,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DSIG1          |-->| DERIVEE DE LA CONTRAINTE EFFECTIVE
-!|                |   | AU PREMIER POINT DU MAILLAGE
-!| DTC            |-->| PAS DE TEMPS DU PHENOMENE DE CONSOLIDATION
-!| EPAI           |-->| EPAISSEURS DES MAILLES
-!| GRAV           |-->| ACCELERATION DE LA PESANTEUR
-!| IMAX           |-->| NOMBRE DE POINTS DU MAILLAGE
-!| IVIDE          |-->| INDICE DES VIDES AUX POINTS DU MAILLAGE
-!|                |   | (MAILLAGE SELON UNE VERTICALE)
-!| NDEB           |---|
-!| NPFMAX         |-->| NOMBRE MAXIMUM DE PLANS HORIZONTAUX
-!|                |   | DISCRETISANT LE FOND VASEUX
-!| RHOS           |-->| MASSE VOLUMIQUE DU SEDIMENT
-!| TRA01          |-->| TABLEAU DE TRAVAIL
+!| DSIG1          |-->| DERIVATIVE OF THE EFFECTIVE STRESS
+!|                |   | AT THE FIRST POINT OF THE MESH
+!| DTC            |-->| TIME STEP FOR CONSOLIDATION 
+!| EPAI           |-->| THICKNESS OF MESH ELEMENTS DISCRETISING THE BED
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| IMAX           |-->| NUMBER OF POINTS AT THE BOTTOM MESH
+!| IVIDE          |-->| INDEX OF EMPTY SPACES AT MESH POINTS
+!| NDEB           |-->| INDEX LIMITING THE RANGE OF RESOLUTION
+!| NPFMAX         |-->| MAXIMUM NUMBER OF HORIZONTAL PLANES THAT
+!|                |   | DISCRETISE MUDDY BOTTOM
+!| RHOS           |-->| SEDIMENT DENSITY 
+!| TRA01          |<->| WORKING ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
        IMPLICIT NONE

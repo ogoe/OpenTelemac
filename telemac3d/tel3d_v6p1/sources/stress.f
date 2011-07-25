@@ -6,7 +6,7 @@
      &  MESH3D,IELM3,IELM2H,IELM2V,SV,MSK,MASKBR,MASKEL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADDS TO OR REMOVES FROM SEM3D THE EXPLICIT STRESS
@@ -30,22 +30,29 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BFBORF         |---|
-!| BFBORS         |---|
+!| BFBORF         |---| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
+!|                |---|  NU*DF/DN = AFBORF*U + BFBORF
+!| BFBORL         |---| LOGARITHMIC LAW FOR COMPONENT ON THE
+!|                |---| LATERAL BOUNDARIES:
+!|                |---| NU*DF/DN = AFBORL*U + BFBORL
+!| BFBORS         |---| LOGARITHMIC LAW FOR COMPONENT AT THE SURFACE:
+!|                |---| NU*DF/DN = AFBORS*U + BFBORS
 !| IELM2H         |-->| DISCRETISATION TYPE FOR 2D HORIZONTAL MESH
 !| IELM2V         |-->| DISCRETISATION TYPE FOR 2D VERTICAL MESH
 !| IELM3          |-->| TYPE OF ELEMENT IN 3D
-!| MASKBR         |-->| MASK PER BOUNDARY ELEMENT
-!| MASKEL         |-->| MASK PER ELEMENT
+!| MASKBR         |<->| 3D MASK ON LATERAL BOUNDARIES
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH2D         |-->| 2D MESH
 !| MESH3D         |-->| 3D MESH
-!| MSK            |-->| SI OUI, PRESENCE D'ELEMENTS MASQUES
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF POINTS IN 3D
 !| OP             |-->| 8 CHARACTERS STRING : 'X=X+Y   ' OR 'X=X-Y   '
 !| SEM3D          |<->| RIGHT HAND SIDE OF EQUATION
 !| SV             |-->| VOID STRUCTURE
-!| T2,T3          |-->| 2D AND 3D WORK BIEF_OBJ STRUCTURES
+!| T2             |-->| 2D WORK BIEF_OBJ STRUCTURES
+!| T3             |-->| 3D WORK BIEF_OBJ STRUCTURES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -7,7 +7,7 @@
      & UETCAR)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS THE INFLUENCE OF TURBULENCE ON THE
@@ -40,23 +40,28 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN             |-->| HAUTEUR D'EAU
-!| IELM3          |-->| TYPE DE DISCRETISATION
-!| LISRUF         |-->| REGIME DE TURBULENCE POUR LE FOND
-!| MASKEL         |-->| MASQUAGE DES ELEMENTS
-!| MESH3          |---|
-!| MSK            |-->| LOGIQUE POUR LE MASQUAGE
-!| NPLAN          |-->| NOMBRE DE PLANS
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| RUGOF          |-->| COEFFICIENT DE RUGOSITE DES FONDS
-!| S              |-->| STRUCTURE VIDE
-!| TRAV2          |---|
-!| TRAV3          |---|
-!| TURBB          |---|
-!| U,V,W          |-->| COMPOSANTES DE LA VITESSE
-!| UETCAR         |---|
-!| WC             |<--| VITESSE DE CHUTE DU SEDIMENT
-!| WCHU0          |---|
+!| HN             |-->| WATER DEPTH
+!| IELM3          |-->| TYPE OF ELEMENT
+!| LISRUF         |-->| TURBULENCE MODEL FOR BOTTOM
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3          |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| RUGOF          |-->| BOTTOM FRICTION COEFFICIENT
+!| S              |-->| VOID STRUCTURE
+!| TRAV1          |<->| WORK ARRAY
+!| TRAV2          |<->| WORK ARRAY
+!| TRAV3          |<->| WORK ARRAY
+!| TURBA          |-->| FLOCULATION COEFFICIENT
+!| TURBB          |-->| COEFFICIENT RELATIVE TO FLOC DESTRUCTION
+!| U              |-->| COMPONENT OF VELOCITY
+!| UETCAR         |-->| USTAR**2 FOR BOTTOM
+!| V              |-->| COMPONENT OF VELOCITY
+!| W              |-->| COMPONENT OF VELOCITY
+!| WC             |<->| SEDIMENT SETTLING VELOCITY
+!| WCHU0          |-->| CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

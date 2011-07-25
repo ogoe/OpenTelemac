@@ -5,7 +5,7 @@
      &(U,V,T1,T2,T3,T4,NUSMAG,MESH3,IELM3,MSK,MASKEL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VISCOSITIES USING THE SMAGORINSKY MODEL:
@@ -36,17 +36,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IELM3          |---|
-!| MASKEL         |---|
-!| MESH3          |---|
-!| MSK            |---|
-!| NUSMAG         |---|
-!| T1             |---|
-!| T2             |---|
-!| T3             |---|
-!| T4             |---|
-!| U              |---|
-!| V              |---|
+!| IELM3          |-->| TYPE OF ELEMENT
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH3          |<->| 3D MESH
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NUSMAG         |<->| VISCOSITY COEFFICIENT FOR SMAGORINSKY MODEL
+!| T1             |<->| WORK ARRAY
+!| T2             |<->| WORK ARRAY
+!| T3             |<->| WORK ARRAY
+!| T4             |<->| WORK ARRAY
+!| U              |-->| COMPONENT OF VELOCITY
+!| V              |-->| COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

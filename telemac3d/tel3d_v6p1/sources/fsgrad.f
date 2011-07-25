@@ -6,7 +6,7 @@
      & NPOIN2,OPTBAN,S)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FREE SURFACE GRADIENT, TAKING INTO
@@ -33,7 +33,7 @@
 !| GRADZS         |<->| FREE SURFACE GRADIENT (BLOCK OF 2 COMPONENTS)
 !| IELM2H         |-->| TYPE OF ELEMENT
 !| MASKEL         |-->| ARRAY OF MASKS, PER ELEMENT
-!| MESH2D         |<->| MESH
+!| MESH2D         |<->| 2D MESH
 !| MSK            |-->| IF YES, THERE IS MASKING, MASKEL IS TO BE USED
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| OPTBAN         |-->| OPTION FOR TIDAL FLATS, IF 1, FREE SURFACE
@@ -42,7 +42,7 @@
 !| T2_01          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
 !| UNSV2D         |-->| INVERSE OF INTEGRAL OF BASES
 !| Z              |-->| Z COORDINATES OF THE 3D MESH
-!| ZF             |---|
+!| ZF             |-->| BOTTOM ELEVATION
 !| ZFLATS         |<->| PIECE-WISE LINEAR FREE SURFACE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

@@ -5,7 +5,7 @@
      & (LM2,Z,HN,NPOIN3,NPOIN2,NPLAN,MIXING,KARMAN,ZF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES (MIXING LENGTH) ** 2  ACCORDING TO
@@ -37,15 +37,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN             |-->| HAUTEUR D'EAU
+!| HN             |-->| WATER DEPTH AT TIME N
 !| KARMAN         |-->| KARMAN CONSTANT
-!| LM2            |---|
-!| MIXING         |-->| MODELE DE LONGUEUR DE MELANGE
-!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| Z              |-->| COTES DU MAILLAGE
-!| ZF             |-->| BOTTOM
+!| LM2            |<->| SQUARE MIXING LENGTH
+!| MIXING         |-->| MIXING LENGTH MODEL
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
+!| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

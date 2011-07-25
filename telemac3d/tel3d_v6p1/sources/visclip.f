@@ -5,7 +5,7 @@
      & (VISCVI,VISCTA,H,NPLAN,NPOIN3,NPOIN2,NTRAC)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    LIMITS VISCOSITY ON TIDAL FLATS.
@@ -28,13 +28,13 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| H              |---|
-!| NPLAN          |-->| NOMBRE DE PLANS DU MAILLAGE 3D
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
-!| NPOIN3         |-->| NOMBRE DE POINTS DU MAILLAGE 3D
-!| NTRAC          |-->| NOMBRE DE TRACEURS ACTIFS
-!| VISCTA         |<--| VISCOSITE DYNAMIQUE DES TRACEURS
-!| VISCVI         |<--| VISCOSITE DYNAMIQUE DE LA VITESSE
+!| H              |-->| WATER DEPTH
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH
+!| NPOIN2         |-->| NUMBER OF 2D POINTS
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
+!| VISCTA         |<->| DYNAMIC VISCOSITY COEFFICIENTS FOR TRACERS
+!| VISCVI         |<->| DYNAMIC VISCOSITY COEFFICIENTS FOR VELOCITIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
