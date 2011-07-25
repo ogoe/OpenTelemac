@@ -81,7 +81,7 @@ MAKEFILE      = makefile
 
 SRCS= \
 declarations_postel3d.f \
-coupeh.f                 exten1.f exten2.f lecdon_postel3d.f        postel3d.f        \
+coupeh.f                 exten1.f                 exten2.f          lecdon_postel3d.f        postel3d.f        \
 coupev.f                 lecr3d.f                 pre2dh.f          \
 pre2dv.f                 ecrdeb.f                 nomtra.f          \
 homere_postel3d.f        point_postel3d.f
