@@ -16,11 +16,11 @@
 #
 NOM_GENERIQUE = spartacus2d
 
-VERSION	      = v6p0
-V_DAMOCLES    = v6p0
-V_BIEF        = v6p0
-V_PARAVOID    = v6p0
-V_SPECIAL     = v6p0
+VERSION	      = v6p1
+V_DAMOCLES    = v6p1
+V_BIEF        = v6p1
+V_PARAVOID    = v6p1
+V_SPECIAL     = v6p1
 
 ###########################
 # Definition des macros
