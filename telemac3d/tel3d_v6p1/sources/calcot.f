@@ -88,7 +88,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ADAPTIVE MESH REFINEMENT (BY CHRISTOPHER CAWTHORN)
+!     ADAPTIVE MESH REFINEMENT (BY CHRIS CAWTHORN)
 !
       ELSEIF(TRANSF.EQ.5.AND.AT.GT.1.D-4) THEN
 !

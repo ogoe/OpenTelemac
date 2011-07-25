@@ -34,8 +34,29 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
+!| GLOSEG         |-->| EDGE ADJACENCY ARRAY
+!| INTSOL         |<->| OBJECTIVE VARIABLE INTERPOLATED ON NEW LAYERS
+!|                |   | (WORK ARRAY)
+!| MCOEFF         |<->| LOCAL MONITOR FUNCTION COEFFICIENT (WORK ARRAY)
 !| MESH2D         |<->| MESH STRUCTURE OF 2D MESH
 !| MESH3D         |<->| MESH STRUCTURE OF 3D MESH
+!| MONITOR        |<->| MONITOR FUNCTION (WORK ARRAY)
+!| NEWZ           |<->| REVISED VERTICAL LAYER POSITIONS
+!| NEXTR          |<->| NUMBER OF EXTREMA IN WATER COLUMN (WORK ARRAY)
+!| NNEIGH         |<->| NUMBER OF NEIGHBOURS OF POINT IN 2D (WORK ARRAY)
+!| NPLAN          |-->| NUMBER OF PLANES
+!| NPOIN2         |-->| NUMBER OF NODES IN 2D
+!| NSEG2          |-->| NUMBER OF EDGES IN 2D
+!| OBJSOL         |-->| OBJECTIVE VARIABLE TO BE USED FOR MESH REFINEMENT
+!| REFTYPE        |-->| TYPE OF MONITOR FUNCTION 
+!|                |   | (A=ARCLENGTH, C=CURVATURE) 
+!| SMONITOR       |<->| SMOOTHED MONITOR FUNCTION (WORK ARRAY)
+!| SNNEIGH        |<->| STRUCTURE OF NNEIGH
+!| SSMONITOR      |<->| STRUCTURE OF SMONITOR
+!| Z0             |<->| ORIGINAL LAYER POSITIONS (WORK ARRAY) 
+!| ZEXT           |<->| POSITITIONS OF EXTREMA (WORK ARRAY)
+!| ZVALS          |<->| VERTICAL LAYER POSITIONS
+!|                |   | ON OUTPUT, ADAPTED LAYER POSITIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
