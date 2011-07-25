@@ -24,6 +24,9 @@
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         FOR CLARITY
+!
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        18/02/08
 !+        V5P9
@@ -42,27 +45,28 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |---|
-!| B              |---|
-!| C              |---|
-!| D              |---|
-!| FLAG           |---|
-!| IA             |---|
-!| IC             |---|
-!| IL             |---|
-!| IU             |---|
-!| JA             |---|
-!| JL             |---|
-!| JU             |---|
-!| L              |---|
-!| LMAX           |---|
-!| N              |---|
-!| R              |---|
-!| ROW            |---|
-!| TMP            |---|
-!| U              |---|
-!| UMAX           |---|
-!| Z              |---|
+!| A              |-->| NONZERO ENTRIES OF THE COEFFICIENT MATRIX M, 
+!|                |   | STORED BY ROWS
+!| B              |-->| RIGHT-HAND SIDE B ; 
+!| C              |-->| ORDERING OF THE COLUMNS OF MATRIX
+!| D              |<--| DIAGONAL FACTORIZED OF MATRIX
+!| FLAG           |<--| INDICATOR ERROR : 
+!|                |   |= 4*N + 1:INSUFFICIENT STORAGE FOR L
+!|                |   |= 7*N + 1:INSUFFICIENT STORAGE FOR U
+!| IA, JA         |-->| STRUCTURE OF A NONSYMMETRICAL MATRIX
+!| IA, JA         |-->| STRUCTURE OF A NONSYMMETRICAL MATRIX
+!| IC             |-->| INVERSE OF THE ORDERING OF THE COLUMNS OF MATRIX
+!| IL, JL         |-->| STRUCTURE OF LOWER FACTORISED TRIANGULAR MATRIX
+!| IU, JU         |-->| STRUCTURE OF UPPER FACTORISED TRIANGULAR MATRIX
+!| L              |<--| LOWER FACTORIZED TRIANGULAR MATRIX
+!| LMAX           |-->| PREVISIONAL MAXIMUM DIMENSION OF JL
+!| N              |-->| RANK OF MATRIX
+!| R              |-->| ORDERING OF THE ROWS OF MATRIX
+!| ROW            |---| REAL ONE-DIMENSIONAL WORK ARRAY 
+!| TMP            |---| REAL ONE-DIMENSIONAL WORK ARRAY
+!| U              |<--| UPPER FACTORIZED TRIANGULAR MATRIX
+!| UMAX           |-->| PREVISIONAL MAXIMUM DIMENSION OF JU
+!| Z              |<--| SOLUTION X
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

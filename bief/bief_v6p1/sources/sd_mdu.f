@@ -31,13 +31,17 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DMIN           |---|
-!| EK             |---|
-!| HEAD           |---|
-!| L              |---|
-!| LAST           |---|
-!| MARK           |---|
-!| NEXT           |---|
-!| V              |---|
+!| EK             |-->|
+!| HEAD           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| L              |<--| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
+!| LAST           |---| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | DIMENSION = N
+!| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| NEXT           |---| INVERSE OF THE PERMUTATION RETURNED IN LAST
+!|                |   | DIMENSION = N
+!| V              |-->| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_MDU => SD_MDU

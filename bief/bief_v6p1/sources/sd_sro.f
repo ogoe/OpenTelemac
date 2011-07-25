@@ -5,7 +5,7 @@
      &(N,IP,IA,JA,A,Q,R,DFLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    SYMMETRIC REORDERING OF SPARSE SYMMETRIC MATRIX.
@@ -41,18 +41,23 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |---|
+!| A              |---| NONZERO ELEMENT OF MATRIX
 !| DFLAG          |-->| LOGICAL VARIABLE;  IF DFLAG = .TRUE., THEN
 !|                |   | STORE NONZERO DIAGONAL ELEMENTS AT THE
 !|                |   | BEGINNING OF THE ROW
-!| IA             |---|
-!| IP             |---|
-!| JA             |---|
-!| N              |---|
-!| Q              |-->| INTEGER ONE-DIMENSIONAL WORK ARRAY
-!| R              |-->| INTEGER ONE-DIMENSIONAL WORK ARRAY
-!|                |   | DIMENSION = NUMBER OF
+!| IA             |---| INTEGER ONE-DIMENSIONAL ARRAY CONTAINING
+!|                |   | POINTERS TO DELIMIT ROWS IN JA AND A;
+!|                |   | DIMENSION = N+1
+!! IP             |-->| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN
+!|                |   | THE INVERSE OF THE PERMUTATION RETURNED IN IP;
+!|                |   | DIMENSION = N
+!| JA             |---| INTEGER ONE-DIMENSIONAL ARRAY CONTAINING THE
+!|                |   | COLUMN INDICES CORRESPONDING TO THE ELEMENTS
+!|                |   | OF A;
+!| N              |-->| DIMENSION = NUMBER OF
 !|                |   | NONZERO ENTRIES IN THE UPPER TRIANGLE OF M
+!| Q              |<--| INTEGER ONE-DIMENSIONAL WORK ARRAY
+!| R              |<--| INTEGER ONE-DIMENSIONAL WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_SRO => SD_SRO

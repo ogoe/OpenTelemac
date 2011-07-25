@@ -5,7 +5,7 @@
      &(VK,TAIL,V,L,LAST,NEXT,MARK)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    FORMS ELEMENT FROM UNELIMINATED NEIGHBOURS OF VK.
@@ -30,13 +30,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| L              |---|
-!| LAST           |---|
-!| MARK           |---|
-!| NEXT           |---|
-!| TAIL           |---|
-!| V              |---|
-!| VK             |---|
+!| L              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
+!| LAST           |-->| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | DIMENSION = N
+!| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| NEXT           |-->| INVERSE OF THE PERMUTATION RETURNED IN LAST
+!|                |   | DIMENSION = N
+!| TAIL           |<--| UNELIMINATED NEIGHBOURS OF VERTEX VK
+!| V              |-->| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
+!| VK             |-->| VERTEX NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_MDM => SD_MDM

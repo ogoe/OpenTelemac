@@ -5,7 +5,7 @@
      &(K,EK,TAIL,V,L,HEAD,LAST,NEXT,MARK)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    PURGES INACTIVE ELEMENTS AND DOES MASS ELIMINATION.
@@ -30,15 +30,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| EK             |---|
-!| HEAD           |---| DIMENSION N
-!| K              |-->|
-!| L              |---| DIMENSION MAX
-!| LAST           |---| DIMENSION N
-!| MARK           |---| DIMENSION N
-!| NEXT           |---| DIMENSION N
+!| EK             |-->| 
+!| HEAD           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| K              |-->| 
+!| L              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
+!| LAST           |---| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | DIMENSION = N
+!| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| NEXT           |---| INVERSE OF THE PERMUTATION RETURNED IN LAST
+!|                |   | DIMENSION = N
 !| TAIL           |---|
-!| V              |---| DIMENSION MAX
+!| V              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_MDP => SD_MDP

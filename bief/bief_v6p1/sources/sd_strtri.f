@@ -31,8 +31,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IND            |<--|
-!| IS             |-->|
+!| IND            |<--| PERMUTATION ARRAY FOR ASCENDING ORDER IS
+!| IS             |-->| INTEGER ARRAY TO SORT IN ASCENDING ORDER
 !| N              |-->| LENGTH OF IS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

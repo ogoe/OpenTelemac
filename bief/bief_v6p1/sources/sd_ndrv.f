@@ -5,7 +5,7 @@
      &(N,R,C,IC,IA,JA,A,B,Z,NSP,ISP,RSP,ESP,PATH,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    DRIVER FOR SUBROUTINES TO SOLVE SPARSE NONSYMMETRICAL
@@ -179,21 +179,51 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |---|
-!| B              |---|
-!| C              |---|
-!| ESP            |---|
-!| FLAG           |---|
-!| IA             |---|
-!| IC             |---|
-!| ISP            |---|
-!| JA             |---|
-!| N              |---|
-!| NSP            |---|
-!| PATH           |---|
-!| R              |---|
-!| RSP            |---|
-!| Z              |---|
+!| A              |-->|NONZERO ENTRIES OF THE COEFFICIENT MATRIX M, 
+!|                |   |STORED BY ROWS
+!| B              |-->|RIGHT-HAND SIDE B ; 
+!| C              |-->|ORDERING OF THE COLUMNS OF MATRIX
+!| ESP            |---|INTEGER DIMENSION STORAGE : IF SUFFICIENT STORAGE  
+!|                |   |WAS AVAILABLE TO PERFORM THE SYMBOLIC  
+!|                |   |FACTORIZATION (NSF), THEN ESP IS SET TO THE AMOUNT 
+!|                |   | OF EXCESS STORAGE PROVIDED (NEGATIVE IF  
+!|                |   |INSUFFICIENT STORAGE WAS AVAILABLE TO PERFORM 
+!|                |   |THE NUMERIC FACTORIZATION (NNF)).
+!| FLAG           |<--|ERROR FLAG;  VALUES AND THEIR MEANINGS ARE :
+!|                |   |0     NO ERRORS DETECTED
+!|                |   |N+K   NULL ROW IN A  --  ROW = K
+!|                |   |2N+K   DUPLICATE ENTRY IN A  --  ROW = K
+!|                |   |3N+K   INSUFFICIENT STORAGE IN NSF  --  ROW = K
+!|                |   |4N+1   INSUFFICIENT STORAGE IN NNF
+!|                |   |5N+K   NULL PIVOT  --  ROW = K
+!|                |   |6N+K   INSUFFICIENT STORAGE IN NSF  --  ROW = K
+!|                |   |7N+1   INSUFFICIENT STORAGE IN NNF
+!|                |   |8N+K   ZERO PIVOT  --  ROW = K
+!|                |   |10N+1   INSUFFICIENT STORAGE IN NDRV
+!|                |   |11N+1   ILLEGAL PATH SPECIFICATION
+!| IA             |-->|POINTERS TO DELIMIT THE ROWS IN A ; SIZE = N+1
+!| IC             |-->|INVERSE OF THE ORDERING OF THE COLUMNS OF MATRIX
+!| ISP            |-->|INTEGER WORKING STORAGE
+!| JA             |-->|COLUMN NUMBERS CORRESPONDING TO THE ELEMENTS OF A
+!| N              |-->|NUMBER OF VARIABLES/EQUATIONS
+!| NSP            |-->|DECLARED DIMENSION OF RSP : GENERALLY MUST
+!|                |   |BE LARGER THAN  5N+3 + 2K  (WHERE  K = (NUMBER OF
+!|                |   |NONZERO ENTRIES IN THE MATRIX M).
+!| PATH           |-->|PATH SPECIFICATION;  VALUES AND THEIR MEANINGS ARE:
+!|                |   |1  PERFORM NSF AND NNF.
+!|                |   |2  PERFORM NNF ONLY  (NSF IS ASSUMED TO HAVE BEEN
+!|                |   |   DONE IN A MANNER COMPATIBLE WITH THE STORAGE
+!|                |   |   ALLOCATION USED IN THE DRIVER).
+!|                |   |3  PERFORM NNS ONLY  (NSF AND NNF ARE ASSUMED TO
+!|                |   |   HAVE BEEN DONE IN A MANNER COMPATIBLE WITH THE
+!|                |   |   STORAGE ALLOCATION USED IN THE DRIVER).
+!|                |   |4  PERFORM NNT ONLY  (NSF AND NNF ARE ASSUMED TO
+!|                |   |   HAVE BEEN DONE IN A MANNER COMPATIBLE WITH THE
+!|                |   |   STORAGE ALLOCATION USED IN THE DRIVER).
+!|                |   |5  PERFORM NSF ONLY.
+!| R              |-->|ORDERING OF THE ROWS OF MATRIX
+!| RSP            |-->|REAL WORKING STORAGE (SIZE = NSP)
+!| Z              |<--|SOLUTION X
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

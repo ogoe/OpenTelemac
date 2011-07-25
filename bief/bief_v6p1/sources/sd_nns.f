@@ -22,6 +22,9 @@
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         FOR CLARITY
+!
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        18/02/08
 !+        V5P9
@@ -40,19 +43,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| B              |---|
-!| C              |---|
-!| D              |---|
-!| IL             |---|
-!| IU             |---|
-!| JL             |---|
-!| JU             |---|
-!| L              |---|
-!| N              |---|
-!| R              |---|
-!| TMP            |---|
-!| U              |---|
-!| Z              |---|
+!| B              |-->| RIGHT-HAND SIDE B ; 
+!| C              |-->| ORDERING OF THE COLUMNS OF MATRIX
+!| D              |-->| DIAGONAL FACTORIZED OF MATRIX
+!| IL, JL         |-->| STRUCTURE OF LOWER FACTORISED TRIANGULAR MATRIX
+!| IU, JU         |-->| STRUCTURE OF UPPER FACTORISED TRIANGULAR MATRIX
+!| L              |-->| LOWER FACTORIZED TRIANGULAR MATRIX
+!| N              |-->| RANK OF MATRIX
+!| R              |-->| ORDERING OF THE ROWS OF MATRIX
+!| TMP            |-->| REAL ONE-DIMENSIONAL WORK ARRAY
+!| U              |-->| UPPER FACTORIZED TRIANGULAR MATRIX
+!| Z              |<--| SOLUTION X
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

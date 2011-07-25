@@ -37,6 +37,9 @@
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         FOR CLARITY
+!
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        18/02/08
 !+        V5P9
@@ -55,20 +58,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLAG           |---|
-!| IA             |---|
-!| IC             |---|
-!| IL             |---|
-!| IM             |---|
-!| IU             |---|
-!| JA             |---|
-!| JL             |---|
-!| JLMAX          |---|
-!| JU             |---|
-!| JUMAX          |---|
-!| N              |---|
-!| Q              |---|
-!| R              |---|
+!| FLAG           |<--| INDICATOR ERROR : 
+!|                |   |= N + R(K):  NULL ROW IN A
+!|                |   |= 2*N + R(K):DUPLICATE ENTRY IN A
+!|                |   |= 3*N + K:INSUFFICIENT STORAGE FOR JL
+!|                |   |= 6*N + K:INSUFFICIENT STORAGE FOR JU
+!|                |   |= 5*N + K: ZERO PIVOT
+!| IA, JA         |-->| STRUCTURE OF A NONSYMMETRICAL MATRIX
+!| IC             |-->| INVERSE OF THE ORDERING OF THE COLUMNS OF MATRIX
+!| IL, JL         |<--| STRUCTURE OF LOWER FACTORISED TRIANGULAR MATRIX
+!| IU, JU         |<--| STRUCTURE OF UPPER FACTORISED TRIANGULAR MATRIX
+!| IM             |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;SIZE = N
+!| JLMAX          |-->| PREVISIONAL MAXIMUM DIMENSION OF JL
+!| JUMAX          |-->| PREVISIONAL MAXIMUM DIMENSION OF JU
+!| N              |-->| RANK OF MATRIX
+!| Q              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;SIZE = N+1
+!| R              |-->| ORDERING OF THE ROWS OF MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

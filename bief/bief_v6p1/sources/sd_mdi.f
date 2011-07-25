@@ -10,9 +10,9 @@
 !
 !brief    INITIALISES.
 !
-!note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
+!note     IMPORTANT: INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
-!history  E. RAZAFINDRAKOTO (LNH)
+!history  E. RAZAFINDRAKOTO (LNHE)
 !+        20/11/06
 !+        V5P7
 !+
@@ -30,18 +30,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLAG           |---|
-!| HEAD           |---|
-!| IA             |---|
-!| JA             |---|
-!| L              |---|
-!| LAST           |---|
-!| MARK           |---|
-!| MAX            |---|
-!| N              |---|
-!| NEXT           |---|
-!| TAG            |---|
-!| V              |---|
+!| FLAG           |<--| FLAG - INTEGER ERROR FLAG;  VALUES AND THEIR 
+!|                |   | MEANINGS ARE : 0      NO ERRORS DETECTED
+!|                |   |         9*N + VI  INSUFFICIENT STORAGE IN MDI
+!| HEAD           |<--| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| IA, JA         |-->| COMPACT STORAGE STRUCTURE OF MATRIX
+!| L              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
+!| LAST           |---| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | DIMENSION = N
+!| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| MAX            |-->| DECLARED DIMENSION OF THE ONE-DIMENSIONAL ARRAYS
+!|                |   | V AND L; 
+!| N              |-->| RANK OF MATRIX
+!| NEXT           |<--| INVERSE OF THE PERMUTATION RETURNED IN LAST
+!|                |   | DIMENSION = N
+!| TAG            |-->| SEE DEFINITION IN INTERNAL PARAMATERS OF SD_MD.f 
+!| V              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_MDI => SD_MDI

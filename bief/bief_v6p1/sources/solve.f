@@ -142,15 +142,17 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER PRESTO,IG,LV,S,NBL
+      INTEGER PRESTO,IG,LV,S,NBL,I
       INTEGER IT1,IT2,IT3,IT4,IT5,IT6,IT7,IBL1,IBL2,K,IAD,ITB,ITBB
 !
       DOUBLE PRECISION C
 !
       LOGICAL DIADON,PREXSM
       INTEGER NPOIN_TOT
-      EXTERNAL P_ISUM
-      INTEGER P_ISUM
+      EXTERNAL P_IMAX
+      INTEGER  P_IMAX
+!
+      INTRINSIC MAX
 !
 !-----------------------------------------------------------------------
 !
@@ -298,24 +300,32 @@
           IF(LNG.EQ.1) WRITE(LU,3018)
           IF(LNG.EQ.2) WRITE(LU,3019)
 3018      FORMAT(1X,'MUMPS NON DISPONIBLE POUR DES TESTS SEQUENTIELS',
-     &         /,1X,
-     &              'UTILISER LE SOLVEUR SEQUENTIEL (SOLVEUR =8)',///)
+     &         /,1X,'UTILISER LE SOLVEUR SEQUENTIEL (SOLVEUR =8)',///)
 3019      FORMAT(1X,'MUMPS ARE NOT AVAILABLE FOR SEQUENTIAL RUNS,',/,1X,
      &         'USE SEQUENITAL DIRECT SOLVER (SOLVER = 8) ',///)
           CALL PLANTE(1)
           STOP
         ENDIF
-! NOTE JMH: VERY DANGEROUS !!!!!!!!!!!
-        OPEN(UNIT=25,FILE='FRONT_GLOB.DAT')
-        READ(25,*) NPOIN_TOT
-        CLOSE(25)
+!
+!       COMPUTING THE NUMBER OF POINTS IN THE MESH BEFORE PARTITIONING
+!
+        IF(NCSIZE.GT.1) THEN
+          NPOIN_TOT=0
+          DO I=1,MESH%NPOIN
+            NPOIN_TOT=MAX(MESH%KNOLG%I(I),NPOIN_TOT)
+          ENDDO
+          NPOIN_TOT=P_IMAX(NPOIN_TOT)
+        ELSE
+          NPOIN_TOT=MESH%NPOIN
+        ENDIF
+!
         IF(S.EQ.0) THEN
-          IF(LNG.EQ.1) WRITE(LU,30110) S
-          IF(LNG.EQ.2) WRITE(LU,40110) S
-30110     FORMAT(1X,'SOLVE (BIEF) : S=',1I6,' CAS NON ENCORE PREVU
-     &           POUR MUMPS')
-40110     FORMAT(1X,'SOLVE (BIEF): S=',1I6,' CASE NOT YET
-     &           IMPLEMENTED FOR MUMPS')
+          IF(LNG.EQ.1) WRITE(LU,302) S
+          IF(LNG.EQ.2) WRITE(LU,402) S
+302       FORMAT(1X,'SOLVE (BIEF) : S=',1I6,1X,
+     &              'CAS NON ENCORE PREVU POUR MUMPS')
+402       FORMAT(1X,'SOLVE (BIEF): S=',1I6,1X,
+     &              'CASE NOT YET MPLEMENTED FOR MUMPS')
           CALL PLANTE(1)
           STOP
         ELSEIF(S.EQ.1) THEN

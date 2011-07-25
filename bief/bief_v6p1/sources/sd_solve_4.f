@@ -6,7 +6,7 @@
      & XX1,XX2,CVB1,CVB2,INFOGR,TYPEXT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    DIRECT RESOLUTION OF A SYSTEM 2 X 2 WITH
@@ -34,20 +34,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CVB1,CVB2      |-->| SECONDS MEMBRES
-!| DAB1           |---|
-!| DAB2           |---|
-!| DAB3           |---|
-!| DAB4           |---|
-!| GLOSEGB        |---|
+!| CVB1,CVB2      |-->| SECOND MEMBERS OF THE 2 SUB-SYSTEMS
+!| DABX           |-->| DIAGONAL TERMS OF SUB-MATRIX X
+!| GLOSEGB        |-->| GLOBAL NUMBER OF SEGMENT OF A SUB-MATRIX
 !| INFOGR         |-->| IF, YES INFORMATIONS ON LISTING
 !| NPOIN          |-->| NOMBRE D'INCONNUES
 !| NSEGB          |-->| NOMBRE DE SEGMENTS
-!| TYPEXT         |---|
-!| XAB1           |---|
-!| XAB2           |---|
-!| XAB3           |---|
-!| XAB4           |---|
+!| TYPEXT         |-->| = 'S' : SYMETRIC MATRIX
+!| XABX           |-->| OFF-DIAGONAL TERMS OF SUB-MATRIX X
 !| XX1,XX2        |<--| SOLUTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

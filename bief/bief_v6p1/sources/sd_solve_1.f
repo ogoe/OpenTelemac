@@ -5,7 +5,7 @@
      &(NPOIN,NSEGB,GLOSEG,MAXSEG,DA,XA,XINC,RHS,INFOGR,TYPEXT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    DIRECT RESOLUTION OF A SYMMETRICAL LINEAR SYSTEM WITH
@@ -173,14 +173,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DA,XA          |-->| DIAGONALE ET TERMES EXTRA-DIAGONAUX DE LA MATRICE
-!| GLOSEG         |-->| NUMEROS GLOBAUX DES POINTS DES SEGMENTS
+!| DA             |-->| MATRIX DIAGONAL COEFFICIENTS
+!| XA             |-->| OFF-DIAGONAL TERM OF MATRIX 
+!| GLOSEG         |-->| GLOBAL NUMBER OF SEGMENTS OF THE MATRIX
 !| INFOGR         |-->| IF, YES INFORMATIONS ON LISTING
-!| MAXSEG         |---|
-!| NPOIN          |-->| NOMBRE D'INCONNUES
-!| NSEGB          |-->| NOMBRE DE SEGMENTS
-!| RHS            |-->| SECOND MEMBRE
-!| TYPEXT         |---|
+!| MAXSEG         |-->| MAXIMUM NUMBER OF SEGMENTS
+!| NPOIN          |-->| NUMBER OF UNKNOWN
+!| NSEGB          |-->| NUMBER OF SEGMENTS
+!| RHS            |-->| SECOND MEMBER OF LINEAR EQUATION
+!| TYPEXT         |---| = 'S' : SYMETRIC MATRIX 
 !| XINC           |<--| SOLUTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

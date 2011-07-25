@@ -6,7 +6,7 @@
      & INDTRI,ISTRI,INX,IPX,ACTRI,XA1,XA2,DA,AC)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    BUILDS A COMPACT STORAGE
@@ -16,10 +16,6 @@
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
-!history  E. RAZAFINDRAKOTO (LNH)
-!+        20/11/06
-!+        V5P7
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -30,20 +26,23 @@
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
+!
+!history  E. RAZAFINDRAKOTO (LNH)
+!+        21/11/11
+!+        V6P1
+!
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| ACTRI          |---|
-!| DA             |-->| MATRIX DIAGONAL
-!| IN             |---|
-!| INDTRI         |---|
-!| INX            |---|
-!| IP             |---|
-!| IPX            |---|
-!| ISEGIP         |---|
-!| ISTRI          |---|
+!| AC             |<--|COMPACT STORED MATRIX WITH DIAGONAL
+!| ACTRI          |---|REAL WORKING STORAGE
+!| DA             |-->|MATRIX DIAGONAL COEFFICIENTS
+!| (IN,IP)        |-->|STRUCTURE WITHOUT THE DIAGONAL
+!| INDTRI         |---|INTEGER WORKING STORAGE
+!| (INX,IPX)      |<--|STRUCTURE WITH THE DIAGONAL
+!| ISEGIP         |-->|INVERSE TABLE OF CONNECTIVITY: POINT ---> SEGMENT
+!| ISTRI          |---|INTEGER WORKING STORAGE
 !| NPBLK          |-->| SIZE OF MATRIX DIAGONAL
 !| NSEGBLK        |-->| NUMBER OF SEGMENTS IN ORIGINAL MATRIX
 !| XA1            |-->| OFF-DIAGONAL TERM OF MATRIX A

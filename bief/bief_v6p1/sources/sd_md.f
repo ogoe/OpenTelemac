@@ -5,7 +5,7 @@
      &(N,IA,JA,MAX,V,L,HEAD,LAST,NEXT,MARK,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P1                                   21/07/2011
 !***********************************************************************
 !
 !brief    MINIMUM DEGREE ALGORITHM (BASED ON ELEMENT MODEL).
@@ -100,17 +100,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLAG           |---|
-!| HEAD           |---|
-!| IA             |---|
-!| JA             |---|
-!| L              |---|
-!| LAST           |---|
-!| MARK           |---|
-!| MAX            |---|
-!| N              |---|
-!| NEXT           |---|
-!| V              |---|
+!| FLAG           |<--| FLAG - INTEGER ERROR FLAG;  VALUES AND THEIR 
+!|                |   | MEANINGS ARE : 0      NO ERRORS DETECTED
+!|                |   |               11N+1  INSUFFICIENT STORAGE IN MD
+!| HEAD           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| IA, JA         |-->| SYMETRICAL COMPACT STORAGE OF MATRIX
+!| L              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
+!| LAST           |---| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | DIMENSION = N
+!| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
+!| MAX            |-->| DECLARED DIMENSION OF THE ONE-DIMENSIONAL ARRAYS
+!|                |   | V AND L; MAX MUST BE AT LEAST  N+2K,  WHERE K IS
+!|                |   | THE NUMBER OF NONZEROES IN THE STRICT UPPER 
+!|                |   | TRIANGLE OF M
+!| N              |-->| DIMENSION OF SYSTEM
+!| NEXT           |<--| INVERSE OF THE PERMUTATION RETURNED IN LAST
+!|                |   | DIMENSION = N
+!| V              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_SD_MD => SD_MD

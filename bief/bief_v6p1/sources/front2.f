@@ -50,7 +50,7 @@
 !| NFRSOL         |<--| NUMBER OF SOLID BOUNDARIES
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NUMLIQ         |-->| BOUNDARY NOMBER OF BOUNDARY POINTS
+!| NUMLIQ         |-->| BOUNDARY NUMBER OF BOUNDARY POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

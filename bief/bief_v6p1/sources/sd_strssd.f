@@ -34,9 +34,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| GLOSEG1        |-->| FIRST POINT OF SEGMENTS
 !| GLOSEG2        |-->| SECOND POINT OF SEGMENTS
-!| IN             |<--| ADDRESSES OF NEIGHBOURS
-!| IP             |---|
-!| ISEGIP         |---|
+!| IN             |<--| (IN, IP)COMPACT STORAGE OF EXTRADIAGONAL TERMS
+!| IP             |<--| (IN, IP)COMPACT STORAGE OF EXTRADIAGONAL TERMS
+!| ISEGIP         |<--| INVERSE TABLE OF CONNECTIVITY: POINT-->SEGMENT
 !| IW             |<--| NUMBER OF NEIGHBOURS OF POINTS
 !| NPBLK          |-->| NUMBER OF POINTS
 !| NSEGBLK        |-->| NUMBER OF SEGMENTS
