@@ -1,7 +1,7 @@
 #------------------------------makefile.wnt----------------------------
-#     Système TELEMAC Version 6.0     PLG / INGEROP
+#     Système TELEMAC Version 6.0     CCT - MHL
 #
-# Makefile de SPECIAL pour WindowsNT (GFORTRAN/G95).
+# Makefile de SPECIAL pour WindowsNT (avec Intel).
 #
 # ATTENTION : doit être lancé dans le répertoire adéquat :
 #                   SPECIAL*/.../sources.
@@ -29,7 +29,7 @@ F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)
 #
 # ----- Règles de compilation Fortran
 #
-.f.o:
+.f.obj:
     $(F90) $(F90_PROJ) $<
 #
 #----- Paramétrage Telemac
@@ -48,7 +48,7 @@ gracestop.f     special_plante.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+OBJS = $(SRCS:.f=.obj)
 
 #
 # ------------------------ Cibles
@@ -58,14 +58,14 @@ ALL: $(LIBRARY)
 
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
-	@echo ---------------------Création de la librairie.
-	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+	@echo ---------------------Création de la librairie. WNT
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
 
 #--- Suppression des ".obj" (existants) + ".lib"
-menage:  $(SRCS)
+menage:  $(SRCS) 
 	@echo  -
 	@echo ---------------------Destruction de tous les objets.
-	!@if EXIST $(**B).o del /q  $(**B).o
+	!@if EXIST $(**B).obj del /q  $(**B).obj
 	@echo ---------------------Destruction des librairies
 	!@if EXIST *.lib del /q  *.lib
 	@echo ---------------------Destruction des executables
@@ -82,21 +82,21 @@ install: $(LIBRARY)
 libdebug:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
-	nmake /f makefile.gfo install  "MODE=d"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d" 
+	nmake /f makefile.wnt install  "MODE=d" 
 
 #--- Librairie en PROFILE
 libprofile:
 	@echo  -
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
-	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
-	nmake /f makefile.gfo install  "MODE=p"
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p" 
+	nmake /f makefile.wnt install  "MODE=p" 
 
 #--- Modules
 #
-MODS =   *.o
-gracestop.o:
-    $(F90) $(F90_PROJ) gracestop.f
+MODS =   gracestop.obj
+gracestop.obj:
+    $(F90) $(F90_PROJ) gracestop.f  
     if EXIST $(DIRINC)\gracestop.mod del /f $(DIRINC)\gracestop.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move gracestop.mod $(DIRINC)
