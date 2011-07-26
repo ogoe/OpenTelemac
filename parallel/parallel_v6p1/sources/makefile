@@ -73,6 +73,7 @@ MAKEFILE      = makefile
 
 SRCS	      = errpvm.f \
 		get_mpi_parameters.f \
+		org_charac_type1.f \
 		p_dmax.f \
 		p_dmin.f \
 		p_dsum.f \
@@ -90,9 +91,11 @@ SRCS	      = errpvm.f \
 		p_mpi_alltoallv.f \
 		p_mpi_type_commit.f \
 		p_mpi_type_extent.f \
+		p_mpi_type_get_extent.f \
 		p_mpi_type_free.f \
 		p_mpi_type_lb.f \
 		p_mpi_type_struct.f \
+		p_mpi_type_create_struct.f \
 		p_mpi_type_ub.f \
 		p_read.f \
 		p_iread.f \

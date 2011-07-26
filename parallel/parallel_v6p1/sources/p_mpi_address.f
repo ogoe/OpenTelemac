@@ -1,11 +1,11 @@
-!                    ************************
-                     SUBROUTINE P_MPI_ADDRESS
-!                    ************************
-!
-     &(LOCATION,ADDRESS,IER)
+C                       ************************
+                        SUBROUTINE P_MPI_ADDRESS
+C                       ************************
+C
+     *(LOCATION,ADDRESS,IER)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_ADDRESS.
@@ -34,23 +34,26 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
-!
+C
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
-      INTEGER LOCATION,ADDRESS,IER
-!
-!-----------------------------------------------------------------------
-!
-      CALL MPI_ADDRESS(LOCATION,ADDRESS,IER)
-!
+C
+      INCLUDE 'mpif.h'
+      INTEGER LOCATION
+      INTEGER (MPI_ADDRESS_KIND) ADDRESS
+      INTEGER IER
+C
+C-----------------------------------------------------------------------
+C
+      CALL MPI_GET_ADDRESS(LOCATION,ADDRESS,IER)
+C
       IF(IER.NE.0) THEN
         WRITE(LU,*) 'P_MPI_ADDRESS:'
         WRITE(LU,*) 'MPI ERROR ',IER
         STOP
       ENDIF
-!
-!----------------------------------------------------------------------
-!
+C
+C----------------------------------------------------------------------
+C
       RETURN
       END
