@@ -5,7 +5,7 @@
      &(CHAINE,NCAR,IPID,NCSIZE)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARAVOID   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES.
@@ -56,10 +56,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHAINE         |---| REPERTOIRE DE TRAVAIL
-!| IPID           |---|
-!| NCAR           |---|
-!| NCSIZE         |---|
+!| CHAINE         |---| WORKING DIRECTORY
+!| IPID           |---| PROCESSUS ID
+!| NCAR           |---| SIZE OF THE CHARACTER STRING
+!| NCSIZE         |---| NUMBER OF MPI PROCESSUS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

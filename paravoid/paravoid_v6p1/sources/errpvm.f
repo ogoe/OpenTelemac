@@ -5,7 +5,7 @@
      &(ERROR_NUMBER)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARAVOID   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES OUT THE ERROR MESSAGES FOR PVM.
@@ -40,7 +40,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ERROR_NUMBER   |-->| RETOUR D'UN APPEL A MPI
+!| ERROR_NUMBER   |-->| ERROR RETURN VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

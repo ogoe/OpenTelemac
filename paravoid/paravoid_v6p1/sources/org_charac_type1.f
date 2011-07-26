@@ -1,30 +1,42 @@
-C                    ***************************
+!                    ***************************
                      SUBROUTINE ORG_CHARAC_TYPE1 
-C                    *************************** 
-C 
-     *(NOMB,TRACE,CHARACTERISTIC)                      
-C 
-C*********************************************************************** 
-C 
-C  PARAVOID VERSION 6.1   16/01/2010    C. DENIS (SINETICS) 
-C 
-C*********************************************************************** 
-C 
-C    MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS / INIT, ETC. 
-C    MPI_ADDRESS POSSIBLY MOST PORTABLE THROUGH PLATFORMS  
-C    HOWEVER WE APPLY MPI_TYPE_EXTENT TO ESTIMATE THE BASKET FIELD   
-C   / UP TO DATE NO CHECKING OF THE MPI ERROR STATUS /  
-C 
-C----------------------------------------------------------------------- 
-C 
-C APPELE PAR : STREAMLINE  
-C 
-C*********************************************************************** 
-C       
+!                    *************************** 
+! 
+     &(NOMB,TRACE,CHARACTERISTIC)                      
+!
+!***********************************************************************
+! PARAVOID   V6P1                                   21/08/2010
+!***********************************************************************
+!
+!brief    MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS /
+!
+!history  C. DENIS
+!+        01/07/2011
+!+        V6P1
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| NOMB           |<---| NUMBER OF VARIABLES 
+!| TRACE          |<---| IF .TRUE. TRACE EXECUTION
+!| CHARACTERISTIC |--->| DATATYPE FOR CHARACTERISTIC 
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU 
-C 
+! 
       INTEGER, INTENT(INOUT) :: NOMB 
       INTEGER, INTENT(INOUT)  :: CHARACTERISTIC 
       LOGICAL, INTENT(IN) ::TRACE 

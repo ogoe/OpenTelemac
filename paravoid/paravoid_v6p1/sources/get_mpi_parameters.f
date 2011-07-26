@@ -5,7 +5,7 @@
      &(P_INTEGER,P_REAL8,P_UB,P_COMM_WORLD,P_SUCCESS)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARAVOID   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -30,14 +30,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| P_COMM_WORLD   |---|
-!| P_INTEGER      |---|
-!| P_REAL8        |---|
-!| P_SUCCESS      |---|
-!| P_UB           |---|
+!| P_COMM_WORLD   |<--|  MPI_COMM_WORLD VALUE
+!| P_INTEGER      |<--|  MPI_INTEGER VALUE 
+!| P_REAL8        |<--|  MPI_REAL8 VALUE 
+!| P_SUCCESS      |<--|  MPI_SUCCESS VALUE
+!| P_UB           |<--|  MPI_UB VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      IMPLICIT NONE
+      IMPLICIT NONE               
 !
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU

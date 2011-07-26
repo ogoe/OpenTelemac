@@ -5,7 +5,7 @@
      &(LOCATION,ADDRESS,IER)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARAVOID   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_ADDRESS (HERE 1ST ARGUMENT
@@ -29,11 +29,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ADDRESS        |---|
-!| IER            |---|
-!| LOCATION       |---|
+!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ADDRESS        |-->| LOCATION IN CALLER MEMORY
+!| IER            |<--| ERROR VALUE
+!| LOCATION       |<--| ADDRESS OF LOCATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

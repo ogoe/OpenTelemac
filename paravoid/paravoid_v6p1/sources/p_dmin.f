@@ -5,7 +5,7 @@
      &(MYPART)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARAVOID   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MINIMUM VALUE FROM ALL THE PROCESSORS.
@@ -40,7 +40,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| MYPART         |-->| CONTRIBUTION DU PROCESSEUR APPELANT.
+!| MYPART         |-->| SEND BUFFER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
