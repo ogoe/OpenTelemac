@@ -5,7 +5,7 @@
      &(IARG1,LARG2)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    REDUCTION OF A VECTOR OF LOGICALS WITH DIFFUSION OF
@@ -29,8 +29,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IARG1          |-->| TAILLE DU VECTEUR
-!| LARG2          |<->| CONTRIBUTION DU PROCESSEUR APPELANT.
+!| IARG1          |-->| BUFFER SIZE
+!| LARG2          |<->| SEND BUFFER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

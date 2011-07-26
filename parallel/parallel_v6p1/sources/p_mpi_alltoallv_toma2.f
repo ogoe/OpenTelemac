@@ -5,7 +5,7 @@
      &(I1,I2,I3,I4,I5,I6,I7,I8,I9,I10)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_ALLTOALLV.
@@ -26,18 +26,19 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
-!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I1             |---|
-!| I10            |---|
-!| I2             |---|
-!| I3             |---|
-!| I4             |---|
-!| I5             |---|
-!| I6             |---|
-!| I7             |---|
-!| I8             |---|
-!| I9             |---|
+!| I1             |-->| SEND BUFFER  
+!| I2             |-->| SPECIFIES THE NUMBER OF ELEMENTS TO SEND TO EACH
+!|                |   | PROCESSOR 
+!| I3             |-->| DISPLACEMENT ARRAY FOR THE SEND BUFFER 
+!| I4             |-->| DATA TYPE OF SEND BUFFER ELEMENTS
+!| I5             |-->| RECEIVE BUFFER
+!| I6             |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT 
+!|                |   | CAN BE RECEIVED FROM EACH PROCESSOR
+!| I7             |-->| DISPLACEMENT ARRAY FOR THE RECEIVE BUFFER 
+!| I8             |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
+!| I9             |-->| COMMUNICATOR 
+!| I10            |-->| ERROR VALUE 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

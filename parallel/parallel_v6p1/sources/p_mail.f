@@ -5,7 +5,7 @@
      &(CHAINE,NCAR)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PASSES A CHARACTER STRING (OF LENGTH NCAR)
@@ -39,8 +39,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CHAINE         |---|
-!| NCAR           |---|
+!| CHAINE         |---| CHARACTER STRING
+!| NCAR           |---| SIZE OF THE CHARACTER STRING
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

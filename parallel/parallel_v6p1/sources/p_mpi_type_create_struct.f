@@ -28,12 +28,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I1             |---|
-!| I2             |---|
-!| I3             |---|
-!| I4             |---|
-!| I5             |---|
-!| I6             |---|
+!| I1             |-->| NUMBER OF BLOCKS 
+!| I2             |-->| NUMBER OF ELEMENTS IN EACH BLOCK
+!| I3             |-->| BYTE DISLACEMENT   IN EACH BLOCK
+!| I4             |-->| TYPE OF ELEMENTS   IN EACH BLOCK 
+!| I5             |<--| NEW DATATYPE
+!| I6             |<--| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

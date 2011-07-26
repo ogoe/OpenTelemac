@@ -5,7 +5,7 @@
      &(KNOLG,NPOIN,NPOIN_TOT,X,Y,K,C,CG,XT,YT,KT,CTT,CGT)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    REBUILDS THE BOUNDARY OF THE MESH (GLOBAL NODES).
@@ -30,19 +30,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| C              |---|
-!| CG             |---|
-!| CGT            |---|
-!| CTT            |---|
-!| K              |---|
-!| KNOLG          |---|
-!| KT             |---|
-!| NPOIN          |---|
-!| NPOIN_TOT      |---|
-!| X              |---|
-!| XT             |---|
-!| Y              |---|
-!| YT             |---|
+!| C              |-->| LOCAL PHASE VELOCITIES
+!| CG             |-->| LOCAL GROUP VELOCITIES
+!| CGT            |<--| GLOBAL GROUP VELOCITIES
+!| CTT            |<--| GLOBAL PHASE VELOCITIES
+!| K              |-->| LOCAL WAVE NUMBER
+!| KNOLG          |<--| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
+!| KT             |<--| GLOBAL WAVE NUMBER
+!| NPOIN          |-->| NUMBER OF LOCAL POINTS
+!| NPOIN_TOT      |<--| NUMBER OF GLOBAL POINTS
+!| X              |-->| LOCAL X VECTOR
+!| XT             |<--| GLOBAL X VECTOR
+!| Y              |-->| LOCAL X VECTOR
+!| YT             |<--| GLOBAL Y VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

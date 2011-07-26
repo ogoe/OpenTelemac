@@ -1,7 +1,7 @@
-C                       *************************
+!                       *************************
                         SUBROUTINE P_MPI_ADDRESS3
-C                       *************************
-C
+!                       *************************
+!
      *(LOCATION,ADDRESS,IER)
 !
 !***********************************************************************
@@ -29,32 +29,32 @@ C
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ADDRESS        |---|
-!| IER            |---|
-!| LOCATION       |---|
+!| ADDRESS        |-->| LOCATION IN CALLER MEMORY
+!| IER            |<--| ERROR VALUE
+!| LOCATION       |<--| ADDRESS OF LOCATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
-C
+!
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
+!
       INCLUDE 'mpif.h'
       DOUBLE PRECISION LOCATION(10)
       INTEGER IER
       INTEGER (MPI_ADDRESS_KIND) ADDRESS
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       CALL MPI_GET_ADDRESS(LOCATION,ADDRESS,IER)
-C
+!
       IF(IER.NE.0) THEN
         WRITE(LU,*) 'P_MPI_ADDRESS3:'
         WRITE(LU,*) 'MPI ERROR ',IER
         STOP
       ENDIF
-C
-C----------------------------------------------------------------------
-C
+!
+!----------------------------------------------------------------------
+!
       RETURN
       END
