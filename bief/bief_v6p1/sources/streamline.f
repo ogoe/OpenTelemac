@@ -88,114 +88,6 @@
   !--------------------------------------------------------------------- 
   !   <<<<<<<<<<<<<<<<<< CHARACTERISTICS: PRIVATE >>>>>>>>>>>>>>>>>> 
   !--------------------------------------------------------------------- 
- 
-  !--------------------------------------------------------------------- 
-  ! MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS / INIT, ETC. 
-  ! MPI_ADDRESS POSSIBLY MOST PORTABLE THROUGH PLATFORMS  
-  ! HOWEVER WE APPLY MPI_TYPE_EXTENT TO ESTIMATE THE BASKET FIELD   
-  !   / UP TO DATE NO CHECKING OF THE MPI ERROR STATUS /  
-  !--------------------------------------------------------------------- 
- 
-        SUBROUTINE ORG_CHARAC_TYPE(NOMB)  
-          IMPLICIT NONE 
-          INTEGER, INTENT(IN) :: NOMB  
-          INTEGER INTEX, IER, ILB, IUB           
-          TYPE(CHARAC_TYPE) :: CH 
-          INTEGER LNG,LU 
-          COMMON/INFO/LNG,LU 
-          INTEGER I 
-C         NOTE JMH : P_MPI_ADDRESS 2 AND 3 ARE IN PARALLEL LIBRARY 
-C                    THEY ALL CALL MPI_ADDRESS BUT WITH DIFFERENT 
-C                    DATA TYPES (THIS IS TO ENABLE COMPILING BY NAG)            
-!         CALL P_MPI_ADDRESS (CH%MYPID,  CH_DELTA(1),  IER) 
-!         CALL P_MPI_ADDRESS (CH%NEPID,  CH_DELTA(2),  IER) 
-!         CALL P_MPI_ADDRESS (CH%INE,    CH_DELTA(3),  IER) 
-!         CALL P_MPI_ADDRESS (CH%KNE,    CH_DELTA(4),  IER) 
-!         CALL P_MPI_ADDRESS (CH%IOR,    CH_DELTA(5),  IER) 
-!         CALL P_MPI_ADDRESS (CH%ISP,    CH_DELTA(6),  IER) 
-!         CALL P_MPI_ADDRESS (CH%NSP,    CH_DELTA(7),  IER) 
-!         CALL P_MPI_ADDRESS2(CH%XP,     CH_DELTA(8),  IER) 
-!         CALL P_MPI_ADDRESS2(CH%YP,     CH_DELTA(9),  IER) 
-!         CALL P_MPI_ADDRESS2(CH%ZP,     CH_DELTA(10), IER) 
-!         CALL P_MPI_ADDRESS3(CH%BASKET, CH_DELTA(11), IER) ! BASKET STATIC  
-C 
-C         CALL P_MPI_TYPE_EXTENT(MPI_REAL8,INTEX,IER) 
-!         INTEX = 8 
-!         ! MARKING THE END OF THE TYPE  
-!         CH_DELTA(12) = CH_DELTA(11) + MAX_BASKET_SIZE*INTEX ! MPI_UB POSITION  
-!         IBASE = CH_DELTA(1) 
-!         DO I=1,12 
-!           CH_DELTA(I)=CH_DELTA(I)-IBASE 
-!         ENDDO 
-C         CH_DELTA = CH_DELTA - IBASE ! RELATIVE ADDRESSES 
-! 
-          CALL P_MPI_TYPE_EXTENT(MPI_INTEGER,INTEX,IER) 
-          CH_DELTA(1)=0 
-          DO I=2,7 
-            CH_DELTA(I)=CH_DELTA(I-1)+INTEX 
-          ENDDO 
-!         CALL P_MPI_TYPE_EXTENT(MPI_REAL8,INTEX,IER) 
-!         IF YOU KNOW A COMPILER WITH REAL8 NOT OF A SIZE 8, WARN US !! 
-          INTEX=8 
-!         BEWARE TRICK: INTEGER NUMBER 7 IS TREATED HERE AS A REAL8 BECAUSE 
-!                       WE HAVE ADDED INTEGER VOID BEHIND. IF WE DO NOT ADD 
-!                       VOID, SOME COMPILERS WILL ADD A GAP IN THE DATA 
-! 
-          DO I=8,11 
-            CH_DELTA(I)=CH_DELTA(I-1)+INTEX 
-          ENDDO 
-          CH_DELTA(12)=CH_DELTA(11)+INTEX*MAX_BASKET_SIZE         
-! 
-          IF (NOMB>0.AND.NOMB<=MAX_BASKET_SIZE) THEN  
-            CH_BLENGTH(11) = NOMB ! CH%BASKET RANGE APPLIED FOR COMMUNICATION   
-          ELSE 
-            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE::', 
-     &        ' NOMB NOT IN RANGE [1..MAX_BASKET_SIZE]' 
-            WRITE(LU,*) ' MAX_BASKET_SIZE, NOMB: ',MAX_BASKET_SIZE,NOMB 
-            CALL PLANTE(1) 
-            STOP  
-          ENDIF 
-          CH_TYPES(1)=MPI_INTEGER 
-          CH_TYPES(2)=MPI_INTEGER 
-          CH_TYPES(3)=MPI_INTEGER 
-          CH_TYPES(4)=MPI_INTEGER 
-          CH_TYPES(5)=MPI_INTEGER 
-          CH_TYPES(6)=MPI_INTEGER 
-          CH_TYPES(7)=MPI_INTEGER 
-          CH_TYPES(8)=MPI_REAL8 
-          CH_TYPES(9)=MPI_REAL8 
-          CH_TYPES(10)=MPI_REAL8 
-          CH_TYPES(11)=MPI_REAL8 
-          CH_TYPES(12)=MPI_UB       ! THE TYPE UPPER BOUND MARKER           
-          CALL P_MPI_TYPE_STRUCT(12,CH_BLENGTH,CH_DELTA,CH_TYPES, 
-     &                           CHARACTERISTIC,IER) 
-          CALL P_MPI_TYPE_COMMIT(CHARACTERISTIC,IER) 
-          CALL P_MPI_TYPE_LB(CHARACTERISTIC, ILB, IER) 
-          CALL P_MPI_TYPE_UB(CHARACTERISTIC, IUB, IER) 
-          IF(ILB.NE.CH_DELTA(1).OR.IUB.NE.CH_DELTA(12)) THEN 
-            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE:' 
-            WRITE(LU,*) ' MEMORY PROBLEM WITH THIS COMPILER: ' 
-            WRITE(LU,*) ' ILB=',ILB,' NOT EQUAL TO CH_DELTA(1)=', 
-     &                  CH_DELTA(1) 
-            WRITE(LU,*) ' OR' 
-            WRITE(LU,*) ' IUB=',IUB,' NOT EQUAL TO CH_DELTA(12)=', 
-     &                  CH_DELTA(12) 
-            CALL PLANTE(1) 
-            STOP 
-          ENDIF 
-          IF (TRACE) THEN 
-            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE:' 
-            WRITE(LU,*) ' MAX_BASKET_SIZE: ', MAX_BASKET_SIZE 
-            WRITE(LU,*) ' SIZE(CH%BASKET): ',SIZE(CH%BASKET) 
-            WRITE(LU,*) ' CH_DELTA: ',CH_DELTA 
-            WRITE(LU,*) ' CH_BLENGTH: ',CH_BLENGTH 
-            WRITE(LU,*) ' CH_TYPES: ',CH_TYPES 
-            WRITE(LU,*) ' COMMITING MPI_TYPE_STRUCT: ', CHARACTERISTIC 
-            WRITE(LU,*) ' MPI_TYPE_LB, MPI_TYPE_UB: ',ILB, IUB 
-          ENDIF 
-          IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE' 
-          RETURN  
-        END SUBROUTINE ORG_CHARAC_TYPE 
         
         SUBROUTINE DEORG_CHARAC_TYPE 
           INTEGER IER 
@@ -239,7 +131,7 @@ C         CH_DELTA = CH_DELTA - IBASE ! RELATIVE ADDRESSES
           IF (.NOT.ALLOCATED(SENDCHAR)) ALLOCATE(SENDCHAR(NCHDIM)) 
           IF (.NOT.ALLOCATED(RECVCHAR)) ALLOCATE(RECVCHAR(NCHDIM)) 
           IF (.NOT.ALLOCATED(HEAPCHAR)) ALLOCATE(HEAPCHAR(NCHDIM)) 
-          CALL ORG_CHARAC_TYPE(NOMB) ! COMMIT THE CHARACTERISTICS TYPE FOR COMM. 
+          CALL ORG_CHARAC_TYPE1(NOMB,TRACE,CHARACTERISTIC) ! COMMIT THE CHARACTERISTICS TYPE FOR COMM. 
           RETURN 
         END SUBROUTINE ORGANISE_CHARS 
  
