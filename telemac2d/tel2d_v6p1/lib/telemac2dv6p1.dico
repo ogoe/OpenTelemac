@@ -1394,12 +1394,11 @@ MNEMO = 'SB'
 TAILLE = 0 
 DEFAUT = 100. 
 DEFAUT1 = 100. 
-RUBRIQUE = 'EQUATIONS';'MODELE DE TURBULENCE';'MODELE K-EPSILON' 
-RUBRIQUE1 = 'EQUATIONS';'TURBULENCE MODEL';'K-EPSILON MODEL' 
+RUBRIQUE = 'EQUATIONS' 
+RUBRIQUE1 = 'EQUATIONS' 
 NIVEAU = 1 
 AIDE = 'Fixe la valeur du coefficient de frottement sur les frontieres 
-solides lorsqu''on utilise le modele k-epsilon avec un regime 
-turbulent rugueux sur les bords du domaine. 
+solides avec un regime turbulent rugueux sur les bords du domaine. 
 meme convention que pour le coefficient de frottement: 
                     1 : non programme 
                     2 : coefficient de Chezy 
@@ -1407,8 +1406,7 @@ meme convention que pour le coefficient de frottement:
                     4 : coefficient de Manning 
                     5 : hauteur de rugosite de Nikuradse' 
 AIDE1 = 'Sets the value of the friction coefficient of the solid boundary 
-when using the k-epsilon model with the bed roughness option. 
-same meaning than the friction coefficient' 
+with the bed roughness option. Same meaning than friction coefficient' 
  
 NOM = 'DEBITS IMPOSES' 
 NOM1 = 'PRESCRIBED FLOWRATES' 
@@ -4779,22 +4777,46 @@ TYPE = INTEGER
 INDEX = 75
 MNEMO = 'TIDALTYPE'
 TAILLE = 0
-DEFAUT = 0 
-DEFAUT1= 0 
-CHOIX='1="Priorite aux valeurs imposees"';'2="Priorite aux flux"'
-CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
+DEFAUT = 0
+DEFAUT1= 0
+CHOIX=
+'0="Pas de maree"';
+'1="Maree reelle (methodologie recommandee)"';
+'2="Maree de vive-eau exceptionnelle (coef. presque 120)"';
+'3="Maree de vive-eau moyenne (coef. presque 95)"';
+'4="Maree moyenne (coef. presque 70)"';
+'5="Maree de morte-eau moyenne (coef. presque 45)"';
+'6="Maree de morte-eau exceptionnelle (coef. presque 20)"';
+'7="Maree reelle (methodologie d avant 2010)"'
+CHOIX1=
+'0="No tide"';
+'1="Real tide (recommended methodology)"';
+'2="Astronomical tide"';
+'3="Mean spring tide"';
+'4="Mean tide"';
+'5="Mean neap tide"';
+'6="Astronomical neap tide"';
+'7="Real tide (methodology before 2010)"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1
-AIDE = ' '
-AIDE1= ' ' 
+AIDE = 'Option pour les conditions aux limites de maree.
+Pour des marees reelles, l option 1 est recommandee.
+Calage possible par les mots-cles COEFFICIENT POUR CALAGE EN MARNAGE
+(seulement pour les marees schematiques)
+et COEFFICIENT POUR CALAGE EN NIVEAU.'
+AIDE1= 'Option for tidal boundary conditions.
+For real tides, option 1 is recommended.
+Possible calibration with keywords COEFFICIENT TO ADJUST TIDAL RANGE
+(only for schematic tides)
+and COEFFICIENT TO ADJUST SEA LEVEL.'
 
 NOM = 'FICHIER DES CONSTANTES HARMONIQUES' 
 NOM1 = 'HARMONIC CONSTANTS FILE' 
 TYPE = CARACTERE 
 INDEX = 83 
 MNEMO = 'T2D_FILES(T2DHAR)' 
-SUBMIT = 'NHAR-READWRITE-13;T2DHAR;FACUL;ASC;LIT;PARAL' 
+SUBMIT = 'NHAR-READWRITE-13;T2DHAR;FACUL;ASC;ECRLIT;PARAL' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
