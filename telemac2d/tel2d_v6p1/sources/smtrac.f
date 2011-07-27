@@ -5,7 +5,7 @@
      &(NPOIN,DIMT,AT,DT,SMTR,SMH,NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,ITRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE SECOND MEMBER FOR THE TRACER.
@@ -28,18 +28,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AT             |-->| TEMPS
-!| DIMT           |-->| DIMENSION DU TRACEUR
-!| DT             |-->| PAS DE TEMPS HYDRO
-!| ISCE           |-->| NUMEROS GLOBAUX DES POINTS SOURCES
-!| ITRAC          |---|
-!| MAXSCE         |---|
-!| MAXTRA         |---|
-!| NPOIN          |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NREJET         |-->| NOMBRE DE SOURCES/PUITS
-!| SMH            |-->| TERMES SOURCES DE L'EQUATION DE CONTINUITE
-!| SMTR           |---| TERMES SOURCES DU TRACEUR
-!| TSCE2          |---|
+!| AT             |-->| TIME
+!| DIMT           |-->| DIMENSION OF THE TRACER
+!| DT             |-->| HYDRO TIME STEP
+!| ISCE           |-->| GLOBAL INDICES OF SOURCE POINTS
+!| ITRAC          |-->| TRCER INDEX 
+!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
+!| MAXTRA         |-->| MAXIMUM NUMER OF TRACERS 
+!| NPOIN          |-->| TOTAL NUMBER OF NODES IN THE MESH
+!| NREJET         |-->| NUMBER OF SOURCE/SINK
+!| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION
+!| SMTR           |-->| SOURCE TERMS FOR TRACER
+!| TSCE2          |-->| VALUES OF TRACERS AT SOURCES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

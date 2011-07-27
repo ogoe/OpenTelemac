@@ -6,7 +6,7 @@
      & ZF,DPX,DPY,DSZ,BETA,AIRST,DXIZ,DYIZ,DSP,DSM,CORR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    SAINT VENANT-KINETIC.
@@ -31,25 +31,26 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRS           |-->| AIRES DES CELLULES
-!| AIRST          |-->| AIRES DES SOUS-TRIANGLES DANS CELLULES
-!| AIRT           |-->| AIRES DES TRIANGLES
-!| BETA           |---| COEFFICIENT EXTRAPOLATION
-!| CMI            |-->| COORDONNEES DES POINTS MILIEUX D'INTERFACE
-!| DPX,DPY        |-->| GRADIENT DES FONCTIONS DE BASE P1
-!|                |   | PAR TRIANGLE
-!| DSM,CORR       |---|
-!| DSZ            |<--| VARIATION DE Z POUR ORDRE 2
-!| DXIZ,DYIZ,DSP  |---| TABLEAUX DE TRAVAIL
-!| JV             |-->| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE
-!|                |   | POINT MILIEU D'UNE INTERFACE
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NT             |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NU             |-->| NUMEROS DES NOEUDS PAR TRIANGLE
-!| NUBO           |-->| NUMEROS DES DEUX SOMMETS D'UNE ARETE
-!| X,Y            |-->| COORDONNEES DES NOEUDS DU MAILLAGE
-!| ZF             |-->| COTES DU FOND
+!| AIRS           |-->| CELL'S AREAS
+!| AIRST          |-->| AREAS OF SUBTRIANGLES WITHIN THE CELLS
+!| AIRT           |-->| TRIANGLES' AREAS
+!| BETA           |-->|  EXTRAPOLATION COEFFICIENT
+!| CMI            |-->| COORDINATES OF THE INTERFACE MIDDLE POINT
+!| DPX,DPY        |-->| GRADIENT OF P1 BASE FUNCTIONS
+!|                |   | PER TRIANGLE
+!| DSM            |<->| EXTRAPOLATED GRADIENTS
+!| CORR           |<->| CORRECTION TO HAVE CONSERVATION
+!| DSZ            |<--| VARIATION OF Z FOR ORDRE 2
+!| DXIZ,DYIZ,DSP  |<->| WORKING TABLES 
+!| JV             |-->| NUMBER OF TRIANGLE IN WHICH IS LOCATED 
+!|                |   | THE INTERFACE MIDDLE POINT
+!| NS             |-->| TOTAL NUMER OF NODES IN THE MESH
+!| NSEG           |-->| TOTAL NUMER OF SEGMENTS IN THE MESH
+!| NT             |-->| TOTAL NUMBER OF ELEMENTS IN THE MESH
+!| NU             |-->| NUMBERING OF NODES IN THE TRIANGLE
+!| NUBO           |-->| NUMBERS OF THE TWO NODES FORMING ONE EDGE (SEGMENT)
+!| X,Y            |-->| COORDINATES IF THE NODES
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

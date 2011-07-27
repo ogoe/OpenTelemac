@@ -5,7 +5,7 @@
      &(NS,NSEG,NPTFR,H,SMTR,HSTOK,HC,HCSTOK,FLUXT,FLUHBOR,DTT,NTRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES A TIME STEP (TRACER).
@@ -28,18 +28,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DTT            |<--| PAS DE TEMPS TRACEUR
-!| FLUHBOR        |<--| FLUX  TRACEUR FRONTIERE REINITIALISE
-!| FLUXT          |<--| FLUX  TRACEUR  REINITIALISE
-!| H              |-->| HAUTEURS D'EAU
-!| HC             |-->| H RECONSTRUIT ORDRE 2   CORRIGE
-!| HCSTOK         |<--| H RECONSTRUIT ORDRE 2   CORRIGE  STOCKE
-!| HSTOK          |<--| HAUTEURS D'EAU  STOCKEES
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NTRAC          |-->| NUMBER OF TRACERS
-!| SMTR           |<--| TERMES SOURCES DU TRACEUR
+!| DTT            |<--| TIME STEP FOR TRACER
+!| FLUHBOR        |<--| TRACER FLUX AT HE BOUNDARY (UPDATED)
+!| FLUXT          |<--| TRACER FLUX (UPDATED)  
+!| H              |-->| WATER DEPTH
+!| HC             |-->| RECONSRUCTED H FOR ORDRE 2 (CORRECTED)
+!| HCSTOK         |<--| RECONSTRUCTED H FOR ORDRE 2(CORRECTED AND STOCKE)
+!| HSTOK          |<--| STOCKED WATER DEPTHS
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NS             |-->| TOTAL NUMER OF POINTS IN THE MESH
+!| NSEG           |-->| NUMBER OF EDGES IN THE MESH
+!| NTRAC          |-->| NUMBER OF TRACERS 
+!| SMTR           |<--| TRACER SOURCE TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

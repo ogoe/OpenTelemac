@@ -5,7 +5,7 @@
      &(NS,G,DT,UA,H,QU,QV,CF)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FRICTION TERM.
@@ -28,14 +28,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CF             |---|
-!| DT             |---|
-!| G              |---|
-!| H              |---|
-!| NS             |---|
-!| QU             |---|
-!| QV             |---|
-!| UA             |---|
+!| CF             |-->| THE FRICTION COEFFICIENT
+!| DT             |-->| TIME STEP
+!| G              |-->| GRAVITY
+!| H              |-->| WATER DEPTH AT TN
+!| NS             |-->| TOTAL NUMBER OF NODES
+!| QU             |-->| HU AT TIME TN
+!| QV             |-->| HV AT TIME TN 
+!| UA             |<->| (H,HU,HV) AT TN+1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

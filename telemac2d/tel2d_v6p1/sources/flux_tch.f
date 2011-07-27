@@ -8,6 +8,15 @@
 ! TELEMAC-2D VERSION 6.1                                     03/15/2011
 !***********************************************************************
 !
+!brief  COMPUTES TCHAMEN FLUX AT THE INERNAL INTERFACES 
+!       REF.:"MODELING OF WETTING-DRYING TRANSITIONS IN FREE SURFACE FLOWS 
+!             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304 
+!
+!history  R. ATA (EDF-LNHE)
+!+
+!+        V6P1
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AIRS           |-->| AIRES DES CELLULES
 !| CE             |<->| FLUX  INCREMENTES DES FLUX
@@ -143,5 +152,6 @@
 5500   CONTINUE
 !
 !-----------------------------------------------------------------------
+!
       RETURN
       END

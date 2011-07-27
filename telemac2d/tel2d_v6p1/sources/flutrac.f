@@ -5,7 +5,7 @@
      &(NSEG,NPTFR,DT,FLUXT,FLUHBOR,FLUXTEMP,FLUHBTEMP,DTT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    INCREMENTS TRACER FLUXES BY ONE HYDRO TIMESTEP.
@@ -28,14 +28,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DT             |-->| PAS DE TEMPS HYDRO
-!| DTT            |<->| PAS DE TEMPS TRACEUR
-!| FLUHBOR        |<->| FLUX  TRACEUR FRONTIERE INCREMENTE
-!| FLUHBTEMP      |-->| FLUX FRONTIERE D'UN PAS DE TEMPS HYDRO
-!| FLUXT          |<->| FLUX  TRACEUR INCREMENTE
-!| FLUXTEMP       |-->| FLUX D'UN PAS DE TEMPS HYDRO
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
+!| DT             |-->| HYDRAULIC TIME STEP 
+!| DTT            |<->| TRACER TIME STEP
+!| FLUHBOR        |<->| TRACER FLUX AT THE BOUNDARY (INCREMENTED)
+!| FLUHBTEMP      |-->| HYDRO BOUNDARY FLUX OF ONE TIME STEP
+!| FLUXT          |<->| INCREMENTED TRACER FLUX
+!| FLUXTEMP       |-->| FLUX OF ONE HYDRO TIME STEP
+!| NPTFR          |-->| NUMBER OF BOUNDARY NODES
+!| NSEG           |-->| NUMBER OF SEGMENT OF THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -7,7 +7,7 @@
      & XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES OF ROE TYPE (INTERNAL AND BOUNDARY FLUXES)
@@ -30,35 +30,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRS           |-->| AIRES DES CELLULES DU MAILLAGE.
-!| DDMIN          |---|
-!| EPS            |---|
-!| FLUENT         |---|
-!| FLUSCE         |---|
-!| FLUSORT        |---|
-!| FLUX           |<--| TABLEAU DES FLUX DE TYPE ROE
-!| G              |---|
-!| KDDL           |---|
-!| KDIR           |---|
-!| KNEU           |---|
-!| LIMPRO         |---|
-!| NBOR           |---|
-!| NELEM          |---|
-!| NPOIN          |---|
-!| NPTFR          |---|
-!| NSEG           |-->| NOMBRE TOTAL DE SEGMENTS DU MAILLAGE
-!| NUBO           |---|
-!| VNOIN          |-->| NORMALE DU SEGMENT INTERNE
-!|                |   | (2 PREMIERES COMPOSANTES) ET
-!|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
-!| W              |-->| VARIABLES CONSERVATIVES DU PB A L'INSTANT N
-!| WINF           |-->| FLUX FRONTIERE ENTREE-SORTIE SI STAT.
-!|                |   | WINF INITIAL SI INSTAT.
-!| X              |---|
-!| XNEBOR         |---|
-!| Y              |---|
-!| YNEBOR         |---|
-!| ZF             |---| FOND.
+!| AIRS           |-->| CELL AREA
+!| DDMIN          |<--| MINIMUM DISTANCE 
+!| EPS            |-->| TOLERANCE
+!| FLUENT         |<--| MASS FLUX MASSE INLET 
+!| FLUSCE         |-->| SOURCE FLUXES
+!| FLUSORT        |<--| MASS FLUX MASSE OUTLET 
+!| FLUX           |<--| ROE FLUX
+!| G              |-->| GRAVITY
+!| KDDL           |-->| CONVENTION FOR FREE POINTS (BC)
+!| KDIR           |-->| CONVENTION FOR DIRICHLET POINTS
+!| KFROT          |-->| BED FRICTION LAW 
+!| KNEU           |-->| CONVENTION NEUMANN POINTS
+!| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION!
+!| NBOR           |-->| NUMER OF BORD NODES
+!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NPTFR          |-->| TOTAL NUMBER OF BOUNDARY NODES
+!| NREJET         |-->| NUMBER OF SOURCE/SINK
+!| NSEG           |-->| NUMBER OF EDGES
+!| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
+!| VNOIN          |-->| NORMAL TO THE INTERFACE
+!|                |   | (2 FIRS COMPOSANTES) AND 
+!|                |   | SEGMENT LENGTH (3RD COMPONENT)
+!| W              |<->| WORKING TABLE
+!| WINF           |-->| PRESCRIBED VALUES AT THE INLET AND OUTLET
+!| X,Y            |-->| COORDINATES FOR MESH NODES
+!| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
+!| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -114,10 +112,10 @@
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
 !------
-! 2. CALCUL DES FLUX INTERNES
+! 2. COMPUTE INTERNAL FLUXES
 !------
 !
-! XXX   BOUCLE SUR LES SEGMENTS INTERIEURS
+!  LOOP OVER INTERNAL SEGMENTS
 !       ----------------------------------
 !
         DDMIN = 10000.D0
@@ -130,7 +128,7 @@
        INDIC =0
 !
 !
-!   --->    QUELQUES CALCULS INTERMEDIAIRES
+!   --->    INTERMEDIATE COMPUTATIONS
 !           ------------------------------
 !
        HI = W(1,IEL1)
@@ -198,15 +196,15 @@
 !
 !
 !------
-! 3. CALCUL DES FLUX AUX BORDS
+! 3. COMPUTE FLUXES AT THE BOUNDARIES
 !------
 !
-!        MISE A ZERO
+!        START AT ZERO
 !
          FLUSORT = 0.D0
          FLUENT  = 0.D0
 !
-! ====>   FLUX  EN  ENTREE
+! ====>   INLET FLUX
 !
       DO 200 K = 1 , NPTFR
 !
@@ -219,7 +217,7 @@
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
-!   --->    QUELQUES CALCULS INTERMEDIAIRES
+!   --->    INTERMEDIATE COMPUTATIONS
 !           -------------------------------
 !
 !     SI H IMPOSEE
@@ -311,7 +309,7 @@
          FLUX(IEL,3)=FLUX(IEL,3)+FLULOC(3)*RNORM
 !
 !------
-! 5. CALCUL DES FLUX DE PAROI
+! 5. FLUX AT THE BOUNDARY
 !------
 !
        ELSEIF(LIMPRO(K,1).EQ.KNEU) THEN

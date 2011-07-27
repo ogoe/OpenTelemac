@@ -5,7 +5,7 @@
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,UA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    PROJECTS THE SOLUTION ON THE BOUNDARY CONDITIONS.
@@ -28,14 +28,14 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| KNEU           |---|
-!| LIMPRO         |---|
-!| NBOR           |---|
-!| NPTFR          |---|
-!| NS             |---|
-!| UA             |---|
-!| XNEBOR         |---|
-!| YNEBOR         |---|
+!| KNEU           |-->| CONVENTION FOR NEUMANN POINTS
+!| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION
+!| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
+!| NPTFR          |-->| TOTAL NUMBER OF BOUNDARY NODES
+!| NS             |-->| TOTAL NUMBER OF NODES
+!| UA             |<->| WORKING TABLE 
+!| XNEBOR         |-->| OUTWARD UNIT NORMAL (X COMPONENT)
+!| YNEBOR         |-->| OUTWARD UNIT NORMAL (Y COMPONENT)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -57,7 +57,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!  SLIP CONDITION
+!  SLIPING CONDITION
 !  ***********************
 !
 !

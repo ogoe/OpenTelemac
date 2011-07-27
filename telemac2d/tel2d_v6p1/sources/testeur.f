@@ -6,7 +6,7 @@
      & HCSTOK,FLUXT,FLUXTEMP,FLUHBOR,FLUHBTEMP,LOGFR,TEST,NTRAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CHECKS FOR POSITIVE TRACER VALUES.
@@ -29,24 +29,25 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRS           |---|
-!| AIRST          |---|
+!| AIRS           |-->| CELL'S AREA
+!| AIRST          |-->| AREA OF SUB-TRIANGLES IN THE CELLS
 !| DT             |-->| TIME STEP
-!| FLUHBOR        |---|
-!| FLUHBTEMP      |---|
-!| FLUXT          |---|
-!| FLUXTEMP       |---|
-!| HCSTOK         |---|
-!| HSTOK          |---|
-!| LOGFR          |---|
-!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
-!| NORDRE         |---|
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NS             |---|
-!| NSEG           |-->| NUMBER OF SEGMENTS
-!| NTRAC          |-->| NUMBER OF TRACERS
-!| NUBO           |---|
-!| TEST           |---|
+!| FLUHBOR        |-->| MASS FLUX AT THE BOUNDARY
+!| FLUHBTEMP      |-->| BOUNDARY FLUX FOR TRACERS
+!| FLUXT,FLUHBOR  |<->| FLUX
+!| FLUXTEMP       |<->| FLUX FOR TRACER
+!| HSTOK          |-->| H TO STOCK FOR TRACER
+!| HCSTOK         |-->| H CORRECTED TO STOCK FOR TRACER
+!| LOGFR          |-->| REFERENCE OF BOUNDARY NODES
+!| NBOR           |-->| GLOBAL INDICES FOR BORD NODES
+!| NORDRE         |-->| ORDRE OF THE SCHEME
+!| NPTFR          |-->| TOTAL NUMBER OF BOUNDARY NODES
+!| NS             |-->| TOTAL NUMBER OF NODES IN THE MESH
+!| NSEG           |-->| TOTAL NUMBER OF EDGES
+!| NTRAC          |-->| TOTAL NUMBER OF TRACERS
+!| NU             |-->| NUMBERING OF NODES IN THE TRIANGLES
+!| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
+!| TEST           |<--| RESULT OF THE TEST
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

@@ -6,7 +6,7 @@
      & NORDRE,CMI,JMI,DJX,DJY,DX,DY,DJXT,DJYT,DXT,DYT,EPSWL)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES EDGE-WISE ADVECTIVE FLUXES USING THE
@@ -30,30 +30,33 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| CE             |---|
-!| CMI            |---|
-!| DIMT           |---|
-!| DJX            |---|
-!| DJXT           |---|
-!| DJY            |---|
-!| DJYT           |---|
-!| DX             |---|
-!| DXT            |---|
-!| DY             |---|
-!| DYT            |---|
-!| EPSWL          |---|
-!| G              |---|
-!| JMI            |---|
-!| NORDRE         |---|
-!| NS             |---|
-!| NSEG           |---|
-!| NUBO           |---|
-!| TN             |---|
-!| UA             |---|
-!| VNOCL          |---|
-!| X              |---|
-!| Y              |---|
-!| ZF             |---|
+!| CE             |<->| FLUX INCREMENTS AT INTERNAL INTERFACES
+!| CMI            |-->| COORDINATES OF MIDDLE PONTS OF EDGES
+!| DIMT           |-->| DIMENSION OF TN
+!| DJX            |-->| GRADIENTS PER TRIANGLE
+!| DJXT           |-->| WORKING TABLES FOR TRACER
+!| DJY            |-->| GRADIENTS PER TRIANGLE
+!| DJYT           |---| WORKING TABLES FOR TRACER
+!| DX             |-->| GRADIENTS PER NODE
+!| DXT            |-->| WORKING TABLES FOR TRACER
+!| DY             |-->| GRADIENTS PER NODE
+!| DYT            |-->| WORKING TABLES FOR TRACER
+!| EPSWL          |-->| THRESHOLD DEPTH
+!| G              |-->| GRAVITY
+!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
+!|                |   | THE MIDDLE POINT OF THE INTERFACE
+!| NORDRE         |-->| ORDER OF THE SCHEME
+!| NS             |-->| TOTAL NUMBER OF NODES IN THE MESH
+!| NSEG           |-->| TOTAL NUMBER OF SGMENTS IN THE MESH
+!| NUBO           |-->| GLOBAL NUMBERS OF THE NODES FORMING THE EDGE
+!| TN             |-->| CURRENT TIME
+!| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V 
+!| VNOCL          |-->| NORMAL VECTOR TO THE INTERFACE
+!|                |   | (2 FIRST COMPONENTS) AND
+!|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
+!| X              |-->| X COORDINATES OF THE NODES
+!| Y              |-->| Y COORDINATES OF THE NODES
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

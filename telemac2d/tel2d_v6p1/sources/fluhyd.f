@@ -38,50 +38,50 @@ C
 !+    CHANGE CE(3,NS) TO CE(NS,3)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRE           |-->| AIRES DES TRIANGLES
-!| AIRS           |-->| AIRES DES CELLULES
-!| AIRST          |-->| AIRES DES SOUS-TRIANGLES DANS CELLULES
-!| BETA           |---| COEFFICIENT EXTRAPOLATION POUR ORDRE 2
-!| CE             |<--| FLUX   +  TERMES DIFFUSION
-!| CFLWTD         |-->| NOMBRE DE CFL
-!| CMI            |-->| COORDONNEES DES POINTS MILIEUX D'INTERFACE
-!| CVIS           |-->| COEFFICIENT DE DIFFUSION DES VITESSES
-!| DJX,DJY        |---| GRADIENTS PAR TRIANGLES
-!| DSZ            |-->| VARIATIONS DE Z POUR ORDRE 2
-!| DT             |<->| PAS DE TEMPS
-!| DTHAUT         |-->| UTILISE POUR CONDITION CFL
-!| DX,DY          |---| GRADIENTS PAR NOEUDS
-!| FLUENT,FLUSORT |<--| FLUX MASSE ENTREE ET SORTIE DE TN A TN+1
-!| FLUHBTEMP      |<--| FLUX BORD POUR TRACEUR
-!| FLUXTEMP       |<--| FLUX POUR TRACEUR
-!| G              |-->| CONSTANTE DE GRAVITE
-!| HBOR           |-->| VALEURS IMPOSEES DE H
-!| HC             |<--| H RECONSTRUIT ORDRE 2   CORRIGE
-!| IVIS           |-->| OPTION DIFFUSION DES VITESSES
-!| JMI            |-->| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE
-!|                |   | POINT MILIEU DE L'INTERFACE
-!| KDDL           |-->| CONVENTION POUR LES POINTS LIBRES
-!| KDIR           |-->| CONVENTION POUR LES POINTS DIRICHLET
-!| KNEU           |-->| CONVENTION POUR LES POINTS NEUMANN
-!| LIMPRO         |-->| TYPES DE CONDITIONS AUX LIMITES
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
-!| NORDRE         |-->| ORDRE DU SCHEMA
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NT             |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NTRAC          |---|
-!| NU             |-->| NUMEROS DES NOEUDS PAR TRIANGLE
-!| NUBO           |-->| NUMEROS GLOBAUX DES EXTREMITES DES ARETES
+!| AIRE           |-->| ELEMENT AREA
+!| AIRS           |-->| CELL AREA
+!| AIRST          |-->| AREA OF SUB-TRIANGLES (SECOND ORDER)
+!| BETA           |-->| EXTRAPOLATION COEFFICIENT FOR ORDRE 2
+!| CE             |<--| FLUX   +  DIFFUSION TERMS
+!| CFLWTD         |-->| CFL NUMBER
+!| CMI            |-->| COORDINATES OF MIDDLE POINTS OF INTERFACES
+!| CVIS           |-->| COEFFICIENT OF DIFFUSION FOR THE VELOCITIES
+!| DJX,DJY        |-->| GRADIENTS PER TRIANGLE
+!| DSZ            |-->| VARIATIONS Z (BATHY) FOR ORDRE 2
+!| DT             |<->| TIME STEP
+!| DTHAUT         |-->| USED FOR CFL CONDITION
+!| DX,DY          |---| GRADIENTS PER NODES
+!| FLUENT,FLUSORT |<--| INLET AND OUTLET MASS FLUXS BETWEEN TN AND TN+1
+!| FLUHBTEMP      |<--| TRACER BORD FLUXES
+!| FLUXTEMP       |<--| FLUX FOR TRACER
+!| G              |-->| GRAVITY
+!| HBOR           |-->| PRESCRIBED VALUES FOR H
+!| HC             |<--| RECONSTRUCTED H FOR ORDRE 2 
+!| IVIS           |-->| OPTION FOR THE DIFFUSION OF VELOCITIES
+!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
+!|                |   | THE MIDDLE POINT OF THE INTERFACE
+!| KDDL           |-->| CONVENTION FOR THE FREE POINTS
+!| KDIR           |-->| CONVENTION DIRICHLET POINTS
+!| KNEU           |-->| CONVENTION NEUMANN POINTS
+!| LIMPRO         |-->| TYPES OF BOUNDARY CONDITION
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY NODES
+!| NORDRE         |-->| ORDRE OF THE SCHEME
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NS             |-->| TOTAL NUMER OF POINTS IN THE MESH
+!| NSEG           |-->| NUMBER OF EDGES IN THE MESH
+!| NT             |-->| NUMBER OF ELEMENTS IN THE MESH
+!| NTRAC          |---| NUMBER OF TRACER
+!| NU             |-->| NUMEROS OF NODES PER TRIANGLE
+!| NUBO           |-->| GLOBAL NUMBERS OF THE NODES FORMING THE EDGE
 !| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
-!| UBOR           |-->| VALEURS IMPOSEES DE U
-!| VBOR           |-->| VALEURS IMPOSEES DE V
-!| VNOIN          |-->| NORMALE A L'INTERFACE
-!|                |   | (2 PREMIERES COMPOSANTES) ET
-!|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
-!| X,Y            |-->| COORDONNEES DES NOEUDS DU MAILLAGE
-!| XNEBOR,YNEBOR  |-->| NORMALE AUX POINTS FRONTIERE
-!| ZF             |-->| COTES DU FOND
+!| UBOR           |-->| PERSCRIBED VALUES FOR U
+!| VBOR           |-->| PRESCRIBED VALUES FOR V
+!| VNOIN          |-->| NORMAL VECTOR TO THE INTERFACE
+!|                |   | (2 FIRST COMPONENTS) AND
+!|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
+!| X,Y            |-->| COORDINATES IF THE NODES
+!| XNEBOR,YNEBOR  |-->| NORMAL VECTOR TO BOUNDARY NODES 
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

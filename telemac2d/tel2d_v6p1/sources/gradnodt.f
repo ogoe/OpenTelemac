@@ -6,7 +6,7 @@
      & DX,DY,DIFT,CVIST,CE,DTT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE GRADIENTS BY TRIANGLES AND NODE
@@ -30,19 +30,19 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRS           |-->| AIRES DES CELLULES
-!| AIRT           |-->| AIRES DES TRIANGLES
-!| CE             |<--| TERME DE DIFFUSION
-!| CVIST          |-->| COEFFICIENT DE DIFFUSION DU TRACEUR
-!| DIFT           |-->| LOGIQUE INDIQUANT S'IL Y A DIFFUSION TRACEUR
-!| DJX,DJY        |<--| GRADIENTS PAR TRIANGLES
-!| DTT            |-->| PAS DE TEMPS TRACEUR
-!| DX,DY          |<--| GRADIENTS PAR NOEUDS
-!| H              |-->| HAUTEURS D'EAU
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NT             |-->| NOMBRE D'ELEMENTS DU MAILLAGE
-!| NU             |-->| NUMEROS DES NOEUDS PAR TRIANGLE
-!| T              |-->| TRACEURS
+!| AIRS           |-->| CELL'S AREAS
+!| AIRT           |-->| TRIANGLES' AREAS
+!| CE             |<--| DIFFUSION TERM
+!| CVIST          |-->| COEFFICIENT OF TRACER DIFFUSION
+!| DIFT           |-->| LOGICAL TO SAY IF THERE IS TRACER DIFFUSION OR NO
+!| DJX,DJY        |<--| GRADIENTS PER TRIANGLE
+!| DTT            |-->| TRACER TIME STEP
+!| DX,DY          |<--| GRADIENTS AT NODES
+!| H              |-->| WATER DEPTH
+!| NS             |-->| TOTAL NUMER OF NODES IN THE MESH
+!| NT             |-->| TOTAL NUMBER OF ELEMENTS IN THE MESH
+!| NU             |-->| NUMBERING OF NODES IN THE TRIANGLE
+!| T              |-->| TRACERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE

@@ -30,37 +30,35 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRS           |-->| AIRES DES CELLULES
-!| AIRST          |-->| AIRES DES SOUS-TRIANGLES DANS CELLULES
-!| BETA           |<--| COEFFICIENT EXTRAPOLATION POUR ORDRE 2
-!| CE             |<->| FLUX  INCREMENTES DES FLUX
-!|                |   | AUX INTERFACES INTERNES
-!| CFL            |-->| NOMBRE DE CFL
-!| CMI            |-->| COORDONNEES DES POINTS MILIEUX D'INTERFACE
-!| DJX,DJY        |-->| GRADIENTS PAR TRIANGLES
-!| DSZ0           |-->| VARIATIONS DE Z POUR ORDRE 2
-!| DT             |<->| PAS DE TEMPS (PEUT ETRE MODIFIE SI ORDRE 2)
-!| DX,DY          |-->| GRADIENTS PAR NOEUDS
-!| FLUXTEMP       |<--| FLUX DE MASSE POUR TRACEUR
-!| G              |-->| CONSTANTE DE GRAVITE
-!| HC             |<--| H RECONSTRUIT ORDRE 2 CORRIGE
-!| JMI            |-->| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE
-!|                |   | POINT MILIEU DE L'INTERFACE
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
-!| NORDRE         |-->| ORDRE DU SCHEMA
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NS             |-->| NOMBRE DE POINTS DU MAILLAGE
-!| NSEG           |-->| NOMBRE D'ARETES DU MAILLAGE
-!| NTRAC          |-->| NUMBER OF TRACERS
-!| NUBO           |-->| NUMEROS GLOBAUX DES EXTREMITES DES ARETES
+!| AIRS           |-->| CELL'S AREA
+!| AIRST          |-->| AREA OF SUB-TRIANGLES IN THE CELLS
+!| BETA           |-->| EXTRAPOLATION COEFFICIENT FOR ORDRE 2
+!| CE             |<->| FLUX INCREMENTS AT INTERNAL INTERFACES
+!| CFL            |-->| CFL NUMBER
+!| CMI            |-->| COORDINATES OF MIDDLE POINTS OF INTERFACES
+!| DJX,DJY        |-->| GRADIENTS PER TRIANGLE
+!| DSZ0           |-->| VARIATIONS Z (BATHY) FOR ORDRE 2
+!| DT             |<->| TIME STEP (CAN CHANGE IF ORDRE 2)
+!| DX,DY          |-->| GRADIENTS PER NODE
+!| FLUXTEMP       |<--| MASS FLUX OF TRACER
+!| G              |-->| GRAVITY
+!| HC             |<--| REBUILT H (ORDRE 2)
+!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED
+!|                |   | THE MIDDLE POINT OF THE INTERFACE
+!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY NODES
+!| NORDRE         |-->| ORDRE OF THE SCHEME
+!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
+!| NS             |-->| TOTAL NUMER OF POINTS IN THE MESH
+!| NSEG           |-->| NUMBER OF EDGES IN THE MESH
+!| NTRAC          |-->| NUMBER OF TRACERS 
+!| NUBO           |-->| GLOBAL NUMBERS OF THE NODES FORMING THE EDGE
 !| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
-!| VNOCL          |-->| NORMALE A L'INTERFACE
-!|                |   | (2 PREMIERES COMPOSANTES) ET
-!|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
-!| X,Y            |-->| COORDONNEES DES NOEUDS DU MAILLAGE
-!| XNEBOR         |<--| X-COMPONENT OF NORMAL AT NODES
-!| YNEBOR         |<--| Y-COMPONENT OF NORMAL AT NODES
-!| ZF             |-->| ELEVATION OF BOTTOM
+!| VNOCL          |-->| NORMAL VECTOR TO THE INTERFACE
+!|                |   | (2 FIRST COMPONENTS) AND
+!|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
+!| X,Y            |-->| COORDINATES IF THE NODES
+!| XNEBOR,YNEBOR  |-->| NORMAL VECTOR TO BOUNDARY NODES 
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

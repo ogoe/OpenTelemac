@@ -85,7 +85,7 @@
 !| FLUTENT,FLUTSOR|<--| FLUX TRACER INLET AND OUTLET
 !| FLUX           |---| FLUX
 !| FLUXT,FLUHBOR  |<->| FLUX, FLUX BORD FOR TRACER
-!| FLUXTEMP       |<->| FLUX POUR TRACER
+!| FLUXTEMP       |<->| FLUX FOR TRACER
 !| G              |-->| GRAVITY
 !| H              |<--| WATER DEPTH AT TIME N+1
 !| HBOR           |-->| IMPOSED VALUE FOR H
@@ -132,7 +132,7 @@
 !| T1,T2,T3,T4,T5 |---| WORKING TABLES
 !| TBOR           |-->| BC FOR T
 !| TMAX           |-->| FINAL TIME
-!| TSCE2          |-->| VALUES OF TRACERS AT SOURCES
+!| TSCE2          |---|
 !| U,V            |<--| VELOCITY COMPONENTS AT TIME N+1
 !| UBOR           |-->| IMPOSED VALUES FOR U
 !| VBOR           |-->| IMPOSED VALUES FOR V

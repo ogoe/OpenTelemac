@@ -2,15 +2,14 @@
                      SUBROUTINE MAJTRAC
 !                    ******************
 !
-     & (NS,NT,DIMT,DLIMT,NSEG,NPTFR,NUBO,
+     &(NS,NT,DIMT,DLIMT,NSEG,NPTFR,NUBO,
      & X,Y,AIRS,NU,AIRE,HT,HTN,TN,ZF,NBOR,
      & TBOR,FLUTENT,FLUTSOR,SMTR,NORDRE,CMI,JMI,
-     & DJXT,DJYT,DXT,DYT,
-     & DPX,DPY,DIFT,CVIST,BETA,DSZ,AIRST,HSTOK,
+     & DJXT,DJYT,DXT,DYT,DPX,DPY,DIFT,CVIST,BETA,DSZ,AIRST,HSTOK,
      & HCSTOK,FLUXT,FLUHBOR,MASSOU,DTT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    UPDATES THE TRACER.
@@ -33,41 +32,41 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRE           |---|
-!| AIRS           |-->| AIRES DES CELLULES
-!| AIRST          |-->| AIRES DES SOUS-TRIANGLES DANS CELLULES
-!| BETA           |---| COEFFICIENT EXTRAPOLATION POUR ORDRE 2
-!| CMI            |-->| COORDONNEES DES POINTS MILIEUX D'INTERFACE
-!| CVIST          |-->| COEFFICIENT DE DIFFUSION DU TRACEUR
-!| DIFT           |-->| LOGIQUE INDIQUANT S'IL Y A DIFFUSION TRACEUR
-!| DIMT           |-->| DIMENSION DU TRACEUR
-!| DJXT,DJYT      |---| GRADIENTS PAR TRIANGLES
-!| DLIMT          |-->| DIMENSION DU TRACEUR AU BORD
-!| DSZ            |-->| VARIATION DE Z POUR ORDRE 2
-!| DTT            |-->| PAS DE TEMPS TRACEUR
-!| DXT,DYT        |---| GRADIENTS PAR NOEUDS
-!| FLUHBOR        |-->| FLUX DE MASSE FRONTIERE
-!| FLUTENT,FLUTSOR|<--| FLUX TRACEUR ENTREE ET SORTIE
-!| FLUXT          |-->| FLUX DE MASSE
-!| HCSTOK         |-->| H RECONSTRUIT ORDRE 2   CORRIGE  STOCKE
-!| HSTOK          |-->| HAUTEURS D'EAU  STOCKEES
-!| HT             |<--| HT AU TEMPS N+1
-!| HTN,TN         |-->| HT, T  AU TEMPS N
-!| JMI            |-->| NUMERO DU TRIANGLE AUQUEL APPARTIENT LE
-!|                |   | POINT MILIEU DE L'INTERFACE
-!| MASSOU         |<--| MASSE DE TRACEUR AJOUTEE PAR TERME SOURCE
-!| NBOR           |-->| NUMEROS GLOBAUX DES POINTS DE BORD
-!| NORDRE         |-->| ORDRE DU SCHEMA
-!| NPTFR          |-->| NOMBRE DE POINTS FRONTIERE
-!| NS             |-->| NOMBRE DE NOEUDS DU MAILLAGE
-!| NSEG           |-->| NOMBRE D'ARETES
-!| NT             |-->| NOMBRE D'ELEMENTS
-!| NU             |-->| NUMEROS DES NOEUDS PAR TRIANGLE
-!| NUBO           |-->| NUMEROS GLOBAUX DES EXTREMITES DES ARETES
-!| SMTR           |-->| TERMES SOURCES DU TRACEUR
-!| TBOR           |-->| CONDITIONS AUX LIMITES SUR T
-!| X,Y            |-->| COORDONNEES DES NOEUDS DU MAILLAGE
-!| ZF             |-->| COTES DU FOND
+!| AIRE           |-->| ELEMENT AREA
+!| AIRS           |-->| CELL AREA
+!| AIRST          |-->| AREA OF SUB-TRIANGLES (SECOND ORDER)
+!| BETA           |---| COEFFICIENT OF EXTRAPOLATION FOR ORDRE 2
+!| CMI            |-->| COORDINATES OF MIDDLE PONTS OF EDGES
+!| CVIST          |-->| COEFFICIENT OF DIFFUSION FOR TRACER
+!| DIFT           |-->| LOGICAL TELLING IF THERE IS DIFFUSION FOR TRACER OR NOT
+!| DIMT           |-->| DIMENSION OF TRACER
+!| DJXT,DJYT      |---| GRADIENTS PER TRIANGLES
+!| DLIMT          |-->| DIMENSION OF TRACER AT THE BOUNDARY
+!| DSZ            |-->| VARIATION OF Z FOR ORDRE 2
+!| DTT            |-->| TIME STEP FOR TRACER
+!| DXT,DYT        |---| GRADIENTS AT THE NODES
+!| FLUHBOR        |-->| MASS FLUX AT THE BOUNDARY
+!| FLUTENT,FLUTSOR|<--| TRACER FLUX AT THE INLET AND OUTLET
+!| FLUXT          |-->| MASS FLUX OF TRACER
+!| HCSTOK         |-->| STOCKED H RECONSTRUCTED FOR ORDRE 2
+!| HSTOK          |-->| STOCKED WATER DEPTH
+!| HT             |<--| HT AT TIME N+1
+!| HTN,TN         |-->| HT AT TIME N
+!| JMI            |-->| NUMBER OF THE TRIANGLE IN WHICH IS LOCATED 
+!|                |   | THE MIDPOINT OF THE INTERFACE
+!| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
+!| NBOR           |-->| GLOBAL NUMBERING OF BOUNDARY POINTS
+!| NORDRE         |-->| ORDRE OF THE SCHEME
+!| NPTFR          |-->| TOTAL NUMBER OF BOUNDARY NODES
+!| NS             |-->| TOTAL NUMBER OF NODES IN THE MESH
+!| NSEG           |-->| TOTAL NUMBER OF EDGES
+!| NT             |-->| TOTAL NUMBER OF ELEMENTS
+!| NU             |-->| NUMBERING OF NODES IN THE TRIANGLES
+!| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
+!| SMTR           |-->| TRACER SOURCE TERMS 
+!| TBOR           |-->| BOUNDARY CONDITIONS FOR T
+!| X,Y            |-->| COORDINATES IF THE NODES
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_TELEMAC2D, EX_MAJTRAC => MAJTRAC

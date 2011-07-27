@@ -5,7 +5,7 @@
      &(IEL1,IEL2,ISEGIN,VNOIN,W,FLUSCE,X,Y,AIRS,NPOIN,NSEG,ZF,EPS,G)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES DUE TO NON CENTERED SOURCES TERMS.
@@ -28,22 +28,22 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AIRS           |-->| AIRES DES CELLULES DU MAILLAGE.
-!| EPS            |---|
-!| FLUSCE         |---|
-!| G              |---|
-!| IEL1           |---|
-!| IEL2           |---|
-!| ISEGIN         |---|
-!| NPOIN          |---|
-!| NSEG           |-->| NOMBRE TOTAL DE SEGMENTS DU MAILLAGE
-!| VNOIN          |-->| NORMALE DU SEGMENT INTERNE
-!|                |   | (2 PREMIERES COMPOSANTES) ET
-!|                |   | LONGUEUR DE CE SEGMENT (3IEME COMPOSANTE)
-!| W              |-->| VARIABLES CONSERVATIVES DU PB A L'INSTANT N
-!| X              |---|
-!| Y              |---|
-!| ZF             |---| FOND.
+!| AIRS           |-->| AREA OF THE CELLS.
+!| EPS            |-->| TOLERANCE
+!| FLUSCE         |<->| SOURCE FLUXES
+!| G              |-->| GRAVITY
+!| IEL1           |-->| FIRST ELEMENT NUMBER 
+!| IEL2           |-->| SECOND ELEMENT NUMBER
+!| ISEGIN         |-->| SEGMENT NUMBER
+!| NPOIN          |-->| TOTAL NUMBER OF NODES 
+!| NSEG           |-->| TOTAL NUMBER OF SEGMENTS IN THE MESH
+!| VNOIN          |-->| NORMAL VECTOR TO THE INTERFACE
+!|                |   | (2 FIRST COMPONENTS) AND
+!|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
+!| W              |-->| CONSERVATIVE VARIABLE OF THE PROBLEM AT TIME TN
+!| X              |-->| X COORDINATES 
+!| Y              |-->| Y COORDINATES
+!| ZF             |-->| BATHYMETRY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -356,7 +356,7 @@
 !TBTB END
 !
 !
-!-----------CALCUL DES TERMES SOURCE --------------------------
+!-----------COMPUTATION OF SOURCE TERMS --------------------------
 !
          FLUSCE(1,IEL1) = GE(1)*CT2*2.D0
          FLUSCE(2,IEL1) = GE(2)*CT2*2.D0
@@ -373,7 +373,7 @@
             IF ( RLAMBP . GT . 0.D0 ) THEN
 !           - - - - - - - - - - - - - -
 !
-!-----------CALCUL DES TERMES SOURCE ------------------
+!-----------COMPUTATION OF SOURCE TERMS------------------
 !
 !
          FLUSCE(1,IEL1) = 0.D0

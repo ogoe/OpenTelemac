@@ -5,7 +5,7 @@
      &(ILIM,BETA,GRI,GRIJ)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTRAPOLATES THE GRADIENT AND USES OF A SLOPE LIMITER.
@@ -28,9 +28,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETA           |-->| COEFFICIENT EXTRAPOLATION POUR ORDRE 2
+!| BETA           |-->| EXTRAPOLATION COEFFICIENT FOR ORDRE 2
 !| GRI,GRIJ       |-->| GRADIENTS
-!| ILIM           |-->| OPTION POUR LIMITEUR
+!| ILIM           |-->| OPTIONS FOR THE LIMITER
 !|                |   | 1 : MINMOD
 !|                |   | 2 : VAN ALBADA
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

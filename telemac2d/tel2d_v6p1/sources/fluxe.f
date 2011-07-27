@@ -5,12 +5,12 @@
      &(HJ,UJ,VJ,HI,UI,VI,XN,YN,RNORM,G,FLULOC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P1                                   21/08/2010
 !***********************************************************************
 !
-!brief    INTEGRATES IN TIME.
+!brief    COMUTATION OF THE LOCAL ROE FLUX.
 !
-!note     JMH : RNORM, A AND A2 NOT USED
+!note     JMH : RNORM NOT USED
 !
 !history  N. GOUTAL
 !+        24/11/1997
@@ -30,17 +30,17 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLULOC         |---|
-!| G              |---|
-!| HI             |---|
-!| HJ             |---|
-!| RNORM          |---|
-!| UI             |---|
-!| UJ             |---|
-!| VI             |---|
-!| VJ             |---|
-!| XN             |---|
-!| YN             |---|
+!| FLULOC         |<->| LOCAL FLUX AT THE INTERFACE OF IJ 
+!| G              |-->| GRAVITY
+!| HI             |-->| WATER DEPTH OF NODE I
+!| HJ             |-->| WATER DEPTH OF NODE J 
+!| RNORM          |---|  ???? NOT USED
+!| UI             |-->| VELOCITY X-COMPONENT OF NODE I
+!| UJ             |-->| VELOCITY X-COMPONENT OF NODE J
+!| VI             |-->| VELOCITY Y-COMPONENT OF NODE I
+!| VJ             |-->| VELOCITY Y-COMPONENT OF NODE J
+!| XN             |-->| X-COMPONENT OF THE NORMAL VECTOR 
+!| YN             |-->| Y-COMPONENT OF THE NORMAL VECTOR  
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
          IMPLICIT NONE
@@ -76,7 +76,7 @@
 !
          UT = ( RI * UI + RJ * UJ ) /(RI + RJ)
          VT = ( RI * VI + RJ * VJ ) /(RI + RJ)
-         IF ( (HI + HJ) .LE.0.D0)  THEN
+         IF (HI+HJ.LE.0.D0)  THEN
            CT2= 0.D0
          ELSE
          CT2 = G*(HI+HJ)/2.D0
@@ -265,6 +265,7 @@
 !           -----
         ENDIF
 !
+!---------------------------------------------------------------------
 !
         RETURN
         END
