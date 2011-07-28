@@ -1530,29 +1530,8 @@ C
                 DATAVAR(1:NDATA) = dble(IDATAVAR(1:NDATA))
             ENDIF
           endif
-          write(lu,*) 'var : ',nomchamed
-          write(lu,*) 'taille : ',size(datavar)
-          write(lu,*) 'ndata : ',ndata
-          write(lu,*) 'test : ',bvarsor%adr(ivar)%p%elm
 
-          if ((IDDIM==DIMMESH).or.(.not.ISVECTOR)) then
-          select case (TYP_MED)
-          case(MED_TRIA3)
-            write(lu,*) 'type : MED_TRIA3'
-          case(MED_QUAD4)
-            write(lu,*) 'type : MED_QUAD4'
-          case(MED_TETRA4)
-            write(lu,*) 'type : MED_TETRA4'
-          case(MED_PENTA6)
-            write(lu,*) 'type : MED_PENTA6'
-          end select
-          select case (TYP_DISC)
-          case(MED_NOEUD)
-            write(lu,*) 'type : MED_NOEUD'
-          case(MED_MAILLE)
-            write(lu,*) 'type : MED_MAILLE'
-          end select
-                  
+          if ((IDDIM==DIMMESH).or.(.not.ISVECTOR)) then                  
           CALL EFCHAE(FILERES,           ! ID FICHIER
      *                TITRE,             ! TITLE OF ASSOCIATED MESH
      *                NOMCHAMED,         ! NAME OF THE DATA FIELD
@@ -1608,7 +1587,7 @@ C
               DATAVAR((2+NB_VAR)*NDATA+1:(3+NB_VAR)*NDATA)= 
      *                                BVARSOR%ADR(IVAR)%P%R(1:NDATA)
           ENDDO
-          write(lu,*) 'writing 3d var : ',nomchamed
+
           CALL EFCHAE(FILERES,           ! ID FICHIER
      *                TITRE,             ! TITLE OF ASSOCIATED MESH
      *                NOMCHAMED,         ! NAME OF THE DATA FIELD
