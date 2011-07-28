@@ -34,6 +34,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        28/07/2011
+!+        V6P1
+!+   Bug correction in the case quasi-bubble and hfrot=2
+!+
+!
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |-->| COEFFICIENT DE FROTTEMENT VARIABLE EN ESPACE
 !| FUDRAG         |<--| DRAG FORCE ALONG X
@@ -127,19 +134,23 @@
 !         FOLLOWING LINE TO KEEP A FRICTION ON TIDAL FLATS, IF UNORM=0
 !         IDEA : IF TOO SMALL, UNORM PROGRESSIVELY REPLACED BY SQRT(G*H)
 !         WHEN H TENDS TO 0. LITTLE CHANGE, BUT BIG EFFECT ON UNORM/H
-          IF(H.LT.HO) UNORM=MAX(UNORM,SQRT(9.81*(HO-H)*H/HO))
+          IF(H.LT.HO) UNORM=MAX(UNORM,SQRT(9.81D0*(HO-H)*H/HO))
           FU_IMP%R(N) = - 0.5D0 * CF%R(N) * UNORM / H
           FV_IMP%R(N) = FU_IMP%R(N)
         ENDDO
       ELSEIF(HFROT.EQ.2) THEN
         CALL VECTOR(T2,'=','MASVEC          ',IELMH,
-     &              1.D0,HHN,HHN,HHN,HHN,HHN,HHN,MESH,MSK,MASKEL)
+     &              1.D0,HN,HN,HN,HN,HN,HN,MESH,MSK,MASKEL)
         IF(NCSIZE.GT.1) CALL PARCOM(T2,2,MESH)
+        CALL OS('X=XY    ',X=T2,Y=UNSV2D)
+        IF(IELMH.NE.IELMU) THEN
+          CALL CHGDIS( T2 , IELMH , IELMU , MESH )
+        ENDIF
         DO N=1,UN%DIM1
           UNORM = SQRT(UN%R(N)**2+VN%R(N)**2)
 !         SMOOTHED OR AVERAGE DEPTH
-          H = MAX(T2%R(N)*UNSV2D%R(N),1.D-9)
-          IF(H.LT.HO) UNORM=MAX(UNORM,SQRT(9.81*(HO-H)*H/HO))
+          H = MAX(T2%R(N),1.D-9)
+          IF(H.LT.HO) UNORM=MAX(UNORM,SQRT(9.81D0*(HO-H)*H/HO))
           FU_IMP%R(N) = - 0.5D0 * CF%R(N) * UNORM / H
           FV_IMP%R(N) = FU_IMP%R(N)
         ENDDO
