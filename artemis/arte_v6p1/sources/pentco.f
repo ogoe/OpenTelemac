@@ -57,8 +57,8 @@
 !+ THE SECOND MEMEBER (DIFFUSION) IS MODIFIED
 !+
 !history C.PEYRARD & E.RAZAFINDRAKOTO
-!        31/05/11
-!        V6P1
+!+        31/05/11
+!+        V6P1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|    II          |-->|  OPTION FOR GRADIENT AND CURVATURE EFFECTS  
 !|    T2          |---|  WORK TABLE
