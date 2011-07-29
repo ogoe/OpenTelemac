@@ -74,6 +74,10 @@ MAKEFILE      = makefile
 SRCS	      = errpvm.f \
 		get_mpi_parameters.f \
 		org_charac_type1.f \
+		p_org_charac_type.f \
+		p_org_fonction_type.f \
+		p_org_charac_type_4d.f \
+		p_org_fonction_type_4d.f \
 		p_dmax.f \
 		p_dmin.f \
 		p_dsum.f \
