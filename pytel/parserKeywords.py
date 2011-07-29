@@ -22,7 +22,7 @@
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 from utils import getFileContent
 import re
-from os import path
+from os import path,walk
 import sys
 
 debug = False

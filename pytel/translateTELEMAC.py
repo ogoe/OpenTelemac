@@ -11,7 +11,7 @@
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_TranslateTELEMAC
-from os import path,mkdir,remove
+from os import path,walk,mkdir,remove
 from utils import getTheseFiles,getFileContent,putFileContent
 import sys
 import re

@@ -34,7 +34,7 @@
 # ____/ Imports /__________________________________________________/
 #
 from subprocess import *
-from os import path,mkdir,chdir,remove,system,sep,environ
+from os import path,walk,mkdir,chdir,remove,system,sep,environ
 from utils import getFileContent,putFileContent,removeDirectories
 from parserKeywords import scanCAS,scanDICO,getKeyWord,getIOFilesSubmit
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC

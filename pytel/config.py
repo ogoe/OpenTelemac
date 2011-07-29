@@ -119,7 +119,7 @@
 import ConfigParser
 from optparse import OptionParser
 import re
-from os import path, listdir
+from os import path, walk, listdir
 import sys
 
 # _____                   __________________________________________
@@ -349,6 +349,9 @@ def parseConfig_DoxygenTELEMAC(cfg):
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
    cfgTELEMAC.update({'TELVER':get})
+   # Get destination doxydocs: ...
+   get = getConfigKey(cfg,'doxydocs',True,True).lower()
+   cfgTELEMAC.update({'DOXYDOCS':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -358,9 +361,12 @@ def parseConfig_DoxygenTELEMAC(cfg):
    cfgTELEMAC.update({'COMPILER':{}})
    # Get modules: user list of module
    # in which 'system' means all existing modules,
+   # and in which 'update' means an update only of the source files and tags
+   # and in which 'clean' means a rebuild of all source files and tags
    # and Get options: for the switches such as parallel, openmi, mumps, etc.
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC['COMPILER'].update({'MODULES':get.split()})
+   cfgTELEMAC['COMPILER'].update({'REBUILD':tbd})
    for mod in get.split():
       if mod not in cfgTELEMAC['MODULES'].keys(): del cfgTELEMAC['COMPILER']['MODULES'][mod]
 

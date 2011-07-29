@@ -25,7 +25,7 @@
 #
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 from runcode import runCAS
-from os import path,environ
+from os import path,walk,environ
 import sys
 
 # _____             ________________________________________________

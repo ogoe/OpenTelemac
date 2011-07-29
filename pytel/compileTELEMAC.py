@@ -248,6 +248,7 @@ __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
    debug = False
+   BYPASS = True  # /!\ Temporary bypass for subroutine within programs
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,7 +314,7 @@ if __name__ == "__main__":
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
       print '\n\nScanning the source code for configuration ' + cfgname + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg)
+      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,BYPASS)
 
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
       HOMERES = {}

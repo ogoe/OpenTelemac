@@ -22,7 +22,7 @@
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
 import utils
 import re
-from os import path
+from os import path,walk
 import sys
 
 debug = False
@@ -552,7 +552,7 @@ def delComments(lines):
             cmds.append(cmd.replace('\n','').replace('\r','').upper())
    return cmds
 
-def scanSources(cfgdir,cfg):
+def scanSources(cfgdir,cfg,BYPASS):
    fic = {}; mdl = {}; sbt = {}; fct = {}; prg = {}; dep = {}; wcw = {}
 
    # ~~ Looking at each file individually ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -605,9 +605,8 @@ def scanSources(cfgdir,cfg):
             # ~~ Parse Main Structure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             code,w,face,ctns,core = parsePrincipalWrap(core)
             name,whoi,rest = parsePrincipalMain(code,who,w[0],w[1],w[2],w[3])
-            if name == 'EXTENS': print found
             if w[0] == 'P': prg = utils.addToList(prg,name,whoi['libname'])# main program
-            if w[0] == 'P': found = True
+            if w[0] == 'P': found = BYPASS
             if w[0] == 'S': sbt = utils.addToList(sbt,name,whoi['libname'])# subroutine
             if w[0] == 'M': mdl = utils.addToList(mdl,name,whoi['libname'])# module
             if w[0] == 'F': fct = utils.addToList(fct,name,whoi['libname'])# function
@@ -635,7 +634,7 @@ def scanSources(cfgdir,cfg):
             whoi['vars'].update({'use':{}})
             wcw[mod].update({name:whoi})         # ~~ All ~~~~~~~~~~
             #if core == []: break
-
+            
    # ~~ Cross-referencing CALLS together ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # For those CALLs stored in 'calls' but not part of the system:
    #   move them from 'calls' to 'function' (outsiders remain)
@@ -811,61 +810,48 @@ doxytags = '(brief|note|warning|history|bug|code)'
 doxycomment = re.compile(r'\s*!(?P<name>%s\b)(?P<after>.*?)\s*\Z'%(doxytags),re.I)
 doxycommentadd = re.compile(r"\s*!\+(?P<after>.*?)\s*\Z",re.I)
 
-def parseDoxyHeader(core):
+def parseDoxyHeader(body):
    # It is now assumed that doxytags could be part of the main
    # core of the Fortran.
-   tags = []; found = False; count = -1
+   tags = []; tfound = False; tcount = -1
+   core = []; core.extend(body); bcount = -1
+   nfound = False
    # ~~ Parse Doxygen Tags ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    while core != []:
       line = core[0].rstrip()
+      bcount = bcount + 1
 
       # ~~> parsing the tags
       proc = re.match(doxycomment,line)
       if proc:
-         count = count + 1
+         tcount = tcount + 1
          tags.extend([[]])
-         tags[count].append(proc.group('name'))
-         tags[count].append([proc.group('after')])
-         found = True
+         tags[tcount].append(proc.group('name'))
+         tags[tcount].append([proc.group('after')])
+         tfound = True
          core.pop(0)
+         body.pop(bcount)
+         bcount = bcount - 1
          continue
       proc = re.match(doxycommentadd,line)
-      if proc and found:
-         tags[count][1].append(proc.group('after'))
+      if proc and tfound:
+         tags[tcount][1].append(proc.group('after'))
          core.pop(0)
+         body.pop(bcount)
+         bcount = bcount - 1
          continue
-      found = False
+      tfound = False
 
       # ~~> parsing the name of the program for later reference
-      proc = re.match(pcl_title,line)
-      if proc :
-         proc = re.match(var_word,proc.group('after'))
-         if proc : name = proc.group('word')
+      if not nfound:
+         proc = re.match(pcl_title,line)
+         if proc :
+            proc = re.match(var_word,proc.group('after'))
+            if proc : name = proc.group('word')
+            nfound = True
       core.pop(0)
 
-   # ~~ Extract Known Tags ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #count = 0
-   #file = []; hist = []; fcts = []; bugs = []; warn = []; note = []; refs = []; code = []; para = []; resu = []
-   #while count < len(tags):
-   #   if tags[count][0] == 'file':
-   #      file.extend(tags[count][1])
-   #   elif tags[count][0] == 'history':
-   #      hist.extend(tags[count][1])
-   #   elif tags[count][0] == 'brief':
-   #      fcts.extend(tags[count][1])
-   #   elif tags[count][0] == 'warning':
-   #      warn.extend(tags[count][1])
-   #   elif tags[count][0] == 'note':
-   #      note.extend(tags[count][1])
-   #   elif tags[count][0] == 'reference':
-   #      refs.extend(tags[count][1])
-   #   elif tags[count][0] == 'bug':
-   #      bugs.extend(tags[count][1])
-   #   elif tags[count][0] == 'code':
-   #      code.extend(tags[count][1])
-   #   count = count + 1
-
-   return name,tags #{'file':file, 'fcts':fcts, 'code':code, 'hist':hist, 'note':note, 'bugs':bugs, 'warn':warn, 'refs':refs }
+   return name,tags
 
 """
    Split a set of lines (content of a file) into a Doxygen header
@@ -907,7 +893,7 @@ def parseDoxyWrap(lines):
    doxy = []; name = ''
    for w in wrap:
       n,d = parseDoxyHeader(w)
-      if name == '': name = n   #/!\ here takes the first name fo the file
+      if name == '': name = n   #/!\ here takes the first name of the file
       doxy.extend([(name,n,d,w)])
 
    return doxy
@@ -987,7 +973,7 @@ if __name__ == "__main__":
       # ~~ Scans all source files to build a relation database ~~~~~
       print '\n\nScanning the source code\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg)
+      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,False)
       
    sys.exit()
 

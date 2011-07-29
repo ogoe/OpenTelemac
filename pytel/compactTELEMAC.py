@@ -35,7 +35,7 @@
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
-from os import path,remove, environ
+from os import path,walk,remove, environ
 from utils import createDirectories,removeDirectories,zip,copyFiles,copyFile
 import sys
 
