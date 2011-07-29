@@ -94,13 +94,9 @@ SRCS	      = errpvm.f \
 		p_mpi_alltoall.f \
 		p_mpi_alltoallv.f \
 		p_mpi_type_commit.f \
-		p_mpi_type_extent.f \
 		p_mpi_type_get_extent.f \
 		p_mpi_type_free.f \
-		p_mpi_type_lb.f \
-		p_mpi_type_struct.f \
 		p_mpi_type_create_struct.f \
-		p_mpi_type_ub.f \
 		p_read.f \
 		p_iread.f \
 		p_iread_c.f \
