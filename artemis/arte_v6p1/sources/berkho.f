@@ -722,7 +722,7 @@
 !
                DO 80 I = 1,NPOIN
                   T1%R(I) = (0.5D0*FW%R(I)*T4%R(I))/
-     &                    (H%R(I)*((COSH(K%R(I)*H%R(I)))**2.D0))
+     &                    (H%R(I)*((COSH(K%R(I)*H%R(I)))**2))
                   T1%R(I) = T1%R(I)/CG%R(I)
  80            CONTINUE
             ENDIF
@@ -731,7 +731,7 @@
                CALL OS( 'X=C     ' , T1 , SBID , SBID , 0.D0 )
                DO 90 I = 1,NPOIN
                   T1%R(I) = (2*FW%R(I)*HMU%R(I)*
-     &                    ((OMEGA/SINH(K%R(I)*H%R(I)))**3.D0))
+     &                    ((OMEGA/SINH(K%R(I)*H%R(I)))**3))
                   T1%R(I) = T1%R(I)/(3.D0*3.14159D0*GRAV)
                   T1%R(I) = T1%R(I)/CG%R(I)
  90            CONTINUE
