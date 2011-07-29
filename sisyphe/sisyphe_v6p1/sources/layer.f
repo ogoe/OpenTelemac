@@ -106,7 +106,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER I,J,K,ARRET,ARRET2
-      DOUBLE PRECISION EVOL,HEIGH,TEST1,TEST2,AEVOL,AUX
+      DOUBLE PRECISION EVOL,HEIGH,TEST1,TEST2,AUX
 !
 !-----------------------------------------------------------------------
 !

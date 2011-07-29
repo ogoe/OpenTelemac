@@ -244,7 +244,8 @@ C     ICM           = MOTINT( ADRESS(1,  1) )
       ICF           = MOTINT( ADRESS(1,  2) )
       NPAS          = MOTINT( ADRESS(1,  3) )
       NMAREE        = MOTINT( ADRESS(1,  4) )
-C     N1            = MOTINT( ADRESS(1,  5) )
+C     N1            = MOTINT( ADRESS(1,  5) )      NCOUCH_TASS = MOTINT( ADRESS(1,45)   )
+
       LEOPR         = MOTINT( ADRESS(1,  6) )
       LISPR         = MOTINT( ADRESS(1,  7) )
 C     STDGEO IS NOT USED, DELETE FROM DECLARATIONS
@@ -332,14 +333,12 @@ C     COORDINATES OF THE ORIGIN
       I_ORIG = MOTINT( ADRESS(1,43)   )
       J_ORIG = MOTINT( ADRESS(1,43)+1 )
       DEBUG  = MOTINT( ADRESS(1,44)   )
-      NCOUCH_TASS = MOTINT( ADRESS(1,45)   )
-C CV V6P0
+C 
       ICR  =   MOTINT(ADRESS(1,46)   )
-C CV V6P1
+C 
       IKS  =   MOTINT(ADRESS(1,47)   )
 
-!
-      ITASS  =   MOTINT(ADRESS(1,48)   )
+
 !
 ! ############### !
 C REAL KEYWORDS   !
@@ -406,10 +405,8 @@ CV
       BETA2       = MOTREA( ADRESS(2, 26) )
       BIJK        = MOTREA( ADRESS(2, 27) )
 C
-      CSF_VASE    = MOTREA( ADRESS(2, 29) )
-C
 C     INITIAL CONCENTRATIONS
-C
+C++++++++++++++++++++++++++++++++     
       DO K=1,NSICLA
         CS0(K)=MOTREA( ADRESS(2,30) + K-1 )
       ENDDO
@@ -421,35 +418,64 @@ C
           CBOR_CLASSE(K)=MOTREA( ADRESS(2,31) + K-1 )
         ENDDO
       ENDIF
+C 
+C       COHESIVE SEDIMENT 
+C +++++++++++++++++++++++++++++++
+C 
+      NCOUCH_TASS = MOTINT( ADRESS(1,45)   )
+
+C
       IF(DIMENS(2,32).GT.0) THEN
         DO K=1,DIMENS(2,32)
           CONC_VASE(K)=MOTREA( ADRESS(2,32) + K-1 )
         ENDDO
       ENDIF
-      IF(DIMENS(2,33).GT.0) THEN
-        DO K=1,DIMENS(2,33)
-          TRANS_MASS(K)=MOTREA( ADRESS(2,33) + K-1 )
-        ENDDO
-      ENDIF
+C
+C OBSOLETE KEY WORD
+C      CSF_VASE    = MOTREA( ADRESS(2, 29) )
+
+        CSF_VASE = CONC_VASE(1)/XMVS
+C 
       IF(DIMENS(2,34).GT.0) THEN
         DO K=1,DIMENS(2,34)
           TOCE_VASE(K)=MOTREA( ADRESS(2,34) + K-1 )
         ENDDO
       ENDIF
 C
-CV V6P0: 20/07/2009
+C      KRONE AND PARTHENIADES EROSION AND DEPOSITION LAW
 C
-      VITCE= MOTREA( ADRESS(2,35))
-C IF MULTI-LAYER CONSOLIDATION MODEL: USE THE VALUE FOR THE FIRST LAYER
-C SEE END
+C OBSOLETE KEY WORD
+C      VITCE= MOTREA( ADRESS(2,35))
+C     
+      VITCE = SQRT(TOCE_VASE(1)/XMVE)
       VITCD= MOTREA( ADRESS(2,36))
       PARTHENIADES = MOTREA( ADRESS(2,37))
 C
-C CONVERTS TO  M/S
+C CONVERTED TO  M/S
 C
        PARTHENIADES = PARTHENIADES/XMVS
 C
-C END MODIFICATION CV 20/07
+C CONSOLIDATION MODEL
+C
+      TASS = MOTLOG(ADRESS(3,23))
+      ITASS  =   MOTINT(ADRESS(1,48)   )
+!
+! MULTILAYER MODEL (WALTHER, 2008)
+! ITASS = 1
+      IF(DIMENS(2,33).GT.0) THEN
+        DO K=1,DIMENS(2,33)
+          TRANS_MASS(K)=MOTREA( ADRESS(2,33) + K-1 )
+        ENDDO
+      ENDIF
+C
+C V6P1
+C THIEBOT MULTI LAYER MODEL 
+C ITASS=2
+      CONC_GEL=MOTREA( ADRESS(2,38))
+      COEF_N= MOTREA( ADRESS(2,39))
+C
+C       HIDING EXPOSURE MULTI GRAIN MODEL
+C +++++++++++++++++++++++++++++++++++++++++++++++++++++++
       DO K=1,NSICLA
          HIDI(K)  = MOTREA( ADRESS(2,253) + K-1 )
          IF (TROUVE(2,255).EQ.1) THEN
@@ -529,8 +555,7 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
         SLOPEFF=0
         DEVIA=0
       ENDIF
-C CV 06/06/2008
-      TASS = MOTLOG(ADRESS(3,23))
+C 
       MIXTE=MOTLOG(ADRESS(3,24))
 C COUPLING WITH DREDGESIM
       DREDGESIM=MOTLOG(ADRESS(3,25))
@@ -793,7 +818,7 @@ C
      &   RESOL.NE.ADV_LPO   .AND.RESOL.NE.ADV_NSC   .AND.
      &   RESOL.NE.ADV_PSI   .AND.RESOL.NE.ADV_LPO_TF.AND.
      &   RESOL.NE.ADV_NSC_TF                              ) THEN
-         IF (LNG.EQ.1) WRITE(LU,302) RESOL
+         IF (LNG.EQ.1) WRITE(LU,302) RESOL 
          IF (LNG.EQ.2) WRITE(LU,303) RESOL
 302      FORMAT(1X,'METHODE DE RESOLUTION NON PROGRAMMEE : ',1I6)
 303      FORMAT(1X,'RESOLVING METHOD NOT IMPLEMENTED : ',1I6)
@@ -886,10 +911,7 @@ C VITCE AND CSF_VASE STEM FROM THE FIRST LAYER OF THE MULTI-LAYER MODEL
 C +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C Mots clés supprimés vitesse critique d'erosion et concentration du lit
 C CV : si première couche est  vide cela n'est pas correct
-C V6P1 : lop layer 
-C
-        VITCE = SQRT(TOCE_VASE(1)/XMVE)
-        CSF_VASE = CONC_VASE(1)/XMVS
+
 C
       IF(MIXTE) THEN
 C

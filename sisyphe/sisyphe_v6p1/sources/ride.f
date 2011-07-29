@@ -2,7 +2,7 @@
                      SUBROUTINE RIDE
 !                    ***************
 !
-     & (KS,TW,UW,UNORM,GRAV,XMVE,XMVS,VCE,NPOIN,KSPRATIO,ACLADM)
+     &(KS,TW,UW,UNORM,GRAV,XMVE,XMVS,VCE,NPOIN,KSPRATIO,ACLADM)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011

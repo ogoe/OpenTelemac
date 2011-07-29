@@ -948,7 +948,7 @@ C transfert de masse par couche
 C contrainte critique d'erosion de la vase par couche
       DOUBLE PRECISION :: TOCE_VASE(10),TOCE_SABLE
 C Modele de Thiebot 
-      DOUBLE PRECISION :: CONC_GEL, VSTOKES
+      DOUBLE PRECISION :: CONC_GEL, COEF_N
 C-----------------------------------------------------------------------
 C
 C       7) STRINGS
