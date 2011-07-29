@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "The TELEMAC system"
-PROJECT_NUMBER         = v6p0
+PROJECT_NUMBER         = v6p1
 # @INCLUDE               = doxyfile_include.h
 OUTPUT_DIRECTORY       =
 CREATE_SUBDIRS         = NO
@@ -89,25 +89,26 @@ WARN_LOGFILE           = Doxygen_BuildLog.txt
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 INPUT                  = ./ \
-                         ./artemis/arte_v6p0/sources \
-                         ./bief/bief_v6p0/sources \
-                         ./damocles/damo_v6p0/sources \
-                         ./mumpsvoid/mumpsvoid_v6p0/sources \
-                         ./parallel/parallel_v6p0/sources \
-                         ./sisyphe/sisyphe_v6p0/sources \
-                         ./special/special_v6p0/sources \
-                         ./stbtel/stbtel_v6p0/sources \
-                         ./postel3d/postel3d_v6p0/sources \
-                         ./telemac2d/tel2d_v6p0/sources \
-                         ./telemac3d/tel3d_v6p0/sources \
-                         ./tomawac/toma_v6p0/sources
+                         ./artemis/arte_v6p1/sources \
+                         ./bief/bief_v6p1/sources \
+                         ./damocles/damo_v6p1/sources \
+                         ./mumpsvoid/mumpsvoid_v6p1/sources \
+                         ./parallel/parallel_v6p1/sources \
+                         ./sisyphe/sisyphe_v6p1/sources \
+                         ./special/special_v6p1/sources \
+                         ./stbtel/stbtel_v6p1/sources \
+                         ./spartacus2d/spartacus2d_v6p1/sources \
+                         ./postel3d/postel3d_v6p1/sources \
+                         ./telemac2d/tel2d_v6p1/sources \
+                         ./telemac3d/tel3d_v6p1/sources \
+                         ./tomawac/toma_v6p1/sources
 FILE_PATTERNS          = *.f \
                          *.dox
 RECURSIVE              = YES
 EXCLUDE                =
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = *PointSet*
-EXAMPLE_PATH           = ../artemis
+EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = *
 EXAMPLE_RECURSIVE      = YES
 IMAGE_PATH             = ./html/images
