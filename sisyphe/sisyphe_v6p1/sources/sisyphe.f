@@ -14,8 +14,8 @@
 !
 !brief
 !
-!history  C. LENORMANT; J.-M. HERVOUET; S. HADJI; C. MACHET; C. VILLARET
-!history  20/03/2011 C. VILLARET, U. MERKEL, R. KOPMANN
+!history  C. LENORMANT; J.-M. HERVOUET; S. HADJI; C. MACHET; C. VILLARET; U. MERKEL; R. KOPMANN
+!+        20/03/2011
 !+        V6P1
 !+
 !

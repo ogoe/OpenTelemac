@@ -39,8 +39,10 @@
 !+   cross-referencing of the FORTRAN sources
 !+
 !+ 
-!history  C. VILLARET : V6P1
-!+        20/03/2011: send DM instead of array ACLADM
+!history  C. VILLARET
+!+        20/03/2011
+!+        V6P1
+!+   Send DM instead of array ACLADM
 !
 !history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
