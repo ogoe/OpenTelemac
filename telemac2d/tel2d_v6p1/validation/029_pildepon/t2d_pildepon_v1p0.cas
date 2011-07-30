@@ -1,0 +1,69 @@
+/COURBES DE TARAGE : 1;0
+/FICHIER DES COURBES DE TARAGE : tarage.txt
+/
+ PROCESSEURS PARALLELES : 0
+/  ON THIS CASE DIFFERENCES BETWEEN COMPILERS ARE DUE TO TRUNCATIONS ERRORS
+/  BECAUSE OF VON KARMAN EDDIES
+/
+/  EQUATIONS : 'BOUSSINESQ'
+/
+/  WAVE EQUATION + QUASI-BUBBLE
+/
+/  SUR HP3700         :10 s compilateur HP         5.7    19/04/2007
+/  SUR HP3700         :18 s compilateur Nag        5.7    19/04/2007
+/  Dell 2.8 MHz       : 5 s compilateur pgi 6.2    5.7    19/04/2007
+/
+/  SUR HP3700         : 8 s compilateur HP         5.8    30/11/2007
+/  SUR HP3700         :20 s compilateur Nag        5.8    21/12/2007
+/  Dell 2.8 MHz       : 5 s compilateur pgi 6.2    5.8    19/12/2007
+/
+/  NOW WITH DIRECT SOLVER (LOOK AT MASS ERROR!)
+/
+/  SUR HP3700         : 8 s compilateur HP         5.9    12/11/2008
+/  SUR HP3700         :21 s compilateur Nag        5.9    17/10/2008    
+/  Dell 2.8 MHz       : 5 s compilateur pgi 6.2    5.9    16/10/2008  
+/
+/  SUR HP3700         : 9 s compilateur HP         6.0    24/11/2009
+/  SUR HP3700         :19 s compilateur Nag        6.0    26/11/2009
+/  Dell 2.8 MHz       : 4 s compilateur Intel      6.0    26/11/2009
+/
+FICHIER DES CONDITIONS AUX LIMITES : geo_piledepon.cli
+FICHIER DE GEOMETRIE               : geo_piledepon.slf
+FICHIER DES FRONTIERES LIQUIDES    : t2d_piledepon.lqd
+FICHIER DE REFERENCE               : f2d_piledepon_v1p0.slf
+FICHIER DES RESULTATS              : r2d_piledepon_v1p0.slf
+/
+/----------------------------------------------------------------------/
+/ 
+VALIDATION : OUI
+TITRE = 'TELEMAC 2D : RIVIERE AVEC DEUX PILES DE PONT$'  
+SUITE DE CALCUL = NON
+/PAS DE TEMPS = 0.1 NOMBRE DE PAS DE TEMPS = 800
+/PAS DE TEMPS = 0.2 NOMBRE DE PAS DE TEMPS = 400
+ PAS DE TEMPS = 0.4 NOMBRE DE PAS DE TEMPS = 200
+/PAS DE TEMPS = 0.4 NOMBRE DE PAS DE TEMPS = 2
+/PAS DE TEMPS = 0.8 NOMBRE DE PAS DE TEMPS = 100
+PERIODE POUR LES SORTIES GRAPHIQUES = 100
+PERIODE DE SORTIE LISTING           = 100                              
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,H,B,L'                      
+DISCRETISATIONS EN ESPACE : 12 ; 11                            
+FORME DE LA CONVECTION : 1;5        MODELE DE TURBULENCE = 1            
+    OPTION DE SUPG     : 1;2                                          
+LOI DE FROTTEMENT SUR LE FOND = 3     COEFFICIENT DE FROTTEMENT = 40.    
+PROPAGATION = OUI      COEFFICIENT DE DIFFUSION DES VITESSES = 0.005                                                 
+IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6
+INFORMATIONS SUR LE SOLVEUR : OUI        BILAN DE MASSE : OUI           
+SOLVEUR : 1   PRECONDITIONNEMENT : 2   ORDRE DU TIR INITIAL POUR H : 1
+PRECISION DU SOLVEUR = 1.E-5    
+OPTION DU SOLVEUR : 1       CONDITIONS INITIALES : 'COTE NULLE'                                     
+/DEBITS IMPOSES : 0.;62.     COTES IMPOSEES : 0.;0.  
+STOCKAGE DES MATRICES : 3 
+/ AJOUTE POUR EQUATION D'ONDE GENERALISEE
+ MASS-LUMPING SUR LA VITESSE : 1.      MASS-LUMPING SUR H : 1.
+/
+ TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1   PRECONDITIONNEMENT :2
+ TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 8   
+/TRAITEMENT DU SYSTEME LINEAIRE : 1 SOLVEUR : 7   PRECONDITIONNEMENT :2
+/ 
+CORRECTION DE CONTINUITE : OUI
+&ETA                                                                     

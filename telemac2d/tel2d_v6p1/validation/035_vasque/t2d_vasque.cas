@@ -1,0 +1,54 @@
+/
+/   CAS TELEMAC-2D
+/
+/   HP C3700 compilateur HP          : 5 s  5.7 JMH LE 19/04/2007
+/   HP C3700 compilateur Nag         : 7 s  5.7 JMH LE 19/04/2007
+/   Dell 2.8 MHz compilateur pgi 6.2 : 2 s  5.7 JMH LE 19/04/2007
+/ 
+/   HP C3700 compilateur HP          : 2 s  5.8 JMH LE 26/11/2007
+/   HP C3700 compilateur Nag         : 5 s  5.8 JMH LE 26/12/2007
+/   Dell 2.8 MHz compilateur pgi 6.2 : 1 s  5.8 JMH LE 19/12/2007
+/
+/   HP C3700 compilateur HP          : 2 s  5.9 JMH LE 16/10/2008
+/   HP C3700 compilateur Nag         : 8 s  5.9 JMH LE 17/10/2008
+/   Dell 2.8 MHz compilateur pgi 6.2 : 1 s  5.9 JMH LE 16/10/2008 
+/
+/   HP C3700 compilateur HP          : 3 s  6.0 JMH LE 24/11/2009
+/   HP C3700 compilateur Nag         : 5 s  6.0 JMH LE 27/11/2009
+/   Dell 2.8 MHz compilateur Intel   : 2 s  6.0 JMH LE 26/11/2009
+/  
+FICHIER FORTRAN                    : t2d_vasque.f
+FICHIER DES CONDITIONS AUX LIMITES : geo_vasque.cli
+FICHIER DE GEOMETRIE               : geo_vasque.slf
+FICHIER DE REFERENCE               : f2d_vasque.slf
+/
+VALIDATION : OUI
+FICHIER DES RESULTATS              : r2d_vasque.slf
+/                                                 
+/----------------------------------------------------------------------/  
+/                     OPTIONS GENERALES                                   
+/----------------------------------------------------------------------/  
+TITRE = 'TELEMAC 2D : DECOUVREMENT SUR UNE VASQUE$'                       
+SUITE DE CALCUL : NON                                                     
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,B,S'                       
+VARIABLES A IMPRIMER : ''                                                 
+PAS DE TEMPS = 1.      NOMBRE DE PAS DE TEMPS = 300                                     
+PERIODE POUR LES SORTIES GRAPHIQUES : 100                                  
+PERIODE DE SORTIE LISTING = 100                                            
+MODELE DE TURBULENCE = 1  / 1 : LAMINAIRE  3 : K-EPSILON                  
+LOI DE FROTTEMENT SUR LE FOND : 3    COEFFICIENT DE FROTTEMENT = 40.      
+COEFFICIENT DE DIFFUSION DES VITESSES = 1.E-2                             
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100 PRECISION DU SOLVEUR = 1.E-4   
+IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6   
+BILAN DE MASSE : OUI    CLIPPING DE H : NON                               
+SOLVEUR : 3    PRECONDITIONNEMENT : 2    ORDRE DU TIR INITIAL POUR H : 1                 
+FORME DE LA CONVECTION : 1;5                                              
+    OPTION DE SUPG     : 1;2                                              
+/                                                     
+COTES IMPOSEES : 0. / VALEUR FACTICE, VOIR FONCTION SL
+/
+/ CAS DE REPOS INITIAL, QUI DOIT LE RESTER (ENLEVER LA FONCTION Q DU PROGRAMME PRINCIPAL)
+/ 
+/CONDITIONS INITIALES : 'COTE CONSTANTE'
+/COTE INITIALE : -0.4             
+&ETA                                                                      

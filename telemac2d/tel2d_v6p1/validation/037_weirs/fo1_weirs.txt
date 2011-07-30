@@ -1,0 +1,35 @@
+Nb de singularites Option Utan                                                  
+          3             0                                                       
+---------------------------- Singularite 1                                      
+Nb de points                                                                    
+11                                                                              
+Points cote 1                                                                   
+71 72 73 74 75 76 77 78 79 80 41                                                
+Points cote 2                                                                   
+21 20 19 18 17 16 15 14 13 12 11                                                
+Cotes de digue                                                                  
+1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8 1.8                                     
+Coefficients de debit                                                           
+ .4  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4                                     
+---------------------------- Singularite 2                                      
+Nb de points                                                                    
+11                                                                              
+Points cote 1                                                                   
+111 112 113 114 115 116 117 118 119 120 81                                      
+Points cote 2                                                                   
+61 60 59 58 57 56 55 54 53 52 51                                                
+Cotes de digue                                                                  
+1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6 1.6                                     
+Coefficients de debit                                                           
+ .4  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4                                     
+---------------------------- Singularite 3                                      
+Nb de points                                                                    
+11                                                                              
+Points cote 1                                                                   
+151 152 153 154 155 156 157 158 159 160 121                                     
+Points cote2                                                                    
+101 100  99  98  97  96  95  94  93  92  91                                     
+Cotes de digue                                                                  
+1.4 1.4 1.4 1.4 1.4 1.4 1.4 1.4 1.4 1.4 1.4                                     
+Coefficients de debit                                                           
+ .4  .4  .4  .4  .4  .4  .4  .4  .4  .4  .4                                     

@@ -1,0 +1,84 @@
+/
+/  ATTENTION, AVEC CONVECTEUR VOLUMES FINIS, METTRE
+/  SOLVEUR POUR LA DIFFUSION DES TRACEURS : 1
+/
+/  HP C3700 compilateur HP          : 16 s  5.5  23/11/2004
+/  HP C3700 compilateur HP          :  9 s  5.7  19/04/2007
+/  HP C3700 compilateur Nag         : 21 s  5.7  19/04/2007
+/  Dell 2.8 MHz compilateur pgi 6.2 :  6 s  5.7  19/04/2007
+/
+/  HP C3700 compilateur HP          :  9 s  5.8  26/11/2007
+/  HP C3700 compilateur Nag         : 23 s  5.8  26/12/2007  
+/  Dell 2.8 MHz compilateur pgi 6.2 :  7 s  5.8  19/12/2007
+/
+/  HP C3700 compilateur HP          :  9 s  5.9  16/10/2008
+/  HP C3700 compilateur Nag         : 23 s  5.9  17/10/2008
+/  Dell 2.8 MHz compilateur pgi 6.2 :  6 s  5.9  17/10/2008
+/
+/  HP C3700 compilateur HP          : 10 s  6.0  24/11/2009
+/  HP C3700 compilateur Nag         : 22 s  6.0  27/11/2009
+/  Dell 2.8 MHz compilateur Intel   :  5 s  6.0  26/11/2009
+/
+/  TRANSFERT D'EAU PAR UN SIPHON ENTRE DEUX DOMAINES DISJOINTS
+/  AVEC BANCS DECOUVRANTS
+/
+FICHIER FORTRAN                     : t2d_siphon.f
+FICHIER DES CONDITIONS AUX LIMITES  : geo_siphon.cli
+FICHIER DE GEOMETRIE                : geo_siphon.slf
+FICHIER DE DONNEES FORMATE 1        : fo1_siphon.txt
+FICHIER DE REFERENCE                : f2d_siphon.slf  VALIDATION : OUI
+FICHIER DES RESULTATS               : r2d_siphon.slf
+/
+/----------------------------------------------------------------------/ 
+/                     OPTIONS GENERALES                               
+/----------------------------------------------------------------------/ 
+TITRE = 'TELEMAC 2D : TEST SIPHONS'   SUITE DE CALCUL = FAUX               
+PERIODE POUR LES SORTIES GRAPHIQUES=10 PERIODE DE SORTIE LISTING=10       
+VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B,T1,T2                             
+INFORMATIONS SUR LE SOLVEUR = VRAI    BILAN DE MASSE = VRAI                     
+PAS DE TEMPS = 2.5    NOMBRE DE PAS DE TEMPS = 240                                 
+PRECONDITIONNEMENT = 2                                                                            
+DISCRETISATIONS EN ESPACE = 12;11                                                
+FORME DE LA CONVECTION = 1;5;2                                                
+  OPTION DE SUPG       = 1;2;0                                                  
+SOLVEUR = 7      OPTION DU SOLVEUR : 5 
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100                                         
+PRECISION DU SOLVEUR = 1.E-8          MASS-LUMPING SUR H : 1.                                                         
+IMPLICITATION POUR LA HAUTEUR=0.55  IMPLICITATION POUR LA VITESSE = 0.55        
+LOI DE FROTTEMENT SUR LE FOND = 3     COEFFICIENT DE FROTTEMENT = 20.           
+COEFFICIENT DE DIFFUSION DES VITESSES = 1.0                                     
+COTE INITIALE = 2.  CONDITIONS INITIALES = 'PARTICULIERES'           
+BANCS DECOUVRANTS = OUI
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS : 1                                                        
+ABSCISSES DES SOURCES = 100.;400.   ORDONNEES DES SOURCES = 100.;100.           
+DEBITS DES SOURCES = 0.;0.                                                      
+NOMBRE DE SIPHONS : 1                                                           
+NOMBRE DE TRACEURS : 2   COEFFICIENT DE DIFFUSION DES TRACEURS : 1.
+VALEURS INITIALES DES TRACEURS : 100.;200.
+
+/ndu add
+VALEURS INITIALES DES TRACEURS : 100.;200.;0.;0.
+VALEURS DES TRACEURS DES SOURCES : 100.;200.;0.;0.
+/ndu end add
+
+COEFFICIENT D'IMPLICITATION DES TRACEURS : 1.                
+MAXIMUM D'ITERATIONS POUR LA DIFFUSION DES TRACEURS : 40       
+PRECISION POUR LA DIFFUSION DES TRACEURS : 1.E-10 
+SOLVEUR POUR LA DIFFUSION DES TRACEURS : 7                                
+OPTION DU SOLVEUR POUR LA DIFFUSION DES TRACEURS : 2               
+PRECONDITIONNEMENT POUR LA DIFFUSION DES TRACEURS : 2             
+VITESSES DES SOURCES SELON X : 0.;0.                             
+VITESSES DES SOURCES SELON Y : 0.;0.                                                      
+PROCESSEURS PARALLELES : 0 
+/
+/
+/ 0 : ROE 1 : CINETIQUE ORDRE 1  2 : CINETIQUE ORDRE 2
+/NOMBRE DE TRACEURS : 2
+/DISCRETISATIONS EN ESPACE = 11;11 
+/EQUATIONS : 'SAINT-VENANT VF'
+/SCHEMA EN VOLUMES FINIS : 2     PAS DE TEMPS VARIABLE : OUI
+/DUREE DU CALCUL : 600.
+/
+/
+/
+&ETA                                                                            
