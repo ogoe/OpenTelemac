@@ -1,16 +1,14 @@
 /**********************************************************************/
 /                         STEERING FILE FOR                            /
-/                            STBTEL V5.5                               /
 /                 EXAMPLE OF TRIGRID  FILE TREATMENT                   /
 /             GLOBAL MESH - BATHYMETRY IN TRIGRID FILE                 /
-/  SOGREAH                                                02/16/1999   /
 /**********************************************************************/
 /
 /
-UNIVERSAL FILE                          : './grille.dat'
-GEOMETRY FILE FOR TELEMAC               : './geo.slf'
-BOUNDARY CONDITIONS FILE                : './geo.cli'
-MESH ADDITIONAL DATA FILE               : './trian.dat'
+UNIVERSAL FILE                          : 'grille.dat'
+GEOMETRY FILE FOR TELEMAC               : 'geo_tot.slf'
+BOUNDARY CONDITIONS FILE                : 'geo_tot.slf'
+MESH ADDITIONAL DATA FILE               : 'trian.dat'
 /
 MESH GENERATOR                          : TRIGRID
 BOTTOM CORRECTION OF TRIGRID            : 270.

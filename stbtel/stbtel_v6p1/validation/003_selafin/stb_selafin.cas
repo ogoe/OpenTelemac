@@ -1,14 +1,11 @@
 /**********************************************************************/
-/                         STEERING FILE FOR                            /
-/                            STBTEL V5.5                               /
 /                  EXAMPLE OF SELAFIN FILE TREATMENT                   /
 /                 WITHOUT ELIMINATION OF DRY ELEMENTS                  /
-/  SOGREAH                                                02/16/1999   /
 /**********************************************************************/
 /
-UNIVERSAL FILE                          : './hydro'
-GEOMETRY FILE FOR TELEMAC               : './geo.slf'
-BOUNDARY CONDITIONS FILE                : './geo.cli'
+UNIVERSAL FILE                          : 'msh_hydro.slf'
+GEOMETRY FILE FOR TELEMAC               : 'geo_hydro.slf'
+BOUNDARY CONDITIONS FILE                : 'geo_hydro.cli'
 /
 MESH GENERATOR                          : SELAFIN
 /

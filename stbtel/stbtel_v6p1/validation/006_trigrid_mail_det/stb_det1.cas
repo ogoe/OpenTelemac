@@ -1,17 +1,14 @@
 /**********************************************************************/
 /                         STEERING FILE FOR                            /
-/                            STBTEL V5.5                               /
 /                 EXAMPLE OF TRIGRID  FILE TREATMENT                   /
 /             GLOBAL MESH - BATHYMETRY IN TRIGRID FILE                 /
-/                 MESH EXTRACTION WITHOUT PROJECTION                   /
-/  SOGREAH                                                02/16/1999   /
+/                  MESH EXTRACTION WITH PROJECTION                     /
 /**********************************************************************/
 /
-/
-UNIVERSAL FILE                          : './grille.dat'
-GEOMETRY FILE FOR TELEMAC               : './geo2.slf'
-BOUNDARY CONDITIONS FILE                : './geo2.cli'
-MESH ADDITIONAL DATA FILE               : './trian.dat'
+UNIVERSAL FILE                          : 'grille.dat'
+GEOMETRY FILE FOR TELEMAC               : 'geo_det1.slf'
+BOUNDARY CONDITIONS FILE                : 'geo_det1.cli'
+MESH ADDITIONAL DATA FILE               : 'trian.dat'
 /
 MESH GENERATOR                          : TRIGRID
 BOTTOM CORRECTION OF TRIGRID            : 270.
@@ -26,5 +23,5 @@ ABSCISSAE OF THE VERTICES OF THE POLYGON TO EXTRACT THE MESH :
   1140.;1170.;1060.;955.;1000.
 ORDINATES OF THE VERTICES OF THE POLYGON TO EXTRACT THE MESH :
   365.;460.;555.;455.;375.
-PROJECTION AFTER EXTRACTION : NO
+PROJECTION AFTER EXTRACTION : YES
 &FIN
