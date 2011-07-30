@@ -1,0 +1,50 @@
+COUPLAGE AVEC : 'DELWAQ'
+/ Periode de sortie Delwaq et graphiques doivent etre la meme
+FICHIER DELWAQ DES VOLUMES                : dwq_delwaq-t2d-volume.dwq
+FICHIER DELWAQ DES SURFACES DE FLUX       : dwq_delwaq-t2d-area.dwq
+FICHIER DELWAQ DES FLUX VERTICAUX         : dwq_delwaq-t2d-flow.dwq
+FICHIER DELWAQ DES SURFACES DU FOND       : dwq_delwaq-t2d-horsurf.dwq
+FICHIER DELWAQ DES ECHANGES ENTRE NOEUDS  : dwq_delwaq-t2d-frmto.dwq
+FICHIER DELWAQ DES DISTANCES ENTRE NOEUDS : dwq_delwaq-t2d-length.dwq
+FICHIER DE COMMANDE DELWAQ                : dwq_delwaq-t2d.hyd
+/EQUATIONS : 'BOUSSINESQ'
+/
+/  WAVE EQUATION + QUASI-BUBBLE
+/
+/  SUR HP9000 133 MHz : 1 mn 22 s  (2 mn 41 s avec validation)
+/  SUR HP3700         : 8 s     5.6    22/08/2005
+/
+FICHIER DES CONDITIONS AUX LIMITES : geo_delwaq.cli
+FICHIER DE GEOMETRIE               : geo_delwaq.slf
+FICHIER DES FRONTIERES LIQUIDES    : t3d_delwaq.qsl
+/FICHIER DE REFERENCE               : ref
+FICHIER DES RESULTATS              : r2d_delwaq-t2d.slf
+/
+/----------------------------------------------------------------------/
+/ 
+/VALIDATION : OUI
+TITRE = 'TELEMAC 2D : RIVIERE AVEC DEUX PILES DE PONT$'  
+SUITE DE CALCUL = NON
+ PAS DE TEMPS = 0.1 NOMBRE DE PAS DE TEMPS = 2
+PERIODE POUR LES SORTIES GRAPHIQUES = 1
+PERIODE DE SORTIE LISTING           = 1                             
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,H,B,L'                      
+/DISCRETISATIONS EN ESPACE : 12 ; 11                    
+FORME DE LA CONVECTION : 1;5        MODELE DE TURBULENCE = 1            
+    OPTION DE SUPG     : 1;0
+LOI DE FROTTEMENT SUR LE FOND = 3     COEFFICIENT DE FROTTEMENT = 40.    
+PROPAGATION = OUI      COEFFICIENT DE DIFFUSION DES VITESSES = 0.005                                                 
+IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6
+INFORMATIONS SUR LE SOLVEUR : OUI        BILAN DE MASSE : OUI           
+SOLVEUR : 1   PRECONDITIONNEMENT : 2   ORDRE DU TIR INITIAL POUR H : 1
+PRECISION DU SOLVEUR = 1.E-5    
+OPTION DU SOLVEUR : 1       CONDITIONS INITIALES : 'COTE NULLE'                                     
+/DEBITS IMPOSES : 0.;62.     COTES IMPOSEES : 0.;0.  
+STOCKAGE DES MATRICES : 3 
+/ AJOUTE POUR EQUATION D'ONDE GENERALISEE
+ MASS-LUMPING SUR LA VITESSE : 1.      MASS-LUMPING SUR H : 1.
+/
+ TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 2   PRECONDITIONNEMENT :2
+/TRAITEMENT DU SYSTEME LINEAIRE : 1 SOLVEUR : 7   PRECONDITIONNEMENT :2
+/     
+&ETA                                                                     
