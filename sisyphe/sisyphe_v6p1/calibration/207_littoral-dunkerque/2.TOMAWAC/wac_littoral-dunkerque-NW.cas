@@ -1,0 +1,120 @@
+/********************************************************************/
+/             FICHIER DES PARAMETRES                                 /
+/                    DE TOMAWAC                                      /
+/********************************************************************/
+/--------------------------------------------------------------------/
+/     FICHIERS
+/--------------------------------------------------------------------/
+FICHIER DE GEOMETRIE               = '../geo_littoral-dunkerque.slf'
+FICHIER DES CONDITIONS AUX LIMITES = '../geo_littoral-dunkerque.cli'
+/
+FICHIER DES RESULTATS 2D = wac_littoral-dunkerque-NW.slf
+/--------------------------------------------------------------------/
+/ CONDITIONS INITIALES
+/--------------------------------------------------------------------/
+/prise en compte d''un niveau d''eau et de courants
+/ +++++++++++++++++++++++++++++++++++++++++++++++++
+PRISE EN COMPTE DE LA MAREE = OUI
+FICHIER DU NIVEAU DE LA MAREE BINAIRE =
+                         '../1.TELEMAC-2D/r2d_littoral-dunkerque.slf'
+FORMAT DU FICHIER DU NIVEAU DE LA MAREE = 2
+RANG DU NIVEAU DE LA MAREE DANS LE FICHIER TELEMAC = 4
+/
+/PRISE EN COMPTE D'UN COURANT STATIONNAIRE = OUI
+/ question MB: le courant est-il pris en compte??
+/ Ca plante si je mets oui...
+/
+FICHIER DES COURANTS BINAIRE =
+                         '../1.TELEMAC-2D/r2d_littoral-dunkerque.slf'
+FORMAT DU FICHIER DES COURANTS = 3
+/
+/ Dans le fichier résultats issu de TELEMAC : enregistrements tous les 5500 s
+/ Question MB: Y-a-t-il interpollation??
+PERIODE D'ACTUALISATION DE LA MAREE = 110
+/--------------------------------------------------------------------/
+/ CONDITIONS INITIALES
+/--------------------------------------------------------------------/
+HAUTEUR SIGNIFICATIVE INITIALE = 7.4
+FREQUENCE DE PIC INITIALE = 0.125
+FACTEUR DE PIC INITIAL = 3.3
+FONCTION DE REPARTITION ANGULAIRE INITIALE = 1
+FACTEUR DE PONDERATION POUR FRA INITIALE = 1.0
+DIRECTION PRINCIPALE 1 INITIALE = 135.
+ETALEMENT DIRECTIONNEL 1 INITIAL = 3
+/--------------------------------------------------------------------/
+/ DIVERS ENTREES-SORTIES
+/--------------------------------------------------------------------/
+TITRE = 'PROJET LITEAU - CALCUL TOMAWAC '
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D =
+/HS,DM,F01,ZF,WD,SXX,SXY,SYY,FX,FY,UX,UY
+HM0,DMOY,TPR5,ZF,WD,FX,FY,UX,UY
+PROFONDEUR D'EAU MINIMALE = 0.25D0
+/
+/--------------------------------------------------------------------/
+/ DISCRETISATION
+/--------------------------------------------------------------------/
+PAS DE TEMPS = 10
+/Calcul sur 1 cycle de marees
+NOMBRE DE PAS DE TEMPS = 125400
+PERIODE POUR LES SORTIES LISTING = 1100
+PERIODE POUR LES SORTIES GRAPHIQUES = 1100
+/
+/
+NOMBRE DE FREQUENCES = 20
+NOMBRE DE DIRECTIONS = 24
+FREQUENCE MINIMALE = 0.05
+RAISON FREQUENTIELLE = 1.12
+/--------------------------------------------------------------------/
+/ CONDITIONS AUX LIMITES
+/--------------------------------------------------------------------/
+TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES = 6
+/
+/direction de provenance NNW : centenale 7.4 m
+HAUTEUR SIGNIFICATIVE AUX LIMITES = 7.4
+/
+/frequence annuelle : 0.125 Hz
+/frequence centennale :  0.1 Hz
+/frequence cinquentenale : 0.1 Hz
+FREQUENCE DE PIC AUX LIMITES = 0.125
+/
+/direction de provenance WSW = direction de propagation 67.5 degres
+/direction de provenance W = direction de propagation 90. degres
+/direction de provenance NW = direction de propagation 135 degres
+/direction de provenance NNW = direction de propagation 157.5 degres
+/direction de provenance N = direction de propagation 180. degres
+/direction de provenance NNE = direction de propagation 202.5 degres
+/direction de provenance NE = direction de propagation 225 degres
+/DIRECTION PRINCIPALE 1 AUX LIMITES = 225    / 225 degres
+DIRECTION PRINCIPALE 1 AUX LIMITES = 135     / 135 degres
+/DIRECTION PRINCIPALE 1 AUX LIMITES = 67.5    / 67.5 degres
+/DIRECTION PRINCIPALE 1 AUX LIMITES = 157.5    / 157.5 degres
+/DIRECTION PRINCIPALE 1 AUX LIMITES = 202.5    / 202.5 degres
+/DIRECTION PRINCIPALE 1 AUX LIMITES = 180    / 180. degres
+/DIRECTION PRINCIPALE 1 AUX LIMITES = 90    / 90. degres
+/
+ETALEMENT DIRECTIONNEL 1 AUX LIMITES = 3.
+FACTEUR DE PIC AUX LIMITES = 3.3
+SPECTRE AUX LIMITES MODIFIE PAR L'UTILISATEUR = NON
+/--------------------------------------------------------------------/
+/ OPTIONS DU CALCUL
+/--------------------------------------------------------------------/
+PROFONDEUR INFINIE = NON
+PRISE EN COMPTE DES TERMES SOURCES = OUI
+PRISE EN COMPTE DU VENT = NON
+/PRISE EN COMPTE D'UN COURANT STATIONNAIRE = NON
+/--------------------------------------------------------------------/
+/ TERMES SOURCES
+/--------------------------------------------------------------------/
+APPORTS DUS AU VENT = 0
+DISSIPATION PAR FROTTEMENT SUR LE FOND = 1
+DISSIPATION PAR DEFERLEMENT = 1
+VALEUR MAXIMALE DU RAPPORT HS SUR D = 1.
+NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT = 5
+DISSIPATION PAR WAVE BLOCKING = 0
+CALCUL EXACT DU NOMBRE D'ONDE = OUI
+VERIFICATION INITIALE DU CALCUL DU NOMBRE D'ONDE = NON
+RAPPORT MINIMAL CG+UK SUR CG = 0.01
+PULSATION MOYENNE MAXIMALE =10.
+/
+&ETA
+&FIN

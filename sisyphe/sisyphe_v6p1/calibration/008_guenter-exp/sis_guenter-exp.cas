@@ -1,0 +1,70 @@
+/************************************************************************
+/
+/			  STEERING FILE
+/                            SISYPHE                                       
+/    
+/************************************************************************
+/ 
+/------------------------------------------------------------------------
+/
+/INPUTS-OUTPUTS, FILES 
+/
+PARALLEL PROCESSORS : 0
+TITLE                       = 'Guenter experiment' 
+FORTRAN FILE                = sis_guenter-exp.f
+BOUNDARY CONDITIONS FILE    = geo_guenter-exp.cli
+GEOMETRY FILE               = geo_guenter-exp.slf
+RESULTS FILE                = sis_guenter-exp.slf
+REFERENCE FILE              = fis_guenter-exp.slf
+/
+/------------------------------------------------------------------------
+/
+VALIDATION = OUI
+/ Time step = hydrodynamic time step * coupling period
+TIME STEP                         = 5.
+/
+/------------------------------------------------------------------------
+/
+/INPUT-OUTPUT
+/ ++++++++++++++
+MASS-BALANCE                      = YES
+/
+VARIABLES FOR GRAPHIC PRINTOUTS   = 
+'R,S,E,H,B,N,P,I,J,1A1,1A2,1A3,1A4,1A5,QS1,QS2,QS3,QS4,QS5'
+/
+/
+/------------------------------------------------------------------------
+/
+/NUMERICAL PARAMETERS 
+/ +++++++++++++++++++++
+/
+/
+TETA                                     = 1
+TIDAL FLATS                              = NO
+/
+FINITE VOLUMES = YES
+MASS-LUMPING = NO
+OPTION FOR THE TREATMENT OF NON ERODABLE BEDS = 4
+/
+/ SAND TRANSPORT 
+/ ++++++++++++++
+BED-LOAD TRANSPORT FORMULA                = 1
+HIDING FACTOR FORMULA                     = 5
+/
+SLOPE EFFECT = YES
+/ ONLY DEVIATION ACCOUNTED FOR IN KOCH AND FLOCHSTRA 
+BETA = 0.
+/
+COEFFICIENT FUNCTION OF THE POROSITY      = 1.67
+/
+SHIELDS PARAMETER = 0.047
+/
+NUMBER OF SIZE-CLASSES OF BED MATERIAL     = 5
+MEAN DIAMETER OF THE SEDIMENT = 
+0.72D-3;2.49D-3;3.57D-3;4.62D-3;5.59D-3
+INITIAL FRACTION FOR PARTICULAR SIZE CLASS = 
+0.567;0.119;0.175;0.067;0.072
+/
+ACTIVE LAYER THICKNESS = 0.006
+/                                                          
+&FIN
