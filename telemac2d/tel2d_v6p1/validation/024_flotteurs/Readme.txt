@@ -1,9 +1,9 @@
-cas1.txt sert a fabriquer le fichier resu1.slf
+t2d_flotteurs_v1p0.cas sert a fabriquer le fichier r2d_flotteurs_v1p0.slf
 
-cas2.txt est une suite de calcul avec deux flotteurs
+t2d_flotteurs_v2p0.cas est une suite de calcul avec deux flotteurs
 
-Pas de validation, vérifier que le fichier flot.slf donne bien
+Pas de validation, vérifier que le fichier rbi_flotteurs_v2p0.slf donne bien
 les trajectoires de deux flotteurs. Pour ce faire superposer
-le maillage de la géométrie à celui donné dans le fichier resu1.slf
+le maillage de la géométrie à celui donné dans le fichier r2d_flotteurs_v1p0.slf
 
 
