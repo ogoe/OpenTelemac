@@ -153,7 +153,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             print ' copying: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if sortiefile != None:
+   if sortiefile.rstrip() != '':
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
@@ -168,7 +168,8 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       if ncsize > 1:
          for i in range(ncsize-1):
             slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
-            slogfile  = sortiefile.rstrip('.sortie')+'{0:05d}.sortie'.format(i+1)
+            bs,es = path.splitext(path.basename(sortiefile))
+            slogfile  = bs+'_p'+'{0:05d}'.format(i+1)+es
             crun = path.join(TMPDir,slavefile)
             cref = path.join(CASDir,slogfile)
             shutil.copy(crun,cref)
@@ -335,7 +336,7 @@ def runGREDEL(gredel,file,geom,type,ncsize):
    # ~~ Change GRETEL into GREDEL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    pg = path.dirname(gredel)
    bg,eg = path.splitext(path.basename(gredel))
-   gredel = path.join(pg,'gredel' + type.lower() + eg)
+   gredel = path.join(pg,'gredel' + type.lower() + '_autop' + eg)
    # ~~ Run GREDEL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    putFileContent('gretel_'+file+'.par',[geom,file,str(ncsize)])
    failure = system(gredel+' < gretel_'+file+'.par >> gretel_'+file+'.log')
@@ -352,9 +353,14 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    iFS,oFS = getIOFilesSubmit(frgb,dico)
 
    # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if not path.exists(casFile):
+      print '... inexistent CAS file: ',casFile
+      return    # /!\ should you stop or carry on ?
    cas,lang = processCAS(casFile,frgb)
    if not checkConsistency(cas,dico,frgb,cfg):
       print '... inconsistent CAS file: ',casFile
+      print '    +> you may be using an inappropriate configuration:',cfgName
+      print '    +> or may be wishing for scalar mode while using parallel'
       return    # /!\ should you stop or carry on ?
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
