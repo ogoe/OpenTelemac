@@ -1,0 +1,435 @@
+
+------------------------------------------------------------------------------
+ LISTING DE TELEMAC-3D
+
+                 TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC
+                   T    E      L      E      MM MM  A   A  C
+                   T    EEE    L      EEE    M M M  AAAAA  C
+                   T    E      L      E      M   M  A   A  C
+                   T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC
+
+                          3D   VERSION 6.1   FORTRAN 90
+
+                   ********************************************
+                   *               LECDON:                    *
+                   *        AVANT APPEL DE DAMOCLES           *
+                   ********************************************
+
+ FIN DU FICHIER POUR DAMOCLES
+
+                   ********************************************
+                   *               LECDON:                    *
+                   *        APRES APPEL DE DAMOCLES           *
+                   *     VERIFICATION DES DONNEES LUES        *
+                   *     SUR LE FICHIER DES PARAMETRES        *
+                   ********************************************
+
+ SORTIE DE LECDON. TITRE DE L'ETUDE :
+ TELEMAC 3D : GOUTTE D'EAU DANS UN BASSIN$
+
+ OUVERTURE DES FICHIERS POUR TELEMAC3D
+
+ POINT_TELEMAC3D: ALLOCATION DE LA MEMOIRE
+
+ READGEO1 : TITRE= TELEMAC 2D : GOUTTE D'EAU DANS UN BASSIN$
+
+ NOMBRE D'ELEMENTS:     8978
+ NOMBRE REEL DE POINTS:     4624
+ MXPTEL (BIEF) : NOMBRE MAXIMUM D'ELEMENTS VOISINS D'UN POINT :   7
+                 NOMBRE MAXIMUM DE POINTS VOISINS D'UNPOINT :   7
+ CORRXY (BIEF) : PAS DE MODIFICATION DES COORDONNEES
+
+ MAILLAGE : MESH2D ALLOUE
+
+ READGEO1 : TITRE= TELEMAC 2D : GOUTTE D'EAU DANS UN BASSIN$
+
+ NOMBRE D'ELEMENTS:     8978
+ NOMBRE REEL DE POINTS:     4624
+ MXPTEL (BIEF) : NOMBRE MAXIMUM D'ELEMENTS VOISINS D'UN POINT :   7
+                 NOMBRE MAXIMUM DE POINTS VOISINS D'UNPOINT :   7
+ CORRXY (BIEF) : PAS DE MODIFICATION DES COORDONNEES
+
+ MAILLAGE : MESH3D ALLOUE
+
+ MAILLAGE 2D
+ -----------
+
+ 2D ELEMENT TYPE                :       10
+ NOMBRE DE POINTS 2D            :     4624
+ NOMBRE D'ELEMENTS 2D           :     8978
+ NOMBRE DE POINTS DE BORD 2D    :      268
+
+ MAILLAGE 3D
+ -----------
+
+ 3D ELEMENT TYPE                :       40
+ NOMBRE DE POINTS 3D            :    13872
+ NOMBRE D'ELEMENTS 3D           :    17956
+ NOMBRE DE PLANS                :        3
+ NOMBRE D'ELEMENTS DE BORD      :      536
+ NOMBRE TOTAL DE POINTS DE BORD :    10052
+ DONT            COTES LATERAUX :      804
+                        SURFACE :     4624
+                           FOND :     4624
+
+ FIN DE L'ALLOCATION DE LA MEMOIRE
+
+ INBIEF (BIEF) : MACHINE NON VECTORIELLE (SELON VOS DONNEES)
+ CHECK: AUCUNE ERREUR N'A ETE DETECTEE
+
+ FONSTR (BIEF) : PAS DE FOND DANS LE FICHIER DE
+                 GEOMETRIE ET PAS DE FICHIER DES
+                 FONDS. LE FOND EST INITIALISE A
+                 ZERO MAIS PEUT ENCORE ETRE MODIFIE
+                 DANS CORFON.
+
+ STRCHE (BIEF) : PAS DE MODIFICATION DU FROTTEMENT
+
+ IL Y A   1 FRONTIERE(S) SOLIDE(S) :
+
+ FRONTIERE   1 :
+  DEBUT AU POINT DE BORD    1 , DE NUMERO GLOBAL      1
+  ET DE COORDONNEES :     0.000000           0.000000
+  FIN AU POINT DE BORD    1 , DE NUMERO GLOBAL      1
+  ET DE COORDONNEES :     0.000000           0.000000
+ CONDIM: DYNAMIC PRESSURE INITIALISED TO ZERO
+ CONDIM: HYDROSTATIC PRESSURE INITIALISED TO ZERO.
+
+================================================================================
+ITERATION        0 TEMPS    0 J  0 H  0 MIN   0.0000 S   (          0.0000 S)
+================================================================================
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+ MASSE D'EAU INITIALE DANS LE DOMAINE :   999.783877966679
+
+================================================================================
+ITERATION       10 TEMPS    0 J  0 H  0 MIN   0.4000 S   (          0.4000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.2674920E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION RELATIVE:   0.7242942E-08
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       64 ITERATIONS, PRECISION ABSOLUE :   0.9123617E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :   -0.1753313E-07
+
+================================================================================
+ITERATION       20 TEMPS    0 J  0 H  0 MIN   0.8000 S   (          0.8000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.1164378E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION RELATIVE:   0.5426474E-09
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       57 ITERATIONS, PRECISION ABSOLUE :   0.8250651E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :   -0.1273520E-08
+
+================================================================================
+ITERATION       30 TEMPS    0 J  0 H  0 MIN   1.2000 S   (          1.2000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.3402650E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION RELATIVE:   0.1413561E-08
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       55 ITERATIONS, PRECISION ABSOLUE :   0.8427205E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :    0.6737082E-09
+
+================================================================================
+ITERATION       40 TEMPS    0 J  0 H  0 MIN   1.6000 S   (          1.6000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.3046297E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION RELATIVE:   0.1861915E-08
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       53 ITERATIONS, PRECISION ABSOLUE :   0.8997712E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :    0.1969283E-08
+
+================================================================================
+ITERATION       50 TEMPS    0 J  0 H  0 MIN   2.0000 S   (          2.0000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.2137397E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION RELATIVE:   0.9154121E-09
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       53 ITERATIONS, PRECISION ABSOLUE :   0.9407386E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :    0.8299139E-10
+
+================================================================================
+ITERATION       60 TEMPS    0 J  0 H  0 MIN   2.4000 S   (          2.4000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.2590020E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION ABSOLUE :   0.7241983E-09
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       51 ITERATIONS, PRECISION ABSOLUE :   0.9813555E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :   -0.4599769E-09
+
+================================================================================
+ITERATION       70 TEMPS    0 J  0 H  0 MIN   2.8000 S   (          2.8000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.2507254E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION RELATIVE:   0.1961101E-08
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       50 ITERATIONS, PRECISION ABSOLUE :   0.9706650E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :   -0.2209731E-08
+
+================================================================================
+ITERATION       80 TEMPS    0 J  0 H  0 MIN   3.2000 S   (          3.2000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.1659293E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION RELATIVE:   0.2997021E-08
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       49 ITERATIONS, PRECISION ABSOLUE :   0.8548339E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :   -0.2507250E-08
+
+================================================================================
+ITERATION       90 TEMPS    0 J  0 H  0 MIN   3.6000 S   (          3.6000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.1926677E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION ABSOLUE :   0.3503127E-08
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       50 ITERATIONS, PRECISION ABSOLUE :   0.9681662E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :   -0.6035634E-09
+
+================================================================================
+ITERATION      100 TEMPS    0 J  0 H  0 MIN   4.0000 S   (          4.0000 S)
+================================================================================
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ MURD3D OPTION :  5       1 ITERATIONS
+ DIFFUSION DE WN
+ GRACJG (BIEF) :        1 ITERATIONS, PRECISION RELATIVE:   0.2773085E-07
+--------------------------------------------------------------------------------
+       PROPAGATION ET DIFFUSION AVEC EQUATION D'ONDE
+ GMRES (BIEF) :        2 ITERATIONS, PRECISION ABSOLUE :   0.8649098E-09
+--------------------------------------------------------------------------------
+       ETAPE DE CONVECTION - DIFFUSION
+ GRACJG (BIEF) :       46 ITERATIONS, PRECISION ABSOLUE :   0.9348794E-05
+--------------------------------------------------------------------------------
+       ETAPE DE PRESSION DYNAMIQUE
+--------------------------------------------------------------------------------
+                BILAN DE MASSE
+
+  EAU
+MASSE AU PAS DE TEMPS PRECEDENT               :     999.7839
+MASSE AU PAS DE TEMPS EN COURS                :     999.7839
+MASSE SORTIE PAR LES LIMITES PENDANT CE TEMPS :     0.000000
+ERREUR SUR LA MASSE AU COURS DU PAS DE TEMPS  :   -0.1050694E-08
+
+--------------------------------------------------------------------------------
+                BILAN DE MASSE FINAL
+T =           4.0000
+
+--- EAU ---
+MASSE INITIALE (DEBUT DE CE CALCUL) :     999.7839
+MASSE FINALE                        :     999.7839
+MASSE SORTIE DU DOMAINE (OU SOURCE) :     0.000000
+MASSE PERDUE                        :    0.1449962E-05
+
+ ================================================================================
+                          PROCEDURE DE VALIDATION
+ --------------------------------------------------------------------------------
+
+  1) RELECTURE DU FICHIER DE REFERENCE :
+  --------------------------------------
+
+ TITRE DU CAS PRECEDENT: TELEMAC 3D : GOUTTE D'EAU DANS UN BASSIN$
+
+ NOM: COTE Z            UNITE: M
+ NOM: VITESSE U         UNITE: M/S
+ NOM: VITESSE V         UNITE: M/S
+ NOM: VITESSE W         UNITE: M/S
+
+ SUITE_SERAFIN : LECTURE A L'ENREGISTREMENT    11
+
+ TEMPS DE L'ENREGISTREMENT :     4.000000     S
+
+  2) RELECTURE DU FICHIER DE RESULTATS :
+  --------------------------------------
+
+ TITRE DU CAS PRECEDENT: TELEMAC 3D : GOUTTE D'EAU DANS UN BASSIN$
+
+ NOM: COTE Z            UNITE: M
+ NOM: VITESSE U         UNITE: M/S
+ NOM: VITESSE V         UNITE: M/S
+ NOM: VITESSE W         UNITE: M/S
+
+ SUITE_SERAFIN : LECTURE A L'ENREGISTREMENT    11
+
+ TEMPS DE L'ENREGISTREMENT :     4.000000     S
+
+  3) COMPARAISON :
+  ----------------
+
+ VARIABLE : COTE Z            DIFFERENCE :    0.9867907E-02
+
+ VARIABLE : VITESSE U         DIFFERENCE :    0.1537180E-01
+
+ VARIABLE : VITESSE V         DIFFERENCE :    0.1537180E-01
+
+ VARIABLE : VITESSE W         DIFFERENCE :    0.1720887E-01
+
+ --------------------------------------------------------------------------------
+                       FIN DU COMPTE-RENDU DE VALIDATION
+ ================================================================================
+
+ FIN NORMALE DU PROGRAMME
+
+ DUREE DU CALCUL :
+                             20  SECONDES
