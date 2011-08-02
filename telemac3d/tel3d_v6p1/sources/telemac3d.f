@@ -26,7 +26,7 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        05/05/2010
-!+        V6P0
+!+        V6P0   
 !+   K-OMEGA MODEL BY HOLGER WEILBEER (ISEB/UHA)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -40,6 +40,13 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        02/08/2011
+!+        V6P1   
+!+        CALL MITTIT(18,AT,LT) changed into CALL MITTIT(19,AT,LT)
+!+        CALL MITTIT(19,AT,LT) changed into CALL MITTIT(20,AT,LT)
+!+        2 fractional steps were not correctly labelled in the listing
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1419,7 +1426,9 @@
 ! DIFFUSION AND PROPAGATION STEP BY WAVE_EQUATION
 !-----------------------------------------------------------------------
 !
-      IF(INFOGR) CALL MITTIT(6,AT,LT)
+      IF(INFOGR) THEN
+        CALL MITTIT(6,AT,LT)
+      ENDIF
 !     TEMPORARILY PUTS ZPROP IN MESH3D%Z
       SAVEZ     =>MESH3D%Z%R
 !     ALL PROPAGATION WILL BE DONE WITH ZPROP INSTEAD OF Z
@@ -1532,7 +1541,7 @@
 !
       IF(NONHYD.AND..NOT.DPWAVEQ) THEN
 !
-        IF(INFOGR) CALL MITTIT(18,AT,LT)
+        IF(INFOGR) CALL MITTIT(19,AT,LT)
 !
         CALL OS ('X=Y     ', X=W , Y=WD  )
 !
@@ -1549,7 +1558,7 @@
 ! VELOCITY PROJECTION STEP
 !-----------------------------------------------------------------------
 !
-        IF(INFOGR) CALL MITTIT(19,AT,LT)
+        IF(INFOGR) CALL MITTIT(20,AT,LT)
 !
         CALL VELRES(U%R,V%R,W%R,DP,
      &              T3_01,T3_02,T3_03,MSK,MASKEL,MESH3D,
