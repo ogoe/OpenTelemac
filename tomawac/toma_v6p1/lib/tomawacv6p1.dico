@@ -11,8 +11,7 @@ RUBRIQUE = 'RESULTATS'
 RUBRIQUE1 = 'RESULTS' 
 NIVEAU = 1 
 AIDE = 'Determine la periode d''impression, 
-en nombre de pas de temps en mode frequences discretisees et 
-en nombre d''iterations sur la pulsation moyenne sinon, 
+en nombre de pas de temps
 des VARIABLES POUR LES SORTIES GRAPHIQUES dans le FICHIER DES 
 RESULTATS 2D et le FICHIER DES RESULTATS PONCTUELS. 
 **Mots-cles associes :** 
@@ -23,8 +22,7 @@ FICHIER DES RESULTATS 2D
 FICHIER DES RESULTATS PONCTUELS 
 NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES' 
 AIDE1 = 'Determines the printing period, 
-in number of time step in the discretized frequencies mode and 
-in number of iterations over mean angular frequency otherwise, 
+in number of time step
 of the VARIABLES FOR 2D GRAPHIC PRINTOUTS in the 2D 
 RESULTS FILE and the PUNCTUAL RESULTS FILE. 
 **Related keywords :** 
@@ -47,12 +45,10 @@ RUBRIQUE = 'RESULTATS'
 RUBRIQUE1 = 'RESULTS' 
 NIVEAU = 1 
 AIDE = 'Determine la periodicite, 
-en nombre de pas de temps en mode frequences discretisees et 
-en nombre d''iterations sur la pulsation moyenne sinon, 
+en nombre de pas de temps
 des messages du code sur le fichier listing' 
 AIDE1 = 'Determines the period, 
-in number of time step in the discretized frequencies mode and 
-in number of iterations over mean angular frequency otherwise, 
+in number of time step
 of the software messages in the listing file.' 
  
 NOM = 'NOMBRE DE PAS DE TEMPS' 
@@ -67,8 +63,7 @@ RUBRIQUE = 'TEMPS'
 RUBRIQUE1 = 'TIME' 
 NIVEAU = 1 
 AIDE = 'Definit le nombre de pas de temps effectues lors de 
-l''execution du code dans le mode avec discretisation des 
-frequences. 
+l''execution du code. 
 **Mots-cles associes :** 
 PAS DE TEMPS' 
 AIDE1 = 'Define the number of time step. 
@@ -179,7 +174,7 @@ TYPE = ENTIER
 INDEX = 8 
 MNEMO = 'Variable SVENT' 
 TAILLE= 0 
-CONTROLE = 0 ; 2 
+CONTROLE = 0 ; 3 
 DEFAUT = 0 
 DEFAUT1 = 0 
 RUBRIQUE = 'VENT' 
@@ -189,13 +184,13 @@ NIVEAU = 1
 AIDE = 'Choix du type de modelisation du terme source d apport 
 par le vent. Si sa valeur est 0, on ne prend pas en compte les 
 apports dus au vent, si sa valeur est 1, ils sont integres selon 
-une formule empirique dans le mode sans discretisation des 
-frequences et selon la formule utilisee dans WAM cycle 4 dans le 
-mode en frequences discretisees 
+la formule utilisee dans WAM cycle 4;
+si sa valeur est 2, ils sont integres selon la formule utilisee
+dans WAM cycle 3; si sa valeur est 3, ils sont integres selon
+l expression de Yan (1987).
 **Mots-cles associes :** 
 PRISE EN COMPTE DU VENT 
 FICHIER DES VENTS 
--MODE EN FREQUENCES DISCRETISEES : 
 DENSITE DE L''AIR 
 DENSITE DE L''EAU 
 COEFFICIENT DE GENERATION PAR LE VENT 
@@ -204,21 +199,20 @@ CONSTANTE DE CHARNOCK
 DECALAGE COURBE DE CROISSANCE DUE AU VENT 
 COTE DE MESURE DES VENTS 
 COEFFICIENT DE TRAINEE DE VENT 
--MODE SANS FREQUENCES DISCRETISEES : 
 COEFFICIENT A DE GENERATION PAR LE VENT 
 COEFFICIENT B DE GENERATION PAR LE VENT 
 COEFFICIENT C DE GENERATION PAR LE VENT 
 COEFFICIENT D DE GENERATION PAR LE VENT 
 COEFFICIENT TM DE GENERATION PAR LE VENT' 
 AIDE1 = 'Selection of the type of modelling of the wind generation 
-source term. If its value is 0, the wind generation is ignored; if its 
-value is 1, they are integrated in accordance with 
-an empirical formula in the mode without frequency discretization, 
-the WAM cycle 4 formula in the mode with frequency discretization. 
+source term. If its value is 0, the wind generation is ignored; if
+its value is 1, it is integrated in accordance with the WAM cycle 4
+formula; if its value is 2, it is integrated in accordance with the
+WAM cycle 3 formula; if its value is 3, it is integrated in accordance
+with the Yan (1987) expression.
 **Related keywords :** 
 CONSIDERATION OF A WIND 
 WINDS FILE 
--MODE EN FREQUENCES DISCRETISEES : 
 AIR DENSITY 
 WATER DENSITY 
 WIND GENERATION COEFFICIENT 
@@ -227,7 +221,6 @@ CHARNOCK CONSTANT
 SHIFT GROWING CURVE DUE TO WIND 
 WIND MEASUREMENTS LEVEL 
 WIND DRAG COEFFICIENT 
--NO FREQUENCY DISCRETISATION MODE: 
 WIND GENERATION COEFFICIENT A 
 WIND GENERATION COEFFICIENT B 
 WIND GENERATION COEFFICIENT C 
@@ -240,7 +233,7 @@ TYPE = ENTIER
 INDEX = 9 
 MNEMO = 'Variable SMOUT' 
 TAILLE= 0 
-CONTROLE = 0 ; 1 
+CONTROLE = 0 ; 2 
 DEFAUT = 0 
 DEFAUT1 = 0 
 RUBRIQUE = 'MOUTONNEMENT' 
@@ -249,14 +242,28 @@ NIVEAU = 1
 AIDE = 'Choix du type de modelisation du terme source de dissipation 
 par moutonnement. Si sa valeur est 0, on ne prend pas en compte la 
 dissipation par moutonnement, si sa valeur est 1, elle est integree 
-selon la formule utilisee dans WAM cycle 4. 
+selon la formule utilisee dans WAM cycle 4; si sa valeur est 2, elle
+est integree selon la formule de van der Westhuysen (2007). 
 **Mots-cles associes :** 
 COEFFICIENT DE DISSIPATION PAR MOUTONNEMENT 
-COEFFICIENT DE PONDERATION POUR LE MOUTONNEMENT' 
+COEFFICIENT DE PONDERATION POUR LE MOUTONNEMENT
+COEFFICIENT DE DISSIPATION DE WESTHUYSEN
+DISSIPATION PAR MOUTONNEMENT
+SEUIL DE SATURATION POUR LA DISSIPATION
+DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN
+COEFFICIENT DE PONDERATION DE WESTHUYSEN' 
 AIDE1 = 'Selection of the modelling type of the white capping source 
 term. If its value is 0, the white capping dissipation is ignored; 
 if its value is 1, it is integrated in accordance with a formula that 
-is similar to that of WAM cycle 4.' 
+is similar to that of WAM cycle 4; if its value is 2, it is integrated 
+in accordance with the formula of van der Westhuysen (2007).
+**Related keywords:**
+WHITE CAPPING DISSIPATION COEFFICIENT
+WHITE CAPPING WEIGHTING COEFFICIENT
+WESTHUYSEN DISSIPATION COEFFICIENT
+SATURATION THRESHOLD FOR THE DISSIPATION
+WESTHUYSEN WHITE CAPPING DISSIPATION
+WESTHUYSEN WEIGHTING COEFFICIENT'
  
 NOM = 'DISSIPATION PAR FROTTEMENT SUR LE FOND' 
 NOM1 = 'BOTTOM FRICTION DISSIPATION' 
@@ -286,25 +293,48 @@ INFINITE DEPTH
 BOTTOM FRICTION COEFFICIENT' 
  
 NOM = 'TRANSFERTS NON LINEAIRES INTER-FREQUENCES' 
-NOM1 = 'NON-LINEAR TRANSFERTS BETWEEN FREQUENCIES' 
+NOM1 = 'NON-LINEAR TRANSFERS BETWEEN FREQUENCIES' 
 TYPE = ENTIER 
 INDEX = 11 
 MNEMO = 'Variable STRIF' 
 TAILLE= 0 
-CONTROLE = 0 ; 1 
+CONTROLE = 0 ; 3 
 DEFAUT = 0 
 DEFAUT1 = 0 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 AIDE = 'Choix du type de modelisation du terme de transfert non lineaire 
 inter-frequences. Si sa valeur est 0, on ne prend pas en compte les 
 transferts non lineaires inter-frequences, si sa valeur est 1, ils sont 
-integres selon la formule utilisee dans WAM cycle 4.' 
+integres selon la formule utilisee dans WAM cycle 4 (methode DIA), 
+si sa valeur est 2, la methode MDIA (Multiple DIA) est utilisee pour
+calculer le terme de transfert non lineaire, si sa valeur est 3,
+le terme de transfert non lineaire est calcule de maniere exacte
+avec la methode GQM.
+**Mots-cles associes :**
+PARAMETRE DE LA CONFIGURATION STANDARD
+REGLAGE POUR INTEGRATION SUR OMEGA1
+REGLAGE POUR INTEGRATION SUR THETA1
+REGLAGE POUR INTEGRATION SUR OMEGA2
+SEUIL0 ELIMINATION DE CONFIGURATIONS
+SEUIL1 ELIMINATION DE CONFIGURATIONS
+SEUIL2 ELIMINATION DE CONFIGURATIONS' 
 AIDE1 = 'Selection of the modelling type of the non-linear transfert 
-source term. If its value is 0, the non-linear transferts are ignored; 
+source term. If its value is 0, the non-linear transfers are ignored; 
 if its value is 1, they are integrated in accordance with the formula 
-of WAM cycle 4.' 
+of WAM cycle 4 (DIA method), if its value is 2, the MDIA 
+(Multiple DIA) method is used to calculate the non linear transfer
+term, if its value is 3, the non linear transfer term is calculated 
+with the exact GQM method.
+**Related keywords :**
+STANDARD CONFIGURATION PARAMETER
+SETTING FOR INTEGRATION ON OMEGA1
+SETTING FOR INTEGRATION ON THETA1
+SETTING FOR INTEGRATION ON OMEGA2
+THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
+THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
+THRESHOLD2 FOR CONFIGURATIONS ELIMINATION'
  
 NOM = 'FORMAT DU FICHIER DES COURANTS' 
 NOM1 = 'CURRENTS FILE FORMAT' 
@@ -381,7 +411,6 @@ RUBRIQUE = 'TEMPS'
 RUBRIQUE1 = 'TIME' 
 NIVEAU = 1 
 AIDE = ' 
--MODE EN FREQUENCES DISCRETISEES: 
 Nombre de sous-iterations pour le calcul des 
 contributions des termes sources. Le pas de temps considere 
 pour les termes sources est le rapport entre le PAS DE TEMPS 
@@ -389,7 +418,6 @@ et le NOMBRE DE SOUS-ITERATIONS POUR LES TERMES SOURCES.
 **Mots-cles associes :** 
 PAS DE TEMPS' 
 AIDE1 = ' 
--MODE EN FREQUENCES DISCRETISEES: 
 Number of sub-iterations for the computation of the source terms. 
 The time step considered in the integration of the source terms 
 is the ratio between the TIME STEP and the NUMBER OF SUB-ITERATIONS 
@@ -412,8 +440,8 @@ AIDE = 'Si ce mot-cle est pris egal a 0, on specifie un spectre
 nul aux limites. Si il est pris egal entre 1 et 6 
 un spectre de type JONSWAP est specifie en tout point des limites 
 d entree en fonction du champ de vent initial et ou des valeurs des 
-autres mots cles. Si il est pris � 7 un spectre de type 
-TMA parametre est specifi� aux limites. 
+autres mots cles. Si il est pris egal a 7 un spectre de type 
+TMA parametre est specifie aux limites. 
 **Mots-cles associes :** 
 HAUTEUR SIGNIFICATIVE INITIALE 
 FREQUENCE DE PIC INITIALE 
@@ -424,13 +452,13 @@ CONSTANTE DE PHILLIPS INITIALE
 VALEUR MOYENNE DU FETCH INITIAL 
 FREQUENCE DE PIC MAXIMALE 
 DIRECTION PRINCIPALE 1 INITIALE 
-ETALEMENT DIRECTIONNEL 1 INITIAL 
-DIRECTION PRINCIPALE POUR FRA INITIALE' 
-AIDE1 = 'If this keyword is set to LE 2 INITIALE 
+ETALEMENT DIRECTIONNEL 1 INITIAL
+DIRECTION PRINCIPALE 2 INITIALE 
 ETALEMENT DIRECTIONNEL 2 INITIAL 
-FACTEUR DE PONDERATION 0, a non-existent spectrum is speci 
+FACTEUR DE PONDERATION POUR FRA INITIALE' 
+AIDE1 = 'If this keyword is set to 0, a non-existent spectrum is speci 
 fied at the inlet boundaries of the domain. If it ranges from 1 to 7, a 
-JONSWAP (or TMA)-typed spectrum is specified at these very points as a 
+JONSWAP (or TMA)-typed spectrum is specified at these points as a 
 function of the initial wind field and/or of the values of the 
 following keywords 
 **Related keywords :** 
@@ -528,9 +556,9 @@ AIDE = 'Choix du type de modelisation du terme source de dissipation
 par deferlement du a la bathymetrie : 
  0 : Pas de prise en compte du deferlement. 
  1 : Modele de Battjes et Janssen (1978). 
- 2 : Modele de Thornton et Guza  (1983)  (si frequences discretisees). 
- 3 : Modele de Roelvink (1993)           (si frequences discretisees). 
- 4 : Modele de Izumiya et Horikawa (1984)(si frequences discretisees). 
+ 2 : Modele de Thornton et Guza  (1983).
+ 3 : Modele de Roelvink (1993). 
+ 4 : Modele de Izumiya et Horikawa (1984). 
 **Mots-cles associes :** 
 NOMBRE DE SOUS-PAS DE TEMPS POUR LE DEFERLEMENT 
 DEFERLEMENT 1 (BJ) MODE DE CALCUL DE QB 
@@ -556,9 +584,9 @@ AIDE1 = 'Selection of the modelling type of the bathymetric-induced
 breaking dissipation source term : 
 0 : Breaking is ignored. 
 1 : Battjes and Janssen model (1978). 
-2 : Thornton and Guza model (1983)   (if discretization in frequencies). 
-3 : Roelvink model (1993)            (if discretization in frequencies). 
-4 : Izumiya and Horikawa model (1984)(if discretization in frequencies). 
+2 : Thornton and Guza model (1983). 
+3 : Roelvink model (1993). 
+4 : Izumiya and Horikawa model (1984). 
 **Related keywords :** 
 NUMBER OF BREAKING TIME STEPS 
 DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD 
@@ -942,6 +970,35 @@ If LIMIT=2, Hersbach et Janssen (1999) limiter.
 **Related keywords :** 
 CONSIDERATION OF SOURCE TERMS' 
  
+NOM = 'CROISSANCE LINEAIRE DES VAGUES'
+NOM1 = 'LINEAR WAVE GROWTH'
+TYPE = ENTIER
+INDEX = 31
+MNEMO = 'Variable LVENT'
+TAILLE= 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'VENT'
+RUBRIQUE1 = 'WIND'
+NIVEAU = 1
+AIDE = 'Possibilite d ajouter au terme source d apport 
+par le vent un terme de croissance lineaire.
+Si sa valeur est 0, on ne prend pas en compte le
+terme de croissance lineaire, si sa valeur est 1, 
+il est ajoute au terme source, selon la formule 
+de Cavaleri et Malanotte-Rizzoli (1981)
+**Mots-cles associes :** 
+PRISE EN COMPTE DU VENT
+FICHIER DES VENTS'
+AIDE1 = 'Possibility to add a linear wave growth term 
+to the wind generation source term. 
+If its value is 0, the linear wave growth is ignored; 
+if its value is 1, it is added to the source term,
+as in the formula of Cavaleri and Malanotte-Rizzoli (1981).
+**Related keywords :**
+CONSIDERATION OF A WIND
+WINDS FILE'
+
 NOM = 'TRANSFERTS ENTRE TRIPLETS DE FREQUENCES' 
 NOM1 = 'TRIAD INTERACTIONS' 
 TYPE = ENTIER 
@@ -952,7 +1009,7 @@ CONTROLE = 0 ; 2
 DEFAUT = 0 
 DEFAUT1 = 0 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 AIDE = 'Choix du type de modelisation du terme de transfert non 
 lineaire entre triplets de frequences. Si sa valeur est 0, on ne 
@@ -1208,6 +1265,65 @@ dans le format Selafin mais pas d''autre traitement pour l''instant'
 AIDE1 = 'Value in metres, used to avoid large real numbers, 
 added in Selafin format, but so far no other treatment' 
  
+NOM = 'REGLAGE POUR INTEGRATION SUR OMEGA1'
+NOM1 = 'SETTING FOR INTEGRATION ON OMEGA1'
+TYPE = ENTIER
+INDEX = 42
+MNEMO = 'Variable IQ_OM1'
+TAILLE= 0
+CONTROLE = 1 ; 3
+DEFAUT = 3
+DEFAUT1 = 3
+RUBRIQUE = 'TRANSFERTS'
+RUBRIQUE1 = 'TRANSFERS'
+NIVEAU = 1
+AIDE = ' Choix du reglage donnant le nombre de point d integration sur
+omega1 lorsque le terme de transfert non lineaire est calcule de 
+maniere exacte (methode GQM): grossier 3 ; moyen 1 ; fin 2'
+AIDE1 = 'Choice of setting giving the number of integration points on
+omega1 when the non linear transfer term is calculated with the exact 
+GQM method: rough 3 ; medium 1 ; fine 2'
+
+NOM = 'REGLAGE POUR INTEGRATION SUR THETA1'
+NOM1 = 'SETTING FOR INTEGRATION ON THETA1'
+TYPE = ENTIER
+INDEX = 43
+MNEMO = 'Variable NQ_TE1'
+TAILLE= 0
+CONTROLE = 3 ; 16
+DEFAUT = 3
+DEFAUT1 = 3
+RUBRIQUE = 'TRANSFERTS'
+RUBRIQUE1 = 'TRANSFERS'
+NIVEAU = 1
+AIDE = ' Choix du reglage donnant le nombre de point d integration sur
+theta1 (nombre de points d integration = 2*NQ_TE1) lorsque le terme 
+de transfert non lineaire est calcule de maniere exacte (methode GQM): 
+grossier 3 ; moyen 4 ; fin 8'
+AIDE1 = 'Choice of setting giving the number of integration points on
+theta1 (number of integration points= 2*NQ_TE1) when the non linear 
+transfer term is calculated with the exact GQM method: 
+rough 3 ; medium 4 ; fine 8'
+
+NOM = 'REGLAGE POUR INTEGRATION SUR OMEGA2'
+NOM1 = 'SETTING FOR INTEGRATION ON OMEGA2'
+TYPE = ENTIER
+INDEX = 44
+MNEMO = 'Variable NQ_OM2'
+TAILLE= 0
+CONTROLE = 3 ; 16
+DEFAUT = 6
+DEFAUT1 = 6
+RUBRIQUE = 'TRANSFERTS'
+RUBRIQUE1 = 'TRANSFERS'
+NIVEAU = 1
+AIDE = ' Nombre de point d integration sur omega 2 lorsque le terme de
+transfert non lineaire est calcule de maniere exacte (methode GQM):
+grossier 6 ; moyen 8 ; fin 12'
+AIDE1 = 'Number of integration points on omega 2 when the non linear 
+transfer term is calculated with the exact GQM method:
+rough 6 ; medium 8 ; fine 12'
+
 NOM = 'PROCESSEURS PARALLELES' 
 NOM1 = 'PARALLEL PROCESSORS' 
 TYPE = ENTIER 
@@ -1313,13 +1429,13 @@ RUBRIQUE = 'RESULTATS'
 RUBRIQUE1 = 'RESULTS' 
 NIVEAU = 1 
 AIDE = 'Tableau donnant les abscisses des points de sortie Seraphin du 
-spectre et de dimension maximale 10. Les points de sortie du spectre 
+spectre et de dimension maximale 99. Les points de sortie du spectre 
 sont les points 2D les plus proches des coordonnees specifiees 
 **Mots-cles associes :** 
 ORDONNEES DES POINTS DE SORTIE DU SPECTRE 
 FICHIER DES RESULTATS PONCTUELS' 
 AIDE1 = 'Array providing the abscissae of the Seraphin spectrum printout 
-points with a maximum dimension of 10. The chosen spectrum points are 
+points with a maximum dimension of 99. The chosen spectrum points are 
 the closest 2D points to the specified co-ordinates. 
 **Related keywords :** 
 ORDINATES OF SPECTRUM PRINTOUT POINTS 
@@ -1337,13 +1453,13 @@ RUBRIQUE = 'RESULTATS'
 RUBRIQUE1 = 'RESULTS' 
 NIVEAU = 1 
 AIDE = 'Tableau donnant les ordonnees des points de sortie Seraphin du 
-spectre et de dimension max 10.Les points de sortie du spectre 
+spectre et de dimension max 99.Les points de sortie du spectre 
 sont les points 2D les plus proches des coordonnees specifiees 
 **Mots-cles associes :** 
 ABSCISSES DES POINTS DE SORTIE DU SPECTRE 
 FICHIER DES RESULTATS PONCTUELS' 
 AIDE1 = 'Array providing the ordinates of the Seraphin spectrum printout 
-points with a maximum dimension of 10. The spectrum printout points are 
+points with a maximum dimension of 99. The spectrum printout points are 
 the closest 2D points to the specified co-ordinates 
 **Related keywords:** 
 ABSCISSAE OF SPECTRUM PRINTOUT POINTS 
@@ -2269,7 +2385,7 @@ TAILLE= 0
 DEFAUT = 0.25 
 DEFAUT1 = 0.25 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 AIDE = 'Parametre definissant la configuration d interaction 
 standard pour les quadruplets dans la methode DIA. 
@@ -2278,7 +2394,7 @@ TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
 AIDE1 = 'Parameter defining the standard configuration for 
 the quadruplet interactions in the DIA method. 
 **Related keywords :** 
-NON-LINEAR TRANSFERTS' 
+NON-LINEAR TRANSFERS' 
  
 NOM = 'COTE INITIALE DU PLAN D''EAU AU REPOS' 
 NOM1 = 'INITIAL STILL WATER LEVEL' 
@@ -2304,7 +2420,7 @@ MNEMO = 'Variable ALFLTA'
 TAILLE= 0 
 DEFAUT = 0.5 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 1' 
 AIDE = 'Constante alpha du modele LTA propos� par Eldeberky (1996). 
@@ -2329,7 +2445,7 @@ TAILLE= 0
 DEFAUT = 2.5 
 DEFAUT1 = 2.5 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 1' 
 AIDE = 'RFMLTA determine la frequence maximale vers laquelle les 
@@ -2355,7 +2471,7 @@ TAILLE= 0
 DEFAUT = 0.34 
 DEFAUT1 = 0.34 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 2' 
 AIDE = 'Parametre d ajustement du modele SPB 
@@ -2378,7 +2494,7 @@ TAILLE= 0
 DEFAUT = 0. 
 DEFAUT1 = 0. 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 2' 
 AIDE = 'Borne directionnelle inferieure du modele SPB 
@@ -2401,7 +2517,7 @@ TAILLE= 0
 DEFAUT = 360. 
 DEFAUT1 = 360. 
 RUBRIQUE = 'TRANSFERTS' 
-RUBRIQUE1 = 'TRANSFERTS' 
+RUBRIQUE1 = 'TRANSFERS' 
 NIVEAU = 2 
 COMPORT = 'DISPLAY %TRANSFERTS ENTRE TRIPLETS DE FREQUENCES% = 2' 
 AIDE = 'Borne directionnelle superieure du modele SPB 
@@ -2768,6 +2884,286 @@ CIMPLI=1.  : implicit.
 **Related keyword :** 
 CONSIDERATION OF SOURCE TERMS' 
  
+NOM = 'COEFFICIENT DE GENERATION DE YAN D'
+NOM1 = 'YAN GENERATION COEFFICIENT D'
+TYPE = REEL
+INDEX = 69
+MNEMO = 'Variable COEFWD'
+TAILLE= 0
+DEFAUT = 0.04
+DEFAUT1 = 0.04
+RUBRIQUE = 'VENT'
+RUBRIQUE1 = 'WIND'
+NIVEAU = 1
+AIDE = 'Fait partie de l ensemble des constantes utilisees dans 
+le terme source de generation par le vent de Yan (1987).
+**Mots-cles associes :**
+APPORTS DUS AU VENT
+COEFFICIENT DE GENERATION DE YAN E
+COEFFICIENT DE GENERATION DE YAN F
+COEFFICIENT DE GENERATION DE YAN H'
+AIDE1 = 'Constant used in the wind source term of Yan (1987).
+**Related keywords:**
+WIND GENERATION
+YAN GENERATION COEFFICIENT E
+YAN GENERATION COEFFICIENT F
+YAN GENERATION COEFFICIENT H'
+
+NOM = 'COEFFICIENT DE GENERATION DE YAN E'
+NOM1 = 'YAN GENERATION COEFFICIENT E'
+TYPE = REEL
+INDEX = 70
+MNEMO = 'Variable COEFWE'
+TAILLE= 0
+DEFAUT = 0.00552
+DEFAUT1 = 0.00552
+RUBRIQUE = 'VENT'
+RUBRIQUE1 = 'WIND'
+NIVEAU = 1
+AIDE = 'Fait partie de l ensemble des constantes utilisees dans 
+le terme source de generation par le vent de Yan (1987).
+**Mots-cles associes :**
+APPORTS DUS AU VENT
+COEFFICIENT DE GENERATION DE YAN D
+COEFFICIENT DE GENERATION DE YAN F
+COEFFICIENT DE GENERATION DE YAN H'
+AIDE1 = 'Constant used in the wind source term of Yan (1987).
+**Related keywords:**
+WIND GENERATION
+YAN GENERATION COEFFICIENT D
+YAN GENERATION COEFFICIENT F
+YAN GENERATION COEFFICIENT H'
+
+NOM = 'COEFFICIENT DE GENERATION DE YAN F'
+NOM1 = 'YAN GENERATION COEFFICIENT F'
+TYPE = REEL
+INDEX = 71
+MNEMO = 'Variable COEFWF'
+TAILLE= 0
+DEFAUT = 0.000052
+DEFAUT1 = 0.000052
+RUBRIQUE = 'VENT'
+RUBRIQUE1 = 'WIND'
+NIVEAU = 1
+AIDE = 'Fait partie de l ensemble des constantes utilisees dans 
+le terme source de generation par le vent de Yan (1987).
+**Mots-cles associes :**
+APPORTS DUS AU VENT
+COEFFICIENT DE GENERATION DE YAN D
+COEFFICIENT DE GENERATION DE YAN E
+COEFFICIENT DE GENERATION DE YAN H'
+AIDE1 = 'Constant used in the wind source term of Yan (1987).
+**Related keywords:**
+WIND GENERATION
+YAN GENERATION COEFFICIENT D
+YAN GENERATION COEFFICIENT E
+YAN GENERATION COEFFICIENT H'
+
+NOM = 'COEFFICIENT DE GENERATION DE YAN H'
+NOM1 = 'YAN GENERATION COEFFICIENT H'
+TYPE = REEL
+INDEX = 72
+MNEMO = 'Variable COEFWH'
+TAILLE= 0
+DEFAUT = -0.000302
+DEFAUT1 = -0.000302
+RUBRIQUE = 'VENT'
+RUBRIQUE1 = 'WIND'
+NIVEAU = 1
+AIDE = 'Fait partie de l ensemble des constantes utilisees dans 
+le terme source de generation par le vent de Yan (1987).
+**Mots-cles associes :**
+APPORTS DUS AU VENT
+COEFFICIENT DE GENERATION DE YAN D
+COEFFICIENT DE GENERATION DE YAN E
+COEFFICIENT DE GENERATION DE YAN F'
+AIDE1 = 'Constant used in the wind source term of Yan (1987).
+**Related keywords:**
+WIND GENERATION
+YAN GENERATION COEFFICIENT D
+YAN GENERATION COEFFICIENT E
+YAN GENERATION COEFFICIENT F'
+
+NOM = 'COEFFICIENT DE DISSIPATION DE WESTHUYSEN'
+NOM1 = 'WESTHUYSEN DISSIPATION COEFFICIENT'
+TYPE = REEL
+INDEX = 73
+MNEMO = 'Variable CMOUT3'
+TAILLE= 0
+DEFAUT = 0.00005
+DEFAUT1 = 0.00005
+RUBRIQUE = 'MOUTONNEMENT'
+RUBRIQUE1 = 'WHITE CAPPING'
+NIVEAU = 1
+AIDE = 'Coefficient de dissipation par moutonnement de l expression
+de van der Westhuysen (2007): Cdis,break.
+**Mots-cles associes :**
+DISSIPATION PAR MOUTONNEMENT
+SEUIL DE SATURATION POUR LA DISSIPATION
+DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN
+COEFFICIENT DE PONDERATION DE WESTHUYSEN'
+AIDE1 = 'White capping dissipation coefficient of 
+van der Westhuysen (2007): Cdis,break.
+**Related keywords:**
+WHITE CAPPING DISSIPATION
+SATURATION THRESHOLD FOR THE DISSIPATION
+WESTHUYSEN WHITE CAPPING DISSIPATION
+WESTHUYSEN WEIGHTING COEFFICIENT'
+
+NOM = 'SEUIL DE SATURATION POUR LA DISSIPATION'
+NOM1 = 'SATURATION THRESHOLD FOR THE DISSIPATION'
+TYPE = REEL
+INDEX = 74
+MNEMO = 'Variable CMOUT4'
+TAILLE= 0
+DEFAUT = 0.00175
+DEFAUT1 = 0.00175
+RUBRIQUE = 'MOUTONNEMENT'
+RUBRIQUE1 = 'WHITE CAPPING'
+NIVEAU = 1
+AIDE = 'Coefficient de dissipation par moutonnement de l expression
+de van der Westhuysen (2007): Br (seuil de saturation).
+**Mots-cles associes :**
+DISSIPATION PAR MOUTONNEMENT
+COEFFICIENT DE DISSIPATION DE WESTHUYSEN
+DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN
+COEFFICIENT DE PONDERATION DE WESTHUYSEN'
+AIDE1 = 'White capping dissipation coefficient of 
+van der Westhuysen (2007): Br (saturation threshold).
+**Related keywords:**
+WHITE CAPPING DISSIPATION
+WESTHUYSEN DISSIPATION COEFFICIENT
+WESTHUYSEN WHITE CAPPING DISSIPATION
+WESTHUYSEN WEIGHTING COEFFICIENT'
+
+NOM = 'DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN'
+NOM1 = 'WESTHUYSEN WHITE CAPPING DISSIPATION'
+TYPE = REEL
+INDEX = 75
+MNEMO = 'Variable CMOUT5'
+TAILLE= 0
+DEFAUT = 3.29
+DEFAUT1 = 3.29
+RUBRIQUE = 'MOUTONNEMENT'
+RUBRIQUE1 = 'WHITE CAPPING'
+NIVEAU = 1
+AIDE = 'Coefficient de dissipation par moutonnement de l expression
+de van der Westhuysen (2007): Cdis,non-break.
+**Mots-cles associes :**
+DISSIPATION PAR MOUTONNEMENT
+COEFFICIENT DE DISSIPATION DE WESTHUYSEN
+SEUIL DE SATURATION POUR LA DISSIPATION
+COEFFICIENT DE PONDERATION DE WESTHUYSEN'
+AIDE1 = 'White capping dissipation coefficient of 
+van der Westhuysen (2007): Cdis,non-break.
+**Related keywords:**
+WHITE CAPPING DISSIPATION
+WESTHUYSEN DISSIPATION COEFFICIENT
+SATURATION THRESHOLD FOR THE DISSIPATION
+WESTHUYSEN WEIGHTING COEFFICIENT'
+
+NOM = 'COEFFICIENT DE PONDERATION DE WESTHUYSEN'
+NOM1 = 'WESTHUYSEN WEIGHTING COEFFICIENT'
+TYPE = REEL
+INDEX = 76
+MNEMO = 'Variable CMOUT6'
+TAILLE= 0
+DEFAUT = 0.0
+DEFAUT1 = 0.0
+RUBRIQUE = 'MOUTONNEMENT'
+RUBRIQUE1 = 'WHITE CAPPING'
+NIVEAU = 1
+AIDE = 'Coefficient de dissipation par moutonnement de l expression
+de van der Westhuysen (2007): delta.
+**Mots-cles associes :**
+DISSIPATION PAR MOUTONNEMENT
+COEFFICIENT DE DISSIPATION DE WESTHUYSEN
+SEUIL DE SATURATION POUR LA DISSIPATION
+DISSIPATION PAR MOUTONNEMENT DE WESTHUYSEN'
+AIDE1 = 'White capping dissipation coefficient of 
+van der Westhuysen (2007): delta.
+**Related keywords:**
+WHITE CAPPING DISSIPATION
+WESTHUYSEN DISSIPATION COEFFICIENT
+SATURATION THRESHOLD FOR THE DISSIPATION
+WESTHUYSEN WHITE CAPPING DISSIPATION'
+
+NOM = 'SEUIL0 ELIMINATION DE CONFIGURATIONS'
+NOM1 = 'THRESHOLD0 FOR CONFIGURATIONS ELIMINATION'
+TYPE = REEL
+INDEX = 77
+MNEMO = 'Variable SEUIL'
+TAILLE= 0
+DEFAUT = 0.00
+DEFAUT1 = 0.00
+RUBRIQUE = 'TRANSFERTS'
+RUBRIQUE1 = 'TRANSFERS'
+NIVEAU = 1
+AIDE = ' Choix du seuil pour l elimination de configurations lorsque 
+le terme de transfert non lineaire est calcule de maniere exacte 
+(methode GQM)
+**Mots-cles associes :**
+SEUIL1 ELIMINATION DE CONFIGURATIONS
+SEUIL2 ELIMINATION DE CONFIGURATIONS
+TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
+AIDE1 = 'Choice of threshold for configurations elimination when the 
+non linear transfer term is calculated with the exact GQM method
+**Related keywords:**
+THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
+THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES'
+
+NOM = 'SEUIL1 ELIMINATION DE CONFIGURATIONS'
+NOM1 = 'THRESHOLD1 FOR CONFIGURATIONS ELIMINATION'
+TYPE = REEL
+INDEX = 78
+MNEMO = 'Variable SEUIL1'
+TAILLE= 0
+DEFAUT = 10000000000.0
+DEFAUT1 = 10000000000.0
+RUBRIQUE = 'TRANSFERTS'
+RUBRIQUE1 = 'TRANSFERS'
+NIVEAU = 1
+AIDE = ' Choix du seuil1 pour l elimination de configurations lorsque 
+le terme de transfert non lineaire est calcule de maniere exacte 
+(methode GQM)
+**Mots-cles associes :**
+SEUIL0 ELIMINATION DE CONFIGURATIONS
+SEUIL2 ELIMINATION DE CONFIGURATIONS
+TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
+AIDE1 = 'Choice of threshold1 for configurations elimination when the 
+non linear transfer term is calculated with the exact GQM method
+**Related keywords:**
+THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
+THRESHOLD2 FOR CONFIGURATIONS ELIMINATION
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES'
+
+NOM = 'SEUIL2 ELIMINATION DE CONFIGURATIONS'
+NOM1 = 'THRESHOLD2 FOR CONFIGURATIONS ELIMINATION'
+TYPE = REEL
+INDEX = 79
+MNEMO = 'Variable SEUIL2'
+TAILLE= 0
+DEFAUT = 0.15
+DEFAUT1 = 0.15
+RUBRIQUE = 'TRANSFERTS'
+RUBRIQUE1 = 'TRANSFERS'
+NIVEAU = 1
+AIDE = ' Choix du seuil2 pour l elimination de configurations lorsque 
+le terme de transfert non lineaire est calcule de maniere exacte 
+(methode GQM) : grossier 0.15 ; moyen 0.01 ; fin 0.001
+**Mots-cles associes :**
+SEUIL0 ELIMINATION DE CONFIGURATIONS
+SEUIL1 ELIMINATION DE CONFIGURATIONS
+TRANSFERTS NON LINEAIRES INTER-FREQUENCES'
+AIDE1 = 'Choice of threshold2 for configurations elimination when the 
+non linear transfer term is calculated with the exact GQM method:
+rough 0.15 ; medium 0.01 ; fine 0.001
+**Related keywords:**
+THRESHOLD0 FOR CONFIGURATIONS ELIMINATION
+THRESHOLD1 FOR CONFIGURATIONS ELIMINATION
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES'
+
 NOM = 'TITRE' 
 NOM1 = 'TITLE' 
 TYPE = CARACTERE 
@@ -3119,8 +3515,7 @@ TYPE = CARACTERE
 INDEX = 9 
 MNEMO = 'Variable WAC_FILES(WACLEO)%NAME' 
 TAILLE= 0 
-SUBMIT = 'WACLEO-READWRITE-33;WACLEO;OBLIG;BIN;ECR;PARAL' 
-/SUBMIT = 'WACLEO-READWRITE-33;WACLEO;OBLIG;BIN;ECR;SELAFIN' 
+SUBMIT = 'WACLEO-READWRITE-33;WACLEO;OBLIG;BIN;ECR;SCAL'  
 DEFAUT = 'spect' 
 DEFAUT1 = 'spect' 
 RUBRIQUE = 'RESULTATS' 
@@ -3734,7 +4129,7 @@ BOTTOM FRICTION DISSIPATION
 WHITE CAPPING DISSIPATION 
 DEPTH-INDUCED BREAKING DISSIPATION 
 WAVE BLOCKING DISSIPATION 
-NON-LINEAR TRANSFERTS BETWEEN FREQUENCIES 
+NON-LINEAR TRANSFERS BETWEEN FREQUENCIES 
 TRIAD INTERACTION' 
  
 NOM = 'COORDONNEES SPHERIQUES' 
@@ -3999,7 +4394,7 @@ spectre et le sous programme spelim.f sinon.
 **Mots-cles associes :** 
 TYPE DE SPECTRE DIRECTIONNEL AUX LIMITES' 
 AIDE1 = 'Indicates whether the user wants to modify the boundary 
-spectrum. It should then retrieve the limwac.f suroutine, if the 
+spectrum. He should then retrieve the limwac.f subroutine, if the 
 spectrum is frequency discretized, or the spelim.f subroutine, 
 otherwise. 
 **Related keyword :** 
