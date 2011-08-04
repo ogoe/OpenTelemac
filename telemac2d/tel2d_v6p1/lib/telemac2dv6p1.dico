@@ -286,10 +286,12 @@ TAILLE = 0
 DEFAUT = 2 
 DEFAUT1 = 2 
 CHOIX = '2="diagonal"'; '0="aucun"'; 
-'3="diagonal condensee"'; '7="crout"';'11="gauss-seidel"'; 
+'3="diagonal condensee"'; '5="diagonal en valeur absolue"';
+'7="crout"';'11="gauss-seidel"'; 
 '14="diagonal et crout"'; '21="diagonal condense et crout"' 
 CHOIX1 = '2="diagonal"'; '0="no preconditioning"'; 
-'3="diagonal condensee"'; '7="crout"';'11="gauss-seidel"'; 
+'3="diagonal condensee"'; '5="diagonal with absolute value"';
+'7="crout"';'11="gauss-seidel"'; 
 '14="diagonal and crout"'; '21="diagonal condensed and crout"' 
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 

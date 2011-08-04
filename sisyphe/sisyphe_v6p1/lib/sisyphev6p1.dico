@@ -3102,19 +3102,19 @@ COMPORT = 'DISPLAY %SUSPENSION% = OUI'
 AIDE = 'Concentration de transition pour modele de Thiebot (Kg/m3)'
 AIDE1 = 'Gel Concentration (Kg/m3)'     
 /
-NOM = 'COEFFICIENT DU MODELE THIEBOT'
-NOM1 = 'ADDITIONAL CONSOLIDATION COEFFICIENT'
+NOM = 'COEFFICIENT DE PERMEABILITE'
+NOM1 = 'PERMEABILITY COEFFICIENT'
 TYPE = REEL
 INDEX = 39
-MNEMO = 'CONC_GEL'
-DEFAUT  = 310.D0
-DEFAUT1 = 310.D0
+MNEMO = 'COEF_N'
+DEFAUT  = 8.D0
+DEFAUT1 = 8.D0
 RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
 NIVEAU = 2
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
-AIDE = 'Concentration de transition pour modele de Thiebot (Kg/m3)'
-AIDE1 = 'Gel Concentration (Kg/m3)'
+AIDE = 'Coefficient de permeabilite pour le modele de consolidation '
+AIDE1 = 'Coefficient of permeability for consolidation model'
 /
 / UM MPM
 /
