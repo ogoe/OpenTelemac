@@ -623,6 +623,10 @@ C
 C-----------------------------------------------------------------------
 C
 C LOGICALS FOR OUTPUT VARIABLES
+C-----------------------------------------------------------------------
+C
+C     CV ... IF CANNOT FIND ANY BETTER (MOVED HERE BEFORE CALL TO NOMVAR)
+      IF(TASS) NOMBLAY=NCOUCH_TASS
 C
 C  NPRIV MOFIFIED FOR OUTPUT OF USER-BUILT VARIABLES
 CV augmentation des index
@@ -656,11 +660,6 @@ CV 2010: augmentation des index +1
         SORIMP(23+(NOMBLAY+2)*NSICLA)=.FALSE.
         SORIMP(24+(NOMBLAY+2)*NSICLA)=.FALSE.
       ENDIF
-C
-C-----------------------------------------------------------------------
-C
-C     CV ... IF CANNOT FIND ANY BETTER (MOVED HERE BY JMH, IT WAS AT THE END)
-      IF(TASS) NOMBLAY=NCOUCH_TASS
 C
 C-----------------------------------------------------------------------
 C
@@ -946,12 +945,7 @@ C
       IF(KSPRED) KFROT=5
 C
 C
-C----------------------------------------------------------------
-C  NOMBRE dE cOUCHE POUR TASSEMENT
-      IF (TASS) NOMBLAY= NCOUCH_TASS
-  
 
-C
       RETURN
       END
 C
