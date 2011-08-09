@@ -45,11 +45,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: NPTFR,NPT,NDP,NELEM           
-      INTEGER, INTENT(IN)          :: NBOR(*),LISPFR(*),ITRAV2(*)
-      INTEGER, INTENT(OUT)         :: ELT(*)
-      DOUBLE PRECISION, INTENT(OUT):: XCONV(*),YCONV(*),SHPT(NDP,NPTFR)
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),SHP(NDP,*)
+      INTEGER, INTENT(IN)            :: NPTFR,NPT,NDP,NELEM           
+      INTEGER, INTENT(IN)            :: NBOR(*),LISPFR(*),ITRAV2(*)
+      INTEGER, INTENT(INOUT)         :: ELT(*)
+      DOUBLE PRECISION, INTENT(INOUT)::XCONV(*),YCONV(*),SHPT(NDP,NPTFR)
+      DOUBLE PRECISION, INTENT(IN)   :: X(*),Y(*),SHP(NDP,*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
