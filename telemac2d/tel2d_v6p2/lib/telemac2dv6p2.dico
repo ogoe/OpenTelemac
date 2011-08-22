@@ -36,7 +36,7 @@
 /!RUBRIQUE 'CONSTANTES PHYSIQUES' 
 /!BACKGROUND 'LightGray' 
 /!FOREGROUND 'Brown' 
-/---SYSTEME-TELEMAC-V6P1------------------------------TELEMAC-2D------------- 
+/---SYSTEME-TELEMAC-V6P2------------------------------TELEMAC-2D------------- 
 / 
 /Signification des differents mode d'acquisition/restitution 
 /des fichiers vis a vis du parallelisme : 
@@ -70,7 +70,7 @@
 /     Sections input file, to be treated in parallel by partel in  
 /     a similar way as CONLIM !jaj #### 
 / 
-/---SYSTEME-TELEMAC-V6P1------------------------DeltaCAD-/-Septembre-2003---- 
+/---SYSTEME-TELEMAC-V6P2------------------------DeltaCAD-/-Septembre-2003---- 
  
 NOM = 'FICHIER DE GEOMETRIE' 
 NOM1 = 'GEOMETRY FILE' 
@@ -2063,8 +2063,8 @@ TYPE = CARACTERE
 INDEX = 12 
 MNEMO = '' 
 TAILLE = 0 
-DEFAUT = 'V6P1' 
-DEFAUT1 = 'V6P1' 
+DEFAUT = 'V6P2' 
+DEFAUT1 = 'V6P2' 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL' 
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION' 
 NIVEAU = -3 
@@ -3176,8 +3176,8 @@ TYPE = CARACTERE
 INDEX = 100 
 MNEMO = '' 
 SUBMIT = 'INUTILE;T2DDICO;OBLIG;ASC;LIT;DICO' 
-DEFAUT = 'telemac2dv6p1.dico' 
-DEFAUT1 = 'telemac2dv6p1.dico' 
+DEFAUT = 'telemac2dv6p2.dico' 
+DEFAUT1 = 'telemac2dv6p2.dico' 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT' 
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT' 
 NIVEAU = -3 

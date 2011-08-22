@@ -10,7 +10,7 @@
 /
 &DYN
 /
-/---SYSTEME-TELEMAC-V6P1------------------------------TELEMAC-3D-------------
+/---SYSTEME-TELEMAC-V6P2------------------------------TELEMAC-3D-------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -40,7 +40,7 @@
 /     Cette valeur designe le fichier des "conditions aux limites"	
 /     (utilise par le decoupeur "partel").
 /
-/---SYSTEME-TELEMAC-V6P1------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC-V6P2------------------------DeltaCAD-/-Septembre-2003----
 /
 NOM = 'NOMBRE DE PAS DE TEMPS'
 NOM1 = 'NUMBER OF TIME STEPS'
@@ -2177,8 +2177,8 @@ TYPE = CARACTERE
 INDEX = 12
 MNEMO = ''
 TAILLE = 0
-DEFAUT = 'V6P1'
-DEFAUT1 = 'V6P1'
+DEFAUT = 'V6P2'
+DEFAUT1 = 'V6P2'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
@@ -5284,7 +5284,7 @@ AIDE= 'U.N = 0 sur le fond est force en fin de boucle en temps'
 AIDE1 = 'Will ensure U.N = 0 on bottom by a projection 
 at the end of time loop'
 /
-/  V6P1
+/  V6P2
 /
 NOM = 'CORRECTION FROTTEMENT DE PEAU'
 NOM1 = 'SKIN FRICTION CORRECTION'     
@@ -5371,8 +5371,8 @@ TYPE = CARACTERE
 INDEX = 100
 MNEMO = ''
 SUBMIT = 'INUTILE;T3DDICO;OBLIG;ASC;LIT;DICO'
-DEFAUT = 'telemac3dV6P1.dico'
-DEFAUT1 = 'telemac3dV6P1.dico'
+DEFAUT = 'telemac3dV6P2.dico'
+DEFAUT1 = 'telemac3dV6P2.dico'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
 NIVEAU = -3

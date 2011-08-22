@@ -4,7 +4,7 @@
 /        KFROT=0 OR LESS : Assume flat bed KS=KSP  
 / Ajout des variables KS, KSP, CHESTR pour les sorties graphiques
 / Frottement de peau (ICR =1 par defaut)
-/---SYSTEME-TELEMAC-V6P1-----------------------SISYPHE-----------------------
+/---SYSTEME-TELEMAC-V6P2-----------------------SISYPHE-----------------------
 /
 /Signification des differents mode d'acquisition/restitution
 /des fichiers vis a vis du parallelisme :
@@ -38,7 +38,7 @@
 /     Sections input file, to be treated in parallel by partel in
 /     a similar way as CONLIM   !jaj ####
 /
-/---SYSTEME-TELEMAC-V6P1------------------------DeltaCAD-/-Septembre-2003----
+/---SYSTEME-TELEMAC-V6P2------------------------DeltaCAD-/-Septembre-2003----
 /
 NOM = 'FICHIER DE GEOMETRIE'
 NOM1 = 'GEOMETRY FILE'
@@ -435,8 +435,8 @@ NOM = 'NUMERO DE VERSION'
 NOM1 = 'RELEASE'  
 TYPE = CARACTERE
 INDEX = 13
-DEFAUT = 'V6P1'
-DEFAUT1 = 'V6P1'
+DEFAUT = 'V6P2'
+DEFAUT1 = 'V6P2'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 3
@@ -2133,8 +2133,8 @@ TYPE = CARACTERE
 INDEX = 100
 MNEMO = ''
 SUBMIT = 'INUTILE;SISDICO;OBLIG;ASC;LIT;DICO'
-DEFAUT = 'sisyphev6p1.dico'
-DEFAUT1 = 'sisyphev6p1.dico'
+DEFAUT = 'sisyphev6p2.dico'
+DEFAUT1 = 'sisyphev6p2.dico'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
 NIVEAU = -3
@@ -3102,19 +3102,19 @@ COMPORT = 'DISPLAY %SUSPENSION% = OUI'
 AIDE = 'Concentration de transition pour modele de Thiebot (Kg/m3)'
 AIDE1 = 'Gel Concentration (Kg/m3)'     
 /
-NOM = 'COEFFICIENT DU MODELE THIEBOT'
-NOM1 = 'ADDITIONAL CONSOLIDATION COEFFICIENT'
+NOM = 'COEFFICIENT DE PERMEABILITE'
+NOM1 = 'PERMEABILITY COEFFICIENT'
 TYPE = REEL
 INDEX = 39
-MNEMO = 'CONC_GEL'
-DEFAUT  = 310.D0
-DEFAUT1 = 310.D0
+MNEMO = 'COEF_N'
+DEFAUT  = 8.D0
+DEFAUT1 = 8.D0
 RUBRIQUE = 'TASSEMENT'
 RUBRIQUE1 = 'CONSOLIDATION'
 NIVEAU = 2
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
-AIDE = 'Concentration de transition pour modele de Thiebot (Kg/m3)'
-AIDE1 = 'Gel Concentration (Kg/m3)'
+AIDE = 'Coefficient de permeabilite pour le modele de consolidation '
+AIDE1 = 'Coefficient of permeability for consolidation model'
 /
 / UM MPM
 /
