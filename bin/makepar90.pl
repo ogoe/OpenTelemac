@@ -15,23 +15,23 @@
 
 @dirs=(
 #Libs : Bief, Damocles, Paravoid, Special, MumpsVoid
-	"parallel|parallel_v6p1|sources",
+	"parallel|parallel_v6p2|sources",
 #Sisyphe
-	"sisyphe|sisyphe_v6p1|sources",
+	"sisyphe|sisyphe_v6p2|sources",
 #Tomawac
-	"tomawac|toma_v6p1|sources",
+	"tomawac|toma_v6p2|sources",
 #T2d
-	"telemac2d|tel2d_v6p1|sources",
+	"telemac2d|tel2d_v6p2|sources",
 #T3d
-	"telemac3d|tel3d_v6p1|sources",
+	"telemac3d|tel3d_v6p2|sources",
 #Artemis
-	"artemis|arte_v6p1|sources",
+	"artemis|arte_v6p2|sources",
 #Estel2d
-	"estel2d|estel2d_v6p1|sources",
+	"estel2d|estel2d_v6p2|sources",
 #Estel3d
-	"estel3d|estel3d_v6p1|sources",
+	"estel3d|estel3d_v6p2|sources",
 #Spartacus2d
-	"spartacus2d|spartacus2d_v6p1|sources",
+	"spartacus2d|spartacus2d_v6p2|sources",
 
 );
 

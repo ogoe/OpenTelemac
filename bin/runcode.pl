@@ -130,9 +130,12 @@ else { #parallele
   #Cas WindowsNT
   if($ENV{"OS"} eq "Windows_NT")     # Librairies pour WindowsNT
     {
-     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
+#PLG INGEROP     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
+#PLG INGEROP                " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
+#PLG INGEROP                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
+     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib gdi32.lib winspool.lib".
                 " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
-                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
+                " netapi32.lib uuid.lib oldnames.lib ";
     }
 
 } #($NCSIZE < 2 && $CALCIUM ne "OUI" )

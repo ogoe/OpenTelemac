@@ -842,7 +842,7 @@ sub jajbanner
   #return; # ...ehm, we love banners indicating which versions WE use, don't WE?
   printf "\n";
   printf "=========================================================\n";
-  printf " Telemac System 5.6 to 6.1 - Perl scripts version 6.1    \n";
+  printf " Telemac System 5.6 to 6.2 - Perl scripts version 6.2    \n";
   printf "=========================================================\n";
   printf "$_[0]\n";
   printf "\n";
