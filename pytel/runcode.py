@@ -153,7 +153,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             print ' copying: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if sortiefile.rstrip() != '':
+   if sortiefile != None:    # sortiefile.rstrip() != '':
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
@@ -355,13 +355,13 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not path.exists(casFile):
       print '... inexistent CAS file: ',casFile
-      return    # /!\ should you stop or carry on ?
+      return None    # /!\ should you stop or carry on ?
    cas,lang = processCAS(casFile,frgb)
    if not checkConsistency(cas,dico,frgb,cfg):
       print '... inconsistent CAS file: ',casFile
       print '    +> you may be using an inappropriate configuration:',cfgName
       print '    +> or may be wishing for scalar mode while using parallel'
-      return    # /!\ should you stop or carry on ?
+      return None   # /!\ should you stop or carry on ?
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
@@ -381,7 +381,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             casFilePlage = path.join(CASDir,casFilePlage[0])
             if not path.isfile(casFilePlage):
                print '... missing coupling CAS file for',mod,': ',casFilePlage
-               return    # /!\ should you stop or carry on ?
+               return None   # /!\ should you stop or carry on ?
 
             # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             dicoFilePlage = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['TELVER']+'.dico')
@@ -392,7 +392,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             casPlage,lang = processCAS(casFilePlage,frgbPlage)
             if not checkConsistency(casPlage,dicoPlage,frgbPlage,cfg):
                print '... inconsistent CAS file: ',casFilePlage
-               return    # /!\ should you stop or carry on ?
+               return None   # /!\ should you stop or carry on ?
 
             COUPLAGE.update({mod:{}})
             COUPLAGE[mod].update({'cas':casPlage,'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage})
@@ -458,7 +458,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
                mpiCmd = cfg['MPI']['EXEC']
          if mpiCmd == '':
             print '... I do not know how to run MPI, can you help ?'
-            return    # /!\ should you stop or carry on ?
+            return None   # /!\ should you stop or carry on ?
          # ~~> Assign the mpi_telemac.conf
          hosts = ''
          if cfg.has_key('MPI'):
@@ -516,7 +516,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    chdir(CASDir)
    if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
 
-   return
+   return sortiefile
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

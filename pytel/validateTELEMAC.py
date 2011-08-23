@@ -20,11 +20,15 @@
          linux calls. This is a temporary solution as "/usr/bin/env" is not
          strickly portable cross operating systems
 """
+"""@history 21/08/2011 -- David Roscoe and Sebastien Bourban: addition of
+         a program of validation in the form of a local XML file. This
+         XML file sets the validation instructions for every test cases.
+"""
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
-from runcode import runCAS
+from parserXML import runXML
 from os import path,walk,environ
 import sys
 
@@ -115,18 +119,20 @@ if __name__ == "__main__":
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
 
       for codeName in cfg['VALIDATION'].keys():
-# ~~ Scans all CAS files to launch validation ~~~~~~~~~~~~~~~~~~~~~~
+# ~~ Scans all XML files to launch validation ~~~~~~~~~~~~~~~~~~~~~~
          print '\n\nConfiguration ' + cfgname + ', Module '+ codeName + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
-         for casFile in cfg['VALIDATION'][codeName]:
-            casFile = path.realpath(casFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
-            print '\n\nRunning ' + path.basename(casFile) + ' with '+ codeName + ' under ' + path.dirname(casFile) + '\n\
+         xmlKeys = cfg['VALIDATION'][codeName]
+         for key in xmlKeys.keys():
+            if key != 'path':
+               xmlDir = path.join(xmlKeys['path'],key)
+               for xmlFile in xmlKeys[key]:
+                  print '\n\nRunning ' + xmlFile + ' under ' + path.dirname(xmlDir) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-            print '... reading module dictionary'
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            runCAS(cfgname,cfg,codeName,casFile,options)
+                  runXML(cfgname,cfg,codeName,path.join(xmlDir,xmlFile),options)
 
    sys.exit()
