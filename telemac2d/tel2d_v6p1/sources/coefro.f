@@ -1,3 +1,4 @@
+! modif CV sept 2011
 !                    *****************
                      SUBROUTINE COEFRO
 !                    *****************
@@ -154,8 +155,8 @@
 !     ***********************
 !
         DO N=1,NPOIN
-          HC = MAX(HH(N),1.D-4)
-          CF%R(N) = 2.D0 / (LOG( 11.D0*HC/CHESTR%R(N))/KARMAN )**2
+          HC = MAX(HH(N),1.D-4)/EXP(1.D0)
+          CF%R(N) = 2.D0 / (LOG( 30.*HC/CHESTR%R(N))/KARMAN )**2
         ENDDO
 !
 !     ****
