@@ -632,7 +632,7 @@
      &                    AVAIL,FRACSED_GF,AVA0,LGRAFED,CALWC,
      &                    XMVS,XMVE,GRAV,VCE,XWC,FDM,CALAC,AC,
      &                    SEDCO, ES, NCOUCH_TASS,CONC_VASE,
-     &         MS_SABLE, MS_VASE,ACLADM, UNLADM,TOCE_SABLE)
+     &         MS_SABLE, MS_VASE,ACLADM, UNLADM,TOCE_SABLE,DEBU)
          IF(DEBUG.GT.0) WRITE(LU,*) 'END INIT_SEDIMENT'
 !
 !
