@@ -1309,15 +1309,15 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !     MAIS XSEG ET YSEG NE SONT PLUS UTILISES
  4000       FORMAT (1X,I2,1X,2(I1,1X),3(F24.12,1X),1X,
      &           F24.12,3X,I1,1X,3(F24.12,1X),1I9,1X,1I9,
-     &           1X,I7,1X,2(F27.15,1X),I6)
+     &           1X,I10,1X,2(F27.15,1X),I6)
          ENDIF
 !     
       END DO
       
-      FMT4='(I6)'
+      FMT4='(I7)'
       WRITE (NCLM,*) NPTIR_P(I)
        IF (MAX_N_NEIGH < NBMAXNSHARE-1) MAX_N_NEIGH = NBMAXNSHARE-1
-       FMT4='(   (I6,1X))'
+       FMT4='(   (I7,1X))'
        WRITE (FMT4(2:4),'(I3)') MAX_N_NEIGH+1
   
        ! SORTING NODE NUMBERS TO SORT(J) SO THAT CUT_P(SORT(J)) IS ORDERED 
