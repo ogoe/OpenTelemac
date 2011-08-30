@@ -130,9 +130,10 @@ else { #parallele
   #Cas WindowsNT
   if($ENV{"OS"} eq "Windows_NT")     # Librairies pour WindowsNT
     {
-     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
-                " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
-                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
+     $LIB_SYS = " $LIB_SYS "
+#PLG INGEROP     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
+#PLG INGEROP                " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
+#PLG INGEROP                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
     }
 
 } #($NCSIZE < 2 && $CALCIUM ne "OUI" )
@@ -369,7 +370,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
 {#acquihpPARAL
  my $FIL1 = @_[0];      #nom utilisateur du fichier
  my $FIL2 = @_[1];      #nom (de base) du fichier pour le code apres acquisition
- my $modepar =@_[2];    #type d'acquisition parallèle : SCAL, SELAFIN ou PARAL
+ my $modepar =@_[2];    #type d'acquisition parallÃ¨le : SCAL, SELAFIN ou PARAL
  my $conlimFIC =@_[3];  #nom du fichier des CONDITIONS LIMITES (pour PARTEL)
  my $autopar =@_[4];    #mode parallelisme automatique ou non
  my $secFIC=@_[5];      #the sections input file workdir name #jaj
@@ -399,7 +400,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
 #
 #---- Les fichiers "SELAFIN" sont a decouper avec PARTEL en
 #      mode "autopar"
-#     Sinon, les utiliser comme pré-découpés avec les fonctions
+#     Sinon, les utiliser comme prÃ©-dÃ©coupÃ©s avec les fonctions
 #     "extens"
   if ( ($modepar =~ /SELAFIN/)  )
    {
@@ -449,7 +450,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
    {
       @lfic=list_extens_file_names($FIL1, $NCSIZE);
 #
-#------- En manuel, copier les fichiers qui doivent pré-exister
+#------- En manuel, copier les fichiers qui doivent prÃ©-exister
 #
    	  if ($autopar eq "0")    
    	    { foreach (@lfic)
@@ -679,7 +680,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
  my $FIL1 = @_[0];      #nom (de base) du fichier pour le code apres acquisition
  my $FIL2 = @_[1];      #nom utilisateur du fichier
  my $ficGEOM = @_[2];   #nom du fichier GEOMETRIE du code
- my $modepar =@_[3];    #type de gestion parallèle : SCAL, SELAFIN ou PARAL
+ my $modepar =@_[3];    #type de gestion parallÃ¨le : SCAL, SELAFIN ou PARAL
  my $autopar =@_[4];    #mode parallelisme automatique ou non 
 
 #
@@ -1270,7 +1271,7 @@ printf "\n";
 ecrire("*** EDITION DE LIENS ***", "*** LINKING ***");
 print "\n";
 
-if ($NCSIZE > 0 )   #cas parallèle : MPIlink
+if ($NCSIZE > 0 )   #cas parallÃ¨le : MPIlink
   {
     $dolink=$lkmpi;
     $dolink=~s/<EXE>/$EXEFILE/;
