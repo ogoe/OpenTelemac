@@ -799,7 +799,7 @@
          DO K=1,NPTFR
             WRITE(89,*) KP1BOR(K,2)
          END DO 
-         CALL FLUSH(89)
+!         CALL FLUSH(89)
          CLOSE(89)
       END IF
       CALL FRONT2_PARTEL (NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
