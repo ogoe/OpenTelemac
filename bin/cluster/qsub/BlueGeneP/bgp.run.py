@@ -17,7 +17,7 @@ splitfront = False # Frontale : Pas de decoupage du domaine par defaut
 mergefront = False # Frontale : Pas d agglomeration des resultats par defaut
 mpirun = False # Option de lancement directement sur les noeuds d'un executable (ex: out*.exe)
 runcode = True # Option mpirun couplee a runcode...
-version = 'v6p0'
+version = 'v6p1'
 #
 # ------------------------------------------------------------#
 #
