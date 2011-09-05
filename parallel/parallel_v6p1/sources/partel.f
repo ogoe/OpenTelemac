@@ -105,15 +105,14 @@
 !
       INTEGER :: NINP=10, NCLI=11, NMET=12,NINPFORMAT=52
       INTEGER :: NEPART=15, NNPART=16, NOUT=17, NCLM=18
-      INTEGER TIME(3), DATE(3)
-       INTEGER TIME_TMP(3), DATE_TMP(3)
+      INTEGER TIME(3),DATE(3),TIME_TMP(3), DATE_TMP(3)
 !
       CHARACTER(LEN=80)  :: TITLE
       CHARACTER(LEN=32)  :: VARI, VARIABLE(MAXVAR)
       CHARACTER(LEN=MAXALLVARLENGTH) :: ALLVAR 
       CHARACTER(LEN=MAXLENHARD)  :: NAMEINP, NAMECLI, NAMEOUT, NAMECLM
-      CHARACTER(LEN=MAXLENHARD)  :: NAMEMET,NAMEEPART,NAMENPART,
-     C     NAMENINPFORMAT,NAMEOUTFORMA
+      CHARACTER(LEN=MAXLENHARD)  :: NAMEMET,NAMEEPART,NAMENPART
+      CHARACTER(LEN=MAXLENHARD)  :: NAMENINPFORMAT,NAMEOUTFORMA
       CHARACTER(LEN=5)   :: CHCH  
       CHARACTER(LEN=12)  :: FMT4
 !
@@ -185,8 +184,8 @@
       LOGICAL FOUND
       INTEGER NDP_2D,NDP_3D
       INTEGER EF,POS
-      INTEGER, ALLOCATABLE :: NBRE_EF(:),NBRE_EF_LOC(:),EF_I(:),
-     C     TAB_TMP(:),EF_II(:)
+      INTEGER, ALLOCATABLE :: NBRE_EF(:),NBRE_EF_LOC(:),EF_I(:)
+      INTEGER, ALLOCATABLE :: TAB_TMP(:),EF_II(:)
       LOGICAL TROUVE,HALO
       INTEGER NOEUD,NBRE_NOEUD_INTERNE
       INTEGER NBRE_NOEUD_INTERF
@@ -441,10 +440,8 @@
 !
       WRITE (LU,*) 'VARIABLES ARE: '
       DO I=1,NVAR
-        READ(NINP) VARI
-       
-        VARIABLE(I) = VARI
-     
+        READ(NINP) VARI       
+        VARIABLE(I) = VARI     
         DO J=1,32
           IF(VARI(J:J).EQ.' ') VARI(J:J) = '-'
         END DO
@@ -463,21 +460,20 @@
 ! READ THE REST OF THE SELAFIN FILE
 ! 10 INTEGERS, THE FIRST IS THE NUMBER OF RECORDS (TIMESTEPS)
 !
-      READ (NINP) (IB(I), I=1,10)
+      READ(NINP) (IB(I), I=1,10)
       IF (IB(8).NE.0.OR.IB(9).NE.0) THEN
         WRITE(LU,*) 'THIS IS A PARTIAL OUTPUT FILE'
         WRITE(LU,*) 'MAYBE MEET GRETEL BEFORE...'
       ENDIF 
       NREC  = IB(1)
       NPLAN = IB(7) 
-      IF (IB(10).EQ.1) THEN 
-        READ(NINP) DATE(1), DATE(2), DATE(3), TIME(1), TIME(2), TIME(3)
-        
+      IF(IB(10).EQ.1) THEN 
+        READ(NINP) DATE(1),DATE(2),DATE(3),TIME(1),TIME(2),TIME(3)        
       ENDIF 
 !
-      READ (NINP) NELEM,NPOIN,NDP,NDUM
+      READ(NINP) NELEM,NPOIN,NDP,NDUM
       NPOIN_TOT=NPOIN
-      IF (NPLAN.GT.1) THEN 
+      IF(NPLAN.GT.1) THEN 
         WRITE(LU,*) ' '
         WRITE(LU,*) '3D MESH DETECTED.' 
         NPOIN2 = NPOIN/NPLAN
@@ -539,8 +535,7 @@
 ! CONNECTIVITY TABLE:
 !
       IF(NPLAN.LE.1) THEN
-        READ(NINP) ((IKLES((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
-        
+        READ(NINP) ((IKLES((K-1)*NDP+J),J=1,NDP),K=1,NELEM)        
       ELSE
         READ(NINP) ((IKLES3D((K-1)*NDP+J),J=1,NDP),K=1,NELEM)
 !       BUILDING IKLES
@@ -799,7 +794,7 @@
          DO K=1,NPTFR
             WRITE(89,*) KP1BOR(K,2)
          END DO 
-!         CALL FLUSH(89)
+         CALL FLUSH(89)
          CLOSE(89)
       END IF
       CALL FRONT2_PARTEL (NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
@@ -1412,8 +1407,8 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
       IF (ERR.NE.0) CALL ALLOER (LU, 'F_P')
       ALLOCATE(IKLES_P(MAX_NELEM_P*3),STAT=ERR)
       IF(NPLAN.GT.1) THEN
-         ALLOCATE(IKLES3D_P(6,MAX_NELEM_P,NPLAN-1),STAT=ERR)
-       ENDIF
+        ALLOCATE(IKLES3D_P(6,MAX_NELEM_P,NPLAN-1),STAT=ERR)
+      ENDIF
       IF (ERR.NE.0) CALL ALLOER (LU, 'IKLES3D_P')
 
       
@@ -1447,14 +1442,13 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
         WRITE(NOUT) (IB(K), K=1,10)
         IF (IB(10).EQ.1) THEN 
            WRITE(NOUT) DATE(1), DATE(2), DATE(3), 
-     &                TIME(1), TIME(2), TIME(3)
-           
+     &                TIME(1), TIME(2), TIME(3)           
         ENDIF 
 
         IF(NPLAN.LE.1) THEN
           WRITE(NOUT) NELEM_P(I), NPOIN_P(I), NDP, NDUM
         ELSE
-           WRITE(NOUT) NELEM_P(I)*(NPLAN-1),
+          WRITE(NOUT) NELEM_P(I)*(NPLAN-1),
      &          NPOIN_P(I)*NPLAN, NDP, NDUM
         ENDIF
 !     
@@ -1466,7 +1460,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
         END DO
         IF(NPLAN > 1) THEN
            DO K = 1,NPLAN-1
-                                  DO J = 1,NELEM_P(I)       
+              DO J = 1,NELEM_P(I)       
                 IKLES3D_P(1,J,K) = IKLES_P(1+(J-1)*3) + (K-1)*NPOIN_P(I)
                 IKLES3D_P(2,J,K) = IKLES_P(2+(J-1)*3) + (K-1)*NPOIN_P(I)
                 IKLES3D_P(3,J,K) = IKLES_P(3+(J-1)*3) + (K-1)*NPOIN_P(I)
@@ -1477,12 +1471,10 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
            ENDDO
         ENDIF
 !
-        IF (NPLAN.EQ.0) THEN
+        IF(NPLAN.EQ.0) THEN
            WRITE(NOUT) 
      &          ((IKLES_P((J-1)*3+K),K=1,3),J=1,NELEM_P(I))
-        ELSE
-           
-           
+        ELSE           
            WRITE(NOUT)
      &         (((IKLES3D_P(L,J,K),L=1,6),J=1,NELEM_P(I)),K=1,NPLAN-1)
         ENDIF
@@ -1490,22 +1482,19 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 ! INSTEAD OF IRAND, KNOLG IS WRITTEN !!!
 ! I.E. THE TABLE PROCESSOR-LOCAL -> PROCESSOR-GLOBAL NODE NUMBERS
 !
-        IF (NPLAN.EQ.0) THEN
+        IF(NPLAN.EQ.0) THEN
           WRITE(NOUT) (KNOLG(J,I), J=1,NPOIN_P(I))
         ELSE
-!     BEYOND NPOIN_P(I) : DUMMY VALUES IN KNOLG, NEVER USED
-           WRITE(NOUT) (KNOLG(J,I), J=1,NPOIN_P(I)*NPLAN)
+!         BEYOND NPOIN_P(I) : DUMMY VALUES IN KNOLG, NEVER USED
+          WRITE(NOUT) (KNOLG(J,I), J=1,NPOIN_P(I)*NPLAN)
         ENDIF
 !
-
 ! NODE COORDINATES X AND Y
 !
-        IF (NPLAN.EQ.0) THEN
+        IF(NPLAN.EQ.0) THEN
           WRITE(NOUT) (F_P(J,1,I),J=1,NPOIN_P(I))
           WRITE(NOUT) (F_P(J,2,I),J=1,NPOIN_P(I))
-        ELSE
-             
-         
+        ELSE                      
           WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,1),J=1,NPOIN_P(I)), 
      &          L=1,NPLAN)  
           WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,2),J=1,NPOIN_P(I)), 
@@ -1514,33 +1503,30 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !
 ! TIME STAMP (SECONDS) 
 !
+CD
 CD   -------------------------------------------------------------------
 CD   MODIFICATION TO PUT ALL THE RECORDINGS IN PARALLEL 
 CD   GEO FILE 08/06/2011
 CD   -------------------------------------------------------------------
-
 CD     FIRST STEP : CLOSE/REOPEN/REWIND THE FILE AND READ ALL THE RECORDINGS UNTIL
 CD     THOSE CONCERNING THE TIME-DEPENDENT  VARIABLES
+CD
         CLOSE(NINP)
         OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
         REWIND(NINP)
         READ (NINP) TITLE
         READ (NINP) II, JJ
-         NVAR = II + JJ 
-         DO II=1,NVAR
-           READ(NINP) VARI
-         END DO 
-         READ (NINP) (II, JJ=1,10)
-         IF (II.EQ.1) THEN 
-           READ(NINP) DATE_TMP(1), DATE_TMP(2), DATE_TMP(3), 
-     &           TIME_TMP(1), TIME_TMP(2), TIME_TMP(3)
+        NVAR = II + JJ 
+        DO II=1,NVAR
+          READ(NINP) VARI
+        ENDDO 
+        READ (NINP) (II, JJ=1,10)
+        IF(II.EQ.1) THEN 
+          READ(NINP) DATE_TMP(1), DATE_TMP(2), DATE_TMP(3), 
+     &               TIME_TMP(1), TIME_TMP(2), TIME_TMP(3)
         ENDIF 
-        READ (NINP) II,II,II,II
-        IF(NPLAN.LE.1) THEN
-           READ(NINP) ((II,JJ=1,NDP),K=1,NELEM)
-        ELSE
-           READ(NINP) ((II,JJ=1,NDP),K=1,NELEM)
-        END IF
+        READ(NINP) II,II,II,II
+        READ(NINP) ((II,JJ=1,NDP),K=1,NELEM)
         READ(NINP) (II,JJ=1,NPOIN)
         READ(NINP) (TMP,JJ=1,NPOIN)
         READ(NINP) (TMP,JJ=1,NPOIN)
@@ -1548,32 +1534,37 @@ CD      SECOND STEP
 CD      EACH RECORDING IS READ AND ONLY THE LOCAL VARIABLES ARE STORED 
 CD      INTO THE PARALLEL GEO FILE        
         DO 
-           READ(NINP, END=1111, ERR=300) TIMES
-           WRITE(NOUT) TIMES
-           DO K=3,NVAR+2
-              READ(NINP, END=300, ERR=300) (F(J,K), J=1,NPOIN)
+          READ(NINP, END=1111, ERR=300) TIMES
+          WRITE(NOUT) TIMES
+          DO K=3,NVAR+2
+            READ(NINP, END=300, ERR=300) (F(J,K), J=1,NPOIN)
+!
+!           CORRECTION JMH 05/09/2011 : F_P IS NOT DIMENSIONED
+!           FOR 3D AND IS NOT USED IN 3D
+            IF(NPLAN.EQ.0) THEN
               DO JJ=1,NPOIN
-                 IF (KNOGL(JJ,I) .NE. 0) THEN
-CD               IF KNOGL(JJ,I) > 0 THE VARIABLE HAVING GLOBAL NUMBER 
-CD               JJ BELONGS TO THE SUBDOMAIN I AND ITS LOCAL NUMBER IS
-CD               KNOGL(JJ,I) 
-                    F_P(KNOGL(JJ,I),K,I)=F(JJ,K)
-                 END IF
-              END DO 
-           END DO
-           DO K=3,NVAR+2
-              IF(NPLAN.EQ.0) THEN
-                 WRITE(NOUT) (F_P(J,K,I),J=1,NPOIN_P(I))
-              ELSE
-                 WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,K),
-     &                J=1,NPOIN_P(I)), 
-     &                L=1,NPLAN) 
-              ENDIF
-           END DO
-        END DO
- 1111   CLOSE (NINP)
+                IF(KNOGL(JJ,I).GT.0) THEN
+CD                IF KNOGL(JJ,I) > 0 THE VARIABLE HAVING GLOBAL NUMBER 
+CD                JJ BELONGS TO THE SUBDOMAIN I AND ITS LOCAL NUMBER IS
+CD                KNOGL(JJ,I) 
+                  F_P(KNOGL(JJ,I),K,I)=F(JJ,K)
+                ENDIF
+              ENDDO
+            ENDIF 
+          ENDDO
+          DO K=3,NVAR+2
+            IF(NPLAN.EQ.0) THEN
+              WRITE(NOUT) (F_P(J,K,I),J=1,NPOIN_P(I))
+            ELSE
+              WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,K),
+     &                      J=1,NPOIN_P(I)),L=1,NPLAN) 
+            ENDIF
+          ENDDO
+        ENDDO
+ 1111   CONTINUE   
+        CLOSE (NINP)
         CLOSE (NOUT)    
-      END DO
+      ENDDO
 CD   -------------------------------------------------------------------
 CD   END OF THE MODIFICATION TO PUT ALL THE
 CD   RECORDINGS IN PARALLEL GEO FILE 08/06/2011
