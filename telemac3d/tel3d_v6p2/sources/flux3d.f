@@ -10,7 +10,7 @@
      & N_ADV,MTRA1)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES RELATIVE WATER AND TRACER MASS BALANCES
@@ -21,11 +21,6 @@
 !+        **/03/1999
 !+
 !+   FORTRAN95 VERSION
-!
-!history  J-M HERVOUET(LNHE)
-!+        26/04/2010
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -38,6 +33,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET(LNHE)
+!+        26/08/2011
+!+        V6P2
+!+   Call to FLUX_EF_VF_3D changed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BYPASS         |---| IF YES, BYPASS VOID VOLUMES
@@ -166,7 +166,8 @@
         IOPT=2
         CALL FLUX_EF_VF_3D(FLODEL%R,MESH2%W%R,MESH3%W%R,
      &                     MESH2%NSEG,MESH3%NSEG,MESH2%NELEM,
-     &                     MESH3%NELEM,MESH2,MESH3,.TRUE.,IOPT,1)
+     &                     MESH3%NELEM,MESH2,.TRUE.,IOPT,1,
+     &                     IELM3,NPLAN,MESH3%IKLE%I,MESH3%NELMAX)
       ENDIF
 !
 ! LIMITING FLUXES ACCORDING TO WHAT IS DONE IN 2D CONTINUITY EQUATION

@@ -5,7 +5,7 @@
      &(LT,ISOUSI)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
@@ -126,7 +126,7 @@
 !     BUILDS A TRIDIAGONAL MATRIX IN OFF-DIAGONAL TERMS OF MTRA2
 !
       CALL GETTRI(MTRA2%X%R,MDIFF,TETADI,MESH3D,NPLAN,MESH2D%NPOIN,
-     &            MESH2D%NSEG)
+     &            MESH2D%NSEG,IELM3,NELEM2)
 !
       DO I=1,U%DIM1
         TRIC(I)=TRIC(I)*UNSV3D%R(I)*DT

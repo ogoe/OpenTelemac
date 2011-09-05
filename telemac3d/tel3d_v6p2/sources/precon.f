@@ -5,7 +5,7 @@
      &(WP,WPS,ZPROPS,ISOUSI,LT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE ADVECTION STEP BY COMPUTING THE
@@ -320,15 +320,19 @@
 !        ADDS CENTRED ADVECTION TERM
 !
          FORMUL = 'MATVGR          '
-         FORMUL(8:8) = '2'
+         FORMUL(8:8) = '2'   
          CALL MATRIX
      &   (MSUPG,OPER,FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,SVIDE,
-     &    UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
+     &    UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)    
 !
 !        VERTICAL UPWIND (SUBROUTINE UPWIND EXPECTS SYMMETRICAL MATRICES)
-!        HERE UPWIND COEFFICIENT = 1, BUT WSCONV USED INSTEAD OF W
+!        HERE UPWIND COEFFICIENT = 1, BUT WSCONV USED INSTEAD OF W.
+!        WITH TETRAHEDRONS UPWINDING IS DONE IN 3D, SO NO NEED
+!        TO CALL THIS UPWIND ON THE VERTICAL.
 !
-         CALL UPWIND(MSUPG,WSCONV,1.D0,MESH2D,MESH3D,NPLAN)
+         IF(IELM3.EQ.41) THEN
+           CALL UPWIND(MSUPG,WSCONV,1.D0,MESH2D,MESH3D,NPLAN)
+         ENDIF
 !
       ENDIF
 !

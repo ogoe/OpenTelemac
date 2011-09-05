@@ -1450,14 +1450,18 @@
 ! CLIPS NEGATIVE DEPTHS
 !-----------------------------------------------------------------------
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORRECTION_DEPTH_3D'
       CALL CORRECTION_DEPTH_3D(MESH2D%W%R,MESH3D%W%R,MESH2D%GLOSEG%I,
      &                         MESH2D%GLOSEG%DIM1)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORRECTION_DEPTH_3D'
 !
 !-----------------------------------------------------------------------
 ! BUILDS NEW MESH WITH THE NEW FREE SURFACE
 !-----------------------------------------------------------------------
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CALCOT'
       CALL CALCOT(Z,H%R)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CALCOT'
 !
 !----------------------------------------------------------------------
 !
@@ -1515,9 +1519,11 @@
 !
 ! COMPUTES SURFACE GRADIENTS AT TIME LEVEL N+1 AND DSSUDT
 !
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FSGRAD'
       CALL FSGRAD(GRADZS,ZFLATS,Z(NPOIN3-NPOIN2+1:NPOIN3),
      &            ZF,IELM2H,MESH2D,MSK,MASKEL,
      &            UNSV2D,T2_01,NPOIN2,OPTBAN,SVIDE)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FSGRAD'
 !
       CALL OS( 'X=Y-Z   ', X=DSSUDT, Y=H, Z=HN )
       CALL OS( 'X=CX    ', X=DSSUDT, C=1.D0/DT )
@@ -1557,7 +1563,9 @@
 !       WITH WAVE EQUATION, DYNAMIC PRESSURE HERE IS INCREMENTAL
 !       THUS WITHOUT BOUNDARY CONDITIONS
         BC=.NOT.DPWAVEQ
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDIV'
         CALL PREDIV(DP,U,V,W,INFOGR,BC,1,.TRUE.,.TRUE.,.TRUE.)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIV'
 !
 !-----------------------------------------------------------------------
 ! VELOCITY PROJECTION STEP

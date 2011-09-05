@@ -5,7 +5,7 @@
      &(W2D,W3D,GLOSEG,DIMGLO)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    APPLIES VARIOUS TECHNIQUES TO TREAT NEGATIVE DEPTHS.
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J.M. HERVOUET (LNHE)
+!+        26/08/2011
+!+        V6P2
+!+   Call to FLUX_EF_VF_3D changed
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -54,7 +59,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=16) :: FORMUL
-      INTEGER I,IELEM,IELEM3,IELCON
+      INTEGER I,IELEM,IELEM3
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
 !
 !-----------------------------------------------------------------------
@@ -70,8 +75,7 @@
           FORMUL = 'VGRADP 2     HOR'
           SAVEZ     =>MESH3D%Z%R
           MESH3D%Z%R=>ZPROP%R
-          IELCON=UCONV%ELM
-!         CALL VECTOR(T3_01,'=',FORMUL,IELCON,-1.D0,DM1,ZCONV,ZCONV,
+!         CALL VECTOR(T3_01,'=',FORMUL,IELM3,-1.D0,DM1,ZCONV,ZCONV,
 !    *                UCONV,VCONV,VCONV,MESH3D,MSK,MASKEL)
 !         EQUIVALENT TO CALL VECTOR BUT WITHOUT ASSEMBLING T3_01
 !         BECAUSE ARGUMENT LEGO IS SET TO FALSE :
@@ -83,29 +87,44 @@
      &                MESH3D%XEL%R,MESH3D%YEL%R,MESH3D%ZEL%R,
      &                MESH3D%SURFAC%R,MESH3D%IKLE%I,MESH3D%NBOR%I,
      &                MESH3D%XSGBOR%R,MESH3D%YSGBOR%R,MESH3D%ZSGBOR%R,
-     &                BIEF_NBPTS(IELCON,MESH3D),MESH3D%NELEM,
+     &                BIEF_NBPTS(IELM3,MESH3D),MESH3D%NELEM,
      &                MESH3D%NELMAX,
-     &                IELCON,MESH3D%LV,MSK,MASKEL%R,MESH3D)
+     &                IELM3,MESH3D%LV,MSK,MASKEL%R,MESH3D)
           MESH3D%Z%R=>SAVEZ
 !                     T3_01 IS NOT USED AS AN ASSEMBLED VECTOR
 !                     BUT TO GET THE NON ASSEMBLED FORM MESH3D%W,
 !                     WHICH IS HERE ALSO W3D
-!###> MST @ HRW
+!
 !         CALCULATES 3D FLODEL (NOTE JMH: THIS WILL BE REDONE IN FLUX3D
 !                                         OPTIMISATION MAYBE POSSIBLE  )
           IOPT=2
           CALL FLUX_EF_VF_3D(FLODEL%R,MESH2D%W%R,MESH3D%W%R,
      &                       MESH2D%NSEG,MESH3D%NSEG,MESH2D%NELEM,
-     &                       MESH3D%NELEM,MESH2D,MESH3D,.TRUE.,IOPT,1)
+     &                       MESH3D%NELEM,MESH2D,.TRUE.,IOPT,1,
+     &                       IELM3,NPLAN,MESH3D%IKLE%I,MESH3D%NELMAX)
 !
 !         CALCULATES 2D FLODEL (PUT IN FIRST PLANE OF 3D FLODEL)
-          DO ISEG = 1,MESH2D%NSEG
-            DO I = 2,NPLAN
-              ISEG3D = ISEG + (I-1)*MESH2D%NSEG
-              FLODEL%R(ISEG) = FLODEL%R(ISEG) + FLODEL%R(ISEG3D)
+!      
+!         IT IS DIFFERENT FROM THE METHOD CONSISTING OF SUMMING THE
+!         FLUXES ON THE VERTICAL FIRST AND THEN CALLING FLUX_EF_VF
+!
+          IF(IELM3.EQ.41.OR.IELM3.EQ.51) THEN
+!
+!           HORIZONTAL SEGMENT HAVE SAME NUMBERING
+!           WITH ELEMENTS 41 AND 51
+!          
+            DO ISEG = 1,MESH2D%NSEG
+              DO I = 2,NPLAN
+                ISEG3D = ISEG + (I-1)*MESH2D%NSEG
+                FLODEL%R(ISEG) = FLODEL%R(ISEG) + FLODEL%R(ISEG3D)
+              ENDDO
             ENDDO
-          ENDDO
-!###
+!
+          ELSE
+            WRITE(LU,*) 'CORECTION_DEPTH_3D: UNKNOWN ELEMENT:',IELM3
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
           CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,
      &                         MESH2D,FLODEL,.FALSE.,
