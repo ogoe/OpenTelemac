@@ -2,11 +2,11 @@
                      SUBROUTINE VC13TT
 !                    *****************
 !
-     &( XMUL,SF,F,X,Y,Z,IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,
-     &  W1,W2,W3,W4,ICOORD , FORMUL )
+     &(XMUL,SF,F,X,Y,Z,IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,
+     & W1,W2,W3,W4,ICOORD,FORMUL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -40,14 +40,19 @@
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
+!+   TRANSLATION OF FRENCH COMMENTS WITHIN THE FORTRAN SOURCES INTO
+!+   ENGLISH COMMENTS
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
+!+   CREATION OF DOXYGEN TAGS FOR AUTOMATED DOCUMENTATION AND
+!+   CROSS-REFERENCING OF THE FORTRAN SOURCES
+!
+!history  J-M HERVOUET (LNH)
+!+        30/08/2011
+!+        V6P2
+!+   Treating crushed elements
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -96,11 +101,13 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELEM,IELMF
-      DOUBLE PRECISION X2,X3,X4,Y2,Y3,Y4,Z2,Z3,Z4,XSUR24
+      DOUBLE PRECISION X2,X3,X4,Y2,Y3,Y4,Z2,Z3,Z4,XSUR24,SUR6
+      DOUBLE PRECISION VOL
       INTEGER I1,I2,I3,I4
 !
 !-----------------------------------------------------------------------
 !
+      SUR6=1.D0/6.D0
       XSUR24 = XMUL/24.D0
 !
 !-----------------------------------------------------------------------
@@ -245,31 +252,42 @@
 !
 !=======================================================================
 !
-!  HYDROSTATIC INCONSISTENCIES
+!     FILTER FOR PARTLY CRUSHED ELEMENTS (ON THE VERTICAL)
 !
-!     IF(FORMUL(6:6).EQ.'2') THEN
+      IF(FORMUL(7:7).EQ.'2') THEN
 !
-!     DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
+          I1 = IKLE1(IELEM)
+          I2 = IKLE2(IELEM)
+          I3 = IKLE3(IELEM)
+          I4 = IKLE4(IELEM)
 !
-!        I1 = IKLE1(IELEM)
-!        I2 = IKLE2(IELEM)
-!        I3 = IKLE3(IELEM)
-!        I4 = IKLE4(IELEM)
-!        I5 = IKLE5(IELEM)
-!        I6 = IKLE6(IELEM)
+          X2=X(I2)-X(I1)
+          Y2=Y(I2)-Y(I1)
+          Z2=Z(I2)-Z(I1)
+          X3=X(I3)-X(I1)
+          Y3=Y(I3)-Y(I1)
+          Z3=Z(I3)-Z(I1)
+          X4=X(I4)-X(I1)
+          Y4=Y(I4)-Y(I1)
+          Z4=Z(I4)-Z(I1)
 !
-!        IF(MAX(Z(I1),Z(I2),Z(I3)).GT.MIN(Z(I4),Z(I5),Z(I6))) THEN
-!          W1(IELEM)=0.D0
-!          W2(IELEM)=0.D0
-!          W3(IELEM)=0.D0
-!          W4(IELEM)=0.D0
-!          W5(IELEM)=0.D0
-!          W6(IELEM)=0.D0
-!        ENDIF
+          VOL=(Z2*(X3*Y4-X4*Y3)+Y2*(X4*Z3-X3*Z4)+X2*(Y3*Z4-Y4*Z3))*SUR6
 !
-!     ENDDO
+!         TEST DE VC13PP
+!         IF(Z(I4)-Z(I1).LT.1.D-3.OR.
+!    &       Z(I5)-Z(I2).LT.1.D-3.OR.
+!    &       Z(I6)-Z(I3).LT.1.D-3     ) THEN
 !
-!     ENDIF
+          IF(VOL.LT.1.D-3) THEN
+            W1(IELEM)=0.D0
+            W2(IELEM)=0.D0
+            W3(IELEM)=0.D0
+            W4(IELEM)=0.D0
+          ENDIF
+        ENDDO
+!
+      ENDIF
 !
 !=======================================================================
 !

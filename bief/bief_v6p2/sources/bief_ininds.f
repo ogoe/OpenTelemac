@@ -5,7 +5,7 @@
      &(NPOIN,NPTFR,NELEM,NPMAX,NPTFX,NELMAX,NPLAN,NSEGBOR,NDS,NELEB)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAY NDS, WHICH IS USED BY
@@ -46,6 +46,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE) 
+!+        25/08/2011
+!+        V6P2
+!+   NBSEG and NBSEGEL added for element 51 
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NDS            |<--| ARRAY IN BIEF_MESH STRUCTURE FOR STORING
 !|                |   | NUMBERS
@@ -263,6 +268,9 @@
 !     41) P1 ELEMENT ON PRISMS
 !
       NDS(41,1) = NPOIN*NPLAN
+!     HORIZONTAL SEGMENTS : NDS(11,2)*NPLAN
+!     VERTICAL SEGMENTS   : NPOIN*(NPLAN-1)
+!     CROSSED SEGMENTS    : NDS(11,2)*2*(NPLAN-1) 
       NDS(41,2) = NDS(11,2)*(3*NPLAN-2)+NPOIN*(NPLAN-1)
       NDS(41,3) = 6
       NDS(41,4) = 5
@@ -285,11 +293,14 @@
 !     51) PRISMS SPLIT IN T1 TETRAHEDRONS
 !
       NDS(51,1) = NPOIN*NPLAN
-!     NDS(51,2) = ?????
+!     HORIZONTAL SEGMENTS : NDS(11,2)*NPLAN
+!     VERTICAL SEGMENTS   : NPOIN*(NPLAN-1)
+!     CROSSED SEGMENTS    : NDS(11,2)*(NPLAN-1) 
+      NDS(51,2) = NDS(11,2)*(2*NPLAN-1)+NPOIN*(NPLAN-1)
       NDS(51,3) = 4
       NDS(51,4) = 4
       NDS(51,5) = NPMAX*NPLAN
-!     NDS(51,6) = ?????
+      NDS(51,6) = 6
 !
 !-----------------------------------------------------------------------
 !
@@ -365,5 +376,6 @@
       NDS(81,6) = 3
 !
 !-----------------------------------------------------------------------
+!
       RETURN
       END

@@ -137,6 +137,8 @@
 !+                     TREATED FIRST, SO THAT IKLE SENT TO SUBROUTINE
 !+                     VOISIN BE THE SAME AS WITH PRISMS OR TRIANGLES
 !+                     FOR THE NELEM2 FIRST ELEMENTS.
+!+                     CONSEQUENTLY THE FIRSt 3 POINTS OF TETRAHEDRON 1
+!+                     ARE ALWAYS 1,2 AND 3.
 !
 !history  J-M HERVOUET (LNH)
 !+        23/08/99
@@ -178,7 +180,8 @@
 !
       INTEGER IELEM,I,K,L,IGLOB(6),S1,S2,S3
 !
-!     TETRA : SEE EXPLANATIONS ABOVE
+!     TETRA : SEE EXPLANATIONS ABOVE, THE 0 CORRESPOND TO SITUATIONS
+!             THAT NEVER HAPPEN (TETRA(1,1,1,... OR TETRA(2,2,2,...)
       INTEGER TETRA(2,2,2,3,4)
       DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
      &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
@@ -232,7 +235,7 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'CPIKLE3 : MINIMUM OF 2 PLANES NEEDED'
         CALL PLANTE(1)
         STOP
-      ENDIF
+      ENDIF      
 !
 !-----------------------------------------------------------------------
 !

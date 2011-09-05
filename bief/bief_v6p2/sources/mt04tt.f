@@ -2,10 +2,10 @@
                      SUBROUTINE MT04TT
 !                    *****************
 !
-     &( T,XM,XMUL,SU,SV,SW,U,V,W,X,Y,Z,IKLE,NELEM,NELMAX)
+     &( T,XM,XMUL,SU,SV,SW,U,V,W,X,Y,Z,IKLE,NELEM,NELMAX,FORMUL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES A MATRIX FOR THE SUPG METHOD.
@@ -91,6 +91,8 @@
 !
       DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),Z(*)
 !
+      CHARACTER(LEN=16), INTENT(IN) :: FORMUL
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     SPECIFIC DECLARATIONS
@@ -104,6 +106,8 @@
 !***********************************************************************
 !
       SUR120=XMUL/120.D0
+!
+      IF(FORMUL(1:7).EQ.'MAUGUG2') THEN
 !
       IF((SU%ELM.EQ.31.AND.SV%ELM.EQ.31.AND.SW%ELM.EQ.31).OR.
      &   (SU%ELM.EQ.51.AND.SV%ELM.EQ.51.AND.SW%ELM.EQ.51)     ) THEN
@@ -267,7 +271,8 @@
 !---------------------------------------------------------------
 !
       ELSE IF((SU%ELM.EQ.30.AND.SV%ELM.EQ.30.AND.SW%ELM.EQ.30).OR.
-     &       (SU%ELM.EQ.50.AND.SV%ELM.EQ.50.AND.SW%ELM.EQ.50)     ) THEN
+     &        (SU%ELM.EQ.50.AND.SV%ELM.EQ.50.AND.SW%ELM.EQ.50)    ) THEN
+!
 !   P0 DISCRETISATION OF DIFFUSION COEFFICIENTS
 !
 !   LOOP ON THE TETRAHEDRONS
@@ -435,6 +440,19 @@
         CALL PLANTE(1)
         STOP
 !
+      ENDIF
+!
+!     ELSEIF(FORMUL(1:7).EQ.'MAUGUG1') THEN
+!
+!
+!
+      ELSE
+        IF (LNG.EQ.1) WRITE(LU,4000) FORMUL
+        IF (LNG.EQ.2) WRITE(LU,4001) FORMUL
+4000    FORMAT(1X,'MT04TT (BIEF) : FORMULE NON PREVUE : ',A16)
+4001    FORMAT(1X,'MT04TT (BIEF) : UNEXPECTED FORMULA: ',A16)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

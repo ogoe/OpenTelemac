@@ -5,7 +5,7 @@
      &( T,XM,XMUL,SU,SV,SW,U,V,W,X,Y,Z,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MATVGR MATRIX.
@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNH)    ; F  LEPEINTRE (LNH)
+!+        30/08/2011
+!+        V6P2
+!+   Element 51 (prism cut into tetrahedrons) taken into account
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| NELEM          |-->| NUMBER OF ELEMENTS
@@ -94,7 +99,7 @@
 !
       IELMU = SU%ELM
 !      U P1
-      IF(IELMU.EQ.31) THEN
+      IF(IELMU.EQ.31.OR.IELMU.EQ.51) THEN
 ! AND IELMV=11 AND IELMW=11
 !-----------------------------------------------------------------------
 !     LOOP ON THE TETRAHEDRONS
@@ -290,7 +295,7 @@
  20   CONTINUE
 !
 !-----------------------------------------------------------------------
-      ELSE IF (IELMU .EQ. 30) THEN
+      ELSEIF (IELMU.EQ.30.OR.IELMU.EQ.50) THEN
 ! AND V AND W
 !-----------------------------------------------------------------------
 !     LOOP ON THE TETRAHEDRONS

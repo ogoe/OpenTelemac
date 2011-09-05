@@ -1096,10 +1096,14 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
              CALL MT04TT(T,XM,XMUL,SU,SV,SW,U,V,W,
-     &                   XEL,YEL,ZEL,IKLE,NELEM,NELMAX)
+     &                   XEL,YEL,ZEL,IKLE,NELEM,NELMAX,FORMUL)
 !
              TYPDIA='Q'
-             TYPEXT='S'
+             IF(FORMUL(7:7).EQ.'2') THEN
+               TYPEXT='S'
+             ELSE
+               TYPEXT='Q'
+             ENDIF
 !
 !.......................................................................
 !         OTHER

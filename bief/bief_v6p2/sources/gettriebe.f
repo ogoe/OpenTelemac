@@ -2,10 +2,10 @@
                      SUBROUTINE GETTRIEBE
 !                    ********************
 !
-     &(XAUX,AD,AX,TETA,IKLE,NPOIN,NELEM,NELMAX,MESH)
+     &(XAUX,AD,AX,TETA,IKLE,NPOIN,NELEM,NELMAX,MESH,IELM3,NELEM2)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    GETS THE TRIDIAGONAL PART OF A DIFFUSION MATRIX ON
@@ -36,12 +36,19 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        01/09/2011
+!+        V6P2
+!+   Element 51 programmed
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AD             |-->| DIAGONAL TERMS OF MATRIX
 !| AX             |-->| OFF-DIAGONAL TERMS OF MATRIX
+!| IELM3          |-->| TYPE OF ELEMENT
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| MESH           |-->| MESH STRUCTURE
 !| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELEM2         |-->| NUMBER OF TRIANGLES OF ORIGINAL 2D MESH
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| TETA           |-->| COEFFICIENT USED IN THE RESULT
@@ -56,8 +63,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN
-      INTEGER, INTENT(IN) :: IKLE(NELMAX,6)
+      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN,IELM3,NELEM2
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,*)
 !
       DOUBLE PRECISION, INTENT(IN)    :: TETA
       DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*),AX(NELMAX,*)
@@ -67,7 +74,30 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I1,I2,I3,I4,I5,I6,IELEM,NPLAN,IAN,ICOM,NPOIN2
+      INTEGER I1,I2,I3,I4,I5,I6,IELEM,NPLAN,IAN,ICOM,NPOIN2,IPLAN,K
+      INTEGER S1,S2,S3,IT1,IT2,IELEM3D,L1,L2
+!
+!     TETRA : WILL GIVE THE LOCAL NUMBERS OF POINTS IN THE PRISM
+!             THE 0 CORRESPOND TO SITUATIONS
+!             THAT NEVER HAPPEN (TETRA(1,1,1,... OR TETRA(2,2,2,...)
+!             SEE ALSO CPIKLE3 AND FLUX_EF_VF_3D, WITH SIMILAR USE
+      INTEGER TETRA(2,2,2,3,4),PLUS1(4),STO(4,4)
+      DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
+     &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
+     &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
+     &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
+      DATA PLUS1 /2,3,4,1/
+!     EBE SYMMETRIC STORAGE OF OFF-DIAGONAL TERMS FOR TETRAHEDRONS
+!     0 ARE PUT FOR DIAGONALS
+      DATA STO / 0, 1, 2, 3,
+     &           1, 0, 4, 5,
+     &           2, 4, 0, 6,
+     &           3, 5, 6, 0 /
+!     CORRESPONDING OFF-DIAGONAL TERMS
+!     DATA STO /1-1,2-1,3-1,4-1,
+!    &          1-2,2-2,3-2,4-2,
+!    &          1-3,2-3,3-3,4-3,
+!    &          1-4,2-4,3-4,4-4/
 !
 !-----------------------------------------------------------------------
 !
@@ -91,26 +121,104 @@
 !     ADDS TRIDIAGONAL TERMS
 !-----------------------------------------------------------------------
 !
-      DO IELEM=1,NELEM
+      IF(IELM3.EQ.41) THEN
 !
-        I1=IKLE(IELEM,1)
-        I2=IKLE(IELEM,2)
-        I3=IKLE(IELEM,3)
-        I4=IKLE(IELEM,4)
-        I5=IKLE(IELEM,5)
-        I6=IKLE(IELEM,6)
-        XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM,03) ! TERM 1-4
-        XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM,08) ! TERM 2-5
-        XAUX(I3,3)=XAUX(I3,3)+TETA*AX(IELEM,12) ! TERM 3-6
-        XAUX(I4,1)=XAUX(I4,1)+TETA*AX(IELEM,03) ! TERM 4-1
-        XAUX(I5,1)=XAUX(I5,1)+TETA*AX(IELEM,08) ! TERM 5-2
-        XAUX(I6,1)=XAUX(I6,1)+TETA*AX(IELEM,12) ! TERM 6-3
+        DO IELEM=1,NELEM
 !
-        AX(IELEM,03)=AX(IELEM,03)*(1.D0-TETA)
-        AX(IELEM,08)=AX(IELEM,08)*(1.D0-TETA)
-        AX(IELEM,12)=AX(IELEM,12)*(1.D0-TETA)
+          I1=IKLE(IELEM,1)
+          I2=IKLE(IELEM,2)
+          I3=IKLE(IELEM,3)
+          I4=IKLE(IELEM,4)
+          I5=IKLE(IELEM,5)
+          I6=IKLE(IELEM,6)
+          XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM,03) ! TERM 1-4
+          XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM,08) ! TERM 2-5
+          XAUX(I3,3)=XAUX(I3,3)+TETA*AX(IELEM,12) ! TERM 3-6
+          XAUX(I4,1)=XAUX(I4,1)+TETA*AX(IELEM,03) ! TERM 4-1
+          XAUX(I5,1)=XAUX(I5,1)+TETA*AX(IELEM,08) ! TERM 5-2
+          XAUX(I6,1)=XAUX(I6,1)+TETA*AX(IELEM,12) ! TERM 6-3
 !
+          AX(IELEM,03)=AX(IELEM,03)*(1.D0-TETA)
+          AX(IELEM,08)=AX(IELEM,08)*(1.D0-TETA)
+          AX(IELEM,12)=AX(IELEM,12)*(1.D0-TETA)
+!
+        ENDDO
+!
+      ELSEIF(IELM3.EQ.51) THEN
+!
+        DO IPLAN=1,NPLAN-1
+          DO IELEM=1,NELEM2
+!
+!           HERE LOWER LEVEL OF ELEMENTS ALWAYS TAKEN
+!           TO FIND THE WAY THE PRISM HAS BEEN CUT BY LOOKING
+!           AT GLOBAL NUMBERS OF POINTS
+!           THIS PART IS THUS COMMON TO ALL PLANES
+!           IKLE 3D IS TAKEN, COULD BE IKLE 2D AS WELL
+            I1=IKLE(IELEM,1)
+            I2=IKLE(IELEM,2)
+            I3=IKLE(IELEM,3)
+!           THIS IS DONE LIKE IN CPIKLE3 TO USE ARRAY TETRA
+            IF(I1.GT.I2) THEN
+              S1=1
+            ELSE
+              S1=2
+            ENDIF
+            IF(I2.GT.I3) THEN
+              S2=1
+            ELSE
+              S2=2
+            ENDIF
+            IF(I3.GT.I1) THEN
+              S3=1
+            ELSE
+              S3=2
+            ENDIF
+!
+!           NOW TAKING CONTRIBUTIONS OF TETRAHEDRON K= 1, 2 AND 3
+!   
+            DO K=1,3
+!             POINTS 1 TO 4
+              IELEM3D=3*(IPLAN-1)*NELEM2+IELEM+(K-1)*NELEM2
+              DO L1=1,4
+!               ORIGINAL NUMBER IN THE PRISM
+                IT1=TETRA(S1,S2,S3,K,L1)
+                L2=PLUS1(L1)
+                IT2=TETRA(S1,S2,S3,K,L2)
+                I1=IKLE(IELEM3D,L1)
+                I2=IKLE(IELEM3D,L2)
+!               WE LOOK FOR VERTICALS OF THE ORIGINAL PRISM
+                IF(IT1.EQ.1.AND.IT2.EQ.4) THEN
+                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 1-4
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 4-1 
+                ELSEIF(IT1.EQ.4.AND.IT2.EQ.1) THEN
+                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 4-1
+                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 1-4
+                ELSEIF(IT1.EQ.2.AND.IT2.EQ.5) THEN
+                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 2-5
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 5-2 
+                ELSEIF(IT1.EQ.5.AND.IT2.EQ.2) THEN
+                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 5-2
+                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 2-5
+                ELSEIF(IT1.EQ.3.AND.IT2.EQ.6) THEN
+                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 3-6
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 6-3 
+                ELSEIF(IT1.EQ.6.AND.IT2.EQ.3) THEN
+                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 6-3
+                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 3-6
+                ENDIF           
+              ENDDO
+            ENDDO
+!
+        ENDDO
       ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      ELSE
+        WRITE(LU,*) 'GETTRIEBE: ELEMENT NOT IMPLEMENTED:',IELM3
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

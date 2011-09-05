@@ -6,7 +6,7 @@
      & MESH,NELMAX,ELTSEG,ORISEG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    ASSEMBLES MATRICES EXTRA-DIAGONAL TERMS
@@ -28,6 +28,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        25/08/2011
+!+        V6P2
+!+   Tetrahedron element added
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIM1XMT        |-->| FIRST DIMENSION OF XMT
@@ -60,7 +65,7 @@
       INTEGER         , INTENT(IN)    :: IELM1,IELM2,NELMAX
       INTEGER         , INTENT(IN)    :: DIM1XMT,DIM2XMT,STOXMT
       INTEGER         , INTENT(IN)    :: ELTSEG(NELMAX,*)
-      INTEGER         , INTENT(IN)    :: ORISEG(NELMAX,3)
+      INTEGER         , INTENT(IN)    :: ORISEG(NELMAX,*)
       CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT
       DOUBLE PRECISION, INTENT(INOUT) :: XMT(DIM1XMT,DIM2XMT)
       DOUBLE PRECISION, INTENT(INOUT) :: XM(*)
@@ -96,7 +101,7 @@
          IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
          IF (LNG.EQ.1) WRITE(LU,300)
          IF (LNG.EQ.2) WRITE(LU,301)
-         CALL PLANTE(0)
+         CALL PLANTE(1)
          STOP
       ENDIF
 !
@@ -201,6 +206,25 @@
           CALL AS3_4141_Q(XM,BIEF_NBSEG(IELM1,MESH),
      &                    XMT,DIM1XMT,DIM2XMT,STOXMT,
      &                    NELMAX,NELEM,ELTSEG,ORISEG)
+        ENDIF
+!
+      ELSEIF( (IELM1.EQ.31.AND.IELM2.EQ.31).OR.
+     &        (IELM1.EQ.51.AND.IELM2.EQ.51)     ) THEN
+!
+!       TETRAHEDRONS MATRIX
+!
+        IF(TYPEXT.EQ.'S') THEN
+          CALL AS3_3131_S(XM,BIEF_NBSEG(IELM1,MESH),
+     &                    XMT,NELMAX,NELEM,
+     &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3),
+     &                    ELTSEG(1,4),ELTSEG(1,5),ELTSEG(1,6))
+        ELSEIF(TYPEXT.EQ.'Q') THEN
+          CALL AS3_3131_Q(XM,BIEF_NBSEG(IELM1,MESH),
+     &                    XMT,NELMAX,NELEM,
+     &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3),
+     &                    ELTSEG(1,4),ELTSEG(1,5),ELTSEG(1,6),
+     &                    ORISEG(1,1),ORISEG(1,2),ORISEG(1,3),
+     &                    ORISEG(1,4),ORISEG(1,5),ORISEG(1,6))
         ENDIF
 !
       ELSE

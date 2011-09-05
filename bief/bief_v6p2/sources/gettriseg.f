@@ -2,7 +2,7 @@
                      SUBROUTINE GETTRISEG
 !                    ********************
 !
-     &(XAUX,AD,AX,TETA,NPOIN,MESH,NSEG3D,NSEG2D,NPLAN,NPOIN2)
+     &(XAUX,AD,AX,TETA,NPOIN,MESH,NSEG3D,NSEG2D,NPLAN,NPOIN2,IELM3)
 !
 !***********************************************************************
 ! BIEF   V6P1                                   21/08/2010
@@ -42,6 +42,7 @@
 !| AD             |-->| DIAGONAL TERMS OF MATRIX
 !| AX             |-->| OFF-DIAGONAL TERMS OF MATRIX 
 !|                |   | HERE DIMENSION 1 BECAUSE SYMMETRY
+!| IELM3          |-->| TYPE OF ELEMENT
 !| MESH           |-->| MESH STRUCTURE
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN          |-->| NUMBER OF POINTS
@@ -60,7 +61,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN,NSEG3D,NSEG2D,NPLAN,NPOIN2
+      INTEGER, INTENT(IN) :: NPOIN,NSEG3D,NSEG2D,NPLAN,NPOIN2,IELM3
 !
       DOUBLE PRECISION, INTENT(IN)    :: TETA
       DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*),AX(NSEG3D)
@@ -71,11 +72,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I2,I3,IPLAN,IAN,ICOM,SEGUP,SEGDOWN,NSEGH,NSEGV
-!
-!-----------------------------------------------------------------------
-!
-      NSEGH=NSEG2D*NPLAN
-      NSEGV=NPOIN2*(NPLAN-1)
 !
 !-----------------------------------------------------------------------
 !
@@ -96,38 +92,51 @@
 !     TRIDIAGONAL TERMS
 !-----------------------------------------------------------------------
 !
-!     PLANE ON THE BOTTOM
+!     VERTICAL SEGMENTS HAVE THE SAME POSITION, SEE STOSEG41,STOSEG51
 !
-      DO I2=1,NPOIN2
-        SEGUP=NSEGH+I2
-        XAUX(I2,1)=0.D0
-        XAUX(I2,3)=TETA*AX(SEGUP)
-      ENDDO
+      IF(IELM3.EQ.41.OR.IELM3.EQ.51) THEN
 !
-!     PLANE AT THE FREE SURFACE
+        NSEGH=NSEG2D*NPLAN
+        NSEGV=NPOIN2*(NPLAN-1)
 !
-      DO I2=1,NPOIN2
-        I3=I2+(NPLAN-1)*NPOIN2
-        SEGDOWN=NSEGH+NPOIN2*(NPLAN-2)+I2
-        XAUX(I3,1)=TETA*AX(SEGDOWN)
-        XAUX(I3,3)=0.D0
-      ENDDO
+!       PLANE ON THE BOTTOM
 !
-!     OTHER PLANES
-!
-      IF(NPLAN.GT.2) THEN
-      DO IPLAN=2,NPLAN-1
         DO I2=1,NPOIN2
-          I3=I2+(IPLAN-1)*NPOIN2
-          SEGDOWN=NSEGH+NPOIN2*(IPLAN-2)+I2
-          SEGUP  =SEGDOWN+NPOIN2
-          XAUX(I3,1)=TETA*AX(SEGDOWN)
-          XAUX(I3,3)=TETA*AX(SEGUP)
+          SEGUP=NSEGH+I2
+          XAUX(I2,1)=0.D0
+          XAUX(I2,3)=TETA*AX(SEGUP)
         ENDDO
-      ENDDO
-      ENDIF
 !
-      CALL OV('X=CX    ',AX(NSEGH+1:NSEGH+NSEGV),AX,AX,1.D0-TETA,NSEGV)
+!       PLANE AT THE FREE SURFACE
+!
+        DO I2=1,NPOIN2
+          I3=I2+(NPLAN-1)*NPOIN2
+          SEGDOWN=NSEGH+NPOIN2*(NPLAN-2)+I2
+          XAUX(I3,1)=TETA*AX(SEGDOWN)
+          XAUX(I3,3)=0.D0
+        ENDDO
+!
+!       OTHER PLANES
+!
+        IF(NPLAN.GT.2) THEN
+          DO IPLAN=2,NPLAN-1
+            DO I2=1,NPOIN2
+              I3=I2+(IPLAN-1)*NPOIN2
+              SEGDOWN=NSEGH+NPOIN2*(IPLAN-2)+I2
+              SEGUP  =SEGDOWN+NPOIN2
+              XAUX(I3,1)=TETA*AX(SEGDOWN)
+              XAUX(I3,3)=TETA*AX(SEGUP)
+            ENDDO
+          ENDDO
+        ENDIF
+!
+       CALL OV('X=CX    ',AX(NSEGH+1:NSEGH+NSEGV),AX,AX,1.D0-TETA,NSEGV)
+!
+      ELSE
+        WRITE(LU,*) 'GETTRISEG: UNKNOWN ELEMENT:',IELM3
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

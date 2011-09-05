@@ -9,7 +9,7 @@
      & XNOR,YNOR,ZNOR,NPT,NELEM,NELMAX,IELM1,LV,MSK,MASKEL,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                  21/08/2010
+! BIEF   V6P2                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -1055,7 +1055,7 @@
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
              IF(FORMUL(1:15).EQ.'GRADF          '.OR.
-     &          FORMUL(1:15).EQ.'GRADF2         '  ) THEN
+     &          FORMUL(1:15).EQ.'GRADF 2        '  ) THEN
              CALL VC13TT(XMUL,SF,F,XEL,YEL,ZEL,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   NELEM,NELMAX,T(1,1),T(1,2),
