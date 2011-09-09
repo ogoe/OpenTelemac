@@ -30,6 +30,7 @@
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 from parserXML import runXML
 from os import path,walk,environ
+import parser
 import sys
 
 # _____             ________________________________________________
@@ -47,47 +48,47 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    CFGNAME = ''
-   PWD = path.dirname(path.dirname(sys.argv[0]))
-   SYSTELCFG = path.join(PWD,'config')
+   PWD = path.dirname(sys.argv[0])
+   SYSTELCFG = path.join(path.dirname(PWD),'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
+   oparser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   oparser.add_option("-c", "--configname",
                       type="string",
                       dest="configName",
                       default=CFGNAME,
                       help="specify configuration name, default is the first found in the configuration file" )
-   parser.add_option("-f", "--configfile",
+   oparser.add_option("-f", "--configfile",
                       type="string",
                       dest="configFile",
                       default=SYSTELCFG,
                       help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",
+   oparser.add_option("-r", "--rootdir",
                       type="string",
                       dest="rootDir",
-                      default=PWD,
+                      default=path.dirname(PWD),
                       help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
+   oparser.add_option("-v", "--version",
                       type="string",
                       dest="version",
                       default='',
                       help="specify the version number, default is taken from config file" )
-   parser.add_option("-s", "--sortiefile",
+   oparser.add_option("-s", "--sortiefile",
                       action="store_true",
                       dest="sortieFile",
                       default=False,
                       help="specify whether there is a sortie file, default is no" )
-   parser.add_option("-t", "--tmpdirectory",
-                      action="store_false",
-                      dest="tmpdirectory",
-                      default=True,
-                      help="specify whether the temporary directory is removed, default is yes" )
-   parser.add_option("-x", "--compileonly",
-                      action="store_true",
-                      dest="compileonly",
-                      default=False,
-                      help="specify whether to only create an executable but not run, default is no" )
-   options, args = parser.parse_args()
+   oparser.add_option("-p", "--process",
+                      type="string",
+                      dest="process",
+                      default='',
+                      help="filter specific process actions from the XML file" )
+   oparser.add_option("-d", "--draw",
+                      type="string",
+                      dest="draw",
+                      default='',
+                      help="filter specific drawing actions from the XML file" )
+   options, args = oparser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.abspath(path.dirname(options.configFile))
@@ -117,6 +118,7 @@ if __name__ == "__main__":
       if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
+      cfg.update({ 'PWD':PWD })
 
       for codeName in cfg['VALIDATION'].keys():
 # ~~ Scans all XML files to launch validation ~~~~~~~~~~~~~~~~~~~~~~

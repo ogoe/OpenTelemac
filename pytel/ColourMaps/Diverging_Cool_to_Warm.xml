@@ -1,0 +1,4 @@
+<ColorMap name="Cool to Warm" space="Diverging">
+  <Point x="0" o="0" r="0.231373" g="0.298039" b="0.752941"/>
+  <Point x="1" o="1" r="0.705882" g="0.0156863" b="0.14902"/>
+</ColorMap>

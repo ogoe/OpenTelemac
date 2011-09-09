@@ -226,7 +226,7 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
       shutil.copy2(useName,path.basename(useName))
 
    # ~~ save a copy for future uses ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   shutil.copy2(path.basename(useName),path.join(CASDir,path.basename(useName)))
+   if CASDir != '': shutil.copy2(path.basename(useName),path.join(CASDir,path.basename(useName)))
 
    return True
 
