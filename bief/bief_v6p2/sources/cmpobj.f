@@ -5,7 +5,7 @@
      &( OBJ1 , OBJ2 )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPARES 2 OBJECTS.
@@ -71,11 +71,15 @@
 !
         ELSE
 !
-          IF(LNG.EQ.1) WRITE(LU,100)
-          IF(LNG.EQ.2) WRITE(LU,101)
-100       FORMAT(1X,'CMPOBJ (BIEF) : POUR BLOCS ET VECTEURS SEULEMENT')
-101       FORMAT(1X,'CMPOBJ (BIEF) : FOR BLOCS AND VECTORS ONLY')
-          CALL PLANTE(0)
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CMPOBJ (BIEF) : OBJET 1 : ',OBJ1%NAME,
+     &                  ' DE TYPE ',TYP1,' CAS NON PREVU'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'CMPOBJ (BIEF): OBJECT 1 : ',OBJ1%NAME,
+     &                  ' OF TYPE ',TYP1,' UNEXPECTED CASE'
+          ENDIF
+          CALL PLANTE(1)
           STOP
         ENDIF
 !

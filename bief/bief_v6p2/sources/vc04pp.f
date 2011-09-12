@@ -4,10 +4,10 @@
 !
      &( XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,X,Y,Z,
      &  IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
-     &  W1,W2,W3,W4,W5,W6,SPECAD,FORMUL,NPLAN)
+     &  W1,W2,W3,W4,W5,W6,SPECAD,FORMUL,NELEM2)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -36,7 +36,9 @@
 !warning  THE JACOBIAN MUST BE POSITIVE
 !warning  THE RESULT IS IN W IN NOT ASSEMBLED FORM
 !warning  IF SPECAD=.TRUE., THE ADVECTING FIELD IS NOT ONLY
-!+                 U AND V BUT U+DM1*GRAD(ZCONV)
+!+        U AND V BUT U+DM1*GRAD(ZCONV). ZCONV IS HERE G, DM1 IS F
+!+        GRAD(ZCONV) IS HERE H, DM1 IS F
+!+               
 !warning  VERSION 6.1: WITH MASS-LUMPING ON THE VERTICAL
 !
 !history  J-M HERVOUET (LNHE)
@@ -55,6 +57,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        07/09/2011
+!+        V6P2
+!+   Case SPECAD=.TRUE. differently treated, with gradient of ZCONV
+!+   now given as argument.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -100,7 +108,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPLAN
+      INTEGER, INTENT(IN) :: NELEM,NELMAX,NELEM2
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX),IKLE3(NELMAX)
       INTEGER, INTENT(IN) :: IKLE4(NELMAX),IKLE5(NELMAX),IKLE6(NELMAX)
 !
@@ -112,10 +120,11 @@
       LOGICAL, INTENT(IN) :: SPECAD
       CHARACTER(LEN=16), INTENT(IN) :: FORMUL
 !
-!     STRUCTURES OF U, V AND REAL DATA
+!     STRUCTURES AND THEIR REAL DATA
 !
       TYPE(BIEF_OBJ),   INTENT(IN) :: SU,SV,SW,SF,SG,SH
-      DOUBLE PRECISION, INTENT(IN) :: U(*),V(*),W(*),F(*),G(*),H(*)
+      DOUBLE PRECISION, INTENT(IN) :: U(*),V(*),W(*),F(*),G(*)
+      DOUBLE PRECISION, INTENT(IN) :: H(NELEM2,2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -123,8 +132,8 @@
       DOUBLE PRECISION HU1,HU2,HUINF,HUSUP,HV1,HV2,HVINF,HVSUP
       DOUBLE PRECISION U1,U2,U3,U4,U5,U6,V1,V2,V3,V4,V5,V6
       DOUBLE PRECISION Q1,Q2,Q3,Q4,Q5,Q6,Z2,Z3,Z4,Z5,Z6,G2,G3
-      DOUBLE PRECISION GRADGX,GRADGY,DET
-      INTEGER I1,I2,I3,I4,I5,I6,IELEM2,NELEM2
+!     DOUBLE PRECISION GRADGX,GRADGY,DET
+      INTEGER I1,I2,I3,I4,I5,I6,IELEM2
       INTEGER IELEM,IELMU,IELMV,IELMW
 !
 !**********************************************************************
@@ -136,7 +145,6 @@
       IELMU=SU%ELM
       IELMV=SV%ELM
       IELMW=SW%ELM
-      NELEM2 = NELEM/(NPLAN-1)
 !
 !-----------------------------------------------------------------------
 !
@@ -203,6 +211,11 @@
 !
       DO IELEM = 1 , NELEM
 !
+!        CORRESPONDING 2D ELEMENT ON THE VERTICAL
+!        SEE NUMBERING OF PRISMS
+!
+         IELEM2 = MOD(IELEM-1,NELEM2) + 1
+!
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
          I3 = IKLE3(IELEM)
@@ -215,31 +228,18 @@
          H3 = Z(I6) - Z(I3)
          SHT = H1 + H2 + H3
 !
-         Y2 = Y(I2) - Y(I1)
-         Y3 = Y(I3) - Y(I1)
-         X2 = X(I2) - X(I1)
-         X3 = X(I3) - X(I1)
-         DET= X2*Y3-X3*Y2
-         IELEM2 = MOD(IELEM-1,NELEM2) + 1
-!        G IS PIECE-WISE LINEAR
-!        IT IS ZCONV IN TELEMAC-3D
-         G2 = G(IELEM2+NELEM2)-G(IELEM2)
-         G3 = G(IELEM2+2*NELEM2)-G(IELEM2)
-         GRADGX=(G2*Y3-G3*Y2)/DET
-         GRADGY=(X2*G3-X3*G2)/DET
-!
-         U1=U(I1)+F(I1)*GRADGX
-         U2=U(I2)+F(I2)*GRADGX
-         U3=U(I3)+F(I3)*GRADGX
-         U4=U(I4)+F(I4)*GRADGX
-         U5=U(I5)+F(I5)*GRADGX
-         U6=U(I6)+F(I6)*GRADGX
-         V1=V(I1)+F(I1)*GRADGY
-         V2=V(I2)+F(I2)*GRADGY
-         V3=V(I3)+F(I3)*GRADGY
-         V4=V(I4)+F(I4)*GRADGY
-         V5=V(I5)+F(I5)*GRADGY
-         V6=V(I6)+F(I6)*GRADGY
+         U1=U(I1)+F(I1)*H(IELEM2,1)
+         U2=U(I2)+F(I2)*H(IELEM2,1)
+         U3=U(I3)+F(I3)*H(IELEM2,1)
+         U4=U(I4)+F(I4)*H(IELEM2,1)
+         U5=U(I5)+F(I5)*H(IELEM2,1)
+         U6=U(I6)+F(I6)*H(IELEM2,1)
+         V1=V(I1)+F(I1)*H(IELEM2,2)
+         V2=V(I2)+F(I2)*H(IELEM2,2)
+         V3=V(I3)+F(I3)*H(IELEM2,2)
+         V4=V(I4)+F(I4)*H(IELEM2,2)
+         V5=V(I5)+F(I5)*H(IELEM2,2)
+         V6=V(I6)+F(I6)*H(IELEM2,2)
 !
          HU1 = (U1+U2+U3)*SHT + H1*U1 + H2*U2 + H3*U3
          HU2 = (U4+U5+U6)*SHT + H1*U4 + H2*U5 + H3*U6

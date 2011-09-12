@@ -482,11 +482,12 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-             CALL VC04PP(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XEL,YEL,ZEL,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
-     &                   T(1,3),T(1,4),T(1,5),T(1,6),SPECAD,FORMUL,
-     &                   MESH%NPOIN/BIEF_NBPTS(11,MESH))
+          CALL VC04PP(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XEL,YEL,ZEL,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
+     &                T(1,3),T(1,4),T(1,5),T(1,6),SPECAD,FORMUL,
+!                     THIS IS TO RETRIEVE THE NUMBER OF TRIANGLES
+     &                BIEF_NBPTS(10,MESH))
 !
 !-----------------------------------------------------------------------
 !
@@ -494,10 +495,12 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-             CALL VC04TT(XMUL,SU,SV,SW,U,V,W,XEL,YEL,ZEL,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   NELEM,NELMAX,T(1,1),T(1,2),
-     &                   T(1,3),T(1,4),FORMUL)
+          CALL VC04TT(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XEL,YEL,ZEL,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                NELEM,NELMAX,T(1,1),T(1,2),
+     &                T(1,3),T(1,4),FORMUL,SPECAD,
+!                     THIS IS TO RETRIEVE THE NUMBER OF TRIANGLES
+     &                BIEF_NBPTS(10,MESH))
 !
 !-----------------------------------------------------------------------
 !       OTHER
@@ -543,24 +546,24 @@
 !
         ELSEIF(IELM1.EQ.61) THEN
 !
-             CALL VC05FT(XMUL,SU,SV,U,V,XEL,YEL,ZEL,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
-     &                   NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
+          CALL VC05FT(XMUL,SU,SV,U,V,XEL,YEL,ZEL,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
+     &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
 !
 !       ELEMENT P1 QUADRILATERAL FOR VERTICAL SIDES OF THE PRISMS
 !
         ELSEIF(IELM1.EQ.71) THEN
 !
-             CALL VC05FF(XMUL,SU,SV,U,V,XEL,YEL,ZEL,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
-     &                   NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
+          CALL VC05FF(XMUL,SU,SV,U,V,XEL,YEL,ZEL,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
+     &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
 !       ELEMENT LINEAR SEGMENT
 !
         ELSEIF(IELM1.EQ.1) THEN
 !
-             CALL VC05OO(XMUL,SU,SV,U,V,XNOR,YNOR,SURFAC,
-     &                   IKLE,NBOR,NELEM,NELMAX,T(1,1),T(1,2))
+          CALL VC05OO(XMUL,SU,SV,U,V,XNOR,YNOR,SURFAC,
+     &                IKLE,NBOR,NELEM,NELMAX,T(1,1),T(1,2))
 !
 !-----------------------------------------------------------------------
 !       OTHER

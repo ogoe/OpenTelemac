@@ -46,6 +46,7 @@
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS (SEE IKLE)
 !| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH
 !| NSEG2D         |-->| NUMBER OF SEGMENTS IN 2D
 !| NSEG3D         |-->| NUMBER OF SEGMENTS IN 3D
 !| SENS           |-->| IF 1: HORIZONTAL FLUXES FROM BOTTOM TO TOP
@@ -65,6 +66,8 @@
       INTEGER, INTENT(IN)             :: NSEG2D,NSEG3D,NELEM2,NELEM3
 !                                             *=NSEG2D*NPLAN+NPOIN2*NETAGE
       INTEGER, INTENT(IN)             :: IOPT,SENS,IELM3,NPLAN,NELMAX
+!                                                    6 IF IELM3=41
+!                                                    4 IF IELM3=51
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,*)
       DOUBLE PRECISION, INTENT(INOUT) :: FLOW(NSEG3D)
 !                                                   6 IF IELM3=41
@@ -180,15 +183,17 @@
 !     ADDS FLUXES ON HORIZONTAL SEGMENTS (FOR SEGMENT NUMBERING IN 3D
 !                                         SEE STOSEG51 IN BIEF)
 !
-!     INITIALISING
+!     LOOP ON LAYERS OF ELEMENTS
 !
-      DO IELEM=1,NELEM2
-        W2D(IELEM,1)=0.D0
-        W2D(IELEM,2)=0.D0
-        W2D(IELEM,3)=0.D0
-      ENDDO
+      DO IPLAN=1,NPLAN-1
 !
-      DO IPLAN=1,NPLAN
+!       INITIALISING
+!
+        DO IELEM=1,NELEM2
+          W2D(IELEM,1)=0.D0
+          W2D(IELEM,2)=0.D0
+          W2D(IELEM,3)=0.D0
+        ENDDO
 !
 !       LOOP ON TRIANGLES
 !
@@ -220,39 +225,21 @@
           ENDIF
 !
 !         NOW TAKING CONTRIBUTIONS OF TETRAHEDRON K= 1, 2 AND 3
-!         UNDER THE PLANE AND OVER THE PLANE
 ! 
-!         UNDER THE PLANE
-          IF(IPLAN.GE.2) THEN       
           DO K=1,3
-!           POINTS 1 TO 4
-            DO L=1,4
-!             ORIGINAL NUMBER IN THE PRISM
-              IT=TETRA(S1,S2,S3,K,L)
-!             WE LOOK FOR POINTS 4,5,6 OF THE ORIGINAL PRISM
-              IF(IT.GE.4) THEN
-                IELEM3D=3*(IPLAN-2)*NELEM2+IELEM+(K-1)*NELEM2
-                W2D(IELEM,IT-3)=W2D(IELEM,IT-3)+W3D(IELEM3D,L)
-              ENDIF              
-            ENDDO
-          ENDDO
-          ENDIF 
 !
-!         OVER THE PLANE
-          IF(IPLAN.LT.NPLAN) THEN       
-          DO K=1,3
+            IELEM3D=3*(IPLAN-1)*NELEM2+IELEM+(K-1)*NELEM2
 !           POINTS 1 TO 4
             DO L=1,4
 !             ORIGINAL NUMBER IN THE PRISM
               IT=TETRA(S1,S2,S3,K,L)
-!             WE LOOK FOR POINTS 1,2,3 OF THE ORIGINAL PRISM
-              IF(IT.LE.3) THEN
-                IELEM3D=3*(IPLAN-1)*NELEM2+IELEM+(K-1)*NELEM2
-                W2D(IELEM,IT)=W2D(IELEM,IT)+W3D(IELEM3D,L)
+              IF(IT.GE.4) THEN
+                W2D(IELEM,IT-3)=W2D(IELEM,IT-3)+W3D(IELEM3D,L)
+              ELSE
+                W2D(IELEM,IT  )=W2D(IELEM,IT  )+W3D(IELEM3D,L)
               ENDIF              
             ENDDO
           ENDDO
-          ENDIF 
 !
         ENDDO
 !

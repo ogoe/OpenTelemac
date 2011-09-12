@@ -2,11 +2,12 @@
                      SUBROUTINE VC04TT
 !                    *****************
 !
-     &(XMUL,SU,SV,SW,U,V,W,X,Y,Z,
-     & IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,W1,W2,W3,W4,FORMUL)
+     &(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,X,Y,Z,
+     & IKLE1,IKLE2,IKLE3,IKLE4,NELEM,NELMAX,W1,W2,W3,W4,FORMUL,SPECAD,
+     & NELEM2)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -26,6 +27,9 @@
 !
 !warning  THE JACOBIAN MUST BE POSITIVE
 !warning  THE RESULT IS IN W IN NOT ASSEMBLED FORM
+!warning  IF SPECAD=.TRUE., THE ADVECTING FIELD IS NOT ONLY
+!+        U AND V BUT U+DM1*GRAD(ZCONV). ZCONV IS HERE G, DM1 IS F
+!+               
 !
 !history  J-M HERVOUET (LNH)
 !+        22/03/02
@@ -44,6 +48,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        07/09/2011
+!+        V6P2
+!+   Adaptation to case SPECAD=.TRUE.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FORMUL         |-->| STRING WITH FORMULA OF VECTOR
 !| IKLE1          |-->| FIRST POINT OF TETRAHEDRA
@@ -51,7 +60,9 @@
 !| IKLE3          |-->| THIRD POINT OF TETRAHEDRA
 !| IKLE4          |-->| FOURTH POINT OF TETRAHEDRA
 !| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELEM2         |-->| NUMBER OF 2D ELEMENTS (CASE SPECAD)
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| SPECAD         |-->| IF YES, SPECIAL ADVECTION FIELD, SEE ABOVE
 !| SU             |-->| BIEF_OBJ STRUCTURE OF U
 !| SV             |-->| BIEF_OBJ STRUCTURE OF V
 !| SW             |-->| BIEF_OBJ STRUCTURE OF W
@@ -76,27 +87,30 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NELMAX
+      INTEGER, INTENT(IN) :: NELEM,NELMAX,NELEM2
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX)
       INTEGER, INTENT(IN) :: IKLE3(NELMAX),IKLE4(NELMAX)
 !
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),Z(*)
+      DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*),Z(*)
       DOUBLE PRECISION, INTENT(INOUT) :: W1(NELMAX),W2(NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) :: W3(NELMAX),W4(NELMAX)
-      DOUBLE PRECISION, INTENT(IN) :: XMUL
+      DOUBLE PRECISION, INTENT(IN)    :: XMUL
+!
+      LOGICAL, INTENT(IN) :: SPECAD
 !
       CHARACTER(LEN=16), INTENT(IN) :: FORMUL
 !
-!     STRUCTURES OF U, V AND REAL DATA
+!     STRUCTURES AND THERE REAL DATA
 !
-      TYPE(BIEF_OBJ),   INTENT(IN) :: SU,SV,SW
-      DOUBLE PRECISION, INTENT(IN) :: U(*),V(*),W(*)
+      TYPE(BIEF_OBJ),   INTENT(IN) :: SU,SV,SW,SF,SG,SH
+      DOUBLE PRECISION, INTENT(IN) :: U(*),V(*),W(*),F(*),G(*)
+      DOUBLE PRECISION, INTENT(IN) :: H(NELEM2,2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION XSUR24,X2,X3,X4,Y2,Y3,Y4,Z2,Z3,Z4
       DOUBLE PRECISION U1,U2,U3,U4,V1,V2,V3,V4,Q1,Q2,Q3,Q4
-      INTEGER I1,I2,I3,I4,IELEM,IELMU,IELMV,IELMW
+      INTEGER I1,I2,I3,I4,IELEM,IELEM2,IELMU,IELMV,IELMW
 !
 !**********************************************************************
 !
@@ -123,7 +137,11 @@
 !
 !  U AND V DISCRETISED IN P1 PRISM:
 !
-      DO 3 IELEM = 1 , NELEM
+      IF(.NOT.SPECAD) THEN
+!
+!     STANDARD CASE
+!
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -175,7 +193,72 @@
      &Y2*Z3-U3*Z2*Y3-V3*X2*Z3+V3*Z2*X3-V1*X2*Z3+V1*Z2*X3-U2*Z2*Y3+U2*Y2*
      &Z3-V2*X2*Z3+V2*Z2*X3)
 !
-3     CONTINUE
+      ENDDO
+!
+      ELSE
+!
+!     CASE WITH SPECIFIC ADVECTING FIELD
+!
+      DO IELEM = 1 , NELEM
+!
+!        CORRESPONDING 2D ELEMENT ON THE VERTICAL
+!        SEE NUMBERING OF ELEMENTS WHEN PRISMS ARE
+!        CUT INTO TETRAHEDRONS
+!
+         IELEM2 = MOD(IELEM-1,NELEM2) + 1
+         I1 = IKLE1(IELEM)
+         I2 = IKLE2(IELEM)
+         I3 = IKLE3(IELEM)
+         I4 = IKLE4(IELEM)
+!
+         X2 = X(I2) - X(I1)
+         X3 = X(I3) - X(I1)
+         X4 = X(I4) - X(I1)
+!
+         Y2 = Y(I2) - Y(I1)
+         Y3 = Y(I3) - Y(I1)
+         Y4 = Y(I4) - Y(I1)
+!
+         Z2 = Z(I2) - Z(I1)
+         Z3 = Z(I3) - Z(I1)
+         Z4 = Z(I4) - Z(I1)
+!
+         U1 = U(I1)+F(I1)*H(IELEM2,1)
+         U2 = U(I2)+F(I2)*H(IELEM2,1)
+         U3 = U(I3)+F(I3)*H(IELEM2,1)
+         U4 = U(I4)+F(I4)*H(IELEM2,1)
+         V1 = V(I1)+F(I1)*H(IELEM2,2)
+         V2 = V(I2)+F(I2)*H(IELEM2,2)
+         V3 = V(I3)+F(I3)*H(IELEM2,2)
+         V4 = V(I4)+F(I4)*H(IELEM2,2)
+!
+         W1(IELEM) = XSUR24*(
+     &U3*Z2*Y3+V4*X3*Z4-U4*Y3*Z4+U4*Z2*Y3+U4*Y4*Z3-U4*Z2*Y4-U4*
+     &Y2*Z3+U1*Y4*Z3+V1*Z2*X4-V4*X2*Z4-U3*Z2*Y4-U2*Y2*Z3+V4*X2*Z3+V4*Z2*
+     &X4-V4*X4*Z3+V2*Z2*X4-U2*Z2*Y4+U2*Y2*Z4+U2*Y4*Z3+U2*Z2*Y3-V1*Z2*X3+
+     &V1*X2*Z3-V1*X4*Z3+V1*X3*Z4+U3*Y2*Z4+U3*Y4*Z3-V3*X2*Z4-V3*X4*Z3+V3*
+     &X3*Z4-V3*Z2*X3+V3*X2*Z3+V3*Z2*X4+U1*Z2*Y3-U1*Y2*Z3+U1*Y2*Z4-V2*X2*
+     &Z4-V2*X4*Z3-V2*Z2*X3+V2*X2*Z3-U3*Y2*Z3+V2*X3*Z4-V4*Z2*X3-U1*Y3*Z4+
+     &U4*Y2*Z4-U3*Y3*Z4-V1*X2*Z4-U1*Z2*Y4-U2*Y3*Z4)
+!
+         W2(IELEM) = XSUR24*(
+     &-U4*Y4*Z3+U4*Y3*Z4-V4*X3*Z4+V4*X4*Z3+U1*Y3*Z4-U1*Y4*Z3-V3
+     &*X3*Z4+V3*X4*Z3+U3*Y3*Z4-U3*Y4*Z3-V1*X3*Z4+V1*X4*Z3+U2*Y3*Z4-U2*Y4
+     &*Z3-V2*X3*Z4+V2*X4*Z3)
+!
+         W3(IELEM) = XSUR24*(
+     &U4*Z2*Y4-U4*Y2*Z4-V4*Z2*X4+U3*Z2*Y4+V4*X2*Z4-V1*Z2*X4-U1*
+     &Y2*Z4-V3*Z2*X4+V3*X2*Z4-U3*Y2*Z4+V1*X2*Z4-U2*Y2*Z4+U2*Z2*Y4-V2*Z2*
+     &X4+V2*X2*Z4+U1*Z2*Y4)
+!
+         W4(IELEM) = XSUR24*(
+     &U4*Y2*Z3-U4*Z2*Y3+V4*Z2*X3-V4*X2*Z3+U1*Y2*Z3-U1*Z2*Y3+U3*
+     &Y2*Z3-U3*Z2*Y3-V3*X2*Z3+V3*Z2*X3-V1*X2*Z3+V1*Z2*X3-U2*Z2*Y3+U2*Y2*
+     &Z3-V2*X2*Z3+V2*Z2*X3)
+!
+      ENDDO
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

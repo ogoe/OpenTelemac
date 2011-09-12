@@ -114,11 +114,12 @@
 !
 !-----------------------------------------------------------------------
 !
-!   LINEAR DISCRETISATION OF DIFFUSION COEFFICIENTS
+!     LINEAR DISCRETISATION OF DIFFUSION COEFFICIENTS
 !
-!   LOOP ON THE TETRAHEDRONS
+!     LOOP ON THE TETRAHEDRONS
 !
       DO 20 IELEM=1,NELEM
+!
       I1=IKLE(IELEM,1)
       I2=IKLE(IELEM,2)
       I3=IKLE(IELEM,3)
@@ -151,9 +152,9 @@
       W3 = W(IKLE(IELEM,3))
       W4 = W(IKLE(IELEM,4))
 !
-      XJAC = X2*Y3*Z4-X2*Y4*Z3-Y2*X3*Z4+Y2*X4*Z3+Z2*X3*Y4-Z2*X4*Y3
+      XJAC = X2*(Y3*Z4-Y4*Z3)+Y2*(X4*Z3-X3*Z4)+Z2*(X3*Y4-X4*Y3)
 !
-      COEF = SUR120/XJAC
+      COEF = SUR120/MAX(XJAC,1.D-8)
 !
       A1 = -Y3*Z4+Y4*Z3+Y2*Z4-Z2*Y4-Y2*Z3+Z2*Y3
       A2 = -X3*Z4+X4*Z3+X2*Z4-Z2*X4-X2*Z3+Z2*X3
@@ -171,47 +172,25 @@
       AUX7 = 2*U2*W2+2*U3*W3+U3*W2+U3*W1+U1*W2+2*U1*W1+U2*W3+U2*W1+
      &U1*W3+U4*W2+U4*W1+2*U4*W4+U1*W4+U2*W4+U4*W3+U3*W4
 !
-      T(IELEM,1)= (A1**2*AUX1-
-     &A1*
-     &A2*AUX2+
-     &A1*
-     &A3*AUX7+
-     &A2**2*AUX4-
-     &A2*
-     &A3*AUX5+
-     &A3**2*AUX6)*2*COEF
+      T(IELEM,1)= (A1**2*AUX1-A1*A2*AUX2+A1*A3*AUX7+A2**2*AUX4-A2*
+     &A3*AUX5+A3**2*AUX6)*2*COEF
 !
-      XM(IELEM,1) = (2*(Y3*Z4-Y4*Z3)*
-     &A1*AUX1-
-     &(Y3*Z4-Y4*Z3)*A2*AUX2+
-     &(Y3*Z4-Y4*Z3)*A3*AUX7-
-     &(X3*Z4-X4*Z3)*A1*AUX2+
-     &2*(X3*Z4-X4*Z3)*A2*AUX4-
-     &(X3*Z4-X4*Z3)*A3*AUX5-
-     &(-X3*Y4+X4*Y3)*A1*AUX7+
-     &(-X3*Y4+X4*Y3)*A2*AUX5-
+      XM(IELEM,1) = (2*(Y3*Z4-Y4*Z3)*A1*AUX1-(Y3*Z4-Y4*Z3)*A2*AUX2+
+     &(Y3*Z4-Y4*Z3)*A3*AUX7-(X3*Z4-X4*Z3)*A1*AUX2+
+     &2*(X3*Z4-X4*Z3)*A2*AUX4-(X3*Z4-X4*Z3)*A3*AUX5-
+     &(-X3*Y4+X4*Y3)*A1*AUX7+(-X3*Y4+X4*Y3)*A2*AUX5-
      &2*(-X3*Y4+X4*Y3)*A3*AUX6)*COEF
 !
-      XM(IELEM,2) = (2*(-Y2*Z4+Z2*Y4)*
-     &A1*AUX1-
-     &(-Y2*Z4+Z2*Y4)*A2*AUX2+
-     &(-Y2*Z4+Z2*Y4)*A3*AUX7-
-     &(-X2*Z4+Z2*X4)*A1*AUX2+
-     &2*(-X2*Z4+Z2*X4)*A2*AUX4-
-     &(-X2*Z4+Z2*X4)*A3*AUX5-
-     &(X2*Y4-Y2*X4)*A1*AUX7+
-     &(X2*Y4-Y2*X4)*A2*AUX5-
+      XM(IELEM,2) = (2*(-Y2*Z4+Z2*Y4)*A1*AUX1-(-Y2*Z4+Z2*Y4)*A2*AUX2+
+     &(-Y2*Z4+Z2*Y4)*A3*AUX7-(-X2*Z4+Z2*X4)*A1*AUX2+
+     &2*(-X2*Z4+Z2*X4)*A2*AUX4-(-X2*Z4+Z2*X4)*A3*AUX5-
+     &(X2*Y4-Y2*X4)*A1*AUX7+(X2*Y4-Y2*X4)*A2*AUX5-
      &2*(X2*Y4-Y2*X4)*A3*AUX6)*COEF
 !
-      XM(IELEM,3) = (-2*(-Y2*Z3+Z2*Y3)*
-     &A1*AUX1+
-     &(-Y2*Z3+Z2*Y3)*A2*AUX2-
-     &(-Y2*Z3+Z2*Y3)*A3*AUX7+
-     &(-X2*Z3+Z2*X3)*A1*AUX2-
-     &2*(-X2*Z3+Z2*X3)*A2*AUX4+
-     &(-X2*Z3+Z2*X3)*A3*AUX5+
-     &(X2*Y3-Y2*X3)*A1*AUX7-
-     &(X2*Y3-Y2*X3)*A2*AUX5+
+      XM(IELEM,3) = (-2*(-Y2*Z3+Z2*Y3)*A1*AUX1+(-Y2*Z3+Z2*Y3)*A2*AUX2-
+     &(-Y2*Z3+Z2*Y3)*A3*AUX7+(-X2*Z3+Z2*X3)*A1*AUX2-
+     &2*(-X2*Z3+Z2*X3)*A2*AUX4+(-X2*Z3+Z2*X3)*A3*AUX5+
+     &(X2*Y3-Y2*X3)*A1*AUX7-(X2*Y3-Y2*X3)*A2*AUX5+
      &2*(X2*Y3-Y2*X3)*A3*AUX6)*COEF
 !
       T(IELEM,2) =((Y3*Z4-Y4*Z3)**2*AUX1-
@@ -311,14 +290,15 @@
       W3 = W1
       W4 = W1
 !
+      XJAC = X2*(Y3*Z4-Y4*Z3)+Y2*(X4*Z3-X3*Z4)+Z2*(X3*Y4-X4*Y3)
 !
-      XJAC = X2*Y3*Z4-X2*Y4*Z3-Y2*X3*Z4+Y2*X4*Z3+Z2*X3*Y4-Z2*X4*Y3
-!
-      COEF = SUR120/XJAC
+      COEF = SUR120/MAX(XJAC,1.D-8)
 !
       A1 = -Y3*Z4+Y4*Z3+Y2*Z4-Z2*Y4-Y2*Z3+Z2*Y3
       A2 = -X3*Z4+X4*Z3+X2*Z4-Z2*X4-X2*Z3+Z2*X3
       A3 = -X3*Y4+X4*Y3+X2*Y4-Y2*X4-X2*Y3+Y2*X3
+!
+!     NOTE JMH : SIMPLIFICATIONS TO BE DONE HERE !!!!!!!!!!!!!!
 !
       AUX1 = U3*U2+U1*U3+U1*U2+U4**2+U1*U4+U4*U2+U3**2+U2**2+U1**2+U3*U4
 !
@@ -332,18 +312,10 @@
       AUX7 = 2*U2*W2+2*U3*W3+U3*W2+U3*W1+U1*W2+2*U1*W1+U2*W3+U2*W1+
      &U1*W3+U4*W2+U4*W1+2*U4*W4+U1*W4+U2*W4+U4*W3+U3*W4
 !
-      T(IELEM,1)= (A1**2*AUX1-
-     &A1*
-     &A2*AUX2+
-     &A1*
-     &A3*AUX7+
-     &A2**2*AUX4-
-     &A2*
-     &A3*AUX5+
-     &A3**2*AUX6)*2*COEF
+      T(IELEM,1)= (A1**2*AUX1-A1*A2*AUX2+A1*A3*AUX7+A2**2*AUX4-A2*
+     &A3*AUX5+A3**2*AUX6)*2*COEF
 !
-      XM(IELEM,1) = (2*(Y3*Z4-Y4*Z3)*
-     &A1*AUX1-
+      XM(IELEM,1) = (2*(Y3*Z4-Y4*Z3)*A1*AUX1-
      &(Y3*Z4-Y4*Z3)*A2*AUX2+
      &(Y3*Z4-Y4*Z3)*A3*AUX7-
      &(X3*Z4-X4*Z3)*A1*AUX2+
@@ -354,25 +326,15 @@
      &2*(-X3*Y4+X4*Y3)*A3*AUX6)*COEF
 !
       XM(IELEM,2) = (2*(-Y2*Z4+Z2*Y4)*
-     &A1*AUX1-
-     &(-Y2*Z4+Z2*Y4)*A2*AUX2+
-     &(-Y2*Z4+Z2*Y4)*A3*AUX7-
-     &(-X2*Z4+Z2*X4)*A1*AUX2+
-     &2*(-X2*Z4+Z2*X4)*A2*AUX4-
-     &(-X2*Z4+Z2*X4)*A3*AUX5-
-     &(X2*Y4-Y2*X4)*A1*AUX7+
-     &(X2*Y4-Y2*X4)*A2*AUX5-
-     &2*(X2*Y4-Y2*X4)*A3*AUX6)*COEF
+     &A1*AUX1-(-Y2*Z4+Z2*Y4)*A2*AUX2+(-Y2*Z4+Z2*Y4)*A3*AUX7-
+     &(-X2*Z4+Z2*X4)*A1*AUX2+2*(-X2*Z4+Z2*X4)*A2*AUX4-
+     &(-X2*Z4+Z2*X4)*A3*AUX5-(X2*Y4-Y2*X4)*A1*AUX7+
+     &(X2*Y4-Y2*X4)*A2*AUX5-2*(X2*Y4-Y2*X4)*A3*AUX6)*COEF
 !
-      XM(IELEM,3) = (-2*(-Y2*Z3+Z2*Y3)*
-     &A1*AUX1+
-     &(-Y2*Z3+Z2*Y3)*A2*AUX2-
-     &(-Y2*Z3+Z2*Y3)*A3*AUX7+
-     &(-X2*Z3+Z2*X3)*A1*AUX2-
-     &2*(-X2*Z3+Z2*X3)*A2*AUX4+
-     &(-X2*Z3+Z2*X3)*A3*AUX5+
-     &(X2*Y3-Y2*X3)*A1*AUX7-
-     &(X2*Y3-Y2*X3)*A2*AUX5+
+      XM(IELEM,3) = (-2*(-Y2*Z3+Z2*Y3)*A1*AUX1+(-Y2*Z3+Z2*Y3)*A2*AUX2-
+     &(-Y2*Z3+Z2*Y3)*A3*AUX7+(-X2*Z3+Z2*X3)*A1*AUX2-
+     &2*(-X2*Z3+Z2*X3)*A2*AUX4+(-X2*Z3+Z2*X3)*A3*AUX5+
+     &(X2*Y3-Y2*X3)*A1*AUX7-(X2*Y3-Y2*X3)*A2*AUX5+
      &2*(X2*Y3-Y2*X3)*A3*AUX6)*COEF
 !
       T(IELEM,2) =((Y3*Z4-Y4*Z3)**2*AUX1-

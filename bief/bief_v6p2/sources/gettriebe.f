@@ -2,7 +2,7 @@
                      SUBROUTINE GETTRIEBE
 !                    ********************
 !
-     &(XAUX,AD,AX,TETA,IKLE,NPOIN,NELEM,NELMAX,MESH,IELM3,NELEM2)
+     &(XAUX,AD,AX,TETA,IKLE,NPOIN,NELEM,NELMAX,MESH,IELM3,NELEM2,NPLAN)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -50,6 +50,7 @@
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELEM2         |-->| NUMBER OF TRIANGLES OF ORIGINAL 2D MESH
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NPLAN          |-->| NUMBER OF PLANES IN THE ORIGINAL MESH
 !| NPOIN          |-->| NUMBER OF POINTS
 !| TETA           |-->| COEFFICIENT USED IN THE RESULT
 !| XAUX           |<--| THE RESULTING MATRIX
@@ -63,7 +64,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN,IELM3,NELEM2
+      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN,IELM3,NELEM2,NPLAN
       INTEGER, INTENT(IN) :: IKLE(NELMAX,*)
 !
       DOUBLE PRECISION, INTENT(IN)    :: TETA
@@ -74,19 +75,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I1,I2,I3,I4,I5,I6,IELEM,NPLAN,IAN,ICOM,NPOIN2,IPLAN,K
-      INTEGER S1,S2,S3,IT1,IT2,IELEM3D,L1,L2
+      INTEGER I1,I2,I3,I4,I5,I6,IELEM,IAN,ICOM,NPOIN2,IPLAN,K
+      INTEGER S1,S2,S3,IT1,IT2,IELEM3D,L1,L2,ISEG
 !
 !     TETRA : WILL GIVE THE LOCAL NUMBERS OF POINTS IN THE PRISM
 !             THE 0 CORRESPOND TO SITUATIONS
 !             THAT NEVER HAPPEN (TETRA(1,1,1,... OR TETRA(2,2,2,...)
 !             SEE ALSO CPIKLE3 AND FLUX_EF_VF_3D, WITH SIMILAR USE
-      INTEGER TETRA(2,2,2,3,4),PLUS1(4),STO(4,4)
+      INTEGER TETRA(2,2,2,3,4),STO(4,4)
       DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
      &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
      &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
      &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
-      DATA PLUS1 /2,3,4,1/
 !     EBE SYMMETRIC STORAGE OF OFF-DIAGONAL TERMS FOR TETRAHEDRONS
 !     0 ARE PUT FOR DIAGONALS
       DATA STO / 0, 1, 2, 3,
@@ -98,6 +98,10 @@
 !    &          1-2,2-2,3-2,4-2,
 !    &          1-3,2-3,3-3,4-3,
 !    &          1-4,2-4,3-4,4-4/
+      INTEGER ISEGT(6,2)
+      DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
+      
+      LOGICAL YA
 !
 !-----------------------------------------------------------------------
 !
@@ -146,6 +150,7 @@
 !
       ELSEIF(IELM3.EQ.51) THEN
 !
+        YA=.FALSE.
         DO IPLAN=1,NPLAN-1
           DO IELEM=1,NELEM2
 !
@@ -177,34 +182,49 @@
 !           NOW TAKING CONTRIBUTIONS OF TETRAHEDRON K= 1, 2 AND 3
 !   
             DO K=1,3
-!             POINTS 1 TO 4
               IELEM3D=3*(IPLAN-1)*NELEM2+IELEM+(K-1)*NELEM2
-              DO L1=1,4
-!               ORIGINAL NUMBER IN THE PRISM
-                IT1=TETRA(S1,S2,S3,K,L1)
-                L2=PLUS1(L1)
-                IT2=TETRA(S1,S2,S3,K,L2)
+!             SEGMENTS 1 TO 6
+              DO ISEG=1,6            
+!               LOCAL NUMBERS OF 2 POINTS OF SEGMENT IN THE TETRAHEDRON
+                L1=ISEGT(ISEG,1)
+                L2=ISEGT(ISEG,2)
+!               GLOBAL NUMBERS OF 2 POINTS OF SEGMENT
                 I1=IKLE(IELEM3D,L1)
-                I2=IKLE(IELEM3D,L2)
+                I2=IKLE(IELEM3D,L2)          
+!               NUMBERS OF 2 POINTS OF SEGMENT IN THE ORIGINAL PRISM
+                IT1=TETRA(S1,S2,S3,K,L1)
+                IT2=TETRA(S1,S2,S3,K,L2)
 !               WE LOOK FOR VERTICALS OF THE ORIGINAL PRISM
                 IF(IT1.EQ.1.AND.IT2.EQ.4) THEN
-                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 1-4
-                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 4-1 
+                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 1-4
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 4-1 
+                  AX(IELEM3D,STO(L1,L2))=
+     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ELSEIF(IT1.EQ.4.AND.IT2.EQ.1) THEN
-                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 4-1
-                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 1-4
+                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 4-1
+                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 1-4
+                  AX(IELEM3D,STO(L1,L2))=
+     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ELSEIF(IT1.EQ.2.AND.IT2.EQ.5) THEN
-                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 2-5
-                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 5-2 
+                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 2-5
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 5-2
+                  AX(IELEM3D,STO(L1,L2))=
+     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ELSEIF(IT1.EQ.5.AND.IT2.EQ.2) THEN
-                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 5-2
-                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 2-5
+                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 5-2
+                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 2-5
+                  AX(IELEM3D,STO(L1,L2))=
+     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ELSEIF(IT1.EQ.3.AND.IT2.EQ.6) THEN
-                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 3-6
-                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 6-3 
+                  XAUX(I1,3)=XAUX(I1,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 3-6
+                  XAUX(I2,1)=XAUX(I2,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 6-3 
+                  AX(IELEM3D,STO(L1,L2))=
+     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)     
                 ELSEIF(IT1.EQ.6.AND.IT2.EQ.3) THEN
-                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 6-3
-                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(IT1,IT2)) ! TERM 3-6
+                  XAUX(I1,1)=XAUX(I1,1)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 6-3
+                  XAUX(I2,3)=XAUX(I2,3)+TETA*AX(IELEM3D,STO(L1,L2)) ! TERM 3-6
+                  AX(IELEM3D,STO(L1,L2))=
+     &            AX(IELEM3D,STO(L1,L2))*(1.D0-TETA)
                 ENDIF           
               ENDDO
             ENDDO
@@ -228,7 +248,6 @@
         IAN    = 3
         ICOM   = 2
         NPOIN2 = BIEF_NBPTS(11,MESH)
-        NPLAN=NPOIN/NPOIN2
         CALL PARCOM2(XAUX(1,1),XAUX(1,2),XAUX(1,3),
      &               NPOIN2,NPLAN,ICOM,IAN,MESH)
       ENDIF
