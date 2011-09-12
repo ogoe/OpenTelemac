@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """@brief
 """
 """@author Sebastien E. Bourban and Noemie Durand
@@ -119,7 +120,7 @@
 import ConfigParser
 from optparse import OptionParser
 import re
-from os import path, walk, listdir
+from os import path, walk, listdir, environ
 import sys
 
 # _____                   __________________________________________
@@ -758,7 +759,8 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    CFGNAME = ''
-   SYSTELCFG = 'systel.cfg'
+   PWD = path.dirname(path.dirname(sys.argv[0]))
+   SYSTELCFG = path.join(PWD,'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
@@ -806,7 +808,9 @@ if __name__ == "__main__":
          sys.exit()
       cfgnames = [options.configName]
 
-   #  /!\  for testing purposes ... no real use
+   print '\n' + options.configFile + '\n\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+#  /!\  for testing purposes ... no real use
    for cfgname in cfgnames:
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
@@ -814,7 +818,9 @@ if __name__ == "__main__":
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
-      print cfgname + ': ' + ' '.join(cfg['COMPILER']['MODULES'])
-      print 'including ... ' + ' '.join(cfg['MODULES'])
+      print '\n'+cfgname + ': \n    '
+      print '    +> root:    ',cfgs[cfgname]['root']
+      print '    +> version: ',cfgs[cfgname]['version']
+      print '    +> module:  ',' / '.join(cfg['MODULES'])
    
    sys.exit()

@@ -30,7 +30,6 @@
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 from parserXML import runXML
 from os import path,walk,environ
-import parser
 import sys
 
 # _____             ________________________________________________
@@ -136,5 +135,9 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                   runXML(cfgname,cfg,codeName,path.join(xmlDir,xmlFile),options)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
 
    sys.exit()

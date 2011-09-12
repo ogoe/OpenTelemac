@@ -11,6 +11,7 @@
 from struct import unpack
 from os import path
 import sys
+import numpy as np
 
 def getHeaderParametersSLF(f):
 
@@ -109,7 +110,7 @@ def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
    if l!=chk:
       print '... Cannot read MESHY'
 
-   return IKLE,IPOBO,MESHX,MESHY
+   return np.asarray(IKLE)-1,np.asarray(IPOBO),np.asarray(MESHX),np.asarray(MESHY)
 
 def getHeaderSLF(f):
    """ getSelafin: Read a binary (big-endian) Selafin file
@@ -142,7 +143,7 @@ def getCoreValueSLF(f,ivar,NPOIN3):
    if l!=chk:
       print 'Error reading VARSOR['+str(ivar)+']'
 
-   return VARSOR
+   return np.asarray(VARSOR)
 """
 
 def getSLF(filename):

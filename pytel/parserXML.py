@@ -19,6 +19,48 @@ from runcode import runCAS, scanCAS, processExecutable
 from parserKeywords import scanDICO, translateCAS, getKeyWord, getIOFilesSubmit
 import sys
 
+# _____                  ___________________________________________
+# ____/ General Toolbox /__________________________________________/
+#
+def doSortieDraw(entry,did):
+
+   for subentry in entry.findall("do"):
+      for xref in subentry.attrib['xref'].split(';'):
+         for x in did:
+            if x.has_key('xref'):
+               #if not x.has_key('sortie'):
+               #   print '... could not find sortie file for: ' + x
+               #   sys.exit()
+               if x['sortie'] == None:
+                  print '... could not find sortie file for: ' + xref
+                  break #sys.exit()
+               sortie = { 'fileName': x['sortie'], 'typePlot': subentry.attrib["action"], 'outFormat': entry.attrib['format'] }
+               figout = plotTimeSeriesSortie(sortie)
+
+   return figout
+
+def doPlot2dDraw(entry,did):
+
+   for subentry in entry.findall("do"):
+      for xref in subentry.attrib['xref'].split(';'):
+         for x in did:
+            if xref == x['xref']:
+               value,default = getKeyWord('FICHIER DE GEOMETRIE',x['cas'],x['dico'],x['frgb'])
+               if value != []:
+                  geo = {
+                     'fileName': path.join(x['path'],value[0]),
+                     'typePlot': subentry.attrib['action'],
+                     'varsPlot':["BOTTOM","FOND"],
+                     'outFormat': entry.attrib['format'] }
+                  if vars != []:
+                     geo.update({ 'varsPlot': vars })
+                     if subentry.attrib.has_key('colourmap'):
+                        cmapPlot = path.join(x['cmaps'],subentry.attrib['colourmap'])
+                        if path.exists(cmapPlot): geo.update({ 'cmapPlot': cmapPlot })
+                  print '     +> plotting from the GEO file: ' + path.basename(geo['fileName'])
+                  figout = plot2dMeshSLF(geo)
+
+   return
 # _____                     ________________________________________
 # ____/ XML Parser Toolbox /_______________________________________/
 #
@@ -31,7 +73,7 @@ def runXML(cfgName,cfg,module,xmlFile,options):
    # options.process takes: translate;run;compile and none
    if options.process == '': options.process = "run"
    # options.draw takes: sortie;plot2d;plot3d and none
-   if options.draw == '': options.draw = "sortie;plot2d"
+   if options.draw == '': options.draw = "plot2d"
 
    # ~~ Parse xmlFile ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '... reading XML test specification file: ' + path.basename(xmlFile)
@@ -60,10 +102,9 @@ def runXML(cfgName,cfg,module,xmlFile,options):
                print '... do not know about:' + codeName
                sys.exit()
             casFile = path.join(path.dirname(xmlFile),entry.attrib["cas"])
-            do = { 'cas': casFile, 'title': entry.attrib["title"], 'code': codeName, 'xref': entry.attrib["xref"] }
             cas = scanCAS(casFile)
             frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][codeName]['path'],'lib'),codeName+cfg['TELVER']+'.dico'))
-            do.update({ 'dico':dico, 'frgb':frgb })
+            do = { 'path': path.dirname(casFile), 'cas': cas, 'title': entry.attrib["title"], 'code': codeName, 'xref': entry.attrib["xref"], 'cmaps': path.join(cfg['PWD'],'ColourMaps'), 'dico':dico, 'frgb':frgb }
             # Options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             specs = Values()
             setattr(specs,'configName',options.configName)
@@ -80,13 +121,13 @@ def runXML(cfgName,cfg,module,xmlFile,options):
             for k in cas.keys():
                if iFS.has_key(k):
                   ifile = path.join(path.dirname(casFile),cas[k][0])
-                  do['input'].append([ifile,iFS[k]])
+                  do['input'].append([k,ifile,iFS[k]])
                   #if not path.isfile(ifile):
                   #   print '... file does not exist ',ifile
                   #   sys.exit()
                if oFS.has_key(k):
                   ofile = path.join(path.dirname(casFile),cas[k][0])
-                  do['output'].append([ofile,oFS[k]])
+                  do['output'].append([k,ofile,oFS[k]])
 
             # Analysis CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -127,7 +168,7 @@ def runXML(cfgName,cfg,module,xmlFile,options):
                print '     +> running cas file: ' + path.basename(casFile)
                specs.compileonly = False
                specs.sortieFile = True
-               sortieFile = runCAS(cfgName,cfg,codeName,casFile,specs)
+               sortieFile = '' #runCAS(cfgName,cfg,codeName,casFile,specs)
                do.update({ 'sortie': sortieFile })
 
             # Store actions completed ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,34 +181,13 @@ def runXML(cfgName,cfg,module,xmlFile,options):
 
             # Draw the sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if drawType == "sortie" and "sortie" in options.draw.split(';'):
-
-               for subentry in entry.findall("do"):
-                  # mass plot
-                  if "mass" in subentry.attrib['action'].split(';'):
-                     for xref in subentry.attrib['xref'].split(';'):
-                        for x in action[processXref]:
-                           if x.has_key('xref'):
-                              #if not x.has_key('sortie'):
-                              #   print '... could not find sortie file for: ' + x
-                              #   sys.exit()
-                              if x['sortie'] == None:
-                                 print '... could not find sortie file for: ' + xref
-                                 break #sys.exit()
-                              sortie = { 'fileName': x['sortie'], 'typePlot': "mass", 'outFormat': entry.attrib['format'] }
-                              figout = plotTimeSeriesSortie(sortie)
-                  # iteration plot
-                  if "iteration" in subentry.attrib['action'].split(';'):
-                     for xref in subentry.attrib['xref'].split(';'):
-                        print xref
-                  # flux plot
-                  if "flux" in subentry.attrib['action'].split(';'):
-                     for xref in subentry.attrib['xref'].split(';'):
-                        print xref
+               doSortieDraw(entry,action[processXref])
 
             # Plot of GEO files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             if drawType == "plot2d" and "plot2d" in options.draw.split(';'):
+               doPlot2dDraw(entry,action[processXref])
 
-               for subentry in entry.findall("do"):
+               """for subentry in entry.findall("do"):
                   # mesh plot2d
                   if "mesh" in subentry.attrib['action'].split(';'):
                      for xref in subentry.attrib['xref'].split(';'):
@@ -198,7 +218,7 @@ def runXML(cfgName,cfg,module,xmlFile,options):
                                     cmapPlot = path.join(path.join(cfg['PWD'],'ColourMaps'),subentry.attrib['colourmap'])
                                     if path.exists(cmapPlot): geo.update({ 'cmapPlot': cmapPlot })
                                  print '     +> plotting BOTTOM of GEO file: ' + path.basename(geo['fileName'])
-                                 figout = plot2dMeshSLF(geo)
+                                 figout = plot2dMeshSLF(geo)"""
 
             # Plot of REF files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
