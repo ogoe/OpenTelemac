@@ -2,7 +2,7 @@
                      SUBROUTINE RHS_PRESSURE
 !                    ***********************
 !
-     &(DIVU,UP,VP,WP,IELM3,DM1,ZCONV,SVIDE,MESH3D,MSK,MASKEL,FLUEXT,
+     &(DIVU,UP,VP,WP,IELM3,DM1,GRAZCO,SVIDE,MESH3D,MSK,MASKEL,FLUEXT,
      & NSCE,RAIN,PLUIE,SOURCES,GRADZF,VOLU2D,DSSUDT,NPOIN2,NPOIN3,NPLAN)
 !
 !***********************************************************************
@@ -29,13 +29,13 @@
       LOGICAL,         INTENT(IN)    :: MSK,RAIN
       TYPE(BIEF_OBJ),  INTENT(INOUT) :: DIVU
       TYPE(BIEF_OBJ),  INTENT(IN)    :: UP,VP,WP,PLUIE,SOURCES,GRADZF
-      TYPE(BIEF_OBJ),  INTENT(IN)    :: DM1,ZCONV,SVIDE,MASKEL,FLUEXT
+      TYPE(BIEF_OBJ),  INTENT(IN)    :: DM1,GRAZCO,SVIDE,MASKEL,FLUEXT
       TYPE(BIEF_OBJ),  INTENT(IN)    :: VOLU2D,DSSUDT
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,IIS,IPLAN,IPOIN2,IPOIN3,ILEVEL,IUPPER,ILOWER
+      INTEGER IS,IIS,IPLAN,IPOIN2,IPOIN3
       CHARACTER(LEN=16) FORMUL
 !
 !=======================================================================
@@ -56,7 +56,7 @@
         FORMUL = 'VGRADP       HOR'
       ENDIF
       CALL VECTOR(DIVU,'+',FORMUL,IELM3,1.D0,
-     &            DM1,ZCONV,SVIDE,UP,VP,SVIDE,MESH3D,MSK,MASKEL)
+     &            DM1,GRAZCO,GRAZCO,UP,VP,SVIDE,MESH3D,MSK,MASKEL)
 !
 !     - FLUEXT
 !

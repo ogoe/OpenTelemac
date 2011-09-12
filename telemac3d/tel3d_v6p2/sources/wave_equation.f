@@ -614,6 +614,11 @@
         ENDIF
       ENDIF
 !
+!     COMPUTING THE GRADIENT OF ZCONV
+!
+      CALL GRAD_ZCONV(GRAZCO%R,ZCONV%R,MESH2D%XEL%R,MESH2D%YEL%R,
+     &                NELEM2,MESH2D%NELMAX)
+!
 !=======================================================================
 !     3) COMPUTES NEW VELOCITIES
 !=======================================================================

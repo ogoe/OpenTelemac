@@ -5,7 +5,7 @@
      & ( PD, UP, VP, WP, INFO , BC , OPT, DIRSUR, DIRBOT, DIRLAT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE PRESSURE POISSON EQUATION
@@ -137,7 +137,7 @@
 !
       ELSEIF(OPT.EQ.2.OR.OPT.EQ.3) THEN
 !
-        CALL RHS_PRESSURE(SEM3D,UP,VP,WP,IELM3,DM1,ZCONV,SVIDE,
+        CALL RHS_PRESSURE(SEM3D,UP,VP,WP,IELM3,DM1,GRAZCO,SVIDE,
      &                    MESH3D,MSK,MASKEL,FLUEXT,NSCE,RAIN,PLUIE,
      &                    SOURCES,GRADZF,VOLU2D,DSSUDT,
      &                    NPOIN2,NPOIN3,NPLAN)

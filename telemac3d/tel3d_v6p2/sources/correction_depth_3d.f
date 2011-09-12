@@ -75,13 +75,13 @@
           FORMUL = 'VGRADP 2     HOR'
           SAVEZ     =>MESH3D%Z%R
           MESH3D%Z%R=>ZPROP%R
-!         CALL VECTOR(T3_01,'=',FORMUL,IELM3,-1.D0,DM1,ZCONV,ZCONV,
+!         CALL VECTOR(T3_01,'=',FORMUL,IELM3,-1.D0,DM1,GRAZCO,GRAZCO,
 !    *                UCONV,VCONV,VCONV,MESH3D,MSK,MASKEL)
 !         EQUIVALENT TO CALL VECTOR BUT WITHOUT ASSEMBLING T3_01
 !         BECAUSE ARGUMENT LEGO IS SET TO FALSE :
           CALL VECTOS(T3_01%R,'=',FORMUL,-1.D0,
-     &                DM1%R,ZCONV%R,ZCONV%R,UCONV%R,VCONV%R,VCONV%R,
-     &                DM1,  ZCONV,  ZCONV,  UCONV,  VCONV,  VCONV,
+     &                DM1%R,GRAZCO%R,GRAZCO%R,UCONV%R,VCONV%R,VCONV%R,
+     &                DM1,  GRAZCO,  GRAZCO,  UCONV,  VCONV,  VCONV,
 !                                 LEGO
      &                MESH3D%W%R,.FALSE.,
      &                MESH3D%XEL%R,MESH3D%YEL%R,MESH3D%ZEL%R,
