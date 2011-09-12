@@ -12,7 +12,7 @@
      & MESH2D,MESH3D)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                  21/08/2010
+! TELEMAC2D   V6P2                                  21/08/2010
 !***********************************************************************
 !
 !brief    COUPLES LNH-TELEMAC-3D TO DELFT-WAQ ONLINE.
@@ -784,8 +784,9 @@
 !
 !       3D CASE
         CALL FLUX_EF_VF_3D(FLOW,W2D,W,NSEG,MESH3D%NSEG,NELEM2,
-     &                     MESH3D%NELEM,MESH2D,MESH3D,INIFLOW,
-     &                     IOPT1,2)
+     &                     MESH3D%NELEM,MESH2D,INIFLOW,
+     &                     IOPT1,2,MESH3D%TYPELM+1,NOLAY,
+     &                     MESH3D%IKLE%I,MESH3D%NELMAX)
 !                                2: HORIZONTAL FLUXES FROM TOP TO BOTTOM
 !       FLUX LIMITATION (FLULIM IS 2D, SO NUMBERING FROM TOP TO BOTTOM
 !                        MAKES NO PROBLEM)

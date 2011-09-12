@@ -133,7 +133,7 @@ fluxpr_telemac2d.f fricti.f friction.f friction_bubble.f \
 friction_lindner.f  friction_calc.f friction_quad.f \
 friction_unif.f friction_zones.f friction_user.f \
 friction_read.f friction_scan.f friction_init.f friction_choice.f \
-gestio.f  gradnod.f gradnodt.f gradz.f \
+gestio.f  gradnod.f gradnodt.f gradz.f grad_zconv.f \
 homere_adj_t2d.f hpropa.f interpol.f  \
 href.f   incide.f   init_kin.f initstr.f intemp.f isitok.f  \
 kepscl.f kepsil.f   kepsin.f lagran.f  \

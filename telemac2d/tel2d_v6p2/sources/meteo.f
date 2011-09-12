@@ -48,6 +48,8 @@
 !| VENT           |-->| YES IF WIND TAKEN INTO ACCOUNT
 !| WINDX          |<--| FIRST COMPONENT OF WIND VELOCITY
 !| WINDY          |<--| SECOND COMPONENT OF WIND VELOCITY
+!| X              |-->| ABSCISSAE OF POINTS
+!| Y              |-->| ORDINATES OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

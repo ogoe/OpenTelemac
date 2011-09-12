@@ -192,7 +192,9 @@
       TYPE(BIEF_OBJ), TARGET :: FU,FV
 !brief WAVE STRESSES (FROM ARTEMIS OR TOMAWAC)
       TYPE(BIEF_OBJ), TARGET :: FXWAVE,FYWAVE
-!brief INITIAL CELERITY OF WAVES
+!
+!     INITIAL CELERITY OF WAVES
+!
       TYPE(BIEF_OBJ), TARGET :: C0
 !brief INITIAL DEPTH
       TYPE(BIEF_OBJ), TARGET :: H0
@@ -245,24 +247,16 @@
 !     FOR FLUXES ACCROSS SECTIONS
 !
       TYPE(BIEF_OBJ), TARGET :: MSKSEC
-!brief
 !
       TYPE(BIEF_OBJ), TARGET :: ZFLATS
-!brief FRICTION COEFFICIENT, IN TERMS OF STRICKLER, CHEZY, ETC
-! tableau des coefficients de frottement sur le fond
+!
+!     FRICTION COEFFICIENT, IN TERMS OF STRICKLER, CHEZY, ETC
+! 
       TYPE(BIEF_OBJ), TARGET :: CHESTR
-!brief TYPES OF BOUNDARY CONDITIONS
-! types de conditions aux limites sur u
-      TYPE(BIEF_OBJ), TARGET :: LIUBOR
-!brief TYPES OF BOUNDARY CONDITIONS
-! types de conditions aux limites sur v
-      TYPE(BIEF_OBJ), TARGET :: LIVBOR
-!brief TYPES OF BOUNDARY CONDITIONS
-! types de conditions aux limites sur h
-      TYPE(BIEF_OBJ), TARGET :: LIHBOR
-!brief TYPES OF BOUNDARY CONDITIONS
-! types de conditions aux limites sur le traceur
-      TYPE(BIEF_OBJ), TARGET :: LITBOR
+!
+!     TYPES OF BOUNDARY CONDITIONS ON U, V, H AND TRACERS
+! 
+      TYPE(BIEF_OBJ), TARGET :: LIUBOR,LIVBOR,LIHBOR,LITBOR
 !brief
 ! types de conditions aux limites sur le traceur
       TYPE(BIEF_OBJ), TARGET :: LIMTRA
@@ -1247,13 +1241,16 @@
 !brief TIME RANGE FOR FOURIER ANALYSIS
 ! bornes en temps pour l'analyse de fourier
       DOUBLE PRECISION TAFEND
-!brief CURRENT TIME
-! temps
+!
+!     CURRENT TIME
+! 
       DOUBLE PRECISION AT
-!brief FOURIER ANALYSIS PERIODS
-! periodes d'analyse de fourier
+!
+!     FOURIER ANALYSIS PERIODS
+! 
       DOUBLE PRECISION PERIAF(50)
-!brief ARRAY OF REALS TO READ INTO SELAFIN FILES
+!
+!     ARRAY OF REALS TO READ INTO SELAFIN FILES
 !
       REAL, ALLOCATABLE :: W(:)
 !
@@ -1275,8 +1272,8 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief TITLE
-! titre du fichier cas
+!     TITLE
+! 
       CHARACTER*72 TITCAS
 !brief
 !
