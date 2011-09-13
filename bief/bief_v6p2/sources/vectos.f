@@ -174,19 +174,10 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-             IF(FORMUL(7:7).EQ.'2') THEN
-!              COMPATIBLE WITH MASS-LUMPING IN 2D
-               CALL VC00PP2(XMUL,ZEL,SURFAC,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
-     &                   T(1,3),T(1,4),T(1,5),T(1,6))
-             ELSE
-!              NORMAL COMPUTATION OF INTEGRAL OF BASIS FUNCTIONS
-               CALL VC00PP(XMUL,ZEL,SURFAC,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
-     &                   T(1,3),T(1,4),T(1,5),T(1,6))
-             ENDIF
+          CALL VC00PP(XMUL,ZEL,SURFAC,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
+     &                T(1,3),T(1,4),T(1,5),T(1,6),FORMUL)
 !
 !-----------------------------------------------------------------------
 !
@@ -194,9 +185,10 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-             CALL VC00TT(XMUL,XEL,YEL,ZEL,SURFAC,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
+          CALL VC00TT(XMUL,XEL,YEL,ZEL,SURFAC,
+     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4),FORMUL,
+     &                BIEF_NBPTS(11,MESH),IELM1)
 !
 !-----------------------------------------------------------------------
 !

@@ -3,10 +3,10 @@
 !                    *****************
 !
      &(XMUL,Z,SURFAC,IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
-     & W1,W2,W3,W4,W5,W6)
+     & W1,W2,W3,W4,W5,W6,FORMUL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -38,6 +38,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
 !| IKLE1          |-->| FIRST POINT OF PRISMS
 !| IKLE2          |-->| SECOND POINT OF PRISMS
 !| IKLE3          |-->| THIRD POINT OF PRISMS
@@ -77,19 +78,28 @@
       DOUBLE PRECISION, INTENT(INOUT) :: W6(NELMAX)
       DOUBLE PRECISION, INTENT(IN)    :: XMUL
 !
+      CHARACTER(LEN=16), INTENT(IN) :: FORMUL
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELEM
 !
-      DOUBLE PRECISION XSUR24,H1,H2,H3,SHT,COEF
+      DOUBLE PRECISION XSUR24,XSUR6,H1,H2,H3,SHT,COEF
 !
 !-----------------------------------------------------------------------
 !
-      XSUR24  = XMUL/24.D0
+      XSUR24 = XMUL/24.D0
+      XSUR6  = XMUL/6.D0
 !
-!   LOOP ON THE ELEMENTS
+!-----------------------------------------------------------------------
 !
-      DO 3 IELEM = 1 , NELEM
+      IF(FORMUL(1:7).EQ.'MASBAS ') THEN
+!
+!     STANDARD FORMULA
+!
+!     LOOP ON THE ELEMENTS
+!
+      DO IELEM = 1 , NELEM
 !
          H1 = Z(IKLE4(IELEM)) - Z(IKLE1(IELEM))
          H2 = Z(IKLE5(IELEM)) - Z(IKLE2(IELEM))
@@ -105,7 +115,44 @@
          W5(IELEM) = W2(IELEM)
          W6(IELEM) = W3(IELEM)
 !
-3     CONTINUE
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      ELSEIF(FORMUL(1:7).EQ.'MASBAS2') THEN
+!
+!     FORMULA WITH MASS-LUMPING
+!
+!     LOOP ON THE ELEMENTS
+!
+      DO IELEM = 1 , NELEM
+!
+         H1 = Z(IKLE4(IELEM)) - Z(IKLE1(IELEM))
+         H2 = Z(IKLE5(IELEM)) - Z(IKLE2(IELEM))
+         H3 = Z(IKLE6(IELEM)) - Z(IKLE3(IELEM))
+!
+         COEF = XSUR6 * SURFAC(IELEM)
+!
+         W1(IELEM) = COEF * H1
+         W2(IELEM) = COEF * H2
+         W3(IELEM) = COEF * H3
+         W4(IELEM) = W1(IELEM)
+         W5(IELEM) = W2(IELEM)
+         W6(IELEM) = W3(IELEM)
+!
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      ELSE
+!
+        WRITE(LU,*) ' '
+        IF(LNG.EQ.1) WRITE(LU,*) 'FORMULE INCONNUE DANS VC00PP :',FORMUL
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN FORMULA IN VC00PP:',FORMUL
+        CALL PLANTE(1)
+        STOP
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

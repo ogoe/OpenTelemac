@@ -131,7 +131,7 @@ solaux.f     solve.f        somme.f       somme2.f      sortie.f \
 stoseg.f     stoseg41.f     stoseg51.f    strche.f      suite_serafin.f surv11.f \
 survol.f      time_in_seconds.f           tnomer.f       tracvf.f      trid3d.f      tsloc.f       topogr.f  tvf.f \
 um1x.f       um1x04.f       um1x09.f       \
-vc00aa.f     vc00bb.f       vc00cc.f      vc00pp.f      vc00pp2.f     vc00ft.f \
+vc00aa.f     vc00bb.f       vc00cc.f      vc00pp.f      vc00ft.f \
 vc00ff.f     vc00tt.f       vc01aa.f       \
 vc01bb.f     vc01ff.f       vc01ft.f      vc01ft2.f     vc01oo.f      vc01pp.f  vc01tt.f  vc01tt0.f \
 vc02pp_star.f               vc03aa.f      vc03bb.f      vc04aa.f      vc04pp.f  vc05oo.f  vc05aa.f  vc04tt.f \
