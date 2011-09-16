@@ -188,7 +188,7 @@
           CALL VC00TT(XMUL,XEL,YEL,ZEL,SURFAC,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4),FORMUL,
-     &                BIEF_NBPTS(11,MESH),IELM1)
+     &                BIEF_NBPTS(11,MESH),BIEF_NBPTS(10,MESH),IELM1)
 !
 !-----------------------------------------------------------------------
 !
