@@ -48,6 +48,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        15/09/2011
+!+
+!+   Call to NUWAVE_P0 modified
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -75,6 +80,11 @@
       DOUBLE PRECISION  :: C
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
+      
+      
+      DOUBLE PRECISION CC1,CC2
+      
+      
 !
 !-----------------------------------------------------------------------
 !
@@ -320,9 +330,10 @@
 !
 !     PSEUDO-VISCOSITY IN THE WAVE EQUATION (IN NUWAVE, P0 FUNCTION)
 !
-      CALL NUWAVE_P0(NUWAVE%R,DM1%R,Z,T3_03%R,IKLE2%I,
-     &               NPOIN2,NPLAN,MESH2D%NELMAX,NELEM2,
-     &               GRAV*TETAH*TETAU*DT)
+      CALL NUWAVE_P0(NUWAVE%R,DM1%R,Z,T3_03%R,MESH3D%IKLE%I,
+     &               NPOIN2,NPLAN,MESH3D%NELEM,MESH3D%NELMAX,NELEM2,
+     &               GRAV*TETAH*TETAU*DT,IELM3,MESH3D%X%R,MESH3D%Y%R,
+     &               MESH2D%SURFAC%R)
 !
 !     CORRESPONDING DIFFUSION MATRIX
 !
