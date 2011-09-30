@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINICIPAL TELEMAC2D VARIABLES
@@ -118,37 +118,37 @@
 !     INCREMENT OF H IN ONE TIME STEP
 ! 
       TYPE(BIEF_OBJ), TARGET :: DH
-!brief INCREMENT OF U IN ONE TIME STEP
-! accriossements en u
-      TYPE(BIEF_OBJ), TARGET :: DU
-!brief INCREMENT OF V IN ONE TIME STEP
-! accriossements en v
-      TYPE(BIEF_OBJ), TARGET :: DV
-!brief INCREMENT OF HN IN ONE TIME STEP
-! accriossements en hn
+!
+!     INCREMENTS OF U AND V IN ONE TIME STEP
+! 
+      TYPE(BIEF_OBJ), TARGET :: DU,DV
+!
+!     INCREMENT OF HN IN ONE TIME STEP
+! 
       TYPE(BIEF_OBJ), TARGET :: DHN
-!brief COMPONENTS OF ADVECTING FIELD
-! composantes des vitesses du convecteur
-      TYPE(BIEF_OBJ), TARGET :: UCONV
-!brief COMPONENTS OF ADVECTING FIELD
-! composantes des vitesses du convecteur
-      TYPE(BIEF_OBJ), TARGET :: VCONV
-!brief DEPTH IN THE PROPAGATION TERM I.E. IN H DIV(U)
-! hauteur de propagation
+!
+!     COMPONENTS OF ADVECTING FIELD
+! 
+      TYPE(BIEF_OBJ), TARGET :: UCONV,VCONV
+!
+!     DEPTH IN THE PROPAGATION TERM I.E. IN H DIV(U)
+! 
       TYPE(BIEF_OBJ), TARGET :: HPROP
-!brief VALUES ON BOUNDARIES: U
-! valeurs imposees de u au bord
-      TYPE(BIEF_OBJ), TARGET :: UBOR
-!brief VALUES ON BOUNDARIES: V
-! valeurs imposees de v au bord
-      TYPE(BIEF_OBJ), TARGET :: VBOR
-!brief VALUES ON BOUNDARIES: WALL FRICTION COEFFICIENTS
+!
+!    PRESCRIBED VALUES ON BOUNDARIES FOR U AND V
+! 
+      TYPE(BIEF_OBJ), TARGET :: UBOR,VBOR
+!
+!     VALUES ON BOUNDARIES: WALL FRICTION COEFFICIENTS
+!
       TYPE(BIEF_OBJ), TARGET :: AUBOR,UETUTA
-!brief VALUES ON BOUNDARIES: H
-! valeurs imposees de h au bord
+!
+!     PRESCRIBED VALUES ON BOUNDARIES FOR DEPTH
+! 
       TYPE(BIEF_OBJ), TARGET :: HBOR
-!brief VALUES ON BOUNDARIES: T
-! valeurs imposees du traceur au bord
+!
+!     PRESCRIBED VALUES ON BOUNDARIES FOR TRACERS
+! 
       TYPE(BIEF_OBJ), TARGET :: TBOR
 !brief VALUES ON BOUNDARIES: K
 ! valeurs imposees de la dissipation turbulente au bord
@@ -1008,47 +1008,62 @@
 !brief IF YES,TIDE GENERATING FORCE
 ! si oui, force generatrice de la maree
       LOGICAL MAREE
-!brief
-! si oui, traitement par caracteristiques des frontieres liquides
+!
+!     IF YES, THERE IS A TREATMENT OF BOUNDARY CONDITIONS WITH 
+!     THOMPSON METHOD
+! 
       LOGICAL THOMFR
-!brief IF YES, C-U PRECONDITIONING
-! si oui, preconditionnement c-u
+!
+!     IF YES, C-U PRECONDITIONING
+! 
       LOGICAL PRECCU
-!brief IF YES, VARIABLE TIME-STEP
-! si oui, pas de temps variable
+!
+!     IF YES, VARIABLE TIME-STEP
+! 
       LOGICAL DTVARI
-!brief IF YES, TIDAL FLATS
-! si oui, bancs decouvrants
+!
+!     IF YES, TIDAL FLATS
+!  
       LOGICAL BANDEC
-!brief
-! si oui, messages imprimes (messages d'erreurs toujours imprimes)
+!
+!     IF YES, PRINT INFORMATIONS ON LISTING
+!
       LOGICAL ENTET
-!brief IF YES, OIL SPILL MODEL
-! si oui, modele de nappes d'hydrocarbures
+!
+!     IF YES, OIL SPILL MODEL
+! 
       LOGICAL SPILL_MODEL
-!brief IF YES, WAVE DRIVEN CURRENTS ARE TAKEN INTO ACCOUNT
-! si oui, prise en compte des courants de houle
+!
+!     IF YES, WAVE DRIVEN CURRENTS ARE TAKEN INTO ACCOUNT
+! 
       LOGICAL COUROU
-!brief IF YES, VERTICAL STRUCTURES ARE TAKEN INTO ACCOUNT
-! si oui, prise en compte des structures verticales
+!
+!     IF YES, VERTICAL STRUCTURES ARE TAKEN INTO ACCOUNT
+! 
       LOGICAL VERTIC
-!brief IF YES, OUTPUT INITIAL CONDITIONS
-! si oui, sortie des conditions initiales
+!
+!     IF YES, OUTPUT INITIAL CONDITIONS
+! 
       LOGICAL OUTINI
-!brief IF YES, THE USER WANTS TO DEFINE ZONES
-! si oui, definition de zones
+!
+!     IF YES, THE USER WANTS TO DEFINE ZONES
+!  
       LOGICAL DEFZON
-!brief IF YES, COMPATIBLE COMPUTATION OF FLUXES (RELATED TO FLUXES THROUGH SECTIONS)
-! si oui, calcul compatible des flux
+!
+!     IF YES, COMPATIBLE COMPUTATION OF FLUXES (RELATED TO FLUXES THROUGH SECTIONS)
+! 
       LOGICAL COMFLU
-!brief IF YES, PRINTS CUMULATED FLOWRATES
-! si oui, impression du cumul des flux
+!
+!     IF YES, PRINTS CUMULATED FLOWRATES
+! 
       LOGICAL CUMFLO
-!brief IF YES, OUTPUT OF SALINITY FOR DELWAQ
-! si oui, salinite pour delwaq
+!
+!     IF YES, OUTPUT OF SALINITY FOR DELWAQ
+! 
       LOGICAL SALI_DEL
-!brief IF YES, OUTPUT OF TEMPERATURE FOR DELWAQ
-! si oui, temperature pour delwaq
+!
+!     IF YES, OUTPUT OF TEMPERATURE FOR DELWAQ
+! 
       LOGICAL TEMP_DEL
 !brief IF YES, OUTPUT OF VELOCITY FOR DELWAQ
 ! si oui, vitesse pour delwaq

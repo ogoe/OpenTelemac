@@ -236,7 +236,13 @@
       UFIELD%ELM=IELM
       VFIELD%ELM=IELM
       HFIELD%ELM=IELM
-!    
+!
+      UFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
+      VFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
+      HFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
+! 
+!
+!  
       TETA=1.D0
 !     CAN BE RELAXED, TESTED UP TO 0.05 IN PALUEL BOX MODEL
 !     TETA=0.05D0  
@@ -312,11 +318,21 @@
      *                          ITRAV2,SHP,XCONV%R,YCONV%R,SHPP,ELT_T)
 !
 !     PROVISIONAL, SHOULD WORK WITHOUT THIS IN VERSION 6.2
+!
       IF(NCSIZE.GT.1) THEN
-        CALL OS('X=0     ',X=UBTIL)
-        CALL OS('X=0     ',X=VBTIL)
-        CALL OS('X=0     ',X=HBTIL)
-        CALL OS('X=0     ',X=ZBTIL)
+        DO K=1,NPTFR
+          UBTIL%R(K)=0.D0
+          VBTIL%R(K)=0.D0
+          HBTIL%R(K)=0.D0
+!         ZBTIL%R(K)=0.D0
+        ENDDO
+        IF(NTRAC.GT.0) THEN
+          DO ITRAC=1,NTRAC
+            DO K=1,NPTFR
+              TBTIL%ADR(ITRAC)%P%R(K)=0.D0
+            ENDDO
+          ENDDO
+        ENDIF
       ENDIF
 !
       NOMB=4+NTRAC
@@ -439,11 +455,14 @@
      *                          SHP,XCONV%R,YCONV%R,SHPP,ELT_T)
 !
 !     PROVISIONAL, SHOULD WORK WITHOUT THIS IN VERSION 6.2
+!
       IF(NCSIZE.GT.1) THEN
-        CALL OS('X=0     ',X=UBTIL)
-        CALL OS('X=0     ',X=VBTIL)
-        CALL OS('X=0     ',X=HBTIL)
-        CALL OS('X=0     ',X=ZBTIL)
+        DO K=1,NPTFR
+          UBTIL%R(K)=0.D0
+          VBTIL%R(K)=0.D0
+          HBTIL%R(K)=0.D0
+          ZBTIL%R(K)=0.D0
+        ENDDO
       ENDIF
 !
       NOMB=4
@@ -526,11 +545,14 @@
      *                          ITRAV2,SHP,XCONV%R,YCONV%R,SHPP,ELT_T)
 !
 !     PROVISIONAL, SHOULD WORK WITHOUT THIS IN VERSION 6.2
+!
       IF(NCSIZE.GT.1) THEN
-        CALL OS('X=0     ',X=UBTIL)
-        CALL OS('X=0     ',X=VBTIL)
-        CALL OS('X=0     ',X=HBTIL)
-        CALL OS('X=0     ',X=ZBTIL)
+        DO K=1,NPTFR
+          UBTIL%R(K)=0.D0
+          VBTIL%R(K)=0.D0
+          HBTIL%R(K)=0.D0
+          ZBTIL%R(K)=0.D0
+        ENDDO
       ENDIF
 !
       NOMB=4
@@ -638,11 +660,15 @@
 !
 !-----------------------------------------------------------------------
 !
-!     RESTORING ORIGINAL DISCRETISATIONS (JUST IN CASE)
+!     RESTORING ORIGINAL DISCRETISATIONS
 !                                       
       UFIELD%ELM=ELM_UFIELD
       VFIELD%ELM=ELM_VFIELD
       HFIELD%ELM=ELM_HFIELD
+!      
+      UFIELD%DIM1=BIEF_NBPTS(ELM_UFIELD,MESH)
+      VFIELD%DIM1=BIEF_NBPTS(ELM_VFIELD,MESH)
+      HFIELD%DIM1=BIEF_NBPTS(ELM_HFIELD,MESH)           
 !
 !-----------------------------------------------------------------------
 !
