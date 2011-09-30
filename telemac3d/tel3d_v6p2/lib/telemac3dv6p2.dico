@@ -2505,7 +2505,7 @@ NOM = 'SUITE DE CALCUL'
 NOM1 = 'COMPUTATION CONTINUED'
 TYPE = LOGIQUE
 INDEX = 1
-MNEMO = ''
+MNEMO = 'DEBU'
 TAILLE = 0
 DEFAUT = NON
 DEFAUT1 = NO
@@ -5284,7 +5284,7 @@ AIDE= 'U.N = 0 sur le fond est force en fin de boucle en temps'
 AIDE1 = 'Will ensure U.N = 0 on bottom by a projection 
 at the end of time loop'
 /
-/  V6P2
+/  V6P1
 /
 NOM = 'CORRECTION FROTTEMENT DE PEAU'
 NOM1 = 'SKIN FRICTION CORRECTION'     
@@ -5361,7 +5361,26 @@ NIVEAU = 1
 AIDE = 'POUR DECLENCHER LE MODELE DE DERIVE DE NAPPES, DANS 
 CE CAS LE FICHIER DE COMMANDES MIGRHYCAR EST NECESSAIRE' 
 AIDE1 = 'WILL TRIGGER THE OIL SPILL MODEL, IN THIS CASE 
-THE MIGRHYCAR STEERING FILE IS NEEDED'             
+THE MIGRHYCAR STEERING FILE IS NEEDED' 
+/
+/ VERSION 6.2
+/            
+NOM = 'OPTION POUR LES FRONTIERES LIQUIDES' 
+NOM1 = 'OPTION FOR LIQUID BOUNDARIES' 
+TYPE = ENTIER 
+INDEX = 109 
+MNEMO = 'FRTYPE' 
+CONTROLE = 1;2 
+TAILLE = 2 
+RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES' 
+RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS' 
+NIVEAU = 1 
+AIDE = 'On donne 1 entier par frontiere liquide 
+     1 : conditions aux limites classiques 
+     2 : methode de Thompson avec calcul de caracteristiques' 
+AIDE1 = 'One integer per liquid boundary is given 
+     1 : classical boundary conditions 
+     2 : Thompson method based on characteristics' 
 /
 /---------------------------------------------------------------------
 /
