@@ -59,7 +59,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CHARACTER(LEN=16) :: FORMUL
-      INTEGER I,IELEM,IELEM3
+      INTEGER I
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
 !
 !-----------------------------------------------------------------------
@@ -136,7 +136,7 @@
      &                         SMH,.TRUE.,2,
 !                                   YASMH OPTSOU
 !                              SMH IN PROJECTED FORM IN T3D
-     &                         FLULIM%R,LIMPRO%I,HBOR%R,KDIR,INFOGR,
+     &                         FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,
      &                         MESH2D%W%R,NAMECODE,2)
 !                                                  2 HARDCODED OPTION
 !                                                  FOR POSITIVE DEPTH ALGORITHM

@@ -1,12 +1,12 @@
-!                    *****************
-                     SUBROUTINE STRESS
-!                    *****************
+!                    *********************
+                     SUBROUTINE T3D_STRESS
+!                    *********************
 !
      & (SEM3D,OP,T2,T3,BFBORL,BFBORF,BFBORS,NPOIN2,NPOIN3,MESH2D,
      &  MESH3D,IELM3,IELM2H,IELM2V,SV,MSK,MASKBR,MASKEL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADDS TO OR REMOVES FROM SEM3D THE EXPLICIT STRESS
@@ -28,6 +28,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J.M. HERVOUET (LNHE)
+!+        26/09/2011
+!+        V6P2
+!+   Replaces subroutine STRESS to avoid a duplication with Tomawac.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BFBORF         |---| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:

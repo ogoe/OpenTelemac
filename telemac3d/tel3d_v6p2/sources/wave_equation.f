@@ -79,12 +79,7 @@
       LOGICAL           :: MSKGRA
       DOUBLE PRECISION  :: C
       DOUBLE PRECISION P_DSUM
-      EXTERNAL         P_DSUM
-      
-      
-      DOUBLE PRECISION CC1,CC2
-      
-      
+      EXTERNAL         P_DSUM  
 !
 !-----------------------------------------------------------------------
 !
@@ -151,12 +146,14 @@
 !
 !     EXPLICIT STRESS TERMS
 !
-      CALL STRESS(T3_01,'X=X-Y   ',T2_02,T3_04,
-     &            BUBORL,BUBORF,BUBORS,NPOIN2,NPOIN3,MESH2D,
-     &            MESH3D,IELM3,IELM2H,IELM2V,SVIDE,MSK,MASKBR,MASKEL)
-      CALL STRESS(T3_02,'X=X-Y   ',T2_02,T3_04,
-     &            BVBORL,BVBORF,BVBORS,NPOIN2,NPOIN3,MESH2D,
-     &            MESH3D,IELM3,IELM2H,IELM2V,SVIDE,MSK,MASKBR,MASKEL)
+      CALL T3D_STRESS(T3_01,'X=X-Y   ',T2_02,T3_04,
+     &                BUBORL,BUBORF,BUBORS,NPOIN2,NPOIN3,MESH2D,
+     &                MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
+     &                MSK,MASKBR,MASKEL)
+      CALL T3D_STRESS(T3_02,'X=X-Y   ',T2_02,T3_04,
+     &                BVBORL,BVBORF,BVBORS,NPOIN2,NPOIN3,MESH2D,
+     &                MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
+     &                MSK,MASKBR,MASKEL)
 !
 !     REQUIRES REAL VALUES IN PARALLEL MODE
 !
@@ -458,10 +455,13 @@
 !     SEM2D%ADR(1)%P = SEM2D%ADR(1)%P - FLUX2D
 !
 !     UNONNEU=8 : 1 IF NOT A WALL
-      CALL EXTMSK(MASKBR,MASK%ADR(8)%P%R,MESH2D%NPTFR,NETAGE)
+!     CALL EXTMSK(MASKBR,MASK%ADR(8)%P%R,MESH2D%NPTFR,NETAGE)
+!     CALL VECTOR(T3_06,'=','FLUBOR          ',IELBOR(IELM3,2),
+!    &            1.D0,SVIDE,SVIDE,SVIDE,UCONV,VCONV,SVIDE,
+!    &            MESH3D,.TRUE.,MASKBR)
       CALL VECTOR(T3_06,'=','FLUBOR          ',IELBOR(IELM3,2),
      &            1.D0,SVIDE,SVIDE,SVIDE,UCONV,VCONV,SVIDE,
-     &            MESH3D,.TRUE.,MASKBR)
+     &            MESH3D,.TRUE.,MASK_3D%ADR(8)%P)          
 !
       CALL SUMVER(FLBOR%R,T3_06%R,NPOIN2,NPLAN,MESH2D%NPTFR)
 !
@@ -567,7 +567,7 @@
 !
       CALL OSBD( 'X=X-Y   ' , HBOR , HN , HN , C , MESH2D )
       CALL DIRICH(DH,MAT2D%ADR(1)%P,SEM2D%ADR(1)%P,
-     &            HBOR,LIMPRO%I,TRAV2,MESH2D,KDIR,MSK,MASKPT)
+     &            HBOR,LIHBOR%I,TRAV2,MESH2D,KENT,MSK,MASKPT)
       CALL SOLVE(DH,MAT2D%ADR(1)%P,SEM2D%ADR(1)%P,
      &           TRAV2,SLVPRO,INFOGR,MESH2D,MAT2D%ADR(2)%P)
       CALL OSBD( 'X=X+Y   ' , HBOR , HN , HN , C , MESH2D )
@@ -585,7 +585,7 @@
       IF(OPTBAN.EQ.1.AND.OPT_HNEG.EQ.2.AND.NPTFR2.GT.0) THEN
         CALL MATVEC('X=AY    ',T2_01,MAT2D%ADR(3)%P,DH,1.D0,MESH2D)
         DO I=1,NPTFR2
-          IF(LIMPRO%I(I).EQ.KDIR) THEN
+          IF(LIHBOR%I(I).EQ.KENT) THEN
             FLBOR%R(I)=FLINT2%R(NBOR2%I(I))-T2_01%R(NBOR2%I(I))
           ENDIF
         ENDDO

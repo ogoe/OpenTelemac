@@ -1,12 +1,12 @@
-!                    *****************
-                     SUBROUTINE CORFON
-!                    *****************
+!                    *********************
+                     SUBROUTINE T3D_CORFON
+!                    *********************
 !
      &(SZF, ST1, ST2, ZF, T1, T2, X, Y, PRIVE, NPOIN2,
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE BOTTOM TOPOGRAPHY.
@@ -39,6 +39,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        29/09/2011
+!+        V6P2
+!+   Name changed into T3D_CORFON to avoid duplication with Telemac-2D
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LISFON         |-->| NUMBER OF SMOOTHINGS REQUIRED
@@ -98,4 +103,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE CORFON
+      END

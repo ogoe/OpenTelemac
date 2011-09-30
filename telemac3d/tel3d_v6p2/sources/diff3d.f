@@ -15,7 +15,7 @@
      & IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE DIFFUSION AND SUPG ADVECTION STEPS
@@ -457,9 +457,10 @@
 !   TAKES THE EXPLICIT BOUNDARY TERMS INTO ACCOUNT
 !   ---------------------------------------------
 !
-         CALL STRESS(SEM3D,'X=X+Y   ',T2_01,T3_02,
-     &               BFBORL,BFBORF,BFBORS,NPOIN2,NPOIN3,MESH2D,
-     &               MESH3D,IELM3,IELM2H,IELM2V,SVIDE,MSK,MASKBR,MASKEL)
+         CALL T3D_STRESS(SEM3D,'X=X+Y   ',T2_01,T3_02,
+     &                   BFBORL,BFBORF,BFBORS,NPOIN2,NPOIN3,MESH2D,
+     &                   MESH3D,IELM3,IELM2H,IELM2V,SVIDE,
+     &                   MSK,MASKBR,MASKEL)
 !
 !=======================================================================
 !   SEDIMENT-SPECIFIC

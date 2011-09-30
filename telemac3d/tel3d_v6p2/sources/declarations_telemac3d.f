@@ -141,6 +141,7 @@ C
 !     TYPES OF BOUNDARY CONDITIONS FOR U ON THE LATERAL BOUNDARIES
 !
       TYPE(BIEF_OBJ), TARGET :: LIUBOL,LIVBOL,LIWBOL
+      TYPE(BIEF_OBJ), TARGET :: LIUBOL_USER,LIVBOL_USER
 !
 !     TYPES OF BOUNDARY CONDITIONS FOR VELOCITY COMPONENTS AT THE FREE SURFACE
 !
@@ -194,34 +195,18 @@ C
 !
       TYPE(BIEF_OBJ), TARGET :: S1AK
 !
-!     PRESCRIBED K OF K-EPSILON MODEL ON THE BOTTOM
+!     PRESCRIBED K OF K-EPSILON MODEL ON: LATERAL BOUNDARY
+!                                         FREE SURFACE
+!                                         BOTTOM
 !
-      TYPE(BIEF_OBJ), TARGET :: KBORF
+      TYPE(BIEF_OBJ), TARGET :: KBORL,KBORS,KBORF
 !
-!     PRESCRIBED K OF K-EPSILON MODEL ON THE LATERAL BOUNDARY
+!     COEFFICIENTS OF LOGARITHMIC LAW FOR K OF K-EPSILON MODEL, ON THE BOTTOM
+!                                                               FREE SURFACE
 !
-      TYPE(BIEF_OBJ), TARGET :: KBORL
-!> @brief PRESCRIBED K OF K-EPSILON MODEL AT THE FREE SURFACE
-C k du modele k-epsilon impose en surface
-      TYPE(BIEF_OBJ), TARGET :: KBORS
-!> @brief LOGARITHMIC LAW FOR K OF K-EPSILON MODEL, ON THE BOTTOM
-C
-      TYPE(BIEF_OBJ), TARGET :: AKBORF
-!> @brief LOGARITHMIC LAW FOR K OF K-EPSILON MODEL, ON THE BOTTOM
-C
-      TYPE(BIEF_OBJ), TARGET :: BKBORF
-!> @brief LOGARITHMIC LAW FOR K OF K-EPSILON MODEL, ON THE LATERAL BOUNDARIES
-C
-      TYPE(BIEF_OBJ), TARGET :: AKBORL
-!> @brief LOGARITHMIC LAW FOR K OF K-EPSILON MODEL, ON THE LATERAL BOUNDARIES
-C
-      TYPE(BIEF_OBJ), TARGET :: BKBORL
-!> @brief LOGARITHMIC LAW FOR K OF K-EPSILON MODEL, AT THE FREE SURFACE
-C
-      TYPE(BIEF_OBJ), TARGET :: AKBORS
-!> @brief LOGARITHMIC LAW FOR K OF K-EPSILON MODEL, AT THE FREE SURFACE
-C
-      TYPE(BIEF_OBJ), TARGET :: BKBORS
+      TYPE(BIEF_OBJ), TARGET :: AKBORF,BKBORF,AKBORL
+      TYPE(BIEF_OBJ), TARGET :: BKBORL,AKBORS,BKBORS
+!
 !> @brief TYPES OF BOUNDARY CONDITIONS FOR K OF K-EPSILON MODEL ON THE BOTTOM
 C types de conditions aux limites au fond sur k du modele k-epsilon
       TYPE(BIEF_OBJ), TARGET :: LIKBOF
@@ -456,21 +441,18 @@ C masquage des elements
 !> @brief MASK OF NODES
 C masquage des points
       TYPE(BIEF_OBJ), TARGET :: MASKPT
-!> @brief 3D MASK OF BOUNDARY ELEMENTS
-C masque 3d sur les bords lateraux
+!
+!     3D MASK OF BOUNDARY ELEMENTS (CASE WITH MASKING)
+!
       TYPE(BIEF_OBJ), TARGET :: MASKBR
-!> @brief POSITIONS OF FLOATING BODIES
-C positions successives des flotteurs
-      TYPE(BIEF_OBJ), TARGET :: XFLOT
-!> @brief POSITIONS OF FLOATING BODIES
-C positions successives des flotteurs
-      TYPE(BIEF_OBJ), TARGET :: YFLOT
-!> @brief POSITIONS OF FLOATING BODIES
-C positions successives des flotteurs
-      TYPE(BIEF_OBJ), TARGET :: ZFLOT
-!> @brief
-C z des flotteurs dans le maillage transforme
-      TYPE(BIEF_OBJ), TARGET :: ZSFLOT
+!
+!     3D MASK OF BOUNDARY ELEMENTS (WORKING ARRAY FOR DEBIMP_3D)
+!
+      TYPE(BIEF_OBJ), TARGET :: MASKTR
+!
+!     POSITIONS OF FLOATING BODIES (X,Y, Z AND Z IN TRANSFORMED MESH)
+!
+      TYPE(BIEF_OBJ), TARGET :: XFLOT,YFLOT,ZFLOT,ZSFLOT
 !> @brief
 C coordonnees barycentriques instantannees, au pied des courbes caracteristiques, des flotteurs en 2dh
       TYPE(BIEF_OBJ), TARGET :: SHPFLO
@@ -495,23 +477,29 @@ C table de connectivite bidon utilisee pour la sortie des trajectoires sous form
 !> @brief WORKING ARRAY
 C tableau de travail
       TYPE(BIEF_OBJ), TARGET :: TRAFLO
-!> @brief TYPE OF BOUNDARY CONDITIONS ON DEPTH
-C types de conditions aux limites sur h
-      TYPE(BIEF_OBJ), TARGET :: LIHBOR
-!> @brief NUMBER OF LIQUID BOUNDARIES
-C
-      TYPE(BIEF_OBJ), TARGET :: NUMLIQ
-!> @brief PROPAGATION BC TYPES (TELEMAC2D'S PROPAG)
-C
+!
+!     TYPE OF BOUNDARY CONDITIONS ON DEPTH (AND VALUE OF USER SAVED IF THOMPSON)
+!
+      TYPE(BIEF_OBJ), TARGET :: LIHBOR,LIHBOR_USER
+!
+!     LIQUID BOUNDARY NUMNER OF BOUNDARY POINTS, OF BOUNDARY ELEMENTS
+!
+      TYPE(BIEF_OBJ), TARGET :: NUMLIQ,NUMLIQ_ELM
+!
+!     PROPAGATION BC TYPES (TELEMAC2D'S PROPAG)
+!
       TYPE(BIEF_OBJ), TARGET :: LIMPRO
-!> @brief SECOND MEMBERS (RIGHT HAND SIDE) FOR THE LINEAR EQUATIONS 3D
-C seconds membres
+!
+!     RIGHT HAND SIDE FOR THE LINEAR EQUATIONS IN 3D
+!
       TYPE(BIEF_OBJ), TARGET :: SEM3D
-!> @brief SECOND MEMBERS (RIGHT HAND SIDE) FOR THE LINEAR EQUATIONS 2D
-C seconds membres
+!
+!     RIGHT HAND SIDE FOR THE LINEAR EQUATIONS IN 2D
+!
       TYPE(BIEF_OBJ), TARGET :: SEM2D
-!> @brief ELEMENT-ORIENTED WORKING ARRAY
-C tableau de travail par element 2d
+!
+!     ELEMENT-ORIENTED WORKING ARRAY
+!
       TYPE(BIEF_OBJ), TARGET :: TE1
 !> @brief ELEMENT-ORIENTED WORKING ARRAY
 C tableau de travail par element 2d
@@ -667,25 +655,22 @@ C
 !> @brief
 C
       TYPE(BIEF_OBJ), TARGET :: GRADZN
-!> @brief 2D MASK, FOR TELEMAC2D COMPATIBILITY
-C masque pour les segments 2d
-      TYPE(BIEF_OBJ), TARGET :: MASK
-!> @brief BLOCKS OF ARRAYS FOR THE USER
-C
+!
+!     2D MASK, FOR TELEMAC2D COMPATIBILITY
+!
+      TYPE(BIEF_OBJ), TARGET :: MASK,MASK_3D
+!
+!     BLOCKS OF ARRAYS FOR THE USER
+!
       TYPE(BIEF_OBJ), TARGET :: PRIVE
 !
 !     BLOCKS OF ARRAYS FOR THE USER
 !
       TYPE(BIEF_OBJ), TARGET :: MAT2D, TM1
-!> @brief
-C structure de tableaux de travail 3d
-      TYPE(BIEF_OBJ), TARGET :: TRAV3
-!> @brief
-C structure de tableaux de travail 2d
-      TYPE(BIEF_OBJ), TARGET :: TRAV2
-!> @brief
-C structure de tableaux de travail d'entiers
-      TYPE(BIEF_OBJ), TARGET :: ITRAV3
+!
+!     BLOCKS THAT WILL CONTAIN WORK STRUCTURES
+!
+      TYPE(BIEF_OBJ), TARGET :: TRAV3,TRAV2,ITRAV3
 !
       TYPE(BIEF_OBJ), TARGET :: VARSOR, VARCL
 !
@@ -996,20 +981,25 @@ C fichier de donnees formate 1
 !> @brief FORMATTED DATA FILE 2
 C fichier de donnees formate 2
       INTEGER T3DFO2
-!> @brief BINARY DATA FILE 1
-C fichier de donnees binaire 1
+!
+!     BINARY DATA FILE 1
+!
       INTEGER T3DBI1
-!> @brief BINARY DATA FILE 2
-C fichier de donnees binaire 2
+!
+!     BINARY DATA FILE 2
+!
       INTEGER T3DBI2
-!> @brief
-C
+!
+!
+!
       INTEGER T3DSED
-!> @brief
-C
+!
+!     
+!
       INTEGER T3DSUS
-!> @brief REFERENCE FILE NUMBER
-C fichier de reference
+!
+!     REFERENCE FILE NUMBER
+!
       INTEGER T3DREF
 !
 !     LIQUID BOUNDARIES FILE NUMBER
@@ -1056,13 +1046,17 @@ C fichier de reference
 !     BOUNDARY CONDITION ON THE BOTTOM 
 !
       INTEGER BC_BOTTOM
-C
-C-----------------------------------------------------------------------
-C (5) LOGICAL VALUES
-C-----------------------------------------------------------------------
-C
-C LOGICAL STEERING PARAMETERS
-C
+!
+!     THOMPSON BOUNDARY CONDITIONS 
+!
+      INTEGER FRTYPE(MAXFRO)
+!
+!-----------------------------------------------------------------------
+! (5) LOGICAL VALUES
+!-----------------------------------------------------------------------
+!
+! LOGICAL STEERING PARAMETERS
+!
       LOGICAL DEBU,   PROP
 !
 !     IF YES, CORIOLIS
@@ -1213,6 +1207,10 @@ C si oui, pression dynamique dans l'equation d'onde
 !
       LOGICAL SPILL_MODEL
 !
+!     THOMFR (TRUE IF ONE OF THE VALIUES IN FRTYPE IS 2)
+!
+      LOGICAL THOMFR
+!
 !-----------------------------------------------------------------------
 ! (6) REALS
 !-----------------------------------------------------------------------
@@ -1248,50 +1246,65 @@ C si oui, pression dynamique dans l'equation d'onde
 !     AIR TEMPERATURE
 !
       DOUBLE PRECISION TAIR
-!> @brief WATER DENSITY AT REFERENCE CONCENTRATION
-C masse volumique de reference de l'eau
+!
+!     WATER DENSITY AT REFERENCE CONCENTRATION
+!
       DOUBLE PRECISION RHO0
-!> @brief FRICTION COEFFICIENT FOR THE BOTTOM
-C coefficient de frottement pour le fond
+!
+!     FRICTION COEFFICIENT FOR THE BOTTOM
+!
       DOUBLE PRECISION RUGOF0
-!> @brief FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES
-C coefficient de frottement pour les parois laterales
+!
+!     FRICTION COEFFICIENT FOR LATERAL SOLID BOUNDARIES
+!
       DOUBLE PRECISION RUGOL0
-!> @brief ZERO
-C zero (plus petite valeur non nulle autorisee)
+!
+!     ZERO
+!
       DOUBLE PRECISION ZERO
-!> @brief MINIMAL VALUE FOR DEPTH
-C valeur minimale pour la hauteur
+!
+!     MINIMAL VALUE FOR DEPTH
+!
       DOUBLE PRECISION HMIN
-!> @brief MEAN DEPTH FOR LINEARIZATION
-C profondeur moyenne pour la linearisation
+!
+!     MEAN DEPTH FOR LINEARIZATION
+!
       DOUBLE PRECISION HAULIN
-!> @brief COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
-C coefficient de diffusion horizontale des vitesses
+!
+!     COEFFICIENT FOR HORIZONTAL DIFFUSION OF VELOCITIES
+!
       DOUBLE PRECISION DNUVIH
-!> @brief COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
-C coefficient de diffusion verticale des vitesses
+!
+!     COEFFICIENT FOR VERTICAL DIFFUSION OF VELOCITIES
+!
       DOUBLE PRECISION DNUVIV
-!> @brief COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS
-C coefficient de diffusion horizontale des traceurs
+!
+!     COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS
+!
       DOUBLE PRECISION DNUTAH
-!> @brief COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS
-C coefficient de diffusion verticale des traceurs
+!
+!     COEFFICIENT FOR VERTICAL DIFFUSION OF TRACERS
+!
       DOUBLE PRECISION DNUTAV
-!> @brief INITIAL DEPTH
-C hauteur initiale
+!
+!     INITIAL DEPTH
+!
       DOUBLE PRECISION HAUTIN
-!> @brief INITIAL ELEVATION
-C cote initiale
+!
+!     INITIAL ELEVATION
+!
       DOUBLE PRECISION COTINI
-!> @brief RAIN OR EVAPORATION IN MM PER DAY
-C pluie ou evaporation en mm par jour
+!
+!     RAIN OR EVAPORATION IN MM PER DAY
+!
       DOUBLE PRECISION RAIN_MMPD
-!> @brief IMPLICITATION FOR DEPTH
-C taux d'implicitation pour la hauteur
+!
+!     IMPLICITATION FOR DEPTH
+!
       DOUBLE PRECISION TETAH
-!> @brief IMPLICITATION FOR VELOCITIES
-C taux d'implicitation pour les vitesses
+!
+!     IMPLICITATION FOR VELOCITIES
+!
       DOUBLE PRECISION TETAU
 !> @brief
 C
@@ -1546,18 +1559,18 @@ C
 C maillage 2d
       TYPE(BIEF_MESH) :: MESH2D
 !> @brief 3D MESH WITH SIGMA-MESH SPECIFIC FEATURES
-C maillage 3d
+! maillage 3d
       TYPE(BIEF_MESH) :: MESH3D
-C
-C-----------------------------------------------------------------------
-C (10) ALIASES
-C-----------------------------------------------------------------------
-C
-C     DECLARATION OF POINTERS FOR ALIASES
-C     TARGETS ARE ALLOCATED AND POINTED TO IN POINT_TELEMAC3D
-C
-C     ALIASES FOR WORKING VECTORS, REAL 3D, INTEGER 3D, REAL 2D
-C
+!
+!-----------------------------------------------------------------------
+! (10) ALIASES
+!-----------------------------------------------------------------------
+!
+!     DECLARATION OF POINTERS FOR ALIASES
+!     TARGETS ARE ALLOCATED AND POINTED TO IN POINT_TELEMAC3D
+!
+!     ALIASES FOR WORKING VECTORS, REAL 3D, INTEGER 3D, REAL 2D
+!
 !
 !     BIEF_OBJ STRUCTURES FOR ARRAYS OF DIMENSION NPOIN3
 !
@@ -1576,7 +1589,7 @@ C
       TYPE(BIEF_OBJ), POINTER :: T2_06,T2_07,T2_08,T2_09,T2_10
       TYPE(BIEF_OBJ), POINTER :: T2_11,T2_12,T2_13,T2_14,T2_15
       TYPE(BIEF_OBJ), POINTER :: T2_16,T2_17,T2_18,T2_19,T2_20
-      TYPE(BIEF_OBJ), POINTER :: T2_21
+      TYPE(BIEF_OBJ), POINTER :: T2_21,T2_22,T2_23
 !
 !     2D NODE COORDINATES
 !
