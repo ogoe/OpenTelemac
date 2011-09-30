@@ -97,7 +97,8 @@
 !
       IFLOT = 0
       CALL BIEF_OPEN_FILES(CODE1,T3D_FILES,MAXLU_T3D,PATH,NCAR,
-     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,1)
+     &                     INCLUS(COUPLING,'SISYPHE').OR.
+     &                     INCLUS(COUPLING,'TOMAWAC') ,IFLOT,1)
 !
 !-----------------------------------------------------------------------
 !
