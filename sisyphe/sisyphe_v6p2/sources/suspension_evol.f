@@ -1,3 +1,4 @@
+! Bug correction 26/08/2011
 !                    **************************
                      SUBROUTINE SUSPENSION_EVOL
 !                    **************************
@@ -94,6 +95,8 @@ C
              IF (QFLUX%R(I).GT.ZERO) THEN
                 ZFCL_S%R(I) = QFLUX%R(I) / CONC_VASE(1)
                 MS_VASE(I,1) = MS_VASE (I,1) +QFLUX%R(I)
+! correction LAV 26/08/2011
+                ES(I,1)= MS_VASE(I,1)/CONC_VASE(1)
 !
               ELSEIF(QFLUX%R(I).LT.ZERO) THEN
 !

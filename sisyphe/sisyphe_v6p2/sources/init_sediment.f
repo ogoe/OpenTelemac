@@ -5,7 +5,7 @@
      &(NSICLA,ELAY,ZF,ZR,NPOIN,AVAIL,FRACSED_GF,AVA0,
      & LGRAFED,CALWC,XMVS,XMVE,GRAV,VCE,XWC,FDM,
      & CALAC,AC,SEDCO,ES,NCOUCH_TASS,CONC_VASE,
-     & MS_SABLE,MS_VASE,ACLADM,UNLADM,TOCE_SABLE)
+     & MS_SABLE,MS_VASE,ACLADM,UNLADM,TOCE_SABLE,DEBU)
 C
 !
 !***********************************************************************
@@ -69,6 +69,7 @@ C
 !| XWC            |-->| SETTLING VELOCITY
 !| ZF             |-->| ELEVATION OF BOTTOM
 !| ZR             |-->| NON ERODABLE BED
+!| DEBU           |-->| FLAG, RESTART ON SEDIMENTOLOGICAL FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       USE BIEF
@@ -93,7 +94,7 @@ C
       DOUBLE PRECISION,  INTENT(INOUT)  :: FDM(NSICLA),XWC(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: AC(NSICLA),TOCE_SABLE
 C
-      LOGICAL,           INTENT(IN)     :: SEDCO(NSICLA)
+      LOGICAL,           INTENT(IN)     :: SEDCO(NSICLA), DEBU
 C
 C IF SEDCO(1) OR SEDCO(2) = YES --> CONSOLIDATION MODEL
 C
@@ -128,7 +129,7 @@ C     PURE MUD ONLY
         IF(SEDCO(1)) CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,
      &                               ELAY%R,NCOUCH_TASS,CONC_VASE,
      &                                  MS_SABLE%R,MS_VASE%R,ZF%R,
-     &                                               ZR%R,AVA0)
+     &                                               ZR%R,AVA0,DEBU)
 C
       ELSE
 C
@@ -157,7 +158,7 @@ C
           MIXTE=.TRUE.      
           CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,ELAY%R,
      &                     NCOUCH_TASS,CONC_VASE,MS_SABLE%R,
-     &                     MS_VASE%R,ZF%R,ZR%R,AVA0)
+     &                     MS_VASE%R,ZF%R,ZR%R,AVA0,DEBU)
           DO I=1,NPOIN
             ACLADM%R(I) = FDM(1)
           ENDDO

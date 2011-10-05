@@ -1,9 +1,10 @@
-!                    *********************
+! CV correction bug en cas de suite (IF DEBU) 
+!                   *********************
                      SUBROUTINE INIT_MIXTE
 !                    *********************
 !
      &(XMVS,NPOIN,AVAIL,NSICLA,ES,ELAY,NCOUCH_TASS,CONC_VASE,
-     & MS_SABLE,MS_VASE,ZF,ZR,AVA0)
+     & MS_SABLE,MS_VASE,ZF,ZR,AVA0,DEBU)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -48,6 +49,7 @@
 !| XMVS           |-->| WATER DENSITY 
 !| ZF             |-->| ELEVATION OF BOTTOM
 !| ZR             |-->| NON ERODABLE BED
+!|  DEBU          |-->| FLAG, FOR PREVIOUS SEDIMENTOLOGICAL FILE 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -66,6 +68,7 @@
       DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,10)
       DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(10)
       DOUBLE PRECISION, INTENT(IN)   :: AVA0(NSICLA)
+      LOGICAL, INTENT (IN) :: DEBU
 !
 !-----------------------------------------------------------------------
 !     LOCAL VARIABLES
@@ -111,9 +114,15 @@
         ELAY(I)=0.D0
         IF(NCOUCH_TASS.GT.1) THEN
           DO J=1,NCOUCH_TASS-1
-            ES(I,J)= EPAI_VASE(J)
-            IF(NSICLA.GT.1) THEN
-              ES(I,J)= ES(I,J)  + EPAI_SABLE(J)
+!CV.. 
+            IF(.NOT.DEBU) THEN 
+!...CV
+               ES(I,J)= EPAI_VASE(J)
+               IF(NSICLA.GT.1) THEN
+                 ES(I,J)= ES(I,J)  + EPAI_SABLE(J)
+! CV..
+               ENDIF
+!CV
             ENDIF
             ELAY(I)=ELAY(I)+ES(I,J)
           ENDDO
@@ -150,6 +159,8 @@
 !           IF MIXED
             MS_VASE(I,J) = ES(I,J)*CONC_VASE(J)*AVA0(2)
             MS_SABLE(I,J)= ES(I,J)*XMVS*AVA0(1)
+! CV..
+            IF(.NOT.DEBU) THEN
             IF(ES(I,J).GE.1.D-6) THEN
               AVAIL(I,J,1)= AVA0(1)
               AVAIL(I,J,2)= AVA0(2)
@@ -157,7 +168,9 @@
               AVAIL(I,J,1)= 0.D0
               AVAIL(I,J,2)= 0.D0
             ENDIF
-!
+!CV..
+            ENDIF
+!..CV
           ENDIF
         ENDDO
 !

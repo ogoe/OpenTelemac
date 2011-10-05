@@ -329,19 +329,18 @@ C     CONTROL SECTIONS
           CTRLSC(K) = MOTINT( ADRESS(1,42) + K-1 )
         ENDDO
       ENDIF
-C     COORDINATES OF THE ORIGIN
+!     COORDINATES OF THE ORIGIN
       I_ORIG = MOTINT( ADRESS(1,43)   )
       J_ORIG = MOTINT( ADRESS(1,43)+1 )
       DEBUG  = MOTINT( ADRESS(1,44)   )
-C 
+! 
       ICR  =   MOTINT(ADRESS(1,46)   )
-C 
+! 
       IKS  =   MOTINT(ADRESS(1,47)   )
-
-
+!
 !
 ! ############### !
-C REAL KEYWORDS   !
+! REAL KEYWORDS   !
 ! ############### !
 !
       ! NON-EQUILIBIRUM BEDLOAD
@@ -354,24 +353,26 @@ C REAL KEYWORDS   !
       DO K=1,NSICLA
         FDM(K)   = MOTREA( ADRESS(2,  4) + K-1 )
       ENDDO
-C     IF OLD NAME OF KEYWORD 28 HAS BEEN FOUND
+!     IF OLD NAME OF KEYWORD 28 HAS BEEN FOUND
       IF(TROUVE(2,28).EQ.2) THEN
         DO K=1,NSICLA
           FDM(K) = MOTREA( ADRESS(2,28) + K-1 )
         ENDDO
       ENDIF
       XKV         = MOTREA( ADRESS(2,  5) )
-CV
-CV      AC          = MOTREA( ADRESS(2,  6) )
-      DO K=1,MAX(DIMENS(2,6),NSICLA)
-         AC(K)   = MOTREA( ADRESS(2, 6) + K-1 )
+!     SHIELDS NUMBERS
+      DO K=1,DIMENS(2,6)
+        AC(K)   = MOTREA( ADRESS(2, 6) + K-1 )
       ENDDO
+!     IF ALL SHIELDS NUMBERS ARE NOT GIVEN, THE LATEST
+!     ONE IS TAKEN FOR THE FOLLOWING
+!     FOR EXAMPLE IF ONLY ONE IS GIVEN, ALL WILL HAVE
+!     THE SAME VALUE
       IF(DIMENS(2,6).LT.NSICLA) THEN
         DO K=DIMENS(2,6)+1,NSICLA
           AC(K) = MOTREA( ADRESS(2, 6)+DIMENS(2,6)-1 )
         ENDDO
       ENDIF
-CV
       SFON        = MOTREA( ADRESS(2,  7) )
       GRAV        = MOTREA( ADRESS(2,  8) )
       ZERO        = MOTREA( ADRESS(2,  9) )
@@ -388,25 +389,24 @@ CV
       XKX         = MOTREA( ADRESS(2, 19) )
       XKY         = MOTREA( ADRESS(2, 20) )
       SLVTRA%EPS  = MOTREA( ADRESS(2, 21) )
-      DO K=1,NSICLA
-         XWC(K)   = MOTREA( ADRESS(2, 22) + K-1 )
+!     SETTLING VELOCITIES (SAME TREATMENT THAN SHIELDS NUMBERS)
+      DO K=1,DIMENS(2,22)
+        XWC(K)   = MOTREA( ADRESS(2, 22) + K-1 )
       ENDDO
-CV
       IF(DIMENS(2,22).LT.NSICLA) THEN
         DO K=DIMENS(2,22)+1,NSICLA
           XWC(K) = MOTREA( ADRESS(2, 22)+DIMENS(2,22)-1 )
         ENDDO
       ENDIF
-
-CV
       CRIT_CFD    = MOTREA( ADRESS(2, 23) )
       KSPRATIO    = MOTREA( ADRESS(2, 24) )
       PHISED      = MOTREA( ADRESS(2, 25) )
       BETA2       = MOTREA( ADRESS(2, 26) )
       BIJK        = MOTREA( ADRESS(2, 27) )
-C
-C     INITIAL CONCENTRATIONS
-C++++++++++++++++++++++++++++++++     
+!
+!     INITIAL CONCENTRATIONS
+!     ++++++++++++++++++++++
+!     
       DO K=1,NSICLA
         CS0(K)=MOTREA( ADRESS(2,30) + K-1 )
       ENDDO
@@ -418,50 +418,44 @@ C++++++++++++++++++++++++++++++++
           CBOR_CLASSE(K)=MOTREA( ADRESS(2,31) + K-1 )
         ENDDO
       ENDIF
-C 
-C       COHESIVE SEDIMENT 
-C +++++++++++++++++++++++++++++++
-C 
+! 
+!     COHESIVE SEDIMENT 
+!     +++++++++++++++++
+! 
       NCOUCH_TASS = MOTINT( ADRESS(1,45)   )
-
-C
+!
       IF(DIMENS(2,32).GT.0) THEN
         DO K=1,DIMENS(2,32)
           CONC_VASE(K)=MOTREA( ADRESS(2,32) + K-1 )
         ENDDO
       ENDIF
-C
-C OBSOLETE KEY WORD
-C      CSF_VASE    = MOTREA( ADRESS(2, 29) )
-
-        CSF_VASE = CONC_VASE(1)/XMVS
-C 
+!
+!     OBSOLETE KEY WORD : CSF_VASE = MOTREA( ADRESS(2, 29) )
+!
+      CSF_VASE = CONC_VASE(1)/XMVS
+! 
       IF(DIMENS(2,34).GT.0) THEN
         DO K=1,DIMENS(2,34)
           TOCE_VASE(K)=MOTREA( ADRESS(2,34) + K-1 )
         ENDDO
       ENDIF
-C
-C      KRONE AND PARTHENIADES EROSION AND DEPOSITION LAW
-C
-C OBSOLETE KEY WORD
-C      VITCE= MOTREA( ADRESS(2,35))
-C     
+!
+!     KRONE AND PARTHENIADES EROSION AND DEPOSITION LAW
+!
+!     OBSOLETE KEY WORD : VITCE= MOTREA( ADRESS(2,35))
+!     
       VITCE = SQRT(TOCE_VASE(1)/XMVE)
       VITCD= MOTREA( ADRESS(2,36))
-      PARTHENIADES = MOTREA( ADRESS(2,37))
-C
-C CONVERTED TO  M/S
-C
-       PARTHENIADES = PARTHENIADES/XMVS
-C
-C CONSOLIDATION MODEL
-C
+!     PARTHENIADES WITH CONVERSION TO M/S
+      PARTHENIADES = MOTREA( ADRESS(2,37))/XMVS
+!
+!     CONSOLIDATION MODEL
+!
       TASS = MOTLOG(ADRESS(3,23))
       ITASS  =   MOTINT(ADRESS(1,48)   )
 !
-! MULTILAYER MODEL (WALTHER, 2008)
-! ITASS = 1
+!     MULTILAYER MODEL (WALTHER, 2008)
+!     ITASS = 1
       IF(DIMENS(2,33).GT.0) THEN
         DO K=1,DIMENS(2,33)
           TRANS_MASS(K)=MOTREA( ADRESS(2,33) + K-1 )
