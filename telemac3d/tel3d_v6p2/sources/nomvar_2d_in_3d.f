@@ -101,6 +101,8 @@
       TEXTE (32) = 'SOLID DISCHARGE M2/S            '
       TEXTE (33) = 'SOLID DIS IN X  M2/S            '
       TEXTE (34) = 'SOLID DIS IN Y  M2/S            '
+      TEXTE (35) = 'HIGH WATER MARK M               '
+      TEXTE (36) = 'HIGH WATER TIME S               '
 !
 ! TEXTPR IS USED TO READ PREVIOUS COMPUTATION FILES.
 ! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
@@ -141,6 +143,8 @@
       TEXTPR (32) = 'SOLID DISCHARGE M2/S            '
       TEXTPR (33) = 'SOLID DIS IN X  M2/S            '
       TEXTPR (34) = 'SOLID DIS IN Y  M2/S            '
+      TEXTPR (35) = 'HIGH WATER MARK M               '
+      TEXTPR (36) = 'HIGH WATER TIME S               '
 !
 !-----------------------------------------------------------------------
 !
@@ -182,6 +186,8 @@
       TEXTE (32) = 'DEBIT SOLIDE    M2/S            '
       TEXTE (33) = 'DEBIT SOL EN X  M2/S            '
       TEXTE (34) = 'DEBIT SOL EN Y  M2/S            '
+      TEXTE (35) = 'COTE MAXIMUM    M               '
+      TEXTE (36) = 'TEMPS COTE MAXI S               '
 !
 ! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
 ! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
@@ -221,6 +227,8 @@
       TEXTPR (32) = 'DEBIT SOLIDE    M2/S            '
       TEXTPR (33) = 'DEBIT SOL EN X  M2/S            '
       TEXTPR (34) = 'DEBIT SOL EN Y  M2/S            '
+      TEXTPR (35) = 'COTE MAXIMUM    M               '
+      TEXTPR (36) = 'TEMPS COTE MAXI S               '
 !
       ENDIF
 !
@@ -289,18 +297,22 @@
       MNEMO(29)   = 'PRIVE3  '
 !     VARIABLE 30
       MNEMO(30)   = 'PRIVE4  '
-!     VARIABLE 31
+!     FRICTION VELOCITY
       MNEMO(31)   = 'US      '
-!     SOLID DISCHARGE 32
+!     SOLID DISCHARGE
       MNEMO(32)   = 'QS      '
-!     SOLID DISCHARGE ALONG X 33
+!     SOLID DISCHARGE ALONG X
       MNEMO(33)   = 'QSX     '
-!     SOLID DISCHARGE ALONG Y 34
+!     SOLID DISCHARGE ALONG Y
       MNEMO(34)   = 'QSY     '
+!     HIGH WATER MARK
+      MNEMO(35)   = 'MAXZ    '
+!     HIGH WATER TIME
+      MNEMO(36)   = 'TMXZ    '
 !
 !-----------------------------------------------------------------------
 !
-      NEXT = 35
+      NEXT = 37
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC

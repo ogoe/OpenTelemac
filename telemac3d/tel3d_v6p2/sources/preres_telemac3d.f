@@ -46,12 +46,63 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL LEO
+      LOGICAL LEO,DEJA
 !
       INTEGER LTT,I,IPLAN,I3
-      DOUBLE PRECISION DELTAZ,U_0,U_1,V_0,V_1,C_0,C_1
+      DOUBLE PRECISION DELTAZ,U_0,U_1,V_0,V_1,C_0,C_1,XMAX
+!
+      DATA DEJA/.FALSE./
 !
       INTRINSIC SQRT,MAX
+!
+!-----------------------------------------------------------------------
+!
+!
+!-----------------------------------------------------------------------
+!
+! 1)  PART WHICH MUST BE DONE EVEN IF THERE IS NO OUTPUT FOR THIS TIMESTEP
+!     BUT ONLY AFTER FIRST TIMESTEP FOR GRAPHIC PRINTOUTS
+!
+!-----------------------------------------------------------------------
+!
+      IF(LT.GE.GRADEB) THEN
+!
+!=======================================================================
+! COMPUTES THE MAXIMUM ELEVATION AND ASSOCIATED TIME
+!=======================================================================
+!
+      IF(SORG2D(35)) THEN
+        IF(.NOT.DEJA) THEN
+          CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+          CALL OS('X=C     ',X=TMAXZ,C=AT)
+          DEJA=.TRUE.
+        ELSE
+          DO I=1,NPOIN2
+            XMAX=H%R(I)+ZF%R(I)
+!           DRY LAND EXCLUDED (TO AVOID RANDOM TIMES)
+            IF(XMAX.GT.MAXZ%R(I).AND.H%R(I).GT.0.01D0) THEN
+              MAXZ%R(I)=XMAX
+              IF(SORG2D(36)) TMAXZ%R(I)=AT
+            ENDIF
+          ENDDO
+        ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      ELSE
+!
+!      CASE WHERE OUTINI=.TRUE. : PRIORITY ON PTINIG, VALUES FOR LT=0
+!      OTHERWISE THEY WOULD NOT BE INITIALISED
+       IF(SORG2D(35)) CALL OS('X=Y     ',X=MAXZ ,Y=ZF)
+       IF(SORG2D(36)) CALL OS('X=C     ',X=TMAXZ,C=AT)
+!
+!     ENDIF FOR : IF(LT.GE.GRADEB) THEN
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+! 2)  PART WHICH MUST BE DONE ONLY IF THERE IS AN OUTPUT FOR THIS TIMESTEP
 !
 !-----------------------------------------------------------------------
 !

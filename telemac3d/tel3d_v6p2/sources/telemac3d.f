@@ -2000,15 +2000,16 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-! RESULT OUTPUT
-!
-! PREPARES 3D OUTPUT
-!
-      IF (MOD(LT,GRAPRD).EQ.0.AND.LT.GE.GRADEB) THEN
 !
 ! PREPARES 2D AND 3D OUTPUT
 !
+!     ALWAYS CALLED (SEE E.G. OUTPUT MAXZ)
+!
       CALL PRERES_TELEMAC3D(LT)
+!
+!     CALLED IF OUTPUTS REQUESTED
+!
+      IF (MOD(LT,GRAPRD).EQ.0.AND.LT.GE.GRADEB) THEN
 !
 ! 3D OUTPUT
 !

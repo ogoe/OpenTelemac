@@ -30,24 +30,24 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF
-C
-C       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
-C
-C       (1) VECTORS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       (2) MATRICES (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       (3) BLOCKS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       (4) INTEGERS
-C       (5) LOGICAL VALUES
-C       (6) REALS
-C       (7) STRINGS
-C       (8) SLVCFG STRUCTURES
-C       (9) MESH STRUCTURE
-C      (10) ALIASES
-C
-C-----------------------------------------------------------------------
-C (1) VECTORS (REAL AND INTEGER)
-C-----------------------------------------------------------------------
-C
+!
+!       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
+!
+!       (1) VECTORS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (2) MATRICES (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (3) BLOCKS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       (4) INTEGERS
+!       (5) LOGICAL VALUES
+!       (6) REALS
+!       (7) STRINGS
+!       (8) SLVCFG STRUCTURES
+!       (9) MESH STRUCTURE
+!      (10) ALIASES
+!
+!-----------------------------------------------------------------------
+! (1) VECTORS (REAL AND INTEGER)
+!-----------------------------------------------------------------------
+!
 !
 !     3D VELOCITY COMPONENTS AT PREVIOUS TIMESTEP (TIME N)
 !
@@ -207,71 +207,47 @@ C
       TYPE(BIEF_OBJ), TARGET :: AKBORF,BKBORF,AKBORL
       TYPE(BIEF_OBJ), TARGET :: BKBORL,AKBORS,BKBORS
 !
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR K OF K-EPSILON MODEL ON THE BOTTOM
-C types de conditions aux limites au fond sur k du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: LIKBOF
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR K OF K-EPSILON MODEL ON THE LATERAL BOUNDARIES
-C types de conditions aux limites sur les parois laterales sur k du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: LIKBOL
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR K OF K-EPSILON MODEL AT THE FREE SURFACE
-C types de conditions aux limites en surface sur k du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: LIKBOS
-!> @brief EPSILON OF K-EPSILON MODEL AT PREVIOUS TIMESTEP (TIME N)
-C epsilon (dissipation turbulente) du modele k-epsilon au pas de temps precedent (n)
+!     TYPES OF BOUNDARY CONDITIONS FOR K OF K-EPSILON MODEL ON THE BOTTOM
+!                                                        LATERAL BOUNDARY
+!                                                            FREE SURFACE
+      TYPE(BIEF_OBJ), TARGET :: LIKBOF,LIKBOL,LIKBOS
+!
+!     EPSILON OF K-EPSILON MODEL AT PREVIOUS TIMESTEP (TIME N)
+!
       TYPE(BIEF_OBJ), TARGET :: EPN
-!> @brief EPSILON OF K-EPSILON MODEL AFTER ADVECTION
-C epsilon (dissipation turbulente) du modele k-epsilon apres convection
+!
+!     EPSILON OF K-EPSILON MODEL AFTER ADVECTION
+!
       TYPE(BIEF_OBJ), TARGET :: EPC
-!> @brief EPSILON OF K-EPSILON MODEL AT TIME N+1
-C epsilon (dissipation turbulente) du modele k-epsilon au temps n+1
+!
+!     EPSILON OF K-EPSILON MODEL AT TIME N+1
+!
       TYPE(BIEF_OBJ), TARGET :: EP
-!> @brief
-C terme source explicite pour epsilon du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: S0EP
-!> @brief
-C terme source implicite pour epsilon du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: S1EP
-!> @brief PRESCRIBED EPSILON OF K-EPSILON MODEL ON THE BOTTOM
-C epsilon du modele k-epsilon impose au fond
-      TYPE(BIEF_OBJ), TARGET :: EBORF
-!> @brief PRESCRIBED EPSILON OF K-EPSILON MODEL ON THE LATERAL BOUNDARY
-C epsilon du modele k-epsilon impose sur les parois laterales
-      TYPE(BIEF_OBJ), TARGET :: EBORL
-!> @brief PRESCRIBED EPSILON OF K-EPSILON MODEL AT THE FREE SURFACE
-C epsilon du modele k-epsilon impose en surface
-      TYPE(BIEF_OBJ), TARGET :: EBORS
-!> @brief LOGARITHMIC LAW FOR EPSILON OF K-EPSILON MODEL, ON THE BOTTOM
-C
-      TYPE(BIEF_OBJ), TARGET :: AEBORF
-!> @brief LOGARITHMIC LAW FOR EPSILON OF K-EPSILON MODEL, ON THE BOTTOM
-C
-      TYPE(BIEF_OBJ), TARGET :: BEBORF
-!> @brief LOGARITHMIC LAW FOR EPSILON OF K-EPSILON MODEL, ON THE LATERAL BOUNDARIES
-C
-      TYPE(BIEF_OBJ), TARGET :: AEBORL
-!> @brief LOGARITHMIC LAW FOR EPSILON OF K-EPSILON MODEL, ON THE LATERAL BOUNDARIES
-C
-      TYPE(BIEF_OBJ), TARGET :: BEBORL
-!> @brief LOGARITHMIC LAW FOR EPSILON OF K-EPSILON MODEL, AT THE FREE SURFACE
-C
-      TYPE(BIEF_OBJ), TARGET :: AEBORS
-!> @brief LOGARITHMIC LAW FOR EPSILON OF K-EPSILON MODEL, AT THE FREE SURFACE
-C
-      TYPE(BIEF_OBJ), TARGET :: BEBORS
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR EPSILON OF K-EPSILON MODEL ON THE BOTTOM
-C types de conditions aux limites au fond sur epsilon du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: LIEBOF
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR EPSILON OF K-EPSILON MODEL ON THE LATERAL BOUNDARIES
-C types de conditions aux limites sur les parois laterales sur epsilon du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: LIEBOL
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR EPSILON OF K-EPSILON MODEL AT THE FREE SURFACE
-C types de conditions aux limites en surface sur epsilon du modele k-epsilon
-      TYPE(BIEF_OBJ), TARGET :: LIEBOS
-!> @brief 2D (VERTICALLY INTEGRATED) VELOCITY COMPONENT
-      TYPE(BIEF_OBJ), TARGET :: U2D
-!> @brief 2D (VERTICALLY INTEGRATED) VELOCITY COMPONENT
-C composante 2d de la vitesse
-      TYPE(BIEF_OBJ), TARGET :: V2D
+!
+!     EXPLICIT/IMPLICIT SOURCE TERM OF EPSILON IN K-EPSILON MODEL
+!
+      TYPE(BIEF_OBJ), TARGET :: S0EP,S1EP
+!
+!     PRESCRIBED EPSILON OF K-EPSILON MODEL ON THE BOTTOM
+!                                        LATERAL BOUNDARY
+!                                            FREE SURFACE
+!
+      TYPE(BIEF_OBJ), TARGET :: EBORF,EBORL,EBORS
+!
+!     COEFFICIENTS IN LOGARITHMIC LAW FOR EPSILON OF K-EPSILON MODEL, ON THE BOTTOM
+!                                                                  LATERAL BOUNDARY
+!                                                                      FREE SURFACE
+      TYPE(BIEF_OBJ), TARGET :: AEBORF,AEBORL,AEBORS
+      TYPE(BIEF_OBJ), TARGET :: BEBORF,BEBORL,BEBORS
+!
+!     TYPES OF BOUNDARY CONDITIONS FOR EPSILON OF K-EPSILON MODEL ON THE BOTTOM
+!                                                              LATERAL BOUNDARY
+!                                                                  FREE SURFACE
+      TYPE(BIEF_OBJ), TARGET :: LIEBOF,LIEBOL,LIEBOS
+!
+!     VERTICALLY INTEGRATED) VELOCITY COMPONENTS
+!
+      TYPE(BIEF_OBJ), TARGET :: U2D,V2D
 !> @brief
       TYPE(BIEF_OBJ), TARGET :: UBOR2D,VBOR2D
 !> @brief
@@ -357,8 +333,9 @@ C coefficient de frottement pour k-epsilon
 !> @brief WIND VELOCITY
 C
       TYPE(BIEF_OBJ), TARGET :: WIND
-!> @brief ATMOSPHERIC PRESSURE
-C
+!
+!     ATMOSPHERIC PRESSURE
+!
       TYPE(BIEF_OBJ), TARGET :: PATMOS
 !> @brief PARAMETERS FOR GLOBAL MASS AND FLUX BALANCES
 C
@@ -377,14 +354,21 @@ C flux entre les 2 pas de temps
 !> @brief DEPTH AT TIME N+1
 C hauteur d'eau au temps n+1
       TYPE(BIEF_OBJ), TARGET :: H
-!> @brief DEPTH AT TIME N
-C hauteur d'eau au temps n
+!
+!     DEPTH AT TIME N
+!
       TYPE(BIEF_OBJ), TARGET :: HN
-!> @brief
-C hauteur d'eau de propagation
+!
+!     PROPAGATION DEPTH, I.E. DEPTH INTO THE TERM DIV(HU)
+!
       TYPE(BIEF_OBJ), TARGET :: HPROP
-!> @brief
-C
+!
+!     HIGH WATER MARK, HIGH WATER TIME
+!
+      TYPE(BIEF_OBJ), TARGET :: MAXZ,TMAXZ
+!
+!     VARIATION OF DEPTH : H(N+1)-H(N)
+!
       TYPE(BIEF_OBJ), TARGET :: DH
 !> @brief
 C second membre pour la hauteur d'eau
@@ -1752,20 +1736,25 @@ C constante du modele k-epsilon
 !> @brief K-EPSILON CONSTANT
 C constante du modele k-epsilon
       DOUBLE PRECISION :: VIRT
-!> @brief SCHMIDT NUMBER
-C
+!
+!     SCHMIDT NUMBER
+!
       DOUBLE PRECISION :: SCHMIT
-!> @brief MINIMUM K
-C k minimum en cas de clipping
+!
+!     MINIMUM K
+!
       DOUBLE PRECISION :: KMIN
-!> @brief MAXIMUM K
-C k maximum en cas de clipping
+!
+!     MAXIMUM K
+!
       DOUBLE PRECISION :: KMAX
-!> @brief MINIMUM EPSILON
-C epsilon minimum en cas de clipping
+!
+!     MINIMUM EPSILON
+!
       DOUBLE PRECISION :: EMIN
-!> @brief MAXIMUM EPSILON
-C epsilon maximum en cas de clipping
+!
+!     MAXIMUM EPSILON
+!
       DOUBLE PRECISION :: EMAX
 !
 !     PRANDTL NUMBER
