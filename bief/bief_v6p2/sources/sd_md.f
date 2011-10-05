@@ -190,8 +190,9 @@
 !----GENERATES INVERSE PERMUTATION FROM PERMUTATION
 !
 4     DO 5 K=1,N
-      NEXT(K) = -NEXT(K)
-5     LAST(NEXT(K)) = K
+        NEXT(K) = -NEXT(K)
+        LAST(NEXT(K)) = K
+5     CONTINUE
 !
 !-----------------------------------------------------------------------
 !

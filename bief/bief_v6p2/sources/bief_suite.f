@@ -69,15 +69,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: VARSOR,CLAND
-      INTEGER, INTENT(IN), OPTIONAL :: NPLAN
-      INTEGER, INTENT(IN)           :: NHIST,NVARCL,MAXVAR
-      INTEGER                       :: NUMDEB,NPRE,NPOIN,TROUVE(MAXVAR)
-      INTEGER                       :: ALIRE(MAXVAR)
-      CHARACTER(LEN=*)              :: STD
-      CHARACTER(LEN=32)             :: TEXTPR(MAXVAR),VARCLA(NVARCL)
-      DOUBLE PRECISION              :: HIST(*),AT
-      LOGICAL                       :: FIN,LISTIN
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: VARSOR,CLAND
+      INTEGER, INTENT(IN), OPTIONAL   :: NPLAN
+      INTEGER, INTENT(IN)             :: NHIST,NVARCL,MAXVAR
+      INTEGER, INTENT(IN)             :: NUMDEB,NPRE,NPOIN
+      INTEGER, INTENT(INOUT)          :: TROUVE(MAXVAR)
+      INTEGER, INTENT(IN)             :: ALIRE(MAXVAR)
+      CHARACTER(LEN=*), INTENT(IN)    :: STD
+      CHARACTER(LEN=32), INTENT(IN)   :: TEXTPR(MAXVAR),VARCLA(NVARCL)
+      DOUBLE PRECISION, INTENT(INOUT) :: HIST(*),AT
+      LOGICAL, INTENT(IN)             :: FIN,LISTIN
       DOUBLE PRECISION, INTENT(OUT), OPTIONAL :: DT
       INTEGER, INTENT(OUT), OPTIONAL :: NDT
 !

@@ -82,7 +82,8 @@
           DO 1 J=JMIN,JMAX
             BSUM = BSUM - L(J) * TMP(JL(J))
 1         CONTINUE
-2         TMP(K) = BSUM * D(K)
+          TMP(K) = BSUM * D(K)
+2       CONTINUE
 !
 !  ******  SOLVES  UX = Y  BY BACK SUBSTITUTION  ***********************
 !

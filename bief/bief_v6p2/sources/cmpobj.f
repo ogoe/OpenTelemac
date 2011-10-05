@@ -61,7 +61,29 @@
 !
           IELM1 = OBJ1%ELM
           IELM2 = OBJ2%ELM
-          IF(IELM1.EQ.IELM2) CMPOBJ = .TRUE.
+          IF(IELM1.EQ.IELM2) THEN
+            IF(OBJ1%DIM1.NE.OBJ2%DIM1) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'CMPOBJ (BIEF) :' 
+                WRITE(LU,*) 'OBJET 1 : ',OBJ1%NAME,
+     &          ' DE TYPE ',TYP1,' ET TAILLE ',OBJ1%DIM1
+                WRITE(LU,*) 'OBJET 2 : ',OBJ2%NAME,
+     &          ' DE TYPE ',TYP2,' ET TAILLE ',OBJ2%DIM1
+                WRITE(LU,*) 'DIMENSIONS DIFFERENTES'
+              ENDIF
+              IF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'CMPOBJ (BIEF): '
+                WRITE(LU,*) 'OBJECT 1 : ',OBJ1%NAME,
+     &          ' OF TYPE ',TYP1,' AND SIZE ',OBJ1%DIM1
+                WRITE(LU,*) 'OBJECT 2 : ',OBJ2%NAME,
+     &          ' OF TYPE ',TYP2,' AND SIZE ',OBJ2%DIM1
+                WRITE(LU,*) 'DIFFERENT DIMENSIONS'
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+            CMPOBJ = .TRUE.
+          ENDIF
 !
         ELSEIF(TYP1.EQ.4) THEN
 !
@@ -81,6 +103,7 @@
           ENDIF
           CALL PLANTE(1)
           STOP
+!
         ENDIF
 !
       ENDIF

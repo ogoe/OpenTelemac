@@ -63,7 +63,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !     
       INTEGER, INTENT(IN)             :: NELEM,NELMAX,NPOIN,NPOIN2
-      INTEGER, INTENT(IN)             :: NDP,NPLAN,IELM,IELMU
+      INTEGER, INTENT(IN)             :: NDP,NPLAN,IELMU
+      INTEGER, INTENT(INOUT)          :: IELM
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: U,UTILD
       DOUBLE PRECISION, INTENT(IN)    :: WCONV(NPOIN),X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN2,NPLAN),ZSTAR(NPLAN)
