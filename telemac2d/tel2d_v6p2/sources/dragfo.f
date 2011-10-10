@@ -5,7 +5,7 @@
      &(FUDRAG,FVDRAG)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADDS THE DRAG FORCE OF VERTICAL STRUCTURES IN THE
@@ -54,11 +54,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,I,I4,NSOM
+      INTEGER IELEM,I,I4,NSOM,DISCLIN
       DOUBLE PRECISION UNORM,AIRE,SOM,XSOM(4),YSOM(4),X4,Y4
 !     DOUBLE PRECISION, PARAMETER :: CD=1.56D0,DIAM=2.D0
       DOUBLE PRECISION, PARAMETER :: CD=1.34D0,DIAM=2.D0
-      INTEGER, PARAMETER :: N=1
+      INTEGER, PARAMETER :: N=1      
 !
 !-----------------------------------------------------------------------
 !
@@ -108,8 +108,9 @@
 !
       IF(FU%ELM.EQ.12) THEN
 !
-        CALL CHGDIS(FUDRAG,11,12,MESH)
-        CALL CHGDIS(FVDRAG,11,12,MESH)
+        DISCLIN=11
+        CALL CHGDIS(FUDRAG,DISCLIN,12,MESH)
+        CALL CHGDIS(FVDRAG,DISCLIN,12,MESH)
 !
         DO IELEM = 1 , NELEM
           I4=IKLE%I(IELEM+3*NELMAX)

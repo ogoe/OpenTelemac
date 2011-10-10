@@ -340,7 +340,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IELMU,IELMH,UDIR,UDDL,UNEU,HOND,UNONNEU,IELEM,NELEM
-      INTEGER I1,I2,I3,DIMLIM,N,IOPT
+      INTEGER I1,I2,I3,DIMLIM,N,IOPT,DISCLIN
 !
       DOUBLE PRECISION Z(1),SL1,SL1U,C,FL1,FL2
 !
@@ -368,6 +368,10 @@
 !     VNEU = 6
       HOND = 7
       UNONNEU = 8
+!
+!  CONVENTION FOR LINEAR DISCRETISATION
+!
+      DISCLIN=11
 !
 !-----------------------------------------------------------------------
 !
@@ -840,8 +844,8 @@
      &              KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
      &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT)
         IF(IELMU.NE.11) THEN
-          CALL CHGDIS(T1,11,IELMU,MESH)
-          CALL CHGDIS(T2,11,IELMU,MESH)
+          CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
+          CALL CHGDIS(T2,DISCLIN,IELMU,MESH)
         ENDIF
 !
 !------ SCHEMA VOLUMES FINIS AVEC BANCS DECOUVRANTS -------------------
@@ -885,8 +889,8 @@
 !                       2: HARDCODED OPTION
 !
         IF(IELMU.NE.11) THEN
-          CALL CHGDIS(T1,11,IELMU,MESH)
-          CALL CHGDIS(T2,11,IELMU,MESH)
+          CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
+          CALL CHGDIS(T2,DISCLIN,IELMU,MESH)
         ENDIF
 !
 !-----------------------------------------------------------------

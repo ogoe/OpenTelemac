@@ -51,7 +51,7 @@
 !
       DOUBLE PRECISION TPS,C
       LOGICAL OKH,OKU,OKV
-      INTEGER I
+      INTEGER I,DISCLIN
 !
 !-----------------------------------------------------------------------
 !
@@ -91,8 +91,9 @@
 !       UD AND VD MAY BE QUASI-BUBBLE
 !       (BUT ALPHA2 AND ALPHA3 WILL BE SET TO 0)
         IF(UD%ELM.EQ.12) THEN
-          CALL CHGDIS(UD,11,12,MESH)
-          CALL CHGDIS(VD,11,12,MESH)
+          DISCLIN=11
+          CALL CHGDIS(UD,DISCLIN,12,MESH)
+          CALL CHGDIS(VD,DISCLIN,12,MESH)
         ENDIF
 !
 !-----------------------------------------------------------------------
