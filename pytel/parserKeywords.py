@@ -20,7 +20,7 @@
 #
 
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
-from utils import getFileContent
+from utils import getFileContent,putFileContent
 import re
 from os import path,walk
 import sys
@@ -43,9 +43,12 @@ entryquote = re.compile(r'(?P<before>[^\'"]*)(?P<after>.*)\s*\Z',re.I)
 exitsquote = re.compile(r"'(?P<before>(.*?[^']+|))'(?P<after>[^']+.*)\s*\Z",re.I)
 exitdquote = re.compile(r'"(?P<before>(.*?[^"]+|))"(?P<after>[^"]+.*)\s*\Z',re.I)
 
-key_none = re.compile(r'\s*&\w*\s+(?P<after>.*)',re.I)
+key_none = re.compile(r'\s*(?P<key>&\w*)\s+(?P<after>.*)',re.I)
 key_equals = re.compile(r'(?P<key>[^=:]*)(?P<after>.*)',re.I)
 val_equals = re.compile(r"[=:;]\s*(?P<val>('.*?'|[^\s;']*))\s*(?P<after>.*)",re.I)
+
+key_word = r'\s*(?P<this>(%s))\s*(?P<after>.*)\s*\Z'
+val_word = r"\s*[=:;]\s*(?P<this>('.*?'|%s))\s*(?P<after>.*)\s*\Z"
 
 dicokeys = ['AIDE','AIDE1','APPARENCE','CHOIX','CHOIX1','COMPORT','COMPOSE',
     'CONTROLE','DEFAUT','DEFAUT1','INDEX','MNEMO','NIVEAU','NOM','NOM1', \
@@ -98,6 +101,107 @@ def scanCAS(cas):
       keylist.pop(0)
 
    return keywords
+
+def translateCAS(cas,frgb):
+   keyLines = []
+   casLines = getFileContent(cas)
+
+   # ~~ split comments
+   core = []
+   for i in range(len(casLines)):
+      casLines[i] = casLines[i].replace('"""',"'''").replace('"',"'")
+      proc = re.match(key_comment,casLines[i]+'/')
+      head = proc.group('before').strip()
+      tail = proc.group('after').rstrip('/')
+      p = re.match(key_none,head+' ')
+      if p:
+         keyLines.insert(0,p.group('key'))
+         head = ''  # /!\ here you forget about proc.group('after')
+      if head != '':
+         core.append(head)
+         keyLines.append(head) # /!\ here you forget about tail
+      elif tail != '':
+         keyLines.append(tail)
+   casStream = ' '.join(core)
+
+   ik = 0; frLines = []; gbLines = []
+   # ~~ clean values to keep only the keys
+   while casStream != '':
+      # ~~ key
+      proc = re.match(key_equals,casStream)
+      if not proc:
+         print '... hmmm, did not see this one coming ...'
+         break
+      kw = proc.group('key').strip()
+      casStream = proc.group('after')   # still hold the separator
+      while 1:
+         p = re.match(re.compile(key_word%(kw),re.I),keyLines[ik])
+         if not p:
+            frLines.append(keyLines[ik])
+            gbLines.append(keyLines[ik])
+            ik = ik + 1
+         else:
+            keyLines[ik] = p.group('after')
+            if kw in frgb['GB'].keys():
+               frline = frgb['GB'][kw]
+               gbline = kw
+            if kw in frgb['FR'].keys():
+               frline = kw
+               gbline = frgb['FR'][kw]
+            break
+      # ~~ val
+      proc = re.match(val_equals,casStream)
+      if not proc:
+         print 'no value to keyword ',kw
+         sys.exit()
+      val = []
+      while proc:
+         val.append(proc.group('val')) #.replace("'",''))
+         casStream = proc.group('after')   # still hold the separator
+         while 1:
+            p = re.match(re.compile(val_word%(proc.group('val')),re.I),keyLines[ik])
+            if not p:
+               print '... could not get the values for ',kw
+               sys.exit()
+            keyLines[ik] = p.group('after')
+            if keyLines[ik] == '': ik = ik + 1
+            break
+         proc = re.match(val_equals,casStream)
+      # in FRENCH
+      for i in range(len(val)):
+         if val[i] in ['YES','Y','TRUE']: val[i] = 'OUI'
+         if val[i] in ['NO','N','FALSE']: val[i] = 'NON'
+      # not more than 72 characters
+      if len(' '+frline+' : '+';'.join(val)) < 73:
+         frline = ' ' + frline + ' : ' + ';'.join(val)
+      else:
+         frline = ' ' + frline + ' :\n'
+         if len(';'.join(val)) < 70:
+            frline = frline + '   ' + ';'.join(val)
+         else:
+            frline = frline + '   ' + ';\n   '.join(val)
+      # in ENGLISH
+      for i in range(len(val)):
+         if val[i] in ['OUI','O','VRAI']: val[i] = 'TRUE'
+         if val[i] in ['NON','N','FAUX']: val[i] = 'FALSE'
+      # not more than 72 characters
+      if len(' '+gbline+' : '+';'.join(val)) < 73:
+         gbline = ' ' + gbline + ' : ' + ';'.join(val)
+      else:
+         gbline = ' ' + gbline + ' :\n'
+         if len(';'.join(val)) < 70:
+            gbline = gbline + '   ' + ';'.join(val)
+         else:
+            gbline = gbline + '   ' + ';\n   '.join(val)
+      # final append
+      frLines.append(frline)
+      gbLines.append(gbline)
+
+   # ~~ print FR and GB versions of the CAS file
+   putFileContent(cas+'.fr',frLines)
+   putFileContent(cas+'.gb',gbLines)
+
+   return
 
 # _____              _______________________________________________
 # ____/ DICO FILES  /______________________________________________/

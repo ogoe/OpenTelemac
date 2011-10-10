@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """@brief
 """
 """@author Sebastien E. Bourban and Noemie Durand
@@ -119,7 +120,7 @@
 import ConfigParser
 from optparse import OptionParser
 import re
-from os import path, walk, listdir
+from os import path, walk, listdir, environ
 import sys
 
 # _____                   __________________________________________
@@ -406,6 +407,15 @@ def parseConfig_CompactTELEMAC(cfg):
 """
    Extract all the information required for the validation
    of the relevant modules for each configuration
+   The principal assumption is that the validation cases are
+   either under:
+     + val_root\\module\\mod_version\\rnn_*
+     + teldir\\module\\mod_version\\val_root\\rnn_*
+   where 'r' is the rank.
+   If the 'val_root' key is not in the config, the default
+   path is assumed to be based on the first option, with
+   val_root = teldir\\..\\validation, i.e.
+     + teldir\\..\\validation\\module\\mod_version\\rnn_*
 """
 def parseConfig_ValidateTELEMAC(cfg):
    #  cfg is either  wintel32s wintel32p wing9532s wing9532p ...
@@ -436,18 +446,39 @@ def parseConfig_ValidateTELEMAC(cfg):
       cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod)})
 
    cfgTELEMAC.update({'VALIDATION':{}})
-   # Get modules: user list of module and there associated directories
+   # Get ranks: user list of ranks to filter the list of validation cases
+   # in which 'all' means all possible ranks,
+   # in which '<n' means all ranks less than n,
+   # in which 'n' means all ranks equal to n,
+   # in which '>n' means all ranks greater than n,
+   # where 'n', '>n', and '<n' can be combined if necessary
+   val_ranks = parseValidationRanks(cfg)
+   # Get validation: user list of module and there associated directories
    # in which 'system' means all existing modules,
    # and in which 'update' means a continuation, ignoring previously completed runs
    # and in which 'clean' means a re-run of all validation tests
-   # and Get options: for the switches such as parallel, openmi, mumps, etc.
+   if not cfg.has_key('val_root'):
+      val_root = path.realpath(path.join(cfgTELEMAC['TELDIR'],'validation'))
+      if not path.isdir(val_root):
+         print '\nNot able to find your validation set from the path: ' + val_root + '\n'
+         print ' ... check the val_root key in your configuration file'
+         sys.exit()
+   else:
+      val_root = cfg['val_root'].replace('<root>',cfgTELEMAC['TELDIR'])
+   val_found = path.isdir(val_root)
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
    for mod in get.split():
       if mod in cfgTELEMAC['MODULES'].keys():
-         got = getFolders_ValidationTELEMAC(cfgTELEMAC['MODULES'][mod]['path'])
-         if got != []:
-            cfgTELEMAC['VALIDATION'].update({mod:got})
+         if val_found:
+            val_dir = cfgTELEMAC['MODULES'][mod]['path'].replace(cfgTELEMAC['TELDIR'],val_root)
+         else:
+            val_dir = val_root.replace('<modpath>',cfgTELEMAC['MODULES'][mod]['path'])
+         if path.isdir(val_dir):
+            val_mod = getFiles_ValidationTELEMAC(val_dir,val_ranks)
+            if val_mod != {}:
+               cfgTELEMAC['VALIDATION'].update({mod:{'path':path.realpath(val_dir)}})
+               cfgTELEMAC['VALIDATION'][mod].update(val_mod)
 
    # Get path_parallel: for parallel option
    # the parallel dependent command line executables (partel, gretel, ...)
@@ -532,20 +563,22 @@ def parseConfig_RunningTELEMAC(cfg):
    return cfgTELEMAC
 
 """
-   Walk through the directory structure available from the root
-   and identifies modules with the template
-   root\validation\*\*.cas
+   Get the root of the validation directory and walk from there
+   through the directory structure to identify modules with the template
+   val_root\module_name\*\*.xml
 """
-def getFolders_ValidationTELEMAC(root):
-   validation = []
-   valroot = path.join(root,'validation')
-   if path.exists(valroot) :
-      for valdir in listdir(valroot) :
-         if not (valdir[0] == '.' or path.isfile(path.join(valroot,valdir))) :
-            subroot = path.join(valroot,valdir)
-            for file in listdir(subroot):
-               if path.splitext(file)[1] == '.cas' and path.isfile(path.join(subroot,file)) :
-                  validation.append(path.join(subroot,file))
+def getFiles_ValidationTELEMAC(root,ranks):
+   validation = {}
+
+   for dirpath,dirnames,filenames in walk(root) : break
+   for dir in dirnames:
+      if dir[0] in str(ranks):
+         val = { dir:[] }
+         for valpath,valnames,filenames in walk(path.join(dirpath,dir)) : break
+         for file in filenames:
+            if path.splitext(file)[1] == '.xml' : val[dir].append(file)
+         if val[dir] != []: validation.update(val)
+
    return validation
 
 """
@@ -669,6 +702,49 @@ def parseUserModules(cfgDict,modules):
    #   if 'openmi' in cfgDict['options'].lower():
    return userList,typeBuild
 
+"""
+   Read the list of user defined ranks used as a filter of the
+   validation test case directory names in the form rnn_*,
+   where r takes values from 0 to 9 inclusive. Special keywords
+   such as all, >, or < will trigger additonal behaviours:
+    - all: includes all numbers from 0 to 9
+    - <n: includes all numbers below n
+    - >n: includes all numbers above n
+    - n: includes the number n
+"""
+def parseValidationRanks(cfgDict):
+
+   # ~~ Key not here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if not cfgDict.has_key('val_rank'): return range(10)
+
+   # ~~ 'all' in key ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   userList = cfgDict['val_rank']
+   word = r'(?P<before>.*)\s*(?P<this>(\b(%s)\b))\s*(?P<after>.*)\s*\Z'
+   proc = re.match(re.compile(word%('all'),re.I),userList)
+   if proc : return range(10)
+
+   ranks = []
+   # ~~ '<' and '>' in key ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   word = r'(?P<before>.*?)\s*(?P<symbol>([><]|))(?P<this>\d\b)\s*(?P<after>.*)\s*\Z'
+   while 1:
+      ul = userList
+      proc = re.match(re.compile(word,re.I),userList)
+      if proc :
+         if proc.group('symbol') == '<' :
+            ranks.extend(range(0,int(proc.group('this'))))
+         elif proc.group('symbol') == '>' :
+            ranks.extend(range(int(proc.group('this'))+1,10))
+         else:
+            ranks.append(int(proc.group('this')))
+         userList = proc.group('before') + proc.group('after')
+      if ul == userList: break
+
+   # ~~ sorting out duplicates ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # there must be a better way (with tuples maybe ?)
+   for u in range(10):
+      while ranks.count(u) > 1: ranks.remove(u)
+
+   return sorted(ranks)
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -683,7 +759,8 @@ if __name__ == "__main__":
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    CFGNAME = ''
-   SYSTELCFG = 'systel.cfg'
+   PWD = path.dirname(path.dirname(sys.argv[0]))
+   SYSTELCFG = path.join(PWD,'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
@@ -731,7 +808,9 @@ if __name__ == "__main__":
          sys.exit()
       cfgnames = [options.configName]
 
-   #  /!\  for testing purposes ... no real use
+   print '\n' + options.configFile + '\n\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+#  /!\  for testing purposes ... no real use
    for cfgname in cfgnames:
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
@@ -739,7 +818,9 @@ if __name__ == "__main__":
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
-      print cfgname + ': ' + ' '.join(cfg['COMPILER']['MODULES'])
-      print 'including ... ' + ' '.join(cfg['MODULES'])
+      print '\n'+cfgname + ': \n    '
+      print '    +> root:    ',cfgs[cfgname]['root']
+      print '    +> version: ',cfgs[cfgname]['version']
+      print '    +> module:  ',' / '.join(cfg['MODULES'])
    
    sys.exit()

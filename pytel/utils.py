@@ -54,6 +54,14 @@ def getTheseFiles(root,exts):
    return files
 
 """
+   Evaluate whether one file is more recent than the other
+   Return 1 is ofile exists and is more recent than nfile, 0 otherwise
+"""
+def isNewer(nfile,ofile):
+   if newer(nfile,ofile): return 0
+   return 1
+
+"""
 
 """
 def getFileContent(file):
@@ -107,7 +115,11 @@ def removeDirectories(root):
        for f in pfiles: remove(path.join(p,f))
        for d in pdirs: rmdir(path.join(p,d))
    rmdir(root)
+   return
    
+# _____                  ___________________________________________
+# ____/ Archive Toolbox /__________________________________________/
+#
 """
     bname is a the root directory to be archived --
     Return the name of the archive, zname, with its full path --
@@ -119,14 +131,6 @@ def zip(zname,bname,form):
    zipfile = make_archive(zname,form,base_dir=path.basename(bname))
    chdir(cpath)
    return zipfile
-
-"""
-   Evaluate whether one file is more recent than the other
-   Return 1 is ofile exists and is more recent than nfile, 0 otherwise
-"""
-def isNewer(nfile,ofile):
-   if newer(nfile,ofile): return 0
-   return 1
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

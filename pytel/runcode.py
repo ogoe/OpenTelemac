@@ -29,6 +29,9 @@
          linux calls. This is a temporary solution as "/usr/bin/env" is not
          strickly portable cross operating systems
 """
+"""@history 10/10/2011 -- Jan-Philip Gehrcke: correction made to the
+         management of sortie files. (search JPG)
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -153,10 +156,11 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             print ' copying: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if sortiefile.rstrip() != '':
+   if sortiefile != None:    # sortiefile.rstrip() != '':
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
+         return False      # JPG
       cref = path.join(CASDir,sortiefile)
       shutil.copy(crun,cref)
       print ' copying: ', path.basename(cref)
@@ -168,10 +172,13 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       if ncsize > 1:
          for i in range(ncsize-1):
             slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
-            bs,es = path.splitext(path.basename(sortiefile))
+            bs,es = path.splitext(sortiefile) # (path.basename(sortiefile))
             slogfile  = bs+'_p'+'{0:05d}'.format(i+1)+es
             crun = path.join(TMPDir,slavefile)
             cref = path.join(CASDir,slogfile)
+            if not path.isfile(crun):
+               print '... could not find the listing file ',crun
+               return False
             shutil.copy(crun,cref)
             print ' copying: ',path.basename(cref)            
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -226,7 +233,7 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
       shutil.copy2(useName,path.basename(useName))
 
    # ~~ save a copy for future uses ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   shutil.copy2(path.basename(useName),path.join(CASDir,path.basename(useName)))
+   if CASDir != '': shutil.copy2(path.basename(useName),path.join(CASDir,path.basename(useName)))
 
    return True
 
@@ -272,10 +279,11 @@ def runPARTEL(partel,file,conlim,ncsize):
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
 # ~~~      print_twice echos the listing output to the sortie file ~~~
-def print_twice(pipe,ofile,lastlineempty):
+def print_twice(pipe,ofile):  # JPG: ,lastlineempty):
 
    # Utility subroutine to print listing data both to stdout 
    # and to the listing file, accessed via the ofile handle
+   lastlineempty = False      # JPG addition here as opposed to argument
    for line in iter(pipe.readline,''):
       dat = line.rstrip()
       # This IF statement just avoid printing a lot of blank lines 
@@ -296,12 +304,12 @@ def print_twice(pipe,ofile,lastlineempty):
 def runCode(exe,sortiefile):
    ofile = None
    if sortiefile != None: ofile = open(sortiefile,"w")
-   lastlineempty=False
+   # JPG removed this: lastlineempty=False
    proc = Popen(exe,bufsize=1024,stdout=PIPE,stderr=PIPE,shell=True)
-   t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile,lastlineempty,))
+   t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile))  # JPG removed last argument: ,lastlineempty,
    t1.start()
    t1.join()
-   if ofile != None: ofile.close()
+   if ofile: ofile.close()
    proc.wait()
    if proc.returncode == 0: return True
 
@@ -355,13 +363,13 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not path.exists(casFile):
       print '... inexistent CAS file: ',casFile
-      return    # /!\ should you stop or carry on ?
+      return None    # /!\ should you stop or carry on ?
    cas,lang = processCAS(casFile,frgb)
    if not checkConsistency(cas,dico,frgb,cfg):
       print '... inconsistent CAS file: ',casFile
       print '    +> you may be using an inappropriate configuration:',cfgName
       print '    +> or may be wishing for scalar mode while using parallel'
-      return    # /!\ should you stop or carry on ?
+      return None   # /!\ should you stop or carry on ?
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
@@ -381,7 +389,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             casFilePlage = path.join(CASDir,casFilePlage[0])
             if not path.isfile(casFilePlage):
                print '... missing coupling CAS file for',mod,': ',casFilePlage
-               return    # /!\ should you stop or carry on ?
+               return None   # /!\ should you stop or carry on ?
 
             # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             dicoFilePlage = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['TELVER']+'.dico')
@@ -392,16 +400,16 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             casPlage,lang = processCAS(casFilePlage,frgbPlage)
             if not checkConsistency(casPlage,dicoPlage,frgbPlage,cfg):
                print '... inconsistent CAS file: ',casFilePlage
-               return    # /!\ should you stop or carry on ?
+               return None   # /!\ should you stop or carry on ?
 
             COUPLAGE.update({mod:{}})
             COUPLAGE[mod].update({'cas':casPlage,'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage})
 
    # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sortiefile = None
    if options.sortieFile:
+      # define the filename (basename) of the sortie file
       sortiefile =  path.basename(TMPDir)+'.sortie'
-   else:
-      sortiefile = None
 
    # ~~ Handling all input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Placing yourself where the CAS File is
@@ -458,7 +466,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
                mpiCmd = cfg['MPI']['EXEC']
          if mpiCmd == '':
             print '... I do not know how to run MPI, can you help ?'
-            return    # /!\ should you stop or carry on ?
+            return None   # /!\ should you stop or carry on ?
          # ~~> Assign the mpi_telemac.conf
          hosts = ''
          if cfg.has_key('MPI'):
@@ -516,7 +524,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    chdir(CASDir)
    if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
 
-   return
+   return sortiefile
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -630,5 +638,9 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       runCAS(cfgname,cfg,codeName,casFile,options)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
 
    sys.exit()

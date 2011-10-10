@@ -347,4 +347,8 @@ if __name__ == "__main__":
             if not createExeFiles(item.lower(),cfgname,prg[item][0]):
                sys.exit()
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
+
    sys.exit()
