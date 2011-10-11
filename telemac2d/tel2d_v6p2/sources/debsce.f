@@ -5,7 +5,7 @@
      &( TIME , I , DISCE )
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   07/10/2011
 !***********************************************************************
 !
 !brief    GIVES THE PRESCRIBED DISCHARGE OF EVERY SOURCE POINT.
@@ -31,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. COULET (ARTELIA GROUP)
+!+        07/10/2011
+!+        V6P2
+!+   Modification size FCT due to modification of TRACER numbering
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DISCE          |-->| ARRAY OF DISCHARGES OF SOURCES.
 !|                |   | READ IN THE PARAMETER FILE.
@@ -54,11 +59,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER N
-      LOGICAL DEJA,OK(MAXSCE)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      LOGICAL, SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXSCE), SAVE :: OK
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !

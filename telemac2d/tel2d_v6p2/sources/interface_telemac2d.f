@@ -1839,6 +1839,20 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE READ_FIC_SOURCES(Q,WHAT,AT,NFIC,LISTIN,STAT)
+      IMPLICIT NONE
+      CHARACTER*9     , INTENT(IN)       :: WHAT
+      DOUBLE PRECISION, INTENT(IN)       :: AT
+      DOUBLE PRECISION, INTENT(INOUT)    :: Q
+      INTEGER         , INTENT(IN)       :: NFIC
+      LOGICAL         , INTENT(IN)       :: LISTIN
+      LOGICAL         , INTENT(OUT)      :: STAT
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE REINIT
      &(NS,NSEG,NPTFR,H,SMTR,HSTOK,HC,HCSTOK,FLUXT,FLUHBOR,DTT,NTRAC)
       USE BIEF_DEF

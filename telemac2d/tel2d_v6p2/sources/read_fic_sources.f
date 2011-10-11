@@ -5,7 +5,7 @@
      &( Q , WHAT , AT , NFIC , LISTIN , STAT )
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   07/10/2011
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VALUES IN THE SOURCE FILE.
@@ -43,6 +43,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. COULET (ARTELIA GROUP)
+!+        07/10/2011
+!+        V6P2
+!+   Modification size WHAT and CHOIX due to modification of TRACER
+!+    numbering TRACER is now identified by 2 values (Isource, Itracer)
+!+   So MAXVAL is now equal to MAXSCE+MAXSCE*MAXTRA
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
@@ -58,7 +65,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8     , INTENT(IN)       :: WHAT
+      CHARACTER*9     , INTENT(IN)       :: WHAT
       DOUBLE PRECISION, INTENT(IN)       :: AT
       DOUBLE PRECISION, INTENT(INOUT)    :: Q
       INTEGER         , INTENT(IN)       :: NFIC
@@ -75,11 +82,11 @@
       INTEGER, PARAMETER :: SIZELIGN = 3000
 !
       INTEGER IVALUE,NVALUE,ILIG,NLIG,OK,J,IWHAT,IDEB,IFIN,IL1,IL2
-      INTEGER, PARAMETER :: MAXVAL=50
+      INTEGER, PARAMETER :: MAXVAL=2100
       DOUBLE PRECISION TL1,TL2,TETA,TOL,LASTAT
 !
       CHARACTER(LEN=SIZELIGN) :: LIGNE
-      CHARACTER*8 CHOIX(MAXVAL),LASTWHAT
+      CHARACTER*9 CHOIX(MAXVAL),LASTWHAT
 !
       DATA TOL /1.D-3/
 !
@@ -138,7 +145,7 @@
           STOP
           ENDIF
         ELSEIF(NVALUE.LE.MAXVAL) THEN
-          CHOIX(NVALUE)='        '
+          CHOIX(NVALUE)='         '
           CHOIX(NVALUE)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
         ELSE
           IF(LNG.EQ.1) THEN
