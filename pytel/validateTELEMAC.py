@@ -77,9 +77,9 @@ if __name__ == "__main__":
                       dest="sortieFile",
                       default=False,
                       help="specify whether there is a sortie file, default is no" )
-   oparser.add_option("-p", "--process",
+   oparser.add_option("-a", "--action",
                       type="string",
-                      dest="process",
+                      dest="do",
                       default='',
                       help="filter specific process actions from the XML file" )
    oparser.add_option("-d", "--draw",

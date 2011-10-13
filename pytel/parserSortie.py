@@ -14,6 +14,7 @@
 
 import re
 from utils import getFileContent
+import sys
 
 # _____                             ________________________________
 # ____/ Global Regular Expressions /_______________________________/
@@ -30,14 +31,14 @@ sortie_time = re.compile(r'\s*ITERATION\s+(?P<iteration>\d+)\s+(TEMPS|TIME)[\s:]
             + r'(?P<number>\b((?:(\d+)\b)|(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+))))\s+S\s*(|\))'
             + r'\s*\Z',re.I)
 
-def getTimeProfile(sortieLines):
+def parseTimeProfile(sortieLines):
    iter = []; time = []
    for line in sortieLines:
       proc = re.match(sortie_time,line)
       if proc:
          iter.append(int(proc.group('iteration')))
          time.append(float(proc.group('number')))
-   return {'profile':iter,'name':'Iteration #'},{'profile':time,'name':'Time (s)'}
+   return ('Iteration #',iter), ('Time (s)',time)
 
 """
    Returns the name of the study, read from the TELEMAC sortie file
@@ -47,7 +48,7 @@ def getTimeProfile(sortieLines):
 sortie_nameofstudy = re.compile(r'\s*(?P<before>.*?)(NAME OF THE STUDY|TITRE DE L\'ETUDE)[\s:]*(?P<after>.*?)\s*\Z',re.I)
 #sortie_title = re.compile(r'\s*(?P<before>.*?)(TITLE|TITRE)[\s=]*(?P<after>.*?)\s*\Z',re.I)
 
-def getNameOfStudy(sortieLines):
+def parseNameOfStudy(sortieLines):
    for line in range(len(sortieLines)):
       proc = re.match(sortie_nameofstudy,sortieLines[line])
       if proc:
@@ -82,30 +83,34 @@ sortie_volerror = re.compile(r'\s*(RELATIVE ERROR IN VOLUME AT T =|ERREUR RELATI
             + r'(?P<value>[+-]*\b((?:(\d+)\b)|(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+))))'
             + r'\s*\Z',re.I)
 
-def getValueProfile(sortieLines):
+def parseValueProfile(sortieLines):
    iLine = 0
 
-   # ~~ Searches for number of liquid boundaries ~~~~~~~~~~
-   fluxes = []; liqnumber = 0
+   # ~~ Searches for number of liquid boundaries ~~~~~~~~~~~~~~~~~~~
+   fluxesProf = []; fluxesName = []; boundNames = []
+   liqnumber = 0
    while iLine < len(sortieLines):
       proc = re.match(sortie_liqnumber,sortieLines[iLine])
       if proc:
          liqnumber = int(proc.group('number'))
-         for i in range(liqnumber): fluxes.append({ 'profile':[], 'name':'Fluxes ' })
-         print '... Could find ' + str(liqnumber) + ' open boundaries'
+         for i in range(liqnumber):
+            fluxesProf.append([])
+            boundNames.append( 'Boundary ' + str(i+1) )
+         #print '... Could find ' + str(liqnumber) + ' open boundaries'
          break
       iLine = iLine + 1
-   # ~~ Initiates profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   volumes = { 'profile':[], 'name':'Volumes (m3/s)' }
-   errors = { 'profile':[], 'name':'Error (-)' }
+   # ~~ Initiates profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   volumesProf = []; volumesName = 'Volumes (m3/s)'
+   errorsProf = []; errorsName = 'Error (-)'
+   fluxesName = 'Fluxes (-)'
 
-   # ~~ Reads the rest of time profiles ~~~~~~~~~~~~~~~~~~~
+   # ~~ Reads the rest of time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    while iLine < len(sortieLines):
       if re.match(sortie_volinitial,sortieLines[iLine]): break
 
       proc = re.match(sortie_voltotal,sortieLines[iLine])
       if proc:
-         volumes['profile'].append(float(proc.group('value')))
+         volumesProf.append(float(proc.group('value')))
          for i in range(liqnumber):
             iLine = iLine + 1
             proc = re.match(sortie_volfluxes,sortieLines[iLine])
@@ -115,7 +120,7 @@ def getValueProfile(sortieLines):
                   print '... Could not parse FLUXES FOR BOUNDARY ' + str(i+1)
                   sys.exit()
                proc = re.match(sortie_volfluxes,sortieLines[iLine])
-            fluxes[i]['profile'].append(float(proc.group('value')))
+            fluxesProf[i].append(float(proc.group('value')))
          iLine = iLine + 1
          proc = re.match(sortie_volerror,sortieLines[iLine])
          while not proc:
@@ -124,19 +129,60 @@ def getValueProfile(sortieLines):
                print '... Could not parse RELATIVE ERROR IN VOLUME '
                sys.exit()
                proc = re.match(sortie_volerror,sortieLines[iLine])
-         errors['profile'].append(float(proc.group('value')))
+         errorsProf.append(float(proc.group('value')))
 
       iLine = iLine + 1
 
-   # ~~ Adds initial volume ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Adds initial volume ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    while iLine < len(sortieLines):
       proc = re.match(sortie_volinitial,sortieLines[iLine])
       if proc:
-         volumes['profile'].insert(0,float(proc.group('value')))
+         volumesProf.insert(0,float(proc.group('value')))
          break
       iLine = iLine + 1
+   # ~~ Adds initial error ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   errorsProf.insert(0,0.0) # assumed
+   # ~~ Adds initial fluxes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for i in range(liqnumber):      # 0.0 may not be the correct value
+      fluxesProf[i].insert(0,0.0)
 
-   return volumes,fluxes,errors
+   return (volumesName,volumesProf),(fluxesName,boundNames,fluxesProf),(errorsName,errorsProf)
+   #/!\ remember that "fluxes" is an array already
+
+"""
+   Creates the x,y arrays for plotting
+   Values read from the TELEMAC sortie file ... every time this is called
+"""
+def getValueProfileSortie(args):
+
+   fileName,sup,var = args
+   # ~~ Extract data
+   content = getFileContent(fileName)
+   title = parseNameOfStudy(content)
+   i,x = parseTimeProfile(content)
+   y1,y2,y3 = parseValueProfile(content)
+
+   # ~~ Volumes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if var == "voltotal":
+      if sup == "time": return x,y1
+      if sup == "iteration": return i,y1
+
+   # ~~ Plot Fluxes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if var == "volfluxes":
+      print x
+      print y2
+      if sup == "time": return x,y2
+      if sup == "iteration": return i,y2
+
+   # ~~ Plot Errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if var == "volerror":
+      if sup == "time": return x,y3
+      if sup == "iteration": return i,y3
+
+   print '... do not know how to extract: ' + var + ' of support ' + sup
+   sys.exit()
+   
+   return
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -158,7 +204,5 @@ if __name__ == "__main__":
    title = getNameOfStudy(content)
    i,x = getTimeProfile(content)
    y1,y2,y3 = getValueProfile(content)
-   print len(x['profile'])
-   print len(y1['profile']),y1['profile']
 
    print 'my job is done'

@@ -112,38 +112,134 @@ def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
 
    return np.asarray(IKLE)-1,np.asarray(IPOBO),np.asarray(MESHX),np.asarray(MESHY)
 
-def getHeaderSLF(f):
-   """ getSelafin: Read a binary (big-endian) Selafin file
-                     and returns the data in several variables
-   """
+def getTimeProfileSLF(f,NVAR,NPOIN3):
+
+   ATs = []; ATt = []
+   while True:
+      try:
+         ATt.append(f.tell())
+         # ~~ Read AT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         l = unpack('>i',f.read(4))[0]
+         ATs.append(unpack('>f',f.read(4))[0])
+         chk = unpack('>i',f.read(4))[0]
+         if l!=chk: print 'Error reading AT'
+         # ~~ Skip Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         f.read( NVAR*(4+4*NPOIN3+4) )
+         
+      except:
+         ATt.pop(len(ATt)-1)   # since the last record failed the try
+         break
+
+   return ATt, np.asarray(ATs)
+
+def parseSLF(f):
+   
+   tags = { }; f.seek(0)
+   
+   tags.update({ 'meta': f.tell() })
    TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,NPLAN = getHeaderParametersSLF(f)
+
+   tags.update({ 'mesh': f.tell() })
    IKLE,IPOBO,MESHX,MESHY = getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN)
 
-   return TITLE,(NELEM3,NPOIN3,NDP,NPLAN),(NBV1,NBV2,VARNAMES,VARUNITS),(IKLE,IPOBO,MESHX,MESHY)
+   ATtags,ATs = getTimeProfileSLF(f,NBV1+NBV2,NPOIN3)
+   tags.update({ 'core': ATtags })
 
-def getCoreValueSLF(f,ivar,NPOIN3):
+   return tags, TITLE,(NELEM3,NPOIN3,NDP,NPLAN),(NBV1,NBV2,VARNAMES,VARUNITS),(IKLE,IPOBO,MESHX,MESHY), ATs
+
+def getValueProfilesSLF( args ):
+
+   fileName,ext,var = args
+   # ~~ Extract data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f = open(fileName,'rb')
+   tags,title,nbrs,vars,mesh,x = parseSLF(f)
+   NELEM3,NPOIN3,NDP,NPLAN = nbrs
+   NBV1,NBV2,VARNAMES,VARUNITS = vars
+   IKLE,IPOBO,MESHX,MESHY = mesh
+   # ~~ Find sample locations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   le,ln,bn = locateXY_inMeshSLF( ext, NELEM3,IKLE,MESHX,MESHY )
+   # ~~ Find variable indices ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   varsNber = []; varsName = []
+   for ivar in range(len(VARNAMES)):
+      for v in var.split(';'):
+         if v in VARNAMES[ivar].strip():
+            varsNber.append(ivar)
+            varsName.append(VARNAMES[ivar].strip())
+   if not len(varsNber) == len(var.split(';')):
+      print "... Could not find all variables: "
+      sys.exit()
+   # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   z = np.zeros((len(varsNber),len(bn),len(tags['core'])))
+   for t in range(len(tags['core'])):
+      f.seek(tags['core'][t])
+      f.read(4+4+4)
+      for ivar in range(NBV1+NBV2):
+         f.read(4)
+         if ivar in varsNber:
+            VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
+            for xy in range(len(bn)):
+               z[varsNber.index(ivar)][xy][t] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
+         else:
+            f.read(4*NPOIN3)
+         f.read(4)
+   # ~~ Close data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.close()
+   return ('Time (s)',x),(title,varsName,le,z)
+
+def getMeshElementSLF(args):
    
-   VARSOR = []
-   # ~~ Read AT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   time = unpack('>f',f.read(4))[0]
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk: print 'Error reading geo'
+   fileName = args
+   # ~~ Extract data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f = open(fileName,'rb')
+   TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,NPLAN = getHeaderParametersSLF(f)
+   IKLE,IPOBO,MESHX,MESHY = getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN)
+   # ~~ Close data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.close()
+   # ~~ min-max ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   xmin = np.min(MESHX); xmax = np.max(MESHX)
+   ymin = np.min(MESHY); ymax = np.max(MESHY)
+   # ~~ Plot the mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   elements = []
+   for e in IKLE:
+      element = []
+      for n in e:
+          element.append((MESHX[n],MESHY[n]))
+      elements.append(element)
 
-   # ~~ Read AT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for i in range(ivar):
-      l= unpack('>i',f.read(4))[0]
-      unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
-      chk =unpack('>i',f.read(4))[0]
-      if l!=chk:
-         print 'Error reading VARSOR['+str(i)+']'
-   l= unpack('>i',f.read(4))[0]
-   VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
-   chk =unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print 'Error reading VARSOR['+str(ivar)+']'
+   return (xmin,xmax,ymin,ymax), np.asarray(elements)
 
-   return np.asarray(VARSOR)
+"""
+   This function return the element number for the triangle including xyo=(xo,yo)
+      or -1 if the (xo,yo) is outside the mesh
+   It should be noted that (xo,yo) are arrays so only one search is necessary for
+      multiple pairs
+   Return: locate, and array of integers of size len(xyo)
+"""
+def locateXY_inMeshSLF(xyo,NELEM,IKLE,MESHX,MESHY):
+   
+   locate = - np.ones((len(xyo),), dtype=np.int)
+   locatn = - np.ones((len(xyo),3), dtype=np.int)
+   bryctr = np.zeros((len(xyo),3))
+   
+   for e in range(NELEM):
+      # barycentric coordinates
+      p = [ IKLE[e][0], IKLE[e][1], IKLE[e][2] ]
+      det = ( MESHY[p[1]]-MESHY[p[2]] ) * ( MESHX[p[0]]-MESHX[p[2]] ) - \
+            ( MESHY[p[0]]-MESHY[p[2]] ) * ( MESHX[p[1]]-MESHX[p[2]] )
+      for io in range(len(xyo)):
+         xo,yo = xyo[io]
+         l1 = ( ( MESHY[p[1]]-MESHY[p[2]] ) * (    xo      -MESHX[p[2]] ) + \
+                (     yo     -MESHY[p[2]] ) * ( MESHX[p[2]]-MESHX[p[1]] ) )/det
+         l2 = ( ( MESHY[p[2]]-MESHY[p[0]] ) * (    xo      -MESHX[p[2]] ) + \
+                (     yo     -MESHY[p[2]] ) * ( MESHX[p[0]]-MESHX[p[2]] ) )/det
+         l3 = 1.0 - l2 - l1
+         if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 :
+            locate[io] = e
+            locatn[io] = p
+            bryctr[io] = [ l1, l2, l3 ]
+
+   return locate,locatn,bryctr
+
 """
 
 def getSLF(filename):
