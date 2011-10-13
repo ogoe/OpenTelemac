@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPROCESSING STEP BEFORE A PARALLEL COMPUTATION
@@ -2022,7 +2022,7 @@ C$$$      CLOSE(NNPART)
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: N
       CHARACTER*(*), INTENT(IN) :: CHFILE
-      WRITE(N,*)TRIM(CHFILE)
+      WRITE(N,*) TRIM(CHFILE)
       CALL PLANTE2(-1)
       STOP
       END SUBROUTINE ALLOER2
@@ -2040,7 +2040,8 @@ C$$$      CLOSE(NNPART)
         ICODE = 0
       ENDIF 
       !!! WRITE(*,*) 'RETURNING EXIT CODE: ', ICODE
-      CALL EXIT(ICODE)
+!     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
+!     CALL EXIT(ICODE)
       STOP    ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
       END SUBROUTINE PLANTE2
 C                       *********************************
@@ -4633,7 +4634,7 @@ C OB F
   143 DO J = 1,NELEMTOTAL
         IF (TYPELEM(J,2)==I) WRITE(UNIT=STR8,FMT='(I8)')J
       ENDDO
-      WRITE(UNIT=STR26,FMT='(I8,X,I8,X,I8)')IKLE1,IKLE2,IKLE3
+      WRITE(UNIT=STR26,FMT='(I8,1X,I8,1X,I8)')IKLE1,IKLE2,IKLE3
       TEXTERROR='! BORDER SURFACE OF NUMBER '//STR8//' AND OF NODES '//
      &          STR26//' NOT LINK TO A TETRAHEDRON !'
       GOTO 999
@@ -4655,18 +4656,15 @@ C OB F
       GOTO 999
   150 TEXTERROR='! NO INPUT LOG FILE !' 
       GOTO 999
-!  151 WRITE(UNIT=STR8,FMT='(I8)')J
-!      WRITE(UNIT=STR26,FMT='(I3,X,I3,X,I3,X,I3,X,I3,X,I3)')
-!     &                 (NACHB(K,J),K=2,6),IDD
   151 WRITE(UNIT=STR8,FMT='(I8)')J
-      WRITE(UNIT=STR26,FMT='(I3,X,I3,X,I3,X,I3,X,I3,X,I3)')
+      WRITE(UNIT=STR26,FMT='(I3,1X,I3,1X,I3,1X,I3,1X,I3,1X,I3)')
      &                 (NACHB(K,J),K=2,NBSDOMVOIS-1),IDD
       TEXTERROR='! NODE '//STR8//' BELONGS TO DOMAINS '//STR26(1:23)
      &                 //' !' 
       GOTO 999
   152 TEXTERROR='! PROBLEM WITH CONSTRUCTION OF VECTNB FOR NACHB !' 
       GOTO 999
-  153 WRITE(UNIT=STR8,FMT='(I8)')CONVTET(J)
+  153 WRITE(UNIT=STR8,FMT='(I8)') CONVTET(J)
       TEXTERROR='! TETRAHEDRON '//STR8//
      &          ' LINKS TO SEVERAL BORDER TRIANGLES !'
       GOTO 999

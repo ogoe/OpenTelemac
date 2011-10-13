@@ -47,15 +47,19 @@
 !
       IMPLICIT NONE
       INCLUDE 'mpif.h'
-!
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
       INTEGER, INTENT(IN) :: NPOIN_TOT
       INTEGER, INTENT(IN) :: NPOIN
       INTEGER, INTENT(IN), DIMENSION(NPOIN) :: KNOLG
       DOUBLE PRECISION, INTENT(IN), DIMENSION(NPOIN)  :: X, Y, K, C,CG
-      DOUBLE PRECISION , INTENT(OUT), DIMENSION(NPOIN_TOT) :: XT,YT,KT,
-     &     CTT,CGT
-      INTEGER :: I
-      INTEGER :: IER
+      DOUBLE PRECISION , INTENT(OUT), DIMENSION(NPOIN_TOT) :: XT,YT,KT
+      DOUBLE PRECISION , INTENT(OUT), DIMENSION(NPOIN_TOT) :: CTT,CGT
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
+      INTEGER I,IER
       INTEGER, ALLOCATABLE :: TEMP1(:)
       INTEGER, ALLOCATABLE :: TEMP2(:)
       DOUBLE PRECISION, ALLOCATABLE :: TEMP3(:)

@@ -1,10 +1,10 @@
-!                    *****************
+!                    ***********************
                      PROGRAM GREDELPTS_AUTOP
-!                    *****************
+!                    ***********************
 !
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MERGES THE RESULTS OF A PARALLEL COMPUTATION (COUPLING
@@ -517,6 +517,7 @@
       ELSE                    ! THIS INDICATES A NORMAL STOP
         ICODE = 0
       ENDIF
-      CALL EXIT(ICODE)
+! SUPPRESSED FOR NAG COMPILER
+!     CALL EXIT(ICODE)
       STOP    ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
       END SUBROUTINE PLANTE

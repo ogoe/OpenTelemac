@@ -170,6 +170,20 @@ parallel: $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) 
 	copy $(GREDELHYD) $(DEST)\$(GREDELHYD)
 	copy $(DIFFSEL) $(DEST)\$(DIFFSEL)
 
+install: $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL)
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	copy $(LIBRARY) $(DEST)\$(LIBRARY)
+	@echo ---------------------Installe PARTEL/GRETEL et autres.
+	copy $(PARTEL) $(DEST)\$(PARTEL)
+	copy $(GRETEL) $(DEST)\$(GRETEL)
+	copy $(GREDELPTS) $(DEST)\$(GREDELPTS)
+	copy $(GREDELSEG) $(DEST)\$(GREDELSEG)
+	copy $(GREDELMET) $(DEST)\$(GREDELMET)
+	copy $(GREDELHYD) $(DEST)\$(GREDELHYD)
+	copy $(DIFFSEL) $(DEST)\$(DIFFSEL)
+
 #--- Librairie en DEBUG
 libdebug:
 	@echo  -

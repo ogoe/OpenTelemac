@@ -1,10 +1,10 @@
-!                    *****************
+!                    ***********************
                      PROGRAM GREDELHYD_AUTOP
-!                    *****************
+!                    ***********************
 !
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MERGES THE RESULTS OF A PARALLEL COMPUTATION (COUPLING
@@ -318,59 +318,59 @@
       WRITE(3, '(A,A,A)' )
      &    "grid-coordinates-file    '",NOMLIM(1:J),"'"
       READ(4,'(I3)')J
-      READ(4,'(A)')NOMSOU(1:J)
+      READ(4,'(A)') NOMSOU(1:J)
       WRITE(3, '(A,A,A)' )
      &    "volumes-file             '",NOMSOU(1:J),"'"
       READ(4,'(I3)')J
-      READ(4,'(A)')NOMMAB(1:J)
+      READ(4,'(A)') NOMMAB(1:J)
       WRITE(3, '(A,A,A)' )
      &    "areas-file               '",NOMMAB(1:J),"'"
       READ(4,'(I3)')J
-      READ(4,'(A)')NOMCOU(1:J)
+      READ(4,'(A)') NOMCOU(1:J)
       WRITE(3, '(A,A,A)' )
      &    "flows-file               '",NOMCOU(1:J),"'"
       READ(4,'(I3)')J
-      READ(4,'(A)')NOMVEB(1:J)
+      READ(4,'(A)') NOMVEB(1:J)
       WRITE(3, '(A,A,A)' )
      &    "pointers-file            '",NOMVEB(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMMAF(1:J)
       WRITE(3, '(A,A,A)' )
      &    "lengths-file             '",NOMMAF(1:J),"'"
-      READ(4,'(L)')SALI_DEL
+      READ(4,'(L1)') SALI_DEL
       IF(SALI_DEL) THEN
         READ(4,'(I3)')J
-        READ(4,'(A)')NOMSAL(1:J)
+        READ(4,'(A)') NOMSAL(1:J)
         WRITE(3, '(A,A,A)' )
      &    "salinity-file            '",NOMSAL(1:J),"'"
       ELSE
         WRITE(3, '(A)' )
      &    "salinity-file            none                        "
       ENDIF
-      READ(4,'(L)')TEMP_DEL
+      READ(4,'(L1)') TEMP_DEL
       IF(TEMP_DEL) THEN
         READ(4,'(I3)')J
-        READ(4,'(A)')NOMTEM(1:J)
+        READ(4,'(A)') NOMTEM(1:J)
         WRITE(3, '(A,A,A)' )
      &    "temperature-file         '",NOMTEM(1:J),"'"
       ELSE
         WRITE(3, '(A)' )
      &    "temperature-file         none                        "
       ENDIF
-      READ(4,'(L)')DIFF_DEL
+      READ(4,'(L1)') DIFF_DEL
       IF(DIFF_DEL) THEN
         READ(4,'(I3)')J
-        READ(4,'(A)')NOMVIS(1:J)
+        READ(4,'(A)') NOMVIS(1:J)
         WRITE(3, '(A,A,A)' )
      &    "vert-diffusion-file      '",NOMVIS(1:J),"'"
       ELSE
         WRITE(3, '(A)' )
      &    "vert-diffusion-file      none                        "
       ENDIF
-      READ(4,'(L)')VELO_DEL
+      READ(4,'(L1)') VELO_DEL
       IF(VELO_DEL) THEN
         READ(4,'(I3)')J
-        READ(4,'(A)')NOMVEL(1:J)
+        READ(4,'(A)') NOMVEL(1:J)
         WRITE(3, '(A,A,A)' )
      &    "velocity-file            '",NOMVEL(1:J),"'"
       ELSE
@@ -378,7 +378,7 @@
      &    "velocity-file            none                        "
       ENDIF
       READ(4,'(I3)')J
-      READ(4,'(A)')NOMINI(1:J)
+      READ(4,'(A)') NOMINI(1:J)
       WRITE(3, '(A,A,A)' )
      &    "surfaces-file            '",NOMINI(1:J),"'"
 !
@@ -599,6 +599,7 @@
       ELSE                    ! THIS INDICATES A NORMAL STOP
         ICODE = 0
       ENDIF
-      CALL EXIT(ICODE)
+! SUPPRESSED FOR NAG COMPILER
+!     CALL EXIT(ICODE)
       STOP    ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
       END SUBROUTINE PLANTE

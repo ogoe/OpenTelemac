@@ -183,6 +183,22 @@ install:	$(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $
 		@$(INSTALL) $(GREDELMET) $(DEST)/$(GREDELMET)
 		@$(INSTALL) $(GREDELHYD) $(DEST)/$(GREDELHYD)
 		@$(INSTALL) $(DIFFSEL) $(DEST)/$(DIFFSEL)
+		
+parallel:	$(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD)
+		@if [ ! -d ../$(DIRLIB) ]; then \
+		echo "creation du repertoire $(DIRLIB)";mkdir ../$(DIRLIB); fi
+		@rm  -f $(DEST)/$(NOM_GENERIQUE)$(MODE)$(VERSION).a
+		$(MESSAGE) "Installe $(LIBRARY) dans $(DEST)."
+		@if [ $(DEST) != . ]; then \
+		(rm -f $(DEST)/$(LIBRARY); $(INSTALL) $(LIBRARY) $(DEST)); fi
+		$(MESSAGE) "Installe $(PARTEL)/$(GRETEL)/$(GREDELPTS)/$(GREDELSEG)/$(GREDELMET)/$(GREDELHYD) dans $(DEST)."
+		@$(INSTALL) $(PARTEL) $(DEST)/$(PARTEL)
+		@$(INSTALL) $(GRETEL) $(DEST)/$(GRETEL)
+		@$(INSTALL) $(GREDELPTS) $(DEST)/$(GREDELPTS)
+		@$(INSTALL) $(GREDELSEG) $(DEST)/$(GREDELSEG)
+		@$(INSTALL) $(GREDELMET) $(DEST)/$(GREDELMET)
+		@$(INSTALL) $(GREDELHYD) $(DEST)/$(GREDELHYD)
+		@$(INSTALL) $(DIFFSEL) $(DEST)/$(DIFFSEL)
 
 #--- Librairie en DEBUG
 libdebug:
