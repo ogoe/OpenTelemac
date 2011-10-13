@@ -121,7 +121,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NRK,I,NPOINT,NPOINT2,IPOIN,IELMI
+      INTEGER NRK,I,NPOINT,NPOINT2,IPOIN,IELMI,OLDELT
       DOUBLE PRECISION C
       LOGICAL QUAD
 !
@@ -151,8 +151,9 @@
         ENDDO
 !
         IF(QUAD) THEN
-          CALL CHGDIS(T1,IELM,13,MESH)
-          CALL CHGDIS(T2,IELM,13,MESH)
+          OLDELT=IELM
+          CALL CHGDIS(T1,OLDELT,13,MESH)
+          CALL CHGDIS(T2,OLDELT,13,MESH)
         ENDIF
 !
 !-----------------------------------------------------------------------
