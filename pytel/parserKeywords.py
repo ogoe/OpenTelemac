@@ -314,7 +314,7 @@ def getIOFilesSubmit(frgb,dico):
             oFiles.update({frgb['FR'][key]:dico[key]['SUBMIT'][0]})
          else:
             if 'void' not in dico[key]['SUBMIT'][0]:
-               print '... hmm, this is embarassing. I do not know what to do with ', key
+               print '... hmm, this is embarrassing. I do not know what to do with ', key
                sys.exit()
 
    return iFiles,oFiles
@@ -332,6 +332,18 @@ def getKeyWord(key,cas,dico,frgb):
       elif frgb['FR'][key] in cas.keys(): value = cas[frgb['FR'][key]]
 
    return value,defaut
+
+def getSubmitWord(key,cas,iFS,oFS):
+
+   value = []
+   for i in iFS.keys():
+      if key == iFS[i].split(';')[1]:
+         if i in cas.keys(): value = cas[i]
+   for i in oFS.keys():
+      if key == oFS[i].split(';')[1]:
+         if i in cas.keys(): value = cas[i]
+
+   return value
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
