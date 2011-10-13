@@ -29,6 +29,9 @@
          linux calls. This is a temporary solution as "/usr/bin/env" is not
          strickly portable cross operating systems
 """
+"""@history 10/10/2011 -- Jan-Philip Gehrcke: correction made to the
+         management of sortie files. (search JPG)
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -157,6 +160,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       crun = path.join(TMPDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
+         return False      # JPG
       cref = path.join(CASDir,sortiefile)
       shutil.copy(crun,cref)
       print ' copying: ', path.basename(cref)
@@ -168,10 +172,13 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       if ncsize > 1:
          for i in range(ncsize-1):
             slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
-            bs,es = path.splitext(path.basename(sortiefile))
+            bs,es = path.splitext(sortiefile) # (path.basename(sortiefile))
             slogfile  = bs+'_p'+'{0:05d}'.format(i+1)+es
             crun = path.join(TMPDir,slavefile)
             cref = path.join(CASDir,slogfile)
+            if not path.isfile(crun):
+               print '... could not find the listing file ',crun
+               return False
             shutil.copy(crun,cref)
             print ' copying: ',path.basename(cref)            
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -272,10 +279,11 @@ def runPARTEL(partel,file,conlim,ncsize):
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
 # ~~~      print_twice echos the listing output to the sortie file ~~~
-def print_twice(pipe,ofile,lastlineempty):
+def print_twice(pipe,ofile):  # JPG: ,lastlineempty):
 
    # Utility subroutine to print listing data both to stdout 
    # and to the listing file, accessed via the ofile handle
+   lastlineempty = False      # JPG addition here as opposed to argument
    for line in iter(pipe.readline,''):
       dat = line.rstrip()
       # This IF statement just avoid printing a lot of blank lines 
@@ -296,12 +304,12 @@ def print_twice(pipe,ofile,lastlineempty):
 def runCode(exe,sortiefile):
    ofile = None
    if sortiefile != None: ofile = open(sortiefile,"w")
-   lastlineempty=False
+   # JPG removed this: lastlineempty=False
    proc = Popen(exe,bufsize=1024,stdout=PIPE,stderr=PIPE,shell=True)
-   t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile,lastlineempty,))
+   t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile))  # JPG removed last argument: ,lastlineempty,
    t1.start()
    t1.join()
-   if ofile != None: ofile.close()
+   if ofile: ofile.close()
    proc.wait()
    if proc.returncode == 0: return True
 
@@ -398,10 +406,10 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             COUPLAGE[mod].update({'cas':casPlage,'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage})
 
    # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sortiefile = None
    if options.sortieFile:
+      # define the filename (basename) of the sortie file
       sortiefile =  path.basename(TMPDir)+'.sortie'
-   else:
-      sortiefile = None
 
    # ~~ Handling all input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Placing yourself where the CAS File is
