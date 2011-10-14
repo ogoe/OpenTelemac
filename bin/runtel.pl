@@ -1726,8 +1726,9 @@ if ( $errorexe eq "1" )
   if ( ($errcomplink ne "1") && ($errorexe ne "1") &&
        ($MODE ne "p") && ($DELWORKDIR ne "0") ) {
 ########moulinec
-####    $command=join "", "delete_",$PARA,$WORKING,$fileToDelete;
-    $command=join "","./", "delete_",$PARA,$WORKING,$fileToDelete;
+    $command=join "", "delete_",$PARA,$WORKING,$fileToDelete;
+# Don't work on Windows. On linux, add a "." to your PATH
+####    $command=join "","./", "delete_",$PARA,$WORKING,$fileToDelete;
 ########moulinec
     $Lret=CatchError($command,"","");
     if ( $Lret eq "False" ) {
