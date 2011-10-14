@@ -104,81 +104,40 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      CALL OS( 'X=C     ' , TETAB , SBID , SBID , TETAH ) 
-      CALL OS( 'X=C     ' , TETAP , SBID , SBID , 0.D0  ) 
-      CALL OS( 'X=C     ' , ALFAP , SBID , SBID , 0.D0  ) 
-      CALL OS( 'X=C     ' , RP    , SBID , SBID , 0.D0  ) 
-      CALL OS( 'X=C     ' , HB    , SBID , SBID , 0.04D0) 
+      TETABT(:) = TETAH
+      TETAPT(:) = 0.D0
+      ALFAPT(:) = 0.D0
+      RPT(:)    = 0.D0
+      HBT(:)    = 0.04D0
 C
-C -----------------------------
-C EXEMPLE DE CONDITIONS LIMITES  :
-C
-C
-C ------------ 
-C SORTIE LIBRE                                                        
-C ------------ 
-C
-C      DO 10 I = 1,151
-C         LIHBOR%I(I) = KSORT
-C         TETAP%R(I) = 90.D0
-C10    CONTINUE
-C
-C ------------ 
-C PAROI SOLIDE
-C ------------ 
-C
-C      DO 40 I = 305,336
-C         LIHBOR%I(I) = KLOG
-C         RP%R(I) = 0.D0
-C         TETAP%R(I) = 0.D0
-C         ALFAP%R(I) = 0.D0
-C40    CONTINUE
-C
-C ------------ 
-C FRONTIERE ONDE INCIDENTE
-C ------------ 
-C
-C      DO 70 I = 577,680
-C         LIHBOR%I(I) = KINC
-C         HB%R(I) = 2.5D0
-C         TETAB%R(I) = -45.D0
-C         TETAP%R(I) = 0.D0
-C         ALFAP%R(I) = 0.D0
-C70    CONTINUE
-C
-C ------------ 
-C VOS CONDITIONS AUX LIMITES :
-C ------------ 
-C                                                                       
-C JCB :                                                                       
       DO 10 I=1,32
-	 RP%R(I)=0.23D0
-	 TETAP%R(I)=0.D0
+	 RPT(I)=0.23D0
+	 TETAPT(I)=0.D0
  10   CONTINUE
 C
       DO 20 I=33,42
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=0.D0
+	 RPT(I)=1.D0
+	 TETAPT(I)=0.D0
  20   CONTINUE
 C
       DO 30 I=58,82
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=0.D0
+	 RPT(I)=1.D0
+	 TETAPT(I)=0.D0
  30   CONTINUE
 C
       DO 40 I=83,103
-	 RP%R(I)=0.05D0
-	 TETAP%R(I)=45.D0
+	 RPT(I)=0.05D0
+	 TETAPT(I)=45.D0
  40   CONTINUE
 C
       DO 50 I=104,135
-	 RP%R(I)=0.05D0
-	 TETAP%R(I)=0.D0
+	 RPT(I)=0.05D0
+	 TETAPT(I)=0.D0
  50   CONTINUE
 C
       DO 60 I=136,165
-	 RP%R(I)=0.23D0
-	 TETAP%R(I)=0.D0
+	 RPT(I)=0.23D0
+	 TETAPT(I)=0.D0
  60   CONTINUE
 C
 C-----------------------------------------------------------------------
