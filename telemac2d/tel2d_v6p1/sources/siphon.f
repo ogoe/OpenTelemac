@@ -7,7 +7,7 @@
      & NTRAC,T,TSCE,USCE,VSCE,U,V,ENTET,MAXSCE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    TREATS SIPHONS.
@@ -17,17 +17,12 @@
 !+
 !+
 !
-!history  J.-M. HERVOUET (LNH)
-!+        03/10/1996
-!+
-!+
-!
-!history  E. DAVID (SOGREAH)
+!history  E. DAVID & C. COULET (SOGREAH)
 !+        **/03/2000
-!+
+!+   Limitation of Q when depth less than 2 cm
 !+
 !
-!history  J-M HERVOUET (LNH)
+!history  J-M HERVOUET (LNHE)
 !+        16/02/2009
 !+        V5P9
 !+   CORRECTED 03/2000 CORRECTION (IN PARALLEL MODE)
@@ -43,6 +38,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE) & P. LANG (INGEROP)
+!+        14/10/2011
+!+        V6P2
+!+   Correction of DSCE if requested water is not available.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTSCE         |-->| ELEVATIONS OF PIPES
@@ -73,6 +73,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : V2DPAR,DT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -97,7 +98,7 @@
       INTEGER N,I1,I2,IR1,IR2,ITRAC
 !
       DOUBLE PRECISION SEC,L
-      DOUBLE PRECISION D1,D2,S1,S2,CE1,CE2,CS1,CS2,Q,HIR1,HIR2
+      DOUBLE PRECISION D1,D2,S1,S2,CE1,CE2,CS1,CS2,Q,QMAX1,QMAX2
 !
       INTRINSIC SQRT,COS,SIN
 !
@@ -123,24 +124,24 @@
 !
       IF(IR1.GT.0) THEN
         S1=H(IR1)+ZF(IR1)
-        HIR1=H(IR1)
+        QMAX1=0.9D0*H(IR1)*V2DPAR%R(IR1)/DT
       ELSE
         S1=-1.D10
-        HIR1=-1.D10
+        QMAX1=-1.D10
       ENDIF
       IF(IR2.GT.0) THEN
         S2=H(IR2)+ZF(IR2)
-        HIR2=H(IR2)
+        QMAX2=0.9D0*H(IR2)*V2DPAR%R(IR2)/DT
       ELSE
         S2=-1.D10
-        HIR2=-1.D10
+        QMAX2=-1.D10
       ENDIF
 !     CASE WHERE ONE OF THE ENDS IS NOT IN THE SUB-DOMAIN
       IF(NCSIZE.GT.1) THEN
         S1=P_DMAX(S1)
         S2=P_DMAX(S2)
-        HIR1=P_DMAX(HIR1)
-        HIR2=P_DMAX(HIR2)
+        QMAX1=P_DMAX(QMAX1)
+        QMAX2=P_DMAX(QMAX2)
       ENDIF
 !
 !     COEFFICIENTS FOR COMPUTATION OF PRESSURE LOSS
@@ -159,22 +160,13 @@
 !     ENTRY / EXIT SECTIONS
 !
       IF(S1.GE.S2) THEN
-! EDD + CCT 03/2000 (CORRECTED BY JMH 16/02/2009 H(IR1) AND H(IR2)
-!                    ARE NOT GUARANTEED TO WORK IN PARALLEL ==>  HIR1 AND HIR2)
-!        IF(S1.GT.ALTSCE(I1).AND.S1.GT.ALTSCE(I2)) THEN
-        IF(S1.GT.ALTSCE(I1).AND.S1.GT.ALTSCE(I2).AND.
-     &     HIR1.GT.0.02D0) THEN
-!
+        IF(S1.GT.ALTSCE(I1).AND.S1.GT.ALTSCE(I2)) THEN
           Q = SEC * SQRT( 2.D0*GRAV*(S1-S2)/(CE1+L+CS2) )
         ELSE
           Q=0.D0
         ENDIF
       ELSE
-! EDD + CCT 03/2000
-!        IF(S2.GT.ALTSCE(I1).AND.S2.GT.ALTSCE(I2)) THEN
-        IF(S2.GT.ALTSCE(I1).AND.S2.GT.ALTSCE(I2).AND.
-     &     HIR2.GT.0.02D0) THEN
-!
+        IF(S2.GT.ALTSCE(I1).AND.S2.GT.ALTSCE(I2)) THEN
           Q = - SEC * SQRT( 2.D0*GRAV*(S2-S1)/(CS1+L+CE2) )
         ELSE
           Q=0.D0
@@ -186,9 +178,20 @@
 !
       IF(S1.LT.ALTSCE(I1).AND.S2.LT.ALTSCE(I2)) Q=0.D0
 !
-!  FILLS OUT DSCE USING RELAXATION
+!     FILLS OUT DSCE(I2) USING RELAXATION
 !
       DSCE(I2)= RELAXS * Q + (1.D0-RELAXS) * DSCE(I2)
+!
+!     LIMITATION WITH AVAILABLE WATER
+!
+      IF(DSCE(I2).GT.0.D0) THEN
+        DSCE(I2)=MIN(QMAX1,DSCE(I2))
+      ELSE
+        DSCE(I2)=MAX(-QMAX2,DSCE(I2))
+      ENDIF
+!
+!     NOW POINT I1
+!
       DSCE(I1)=-DSCE(I2)
 !
       IF(ENTET) THEN
