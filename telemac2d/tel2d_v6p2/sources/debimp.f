@@ -6,7 +6,7 @@
      & KP1BOR,EQUA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    IMPOSES FLUX BOUNDARY CONDITIONS,
@@ -29,6 +29,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNH)
+!+        11/10/2011
+!+        V6P2
+!+   Velocity updated with UBOR and VBOR eventually computed
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
@@ -62,12 +67,12 @@
       DOUBLE PRECISION, INTENT(INOUT) :: UBOR(NPTFR),VBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: MASK(*),Q
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
-      TYPE(BIEF_OBJ), INTENT(IN)      :: H,U,V
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: WORK1,WORK2
+      TYPE(BIEF_OBJ), INTENT(IN)      :: H
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: WORK1,WORK2,U,V
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,IELM
+      INTEGER K,IELM,N
 !
       DOUBLE PRECISION Q1
 !
@@ -150,14 +155,20 @@
 !   COMPUTES UBOR AND VBOR
 !=======================================================================
 !
-      DO 40 K=1,NPTFR
+      DO K=1,NPTFR
 !
         IF(NUMLIQ(K).EQ.IFRLIQ) THEN
+          N=MESH%NBOR%I(K)
           UBOR(K) = UBOR(K) * Q / Q1
           VBOR(K) = VBOR(K) * Q / Q1
+!         WE DO NOT LET THE PREVIOUS UBOR WHICH IS ONLY A PROFILE
+!         THIS HAS AN EFFECT AT LEAST IN PROPIN_TELEMAC2D
+!         WHICH IS CALLED BEFORE THE TREATMENT OF DIRICHLET CONDITIONS
+          U%R(N)  = UBOR(K)
+          V%R(N)  = VBOR(K)
         ENDIF
 !
-40    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

@@ -414,9 +414,13 @@
             IF(ERR.NE.0) THEN
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'ERREUR D''ALLOCATION DE W DANS PROSOU'
+                WRITE(LU,*) 'CODE ERREUR ',ERR
+                WRITE(LU,*) 'NOMBRE DE POINTS : ',NPOIN
               ENDIF
               IF(LNG.EQ.2) THEN
                 WRITE(LU,*) 'MEMORY ALLOCATION ERROR OF W IN PROSOU'
+                WRITE(LU,*) 'ERROR CODE ',ERR
+                WRITE(LU,*) 'NUMBER OF POINTS: ',NPOIN
               ENDIF
             ENDIF
 !
