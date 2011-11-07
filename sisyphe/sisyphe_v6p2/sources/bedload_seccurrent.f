@@ -40,9 +40,10 @@
        DOUBLE PRECISION C, ALPHAL
 !
 C REMEMBER: QU = U_TEL*H_TEL, QV=V_TEL*H_TEL
-!
-!
-!
+!CV+PT ...
+       CALL OS ('X=CYZ   ', QU,U2D,HN,C=1.D0)
+       CALL OS ('X=CYZ   ', QV,V2D,HN,C=1.D0)
+!... CV +PT
 C COMPUTES PI
 C       PI = ACOS(-1.D0)
 !
