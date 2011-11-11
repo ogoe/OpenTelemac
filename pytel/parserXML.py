@@ -181,7 +181,7 @@ def runXML(cfgName,cfg,module,xmlFile,options):
    # options.process takes: translate;run;compile and none
    if options.do == '': options.do = "run" #"translate;run;compile"
    # options.draw takes: plot1;plot2d;plot3d;plotpv and none
-   if options.draw == '': options.draw = "plot1d"
+   if options.draw == '': options.draw = "plot2d"
    # meta data process
    title = ""
 
@@ -281,8 +281,8 @@ def runXML(cfgName,cfg,module,xmlFile,options):
          if "run" in options.do.split(';') and "run" in  do["do"].split(';'):
             print '     +> running cas file: ' + path.basename(casFile)
             specs.compileonly = False
-            #sortieFile = runCAS(cfgName,cfg,do["code"],casFile,specs)
-            sortieFile = 'C:\home\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\t2d_bumpflu_v1p0.cas_2011-10-05-09h10min47s.sortie'
+            sortieFile = runCAS(cfgName,cfg,do["code"],casFile,specs)
+            #sortieFile = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\t2d_bumpflu_v1p0.cas_2011-10-31-17h16min00s.sortie'
             specs.sortieFile = True
             if sortieFile != None: did.update({ 'sortie': sortieFile })
 

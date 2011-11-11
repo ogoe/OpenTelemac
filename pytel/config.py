@@ -168,8 +168,8 @@ def parseConfigFile(file):
    #
    # ~~ Parse CFG File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #
-   print "... parsing configuration file"
    if file == '': file = options.configFile
+   print "... parsing configuration file: " + file
    configDict = getConfigs(file)
    if configDict == {}:
       print '\nPlease specify configuration in config file \n'
@@ -684,6 +684,11 @@ def parseUserModules(cfgDict,modules):
       if proc :
          userList = proc.group('before') + ' ' + proc.group('after')
          del modules[mod]
+   # ~~ Check forgotten ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for mod in userList.split():
+      if '-' == mod[0:1]:
+         print '\nCould not find the following module:',mod[1:]
+         sys.exit()
    # ~~ Deal with all ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if 'system' in userList : userList = ' '.join(modules.keys())
    # ~~ Activates parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

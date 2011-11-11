@@ -569,7 +569,7 @@ if __name__ == "__main__":
    parser.add_option("-r", "--rootdir",
                       type="string",
                       dest="rootDir",
-                      default=PWD,
+                      default='',
                       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",
                       type="string",

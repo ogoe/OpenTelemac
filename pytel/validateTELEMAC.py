@@ -65,7 +65,7 @@ if __name__ == "__main__":
    oparser.add_option("-r", "--rootdir",
                       type="string",
                       dest="rootDir",
-                      default=path.dirname(PWD),
+                      default='',
                       help="specify the root, default is taken from config file" )
    oparser.add_option("-v", "--version",
                       type="string",

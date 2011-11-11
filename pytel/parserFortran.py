@@ -108,8 +108,8 @@ var_equals = re.compile(r'\s*(?P<before>.*?)(?P<name>\s*\b\w+?\b)(?P<value>\s*=[
 var_operand = re.compile(r'\s*(?P<before>.*?)(?=[^\s])\W+(?P<after>.*?)\s*\Z',re.I)
 argnames = re.compile(r'\s*(?P<name>\b\w+\b)\s*?(|\((?P<args>.*)\))\s*\Z',re.I)
 
-itf_title = re.compile(r'\s*?\bINTERFACE\b(|\s+?(?P<name>\w+?).*?)\s*\Z',re.I)
-itf_close = re.compile(r'\s*?\bEND\s+INTERFACE\b(|\s+?(?P<name>\w*?).*?)\s*\Z',re.I)
+itf_title = re.compile(r'\s*?\bINTERFACE\b(|\s+?(?P<name>\w+).*?)\s*\Z',re.I)
+itf_close = re.compile(r'\s*?\bEND\s+INTERFACE\b(|\s+?(?P<name>\w+).*?)\s*\Z',re.I)
 use_title = re.compile(r'\s*?\bUSE\b\s+?(?P<name>\b\w+\b)\s*(|,\s*(?P<after>.*?))\s*\Z',re.I)
 xtn_title = re.compile(r'.*?\bEXTERNAL\b(.*?::)?\s*?(?P<vars>.*?)\s*\Z',re.I)
 itz_title = re.compile(r'\s*?\bINTRINSIC\b(.*?::)?\s*?(?P<vars>.*?)\s*\Z',re.I)
@@ -412,6 +412,7 @@ def parsePrincipalWrap(lines):
                   face.append(line)
                core.pop(count)
                count = count - 1
+               continue  # THIS IS TO IGNORE THE LOCAL VARIABLES
             else:
                proc = re.match(itf_title,line)
                if proc :
@@ -502,27 +503,48 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
    removed already
    Return the set of lines without continuation
 """
-def delContinueds(lines):
+
+def delContinuedsF77(lines):
    # ~~ Assumes code without comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cmds = []
    cmd  = ''
    for line in lines :
       proc1 = re.match(f77continu2,line)
+      if proc1:
+         cmd = cmd.rstrip() + proc1.group('line')
+      else:
+         if cmd is not '' : cmds.append(cmd)
+         cmd = line
+   cmds.append(cmd)
+   return cmds
+
+def delContinuedsF90(lines):
+   # ~~ Assumes code without comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cmds = []
+   cmd  = ''
+   cnt = False
+   for line in lines :
       proc2 = re.match(f90continu1,line)
       proc3 = re.match(f90continu2,line)
       proc4 = re.match(f90continu3,line)
-      if proc1 :
-         cmd = cmd.rstrip() + proc1.group('line')
-      elif proc2 :
-         cmd = cmds.append(cmd)
-         cmd = proc2.group('line')
+      if proc2 :
+         if not cnt:
+            cmds.append(cmd)
+            cmd = ''
+         cmd = cmd.rstrip() + proc2.group('line')
+         cnt = True
       elif proc3 :
          cmd = cmd.rstrip() + proc3.group('line')
+         cnt = True
       elif proc4 :
          cmd = cmd.rstrip() + proc4.group('line')
       else:
-         if cmd != '' : cmds.append(cmd)
-         cmd = line
+         if cnt:
+            cmd = cmd.rstrip() + line
+         else:
+            if cmd is not '' : cmds.append(cmd)
+            cmd = line
+         cnt = False
    cmds.append(cmd)
    return cmds
 
@@ -562,7 +584,7 @@ def scanSources(cfgdir,cfg,BYPASS):
       fic.update({mod:{}})
       # ~~ Scans the sources that are relevant to the model ~~~~~~~~
       SrcDir = path.join(cfg['MODULES'][mod]['path'],'sources')     # assumes the sources are under ./sources
-      FileList = utils.getTheseFiles(SrcDir,['.f'])
+      FileList = utils.getTheseFiles(SrcDir,['.f','.f90'])
       ODir = path.join(cfg['MODULES'][mod]['path'],cfgdir)
 
       print '... now scanning ', path.basename(cfg['MODULES'][mod]['path'])
@@ -595,9 +617,12 @@ def scanSources(cfgdir,cfg,BYPASS):
 
          if debug : print File
          SrcF = open(File,'r')
-         flines = delContinueds(delComments(SrcF))              # Strips the commented lines
+         if path.splitext(who['file'])[1].lower() in ['.f90','.f95']:
+            flines = delContinuedsF90(delComments(SrcF))        # Strips the F90+ commented lines
+         else:
+            flines = delContinuedsF77(delComments(SrcF))        # Strips the F77 commented lines
          SrcF.close()                                           # and deletes the continuation characters
-
+         
          core = flines
          found = False #ndu
          while core != [] and not found:                             # ignores what might be in the file after the main program
@@ -611,12 +636,14 @@ def scanSources(cfgdir,cfg,BYPASS):
             if w[0] == 'M': mdl = utils.addToList(mdl,name,whoi['libname'])# module
             if w[0] == 'F': fct = utils.addToList(fct,name,whoi['libname'])# function
             fic[mod][File].append(name)
-            while face != []:
-               fcode,fw,ff,ft,face = parsePrincipalWrap(face)
-               if fcode != []:
-                  fname,whof,rest = parsePrincipalMain(fcode,who,fw[0],fw[1],fw[2],fw[3])
-                  for k in whof['uses'].keys():
-                     for v in whof['uses'][k]: utils.addToList(whoi['uses'],k,v)
+            # SEB @ HRW : 07-NOV-2011 : REMOVING THIS PARSING FOR AS LONG AS IT DOES NOT
+            #  COMPLY WITH DREDSIM'S INTERFACE'S MODULE PROCEDURE
+            #while face != []:
+            #   fcode,fw,ff,ft,face = parsePrincipalWrap(face)
+            #   if fcode != []:
+            #      fname,whof,rest = parsePrincipalMain(fcode,who,fw[0],fw[1],fw[2],fw[3])
+            #      for k in whof['uses'].keys():
+            #         for v in whof['uses'][k]: utils.addToList(whoi['uses'],k,v)
             while ctns != []:                                      # contains fcts & subs
                ccode,cw,cf,ct,ctns = parsePrincipalWrap(ctns)
                if ccode != []:
@@ -698,7 +725,7 @@ def sortFunctions(ifcts,iuses,list,mods,xuses):
             break
          if d in list[mods[u][0]][u]['vars']['als']:
             ofcts.remove(d)
-            utils.ddToList(iuses,u,d)
+            utils.addToList(iuses,u,d)
             break
    ifcts = ofcts
    for u in xuses:

@@ -464,7 +464,7 @@ if __name__ == "__main__":
    parser.add_option("-r", "--rootdir",
                       type="string",
                       dest="rootDir",
-                      default=PWD,
+                      default='',
                       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",
                       type="string",
@@ -511,10 +511,14 @@ if __name__ == "__main__":
    if not path.isdir(cfgs[cfgname]['doxydocs']): createDirectories(cfgs[cfgname]['doxydocs'])
    # parsing for proper naming
    cfg = parseConfig_DoxygenTELEMAC(cfgs[cfgname])
+   print '\n\nScanning the source code for:\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '    +> configuration: ' +  cfgname
+   print '    +> root:          ' +  cfgs[cfgname]['root']
+   print '    +> version        ' +  cfgs[cfgname]['version'] + '\n\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
    # ~~ Scans all source files to build a relation database ~~
-   print '\n\nScanning the source code\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,BYPASS)
 
    # ~~ Scann all source files to update Doxygen ~~~~~~~~~~~~~~~~
