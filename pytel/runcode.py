@@ -443,7 +443,17 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       useFile = path.join(CASDir,path.splitext(value[0])[0]+cfg['SYSTEM']['SFX_EXE'])
       if path.exists(useFile) and cfg['REBUILD'] > 0: remove(useFile)
       #> default command line compilation and linkage
+   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdo')):
+      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['TELVER']+'.cmdo') + '\n'
+      print ' ... you have to compile this module at least: '
+      print '    +> ',codeName
+      sys.exit()
    objCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdo'))[0]
+   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdx')):
+      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['TELVER']+'.cmdx') + '\n'
+      print ' ... you have to compile this module at least: '
+      print '    +> ',codeName
+      sys.exit()
    exeCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdx'))[0]
    # >>> Compiling the executable if required
    if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
@@ -559,7 +569,7 @@ if __name__ == "__main__":
    parser.add_option("-r", "--rootdir",
                       type="string",
                       dest="rootDir",
-                      default=PWD,
+                      default='',
                       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",
                       type="string",
