@@ -636,14 +636,12 @@ def scanSources(cfgdir,cfg,BYPASS):
             if w[0] == 'M': mdl = utils.addToList(mdl,name,whoi['libname'])# module
             if w[0] == 'F': fct = utils.addToList(fct,name,whoi['libname'])# function
             fic[mod][File].append(name)
-            # SEB @ HRW : 07-NOV-2011 : REMOVING THIS PARSING FOR AS LONG AS IT DOES NOT
-            #  COMPLY WITH DREDSIM'S INTERFACE'S MODULE PROCEDURE
-            #while face != []:
-            #   fcode,fw,ff,ft,face = parsePrincipalWrap(face)
-            #   if fcode != []:
-            #      fname,whof,rest = parsePrincipalMain(fcode,who,fw[0],fw[1],fw[2],fw[3])
-            #      for k in whof['uses'].keys():
-            #         for v in whof['uses'][k]: utils.addToList(whoi['uses'],k,v)
+            while face != []:
+               fcode,fw,ff,ft,face = parsePrincipalWrap(face)
+               if fcode != []:
+                  fname,whof,rest = parsePrincipalMain(fcode,who,fw[0],fw[1],fw[2],fw[3])
+                  for k in whof['uses'].keys():
+                     for v in whof['uses'][k]: utils.addToList(whoi['uses'],k,v)
             while ctns != []:                                      # contains fcts & subs
                ccode,cw,cf,ct,ctns = parsePrincipalWrap(ctns)
                if ccode != []:
