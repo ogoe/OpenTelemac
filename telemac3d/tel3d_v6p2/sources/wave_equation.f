@@ -207,7 +207,12 @@
           MSKGRA = .TRUE.
           IF(OPTBAN.EQ.1) THEN
             CALL OV('X=Y+Z   ',T2_01%R,HN%R,Z3%R,0.D0,NPOIN2)
+!           Z3 GIVEN AS ZF (FIRST PLANE IS BOTTOM)
+!           WOULD BE REJECTED AS 3D VECTOR
+            I=Z3%ELM
+            Z3%ELM=11
             CALL DECVRT(TE3,T2_01,Z3,MESH2D)
+            Z3%ELM=I
           ENDIF
           IF(OPTBAN.EQ.1.AND.MSK) THEN
             CALL OV('X=XY    ',TE3%R,MASKEL%R,MASKEL%R,0.D0,NELEM2)

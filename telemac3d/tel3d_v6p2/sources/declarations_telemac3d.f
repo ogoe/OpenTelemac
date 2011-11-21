@@ -840,32 +840,35 @@ C
 !> @brief OPTION FOR THE TREATMENT OF TIDAL FLATS
 C option de traitement des bancs decouvrants
       INTEGER OPTBAN
-!> @brief TREATMENT OF NEGATIVE DEPTHS
-C traitement des hauteurs negatives
+!
+!     TREATMENT OF NEGATIVE DEPTHS
+!
       INTEGER OPT_HNEG
 !> @brief
 C
       INTEGER OPDVIT,OPTSOU
-!> @brief SUPG OPTION
-C option de supg
+!
+!     SUPG OPTION
+!
       INTEGER OPTSUP(4)
 !> @brief
 C
       INTEGER OPTASS2D
-!> @brief 3D DISCRETISATION TYPE
-C type de discretisation 3d
+!
+!     3D DISCRETISATION TYPE
+!
       INTEGER IELM3
-!> @brief 2DH DISCRETISATION TYPE
-C type de discretisation 2dh
-      INTEGER IELM2H
-!> @brief 2DV DISCRETISATION TYPE
-C type de discretisation 2dv
-      INTEGER IELM2V
-!> @brief
-C
+!
+!     2D DISCRETISATION TYPES, HORIZONTAL, VERTICAL
+!
+      INTEGER IELM2H,IELM2V
+!
+!
+!
       INTEGER IELM0, IELMH, IELMU, IELM1, IELMX
-!> @brief NUMBER OF LAYERS OF 3D ELEMENTS (NPLAN - 1)
-C nombre d'etages sur la verticale (NPLAN - 1)
+!
+!     NUMBER OF LAYERS OF 3D ELEMENTS (NPLAN - 1)
+!
       INTEGER NETAGE
 !> @brief
 C nombre de variables traitees dans le bilan
@@ -1290,77 +1293,77 @@ C si oui, pression dynamique dans l'equation d'onde
 !     IMPLICITATION FOR VELOCITIES
 !
       DOUBLE PRECISION TETAU
-!> @brief
-C
-      DOUBLE PRECISION TETAD
-!> @brief IMPLICITATION FOR DIFFUSION
-C taux d'implicitation pour la diffusion (diagonale si optdif = 2)
-      DOUBLE PRECISION TETADI
-!> @brief MASS-LUMPING FOR DEPTH
-C mass-lumping pour la hauteur
-      DOUBLE PRECISION AGGLOH
-!> @brief MASS-LUMPING FOR DIFFUSION
-C mass-lumping pour la diffusion
-      DOUBLE PRECISION AGGLOD
-!> @brief MASS-LUMPING FOR VELOCITIES
-C mass-lumping pour les vitesses
-      DOUBLE PRECISION AGGLOU
-!> @brief
-C cote du plan intermediaire de reference
-      DOUBLE PRECISION COTINT
-!> @brief ARRAY OF PRESCRIBED FLOWRATES
-C debits imposes
-      DOUBLE PRECISION DEBIMP(MAXFRO)
-!> @brief ARRAY OF PRESCRIBED ELEVATIONS
-C cotes imposees
-      DOUBLE PRECISION COTIMP(MAXFRO)
-!> @brief ARRAY OF PRESCRIBED VELOCITIES
-C vitesses imposees
-      DOUBLE PRECISION VITIMP(MAXFRO)
-!> @brief BETA EXPANSION COEFFICIENT FOR TRACERS
-C coefficient de dilatation volumique beta pour les traceurs
+!
+!     IMPLICITATIONS FOR DIFFUSION ?
+!
+      DOUBLE PRECISION TETAD,TETADI
+!
+!     MASS-LUMPING FOR DEPTH, DIFFUSION, VELOCITIES
+!
+      DOUBLE PRECISION AGGLOH,AGGLOD,AGGLOU
+!
+!     ARRAY OF PRESCRIBED FLOWRATES, ELEVATIONS, VELOCITIES
+!
+      DOUBLE PRECISION DEBIMP(MAXFRO),COTIMP(MAXFRO),VITIMP(MAXFRO)
+!
+!     BETA EXPANSION COEFFICIENT FOR TRACERS
+!
       DOUBLE PRECISION BETAC(MAXTRA)
-!> @brief REFERENCE CONCENTRATION OF TRACERS
-C valeurs de reference des traceurs
+!
+!     REFERENCE CONCENTRATION OF TRACERS
+!
       DOUBLE PRECISION T0AC(MAXTRA)
-!> @brief INITIAL VALUES OF TRACERS
-C valeurs initiales des traceurs
+!
+!     INITIAL VALUES OF TRACERS
+!
       DOUBLE PRECISION TRAC0(MAXTRA)
-!> @brief DENSITY OF THE SEDIMENT
-C masse volumique du sediment
+!
+!     DENSITY OF THE SEDIMENT
+!
       DOUBLE PRECISION RHOS
-!> @brief CRITICAL SHEAR STRESS FOR DEPOSITION
-C contrainte critique de depot
+!
+!     CRITICAL SHEAR STRESS FOR DEPOSITION
+!
       DOUBLE PRECISION TOCD
-!> @brief CONCENTRATION (G/L) OF FRESH DEPOSITS
-C concentration (g/l) des depots frais
+!
+!     CONCENTRATION (G/L) OF FRESH DEPOSITS
+!
       DOUBLE PRECISION CFDEP
-!> @brief REFERENCE BED LAYER THICKNESS FOR NEW LAYER CREATION
-C epaisseur de reference pour creer de nouvelles couches du fond vaseux
+!
+!     REFERENCE BED LAYER THICKNESS FOR NEW LAYER CREATION
+!
       DOUBLE PRECISION EPAI0
-!> @brief TIMESTEP FOR CONSOLIDATION
-C pas de temps de la consolidation
+!
+!     TIMESTEP FOR CONSOLIDATION
+!
       DOUBLE PRECISION DTC
-!> @brief CONCENTRATION (G/L) OF THE CONSOLIDATED MUD
-C concentration (g/l) de la vase tassee
+!
+!     CONCENTRATION (G/L) OF THE CONSOLIDATED MUD
+!
       DOUBLE PRECISION CFMAX
-!> @brief EROSION COEFFICIENT (EMPIRICAL PARTHENIADES COEFFICIENT)
-C coefficient d'erosion (loi de partheniades)
+!
+!     EROSION COEFFICIENT (EMPIRICAL PARTHENIADES COEFFICIENT)
+!
       DOUBLE PRECISION MPART
-!> @brief CRITICAL SHEAR STRESS FOR EROSION (FRESH DEPOSIT)
-C contrainte critique d'erosion
+!
+!     CRITICAL SHEAR STRESS FOR EROSION (FRESH DEPOSIT)
+!
       DOUBLE PRECISION TOCE
-!> @brief FLOCULATION COEFFICIENT
-C coefficient traduisant la formation des flocs
+!
+!     FLOCULATION COEFFICIENT
+!
       DOUBLE PRECISION TURBA
-!> @brief COEFFICIENT RELATIVE TO FLOC DESTRUCTION
-C coefficient traduisant la destruction des flocs
+!
+!     COEFFICIENT RELATIVE TO FLOC DESTRUCTION
+!
       DOUBLE PRECISION TURBB
-!> @brief CONSOLIDATION TIME SCALE (ONLY FOR MULTILAYER MODEL)
-C temps de sejour de la vase dans les couches (modele multi-couches)
+!
+!     CONSOLIDATION TIME SCALE (ONLY FOR MULTILAYER MODEL)
+!
       DOUBLE PRECISION TREST(30)
-!> @brief CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
-C vitesse de chute constante (m/s)
+!
+!     CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
+!
       DOUBLE PRECISION WCHU0
 !> @brief MEAN DIAMETER OF THE SEDIMENT
 C diametre moyen des grains
@@ -1442,12 +1445,17 @@ C parametre de shields
 !     INITIAL, PAST AND PRESENT MASS OF WATER
 !
       DOUBLE PRECISION MASINI_WATER, MASSEN_WATER,MASSE_WATER
-C
-C-----------------------------------------------------------------------
-C (7) STRINGS
-C-----------------------------------------------------------------------
-C
+!
+!     THRESHOLD FOR VISCOSITY CORRECTION ON TIDAL FLATS
+!
+      DOUBLE PRECISION HLIM
+!
+!-----------------------------------------------------------------------
+! (7) STRINGS
+!-----------------------------------------------------------------------
+!
 !     TITLE
+!
       CHARACTER(LEN=72) TITCAS
 !> @brief
 C

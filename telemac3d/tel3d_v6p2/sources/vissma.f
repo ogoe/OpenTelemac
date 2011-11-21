@@ -105,46 +105,47 @@
 !
       IF(ITURBV.NE.4) THEN
 !
-      CALL SMAGO(U,V,TRAV1,TRAV2,TRAV3,TRAV4,TRAV5,MESH3,IELM3,
-     &           MSK,MASKEL)
+        CALL CPSTVC(U,TRAV5)
+        CALL SMAGO(U,V,TRAV1,TRAV2,TRAV3,TRAV4,TRAV5,MESH3,IELM3,
+     &             MSK,MASKEL)
 !
-! VISCOSITY COMPUTED BY SMAGORINSKI : IN TRAV5
+!       VISCOSITY COMPUTED BY SMAGORINSKI : IN TRAV5
 !
-      CALL OS('X=Y+C   ',X=VISCVI%ADR(1)%P,Y=TRAV5,C=DNUVIH)
-      CALL OS('X=Y+C   ',X=VISCVI%ADR(2)%P,Y=TRAV5,C=DNUVIH)
+        CALL OS('X=Y+C   ',X=VISCVI%ADR(1)%P,Y=TRAV5,C=DNUVIH)
+        CALL OS('X=Y+C   ',X=VISCVI%ADR(2)%P,Y=TRAV5,C=DNUVIH)
 !
-      IF (NTRAC.NE.0) THEN
+        IF(NTRAC.NE.0) THEN
 !
-        DO ITRAC=1,NTRAC
-          CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
-     &                       Y=TRAV5,C=DNUTAH)
-          CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
-     &                       Y=TRAV5,C=DNUTAH)
-        ENDDO
+          DO ITRAC=1,NTRAC
+            CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
+     &                         Y=TRAV5,C=DNUTAH)
+            CALL OS('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
+     &                         Y=TRAV5,C=DNUTAH)
+          ENDDO
 !
-      ENDIF
+        ENDIF
 !
       ELSE !ITURBV=4 -> 3D SMAGORINSKI
 !
-      CALL SMAGO3D(U,V,W,TRAV1,TRAV2,TRAV3,TRAV4,TRAV5,TRAV6,
-     &             SVIDE,MESH3,IELM3,MSK,MASKEL)
+        CALL SMAGO3D(U,V,W,TRAV1,TRAV2,TRAV3,TRAV4,TRAV5,TRAV6,
+     &               SVIDE,MESH3,IELM3,MSK,MASKEL)
 !
-      CALL OS('X=Y+C   ',X=VISCVI%ADR(1)%P,Y=TRAV5,C=DNUVIH)
-      CALL OS('X=Y+C   ',X=VISCVI%ADR(2)%P,Y=TRAV5,C=DNUVIH)
-      CALL OS('X=Y+C   ',X=VISCVI%ADR(3)%P,Y=TRAV5,C=DNUVIV)
+        CALL OS('X=Y+C   ',X=VISCVI%ADR(1)%P,Y=TRAV5,C=DNUVIH)
+        CALL OS('X=Y+C   ',X=VISCVI%ADR(2)%P,Y=TRAV5,C=DNUVIH)
+        CALL OS('X=Y+C   ',X=VISCVI%ADR(3)%P,Y=TRAV5,C=DNUVIV)
 !
-      IF(NTRAC.NE.0) THEN
+        IF(NTRAC.NE.0) THEN
 !
-        DO ITRAC=1,NTRAC
-          CALL OS ('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
-     &                        Y=TRAV5,C=DNUTAH)
-          CALL OS ('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
-     &                        Y=TRAV5,C=DNUTAH)
-          CALL OS ('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
-     &                        Y=TRAV5,C=DNUTAV)
-        ENDDO
+          DO ITRAC=1,NTRAC
+            CALL OS ('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(1)%P,
+     &                          Y=TRAV5,C=DNUTAH)
+            CALL OS ('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(2)%P,
+     &                          Y=TRAV5,C=DNUTAH)
+            CALL OS ('X=Y+C   ',X=VISCTA%ADR(ITRAC)%P%ADR(3)%P,
+     &                          Y=TRAV5,C=DNUTAV)
+          ENDDO
 !
-      ENDIF
+        ENDIF
 !
       ENDIF
 !

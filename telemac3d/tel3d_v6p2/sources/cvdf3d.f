@@ -216,7 +216,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IP,K,NPTFR,IPLAN,IPTFR,IS,IPTFR2,I,IIS,PARA
+      INTEGER IP,K,NPTFR,IPLAN,IPTFR,IS,IPTFR2,I,IIS,PARA,DIM1X
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
       DOUBLE PRECISION STOFD,TETASUPG
       TYPE(BIEF_OBJ), POINTER :: VOLUME
@@ -230,6 +230,12 @@
 !
 !***********************************************************************
 !
+!     FOR DIMENSIONING XA AND XB IN MURD3D.
+!
+      DIM1X=BIEF_DIM2_EXT(IELM3,IELM3,1,'Q',MESH3D)
+!
+!     DEALING WITH A VELOCITY ?
+!      
       VELOCITY=.FALSE.
       IF(FN%NAME(1:1).EQ.'U'.OR.
      &   FN%NAME(1:1).EQ.'V'.OR.
@@ -364,7 +370,8 @@
       ELSEIF(SCHCF.EQ.ADV_NSC) THEN
 !
         CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &              MMURD%D%R,MMURD%X%R,MMURD%D%R,MMURD%X%R,
+     &              MMURD%D%R,MMURD%X%R,DIM1X,
+     &              MMURD%D%R,MMURD%X%R,DIM1X,
      &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &              MESH3D%W%R,IKLE3%I,MESH3D,
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
@@ -372,7 +379,7 @@
      &              RAIN,PARAPLUIE%R,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN)
+     &              MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
@@ -386,7 +393,8 @@
       ELSEIF(SCHCF.EQ.ADV_PSI) THEN
 !
          CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &               MMURD%D%R,MMURD%X%R,MESH3D%M%D%R,MESH3D%M%X%R,
+     &               MMURD%D%R,MMURD%X%R,DIM1X,
+     &               MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
      &               T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &               W1%R,IKLE3%I,MESH3D,
      &               NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
@@ -394,7 +402,7 @@
      &               RAIN,PARAPLUIE%R,NPOIN2,
      &               TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &               FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN)
+     &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
@@ -409,7 +417,8 @@
       ELSEIF(SCHCF.EQ.ADV_LPO) THEN
 !
          CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &               MMURD%D%R,MMURD%X%R,MESH3D%M%D%R,MESH3D%M%X%R,
+     &               MMURD%D%R,MMURD%X%R,DIM1X,
+     &               MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
      &               T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &               W1%R,IKLE3%I,MESH3D,
      &               NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
@@ -417,7 +426,7 @@
      &               RAIN,PARAPLUIE%R,NPOIN2,
      &               TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &               FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN)
+     &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
@@ -442,7 +451,7 @@
      &                   MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
      &                   TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
      &                   TRAV3%ADR(8)%P,
-     &                   TRAV3%ADR(9)%P,2)
+     &                   TRAV3%ADR(9)%P,2,IELM3)
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
@@ -471,7 +480,7 @@
      &                   MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
      &                   TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
      &                   TRAV3%ADR(8)%P,
-     &                   TRAV3%ADR(9)%P,2)
+     &                   TRAV3%ADR(9)%P,2,IELM3)
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER

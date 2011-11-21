@@ -5,7 +5,7 @@
      &(LT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -27,6 +27,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        14/10/2011
+!+        V6P2
+!+   ADDING MAXIMUM ELEVATION AND ASSOCIATED TIME
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| ITERATION NUMBER
@@ -247,7 +252,7 @@
 !
       IF(NTRAC.GT.0) THEN
       DO I=1,NTRAC
-      IF(LEO.AND.SORG2D(34+I)) THEN
+      IF(LEO.AND.SORG2D(36+I)) THEN
         CALL VERMOY(TRAV2%ADR(13+I)%P%R,TRAV2%ADR(13+I)%P%R,
      &              TA%ADR(I)%P%R,TA%ADR(I)%P%R,1,Z,
      &              T3_01%R,T3_02%R,T3_03%R,1,NPLAN,NPOIN2,NPLAN,OPTBAN)

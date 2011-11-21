@@ -2,10 +2,10 @@
                      SUBROUTINE VISCLIP
 !                    ******************
 !
-     & (VISCVI,VISCTA,H,NPLAN,NPOIN3,NPOIN2,NTRAC)
+     & (VISCVI,VISCTA,H,NPLAN,NPOIN3,NPOIN2,NTRAC,HLIM)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    LIMITS VISCOSITY ON TIDAL FLATS.
@@ -27,8 +27,14 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J.-M. HERVOUET
+!+        11/10/2011
+!+        V6P2
+!+   HLIM added as argument, now a keyword.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| H              |-->| WATER DEPTH
+!| HLIM           |-->| THRESHOLD FOR VISCOSITY CORRECTION ON TIDAL FLATS
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
@@ -47,14 +53,14 @@
 !
       INTEGER, INTENT(IN)            :: NPOIN3, NPOIN2, NPLAN
       INTEGER, INTENT(IN)            :: NTRAC
+      DOUBLE PRECISION, INTENT(IN)   :: HLIM
       TYPE (BIEF_OBJ), INTENT(INOUT) :: VISCVI, VISCTA
       TYPE (BIEF_OBJ), INTENT(IN)    :: H
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPLAN,I,ITRAC
-      DOUBLE PRECISION HLIM,COR
-      DATA HLIM /0.2D0/
+      DOUBLE PRECISION COR
 !
 !***********************************************************************
 !

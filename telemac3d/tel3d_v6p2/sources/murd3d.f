@@ -2,14 +2,14 @@
                      SUBROUTINE MURD3D
 !                    *****************
 !
-     &(FC,FN,VOLU,VOLUN,VOLU2,SVOLU2,DA,XA,DB,XB,
+     &(FC,FN,VOLU,VOLUN,VOLU2,SVOLU2,DA,XA,DIM1XA,DB,XB,DIM1XB,
      & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,W1,IKLE3,MESH3,
      & NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
      & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,NPOIN2,MINFC,MAXFC,MASKPT,
-     & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN)
+     & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH THE DISTRIBUTIVE SCHEME
@@ -100,6 +100,8 @@
 !| DB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
 !|                |   | POSSIBLY TRANSFORMED IN OPTION PSI
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
+!| DIM1XA         |-->| FIRST DIMENSION OF XA
+!| DIM1XB         |-->| FIRST DIMENSION OF XB
 !| DT             |-->| TIME STEP
 !| FC             |<->| VARIABLE AFTER CONVECTION
 !| FLODEL         |-->| FLUX BY MESH EDGES
@@ -109,6 +111,7 @@
 !| FN             |-->| VARIABLE AT TIME N
 !| FSCE           |-->| SOURCE
 !| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| IELM3          |-->| TYPE OF ELEMENT (41:PRISM, ETC.)
 !| IKLE3          |-->| GLOBAL 3D CONNECTIVITY
 !| INFOR          |-->| INFORMATIONS FOR SOLVERS
 !| LV             |-->| VECTOR LENGTH OF THE MACHINE
@@ -160,14 +163,16 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,LV,NPOIN2
-      INTEGER, INTENT(IN)             :: IKLE3(NELEM3,6),NSCE,OPTBAN
+      INTEGER, INTENT(IN)             :: IELM3,DIM1XA,DIM1XB
+!                                                     6 OR 4
+      INTEGER, INTENT(IN)             :: IKLE3(NELEM3,*),NSCE,OPTBAN
       INTEGER, INTENT(IN)             :: NSEG,NPLAN,DIMGLO
       INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3),PLUIE(NPOIN2)
-!
-      DOUBLE PRECISION, INTENT(INOUT) :: W1(NELEM3,6)
+!                                                  6 OR 4
+      DOUBLE PRECISION, INTENT(INOUT) :: W1(NELEM3,*)
       DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELEM3), FLUEXT(NPOIN3)
 !
       DOUBLE PRECISION, INTENT(IN)    :: VOLUN(NPOIN3), VOLU(NPOIN3)
@@ -181,8 +186,8 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: SOURCES,S0F
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: STRA01,STRA02,STRA03
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3
-      DOUBLE PRECISION, INTENT(INOUT) :: DA(NPOIN3),XA(30,NELEM3)
-      DOUBLE PRECISION, INTENT(INOUT) :: DB(NPOIN3),XB(30,NELEM3)
+      DOUBLE PRECISION, INTENT(INOUT) :: DA(NPOIN3),XA(DIM1XA,NELEM3)
+      DOUBLE PRECISION, INTENT(INOUT) :: DB(NPOIN3),XB(DIM1XB,NELEM3)
 !
 !     DIMENSION OF FLODEL AND FLOPAR=NSEG2D*NPLAN+NPOIN2*NETAGE
       DOUBLE PRECISION, INTENT(IN)    :: FLODEL(*),FLOPAR(*)
@@ -241,6 +246,8 @@
          DO IPOIN=1,NPOIN3
            DB(IPOIN)=0.D0
          ENDDO
+!
+         IF(IELM3.EQ.41) THEN
 !
          DO 20 IELEM = 1,NELEM3
 !
@@ -501,6 +508,8 @@
                ENDIF
             ENDIF
 !
+!           DB IS : - SUM ON J OF LAMBDA(I,J)
+!
             DB(I1)=DB(I1) - XB(01,IELEM) - XB(02,IELEM)
      &                    - XB(03,IELEM)
      &                    - XB(04,IELEM) - XB(05,IELEM)
@@ -522,10 +531,136 @@
 !
 20       CONTINUE
 !
-!        DB IS : - SUM ON J OF LAMBDA(I,J)
+         ELSEIF(IELM3.EQ.51) THEN
 !
-!        CALL ASSVEC
-!    &   (DB,IKLE3,NPOIN3,NELEM3,NELEM3,41,W1,.TRUE.,LV,MSK,MASKEL)
+         DO 30 IELEM = 1,NELEM3
+!
+            I1 = IKLE3(IELEM,1)
+            I2 = IKLE3(IELEM,2)
+            I3 = IKLE3(IELEM,3)
+            I4 = IKLE3(IELEM,4)
+!
+            T1 = FC(I1)
+            T2 = FC(I2)
+            T3 = FC(I3)
+            T4 = FC(I4)
+!
+            M12 = (XA(01,IELEM)-XA(07,IELEM)) * (T1-T2)
+            M13 = (XA(02,IELEM)-XA(08,IELEM)) * (T1-T3)
+            M14 = (XA(03,IELEM)-XA(09,IELEM)) * (T1-T4)
+            M23 = (XA(04,IELEM)-XA(10,IELEM)) * (T2-T3)
+            M24 = (XA(05,IELEM)-XA(11,IELEM)) * (T2-T4)
+            M34 = (XA(06,IELEM)-XA(12,IELEM)) * (T3-T4)
+!
+            PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
+     &           + MAX( M23,0.D0) + MAX( M24,0.D0) + MAX( M34,0.D0)
+            PHIM = MAX(-M12,0.D0) + MAX(-M13,0.D0) + MAX(-M14,0.D0)
+     &           + MAX(-M23,0.D0) + MAX(-M24,0.D0) + MAX(-M34,0.D0)
+!
+            IF(PHIP.GE.PHIM) THEN
+               ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
+               IF(T2.GT.T1) THEN
+                 XB(01,IELEM) = 0.D0
+                 XB(07,IELEM) = XA(07,IELEM) * ALFA
+               ELSE
+                 XB(01,IELEM) = XA(01,IELEM) * ALFA
+                 XB(07,IELEM) = 0.D0
+               ENDIF
+               IF(T3.GT.T1) THEN
+                 XB(02,IELEM) = 0.D0
+                 XB(08,IELEM) = XA(08,IELEM) * ALFA
+               ELSE
+                 XB(02,IELEM) = XA(02,IELEM) * ALFA
+                 XB(08,IELEM) = 0.D0
+               ENDIF
+               IF(T4.GT.T1) THEN
+                 XB(03,IELEM) = 0.D0
+                 XB(09,IELEM) = XA(09,IELEM) * ALFA
+               ELSE
+                 XB(03,IELEM) = XA(03,IELEM) * ALFA
+                 XB(09,IELEM) = 0.D0
+               ENDIF
+               IF(T3.GT.T2) THEN
+                 XB(04,IELEM) = 0.D0
+                 XB(10,IELEM) = XA(10,IELEM) * ALFA
+               ELSE
+                 XB(04,IELEM) = XA(04,IELEM) * ALFA
+                 XB(10,IELEM) = 0.D0
+               ENDIF
+               IF(T4.GT.T2) THEN
+                 XB(05,IELEM) = 0.D0
+                 XB(11,IELEM) = XA(11,IELEM) * ALFA
+               ELSE
+                 XB(05,IELEM) = XA(05,IELEM) * ALFA
+                 XB(11,IELEM) = 0.D0
+               ENDIF
+               IF(T4.GT.T3) THEN
+                 XB(06,IELEM) = 0.D0
+                 XB(12,IELEM) = XA(12,IELEM) * ALFA
+               ELSE
+                 XB(06,IELEM) = XA(06,IELEM) * ALFA
+                 XB(12,IELEM) = 0.D0
+               ENDIF
+            ELSE
+               ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
+               IF(T2.GT.T1) THEN
+                 XB(01,IELEM) = XA(01,IELEM) * ALFA
+                 XB(07,IELEM) = 0.D0
+               ELSE
+                 XB(01,IELEM) = 0.D0
+                 XB(07,IELEM) = XA(07,IELEM) * ALFA
+               ENDIF
+               IF(T3.GT.T1) THEN
+                 XB(02,IELEM) = XA(02,IELEM) * ALFA
+                 XB(08,IELEM) = 0.D0
+               ELSE
+                 XB(02,IELEM) = 0.D0
+                 XB(08,IELEM) = XA(08,IELEM) * ALFA
+               ENDIF
+               IF(T4.GT.T1) THEN
+                 XB(03,IELEM) = XA(03,IELEM) * ALFA
+                 XB(09,IELEM) = 0.D0
+               ELSE
+                 XB(03,IELEM) = 0.D0
+                 XB(09,IELEM) = XA(09,IELEM) * ALFA
+               ENDIF
+               IF(T3.GT.T2) THEN
+                 XB(04,IELEM) = XA(04,IELEM) * ALFA
+                 XB(10,IELEM) = 0.D0
+               ELSE
+                 XB(04,IELEM) = 0.D0
+                 XB(10,IELEM) = XA(10,IELEM) * ALFA
+               ENDIF
+               IF(T4.GT.T2) THEN
+                 XB(05,IELEM) = XA(05,IELEM) * ALFA
+                 XB(11,IELEM) = 0.D0
+               ELSE
+                 XB(05,IELEM) = 0.D0
+                 XB(11,IELEM) = XA(11,IELEM) * ALFA
+               ENDIF
+               IF(T4.GT.T3) THEN
+                 XB(06,IELEM) = XA(06,IELEM) * ALFA
+                 XB(12,IELEM) = 0.D0
+               ELSE
+                 XB(06,IELEM) = 0.D0
+                 XB(12,IELEM) = XA(12,IELEM) * ALFA
+               ENDIF
+            ENDIF
+!
+!           DB IS : - SUM ON J OF LAMBDA(I,J)
+!
+            DB(I1)=DB(I1)-XB(01,IELEM)-XB(02,IELEM)-XB(03,IELEM)
+            DB(I2)=DB(I2)-XB(04,IELEM)-XB(05,IELEM)-XB(07,IELEM)
+            DB(I3)=DB(I3)-XB(06,IELEM)-XB(08,IELEM)-XB(10,IELEM)
+            DB(I4)=DB(I4)-XB(09,IELEM)-XB(11,IELEM)-XB(12,IELEM)
+!
+30       CONTINUE
+!
+         ELSE
+           WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
+           CALL PLANTE(1)
+           STOP
+         ENDIF
 !
       ENDIF
 !
@@ -550,7 +685,9 @@
 !
 !     REPLACES CALL MV0606 AND CALL ASSVEC
 !
-      CALL OV ('X=YZ    ',TRA02,DB,FC,C,NPOIN3)
+      CALL OV ('X=YZ    ',TRA02,DB,FC,C,NPOIN3) 
+!
+      IF(IELM3.EQ.41) THEN
 !
       DO IELEM = 1 , NELEM3
 !
@@ -599,10 +736,45 @@
 !
       ENDDO
 !
+      ELSEIF(IELM3.EQ.51) THEN
+!
+      DO IELEM = 1 , NELEM3
+!
+        I1 = IKLE3(IELEM,1)
+        I2 = IKLE3(IELEM,2)
+        I3 = IKLE3(IELEM,3)
+        I4 = IKLE3(IELEM,4)
+!
+        TRA02(I1) = TRA02(I1) + XB(01,IELEM) * FC(I2)
+     &                        + XB(02,IELEM) * FC(I3)
+     &                        + XB(03,IELEM) * FC(I4)
+!
+        TRA02(I2) = TRA02(I2) + XB(04,IELEM) * FC(I3)
+     &                        + XB(05,IELEM) * FC(I4)
+     &                        + XB(07,IELEM) * FC(I1)
+!
+        TRA02(I3) = TRA02(I3) + XB(06,IELEM) * FC(I4)
+     &                        + XB(08,IELEM) * FC(I1)
+     &                        + XB(10,IELEM) * FC(I2)
+!
+        TRA02(I4) = TRA02(I4) + XB(09,IELEM) * FC(I1)
+     &                        + XB(11,IELEM) * FC(I2)
+     &                        + XB(12,IELEM) * FC(I3)
+!
+      ENDDO      
+!
+      ELSE
+        WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
 !     END OF THE REPLACEMENT OF CALL MV0606
 !
       ENDIF
 !
+!
+!     SPECIFIC IELM3=41 ???
       IF(SCHCF.EQ.ADV_LPO) THEN
 !
         NSEGH=NSEG*NPLAN
@@ -648,32 +820,61 @@
       IF(OPT.EQ.2) THEN
 !
 !     COMPUTES THE LOCAL EXTREMA
+!
       DO IPOIN=1,NPOIN3
         MINFC%R(IPOIN)=FC(IPOIN)
         MAXFC%R(IPOIN)=FC(IPOIN)
       ENDDO
-      DO IELEM=1,NELEM3
-        I1=IKLE3(IELEM,1)
-        I2=IKLE3(IELEM,2)
-        I3=IKLE3(IELEM,3)
-        I4=IKLE3(IELEM,4)
-        I5=IKLE3(IELEM,5)
-        I6=IKLE3(IELEM,6)
-        MINEL=MIN(FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6))
-        MAXEL=MAX(FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6))
-        MINFC%R(I1)=MIN(MINFC%R(I1),MINEL)
-        MINFC%R(I2)=MIN(MINFC%R(I2),MINEL)
-        MINFC%R(I3)=MIN(MINFC%R(I3),MINEL)
-        MINFC%R(I4)=MIN(MINFC%R(I4),MINEL)
-        MINFC%R(I5)=MIN(MINFC%R(I5),MINEL)
-        MINFC%R(I6)=MIN(MINFC%R(I6),MINEL)
-        MAXFC%R(I1)=MAX(MAXFC%R(I1),MAXEL)
-        MAXFC%R(I2)=MAX(MAXFC%R(I2),MAXEL)
-        MAXFC%R(I3)=MAX(MAXFC%R(I3),MAXEL)
-        MAXFC%R(I4)=MAX(MAXFC%R(I4),MAXEL)
-        MAXFC%R(I5)=MAX(MAXFC%R(I5),MAXEL)
-        MAXFC%R(I6)=MAX(MAXFC%R(I6),MAXEL)
-      ENDDO
+!
+      IF(IELM3.EQ.41) THEN
+!
+        DO IELEM=1,NELEM3
+          I1=IKLE3(IELEM,1)
+          I2=IKLE3(IELEM,2)
+          I3=IKLE3(IELEM,3)
+          I4=IKLE3(IELEM,4)
+          I5=IKLE3(IELEM,5)
+          I6=IKLE3(IELEM,6)
+          MINEL=MIN(FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6))
+          MAXEL=MAX(FC(I1),FC(I2),FC(I3),FC(I4),FC(I5),FC(I6))
+          MINFC%R(I1)=MIN(MINFC%R(I1),MINEL)
+          MINFC%R(I2)=MIN(MINFC%R(I2),MINEL)
+          MINFC%R(I3)=MIN(MINFC%R(I3),MINEL)
+          MINFC%R(I4)=MIN(MINFC%R(I4),MINEL)
+          MINFC%R(I5)=MIN(MINFC%R(I5),MINEL)
+          MINFC%R(I6)=MIN(MINFC%R(I6),MINEL)
+          MAXFC%R(I1)=MAX(MAXFC%R(I1),MAXEL)
+          MAXFC%R(I2)=MAX(MAXFC%R(I2),MAXEL)
+          MAXFC%R(I3)=MAX(MAXFC%R(I3),MAXEL)
+          MAXFC%R(I4)=MAX(MAXFC%R(I4),MAXEL)
+          MAXFC%R(I5)=MAX(MAXFC%R(I5),MAXEL)
+          MAXFC%R(I6)=MAX(MAXFC%R(I6),MAXEL)
+        ENDDO
+!
+      ELSEIF(IELM3.EQ.51) THEN
+!
+        DO IELEM=1,NELEM3
+          I1=IKLE3(IELEM,1)
+          I2=IKLE3(IELEM,2)
+          I3=IKLE3(IELEM,3)
+          I4=IKLE3(IELEM,4)
+          MINEL=MIN(FC(I1),FC(I2),FC(I3),FC(I4))
+          MAXEL=MAX(FC(I1),FC(I2),FC(I3),FC(I4))
+          MINFC%R(I1)=MIN(MINFC%R(I1),MINEL)
+          MINFC%R(I2)=MIN(MINFC%R(I2),MINEL)
+          MINFC%R(I3)=MIN(MINFC%R(I3),MINEL)
+          MINFC%R(I4)=MIN(MINFC%R(I4),MINEL)
+          MAXFC%R(I1)=MAX(MAXFC%R(I1),MAXEL)
+          MAXFC%R(I2)=MAX(MAXFC%R(I2),MAXEL)
+          MAXFC%R(I3)=MAX(MAXFC%R(I3),MAXEL)
+          MAXFC%R(I4)=MAX(MAXFC%R(I4),MAXEL)
+        ENDDO
+!
+      ELSE
+        WRITE(LU,*) 'ELEMENT ',IELM3,' NOT COMPUTED IN MURD3D'
+        CALL PLANTE(1)
+        STOP
+      ENDIF      
 !
 !     IN PARALLEL MODE: GLOBAL EXTREMA
 !
@@ -734,7 +935,7 @@
       ALFA = 1.D0
       IGUILT=1
       IF(OPTBAN.EQ.2) THEN
-      DO IPOIN = 1,NPOIN3
+        DO IPOIN = 1,NPOIN3
          IF(TRA03(IPOIN).LT.0.D0.AND.MASKPT(IPOIN).GT.0.5D0) THEN
             IF(ABS(TRA01(IPOIN)-TRA03(IPOIN)).GT.EPS) THEN
 !             CONSIDERING THAT THE NEW TIME-STEP WILL BE ALFA*DTJ
@@ -748,9 +949,9 @@
               ENDIF
             ENDIF
          ENDIF
-      ENDDO
+        ENDDO
       ELSE
-      DO IPOIN = 1,NPOIN3
+        DO IPOIN = 1,NPOIN3
 !                                          TIDAL FLATS : VOLUN=0
          IF(TRA03(IPOIN).LT.0.D0.AND.TRA01(IPOIN).GT.EPS) THEN
             IF(ABS(TRA01(IPOIN)-TRA03(IPOIN)).GT.EPS) THEN
@@ -765,7 +966,7 @@
               ENDIF
             ENDIF
          ENDIF
-      ENDDO
+        ENDDO   
       ENDIF
 !
       IF(NCSIZE.GT.1) ALFA = P_DMIN(ALFA)
@@ -821,7 +1022,9 @@
           ENDIF
         ENDDO
       ENDIF
+!
 !     RAIN
+!
       IF(RAIN) THEN
         DO IPOIN=1,NPOIN2
           IS=NPOIN3-NPOIN2+IPOIN
