@@ -5,10 +5,10 @@
      &(FORMUL,XM,TYPDIA,TYPEXT,
      & XMUL,SF,SG,SH,SU,SV,SW,F,G,H,U,V,W,T,LEGO,
      & XEL,YEL,ZEL,SURFAC,IKLE,NBOR,
-     & NELEM,NELMAX,IELM1,IELM2,S,NPLAN)
+     & NELEM,NELMAX,IELM1,IELM2,S,NPLAN,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN MATRICES.
@@ -60,6 +60,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        18/10/2011
+!+        V6P2
+!+   Argument MESH added, call to MT14TT.
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -113,6 +118,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: XM(NELMAX,*),T(NELMAX,*)
       CHARACTER(LEN=16), INTENT(IN)   :: FORMUL
       CHARACTER(LEN=1), INTENT(INOUT) :: TYPDIA,TYPEXT
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -2853,6 +2859,7 @@
       IF(FORMUL(14:16).EQ.'PSI') LEGO = .FALSE.
 !
 !-----------------------------------------------------------------------
+!
 !       P1 PRISM ROW ELEMENT
         IF(IELM1.EQ.41) THEN
 !
@@ -2871,11 +2878,11 @@
 !         OTHER
 !.......................................................................
 !
-!         ELSEIF
 !
 !.......................................................................
 !         ERROR ON THE COLUMN ELEMENT
 !.......................................................................
+!
           ELSE
             IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
             IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
@@ -2891,7 +2898,38 @@
 !       OTHER ROW ELEMENT
 !-----------------------------------------------------------------------
 !
-!       ELSEIF
+        ELSEIF(IELM1.EQ.51) THEN
+!
+!.......................................................................
+!         P1 PRISM COLUMN ELEMENT
+!
+          IF(IELM2.EQ.51) THEN
+            CALL MT14TT(T,XM,PPQ(1,1,S),LEGO,
+     &                  XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
+     &                  XEL,YEL,ZEL,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,
+     &                  SPECAD,NPLAN,BIEF_NBPTS(11,MESH))
+            TYPDIA='Q'
+            TYPEXT='Q'
+!
+!.......................................................................
+!         OTHER
+!.......................................................................
+!
+!
+!.......................................................................
+!         ERROR ON THE COLUMN ELEMENT
+!.......................................................................
+!
+          ELSE
+            IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
+            IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
+            IF (LNG.EQ.1) WRITE(LU,2000) IELM1
+            IF (LNG.EQ.2) WRITE(LU,2001) IELM1
+            IF (LNG.EQ.1) WRITE(LU,3000) IELM2
+            IF (LNG.EQ.2) WRITE(LU,3001) IELM2
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
 !-----------------------------------------------------------------------
 !       ERROR ON THE ROW ELEMENT

@@ -215,12 +215,14 @@
 !
         IF(TYPEXT.EQ.'S') THEN
           CALL AS3_3131_S(XM,BIEF_NBSEG(IELM1,MESH),
-     &                    XMT,NELMAX,NELEM,
+     &                    XMT,DIM1XMT,DIM2XMT,STOXMT,
+     &                    NELMAX,NELEM,
      &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3),
      &                    ELTSEG(1,4),ELTSEG(1,5),ELTSEG(1,6))
         ELSEIF(TYPEXT.EQ.'Q') THEN
           CALL AS3_3131_Q(XM,BIEF_NBSEG(IELM1,MESH),
-     &                    XMT,NELMAX,NELEM,
+     &                    XMT,DIM1XMT,DIM2XMT,STOXMT,
+     &                    NELMAX,NELEM,
      &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3),
      &                    ELTSEG(1,4),ELTSEG(1,5),ELTSEG(1,6),
      &                    ORISEG(1,1),ORISEG(1,2),ORISEG(1,3),

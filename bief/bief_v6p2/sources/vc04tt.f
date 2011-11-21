@@ -16,8 +16,8 @@
 !+      V  = XMUL  /     U * ------- + V * -------   D(OMEGA)
 !+       I        /OMEGA       DX            DY
 !+
-!+                  /            D(PSII*)           D(PSII*)
-!+         = XMUL  /     H * U * -------- + H * V * --------   D(OMEGA*)
+!+                  /             D(PSII*)           D(PSII*)
+!+         = XMUL  /    DZ * U * -------- + DZ * V * --------   D(OMEGA*)
 !+                /OMEGA*           DX                 DY
 !+
 !+    PSII IS OF TYPE P1 TETRAHEDRON
@@ -28,7 +28,7 @@
 !warning  THE JACOBIAN MUST BE POSITIVE
 !warning  THE RESULT IS IN W IN NOT ASSEMBLED FORM
 !warning  IF SPECAD=.TRUE., THE ADVECTING FIELD IS NOT ONLY
-!+        U AND V BUT U+DM1*GRAD(ZCONV). ZCONV IS HERE G, DM1 IS F
+!+        U AND V BUT U+DM1*GRAD(ZCONV). GRAD(ZCONV) IS HERE H, DM1 IS F
 !+               
 !
 !history  J-M HERVOUET (LNH)

@@ -168,7 +168,8 @@
      &              MESH%W%R,LEGO,XX,YY,ZZ,
      &              SURFAC,IKLE,MESH%NBOR%I ,
      &              NELEM,NELMAX,IELM1,IELM2,SS,
-     &              MESH%NPOIN/BIEF_NBPTS(11,MESH))
+     &              MESH%NPOIN/BIEF_NBPTS(11,MESH),
+     &              MESH)
       ENDIF
 !
 !  UPDATES THE INFORMATION OF THE MATRIX
