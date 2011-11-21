@@ -7,10 +7,10 @@
      & NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
      & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,NPOIN2,
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,
-     & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION)
+     & T5,FLUX_REMOVED,SAVED_VOLU2,SAVED_F,OPTION,IELM3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    ADVECTION OF A VARIABLE WITH AN UPWIND FINITE
@@ -41,6 +41,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        28/10/2011
+!+        V6P2
+!+   Updated for element 51 (prisms cut into tetrahedra)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DIMGLO         |-->| FIRST DIMENSION OF ARRAY GLOSEG
@@ -54,6 +59,7 @@
 !| FN             |-->| VARIABLE AT TIME N
 !| FSCE           |-->| DIRICHLET BOUNDARY CONDITIONS OF F
 !| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
+!| IELM3          |-->| TYPE OF ELEMENT (41: PRISM, ETC.)
 !| INFOR          |-->| INFORMATIONS FOR SOLVERS
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
@@ -103,7 +109,7 @@
 !
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,NPOIN2
       INTEGER, INTENT(IN)             :: NSCE,OPTBAN,NSEG,NPLAN,DIMGLO
-      INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2),OPTION
+      INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2),OPTION,IELM3
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3),PLUIE(NPOIN2)
@@ -146,7 +152,7 @@
       INTEGER  P_ISUM
       EXTERNAL P_ISUM
 !
-      DOUBLE PRECISION RINIT,C,NEWVOL,RFLUX,RFLUX_OLD
+      DOUBLE PRECISION RINIT,C,C2,NEWVOL,RFLUX,RFLUX_OLD
       DOUBLE PRECISION VOLSEG1,VOLSEG2
 !
       DOUBLE PRECISION EPS
@@ -200,7 +206,15 @@
         OPT=1
       ELSEIF(SCHCF.EQ.ADV_NSC_TF) THEN
 !       ALL SEGMENTS
-        REMAIN_SEG=NSEGH+NSEGV+2*NSEG*(NPLAN-1)
+        IF(IELM3.EQ.41) THEN
+          REMAIN_SEG=NSEGH+NSEGV+2*NSEG*(NPLAN-1)
+        ELSEIF(IELM3.EQ.51) THEN
+          REMAIN_SEG=NSEGH+NSEGV+NSEG*(NPLAN-1)
+        ELSE
+          WRITE(LU,*) 'UNKNOWN ELEMENT IN MURD3D_POS:',IELM3
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         OPT=2
       ELSE
         WRITE(LU,*) 'UNKNOWN SCHEME IN MURD3D_POS:',SCHCF
@@ -261,7 +275,7 @@
 !
 !     VOLU2 WILL BE THE VOLUME CHANGING PROGRESSIVELY FROM VOLUN TO VOLU
 !
-      CALL OS ('X=Y     ',X=SVOLU2,Y=SVOLUN)
+      CALL OS ('X=Y     ',X=SVOLU2,Y=SVOLUN) 
 !
 !     TAKES INTO ACCOUNT ENTERING EXTERNAL FLUXES
 !     THIS IS DONE WITHOUT CHANGING THE TRACER
@@ -628,8 +642,6 @@
         ENDDO
       ENDIF
 !
-      IF(TESTING) WRITE(LU,*) 'FLUX NON PRIS EN COMPTE=',C
-!
       REMAIN_TOT=REMAIN_SEG
       IF(NCSIZE.GT.1) THEN
         RFLUX=P_DSUM(RFLUX)
@@ -651,7 +663,7 @@
      &               NITER.LT.NITMAX                   ) THEN
         RFLUX_OLD=RFLUX
         GO TO 777
-      ENDIF
+      ENDIF  
 !
 !     TAKES INTO ACCOUNT EXITING EXTERNAL FLUXES
 !     THIS IS DONE WITHOUT CHANGING THE TRACER
@@ -716,6 +728,7 @@
           DO I=1,NPOIN3
             TRA02(I)=MAX(TRA03(I),0.D0)
 !           SHARED FLUEXT IN TRA03 ERASED NOW (NOT USED AFTER)
+!           NOW VOLU IS COPIED INTO TRA03 FOR PARCOM
             TRA03(I)=VOLU(I)
           ENDDO
         ELSE
@@ -728,6 +741,11 @@
           CALL PARCOM(STRA02,2,MESH3)
           CALL PARCOM(STRA03,2,MESH3)
         ENDIF
+!!!!!
+!!!!!   IMPORTANT WARNING: THIS SHOULD BE DONE EVEN WITHOUT TESTING
+!!!!!   IF WE WANT THE CORRECT VOLU2, BUT VOLU2 HERE IS NOT USED
+!!!!!   AFTER.
+!!!!!
         DO I=1,NPOIN3
           VOLU2(I)=VOLU2(I)-TRA02(I)*DT
           IF(VOLU2(I).LT.0.D0) THEN
@@ -736,15 +754,19 @@
             STOP
           ENDIF
         ENDDO
+!!!!!
+!!!!!   END OF IMPORTANT NOTE
+!!!!!
 !       CHECKS EQUALITY OF ASSEMBLED VOLUMES
         C=0.D0
         IF(NCSIZE.GT.1) THEN
           DO I=1,NPOIN3
-            C = C+ABS(VOLU2(I)-TRA03(I))*MESH3%FAC%R(I)
+            C=C+ABS(VOLU2(I)-TRA03(I))*MESH3%FAC%R(I)
           ENDDO
           C=P_DSUM(C)
         ELSE
           DO I=1,NPOIN3
+!                            VOLU
             C=C+ABS(VOLU2(I)-TRA03(I))
           ENDDO
         ENDIF
