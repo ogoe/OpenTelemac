@@ -69,6 +69,7 @@
 !
       DOUBLE PRECISION X1,X2,X3,Y1,Y2,Y3,PI,DTR,RTD,REARTH
       DOUBLE PRECISION XM,YM,DIS,A1,A2,A3,DISEL,ZP,XL,YL
+      DOUBLE PRECISION XO,YO,ALPHA
       DOUBLE PRECISION AF(25),PF(25),COEF(24),COEFM(24),BETA
       DOUBLE PRECISION, ALLOCATABLE :: SURFAC(:)
       DOUBLE PRECISION, ALLOCATABLE :: XTIDE(:),YTIDE(:),ZTIDE(:)
@@ -113,6 +114,19 @@
       DTR = PI/180.D0
       RTD = 180.D0/PI
       REARTH = 6.37D6
+!
+!-----------------------------------------------------------------------
+!
+!  SPECIFIC VALUES FOR THE EXAMPLE OF A GEOGRAPHIC SYSTEM DEFINED BY
+!  THE USER
+!
+      XO =  1.2D0
+      YO = 50.D0
+!  ANGLE BETWEEN EAST AXIS ---> X AXIS (TRIGONOMETRIC DEGREES)
+      ALPHA = 40.D0
+      ALPHA = ALPHA*DTR ! IN RADIANS
+!
+!-----------------------------------------------------------------------
 !
 !     OPEN (57,FILE='../coord_liquid_nodes_Mercator_JMJ.txt')
 !
@@ -246,18 +260,23 @@ c$$$            IF(BOUNDARY_COLOUR%I(K).EQ.1) THEN
      &                              XBTIDE(1:NNBTIDE),YBTIDE(1:NNBTIDE),
      &                              LAMBDA(1:NNBTIDE),PHI(1:NNBTIDE),
      &                              NUMZONE)
+      ELSEIF(GEOSYST.EQ.0) THEN
+!  DEFINED BY THE USER
+!  THIS IS AN EXAMPLE
+        DO K=1,NNBTIDE
+          XL = XBTIDE(K)
+          YL = YBTIDE(K)
+!  ROTATION WITH ALPHA ANGLE HERE
+          XM=XL*COS(ALPHA)-YL*SIN(ALPHA)
+          YL=XL*SIN(ALPHA)+YL*COS(ALPHA)
+          XL=XM
+!  TRANSLATION AND CONVERSION INTO REAL DEGREES
+          LAMBDA(K) = XO+XL/REARTH/COS(YO*DTR)*RTD
+          PHI(K)    = YO+YL/REARTH            *RTD
+        ENDDO
       ENDIF
 !
       DO K=1,NNBTIDE
-!
-c$$$          XL = XBTIDE(K)
-c$$$          YL = YBTIDE(K)
-c$$$!
-c$$$! TRANSLATION AND CONVERSION INTO REAL DEGREES
-c$$$!
-c$$$        XL=XO+XL/R/COS(YO*PI/180.D0)*180.D0/PI
-c$$$        YL=YO+YL/R                  *180.D0/PI
-!
         XL=LAMBDA(K)
         YL=PHI(K)
 !
@@ -342,7 +361,6 @@ c$$$        YL=YO+YL/R                  *180.D0/PI
 !  THIS ANGLE (IN DEGREES) MAY BE CHANGED
 !
         BETA = 0.D0  ! DEFAULT=0 DEGREES
-        BETA = -4.D0 ! -4 DEGREES
 !
 !  RECOMMENDED: REAL TIDE (RECOMMENDED METHODOLOGY) OR SCHEMATIC TIDES: 1<=TIDALTYPE<=6
 !  TIDALTYPE = 1 TO 6: MAGNITUDE AND PHASE
