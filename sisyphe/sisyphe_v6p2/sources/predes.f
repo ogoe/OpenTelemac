@@ -94,7 +94,7 @@
 !     DISCHARGE ALONG Y
 !
       IF((LEO.AND.SORLEO(8)).OR.(IMP.AND.SORIMP(8))) THEN
-        CALL OS('X=YZ    ',X=QU,Y=V2D,Z=HN)
+        CALL OS('X=YZ    ',X=QV,Y=V2D,Z=HN)
       ENDIF
 !
 !=======================================================================

@@ -815,7 +815,7 @@
 !  ----     PRINTOUTS TO LISTING :
 !
             ENTETS = .FALSE.
-            IF(LISPR*((LT+PERICOU)/LISPR).EQ.LT+PERICOU) THEN
+            IF(LISPR*(LT/LISPR).EQ.LT) THEN
               ENTET = .TRUE.
             ELSE
               ENTET = .FALSE.
@@ -1439,28 +1439,21 @@
 883       FORMAT(' EVOLUTION MINIMUM TOTALE : ',G16.7,' NOEUD : ',I6)
 884       FORMAT(' TOTAL MINIMAL EVOLUTION  : ',G16.7,' NODE  : ',I6)
         ENDIF
+!
 !=======================================================================
 ! : 10         PRINTS OUT RESULTS AT THIS TIMESTEP
 !              AND COMPARES AGAINST A REFERENCE FILE
 !=======================================================================
 !
-!       IN COUPLING MODE, OUTPUT TIMES OF TELEMAC AND SISYPHE ARE
-!       SYNCHRONISED, IT MEANS THAT WE MUST HAVE :
-!       LT * DT (TIME AT THE END OF TIME STEP LT IN TELEMAC)
-!       EQUAL TO:
-!       LT * DT + PERICOU*DT (TIME AT THE END OF TIME STEP LT IN SISYPHE
-!       HENCE THE FACT THAT LT IS REPLACED BY LT+PERICOU
-!       DEFAULT VALUE OF PERICOU IS 1
-!
         IF(UNIT) CALL OS('X=CX    ', X=CS, C= XMVS)
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDES'
-        CALL PREDES(LT+PERICOU,AT0)
+        CALL PREDES(LT,AT0)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDES'
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
         CALL BIEF_DESIMP(SIS_FILES(SISRES)%FMT,VARSOR,
      &                   HIST,0,NPOIN,SIS_FILES(SISRES)%LU,
-     &                   'STD',AT0,LT+PERICOU,LISPR,LEOPR,
+     &                   'STD',AT0,LT,LISPR,LEOPR,
      &                   SORLEO,SORIMP,MAXVAR,TEXTE,PTINIG,PTINIL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
