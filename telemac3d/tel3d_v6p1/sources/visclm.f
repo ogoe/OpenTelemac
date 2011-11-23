@@ -112,7 +112,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ITRAC,I,IPLAN,I3D
-      DOUBLE PRECISION SDELTAZ,ZMIL,HH,SDLOGZ
+      DOUBLE PRECISION SDELTAZ,ZMIL,HH,SDLOGZ,AUX1,AUX2,DENOM
 !
 !***********************************************************************
 !
@@ -175,23 +175,30 @@
           TRAV3%R(I)=(DELTAR%R(I+NPOIN2)-DELTAR%R(I))*SDELTAZ
         ENDDO
       ELSE
-!       LOGARITHMIC DERIVATIVE (A SPLENDID IDEA BY CATHERINE)
-! 	DU/DZ =DU/DLOGZ/Z
+!       LOGARITHMIC DERIVATIVE 
+! 	DU/DZ =DU/D(LOGZ)/Z
         DO IPLAN=1,NPLAN-1
         DO I=1,NPOIN2
           I3D=I+NPOIN2*(IPLAN-1)
 !         THIS OPTION WORKS ONLY WITH NIKURADSE LAW, HENCE RUGOF
 !         IS HERE THE GRAIN SIZE
-          SDLOGZ=1.D0/(LOG(Z%R(I3D+NPOIN2)-ZF%R(I)+RUGOF%R(I)/30.D0)
-     &                -LOG(Z%R(I3D       )-ZF%R(I)+RUGOF%R(I)/30.D0))
-          TRAV1%R(I3D)=(U%R(I3D+NPOIN2)-U%R(I3D))
-     &                *SDLOGZ/TRAV7%R(I3D)
-          TRAV2%R(I3D)=(V%R(I3D+NPOIN2)-V%R(I3D))
-     &                *SDLOGZ/TRAV7%R(I3D)
-!         HUM, NOT FOR DELTAR... BACK TO LINEAR DERIVATIVE
-          SDELTAZ=1.D0/MAX(Z%R(I3D+NPOIN2)-Z%R(I3D),1.D-4)
-          TRAV3%R(I3D)=(DELTAR%R(I3D+NPOIN2)-DELTAR%R(I3D))
-     &                *SDELTAZ
+!         JMH 21/11/2011
+          AUX1=Z%R(I3D+NPOIN2)-ZF%R(I)+RUGOF%R(I)/30.D0
+          AUX2=Z%R(I3D       )-ZF%R(I)+RUGOF%R(I)/30.D0
+          DENOM=LOG(AUX1)-LOG(AUX2)
+          IF(DENOM.GT.1.D-8) THEN
+            SDLOGZ=1.D0/DENOM
+            TRAV1%R(I3D)=(U%R(I3D+NPOIN2)-U%R(I3D))*SDLOGZ/TRAV7%R(I3D)
+            TRAV2%R(I3D)=(V%R(I3D+NPOIN2)-V%R(I3D))*SDLOGZ/TRAV7%R(I3D)
+!           BACK TO LINEAR DERIVATIVE FOR DELTAR
+            SDELTAZ=1.D0/MAX(Z%R(I3D+NPOIN2)-Z%R(I3D),1.D-4)
+            TRAV3%R(I3D)=(DELTAR%R(I3D+NPOIN2)-DELTAR%R(I3D))*SDELTAZ
+          ELSE
+            SDELTAZ=1.D0/MAX(Z%R(I+NPOIN2)-Z%R(I),1.D-4)
+            TRAV1%R(I)=(     U%R(I+NPOIN2)-     U%R(I))*SDELTAZ
+            TRAV2%R(I)=(     V%R(I+NPOIN2)-     V%R(I))*SDELTAZ
+            TRAV3%R(I)=(DELTAR%R(I+NPOIN2)-DELTAR%R(I))*SDELTAZ
+          ENDIF
         ENDDO
         ENDDO
       ENDIF
