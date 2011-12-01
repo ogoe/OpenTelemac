@@ -486,12 +486,13 @@ C NUMBERING MECHANISM!
 !
 C NOTE JMH : MAX(NTRAC,1) BELOW : TO HAVE AT LEAST ONE ARRAY, EVEN EMPTY
 C                                 TO PUT IN THE CALL TO CONLIM
+!                                 AND TEL4DEL
 !
       CALL BIEF_ALLVEC_IN_BLOCK(TAN,    NTRAC,
      *                          1, 'TAN   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TAC,    NTRAC,
      *                          1, 'TAC   ', IELM, 1, STATUT,MESH3D)
-      CALL BIEF_ALLVEC_IN_BLOCK(TA,     NTRAC,
+      CALL BIEF_ALLVEC_IN_BLOCK(TA,     MAX(NTRAC,1),
      *                          1, 'TA    ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(S0TA,   NTRAC,
      *                          1, 'S0TA  ', IELM, 1, STATUT,MESH3D)
