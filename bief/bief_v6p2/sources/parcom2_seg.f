@@ -2,10 +2,10 @@
                      SUBROUTINE PARCOM2_SEG
 !                    **********************
 !
-     &( X1 , X2 , X3 , NSEG , NPLAN , ICOM , IAN , MESH , OPT )
+     &( X1 , X2 , X3 , NSEG , NPLAN , ICOM , IAN , MESH , OPT , IELM )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPLEMENTS A VECTOR OF SEGMENT AT THE INTERFACES
@@ -45,6 +45,7 @@
 !|                |   | = 2 : CONTRIBUTIONS ADDED
 !|                |   | = 3 : MAXIMUM CONTRIBUTION RETAINED
 !|                |   | = 4 : MINIMUM CONTRIBUTION RETAINED
+!| IELM           |-->| TYPE OF ELEMENT (11: LINEAR TRIANGLE, ETC.)
 !| MESH           |-->| MESH STRUCTURE
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NSEG           |-->| NUMBER OF 2D SEGMENTS
@@ -63,7 +64,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: ICOM,NSEG,NPLAN,IAN,OPT
+      INTEGER, INTENT(IN) :: ICOM,NSEG,NPLAN,IAN,OPT,IELM
 !
 !     STRUCTURES: VECTORS OR BLOCKS
 !
@@ -76,7 +77,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN2,IDEB,IFIN,IPLAN
+      INTEGER NPOIN2,IDEB,IFIN,IPLAN,NPL
 !
 !-----------------------------------------------------------------------
 !
@@ -109,10 +110,23 @@
 !
         IF(OPT.EQ.2) THEN
           DO IPLAN=1,NPLAN-1
-            IDEB=NSEG*NPLAN + NPOIN2*(NPLAN-1) + 2*NSEG*(IPLAN-1) + 1
-            IFIN=NSEG*NPLAN + NPOIN2*(NPLAN-1) + 2*NSEG* IPLAN
+            IF(IELM.EQ.41) THEN
+!             TWO CROSSED FLUXES (PER RECTANGLE OF PRISM)
+              NPL=2
+              IDEB=NSEG*NPLAN+NPOIN2*(NPLAN-1)+2*NSEG*(IPLAN-1) + 1
+              IFIN=NSEG*NPLAN+NPOIN2*(NPLAN-1)+2*NSEG* IPLAN
+            ELSEIF(IELM.EQ.51) THEN
+!             ONE CROSSED FLUX (PER ORIGINAL RECTANGLE OF PRISM)
+              NPL=1
+              IDEB=NSEG*NPLAN+NPOIN2*(NPLAN-1)+NSEG*(IPLAN-1) + 1
+              IFIN=NSEG*NPLAN+NPOIN2*(NPLAN-1)+NSEG* IPLAN
+            ELSE
+              WRITE(LU,*) 'UNKNOWN ELEMENT IN PARCOM2_SEG: ',IELM
+              CALL PLANTE(1)
+              STOP
+            ENDIF
             CALL PARACO(X1(IDEB:IFIN),X2(IDEB:IFIN),X3(IDEB:IFIN),
-     &                  NSEG,ICOM,IAN,2,
+     &                  NSEG,ICOM,IAN,NPL,
      &                  MESH%NB_NEIGHB_SEG,MESH%NB_NEIGHB_PT_SEG%I,
      &                  MESH%LIST_SEND_SEG%I,MESH%NH_COM_SEG%I,
      &                  MESH%NH_COM_SEG%DIM1,MESH%BUF_SEND%R,

@@ -5,7 +5,7 @@
      &(NFIC,MESH,NPLAN,DATE,TIME,I_ORIG,J_ORIG,FFORMAT)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES HEADER DATA IN A SERAFIN FORMAT FILE
@@ -27,6 +27,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        29/11/2011
+!+        V6P2
+!+   Correction in the case of prisms split into tetrahedrons (IKLES was
+!+   wrong, though only parallelism saw it).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DATE           |-->| 3 INTEGERS (YEAR, MONTH, DAY)
@@ -83,7 +89,7 @@
         RF = 'R8'
       ELSE
         RF = 'R4'
-      END IF
+      ENDIF
 !
       SELECT CASE (MESH%TYPELM )
         CASE (10) ! TRIANGLES
@@ -177,6 +183,7 @@
         ALLOCATE(IKLES(NELEM*NDP),STAT=ERR)
       ELSE
 !       TETRAHEDRONS REGROUPED INTO PRISMS
+!                            2=(NELEM/3)*6
         ALLOCATE(IKLES(NELEM*2)  ,STAT=ERR)
       ENDIF
       IF(ERR.NE.0) STOP 'ECRGEO : ALLOCATION DE IKLES'
@@ -192,12 +199,12 @@
       ELSE
 !     TETRAHEDRONS REGROUPED INTO PRISMS
         DO IELEM  = 1,NELEM/3
-          IKLES((IELEM-1)*6+1) = IKLE(      IELEM)
-          IKLES((IELEM-1)*6+2) = IKLE(NELEM+IELEM)
-          IKLES((IELEM-1)*6+3) = IKLE(NELEM+IELEM)
-          IKLES((IELEM-1)*6+4) = IKLE(      IELEM)+MESH%NPOIN/NPLAN
-          IKLES((IELEM-1)*6+5) = IKLE(NELEM+IELEM)+MESH%NPOIN/NPLAN
-          IKLES((IELEM-1)*6+6) = IKLE(NELEM+IELEM)+MESH%NPOIN/NPLAN
+          IKLES((IELEM-1)*6+1) = IKLE(        IELEM)
+          IKLES((IELEM-1)*6+2) = IKLE(  NELEM+IELEM)
+          IKLES((IELEM-1)*6+3) = IKLE(2*NELEM+IELEM)
+          IKLES((IELEM-1)*6+4) = IKLE(        IELEM)+MESH%NPOIN/NPLAN
+          IKLES((IELEM-1)*6+5) = IKLE(  NELEM+IELEM)+MESH%NPOIN/NPLAN
+          IKLES((IELEM-1)*6+6) = IKLE(2*NELEM+IELEM)+MESH%NPOIN/NPLAN
         ENDDO
       ENDIF
 !

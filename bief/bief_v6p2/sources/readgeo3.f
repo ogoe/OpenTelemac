@@ -121,9 +121,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!MODIFICATION ER 19/10/2005
       CALL CORRXY(X,Y,NPOIN)
-!END OF MODIFICATION ER 19/10/2005
 !
       DEALLOCATE(RB)
 !

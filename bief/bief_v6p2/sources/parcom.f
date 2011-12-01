@@ -5,7 +5,7 @@
      &( X , ICOM , MESH )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPLEMENTS A VECTOR AT THE INTERFACES BETWEEN
@@ -99,7 +99,7 @@
         CALL PARCOM2_SEG(X%R(NP11+1:NP11+NSEG),
      &                   X%R(NP11+1:NP11+NSEG),
      &                   X%R(NP11+1:NP11+NSEG),
-     &                   NSEG,1,ICOM,IAN,MESH,1)
+     &                   NSEG,1,ICOM,IAN,MESH,1,11)
       ENDIF
 !
       ELSEIF(X%TYPE.EQ.4) THEN
@@ -135,7 +135,7 @@
      &                   X%ADR(1)%P%R(NP11+1:NP11+NSEG),
      &                   X%ADR(1)%P%R(NP11+1:NP11+NSEG),
 !    *                   NSEG,1,ICOM,IAN,MESH)
-     &                   NSEG,1,ICOM,1  ,MESH,1)
+     &                   NSEG,1,ICOM,1  ,MESH,1,11)
       ENDIF
       IF(IAN.GE.2.AND.X2%ELM.EQ.13) THEN
         NP11=BIEF_NBPTS(11,MESH)
@@ -144,7 +144,7 @@
      &                   X2%R(NP11+1:NP11+NSEG),
      &                   X2%R(NP11+1:NP11+NSEG),
 !    *                   NSEG,1,ICOM,IAN,MESH)
-     &                   NSEG,1,ICOM,1  ,MESH,1)
+     &                   NSEG,1,ICOM,1  ,MESH,1,11)
       ENDIF
       IF(IAN.EQ.3.AND.X3%ELM.EQ.13) THEN
         NP11=BIEF_NBPTS(11,MESH)
@@ -153,7 +153,7 @@
      &                   X3%R(NP11+1:NP11+NSEG),
      &                   X3%R(NP11+1:NP11+NSEG),
 !    *                   NSEG,1,ICOM,IAN,MESH)
-     &                   NSEG,1,ICOM,1  ,MESH,1)
+     &                   NSEG,1,ICOM,1  ,MESH,1,11)
       ENDIF
 !
       ELSE

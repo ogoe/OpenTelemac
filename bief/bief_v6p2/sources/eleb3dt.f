@@ -42,7 +42,16 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLBOR         |<--| CONNECTIVITY TABLE FOR BOUNDARY ELEMENTS
-!| IKLE3          |<--| CONNECTIVITY TABLE IN 3D
+!|                |   | HERE DECLARED AS IKLBOR(NPTFR,2,NETAGE,3)
+!|                |   | 2 IS THE NUMBER OF TETRAHEDRONS FORMING A
+!|                |   | VERTICAL RECTANGLE IN THE BORDER.
+!|                |   | 3 IS THE NUMBER OF POINTS IN EVERY TRIANGLE
+!|                |   | FORMING THIS RECTANGLE
+!| IKLE3          |<--| CONNECTIVITY TABLE IN 3D, FOR TETRAHEDRONS
+!|                |   | HERE DECLARED AS IKLE3(NELEM2,3,NETAGE,4)
+!|                |   | 3 IS THE NUMBER OF TETRAHEDRONS PER PRISM
+!|                |   | (TETRAHEDRONS ARE NUMBERED ACCORDINGLY)
+!|                |   | 4 IS THE NUMBER OF POINTS IN A TETRAHEDRA.
 !| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS IN 2D
 !| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
@@ -62,7 +71,7 @@
 !|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_ELEB3DT => ELEB3DT
+      USE BIEF, EX_ELEB3DT => ELEB3DT 
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -84,8 +93,7 @@
 !
       INTEGER IELEM,IPOIN,T(3)
       INTEGER IETAGE,IPTFR,IL1,IL2,IL3,IL4,IG(2,2,3),IL(2,2,3)
-      INTEGER IG1,IG2,IG3,IG4
-      INTEGER NUM1(12),NUM2(12),NUM3(12),K,L,M,N
+      INTEGER IG1,IG2,IG3,IG4,NUM1(12),NUM2(12),NUM3(12),K,L,M,N   
 !
       DATA NUM1 / 1 , 2 , 4 , 1 , 3 , 2 , 2 , 3 , 4 , 3 , 1 , 4 /
       DATA NUM2 / 2 , 4 , 1 , 3 , 2 , 1 , 3 , 4 , 2 , 1 , 4 , 3 /
@@ -102,16 +110,18 @@
 ! FOR EACH RECTANGULAR FACE SPLIT IN TWO TRIANGLES
 ! THE LOWER TRIANGLE IS NUMBER 1, THE HIGHER IS NUMBER 2
 !
-      DO IPTFR = 1,NPTFR
+      DO IPTFR = 1,NPTFR         
 !
-!        NUMBER OF THE TRIANGLE TOUCHING THE BOUNDARY IN 2D
-         IELEM = NELBOR(IPTFR,1,1)
+!       NUMBER OF THE TRIANGLE TOUCHING THE BOUNDARY IN 2D
+        IELEM = NELBOR(IPTFR,1,1)
 !
-!        GLOBAL NUMBER OF BOTTOM-LEFT POINT OF THE RECTANGULAR FACE
-!        IN THE FIRST LAYER (THE PATTERN REPEATS ITSELF THEREAFTER)
-         IPOIN = NBOR(IPTFR)
+        IF(IELEM.GT.0) THEN
 !
-         DO IETAGE = 1,NETAGE
+!         GLOBAL NUMBER OF BOTTOM-LEFT POINT OF THE RECTANGULAR FACE
+!         IN THE FIRST LAYER (THE PATTERN REPEATS ITSELF THEREAFTER)
+          IPOIN = NBOR(IPTFR)
+!
+          DO IETAGE = 1,NETAGE
 !
 !           3D BOUNDARY NUMBERING OF THE 4 POINTS OF THE RECTANGULAR FACE
 !
@@ -177,15 +187,15 @@
      &           IG(K,L,2).EQ.IKLE3(IELEM,N,IETAGE,NUM2(M)).AND.
      &           IG(K,L,3).EQ.IKLE3(IELEM,N,IETAGE,NUM3(M))) THEN
 !
-                  IKLBOR(IPTFR,K,IETAGE,1) = IL(K,L,1)
-                  IKLBOR(IPTFR,K,IETAGE,2) = IL(K,L,2)
-                  IKLBOR(IPTFR,K,IETAGE,3) = IL(K,L,3)
-                  NELBOR(IPTFR,K,IETAGE)   = T(N)
-                  NULONE(IPTFR,K,IETAGE,1) = NUM1(M)
-                  NULONE(IPTFR,K,IETAGE,2) = NUM2(M)
-                  NULONE(IPTFR,K,IETAGE,3) = NUM3(M)
+                 IKLBOR(IPTFR,K,IETAGE,1) = IL(K,L,1)
+                 IKLBOR(IPTFR,K,IETAGE,2) = IL(K,L,2)
+                 IKLBOR(IPTFR,K,IETAGE,3) = IL(K,L,3)
+                 NELBOR(IPTFR,K,IETAGE)   = T(N)
+                 NULONE(IPTFR,K,IETAGE,1) = NUM1(M)
+                 NULONE(IPTFR,K,IETAGE,2) = NUM2(M)
+                 NULONE(IPTFR,K,IETAGE,3) = NUM3(M)
 !
-                  OK(K) = .TRUE.
+                 OK(K) = .TRUE.
 !
               ENDIF
             ENDDO
@@ -193,23 +203,59 @@
             ENDDO
             ENDDO
             IF(.NOT.OK(1).OR..NOT.OK(2)) THEN
-            WRITE(LU,*) 'PB IN ELEB3DT IELEM=',IELEM,' IPTFR=',IPTFR
-            CALL PLANTE(1)
-            STOP
+              WRITE(LU,*) 'PB IN ELEB3DT IELEM=',IELEM,' IPTFR=',IPTFR
+              CALL PLANTE(1)
+              STOP
             ENDIF
 !
 !           GLOBAL NUMBERS OF THE LATERAL BOUNDARY POINTS
 !           ALL THE PLANES EXCEPT SURFACE
             NBOR(IPTFR +(IETAGE-1)*NPTFR)=IPOIN+(IETAGE-1)*NPOIN2
 !
-         ENDDO
+          ENDDO
+!
+        ELSEIF(NCSIZE.GT.1) THEN
+!
+!         THE SEGMENT FOLLOWING THE 2D BOUNDARY POINT IS IN ANOTHER SUBDOMAIN
+!         CORRESPONDING BOUNDARY ELEMENTS (2 TRIANGLES PER SIDE, K=1 AND 2) 
+!         ARE NOT IN THE DOMAIN
+!
+          DO IETAGE = 1,NETAGE
+            DO K=1,2
+!             THE ELEMENT IS OUTSIDE THIS DOMAIN
+              NELBOR(IPTFR,K,IETAGE)   = 0
+              IKLBOR(IPTFR,K,IETAGE,1) = 0
+              IKLBOR(IPTFR,K,IETAGE,2) = 0
+              IKLBOR(IPTFR,K,IETAGE,3) = 0
+              NULONE(IPTFR,K,IETAGE,1) = 0
+              NULONE(IPTFR,K,IETAGE,2) = 0
+              NULONE(IPTFR,K,IETAGE,3) = 0
+            ENDDO
+            NBOR(IPTFR +(IETAGE-1)*NPTFR)=NBOR(IPTFR)+(IETAGE-1)*NPOIN2
+          ENDDO
+!
+        ELSE
+!
+          IF(LNG.EQ.1) WRITE(LU,101) IPOIN
+          IF(LNG.EQ.2) WRITE(LU,102) IPOIN
+          CALL PLANTE(1)
+          STOP
+!
+        ENDIF
+!
       ENDDO
 !
 ! GLOBAL NUMBERS OF THE LATERAL BOUNDARY POINTS: ON THE SURFACE
 !
       DO IPTFR = 1,NPTFR
-         NBOR(IPTFR+(NPLAN-1)*NPTFR)=NBOR(IPTFR)+(NPLAN-1)*NPOIN2
+        NBOR(IPTFR+(NPLAN-1)*NPTFR)=NBOR(IPTFR)+(NPLAN-1)*NPOIN2
       ENDDO
+!
+!-----------------------------------------------------------------------
+!
+101   FORMAT(' ELEB3DT : PROBLEME A LA CONSTRUCTION DE NULONE, IPOIN =',
+     &  I6)
+102   FORMAT(' ELEB3DT: PROBLEM WHEN BUILDING NULONE, IPOIN =',I6)
 !
 !-----------------------------------------------------------------------
 !

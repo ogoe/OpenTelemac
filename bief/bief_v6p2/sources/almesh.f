@@ -29,9 +29,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        12/08/2011
+!+        28/11/2011
 !+        V6P2
-!+   Calls to eleb3d and eleb3dt changed.
+!+   Calls to eleb3d and eleb3dt changed. Calls of READGEO3 and CPIKLE2
+!+   and CPIKLE3 swapped (now KNOLG used in CPIKLE3).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| NAME IN 20 CHARACTERS TO ENABLE DIFFERENT
@@ -89,13 +90,7 @@
 !
       INTEGER, ALLOCATABLE :: IPOBO(:)
 !
-      INTEGER IELB0V,IELB1V
-!
-      INTEGER I
-!
-!     FH-JAJ
-!     FOR SIZE OF KNOGL
-      INTEGER :: NPOIN_MAX
+      INTEGER IELB0V,IELB1V,I,NPOIN_MAX
       INTEGER, EXTERNAL :: P_ISUM
 !
 !-----------------------------------------------------------------------
@@ -742,22 +737,24 @@
 !
       IF(IELM.EQ.51) THEN
 !
-        CALL CPIKLE3(MESH%IKLE%I,IKLES,NELEM,NNELMAX,NPOIN,NNPLAN)
-!
 !       NOTE : NO Z HERE, AS IELM.EQ.41, SEE NOTE BELOW
         CALL READGEO3(MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPOIN,NFIC,IB,
      *                FFORMAT)
+!
+        CALL CPIKLE3(MESH%IKLE%I,IKLES,NELEM,NNELMAX,NPOIN,NNPLAN,
+     *               MESH%KNOLG%I)
 !
 !     PRISMS
 !
       ELSEIF(IELM.EQ.41) THEN
 !
-        CALL CPIKLE2(MESH%IKLE%I,MESH%KLEI%I,IKLES,
-     &               NELEM,NNELMAX,NPOIN,NNPLAN)
 !       NOTE : WITH PRISMS Z IS COMPUTED WITH ZF AND H, OR
 !              READ IN THE PREVIOUS COMPUTATION FILE, HENCE NO Z HERE
         CALL READGEO3(MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPOIN,NFIC,IB,
      *                FFORMAT)
+!
+        CALL CPIKLE2(MESH%IKLE%I,MESH%KLEI%I,IKLES,
+     &               NELEM,NNELMAX,NPOIN,NNPLAN)
 !
 !     TRIANGLES OR TETRAHEDRONS
 !

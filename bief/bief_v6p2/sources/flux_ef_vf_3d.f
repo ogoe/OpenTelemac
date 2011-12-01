@@ -3,7 +3,7 @@
 !                    ************************
 !
      &(FLOW,W2D,W3D,NSEG2D,NSEG3D,NELEM2,NELEM3,MESH2D,INIFLO,
-     & IOPT,SENS,IELM3,NPLAN,IKLE,NELMAX)
+     & IOPT,SENS,IELM3,NPLAN,IKLE,NELMAX,KNOLG)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -48,6 +48,9 @@
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INIFLO         |-->| IF(YES) FLOW WILL BE INITIALISED AT 0.
 !| IOPT           |-->| CHOICE OF THE CONSTANT IN FLUX_EF_VF
+!| KNOLG          |-->| GIVES THE ORIGINAL GLOBAL NUMBER OF POINTS
+!|                |   | IN SCALAR MODE (SIZE NPOIN3 BUT FILLED ONLY
+!|                |   | UP TO NPOIN2)
 !| MESH2D         |-->| 2D MESH
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS (SEE IKLE)
@@ -74,7 +77,7 @@
       INTEGER, INTENT(IN)             :: IOPT,SENS,IELM3,NPLAN,NELMAX
 !                                                    6 IF IELM3=41
 !                                                    4 IF IELM3=51
-      INTEGER, INTENT(IN)             :: IKLE(NELMAX,*)
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),KNOLG(*)
       DOUBLE PRECISION, INTENT(INOUT) :: FLOW(NSEG3D)
 !                                                   6 IF IELM3=41
 !                                                   4 IF IELM3=51
@@ -204,6 +207,12 @@
           I1=IKLE(IELEM,1)
           I2=IKLE(IELEM,2)
           I3=IKLE(IELEM,3)
+!         IN PARALLELISM BACK TO ORIGINAL GLOBAL NUMBERS
+          IF(NCSIZE.GT.1) THEN
+            I1=KNOLG(I1)
+            I2=KNOLG(I2)
+            I3=KNOLG(I3)
+          ENDIF
 !         THIS IS DONE LIKE IN CPIKLE3 TO USE ARRAY TETRA
           IF(I1.GT.I2) THEN
             S1=1

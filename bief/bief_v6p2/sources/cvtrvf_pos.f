@@ -282,7 +282,7 @@
 !
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM2_SEG(FXMAT,FXMAT,FXMAT,MESH%NSEG,1,2,1,MESH,
-     &                   1)
+     &                   1,11)
         CALL MULT_INTERFACE_SEG(FXMAT,MESH%NH_COM_SEG%I,
      &                          MESH%NH_COM_SEG%DIM1,
      &                          MESH%NB_NEIGHB_SEG,

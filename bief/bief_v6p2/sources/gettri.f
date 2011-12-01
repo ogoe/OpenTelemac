@@ -5,7 +5,7 @@
      &(M,MDIFF,TETA,MESH3D,NPLAN,NPOIN2,NSEG2D,IELM3,NELEM2)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    GETS THE TRIDIAGONAL PART OF A DIFFUSION MATRIX ON
@@ -70,7 +70,8 @@
 !
         CALL GETTRIEBE(M,MDIFF%D%R,MDIFF%X%R,TETA,
      &                 MESH3D%IKLE%I,MESH3D%NPOIN,MESH3D%NELEM,
-     &                 MESH3D%NELMAX,MESH3D,IELM3,NELEM2,NPLAN)
+     &                 MESH3D%NELMAX,MESH3D,IELM3,NELEM2,NPLAN,
+     &                 MESH3D%KNOLG%I)
 !
       ELSEIF(MDIFF%STO.EQ.3) THEN
 !

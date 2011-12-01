@@ -271,7 +271,7 @@
         IF(NCSIZE.GT.1) THEN
           CALL OV('X=Y     ',FXMATPAR,FXMAT,FXMAT,0.D0,MESH%NSEG)
           CALL PARCOM2_SEG(FXMATPAR,FXMATPAR,FXMATPAR,
-     &                     MESH%NSEG,1,2,1,MESH,1)
+     &                     MESH%NSEG,1,2,1,MESH,1,11)
         ENDIF
       ENDIF
 !

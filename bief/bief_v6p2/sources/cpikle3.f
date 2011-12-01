@@ -2,10 +2,10 @@
                      SUBROUTINE CPIKLE3
 !                    ******************
 !
-     &(IKLE3,IKLES,NELEM2,NELMAX2,NPOIN2,NPLAN)
+     &(IKLE3,IKLES,NELEM2,NELMAX2,NPOIN2,NPLAN,KNOLG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    EXTENDS THE CONNECTIVITY TABLE.
@@ -157,14 +157,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNH)
+!+        28/11/2011
+!+        V6P2
+!+   Use of KNOGL in case of parallelism, to get the same splitting of 
+!+   than in scalar mode. Loops on planes and elements swapped.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE3          |<->| 3D CONNECTIVITY TABLE
 !| IKLES          |-->| 2D CONNECTIVITY TABLE WITH DIMENSION (3,NELEM2)
+!| KNOLG          |-->| GIVES THE ORIGINAL GLOBAL NUMBER OF POINTS
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -173,12 +182,14 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: NELEM2,NELMAX2,NPOIN2,NPLAN
+!                                     NPOIN3 BUT ONLY FILLED TO NPOIN2
+      INTEGER, INTENT(IN)    :: KNOLG(NPOIN2)
       INTEGER, INTENT(INOUT) :: IKLES(3,NELEM2)
       INTEGER, INTENT(INOUT) :: IKLE3(NELMAX2,3,NPLAN-1,4)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,I,K,L,IGLOB(6),S1,S2,S3
+      INTEGER IELEM,I,K,L,IGLOB(6),S1,S2,S3,I1,I2,I3
 !
 !     TETRA : SEE EXPLANATIONS ABOVE, THE 0 CORRESPOND TO SITUATIONS
 !             THAT NEVER HAPPEN (TETRA(1,1,1,... OR TETRA(2,2,2,...)
@@ -193,9 +204,44 @@
 !     BOTTOM AND TOP OF ALL LAYERS
 !
       IF(NPLAN.GE.2) THEN
-        DO I = 1,NPLAN-1
-!         LOOP ON THE TRIANGLES
-          DO IELEM = 1,NELEM2
+!        
+!       LOOP ON THE TRIANGLES
+!
+        DO IELEM = 1,NELEM2
+!
+          I1=IKLES(1,IELEM)
+          I2=IKLES(2,IELEM)
+          I3=IKLES(3,IELEM)
+!
+!         IN PARALLEL, IT IS NOT SURE THAT THE MESH PARTITIONER KEEPS
+!         THE SAME RANK BETWEEN POINTS, SO WE USE HERE THE ORIGINAL
+!         GLOBAL NUMBERS
+!
+          IF(NCSIZE.GT.1) THEN
+            I1=KNOLG(I1)            
+            I2=KNOLG(I2) 
+            I3=KNOLG(I3) 
+          ENDIF
+!
+          IF(I1.GT.I2) THEN
+            S1=1
+          ELSE
+            S1=2
+          ENDIF
+          IF(I2.GT.I3) THEN
+            S2=1
+          ELSE
+            S2=2
+          ENDIF
+          IF(I3.GT.I1) THEN
+            S3=1
+          ELSE
+            S3=2
+          ENDIF
+!
+!         LOOP ON THE PLANES
+!
+          DO I = 1,NPLAN-1
 !
 !           GLOBAL NUMBERS OF THE 6 POINTS OF THE PRISM
 !
@@ -206,25 +252,9 @@
             IGLOB(5) = IKLES(2,IELEM) +  I   *NPOIN2
             IGLOB(6) = IKLES(3,IELEM) +  I   *NPOIN2
 !
-            IF(IGLOB(1).GT.IGLOB(2)) THEN
-              S1=1
-            ELSE
-              S1=2
-            ENDIF
-            IF(IGLOB(2).GT.IGLOB(3)) THEN
-              S2=1
-            ELSE
-              S2=2
-            ENDIF
-            IF(IGLOB(3).GT.IGLOB(1)) THEN
-              S3=1
-            ELSE
-              S3=2
-            ENDIF
-!
             DO K=1,3
             DO L=1,4
-              IKLE3(IELEM,K,I,L) = IGLOB(TETRA(S1,S2,S3,K,L))
+              IKLE3(IELEM,K,I,L) = IGLOB(TETRA(S1,S2,S3,K,L))        
             ENDDO
             ENDDO
 !
@@ -235,7 +265,7 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'CPIKLE3 : MINIMUM OF 2 PLANES NEEDED'
         CALL PLANTE(1)
         STOP
-      ENDIF      
+      ENDIF    
 !
 !-----------------------------------------------------------------------
 !

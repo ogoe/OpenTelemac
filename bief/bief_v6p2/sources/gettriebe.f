@@ -2,7 +2,8 @@
                      SUBROUTINE GETTRIEBE
 !                    ********************
 !
-     &(XAUX,AD,AX,TETA,IKLE,NPOIN,NELEM,NELMAX,MESH,IELM3,NELEM2,NPLAN)
+     &(XAUX,AD,AX,TETA,IKLE,NPOIN,NELEM,NELMAX,MESH,IELM3,NELEM2,NPLAN,
+     & KNOLG)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -37,15 +38,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        01/09/2011
+!+        29/11/2011
 !+        V6P2
-!+   Element 51 programmed
+!+   Element 51 programmed, KNOLG added
 !+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AD             |-->| DIAGONAL TERMS OF MATRIX
 !| AX             |-->| OFF-DIAGONAL TERMS OF MATRIX
 !| IELM3          |-->| TYPE OF ELEMENT
 !| IKLE           |-->| CONNECTIVITY TABLE
+!| KNOLG          |-->| ORIGINAL (I.E. SCALAR MODE) GLOBAL NUMBER OF POINTS
 !| MESH           |-->| MESH STRUCTURE
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELEM2         |-->| NUMBER OF TRIANGLES OF ORIGINAL 2D MESH
@@ -65,7 +67,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN,IELM3,NELEM2,NPLAN
-      INTEGER, INTENT(IN) :: IKLE(NELMAX,*)
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,*),KNOLG(NPOIN)
 !
       DOUBLE PRECISION, INTENT(IN)    :: TETA
       DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*),AX(NELMAX,*)
@@ -162,6 +164,11 @@
             I1=IKLE(IELEM,1)
             I2=IKLE(IELEM,2)
             I3=IKLE(IELEM,3)
+            IF(NCSIZE.GT.1) THEN
+              I1=KNOLG(I1)
+              I2=KNOLG(I2)
+              I3=KNOLG(I3)
+            ENDIF
 !           THIS IS DONE LIKE IN CPIKLE3 TO USE ARRAY TETRA
             IF(I1.GT.I2) THEN
               S1=1

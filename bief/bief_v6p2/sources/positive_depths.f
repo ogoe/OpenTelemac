@@ -112,7 +112,7 @@
 !
       LOGICAL DEJA
       DATA DEJA/.FALSE./
-      INTEGER,          ALLOCATABLE :: INDIC(:)
+      INTEGER, ALLOCATABLE :: INDIC(:)
       SAVE
       IF(.NOT.DEJA) THEN
         ALLOCATE(INDIC(MESH%NSEG))
@@ -134,6 +134,23 @@
         ENDIF
         WRITE(LU,*) 'AVANT TRAITEMENT HAUTEURS NEGATIVES, H MIN=',C
         WRITE(LU,*) 'AVANT TRAITEMENT HAUTEURS NEGATIVES, HN MIN=',CINIT
+        C=0.D0
+        CINIT=0.D0
+        IF(NCSIZE.GT.0) THEN
+          DO I=1,NPOIN
+            C    =C    +H%R(I) *MESH%FAC%R(I)/UNSV2D%R(I)
+            CINIT=CINIT+HN%R(I)*MESH%FAC%R(I)/UNSV2D%R(I)
+          ENDDO
+          C    =P_DSUM(C    )
+          CINIT=P_DSUM(CINIT)
+        ELSE
+          DO I=1,NPOIN
+            C    =C    +H%R(I) /UNSV2D%R(I)
+            CINIT=CINIT+HN%R(I)/UNSV2D%R(I)
+          ENDDO
+        ENDIF        
+        WRITE(LU,*) 'AVANT TRAITEMENT MASSE INITIALE=',CINIT 
+        WRITE(LU,*) 'AVANT TRAITEMENT MASSE FINALE  =',C       
       ENDIF
 !
 !     CALCUL DES FLUX PAR SEGMENT (T1 SUIVI DE FALSE NON UTILISE)
@@ -154,7 +171,7 @@
 !
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM2_SEG(FLODEL%R,FLODEL%R,FLODEL%R,
-     &                   MESH%NSEG,1,2,1,MESH,1)
+     &                   MESH%NSEG,1,2,1,MESH,1,11)
         CALL MULT_INTERFACE_SEG(FLODEL%R,MESH%NH_COM_SEG%I,
      &                          MESH%NH_COM_SEG%DIM1,
      &                          MESH%NB_NEIGHB_SEG,
@@ -453,6 +470,18 @@
         ENDDO
         IF(NCSIZE.GT.1) C=P_DMIN(C)
         WRITE(LU,*) 'APRES TRAITEMENT HAUTEURS NEGATIVES, HMIN=',C
+        C=0.D0
+        IF(NCSIZE.GT.0) THEN
+          DO I=1,NPOIN
+            C=C+H%R(I)*MESH%FAC%R(I)/UNSV2D%R(I)
+          ENDDO
+          C=P_DSUM(C)
+        ELSE
+          DO I=1,NPOIN
+            C=C+H%R(I)/UNSV2D%R(I)
+          ENDDO
+        ENDIF        
+        WRITE(LU,*) 'APRES TRAITEMENT MASSE FINALE =',C      
       ENDIF
 !
 !-----------------------------------------------------------------------
