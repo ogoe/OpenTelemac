@@ -524,54 +524,68 @@ C compteur de temps (modele multi-couches)
 !> @brief EROSION FLUX
 C flux d'erosion en chaque point 2d
       TYPE(BIEF_OBJ), TARGET :: FLUER
-!> @brief PROBABILITY OF DEPOSIT
-C probabilite de depot en chaque point 2d
+!
+!     PROBABILITY OF DEPOSIT
+!
       TYPE(BIEF_OBJ), TARGET :: PDEPO
-!> @brief RIDIG BED ELEVATION
-C cote du fond rigide
+!
+!     RIDIG BED ELEVATION
+!
       TYPE(BIEF_OBJ), TARGET :: ZR
-!> @brief
-C concentration d'equilibre
+!
+!     EQUILIBRIUM CONCENTRATION
+!
       TYPE(BIEF_OBJ), TARGET :: CREF
-!> @brief
-C diametre moyen des grains
+!
+!     AVERAGE DIAMETER OF GRAINS
+!
       TYPE(BIEF_OBJ), TARGET :: DMOY
-!> @brief NUMBER OF POINTS WITHIN THE BED ALONG THE VERTICAL
-C nombre de points discretisant le fond vaseux sur une verticale
+!
+!     NUMBER OF POINTS WITHIN THE BED ALONG THE VERTICAL
+!
       TYPE(BIEF_OBJ), TARGET :: NPF
-C
-C-----------------------------------------------------------------------
-C (2) MATRICES
-C-----------------------------------------------------------------------
-C
-!> @brief
-C matrice supg non symetrique
+!
+!     VECTOR OF SIZE NDP*NELEM (NUMBER OF POINTS IN THE ELEMENT * NELEM)     
+!
+      TYPE(BIEF_OBJ), TARGET :: WEL
+!
+!-----------------------------------------------------------------------
+! (2) MATRICES
+!-----------------------------------------------------------------------
+!
+!
+!     SUPG NON SYMMETRIC MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: MSUPG
-!> @brief
-C matrice murd non symetrique
+!
+!     MURD NON SYMMETRIC MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: MMURD
-!> @brief
-C
+!
+!     DIFFUSION MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: MDIFF
-!> @brief
-C
+!
+!     MURD MATRIX FOR TIDAL FLATS VERSION
+!
       TYPE(BIEF_OBJ), TARGET :: MURD_TF
-!> @brief 3D WORKING MATRIX
-C matrice de travail
-      TYPE(BIEF_OBJ), TARGET :: MTRA1
-!> @brief 3D WORKING MATRIX
-C matrice de travail
-      TYPE(BIEF_OBJ), TARGET :: MTRA2
-!> @brief 2D MATRIX
+!
+!     WORKING MATRICES
+!
+      TYPE(BIEF_OBJ), TARGET :: MTRA1,MTRA2
+!
+!     2D BOUNDARY MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: MBOR2D
-!> @brief 2D MATRIX
-C matrice de travail 2dh
+!
+!     WORKING 2D MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: MATR2H
-C
-C-----------------------------------------------------------------------
-C (3) BLOCKS
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+! (3) BLOCKS
+!-----------------------------------------------------------------------
+!
 !> @brief
 C traceurs au pas precedent
       TYPE(BIEF_OBJ), TARGET :: TAN

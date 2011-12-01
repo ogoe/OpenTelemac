@@ -6,7 +6,7 @@
      & RUGOF,UETCAR,NONHYD,OPTBAN,HN,GRAV,IPBOT,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES AUBOR, COEFFICIENT FOR THE LOG LAW
@@ -33,6 +33,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        21/11/2011
+!+        V6P2
+!+   Treatment of tidal flats in case of Nikuradse law.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AUBOR          |<->| FRICTION COEFFICIENT FOR THE LOG LAW ON WALLS
@@ -84,12 +89,11 @@
 !
       INTEGER N,IT,I1
 !
-      DOUBLE PRECISION UTANG,DIST,UETUTA,YPLUS,VNORM
+      DOUBLE PRECISION UTANG,DIST,UETUTA,YPLUS,VNORM,AUX
 !
       INTRINSIC SQRT,LOG
 !
 !-----------------------------------------------------------------------
-!
 !
 !     COMPUTES UETOIL ** 2 FOR THE SOLID BOUNDARIES
 !     ----------------------------------------
@@ -151,7 +155,9 @@
             I1=(MIN(NPLAN-1,IPBOT(N)+1)-1)*NPOIN+N
 !           1.D-6 TO AVOID LOG(0) ON TIDAL FLATS
             DIST  = MAX((Z(NPOIN+I1)-Z(I1))+RUGOF(N)/30.D0,1.D-6)
-            UETCAR(N)=(KARMAN/LOG(30.D0*DIST/RUGOF(N)))**2
+!           JMH 21/11/2011
+            AUX=MAX(1.001D0,30.D0*DIST/RUGOF(N))
+            UETCAR(N)=(KARMAN/LOG(AUX))**2
      &               * (U3D(N+NPOIN)**2+V3D(N+NPOIN)**2)
           ENDDO
 !

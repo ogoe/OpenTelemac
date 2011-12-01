@@ -44,7 +44,8 @@
 !history  J-M HERVOUET (LNHE)
 !+        28/10/2011
 !+        V6P2
-!+   Updated for element 51 (prisms cut into tetrahedra)
+!+   Updated for element 51 (prisms cut into tetrahedra). Better memory
+!+   allocation of INDIC.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
@@ -142,7 +143,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IPOIN,NITER,IS,IIS,I,NSEGH,NSEGV,OPT,IR
-      INTEGER I1,I2,IPLAN,ISEG3D,I2D,I3D,IPTFR
+      INTEGER I1,I2,IPLAN,ISEG3D,I2D,I3D,IPTFR,SIZEINDIC
       INTEGER REMAIN_SEG,NEWREMAIN,REMAIN_TOT,REMAIN_SEG_INIT
 !
 !-----------------------------------------------------------------------
@@ -224,9 +225,19 @@
 !
       REMAIN_SEG_INIT=REMAIN_SEG
 !
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(INDIC(REMAIN_SEG))
+      IF(.NOT.DEJA) THEN  
+        ALLOCATE(INDIC(REMAIN_SEG)) 
+        SIZEINDIC=REMAIN_SEG   
         DEJA=.TRUE.
+      ELSE
+        IF(REMAIN_SEG.GT.SIZEINDIC) THEN
+!         LARGER SIZE OF INDIC REQUIRED (CASE OF SEVERAL CALLS WITH
+!         DIFFERENT SCHEMES THAT IMPLY DIFFERENT NUMBERS OF SEGMENTS
+!         LIKE SCHEMES LPO_TF AND NSC_TF IN PRISMS
+          DEALLOCATE(INDIC) 
+          ALLOCATE(INDIC(REMAIN_SEG)) 
+          SIZEINDIC=REMAIN_SEG 
+        ENDIF
       ENDIF
 !
       IF(OPTION.EQ.2) CALL CPSTVC(SVOLU2,FLUX_REMOVED)

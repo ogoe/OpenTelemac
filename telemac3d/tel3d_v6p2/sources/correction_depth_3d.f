@@ -101,7 +101,8 @@
           CALL FLUX_EF_VF_3D(FLODEL%R,MESH2D%W%R,MESH3D%W%R,
      &                       MESH2D%NSEG,MESH3D%NSEG,MESH2D%NELEM,
      &                       MESH3D%NELEM,MESH2D,.TRUE.,IOPT,1,
-     &                       IELM3,NPLAN,MESH3D%IKLE%I,MESH3D%NELMAX)
+     &                       IELM3,NPLAN,MESH3D%IKLE%I,MESH3D%NELMAX,
+     &                       MESH3D%KNOLG%I)
 !
 !         CALCULATES 2D FLODEL (PUT IN FIRST PLANE OF 3D FLODEL)
 !      
@@ -109,10 +110,7 @@
 !         FLUXES ON THE VERTICAL FIRST AND THEN CALLING FLUX_EF_VF
 !
           IF(IELM3.EQ.41) THEN
-!
-!           HORIZONTAL SEGMENT HAVE SAME NUMBERING
-!           WITH ELEMENTS 41 AND 51
-!          
+!         
             DO ISEG = 1,MESH2D%NSEG
               DO I = 2,NPLAN
                 ISEG3D = ISEG + (I-1)*MESH2D%NSEG
@@ -125,9 +123,9 @@
 !           NOTHING TO DO, THIS WAS DONE IN FLUX_EF_VF_3D
 !
           ELSE
-            WRITE(LU,*) 'CORECTION_DEPTH_3D: UNKNOWN ELEMENT:',IELM3
-            CALL PLANTE(1)
-            STOP
+           WRITE(LU,*) 'CORRECTION_DEPTH_3D: UNKNOWN ELEMENT:',IELM3
+           CALL PLANTE(1)
+           STOP
           ENDIF
 !
           CALL POSITIVE_DEPTHS(T2_01,T2_02,T2_03,T2_04,H,HN,

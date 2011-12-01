@@ -115,7 +115,7 @@
      &  GRAPRD,SIGMAG,T2_01,NPOIN2,NPOIN3,DM1,GRAZCO,FLBOR,
      &  PLUIE,RAIN,FLODEL,FLOPAR,OPTHNEG,FLULIM,
      &  (N_ADV(ADV_LPO).GT.0.OR.N_ADV(ADV_LPO_TF).GT.0),
-     &  LT,BYPASS,N_ADV,MTRA1)
+     &  LT,BYPASS,N_ADV,WEL)
 !
 !=======================================================================
 !   COMPUTES (DZW*)JH,IV+1/2 AND ACCUMULATES IN WSCONV
@@ -169,8 +169,8 @@
           FORMUL = 'MAMURD 2     PSI'
         ENDIF
         CALL MATRIX
-!                                                           !!!!!!!
-     &  (MMURD,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,MTRA1%X,
+!                                                           !!!
+     &  (MMURD,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,WEL,
      &   UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
 !       HERE THE BYPASS IS NOT OPTIONAL, OTHERWISE
 !       THE SCHEMES ARE NOT MASS-CONSERVATIVE
@@ -202,8 +202,8 @@
 !             IT IS WHAT WE WANT HERE
         FORMUL = 'MAMURD 2     PSI'
         CALL MATRIX
-!                                                             !!!!!!!
-     &  (MURD_TF,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,MTRA1%X,
+!                                                             !!!
+     &  (MURD_TF,'M=N     ',FORMUL,IELM3,IELM3,1.D0,DM1,ZCONV,WEL,
      &   UCONV,VCONV,WSCONV,MESH3D,MSK,MASKEL)
 !
 !       FROM 30 SEGMENTS WITH POSITIVE FLUXES, WE GO TO 15 WITH
@@ -232,7 +232,7 @@
           CALL PARCOM2_SEG(MURD_TF%X%R(NSEG3D+1:2*NSEG3D),
      &                     MURD_TF%X%R(NSEG3D+1:2*NSEG3D),
      &                     MURD_TF%X%R(NSEG3D+1:2*NSEG3D),
-     &                     MESH2D%NSEG,NPLAN,2,1,MESH2D,2)
+     &                     MESH2D%NSEG,NPLAN,2,1,MESH2D,2,IELM3)
         ENDIF
 !
       ENDIF
@@ -281,7 +281,7 @@
         IF(NCSIZE.GT.1) THEN
           CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
           CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,
-     &                     MESH2D%NSEG,NPLAN,2,1,MESH2D,1)
+     &                     MESH2D%NSEG,NPLAN,2,1,MESH2D,1,IELM3)
         ELSE
           FLOPAR%R=>FLODEL%R
         ENDIF

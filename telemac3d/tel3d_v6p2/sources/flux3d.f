@@ -7,7 +7,7 @@
      & MSK,MASKEL,MASK_3D,LIHBOR,KENT,NPTFR,DT,VOLU,VOLUN,
      & MESH2,GRAPRD,SIGMAG,TRAV2,NPOIN2,NPOIN3,DM1,GRAZCO,
      & FLBOR,PLUIE,RAIN,FLODEL,FLOPAR,OPT_HNEG,FLULIM,YACVVF,LT,BYPASS,
-     & N_ADV,MTRA1)
+     & N_ADV,WEL)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -68,7 +68,6 @@
 !| MESH2          |<->| 2D MESH
 !| MESH3          |<->| 3D MESH
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
-!| MTRA1          |<->| 3D WORK MATRIX
 !| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
 !| NETAGE         |-->| NUMBER OF LAYERS I.E. NUMBER OF PLANES - 1
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
@@ -88,6 +87,7 @@
 !| VOLU           |-->| VOLUME AROUND POINTS AT TIME N+1
 !| VOLUN          |-->| VOLUME AROUND POINTS AT TIME N
 !| W1             |<->| WORK ARRAY IN 3D
+!| WEL            |<->| BIEF WORK ARRAY
 !| YACVVF         |-->| THERE IS AN ADVECTION WITH FINITE VOLUMES
 !|                |   | (HENCE COMPUTATION OF FLUXES REQUIRED)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,7 +109,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: FLUINT,FLUEXT,FLUEXTPAR
       TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU,VOLUN,DM1,GRAZCO
       TYPE(BIEF_OBJ), INTENT(IN)    :: UCONV,VCONV,PLUIE,MASK_3D
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: MASKEL,MTRA1
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: MASKEL,WEL
       TYPE(BIEF_OBJ), INTENT(INOUT) :: FLOPAR,FLULIM
       TYPE(BIEF_OBJ), INTENT(INOUT), TARGET :: FLODEL
       TYPE(BIEF_OBJ), INTENT(INOUT) :: FLBOR
@@ -144,7 +144,7 @@
       CALL VECTOR(FLUINT,'=',FORMUL,IELM3,1.D0,DM1,GRAZCO,GRAZCO,
      &            UCONV,VCONV,SVIDE,MESH3,MSK,MASKEL)
 !
-!     STORING NON-ASSEMBLED FLUINT IN MATRIX MTRA1
+!     STORING NON-ASSEMBLED FLUINT IN WEL
 !     WHICH IS NOT TO BE USED BEFORE BUILDING MATRICES MMURD OR
 !     MURD_TF (SEE PRECON AND MT14PP)
 !
@@ -152,11 +152,11 @@
      &                      .OR.N_ADV(ADV_NSC_TF).GT.0) THEN
         IF(IELM3.EQ.41) THEN
           DO I=1,6*MESH3%NELEM
-            MTRA1%X%R(I)=MESH3%W%R(I)
+            WEL%R(I)=MESH3%W%R(I)
           ENDDO
         ELSEIF(IELM3.EQ.51) THEN
           DO I=1,4*MESH3%NELEM
-            MTRA1%X%R(I)=MESH3%W%R(I)
+            WEL%R(I)=MESH3%W%R(I)
           ENDDO
         ELSE
           WRITE(LU,*) 'FLUX3D: ELEMENT ',IELM3,' NOT IMPLEMENTED'
@@ -186,7 +186,8 @@
         CALL FLUX_EF_VF_3D(FLODEL%R,MESH2%W%R,MESH3%W%R,
      &                     MESH2%NSEG,MESH3%NSEG,MESH2%NELEM,
      &                     MESH3%NELEM,MESH2,.TRUE.,IOPT,1,
-     &                     IELM3,NPLAN,MESH3%IKLE%I,MESH3%NELMAX)
+     &                     IELM3,NPLAN,MESH3%IKLE%I,MESH3%NELMAX,
+     &                     MESH3%KNOLG%I)
       ENDIF
 !
 ! LIMITING FLUXES ACCORDING TO WHAT IS DONE IN 2D CONTINUITY EQUATION

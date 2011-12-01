@@ -440,6 +440,7 @@
 !
       ELSEIF(SCHCF.EQ.ADV_LPO_TF) THEN
 !
+         WRITE(LU,*) 'APPEL DE MURD3D_POS POUR LPO_TF'
          CALL MURD3D_POS(FC%R,FN%R,VOLU%R,VOLU,VOLUN%R,VOLUN,
      &                   T3_01%R,T3_01,MESH3D%M%X%R,
      &                   T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
@@ -452,6 +453,7 @@
      &                   TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
      &                   TRAV3%ADR(8)%P,
      &                   TRAV3%ADR(9)%P,2,IELM3)
+         WRITE(LU,*) 'RETOUR DE MURD3D_POS POUR LPO_TF'
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER

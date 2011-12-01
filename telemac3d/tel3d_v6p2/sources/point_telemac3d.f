@@ -45,9 +45,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER CFG(2),CFG2D(2),CFGMURD(2),CFGBOR2D(2),CFGMURD_TF(2)
-      INTEGER ITRAC, ITAB
-      INTEGER IELM, IELV, IELH, STATUT
-      INTEGER NTR,I,NSEG
+      INTEGER ITRAC,ITAB,IELM,IELV,IELH,STATUT,NTR,I,NSEG
       CHARACTER(LEN=1) TYPDIA, TYPEXT
 !
 !-----------------------------------------------------------------------
@@ -411,7 +409,12 @@ C THEY ARE DEFINED IN DECLARATIONS
 !
 ! SIGMA-TRANSFORMED VALUES / NO BLOCK
 !
-      CALL BIEF_ALLVEC(1, WS,        'WS    ', IELM3,  1, 1,MESH3D)
+      CALL BIEF_ALLVEC(1,WS,'WS    ',IELM3,1,1,MESH3D)
+!
+! VECTOR OF SIZE NUMBER OF POINTS IN THE ELEMENT * NELEM
+!
+      CALL BIEF_ALLVEC(1,WEL,'WEL   ',10*(IELM3/10),
+     &                 BIEF_NBPEL(IELM3,MESH3D),1,MESH3D)
 !
 !=======================================================================
 ! HYDRODYNAMIC PRESSURE SPECIFIC FOR THE NON-HYDROSTATIC OPTION
@@ -476,13 +479,14 @@ C THEY ARE DEFINED IN DECLARATIONS
 ! NUMBERING MECHANISM!
 !
 ! NOTE JMH : MAX(NTRAC,1) BELOW : TO HAVE AT LEAST ONE ARRAY, EVEN EMPTY
-C                                 TO PUT IN THE CALL TO CONLIM
+!                                 TO PUT IN THE CALL TO CONLIM
+!                                 AND CALL TO TEL4DEL
 !
       CALL BIEF_ALLVEC_IN_BLOCK(TAN,    NTRAC,
      *                          1, 'TAN   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TAC,    NTRAC,
      *                          1, 'TAC   ', IELM, 1, STATUT,MESH3D)
-      CALL BIEF_ALLVEC_IN_BLOCK(TA,     NTRAC,
+      CALL BIEF_ALLVEC_IN_BLOCK(TA,     MAX(NTRAC,1),
      *                          1, 'TA    ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(S0TA,   NTRAC,
      *                          1, 'S0TA  ', IELM, 1, STATUT,MESH3D)
@@ -910,19 +914,19 @@ C K-EPSILON MODEL
 !=======================================================================
 !
 !                   *********************************
-C                   * STRUCTURES FOR THE RESOLUTION *
-C                   *  OF LINEAR EQUATION SYSTEMS   *
-C                   *          F I R S T            *
-C                   *        M A T R I C E S        *
+!                   * STRUCTURES FOR THE RESOLUTION *
+!                   *  OF LINEAR EQUATION SYSTEMS   *
+!                   *          F I R S T            *
+!                   *        M A T R I C E S        *
 !                   *********************************
 !
-C BEWARE : 2D AND ESPECIALLY 3D MATRICES OCCUPY
-C ======   A LARGE CHUNK OF MEMORY
+! BEWARE : 2D AND ESPECIALLY 3D MATRICES OCCUPY
+! ======   A LARGE CHUNK OF MEMORY
 !
 !-----------------------------------------------------------------------
-C 3D MATRICES
+! 3D MATRICES
 !
-C S.U.P.G.
+! S.U.P.G.
 !
       TYPDIA = '0'
       TYPEXT = '0'
@@ -933,7 +937,7 @@ C S.U.P.G.
       CALL BIEF_ALLMAT(MSUPG,'SUPG  ',
      *                 IELM3,IELM3,CFG,TYPDIA,TYPEXT,MESH3D)
 !
-C M.U.R.D.
+! M.U.R.D.
 !
       TYPDIA = '0'
       TYPEXT = '0'
@@ -944,7 +948,7 @@ C M.U.R.D.
       CALL BIEF_ALLMAT(MMURD,'MURD  ',
      *                 IELM3,IELM3,CFGMURD,TYPDIA,TYPEXT,MESH3D)
 !
-C M.U.R.D. (EDGE-BASED FOR TIDAL FLATS)
+! M.U.R.D. (EDGE-BASED FOR TIDAL FLATS)
 !
       TYPDIA = '0'
       TYPEXT = '0'
@@ -955,7 +959,7 @@ C M.U.R.D. (EDGE-BASED FOR TIDAL FLATS)
       CALL BIEF_ALLMAT(MURD_TF,'MURDTF',IELM3,IELM3,CFGMURD_TF,
      &                 TYPDIA,TYPEXT,MESH3D)
 !
-C DIFFUSION
+! DIFFUSION
 !
       TYPDIA = '0'
       IF (DIF(1) .OR. NONHYD) TYPDIA = 'Q'
@@ -964,15 +968,15 @@ C DIFFUSION
       CALL BIEF_ALLMAT (MDIFF, 'DIFF  ',
      *                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
 !
-C THE 3D WORK MATRICES (ALWAYS ALLOCATED AS NON SYMMETRICAL)
-C                       SEE USE OF MTRA2%X IN WAVE_EQUATION
+! THE 3D WORK MATRICES (ALWAYS ALLOCATED AS NON SYMMETRICAL)
+!                       SEE USE OF MTRA2%X IN WAVE_EQUATION
 !
       TYPDIA = 'Q'
       TYPEXT = 'Q'
       CALL BIEF_ALLMAT (MTRA2, 'MTRA2 ',
-     *                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
+     *                  IELM3, IELM3, CFG   , TYPDIA, TYPEXT,MESH3D)
       CALL BIEF_ALLMAT (MTRA1, 'MTRA1 ',
-     *                  IELM3, IELM3, CFG, TYPDIA, TYPEXT,MESH3D)
+     *                  IELM3, IELM3, CFG   , TYPDIA, TYPEXT,MESH3D)
 !
 !-----------------------------------------------------------------------
 ! 3 2D MATRICES (IELM2H) - (EACH OF THEM ALLOCATED IN A
