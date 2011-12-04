@@ -1,35 +1,51 @@
 #!/usr/bin/env python
-"""@brief
-"""
 """@author Sebastien E. Bourban and Noemie Durand
 """
-"""@history 28/04/2011 -- Sebastien Bourban: Now supports SYSTELCFG
-         as a directory (old Perl version, to which systel.cfg is added)
-         or as a file.
+"""@note ... this work is based on a collaboration effort between
+  .________.                                                          ,--.
+  |        |                                                      .  (  (
+  |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
+  /   \  /    Howbery Park,                 6, quai Watier       \   )   /_   )
+   ,.  `'     Wallingford, Oxfordshire      78401 Cedex           `-'_  __ `--
+  /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
+ /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
+!________!                                                        `--'   `--
 """
-"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to config parsing
-         to include the option to reset the version and the root from the
-         command line option:
+"""@history 28/04/2011 -- Sebastien E. Bourban
+         Now supports SYSTELCFG as a directory (old Perl version, to
+         which systel.cfg is added) or as a file.
+"""
+"""@history 30/04/2011 -- Sebastien E. Bourban
+         Upgrade made to config parsing to include the option to reset
+         the version and the root from the command line option:
          -v <version>, reset the version read in the config file with this
          -r <root>, reset the root path read in the config file with this
 """
-"""@history 05/07/2011 -- Sebastien Bourban: python interpreter added for
-         linux calls. This is a temporary solution as "/usr/bin/env" is not
-         strickly portable cross operating systems
+"""@history 05/07/2011 -- Sebastien E. Bourban
+         Python interpreter added for linux calls. This is a temporary
+         solution as "/usr/bin/env" is not strickly portable cross
+         operating systems
 """
-"""@history 30/08/2011 -- Sebastien Bourban: completion of the scipt so it
-         reads the agreed template and write the DOXYGEN tags. There are a
-         number of extensions that can be used, in particular a scan of the
-         source code for validity of declaration and memory allocation.
+"""@history 30/08/2011 -- Sebastien E. Bourban
+         Completion of the scipt so it reads the agreed template and write
+         the DOXYGEN tags. There are a number of extensions that can be used,
+         in particular a scan of the source code for validity of declaration
+         and memory allocation.
 """
+"""@brief
+"""
+
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-from config import OptionParser,parseConfigFile, parseConfig_DoxygenTELEMAC
-from parserFortran import scanSources, parseDoxyWrap, parseVars
-from os import path, walk, chdir, mkdir, remove, system, environ
-from utils import getFileContent, putFileContent, createDirectories
+# ~~> dependencies towards standard python
 import sys
+from os import path, walk, chdir, mkdir, remove, system, environ
+# ~~> dependencies towards the root of pytel
+from config import OptionParser,parseConfigFile, parseConfig_DoxygenTELEMAC
+# ~~> dependencies towards other pytel/modules
+from parsers.parserFortran import scanSources, parseDoxyWrap, parseVars
+from utils.files import getFileContent, putFileContent, createDirectories
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -434,7 +450,7 @@ def createDOXYGEN(ifile,ilines,lname,list):
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Sebastien Bourban; Noemie Durand"
+__author__="Sebastien E. Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":

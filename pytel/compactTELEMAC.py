@@ -1,49 +1,65 @@
 #!/usr/bin/env python
-"""@brief
-"""
 """@author Sebastien E. Bourban and Noemie Durand
 """
-"""@history 28/04/2011 -- Sebastien Bourban: Now supports SYSTELCFG
-         as a directory (old Perl version, to which systel.cfg is added)
-         or as a file.
+"""@note ... this work is based on a collaboration effort between
+  .________.                                                          ,--.
+  |        |                                                      .  (  (
+  |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
+  /   \  /    Howbery Park,                 6, quai Watier       \   )   /_   )
+   ,.  `'     Wallingford, Oxfordshire      78401 Cedex           `-'_  __ `--
+  /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
+ /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
+!________!                                                        `--'   `--
 """
-"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to config parsing
-         to include the option to reset the version and the root from the
-         command line option:
-         -v <version>, reset the version read in the config file with this
-         -r <root>, reset the root path read in the config file with this
+"""@history 28/04/2011 -- Sebastien E. Bourban
+      Now supports SYSTELCFG as a directory (old Perl version,
+      to which systel.cfg is added) or as a file.
 """
-"""@history 05/07/2011 -- Sebastien Bourban: python interpreter added for
-         linux calls. This is a temporary solution as "/usr/bin/env" is not
-         strickly portable cross operating systems
+"""@history 30/04/2011 -- Sebastien E. Bourban
+      Upgrade made to config parsing to include the option to reset
+      the version and the root from the command line option:
+      -v <version>, reset the version read in the config file with this
+      -r <root>, reset the root path read in the config file with this
 """
-"""@history 05/07/2011 -- Sebastien Bourban: copy only the relevant CFG file
+"""@history 05/07/2011 -- Sebastien E. Bourban
+      Python interpreter added for linux calls. This is a temporary solution
+      as "/usr/bin/env" is not strickly portable cross operating systems
 """
-"""@history 05/07/2011 -- Sebastien Bourban: Addition of a new option:
-          -a archive_name
- - if the -a option is not present, the archive files are named after each
-   available configuration
- - if the -a option is present, and it is just a name, then the archives
-   files are named after each available configuration and further packaged
-   within archive_name
- - if the -a option is present, and it is a name including a path, then the
-   archives files are named after each available configuration and further
-   packaged within the archive_name (at the defined location)
+"""@history 05/07/2011 -- Sebastien E. Bourban
+      Copy only the relevant CFG file
+"""
+"""@history 05/07/2011 -- Sebastien E. Bourban
+      Addition of a new option:
+      -a archive_name
+      - if the -a option is not present, the archive files are named after
+      each available configuration
+      - if the -a option is present, and it is just a name, then the archives
+      files are named after each available configuration and further packaged
+      within archive_name
+      - if the -a option is present, and it is a name including a path, then
+      the archives files are named after each available configuration and
+      further packaged within the archive_name (at the defined location)
+"""
+"""@brief
+
 """
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
-from os import path,walk,remove, environ
-from utils import createDirectories,removeDirectories,zip,copyFiles,copyFile
+# ~~> dependencies towards standard python
+from os import path,walk,environ
 import sys
+# ~~> dependencies towards the root of pytel
+from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
+# ~~> dependencies towards other pytel/modules
+from utils.files import createDirectories,removeDirectories,zip,copyFiles,copyFile
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Sebastien Bourban; Noemie Durand"
+__author__="Sebastien E. Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":

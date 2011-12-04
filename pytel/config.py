@@ -1,7 +1,25 @@
 #!/usr/bin/env python
-"""@brief
-"""
 """@author Sebastien E. Bourban and Noemie Durand
+"""
+"""@note ... this work is based on a collaboration effort between
+  .________.                                                          ,--.
+  |        |                                                      .  (  (
+  |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
+  /   \  /    Howbery Park,                 6, quai Watier       \   )   /_   )
+   ,.  `'     Wallingford, Oxfordshire      78401 Cedex           `-'_  __ `--
+  /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
+ /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
+!________!                                                        `--'   `--
+"""
+"""@history 30/04/2011 -- Sebastien E. Bourban
+         Upgrade made to parseConfig_CompileTELEMAC, which does not use the
+         GLOBAL variable anymore. The configuration is passed in argument.
+"""
+"""@history 30/04/2011 -- Sebastien E. Bourban
+         Upgrade made to the others parseConfig_***TELEMAC just as
+         previously done
+"""
+"""@brief
 """
 """@details
    A new TELEMAC config file has been designed to be more generic
@@ -106,22 +124,15 @@
    first 4 letters, are incs, libs, or mods and define how the
    compiler should link to include, library and module files.
 """
-"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to
-         parseConfig_CompileTELEMAC, which does not use the GLOBAL
-         variable anymore. The configuration is passed in argument.
-"""
-"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to
-         the others parseConfig_***TELEMAC just as previously done
-"""
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-
+# ~~> dependencies towards standard python
+import re
+import sys
+from os import path, walk, listdir, environ
 import ConfigParser
 from optparse import OptionParser
-import re
-from os import path, walk, listdir, environ
-import sys
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -370,6 +381,18 @@ def parseConfig_DoxygenTELEMAC(cfg):
    cfgTELEMAC['COMPILER'].update({'REBUILD':tbd})
    for mod in get.split():
       if mod not in cfgTELEMAC['MODULES'].keys(): del cfgTELEMAC['COMPILER']['MODULES'][mod]
+
+   # Get command_zip: and command_piz:
+   # the command lines to zip/unzip respectively
+   cfgTELEMAC.update({'ZIPPER':getConfigKey(cfg,'sfx_zip',True,False)[1:]})
+
+   # Get system's suffixes for obj, lib, mod, and exe
+   system = {}
+   system.update({'SFX_OBJ':getConfigKey(cfg,'sfx_obj',True,False).lower()})
+   system.update({'SFX_EXE':getConfigKey(cfg,'sfx_exe',True,False).lower()})
+   system.update({'SFX_LIB':getConfigKey(cfg,'sfx_lib',True,False).lower()})
+   system.update({'SFX_MOD':getConfigKey(cfg,'sfx_mod',True,False).lower()})
+   cfgTELEMAC.update({'SYSTEM':system})
 
    return cfgTELEMAC
 
@@ -755,7 +778,7 @@ def parseValidationRanks(cfgDict):
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Sebastien Bourban; Noemie Durand"
+__author__="Sebastien E. Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":

@@ -1,29 +1,39 @@
-"""@brief
-"""
 """@author Sebastien E. Bourban and Noemie Durand
 """
-"""@details
+"""@note ... this work is based on a collaboration effort between
+  .________.                                                          ,--.
+  |        |                                                      .  (  (
+  |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
+  /   \  /    Howbery Park,                 6, quai Watier       \   )   /_   )
+   ,.  `'     Wallingford, Oxfordshire      78401 Cedex           `-'_  __ `--
+  /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
+ /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
+!________!                                                        `--'   `--
+"""
+"""@history 28/04/2011 -- Sebastien E. Bourban
+      Now supports SYSTELCFG as a directory (old Perl version, to which
+      systel.cfg is added) or as a file.
+"""
+"""@history 30/04/2011 -- Sebastien E. Bourban
+      Upgrade made to config parsing to include the option to reset the
+      version and the root from the command line option:
+      -v <version>, reset the version read in the config file with this
+      -r <root>, reset the root path read in the config file with this
+"""
+"""@brief
+"""
 
-"""
-"""@history 28/04/2011 -- Sebastien Bourban: Now supports SYSTELCFG
-         as a directory (old Perl version, to which systel.cfg is added)
-         or as a file.
-"""
-"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to config parsing
-         to include the option to reset the version and the root from the
-         command line option:
-         -v <version>, reset the version read in the config file with this
-         -r <root>, reset the root path read in the config file with this
-"""
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-
-from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
-import utils
+# ~~> dependencies towards standard python
 import re
-from os import path,walk
 import sys
+from os import path,walk
+# ~~> dependencies towards the root of pytel
+from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
+# ~~> dependencies towards other pytel/modules
+from utils.files import getTheseFiles,isNewer,addToList
 
 debug = False
 
@@ -96,6 +106,7 @@ var_dquots = re.compile(r'(?P<dquot>".*?")',re.I)
 var_squots = re.compile(r"(?P<squot>'.*?')",re.I)
 var_bracks = re.compile(r'(?P<brack>\([\w,*\s+-/:]*?\))',re.I)
 
+# no (\+|\-)? to capture the sign if there ... different from the utils version
 var_doublep = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z',re.I)
 var_integer = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z',re.I)
 f90logic = '(FALSE|TRUE|EQ|NE|GT|LT|GE|LE|OR|AND|XOR)'
@@ -334,7 +345,7 @@ def parseUses(lines):
          args = ''
          if proc.group('after') != None: args = proc.group('after')              # Do you need to distinguish the ONLYs ?
          core.pop(0)
-         utils.addToList(listUses,name,args)
+         addToList(listUses,name,args)
       else: break
    return core,listUses
 
@@ -349,7 +360,7 @@ def parseCalls(lines):
       if proc :
          name = proc.group('name'); args = []
          if proc.group('args') != None: args = parseVars(proc.group('args'))
-         utils.addToList(listCalls,name,args)
+         addToList(listCalls,name,args)
    return core,listCalls
 
 def parseFunctions(lines):
@@ -454,7 +465,7 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
    core,uses = parseUses(core)
    for k in uses.keys():
       whi['uses'].update({k:[]})
-      for v in uses[k]: utils.addToList(whi['uses'],k,v)
+      for v in uses[k]: addToList(whi['uses'],k,v)
 
    # ~~ Imposes IMPLICIT NONE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    core,l = parseImplicitNone(core)
@@ -472,14 +483,14 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
       if dec in decs['dec']: decs['dec'].remove(dec)
    for k in decs.keys():
       whi['vars'][k] = []
-      for v in decs[k]: utils.addToList(whi['vars'],k,v)
+      for v in decs[k]: addToList(whi['vars'],k,v)
    whi['vars']['als'] = alias
 
    # ~~ Lists calls in File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    core,calls = parseCalls(core)
    for k in calls.keys():
       whi['calls'][k] = []
-      for v in calls[k]: utils.addToList(whi['calls'],k,v) # still includes xtn calls
+      for v in calls[k]: addToList(whi['calls'],k,v) # still includes xtn calls
 
    # ~~ Lists functions in File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    fcts = []
@@ -584,7 +595,7 @@ def scanSources(cfgdir,cfg,BYPASS):
       fic.update({mod:{}})
       # ~~ Scans the sources that are relevant to the model ~~~~~~~~
       SrcDir = path.join(cfg['MODULES'][mod]['path'],'sources')     # assumes the sources are under ./sources
-      FileList = utils.getTheseFiles(SrcDir,['.f','.f90'])
+      FileList = getTheseFiles(SrcDir,['.f','.f90'])
       ODir = path.join(cfg['MODULES'][mod]['path'],cfgdir)
 
       print '... now scanning ', path.basename(cfg['MODULES'][mod]['path'])
@@ -612,8 +623,8 @@ def scanSources(cfgdir,cfg,BYPASS):
             if cfg['COMPILER']['REBUILD'] > 1:
                who['time'] = 0
             else:
-               #who['time'] = utils.isNewer(path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()),File)
-               who['time'] = utils.isNewer(File,path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()))
+               #who['time'] = isNewer(path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()),File)
+               who['time'] = isNewer(File,path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()))
 
          if debug : print File
          SrcF = open(File,'r')
@@ -630,31 +641,31 @@ def scanSources(cfgdir,cfg,BYPASS):
             # ~~ Parse Main Structure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             code,w,face,ctns,core = parsePrincipalWrap(core)
             name,whoi,rest = parsePrincipalMain(code,who,w[0],w[1],w[2],w[3])
-            if w[0] == 'P': prg = utils.addToList(prg,name,whoi['libname'])# main program
+            if w[0] == 'P': prg = addToList(prg,name,whoi['libname'])# main program
             if w[0] == 'P': found = BYPASS
-            if w[0] == 'S': sbt = utils.addToList(sbt,name,whoi['libname'])# subroutine
-            if w[0] == 'M': mdl = utils.addToList(mdl,name,whoi['libname'])# module
-            if w[0] == 'F': fct = utils.addToList(fct,name,whoi['libname'])# function
+            if w[0] == 'S': sbt = addToList(sbt,name,whoi['libname'])# subroutine
+            if w[0] == 'M': mdl = addToList(mdl,name,whoi['libname'])# module
+            if w[0] == 'F': fct = addToList(fct,name,whoi['libname'])# function
             fic[mod][File].append(name)
             while face != []:
                fcode,fw,ff,ft,face = parsePrincipalWrap(face)
                if fcode != []:
                   fname,whof,rest = parsePrincipalMain(fcode,who,fw[0],fw[1],fw[2],fw[3])
                   for k in whof['uses'].keys():
-                     for v in whof['uses'][k]: utils.addToList(whoi['uses'],k,v)
+                     for v in whof['uses'][k]: addToList(whoi['uses'],k,v)
             while ctns != []:                                      # contains fcts & subs
                ccode,cw,cf,ct,ctns = parsePrincipalWrap(ctns)
                if ccode != []:
                   cname,whoc,rest = parsePrincipalMain(ccode,who,cw[0],cw[1],cw[2],cw[3])
                   whoi['contains'].append(cname)
-                  if cw[0] == 'S': sbt = utils.addToList(sbt,cname,whoi['libname'])# subroutine
-                  if cw[0] == 'F': fct = utils.addToList(fct,cname,whoi['libname'])# function
+                  if cw[0] == 'S': sbt = addToList(sbt,cname,whoi['libname'])# subroutine
+                  if cw[0] == 'F': fct = addToList(fct,cname,whoi['libname'])# function
                   for k in whoc['uses'].keys():
-                     for v in whoc['uses'][k]: utils.addToList(whoi['uses'],k,v)
+                     for v in whoc['uses'][k]: addToList(whoi['uses'],k,v)
                   for k in whoc['vars'].keys():
-                     for v in whoc['vars'][k]: utils.addToList(whoi['vars'],k,v)
+                     for v in whoc['vars'][k]: addToList(whoi['vars'],k,v)
                   for k in whoc['calls'].keys():
-                     for v in whoc['calls'][k]: utils.addToList(whoi['calls'],k,v)
+                     for v in whoc['calls'][k]: addToList(whoi['calls'],k,v)
                   whoi['functions'].extend(whoc['functions'])
             whoi['vars'].update({'use':{}})
             wcw[mod].update({name:whoi})         # ~~ All ~~~~~~~~~~
@@ -719,11 +730,11 @@ def sortFunctions(ifcts,iuses,list,mods,xuses):
             continue
          if d in list[mods[u][0]][u]['vars']['dec']:
             ofcts.remove(d)
-            utils.addToList(iuses,u,d)
+            addToList(iuses,u,d)
             break
          if d in list[mods[u][0]][u]['vars']['als']:
             ofcts.remove(d)
-            utils.addToList(iuses,u,d)
+            addToList(iuses,u,d)
             break
    ifcts = ofcts
    for u in xuses:
@@ -927,7 +938,7 @@ def parseDoxyWrap(lines):
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Sebastien Bourban; Noemie Durand"
+__author__="Sebastien E. Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":

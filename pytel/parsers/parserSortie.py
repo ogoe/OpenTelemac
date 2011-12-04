@@ -1,20 +1,56 @@
+"""@author David H. Roscoe, Matthew J. Wood and Sebastien E. Bourban
+"""
+"""@note ... this work is based on a collaboration effort between
+  .________.                                                          ,--.
+  |        |                                                      .  (  (
+  |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
+  /   \  /    Howbery Park,                 6, quai Watier       \   )   /_   )
+   ,.  `'     Wallingford, Oxfordshire      78401 Cedex           `-'_  __ `--
+  /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
+ /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
+!________!                                                        `--'   `--
+"""
+"""@history 15/08/2011 -- Sebastien Bourban
+"""
 """@brief
+         This includes a series of tools to parse the content of a TELEMAC
+         sortie file (generated with the '-s' TELEMAC runcode option)
 """
-"""@author David H. Roscoe and Sebastien E. Bourban
-"""
-"""@details
-   This includes a series of tools to parse the content of a TELEMAC
-   sortie file (generated with the '-s' TELEMAC runcode option)
-"""
-"""@history 15/08/2011 -- Sebastien Bourban:
-"""
+
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 
+# ~~> dependencies towards standard python
 import re
-from utils import getFileContent
 import sys
+from os import path,walk
+from fnmatch import fnmatch
+# ~~> dependencies towards other pytel/modules
+from utils.files import getFileContent
+
+# _____                  ___________________________________________
+# ____/ General Toolbox /__________________________________________/
+#
+"""
+   Inspired from matchSafe in utils.py
+   Follows first the simple template casFile+'_*??h??min??s.sortie'
+   and then look for the parallel equivalent.
+"""
+def getLatestSortieFiles(fi):
+   # ~~> list all entries
+   for dp,dn,filenames in walk(path.dirname(fi)): break
+   # ~~> match expression
+   exnames = [] #[ path.basename(fi) ]
+   for fo in filenames:
+      if fnmatch(fo,path.basename(fi)+'_*??h??min??s.sortie'): exnames.append(fo)
+   if exnames == []: return []
+   casbase = sorted(exnames).pop()
+   exnames = [ path.join(dp,casbase) ]
+   casbase = path.splitext(casbase)[0]
+   for fo in filenames:
+      if fnmatch(fo,casbase+'_*.sortie'): exnames.append(path.join(dp,fo))
+   return exnames
 
 # _____                             ________________________________
 # ____/ Global Regular Expressions /_______________________________/
@@ -67,8 +103,9 @@ def parseNameOfStudy(sortieLines):
       +> for every VOLUME instance, it will advance to find FLUX and ERROR
    Also sets the yLabel to either 'Volume (m3/s)' or 'Fluxes (-)' or 'Error (-)'
 """
-sortie_liqnumber = re.compile(r'\s*(THERE IS|IL Y A)\s+(?P<number>\d+)'
+sortie_liqnumbers = re.compile(r'\s*(THERE IS|IL Y A)\s+(?P<number>\d+)'
             + r'\s+(LIQUID BOUNDARIES:|FRONTIERE\(S\) LIQUIDE\(S\) :)\s*\Z',re.I)
+sortie_liqnumberp = re.compile(r'\s*(NUMBER OF LIQUID BOUNDARIES|NOMBRE DE FRONTIERES LIQUIDES :)\s+(?P<number>\d+)\s*\Z',re.I)
 sortie_volinitial = re.compile(r'\s*(INITIAL VOLUME |VOLUME INITIAL)[\s:]*'
             + r'\s+(?P<value>\b([-+]|)((?:(\d+)\b)|(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+))))\s+'
             + r'(?P<after>.*?)\s*\Z',re.I)
@@ -90,7 +127,8 @@ def parseValueProfile(sortieLines):
    fluxesProf = []; fluxesName = []; boundNames = []
    liqnumber = 0
    while iLine < len(sortieLines):
-      proc = re.match(sortie_liqnumber,sortieLines[iLine])
+      proc = re.match(sortie_liqnumbers,sortieLines[iLine])
+      if not proc: proc = re.match(sortie_liqnumberp,sortieLines[iLine])
       if proc:
          liqnumber = int(proc.group('number'))
          for i in range(liqnumber):
@@ -153,36 +191,33 @@ def parseValueProfile(sortieLines):
    Creates the x,y arrays for plotting
    Values read from the TELEMAC sortie file ... every time this is called
 """
-def getValueProfileSortie(args):
+def getValueHistorySortie(content,vars):
 
-   fileName,sup,var = args
    # ~~ Extract data
-   content = getFileContent(fileName)
    title = parseNameOfStudy(content)
    i,x = parseTimeProfile(content)
    y1,y2,y3 = parseValueProfile(content)
 
-   # ~~ Volumes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if var == "voltotal":
-      if sup == "time": return x,y1
-      if sup == "iteration": return i,y1
+   y0 = []
+   for var in vars.split(';'):
+      v,s = var.split(':')
+      
+      # ~~ x-axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if s == "time": x0 = x
+      elif s == "iterator": x0 = i
+      else:
+         print '... do not know how to understand: ' + s + ' as support '
+         sys.exit()
 
-   # ~~ Plot Fluxes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if var == "volfluxes":
-      print x
-      print y2
-      if sup == "time": return x,y2
-      if sup == "iteration": return i,y2
-
-   # ~~ Plot Errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if var == "volerror":
-      if sup == "time": return x,y3
-      if sup == "iteration": return i,y3
-
-   print '... do not know how to extract: ' + var + ' of support ' + sup
-   sys.exit()
+      # ~~ y-axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if v == "voltotal": y0.append(y1)
+      elif v == "volfluxes": y0.append(y2)
+      elif v == "volerror": y0.append(y3)
+      else:
+         print '... do not know how to extract: ' + v + ' of support ' + s
+         sys.exit()
    
-   return
+   return x0,y0
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

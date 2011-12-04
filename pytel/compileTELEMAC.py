@@ -1,35 +1,46 @@
 #!/usr/bin/env python
-"""@brief
-"""
 """@author Sebastien E. Bourban and Noemie Durand
 """
-"""@history 28/04/2011 -- Sebastien Bourban: Now supports SYSTELCFG
-         as a directory (old Perl version, to which systel.cfg is added)
-         or as a file.
+"""@note ... this work is based on a collaboration effort between
+  .________.                                                          ,--.
+  |        |                                                      .  (  (
+  |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
+  /   \  /    Howbery Park,                 6, quai Watier       \   )   /_   )
+   ,.  `'     Wallingford, Oxfordshire      78401 Cedex           `-'_  __ `--
+  /  \   /    OX10 8BA, United Kingdom      Chatou, France        __/ \ \ `.
+ /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
+!________!                                                        `--'   `--
 """
-"""@history 30/04/2011 -- Sebastien Bourban: Upgrade made to config parsing
-         to include the option to reset the version and the root from the
-         command line option:
+"""@history 28/04/2011 -- Sebastien E. Bourban
+         Now supports SYSTELCFG as a directory (old Perl version,
+         to which systel.cfg is added) or as a file.
+"""
+"""@history 30/04/2011 -- Sebastien E. Bourban
+         Upgrade made to config parsing to include the option to reset
+         the version and the root from the command line option:
          -v <version>, reset the version read in the config file with this
          -r <root>, reset the root path read in the config file with this
 """
-"""@history 05/07/2011 -- Sebastien Bourban: python interpreter added for
-         linux calls. This is a temporary solution as "/usr/bin/env" is not
-         strickly portable cross operating systems
+"""@history 05/07/2011 -- Sebastien E. Bourban
+         Python interpreter added for linux calls. This is a temporary
+         solution as "/usr/bin/env" is not strickly portable cross
+         operating systems
 """
+"""@brief
+"""
+
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
-from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
-from parserFortran import scanSources
-from os import path, walk, chdir, remove, system, environ
-from utils import createDirectories,putFileContent
+# ~~> dependencies towards standard python
 import shutil
 import sys
-
-# _____                   __________________________________________
-# ____/ Global Variables /_________________________________________/
-#
+from os import path, walk, chdir, remove, system, environ
+# ~~> dependencies towards the root of pytel
+from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
+from parsers.parserFortran import scanSources
+# ~~> dependencies towards other pytel/modules
+from utils.files import createDirectories,putFileContent
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -88,7 +99,6 @@ def getTree(name,lname,list,level):
    #ndu print to check 0s and 1s print "|  "*level + name + '  (' + str(time) + ')'
 
    return list[lname][name]['time'],rank+1
-
 
 def createObjFiles(oname,oprog,odict,ocfg):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
@@ -243,7 +253,7 @@ def createExeFiles(ename,ecfg,eprog):
 # ____/ MAIN CALL  /_______________________________________________/
 #
 
-__author__="Sebastien Bourban; Noemie Durand"
+__author__="Sebastien E. Bourban; Noemie Durand"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
