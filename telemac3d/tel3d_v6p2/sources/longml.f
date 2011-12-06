@@ -5,7 +5,7 @@
      & (LM2,Z,HN,NPOIN3,NPOIN2,NPLAN,MIXING,KARMAN,ZF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES (MIXING LENGTH) ** 2  ACCORDING TO
@@ -36,6 +36,10 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/12/2011
+!+   Z changed from 'elevation' to 'elevation above bottom'
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| HN             |-->| WATER DEPTH AT TIME N
 !| KARMAN         |-->| KARMAN CONSTANT
@@ -45,7 +49,7 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPOIN3         |-->| NUMBER OF 3D POINTS
 !| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
-!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS
+!| Z              |-->| ELEVATION OF REAL 3D MESH POINTS ABOVE BOTTOM
 !| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -64,7 +68,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IPLAN,I3D
-      DOUBLE PRECISION LMM,ZEDE,HH
+      DOUBLE PRECISION LMM,HH
 !
 !***********************************************************************
 !
@@ -75,9 +79,8 @@
       DO I=1,NPOIN2
         DO IPLAN=1,NPLAN
           I3D = I + (IPLAN-1)*NPOIN2
-          ZEDE=Z(I3D)-ZF(I)
-          IF(ZEDE.LE.0.2D0*HN(I)) THEN
-            LM2(I3D)=(KARMAN*ZEDE)**2
+          IF(Z(I3D).LE.0.2D0*HN(I)) THEN
+            LM2(I3D)=(KARMAN*Z(I3D))**2
           ELSE
             LM2(I3D)=(0.2D0*KARMAN*HN(I))**2
           ENDIF
@@ -91,9 +94,8 @@
         DO I=1,NPOIN2
           DO IPLAN=1,NPLAN
             I3D = I + (IPLAN-1)*NPOIN2
-            ZEDE=Z(I3D)-ZF(I)
             HH=MAX(HN(I),1.D-6)
-            LM2(I3D)=(1.D0-ZEDE/HH)*(KARMAN*ZEDE)**2
+            LM2(I3D)=(1.D0-Z(I3D)/HH)*(KARMAN*Z(I3D))**2
           ENDDO
         ENDDO
 !
@@ -104,9 +106,8 @@
         DO I=1,NPOIN2
           DO IPLAN=1,NPLAN
             I3D = I + (IPLAN-1)*NPOIN2
-            ZEDE=Z(I3D)-ZF(I)
-            LMM=1.D0/(KARMAN*ZEDE+1.D-7)+
-     &          1.D0/(0.65D0*(HN(I)-ZEDE)+1.D-7)
+            LMM=1.D0/(KARMAN*Z(I3D)+1.D-7)+
+     &          1.D0/(0.65D0*(HN(I)-Z(I3D))+1.D-7)
             LM2(I3D)=(1.D0/LMM)**2
           ENDDO
         ENDDO
@@ -118,11 +119,10 @@
         DO I=1,NPOIN2
           DO IPLAN=1,NPLAN
             I3D = I + (IPLAN-1)*NPOIN2
-            ZEDE=Z(I3D)-ZF(I)
-            IF(ZEDE.LE.0.2D0*HN(I)) THEN
-              LM2(I3D)=(KARMAN*ZEDE)**2
-            ELSEIF(ZEDE.GE.0.8D0*HN(I)) THEN
-              LM2(I3D)=(KARMAN*(HN(I)-ZEDE))**2
+            IF(Z(I3D).LE.0.2D0*HN(I)) THEN
+              LM2(I3D)=(KARMAN*Z(I3D))**2
+            ELSEIF(Z(I3D).GE.0.8D0*HN(I)) THEN
+              LM2(I3D)=(KARMAN*(HN(I)-Z(I3D)))**2
             ELSE
               LM2(I3D)=(0.2D0*KARMAN*HN(I))**2
             ENDIF

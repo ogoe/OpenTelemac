@@ -2,11 +2,11 @@
                      SUBROUTINE VISCLM
 !                    *****************
 !
-     & (VISCVI,VISCTA,RI,U,V,DELTAR,X,Y,Z,HN,TRAV1,TRAV2,TRAV3,
-     &  TRAV4,TRAV5,TRAV6,TRAV7,SVIDE,MESH3D,IELM3,GRAV,
-     &  NPLAN,NPOIN3,NPOIN2,NTRAC,MSK,MASKEL,TA,MIXING,
-     &  DAMPING,IND_T,DNUVIV,DNUTAV,KARMAN,PRANDTL,UETCAR,KFROT,
-     &  RUGOF,ZF)
+     &(VISCVI,VISCTA,RI,U,V,DELTAR,X,Y,Z,HN,TRAV1,TRAV2,TRAV3,
+     & TRAV4,TRAV5,TRAV6,TRAV7,SVIDE,MESH3D,IELM3,GRAV,
+     & NPLAN,NPOIN3,NPOIN2,NTRAC,MSK,MASKEL,TA,MIXING,
+     & DAMPING,IND_T,DNUVIV,DNUTAV,KARMAN,PRANDTL,UETCAR,KFROT,
+     & RUGOF,ZF,LINLOG)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -14,20 +14,9 @@
 !
 !brief    INITIALISES VISCOSITIES.
 !
-!history  C. VILLARET, P. TASSI, J.-M. HERVOUET
-!+        02/02/2011
-!+
-!+
-!
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
-!+
 !+   FORTRAN95 VERSION
-!
-!history  AG (LNHE)
-!+        **/01/01
-!+        V5P8
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -41,10 +30,19 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. VILLARET, P. TASSI
+!+        02/02/2011
+!+   Introducing logarithmic derivatives of velocities.
+!+
+!
 !history  J-M HERVOUET (LNHE)
-!+        21/11/2011
+!+        01/12/2011
 !+        V6P2
-!+   Treatment of tidal flats in case of Nikuradse law.
+!+   Treatment of tidal flats in case of logarithmic derivatives. 
+!+   LINLOG as a new parameter for vertical velocity derivatives.
+!+   Hardcoded option:
+!+   Option 1 for taking advantage of verticals (previous versions)
+!+   Option 2 for pure finite elements
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DAMPING        |-->| NUMBER FOR CHOICE OF DAMPING FUNCION
@@ -57,6 +55,8 @@
 !| IND_T          |-->| INDEX FOR TEMPERATURE
 !| KARMAN         |-->| KARMAN CONSTANT
 !| KFROT          |-->| LAW OF BOTTOM FRICTION
+!| LINLOG         |-->| 1: LINEAR VERTICAL DERIVATIVES OF VELOCITY
+!|                |   | 2: LOGARITHMIC VERTICAL DERIVATIVES OF VELOCITY
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH3D         |---| 3D MESH
@@ -99,7 +99,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)            :: NPOIN3, NPOIN2,NPLAN,KFROT
-      INTEGER, INTENT(IN)            :: NTRAC,DAMPING
+      INTEGER, INTENT(IN)            :: NTRAC,DAMPING,LINLOG
       INTEGER, INTENT(IN)            :: IELM3, MIXING,IND_T
       DOUBLE PRECISION, INTENT(IN)   :: GRAV,DNUVIV,DNUTAV,KARMAN
       DOUBLE PRECISION, INTENT(IN)   :: PRANDTL
@@ -116,17 +116,34 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ITRAC,I,IPLAN,I3D
-      DOUBLE PRECISION SDELTAZ,ZMIL,HH,SDLOGZ,AUX1,AUX2,DENOM
+      INTEGER ITRAC,I,IPLAN,I3D,OPTION
+      DOUBLE PRECISION SDELTAZ,AUX,AUX1,AUX2,DENOM,DELTAZ
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
-!     DISCRETISATION DES VISCOSITES SUR LA VERTICALE
-!     ON LES DECLARE P1 TRIANGLES AVEC DEUXIEME DIMENSION NPLAN-1
-!     POUR AVOIR UNE DISCRETISATION P0 SUR LA VERTICALE ET LINEAIRE EN PLAN
+!     SETTING DISCRETISATION OF WORK ARRAYS AS VELOCITY U
 !
-!     CECI EST FAIT EN UTILISANT LA COMPOSANTE DIMDISC MISE A 4111
-!     POUR UNE UTILISATION DANS MT02PP
+      CALL CPSTVC(U,TRAV1)
+      CALL CPSTVC(U,TRAV2)
+      CALL CPSTVC(U,TRAV3)
+      CALL CPSTVC(U,TRAV4)
+      CALL CPSTVC(U,TRAV5)
+!
+!     OPTION 1 : TAKING ADVANTAGE OF VERTICALS (ONLY WITH PRISMS)
+!     OPTION 2 : PURE FINITE ELEMENT PROGRAMMING (PRISMS OR TETRAHEDRONS)
+!
+      OPTION = 1
+!
+!-----------------------------------------------------------------------
+!
+      IF(OPTION.EQ.1.AND.IELM3.EQ.41) THEN
+!
+!     DISCRETISATION OF VISCOSITES ON VERTICAL
+!     DECLARED AS P1 TRIANGLES WITH SECOND DIMENSION NPLAN-1
+!     TO HAVE A DISCRETISATION P0 ON VERTICAL AND LINEAR ON HORIZONTAL
+!
+!     THIS IS DONE WITH COMPONENT DIMDISC SET TO 4111
+!     THAT IS SEEN BY MT02PP (AND FORBIDDEN IN MT02TT)
 !
       VISCVI%ADR(3)%P%DIMDISC=4111
       IF(NTRAC.GT.0) THEN
@@ -135,43 +152,25 @@
         ENDDO
       ENDIF
 !
-      CALL CPSTVC(DELTAR,TRAV1)
-      CALL CPSTVC(DELTAR,TRAV2)
-      CALL CPSTVC(DELTAR,TRAV3)
-      CALL CPSTVC(DELTAR,TRAV4)
-      CALL CPSTVC(DELTAR,TRAV5)
-!
 !     COMPUTING DISTANCE TO BOTTOM OF MIDDLE OF EVERY LAYER (TRAV7)
 !
-      IF(KFROT.NE.5) THEN
-        DO IPLAN= 1, NPLAN-1
-          DO I = 1, NPOIN2
-            I3D=I+NPOIN2*(IPLAN-1)
-            TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0-ZF%R(I)
-            TRAV7%R(I3D)=MAX(TRAV7%R(I3D),1.D-8)
-          ENDDO
+      DO IPLAN= 1, NPLAN-1
+        DO I = 1, NPOIN2
+          I3D=I+NPOIN2*(IPLAN-1)
+          TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0-ZF%R(I)
+          TRAV7%R(I3D)=MAX(TRAV7%R(I3D),1.D-8)
         ENDDO
-      ELSE
-!       THIS OPTION WORKS ONLY WITH NIKURADSE LAW, HENCE RUGOF
-!       IS HERE THE GRAIN SIZE
-        DO IPLAN= 1, NPLAN-1
-          DO I = 1, NPOIN2
-            I3D=I+NPOIN2*(IPLAN-1)
-            ZMIL=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0
-            TRAV7%R(I3D)=ZMIL+RUGOF%R(I)/30.D0-ZF%R(I)
-            TRAV7%R(I3D)=MAX(TRAV7%R(I3D),1.D-8)
-          ENDDO
-        ENDDO
-      ENDIF
-!     UPPER PLANE USELESS... BUT COMPUTATION DONE IN LONGML
-!                            AND SHOULD BE REMOVED
+      ENDDO
+!
+!     UPPER PLANE (USELESS HERE... BUT COMPUTATION DONE IN LONGML)
+!                           
       DO I=1,NPOIN2
         I3D=I+NPOIN2*(NPLAN-1)
         TRAV7%R(I3D)=Z%R(I3D)-ZF%R(I)
         TRAV7%R(I3D)=MAX(TRAV7%R(I3D),1.D-8)
       ENDDO
 !
-      IF(KFROT.NE.5) THEN
+      IF(LINLOG.EQ.1) THEN
 !       LINEAR DERIVATIVE
         DO I=1,NPOIN3-NPOIN2
           SDELTAZ=1.D0/MAX(Z%R(I+NPOIN2)-Z%R(I),1.D-4)
@@ -179,51 +178,116 @@
           TRAV2%R(I)=(     V%R(I+NPOIN2)-     V%R(I))*SDELTAZ
           TRAV3%R(I)=(DELTAR%R(I+NPOIN2)-DELTAR%R(I))*SDELTAZ
         ENDDO
-      ELSE
+      ELSEIF(LINLOG.EQ.2) THEN
 !       LOGARITHMIC DERIVATIVE 
-! 	DU/DZ =DU/D(LOGZ)/Z
+! 	DU/DZ =DU/D(LOG(Z))/Z
         DO IPLAN=1,NPLAN-1
         DO I=1,NPOIN2
           I3D=I+NPOIN2*(IPLAN-1)
-!         THIS OPTION WORKS ONLY WITH NIKURADSE LAW, HENCE RUGOF
-!         IS HERE THE GRAIN SIZE
-!         JMH 21/11/2011
-          AUX1=Z%R(I3D+NPOIN2)-ZF%R(I)+RUGOF%R(I)/30.D0
-          AUX2=Z%R(I3D       )-ZF%R(I)+RUGOF%R(I)/30.D0
+          SDELTAZ=1.D0/MAX(Z%R(I3D+NPOIN2)-Z%R(I3D),1.D-4)
+          AUX1=MAX(Z%R(I3D+NPOIN2)-ZF%R(I),1.D-4)
+          AUX2=MAX(Z%R(I3D       )-ZF%R(I),1.D-4)
           DENOM=LOG(AUX1)-LOG(AUX2)
-          IF(DENOM.GT.1.D-8) THEN
-            SDLOGZ=1.D0/DENOM
-            TRAV1%R(I3D)=(U%R(I3D+NPOIN2)-U%R(I3D))*SDLOGZ/TRAV7%R(I3D)
-            TRAV2%R(I3D)=(V%R(I3D+NPOIN2)-V%R(I3D))*SDLOGZ/TRAV7%R(I3D)
-!           BACK TO LINEAR DERIVATIVE FOR DELTAR
-            SDELTAZ=1.D0/MAX(Z%R(I3D+NPOIN2)-Z%R(I3D),1.D-4)
-            TRAV3%R(I3D)=(DELTAR%R(I3D+NPOIN2)-DELTAR%R(I3D))*SDELTAZ
+          IF(DENOM.GT.1.D-8.AND.TRAV7%R(I3D).LT.0.2D0*HN%R(I)) THEN
+!           LOGARITHMIC DERIVATIVE IN LOGARITHMIC PROFILE ZONE
+            AUX=1.D0/(DENOM*TRAV7%R(I3D))
           ELSE
-            SDELTAZ=1.D0/MAX(Z%R(I+NPOIN2)-Z%R(I),1.D-4)
-            TRAV1%R(I)=(     U%R(I+NPOIN2)-     U%R(I))*SDELTAZ
-            TRAV2%R(I)=(     V%R(I+NPOIN2)-     V%R(I))*SDELTAZ
-            TRAV3%R(I)=(DELTAR%R(I+NPOIN2)-DELTAR%R(I))*SDELTAZ
+!           LINEAR DERIVATIVE 
+            AUX=SDELTAZ
           ENDIF
+          TRAV1%R(I3D)=(U%R(I3D+NPOIN2)-U%R(I3D))*AUX
+          TRAV2%R(I3D)=(V%R(I3D+NPOIN2)-V%R(I3D))*AUX
+!         LINEAR DERIVATIVE FOR DELTAR            
+          TRAV3%R(I3D)=(DELTAR%R(I3D+NPOIN2)-DELTAR%R(I3D))*SDELTAZ
         ENDDO
         ENDDO
+      ELSE
+        WRITE(LU,*) 'UNKNOWN VERTICAL VELOCITY DERIVATIVES:',LINLOG
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !     SURFACE VALUE SET TO 0, IT IS ACTUALLY NOT USED
-!     EXCEPT IN LONGML OR LONGMB (FOR NOTHING)
+!     EXCEPT IN LONGML OR LONGMB (HERE FOR NOTHING)
 !
       DO I=NPOIN3-NPOIN2+1,NPOIN3
         TRAV1%R(I)=0.D0
         TRAV2%R(I)=0.D0
         TRAV3%R(I)=0.D0
-        TRAV4%R(I)=0.D0
-        RI%R(I)=0.D0
       ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      ELSEIF((OPTION.EQ.2.AND.IELM3.EQ.41).OR.IELM3.EQ.51) THEN
+!
+!     COMPUTING DISTANCE TO BOTTOM (TRAV7, WILL BE USED BY LONGML)
+!
+      DO IPLAN= 1, NPLAN
+        DO I = 1, NPOIN2
+          I3D=I+NPOIN2*(IPLAN-1)
+          TRAV7%R(I3D)=MAX(Z%R(I3D)-ZF%R(I),1.D-8)
+        ENDDO
+      ENDDO
+!
+      IF(LINLOG.EQ.1) THEN
+!
+!       LINEAR DERIVATIVE
+!
+        CALL VECTOR(TRAV1,'=','GRADF          Z',IELM3,1.D0,U,
+     &              U,U,U,U,U,MESH3D,MSK,MASKEL)
+        CALL VECTOR(TRAV2,'=','GRADF          Z',IELM3,1.D0,V,
+     &              U,U,U,U,U,MESH3D,MSK,MASKEL)
+        CALL VECTOR(TRAV3,'=','GRADF          Z',IELM3,1.D0,DELTAR,
+     &              U,U,U,U,U,MESH3D,MSK,MASKEL)
+        CALL VECTOR(TRAV4,'=','MASBAS          ',IELM3,1.D0,
+     &              U,U,U,U,U,U,MESH3D,MSK,MASKEL)
+!
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM(TRAV1,2,MESH3D)
+          CALL PARCOM(TRAV2,2,MESH3D)
+          CALL PARCOM(TRAV3,2,MESH3D)
+          CALL PARCOM(TRAV4,2,MESH3D)
+        ENDIF
+!
+        DO I=1,NPOIN3
+          IF(TRAV4%R(I).GT.1.D-6) THEN
+            TRAV4%R(I)=1.D0/TRAV4%R(I)
+            TRAV1%R(I)=TRAV1%R(I)*TRAV4%R(I)
+            TRAV2%R(I)=TRAV2%R(I)*TRAV4%R(I)
+            TRAV3%R(I)=TRAV3%R(I)*TRAV4%R(I)
+          ELSE
+            TRAV1%R(I)=0.D0
+            TRAV2%R(I)=0.D0
+            TRAV3%R(I)=0.D0
+          ENDIF
+        ENDDO
+!
+      ELSE
+!
+        WRITE(LU,*) 'VERTICAL VELOCITY DERIVATIVES:',LINLOG
+        WRITE(LU,*) 'NOT IMPLEMENTED WITH OPTION 2'
+        CALL PLANTE(1)
+        STOP
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      ELSE
+!
+        WRITE(LU,*) 'UNKNOWN OPTION OR ELEMENT IN VISCLM'
+        WRITE(LU,*) 'OPTION: ',OPTION
+        WRITE(LU,*) 'ELEMENT DISCRETISATION: ',IELM3
+        CALL PLANTE(1)
+        STOP
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
 !     COMPUTES THE RICHARDSON NUMBER
 !
-      DO I=1,NPOIN3-NPOIN2
+      DO I=1,NPOIN3
         TRAV4%R(I)=TRAV1%R(I)**2+TRAV2%R(I)**2
         RI%R(I)=-GRAV*TRAV3%R(I)/MAX(TRAV4%R(I),1.D-10)
         TRAV1%R(I)=SQRT(TRAV4%R(I))
@@ -235,23 +299,9 @@
 !
       IF(MIXING.EQ.1.OR.MIXING.EQ.3.OR.MIXING.EQ.5.OR.MIXING.EQ.6) THEN
 !
-        DO I = 1,NPOIN2
-          DO IPLAN= 1, NPLAN
-!           BACK TO ABSOLUTE VALUES (BUT Z0/30 KEPT)
-            I3D=I+NPOIN2*(IPLAN-1)
-            TRAV7%R(I3D)=TRAV7%R(I3D)+ZF%R(I)
-          ENDDO
-        ENDDO
-!
-        IF(KFROT.NE.5) THEN
-          CALL LONGML(TRAV2%R,TRAV7%R,HN%R,NPOIN3,NPOIN2,
-     &                NPLAN,MIXING,KARMAN,ZF%R)
-        ELSE
-!         SHIFTING DEPTH
-          CALL OS('X=Y+CZ  ',X=TRAV6,Y=HN,Z=RUGOF,C=1.D0/30.D0)
-          CALL LONGML(TRAV2%R,TRAV7%R,TRAV6%R,NPOIN3,NPOIN2,
-     &                NPLAN,MIXING,KARMAN,ZF%R)
-        ENDIF
+!                           TRAV7 IS STILL THE HEIGHT ABOVE BOTTOM
+        CALL LONGML(TRAV2%R,TRAV7%R,HN%R,NPOIN3,NPOIN2,
+     &              NPLAN,MIXING,KARMAN,ZF%R)
 !
       ELSEIF(MIXING.EQ.4) THEN
 !
@@ -259,6 +309,7 @@
           CALL LONGMB(TRAV2%R,Z%R,HN%R,NPOIN3,NPOIN2,NPLAN,
      &                U%R,V%R,X%R,Y%R,TRAV5%R,TRAV6%R,
      &                TRAV7%R,NTRAC,TA%ADR(IND_T)%P%R,KARMAN,ZF%R)
+!                     TRAV7 IS HERE A WORK ARRAY
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'TEMPERATURE NECESSAIRE POUR LE MODELE DE JET'
@@ -349,10 +400,8 @@
             CALL DRIUTI(TRAV3%R,RI%R,2,ITRAC,NPOIN3)
           ELSEIF(DAMPING.EQ.2) THEN
 !           VIOLLET (SEE CALL DRIALG ABOVE)
-!
           ELSEIF(DAMPING.EQ.3) THEN
 !           CV (SEE CALL DRICV ABOVE)
-!
           ENDIF
 !
           IF(DAMPING.EQ.0) THEN

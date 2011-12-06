@@ -592,7 +592,7 @@
      &               SVIDE, MESH3D, IELM3, GRAV, NPLAN,
      &               NPOIN3, NPOIN2, NTRAC, MSK, MASKEL,
      &               TA,MIXING,DAMPING,IND_T,DNUVIV,DNUTAV,KARMAN,
-     &               PRANDTL,UETCAR,KFROT,RUGOF,ZF)
+     &               PRANDTL,UETCAR,KFROT,RUGOF,ZF,LINLOG)
          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VISCLM'
 !
       ENDIF
@@ -1835,7 +1835,7 @@
      &               SVIDE, MESH3D, IELM3, GRAV, NPLAN,
      &               NPOIN3, NPOIN2, NTRAC, MSK, MASKEL,
      &               TA,MIXING,DAMPING,IND_T,DNUVIV,DNUTAV,KARMAN,
-     &               PRANDTL,UETCAR,KFROT,RUGOF,ZF)
+     &               PRANDTL,UETCAR,KFROT,RUGOF,ZF,LINLOG)
          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VISCLM'
 !
       ENDIF

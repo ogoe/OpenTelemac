@@ -153,9 +153,7 @@
 !           I1 FIRST POINT WITH WATER ABOVE (EXCEPT CASE OF TIDAL FLATS
 !           WHERE THE LEVEL UNDER THE FREE SURFACE IS TAKEN)
             I1=(MIN(NPLAN-1,IPBOT(N)+1)-1)*NPOIN+N
-!           1.D-6 TO AVOID LOG(0) ON TIDAL FLATS
-            DIST  = MAX((Z(NPOIN+I1)-Z(I1))+RUGOF(N)/30.D0,1.D-6)
-!           JMH 21/11/2011
+            DIST  = Z(NPOIN+I1)-Z(I1)
             AUX=MAX(1.001D0,30.D0*DIST/RUGOF(N))
             UETCAR(N)=(KARMAN/LOG(AUX))**2
      &               * (U3D(N+NPOIN)**2+V3D(N+NPOIN)**2)
