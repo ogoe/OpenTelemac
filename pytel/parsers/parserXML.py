@@ -1,6 +1,6 @@
 """@author David H. Roscoe and Sebastien E. Bourban
 """
-"""@note ... this work is based on a collaboration effort between
+"""@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
   |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
@@ -30,7 +30,7 @@ from parserStrings import parseArrayPaires
 from runcode import runCAS, scanCAS, checkConsistency, compilePRINCI
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories,copyFile,moveFile, checkSafe,matchSafe
-from mtlplots.plotTELEMAC import openFigure,closeFigure,drawFigure1D,drawFigure1DV,drawFigure2D
+from mtlplots.plotTELEMAC import openFigure,closeFigure,drawFigure1D,drawFigure2D
 
 # _____                     ________________________________________
 # ____/ XML Parser Toolbox /_______________________________________/
@@ -94,6 +94,7 @@ def runXML(xmlFile,xmlConfig):
          cfg = xmlConfig[cfgname]['cfg']
 
          did.update({ cfgname:{ 'code':do['code'], 'cas':cas,
+            'title': do['title'],
             'cmaps': path.join(cfg['PWD'],'ColourMaps') } })
 
          # options.process takes: translate;run;compile and none
@@ -210,7 +211,7 @@ def runXML(xmlFile,xmlConfig):
       for plot in xmlRoot.iter(typePlot):
          did = {}
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
-         draw = { "type":'', "support": '', "extract": '', "vars": '',
+         draw = { "type":'', "time": '[-1]', "deco": 'line', "extract": '', "vars": '',
                  "title": title, "config": 'distinct',
                  'layers':[] }
          draw = getXMLKeys(plot,draw)
@@ -218,15 +219,15 @@ def runXML(xmlFile,xmlConfig):
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for layer in plot.iter("layer"):
             # ~~> check keys
-            do = { "vars": draw["vars"], # change of plan: "support": draw["support"],
+            do = { "vars": draw["vars"], "time": draw["time"],
                    "extract": draw["extract"], "target":'',
                    "title":'', 'outFormat': 'png', "config": draw["config"] }
             do = getXMLKeys(layer,do)
             # ~~> distribute support
-            support = do["vars"].split(';')
-            for i in range(len(support)):
-               if ':' not in support[i]: support[i] = support[i] + ':' + draw["support"]
-            do["vars"] = ';'.join(support)
+            decor = do["vars"].split(';')
+            for i in range(len(decor)):
+               if ':' not in decor[i]: decor[i] = decor[i] + ':' + draw["deco"]
+            do["vars"] = ';'.join(decor)
 
             # ~~> round up targets and their configurations
             xref,src = do["target"].split(':')
@@ -273,11 +274,11 @@ def runXML(xmlFile,xmlConfig):
 
    # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
    # /!\ configurations cannot be called "together" or "distinct" or "oneofall"
-   for draw in drawList.keys():
-      for plot in drawList[draw]:
+   for typePlot in drawList.keys():
+      for draw in drawList[typePlot]:
 
          xlayers = ''   # now done with strings as arrays proved to be too challenging
-         for layer in plot["layers"]:
+         for layer in draw["layers"]:
             if layer['config'] == 'together':
                xys = []
                for x in xlayers.split('|'): xys.append( (x+';'+':'.join( layer['fileName'].keys() )).strip(';') )
@@ -299,25 +300,24 @@ def runXML(xmlFile,xmlConfig):
                xlayers = '|'.join(xys)
 
          for cfglist in xlayers.split('|'):
-            fig = openFigure(plot)    #/!\ fig represents here both plt and fig in fig = plt.figure()
-            for layer,cfgs in zip(plot["layers"],cfglist.split(';')):
+            fig = openFigure(draw)    #/!\ fig represents here both plt and fig in fig = plt.figure()
+            for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
                for cfg in cfgs.split(':'):
                   for file in layer['fileName'][cfg][0]:
 
                      # ~~ 1d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     if draw == "plot1d" and plot['type'] == "history":
+                     if typePlot == "plot1d":
                         drawFigure1D( layer['fileName'][cfg][2], { 'file': file,
-                           'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"])
-                           },fig )
-                     if draw == "plot1d" and plot['type'] == "v-section":
-                        drawFigure1DV( layer['fileName'][cfg][2], { 'file': file,
-                           'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"])
-                           },fig )
+                           'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
+                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] },fig )
 
                      # ~~ 2d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     if draw == "plot2d":  # so far no plot type, but this may change
+                     if typePlot == "plot2d":  # so far no plot type, but this may change
                         drawFigure2D( layer['fileName'][cfg][2], { 'file': file,
-                           'vars': layer["vars"] },fig )
+                           'vars': layer["vars"],
+                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] },fig )
+
+#figout = '.'.join([path.splitext(geometry['fileName'])[0],"mesh",geometry['outFormat']])
 
             closeFigure(fig)
 

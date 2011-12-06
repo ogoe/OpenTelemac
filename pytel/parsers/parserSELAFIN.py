@@ -1,6 +1,6 @@
 """@author Christopher J. Cawthorn and Sebastien E. Bourban
 """
-"""@note ... this work is based on a collaboration effort between
+"""@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
   |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
@@ -159,9 +159,10 @@ def parseSLF(f):
    IKLE,IPOBO,MESHX,MESHY = getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN)
 
    ATtags,ATs = getTimeHistorySLF(f,NBV1+NBV2,NPOIN3)
-   tags.update({ 'core': ATtags })
+   tags.update({ 'cores': ATtags })
+   tags.update({ 'times': ATs })
 
-   return tags, TITLE,(NELEM3,NPOIN3,NDP,NPLAN),(NBV1,NBV2,VARNAMES,VARUNITS),(IKLE,IPOBO,MESHX,MESHY), ATs
+   return tags, TITLE,(NELEM3,NPOIN3,NDP,NPLAN),(NBV1,NBV2,VARNAMES,VARUNITS),(IKLE,IPOBO,MESHX,MESHY)
 
 def subsetVariablesSLF(vars,VARNAMES):
    ids = []; names = []
@@ -178,22 +179,18 @@ def subsetVariablesSLF(vars,VARNAMES):
 
    return ids,names
 
-def getValueHistorySLF( f,ext,var ):
+def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NBV1,NBV2,NPOIN3,(varsNber,varsName) ):
 
-   var = var.split(':')[0]
-   # ~~ Extract data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   tags,title,nbrs,vars,mesh,x = parseSLF(f)
-   NELEM3,NPOIN3,NDP,NPLAN = nbrs
-   NBV1,NBV2,VARNAMES,VARUNITS = vars
-   IKLE,IPOBO,MESHX,MESHY = mesh
-   # ~~ Find sample locations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   le,ln,bn = xyLocateMeshSLF( ext, NELEM3,IKLE,MESHX,MESHY )
-   # ~~ Find variable indices ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   varsNber,varsName = subsetVariablesSLF(var,VARNAMES)
+   # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   subset = time  # /!\ History requires 2 values
+   if time[0] < 0: subset = [ 0,max( 0, len(tags['cores']) + time[0] ) ]
+   if time[1] < 0: subset = [ time[0],max( 0, len(tags['cores']) + time[1] ) ]
+
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsNber),len(bn),len(tags['core'])))
-   for t in range(len(tags['core'])):
-      f.seek(tags['core'][t])
+   z = np.zeros((len(varsNber),len(bn),len(tags['cores'])))
+   for t in range(len(tags['cores'])):
+      if t < subset[0] or t > subset[1]: continue
+      f.seek(tags['cores'][t])
       f.read(4+4+4)
       for ivar in range(NBV1+NBV2):
          f.read(4)
@@ -205,7 +202,7 @@ def getValueHistorySLF( f,ext,var ):
             f.read(4*NPOIN3)
          f.read(4)
 
-   return ('Time (s)',x),[(title,varsName,le,z)]
+   return ('Time (s)',tags['times']),[(TITLE,varsName,le,z)]
 
 def getMeshElementSLF(fileName,vars):
    
@@ -409,15 +406,15 @@ def crossLocateMeshSLF(polyline,NELEM,IKLE,MESHX,MESHY):
          pi = polyline[li]
          if p != []:
             if not consecutive(pi,p[0]):
-               ipt.append(pi); iet.append(ei)
+               ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
                ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
          else:
-            ipt.append(pi); iet.append(ei)
+            ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
             ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
 
       # ~~> You may duplicate the nodes at either end ~~~~~~~~~~~~~~
       for pi,ei in zip(p,e):
-         ipt.append(pi); iet.append(ei)
+         ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
          ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
 
    # ~~> Last node on the polyline ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -426,15 +423,20 @@ def crossLocateMeshSLF(polyline,NELEM,IKLE,MESHX,MESHY):
       pi = polyline[len(polyle)-1]
       if ipt != []:
          if not consecutive(pi,ipt[len(ipt)-1]):
-            ipt.append(pi); iet.append(ei)
+            ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
             ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
 
    return ipt,iet,ibr
 
-def getValuePolylineSLF(f,tags,(p,e,b),NBV1,NBV2,NPOIN3,IKLE,(varsNber,varsName)):
+def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NBV1,NBV2,NPOIN3,(varsNber,varsName)):
+   # TODO: you may have one or two values, the later defining an animation
+
+   # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   subset = [ time[0] ]
+   if time[0] < 0: subset = [ max( 0, len(tags['cores']) + time[0] ) ]
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsNber),len(p))) #,len(tags['core'])))
+   z = np.zeros((len(varsNber),len(p))) #,len(tags['cores'])))
    # ~~ Extract distances along ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    d = 0.0
    x = [ d ]
@@ -442,21 +444,21 @@ def getValuePolylineSLF(f,tags,(p,e,b),NBV1,NBV2,NPOIN3,IKLE,(varsNber,varsName)
       d = d + np.sqrt( np.power(p[xy+1][0]-p[xy][0],2) + np.power(p[xy+1][1]-p[xy][1],2) )
       x.append(d)
    # ~~ Extract data along line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #for t in range(len(tags['core'])):
-   t = 0
-   f.seek(tags['core'][t])
+   #for t in range(len(tags['cores'])): ... see the TODO above
+   t = int(subset[0])
+   f.seek(tags['cores'][t])
    f.read(4+4+4)
    for ivar in range(NBV1+NBV2):
       f.read(4)
       if ivar in varsNber:
          VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
          for xy in range(len(p)):
-            z[varsNber.index(ivar)][xy] = b[xy][0]*VARSOR[IKLE[e[xy]][0]] + b[xy][1]*VARSOR[IKLE[e[xy]][1]] + b[xy][2]*VARSOR[IKLE[e[xy]][2]]
+            z[varsNber.index(ivar)][xy] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
       else:
          f.read(4*NPOIN3)
       f.read(4)
 
-   return ('Distance (m)',x),[('cross section',varsName,z)]
+   return ('Distance (m)',x),[(TITLE,varsName,z)]
 """
 
 def getSLF(filename):

@@ -1,6 +1,6 @@
 """@author David H. Roscoe, Matthew J. Wood and Sebastien E. Bourban
 """
-"""@note ... this work is based on a collaboration effort between
+"""@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
   |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
@@ -203,11 +203,12 @@ def getValueHistorySortie(content,vars):
       v,s = var.split(':')
       
       # ~~ x-axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if s == "time": x0 = x
-      elif s == "iterator": x0 = i
-      else:
-         print '... do not know how to understand: ' + s + ' as support '
-         sys.exit()
+      x0 = x  # you allow for choice ...
+      #if s == "time": x0 = x
+      #elif s == "iterator": x0 = i
+      #else:
+      #   print '... do not know how to understand: ' + s + ' as support '
+      #   sys.exit()
 
       # ~~ y-axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if v == "voltotal": y0.append(y1)

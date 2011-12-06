@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """@author David H. Roscoe and Sebastien E. Bourban
 """
-"""@note ... this work is based on a collaboration effort between
+"""@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
   |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
@@ -30,7 +30,7 @@ from myplot2d import drawLabeledContours,drawMeshTriangles,drawMeshLines,drawCol
 # ~~> dependencies towards other pytel/modules
 from utils.files import getFileContent
 from parsers.parserSortie import getValueHistorySortie
-from parsers.parserSELAFIN import getValueHistorySLF,parseSLF,crossLocateMeshSLF,getValuePolylineSLF,subsetVariablesSLF
+from parsers.parserSELAFIN import getValueHistorySLF,parseSLF,crossLocateMeshSLF,xyLocateMeshSLF,getValuePolylineSLF,subsetVariablesSLF
 from parsers.parserStrings import parseArrayPaires
 
 # _____                   __________________________________________
@@ -175,7 +175,7 @@ def openFigure(plot):
 
 def closeFigure((plt,fig)):
 
-   plt.show()
+   #plt.show()
    #plt.savefig(fig)
 
    return
@@ -189,40 +189,42 @@ def drawFigure1D(type,what,(plt,fig)):
 # TODO: save the plot in a file name.png
 
    if 'sortie' in type.lower():
-      drawHistoryLines(plt,getValueHistorySortie(getFileContent(what['file']),what["vars"]),deco)
+      drawHistoryLines(plt,getValueHistorySortie(getFileContent(what['file']),
+         what["vars"]),deco)
+
    elif 'SELAFIN' in type.upper():
-      f = open(what['file'],'rb')
-      drawHistoryLines(plt,getValueHistorySLF(f,what["extract"],what["vars"]),deco)
-      f.close()
-   else:
-      print '... do not know how to draw this format: ' + type
-
-   return
-
-def drawFigure1DV(type,what,(plt,fig)):
-# TODO: use the names to label the curves
-# TODO: save the plot in a file name.png
-
-   if 'SELAFIN' in type.upper():
 
       # ~~ Extract data
       f = open(what['file'],'rb')
-      tags,title,numbers,vars,mesh,x = parseSLF(f)
+      tags,TITLE,numbers,vars,mesh = parseSLF(f)
       NELEM3,NPOIN3,NDP,NPLAN = numbers
       NBV1,NBV2,VARNAMES,VARUNITS = vars
       IKLE,IPOBO,MESHX,MESHY = mesh
 
-      if what.has_key('roi'):
-         deco['roi'] = what['roi']
-      else:
-         deco['roi'] = [ np.min(MESHX),np.max(MESHX), np.min(MESHY),np.max(MESHY) ]
+      if what['type'] == 'history':
+         if what.has_key('roi'): deco['roi'] = what['roi']
 
-      drawPolylineLines(plt,getValuePolylineSLF(f,tags,
-         crossLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
-         NBV1,NBV2,NPOIN3,IKLE,
-         subsetVariablesSLF(what["vars"],VARNAMES)),deco)
+         drawHistoryLines(plt,getValueHistorySLF(f,tags,what['time'],
+            xyLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
+            TITLE,NBV1,NBV2,NPOIN3,
+            subsetVariablesSLF(what["vars"],VARNAMES)),deco)
+
+      elif what['type'] == 'v-section':
+         if what.has_key('roi'):
+            deco['roi'] = what['roi']
+         else:
+            deco['roi'] = [ np.min(MESHX),np.max(MESHX), np.min(MESHY),np.max(MESHY) ]
+
+         drawPolylineLines(plt,getValuePolylineSLF(f,tags,what['time'],
+            crossLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
+            TITLE,NBV1,NBV2,NPOIN3,
+            subsetVariablesSLF(what["vars"],VARNAMES)),deco)
+
+      else:
+         print '... do not know how to draw this type: ' + what['type']
 
       f.close()
+
    else:
       print '... do not know how to draw this format: ' + type
 
@@ -236,7 +238,7 @@ def drawFigure2D(type,what,(plt,fig)):
 
       # ~~ Extract data
       f = open(what['file'],'rb')
-      tags,title,numbers,vars,mesh,x = parseSLF(f)
+      tags,title,numbers,vars,mesh = parseSLF(f)
       NELEM3,NPOIN3,NDP,NPLAN = numbers
       NBV1,NBV2,VARNAMES,VARUNITS = vars
       IKLE,IPOBO,MESHX,MESHY = mesh
@@ -276,7 +278,7 @@ def drawFigure2D(type,what,(plt,fig)):
          else:
             # ~~> Extract variable data
             VARSOR = np.zeros(NPOIN3)
-            f.seek(tags['core'][0])
+            f.seek(tags['cores'][0])
             f.read(4+4+4)
             for ivar in range(NBV1+NBV2):
                f.read(4)
@@ -293,8 +295,6 @@ def drawFigure2D(type,what,(plt,fig)):
       f.close()
    else:
       print '... do not know how to draw this format: ' + type
-
-   #figout = '.'.join([path.splitext(geometry['fileName'])[0],"mesh",geometry['outFormat']])
 
    return
 

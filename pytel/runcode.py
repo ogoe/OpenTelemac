@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """@author Sebastien E. Bourban, Noemie Durand and Alain Weisgerber
 """
-"""@note ... this work is based on a collaboration effort between
+"""@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
   |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.

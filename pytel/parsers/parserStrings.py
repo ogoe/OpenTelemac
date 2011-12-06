@@ -1,6 +1,6 @@
 """@author Sebastien E. Bourban
 """
-"""@note ... this work is based on a collaboration effort between
+"""@note ... this work is based on a collaborative effort between
   .________.                                                          ,--.
   |        |                                                      .  (  (
   |,-.    /   HR Wallingford                EDF - LNHE           / \_ \_/ .--.
@@ -44,7 +44,7 @@ def parseArrayPaires(s):
    z = []  # /!\ only pairs of points allowed for now
    for brack in re.findall(sqr_brack,s):
       p = []
-      for v in brack.split(';'):
+      for v in brack.split(';'): # /!\ this also work for one value
          proci = re.match(var_integer,v)
          procd = re.match(var_doublep,v)
          if procd:
