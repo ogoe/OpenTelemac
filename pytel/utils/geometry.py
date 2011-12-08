@@ -93,7 +93,7 @@ def getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
 
 def getTriangleArea( (x1,y1),(x2,y2),(x3,y3) ):
    # half the vector product
-   return 0.5 * ( x2-x1 ) * ( y3-y1 ) - ( x3-x1 ) * ( y2-y1 )
+   return 0.5 * ( ( x2-x1 )*( y3-y1 ) - ( x3-x1 )*( y2-y1 ) )
 
 def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
 
