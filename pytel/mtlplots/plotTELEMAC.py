@@ -11,7 +11,9 @@
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
 """
-"""@history 30/08/2011 -- Sebastien E. Bourban: 
+"""@history 30/08/2011 -- Sebastien E. Bourban:
+         Addition of a reference to time (or time frame rather) passed on
+         from the XML and extracted while reading the files.
 """
 """@brief
 """
@@ -175,7 +177,7 @@ def openFigure(plot):
 
 def closeFigure((plt,fig)):
 
-   #plt.show()
+   plt.show()
    #plt.savefig(fig)
 
    return
@@ -206,7 +208,7 @@ def drawFigure1D(type,what,(plt,fig)):
 
          drawHistoryLines(plt,getValueHistorySLF(f,tags,what['time'],
             xyLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
-            TITLE,NBV1,NBV2,NPOIN3,
+            TITLE,(NBV1+NBV2),NPOIN3,
             subsetVariablesSLF(what["vars"],VARNAMES)),deco)
 
       elif what['type'] == 'v-section':
@@ -217,7 +219,7 @@ def drawFigure1D(type,what,(plt,fig)):
 
          drawPolylineLines(plt,getValuePolylineSLF(f,tags,what['time'],
             crossLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
-            TITLE,NBV1,NBV2,NPOIN3,
+            TITLE,(NBV1+NBV2),NPOIN3,
             subsetVariablesSLF(what["vars"],VARNAMES)),deco)
 
       else:
@@ -337,53 +339,53 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Debuging drawFigure1D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   if False:
+   if True:
    # ~~ sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      plot = { 'title':'openTELEMAC','type':'sortie' }
-      fig = openFigure(plot)
+      draw = { 'title':'openTELEMAC','type':'sortie' }
+      fig = openFigure(draw)
 
       type = 'sortie'
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\t2d_bumpflu_v1p0.cas_2011-11-23-13h40min12s.sortie'
-      drawFigure1D( plot['type'], { 'file':fileName,
-         'vars':'voltotal:time' }, fig)
-
-      closeFigure(fig)
-
-   if False:
-   # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      plot = { 'title':'openTELEMAC','type':'SELAFIN' }
-      fig = openFigure(plot)
-
-      fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\r2d_bumpflu_v1p0.slf'
-      drawFigure1D( plot['type'], { 'file':fileName,
-         'extract': parseArrayPaires('[10;1][0;1]'),
-         'vars': 'surface libre:time' }, fig)
+      drawFigure1D( draw['type'], { 'file':fileName, 'type': 'history',
+         'time':parseArrayPaires("[0;-1]")[0], 'vars':'voltotal:time' }, fig)
 
       closeFigure(fig)
 
    if True:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      plot = { 'title':'openTELEMAC','type':'SELAFIN' }
-      fig = openFigure(plot)
+      draw = { 'title':'openTELEMAC','type':'SELAFIN' }
+      fig = openFigure(draw)
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\r2d_bumpflu_v1p0.slf'
-      drawFigure1DV( plot['type'], { 'file':fileName,
+      drawFigure1D( draw['type'], { 'file':fileName, 'type': 'history',
+         'extract': parseArrayPaires('[10;1][0;1]'),
+         'time':parseArrayPaires("[0;-1]")[0],'vars': 'surface libre:time' }, fig)
+
+      closeFigure(fig)
+
+   if True:
+   # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      draw = { 'title':'openTELEMAC','type':'SELAFIN' }
+      fig = openFigure(draw)
+
+      fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\r2d_bumpflu_v1p0.slf'
+      drawFigure1D( draw['type'], { 'file':fileName, 'type': 'v-section',
          'extract': parseArrayPaires('[0.0;1.0][20;1.0]'),
-         'vars': 'surface libre:distance;fond:distance' }, fig)
+         'time':parseArrayPaires("[-1]")[0],'vars': 'surface libre:distance;fond:distance' }, fig)
 
       closeFigure(fig)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Debuging drawFigure2D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   if False:
+   if True:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      plot = { 'title':'openTELEMAC','type':'SELAFIN' }
-      fig = openFigure(plot)
+      draw = { 'title':'openTELEMAC','type':'SELAFIN' }
+      fig = openFigure(draw)
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wintels\\geo_bumpflu_v1p0.slf'
-      drawFigure2D( plot['type'], { 'file':fileName,
-         'vars': 'fond:map'
+      drawFigure2D( draw['type'], { 'file':fileName,
+         'time':parseArrayPaires("[-1]")[0],'vars': 'fond:map'
          }, fig)
 
       closeFigure(fig)

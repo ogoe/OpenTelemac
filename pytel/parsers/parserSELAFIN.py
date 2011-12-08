@@ -10,6 +10,12 @@
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
 """
+"""@history 07/12/2011 -- Sebastien E. Bourban:
+         Addition of 2 new methods (getVariablesAt and getNeighboursSLF)
+         and modifications to others to:
+         + replace NBV1+NBV2 by NVAR and varsNumbers by varsIndexes
+         + and correct a bug in subsetVariablesSLF
+"""
 """@brief
          Tools for handling SELAFIN files and TELEMAC binary related in python
 """
@@ -148,6 +154,22 @@ def getTimeHistorySLF(f,NVAR,NPOIN3):
 
    return ATt, np.asarray(ATs)
 
+def getVariablesAt( f,tags,frame,NVAR,NPOIN3,varsIndexes ):
+
+   z = np.zeros((len(varsIndexes),NPOIN3))
+   if frame < len(tags['cores']) and frame > 0:
+      f.seek(tags['cores'][frame])
+      f.read(4+4+4)
+      for ivar in range(NVAR):
+         f.read(4)
+         if ivar in varsIndexes:
+            z[varsIndexes.index(ivar)] = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
+         else:
+            f.read(4*NPOIN3)
+         f.read(4)
+
+   return z
+
 def parseSLF(f):
    
    tags = { }; f.seek(0)
@@ -166,20 +188,21 @@ def parseSLF(f):
 
 def subsetVariablesSLF(vars,VARNAMES):
    ids = []; names = []
-
-   for ivar in range(len(VARNAMES)):
-      for v in vars.split(';'):
-         vi = v.split(':')[0]
-         if vi.lower() in VARNAMES[ivar].strip().lower():
-            ids.append(ivar)
-            names.append(VARNAMES[ivar].strip())
+   
+   v = vars.split(';')
+   for ivar in range(len(v)):
+      vi = v[ivar].split(':')[0]
+      for jvar in range(len(VARNAMES)):
+         if vi.lower() in VARNAMES[jvar].strip().lower():
+            ids.append(jvar)
+            names.append(VARNAMES[jvar].strip())
    if not len(ids) == len(vars.split(';')):
       print "... Could not find ",vars," in ",VARNAMES
       sys.exit()
 
    return ids,names
 
-def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NBV1,NBV2,NPOIN3,(varsNber,varsName) ):
+def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName) ):
 
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    subset = time  # /!\ History requires 2 values
@@ -187,50 +210,56 @@ def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NBV1,NBV2,NPOIN3,(varsNber,
    if time[1] < 0: subset = [ time[0],max( 0, len(tags['cores']) + time[1] ) ]
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsNber),len(bn),len(tags['cores'])))
+   z = np.zeros((len(varsIndexes),len(bn),len(tags['cores'])))
    for t in range(len(tags['cores'])):
       if t < subset[0] or t > subset[1]: continue
       f.seek(tags['cores'][t])
       f.read(4+4+4)
-      for ivar in range(NBV1+NBV2):
+      for ivar in range(NVAR):
          f.read(4)
-         if ivar in varsNber:
+         if ivar in varsIndexes:
             VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
             for xy in range(len(bn)):
-               z[varsNber.index(ivar)][xy][t] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
+               z[varsIndexes.index(ivar)][xy][t] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
          else:
             f.read(4*NPOIN3)
          f.read(4)
 
    return ('Time (s)',tags['times']),[(TITLE,varsName,le,z)]
 
-def getMeshElementSLF(fileName,vars):
-   
-   var,sup = vars.split(':')
-   # ~~ Extract data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f = open(fileName,'rb')
-   TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,NPLAN = getHeaderParametersSLF(f)
-   IKLE,IPOBO,MESHX,MESHY = getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN)
-   # ~~ Close data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.close()
-   # ~~ min-max ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   xmin = np.min(MESHX); xmax = np.max(MESHX)
-   ymin = np.min(MESHY); ymax = np.max(MESHY)
-   # ~~ Plot the mesh ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   elements = []
-   for e in IKLE:
-      element = []
-      for n in e:
-          element.append((MESHX[n],MESHY[n]))
-      elements.append(element)
+def getEdgesSLF(IKLE):
 
-   return (xmin,xmax,ymin,ymax), np.asarray(elements)
+   edges = []
+   for e in IKLE:
+      if (e[0],e[1]) not in edges: edges.append((e[1],e[0]))
+      if (e[1],e[2]) not in edges: edges.append((e[2],e[1]))
+      if (e[2],e[0]) not in edges: edges.append((e[0],e[2]))
+
+   return edges
+
+def getNeighboursSLF(IKLE):
+
+   print '    +> listing neighbours of edges'
+   neighbours = {}
+   for e,i in zip(IKLE,range(len(IKLE))):
+      nk = neighbours.keys()
+      if (e[0],e[1]) not in nk: neighbours.update({ (e[1],e[0]):[i] })
+      else: neighbours[(e[0],e[1])].append(i)
+      if (e[1],e[2]) not in nk: neighbours.update({ (e[2],e[1]):[i] })
+      else: neighbours[(e[1],e[2])].append(i)
+      if (e[2],e[0]) not in nk: neighbours.update({ (e[0],e[2]):[i] })
+      else: neighbours[(e[2],e[0])].append(i)
+
+   print '    +> switching the refences to the edges'
+   nk = neighbours.keys()
+   for e1,e2 in nk: neighbours.update({ (e2,e1):neighbours[(e1,e2)] })
+
+   return neighbours
 
 """
    An accuracy has been introduced because Python does not seem to be accurate
       with sums and multiplications
 """
-
 def consecutive( p1,p2 ):
 
    if ( p2 == [] or p1 == [] ): return False
@@ -248,7 +277,7 @@ def consecutive( p1,p2 ):
 """
 def xyLocateMeshSLF(xyo,NELEM,IKLE,MESHX,MESHY):
    
-   locate = - np.ones((len(xyo),), dtype=np.int)
+   locate = - np.ones((len(xyo)), dtype=np.int)
    locatn = - np.ones((len(xyo),3), dtype=np.int)
    bryctr = np.zeros((len(xyo),3))
    
@@ -428,7 +457,7 @@ def crossLocateMeshSLF(polyline,NELEM,IKLE,MESHX,MESHY):
 
    return ipt,iet,ibr
 
-def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NBV1,NBV2,NPOIN3,(varsNber,varsName)):
+def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName)):
    # TODO: you may have one or two values, the later defining an animation
 
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -436,7 +465,7 @@ def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NBV1,NBV2,NPOIN3,(varsNber,v
    if time[0] < 0: subset = [ max( 0, len(tags['cores']) + time[0] ) ]
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsNber),len(p))) #,len(tags['cores'])))
+   z = np.zeros((len(varsIndexes),len(p))) #,len(tags['cores'])))
    # ~~ Extract distances along ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    d = 0.0
    x = [ d ]
@@ -448,34 +477,18 @@ def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NBV1,NBV2,NPOIN3,(varsNber,v
    t = int(subset[0])
    f.seek(tags['cores'][t])
    f.read(4+4+4)
-   for ivar in range(NBV1+NBV2):
+   for ivar in range(NVAR):
       f.read(4)
-      if ivar in varsNber:
+      if ivar in varsIndexes:
          VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
          for xy in range(len(p)):
-            z[varsNber.index(ivar)][xy] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
+            z[varsIndexes.index(ivar)][xy] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
       else:
          f.read(4*NPOIN3)
       f.read(4)
 
    return ('Distance (m)',x),[(TITLE,varsName,z)]
-"""
 
-def getSLF(filename):
-    # getSelafin: Read a binary (big-endian) Selafin file
-    #                 and returns the data in several variables
-    
-    f = open(filename,'rb')
-
-    TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,NPLAN = getHeaderSLF(f)
-    IKLE,IPOBO,MESHX,MESHY = getHeaderMesh(f,NELEM3,NPOIN3,NDP,NPLAN)
-
-    f.close()
-
-
-    return TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,IKLE,IPOBO,MESHX,MESHY,VARSOR,TIME,NTIME
-
-"""
 def putSLF(TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,IKLE,IPOBO,MESHX,MESHY,VARSOR,TIME,NTIME,selfile):
     # Writes a Selafin file (binary, big-endian) for the supplied data.
     
