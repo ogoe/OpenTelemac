@@ -786,7 +786,7 @@
         CALL FLUX_EF_VF_3D(FLOW,W2D,W,NSEG,MESH3D%NSEG,NELEM2,
      &                     MESH3D%NELEM,MESH2D,INIFLOW,
      &                     IOPT1,2,MESH3D%TYPELM+1,NOLAY,
-     &                     MESH3D%IKLE%I,MESH3D%NELMAX)
+     &                     MESH3D%IKLE%I,MESH3D%NELMAX,KNOLG)
 !                                2: HORIZONTAL FLUXES FROM TOP TO BOTTOM
 !       FLUX LIMITATION (FLULIM IS 2D, SO NUMBERING FROM TOP TO BOTTOM
 !                        MAKES NO PROBLEM)
