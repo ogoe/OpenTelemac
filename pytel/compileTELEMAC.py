@@ -188,7 +188,7 @@ def createExeFiles(ename,ecfg,eprog):
    chdir(ExeDir)
    
    # ~~ Removes existing executables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if 'homere' in ename:
+   if 'homere' in ename or 'systeme' in ename:
       ExeFile = path.join(ExeDir,eprog + cfg['TELVER'] + cfg['SYSTEM']['SFX_EXE'])
       LibFile = path.join(ExeDir,eprog + cfg['TELVER'] + cfg['SYSTEM']['SFX_LIB'])
       ObjCmd = path.join(ExeDir,eprog + cfg['TELVER'] + '.cmdo')
@@ -341,7 +341,6 @@ if __name__ == "__main__":
             debug = False
             MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
             t,r = getTree(item,prg[item][0],all,0)
-            debug = True
             #del MAKSYSTEL['deps'][prg[item][0]]
             MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=True)
             HOMERES.update({item:MAKSYSTEL})

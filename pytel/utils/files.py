@@ -93,6 +93,14 @@ def putFileContent(file,lines):
    SrcF.write(('\n'.join(lines)).replace('\r','').replace('\n\n','\n'))
    SrcF.close()
    return
+"""
+
+"""
+def addFileContent(file,lines):
+   SrcF = open(file,'ab')
+   SrcF.write(('\n'+'\n'.join(lines)).replace('\r','').replace('\n\n','\n'))
+   SrcF.close()
+   return
 
 """
 

@@ -249,7 +249,12 @@ def parseConfig_CompileTELEMAC(cfg):
    cfgTELEMAC['COMPILER'].update({'MODULES':get.split()})
    cfgTELEMAC['COMPILER'].update({'REBUILD':tbd})
    for mod in get.split():
-      if mod not in cfgTELEMAC['MODULES'].keys(): del cfgTELEMAC['COMPILER']['MODULES'][mod]
+      if mod not in cfgTELEMAC['MODULES'].keys():
+         print ('\nThe following module does not exist %s \n' % (mod))
+         sys.exit()
+   for mod in get.split():
+      if mod not in cfgTELEMAC['MODULES'].keys():
+         del cfgTELEMAC['COMPILER']['MODULES'][cfgTELEMAC['COMPILER']['MODULES'].index(mod)]
    # Get cmd_obj: ... cmd_lib: ... cmd_exe: ...
    # the compiler dependent command lines to create obj, lib and exe
    # respectively
@@ -299,7 +304,12 @@ def parseConfig_TranslateTELEMAC(cfg):
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
    cfgTELEMAC[cfg]['COMPILER'].update({'MODULES':get.split()})
    for mod in get.split():
-      if mod not in cfgTELEMAC[cfg]['MODULES'].keys(): del cfgTELEMAC[cfg]['COMPILER']['MODULES'][mod]
+      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+         print ('\nThe following module does not exist %s \n' % (mod))
+         sys.exit()
+   for mod in get.split():
+      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+         del cfgTELEMAC[cfg]['COMPILER']['MODULES'][cfgTELEMAC[cfg]['COMPILER']['MODULES'].index(mod)]
 
    return cfgTELEMAC
 
@@ -332,7 +342,12 @@ def parseConfig_TranslateCAS(cfg):
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
    cfgTELEMAC[cfg]['COMPILER'].update({'MODULES':get.split()})
    for mod in get.split():
-      if mod not in cfgTELEMAC[cfg]['MODULES'].keys(): del cfgTELEMAC[cfg]['COMPILER']['MODULES'][mod]
+      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+         print ('\nThe following module does not exist %s \n' % (mod))
+         sys.exit()
+   for mod in get.split():
+      if mod not in cfgTELEMAC[cfg]['MODULES'].keys():
+        del cfgTELEMAC[cfg]['COMPILER']['MODULES'][cfgTELEMAC[cfg]['COMPILER']['MODULES'].index(mod)]
 
    # Get tellng:
    # TELEMAC language code, to know the default language
@@ -380,7 +395,12 @@ def parseConfig_DoxygenTELEMAC(cfg):
    cfgTELEMAC['COMPILER'].update({'MODULES':get.split()})
    cfgTELEMAC['COMPILER'].update({'REBUILD':tbd})
    for mod in get.split():
-      if mod not in cfgTELEMAC['MODULES'].keys(): del cfgTELEMAC['COMPILER']['MODULES'][mod]
+      if mod not in cfgTELEMAC['MODULES'].keys():
+         print ('\nThe following module does not exist %s \n' % (mod))
+         sys.exit()
+   for mod in get.split():
+      if mod not in cfgTELEMAC['MODULES'].keys():
+        del cfgTELEMAC['COMPILER']['MODULES'][cfgTELEMAC['COMPILER']['MODULES'].index(mod)]
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively

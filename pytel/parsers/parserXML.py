@@ -11,6 +11,7 @@
 !________!                                                        `--'   `--
 """
 """@history 15/08/2011 -- Sebastien E. Bourban:
+         Major re-work of this XML parser
 """
 """@brief
 """

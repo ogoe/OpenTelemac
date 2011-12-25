@@ -321,7 +321,7 @@ def runPARTEL(partel,file,conlim,ncsize):
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
 # ~~~      print_twice echos the listing output to the sortie file ~~~
-def print_twice(pipe,ofile):  # JPG: ,lastlineempty):
+def print_twice(pipe,ofile):
 
    # Utility subroutine to print listing data both to stdout 
    # and to the listing file, accessed via the ofile handle
@@ -347,13 +347,12 @@ def runCode(exe,sortiefile):
    ofile = None
    # If sortiefile is required, open it
    if sortiefile != None: ofile = open(sortiefile,"w")
-   # JPG removed this: lastlineempty=False
    # Start process with command 'exe', and direct standard output and
    # standard error into PIPE (part of the Popen object called proc)
    proc = Popen(exe,bufsize=1024,stdout=PIPE,stderr=PIPE,shell=True)
    # Define a thread, t1, that will execute the subroutine 'print_twice', with
    # the args given.
-   t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile))  # JPG removed last argument: ,lastlineempty,
+   t1 = threading.Thread(target=print_twice,args=(proc.stdout,ofile))
    # Start the print_twice thread. This continues until the stdout buffer is empty
    # (usually when the Telemac code has terminated)
    t1.start()
@@ -477,6 +476,10 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    chdir(TMPDir)
    # >>> Creating LNG file
    processCONFIG(lang)
+
+   # ~~ Handling Time Step for Progress ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #time,defaut = getKeyWord('TIME STEP',cas,dico,frgb)
+   #time,defaut = getKeyWord('NUMBER OF TIME STEPS',cas,dico,frgb)
 
    # ~~ Handling Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Names for the executable set
@@ -693,6 +696,12 @@ if __name__ == "__main__":
    if options.version != '': cfgs[cfgname]['version'] = options.version
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
+   print '\n\nRunning your CAS file for:\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   print '    +> configuration: ' +  cfgname
+   print '    +> root:          ' +  cfgs[cfgname]['root']
+   print '    +> version        ' +  cfgs[cfgname]['version'] + '\n\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
 # >>> Check wether the config has been compiled for the runcode
    if options.compileonly: cfg['REBUILD'] = 2

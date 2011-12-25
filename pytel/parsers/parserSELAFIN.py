@@ -239,22 +239,23 @@ def getEdgesSLF(IKLE):
 
 def getNeighboursSLF(IKLE):
 
-   print '    +> listing neighbours of edges'
-   neighbours = {}
+   print '    +> start listing neighbours of edges'
+   neighbours = {}; ne = []
    for e,i in zip(IKLE,range(len(IKLE))):
-      nk = neighbours.keys()
-      if (e[0],e[1]) not in nk: neighbours.update({ (e[1],e[0]):[i] })
-      else: neighbours[(e[0],e[1])].append(i)
-      if (e[1],e[2]) not in nk: neighbours.update({ (e[2],e[1]):[i] })
-      else: neighbours[(e[1],e[2])].append(i)
-      if (e[2],e[0]) not in nk: neighbours.update({ (e[0],e[2]):[i] })
-      else: neighbours[(e[2],e[0])].append(i)
+      nk = neighbours.keys(); ne.append({})
+      for k in [0,1,2]:
+         ne[i].update({ (e[k],e[(k+1)%3]):-1, (e[(k+1)%3],e[k]):-1 })
+         if (e[k],e[(k+1)%3]) not in nk: neighbours.update({ (e[(k+1)%3],e[k]):i })
+         else:
+            j = neighbours[(e[k],e[(k+1)%3])]
+            ne[i][(e[k],e[(k+1)%3])] = j
+            ne[i][(e[(k+1)%3],e[k])] = j
+            ne[j][(e[k],e[(k+1)%3])] = i
+            ne[j][(e[(k+1)%3],e[k])] = i
+            del neighbours[(e[k],e[(k+1)%3])]
+   print '    +> listing neighbours of edges completed'
 
-   print '    +> switching the refences to the edges'
-   nk = neighbours.keys()
-   for e1,e2 in nk: neighbours.update({ (e2,e1):neighbours[(e1,e2)] })
-
-   return neighbours
+   return ne
 
 """
    An accuracy has been introduced because Python does not seem to be accurate

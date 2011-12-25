@@ -34,6 +34,7 @@ from os import path,walk
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import getTheseFiles,isNewer,addToList
+from utils.progressbar import ProgressBar
 
 debug = False
 
@@ -89,63 +90,108 @@ listINTRINSIC = [ \
 """
    
 """
-beforethisafter=r'\s*(?P<before>%s(?=\s*(\b(%s)\b)))'+ \
-                          r'\s*(?P<this>(\b(%s)\b))'+ \
-                          r'\s*(?P<after>%s)\s*\Z'
+#?beforethisafter=r'\s*(?P<before>%s(?=\s*(\b(%s)\b)))'+ \
+#?                          r'\s*(?P<this>(\b(%s)\b))'+ \
+#?                          r'\s*(?P<after>%s)\s*\Z'
+beforethisafter=r'(?P<before>%s(?=\s?(\b(%s)\b)))'+ \
+                          r'\s?(?P<this>(\b(%s)\b))'+ \
+                          r'\s?(?P<after>%s)\Z'
 
-emptyline = re.compile(r'\s*\Z',re.I)
+#?emptyline = re.compile(r'\s*\Z') #,re.I)
+emptyline = re.compile(r'\Z') #,re.I)
 
-f77comment = re.compile(r'[C!#*]',re.I)
-f77continu2 = re.compile(r'(\s{5}\S\s*)(?P<line>.*)',re.I)
-f90comment = re.compile(r'(?P<line>([^"]*"[^"]*"[^"!]*|[^\']*\'[^\']*\'[^\'!]*|[^!]*))!{1}(?P<rest>.*)',re.I)
-f90continu1 = re.compile(r'(?P<line>.*)&\s*\Z',re.I)
-f90continu2 = re.compile(r'(\s*&\s*)(?P<line>.*)&\s*\Z',re.I)
-f90continu3 = re.compile(r'(\s*&\s*)(?P<line>.*)',re.I)
+f77comment = re.compile(r'[C!#*]') #,re.I)
+#?f77continu2 = re.compile(r'(\s{5}\S\s*)(?P<line>.*)') #,re.I)
+f77continu2 = re.compile(r'(\s{5}\S\s?)(?P<line>[^\Z]*)') #,re.I)
+f90comment = re.compile(r'(?P<line>([^"]*"[^"]*"[^"!]*|[^\']*\'[^\']*\'[^\'!]*|[^!]*))!{1}(?P<rest>[^\Z]*)') #,re.I)
+#?f90continu1 = re.compile(r'(?P<line>.*)&\s*\Z') #,re.I)
+f90continu1 = re.compile(r'(?P<line>.*)&\Z') #,re.I)
+#?f90continu2 = re.compile(r'(\s*&\s*)(?P<line>.*)&\s*\Z') #,re.I)
+f90continu2 = re.compile(r'(&\s?)(?P<line>.*)&\Z') #,re.I)
+#?f90continu3 = re.compile(r'(\s*&\s*)(?P<line>.*)') #,re.I)
+f90continu3 = re.compile(r'(&\s?)(?P<line>[^\Z]*)\Z') #,re.I)
 
-var_dquots = re.compile(r'(?P<dquot>".*?")',re.I)
-var_squots = re.compile(r"(?P<squot>'.*?')",re.I)
-var_bracks = re.compile(r'(?P<brack>\([\w,*\s+-/:]*?\))',re.I)
+var_dquots = re.compile(r'(?P<dquot>".*?")') #,re.I)
+var_squots = re.compile(r"(?P<squot>'.*?')") #,re.I)
+var_bracks = re.compile(r'(?P<brack>\([\w,*\s+-/:]*?\))') #,re.I)
 
 # no (\+|\-)? to capture the sign if there ... different from the utils version
-var_doublep = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z',re.I)
-var_integer = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z',re.I)
+#?var_doublep = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z') #,re.I)
+var_doublep = re.compile(r'(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z') #,re.I)
+#?var_integer = re.compile(r'\s*(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>.*?)\s*\Z') #,re.I)
+var_integer = re.compile(r'(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z') #,re.I)
 f90logic = '(FALSE|TRUE|EQ|NE|GT|LT|GE|LE|OR|AND|XOR)'
-var_logical = re.compile(r'.*?(?P<logic>\.\s*?%s\s*?\.).*?'%(f90logic),re.I)
-var_pointer = re.compile(r'\s*(?P<before>.*?)(?P<this>%\w+)(?P<after>.*?)\s*\Z',re.I)
-var_word = re.compile(r'\s*(?P<before>.*?)(?P<word>\b\w+?\b)(?P<after>.*?)\s*\Z',re.I)
+#?var_logical = re.compile(r'.*?(?P<logic>\.\s*?%s\s*?\.).*?'%(f90logic)) #,re.I)
+var_logical = re.compile(r'[^\.](?P<logic>\.\s?%s\s?\.)'%(f90logic)) #,re.I)
+#?var_pointer = re.compile(r'\s*(?P<before>.*?)(?P<this>%\w+)(?P<after>.*?)\s*\Z') #,re.I)
+var_pointer = re.compile(r'(?P<before>.*?)(?P<this>%\w+)(?P<after>[^\Z]*)\Z') #,re.I)
+#?var_word = re.compile(r'\s*(?P<before>.*?)(?P<word>\b\w+?\b)(?P<after>.*?)\s*\Z') #,re.I)
+var_word = re.compile(r'(?P<before>.*?)(?P<word>\b\w+?\b)(?P<after>[^\Z]*)\Z') #,re.I)
 
-var_assocs = re.compile(r'\s*(?P<before>.*?)(?P<name>\s*\b\w+?\b\s*=\s*)(?P<after>.*?)\s*\Z',re.I)
-var_equals = re.compile(r'\s*(?P<before>.*?)(?P<name>\s*\b\w+?\b)(?P<value>\s*=[^,]*)(?P<after>.*?)\s*\Z',re.I)
-var_operand = re.compile(r'\s*(?P<before>.*?)(?=[^\s])\W+(?P<after>.*?)\s*\Z',re.I)
-argnames = re.compile(r'\s*(?P<name>\b\w+\b)\s*?(|\((?P<args>.*)\))\s*\Z',re.I)
+#?var_assocs = re.compile(r'\s*(?P<before>.*?)(?P<name>\s*\b\w+?\b\s*=\s*)(?P<after>.*?)\s*\Z') #,re.I)
+var_assocs = re.compile(r'(?P<before>.*?)(?P<name>\s?\b\w+?\b\s?=\s?)(?P<after>[^\Z]*)\Z') #,re.I)
+#?var_equals = re.compile(r'\s*(?P<before>.*?)(?P<name>\s*\b\w+?\b)(?P<value>\s*=[^,]*)(?P<after>.*?)\s*\Z') #,re.I)
+var_equals = re.compile(r'(?P<before>.*?)(?P<name>\s?\b\w+?\b)(?P<value>\s?=[^,]*)(?P<after>[^\Z]*)\Z') #,re.I)
+#?var_operand = re.compile(r'\s*(?P<before>.*?)(?=[^\s])\W+(?P<after>.*?)\s*\Z') #,re.I)
+var_operand = re.compile(r'(?P<before>.*?)(?=[^\s])\W+(?P<after>[^\Z]*)\Z') #,re.I)
+#?argnames = re.compile(r'\s*(?P<name>\b\w+\b)\s*?(|\((?P<args>.*)\))\s*\Z') #,re.I)
+argnames = re.compile(r'(?P<name>\b\w+\b)\s?(|\((?P<args>.*)\))\Z') #,re.I)
 
-itf_title = re.compile(r'\s*?\bINTERFACE\b(|\s+?(?P<name>\w+).*?)\s*\Z',re.I)
-itf_close = re.compile(r'\s*?\bEND\s+INTERFACE\b(|\s+?(?P<name>\w+).*?)\s*\Z',re.I)
-use_title = re.compile(r'\s*?\bUSE\b\s+?(?P<name>\b\w+\b)\s*(|,\s*(?P<after>.*?))\s*\Z',re.I)
-xtn_title = re.compile(r'.*?\bEXTERNAL\b(.*?::)?\s*?(?P<vars>.*?)\s*\Z',re.I)
-itz_title = re.compile(r'\s*?\bINTRINSIC\b(.*?::)?\s*?(?P<vars>.*?)\s*\Z',re.I)
-implictNone = re.compile(r'\s*?\bIMPLICIT\s+NONE\b\s*\Z',re.I)
-inc_title = re.compile(r'\s*?\bINCLUDE\b\s*(?P<file>.*?)\s*\Z',re.I)
-cmn_title = re.compile(r'\s*?\bCOMMON\b\s*?/\s*(?P<name>\w*)\s*/\s*?(?P<after>.*?)\s*\Z',re.I)
-ctn_title = re.compile(r'\s*?\bCONTAINS\b\s*\Z',re.I)
-def_title = re.compile(r'\s*?\bTYPE\b\s+?(?P<name>\b\w+\b)\s*\Z',re.I)
-def_close = re.compile(r'\s*?\bEND TYPE\b\s+?(?P<name>\b\w+\b)\s*\Z',re.I)
+#?itf_title = re.compile(r'\s*?\bINTERFACE\b(|\s+?(?P<name>\w+).*?)\s*\Z') #,re.I)
+itf_title = re.compile(r'\bINTERFACE\b(|\s(?P<name>\w+)[^\Z]*)\Z') #,re.I)
+#?itf_uless = re.compile(r'\s*?\bMODULE\s+?PROCEDURE\s+?(?P<name>\w+).*?\s*\Z') #,re.I)
+itf_uless = re.compile(r'\bMODULE\sPROCEDURE\s(?P<name>\w+)[^\Z]*\Z') #,re.I)
+#?itf_close = re.compile(r'\s*?\bEND\s+INTERFACE\b(|\s+?(?P<name>\w+).*?)\s*\Z') #,re.I)
+itf_close = re.compile(r'\bEND\sINTERFACE\b(|\s(?P<name>\w+)[^\Z]*)\Z') #,re.I)
+#?use_title = re.compile(r'\s*?\bUSE\b\s+?(?P<name>\b\w+\b)\s*(|,\s*(?P<after>.*?))\s*\Z') #,re.I)
+use_title = re.compile(r'\bUSE\b\s(?P<name>\b\w+\b)\s?(|,\s?(?P<after>[^\Z]*))\Z') #,re.I)
+#?xtn_title = re.compile(r'.*?\bEXTERNAL\b(.*?::)?\s*?(?P<vars>.*?)\s*\Z') #,re.I)
+xtn_title = re.compile(r'.*?\bEXTERNAL\b(.*?::)?\s?(?P<vars>[^\Z]*)\Z') #,re.I)
+#?itz_title = re.compile(r'\s*?\bINTRINSIC\b(.*?::)?\s*?(?P<vars>.*?)\s*\Z') #,re.I)
+itz_title = re.compile(r'\bINTRINSIC\b([^:]?::)?\s?(?P<vars>[^\Z]*)\Z') #,re.I)
+#?implictNone = re.compile(r'\s*?\bIMPLICIT\s+NONE\b\s*\Z') #,re.I)
+implictNone = re.compile(r'\bIMPLICIT\sNONE\b\Z') #,re.I)
+#?inc_title = re.compile(r'\s*?\bINCLUDE\b\s*(?P<file>.*?)\s*\Z') #,re.I)
+inc_title = re.compile(r'\bINCLUDE\b\s?(?P<file>[^\Z]*)\Z') #,re.I)
+#?cmn_title = re.compile(r'\s*?\bCOMMON\b\s*?/\s*(?P<name>\w*)\s*/\s*?(?P<after>.*?)\s*\Z') #,re.I)
+cmn_title = re.compile(r'\bCOMMON\b\s?/\s?(?P<name>\w*)\s?/\s?(?P<after>[^\Z]*)\Z') #,re.I)
+#?ctn_title = re.compile(r'\s*?\bCONTAINS\b\s*\Z') #,re.I)
+ctn_title = re.compile(r'\bCONTAINS\b\Z') #,re.I)
+#?def_title = re.compile(r'\s*?\bTYPE\b\s+?(?P<name>\b\w+\b)\s*\Z') #,re.I)
+def_title = re.compile(r'\bTYPE\b\s(?P<name>\b\w+\b)\Z') #,re.I)
+#?def_close = re.compile(r'\s*?\bEND TYPE\b\s+?(?P<name>\b\w+\b)\s*\Z') #,re.I)
+def_close = re.compile(r'\bEND TYPE\b\s(?P<name>\b\w+\b)\Z') #,re.I)
 
-als_core = re.compile(r'(?P<before>.*?)(?P<alias>\b\w([\w%]|\([\w(,:)%]*\))*)\s*=>\s*(?P<link>\b\w+?\b)(?P<after>.*?)\s*\Z',re.I)
-var_format = re.compile(r'\s*(?P<before>.*?)\d+?\s+?\bFORMAT\b(?P<after>.*?)\s*\Z',re.I)
+#?als_core = re.compile(r'(?P<before>.*?)(?P<alias>\b\w([\w%]|\([\w(,:)%]*\))*)\s*=>\s*(?P<link>\b\w+?\b)(?P<after>.*?)\s*\Z') #,re.I)
+als_core = re.compile(r'(?P<before>.*?)(?P<alias>\b\w([\w%]|\([\w(,:)%]*\))*)\s?=>\s?(?P<link>\b\w+?\b)(?P<after>[^\Z]*)\Z') #,re.I)
+#?var_format = re.compile(r'\s*(?P<before>.*?)\d+?\s+?\bFORMAT\b(?P<after>.*?)\s*\Z') #,re.I)
+var_format = re.compile(r'(?P<before>.*?)\d+?\s\bFORMAT\b(?P<after>[^\Z]*)\Z') #,re.I)
 
-cls_title = re.compile(r".*?\bCALL\b\s+?(?P<name>\b\w+\b)\s*?(|\((?P<args>[\w\s\*\+\-\/=,%('.:)]*)\))\s*\Z",re.I)
-fct_title = re.compile(r"\s*(?P<before>.*?)(?P<name>\b\w+\b)\s*?\((?P<args>[\w\s\*\+\-\/=,%('.:)]*)\)(?P<after>.*?)\s*\Z",re.I)
-f90types = '(CHARACTER|LOGICAL|INTEGER|REAL|COMPLEX|DOUBLE\s*(PRECISION\s*(COMPLEX|)|COMPLEX))\s*?(\**\s*?\d+|\**\(.*?\))?|TYPE\s*\([\w\s,=(*)]*?\)'
-f90xport = '(PUBLIC|PRIVATE|SAVE|PARAMETER|DATA|SEQUENCE)\s*?'
-f95_name = re.compile(r"\s*(?P<name>\b\w+\b)\s*?:\s*(?P<after>.*?)\s*\Z",re.I)
-typ_args = re.compile(r'\s*?(.*?::)?\s*?(?P<vars>.*?)\s*\Z',re.I)
-typ_name = re.compile(r'\s*?(?P<type>(%s))\s*\Z'%(f90types),re.I)
-typ_title = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90types),re.I)
-typ_xport = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90xport),re.I)
+#?cls_title = re.compile(r".*?\bCALL\b\s+?(?P<name>\b\w+\b)\s*?(|\((?P<args>[\w\s\*\+\-\/=,%('.:)]*)\))\s*\Z") #,re.I)
+cls_title = re.compile(r".*?\bCALL\b\s(?P<name>\b\w+\b)\s?(|\((?P<args>[\w\s\*\+\-\/=,%('.:)]*)\))\Z") #,re.I)
+#?fct_title = re.compile(r"\s*(?P<before>.*?)(?P<name>\b\w+\b)\s*?\((?P<args>[\w\s\*\+\-\/=,%('.:)]*)\)(?P<after>.*?)\s*\Z") #,re.I)
+fct_title = re.compile(r"(?P<before>.*?)(?P<name>\b\w+\b)\s?\((?P<args>[\w\s\*\+\-\/=,%('.:)]*)\)(?P<after>[^\Z]*)\Z") #,re.I)
+#?f90types = '(CHARACTER|LOGICAL|INTEGER|REAL|COMPLEX|DOUBLE\s*(PRECISION\s*(COMPLEX|)|COMPLEX))\s*?(\**\s*?\d+|\**\(.*?\))?|TYPE\s*\([\w\s,=(*)]*?\)'
+f90types = '(CHARACTER|LOGICAL|INTEGER|REAL|COMPLEX|DOUBLE\s?(PRECISION\s?(COMPLEX|)|COMPLEX))\s?(\**\s?\d+|\**\(.*?\))?|TYPE\s?\([\w\s,=(*)]*?\)'
+#?f90xport = '(PUBLIC|PRIVATE|SAVE|PARAMETER|DATA|SEQUENCE)\s*?'
+f90xport = '(PUBLIC|PRIVATE|SAVE|PARAMETER|DATA|SEQUENCE)'
+#?f95_name = re.compile(r"\s*(?P<name>\b\w+\b)\s*?:\s*(?P<after>.*?)\s*\Z") #,re.I)
+f95_name = re.compile(r"(?P<name>\b\w+\b)\s?:\s?(?P<after>[^\Z]*)\Z") #,re.I)
+#?typ_args = re.compile(r'\s*?(.*?::)?\s*?(?P<vars>.*?)\s*\Z',re.I)
+typ_args = re.compile(r'(.*?::)?\s?(?P<vars>[^\Z]*)\Z') #,re.I)
+#?typ_name = re.compile(r'\s*?(?P<type>(%s))\s*?\Z'%(f90types)) #,re.I)
+typ_name = re.compile(r'(?P<type>(%s))\Z'%(f90types)) #,re.I)
+#?typ_title = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90types)) #,re.I)
+typ_name = re.compile(r'(?P<type>(%s))\Z'%(f90types)) #,re.I)
+#?typ_title = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90types)) #,re.I)
+typ_title = re.compile(r'(?P<type>(%s))\s?(?P<after>[^\Z]*)\Z'%(f90types)) #,re.I)
+#?typ_xport = re.compile(r'\s*?(?P<type>(%s))\s*?(?P<after>.*?)\s*\Z'%(f90xport)) #,re.I)
+typ_xport = re.compile(r'(?P<type>(%s))\s?(?P<after>[^\Z]*)\Z'%(f90xport)) #,re.I)
 
-pcl_title = re.compile(r'\s*?((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s*(?P<after>.*?)\s*?(\bRESULT\b\s*?(?P<result>\w+[\w\s]*)|)\s*\Z',re.I)
-pcl_close = re.compile(r'\s*?\bEND\b(|\s+?(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s+?(?P<name>\w+?)))\s*\Z',re.I)
+#?pcl_title = re.compile(r'\s*?((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s*(?P<after>.*?)\s*?(\bRESULT\b\s*?(?P<result>\w+[\w\s]*)|)\s*\Z') #,re.I)
+pcl_title = re.compile(r'((?P<type>[\w\s(=*+-/)]*?)|)\b(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))\b\s?(?P<after>.*?)\s?(\bRESULT\b\s?(?P<result>\w+[\w\s]*)|)\Z') #,re.I)
+#?pcl_close = re.compile(r'\s*?\bEND\b(|\s+?(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s+?(?P<name>\w+?)))\s*\Z') #,re.I)
+pcl_close = re.compile(r'\bEND\b(|\s(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODULE))(|\s(?P<name>\w+?)))\Z') #,re.I)
 
 # _____                         ____________________________________
 # ____/ FORTRAN Parser Toolbox /___________________________________/
@@ -237,16 +283,20 @@ def cleanPointers(istr):
 
 def cleanQuotes(istr):
    istr = istr.replace("'''","'").replace('"""',"'")
+   # ~~> Deal with single quotes
    while 1:
       ostr = istr
       for quote in re.findall(var_squots,ostr):
          istr = istr.replace(quote,"''")
       if ostr == istr: break
+   # ~~> Deal with double quotes (replace by sigle quotes)
    while 1:
       ostr = istr
       for quote in re.findall(var_dquots,ostr):
          istr = istr.replace(quote,"''")
       if ostr == istr: break
+   # ~~> Remove the internal apostrophies
+   ostr = ostr.replace("''''","''").replace("''''","''")
    return ostr
 
 def parseAlias(lines):
@@ -403,7 +453,7 @@ def parsePrincipalWrap(lines):
       if ( type != '' ):
          if not re.match(typ_name,type):
             print 'Invalid header type ' + type + ' ' + objt + ' ' + name
-            return [],[],[],lines
+            sys.exit() #return [],[],[],lines
       proc = re.match(argnames,name)
       if proc :
          name = proc.group('name')
@@ -420,7 +470,8 @@ def parsePrincipalWrap(lines):
                if proc:
                   lface = False
                else:
-                  face.append(line)
+                  proc = re.match(itf_uless,line)
+                  if not proc: face.append(line)
                core.pop(count)
                count = count - 1
                continue  # THIS IS TO IGNORE THE LOCAL VARIABLES
@@ -432,7 +483,8 @@ def parsePrincipalWrap(lines):
                   count = count - 1
             #~~> contains
             if ltain: ctain = ctain - 1
-            if re.match(ctn_title,line) : ltain = True
+            if not ltain:
+               if re.match(ctn_title,line) : ltain = True
             proc = re.match(pcl_close,line)
             if proc :
                block = block - 1
@@ -449,9 +501,20 @@ def parsePrincipalWrap(lines):
                if proc.group('object') != objt:
                   if debug: print 'Different type at END ' + objt
                return core[1:count+ctain],[ objt[0:1], name, args, resu ],face,core[count+ctain+1:count],core[count+1:]
-         if debug: print 'Could not find END ' + objt + ' ' + name
-      # wrong syntax if stops at this level
-   return [],[],[],lines
+         # ~~> Acount for empty MODULE (including only INTERFACE and CONTAINS)
+         if ltain and block == 0 and count+1 >= len(core)-1:
+            if proc.group('name') != name:
+               if debug: print 'Different name at END ' + objt + ' ' + name
+            if proc.group('object') != objt:
+               if debug: print 'Different type at END ' + objt
+            return core[1:count+ctain],[ objt[0:1], name, args, resu ],face,core[count+ctain+1:count],core[count+2:]
+      else:
+         print 'Invalid header type for first line' + lines[0]
+         sys.exit()
+
+   print 'Invalid header type for first line' + lines[0]
+   sys.exit()
+   return # /!\ this return is just for python parsing
 
 def parsePrincipalMain(lines,who,type,name,args,resu):
    core = []; core.extend(lines)
@@ -522,10 +585,12 @@ def delContinuedsF77(lines):
    for line in lines :
       proc1 = re.match(f77continu2,line)
       if proc1:
-         cmd = cmd.rstrip() + proc1.group('line')
+         #?cmd = cmd.rstrip() + proc1.group('line')
+         cmd = cmd.rstrip() + ( proc1.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
       else:
          if cmd is not '' : cmds.append(cmd)
-         cmd = line
+         #?cmd = line
+         cmd = line.strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
    cmds.append(cmd)
    return cmds
 
@@ -538,25 +603,31 @@ def delContinuedsF90(lines):
       proc2 = re.match(f90continu1,line)
       proc3 = re.match(f90continu2,line)
       proc4 = re.match(f90continu3,line)
-      if proc2 :
-         if not cnt:
-            cmds.append(cmd)
-            cmd = ''
-         cmd = cmd.rstrip() + proc2.group('line')
+      if proc3 :
+         #?cmd = cmd.rstrip() + proc3.group('line')
+         cmd = cmd + ( proc3.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
          cnt = True
-      elif proc3 :
-         cmd = cmd.rstrip() + proc3.group('line')
+      elif proc2 :
+         if not cnt:
+            if cmd is not '' : cmds.append(cmd)
+            cmd = ''
+         #?cmd = cmd.rstrip() + proc2.group('line')
+         cmd = cmd + ( proc2.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
          cnt = True
       elif proc4 :
-         cmd = cmd.rstrip() + proc4.group('line')
+         #?cmd = cmd.rstrip() + proc4.group('line')
+         cmd = cmd + ( proc4.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
+         cnt = False
       else:
          if cnt:
-            cmd = cmd.rstrip() + line
+            #?cmd = cmd.rstrip() + line
+            cmd = cmd + line.strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
          else:
             if cmd is not '' : cmds.append(cmd)
-            cmd = line
+            #?cmd = line
+            cmd = line.strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
          cnt = False
-   cmds.append(cmd)
+   if cmd is not '' : cmds.append(cmd)
    return cmds
 
 """
@@ -568,7 +639,7 @@ def delComments(lines):
    # ~~ Also removes end lines and sets to UPPERCASE ~~~~~~~~~~~~~~~
    cmds = []
    for line in lines :
-      line = cleanQuotes(line).rstrip()
+      line = cleanQuotes(line).rstrip().upper()
       proc1 = re.match(f77continu2,line) # no strip here
       proc = re.match(f77comment,line)   # no strip here
       if proc and not proc1 :
@@ -582,7 +653,7 @@ def delComments(lines):
       if cmd != '' :
          proc = re.match(emptyline,cmd)
          if not proc:
-            cmds.append(cmd.replace('\n','').replace('\r','').upper())
+            cmds.append(cmd.replace('\n','').replace('\r',''))
    return cmds
 
 def scanSources(cfgdir,cfg,BYPASS):
@@ -600,10 +671,15 @@ def scanSources(cfgdir,cfg,BYPASS):
 
       print '... now scanning ', path.basename(cfg['MODULES'][mod]['path'])
 
+      ibar = 0; pbar = ProgressBar(maxval=len(FileList)).start()
+      #/!\ if you need to print within this loop, you now need to use
+      #    pbar.write(text,ibar) so the progress bar moves along
       for File in FileList :
+         ibar = ibar + 1; pbar.update(ibar)
 
          if not fic.has_key(mod): update({mod:{}})
          fic[mod].update({File:[]})
+         #pbar.write(File,ibar)
          who = { 'path':path.abspath(path.dirname(File)), \
             'file':path.basename(File), \
             'libname':mod,   \
@@ -626,7 +702,6 @@ def scanSources(cfgdir,cfg,BYPASS):
                #who['time'] = isNewer(path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()),File)
                who['time'] = isNewer(File,path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()))
 
-         if debug : print File
          SrcF = open(File,'r')
          if path.splitext(who['file'])[1].lower() in ['.f90','.f95']:
             flines = delContinuedsF90(delComments(SrcF))        # Strips the F90+ commented lines
@@ -666,11 +741,14 @@ def scanSources(cfgdir,cfg,BYPASS):
                      for v in whoc['vars'][k]: addToList(whoi['vars'],k,v)
                   for k in whoc['calls'].keys():
                      for v in whoc['calls'][k]: addToList(whoi['calls'],k,v)
-                  whoi['functions'].extend(whoc['functions'])
+                  for k in whoc['functions']:
+                     if k not in whoi['functions']: whoi['functions'].append(k)
             whoi['vars'].update({'use':{}})
             wcw[mod].update({name:whoi})         # ~~ All ~~~~~~~~~~
             #if core == []: break
-            
+
+      pbar.finish()
+
    # ~~ Cross-referencing CALLS together ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # For those CALLs stored in 'calls' but not part of the system:
    #   move them from 'calls' to 'function' (outsiders remain)
@@ -747,9 +825,9 @@ def sortFunctions(ifcts,iuses,list,mods,xuses):
 # ____/ DOXYGEN parse  /___________________________________________/
 #
 
-doxycomment = re.compile(r'!>(?P<doxy>.*)\s*\Z',re.I)
-doxy_tag = re.compile(r'!>\s*?@(?P<tag>[\w\[,\]]+)(?P<after>.*)\s*\Z',re.I)
-doxy_title = re.compile(r'\s+(?P<title>.*)\s*\Z',re.I)
+doxycomment = re.compile(r'!>(?P<doxy>.*)\s*\Z') #,re.I)
+doxy_tag = re.compile(r'!>\s*?@(?P<tag>[\w\[,\]]+)(?P<after>.*)\s*\Z') #,re.I)
+doxy_title = re.compile(r'\s+(?P<title>.*)\s*\Z') #,re.I)
 
 """
    Parse a list of entry lines, removing the lines that are
@@ -790,7 +868,8 @@ def parseDoxyTags(core):
 # ____/ FORTRAN parse  /___________________________________________/
 #
 
-varcomment = re.compile(r'[C!#*]\s*?[|!]\s*?(?P<vars>[\s\w,()]*)(?P<inout>(|[|!->=<\s]*[|!]))(?P<after>(|[^|!]*))\s*[|!]?\s*\Z',re.I)
+#?varcomment = re.compile(r'[C!#*]\s*?[|!]\s*?(?P<vars>[\s\w,()]*)(?P<inout>(|[|!->=<\s]*[|!]))(?P<after>(|[^|!]*))\s*[|!]?\s*\Z') #,re.I)
+varcomment = re.compile(r'[C!#*]\s*?[|!]\s*?(?P<vars>[\s\w,()]*)(?P<inout>(|[|!->=<\s]*[|!]))(?P<after>(|[^|!]*))\s*[|!]?\s*\Z') #,re.I)
 
 def parseFortHeader(core):
    docs = []; title = []; vars = {}
@@ -843,8 +922,8 @@ def parseFortHeader(core):
 
 # Note that the spaces are kept in the 'after' text for possible formatting
 doxytags = '(brief|note|warning|history|bug|code)'
-doxycomment = re.compile(r'\s*!(?P<name>%s\b)(?P<after>.*?)\s*\Z'%(doxytags),re.I)
-doxycommentadd = re.compile(r"\s*!\+(?P<after>.*?)\s*\Z",re.I)
+doxycomment = re.compile(r'\s*!(?P<name>%s\b)(?P<after>.*?)\s*\Z'%(doxytags)) #,re.I)
+doxycommentadd = re.compile(r"\s*!\+(?P<after>.*?)\s*\Z") #,re.I)
 
 def parseDoxyHeader(body):
    # It is now assumed that doxytags could be part of the main
