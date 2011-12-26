@@ -101,15 +101,15 @@ beforethisafter=r'(?P<before>%s(?=\s?(\b(%s)\b)))'+ \
 emptyline = re.compile(r'\Z') #,re.I)
 
 f77comment = re.compile(r'[C!#*]') #,re.I)
-#?f77continu2 = re.compile(r'(\s{5}\S\s*)(?P<line>.*)') #,re.I)
-f77continu2 = re.compile(r'(\s{5}\S\s?)(?P<line>[^\Z]*)') #,re.I)
+f77continu2 = re.compile(r'(\s{5}\S\s*)(?P<line>.*)') #,re.I)
+#?f90comment = re.compile(r'(?P<line>([^"]*"[^"]*"[^"!]*|[^\']*\'[^\']*\'[^\'!]*|[^!]*))!{1}(?P<rest>.*)') #,re.I)
 f90comment = re.compile(r'(?P<line>([^"]*"[^"]*"[^"!]*|[^\']*\'[^\']*\'[^\'!]*|[^!]*))!{1}(?P<rest>[^\Z]*)') #,re.I)
 #?f90continu1 = re.compile(r'(?P<line>.*)&\s*\Z') #,re.I)
 f90continu1 = re.compile(r'(?P<line>.*)&\Z') #,re.I)
 #?f90continu2 = re.compile(r'(\s*&\s*)(?P<line>.*)&\s*\Z') #,re.I)
 f90continu2 = re.compile(r'(&\s?)(?P<line>.*)&\Z') #,re.I)
 #?f90continu3 = re.compile(r'(\s*&\s*)(?P<line>.*)') #,re.I)
-f90continu3 = re.compile(r'(&\s?)(?P<line>[^\Z]*)\Z') #,re.I)
+f90continu3 = re.compile(r'(&\s?)(?P<line>.*)') #,re.I)
 
 var_dquots = re.compile(r'(?P<dquot>".*?")') #,re.I)
 var_squots = re.compile(r"(?P<squot>'.*?')") #,re.I)
@@ -197,6 +197,9 @@ pcl_close = re.compile(r'\bEND\b(|\s(?P<object>(PROGRAM|FUNCTION|SUBROUTINE|MODU
 # ____/ FORTRAN Parser Toolbox /___________________________________/
 #
 
+def cleanSpaces(istr):
+   return istr.strip().replace('  ',' ').replace('  ',' ')
+
 def cleanAssoc(istr):
    while 1:
       ostr = istr
@@ -204,14 +207,14 @@ def cleanAssoc(istr):
       if proc:
          istr = proc.group('before')+proc.group('after')
       if ostr == istr: break
-   return ostr
+   return cleanSpaces(ostr)
 
 def cleanBracks(istr):
    while 1:
       ostr = istr
       for brack in re.findall(var_bracks,ostr):
          istr = istr.replace(brack,'')
-      if ostr == istr: return ostr
+      if ostr == istr: return cleanSpaces(ostr)
 
 def cleanEquals(istr):
    while 1:
@@ -220,7 +223,7 @@ def cleanEquals(istr):
       if proc:
          istr = proc.group('before')+proc.group('name')+proc.group('after')
       if ostr == istr: break
-   return ostr
+   return cleanSpaces(ostr)
 
 def cleanFormatted(istr):
    proc = re.match(var_format,istr)
@@ -237,7 +240,7 @@ def cleanInstruction(istr,list):
          instr = proc.group('word')
          if instr not in list: ostr = ostr + ' ' + instr
       else: break
-   return ostr.replace('  ',' ').strip()
+   return cleanSpaces(ostr)
 
 def cleanLogicals(istr):
    while 1:
@@ -246,7 +249,7 @@ def cleanLogicals(istr):
       if proc:
          istr = istr.replace(proc.group('logic'),' ')
       if ostr == istr: break
-   return ostr.replace('  ',' ').strip()
+   return cleanSpaces(ostr)
 
 def cleanNumbers(istr):
    while 1:
@@ -261,7 +264,7 @@ def cleanNumbers(istr):
       if proc:
          istr = proc.group('before')+proc.group('after')
       if ostr == istr: break
-   return ostr
+   return cleanSpaces(ostr)
 
 def cleanOperators(istr):
    while 1:
@@ -270,7 +273,7 @@ def cleanOperators(istr):
       if proc:
          istr = proc.group('before')+' '+proc.group('after')
       if ostr == istr: break
-   return ostr.replace('  ',' ').strip()
+   return cleanSpaces(ostr)
 
 def cleanPointers(istr):
    while 1:
@@ -279,7 +282,7 @@ def cleanPointers(istr):
       if proc:
          istr = proc.group('before')+proc.group('after')
       if ostr == istr: break
-   return ostr.replace('  ',' ').strip()
+   return cleanSpaces(ostr)
 
 def cleanQuotes(istr):
    istr = istr.replace("'''","'").replace('"""',"'")
@@ -586,7 +589,7 @@ def delContinuedsF77(lines):
       proc1 = re.match(f77continu2,line)
       if proc1:
          #?cmd = cmd.rstrip() + proc1.group('line')
-         cmd = cmd.rstrip() + ( proc1.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
+         cmd = ( cmd.rstrip() + proc1.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
       else:
          if cmd is not '' : cmds.append(cmd)
          #?cmd = line
@@ -605,27 +608,27 @@ def delContinuedsF90(lines):
       proc4 = re.match(f90continu3,line)
       if proc3 :
          #?cmd = cmd.rstrip() + proc3.group('line')
-         cmd = cmd + ( proc3.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
+         cmd = cleanSpaces( cmd + proc3.group('line') ) # /!\ Looking to save on upper space
          cnt = True
       elif proc2 :
          if not cnt:
             if cmd is not '' : cmds.append(cmd)
             cmd = ''
          #?cmd = cmd.rstrip() + proc2.group('line')
-         cmd = cmd + ( proc2.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
+         cmd = cleanSpaces( cmd + proc2.group('line') ) # /!\ Looking to save on upper space
          cnt = True
       elif proc4 :
          #?cmd = cmd.rstrip() + proc4.group('line')
-         cmd = cmd + ( proc4.group('line') ).strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
+         cmd = cleanSpaces( cmd + proc4.group('line') ) # /!\ Looking to save on upper space
          cnt = False
       else:
          if cnt:
             #?cmd = cmd.rstrip() + line
-            cmd = cmd + line.strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
+            cmd = cleanSpaces( cmd + line ) # /!\ Looking to save on upper space
          else:
             if cmd is not '' : cmds.append(cmd)
             #?cmd = line
-            cmd = line.strip().replace('  ',' ').replace('  ',' ') # /!\ Looking to save on upper space
+            cmd = cleanSpaces(line) # /!\ Looking to save on upper space
          cnt = False
    if cmd is not '' : cmds.append(cmd)
    return cmds
