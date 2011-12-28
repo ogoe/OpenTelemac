@@ -5,7 +5,7 @@
      &(X, A,B,TB,CFG,INFOGR,MESH,AUX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES A LINEAR SYSTEM OF THE FORM A X = B
@@ -99,6 +99,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        07/12/2011
+!+        V6P2
+!+   Call to preverseg and preverebe modified.
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM (OR BLOCK OF MATRICES)
 !| AUX            |-->| MATRIX FOR PRECONDITIONING.
@@ -483,12 +488,6 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        IF(MESH%TYPELM.NE.40) THEN
-          WRITE(LU,*) 'PRECONDITIONING 17'
-          WRITE(LU,*) 'IMPLEMENTED ONLY FOR PRISMS'
-          CALL PLANTE(1)
-          STOP
-        ENDIF
         IF(AUX%TYPE.NE.3) THEN
           WRITE(LU,*) 'PRECONDITIONING 17'
           WRITE(LU,*) 'NOT IMPLEMENTED FOR BLOCKS OF MATRICES'
@@ -497,11 +496,12 @@
         ENDIF
 !
         IF(AUX%STO.EQ.1) THEN
-        CALL PREVEREBE(AUX%X%R,A%D%R,A%X%R,A%TYPDIA,A%TYPEXT,
-     &              MESH%IKLE%I,MESH%NPOIN,MESH%NELEM,MESH%NELMAX,MESH)
+          CALL PREVEREBE(AUX%X%R,A%D%R,A%X%R,A%TYPDIA,A%TYPEXT,
+     &                   MESH%IKLE%I,MESH%NPOIN,MESH%NELEM,
+     &                   MESH%NELMAX,MESH,MESH%TYPELM)
         ELSE
-        CALL PREVERSEG(AUX%X%R,A%D%R,A%X%R,A%TYPDIA,A%TYPEXT,
-     &                 MESH%NPOIN,MESH,MESH%NSEG)
+          CALL PREVERSEG(AUX%X%R,A%D%R,A%X%R,A%TYPDIA,A%TYPEXT,
+     &                   MESH%NPOIN,MESH,MESH%NSEG,MESH%TYPELM)
         ENDIF
 !
       ENDIF
@@ -615,7 +615,6 @@
       CFG%PRECON = PRESTO
 !
 !-----------------------------------------------------------------------
-!
 !
       RETURN
       END

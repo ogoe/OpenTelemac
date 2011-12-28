@@ -2,10 +2,10 @@
                      SUBROUTINE PREVEREBE
 !                    ********************
 !
-     &(XAUX,AD,AX,TYPDIA,TYPEXT,IKLE,NPOIN,NELEM,NELMAX,MESH)
+     &(XAUX,AD,AX,TYPDIA,TYPEXT,IKLE,NPOIN,NELEM,NELMAX,MESH,TYPEMESH)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS TRIDIAGONAL SYSTEMS FOR EVERY VERTICAL,
@@ -46,6 +46,8 @@
 !|                |   | TYPEXT = 'Q' : ANY VALUE
 !|                |   | TYPEXT = 'S' : SYMMETRIC
 !|                |   | TYPEXT = '0' : ZERO
+!| TYPEMESH       |-->| TYPE OF MESH (40: PRISMS, 50: PRISMS CUT INTO
+!|                |   | TETRAHEDRONS)
 !| XAUX           |<--| TRIDIAGONAL MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -57,7 +59,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN
+      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN,TYPEMESH
       INTEGER, INTENT(IN) :: IKLE(NELMAX,6)
 !
       DOUBLE PRECISION, INTENT(IN) :: AD(NPOIN),AX(NELMAX,*)
@@ -106,7 +108,14 @@
 !
 !-----------------------------------------------------------------------
 !     LUMPS THE OFF-DIAGONAL TERMS
+!
+!     ONLY VERTICAL OF POINT, LUMPING ALL TERMS HAS BEEN TESTED, SEE 
+!     LINE COMMENTED, BUT DOES NOT WORK (E.G. TRY SOLITARY WAVE)
+!
+!
 !-----------------------------------------------------------------------
+!
+      IF(TYPEMESH.EQ.40) THEN
 !
       IF(TYPEXT.EQ.'Q') THEN
         DO IELEM=1,NELEM
@@ -131,12 +140,36 @@
           I4=IKLE(IELEM,4)
           I5=IKLE(IELEM,5)
           I6=IKLE(IELEM,6)
+!         XAUX(I1,2)=XAUX(I1,2)+AX(IELEM,01) ! TERM 1-2
+!         XAUX(I2,2)=XAUX(I2,2)+AX(IELEM,01) ! TERM 2-1
+!         XAUX(I1,2)=XAUX(I1,2)+AX(IELEM,02) ! TERM 1-3
+!         XAUX(I2,2)=XAUX(I2,2)+AX(IELEM,02) ! TERM 3-1
           XAUX(I1,3)=XAUX(I1,3)+AX(IELEM,03) ! TERM 1-4
-          XAUX(I2,3)=XAUX(I2,3)+AX(IELEM,08) ! TERM 2-5
-          XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,12) ! TERM 3-6
           XAUX(I4,1)=XAUX(I4,1)+AX(IELEM,03) ! TERM 4-1
+!         XAUX(I1,3)=XAUX(I1,3)+AX(IELEM,04) ! TERM 1-5
+!         XAUX(I5,1)=XAUX(I5,1)+AX(IELEM,04) ! TERM 5-1
+!         XAUX(I1,3)=XAUX(I1,3)+AX(IELEM,05) ! TERM 1-6
+!         XAUX(I6,1)=XAUX(I6,1)+AX(IELEM,05) ! TERM 6-1
+!         XAUX(I2,2)=XAUX(I2,2)+AX(IELEM,06) ! TERM 2-3
+!         XAUX(I3,2)=XAUX(I3,2)+AX(IELEM,06) ! TERM 3-2
+!         XAUX(I2,3)=XAUX(I2,3)+AX(IELEM,07) ! TERM 2-4
+!         XAUX(I4,1)=XAUX(I4,1)+AX(IELEM,07) ! TERM 4-2          
+          XAUX(I2,3)=XAUX(I2,3)+AX(IELEM,08) ! TERM 2-5
           XAUX(I5,1)=XAUX(I5,1)+AX(IELEM,08) ! TERM 5-2
-          XAUX(I6,1)=XAUX(I6,1)+AX(IELEM,12) ! TERM 6-3
+!         XAUX(I2,3)=XAUX(I2,3)+AX(IELEM,09) ! TERM 2-6
+!         XAUX(I6,1)=XAUX(I6,1)+AX(IELEM,09) ! TERM 6-2
+!         XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,10) ! TERM 3-4
+!         XAUX(I4,1)=XAUX(I4,1)+AX(IELEM,10) ! TERM 4-3
+!         XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,11) ! TERM 3-5
+!         XAUX(I5,1)=XAUX(I5,1)+AX(IELEM,11) ! TERM 5-3                    
+          XAUX(I3,3)=XAUX(I3,3)+AX(IELEM,12) ! TERM 3-6                    
+          XAUX(I6,1)=XAUX(I6,1)+AX(IELEM,12) ! TERM 6-3                    
+!         XAUX(I4,2)=XAUX(I4,2)+AX(IELEM,13) ! TERM 4-5
+!         XAUX(I5,2)=XAUX(I5,2)+AX(IELEM,13) ! TERM 5-4
+!         XAUX(I4,2)=XAUX(I4,2)+AX(IELEM,14) ! TERM 4-6
+!         XAUX(I6,2)=XAUX(I6,2)+AX(IELEM,14) ! TERM 6-4
+!         XAUX(I5,2)=XAUX(I5,2)+AX(IELEM,15) ! TERM 5-6
+!         XAUX(I6,2)=XAUX(I6,2)+AX(IELEM,15) ! TERM 6-5                  
         ENDDO
       ELSEIF(TYPEXT.EQ.'0') THEN
 !       NOTHING TO DO (BUT WHAT'S THE USE OF AN ITERATIVE SOLVER ?)
@@ -146,6 +179,16 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'INCONNUS DANS PREVEREBE'
         IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN TYPE OF OFF-DIAGONAL TERMS'
         IF(LNG.EQ.2) WRITE(LU,*) 'IN PREVEREBE'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      ELSE
+        WRITE(LU,*) TYPEMESH
+        IF(LNG.EQ.1) WRITE(LU,*) 'TYPE DE MAILLAGE'
+        IF(LNG.EQ.1) WRITE(LU,*) 'INCONNU DANS PREVEREBE : ',TYPEMESH
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN TYPE OF MESH'
+        IF(LNG.EQ.2) WRITE(LU,*) 'IN PREVEREBE: ',TYPEMESH
         CALL PLANTE(1)
         STOP
       ENDIF

@@ -51,7 +51,7 @@
 !| XMUL           |-->| MULTIPLICATION COEFFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_VC05AA => VC05AA
+      USE BIEF   !!, EX_VC05AA => VC05AA
 !
       IMPLICIT NONE
       INTEGER LNG,LU

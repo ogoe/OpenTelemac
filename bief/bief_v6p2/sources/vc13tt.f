@@ -50,9 +50,10 @@
 !+   CROSS-REFERENCING OF THE FORTRAN SOURCES
 !
 !history  J-M HERVOUET (LNH)
-!+        30/08/2011
+!+        06/12/2011
 !+        V6P2
-!+   Treating crushed elements
+!+   Treating crushed elements and securing options which are not
+!+   implemented.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -116,6 +117,17 @@
 !
 !=======================================================================
 !
+!     FILTERING OPTIONS NOT TREATED
+!
+      IF(FORMUL(6:6).EQ.'2') THEN
+        WRITE(LU,*) 'VC13TT: FORMUL=',FORMUL
+        WRITE(LU,*) '        OPTION NOT TREATED'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
 !     F IS LINEAR
 !
       IF(IELMF.EQ.31.OR.IELMF.EQ.51) THEN
@@ -124,7 +136,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!  DERIVATIVE WRT X
+!     DERIVATIVE WITH RESPECT TO X
 !
       DO 3 IELEM = 1 , NELEM
 !
@@ -133,7 +145,7 @@
          I3 = IKLE3(IELEM)
          I4 = IKLE4(IELEM)
 !
-!  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
+!        REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
          Y2  =  Y(I2) - Y(I1)
          Y3  =  Y(I3) - Y(I1)
@@ -156,7 +168,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!  DERIVATIVE WRT Y
+!     DERIVATIVE WITH RESPECT TO Y
 !
       DO IELEM = 1 , NELEM
 !
@@ -165,7 +177,7 @@
          I3 = IKLE3(IELEM)
          I4 = IKLE4(IELEM)
 !
-!  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
+!        REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
          X2  =  X(I2) - X(I1)
          X3  =  X(I3) - X(I1)
@@ -188,7 +200,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!  DERIVATIVE WRT Z
+!     DERIVATIVE WITH RESPECT TO Z
 !
       DO 5 IELEM = 1 , NELEM
 !
@@ -197,7 +209,7 @@
          I3 = IKLE3(IELEM)
          I4 = IKLE4(IELEM)
 !
-!  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
+!        REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
          X2  =  X(I2) - X(I1)
          X3  =  X(I3) - X(I1)
@@ -287,6 +299,11 @@
           ENDIF
         ENDDO
 !
+      ELSEIF(FORMUL(7:7).NE.' ') THEN
+        WRITE(LU,*) 'VC13TT: FORMUL=',FORMUL
+        WRITE(LU,*) '        OPTION NOT TREATED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !=======================================================================

@@ -49,6 +49,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        06/12/2011
+!+        V6P2
+!+   Call of VC13TT modified.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA 
 !| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
@@ -1049,12 +1054,13 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-             IF(FORMUL(1:15).EQ.'GRADF          '.OR.
-     &          FORMUL(1:15).EQ.'GRADF 2        '  ) THEN
-             CALL VC13TT(XMUL,SF,F,XEL,YEL,ZEL,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &                   NELEM,NELMAX,T(1,1),T(1,2),
-     &                   T(1,3),T(1,4),ICOORD,FORMUL)
+             IF(FORMUL(1:5).EQ.'GRADF'.AND.
+     &          FORMUL(8:15).EQ.'        ') THEN
+!              FORMUL(6:7) IS LEFT FOR OPTIONS
+               CALL VC13TT(XMUL,SF,F,XEL,YEL,ZEL,
+     &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
+     &                     NELEM,NELMAX,T(1,1),T(1,2),
+     &                     T(1,3),T(1,4),ICOORD,FORMUL)
 !
              ELSE
                IF(LNG.EQ.1) WRITE(LU,1000) FORMUL

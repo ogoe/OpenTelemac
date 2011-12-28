@@ -2,17 +2,17 @@
                      SUBROUTINE MT02TT
 !                    *****************
 !
-     &( T,XM,XMUL,SF,SG,SH,F,G,H,
-     &  X,Y,Z,IKLE,NELEM,NELMAX,INCHYD)
+     &(T,XM,XMUL,SF,SG,SH,F,G,H,X,Y,Z,IKLE,NELEM,NELMAX,INCHYD,NPOIN2)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DIFFUSION MATRIX FOR TETRAHEDRONS.
 !+
 !+            THE FUNCTION DIFFUSION COEFFICIENT IS HERE A P1
 !+                DIAGONAL TENSOR.
+!
 !code
 !+     STORAGE CONVENTION FOR EXTRA-DIAGONAL TERMS:
 !+
@@ -40,6 +40,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        09/12/2011
+!+        V6P2
+!+   Element 51 now treated separately.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -50,6 +55,8 @@
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPLAN          |-->| NUMBER OF PLANES IN THE MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN UNDERLYING 2D MESH
+!|                |   | (CASE OF ELEMENT 51, PRISMS CUT INTO TETRAHEDRA)
 !| SF             |-->| STRUCTURE OF FUNCTIONS F
 !| SG             |-->| STRUCTURE OF FUNCTIONS G
 !| SH             |-->| STRUCTURE OF FUNCTIONS H
@@ -71,7 +78,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELEM,NELMAX
+      INTEGER, INTENT(IN) :: NELEM,NELMAX,NPOIN2
       INTEGER, INTENT(IN) :: IKLE(NELMAX,4)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: T(NELMAX,4),XM(NELMAX,6)
@@ -92,23 +99,45 @@
 !     SPECIFIC DECLARATIONS
 !
       DOUBLE PRECISION X2,Y2,Z2,X3,Y3,Z3,X4,Y4,Z4
-      INTEGER I1,I2,I3,I4,IELEM,ISO
+      INTEGER I1,I2,I3,I4,IELEM,ISO,IMAX,IL1,IL2,IL3,IL4,ILOW
 !
-      DOUBLE PRECISION COEF,SUR24
+      DOUBLE PRECISION COEF,SUR24,H1,H2,H3,H4
       DOUBLE PRECISION FTOT,GTOT,HTOT,VTOT,WTOT,FGTOT,GHTOT,FHTOT
       DOUBLE PRECISION T1,T3,T5,T7,T9,T11,T13,T15,T17,T19,T21,T23
       DOUBLE PRECISION T35,T49,T28,T42,T51,T54
       DOUBLE PRECISION AUX,AUXX,AUXXX
       DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,AUX5,AUX6,AUX7,AUX8,AUX9
 !
+      DOUBLE PRECISION EPSILON
+      DATA EPSILON/1.D-4/
+!
 !***********************************************************************
 !
       SUR24=1.D0/24.D0
       ISO = SF%DIM2
 !
-      IF((SF%ELM.EQ.31.AND.SG%ELM.EQ.31.AND.SH%ELM.EQ.31).OR.
-     &   (SF%ELM.EQ.51.AND.SG%ELM.EQ.51.AND.SH%ELM.EQ.51).AND.
-     &    ISO.EQ.1 ) THEN
+!     SEE VISCLM OF TELEMAC-3D
+!     FOR THE TREATMENT OF P0 VERTICAL VISCOSITY ON THE VERTICAL
+!
+      IF(SH%DIMDISC.EQ.0) THEN
+!       P1 VERTICAL VISCOSITY
+!       NPOU0=SH%DIM1/NPLAN
+!     ELSEIF(SH%DIMDISC.EQ.4111) THEN
+!       P0 VERTICAL VISCOSITY ON THE VERTICAL (SEE II4,5,6)
+!       NPOU0=0
+      ELSE
+        IF (LNG.EQ.1) WRITE(LU,4000) SH%DIMDISC
+        IF (LNG.EQ.2) WRITE(LU,4001) SH%DIMDISC
+4000    FORMAT(1X,'MT02TT (BIEF) : DIMDISC DE H NON PREVU : ',I6)
+4001    FORMAT(1X,'MT02TT (BIEF): DIMDISC OF H NOT IMPLEMENTED: ',I6)
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!     TRUE TETRAHEDRA
+!
+      IF(SF%ELM.EQ.31.AND.SG%ELM.EQ.31.AND.
+     &   SH%ELM.EQ.31.AND.ISO.EQ.1) THEN
 !
 !-----------------------------------------------------------------------
 !
@@ -116,7 +145,7 @@
 !
 !   LOOP ON THE TETRAHEDRONS
 !
-      DO 20 IELEM=1,NELEM
+      DO IELEM=1,NELEM
 !
       I1=IKLE(IELEM,1)
       I2=IKLE(IELEM,2)
@@ -164,8 +193,6 @@
 !
 !     BEWARE, PROBLEM WITH TIDAL FLATS HERE
 !
-!      COEF=XMUL*SUR24/MAX(T13,0.01D0*SURF)
-!      COEF=XMUL*SUR24/MAX(T13,1.D-3)
       COEF=XMUL*SUR24/MAX(T13,1.D-10)
 !     COEF=XMUL*SUR24/T13
 !
@@ -187,7 +214,135 @@
 !
 !-----------------------------------------------------------------------
 !
-20    CONTINUE
+      ENDDO
+!
+!     TETRAHEDRA FORMING PRISMS
+!
+      ELSEIF(SF%ELM.EQ.51.AND.SG%ELM.EQ.51.AND.SH%ELM.EQ.51.AND.
+     &                                                    ISO.EQ.1) THEN
+!
+!-----------------------------------------------------------------------
+!
+!   LINEAR DISCRETISATION OF DIFFUSION COEFFICIENTS
+!
+!   LOOP ON THE TETRAHEDRONS
+!
+      DO IELEM=1,NELEM
+!
+      I1=IKLE(IELEM,1)
+      I2=IKLE(IELEM,2)
+      I3=IKLE(IELEM,3)
+      I4=IKLE(IELEM,4)
+!
+!-----------------------------------------------------------------------
+!
+! VISCOSITY ALONG X, Y, AND Z
+!
+!     IL1: PLANE NUMBER OF POINT 1 MINUS 1 (0 FOR FIRST PLANE), ETC.
+      IL1=(I1-1)/NPOIN2
+      IL2=(I2-1)/NPOIN2
+      IL3=(I3-1)/NPOIN2
+      IL4=(I4-1)/NPOIN2
+!     RANK OF LOWER PLANE MINUS 1
+      ILOW=MIN(IL1,IL2,IL3,IL4)
+!     NOW IL1=0 IF POINT AT THE BACK OF ORIGINAL PRISM
+!         IL1=1 IF POINT AT THE TOP OF ORIGINAL PRISM ,ETC. FOR IL2...
+      IL1=IL1-ILOW
+      IL2=IL2-ILOW
+      IL3=IL3-ILOW
+      IL4=IL4-ILOW 
+!     H1, H2, H3, H4 WILL BE THE DELTA(Z) ABOVE OR BELOW EVERY POINT IN
+!     THE ORIGINAL PRISM     
+      IF(IL1.EQ.0) THEN
+        H1=Z(I1+NPOIN2)-Z(I1)
+      ELSE
+        H1=Z(I1)-Z(I1-NPOIN2)
+      ENDIF
+      IF(IL2.EQ.0) THEN
+        H2=Z(I2+NPOIN2)-Z(I2)
+      ELSE
+        H2=Z(I2)-Z(I2-NPOIN2)
+      ENDIF
+      IF(IL3.EQ.0) THEN
+        H3=Z(I3+NPOIN2)-Z(I3)
+      ELSE
+        H3=Z(I3)-Z(I3-NPOIN2)
+      ENDIF
+      IF(IL4.EQ.0) THEN
+        H4=Z(I4+NPOIN2)-Z(I4)
+      ELSE
+        H4=Z(I4)-Z(I4-NPOIN2)
+      ENDIF        
+!
+!     SEE MT02PP FOR A SIMILAR LIMITATION
+!     DIFFUSION CONNECTIONS CUT IF ONE POINT IS CRUSHED IN THE ELEMENT
+!     THIS IS NECESSARY TO AVOID A MASS ERROR
+! 
+      IF(H1.LT.EPSILON.OR.H2.LT.EPSILON.OR.
+     &   H3.LT.EPSILON.OR.H4.LT.EPSILON ) THEN     
+        HTOT=0.D0
+        VTOT=0.D0
+        WTOT=0.D0
+      ELSE
+        HTOT=F(I1)+F(I2)+F(I3)+F(I4)
+        VTOT=G(I1)+G(I2)+G(I3)+G(I4)
+        WTOT=H(I1)+H(I2)+H(I3)+H(I4)
+      ENDIF
+!
+      X2=X(I2)-X(I1)
+      Y2=Y(I2)-Y(I1)
+      Z2=Z(I2)-Z(I1)
+      X3=X(I3)-X(I1)
+      Y3=Y(I3)-Y(I1)
+      Z3=Z(I3)-Z(I1)
+      X4=X(I4)-X(I1)
+      Y4=Y(I4)-Y(I1)
+      Z4=Z(I4)-Z(I1)
+!
+!-----------------------------------------------------------------------
+!    COEF:  THANKS MAPLE...
+!-----------------------------------------------------------------------
+!
+      T1  = X2*Y3
+      T3  = X2*Y4
+      T5  = X3*Y2
+      T7  = X4*Y2
+      T9  = X3*Z2
+      T11 = X4*Z2
+!     T13 = 4 TIMES THE TETRAHEDRON VOLUME ?
+      T13 = T1*Z4-T3*Z3-T5*Z4+T7*Z3+T9*Y4-T11*Y3
+!
+      T15 = -Y2*Z3+Y3*Z2
+      T17 =  X2*Z4-T11
+      T19 = -Y3*Z4+Y4*Z3
+      T21 =  X2*Z3-T9
+      T23 = -Y2*Z4+Y4*Z2
+      T35 =  X3*Z4-X4*Z3
+      T49 =  X3*Y4-X4*Y3
+!
+!     BEWARE, PROBLEM WITH TIDAL FLATS HERE
+!
+      COEF=XMUL*SUR24/MAX(T13,1.D-10)
+!
+      T28 = -T19+T23-T15
+      T42 = -T35+T17-T21
+      T51 = T3-T7
+      T54 = T49-T3+T7+T1-T5
+!
+      T(IELEM,1) =COEF*(HTOT*T28**2+VTOT*T42**2+WTOT*T54**2)
+      T(IELEM,2) =COEF*(HTOT*T19**2+VTOT*T35**2+WTOT*T49**2)
+      T(IELEM,3) =COEF*(HTOT*T23**2+VTOT*T17**2+WTOT*T51**2)
+      XM(IELEM,1)=COEF*(HTOT*T28*T19+VTOT*T42*T35-WTOT*T54*T49)
+      XM(IELEM,2)=COEF*(-HTOT*T28*T23-VTOT*T42*T17+WTOT*T54*T51)
+      XM(IELEM,3)=-(XM(IELEM,2)+XM(IELEM,1)+T(IELEM,1))
+      XM(IELEM,4)=COEF*(-HTOT*T19*T23-VTOT*T35*T17-WTOT*T49*T51)
+      XM(IELEM,5)= -(XM(IELEM,4)+T(IELEM,2)+XM(IELEM,1))
+      XM(IELEM,6)= -(T(IELEM,3)+XM(IELEM,4)+XM(IELEM,2))
+      T(IELEM,4) = -(XM(IELEM,3)+XM(IELEM,5)+XM(IELEM,6))
+!
+!-----------------------------------------------------------------------
+!
+      ENDDO
 !
       ELSEIF(SF%ELM.EQ.30.AND.SG%ELM.EQ.30.AND.SH%ELM.EQ.30.AND.
      &       ISO.EQ.1) THEN
@@ -275,6 +430,7 @@
 21    CONTINUE
 !
       ELSEIF(SF%ELM.EQ.30.AND.ISO.EQ.6) THEN
+!
 !   P0 DISCRETISATION OF DIFFUSION COEFFICIENTS (CONSTANT ON AN ELEMENT)
 !   NONISOTROPIC VISCOSITY ==> 6 COMPONENTS
 !   THE FUNCTION DIFFUSION COEFFICIENT IS HERE A P0 NON DIAGONAL
@@ -373,6 +529,7 @@
      & FHTOT*(X2*Y4-Y2*X4))-(X2*Y3-Y2*X3)*(HTOT*(X2*Y4-Y2*X4)+
      & FHTOT*(Y2*Z4-Z2*Y4)+GHTOT*(-X2*Z4+Z2*X4)))
 22    CONTINUE
+!
       ELSE
 !
         IF (LNG.EQ.1) WRITE(LU,1000) SF%ELM,SG%ELM,SH%ELM

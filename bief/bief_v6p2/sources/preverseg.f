@@ -2,10 +2,10 @@
                      SUBROUTINE PREVERSEG
 !                    ********************
 !
-     &(XAUX,AD,AX,TYPDIA,TYPEXT,NPOIN,MESH,NSEG3D)
+     &(XAUX,AD,AX,TYPDIA,TYPEXT,NPOIN,MESH,NSEG3D,TYPEMESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS TRIDIAGONAL SYSTEMS FOR EVERY VERTICAL,
@@ -49,6 +49,8 @@
 !|                |   | TYPEXT = 'Q' : ANY VALUE
 !|                |   | TYPEXT = 'S' : SYMMETRIC
 !|                |   | TYPEXT = '0' : ZERO
+!| TYPEMESH       |-->| TYPE OF MESH (40: PRISMS, 50: PRISMS CUT INTO
+!|                |   | TETRAHEDRONS)
 !| XAUX           |<--| TRIDIAGONAL MATRIX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -60,7 +62,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN,NSEG3D
+      INTEGER, INTENT(IN) :: NPOIN,NSEG3D,TYPEMESH
 !
       DOUBLE PRECISION, INTENT(IN)    :: AD(NPOIN),AX(NSEG3D,2)
       DOUBLE PRECISION, INTENT(INOUT) :: XAUX(NPOIN,*)
@@ -108,6 +110,8 @@
       NPLAN  = NPOIN/NPOIN2
       NSEG2D = BIEF_NBSEG(11,MESH)
       NSEGH  = NSEG2D*NPLAN
+!
+      IF(TYPEMESH.EQ.40.OR.TYPEMESH.EQ.50) THEN
 !
       IF(TYPEXT.EQ.'Q') THEN
 !       PLANE ON THE BOTTOM
@@ -169,6 +173,16 @@
         IF(LNG.EQ.1) WRITE(LU,*) 'INCONNUS DANS PREVERSEG'
         IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN TYPE OF OFF-DIAGONAL TERMS'
         IF(LNG.EQ.2) WRITE(LU,*) 'IN PREVERSEG'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      ELSE
+        WRITE(LU,*) TYPEMESH
+        IF(LNG.EQ.1) WRITE(LU,*) 'TYPE DE MAILLAGE'
+        IF(LNG.EQ.1) WRITE(LU,*) 'INCONNU DANS PREVERSEG : ',TYPEMESH
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN TYPE OF MESH'
+        IF(LNG.EQ.2) WRITE(LU,*) 'IN PREVERSEG: ',TYPEMESH
         CALL PLANTE(1)
         STOP
       ENDIF

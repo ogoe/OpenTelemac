@@ -736,7 +736,8 @@
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
 !
           CALL MT02TT(T,XM,XMUL,SF,SG,SH,F,G,H,
-     &                XEL,YEL,ZEL,IKLE,NELEM,NELMAX,INCHYD)
+     &                XEL,YEL,ZEL,IKLE,NELEM,NELMAX,INCHYD,
+     &                BIEF_NBPTS(11,MESH))
 !
           TYPDIA='Q'
           TYPEXT='S'

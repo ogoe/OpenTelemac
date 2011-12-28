@@ -3,7 +3,7 @@
 !                    *****************
 !
      &(LIHBOR,KLOG,IT1,IT2,IT3,LVMAC,IELMX,
-     & LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA)
+     & LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA,MESH2D)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -51,9 +51,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE) ; REGINA NEBAUER; LAM MINH PHUONG; EMILE RAZAFINDRAKOTO
-!+        12/08/2011
+!+        07/12/2011
 !+        V6P2
-!+   Checking elements for building GLOSEG
+!+   Checking elements for building GLOSEG. New optional argument MESH2D.
+!+   for prisms split into tetrahedrons (call of STOSEG51)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -66,6 +67,8 @@
 !| LIHBOR         |-->| TYPES OF BOUNDARY CONDITIONS ON DEPTH
 !| LVMAC          |-->| VECTOR LENGTH (IF VECTOR MACHINE)
 !| MESH           |-->| MESH STRUCTURE
+!| MESH2D         |-->| UNDERLYING 2D MESH (FOR PRISMS AND PRISMS SPLIT
+!|                |   | INTO TETRAHEDRONS)
 !| OPTASS         |-->| OPTION FOR MATRIX STORAGE.
 !| PRODUC         |-->| OPTION FOR MATRIX x VECTOR PRODUCT.
 !| SPHERI         |-->| LOGICAL, IF YES : SPHERICAL COORDINATES.
@@ -88,6 +91,7 @@
       CHARACTER(LEN=20)              :: EQUA
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: T1,T2,IT1,IT2,IT3
+      TYPE(BIEF_MESH), INTENT(INOUT), OPTIONAL :: MESH2D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -201,6 +205,8 @@
 !
       IF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
 !
+!       CASES WITH A FIRST CALL IN 2D
+!
         MXPTVS = MESH%MXPTVS
         MXELVS = MESH%MXELVS
         CALL ELEBD(MESH%NELBOR%I,MESH%NULONE%I,MESH%KP1BOR%I,
@@ -209,21 +215,19 @@
      &             LIHBOR,KLOG,MESH%IFANUM%I,OPTASS,MESH%ISEG%I,
      &             IT1%I,IT2%I,IT3%I)
 !
-      ELSEIF(IELM.EQ.31) THEN
+      ENDIF
+!
+!     3D CASES
+!
+      IF(IELM.EQ.31) THEN
+!
+!       BUILDING ARRAYS FOR TETRAHEDRONS
 !
         CALL ELEBD31(MESH%NELBOR%I,MESH%NULONE%I,MESH%IKLBOR%I,
      &               MESH%IFABOR%I,MESH%NBOR%I,MESH%IKLE%I,
      &               NELEM2,NELEB2,NELMAX2,NPOIN2,NPTFR2,IELM)
 !
-      ELSE
-!
-        WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
-        CALL PLANTE(1)
-        STOP
-!
-      ENDIF
-!
-      IF(IELM.EQ.41) THEN
+      ELSEIF(IELM.EQ.41) THEN
 !
 !       COMPLETES ARRAYS FOR PRISMS
 !
@@ -234,7 +238,7 @@
 !
       ELSEIF(IELM.EQ.51) THEN
 !
-!       COMPLETES ARRAYS FOR TETRAHEDRONS
+!       COMPLETES ARRAYS FOR PRISMS SPLIT INTO TETRAHEDRONS
 !
         CALL ELEB3DT(MESH%IKLE%I,MESH%NBOR%I,MESH%KP1BOR%I,
      &               MESH%NELBOR%I,MESH%IKLBOR%I,
@@ -242,7 +246,7 @@
      &               MESH%NULONE%I,NELEM2,NELMAX2,
      &               NPOIN2,NPLAN,NPLAN-1,NPTFR2)
 !
-      ELSEIF(IELM.NE.11.AND.IELM.NE.31) THEN
+      ELSEIF(IELM.NE.11) THEN
 !
         WRITE(LU,*) 'INBIEF UNEXPECTED ELEMENT: ',IELM
         CALL PLANTE(1)
@@ -435,12 +439,22 @@
 !
       ELSEIF(IELM.EQ.51) THEN
 !
-      CALL STOSEG51(MESH%IFABOR%I,NELMAX,IELMX,MESH%IKLE%I,MESH%NBOR%I,
-     &              MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,
-     &              MESH%ELTSEG%I,MESH%ORISEG%I,
-     &              MESH%KP1BOR%I,MESH%NELBOR%I,MESH%NULONE%I,
-     &              NELMAX2,NELEM2,NPTFR2,NPOIN2,NPLAN,MESH%KNOLG%I,
-     &              BIEF_NBSEG(11,MESH))
+      IF(PRESENT(MESH2D)) THEN
+!       NOTE THE USE OF MESH2D FOR NELBOR AND NULONE
+!       THIS IS FOR CALLING STOSEG
+        CALL STOSEG51(MESH%IFABOR%I,NELMAX,IELMX,
+     &                MESH%IKLE%I,MESH%NBOR%I,
+     &                MESH%GLOSEG%I,MESH%GLOSEG%MAXDIM1,
+     &                MESH%ELTSEG%I,MESH%ORISEG%I,
+     &                MESH%KP1BOR%I,MESH2D%NELBOR%I,MESH2D%NULONE%I,
+     &                NELMAX2,NELEM2,NPTFR2,NPOIN2,NPLAN,MESH%KNOLG%I,
+     &                BIEF_NBSEG(11,MESH))
+      ELSE
+        WRITE(LU,*) 'ARGUMENT MESH2D SHOULD BE ADDED TO INBIEF'
+        WRITE(LU,*) 'FOR A CALL WITH IELM=51'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
       ELSE
 !
