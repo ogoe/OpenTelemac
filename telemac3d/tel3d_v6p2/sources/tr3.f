@@ -5,7 +5,7 @@
      &( I , ITRAC , N , TIME , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    PRESCRIBES THE TRACER  FOR TRACER IMPOSED
@@ -27,6 +27,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification size FCT and OK due to modification of TRACER
+!+    numbering TRACER is now identified by 2 values (Ifront, Itracer)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS PRINTED
@@ -52,17 +58,18 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
-      INTEGER J,IRANK
-      LOGICAL DEJA,OK(99)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      CHARACTER*9 FCT
+      INTEGER J,K,IRANK
+      LOGICAL, SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXFRO,MAXTRA), SAVE :: OK
 !
 !     FIRST CALL, INITIALISES OK TO .TRUE.
 !
       IF(.NOT.DEJA) THEN
-        DO J=1,99
-          OK(J)=.TRUE.
+        DO K=1, MAXTRA
+           DO J=1,MAXFRO
+              OK(J,K)=.TRUE.
+           ENDDO
         ENDDO
         DEJA=.TRUE.
       ENDIF
@@ -73,39 +80,50 @@
 !
 !     RANK OF VALUE IN ARRAY TRACER OR IN LIQUID BOUNDARY FILE
 !
-      IRANK=ITRAC+(I-1)*NTRAC
-      IF(IRANK.GT.99) THEN
-        WRITE(LU,*) 'CHANGE DIMENSION OF OK IN TR3, ',IRANK,
-     &              ' AT LEAST REQUIRED, IN FACT NFRLIQ*NTRAC'
-        CALL PLANTE(1)
-        STOP
-      ENDIF
-      IF(OK(IRANK).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OK(I,ITRAC).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
 !
-!       FCT WILL BE TR(1), TR(2), ETC, TR(99), DEPENDING ON IRANK
-        FCT(1:3)='TR('
-        IF(IRANK.LT.10) THEN
-          WRITE(FCT(4:4),FMT='(I1)') IRANK
-          FCT(5:8)=')   '
-        ELSEIF(IRANK.LT.100) THEN
-          WRITE(FCT(4:5),FMT='(I2)') IRANK
-          FCT(6:8)=')  '
+!       FCT WILL BE TR(I,ITRAC)
+        FCT='TR(      '
+        IRANK=4
+        IF(I.LT.10) THEN
+          WRITE(FCT(IRANK:IRANK),FMT='(I1)') I
+          IRANK=IRANK+1
+          FCT(IRANK:IRANK)=','
+        ELSEIF(I.LT.100) THEN
+          WRITE(FCT(IRANK:IRANK+1),FMT='(I2)') I
+          IRANK=IRANK+2
+          FCT(IRANK:IRANK)=','
         ELSE
-          WRITE(LU,*) 'TR3 NOT PROGRAMMED FOR MORE THAN 99 VALUES'
+          WRITE(LU,*) 'TR NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        IRANK=IRANK+1
+        IF(ITRAC.LT.10) THEN
+          WRITE(FCT(IRANK:IRANK),FMT='(I1)') ITRAC
+          IRANK=IRANK+1
+          FCT(IRANK:IRANK)=')'
+        ELSEIF(ITRAC.LT.100) THEN
+          WRITE(FCT(IRANK:IRANK+1),FMT='(I2)') ITRAC
+          IRANK=IRANK+2
+          FCT(IRANK:IRANK)=')'
+        ELSE ! Probably unused because ntrac<maxtrac
+          WRITE(LU,*) 'TRSCE NOT PROGRAMMED FOR MORE THAN 99 TRACERS'
           CALL PLANTE(1)
           STOP
         ENDIF
         CALL READ_FIC_FRLIQ(TR3,FCT,TIME,T3D_FILES(T3DIMP)%LU,
-     &                      ENTET,OK(IRANK))
+     &                      ENTET,OK(I,ITRAC))
 !
       ENDIF
 !
-      IF(.NOT.OK(IRANK).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OK(I,ITRAC).OR.T3D_FILES(T3DIMP)%NAME(1:1).EQ.' ') THEN
 !
 !     PROGRAMMABLE PART
 !     TRACER IS TAKEN FROM THE STEERING FILE, BUT MAY BE CHANGED
 !     (FIRST THE NTRAC VALUES OF LIQUID BOUNDARY 1, ETC.)
 !
+        IRANK=ITRAC+(I-1)*NTRAC
         TR3 = TRACER(IRANK)
 !
       ENDIF

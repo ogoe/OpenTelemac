@@ -58,6 +58,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        28/12/2011
+!+        V6P2
+!+   Adaptations to tetrahedra
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -110,8 +115,7 @@
       CALL FLUX3D
      & (FLUINT,FLUEXT,FLUEXTPAR,UCONV,VCONV,T3_01,T3_02,T3_03,MESH3D%W,
      &  NETAGE,NPLAN,NELEM3,IELM3,IELM2H,IELM2V,SVIDE,MESH3D,
-     &  MSK,MASKEL,MASK_3D,
-     &  LIHBOR%I,KENT,NPTFR2,DT,VOLU,VOLUN,MESH2D,
+     &  MSK,MASKEL,MASK_3D,LIHBOR%I,KENT,NPTFR2,DT,VOLU,VOLUN,MESH2D,
      &  GRAPRD,SIGMAG,T2_01,NPOIN2,NPOIN3,DM1,GRAZCO,FLBOR,
      &  PLUIE,RAIN,FLODEL,FLOPAR,OPTHNEG,FLULIM,
      &  (N_ADV(ADV_LPO).GT.0.OR.N_ADV(ADV_LPO_TF).GT.0),
@@ -176,7 +180,7 @@
 !       THE SCHEMES ARE NOT MASS-CONSERVATIVE
 !       IF(BYPASS) THEN
         IF((OPT_HNEG.EQ.2.OR.SIGMAG).AND.IELM3.EQ.41) THEN
-!         BYPASS NOT PROGRAMMED YET FOR TETRAHEDRA !!!!!!!!!!
+!         NOT PROGRAMMED YET FOR TETRAHEDRA !!!!!!!!!!
           CALL BYPASS_CRUSHED_POINTS_EBE(VOLU%R,VOLU,VOLUN%R,VOLUN,
      &                                   MMURD%X%R,T3_01,MESH2D,MESH3D,
      &                                   NPOIN3,NELEM2,NELEM3,NPLAN,
@@ -213,7 +217,7 @@
           MURD_TF%X%R(I) = MURD_TF%X%R(I) - MURD_TF%X%R(I+NSEG3D)
         ENDDO
 !       CALL BYPASS: OPTIONAL BUT SAVES ITERATIONS
-        IF((OPT_HNEG.EQ.2.OR.SIGMAG).AND.BYPASS.AND.IELM3.EQ.41) THEN
+        IF((OPT_HNEG.EQ.2.OR.SIGMAG).AND.BYPASS) THEN
           CALL BYPASS_CRUSHED_POINTS_SEG(VOLU%R,VOLU,VOLUN%R,VOLUN,
      &                                   MURD_TF%X%R,
      &                                   T3_01,MESH2D,MESH3D,

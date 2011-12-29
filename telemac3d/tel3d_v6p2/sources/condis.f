@@ -64,8 +64,7 @@
 !
       USE BIEF
 !#####> NOE-CHANGES
-      USE DECLARATIONS_TELEMAC3D, ONLY: NPRIV,
-     &                                  EPAI0,CFDEP,RHOS,GRAV,CFMAX,DT
+      USE DECLARATIONS_TELEMAC3D, ONLY: EPAI0,CFDEP,RHOS,GRAV,CFMAX,DT
 !#####< NOE-CHANGES
       IMPLICIT NONE
 !
@@ -144,19 +143,6 @@
 !     -----  INITIALISES ZR  -----
 !
       CALL OV('X=Y-Z   ' ,ZR,ZF,HDEP,0.D0,NPOIN2)
-!
-!#####> NOE-CHANGES
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!     NOTE THAT THE USE OF HDEP & ZR HERE IS ONLY TEMPORARY, IN THE CASE
-!     OF NPRIV.GE.1
-!     BEFORE SPLIT AND CONSOLIDATION, HDEP WILL BE SET TO ZF - ZR(USER)
-! DELETED BY JMH, AWAITING EXPLANATIONS/COMMENTS
-!     IF(NPRIV.GE.1) THEN
-!       CALL OV('X=Y     ',ZR,PRIVE%ADR(1)%P%R,ZR,0.D0,NPOIN2)
-!       CALL OV( 'X=Y-Z   ' ,HDEP,ZF,ZR,0.D0,NPOIN2)
-!     ENDIF
-!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-!#####< NOE-CHANGES
 !
 !     -------------------------------------------
 !     INITIAL CONDITIONS FOR THE MULTILAYER MODEL

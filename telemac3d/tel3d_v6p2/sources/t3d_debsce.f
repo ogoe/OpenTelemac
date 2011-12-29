@@ -5,7 +5,7 @@
      &( TIME , I , DISCE )
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    PRESCRIBES THE DISCHARGE FOR EVERY SOURCE POINT
@@ -31,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification size FCT due to modification of TRACER numbering
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DISCE          |-->| ARRAY OF DISCHARGES OF SOURCES.
 !|                |   | READ IN THE PARAMETER FILE.
@@ -54,11 +59,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER N
-      LOGICAL DEJA,OK(MAXSCE)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      LOGICAL, SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXSCE), SAVE :: OK
 !
 !     FIRST CALL, INITIALISES OK TO .TRUE.
 !
@@ -76,13 +80,13 @@
       IF(OK(I).AND.T3D_FILES(T3DVEF)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
-        FCT(1:2)='Q('
+        FCT='Q(       '
         IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
-          FCT(4:8)=')    '
+          FCT(4:4)=')'
         ELSEIF(I.LT.100) THEN
           WRITE(FCT(3:4),FMT='(I2)') I
-          FCT(5:8)=')   '
+          FCT(5:5)=')'
         ELSE
           WRITE(LU,*) 'T3D_DEBSCE NOT PROGRAMMED'
           WRITE(LU,*) 'FOR MORE THAN 99 SOURCES'

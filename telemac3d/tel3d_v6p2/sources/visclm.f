@@ -6,7 +6,7 @@
      & TRAV4,TRAV5,TRAV6,TRAV7,SVIDE,MESH3D,IELM3,GRAV,
      & NPLAN,NPOIN3,NPOIN2,NTRAC,MSK,MASKEL,TA,MIXING,
      & DAMPING,IND_T,DNUVIV,DNUTAV,KARMAN,PRANDTL,UETCAR,KFROT,
-     & RUGOF,ZF,LINLOG)
+     & RUGOF,ZF,LINLOG,IPBOT)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -44,6 +44,12 @@
 !+   Option 1 for taking advantage of verticals (previous versions)
 !+   Option 2 for pure finite elements
 !
+!history  C. VILLARET
+!+        15/12/2012
+!+        V6P2
+!+   Treatment of tidal flats in case of logarithmic derivatives
+!+   and Nikuradse: specific treatment for first plane.
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DAMPING        |-->| NUMBER FOR CHOICE OF DAMPING FUNCION
 !| DELTAR         |-->| (RHO-RHO0)/RHO0
@@ -53,6 +59,7 @@
 !| HN             |-->| WATER DEPTH
 !| IELM3          |-->| TYPE OF 3D DISCRETISATION
 !| IND_T          |-->| INDEX FOR TEMPERATURE
+!| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
 !| KARMAN         |-->| KARMAN CONSTANT
 !| KFROT          |-->| LAW OF BOTTOM FRICTION
 !| LINLOG         |-->| 1: LINEAR VERTICAL DERIVATIVES OF VELOCITY
@@ -101,6 +108,7 @@
       INTEGER, INTENT(IN)            :: NPOIN3, NPOIN2,NPLAN,KFROT
       INTEGER, INTENT(IN)            :: NTRAC,DAMPING,LINLOG
       INTEGER, INTENT(IN)            :: IELM3, MIXING,IND_T
+      INTEGER, INTENT(IN)            :: IPBOT(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)   :: GRAV,DNUVIV,DNUTAV,KARMAN
       DOUBLE PRECISION, INTENT(IN)   :: PRANDTL
       LOGICAL, INTENT(IN)            :: MSK
@@ -117,7 +125,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ITRAC,I,IPLAN,I3D,OPTION
-      DOUBLE PRECISION SDELTAZ,AUX,AUX1,AUX2,DENOM,DELTAZ
+      DOUBLE PRECISION SDELTAZ,AUX,AUX1,AUX2,DENOM,DELTAZ,ZMIL
 !
 !-----------------------------------------------------------------------
 !
@@ -154,13 +162,35 @@
 !
 !     COMPUTING DISTANCE TO BOTTOM OF MIDDLE OF EVERY LAYER (TRAV7)
 !
-      DO IPLAN= 1, NPLAN-1
-        DO I = 1, NPOIN2
-          I3D=I+NPOIN2*(IPLAN-1)
-          TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0-ZF%R(I)
-          TRAV7%R(I3D)=MAX(TRAV7%R(I3D),1.D-8)
+      IF(KFROT.NE.5) THEN
+        DO IPLAN= 1, NPLAN-1
+          DO I = 1, NPOIN2
+            I3D=I+NPOIN2*(IPLAN-1)
+            TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0-ZF%R(I)
+            TRAV7%R(I3D)=MAX(TRAV7%R(I3D),1.D-8)
+          ENDDO
         ENDDO
-      ENDDO
+      ELSE
+!       THIS OPTION WORKS ONLY WITH NIKURADSE LAW, HENCE RUGOF
+!       IS HERE THE GRAIN SIZE
+!       THE REAL BOTTOM IS CONSIDERED TO BE AT RUGOF/30 UNDER
+!       THE FIRST PLANE (SO THAT FIRST PLANE CORRESPONDS TO U=0)
+!       HERE THE ELEVATION OF TRUE BOTTOM CONSIDERED IS THUS
+!       ZF%R(I)-RUGOF%R(I)/30.D0, HENCE THE FORMULA FOR TRAV7
+        DO I = 1, NPOIN2
+          DO IPLAN= 1, NPLAN-1
+          I3D=I+NPOIN2*(IPLAN-1)
+          IF(IPLAN.LE.IPBOT(I)+1) THEN
+            TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)-ZF%R(I)
+     &                   + RUGOF%R(I)/30.D0)*0.5D0 
+          ELSE
+            TRAV7%R(I3D)=(Z%R(I3D+NPOIN2)+Z%R(I3D))*0.5D0-ZF%R(I)     
+          ENDIF
+!         THIS WILL TREAT TIDAL FLATS FOR WHICH Z=ZF
+          TRAV7%R(I3D)=MAX(TRAV7%R(I3D),RUGOF%R(I)/60.D0) 
+          ENDDO
+        ENDDO     
+      ENDIF
 !
 !     UPPER PLANE (USELESS HERE... BUT COMPUTATION DONE IN LONGML)
 !                           
@@ -173,7 +203,7 @@
       IF(LINLOG.EQ.1) THEN
 !       LINEAR DERIVATIVE
         DO I=1,NPOIN3-NPOIN2
-          SDELTAZ=1.D0/MAX(Z%R(I+NPOIN2)-Z%R(I),1.D-4)
+          SDELTAZ=1.D0/MAX(Z%R(I+NPOIN2)-Z%R(I),1.D-8)
           TRAV1%R(I)=(     U%R(I+NPOIN2)-     U%R(I))*SDELTAZ
           TRAV2%R(I)=(     V%R(I+NPOIN2)-     V%R(I))*SDELTAZ
           TRAV3%R(I)=(DELTAR%R(I+NPOIN2)-DELTAR%R(I))*SDELTAZ
@@ -181,22 +211,37 @@
       ELSEIF(LINLOG.EQ.2) THEN
 !       LOGARITHMIC DERIVATIVE 
 ! 	DU/DZ =DU/D(LOG(Z))/Z
+!
+        IF(KFROT.NE.5) THEN
+          WRITE(LU,*) 'NIKURADSE LAW MANDATORY'
+          WRITE(LU,*) 'WITH LOGARITHMIC DERIVATIVES'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
         DO IPLAN=1,NPLAN-1
         DO I=1,NPOIN2
           I3D=I+NPOIN2*(IPLAN-1)
-          SDELTAZ=1.D0/MAX(Z%R(I3D+NPOIN2)-Z%R(I3D),1.D-4)
-          AUX1=MAX(Z%R(I3D+NPOIN2)-ZF%R(I),1.D-4)
-          AUX2=MAX(Z%R(I3D       )-ZF%R(I),1.D-4)
+          SDELTAZ=1.D0/MAX(Z%R(I3D+NPOIN2)-Z%R(I3D),1.D-8)
+          AUX1=MAX(Z%R(I3D+NPOIN2)-ZF%R(I),RUGOF%R(I)/30.D0)
+          AUX2=MAX(Z%R(I3D       )-ZF%R(I),RUGOF%R(I)/30.D0)
           DENOM=LOG(AUX1)-LOG(AUX2)
-          IF(DENOM.GT.1.D-8.AND.TRAV7%R(I3D).LT.0.2D0*HN%R(I)) THEN
+          IF(TRAV7%R(I3D).LT.0.2D0*HN%R(I)) THEN
 !           LOGARITHMIC DERIVATIVE IN LOGARITHMIC PROFILE ZONE
-            AUX=1.D0/(DENOM*TRAV7%R(I3D))
+            AUX=1.D0/(MAX(DENOM*TRAV7%R(I3D),1.D-8))
           ELSE
 !           LINEAR DERIVATIVE 
             AUX=SDELTAZ
           ENDIF
-          TRAV1%R(I3D)=(U%R(I3D+NPOIN2)-U%R(I3D))*AUX
-          TRAV2%R(I3D)=(V%R(I3D+NPOIN2)-V%R(I3D))*AUX
+!         BOTTOM OR FIRST PLANE WITH FREE WATER ABOVE
+          IF(IPLAN.LE.IPBOT(I)+1) THEN
+!           VELOCITY AT BOTTOM ASSUMED TO BE 0 EVEN IF IT IS NOT
+            TRAV1%R(I3D)=(U%R(I3D+NPOIN2)         )*AUX
+            TRAV2%R(I3D)=(V%R(I3D+NPOIN2)         )*AUX
+          ELSE
+            TRAV1%R(I3D)=(U%R(I3D+NPOIN2)-U%R(I3D))*AUX
+            TRAV2%R(I3D)=(V%R(I3D+NPOIN2)-V%R(I3D))*AUX
+          ENDIF
 !         LINEAR DERIVATIVE FOR DELTAR            
           TRAV3%R(I3D)=(DELTAR%R(I3D+NPOIN2)-DELTAR%R(I3D))*SDELTAZ
         ENDDO

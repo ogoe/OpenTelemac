@@ -6,7 +6,7 @@
      & NPOIN3,SCHCF,NPOIN2,GLOSEG,DIMGLO,NSEG,NPLAN)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    BYPASSES FLUXES TO POINTS THAT WILL REMAIN WITH
@@ -37,6 +37,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        28/12/2011
+!+        V6P2
+!+   Adaptation to prisms cut into tetrahedra
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -80,7 +85,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NSEGH,NSEGV,IHOR
-      INTEGER I1,I2,I3,I4,IPLAN,ISEG2D,ISEG3D,I2D,I3D,ICR1,ICR2
+      INTEGER I1,I2,I3,I4,IPLAN,ISEG2D,ISEG3D,I2D,I3D,ICR1,ICR2,IS1
 !
 !-----------------------------------------------------------------------
 !
@@ -106,6 +111,9 @@
 !
       IF(SCHCF.EQ.ADV_NSC_TF) THEN
 !
+        IF(MESH3%TYPELM.EQ.40) THEN
+!
+!       PRISMS
 !       CASE WITH BOTH HORIZONTAL AND CROSSED FLUXES (CASE OF N-SCHEME)
 !
         DO ISEG2D=1,NSEG
@@ -120,41 +128,38 @@
             I2=GLOSEG(ISEG3D,2)
             I3=GLOSEG(ICR1,2)
             I4=GLOSEG(ICR2,2)
+!           FIRST CROSSED SEGMENT BYPASSED
             IF(TRA01%R(I1).LT.EPS_VOLUME.OR.
      &         TRA01%R(I3).LT.EPS_VOLUME) THEN
 !             FLUX ADDED TO UPPER LAYER WITH SAME ORIENTATION
-              IHOR=ISEG2D+IPLAN*NSEG
+              IHOR=ISEG3D+NSEG
               FLUX(IHOR)=FLUX(IHOR)+FLUX(ICR1)
 !             FLUX ADDED TO VERTICAL OF I1
               FLUX(NSEGH+I1)=FLUX(NSEGH+I1)+FLUX(ICR1)
 !             FLUX CANCELLED
               FLUX(ICR1)=0.D0
             ENDIF
+!           SECOND CROSSED SEGMENT BYPASSED
             IF(TRA01%R(I2).LT.EPS_VOLUME.OR.
      &         TRA01%R(I4).LT.EPS_VOLUME) THEN
 !             FLUX ADDED TO UPPER LAYER WITH OPPOSITE ORIENTATION
-              IHOR=ISEG2D+IPLAN*NSEG
+              IHOR=ISEG3D+NSEG
               FLUX(IHOR)=FLUX(IHOR)-FLUX(ICR2)
 !             FLUX ADDED TO VERTICAL OF I2
               FLUX(NSEGH+I2)=FLUX(NSEGH+I2)+FLUX(ICR2)
 !             FLUX CANCELLED
               FLUX(ICR2)=0.D0
             ENDIF
-            IF(TRA01%R(I1).LT.EPS_VOLUME) THEN
+!           LOWER HORIZONTAL SEGMENT BYPASSED
+            IF(TRA01%R(I1).LT.EPS_VOLUME.OR.
+     &         TRA01%R(I2).LT.EPS_VOLUME) THEN
 !             FLUX (FROM 2 TO 1) ADDED TO UPPER LAYER
-              FLUX(ISEG3D+NSEG)=FLUX(ISEG3D+NSEG)+FLUX(ISEG3D)
-!             FLUX ADDED TO VERTICAL OF I2 (WITH - SIGN)
+!             HERE IHOR HAS ALREADY BEEN COMPUTED ABOVE
+              FLUX(IHOR)=FLUX(IHOR)+FLUX(ISEG3D)
+!             FLUX ADDED TO VERTICAL OF I2
+!             (WITH - SIGN BECAUSE POSITIVE IS FROM UP TO DOWN)
               FLUX(NSEGH+I2)=FLUX(NSEGH+I2)-FLUX(ISEG3D)
 !             FLUX REMOVED FROM VERTICAL OF I1 (WITH + SIGN)
-              FLUX(NSEGH+I1)=FLUX(NSEGH+I1)+FLUX(ISEG3D)
-!             FLUX CANCELLED
-              FLUX(ISEG3D)=0.D0
-            ELSEIF(TRA01%R(I2).LT.EPS_VOLUME) THEN
-!             FLUX (FROM 2 TO 1) ADDED TO UPPER LAYER
-              FLUX(ISEG3D+NSEG)=FLUX(ISEG3D+NSEG)+FLUX(ISEG3D)
-!             FLUX REMOVED FROM VERTICAL OF I2
-              FLUX(NSEGH+I2)=FLUX(NSEGH+I2)-FLUX(ISEG3D)
-!             FLUX ADDED TO VERTICAL OF I1 (BUT - SIGN)
               FLUX(NSEGH+I1)=FLUX(NSEGH+I1)+FLUX(ISEG3D)
 !             FLUX CANCELLED
               FLUX(ISEG3D)=0.D0
@@ -164,7 +169,112 @@
           ENDDO
         ENDDO
 !
+        ELSEIF(MESH3%TYPELM.EQ.50) THEN
+!
+!       SEE STOSEG51.F FOR NUMBERING OF CROSSED SEGMENTS
+!
+!       TETRAHEDRA
+!       CASE WITH BOTH HORIZONTAL AND CROSSED FLUXES (CASE OF N-SCHEME)
+!
+        DO ISEG2D=1,NSEG
+          DO IPLAN=1,NPLAN-1
+!           ONLY ONE CROSSED SEGMENT, EXITING FROM POINT 1 OR 2
+            ICR1=NSEGH+NSEGV+(IPLAN-1)*NSEG+ISEG2D
+!           FIRST POINT OF THIS SEGMENT
+            IS1=GLOSEG(ICR1,1)
+!           LOWER HORIZONTAL SEGMENT
+            ISEG3D=ISEG2D+(IPLAN-1)*NSEG
+            I1=GLOSEG(ISEG3D,1)
+            I2=GLOSEG(ISEG3D,2)
+!           POINT ABOVE I2
+            I3=I2+NPOIN2
+!           POINT ABOVE I1
+            I4=I1+NPOIN2
+!           CASE OF CROSSED SEGMENT TOUCHING I1 (IS1=I1 OR IS1=I3) 
+            IF(TRA01%R(I1).LT.EPS_VOLUME.OR.
+     &         TRA01%R(I3).LT.EPS_VOLUME) THEN
+              IF(IS1.EQ.I1) THEN
+!               WITH SAME ORIENTATION
+!               FLUX ADDED TO UPPER LAYER WITH SAME ORIENTATION
+                IHOR=ISEG3D+NSEG
+                FLUX(IHOR)=FLUX(IHOR)+FLUX(ICR1)
+!               FLUX ADDED TO VERTICAL OF I1
+                FLUX(NSEGH+I1)=FLUX(NSEGH+I1)+FLUX(ICR1)
+!               FLUX CANCELLED
+                FLUX(ICR1)=0.D0
+              ELSEIF(IS1.EQ.I3) THEN
+!               WITH OPPOSITE ORIENTATION
+!               FLUX ADDED TO UPPER LAYER WITH OPPOSITE ORIENTATION
+                IHOR=ISEG3D+NSEG
+                FLUX(IHOR)=FLUX(IHOR)-FLUX(ICR1)
+!               FLUX ADDED TO VERTICAL OF I1
+!               ALSO WITH - SIGN BECAUSE WITH OPPOSITE ORIENTATION
+!               TO VERTICAL SEGMENTS ALSO (ALL ARE FROM BOTTOM TO TOP)
+                FLUX(NSEGH+I1)=FLUX(NSEGH+I1)-FLUX(ICR1)
+!               FLUX CANCELLED
+                FLUX(ICR1)=0.D0
+              ENDIF              
+            ENDIF
+!           CASE OF CROSSED SEGMENT TOUCHING I2 (IS1=I2 OR IS1=I4) 
+            IF(TRA01%R(I2).LT.EPS_VOLUME.OR.
+     &         TRA01%R(I4).LT.EPS_VOLUME) THEN
+              IF(IS1.EQ.I2) THEN
+!               WITH SAME ORIENTATION
+!               FLUX ADDED TO UPPER LAYER WITH OPPOSITE ORIENTATION
+                IHOR=ISEG3D+NSEG
+                FLUX(IHOR)=FLUX(IHOR)-FLUX(ICR1)
+!               FLUX ADDED TO VERTICAL OF I2
+!               SAME ORIENTATION AS VERTICAL SEGMENTS, HENCE +
+                FLUX(NSEGH+I2)=FLUX(NSEGH+I2)+FLUX(ICR1)
+!               FLUX CANCELLED
+                FLUX(ICR1)=0.D0
+              ELSEIF(IS1.EQ.I4) THEN
+!               WITH OPPOSITE ORIENTATION
+!               FLUX ADDED TO UPPER LAYER WITH SAME ORIENTATION
+                IHOR=ISEG3D+NSEG
+                FLUX(IHOR)=FLUX(IHOR)+FLUX(ICR1)
+!               FLUX ADDED TO VERTICAL OF I2
+!               OPPOSITE ORIENTATION AS VERTICAL SEGMENTS, HENCE -
+                FLUX(NSEGH+I2)=FLUX(NSEGH+I2)-FLUX(ICR1)
+!               FLUX CANCELLED
+                FLUX(ICR1)=0.D0
+              ENDIF
+            ENDIF
+!           BYPASSING THE LOWER HORIZONTAL SEGMENT. EXACTLY LIKE PRISMS
+!           BECAUSE SAME NUMBERING OF HORIZONTAL AND VERTICAL SEGMENTS        
+            IF(TRA01%R(I1).LT.EPS_VOLUME.OR.
+     &         TRA01%R(I2).LT.EPS_VOLUME) THEN
+!             FLUX (FROM 2 TO 1) ADDED TO UPPER LAYER
+              FLUX(ISEG3D+NSEG)=FLUX(ISEG3D+NSEG)+FLUX(ISEG3D)
+!             FLUX ADDED TO VERTICAL OF I2 (WITH - SIGN)
+              FLUX(NSEGH+I2)=FLUX(NSEGH+I2)-FLUX(ISEG3D)
+!             FLUX REMOVED FROM VERTICAL OF I1 (WITH + SIGN)
+              FLUX(NSEGH+I1)=FLUX(NSEGH+I1)+FLUX(ISEG3D)
+!             FLUX CANCELLED
+              FLUX(ISEG3D)=0.D0
+            ELSE
+              EXIT
+            ENDIF
+          ENDDO
+        ENDDO
+!
+        ELSE
+          WRITE(LU,*) 'BYPASS_CRUSHED_POINTS_SEG'
+          WRITE(LU,*) 'UNKNOWN TYPE OF ELEMENT: ',MESH3%TYPELM
+          WRITE(LU,*) 'IN THE CASE OF SCHEME: ',SCHCF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
       ELSEIF(SCHCF.EQ.ADV_LPO_TF) THEN
+!
+        IF(MESH3%TYPELM.NE.40) THEN
+          WRITE(LU,*) 'BYPASS_CRUSHED_POINTS_SEG'
+          WRITE(LU,*) 'UNKNOWN TYPE OF ELEMENT: ',MESH3%TYPELM
+          WRITE(LU,*) 'IN THE CASE OF SCHEME: ',SCHCF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !       CASE WITH ONLY HORIZONTAL FLUXES
 !

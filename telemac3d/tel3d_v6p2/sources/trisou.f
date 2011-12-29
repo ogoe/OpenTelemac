@@ -12,7 +12,7 @@
      &  COUROU,NPTH,T3D_FILES,T3DBI1)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                  21/08/2010
+! TELEMAC3D   V6P2                                  21/08/2010
 !***********************************************************************
 !
 !brief    SOURCE TERMS FOR U & V MOMENTUM EQUATIONS.
@@ -253,9 +253,10 @@
 !
 ! - G DENSITY GRADIENTS
 !     WITH TREATMENT OF HYDROSTATIC INCONSISTENCIES IF NEEDED
+!     THIS IS AVAILABLE ONLY FOR PRISMS !!!!!!!!!!!!
 !
       FORMUL='GRADF          '
-      IF(INCHYD) FORMUL(6:6)='2'
+      IF(IELM3.EQ.41.AND.INCHYD) FORMUL(6:6)='2'
 !
 !     ===============================================
 !     BETTER FILTERING OF HYDROSTATIC INCONSISTENCIES

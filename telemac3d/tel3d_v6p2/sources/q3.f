@@ -5,7 +5,7 @@
      &( I , TIME , ENTET )
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    PRESCRIBES THE DISCHARGE FOR FLOW IMPOSED
@@ -27,6 +27,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification of FCT size due to modification of TRACER numbering
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| IF YES, LISTING PRINTOUTS ALLOWED
@@ -50,16 +55,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER N
-      LOGICAL DEJA,OK(99)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      LOGICAL,SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
 !
 !     FIRST CALL, INITIALISES OK TO .TRUE.
 !
       IF(.NOT.DEJA) THEN
-        DO N=1,99
+        DO N=1,MAXFRO
           OK(N)=.TRUE.
         ENDDO
         DEJA=.TRUE.
@@ -72,13 +76,13 @@
       IF(OK(I).AND.T3D_FILES(T3DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
-        FCT(1:2)='Q('
+        FCT='Q(       '
         IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
-          FCT(4:8)=')    '
+          FCT(4:4)=')'
         ELSEIF(I.LT.100) THEN
           WRITE(FCT(3:4),FMT='(I2)') I
-          FCT(5:8)=')   '
+          FCT(5:5)=')'
         ELSE
           CALL PLANTE(1)
           STOP 'Q3 NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'

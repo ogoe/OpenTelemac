@@ -27,7 +27,7 @@
 !history  JMH
 !+        02/09/2002
 !+
-!+   TIDAL FLATS
+!+   Tidal flats
 !
 !history  J-M HERVOUET (LNHE)     ; JACEK A. JANKOWSKI - UNIVERSITAET HANNOVER
 !+        21/05/2010
@@ -46,6 +46,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)   
+!+        07/12/2011
+!+        V6P2
+!+   Removing preconditioning 17 in case of 2 planes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BC             |-->| LOGICAL, IF YES, BOUNDARY CONDITIONS
 !|                |   | ARE TAKEN INTO ACCOUNT (SEE CALL FLUPRI...)
@@ -60,7 +65,7 @@
 !|                |   | 2: DIVERGENCE OBTAINED BY SUM OF FLUXES
 !|                |   | 3: DIVERGENCE OBTAINED BY SUM OF FLUXES
 !|                |   | AND LAPLACIAN IN THE TRANSFORMED MESH
-!|                |   | THAT WILl ALLOW A SPLITTING BETWEEN
+!|                |   | THAT WILL ALLOW A SPLITTING BETWEEN
 !|                |   | VERTICAL FLUXES AND FLUXES TANGENT
 !|                |   | TO PLANES
 !| PD             |<->| DYNAMIC PRESSURE
@@ -309,9 +314,15 @@
         MDIFF%ELMLIN=11
         MDIFF%ELMCOL=11
         MDIFF%D%ELM=11
-!
+!       PRECONDITIONING 17 WILL NOT BE ACCEPTED IN 2D
+        IS=SLVPOI%PRECON
+        IF(17*(IS/17).EQ.IS) SLVPOI%PRECON=IS/17
+! 
         CALL SOLVE(PD,MDIFF,SEM3D,TRAV2,SLVPOI,INFO,MESH2D,
      &             MAT2D%ADR(1)%P)
+!
+!       RESTORING POSSIBLE PRECONDITIONING 17
+        SLVPOI%PRECON=IS
 !
 !       OLD PROPERTIES RESTORED
         MDIFF%ELMLIN=41
