@@ -5383,6 +5383,25 @@ AIDE = 'On donne 1 entier par frontiere liquide
 AIDE1 = 'One integer per liquid boundary is given 
      1 : classical boundary conditions 
      2 : Thompson method based on characteristics' 
+     
+NOM = 'DERIVEES VERTICALES DES VITESSES' 
+NOM1 = 'VERTICAL VELOCITY DERIVATIVES' 
+TYPE = ENTIER 
+INDEX = 110 
+MNEMO = 'LINLOG' 
+CONTROLE = 1;2 
+TAILLE = 0
+DEFAUT = 1 
+DEFAUT1 = 1  
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2 
+AIDE = 'Mode de calcul des derivees des vitesses suivant z 
+     1 : derivee lineaire (classique)
+     2 : derivee logarithmique (mieux pour profils logarithmiques)' 
+AIDE1 = 'Way of computing the velocity derivatives along z 
+     1 : linear derivative (classic)
+     2 : logarithmic derivative (better for logarithmic profiles)' 
 /
 /---------------------------------------------------------------------
 /
