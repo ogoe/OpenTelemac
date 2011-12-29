@@ -35,7 +35,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        21/11/2011
+!+        29/12/2011
 !+        V6P2
 !+   Treatment of tidal flats in case of Nikuradse law.
 !
@@ -161,7 +161,7 @@
             DIST  = Z(NPOIN+I1)-Z(I1)
             AUX=MAX(1.001D0,30.D0*DIST/RUGOF(N))
             UETCAR(N)=(KARMAN/LOG(AUX))**2
-     &               * (U3D(N+NPOIN)**2+V3D(N+NPOIN)**2)
+     &               * (U3D(I1+NPOIN)**2+V3D(I1+NPOIN)**2)
           ENDDO
 !
         ELSE
