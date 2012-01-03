@@ -8,7 +8,7 @@
      &  NELEM2,NELMAX2,IKLE2,SURDET2   , INILOC)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS THE METHOD OF CHARACTERISTICS
@@ -30,6 +30,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        03/01/2012
+!+        V6P2
+!+   NPOIN instead of NPOIN2 in the call to SCARACT at the position
+!+   of argument NPLOT (goes with corrections in Streamline.f)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
@@ -190,7 +196,7 @@
      &                SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
      &                IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
      &                3,NPLAN,MESH%LV,MSK,MASKEL%R,
-     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPOIN2,
+     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPOIN,
      &                .TRUE.,.TRUE.)
 !
       ENDIF
