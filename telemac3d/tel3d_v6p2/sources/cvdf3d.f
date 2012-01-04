@@ -18,7 +18,7 @@
      &  VOLUT,ZT,ZPROP,RAIN,PLUIE,PARAPLUIE,FLODEL,FLOPAR,SIGMAG,IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE ADVECTION-DIFFUSION STEP.
@@ -45,6 +45,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J.M. HERVOUET (LNHE)
+!+        04/01/2012
+!+        V6P2
+!+   Call to MURD3D modified
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -365,15 +370,14 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION N
+!     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION N OR PSI
 !
-      ELSEIF(SCHCF.EQ.ADV_NSC) THEN
+      ELSEIF(SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI) THEN
 !
         CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
      &              MMURD%D%R,MMURD%X%R,DIM1X,
-     &              MMURD%D%R,MMURD%X%R,DIM1X,
      &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &              MESH3D%W%R,IKLE3%I,MESH3D,
+     &              IKLE3%I,MESH3D,
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
      &              CALFLU,FLUXF,FLUEXT%R,S0F,NSCE,SOURCES,FSCE,
      &              RAIN,PARAPLUIE%R,NPOIN2,
@@ -388,39 +392,14 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ADVECTION BY MURD DISTRIBUTIVE SCHEME, OPTION PSI
-!
-      ELSEIF(SCHCF.EQ.ADV_PSI) THEN
-!
-         CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &               MMURD%D%R,MMURD%X%R,DIM1X,
-     &               MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
-     &               T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &               W1%R,IKLE3%I,MESH3D,
-     &               NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
-     &               CALFLU,FLUXF,FLUEXT%R,S0F,NSCE,SOURCES,FSCE,
-     &               RAIN,PARAPLUIE%R,NPOIN2,
-     &               TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
-     &               FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
-     &               MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,IELM3)
-!
-!        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
-!        IF DIFF3D IS CALLED AFTER
-!
-!        CALL OS('X=C     ',X=S0F,C=0.D0)
-         S0F%TYPR='0'
-!
-!-----------------------------------------------------------------------
-!
 !     ADVECTION BY UPWIND EXPLICIT FINITE VOLUME SCHEME
 !
       ELSEIF(SCHCF.EQ.ADV_LPO) THEN
 !
          CALL MURD3D(FC%R,FN%R,VOLU%R,VOLUN%R,T3_01%R,T3_01,
-     &               MMURD%D%R,MMURD%X%R,DIM1X,
      &               MESH3D%M%D%R,MESH3D%M%X%R,DIM1X,
      &               T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
-     &               W1%R,IKLE3%I,MESH3D,
+     &               IKLE3%I,MESH3D,
      &               NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
      &               CALFLU,FLUXF,FLUEXT%R,S0F,NSCE,SOURCES,FSCE,
      &               RAIN,PARAPLUIE%R,NPOIN2,

@@ -7,7 +7,7 @@
      & MDIFF,MESH3D,VOLU3D,VOLU3DPAR,UNSV3D,MSK,MASKEL,IELM3)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE MESH FOR THE PROPAGATION STEP.
@@ -30,6 +30,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        20/05/2010
+!+        V6P0
+!+   Inverse of VOLU3DPAR differently clipped
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| H              |-->| WATER DEPTH
@@ -132,10 +137,14 @@
         CALL OS('X=Y     ',X=VOLU3DPAR,Y=VOLU3D)
         CALL PARCOM(VOLU3DPAR,2,MESH3D)
         CALL OS('X=1/Y   ',X=UNSV3D,Y=VOLU3DPAR,
-     &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
+     &          IOPT=2,INFINI=1.D6,ZERO=1.D-6)
+!               VERSION 6.1
+!    &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
       ELSE
         CALL OS('X=1/Y   ',X=UNSV3D,Y=VOLU3D,
-     &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
+     &          IOPT=2,INFINI=1.D6,ZERO=1.D-6)
+!               VERSION 6.1
+!    &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
       ENDIF
 !
 !     RESTORES Z

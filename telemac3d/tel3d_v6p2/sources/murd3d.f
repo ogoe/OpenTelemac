@@ -2,8 +2,8 @@
                      SUBROUTINE MURD3D
 !                    *****************
 !
-     &(FC,FN,VOLU,VOLUN,VOLU2,SVOLU2,DA,XA,DIM1XA,DB,XB,DIM1XB,
-     & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,W1,IKLE3,MESH3,
+     &(FC,FN,VOLU,VOLUN,VOLU2,SVOLU2,DB,XB,DIM1XB,
+     & TRA01,TRA02,TRA03,STRA01,STRA02,STRA03,IKLE3,MESH3,
      & NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL,INFOR,CALFLU,FLUX,FLUEXT,
      & S0F,NSCE,SOURCES,FSCE,RAIN,PLUIE,NPOIN2,MINFC,MAXFC,MASKPT,
      & OPTBAN,FLODEL,FLOPAR,GLOSEG,DIMGLO,NSEG,NPLAN,IELM3)
@@ -93,14 +93,16 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
-!
+!+
+!history  J-M HERVOUET (LNHE)
+!+        04/01/2012
+!+        V6P2
+!+   Adaptation to tetrahedra
+!+   PSI 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
-!| DA             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
 !| DB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
-!|                |   | POSSIBLY TRANSFORMED IN OPTION PSI
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
-!| DIM1XA         |-->| FIRST DIMENSION OF XA
 !| DIM1XB         |-->| FIRST DIMENSION OF XB
 !| DT             |-->| TIME STEP
 !| FC             |<->| VARIABLE AFTER CONVECTION
@@ -147,10 +149,7 @@
 !| VOLU           |-->| CONTROL VOLUME AT TIME N+1
 !| VOLU2          |<->| LIKE VOLU, BUT ASSEMBLED IN PARALLEL
 !| VOLUN          |-->| CONTROL VOLUME AT TIME N
-!| W1             |<->| WORK ARRAY (CALCULATION OF MATRICES...)
-!| XA             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
 !| XB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
-!|                |   | POSSIBLY TRANSFORMED IN OPTION PSI
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -163,7 +162,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,LV,NPOIN2
-      INTEGER, INTENT(IN)             :: IELM3,DIM1XA,DIM1XB
+      INTEGER, INTENT(IN)             :: IELM3,DIM1XB
 !                                                     6 OR 4
       INTEGER, INTENT(IN)             :: IKLE3(NELEM3,*),NSCE,OPTBAN
       INTEGER, INTENT(IN)             :: NSEG,NPLAN,DIMGLO
@@ -171,8 +170,6 @@
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FC(NPOIN3)
       DOUBLE PRECISION, INTENT(IN)    :: FN(NPOIN3),PLUIE(NPOIN2)
-!                                                  6 OR 4
-      DOUBLE PRECISION, INTENT(INOUT) :: W1(NELEM3,*)
       DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELEM3), FLUEXT(NPOIN3)
 !
       DOUBLE PRECISION, INTENT(IN)    :: VOLUN(NPOIN3), VOLU(NPOIN3)
@@ -186,7 +183,6 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: SOURCES,S0F
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: STRA01,STRA02,STRA03
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3
-      DOUBLE PRECISION, INTENT(INOUT) :: DA(NPOIN3),XA(DIM1XA,NELEM3)
       DOUBLE PRECISION, INTENT(INOUT) :: DB(NPOIN3),XB(DIM1XB,NELEM3)
 !
 !     DIMENSION OF FLODEL AND FLOPAR=NSEG2D*NPLAN+NPOIN2*NETAGE
@@ -244,7 +240,7 @@
       IF(SCHCF.EQ.ADV_PSI) THEN
 !
          DO IPOIN=1,NPOIN3
-           DB(IPOIN)=0.D0
+           TRA02(IPOIN)=0.D0
          ENDDO
 !
          IF(IELM3.EQ.41) THEN
@@ -265,21 +261,21 @@
             T5 = FC(I5)
             T6 = FC(I6)
 !
-            M12 = (XA(01,IELEM)-XA(16,IELEM)) * (T1-T2)
-            M13 = (XA(02,IELEM)-XA(17,IELEM)) * (T1-T3)
-            M14 = (XA(03,IELEM)-XA(18,IELEM)) * (T1-T4)
-            M15 = (XA(04,IELEM)-XA(19,IELEM)) * (T1-T5)
-            M16 = (XA(05,IELEM)-XA(20,IELEM)) * (T1-T6)
-            M23 = (XA(06,IELEM)-XA(21,IELEM)) * (T2-T3)
-            M24 = (XA(07,IELEM)-XA(22,IELEM)) * (T2-T4)
-            M25 = (XA(08,IELEM)-XA(23,IELEM)) * (T2-T5)
-            M26 = (XA(09,IELEM)-XA(24,IELEM)) * (T2-T6)
-            M34 = (XA(10,IELEM)-XA(25,IELEM)) * (T3-T4)
-            M35 = (XA(11,IELEM)-XA(26,IELEM)) * (T3-T5)
-            M36 = (XA(12,IELEM)-XA(27,IELEM)) * (T3-T6)
-            M45 = (XA(13,IELEM)-XA(28,IELEM)) * (T4-T5)
-            M46 = (XA(14,IELEM)-XA(29,IELEM)) * (T4-T6)
-            M56 = (XA(15,IELEM)-XA(30,IELEM)) * (T5-T6)
+            M12 = (XB(01,IELEM)-XB(16,IELEM)) * (T1-T2)
+            M13 = (XB(02,IELEM)-XB(17,IELEM)) * (T1-T3)
+            M14 = (XB(03,IELEM)-XB(18,IELEM)) * (T1-T4)
+            M15 = (XB(04,IELEM)-XB(19,IELEM)) * (T1-T5)
+            M16 = (XB(05,IELEM)-XB(20,IELEM)) * (T1-T6)
+            M23 = (XB(06,IELEM)-XB(21,IELEM)) * (T2-T3)
+            M24 = (XB(07,IELEM)-XB(22,IELEM)) * (T2-T4)
+            M25 = (XB(08,IELEM)-XB(23,IELEM)) * (T2-T5)
+            M26 = (XB(09,IELEM)-XB(24,IELEM)) * (T2-T6)
+            M34 = (XB(10,IELEM)-XB(25,IELEM)) * (T3-T4)
+            M35 = (XB(11,IELEM)-XB(26,IELEM)) * (T3-T5)
+            M36 = (XB(12,IELEM)-XB(27,IELEM)) * (T3-T6)
+            M45 = (XB(13,IELEM)-XB(28,IELEM)) * (T4-T5)
+            M46 = (XB(14,IELEM)-XB(29,IELEM)) * (T4-T6)
+            M56 = (XB(15,IELEM)-XB(30,IELEM)) * (T5-T6)
 !
             PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
      &           + MAX( M15,0.D0) + MAX( M16,0.D0) + MAX( M23,0.D0)
@@ -295,239 +291,158 @@
             IF(PHIP.GE.PHIM) THEN
                ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
                IF(T2.GT.T1) THEN
-                 XB(01,IELEM) = 0.D0
-                 XB(16,IELEM) = XA(16,IELEM) * ALFA
+                 TRA02(I2)=TRA02(I2)+XB(16,IELEM)*ALFA*(FC(I1)-FC(I2))
                ELSE
-                 XB(01,IELEM) = XA(01,IELEM) * ALFA
-                 XB(16,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
                ENDIF
                IF(T3.GT.T1) THEN
-                 XB(02,IELEM) = 0.D0
-                 XB(17,IELEM) = XA(17,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(17,IELEM)*ALFA*(FC(I1)-FC(I3))
                ELSE
-                 XB(02,IELEM) = XA(02,IELEM) * ALFA
-                 XB(17,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
                ENDIF
                IF(T4.GT.T1) THEN
-                 XB(03,IELEM) = 0.D0
-                 XB(18,IELEM) = XA(18,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(18,IELEM)*ALFA*(FC(I1)-FC(I4))
                ELSE
-                 XB(03,IELEM) = XA(03,IELEM) * ALFA
-                 XB(18,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
                ENDIF
                IF(T5.GT.T1) THEN
-                 XB(04,IELEM) = 0.D0
-                 XB(19,IELEM) = XA(19,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(19,IELEM)*ALFA*(FC(I1)-FC(I5))
                ELSE
-                 XB(04,IELEM) = XA(04,IELEM) * ALFA
-                 XB(19,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(04,IELEM)*ALFA*(FC(I5)-FC(I1))
                ENDIF
                IF(T6.GT.T1) THEN
-                 XB(05,IELEM) = 0.D0
-                 XB(20,IELEM) = XA(20,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(20,IELEM)*ALFA*(FC(I1)-FC(I6))
                ELSE
-                 XB(05,IELEM) = XA(05,IELEM) * ALFA
-                 XB(20,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(05,IELEM)*ALFA*(FC(I6)-FC(I1))
                ENDIF
                IF(T3.GT.T2) THEN
-                 XB(06,IELEM) = 0.D0
-                 XB(21,IELEM) = XA(21,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(21,IELEM)*ALFA*(FC(I2)-FC(I3))
                ELSE
-                 XB(06,IELEM) = XA(06,IELEM) * ALFA
-                 XB(21,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(06,IELEM)*ALFA*(FC(I3)-FC(I2))
                ENDIF
                IF(T4.GT.T2) THEN
-                 XB(07,IELEM) = 0.D0
-                 XB(22,IELEM) = XA(22,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(22,IELEM)*ALFA*(FC(I2)-FC(I4))
                ELSE
-                 XB(07,IELEM) = XA(07,IELEM) * ALFA
-                 XB(22,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I4)-FC(I2))
                ENDIF
                IF(T5.GT.T2) THEN
-                 XB(08,IELEM) = 0.D0
-                 XB(23,IELEM) = XA(23,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(23,IELEM)*ALFA*(FC(I2)-FC(I5))
                ELSE
-                 XB(08,IELEM) = XA(08,IELEM) * ALFA
-                 XB(23,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(08,IELEM)*ALFA*(FC(I5)-FC(I2))
                ENDIF
                IF(T6.GT.T2) THEN
-                 XB(09,IELEM) = 0.D0
-                 XB(24,IELEM) = XA(24,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(24,IELEM)*ALFA*(FC(I2)-FC(I6))
                ELSE
-                 XB(09,IELEM) = XA(09,IELEM) * ALFA
-                 XB(24,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(09,IELEM)*ALFA*(FC(I6)-FC(I2))
                ENDIF
                IF(T4.GT.T3) THEN
-                 XB(10,IELEM) = 0.D0
-                 XB(25,IELEM) = XA(25,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(25,IELEM)*ALFA*(FC(I3)-FC(I4))
                ELSE
-                 XB(10,IELEM) = XA(10,IELEM) * ALFA
-                 XB(25,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I4)-FC(I3))
                ENDIF
                IF(T5.GT.T3) THEN
-                 XB(11,IELEM) = 0.D0
-                 XB(26,IELEM) = XA(26,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(26,IELEM)*ALFA*(FC(I3)-FC(I5))
                ELSE
-                 XB(11,IELEM) = XA(11,IELEM) * ALFA
-                 XB(26,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(11,IELEM)*ALFA*(FC(I5)-FC(I3))
                ENDIF
                IF(T6.GT.T3) THEN
-                 XB(12,IELEM) = 0.D0
-                 XB(27,IELEM) = XA(27,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(27,IELEM)*ALFA*(FC(I3)-FC(I6))
                ELSE
-                 XB(12,IELEM) = XA(12,IELEM) * ALFA
-                 XB(27,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(12,IELEM)*ALFA*(FC(I6)-FC(I3))
                ENDIF
                IF(T5.GT.T4) THEN
-                 XB(13,IELEM) = 0.D0
-                 XB(28,IELEM) = XA(28,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(28,IELEM)*ALFA*(FC(I4)-FC(I5))
                ELSE
-                 XB(13,IELEM) = XA(13,IELEM) * ALFA
-                 XB(28,IELEM) = 0.D0
+                 TRA02(I4)=TRA02(I4)+XB(13,IELEM)*ALFA*(FC(I5)-FC(I4))
                ENDIF
                IF(T6.GT.T4) THEN
-                 XB(14,IELEM) = 0.D0
-                 XB(29,IELEM) = XA(29,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(29,IELEM)*ALFA*(FC(I4)-FC(I6))
                ELSE
-                 XB(14,IELEM) = XA(14,IELEM) * ALFA
-                 XB(29,IELEM) = 0.D0
+                 TRA02(I4)=TRA02(I4)+XB(14,IELEM)*ALFA*(FC(I6)-FC(I4))
                ENDIF
                IF(T6.GT.T5) THEN
-                 XB(15,IELEM) = 0.D0
-                 XB(30,IELEM) = XA(30,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(30,IELEM)*ALFA*(FC(I5)-FC(I6))
                ELSE
-                 XB(15,IELEM) = XA(15,IELEM) * ALFA
-                 XB(30,IELEM) = 0.D0
+                 TRA02(I5)=TRA02(I5)+XB(15,IELEM)*ALFA*(FC(I6)-FC(I5))
                ENDIF
             ELSE
                ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
                IF(T2.GT.T1) THEN
-                 XB(01,IELEM) = XA(01,IELEM) * ALFA
-                 XB(16,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
                ELSE
-                 XB(01,IELEM) = 0.D0
-                 XB(16,IELEM) = XA(16,IELEM) * ALFA
+                 TRA02(I2)=TRA02(I2)+XB(16,IELEM)*ALFA*(FC(I1)-FC(I2))
                ENDIF
                IF(T3.GT.T1) THEN
-                 XB(02,IELEM) = XA(02,IELEM) * ALFA
-                 XB(17,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
                ELSE
-                 XB(02,IELEM) = 0.D0
-                 XB(17,IELEM) = XA(17,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(17,IELEM)*ALFA*(FC(I1)-FC(I3))
                ENDIF
                IF(T4.GT.T1) THEN
-                 XB(03,IELEM) = XA(03,IELEM) * ALFA
-                 XB(18,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
                ELSE
-                 XB(03,IELEM) = 0.D0
-                 XB(18,IELEM) = XA(18,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(18,IELEM)*ALFA*(FC(I1)-FC(I4))
                ENDIF
                IF(T5.GT.T1) THEN
-                 XB(04,IELEM) = XA(04,IELEM) * ALFA
-                 XB(19,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(04,IELEM)*ALFA*(FC(I5)-FC(I1))
                ELSE
-                 XB(04,IELEM) = 0.D0
-                 XB(19,IELEM) = XA(19,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(19,IELEM)*ALFA*(FC(I1)-FC(I5))
                ENDIF
                IF(T6.GT.T1) THEN
-                 XB(05,IELEM) = XA(05,IELEM) * ALFA
-                 XB(20,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(05,IELEM)*ALFA*(FC(I6)-FC(I1))
                ELSE
-                 XB(05,IELEM) = 0.D0
-                 XB(20,IELEM) = XA(20,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(20,IELEM)*ALFA*(FC(I1)-FC(I6))
                ENDIF
                IF(T3.GT.T2) THEN
-                 XB(06,IELEM) = XA(06,IELEM) * ALFA
-                 XB(21,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(06,IELEM)*ALFA*(FC(I3)-FC(I2))
                ELSE
-                 XB(06,IELEM) = 0.D0
-                 XB(21,IELEM) = XA(21,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(21,IELEM)*ALFA*(FC(I2)-FC(I3))
                ENDIF
                IF(T4.GT.T2) THEN
-                 XB(07,IELEM) = XA(07,IELEM) * ALFA
-                 XB(22,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I4)-FC(I2))
                ELSE
-                 XB(07,IELEM) = 0.D0
-                 XB(22,IELEM) = XA(22,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(22,IELEM)*ALFA*(FC(I2)-FC(I4))
                ENDIF
                IF(T5.GT.T2) THEN
-                 XB(08,IELEM) = XA(08,IELEM) * ALFA
-                 XB(23,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(08,IELEM)*ALFA*(FC(I5)-FC(I2))
                ELSE
-                 XB(08,IELEM) = 0.D0
-                 XB(23,IELEM) = XA(23,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(23,IELEM)*ALFA*(FC(I2)-FC(I5))
                ENDIF
                IF(T6.GT.T2) THEN
-                 XB(09,IELEM) = XA(09,IELEM) * ALFA
-                 XB(24,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(09,IELEM)*ALFA*(FC(I6)-FC(I2))
                ELSE
-                 XB(09,IELEM) = 0.D0
-                 XB(24,IELEM) = XA(24,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(24,IELEM)*ALFA*(FC(I2)-FC(I6))
                ENDIF
                IF(T4.GT.T3) THEN
-                 XB(10,IELEM) = XA(10,IELEM) * ALFA
-                 XB(25,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I4)-FC(I3))
                ELSE
-                 XB(10,IELEM) = 0.D0
-                 XB(25,IELEM) = XA(25,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(25,IELEM)*ALFA*(FC(I3)-FC(I4))
                ENDIF
                IF(T5.GT.T3) THEN
-                 XB(11,IELEM) = XA(11,IELEM) * ALFA
-                 XB(26,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(11,IELEM)*ALFA*(FC(I5)-FC(I3))
                ELSE
-                 XB(11,IELEM) = 0.D0
-                 XB(26,IELEM) = XA(26,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(26,IELEM)*ALFA*(FC(I3)-FC(I5))
                ENDIF
                IF(T6.GT.T3) THEN
-                 XB(12,IELEM) = XA(12,IELEM) * ALFA
-                 XB(27,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(12,IELEM)*ALFA*(FC(I6)-FC(I3))
                ELSE
-                 XB(12,IELEM) = 0.D0
-                 XB(27,IELEM) = XA(27,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(27,IELEM)*ALFA*(FC(I3)-FC(I6))
                ENDIF
                IF(T5.GT.T4) THEN
-                 XB(13,IELEM) = XA(13,IELEM) * ALFA
-                 XB(28,IELEM) = 0.D0
+                 TRA02(I4)=TRA02(I4)+XB(13,IELEM)*ALFA*(FC(I5)-FC(I4))
                ELSE
-                 XB(13,IELEM) = 0.D0
-                 XB(28,IELEM) = XA(28,IELEM) * ALFA
+                 TRA02(I5)=TRA02(I5)+XB(28,IELEM)*ALFA*(FC(I4)-FC(I5))
                ENDIF
                IF(T6.GT.T4) THEN
-                 XB(14,IELEM) = XA(14,IELEM) * ALFA
-                 XB(29,IELEM) = 0.D0
+                 TRA02(I4)=TRA02(I4)+XB(14,IELEM)*ALFA*(FC(I6)-FC(I4))
                ELSE
-                 XB(14,IELEM) = 0.D0
-                 XB(29,IELEM) = XA(29,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(29,IELEM)*ALFA*(FC(I4)-FC(I6))
                ENDIF
                IF(T6.GT.T5) THEN
-                 XB(15,IELEM) = XA(15,IELEM) * ALFA
-                 XB(30,IELEM) = 0.D0
+                 TRA02(I5)=TRA02(I5)+XB(15,IELEM)*ALFA*(FC(I6)-FC(I5))
                ELSE
-                 XB(15,IELEM) = 0.D0
-                 XB(30,IELEM) = XA(30,IELEM) * ALFA
+                 TRA02(I6)=TRA02(I6)+XB(30,IELEM)*ALFA*(FC(I5)-FC(I6))
                ENDIF
             ENDIF
-!
-!           DB IS : - SUM ON J OF LAMBDA(I,J)
-!
-            DB(I1)=DB(I1) - XB(01,IELEM) - XB(02,IELEM)
-     &                    - XB(03,IELEM)
-     &                    - XB(04,IELEM) - XB(05,IELEM)
-            DB(I2)=DB(I2) - XB(16,IELEM) - XB(06,IELEM)
-     &                    - XB(07,IELEM)
-     &                    - XB(08,IELEM) - XB(09,IELEM)
-            DB(I3)=DB(I3) - XB(17,IELEM) - XB(21,IELEM)
-     &                    - XB(10,IELEM)
-     &                    - XB(11,IELEM) - XB(12,IELEM)
-            DB(I4)=DB(I4) - XB(18,IELEM) - XB(22,IELEM)
-     &                    - XB(25,IELEM)
-     &                    - XB(13,IELEM) - XB(14,IELEM)
-            DB(I5)=DB(I5) - XB(19,IELEM) - XB(23,IELEM)
-     &                    - XB(26,IELEM)
-     &                    - XB(28,IELEM) - XB(15,IELEM)
-            DB(I6)=DB(I6) - XB(20,IELEM) - XB(24,IELEM)
-     &                    - XB(27,IELEM)
-     &                    - XB(29,IELEM) - XB(30,IELEM)
 !
 20       CONTINUE
 !
@@ -545,12 +460,12 @@
             T3 = FC(I3)
             T4 = FC(I4)
 !
-            M12 = (XA(01,IELEM)-XA(07,IELEM)) * (T1-T2)
-            M13 = (XA(02,IELEM)-XA(08,IELEM)) * (T1-T3)
-            M14 = (XA(03,IELEM)-XA(09,IELEM)) * (T1-T4)
-            M23 = (XA(04,IELEM)-XA(10,IELEM)) * (T2-T3)
-            M24 = (XA(05,IELEM)-XA(11,IELEM)) * (T2-T4)
-            M34 = (XA(06,IELEM)-XA(12,IELEM)) * (T3-T4)
+            M12 = (XB(01,IELEM)-XB(07,IELEM)) * (T1-T2)
+            M13 = (XB(02,IELEM)-XB(08,IELEM)) * (T1-T3)
+            M14 = (XB(03,IELEM)-XB(09,IELEM)) * (T1-T4)
+            M23 = (XB(04,IELEM)-XB(10,IELEM)) * (T2-T3)
+            M24 = (XB(05,IELEM)-XB(11,IELEM)) * (T2-T4)
+            M34 = (XB(06,IELEM)-XB(12,IELEM)) * (T3-T4)
 !
             PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
      &           + MAX( M23,0.D0) + MAX( M24,0.D0) + MAX( M34,0.D0)
@@ -560,99 +475,68 @@
             IF(PHIP.GE.PHIM) THEN
                ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
                IF(T2.GT.T1) THEN
-                 XB(01,IELEM) = 0.D0
-                 XB(07,IELEM) = XA(07,IELEM) * ALFA
+                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I1)-FC(I2))
                ELSE
-                 XB(01,IELEM) = XA(01,IELEM) * ALFA
-                 XB(07,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
                ENDIF
                IF(T3.GT.T1) THEN
-                 XB(02,IELEM) = 0.D0
-                 XB(08,IELEM) = XA(08,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*(FC(I1)-FC(I3))
                ELSE
-                 XB(02,IELEM) = XA(02,IELEM) * ALFA
-                 XB(08,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
                ENDIF
                IF(T4.GT.T1) THEN
-                 XB(03,IELEM) = 0.D0
-                 XB(09,IELEM) = XA(09,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*(FC(I1)-FC(I4))
                ELSE
-                 XB(03,IELEM) = XA(03,IELEM) * ALFA
-                 XB(09,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
                ENDIF
                IF(T3.GT.T2) THEN
-                 XB(04,IELEM) = 0.D0
-                 XB(10,IELEM) = XA(10,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I2)-FC(I3))
                ELSE
-                 XB(04,IELEM) = XA(04,IELEM) * ALFA
-                 XB(10,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(04,IELEM)*ALFA*(FC(I3)-FC(I2))
                ENDIF
                IF(T4.GT.T2) THEN
-                 XB(05,IELEM) = 0.D0
-                 XB(11,IELEM) = XA(11,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*(FC(I2)-FC(I4))
                ELSE
-                 XB(05,IELEM) = XA(05,IELEM) * ALFA
-                 XB(11,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(05,IELEM)*ALFA*(FC(I4)-FC(I2))
                ENDIF
                IF(T4.GT.T3) THEN
-                 XB(06,IELEM) = 0.D0
-                 XB(12,IELEM) = XA(12,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*(FC(I3)-FC(I4))
                ELSE
-                 XB(06,IELEM) = XA(06,IELEM) * ALFA
-                 XB(12,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(06,IELEM)*ALFA*(FC(I4)-FC(I3))
                ENDIF
             ELSE
                ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
                IF(T2.GT.T1) THEN
-                 XB(01,IELEM) = XA(01,IELEM) * ALFA
-                 XB(07,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
                ELSE
-                 XB(01,IELEM) = 0.D0
-                 XB(07,IELEM) = XA(07,IELEM) * ALFA
+                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I1)-FC(I2))
                ENDIF
                IF(T3.GT.T1) THEN
-                 XB(02,IELEM) = XA(02,IELEM) * ALFA
-                 XB(08,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
                ELSE
-                 XB(02,IELEM) = 0.D0
-                 XB(08,IELEM) = XA(08,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*(FC(I1)-FC(I3))
                ENDIF
                IF(T4.GT.T1) THEN
-                 XB(03,IELEM) = XA(03,IELEM) * ALFA
-                 XB(09,IELEM) = 0.D0
+                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
                ELSE
-                 XB(03,IELEM) = 0.D0
-                 XB(09,IELEM) = XA(09,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*(FC(I1)-FC(I4))
                ENDIF
                IF(T3.GT.T2) THEN
-                 XB(04,IELEM) = XA(04,IELEM) * ALFA
-                 XB(10,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(04,IELEM)*ALFA*(FC(I3)-FC(I2))
                ELSE
-                 XB(04,IELEM) = 0.D0
-                 XB(10,IELEM) = XA(10,IELEM) * ALFA
+                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I2)-FC(I3))
                ENDIF
                IF(T4.GT.T2) THEN
-                 XB(05,IELEM) = XA(05,IELEM) * ALFA
-                 XB(11,IELEM) = 0.D0
+                 TRA02(I2)=TRA02(I2)+XB(05,IELEM)*ALFA*(FC(I4)-FC(I2))
                ELSE
-                 XB(05,IELEM) = 0.D0
-                 XB(11,IELEM) = XA(11,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*(FC(I2)-FC(I4))
                ENDIF
                IF(T4.GT.T3) THEN
-                 XB(06,IELEM) = XA(06,IELEM) * ALFA
-                 XB(12,IELEM) = 0.D0
+                 TRA02(I3)=TRA02(I3)+XB(06,IELEM)*ALFA*(FC(I4)-FC(I3))
                ELSE
-                 XB(06,IELEM) = 0.D0
-                 XB(12,IELEM) = XA(12,IELEM) * ALFA
+                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*(FC(I3)-FC(I4))
                ENDIF
             ENDIF
-!
-!           DB IS : - SUM ON J OF LAMBDA(I,J)
-!
-            DB(I1)=DB(I1)-XB(01,IELEM)-XB(02,IELEM)-XB(03,IELEM)
-            DB(I2)=DB(I2)-XB(04,IELEM)-XB(05,IELEM)-XB(07,IELEM)
-            DB(I3)=DB(I3)-XB(06,IELEM)-XB(08,IELEM)-XB(10,IELEM)
-            DB(I4)=DB(I4)-XB(09,IELEM)-XB(11,IELEM)-XB(12,IELEM)
 !
 30       CONTINUE
 !
@@ -666,7 +550,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI) THEN
+      IF(SCHCF.EQ.ADV_NSC) THEN
 !
 !  COMPUTES THE FLUX TERMS PER UNIT OF TIME:
 !
