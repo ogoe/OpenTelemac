@@ -1251,7 +1251,7 @@ C
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER, INTENT(IN)             :: SCHCF,NELEM3,NPOIN3,LV,NPOIN2
-      INTEGER, INTENT(IN)             :: IELM3,DIM1XB                                                     6 OR 4
+      INTEGER, INTENT(IN)             :: IELM3,DIM1XB
       INTEGER, INTENT(IN)             :: IKLE3(NELEM3,*),NSCE,OPTBAN
       INTEGER, INTENT(IN)             :: NSEG,NPLAN,DIMGLO
       INTEGER, INTENT(IN)             :: GLOSEG(DIMGLO,2)
