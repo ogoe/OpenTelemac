@@ -30,9 +30,14 @@
 # ~~> dependencies towards standard python
 import sys
 import numpy as np
+import math
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
+#
+
+# _____                  ___________________________________________
+# ____/ General Toolbox /__________________________________________/
 #
 """@brief
    Returns the coordinate of the point at the intersection
@@ -91,9 +96,38 @@ def getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
 
    return l1, l2, 1.0 - l2 - l1
 
+def getDistancePointToLine( (xo,yo),(x1,y1),(x2,y2) ):
+
+   c2 = ( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) )
+   det = ( x2-x1 )*( y1-yo ) - ( x1-xo )*( y2-y1 )
+
+   return abs(det) / math.sqrt(c2)
+
 def getTriangleArea( (x1,y1),(x2,y2),(x3,y3) ):
    # half the vector product
    return 0.5 * ( ( x2-x1 )*( y3-y1 ) - ( x3-x1 )*( y2-y1 ) )
+
+def getConeSinAngle( (x1,y1),(x2,y2),(x3,y3) ):
+   # S = ac.sin(B)/2 = det / 2
+   a2 = ( (x2-x3)*(x2-x3) + (y2-y3)*(y2-y3) )
+   c2 = ( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) )
+   ac = np.sqrt( a2*c2 )
+   det = ( x1-x2 )*( y3-y2 ) - ( x3-x2 )*( y1-y2 ) # A to C
+   return det / ac
+
+def getConeAngle( (x1,y1),(x2,y2),(x3,y3) ):
+   # S = ac.sin(B)/2 = det / 2
+   # b2 = a2 + c2 - 2ac.cos(B)
+   a2 = ( (x2-x3)*(x2-x3) + (y2-y3)*(y2-y3) )
+   b2 = ( (x1-x3)*(x1-x3) + (y1-y3)*(y1-y3) )
+   c2 = ( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) )
+   ac = math.sqrt( a2*c2 )
+   det = ( x1-x2 )*( y3-y2 ) - ( x3-x2 )*( y1-y2 ) # A to C
+   cosB = 0.5*( a2+c2-b2 ) / ac
+   if det > 0: return math.acos( cosB )
+   if det < 0: return  2*math.pi - math.acos( cosB )
+   if cosB < 0: return math.pi
+   return 0
 
 def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
 

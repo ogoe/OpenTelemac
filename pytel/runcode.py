@@ -59,7 +59,9 @@ import threading
 from time import gmtime, strftime
 from subprocess import *
 from os import path,walk,mkdir,chdir,remove,system,sep,environ
+# ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
+# ~~> dependencies towards other pytel/modules
 from utils.files import getFileContent,putFileContent,removeDirectories
 from parsers.parserKeywords import scanCAS,scanDICO,getKeyWord,getIOFilesSubmit
 

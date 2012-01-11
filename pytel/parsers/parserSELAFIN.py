@@ -10,34 +10,54 @@
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
 """
+"""@brief
+         Tools for handling SELAFIN files and TELEMAC binary related in python
+"""
+"""@details
+         Contains read/write functions for binary (big-endian) SELAFIN files
+"""
 """@history 07/12/2011 -- Sebastien E. Bourban:
          Addition of 2 new methods (getVariablesAt and getNeighboursSLF)
          and modifications to others to:
          + replace NBV1+NBV2 by NVAR and varsNumbers by varsIndexes
          + and correct a bug in subsetVariablesSLF
 """
-"""@brief
-         Tools for handling SELAFIN files and TELEMAC binary related in python
+"""@history 07/01/2012 -- Sebastien E. Bourban:
+         Implementation of the SELAFIN class and of the putSLF function.
+         A number of methods are available to the SELAFIN object to modify
+            or transform its content, which are then called upon in putSLF.
 """
-"""@details
-         Contains getSLF and putSLF, which read/write python variables into
-         binary (big-endian) SELAFIN files
+"""@history 07/01/2012 -- Sebastien E. Bourban:
+         Distinguishing between VARIABLES and CLANDESTINES.
+         Also, now learned how mix multiple classes' methods.
 """
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-from struct import unpack
+from struct import unpack,pack
 import sys
+from os import path
 import numpy as np
+# ~~> dependencies towards other modules
+from config import OptionParser
 #np.set_printoptions(precision=16)
 # ~~> dependencies towards other pytel/modules
 from utils.geometry import isInsideTriangle,getBarycentricWeights,getSegmentIntersection
+from utils.progressbar import ProgressBar
+
+# _____                   __________________________________________
+# ____/ Global Variables /_________________________________________/
+#
+
+# _____                  ___________________________________________
+# ____/ General Toolbox /__________________________________________/
+#
 
 def getHeaderParametersSLF(f):
 
-   # ~~ Read title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Read title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    l = unpack('>i',f.read(4))[0]
    TITLE = unpack('>80s',f.read(80))[0]
    chk = unpack('>i',f.read(4))[0]
@@ -45,7 +65,7 @@ def getHeaderParametersSLF(f):
       print '... Cannot read TITLE'
       sys.exit()
 
-   # ~~ Read NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Read NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    l = unpack('>i',f.read(4))[0]
    NBV1,NBV2 = unpack('>ii',f.read(8))
    chk = unpack('>i',f.read(4))[0]
@@ -53,9 +73,9 @@ def getHeaderParametersSLF(f):
       print '... Cannot read NBVs'
       sys.exit()
 
-   # ~~ Read variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Read variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    VARNAMES = []; VARUNITS = []
-   for i in range(NBV1+NBV2):
+   for i in range(NBV1):
      l = unpack('>i',f.read(4))[0]
      VARNAMES.append(unpack('>16s',f.read(16))[0])
      VARUNITS.append(unpack('>16s',f.read(16))[0])
@@ -63,20 +83,35 @@ def getHeaderParametersSLF(f):
      if l!=chk:
         print '... Cannot read VARNAMES/VARUNITS['+str(i)+']'
         sys.exit()
+   CLDNAMES = []; CLDUNITS = []
+   for i in range(NBV2):
+     l = unpack('>i',f.read(4))[0]
+     CLDNAMES.append(unpack('>16s',f.read(16))[0])
+     CLDUNITS.append(unpack('>16s',f.read(16))[0])
+     chk = unpack('>i',f.read(4))[0]
+     if l!=chk:
+        print '... Cannot read CLDNAMES/CLDUNITS['+str(i)+']'
+        sys.exit()
 
-   # ~~ Read IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Read IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    l = unpack('>i',f.read(4))[0]
-   IPARAM = unpack('>10i',f.read(40))
+   IPARAM = np.asarray( unpack('>10i',f.read(40)) )
    chk = unpack('>i',f.read(4))[0]
    if l!=chk:
       print '... Cannot read IPARAM'
       sys.exit()
 
-   # ~~ Read DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #if IPARAM[9] == 1:
-   #   l = unpack('>i',f.read(4))[0]
+   # ~~ Read DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   DATETIME = [1972,07,13,17,15,13]
+   if IPARAM[9] == 1:
+      l = unpack('>i',f.read(4))[0]
+      DATETIME = np.asarray( unpack('>6i',f.read(4*6)) )
+      chk = unpack('>i',f.read(4))[0]
+      if l!=chk:
+         print '... Cannot read DATE and TIME'
+         sys.exit()
 
-   # ~~ Read NELEM3, NPOIN3, NDP, NPLAN ~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Read NELEM3, NPOIN3, NDP, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    l = unpack('>i',f.read(4))[0]
    NELEM3,NPOIN3,NDP,NPLAN = unpack('>4i',f.read(16))
    chk = unpack('>i',f.read(4))[0]
@@ -84,7 +119,7 @@ def getHeaderParametersSLF(f):
       print '... Cannot read NELEM3 etc.'
       sys.exit()
 
-   return TITLE, NBV1,NBV2, VARNAMES,VARUNITS, IPARAM, NELEM3,NPOIN3,NDP,NPLAN
+   return TITLE, NBV1,VARNAMES,VARUNITS, NBV2,CLDNAMES,CLDUNITS, IPARAM, DATETIME, NELEM3,NPOIN3,NDP,NPLAN
 
 def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
 
@@ -157,7 +192,7 @@ def getTimeHistorySLF(f,NVAR,NPOIN3):
 def getVariablesAt( f,tags,frame,NVAR,NPOIN3,varsIndexes ):
 
    z = np.zeros((len(varsIndexes),NPOIN3))
-   if frame < len(tags['cores']) and frame > 0:
+   if frame < len(tags['cores']) and frame >= 0:
       f.seek(tags['cores'][frame])
       f.read(4+4+4)
       for ivar in range(NVAR):
@@ -175,7 +210,7 @@ def parseSLF(f):
    tags = { }; f.seek(0)
    
    tags.update({ 'meta': f.tell() })
-   TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,NPLAN = getHeaderParametersSLF(f)
+   TITLE,NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS,IPARAM,DATETIME,NELEM3,NPOIN3,NDP,NPLAN = getHeaderParametersSLF(f)
 
    tags.update({ 'mesh': f.tell() })
    IKLE,IPOBO,MESHX,MESHY = getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN)
@@ -184,20 +219,20 @@ def parseSLF(f):
    tags.update({ 'cores': ATtags })
    tags.update({ 'times': ATs })
 
-   return tags, TITLE,(NELEM3,NPOIN3,NDP,NPLAN),(NBV1,NBV2,VARNAMES,VARUNITS),(IKLE,IPOBO,MESHX,MESHY)
+   return tags, TITLE,DATETIME,IPARAM,(NELEM3,NPOIN3,NDP,NPLAN),(NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS),(IKLE,IPOBO,MESHX,MESHY)
 
-def subsetVariablesSLF(vars,VARNAMES):
+def subsetVariablesSLF(vars,ALLVARS):
    ids = []; names = []
    
    v = vars.split(';')
    for ivar in range(len(v)):
       vi = v[ivar].split(':')[0]
-      for jvar in range(len(VARNAMES)):
-         if vi.lower() in VARNAMES[jvar].strip().lower():
+      for jvar in range(len(ALLVARS)):
+         if vi.lower() in ALLVARS[jvar].strip().lower():
             ids.append(jvar)
-            names.append(VARNAMES[jvar].strip())
+            names.append(ALLVARS[jvar].strip())
    if not len(ids) == len(vars.split(';')):
-      print "... Could not find ",vars," in ",VARNAMES
+      print "... Could not find ",vars," in ",ALLVARS
       sys.exit()
 
    return ids,names
@@ -230,20 +265,25 @@ def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,va
 def getEdgesSLF(IKLE):
 
    edges = []
+   ibar = 0; pbar = ProgressBar(maxval=(len(IKLE))).start()
    for e in IKLE:
+      pbar.update(ibar); ibar += 1
       if (e[0],e[1]) not in edges: edges.append((e[1],e[0]))
       if (e[1],e[2]) not in edges: edges.append((e[2],e[1]))
       if (e[2],e[0]) not in edges: edges.append((e[0],e[2]))
+   pbar.finish()
 
    return edges
 
 def getNeighboursSLF(IKLE):
 
+   neighbours = {}; ne = []; insiders = {}
    print '    +> start listing neighbours of edges'
-   neighbours = {}; ne = []
+   ibar = 0; pbar = ProgressBar(maxval=(3*len(IKLE))).start()
    for e,i in zip(IKLE,range(len(IKLE))):
       nk = neighbours.keys(); ne.append({})
       for k in [0,1,2]:
+         pbar.update(ibar); ibar += 1
          ne[i].update({ (e[k],e[(k+1)%3]):-1, (e[(k+1)%3],e[k]):-1 })
          if (e[k],e[(k+1)%3]) not in nk: neighbours.update({ (e[(k+1)%3],e[k]):i })
          else:
@@ -252,10 +292,12 @@ def getNeighboursSLF(IKLE):
             ne[i][(e[(k+1)%3],e[k])] = j
             ne[j][(e[k],e[(k+1)%3])] = i
             ne[j][(e[(k+1)%3],e[k])] = i
+            insiders.update({(e[k],e[(k+1)%3]):[i,j]})
             del neighbours[(e[k],e[(k+1)%3])]
-   print '    +> listing neighbours of edges completed'
+   pbar.write('    +> listing neighbours of edges completed',ibar)
+   pbar.finish()
 
-   return ne
+   return ne,neighbours,insiders
 
 """
    An accuracy has been introduced because Python does not seem to be accurate
@@ -490,91 +532,231 @@ def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,var
 
    return ('Distance (m)',x),[(TITLE,varsName,z)]
 
-def putSLF(TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,IKLE,IPOBO,MESHX,MESHY,VARSOR,TIME,NTIME,selfile):
-    # Writes a Selafin file (binary, big-endian) for the supplied data.
-    
-    #File takes the form of a list of Fortran records complete with checksums:
-    #(length)[data_entry](length)
+def putSLF(slf):
 
-    from struct import pack
+   putHeaderSLF(slf)
+   # ~~ Write time varying variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for t in range(len(slf.tags['times'])):
+      appendCoreTimeSLF(slf,t)
+      VARSOR = slf.getVALUES(t)
+      appendCoreVarsSLF(slf,VARSOR)
 
-    sf = open(selfile,'wb')
-
-    # Write padding and title
-    l=80 
-    sf.write(pack('>i80si',l,TITLE,l))
-
-    # Write NBV1 and NBV2
-    l=8
-    sf.write(pack('>iiii',l,NBV1,NBV2,l))
-
-    # Write VARNAMES and VARUNITS
-    l=32
-    for i in range(NBV1+NBV2):
-        sf.write(pack('>i',l))
-        sf.write(pack('>16s',VARNAMES[i]))
-        sf.write(pack('>16s',VARUNITS[i]))
-        sf.write(pack('>i',l))
-
-    # Write IPARAM array
-    l=40
-    sf.write(pack('>i',l))
-    sf.write(pack('>10i',*IPARAM))
-    sf.write(pack('>i',l))
-
-    # Write NELEM3, NPOIN3, NDP, 1
-    l=16
-    sf.write(pack('>6i',l,NELEM3,NPOIN3,NDP,1,l))
-
-    # Write IKLE array
-    l = NELEM3*NDP*4
-    sf.write(pack('>i',l))
-    for i in range(NELEM3):
-        for j in range(NDP):
-            sf.write(pack('>i',IKLE[i][j]))
-    sf.write(pack('>i',l))    
-
-    # Write IPOBO array
-    l = 4*NPOIN3
-    sf.write(pack('>i',l))
-    for i in range(NPOIN3):
-        sf.write(pack('>i',IPOBO[i]))
-    sf.write(pack('>i',l))
-
-    # Write X and Y values
-    l=4*NPOIN3
-    sf.write(pack('>i',l))
-    for i in range(NPOIN3):
-        sf.write(pack('>f',MESHX[i]))
-    sf.write(pack('>i',l))
-    sf.write(pack('>i',l))
-    for i in range(NPOIN3):
-        sf.write(pack('>f',MESHY[i]))
-    sf.write(pack('>i',l))
-
-    # Now loop to add temporal data
-    for t in range(NTIME):
-        # Print time record
-        l = 4
-        sf.write(pack('>ifi',l,TIME[t],l))
-        # Print variable records
-        for i in range(NBV1+NBV2):
-            l = 4*NPOIN3
-            sf.write(pack('>i',l))
-            for j in range(NPOIN3):
-                sf.write(pack('>f',VARSOR[t][i][j]))
-            sf.write(pack('>i',l))
-
-    sf.close()
-    return
-
-def diffSLF():
    return
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
+#                                                 Header \_/
+#
 
-# Example use: 
+def putHeaderSLF(slf):
+   f = slf.fole
+
+   # ~~ Write title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>i80si',80,slf.TITLE,80))
+
+  # ~~ Write NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>iiii',4+4,slf.NBV1,slf.NBV2,4+4))
+
+   # ~~ Write variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for i in range(slf.NBV1):
+      f.write(pack('>i',32))
+      f.write(pack('>16s',slf.VARNAMES[i]))
+      f.write(pack('>16s',slf.VARUNITS[i]))
+      f.write(pack('>i',32))
+   for i in range(slf.NBV2):
+      f.write(pack('>i',32))
+      f.write(pack('>16s',slf.CLDNAMES[i]))
+      f.write(pack('>16s',slf.CLDUNITS[i]))
+      f.write(pack('>i',32))
+
+   # ~~ Write IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>i',4*10))
+   for i in range(len(slf.IPARAM)): f.write(pack('>i',slf.IPARAM[i]))
+   f.write(pack('>i',4*10))
+
+   # ~~ Write DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if slf.IPARAM[9] == 1:
+      f.write(pack('>i',4*6))
+      for i in range(6): f.write(pack('>i',slf.DATETIME[i]))
+      f.write(pack('>i',4*6))
+
+   # ~~ Write NELEM3, NPOIN3, NDP, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>6i',4*4,slf.NELEM3,slf.NPOIN3,slf.NDP,slf.NPLAN,4*4))
+
+   # ~~ Write the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>i',4*slf.NELEM3*slf.NDP))
+   for i in range(slf.NELEM3):
+      for j in range(slf.NDP): f.write(pack('>i',slf.IKLE[i][j]+1))
+   f.write(pack('>i',4*slf.NELEM3*slf.NDP))
+
+   # ~~ Write the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>i',4*slf.NPOIN3))
+   for i in range(slf.NPOIN3): f.write(pack('>i',slf.IPOBO[i]))
+   f.write(pack('>i',4*slf.NPOIN3))
+
+   # ~~ Write the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>i',4*slf.NPOIN3))
+   for i in range(slf.NPOIN3): f.write(pack('>f',slf.MESHX[i]))
+   f.write(pack('>i',4*slf.NPOIN3))
+
+   # ~~ Write the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
+   f.write(pack('>i',4*slf.NPOIN3))
+   for i in range(slf.NPOIN3): f.write(pack('>f',slf.MESHY[i]))
+   f.write(pack('>i',4*slf.NPOIN3))
+
+   return
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
+#                                                   Core \_/
+#
+
+def appendCoreTimeSLF(slf,t):
+   f = slf.fole
+
+   # Print time record
+   f.write(pack('>ifi',4,slf.tags['times'][t],4))
+
+   return
+
+def appendCoreVarsSLF(slf,VARSOR):
+   f = slf.fole
+
+   # Print variable records
+   for v in range(len(VARSOR)):
+      f.write(pack('>i',4*slf.NPOIN3))
+      for j in range(slf.NPOIN3): f.write(pack('>f',VARSOR[v][j]))
+      f.write(pack('>i',4*slf.NPOIN3))
+
+   return
+
+# _____                  ___________________________________________
+# ____/ Primary Classes /__________________________________________/
+#
+class SELAFIN:
+
+   DATETIME = [1972,07,13,17,24,27]  # ... needed here ecause optional in SLF
+   
+   def __init__(self,fileName):
+      self.fileName = fileName
+      self.file = open(fileName,'rb')
+      self.tags,self.TITLE,self.DATETIME,self.IPARAM,numbers,vars,mesh = parseSLF(self.file)
+      self.NELEM3,self.NPOIN3,self.NDP,self.NPLAN = numbers
+      self.NBV1,self.VARNAMES,self.VARUNITS,self.NBV2,self.CLDNAMES,self.CLDUNITS = vars
+      self.NVAR = self.NBV1 + self.NBV2
+      self.VARINDEX = range(self.NVAR)
+      self.IKLE,self.IPOBO,self.MESHX,self.MESHY = mesh
+
+   def getVALUES(self,t):
+      return getVariablesAt( self.file,self.tags,t,self.NVAR,self.NPOIN3,self.VARINDEX )
+
+   def putContent(self,fileName):
+      self.fole = open(fileName,'wb')
+      putHeaderSLF(self)
+      for t in range(len(self.tags['times'])):
+         appendCoreTimeSLF(self,t)
+         appendCoreVarsSLF(self,self.getVALUES(t))
+      self.fole.close()
+
+   def __del__(self): self.file.close()
+
+class SELAFINS:
+
+   def __init__(self):
+      self.slfs = []
+      self.slf = None
+
+   def add(self,fileName):
+      slf = SELAFIN(fileName)
+      if self.slf == None: self.slf = slf
+      self.slfs.append(slf)
+      self.suite = self.isSuite()
+      self.merge = self.isMerge()
+
+   def isSuite(self):
+      same = True
+      for slf in self.slfs[1:]:
+         for v in slf.VARNAMES: same = same and ( v in self.slf.VARNAMES )
+         for v in slf.CLDNAMES: same = same and ( v in self.slf.CLDNAMES )
+      return same
+
+   def isMerge(self):
+      same = True
+      for slf in self.slfs[1:]:
+         max = 1.e-5 + np.max( slf.tags['times'] ) + np.max( self.slf.tags['times'] )
+         accuracy = np.power(10.0, -5+np.floor(np.log10(max)))
+         same = same and ( accuracy > \
+            np.max( slf.tags['times'] - self.slf.tags['times'] ) - np.min( slf.tags['times'] - self.slf.tags['times'] ) )
+      return same
+
+   def pop(self,index=0):
+      index = max( 0,min(index,len(self.slfs)-1) )
+      return slfs.pop(self.slfs[index])
+
+   def putContent(self,fileName): # TODO: files also have to have the same header
+      if self.suite and self.merge: SELAFIN.putContent(self.slf,fileName) # just a copy
+      elif self.suite:
+         self.slf.fole = open(fileName,'wb')
+         putHeaderSLF(self.slf)
+         for t in range(len(self.slf.tags['times'])):
+            time = self.slf.tags['times'][t]
+            appendCoreTimeSLF(self.slf,t)
+            appendCoreVarsSLF(self.slf,self.slf.getVALUES(t))
+         for slf in self.slfs:
+            slf.fole = self.slf.fole
+            for t in range(len(slf.tags['times'])):
+               if slf.tags['times'][t] > time:
+                  time = slf.tags['times'][t]
+                  appendCoreTimeSLF(slf,t)
+                  appendCoreVarsSLF(slf,slf.getVALUES(t))
+         self.slf.fole.close()
+      elif self.merge:
+         self.slf.fole = open(fileName,'wb')
+         for slf in self.slfs[1:]:
+            slf.fole = self.slf.fole
+            idvars = []
+            for v in range(len(slf.VARNAMES)):
+               if v not in self.slf.VARNAMES:
+                  idvars.append(v)
+                  self.slf.VARNAMES.append(slf.VARNAMES[v])
+                  self.slf.VARUNITS.append(slf.VARUNITS[v])
+            for v in range(len(slf.CLDNAMES)):
+               if v not in self.slf.CLDNAMES:
+                  idvars.append(v+slf.NBV1)
+                  self.slf.CLDNAMES.append(slf.CLDNAMES[v])
+                  self.slf.CLDUNITS.append(slf.CLDUNITS[v])
+            slf.VARINDEX = idvars
+            self.slf.NBV1 = len(self.slf.VARNAMES)
+            self.slf.NBV2 = len(self.slf.CLDNAMES)
+         putHeaderSLF(self.slf)
+         for t in range(len(self.slf.tags['times'])):
+            appendCoreTimeSLF(self.slf,t)
+            appendCoreVarsSLF(self.slf,self.slf.getVALUES(t))
+            for slf in self.slfs[1:]:
+               appendCoreVarsSLF(self.slf,slf.getVALUES(t))
+         self.slf.fole.close()
+
+      else:
+         print "Does not know how to merge your files. Try either:"
+         print "    + to make sure your files have the same time support"
+         print "    + to make sure your files have the same variables"
+         sys.exit()
+
+   def __del__(self):
+      SELAFIN.__del__(self.slf)
+      for slf in self.slfs: SELAFIN.__del__(slf)
+
+
+# _____             ________________________________________________
+# ____/ MAIN CALL  /_______________________________________________/
+#
+
+__author__="Christopher J. Cawthor and Sebastien E. Bourban"
+__date__ ="$09-Sep-2011 08:51:29$"
+
 if __name__ == "__main__":
-    import sys
-    TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,IKLE,IPOBO,MESHX,MESHY,VARSOR,TIME,NTIME = getSLF(sys.argv[1])
-    putSLF(TITLE,NBV1,NBV2,VARNAMES,VARUNITS,IPARAM,NELEM3,NPOIN3,NDP,IKLE,IPOBO,MESHX,MESHY,VARSOR,TIME,NTIME,sys.argv[2])
+   debug = False
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
+
+   sys.exit()

@@ -198,9 +198,10 @@ def drawFigure1D(type,what,(plt,fig)):
 
       # ~~ Extract data
       f = open(what['file'],'rb')
-      tags,TITLE,numbers,vars,mesh = parseSLF(f)
+      tags,TITLE,DATETIME,IPARAM,numbers,vars,mesh = parseSLF(f)
       NELEM3,NPOIN3,NDP,NPLAN = numbers
-      NBV1,NBV2,VARNAMES,VARUNITS = vars
+      NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS = vars
+      NVAR = NBV1+NBV2; VARNAMES.extend(CLDNAMES)
       IKLE,IPOBO,MESHX,MESHY = mesh
 
       if what['type'] == 'history':
@@ -208,7 +209,7 @@ def drawFigure1D(type,what,(plt,fig)):
 
          drawHistoryLines(plt,getValueHistorySLF(f,tags,what['time'],
             xyLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
-            TITLE,(NBV1+NBV2),NPOIN3,
+            TITLE,NVAR,NPOIN3,
             subsetVariablesSLF(what["vars"],VARNAMES)),deco)
 
       elif what['type'] == 'v-section':
@@ -219,7 +220,7 @@ def drawFigure1D(type,what,(plt,fig)):
 
          drawPolylineLines(plt,getValuePolylineSLF(f,tags,what['time'],
             crossLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
-            TITLE,(NBV1+NBV2),NPOIN3,
+            TITLE,NVAR,NPOIN3,
             subsetVariablesSLF(what["vars"],VARNAMES)),deco)
 
       else:
@@ -240,9 +241,10 @@ def drawFigure2D(type,what,(plt,fig)):
 
       # ~~ Extract data
       f = open(what['file'],'rb')
-      tags,title,numbers,vars,mesh = parseSLF(f)
+      tags,title,DATETIME,IPARAM,numbers,vars,mesh = parseSLF(f)
       NELEM3,NPOIN3,NDP,NPLAN = numbers
-      NBV1,NBV2,VARNAMES,VARUNITS = vars
+      NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS = vars
+      NVAR = NBV1+NBV2; VARNAMES.extend(CLDNAMES)
       IKLE,IPOBO,MESHX,MESHY = mesh
 
       if what.has_key('roi'):
@@ -282,7 +284,7 @@ def drawFigure2D(type,what,(plt,fig)):
             VARSOR = np.zeros(NPOIN3)
             f.seek(tags['cores'][0])
             f.read(4+4+4)
-            for ivar in range(NBV1+NBV2):
+            for ivar in range(NVAR):
                f.read(4)
                if v.upper() in VARNAMES[ivar].strip():
                   VARSOR = np.asarray(unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3)))
