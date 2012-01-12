@@ -692,7 +692,14 @@ class SELAFINS:
       return slfs.pop(self.slfs[index])
 
    def putContent(self,fileName): # TODO: files also have to have the same header
-      if self.suite and self.merge: SELAFIN.putContent(self.slf,fileName) # just a copy
+      if self.suite and self.merge:
+         if len(self.slfs) == 2:  # /!\ difference only between two files
+            self.slf.fole = open(fileName,'wb')
+            putHeaderSLF(self.slf)
+            for t in range(len(self.slf.tags['times'])):
+               appendCoreTimeSLF(self.slf,t)
+               appendCoreVarsSLF(self.slf,self.slf.getVALUES(t)-self.slfs[1].getVALUES(t))
+         else: SELAFIN.putContent(self.slf,fileName) # just a copy
       elif self.suite:
          self.slf.fole = open(fileName,'wb')
          putHeaderSLF(self.slf)
@@ -741,8 +748,9 @@ class SELAFINS:
          sys.exit()
 
    def __del__(self):
-      SELAFIN.__del__(self.slf)
-      for slf in self.slfs: SELAFIN.__del__(slf)
+      if self.slf != None: SELAFIN.__del__(self.slf)
+      if self.slfs != []:
+         for slf in self.slfs: SELAFIN.__del__(slf)
 
 
 # _____             ________________________________________________

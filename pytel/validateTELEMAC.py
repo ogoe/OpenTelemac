@@ -68,41 +68,20 @@ if __name__ == "__main__":
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",
-                      type="string",
-                      dest="configName",
-                      default=CFGNAME,
-                      help="specify configuration name, default is the first found in the configuration file" )
-   parser.add_option("-f", "--configfile",
-                      type="string",
-                      dest="configFile",
-                      default=SYSTELCFG,
-                      help="specify configuration file, default is systel.cfg" )
-   parser.add_option("-r", "--rootdir",
-                      type="string",
-                      dest="rootDir",
-                      default='',
-                      help="specify the root, default is taken from config file" )
-   parser.add_option("-v", "--version",
-                      type="string",
-                      dest="version",
-                      default='',
-                      help="specify the version number, default is taken from config file" )
-   parser.add_option("-s", "--sortiefile",
-                      action="store_true",
-                      dest="sortieFile",
-                      default=False,
-                      help="specify whether there is a sortie file, default is no" )
-   parser.add_option("-a", "--action",
-                      type="string",
-                      dest="do",
-                      default='',
-                      help="filter specific process actions from the XML file" )
-   parser.add_option("-d", "--draw",
-                      type="string",
-                      dest="draw",
-                      default='',
-                      help="filter specific drawing actions from the XML file" )
+   parser.add_option("-c", "--configname",type="string",dest="configName",default=CFGNAME,
+      help="specify configuration name, default is the first found in the configuration file" )
+   parser.add_option("-f", "--configfile",type="string",dest="configFile",default=SYSTELCFG,
+      help="specify configuration file, default is systel.cfg" )
+   parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',
+      help="specify the root, default is taken from config file" )
+   parser.add_option("-v", "--version",type="string",dest="version",default='',
+      help="specify the version number, default is taken from config file" )
+   parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
+      help="specify whether there is a sortie file, default is no" )
+   parser.add_option("-a", "--action",type="string",dest="do",default='',
+      help="filter specific process actions from the XML file" )
+   parser.add_option("-d", "--draw",type="string",dest="draw",default='',
+      help="filter specific drawing actions from the XML file" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'

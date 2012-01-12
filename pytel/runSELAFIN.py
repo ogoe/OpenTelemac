@@ -287,7 +287,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of CHOP ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if codeName == 'chop':
+   elif codeName == 'chop':
 
       if not options.freplace:
          if len(args) != 3:
@@ -315,7 +315,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of ALTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if codeName == 'alter':
+   elif codeName == 'alter':
 
       if not options.freplace:
          if len(args) != 3:
@@ -352,7 +352,7 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of MERGE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if codeName == 'merge':
+   elif codeName == 'merge':
 
       if len(args) < 3:
          print '\nThe code "merge" uses a minimum of 2 argumensts, aside from the options\n'
@@ -370,6 +370,35 @@ if __name__ == "__main__":
          slfs.add( slfFile )
 
       slfs.putContent(outFile)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of DIFF ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   elif codeName == 'diff':
+
+      if len(args) < 3:
+         print '\nThe code "diff" uses a minimum of 3 argumensts, aside from the options\n'
+         parser.print_help()
+         sys.exit()
+
+      slfFiles = args[1:len(args)-1]
+      print slfFiles
+      outFile = args[len(args)-1]
+      print outFile
+
+      slfs = SELAFINS()
+      print '\n\nDifferences into ' + path.basename(outFile) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      for slfFile in slfFiles:
+         slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         slfs.add( slfFile )
+
+      slfs.putContent(outFile)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   else:
+      print '\nDo not know what to do with this code name: ',codeName
+      sys.exit()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
