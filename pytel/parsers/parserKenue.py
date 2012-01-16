@@ -25,6 +25,15 @@
 """@history 09/01/2012 -- Sebastien E. Bourban:
          Addition of XY and XYZ parsing
 """
+"""@history 13/01/2012 -- Sebastien E. Bourban:
+         Creates InS class with associated methods including:
+         + removeDuplicates (remove duplicated points based on proximity)
+         + makeClockwise (make closed loops clockwise)
+         + makeAntiClockwise (make closed loops anti-clockwise)
+         + smoothSubdivise (add points and weigthed average move)
+         + smoothSubsampleDistance (remove points based on proximity)
+         + smoothSubsampleAngle (remove points based on flatness)
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -37,6 +46,8 @@ from os import path
 # ~~> dependencies towards other pytel/modules
 from utils.files import getFileContent,putFileContent
 from utils.progressbar import ProgressBar
+from utils.geometry import isClose
+from samplers.polygons import isClockwise,removeDuplicates,smoothSubdivise,subsampleDistance,subsampleAngle
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -45,15 +56,10 @@ ken_header = re.compile(r'[#:]')
 
 asc_FileType = re.compile(r':FileType\s(?P<type>\b\w\w\w\b)') #\s(?P<after>[^\Z]*)\Z')
 
-var_integer = re.compile(r'(?P<number>\b\d+\b)(?P<after>[^\Z]*)\Z')
-var_doublep = re.compile(r'(?P<number>\b(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z')
-
-rint = r'\b\d+\b'
-var_1int = re.compile(r'\s(?P<number>'+rint+r')\s')
-rdbl = r'[+-]*\b((?:(\d+)\b)|(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)))'
-var_1dbl = re.compile(r'\s*(?P<number>'+rdbl+r')\s*')
-var_2dbl = re.compile(r'\s*(?P<number1>'+rdbl+r')'+r'[\s,;]*(?P<number2>'+rdbl+r')\s*')
-var_3dbl = re.compile(r'\s*(?P<number1>'+rdbl+r')'+r'[\s,;]*(?P<number2>'+rdbl+r')'+r'[\s,;]*(?P<number3>'+rdbl+r')\s*')
+var_1int = re.compile(r'(?P<before>[^+-]*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z')
+var_1dbl = re.compile(r'(?P<number>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<after>[^\Z]*)\Z')
+var_2dbl = re.compile(r'(?P<number1>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<number2>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z')
+var_3dbl = re.compile(r'(?P<number1>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<number2>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<number3>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z')
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -87,34 +93,32 @@ def getInS(file):
 
    # ~~ Parse body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # This is also fairly fast, so you might not need a progress bar
-   poly = []; type = [] #; pbar = ProgressBar(maxval=len(core)).start()
+   poly = []; type = []; npoin = 0
    while icore < len(core):
       # ~~> polygon head
       proc = re.match(var_1int,core[icore])
       if not proc:
          print '\nCould not parse the following polyline header: '+core[icore]
          sys.exit()
-      nrec = int(proc.group('number')); icore += 1 #; pbar.update(icore)
+      nrec = int(proc.group('number')); icore += 1
       xyi = []
       for irec in range(nrec):
-         proc = re.match(var_2dbl,core[icore+irec]+' ')
+         proc = re.match(var_2dbl,core[icore+irec])
          if not proc:
             print '\nCould not parse the following polyline record: '+core[icore+irec+1]
             sys.exit()
          xyi.append([float(proc.group('number1')),float(proc.group('number2'))])
       if xyi != []:
-         accuracy = np.power(10.0, -5+np.floor(np.log10(xyi[0][0]+xyi[0][1])))
-         distance = np.sqrt( ( np.power((xyi[0][0]-xyi[len(xyi)-1][0]),2)+np.power((xyi[0][1]-xyi[len(xyi)-1][1]),2) ) )
-         cls = False
-         if accuracy > distance :
-            xyi.pop()
-            cls = True
-         poly.append(xyi)
+         cls = 0
+         if isClose(xyi[0],xyi[len(xyi)-1],size=10) :
+            xyi.pop(len(xyi)-1)
+            cls = 1
+         poly.append(np.asarray(xyi))
          type.append(cls)
+      npoin += len(xyi)
       icore += nrec
-   #pbar.finish()
 
-   return head,fileType,poly,type
+   return head,fileType,npoin,poly,type
 
 def putInS(file,head,fileType,poly,type):
 
@@ -129,20 +133,124 @@ def putInS(file,head,fileType,poly,type):
 
    # ~~ Write body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for ip,it in zip(poly,type):
-      il = len(ip)
-      if it: il += 1
+      il = len(ip)+it
       core.append(str(il)+' 0')  #TODO: you should use proper values
       if fileType == 'i2s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1]))
-         if it: core.append(str(ip[0][0])+' '+str(ip[0][1]))
+         if it != 0: core.append(str(ip[0][0])+' '+str(ip[0][1]))
       elif fileType == 'i3s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1])+' '+str(xyi[2]))
-         if it: core.append(str(ip[0][0])+' '+str(ip[0][1])+' '+str(ip[0][2]))
+         if it != 0: core.append(str(ip[0][0])+' '+str(ip[0][1])+' '+str(ip[0][2]))
 
    # ~~ Put all ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    putFileContent(file,core)
 
    return
+
+"""
+   self.poly is a numpy object, while self.type is not.
+"""
+class InS:
+
+   def __init__(self,fileName):
+      self.fileName = fileName
+      self.head,self.fileType,self.npoin,self.poly,self.type = getInS(self.fileName)
+
+   def putContent(self,fileName):
+      putInS(fileName,self.head,self.fileType,self.poly,self.type)
+
+   def removeDuplicates(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      ip = 0
+      while ip < len(self.poly):
+         ibar += len(self.poly[ip])
+         lb = len(self.poly[ip])
+         self.poly[ip],self.type[ip] = removeDuplicates(self.poly[ip],self.type[ip])
+         la = len(self.poly[ip])
+         if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
+         if self.poly[ip] == []:
+            self.poly.pop(ip)
+            self.type.pop(ip)
+         else: ip += 1
+         pbar.update(ibar)
+      pbar.finish()
+      return self.poly,self.type
+
+   def makeClockwise(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      for ip in range(len(self.poly)):
+         ibar += len(self.poly[ip])
+         if self.type[ip] != 0:
+            if not isClockwise(self.poly[ip]):
+               pbar.write('    +> turned clockwise polygon '+str(ip+1),ibar)
+               self.poly[ip] = np.flipud(self.poly[ip])
+         pbar.update(ibar)
+      pbar.finish()
+      return self.poly
+
+   def makeAntiClockwise(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      for ip in range(len(self.poly)):
+         ibar += len(self.poly[ip])
+         if self.type[ip] != 0:
+            if isClockwise(self.poly[ip]):
+               pbar.write('    +> turned anti-clockwise polygon '+str(ip+1),ibar)
+               self.poly[ip] = np.flipud(self.poly[ip])
+         pbar.update(ibar)
+      pbar.finish()
+      return
+
+   def smoothSubdivise(self,weight=0.5):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      for ip in range(len(self.poly)):
+         ibar += len(self.poly[ip])
+         lb = len(self.poly[ip])
+         self.poly[ip],self.type[ip] = smoothSubdivise(self.poly[ip],self.type[ip],weight)
+         la = len(self.poly[ip])
+         if la > lb: pbar.write('    +> added '+str(la-lb)+' points to polygon '+str(ip+1),ibar)
+         pbar.update(ibar)
+      pbar.finish()
+      return self.poly,self.type
+
+   def smoothSubsampleDistance(self,distance):
+      pbar = ProgressBar(maxval=self.npoin).start()
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
+      #                          subsampling by distance \_/
+      #
+      ibar = 0
+      for ip in range(len(self.poly)):
+         ibar += len(self.poly[ip])
+         lb = len(self.poly[ip])
+         self.poly[ip],self.type[ip] = subsampleDistance(self.poly[ip],self.type[ip],distance)
+         la = len(self.poly[ip])
+         if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
+         if self.poly[ip] == []:
+            self.poly.pop(ip)
+            self.type.pop(ip)
+         pbar.update(ibar)
+
+      pbar.finish()
+      return self.poly,self.type
+
+   def smoothSubsampleAngle(self,angle):
+      pbar = ProgressBar(maxval=self.npoin).start()
+      # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
+      #                            subsampling by anlgle \_/
+      #
+      ibar = 0
+      for ip in range(len(self.poly)):
+         ibar += len(self.poly[ip])
+         lb = len(self.poly[ip])
+         self.poly[ip],self.type[ip] = subsampleAngle(self.poly[ip],self.type[ip],angle)
+         la = len(self.poly[ip])
+         if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
+         if self.poly[ip] == []:
+            self.poly.pop(ip)
+            self.type.pop(ip)
+         pbar.update(ibar)
+
+      pbar.finish()
+      return self.poly,self.type
 
 # _____                  ___________________________________________
 # ____/ Toolbox for XYZ /__________________________________________/

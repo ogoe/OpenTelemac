@@ -20,6 +20,11 @@
       + getPlaneEquation (of the form Z = a*X + b*Y + c)
       + getTriangleArea
 """
+"""@history 07/01/2012 -- Sebastien E. Bourban
+      Addition of a few geometrical tools, working on angles:
+      + getConeAngle ( based on arctan2 )
+      + getConeSinAngle ( S = ac.sin(B)/2 = det / 2 )
+"""
 """@brief
       Tools for trivial geometrical operations
 """
@@ -79,6 +84,9 @@ def getSegmentLineIntersection( (x1,y1),(x2,y2),(x3,y3),(x4,y4) ):
    Find the equation of the plane defined by 3 points.
    The form of the equation is: Z = a*X + b*Y + c
 """
+def getNorm2( (x1,y1), (x2,y2) ):
+   return np.sqrt( np.power(x1-x2,2) + np.power(y1-y2,2))
+
 def getPlaneEquation( (x1,y1,z1),(x2,y2,z2),(x3,y3,z3) ):
 
    det = x1*( y2-y3 ) + y1*( x3-x2 ) + ( x2*y3 - y2*x3 )
@@ -116,24 +124,35 @@ def getConeSinAngle( (x1,y1),(x2,y2),(x3,y3) ):
    return det / ac
 
 def getConeAngle( (x1,y1),(x2,y2),(x3,y3) ):
+   return np.arctan2( y2-y3,x2-x3 ) - np.arctan2( y2-y1,x2-x1 )
+   """
    # S = ac.sin(B)/2 = det / 2
    # b2 = a2 + c2 - 2ac.cos(B)
    a2 = ( (x2-x3)*(x2-x3) + (y2-y3)*(y2-y3) )
    b2 = ( (x1-x3)*(x1-x3) + (y1-y3)*(y1-y3) )
    c2 = ( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) )
-   ac = math.sqrt( a2*c2 )
+   ac = np.sqrt( a2*c2 )
    det = ( x1-x2 )*( y3-y2 ) - ( x3-x2 )*( y1-y2 ) # A to C
    cosB = 0.5*( a2+c2-b2 ) / ac
-   if det > 0: return math.acos( cosB )
-   if det < 0: return  2*math.pi - math.acos( cosB )
-   if cosB < 0: return math.pi
+   if det > 0: return np.arccos( cosB )
+   if det < 0: return  2*np.pi - np.arccos( cosB )
+   if cosB < 0: return np.pi
    return 0
+   """
 
 def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
 
    l1,l2,l3 = getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
    if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 : return [ l1, l2, l3 ]
    return []
+
+def isClose( p1,p2,size=5 ):
+
+   if ( p2 == [] or p1 == [] ): return False
+   s = np.max(p1+p2)
+   accuracy = np.power(10.0, -size+np.floor(np.log10(s)))
+
+   return getNorm2( p1[0:2],p2[0:2] ) < accuracy
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

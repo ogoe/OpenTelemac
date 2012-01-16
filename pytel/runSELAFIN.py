@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
    options, args = parser.parse_args()
    if len(args) < 1:
-      print '\nThe name of the module to run and one CAS file at least are required\n'
+      print '\nThe name of one SELAFIN file at least is required\n'
       parser.print_help()
       sys.exit()
 

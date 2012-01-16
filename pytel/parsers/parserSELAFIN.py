@@ -44,7 +44,7 @@ import numpy as np
 from config import OptionParser
 #np.set_printoptions(precision=16)
 # ~~> dependencies towards other pytel/modules
-from utils.geometry import isInsideTriangle,getBarycentricWeights,getSegmentIntersection
+from utils.geometry import isClose,isInsideTriangle,getBarycentricWeights,getSegmentIntersection
 from utils.progressbar import ProgressBar
 
 # _____                   __________________________________________
@@ -300,18 +300,6 @@ def getNeighboursSLF(IKLE):
    return ne,neighbours,insiders
 
 """
-   An accuracy has been introduced because Python does not seem to be accurate
-      with sums and multiplications
-"""
-def consecutive( p1,p2 ):
-
-   if ( p2 == [] or p1 == [] ): return False
-   s = max(p1[0]+p2[0],p1[1]+p2[1])
-   accuracy = np.power(10.0, -5+np.floor(np.log10(s)))
-
-   return np.sqrt( np.power(p1[0]-p2[0],2) + np.power(p1[1]-p2[1],2)) < accuracy
-
-"""
    This function return the element number for the triangle including xyo=(xo,yo)
       or -1 if the (xo,yo) is outside the mesh
    It should be noted that (xo,yo) are arrays so only one search is necessary for
@@ -409,7 +397,7 @@ def dichoLocateMeshSLF(rank,(e1,e2),(p1,p2),NELEM,IKLE,MESHX,MESHY):
 
    for pj in p10: #p.append(pi)
       if p != []:
-         if not consecutive(pj,p[len(p)-1]):
+         if not isClose(pj,p[len(p)-1]):
             p.append(pj)
             e.append(e10.pop(0))
          else: e10.pop(0)
@@ -449,7 +437,7 @@ def dichoLocateMeshSLF(rank,(e1,e2),(p1,p2),NELEM,IKLE,MESHX,MESHY):
 
    for pj in p02: #p.append(pi)
       if p != []:
-         if not consecutive(pj,p[len(p)-1]):
+         if not isClose(pj,p[len(p)-1]):
             p.append(pj)
             e.append(e02.pop(0))
          else: e02.pop(0)
@@ -477,7 +465,7 @@ def crossLocateMeshSLF(polyline,NELEM,IKLE,MESHX,MESHY):
       if ei >= 0:
          pi = polyline[li]
          if p != []:
-            if not consecutive(pi,p[0]):
+            if not isClose(pi,p[0]):
                ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
                ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
          else:
@@ -494,7 +482,7 @@ def crossLocateMeshSLF(polyline,NELEM,IKLE,MESHX,MESHY):
    if ei >= 0:
       pi = polyline[len(polyle)-1]
       if ipt != []:
-         if not consecutive(pi,ipt[len(ipt)-1]):
+         if not isClose(pi,ipt[len(ipt)-1]):
             ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
             ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
 

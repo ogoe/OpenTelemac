@@ -327,7 +327,7 @@ class dlgBox(QtGui.QWidget) :
       # ~~ Provide context - 5 lines before ~~~~~~~~~~~~~~~~~~~~~~~~
       head = ''
       for i in range(5):
-         if len(self.doneLines) > i: #  size=+1
+         if len(self.doneLines) > i: #  size+=1
             head = self.html11(self.doneLines[len(self.doneLines)-i-1]) + head
       if len(self.doneLines) > 5: head = self.html00() + head
       else: head = self.html01() + head
