@@ -2,12 +2,11 @@
                      SUBROUTINE SUSPENSION_EROSION_COH
 !                    *********************************
 !
-     &(TAUP,NPOIN,XMVE,XMVS,GRAV,VITCE,
-     & PARTHENIADES,ZERO,DEBUG,
+     &(TAUP,NPOIN,XMVE,XMVS,GRAV,VITCE,PARTHENIADES,ZERO,DEBUG,
      & FLUER, ES, TOCE_VASE, NCOUCH_TASS, DT, MS_VASE,TASS)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION
@@ -54,29 +53,32 @@
       USE INTERFACE_SISYPHE, EX_SUSPENSION_EROSION_COH=>
      &                          SUSPENSION_EROSION_COH
       USE BIEF
+      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER,          INTENT(IN)    :: NCOUCH_TASS
       INTEGER,          INTENT(IN)    :: NPOIN,DEBUG
       DOUBLE PRECISION, INTENT(IN)    :: XMVE,XMVS,GRAV
       DOUBLE PRECISION, INTENT(IN)    :: VITCE
       DOUBLE PRECISION, INTENT(IN)    :: ZERO,PARTHENIADES
 ! FOR CONSOLIDATION
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,10)
-      DOUBLE PRECISION, INTENT(IN)     :: TOCE_VASE(10), DT
-      INTEGER,          INTENT(IN)    :: NCOUCH_TASS
+      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
+      DOUBLE PRECISION, INTENT(IN)     :: TOCE_VASE(NCOUCH_TASS), DT
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUER
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10)
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP
 !
       LOGICAL, INTENT(IN) :: TASS
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER :: I, J
       DOUBLE PRECISION :: USTARP,AUX
-      DOUBLE PRECISION :: FLUER_LOC(10), QER_VASE,TEMPS, QE_COUCHE
+      DOUBLE PRECISION :: FLUER_LOC(NLAYMAX),QER_VASE,TEMPS, QE_COUCHE
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !

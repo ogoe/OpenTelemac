@@ -138,7 +138,7 @@ dredgesim_interface.f\
 bedload_interact.f         conlit.f                   point_sisyphe.f  \
 corstr_sisyphe.f           predes.f                         maxslope.f \
 init_transport.f           init_mixte.f               init_zero.f\
-init_sediment.f            ks_sisyphe.f\
+init_sediment.f            ks_sisyphe.f               tassement_2.f\
 sisyphe.f                 read_sections_sisyphe.f rescue_sisyphe_notperma.f   tassement.f
 
 #------- Objets

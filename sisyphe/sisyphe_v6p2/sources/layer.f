@@ -78,6 +78,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SISYPHE , ONLY : NLAYMAX
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -91,9 +92,9 @@
       LOGICAL,          INTENT(IN)    :: CONST_ALAYER
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: NLAYER,ESTRAT,ELAY
       DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10)
-      DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,10,NSICLA)
-      DOUBLE PRECISION, INTENT(INOUT) :: VOLTOT(10),ESTRATNEW(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NLAYMAX,NSICLA)
+      DOUBLE PRECISION, INTENT(INOUT) :: VOLTOT(NSICLA),ESTRATNEW(NPOIN)
       INTEGER         , INTENT(INOUT) :: NLAYNEW(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -236,6 +237,7 @@
                     STOP
                   ENDIF
                   AVAIL(J,2,I) = AVAIL(J,3,I)
+!                            ?=
                   DO K=3,MIN(9,NLAYER%I(J))
                     AVAIL(J,K,I) = AVAIL(J,K+1,I)
                   ENDDO

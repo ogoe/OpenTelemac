@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINICIPAL SISYPHE VARIABLES
@@ -66,81 +66,93 @@ C
 C       1) VECTORS
 C
 C-----------------------------------------------------------------------
-C
-!> @brief EVOLUTION
-C
+!
+!     EVOLUTION
+!
       TYPE(BIEF_OBJ), TARGET :: E
-!> @brief EVOLUTION SAVED FOR CONSTANT FLOW DISCHARGE
-C
+!
+!     EVOLUTION SAVED FOR CONSTANT FLOW DISCHARGE
+!
       TYPE(BIEF_OBJ), TARGET :: ECPL
-!> @brief FREE SURFACE ELEVATION
-C cote de la surface libre
+!
+!     FREE SURFACE ELEVATION
+!
       TYPE(BIEF_OBJ), TARGET :: Z
-!> @brief INCREMENT OF FREE SURFACE ELEVATION WHEN READING AN HYDRO FILE
-C
+!
+!     INCREMENT OF FREE SURFACE ELEVATION WHEN READING AN HYDRO FILE
+!
       TYPE(BIEF_OBJ), TARGET :: DEL_Z
-!> @brief EVOLUTION DUE TO BEDLOAD
-C
+!
+!     EVOLUTION DUE TO BEDLOAD
+!
       TYPE(BIEF_OBJ), TARGET :: ZF_C
-!> @brief EVOLUTION DUE TO SUSPENSION
-C
+!
+!     EVOLUTION DUE TO SUSPENSION
+!
       TYPE(BIEF_OBJ), TARGET :: ZF_S
-!> @brief CUMULATED BED EVOLUTION
-C evolution totale
+!
+!     CUMULATED BED EVOLUTION
+!
       TYPE(BIEF_OBJ), TARGET :: ESOMT
-!> @brief MAXIMUM EVOLUTION
-C
+!
+!     MAXIMUM EVOLUTION
+!
       TYPE(BIEF_OBJ), TARGET :: EMAX
-!> @brief COMPONENTS OF DEPTH-AVERAGED FLOW RATE
-C composantes du debit vectoriel
+!
+!     COMPONENTS OF DEPTH-AVERAGED FLOW RATE
+!
       TYPE(BIEF_OBJ), TARGET :: QU
-!> @brief COMPONENTS OF DEPTH-AVERAGED FLOW RATE
-C composantes du debit vectoriel
+!
+!     COMPONENTS OF DEPTH-AVERAGED FLOW RATE
+!
       TYPE(BIEF_OBJ), TARGET :: QV
-!> @brief INCREMENTS OF FLOW RATE COMPONENTS WHEN READING AN HYDRO FILE
-C
+!
+!     INCREMENTS OF FLOW RATE COMPONENTS WHEN READING AN HYDRO FILE
+!
       TYPE(BIEF_OBJ), TARGET :: DEL_QU
-!> @brief INCREMENTS OF FLOW RATE COMPONENTS WHEN READING AN HYDRO FILE
-C
+!
+!     INCREMENTS OF FLOW RATE COMPONENTS WHEN READING AN HYDRO FILE
+!
       TYPE(BIEF_OBJ), TARGET :: DEL_QV
-!> @brief FLOW RATE
-C debit liquide
+!
+!     FLOW RATE
+!
       TYPE(BIEF_OBJ), TARGET :: Q
-!> @brief SOLID DISCHARGE
-C
+!
+!     SOLID DISCHARGE
+!
       TYPE(BIEF_OBJ), TARGET :: QS
-!> @brief SOLID DISCHARGE
-C
-      TYPE(BIEF_OBJ), TARGET :: QSX
-!> @brief SOLID DISCHARGE
-C
-      TYPE(BIEF_OBJ), TARGET :: QSY
-!> @brief SOLID DISCHARGE (BEDLOAD)
-C
+!
+!     SOLID DISCHARGE ,ALONG X AND Y
+!
+      TYPE(BIEF_OBJ), TARGET :: QSX,QSY
+!
+!     SOLID DISCHARGE (BEDLOAD)
+!
       TYPE(BIEF_OBJ), TARGET :: QS_C
-!> @brief SOLID DISCHARGE (BEDLOAD)
-C
-      TYPE(BIEF_OBJ), TARGET :: QSXC
-!> @brief SOLID DISCHARGE (BEDLOAD)
-C
-      TYPE(BIEF_OBJ), TARGET :: QSYC
-!> @brief SOLID DISCHARGE (SUSPENSION)
-C
+!
+!     SOLID DISCHARGE (BEDLOAD), ALONG X AND Y
+!
+      TYPE(BIEF_OBJ), TARGET :: QSXC,QSYC
+!
+!     SOLID DISCHARGE (SUSPENSION)
+!
       TYPE(BIEF_OBJ), TARGET :: QS_S
-!> @brief SOLID DISCHARGE (SUSPENSION)
-C
-      TYPE(BIEF_OBJ), TARGET :: QSXS
-!> @brief SOLID DISCHARGE (SUSPENSION)
-C
-      TYPE(BIEF_OBJ), TARGET :: QSYS
-!> @brief WATER DEPTH
-C hauteur d'eau au temps n
+!
+!     SOLID DISCHARGE (SUSPENSION), ALONG X AND Y
+!
+      TYPE(BIEF_OBJ), TARGET :: QSXS,QSYS
+!
+!     WATER DEPTH
+!
       TYPE(BIEF_OBJ), TARGET :: HN
-!> @brief
-C
+!
+!     DEPTH AFTER CLIPPING
+!
       TYPE(BIEF_OBJ), TARGET :: HCLIP
-!> @brief
-C
+!
+!     COMPONENTS OF DEPTH-AVERAGED VELOCITY
+!
       TYPE(BIEF_OBJ), TARGET :: U2D,V2D
 !> @brief
 C intensite du courant
@@ -599,30 +611,30 @@ C formule pour la deviation
 !> @brief FORMULA FOR SLOPE EFFECT
 C formule pour effet de pente
       INTEGER SLOPEFF
-C
-C NON-EQUILIBRIUM BEDLOAD AND NON-UNIFORM BED MATERIA (BMD AND MGDL)
-C --------
-C
-!> @brief MAXIMUM NUMBER OF SIZE-CLASSES
-C
+!
+! NON-EQUILIBRIUM BEDLOAD AND NON-UNIFORM BED MATERIA (BMD AND MGDL)
+! --------
+!
+!     MAXIMUM NUMBER OF SIZE-CLASSES
+!
       INTEGER, PARAMETER :: NSICLM = 10
-!> @brief NUMBER OF SIZE-CLASSES OF BED MATERIAL (LESS THAN 10)
-C nombre de classes granulometriques
+!
+!     NUMBER OF SIZE-CLASSES OF BED MATERIAL (LESS THAN 10)
+!
       INTEGER :: NSICLA
-!> @brief MAXIMUM NUMBER OF LAYERS ON THE MESH
-C
-      INTEGER,PARAMETER :: NLAYMAX = 10
-!> @brief NUMBER OF BED LOAD MODEL LAYERS
-C nombre de couches pour granulo etendue
+!
+!     MAXIMUM NUMBER OF LAYERS ON THE MESH
+!
+      INTEGER, PARAMETER :: NLAYMAX = 20
+!
+!     NUMBER OF BED LOAD MODEL LAYERS
+!
       INTEGER NOMBLAY
-!> @brief FORMULATION FOR THE HIDING FACTOR
-C
+!     
+!     FORMULATION FOR THE HIDING FACTOR
+!
       INTEGER HIDFAC
-!> @brief
-C
-      INTEGER, PARAMETER :: TMCOD_SISTEL = 0
-!> @brief FOR NON-EQUILIBRIUM BEDLOAD
-C
+!
       INTEGER :: LOADMETH
 !> @brief DEBUGGER
 C debugger
@@ -860,9 +872,6 @@ C
 !> @brief HIDING FACTOR FOR PARTICULAR SIZE CLASS WHEN THE USER SUBROUTINE INIT_HIDING IS NOT USED
 C hiding factor par classe granulo
       DOUBLE PRECISION HIDI(NSICLM)
-!> @brief
-C
-      DOUBLE PRECISION VSET(NSICLM)
 !> @brief D90
 C d90
       DOUBLE PRECISION FD90(NSICLM)
@@ -877,7 +886,7 @@ C epaisseur de couche active
       DOUBLE PRECISION ELAY0
 !> @brief TOTAL VOLUME OF SEDIMENT IN EACH CLASS
 C
-      DOUBLE PRECISION VOLTOT(10)
+      DOUBLE PRECISION VOLTOT(NSICLM)
 !> @brief CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION
 C vitesse critique de depot de la vase
       DOUBLE PRECISION :: VITCD
@@ -935,28 +944,38 @@ C
 !> @brief B VALUE FOR THE BIJKER FORMULA
 C coefficient b de la formule de bijker
       DOUBLE PRECISION :: BIJK
-!> @brief MUD CONCENTRATION AT BOUNDARIES FOR EACH CLASS
-C concentrations par classe aux frontieres
-      DOUBLE PRECISION :: CBOR_CLASSE(10*MAXFRO)
-!> @brief MUD CONCENTRATION FOR EACH LAYER
-C concentrations de vase par couche
-      DOUBLE PRECISION :: CONC_VASE(10)
-!> @brief MASS TRANSFER BETWEEN LAYERS
-C transfert de masse par couche
-      DOUBLE PRECISION :: TRANS_MASS(10)
-!> @brief CRITICAL EROSION SHEAR STRESS OF THE MUD PER LAYER
-C contrainte critique d'erosion de la vase par couche
-      DOUBLE PRECISION :: TOCE_VASE(10),TOCE_SABLE
-C Modele de Thiebot 
-      DOUBLE PRECISION :: CONC_GEL, COEF_N
-C-----------------------------------------------------------------------
-C
-C       7) STRINGS
-C
-C-----------------------------------------------------------------------
-C
-!> @brief
-C
+!
+!     MUD CONCENTRATION AT BOUNDARIES FOR EACH CLASS
+!
+      DOUBLE PRECISION :: CBOR_CLASSE(NSICLM*MAXFRO)
+!
+!     MUD CONCENTRATION FOR EACH LAYER
+!
+      DOUBLE PRECISION :: CONC_VASE(NLAYMAX)
+!
+!     MASS TRANSFER BETWEEN LAYERS
+!
+      DOUBLE PRECISION :: TRANS_MASS(NLAYMAX)
+!
+!     CRITICAL EROSION SHEAR STRESS OF THE MUD PER LAYER
+!
+      DOUBLE PRECISION :: TOCE_VASE(NLAYMAX)
+!
+!     CRITICAL EROSION SHEAR STRESS OF THE SAND
+!
+      DOUBLE PRECISION :: TOCE_SABLE
+!
+!     THIEBOT MODEL
+! 
+      DOUBLE PRECISION :: CONC_GEL, COEF_N,CONC_MAX
+!
+!-----------------------------------------------------------------------
+!
+!       7) STRINGS
+!
+!-----------------------------------------------------------------------
+!
+!
       CHARACTER(LEN=72) TITCA,SORTIS,VARIM
 !> @brief
 C

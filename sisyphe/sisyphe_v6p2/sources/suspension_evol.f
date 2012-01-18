@@ -1,13 +1,12 @@
-! Bug correction 26/08/2011
 !                    **************************
                      SUBROUTINE SUSPENSION_EVOL
 !                    **************************
 !
-     &  (ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES,
-     &   CONC_VASE,NCOUCH_TASS)
+     &(ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES,
+     & CONC_VASE,NCOUCH_TASS)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE EVOLUTION FOR MUD ACCORDING TO FLUDP
@@ -51,6 +50,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -60,7 +60,7 @@
       INTEGER, INTENT(IN) :: NPOIN,NCOUCH_TASS
       DOUBLE PRECISION, INTENT(IN) :: CONC_VASE(NCOUCH_TASS)
       DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
-      DOUBLE PRECISION,  INTENT(INOUT) :: ES(NPOIN,NCOUCH_TASS)
+      DOUBLE PRECISION,  INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
 !
       ! 3/ LOCAL VARIABLES
       ! ------------------

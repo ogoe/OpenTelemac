@@ -81,7 +81,7 @@
 !
       LOGICAL,          INTENT(IN)    :: LGRAFED
       DOUBLE PRECISION, INTENT(INOUT) :: MASS_GF,VCUMU
-      DOUBLE PRECISION, INTENT(IN)    :: VOLTOT(10)
+      DOUBLE PRECISION, INTENT(IN)    :: VOLTOT(NSICLA)
 !
 !-----------------------------------------------------------------------
 !

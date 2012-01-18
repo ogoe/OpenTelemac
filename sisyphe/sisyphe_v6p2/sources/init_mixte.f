@@ -1,5 +1,4 @@
-! CV correction bug en cas de suite (IF DEBU) 
-!                   *********************
+!                    *********************
                      SUBROUTINE INIT_MIXTE
 !                    *********************
 !
@@ -7,7 +6,7 @@
      & MS_SABLE,MS_VASE,ZF,ZR,AVA0,DEBU)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -53,29 +52,32 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN,NSICLA,NCOUCH_TASS
-      DOUBLE PRECISION, INTENT(IN)    :: XMVS
-      DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,10,NSICLA)
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10),ELAY(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: ZR(NPOIN),ZF(NPOIN)
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_SABLE(NPOIN,10)
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,10)
-      DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(10)
-      DOUBLE PRECISION, INTENT(IN)   :: AVA0(NSICLA)
-      LOGICAL, INTENT (IN) :: DEBU
+      INTEGER, INTENT(IN)              :: NPOIN,NSICLA,NCOUCH_TASS
+      DOUBLE PRECISION, INTENT(IN)     :: XMVS
+      DOUBLE PRECISION, INTENT(INOUT)  :: AVAIL(NPOIN,NLAYMAX,NSICLA)
+      DOUBLE PRECISION, INTENT(INOUT)  :: ES(NPOIN,NCOUCH_TASS)
+      DOUBLE PRECISION, INTENT(INOUT)  :: ELAY(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)     :: ZR(NPOIN),ZF(NPOIN)
+      DOUBLE PRECISION,  INTENT(INOUT) :: MS_SABLE(NPOIN,NCOUCH_TASS)
+      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
+      DOUBLE PRECISION, INTENT(IN)     :: CONC_VASE(NCOUCH_TASS)
+      DOUBLE PRECISION, INTENT(IN)     :: AVA0(NSICLA)
+      LOGICAL, INTENT (IN)             :: DEBU
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
 !     LOCAL VARIABLES
 !
       INTEGER I,J
 !
-      DOUBLE PRECISION EPAI_VASE(10),EPAI_SABLE(10)
+      DOUBLE PRECISION EPAI_VASE(NLAYMAX),EPAI_SABLE(NLAYMAX)
       DOUBLE PRECISION DIFF
 !
 ! ------------------------------------------------------------------------

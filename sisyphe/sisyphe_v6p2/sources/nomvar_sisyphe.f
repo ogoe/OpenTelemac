@@ -2,10 +2,10 @@
                      SUBROUTINE NOMVAR_SISYPHE
 !                    *************************
 !
-     &( TEXTE ,TEXTPR , MNEMO , NSICLA , UNIT )
+     &(TEXTE,TEXTPR,MNEMO,NSICLA,UNIT,MAXVAR,NPRIV,NOMBLAY)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND
@@ -38,17 +38,25 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  CV + JMH (LNHE)
+!+        17/01/2012
+!+        V6P2
+!+   Adaptation to greater numbers of layers and classes (up to 99 each)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
 !| MNEMO          |<--| SYMBOLS TO SPECIFY THE VARIABLES FOR OUTPUT
 !|                |   | IN THE STEERING FILE
+!| NOMBLAY        |-->| NUMBER OF LAYERS
+!| NPRIV          |-->| NUMBER OF PRIVATE ARRAYS
 !| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
+!| NSICLM         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !| TEXTE          |<--| NAMES OF VARIABLES (PRINTOUT)
 !| TEXTPR         |<--| NAMES OF VARIABLES (INPUT)
 !| UNIT           |-->| LOGICAL, FILE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_SISYPHE, ONLY : MAXVAR,NSICLM,NLAYMAX,NOMBLAY,
-     &                                 NPRIV
+      USE DECLARATIONS_SISYPHE, ONLY : NSICLM,NLAYMAX
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -56,7 +64,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)         :: NSICLA
+      INTEGER, INTENT(IN)         :: NSICLA,MAXVAR,NPRIV,NOMBLAY
       CHARACTER*8, INTENT(INOUT)  :: MNEMO(MAXVAR)
       CHARACTER*32, INTENT(INOUT) :: TEXTE(MAXVAR),TEXTPR(MAXVAR)
       LOGICAL, INTENT(IN)         :: UNIT
@@ -65,15 +73,20 @@
 !
       INTEGER I,J,K,ADD
 !
-      CHARACTER(LEN=32) TEXTE_AVAI(NLAYMAX*NSICLM),TEXTE_QS(NSICLM)
+!     LOCAL ARRAYS DIMENSIONED WITH FIXED PARAMETERS FROM
+!     DECLARATIONS_SISYPHE. IT IS NOT A HIDDEN DYNAMIC ALLOCATION   
+!
+      CHARACTER(LEN=32) TEXTE_QS(NSICLM)
       CHARACTER(LEN=32) TEXTE_CS(NSICLM),TEXTE_QSC(NSICLM)
       CHARACTER(LEN=32) TEXTE_QSS(NSICLM),TEXTE_ES(NLAYMAX)
-      CHARACTER(LEN=8)  MNEMO_AVAI(NLAYMAX*NSICLM),MNEMO_QS(NSICLM)
+      CHARACTER(LEN=8)  MNEMO_QS(NSICLM)
       CHARACTER(LEN=8)  MNEMO_CS(NSICLM),MNEMO_ES(NLAYMAX)
       CHARACTER(LEN=8)  MNEMO_QSC(NSICLM),MNEMO_QSS(NSICLM)
       CHARACTER(LEN=2)  CLA,LAY
 !
 !-----------------------------------------------------------------------
+!
+      ADD=27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY
 !
       IF(ADD.GT.MAXVAR) THEN
         IF(LNG.EQ.1) THEN
@@ -87,38 +100,49 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!     2 3RD FRACTION MEANS FRACTION OF SEDIMENT OF CLASS 3 IN 2ND LAYER
 !
-      IF(NOMBLAY.GT.99.OR.NSICLA.GT.99) THEN
-        WRITE (LU,*) 'REPROGRAM NOMVAR_SISYPHE DUE TO CONSTANT FORMATS'
-        CALL PLANTE(1)
-        STOP
-      ENDIF
+!     2 3RD FRACTION MEANS FRACTION OF SEDIMENT OF CLASS 3 IN 2ND LAYER
 !
       DO I=1,NSICLA
         DO J=1,NOMBLAY
-          K=(I-1)*NOMBLAY+J
-          WRITE(LAY,'(I1)') J
           IF(J.LT.10) THEN
             WRITE(LAY,'(I1)') J
-          ELSE
+          ELSEIF(J.LT.100) THEN
             WRITE(LAY,'(I2)') J
+          ELSE
+            WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
+            WRITE (LU,*) '                LAYERS'
+            CALL PLANTE(1)
+            STOP          
           ENDIF
           IF(I.LT.10) THEN
             WRITE(CLA,'(I1)') I
-          ELSE
+          ELSEIF(I.LT.100) THEN
             WRITE(CLA,'(I2)') I
+          ELSE
+            WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NSICLA
+            WRITE (LU,*) '                CLASSES'
+            CALL PLANTE(1)
+            STOP
           ENDIF
-          TEXTE_AVAI(K) = TRIM('FRACLAY '//LAY//' CL '//CLA)
-          MNEMO_AVAI(K) = TRIM(LAY//'A'//CLA)
+!         AVAIL: ALL LAYERS OF CLASS 1, THEN ALL LAYERS OF CLASS 2, ETC.
+!         SAME ORDER AS IN POINT_SISYPHE
+!         BEWARE, 21 IS DUE TO OTHER VARIABLES BEFORE, SEE BELOW
+          TEXTE(21+(I-1)*NOMBLAY+J)=TRIM('FRACLAY '//LAY//' CL '//CLA)
+          MNEMO(21+(I-1)*NOMBLAY+J)=TRIM(LAY)//'A'//CLA
         ENDDO
       ENDDO
 !
       DO J=1,NSICLA
         IF(J.LT.10) THEN
           WRITE(CLA,'(I1)') J
-        ELSE
+        ELSEIF(J.LT.100) THEN
           WRITE(CLA,'(I2)') J
+        ELSE
+          WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NSICLA
+          WRITE (LU,*) '                CLASSES'
+          CALL PLANTE(1)
+          STOP        
         ENDIF
         TEXTE_QS(J)  = TRIM('QS CLASS '//CLA)
         TEXTE_QSC(J) = TRIM('QS BEDLOAD CL'//CLA)
@@ -136,11 +160,20 @@
       ENDDO
 !
       DO K=1,NOMBLAY
-        WRITE(LAY,'(I1)') K
-!V        TEXTE_ES(K)(1:16)  = 'LAY. '//LAY//' THICKNESS'
+        IF(K.LT.10) THEN
+          WRITE(LAY,'(I1)') K
+          MNEMO_ES(K) = TRIM(LAY)//'ES     '
+        ELSEIF(K.LT.100) THEN
+          WRITE(LAY,'(I2)') K
+          MNEMO_ES(K) = TRIM(LAY)//'ES    '
+        ELSE
+          WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
+          WRITE (LU,*) '                LAYERS'
+          CALL PLANTE(1)
+          STOP            
+        ENDIF	   
         TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNESS'
         TEXTE_ES(K)(17:32) = 'M               '
-        MNEMO_ES(K) = LAY//'ES     '
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -169,9 +202,24 @@
         TEXTE(18) = 'EVOLUTION       M               '
         TEXTE(19) = 'RUGOSITE TOTALE M               '
         TEXTE(20) = 'FROT. PEAU MU                   '
-!V 2010
         TEXTE(21) = 'MEAN DIAMETER M                 '
-! CV 2010 +1
+!
+!       THIS IS DONE ABOVE
+!
+!       DO J=1,NOMBLAY
+!         DO I=1,NSICLA
+!           TEXTE(21+(I-1)*NOMBLAY+J) = ...
+!           MNEMO(21+(I-1)*NOMBLAY+J) = ...
+!         ENDDO
+!       ENDDO
+!
+        DO I=1,NSICLA
+          TEXTE(21+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
+          MNEMO(21+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
+          TEXTE(21+I+(NOMBLAY+1)*NSICLA) = TEXTE_CS(I)
+          MNEMO(21+I+(NOMBLAY+1)*NSICLA) = MNEMO_CS(I)
+        ENDDO
+!
         ADD=NSICLA*(NOMBLAY+2)
         TEXTE(22+ADD)='QS BEDLOAD      M2/S            '
         TEXTE(23+ADD)='QS BEDLOAD X    M2/S            '
@@ -206,6 +254,22 @@
         TEXTE(20)  = 'CORR FROTT PEAU MU              '
         TEXTE(21)  = 'DIAMETRE MOYEN  M               '
 !
+!       THIS IS DONE ABOVE
+!
+!       DO J=1,NOMBLAY
+!         DO I=1,NSICLA
+!           TEXTE(21+(I-1)*NOMBLAY+J) = ...
+!           MNEMO(21+(I-1)*NOMBLAY+J) = ...
+!         ENDDO
+!       ENDDO
+!
+        DO I=1,NSICLA
+          TEXTE(21+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
+          MNEMO(21+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
+          TEXTE(21+I+(NOMBLAY+1)*NSICLA) = TEXTE_CS(I)
+          MNEMO(21+I+(NOMBLAY+1)*NSICLA) = MNEMO_CS(I)
+        ENDDO
+!
         ADD=NSICLA*(NOMBLAY+2)
         TEXTE(22+ADD)='QS CHARRIAGE    M2/S            '
         TEXTE(23+ADD)='QS CHARRIAGE X  M2/S            '
@@ -216,30 +280,13 @@
 !
       ENDIF
 !
-!     AVAIL: ALL LAYERS OF CLASS 1, THEN ALL LAYERS OF CLASS 2, ETC.
-!            SAME ORDER AS IN POINT_SISYPHE
-!
-      DO J=1,NOMBLAY
-        DO I=1,NSICLA
-!V 2010    +1
-          TEXTE(21+(I-1)*NOMBLAY+J) = TEXTE_AVAI((I-1)*NOMBLAY+J)
-          MNEMO(21+(I-1)*NOMBLAY+J) = MNEMO_AVAI((I-1)*NOMBLAY+J)
-        ENDDO
-      ENDDO
-!
       DO I=1,NSICLA
-!V 2010    +1
-        TEXTE(21+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
-        MNEMO(21+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
-        TEXTE(21+I+(NOMBLAY+1)*NSICLA) = TEXTE_CS(I)
-        MNEMO(21+I+(NOMBLAY+1)*NSICLA) = MNEMO_CS(I)
         TEXTE(27+I+NSICLA*(NOMBLAY+2)) = TEXTE_QSC(I)
         MNEMO(27+I+NSICLA*(NOMBLAY+2)) = MNEMO_QSC(I)
         TEXTE(27+I+NSICLA*(NOMBLAY+3)) = TEXTE_QSS(I)
         MNEMO(27+I+NSICLA*(NOMBLAY+3)) = MNEMO_QSS(I)
       ENDDO
 !
-!V 2010    +1
       DO I=1,NOMBLAY
         TEXTE(27+I+NSICLA*(NOMBLAY+4)) = TEXTE_ES(I)
         MNEMO(27+I+NSICLA*(NOMBLAY+4)) = MNEMO_ES(I)
@@ -253,7 +300,6 @@
 !     NPRIV MAY BE GREATER THAN 4
 !     TEXTE(31+ADD)='PRIVE 5                         '
 !
-!V 2010 +1
       DO I=1,31+NSICLA*(NOMBLAY+4)+NOMBLAY
         TEXTPR(I)=TEXTE(I)
       ENDDO
@@ -302,9 +348,9 @@
       MNEMO(19)   = 'KS      '
 !     MU
       MNEMO(20)   = 'MU      '
-! CV 2010
+!     D50
       MNEMO(21)   = 'D50     '
-! +1
+!
       MNEMO(22+NSICLA*(NOMBLAY+2)) = 'QSBL    '
       MNEMO(23+NSICLA*(NOMBLAY+2)) = 'QSBLX   '
       MNEMO(24+NSICLA*(NOMBLAY+2)) = 'QSBLY   '
@@ -321,7 +367,7 @@
 !     MNEMO(31+ADD) = '????????'
 !
 !----------------------------
-! CV 2010: +1
+! 
       ADD=NSICLA*(NOMBLAY+4)+NOMBLAY+27+MAX(NPRIV,4)
       IF(ADD.LT.MAXVAR) THEN
         DO I=ADD+1,MAXVAR

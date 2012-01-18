@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    ALLOCATES STRUCTURES.
@@ -205,11 +205,14 @@ C     FOR MIXED SEDIMENTS
       IF(SEDCO(1).OR.SEDCO(2)) THEN
 !      IF(MIXTE.OR.TASS) THEN
         CALL BIEF_ALLVEC(1,FLUER_VASE,'FRMIXT',IELMT,1,2,MESH)
-        CALL BIEF_ALLVEC(1,TOCE_MIXTE ,'TCMIXT',IELMT,10,2,MESH)
-        CALL BIEF_ALLVEC(1,MS_SABLE   ,'MSSABL',IELMT,10,2,MESH)
-        CALL BIEF_ALLVEC(1,MS_VASE    ,'MSVASE',IELMT,10,2,MESH)
+        CALL BIEF_ALLVEC(1,TOCE_MIXTE ,'TCMIXT',
+     &                   IELMT,NCOUCH_TASS,2,MESH)
+        CALL BIEF_ALLVEC(1,MS_SABLE   ,'MSSABL',
+     &                   IELMT,NCOUCH_TASS,2,MESH)
+        CALL BIEF_ALLVEC(1,MS_VASE    ,'MSVASE',
+     &                   IELMT,NCOUCH_TASS,2,MESH)
       ELSE
-        CALL BIEF_ALLVEC(1,FLUER_VASE,'FRMIXT',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,FLUER_VASE ,'FRMIXT',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,TOCE_MIXTE ,'TCMIXT',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,MS_SABLE   ,'MSSABL',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,MS_VASE    ,'MSVASE',0,1,0,MESH)
@@ -254,8 +257,8 @@ C     FOR MIXED SEDIMENTS
       ! ******************* !
       ! V - BLOCK OF ARRAYS !
       ! ******************* !
-      ALLOCATE(AVAIL(NPOIN,10,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
-      ALLOCATE(ES(NPOIN,10))           ! THICKNESS OF EACH CLASS ???
+      ALLOCATE(AVAIL(NPOIN,NLAYMAX,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
+      ALLOCATE(ES(NPOIN,NLAYMAX))           ! THICKNESS OF EACH CLASS
 
       !================================================================!
       CALL ALLBLO(MASKTR, 'MASKTR') ! MASK OF THE BOUNDARY CONDITIONS
