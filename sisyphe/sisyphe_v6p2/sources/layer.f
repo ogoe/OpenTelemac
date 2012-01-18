@@ -6,7 +6,7 @@
      & ELAY0,VOLTOT,ES,AVAIL,CONST_ALAYER,DTS,ESTRATNEW,NLAYNEW)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES AVAIL FOR EACH CLASS AND EACH LAYER;
@@ -54,7 +54,10 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!+ 
+!history  C.VILLARET (EDF-LNHE)
+!+        18/021
+!+  Dimension 10 of AVAIL changed into NOMBLAY    
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -78,7 +81,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE , ONLY : NLAYMAX
+      USE DECLARATIONS_SISYPHE , ONLY : NLAYMAX,NOMBLAY
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -93,7 +96,7 @@
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: NLAYER,ESTRAT,ELAY
       DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
       DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
-      DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NLAYMAX,NSICLA)
+      DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
       DOUBLE PRECISION, INTENT(INOUT) :: VOLTOT(NSICLA),ESTRATNEW(NPOIN)
       INTEGER         , INTENT(INOUT) :: NLAYNEW(NPOIN)
 !
@@ -237,15 +240,19 @@
                     STOP
                   ENDIF
                   AVAIL(J,2,I) = AVAIL(J,3,I)
-!                            ?=
-                  DO K=3,MIN(9,NLAYER%I(J))
+! CV : change 9 in NOMBLAY-1 ??
+! Pourquoi pas NOMBLAY?                          ?=
+!                  DO K=3,MIN(9,NLAYER%I(J))
+                 DO K=3,MIN(NOMBLAY-1,NLAYER%I(J))
                     AVAIL(J,K,I) = AVAIL(J,K+1,I)
                   ENDDO
                 ENDDO
                 ELAY%R(J) = ELAY0
                 NLAYNEW(J) = NLAYER%I(J) - 1
                 ESTRATNEW(J) = ESTRAT%R(J) + EVOL + ES(J,3)
-                DO K=3,MIN(9,NLAYER%I(J))
+!CV              DO K=3,MIN(9,NLAYER%I(J))
+! Pourquoi pas NOMBLAY? 
+                DO K=3,MIN(NOMBLAY-1,NLAYER%I(J))
                   ES(J,K) = ES(J,K+1)
                 ENDDO
 !

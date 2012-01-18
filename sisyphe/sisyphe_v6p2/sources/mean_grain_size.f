@@ -36,13 +36,16 @@
       USE DECLARATIONS_SISYPHE
 !
       IMPLICIT NONE
-      INTEGER I , J
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
-!  UNLADM IS NEEDED FOR HUNZIKER
+      INTEGER I,J
+!
+!-----------------------------------------------------------------------
+!
+!     UNLADM IS NEEDED FOR HUNZIKER
 !
       DO J=1,NPOIN
         ACLADM%R(J) = 0.D0

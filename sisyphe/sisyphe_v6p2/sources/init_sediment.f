@@ -73,7 +73,7 @@
 
       USE BIEF
       USE INTERFACE_SISYPHE, EX_INIT_SEDIMENT => INIT_SEDIMENT
-      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
+      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX,NOMBLAY
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -89,7 +89,7 @@ C
       LOGICAL,           INTENT(IN)     :: CALAC
       DOUBLE PRECISION,  INTENT(IN)     :: XMVS,XMVE,GRAV,VCE
       DOUBLE PRECISION,  INTENT(INOUT)  :: AVA0(NSICLA)
-      DOUBLE PRECISION,  INTENT(INOUT)  :: AVAIL(NPOIN,NLAYMAX,NSICLA)
+      DOUBLE PRECISION,  INTENT(INOUT)  :: AVAIL(NPOIN,NOMBLAY,NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: FRACSED_GF(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: FDM(NSICLA),XWC(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: AC(NSICLA),TOCE_SABLE
@@ -172,8 +172,7 @@ C
         ENDDO
       ENDIF
 C
-C
-C ------ SETTLING VELOCITY
+C     SETTLING VELOCITY
 C
       IF(.NOT.CALWC) THEN
         DENS = (XMVS - XMVE) / XMVE
@@ -182,7 +181,7 @@ C
         ENDDO
       ENDIF
 C
-C------ SHIELDS PARAMETER
+C     SHIELDS PARAMETER
 C
       IF(.NOT.CALAC) THEN
         DENS  = (XMVS - XMVE )/ XMVE
@@ -201,12 +200,12 @@ C
           ENDIF          
         ENDDO
       ENDIF
-C pour les sédiments mixtes (suspension_flux_mixte)
+!
+!     FOR MIXED SEDIMENTS
+!
       IF(MIXTE) TOCE_SABLE=AC(1)*FDM(1)*GRAV*(XMVS - XMVE)
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END
-C
-C#######################################################################

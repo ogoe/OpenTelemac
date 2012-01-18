@@ -257,7 +257,7 @@ C     FOR MIXED SEDIMENTS
       ! ******************* !
       ! V - BLOCK OF ARRAYS !
       ! ******************* !
-      ALLOCATE(AVAIL(NPOIN,NLAYMAX,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
+      ALLOCATE(AVAIL(NPOIN,NOMBLAY,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
       ALLOCATE(ES(NPOIN,NLAYMAX))           ! THICKNESS OF EACH CLASS
 
       !================================================================!

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    INITIAL FRACTION DISTRIBUTION AND LAYER THICKNESS.
@@ -94,15 +94,17 @@
           ENDDO
         ENDDO
       ELSE
+!
         CALL INIT_COMPO(IT1%I)
 !
         DO 45 J=1,NPOIN
 !
-!       10 IS THE MAXIMUM NUMBER OF LAYERS ALLOWED
+!       NOMBLAY IS THE MAXIMUM NUMBER OF LAYERS ALLOWED
+!
         NLAYER%I(J) = IT1%I(J)
-        IF(NLAYER%I(J).GT.10) THEN
-          IF(LNG.EQ.1) WRITE(LU,1800)
-          IF(LNG.EQ.2) WRITE(LU,1815)
+        IF(NLAYER%I(J).GT.NOMBLAY) THEN
+          IF(LNG.EQ.1) WRITE(LU,1800) NOMBLAY
+          IF(LNG.EQ.2) WRITE(LU,1815) NOMBLAY
           CALL PLANTE(1)
           STOP
         ENDIF
@@ -121,14 +123,18 @@
           HAUTSED = HAUTSED + ES(J,K)
         ENDDO
 144     CONTINUE
-!V pour eviter confusion affichage
-         DO K=NLAYER%I(J)+1, NOMBLAY
-            ES(J,K) = 0.D0
-         ENDDO
 !
+!       FOR CLEAN OUTPUTS
+!
+        IF(NLAYER%I(J).LT.NOMBLAY) THEN
+          DO K=NLAYER%I(J)+1,NOMBLAY
+            ES(J,K) = 0.D0
+          ENDDO
+        ENDIF
 !
 !       THE THICKNESS OF THE LAST LAYER IS ENLARGED SO THAT
 !       THE HEIGHT OF SEDIMENT (SUM OF ES) IS EQUAL TO ZF-ZR
+!
         IF(HAUTSED.LT.ZF%R(J)-ZR%R(J)) THEN
           ES(J,NLAYER%I(J))=ES(J,NLAYER%I(J))+ZF%R(J)-ZR%R(J)-HAUTSED
         ENDIF
@@ -147,7 +153,9 @@
             STOP
           ENDIF
         ENDIF
+!
 !       THE FIRST STRATUM IS SEPARATED BETWEEN ACTIVE LAYER + ACTIVE STRATUM
+!
         IF(ELAY0.LT.ES(J,1)) THEN
           NLAYER%I(J) = NLAYER%I(J) + 1
           IF(NLAYER%I(J).GT.10) THEN
@@ -181,11 +189,12 @@
         IF(NLAYER%I(J).GT.1) THEN
           ESTRAT%R(J) = ES(J,2)
         ENDIF
-!       TO RE-EXAMINE :
-!       UNUSED AVAIL ARE FILLED WITH ZEROS, IS IT BETTER !!!???
-        IF(NLAYER%I(J).LT.10) THEN
+!       
+!       UNUSED AVAIL ARE FILLED WITH ZEROS (IS IT USEFUL ???)
+!
+        IF(NLAYER%I(J).LT.NOMBLAY) THEN
           DO I = 1, NSICLA
-            DO K = NLAYER%I(J)+1,10
+            DO K = NLAYER%I(J)+1,NOMBLAY
               AVAIL(J,K,I) = 0.D0
             ENDDO
           ENDDO
@@ -222,8 +231,8 @@
 !
 !-----------------------------------------------------------------------
 !
-1800  FORMAT(1X,'IL Y A PLUS DE 10 COUCHES DANS LA STRATIFICATION')
-1815  FORMAT(1X,'THERE ARE MORE THAN 10 LAYERS IN THE STRATIFICATION')
+1800  FORMAT(1X,'IL Y A PLUS DE ',1I3,' COUCHES DANS LA STRATIFICATION')
+1815  FORMAT(1X,'THERE ARE MORE THAN ',1I3,' LAYERS IN STRATIFICATION')
 !
 !-----------------------------------------------------------------------
 !
