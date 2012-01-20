@@ -59,6 +59,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_GETTRIEBE => GETTRIEBE
+      USE DECLARATIONS_TELEMAC, ONLY : TETRA,ISEGT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -84,13 +85,14 @@
 !             THE 0 CORRESPOND TO SITUATIONS
 !             THAT NEVER HAPPEN (TETRA(1,1,1,... OR TETRA(2,2,2,...)
 !             SEE ALSO CPIKLE3 AND FLUX_EF_VF_3D, WITH SIMILAR USE
-      INTEGER TETRA(2,2,2,3,4),STO(4,4)
-      DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
-     &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
-     &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
-     &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
+!     INTEGER TETRA(2,2,2,3,4)
+!     DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
+!    &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
+!    &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
+!    &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
 !     EBE SYMMETRIC STORAGE OF OFF-DIAGONAL TERMS FOR TETRAHEDRONS
 !     0 ARE PUT FOR DIAGONALS
+      INTEGER STO(4,4)
       DATA STO / 0, 1, 2, 3,
      &           1, 0, 4, 5,
      &           2, 4, 0, 6,
@@ -100,9 +102,9 @@
 !    &          1-2,2-2,3-2,4-2,
 !    &          1-3,2-3,3-3,4-3,
 !    &          1-4,2-4,3-4,4-4/
-      INTEGER ISEGT(6,2)
-      DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
-      
+!     INTEGER ISEGT(6,2)
+!     DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
+!      
       LOGICAL YA
 !
 !-----------------------------------------------------------------------

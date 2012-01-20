@@ -85,6 +85,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF    !, EX_STOSEG51 => STOSEG51
+      USE DECLARATIONS_TELEMAC, ONLY : ISEGT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -109,8 +110,8 @@
       INTEGER IPLAN,ISEG2D,ISEG3D,IELEM3D,NSEGH,NSEGV
 !     THE SIX SEGMENTS IN A TETRAHEDRON
 !     ISEGT(ISEG,1 OR 2) : FIRST OR SECOND POINT OF SEGMENT ISEG
-      INTEGER ISEGT(6,2)
-      DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
+!     INTEGER ISEGT(6,2)
+!     DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
 !
 !-----------------------------------------------------------------------
 !

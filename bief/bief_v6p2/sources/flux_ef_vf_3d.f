@@ -64,7 +64,8 @@
 !| W3D            |-->| NON ASSEMBLED FLUXES LEAVING POINTS,PER PRISM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_FLUX_EF_VF_3D => FLUX_EF_VF_3D   
+      USE BIEF, EX_FLUX_EF_VF_3D => FLUX_EF_VF_3D 
+      USE DECLARATIONS_TELEMAC, ONLY : TETRA  
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -88,16 +89,16 @@
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
-      INTEGER IPLAN,N1,N2,IELEM,ISEG,I1,I2,I3,S1,S2,S3,IT,IELEM3D,K,L      
+      INTEGER IPLAN,N1,N2,IELEM,I1,I2,I3,S1,S2,S3,IT,IELEM3D,K,L      
 !
 !     TETRA : WILL GIVE THE LOCAL NUMBERS OF POINTS IN THE PRISM
 !             THE 0 CORRESPOND TO SITUATIONS
 !             THAT NEVER HAPPEN (TETRA(1,1,1,... OR TETRA(2,2,2,...)
-      INTEGER TETRA(2,2,2,3,4)
-      DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
-     &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
-     &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
-     &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
+!     INTEGER TETRA(2,2,2,3,4)
+!     DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
+!    &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
+!    &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
+!    &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
 !
 !-----------------------------------------------------------------------
 !

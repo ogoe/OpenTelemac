@@ -2,8 +2,8 @@
                      SUBROUTINE MT14TT
 !                    *****************
 !
-     &( T,XM,PPQ,LEGO,XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &  X,Y,Z,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD,NPLAN,NPOIN2)
+     &(T,XM,PPQ,LEGO,XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
+     & X,Y,Z,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD,NPLAN,NPOIN2)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -60,6 +60,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF           !, EX_MT14TT => MT14TT
+      USE DECLARATIONS_TELEMAC, ONLY : ISEGT
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -103,8 +104,8 @@
 !
 !     THE SIX SEGMENTS IN A TETRAHEDRON
 !     ISEGT(ISEG,1 OR 2) : FIRST OR SECOND POINT OF SEGMENT ISEG
-      INTEGER ISEGT(6,2)
-      DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
+!     INTEGER ISEGT(6,2)
+!     DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
 !
 !=======================================================================
 !
@@ -238,18 +239,24 @@
               L42=SUMMAXK*MAX(0.D0,ALFA(4))*MIN(0.D0,ALFA(2))
               L43=SUMMAXK*MAX(0.D0,ALFA(4))*MIN(0.D0,ALFA(3))
             ELSE
+!             A SIMPLE SOLUTION, WITHOUT DIVISION
+!             PRINCIPLE : POINTS 1, 2, 3 GIVE THEIR CONTRIBUTION
+!             TO POINT 4, IT WORKS BECAUSE ALFA(4)=-ALFA(1)-ALFA(2)-ALFA(3)
+!             BUT IT IS NOT THE N-SCHEME
+!             BETTER THAN PUTTING 0 FOR MASS ERROR ?
+!             COULD BE USELESS DEPENDING ON FLUX CLIPPING AFTER 
               L12 = 0.D0
               L13 = 0.D0
-              L14 = 0.D0
+              L14 = MAX(ALFA(1),0.D0)
               L23 = 0.D0
-              L24 = 0.D0
-              L34 = 0.D0
+              L24 = MAX(ALFA(2),0.D0)
+              L34 = MAX(ALFA(3),0.D0)
               L21 = 0.D0
               L31 = 0.D0
-              L41 = 0.D0
+              L41 = - MIN(ALFA(1),0.D0)
               L32 = 0.D0
-              L42 = 0.D0
-              L43 = 0.D0
+              L42 = - MIN(ALFA(2),0.D0)
+              L43 = - MIN(ALFA(3),0.D0)
             ENDIF
 !
             XM(01,IELEM3D) = L12

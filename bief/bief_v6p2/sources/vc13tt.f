@@ -291,7 +291,9 @@
 !    &       Z(I5)-Z(I2).LT.1.D-3.OR.
 !    &       Z(I6)-Z(I3).LT.1.D-3     ) THEN
 !
-          IF(VOL.LT.1.D-3) THEN
+!         HIDDEN PARAMETER !!!!!!!!!!!!!!!!!!!
+!
+          IF(VOL.LT.1.D-6) THEN
             W1(IELEM)=0.D0
             W2(IELEM)=0.D0
             W3(IELEM)=0.D0

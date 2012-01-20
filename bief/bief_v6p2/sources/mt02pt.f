@@ -2,11 +2,10 @@
                      SUBROUTINE MT02PT
 !                    *****************
 !
-     &( T,XM,XMUL,SF,SG,SH,F,G,H,
-     &  X,Y,Z,IKLE,NELEM,NELMAX,INCHYD)
+     &(T,XM,XMUL,SF,SG,SH,F,G,H,X,Y,Z,IKLE,NELEM,NELMAX,INCHYD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DIFFUSION MATRIX.
@@ -75,6 +74,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_MT02PT => MT02PT
+      USE DECLARATIONS_TELEMAC, ONLY : TETRA
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -105,13 +105,13 @@
       DOUBLE PRECISION T1,T3,T5,T7,T9,T11,T13,T15,T17,T19,T21,T23
       DOUBLE PRECISION T35,T49,T28,T42,T51,T54,SURF
 !
-!     PRISM SPLITTING (SEE FORTRAN EQUIVALENT IN COMMENT BELOW)
+!     PRISM SPLITTING (SEE EXPLANATIONS IN DECLARATIONS_TELEMAC)
 !
-      INTEGER TETRA(2,2,2,3,4)
-      DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
-     &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
-     &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
-     &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
+!     INTEGER TETRA(2,2,2,3,4)
+!     DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
+!    &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
+!    &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
+!    &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
 !
 !     STORAGE CONVENTION FOR THE PRISM EXTRADIAGONAL TERMS
 !

@@ -496,8 +496,9 @@
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                NELEM,NELMAX,T(1,1),T(1,2),
      &                T(1,3),T(1,4),FORMUL,SPECAD,
-!                     THIS IS TO RETRIEVE THE NUMBER OF TRIANGLES
-     &                BIEF_NBPTS(10,MESH))
+!                     THIS IS TO RETRIEVE THE NUMBER OF 2D POINTS
+!                     AND TRIANGLES
+     &                BIEF_NBPTS(11,MESH),BIEF_NBPTS(10,MESH))
 !
 !-----------------------------------------------------------------------
 !       OTHER

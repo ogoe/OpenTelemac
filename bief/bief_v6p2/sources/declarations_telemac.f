@@ -97,6 +97,148 @@
 !
       CHARACTER(LEN=24) :: NAMECODE,NNAMECODE(3)
 !
+!+     DIFFERENT WAYS OF SPLITTING PRISMS :
+!+
+!+     TO ENSURE MATCHING OF TETRAHEDRONS, FACES OF TRIANGLES ARE "SIGNED"
+!+     WITH 1 OR 2 DEPENDING OF THE GLOBAL NUMBERS OF THEIR POINTS, TAKEN IN
+!+     COUNTER-CLOCKWISE DIRECTION. A FACE 1 IN A TRIANGLE WILL BE 2 IN ITS
+!+     NEIGHBOUR AND THIS IS USED TO HAVE A CORRECT SPLITTING. THE SPLITTING
+!+     DEPENDING ON THE "SIGNS" OF THE 3 FACES IS GIVEN IN ARRAY TETRA.
+!+
+!+
+!+     TETRA(2,2,2,3,4)
+!+
+!+     FIRST 3 DIMENSIONS : TYPE OF FACE
+!+                      1 : CUT RECTANGLE BETWEEN  LOW-LEFT AND HIGH-RIGHT
+!+                      2 : CUT RECTANGLE BETWEEN  HIGH-LEFT AND LOW-RIGHT
+!+
+!+     4TH DIMENSION : NUMBER OF TETRAHEDRON
+!+     5TH DIMENSION : 4 POINTS OF THE TETRAHEDRON (IN LOCAL PRISM NUMBERING)
+!+
+!+     1 1 2 SPLITTING
+!+
+!+     TETRA(1,1,2,1,1)= 1
+!+     TETRA(1,1,2,1,2)= 2
+!+     TETRA(1,1,2,1,3)= 3
+!+     TETRA(1,1,2,1,4)= 6
+!+
+!+     TETRA(1,1,2,2,1)= 4
+!+     TETRA(1,1,2,2,2)= 6
+!+     TETRA(1,1,2,2,3)= 5
+!+     TETRA(1,1,2,2,4)= 1
+!+
+!+     TETRA(1,1,2,3,1)= 5
+!+     TETRA(1,1,2,3,2)= 2
+!+     TETRA(1,1,2,3,3)= 1
+!+     TETRA(1,1,2,3,4)= 6
+!+
+!+     2 1 1 SPLITTING
+!+
+!+     TETRA(2,1,1,1,1)= 1
+!+     TETRA(2,1,1,1,2)= 2
+!+     TETRA(2,1,1,1,3)= 3
+!+     TETRA(2,1,1,1,4)= 4
+!+
+!+     TETRA(2,1,1,2,1)= 4
+!+     TETRA(2,1,1,2,2)= 6
+!+     TETRA(2,1,1,2,3)= 5
+!+     TETRA(2,1,1,2,4)= 2
+!+
+!+     TETRA(2,1,1,3,1)= 6
+!+     TETRA(2,1,1,3,2)= 3
+!+     TETRA(2,1,1,3,3)= 2
+!+     TETRA(2,1,1,3,4)= 4
+!+
+!+     1 2 1 SPLITTING
+!+
+!+     TETRA(1,2,1,1,1)= 1
+!+     TETRA(1,2,1,1,2)= 2
+!+     TETRA(1,2,1,1,3)= 3
+!+     TETRA(1,2,1,1,4)= 5
+!+
+!+     TETRA(1,2,1,2,1)= 4
+!+     TETRA(1,2,1,2,2)= 6
+!+     TETRA(1,2,1,2,3)= 5
+!+     TETRA(1,2,1,2,4)= 3
+!+
+!+     TETRA(1,2,1,3,1)= 4
+!+     TETRA(1,2,1,3,2)= 1
+!+     TETRA(1,2,1,3,3)= 3
+!+     TETRA(1,2,1,3,4)= 5
+!+
+!+     2 2 1 SPLITTING
+!+
+!+     TETRA(2,2,1,1,1)= 1
+!+     TETRA(2,2,1,1,2)= 2
+!+     TETRA(2,2,1,1,3)= 3
+!+     TETRA(2,2,1,1,4)= 4
+!+
+!+     TETRA(2,2,1,2,1)= 4
+!+     TETRA(2,2,1,2,2)= 6
+!+     TETRA(2,2,1,2,3)= 5
+!+     TETRA(2,2,1,2,4)= 3
+!+
+!+     TETRA(2,2,1,3,1)= 5
+!+     TETRA(2,2,1,3,2)= 2
+!+     TETRA(2,2,1,3,3)= 4
+!+     TETRA(2,2,1,3,4)= 3
+!+
+!+     1 2 2 SPLITTING
+!+
+!+     TETRA(1,2,2,1,1)= 1
+!+     TETRA(1,2,2,1,2)= 2
+!+     TETRA(1,2,2,1,3)= 3
+!+     TETRA(1,2,2,1,4)= 5
+!+
+!+     TETRA(1,2,2,2,1)= 4
+!+     TETRA(1,2,2,2,2)= 6
+!+     TETRA(1,2,2,2,3)= 5
+!+     TETRA(1,2,2,2,4)= 1
+!+
+!+     TETRA(1,2,2,3,1)= 6
+!+     TETRA(1,2,2,3,2)= 3
+!+     TETRA(1,2,2,3,3)= 5
+!+     TETRA(1,2,2,3,4)= 1
+!+
+!+     2 1 2 SPLITTING
+!+
+!+     TETRA(2,1,2,1,1)= 1
+!+     TETRA(2,1,2,1,2)= 2
+!+     TETRA(2,1,2,1,3)= 3
+!+     TETRA(2,1,2,1,4)= 6
+!+
+!+     TETRA(2,1,2,2,1)= 4
+!+     TETRA(2,1,2,2,2)= 6
+!+     TETRA(2,1,2,2,3)= 5
+!+     TETRA(2,1,2,2,4)= 2
+!+
+!+     TETRA(2,1,2,3,1)= 4
+!+     TETRA(2,1,2,3,2)= 1
+!+     TETRA(2,1,2,3,3)= 6
+!+     TETRA(2,1,2,3,4)= 2
+!
+!note     IMPORTANT : ON EACH LAYER THE BOTTOM TETRAHEDRONS MUST BE
+!+                     TREATED FIRST, SO THAT IKLE SENT TO SUBROUTINE
+!+                     VOISIN BE THE SAME AS WITH PRISMS OR TRIANGLES
+!+                     FOR THE NELEM2 FIRST ELEMENTS.
+!+                     CONSEQUENTLY THE FIRSt 3 POINTS OF TETRAHEDRON 1
+!+                     ARE ALWAYS 1,2 AND 3.
+!
+!     TETRA : SEE EXPLANATIONS ABOVE, THE 0 CORRESPOND TO SITUATIONS
+!             THAT NEVER HAPPEN (TETRA(1,1,1,... OR TETRA(2,2,2,...)
+      INTEGER TETRA(2,2,2,3,4)
+      DATA TETRA / 0,1,1,1,1,1,1,0,0,4,4,4,4,4,4,0,0,6,4,5,5,4,6,0,
+     &             0,2,2,2,2,2,2,0,0,6,6,6,6,6,6,0,0,3,1,2,2,1,3,0,
+     &             0,3,3,3,3,3,3,0,0,5,5,5,5,5,5,0,0,2,3,4,1,6,5,0,
+     &             0,4,5,4,6,6,5,0,0,2,3,3,1,2,1,0,0,4,5,3,6,2,1,0 /
+!
+!     NUMBERING OF SEGMENTS IN A TETRAHEDRON
+!     ISEGT(N,I) : POINT NUMBER I OF SEGMENT N. GIVES THE POINT IN 
+!                  LOCAL NUMBERING
+!
+      INTEGER ISEGT(6,2)
+      DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
+!
 !-----------------------------------------------------------------------
 !
       END MODULE DECLARATIONS_TELEMAC
