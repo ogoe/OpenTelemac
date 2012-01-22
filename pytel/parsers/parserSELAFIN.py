@@ -38,10 +38,8 @@
 # ~~> dependencies towards standard python
 from struct import unpack,pack
 import sys
-from os import path
 import numpy as np
 # ~~> dependencies towards other modules
-from config import OptionParser
 #np.set_printoptions(precision=16)
 # ~~> dependencies towards other pytel/modules
 from utils.geometry import isClose,isInsideTriangle,getBarycentricWeights,getSegmentIntersection
@@ -535,7 +533,7 @@ def putSLF(slf):
 #                                                 Header \_/
 #
 
-def putHeaderSLF(slf):
+def putHeaderSLF(slf): #TODO: optimise for speed, use of struct.Struct
    f = slf.fole
 
    # ~~ Write title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

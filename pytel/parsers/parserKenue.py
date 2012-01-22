@@ -169,6 +169,7 @@ class InS:
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if self.poly[ip] == []:
+            pbar.write('    +> removed entire polygon '+str(ip+1),ibar)
             self.poly.pop(ip)
             self.type.pop(ip)
          else: ip += 1
@@ -213,44 +214,78 @@ class InS:
       return self.poly,self.type
 
    def smoothSubsampleDistance(self,distance):
-      pbar = ProgressBar(maxval=self.npoin).start()
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
       #                          subsampling by distance \_/
-      #
-      ibar = 0
-      for ip in range(len(self.poly)):
+      ip = 0
+      while ip < len(self.poly):
          ibar += len(self.poly[ip])
          lb = len(self.poly[ip])
          self.poly[ip],self.type[ip] = subsampleDistance(self.poly[ip],self.type[ip],distance)
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if self.poly[ip] == []:
+            pbar.write('    +> removed entire polygon '+str(ip+1),ibar)
             self.poly.pop(ip)
             self.type.pop(ip)
+         else: ip += 1
          pbar.update(ibar)
 
       pbar.finish()
       return self.poly,self.type
 
    def smoothSubsampleAngle(self,angle):
-      pbar = ProgressBar(maxval=self.npoin).start()
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
       # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
       #                            subsampling by anlgle \_/
-      #
-      ibar = 0
-      for ip in range(len(self.poly)):
+      ip = 0
+      while ip < len(self.poly):
          ibar += len(self.poly[ip])
          lb = len(self.poly[ip])
          self.poly[ip],self.type[ip] = subsampleAngle(self.poly[ip],self.type[ip],angle)
          la = len(self.poly[ip])
          if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
          if self.poly[ip] == []:
+            pbar.write('    +> removed entire polygon '+str(ip+1),ibar)
             self.poly.pop(ip)
             self.type.pop(ip)
+         else: ip += 1
          pbar.update(ibar)
 
       pbar.finish()
       return self.poly,self.type
+
+   """
+   Early work by S.E.Bourban ... will be replaced by more recent work from M.S.Turnbull
+
+   def cutAngleJoinSplit(self,angle,distance,stencil):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      ip = 0
+      while ip < len(self.poly):
+         ibar += len(self.poly[ip])
+         if self.type[ip] == 0:
+            ip += 1; pbar.update(ibar)
+            continue # \!/ Only do the rest for closed polygons
+         lb = len(self.poly[ip])
+         if isClockwise(self.poly[ip]):
+            self.poly[ip],loops = cutAngleJoinSplit(
+               np.flipud(self.poly[ip]),angle,distance,stencil )
+         else:
+            self.poly[ip],loops = cutAngleJoinSplit(
+               self.poly[ip],angle,distance,stencil )
+         sys.exit()
+         la = len(self.poly[ip])
+         if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
+         if len(loops) > 0: pbar.write('    +> separate loops created from polygon '+str(ip+1),ibar)
+         if self.poly[ip] == []:
+            pbar.write('    +> removed entire polygon '+str(ip+1),ibar)
+            self.poly.pop(ip)
+            self.type.pop(ip)
+         else: ip += 1
+         pbar.update(ibar)
+
+      return self.poly,self.type
+   """
 
 # _____                  ___________________________________________
 # ____/ Toolbox for XYZ /__________________________________________/

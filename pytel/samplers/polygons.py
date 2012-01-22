@@ -133,7 +133,6 @@ def isClockwise(poly):
          * ( poly[(i+2)%len(poly)][0]-poly[(i+1)%len(poly)][0] )
    return wise < 0
 
-
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
@@ -148,3 +147,42 @@ if __name__ == "__main__":
    print '\n\nMy work is done\n\n'
 
    sys.exit()
+
+"""
+Early work by S.E.Bourban ... will be replaced by more recent work from M.S.Turnbull
+
+def cutAngleJoinSplit(poly,angle,dist,stencil):
+
+   d2 = np.power(dist,2)     # ~~> d square will save some calculation time
+   a2 = angle * np.pi / 180.
+   remo = []                 # ~~> left over
+   found = True
+   while found:
+      found = False
+      iline = 0
+      for s in range(stencil)[:int(2*stencil/3):-2]:   # ~~> here you start wit hthe larger stencil first
+         iline = iline%len(poly)
+         while iline < len(poly):
+            #ibar = min((iline-stencil)%len(line)*len(line)/l0Line+stencil*l0Line,(maxStencil-4)*l0Line)
+            # ~~> takes points on either sides (stencil)
+            a,b,c = poly[(iline-s)%len(poly)],poly[iline%len(poly)],poly[(iline+s)%len(poly)]
+            # ~~> calculates the "vision" angle -- (+):inlet; (-):headland assuming anti-clockwise
+            cosac = getConeAngle( a,b,c )
+            if abs(cosac) < a2 and cosac > 0:
+               if getDistancePointToLine( c,b,a ) < dist or getDistancePointToLine( a,b,c ) < dist:
+                  remo.append(poly[(iline-s)%len(poly):(iline+s)%len(poly)+1])
+                  iline += stencil
+               #   should use split / join
+               #   poly = np.delete(poly,iline%len(line))
+               #   print 'I can delete the following',a,b,c
+               #   sys.exit()
+               #   found += 1
+               #   continue
+            iline += 1
+            #pbar.update(ibar)
+         #pbar.write('Areas of interst found: '+str(found),ibar)
+      #if found == 0: break
+      #pbar.finish()
+
+   return poly,remo
+"""

@@ -80,7 +80,9 @@ class chopSELAFIN(SELAFIN):
       self.NBV1 = NBV1; self.VARNAMES = VARNAMES; self.VARUNITS = VARUNITS
       self.NBV2 = NBV2; self.CLDNAMES = CLDNAMES; self.CLDUNITS = CLDUNITS
 
-   def updateTIMES(self,tfrom,tstep,tstop):
+   def updateTIMES(self,tfrom,tstep,tstop): # /!\ starts from 0!
+      if tfrom > 0: tfrom -= 1
+      if tstop > 0: tstop -= 1
       ltime = len(self.tags['times'])
       if tstop < 0: tstop = max(0,ltime+tstop)
       if tfrom < 0: tfrom = max(0,ltime+tfrom)
@@ -235,7 +237,7 @@ if __name__ == "__main__":
    parser.add_option("-v", "--vars",type="string",dest="xvars",default=None,help="specify which variables should remain (';'-delimited)" )
    # valid for scan and chop
    parser.add_option("-c","--core",action="store_true",dest="core",default=False,help="scan: specify whether to print statistics on the core variables" )
-   parser.add_option("-f", "--from",type="string",dest="tfrom",default="0",help="chop: specify the first frame included" )
+   parser.add_option("-f", "--from",type="string",dest="tfrom",default="1",help="chop: specify the first frame included" )
    parser.add_option("-s", "--stop",type="string",dest="tstop",default="-1",help="chop: specify the last frame included (negative from the end)" )
    parser.add_option("-d", "--step",type="string",dest="tstep",default="1",help="specify the step for the extraction of frames" )
    # valid for chop, alter and merge
@@ -319,7 +321,7 @@ if __name__ == "__main__":
 
       if not options.freplace:
          if len(args) != 3:
-            print '\nThe code "chop" (without --replace) uses a minimum of 2 argumensts, aside from the options\n'
+            print '\nThe code "alter" (without --replace) uses a minimum of 2 argumensts, aside from the options\n'
             parser.print_help()
             sys.exit()
          slfFiles = [ args[1] ]
