@@ -251,16 +251,16 @@
            ENDIF
           ENDDO
          ENDIF
-         IF (LGRAFED) THEN
-            IF (LNG.EQ.1) THEN
-               WRITE(LU, 4000) MASST
-               WRITE(LU, 4010) MASS_GF
-            ENDIF
-            IF (LNG.EQ.2) THEN
-               WRITE(LU, 4001) MASST
-               WRITE(LU, 4011) MASS_GF
-            ENDIF
-         ENDIF
+!        IF (LGRAFED) THEN
+!           IF (LNG.EQ.1) THEN
+!              WRITE(LU, 4000) MASST
+!              WRITE(LU, 4010) MASS_GF
+!           ENDIF
+!           IF (LNG.EQ.2) THEN
+!              WRITE(LU, 4001) MASST
+!              WRITE(LU, 4011) MASS_GF
+!           ENDIF
+!        ENDIF
       ENDIF
 !
 1000  FORMAT(1X,'BILAN DE MASSE : ')

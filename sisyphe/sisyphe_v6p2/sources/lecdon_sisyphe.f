@@ -244,7 +244,7 @@ C     ICM           = MOTINT( ADRESS(1,  1) )
       ICF           = MOTINT( ADRESS(1,  2) )
       NPAS          = MOTINT( ADRESS(1,  3) )
       NMAREE        = MOTINT( ADRESS(1,  4) )
-C     N1            = MOTINT( ADRESS(1,  5) )      NCOUCH_TASS = MOTINT( ADRESS(1,45)   )
+C     N1            = MOTINT( ADRESS(1,  5) )
 
       LEOPR         = MOTINT( ADRESS(1,  6) )
       LISPR         = MOTINT( ADRESS(1,  7) )
@@ -620,8 +620,8 @@ C
 C LOGICALS FOR OUTPUT VARIABLES
 C-----------------------------------------------------------------------
 C
-C     CV ... IF CANNOT FIND ANY BETTER (MOVED HERE BEFORE CALL TO NOMVAR)
-      IF(TASS) NOMBLAY=NCOUCH_TASS
+      NOMBLAY=MAX(NOMBLAY,NCOUCH_TASS)
+      NCOUCH_TASS=NOMBLAY
 C
       CALL NOMVAR_SISYPHE(TEXTE,TEXTPR,MNEMO,NSICLA,UNIT,MAXVAR,
      &                    NPRIV,NOMBLAY)

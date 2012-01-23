@@ -3,7 +3,7 @@
 !                    ********************
 !
      &(ZF,NPOIN,DTS,ELAY,DZF_TASS,T2,LT,AVAIL,NSICLA,ES,XMVS,
-     & XKV,TRANS_MASS,CONC_VASE,NCOUCH_TASS,MS_SABLE,MS_VASE)
+     & XKV,TRANS_MASS,CONC_VASE,NOMBLAY,MS_SABLE,MS_VASE)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -39,7 +39,7 @@
 !| LT             |-->| ITERATION 
 !| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
-!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NOMBLAY        |-->| NUMBER OF LAYERS FOR CONSOLIDATION
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
@@ -50,22 +50,22 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX,NOMBLAY
+      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,          INTENT(IN)    :: NPOIN,NSICLA,LT,NCOUCH_TASS
+      INTEGER,          INTENT(IN)    :: NPOIN,NSICLA,LT,NOMBLAY
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: DZF_TASS,ZF,ELAY,T2
-      DOUBLE PRECISION, INTENT(INOUT) :: MS_SABLE(NPOIN,NCOUCH_TASS)
-      DOUBLE PRECISION, INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
+      DOUBLE PRECISION, INTENT(INOUT) :: MS_SABLE(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT) :: MS_VASE(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(IN)    :: DTS
       DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
-      DOUBLE PRECISION, INTENT(IN)    :: TRANS_MASS(NCOUCH_TASS)
-      DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NCOUCH_TASS)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(IN)    :: TRANS_MASS(NOMBLAY)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NOMBLAY)
       DOUBLE PRECISION, INTENT(IN)    :: XMVS,XKV
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -86,7 +86,7 @@
       DO I=1,NPOIN
 !
         T2%R(I)=0.D0
-        DO J=1,NCOUCH_TASS
+        DO J=1,NOMBLAY
           EPAI_VASE(J)=MS_VASE(I,J)/CONC_VASE(J)
           ES(I,J)=EPAI_VASE(J)
           IF(NSICLA.GT.1) THEN
@@ -96,7 +96,7 @@
           T2%R(I)=T2%R(I)+ES(I,J)
         ENDDO
 !
-        DO J=1,NCOUCH_TASS
+        DO J=1,NOMBLAY
           IF(MS_VASE(I,J).GE.1.D-6) THEN
             TRANSFERT_MASSE_VASE(J)=MIN(MS_VASE(I,J),
      &              MS_VASE(I,J)*DTS*TRANS_MASS(J))
@@ -116,8 +116,8 @@
           ENDIF
         ENDDO
 !
-        DO J=1,NCOUCH_TASS
-          IF(J.EQ.NCOUCH_TASS) THEN
+        DO J=1,NOMBLAY
+          IF(J.EQ.NOMBLAY) THEN
              MS_VASE(I,J)=MAX(0.D0,MS_VASE(I,J)
      &            +TRANSFERT_MASSE_VASE(J-1))
              IF(NSICLA.GT.1) THEN
@@ -143,7 +143,7 @@
 !
         ELAY%R(I)=0.D0
 !
-        DO J=1,NCOUCH_TASS
+        DO J=1,NOMBLAY
           EPAI_VASE(J)=MS_VASE(I,J)/CONC_VASE(J)
           ES(I,J) = EPAI_VASE (J)
           IF(NSICLA.GT.1) THEN
@@ -161,7 +161,7 @@
 !            AND FROM 2 ON: SAND; WHAT ARE WE DOING HERE ??
 !
         IF(NSICLA.GT.1) THEN
-          DO J=1,NCOUCH_TASS
+          DO J=1,NOMBLAY
            IF(ES(I,J).GE.1.D-6) THEN
              AVAIL(I,J,1)=MS_SABLE(I,J)/XMVS/ES(I,J)
              AVAIL(I,J,2)=MS_VASE(I,J)/CONC_VASE(J)/ES(I,J)

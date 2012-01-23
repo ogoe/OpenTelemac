@@ -4,7 +4,7 @@
 !
      &(NSICLA,ELAY,ZF,ZR,NPOIN,AVAIL,FRACSED_GF,AVA0,
      & LGRAFED,CALWC,XMVS,XMVE,GRAV,VCE,XWC,FDM,
-     & CALAC,AC,SEDCO,ES,NCOUCH_TASS,CONC_VASE,
+     & CALAC,AC,SEDCO,ES,NOMBLAY,CONC_VASE,
      & MS_SABLE,MS_VASE,ACLADM,UNLADM,TOCE_SABLE,DEBU)
 !
 !***********************************************************************
@@ -57,7 +57,7 @@
 !| LGRAFED        |-->|(A SUPPRIMER)
 !| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
-!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NOMBLAY        |-->| NUMBER OF BED LAYERS 
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SEDIMENT CLASSES
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
@@ -73,7 +73,7 @@
 
       USE BIEF
       USE INTERFACE_SISYPHE, EX_INIT_SEDIMENT => INIT_SEDIMENT
-      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX,NOMBLAY
+!      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -81,7 +81,7 @@
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
-      INTEGER,           INTENT(IN)     :: NSICLA,NPOIN,NCOUCH_TASS
+      INTEGER,           INTENT(IN)     :: NSICLA,NPOIN,NOMBLAY
       TYPE(BIEF_OBJ),    INTENT(INOUT)  :: ELAY,ZF,ZR
       TYPE(BIEF_OBJ), INTENT(INOUT)     :: MS_SABLE, MS_VASE
       TYPE(BIEF_OBJ),    INTENT(INOUT)  :: ACLADM, UNLADM
@@ -99,8 +99,8 @@ C
 C IF SEDCO(1) OR SEDCO(2) = YES --> CONSOLIDATION MODEL
 C
 C
-      DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NCOUCH_TASS)
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
@@ -127,7 +127,7 @@ C
         ENDDO
 C     PURE MUD ONLY
         IF(SEDCO(1)) CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,
-     &                               ELAY%R,NCOUCH_TASS,CONC_VASE,
+     &                               ELAY%R,NOMBLAY,CONC_VASE,
      &                                  MS_SABLE%R,MS_VASE%R,ZF%R,
      &                                               ZR%R,AVA0,DEBU)
 C
@@ -157,7 +157,7 @@ C        MIXED (so far only 2 classes: NON COHESIVE /COHESIVE)
 C  
           MIXTE=.TRUE.      
           CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,ELAY%R,
-     &                     NCOUCH_TASS,CONC_VASE,MS_SABLE%R,
+     &                     NOMBLAY,CONC_VASE,MS_SABLE%R,
      &                     MS_VASE%R,ZF%R,ZR%R,AVA0,DEBU)
           DO I=1,NPOIN
             ACLADM%R(I) = FDM(1)

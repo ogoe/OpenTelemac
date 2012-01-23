@@ -7,7 +7,7 @@
 ! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
-!brief    DECLARATION OF PRINICIPAL SISYPHE VARIABLES
+!brief    DECLARATION OF PRINCIPAL SISYPHE VARIABLES
 !
 !history  CV
 !+        15/03/2009
@@ -154,68 +154,89 @@ C-----------------------------------------------------------------------
 !     COMPONENTS OF DEPTH-AVERAGED VELOCITY
 !
       TYPE(BIEF_OBJ), TARGET :: U2D,V2D
-!> @brief
-C intensite du courant
+!
+!     FLOW INTENSITY
+!
       TYPE(BIEF_OBJ), TARGET :: UNORM
-!> @brief WATER DEPTH SAVED FOR CONSTANT FLOW DISCHARGE
-C
+!
+!     WATER DEPTH SAVED FOR CONSTANT FLOW DISCHARGE
+!
       TYPE(BIEF_OBJ), TARGET :: HCPL
-!> @brief IMPOSED BED EVOLUTION AT THE BOUNDARY
-C evolution aux points de bord
+!
+!     IMPOSED BED EVOLUTION AT THE BOUNDARY
+!
       TYPE(BIEF_OBJ), TARGET :: EBOR
-!> @brief IMPOSED SOLID TRANSPORT AT THE BOUNDARY
-C
+!
+!     IMPOSED SOLID TRANSPORT AT THE BOUNDARY
+!
       TYPE(BIEF_OBJ), TARGET :: QBOR
-!> @brief ZF VALUES ON BOUNDARIES
-C
+!
+!     ZF VALUES ON BOUNDARIES
+!
       TYPE(BIEF_OBJ), TARGET :: FLBOR
-!> @brief BOTTOM ELEVATION
-C cote du fond
+!
+!     BOTTOM ELEVATION
+!
       TYPE(BIEF_OBJ), TARGET :: ZF
-!> @brief NON ERODABLE (RIGID) BOTTOM ELEVATION
-C
+!
+!     NON ERODABLE (RIGID) BOTTOM ELEVATION
+!
       TYPE(BIEF_OBJ), TARGET :: ZR
-!> @brief REFERENCE ELEVATION
-C
+!
+!     REFERENCE ELEVATION
+!
       TYPE(BIEF_OBJ), TARGET :: ZREF
-!> @brief INTEGRAL OF BASES
-C
+!
+!     INTEGRAL OF BASES
+!
       TYPE(BIEF_OBJ), TARGET :: VOLU2D
-!> @brief INTEGRAL OF BASES IN PARALLEL
-C
+!
+!     INTEGRAL OF BASES IN PARALLEL
+!
       TYPE(BIEF_OBJ), TARGET :: V2DPAR
-!> @brief INVERSE OF INTEGRAL OF BASES
-C
+!
+!     INVERSE OF INTEGRAL OF BASES
+!
       TYPE(BIEF_OBJ), TARGET :: UNSV2D
-!> @brief BOTTOM FRICTION COEFFICIENT (CHEZY, NIKURADSE OR STICKLER)
-C coefficients de frottement sur le  fond (mot cle)
+!
+!     BOTTOM FRICTION COEFFICIENT (CHEZY, NIKURADSE OR STICKLER)
+!
       TYPE(BIEF_OBJ), TARGET :: CHESTR
-!> @brief ANGLE BETWEEN QS AND Q
-C
+!
+!     ANGLE BETWEEN QS AND Q
+!
       TYPE(BIEF_OBJ), TARGET :: CALFA
-!> @brief ANGLE BETWEEN QS AND Q
-C
+!
+!     ANGLE BETWEEN QS AND Q
+!
       TYPE(BIEF_OBJ), TARGET :: SALFA
-!> @brief VOID STRUCTURE
-C
+!
+!     VOID STRUCTURE
+!
       TYPE(BIEF_OBJ), TARGET :: S
-!> @brief MASK
-C
+!
+!     MASK ON POINTS
+!
       TYPE(BIEF_OBJ), TARGET :: MASKPT
-!> @brief MASK
-C
+!
+!     MASK
+!
       TYPE(BIEF_OBJ), TARGET :: MASKTR
-!> @brief MASK
-C
+!
+!     MASK
+!
       TYPE(BIEF_OBJ), TARGET :: MASKB
-!> @brief MASK
-C
+!
+!     MASK
+!
       TYPE(BIEF_OBJ), TARGET :: MASKEL
-!> @brief MASK
-C
+!
+!     MASK
+!
       TYPE(BIEF_OBJ), TARGET :: MSKTMP
-!> @brief WORKING ARRAYS
-C
+!
+!     WORKING ARRAYS
+!
       TYPE(BIEF_OBJ), TARGET :: W1
 C
 C WAVE DATA

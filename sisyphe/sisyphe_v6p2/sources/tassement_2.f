@@ -2,7 +2,7 @@
                          SUBROUTINE TASSEMENT_2
 !                        **********************
 !
-     *(ZF,NPOIN,DTS,ELAY,DZF_TASS,T2,LT,XMVS,XMVE,GRAV,NCOUCH_TASS,
+     *(ZF,NPOIN,DTS,ELAY,DZF_TASS,T2,LT,XMVS,XMVE,GRAV,NOMBLAY,
      * ES,CONC_VASE,MS_VASE,XWC,COEF_N,CONC_GEL,CONC_MAX)
 !
 !***********************************************************************
@@ -12,7 +12,10 @@
 !brief    COMPUTES THE CONSOLIDATION BASED ON GIBSON THEORY
 !+               
 !
-!history  Lan Anh Van (10/01/2011)
+!history  Lan Anh Van (LHSV)
+!+        10/01/2011
+!+        V6P2
+!+   First version in test (not yet called in current version 6.2)  
 !+       
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,7 +30,7 @@
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| LT             |-->| ITERATION 
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
-!| NCOUCH_TASS    |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NOMBLAY        |-->| NUMBER OF LAYERS FOR CONSOLIDATION
 !| NPOIN          |-->| NUMBER OF POINTS
 !| T2             |<->| WORK BIEF_OBJ STRUCTURE
 !| XMVE           |-->| WATER DENSITY
@@ -47,13 +50,13 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER,INTENT(IN)              :: NPOIN
-      INTEGER, INTENT(IN)             :: LT,NCOUCH_TASS
+      INTEGER, INTENT(IN)             :: LT,NOMBLAY
       DOUBLE PRECISION, INTENT(IN)    :: DTS
       DOUBLE PRECISION, INTENT(IN)    :: XMVS,XMVE,GRAV
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: DZF_TASS,ELAY,T2,ZF
-      DOUBLE PRECISION, INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NCOUCH_TASS)
-      DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NCOUCH_TASS)
+      DOUBLE PRECISION, INTENT(INOUT) :: MS_VASE(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NOMBLAY)
       DOUBLE PRECISION, INTENT(IN)    :: XWC
       DOUBLE PRECISION, INTENT(IN)    :: COEF_N,CONC_GEL,CONC_MAX
 !
@@ -74,20 +77,20 @@
 !     ******************************************************************
 !  
         DO I =1,NPOIN 
-        T2%R(I)=0.D0
-          DO J=1,NCOUCH_TASS
+          T2%R(I)=0.D0
+          DO J=1,NOMBLAY
             T2%R(I)=T2%R(I)+ES(I,J)
           ENDDO
 c 
 c        EFFECTIVE STRESS
 c        ------------------------
-          DO J = 1,NCOUCH_TASS
+          DO J = 1,NOMBLAY
             SIG_EFF(J)=119033.d0*(CONC_VASE(J)/XMVS)**14
           ENDDO
 
 c        PERMEABILITY
 c        --------------          
-          DO J=1,NCOUCH_TASS-1
+          DO J=1,NOMBLAY-1
 C        SEDIMENTATION 
              KSED(J)=XWC*(1.D0-CONC_VASE(J)/XMVS)*
      &               (1.D0-(CONC_VASE(J)/CONC_GEL))**COEF_N/
@@ -118,22 +121,22 @@ c      ---------------
           ENDIF
         ENDDO
 C
-          DO J=1,NCOUCH_TASS
+          DO J=1,NOMBLAY
            IF (V_S(J).gt.0.d0) V_S(J) = 0.d0 
           ENDDO
 C
 c        FALLVING VELOCITY AT THE LEVEL OF ZR (AT THE BED)
-            V_S(NCOUCH_TASS) = 0.D0
+            V_S(NOMBLAY) = 0.D0
 C        SEDIMENT FLUX :
 c      ---------------             
-          DO J=NCOUCH_TASS-1,1,-1
+          DO J=NOMBLAY-1,1,-1
             FLUX(J) =
      *      (V_S(J)-V_S(J+1))*CONC_VASE(J+1)*CONC_VASE(J)/
      *            (CONC_VASE(J+1)-CONC_VASE(J)) 
             IF (FLUX(J).gt.0.D0) FLUX(J) = 0.D0
           ENDDO
 c        SEDIMENT FLUX AT THE RIGID BED
-          FLUX(NCOUCH_TASS) = 0.D0
+          FLUX(NOMBLAY) = 0.D0
 c
 c        REDISTRIBUTE THE MASS :
 c        ----------------------------------
@@ -141,7 +144,7 @@ C        RECALCULATE THE FLUX FROM LAYER 1 TO NCOUCH_TASS
           IF ((MS_VASE(I,1)+DTS*FLUX(1)).LT.0.D0) THEN
                 FLUX(1) = -MS_VASE(I,1)/DTS
           ENDIF
-          DO J=2,NCOUCH_TASS
+          DO J=2,NOMBLAY
             IF ((MS_VASE(I,J)-DTS*(FLUX(J-1)-FLUX(J))).LT.0.D0) THEN
                 FLUX(J) = -MS_VASE(I,J)/DTS + FLUX(J-1)
             ENDIF
@@ -149,14 +152,14 @@ C        RECALCULATE THE FLUX FROM LAYER 1 TO NCOUCH_TASS
 C        MASS OF FIRST LAYER        
           MS_VASE(I,1)=MS_VASE(I,1)+DTS*FLUX(1)
 c        MASS OF LAYER 2 TO NCOUCH_TASS                
-          DO J=2,NCOUCH_TASS
+          DO J=2,NOMBLAY
             MS_VASE(I,J) = MS_VASE(I,J) - DTS * (FLUX(J-1)-FLUX(J))
           ENDDO
 C                                                                                                                                                                      
 C        THICKNESSES
           ELAY%R(I)=0.D0        
 C
-          DO J=1,NCOUCH_TASS
+          DO J=1,NOMBLAY
             ES(I,J) = MS_VASE(I,J) / CONC_VASE(J)
             ELAY%R(I)=ELAY%R(I) + ES(I,J)
           ENDDO 

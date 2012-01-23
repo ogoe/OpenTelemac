@@ -155,10 +155,12 @@
         ENDIF
 !
 !       THE FIRST STRATUM IS SEPARATED BETWEEN ACTIVE LAYER + ACTIVE STRATUM
+! CV: NOMBLAY= 2 au moins?
 !
         IF(ELAY0.LT.ES(J,1)) THEN
           NLAYER%I(J) = NLAYER%I(J) + 1
-          IF(NLAYER%I(J).GT.10) THEN
+CV          IF(NLAYER%I(J).GT.10) THEN
+           IF(NLAYER%I(J).GT.NOMBLAY) THEN
             IF(LNG.EQ.1) WRITE(LU,1800)
             IF(LNG.EQ.2) WRITE(LU,1815)
             CALL PLANTE(1)

@@ -3,7 +3,7 @@
 !                    *********************************
 !
      &(TAUP,NPOIN,XMVE,XMVS,GRAV,VITCE,PARTHENIADES,ZERO,DEBUG,
-     & FLUER, ES, TOCE_VASE, NCOUCH_TASS, DT, MS_VASE,TASS)
+     & FLUER, ES, TOCE_VASE, NOMBLAY, DT, MS_VASE,TASS)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -38,7 +38,7 @@
 !| FLUER          |<->| EROSION RATE
 !| GRAV           |-->| GRAVITY ACCELERATION
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (not modified here)
-!| NCOUCH_TASS    |-->| NUMBER OF LAYERS OF THE CONSOLIDATION MODEL
+!| NOMBLAY        |-->| NUMBER OF LAYERS OF THE CONSOLIDATION MODEL
 !| NPOIN          |-->| NUMBER OF POINTS
 !| PARTHENIADES   |-->| PARTHENIADES CONSTANT (M/S)
 !| TASS           |-->| A SUPPRIMER
@@ -54,21 +54,22 @@
      &                          SUSPENSION_EROSION_COH
       USE BIEF
       USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,          INTENT(IN)    :: NCOUCH_TASS
+      INTEGER,          INTENT(IN)    :: NOMBLAY
       INTEGER,          INTENT(IN)    :: NPOIN,DEBUG
       DOUBLE PRECISION, INTENT(IN)    :: XMVE,XMVS,GRAV
       DOUBLE PRECISION, INTENT(IN)    :: VITCE
       DOUBLE PRECISION, INTENT(IN)    :: ZERO,PARTHENIADES
 ! FOR CONSOLIDATION
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
-      DOUBLE PRECISION, INTENT(IN)     :: TOCE_VASE(NCOUCH_TASS), DT
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
+      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(IN)     :: TOCE_VASE(NOMBLAY), DT
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUER
       TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP
 !
@@ -88,7 +89,7 @@
       ! IA - FORMULATION FOR COHESIVE SEDIMENTS            !
       !      (WITHOUT CONSOLIDATION: UNIFORM SEDIMENT BED) !                                   !
       ! ******************************************* *****  !
-      IF(NCOUCH_TASS.EQ.1) THEN
+      IF(NOMBLAY.EQ.1) THEN
         DO I = 1, NPOIN
           USTARP =SQRT(TAUP%R(I)/XMVE)
           IF(VITCE.GT.1.D-8) THEN
@@ -106,7 +107,7 @@
 !      BEWARE: HERE PARTHENIADES IS IN M/S 
         DO I=1,NPOIN
 !
-          DO J=1,NCOUCH_TASS
+          DO J=1,NOMBLAY
             IF(TAUP%R(I).GT.TOCE_VASE(J))THEN
               FLUER_LOC(J)=PARTHENIADES*
      &              ((TAUP%R(I)/MAX(TOCE_VASE(J),1.D-08))-1.D0)
@@ -117,7 +118,7 @@
           QER_VASE = 0.D0
           TEMPS= DT
 !
-          DO J= 1, NCOUCH_TASS
+          DO J= 1, NOMBLAY
             IF(ES(I,J).GE.1.D-6) THEN
 !             COMPUTES THE MASS POTENTIALLY ERODABLE IN LAYER J (KG/M2)
               QE_COUCHE = FLUER_LOC(J) *XMVS * TEMPS

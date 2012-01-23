@@ -32,13 +32,13 @@
 !+        V6P0
 !+   CASE WITH DEPOSITION REWRITTEN, TESTS CHANGED.
 !
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!history  N. DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
 !+   Translation of French comments within the FORTRAN sources into
 !+   English comments
 !
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!history  N. DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
@@ -50,13 +50,14 @@
 !+   One bug corrected in case of restart, and a formula made clearer
 !+   Look for 12/04/2011...
 !
-!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!history  C. VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
 !+ 
-!history  C.VILLARET (EDF-LNHE)
-!+        18/021
+!history  C. VILLARET (EDF-LNHE)
+!+        18/01/2012
+!+        V6P1
 !+  Dimension 10 of AVAIL changed into NOMBLAY    
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,7 +82,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE , ONLY : NLAYMAX,NOMBLAY
+      USE DECLARATIONS_SISYPHE , ONLY : NOMBLAY
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -95,7 +96,7 @@
       LOGICAL,          INTENT(IN)    :: CONST_ALAYER
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: NLAYER,ESTRAT,ELAY
       DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
-      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
       DOUBLE PRECISION, INTENT(INOUT) :: VOLTOT(NSICLA),ESTRATNEW(NPOIN)
       INTEGER         , INTENT(INOUT) :: NLAYNEW(NPOIN)

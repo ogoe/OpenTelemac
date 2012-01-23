@@ -258,7 +258,7 @@ C     FOR MIXED SEDIMENTS
       ! V - BLOCK OF ARRAYS !
       ! ******************* !
       ALLOCATE(AVAIL(NPOIN,NOMBLAY,NSICLA)) ! FRACTION OF EACH CLASS FOR EACH LAYER
-      ALLOCATE(ES(NPOIN,NLAYMAX))           ! THICKNESS OF EACH CLASS
+      ALLOCATE(ES(NPOIN,NOMBLAY))           ! THICKNESS OF EACH CLASS
 
       !================================================================!
       CALL ALLBLO(MASKTR, 'MASKTR') ! MASK OF THE BOUNDARY CONDITIONS

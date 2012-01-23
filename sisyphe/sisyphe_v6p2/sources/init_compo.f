@@ -74,11 +74,10 @@
 !
 !       BY DEFAULT : UNIFORM BED COMPOSITION
 !
-          NCOUCHES(J) = 1
-          DO I = 1, NSICLA
-            AVAIL(J,1,I) = AVA0(I)
-            AVAIL(J,2,I) = AVA0(I)
-          ENDDO
+        NCOUCHES(J) = 1
+        DO I = 1, NSICLA
+          AVAIL(J,1,I) = AVA0(I)
+        ENDDO
 !
 !  TO BE FILLED BY THE USER
 !      NCOUCHES(J) = 10

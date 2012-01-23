@@ -3,7 +3,7 @@
 !                    **************************
 !
      &(ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES,
-     & CONC_VASE,NCOUCH_TASS)
+     & CONC_VASE,NOMBLAY)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -41,7 +41,7 @@
 !| FLUDP          |<->| DEPOSITION FLUX
 !| FLUER          |<->| EROSION FLUX
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
-!| NCOUCH_TASS    |-->| NUMBER OF VERTICAL BED LAYERS
+!| NOMBLAY    |-->| NUMBER OF VERTICAL BED LAYERS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| QFLUX          |---| NET EROSION MINUS DEPOSITION RATE
 !| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
@@ -50,17 +50,16 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
       ! 2/ GLOBAL VARIABLES
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: ZFCL_S,FLUDP,FLUER,QFLUX
       DOUBLE PRECISION, INTENT(IN)    :: DT, XMVS
-      INTEGER, INTENT(IN) :: NPOIN,NCOUCH_TASS
-      DOUBLE PRECISION, INTENT(IN) :: CONC_VASE(NCOUCH_TASS)
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NCOUCH_TASS)
-      DOUBLE PRECISION,  INTENT(INOUT) :: ES(NPOIN,NLAYMAX)
+      INTEGER, INTENT(IN) :: NPOIN,NOMBLAY
+      DOUBLE PRECISION, INTENT(IN) :: CONC_VASE(NOMBLAY)
+      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NOMBLAY)
+      DOUBLE PRECISION,  INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
 !
       ! 3/ LOCAL VARIABLES
       ! ------------------
@@ -83,7 +82,7 @@
            CALL OS('X=CX    ', X=QFLUX, C=DT)
            CALL OS('X=CX    ', X=QFLUX, C=XMVS)
 C
-         IF(NCOUCH_TASS.EQ.1)  THEN
+         IF(NOMBLAY.EQ.1)  THEN
               CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX, 
      &             C=1.D0/CONC_VASE(1))
 !
@@ -106,7 +105,7 @@ C
                 ZFCL_S%R(I) = 0.D0
                 MER = - QFLUX%R(I)
 !
-                DO J = 1, NCOUCH_TASS
+                DO J = 1, NOMBLAY
 !
 ! CONC ARE IN KG/M3
 !
