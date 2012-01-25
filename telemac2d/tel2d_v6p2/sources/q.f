@@ -5,7 +5,7 @@
      &( I )
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    PRESCRIBES THE DISCHARGE FOR FLOW IMPOSED
@@ -28,6 +28,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification of FCT size due to modification of TRACER numbering
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,11 +52,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER N
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      LOGICAL,SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
@@ -69,13 +73,13 @@
       IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
-        FCT(1:2)='Q('
+        FCT='Q(       '
         IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
-          FCT(4:8)=')    '
+          FCT(4:4)=')'
         ELSEIF(I.LT.100) THEN
           WRITE(FCT(3:4),FMT='(I2)') I
-          FCT(5:8)=')   '
+          FCT(5:5)=')'
         ELSE
           WRITE(LU,*) 'Q NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)

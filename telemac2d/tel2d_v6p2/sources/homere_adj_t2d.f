@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) ACQUIRES THE DATA NECESSARY TO DEFINE THE POINTERS:
@@ -293,7 +293,7 @@
      &14X,'  T    E      L      E      M   M  A   A  C    ',/,
      &14X,'  T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
      &14X,'                                               ',/,
-     &14X,'        2D    VERSION 6.0     FORTRAN 90       ',/,
+     &14X,'        2D    VERSION 6.2     FORTRAN 90       ',/,
      &14X,'                                               ',/,
      &14X,'DIRECT MODE DIRECT MODE DIRECT MODE DIRECT MODE',/,
      &14X,/////)
@@ -515,7 +515,7 @@
      &14X,'  T    E      L      E      M   M  A   A  C    ',/,
      &14X,'  T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
      &14X,'                                               ',/,
-     &14X,'        2D    VERSION 6.0     FORTRAN 90       ',/,
+     &14X,'        2D    VERSION 6.2     FORTRAN 90       ',/,
      &14X,'                                               ',/,
      &14X,' ADJOINT MODE ADJOINT MODE ADJOINT MODE ADJOINT',/,
      &14X,/////)

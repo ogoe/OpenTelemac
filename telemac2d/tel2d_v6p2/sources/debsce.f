@@ -80,13 +80,13 @@
       IF(OK(I).AND.T2D_FILES(T2DVEF)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE Q(1), Q(2), ETC, Q(99), DEPENDING ON I
-        FCT(1:2)='Q('
+        FCT='Q(       '
         IF(I.LT.10) THEN
           WRITE(FCT(3:3),FMT='(I1)') I
-          FCT(4:8)=')    '
+          FCT(4:4)=')'
         ELSEIF(I.LT.100) THEN
           WRITE(FCT(3:4),FMT='(I2)') I
-          FCT(5:8)=')   '
+          FCT(5:5)=')'
         ELSE
           WRITE(LU,*) 'DEBSCE NOT PROGRAMMED FOR MORE THAN 99 SOURCES'
           CALL PLANTE(1)

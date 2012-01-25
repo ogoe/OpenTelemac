@@ -1,11 +1,11 @@
-C                       **********************
+!                       **********************
                         SUBROUTINE FLU_ZOKAGOA
-C                       **********************
+!                       **********************
 
-     *(H1,H2,ETA1,ETA2,U1,U2,V1,V2,XNN,YNN,FLXI,FLXJ,G)
+     &(H1,H2,ETA1,ETA2,U1,U2,V1,V2,XNN,YNN,FLXI,FLXJ,G)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.1                                     03/15/2011
+! TELEMAC 2D VERSION 6.2                                     03/15/2011
 !***********************************************************************
 !
 !brief  COMPUTES ZOKAGOA FLUX AT THE INERNAL INTERFACES 
@@ -13,7 +13,7 @@ C                       **********************
 !             OVER COMPLEX TOPOGRAPHIES" CMAME 199(2010) PP 2281-2304 
 !
 !history  R. ATA (EDF-LNHE)
-!+
+!+        06/01/2012
 !+        V6P1
 !+
 !
@@ -42,31 +42,26 @@ C                       **********************
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSG,J,IVAR,IS,K,ILIM    
+      INTEGER IVAR ,CHOICE_D  
 !
-      DOUBLE PRECISION VNX,VNY,VNL,ZF1,ZF2
-      DOUBLE PRECISION FLUIJ_20
-      DOUBLE PRECISION SIGMAX,UNORM
+      DOUBLE PRECISION ZF1,ZF2
 !
-      INTEGER CHOICE_D
-      DOUBLE PRECISION GSUR2,DIJS2
-      DOUBLE PRECISION ALPHA,FLUIJ_1,EPS
-      DOUBLE PRECISION UI,UJ,VI,VJ
+      DOUBLE PRECISION GSUR2,ALPHA,FLUIJ_1,EPS,UI,UJ,VI,VJ
       DOUBLE PRECISION U_IJ,D_IJ,C_IJ,C_I,C_J,UI0,UJ0
-      DOUBLE PRECISION FLUIJ_2I,FLUIJ_2J
-      DOUBLE PRECISION FLUIJ_3,FLUIJ_3I,FLUIJ_3J
+      DOUBLE PRECISION FLUIJ_2I,FLUIJ_2J,FLUIJ_3,DIJS2,FLUIJ_20
+      DOUBLE PRECISION FLUIJ_3I,FLUIJ_3J
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
       ALPHA=1.D0
       CHOICE_D=1
       EPS=1.E-6
-      GSUR2=G/2.0D0
+      GSUR2=G/2.D0
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
 !     INITIALIZATION OF FLXI AND FLXJ
-! 
+!
       DO IVAR=1,3
         FLXI(IVAR) = 0.D0
         FLXJ(IVAR) = 0.D0
@@ -79,14 +74,14 @@ C                       **********************
       ZF1   =    ETA1-H1
       ZF2   =    ETA2-H2
 !
-!     VELOCITIES
+! VELOCITIES
 !
       UI=U1
       VI=V1
       UJ=U2
       VJ=V2
 !
-!     ROTATION
+! ROTATION
 !
       UI0 = UI
       UI  = XNN*UI0+YNN*VI
@@ -96,9 +91,9 @@ C                       **********************
       UJ  = XNN*UJ0+YNN*VJ
       VJ  =-YNN*UJ0+XNN*VJ
 !
-!     WET/DRY TREATMENT
+! WET/DRY TREATMENT
 !
-      CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
+!     CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
 !
 !     LET'S COMPUTE D_IJ
 !
@@ -131,20 +126,19 @@ C                       **********************
 !
       ENDIF
 
-5000  CONTINUE
 !
-!     CENTERED FLUX COMPUTATION
+! CENTERED FLUX COMPUTATION
 !
-!     ZOKAOA FLUX
+! ZOKAGOA FLUX
 !
       FLUIJ_1 = 0.5D0*(H1*UI+H2*UJ) 
       FLUIJ_2I= 0.5D0*(H1*(UI*UI)+H2*(UJ*UJ) +
-     &               GSUR2*((ETA1*ETA1)+(ETA2*ETA2))-
-     &               G*ZF1*(ETA1+ETA2) )
+     &          GSUR2*((ETA1*ETA1)+(ETA2*ETA2))-
+     &          G*ZF1*(ETA1+ETA2) )
       FLUIJ_2J= FLUIJ_2I+GSUR2*(ETA1+ETA2)*(ZF1-ZF2) 
       FLUIJ_3 = 0.5D0*(H1*UI*VI+H2*UJ*VJ) 
 !
-!     UPWIND ADDING
+! UPWIND ADDING
 ! 
       DIJS2=0.5D0*D_IJ
       FLUIJ_1  = FLUIJ_1 - DIJS2*(ETA2-ETA1)
@@ -152,7 +146,7 @@ C                       **********************
       FLUIJ_2J = FLUIJ_2J- DIJS2*(H2*UJ-H1*UI)
       FLUIJ_3  = FLUIJ_3 - DIJS2*(H2*VJ-H1*VI)
 !
-!     INVERSE ROTATION
+! INVERSE ROTATION
 !
       FLUIJ_20  = FLUIJ_2I
       FLUIJ_3I  = FLUIJ_3
@@ -164,7 +158,7 @@ C                       **********************
       FLUIJ_2J  = XNN*FLUIJ_20-YNN*FLUIJ_3J
       FLUIJ_3J  = YNN*FLUIJ_20+XNN*FLUIJ_3J
 !
-!     FINAL FLUX 
+! FINAL FLUX 
 !
       FLXI(1) =  FLUIJ_1
       FLXI(2) =  FLUIJ_2I 
@@ -173,8 +167,6 @@ C                       **********************
       FLXJ(1) =  FLUIJ_1
       FLXJ(2) =  FLUIJ_2J 
       FLXJ(3) =  FLUIJ_3J 
-!
-5500  CONTINUE
 !
 !-----------------------------------------------------------------------
 !

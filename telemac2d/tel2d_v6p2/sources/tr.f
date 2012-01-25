@@ -5,7 +5,7 @@
      &( I , ITRAC , N , IERR )
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    PRESCRIBES THE TRACER VALUES FOR TRACER IMPOSED
@@ -27,6 +27,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification size FCT and OK due to modification of TRACER
+!+    numbering TRACER is now identified by 2 values (Ifront, Itracer)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| BOUNDARY RANK
@@ -51,11 +57,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
-      INTEGER J,IRANK
-      LOGICAL DEJA,OK(MAXFRO*MAXTRA)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      CHARACTER*9 FCT
+      INTEGER J,K,IRANK
+      LOGICAL, SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXFRO,MAXTRA), SAVE :: OK
 !
 !     A PRIORI ASSUMES THAT TR WILL BE FOUND
 !
@@ -64,8 +69,10 @@
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
       IF(.NOT.DEJA) THEN
-        DO J=1,MAXFRO
-          OK(J)=.TRUE.
+        DO K=1, MAXTRA
+           DO J=1,MAXFRO
+              OK(J,K)=.TRUE.
+           ENDDO
         ENDDO
         DEJA=.TRUE.
       ENDIF
@@ -75,24 +82,40 @@
 !                      IF  NO, OK SET     TO .FALSE.
 !     RANK OF VALUE IN ARRAY TRACER OR IN LIQUID BOUNDARY FILE
 !
-      IRANK=ITRAC+(I-1)*NTRAC
-      IF(OK(IRANK).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
+      IF(OK(I,ITRAC).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
-!       FCT WILL BE TR(1), TR(2), ETC, TR(99), DEPENDING ON I
-        FCT(1:3)='TR('
-        IF(IRANK.LT.10) THEN
-          WRITE(FCT(4:4),FMT='(I1)') IRANK
-          FCT(5:8)=')   '
-        ELSEIF(IRANK.LT.100) THEN
-          WRITE(FCT(4:5),FMT='(I2)') IRANK
-          FCT(6:8)=')  '
+!       FCT WILL BE TR(I,ITRAC)
+        FCT='TR(      '
+        IRANK=4
+        IF(I.LT.10) THEN
+          WRITE(FCT(IRANK:IRANK),FMT='(I1)') I
+          IRANK=IRANK+1
+          FCT(IRANK:IRANK)=','
+        ELSEIF(I.LT.100) THEN
+          WRITE(FCT(IRANK:IRANK+1),FMT='(I2)') I
+          IRANK=IRANK+2
+          FCT(IRANK:IRANK)=','
         ELSE
           WRITE(LU,*) 'TR NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)
           STOP
         ENDIF
+        IRANK=IRANK+1
+        IF(ITRAC.LT.10) THEN
+          WRITE(FCT(IRANK:IRANK),FMT='(I1)') ITRAC
+          IRANK=IRANK+1
+          FCT(IRANK:IRANK)=')'
+        ELSEIF(ITRAC.LT.100) THEN
+          WRITE(FCT(IRANK:IRANK+1),FMT='(I2)') ITRAC
+          IRANK=IRANK+2
+          FCT(IRANK:IRANK)=')'
+        ELSE ! Probably unused because ntrac<maxtrac
+          WRITE(LU,*) 'TRSCE NOT PROGRAMMED FOR MORE THAN 99 TRACERS'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         CALL READ_FIC_FRLIQ(TR,FCT,AT,T2D_FILES(T2DIMP)%LU,
-     &                      ENTET,OK(IRANK))
+     &                      ENTET,OK(I,ITRAC))
 !
       ENDIF
 !
@@ -100,11 +123,12 @@
 !     OR IF THERE IS NO LIQUID BOUNDARY FILE
 !     ATTEMPTS TO FIND IT IN THE STEERING FILE
 !
-      IF(.NOT.OK(IRANK).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
+      IF(.NOT.OK(I,ITRAC).OR.T2D_FILES(T2DIMP)%NAME(1:1).EQ.' ') THEN
 !
+        IRANK=ITRAC+(I-1)*NTRAC
         IF(NTRACE.GE.IRANK) THEN
           TR = TRACER(IRANK)
-          OK(IRANK)=.TRUE.
+          OK(I,ITRAC)=.TRUE.
         ELSEIF(NTRACE.NE.0) THEN
           IF(LNG.EQ.1) WRITE(LU,300) IRANK
 300       FORMAT(1X,/,1X,'TR : VALEURS IMPOSEES DU TRACEUR'
@@ -124,7 +148,7 @@
 !
 !     NOTHING FOUND: VALUES WILL BE TAKEN FROM BOUNDARY CONDITION FILE
 !
-      IF(.NOT.OK(IRANK)) THEN
+      IF(.NOT.OK(I,ITRAC)) THEN
         TR=0.D0
         IERR=1
       ENDIF

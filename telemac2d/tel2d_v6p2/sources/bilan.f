@@ -3,10 +3,10 @@
 !                    ****************
 !
      &(MESH,H,WORK,MASK,AT,DT,LT,NIT,INFO,MASSES,MSK,MASKEL,EQUA,POROS,
-     & OPTBAN,NPTFR,FLBOR,FLUX_BOUNDARIES,NUMLIQ,NFRLIQ)
+     & OPTBAN,NPTFR,FLBOR,FLUX_BOUNDARIES,NUMLIQ,NFRLIQ,GAMMA)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALCULATES THE BALANCE OF THE MASS OF WATER.
@@ -32,6 +32,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+! history R. ATA(LNHE)
+!         06/01/2012 
+!         V6P0
+!     ADAPTATION FOR FV
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
@@ -56,6 +60,7 @@
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !| POROS          |-->| POROSITY, PER ELEMENT.
 !| WORK           |-->| WORK ARRAY
+!| GAMMA          |-->| NEWMARK COEFFICIENT FOR TIME INTEGRATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -76,7 +81,7 @@
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: WORK,FLBOR
       TYPE(BIEF_OBJ), INTENT(IN)     :: H,MASKEL,POROS,MASK
-      DOUBLE PRECISION, INTENT(IN)   :: AT,DT
+      DOUBLE PRECISION, INTENT(IN)   :: AT,DT,GAMMA
       DOUBLE PRECISION, INTENT(INOUT):: MASSES,FLUX_BOUNDARIES(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -89,9 +94,10 @@
       DOUBLE PRECISION ERREUR,FLUX1,PERDUE,DENOM
       DOUBLE PRECISION MASSE0,MASSE1,MASSE2,MASENT,RELATI,MASSET
 !
+      DOUBLE PRECISION FLUX1_OLD,CONTRIB
       INTRINSIC ABS
 !
-      SAVE MASSE0,MASSE1,MASSE2,MASENT,MASSET
+      SAVE MASSE0,MASSE1,MASSE2,MASENT,MASSET,FLUX1_OLD
 !
 !-----------------------------------------------------------------------
 !
@@ -119,6 +125,7 @@
         MASSE1 = MASSE2
         MASENT = 0.D0
         MASSET = 0.D0
+        FLUX1_OLD = 0.D0
 !
 !       FOR THE FIRST CALL, RETURN HERE
 !
@@ -176,13 +183,23 @@
 !
 !=======================================================================
 !
-      MASENT = MASENT - FLUX1*DT
+      IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
+         CONTRIB = DT*( (1-GAMMA)*FLUX1_OLD + GAMMA*FLUX1)
+         MASENT = MASENT - CONTRIB
+      ELSE 
+         MASENT = MASENT - FLUX1*DT
+      ENDIF
 !
 !=======================================================================
 !
-!   CALCULATES THE ERROR ON THE MASS FOR THIS TIME STEP
+!   COMPUTES ERROR FOR THIS TIME STEP
 !
-      ERREUR = MASSE1 + MASSES - MASSE2 - DT*FLUX1
+      IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
+         ERREUR = MASSE1 + MASSES - MASSE2 - CONTRIB
+         FLUX1_OLD = FLUX1
+      ELSE
+         ERREUR = MASSE1 + MASSES - MASSE2 - DT*FLUX1
+      ENDIF
 !
 !=======================================================================
 !

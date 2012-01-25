@@ -5,7 +5,7 @@
      &( I , N )
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    PRESCRIBES THE VELOCITY FOR VEL IMPOSED LIQUID BOUNDARIES.
@@ -27,6 +27,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification size FCT due to modification of TRACER numbering
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF LIQUID BOUNDARY
 !| N              |-->| GLOBAL NUMBER OF POINT
@@ -47,11 +52,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER J
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      LOGICAL, SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
@@ -69,13 +73,13 @@
       IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE VIT(1), VIT(2), ETC, VIT(99), DEPENDING ON I
-        FCT(1:4)='VIT('
+        FCT='VIT(     '
         IF(I.LT.10) THEN
           WRITE(FCT(5:5),FMT='(I1)') I
-          FCT(6:8)=')  '
+          FCT(6:6)=')'
         ELSEIF(I.LT.100) THEN
           WRITE(FCT(5:6),FMT='(I2)') I
-          FCT(7:8)=') '
+          FCT(7:7)=')'
         ELSE
           STOP 'VIT NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
         ENDIF

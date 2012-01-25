@@ -3,17 +3,18 @@
 !                       ****************
 !  
      &(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
-     & HN,QU,QV,LT,GAMMA,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU)
+     & HN,QU,QV,LT,GAMMA,
+     & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                         03/15/2011
+! TELEMAC2D   V6P2                                         03/15/2011
 !***********************************************************************
 !
 !brief      TIME INTEGRATION WITH NEWMARK SCHEME:
-!+          U_(N+1)=U_N + DT*( (1-GAMMA)ACC_N +GAMMA*ACC_(N+1))
-!+      ACC: IS THE ACCELERATION (FLUX BALANCE FOR FV)
-!+      FOR GAMMA=0.5 THE SCHEME IS SECOND ORDER ACCURATE
-!+      FOR GAMMA=1.0 THE SCHEME IS EULER EXPLICIT (FIRST ORDER)
+!+           U_(N+1)=U_N + DT*( (1-GAMMA)ACC_N +GAMMA*ACC_(N+1))
+!+       ACC: IS THE ACCELERATION (FLUX BALANCE FOR FV)
+!+       FOR GAMMA=0.5 THE SCHEME IS SECOND ORDER ACCURATE
+!+       FOR GAMMA=1.0 THE SCHEME IS EULER EXPLICIT (FIRST ORDER)
 !
 !
 !history  R. ATA (EDF-LNHE)
@@ -67,46 +68,97 @@
 ! 
       DOUBLE PRECISION FACT,UNMGAMMA
       DOUBLE PRECISION, PARAMETER :: G = 9.81D0
-
+!
 !=======================
+!---- TEST FOR DT
+!=======================
+!
+      IF(DT.LE.0.D0) THEN
+        WRITE(LU,*)'*********************************************'
+        WRITE(LU,*)'          WARNING: TIME STEP =0'
+        WRITE(LU,*)'          WE ARE IN MAJZZ...'
+        WRITE(LU,*)'*********************************************'  
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!++++++++++++++++++++++++++++++++++++
+! TIME INTEGRATION
+!++++++++++++++++++++++++++++++++++++
+!
+      IF(GAMMA.EQ.1.D0) THEN
+!
+!==========================
+!---- EULER EXPLICIT SCHEME
+!==========================
+!
+        DO I=1,NPOIN
+          FACT=DT/AIRS(I)
+          W(1,I) = HN(I) + FACT * ( FLUX(I,1)+SMH(I) ) 
+          W(2,I) = QU(I) + FACT * FLUX (I,2)
+          W(3,I) = QV(I) + FACT * FLUX (I,3)     
+        ENDDO
+!
+      ELSEIF(GAMMA.GE.0.D0.AND.GAMMA.LT.1.D0) THEN
+!
+!==========================
 !---- NEWMARK SCHEME
-!=======================
+!==========================
 ! 
-      UNMGAMMA = 1.0D0-GAMMA
-!  - FOR GAMMA=0.5, THIS CHOICE GIVES ORDER 2 ACCURACY AND
-!     THE SCHEME IS UNCONDITIALLY STABLE
-!  - FOR USER WHO PREFERS (EULER) EXPLICIT SCHEME,
-!     YOU HAVE TO PUT GAMMA=1  
-      DO I=1,NPOIN
-        FACT=DT/AIRS(I)
-        !--- FIRST TIME STEP
-        IF (LT.EQ.1)THEN
-           W(1,I) = HN(I) + FACT * ( FLUX(I,1)+SMH(I) ) 
-           W(2,I) = QU(I) + FACT * FLUX (I,2)
-           W(3,I) = QV(I) + FACT * FLUX (I,3)
-        ELSE
-           W(1,I) = HN(I) + FACT * (UNMGAMMA*FLUX_OLD(I,1) + 
-     &                             GAMMA*FLUX(I,1)+SMH(I))
-           W(2,I) = QU(I) + FACT * (UNMGAMMA*FLUX_OLD(I,2) + 
+        UNMGAMMA = 1.D0-GAMMA
+!
+!       - FOR GAMMA=0.5, THIS CHOICE GIVES ORDER 2 ACCURACY AND
+!         THE SCHEME IS UNCONDITIALLY STABLE
+!       - FOR USER WHO PREFERS (EULER) EXPLICIT SCHEME,
+!         YOU HAVE TO PUT GAMMA=1  
+        DO I=1,NPOIN
+          FACT=DT/AIRS(I)
+          !--- FIRST TIME STEP
+          IF(LT.EQ.1)THEN
+            W(1,I) = HN(I) + FACT * ( FLUX(I,1)+SMH(I) ) 
+            W(2,I) = QU(I) + FACT * FLUX (I,2)
+            W(3,I) = QV(I) + FACT * FLUX (I,3)
+          ELSE
+            W(1,I) = HN(I) + FACT * (UNMGAMMA*FLUX_OLD(I,1) + 
+     &                              GAMMA*FLUX(I,1)+SMH(I))
+            W(2,I) = QU(I) + FACT * (UNMGAMMA*FLUX_OLD(I,2) + 
      &                             GAMMA*FLUX(I,2))
-           W(3,I) = QV(I) + FACT * (UNMGAMMA*FLUX_OLD(I,3) + 
+            W(3,I) = QV(I) + FACT * (UNMGAMMA*FLUX_OLD(I,3) + 
      &                             GAMMA*FLUX(I,3))
+          ENDIF
+        ENDDO
+!
+      ELSE
+        IF(LNG.EQ.1) THEN
+           WRITE(LU,*) 'MAJZZ: ERREUR: COEFFICIENT DE NEWMARK DOIT ...'
+           WRITE(LU,*) '... ETRE ENTRE 0 ET 1: ',GAMMA
+        ELSEIF(LNG.EQ.2) THEN 
+           WRITE(LU,*) 'MAJZZ: ERROR:NEMARK COEFFICIENT MUST...'
+           WRITE(LU,*) '... BE BETWEEN 0 AND 1: ',GAMMA
         ENDIF
-      ENDDO
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 
 100   CONTINUE
-!   PROJECTION ON THE SLIPPING BOUNDARY CONDITIONS
-!   **********************************************
+!
+!     PROJECTION ON THE SLIPPING BOUNDARY CONDITIONS
+!     **********************************************
+!
       CALL CDLPROJ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,W)
 !
-!      DO I =1,NPOIN
-!        IF(W(1,I).LE.1.D-12) W(1,I)=0.D0
-!        IF(ABS(W(2,I)).LE.1.D-12) W(2,I)=0.D0
-!        IF(ABS(W(3,I)).LE.1.D-12) W(3,I)=0.D0
-!      ENDDO
+      DO I =1,NPOIN
+        IF(W(1,I).LE.1.D-12) W(1,I)=0.D0
+        IF(ABS(W(2,I)).LE.1.D-12) W(2,I)=0.D0
+        IF(ABS(W(3,I)).LE.1.D-12) W(3,I)=0.D0
+      ENDDO
+!
 !     SEMI IMPLICIT FRICTION INTRODUCTION
 !     ***********************************
-      IF (KFROT.NE.0) CALL FRICTION(NPOIN,G,DT,W,HN,QU,QV,CF)
+!
+      IF(KFROT.NE.0) CALL FRICTION(NPOIN,G,DT,W,HN,QU,QV,CF)
+! 
+!-----------------------------------------------------------------------
 !
       RETURN
       END

@@ -2,7 +2,7 @@
                         SUBROUTINE FLUXZZ
 !                      *******************
 
-     *(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
+     &(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
 !
 !***********************************************************************
 ! TELEMAC-2D VERSION 6.1                                     03/15/2011
@@ -44,7 +44,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG),AIRS(*)
       DOUBLE PRECISION, INTENT(IN)    :: G,W(3,NS)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3)
-!***********************************************************************
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -133,18 +132,18 @@
 !        AT LEAST ONE WET CELL
         IF(IDRY.LT.2)THEN
            CALL FLU_ZOKAGOA(H1,H2,ETA1,ETA2,V21,V22,
-     &                      V31,V32,XNN,YNN,FLXI,FLXJ,G)
-        ENDIF 
+     &                      V31,V32,XNN,YNN,FLXI,FLXJ,G) 
 !
 ! FLUX INCREMENT
 !
-         CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLXI(1)
-         CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLXI(2) 
-         CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLXI(3) 
+           CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLXI(1)
+           CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLXI(2) 
+           CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLXI(3) 
 !
-         CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLXJ(1)
-         CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLXJ(2) 
-         CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLXJ(3) 
+           CE(NUBO2,1) = CE(NUBO2,1) + RNN*FLXJ(1)
+           CE(NUBO2,2) = CE(NUBO2,2) + RNN*FLXJ(2) 
+           CE(NUBO2,3) = CE(NUBO2,3) + RNN*FLXJ(3) 
+        ENDIF
 !
 5500   CONTINUE
 !

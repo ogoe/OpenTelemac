@@ -5,7 +5,7 @@
      &(H1,H2,ETA1,ETA2,U1,U2,V1,V2,XNN,YNN,FLXI,FLXJ,G,EPS)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.1                                     03/15/2011
+! TELEMAC 2D VERSION 6.2                                     03/15/2011
 !***********************************************************************
 !
 !brief  COMPUTES TCHAMEN FLUX AT THE INERNAL INTERFACES 
@@ -42,7 +42,7 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSG,J,IVAR,IS,K,ILIM    
+      INTEGER NSG,J,IVAR,IS,K,ILIM 
 !
       DOUBLE PRECISION VNX,VNY,VNL,ZF1,ZF2
       DOUBLE PRECISION FLUIJ_20
@@ -56,16 +56,16 @@
       DOUBLE PRECISION FLUIJ_2I,FLUIJ_2J
       DOUBLE PRECISION FLUIJ_3,FLUIJ_3I,FLUIJ_3J
 !
-!----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 ! 
       ALPHA=1.D0
       CHOICE_D=2
-      GSUR2=G/2.0D0
+      GSUR2=G/2.D0
 !
-!----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-!     INITIALIZATION OF FLXI AND FLXJ
-! 
+!     INITIALIZATION OF FLXI AND FLXJ 
+!
       DO IVAR=1,3
         FLXI(IVAR) = 0.D0
         FLXJ(IVAR) = 0.D0
@@ -85,7 +85,7 @@
       UJ=U2
       VJ=V2
 !
-!     ROTATION
+! ROTATION
 !
       UI0 = UI
       UI  = XNN*UI0+YNN*VI
@@ -95,9 +95,10 @@
       UJ  = XNN*UJ0+YNN*VJ
       VJ  =-YNN*UJ0+XNN*VJ
 !
-!     WET/DRY TREATMENT
+! WET/DRY TREATMENT
 !
-      CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
+!     CALL WETDRY(ETA1,ZF1,H1,UI,VI,ETA2,ZF2,H2,UJ,VJ,EPS)
+!
 !
 !     LET'S COMPUTE D_IJ
 !
@@ -128,48 +129,44 @@
 !
       ENDIF
 !
-5000  CONTINUE
+! CENTERED FLUX COMPUTATION
 !
-!     CENTERED FLUX COMPUTATION
-!
-!     TCHAMEN FLUX
+! TCHAMEN FLUX
 !
       FLUIJ_1=0.5D0*(H1*UI+H2*UJ)
-      FLUIJ_2I=0.5D0*(H1*(UI*UI) + H2*(UJ*UJ)+G*H1*(ETA1+ETA2))
+      FLUIJ_2I=0.5D0*(H1*(UI*UI)+H2*(UJ*UJ)+G*H1*(ETA1+ETA2))
       FLUIJ_2J=FLUIJ_2I+GSUR2*(ETA1+ETA2)*(H2-H1)
       FLUIJ_3=0.5D0*(H1*UI*VI+H2*UJ*VJ)
 !
-!     UPWINDING
+! UPWINDING
 ! 
       DIJS2=0.5D0*D_IJ
-      FLUIJ_1  = FLUIJ_1 - DIJS2*(ETA2-ETA1)
+      FLUIJ_1=FLUIJ_1 -    DIJS2*(ETA2-ETA1)
       FLUIJ_2I = FLUIJ_2I- DIJS2*(H2*UJ-H1*UI)
       FLUIJ_2J = FLUIJ_2J- DIJS2*(H2*UJ-H1*UI)
-      FLUIJ_3  = FLUIJ_3 - DIJS2*(H2*VJ-H1*VI)
+      FLUIJ_3=FLUIJ_3 -    DIJS2*(H2*VJ-H1*VI)
 !
-!     INVERSE ROTATION
+! INVERSE ROTATION
 !
-      FLUIJ_20 = FLUIJ_2I
-      FLUIJ_3I = FLUIJ_3
-      FLUIJ_2I = XNN*FLUIJ_20-YNN*FLUIJ_3I
-      FLUIJ_3I = YNN*FLUIJ_20+XNN*FLUIJ_3I
+      FLUIJ_20  = FLUIJ_2I
+      FLUIJ_3I  = FLUIJ_3
+      FLUIJ_2I  = XNN*FLUIJ_20-YNN*FLUIJ_3I
+      FLUIJ_3I  = YNN*FLUIJ_20+XNN*FLUIJ_3I
 !
-      FLUIJ_20 = FLUIJ_2J
-      FLUIJ_3J = FLUIJ_3
-      FLUIJ_2J = XNN*FLUIJ_20-YNN*FLUIJ_3J
-      FLUIJ_3J = YNN*FLUIJ_20+XNN*FLUIJ_3J
+      FLUIJ_20  = FLUIJ_2J
+      FLUIJ_3J  = FLUIJ_3
+      FLUIJ_2J  = XNN*FLUIJ_20-YNN*FLUIJ_3J
+      FLUIJ_3J  = YNN*FLUIJ_20+XNN*FLUIJ_3J
 !
-!     FINAL FLUX 
+! FINAL FLUX 
 !
-      FLXI(1) = FLUIJ_1
-      FLXI(2) = FLUIJ_2I 
-      FLXI(3) = FLUIJ_3I 
+      FLXI(1) =  FLUIJ_1
+      FLXI(2) =  FLUIJ_2I 
+      FLXI(3) =  FLUIJ_3I 
 !
-      FLXJ(1) = FLUIJ_1
-      FLXJ(2) = FLUIJ_2J 
-      FLXJ(3) = FLUIJ_3J 
-!
-5500  CONTINUE
+      FLXJ(1) =  FLUIJ_1
+      FLXJ(2) =  FLUIJ_2J 
+      FLXJ(3) =  FLUIJ_3J 
 !
 !-----------------------------------------------------------------------
 !

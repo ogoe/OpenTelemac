@@ -56,7 +56,7 @@
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| VARIABLE READ AND INTERPOLATED
 !| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
-!| WHAT           |-->| VARIABLE TO LOOK FOR IN 8 CHARACTERS
+!| WHAT           |-->| VARIABLE TO LOOK FOR IN 9 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -74,8 +74,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL DEJA
-      DATA DEJA /.FALSE./
+      LOGICAL, SAVE :: DEJA=.FALSE.
 !
 !     MAXIMUM NUMBER OF CHARACTERS PER LIGN (MAY BE CHANGED)
 !
@@ -93,8 +92,7 @@
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INFIC
       DOUBLE PRECISION, DIMENSION(:)  , ALLOCATABLE :: TIME
 !
-      SAVE DEJA,INFIC,TIME,CHOIX,IL1,IL2,TL1,TL2,NVALUE,LASTWHAT,LASTAT
-      SAVE NLIG
+      SAVE INFIC,TIME,CHOIX,IL1,IL2,TL1,TL2,NVALUE,LASTWHAT,LASTAT,NLIG
 !
       INTRINSIC ABS
 !

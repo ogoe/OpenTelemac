@@ -5,7 +5,7 @@
      &(NS,G,H,U,V,DTHAUT,DT,CFL,ICIN,DTVARI,LISTIN)
 !
 !***********************************************************************
-!TELEMAC-2D VERSION 6.1                                 22/11/10
+!TELEMAC-2D VERSION 6.2                                 22/11/10
 !***********************************************************************
 !
 !brief  COMPUTES THE TIME STEP UNDER CFL CONDITION
@@ -95,15 +95,26 @@ C
       ELSE
         IF(LNG.EQ.1) WRITE(LU,4010) ICIN
         IF(LNG.EQ.2) WRITE(LU,4020) ICIN
-4010    FORMAT(1X,'FLU_TCH : ERREUR DANS LE CHOIX DE ICIN : ',1I6)
-4020    FORMAT(1X,'FLU_TCH: ERROR IN THE CHOICE OF ICIN: ',1I6)
+4010    FORMAT(1X,'CALDT: ERREUR DANS LE CHOIX DE ICIN : ',1I6)
+4020    FORMAT(1X,'CALDT: ERROR IN THE CHOICE OF ICIN: ',1I6)
         CALL PLANTE(1)
         STOP
       ENDIF
 !
 !*************************************************************************
-!ERROR TREATMENT AND LISTING OUTPUTS
+!     ERROR TREATMENT AND LISTING OUTPUTS
 !*************************************************************************
+!
+!     CASE DT <=0 
+!
+      IF(DT.LE.0.D0)THEN
+        IF(LISTIN.AND.LNG.EQ.1)
+     &      WRITE(LU,*) 'PAS DE TEMPS NEGATIF OU NUL: ',DT
+        IF(LISTIN.AND.LNG.EQ.2) 
+     &      WRITE(LU,*) 'NEGATIVE (OR NIL) TIME-STEP: ',DT
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
       IF(DTVARI.AND.CFL.LT.1.D0) THEN
         IF(LISTIN.AND.LNG.EQ.1) WRITE(LU,*) 'PAS DE TEMPS : ',DT

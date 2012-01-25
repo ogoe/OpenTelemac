@@ -5,7 +5,7 @@
      &( Q , WHAT , AT , NFIC , LISTIN , STAT )
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VALUES FROM THE LIQUID BOUNDARY FILE.
@@ -32,13 +32,18 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification size WHAT and CHOIX due to modification of TRACER
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
 !| NFIC           |-->| LOGICAL UNIT OF FILE
 !| Q              |<--| VARIABLE READ AND INTERPOLATED
 !| STAT           |<--| IF FALSE: VARIABLE NOT FOUND
-!| WHAT           |-->| VARIABLE TO LOOK FOR IN 8 CHARACTERS
+!| WHAT           |-->| VARIABLE TO LOOK FOR IN 9 CHARACTERS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -47,7 +52,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8     , INTENT(IN)       :: WHAT
+      CHARACTER*9     , INTENT(IN)       :: WHAT
       DOUBLE PRECISION, INTENT(IN)       :: AT
       DOUBLE PRECISION, INTENT(INOUT)    :: Q
       INTEGER         , INTENT(IN)       :: NFIC
@@ -56,27 +61,25 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL DEJA
-      DATA DEJA /.FALSE./
+      LOGICAL, SAVE :: DEJA=.FALSE.
 !
 !     MAXIMUM NUMBER OF CHARACTERS PER LIGN (MAY BE CHANGED)
 !
       INTEGER, PARAMETER :: SIZELIGN = 3000
 !
       INTEGER IVALUE,NVALUE,ILIG,NLIG,OK,J,IWHAT,IDEB,IFIN,IL1,IL2
-      INTEGER, PARAMETER :: MAXVAL=50
+      INTEGER, PARAMETER :: MAXVAL=2100
       DOUBLE PRECISION TL1,TL2,TETA,TOL,LASTAT
 !
       CHARACTER(LEN=SIZELIGN) :: LIGNE
-      CHARACTER*8 CHOIX(MAXVAL),LASTWHAT
+      CHARACTER*9 CHOIX(MAXVAL),LASTWHAT
 !
       DATA TOL /1.D-3/
 !
       DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: INFIC
       DOUBLE PRECISION, DIMENSION(:)  , ALLOCATABLE :: TIME
 !
-      SAVE DEJA,INFIC,TIME,CHOIX,IL1,IL2,TL1,TL2,NVALUE,LASTWHAT,LASTAT
-      SAVE NLIG
+      SAVE INFIC,TIME,CHOIX,IL1,IL2,TL1,TL2,NVALUE,LASTWHAT,LASTAT,NLIG
 !
       INTRINSIC ABS
 !
@@ -147,7 +150,7 @@
           STOP
           ENDIF
         ELSEIF(NVALUE.LE.MAXVAL) THEN
-          CHOIX(NVALUE)='        '
+          CHOIX(NVALUE)='         '
           CHOIX(NVALUE)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
         ELSE
           IF(LNG.EQ.1) THEN

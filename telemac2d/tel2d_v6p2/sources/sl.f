@@ -5,7 +5,7 @@
      &( I , N )
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   08/11/2011
 !***********************************************************************
 !
 !brief    PRESCRIBES THE FREE SURFACE ELEVATION FOR LEVEL IMPOSED
@@ -28,6 +28,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. COULET (ARTELIA GROUP)
+!+        08/11/2011
+!+        V6P2
+!+   Modification size FCT due to modification of TRACER numbering
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF LIQUID BOUNDARY
 !| N              |-->| GLOBAL NUMBER OF POINT
@@ -48,11 +53,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*8 FCT
+      CHARACTER*9 FCT
       INTEGER J
-      LOGICAL DEJA,OK(MAXFRO)
-      DATA    DEJA /.FALSE./
-      SAVE    OK,DEJA
+      LOGICAL, SAVE :: DEJA=.FALSE.
+      LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
@@ -72,13 +76,13 @@
       IF(OK(I).AND.T2D_FILES(T2DIMP)%NAME(1:1).NE.' ') THEN
 !
 !       FCT WILL BE SL(1), SL(2), ETC, SL(99), DEPENDING ON I
-        FCT(1:3)='SL('
+        FCT='SL(      '
         IF(I.LT.10) THEN
           WRITE(FCT(4:4),FMT='(I1)') I
-          FCT(5:8)=')   '
+          FCT(5:5)=')'
         ELSEIF(I.LT.100) THEN
           WRITE(FCT(4:5),FMT='(I2)') I
-          FCT(6:8)=')  '
+          FCT(6:6)=')'
         ELSE
           WRITE(LU,*) 'SL NOT PROGRAMMED FOR MORE THAN 99 BOUNDARIES'
           CALL PLANTE(1)

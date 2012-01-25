@@ -9,7 +9,8 @@ C                       *****************
      &  NREJET,ISCE,TSCE2,MAXSCE,MAXTRA,YASMH,SMH,
      &  NTRAC,DIMT,T,HT,TN,DLIMT,LIMTRA,
      &  TBOR,MASSOU,FLUTENT,FLUTSOR,DTHAUT,DPX,DPY,DJX,DJY,CMI,JMI,
-     &  DJXT,DJYT,DIFVIT,ITURB,PROPNU,DIFT,DIFNU,DX,DY,OPTVF,
+     &  DJXT,DJYT,DIFVIT,ITURB,PROPNU,DIFT,DIFNU,
+     &  DX,DY,OPTVF,
      &  HSTOK,HCSTOK,LOGFR,DSZ,FLUXT,FLUHBOR,FLBOR,DTN,FLUSORTN,
      &  FLUENTN,LTT,
      &  FLUXTEMP,FLUHBTEMP,HC,SMTR,AIRST,TMAX,DTT,GAMMA,FLUX_OLD)
@@ -139,7 +140,7 @@ C                       *****************
 !|                |   | (2 FIRST COMPONENTS) AND 
 !|                |   | SEGMENT LENGTH (3RD COMPONENT)
 !| W              |<->| WORKING TABLE
-!| WINF           |---| ???????  NOT USED
+!| WINF           |-->| BOUNDARY CONDITIONS GIVEN BY BORD
 !| X,Y            |-->| COORDINATES FOR MESH NODES
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH
@@ -164,11 +165,12 @@ C                       *****************
       INTEGER, INTENT(IN)    :: ISCE(NREJET)
       INTEGER, INTENT(INOUT) :: JMI(*),LOGFR(NPOIN)
       LOGICAL, INTENT(IN)    :: DIFVIT,DIFT,LISTIN,MSK,DTVARI,YASMH
-      DOUBLE PRECISION, INTENT(IN)    :: PROPNU,DIFNU,GAMMA
+
+      DOUBLE PRECISION, INTENT(IN) :: PROPNU,DIFNU,GAMMA
       DOUBLE PRECISION, INTENT(INOUT) :: AT,DT,MASSES,DTT
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),QU(NPOIN),QV(NPOIN)           
       DOUBLE PRECISION, INTENT(INOUT) :: W1(*)
-C                                              NSEG    NSEG               
+
       DOUBLE PRECISION, INTENT(INOUT) :: DSZ(2,*),HC(2,*)
       DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN),V(NPOIN) 
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),SMH(NPOIN)
@@ -191,13 +193,13 @@ C                                              NSEG    NSEG
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ) , INTENT(IN)     :: TBOR,TN
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: T,HT,SMTR,FLUHBOR,FLUHBTEMP
-      TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR,FLUX_OLD   
+      TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLUXTEMP,FLUXT,FLBOR,FLUX_OLD
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !
       MASSES = 0.D0  
 !
-!     COMPUTE CELL AREAS 
+!   COMPUTE CELL AREAS 
 !
       CALL VECTOR(TB%ADR(1)%P,'=','MASBAS          ',11,
      &            1.D0,S,S,S,S,S,S,MESH,MSK,MASKEL)

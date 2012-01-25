@@ -109,7 +109,7 @@
       WRITE(LU,3)
       WRITE(LU,4)
 !
-      ! READ DATA FOR EACH ZONES
+      ! READ DATA FOR EACH ZONE
       ! ------------------------
       IZONE = 0
       LINE = 0

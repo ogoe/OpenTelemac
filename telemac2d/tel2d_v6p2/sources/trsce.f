@@ -42,7 +42,8 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC2D, ONLY: AT,ENTET,NTRAC,TSCE,NREJET,
-     &                                  T2D_FILES,T2DVEF,MAXSCE,MAXTRA
+     &                                  T2D_FILES,T2DVEF,MAXSCE,MAXTRA,
+     &                                  MAXFRO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -58,7 +59,7 @@
       CHARACTER*9 FCT
       INTEGER N,M,IRANK
       LOGICAL,SAVE :: DEJA=.FALSE.
-      LOGICAL, SAVE :: OK(MAXSCE,MAXTRA)
+      LOGICAL, DIMENSION(MAXFRO,MAXTRA), SAVE :: OK
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
