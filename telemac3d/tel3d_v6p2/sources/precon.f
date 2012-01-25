@@ -59,9 +59,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        28/12/2011
+!+        24/01/2012
 !+        V6P2
-!+   Adaptations to tetrahedra
+!+   Adaptations to tetrahedra. Building FLOPAR only done with ADV_LPO
+!+   advection schemes.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
@@ -276,18 +277,15 @@
      &                                   MESH3D%GLOSEG%DIM1,
      &                                   MESH2D%NSEG,NPLAN)
         ENDIF
-      ENDIF
-!
-!     FLOPAR = FLODEL ASSEMBLED IN PARALLEL MODE
-!
-      IF(OPTHNEG.EQ.2.OR.N_ADV(ADV_LPO)   .GT.0
-     &               .OR.N_ADV(ADV_LPO_TF).GT.0) THEN
-        IF(NCSIZE.GT.1) THEN
-          CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
-          CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,
-     &                     MESH2D%NSEG,NPLAN,2,1,MESH2D,1,IELM3)
-        ELSE
-          FLOPAR%R=>FLODEL%R
+!       FLOPAR = FLODEL ASSEMBLED IN PARALLEL MODE  
+        IF(OPTHNEG.EQ.2) THEN
+          IF(NCSIZE.GT.1) THEN
+            CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
+            CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,
+     &                       MESH2D%NSEG,NPLAN,2,1,MESH2D,1,IELM3)
+          ELSE
+            FLOPAR%R=>FLODEL%R
+          ENDIF
         ENDIF
       ENDIF
 !

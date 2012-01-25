@@ -191,8 +191,9 @@
 !-----------------------------------------------------------------------
 !
       INTEGER IPOIN3,IPOIN2,IPTFR3,ITERD,NITERD,IS,IIS,I,IPLAN,I2D,NP
-      DOUBLE PRECISION C,AGGLO
+      DOUBLE PRECISION C,AGGLO,QTOT,VTOT,FTOT
       CHARACTER(LEN=16) FORMUL
+      DOUBLE PRECISION, POINTER :: VOLUME(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -703,44 +704,40 @@
 !
 !=======================================================================
 !
-!   THOSE CRUSHED POINTS THAT HAVE NO VOLUME MUST HAVE VALUES EQUAL
-!   TO THE FIRST FREE POINT ABOVE (GIVEN BY PLANE IPBOT+1)
-!
-!   TO AVOID SPURIOUS GRADIENTS... BUT WELL, HEAVY
+!   CRUSHED POINTS AND THEIR FREE POINT ABOVE MUST HAVE THE SAME VALUE
+!   IT IS DONE HERE WITH MASS CONSERVATION : THE VOLUMIC AVERAGE IS
+!   TAKEN. TO AVOID SPURIOUS GRADIENTS... 
+!   HEAVY BUT SAVES TIME IN COMPLEX APPLICATIONS!
 !
 !=======================================================================
 !
       IF(SIGMAG.OR.OPTBAN.EQ.1) THEN
         IF(NCSIZE.GT.1) THEN
           CALL OS('X=Y     ',X=T3_02,Y=VOLU)
-!         T3_02 WILL BE THE ASSEMBLED VOLUME
+!         T3_02 IS THE ASSEMBLED VOLUME
           CALL PARCOM(T3_02,2,MESH3D)
-          DO I2D=1,NPOIN2
-            IF(IPBOT(I2D).GT.0) THEN
-!             VALUE OF THE FIRST FREE POINT IS COPIED BELOW
-!             FOR DIRICHLET CASES THIS FREE POINT HAS BEEN GIVEN ABOVE
-!             THE FBORF DIRICHLET VALUE
-              DO I=0,IPBOT(I2D)-1
-                IF(T3_02%R(I2D+I*NPOIN2).LT.1.D-10) THEN
-                  FD%R(I2D+I*NPOIN2)=FD%R(I2D+IPBOT(I2D)*NPOIN2)
-                ENDIF
-              ENDDO
-            ENDIF
-          ENDDO
+          VOLUME => T3_02%R
         ELSE
-          DO I2D=1,NPOIN2
-            IF(IPBOT(I2D).GT.0) THEN
-!             VALUE OF THE FIRST FREE POINT IS COPIED BELOW
-!             FOR DIRICHLET CASES THIS FREE POINT HAS BEEN GIVEN ABOVE
-!             THE FBORF DIRICHLET VALUE
-              DO I=0,IPBOT(I2D)-1
-                IF(VOLU%R(I2D+I*NPOIN2).LT.1.D-10) THEN
-                  FD%R(I2D+I*NPOIN2)=FD%R(I2D+IPBOT(I2D)*NPOIN2)
-                ENDIF
-              ENDDO
-            ENDIF
-          ENDDO
+          VOLUME => VOLU%R
         ENDIF
+        DO I2D=1,NPOIN2
+          IF(IPBOT(I2D).GT.0) THEN
+            VTOT=0.D0
+            QTOT=0.D0
+            DO I=0,IPBOT(I2D)
+              VTOT=VTOT+VOLUME(I2D+I*NPOIN2)
+              QTOT=QTOT+VOLUME(I2D+I*NPOIN2)*FD%R(I2D+I*NPOIN2)
+            ENDDO
+            IF(VTOT.GT.1.D-10) THEN
+              FTOT=QTOT/VTOT
+            ELSE
+              FTOT=FD%R(I2D+IPBOT(I2D)*NPOIN2)
+            ENDIF
+            DO I=0,IPBOT(I2D)
+              FD%R(I2D+I*NPOIN2)=FTOT
+            ENDDO
+          ENDIF
+        ENDDO
       ENDIF
 !
 !=======================================================================

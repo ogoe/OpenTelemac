@@ -1056,28 +1056,24 @@ C K-EPSILON MODEL
 !
 ! POINTERS TO THESE 3D WORK VECTORS; FIRST 10 EXIST FOR SURE
 !
-      T3_01 => TRAV3%ADR(1)%P
-      T3_02 => TRAV3%ADR(2)%P
-      T3_03 => TRAV3%ADR(3)%P
-      T3_04 => TRAV3%ADR(4)%P
-      T3_05 => TRAV3%ADR(5)%P
-      T3_06 => TRAV3%ADR(6)%P
-      T3_07 => TRAV3%ADR(7)%P
-      T3_08 => TRAV3%ADR(8)%P
-      T3_09 => TRAV3%ADR(9)%P
+      T3_01 => TRAV3%ADR(01)%P
+      T3_02 => TRAV3%ADR(02)%P
+      T3_03 => TRAV3%ADR(03)%P
+      T3_04 => TRAV3%ADR(04)%P
+      T3_05 => TRAV3%ADR(05)%P
+      T3_06 => TRAV3%ADR(06)%P
+      T3_07 => TRAV3%ADR(07)%P
+      T3_08 => TRAV3%ADR(08)%P
+      T3_09 => TRAV3%ADR(09)%P
       T3_10 => TRAV3%ADR(10)%P
-      IF(NTR.GE.12) THEN
-        T3_11 => TRAV3%ADR(11)%P
-        T3_12 => TRAV3%ADR(12)%P
-      ENDIF
-      IF(NTR.GE.18) THEN
-        T3_13 => TRAV3%ADR(13)%P
-        T3_14 => TRAV3%ADR(14)%P
-        T3_15 => TRAV3%ADR(15)%P
-        T3_16 => TRAV3%ADR(16)%P
-        T3_17 => TRAV3%ADR(17)%P
-        T3_18 => TRAV3%ADR(18)%P
-      ENDIF
+      T3_11 => TRAV3%ADR(11)%P
+      T3_12 => TRAV3%ADR(12)%P
+      T3_13 => TRAV3%ADR(13)%P
+      IF(NTR.GE.14) T3_14 => TRAV3%ADR(14)%P
+      IF(NTR.GE.15) T3_15 => TRAV3%ADR(15)%P
+      IF(NTR.GE.16) T3_16 => TRAV3%ADR(16)%P
+      IF(NTR.GE.17) T3_17 => TRAV3%ADR(17)%P
+      IF(NTR.GE.18) T3_18 => TRAV3%ADR(18)%P
 !
 ! SECOND MEMBER 3D
 !

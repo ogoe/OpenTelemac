@@ -28,21 +28,6 @@
 !+   FORTRAN95 VERSION
 !
 !history
-!+        16/06/05
-!+
-!+   SOURCES MODIFIED FOR INTAKES
-!
-!history
-!+        10/11/05
-!+
-!+   SOURCES TAKEN INTO ACCOUNT IN MONOTONICITY CRITERION
-!
-!history
-!+        12/06/07
-!+
-!+   SOURCES IN PARALLEL LOOK AT THE USE OF IIS
-!
-!history
 !+        28/08/07
 !+
 !+   PSI SCHEME RE-WRITTEN, NO THEORETICAL CHANGES BUT
@@ -52,35 +37,25 @@
 !+
 !+   RAIN HAD BEEN LEFT OUT IN THE PART WITH ALFA
 !
-!history
+!history  J-M HERVOUET (LNHE)
 !+        19/12/07
 !+
 !+   CHANGED MONOTONICITY CRITERION
 !
-!history
+!history  J-M HERVOUET (LNHE)
 !+        29/07/08
 !+
 !+   TIDAL FLATS WITH OPTBAN=2
 !
-!history
+!history  J-M HERVOUET (LNHE)
 !+        04/08/08
 !+
 !+   DIMENSIONS OF XA AND XB INVERTED (SEE ALSO MT14PP)
 !
-!history
+!history  J-M HERVOUET (LNHE)
 !+        22/06/09
 !+
 !+   FINITE VOLUME SCHEME ADDED
-!
-!history
-!+        11/08/09
-!+
-!+   FINITE VOLUME SCHEME OPTIMISED
-!
-!history  J.M. JANIN  (LNH)
-!+
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -98,7 +73,7 @@
 !+        04/01/2012
 !+        V6P2
 !+   Adaptation to tetrahedra
-!+   PSI 
+!+   PSI scheme optimised 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
 !| DB             |<->| NOT SYMMETRIC MURD MATRIX OPTION N
@@ -195,6 +170,7 @@
       DOUBLE PRECISION DTJ,PHIP,PHIM,ALFA,C,ALFA2,DTJALFA,MINEL,MAXEL
       DOUBLE PRECISION M12,M13,M14,M15,M16,M23,M24,M25,M26,M34
       DOUBLE PRECISION M35,M36,M45,M46,M56,T1,T2,T3,T4,T5,T6
+      DOUBLE PRECISION F1MF2,F1MF3,F1MF4,F2MF3,F2MF4,F3MF4
 !
       INTEGER IELEM,IPOIN,NITER,IS,IGUILT,IIS
       INTEGER I1,I2,I3,I4,I5,I6,OPT,ISEG3D,NSEGH,NSEGV
@@ -455,17 +431,19 @@
             I3 = IKLE3(IELEM,3)
             I4 = IKLE3(IELEM,4)
 !
-            T1 = FC(I1)
-            T2 = FC(I2)
-            T3 = FC(I3)
-            T4 = FC(I4)
+            F1MF2 = FC(I1)-FC(I2)
+            F1MF3 = FC(I1)-FC(I3)
+            F1MF4 = FC(I1)-FC(I4)
+            F2MF3 = FC(I2)-FC(I3)
+            F2MF4 = FC(I2)-FC(I4)
+            F3MF4 = FC(I3)-FC(I4)
 !
-            M12 = (XB(01,IELEM)-XB(07,IELEM)) * (T1-T2)
-            M13 = (XB(02,IELEM)-XB(08,IELEM)) * (T1-T3)
-            M14 = (XB(03,IELEM)-XB(09,IELEM)) * (T1-T4)
-            M23 = (XB(04,IELEM)-XB(10,IELEM)) * (T2-T3)
-            M24 = (XB(05,IELEM)-XB(11,IELEM)) * (T2-T4)
-            M34 = (XB(06,IELEM)-XB(12,IELEM)) * (T3-T4)
+            M12 = (XB(01,IELEM)-XB(07,IELEM)) * F1MF2
+            M13 = (XB(02,IELEM)-XB(08,IELEM)) * F1MF3
+            M14 = (XB(03,IELEM)-XB(09,IELEM)) * F1MF4
+            M23 = (XB(04,IELEM)-XB(10,IELEM)) * F2MF3
+            M24 = (XB(05,IELEM)-XB(11,IELEM)) * F2MF4
+            M34 = (XB(06,IELEM)-XB(12,IELEM)) * F3MF4
 !
             PHIP = MAX( M12,0.D0) + MAX( M13,0.D0) + MAX( M14,0.D0)
      &           + MAX( M23,0.D0) + MAX( M24,0.D0) + MAX( M34,0.D0)
@@ -474,67 +452,67 @@
 !
             IF(PHIP.GE.PHIM) THEN
                ALFA = (PHIP - PHIM) / MAX(PHIP,1.D-10)
-               IF(T2.GT.T1) THEN
-                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I1)-FC(I2))
+               IF(F1MF2.LT.0.D0) THEN
+                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*F1MF2
                ELSE
-                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
+                 TRA02(I1)=TRA02(I1)-XB(01,IELEM)*ALFA*F1MF2
                ENDIF
-               IF(T3.GT.T1) THEN
-                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*(FC(I1)-FC(I3))
+               IF(F1MF3.LT.0.D0) THEN
+                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*F1MF3
                ELSE
-                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
+                 TRA02(I1)=TRA02(I1)-XB(02,IELEM)*ALFA*F1MF3
                ENDIF
-               IF(T4.GT.T1) THEN
-                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*(FC(I1)-FC(I4))
+               IF(F1MF4.LT.0.D0) THEN
+                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*F1MF4
                ELSE
-                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
+                 TRA02(I1)=TRA02(I1)-XB(03,IELEM)*ALFA*F1MF4
                ENDIF
-               IF(T3.GT.T2) THEN
-                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I2)-FC(I3))
+               IF(F2MF3.LT.0.D0) THEN
+                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*F2MF3
                ELSE
-                 TRA02(I2)=TRA02(I2)+XB(04,IELEM)*ALFA*(FC(I3)-FC(I2))
+                 TRA02(I2)=TRA02(I2)-XB(04,IELEM)*ALFA*F2MF3
                ENDIF
-               IF(T4.GT.T2) THEN
-                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*(FC(I2)-FC(I4))
+               IF(F2MF4.LT.0.D0) THEN
+                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*F2MF4
                ELSE
-                 TRA02(I2)=TRA02(I2)+XB(05,IELEM)*ALFA*(FC(I4)-FC(I2))
+                 TRA02(I2)=TRA02(I2)-XB(05,IELEM)*ALFA*F2MF4
                ENDIF
-               IF(T4.GT.T3) THEN
-                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*(FC(I3)-FC(I4))
+               IF(F3MF4.LT.0.D0) THEN
+                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*F3MF4
                ELSE
-                 TRA02(I3)=TRA02(I3)+XB(06,IELEM)*ALFA*(FC(I4)-FC(I3))
+                 TRA02(I3)=TRA02(I3)-XB(06,IELEM)*ALFA*F3MF4
                ENDIF
             ELSE
                ALFA = (PHIM - PHIP) / MAX(PHIM,1.D-10)
-               IF(T2.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(01,IELEM)*ALFA*(FC(I2)-FC(I1))
+               IF(F1MF2.LT.0.D0) THEN
+                 TRA02(I1)=TRA02(I1)-XB(01,IELEM)*ALFA*F1MF2
                ELSE
-                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*(FC(I1)-FC(I2))
+                 TRA02(I2)=TRA02(I2)+XB(07,IELEM)*ALFA*F1MF2
                ENDIF
-               IF(T3.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(02,IELEM)*ALFA*(FC(I3)-FC(I1))
+               IF(F1MF3.LT.0.D0) THEN
+                 TRA02(I1)=TRA02(I1)-XB(02,IELEM)*ALFA*F1MF3
                ELSE
-                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*(FC(I1)-FC(I3))
+                 TRA02(I3)=TRA02(I3)+XB(08,IELEM)*ALFA*F1MF3
                ENDIF
-               IF(T4.GT.T1) THEN
-                 TRA02(I1)=TRA02(I1)+XB(03,IELEM)*ALFA*(FC(I4)-FC(I1))
+               IF(F1MF4.LT.0.D0) THEN
+                 TRA02(I1)=TRA02(I1)-XB(03,IELEM)*ALFA*F1MF4
                ELSE
-                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*(FC(I1)-FC(I4))
+                 TRA02(I4)=TRA02(I4)+XB(09,IELEM)*ALFA*F1MF4
                ENDIF
-               IF(T3.GT.T2) THEN
-                 TRA02(I2)=TRA02(I2)+XB(04,IELEM)*ALFA*(FC(I3)-FC(I2))
+               IF(F2MF3.LT.0.D0) THEN
+                 TRA02(I2)=TRA02(I2)-XB(04,IELEM)*ALFA*F2MF3
                ELSE
-                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*(FC(I2)-FC(I3))
+                 TRA02(I3)=TRA02(I3)+XB(10,IELEM)*ALFA*F2MF3
                ENDIF
-               IF(T4.GT.T2) THEN
-                 TRA02(I2)=TRA02(I2)+XB(05,IELEM)*ALFA*(FC(I4)-FC(I2))
+               IF(F2MF4.LT.0.D0) THEN
+                 TRA02(I2)=TRA02(I2)-XB(05,IELEM)*ALFA*F2MF4
                ELSE
-                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*(FC(I2)-FC(I4))
+                 TRA02(I4)=TRA02(I4)+XB(11,IELEM)*ALFA*F2MF4
                ENDIF
-               IF(T4.GT.T3) THEN
-                 TRA02(I3)=TRA02(I3)+XB(06,IELEM)*ALFA*(FC(I4)-FC(I3))
+               IF(F3MF4.LT.0.D0) THEN
+                 TRA02(I3)=TRA02(I3)-XB(06,IELEM)*ALFA*F3MF4
                ELSE
-                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*(FC(I3)-FC(I4))
+                 TRA02(I4)=TRA02(I4)+XB(12,IELEM)*ALFA*F3MF4
                ENDIF
             ENDIF
 !
@@ -546,11 +524,9 @@
            STOP
          ENDIF
 !
-      ENDIF
-!
 !-----------------------------------------------------------------------
 !
-      IF(SCHCF.EQ.ADV_NSC) THEN
+      ELSEIF(SCHCF.EQ.ADV_NSC) THEN
 !
 !  COMPUTES THE FLUX TERMS PER UNIT OF TIME:
 !
@@ -655,16 +631,20 @@
 !
 !     END OF THE REPLACEMENT OF CALL MV0606
 !
-      ENDIF
+      ELSEIF(SCHCF.EQ.ADV_LPO) THEN
 !
-!
-!     SPECIFIC IELM3=41 ???
-      IF(SCHCF.EQ.ADV_LPO) THEN
+        IF(IELM3.NE.41) THEN
+          WRITE(LU,*) 'MURD3D: ELEMENT ',IELM3,' NOT IMPLEMENTED'
+          WRITE(LU,*) '        WITH SCHEME ',SCHCF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
         NSEGH=NSEG*NPLAN
         NSEGV=(NPLAN-1)*NPOIN2
 !
 !       COMPUTES DB AND TRA02 IN UPWIND EXPLICIT FINITE VOLUMES
+!       POSSIBLE OPTIMISATION: DB IS NOT COMPUTED IF OPT=2
 !
         DO IPOIN=1,NPOIN3
           DB(IPOIN)=0.D0
@@ -687,6 +667,10 @@
           ENDIF
         ENDDO
 !
+      ELSE
+        WRITE(LU,*) 'MURD3D: UNKNOWN ADVECTION SCHEME: ',SCHCF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       IF(NCSIZE.GT.1) CALL PARCOM(STRA02,2,MESH3)
@@ -793,6 +777,13 @@
 !
       ELSEIF(OPT.EQ.1) THEN
 !
+      IF(SCHCF.EQ.ADV_PSI) THEN
+        WRITE(LU,*) 'MURD3D: OPT=1 IS NOT ALLOWED WITH PSI-SCHEME'
+        WRITE(LU,*) '        BECAUSE DIAGONAL DB IS NOT COMPUTED'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
 !     TRA03 : COEFFICIENT OF FC(I), THAT MUST REMAIN POSITIVE FOR MONOTONICITY
       CALL OV('X=Y+CZ  ',TRA03, VOLU, DB, DTJ, NPOIN3)
 !
@@ -811,6 +802,10 @@
 !
       IF(NCSIZE.GT.1) CALL PARCOM(STRA03,2,MESH3)
 !
+      ELSE
+        WRITE(LU,*) 'MURD3D: OPT=',OPT,' NOT IMPLEMENTED'
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !     IF MONOTONICITY IS NOT ENSURED, REDUCTION OF TIME-STEP BY FACTOR ALFA
@@ -942,17 +937,17 @@
         ENDDO
       ELSE
         IF(OPTBAN.EQ.2) THEN
-          DO IPOIN=1,NPOIN3
-            IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
-              FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
-            ENDIF
-          ENDDO
+        DO IPOIN=1,NPOIN3
+          IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IPOIN).GT.EPS) THEN
+            FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
+          ENDIF
+        ENDDO
         ELSE
-          DO IPOIN=1,NPOIN3
-            IF(TRA01(IPOIN).GT.EPS) THEN
-              FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
-            ENDIF
-          ENDDO
+        DO IPOIN=1,NPOIN3
+          IF(TRA01(IPOIN).GT.EPS) THEN
+            FC(IPOIN)=FC(IPOIN)+DTJALFA*TRA02(IPOIN)/TRA01(IPOIN)
+          ENDIF
+        ENDDO
         ENDIF
       ENDIF
 !
