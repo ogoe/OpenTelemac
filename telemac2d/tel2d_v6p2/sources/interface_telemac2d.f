@@ -1827,7 +1827,7 @@
       INTERFACE
         SUBROUTINE READ_FIC_FRLIQ(Q, WHAT , AT , NFIC , LISTIN , STAT )
       IMPLICIT NONE
-      CHARACTER*8     , INTENT(IN)       :: WHAT
+      CHARACTER*9     , INTENT(IN)       :: WHAT
       DOUBLE PRECISION, INTENT(IN)       :: AT
       DOUBLE PRECISION, INTENT(INOUT)    :: Q
       INTEGER         , INTENT(IN)       :: NFIC
