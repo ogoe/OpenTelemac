@@ -24,6 +24,7 @@ import sys
 import numpy as np
 # ~~> dependencies towards other pytel/modules
 from utils.geometry import getConeAngle,isClose,getNorm2
+from utils.progressbar import SubProgressBar
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -83,12 +84,52 @@ def removeDuplicates(poly,type):
             poly = np.delete(poly,i+1,0)
          i += 1
    if len(poly) == 1: return [],0
-   elif len(poly) == 2: return poly,0
+   elif len(poly) == 2: return [],0 #poly,0
    else:
       if type != 0:
          if isClose( poly[len(poly)-1],poly[0],size=10 ): poly = np.delete(poly,len(poly)-1,0)
-      if len(poly) < 3: return poly,0
+      if len(poly) < 3: return [],0 #poly,0
       return poly,type
+
+def removeDuplilines(poly,type):
+   p = []; t = []; stencil = 1000
+   sbar = SubProgressBar(maxval=len(poly)).start()
+   found = False
+   for i in range(len(poly)):
+      for j in range(len(poly))[i+2:i+2+stencil]:
+         if isClose( poly[i],poly[j] ):
+            ia = (i+1)%len(poly)
+            ib = (j-1)%len(poly)
+            if isClose( poly[ia],poly[ib] ):
+               poly1,ptmp1,poly2,ptmp2,poly3 = np.split(poly,[i,ia,ib,j])
+               p.append(np.concatenate((poly1, poly3), axis=0))
+               if type == 1: t.append(1)
+               p.append(poly2)
+               t.append(1)
+               found = True
+         if found: break
+      if found: break
+      sbar.update(i)
+   sbar.finish()
+   if p == []:
+      p.append(poly); t.append(type)
+   return p,t
+
+def removeDuplangles(poly,type):
+
+   found = True
+   while found:
+      i = 0; found = False
+      while i < len(poly)-3:
+         if 1 > 180*abs( getConeAngle( poly[i],poly[i+1],poly[i+2] ) )/np.pi:
+            poly = np.delete(poly,i+1,0)
+            found = True
+         if 1 > 180*abs( getConeAngle( poly[i+1],poly[i+2],poly[i+3] ) )/np.pi:
+            poly = np.delete(poly,i+2,0)
+            found = True
+         i += 2
+   if len(poly) < 3: return [],0 #poly,0
+   return poly,type
 
 def subsampleDistance(poly,type,dist):
 
@@ -102,13 +143,13 @@ def subsampleDistance(poly,type,dist):
             found = True
          i += 1
    if len(poly) == 1: return [],0
-   elif len(poly) == 2: return poly,0
+   elif len(poly) == 2: return [],0 #poly,0
    else:
       if type!=0:
          if dist > getNorm2( poly[len(poly)-1],poly[0] ):
             poly[len(poly)-1] = ( poly[len(poly)-1]+poly[0] )/2.
             poly = np.delete(poly,0,0)
-      if len(poly) < 3: return poly,0
+      if len(poly) < 3: return [],0 #poly,0
       return poly,type
 
 def subsampleAngle(poly,type,angle):
@@ -116,12 +157,15 @@ def subsampleAngle(poly,type,angle):
    found = True
    while found:
       i = 0; found = False
-      while i < len(poly)-2:
+      while i < len(poly)-4:
          if angle > 180*abs( abs(getConeAngle( poly[i],poly[i+1],poly[i+2] )) - np.pi )/np.pi:
             poly = np.delete(poly,i+1,0)
             found = True
+         if angle > 180*abs( abs(getConeAngle( poly[i+1],poly[i+2],poly[i+3] )) - np.pi )/np.pi:
+            poly = np.delete(poly,i+2,0)
+            found = True
          i += 2
-   if len(poly) < 3: return poly,0
+   if len(poly) < 3: return [],0 #poly,0
    return poly,type
 
 def isClockwise(poly):

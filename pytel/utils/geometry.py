@@ -54,10 +54,10 @@ def getSegmentIntersection( (x1,y1),(x2,y2),(x3,y3),(x4,y4) ):
    if det == 0: return []
    x0 = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/det
    y0 = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/det
-   accuracy = np.power(10.0, -5+np.floor(np.log10(x1+x2+x3+x4)))
+   accuracy = np.power(10.0, -5+np.floor(np.log10(abs(x1+x2+x3+x4))))
    if ( min(x1,x2)-x0 ) > accuracy or ( x0-max(x1,x2) ) > accuracy: return []
    if ( min(x3,x4)-x0 ) > accuracy or ( x0-max(x3,x4) ) > accuracy: return []
-   accuracy = np.power(10.0, -5+np.floor(np.log10(y1+y2+y3+y4)))
+   accuracy = np.power(10.0, -5+np.floor(np.log10(abs(y1+y2+y3+y4))))
    if ( min(y1,y2)-y0 ) > accuracy or ( y0-max(y1,y2) ) > accuracy: return []
    if ( min(y3,y4)-y0 ) > accuracy or ( y0-max(y3,y4) ) > accuracy: return []
 
@@ -73,9 +73,9 @@ def getSegmentLineIntersection( (x1,y1),(x2,y2),(x3,y3),(x4,y4) ):
    if det == 0: return []
    x0 = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/det
    y0 = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/det
-   accuracy = np.power(10.0, -5+np.floor(np.log10(x1+x2+x3+x4)))
+   accuracy = np.power(10.0, -5+np.floor(np.log10(abs(x1+x2+x3+x4))))
    if ( min(x1,x2)-x0 ) > accuracy or ( x0-max(x1,x2) ) > accuracy: return []
-   accuracy = np.power(10.0, -5+np.floor(np.log10(y1+y2+y3+y4)))
+   accuracy = np.power(10.0, -5+np.floor(np.log10(abs(y1+y2+y3+y4))))
    if ( min(y1,y2)-y0 ) > accuracy or ( y0-max(y1,y2) ) > accuracy: return []
 
    return [[x0,y0]]
@@ -149,7 +149,7 @@ def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
 def isClose( p1,p2,size=5 ):
 
    if ( p2 == [] or p1 == [] ): return False
-   s = np.max(p1+p2)
+   s = 1.e-5 + abs(np.max(p1+p2))
    accuracy = np.power(10.0, -size+np.floor(np.log10(s)))
 
    return getNorm2( p1[0:2],p2[0:2] ) < accuracy

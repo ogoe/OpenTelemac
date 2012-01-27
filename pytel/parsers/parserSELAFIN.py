@@ -127,8 +127,6 @@ def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
    IKLE = []
    for i in range(NELEM3):
       IKLE.append(unpack('>'+str(NDP)+'i',f.read(4*NDP)))
-   #   for j in range(NDP):
-   #      IKLE[i].append(unpack('>i',f.read(4))[0])
    chk = unpack('>i',f.read(4))[0]
    if l!=chk:
       print '... Cannot read IKLE3'
@@ -137,9 +135,6 @@ def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
    # ~~ Read the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    l = unpack('>i',f.read(4))[0]
    IPOBO = unpack('>'+str(NPOIN3)+'i',f.read(4*NPOIN3))
-   #IPOBO = []
-   #for i in range(NPOIN3):
-   #   IPOBO.append(unpack('>i',f.read(4))[0])
    chk = unpack('>i',f.read(4))[0]
    if l!=chk:
       print '... Cannot read IPOBO'
@@ -148,9 +143,6 @@ def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
    # ~~ Read the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
    l = unpack('>i',f.read(4))[0]
    MESHX = unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN))
-   #MESHX = []
-   #for i in range(NPOIN3):
-   #   MESHX.append(unpack('>f',f.read(4))[0])
    chk = unpack('>i',f.read(4))[0]
    if l!=chk:
       print '... Cannot read MESHX'
@@ -158,9 +150,6 @@ def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
    # ~~ Read the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
    l = unpack('>i',f.read(4))[0]
    MESHY = unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN))
-   #MESHY = []
-   #for i in range(NPOIN3):
-   #   MESHY.append(unpack('>f',f.read(4))[0])
    chk = unpack('>i',f.read(4))[0]
    if l!=chk:
       print '... Cannot read MESHY'
@@ -263,7 +252,7 @@ def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,va
 def getEdgesSLF(IKLE):
 
    edges = []
-   ibar = 0; pbar = ProgressBar(maxval=(len(IKLE))).start()
+   ibar = 0; pbar = ProgressBar(maxval=len(IKLE)).start()
    for e in IKLE:
       pbar.update(ibar); ibar += 1
       if (e[0],e[1]) not in edges: edges.append((e[1],e[0]))
@@ -570,23 +559,22 @@ def putHeaderSLF(slf): #TODO: optimise for speed, use of struct.Struct
 
    # ~~ Write the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    f.write(pack('>i',4*slf.NELEM3*slf.NDP))
-   for i in range(slf.NELEM3):
-      for j in range(slf.NDP): f.write(pack('>i',slf.IKLE[i][j]+1))
+   f.write(pack('>'+str(slf.NELEM3*slf.NDP)+'i',*(n+1 for e in slf.IKLE for n in e)))
    f.write(pack('>i',4*slf.NELEM3*slf.NDP))
 
    # ~~ Write the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    f.write(pack('>i',4*slf.NPOIN3))
-   for i in range(slf.NPOIN3): f.write(pack('>i',slf.IPOBO[i]))
+   f.write(pack('>'+str(slf.NPOIN3)+'i',*(slf.IPOBO)))
    f.write(pack('>i',4*slf.NPOIN3))
 
    # ~~ Write the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
    f.write(pack('>i',4*slf.NPOIN3))
-   for i in range(slf.NPOIN3): f.write(pack('>f',slf.MESHX[i]))
+   f.write(pack('>'+str(slf.NPOIN3)+'f',*(slf.MESHX)))
    f.write(pack('>i',4*slf.NPOIN3))
 
    # ~~ Write the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
    f.write(pack('>i',4*slf.NPOIN3))
-   for i in range(slf.NPOIN3): f.write(pack('>f',slf.MESHY[i]))
+   f.write(pack('>'+str(slf.NPOIN3)+'f',*(slf.MESHY)))
    f.write(pack('>i',4*slf.NPOIN3))
 
    return
@@ -609,7 +597,7 @@ def appendCoreVarsSLF(slf,VARSOR):
    # Print variable records
    for v in range(len(VARSOR)):
       f.write(pack('>i',4*slf.NPOIN3))
-      for j in range(slf.NPOIN3): f.write(pack('>f',VARSOR[v][j]))
+      f.write(pack('>'+str(slf.NPOIN3)+'f',*(VARSOR[v])))
       f.write(pack('>i',4*slf.NPOIN3))
 
    return
@@ -636,11 +624,15 @@ class SELAFIN:
 
    def putContent(self,fileName):
       self.fole = open(fileName,'wb')
+      ibar = 0; pbar = ProgressBar(maxval=len(self.tags['times'])).start()
       putHeaderSLF(self)
       for t in range(len(self.tags['times'])):
+         ibar += 1
          appendCoreTimeSLF(self,t)
          appendCoreVarsSLF(self,self.getVALUES(t))
+         pbar.update(ibar)
       self.fole.close()
+      pbar.finish()
 
    def __del__(self): self.file.close()
 
@@ -668,7 +660,7 @@ class SELAFINS:
       same = True
       for slf in self.slfs[1:]:
          max = 1.e-5 + np.max( slf.tags['times'] ) + np.max( self.slf.tags['times'] )
-         accuracy = np.power(10.0, -5+np.floor(np.log10(max)))
+         accuracy = np.power(10.0, -5+np.floor(np.log10(max)))  #/!\ max always positive
          same = same and ( accuracy > \
             np.max( slf.tags['times'] - self.slf.tags['times'] ) - np.min( slf.tags['times'] - self.slf.tags['times'] ) )
       return same
@@ -681,25 +673,37 @@ class SELAFINS:
       if self.suite and self.merge:
          if len(self.slfs) == 2:  # /!\ difference only between two files
             self.slf.fole = open(fileName,'wb')
+            ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
             putHeaderSLF(self.slf)
             for t in range(len(self.slf.tags['times'])):
+               ibar += 1
                appendCoreTimeSLF(self.slf,t)
                appendCoreVarsSLF(self.slf,self.slf.getVALUES(t)-self.slfs[1].getVALUES(t))
+               pbar.update(ibar)
+            pbar.finish()
          else: SELAFIN.putContent(self.slf,fileName) # just a copy
       elif self.suite:
          self.slf.fole = open(fileName,'wb')
+         ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
          putHeaderSLF(self.slf)
          for t in range(len(self.slf.tags['times'])):
+            ibar += 1
             time = self.slf.tags['times'][t]
             appendCoreTimeSLF(self.slf,t)
             appendCoreVarsSLF(self.slf,self.slf.getVALUES(t))
+            pbar.update(ibar)
+         pbar.finish()
          for slf in self.slfs:
             slf.fole = self.slf.fole
+            ibar = 0; pbar = ProgressBar(maxval=len(slf.tags['times'])).start()
             for t in range(len(slf.tags['times'])):
                if slf.tags['times'][t] > time:
+                  ibar += 1
                   time = slf.tags['times'][t]
                   appendCoreTimeSLF(slf,t)
                   appendCoreVarsSLF(slf,slf.getVALUES(t))
+                  pbar.update(ibar)
+            pbar.finish()
          self.slf.fole.close()
       elif self.merge:
          self.slf.fole = open(fileName,'wb')
@@ -719,12 +723,16 @@ class SELAFINS:
             slf.VARINDEX = idvars
             self.slf.NBV1 = len(self.slf.VARNAMES)
             self.slf.NBV2 = len(self.slf.CLDNAMES)
+         ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
          putHeaderSLF(self.slf)
          for t in range(len(self.slf.tags['times'])):
+            ibar += 1
             appendCoreTimeSLF(self.slf,t)
             appendCoreVarsSLF(self.slf,self.slf.getVALUES(t))
             for slf in self.slfs[1:]:
                appendCoreVarsSLF(self.slf,slf.getVALUES(t))
+            pbar.update(ibar)
+         pbar.finish()
          self.slf.fole.close()
 
       else:

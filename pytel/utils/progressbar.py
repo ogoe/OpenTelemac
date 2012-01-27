@@ -250,6 +250,7 @@ class ReverseBar(Bar):
       return bar
 
 default_widgets = [Bar(marker='\\',left='[',right=']'),' ',Percentage(),' ',ETA()]
+default_subwidgets = [Bar(marker='.',left='[',right=']')]
 
 """
 def format_updatable(updatable, pbar):
@@ -403,6 +404,7 @@ class ProgressBar(object):
    def percentage(self):
       "Returns the percentage of the progress."
       return self.currval*100.0 / self.maxval
+
    def _format_widgets(self):
       r = []
       hfill_inds = []
@@ -423,13 +425,14 @@ class ProgressBar(object):
       for iw in hfill_inds:
           r[iw] = r[iw].update(self, (self.term_width-currwidth)/num_hfill)
       return r
+
    def _format_line(self):
       return ''.join(self._format_widgets()).ljust(self.term_width)
 
    def _need_update(self):
       return int(self.percentage()) != int(self.prev_percentage)
 
-   def update(self, value):
+   def update(self, value, carriage='\r'):
       "Updates the progress bar to a new value."
       assert 0 <= value <= self.maxval
       self.currval = value
@@ -438,11 +441,11 @@ class ProgressBar(object):
       self.seconds_elapsed = time.time() - self.start_time
       self.prev_percentage = self.percentage()
       if value != self.maxval:
-          self.fd.write(self._format_line() + '\r')
+          self.fd.write(self._format_line() + carriage)
       else:
           self.finished = True
           self.fd.write(' '*79+'\r') # /!\ remove the progress bar from display
-          #self.fd.write(self._format_line() + '\n')
+          #self.fd.write(self._format_line() + '\n') or with carriage
 
    def write(self, str, value):
       "Move the progress bar along."
@@ -458,6 +461,10 @@ class ProgressBar(object):
           self.fd.write(' '*79+'\r') # /!\ remove the progress bar from display
           #self.fd.write(self._format_line() + '\n')
 
+   def trace(self):
+      "Leave a trace on screen of the progress bar and carry on to the next line."
+      if self.currval > 0: self.fd.write(self._format_line() + '\n')
+
    def start(self):
       # ~~> Start measuring time, and prints the bar at 0%.
       self.update(0)
@@ -467,6 +474,11 @@ class ProgressBar(object):
       # ~~> Used to tell the progress is finished.
       self.update(self.maxval)
       if self.signal_set: signal.signal(signal.SIGWINCH, signal.SIG_DFL)
+
+class SubProgressBar(ProgressBar):
+
+   def __init__(self, maxval=100):
+      ProgressBar.__init__( self, maxval=maxval, widgets=default_subwidgets )
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

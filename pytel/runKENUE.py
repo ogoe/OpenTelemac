@@ -63,7 +63,8 @@ if __name__ == "__main__":
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    # valid for i2s / i3s
    parser.add_option("--replace",action="store_true",dest="freplace",default=False,help="if present, the output file will eventualy replace the input file" )
-   parser.add_option("--duplicates",action="store_true",dest="fduplicates",default=False,help="if present, use the subdivise method (first)" )
+   parser.add_option("--duplicates",action="store_true",dest="fduplicates",default=False,help="if present, remove duplicate points" )
+   parser.add_option("--duplangles",action="store_true",dest="fduplangles",default=False,help="if present, remove return angles" )
    parser.add_option("--subdivise",type="string",dest="fsubdivise",default=None,help="if present, use the subdivise method (first)" )
    parser.add_option("--subsample",type="string",dest="fsubsample",default=None,help="if present, use the subsample method (distance=..;angle=.." )
    parser.add_option("--clockwise",action="store_true",dest="fclock",default=False,help="if present, anticlockwise polylines will be converted clockwise" )
@@ -109,6 +110,9 @@ if __name__ == "__main__":
          if options.fduplicates:
             print '\nRemove duplicates'
             ins.removeDuplicates()
+         if options.fduplangles:
+            print '\nRemove return angles'
+            ins.removeDuplangles()
          if options.fsubdivise != None:
             print '\nSubdivise and average'
             ins.smoothSubdivise(float(options.fsubdivise))

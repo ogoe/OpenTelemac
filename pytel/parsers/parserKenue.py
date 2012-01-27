@@ -47,7 +47,7 @@ from os import path
 from utils.files import getFileContent,putFileContent
 from utils.progressbar import ProgressBar
 from utils.geometry import isClose
-from samplers.polygons import isClockwise,removeDuplicates,smoothSubdivise,subsampleDistance,subsampleAngle
+from samplers.polygons import isClockwise,removeDuplicates,removeDuplilines,removeDuplangles,smoothSubdivise,subsampleDistance,subsampleAngle
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -154,7 +154,8 @@ class InS:
 
    def __init__(self,fileName):
       self.fileName = fileName
-      self.head,self.fileType,self.npoin,self.poly,self.type = getInS(self.fileName)
+      if fileName != '':
+         self.head,self.fileType,self.npoin,self.poly,self.type = getInS(self.fileName)
 
    def putContent(self,fileName):
       putInS(fileName,self.head,self.fileType,self.poly,self.type)
@@ -174,6 +175,47 @@ class InS:
             self.type.pop(ip)
          else: ip += 1
          pbar.update(ibar)
+      pbar.finish()
+      return self.poly,self.type
+
+   def removeDuplilines(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      ip = 0
+      while ip < len(self.poly):
+         ibar += len(self.poly[ip])
+         p,t = removeDuplilines(self.poly[ip],self.type[ip])
+         pbar.trace() # /!\ the call requires sub-progress bar
+         if len(p) > 1:
+            pbar.maxval -= len(self.poly[ip])
+            ibar -= len(self.poly[ip])
+            self.poly.pop(ip)
+            self.type.pop(ip)
+            for po,to in zip(p,t):
+               pbar.maxval += len(po)
+               self.poly.append(po)
+               self.type.append(to)
+         else:
+            ip += 1
+         pbar.update(ibar)
+      pbar.finish()
+      return self.poly,self.type
+
+   def removeDuplangles(self):
+      ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
+      ip = 0
+      while ip < len(self.poly):
+         ibar += len(self.poly[ip])
+         lb = len(self.poly[ip])
+         self.poly[ip],self.type[ip] = removeDuplangles(self.poly[ip],self.type[ip])
+         la = len(self.poly[ip])
+         if la < lb: pbar.write('    +> removed '+str(lb-la)+' points of '+str(lb)+' from polygon '+str(ip+1),ibar)
+         if self.poly[ip] == []:
+            pbar.write('    +> removed entire polygon '+str(ip+1),ibar)
+            self.poly.pop(ip)
+            self.type.pop(ip)
+         else: ip += 1
+         pbar.update(ibar)
+
       pbar.finish()
       return self.poly,self.type
 
@@ -229,7 +271,7 @@ class InS:
             self.poly.pop(ip)
             self.type.pop(ip)
          else: ip += 1
-         pbar.update(ibar)
+         #pbar.update(ibar)
 
       pbar.finish()
       return self.poly,self.type
@@ -250,7 +292,7 @@ class InS:
             self.poly.pop(ip)
             self.type.pop(ip)
          else: ip += 1
-         pbar.update(ibar)
+         #pbar.update(ibar)
 
       pbar.finish()
       return self.poly,self.type
