@@ -1,6 +1,6 @@
-!                    *************************
-                     SUBROUTINE BEDLOAD_EVOL !
-!                    *************************
+!                    ***********************
+                     SUBROUTINE BEDLOAD_EVOL
+!                    ***********************
 !
      &(HN,Q,S,ELAY,ACLADM, AVA,COEFPN,CALFA,SALFA,LIMTEC,EBOR,
      & MASKEL,MASK,V2DPAR,UNSV2D,DEBUG,NPOIN,NPTFR,
@@ -8,10 +8,10 @@
      & DTS,DM,D90,HMIN,LS0,GRAV,XMVS,XMVE,VCE,
      & VF,ENTET,MSK,CONST_ALAYER,LCONDIS,MESH,
      & QS,T1, T2, T3, T4, T5, T6, T7, T8, T9,
-     & T10, T11, T12, T13, CSF_SABLE, BREACH, QSX, QSY, ZFCL,SLOPEFF)
+     & T10,T11,T12,T13,CSF_SABLE,BREACH,QSX,QSY,ZFCL,SLOPEFF,ICLA)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE EVOLUTION FOR THE BEDLOAD TRANSPORT.
@@ -37,7 +37,11 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!+ 
+!history  J-M HERVOUET (EDF-LNHE)
+!+        27/01/2012
+!+        V6P2
+!+  Argument ICLA added     
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -57,6 +61,7 @@
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| HMIN           |-->| MINIMUM VALUE OF WATER DEPTH
 !| HN             |-->| WATER DEPTH
+!| ICLA           |-->| CLASS NUMBER
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
@@ -111,7 +116,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HN,Q,S,UNSV2D,ELAY,ACLADM
       TYPE(BIEF_OBJ),   INTENT(IN)    :: COEFPN,CALFA,SALFA,LIMTEC
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL,MASK,V2DPAR
-      INTEGER,          INTENT(IN)    :: DEBUG,SLOPEFF,NPOIN,NPTFR
+      INTEGER,          INTENT(IN)    :: DEBUG,SLOPEFF,NPOIN,NPTFR,ICLA
       INTEGER,          INTENT(IN)    :: IELMT,KENT,KDIR,LOADMETH,KDDL
       DOUBLE PRECISION, INTENT(IN)    :: DTS,DM,D90,HMIN,LS0
       DOUBLE PRECISION, INTENT(IN)    :: GRAV,XMVS,XMVE,VCE,AVA(NPOIN)
@@ -121,7 +126,7 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS,EBOR
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T1, T2, T3, T4, T5, T6, T7
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8, T9, T10, T11, T12, T13
-      DOUBLE PRECISION, INTENT(IN) :: CSF_SABLE
+      DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH, QSX, QSY, ZFCL
 !
       ! 3/ LOCAL VARIABLES
@@ -133,10 +138,11 @@
 !                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
+!
       ! **************** !
       ! I - SLOPE EFFECT !
       ! **************** !
-        IF (SLOPEFF == 1) THEN
+        IF(SLOPEFF.EQ.1) THEN
           CALL OS('X=XY    ', X=QS , Y=COEFPN)
         ENDIF
         CALL OS('X=YZ    ', X=QSX, Y=QS, Z=CALFA)
@@ -156,7 +162,7 @@
       ! ***************************************************** !
       ! IVA - SOLVES THE BED-EVOLUTION EQUATION : F.V.        !
       ! ***************************************************** !
-      IF (VF) THEN
+      IF(VF) THEN
          IF(DEBUG > 0) WRITE(LU,*) 'BEDLOAD_SOLVS_VF'
          CALL BEDLOAD_SOLVS_VF
      &        (MESH, QSX, QSY, LIMTEC,UNSV2D, EBOR, BREACH,
@@ -179,7 +185,7 @@
      &         ZFCL,T12,T13,MESH%GLOSEG%I,
      &         MESH%GLOSEG%DIM1,MESH%MSEG%X,
      &         MESH%MSEG%X%R(MESH%NSEG+1:2*MESH%NSEG),
-     &         MESH%NSEG,UNSV2D,CSF_SABLE)
+     &         MESH%NSEG,UNSV2D,CSF_SABLE,ICLA)
         IF(DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_SOLVS_FE'
       ENDIF
 !

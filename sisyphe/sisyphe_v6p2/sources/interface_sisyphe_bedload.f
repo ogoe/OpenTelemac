@@ -10,15 +10,16 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-        INTERFACE                        !
-      ! ******************************** !
+        INTERFACE          
+!
 !**********************************************************************C
 ! SISYPHE RELEASE 5.6  12/01/05  F. HUVELIN                            C
 !**********************************************************************C
-             ! ======================================= !
-             !  INTERFACE FOR THE SISYPHE SUBROUTINE   !
-             !         FOR BEDLOAD TRANSPORT           !
-             ! ======================================= !
+!
+! ======================================= !
+!  INTERFACE FOR THE SISYPHE SUBROUTINE   !
+!         FOR BEDLOAD TRANSPORT           !
+! ======================================= !
 !
 ! COPYRIGHT EDF-DTMPL-SOGREAH-LHF-GRADIENT
 !**********************************************************************C
@@ -251,7 +252,7 @@
      & DTS,DM,D90,HMIN,LS0,GRAV,XMVS,XMVE,VCE,
      & VF,ENTET,MSK,CONST_ALAYER,LCONDIS,MESH,
      & QS,T1, T2, T3, T4, T5, T6, T7, T8, T9,
-     & T10, T11, T12, T13, CSF_SABLE, BREACH, QSX, QSY, ZFCL,SLOPEFF)
+     & T10,T11,T12,T13,CSF_SABLE,BREACH,QSX,QSY,ZFCL,SLOPEFF,ICLA)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HN,Q,S,UNSV2D
@@ -259,7 +260,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: COEFPN,CALFA,SALFA
       TYPE(BIEF_OBJ),   INTENT(IN)    :: LIMTEC
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL, MASK,MASBAS
-      INTEGER,          INTENT(IN)    :: DEBUG,SLOPEFF
+      INTEGER,          INTENT(IN)    :: DEBUG,SLOPEFF,ICLA
       INTEGER,          INTENT(IN)    :: NPOIN, NPTFR
       INTEGER,          INTENT(IN)    :: IELMT,KENT,KDIR
       INTEGER,          INTENT(IN)    :: LOADMETH,KDDL
@@ -555,7 +556,6 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: CALFA,SALFA,COEFPN
       DOUBLE PRECISION, INTENT(IN)    :: BIJK,AVA(NPOIN)
 !
-!RK
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
 !
@@ -586,14 +586,15 @@
       !----------------------------------------------------------------!
      &(MESH,S,EBOR,MASKEL,MASK,
      & QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,LIMTEC,DT,
-     & MSK, ENTET, T1,T2,T3,T4, T8,
-     & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE)
+     & MSK,ENTET,T1,T2,T3,T4,T8,
+     & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,
+     & ICLA)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: S,LIMTEC,MASKEL,MASK,QSX,QSY
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
-      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG
+      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)

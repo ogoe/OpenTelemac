@@ -8,7 +8,7 @@
      &  VOLTOT , DZF_GF , MASS_GF, LGRAFED, NUMLIQ , NFRLIQ)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE MASS BALANCE.
@@ -37,6 +37,11 @@
 !+        V6P1
 !+  Name of variables   
 !+   
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        27/01/2012
+!+        V6P2
+!+  NSICLM and MAXFRO used instead of 10 and 300. 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
@@ -67,6 +72,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_SISYPHE, ONLY : NSICLM,MAXFRO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -100,10 +106,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IFRLIQ,IPTFR
-      DOUBLE PRECISION RMASSE,RCUMU,RMASCLA(10)
-      DOUBLE PRECISION VCUMUCLA(10),MASST,FLUXT
-!     300 STANDS FOR MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
-      DOUBLE PRECISION FLT_BOUND(300)
+      DOUBLE PRECISION RMASSE,RCUMU,RMASCLA(NSICLM)
+      DOUBLE PRECISION VCUMUCLA(NSICLM),MASST,FLUXT
+      DOUBLE PRECISION FLT_BOUND(MAXFRO)
 !
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM

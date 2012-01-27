@@ -2,8 +2,7 @@
                      SUBROUTINE BEDLOAD_MEYER !
 !                    **************************
 !
-     &  (TETAP, HIDING, HIDFAC, DENS, GRAV, DM, AC,
-     &   ACP, QSC, SLOPEFF, COEFPN)
+     &(TETAP,HIDING,HIDFAC,DENS,GRAV,DM,AC,ACP,QSC,SLOPEFF,COEFPN)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -58,72 +57,65 @@
 !| TETAP          |-->| ADIMENSIONAL SKIN FRICTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE INTERFACE_SISYPHE,
-     &    EX_BEDLOAD_MEYER => BEDLOAD_MEYER
       USE BIEF
+      USE INTERFACE_SISYPHE, EX_BEDLOAD_MEYER => BEDLOAD_MEYER
       USE DECLARATIONS_SISYPHE, only : MPM_ARAY
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
-
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TETAP, HIDING
       INTEGER,          INTENT(IN)    :: HIDFAC, SLOPEFF
       DOUBLE PRECISION, INTENT(IN)    :: DENS, GRAV, DM, AC
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: ACP ! WORK ARRAY T1
-      TYPE(BIEF_OBJ),   INTENT(INOUT)   :: QSC, COEFPN
-
-
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC, COEFPN
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION :: C2
-
-
+!
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
-
+!
       CALL CPSTVC(QSC,ACP)
       CALL OS('X=C     ', X=ACP, C=AC)
 
       ! **************************************** !
-      ! 0 - SLOPE EFFECT: SOULBY FORMULATION     ! (_IMP_)
+      ! 0 - SLOPE EFFECT: SOULBY FORMULATION     ! 
       ! **************************************** !
-      IF(SLOPEFF == 2) THEN
+      IF(SLOPEFF.EQ.2) THEN
         CALL OS('X=XY    ', X=ACP, Y=COEFPN )
       ENDIF
 
       ! **************************************** !
-      ! III - BEDLOAD TRANSPORT CORRECTED        ! (_IMP_)
-      !       FOR EXTENDED GRAIN SIZE            ! (_IMP_)
-	  !       WITH VARIABLE MPM_COEFFICIENT      !
+      ! III - BEDLOAD TRANSPORT CORRECTED        ! 
+      !       FOR EXTENDED GRAIN SIZE            ! 
+      !       WITH VARIABLE MPM_COEFFICIENT      !
       ! **************************************** !
       C2 = SQRT(GRAV*DENS*DM**3)
-      IF ((HIDFAC == 1) .OR. (HIDFAC == 2) ) THEN
-         CALL OS('X=XY    ', X=ACP, Y=HIDING)
-         CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
-         CALL OS('X=+(Y,C)', X=QSC, Y=QSC , C=0.D0)
-         CALL OS('X=Y**C  ', X=QSC, Y=QSC , C=1.5D0)
-         CALL OS('X=CX    ', X=QSC, C=C2)
-         CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
+      IF(HIDFAC.EQ.1.OR.HIDFAC.EQ.2) THEN
+        CALL OS('X=XY    ', X=ACP, Y=HIDING)
+        CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
+        CALL OS('X=+(Y,C)', X=QSC, Y=QSC , C=0.D0)
+        CALL OS('X=Y**C  ', X=QSC, Y=QSC , C=1.5D0)
+        CALL OS('X=CX    ', X=QSC, C=C2)
+        CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
       ELSE
-          CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
-          CALL OS('X=+(Y,C)', X=QSC, Y=QSC, C=0.D0)
-         CALL OS('X=Y**C  ', X=QSC, Y=QSC, C=1.5D0)
-         CALL OS('X=CX    ', X=QSC, C=C2)
-         CALL OS('X=XY    ', X=QSC, Y=HIDING)
-         CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
+        CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
+        CALL OS('X=+(Y,C)', X=QSC, Y=QSC, C=0.D0)
+        CALL OS('X=Y**C  ', X=QSC, Y=QSC, C=1.5D0)
+        CALL OS('X=CX    ', X=QSC, C=C2)
+        CALL OS('X=XY    ', X=QSC, Y=HIDING)
+        CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
       ENDIF
-
+!
 !======================================================================!
 !======================================================================!
-
+!
       RETURN
-      END SUBROUTINE BEDLOAD_MEYER
-C
-C#######################################################################
-C
+      END

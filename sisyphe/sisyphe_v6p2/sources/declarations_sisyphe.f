@@ -199,7 +199,7 @@ C-----------------------------------------------------------------------
 !
       TYPE(BIEF_OBJ), TARGET :: UNSV2D
 !
-!     BOTTOM FRICTION COEFFICIENT (CHEZY, NIKURADSE OR STICKLER)
+!     BOTTOM FRICTION COEFFICIENT (CHEZY, NIKURADSE OR STRICKLER)
 !
       TYPE(BIEF_OBJ), TARGET :: CHESTR
 !
@@ -626,11 +626,13 @@ C
 !> @brief
 C
       INTEGER DEPER
-!> @brief FORMULA FOR DEVIATION
-C formule pour la deviation
+!
+!     FORMULA FOR DEVIATION
+!
       INTEGER DEVIA
-!> @brief FORMULA FOR SLOPE EFFECT
-C formule pour effet de pente
+!
+!     FORMULA FOR SLOPE EFFECT
+!
       INTEGER SLOPEFF
 !
 ! NON-EQUILIBRIUM BEDLOAD AND NON-UNIFORM BED MATERIA (BMD AND MGDL)

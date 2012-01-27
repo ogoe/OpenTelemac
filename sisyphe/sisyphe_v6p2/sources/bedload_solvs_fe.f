@@ -1,14 +1,15 @@
-!                    *****************************
-                     SUBROUTINE BEDLOAD_SOLVS_FE !
-!                    *****************************
+!                    ***************************
+                     SUBROUTINE BEDLOAD_SOLVS_FE
+!                    ***************************
 !
      &(MESH,S,EBOR,MASKEL,MASK,
      & QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,LIMTEC,DT,
      & MSK, ENTET,T1,T2,T3,T4,T8,
-     & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE)
+     & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,
+     & ICLA)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    SOLVES:
@@ -58,7 +59,11 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!+
+!history  J-M HERVOUET (EDF-LNHE)
+!+        27/01/2012
+!+        V6P2
+!+  Argument ICLA added    
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -70,6 +75,7 @@
 !| GLOSEG         |-->| CONNECTIVITY TABLE FOR SEGMENTS
 !| HZ             |<--| NEW AVAILABLE LAYER OF SEDIMENT
 !| HZN            |-->| OLD AVAILABLE LAYER OF SEDIMENT
+!| ICLA           |-->| CLASS NUMBER
 !| IELMT          |-->| NUMBER OF ELEMENTS
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
@@ -106,7 +112,7 @@
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: S,LIMTEC,MASKEL,MASK,QSX,QSY
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
-      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG
+      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)
@@ -178,6 +184,7 @@
 !         HERE THIS IS MASS, DIVISION BY CSF_SABLE DONE LATER
           ZFCL%R(MESH%NBOR%I(K))=EBOR%R(K)-HZN%R(MESH%NBOR%I(K))
 !         ORIGINAL EBOR RESTORED
+!         NOTE JMH: IS THIS USEFUL ? WHAT IS THE USE OF EBOR AFTER ?
           EBOR%R(K)=(EBOR%R(K)-HZN%R(MESH%NBOR%I(K)))/CSF_SABLE
         ENDIF
       ENDDO

@@ -303,7 +303,8 @@
      &                      LCONDIS,MESH,QSCL_C%ADR(I)%P,
      &                      T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,
      &                      T13,CSF_SABLE,BREACH,QSCLXC%ADR(I)%P,
-     &                      QSCLYC%ADR(I)%P,ZFCL_C%ADR(I)%P,SLOPEFF)
+     &                      QSCLYC%ADR(I)%P,ZFCL_C%ADR(I)%P,SLOPEFF,
+     &                      I)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_EVOL'
 !
 !         NOW DIVIDING BY CSF_SABLE TO GET THE EVOLUTION OF BED
