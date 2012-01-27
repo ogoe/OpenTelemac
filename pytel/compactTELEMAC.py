@@ -40,6 +40,12 @@
       the archives files are named after each available configuration and
       further packaged within the archive_name (at the defined location)
 """
+"""@history 27/01/2012 -- Sebastien E. Bourban
+         A new option (--modules) added to the command line, which if present
+         will reset the value of the key in the configuration file.
+         This development was triggered by Christophe Coulet (Artelia-Sogreah)
+         who asked about it on the open TELEMAC forum.
+"""
 """@brief
 
 """
@@ -99,6 +105,11 @@ if __name__ == "__main__":
                       dest="archiveName",
                       default='',
                       help="specify the archive name, default is taken as the config name" )
+   parser.add_option("-m", "--modules",
+                      type="string",
+                      dest="modules",
+                      default='',
+                      help="specify the list modules, default is taken from config file" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -130,13 +141,15 @@ if __name__ == "__main__":
          print '\nNot able to find your root directory: ' + cfgs[cfgname]['root'] + '\n'
          sys.exit()
       if options.version != '': cfgs[cfgname]['version'] = options.version
+      if options.modules != '': cfgs[cfgname]['modules'] = options.modules
       # parsing for proper naming
       cfg = parseConfig_CompactTELEMAC(cfgs[cfgname])
       print '\n\nScanning the source code for:\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       print '    +> configuration: ' +  cfgname
       print '    +> root:          ' +  cfgs[cfgname]['root']
-      print '    +> version        ' +  cfgs[cfgname]['version'] + '\n\n\
+      print '    +> version:       ' +  cfgs[cfgname]['version']
+      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
