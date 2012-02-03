@@ -32,6 +32,11 @@
          - merge (merge 2 results into one file, either alining time or
            pulling variables together)
 """
+"""@history 01/02/2012 -- Michelle Woodward, Laure C. Grignon and Sebastien E. Bourban:
+         Addition of a new SELAFIN class to add calculated variables to a
+         existing SELAFIN file.
+"""
+
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
@@ -42,7 +47,7 @@ import numpy as np
 # ~~> dependencies towards other modules
 from config import OptionParser
 # ~~> dependencies towards other modules
-from parsers.parserSELAFIN import SELAFIN,SELAFINS,getVariablesAt,subsetVariablesSLF
+from parsers.parserSELAFIN import SELAFIN,SELAFINS,putHeaderSLF,appendCoreTimeSLF,appendCoreVarsSLF,getVariablesAt,subsetVariablesSLF
 from parsers.parserFortran import cleanQuotes
 from utils.files import moveFile
 # _____                   __________________________________________
@@ -113,8 +118,8 @@ class scanSELAFIN(SELAFIN,chopSELAFIN):
          print "DATE / TIME  : ", \
          self.DATETIME[2],"-",self.DATETIME[1],"-",self.DATETIME[0]," ", \
          self.DATETIME[3],":",self.DATETIME[4],":",self.DATETIME[5]
-      if len(self.VARNAMES) > 0: print "VARIABLES    :\n   - " + "\n   - ".join(self.VARNAMES)
-      if len(self.CLDNAMES) > 0: print "CLANDESTINES :\n   - " + "\n   - ".join(self.CLDNAMES)
+      if len(self.VARNAMES) > 0: print "VARIABLES    :\n   - " + "\n   - ".join(v+u for v,u in zip(self.VARNAMES,self.VARUNITS))
+      if len(self.CLDNAMES) > 0: print "CLANDESTINES :\n   - " + "\n   - ".join(v+u for v,u in zip(self.CLDNAMES,self.CLDUNITS))
       print "NUMBERs      :"
       print "   - NPLAN* = ",self.IPARAM[6],"\n   - NPTFR* = ",self.IPARAM[7],"\n   - IFACE* = ",self.IPARAM[8]
       print "   - NELEM3 = ",self.NELEM3,"\n   - NPOIN3 = ",self.NPOIN3,"\n   - NDP    = ",self.NDP,"\n   - NPLAN  = ",self.NPLAN
@@ -203,6 +208,38 @@ class alterSELAFIN(SELAFIN,chopSELAFIN):
             if v.lower() in self.CLDNAMES[iv].lower(): VARSOR[iv+slf.NBV1] = self.alterZm * VARSOR[iv+slf.NBV1] + self.alterZp
       return VARSOR
 
+class calcsSELAFIN(SELAFIN):
+
+   def __init__(self,f, times=None,vars=None):
+      SELAFIN.__init__(self,f)
+      self.calcs = []
+
+   def calcWaterDepth(self):
+      self.VARNAMES.append("WATER DEPTH     ")
+      self.VARUNITS.append("M               ")
+      self.NBV1 += 1
+      args = subsetVariablesSLF("FREE SURFACE;BOTTOM",self.VARNAMES)[0]
+      def calc(vars,ivars): return [vars[ivars[0]]-vars[ivars[1]]]
+      self.calcs.append( [ calc, args ] )
+
+   def calcKineticEnergy(self):
+      self.VARNAMES.append("KINETIC ENERGY  ")
+      self.VARUNITS.append("?               ")
+      self.NBV1 += 1
+      args = subsetVariablesSLF("VELOCITY U;VELOCITY V",self.VARNAMES)[0]
+      def calc(vars,ivars): return [np.power( (np.power(vars[ivars[0]],2)+np.power(vars[ivars[1]],2) ),(3.0/2.0) )]
+      self.calcs.append( [ calc, args ] )
+
+   def putContent(self,fileName):
+      self.fole = open(fileName,'wb')
+      putHeaderSLF(self)
+      for t in range(len(self.tags['times'])):
+         appendCoreTimeSLF(self,t)
+         vars = self.getVALUES(t)
+         appendCoreVarsSLF(self,vars)
+         for fct,args in self.calcs: appendCoreVarsSLF(self,fct(vars,args))
+      self.fole.close()
+
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
@@ -281,7 +318,7 @@ if __name__ == "__main__":
          print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
-         if options.xvars != None: vars = cleanQuotes(options.xvars)
+         if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = scanSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
          slf.printHeader()
          if options.core: slf.printCore()
@@ -308,7 +345,7 @@ if __name__ == "__main__":
          print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
-         if options.xvars != None: vars = cleanQuotes(options.xvars)
+         if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = chopSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
 
          slf.putContent( outFile )
@@ -336,7 +373,7 @@ if __name__ == "__main__":
          print '\n\nAltering ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
-         if options.xvars != None: vars = cleanQuotes(options.xvars)
+         if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = alterSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
          if options.atitle != None: slf.updateTITLE(options.atitle)
          if options.areset: slf.updateTIMES(pT=-slf.tags['times'][0])

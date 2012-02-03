@@ -31,6 +31,12 @@
          Distinguishing between VARIABLES and CLANDESTINES.
          Also, now learned how mix multiple classes' methods.
 """
+"""@history 01/02/2012 -- Sebastien E. Bourban:
+         Massively speeding up the read and write of SELAFIN files.
+         Also, following discussion with Laure C. Grignon (HRW), addition of
+         the getSERIES() method to the SELAFIN class, which will eventually
+         replace or at least accelerate getValueHistorySLF
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -56,105 +62,63 @@ from utils.progressbar import ProgressBar
 def getHeaderParametersSLF(f):
 
    # ~~ Read title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   TITLE = unpack('>80s',f.read(80))[0]
-   chk = unpack('>i',f.read(4))[0]
+   l,TITLE,chk = unpack('>i80si',f.read(4+80+4))
    if l!=chk:
-      print '... Cannot read TITLE'
+      print '... Cannot read the TITLE of your SELAFIN file'
       sys.exit()
 
    # ~~ Read NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   NBV1,NBV2 = unpack('>ii',f.read(8))
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print '... Cannot read NBVs'
-      sys.exit()
-
+   l,NBV1,NBV2,chk = unpack('>iiii',f.read(4+8+4))
    # ~~ Read variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    VARNAMES = []; VARUNITS = []
    for i in range(NBV1):
-     l = unpack('>i',f.read(4))[0]
-     VARNAMES.append(unpack('>16s',f.read(16))[0])
-     VARUNITS.append(unpack('>16s',f.read(16))[0])
-     chk = unpack('>i',f.read(4))[0]
-     if l!=chk:
-        print '... Cannot read VARNAMES/VARUNITS['+str(i)+']'
-        sys.exit()
+     l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
+     VARNAMES.append(vn)
+     VARUNITS.append(vu)
    CLDNAMES = []; CLDUNITS = []
    for i in range(NBV2):
-     l = unpack('>i',f.read(4))[0]
-     CLDNAMES.append(unpack('>16s',f.read(16))[0])
-     CLDUNITS.append(unpack('>16s',f.read(16))[0])
-     chk = unpack('>i',f.read(4))[0]
-     if l!=chk:
-        print '... Cannot read CLDNAMES/CLDUNITS['+str(i)+']'
-        sys.exit()
+     l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
+     CLDNAMES.append(vn)
+     CLDUNITS.append(vu)
 
    # ~~ Read IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   IPARAM = np.asarray( unpack('>10i',f.read(40)) )
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print '... Cannot read IPARAM'
-      sys.exit()
+   d = unpack('>12i',f.read(4+40+4))
+   IPARAM = np.asarray( d[1:11] )
 
    # ~~ Read DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    DATETIME = [1972,07,13,17,15,13]
    if IPARAM[9] == 1:
-      l = unpack('>i',f.read(4))[0]
-      DATETIME = np.asarray( unpack('>6i',f.read(4*6)) )
-      chk = unpack('>i',f.read(4))[0]
-      if l!=chk:
-         print '... Cannot read DATE and TIME'
-         sys.exit()
+      d = unpack('>8i',f.read(4+24+4))
+      DATETIME = np.asarray( d[1:9] )
 
    # ~~ Read NELEM3, NPOIN3, NDP, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   NELEM3,NPOIN3,NDP,NPLAN = unpack('>4i',f.read(16))
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print '... Cannot read NELEM3 etc.'
-      sys.exit()
+   l,NELEM3,NPOIN3,NDP,NPLAN,chk = unpack('>6i',f.read(4+16+4))
 
    return TITLE, NBV1,VARNAMES,VARUNITS, NBV2,CLDNAMES,CLDUNITS, IPARAM, DATETIME, NELEM3,NPOIN3,NDP,NPLAN
 
 def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
 
    # ~~ Read the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   #IKLE = unpack('>'+str(NELEM3*NDP)+'i',f.read(4*NELEM3*NDP))
-   IKLE = []
-   for i in range(NELEM3):
-      IKLE.append(unpack('>'+str(NDP)+'i',f.read(4*NDP)))
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print '... Cannot read IKLE3'
-      sys.exit()
+   f.seek(4,1)
+   IKLE = np.array( unpack('>'+str(NELEM3*NDP)+'i',f.read(4*NELEM3*NDP)) ).reshape((NELEM3,NDP))
+   f.seek(4,1)
 
    # ~~ Read the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   IPOBO = unpack('>'+str(NPOIN3)+'i',f.read(4*NPOIN3))
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print '... Cannot read IPOBO'
-      sys.exit()
+   f.seek(4,1)
+   IPOBO = np.asarray( unpack('>'+str(NPOIN3)+'i',f.read(4*NPOIN3)) )
+   f.seek(4,1)
 
    # ~~ Read the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   MESHX = unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN))
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print '... Cannot read MESHX'
+   f.seek(4,1)
+   MESHX = np.asarray( unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN)) )
+   f.seek(4,1)
 
    # ~~ Read the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
-   l = unpack('>i',f.read(4))[0]
-   MESHY = unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN))
-   chk = unpack('>i',f.read(4))[0]
-   if l!=chk:
-      print '... Cannot read MESHY'
+   f.seek(4,1)
+   MESHY = np.asarray( unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN)) )
+   f.seek(4,1)
 
-   return np.asarray(IKLE)-1,np.asarray(IPOBO),np.asarray(MESHX),np.asarray(MESHY)
+   return IKLE-1,IPOBO,MESHX,MESHY
 
 def getTimeHistorySLF(f,NVAR,NPOIN3):
 
@@ -163,12 +127,11 @@ def getTimeHistorySLF(f,NVAR,NPOIN3):
       try:
          ATt.append(f.tell())
          # ~~ Read AT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         l = unpack('>i',f.read(4))[0]
+         f.seek(4,1)
          ATs.append(unpack('>f',f.read(4))[0])
-         chk = unpack('>i',f.read(4))[0]
-         if l!=chk: print 'Error reading AT'
+         f.seek(4,1)
          # ~~ Skip Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         f.read( NVAR*(4+4*NPOIN3+4) )
+         f.seek(NVAR*(4+4*NPOIN3+4),1)
          
       except:
          ATt.pop(len(ATt)-1)   # since the last record failed the try
@@ -181,14 +144,14 @@ def getVariablesAt( f,tags,frame,NVAR,NPOIN3,varsIndexes ):
    z = np.zeros((len(varsIndexes),NPOIN3))
    if frame < len(tags['cores']) and frame >= 0:
       f.seek(tags['cores'][frame])
-      f.read(4+4+4)
+      f.seek(4+4+4,1)
       for ivar in range(NVAR):
-         f.read(4)
+         f.seek(4,1)
          if ivar in varsIndexes:
             z[varsIndexes.index(ivar)] = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
          else:
-            f.read(4*NPOIN3)
-         f.read(4)
+            f.seek(4*NPOIN3,1)
+         f.seek(4,1)
 
    return z
 
@@ -219,7 +182,8 @@ def subsetVariablesSLF(vars,ALLVARS):
             ids.append(jvar)
             names.append(ALLVARS[jvar].strip())
    if not len(ids) == len(vars.split(';')):
-      print "... Could not find ",vars," in ",ALLVARS
+      print "... Could not find ",v[ivar]," in ",ALLVARS
+      print "   +> may be you forgot to switch name spaces into underscores in your command ?"
       sys.exit()
 
    return ids,names
@@ -236,16 +200,16 @@ def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,va
    for t in range(len(tags['cores'])):
       if t < subset[0] or t > subset[1]: continue
       f.seek(tags['cores'][t])
-      f.read(4+4+4)
+      f.seek(4+4+4,1)
       for ivar in range(NVAR):
-         f.read(4)
+         f.seek(4,1)
          if ivar in varsIndexes:
             VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
             for xy in range(len(bn)):
                z[varsIndexes.index(ivar)][xy][t] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
          else:
-            f.read(4*NPOIN3)
-         f.read(4)
+            f.seek(4*NPOIN3,1)
+         f.seek(4,1)
 
    return ('Time (s)',tags['times']),[(TITLE,varsName,le,z)]
 
@@ -595,9 +559,9 @@ def appendCoreVarsSLF(slf,VARSOR):
    f = slf.fole
 
    # Print variable records
-   for v in range(len(VARSOR)):
+   for v in VARSOR:
       f.write(pack('>i',4*slf.NPOIN3))
-      f.write(pack('>'+str(slf.NPOIN3)+'f',*(VARSOR[v])))
+      f.write(pack('>'+str(slf.NPOIN3)+'f',*(v)))
       f.write(pack('>i',4*slf.NPOIN3))
 
    return
@@ -633,6 +597,31 @@ class SELAFIN:
          pbar.update(ibar)
       self.fole.close()
       pbar.finish()
+
+   def getSERIES( self,nodes ): # /!\ nodes is an array assumed sorted !
+      f = self.file
+
+      # ~~ Ordering the nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      onodes = np.sort(np.array( zip(range(len(nodes)),nodes), dtype=[ ('0',int),('1',int) ] ),order='1')
+
+      # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      z = np.zeros((self.NVAR,len(nodes),len(self.tags['cores'])))
+      f.seek(self.tags['cores'][0])
+      for t in range(len(self.tags['cores'])):
+         f.seek(4+4+4,1)
+         for ivar in range(self.NVAR):
+            f.seek(4,1)
+            jnod = onodes[0]
+            f.seek(4*(jnod[1]-1),1)
+            z[ivar,jnod[0],t] = unpack('>f',f.read(4))[0]
+            for inod in onodes[1:]:
+               f.seek(4*(inod[1]-jnod[1]-1),1)
+               z[ivar,inod[0],t] = unpack('>f',f.read(4))[0]
+               jnod = inod
+            f.seek(4*self.NPOIN3-4*jnod[1],1)
+            f.seek(4,1)
+
+      return z
 
    def __del__(self): self.file.close()
 

@@ -73,7 +73,7 @@ def getINSEL(file):
    core.pop(len(core)-1)
    poly = []; type = []; npoin = 0
    iline = 0; xyi = []; fileType = True
-   while iline < len(core[iline]):
+   while iline < len(core):
       proco = re.match(dat_openh,core[iline])
       if proco: t = 0
       procc = re.match(dat_closh,core[iline])
