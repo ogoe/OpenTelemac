@@ -10,6 +10,7 @@ from time import strftime
 # Global variable and default values of input parameters
 # ------------------------------------------------------------#
 # Debug
+ok_submit = True
 verbose    = False
 filename   = 'run.slurm'
 jobname    = ''
@@ -76,10 +77,12 @@ def create_run_slurm():
 #SBATCH --time=%(walltime)s
 #SBATCH --ntasks=%(ncsize)s
 #SBATCH --partition=%(queue)s
-srun hostname -s | sort -u > mpid.conf
+##SBATCH --exclude=cn[0000-0000,0000]
+#SBATCH --exclusive
+srun hostname | sort > mpid.conf
 for line in $(echo | cat mpid.conf)
 do
-  echo -e "$line 12"
+  echo -e "$line 1"
 done > mpitasks.conf
 echo %(ncsize)s > mpitasks | cat mpitasks mpitasks.conf > mpi_telemac.conf
 #
@@ -131,11 +134,17 @@ if __name__ == "__main__":
     if '-verbose' in sys.argv:
         # if then, print everything it could...
         verbose = True
+        sys.argv.remove('-verbose')
+    elif '-s' in sys.argv:
+        # if then, cree run.slurm mais ne soumet pas le job
+        ok_submit = False
+        sys.argv.remove('-s')
     elif '-help' in sys.argv or '-h' in sys.argv:
         # if then, printout the help page
         print bcolors.OKGREEN + "usage : ./script.py [-h|prefix|source...]" + bcolors.ENDC
         print bcolors.OKGREEN + "  -h       : print this page" + bcolors.ENDC
         print bcolors.OKGREEN + "  -verbose : un peu plus causant" + bcolors.ENDC
+        print bcolors.OKGREEN + "  -s : cree run.slurm mais ne soumet pas le job" + bcolors.ENDC
         print bcolors.OKGREEN + "RunScript_queue JOB 8 telemac3s cas.txt queuelist [walltime] [sourcefile] [option]" + bcolors.ENDC
         print bcolors.OKGREEN + "RunScript_queue JOB 8 telemac3s cas.txt queuelist 01:00:00 $SOURCEFILE -t" + bcolors.ENDC
         print '';
@@ -155,9 +164,11 @@ if __name__ == "__main__":
         option = sys.argv[8]
    
     create_run_slurm()
-    submit('sbatch %s'%filename)
-
-    # -----------------------------------------# -----------------------------------------#
-    # Lancement du calcul
-    # -----------------------------------------# -----------------------------------------#
-    print bcolors.HEADER + "------------      Calcul sur Ivanoe a ete lance    ----------" + bcolors.ENDC
+    if ok_submit:
+        submit('sbatch %s'%filename)
+        # -----------------------------------------# -----------------------------------------#
+        # Lancement du calcul
+        # -----------------------------------------# -----------------------------------------#
+        print bcolors.HEADER + "------------      Calcul sur Ivanoe a ete lance    ----------" + bcolors.ENDC
+    else:
+        print bcolors.HEADER + "------------     Fichier de lancement run.slurm ok  ----------" + bcolors.ENDC
