@@ -429,6 +429,10 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
    TMPDir = processTMP(casFile)
+   WDir = TMPDir
+   if options.workDirectory != '':
+      WDir = path.join(path.dirname(casFile),options.workDirectory)
+      if not path.exists(WDir): mkdir(WDir)
 
    # ~~ Read the included CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
@@ -470,12 +474,12 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Handling all input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Placing yourself where the CAS File is
    chdir(CASDir)
-   # >>> Copy INPUT files into TMPDir
-   if not processLIT(cas,iFS,TMPDir): sys.exit()
+   # >>> Copy INPUT files into WDir
+   if not processLIT(cas,iFS,WDir): sys.exit()
    for mod in COUPLAGE.keys():
-      if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],TMPDir): sys.exit()
-   # >>> Placing yourself into the TMPDir
-   chdir(TMPDir)
+      if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir): sys.exit()
+   # >>> Placing yourself into the WDir
+   chdir(WDir)
    # >>> Creating LNG file
    processCONFIG(lang)
 
@@ -485,7 +489,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
    # ~~ Handling Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Names for the executable set
-      #> names within TMPDir
+      #> names within WDir
    f90File = iFS['FICHIER FORTRAN'].split(';')[1]
       #> aggregation of PRINCI files
    for mod in COUPLAGE.keys():
@@ -519,7 +523,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
 
    # >>> Rename executable because of firewall issues ~~~~~~~~~~~~~~
-   runCmd = path.join(TMPDir,'out_'+path.basename(useFile))
+   runCmd = path.join(WDir,'out_'+path.basename(useFile))
    shutil.move(path.basename(useFile),runCmd)
 
    if not options.compileonly:
@@ -543,7 +547,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             if cfg['MPI'].has_key('HOSTS'):
                hosts = cfg['MPI']['HOSTS']
          # ~~> MPI Command line
-         mpiCmd = mpiCmd.replace('<wdir>','-wdir '+TMPDir)   # /!\ Make sure TMPDir works in UNC convention
+         mpiCmd = mpiCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
          mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
          mpiCmd = mpiCmd.replace('<hosts>',hosts)
          mpiCmd = mpiCmd.replace('<exename>',runCmd)
@@ -557,7 +561,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             if cfg['PARALLEL'].has_key('PATH'):
                PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['TELDIR']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
          # ~~> Creating PARA file and the mpi_telemac.conf
-         processPARALLEL(ncsize,TMPDir+sep)  # /!\ Make sure TMPDir works in UNC convention
+         processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
 
       # >>> Running the partionning
       if ncsize > 1:
@@ -586,21 +590,21 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             runRecollection(exeCmd,COUPLAGE[mod]['cas'],GLOGEO,COUPLAGE[mod]['oFS'],ncsize)
 
    # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      done,files = processECR(cas,oFS,CASDir,TMPDir,sortiefile,ncsize)
+      done,files = processECR(cas,oFS,CASDir,WDir,sortiefile,ncsize)
       if not done:
-         print '... I could not copy the output files back from the temporary directory: ' + TMPDir
+         print '... I could not copy the output files back from the temporary directory: ' + WDir
          sys.exit()
       sortiefiles.extend(files)
       for mod in COUPLAGE.keys():
-         done,files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,TMPDir,None,ncsize)
+         done,files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,WDir,None,ncsize)
          if not done:
-            print '... I could not copy the output files back from the temporary directory: ' + TMPDir
+            print '... I could not copy the output files back from the temporary directory: ' + WDir
             sys.exit()
          sortiefiles.extend(files)
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    chdir(CASDir)
-   if options.tmpdirectory or options.compileonly: removeDirectories(TMPDir)
+   if options.tmpdirectory or options.compileonly: removeDirectories(WDir)
 
    return sortiefiles
 
@@ -659,6 +663,11 @@ if __name__ == "__main__":
                       dest="compileonly",
                       default=False,
                       help="specify whether to only create an executable but not run, default is no" )
+   parser.add_option("-w", "--workdirectory",
+                      type="string",
+                      dest="workDirectory",
+                      default='',
+                      help="specify whether to re-run within a defined subdirectory" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -702,7 +711,11 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '    +> configuration: ' +  cfgname
    print '    +> root:          ' +  cfgs[cfgname]['root']
-   print '    +> version        ' +  cfgs[cfgname]['version'] + '\n\n\
+   print '    +> version        ' +  cfgs[cfgname]['version']
+   if options.workDirectory != '':
+      print '    +> directory      ' +  options.workDirectory
+      options.tmpdirectory = False
+   print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
 # >>> Check wether the config has been compiled for the runcode

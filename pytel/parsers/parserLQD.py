@@ -94,10 +94,12 @@ def getLQD(file):
 
    return head,vars[1:],t,z
 
-def putLQD(file,head,vars,time,xyz):
+def putLQD(file,head,vars,date0,time,xyz):
 
    # ~~ Write head ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    core = head
+   from datetime import datetime
+   core.append( "#Date&Time: "+datetime(*date0).strftime("%d/%m/%Y %H:%M:%S") )
    
    names = 'T'; units = 's'
    if xyz.ndim == 2:
@@ -134,12 +136,13 @@ def putLQD(file,head,vars,time,xyz):
 class LQD:
    fileName = ''; head = []
 
-   def __init__(self,fileName='', vars=[],times=[],series=[]):
+   def __init__(self,fileName='', vars=[],date=[1972,07,13,17,24,27],times=[],series=[]):
       if fileName != '': # read from file
          self.head,self.vars,self.times,self.series = getLDQ(self.fileName)
       else:              # set content values
          self.vars = vars; self.times = times; self.series = series
+      self.date=date
 
    def putContent(self,fileName):
-      putLQD(fileName,self.head,self.vars,self.times,self.series)
+      putLQD(fileName,self.head,self.vars,self.date,self.times,self.series)
 

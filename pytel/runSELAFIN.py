@@ -455,7 +455,7 @@ if __name__ == "__main__":
       if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
       slf = chopSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
 
-      lqd = LQD( vars=[zip(slf.VARNAMES,slf.VARUNITS),nodList], times=slf.tags['times'], series=slf.getSERIES(nodList) )
+      lqd = LQD( vars=[zip(slf.VARNAMES,slf.VARUNITS),nodList], date=slf.DATETIME, times=slf.tags['times'], series=slf.getSERIES(nodList) )
       lqd.putContent( outFile )
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
