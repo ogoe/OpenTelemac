@@ -598,10 +598,9 @@ class SELAFIN:
       self.fole.close()
       pbar.finish()
 
-   def getSERIES( self,nodes,vars=None ): # /!\ nodes is an array assumed sorted !
+   def getSERIES( self,nodes ):
       f = self.file
-      if vars == None: varsIndexes = range(len(self.VARNAMES))
-      else: varsIndexes = vars
+      varsIndexes = self.VARINDEX
 
       # ~~ Ordering the nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       onodes = np.sort(np.array( zip(range(len(nodes)),nodes), dtype=[ ('0',int),('1',int) ] ),order='1')
@@ -618,10 +617,10 @@ class SELAFIN:
             if ivar in varsIndexes:
                jnod = onodes[0]
                f.seek(4*(jnod[1]-1),1)
-               z[ivar,jnod[0],t] = unpack('>f',f.read(4))[0]
+               z[varsIndexes.index(ivar),jnod[0],t] = unpack('>f',f.read(4))[0]
                for inod in onodes[1:]:
                   f.seek(4*(inod[1]-jnod[1]-1),1)
-                  z[ivar,inod[0],t] = unpack('>f',f.read(4))[0]
+                  z[varsIndexes.index(ivar),inod[0],t] = unpack('>f',f.read(4))[0]
                   jnod = inod
                f.seek(4*self.NPOIN3-4*jnod[1],1)
             else:
