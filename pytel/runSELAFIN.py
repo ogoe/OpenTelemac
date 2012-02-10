@@ -49,6 +49,7 @@ from config import OptionParser
 # ~~> dependencies towards other modules
 from parsers.parserSELAFIN import SELAFIN,SELAFINS,putHeaderSLF,appendCoreTimeSLF,appendCoreVarsSLF,getVariablesAt,subsetVariablesSLF
 from parsers.parserFortran import cleanQuotes
+from parsers.parserLQD import LQD
 from utils.files import moveFile
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -432,6 +433,30 @@ if __name__ == "__main__":
          slfs.add( slfFile )
 
       slfs.putContent(outFile)
+
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of SAMPLE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   elif codeName == 'sample':
+      if len(args) < 3:
+         print '\nThe code "sample" uses a minimum of 3 argumensts, aside from the options\n'
+         parser.print_help()
+         sys.exit()
+
+      slfFile = args[1]
+      outFile = args[2]
+      nodList = []
+      for nod in args[3].split(): nodList.append(int(nod))
+
+      slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+      print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      vars = options.xvars
+      if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
+      slf = chopSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
+
+      lqd = LQD( vars=[zip(slf.VARNAMES,slf.VARUNITS),nodList], times=slf.tags['times'], series=slf.getSERIES(nodList) )
+      lqd.putContent( outFile )
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
