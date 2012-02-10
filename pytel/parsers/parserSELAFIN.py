@@ -598,27 +598,34 @@ class SELAFIN:
       self.fole.close()
       pbar.finish()
 
-   def getSERIES( self,nodes ): # /!\ nodes is an array assumed sorted !
+   def getSERIES( self,nodes,vars=None ): # /!\ nodes is an array assumed sorted !
       f = self.file
+      if vars == None: varsIndexes = range(len(self.VARNAMES))
+      else: varsIndexes = vars
 
       # ~~ Ordering the nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       onodes = np.sort(np.array( zip(range(len(nodes)),nodes), dtype=[ ('0',int),('1',int) ] ),order='1')
 
       # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      z = np.zeros((self.NVAR,len(nodes),len(self.tags['cores'])))
+      z = np.zeros((len(varsIndexes),len(nodes),len(self.tags['cores'])))
       f.seek(self.tags['cores'][0])
       for t in range(len(self.tags['cores'])):
+         f.seek(self.tags['cores'][t])
          f.seek(4+4+4,1)
          for ivar in range(self.NVAR):
+
             f.seek(4,1)
-            jnod = onodes[0]
-            f.seek(4*(jnod[1]-1),1)
-            z[ivar,jnod[0],t] = unpack('>f',f.read(4))[0]
-            for inod in onodes[1:]:
-               f.seek(4*(inod[1]-jnod[1]-1),1)
-               z[ivar,inod[0],t] = unpack('>f',f.read(4))[0]
-               jnod = inod
-            f.seek(4*self.NPOIN3-4*jnod[1],1)
+            if ivar in varsIndexes:
+               jnod = onodes[0]
+               f.seek(4*(jnod[1]-1),1)
+               z[ivar,jnod[0],t] = unpack('>f',f.read(4))[0]
+               for inod in onodes[1:]:
+                  f.seek(4*(inod[1]-jnod[1]-1),1)
+                  z[ivar,inod[0],t] = unpack('>f',f.read(4))[0]
+                  jnod = inod
+               f.seek(4*self.NPOIN3-4*jnod[1],1)
+            else:
+               f.seek(4*self.NPOIN3,1)
             f.seek(4,1)
 
       return z
