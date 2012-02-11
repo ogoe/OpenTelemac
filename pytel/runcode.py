@@ -62,7 +62,7 @@ from os import path,walk,mkdir,chdir,remove,system,sep,environ
 # ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import getFileContent,putFileContent,removeDirectories
+from utils.files import getFileContent,putFileContent,removeDirectories,isNewer
 from parsers.parserKeywords import scanCAS,scanDICO,getKeyWord,getIOFilesSubmit
 
 # _____                   __________________________________________
@@ -113,11 +113,10 @@ def processTMP(casFile):
 
    # ~~ TMP Directory ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    TMPDir = casFile + '_' + strftime("%Y-%m-%d-%Hh%Mmin%Ss", gmtime())
-   mkdir(TMPDir)
 
    return TMPDir
 
-def processLIT(cas,iFiles,TMPDir):
+def processLIT(cas,iFiles,TMPDir,update):
 
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
@@ -127,12 +126,18 @@ def processLIT(cas,iFiles,TMPDir):
             print '... file does not exist ',cref
             return False
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
+         if path.exists(crun) and update:
+            if not isNewer(crun,cref) == 1:
+               print ' ignoring: ', path.basename(cref),crun
+               if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
+                  iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
+               continue
          if iFiles[k].split(';')[3] == 'ASC':
             putFileContent(crun,getFileContent(cref)+[''])
-            print ' copying: ', path.basename(cref)
+            print ' copying: ', path.basename(cref),crun
          else:
-            shutil.copy2(cref,crun)
-            print ' copying: ', path.basename(cref)
+            shutil.copy(cref,crun)
+            print ' copying: ', path.basename(cref),crun
 
    return True
 
@@ -430,9 +435,11 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    CASDir = path.dirname(casFile)
    TMPDir = processTMP(casFile)
    WDir = TMPDir
-   if options.workDirectory != '':
-      WDir = path.join(path.dirname(casFile),options.workDirectory)
-      if not path.exists(WDir): mkdir(WDir)
+   if options.wDir != '':
+      WDir = path.join(path.dirname(casFile),options.wDir)
+   if not path.exists(WDir):
+      mkdir(WDir)
+      options.wDir = ''
 
    # ~~ Read the included CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
@@ -475,9 +482,9 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # >>> Placing yourself where the CAS File is
    chdir(CASDir)
    # >>> Copy INPUT files into WDir
-   if not processLIT(cas,iFS,WDir): sys.exit()
+   if not processLIT(cas,iFS,WDir,(options.wDir!='')): sys.exit()
    for mod in COUPLAGE.keys():
-      if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir): sys.exit()
+      if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,(options.wDir!='')): sys.exit()
    # >>> Placing yourself into the WDir
    chdir(WDir)
    # >>> Creating LNG file
@@ -665,7 +672,7 @@ if __name__ == "__main__":
                       help="specify whether to only create an executable but not run, default is no" )
    parser.add_option("-w", "--workdirectory",
                       type="string",
-                      dest="workDirectory",
+                      dest="wDir",
                       default='',
                       help="specify whether to re-run within a defined subdirectory" )
    options, args = parser.parse_args()
@@ -712,8 +719,8 @@ if __name__ == "__main__":
    print '    +> configuration: ' +  cfgname
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> version        ' +  cfgs[cfgname]['version']
-   if options.workDirectory != '':
-      print '    +> directory      ' +  options.workDirectory
+   if options.wDir != '':
+      print '    +> directory      ' +  options.wDir
       options.tmpdirectory = False
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
