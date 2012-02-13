@@ -35,6 +35,9 @@ from parsers.parserSortie import getValueHistorySortie
 from parsers.parserSELAFIN import getValueHistorySLF,parseSLF,crossLocateMeshSLF,xyLocateMeshSLF,getValuePolylineSLF,subsetVariablesSLF
 from parsers.parserStrings import parseArrayPaires
 
+# On Jenkins' virtual boxes, forces matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+
 # _____                   __________________________________________
 # ____/ Plotting Toolbox /_________________________________________/
 #

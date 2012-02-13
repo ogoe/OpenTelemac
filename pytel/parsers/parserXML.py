@@ -204,7 +204,7 @@ def runXML(xmlFile,xmlConfig):
    # ~~ Extraction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # dicos is correct
    # did has all the IO references and the latest sortie files
-   return
+
    # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    drawList = {}
    print '... looping through the plot list'
