@@ -194,6 +194,7 @@ def runXML(xmlFile,xmlConfig):
                for k in did[cfgname]['output']: matchSafe('',path.basename(k[1][0]),safe,2)
                specs.compileonly = False
                specs.sortieFile = True
+               specs.wDir = ''
                sortieFiles = runCAS(cfgname,cfg,do["code"],sacFile,specs)
          if sortieFiles != []: did[cfgname].update({ 'sortie': sortieFiles })
 
