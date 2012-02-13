@@ -177,7 +177,7 @@ def openFigure(plot):
 
 def closeFigure((plt,fig)):
 
-   plt.show()
+   #plt.show()
    #plt.savefig(fig)
 
    return
