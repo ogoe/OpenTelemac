@@ -25,6 +25,10 @@
       + getConeAngle ( based on arctan2 )
       + getConeSinAngle ( S = ac.sin(B)/2 = det / 2 )
 """
+"""@history 14/02/2012 -- Sebastien E. Bourban, Laure C. Grignon
+      Addition of the isIsidePoly method to define whether a point is
+      inside of a polygon based on the ray casting method
+"""
 """@brief
       Tools for trivial geometrical operations
 """
@@ -145,6 +149,20 @@ def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
    l1,l2,l3 = getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
    if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 : return [ l1, l2, l3 ]
    return []
+
+def isInsidePoly( (xo,yo), poly ):
+# ... by the "Ray Casting Method".
+   inside = False
+   p1 = poly[0]
+   for j in range(len(poly)+1):
+      p2 = poly[j%len(poly)]
+      if yo >= min(p1[1],p2[1]):
+         if yo <= max(p1[1],p2[1]):
+            if xo <= max(p1[0],p2[0]):
+               if p1[1] != p2[1]: xints = (yo-p1[1])*(p2[0]-p1[0])/(p2[1]-p1[1])+p1[0]
+               if p1[0] == p2[0] or xo <= xints: inside = not inside
+      p1 = p2
+   return inside
 
 def isClose( p1,p2,size=5 ):
 
