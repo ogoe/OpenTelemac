@@ -1274,7 +1274,7 @@ print "\n";
 if ($NCSIZE > 0 )   #cas parallèle : MPIlink
   {
     $dolink=$lkmpi;
-    $dolink=~s/<EXE>/$EXEFILE/;
+    $dolink=~s/<EXE>/.\$EXEFILE/;
     $dolink=~s/<OBJS>/@FicToLink/;
     $dolink=~s/<LIBS>/$BIBLI/;
   }
@@ -1539,7 +1539,7 @@ print "\n";
 if ($NCSIZE > 0 )
 {
   $cmd_runmpi=$runmpi;
-  $cmd_runmpi=~s/<EXE>/$EXEFILE/;
+  $cmd_runmpi=~s/<EXE>/.\$EXEFILE/;
   $cmd_runmpi=~s/<N>/$NCSIZE/;
   
   ecrire(" lancement MPI : $cmd_runmpi",
