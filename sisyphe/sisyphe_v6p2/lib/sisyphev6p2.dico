@@ -47,8 +47,8 @@ INDEX = 6
 MNEMO = 'SIS_FILES(SISGEO)%NAME'
 TAILLE = 0
 SUBMIT = 'SISGEO-READ-01;SISGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
-DEFAUT = ''
-DEFAUT1 = ''
+/DEFAUT = ''
+/DEFAUT1 = ''
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 COMPORT =
@@ -111,6 +111,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 '2Ai="fraction de sediment de la classe i dans la deuxieme couche"';
 'kAi="fraction of sediment of class i in the k layer"';
 'kES="thickness of the k layer"';
+'kCONC="concentration of bed layer k"';
 'QSi="debit solide pour la classe i"';
 'CSi="concentration volumique ou g/l pour la classe i"';
 'A="variable supplementaire A"';
@@ -146,6 +147,7 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 '2Ai="fraction of sediment of class i in the second layer"';
 'kAi="fraction of sediment of class i in the k layer"';
 'kES="thickness of the k layer"';
+'kCONC="concentration of bed layer k"';
 'QSi="bed load transport rate of sediment of class i"';
 'CSi="concentration volumic or mass concentration for class i"';
 'A="supplementary variable A"';
@@ -197,6 +199,8 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 '2Ai="fraction de sediment de la classe i dans la deuxieme couche"';
 'QSi="debit solide pour la classe i"';
 'CSi="concentration pour la classe i"';
+'*ES = "thicknes of bed layer i"';
+'*CONC= "concentration of bed layer i "';
 'A="variable supplementaire A"';
 'G="variable supplementaire G"';
 'L="variable supplementaire L"';
@@ -224,6 +228,8 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 '1Ai="fraction of sediment of class i in the first layer"';
 '2Ai="fraction of sediment of class i in the second layer"';
 'QSi="bed load transport rate of sediment of class i"';
+'*ES = "thicknes of bed layer i"';
+'*CONC= "concentration of bed layer i "';
 'CSi="concentration for class i"';
 'A="supplementary variable A"';
 'G="supplementary variable G"';
@@ -298,8 +304,8 @@ TYPE = CARACTERE
 INDEX = 9
 MNEMO='SIS_FILES(SISLIM)%NAME'
 SUBMIT = 'SISLIM-READ-07;SISCLI;OBLIG;ASC;LIT;CONLIM'
-DEFAUT = ''
-DEFAUT1 = ''
+/DEFAUT = ''
+/DEFAUT1 = ''
 RUBRIQUE = 'FICHIERS DONNEES'
 RUBRIQUE1 = 'DATA FILES'
 APPARENCE = 'LISTE IS FICHIER'
@@ -2875,12 +2881,12 @@ TYPE = INTEGER
 INDEX = 251 
 MNEMO = 'NOMBLAY'
 TAILLE = 1
-DEFAUT = 1
-DEFAUT1 = 1
+DEFAUT = 2
+DEFAUT1 = 2
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
 NIVEAU = 1
-AIDE = 'Comme son nom l''indique..., defaut NOMLAY=2'
+AIDE = 'Comme son nom l''indique..., defaut NOMBLAY=2'
 AIDE1 ='This is the given allocation limit, secure default NOMLAY=2'
 
 // jaj #### added for sections 
@@ -3089,8 +3095,8 @@ AIDE = '1 :Modele multicouche de Walther,
 AIDE1 ='1: Multilayer model of Walther, 2: Thiebot , 
 3: Lenormant'
 /
-NOM = 'CONCENTRATION LIMITE'
-NOM1 = 'LIMIT CONCENTRATION'
+NOM = 'CONCENTRATION GEL'
+NOM1 = 'GEL CONCENTRATION'
 TYPE = REEL
 INDEX = 38
 MNEMO = 'CONC_GEL'
@@ -3101,7 +3107,24 @@ RUBRIQUE1 = 'CONSOLIDATION'
 NIVEAU = 2
 COMPORT = 'DISPLAY %SUSPENSION% = OUI'
 AIDE = 'Concentration de transition pour modele de Thiebot (Kg/m3)'
-AIDE1 = 'Gel Concentration (Kg/m3)'     
+AIDE1 = 'Gel Concentration (Kg/m3)'    
+/ 
+/ V6P2 LAV ...
+/
+NOM = 'CONCENTRATION MAXIMALE'
+NOM1 = 'MAXIMUM CONCENTRATION'
+TYPE = REEL
+INDEX = 50
+MNEMO = 'CONC_MAX'
+DEFAUT  = 364.D0
+DEFAUT1 = 364.D0
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'Concentration maximale du modele de Thiebot (Kg/m3)'
+AIDE1 = 'Maximum Concentration for Thiebot consolidation model(Kg/m3)' 
+/... fin modifs LAV
 /
 NOM = 'COEFFICIENT DE PERMEABILITE'
 NOM1 = 'PERMEABILITY COEFFICIENT'
