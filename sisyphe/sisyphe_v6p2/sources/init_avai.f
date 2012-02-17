@@ -39,12 +39,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
-      USE INTERFACE_SISYPHE,EX_INIT_AVAI=> INIT_AVAI
+      USE INTERFACE_SISYPHE, EX_INIT_AVAI=> INIT_AVAI
 !
       IMPLICIT NONE
 !
@@ -75,9 +74,11 @@
 !       ADDED BY JMH 30/06/2010
         DO J=1,NPOIN
           I=1
-          DO K=2,NOMBLAY
-            IF(ES(J,K).GT.0.D0) I = I + 1
-          ENDDO
+          IF(NOMBLAY.GE.2) THEN
+            DO K=2,NOMBLAY
+              IF(ES(J,K).GT.0.D0) I = I + 1
+            ENDDO
+          ENDIF
           NLAYER%I(J)=I
 !         CHECKING ALL LAYERS AND CORRECTING AVAIL
 !         DUE TO POSSIBLE SHIFT OF SINGLE PRECISION STORAGE
@@ -155,14 +156,12 @@
         ENDIF
 !
 !       THE FIRST STRATUM IS SEPARATED BETWEEN ACTIVE LAYER + ACTIVE STRATUM
-! CV: NOMBLAY= 2 au moins?
 !
         IF(ELAY0.LT.ES(J,1)) THEN
           NLAYER%I(J) = NLAYER%I(J) + 1
-CV          IF(NLAYER%I(J).GT.10) THEN
-           IF(NLAYER%I(J).GT.NOMBLAY) THEN
-            IF(LNG.EQ.1) WRITE(LU,1800)
-            IF(LNG.EQ.2) WRITE(LU,1815)
+          IF(NLAYER%I(J).GT.NOMBLAY) THEN
+            IF(LNG.EQ.1) WRITE(LU,1800) NOMBLAY
+            IF(LNG.EQ.2) WRITE(LU,1815) NOMBLAY
             CALL PLANTE(1)
             STOP
           ENDIF

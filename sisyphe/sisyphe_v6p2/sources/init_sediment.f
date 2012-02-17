@@ -5,7 +5,8 @@
      &(NSICLA,ELAY,ZF,ZR,NPOIN,AVAIL,FRACSED_GF,AVA0,
      & LGRAFED,CALWC,XMVS,XMVE,GRAV,VCE,XWC,FDM,
      & CALAC,AC,SEDCO,ES,NOMBLAY,CONC_VASE,
-     & MS_SABLE,MS_VASE,ACLADM,UNLADM,TOCE_SABLE,DEBU)
+     & MS_SABLE,MS_VASE,ACLADM,UNLADM,TOCE_SABLE,
+     & CONC,NLAYER,DEBU)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -68,11 +69,14 @@
 !| XWC            |-->| SETTLING VELOCITY
 !| ZF             |-->| ELEVATION OF BOTTOM
 !| ZR             |-->| NON ERODABLE BED
+!| CONC           |<->| CONCENTRATION OF BED LAYER
+!| NLAYER         |<->| NUMBER OF BED LAYER
 !| DEBU           |-->| FLAG, RESTART ON SEDIMENTOLOGICAL FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       USE BIEF
       USE INTERFACE_SISYPHE, EX_INIT_SEDIMENT => INIT_SEDIMENT
+!
 !      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
 !
       IMPLICIT NONE
@@ -85,6 +89,7 @@ C
       TYPE(BIEF_OBJ),    INTENT(INOUT)  :: ELAY,ZF,ZR
       TYPE(BIEF_OBJ), INTENT(INOUT)     :: MS_SABLE, MS_VASE
       TYPE(BIEF_OBJ),    INTENT(INOUT)  :: ACLADM, UNLADM
+      TYPE(BIEF_OBJ),    INTENT(INOUT)  :: NLAYER
       LOGICAL,           INTENT(IN)     :: LGRAFED,CALWC
       LOGICAL,           INTENT(IN)     :: CALAC
       DOUBLE PRECISION,  INTENT(IN)     :: XMVS,XMVE,GRAV,VCE
@@ -98,9 +103,9 @@ C
 C
 C IF SEDCO(1) OR SEDCO(2) = YES --> CONSOLIDATION MODEL
 C
-C
       DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN,NOMBLAY)
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
@@ -129,7 +134,7 @@ C     PURE MUD ONLY
         IF(SEDCO(1)) CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,
      &                               ELAY%R,NOMBLAY,CONC_VASE,
      &                                  MS_SABLE%R,MS_VASE%R,ZF%R,
-     &                                               ZR%R,AVA0,DEBU)
+     &                                  ZR%R,AVA0,CONC,NLAYER,DEBU)
 C
       ELSE
 C
@@ -157,8 +162,8 @@ C        MIXED (so far only 2 classes: NON COHESIVE /COHESIVE)
 C  
           MIXTE=.TRUE.      
           CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,ELAY%R,
-     &                     NOMBLAY,CONC_VASE,MS_SABLE%R,
-     &                     MS_VASE%R,ZF%R,ZR%R,AVA0,DEBU)
+     &                  NOMBLAY,CONC_VASE,MS_SABLE%R,
+     &                  MS_VASE%R,ZF%R,ZR%R,AVA0,CONC,NLAYER,DEBU)
           DO I=1,NPOIN
             ACLADM%R(I) = FDM(1)
           ENDDO

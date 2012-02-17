@@ -14,7 +14,7 @@
 !
 !brief
 !
-!history  C. LENORMANT; J.-M. HERVOUET; S. HADJI; C. MACHET; C. VILLARET; U. MERKEL; R. KOPMANN
+!history  C. LENORMANT; J.-M. HERVOUET; C. MACHET; C. VILLARET; U. MERKEL; R. KOPMANN
 !+        20/03/2011
 !+        V6P1
 !+
@@ -95,6 +95,8 @@
       TYPE(BIEF_OBJ),    INTENT(IN)    :: FLBOR_TEL,DM1,ZCONV
       TYPE(BIEF_OBJ),    INTENT(IN)    :: UCONV_TEL,VCONV_TEL
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER                        P_IMAX
       DOUBLE PRECISION P_DMAX,P_DMIN
       EXTERNAL         P_DMAX,P_DMIN,P_IMAX
@@ -119,7 +121,7 @@
 !
       ! SAVES LOCAL VARIABLES
       ! --------------------------------
-      SAVE VCUMU               ! FOR THE BALANCE
+      SAVE VCUMU       ! FOR THE BALANCE
       SAVE MASS_GF             ! FOR GRAIN-FEEDING
       SAVE PASS, PASS_SUSP     ! IDENTIFIES 1ST TIMESTEP
       SAVE NIDT, NCALCU, NUMEN, NIT, VALNIT !
@@ -186,29 +188,39 @@
           ALIRE(16)=1
           ALIRE(17)=1
           ALIRE(18)=1
-!CV 2011 relecture des D50, KS et MU
-          ALIRE(19) = 1
-          ALIRE(20) = 1
-          ALIRE(21) = 1
+          ALIRE(19)=1
+          ALIRE(20)=1
+          ALIRE(21)=1
 !         READS AVAI FROM THE PREVIOUS COMPUTATION FILE
           DO I=1,NSICLA*NOMBLAY
-!CV 2010
             ALIRE(21+I)=1
           ENDDO
 !         READS CS (CONCENTRATION) FROM THE PREVIOUS COMPUTATION FILE
           IF(SUSP) THEN
             DO I=1,NSICLA
-!V 2010
              ALIRE(21+(NOMBLAY+1)*NSICLA+I)=1
             ENDDO
           ENDIF
 !         READS THE LAYER THICKNESSES
           DO I=1,NOMBLAY
-!V 2019
             ALIRE(27+(NOMBLAY+4)*NSICLA+I)=1
           ENDDO
         ENDIF
+!V6P2 CV lecture concentration des couches
+          IF(TASS) THEN
+          DO I=1,NOMBLAY
+            ALIRE(27+(NOMBLAY+4)*NSICLA+I+NOMBLAY)=1
+          ENDDO
+        ENDIF
 !
+!       INITIALISING DEPOSITS ON THE BOTTOM
+!       THEY MUST BE USED IN BILAN_SISYPHE EVEN IF SUSP=.FALSE.
+!
+        DO I=1,NSICLA
+          MASDEP(I)=0.D0
+          MASDEPT(I)=0.D0
+        ENDDO
+!        
 ! --------  INITIALISES (SETS TO 0) THE ARRAYS
 !
         CALL INIT_ZERO
@@ -632,7 +644,8 @@
      &                    AVAIL,FRACSED_GF,AVA0,LGRAFED,CALWC,
      &                    XMVS,XMVE,GRAV,VCE,XWC,FDM,CALAC,AC,
      &                    SEDCO, ES, NCOUCH_TASS,CONC_VASE,
-     &         MS_SABLE, MS_VASE,ACLADM, UNLADM,TOCE_SABLE,DEBU)
+     &         MS_SABLE, MS_VASE,ACLADM, UNLADM,TOCE_SABLE,
+     &         CONC,NLAYER,DEBU)
          IF(DEBUG.GT.0) WRITE(LU,*) 'END INIT_SEDIMENT'
 !
 !
@@ -1064,7 +1077,7 @@
      &         QSCL_C,QSCL_S,QS_C,QSCLXC,QSXC,QSCLYC,
      &         QSYC,SALFA,ZF_C,ZFCL_C,NSOUS,ENTETS,
      &         SECCURRENT,SLOPEFF,PHISED,DEVIA,BETA2,BIJK,
-     &         SEDCO,HOULE,U3D,V3D,CODE)
+     &         SEDCO,HOULE,U3D,V3D,CODE,FLBCLA)
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_MAIN'
 !
@@ -1138,18 +1151,17 @@
 !
         IF( DEBUG.GT.0) WRITE(LU,*) 'QS_RESULT'
 !
-        CALL OS('X=0     ', X=QSX)
-        CALL OS('X=0     ', X=QSY)
-!
         DO I = 1, NSICLA
-          CALL OS('X=Y+Z   ', X=QSCLX%ADR(I)%P, Y=QSCLXC%ADR(I)%P,
-     &                                          Z=QSCLXS%ADR(I)%P)
-          CALL OS('X=Y+Z   ', X=QSCLY%ADR(I)%P, Y=QSCLYC%ADR(I)%P,
-     &                                          Z=QSCLYS%ADR(I)%P)
-          CALL OS('X=N(Y,Z)', X=QSCL%ADR(I)%P,  Y=QSCLX%ADR(I)%P,
-     &                                          Z=QSCLY%ADR(I)%P)
-          CALL OS('X=X+Y   ', X=QSX, Y=QSCLX%ADR(I)%P)
-          CALL OS('X=X+Y   ', X=QSY, Y=QSCLY%ADR(I)%P)
+          CALL OS('X=Y+Z   ',X=T1,Y=QSCLXC%ADR(I)%P,Z=QSCLXS%ADR(I)%P)
+          CALL OS('X=Y+Z   ',X=T2,Y=QSCLYC%ADR(I)%P,Z=QSCLYS%ADR(I)%P)
+          CALL OS('X=N(Y,Z)', X=QSCL%ADR(I)%P,Y=T1,Z=T2)
+          IF(I.EQ.1) THEN
+            CALL OS('X=Y     ', X=QSX, Y=T1)
+            CALL OS('X=Y     ', X=QSY, Y=T2)
+          ELSE
+            CALL OS('X=X+Y   ', X=QSX, Y=T1)
+            CALL OS('X=X+Y   ', X=QSY, Y=T2)
+          ENDIF
         ENDDO
         CALL OS('X=N(Y,Z)', X=QS, Y=QSX, Z=QSY)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_QS_RESULT'
@@ -1285,10 +1297,12 @@ C!!! ONLY FOR ONE CLASS
 !
         IF(BILMA.AND.CHARR) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'BILAN_SISYPHE'
-          CALL BILAN_SISYPHE(E,ESOMT,QSX,QSY,
-     &                       MESH,MSK,MASKEL,T1,T2,S,IELMU_SIS,VCUMU,
-     &       DTS,NPTFR,ENTETS,ZFCL_C,QSCLXC,QSCLYC,NSICLA,
-     &       VOLTOT,DZF_GF,MASS_GF,LGRAFED,NUMLIQ%I,NFRLIQ)
+          CALL BILAN_SISYPHE(E,ESOMT,MESH,MSK,MASKEL,T1,T2,S,
+     &                       IELMU_SIS,VCUMU,DTS,NPTFR,ENTETS,
+     &                       ZFCL_C,ZFCL_S,
+     &                       QSCLXC,QSCLYC,NSICLA,VOLTOT,DZF_GF,MASS_GF,
+     &                       LGRAFED,NUMLIQ%I,NFRLIQ,FLBCLA,VF,LT,NIT,
+     &                       NPOIN,VOLU2D,CSF_SABLE,MASDEP,MASDEPT,SUSP)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BILAN_SISYPHE'
         ENDIF
 !
@@ -1503,8 +1517,8 @@ C!!! ONLY FOR ONE CLASS
 !-----------------------------------------------------------------------
 !
       IF(DREDGESIM.AND.(LOOPCOUNT.EQ.TELNIT.AND.PART.EQ.1.
-     &                                            .OR. PART.EQ.-1)) THEN
-         CALL DREDGESIM_INTERFACE(3)
+     &                                            .OR.PART.EQ.-1)) THEN
+        CALL DREDGESIM_INTERFACE(3)
       ENDIF
 !
 !-----------------------------------------------------------------------

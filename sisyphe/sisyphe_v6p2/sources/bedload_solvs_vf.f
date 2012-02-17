@@ -1,12 +1,12 @@
-!                    *****************************
-                     SUBROUTINE BEDLOAD_SOLVS_VF !
-!                    *****************************
+!                    ***************************
+                     SUBROUTINE BEDLOAD_SOLVS_VF
+!                    ***************************
 !
      &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,
-     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE)
+     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    SOLVES EXNER EQUATION WITH THE FINITE VOLUME METHOD.
@@ -53,6 +53,7 @@
 !| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED (FINITE VOLUMES SHEMES)
 !| DT             |-->| TIME STEP
 !| EBOR           |<->| BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
+!| FLBCLA         |<->| FLUXES AT BOUNDARY FOR THE CLASS
 !| FLUX           |<->| SEDIMENT FLUX  
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
@@ -82,7 +83,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH
       INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KSORT
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
 !
       ! 3/ LOCAL VARIABLES
@@ -137,25 +138,38 @@
          FLUX%R(IEL2) = FLUX%R(IEL2) - RNORM*QSP
       ENDDO
       ! ******************************* !
-      ! III - BOUNDARIES                ! (_IMP_)
+      ! III - BOUNDARIES                !
       ! ******************************* !
       DO K = 1 , NPTFR
          IEL = MESH%NBOR%I(K)
-         ! III.1 - FREE EVOLUTION: SEDIMENTS ARE FREE TO LEAVE
-         ! --------------------------------------------------------
-         IF (LIEBOR%I(K).EQ.KSORT) THEN
-            ! XNEBOR (*+NPTFR) AND YNEBOR (*+NPTFR)
-            ! CONTAIN THE VECTOR NORMAL TO A BOUNDARY NODE
-            ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            XN = MESH%XNEBOR%R(K+NPTFR)
-            YN = MESH%YNEBOR%R(K+NPTFR)
-            ! ADDS THE CONTRIBUTION OF THE FLUX ON THE BOUNDARY SEGMENT
-            ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            FLUX%R(IEL) = FLUX%R(IEL) + QSX%R(IEL)*XN + QSY%R(IEL)*YN
+!        VECTOR NORMAL TO A BOUNDARY NODE
+!        VERSION WHICH IS NOT NORMED
+         XN = MESH%XNEBOR%R(K+NPTFR)
+         YN = MESH%YNEBOR%R(K+NPTFR)
+!
+!        FREE EVOLUTION: SEDIMENTS ARE FREE TO LEAVE
+!        NOTE JMH: BUT SEDIMENTS CAN ALSO ENTER ???
+!        IF(LIEBOR%I(K).EQ.KSORT.OR.LIEBOR%I(K).EQ.KENT) THEN
+         IF(LIEBOR%I(K).EQ.KSORT) THEN
+!          ADDS THE CONTRIBUTION OF THE FLUX ON THE BOUNDARY SEGMENT
+           FLUX%R(IEL) = FLUX%R(IEL) + QSX%R(IEL)*XN + QSY%R(IEL)*YN
          ENDIF
-         ! III.2 - FOR A SOLID BOUNDARY: NOTHING TO PROGRAM
-         !         BECAUSE THE SEDIMENT FLUX IS ZERO HERE
-         ! -------------------------------------------------------
+!
+!        JMH 16/02/2012 : NOT SURE OF WHAT TO DO HERE AND IT DOES NOT WORK
+!        NOT EVEN SURE OF SIGN
+!        A MISTAKE IS THAT THIS FLUX DOES NOT GIVE EBOR, A CORRECTION SHOULD
+!        BE DONE AS IN POSITIVE_DEPTHS
+!
+!        STORING THE BOUNDARY FLUX FOR A USE IN BILAN_SISYPHE
+!
+         IF(LIEBOR%I(K).EQ.KSORT) THEN
+           FLBCLA%R(K)=QSX%R(IEL)*XN+QSY%R(IEL)*YN
+!  JMH : WHY NOT THIS ????
+!        ELSEIF(LIEBOR%I(K).EQ.KENT) THEN
+!          FLBCLA%R(K)=QSX%R(IEL)*XN+QSY%R(IEL)*YN
+         ELSE
+           FLBCLA%R(K)=0.D0
+         ENDIF
       ENDDO
       IF(NCSIZE.GT.1) CALL PARCOM(FLUX, 2, MESH)
       ! ************************** !
@@ -170,6 +184,11 @@
 !         ZFCL WILL BE DIVIDED BY CSF_SABLE AFTER, AND THEN IT WILL
 !         BE EBOR...
           ZFCL%R(MESH%NBOR%I(K)) = EBOR%R(K)*CSF_SABLE
+!
+!         CORRECTION IN POSITIVE_DEPTHS (BUT BEWARE PARALLELISM)
+!         FLBOR%R(IPTFR)=FLBOR%R(IPTFR)
+!    &                  +(H%R(I)-HBOR(IPTFR))/(DT*UNSV2D%R(I))
+!
         ENDIF
       ENDDO
 !

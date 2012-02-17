@@ -2,11 +2,9 @@
                      SUBROUTINE BEDLOAD_SOLVS_FE
 !                    ***************************
 !
-     &(MESH,S,EBOR,MASKEL,MASK,
-     & QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,LIMTEC,DT,
-     & MSK, ENTET,T1,T2,T3,T4,T8,
-     & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,
-     & ICLA)
+     &(MESH,S,EBOR,MASKEL,MASK,QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,
+     & LIMTEC,DT,MSK,ENTET,T1,T2,T3,T4,T8,ZFCL,HZ,HZN,GLOSEG,DIMGLO,
+     & FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,ICLA,FLBCLA,AVA)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -63,13 +61,19 @@
 !history  J-M HERVOUET (EDF-LNHE)
 !+        27/01/2012
 !+        V6P2
-!+  Argument ICLA added    
+!+  Argument ICLA added 
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        14/02/2012
+!+        V6P2
+!+  Optimisation, and FLBCLA built and kept for use in bilan_sisyphe     
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| DT             |-->| TIME STEP
 !| EBOR           |<->| BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION
+!| FLBCLA         |<->| FLUXES AT BOUNDARY FOR THE CLASS
 !| FLODEL         |<--| FLUXES BETWEEN POINTS (PER SEGMENT)
 !| FLULIM         |<--| LIMITATION OF FLUXES
 !| GLOSEG         |-->| CONNECTIVITY TABLE FOR SEGMENTS
@@ -114,34 +118,36 @@
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
       INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
-      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE,AVA(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)
       LOGICAL,          INTENT(IN)    :: MSK,ENTET
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: FLODEL,T1,T2,T3,T4,T8
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: HZ,EBOR
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ZFCL
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ZFCL,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HZN,UNSV2D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K
+      INTEGER K,I,N
+      DOUBLE PRECISION MASINI,MASFIN,FLUXB
+!
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM
 !
 !-----------------------------------------------------------------------
 !
 !     BOUNDARY FLUXES
 !
-      CALL CPSTVC(QSX,T4)
-      CALL OS('X=C     ',X=T4,C=1.D0)
-      CALL VECTOR(T8, '=', 'FLUBDF          ',IELBOR(IELMT,1),1.D0,
-     &            T4,S,S,QSX,QSY,S,MESH,.TRUE.,MASK)
+      CALL VECTOR(FLBCLA,'=','FLUBOR          ',IELBOR(IELMT,1),1.D0,
+     &            S,S,S,QSX,QSY,S,MESH,.TRUE.,MASK)
 !
-!     HERE THE VARIABLE WILL BE THE LAYER DEPTH OF THE SEDIMENT CLASS
-!     NOT THE EVOLUTION
+!     HERE THE VARIABLE WILL BE THE LAYER DEPTH OF THE SEDIMENT CLASS,
+!     PUT IN T8, NOT THE EVOLUTION
 !
       DO K=1,NPTFR
         IF(LIMTEC%I(K).EQ.KDIR) THEN
-!         JMH: FACTOR AVAIL MISSING ? (EBOR OBTAINED FOR EVERY CLASS ?)
-          EBOR%R(K)=EBOR%R(K)*CSF_SABLE+HZN%R(MESH%NBOR%I(K))
+          N=MESH%NBOR%I(K)
+          T8%R(K)=AVA(N)*EBOR%R(K)*CSF_SABLE+HZN%R(N)
         ENDIF
       ENDDO
 !
@@ -163,11 +169,13 @@
      &            QSX%ELM,MESH%LV,MSK,MASKEL%R,MESH)
 !
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,HZ,HZN,MESH,
-     &                     FLODEL,.TRUE.,T8,DT,UNSV2D,NPOIN,
+     &                     FLODEL,.TRUE.,FLBCLA,DT,UNSV2D,NPOIN,
      &                     GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
      &                     MESH%NBOR%I,NPTFR,.FALSE.,T8,.FALSE.,
+!                                                    VOID
      &                     1,FLULIM,
-     &                     LIMTEC%I,EBOR%R,KDIR,ENTET,MESH%W%R,
+     &                     LIMTEC%I,T8%R  ,KDIR,ENTET,MESH%W%R,
+!                                   EBOR%R
      &                     'SISYPHE                 ',2)
 !                                                     2 : HARDCODED
 !                             OPTION FOR POSITIVE DEPTHS ALGORITHMS
@@ -176,18 +184,40 @@
 !
       CALL OS('X=Y-Z   ' ,X=ZFCL,Y=HZ,Z=HZN)
 !
-!     DIRICHLET CONDITIONS
+!     DIRICHLET CONDITIONS (DONE BY POSITIVE_DEPTHS, SO WHAT ???)
 !
-      DO K=1,NPTFR
-        IF(LIMTEC%I(K).EQ.KDIR) THEN
+!     DO K=1,NPTFR
+!       IF(LIMTEC%I(K).EQ.KDIR) THEN
 !         BOUNDARY CONDITIONS OF HZ MINUS HZN
 !         HERE THIS IS MASS, DIVISION BY CSF_SABLE DONE LATER
-          ZFCL%R(MESH%NBOR%I(K))=EBOR%R(K)-HZN%R(MESH%NBOR%I(K))
-!         ORIGINAL EBOR RESTORED
-!         NOTE JMH: IS THIS USEFUL ? WHAT IS THE USE OF EBOR AFTER ?
-          EBOR%R(K)=(EBOR%R(K)-HZN%R(MESH%NBOR%I(K)))/CSF_SABLE
-        ENDIF
-      ENDDO
+!         ZFCL%R(MESH%NBOR%I(K))=T8%R(K)-HZN%R(MESH%NBOR%I(K))
+!       ENDIF
+!     ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     BILAN
+!
+!     WRITE(LU,*) 'BILAN DE LA CLASSE ',ICLA
+!     MASINI=0.D0
+!     MASFIN=0.D0
+!     DO I=1,NPOIN
+!       MASINI=MASINI+HZN%R(I)*VOLU2D%R(I)
+!       MASFIN=MASFIN+HZ%R(I)*VOLU2D%R(I)
+!     ENDDO
+!     IF(NCSIZE.GT.1) THEN
+!       MASINI=P_DSUM(MASINI)
+!       MASFIN=P_DSUM(MASFIN)  
+!     ENDIF
+!     WRITE(LU,*) 'MASSE INITIALE : ',MASINI,' MASSE FINALE : ',MASFIN 
+!     WRITE(LU,*) 'DIFFERENCE : ',MASFIN-MASINI
+!     WRITE(LU,*) 'DIFFERENCE EN VOLUME : ',(MASFIN-MASINI)/CSF_SABLE
+!     FLUXB=0.D0
+!     DO K=1,NPTFR
+!       FLUXB=FLUXB+FLBCLA%R(K)
+!     ENDDO
+!     WRITE(LU,*) 'FLUX EN MASSE : ',FLUXB
+!     WRITE(LU,*) 'ERREUR DE MASSE : ',MASFIN-MASINI+FLUXB*DT
 !
 !-----------------------------------------------------------------------
 !

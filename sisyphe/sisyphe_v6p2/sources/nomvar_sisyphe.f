@@ -83,10 +83,14 @@
       CHARACTER(LEN=8)  MNEMO_CS(NSICLM),MNEMO_ES(NLAYMAX)
       CHARACTER(LEN=8)  MNEMO_QSC(NSICLM),MNEMO_QSS(NSICLM)
       CHARACTER(LEN=2)  CLA,LAY
-!
+! V6P2
+      CHARACTER(LEN=32) TEXTE_CONC(NLAYMAX)
+      CHARACTER(LEN=8)  MNEMO_CONC(NLAYMAX)
 !-----------------------------------------------------------------------
 !
-      ADD=27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY
+!      ADD=27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY
+!
+      ADD=27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY
 !
       IF(ADD.GT.MAXVAR) THEN
         IF(LNG.EQ.1) THEN
@@ -175,6 +179,24 @@
         TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNESS'
         TEXTE_ES(K)(17:32) = 'M               '
       ENDDO
+!V6P2
+      DO K=1,NOMBLAY
+        IF(K.LT.10) THEN
+          WRITE(LAY,'(I1)') K
+          MNEMO_CONC(K) = TRIM(LAY)//'CONC     '
+        ELSEIF(K.LT.100) THEN
+          WRITE(LAY,'(I2)') K
+          MNEMO_CONC(K) = TRIM(LAY)//'CONC    '
+        ELSE
+          WRITE (LU,*) 'NOMVAR_SISYPHE: NOT IMPLEMENTED FOR ',NOMBLAY
+          WRITE (LU,*) '                LAYERS'
+          CALL PLANTE(1)
+          STOP            
+        ENDIF	   
+        TEXTE_CONC(K)(1:12)  = 'LAYER'//LAY//' CONC'
+        TEXTE_CONC(K)(17:32) = 'KG/L            '
+      ENDDO
+
 !
 !-----------------------------------------------------------------------
 !
@@ -291,8 +313,16 @@
         TEXTE(27+I+NSICLA*(NOMBLAY+4)) = TEXTE_ES(I)
         MNEMO(27+I+NSICLA*(NOMBLAY+4)) = MNEMO_ES(I)
       ENDDO
+! V6P2
+      DO I=1,NOMBLAY
+        TEXTE(27+I+NSICLA*(NOMBLAY+4)+NOMBLAY) = TEXTE_CONC(I)
+        MNEMO(27+I+NSICLA*(NOMBLAY+4)+NOMBLAY) = MNEMO_CONC(I)
+      ENDDO
 !
-      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY
+!      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY
+       ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY
+! ... V6P2
+!
       TEXTE(28+ADD)='PRIVE 1                         '
       TEXTE(29+ADD)='PRIVE 2                         '
       TEXTE(30+ADD)='PRIVE 3                         '
@@ -300,7 +330,7 @@
 !     NPRIV MAY BE GREATER THAN 4
 !     TEXTE(31+ADD)='PRIVE 5                         '
 !
-      DO I=1,31+NSICLA*(NOMBLAY+4)+NOMBLAY
+      DO I=1,31+NSICLA*(NOMBLAY+4)+2*NOMBLAY
         TEXTPR(I)=TEXTE(I)
       ENDDO
 !
@@ -357,8 +387,9 @@
       MNEMO(25+NSICLA*(NOMBLAY+2)) = 'QSSUSP  '
       MNEMO(26+NSICLA*(NOMBLAY+2)) = 'QSSUSPX '
       MNEMO(27+NSICLA*(NOMBLAY+2)) = 'QSSUSPY '
-!
-      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY
+!CV
+!V6P2      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY
+      ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY
       MNEMO(28+ADD) = 'A       '
       MNEMO(29+ADD) = 'G       '
       MNEMO(30+ADD) = 'L       '
@@ -367,8 +398,9 @@
 !     MNEMO(31+ADD) = '????????'
 !
 !----------------------------
-! 
-      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY+27+MAX(NPRIV,4)
+!CV V6P2 
+!      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY+27+MAX(NPRIV,4)
+      ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY+27+MAX(NPRIV,4)
       IF(ADD.LT.MAXVAR) THEN
         DO I=ADD+1,MAXVAR
           MNEMO(I) =' '

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -252,7 +252,8 @@
      & DTS,DM,D90,HMIN,LS0,GRAV,XMVS,XMVE,VCE,
      & VF,ENTET,MSK,CONST_ALAYER,LCONDIS,MESH,
      & QS,T1, T2, T3, T4, T5, T6, T7, T8, T9,
-     & T10,T11,T12,T13,CSF_SABLE,BREACH,QSX,QSY,ZFCL,SLOPEFF,ICLA)
+     & T10,T11,T12,T13,CSF_SABLE,BREACH,QSX,QSY,ZFCL,SLOPEFF,ICLA,
+     & FLBCLA)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HN,Q,S,UNSV2D
@@ -269,7 +270,7 @@
       LOGICAL,          INTENT(IN)    :: VF,ENTET,MSK
       LOGICAL,          INTENT(IN)    :: CONST_ALAYER, LCONDIS
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS,EBOR
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QS,EBOR,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T1, T2, T3, T4, T5, T6, T7
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8, T9, T10, T11, T12, T13
       DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE
@@ -389,7 +390,7 @@
      &   QSCLXC, QSXC, QSCLYC, QSYC, SALFA, ZF_C, ZFCL_C, NSOUS,
      &   ENTETS, SECCURRENT, SLOPEFF,
      &   PHISED, DEVIA, BETA2, BIJK,SEDCO,HOULE,
-     &   U3D,V3D,CODE)
+     &   U3D,V3D,CODE,FLBCLA)
 !
       USE BIEF_DEF
       USE DECLARATIONS_SISYPHE, ONLY : NOMBLAY
@@ -419,7 +420,7 @@
       LOGICAL,          INTENT(IN)    :: LCONDIS, LGRAFED,SECCURRENT
       LOGICAL,          INTENT(IN)    :: SEDCO(NSICLA),HOULE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ELAY
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ELAY,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: LIEBOR, LIMTEC, MASKTR
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: IT1,T1,T2,T3,T4,T5,T6,T7
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8,T9,T10,T11,T12,T13
@@ -588,7 +589,7 @@
      & QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,LIMTEC,DT,
      & MSK,ENTET,T1,T2,T3,T4,T8,
      & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,
-     & ICLA)
+     & ICLA,FLBCLA,AVA)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
@@ -596,12 +597,12 @@
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
       INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
-      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE,AVA(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)
       LOGICAL,          INTENT(IN)    :: MSK,ENTET
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: FLODEL,T1,T2,T3,T4,T8
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: HZ,EBOR
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ZFCL
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ZFCL,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HZN,UNSV2D
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOLVS_FE
@@ -612,7 +613,7 @@
       SUBROUTINE BEDLOAD_SOLVS_VF   !
       !----------------------------------------------------------------!
      &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,
-     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE)
+     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
@@ -621,7 +622,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH
       INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KSORT
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOLVS_VF

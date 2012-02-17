@@ -728,14 +728,9 @@
          CALL OS('X=Y-Z   ', X=ZFCL_S, Y=FLUDP, Z=FLUER)
          CALL OS('X=CX    ', X=ZFCL_S, C=DT/CSF_SABLE)
        ELSE
-!!! Erreur!
-!         CALL SUSPENSION_EVOL(ZFCL_S, FLUDP, FLUER,DT,
-!     &                 NPOIN,CSF_SABLE, XMVS,T3,MS_SABLE%R,
-!     &                 SEDCO,CONC_VASE,NCOUCH_TASS)
-         CALL SUSPENSION_EVOL(ZFCL_S, FLUDP, FLUER,DT,
-     &                 NPOIN, XMVS,T3,MS_VASE%R,ES,
-     &                 CONC_VASE,NOMBLAY)
-!
+         CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
+     &                        NPOIN,XMVS,T3,MS_VASE%R,ES,
+     &                        CONC_VASE,NOMBLAY)
        ENDIF
 !
 !     WRITES OUT THE MIN/MAX VALUES TO THE LISTING
@@ -761,13 +756,9 @@
         IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN'
       ENDIF
 !
-!     JMH 21/04/2011 : THIS BLOCK WAS IN SUSPENSION_MAIN
-!                      IT MIXES UPDATING CS
-!                      AND BUILDING DATA FOR POST-PROCESSING
-!                      MAYBE THESE DATA NEED NOT BE DONE AT EVERY
-!                      TIME STEP ???
-!
       CALL OS('X=Y     ', X=CS, Y=CST)
+!
+!     NOTE: ARE QSCLXS AND QSCLYS USEFUL ????????
 !
       CALL OS('X=YZ    ', X=T1, Y=UCONV, Z=HN)
       CALL OS('X=YZ    ', X=T2, Y=VCONV, Z=HN)

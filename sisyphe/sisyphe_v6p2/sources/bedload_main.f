@@ -19,7 +19,7 @@
      &   QSCLXC, QSXC, QSCLYC, QSYC, SALFA, ZF_C, ZFCL_C, NSOUS,
      &   ENTETS, SECCURRENT, SLOPEFF,
      &   PHISED, DEVIA, BETA2, BIJK,SEDCO,HOULE,
-     &   U3D,V3D,CODE)
+     &   U3D,V3D,CODE,FLBCLA)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -80,6 +80,7 @@
 !| ENTETS         |<->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS CONSERVATION FOR SUSPENSION 
 !| FD90           |-->| DIAMETER D90 
 !| FDM            |-->| DIAMETER DM FOR EACH CLASS 
+!| FLBCLA         |-->| BLOCK OF FLUXES AT BOUNDARY FOR EACH CLASS
 !| FRACSED_GF     |<->| (A SUPPRIMER)
 !| FW             |-->| WAVE FRICTION FACTOR
 !| GRAV           |-->| ACCELERATION OF GRAVITY
@@ -192,7 +193,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: CF,FW,KSP,HN,LIQBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASK, MASKEL, MASKPT
       TYPE(BIEF_OBJ),   INTENT(IN)    :: Q, QBOR
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: U2D, V2D,TOB, MU,UNORM,EBOR
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: U2D,V2D,TOB,MU,UNORM,EBOR
       TYPE(BIEF_OBJ),   INTENT(IN)    :: S,UNLADM
       TYPE(BIEF_OBJ),   INTENT(IN)    :: UW, THETAW,  TOBW, TW
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ZF
@@ -212,7 +213,7 @@
       LOGICAL,          INTENT(IN)    :: LCONDIS, LGRAFED,SECCURRENT
       LOGICAL,          INTENT(IN)    :: SEDCO(NSICLA),HOULE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ELAY
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: ELAY,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: LIEBOR, LIMTEC, MASKTR
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: IT1,T1,T2,T3,T4,T5,T6,T7
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8,T9,T10,T11,T12,T13
@@ -304,7 +305,7 @@
      &                      T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,
      &                      T13,CSF_SABLE,BREACH,QSCLXC%ADR(I)%P,
      &                      QSCLYC%ADR(I)%P,ZFCL_C%ADR(I)%P,SLOPEFF,
-     &                      I)
+     &                      I,FLBCLA)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_EVOL'
 !
 !         NOW DIVIDING BY CSF_SABLE TO GET THE EVOLUTION OF BED

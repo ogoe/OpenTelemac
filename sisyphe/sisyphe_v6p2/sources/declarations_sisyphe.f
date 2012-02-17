@@ -238,57 +238,60 @@ C-----------------------------------------------------------------------
 !     WORKING ARRAYS
 !
       TYPE(BIEF_OBJ), TARGET :: W1
-C
-C WAVE DATA
-C --------
-
-!> @brief WAVE DIRECTION (DEG WRT OX AXIS)    !!!!!SOME SAY OY AXIS!!!!!
-C angle d'attaque de la houle (par rapport a l'axe oy)
+!
+! WAVE DATA
+! --------
+!
+!     WAVE DIRECTION (DEG WRT OX AXIS)    !!!!!SOME SAY OY AXIS!!!!!
+!
       TYPE(BIEF_OBJ), TARGET :: THETAW
-!> @brief FRICTION COEFFICIENT (WAVES)
-C coefficient de frottement quadratique de la houle
+!
+!     FRICTION COEFFICIENT (WAVES)
+!
       TYPE(BIEF_OBJ), TARGET :: FW
-!> @brief ORBITAL VELOCITY
-C courant orbital
+!
+!     ORBITAL VELOCITY
+!
       TYPE(BIEF_OBJ), TARGET :: UW
-!> @brief SIGNIFICANT WAVE HEIGHT
-C hauteur de houle
+!
+!     SIGNIFICANT WAVE HEIGHT
+!
       TYPE(BIEF_OBJ), TARGET :: HW
-!> @brief MEAN WAVE PERIOD
-C periode de houle
+!
+!     MEAN WAVE PERIOD
+!
       TYPE(BIEF_OBJ), TARGET :: TW
-!> @brief
-C
+!
+!
+!
       TYPE(BIEF_OBJ), TARGET :: INDIC,IFAMAS
-!> @brief INTEGER WORKING ARRAY
-C
-      TYPE(BIEF_OBJ), TARGET :: IT1
-!> @brief INTEGER WORKING ARRAY
-C
-      TYPE(BIEF_OBJ), TARGET :: IT2
-!> @brief INTEGER WORKING ARRAY
-C
-      TYPE(BIEF_OBJ), TARGET :: IT3
-!> @brief INTEGER WORKING ARRAY
-C
-      TYPE(BIEF_OBJ), TARGET :: IT4
-!> @brief TYPE OF BOUNDARY CONDITIONS ON BED EVOLUTION
-C types de conditions aux limites sur l'evolution
+!
+!     INTEGER WORKING ARRAYS
+!
+      TYPE(BIEF_OBJ), TARGET :: IT1,IT2,IT3,IT4
+!
+!     TYPE OF BOUNDARY CONDITIONS ON BED EVOLUTION
+!
       TYPE(BIEF_OBJ), TARGET :: LIEBOR
-!> @brief TYPE OF BOUNDARY CONDITIONS ON SAND TRANSPORT RATE
-C
+!
+!     TYPE OF BOUNDARY CONDITIONS ON SAND TRANSPORT RATE
+!
       TYPE(BIEF_OBJ), TARGET :: LIQBOR
-!> @brief TYPE OF BOUNDARY CONDITIONS
-C
+!
+!     TYPE OF BOUNDARY CONDITIONS
+!
       TYPE(BIEF_OBJ), TARGET :: LIMTEC
-!> @brief IMPACT OF THE SLOPE EFFECT ON AMPLITUDE
-C
+!
+!     IMPACT OF THE SLOPE EFFECT ON AMPLITUDE
+!
       TYPE(BIEF_OBJ), TARGET :: COEFPN
-!> @brief LIQUID BOUNDARY NUMBERING
-C
+!
+!     LIQUID BOUNDARY NUMBERING
+!
       TYPE(BIEF_OBJ), TARGET :: NUMLIQ
-!> @brief SHEAR STRESS
-C contrainte de frottement en courant seul
+!
+!     SHEAR STRESS
+!
       TYPE(BIEF_OBJ), TARGET :: TOB
 !> @brief FRICTION COEFFICIENT
 C coefficient de frottement quadratique du courant
@@ -457,48 +460,59 @@ C
 C
       TYPE(BIEF_OBJ), TARGET :: MBOR
 !> @brief
-C
+!
       TYPE(BIEF_OBJ), TARGET :: AM1_S,AM2_S
-C
-C-----------------------------------------------------------------------
-C
-C       3) BLOCKS
-C
-C-----------------------------------------------------------------------
-C
-!> @brief BLOCK OF MASKS
-C
+!
+!-----------------------------------------------------------------------
+!
+!       3) BLOCKS
+!
+!-----------------------------------------------------------------------
+!
+!     BLOCK OF MASKS
+!
       TYPE(BIEF_OBJ), TARGET :: MASK
-!> @brief BLOCK OF WORKING ARRAYS
-C
+!
+!     BLOCK OF WORKING ARRAYS
+!
       TYPE(BIEF_OBJ), TARGET :: TB
-!> @brief BLOCK OF PRIVATE VECTORS
-C
+!
+!     BLOCK OF PRIVATE VECTORS
+!
       TYPE(BIEF_OBJ), TARGET :: PRIVE
-!> @brief BLOCK OF CLANDESTINE VARIABLES
-C
+!
+!     BLOCK OF CLANDESTINE VARIABLES
+!
       TYPE(BIEF_OBJ), TARGET :: VARCL
-!> @brief BLOCK OF VARIABLES FOR INPUT
-C
+!
+!     BLOCK OF VARIABLES FOR INPUT
+!
       TYPE(BIEF_OBJ), TARGET :: VARHYD
-!> @brief BLOCK OF VARIABLES FOR OUTPUT
-C
+!
+!     BLOCK OF VARIABLES FOR OUTPUT
+!
       TYPE(BIEF_OBJ), TARGET :: VARSOR
-!> @brief SEDIMENT FRACTION FOR EACH LAYER, CLASS, POINT
-C
+!
+!     SEDIMENT FRACTION FOR EACH LAYER, CLASS, POINT
+!
       DOUBLE PRECISION,DIMENSION(:,:,:),TARGET,ALLOCATABLE::AVAIL
-!> @brief SEDIMENT COMPOSITION
-C
+!
+!     LAYER THICKNESSES AS DOUBLE PRECISION
+!
+      DOUBLE PRECISION,DIMENSION(:,:),TARGET,ALLOCATABLE :: ES
+!
+!     SEDIMENT COMPOSITION
+!
       TYPE(BIEF_OBJ), TARGET :: AVAI
 !> @brief LAYER THICKNESSES
 C
       TYPE(BIEF_OBJ), TARGET :: LAYTHI
 !> @brief
 C
-      TYPE(BIEF_OBJ), TARGET :: QSCL
+      TYPE(BIEF_OBJ), TARGET :: LAYCONC
 !> @brief
 C
-      TYPE(BIEF_OBJ), TARGET :: QSCLX , QSCLY
+      TYPE(BIEF_OBJ), TARGET :: QSCL
 !> @brief
 C
       TYPE(BIEF_OBJ), TARGET :: QSCL_C
@@ -526,18 +540,32 @@ C
 C
 C     FLUX LIMITATION PER SEGMENT
 C
-      TYPE(BIEF_OBJ), TARGET :: FLULIM	  
-C
-C-----------------------------------------------------------------------
-C
-C       4) INTEGERS
-C
-C-----------------------------------------------------------------------
-C
-C       KEYWORDS AND PARAMETERS
-C
-!> @brief MAXIMUM NUMBER OF OUTPUT VARIABLES
-C
+      TYPE(BIEF_OBJ), TARGET :: FLULIM
+!
+!     FLUXES AT BOUNDARY FOR EVERY CLASS
+!
+      TYPE(BIEF_OBJ), TARGET :: FLBCLA		  
+! 
+!     CV modifs V6P2 new variables for consolidation model
+! 
+!     VOID INDEX OF BED LAYERS
+!
+      DOUBLE PRECISION,DIMENSION(:,:),TARGET,ALLOCATABLE::IVIDE
+!
+!     CONCENTRATION OF BED LAYER
+!
+      DOUBLE PRECISION,DIMENSION(:,:),TARGET,ALLOCATABLE::CONC
+!
+!-----------------------------------------------------------------------
+!
+!       4) INTEGERS
+!
+!-----------------------------------------------------------------------
+!
+!      KEYWORDS AND PARAMETERS
+!
+!      MAXIMUM NUMBER OF OUTPUT VARIABLES
+!
       INTEGER, PARAMETER :: MAXVAR = 500
 !> @brief MAXIMUM NUMBER OF (LIQUID BOUNDARIES, SOLID BOUNDARIES)
 C
@@ -931,10 +959,7 @@ C
 !> @brief
 C
       DOUBLE PRECISION :: MASDEP(NSICLM), MASDEPT(NSICLM)
-!> @brief LAYER THICKNESSES AS DOUBLE PRECISION
-C
-      DOUBLE PRECISION,DIMENSION(:,:),TARGET,ALLOCATABLE :: ES
-!> @brief FOR NON-EQUILIBIRUM BEDLOAD
+!!> @brief FOR NON-EQUILIBIRUM BEDLOAD
 C
       DOUBLE PRECISION :: LS0
 !> @brief RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER
@@ -972,7 +997,7 @@ C coefficient b de la formule de bijker
 !
       DOUBLE PRECISION :: CBOR_CLASSE(NSICLM*MAXFRO)
 !
-!     MUD CONCENTRATION FOR EACH LAYER
+!     MUD CONCENTRATION FOR EACH LAYER (Constante
 !
       DOUBLE PRECISION :: CONC_VASE(NLAYMAX)
 !
