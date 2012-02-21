@@ -339,8 +339,8 @@ def runPartition(partel,cas,conlim,iFiles,ncsize):
 
 def runPARTEL(partel,file,conlim,ncsize):
 
-   putFileContent('partel.par',[file,conlim,str(ncsize),str(1),str(0),'']) # option 1, without sections 0
-   failure = system(partel.replace('<partel.log>','partel_'+file+'.log'))
+   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),str(0),'']) # option 1, without sections 0
+   failure = system(partel.replace('<partel.log>','PARTEL_'+file+'.LOG'))
    if not failure: return True
    return False
 
