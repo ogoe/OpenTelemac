@@ -680,6 +680,7 @@ def getPARALLEL(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    parallel = {}
    if cfgDict.has_key('path_parallel'): parallel.update({'PATH':cfgDict['path_parallel']})
+   if cfgDict.has_key('par_cmdexec'): parallel.update({'EXEC':cfgDict['par_cmdexec']})
    return parallel
 
 """
@@ -690,7 +691,11 @@ def getMPI(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpi = {}
    if cfgDict.has_key('mpi_hosts'): mpi.update({'HOSTS':cfgDict['mpi_hosts']})
-   if cfgDict.has_key('mpi_cmdexec'): mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
+   if cfgDict.has_key('mpi_cmdexec'):
+      mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
+   else:
+      print '... I do not know how to run MPI, can you help ?'
+      sys.exit()
    return mpi
 
 """

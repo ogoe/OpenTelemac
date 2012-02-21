@@ -45,6 +45,14 @@
 """@history 10/10/2011 -- Jan-Philip Gehrcke
          Correction made to the management of sortie files. (search JPG)
 """
+"""@history 10/02/2012 -- Sebastien E. Bourban
+         Addition of the fixed directory option, which is particulalry useful
+         for parallel simulations.
+"""
+"""@history 20/02/2012 -- Sebastien E. Bourban
+         Allowing PARTEL to run in parallel, having received the PARTEL
+         source code from Charles (STFC-DL).
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -227,6 +235,16 @@ def getNCSIZE(cas,dico,frgb):
 
    return ncsize
 
+def getMPICommand(cfgMPI):
+   # ~~> Executable
+   mpiCmd = cfgMPI['EXEC']
+   # ~~> host
+   hosts = ''
+   if cfgMPI.has_key('HOSTS'): hosts = cfgMPI['HOSTS']
+   mpiCmd = mpiCmd.replace('<hosts>',hosts)
+
+   return mpiCmd
+
 def processPARALLEL(ncsize,wdir):
 
    # ~~ parallel case ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -321,8 +339,8 @@ def runPartition(partel,cas,conlim,iFiles,ncsize):
 
 def runPARTEL(partel,file,conlim,ncsize):
 
-   putFileContent('partel_'+file+'.par',[file,conlim,str(ncsize),str(1),str(0),'']) # option 1, without sections 0
-   failure = system(partel+' < partel_'+file+'.par >> partel_'+file+'.log')
+   putFileContent('partel.par',[file,conlim,str(ncsize),str(1),str(0),'']) # option 1, without sections 0
+   failure = system(partel.replace('<partel.log>','partel_'+file+'.log'))
    if not failure: return True
    return False
 
@@ -539,47 +557,35 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       ncsize = getNCSIZE(cas,dico,frgb)
       
       if ncsize > 1:
-      # >>> MPI configuration
-         # ~~> Executable                  /!\ you need one if ncsize > 1
+         # >>> Parallel execution configuration
          mpiCmd = ''
-         if cfg.has_key('MPI'):
-            if cfg['MPI'].has_key('EXEC'):
-               mpiCmd = cfg['MPI']['EXEC']
-         if mpiCmd == '':
-            print '... I do not know how to run MPI, can you help ?'
-            return None   # /!\ should you stop or carry on ?
-         # ~~> Assign the mpi_telemac.conf
-         hosts = ''
-         if cfg.has_key('MPI'):
-            if cfg['MPI'].has_key('HOSTS'):
-               hosts = cfg['MPI']['HOSTS']
-         # ~~> MPI Command line
-         mpiCmd = mpiCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
+         if cfg.has_key('MPI'): mpiCmd = getMPICommand(cfg['MPI'])
+         # ~~> MPI Command line ( except <exename> )
          mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
-         mpiCmd = mpiCmd.replace('<hosts>',hosts)
-         mpiCmd = mpiCmd.replace('<exename>',runCmd)
-         runCmd = mpiCmd
+         mpiCmd = mpiCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
 
-      # >>> Parallel tools
-         # ~~> Default path
+         # >>> Parallel tools
+         # ~~> Path
          PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
-         # ~~> User path
-         if cfg.has_key('PARALLEL'):
-            if cfg['PARALLEL'].has_key('PATH'):
-               PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['TELDIR']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
-         # ~~> Creating PARA file and the mpi_telemac.conf
+         if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['TELDIR']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
+         # ~~> Call to PARTEL
+         parCmd = path.join('<config>partel'+cfg['SYSTEM']['SFX_EXE'])
+         if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
+         parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
+         parCmd = parCmd.replace('<root>',cfg['TELDIR']).replace('<config>',PARDir)
+         # ~~> Creating the PARA files
          processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
 
-      # >>> Running the partionning
-      if ncsize > 1:
-         # ~~> PARTEL Executable
-         exeCmd = path.join(PARDir,'partel'+cfg['SYSTEM']['SFX_EXE'])
+         # >>> Running the partionning
          # ~~> Run PARTEL
-         CONLIM = getCONLIM(cas,iFS)      # no check on existence
-         runPartition(exeCmd,cas,CONLIM,iFS,ncsize)
+         CONLIM = getCONLIM(cas,iFS)    # Global CONLIM file
+         runPartition(parCmd,cas,CONLIM,iFS,ncsize)
          for mod in COUPLAGE.keys():
             CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
-            runPartition(exeCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
+            runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
+
+         # >>> Replace running command
+         runCmd = mpiCmd.replace('<exename>',runCmd)
 
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print runCmd
@@ -590,7 +596,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          # ~~> GRETEL Executable
          exeCmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['SFX_EXE'])
          # ~~> Run GRETEL
-         GLOGEO = getGLOGEO(cas,iFS)      # no check on existence
+         GLOGEO = getGLOGEO(cas,iFS)    # Global GEO file
          runRecollection(exeCmd,cas,GLOGEO,oFS,ncsize)
          for mod in COUPLAGE.keys():
             GLOGEO = getGLOGEO(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])

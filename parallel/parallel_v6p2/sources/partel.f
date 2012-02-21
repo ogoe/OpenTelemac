@@ -279,10 +279,19 @@
 !----------------------------------------------------------------------
 ! NAMES OF THE INPUT FILES:
 !
+!###> SEB@HRW
+      INQUIRE(FILE='partel.par',EXIST=FOUND)
+      IF( FOUND ) OPEN(UNIT=72,FILE='partel.par')
+!###< SEB@HRW
+
       DO 
-        WRITE(LU, ADVANCE='NO', FMT=
+        IF( FOUND ) THEN                      !###> SEB@HRW
+           READ(72,*) NAMEINP                 !###> SEB@HRW
+        ELSE                                  !###> SEB@HRW
+           WRITE(LU, ADVANCE='NO', FMT=
      &         '(/,'' SELAFIN INPUT NAME <INPUT_NAME>: '')')
-        READ(LI,'(A)') NAMEINP
+           READ(LI,'(A)') NAMEINP
+        ENDIF                                 !###> SEB@HRW
         IF (NAMEINP.EQ.' ') THEN
           WRITE (LU,'('' NO FILENAME'')') 
         ELSE
@@ -310,9 +319,13 @@
       END IF  
 !
       DO
-        WRITE(LU, ADVANCE='NO', FMT=
+        IF( FOUND ) THEN                      !###> SEB@HRW
+           READ(72,*) NAMECLI                 !###> SEB@HRW
+        ELSE                                  !###> SEB@HRW
+           WRITE(LU, ADVANCE='NO', FMT=
      &           '(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
-        READ(LI,'(A)') NAMECLI
+           READ(LI,'(A)') NAMECLI
+        ENDIF                                 !###> SEB@HRW
         IF (NAMECLI.EQ.' ') THEN
           WRITE (LU,'('' NO FILENAME'')') 
         ELSE
@@ -329,10 +342,14 @@
       END IF  
 !
       DO 
-        WRITE(LU, ADVANCE='NO',FMT=
+        IF( FOUND ) THEN                      !###> SEB@HRW
+           READ(72,*) NPARTS                  !###> SEB@HRW
+        ELSE                                  !###> SEB@HRW
+           WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
      &        MAXNPROC
-        READ(LI,*) NPARTS
+           READ(LI,*) NPARTS
+        ENDIF                                 !###> SEB@HRW
         IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
           WRITE(LU,
      &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')') 
@@ -350,9 +367,13 @@
 !     & ' (EACH NODE OF THE MESH BECOMES A VERTEX OF THE GRAPH)'
 
       DO 
-        WRITE(LU, ADVANCE='NO',FMT=
+        IF( FOUND ) THEN                      !###> SEB@HRW
+           READ(72,*) PMETHOD                 !###> SEB@HRW
+        ELSE                                  !###> SEB@HRW
+           WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' PARTITIONING METHOD <PMETHOD> [1 OR 2]: '')') 
-        READ(LI,*) PMETHOD
+           READ(LI,*) PMETHOD
+        ENDIF                                 !###> SEB@HRW
         IF ( (PMETHOD > 2) .OR. (PMETHOD < 1) ) THEN
           WRITE(LU,
      &    '('' PARTITIONING METHOD MUST BE 1 OR 2'')') 
@@ -365,9 +386,13 @@
 ! #### THE SECTIONS FILE NAME 
 
       DO
-        WRITE(LU, ADVANCE='NO',FMT=
+        IF( FOUND ) THEN                      !###> SEB@HRW
+           READ(72,*) I                       !###> SEB@HRW
+        ELSE                                  !###> SEB@HRW
+           WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')') 
-        READ(LI,*) I
+           READ(LI,*) I
+        ENDIF                                 !###> SEB@HRW
         IF ( I<0 .OR. I>1 ) THEN
           WRITE(LU,
      &    '('' PLEASE ANSWER 1:YES OR 0:NO '')') 
@@ -377,6 +402,10 @@
         END IF 
       END DO
       IF (I==1) WITH_SECTIONS=.TRUE.
+
+!###> SEB@HRW
+      IF( FOUND ) CLOSE(72)
+!###< SEB@HRW
 
 
       IF (WITH_SECTIONS) THEN 
