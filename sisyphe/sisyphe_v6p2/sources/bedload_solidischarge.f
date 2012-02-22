@@ -13,7 +13,7 @@
      & DEVIA,BETA2,SECCURRENT,BIJK,HOULE,UNSV2D,U3D,V3D,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -46,17 +46,7 @@
 !history  J.-M. HERVOUET
 !+        11/03/2008
 !+        V5P9
-!+
-!
-!history
-!+        11/03/2009
-!+
 !+   MODIFICATIONS FOR PARALLEL MODE
-!
-!history  J.-M. HERVOUET
-!+        15/09/2009
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -74,7 +64,12 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!+ 
+!history  J-M HERVOUET (EDF-LNHE)
+!+        22/02/2012
+!+        V6P2
+!+  Dirichlet treatment of QBOR removed
+!+  It is now done in bedload_solvs_ef and vf   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -192,27 +187,20 @@
 !
       DOUBLE PRECISION, INTENT(IN)    :: BIJK,AVA(NPOIN)
 !
-!RK
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION P_DMAX
       EXTERNAL         P_DMAX
-!RK
       DOUBLE PRECISION U3DNORM
 !
       INTEGER          :: I
 !
 !======================================================================!
-!======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
-!======================================================================!
-!
-! ********************************************************
-! 0 - COMPUTES THE PARAMETERS FOR THE SLOPE EFFECT
-! ********************************************************
 !
       IF (DEBUG > 0) WRITE(LU,*) 'BEDLOAD_EFFPNT'
 !
@@ -246,9 +234,8 @@
 !
       IF (DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_EFFPNT'
 !
-      ! **************************************** !
-      ! I - MASKING/EXPOSURE COEFFICIENT         !
-      ! **************************************** !
+!     MASKING/EXPOSURE COEFFICIENT
+!
       IF (DEBUG > 0) WRITE(LU,*) 'BEDLOAD_HIDING_FACTOR'
 !
 !     WITH HUNZIKER FORMULATION (6), THE HIDING FACTOR IS COMPUTED
@@ -260,10 +247,8 @@
       ENDIF
       IF (DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_HIDING_FACTOR'
 !
-      ! ******************************************* !
-      ! II - QSC COMPUTED USING EMPIRICAL FORMULATION !
-      !      T1 = DQSC/DH                           !
-      ! ******************************************* !
+!     QSC COMPUTED USING EMPIRICAL FORMULATION : T1 = DQSC/DH                           !
+!
       IF (DEBUG > 0) WRITE(LU,*) 'BEDLOAD_FORMULA'
 !
       CALL BEDLOAD_FORMULA
@@ -275,26 +260,15 @@
      &   SLOPEFF, COEFPN, BIJK, HOULE)
       IF (DEBUG > 0) WRITE(LU,*) 'END_BEDLOAD_FORMULA'
 !
-      ! **************************************************** !
-      ! IV - BOUNDARY NODES WITH IMPOSED FLOW                !
-      ! **************************************************** !
-      IF (DEBUG > 0) WRITE(LU,*) 'BOUNDARY_NODES_TREATMENT'
-      DO I = 1 , NPTFR
-        IF(LIQBOR%I(I).EQ.KENT) QSC%R(MESH%NBOR%I(I)) = QBOR%R(I)
-      ENDDO
-      IF (DEBUG > 0) WRITE(LU,*) 'END_BOUNDARY_NODES_TREATMENT'
+!     TIDAL FLATS 
 !
-      ! ************************************ !
-      ! V - TIDAL FLATS                      !
-      ! ************************************ !
       IF(OPTBAN.EQ.2) THEN
         IF (DEBUG > 0) WRITE(LU,*) 'TIDAL_FLATS_TREATMENT'
         CALL OS('X=XY    ', X=QSC, Y=MASKPT)
         IF (DEBUG > 0) WRITE(LU,*) 'END_TIDAL_FLATS_TREATMENT'
       ENDIF
 !
-!======================================================================!
-!======================================================================!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

@@ -2,9 +2,9 @@
                      SUBROUTINE BEDLOAD_SOLVS_FE
 !                    ***************************
 !
-     &(MESH,S,EBOR,MASKEL,MASK,QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,
+     &(MESH,S,EBOR,MASKEL,MASK,QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,KDDL,
      & LIMTEC,DT,MSK,ENTET,T1,T2,T3,T4,T8,ZFCL,HZ,HZN,GLOSEG,DIMGLO,
-     & FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,ICLA,FLBCLA,AVA)
+     & FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,ICLA,FLBCLA,AVA,LIQBOR,QBOR)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -13,10 +13,16 @@
 !brief    SOLVES:
 !code
 !+     D(HZ)
-!+     ---- + DIV(T) = 0
+!+     ---- + DIV(QS) = 0
 !+      DT
 !
-!history  E. PELTIER;C. LENORMANT; J.-M. HERVOUET
+!warning
+!+     LIMTEC is used here instead of LIEBOR. The difference is that
+!+     LIMTEC is LIEBOR corrected in view of sign of u.n at boundaries
+!+     then KENT, KSORT apply to LIEBOR, while KDIR and KDDL apply on
+!+     LIMTEC, see bedload_diffin.f
+!
+!history  E. PELTIER; C. LENORMANT; J.-M. HERVOUET
 !+        11/09/1995
 !+        V5P1
 !+
@@ -66,7 +72,8 @@
 !history  J-M HERVOUET (EDF-LNHE)
 !+        14/02/2012
 !+        V6P2
-!+  Optimisation, and FLBCLA built and kept for use in bilan_sisyphe     
+!+  Optimisation, and FLBCLA built and kept for use in bilan_sisyphe
+!+  Treatment of QBOR added     
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -81,9 +88,11 @@
 !| HZN            |-->| OLD AVAILABLE LAYER OF SEDIMENT
 !| ICLA           |-->| CLASS NUMBER
 !| IELMT          |-->| NUMBER OF ELEMENTS
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-!| LIMTEC         |<->| TYPE OF BOUNDARY CONDITION ***
+!| LIMTEC         |-->| TYPE OF BOUNDARY CONDITION
+!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITION ON BEDLOAD DISCHARGE
 !| MASK           |-->| BLOCK OF MASKS, EVERY ONE FOR A TYPE OF BOUNDARY
 !|                |   | SEE DIFFIN.F IN LIBRARY BIEF.
 !| MASKEL         |-->| MASKING OF ELEMENTS
@@ -91,7 +100,8 @@
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION 
+!| NSEG           |-->| NUMBER OF SEGMENTS PER CONTROL SECTION
+!| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGES 
 !| QSX            |-->| SOLID DISCHARGE X
 !| QSY            |-->| SOLID DISCHARGE Y
 !| S              |-->| VOID STRUCTURE
@@ -114,17 +124,17 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: S,LIMTEC,MASKEL,MASK,QSX,QSY
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: S,MASKEL,MASK,QSX,QSY
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
-      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA
+      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA,KDDL
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE,AVA(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)
       LOGICAL,          INTENT(IN)    :: MSK,ENTET
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: FLODEL,T1,T2,T3,T4,T8
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: HZ,EBOR
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: HZ,EBOR,LIMTEC
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: ZFCL,FLBCLA
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: HZN,UNSV2D
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: HZN,UNSV2D,LIQBOR,QBOR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -141,11 +151,19 @@
       CALL VECTOR(FLBCLA,'=','FLUBOR          ',IELBOR(IELMT,1),1.D0,
      &            S,S,S,QSX,QSY,S,MESH,.TRUE.,MASK)
 !
-!     HERE THE VARIABLE WILL BE THE LAYER DEPTH OF THE SEDIMENT CLASS,
-!     PUT IN T8, NOT THE EVOLUTION
+!     BOUNDARY CONDITIONS: EITHER EBOR OR QBOR PRESCRIBED (NOT THE 2)
 !
       DO K=1,NPTFR
-        IF(LIMTEC%I(K).EQ.KDIR) THEN
+        IF(LIQBOR%I(K).EQ.KENT) THEN
+          FLBCLA%R(K)=QBOR%R(K)
+!         EVEN IF USER HAS SPECIFIED LIEBOR=KSORT, LIMTEC MAY HAVE BEEN
+!         SET TO KDIR BY CHECKING IF VELOCITY IS ENTERING, THIS IS 
+!         UNWANTED HERE AS QBOR ONLY IS TAKEN INTO ACCOUNT,
+!         SO DDL IS PUT TO AVOID A DIRICHLET TREATMENT IN POSITIVE_DEPTHS.
+          LIMTEC%I(K)=KDDL
+        ELSEIF(LIMTEC%I(K).EQ.KDIR) THEN
+!         HERE THE VARIABLE WILL BE THE LAYER DEPTH OF THE SEDIMENT CLASS,
+!         PUT IN T8, NOT THE EVOLUTION
           N=MESH%NBOR%I(K)
           T8%R(K)=AVA(N)*EBOR%R(K)*CSF_SABLE+HZN%R(N)
         ENDIF
@@ -183,41 +201,6 @@
 !                             SEGMENT NUMBERING
 !
       CALL OS('X=Y-Z   ' ,X=ZFCL,Y=HZ,Z=HZN)
-!
-!     DIRICHLET CONDITIONS (DONE BY POSITIVE_DEPTHS, SO WHAT ???)
-!
-!     DO K=1,NPTFR
-!       IF(LIMTEC%I(K).EQ.KDIR) THEN
-!         BOUNDARY CONDITIONS OF HZ MINUS HZN
-!         HERE THIS IS MASS, DIVISION BY CSF_SABLE DONE LATER
-!         ZFCL%R(MESH%NBOR%I(K))=T8%R(K)-HZN%R(MESH%NBOR%I(K))
-!       ENDIF
-!     ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     BILAN
-!
-!     WRITE(LU,*) 'BILAN DE LA CLASSE ',ICLA
-!     MASINI=0.D0
-!     MASFIN=0.D0
-!     DO I=1,NPOIN
-!       MASINI=MASINI+HZN%R(I)*VOLU2D%R(I)
-!       MASFIN=MASFIN+HZ%R(I)*VOLU2D%R(I)
-!     ENDDO
-!     IF(NCSIZE.GT.1) THEN
-!       MASINI=P_DSUM(MASINI)
-!       MASFIN=P_DSUM(MASFIN)  
-!     ENDIF
-!     WRITE(LU,*) 'MASSE INITIALE : ',MASINI,' MASSE FINALE : ',MASFIN 
-!     WRITE(LU,*) 'DIFFERENCE : ',MASFIN-MASINI
-!     WRITE(LU,*) 'DIFFERENCE EN VOLUME : ',(MASFIN-MASINI)/CSF_SABLE
-!     FLUXB=0.D0
-!     DO K=1,NPTFR
-!       FLUXB=FLUXB+FLBCLA%R(K)
-!     ENDDO
-!     WRITE(LU,*) 'FLUX EN MASSE : ',FLUXB
-!     WRITE(LU,*) 'ERREUR DE MASSE : ',MASFIN-MASINI+FLUXB*DT
 !
 !-----------------------------------------------------------------------
 !

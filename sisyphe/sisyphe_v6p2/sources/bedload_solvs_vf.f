@@ -2,8 +2,8 @@
                      SUBROUTINE BEDLOAD_SOLVS_VF
 !                    ***************************
 !
-     &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,
-     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA)
+     &(MESH,QSX,QSY,LIMTEC,UNSV2D,EBOR,BREACH,NSEG,NPTFR,NPOIN,
+     & KENT,KDIR,KDDL,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA,AVA,LIQBOR,QBOR)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -29,7 +29,7 @@
 !history  JMH
 !+        15/09/2009
 !+
-!+   KENT KSORT ADDED (WERE HARD-CODED BEFORE !!!)
+!+   KDIR KDDL ADDED (WERE HARD-CODED BEFORE !!!)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -47,21 +47,32 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!+  
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        21/02/2012
+!+        V6P2
+!+  Corrections for a perfect mass balance: FLBTRA built to be used in
+!+  bilan_sisyphe, coefficient AVA added in Dirichlet value, QBOR
+!+  dealt with.    
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED (FINITE VOLUMES SHEMES)
+!| AVA            |-->| PERCENTAGE OF CLASS IN SEDIMENT
+!| BREACH         |<->| INDICATOR FOR NON ERODIBLE BED 
 !| DT             |-->| TIME STEP
 !| EBOR           |<->| BOUNDARY CONDITION FOR BED EVOLUTION (DIRICHLET)
 !| FLBCLA         |<->| FLUXES AT BOUNDARY FOR THE CLASS
 !| FLUX           |<->| SEDIMENT FLUX  
-!| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-!| KSORT          |-->| CONVENTION FOR FREE OUTPUT  
-!| LIEBOR         |<->| PHYSICAL BOUNDARY CONDITIONS FOR BED EVOLUTION
+!| KDIR           |-->| CONVENTION FOR DIRICHLET VALUE
+!| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM 
+!| KENT           |-->| CONVENTION FOR PRESCRIBED VALUE AT ENTRANCE 
+!| LIMTEC         |-->| TECHNICAL BOUNDARY CONDITIONS FOR BED EVOLUTION
+!| LIQBOR         |-->| TYPE OF BOUNDARY CONDITIONS FOR BEDLOAD DISCHARGE
 !| MESH           |<->| MESH STRUCTURE
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS
+!| QBOR           |-->| PRESCRIBED BEDLOAD DISCHARGES
 !| QSX            |<->| BEDLOAD TRANSPORT RATE X-DIRECTION
 !| QSY            |<->| BEDLOAD TRANSPORT RATE Y-DIRECTION
 !| T10            |<->| WORK BIEF_OBJ STRUCTURE
@@ -75,37 +86,34 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
-      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: QSX, QSY
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: LIEBOR,UNSV2D, EBOR
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH
-      INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KSORT
-      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA
-      TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
-      INTEGER          :: ISEGIN, K
-      INTEGER          :: IEL, IEL1, IEL2
-      DOUBLE PRECISION :: QSMOY1, QSMOY2
-      DOUBLE PRECISION :: QSP
-      DOUBLE PRECISION :: VNOIN1, VNOIN2, RNORM
-      DOUBLE PRECISION :: XN, YN
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: QSX,QSY,LIMTEC,UNSV2D,EBOR
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH,LIQBOR,QBOR
+      INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KDIR,KDDL
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
+      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN)
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA,ZFCL,FLUX
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER          :: ISEGIN,K,N,IEL,IEL1,IEL2
+      DOUBLE PRECISION :: QSMOY1,QSMOY2,QSP,VNOIN1,VNOIN2,RNORM,XN,YN
+      DOUBLE PRECISION :: ZFCLDIR
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
-      ! ***************** !
-      ! I - INTIALISES !
-      ! ***************** !
+!
+!     INTIALISES THE DIVERGENCE
+!
       CALL OS('X=0     ', X=FLUX)
-      ! ************************************************* !
-      ! II - DETERMINES THE OUTGOING FLUX FOR EACH CELL   !
-      ! ************************************************* !
+!
+!     DETERMINES THE OUTGOING FLUX FOR EACH CELL 
+!
       DO ISEGIN = 1, NSEG
          IEL1 = MESH%NUBO%I(2*ISEGIN - 1)
          IEL2 = MESH%NUBO%I(2*ISEGIN    )
@@ -137,59 +145,57 @@
          FLUX%R(IEL1) = FLUX%R(IEL1) + RNORM*QSP
          FLUX%R(IEL2) = FLUX%R(IEL2) - RNORM*QSP
       ENDDO
-      ! ******************************* !
-      ! III - BOUNDARIES                !
-      ! ******************************* !
+!
+!     BOUNDARIES
+!
       DO K = 1 , NPTFR
-         IEL = MESH%NBOR%I(K)
-!        VECTOR NORMAL TO A BOUNDARY NODE
-!        VERSION WHICH IS NOT NORMED
-         XN = MESH%XNEBOR%R(K+NPTFR)
-         YN = MESH%YNEBOR%R(K+NPTFR)
+        IEL = MESH%NBOR%I(K)
+!       VECTOR NORMAL TO A BOUNDARY NODE
+!       VERSION WHICH IS NOT NORMED
+        XN = MESH%XNEBOR%R(K+NPTFR)
+        YN = MESH%YNEBOR%R(K+NPTFR)
 !
-!        FREE EVOLUTION: SEDIMENTS ARE FREE TO LEAVE
-!        NOTE JMH: BUT SEDIMENTS CAN ALSO ENTER ???
-!        IF(LIEBOR%I(K).EQ.KSORT.OR.LIEBOR%I(K).EQ.KENT) THEN
-         IF(LIEBOR%I(K).EQ.KSORT) THEN
-!          ADDS THE CONTRIBUTION OF THE FLUX ON THE BOUNDARY SEGMENT
-           FLUX%R(IEL) = FLUX%R(IEL) + QSX%R(IEL)*XN + QSY%R(IEL)*YN
-         ENDIF
-!
-!        JMH 16/02/2012 : NOT SURE OF WHAT TO DO HERE AND IT DOES NOT WORK
-!        NOT EVEN SURE OF SIGN
-!        A MISTAKE IS THAT THIS FLUX DOES NOT GIVE EBOR, A CORRECTION SHOULD
-!        BE DONE AS IN POSITIVE_DEPTHS
-!
-!        STORING THE BOUNDARY FLUX FOR A USE IN BILAN_SISYPHE
-!
-         IF(LIEBOR%I(K).EQ.KSORT) THEN
-           FLBCLA%R(K)=QSX%R(IEL)*XN+QSY%R(IEL)*YN
-!  JMH : WHY NOT THIS ????
-!        ELSEIF(LIEBOR%I(K).EQ.KENT) THEN
-!          FLBCLA%R(K)=QSX%R(IEL)*XN+QSY%R(IEL)*YN
-         ELSE
-           FLBCLA%R(K)=0.D0
-         ENDIF
+!       ADDING BOUNDARY FLUX AT OPEN BOUNDARIES
+!       QBOR HAS PRIORITY HERE, SO IN CASE OF LIQBOR=KENT
+!       LIMTEC=KDIR WILL NOT BE CONSIDERED, SEE BEDLOAD_SOLVS_FE
+!       FOR MORE EXPLANATIONS
+! 
+        IF(LIQBOR%I(K).EQ.KENT) THEN 
+          FLBCLA%R(K) = QBOR%R(K)
+          FLUX%R(IEL) = FLUX%R(IEL) + FLBCLA%R(K)             
+        ELSEIF(LIMTEC%I(K).EQ.KDDL.OR.LIMTEC%I(K).EQ.KDIR) THEN
+!         IF KDIR WILL BE UPDATED LATER
+          FLBCLA%R(K)= QSX%R(IEL)*XN + QSY%R(IEL)*YN
+!         ADDS THE CONTRIBUTION OF THE FLUX ON THE BOUNDARY SEGMENT
+          FLUX%R(IEL) = FLUX%R(IEL) + FLBCLA%R(K)           
+        ELSE
+!         NO SEDIMENT FLUX ACCROSS SOLID BOUNDARIES
+          FLBCLA%R(K)=0.D0
+        ENDIF
       ENDDO
+!
+!     ASSEMBLING IN PARALLEL
+!
       IF(NCSIZE.GT.1) CALL PARCOM(FLUX, 2, MESH)
-      ! ************************** !
-      ! IV - SOLVES THE SYSTEM     !
-      ! ************************** !
-      ! NEGATIVE SIGN BECAUSE OUTGOING FLUX IS POSITIVE
-      ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+!     SOLVING, NEGATIVE SIGN BECAUSE OUTGOING FLUX IS POSITIVE
+!     NOTE JMH: FLUX MUST BE HERE DIV(QS)
+!
       CALL OS('X=CYZ   ', X=ZFCL, Y=FLUX, Z=UNSV2D, C=-DT)
 !
       DO K=1,NPTFR
-        IF(LIEBOR%I(K).EQ.KENT) THEN
-!         ZFCL WILL BE DIVIDED BY CSF_SABLE AFTER, AND THEN IT WILL
-!         BE EBOR...
-          ZFCL%R(MESH%NBOR%I(K)) = EBOR%R(K)*CSF_SABLE
-!
-!         CORRECTION IN POSITIVE_DEPTHS (BUT BEWARE PARALLELISM)
-!         FLBOR%R(IPTFR)=FLBOR%R(IPTFR)
-!    &                  +(H%R(I)-HBOR(IPTFR))/(DT*UNSV2D%R(I))
-!
+!                                  PRIORITY OF LIQBOR, SEE ABOVE
+        IF(LIMTEC%I(K).EQ.KDIR.AND.LIQBOR%I(K).NE.KENT) THEN       
+          N = MESH%NBOR%I(K)
+!         ZFCLDIR: DIRICHLET VALUE OF EVOLUTION, ZFCL WILL BE DIVIDED BY 
+!         CSF_SABLE AFTER, AND THEN IT WILL BE AVA(N)*EBOR...
+          ZFCLDIR = AVA(N)*EBOR%R(K)*CSF_SABLE
+!         CORRECTION OF BOUNDARY FLUX TO GET ZFCLDIR          
+          FLBCLA%R(K)=FLBCLA%R(K)-(ZFCLDIR-ZFCL%R(N))/(DT*UNSV2D%R(N)) 
+!         ZFCLDIR FINALLY IMPOSED                   
+          ZFCL%R(N) = ZFCLDIR
         ENDIF
+!
       ENDDO
 !
 !======================================================================!

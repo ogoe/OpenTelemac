@@ -70,37 +70,41 @@
 !
         I = NBOR(K)
 !
-!
-!  DIRICHLET CONDITIONS
-!  +++++++++++++++++++++
+!       HERE KADH (WALL WITH NO SLIP CONDITION) IS CHANGED INTO KLOG (WALL)
 !
         IF(LIEBOR%I(K).EQ.KADH) THEN
           LIEBOR%I(K)= KLOG
         ENDIF
 !
-! IMPOSED SOLID DISCHARGE - FREE BED EVOLUTION
-! ++++++++++++++++++++++++++++++++++++++++++++
-! QBOR%ADR(J)%P%R(K) IS THE SOLID DISCHARGE IMPOSED AT THE BOUNDARY
-!                   NODE K , CLASS OF SEDIMENT J
+!       DIRICHLET CONDITIONS
+!       EITHER ON EVOLUTION OR ON SOLID DISCHARGE
 !
-!               LIEBOR%I(K)=KSORT
-!               LIQBOR%I(K)=KENT
+!       EXAMPLE 1: IMPOSED SOLID DISCHARGE - FREE BED EVOLUTION
+! 
+!       QBOR%ADR(J)%P%R(K) IS THE SOLID DISCHARGE IMPOSED AT THE BOUNDARY
+!       NODE K , CLASS OF SEDIMENT J, EXCLUDING VOIDS 
 !
-!               QBOR%ADR(1)%P%R(K)=1.D-4
-!               QBOR%ADR(2)%P%R(K)=1.D-4 .....
+!       LIEBOR%I(K)=KSORT
+!       LIQBOR%I(K)=KENT
 !
-!  IMPOSED BED EVOLUTON
-! +++++++++++++++++++++
-!          IF (LIEBOR%I(K).EQ.KENT) THEN
-!               EBOR%ADR(1)%P%R(K)=1.D-4
-!               EBOR%ADR(2)%P%R(K)=1.D-4.....
-!         ENDIF
+!       QBOR%ADR(1)%P%R(K)=1.D-4
+!       QBOR%ADR(2)%P%R(K)=1.D-4 .....
 !
-       ENDDO
+!       EXAMPLE 2: IMPOSED BED EVOLUTON
+!
+!       LIEBOR%I(K)=KENT
+!       (LIQBOR%I(K)=KSORT IS DONE IN SISYPHE.F)
+!       IF(LIEBOR%I(K).EQ.KENT) THEN
+!         EBOR%ADR(1)%P%R(K)=1.D-4
+!         EBOR%ADR(2)%P%R(K)=1.D-4.....
+!       ENDIF
+!
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !     LICBOR : BOUNDARY CONDITION FOR SEDIMENT CONCENTRATION
 !-----------------------------------------------------------------------
+!
       IF(SUSP) THEN
 !
         DO K=1,NPTFR

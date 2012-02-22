@@ -231,7 +231,6 @@
       DOUBLE PRECISION,   INTENT(IN)  :: BETA2, PHISED
       INTEGER, INTENT (IN)            :: SLOPEFF, DEVIA
       DOUBLE PRECISION, INTENT(IN)    :: BIJK
-!RK
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
       CHARACTER(LEN=24), INTENT(IN)    :: CODE
       ! 3/ LOCAL VARIABLES
@@ -305,7 +304,7 @@
      &                      T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,
      &                      T13,CSF_SABLE,BREACH,QSCLXC%ADR(I)%P,
      &                      QSCLYC%ADR(I)%P,ZFCL_C%ADR(I)%P,SLOPEFF,
-     &                      I,FLBCLA)
+     &                      I,FLBCLA,LIQBOR,QBOR%ADR(I)%P)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_EVOL'
 !
 !         NOW DIVIDING BY CSF_SABLE TO GET THE EVOLUTION OF BED

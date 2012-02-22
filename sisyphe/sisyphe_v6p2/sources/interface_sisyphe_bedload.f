@@ -243,7 +243,7 @@
 !
 !
       !================================================================!
-        SUBROUTINE BEDLOAD_EVOL !
+        SUBROUTINE BEDLOAD_EVOL 
       !----------------------------------------------------------------!
 !
      &(HN,Q,S,ELAY,ACLADM, AVA,COEFPN,CALFA,SALFA,LIMTEC,EBOR,
@@ -253,13 +253,13 @@
      & VF,ENTET,MSK,CONST_ALAYER,LCONDIS,MESH,
      & QS,T1, T2, T3, T4, T5, T6, T7, T8, T9,
      & T10,T11,T12,T13,CSF_SABLE,BREACH,QSX,QSY,ZFCL,SLOPEFF,ICLA,
-     & FLBCLA)
+     & FLBCLA,LIQBOR,QBOR)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_OBJ),   INTENT(IN)    :: HN,Q,S,UNSV2D
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ELAY,ACLADM
       TYPE(BIEF_OBJ),   INTENT(IN)    :: COEFPN,CALFA,SALFA
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: LIMTEC
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: LIMTEC
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL, MASK,MASBAS
       INTEGER,          INTENT(IN)    :: DEBUG,SLOPEFF,ICLA
       INTEGER,          INTENT(IN)    :: NPOIN, NPTFR
@@ -274,7 +274,8 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T1, T2, T3, T4, T5, T6, T7
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T8, T9, T10, T11, T12, T13
       DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH, QSX, QSY, ZFCL
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: BREACH,QSX,QSY,ZFCL
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: LIQBOR,QBOR
 !
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_EVOL
@@ -583,45 +584,45 @@
 !
 !
       !================================================================!
-      SUBROUTINE BEDLOAD_SOLVS_FE   !
+      SUBROUTINE BEDLOAD_SOLVS_FE
       !----------------------------------------------------------------!
      &(MESH,S,EBOR,MASKEL,MASK,
-     & QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,LIMTEC,DT,
+     & QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,KDDL,LIMTEC,DT,
      & MSK,ENTET,T1,T2,T3,T4,T8,
      & ZFCL,HZ,HZN,GLOSEG,DIMGLO,FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,
-     & ICLA,FLBCLA,AVA)
+     & ICLA,FLBCLA,AVA,LIQBOR,QBOR)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: S,LIMTEC,MASKEL,MASK,QSX,QSY
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: S,MASKEL,MASK,QSX,QSY
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
-      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA
+      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA,KDDL
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE,AVA(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)
       LOGICAL,          INTENT(IN)    :: MSK,ENTET
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: FLODEL,T1,T2,T3,T4,T8
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: HZ,EBOR
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: HZ,EBOR,LIMTEC
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: ZFCL,FLBCLA
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: HZN,UNSV2D
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: HZN,UNSV2D,LIQBOR,QBOR
       !----------------------------------------------------------------!
       END SUBROUTINE BEDLOAD_SOLVS_FE
       !================================================================!
 !
 !
       !================================================================!
-      SUBROUTINE BEDLOAD_SOLVS_VF   !
+      SUBROUTINE BEDLOAD_SOLVS_VF
       !----------------------------------------------------------------!
-     &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,
-     & NPOIN,KENT,KSORT,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA)
+     &(MESH,QSX,QSY,LIEBOR,UNSV2D,EBOR,BREACH,NSEG,NPTFR,NPOIN,
+     & KENT,KDIR,KDDL,DT,T10,ZFCL,FLUX,CSF_SABLE,FLBCLA,AVA,LIQBOR,QBOR)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: QSX, QSY
       TYPE(BIEF_OBJ),   INTENT(IN)    :: LIEBOR,UNSV2D, EBOR
-      TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH
-      INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KSORT
-      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: BREACH,LIQBOR,QBOR
+      INTEGER,          INTENT(IN)    :: NSEG,NPTFR,NPOIN,KENT,KDIR,KDDL
+      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE,AVA(NPOIN)
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T10,FLBCLA
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: ZFCL, FLUX
       !----------------------------------------------------------------!
