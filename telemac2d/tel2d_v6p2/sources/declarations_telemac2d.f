@@ -135,7 +135,7 @@
 ! 
       TYPE(BIEF_OBJ), TARGET :: HPROP
 !
-!    PRESCRIBED VALUES ON BOUNDARIES FOR U AND V
+!     PRESCRIBED VALUES ON BOUNDARIES FOR U AND V
 ! 
       TYPE(BIEF_OBJ), TARGET :: UBOR,VBOR
 !
@@ -150,58 +150,57 @@
 !     PRESCRIBED VALUES ON BOUNDARIES FOR TRACERS
 ! 
       TYPE(BIEF_OBJ), TARGET :: TBOR
-!brief VALUES ON BOUNDARIES: K
-! valeurs imposees de la dissipation turbulente au bord
-      TYPE(BIEF_OBJ), TARGET :: KBOR
-!brief VALUES ON BOUNDARIES: EP
-! valeurs imposees de l'energie turbulente au bord
-      TYPE(BIEF_OBJ), TARGET :: EBOR
-!brief FLUX ON THE BOUNDARIES
 !
-      TYPE(BIEF_OBJ), TARGET :: FLBOR
-!brief FLUX ON THE BOUNDARIES
+!     PRESCRIBED VALUES ON BOUNDARIES: K AND EPSILON
+! 
+      TYPE(BIEF_OBJ), TARGET :: KBOR,EBOR
 !
-      TYPE(BIEF_OBJ), TARGET :: FLBORTRA
-!brief ON BOUNDARIES: COEFFICIENTS FOR HEAT FLUXES
-! coefficients d'echange thermique au bord
-      TYPE(BIEF_OBJ), TARGET :: ATBOR
-!brief ON BOUNDARIES: COEFFICIENTS FOR HEAT FLUXES
-! coefficients d'echange thermique au bord
-      TYPE(BIEF_OBJ), TARGET :: BTBOR
-!brief ADIMENSIONAL FRICTION COEFFICIENTS (BOTTOM OR WALL)
-! coefficient de frottement variable en espace
-      TYPE(BIEF_OBJ), TARGET :: CF
-!brief ADIMENSIONAL FRICTION COEFFICIENTS
+!     FLUX ON THE BOUNDARIES: WATER AND TRACERS
 !
-      TYPE(BIEF_OBJ), TARGET :: CFBOR
-!brief VOID STRUCTURE
+      TYPE(BIEF_OBJ), TARGET :: FLBOR,FLBORTRA
+!
+!     ON BOUNDARIES: COEFFICIENTS FOR HEAT FLUXES
+! 
+      TYPE(BIEF_OBJ), TARGET :: ATBOR,BTBOR
+!
+!     ADIMENSIONAL FRICTION COEFFICIENTS (BOTTOM AND BOUNDARIES)
+! 
+      TYPE(BIEF_OBJ), TARGET :: CF,CFBOR
+!
+!     VOID STRUCTURE
 !
       TYPE(BIEF_OBJ), TARGET :: S
-!brief BOTTOM TOPOGRAPHY, PER POINT
-! cote du fond
-      TYPE(BIEF_OBJ), TARGET :: ZF
-!brief BOTTOM TOPOGRAPHY, PER ELEMENTS
-      TYPE(BIEF_OBJ), TARGET :: ZFE
-!brief VELOCITY DIFFUSIVITY
-      TYPE(BIEF_OBJ), TARGET :: VISC
-!brief TRACER DIFFUSIVITY
-      TYPE(BIEF_OBJ), TARGET :: VISCT
-!brief VELOCITY DIFFUSIVITY SAVED
-      TYPE(BIEF_OBJ), TARGET :: VISC_S
-!brief SOURCE TERMS IN THE MOMENTUM EQUATION
+!
+!     BOTTOM TOPOGRAPHY: PER POINT, PER ELEMENT
+! 
+      TYPE(BIEF_OBJ), TARGET :: ZF,ZFE
+!
+!     VELOCITY DIFFUSIVITY: VELOCITY, TRACERS, SAVED
+!
+      TYPE(BIEF_OBJ), TARGET :: VISC,VISCT,VISC_S
+!
+!     SOURCE TERMS IN THE MOMENTUM EQUATION
+!
       TYPE(BIEF_OBJ), TARGET :: FU,FV
-!brief WAVE STRESSES (FROM ARTEMIS OR TOMAWAC)
+!
+!     WAVE STRESSES (FROM ARTEMIS OR TOMAWAC)
+!
       TYPE(BIEF_OBJ), TARGET :: FXWAVE,FYWAVE
 !
 !     INITIAL CELERITY OF WAVES
 !
       TYPE(BIEF_OBJ), TARGET :: C0
-!brief INITIAL DEPTH
+!
+!     INITIAL DEPTH
+!
       TYPE(BIEF_OBJ), TARGET :: H0
-!brief MASK FOR TRACER
+!
+!     MASK FOR TRACERS
+!
       TYPE(BIEF_OBJ), TARGET :: MASKTR
-!brief FREE SURFACE ELEVATION OF INCIDENT WAVE
-! onde resultat
+!
+!     FREE SURFACE ELEVATION OF INCIDENT WAVE
+! 
       TYPE(BIEF_OBJ), TARGET :: COTOND
 !
 !     ATMOSPHERIC PRESSURE
@@ -257,110 +256,101 @@
 !     TYPES OF BOUNDARY CONDITIONS ON U, V, H AND TRACERS
 ! 
       TYPE(BIEF_OBJ), TARGET :: LIUBOR,LIVBOR,LIHBOR,LITBOR
-!brief
-! types de conditions aux limites sur le traceur
+!
+!     TYPES OF BOUNDARY CONDITIONS ON TRACERS
+!
       TYPE(BIEF_OBJ), TARGET :: LIMTRA
-!brief
-! types de conditions aux limites sur k et epsilon
+!
+!     TYPES OF BOUNDARY CONDITIONS ON K AND EPSILON
+!
       TYPE(BIEF_OBJ), TARGET :: LIMKEP
-!brief
-! types de conditions aux limites pour la propagation
+!
+!     TYPES OF BOUNDARY CONDITIONS FOR PROPAGATION
+!
       TYPE(BIEF_OBJ), TARGET :: LIMPRO
-!brief
-! types de conditions aux limites sur h (recopie de lihbor)
-      TYPE(BIEF_OBJ), TARGET :: CLH
-!brief
-! types de conditions aux limites sur u (recopie de liubor)
-      TYPE(BIEF_OBJ), TARGET :: CLU
-!brief
-! types de conditions aux limites sur v (recopie de livbor)
-      TYPE(BIEF_OBJ), TARGET :: CLV
-!brief
+!
+!     BOUNDARY CONDITIONS ON H, U, V (COPIES OF LIHBOR,LIUBOR,LIVBOR)
+!
+      TYPE(BIEF_OBJ), TARGET :: CLH,CLU,CLV
+!
+!     ORIGINAL BOUNDARY NODE NUMBER (OR COLOUR GIVEN BY USER)
 !
       TYPE(BIEF_OBJ), TARGET :: BOUNDARY_COLOUR
-!brief POSITIONS OF FLOATING BODIES
-! positions des flotteurs
-      TYPE(BIEF_OBJ), TARGET :: XFLOT
-!brief POSITIONS OF FLOATING BODIES
-! positions des flotteurs
-      TYPE(BIEF_OBJ), TARGET :: YFLOT
-!brief
+!
+!     POSITIONS OF FLOATING BODIES
+! 
+      TYPE(BIEF_OBJ), TARGET :: XFLOT,YFLOT
+!
+!     FOR LAGRANGIAN DRIFTS
 !
       TYPE(BIEF_OBJ), TARGET :: SHPFLO,XLAG,YLAG,SHPLAG
-!brief
-! cote de la digue au i-eme point de la n-ieme singularite
+!
+!     ELEVATION OF POINTS IN A WEIR
+!
       TYPE(BIEF_OBJ), TARGET :: ZDIG
-!brief
-! coefficient de debit au i-eme point de la n-ieme singularite
+!
+!     DISCHARGE COEFFICIENTS OF POINTS IN WEIRS
+!
       TYPE(BIEF_OBJ), TARGET :: PHIDIG
-!brief TIME STEP OF INITIAL RELEASE
-! numeros des pas de temps de largage pour chaque flotteur
-      TYPE(BIEF_OBJ), TARGET :: DEBFLO
-!brief TIME STEP OF END OF FOLLOW UP
-! numeros des pas de temps de fin de calcul de derive pour chaque flotteur
-      TYPE(BIEF_OBJ), TARGET :: FINFLO
-!brief
+!
+!     TIME STEP OF INITIAL RELEASE FOR FLOATING BODIES, IDEM FOR FINAL
+! 
+      TYPE(BIEF_OBJ), TARGET :: DEBFLO,FINFLO
+!
+!     ELEMENT WHERE THE FLOATING BODIES ARE
 !
       TYPE(BIEF_OBJ), TARGET :: ELTFLO
-!brief
-! table de connectivite utilisee pour la sortie des trajectoires sous forme de maillage
+!
+!     CONNECTIVITY TABLE FOR OUTPUT OF FLOATING BODIES TRAJECTORY
+!
       TYPE(BIEF_OBJ), TARGET :: IKLFLO
-!brief TIME STEP AT THE BEGINNING
 !
-      TYPE(BIEF_OBJ), TARGET :: DEBLAG
-!brief TIME STEP AT THE END
+!     TIME STEP AT THE BEGINNING (END) OF LAGRANGIAN DRIFTS
 !
-      TYPE(BIEF_OBJ), TARGET :: FINLAG
-!brief
+      TYPE(BIEF_OBJ), TARGET :: DEBLAG,FINLAG
+!
+!     ELEMENT WHERE IS THE LAGRANGIAN DRIFT
 !
       TYPE(BIEF_OBJ), TARGET :: ELTLAG
-!brief
-! numdig(k,n,i): numero des points des digues dans la numerotation des points de bord des conditions aux limites) du i-eme point sur le cote k de l'ouvrage n
+!
+!     BOUNDARY NUMBERS OF POINTS IN A WEIR
+!
       TYPE(BIEF_OBJ), TARGET :: NUMDIG
-!brief WORKING ARRAY
 !
-      TYPE(BIEF_OBJ), TARGET :: IT1
-!brief WORKING ARRAY
+!     INTEGERS WORKING ARRAYS
 !
-      TYPE(BIEF_OBJ), TARGET :: IT2
-!brief WORKING ARRAY
+      TYPE(BIEF_OBJ), TARGET :: IT1,IT2,IT3,IT4
 !
-      TYPE(BIEF_OBJ), TARGET :: IT3
-!brief WORKING ARRAY
+!     COMPONENTS OF DISCHARGE AT TIME N
 !
-      TYPE(BIEF_OBJ), TARGET :: IT4
-!brief
-! composantes du debit au temps n
-      TYPE(BIEF_OBJ), TARGET :: QU
-!brief
-! composantes du debit au temps n
-      TYPE(BIEF_OBJ), TARGET :: QV
-!brief
-! hauteurs d'eau  stockees
-      TYPE(BIEF_OBJ), TARGET :: HSTOK
-!brief
-! termes sources du traceur
+      TYPE(BIEF_OBJ), TARGET :: QU,QV
+!
+!     STORED WATER DEPTH, AND CORRECTED STORED WATER DEPTH
+!
+      TYPE(BIEF_OBJ), TARGET :: HSTOK,HCSTOK
+!
+!     SOURCE TERMS OF TRACERS
+!
       TYPE(BIEF_OBJ), TARGET :: SMTR
-!brief
-! reference des noeuds frontiere
-      TYPE(BIEF_OBJ), TARGET :: LOGFR
-!brief
-! h reconstruit ordre 2   corrige  stocke
-      TYPE(BIEF_OBJ), TARGET :: HCSTOK
-!brief
-! flux  traceur incremente
-      TYPE(BIEF_OBJ), TARGET :: FLUXT
-!brief
 !
-      TYPE(BIEF_OBJ), TARGET :: HT
-!brief WATER DEPTH : MAX(H,HMIN)
-! h reconstruit ordre 2   corrige
-      TYPE(BIEF_OBJ), TARGET :: HC
-!brief
-! variations de z pour ordre 2
+!     REFERENCE OF BOUNDARY NODES
+!
+      TYPE(BIEF_OBJ), TARGET :: LOGFR
+!
+!     TRACER FLUX
+!
+      TYPE(BIEF_OBJ), TARGET :: FLUXT
+!
+!     RECONSTRUCTED DEPTH, AND CORRECTED VERSION
+!
+      TYPE(BIEF_OBJ), TARGET :: HT,HC
+!
+!     VARIATIONS OF Z OF ORDER 2
+!
       TYPE(BIEF_OBJ), TARGET :: DSZ
-!brief
-! flux de masse pour traceur
+!
+!     FLUX OF MASS FOR TRACER
+!
       TYPE(BIEF_OBJ), TARGET :: FLUXTEMP
 !brief
 ! flux  traceur frontiere incremente
@@ -443,6 +433,10 @@
 !
       TYPE(BIEF_OBJ),TARGET :: HBTIDE,UBTIDE,VBTIDE,NUMTIDE
 !
+!     FOR RAIN-EVAPORATION
+!
+      TYPE(BIEF_OBJ),TARGET :: PLUIE
+!
 !-----------------------------------------------------------------------
 !
 !       2) MATRICES
@@ -460,42 +454,17 @@
 !     ( CM2  A32  AM3 )   (V )      ( CV3 )
 !
 !
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: AM1
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: AM2
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: AM3
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: BM1
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: BM2
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: BM1S
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: BM2S
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: CM1
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: CM2
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: A23
-!brief
-! matrice
-      TYPE(BIEF_OBJ), TARGET :: A32
-!brief
-! matrice
+!     MATRICES OF THE FINAL LINEAR SYSTEM OF THE PRIMITIVE EQUATIONS OPTION
+!
+      TYPE(BIEF_OBJ), TARGET :: AM1,AM2,AM3,BM1,BM2,CM1,CM2,A23,A32
+!  
+!     BOUNDARY MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: MBOR
+!
+!     BM1 AND BM2 SAVED
+!
+      TYPE(BIEF_OBJ), TARGET :: BM1S,BM2S
 !
 !-----------------------------------------------------------------------
 !
@@ -1065,12 +1034,18 @@
 !     IF YES, OUTPUT OF TEMPERATURE FOR DELWAQ
 ! 
       LOGICAL TEMP_DEL
-!brief IF YES, OUTPUT OF VELOCITY FOR DELWAQ
-! si oui, vitesse pour delwaq
+!
+!     IF YES, OUTPUT OF VELOCITY FOR DELWAQ
+! 
       LOGICAL VELO_DEL
-!brief IF YES, OUTPUT OF DIFFUSIVITY FOR DELWAQ
-! si oui, diffusion pour delwaq
+!
+!     IF YES, OUTPUT OF DIFFUSIVITY FOR DELWAQ
+!  
       LOGICAL DIFF_DEL
+!
+!     IF YES, RAIN OR EVAPORATION TAKEN INTO ACCOUNT
+!  
+      LOGICAL RAIN
 !
 !-----------------------------------------------------------------------
 !
@@ -1214,48 +1189,58 @@
 !brief
 ! perte de charge lineaire de la conduite
       DOUBLE PRECISION LSCE(MAXSCE)
-!brief UPWIND COEFFICIENTS
-! coefficients de decentrement pour s.u.p.g (1:u et v, 2:h, 3:traceur, 4:k et epsilon)
+!
+!     UPWIND COEFFICIENTS FOR SUPG (1:u and v, 2:h, 3:tracers, 4:k and epsilon)
+!
       DOUBLE PRECISION COSUPG(4)
-!brief STOP CRITERIA
-! criteres d'arret dans l'ordre suivant : h, uv, t
+!
+!     STOP CRITERIA (ORDER: H,U AND V,T)
+! 
       DOUBLE PRECISION CRIPER(3)
-!brief
+!
+!     REFERENCE TEMPERATURE FOR COMPUTING DENSITY
 !
       DOUBLE PRECISION TMOY
-!brief DIRECTION OF NORTH, COUNTER-CLOCK-WISE, STARTING FROM VERTICAL AXIS
-! direction du nord en degres par rapport a l'axe des y (sens trigonometrique)
+!
+!     DIRECTION OF NORTH, COUNTER-CLOCK-WISE, STARTING FROM VERTICAL AXIS
+! 
       DOUBLE PRECISION NORD
-!brief NON-DIMENSIONAL DISPERSION COEFFICIENTS
-! coefficients adimensionnels de dispersion
+!
+!     NON-DIMENSIONAL DISPERSION COEFFICIENTS
+! 
       DOUBLE PRECISION ELDER(2)
-!brief LONGITUDE OF ORIGIN POINT
-! longitude du point origine
+!
+!     LONGITUDE OF ORIGIN POINT
+! 
       DOUBLE PRECISION PHI0
-!brief MASS-LUMPING ON TRACERS
-! mass-lumping sur les traceurs
+!
+!     MASS-LUMPING ON TRACERS
+! 
       DOUBLE PRECISION AGGLOT
-!brief DURATION
-! duree du calcul
+!
+!     DURATION OF COMPUTATION
+! 
       DOUBLE PRECISION DUREE
-!brief DESIRED COURANT NUMBER
-! nombre de courant souhaite
+!
+!     DESIRED COURANT NUMBER
+! 
       DOUBLE PRECISION CFLWTD
-!brief MINIMUM DEPTH TO TAKE WIND INTO ACCOUNT
-! profondeur limite pour le vent
+!
+!     MINIMUM DEPTH TO TAKE WIND INTO ACCOUNT
+! 
       DOUBLE PRECISION HWIND
-!brief THRESHOLD FOR NEGATIVE DEPTHS
-! seuil pour les profondeurs negatives
+!
+!     THRESHOLD FOR NEGATIVE DEPTHS
+! 
       DOUBLE PRECISION HNEG
-!brief FREE SURFACE GRADIENT COMPATIBILITY
-! compatibilite du gradient de surface libre
+!
+!     FREE SURFACE GRADIENT COMPATIBILITY
+! 
       DOUBLE PRECISION TETAZCOMP
-!brief TIME RANGE FOR FOURIER ANALYSIS
-! bornes en temps pour l'analyse de fourier
-      DOUBLE PRECISION TAFBGN
-!brief TIME RANGE FOR FOURIER ANALYSIS
-! bornes en temps pour l'analyse de fourier
-      DOUBLE PRECISION TAFEND
+!
+!     TIME RANGE FOR FOURIER ANALYSIS
+! 
+      DOUBLE PRECISION TAFBGN,TAFEND
 !
 !     CURRENT TIME
 ! 
@@ -1281,13 +1266,17 @@
 !
       DOUBLE PRECISION, ALLOCATABLE :: QZ(:,:,:)
 !
+!     RAIN OR EVAPORATION IN MM PER DAY
+!
+      DOUBLE PRECISION RAIN_MMPD
+!
 !-----------------------------------------------------------------------
 !
 !       7) STRINGS
 !
 !-----------------------------------------------------------------------
 !
-!     TITLE
+!     TITLE OF STUDY
 ! 
       CHARACTER*72 TITCAS
 !brief

@@ -6,7 +6,7 @@
      & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCES TERMS IN THE DIFFUSION EQUATION
@@ -16,7 +16,7 @@
 !+            SHOULD REMAIN UNCHANGED UNTIL THE COMPUTATION OF THE
 !+            TRACER MASS IN CVDFTR
 !
-!history  J-M HERVOUET (LNHE)     ; C MOULIN (LNH)
+!history  J-M HERVOUET (LNHE); C MOULIN (LNH)
 !+        23/02/2009
 !+        V6P0
 !+
@@ -83,17 +83,19 @@
 !
       INTEGER I,IR,ITRAC
 !
-      DOUBLE PRECISION DEBIT,TRASCE
+      DOUBLE PRECISION DEBIT,TRASCE,RAIN_MPS
 !
       DOUBLE PRECISION P_DSUM
       EXTERNAL         P_DSUM
 !
 !-----------------------------------------------------------------------
 !
-!     EXPLICIT SOURCE TERMS (HERE SET TO ZERO)
+!     EXPLICIT SOURCE TERMS
 !
       DO ITRAC=1,NTRAC
+        CALL OS('X=0     ',X=TSCEXP%ADR(ITRAC)%P)
         CALL OS('X=0     ',X=TEXP%ADR(ITRAC)%P)
+        MASSOU(ITRAC) = 0.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -132,13 +134,9 @@
 !
       DO ITRAC=1,NTRAC
 !
-      MASSOU(ITRAC) = 0.D0
+      IF(NREJTR.GT.0) THEN
 !
-      CALL OS('X=0     ',X=TSCEXP%ADR(ITRAC)%P)
-!
-      IF(NREJTR.NE.0) THEN
-!
-      DO 10 I = 1 , NREJTR
+      DO I = 1 , NREJTR
 !
         IR = ISCE(I)
 !       TEST IR.GT.0 FOR THE PARALLELISM
@@ -147,8 +145,7 @@
           IF(DEBIT.GT.0.D0) THEN
             TRASCE = TSCE(I,ITRAC)
           ELSE
-!           THE VALUE AT THE SOURCE IS THAT OF INDIDE IF THE FLOW
-!                                                      IS OUTGOING
+!           THE VALUE AT THE SOURCE IS TN IF THE FLOW IS OUTGOING
             TRASCE = TN%ADR(ITRAC)%P%R(IR)
           ENDIF
 !         SOURCE TERM ADDED TO THE MASS OF TRACER
@@ -167,7 +164,7 @@
 !
         ENDIF
 !
-10    CONTINUE
+      ENDDO
 !
       IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
 !

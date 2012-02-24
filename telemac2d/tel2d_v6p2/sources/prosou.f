@@ -2,15 +2,15 @@
                      SUBROUTINE PROSOU
 !                    *****************
 !
-     &(FU,FV,SMH,    UN,VN,HN,GRAV,NORD,
-     & FAIR,WINDX,WINDY,VENT,HWIND,CORIOL,FCOR,
-     & SPHERI,YASMH,COSLAT,SINLAT,AT,LT,
+     &(FU,FV,SMH,    UN,VN,HN,GRAV,NORD,FAIR,WINDX,WINDY,VENT,HWIND,
+     & CORIOL,FCOR,SPHERI,YASMH,COSLAT,SINLAT,AT,LT,DT,
      & NREJET,NREJEU,DSCE,ISCE,T1,MESH,MSK,MASKEL,
      & MAREE,MARDAT,MARTIM,PHI0,OPTSOU,COUROU,NPTH,VARCL,NVARCL,VARCLA,
-     & UNSV2D,FXWAVE,FYWAVE)
+     & UNSV2D,FXWAVE,FYWAVE,RAIN,RAIN_MMPD,PLUIE,T2D_FILES,T2DBI1,
+     & BANDEC,OPTBAN)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCE TERMS IN THE CONTINUITY EQUATION
@@ -80,12 +80,20 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        20/02/2012
+!+        V6P2
+!+   Rain-evaporation added (after initial code provided by O. Boutron, 
+!+   Tour du Valat and O. Bertrand, Artelia-group).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
+!| BANDEC         |-->| IF YES, TIDAL FLATS OR DRY ZONES
 !| CORIOL         |-->| IF YES, CORIOLIS FORCE
 !| COSLAT         |-->| COSINUS OF LATITUDE (SPHERICAL COORDINATES)
 !| COUROU         |-->| IF YES, WAVE DRIVEN CURRENTS TAKEN INTO ACCOUNT
 !| DSCE           |-->| DISCHARGE OF POINT SOURCES
+!| DT             |-->| TIME STEP IN SECONDS
 !| FAIR           |-->| FRICTION COEFFICIENT FOR WIND
 !| FCOR           |-->| CORIOLIS PARAMETER
 !| FU             |<->| SOURCE TERMS ON VELOCITY U
@@ -112,12 +120,18 @@
 !|                |   | IF NREJEU=0 VELOCITY OF SOURCES IS TAKEN EQUAL
 !|                |   | TO VELOCITY.
 !| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES
+!| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !| OPTSOU         |-->| OPTION FOR THE TREATMENT OF SOURCES
 !| PHI0           |-->| LATITUDE OF ORIGIN POINT
+!| PLUIE          |-->| BIEF_OBJ STRUCTURE WITH RAIN OR EVAPORATION.
+!| RAIN           |-->| IF YES, RAIN OR EVAPORATION TAKEN INTO ACCOUNT
+!| RAIN_MMPD      |-->| RAIN OR EVAPORATION IN MM PER DAY
 !| SINLAT         |-->| SINUS OF LATITUDE (SPHERICAL COORDINATES)
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
 !| SPHERI         |-->| IF TRUE : SPHERICAL COORDINATES
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
+!| T2D_FILES      |-->| BIEF_FILE STRUCTURE WITH AL TELEMAC-2D FILES
+!| T2D_BI1        |-->| RANK OF BINARY FILE 1
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !| VARCL          |<->| BLOCK OF CLANDESTINE VARIABLES
 !| VARCLA         |-->| NAMES OF CLANDESTINE VARIABLES
@@ -129,11 +143,10 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC2D, ONLY : T2D_FILES,T2DBI1
+!     FOR SEEING OTHER VARIABLES IN DECLARATIONS_TELEMAC2D:
+      USE DECLARATIONS_TELEMAC2D, ONLY : V2DPAR
       USE INTERFACE_TELEMAC2D, EX_PROSOU => PROSOU
-! --- JP RENAUD START ---
       USE M_COUPLING_ESTEL3D
-! --- JP RENAUD END ---
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -162,21 +175,22 @@
 !-----------------------------------------------------------------------
 !
       INTEGER, INTENT(IN)           :: NVARCL,LT,NREJET,NREJEU,OPTSOU
-      INTEGER, INTENT(IN)           :: NPTH
+      INTEGER, INTENT(IN)           :: NPTH,T2DBI1,OPTBAN
       INTEGER, INTENT(IN)           :: MARDAT(3),MARTIM(3),ISCE(NREJET)
       DOUBLE PRECISION, INTENT(IN)  :: HWIND,AT,FAIR,FCOR,DSCE(NREJET)
-      DOUBLE PRECISION, INTENT(IN)  :: GRAV,NORD,PHI0
+      DOUBLE PRECISION, INTENT(IN)  :: GRAV,NORD,PHI0,RAIN_MMPD,DT
       CHARACTER(LEN=32), INTENT(IN) :: VARCLA(NVARCL)
       LOGICAL, INTENT(IN)           :: VENT,MAREE,CORIOL,SPHERI,MSK
-      LOGICAL, INTENT(IN)           :: COUROU
+      LOGICAL, INTENT(IN)           :: COUROU,RAIN,BANDEC
       LOGICAL, INTENT(INOUT)        :: YASMH
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: VARCL
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: VARCL,PLUIE
+      TYPE(BIEF_FILE), INTENT(IN)   :: T2D_FILES(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER N,I,IELMU,IELMH,IELM1,NPOIN,IR,ERR,NP
 !
-      DOUBLE PRECISION PI,WROT,WD,ATH
+      DOUBLE PRECISION PI,WROT,WD,ATH,RAIN_MPS,SURDT
 !
       CHARACTER*16 NOMX,NOMY
       LOGICAL DEJALU,OKX,OKY,OKC
@@ -226,13 +240,13 @@
 !
 !  ASSUMES HERE THAT THE WIND IS GIVEN IN P1
 !
-        DO 10 N=1,NPOIN
+        DO N=1,NPOIN
           IF (HN%R(N).GT.HWIND) THEN
             WD = SQRT( WINDX%R(N)**2 + WINDY%R(N)**2 )
             FU%R(N) = FU%R(N) + FAIR * WINDX%R(N) * WD / HN%R(N)
             FV%R(N) = FV%R(N) + FAIR * WINDY%R(N) * WD / HN%R(N)
           ENDIF
-10      CONTINUE
+        ENDDO
 !
       ENDIF
 !
@@ -254,11 +268,11 @@
         IF(SPHERI) THEN
 !
           WROT = 2 * PI / 86164.D0
-          DO 20 I=1,NPOIN
+          DO I=1,NPOIN
 !           FORMULATION INDEPENDENT OF THE DIRECTION OF NORTH
             FU%R(I) = FU%R(I) + VN%R(I) * 2 * WROT * SINLAT%R(I)
             FV%R(I) = FV%R(I) - UN%R(I) * 2 * WROT * SINLAT%R(I)
-20        CONTINUE
+          ENDDO
 !
 !         TAKES THE TIDAL FORCE INTO ACCOUNT
 !
@@ -319,68 +333,66 @@
 !
       IELMH=HN%ELM
       CALL CPSTVC(HN,SMH)
-      CALL OS( 'X=0     ' , X=SMH )
+      YASMH=.FALSE.
+      CALL OS('X=0     ',X=SMH)
 !
-      YASMH = .FALSE.
+!     RAIN-EVAPORATION
 !
-      IF(NREJET.NE.0) THEN
-!
-!  YASMH BECOMES TRUE
-!
-      YASMH = .TRUE.
-!
-!  SOURCE TERMS IN THE CONTINUITY EQUATION
-!           AND IN THE MOMENTUM EQUATION:
-!
-!  BEWARE, SMH IS ALSO USED FOR TRACER
-!
-!     COMPUTES THE VOLUME OF THE BASES
-!     HN HERE IS A DUMMY STRUCTURE
-      CALL VECTOR(T1,'=','MASBAS          ',IELMH,
-     &            1.D0,HN,HN,HN,HN,HN,HN,MESH,MSK,MASKEL)
-!
-      IF(NCSIZE.GT.1) CALL PARCOM(T1,2,MESH)
-!
-      DO I = 1 , NREJET
-!
-        IR = ISCE(I)
-!       THE TEST IS USEFUL IN PARALLEL MODE, WHEN THE POINT SOURCE
-!       IS NOT IN THE SUB-DOMAIN
-        IF(IR.GT.0) THEN
-         IF(OPTSOU.EQ.1) THEN
-!          "NORMAL" VERSION
-           SMH%R(IR)=SMH%R(IR)+DSCE(I)/T1%R(IR)
-         ELSE
-!          "DIRAC" VERSION
-           SMH%R(IR) = SMH%R(IR)+DSCE(I)
-         ENDIF
-        ENDIF
-!
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-! EXPLICIT TREATMENT OF MOMENTUM CONTRIBUTIONS TO THE SOURCES
-!
-      IF(NREJEU.GT.0) THEN
-!
-      DO I = 1 , NREJEU
-!
-        IR = ISCE(I)
-!       THE TEST IS USEFUL IN PARALLEL MODE, WHEN THE POINT SOURCE
-!       IS NOT IN THE SUB-DOMAIN
-        IF(IR.GT.0) THEN
-!       MOMENTUM ADDED BY THE SOURCE
-!      -MOMENTUM TAKEN BY THE SOURCE
-        FU%R(IR)=FU%R(IR) + (VUSCE(AT,I)-UN%R(IR))*
-     &  DSCE(I)/(T1%R(IR)*MAX(HN%R(IR),0.1D0))
-        FV%R(IR)=FV%R(IR) + (VVSCE(AT,I)-VN%R(IR))*
-     &  DSCE(I)/(T1%R(IR)*MAX(HN%R(IR),0.1D0))
-        ENDIF
-!
-      ENDDO
-!
+      IF(RAIN) THEN
+        RAIN_MPS=RAIN_MMPD/86400000.D0
+        SURDT=1.D0/DT
+        IF(BANDEC) THEN
+!         EVAPORATION (TENTATIVELY...) LIMITED BY AVAILABLE WATER
+          DO I=1,NPOIN
+            PLUIE%R(I)=MAX(RAIN_MPS,-HN%R(I)*SURDT)
+          ENDDO
+        ELSE
+          CALL OS('X=C     ',X=PLUIE,C=RAIN_MPS)
+        ENDIF 
       ENDIF
+!
+!     SOURCES
+!
+      IF(NREJET.GT.0) THEN
+!
+        YASMH = .TRUE.
+!
+!       SOURCE TERMS IN THE CONTINUITY EQUATION
+!       BEWARE, SMH IS ALSO USED FOR TRACER
+!
+        DO I = 1 , NREJET
+          IR = ISCE(I)
+!         THE TEST IS USEFUL IN PARALLEL MODE, WHEN THE POINT SOURCE
+!         IS NOT IN THE SUB-DOMAIN
+          IF(IR.GT.0) THEN
+            IF(OPTSOU.EQ.1) THEN
+!             "NORMAL" VERSION
+              SMH%R(IR)=SMH%R(IR)+DSCE(I)*UNSV2D%R(IR)
+            ELSE
+!             "DIRAC" VERSION
+              SMH%R(IR)=SMH%R(IR)+DSCE(I)
+            ENDIF
+          ENDIF
+        ENDDO
+!
+!       SOURCE TERMS IN THE MOMENTUM EQUATIONS
+!       EXPLICIT TREATMENT OF MOMENTUM CONTRIBUTIONS TO THE SOURCES
+!
+        IF(NREJEU.GT.0) THEN
+          DO I = 1 , NREJEU
+            IR = ISCE(I)
+!           THE TEST IS USEFUL IN PARALLEL MODE, WHEN THE POINT SOURCE
+!           IS NOT IN THE SUB-DOMAIN
+            IF(IR.GT.0) THEN
+!             MOMENTUM ADDED BY THE SOURCE
+!      -      MOMENTUM TAKEN BY THE SOURCE
+              FU%R(IR)=FU%R(IR) + (VUSCE(AT,I)-UN%R(IR))*
+     &        DSCE(I)/(T1%R(IR)*MAX(HN%R(IR),0.1D0))
+              FV%R(IR)=FV%R(IR) + (VVSCE(AT,I)-VN%R(IR))*
+     &        DSCE(I)/(T1%R(IR)*MAX(HN%R(IR),0.1D0))
+            ENDIF
+          ENDDO
+        ENDIF
 !
       ENDIF
 !
@@ -514,9 +526,8 @@
 !
 !-----------------------------------------------------------------------
 !
-!
-!  TAKES SEEPAGE IN THE SOIL INTO ACCOUNT
-!  COMMUNICATES WITH ESTEL-3D
+!     TAKES SEEPAGE IN THE SOIL INTO ACCOUNT
+!     COMMUNICATES WITH ESTEL-3D
 !
 !     GETS SOURCE TERM FROM ESTEL-3D TO ACCOUNT FOR SEEPAGE
 !     CALLS THE INFILTRATION ROUTINE

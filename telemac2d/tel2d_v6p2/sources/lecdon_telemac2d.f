@@ -638,6 +638,7 @@
          TAFBGN   = MOTREA( ADRESS(2,59) )
          TAFEND   = MOTREA( ADRESS(2,59)+1 )
          GAMMA    = MOTREA( ADRESS(2,60) )
+         RAIN_MMPD= MOTREA( ADRESS(2,61) )
 !
 ! LOGICAL KEYWORDS:
 !
@@ -663,7 +664,7 @@
          BILMAS    = MOTLOG( ADRESS(3,16) )
          CLIPH     = MOTLOG( ADRESS(3,17) )
          SPHERI    = MOTLOG( ADRESS(3,18) )
-!        FROVAR    = MOTLOG( ADRESS(3,19) )
+         RAIN      = MOTLOG( ADRESS(3,19) )
          PROLIN    = MOTLOG( ADRESS(3,20) )
          VALID     = MOTLOG( ADRESS(3,21) )
          INFOKE    = MOTLOG( ADRESS(3,22) )

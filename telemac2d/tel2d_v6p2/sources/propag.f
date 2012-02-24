@@ -15,7 +15,7 @@
      & MAT,RHS,UNK,TB,S,BD,PRECCU,SOLSYS,CFLMAX,OPDVIT,OPTSOU,
      & NFRLIQ,SLVPRO,EQUA,VERTIC,ADJO,ZFLATS,TETAZCOMP,UDEL,VDEL,DM1,
      & ZCONV,COUPLING,FLBOR,BM1S,BM2S,CV1S,VOLU2D,V2DPAR,UNSV2D,
-     & NUMDIG,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM)
+     & NUMDIG,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM,RAIN,PLUIE)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -115,6 +115,11 @@
 !+        V6P2
 !+   Adaptation to parallelism
 !
+!history  J-M HERVOUET (LNHE)
+!+        249/02/2012
+!+        V6P2
+!+   Rain and evaporation added
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -211,8 +216,10 @@
 !| OPTSOU         |-->| KEYWORD: 'TYPE OF SOURCES'
 !| OPTSUP         |-->| KEYWORD: 'SUPG OPTION'
 !| PATMOS         |-->| ATMOSPHERIC PRESSURE
+!| PLUIE          |-->| RAIN OR EVAPORATION IN M/S IN A BIEF_OBJ
 !| PRECCU         |-->| KEYWORD: 'C-U PRECONDITIONING' 
 !| PRIVE          |-->| BLOCK OF WORK BIEF_OBJ STRUCTURES
+!| RAIN           |-->| IF YES, RAIN OR EVAPORATION
 !| RHS            |<->| BLOCK OF PRIVATE BIEF_OBJ STRUCTURES
 !| RO             |-->| WATER DENSITY IF VARIABLE
 !| ROEAU          |-->| WATER DENSITY
@@ -290,7 +297,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: CFLMAX,MASSES
       LOGICAL, INTENT(IN) :: BILMAS,ATMOS,DIFVIT,INFOGR,CONVV(4),MSK
       LOGICAL, INTENT(IN) :: YASMH,ROVAR,PRECCU,VERTIC,ADJO,CORCON
-      LOGICAL, INTENT(IN) :: YAFLULIM
+      LOGICAL, INTENT(IN) :: YAFLULIM,RAIN
       TYPE(SLVCFG), INTENT(INOUT)     :: SLVPRO
       CHARACTER(LEN=20),  INTENT(IN)  :: EQUA
       CHARACTER(LEN=*) ,  INTENT(IN)  :: COUPLING
@@ -307,7 +314,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: CV1S
       TYPE(BIEF_OBJ), INTENT(INOUT) :: DU,DV,FU,FV,VISC,VISC_S,HTILD
       TYPE(BIEF_OBJ), INTENT(INOUT) :: UBOR,VBOR,HBOR,AUBOR,COTOND
-      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,MASKPT,ZF
+      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,MASKPT,ZF,PLUIE
       TYPE(BIEF_OBJ), INTENT(IN)    :: HPROP,H0,C0,LIMPRO
 !
 !     TE : BY ELEMENT               TE4,TE5 ONLY IF OPTBAN=3
@@ -685,7 +692,7 @@
 !         WITHOUT TAKING MASS-LUMPING INTO ACCOUNT
 !         CALL VECTOR(T1,'=','MASVEC          ',IELMH,
 !    *                1.D0,SMH,S,S,S,S,S,MESH,MSK,MASKEL)
-          CALL OS( 'X=X+Y   ' , CV1 , T1 , S , C )
+          CALL OS( 'X=X+Y   ' , X=CV1 , Y=T1 )
           IF(BILMAS) MASSES = DT * BIEF_SUM(T1)
         ELSE
 !         DIRAC VERSION
@@ -696,8 +703,15 @@
 !       IF (NCSIZE.GT.1) MASSES=P_DSUM (MASSES)
       ENDIF
 !
-!  DEBUT DES CONVECTIONS DE U
+!     SAME THING WITH RAIN-EVAPORATION (LIKE OPTSOU=1)
 !
+      IF(RAIN) THEN
+        CALL MATVEC( 'X=CAY   ',T1,AM1,PLUIE,DT,MESH)
+        CALL OS( 'X=X+Y   ' , X=CV1 , Y=T1 )
+        IF(BILMAS) MASSES = MASSES + DT * BIEF_SUM(T1)
+      ENDIF
+!
+!  DEBUT DES CONVECTIONS DE U
 !
 !-----------------------------------------------------------------------
 !
@@ -832,7 +846,7 @@
      &              TB%ADR(22)%P,AGGLOH,TE1,DT,INFOGR,BILMAS,
      &              1,MSK,MASKEL,S,C,1,LIMPRO%I(1+DIMLIM:2*DIMLIM),
      &              KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
-     &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT)
+     &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,RAIN,PLUIE)
         CALL CVTRVF(T2,VN,S,.FALSE.,.TRUE.,H,HN,
      &              HPROP,UCONV,VCONV,S,S,
      &              1,S,S,FV,S,.FALSE.,S,.FALSE.,VBOR,MASK,MESH,
@@ -842,7 +856,7 @@
      &              TB%ADR(22)%P,AGGLOH,TE1,DT,INFOGR,BILMAS,
      &              1,MSK,MASKEL,S,C,1,LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
      &              KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
-     &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT)
+     &              V2DPAR,UNSV2D,IOPT,TB%ADR(12)%P,MASKPT,RAIN,PLUIE)
         IF(IELMU.NE.11) THEN
           CALL CHGDIS(T1,DISCLIN,IELMU,MESH)
           CALL CHGDIS(T2,DISCLIN,IELMU,MESH)
@@ -885,7 +899,7 @@
      &      V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,TB%ADR(12)%P,MASKPT,
      &      MESH%GLOSEG%I(                 1:  MESH%GLOSEG%DIM1),
      &      MESH%GLOSEG%I(MESH%GLOSEG%DIM1+1:2*MESH%GLOSEG%DIM1),
-     &      MESH%NBOR%I,2,FLULIM%R,YAFLULIM)
+     &      MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE)
 !                       2: HARDCODED OPTION
 !
         IF(IELMU.NE.11) THEN
@@ -1527,7 +1541,7 @@
 !       PRINT*,'DBM2=',DOTS(BM2%D,BM2%D)
 !       PRINT*,'DCM1=',DOTS(CM1%D,CM1%D)
 !       PRINT*,'DCM2=',DOTS(CM2%D,CM2%D)
-!       PRINT*,'CV1=',DOTS(CV1,CV1)
+!       PRINT*,'CV1=',P_DOTS(CV1,CV1,MESH)
 !       PRINT*,'CV2=',DOTS(CV2,CV2)
 !       PRINT*,'CV3=',DOTS(CV3,CV3)
 !

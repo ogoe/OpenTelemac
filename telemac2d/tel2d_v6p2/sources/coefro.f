@@ -27,6 +27,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. VILLARET (LNHE)
+!+        21/02/2012
+!+        V6P2
+!+   Nikuradse formula slightly changed (30/e instead of 11).
+!+   Optimised by JMH
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<--| ADIMENSIONAL FRICTION COEFFICIENT
 !| CHESTR         |-->| FRICTION COEFFICIENTS
@@ -58,7 +64,7 @@
 !
       INTEGER NPOIN,N,IELMC,IELMH
 !
-      DOUBLE PRECISION TIERS,HC,UNORM,AUX,INLOG
+      DOUBLE PRECISION TIERS,HC,UNORM,AUX,INLOG,TRENTESURE
       DOUBLE PRECISION, POINTER :: HH(:)
 !
       INTRINSIC SQRT,MAX,LOG
@@ -153,9 +159,10 @@
       ELSEIF(KFROT.EQ.5) THEN
 !     ***********************
 !
+        TRENTESURE=30.D0/EXP(1.D0)
         DO N=1,NPOIN
           HC = MAX(HH(N),1.D-4)
-          CF%R(N) = 2.D0 / (LOG( 11.D0*HC/CHESTR%R(N))/KARMAN )**2
+          CF%R(N) = 2.D0 / (LOG( TRENTESURE*HC/CHESTR%R(N))/KARMAN )**2
         ENDDO
 !
 !     ****

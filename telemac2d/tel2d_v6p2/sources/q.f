@@ -2,7 +2,7 @@
                      DOUBLE PRECISION FUNCTION Q
 !                    ***************************
 !
-     &( I )
+     &(I)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   08/11/2011
@@ -33,6 +33,11 @@
 !+        V6P2
 !+   Modification of FCT size due to modification of TRACER numbering
 !
+!history  J-M HERVOUET (LNHE)
+!+        243/02/2012
+!+        V6P2
+!+   Discharge taken at mid distance between AT-DT AND AT
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,6 +61,7 @@
       INTEGER N
       LOGICAL,SAVE :: DEJA=.FALSE.
       LOGICAL, DIMENSION(MAXFRO), SAVE :: OK
+      DOUBLE PRECISION Q1,Q2
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
@@ -85,7 +91,11 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(Q,FCT,AT,T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        CALL READ_FIC_FRLIQ(Q1,FCT,AT-DT,
+     &                      T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        CALL READ_FIC_FRLIQ(Q2,FCT,AT   ,
+     &                      T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        Q=(Q1+Q2)*0.5D0
 !
       ENDIF
 !

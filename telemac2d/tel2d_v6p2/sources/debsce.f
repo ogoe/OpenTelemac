@@ -36,6 +36,11 @@
 !+        V6P2
 !+   Modification size FCT due to modification of TRACER numbering
 !
+!history  J-M HERVOUET (LNHE)
+!+        243/02/2012
+!+        V6P2
+!+   Discharge taken at mid distance between AT-DT AND AT
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DISCE          |-->| ARRAY OF DISCHARGES OF SOURCES.
 !|                |   | READ IN THE PARAMETER FILE.
@@ -45,7 +50,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY: MAXSCE,AT,ENTET,NREJET,
+      USE DECLARATIONS_TELEMAC2D, ONLY: MAXSCE,AT,ENTET,NREJET,DT,
      &                                  T2D_FILES,T2DVEF
 !
       IMPLICIT NONE
@@ -63,6 +68,7 @@
       INTEGER N
       LOGICAL, SAVE :: DEJA=.FALSE.
       LOGICAL, DIMENSION(MAXSCE), SAVE :: OK
+      DOUBLE PRECISION DEBSCE1,DEBSCE2
 !
 !     FIRST CALL, OK INITIALISED TO .TRUE.
 !
@@ -92,8 +98,11 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL READ_FIC_SOURCES(DEBSCE,FCT,AT,T2D_FILES(T2DVEF)%LU,
+        CALL READ_FIC_SOURCES(DEBSCE1,FCT,AT-DT,T2D_FILES(T2DVEF)%LU,
      &                        ENTET,OK(I))
+        CALL READ_FIC_SOURCES(DEBSCE2,FCT,AT   ,T2D_FILES(T2DVEF)%LU,
+     &                        ENTET,OK(I))
+        DEBSCE=(DEBSCE1+DEBSCE2)*0.5D0
 !
       ENDIF
 !

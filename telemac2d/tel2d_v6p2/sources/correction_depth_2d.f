@@ -5,7 +5,7 @@
      &(GLOSEG,DIMGLO,YAFLODEL,YASMH,YAFLULIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    APPLIES VARIOUS TECHNIQUES TO TREAT NEGATIVE DEPTHS.
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        24/02/2012
+!+        V6P2
+!+   Rain and evaporation added
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -91,16 +96,53 @@
 !
       YAFLULIM=.TRUE.
 !
+      IF(.NOT.RAIN) THEN
+!
+!     CASE ONLY SMH OR NOTHING
+!
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.TRUE.,
      &                     FLBOR,DT,UNSV2D,
      &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
-     &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,SMH,YASMH,
+     &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
+     &                     SMH,YASMH,
      &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
      &                     MESH%W%R,NAMECODE,2)
 !                                            2 HARDCODED OPTION
 !                                            FOR POSITIVE DEPTH ALGORITHM
 !                                            INDEPENDENT OF SEGMENT
 !                                            NUMBERING
+!
+      ELSEIF(YASMH) THEN
+!
+!     CASE SMH AND RAIN
+!      
+      IF(OPTSOU.EQ.1) THEN
+        CALL OS('X=Y+Z   ',X=T5,Y=SMH,Z=PLUIE)
+      ELSE
+        CALL OS('X=Y     ',X=T5,Y=SMH)
+        CALL OS('X=X+YZ  ',X=T5,Y=PLUIE,Z=V2DPAR)
+      ENDIF
+      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.TRUE.,
+     &                     FLBOR,DT,UNSV2D,
+     &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
+     &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
+     &                     T5,.TRUE.,
+     &                     OPTSOU,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
+     &                     MESH%W%R,NAMECODE,2)
+!
+      ELSE
+!
+!     CASE ONLY RAIN
+!
+      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.TRUE.,
+     &                     FLBOR,DT,UNSV2D,
+     &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
+     &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
+     &                     PLUIE,RAIN,
+     &                     1,FLULIM%R,LIMPRO%I,HBOR%R,KDIR,ENTET,
+     &                     MESH%W%R,NAMECODE,2)
+!
+      ENDIF
 !
       ELSEIF(OPT_HNEG.EQ.1) THEN
 !
