@@ -54,7 +54,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX,IT1
+      USE DECLARATIONS_SISYPHE, ONLY : IT1
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU

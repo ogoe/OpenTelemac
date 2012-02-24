@@ -77,27 +77,23 @@
       DOUBLE PRECISION :: C2
 !
 !======================================================================!
-!======================================================================!
 !                               PROGRAM                                !
-!======================================================================!
 !======================================================================!
 !
       CALL CPSTVC(QSC,ACP)
       CALL OS('X=C     ', X=ACP, C=AC)
-
-      ! **************************************** !
-      ! 0 - SLOPE EFFECT: SOULBY FORMULATION     ! 
-      ! **************************************** !
+!
+!     SLOPE EFFECT: SOULBY FORMULATION
+!
       IF(SLOPEFF.EQ.2) THEN
         CALL OS('X=XY    ', X=ACP, Y=COEFPN )
       ENDIF
-
-      ! **************************************** !
-      ! III - BEDLOAD TRANSPORT CORRECTED        ! 
-      !       FOR EXTENDED GRAIN SIZE            ! 
-      !       WITH VARIABLE MPM_COEFFICIENT      !
-      ! **************************************** !
+!
+!     BEDLOAD TRANSPORT CORRECTED FOR EXTENDED GRAIN SIZE 
+!     WITH VARIABLE MPM_COEFFICIENT
+!
       C2 = SQRT(GRAV*DENS*DM**3)
+!
       IF(HIDFAC.EQ.1.OR.HIDFAC.EQ.2) THEN
         CALL OS('X=XY    ', X=ACP, Y=HIDING)
         CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
@@ -114,7 +110,6 @@
         CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
       ENDIF
 !
-!======================================================================!
 !======================================================================!
 !
       RETURN

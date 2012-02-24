@@ -700,13 +700,14 @@
      &  DISP, DISP_C, T11, T2, .FALSE., T9,  YASMI2,AM1_S,AM2_S,
      &  ZF, CBOR, AFBOR, BFBOR, LIMDIF, MASKTR, MESH,
      &  W1, TB, T8, T12, T3, T4, T5, T6, T7, T10, TE1, TE2, TE3,
-!                                                       BILMAS
      &  KDIR,KDDL,KENT,DT,ENTETS,TETA_SUSP,
+!                      BILAN
      &  AGGLOT,ENTETS,.FALSE.,OPTSUP,
      &  1, LT, NIT, OPDTRA, OPTBAN, MSK, MASKEL, MASKPT, MBOR, S,
 !               OPTSOU
      &  MASSOU, 1,     SLVTRA,FLBOR_SIS,V2DPAR,UNSV2D,OPTVF,FLBORTRA,
-     &  FLULIM,YAFLULIM,DIRFLU)
+     &  FLULIM,YAFLULIM,DIRFLU,.FALSE.,T8)
+!                               RAIN  ,PLUIE (NOT TRANSMITTED SO FAR)
 !
       IF (DEBUG > 0) WRITE(LU,*) 'END_CVDFTR'
 !
