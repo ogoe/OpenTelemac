@@ -79,8 +79,8 @@ INDEX = 6
 MNEMO = 'T2D_FILES(T2DGEO)%NAME' 
 TAILLE = 0 
 SUBMIT = 'T2DGEO-READ-01;T2DGEO;OBLIG;BIN;LIT;SELAFIN-GEOM' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
+/DEFAUT = ' ' 
+/DEFAUT1 = ' ' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
 COMPORT = 
@@ -246,19 +246,27 @@ ces coefficients sont respectivement appliques a
 1) U et V     2) H     3) T     4) K ET EPSILON 
 1 : caracteristiques sur h 
 2 : SUPG 
-3 :  
-4 :  
-5 : Sur h seulement (schema conservatif sans sous-iteration) 
-6 :  Schema PSI' 
+3 : Schema N conservatif 
+4 : Schema N conservatif    
+5 : Schema PSI conservatif 
+6 : Schema PSI non conservatif
+7 : schema N implicite non conservatif
+13 : Schema N par segment
+14 : Schema N par segment
+Second integer must be 5' 
 AIDE1 = 'Choice of advection schemes for every variable 
 These coefficients are applied respectively to 
 1) U et V     2) H     3) T     4) K and EPSILON 
 1: characteristics 
 2: SUPG 
-3:  
-4:  
-5: On h only (mass conservative scheme without sub-iterations) 
-6: PSI scheme (explicit with stability criterion)'
+3: Conservative N-scheme  
+4: Conservative N-scheme  
+5: Conservative PSI-scheme  
+6 : Non conservative PSI scheme
+7 : Implicit non conservative N scheme
+13 : Edge-based N-scheme 
+14 : Edge-based N-scheme 
+Second integer must be 5'
  
 NOM = 'free integer 6' 
 NOM1 = 'free integer 6' 
@@ -2004,8 +2012,8 @@ TYPE = CARACTERE
 INDEX = 9 
 MNEMO = 'T2D_FILES(T2DLIM)%NAME' 
 SUBMIT = 'T2DLIM-READ-07;T2DCLI;OBLIG;ASC;LIT;CONLIM' 
-DEFAUT = ' ' 
-DEFAUT1 = ' ' 
+/DEFAUT = ' ' 
+/DEFAUT1 = ' ' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
 APPARENCE = 'LISTE IS FICHIER' 
@@ -2779,20 +2787,6 @@ Warning: this option is closely related to the mesh that should have
 been entered onto a nautical chart drawn as per Mercator projection 
 The LATITUDE OF ORIGIN POINT (another keyword), which corresponds to 
 ordinate y=0 in the mesh, must moreover be given.' 
- 
-NOM = 'COEFFICIENT DE FROTTEMENT VARIABLE EN ESPACE' 
-NOM1 = 'FRICTION COEFFICIENT VARIABLE IN SPACE' 
-TYPE = LOGIQUE 
-INDEX = 19 
-MNEMO = 'FROVAR' 
-TAILLE = 0 
-DEFAUT = NON 
-DEFAUT1 = NO 
-RUBRIQUE = 'EQUATIONS';'FROTTEMENT ET LISSAGE' 
-RUBRIQUE1 = 'EQUATIONS';'FRICTION AND SMOOTHINGS' 
-NIVEAU = -13 
-AIDE = 'Inactive. Sera retire de la prochaine version' 
-AIDE1 = 'No longer activated. Will be removed from next release' 
  
 NOM = 'PROPAGATION LINEARISEE' 
 NOM1 = 'LINEARIZED PROPAGATION' 
@@ -4852,7 +4846,38 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1 
 AIDE = 'Base de donnees tiree du fichier du modele de maree' 
 AIDE1 = 'Tide data base extracted from the tidal model file' 
-
+/ 
+/ VERSION 6.2
+/
+NOM = 'PLUIE OU EVAPORATION'
+NOM1 = 'RAIN OR EVAPORATION'
+TYPE = LOGIQUE
+INDEX = 19
+MNEMO = 'RAIN'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 1
+AIDE  = 'Pour ajouter un apport ou une perte d''eau en surface.
+Voir le mot-cle PLUIE OU EVAPORATION EN MM PAR JOUR'
+AIDE1 = 'to add or remove water at the free surface. See the key-word
+RAIN OR EVAPORATION IN MM PER DAY'
+/ 
+NOM = 'PLUIE OU EVAPORATION EN MM PAR JOUR'
+NOM1 = 'RAIN OR EVAPORATION IN MM PER DAY'
+TYPE = REAL
+INDEX = 61
+MNEMO = 'RAIN_MMPD'
+TAILLE = 0
+DEFAUT = 0.D0
+DEFAUT1 = 0.D0
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 1
+AIDE  = 'Pour ajouter un apport ou une perte d''eau en surface'
+AIDE1 = 'to add or remove water at the free surface'
 / 
 / POUR LES LANCEURS PERL : 
 / 
