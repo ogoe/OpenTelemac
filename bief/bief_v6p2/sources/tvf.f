@@ -5,10 +5,10 @@
      &(F,FN,FC,H,FXMAT,FXMATPAR,
      & UNSV2D,DT,FXBOR,FXBORPAR,T7,FBOR,SMH,YASMH,FSCEXP,
      & NSEG,NPOIN,NPTFR,GLOSEG,SIZGLO,NBOR,LIMTRA,KDIR,KDDL,OPTSOU,HLIN,
-     & IOPT2,FLBORTRA,SURNIT,MESH,SF)
+     & IOPT2,FLBORTRA,SURNIT,MESH,SF,RAIN,PLUIE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TRACER FOR FINITE VOLUME SCHEME.
@@ -30,6 +30,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        24/02/2012
+!+        V6P2
+!+   Rain and evaporation added (after initiative by O. Boutron, from
+!+   Tour du Valat, and O. Bertrand, Artelia group)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME-STEP
@@ -63,6 +69,8 @@
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
 !|                |   | 2: DIRAC
+!| PLUIE          |-->| RAIN OR EVAPORATION, IN M/S
+!| RAIN           |-->| IF YES: RAIN OR EVAPORATION
 !| SF             |<->| BIEF_OBJ SUTRUCTURE OF F
 !| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
@@ -90,10 +98,11 @@
       DOUBLE PRECISION, INTENT(IN)    :: FXBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: FC(NPOIN),H(NPOIN),HLIN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: SMH(NPOIN),UNSV2D(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: PLUIE(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FSCEXP(NPOIN),FN(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FBOR(NPTFR),FXBORPAR(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FXMAT(NSEG),FXMATPAR(NSEG)
-      LOGICAL, INTENT(IN)             :: YASMH
+      LOGICAL, INTENT(IN)             :: YASMH,RAIN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T7,SF
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
@@ -168,9 +177,19 @@
           ENDDO
         ELSEIF(OPTSOU.EQ.2) THEN
           DO I=1,NPOIN
-         F(I)=F(I)+DT/HLIN(I)*UNSV2D(I)*SMH(I)*(FSCEXP(I)+FN(I)-FC(I))
+           F(I)=F(I)+DT/HLIN(I)*UNSV2D(I)*SMH(I)*(FSCEXP(I)+FN(I)-FC(I))
           ENDDO
         ENDIF
+      ENDIF
+!
+!     RAIN-EVAPORATION
+!
+      IF(RAIN) THEN
+        DO I=1,NPOIN
+!         IF A VALUE IN RAIN HAD TO BE CONSIDERED...
+!         F(I)=F(I)+DT/HLIN(I)*PLUIE(I)*(VALUE-FC(I))
+          F(I)=F(I)+DT/HLIN(I)*PLUIE(I)*(     -FC(I))
+        ENDDO
       ENDIF
 !
 !     ON THE DIRICHLET BOUNDARIES, FLUX TERMS TAKEN INTO ACCOUNT

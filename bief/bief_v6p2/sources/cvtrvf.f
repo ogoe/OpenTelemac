@@ -6,10 +6,10 @@
      & VISC,VISC_S,SM,SMH,YASMH,SMI,YASMI,FBOR,MASKTR,MESH,
      & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
-     & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT)
+     & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT ADVECTOR.
@@ -34,6 +34,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        24/02/2012
+!+        V6P2
+!+   Rain and evaporation added (after initiative by O. Boutron, from
+!+   Tour du Valat, and O. Bertrand, Artelia group)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -122,7 +128,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR
-      LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI
+      LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,RAIN
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN)      :: V2DPAR,UNSV2D,HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,HNT,HT
@@ -130,7 +136,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR,FLBOR
-      TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC
+      TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
       TYPE(BIEF_MESH) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -300,7 +306,8 @@
 !                                   FLBOR%R(NPOIN)
      &           V2DPAR%R,DT_REMAIN,T7%R   ,SMH%R,
      &           YASMH,T8,MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
-     &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT)
+     &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
+     &           RAIN,PLUIE%R)
       IF(NCSIZE.GT.1) DTMAX=P_DMIN(DTMAX)
 !
       DDT=MIN(DT_REMAIN,DTMAX)
@@ -329,11 +336,12 @@
         CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,UNSV2D,
      &              DDT,FLBOR,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
      &              MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,
-     &              DT)
+     &              DT,RAIN,PLUIE)
       ELSE
         CALL TRACVF(F,FN,FSCEXP,HT,HNT,FXMAT,FXMATPAR,V2DPAR,UNSV2D,
      &              DDT,T3,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,MESH,
-     &              LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT)
+     &              LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT,
+     &              RAIN,PLUIE)
       ENDIF
 !
       DO I=1,HN%DIM1

@@ -3,10 +3,10 @@
 !                    ****************
 !
      &(DTMAX,HSTART,H,FXMAT,FXMATPAR,MAS,DT,FXBOR,SMH,YASMH,TAB1,NSEG,
-     & NPOIN,NPTFR,GLOSEG,SIZGLO,MESH,MSK,MASKPT)
+     & NPOIN,NPTFR,GLOSEG,SIZGLO,MESH,MSK,MASKPT,RAIN,PLUIE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MAXIMUM TIMESTEP THAT ENABLES
@@ -44,6 +44,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        24/02/2012
+!+        V6P2
+!+   Rain and evaporation added (after initiative by O. Boutron, from
+!+   Tour du Valat, and O. Bertrand, Artelia group)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
 !| DTMAX          |<--| MAXIMUM TIME STEP FOR STABILITY
@@ -60,6 +66,8 @@
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSEG           |-->| NUMBER OF SEGMENTS
+!| PLUIE          |-->| RAIN OR EVAPORATION IN M/S
+!| RAIN           |-->| IF YES: RAIN OR EVAPORATION
 !| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| SMH            |-->| RIGHT HAND SIDE OF CONTINUITY EQUATION
 !| TAB1           |-->| WORK ARRAY
@@ -79,10 +87,11 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DTMAX
       DOUBLE PRECISION, INTENT(IN)    :: DT,HSTART(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: H(NPOIN),MAS(NPOIN),SMH(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: PLUIE(NPOIN)
 !                                              NOT NPTFR, SEE TRACVF
       DOUBLE PRECISION, INTENT(IN)    :: FXBOR(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FXMAT(NSEG),FXMATPAR(NSEG)
-      LOGICAL, INTENT(IN)             :: YASMH,MSK
+      LOGICAL, INTENT(IN)             :: YASMH,MSK,RAIN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TAB1
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKPT
@@ -131,9 +140,28 @@
 !     BUT HERE THE FINAL H IS NOT H(N+1) BUT A FUNCTION OF DTMAX ITSELF
 !     H FINAL = HSTART + DTMAX/DT *(H-HSTART)
 !
-      IF(YASMH) THEN
+      IF(YASMH.AND.RAIN) THEN
+        DO I = 1,NPOIN
+          DENOM=TAB1%R(I)+MIN(FXBOR(I),0.D0)-MAX(SMH(I)  ,0.D0)
+     &                                      -MAX(PLUIE(I),0.D0)
+          A=-MAS(I)/MIN(DENOM,-1.D-12)
+          B=DT+A*(HSTART(I)-H(I))
+          IF(B.GT.0.D0) THEN
+            DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
+          ENDIF
+        ENDDO
+      ELSEIF(YASMH) THEN
         DO I = 1,NPOIN
           DENOM=TAB1%R(I)+MIN(FXBOR(I),0.D0)-MAX(SMH(I),0.D0)
+          A=-MAS(I)/MIN(DENOM,-1.D-12)
+          B=DT+A*(HSTART(I)-H(I))
+          IF(B.GT.0.D0) THEN
+            DTMAX = MIN(DTMAX,A*HSTART(I)*DT/B)
+          ENDIF
+        ENDDO
+      ELSEIF(RAIN) THEN
+        DO I = 1,NPOIN
+          DENOM=TAB1%R(I)+MIN(FXBOR(I),0.D0)-MAX(PLUIE(I),0.D0)
           A=-MAS(I)/MIN(DENOM,-1.D-12)
           B=DT+A*(HSTART(I)-H(I))
           IF(B.GT.0.D0) THEN

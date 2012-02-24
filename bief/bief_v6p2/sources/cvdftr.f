@@ -10,10 +10,10 @@
      & TETAT,AGGLOT,INFOGT,BILAN,OPTSUP,
      & ISOUSI,LT,NIT,OPDTRA,OPTBAN,MSK,MASKEL,MASKPT,MBOR,
      & S,MASSOU,OPTSOU,SLVTRA,FLBOR,V2DPAR,UNSV2D,OPTVF,FLBORTRA,
-     & FLULIM,YAFLULIM,DIRFLU)
+     & FLULIM,YAFLULIM,DIRFLU,RAIN,PLUIE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION, ADVECTION AND SOURCE TERMS FOR A TRACER.
@@ -95,6 +95,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        24/02/2012
+!+        V6P2
+!+   Rain and evaporation added (after initiative by O. Boutron, from
+!+   Tour du Valat, and O. Bertrand, Artelia group)
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -159,6 +165,8 @@
 !|                |   | 1: CLASSIC SUPG
 !|                |   | 2: MODIFIED SUPG
 !| OPTVF          |-->| OPTIONS FOR FINITE VOLUMES (SEE CVTRVF)
+!| PLUIE          |-->| RAIN OR EVAPORATION, IN M/S
+!| RAIN           |-->| IF YES: RAIN OR EVAPORATION
 !| S              |-->| VOID STRUCTURE
 !| SLVTRA         |-->| SOLVER CONFIGURATION (SLVCFG) STRUCTURE 
 !|                |   | CONTAINING DATA FOR CALLING SOLVE
@@ -209,14 +217,14 @@
       INTEGER, INTENT(IN)           :: KDDL,OPTVF,DIRFLU
       DOUBLE PRECISION, INTENT(IN)  :: TETAT,AGGLOT,TETAH,DT
       DOUBLE PRECISION, INTENT(INOUT)  :: MASSOU
-      LOGICAL, INTENT(IN)           :: INFOGT,BILAN,CONV,YASMH
+      LOGICAL, INTENT(IN)           :: INFOGT,BILAN,CONV,YASMH,RAIN
       LOGICAL, INTENT(IN)           :: DIFT,MSK,ENTET,YASMI,YAFLULIM
       TYPE(SLVCFG), INTENT(INOUT)   :: SLVTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,MASKPT,H,HN,AFBOR,BFBOR
       TYPE(BIEF_OBJ), INTENT(INOUT) :: HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT) :: F,SM,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: FBOR,UCONV,VCONV,ZF
-      TYPE(BIEF_OBJ), INTENT(IN)    :: FTILD,FN,SMI,FLULIM
+      TYPE(BIEF_OBJ), INTENT(IN)    :: FTILD,FN,SMI,FLULIM,PLUIE
       TYPE(BIEF_OBJ), INTENT(INOUT) :: SMH
       TYPE(BIEF_OBJ), INTENT(INOUT) :: TE1,TE2,TE3,W
       TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2,T3,T4,T5,T6,T7,T10
@@ -360,17 +368,27 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(BILAN) THEN
+!     NOTE JMH ON 23/02/2012
 !
-        CALL MATVEC( 'X=AY    ',T2,AM1,SM,C,MESH)
-        IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(T2,2,MESH)
-          MASSOU = MASSOU + P_DOTS(T2,T10,MESH)
-        ELSE
-          MASSOU = MASSOU + DOTS(T2,T10)
-        ENDIF
+!     THIS IMPLEMENTATION IS WRONG (AND IS MINE...)
+!     THE ADDED QUANTITY IS RATHER FUNCTION OF
+!     H(n+1)*T(n+1)-H(n)*T(n), AND THIS MAY BE 0 EVEN IF SM IS NOT 0
+!     FOR EXAMPLE RAIN CREATES A SOURCE TERM, BUT NO MASS OF TRACER
+!     SO FAR POINT SOURCES ADD THEIR QUANTITIES TO MASSOU IN DIFSOU
+!     AND ANY OTHER SOURCE TERM LIKE RAIN SHOULD MODIFY MASSOU ON ITS
+!     OWN, IN A MORE SIMPLE WAY
 !
-      ENDIF
+!     IF(BILAN) THEN
+!
+!       CALL MATVEC( 'X=AY    ',T2,AM1,SM,C,MESH)
+!       IF(NCSIZE.GT.1) THEN
+!         CALL PARCOM(T2,2,MESH)
+!         MASSOU = MASSOU + P_DOTS(T2,T10,MESH)
+!       ELSE
+!         MASSOU = MASSOU + DOTS(T2,T10)
+!       ENDIF
+!
+!     ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -379,6 +397,7 @@
 !     COMPUTES DT * SM IN T2
 !
 !     CVTRVF AND CVTRVF_POS WILL TREAT SM IN A DIFFERENT WAY
+!
       IF(.NOT.FV_SCHEME) THEN
         CALL OS( 'X=CY    ' , X=T2 , Y=SM , C=DT )
       ENDIF
@@ -501,7 +520,7 @@
      &              OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
 !                                                       YAFLBOR
      &              LIMTRA%I,KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
-     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT)
+     &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE)
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
         IF(.NOT.DIFT) RETURN
@@ -541,7 +560,7 @@
      &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
      &            MESH%GLOSEG%I(                 1:  MESH%GLOSEG%DIM1),
      &            MESH%GLOSEG%I(MESH%GLOSEG%DIM1+1:2*MESH%GLOSEG%DIM1),
-     &            MESH%NBOR%I,2,FLULIM%R,YAFLULIM)
+     &            MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE)
 !                             2:HARDCODED OPTION FOR ALGORITHM
 !                               INDEPENDENT OF SEGMENT NUMBERING.
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
@@ -636,7 +655,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!   TAKES INTO ACCOUNT THE IMPLICIT TERM RESULTING FROM THE POINT SOURCES:
+!     IMPLICIT AND EXPLICIT TERM DUE TO THE SOURCES:
 !
       IF(YASMH.AND..NOT.(FV_SCHEME.AND.CONV)) THEN
 !
@@ -665,9 +684,31 @@
           CALL OS( 'X=X+YZ  ' , SM , T1 , FSCEXP , C )
 !         IMPLICIT PART OF THE POINT SOURCE TERM
 !         - TETAT T 1/HPROP SUM ( SCE PSI D(OMEGA)
-          CALL OS( 'X=CX    ' , T1 , T1 , T1 , TETAT )
+          CALL OS( 'X=CX    ' ,X=T1,C=TETAT )
           CALL OM( 'M=M+D   ' , AM1 , AM1 , T1 , TETAT , MESH )
         ENDIF
+!
+      ENDIF
+!
+!     IMPLICIT AND EXPLICIT TERM DUE TO RAIN AND EVAPORATION
+!
+      IF(RAIN.AND..NOT.(FV_SCHEME.AND.CONV)) THEN
+!
+        CALL VECTOR(T2,'=','MASVEC          ',IELMF,
+     &              1.D0,PLUIE,S,S,S,S,S,MESH,MSK,MASKEL)
+        CALL OS('X=Y/Z   ' ,T1,T2,T10,C,
+     &          IOPT=2,INFINI=0.D0,ZERO=1.D-3)
+!       IMPLICIT PART OF THE POINT SOURCE TERM
+!       - TETAT T 1/HPROP SUM ( SCE PSI D(OMEGA)
+        CALL OS('X=CX    ',X=T1,C=TETAT)
+        CALL OM('M=M+D   ',AM1,AM1,T1,TETAT,MESH)
+!       PREPARES THE EXPLICIT PART
+        CALL OS('X=CYZ   ',T1,PLUIE,FN,TETAT-1.D0)
+        CALL VECTOR(T2,'=','MASVEC          ',IELMF,
+     &              1.D0,T1,S,S,S,S,S,MESH,MSK,MASKEL)
+        CALL OS('X=Y/Z   ',T1,T2,T10,C,
+     &          IOPT=2,INFINI=0.D0,ZERO=1.D-3)
+        CALL OS('X=X+Y   ',X=SM,Y=T1)
 !
       ENDIF
 !

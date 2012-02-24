@@ -100,7 +100,7 @@
 !| Z              |-->| ELEVATIONS OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_VC04PP => VC04PP
+      USE BIEF   !, EX_VC04PP => VC04PP
 !
       IMPLICIT NONE
       INTEGER LNG,LU

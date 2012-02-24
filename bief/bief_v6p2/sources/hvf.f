@@ -3,10 +3,10 @@
 !                    **************
 !
      &(H,HN,FXMAT,UNSV2D,DT,FXBOR,SMH,YASMH,NSEG,NPOIN,NPTFR,GLOSEG,
-     & SIZGLO,NBOR,OPTSOU,T7,MESH,MSK)
+     & SIZGLO,NBOR,OPTSOU,T7,MESH,MSK,RAIN,PLUIE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    FOR FINITE VOLUMES ADVECTION, COMPUTES AN INTERMEDIATE DEPTH
@@ -29,6 +29,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        24/02/2012
+!+        V6P2
+!+   Rain and evaporation added (after initiative by O. Boutron, from
+!+   Tour du Valat, and O. Bertrand, Artelia group)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
 !| FXBOR          |-->| FLUX ON BOUNDARIES (DEFINED ON ALL DOMAIN
@@ -46,6 +52,8 @@
 !| OPTSOU         |-->| OPTION FOR THE TREATMENT OF SOURCES
 !|                |   | 1: NORMAL  2: DIRAC
 !|                |   | SEE PROPAG IN TELEMAC-2D
+!| PLUIE          |-->| RAIN OR EVAPORATION, IN M/S
+!| RAIN           |-->| IF YES: RAIN OR EVAPORATION
 !| SIZGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
 !| T7             |<->| WORK BIEF_OBJ STRUCTURE
@@ -68,8 +76,8 @@
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),UNSV2D(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FXBOR(NPOIN),SMH(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: FXMAT(NSEG*2)
-      LOGICAL, INTENT(IN)             :: YASMH,MSK
+      DOUBLE PRECISION, INTENT(IN)    :: FXMAT(NSEG*2),PLUIE(NPOIN)
+      LOGICAL, INTENT(IN)             :: YASMH,MSK,RAIN
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T7
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
@@ -83,7 +91,7 @@
         H(I) = HN(I)
       ENDDO
 !
-!     SOURCES TERMS
+!     SOURCES
 !
       IF(YASMH) THEN
         IF(OPTSOU.EQ.1) THEN
@@ -95,6 +103,14 @@
             H(I) = H(I) + DT*UNSV2D(I)*SMH(I)
           ENDDO
         ENDIF
+      ENDIF
+!
+!     RAIN OR EVAPORATION
+!
+      IF(RAIN) THEN
+        DO I = 1,NPOIN
+          H(I) = H(I) + DT*PLUIE(I)
+        ENDDO
       ENDIF
 !
       IF(NCSIZE.GT.1) THEN

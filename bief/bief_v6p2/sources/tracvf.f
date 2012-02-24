@@ -4,10 +4,10 @@
 !
      &(F,FN,FSCEXP,H,HN,FXMAT,FXMATPAR,
      & V2DPAR,UNSV2D,DDT,FXBOR,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
-     & MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT)
+     & MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT,RAIN,PLUIE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TRACER FOR FINITE VOLUME SCHEME.
@@ -29,6 +29,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        24/02/2012
+!+        V6P2
+!+   Rain and evaporation added (after initiative by O. Boutron, from
+!+   Tour du Valat, and O. Bertrand, Artelia group)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DDT            |-->| SUB TIME-STEP
@@ -53,6 +59,8 @@
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
 !|                |   | 2: DIRAC
+!| PLUIE          |-->| RAIN OR EVAPORATION IN M/S, IN BIEF_OBJ STRUCTURE
+!| RAIN           |-->| IF YES: RAIN OR EVAPORATION
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
 !| T1             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
 !| T2             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
@@ -79,10 +87,10 @@
       DOUBLE PRECISION, INTENT(IN)  :: DDT,DT
       TYPE(BIEF_OBJ), INTENT(INOUT) :: F,T1,T2,T4,T5,T6,T7,T8,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: FN,H,HN,V2DPAR,SMH,FBOR,FSCEXP
-      TYPE(BIEF_OBJ), INTENT(IN)    :: FXBOR,UNSV2D
+      TYPE(BIEF_OBJ), INTENT(IN)    :: FXBOR,UNSV2D,PLUIE
       DOUBLE PRECISION, INTENT(IN)  :: FXMAT(*),FXMATPAR(*)
       TYPE(BIEF_MESH), INTENT(INOUT):: MESH
-      LOGICAL, INTENT(IN)           :: YASMH,MSK
+      LOGICAL, INTENT(IN)           :: YASMH,MSK,RAIN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -104,7 +112,7 @@
      &         MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
      &         MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F)
+     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R)
 !
 !-----------------------------------------------------------------------
 !
@@ -122,14 +130,14 @@
       CALL HVF(T2%R,T1%R,FXMAT,UNSV2D%R,DDT,T7%R,SMH%R,
      &         YASMH,MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH%NBOR%I,OPTSOU,
-     &         T8,MESH,MSK)
+     &         T8,MESH,MSK,RAIN,PLUIE%R)
 !
       CALL TVF(F%R,FN%R,T4%R,T2%R,FXMAT,FXMATPAR,UNSV2D%R,DDT,
      &         FXBOR%R,T7%R,T8,FBOR%R,SMH%R,YASMH,FSCEXP%R,
      &         MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
      &         MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F)
+     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R)
 !
 !-----------------------------------------------------------------------
 !

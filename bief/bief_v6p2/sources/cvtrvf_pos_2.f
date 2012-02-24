@@ -8,10 +8,10 @@
      & TE1,DT,ENTET,BILAN,OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
      & LIMTRA1,LIMTRA2,KDIR,KDDL,NPTFR,FLBOR,YAFLBOR,V2DPAR,UNSV2D,IOPT,
      & FLBORTRA1,FLBORTRA2,MASKPT,GLOSEG1,GLOSEG2,NBOR,
-     & OPTION,FLULIM,YAFLULIM)
+     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT AND MONOTONIC
@@ -95,7 +95,8 @@
 !|                |   | 2: INDEPENDENT OF SEGMENT NUMBERING
 !| OPTSOU         |-->| TYPE OF SOURCES
 !|                |   | 1: NORMAL
-!|                |   | 2: DIRAC
+!| PLUIE          |-->| RAIN OR EVAPORATION IN MM/S IN A BIEF_OBJ
+!| RAIN           |-->| IF YES, RAIN OR EVAPORATION
 !| S              |-->| VOID STRUCTURE
 !| SM1            |-->| SOURCE TERMS OF F1.
 !| SM2            |-->| SOURCE TERMS OF F2.
@@ -144,7 +145,7 @@
 !                                                         NSEG
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH,FLULIM(*)
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
-      LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR
+      LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR,RAIN
       LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,YAFLULIM
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN)      :: V2DPAR,UNSV2D,HPROP
@@ -154,7 +155,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA1,FLBORTRA2
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ), INTENT(IN)      :: F1SCEXP,F2SCEXP,S,MASKTR,FLBOR
-      TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC
+      TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
       TYPE(BIEF_MESH)                 :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -320,6 +321,20 @@
         DO I=1,NPOIN
           HT%R(I)=HN%R(I)
         ENDDO
+      ENDIF
+!
+!     RAIN-EVAPORATION: RAIN FIRST, EVAPORATION IN THE END
+!
+      IF(RAIN) THEN
+        DO I=1,NPOIN
+          C=MAX(PLUIE%R(I),0.D0)
+          HT%R(I)=HT%R(I)+DT*C
+!                                                  VALUE IN RAIN
+!         F1%R(I)=F1%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F1%R(I))
+          F1%R(I)=F1%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F1%R(I)
+!         F2%R(I)=F2%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F2%R(I))
+          F2%R(I)=F2%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F2%R(I)
+        ENDDO       
       ENDIF
 !
 !     BOUNDARY FLUXES : ADDING THE ENTERING (NEGATIVE) FLUXES
@@ -683,6 +698,22 @@
      &             .AND.C.NE.0.D0) THEN
         CPREV=C
         GO TO 777
+      ENDIF
+!
+!     RAIN-EVAPORATION: RAIN DONE ABOVE, NOW EVAPORATION
+!
+      IF(RAIN) THEN
+        DO I=1,NPOIN
+          C=MIN(PLUIE%R(I),0.D0)
+!         POSITIVITY NOT TESTED HERE, WOULD REQUIRE C=MAX(C,-HT%R(I)/DT)
+!         BUT THEN MASS-BALANCE WOULD NOT BE CORRECT, 
+          HT%R(I)=HT%R(I)+DT*C
+!                                                  VALUE IN VAPOR
+!         F1%R(I)=F1%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F1%R(I))
+          F1%R(I)=F1%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F1%R(I)
+!         F2%R(I)=F2%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F2%R(I))
+          F2%R(I)=F2%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F2%R(I)
+        ENDDO       
       ENDIF
 !
 !     BOUNDARY FLUXES : ADDING THE EXITING (POSITIVE) FLUXES
