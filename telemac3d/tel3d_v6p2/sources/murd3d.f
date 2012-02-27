@@ -788,6 +788,7 @@
       CALL OV('X=Y+CZ  ',TRA03, VOLU, DB, DTJ, NPOIN3)
 !
 !     POSITIVE SOURCES CHANGE THE MONOTONICITY CRITERION
+!
       IF(NSCE.GT.0) THEN
         DO IS=1,NSCE
           DO IPOIN=1,NPOIN3
@@ -882,6 +883,7 @@
 !     ADVECTION DURING ALFA*DTJ
 !
 !     SOURCES (BUT WHEN INTAKE, FSCE=FC)
+!
       IF(NSCE.GT.0) THEN
         DO IS=1,NSCE
           IF(OPTBAN.EQ.2) THEN
@@ -902,21 +904,24 @@
         ENDDO
       ENDIF
 !
-!     RAIN
+!     RAIN (NOTE: SHOULD BE TAKEN INTO ACCOUNT FOR STABILITY CRITERION)
 !
       IF(RAIN) THEN
-        DO IPOIN=1,NPOIN2
-          IS=NPOIN3-NPOIN2+IPOIN
-          IF(OPTBAN.EQ.2) THEN
+        IF(OPTBAN.EQ.2) THEN
+          DO IPOIN=1,NPOIN2
+            IS=NPOIN3-NPOIN2+IPOIN
             IF(MASKPT(IPOIN).GT.0.5D0.AND.TRA01(IS).GT.EPS) THEN
               FC(IS)=FC(IS)-DTJALFA*FC(IS)*PLUIE(IPOIN)/TRA01(IS)
             ENDIF
-          ELSE
+          ENDDO
+        ELSE
+          DO IPOIN=1,NPOIN2
+            IS=NPOIN3-NPOIN2+IPOIN
             IF(TRA01(IS).GT.EPS) THEN
               FC(IS)=FC(IS)-DTJALFA*FC(IS)*PLUIE(IPOIN)/TRA01(IS)
             ENDIF
-          ENDIF
-        ENDDO
+          ENDDO
+        ENDIF
       ENDIF
 !
 !     FLUXES

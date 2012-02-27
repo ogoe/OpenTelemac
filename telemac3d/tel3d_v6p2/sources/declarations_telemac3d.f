@@ -431,26 +431,33 @@
 !     PERCENTUAL MESH PLANES
 !
       TYPE(BIEF_OBJ), TARGET :: ZSTAR
-!> @brief Z: DISTRIBUTION
-C
+!
+!     Z: DISTRIBUTION
+!
       TYPE(BIEF_OBJ), TARGET :: ZT
-!> @brief DH/DT
-C
+!
+!     DH/DT
+!
       TYPE(BIEF_OBJ), TARGET :: DSSUDT
-!> @brief
-C
+!
+!     PRESCRIBED ELEVATIONS OF PLANES
+!
       TYPE(BIEF_OBJ), TARGET :: ZPLANE
-!> @brief
-C
+!
+!     TYPE OF SIGMA TRANSFORMATION
+!
       TYPE(BIEF_OBJ), TARGET :: TRANSF_PLANE
-!> @brief COORDINATES IN THE TRANSFORMED MESH FOR THE METHOD OF CHARACTERISTICS
-C
+!
+!     COORDINATES IN THE TRANSFORMED MESH FOR THE METHOD OF CHARACTERISTICS
+!
       TYPE(BIEF_OBJ), TARGET :: ZCHAR
-!> @brief MASK OF ELEMENTS
-C masquage des elements
+!
+!     MASK OF ELEMENTS
+!
       TYPE(BIEF_OBJ), TARGET :: MASKEL
-!> @brief MASK OF NODES
-C masquage des points
+!
+!     MASK OF NODES
+!
       TYPE(BIEF_OBJ), TARGET :: MASKPT
 !
 !     3D MASK OF BOUNDARY ELEMENTS (CASE WITH MASKING)
@@ -464,18 +471,15 @@ C masquage des points
 !     POSITIONS OF FLOATING BODIES (X,Y, Z AND Z IN TRANSFORMED MESH)
 !
       TYPE(BIEF_OBJ), TARGET :: XFLOT,YFLOT,ZFLOT,ZSFLOT
-!> @brief
-C coordonnees barycentriques instantannees, au pied des courbes caracteristiques, des flotteurs en 2dh
-      TYPE(BIEF_OBJ), TARGET :: SHPFLO
-!> @brief
-C coordonnees barycentriques instantannees, au pied des courbes caracteristiques, des flotteurs en 1dv
-      TYPE(BIEF_OBJ), TARGET :: SHZFLO
-!> @brief TIME(STEP) FOR INITIAL RELEASE OF FLOATING BODIES
-C numero du pas de temps de largage de chaque flotteur
-      TYPE(BIEF_OBJ), TARGET :: DEBFLO
-!> @brief TIME(STEP) FOR END OF FOLLOW UP OF FLOATING BODIES
-C numero du pas de temps de fin de calcul de derive pour chaque flotteur
-      TYPE(BIEF_OBJ), TARGET :: FINFLO
+!
+!     BARYCENTRIC COORDINATES OF FLOATING BODIES, AT THE FOOT OF CHARACTERISTICS
+!     HORIZONTAL AND VERTICAL
+!
+      TYPE(BIEF_OBJ), TARGET :: SHPFLO,SHZFLO
+!
+!     TIME-STEPS FOR INITIAL AND FINAL RELEASE OF FLOATING BODIES
+!
+      TYPE(BIEF_OBJ), TARGET :: DEBFLO,FINFLO
 !> @brief
 C numeros des elements 2dh, au pied des courbes caracteristiques, dans lesquels se trouve a cet instant chacun des flotteurs
       TYPE(BIEF_OBJ), TARGET :: ELTFLO
@@ -935,8 +939,9 @@ C traitement des flux aux frontieres
 !> @brief VELOCITY VERTICAL PROFILES
 C profils de vitesse sur la verticale
       INTEGER VERPROVEL(MAXFRO)
-!> @brief TRACERS VERTICAL PROFILES
-C profils des traceurs sur la verticale
+!
+!     TRACERS VERTICAL PROFILES
+!
       INTEGER VERPROTRA(MAXFRO*MAXTRA)
 ! 
 !     NUMBER OF LIQUID BOUNDARIES, OF SOLID BOUNDARIES
@@ -957,57 +962,73 @@ C profils des traceurs sur la verticale
 !     CHOICE OF DENSITY LAW
 !
       INTEGER DENLAW
-!> @brief DELWAQ PRINTOUT PERIOD
-C periode de sortie pour delwaq
+!
+!     DELWAQ PRINTOUT PERIOD
+!
       INTEGER WAQPRD
-!> @brief ORIGIN COORDINATES
-C coordonnees de l'origine
-      INTEGER I_ORIG
-!> @brief ORIGIN COORDINATES
-C coordonnees de l'origine
-      INTEGER J_ORIG
-!> @brief NUMBER OF POINTS GIVEN FOR EACH DISCHARGE-ELEVATIONS CURVES
-C
+!
+!     ORIGIN COORDINATES
+!
+      INTEGER I_ORIG,J_ORIG
+!
+!     NUMBER OF POINTS GIVEN FOR EACH DISCHARGE-ELEVATIONS CURVES
+!
       INTEGER PTS_CURVES(MAXFRO)
-!> @brief STAGE-DISCHARGE CURVES
-C courbes de tarage
+!
+!     STAGE-DISCHARGE CURVES
+!
       INTEGER STA_DIS_CURVES(MAXFRO)
-!> @brief KEYWORD DEBUGGER
-C debugger
+!
+!     KEYWORD DEBUGGER
+!
       INTEGER DEBUG
-!> @brief SKIN FRICTION
+!
+!     SKIN FRICTION
+!
       INTEGER ICR
-!> @brief Equilibrium ttransport formula
+!
+!     Equilibrium transport formula
+!
       INTEGER ICQ
-!> @brief RECORD NUMBER IN THE WAVE DRIVEN CURRENTS FILE
-C numero de l'enregistrement dans le fichier de houle
+!      
+!     RECORD NUMBER IN THE WAVE DRIVEN CURRENTS FILE
+!
       INTEGER NPTH
-!> @brief GEOMETRY FILE NUMBER
-C fichier de geometrie
+!
+!     GEOMETRY FILE NUMBER
+!
       INTEGER T3DGEO
-!> @brief BOUNDARY CONDITIONS FILE NUMBER
-C fichier des conditions aux limites
+!
+!     BOUNDARY CONDITIONS FILE NUMBER
+!
       INTEGER T3DCLI
-!> @brief PREVIOUS COMPUTATION FILE NUMBER
-C fichier du calcul precedent
+!
+!     PREVIOUS COMPUTATION FILE NUMBER
+!
       INTEGER T3DPRE
-!> @brief 3D RESULT FILE NUMBER
-C fichier des resultats 3d
+!
+!     RESULT FILE NUMBER
+!
       INTEGER T3DRES
-!> @brief BOTTOM TOPOGRAPHY FILE NUMBER
-C fichier des fonds
+!
+!     BOTTOM TOPOGRAPHY FILE NUMBER
+!
       INTEGER T3DFON
-!> @brief FILE NUMBER FOR SCOPE
-C fichier pour scope
+!
+!     FILE NUMBER FOR SCOPE
+!
       INTEGER T3DSCO
-!> @brief 2D RESULT FILE NUMBER
-C fichier des resultats 2d
+!
+!     2D RESULT FILE NUMBER
+!
       INTEGER T3DHYD
-!> @brief FORMATTED DATA FILE 1
-C fichier de donnees formate 1
+!
+!     FORMATTED DATA FILE 1
+!
       INTEGER T3DFO1
-!> @brief FORMATTED DATA FILE 2
-C fichier de donnees formate 2
+!
+!     FORMATTED DATA FILE 2
+!
       INTEGER T3DFO2
 !
 !     BINARY DATA FILE 1
