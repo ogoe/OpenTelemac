@@ -1,11 +1,11 @@
-!                    **************************
-                     SUBROUTINE BEDLOAD_MEYER !
-!                    **************************
+!                    ************************
+                     SUBROUTINE BEDLOAD_MEYER
+!                    ************************
 !
      &(TETAP,HIDING,HIDFAC,DENS,GRAV,DM,AC,ACP,QSC,SLOPEFF,COEFPN)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    MEYER-PETER BEDLOAD TRANSPORT FORMULATION.
@@ -74,11 +74,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER I
       DOUBLE PRECISION :: C2
 !
 !======================================================================!
 !                               PROGRAM                                !
-!======================================================================!
+!=======================================================================
 !
       CALL CPSTVC(QSC,ACP)
       CALL OS('X=C     ', X=ACP, C=AC)
@@ -95,22 +96,30 @@
       C2 = SQRT(GRAV*DENS*DM**3)
 !
       IF(HIDFAC.EQ.1.OR.HIDFAC.EQ.2) THEN
-        CALL OS('X=XY    ', X=ACP, Y=HIDING)
-        CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
-        CALL OS('X=+(Y,C)', X=QSC, Y=QSC , C=0.D0)
-        CALL OS('X=Y**C  ', X=QSC, Y=QSC , C=1.5D0)
-        CALL OS('X=CX    ', X=QSC, C=C2)
-        CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
+!       CALL OS('X=XY    ', X=ACP, Y=HIDING)
+!       CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
+!       CALL OS('X=+(Y,C)', X=QSC, Y=QSC , C=0.D0)
+!       CALL OS('X=Y**C  ', X=QSC, Y=QSC , C=1.5D0)
+!       CALL OS('X=CX    ', X=QSC, C=C2)
+!       CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
+        DO I=1,QSC%DIM1
+          QSC%R(I)=C2*MPM_ARAY%R(I)
+     &               *SQRT(MAX(TETAP%R(I)-ACP%R(I)*HIDING%R(I),0.D0))**3
+        ENDDO
       ELSE
-        CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
-        CALL OS('X=+(Y,C)', X=QSC, Y=QSC, C=0.D0)
-        CALL OS('X=Y**C  ', X=QSC, Y=QSC, C=1.5D0)
-        CALL OS('X=CX    ', X=QSC, C=C2)
-        CALL OS('X=XY    ', X=QSC, Y=HIDING)
-        CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY) 
+!       CALL OS('X=Y-Z   ', X=QSC, Y=TETAP, Z=ACP)
+!       CALL OS('X=+(Y,C)', X=QSC, Y=QSC, C=0.D0)
+!       CALL OS('X=Y**C  ', X=QSC, Y=QSC, C=1.5D0)
+!       CALL OS('X=CX    ', X=QSC, C=C2)
+!       CALL OS('X=XY    ', X=QSC, Y=HIDING)
+!       CALL OS('X=XY    ', X=QSC, Y=MPM_ARAY)
+        DO I=1,QSC%DIM1
+          QSC%R(I)=C2*MPM_ARAY%R(I)*HIDING%R(I)*SQRT(
+     &                                 MAX(TETAP%R(I)-ACP%R(I),0.D0))**3
+        ENDDO        
       ENDIF
 !
-!======================================================================!
+!=======================================================================
 !
       RETURN
       END

@@ -1,8 +1,8 @@
-!                    *********************************
-                     SUBROUTINE BEDLOAD_EINST ! (_IMP)
-!                    *********************************
+!                    ************************
+                     SUBROUTINE BEDLOAD_EINST
+!                    ************************
 !
-     &  (TETAP, NPOIN, DENS, GRAV, DM, DSTAR, QSC)
+     &(TETAP, NPOIN, DENS, GRAV, DM, DSTAR, QSC)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -48,47 +48,44 @@
 !| TETAP          |-->| ADIMENSIONAL SKIN FRICTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE INTERFACE_SISYPHE,
-     &    EX_BEDLOAD_EINST => BEDLOAD_EINST
+      USE INTERFACE_SISYPHE, EX_BEDLOAD_EINST => BEDLOAD_EINST
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TETAP
       INTEGER,          INTENT(IN)    :: NPOIN
       DOUBLE PRECISION, INTENT(IN)    :: DENS, GRAV, DM, DSTAR
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: QSC
 !
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER          :: I
       DOUBLE PRECISION :: CEINST
 !
 !======================================================================!
-!======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
-!======================================================================!
 !
-      ! **************************** !
-      ! II - BEDLOAD TRANSPORT       ! (_IMP_)
-      ! **************************** !
+!     BEDLOAD TRANSPORT 
+!
       CEINST = 36.D0/(DSTAR**3)
       CEINST = SQRT(2.D0/3.D0+CEINST) -  SQRT(CEINST)
       CEINST = CEINST * SQRT(DENS*GRAV*(DM**3))
       DO I = 1, NPOIN
-         IF (TETAP%R(I) < 2.5D-3) THEN
-            QSC%R(I) = 0.D0
-         ELSE IF (TETAP%R(I) < 0.2D0) THEN
-            QSC%R(I) = 2.15D0* CEINST * EXP(-0.391D0/TETAP%R(I))
-         ELSE
-            QSC%R(I) = 40.D0 * CEINST * (TETAP%R(I)**3.D0)
-         ENDIF
+        IF(TETAP%R(I) < 2.5D-3) THEN
+          QSC%R(I) = 0.D0
+        ELSE IF (TETAP%R(I) < 0.2D0) THEN
+          QSC%R(I) = 2.15D0* CEINST * EXP(-0.391D0/TETAP%R(I))
+        ELSE
+          QSC%R(I) = 40.D0 * CEINST * (TETAP%R(I)**3.D0)
+        ENDIF
       ENDDO
-!======================================================================!
-!======================================================================!
+!
+!=======================================================================
+!
       RETURN
-      END SUBROUTINE BEDLOAD_EINST
+      END

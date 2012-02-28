@@ -1,11 +1,11 @@
-!                    **********************************
-                     SUBROUTINE BEDLOAD_ENGEL ! (_IMP_)
-!                    **********************************
+!                    ************************
+                     SUBROUTINE BEDLOAD_ENGEL
+!                    ************************
 !
-     &  (TOB, CF, DENS, GRAV, DM, XMVE, TETA, QSC)
+     &(TOB,CF,DENS,GRAV,DM,XMVE,TETA,QSC)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    ENGELUND-HANSEN BEDLOAD TRANSPORT FORMULATION.
@@ -49,44 +49,43 @@
 !| XMVE           |-->| FLUID DENSITY 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE INTERFACE_SISYPHE,
-     &    EX_BEDLOAD_ENGEL => BEDLOAD_ENGEL
+      USE INTERFACE_SISYPHE, EX_BEDLOAD_ENGEL => BEDLOAD_ENGEL
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOB, CF
       DOUBLE PRECISION, INTENT(IN)    :: DENS, GRAV, DM, XMVE
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: TETA ! WORK ARRAY T1
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC
 !
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I
       DOUBLE PRECISION :: CENGEL, C1
 !
 !======================================================================!
-!======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
-!======================================================================!
-      ! ************************** !
-      ! I - TOTAL STRESS ADIM      ! (_IMP_)
-      ! ************************** !
+! 
       C1 = 1.D0/(DENS*XMVE*GRAV*DM)
-      CALL OS('X=CY    ', X=TETA, Y=TOB , C=C1)
-      CALL OS('X=Y**C  ', X=TETA, Y=TETA, C=5.D0/2.D0)
-!
-      ! *************************** !
-      ! II - BEDLOAD TRANSPORT      ! (_IMP_)
-      ! *************************** !
       CENGEL = 0.1D0*SQRT(DENS*GRAV*DM**3)
-      CALL OS('X=+(Y,C)', X=QSC , Y=CF  , C=1.D-06)
-      CALL OS('X=1/Y   ', X=QSC , Y=QSC)
-      CALL OS('X=CXY   ', X=QSC , Y=TETA, C=CENGEL)
-!======================================================================!
-!======================================================================!
+!     CALL OS('X=CY    ', X=TETA, Y=TOB , C=C1)
+!     CALL OS('X=Y**C  ', X=TETA, Y=TETA, C=5.D0/2.D0)
+!
+!     CALL OS('X=+(Y,C)', X=QSC , Y=CF  , C=1.D-06)
+!     CALL OS('X=1/Y   ', X=QSC , Y=QSC)
+!     CALL OS('X=CXY   ', X=QSC , Y=TETA, C=CENGEL)
+      DO I=1,QSC%DIM1
+!       TOTAL NON DIMENSIONAL STRESS = SQRT(C1*TOB%R(I))**5
+!       BEDLOAD TRANSPORT
+        QSC%R(I)=CENGEL*SQRT(C1*TOB%R(I))**5/MAX(CF%R(I),1.D-6)
+      ENDDO
+!
+!======================================================================
+!
       RETURN
-      END SUBROUTINE BEDLOAD_ENGEL
+      END

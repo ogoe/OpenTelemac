@@ -11,7 +11,7 @@
      & COEFPN,BIJK,HOULE)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE BED-LOAD TRANSPORT.
@@ -47,7 +47,11 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!+ 
+!history  J-M HERVOUET (EDF-LNHE)
+!+        27/02/2012
+!+        V6P2
+!+  ALPHA suppressed, was no longer used   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| SHIELDS PARAMETER
@@ -112,8 +116,8 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D, V2D, UCMOY,HN, CF, TOB
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MU,TOBW, UW, TW, THETAW, FW
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ACLADM,UNLADM,KSR,KSP
@@ -132,10 +136,11 @@
       INTEGER,          INTENT(IN)    :: SLOPEFF
 !
       DOUBLE PRECISION, INTENT (IN) :: BIJK,AVA(NPOIN)
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER                     :: I
-      DOUBLE PRECISION            :: DENS,DSTAR,ALPHA
+      DOUBLE PRECISION            :: DENS,DSTAR
       DOUBLE PRECISION, PARAMETER :: ZERO_LOCAL = 1.D-6
       DOUBLE PRECISION            :: C1
 !
@@ -158,25 +163,6 @@
       CALL OS('X=CYZ   ', X=TETAP, Y=TOB,Z=MU,  C=C1)
       CALL OS('X=+(Y,C)', X= TETAP,Y=TETAP, C=ZERO_LOCAL)
 !
-      ! *********************************************** !
-      ! III - CRITICAL SHIELDS NUMBER FOR ENTRAINMENT   !
-      !       VAN RIJN FORMULATION                      !
-      ! *********************************************** !
-! MOVED TO INIT_SEDIMENT.F
-!
-!      IF(ICF.EQ.7.OR.ICF.EQ.6.OR.AC.LE.0.D0) THEN
-!         IF (DSTAR
-!            AC = 0.24*DSTAR**(-1.0D0)
-!         ELSEIF (DSTAR
-!            AC = 0.14D0*DSTAR**(-0.64D0)
-!         ELSEIF (DSTAR
-!            AC = 0.04D0*DSTAR**(-0.1D0)
-!         ELSEIF (DSTAR
-!            AC = 0.013D0*DSTAR**(0.29D0)
-!         ELSE
-!            AC = 0.055D0
-!         ENDIF
-!      ENDIF
       IF(SECCURRENT) CALL BEDLOAD_SECCURRENT(IELMT)
       ! ****************************************** !
       ! IV - COMPUTES 2 TRANSPORT TERMS            !
@@ -188,12 +174,13 @@
       !         FOR BEDLOAD ONLY              !
       ! ===================================== !
       IF(ICF == 1) THEN
-          CALL BEDLOAD_MEYER(TETAP,HIDING,HIDFAC,DENS,GRAV,DM,AC,
-     &                       T1,QSC,SLOPEFF,COEFPN)
-          DO I=1,NPOIN
-            QSC%R(I)=QSC%R(I)*AVA(I)
-          ENDDO
-          ALPHA = -3.D0
+!
+        CALL BEDLOAD_MEYER(TETAP,HIDING,HIDFAC,DENS,GRAV,DM,AC,
+     &                     T1,QSC,SLOPEFF,COEFPN)
+        DO I=1,NPOIN
+          QSC%R(I)=QSC%R(I)*AVA(I)
+        ENDDO
+!
       ! =========================== !
       ! IV(2) - EINSTEIN FORMULATION!
       !         FOR BEDLOAD ONLY    !
@@ -203,7 +190,7 @@
          DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -6.D0
+!
       ! =================================== !
       ! IV(30) - ENGELUND-HANSEN FORMULATION!
       !          FOR TOTAL TRANSPORT        !
@@ -218,7 +205,7 @@
          DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -5.D0
+!
       ! ======================================== !
       ! IV(3) - ENGELUND-HANSEN FORMULATION      !
       !         MODIFIED: CHOLLET ET CUNGE       !
@@ -232,7 +219,7 @@
          DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -5.D0
+!
       ! ============================== !
       ! IV(4) - BIJKER FORMULATION     !
       !         FOR BEDLOAD + SUSPENSION !
@@ -245,7 +232,7 @@
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
            QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -1.D0
+!
       ! ============================== !
       ! IV(5) - SOULSBY FORMULATION    !
       !         FOR BEDLOAD + SUSPENSION !
@@ -258,7 +245,7 @@
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
            QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -4.6D0
+!
       ! ================================================== !
       ! IV(6) - HUNZIKER / MEYER-PETER & MULLER FORMULATION!
       !         FOR BEDLOAD ONLY                           !
@@ -270,7 +257,7 @@
          DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)
          ENDDO
-         ALPHA = -3.D0
+!
       ! =========================== !
       ! IV(7) - VAN RIJN FORMULATION!
       !         FOR BEDLOAD ONLY    !
@@ -283,7 +270,7 @@
          DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -4.2D0
+!
       ! ============================== !
       ! IV(8) - BAILARD FORMULATION    !
       !         FOR BEDLOAD + SUSPENSION !
@@ -298,7 +285,7 @@
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
            QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -3.D0
+!
       ! ======================================= !
       ! IV(9) - DIBAJNIA AND WATANABE FORMULATION!
       !         FOR TOTAL TRANSPORT             !
@@ -313,12 +300,11 @@
          DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
-         ALPHA = -3.D0
+!
       ! ============================================ !
       ! IV(0) - USER-DEFINED FORMULATION             !
       ! ============================================ !
       ELSEIF (ICF == 0) THEN
-         ALPHA = -1.D0 ! INITIALISES ALPHA
          CALL QSFORM
          DO I=1,NPOIN
            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)

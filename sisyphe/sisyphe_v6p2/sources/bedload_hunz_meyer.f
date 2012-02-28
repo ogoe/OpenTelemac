@@ -1,6 +1,6 @@
-!                    *******************************
-                     SUBROUTINE BEDLOAD_HUNZ_MEYER !
-!                    *******************************
+!                    *****************************
+                     SUBROUTINE BEDLOAD_HUNZ_MEYER
+!                    *****************************
 !
      &  (TOB, MU, ACLADM, UNLADM, NPOIN, DENS, XMVE, GRAV, DM, AC,
      &    TETAP, AHUNZI, ACP, HIDING, QSC)
@@ -95,6 +95,7 @@
       ! I - ADIMENSIONAL SKIN STRESS          !
       ! ************************************* !
       C1 = 1.D0/(DENS*XMVE*GRAV*DM)
+      C2 = 5.D0*SQRT(GRAV*DENS*DM**3)
       CALL OS('X=CYZ   ', X=TETAP, Y=TOB, Z=MU, C=C1)
 !
 !     CHANGED BY JMH ON 28/10/2009 AFTER MODIFICATIONS BY
@@ -132,7 +133,7 @@
       CALL OS('X=+(Y,C)', X=QSC, Y=QSC   , C=0.D0)
       CALL OS('X=XY    ', X=QSC, Y=HIDING)
       CALL OS('X=Y**C  ', X=QSC, Y=QSC   , C=1.5D0)
-      C2 = 5.D0*SQRT(GRAV*DENS*DM**3)
+
       CALL OS('X=CX    ', X=QSC, C=C2)
 !======================================================================!
 !======================================================================!

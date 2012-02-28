@@ -1,6 +1,6 @@
-!                    ************************************
-                     SUBROUTINE BEDLOAD_SOULSBY ! (_IMP_)
-!                    ************************************
+!                    **************************
+                     SUBROUTINE BEDLOAD_SOULSBY 
+!                    **************************
 !
      &  (UCMOY,HN, UW, NPOIN, DENS, GRAV, DM, DSTAR, HMIN, D90, QSC,
      &   QSS)

@@ -1,6 +1,6 @@
-!                    ***************************
-                     SUBROUTINE BEDLOAD_BIJKER !
-!                    ***************************
+!                    *************************
+                     SUBROUTINE BEDLOAD_BIJKER
+!                    *************************
 !
      &  (TOBW,TOB,MU,KSP,KSR,HN,NPOIN,DM,DENS,XMVE,GRAV,XWC,
      &   KARMAN,ZERO,T4,T7,T8,T9,QSC,QSS,BIJK,HOULE)
@@ -74,8 +74,9 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE(BIEF_OBJ),   INTENT(IN)    :: TOBW, TOB, KSR,KSP, HN,MU
       INTEGER,          INTENT(IN)    :: NPOIN
       LOGICAL,          INTENT(IN)    :: HOULE
@@ -85,16 +86,18 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: T7, T8, T9
       TYPE(BIEF_OBJ),   INTENT(INOUT)   :: QSC, QSS
 !
-      ! 3/ LOCAL VARIABLES
-      ! ------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER                      :: I
       DOUBLE PRECISION             :: C1, C2, UCF
       DOUBLE PRECISION, INTENT(IN) :: BIJK
+!
 !======================================================================!
 !======================================================================!
 !                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
+!
       ! ***************************************************** !
       ! I - STRESS UNDER THE COMBINED ACTION OF WAVES AND CURRENTS !
       ! ***************************************************** !
@@ -123,7 +126,7 @@
          ENDIF
       ENDDO
       ! *********************************************************** !
-      ! IV- ROUSE NUMBER AND LOWER BOUND OF EINSTEIN INTEGRAL       ! (_IMP_)
+      ! IV- ROUSE NUMBER AND LOWER BOUND OF EINSTEIN INTEGRAL       ! 
       ! *********************************************************** !
       DO I = 1, NPOIN
          IF (T4%R(I) > 0.D0) THEN
@@ -138,11 +141,11 @@
          ENDIF
       ENDDO
       ! ************************************ !
-      ! V - EINSTEIN INTEGRAL                ! (_IMP_)
+      ! V - EINSTEIN INTEGRAL                !
       ! ************************************ !
       CALL INTEG(T7%R, T8%R, T9%R, NPOIN)
       ! ************************************** !
-      ! VI - TRANSPORT BY SUSPENSION           ! (_IMP_)
+      ! VI - TRANSPORT BY SUSPENSION           ! 
       ! ************************************** !
       CALL OS('X=YZ    ', X=QSS, Y=T9, Z=QSC)
 !======================================================================!
