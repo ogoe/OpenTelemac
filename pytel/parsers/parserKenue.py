@@ -34,6 +34,11 @@
          + smoothSubsampleDistance (remove points based on proximity)
          + smoothSubsampleAngle (remove points based on flatness)
 """
+"""@history 29/02/2012 -- Sebastien E. Bourban:
+         The type of a contour can now be checked automatically so that
+         mixed set can be stored into one I2S/I3S file. To use this
+         feature, type must be absent from the putInS call.
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -120,7 +125,7 @@ def getInS(file):
 
    return head,fileType,npoin,poly,type
 
-def putInS(file,head,fileType,poly,type):
+def putInS(file,head,fileType,poly,type=None):
 
    # ~~ Write head ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if head != []: core = head
@@ -131,16 +136,24 @@ def putInS(file,head,fileType,poly,type):
       ':AttributeUnits 1 m',
       ':EndHeader' ]
 
+   # ~~ Look for closed lines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if type == None:
+      type = []
+      for ip in poly:
+         if isClose(ip[0],ip[len(ip)-1]): type.append(True)
+         else: type.append(False)
+
    # ~~ Write body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for ip,it in zip(poly,type):
-      il = len(ip)+it
+      il = len(ip)
+      if it != 0 and not isClose(ip[0],ip[len(ip)-1]): il += it
       core.append(str(il)+' 0')  #TODO: you should use proper values
       if fileType == 'i2s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1]))
-         if it != 0: core.append(str(ip[0][0])+' '+str(ip[0][1]))
+         if il != len(ip): core.append(str(ip[0][0])+' '+str(ip[0][1]))
       elif fileType == 'i3s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1])+' '+str(xyi[2]))
-         if it != 0: core.append(str(ip[0][0])+' '+str(ip[0][1])+' '+str(ip[0][2]))
+         if il != len(ip): core.append(str(ip[0][0])+' '+str(ip[0][1])+' '+str(ip[0][2]))
 
    # ~~ Put all ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    putFileContent(file,core)
