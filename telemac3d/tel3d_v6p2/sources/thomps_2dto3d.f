@@ -9,7 +9,9 @@
 !
 !brief    GENERATING THE 3D BOUNDARY CONDITIONS IN VIEW OF THE 2D
 !+
-!+            CONDITIONS GIVEN BY 
+!+            CONDITIONS GIVEN BY THOMPSON METHOD
+!
+!warning    Only velocities treated here.
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99

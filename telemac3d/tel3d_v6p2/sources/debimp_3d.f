@@ -96,8 +96,22 @@
       EXTERNAL         P_DSUM
 !
 !=======================================================================
-!     COMPUTES THE FLUX
+!     COMPUTES THE FLUX OBTAINED IF UBOR AND VBOR ARE UNCHANGED
 !=======================================================================
+!
+!     U AND V ARE SET HERE TO THE PRESCRIBED VALUES (THAT MAY EVOLVE IN
+!     TIME AND NOT BE EQUAL TO DIRICHLET VALUE OF PREVIOUS TIME STEP)
+!
+      DO IPTFR=1,NPTFR
+        IF(NUMLIQ(IPTFR).EQ.IFRLIQ) THEN
+          DO IETAGE=1,NETAGE+1
+            I3D=(IETAGE-1)*NPTFR+IPTFR
+            U%R(MESH%NBOR%I(I3D))=UBOR(I3D)
+            V%R(MESH%NBOR%I(I3D))=VBOR(I3D)
+!           W%R = WILL NOT CHANGE THE FLUX IF BOUNDARY VERTICAL
+          ENDDO
+        ENDIF
+      ENDDO
 !
 !     IN THE FOLLOWING LOOP ONE RESTRICTS THE MASK OF DIRICHLET ELEMENTS
 !     TO THOSE OF THE LIQUID BOUNDARY NUMBER IFRLIQ. 
@@ -146,15 +160,17 @@
 !
       DO IPTFR=1,NPTFR
         IF(NUMLIQ(IPTFR).EQ.IFRLIQ) THEN
-          DO IETAGE =1, NETAGE+1
+          DO IETAGE=1,NETAGE+1
             I3D=(IETAGE-1)*NPTFR+IPTFR
             UBOR(I3D) = UBOR(I3D) * Q / Q1
             VBOR(I3D) = VBOR(I3D) * Q / Q1
+!           U%R(MESH%NBOR%I(I3D))=UBOR(I3D)
+!           V%R(MESH%NBOR%I(I3D))=VBOR(I3D)
 !           SEE BORD3D
 !           WBOR(I3D) = 0.D0
           ENDDO
         ENDIF
-      ENDDO
+      ENDDO      
 !
 !-----------------------------------------------------------------------
 !

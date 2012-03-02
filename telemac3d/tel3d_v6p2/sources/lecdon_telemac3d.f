@@ -1554,6 +1554,29 @@ C     AND NOT REVERSE !!!!!!!!!!!
 !
 !-----------------------------------------------------------------------
 !
+! IN CASE OF A VALIDATION, A REFERENCE FILE SHOULD BE GIVEN
+!
+      IF(VALID.AND.T3D_FILES(T3DREF)%NAME(1:1).EQ.' ') THEN
+        IF(LISTIN) THEN
+          IF(LNG.EQ.1) WRITE(LU,1004)
+          IF(LNG.EQ.2) WRITE(LU,1005)
+        ENDIF
+1004    FORMAT(1X,'LECDON : UNE VALIDATION EST DEMANDEE',/,10X,
+     &  'IL FAUT DONNER UN FICHIER DE REFERENCE',/,10X,
+     &  '(MOT-CLE : FICHIER DE REFERENCE)',/,10X,
+     &  'QUI SERVIRA POUR LA COMPARAISON. ARRET DU PROGRAMME',
+     &  ////)
+1005    FORMAT(1X,'LECDON: A VALIDATION IS ASKED, SO A',/,
+     &         9X,'REFERENCE FILE IS NECESSARY',/,
+     &         9X,'(KEY-WORD: REFERENCE FILE)',/,
+     &         9X,'FOR COMPARISON. INTERRUPTION OF PROGRAM',
+     &  ////)
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
 !  CHECKS THE TRACERS USED IN THE DENSITY LAW
 !
       IF(DENLAW.NE.0.AND.NTRAC.EQ.0) THEN
