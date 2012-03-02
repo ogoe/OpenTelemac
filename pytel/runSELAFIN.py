@@ -124,6 +124,7 @@ class scanSELAFIN(SELAFIN,chopSELAFIN):
       print "NUMBERs      :"
       print "   - NPLAN* = ",self.IPARAM[6],"\n   - NPTFR* = ",self.IPARAM[7],"\n   - IFACE* = ",self.IPARAM[8]
       print "   - NELEM3 = ",self.NELEM3,"\n   - NPOIN3 = ",self.NPOIN3,"\n   - NDP    = ",self.NDP,"\n   - NPLAN  = ",self.NPLAN
+      print "IPOBO        :",self.IPOBO[0:]
       print "MESH         : / min: [ ",np.min(self.MESHX),";",np.min(self.MESHY),"]  / max: [ ",np.max(self.MESHX),";",np.max(self.MESHY),"]"
 
    def printCore(self):

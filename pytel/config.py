@@ -585,7 +585,7 @@ def parseConfig_RunningTELEMAC(cfg):
    # Get path_parallel: for parallel option
    # the parallel dependent command line executables (partel, gretel, ...)
    get = getPARALLEL(cfg)
-   if get != {}: cfgTELEMAC.update({'PARALLEL':get})
+   cfgTELEMAC.update({'PARALLEL':get})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
    # .. in theory, mpi could be replaced by something else (?)
    get = getMPI(cfg)
