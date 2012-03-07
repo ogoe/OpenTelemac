@@ -529,7 +529,7 @@ def parseConfig_ValidateTELEMAC(cfg):
    if get != {}: cfgTELEMAC.update({'PARALLEL':get})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
    # .. in theory, mpi could be replaced by something else (?)
-   get = getMPI(cfg)
+   if cfgTELEMAC['PARALLEL'] != {}: get = getMPI(cfg)
    if get != {}: cfgTELEMAC.update({'MPI':get})
 
    # Get command_zip: and command_piz:
@@ -588,7 +588,7 @@ def parseConfig_RunningTELEMAC(cfg):
    cfgTELEMAC.update({'PARALLEL':get})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
    # .. in theory, mpi could be replaced by something else (?)
-   get = getMPI(cfg)
+   if cfgTELEMAC['PARALLEL'] != {}: get = getMPI(cfg)
    if get != {}: cfgTELEMAC.update({'MPI':get})
 
    # Get command_zip: and command_piz:

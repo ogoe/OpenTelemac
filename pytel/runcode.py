@@ -339,10 +339,13 @@ def runPartition(partel,cas,conlim,iFiles,ncsize):
 
 def runPARTEL(partel,file,conlim,ncsize):
 
-   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),str(0),'']) # option 1, without sections 0
-   failure = system(partel.replace('<partel.log>','PARTEL_'+file+'.LOG'))
-   if not failure: return True
-   return False
+   putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),str(0),str(1),str(1),''])
+   parCmd = partel.replace('<partel.log>','PARTEL_'+file+'.LOG').split(';')
+   for p in parCmd:
+      print '    +> ',p
+      failure = system(p)
+   if failure: return False # /!\ only the last one.
+   return True
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
 # ~~~      print_twice echos the listing output to the sortie file ~~~
