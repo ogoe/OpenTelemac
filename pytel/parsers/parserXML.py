@@ -104,7 +104,7 @@ def runXML(xmlFile,xmlConfig):
          # you need to build didList with references to files ... if "none" in options.do.split(';'): break #/!\ because none comes from command line
 
          # ~~> Parse DICO File and default IO Files (only once)
-         dicoFile = path.join(path.join(cfg['MODULES'][do["code"]]['path'],'lib'),do["code"]+cfg['TELVER']+'.dico')
+         dicoFile = path.join(path.join(cfg['MODULES'][do["code"]]['path'],'lib'),do["code"]+cfg['version']+'.dico')
          if dicoFile not in dicos.keys():
             print '... reading DICO file: ' + dicoFile
             frgb,dico = scanDICO(dicoFile)

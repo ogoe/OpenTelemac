@@ -561,13 +561,13 @@ if __name__ == "__main__":
          # ~~ Update its Doxygen content ~~~~~~~~~~~~~~~~~~~~~
          olines = createDOXYGEN(ifile,ilines,mod,all)
          # ~~ Make sure the distination exists ~~~~~~~~~~~~~~~
-         ofile = ifile.replace(cfg['TELDIR'],cfg['DOXYDOCS'])
+         ofile = ifile.replace(cfg['root'],cfg['doxydocs'])
          createDirectories(path.dirname(ofile))
          # ~~ Write the content of the source file ~~~~~~~~~~~
          putFileContent(ofile,olines)
 
    # ~~ Run Doxygen ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   chdir(cfg['DOXYDOCS'])
+   chdir(cfg['doxydocs'])
    if system('doxygen'): sys.exit()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

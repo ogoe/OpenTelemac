@@ -117,14 +117,14 @@ def createObjFiles(oname,oprog,odict,ocfg):
 
    # ~~ Removes exisitng objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if odict['type'] == 'M' :
-      ModFile = path.join(ObjDir,Root + cfg['SYSTEM']['SFX_MOD'])
+      ModFile = path.join(ObjDir,Root + cfg['SYSTEM']['sfx_mod'])
       if path.exists(ModFile): remove(ModFile)
-   ObjFile = path.join(ObjDir,Root + cfg['SYSTEM']['SFX_OBJ'])
+   ObjFile = path.join(ObjDir,Root + cfg['SYSTEM']['sfx_obj'])
    if path.exists(ObjFile): remove(ObjFile)
 
    # ~~ creation of the module (according to makefile.wnt + systel.ini):
    # ~~ ifort.exe /c /Ot /names:uppercase /convert:big_endian /extend_source:132 /include:..\..\..\postel3d\postel3d_V5P9\1 declarations_postel3d.f
-   cmd = cfg['COMPILER']['CMD_OBJ']
+   cmd = cfg['COMPILER']['cmd_obj']
    incs = cfg['MODULES'][odict['libname']]['incs']
    cmd = cmd.replace('<incs>',incs)
    mods = ''
@@ -133,18 +133,18 @@ def createObjFiles(oname,oprog,odict,ocfg):
    #mods = mods + path.join(cfg['MODULES'][odict['libname']]['mods'].replace('<config>',cfg['MODULES'][odict['libname']]['path']),ocfg) + ' '
    cmd = cmd.replace('<mods>',mods)
    cmd = cmd.replace('<f95name>',oname)
-   cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfg['TELDIR'])
+   cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfg['root'])
 
    if debug : print cmd
    failure = system(cmd)
    if not failure:
       if odict['type'] == 'M' :
          print '   - created ' + ObjFile + ' and ' + ModFile
-         shutil.move(Root.lower()+cfg['SYSTEM']['SFX_OBJ'],ObjDir)
-         shutil.move(Root.lower()+cfg['SYSTEM']['SFX_MOD'],ObjDir)
+         shutil.move(Root.lower()+cfg['SYSTEM']['sfx_obj'],ObjDir)
+         shutil.move(Root.lower()+cfg['SYSTEM']['sfx_mod'],ObjDir)
       else :
          print '   - created ' + ObjFile
-         shutil.move(Root.lower()+cfg['SYSTEM']['SFX_OBJ'],ObjDir)
+         shutil.move(Root.lower()+cfg['SYSTEM']['sfx_obj'],ObjDir)
       odict['time'] = 1
       #and remove .f from objList
       return True
@@ -159,21 +159,21 @@ def createLibFiles(lname,lcfg,lprog):
    chdir(LibDir)
 
    # LibFile is now created directly within prg[0]'s directory - /!\ hopefuly, the directory exists
-   LibFile = path.join(path.join(cfg['MODULES'][lprog]['path'],lcfg),lname + cfg['TELVER'] + cfg['SYSTEM']['SFX_LIB'])
+   LibFile = path.join(path.join(cfg['MODULES'][lprog]['path'],lcfg),lname + cfg['version'] + cfg['SYSTEM']['sfx_lib'])
    if cfg['COMPILER']['REBUILD'] > 0 and path.exists(LibFile): remove(LibFile)
 
    # ~~ Lists all objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
    for obj,lib in HOMERES[item]['add'] :
       Root,Suffix = path.splitext(obj)
-      if lib == lname: ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
+      if lib == lname: ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['sfx_obj']+' ')
    if ObjFiles.strip() == '' and path.exists(LibFile): return True
    for obj,lib in HOMERES[item]['tag'] :
-      if lib == lname: ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
+      if lib == lname: ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['sfx_obj']+' ')
 
    # ~~ creation of the librairies (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe -lib /nologo /out:postel3dV5P9.lib declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj
-   cmd = cfg['COMPILER']['CMD_LIB']
+   cmd = cfg['COMPILER']['cmd_lib']
    cmd = cmd.replace('<objs>',ObjFiles)
    cmd = cmd.replace('<libname>',LibFile)
 
@@ -195,13 +195,13 @@ def createExeFiles(ename,ecfg,eprog):
    
    # ~~ Removes existing executables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if 'homere' in ename or 'systeme' in ename:
-      ExeFile = path.join(ExeDir,eprog + cfg['TELVER'] + cfg['SYSTEM']['SFX_EXE'])
-      LibFile = path.join(ExeDir,eprog + cfg['TELVER'] + cfg['SYSTEM']['SFX_LIB'])
-      ObjCmd = path.join(ExeDir,eprog + cfg['TELVER'] + '.cmdo')
-      ExeCmd = path.join(ExeDir,eprog + cfg['TELVER'] + '.cmdx')
+      ExeFile = path.join(ExeDir,eprog + cfg['version'] + cfg['SYSTEM']['sfx_exe'])
+      LibFile = path.join(ExeDir,eprog + cfg['version'] + cfg['SYSTEM']['sfx_lib'])
+      ObjCmd = path.join(ExeDir,eprog + cfg['version'] + '.cmdo')
+      ExeCmd = path.join(ExeDir,eprog + cfg['version'] + '.cmdx')
    else:
-      ExeFile = path.join(ExeDir,ename + cfg['SYSTEM']['SFX_EXE'])
-      LibFile = path.join(ExeDir,ename + cfg['SYSTEM']['SFX_LIB'])
+      ExeFile = path.join(ExeDir,ename + cfg['SYSTEM']['sfx_exe'])
+      LibFile = path.join(ExeDir,ename + cfg['SYSTEM']['sfx_lib'])
       ObjCmd = path.join(ExeDir,ename + '.cmdo')
       ExeCmd = path.join(ExeDir,ename + '.cmdx')
    if cfg['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
@@ -210,38 +210,38 @@ def createExeFiles(ename,ecfg,eprog):
    LibFiles = ''
    for lib in HOMERES[ename.upper()]['deps'][1:]:   # /!\ [1:] to create the exe from local objs.
       #ModDir = path.join(cfg['MODULES'][eprog.lower()]['path'],ecfg)
-      LibFiles = LibFiles + path.join(ExeDir,lib.lower()+cfg['TELVER']+cfg['SYSTEM']['SFX_LIB']) + ' '
+      LibFiles = LibFiles + path.join(ExeDir,lib.lower()+cfg['version']+cfg['SYSTEM']['sfx_lib']) + ' '
    LibFiles = LibFiles + ' ' + cfg['MODULES'][eprog]['libs']     # parallel executable: adding MPI library
 
    # ~~ Lists local objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
    for obj,lib in HOMERES[ename.upper()]['add'] :
       Root,Suffix = path.splitext(obj)
-      if lib == eprog and obj.lower()+cfg['SYSTEM']['SFX_OBJ'] not in ObjFiles.split(): ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
+      if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split(): ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['sfx_obj']+' ')
    if ObjFiles.strip() == '' and path.exists(ExeFile): return True
    for obj,lib in HOMERES[ename.upper()]['tag'] :
-      if lib == eprog and obj.lower()+cfg['SYSTEM']['SFX_OBJ'] not in ObjFiles.split(): ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['SFX_OBJ']+' ')
+      if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split(): ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['sfx_obj']+' ')
 
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
-   cmd = cfg['COMPILER']['CMD_EXE']
+   cmd = cfg['COMPILER']['cmd_exe']
    cmd = cmd.replace('<libs>',LibFiles)
    cmd = cmd.replace('<objs>',ObjFiles)
-   cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfg['TELDIR'])
+   cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfg['root'])
 
-   xocmd = cfg['COMPILER']['CMD_OBJ']
+   xocmd = cfg['COMPILER']['cmd_obj']
    xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
    mods = ''
    for mod in HOMERES[ename.upper()]['deps']:
       mods = mods + path.join(cfg['MODULES'][eprog]['mods'].replace('<config>',cfg['MODULES'][mod]['path']),ecfg) + ' '
    xocmd = xocmd.replace('<mods>',mods)
    # <f95name> ... still to be replaced
-   xocmd = xocmd.replace('<config>',ExeDir).replace('<root>',cfg['TELDIR'])
+   xocmd = xocmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
 
-   xecmd = cfg['COMPILER']['CMD_EXE']
+   xecmd = cfg['COMPILER']['cmd_exe']
    xecmd = xecmd.replace('<libs>',LibFile + ' ' + LibFiles)
    # <exename> and <objs> ... still to be replaced
-   xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['TELDIR'])
+   xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
 
    if debug : print cmd
    failure = system(cmd)

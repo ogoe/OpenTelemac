@@ -159,7 +159,7 @@ if __name__ == "__main__":
          print '\nNot able to find any modules within your root directory ' + cfgs[cfgname]['root'] + '\n'
          sys.exit()
       
-      pt = cfg['TELDIR']
+      pt = cfg['root']
       pc = path.join(pt,cfgname)
       if options.archiveName != '':
          if path.dirname(options.archiveName) != '':

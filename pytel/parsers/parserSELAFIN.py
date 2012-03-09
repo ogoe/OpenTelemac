@@ -626,6 +626,10 @@ class CONLIM:
       solids = self.BOR['lih'] == 2
       self.NFRLIQ = 0 # liquid boundary numbers start at 1
 
+      # ~~> Finds TELEMAC's south-east corner
+
+
+      # ~~> Counts NUMLIQ
       for contour in closedContours: # for the domain boundary and eavery islands
          # ~~> look for a solid point
          inode = 0

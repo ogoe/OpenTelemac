@@ -53,6 +53,14 @@
          Allowing PARTEL to run in parallel, having received the PARTEL
          source code from Charles (STFC-DL).
 """
+"""@history 28/02/2012 -- Sebastien E. Bourban
+         Allowing the python version of PARTEL_PARA to run in parallel, finding
+         that PARTEL in PARALLEL did not solve our partitioning problem.
+"""
+"""@history 07/03/2012 -- Sebastien E. Bourban
+         Allowing a launch of the main executable (MPIEXEC) to run on an HPC queue
+         Example given with BSUB to run on encore.ocf.co.uk
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -238,12 +246,30 @@ def getNCSIZE(cas,dico,frgb):
 def getMPICommand(cfgMPI):
    # ~~> Executable
    mpiCmd = cfgMPI['EXEC']
-   # ~~> host
-   hosts = ''
-   if cfgMPI.has_key('HOSTS'): hosts = cfgMPI['HOSTS']
-   mpiCmd = mpiCmd.replace('<hosts>',hosts)
+   # ~~> hosts
+   hosts = 'MPI_HOSTFILE'
+   if cfgMPI.has_key('HTFILE'):
+      hosts = cfgMPI['HTFILE']
+   cfgMPI['HTFILE'] = { hosts: [] }
+   if cfgMPI.has_key('HOSTS'): cfgMPI['HTFILE'][hosts] = cfgMPI['HOSTS'].split()
+   mpiCmd = mpiCmd.replace('<hostfile>','-machinefile '+hosts)
+   # ~~> stdin file
+   infile = ''
+   if cfgMPI.has_key('INFILE'): infile = cfgMPI['INFILE']
+   mpiCmd = mpiCmd.replace('<mpi_infile>',infile)
 
    return mpiCmd
+
+def getHPCCommand(cfgHPC):
+   # ~~> Executable
+   hpcCmd = cfgHPC['EXEC']
+   # ~~> script
+   if cfgHPC.has_key('STDIN'):
+      infile = 'HPC_STDIN'
+      cfgHPC['STDIN'] = { infile: cfgHPC['STDIN'].replace(r'\n','\n') }
+      hpcCmd = hpcCmd.replace('<hpc_stdin>',infile)
+
+   return hpcCmd
 
 def processPARALLEL(ncsize,wdir):
 
@@ -284,8 +310,8 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
 
 def compilePRINCI(princiFile,codeName,cfgName,cfg):
 
-   objFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdo')
-   exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdx')
+   objFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo')
+   exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx')
    if not path.exists(objFile) or not path.exists(exeFile):
       print '... could not find:' + exeFile
       print '~~~> you may need to compile your system with the configuration: ' + cfgName
@@ -294,8 +320,8 @@ def compilePRINCI(princiFile,codeName,cfgName,cfg):
    exeCmd = getFileContent(exeFile)[0]
    chdir(path.dirname(princiFile))
    princiFile = path.basename(princiFile)
-   objFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['SFX_OBJ']
-   exeFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['SFX_EXE']
+   objFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_obj']
+   exeFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_exe']
    if path.exists(exeFile): remove(exeFile)
    if not processExecutable(exeFile,objFile,princiFile,objCmd,exeCmd,''):
       print '... could not compile:' + princiFile
@@ -437,7 +463,7 @@ def runGREDEL(gredel,file,geom,type,ncsize):
 def runCAS(cfgName,cfg,codeName,casFile,options):
 
    # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   dicoFile = path.join(path.join(cfg['MODULES'][codeName]['path'],'lib'),codeName+cfg['TELVER']+'.dico')
+   dicoFile = path.join(path.join(cfg['MODULES'][codeName]['path'],'lib'),codeName+cfg['version']+'.dico')
    frgb,dico = scanDICO(dicoFile)
    iFS,oFS = getIOFilesSubmit(frgb,dico)
 
@@ -479,7 +505,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
                return None   # /!\ should you stop or carry on ?
 
             # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            dicoFilePlage = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['TELVER']+'.dico')
+            dicoFilePlage = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['version']+'.dico')
             frgbPlage,dicoPlage = scanDICO(dicoFilePlage)
             iFSPlage,oFSPlage = getIOFilesSubmit(frgbPlage,dicoPlage)
 
@@ -525,33 +551,34 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if path.isfile(f90FilePlage):
          putFileContent(f90File,getFileContent(f90File)+['']+getFileContent(f90FilePlage))
          remove(f90FilePlage)
-   objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['SFX_OBJ']
+   objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['sfx_obj']
       #> default executable name
-   exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+cfg['SYSTEM']['SFX_EXE'])
+   exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+cfg['SYSTEM']['sfx_exe'])
       #> user defined executable name
    useFile = exeFile
    value,defaut = getKeyWord('FICHIER FORTRAN',cas,dico,frgb)
    if value != []:
-      useFile = path.join(CASDir,path.splitext(value[0])[0]+cfg['SYSTEM']['SFX_EXE'])
+      useFile = path.join(CASDir,path.splitext(value[0])[0]+cfg['SYSTEM']['sfx_exe'])
       if path.exists(useFile) and cfg['REBUILD'] > 0: remove(useFile)
       #> default command line compilation and linkage
-   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdo')):
-      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['TELVER']+'.cmdo') + '\n'
+   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo')):
+      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['version']+'.cmdo') + '\n'
       print ' ... you have to compile this module at least: '
       print '    +> ',codeName
       sys.exit()
-   objCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdo'))[0]
-   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdx')):
-      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['TELVER']+'.cmdx') + '\n'
+   objCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo'))[0]
+   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx')):
+      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['version']+'.cmdx') + '\n'
       print ' ... you have to compile this module at least: '
       print '    +> ',codeName
       sys.exit()
-   exeCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['TELVER']+'.cmdx'))[0]
+   exeCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx'))[0]
    # >>> Compiling the executable if required
    if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
 
    # >>> Rename executable because of firewall issues ~~~~~~~~~~~~~~
-   runCmd = path.join(WDir,'out_'+path.basename(useFile))
+   exename = path.join(WDir,'out_'+path.basename(useFile))
+   runCmd = exename
    shutil.move(path.basename(useFile),runCmd)
 
    if not options.compileonly:
@@ -562,20 +589,64 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if ncsize > 1:
          # >>> Parallel execution configuration
          mpiCmd = ''
-         if cfg.has_key('MPI'): mpiCmd = getMPICommand(cfg['MPI'])
-         # ~~> MPI Command line ( except <exename> )
-         mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
-         mpiCmd = mpiCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
+         if cfg.has_key('MPI'):
+            # ~~> MPI host file provided through the command line
+            if options.hosts != '':
+               if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(';',' ')
+               else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(';',' ')} )
+            # ~~> MPI Command line ( except <exename> )
+            mpiCmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
+            mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
+            mpiCmd = mpiCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
+            hostfile = cfg['MPI']['HTFILE'].keys()[0] # only one key for now
+            # ~~> MPI host file ( may be re-written by the HPC INFILE script )
+            hosts = []; n = 0
+            while n < ncsize:
+               for i in cfg['MPI']['HTFILE'][hostfile]:
+                  hosts.append(i); n += 1
+                  if n == ncsize: break
+            putFileContent(hostfile,hosts)
+
+            # >>> Replace running command
+            runCmd = mpiCmd.replace('<exename>',exename)
+
+         # >>> HPC execution configuration
+         hpcCmd = ''
+         if cfg.has_key('HPC'):
+            # ~~> HPC Command line ( except <exename> )
+            hpcCmd = getHPCCommand(cfg['HPC']) # /!\ cfg['HPC'] is also modified
+            hpcCmd = hpcCmd.replace('<ncsize>','-n '+str(ncsize))
+            hpcCmd = hpcCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
+            # ~~> HPC queueing script
+            if cfg['HPC'].has_key('STDIN'):
+               stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
+               stdin = cfg['HPC']['STDIN'][stdinfile]
+               stdin = stdin.replace('<hosts>',' '.join(cfg['MPI']['HTFILE'][hostfile]))
+               stdin = stdin.replace('<ncsize>',str(ncsize))
+               stdin = stdin.replace('<wdir>',WDir)
+               stdin = stdin.replace('<email>',options.email)
+               stdin = stdin.replace('<jobname>',options.jobname)
+               stdin = stdin.replace('\n ','\n')
+               if cfg.has_key('MPI'):
+                  stdin = stdin.replace('<mpi_cmdexec>',mpiCmd)
+                  stdin = stdin.replace('<exename>',exename)
+                  stdin = stdin.replace('<hostfile>',hostfile)
+               putFileContent(stdinfile,stdin.split('\n'))
+               hpcCmd = hpcCmd.replace('<ncsize>','-n '+str(ncsize))
+
+            # >>> Replace running command
+            runCmd = hpcCmd.replace('<mpi_cmdexec>',mpiCmd)
+            runCmd = hpcCmd.replace('<exename>',exename)
 
          # >>> Parallel tools
          # ~~> Path
          PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
-         if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['TELDIR']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
+         if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
          # ~~> Call to PARTEL
-         parCmd = path.join('<config>'+sep+'partel'+cfg['SYSTEM']['SFX_EXE']+' >> <partel.log>')
+         parCmd = path.join('<config>'+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' >> <partel.log>')
          if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
          parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
-         parCmd = parCmd.replace('<root>',cfg['TELDIR']).replace('<config>',PARDir)
+         parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
          # ~~> Creating the PARA files
          processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
 
@@ -587,17 +658,15 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
             runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
 
-         # >>> Replace running command
-         runCmd = mpiCmd.replace('<exename>',runCmd)
-
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print runCmd
+      sys.exit()
       if not runCode(runCmd,sortiefile): sys.exit()
 
       # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if ncsize > 1:
          # ~~> GRETEL Executable
-         exeCmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['SFX_EXE'])
+         exeCmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['sfx_exe'])
          # ~~> Run GRETEL
          GLOGEO = getGLOGEO(cas,iFS)    # Global GEO file
          runRecollection(exeCmd,cas,GLOGEO,oFS,ncsize)
@@ -684,6 +753,21 @@ if __name__ == "__main__":
                       dest="wDir",
                       default='',
                       help="specify whether to re-run within a defined subdirectory" )
+   parser.add_option("--jobname",
+                      type="string",
+                      dest="jobname",
+                      default='project',
+                      help="specify a jobname for HPC queue tracking" )
+   parser.add_option("--email",
+                      type="string",
+                      dest="email",
+                      default='s.bourban@hrwallingford.com',
+                      help="specify an e-mail adress to warn when HPC job is finished" )
+   parser.add_option("--hosts",
+                      type="string",
+                      dest="hosts",
+                      default='',
+                      help="specify the list of hosts available for parallel mode, ';' delimited" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -713,7 +797,7 @@ if __name__ == "__main__":
    if options.configName == '':
       cfgname = cfgnames[0]
    if cfgname not in cfgnames:
-      print '\nNot able to get to find your configurtaion in the configuration file: ' + options.configFile + '\n'
+      print '\nNot able to get to find your configuration in the configuration file: ' + options.configFile + '\n'
       print ' ... use instead:'
       for cfgname in cfgnames : print '    +> ',cfgname
       sys.exit()

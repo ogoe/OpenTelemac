@@ -702,8 +702,8 @@ def scanSources(cfgdir,cfg,BYPASS):
             if cfg['COMPILER']['REBUILD'] > 1:
                who['time'] = 0
             else:
-               #who['time'] = isNewer(path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()),File)
-               who['time'] = isNewer(File,path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['SFX_OBJ'].lower()))
+               #who['time'] = isNewer(path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['sfx_obj'].lower()),File)
+               who['time'] = isNewer(File,path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['sfx_obj'].lower()))
 
          SrcF = open(File,'r')
          if path.splitext(who['file'])[1].lower() in ['.f90','.f95']:

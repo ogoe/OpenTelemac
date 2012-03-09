@@ -220,17 +220,17 @@ def parseConfig_CompileTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'TELDIR':get})
+   cfgTELEMAC.update({'root':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
-   cfgTELEMAC.update({'TELVER':get})
+   cfgTELEMAC.update({'version':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['TELDIR'],cfgTELEMAC['TELVER'])})
+   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['root'],cfgTELEMAC['version'])})
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
@@ -267,10 +267,10 @@ def parseConfig_CompileTELEMAC(cfg):
 
    # Get system's suffixes for obj, lib, mod, and exe
    system = {}
-   system.update({'SFX_OBJ':getConfigKey(cfg,'sfx_obj',True,False).lower()})
-   system.update({'SFX_EXE':getConfigKey(cfg,'sfx_exe',True,False).lower()})
-   system.update({'SFX_LIB':getConfigKey(cfg,'sfx_lib',True,False).lower()})
-   system.update({'SFX_MOD':getConfigKey(cfg,'sfx_mod',True,False).lower()})
+   system.update({'sfx_obj':getConfigKey(cfg,'sfx_obj',True,False).lower()})
+   system.update({'sfx_exe':getConfigKey(cfg,'sfx_exe',True,False).lower()})
+   system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
+   system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
 
    return cfgTELEMAC
@@ -288,17 +288,17 @@ def parseConfig_TranslateTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC[cfg].update({'TELDIR':get})
+   cfgTELEMAC[cfg].update({'root':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
-   cfgTELEMAC[cfg].update({'TELVER':get})
+   cfgTELEMAC[cfg].update({'version':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['root'],cfgTELEMAC[cfg]['version'])})
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -326,17 +326,17 @@ def parseConfig_TranslateCAS(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC[cfg].update({'TELDIR':get})
+   cfgTELEMAC[cfg].update({'root':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
-   cfgTELEMAC[cfg].update({'TELVER':get})
+   cfgTELEMAC[cfg].update({'version':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['TELDIR'],cfgTELEMAC[cfg]['TELVER'])})
+   cfgTELEMAC[cfg].update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC[cfg]['root'],cfgTELEMAC[cfg]['version'])})
    cfgTELEMAC[cfg].update({'COMPILER':{}})
    # Get cmplr_mod: user list of module
    get,tbd = parseUserModules(CONFIGS[cfg],cfgTELEMAC[cfg]['MODULES'])
@@ -353,7 +353,7 @@ def parseConfig_TranslateCAS(cfg):
    # TELEMAC language code, to know the default language
    # tellng = 1, French; tellng = 2, English
    get = getConfigKey(CONFIGS[cfg],'language',True,True)
-   cfgTELEMAC[cfg].update({'TELVER':get})
+   cfgTELEMAC[cfg].update({'version':get})
 
    return cfgTELEMAC
 
@@ -370,20 +370,20 @@ def parseConfig_DoxygenTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'TELDIR':get})
+   cfgTELEMAC.update({'root':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
-   cfgTELEMAC.update({'TELVER':get})
+   cfgTELEMAC.update({'version':get})
    # Get destination doxydocs: ...
    get = getConfigKey(cfg,'doxydocs',True,True).lower()
-   cfgTELEMAC.update({'DOXYDOCS':get})
+   cfgTELEMAC.update({'doxydocs':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['TELDIR'],cfgTELEMAC['TELVER'])})
+   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['root'],cfgTELEMAC['version'])})
 
    cfgTELEMAC.update({'COMPILER':{}})
    # Get modules: user list of module
@@ -408,10 +408,10 @@ def parseConfig_DoxygenTELEMAC(cfg):
 
    # Get system's suffixes for obj, lib, mod, and exe
    system = {}
-   system.update({'SFX_OBJ':getConfigKey(cfg,'sfx_obj',True,False).lower()})
-   system.update({'SFX_EXE':getConfigKey(cfg,'sfx_exe',True,False).lower()})
-   system.update({'SFX_LIB':getConfigKey(cfg,'sfx_lib',True,False).lower()})
-   system.update({'SFX_MOD':getConfigKey(cfg,'sfx_mod',True,False).lower()})
+   system.update({'sfx_obj':getConfigKey(cfg,'sfx_obj',True,False).lower()})
+   system.update({'sfx_exe':getConfigKey(cfg,'sfx_exe',True,False).lower()})
+   system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
+   system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
 
    return cfgTELEMAC
@@ -429,17 +429,17 @@ def parseConfig_CompactTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'TELDIR':get})
+   cfgTELEMAC.update({'root':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
-   cfgTELEMAC.update({'TELVER':get})
+   cfgTELEMAC.update({'version':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['TELDIR'],cfgTELEMAC['TELVER'])})
+   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['root'],cfgTELEMAC['version'])})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -469,17 +469,17 @@ def parseConfig_ValidateTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'TELDIR':get})
+   cfgTELEMAC.update({'root':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc..
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
-   cfgTELEMAC.update({'TELVER':get})
+   cfgTELEMAC.update({'version':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['TELDIR'],cfgTELEMAC['TELVER'])})
+   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['root'],cfgTELEMAC['version'])})
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
@@ -501,20 +501,20 @@ def parseConfig_ValidateTELEMAC(cfg):
    # and in which 'update' means a continuation, ignoring previously completed runs
    # and in which 'clean' means a re-run of all validation tests
    if not cfg.has_key('val_root'):
-      val_root = path.realpath(path.join(cfgTELEMAC['TELDIR'],'validation'))
+      val_root = path.realpath(path.join(cfgTELEMAC['root'],'validation'))
       if not path.isdir(val_root):
          print '\nNot able to find your validation set from the path: ' + val_root + '\n'
          print ' ... check the val_root key in your configuration file'
          sys.exit()
    else:
-      val_root = cfg['val_root'].replace('<root>',cfgTELEMAC['TELDIR'])
+      val_root = cfg['val_root'].replace('<root>',cfgTELEMAC['root'])
    val_found = path.isdir(val_root)
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
    for mod in get.split():
       if mod in cfgTELEMAC['MODULES'].keys():
          if val_found:
-            val_dir = cfgTELEMAC['MODULES'][mod]['path'].replace(cfgTELEMAC['TELDIR'],val_root)
+            val_dir = cfgTELEMAC['MODULES'][mod]['path'].replace(cfgTELEMAC['root'],val_root)
          else:
             val_dir = val_root.replace('<modpath>',cfgTELEMAC['MODULES'][mod]['path'])
          if path.isdir(val_dir):
@@ -538,10 +538,10 @@ def parseConfig_ValidateTELEMAC(cfg):
 
    # Get system's suffixes for obj, lib, mod, and exe
    system = {}
-   system.update({'SFX_OBJ':getConfigKey(cfg,'sfx_obj',True,False).lower()})
-   system.update({'SFX_EXE':getConfigKey(cfg,'sfx_exe',True,False).lower()})
-   system.update({'SFX_LIB':getConfigKey(cfg,'sfx_lib',True,False).lower()})
-   system.update({'SFX_MOD':getConfigKey(cfg,'sfx_mod',True,False).lower()})
+   system.update({'sfx_obj':getConfigKey(cfg,'sfx_obj',True,False).lower()})
+   system.update({'sfx_exe':getConfigKey(cfg,'sfx_exe',True,False).lower()})
+   system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
+   system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
 
    return cfgTELEMAC
@@ -559,17 +559,17 @@ def parseConfig_RunningTELEMAC(cfg):
    if not path.exists(get):
       print ('\nThe following directory does not exist %s \n' % (get))
       sys.exit()
-   cfgTELEMAC.update({'TELDIR':get})
+   cfgTELEMAC.update({'root':get})
    # Get telver:
    # TELEMAC version number, to build relative path names to \sources\ etc...
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
-   cfgTELEMAC.update({'TELVER':get})
+   cfgTELEMAC.update({'version':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
-   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['TELDIR'],cfgTELEMAC['TELVER'])})
+   cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['root'],cfgTELEMAC['version'])})
    # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
    # for every module in the list of modules to account for
    # specific external includes for all or each module
@@ -590,6 +590,10 @@ def parseConfig_RunningTELEMAC(cfg):
    # .. in theory, mpi could be replaced by something else (?)
    if cfgTELEMAC['PARALLEL'] != {}: get = getMPI(cfg)
    if get != {}: cfgTELEMAC.update({'MPI':get})
+   # Get hpc_cmdexec and hpc_infile for hpc option
+   # .. in theory, bsub could be replaced by another queueing system
+   if cfgTELEMAC['PARALLEL'] != {}: get = getHPC(cfg)
+   if get != {}: cfgTELEMAC.update({'HPC':get})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -597,10 +601,10 @@ def parseConfig_RunningTELEMAC(cfg):
 
    # Get system's suffixes for obj, lib, mod, and exe
    system = {}
-   system.update({'SFX_OBJ':getConfigKey(cfg,'sfx_obj',True,False).lower()})
-   system.update({'SFX_EXE':getConfigKey(cfg,'sfx_exe',True,False).lower()})
-   system.update({'SFX_LIB':getConfigKey(cfg,'sfx_lib',True,False).lower()})
-   system.update({'SFX_MOD':getConfigKey(cfg,'sfx_mod',True,False).lower()})
+   system.update({'sfx_obj':getConfigKey(cfg,'sfx_obj',True,False).lower()})
+   system.update({'sfx_exe':getConfigKey(cfg,'sfx_exe',True,False).lower()})
+   system.update({'sfx_lib':getConfigKey(cfg,'sfx_lib',True,False).lower()})
+   system.update({'sfx_mod':getConfigKey(cfg,'sfx_mod',True,False).lower()})
    cfgTELEMAC.update({'SYSTEM':system})
 
    return cfgTELEMAC
@@ -663,13 +667,13 @@ def getCOMPILER(cfgDict):
    compiler = {}
    cmd_obj = ''
    if cfgDict.has_key('cmd_obj'): cmd_obj = cfgDict['cmd_obj']
-   compiler.update({'CMD_OBJ':cmd_obj})
+   compiler.update({'cmd_obj':cmd_obj})
    cmd_lib = ''
    if cfgDict.has_key('cmd_lib'): cmd_lib = cfgDict['cmd_lib']
-   compiler.update({'CMD_LIB':cmd_lib})
+   compiler.update({'cmd_lib':cmd_lib})
    cmd_exe = ''
    if cfgDict.has_key('cmd_exe'): cmd_exe = cfgDict['cmd_exe']
-   compiler.update({'CMD_EXE':cmd_exe})
+   compiler.update({'cmd_exe':cmd_exe})
    return compiler
 
 """
@@ -679,7 +683,7 @@ def getCOMPILER(cfgDict):
 def getPARALLEL(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    parallel = {}
-   if cfgDict.has_key('path_parallel'): parallel.update({'PATH':cfgDict['path_parallel']})
+   if cfgDict.has_key('par_path'): parallel.update({'PATH':cfgDict['par_path']})
    if cfgDict.has_key('par_cmdexec'): parallel.update({'EXEC':cfgDict['par_cmdexec']})
    return parallel
 
@@ -690,13 +694,37 @@ def getPARALLEL(cfgDict):
 def getMPI(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpi = {}
-   if cfgDict.has_key('mpi_hosts'): mpi.update({'HOSTS':cfgDict['mpi_hosts']})
+   if cfgDict.has_key('mpi_hostfile'): mpi.update({'HTFILE':cfgDict['mpi_hostfile']})
+   elif cfgDict.has_key('mpi_hosts'):
+      if len(cfgDict['mpi_hosts'].split()) < 1:
+         print '... I do not know where to run MPI, can you provide the names of your hosts ?'
+         sys.exit()
+      mpi.update({'HOSTS':cfgDict['mpi_hosts']})
+   else:
+      print '... I do not know where to run MPI, can you provide the names of your hosts ?'
+      sys.exit()
+   if cfgDict.has_key('mpi_infile'): mpi.update({'INFILE':cfgDict['mpi_infile']})
    if cfgDict.has_key('mpi_cmdexec'):
       mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
    else:
       print '... I do not know how to run MPI, can you help ?'
       sys.exit()
    return mpi
+
+"""
+   Extract full user defined comand line
+   for the treatment of the option 'hpc', Here bsub is used as an example
+"""
+def getHPC(cfgDict):
+   # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   hpc = {}
+   if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':cfgDict['hpc_stdin']})
+   if cfgDict.has_key('hpc_cmdexec'):
+      hpc.update({'EXEC':cfgDict['hpc_cmdexec']})
+   else:
+      print '... I do not know how to run on HPC, can you help ?'
+      sys.exit()
+   return hpc
 
 """
    Read the list of user defined modules for action -- Certain

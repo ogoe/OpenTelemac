@@ -432,7 +432,7 @@ if __name__ == "__main__":
          print '\n\nConfiguration ' + cfgname + ', Module '+ mod + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          print '... reading module dictionary'
-         frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['TELVER']+'.dico'))
+         frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['version']+'.dico'))
          for casFile in cfg['VALIDATION'][mod]:
             print '... CAS file: ',casFile
             casKeys = scanCAS(casFile)
