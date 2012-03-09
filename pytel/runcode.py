@@ -660,7 +660,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print runCmd
-      sys.exit()
       if not runCode(runCmd,sortiefile): sys.exit()
 
       # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
