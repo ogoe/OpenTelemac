@@ -52,7 +52,7 @@ from os import path
 from utils.files import getFileContent,putFileContent
 from utils.progressbar import ProgressBar
 from utils.geometry import isClose
-from samplers.polygons import isClockwise,removeDuplicates,removeDuplilines,removeDuplangles,smoothSubdivise,subsampleDistance,subsampleAngle
+from samplers.polygons import isClockwise
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
