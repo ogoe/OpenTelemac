@@ -721,9 +721,9 @@ def getMPI(cfgDict):
 """
 def getHPC(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   hpc = {}
    if cfgDict.has_key('options'):
       if 'hpc' in cfgDict['options'].lower():
-         hpc = {}
          if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':cfgDict['hpc_stdin']})
          if cfgDict.has_key('hpc_cmdexec'):
             hpc.update({'EXEC':cfgDict['hpc_cmdexec']})
