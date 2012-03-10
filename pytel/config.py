@@ -683,8 +683,10 @@ def getCOMPILER(cfgDict):
 def getPARALLEL(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    parallel = {}
-   if cfgDict.has_key('par_path'): parallel.update({'PATH':cfgDict['par_path']})
-   if cfgDict.has_key('par_cmdexec'): parallel.update({'EXEC':cfgDict['par_cmdexec']})
+   if cfgDict.has_key('options'):
+      if 'parallel' in cfgDict['options'].lower():
+         if cfgDict.has_key('par_path'): parallel.update({'PATH':cfgDict['par_path']})
+         if cfgDict.has_key('par_cmdexec'): parallel.update({'EXEC':cfgDict['par_cmdexec']})
    return parallel
 
 """
@@ -694,21 +696,23 @@ def getPARALLEL(cfgDict):
 def getMPI(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    mpi = {}
-   if cfgDict.has_key('mpi_hostfile'): mpi.update({'HTFILE':cfgDict['mpi_hostfile']})
-   elif cfgDict.has_key('mpi_hosts'):
-      if len(cfgDict['mpi_hosts'].split()) < 1:
-         print '... I do not know where to run MPI, can you provide the names of your hosts ?'
-         sys.exit()
-      mpi.update({'HOSTS':cfgDict['mpi_hosts']})
-   else:
-      print '... I do not know where to run MPI, can you provide the names of your hosts ?'
-      sys.exit()
-   if cfgDict.has_key('mpi_infile'): mpi.update({'INFILE':cfgDict['mpi_infile']})
-   if cfgDict.has_key('mpi_cmdexec'):
-      mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
-   else:
-      print '... I do not know how to run MPI, can you help ?'
-      sys.exit()
+   if cfgDict.has_key('options'):
+      if 'mpi' in cfgDict['options'].lower():
+         if cfgDict.has_key('mpi_hostfile'): mpi.update({'HTFILE':cfgDict['mpi_hostfile']})
+         elif cfgDict.has_key('mpi_hosts'):
+            if len(cfgDict['mpi_hosts'].split()) < 1:
+               print '... I do not know where to run MPI, can you provide the names of your hosts ?'
+               sys.exit()
+            mpi.update({'HOSTS':cfgDict['mpi_hosts']})
+         else:
+            print '... I do not know where to run MPI, can you provide the names of your hosts ?'
+            sys.exit()
+         if cfgDict.has_key('mpi_infile'): mpi.update({'INFILE':cfgDict['mpi_infile']})
+         if cfgDict.has_key('mpi_cmdexec'):
+            mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
+         else:
+            print '... I do not know how to run MPI, can you help ?'
+            sys.exit()
    return mpi
 
 """
@@ -717,13 +721,15 @@ def getMPI(cfgDict):
 """
 def getHPC(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   hpc = {}
-   if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':cfgDict['hpc_stdin']})
-   if cfgDict.has_key('hpc_cmdexec'):
-      hpc.update({'EXEC':cfgDict['hpc_cmdexec']})
-   else:
-      print '... I do not know how to run on HPC, can you help ?'
-      sys.exit()
+   if cfgDict.has_key('options'):
+      if 'hpc' in cfgDict['options'].lower():
+         hpc = {}
+         if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':cfgDict['hpc_stdin']})
+         if cfgDict.has_key('hpc_cmdexec'):
+            hpc.update({'EXEC':cfgDict['hpc_cmdexec']})
+         else:
+            print '... I do not know how to run on HPC, can you help ?'
+            sys.exit()
    return hpc
 
 """
