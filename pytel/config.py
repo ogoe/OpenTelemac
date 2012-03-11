@@ -131,6 +131,7 @@
 import re
 import sys
 from os import path, walk, listdir, environ
+from socket import gethostname
 import ConfigParser
 from optparse import OptionParser
 
@@ -698,15 +699,10 @@ def getMPI(cfgDict):
    mpi = {}
    if cfgDict.has_key('options'):
       if 'mpi' in cfgDict['options'].lower():
+         mpi.update({'HOSTS':gethostname().split('.')[0]}) # /!\ defaulting on  the local hostname
          if cfgDict.has_key('mpi_hostfile'): mpi.update({'HTFILE':cfgDict['mpi_hostfile']})
          elif cfgDict.has_key('mpi_hosts'):
-            if len(cfgDict['mpi_hosts'].split()) < 1:
-               print '... I do not know where to run MPI, can you provide the names of your hosts ?'
-               sys.exit()
-            mpi.update({'HOSTS':cfgDict['mpi_hosts']})
-         else:
-            print '... I do not know where to run MPI, can you provide the names of your hosts ?'
-            sys.exit()
+            if len(cfgDict['mpi_hosts'].split()) > 0: mpi['HOSTS'] = cfgDict['mpi_hosts']
          if cfgDict.has_key('mpi_infile'): mpi.update({'INFILE':cfgDict['mpi_infile']})
          if cfgDict.has_key('mpi_cmdexec'):
             mpi.update({'EXEC':cfgDict['mpi_cmdexec']})
