@@ -33,7 +33,9 @@ from os import path,walk,mkdir,getcwd,chdir,remove,rmdir,listdir,stat
 from fnmatch import fnmatch #,translate
 from distutils.archive_util import make_archive
 from distutils.dep_util import newer
-
+# ~~> dependencies towards other modules
+sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
+from utils.progressbar import ProgressBar
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
 #
@@ -118,8 +120,12 @@ def createDirectories(po):
 """
 """
 def copyFiles(pi,po):
-   for f in listdir(pi):
+   ld = listdir(pi)
+   ibar = 0; pbar = ProgressBar(maxval=len(ld)).start()
+   for f in ld:
       if path.isfile(path.join(pi,f)): shutil.copy(path.join(pi,f),po)
+      pbar.update(ibar); ibar += 1
+   pbar.finish()
    return
 """
 """

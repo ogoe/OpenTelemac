@@ -131,19 +131,20 @@ class scanSELAFIN(SELAFIN,chopSELAFIN):
          print "VARIABLE     : ",self.VARNAMES[v]
          for t in range(len(self.tags['times'])):
             VARSOR = getVariablesAt( self.file,self.tags,t,self.NVAR,self.NPOIN3,[self.VARINDEX[v]] )
-            print "/ TIME: ",self.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
+            print "    / TIME: ",self.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
       for v in range(self.NBV2):
          print "CLANDESTINE  : ",self.CLDNAMES[v]
          for t in range(len(self.tags['times'])):
             VARSOR = getVariablesAt( self.file,self.tags,t,self.NVAR,self.NPOIN3,[self.VARINDEX[v+self.NBV1]] )
-            print "/ TIME: ",self.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
+            print "    / TIME: ",self.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
 
    def printTimeSummary(self):
       print "NUMBER OF TIMES : ",len(self.tags['times'])
       print "FIRST TIME STEP : ",self.tags['times'][0]
       print "LAST TIME STEP  : ",self.tags['times'][len(self.tags['times'])-1]
-      if len(self.tags['times']) > 0: print "TIME STEP       : ", \
+      if len(self.tags['times']) > 1: print "TIME STEP       : ", \
          ( self.tags['times'][len(self.tags['times'])-1] - self.tags['times'][0] )/( len(self.tags['times'])-1 )
+      else: print "ONLY ONE TIME FRAME"
 
 class alterSELAFIN(SELAFIN,chopSELAFIN):
 
@@ -283,8 +284,8 @@ if __name__ == "__main__":
    # valid for alter
    parser.add_option("--title",type="string",dest="atitle",default=None,help="set the title of the SLF" )
    parser.add_option("--reset",action="store_true",dest="areset",default=False,help="reset AT to zero second" )
-   parser.add_option("--date",type="string",dest="adate",default=None,help="set the start date of the SLF" )
-   parser.add_option("--time",type="string",dest="atime",default=None,help="set the start time of the SLF" )
+   parser.add_option("--date",type="string",dest="adate",default=None,help="set the start date of the SLF (dd-mm-yyyy)" )
+   parser.add_option("--time",type="string",dest="atime",default=None,help="set the start time of the SLF (hh:mm:ss)" )
    parser.add_option("--switch",action="store_true",dest="aswitch",default=False,help="switch between VARIABLES and CLANDESTINES" )
    parser.add_option("--name",type="string",dest="aname",default=None,help="change the name of a VARIABLE: 'OLD VAR=NEW VAR'" )
    parser.add_option("--T+?",type="string",dest="atp",default="0",help="adds to the ATs" )

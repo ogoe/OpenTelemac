@@ -25,6 +25,7 @@
 import sys
 from struct import unpack
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 # ~~> dependencies from within pytel/parsers
 from myplot1d import drawHistoryLines,drawPolylineLines
