@@ -74,18 +74,13 @@ def drawGridContours(plt,(x,y,z),deco):
 # ____/ Mesh Toolbox /_____________________________________________/
 #
 """
-   drawMesh* applies to mesh of triangles
+   drawMesh* applies to mesh of triangles / quads
       - by default this is drawn as a uni-colour wireframe
       - see also drawCoulouredMesh*
 """
 
-#  *Triangles: draw individual triangle polygons
-def drawMeshTriangles(plt,elements,deco):
-   # TODO: this method still produce the follwoing warning:
-   # ...matplotlib\axes.py:2381: UserWarning: Attempting to set identical
-   # left==right results in singular transformations; automatically expanding.
-   # left=0.0, right=0.0 + 'left=%s, right=%s') % (left, right))
-   # which comes from the edgescolors ...
+#  *2DElements: draw individual elements polygons  (triangle or quads)
+def drawMesh2DElements(plt,elements,deco):
 
    # ~~> Focus on current subplot / axes instance
    crax = plt.gca()
@@ -98,8 +93,8 @@ def drawMeshTriangles(plt,elements,deco):
    #ex: fig = plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
    crax.add_collection(colection)   # adds, or plots our collection
    xmin,ymin,xmax,ymax = deco['roi']
-   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
+   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    #plt.axis([np.min(x0),np.max(x0),np.min(y0),np.max(y0)])
    crax.axis('equal')         # sets both axis scale to be equal
    #curax.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
@@ -119,14 +114,14 @@ def drawMeshLines(plt,edges,deco):
       linewidth=1 ) #colors = 'k', 
    #colection.set_zorder(deco['zorder'])
 
-   #colection.set_array(val)       # each triangle colour dependent on its value from its verticies
+   #colection.set_array(val)       # each element colour dependent on its value from its verticies
 
    # ~~> Plot data
    #ex: fig = plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
    crax.add_collection(colection, autolim=True)   # adds, or plots our collection
    xmin,ymin,xmax,ymax = deco['roi']
-   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
+   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
 
    return
@@ -138,7 +133,7 @@ def drawColouredMeshLines(plt,edges,deco):
 """
    Contour plot of a Z based on a triangular mesh a with labels.
 """
-def drawLabeledContours(plt,(x,y,ikle,z),deco):
+def drawLabeledTriContours(plt,(x,y,ikle,z),deco):
 
    # ~~> Focus on current subplot / axes instance
    crax = plt.gca()
@@ -207,7 +202,7 @@ def drawLabeledContours(plt,(x,y,ikle,z),deco):
 
    return
 
-def drawColouredMaps(plt,(x,y,ikle,z),deco):
+def drawColouredTriMaps(plt,(x,y,ikle,z),deco):
 
    # ~~> Focus on current subplot / axes instance
    crax = plt.gca()
@@ -222,9 +217,55 @@ def drawColouredMaps(plt,(x,y,ikle,z),deco):
    # adds numbers along the iso-contours
    plt.clabel(cs,fontsize=9,inline=1)
    xmin,ymin,xmax,ymax = deco['roi']
-   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
+   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
+   #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
+   #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
+   #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar
+
+   return
+
+def drawLabeledQuadContours(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
+   return
+
+def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
+
+   # ~~> Focus on current subplot / axes instance
+   crax = plt.gca()
+   # ~~> Plot data
+   colourmap = cm.jet
+   #if geometry.has_key('cmapPlot'):
+   #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
+   zmin = np.min(z); zmax = np.max(z)
+
+   nx = npoin-nelem
+   ny = int(npoin/nx)
+   mesh = np.column_stack((x,y))
+   print nx*ny,len(x),len(mesh)
+   msh = collections.QuadMesh(nx-1,ny-1,mesh,True,shading='gouraud')
+   #msh.set_array(np.zeros(self.x_cells*self.y_cells))
+   #msh.set_array(np.array(self.FD.GetTimestepData(0)))
+   #msh.set_clim(0.0, 1.0)
+   #axis.axis([0, self.x_max, 0, self.y_top])
+   #plt.colorbar(self.cax)
+   ###!!! I have tried cax and msh, and various combos
+   #toolbar.show()
+   #canvas.draw()
+   msh.set_array(z)
+   crax.add_collection(msh)
+
+   """cs = plt.tricontour(x,y,ikle, z, linewidths=0.5, colors='k')
+   #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
+   plt.tricontourf(x,y,ikle, z, cmap=colourmap)
+   # adds numbers along the iso-contours
+   plt.clabel(cs,fontsize=9,inline=1)"""
+   xmin,ymin,xmax,ymax = deco['roi']
+   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
+   crax.axis('equal')         # sets both axis scale to be equal
+
+
    #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
    #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
    #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar

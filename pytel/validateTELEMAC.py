@@ -40,6 +40,10 @@
          This development was triggered by Christophe Coulet (Artelia-Sogreah)
          who asked about it on the open TELEMAC forum.
 """
+"""@history 19/03/2012 -- Sebastien E. Bourban
+         A new option (--screen) added to the command line, in order for
+         Jenkins to use any Xwindows backend on its virtual boxes.
+"""
 """@brief
 """
 
@@ -82,14 +86,16 @@ if __name__ == "__main__":
       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",type="string",dest="version",default='',
       help="specify the version number, default is taken from config file" )
-   parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
-      help="specify whether there is a sortie file, default is no" )
+   #parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
+   #   help="specify whether there is a sortie file, default is no" )
    parser.add_option("-a", "--action",type="string",dest="do",default='',
       help="filter specific process actions from the XML file" )
    parser.add_option("-d", "--draw",type="string",dest="draw",default='',
       help="filter specific drawing actions from the XML file" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
+   parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
+      help="specify whether to display on screen or save silently" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -115,6 +121,12 @@ if __name__ == "__main__":
       cfgnames = [options.configName]
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
+   if not options.display:
+      import matplotlib.pyplot as plt
+      plt.switch_backend('agg')
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
@@ -124,6 +136,7 @@ if __name__ == "__main__":
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if options.version != '': cfgs[cfgname]['version'] = options.version
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+      cfgs[cfgname]['display'] = options.display
       # parsing for proper naming
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
       cfg.update({ 'PWD':PWD })

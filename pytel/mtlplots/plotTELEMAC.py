@@ -23,21 +23,21 @@
 #
 # ~~> dependencies towards standard python
 import sys
+from os import path
 from struct import unpack
 import numpy as np
-import matplotlib
 import matplotlib.pyplot as plt
 # ~~> dependencies from within pytel/parsers
 from myplot1d import drawHistoryLines,drawPolylineLines
-from myplot2d import drawLabeledContours,drawMeshTriangles,drawMeshLines,drawColouredMaps
+from myplot2d import drawMesh2DElements,drawMeshLines, \
+   drawLabeledTriContours,drawColouredTriMaps, \
+   drawLabeledQuadContours,drawColouredQuadMaps
 # ~~> dependencies towards other pytel/modules
+sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent
 from parsers.parserSortie import getValueHistorySortie
-from parsers.parserSELAFIN import getValueHistorySLF,parseSLF,crossLocateMeshSLF,xyLocateMeshSLF,getValuePolylineSLF,subsetVariablesSLF
+from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,parseSLF,crossLocateMeshSLF,xyLocateMeshSLF,getValuePolylineSLF,subsetVariablesSLF
 from parsers.parserStrings import parseArrayPaires
-
-# On Jenkins' virtual boxes, forces matplotlib to not use any Xwindows backend.
-matplotlib.use('Agg')
 
 # _____                   __________________________________________
 # ____/ Plotting Toolbox /_________________________________________/
@@ -154,7 +154,6 @@ def openFigure(plot):
    #   plt.figure(dpi=plot['dpi'])
    #else:
    #   plt.figure(dpi=pltdefault['dpi'])
-   # TODO: use matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg for future GUI
 
    # ~~> add_subplot, or ax definition
    # fig.add_subplot(111) returns an Axes instance, where we can plot and this is
@@ -179,132 +178,150 @@ def openFigure(plot):
 
    return (plt,fig)
 
-def closeFigure((plt,fig)):
-
-   #plt.show()
-   #plt.savefig(fig)
-
-   return
-
 """
    ~ plt.axis([np.min(x0),np.max(x0),np.min(y0),np.max(y0)])
      could be used to restrict the view to a user-defined zoom
 """
-def drawFigure1D(type,what,(plt,fig)):
+# _____                        _____________________________________
+# ____/ Primary Class: FIGURE /____________________________________/
+#
+class Figure1D:
 # TODO: use the names to label the curves
-# TODO: save the plot in a file name.png
 
-   if 'sortie' in type.lower():
-      drawHistoryLines(plt,getValueHistorySortie(getFileContent(what['file']),
-         what["vars"]),deco)
+   def draw(self,type,what,fig):
+      
+      if 'sortie' in type.lower():
+         # ~~> Load data
+         sortie = getFileContent(what['file'])
+         print len(sortie)
+         # ~~> Extract data
+         data = getValueHistorySortie(sortie,what['vars'])
+         print data
+         # ~~> Deco
+         # ~~> Draw data
+         drawHistoryLines(plt,data,deco)
 
-   elif 'SELAFIN' in type.upper():
+      elif 'SELAFIN' in type.upper():
+         # ~~> Load data
+         slf = SELAFIN(what['file'])
 
-      # ~~ Extract data
-      f = open(what['file'],'rb')
-      tags,TITLE,DATETIME,IPARAM,numbers,vars,mesh = parseSLF(f)
-      NELEM3,NPOIN3,NDP,NPLAN = numbers
-      NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS = vars
-      NVAR = NBV1+NBV2; VARNAMES.extend(CLDNAMES)
-      IKLE,IPOBO,MESHX,MESHY = mesh
-
-      if what['type'] == 'history':
-         if what.has_key('roi'): deco['roi'] = what['roi']
-
-         drawHistoryLines(plt,getValueHistorySLF(f,tags,what['time'],
-            xyLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
-            TITLE,NVAR,NPOIN3,
-            subsetVariablesSLF(what["vars"],VARNAMES)),deco)
-
-      elif what['type'] == 'v-section':
-         if what.has_key('roi'):
-            deco['roi'] = what['roi']
-         else:
-            deco['roi'] = [ np.min(MESHX),np.max(MESHX), np.min(MESHY),np.max(MESHY) ]
-
-         drawPolylineLines(plt,getValuePolylineSLF(f,tags,what['time'],
-            crossLocateMeshSLF(what["extract"],NELEM3,IKLE,MESHX,MESHY),
-            TITLE,NVAR,NPOIN3,
-            subsetVariablesSLF(what["vars"],VARNAMES)),deco)
-
-      else:
-         print '... do not know how to draw this type: ' + what['type']
-
-      f.close()
-
-   else:
-      print '... do not know how to draw this format: ' + type
-
-   return
-
-def drawFigure2D(type,what,(plt,fig)):
-# TODO: use the names to label the curves
-# TODO: save the plot in a file name.png
-
-   if 'SELAFIN' in type.upper():
-
-      # ~~ Extract data
-      f = open(what['file'],'rb')
-      tags,title,DATETIME,IPARAM,numbers,vars,mesh = parseSLF(f)
-      NELEM3,NPOIN3,NDP,NPLAN = numbers
-      NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS = vars
-      NVAR = NBV1+NBV2; VARNAMES.extend(CLDNAMES)
-      IKLE,IPOBO,MESHX,MESHY = mesh
-
-      if what.has_key('roi'):
-         deco['roi'] = what['roi']
-      else:
-         deco['roi'] = [ np.min(MESHX),np.max(MESHX), np.min(MESHY),np.max(MESHY) ]
-      elements = []; edges = []; edgexy = []
-
-      for var in what["vars"].split(';'):
-         v,t = var.split(':')
-
-         if "mesh" in t:
-            # ~~> Extract mesh connectivity
-            if elements == []:
-               for e in IKLE:
-                  element = []
-                  for n in e: element.append((MESHX[n],MESHY[n]))
-                  elements.append(element)
-            # ~~> Draw
-            drawMeshTriangles(plt,elements,deco)
-
-         elif "wire" in t:
-            # ~~> Extract unique edges and outline /!\ assumes all same clowise orientation
-            if edges == []:
-               for e in IKLE:
-                  if (e[0],e[1]) not in edges: edges.append((e[1],e[0]))
-                  if (e[1],e[2]) not in edges: edges.append((e[2],e[1]))
-                  if (e[2],e[0]) not in edges: edges.append((e[0],e[2]))
-               # ~~> Assemble wires
-               for e in edges:
-                  edgexy.append(( (MESHX[e[0]],MESHY[e[0]]) , (MESHX[e[1]],MESHY[e[1]]) ))
-            # ~~> Draw
-            drawMeshLines(plt,edgexy,deco)
+         if what['type'] == 'history':
+            # ~~> Extract data
+            vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
+            support = xyLocateMeshSLF(what["extract"],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
+            data = getValueHistorySLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
+            # ~~> Deco
+            if what.has_key('roi'): deco['roi'] = what['roi']
+            # ~~> Draw data
+            drawHistoryLines(plt,data,deco)
             
+         elif what['type'] == 'v-section':
+            # ~~> Extract data
+            vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
+            support = crossLocateMeshSLF(what["extract"],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
+            data = getValuePolylineSLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
+            # ~~> Deco
+            if what.has_key('roi'): deco['roi'] = what['roi']
+            else: deco['roi'] = [ np.min(slf.MESHX),np.max(slf.MESHX), np.min(slf.MESHY),np.max(slf.MESHY) ]
+            # ~~> Draw data
+            drawPolylineLines(plt,data,deco)
+
+         else: print '... do not know how to draw this type: ' + what['type']
+
+      else:
+         print '... do not know how to draw this format: ' + type
+
+class Figure2D:
+   def draw(self,type,what,fig):
+
+      # ~~> Load data
+      slf = SELAFIN(what['file'])
+
+      # /!\ WACLEO: Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
+      if 'WACLEO' in type.upper() or \
+         'SELAFIN' in type.upper():
+
+         # ~~> Extract data
+         elements = None; edges = []; edgexy = []
+
+         # ~~> Deco
+         if what.has_key('roi'): deco['roi'] = what['roi']
          else:
-            # ~~> Extract variable data
-            VARSOR = np.zeros(NPOIN3)
-            f.seek(tags['cores'][0])
-            f.read(4+4+4)
-            for ivar in range(NVAR):
-               f.read(4)
-               if v.upper() in VARNAMES[ivar].strip():
-                  VARSOR = np.asarray(unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3)))
-                  break
-               else:
-                  f.read(4*NPOIN3)
-               f.read(4)
-            # ~~> Draw (multiple options possible)
-            if "map" in t: drawColouredMaps(plt,(MESHX,MESHY,IKLE,VARSOR),deco)
-            if "label" in t: drawLabeledContours(plt,(MESHX,MESHY,IKLE,VARSOR),deco)
+            deco['roi'] = [ np.min(slf.MESHX),np.max(slf.MESHX), np.min(slf.MESHY),np.max(slf.MESHY) ]
 
-      f.close()
-   else:
-      print '... do not know how to draw this format: ' + type
+         for var in what["vars"].split(';'):
+            v,t = var.split(':')
 
-   return
+            if "mesh" in t:
+               # ~~> Extract mesh connectivity
+               if elements == None: elements = np.dstack((slf.MESHX[slf.IKLE],slf.MESHY[slf.IKLE]))
+               # ~~> Draw (works with triangles and quads)
+               drawMesh2DElements(plt,elements,deco)
+
+            elif "wire" in t:
+               # ~~> Extract unique edges and outline /!\ assumes all same clowise orientation
+               if edges == []:
+                  for e in slf.IKLE:
+                     for n in range(slf.NDP):
+                        if (e[n],e[(n+1)%slf.NDP]) not in edges: edges.append((e[(n+1)%slf.NDP],e[n]))
+                  # ~~> Assemble wires
+                  for e in edges:
+                     edgexy.append(( (slf.MESHX[e[0]],slf.MESHY[e[0]]) , (slf.MESHX[e[1]],slf.MESHY[e[1]]) ))
+               # ~~> Draw (works with triangles and quads)
+               drawMeshLines(plt,edgexy,deco)
+
+            else:
+               # ~~> Extract variable data
+               VARSOR = np.zeros(slf.NPOIN3)
+               frame = 0
+               if what.has_key('time'):
+                  frame = int(what['time'][0])
+                  if frame < 0: frame = max( 0, len(slf.tags['cores']) + frame )
+               slf.file.seek(slf.tags['cores'][frame])
+               slf.file.read(4+4+4)
+               for ivar in range(slf.NVAR):
+                  slf.file.read(4)
+                  if v.upper() in slf.VARNAMES[ivar].strip():
+                     VARSOR = np.asarray(unpack('>'+str(slf.NPOIN3)+'f',slf.file.read(4*slf.NPOIN3)))
+                     break
+                  else:
+                     slf.file.read(4*slf.NPOIN3)
+                  slf.file.read(4)
+               # ~~> Draw (multiple options possible)
+               if "map" in t: drawColouredTriMaps(plt,(slf.MESHX,slf.MESHY,slf.IKLE,VARSOR),deco)
+               if "label" in t: drawLabeledTriContours(plt,(slf.MESHX,slf.MESHY,slf.IKLE,VARSOR),deco)
+
+      else:
+         print '... do not know how to draw this format: ' + type
+
+      slf.file.close()
+
+      return
+
+
+class Figure(Figure1D,Figure2D):
+   plt = None; fig = None
+
+   def __init__(self,type,plot,display,figureName):
+      self.typePlot = type
+      self.figureName = figureName
+      self.display = display
+      #/!\ fig represents here plt as well as fig in fig = plt.figure()
+      self.plt,self.fig = openFigure(plot)
+
+   def draw(self,type,what):
+      if self.typePlot == "plot1d":
+         Figure1D.draw(self,type,what,(self.plt,self.fig))
+      elif self.typePlot == "plot2d":
+         Figure2D.draw(self,type,what,(self.plt,self.fig))
+      else:
+         print '... do not know how to draw this type: ' + type
+         sys.exit()
+
+   def show(self):
+      if self.display: self.plt.show()
+      else: self.plt.savefig(self.figureName)
+
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -348,38 +365,37 @@ if __name__ == "__main__":
    if True:
    # ~~ sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       draw = { 'title':'openTELEMAC','type':'sortie' }
-      fig = openFigure(draw)
+      figure = Figure('plot1d',draw,True,'')
 
-      type = 'sortie'
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\t2d_bumpflu_v1p0.cas_2011-11-23-13h40min12s.sortie'
-      drawFigure1D( draw['type'], { 'file':fileName, 'type': 'history',
-         'time':parseArrayPaires("[0;-1]")[0], 'vars':'voltotal:time' }, fig)
+      figure.draw( draw['type'], { 'file':fileName, 'type': 'history',
+         'time':parseArrayPaires("[0;-1]")[0], 'vars':'voltotal:time' })
 
-      closeFigure(fig)
+      figure.show()
 
    if True:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       draw = { 'title':'openTELEMAC','type':'SELAFIN' }
-      fig = openFigure(draw)
+      figure = Figure('plot1d',draw,True,'')
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\r2d_bumpflu_v1p0.slf'
-      drawFigure1D( draw['type'], { 'file':fileName, 'type': 'history',
+      figure.draw( draw['type'], { 'file':fileName, 'type': 'history',
          'extract': parseArrayPaires('[10;1][0;1]'),
-         'time':parseArrayPaires("[0;-1]")[0],'vars': 'surface libre:time' }, fig)
+         'time':parseArrayPaires("[0;-1]")[0],'vars': 'surface libre:time' })
 
-      closeFigure(fig)
+      figure.show()
 
    if True:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       draw = { 'title':'openTELEMAC','type':'SELAFIN' }
-      fig = openFigure(draw)
+      figure = Figure('plot1d',draw,True,'')
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\r2d_bumpflu_v1p0.slf'
-      drawFigure1D( draw['type'], { 'file':fileName, 'type': 'v-section',
+      figure.draw( draw['type'], { 'file':fileName, 'type': 'v-section',
          'extract': parseArrayPaires('[0.0;1.0][20;1.0]'),
-         'time':parseArrayPaires("[-1]")[0],'vars': 'surface libre:distance;fond:distance' }, fig)
+         'time':parseArrayPaires("[-1]")[0],'vars': 'surface libre:distance;fond:distance' })
 
-      closeFigure(fig)
+      figure.show()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Debuging drawFigure2D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -387,14 +403,27 @@ if __name__ == "__main__":
    if True:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       draw = { 'title':'openTELEMAC','type':'SELAFIN' }
-      fig = openFigure(draw)
+      figure = Figure('plot2d',draw,True,'')
 
       fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wintels\\geo_bumpflu_v1p0.slf'
-      drawFigure2D( draw['type'], { 'file':fileName,
-         'time':parseArrayPaires("[-1]")[0],'vars': 'fond:map'
-         }, fig)
+      figure.draw( draw['type'], { 'file':fileName,
+         'time':parseArrayPaires("[-1]")[0],'vars': 'fond:map' })
 
-      closeFigure(fig)
+      figure.show()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Debuging drawFigure2D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   if True:
+   # ~~ SPECTRAL file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      draw = { 'title':'openTELEMAC','type':'WACLEO' }
+      figure = Figure('plot2d',draw,True,'')
+
+      fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\pwc_cali071-darwin_v6p2w1_2009-02-08-00.spc'
+      figure.draw( draw['type'], { 'file':fileName,
+         'time':parseArrayPaires("[-1]")[0],'vars': 'f01:map' })
+
+      figure.show()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
