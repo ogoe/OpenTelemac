@@ -258,23 +258,24 @@ class META:
 # ____/ Primary Class: PLOT /______________________________________/
 #
 class PLOT:
-   drawing = {}; layering = {}; active = { 'type':'', 'xref':'' }; dids = {}
+   drawing = {}; layering = {}; active = { 'type':'', 'xref':'', 'roi':'' }; dids = {}
 
    def __init__(self,title=''):
       if title != '': self.drawing["title"] = title
 
-   def addPlotType(self,plot):
+   def addPlotType(self,plot):   # types: plot1d, plot2d, plot3d, plotpv, ...
       self.dids.update({plot:{}})
       self.active['type'] = plot
       return
 
-   def addDraw(self,draw):
+   def addDraw(self,draw):       # plots: plot1d, plot2d, plot3d, plotpv, ...
       drawing = { "type":'', "xref":'', "deco": 'line',
-         "time": '[-1]', "extract": '', "vars": '',
+         "time": '[-1]', "extract": '', "vars": '', "roi": '',
          "title": '', "config": 'distinct', 'outFormat': 'png',
          'layers':[] }     # draw includes an array of layers
       self.drawing = getXMLKeys(draw,drawing)
       self.active['xref'] = self.drawing["xref"]
+      self.active['roi'] = self.drawing["roi"]
       if self.dids[self.active['type']].has_key(self.drawing["xref"]):
          print '... this xref already exists:',self.drawing["xref"]
          sys.exit()
@@ -496,7 +497,8 @@ def runXML(xmlFile,xmlConfig):
                      if typePlot == "plot2d":  # so far no plot type, but this may change
                         #print typePlot,' ... drawing'
                         figure.draw( layer['fileName'][cfg][2], { 'file': file,
-                           'vars': layer["vars"],
+                           'roi': parseArrayPaires(draw['roi']),
+                           'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
                            'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } ) #,fig )
 
 

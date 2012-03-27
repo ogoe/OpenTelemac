@@ -15,6 +15,15 @@
          Addition of a reference to time (or time frame rather) passed on
          from the XML and extracted while reading the files.
 """
+"""@history 27/03/2012 -- Sebastien E. Bourban:
+         Quad elements from TOMAWAC's SPECTRAL files are now supported,
+         with each quad split into triangles.
+"""
+"""@history 28/03/2012 -- Sebastien E. Bourban:
+         2D Vector plots are now supported with the ability to extract
+         (re-interpolate) vectors on a regular mesh, given the roi
+         (region-of-interest) and the extract (="[nx,ny]").
+"""
 """@brief
 """
 
@@ -31,7 +40,7 @@ import matplotlib.pyplot as plt
 from myplot1d import drawHistoryLines,drawPolylineLines
 from myplot2d import drawMesh2DElements,drawMeshLines, \
    drawLabeledTriContours,drawColouredTriMaps, \
-   drawLabeledQuadContours,drawColouredQuadMaps
+   drawColouredTriVects
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent
@@ -54,7 +63,7 @@ deco = {
    'title': 'OpenTELEMAC',
    'dpi': 100,
    'grid': True,
-   'roi':[0,0,1,1],
+   'roi':[[0,0],[1,1]],
    '1d-line-colours':[],
    '1d-line-symbols':[],
    'contour.levels' : '12',
@@ -211,7 +220,8 @@ class Figure1D:
             support = xyLocateMeshSLF(what["extract"],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
             data = getValueHistorySLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
             # ~~> Deco
-            if what.has_key('roi'): deco['roi'] = what['roi']
+            if what.has_key('roi'):
+               if what['roi'] != []: deco['roi'] = what['roi']
             # ~~> Draw data
             drawHistoryLines(plt,data,deco)
             
@@ -221,8 +231,9 @@ class Figure1D:
             support = crossLocateMeshSLF(what["extract"],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
             data = getValuePolylineSLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
             # ~~> Deco
-            if what.has_key('roi'): deco['roi'] = what['roi']
-            else: deco['roi'] = [ np.min(slf.MESHX),np.max(slf.MESHX), np.min(slf.MESHY),np.max(slf.MESHY) ]
+            deco['roi'] = [ [np.min(slf.MESHX),np.min(slf.MESHY)], [np.max(slf.MESHX),np.max(slf.MESHY)] ]
+            if what.has_key('roi'):
+               if what['roi'] != []: deco['roi'] = what['roi']
             # ~~> Draw data
             drawPolylineLines(plt,data,deco)
 
@@ -245,9 +256,15 @@ class Figure2D:
          elements = None; edges = []; edgexy = []
 
          # ~~> Deco
-         if what.has_key('roi'): deco['roi'] = what['roi']
-         else:
-            deco['roi'] = [ np.min(slf.MESHX),np.max(slf.MESHX), np.min(slf.MESHY),np.max(slf.MESHY) ]
+         xmin = np.min(slf.MESHX); xmax = np.max(slf.MESHX)
+         ymin = np.min(slf.MESHY); ymax = np.max(slf.MESHY)
+         if what.has_key('roi'):
+            if what['roi'] != []:
+               xmin = min(what['roi'][0][0],what['roi'][1][0])
+               xmax = max(what['roi'][0][0],what['roi'][1][0])
+               ymin = min(what['roi'][0][1],what['roi'][1][1])
+               ymax = max(what['roi'][0][1],what['roi'][1][1])
+         deco['roi'] = [[xmin,ymin],[xmax,ymax]]
 
          for var in what["vars"].split(';'):
             v,t = var.split(':')
@@ -272,7 +289,7 @@ class Figure2D:
 
             else:
                # ~~> Extract variable data
-               VARSOR = np.zeros(slf.NPOIN3)
+               VARSORS = []
                frame = 0
                if what.has_key('time'):
                   frame = int(what['time'][0])
@@ -282,14 +299,37 @@ class Figure2D:
                for ivar in range(slf.NVAR):
                   slf.file.read(4)
                   if v.upper() in slf.VARNAMES[ivar].strip():
-                     VARSOR = np.asarray(unpack('>'+str(slf.NPOIN3)+'f',slf.file.read(4*slf.NPOIN3)))
-                     break
+                     VARSORS.append(np.asarray(unpack('>'+str(slf.NPOIN3)+'f',slf.file.read(4*slf.NPOIN3))))
                   else:
                      slf.file.read(4*slf.NPOIN3)
                   slf.file.read(4)
+               # ~~> Multi-variables calculations
+               if len(VARSORS) > 1:
+                  if "arrow" in t:
+                     if what['extract'] != []:
+                        dx = (xmax-xmin)/what['extract'][0][0]
+                        dy = (ymax-ymin)/what['extract'][0][1]
+                        grid = np.meshgrid(np.arange(xmin, xmax+dx, dx),np.arange(ymin, ymax+dy, dy))
+                        MESHX = np.concatenate(grid[0]); MESHY = np.concatenate(grid[1])
+                        le,ln,bn = xyLocateMeshSLF(np.dstack((MESHX,MESHY))[0],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
+                        VARSOR = [np.zeros(len(le),np.float32),np.zeros(len(le),np.float32)]
+                        for xy in range(len(bn)):
+                           if le[xy] >= 0:
+                              VARSOR[0][xy] = bn[xy][0]*VARSORS[0][ln[xy][0]] + bn[xy][1]*VARSORS[0][ln[xy][1]] + bn[xy][2]*VARSORS[0][ln[xy][2]]
+                              VARSOR[1][xy] = bn[xy][0]*VARSORS[1][ln[xy][0]] + bn[xy][1]*VARSORS[1][ln[xy][1]] + bn[xy][2]*VARSORS[1][ln[xy][2]]
+                  else:
+                     VARSOR = np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:2])[0],2),axis=1))
+               else:
+                  VARSOR = VARSORS[0]
+               # ~~> Element types
+               if slf.NDP == 3: IKLE = slf.IKLE
+               elif slf.NDP == 4:
+                  # ~~> split each quad into triangles
+                  IKLE = np.delete(np.concatenate((slf.IKLE,np.roll(slf.IKLE,2,axis=1))),np.s_[3::],axis=1)
                # ~~> Draw (multiple options possible)
-               if "map" in t: drawColouredTriMaps(plt,(slf.MESHX,slf.MESHY,slf.IKLE,VARSOR),deco)
+               if "map" in t: drawColouredTriMaps(plt,(slf.MESHX,slf.MESHY,IKLE,VARSOR),deco)
                if "label" in t: drawLabeledTriContours(plt,(slf.MESHX,slf.MESHY,slf.IKLE,VARSOR),deco)
+               if "arrow" in t: drawColouredTriVects(plt,(MESHX,MESHY,VARSOR),deco)
 
       else:
          print '... do not know how to draw this format: ' + type

@@ -92,7 +92,8 @@ def drawMesh2DElements(plt,elements,deco):
    # ~~> Plot data
    #ex: fig = plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
    crax.add_collection(colection)   # adds, or plots our collection
-   xmin,ymin,xmax,ymax = deco['roi']
+   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
    crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    #plt.axis([np.min(x0),np.max(x0),np.min(y0),np.max(y0)])
@@ -119,7 +120,8 @@ def drawMeshLines(plt,edges,deco):
    # ~~> Plot data
    #ex: fig = plt.figure(1,figsize=(3.0,4.0),dpi=100), where figsize is in inches
    crax.add_collection(colection, autolim=True)   # adds, or plots our collection
-   xmin,ymin,xmax,ymax = deco['roi']
+   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
    crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
@@ -216,7 +218,8 @@ def drawColouredTriMaps(plt,(x,y,ikle,z),deco):
    plt.tricontourf(x,y,ikle, z, cmap=colourmap)
    # adds numbers along the iso-contours
    plt.clabel(cs,fontsize=9,inline=1)
-   xmin,ymin,xmax,ymax = deco['roi']
+   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
    crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
@@ -226,9 +229,34 @@ def drawColouredTriMaps(plt,(x,y,ikle,z),deco):
 
    return
 
-def drawLabeledQuadContours(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
+def drawColouredTriVects(plt,(x,y,uv),deco):
+
+   # ~~> Focus on current subplot / axes instance
+   crax = plt.gca()
+   # ~~> Plot data
+   colourmap = cm.jet
+   #if geometry.has_key('cmapPlot'):
+   #   colourmap = LinearSegmentedColormap('User', getColourMap(geometry['cmapPlot']))
+   # get vector magnitude, i.e norm-2
+   z = np.sqrt(np.sum(np.power(np.dstack(uv[0:2])[0],2),axis=1))
+   zmin = np.min(z); zmax = np.max(z)
+   #cs = plt.quiver(x,y,uv[0],uv[1], cmap=colourmap, norm=plt.Normalize(zmin,zmax))
+   cs = plt.quiver(x,y,uv[0],uv[1], cmap=colourmap )
+   cs.set_array(z)
+   #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
+   # adds numbers along the iso-contours
+   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
+   crax.axis('equal')         # sets both axis scale to be equal
+   #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
+   #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
+   #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar
+
    return
 
+"""
 def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
 
    # ~~> Focus on current subplot / axes instance
@@ -255,12 +283,15 @@ def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
    msh.set_array(z)
    crax.add_collection(msh)
 
-   """cs = plt.tricontour(x,y,ikle, z, linewidths=0.5, colors='k')
+   #cs = plt.tricontour(x,y,ikle, z, linewidths=0.5, colors='k')
    #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
-   plt.tricontourf(x,y,ikle, z, cmap=colourmap)
+   #plt.tricontourf(x,y,ikle, z, cmap=colourmap)
    # adds numbers along the iso-contours
-   plt.clabel(cs,fontsize=9,inline=1)"""
-   xmin,ymin,xmax,ymax = deco['roi']
+   #plt.clabel(cs,fontsize=9,inline=1)
+   xmin = min(deco['roi'][0][0],deco['roi'][1][0])
+   xmax = max(deco['roi'][0][0],deco['roi'][1][0])
+   ymin = min(deco['roi'][0][1],deco['roi'][1][1])
+   ymax = max(deco['roi'][0][1],deco['roi'][1][1])
    crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
    crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
@@ -271,6 +302,7 @@ def drawColouredQuadMaps(plt,(nelem,npoin,ndp,nplan),(x,y,ikle,z),deco):
    #if geometry.has_key('cmapPlot'): fig.colorbar(colormap)     # sets up colourbar
 
    return
+"""
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
