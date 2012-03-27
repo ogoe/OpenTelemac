@@ -36,6 +36,10 @@
          Addition of a new SELAFIN class to add calculated variables to a
          existing SELAFIN file.
 """
+"""@history 01/02/2012 -- Sebastien E. Bourban:
+         Addition of the new code "spec" to read and print to screen the core content
+         of a TOMAWAC SPECTRAL file.
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -242,6 +246,42 @@ class calcsSELAFIN(SELAFIN):
          for fct,args in self.calcs: appendCoreVarsSLF(self,fct(vars,args))
       self.fole.close()
 
+class scanSPECTRAL(scanSELAFIN):
+
+   def printHeader(self):
+      scanSELAFIN.printHeader(self)
+      nd = self.NPOIN3-self.NELEM3
+      nf = self.NPOIN3/nd
+      print "FREQUENCIES ",nf," / min: [ ",self.MESHY[0],"]  / max: [ ",self.MESHY[self.NPOIN3-nd],"]"
+      print ' '.join([ repr(i) for i in self.MESHY[0::nd] ])
+      print "DIRECTIONS  ",nd," / angle: ",360./nd
+
+   def printCore(self,na):
+      for v in range(self.NBV1):
+         print "VARIABLE     : ",self.VARNAMES[v]
+         for t in range(len(self.tags['times'])):
+            VARSOR = getVariablesAt( self.file,self.tags,t,self.NVAR,self.NPOIN3,[self.VARINDEX[v]] )
+            print "    / TIME: ",self.tags['times'][t]
+            # na significant figures
+            accuracy = np.power(10.0, -na+np.floor(np.log10(abs(np.max(VARSOR)))))
+            print '\nFACTOR ', accuracy
+            #spe = np.reshape(np.array((VARSOR/accuracy),dtype=np.int),(self.NPOIN3-self.NELEM3,-1)) # by direction
+            spe = np.reshape(np.array((VARSOR/accuracy),dtype=np.int),(self.NPOIN3/(self.NPOIN3-self.NELEM3),-1)) # by frequency
+            for s in spe: print ' '.join([ repr(i).rjust(na+1) for i in s ])
+            print '\n'
+      for v in range(self.NBV2):
+         print "CLANDESTINE  : ",self.CLDNAMES[v]
+         for t in range(len(self.tags['times'])):
+            VARSOR = getVariablesAt( self.file,self.tags,t,self.NVAR,self.NPOIN3,[self.VARINDEX[v+self.NBV1]] )
+            print "    / TIME: ",self.tags['times'][t]
+            # na significant figures
+            accuracy = np.power(10.0, -na+np.floor(np.log10(abs(np.max(VARSOR)))))
+            print '\nFACTOR ', accuracy
+            #spe = np.reshape(np.array((VARSOR/accuracy),dtype=np.int),(self.NPOIN3-self.NELEM3,-1)) # by direction
+            spe = np.reshape(np.array((VARSOR/accuracy),dtype=np.int),(self.NPOIN3/(self.NPOIN3-self.NELEM3),-1)) # by frequency
+            for s in spe: print ' '.join([ repr(i).rjust(na+1) for i in s ])
+            print '\n'
+
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
@@ -297,7 +337,7 @@ if __name__ == "__main__":
    parser.add_option("--Z?",type="string",dest="azname",default=None,help="will filter Z+ znd Z* operations on that VARIABLE name" )
    parser.add_option("--Z+?",type="string",dest="azp",default="0",help="adds to the VARIABLE" )
    parser.add_option("--Z*?",type="string",dest="azm",default="1",help="scales the VARIABLE" )
-   # valid for merge
+   parser.add_option("--accuracy",type="string",dest="accuracy",default="5",help="significant figures for text display" )
 
    options, args = parser.parse_args()
    if len(args) < 1:
@@ -324,6 +364,23 @@ if __name__ == "__main__":
          slf = scanSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
          slf.printHeader()
          if options.core: slf.printCore()
+         else: slf.printTimeSummary()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of SPECTRAL file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if codeName == 'spec':
+
+      slfFiles = args[1:]
+      for slfFile in slfFiles:
+
+         slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         vars = options.xvars
+         if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
+         slf = scanSPECTRAL( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
+         slf.printHeader()
+         if options.core: slf.printCore(int(options.accuracy))
          else: slf.printTimeSummary()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
