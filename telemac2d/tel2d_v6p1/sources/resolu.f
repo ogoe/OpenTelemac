@@ -17,7 +17,7 @@
      & HC,TMAX,DTT,T1,T2,T3,T4,T5,GAMMA,FLUX_OLD)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A KINETIC 
