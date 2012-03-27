@@ -304,6 +304,7 @@ class Figure2D:
                      slf.file.read(4*slf.NPOIN3)
                   slf.file.read(4)
                # ~~> Multi-variables calculations
+               MESHX = np.array(slf.MESHX); MESHY = np.array(slf.MESHY)
                if len(VARSORS) > 1:
                   if "arrow" in t:
                      if what['extract'] != []:
@@ -322,7 +323,7 @@ class Figure2D:
                else:
                   VARSOR = VARSORS[0]
                # ~~> Element types
-               if slf.NDP == 3: IKLE = slf.IKLE
+               if slf.NDP == 3: IKLE = np.array(slf.IKLE)
                elif slf.NDP == 4:
                   # ~~> split each quad into triangles
                   IKLE = np.delete(np.concatenate((slf.IKLE,np.roll(slf.IKLE,2,axis=1))),np.s_[3::],axis=1)

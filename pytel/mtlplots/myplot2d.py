@@ -77,6 +77,7 @@ def drawGridContours(plt,(x,y,z),deco):
    drawMesh* applies to mesh of triangles / quads
       - by default this is drawn as a uni-colour wireframe
       - see also drawCoulouredMesh*
+   Note: triplot could be used but would not be valid for quads
 """
 
 #  *2DElements: draw individual elements polygons  (triangle or quads)
