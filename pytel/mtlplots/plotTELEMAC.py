@@ -63,7 +63,8 @@ deco = {
    'title': 'OpenTELEMAC',
    'dpi': 100,
    'grid': True,
-   'roi':[[0,0],[1,1]],
+   'crax.xlim': 0.02,
+   'crax.ylim': 0.02,
    '1d-line-colours':[],
    '1d-line-symbols':[],
    'contour.levels' : '12',
@@ -157,12 +158,13 @@ hrwd = {
 def openFigure(plot):
 
    # ~~> figure definition and resolution
-   # plt.figure() returns a Figure, where we can add one or more Axes instances
-   fig = plt.figure()
-   #if plot.has_key('dpi'):
-   #   plt.figure(dpi=plot['dpi'])
-   #else:
-   #   plt.figure(dpi=pltdefault['dpi'])
+   #  > plt.figure(dpi=pltdefault['dpi'])
+   #dpi = pltdefault['dpi']
+   if plot.has_key('dpi'): dpi = plot['dpi']
+   #  > plt.figure(figsize=(width,height))
+   figsize = plot["size"][0]
+   #  > plt.figure() returns a Figure, where we can add one or more Axes instances
+   fig = plt.figure(figsize=figsize)
 
    # ~~> add_subplot, or ax definition
    # fig.add_subplot(111) returns an Axes instance, where we can plot and this is
@@ -202,10 +204,8 @@ class Figure1D:
       if 'sortie' in type.lower():
          # ~~> Load data
          sortie = getFileContent(what['file'])
-         print len(sortie)
          # ~~> Extract data
          data = getValueHistorySortie(sortie,what['vars'])
-         print data
          # ~~> Deco
          # ~~> Draw data
          drawHistoryLines(plt,data,deco)
@@ -306,7 +306,7 @@ class Figure2D:
                # ~~> Multi-variables calculations
                MESHX = np.array(slf.MESHX); MESHY = np.array(slf.MESHY)
                if len(VARSORS) > 1:
-                  if "arrow" in t:
+                  if "arrow" in t or "angle" in t:
                      if what['extract'] != []:
                         dx = (xmax-xmin)/what['extract'][0][0]
                         dy = (ymax-ymin)/what['extract'][0][1]
@@ -319,6 +319,7 @@ class Figure2D:
                               VARSOR[0][xy] = bn[xy][0]*VARSORS[0][ln[xy][0]] + bn[xy][1]*VARSORS[0][ln[xy][1]] + bn[xy][2]*VARSORS[0][ln[xy][2]]
                               VARSOR[1][xy] = bn[xy][0]*VARSORS[1][ln[xy][0]] + bn[xy][1]*VARSORS[1][ln[xy][1]] + bn[xy][2]*VARSORS[1][ln[xy][2]]
                   else:
+                     t = "map"
                      VARSOR = np.sqrt(np.sum(np.power(np.dstack(VARSORS[0:2])[0],2),axis=1))
                else:
                   VARSOR = VARSORS[0]
@@ -330,7 +331,8 @@ class Figure2D:
                # ~~> Draw (multiple options possible)
                if "map" in t: drawColouredTriMaps(plt,(slf.MESHX,slf.MESHY,IKLE,VARSOR),deco)
                if "label" in t: drawLabeledTriContours(plt,(slf.MESHX,slf.MESHY,slf.IKLE,VARSOR),deco)
-               if "arrow" in t: drawColouredTriVects(plt,(MESHX,MESHY,VARSOR),deco)
+               if "arrow" in t: drawColouredTriVects(plt,(MESHX,MESHY,VARSOR,False),deco)
+               if "angle" in t: drawColouredTriVects(plt,(MESHX,MESHY,VARSOR,True),deco)
 
       else:
          print '... do not know how to draw this format: ' + type

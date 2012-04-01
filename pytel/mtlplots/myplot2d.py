@@ -95,8 +95,12 @@ def drawMesh2DElements(plt,elements,deco):
    crax.add_collection(colection)   # adds, or plots our collection
    xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
    ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
-   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
+   if deco.has_key('crax.xlim'):
+      xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
+   if deco.has_key('crax.ylim'):
+      ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
    #plt.axis([np.min(x0),np.max(x0),np.min(y0),np.max(y0)])
    crax.axis('equal')         # sets both axis scale to be equal
    #curax.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
@@ -123,8 +127,12 @@ def drawMeshLines(plt,edges,deco):
    crax.add_collection(colection, autolim=True)   # adds, or plots our collection
    xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
    ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
-   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
+   if deco.has_key('crax.xlim'):
+      xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
+   if deco.has_key('crax.ylim'):
+      ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymim,ymax)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
 
    return
@@ -221,8 +229,12 @@ def drawColouredTriMaps(plt,(x,y,ikle,z),deco):
    plt.clabel(cs,fontsize=9,inline=1)
    xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
    ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
-   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
+   if deco.has_key('crax.xlim'):
+      xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
+   if deco.has_key('crax.ylim'):
+      ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
    #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
    #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar
@@ -230,7 +242,7 @@ def drawColouredTriMaps(plt,(x,y,ikle,z),deco):
 
    return
 
-def drawColouredTriVects(plt,(x,y,uv),deco):
+def drawColouredTriVects(plt,(x,y,uv,normalised),deco):
 
    # ~~> Focus on current subplot / axes instance
    crax = plt.gca()
@@ -241,15 +253,19 @@ def drawColouredTriVects(plt,(x,y,uv),deco):
    # get vector magnitude, i.e norm-2
    z = np.sqrt(np.sum(np.power(np.dstack(uv[0:2])[0],2),axis=1))
    zmin = np.min(z); zmax = np.max(z)
-   #cs = plt.quiver(x,y,uv[0],uv[1], cmap=colourmap, norm=plt.Normalize(zmin,zmax))
-   cs = plt.quiver(x,y,uv[0],uv[1], cmap=colourmap )
+   if not normalised : cs = plt.quiver(x,y,uv[0],uv[1], cmap=colourmap )
+   else: cs = plt.quiver(x,y,uv[0],uv[1], cmap=colourmap, norm=plt.Normalize(zmin,zmax))
    cs.set_array(z)
    #ex: colors='k' or colors=('r', 'g', 'b', (1,1,0), '#afeeee', '1')
    # adds numbers along the iso-contours
    xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
    ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
-   crax.set_xlim(xmin-0.5,xmax+0.5)   # sets x axis limits, default 0-1
-   crax.set_ylim(ymin-0.5,ymax+0.5)   # sets y axis limits, default 0-1
+   if deco.has_key('crax.xlim'):
+      xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
+   if deco.has_key('crax.ylim'):
+      ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
    crax.axis('equal')         # sets both axis scale to be equal
    #mp.set_title('%s\n2D mesh with %d elements, timestep %d, Variable - %s' %(d['NAME'],d['NELEM3'],t,d['VARNAMES'][v]))     # sets up title
    #if geometry.has_key('cmapPlot'): fig.colorbar(colection)     # sets up colourbar

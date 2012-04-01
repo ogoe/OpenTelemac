@@ -269,7 +269,7 @@ class PLOT:
       return
 
    def addDraw(self,draw):       # plots: plot1d, plot2d, plot3d, plotpv, ...
-      drawing = { "type":'', "xref":'', "deco": 'line',
+      drawing = { "type":'', "xref":'', "deco": 'line', "size":'[10;10]',
          "time": '[-1]', "extract": '', "vars": '', "roi": '',
          "title": '', "config": 'distinct', 'outFormat': 'png',
          'layers':[] }     # draw includes an array of layers
@@ -480,6 +480,9 @@ def runXML(xmlFile,xmlConfig):
                figureName = '.'.join([xref,str(nbFig),draw['outFormat']])
             print '       ~> saved as: ',figureName
             figureName = path.join(path.dirname(xmlFile),figureName)
+            # ~~> Figure size
+            draw["size"] = parseArrayPaires(draw["size"])
+            # ~~> Create Figure
             figure = Figure(typePlot,draw,display,figureName)
 
             for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
@@ -491,7 +494,7 @@ def runXML(xmlFile,xmlConfig):
                         #print typePlot,' ... drawing'
                         figure.draw( layer['fileName'][cfg][2], { 'file': file,
                            'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
-                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } ) #,fig )
+                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } )
 
                      # ~~ 2d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                      if typePlot == "plot2d":  # so far no plot type, but this may change
@@ -499,7 +502,7 @@ def runXML(xmlFile,xmlConfig):
                         figure.draw( layer['fileName'][cfg][2], { 'file': file,
                            'roi': parseArrayPaires(draw['roi']),
                            'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
-                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } ) #,fig )
+                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } )
 
 
             figure.show()
