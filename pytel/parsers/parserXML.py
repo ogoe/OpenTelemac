@@ -222,8 +222,8 @@ class ACTION:
 
    # ~~ Run the CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def runCAS(self,options,cfg,rebuild):
-      if "run" in self.available.split(';'): return
-
+      if not "run" in self.available.split(';'): return
+      
       # ~~> prepare options as if run from command line
       specs = Values()
       setattr(specs,'configName',options.configName)
