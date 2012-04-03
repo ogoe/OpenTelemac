@@ -657,9 +657,12 @@ class CONLIM:
       core = []
       for ifr in range(self.NPTFR):
          if self.INDEX[ifr] != 0:
-            c = ( ' '.join(['{0[' + str(i) + ']}' for i in range(len(self.BOR[ifr]))]) ).format(self.BOR[ifr])
+            c = ( ' '.join(['{0[' + repr(i) + ']}' for i in range(len(self.BOR[ifr]))]) ).format(self.BOR[ifr])
             if self.NPTIR != {} and self.IFAPAR != {}:
-               c += ( ' '+' '.join(['{0[' + str(i) + ']}' for i in range(len(self.POR[ifr]))]) ).format(self.POR[ifr])
+               c += ' '+repr(self.POR[ifr][0])
+               c += ' '+repr(float(self.POR[ifr][1]))
+               c += ' '+repr(float(self.POR[ifr][2]))
+               c += ' '+repr(self.POR[ifr][3])
             core.append( c )
 
       if self.NPTIR != {} and self.IFAPAR != {}:
