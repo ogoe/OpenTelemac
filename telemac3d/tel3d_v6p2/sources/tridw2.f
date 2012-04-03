@@ -2,16 +2,17 @@
                      SUBROUTINE TRIDW2
 !                    *****************
 !
-     &(WSS)
+     &(WSCONV,VOLU,VOLUN,SEM2D,FLUINT,FLUEXT,SOURCES,NSCE,NETAGE,NPOIN2,
+     & DT,UNSV2D,MESH2D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES AN AVERAGED VALUE OF H * WSTAR IN A WAY
 !+                COMPATIBLE WITH THE PSI SCHEME.
 !code
-!+      IN WSS (WHICH IS WSCONV) WE FIRST PUT (LOOP 1) :
+!+      IN WSCONV WE FIRST PUT (LOOP 1) :
 !+
 !+      STARTING FROM THE FIRST PLANE (BOTTOM) :
 !+
@@ -27,7 +28,7 @@
 !+      (H WSTAR) LEVEL NPLAN + 1/2   -  (H WSTAR) LEVEL NPLAN - 1/2
 !+
 !+
-!+      THEN BY SUCCESSIVE SUMS WE GET IN WSS (LOOP 2):
+!+      THEN BY SUCCESSIVE SUMS WE GET IN WSCONV (LOOP 2):
 !+
 !+      (H WSTAR) LEVEL 3/2
 !+      (H WSTAR) LEVEL 5/2
@@ -70,13 +71,24 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| WSS            |<->| VERTICAL VELOCITY COMPONENT WSTAR
-!|                |---| IN TRANSFORMED MESH AT TIME N+1
+!| DT             |-->| TIME STEP
+!| FLUINT         |-->| INTERNAL FLUXES
+!| FLUEXT         |-->| EXTERNAL FLUXES
+!| MESH2D         |-->| 2D MESH STRUCTURE
+!| NETAGE         |-->| NPLAN-1
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NSCE           |-->| NUMBER OF SOURCES
+!| SEM2D          |<->| RIGHT-HAND SIDE OF 2D EQUATION
+!| SOURCES        |-->| FLUXES FROM SOURCES
+!| UNSV2D         |-->| INVERSE OF 2D VOLUMES = 1/(INTEGRAL OF BASES) 
+!| VOLU           |-->| VOLUMES (INTEGRAL OF BASES) AT NEW TIME STEP
+!| VOLUN          |-->| VOLUMES (INTEGRAL OF BASES) AT OLD TIME STEP
+!| WSCONV         |<->| VERTICAL VELOCITY COMPONENT WSTAR
+!|                |   | IN TRANSFORMED MESH AT TIME N+1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -84,7 +96,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: WSS
+      INTEGER, INTENT(IN)           :: NSCE,NETAGE,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)  :: DT
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: WSCONV,SEM2D
+      TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU,VOLUN,FLUINT,FLUEXT
+      TYPE(BIEF_OBJ), INTENT(IN)    :: SOURCES,UNSV2D
+      TYPE(BIEF_MESH), INTENT(INOUT):: MESH2D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -92,7 +109,7 @@
 !
       DOUBLE PRECISION :: SURDT
 !
-!***********************************************************************
+!=======================================================================
 !
 !   SOLVES THE LINEAR SYSTEM
 !
@@ -141,7 +158,7 @@
 !
          DO I=1,NPOIN2
            IAD3=IAD3+1
-           WSS%R(IAD3)=SEM2D%ADR(1)%P%R(I)*UNSV2D%R(I)
+           WSCONV%R(IAD3)=SEM2D%ADR(1)%P%R(I)*UNSV2D%R(I)
          ENDDO
 !
       ENDDO
@@ -157,7 +174,7 @@
           DO I=1,NPOIN2
             IAD1=IAD1+1
             IAD2=IAD2+1
-            WSS%R(IAD2)=WSS%R(IAD2)+WSS%R(IAD1)
+            WSCONV%R(IAD2)=WSCONV%R(IAD2)+WSCONV%R(IAD1)
           ENDDO
         ENDDO
       ENDIF
@@ -167,15 +184,15 @@
 !                           HOWEVER WSCONV IS MODIFIED AFTER BECAUSE WSTAR
 !                           IS COPIED INTO IT, BUT IN FACT SET TO 0. ALSO)
 !
-!     CALL OV ('X=C     ',WSS%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
-!    &                    WSS%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
-!    &                    WSS%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
+!     CALL OV ('X=C     ',WSCONV%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
+!    &                    WSCONV%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
+!    &                    WSCONV%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
 !    &                    0.D0, NPOIN2 )
 !
 !=======================================================================
 !
 ! DIRICHLET CONDITIONS ON LATERAL BOUNDARIES
-!     WSS = WSBORL
+!     WSCONV = WSBORL
 !
 !=======================================================================
 ! FORTRAN77:
@@ -197,7 +214,7 @@
 !70      CONTINUE
 !60   CONTINUE
 !
-!     PRINT*,'WSS=',DOTS(WSS,WSS)
+!     PRINT*,'WSCONV=',DOTS(WSCONV,WSCONV)
 !
 !-----------------------------------------------------------------------
 !

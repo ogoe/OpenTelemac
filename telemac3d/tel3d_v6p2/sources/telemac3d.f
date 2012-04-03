@@ -53,6 +53,11 @@
 !+        V6P2   
 !+        Calls to CHECK and BIL3D changed
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/04/2012
+!+        V6P2   
+!+        Clean restart implemented.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -120,8 +125,13 @@
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
 !
 !     IN 3D FILES
-!                  Z U V W       K E     DP
-      DATA ALIRE3D/1,1,1,1,0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+!                                                        U V
+!                                            U V W V     C C          
+!                                            C C C O   D O O      
+!                                            O O O L D H N N     
+!                                        D   N N N U M H V V U V W 
+!                  Z U V W       K E     P   V V V N 1 N C C D D D  
+      DATA ALIRE3D/1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
@@ -420,7 +430,15 @@
           AKEP=.FALSE.
         ENDIF
 !
-      ENDIF
+        IF(TROUVE(19).EQ.1) THEN
+!         RETRIEVING DH AND HN
+          DO I=1,NPOIN2
+            DH%R(I)=T3_01%R(I)
+            HN%R(I)=T3_01%R(I+NPOIN2)
+          ENDDO
+        ENDIF
+!
+      ENDIF 
 !
 !     INITIALISES SEDIMENT PROPERTIES
 !
@@ -449,8 +467,9 @@
       ENDIF
 !
       CALL CALCOT(Z,H%R)
-      CALL OV ( 'X=Y     ',ZPROP%R(1:NPOIN2),Z3%R(1:NPOIN2),
-     &                     Z3%R(1:NPOIN2),0.D0,NPOIN2)
+!     BOTTOM OF ZPROP UPDATED
+      CALL OV('X=Y     ',ZPROP%R(1:NPOIN2),Z3%R(1:NPOIN2),
+     &        Z3%R(1:NPOIN2),0.D0,NPOIN2)
 !
 !-----------------------------------------------------------------------
 ! MASKING:
@@ -464,13 +483,13 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MASK3D'
       ENDIF
 !
-! MESH FOR PROPAGATION
+! MESH FOR PROPAGATION (IF NOT FOUND IN PREVIOUS RESULTS FILE)
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MESH_PROP'
-      CALL MESH_PROP(HPROP,H,H,PROLIN,HAULIN,TETAH,NSOUSI,ZPROP,
+      CALL MESH_PROP(HPROP,HN,H,PROLIN,HAULIN,TETAH,NSOUSI,ZPROP,
      &               IPBOT,NPOIN2,NPLAN,OPTBAN,SIGMAG,OPT_HNEG,
      &               MDIFF,MESH3D,VOLU3D,VOLU3DPAR,
-     &               UNSV3D,MSK,MASKEL,IELM3)
+     &               UNSV3D,MSK,MASKEL,IELM3)   
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MESH_PROP'
 !
 ! INITIALISES THE MEAN VELOCITY IN 2D
@@ -498,7 +517,11 @@
      &  SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,.FALSE.,MASKEL)
       ENDIF
 !
-      CALL OS('X=Y     ',X=VOLUN,Y=VOLU)
+!     IF NEW COMPUTATION OR VOLUN NOT IN PREVIOUS RESULT FILE
+!
+      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(17).NE.1)) THEN
+        CALL OS('X=Y     ',X=VOLUN,Y=VOLU)
+      ENDIF
 !
       IF(NCSIZE.GT.1) THEN
         CALL OS('X=Y     ',X=VOLUPAR,Y=VOLU)
@@ -703,6 +726,24 @@
      &                TIME,            ! START HOUR
      &                I_ORIG,J_ORIG)   ! COORDINATES OF THE ORIGIN
 !
+!     3D OUTPUT FOR RESTART
+!
+      IF(RESTART_MODE.AND.T3D_FILES(T3DRST)%NAME(1:1).NE.' ') THEN
+        CALL CREATE_DATASET(T3D_FILES(T3DRST)%FMT, ! RESULT FILE FORMAT
+     &                      T3D_FILES(T3DRST)%LU,  ! RESULT FILE LU
+     &                      TITCAS,     ! TITLE
+     &                      MAXVA3,     ! MAX NUMBER OF OUTPUT VARIABLES
+     &                      TEXT3,      ! NAMES OF OUTPUT VARIABLES
+     &                      SOREST)     ! OUTPUT OR NOT
+        CALL WRITE_MESH(T3D_FILES(T3DRST)%FMT, ! RESULT FILE FORMAT
+     &                  T3D_FILES(T3DRST)%LU,  ! RESULT FILE LU
+     &                  MESH3D,          ! MESH
+     &                  NPLAN,           ! NUMBER OF PLANE /NA/
+     &                  DATE,            ! START DATE
+     &                  TIME,            ! START HOUR
+     &                  I_ORIG,J_ORIG)   ! COORDINATES OF THE ORIGIN
+      ENDIF
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DESIMP'
        CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
      &                  HIST,0,NPOIN3,T3D_FILES(T3DRES)%LU,'STD',AT,LT,
@@ -779,9 +820,9 @@
 ! RETURNS WHEN THE NUMBER OF REQUIRED TIMESTEPS IS 0
 !
       IF(NIT.EQ.0) THEN
-         IF (LNG == 1) WRITE(LU,11)
-         IF (LNG == 2) WRITE(LU,12)
-         RETURN
+        IF (LNG == 1) WRITE(LU,11)
+        IF (LNG == 2) WRITE(LU,12)
+        RETURN
       ENDIF
 !
 11    FORMAT(' ARRET DANS TELEMAC-3D, NOMBRE D''ITERATIONS DEMANDE NUL')
@@ -789,29 +830,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      CALL OS ( 'X=Y     ' , X=UC, Y=U )
-      CALL OS ( 'X=Y     ' , X=VC, Y=V )
-!
-      IF (NTRAC.NE.0) CALL OS ('X=Y     ', X=TAC, Y=TA )
-!
-! THE SAME FOR K AND EPSILON
-!
-      IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
-        CALL OS ( 'X=Y     ', X=AKC, Y=AK )
-        CALL OS ( 'X=Y     ', X=EPC, Y=EP )
-      ENDIF
-!
 ! INITIALISES THE HORIZONTAL VELOCITY AFTER DIFFUSION
 ! IN ORDER TO ACCELERATE THE SOLVER CONVERGENCE
 !
-      CALL OS ( 'X=Y     ', X=UD, Y=U)
-      CALL OS ( 'X=Y     ', X=VD, Y=V)
+      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(22).NE.1)) THEN
+        CALL OS ( 'X=Y     ', X=UD, Y=U)
+      ENDIF
+      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(23).NE.1)) THEN
+        CALL OS ( 'X=Y     ', X=VD, Y=V)
+      ENDIF
 !
 ! INITIALISES THE FREE SURFACE AND DIFFERENT VERTICAL VELOCITIES
 !
       IF(NONHYD) THEN
-        CALL OS ( 'X=Y     ', X=WC,  Y=W  )
-        CALL OS ( 'X=Y     ', X=WD,  Y=W  )
+        IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(24).NE.1)) THEN
+          CALL OS ( 'X=Y     ', X=WD,  Y=W  )
+        ENDIF
       ENDIF
 !
 ! SOURCE TERMS : FINDS LOCATION OF SOURCES (USED IN PRECON HEREAFTER)
@@ -827,12 +861,95 @@
 !
       ENDIF
 !
-!-----------------------------------------------------------------------
+!=======================================================================
+!     PREPARATION OF ADVECTION FOR THE FIRST TIME STEP 
+!=======================================================================
 !
-!     INITIALISING WSCONV
-!     ADDED BY JMH ON 19/12/2000
-!     WSCONV WAS NOT INITIALISED BEFORE GOING INTO SOLVE IN TRIDW2
+!     WSCONV IS NOT INITIALISED BEFORE GOING INTO TRIDW2
       CALL OS('X=0     ',X=WSCONV)
+!
+      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(14).NE.1)) THEN
+        CALL OS('X=Y     ',X=UCONV,Y=U)
+      ENDIF
+      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(15).NE.1)) THEN
+        CALL OS('X=Y     ',X=VCONV,Y=V)
+      ENDIF
+!     USED ONLY FOR TRIDW3 IN PRECON
+      IF(NONHYD) THEN
+        IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(16).NE.1)) THEN
+          CALL OS('X=Y     ',X=WCONV,Y=W)
+        ENDIF
+      ENDIF
+!
+      IF(.NOT.DEBU.AND.TROUVE(19).EQ.1) THEN
+!       DH AND HN HAVE BEEN RECOVERED
+!       OLD Z TEMPORARILY REDONE IN T3_01
+        CALL OV('X=Y     ',T3_01%R(1:NPOIN2),Z(1:NPOIN2),
+     &          Z(1:NPOIN2),0.D0,NPOIN2)
+        CALL CALCOT(T3_01%R,HN%R)
+!       COMPUTING ZFLATS WITH THE OLD Z IN T3_01
+        CALL FSGRAD(GRADZS,ZFLATS,T3_01%R(NPOIN3-NPOIN2+1:NPOIN3),
+     &              ZF,IELM2H,MESH2D,MSK,MASKEL,
+     &              UNSV2D,T2_01,NPOIN2,OPTBAN,SVIDE)
+!       COMPUTING OLD ZCONV AND GRAZCO
+        CALL MAKE_ZCONV(ZCONV,GRAZCO,ZFLATS,DH,HN,ZF,
+     &                  TETAZCOMP,TETAH,
+     &                  NELEM2,OPTBAN,MESH2D%IKLE%I,MESH2D)     
+!       RESETTING NEW ZFLATS AND GRADZS
+        CALL FSGRAD(GRADZS,ZFLATS,Z(NPOIN3-NPOIN2+1:NPOIN3),
+     &              ZF,IELM2H,MESH2D,MSK,MASKEL,
+     &              UNSV2D,T2_01,NPOIN2,OPTBAN,SVIDE)     
+      ELSE
+        CALL OS('X=0     ',X=DH)
+        CALL OS('X=0     ',X=ZCONV)
+        CALL OS('X=0     ',X=GRAZCO)     
+      ENDIF
+!
+      IF(N_ADV(ADV_CAR).GT.0) THEN
+        IF(DEBU.OR.TROUVE(20).NE.1.OR.TROUVE(21).NE.1) THEN
+          CALL OS('X=Y     ',X=UCONVC,Y=U)
+          CALL OS('X=Y     ',X=VCONVC,Y=V)
+        ENDIF
+      ENDIF
+!
+      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(18).NE.1)) THEN
+        CALL OS('X=0     ',X=DM1)
+      ENDIF
+!     
+!     INITIALISING SOURCES AND SMH 
+      CALL OS ('X=0     ',X=SMH)
+!     SOURCES : COMPUTATION OF INITIAL INPUTS WHEN VARYING IN TIME
+      IF(NSCE.GT.0) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPELS DE T3D_DEBSCE' 
+        DO I=1,NSCE
+          QSCE2(I)=T3D_DEBSCE(AT,I,QSCE)
+        ENDDO
+        IF(DEBUG.GT.0) WRITE(LU,*) 'FIN DES APPELS DE T3D_DEBSCE'
+        IF(NTRAC.GT.0) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPELS DE T3D_TRSCE'          
+          DO I=1,NSCE
+            DO ITRAC=1,NTRAC            
+              TA_SCE%ADR(ITRAC)%P%R(I)=T3D_TRSCE(AT,I,ITRAC)
+            ENDDO
+          ENDDO
+          IF(DEBUG.GT.0) WRITE(LU,*) 'FIN DES APPELS DE T3D_TRSCE'
+        ENDIF
+      ENDIF
+      IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE SOURCES_SINKS'  
+      CALL SOURCES_SINKS
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOURCES_SINKS'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE PRECON'
+!
+      CALL PRECON(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DU PREMIER APPEL DE PRECON' 
+!
+!     NOW SETTING VOLUN=VOLU (IN CASE OF COMPUTATION CONTINUED IT HAS
+!     BEEN RETRIEVED FROM THE PREVIOUS COMPUTATION)
+!
+      IF(.NOT.DEBU.AND.TROUVE(17).EQ.1) THEN
+        CALL OS('X=Y     ',X=VOLUN,Y=VOLU)
+      ENDIF
 !
 !=======================================================================
 !     COUPLING WITH SISYPHE
@@ -937,10 +1054,8 @@
       ENDIF
 !
 !=======================================================================
-! C. LEQUETTE'S MODIFS FOR COUPLING WITH SISYPHE INSIDE THE TIMELOOP
+! INTERNAL COUPLING WITH SISYPHE
 !=======================================================================
-!
-!     INTERNAL COUPLING WITH SISYPHE
 !
       IF( INCLUS(COUPLING,'SISYPHE')   .AND.
      &   (PERCOU_SIS*(LT/PERCOU_SIS).EQ.LT.OR.LT.EQ.1) ) THEN
@@ -1369,11 +1484,11 @@
 !
       SCHCVI_HOR = SCHCVI
       SCHCVI_VER = SCHCVI
-!     ADVECTION IS NOT DONE AT THE FIRST TIME-STEP
-      IF(LT.EQ.1.AND.ISOUSI.EQ.1) THEN
-        SCHCVI_HOR = 0
-        SCHCVI_VER = 0
-      ENDIF
+!     ADVECTION IS NOT DONE AT THE FIRST TIME-STEP (THIS WAS VERSION 6.1)
+!     IF(LT.EQ.1.AND.ISOUSI.EQ.1) THEN
+!       SCHCVI_HOR = 0
+!       SCHCVI_VER = 0
+!     ENDIF
 !
 !     WHEN SCHCVI=ADV_SUP DIFF3D IS CALLED AND
 !     SOURCE TERMS WOULD BE TREATED TWICE
@@ -1745,7 +1860,7 @@
 !
       IF (INFOGR .AND. (.NOT.NONHYD)) CALL MITTIT(9,AT,LT)
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRECON'
-      CALL PRECON(W,WS,ZPROP,ISOUSI,LT)
+      CALL PRECON(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRECON'
 !
 !-----------------------------------------------------------------------
@@ -2010,7 +2125,7 @@
 !
 !     CALLED IF OUTPUTS REQUESTED
 !
-      IF (MOD(LT,GRAPRD).EQ.0.AND.LT.GE.GRADEB) THEN
+      IF(MOD(LT,GRAPRD).EQ.0.AND.LT.GE.GRADEB) THEN
 !
 ! 3D OUTPUT
 !
@@ -2018,6 +2133,16 @@
      &                 HIST,0,NPOIN3,T3D_FILES(T3DRES)%LU,BINRES,AT,LT,
      &                 LISPRD,GRAPRD,
      &                 SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
+!
+! 3D OUTPUT FOR RESTART
+!
+      IF(LT.EQ.NIT.AND.RESTART_MODE
+     &            .AND.T3D_FILES(T3DRST)%NAME(1:1).NE.' ') THEN
+        CALL BIEF_DESIMP(T3D_FILES(T3DRST)%FMT,VARSO3,HIST,0,NPOIN3,
+     &                   T3D_FILES(T3DRST)%LU,BINRES,AT,LT,
+     &                   1,NIT,
+     &                   SOREST,SORIS3,MAXVA3,TEXT3,1,NIT)
+      ENDIF
 !
 ! 2D OUTPUT
 !

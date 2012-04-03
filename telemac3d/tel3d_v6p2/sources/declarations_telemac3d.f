@@ -480,17 +480,21 @@
 !     TIME-STEPS FOR INITIAL AND FINAL RELEASE OF FLOATING BODIES
 !
       TYPE(BIEF_OBJ), TARGET :: DEBFLO,FINFLO
-!> @brief
-C numeros des elements 2dh, au pied des courbes caracteristiques, dans lesquels se trouve a cet instant chacun des flotteurs
+!
+!     STARTING ELEMENTS OF FLOATING BODIES FOR CHARACTERISTICS
+!
       TYPE(BIEF_OBJ), TARGET :: ELTFLO
-!> @brief
-C numeros des plans, au pied des courbes caracteristiques, dans lesquels se trouve a cet instant chacun des flotteurs
+!
+!     STARTING LEVEL OF FLOATING BODIES FOR CHARACTERISTICS
+! 
       TYPE(BIEF_OBJ), TARGET :: ETAFLO
-!> @brief
-C table de connectivite bidon utilisee pour la sortie des trajectoires sous forme de maillage
+!
+!     CONNECTIVITY TABLE USED FOR ISSUING TRAJECTORIES IN THE FORM OF A MESH
+!
       TYPE(BIEF_OBJ), TARGET :: IKLFLO
-!> @brief WORKING ARRAY
-C tableau de travail
+!
+!     WORKING ARRAY FOR FLOATING BODIES
+!
       TYPE(BIEF_OBJ), TARGET :: TRAFLO
 !
 !     TYPE OF BOUNDARY CONDITIONS ON DEPTH (AND VALUE OF USER SAVED IF THOMPSON)
@@ -513,36 +517,36 @@ C tableau de travail
 !
       TYPE(BIEF_OBJ), TARGET :: SEM2D
 !
-!     ELEMENT-ORIENTED WORKING ARRAY
+!     ELEMENT-ORIENTED WORKING ARRAYS
 !
-      TYPE(BIEF_OBJ), TARGET :: TE1
-!> @brief ELEMENT-ORIENTED WORKING ARRAY
-C tableau de travail par element 2d
-      TYPE(BIEF_OBJ), TARGET :: TE2
-!> @brief ELEMENT-ORIENTED WORKING ARRAY
-C tableau de travail par element 2d
-      TYPE(BIEF_OBJ), TARGET :: TE3
-!> @brief PIECE-WISE LINEAR FREE SURFACE
-C
+      TYPE(BIEF_OBJ), TARGET :: TE1,TE2,TE3
+!
+!     PIECE-WISE LINEAR FREE SURFACE
+!
       TYPE(BIEF_OBJ), TARGET :: ZFLATS
-!> @brief VOID VECTOR STRUCTURE
-C structure vide
+!
+!     VOID VECTOR STRUCTURE
+!
       TYPE(BIEF_OBJ), TARGET :: SVIDE
 !
 !     RIGHT HAND SIDE OF CONTINUITY EQUATION WHEN SOURCES
 !
       TYPE(BIEF_OBJ), TARGET :: SOURCES
-!> @brief
-C vitesse de chute du sediment
+!
+!     SETTLING VELOCITY
+!
       TYPE(BIEF_OBJ), TARGET :: WCHU
-!> @brief THICKNESS OF SOLID FRACTION OF THE BED LAYER ( EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS )
-C epaisseurs des mailles discretisant le lit ( epai=dz/(1+ivide) )
+!
+!     THICKNESS OF SOLID FRACTION OF THE BED LAYER ( EPAI=DZ/(1+IVIDE), DZ BED LAYER THICKNESS )
+!
       TYPE(BIEF_OBJ), TARGET :: EPAI
-!> @brief VOID RATIO (GIBSON MODEL ONLY)
-C indice des vides aux points du maillage (modele de gibson)
+!
+!     VOID RATIO (GIBSON MODEL ONLY)
+!
       TYPE(BIEF_OBJ), TARGET :: IVIDE
-!> @brief TIME COUNTER FOR CONSOLIDATION MODEL (MULTILAYER MODEL)
-C compteur de temps (modele multi-couches)
+!
+!     TIME COUNTER FOR CONSOLIDATION MODEL (MULTILAYER MODEL)
+!
       TYPE(BIEF_OBJ), TARGET :: TEMP
 !
 !     CONCENTRATION OF MUD BED LAYER (MULTILAYER MODEL)
@@ -552,8 +556,9 @@ C compteur de temps (modele multi-couches)
 !     THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
 !
       TYPE(BIEF_OBJ), TARGET :: HDEP
-!> @brief EROSION FLUX
-C flux d'erosion en chaque point 2d
+!
+!     EROSION FLUX
+!
       TYPE(BIEF_OBJ), TARGET :: FLUER
 !
 !     PROBABILITY OF DEPOSIT
@@ -617,72 +622,93 @@ C flux d'erosion en chaque point 2d
 ! (3) BLOCKS
 !-----------------------------------------------------------------------
 !
-!> @brief
-C traceurs au pas precedent
+!
+!     TRACERS AT PREVIOUS TIME STEP
+!
       TYPE(BIEF_OBJ), TARGET :: TAN
-!> @brief
-C
+!
+!     TRACERS AFTER ADVECTION
+!
       TYPE(BIEF_OBJ), TARGET :: TAC
-!> @brief CONCENTRATION OF TRACERS
-C traceurs au pas en cours
+!
+!     TRACERS AT CURRENT TIME STEP
+!
       TYPE(BIEF_OBJ), TARGET :: TA
 !
 !     EXPLICIT SOURCE TERM FOR TRACERS
 !
       TYPE(BIEF_OBJ), TARGET :: S0TA
-!> @brief
-C terme source explicite, implicite pour les traceurs
+!
+!     IMPLICIT SOURCE TERM FOR TRACERS
+!
       TYPE(BIEF_OBJ), TARGET :: S1TA
-!> @brief PRESCRIBED TRACERS ON THE BOTTOM
-C
+!
+!     PRESCRIBED TRACERS ON THE BOTTOM
+!
       TYPE(BIEF_OBJ), TARGET :: TABORF
-!> @brief PRESCRIBED TRACERS ON THE LATERAL BOUNDARY
-C
+!
+!     PRESCRIBED TRACERS ON THE LATERAL BOUNDARY
+!
       TYPE(BIEF_OBJ), TARGET :: TABORL
-!> @brief PRESCRIBED TRACERS AT THE FREE SURFACE
-C
+!
+!     PRESCRIBED TRACERS AT THE FREE SURFACE
+!
       TYPE(BIEF_OBJ), TARGET :: TABORS
-!> @brief LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
-C loi log sur traceurs : atabo*ta + btabo, au fond
+!
+!     LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
+!
       TYPE(BIEF_OBJ), TARGET :: ATABOF
-!> @brief LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
-C loi log sur traceurs : atabo*ta + btabo, au fond
+!
+!     LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
+!
       TYPE(BIEF_OBJ), TARGET :: BTABOF
-!> @brief LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
-C loi log sur traceurs : atabo*ta + btabo, sur les parois laterales
+!
+!     LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
+!
       TYPE(BIEF_OBJ), TARGET :: ATABOL
-!> @brief LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
-C loi log sur traceurs : atabo*ta + btabo, sur les parois laterales
+!
+!     LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
+!
       TYPE(BIEF_OBJ), TARGET :: BTABOL
-!> @brief LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
-C loi log sur traceurs : atabo*ta + btabo, en surface
+!
+!     LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
+!
       TYPE(BIEF_OBJ), TARGET :: ATABOS
-!> @brief LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
-C loi log sur traceurs : atabo*ta + btabo, en surface
+!
+!     LOGARITHMIC LAW FOR TRACERS: NU*DTA/DN = ATABO*TA + BTABO
+!
       TYPE(BIEF_OBJ), TARGET :: BTABOS
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR TRACERS ON THE BOTTOM
-C type de conditions aux limites sur traceurs au fond
+!
+!     TYPES OF BOUNDARY CONDITIONS FOR TRACERS ON THE BOTTOM
+!
       TYPE(BIEF_OBJ), TARGET :: LITABF
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR TRACERS ON THE LATERAL BOUNDARY
-C type de conditions aux limites sur traceurs sur les parois laterales
+!
+!     TYPES OF BOUNDARY CONDITIONS FOR TRACERS ON THE LATERAL BOUNDARY
+!
       TYPE(BIEF_OBJ), TARGET :: LITABL
-!> @brief TYPES OF BOUNDARY CONDITIONS FOR TRACERS AT THE FREE SURFACE
-C type de conditions aux limites sur traceurs en surface
+!
+!     TYPES OF BOUNDARY CONDITIONS FOR TRACERS AT THE FREE SURFACE
+!
       TYPE(BIEF_OBJ), TARGET :: LITABS
-!> @brief VISCOSITY
-C coefficients de viscosite pour la vitesse
+!
+!     VISCOSITY
+!
       TYPE(BIEF_OBJ), TARGET :: VISCVI
-!> @brief DIFFUSIVITY FOR TRACERS
-C coefficients de viscosite pour les traceurs
+!
+!     DIFFUSIVITY FOR TRACERS
+!
       TYPE(BIEF_OBJ), TARGET :: VISCTA
-!> @brief BOTTOM GRADIENTS
-C
+!
+!     BOTTOM GRADIENTS
+!
       TYPE(BIEF_OBJ), TARGET :: GRADZF
-!> @brief FREE SURFACE GRADIENT (BLOCK OF 2 COMPONENTS)
-C
+!
+!     FREE SURFACE GRADIENT (BLOCK OF 2 COMPONENTS)
+!
       TYPE(BIEF_OBJ), TARGET :: GRADZS
-!> @brief
-C
+!
+!     OLD FREE SURFACE GRADIENT (BLOCK OF 2 COMPONENTS)
+!
       TYPE(BIEF_OBJ), TARGET :: GRADZN
 !
 !     2D MASK, FOR TELEMAC2D COMPATIBILITY
@@ -712,35 +738,42 @@ C
 !     VOID BLOCK FOR CALL COMPATIBILITY
 !
       TYPE(BIEF_OBJ), TARGET :: BVIDE
-C
-C-----------------------------------------------------------------------
-C (4) INTEGERS
-C-----------------------------------------------------------------------
-C KEYWORDS AND PARAMETERS
-C
-!> @brief
-C maximum de points sources
+!
+!-----------------------------------------------------------------------
+! (4) INTEGERS
+!-----------------------------------------------------------------------
+! KEYWORDS AND PARAMETERS
+!
+!     MAXIMUM OF SOURCE POINTS
+!
       INTEGER, PARAMETER :: MAXSCE = 100
-!> @brief
-C maximum de frontieres liquides
+!
+!     MAXIMUM OF LIQUID BOUNDARIES
+!
       INTEGER, PARAMETER :: MAXFRO = 100
-!> @brief
-C maximum number of tracers
+!
+!     MAXIMUM OF TRACERS
+!
       INTEGER, PARAMETER :: MAXTRA = 20
-!> @brief
-C maximum de variables de sortie
+!
+!     MAXIMUM OF OUTPUT VARIABLES
+!
       INTEGER, PARAMETER :: MAXVAR = 100
-!> @brief
-C
+!
+!     MAXIMUM OF OUTPUT VARIABLES FOR 3D
+!
       INTEGER, PARAMETER :: MAXVA3 = 100
-!> @brief NUMBER OF TIME STEPS
-C nombre total de pas de temps
+!
+!     NUMBER OF TIME STEPS
+!
       INTEGER NIT
-!> @brief NUMBER OF HORIZONTAL PLANES
-C nombre de plans horizontaux
+!
+!     NUMBER OF HORIZONTAL PLANES
+!
       INTEGER NPLAN
-!> @brief NUMBER OF TRACERS
-C nombre de traceurs actifs
+!
+!     NUMBER OF TRACERS
+!
       INTEGER NTRAC
 !> @brief
 C
@@ -1080,6 +1113,10 @@ C profils de vitesse sur la verticale
 !
       INTEGER T3DMIG
 !
+!     RESTART FILE
+!
+      INTEGER T3DRST
+!
 !     NUMBER OF VARIABLES TO BE ADVECTED BY A GIVEN SCHEME
 !     AND THEIR LIST IN THE LIST OF ADVECTED VARIABLES
 !     S_ADV: ASSOCIATED ADVECTION SCHEME
@@ -1139,37 +1176,52 @@ C profils de vitesse sur la verticale
 !     IF YES, MASS BALANCE
 !
       LOGICAL BILMAS
-!> @brief
+!
 C
       LOGICAL INFMAS
-!> @brief
-C
+!
+!     IF YES, MESH WITH SIGMA TRANSFORMATION
+!
       LOGICAL SIGMAG
-!> @brief IF YES, HYDROSTATIC INCONSISTENCY FILTER
-C si oui, filtre les inconsistances hydrostatiques
+!
+!     IF YES, HYDROSTATIC INCONSISTENCY FILTER
+!
       LOGICAL INCHYD
-!> @brief
-      LOGICAL SORIMP(MAXVAR), SORG2D(MAXVAR)
-!> @brief
-      LOGICAL SORIM3(MAXVA3), SORG3D(MAXVA3)
-!> @brief IF YES, 2D CONTINUATION
-C si oui, suite 2d
+!
+!     ARRAYS SAYING IF A VARIABLE IS TO BE PRINTED IN RESULTS FILES
+!
+      LOGICAL SORG2D(MAXVAR),SORG3D(MAXVA3),SOREST(MAXVA3)
+!
+!     ARRAYS SAYING IF A VARIABLE IS TO BE PRINTED IN THE LISTING
+!
+      LOGICAL SORIMP(MAXVAR),SORIM3(MAXVA3),SORIS3(MAXVA3)
+! 
+!     IF YES, CONTINUATION FROM A 2D FILE
+!
       LOGICAL SUIT2
-!> @brief IF YES, RAIN OR EVAPORATION
-C si oui, pluie ou evaporation
+!
+!     IF YES, RAIN OR EVAPORATION
+!
       LOGICAL RAIN
-!> @brief IF YES, STABILISED INITIAL CONDITION
-C si oui, consolidation initiale stabilisee
+!
+!     IF YES, STABILISED INITIAL CONDITION
+!
       LOGICAL CONSOL
-!> @brief IF YES, ELEMENTS MASKED BY USER
-C si oui, elements masques par l'utilisateur
+!
+!     IF YES, ELEMENTS MASKED BY USER
+!
       LOGICAL MSKUSE
-!> @brief DIF(I) WILL SAY IF DIFFUSION SOLVER I IS USED FOR AT LEAST ONE OF THE VARIABLES
+!
+!     DIF(I) WILL SAY IF DIFFUSION SOLVER I IS USED FOR AT LEAST ONE OF THE VARIABLES
+!
       LOGICAL DIF(0:2)
-!> @brief
+! 
+!     IF YES, SPHERICAL COORDINATES (NOT IMPLEMENTED)
+!
       LOGICAL SPHERI
-!> @brief IF YES, THERE ARE MASKED ELEMENTS
-C si oui, presence d'elements masques
+!
+!     IF YES, THERE ARE MASKED ELEMENTS
+!
       LOGICAL MSK
 !> @brief
       LOGICAL CLIPH
@@ -1264,9 +1316,13 @@ C si oui, pression dynamique dans l'equation d'onde
 !
       LOGICAL SPILL_MODEL
 !
-!     THOMFR (TRUE IF ONE OF THE VALIUES IN FRTYPE IS 2)
+!     THOMFR (TRUE IF ONE OF THE VALUES IN FRTYPE IS 2)
 !
       LOGICAL THOMFR
+!
+!     RESTART MODE (TO GENERATE A RESTART FILE)
+!
+      LOGICAL RESTART_MODE
 !
 !-----------------------------------------------------------------------
 ! (6) REALS

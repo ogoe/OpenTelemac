@@ -2,7 +2,7 @@
                      SUBROUTINE PRECON
 !                    *****************
 !
-     &(WP,WPS,ZPROPS,ISOUSI,LT)
+     &(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -67,15 +67,34 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
-!| WP             |<->| W VELOCITY
-!| WPS            |<->| W VELOCITY IN TRANSFORMED MESH
-!| ZPROPS         |<->| TRANSFORMED ZPROP, TEMPORARILY PUT IN MESH3D%Z
+!| VOLU           |-->| VOLUMES (INTEGRAL OF BASES) AT NEW TIME STEP
+!| VOLUN          |-->| VOLUMES (INTEGRAL OF BASES) AT OLD TIME STEP
+!| W              |<->| W VELOCITY
+!| WS             |<->| W VELOCITY IN TRANSFORMED MESH
+!| ZPROP          |<->| TRANSFORMED ZPROP, TEMPORARILY PUT IN MESH3D%Z
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_PRECON => PRECON
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D
+      USE DECLARATIONS_TELEMAC3D, ONLY : MESH3D,FLUINT,FLUEXT,
+     &                                   FLUEXTPAR,UCONV,VCONV,T3_01,
+     &                                   T3_02,T3_03,T3_04,T3_05,
+     &                                   NETAGE,NPLAN,Z,OPTSUP,FN3D,
+     &                                   NELEM3,IELM3,IELM2H,IELM2V,
+     &                                   SVIDE,MSK,MASKEL,MASK_3D,
+     &                                   LIHBOR,NPTFR2,DT,MESH2D,GRAPRD,
+     &                                   SIGMAG,T2_01,NPOIN2,NPOIN3,
+     &                                   DM1,GRAZCO,FLBOR,PLUIE,RAIN,
+     &                                   FLODEL,FLOPAR,FLULIM,MTRA1,
+     &                                   N_ADV,BYPASS,WEL,MMURD,MURD_TF,
+     &                                   WSCONV,VOLU2D,NONHYD,GRADEB,
+     &                                   ITURBV,MTRA2,FC3D,IT1,IT2,IT3,
+     &                                   IT4,TRAV3,GRADEB,ZCONV,IKLE2,
+     &                                   UCONVC,VCONVC,OPT_HNEG,WCONV,
+     &                                   ZCHAR,NELEM2,NPLINT,MSUPG,
+     &                                   UNSV2D,NSCE,SOURCES,SEM2D,
+     &      U,GRADZF,SEM3D,DSSUDT,OPTBAN,INFOGR
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -83,13 +102,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: WP,WPS,ZPROPS
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: W,WS,ZPROP
+      TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU,VOLUN
 !
       INTEGER, INTENT(IN) :: ISOUSI,LT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ::I,IS,IP,OPTHNEG,IWS,NSEG3D,IPLAN,OPT_TRID
+      INTEGER ::I,IS,IP,OPTHNEG,IWS,NSEG3D,OPT_TRID
       CHARACTER(LEN=16) FORMUL
       CHARACTER(LEN=8) OPER
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
@@ -99,9 +119,9 @@
 !     MESH MODIFIED TO BE EQUIVALENT TO THE DEPTH USED IN THE 2D
 !     CONTINUITY EQUATION, TO CALL : FLUX3D, VECTOR, MATRIX
 !
-!     ZPROPS IS TEMPORARILY PUT IN MESH3D%Z
+!     ZPROP IS TEMPORARILY PUT IN MESH3D%Z
       SAVEZ=>MESH3D%Z%R
-      MESH3D%Z%R=>ZPROPS%R
+      MESH3D%Z%R=>ZPROP%R
       NSEG3D=MESH3D%NSEG
 !
 !=======================================================================
@@ -136,11 +156,17 @@
       OPT_TRID=2
 !
       IF(OPT_TRID.EQ.2) THEN
-        CALL TRIDW2(WSCONV)
+        CALL TRIDW2(WSCONV,VOLU,VOLUN,SEM2D,FLUINT,FLUEXT,SOURCES,
+     &              NSCE,NETAGE,NPOIN2,DT,UNSV2D,MESH2D)
       ELSEIF(OPT_TRID.EQ.3) THEN
 !       OTHERWISE WCONV DONE IN WAVE_EQUATION
         IF(LT.EQ.0) CALL OS('X=Y     ',X=WCONV,Y=W)
-        CALL TRIDW3(WSCONV,T3_01,T3_02,T3_03,T3_04,T3_05,MTRA1%D,LT)
+        CALL TRIDW3(WSCONV,T3_01,T3_02,T3_03,T3_04,T3_05,MTRA1%D,LT,
+     &              VOLU,VOLUN,U,UCONV,VCONV,WCONV,DT,NPOIN3,SIGMAG,
+     &              OPTBAN,MESH3D,MTRA1,MASKEL,NPOIN2,T2_01,NPLAN,
+     &              FLUEXT,NSCE,SOURCES,RAIN,PLUIE,FLUINT,NETAGE,UNSV2D,
+     &              SVIDE,NELEM2,MSK,N_ADV,VOLU2D,INFOGR,DSSUDT,IELM3,
+     &              DM1,GRAZCO,MESH2D,SEM3D,NELEM3,GRADZF)
       ENDIF
 !
 !=======================================================================
@@ -351,9 +377,9 @@
 !
 !=======================================================================
 !
-!     COMPUTES DELTAZ*WSTAR (IN WPS) AT NODES
+!     COMPUTES DELTAZ*WSTAR (IN WS) AT NODES
 !
-      CALL WSTAR(WPS,WSCONV,Z,NPOIN2,NPLAN)
+      CALL WSTAR(WS,WSCONV,Z,NPOIN2,NPLAN)
 !
 !=======================================================================
 !
@@ -366,7 +392,7 @@
       IF(.NOT.NONHYD) THEN
         IF(((LT/GRAPRD)*GRAPRD.EQ.LT.AND.LT.GE.GRADEB).OR.
      &      (ITURBV.EQ.3.OR.ITURBV.EQ.7)) THEN
-          CALL WSTARW(WP,WSCONV,T3_03%R,T3_04%R,T3_05%R)
+          CALL WSTARW(W,WSCONV,T3_03%R,T3_04%R,T3_05%R)
         ENDIF
       ENDIF
 !
@@ -386,7 +412,7 @@
 !       FN3D%ADR(ADV_CAR)%P IS THE BLOCK OF VARIABLES ADVECTED WITH
 !       SCHEME ADV_CAR (SEE POINT_TELEMAC3D)
 !
-        CALL CHARAC(FN3D,FC3D,FC3D%N,UCONVC,VCONVC,WPS,ZCHAR,
+        CALL CHARAC(FN3D,FC3D,FC3D%N,UCONVC,VCONVC,WS,ZCHAR,
      &              DT,MESH3D%IFABOR,IELM3,NPOIN2,NPLAN,NPLINT,
      &              MSK,MASKEL,MTRA2%X,MTRA2%D,TRAV3,
      &              IT1%I,IT2%I,IT3%I,IT4%I,

@@ -5,7 +5,7 @@
      &(TEXT3,TEXTP3,MNEMO,NTRAC,NAMETRAC)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND GEOMETRY
@@ -31,6 +31,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        02/04/2012
+!+        V6P2
+!+   New variables added
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MNEMO          |<->| MNEMOTECHNIC NAME
@@ -89,6 +95,17 @@
       TEXT3 (11) = 'RELATIVE DENSITY                '
       TEXT3 (12) = 'DYNAMIC PRESSUREPA              '
       TEXT3 (13) = 'HYDROSTATIC PRESPA              '
+      TEXT3 (14) = 'U ADVECTION     M/S             '
+      TEXT3 (15) = 'V ADVECTION     M/S             '
+      TEXT3 (16) = 'W ADVECTION     M/S             '
+      TEXT3 (17) = 'OLD VOLUMES     M3              '
+      TEXT3 (18) = 'DM1                             '
+      TEXT3 (19) = 'DHHN            M               '
+      TEXT3 (20) = 'UCONVC          M/S             '
+      TEXT3 (21) = 'VCONVC          M/S             '
+      TEXT3 (22) = 'UD              M/S             '
+      TEXT3 (23) = 'VD              M/S             '
+      TEXT3 (24) = 'WD              M/S             '
 !
 ! TEXTPR IS USED FOR READING PREVIOUS COMPUTATION FILES.
 ! IN GENERAL TEXTPR=TEXTE BUT YOU CAN FOLLOW UP A COMPUTATION
@@ -108,6 +125,17 @@
       TEXTP3 (11) = 'RELATIVE DENSITY                '
       TEXTP3 (12) = 'DYNAMIC PRESSUREPA              '
       TEXTP3 (13) = 'HYDROSTATIC PRESPA              '
+      TEXTP3 (14) = 'U ADVECTION     M/S             '
+      TEXTP3 (15) = 'V ADVECTION     M/S             '
+      TEXTP3 (16) = 'W ADVECTION     M/S             '
+      TEXTP3 (17) = 'OLD VOLUMES     M3              '
+      TEXTP3 (18) = 'DM1                             '
+      TEXTP3 (19) = 'DHHN            M               '
+      TEXTP3 (20) = 'UCONVC          M/S             '
+      TEXTP3 (21) = 'VCONVC          M/S             '
+      TEXTP3 (22) = 'UD              M/S             '
+      TEXTP3 (23) = 'VD              M/S             '
+      TEXTP3 (24) = 'WD              M/S             '
 !
 !-----------------------------------------------------------------------
 !
@@ -128,6 +156,17 @@
       TEXT3 (11) = 'DENSITE RELATIVE                '
       TEXT3 (12) = 'PRESSION DYNAMIQPA              '
       TEXT3 (13) = 'PRESSION HYDROSTPA              '
+      TEXT3 (14) = 'U CONVECTION    M/S             '
+      TEXT3 (15) = 'V CONVECTION    M/S             '
+      TEXT3 (16) = 'W CONVECTION    M/S             '
+      TEXT3 (17) = 'VOLUMES TEMPS N M3              '
+      TEXT3 (18) = 'DM1                             '
+      TEXT3 (19) = 'DHHN            M               '
+      TEXT3 (20) = 'UCONVC          M/S             '
+      TEXT3 (21) = 'VCONVC          M/S             '
+      TEXT3 (22) = 'UD              M/S             '
+      TEXT3 (23) = 'VD              M/S             '
+      TEXT3 (24) = 'WD              M/S             '
 !
 ! TEXTPR SERT A LA LECTURE DES FICHIERS DE CALCULS PRECEDENTS
 ! A PRIORI TEXTPR=TEXTE MAIS ON PEUT ESSAYER DE FAIRE UNE SUITE
@@ -146,12 +185,23 @@
       TEXTP3 (11) = 'DENSITE RELATIVE                '
       TEXTP3 (12) = 'PRESSION DYNAMIQPA              '
       TEXTP3 (13) = 'PRESSION HYDROSTPA              '
+      TEXTP3 (14) = 'U CONVECTION    M/S             '
+      TEXTP3 (15) = 'V CONVECTION    M/S             '
+      TEXTP3 (16) = 'W CONVECTION    M/S             '
+      TEXTP3 (17) = 'VOLUMES TEMPS N M3              '
+      TEXTP3 (18) = 'DM1                             '
+      TEXTP3 (19) = 'DHHN            M               '
+      TEXTP3 (20) = 'UCONVC          M/S             '
+      TEXTP3 (21) = 'VCONVC          M/S             '
+      TEXTP3 (22) = 'UD              M/S             '
+      TEXTP3 (23) = 'VD              M/S             '
+      TEXTP3 (24) = 'WD              M/S             '
 !
       ENDIF
 !
 ! WHATEVER THE LANGUAGE: TRACERS
 !
-      NEXT = 14
+      NEXT = 25
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
@@ -186,7 +236,6 @@
 !
 !   ALIASES FOR THE VARIABLES IN THE STEERING FILE
 !
-!
       MNEMO(1)   = 'Z       '
       MNEMO(2)   = 'U       '
       MNEMO(3)   = 'V       '
@@ -200,6 +249,17 @@
       MNEMO(11)  = 'RHO     '
       MNEMO(12)  = 'DP      '
       MNEMO(13)  = 'PH      '
+      MNEMO(14)  = 'UCONV   '
+      MNEMO(15)  = 'VCONV   '
+      MNEMO(16)  = 'WCONV   '
+      MNEMO(17)  = 'VOLUN   '
+      MNEMO(18)  = 'DM1     '
+      MNEMO(19)  = 'DHHN    '
+      MNEMO(20)  = 'UCONVC  '
+      MNEMO(21)  = 'VCONVC  '
+      MNEMO(22)  = 'UD      '
+      MNEMO(23)  = 'VD      '
+      MNEMO(24)  = 'WD      '
 !
 !     MNEMO FOR TRACERS IS DONE ABOVE
 !

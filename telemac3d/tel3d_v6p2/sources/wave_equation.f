@@ -53,6 +53,11 @@
 !+
 !+   Call to NUWAVE_P0 modified
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/04/2012
+!+
+!+   Initialization of DH moved to telemac3d.f
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -551,7 +556,8 @@
       IF(IORDRH.EQ.0) THEN
         CALL OS('X=0     ',X=DH)
       ELSEIF(IORDRH.EQ.1) THEN
-        IF(LT.EQ.1.AND.ISOUSI.EQ.1) CALL OS('X=0     ',X=DH)
+!       DONE IN TELEMAC3D.F
+!       IF(LT.EQ.1.AND.ISOUSI.EQ.1) CALL OS('X=0     ',X=DH)
       ELSE
         IF(LNG.EQ.1) WRITE(LU,30) IORDRH
         IF(LNG.EQ.2) WRITE(LU,31) IORDRH
@@ -601,39 +607,12 @@
 !
 !     CALL MATVEC ('X=X+CAY  ',FLINT2,MAT2D%ADR(2)%P,DH,-1.D0,MESH2D)
 !
-!     PREPARES THE PIECE-WISE LINEAR FUNCTION ZCONV
-!    (THE ADVECTING FIELD WILL BE UCONV-GRAV*DT*TETAU*TETAH*GRAD(ZCONV))
+!=======================================================================
+!     PREPARING ZCONV AND GRAZCO
+!=======================================================================
 !
-      DO IELEM=1,NELEM2
-        ZCONV%R(IELEM         )=DH%R(IKLE2%I(IELEM         ))
-        ZCONV%R(IELEM+  NELEM2)=DH%R(IKLE2%I(IELEM+  NELEM2))
-        ZCONV%R(IELEM+2*NELEM2)=DH%R(IKLE2%I(IELEM+2*NELEM2))
-      ENDDO
-      IF(ABS(1.D0-TETAZCOMP).GT.1.D-6) THEN
-        C=(1.D0-TETAZCOMP)/TETAH
-        IF(OPTBAN.EQ.1) THEN
-!         FREE SURFACE PIECE-WISE LINEAR IN ZFLATS
-          CALL OS('X=X+CY  ',X=ZCONV,Y=ZFLATS,C=C)
-        ELSE
-!         FREE SURFACE LINEAR
-          DO IELEM=1,NELEM2
-            I1=IKLE2%I(IELEM         )
-            I2=IKLE2%I(IELEM+  NELEM2)
-            I3=IKLE2%I(IELEM+2*NELEM2)
-            ZCONV%R(IELEM         )=ZCONV%R(IELEM         )+
-     &      C*(HN%R(I1)+ZF%R(I1))
-            ZCONV%R(IELEM+  NELEM2)=ZCONV%R(IELEM+  NELEM2)+
-     &      C*(HN%R(I2)+ZF%R(I2))
-            ZCONV%R(IELEM+2*NELEM2)=ZCONV%R(IELEM+2*NELEM2)+
-     &      C*(HN%R(I3)+ZF%R(I3))
-          ENDDO
-        ENDIF
-      ENDIF
-!
-!     COMPUTING THE GRADIENT OF ZCONV
-!
-      CALL GRAD_ZCONV(GRAZCO%R,ZCONV%R,MESH2D%XEL%R,MESH2D%YEL%R,
-     &                NELEM2,MESH2D%NELMAX)
+      CALL MAKE_ZCONV(ZCONV,GRAZCO,ZFLATS,DH,HN,ZF,TETAZCOMP,TETAH,
+     &                NELEM2,OPTBAN,MESH2D%IKLE%I,MESH2D)
 !
 !=======================================================================
 !     3) COMPUTES NEW VELOCITIES

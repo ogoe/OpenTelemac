@@ -33,6 +33,11 @@
 !+        V6P2
 !+   ADDING MAXIMUM ELEVATION AND ASSOCIATED TIME
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/04/2012
+!+        V6P2
+!+   DH and HN added in a 3D array for a clean restart.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| ITERATION NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -272,8 +277,24 @@
 !=======================================================================
 !
       IF(NONHYD.AND.LEO.AND.SORG3D(12)) THEN
-         CALL PHSTAT(PH%R,DELTAR%R,Z,T3_01%R,T3_02%R,RHO0,GRAV,
-     &               NPOIN3,NPOIN2,NPLAN,PRIVE)
+        CALL PHSTAT(PH%R,DELTAR%R,Z,T3_01%R,T3_02%R,RHO0,GRAV,
+     &              NPOIN3,NPOIN2,NPLAN,PRIVE)
+      ENDIF
+!
+!=======================================================================
+! FOR RESTARTS, STORAGE OF DH AND HN IN A 3D ARRAY
+!=======================================================================
+!
+      IF(LEO.AND.(SORG3D(19).OR.(SOREST(19).AND.LT.EQ.NIT))) THEN
+        DO I=1,NPOIN2
+          T3_01%R(I       )=DH%R(I)
+          T3_01%R(I+NPOIN2)=HN%R(I)
+        ENDDO
+        IF(NPLAN.GT.2) THEN
+          DO I=2*NPOIN2+1,NPLAN*NPOIN2
+            T3_01%R(I)=0.D0
+          ENDDO
+        ENDIF
       ENDIF
 !
 !=======================================================================

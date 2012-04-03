@@ -6,7 +6,7 @@
      & NPOIN2,OPTBAN,S)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FREE SURFACE GRADIENT, TAKING INTO
@@ -41,7 +41,8 @@
 !| S              |-->| EMPTY BIEF_OBJ STRUCTURE
 !| T2_01          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
 !| UNSV2D         |-->| INVERSE OF INTEGRAL OF BASES
-!| Z              |-->| Z COORDINATES OF THE 3D MESH
+!| Z              |-->| LAST PLANE OF THE Z COORDINATES OF THE 3D MESH
+!|                |   | (SEE CALLS TO FSGRAD), SO THE FREE SURFACE.
 !| ZF             |-->| BOTTOM ELEVATION
 !| ZFLATS         |<->| PIECE-WISE LINEAR FREE SURFACE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

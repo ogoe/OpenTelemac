@@ -31,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/04/2012
+!+        V6P2
+!+   New variables for graphic printouts added, for a clean restart.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1320,8 +1325,30 @@ C K-EPSILON MODEL
       CALL ADDBLO(VARSO3,DP)
 ! 13 : HYDROSTATIC PRESSURE
       CALL ADDBLO(VARSO3,PH)
+! 14 : ADVECTION FIELD U
+      CALL ADDBLO(VARSO3,UCONV)
+! 15 : ADVECTION FIELD V
+      CALL ADDBLO(VARSO3,VCONV)
+! 16 : ADVECTION FIELD V
+      CALL ADDBLO(VARSO3,WCONV)
+! 17 : VOLUN
+      CALL ADDBLO(VARSO3,VOLUN)
+! 18 : DM1
+      CALL ADDBLO(VARSO3,DM1)
+! 19 : DH AND HN
+      CALL ADDBLO(VARSO3,T3_01)
+! 20 : UCONVC
+      CALL ADDBLO(VARSO3,UCONVC)
+! 21 : VCONVC
+      CALL ADDBLO(VARSO3,VCONVC)
+! 22 : UD
+      CALL ADDBLO(VARSO3,UD)
+! 23 : VD
+      CALL ADDBLO(VARSO3,VD)
+! 24 : WD
+      CALL ADDBLO(VARSO3,WD)
 !
-!  NEXT = 14
+! NEXT = 25, SEE ALSO NOMVAR_TELEMAC3D AND LECDON_TELEMAC3D: SOREST(24+I)
 !
 ! VARIABLES NUMBER "NEXT" TO "NEXT" + NTRAC - 1
 !

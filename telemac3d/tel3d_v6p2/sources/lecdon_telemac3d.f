@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE USING DAMOCLES.
@@ -35,6 +35,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        02/04/2012
+!+        V6P2
+!+   A clean restart implemented: RESTART_MODE and restart file.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -123,13 +128,13 @@ C END OF VARIABLES FOR DAMOCLES
         DIMEN(4,K) = 0
       ENDDO
 !
-C DO NOT PRINT THE DICTIONARY OUT
+! DO NOT PRINT THE DICTIONARY OUT
 !
       DOC = .FALSE.
 !
 !
 !-----------------------------------------------------------------------
-C     OPENS THE DICTIONARY AND STEERING FILES
+!     OPENS THE DICTIONARY AND STEERING FILES
 !-----------------------------------------------------------------------
 !
       IF(NCAR.GT.0) THEN
@@ -154,24 +159,24 @@ C     OPENS THE DICTIONARY AND STEERING FILES
      &              TROUVE , 2      , 3      , .FALSE. , FILE_DESC )
 !
 !-----------------------------------------------------------------------
-C     CLOSES THE DICTIONARY AND STEERING FILES
+!     CLOSES THE DICTIONARY AND STEERING FILES
 !-----------------------------------------------------------------------
 !
       CLOSE(2)
       CLOSE(3)
-C
-C     DECODES THE SUBMIT STRINGS
-C
+!
+!     DECODES THE SUBMIT STRINGS
+!
       CALL READ_SUBMIT(T3D_FILES,MAXLU_T3D,CODE1,FILE_DESC,300)
-C
-C-----------------------------------------------------------------------
-C
-C     RETRIEVES FILES NUMBERS IN TELEMAC-3D FORTRAN PARAMETERS
-C     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
-C
+!
+!-----------------------------------------------------------------------
+!
+!     RETRIEVES FILES NUMBERS IN TELEMAC-3D FORTRAN PARAMETERS
+!     AT THIS LEVEL LOGICAL UNITS ARE EQUAL TO THE FILE NUMBER
+!
       DO I=1,MAXLU_T3D
         IF(T3D_FILES(I)%TELNAME.EQ.'T3DGEO') THEN
-C         T3DGEO=T3D_FILES(I)%LU  (IS EQUIVALENT)
+!         T3DGEO=T3D_FILES(I)%LU  (IS EQUIVALENT)
           T3DGEO=I
         ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DCLI') THEN
           T3DCLI=I
@@ -233,6 +238,8 @@ C         T3DGEO=T3D_FILES(I)%LU  (IS EQUIVALENT)
           T3DRFO=I
         ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DMIG') THEN
           T3DMIG=I
+        ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DRST') THEN
+          T3DRST=I
         ENDIF
       ENDDO
 !
@@ -721,17 +728,21 @@ C END OF SOGREAH ADDITIONS
           CALL PLANTE(1)
           STOP
         ENDIF
-        MSKUSE    = MOTLOG(ADRESS(3,10))
-        BANDEC    = MOTLOG(ADRESS(3,11))
-        PROLIN    = MOTLOG(ADRESS(3,12))
-        BILMAS    = MOTLOG(ADRESS(3,13))
-        INFMAS    = MOTLOG(ADRESS(3,14))
-        RAIN      = MOTLOG(ADRESS(3,15))
-        INCHYD    = MOTLOG(ADRESS(3,16))
-!       QUABUB    = MOTLOG(ADRESS(3,17))
-        VARSUB    = MOTLOG(ADRESS(3,18))
-        VALID     = MOTLOG(ADRESS(3,19))
-        LISTIN    = MOTLOG(ADRESS(3,61))
+        MSKUSE       = MOTLOG(ADRESS(3,10))
+        BANDEC       = MOTLOG(ADRESS(3,11))
+        PROLIN       = MOTLOG(ADRESS(3,12))
+        BILMAS       = MOTLOG(ADRESS(3,13))
+        INFMAS       = MOTLOG(ADRESS(3,14))
+        RAIN         = MOTLOG(ADRESS(3,15))
+        INCHYD       = MOTLOG(ADRESS(3,16))
+!       QUABUB       = MOTLOG(ADRESS(3,17))
+        VARSUB       = MOTLOG(ADRESS(3,18))
+        VALID        = MOTLOG(ADRESS(3,19))
+        RESTART_MODE = MOTLOG(ADRESS(3,20))
+        TASSE        = MOTLOG(ADRESS(3,51))
+        GIBSON       = MOTLOG(ADRESS(3,52))
+        TURBWC       = MOTLOG(ADRESS(3,53))
+        LISTIN       = MOTLOG(ADRESS(3,61))
 !
 ! NON-HYDROSTATIC
 !
@@ -812,7 +823,7 @@ C END OF SOGREAH ADDITIONS
         T3D_FILES(T3DRES)%FMT = MOTCAR( ADRESS(4,30) )(1:8)
         CALL MAJUS(T3D_FILES(T3DRES)%FMT)
 !       FORMAT OF THE 2D RESULTS FILE
-        T3D_FILES(T3DHYD)%FMT = MOTCAR( ADRESS(4,30) )(1:8)
+        T3D_FILES(T3DHYD)%FMT = MOTCAR( ADRESS(4,28) )(1:8)
         CALL MAJUS(T3D_FILES(T3DHYD)%FMT)
 !       FORMAT OF THE PREVIOUS COMPUTATION RESULTS FILE
         T3D_FILES(T3DPRE)%FMT = MOTCAR( ADRESS(4,31) )(1:8)
@@ -892,6 +903,10 @@ C END OF SOGREAH ADDITIONS
 !       FORMAT OF THE BINARY DATA FILE 1
         T3D_FILES(T3DBI1)%FMT = MOTCAR( ADRESS(4,79) )(1:8)
         CALL MAJUS(T3D_FILES(T3DBI1)%FMT)
+!       RESTART FILE
+        T3D_FILES(T3DRST)%NAME=MOTCAR( ADRESS(4,85 ) )
+!       RESTART FILE FORMAT
+        T3D_FILES(T3DRST)%FMT = MOTCAR( ADRESS(4,84) )(1:8)
 !
 !-----------------------------------------------------------------------
 ! SEDIMENT - EX-LECSED.F
@@ -922,12 +937,7 @@ C END OF SOGREAH ADDITIONS
             TREST(K) = MOTREA(ADRESS(2,62)+K-1)
           ENDDO
         ENDIF
-!
-! LOGICAL
-!
-        TASSE     = MOTLOG(ADRESS(3,51))
-        GIBSON    = MOTLOG(ADRESS(3,52))
-        TURBWC    = MOTLOG(ADRESS(3,53))
+
 !
 ! CHARACTERS
 !
@@ -940,7 +950,7 @@ C END OF SOGREAH ADDITIONS
         CALL MAJUS(BISUIS)
 !
 !-----------------------------------------------------------------------
-C INFORMS THE USER THAT NO LISTING WILL APPEAR
+! INFORMS THE USER THAT NO LISTING WILL APPEAR
 !
       IF(LISTIN) THEN
          IF(LNG.EQ.1) WRITE(LU,103)
@@ -1172,8 +1182,8 @@ C     TO KEEP DHN FREE FOR CALLING CONTIN
 !     OPTION FOR DIFFUSION OF VELOCITY
 !
       OPDVIT = 1
-C     OPTSOU : TREATMENT OF SOURCES, NORMAL (1) OR DIRAC (2)
-C     HERE 2 BECAUSE IT WILL AVOID AN INTEGRATION OF SMH IN PROPAG
+!     OPTSOU : TREATMENT OF SOURCES, NORMAL (1) OR DIRAC (2)
+!     HERE 2 BECAUSE IT WILL AVOID AN INTEGRATION OF SMH IN PROPAG
       OPTSOU = 2
       TETAD  = 1.D0
       SPHERI = .FALSE.
@@ -1195,8 +1205,8 @@ C     HERE 2 BECAUSE IT WILL AVOID AN INTEGRATION OF SMH IN PROPAG
 !
 !-----------------------------------------------------------------------
 !
-C     IF K-E IS SELECTED FOR VERTICAL TURBULENCE
-C     K-E IS MANDATORY FOR HORIZONTAL TURBULENCE (AND REVERSE)
+!     IF K-E IS SELECTED FOR VERTICAL TURBULENCE
+!     K-E IS MANDATORY FOR HORIZONTAL TURBULENCE (AND REVERSE)
 !
       IF(ITURBV.EQ.3.AND.ITURBH.NE.3) THEN
         ITURBH = 3
@@ -1513,13 +1523,76 @@ C     AND NOT REVERSE !!!!!!!!!!!
 !     CALL SORTIE(VARIMP , MNEMO , MAXVAR , SORIMP )
 !     SORIMP NOT USED SO FAR
       DO I=1,MAXVAR
-         SORIMP(I) = .FALSE.
+        SORIMP(I) = .FALSE.
       ENDDO
 !
 !     FOR 3D
 !
       CALL NOMVAR_TELEMAC3D(TEXT3,TEXTP3,MNEM3,NTRAC,NAMETRAC)
       CALL SORTIE(SORT3D , MNEM3 , MAXVA3 , SORG3D )
+!
+!     FOR RESTART FILE
+!
+      DO I=1,MAXVA3
+        SORIS3(I)=.FALSE.
+        SOREST(I)=.FALSE.
+      ENDDO
+!     Z
+      SOREST(1)=.TRUE.
+!     U
+      SOREST(2)=.TRUE.
+!     V
+      SOREST(3)=.TRUE.
+!     W
+      SOREST(4)=.TRUE. 
+!     K AND EPSILON
+      IF(ITURBH.EQ.3.OR.ITURBH.EQ.7) THEN
+        SOREST(8)=.TRUE.
+        SOREST(9)=.TRUE.
+      ENDIF 
+!     NON HYDROSTATIC PRESSURE
+      IF(NONHYD) SOREST(12)=.TRUE.
+!     UCONV,VCONV,WCONV,VOLUN,DM1
+      SOREST(14)=.TRUE.
+      SOREST(15)=.TRUE.
+      SOREST(16)=.TRUE.
+      SOREST(17)=.TRUE.
+      SOREST(18)=.TRUE.
+!     DH AND HN IN A SINGLE 3D ARRAY
+      SOREST(19)=.TRUE.
+      IF(N_ADV(ADV_CAR).GT.0) THEN
+        SOREST(20)=.TRUE.
+        SOREST(21)=.TRUE.
+      ENDIF
+!     UD,VD,WD
+      SOREST(22)=.TRUE.
+      SOREST(23)=.TRUE.
+      SOREST(24)=.TRUE.
+!     TRACERS
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+!         SEE POINT_TELEMAC3D, VARSO3
+          SOREST(24+I)=.TRUE.
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     RESTART FILE
+!
+      IF(RESTART_MODE) THEN
+        IF(T3D_FILES(T3DRST)%NAME.EQ.' ') THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'LE FICHIER POUR SUITE MANQUE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'THE RESTART FILE IS MISSING'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF
+!
 !
 !-----------------------------------------------------------------------
 ! NUMBER OF FLOAT OUTPUTS
@@ -1545,11 +1618,15 @@ C     AND NOT REVERSE !!!!!!!!!!!
 !
 !-----------------------------------------------------------------------
 !
-!     NO DYNAMIC NOR HYDROSTATIC PRESSURE WITHOUT NON-HYDROSTATIC OPTION
+!     VARIABLES WHICH DO NOT EXIST WITHOUT NON-HYDROSTATIC OPTION
 !
       IF(.NOT.NONHYD) THEN
+!       NO DYNAMIC PRESSURE
         SORG3D(12)=.FALSE.
+!       NO HYDROSTATIC PRESSURE
         SORG3D(13)=.FALSE.
+!       NO W ADVECTION
+        SORG3D(16)=.FALSE.
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1838,7 +1915,7 @@ C  CHECKS THE EXISTENCE OF RELEVANT TRACERS FOR THE DENSITY LAW
 !
 !-----------------------------------------------------------------------
 !
-C BUOYANCY IS NOW IMPLICIT IN DIFFUSION JUST MAKE SURE YOU HAVE IT NOW
+! BUOYANCY IS NOW IMPLICIT IN DIFFUSION JUST MAKE SURE YOU HAVE IT NOW
 !
       IF(NTRAC.NE.0.AND..NOT.DIFFUS) THEN
 !

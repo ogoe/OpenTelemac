@@ -2,19 +2,80 @@
                      SUBROUTINE TRIDW3
 !                    *****************
 !
-     &(WSS,FLUVER,SUMFLU,ERROR,PRESSURE,COR_INT,COR_VER,LT)
+     &(WSCONV,FLUVER,SUMFLU,ERROR,PRESSURE,COR_INT,COR_VER,LT,
+     & VOLU,VOLUN,U,UCONV,VCONV,WCONV,DT,NPOIN3,
+     & SIGMAG,OPTBAN,MESH3D,MTRA1,MASKEL,NPOIN2,T2_01,NPLAN,
+     & FLUEXT,NSCE,SOURCES,RAIN,PLUIE,FLUINT,NETAGE,UNSV2D,SVIDE,
+     & NELEM2,MSK,N_ADV,VOLU2D,INFOGR,DSSUDT,IELM3,DM1,
+     & GRAZCO,MESH2D,SEM3D,NELEM3,GRADZF)
 !
 !***********************************************************************
-! TELEMAC3D
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
+!
+!brief    CORRECTS FLUXES AND COMPUTES AN AVERAGED VALUE OF
+!+        H * WSTAR IN A WAY COMPATIBLE WITH THE PSI SCHEME.
+!+        See release notes on Telemac version 6.1, chapter 2.       
+!
+!history  J-M HERVOUET (LNHE)
+!+        27/03/2012
+!+        V6P2
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| WSS            |<--| COMPOSANTE WSTAR DE LA VITESSE A N+1
+!| COR_EXT        |<->| WORK ARRAY, CORRECTION OF FLUEXT
+!| COR_INT        |<->| WORK ARRAY, CORRECTION OF FLUINT
+!| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV).
+!| DSSUDT         |-->| DERIVATIVE IN TIME OF FREE SURFACE
+!| DT             |-->| TIME STEP IN S
+!| ERROR          |<->| WORK ARRAY
+!| FLUINT         |-->| INTERNAL FLUXES
+!| FLUEXT         |-->| EXTERNAL FLUXES
+!| FLUVER         |<->| WORK ARRAY, VERTICAL FLUXES
+!| GRADZF         |-->| GRADIENT OF BOTTOM
+!| GRAZCO         |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
+!|                |   | IS DM1*GRAD(ZCONV). GRAZCO IS GRAD(ZCONV)
+!| IELM3          |-->| TYPE OF ELEMENT IN 3D
+!| INFOGR         |-->| IF YES, PRINTS ON LISTING RESULTS OF SOLVERS
+!| LT             |-->| CURRENT TIME-STEP NUMBER
+!| MASKEL         |-->| MASKING OF ELEMENTS
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MESH2D         |-->| 2D MESH STRUCTURE
+!| MESH3D         |-->| 3D MESH STRUCTURE
+!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| MTRA1          |<->| WORK MATRIX
+!| N_ADV          |-->| NUMBER OF FUNCTIONS TO ADVECT FOR EVERY SCHEME
+!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
+!| NELEM3         |-->| NUMBER OF ELEMENTS IN 3D
+!| NETAGE         |-->| NPLAN-1
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF POINTS IN 3D
+!| NSCE           |-->| NUMBER OF SOURCES
+!| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
+!| PLUIE          |-->| VALUE OF RAIN OR EVAPORATION IN M/S
+!| PRESSURE       |<->| WORK ARRAY, PRESSURE
+!| RAIN           |-->| IF YES ,THERE IS RAIN OR EVAPORATION
+!| SEM3D          |-->| RIGHT-HAND SIDE OF 3D SYSTEM
+!| SIGMAG         |-->| IF YES, GENERALISED SIGMA TRANSFORMATION
+!| SOURCES        |-->| FLUXES OF SOURCES
+!| SUMFLU         |<->| WORK ARRAY, A SUM OF FLUXES
+!| SVIDE          |-->| VOID BIEF_OBJ STRUCTURE
+!| T2_01          |<->| 2D WORK ARRAY
+!| U              |-->| VELOCITY U
+!| UCONV          |-->| ADVECTION VELOCITY ALONG X
+!| UNSV2D         |-->| INVERSE OF INTEGRALS OF 2D TEST FUNCTIONS
+!| VCONV          |-->| ADVECTION VELOCITY ALONG Y
+!| WCONV          |-->| ADVECTION VELOCITY ALONG Z
+!| VOLU           |-->| VOLUMES (INTEGRAL OF BASES) AT NEW TIME STEP
+!| VOLUN          |-->| VOLUMES (INTEGRAL OF BASES) AT OLD TIME STEP
+!| VOLU2D         |-->| INTEGRAL OF 2D TEST FUNCTIONS
+!| WSCONV         |<--| COMPOSANTE WSTAR DE LA VITESSE A N+1
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -22,14 +83,25 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: WSS,FLUVER,SUMFLU,ERROR,PRESSURE
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: COR_INT,COR_VER
+      INTEGER, INTENT(IN)           :: NPOIN2,NPOIN3,IELM3,NELEM3,NETAGE
+      INTEGER, INTENT(IN)           :: NPLAN,NSCE,OPTBAN,N_ADV(0:15)
+      INTEGER, INTENT(IN)           :: NELEM2
+      LOGICAL, INTENT(IN)           :: RAIN,MSK,INFOGR,SIGMAG
+      DOUBLE PRECISION, INTENT(IN)  :: DT
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: WSCONV,FLUVER,SUMFLU,ERROR,FLUINT
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: PRESSURE,MTRA1,SEM3D,UCONV
+      TYPE(BIEF_OBJ), INTENT(IN)    :: U,VCONV,WCONV,MASKEL
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: COR_INT,COR_VER,T2_01
+      TYPE(BIEF_OBJ), INTENT(IN)    :: VOLU,VOLUN,FLUEXT,SOURCES,DSSUDT
+      TYPE(BIEF_OBJ), INTENT(IN)    :: DM1,GRAZCO,GRADZF,PLUIE
+      TYPE(BIEF_OBJ), INTENT(IN)    :: UNSV2D,VOLU2D,SVIDE
       INTEGER, INTENT(IN)           :: LT
+      TYPE(BIEF_MESH), INTENT(INOUT):: MESH2D,MESH3D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IETAGE, I,IAD1,IAD2,IAD3,IS,IPLAN,IPOIN2
-      DOUBLE PRECISION :: SURDT,AUX,TETA
+      DOUBLE PRECISION :: SURDT
       CHARACTER(LEN=16) FORMUL
       LOGICAL TESTING
       DATA TESTING/.FALSE./
@@ -213,14 +285,14 @@
 !
       IF(NCSIZE.GT.1) CALL PARCOM(FLUVER,2,MESH3D)
 !
-!     FINDING WSS FOR ADVECTION
+!     FINDING WSCONV FOR ADVECTION
 !
       IAD3=0
 !     DO IETAGE = 1,NETAGE
       DO IETAGE = 1,NETAGE+1
         DO I=1,NPOIN2
           IAD3=IAD3+1
-          WSS%R(IAD3)=-FLUVER%R(IAD3)*UNSV2D%R(I)
+          WSCONV%R(IAD3)=-FLUVER%R(IAD3)*UNSV2D%R(I)
         ENDDO
       ENDDO
 !
@@ -232,19 +304,19 @@
           DO I=1,NPOIN2
             IAD1=IAD1+1
             IAD2=IAD2+1
-            WSS%R(IAD2)=WSS%R(IAD2)+WSS%R(IAD1)
+            WSCONV%R(IAD2)=WSCONV%R(IAD2)+WSCONV%R(IAD1)
           ENDDO
         ENDDO
       ENDIF
 !
-!     CHECKING WSS OF LAST PLANE
+!     CHECKING WSCONV OF LAST PLANE
 !
       IF(TESTING) THEN
         DO I=1,NPOIN2
           T2_01%R(I)=0.D0
         ENDDO
         DO I=1,NPOIN2
-          T2_01%R(I)=T2_01%R(I)+WSS%R((NPLAN-1)*NPOIN2+I)
+          T2_01%R(I)=T2_01%R(I)+WSCONV%R((NPLAN-1)*NPOIN2+I)
         ENDDO
         WRITE(LU,*) 'WSCONV FREE SURFACE=',
      &               P_DOTS(T2_01,T2_01,MESH2D)
@@ -255,15 +327,15 @@
 !                           HOWEVER WSCONV IS MODIFIED AFTER BECAUSE WSTAR
 !                           IS COPIED INTO IT, BUT IN FACT SET TO 0. ALSO)
 !
-!     CALL OV ('X=C     ',WSS%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
-!    &                    WSS%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
-!    &                    WSS%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
+!     CALL OV ('X=C     ',WSCONV%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
+!    &                    WSCONV%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
+!    &                    WSCONV%R((NPLAN-1)*NPOIN2+1:NPLAN*NPOIN2),
 !    &                    0.D0, NPOIN2 )
 !
 !=======================================================================
 !
 ! CONDITIONS DE DIRICHLET SUR LES PAROIS LATERALES
-!     WSS = WSBORL
+!     WSCONV = WSBORL
 !
 !=======================================================================
 ! FORTRAN77:
@@ -285,7 +357,7 @@
 !70      CONTINUE
 !60   CONTINUE
 !
-!     PRINT*,'WSS=',DOTS(WSS,WSS)
+!     PRINT*,'WSCONV=',DOTS(WSS,WSS)
 !
 !-----------------------------------------------------------------------
 !
