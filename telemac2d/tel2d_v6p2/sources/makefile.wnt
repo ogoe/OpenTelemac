@@ -95,7 +95,7 @@ LKLIBPARA     = $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)\bief$(MODE)$(VERSION).
 SRCS= \
 friction_def.f\
 declarations_telemac2d.f  interface_telemac2d.f  \
-m_coupling_estel3d.f \
+m_coupling_estel3d.f tpxo.f okada.f \
 homere_telemac2d.f                     \
 lecdon_telemac2d.f                     \
 akepin.f assignstr.f astro.f  bilan.f  \

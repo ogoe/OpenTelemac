@@ -352,64 +352,68 @@
 !     FLUX OF MASS FOR TRACER
 !
       TYPE(BIEF_OBJ), TARGET :: FLUXTEMP
-!brief
-! flux  traceur frontiere incremente
-      TYPE(BIEF_OBJ), TARGET :: FLUHBOR
-!brief
-! flux bord pour traceur
-      TYPE(BIEF_OBJ), TARGET :: FLUHBTEMP
-!brief
+!
+!     TRACER FLUX AT BOUNDARY, TEMPORARY VALUE
+!
+      TYPE(BIEF_OBJ), TARGET :: FLUHBOR,FLUHBTEMP
+!
+!     ??????
 !
       TYPE(BIEF_OBJ), TARGET :: SECMOU , IFAMAS
-!brief
-! tableau de masquage des points (1: normal; 0:masque)
+!
+!     MASK FOR POINTS (1: normal; 0:masked)
+!
       TYPE(BIEF_OBJ), TARGET :: MASKPT
-!brief
-! tableau de masquage des elements (1: normal; 0:masque)
+!
+!     MASK FOR ELEMENTS (1: normal; 0:masked)
+!
       TYPE(BIEF_OBJ), TARGET :: MASKEL
-!brief LIQUID BOUNDARY NUMBERS
+!
+!     LIQUID BOUNDARY NUMBERS
 !
       TYPE(BIEF_OBJ), TARGET :: NUMLIQ
-!brief MAXIMUM ELEVATIONS
+!
+!     MAXIMUM ELEVATIONS
 !
       TYPE(BIEF_OBJ), TARGET :: MAXZ
-!brief CORRESPONDING TIMES FOR MAXIMUM ELEVATIONS
+!
+!     CORRESPONDING TIMES FOR MAXIMUM ELEVATIONS
 !
       TYPE(BIEF_OBJ), TARGET :: TMAXZ
-!brief MAXIMUM VELOCITIES
+!
+!     MAXIMUM VELOCITIES
 !
       TYPE(BIEF_OBJ), TARGET :: MAXV
-!brief CORRESPONDING TIMES FOR MAXIMUM VELOCITIES
+!
+!     CORRESPONDING TIMES FOR MAXIMUM VELOCITIES
 !
       TYPE(BIEF_OBJ), TARGET :: TMAXV
-!brief FOR STORING ZONE NUMBERS
+!
+!     FOR STORING ZONE NUMBERS
 !
       TYPE(BIEF_OBJ), TARGET :: ZONE
-!brief FOR STORING RESULTS OF FOURIER ANALYSIS
 !
-      TYPE(BIEF_OBJ), TARGET :: AMPL
-!brief FOR STORING RESULTS OF FOURIER ANALYSIS
+!     FOR STORING RESULTS OF FOURIER ANALYSIS (AMPLITUDE AND PHASE)
 !
-      TYPE(BIEF_OBJ), TARGET :: PHAS
-!brief CHESTR FOR BOUNDARY CONDITIONS
+      TYPE(BIEF_OBJ), TARGET :: AMPL,PHAS
+!
+!     FRICTION COEFFICIENT FOR BOUNDARY CONDITIONS
 !
       TYPE(BIEF_OBJ),TARGET :: CHBORD
-!brief FOR DELWAQ
 !
-      TYPE(BIEF_OBJ),TARGET :: UDEL
-!brief FOR DELWAQ
+!     COMPATIBLE COMPONENTS OF VELOCITY FOR DELWAQ
 !
-      TYPE(BIEF_OBJ),TARGET :: VDEL
-!brief FOR DELWAQ
+      TYPE(BIEF_OBJ),TARGET :: UDEL,VDEL
 !
-      TYPE(BIEF_OBJ),TARGET :: DM1
-!brief FOR DELWAQ
+!     VELOCITY WILL BE UCONV + DM1*GRAD(ZCONV)
 !
-      TYPE(BIEF_OBJ),TARGET :: ZCONV
-!brief FOR DELWAQ
+      TYPE(BIEF_OBJ),TARGET :: DM1,ZCONV
+!
+!     COMPATIBLE FLUXES FOR DELWAQ
 !
       TYPE(BIEF_OBJ),TARGET :: FLODEL
-!brief FOR DELWAQ
+!
+!     COEFFICIENTS OF LIMITATION FOR DELWAQ
 !
       TYPE(BIEF_OBJ),TARGET :: FLULIM
 !
@@ -472,46 +476,55 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief
-! matrice de diffusion
+!     DIFFUSION MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: TM1
-!brief BLOCK FOR DIRICHLET VALUES HBOR, UBOR AND VBOR
+!
+!     BLOCK FOR DIRICHLET VALUES HBOR, UBOR AND VBOR
 !
       TYPE(BIEF_OBJ), TARGET :: DIRBOR
-!brief BLOCK OF MASKS
+!
+!     BLOCK OF MASKS
 !
       TYPE(BIEF_OBJ), TARGET :: MASK
-!brief BLOCK OF WORKING ARRAYS
+!
+!     BLOCK OF WORKING ARRAYS
 !
       TYPE(BIEF_OBJ), TARGET :: TB
-!brief BLOCK OF PRIVATE VECTORS
-! tableau de travail prive pour l'utilisateur (defini dans princi)
+!
+!     BLOCK OF PRIVATE VECTORS
+! 
       TYPE(BIEF_OBJ), TARGET :: PRIVE
-!brief BLOCKS OF VARIABLES AT TIME N+1
 !
-      TYPE(BIEF_OBJ), TARGET :: F
-!brief BLOCKS OF VARIABLES AT TIME N
+!     BLOCKS OF VARIABLES AT TIME N+1, AT TIME N
 !
-      TYPE(BIEF_OBJ), TARGET :: FN
-!brief BLOCKS OF VARIABLES AFTER ADVECTION BY CHARACTERISTICS
+      TYPE(BIEF_OBJ), TARGET :: F,FN
+!
+!     BLOCKS OF VARIABLES AFTER ADVECTION BY CHARACTERISTICS
 !
       TYPE(BIEF_OBJ), TARGET :: FTILD
-!brief
+!
+!     BLOCK OF VARIABLES TO BE ADVECTED BY CHARACTERISTICS
 !
       TYPE(BIEF_OBJ), TARGET :: FNCAR
-!brief BLOCKS OF MATRICES FOR LINEAR SYSTEMS
+!
+!     BLOCKS OF MATRICES FOR LINEAR SYSTEMS
 !
       TYPE(BIEF_OBJ), TARGET :: MAT
-!brief BLOCKS OF RIGHT HAND SIDES FOR LINEAR SYSTEMS
+!
+!     BLOCKS OF RIGHT HAND SIDES FOR LINEAR SYSTEMS
 !
       TYPE(BIEF_OBJ), TARGET :: RHS
-!brief BLOCKS OF UNKNOWNS FOR LINEAR SYSTEMS
+!
+!     BLOCKS OF UNKNOWNS FOR LINEAR SYSTEMS
 !
       TYPE(BIEF_OBJ), TARGET :: UNK
-!brief BLOCK OF CLANDESTINE VARIABLES
+!
+!     BLOCK OF CLANDESTINE VARIABLES
 !
       TYPE(BIEF_OBJ), TARGET :: VARCL
-!brief BLOCK OF VARIABLES FOR OUTPUT
+!
+!     BLOCK OF VARIABLES FOR OUTPUT
 !
       TYPE(BIEF_OBJ), TARGET :: VARSOR
 !
@@ -523,23 +536,28 @@
 !
 !       KEY-WORDS AND PARAMETERS
 !
-!brief MAXIMUM NUMBER OF SOURCE POINTS
-! nombre maximum de points sources
+!     MAXIMUM NUMBER OF SOURCE POINTS
+! 
       INTEGER, PARAMETER :: MAXSCE = 100
-!brief MAXIMUM NUMBER OF LIQUID / SOLID BOUNDARIES
+!
+!     MAXIMUM NUMBER OF LIQUID / SOLID BOUNDARIES
 !
       INTEGER, PARAMETER :: MAXFRO = 300
-!brief MAXIMUM NUMBER OF OUTPUT VARIABLES
+!
+!     MAXIMUM NUMBER OF OUTPUT VARIABLES
 !
       INTEGER, PARAMETER :: MAXVAR = 100
-!brief MAXIMUM NUMBER OF TRACERS
+!
+!     MAXIMUM NUMBER OF TRACERS
 !
       INTEGER, PARAMETER :: MAXTRA = 20
-!brief NUMBER OF NODES FOR THE CONTROL SECTIONS (TWO TIMES THE NUMBER OF CONTROL SECTIONS)
+!
+!     NUMBER OF NODES FOR THE CONTROL SECTIONS (TWO TIMES THE NUMBER OF CONTROL SECTIONS)
 !
       INTEGER NCP
-!brief ARRAY CONTAINING THE GLOBAL NUMBER OF POINTS IN THE CONTROL SECTIONS
-! donnees sur les sections de controle
+!
+!     ARRAY CONTAINING THE GLOBAL NUMBER OF POINTS IN THE CONTROL SECTIONS
+! 
       INTEGER, ALLOCATABLE :: CTRLSC(:)
 !
 !     MAXIMUM RANK OF LOGICAL UNITS AS DECLARED IN SUBMIT STRINGS IN THE DICTIONARY
@@ -553,11 +571,13 @@
 !     MAXIMUM NUMBER OF SINGULARITIES
 ! 
       INTEGER, PARAMETER :: NWRMAX = 10
-!brief
-! nombre de points de chaque cote de chaque singularite
+!
+!     NUMBER OF POINTS OF EITHER SIDES OF SINGULARITIES
+!
       INTEGER NPSING(NWRMAX)
-!brief GEOMETRY FILE NUMBER
-! fichier de geometrie
+!
+!     GEOMETRY FILE NUMBER
+! 
       INTEGER T2DGEO
 !
 !     BOUNDARY CONDITIONS FILE NUMBER
@@ -571,35 +591,37 @@
 !     RESULTS FILE NUMBER
 ! 
       INTEGER T2DRES
-!brief BOTTOM TOPOGRAPHY FILE NUMBER
-! fichier des fonds
+!
+!     BOTTOM TOPOGRAPHY FILE NUMBER
+! 
       INTEGER T2DFON
-!brief BINARY DATA FILE 1
-! fichier de donnees binaire 1
-      INTEGER T2DBI1
-!brief BINARY DATA FILE 2
-! fichier de donnees binaire 2
-      INTEGER T2DBI2
-!brief FORMATTED DATA FILE 1
-! fichier de donnees formate 1
-      INTEGER T2DFO1
-!brief FORMATTED DATA FILE 2
-! fichier de donnees formate 2
-      INTEGER T2DFO2
-!brief BINARY RESULTS FILE NUMBER
-! fichier de resultats binaire
+!
+!     BINARY DATA FILE 1,2
+! 
+      INTEGER T2DBI1,T2DBI2
+!
+!     FORMATTED DATA FILE 1,2
+! 
+      INTEGER T2DFO1,T2DFO2
+!
+!     BINARY RESULTS FILE NUMBER
+! 
       INTEGER T2DRBI
-!brief FORMATTED RESULTS FILE NUMBER
-! fichier de resultats formate
+!
+!     FORMATTED RESULTS FILE NUMBER
+! 
       INTEGER T2DRFO
-!brief REFERENCE FILE NUMBER
-! fichier de reference
+!
+!     REFERENCE FILE NUMBER
+! 
       INTEGER T2DREF
-!brief
+!
+!     LIQUID BOUNDARIES FILE NUMBER
 !
       INTEGER T2DIMP
-!brief FRICTION DATA FILE NUMBER
-! fichier de donnees pour le frottement
+!
+!     FRICTION DATA FILE NUMBER
+! 
       INTEGER T2DCOF
 !
 !     DELWAQ FILES NUMBERS
@@ -639,6 +661,10 @@
 ! 
       INTEGER T2DBDD
 !
+!     BINARY TIDAL MODEL DATABASES 1 AND 2 FILE NUMBER
+!
+      INTEGER T2DBB1,T2DBB2
+!
 !     GRAPHIC PRINTOUT PERIOD
 ! 
       INTEGER LEOPRD
@@ -666,26 +692,33 @@
 !     NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES
 !
       INTEGER NSOUI
-!brief NOT USED (PROPAGATION OPTION)
-! non utilise (option de propagation)
+!
+!     NOT USED (PROPAGATION OPTION)
+! 
       INTEGER OPTPRO
-!brief INITIAL GUESS FOR H
-! ordre du tir initial pour h
+!
+!     INITIAL GUESS FOR H
+! 
       INTEGER IORDRH
-!brief INITIAL GUESS FOR U
-! ordre du tir initial pour u
+!
+!     INITIAL GUESS FOR U
+! 
       INTEGER IORDRU
-!brief NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES
-! nombre de sous-iterations pour les non-linearites
+!
+!     NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES
+! 
       INTEGER NSOUSI
-!brief NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS
-! numero du premier pas de temps pour les sorties graphiques
+!
+!     NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS
+! 
       INTEGER PTINIG
-!brief NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS
-! numero du premier pas de temps pour les sorties listing
+!
+!     NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS
+! 
       INTEGER PTINIL
-!brief TURBULENCE MODEL FOR SOLID BOUNDARIES
-! regime de turbulence pour les parois
+!
+!     TURBULENCE MODEL FOR SOLID BOUNDARIES
+! 
       INTEGER LISRUG
 !brief
 ! nombre de frontieres a debit impose
@@ -893,80 +926,106 @@
 !
       INTEGER TIDALTYPE
 !
+!     OPTION FOR TSUNAMI GENERATION
+!
+      INTEGER OPTTSUNAMI
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
 !
 !-----------------------------------------------------------------------
 !
-!brief IF YES, COMPUTATION CONTINUED
-! si oui, suite de calcul
+!     IF YES, COMPUTATION CONTINUED
+! 
       LOGICAL DEBU
-!brief IF YES, LISTING PRINTOUT IS REQUIRED
-! si oui, messages imprimes sur listing
+!
+!     IF YES, LISTING PRINTOUT IS REQUIRED
+! 
       LOGICAL LISTIN
-!brief IF YES, DIFFUSION OF VELOCITY
-! si oui, il faut faire la diffusion de u,v
+!
+!     IF YES, DIFFUSION OF VELOCITY
+! 
       LOGICAL DIFVIT
-!brief IF YES, AIR PRESSURE IS TAKEN INTO ACCOUNT
-! si oui, patmos (pression atmospherique) est rempli
+!
+!     IF YES, AIR PRESSURE IS TAKEN INTO ACCOUNT
+! 
       LOGICAL ATMOS
-!brief IF YES, ADVECTION
-! si oui, convection
+!
+!     IF YES, ADVECTION
+! 
       LOGICAL CONV
-!brief IF YES, ADVECTION OF U AND V (1), H (2), TRACERS (3), K AND EPSILON (4)
-! si oui, convection de u et v (1), h (2), traceurs (3), k et epsilon (4)
+!
+!     IF YES, ADVECTION OF U AND V (1), H (2), TRACERS (3), K AND EPSILON (4)
+! 
       LOGICAL CONVV(4)
-!brief IF YES, DIFFUSION OF TRACERS
-! si oui, il faut faire la diffusion du traceur
+!
+!     IF YES, DIFFUSION OF TRACERS
+! 
       LOGICAL DIFT
-!brief IF YES, CORIOLIS
-! si oui, prise en compte des efforts de coriolis
+!
+!     IF YES, CORIOLIS
+! 
       LOGICAL CORIOL
-!brief IF YES, INFORMATION PRINTED ON LISTING
-! si oui, informations sur le gradient a restituer
+!
+!     IF YES, INFORMATION PRINTED ON LISTING
+! 
       LOGICAL INFOGR
-!brief IF YES, MASS-BALANCE
-! si oui, on fait le bilan de masse
+!
+!     IF YES, MASS-BALANCE
+! 
       LOGICAL BILMAS
-!brief IF YES, H CLIPPING
-! si oui, clipping de h
+!
+!     IF YES, H CLIPPING
+! 
       LOGICAL CLIPH
-!brief IF YES, WIND IS TAKEN INTO ACCOUNT
-! si oui, prise en compte des efforts dus au vent
+!
+!     IF YES, WIND IS TAKEN INTO ACCOUNT
+! 
       LOGICAL VENT
-!brief IF YES, PROPAGATION
-! si oui, propagation
+!
+!     IF YES, PROPAGATION
+! 
       LOGICAL PROPA
-!brief IF YES, SPHERICAL COORDINATES
-! si oui, coordonnees spheriques
+!
+!     IF YES, SPHERICAL COORDINATES
+! 
       LOGICAL SPHERI
-!brief IF YES, LINEARISED PROPAGATION
-! si oui, la propagaton est linearisee
+!
+!     IF YES, LINEARISED PROPAGATION
+! 
       LOGICAL PROLIN
-!brief IF YES, VALIDATION
-! si oui, validation
+!
+!     IF YES, VALIDATION
+! 
       LOGICAL VALID
-!brief
+!
+!     IF YES, VERIFICATION OF LIMITS
 !
       LOGICAL VERLIM
-!brief IF YES, CONTINUITY CORRECTION
-! si oui, correction de continuite sur les points a hauteur imposee (on corrige les vitesses)
+!
+!     IF YES, CONTINUITY CORRECTION
+!  
       LOGICAL CORCON
-!brief IF YES, INITIAL TIME SET TO ZERO
-! si oui, remise a zero du temps
+!
+!     IF YES, INITIAL TIME SET TO ZERO
+! 
       LOGICAL RAZTIM
-!brief IF YES, INFORMATION ABOUT K-EPSILON MODEL PRINTED ON LISTING
-! si oui, informations sur le modele k-epsilon a restituer
+!
+!     IF YES, INFORMATION ABOUT K-EPSILON MODEL PRINTED ON LISTING
+! 
       LOGICAL INFOKE
-!brief
-! si oui, presence d'elements masques
+! 
+!     IF YES, THERE ARE MASKED ELEMENTS
+!
       LOGICAL MSK
-!brief IF YES, STOP WHEN A STEADY STATE IS REACHED
-! si oui, arret quand un etat permanent est atteint
+!
+!     IF YES, STOP WHEN A STEADY STATE IS REACHED
+! 
       LOGICAL STOPER
-!brief IF YES, ELEMENTS MASKED BY USER
-! si oui, elements masques par l'utilisateur
+!
+!     IF YES, ELEMENTS MASKED BY USER
+! 
       LOGICAL MSKUSE
 !brief
 !
@@ -1269,6 +1328,10 @@
 !     RAIN OR EVAPORATION IN MM PER DAY
 !
       DOUBLE PRECISION RAIN_MMPD
+!
+!     PHYSICAL CHARACTERISTICS OF THE TSUNAMI
+!
+      DOUBLE PRECISION COETSUNAMI(10)
 !
 !-----------------------------------------------------------------------
 !

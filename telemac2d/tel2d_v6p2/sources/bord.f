@@ -9,7 +9,7 @@
      & NOMIMP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE BOUNDARY CONDITIONS ARRAYS
@@ -35,6 +35,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        06/12/2011
+!+        V6P2
+!+   Addition of the TPXO tidal model by calling CONDI_TPXO
+!+      (the TPXO model being coded in DECLARATIONS_TPXO)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
@@ -79,6 +85,7 @@
       USE INTERFACE_TELEMAC2D, EX_BORD => BORD
       USE DECLARATIONS_TELEMAC2D, ONLY: STA_DIS_CURVES,PTS_CURVES,QZ,
      &                                  FLUX_BOUNDARIES,MAXFRO,TIDALTYPE
+      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -112,6 +119,7 @@
       DOUBLE PRECISION P_DMIN
       INTEGER  P_IMAX
       EXTERNAL P_IMAX,P_DMIN
+!
       INTRINSIC MAX
 !
 !-----------------------------------------------------------------------
@@ -166,7 +174,11 @@
           HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
           H%R(NBOR(K))=HBOR(K)
         ELSEIF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
-          Z = SL(IFRLIQ,NBOR(K))
+          IF( TIDALTYPE.EQ.8 ) THEN
+             Z = SL_TPXO( NBOR(K),TEMPS )
+          ELSE
+             Z = SL(IFRLIQ,NBOR(K))
+          ENDIF
           HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
           H%R(NBOR(K))=HBOR(K)
 !       ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
@@ -224,8 +236,13 @@
 !       POINTS ON WEIRS HAVE NUMLIQ(K)=0
         IF(NUMLIQ(K).GT.0) THEN
           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
-            UBOR(K,1) = - XNEBOR(K) * VIT(NUMLIQ(K),NBOR(K))
-            VBOR(K,1) = - YNEBOR(K) * VIT(NUMLIQ(K),NBOR(K))
+            IF( TIDALTYPE.EQ.8 ) THEN
+               UBOR(K,1) = VITU_TPXO( NBOR(K),TEMPS )
+               VBOR(K,1) = VITV_TPXO( NBOR(K),TEMPS )
+            ELSE
+               UBOR(K,1) = - XNEBOR(K) * VIT(NUMLIQ(K),NBOR(K))
+               VBOR(K,1) = - YNEBOR(K) * VIT(NUMLIQ(K),NBOR(K))
+            ENDIF
           ELSEIF(PROVEL(NUMLIQ(K)).EQ.2) THEN
             UBOR(K,1) = UBOR(K,2)
             VBOR(K,1) = VBOR(K,2)
@@ -233,6 +250,9 @@
             UBOR(K,1) = - XNEBOR(K) * UBOR(K,2)
             VBOR(K,1) = - YNEBOR(K) * UBOR(K,2)
           ENDIF
+!         U AND V INITIALISED WITH THE IMPOSED VALUES
+          U%R(NBOR(K)) = UBOR(K,1)
+          V%R(NBOR(K)) = VBOR(K,1)
         ENDIF
       ENDIF
 !
@@ -259,7 +279,7 @@
 !
 !     AUTOMATIC TIDAL BOUNDARY CONDITIONS
 !
-      IF(TIDALTYPE.GE.1) CALL TIDAL_MODEL_T2D()
+      IF(TIDALTYPE.GE.1 .AND. TIDALTYPE.LE.7) CALL TIDAL_MODEL_T2D()
 !
 !-----------------------------------------------------------------------
 !
@@ -285,20 +305,20 @@
 !
       IF(NDEBIT.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !
-!         ONE TAKES THE MASK OF LIQUID BOUNDARIES MSK8, WHICH IS
-!         EQUAL TO THE MASK OF THE DISCHARGE IMPOSED ON A DISCHARGE
-!         IMPOSED BOUNDARY. THIS MAKES IT POSSIBLE TO CHANGE A FREE
-!         VELOCITY BOUNDARY TO A DISCHARGE IMPOSED TO A LEVEL IMPOSED
-!         BOUNDARY, IN SPITE OF THE FACT THAT THE MASKS ARE MADE IN
-!         PROPIN BEFORE THE CALL TO BORD
+!       ONE TAKES THE MASK OF LIQUID BOUNDARIES MSK8, WHICH IS
+!       EQUAL TO THE MASK OF THE DISCHARGE IMPOSED ON A DISCHARGE
+!       IMPOSED BOUNDARY. THIS MAKES IT POSSIBLE TO CHANGE A FREE
+!       VELOCITY BOUNDARY TO A DISCHARGE IMPOSED TO A LEVEL IMPOSED
+!       BOUNDARY, IN SPITE OF THE FACT THAT THE MASKS ARE MADE IN
+!       PROPIN BEFORE THE CALL TO BORD
 !
-          IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
-          IF(YADEB(IFRLIQ).EQ.1) THEN
-            CALL DEBIMP(Q(IFRLIQ),UBOR,VBOR,U,V,H,NUMLIQ,
-     &                  IFRLIQ,TRA05,TRA06,
-     &                  NPTFR,MASK%ADR(MSK8)%P%R,MESH,MESH%KP1BOR%I,
-     &                  EQUA)
-          ENDIF
+        IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
+        IF(YADEB(IFRLIQ).EQ.1) THEN
+          CALL DEBIMP(Q(IFRLIQ),UBOR,VBOR,U,V,H,NUMLIQ,
+     &                IFRLIQ,TRA05,TRA06,
+     &                NPTFR,MASK%ADR(MSK8)%P%R,MESH,MESH%KP1BOR%I,
+     &                EQUA)
+        ENDIF
 !
       ENDIF
 !

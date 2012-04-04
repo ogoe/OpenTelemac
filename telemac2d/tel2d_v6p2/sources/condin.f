@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES THE PHYSICAL PARAMETERS H, U, V ETC.
@@ -26,11 +26,21 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        06/12/2011
+!+        V6P2
+!+   Addition of the Tsunami displacement (based on Okada's model)
+!+   by calling CONDI_OKADA and of the TPXO tidal model by calling
+!+   CONDI_TPXO (the TPXO model being coded in module TPXO)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
+      USE TPXO
+      USE OKADA
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -53,8 +63,8 @@
 !
 !   INITIALISES THE VELOCITIES: ZERO VELOCITIES
 !
-      CALL OS( 'X=0     ' , X=U )
-      CALL OS( 'X=0     ' , X=V )
+      CALL OS('X=0     ',X=U)
+      CALL OS('X=0     ',X=V)
 !
 !-----------------------------------------------------------------------
 !
@@ -74,10 +84,22 @@
       ELSEIF(CDTINI(1:17).EQ.'HAUTEUR CONSTANTE'.OR.
      &       CDTINI(1:14).EQ.'CONSTANT DEPTH') THEN
         CALL OS( 'X=C     ' , H , H  , H , HAUTIN )
+      ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
+     &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
+        CALL OS('X=-Y    ',X=H,Y=ZF)
+        STIME_MJD = DATE_MJD( MARDAT(2),MARDAT(3),MARDAT(1) ) +
+     &  MARTIM(1)/24.D0 + MARTIM(2)/1440.D0 + MARTIM(3)/86400.D0
+        CALL ALLBORD_TPXO(MESH,LIHBOR%I,KENT)
+        CALL CONDI_TPXO(NPOIN,X,Y,H%R,U%R,V%R,LAMBD0,PHI0,
+     &                  T2D_FILES,T2DBB1,T2DBB2)
+        CALL OS('X=Y/Z   ',U,U,H,0.D0,2,0.D0,0.1D0)
+        CALL OS('X=Y/Z   ',V,V,H,0.D0,2,0.D0,0.1D0)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
-!  TO BE MODIFIED BY USER
+!
+!  TO BE MODIFIED BY USER IF SPECIAL INITIAL CONDITIONS
+!
         IF(LNG.EQ.1) WRITE(LU,10)
         IF(LNG.EQ.2) WRITE(LU,11)
 10      FORMAT(1X,'CONDIN : AVEC DES CONDITIONS INITIALES PARTICULIERES'
@@ -86,7 +108,9 @@
      &         ,/,'         YOU HAVE TO MODIFY CONDIN')
         CALL PLANTE(1)
         STOP
+!
 !  END OF CODE TO BE MODIFIED BY USER
+!
       ELSE
         IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'CONDIN : CONDITION INITIALE NON PREVUE : ',CDTINI
@@ -100,11 +124,19 @@
 !
 !-----------------------------------------------------------------------
 !
+!   INITIALISES TSUNAMI DISPLACEMENT
+!
+      IF(OPTTSUNAMI.EQ.1) THEN
+        CALL CONDI_OKADA(NPOIN,X,Y,H%R,COETSUNAMI,LAMBD0,PHI0)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
 !   INITIALISES THE TRACERS
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-          CALL OS( 'X=C     ' , X=T%ADR(ITRAC)%P , C=TRAC0(ITRAC) )
+          CALL OS('X=C     ',X=T%ADR(ITRAC)%P,C=TRAC0(ITRAC))
         ENDDO
       ENDIF
 !
@@ -112,7 +144,7 @@
 !
 ! INITIALISES THE VISCOSITY
 !
-      CALL OS( 'X=C     ' , X=VISC , C=PROPNU )
+      CALL OS('X=C     ',X=VISC,C=PROPNU)
 !
 !-----------------------------------------------------------------------
 !
