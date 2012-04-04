@@ -3538,19 +3538,23 @@ MNEMO = 'PROVEL'
 TAILLE = 2 
 CHOIX='1="Profil normal constant"';'2="u et v dans le fichier 
  conlim"';'3="Vitesse normale donnee dans ubor dans le fichier 
- conlim"';'4="vitesse en racine carree de h"' 
+ conlim"';'4="vitesse en racine carree de h"';
+'5="vitesse en racine carree de h, variante"'
 CHOIX1='1="constant normal profile"';'2="u and v given in the 
  conlim file"';'3="normal velocity given in ubor in the conlim 
- file"';'4="velocity proportional to square root of depth"' 
+ file"';'4="velocity proportional to square root of depth"';
+'5="velocity proportional to square root of depth, variant"'
 RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES' 
 RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS' 
 NIVEAU = 1 
 AIDE = '1:profil normal constant  2:u et v donnes dans le fichier conlim 
         3:vitesse normale donnee dans ubor dans le fichier conlim 
-        4:profil en racine de la profondeur' 
+        4:profil en racine de la profondeur
+        5:profil en racine de la profondeur, variante' 
 AIDE1= '1:constant normal profile 2:u and v given in the conlim file 
         3:normal velocity given in ubor in the conlim file 
-        4:sqrt(depth) profile' 
+        4:sqrt(depth) profile
+        5:sqrt(depth) profile, variant' 
                                                                     
 NOM = 'OPTION POUR LA DIFFUSION DES TRACEURS'                               
 NOM1 = 'OPTION FOR THE DIFFUSION OF TRACERS'                               
@@ -4878,6 +4882,97 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
 AIDE  = 'Pour ajouter un apport ou une perte d''eau en surface'
 AIDE1 = 'to add or remove water at the free surface'
+/
+NOM = 'BASE BINAIRE 1 DE DONNEES DE MAREE'
+NOM1 = 'BINARY DATABASE 1 FOR TIDE'
+TYPE = CARACTERE
+INDEX = 86
+MNEMO = 'T2D_FILES(T2DBB1)'
+SUBMIT = 'NBB1-READ-16;T2DBB1;FACUL;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Base de donnees binaire 1 tiree du fichier du modele de maree.
+ Dans le cas des donnees satellitaires de TPXO, ce fichier correspond
+ aux donnees de niveau d''eau, par exemple h_tpxo7.2'
+AIDE1 = 'Binary database 1 extracted from the tidal model file.
+ In the case of the TPXO satellite altimetry model, this file should
+ be for free surface level, for instance h_tpxo7.2'
+
+NOM = 'BASE BINAIRE 2 DE DONNEES DE MAREE'
+NOM1 = 'BINARY DATABASE 2 FOR TIDE'
+TYPE = CARACTERE
+INDEX = 87
+MNEMO = 'T2D_FILES(T2DBB2)'
+SUBMIT = 'NBB2-READ-17;T2DBB2;FACUL;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Base de donnees binaire 2 tiree du fichier du modele de maree.
+ Dans le cas des donnees satellitaires de TPXO, ce fichier correspond
+ aux donnees de vitesse de marrees, par exemple u_tpxo7.2'
+AIDE1 = 'Binary database 2 extracted from the tidal model file.
+ In the case of the TPXO satellite altimetry model, this file should
+ be for tidal velocities, for instance u_tpxo7.2'
+
+NOM = 'OPTION POUR LA GENERATION DE TSUNAMI'
+NOM1 = 'OPTION FOR TSUNAMI GENERATION'
+TYPE = INTEGER
+INDEX = 76
+MNEMO = 'OPTTSUNAMI'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1= 0
+CHOIX=
+'0="Pas de Tsunami"';
+'1="Generation d''un Tsunami sur la base du modele de Okada 1992"'
+CHOIX1=
+'0="No Tsunami"';
+'1="Tsunami generated on the basis of the Okada model 1992"'
+RUBRIQUE = 'PARAMETRES PHYSIQUES, CONDITIONS INITIALES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS, INITIAL CONDITIONS'
+NIVEAU = 1
+AIDE = ''
+/'Option pour la generation de Tsunami.
+/Pour l''instant, seul de modele de Okada est programme.
+/Les parametres physiques du modele chosit sont definis avec
+/PARAMETRES PHYSIQUES DU TSUNAMI.'
+AIDE1= ''
+/'Option for the generation of Tsunami.
+/Only the Okada model 1992 is programmed.
+/The physical characteristics of the chosen Tsunami are set in
+/PHYSICAL CHARACTERISTICS OF THE TSUNAMI.'
+
+NOM = 'PARAMETRES PHYSIQUES DU TSUNAMI'
+NOM1 = 'PHYSICAL CHARACTERISTICS OF THE TSUNAMI'
+TYPE = REEL
+INDEX = 62
+MNEMO = 'COETSUNAMI'
+TAILLE = 10
+DEFAUT = 100.;210000.;75000.;13.6;81.;41.;110.;0.;0.;3.
+DEFAUT1= 100.;210000.;75000.;13.6;81.;41.;110.;0.;0.;3.
+RUBRIQUE = 'PARAMETRES PHYSIQUES, CONDITIONS INITIALES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS, INITIAL CONDITIONS'
+NIVEAU = 1
+AIDE = ''
+/'Parametres physiques du modele de generation de tsunami'
+AIDE1 = ''
+/'Physical characteristics of the chosen Tsunami model:
+/ - the focal depth (HH),
+/ - the fault length (L),
+/ - the fault width (W)
+/ - the dislocation (D),
+/ - the strike direction (TH),
+/ - the dip angle (DL),
+/ - the slip (RD),
+/ - the epicentre latitude (Y0) and
+/ - the epicentre longitude (X0)
+/ - the ellipse ( WxL ) area of influence'
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
@@ -4886,7 +4981,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 36 
+TAILLE = 38 
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -4922,7 +5017,9 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE COMMANDES MIGRHYCAR';
          'FICHIER DES CONSTANTES HARMONIQUES';
          'FICHIER DU MODELE DE MAREE';
-         'BASE DE DONNEES DE MAREE' 
+         'BASE DE DONNEES DE MAREE';
+         'BASE BINAIRE 1 DE DONNEES DE MAREE';
+         'BASE BINAIRE 2 DE DONNEES DE MAREE'
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -4958,7 +5055,9 @@ DEFAUT1 ='STEERING FILE';
          'MIGRHYCAR STEERING FILE';
          'HARMONIC CONSTANTS FILE';
          'TIDAL MODEL FILE';
-         'TIDE DATA BASE' 
+         'TIDE DATA BASE';
+         'BINARY DATABASE 1 FOR TIDE';
+         'BINARY DATABASE 2 FOR TIDE' 
 RUBRIQUE  = 'FICHIERS' 
 RUBRIQUE1 = 'FILES' 
 NIVEAU = 1 
