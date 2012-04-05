@@ -40,6 +40,14 @@
          Addition of the new code "spec" to read and print to screen the core content
          of a TOMAWAC SPECTRAL file.
 """
+"""@history 05/04/2012 -- Sebastien E. Bourban:
+         Addition of the new SELAFIN class to expand on calcs with the crunch.
+         While calcsSELAFIN calculates a time varying variables, crunchSELAFIN
+         calculates variables aggregated over time resulting in one time frame.
+         Examples of calculations already implemented include: SURFACE RANGE ;
+         TIME OF PEAK and SURFACE AT PEAK ; MAXIMUM SPEED ; and
+         RESIDUAL VELOCITIES
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -55,6 +63,7 @@ from parsers.parserSELAFIN import SELAFIN,SELAFINS,putHeaderSLF,appendCoreTimeSL
 from parsers.parserFortran import cleanQuotes
 from parsers.parserLQD import LQD
 from utils.files import moveFile
+from utils.progressbar import ProgressBar
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
 #
@@ -161,10 +170,10 @@ class alterSELAFIN(SELAFIN,chopSELAFIN):
          tfrom,tstep,tstop = times
          chopSELAFIN.updateTIMES(self,tfrom,tstep,tstop)
 
-   def updateTITLE(self,title=None):
+   def alterTITLE(self,title=None):
       if title != None: self.TITLE = ( title + 80*' ' )[0:80]
 
-   def updateDATETIME(self,date=None,time=None):
+   def alterDATETIME(self,date=None,time=None):
       if date != None:
          self.DATETIME[0],self.DATETIME[1],self.DATETIME[2] = int(date[2]),int(date[1]),int(date[0])
          self.IPARAM[9] = 1
@@ -174,7 +183,7 @@ class alterSELAFIN(SELAFIN,chopSELAFIN):
          if len(time) > 2: self.DATETIME[5] = int(time[2])
          self.IPARAM[9] = 1
 
-   def updateVARS(self,vars=None):
+   def alterVARS(self,vars=None):
       if vars != None:
          for vn in vars.split(';'):
             v,n = vn.split('=')
@@ -194,14 +203,14 @@ class alterSELAFIN(SELAFIN,chopSELAFIN):
       x = self.VARUNITS
       self.VARUNITS = self.CLDUNITS; self.CLDUNITS = x
 
-   def updateMESH(self,mX=1,pX=0,mY=1,pY=0):
+   def alterMESH(self,mX=1,pX=0,mY=1,pY=0):
       self.MESHX = mX * self.MESHX + pX
       self.MESHY = mY * self.MESHY + pY
 
-   def updateTIMES(self,mT=1,pT=0):
+   def alterTIMES(self,mT=1,pT=0):
       self.tags['times'] = mT * self.tags['times'] + pT
 
-   def updateVALUES(self,vars=None,mZ=1,pZ=0):
+   def alterVALUES(self,vars=None,mZ=1,pZ=0):
       if vars != None:
          self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(';')
 
@@ -214,11 +223,14 @@ class alterSELAFIN(SELAFIN,chopSELAFIN):
             if v.lower() in self.CLDNAMES[iv].lower(): VARSOR[iv+slf.NBV1] = self.alterZm * VARSOR[iv+slf.NBV1] + self.alterZp
       return VARSOR
 
-class calcsSELAFIN(SELAFIN):
+class calcsSELAFIN(SELAFIN,alterSELAFIN):
 
    def __init__(self,f, times=None,vars=None):
       SELAFIN.__init__(self,f)
       self.calcs = []
+      if times != None:
+         tfrom,tstep,tstop = times
+         alterSELAFIN.updateTIMES(self,tfrom,tstep,tstop)
 
    def calcWaterDepth(self):
       self.VARNAMES.append("WATER DEPTH     ")
@@ -244,6 +256,125 @@ class calcsSELAFIN(SELAFIN):
          vars = self.getVALUES(t)
          appendCoreVarsSLF(self,vars)
          for fct,args in self.calcs: appendCoreVarsSLF(self,fct(vars,args))
+      self.fole.close()
+
+class crunchSELAFIN(SELAFIN,alterSELAFIN):
+
+   def __init__(self,f, times=None,vars=None):
+      SELAFIN.__init__(self,f)
+      self.calcs = []
+      if times != None:
+         tfrom,tstep,tstop = times
+         alterSELAFIN.updateTIMES(self,tfrom,tstep,tstop)
+
+   def calcPeakTimeModuloM2(self):
+      # ~~> Dependancies
+      args = subsetVariablesSLF("FREE SURFACE",self.VARNAMES)[0]
+      # ~~> New variable name
+      calcs = { 'vars':[["TIME OF PEAK    ","H               "],["SURFACE AT PEAK ","M               "]]}
+      # ~~> Initial value for new variable
+      def init(vars,ivars,t0,ti): return [np.zeros(self.NPOIN3,dtype=np.float32),np.zeros(self.NPOIN3,dtype=np.float32)]
+      calcs.update( { 'init':( init, args ) } )
+      # ~~> Calculation for new variable
+      def calc(vars,ivars,t0,ti,vari):
+         for ipoin in range(self.NPOIN3):
+            if vars[ivars[0]][ipoin] > vari[1][ipoin]:
+               vari[0][ipoin] = ( (ti-t0)/3600.0 )%12.42
+               vari[1][ipoin] = vars[ivars[0]][ipoin]
+         return vari
+      calcs.update( { 'calc':( calc, args ) } )
+      # ~~> Conclusion step for new variable
+      def stop(t0,ti,vari): return vari
+      calcs.update( { 'stop':stop } )
+      # ~~> Store
+      self.calcs.append( calcs )
+
+   def calcSurfaceRange(self):
+      # ~~> Dependancies
+      args = subsetVariablesSLF("FREE SURFACE",self.VARNAMES)[0]
+      # ~~> New variable name
+      calcs = { 'vars':[["SURFACE RANGE   ","M               "]]}
+      # ~~> Initial value for new variable
+      def init(vars,ivars,t0,ti): return [np.array(vars[ivars[0]],copy=True),np.array(vars[ivars[0]],copy=True)]
+      calcs.update( { 'init':( init, args ) } )
+      # ~~> Calculation for new variable
+      def calc(vars,ivars,t0,ti,vari): return [np.minimum(vars[ivars[0]],vari[0]),np.maximum(vars[ivars[0]],vari[1])]
+      calcs.update( { 'calc':( calc, args ) } )
+      # ~~> Conclusion step for new variable
+      def stop(t0,ti,vari): return [vari[1]-vari[0]]
+      calcs.update( { 'stop':stop } )
+      # ~~> Store
+      self.calcs.append( calcs )
+
+   def calcResidualVelocity(self):
+      # ~~> Dependancies
+      args = subsetVariablesSLF("VELOCITY U;VELOCITY V",self.VARNAMES)[0]
+      # ~~> New variable name
+      calcs = { 'vars':[["RESIDUAL U      ","M/S             "],["RESIDUAL V      ","M/S             "]]}
+      # ~~> Initial value for new variable
+      def init(vars,ivars,t0,ti): return [np.zeros(self.NPOIN3,dtype=np.float32),np.zeros(self.NPOIN3,dtype=np.float32)]
+      calcs.update( { 'init':( init, args ) } )
+      # ~~> Calculation for new variable
+      def calc(vars,ivars,t0,ti,vari):
+         vari[0] += vars[ivars[0]]
+         vari[1] += vars[ivars[1]]
+         return vari
+      calcs.update( { 'calc':( calc, args ) } )
+      # ~~> Conclusion step for new variable
+      def stop(t0,ti,vari): return vari/(ti-t0)
+      calcs.update( { 'stop':stop } )
+      # ~~> Store
+      self.calcs.append( calcs )
+
+   def calcMaximumSpeed(self):
+      # ~~> Dependancies
+      args = subsetVariablesSLF("VELOCITY U;VELOCITY V",self.VARNAMES)[0]
+      # ~~> New variable name
+      calcs = { 'vars':[["MAXIMUM SPEED   ","M/S             "]]}
+      # ~~> Initial value for new variable
+      def init(vars,ivars,t0,ti): return [np.zeros(self.NPOIN3,dtype=np.float32)]
+      calcs.update( { 'init':( init, args ) } )
+      # ~~> Calculation for new variable
+      def calc(vars,ivars,t0,ti,vari): return [np.maximum(vari[0],np.power( (np.power(vars[ivars[0]],2)+np.power(vars[ivars[1]],2) ),(1.0/2.0) ))]
+      calcs.update( { 'calc':( calc, args ) } )
+      # ~~> Conclusion step for new variable
+      def stop(t0,ti,vari): return vari
+      calcs.update( { 'stop':stop } )
+      # ~~> Store
+      self.calcs.append( calcs )
+
+   def putContent(self,fileName):
+      # ~~> Sweep through time steps, saving "vari"
+      vari = []; initiate = True
+      pbar = ProgressBar(maxval=len(self.tags['times'])).start()
+      t0 = self.tags['times'][0]
+      for t in range(len(self.tags['times'])):
+         vars = self.getVALUES(t)
+         if initiate:
+            for calc,icalc in zip(self.calcs,range(len(self.calcs))):
+               fct,args = calc['init']
+               vari.append(fct(vars,args,t0,self.tags['times'][t]))
+            initiate = False
+         else:
+            for calc,icalc in zip(self.calcs,range(len(self.calcs))):
+               fct,args = calc['calc']
+               vari[icalc] = fct(vars,args,t0,self.tags['times'][t],vari[icalc])
+         pbar.update(t)
+      pbar.finish()
+      # ~~> Header
+      self.fole = open(fileName,'wb')
+      self.NBV1 = 0; self.NBV2 = 0; self.VARNAMES = []; self.VARUNITS = []
+      for calc in self.calcs:
+         for cname,cunit in calc['vars']:
+            self.VARNAMES.append(cname)
+            self.VARUNITS.append(cunit)
+            self.NBV1 += 1
+      putHeaderSLF(self)
+      # ~~> Core
+      appendCoreTimeSLF(self,0)
+      for calc,icalc in zip(self.calcs,range(len(self.calcs))):
+         fct = calc['stop']
+         appendCoreVarsSLF(self,fct(t0,t,vari[icalc]))
       self.fole.close()
 
 class scanSPECTRAL(scanSELAFIN):
@@ -357,6 +488,9 @@ if __name__ == "__main__":
       for slfFile in slfFiles:
 
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         if not path.exists(slfFile):
+            print '\nCould not find the file named: ',slfFile
+            sys.exit()
          print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
@@ -368,12 +502,15 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of SPECTRAL file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if codeName == 'spec':
+   elif codeName == 'spec':
 
       slfFiles = args[1:]
       for slfFile in slfFiles:
 
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         if not path.exists(slfFile):
+            print '\nCould not find the file named: ',slfFile
+            sys.exit()
          print '\n\nScanning ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
@@ -401,6 +538,9 @@ if __name__ == "__main__":
       for slfFile in slfFiles:
 
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         if not path.exists(slfFile):
+            print '\nCould not find the file named: ',slfFile
+            sys.exit()
          print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
@@ -429,20 +569,23 @@ if __name__ == "__main__":
       for slfFile in slfFiles:
 
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         if not path.exists(slfFile):
+            print '\nCould not find the file named: ',slfFile
+            sys.exit()
          print '\n\nAltering ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          vars = options.xvars
          if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
          slf = alterSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), vars  = vars )
-         if options.atitle != None: slf.updateTITLE(options.atitle)
-         if options.areset: slf.updateTIMES(pT=-slf.tags['times'][0])
-         if options.adate != None: slf.updateDATETIME(date=options.adate.split('-'))
-         if options.atime != None: slf.updateDATETIME(time=options.atime.split(':'))
+         if options.atitle != None: slf.alterTITLE(options.atitle)
+         if options.areset: slf.alterTIMES(pT=-slf.tags['times'][0])
+         if options.adate != None: slf.alterDATETIME(date=options.adate.split('-'))
+         if options.atime != None: slf.alterDATETIME(time=options.atime.split(':'))
          if options.aswitch: slf.switchVARS()
-         if options.aname != None: slf.updateVARS( options.aname )
-         slf.updateTIMES( mT=float(options.atm),pT=float(options.atp) )
-         slf.updateMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
-         if options.azname != None: slf.updateVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )
+         if options.aname != None: slf.alterVARS( options.aname )
+         slf.alterTIMES( mT=float(options.atm),pT=float(options.atp) )
+         slf.alterMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
+         if options.azname != None: slf.alterVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )
 
          slf.putContent( outFile )
          
@@ -465,6 +608,9 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       for slfFile in slfFiles:
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         if not path.exists(slfFile):
+            print '\nCould not find the file named: ',slfFile
+            sys.exit()
          slfs.add( slfFile )
 
       slfs.putContent(outFile)
@@ -488,10 +634,12 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       for slfFile in slfFiles:
          slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+         if not path.exists(slfFile):
+            print '\nCould not find the file named: ',slfFile
+            sys.exit()
          slfs.add( slfFile )
 
       slfs.putContent(outFile)
-
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of SAMPLE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -507,6 +655,9 @@ if __name__ == "__main__":
       for nod in args[3].split(): nodList.append(int(nod))
 
       slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+      if not path.exists(slfFile):
+         print '\nCould not find the file named: ',slfFile
+         sys.exit()
       print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       vars = options.xvars
@@ -515,6 +666,42 @@ if __name__ == "__main__":
 
       lqd = LQD( vars=[zip(slf.VARNAMES,slf.VARUNITS),nodList], date=slf.DATETIME, times=slf.tags['times'], series=slf.getSERIES(nodList) )
       lqd.putContent( outFile )
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of SAMPLE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   elif codeName == 'calcs' or codeName == 'crunch':
+      if len(args) < 3:
+         print '\nThe code "calcs" uses a minimum of 3 argumensts, aside from the options\n'
+         parser.print_help()
+         sys.exit()
+
+      slfFile = args[1]
+      outFile = args[2]
+      calcList = args[3].split(';')
+
+      slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
+      if not path.exists(slfFile):
+         print '\nCould not find the file named: ',slfFile
+         sys.exit()
+      print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      if codeName == 'calcs':
+         slf = calcsSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)) )
+         for calc in calcList:
+            if calc.upper() in "WATER DEPTH": slf.calcWaterDepth()
+            if calc.upper() in "KINETIC ENERGY": slf.calcKineticEnergy()
+      elif codeName == 'crunch':
+         slf = crunchSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)) )
+         for calc in calcList:
+            if calc.upper() in "SURFACE RANGE": slf.calcSurfaceRange()
+            if calc.upper() in "MAXIMUM SPEED": slf.calcMaximumSpeed()
+            if calc.upper() in "TIME OF PEAK": slf.calcPeakTimeModuloM2()
+            if calc.upper() in "RESIDUAL U": slf.calcResidualVelocity()
+      slf.alterTIMES( mT=float(options.atm),pT=float(options.atp) )
+      slf.alterMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
+      if options.azname != None: slf.alterVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )
+
+      slf.putContent(outFile)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
