@@ -35,6 +35,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF LIQUID BOUNDARY
 !| N              |-->| GLOBAL NUMBER OF POINT
+!|                |   | IN PARALLEL NUMBER IN THE ORIGINAL MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF

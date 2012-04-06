@@ -42,6 +42,11 @@
 !+   Addition of the TPXO tidal model by calling CONDI_TPXO
 !+      (the TPXO model being coded in DECLARATIONS_TPXO)
 !
+!history  J-M HERVOUET (LNHE)
+!+        06/04/2012
+!+        V6P2
+!+   Original point numbers sent to functions SL, VIT and TR
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
 !| H              |-->| DEPTH AT TIME N
@@ -110,7 +115,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,MSK8,IFRLIQ,YADEB(MAXFRO),IERR,ITRAC,IFR
+      INTEGER K,MSK8,IFRLIQ,YADEB(MAXFRO),IERR,ITRAC,IFR,N
 !
       DOUBLE PRECISION Z,ZMIN(MAXFRO)
 !
@@ -174,10 +179,13 @@
           HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
           H%R(NBOR(K))=HBOR(K)
         ELSEIF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
-          IF( TIDALTYPE.EQ.8 ) THEN
-             Z = SL_TPXO( NBOR(K),TEMPS )
+          N=NBOR(K)
+          IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
+          IF(TIDALTYPE.EQ.8 ) THEN
+!                        JMH: N ??????
+            Z = SL_TPXO( NBOR(K),TEMPS )
           ELSE
-             Z = SL(IFRLIQ,NBOR(K))
+            Z = SL(IFRLIQ,N)
           ENDIF
           HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
           H%R(NBOR(K))=HBOR(K)
@@ -236,12 +244,15 @@
 !       POINTS ON WEIRS HAVE NUMLIQ(K)=0
         IF(NUMLIQ(K).GT.0) THEN
           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
+            N=NBOR(K)
+            IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
             IF( TIDALTYPE.EQ.8 ) THEN
-               UBOR(K,1) = VITU_TPXO( NBOR(K),TEMPS )
-               VBOR(K,1) = VITV_TPXO( NBOR(K),TEMPS )
+!                                     JMH: N ?????
+              UBOR(K,1) = VITU_TPXO( NBOR(K),TEMPS )
+              VBOR(K,1) = VITV_TPXO( NBOR(K),TEMPS )
             ELSE
-               UBOR(K,1) = - XNEBOR(K) * VIT(NUMLIQ(K),NBOR(K))
-               VBOR(K,1) = - YNEBOR(K) * VIT(NUMLIQ(K),NBOR(K))
+              UBOR(K,1) = - XNEBOR(K) * VIT(NUMLIQ(K),N)
+              VBOR(K,1) = - YNEBOR(K) * VIT(NUMLIQ(K),N)
             ENDIF
           ELSEIF(PROVEL(NUMLIQ(K)).EQ.2) THEN
             UBOR(K,1) = UBOR(K,2)
@@ -266,7 +277,9 @@
 !         DECLARED AS A SOLID BOUNDARY AND FOR WHICH
 !         TBOR IS FILLED IN CLHUVT
           IF(NUMLIQ(K).GT.0) THEN
-            Z = TR(NUMLIQ(K),ITRAC,NBOR(K),IERR)
+            N=NBOR(K)
+            IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
+            Z = TR(NUMLIQ(K),ITRAC,N,IERR)
             IF(IERR.EQ.0) TBOR%ADR(ITRAC)%P%R(K) = Z
           ENDIF
         ENDIF

@@ -39,6 +39,7 @@
 !| IERR           |<--| IF 0, OK, IF 1: PROBLEM
 !| ITRAC          |-->| TRACER RANK
 !| N              |-->| GLOBAL NUMBER OF POINT
+!|                |   | IN PARALLEL NUMBER IN THE ORIGINAL MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
