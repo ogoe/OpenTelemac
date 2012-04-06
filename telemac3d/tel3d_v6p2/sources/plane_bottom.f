@@ -2,7 +2,7 @@
                      SUBROUTINE PLANE_BOTTOM
 !                    ***********************
 !
-     &(IPBOT,Z,NPOIN2,NPLAN,SIGMAG,OPTBAN,HN)
+     &(IPBOT,Z,NPOIN2,NPLAN,SIGMAG,OPTBAN)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P1                                   21/08/2010
@@ -33,8 +33,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        04/04/2012
+!+        V6P2
+!+   Argument HN suppressed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| HN             |-->| WATER DEPTH
 !| IPBOT          |<->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
 !| NPLAN          |-->| NUMBER OF HORIZONTAL PLANES
 !| NPOIN2         |-->| NUMBER OF 2D POINTS
@@ -52,7 +56,7 @@
 !
       INTEGER, INTENT(IN)          :: NPOIN2,NPLAN,OPTBAN
       INTEGER, INTENT(INOUT)       :: IPBOT(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN) :: Z(NPOIN2,NPLAN),HN(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN) :: Z(NPOIN2,NPLAN)
       LOGICAL, INTENT(IN)          :: SIGMAG
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

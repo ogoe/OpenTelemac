@@ -204,7 +204,7 @@
           DO IPLAN=IMAX,NPLAN
             I3D = I + (IPLAN-1)*NPOIN2
             DELT=ABS(ZMAX-ZCHSUP)
-            LMN =(0.2*KARMAN*DELT)**2
+            LMN =(0.2D0*KARMAN*DELT)**2
             LM(I3D)=MIN(LM(I3D),LMN)
           ENDDO
         ENDIF

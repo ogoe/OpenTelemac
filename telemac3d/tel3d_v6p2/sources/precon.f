@@ -64,6 +64,11 @@
 !+   Adaptations to tetrahedra. Building FLOPAR only done with ADV_LPO
 !+   advection schemes.
 !
+!history  J-M HERVOUET (LNHE)
+!+        06/04/2012
+!+        V6P2
+!+   Specific treatment for LT=0 suppressed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -109,7 +114,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ::I,IS,IP,OPTHNEG,IWS,NSEG3D,OPT_TRID
+      INTEGER ::I,IS,IP,IWS,NSEG3D,OPT_TRID
       CHARACTER(LEN=16) FORMUL
       CHARACTER(LEN=8) OPER
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
@@ -130,15 +135,12 @@
 !
 !=======================================================================
 !
-      OPTHNEG=OPT_HNEG
-      IF(LT.EQ.0) OPTHNEG=0
-!
       CALL FLUX3D
      & (FLUINT,FLUEXT,FLUEXTPAR,UCONV,VCONV,T3_01,T3_02,T3_03,MESH3D%W,
      &  NETAGE,NPLAN,NELEM3,IELM3,IELM2H,IELM2V,SVIDE,MESH3D,
      &  MSK,MASKEL,MASK_3D,LIHBOR%I,KENT,NPTFR2,DT,VOLU,VOLUN,MESH2D,
      &  GRAPRD,SIGMAG,T2_01,NPOIN2,NPOIN3,DM1,GRAZCO,FLBOR,
-     &  PLUIE,RAIN,FLODEL,FLOPAR,OPTHNEG,FLULIM,
+     &  PLUIE,RAIN,FLODEL,OPT_HNEG,FLULIM,
      &  (N_ADV(ADV_LPO).GT.0.OR.N_ADV(ADV_LPO_TF).GT.0),
      &  LT,BYPASS,N_ADV,WEL)
 !
@@ -304,7 +306,7 @@
      &                                   MESH2D%NSEG,NPLAN)
         ENDIF
 !       FLOPAR = FLODEL ASSEMBLED IN PARALLEL MODE  
-        IF(OPTHNEG.EQ.2) THEN
+        IF(OPT_HNEG.EQ.2) THEN
           IF(NCSIZE.GT.1) THEN
             CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
             CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,

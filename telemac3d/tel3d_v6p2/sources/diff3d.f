@@ -48,6 +48,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J.M. HERVOUET (LNHE)
+!+        V6P2
+!+   Void volumes tested up to free point (which may be also crushed
+!+   in case of tidal flats).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -582,11 +587,12 @@
                   T3_03%R(IPOIN3) = FBORF%R(I2D)
                 ENDDO
               ELSE
-!               POINTS WITH NO VOLUME
-!               NECESSARY TO HAVE A WELL DEFINED LINEAR SYSTEM
-!               NOT A DIRICHLET POINT ON THE BOTTOM
-!               CRUSHED POINTS PROVISIONALLY SET TO FN
-                DO I=0,IPBOT(I2D)-1
+!               POINTS WITH NO VOLUME PROVISIONALLY SET TO FN
+!               TESTED UP TO FIRST FREE POINT (IPBOT+1), 
+!               WHICH SHOULD NOT HAVE VOLUME=0 EXCEPT ON TIDAL
+!               FLATS BECAUSE IN THIS CASE IPBOT=NPLAN-1
+!               DO I=0,IPBOT(I2D)-1
+                DO I=0,IPBOT(I2D)
                   IPOIN3 = I2D+I*NPOIN2
                   IF(T3_02%R(IPOIN3).LT.1.D-10) THEN
                     MTRA2%D%R(IPOIN3)=MESH3D%FAC%R(IPOIN3)
@@ -610,11 +616,12 @@
                   T3_03%R(IPOIN3) = FBORF%R(I2D)
                 ENDDO
               ELSE
-!               POINTS WITH NO VOLUME
-!               NECESSARY TO HAVE A WELL DEFINED LINEAR SYSTEM
-!               NOT A DIRICHLET POINT ON THE BOTTOM
-!               CRUSHED POINTS PROVISIONALLY SET TO FN
-                DO I=0,IPBOT(I2D)-1
+!               POINTS WITH NO VOLUME PROVISIONALLY SET TO FN
+!               TESTED UP TO FIRST FREE POINT (IPBOT+1), 
+!               WHICH SHOULD NOT HAVE VOLUME=0 EXCEPT ON TIDAL
+!               FLATS BECAUSE IN THIS CASE IPBOT=NPLAN-1
+!               DO I=0,IPBOT(I2D)-1
+                DO I=0,IPBOT(I2D)
                   IPOIN3 = I2D+I*NPOIN2
                   IF(VOLU%R(IPOIN3).LT.1.D-10) THEN
                     MTRA2%D%R(IPOIN3)=1.D0
@@ -705,7 +712,7 @@
 !=======================================================================
 !
 !   CRUSHED POINTS AND THEIR FREE POINT ABOVE MUST HAVE THE SAME VALUE
-!   IT IS DONE HERE WITH MASS CONSERVATION : THE VOLUMIC AVERAGE IS
+!   IT IS DONE HERE WITH MASS CONSERVATION: THE VOLUMIC AVERAGE IS
 !   TAKEN. TO AVOID SPURIOUS GRADIENTS... 
 !   HEAVY BUT SAVES TIME IN COMPLEX APPLICATIONS!
 !

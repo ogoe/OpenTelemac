@@ -3,10 +3,10 @@
 !                    *****************
 !
      &(U,V,W,DP,PX,PY,PZ,MSK,MASKEL,MESH3D,S,IELM3,NPLAN,OPTBAN,
-     & UNSV3D,NPOIN3,NPOIN2,SIGMAG,IPBOT)
+     & UNSVOL,DO_UNSVOL,NPOIN3,NPOIN2,SIGMAG,IPBOT,AGGLOH)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FINAL, SOLENOIDAL VELOCITY FIELD (UE, VE, WE)
@@ -47,7 +47,14 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        06/04/2012
+!+        V6P2
+!+   Unsv3d changed into unsvol and recomputed here with Z, not ZPROP
+!+   Accordingly IPBOT is redone before with Z.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DO_UNSVOL      |-->| IF YES, UNSVOL IS COMPUTED, IF NOT, IT IS GIVEN
 !| DP             |-->| HYDRODYNAMIC PRESSURE, TIMESTEP N+1
 !| IELM3          |-->| TYPE OF ELEMENT
 !| IPBOT          |-->| PLANE NUMBER OF LAST CRUSHED PLANE (0 IF NONE)
@@ -67,7 +74,7 @@
 !| S              |-->|
 !| SIGMAG         |-->| LOGICAL FOR GENERALISED SIGMA TRANSFORMATION
 !| U              |<->| COMPONENT OF VELOCITY
-!| UNSV3D         |-->| INVERSE OF VOLUME OF BASIS FUNCTIONS 
+!| UNSVOL         |<->| INVERSE OF VOLUME OF BASIS FUNCTIONS 
 !| V              |<->| COMPONENT OF VELOCITY
 !| W              |<->| COMPONENT OF VELOCITY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -81,12 +88,13 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)            :: IELM3,NPLAN,OPTBAN,NPOIN3,NPOIN2
-      TYPE(BIEF_OBJ),  INTENT(IN)    :: S,DP,UNSV3D
-      TYPE(BIEF_OBJ),  INTENT(INOUT) :: PX,PY,PZ
+      DOUBLE PRECISION, INTENT(IN)   :: AGGLOH
+      TYPE(BIEF_OBJ),  INTENT(IN)    :: S,DP
+      TYPE(BIEF_OBJ),  INTENT(INOUT) :: UNSVOL,PX,PY,PZ
       DOUBLE PRECISION, INTENT(INOUT):: U(NPOIN3),V(NPOIN3),W(NPOIN3)
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D
       INTEGER, INTENT(IN)            :: IPBOT(NPOIN2)
-      LOGICAL, INTENT(IN)            :: MSK,SIGMAG
+      LOGICAL, INTENT(IN)            :: MSK,SIGMAG,DO_UNSVOL
 !
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: MASKEL
 !
@@ -114,6 +122,27 @@
       CALL VECTOR(PZ,'=',FORMUL//'Z',IELM3,1.D0,DP,
      &            S,S,S,S,S,MESH3D,MSK,MASKEL)
 !
+!-----------------------------------------------------------------------
+!
+      IF(DO_UNSVOL) THEN
+        CALL VECTOR(UNSVOL, '=', 'MASBAS          ',IELM3,1.D0-AGGLOH,
+     &              S,S,S,S,S,S,MESH3D,.FALSE.,MASKEL)
+        IF(AGGLOH.GT.1.D-6) THEN
+          CALL VECTOR(UNSVOL, '+', 'MASBAS2         ',IELM3,AGGLOH,
+     &                S,S,S,S,S,S,MESH3D,.FALSE.,MASKEL)
+        ENDIF
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM(UNSVOL,2,MESH3D)
+          CALL OS('X=1/Y   ',X=UNSVOL,Y=UNSVOL,
+     &                                    IOPT=2,INFINI=1.D6,ZERO=1.D-6)
+        ELSE
+          CALL OS('X=1/Y   ',X=UNSVOL,Y=UNSVOL,
+     &            IOPT=2,INFINI=1.D6,ZERO=1.D-6)
+        ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       IF(NCSIZE.GT.1) THEN
         CALL PARCOM (PX, 2, MESH3D)
         CALL PARCOM (PY, 2, MESH3D)
@@ -125,9 +154,9 @@
 !-----------------------------------------------------------------------
 !
       DO I3D=1,NPOIN3
-        U(I3D)=U(I3D)-PX%R(I3D)*UNSV3D%R(I3D)
-        V(I3D)=V(I3D)-PY%R(I3D)*UNSV3D%R(I3D)
-        W(I3D)=W(I3D)-PZ%R(I3D)*UNSV3D%R(I3D)
+        U(I3D)=U(I3D)-PX%R(I3D)*UNSVOL%R(I3D)
+        V(I3D)=V(I3D)-PY%R(I3D)*UNSVOL%R(I3D)
+        W(I3D)=W(I3D)-PZ%R(I3D)*UNSVOL%R(I3D)
       ENDDO
 !
       IF(SIGMAG.OR.OPTBAN.EQ.1) THEN

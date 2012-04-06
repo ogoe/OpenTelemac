@@ -89,7 +89,7 @@
       INTEGER TROUVE(4,NMAX)
       LOGICAL DOC
 !
-C END OF VARIABLES FOR DAMOCLES
+! END OF VARIABLES FOR DAMOCLES
 !-----------------------------------------------------------------------
 !
       INTRINSIC MAX,MOD
@@ -1528,7 +1528,8 @@ C     AND NOT REVERSE !!!!!!!!!!!
 !
 !     FOR 3D
 !
-      CALL NOMVAR_TELEMAC3D(TEXT3,TEXTP3,MNEM3,NTRAC,NAMETRAC)
+      CALL NOMVAR_TELEMAC3D(TEXT3,TEXTP3,MNEM3,NTRAC,NAMETRAC,
+     &                      ADR_TRAC)
       CALL SORTIE(SORT3D , MNEM3 , MAXVA3 , SORG3D )
 !
 !     FOR RESTART FILE
@@ -1571,8 +1572,7 @@ C     AND NOT REVERSE !!!!!!!!!!!
 !     TRACERS
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC
-!         SEE POINT_TELEMAC3D, VARSO3
-          SOREST(24+I)=.TRUE.
+          SOREST(ADR_TRAC+I-1)=.TRUE.
         ENDDO
       ENDIF
 !

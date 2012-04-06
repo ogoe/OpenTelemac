@@ -2,7 +2,7 @@
                      SUBROUTINE NOMVAR_TELEMAC3D
 !                    ***************************
 !
-     &(TEXT3,TEXTP3,MNEMO,NTRAC,NAMETRAC)
+     &(TEXT3,TEXTP3,MNEMO,NTRAC,NAMETRAC,ADR_TRAC)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -39,6 +39,7 @@
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ADR_TRAC       |-->| ADDRESS OF TRACERS IN BLOCK VARSO3
 !| MNEMO          |<->| MNEMOTECHNIC NAME
 !| NAMETRAC       |-->| NAME OF TRACERS
 !| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
@@ -52,7 +53,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NTRAC
+      INTEGER, INTENT(IN) :: NTRAC,ADR_TRAC
 !                        100 = MAXVAR IN DECLARATIONS_TELEMAC3D
       CHARACTER(LEN=32), INTENT(INOUT) :: TEXT3(100),TEXTP3(100)
       CHARACTER(LEN=32), INTENT(IN)    :: NAMETRAC(32)
@@ -201,7 +202,7 @@
 !
 ! WHATEVER THE LANGUAGE: TRACERS
 !
-      NEXT = 25
+      NEXT = ADR_TRAC
 !
       IF(NTRAC.GT.0) THEN
         DO I=1,NTRAC

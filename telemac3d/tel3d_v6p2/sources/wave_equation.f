@@ -434,8 +434,9 @@
 !       APPLIES CORRECTION TO UAUX
         CALL VELRES(UAUX,VAUX,WD%R,DP,
      &              T3_08,T3_09,T3_10,MSK,MASKEL,MESH3D,
-     &              SVIDE,IELM3,NPLAN,OPTBAN,UNSV3D,NPOIN3,NPOIN2,
-     &              SIGMAG,IPBOT%I)
+     &              SVIDE,IELM3,NPLAN,OPTBAN,UNSV3D,.FALSE.,
+     &              NPOIN3,NPOIN2,
+     &              SIGMAG,IPBOT%I,AGGLOH)
 !
       ENDIF
 !
