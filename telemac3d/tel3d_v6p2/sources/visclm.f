@@ -351,6 +351,7 @@
       ELSEIF(MIXING.EQ.4) THEN
 !
         IF(IND_T.GT.0) THEN
+!         NOTE JMH: DOES NOT WORK IN PARALLEL (AND WILL NOT SAY IT)
           CALL LONGMB(TRAV2%R,Z%R,HN%R,NPOIN3,NPOIN2,NPLAN,
      &                U%R,V%R,X%R,Y%R,TRAV5%R,TRAV6%R,
      &                TRAV7%R,NTRAC,TA%ADR(IND_T)%P%R,KARMAN,ZF%R)
@@ -376,6 +377,25 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     LEVEL AVERAGING THE MIXING LENGTH
+!     IT SEEMS THAT MIXING=4 CANNOT WORK WITHOUT THIS
+!
+      IF(MIXING.EQ.4) THEN
+        DO I=1,NPOIN3-NPOIN2
+!         OPTION MOYENNE DE LM**2 (correspond a ce qui etait fait avant)
+          TRAV2%R(I)=(TRAV2%R(I)+TRAV2%R(I+NPOIN2))*0.5D0
+!         OPTION (MOYENNE DE LM)**2
+!         TRAV2%R(I)=((SQRT(TRAV2%R(I))+SQRT(TRAV2%R(I+NPOIN2)))*0.5D0)**2
+!         OPTION MAGIQUE (MOYENNE DES DEUX PRECEDENTES)
+!         TRAV2%R(I)=(5.D0*TRAV2%R(I)+3.D0*TRAV2%R(I+NPOIN2))/8.D0
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
 !
 !-----------------------------------------------------------------------
 !

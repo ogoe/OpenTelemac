@@ -306,14 +306,12 @@
      &                                   MESH2D%NSEG,NPLAN)
         ENDIF
 !       FLOPAR = FLODEL ASSEMBLED IN PARALLEL MODE  
-        IF(OPT_HNEG.EQ.2) THEN
-          IF(NCSIZE.GT.1) THEN
-            CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
-            CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,
-     &                       MESH2D%NSEG,NPLAN,2,1,MESH2D,1,IELM3)
-          ELSE
-            FLOPAR%R=>FLODEL%R
-          ENDIF
+        IF(NCSIZE.GT.1) THEN
+          CALL OS('X=Y     ',X=FLOPAR,Y=FLODEL)
+          CALL PARCOM2_SEG(FLOPAR%R,FLOPAR%R,FLOPAR%R,
+     &                     MESH2D%NSEG,NPLAN,2,1,MESH2D,1,IELM3)
+        ELSE
+          FLOPAR%R=>FLODEL%R
         ENDIF
       ENDIF
 !
