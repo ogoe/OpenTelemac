@@ -37,6 +37,7 @@
 !| ENTET          |-->| IF YES, LISTING PRINTOUTS ALLOWED
 !| I              |-->| NUMBER OF LIQUID BOUNDARY
 !| N              |-->| GLOBAL NUMBER OF POINT
+!|                |   | IN PARALLEL NUMBER OF POINT IN ORIGINAL MESH
 !| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

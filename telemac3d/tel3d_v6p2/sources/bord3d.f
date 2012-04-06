@@ -241,7 +241,9 @@
      &                - ZF%R(IPOIN2)
           HBOR%R(K) = MAX(0.D0,HBOR%R(K))
         ELSEIF(NCOTE.GE.NUMLIQ%I(K)) THEN
-          HBOR%R(K) = SL3(ICOT,AT,IPOIN2,INFOGR)-ZF%R(IPOIN2)
+          N=IPOIN2
+          IF(NCSIZE.GT.1) N=MESH2D%KNOLG%I(N)
+          HBOR%R(K) = SL3(ICOT,AT,N,INFOGR)-ZF%R(IPOIN2)
           HBOR%R(K) = MAX(0.D0,HBOR%R(K))
         ELSE
           IF(LNG.EQ.1) WRITE(LU,100) NUMLIQ%I(K)
@@ -337,16 +339,17 @@
       IF(LIUBOL%I(K).EQ.KENTU.AND.NVIT.NE.0) THEN
         IVIT=NUMLIQ%I(K)
         IF(NVIT.GE.IVIT) THEN
-!
-             DO NP=1,NPLAN
-               IBORD = (NP-1)*NPTFR2+K
-               UBORL%R(IBORD) =
-     &         -MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               VBORL%R(IBORD) =
-     &         -MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,NBOR2%I(K),INFOGR)
-               WBORL%R(IBORD)=0.D0
-             END DO
-!
+          DO NP=1,NPLAN
+            IBORD = (NP-1)*NPTFR2+K
+            IF(NCSIZE.GT.1) THEN
+              N=MESH2D%KNOLG%I(NBOR2%I(K))+(NP-1)*NPOIN2
+            ELSE
+              N=NBOR3%I(IBORD)
+            ENDIF
+            UBORL%R(IBORD)=-MESH2D%XNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
+            VBORL%R(IBORD)=-MESH2D%YNEBOR%R(K)*VIT3(IVIT,AT,N,INFOGR)
+            WBORL%R(IBORD)=0.D0
+          ENDDO
         ELSE
           IF(LNG.EQ.1) WRITE(LU,200) NUMLIQ%I(K)
 200       FORMAT(1X,'BORD3D : VITESSES IMPOSEES EN NOMBRE INSUFFISANT',/,
@@ -388,8 +391,13 @@
               STOP
             ENDIF
             IF(NTRACER.GE.IFRLIQ*NTRAC) THEN
-              TABORL%ADR(ITRAC)%P%R(IBORD) =
-     &        TR3(IFRLIQ,ITRAC,NBOR3%I(IBORD),AT,INFOGR)
+              IF(NCSIZE.GT.1) THEN
+                N=MESH2D%KNOLG%I(NBOR2%I(K))+(NP-1)*NPOIN2
+              ELSE
+                N=NBOR3%I(IBORD)
+              ENDIF
+              TABORL%ADR(ITRAC)%P%R(IBORD)=
+     &                                   TR3(IFRLIQ,ITRAC,N,AT,INFOGR)
             ELSE
               IF(LNG.EQ.1) WRITE(LU,300) NUMLIQ%I(K)*NTRAC
 300           FORMAT(1X,'BORD3D : VALEURS IMPOSEES DU TRACEUR',/,

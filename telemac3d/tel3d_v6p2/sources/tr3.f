@@ -39,6 +39,7 @@
 !| I              |-->| LIQUID BOUNDARY NUMBER
 !| ITRAC          |-->| TRACER NUMBER
 !| N              |-->| GLOBAL NUMBER OF POINT
+!|                |   | IN PARALLEL NUMBER OF POINT IN ORIGINAL MESH
 !| TIME           |-->| TIME OF TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
