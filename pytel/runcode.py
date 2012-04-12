@@ -61,6 +61,18 @@
          Allowing a launch of the main executable (MPIEXEC) to run on an HPC queue
          Example given with BSUB to run on encore.ocf.co.uk
 """
+"""@history 04/04/2012 -- Sebastien E. Bourban
+         Three new options are now available toruncode:
+         --split: only does the copying of files (and the split when in parallel)
+         --run  : only does the running (by copying the CAS and the PRINCI
+            again, for good measure)
+         --merge: only does the re-collection and copy back of files,
+            which is most useful when the simulation is put on an HPC queue.
+"""
+"""@history 12/04/2012 -- Sebastien E. Bourban
+         Removed the dependency of the compilation of the PRINCI at run time
+         from the configuration files (update or clean statements).
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -80,6 +92,7 @@ from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import getFileContent,putFileContent,removeDirectories,isNewer
 from parsers.parserKeywords import scanCAS,scanDICO,getKeyWord,getIOFilesSubmit
+from parsers.parserSortie import getLatestSortieFiles
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -107,7 +120,6 @@ def processCAS(casFile,frgb):
 
    # ~~ extract keywords ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cas = scanCAS(casFile)
-   print casFile
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    lang = 1
@@ -115,11 +127,11 @@ def processCAS(casFile,frgb):
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    if lang == 1:
-      print '... simulation en Francais'
+      print '... simulation en Francais avec ',path.basename(casFile)
       cas.update({'FICHIER DES PARAMETRES':[casFile]})
       cas.update({'DICTIONNAIRE':[frgb['DICO']]})
    if lang == 2:
-      print '... running in English'
+      print '... running in English with ',path.basename(casFile)
       cas.update({'STEERING FILE':[casFile]})
       cas.update({'DICTIONARY':[frgb['DICO']]})
 
@@ -144,16 +156,21 @@ def processLIT(cas,iFiles,TMPDir,update):
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
          if path.exists(crun) and update:
             if not isNewer(crun,cref) == 1:
-               print ' ignoring: ', path.basename(cref),crun
                if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
                   iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
+               # special case for FORTRAN and CAS files in case of update
+               if iFiles[k].split(';')[5][0:7] == 'FORTRAN' or iFiles[k].split(';')[5][0:3] == 'CAS':
+                  putFileContent(crun,getFileContent(cref)+[''])
+                  print ' re-copying: ', path.basename(cref),crun
+               else:
+                  print '   ignoring: ', path.basename(cref),crun
                continue
          if iFiles[k].split(';')[3] == 'ASC':
             putFileContent(crun,getFileContent(cref)+[''])
-            print ' copying: ', path.basename(cref),crun
+            print '    copying: ', path.basename(cref),crun
          else:
             shutil.copy(cref,crun)
-            print ' copying: ', path.basename(cref),crun
+            print '    copying: ', path.basename(cref),crun
 
    return True
 
@@ -166,11 +183,12 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             npsize = 1
             while 1:                              # HORIZONTAL SECTION FILES
                cref = path.join(CASDir,cas[k][0]+'_{0:03d}'.format(npsize))
-               if path.isfile(cref): shutil.copy2(cref,cref+'.old')
+               if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
                if not path.isfile(crun): break
-               shutil.copy2(crun,cref)
-               print ' copying: ', path.basename(cref)
+               shutil.move(crun,cref) #shutil.copy2(crun,cref)
+               #print ' copying: ', path.basename(cref)
+               print '  moving: ', path.basename(cref)
                npsize = npsize + 1
             npsize = 1
             while 1:                              # VERTICAL SECTION FILES
@@ -178,31 +196,33 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
                if not path.isfile(oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)): break
                while 1:
                   cref = path.join(CASDir,cas[k][0]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
-                  if path.isfile(cref): shutil.copy2(cref,cref+'.old')
+                  if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                   crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
                   if not path.isfile(crun): break
-                  shutil.copy2(crun,cref)
-                  print ' copying: ', path.basename(cref)
+                  shutil.move(crun,cref) #shutil.copy2(crun,cref)
+                  #print ' copying: ', path.basename(cref)
+                  print '  moving: ', path.basename(cref)
                   nptime = nptime + 1
                npsize = npsize + 1
          else:
             cref = path.join(CASDir,cas[k][0])
-            if path.isfile(cref): shutil.copy2(cref,cref+'.old')
+            if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
             crun = oFiles[k].split(';')[1]
             if not path.isfile(crun):
                print '... did not create outfile ',cref,' (',crun,')'
-               return False
-            shutil.copy2(crun,cref)
-            print ' copying: ', path.basename(cref)
+               return False,[]
+            shutil.move(crun,cref) #shutil.copy2(crun,cref)
+            #print ' copying: ', path.basename(cref)
+            print '  moving: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    sortiefiles = []
    if sortiefile != None:    # sortiefile.rstrip() != '':
-      crun = path.join(TMPDir,sortiefile)
+      crun = path.basename(sortiefile)
+      cref = path.join(CASDir,sortiefile)
       if not path.isfile(crun):
          print '... did not create listing file',cref,' (',crun,')'
          return False,[]
-      cref = path.join(CASDir,sortiefile)
       shutil.copy(crun,cref)
       print ' copying: ', path.basename(cref)
       sortiefiles.append(cref)
@@ -216,7 +236,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
             bs,es = path.splitext(sortiefile) # (path.basename(sortiefile))
             slogfile  = bs+'_p'+'{0:05d}'.format(i+1)+es
-            crun = path.join(TMPDir,slavefile)
+            crun = slavefile
             cref = path.join(CASDir,slogfile)
             if not path.isfile(crun):
                print '... could not find the listing file ',crun
@@ -252,7 +272,7 @@ def getMPICommand(cfgMPI):
       hosts = cfgMPI['HTFILE']
    cfgMPI['HTFILE'] = { hosts: [] }
    if cfgMPI.has_key('HOSTS'): cfgMPI['HTFILE'][hosts] = cfgMPI['HOSTS'].split()
-   mpiCmd = mpiCmd.replace('<hostfile>','-machinefile '+hosts)
+   mpiCmd = mpiCmd.replace('<hostfile>',hosts)
    # ~~> stdin file
    infile = ''
    if cfgMPI.has_key('INFILE'): infile = cfgMPI['INFILE']
@@ -521,17 +541,22 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Handling sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    sortiefile = None
    if options.sortieFile:
-      # define the filename (basename) of the sortie file
-      sortiefile =  path.basename(TMPDir)+'.sortie'
+      if options.merge:
+         # try re-using existing/latest sortie file with same root name
+         sortiefile =  path.basename(getLatestSortieFiles(path.join(WDir,path.basename(casFile)))[0])
+      else:
+         # define the filename (basename) of the sortie file
+         sortiefile =  path.basename(TMPDir)+'.sortie'
    sortiefiles = []
 
    # ~~ Handling all input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # >>> Placing yourself where the CAS File is
    chdir(CASDir)
-   # >>> Copy INPUT files into WDir
-   if not processLIT(cas,iFS,WDir,(options.wDir!='')): sys.exit()
-   for mod in COUPLAGE.keys():
-      if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,(options.wDir!='')): sys.exit()
+   if not options.merge:
+      # >>> Copy INPUT files into WDir
+      if not processLIT(cas,iFS,WDir,(options.wDir!='')): sys.exit()
+      for mod in COUPLAGE.keys():
+         if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,(options.wDir!='')): sys.exit()
    # >>> Placing yourself into the WDir
    chdir(WDir)
    # >>> Creating LNG file
@@ -558,8 +583,11 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    useFile = exeFile
    value,defaut = getKeyWord('FICHIER FORTRAN',cas,dico,frgb)
    if value != []:
+      useFort = path.join(CASDir,value[0])
       useFile = path.join(CASDir,path.splitext(value[0])[0]+cfg['SYSTEM']['sfx_exe'])
-      if path.exists(useFile) and cfg['REBUILD'] > 0: remove(useFile)
+      # /!\ removing dependency over cfg['REBUILD']:
+      if path.exists(useFile):
+         if isNewer(useFile,useFort) == 1: remove(useFile)
       #> default command line compilation and linkage
    if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo')):
       print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['version']+'.cmdo') + '\n'
@@ -574,7 +602,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       sys.exit()
    exeCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx'))[0]
    # >>> Compiling the executable if required
-   if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
+   if not options.merge and not options.split:
+      if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
 
    # >>> Rename executable because of firewall issues ~~~~~~~~~~~~~~
    exename = path.join(WDir,'out_'+path.basename(useFile))
@@ -589,15 +618,15 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if ncsize > 1:
          # >>> Parallel execution configuration
          mpiCmd = ''
-         if cfg.has_key('MPI'):
+         if cfg.has_key('MPI') and not options.merge:
             # ~~> MPI host file provided through the command line
             if options.hosts != '':
                if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(';',' ')
                else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(';',' ')} )
             # ~~> MPI Command line ( except <exename> )
             mpiCmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
-            mpiCmd = mpiCmd.replace('<ncsize>','-n '+str(ncsize))
-            mpiCmd = mpiCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
+            mpiCmd = mpiCmd.replace('<ncsize>',str(ncsize))
+            mpiCmd = mpiCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
             hostfile = cfg['MPI']['HTFILE'].keys()[0] # only one key for now
             # ~~> MPI host file ( may be re-written by the HPC INFILE script )
             hosts = []; n = 0
@@ -612,15 +641,16 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
          # >>> HPC execution configuration
          hpcCmd = ''
-         if cfg.has_key('HPC'):
+         if cfg.has_key('HPC') and not options.merge:
             # ~~> HPC Command line ( except <exename> )
             hpcCmd = getHPCCommand(cfg['HPC']) # /!\ cfg['HPC'] is also modified
-            hpcCmd = hpcCmd.replace('<ncsize>','-n '+str(ncsize))
-            hpcCmd = hpcCmd.replace('<wdir>','-wdir '+WDir)   # /!\ Make sure WDir works in UNC convention
+            hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
+            hpcCmd = hpcCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
             # ~~> HPC queueing script
             if cfg['HPC'].has_key('STDIN'):
                stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
                stdin = cfg['HPC']['STDIN'][stdinfile]
+               stdin = stdin.replace('<sortiefile>',sortiefile)
                stdin = stdin.replace('<hosts>',' '.join(cfg['MPI']['HTFILE'][hostfile]))
                stdin = stdin.replace('<ncsize>',str(ncsize))
                stdin = stdin.replace('<wdir>',WDir)
@@ -632,7 +662,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
                   stdin = stdin.replace('<exename>',exename)
                   stdin = stdin.replace('<hostfile>',hostfile)
                putFileContent(stdinfile,stdin.split('\n'))
-               hpcCmd = hpcCmd.replace('<ncsize>','-n '+str(ncsize))
+               hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
 
             # >>> Replace running command
             runCmd = hpcCmd.replace('<mpi_cmdexec>',mpiCmd)
@@ -648,19 +678,38 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
          parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
          # ~~> Creating the PARA files
-         processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
+         if not options.merge: processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
 
          # >>> Running the partionning
          # ~~> Run PARTEL
          CONLIM = getCONLIM(cas,iFS)    # Global CONLIM file
-         runPartition(parCmd,cas,CONLIM,iFS,ncsize)
-         for mod in COUPLAGE.keys():
-            CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
-            runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
+         if not options.merge:
+            runPartition(parCmd,cas,CONLIM,iFS,ncsize)
+            for mod in COUPLAGE.keys():
+               CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
+               runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
 
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      print runCmd
-      if not runCode(runCmd,sortiefile): sys.exit()
+      if not options.merge:
+         if options.split:
+            print '\n\n... Your simulation is ready for launch and you can now :\n'
+            print '    +> re-run without option --split or with option --run\n'
+            print '    +> or run the following command within : ',WDir
+            print '       ~>    run with EXE: ',path.basename(exename)
+            if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
+            if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
+            return             # Split only: do not proceed any further
+         print '\n\nRunning your simulation :\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n'
+         print runCmd
+         if not runCode(runCmd,sortiefile): sys.exit()
+         if cfg.has_key('HPC'):
+            print '\n... You must wait for the simulation to complete before using option --merge\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+            return             # Case of HPC: do not proceed any further, just wait
+      if options.run:
+         print '\n\n... Your simulation has been completed but you need to re-collect files using the option --merge\n'
+         return   # Run only: do not proceed any further
 
       # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if ncsize > 1:
@@ -683,7 +732,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          done,files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,WDir,None,ncsize)
          if not done:
             print '... I could not copy the output files back from the temporary directory: ' + WDir
-            sys.exit()
+            #sys.exit()
          sortiefiles.extend(files)
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -767,6 +816,21 @@ if __name__ == "__main__":
                       dest="hosts",
                       default='',
                       help="specify the list of hosts available for parallel mode, ';' delimited" )
+   parser.add_option("--split",
+                      action="store_true",
+                      dest="split",
+                      default=False,
+                      help="will only do the trace (and the split in parallel) if option there" )
+   parser.add_option("--merge",
+                      action="store_true",
+                      dest="merge",
+                      default=False,
+                      help="will only do the output copying (and recollection in parallel) if option there" )
+   parser.add_option("--run",
+                      action="store_true",
+                      dest="run",
+                      default=False,
+                      help="will only run the simulation if option there" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'

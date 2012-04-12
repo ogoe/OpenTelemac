@@ -690,6 +690,7 @@ class CONLIM:
                repr(c[0]+1).rjust(9) + ' ' + repr(c[2]+1).rjust(9) + ' ' + repr(c[4]+1).rjust(9)
             core.append( s )
 
+      core.append("")
       putFileContent(fileName,core)
 
 class SELAFIN:
