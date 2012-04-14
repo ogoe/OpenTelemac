@@ -62,6 +62,8 @@
 # ~~> dependencies towards standard python
 from struct import unpack,pack
 import sys
+from os import path,walk
+from fnmatch import fnmatch
 import numpy as np
 # ~~> dependencies towards other modules
 #np.set_printoptions(precision=16)
@@ -727,9 +729,9 @@ class SELAFIN:
       self.fole.close()
       pbar.finish()
 
-   def getSERIES( self,nodes ):
+   def getSERIES( self,nodes,varsIndexes=[] ):
       f = self.file
-      varsIndexes = self.VARINDEX
+      if varsIndexes == []: varsIndexes = self.VARINDEX
 
       # ~~ Ordering the nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       onodes = np.sort(np.array( zip(range(len(nodes)),nodes), dtype=[ ('0',int),('1',int) ] ),order='1')
@@ -776,17 +778,17 @@ class SELAFINS:
    def isSuite(self):
       same = True
       for slf in self.slfs[1:]:
-         for v in slf.VARNAMES: same = same and ( v in self.slf.VARNAMES )
-         for v in slf.CLDNAMES: same = same and ( v in self.slf.CLDNAMES )
+         for v in slf.VARNAMES: same = same and ( v in self.slfs[0].VARNAMES )
+         for v in slf.CLDNAMES: same = same and ( v in self.slfs[0].CLDNAMES )
       return same
 
    def isMerge(self):
       same = True
       for slf in self.slfs[1:]:
-         max = 1.e-5 + np.max( slf.tags['times'] ) + np.max( self.slf.tags['times'] )
+         max = 1.e-5 + np.max( slf.tags['times'] ) + np.max( self.slfs[0].tags['times'] )
          accuracy = np.power(10.0, -5+np.floor(np.log10(max)))  #/!\ max always positive
          same = same and ( accuracy > \
-            np.max( slf.tags['times'] - self.slf.tags['times'] ) - np.min( slf.tags['times'] - self.slf.tags['times'] ) )
+            np.max( slf.tags['times'] - self.slfs[0].tags['times'] ) - np.min( slf.tags['times'] - self.slfs[0].tags['times'] ) )
       return same
 
    def pop(self,index=0):
@@ -869,6 +871,87 @@ class SELAFINS:
       if self.slf != None: SELAFIN.__del__(self.slf)
       if self.slfs != []:
          for slf in self.slfs: SELAFIN.__del__(slf)
+
+class PARAFINS(SELAFINS):
+
+   def __init__(self,fileName,root=None):
+      SELAFINS.__init__(self)
+      # ~~> The main slf is based on the header of the GEO file
+      self.slf = SELAFIN(fileName)
+      if root != None:
+         # ~~> Loading the individual headers
+         self.add(root)
+         # ~~> Making sure there are all inter-compatible
+         if self.suite and self.merge:
+            self.slf.tags = self.slfs[0].tags
+            self.slf.NBV1 = self.slfs[0].NBV1; self.slf.VARNAMES = self.slfs[0].VARNAMES; self.slf.VARUNITS = self.slfs[0].VARUNITS
+            self.slf.NBV2 = self.slfs[0].NBV2; self.slf.CLDNAMES = self.slfs[0].CLDNAMES; self.slf.CLDUNITS = self.slfs[0].CLDUNITS
+            self.slf.NVAR = self.slf.NBV1 + self.slf.NBV2
+            self.slf.VARINDEX = range(self.slf.NVAR)
+         else:
+            print "... Incompatibilities between files for ",path.basename(root)
+            sys.exit()
+         # ~~> Create the corresponding map
+         self.mapPOIN = np.zeros(self.slf.NPOIN3,dtype=np.int)
+         for i,slf in zip(range(len(self.slfs)),self.slfs): self.mapPOIN[slf.IPOBO-1] = i
+
+   def add(self,root):
+      # ~~> list all entries
+      for dp,dn,filenames in walk(path.dirname(root)): break
+      # ~~> match expression
+      slfnames = []
+      for fo in filenames:
+         if fnmatch(fo,path.basename(root)+'?????-?????'): slfnames.append(path.join(dp,fo))
+      if slfnames == []:
+         print "... Could not find any sub-files to the root: ",path.basename(root)
+         return []
+      npsize = len(slfnames)
+      for nptime in range(npsize):
+         fo = root+'{0:05d}-{1:05d}'.format(npsize-1,nptime)
+         if not fo in slfnames:
+            print "... Could not find the following sub-file in the list: ",fo
+            return []
+      for file in sorted(slfnames): SELAFINS.add(self,file)
+      return
+
+   def getPALUES(self,t):
+      if len(self.slfs) > 0:
+         VARSOR = np.zeros((self.slf.NBV1+self.slf.NBV2,self.slf.NPOIN3))
+         for slf in self.slfs:
+            VARSUB = slf.getVALUES(t)
+            for v in range(self.slf.NVAR): VARSOR[v][slf.IPOBO-1] = VARSUB[v]
+      else: VARSOR = self.slf.getVALUES(t)
+      return VARSOR
+
+   def getSERIES(self,nodes,varsIndexes=[]):
+      if varsIndexes == []: varsIndexes = self.slf.VARINDEX
+      if len(self.slfs) > 0:
+         z = np.zeros((len(varsIndexes),len(nodes),len(self.slf.tags['cores'])))
+         mproc = self.mapPOIN[nodes]
+         for islf,slf in zip(range(len(self.slfs)),self.slfs):
+            if not islf in mproc: continue
+            # ~~> Filter the list of nodes according to sub IPOBO
+            subGnodes = np.compress( mproc==islf, np.array( zip(range(len(nodes)),nodes), dtype=[ ('r',int),('n',int) ] ) )
+            subLnodes = np.searchsorted(np.sort(slf.IPOBO),subGnodes['n']) + 1 # /!\ why does this work in a sorted way ?
+            # ~~> Get the series from individual sub-files
+            subz = slf.getSERIES(subLnodes,varsIndexes)
+            # ~~> Reorder according to original list of nodes
+            for v in range(len(varsIndexes)): z[v][subGnodes['r']] = subz[v]
+         return z
+      else: return self.slf.getSERIES(nodes)  # ,varsIndexes not necessary
+
+   def putContent(self,fileName): # TODO: files also have to have the same header
+      self.slf.fole = open(fileName,'wb')
+      ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
+      putHeaderSLF(self.slf)
+      # ~~> Time stepping
+      for t in range(len(self.slf.tags['times'])):
+         ibar += 1
+         appendCoreTimeSLF(self.slf,t) # Time stamps
+         appendCoreVarsSLF(self.slf,self.getPALUES(t))
+         pbar.update(ibar)
+      self.slf.fole.close()
+      pbar.finish()
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
