@@ -733,7 +733,7 @@ if __name__ == "__main__":
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
          sys.exit()
-      print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
+      print '\n\nSample ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       vars = options.xvars
       if options.xvars != None: vars = cleanQuotes(options.xvars.replace('_',' '))
@@ -743,45 +743,61 @@ if __name__ == "__main__":
       lqd.putContent( outFile )
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Case of SAMPLE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~ Case of CALCS and CRUNCH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    elif codeName == 'calcs' or codeName == 'crunch':
       rootFile = None
       if not options.parallel:
          if len(args) < 3:
-            print '\nThe code "calcs" requires 2 file names and a list of calculated variable names\n'
+            print '\nThe code "calcs" requires 2 file names\n'
             parser.print_help()
             sys.exit()
          slfFile = args[1]
          outFile = args[2]
-         calcList = args[3].split(';')
       else:
          if len(args) != 4:
-            print '\nThe code "calcs" requires 2 file names, 1 root file name, and a list of calculated variable names\n'
+            print '\nThe code "calcs" requires 2 file names and 1 root file name for parallel inputs\n'
             parser.print_help()
             sys.exit()
          slfFile = args[1]
          rootFile = args[2]
          outFile = args[3]
-         calcList = args[4].split(';')
 
       slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       if not path.exists(slfFile):
          print '\nCould not find the file named: ',slfFile
          sys.exit()
-      print '\n\nChoping ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
+      print '\n\nCalculations for ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      vars = options.xvars; calcList = []
+      if options.xvars != None:
+         vars = cleanQuotes(options.xvars.replace('_',' '))
+         calcList = vars.split(';')
       if codeName == 'calcs':
          slf = calcsSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), root=rootFile )
+         print '   ~> Assembling the following variables together into the file:'
          for calc in calcList:
-            if calc.upper() in "WATER DEPTH": slf.calcWaterDepth()
-            if calc.upper() in "KINETIC ENERGY": slf.calcKineticEnergy()
+            if calc.upper() in "WATER DEPTH":
+               print '      +> WATER DEPTH'
+               slf.calcWaterDepth()
+            if calc.upper() in "KINETIC ENERGY":
+               print '      +> KINETIC ENERGY'
+               slf.calcKineticEnergy()
       elif codeName == 'crunch':
          slf = crunchSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), root=rootFile )
+         print '   ~> Assembling the following variables into the file:'
          for calc in calcList:
-            if calc.upper() in "SURFACE RANGE": slf.calcSurfaceRange()
-            if calc.upper() in "MAXIMUM SPEED": slf.calcMaximumSpeed()
-            if calc.upper() in "TIME OF PEAK": slf.calcPeakTimeModuloM2()
-            if calc.upper() in "RESIDUAL U": slf.calcResidualVelocity()
+            if calc.upper() in "SURFACE RANGE":
+               print '      +> SURFACE RANGE'
+               slf.calcSurfaceRange()
+            if calc.upper() in "MAXIMUM SPEED":
+               print '      +> MAXIMUM SPEED'
+               slf.calcMaximumSpeed()
+            if calc.upper() in "TIME OF PEAK":
+               print '      +> TIME OF PEAK'
+               slf.calcPeakTimeModuloM2()
+            if calc.upper() in "RESIDUAL U":
+               print '      +> RESIDUAL U'
+               slf.calcResidualVelocity()
       slf.alterTIMES( mT=float(options.atm),pT=float(options.atp) )
       slf.alterMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
       if options.azname != None: slf.alterVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )

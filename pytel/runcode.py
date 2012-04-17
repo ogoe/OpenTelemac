@@ -602,13 +602,11 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       sys.exit()
    exeCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx'))[0]
    # >>> Compiling the executable if required
-   if not options.merge and not options.split:
-      if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
-
-   # >>> Rename executable because of firewall issues ~~~~~~~~~~~~~~
    exename = path.join(WDir,'out_'+path.basename(useFile))
    runCmd = exename
-   shutil.move(path.basename(useFile),runCmd)
+   if not options.merge and not options.split:
+      if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
+      shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
 
    if not options.compileonly:
 

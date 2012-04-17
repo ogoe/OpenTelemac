@@ -17,6 +17,10 @@
 """@history 15/11/2011 -- Sebastien E. Bourban
          Addition of moveFile.
 """
+"""@history 15/11/2011 -- Sebastien E. Bourban
+         Addition of a progress bar to the putFileContentand addFileContent
+         methods -- had to write by line, instead of just one.
+"""
 """@brief
 """
 
@@ -92,7 +96,12 @@ def getFileContent(file):
 """
 def putFileContent(file,lines):
    SrcF = open(file,'wb')
-   SrcF.write(('\n'.join(lines)).replace('\r','').replace('\n\n','\n'))
+   ibar = 0; pbar = ProgressBar(maxval=len(lines)).start()
+   SrcF.write((lines[0].rstrip()).replace('\r','').replace('\n\n','\n'))
+   for line in lines[1:]:
+      pbar.update(ibar); ibar += 1
+      SrcF.write('\n'+(line.rstrip()).replace('\r','').replace('\n\n','\n'))
+   pbar.finish()
    SrcF.close()
    return
 """
@@ -100,7 +109,11 @@ def putFileContent(file,lines):
 """
 def addFileContent(file,lines):
    SrcF = open(file,'ab')
-   SrcF.write(('\n'+'\n'.join(lines)).replace('\r','').replace('\n\n','\n'))
+   ibar = 0; pbar = ProgressBar(maxval=len(lines)).start()
+   for line in lines[0:]:
+      ibar += 1; pbar.update(ibar)
+      SrcF.write('\n'+(line.rstrip()).replace('\r','').replace('\n\n','\n'))
+   pbar.finish()
    SrcF.close()
    return
 
