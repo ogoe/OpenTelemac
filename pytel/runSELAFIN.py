@@ -223,7 +223,7 @@ class alterSELAFIN(PARAFINS,chopSELAFIN):
       if vars != None:
          self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(';')
 
-   def getPALUES(self,t):
+   def getVALUES(self,t):
       VARSOR = self.getPALUES(t)
       for v in self.alterZnames:
          for iv in range(len(self.slf.VARNAMES)):
@@ -474,6 +474,8 @@ if __name__ == "__main__":
    parser.add_option("--name",type="string",dest="aname",default=None,help="change the name of a VARIABLE: 'OLD VAR=NEW VAR'" )
    parser.add_option("--T+?",type="string",dest="atp",default="0",help="adds to the ATs" )
    parser.add_option("--T*?",type="string",dest="atm",default="1",help="scales the ATs" )
+   parser.add_option("--sph2ll",type="string",dest="sph2ll",default=None,help="convert from spherical to longitude-latitude" )
+   parser.add_option("--ll2sph",type="string",dest="ll2sph",default=None,help="convert from longitude-latitude to spherical" )
    parser.add_option("--X+?",type="string",dest="axp",default="0",help="adds to the MESHX" )
    parser.add_option("--X*?",type="string",dest="axm",default="1",help="scales the MESHX" )
    parser.add_option("--Y+?",type="string",dest="ayp",default="0",help="adds to the MESHY" )
@@ -621,6 +623,20 @@ if __name__ == "__main__":
          slf.alterTIMES( mT=float(options.atm),pT=float(options.atp) )
          slf.alterMESH( mX=float(options.axm),pX=float(options.axp),mY=float(options.aym),pY=float(options.ayp) )
          if options.azname != None: slf.alterVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )
+         if options.sph2ll != None:
+            radius  = 6371000.
+            long0,lat0 = options.sph2ll.split(";")
+            long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+            const = np.tan( lat0/2. + np.pi/4. )
+            slf.slf.MESHX = np.rad2deg( slf.slf.MESHX/radius + long0 )
+            slf.slf.MESHY = np.rad2deg( 2.*np.arctan( const*np.exp(slf.slf.MESHY/radius) ) - np.pi/2. )
+         if options.ll2sph != None:
+            radius  = 6371000.
+            long0,lat0 = options.ll2sph.split(";")
+            long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+            slf.slf.MESHX = radius * ( np.deg2rad(slf.slf.MESHX) - long0 )
+            slf.slf.MESHY = radius * ( np.log( np.tan( np.deg2rad(slf.slf.MESHY)/2. + np.pi/4. ) ) \
+                                     - np.log( np.tan( lat0/2. + np.pi/4. ) ) )
 
          slf.putContent( outFile )
          
@@ -803,6 +819,7 @@ if __name__ == "__main__":
       if options.azname != None: slf.alterVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )
 
       slf.putContent(outFile)
+
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

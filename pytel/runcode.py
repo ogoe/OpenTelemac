@@ -671,7 +671,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
          if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
          # ~~> Call to PARTEL
-         parCmd = path.join('<config>'+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' >> <partel.log>')
+         parCmd = path.join('<config>'+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
          if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
          parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
          parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)

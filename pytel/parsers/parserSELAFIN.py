@@ -860,7 +860,35 @@ class SELAFINS:
             pbar.update(ibar)
          pbar.finish()
          self.slf.fole.close()
-
+      elif len(self.slf.tags['times']) == 1 and len(self.slfs) == 2:
+      # self.slf will be distributed over the time frames of the scond other
+         self.slf.fole = open(fileName,'wb')
+         slf = self.slfs[1]
+         slf.fole = self.slf.fole
+         idvars = []
+         for v in range(len(slf.VARNAMES)):
+            if v not in self.slf.VARNAMES:
+               idvars.append(v)
+               self.slf.VARNAMES.append(slf.VARNAMES[v])
+               self.slf.VARUNITS.append(slf.VARUNITS[v])
+         for v in range(len(slf.CLDNAMES)):
+            if v not in self.slf.CLDNAMES:
+               idvars.append(v+slf.NBV1)
+               self.slf.CLDNAMES.append(slf.CLDNAMES[v])
+               self.slf.CLDUNITS.append(slf.CLDUNITS[v])
+         slf.VARINDEX = idvars
+         self.slf.NBV1 = len(self.slf.VARNAMES)
+         self.slf.NBV2 = len(self.slf.CLDNAMES)
+         ibar = 0; pbar = ProgressBar(maxval=len(slf.tags['times'])).start()
+         putHeaderSLF(self.slf)
+         for t in range(len(slf.tags['times'])):
+            ibar += 1
+            appendCoreTimeSLF(slf,t)
+            appendCoreVarsSLF(self.slf,self.slf.getVALUES(0))
+            appendCoreVarsSLF(slf,slf.getVALUES(t))
+            pbar.update(ibar)
+         pbar.finish()
+         self.slf.fole.close()
       else:
          print "Does not know how to merge your files. Try either:"
          print "    + to make sure your files have the same time support"
