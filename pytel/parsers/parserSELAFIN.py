@@ -202,7 +202,7 @@ def subsetVariablesSLF(vars,ALLVARS):
          if vi.lower() in ALLVARS[jvar].strip().lower():
             ids.append(jvar)
             names.append(ALLVARS[jvar].strip())
-   if not len(ids) > len(vars.split(';')):
+   if len(ids) < len(v):
       print "... Could not find ",v," in ",ALLVARS
       print "   +> may be you forgot to switch name spaces into underscores in your command ?"
       sys.exit()
@@ -739,9 +739,11 @@ class SELAFIN:
       # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       z = np.zeros((len(varsIndexes),len(nodes),len(self.tags['cores'])))
       f.seek(self.tags['cores'][0])
+      pbar = ProgressBar(maxval=len(self.tags['cores'])).start()
       for t in range(len(self.tags['cores'])):
          f.seek(self.tags['cores'][t])
          f.seek(4+4+4,1)
+         pbar.update(t)
          for ivar in range(self.NVAR):
 
             f.seek(4,1)
@@ -758,6 +760,7 @@ class SELAFIN:
                f.seek(4*self.NPOIN3,1)
             f.seek(4,1)
 
+      pbar.finish()
       return z
 
    def __del__(self): self.file.close()
@@ -928,7 +931,7 @@ class PARAFINS(SELAFINS):
       diroot = path.dirname(root)
       if path.dirname(root) == '': diroot = getcwd()
       for dp,dn,filenames in walk(diroot): break
-      root = path.join(diroot,root)
+      root = path.join(diroot,path.basename(root))
       # ~~> match expression
       slfnames = []
       for fo in filenames:
@@ -942,7 +945,13 @@ class PARAFINS(SELAFINS):
          if not fo in slfnames:
             print "... Could not find the following sub-file in the list: ",fo
             return []
-      for file in sorted(slfnames): SELAFINS.add(self,file)
+      print '      +> Reading the header from the following partitions:'
+      ibar = 0; pbar = ProgressBar(maxval=len(slfnames)).start()
+      for file in sorted(slfnames):
+         ibar += 1; pbar.write('         ~> '+path.basename(file),ibar)
+         SELAFINS.add(self,file)
+         pbar.update(ibar)
+      pbar.finish()
       return
 
    def getPALUES(self,t):
@@ -959,11 +968,13 @@ class PARAFINS(SELAFINS):
       if len(self.slfs) > 0:
          z = np.zeros((len(varsIndexes),len(nodes),len(self.slf.tags['cores'])))
          mproc = self.mapPOIN[nodes]
+         print '      +> Extracting time series from the following partitions:'
          for islf,slf in zip(range(len(self.slfs)),self.slfs):
             if not islf in mproc: continue
             # ~~> Filter the list of nodes according to sub IPOBO
             subGnodes = np.compress( mproc==islf, np.array( zip(range(len(nodes)),nodes), dtype=[ ('r',int),('n',int) ] ) )
             subLnodes = np.searchsorted(np.sort(slf.IPOBO),subGnodes['n']) + 1 # /!\ why does this work in a sorted way ?
+            print '         ~> ',len(subLnodes),' nodes from partition ',islf
             # ~~> Get the series from individual sub-files
             subz = slf.getSERIES(subLnodes,varsIndexes)
             # ~~> Reorder according to original list of nodes
