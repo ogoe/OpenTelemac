@@ -62,7 +62,7 @@
 # ~~> dependencies towards standard python
 from struct import unpack,pack
 import sys
-from os import path,walk
+from os import path,walk,getcwd
 from fnmatch import fnmatch
 import numpy as np
 # ~~> dependencies towards other modules
@@ -202,8 +202,8 @@ def subsetVariablesSLF(vars,ALLVARS):
          if vi.lower() in ALLVARS[jvar].strip().lower():
             ids.append(jvar)
             names.append(ALLVARS[jvar].strip())
-   if not len(ids) == len(vars.split(';')):
-      print "... Could not find ",v[ivar]," in ",ALLVARS
+   if not len(ids) > len(vars.split(';')):
+      print "... Could not find ",v," in ",ALLVARS
       print "   +> may be you forgot to switch name spaces into underscores in your command ?"
       sys.exit()
 
@@ -925,7 +925,10 @@ class PARAFINS(SELAFINS):
 
    def add(self,root):
       # ~~> list all entries
-      for dp,dn,filenames in walk(path.dirname(root)): break
+      diroot = path.dirname(root)
+      if path.dirname(root) == '': diroot = getcwd()
+      for dp,dn,filenames in walk(diroot): break
+      root = path.join(diroot,root)
       # ~~> match expression
       slfnames = []
       for fo in filenames:
