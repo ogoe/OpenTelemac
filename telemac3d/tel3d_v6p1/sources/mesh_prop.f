@@ -132,10 +132,10 @@
         CALL OS('X=Y     ',X=VOLU3DPAR,Y=VOLU3D)
         CALL PARCOM(VOLU3DPAR,2,MESH3D)
         CALL OS('X=1/Y   ',X=UNSV3D,Y=VOLU3DPAR,
-     &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
+     &          IOPT=2,INFINI=1.D6,ZERO=1.D-6)
       ELSE
         CALL OS('X=1/Y   ',X=UNSV3D,Y=VOLU3D,
-     &          IOPT=2,INFINI=0.D0,ZERO=1.D-6)
+     &          IOPT=2,INFINI=1.D6,ZERO=1.D-6)
       ENDIF
 !
 !     RESTORES Z

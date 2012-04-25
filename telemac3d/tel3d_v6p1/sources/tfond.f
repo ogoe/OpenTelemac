@@ -153,7 +153,7 @@
 !           JMH 21/11/2011
             AUX=MAX(1.001D0,30.D0*DIST/RUGOF(N))
             UETCAR(N)=(KARMAN/LOG(AUX))**2
-     &               * (U3D(N+NPOIN)**2+V3D(N+NPOIN)**2)
+     &               * (U3D(I1+NPOIN)**2+V3D(I1+NPOIN)**2)
           ENDDO
 !
         ELSE
