@@ -132,7 +132,7 @@
 !       AT LEAST ONE WET CELL
          IF(IDRY.LT.2)THEN
             CALL FLU_TCHAMEN(H1,H2,ETA1,ETA2,V21,V22,
-     &                     V31,V32,XNN,YNN,FLX,G,EPS)
+     &                     V31,V32,XNN,YNN,FLX(1),FLX(2),G,EPS)
          ELSE
             FLX(1)=0.0D0
             FLX(2)=0.0D0

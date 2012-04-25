@@ -135,7 +135,7 @@
          V2  =  XNN*V2
 
          CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
-     &                       V2,V1,XNN,YNN,FLXI,FLXJ,G)
+     &                       V2,V1,XNN,YNN,FLXI,FLXJ,G,EPS)
 
 !**************************************************
 !        LIQUID BOUNDARY
@@ -161,7 +161,7 @@
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLU_TCHAMEN(H1,H2,ETA1,ETA2,U1,U2,
-     &                       V1,V2,XNN,YNN,FLXI,FLXJ,G)
+     &                       V1,V2,XNN,YNN,FLXI,FLXJ,G,EPS)
           ENDIF 
           OUTFLOW    = FLXI(1)*VNL
           FLUSORT    = FLUSORT + OUTFLOW
@@ -169,7 +169,7 @@
 
 !       LIMPRO(K,1).NE.KDIR    
         ELSE 
-
+!
           H2 = H1
           U2 = U1
           V2 = V1
@@ -189,7 +189,7 @@
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
-     &                      V2,V1,XNN,YNN,FLXI,FLXJ,G)
+     &                      V2,V1,XNN,YNN,FLXI,FLXJ,G,EPS)
           ENDIF 
           INFLOW     = FLXI(1)*VNL
           FLUENT     = FLUENT + INFLOW
@@ -200,7 +200,7 @@
 !
 !
 100    CONTINUE
-
+!
        CE(IS,1)  = CE(IS,1) - VNL*FLXI(1)
        CE(IS,2)  = CE(IS,2) - VNL*FLXI(2)
        CE(IS,3)  = CE(IS,3) - VNL*FLXI(3)
