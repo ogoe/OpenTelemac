@@ -5,7 +5,7 @@
      &(F,FN,FC,H,FXMAT,FXMATPAR,
      & UNSV2D,DT,FXBOR,FXBORPAR,T7,FBOR,SMH,YASMH,FSCEXP,
      & NSEG,NPOIN,NPTFR,GLOSEG,SIZGLO,NBOR,LIMTRA,KDIR,KDDL,OPTSOU,HLIN,
-     & IOPT2,FLBORTRA,SURNIT,MESH,SF,RAIN,PLUIE)
+     & IOPT2,FLBORTRA,SURNIT,MESH,SF,RAIN,PLUIE,TRAIN)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -76,6 +76,7 @@
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
 !| SURNIT         |-->| SURNIT=1/NIT
 !| T7             |<->| BIEF_OBJ STRUCTURE FOR A WORK ARRAY
+!| TRAIN          |-->| VALUE OF TRACER IN RAIN
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,7 +93,7 @@
       INTEGER, INTENT(IN)             :: SIZGLO,OPTSOU,IOPT2
       INTEGER, INTENT(IN)             :: GLOSEG(SIZGLO,2)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMTRA(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: DT,SURNIT
+      DOUBLE PRECISION, INTENT(IN)    :: DT,SURNIT,TRAIN
       DOUBLE PRECISION, INTENT(INOUT) :: FLBORTRA(NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FXBOR(NPTFR)
@@ -186,9 +187,13 @@
 !
       IF(RAIN) THEN
         DO I=1,NPOIN
-!         IF A VALUE IN RAIN HAD TO BE CONSIDERED...
-!         F(I)=F(I)+DT/HLIN(I)*PLUIE(I)*(VALUE-FC(I))
-          F(I)=F(I)+DT/HLIN(I)*PLUIE(I)*(     -FC(I))
+          IF(PLUIE(I).GT.0.D0) THEN
+!           REAL RAIN, VALUE IN RAIN CONSIDERED...
+            F(I)=F(I)+DT/HLIN(I)*PLUIE(I)*(TRAIN-FC(I))
+          ELSE
+!           EVAPORATION, VALUE IN RAIN NOT CONSIDERED...
+            F(I)=F(I)+DT/HLIN(I)*PLUIE(I)*(     -FC(I))
+          ENDIF
         ENDDO
       ENDIF
 !

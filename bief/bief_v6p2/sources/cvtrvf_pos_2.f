@@ -8,7 +8,7 @@
      & TE1,DT,ENTET,BILAN,OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,
      & LIMTRA1,LIMTRA2,KDIR,KDDL,NPTFR,FLBOR,YAFLBOR,V2DPAR,UNSV2D,IOPT,
      & FLBORTRA1,FLBORTRA2,MASKPT,GLOSEG1,GLOSEG2,NBOR,
-     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE)
+     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN1,TRAIN2)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -113,6 +113,8 @@
 !| T7             |<->| WORK BIEF_OBJ STRUCTURE
 !| T8             |<->| WORK BIEF_OBJ STRUCTURE
 !| TE1            |<->| WORK BIEF_OBJ STRUCTURE FOR ELEMENTS
+!| TRAIN1         |-->| VALUE OF TRACER 1 IN THE RAIN
+!| TRAIN2         |-->| VALUE OF TRACER 2 IN THE RAIN
 !| UDEL           |-->| X-COMPONENT OF ADVECTION VELOCITY
 !| UNSV2D         |-->| INVERSE OF V2DPAR
 !| V2DPAR         |-->| INTEGRAL OF 2D TEST FUNCTIONS, ASSEMBLED
@@ -144,6 +146,7 @@
       INTEGER, INTENT(IN)             :: LIMTRA2(NPTFR)
 !                                                         NSEG
       DOUBLE PRECISION, INTENT(IN)    :: DT,AGGLOH,FLULIM(*)
+      DOUBLE PRECISION, INTENT(IN)    :: TRAIN1,TRAIN2
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR,RAIN
       LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,YAFLULIM
@@ -329,11 +332,8 @@
         DO I=1,NPOIN
           C=MAX(PLUIE%R(I),0.D0)
           HT%R(I)=HT%R(I)+DT*C
-!                                                  VALUE IN RAIN
-!         F1%R(I)=F1%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F1%R(I))
-          F1%R(I)=F1%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F1%R(I)
-!         F2%R(I)=F2%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(0.D0-F2%R(I))
-          F2%R(I)=F2%R(I)-DT/MAX(HT%R(I),1.D-4)*C*F2%R(I)
+          F1%R(I)=F1%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN1-F1%R(I))
+          F2%R(I)=F2%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN2-F2%R(I))
         ENDDO       
       ENDIF
 !

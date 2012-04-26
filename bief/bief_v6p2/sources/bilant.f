@@ -5,10 +5,11 @@
      &(H,WORK2,WORK3,DT,LT,NIT,INFO,
      & T,AGGLOT,MASSOU,MASTR0,MASTR2,MASTEN,
      & MASTOU,MSK,MASKEL,MESH,
-     & FLBOR,NUMLIQ,NFRLIQ,NPTFR,NAMETRAC,FLBORTRA)
+     & FLBOR,NUMLIQ,NFRLIQ,NPTFR,NAMETRAC,FLBORTRA,MASS_RAIN,TRAIN,
+     & MASTRAIN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE MASS BALANCE FOR THE TRACER.
@@ -40,8 +41,10 @@
 !| LT,NIT         |-->| TIME STEP NUMBER, TOTAL NUMBER OF STEPS.
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
-!| MASSOU         |<--| MASS OF TRACER BROUGTH BY SOURCE TERM
+!| MASS_RAIN      |<--| MASS OF WATER ADDED BY RAIN OR EVAPORATION
+!| MASSOU         |-->| MASS OF TRACER BROUGTH BY SOURCE TERM
 !| MASTEN         |<--| WATER MASS ENTERED THROUGH BOUNDARIES
+!| MASTRAIN       |<->| TOTAL WATER MASS ENTERED THROUGH BOUNDARIES
 !| MASTOU         |<--| WATER MASS CREATED BY SOURCE TERMS
 !| MASTR0         |<--| INITIAL TRACER MASS
 !| MASTR2         |<--| CURRENT TRACER MASS
@@ -52,6 +55,7 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NUMLIQ         |-->| NUMBER OF LIQUID BOUNDARIES
 !| T              |-->| TRACER AT TIME T(N+1)
+!| TRAIN          |-->| VALUE OF TRACER IN THE RAIN
 !| WORK2          |<->| WORK ARRAY
 !| WORK3          |<->| WORK ARRAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +70,8 @@
 !
       INTEGER, INTENT(IN)            :: LT,NIT,NFRLIQ,NPTFR
       INTEGER, INTENT(IN)            :: NUMLIQ(NFRLIQ)
-      DOUBLE PRECISION, INTENT(IN)   :: DT,MASSOU,AGGLOT
+      DOUBLE PRECISION, INTENT(IN)   :: DT,MASSOU,AGGLOT,MASS_RAIN,TRAIN
+      DOUBLE PRECISION, INTENT(INOUT):: MASTRAIN
       LOGICAL, INTENT(IN)            :: INFO,MSK
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: WORK2,WORK3
       TYPE(BIEF_OBJ), INTENT(IN)     :: H,T,MASKEL,FLBOR
@@ -83,6 +88,7 @@
       INTEGER I,IFRLIQ,IELMT,IELMH
 !
       DOUBLE PRECISION ERREUT,PERDUE,FLUXT,MASBOR,RELATI,DENOM,MASTR1
+      DOUBLE PRECISION MASRAI
 !     300 IS HERE MAXFRO, THE MAXIMUM NUMBER OF LIQUID BOUNDARIES
       DOUBLE PRECISION FLT_BOUND(300)
 !
@@ -112,10 +118,11 @@
       IF(NCSIZE.GT.1) MASTR2=P_DSUM(MASTR2)
 !
       IF(LT.EQ.0) THEN
-        MASTR0 = MASTR2
-        MASTR1 = MASTR2
-        MASTEN = 0.D0
-        MASTOU = 0.D0
+        MASTR0   = MASTR2
+        MASTR1   = MASTR2
+        MASTEN   = 0.D0
+        MASTOU   = 0.D0
+        MASTRAIN = 0.D0
       ENDIF
 !
 !=======================================================================
@@ -166,9 +173,19 @@
 !
 !=======================================================================
 !
+!     COMPUTES THE TRACER MASS BROUGHT BY THE RAIN
+!     MAX(...,0.D0) BECAUSE EVAPORATION IS NOT TAKEN INTO ACCOUNT
+!
+!     WILL WORK ONLY IF TRAIN AND RAIN CONSTANT ON ALL THE DOMAIN...
+      MASRAI = MAX(MASS_RAIN,0.D0) * TRAIN
+      IF(NCSIZE.GT.1) MASRAI=P_DSUM(MASRAI)
+      MASTRAIN = MASTRAIN + MASRAI
+!
+!=======================================================================
+!
 !     COMPUTES THE ERROR ON THE MASS FOR THIS TIMESTEP
 !
-      ERREUT = MASTR1 + MASSOU - MASTR2 - DT*FLUXT
+      ERREUT = MASTR1 + MASSOU + MASRAI - MASTR2 - DT*FLUXT
 !
 !=======================================================================
 !
@@ -183,22 +200,20 @@
         WRITE(LU,*)
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) '                      BILAN DE QUANTITE DE ',
-     &    TRIM(NAMETRAC(1:16)),' (UNITE : ',TRIM(NAMETRAC(17:32)),')'
+     &    TRIM(NAMETRAC(1:16)),
+     &                       ' (UNITE : ',TRIM(NAMETRAC(17:32)),' * M3)'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) '                           BALANCE OF ',
-     &    TRIM(NAMETRAC(1:16)),' (UNIT: ',TRIM(NAMETRAC(17:32)),')'
+     &    TRIM(NAMETRAC(1:16)),' (UNIT: ',TRIM(NAMETRAC(17:32)),' * M3)'
         ENDIF
 !
         IF(LT.EQ.0) THEN
-!
           IF(LNG.EQ.1) WRITE(LU,1090) MASTR0
           IF(LNG.EQ.2) WRITE(LU,2090) MASTR0
-!
         ELSE
-!
-          IF(LNG.EQ.1) WRITE(LU,1100) MASTR2
-          IF(LNG.EQ.2) WRITE(LU,2100) MASTR2
+          IF(LNG.EQ.1) WRITE(LU,1160) MASTR1,MASTR2
+          IF(LNG.EQ.2) WRITE(LU,2160) MASTR1,MASTR2
           IF(NFRLIQ.GT.0) THEN
             DO IFRLIQ=1,NFRLIQ
               IF(LNG.EQ.1) WRITE(LU,1110) IFRLIQ,-FLT_BOUND(IFRLIQ)
@@ -209,16 +224,18 @@
             IF(LNG.EQ.1) WRITE(LU,1113) MASSOU
             IF(LNG.EQ.2) WRITE(LU,2113) MASSOU
           ENDIF
-          DENOM = MAX(MASTR2,ABS(FLUXT*DT))
+          IF(ABS(MASRAI).GT.1.D-8) THEN
+            IF(LNG.EQ.1) WRITE(LU,1166) MASRAI
+            IF(LNG.EQ.2) WRITE(LU,2166) MASRAI
+          ENDIF
+          IF(LNG.EQ.1) WRITE(LU,1165) ERREUT
+          IF(LNG.EQ.2) WRITE(LU,2165) ERREUT
+          DENOM = MAX(MASTR1,MASTR2,ABS(FLUXT*DT),MASRAI,MASSOU)
           IF(DENOM.GT.1.D-8) THEN
             ERREUT = ERREUT / DENOM
             IF(LNG.EQ.1) WRITE(LU,1120) ERREUT
             IF(LNG.EQ.2) WRITE(LU,2120) ERREUT
-          ELSE
-            IF(LNG.EQ.1) WRITE(LU,1130) ERREUT
-            IF(LNG.EQ.2) WRITE(LU,2130) ERREUT
           ENDIF
-!
         ENDIF
 !
       ENDIF
@@ -232,37 +249,38 @@
         WRITE(LU,*)
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) '                BILAN FINAL DE QUANTITE DE ',
-     &    TRIM(NAMETRAC(1:16)),' (UNITE : ',TRIM(NAMETRAC(17:32)),')'
+     &    TRIM(NAMETRAC(1:16)),
+     &                       ' (UNITE : ',TRIM(NAMETRAC(17:32)),' * M3)'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) '                     FINAL BALANCE OF ',
-     &    TRIM(NAMETRAC(1:16)),' (UNIT: ',TRIM(NAMETRAC(17:32)),')'
+     &    TRIM(NAMETRAC(1:16)),' (UNIT: ',TRIM(NAMETRAC(17:32)),' * M3)'
         ENDIF
 !
           PERDUE = MASTR0+MASTEN+
-     &             MASBOR+MASTOU-MASTR2
-          DENOM = MAX(MASTR0,MASTR2,ABS(MASTEN),ABS(MASTOU))
-          IF(DENOM.GT.1.D-8) THEN
-            RELATI = PERDUE / DENOM
-            IF(LNG.EQ.1) WRITE(LU,1140) RELATI
-            IF(LNG.EQ.2) WRITE(LU,2140) RELATI
-          ELSE
-            RELATI = PERDUE
-            IF(LNG.EQ.1) WRITE(LU,1150) RELATI
-            IF(LNG.EQ.2) WRITE(LU,2150) RELATI
-          ENDIF
+     &             MASBOR+MASTOU+MASTRAIN-MASTR2
+          DENOM = MAX(MASTR0,MASTR2,ABS(MASTEN),
+     &                ABS(MASTOU),ABS(MASTRAIN))
           IF(LNG.EQ.1) THEN
             WRITE(LU,1160) MASTR0,MASTR2
             IF(ABS(MASTEN).GT.1.D-8) WRITE(LU,1161) MASTEN
             IF(ABS(MASTOU).GT.1.D-8) WRITE(LU,1164) MASTOU
+            IF(ABS(MASTRAIN).GT.1.D-8) WRITE(LU,1166) MASTRAIN
             WRITE(LU,1165) PERDUE
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,2160) MASTR0,MASTR2
             IF(ABS(MASTEN).GT.1.D-8) WRITE(LU,2161) MASTEN
             IF(ABS(MASTOU).GT.1.D-8) WRITE(LU,2164) MASTOU
+            IF(ABS(MASTRAIN).GT.1.D-8) WRITE(LU,2166) MASTRAIN
             WRITE(LU,2165) PERDUE
           ENDIF
+          IF(DENOM.GT.1.D-8) THEN
+            RELATI = PERDUE / DENOM
+            IF(LNG.EQ.1) WRITE(LU,1120) RELATI
+            IF(LNG.EQ.2) WRITE(LU,2120) RELATI
+          ENDIF
+          WRITE(LU,*) 
 !
        ENDIF
 !
@@ -272,35 +290,29 @@
 !
 !  FORMATS :
 !
-1090  FORMAT(5X,'QUANTITE INITIALE DE TRACEUR :',G16.7)
-2090  FORMAT(5X,'INITIAL QUANTITY OF TRACER:',G16.7)
-1100  FORMAT(/,5X,'QUANTITE DE TRACEUR :',G16.7)
-2100  FORMAT(/,5X,'QUANTITY OF TRACER:',G16.7)
-1110  FORMAT(5X,'FRONTIERE ',1I3,' FLUX :           ',G16.7,
+1090  FORMAT(  5X,'QUANTITE INITIALE DE TRACEUR :',G16.7)
+2090  FORMAT(  5X,'INITIAL QUANTITY OF TRACER   :',G16.7)
+1110  FORMAT(  5X,'FRONTIERE ',1I3,' FLUX :           ',G16.7,
      &          ' ( >0 : ENTRANT  <0 : SORTANT )')
-1113  FORMAT(5X,'QUANTITE CREEE PAR TERME SOURCE :  ' , G16.7 )
-2110  FORMAT(5X,'BOUNDARY ',1I3,' FLUX:         ',G16.7,
+1113  FORMAT(  5X,'QUANTITE CREEE PAR TERME SOURCE   :  ' , G16.7 )
+2110  FORMAT(  5X,'BOUNDARY ',1I3,' FLUX:         ',G16.7,
      &          ' ( >0 : ENTERING  <0 : EXITING )')
-2113  FORMAT(5X,'QUANTITY CREATED BY SOURCE TERM:   ' , G16.7 )
-1120  FORMAT(5X,'ERREUR RELATIVE : ',G16.7)
-2120  FORMAT(5X,'RELATIVE ERROR: ',G16.7)
-1130  FORMAT(5X,'ERREUR ABSOLUE : ',G16.7)
-2130  FORMAT(5X,'ABSOLUTE ERROR: ',G16.7)
-1140  FORMAT(/,5X,'ERREUR RELATIVE CUMULEE : ',G16.7)
-2140  FORMAT(/,5X,'RELATIVE ERROR CUMULATED: ',G16.7)
-1150  FORMAT(/,5X,'ERREUR ABSOLUE  CUMULEE: ',G16.7)
-2150  FORMAT(/,5X,'ABSOLUTE CUMULATED ERROR: ',G16.7)
+2113  FORMAT(  5X,'QUANTITY CREATED BY SOURCE TERM   :   ' , G16.7 )
+1120  FORMAT(  5X,'ERREUR RELATIVE                   : ',G16.7)
+2120  FORMAT(  5X,'RELATIVE ERROR                    : ',G16.7)
 1160  FORMAT(/,5X,'QUANTITE INITIALE                 : ',G16.7,
      &       /,5X,'QUANTITE FINALE                   : ',G16.7)
 1161  FORMAT(  5X,'QUANTITE ENTREE AUX FRONT. LIQUID.: ',G16.7,
      &            '  ( SI <0 QUANTITE SORTIE )')
 1164  FORMAT(  5X,'QUANTITE CREEE PAR TERME SOURCE   : ',G16.7)
+1166  FORMAT(  5X,'QUANTITE APPORTEE PAR LA PLUIE    : ',G16.7)
 1165  FORMAT(  5X,'QUANTITE TOTALE PERDUE            : ',G16.7)
 2160  FORMAT(/,5X,'INITIAL QUANTITY                  : ',G16.7,
      &       /,5X,'FINAL QUANTITY                    : ',G16.7)
 2161  FORMAT(  5X,'QUANTITY ENTERED THROUGH LIQ. BND.: ',G16.7,
      &            '  ( IF <0 EXIT )')
 2164  FORMAT(  5X,'QUANTITY CREATED BY SOURCE TERM   : ',G16.7)
+2166  FORMAT(  5X,'MASS BROUGHT BY THE RAIN          : ',G16.7)
 2165  FORMAT(  5X,'TOTAL QUANTITY LOST               : ',G16.7)
 !
 !=======================================================================

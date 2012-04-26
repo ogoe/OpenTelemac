@@ -4,7 +4,8 @@
 !
      &(F,FN,FSCEXP,H,HN,FXMAT,FXMATPAR,
      & V2DPAR,UNSV2D,DDT,FXBOR,FBOR,SMH,YASMH,T1,T2,T4,T5,T6,T7,T8,
-     & MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT,RAIN,PLUIE)
+     & MESH,LIMTRA,KDIR,KDDL,OPTSOU,IOPT2,FLBORTRA,MSK,DT,RAIN,PLUIE,
+     & TRAIN)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -69,6 +70,7 @@
 !| T6             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
 !| T7             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
 !| T8             |<->| BIEF_OBJ STRUCTURE USED AS WORK ARRAY
+!| TRAIN          |-->| VALUE OF TRACER IN RAIN
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
 !| YASMH          |-->| IF YES, SMH MUST BE TAKEN INTO ACCOUNT
@@ -84,7 +86,7 @@
 !
       INTEGER, INTENT(IN)           :: KDIR,KDDL,OPTSOU,LIMTRA(*)
       INTEGER, INTENT(IN)           :: IOPT2
-      DOUBLE PRECISION, INTENT(IN)  :: DDT,DT
+      DOUBLE PRECISION, INTENT(IN)  :: DDT,DT,TRAIN
       TYPE(BIEF_OBJ), INTENT(INOUT) :: F,T1,T2,T4,T5,T6,T7,T8,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: FN,H,HN,V2DPAR,SMH,FBOR,FSCEXP
       TYPE(BIEF_OBJ), INTENT(IN)    :: FXBOR,UNSV2D,PLUIE
@@ -112,7 +114,8 @@
      &         MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
      &         MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R)
+     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R,
+     &         TRAIN)
 !
 !-----------------------------------------------------------------------
 !
@@ -137,7 +140,8 @@
      &         MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &         MESH%GLOSEG%I,MESH%GLOSEG%DIM1,
      &         MESH%NBOR%I,LIMTRA,KDIR,KDDL,
-     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R)
+     &         OPTSOU,T5%R,IOPT2,FLBORTRA%R,DDT/DT,MESH,F,RAIN,PLUIE%R,
+     &         TRAIN)
 !
 !-----------------------------------------------------------------------
 !
