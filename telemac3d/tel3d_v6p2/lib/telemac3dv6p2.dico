@@ -166,10 +166,10 @@ COMPORT =
 'Foreground ("ENTREES-SORTIES, GRAPHIQUES ET LISTING")
 IS BRUT (red)'
 AIDE = 'Détermine la période en nombre de pas de temps d''impression
-des ''VARIABLES POUR LES SORTIE GRAPHIQUES'' (voir ce mot-clé)
+des ''VARIABLES POUR LES SORTIE GRAPHIQUES 2D ou 3D'' (voir ces mot-clés)
 dans le FICHIER DES RESULTATS.'
 AIDE1 = 'Determines, in number of time steps, the printout period for
-the VARIABLES FOR GRAPHIC PRINTOUTS in the RESULTS FILE.'
+the VARIABLES FOR 2D (or 3D) GRAPHIC PRINTOUTS in the RESULTS FILE.'
 
 NOM = 'PERIODE POUR LES SORTIES LISTING'
 NOM1 = 'LISTING PRINTOUT PERIOD'
@@ -1783,20 +1783,6 @@ Utilisation déconseillée.'
 AIDE1 = 'Sets the amount of mass-lumping that is performed on
 the velocity.  Not recommended for use.'
 
-NOM = 'COTE DU PLAN INTERMEDIAIRE DE REFERENCE'
-NOM1 = 'ELEVATION OF INTERMEDIATE REFERENCE LEVEL'
-TYPE = REEL
-INDEX = 32
-MNEMO = ''
-TAILLE = 0
-DEFAUT = 0.
-DEFAUT1 = 0.
-RUBRIQUE = 'PARAMETRES NUMERIQUES'
-RUBRIQUE1 = 'NUMERICAL PARAMETERS'
-NIVEAU = 1
-AIDE = 'Fixe la cote du plan intermediaire de reference'
-AIDE1 = 'Sets the elevation of the intermediate reference level'
-
 NOM = 'DEBITS IMPOSES'
 NOM1 = 'PRESCRIBED FLOWRATES'
 TYPE = REEL
@@ -2072,8 +2058,8 @@ INDEX = 6
 MNEMO = 'T3D_FILES(T3DGEO)%NAME'
 TAILLE = 0
 SUBMIT = 'T3DGEO-READ-01;T3DGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
-DEFAUT = ' '
-DEFAUT1 = ' '
+/DEFAUT = ' '
+/DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
@@ -2122,8 +2108,8 @@ INDEX = 9
 MNEMO = 'T3D_FILES(T3DLIM)%NAME'
 TAILLE = 0
 SUBMIT = 'T3DLIM-READ-07;T3DCLI;OBLIG;ASC;LIT;CONLIM'
-DEFAUT = ' '
-DEFAUT1 = ' '
+/DEFAUT = ' '
+/DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
@@ -2487,22 +2473,6 @@ AIDE1 = 'Binary file type used for writing the results file.
 This type depends on the machine on which the file was generated.
 The possible values are the same as for the geometry file.'
 
-NOM = 'NUMERO DE COMPTE'
-NOM1 = 'ACCOUNT NUMBER'
-TYPE = CARACTERE
-INDEX = 28
-MNEMO = ''
-TAILLE = 0
-DEFAUT = ' '
-DEFAUT1 = ' '
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION  ENVIRONMENT'
-NIVEAU = 2
-AIDE = 'Numero du compte calcul sur lequel sera impute le cout
-du calcul.'
-AIDE1 = 'Account number to which the cost of computation shall be
-charged.'
-
 NOM = 'SUITE DE CALCUL'
 NOM1 = 'COMPUTATION CONTINUED'
 TYPE = LOGIQUE
@@ -2715,7 +2685,7 @@ NOM = 'BILAN DE MASSE'
 NOM1 = 'MASS-BALANCE'
 TYPE = LOGIQUE
 INDEX = 13
-MNEMO = ''
+MNEMO = 'BILMAS'
 TAILLE = 0
 DEFAUT = NON
 DEFAUT1 = NO
@@ -2746,7 +2716,7 @@ NOM = 'INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING'
 NOM1 = 'INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT'
 TYPE = LOGIQUE
 INDEX = 14
-MNEMO = ''
+MNEMO = 'INFMAS'
 TAILLE = 0
 DEFAUT = OUI
 DEFAUT1 = YES
@@ -2802,21 +2772,19 @@ AIDE = 'calcule la SL avec l option quasi bulle'
 AIDE1 = 'allows computing the free surface with 
 the quasi-bubble elements option'
 
-NOM = 'VARIABLES POUR SUBIEF3D'
-NOM1 = 'VARIABLES FOR SUBIEF3D'
+NOM = 'FREE LOGICAL'
+NOM1 = 'FREE LOGICAL'
 TYPE = LOGIQUE
 INDEX = 18
-MNEMO = 'VARSUB'
+MNEMO = ''
 TAILLE = 0
 DEFAUT = NON
 DEFAUT1 = NO
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
-AIDE = '4 variables pour subief3d dans le fichier resu
-si active'
-AIDE1 = '4 variables for subief3d in the result file
-if activated' 
+AIDE = ' '
+AIDE1 = ' ' 
 
 NOM = 'VALIDATION'
 NOM1 = 'VALIDATION'
@@ -5136,8 +5104,29 @@ Possible values are:
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
 
-NOM = 'FORMAT DU FICHIER DE RESULTATS'
-NOM1 = 'RESULTS FILE FORMAT'
+NOM = 'FORMAT DU FICHIER DES RESULTATS 2D'
+NOM1 = '2D RESULT FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 28
+MNEMO = 'T3D_FILES(T3DHYD)%FMT'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Results file format. Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
+
+NOM = 'FORMAT DU FICHIER DES RESULTATS 3D'
+NOM1 = '3D RESULT FILE FORMAT'
 TYPE = CARACTERE
 INDEX = 30
 MNEMO = 'T3D_FILES(T3DRES)%FMT'
@@ -5402,6 +5391,79 @@ AIDE = 'Mode de calcul des derivees des vitesses suivant z
 AIDE1 = 'Way of computing the velocity derivatives along z 
      1 : linear derivative (classic)
      2 : logarithmic derivative (better for logarithmic profiles)' 
+     
+NOM  = 'MODE SUITE'
+NOM1 = 'RESTART MODE'
+TYPE = LOGIQUE
+INDEX = 20
+MNEMO = 'RESTART_MODE'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE= 'Declenche le remplissage du FICHIER POUR SUITE,
+qui permet une suite de calcul parfaite,
+contrairement au FICHIER DES RESULTATS 3D'
+AIDE1 = 'Triggers the filling of the RESTART FILE,
+which ensures a perfect restart of a computation,
+unlike the 3D RESULT FILE'
+
+NOM = 'FICHIER POUR SUITE'
+NOM1 = 'RESTART FILE'
+TYPE = CARACTERE
+INDEX = 85
+MNEMO = 'T3D_FILES(T3DRST)%NAME'
+TAILLE = 0
+SUBMIT = 'T3DRST-WRITE-13;T3DRST;FACUL;BIN;ECR;SELAFIN'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE = 'Nom du fichier dans lequel seront écrits les résultats du 
+dernier calcul pour obtenir une suite de calcul parfaite'
+AIDE1 = 'Name of the file into which the last computation results shall be
+written,
+the periodicity being given by the key-word:
+GRAPHIC PRINTOUT PERIOD.'
+
+NOM = 'FORMAT DU FICHIER POUR SUITE'
+NOM1 = 'RESTART FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 84
+MNEMO = 'T3D_FILES(T3DRST)%FMT'
+DEFAUT = 'SERAFIND'
+DEFAUT1 = 'SERAFIND'
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du FICHIER POUR SUITE.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5
+Seul SERAFIND assure une suite parfaite'
+AIDE1 = 'Results file format. Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5
+Only SERAFIND ensures a perfect restart'
+
+NOM = 'VALEURS DES TRACEURS DANS LA PLUIE'
+NOM1 = 'VALUES OF TRACERS IN THE RAIN'
+TYPE = REEL
+INDEX = 32
+MNEMO = 'TRAIN'
+TAILLE = 2
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = ''
+AIDE1 = ''
+
 /
 /---------------------------------------------------------------------
 /
@@ -5425,7 +5487,7 @@ TYPE = CARACTERE
 INDEX = 99
 /
 MNEMO = ''
-TAILLE = 35
+TAILLE = 36
 DEFAUT  = 'FICHIER DES PARAMETRES';
           'DICTIONNAIRE';
           'FICHIER FORTRAN';
@@ -5460,7 +5522,8 @@ DEFAUT  = 'FICHIER DES PARAMETRES';
           'FICHIER DES SOURCES';
           'FICHIER DE RESULTATS BINAIRE';
           'FICHIER DE RESULTATS FORMATE';
-          'FICHIER DE COMMANDES MIGRHYCAR'
+          'FICHIER DE COMMANDES MIGRHYCAR';
+          'FICHIER POUR SUITE'
 DEFAUT1 = 'STEERING FILE';
           'DICTIONARY';
           'FORTRAN FILE';
@@ -5495,13 +5558,13 @@ DEFAUT1 = 'STEERING FILE';
           'SOURCES FILE';
           'BINARY RESULTS FILE';
           'FORMATTED RESULTS FILE';
+          'RESTART FILE';
           'MIGRHYCAR STEERING FILE'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1
 AIDE = 'Noms des fichiers exploites par le code'
 AIDE1= 'File names of the used files'
-
 
 //
 //----Librairies du code-------------------------------------------
