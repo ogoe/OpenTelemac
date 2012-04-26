@@ -78,18 +78,18 @@
      &             'm8  ','mk3 ','s6  ','2sm2',
      &             '2mk3'/
 !
-!brief  FOR EACH CONSTIUENT, THE FOLLOWING PARAMETERS ARE GIVEN:
+!brief  FOR EACH CONSTITUENT, THE FOLLOWING PARAMETERS ARE GIVEN:
 !+  - ALPHA = CORRECTION FACTOR FOR FIRST ORDER LOAD TIDES
 !+  - AMP = AMPLITUDE OF EQUILIBRIUM TIDE, IN M
 !+  - PH = CURRENTLY SET TO ZERO ...
 !+            PHASES FOR EACH CONSTITUENT ARE REFERRED TO THE TIME
 !+            WHEN THE PHASE OF THE FORCING FOR THAT CONSTITUENT
-!+            IS ZERO ON THE GREENICH MERIDIAN
+!+            IS ZERO ON THE GREENWICH MERIDIAN
 !+  - OMEGA = ANGULAR FREQUENCY OF CONSTITUENT, IN RADIANS
 !+  TIDAL PARAMETERS TAKEN FROM RODNEY'S CONSTITUENT.H, 2/23/96:
 !+     (EXCEPT FOR ISPEC).
 !
-      DOUBLE PRECISIONTPXO_OMEGA_D(TPXO_NCMX)
+      DOUBLE PRECISION TPXO_OMEGA_D(TPXO_NCMX)
       DOUBLE PRECISION TPXO_PHASE_MKB(TPXO_NCMX),TPXO_BETA_SE(TPXO_NCMX)
 !
 !     DOUBLE PRECISION TPXO_ALPHA_D(TPXO_NCMX)
@@ -139,7 +139,7 @@
      &    6.926230184D0, 1.904561220D0, 0.000000000D0, 4.551627762D0,
      &    3.809122439D0/
 !
-!note I AM PUTTING 0 FOR MS2,MN4 ETC. FOR NOW: CORRECT LATER
+!note I AM PUTTING 0 FOR MS2, MN4 ETC. FOR NOW: CORRECT LATER
 !+ NOW THIS CORRECTION IS DONE USING THE SAL FILE (H_TPXO3_90-90.LOAD)
 !+ I REPLACE BETA_SE WITH UNITS FOR NOW (IN CASE WE DECIDE TO SWITCH
 !+ BACK TO OLD VERSION) AND COMMENT THE OLD NUMBERS - THIS WAY I DO
@@ -223,60 +223,22 @@
 !
 !-----------------------------------------------------------------------
 !
-!     RADIUS OF THE EARTH
-!
-      DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
-!
-!     ZERO
-!
-      DOUBLE PRECISION, PARAMETER :: ZERO = 0.D0
-!
-!     PI AND DEGREE CONVERSION
-!
-      DOUBLE PRECISION PI, DEG2RAD
-!
-!     REFERENCE LATITUDE AND LONGITUDE
-!
-      DOUBLE PRECISION LAT0, LONG0, CONST
-!
 !     DAYS IN MODIFIED JULIAN DAYS
 !
       DOUBLE PRECISION STIME_MJD
-!
-!     NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
-!
-      INTEGER NC
 !
 !     NUMBER OF CONSTITUENTS TURNED ON
 !
       INTEGER NCON
 !
-!     SIZES OF THE GRID SUPPORTING THE TPXO MODEL
-!
-      INTEGER N, M
-!
 !     WHETHER TO INTERPOLATE FOR MINOR CONSTITUENTS
 !
       LOGICAL I_MICON
 !
-!     MIN AND MAX RANGES FOR PHASES AND PERIODES
+!     INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
 !
-      REAL TH_LIM(2), PH_LIM(2)
-!
-!     INDICES OF AVAILABLE CONTITUENTS AMONSGT THE ALL POSSIBLE
-!
-      CHARACTER*4 C_ID(TPXO_NCMX), C_ID_MOD(TPXO_NCMX)
-      INTEGER, ALLOCATABLE :: CIND(:), CCIND(:)
-!
-!     MASKS TO FILTER VALID AND INVALID (U,V,H) VALUES
-!
-      INTEGER, ALLOCATABLE :: MASKT(:,:), MASKU(:,:), MASKV(:,:)
-!
-!     PHASES AND PERIODS FOR U, V AND H, HERE DEFINED AS COMPLEX
-!
-      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
-      COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
-      COMPLEX, ALLOCATABLE :: UV(:,:,:), ZCON(:)
+      CHARACTER(LEN=4) C_ID(TPXO_NCMX)
+      INTEGER, ALLOCATABLE :: CCIND(:)
 !
 !     INTERPOLATED CONSTITUENTS FOR LIQUID BOUNDARY NODES
 !
@@ -318,7 +280,7 @@
 !
       INTEGER NC,NCON
       INTEGER CIND(NCON)
-      CHARACTER*4 C_ID(TPXO_NCMX),C_ID_MOD(TPXO_NCMX)
+      CHARACTER(LEN=4) C_ID(*),C_ID_MOD(*)
 !
 !-----------------------------------------------------------------------
 !
@@ -326,8 +288,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CIND = 0
       DO IC1 = 1,NCON
+         CIND(IC1) = 0
          DO IC2 = 1,NC
             IF( C_ID(IC1).EQ.C_ID_MOD(IC2) ) CIND(IC1) = IC2
          ENDDO
@@ -362,7 +324,7 @@
 !
       INTEGER NC0
       INTEGER IND(NC0)
-      CHARACTER*4 CID(TPXO_NCMX)
+      CHARACTER(LEN=4) CID(*)
 !
 !-----------------------------------------------------------------------
 !
@@ -381,7 +343,7 @@
          ENDDO
          IF( IND(K).EQ.0 ) THEN
             IF(LNG.EQ.1) WRITE(LU,*) 'TPXO : ATTENTION :' //
-     &         'CONSTITUENT ',CID(IC),' N''EST PAS PERMIS'
+     &         'COMPOSANTE ID ',CID(IC),' N''EST PAS PERMISE'
             IF(LNG.EQ.2) WRITE(LU,*) 'TPXO : WARNING :' //
      &         'CONSTITUENT ID ',CID(IC),' IS NOT ALLOWED'
          ENDIF
@@ -463,7 +425,7 @@
       HEIGHT = 0.D0
 !     HEIGHT(I)=SUM_OF_REAL(A(I)*P(I))
       DO I = 1,NC
-        HEIGHT = HEIGHT +REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
+        HEIGHT = HEIGHT + REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
       ENDDO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -510,14 +472,14 @@
 !-----------------------------------------------------------------------
 !
       IERR = 0
-      DTHETA = ( TH_LIM(2)-TH_LIM(1) )/( 1.D0*M )
-      DPHI = ( PH_LIM(2)-PH_LIM(1) )/( 1.D0*N )
+      DTHETA = ( TH_LIM(2)-TH_LIM(1) )/( REAL(M) )
+      DPHI   = ( PH_LIM(2)-PH_LIM(1) )/( REAL(N) )
 !
 !     CHECKS XLON LONGITUDE CONVENTION
 !
       XLONC = XLON
-      IF( XLONC.LT.PH_LIM(1) ) XLONC = XLONC + 360.0
-      IF( XLONC.GT.PH_LIM(2) ) XLONC = XLONC - 360.0
+      IF( XLONC.LT.PH_LIM(1) ) XLONC = XLONC + 360.D0
+      IF( XLONC.GT.PH_LIM(2) ) XLONC = XLONC - 360.D0
       IF( XLONC.LT.PH_LIM(1).OR.XLONC.GT.PH_LIM(2) ) THEN
          IERR = -1
          RETURN
@@ -532,10 +494,10 @@
       CALL BSI_WEIGHTS( ZUV,DLAT,DLON,TH_LIM,PH_LIM,
      &                 DPHI,DTHETA,MZ,N,M,WW,IW,JW )
 !
-      IF( SUM(WW).LT.0.010 ) THEN
+      IF( (WW(0,0)+WW(1,0)+WW(0,1)+WW(1,1)).LT.0.01D0 ) THEN
          IERR = -2
          DO K = 1,NT
-            UV1(K) = (0.0,0.0)
+            UV1(K) = CMPLX(0.D0,0.D0)
          ENDDO
       ELSE
          IERR = 0
@@ -575,12 +537,12 @@
 !-----------------------------------------------------------------------
 !
       INTEGER N,M
-      INTEGER MASK(N,M)         ! GRID DIMENSIONS AND MASK
+      INTEGER MASK(N,M)             ! GRID DIMENSIONS AND MASK
       INTEGER IW(0:1),JW(0:1)
-      CHARACTER*1 ZUV         ! C-GRID ZUV: 'u','v','z' ('U','V','Z')
-      DOUBLE PRECISION THETA, PHI               ! POINT COORDINATES
+      CHARACTER(LEN=1) ZUV          ! C-GRID ZUV: 'u','v','z' ('U','V','Z')
+      DOUBLE PRECISION THETA, PHI   ! POINT COORDINATES
       REAL THETA_LIM(2),PHI_LIM(2)  ! GRID LIMITS
-      DOUBLE PRECISION DX,DY                    ! STEP X, STEP Y
+      DOUBLE PRECISION DX,DY        ! STEP X, STEP Y
       DOUBLE PRECISION WW(0:1,0:1)
 !
 !-----------------------------------------------------------------------
@@ -618,8 +580,8 @@
 !         |      /|\      |
 !                 |
 !
-         XI = ( PHI-PHI_LIM(1) )/DX+0.50
-         XJ = ( THETA-THETA_LIM(1) )/DY+0.50
+         XI = (PHI  -PHI_LIM(1)  )/DX + 0.5D0
+         XJ = (THETA-THETA_LIM(1))/DY + 0.5D0
 !
       ELSEIF( ZUV.EQ.'u' ) THEN
 !
@@ -640,24 +602,27 @@
 !                 v-------v     WITH A UNIT VECTOR (TH,PH):
 !                               (1.,0)->EW, (0.,1.)->NS
 !
-         XI = ( PHI-PHI_LIM(1) )/DX+1.0
-         XJ = ( THETA-THETA_LIM(1) )/DY+0.50
+         XI = (PHI  -PHI_LIM(1)  )/DX + 1.D0
+         XJ = (THETA-THETA_LIM(1))/DY + 0.5D0
 !
       ELSEIF( ZUV.EQ.'v' ) THEN
 !
-         XI = (PHI-PHI_LIM(1))/DX+0.50
-         XJ = (THETA-THETA_LIM(1))/DY+1.0
+         XI = (PHI  -PHI_LIM(1)  )/DX + 0.5D0
+         XJ = (THETA-THETA_LIM(1))/DY + 1.D0
 !
       ENDIF
 !
-      IF( XI.LT.1. ) XI = N + XI
+      IF( XI.LT.1.D0 ) XI = REAL(N) + XI
       I0 = INT(XI)
-      X = XI - I0
+      X = XI - REAL(I0)
       J0 = INT(XJ)
-      Y = XJ - J0
+      Y = XJ - REAL(J0)
 !     CHECK TO SEE IF CALCULATED INDICES ARE IN RANGE
       IF( (I0.GT.N).OR.(I0.LT.1).OR.(J0.GT.M).OR.(J0.LT.1) ) THEN
-         WW=0.
+         WW(0,0) = 0.D0
+         WW(0,1) = 0.D0
+         WW(1,0) = 0.D0
+         WW(1,1) = 0.D0
          RETURN
       ENDIF
 !
@@ -666,16 +631,22 @@
 !
       J1 = IPSHFT(J0,1,M)
       I1 = IPSHFT(I0,1,N)
-      WW = 0.
+      WW(0,0) = 0.D0
+      WW(0,1) = 0.D0
+      WW(1,0) = 0.D0
+      WW(1,1) = 0.D0
       SM = MASK(I0,J0) + MASK(I0,J1) + MASK(I1,J0) + MASK(I1,J1)
       IF( SM.GT.0 ) THEN
-         W00 = (1.-X)*(1.-Y)*MASK(I0,J0)
-         W01 = (1.-X)*Y*MASK(I0,J1)
-         W10 = X*(1.-Y)*MASK(I1,J0)
-         W11 = X*Y*MASK(I1,J1)
+         W00 = (1.D0-X)*(1.D0-Y)*REAL(MASK(I0,J0))
+         W01 = (1.D0-X)*Y*REAL(MASK(I0,J1))
+         W10 = X*(1.D0-Y)*REAL(MASK(I1,J0))
+         W11 = X*Y*REAL(MASK(I1,J1))
          WTOT = W00+W01+W10+W11
-         IF( WTOT.EQ.0 ) THEN
-            WW = 0
+         IF( WTOT.EQ.0.D0 ) THEN
+            WW(0,0) = 0.D0
+            WW(0,1) = 0.D0
+            WW(1,0) = 0.D0
+            WW(1,1) = 0.D0
             RETURN
          ENDIF
          WW(0,0) = W00/WTOT
@@ -720,7 +691,7 @@
       INTEGER NCON !,NTIME
       INTEGER IND(NCON)
       LOGICAL INTERP
-      CHARACTER*4 CID(NCON)
+      CHARACTER(LEN=4) CID(NCON)
       DOUBLE PRECISION LAT !,ZPRED(NTIME)
       DOUBLE PRECISION TIME_MJD !(NTIME)
       COMPLEX Z1(NCON)
@@ -728,7 +699,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER K,IERR
-      INTEGER SECONDSPERDAY
+      DOUBLE PRECISION, PARAMETER :: SECONDSPERDAY = 86400.D0
       DOUBLE PRECISION TIME,DH
       DOUBLE PRECISION WW(NCON,8)
       DOUBLE PRECISION PU(TPXO_NCMX),PF(TPXO_NCMX),DLAT
@@ -740,7 +711,6 @@
 !
       IF( INTERP ) CALL MKW( INTERP,IND,NCON,WW )
       ALLOCATE( A(NCON) )
-      SECONDSPERDAY = 86400
       DLAT = LAT
       IERR = 0
       DH = 0.D0
@@ -750,15 +720,15 @@
          CALL NODAL( TIME_MJD,DLAT,PU,PF )
 !        TO USE PHASE SHIFTS FROM CONSTIT, TIME SHOULD BE
 !        IN SECONDS, RELATIVE TO JAN 1 1992 (48622MJD)
-         TIME = (TIME_MJD-DBLE(48622))*DBLE(SECONDSPERDAY)
+         TIME = (TIME_MJD-48622.D0)*SECONDSPERDAY
 !        .TRUE. MEANS NO SOLID EARTH CORRECTION APPLIED IN MAKE_A
          CALL MAKE_A(.FALSE.,IND,NCON,TIME,PU,PF,WW,A,.TRUE.)
          PTIDE = HEIGHT(A,Z1,NCON)
          IF( INTERP )
      &      CALL INFER_MINOR( Z1,CID,NCON,TIME_MJD,DH,IERR )
          IF( IERR.EQ.-1 ) THEN
-            IF(LNG.EQ.1) WRITE(LU,*) 'PAS ASSEZ DE CONSTITUENTS' //
-     &        ' POUR EN DEDUIRE LES CONSTITUENTS MINEURS: IGNORES'
+            IF(LNG.EQ.1) WRITE(LU,*) 'PAS ASSEZ DE COMPOSANTES' //
+     &        ' POUR EN DEDUIRE LES COMPOSANTES MINEURES : IGNORE'
             IF(LNG.EQ.2) WRITE(LU,*) 'NOT ENOUGH CONSTITUENTS FOR' //
      &        ' INFERENCE OF MINOR CONSTITUENTS: IGNORED'
             INTERP=.FALSE.
@@ -775,40 +745,40 @@
       RETURN
       END FUNCTION PTIDE
 
-!              ************************************
-               DOUBLE PRECISION FUNCTION TPXO_PTIDE
-!              ************************************
-!
-     &( IV,ITFR,LAT,TIME_MJD,INTERP )
-!
-!***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
-!***********************************************************************
-!
-!brief
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER IV,ITFR
-      LOGICAL INTERP
-      DOUBLE PRECISION LAT, TIME_MJD
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      TPXO_PTIDE = PTIDE( TPXO_BOR(IV,ITFR,:),
-     &                    C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      RETURN
-      END FUNCTION TPXO_PTIDE
-
+c$$$!              ************************************
+c$$$               DOUBLE PRECISION FUNCTION TPXO_PTIDE
+c$$$!              ************************************
+c$$$!
+c$$$     &( IV,ITFR,LAT,TIME_MJD,INTERP )
+c$$$!
+c$$$!***********************************************************************
+c$$$! TELEMAC2D   V6P2                                   16/01/2012
+c$$$!***********************************************************************
+c$$$!
+c$$$!brief
+c$$$!
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!|                |-->|
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!
+c$$$      IMPLICIT NONE
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      INTEGER IV,ITFR
+c$$$      LOGICAL INTERP
+c$$$      DOUBLE PRECISION LAT, TIME_MJD
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      TPXO_PTIDE = PTIDE( TPXO_BOR(IV,ITFR,:),
+c$$$     &                    C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      RETURN
+c$$$      END FUNCTION TPXO_PTIDE
+c$$$
 !                    **************
                      SUBROUTINE MKW
 !                    **************
@@ -836,16 +806,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER J
+      INTEGER I,J
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      WR = TPXO_W
-      IF( INTERP ) RETURN
-!
-      DO J=1,NC
-         IF( IND(J).NE.0 ) WR(IND(J),:) = 0.0
+      DO J=1,TPXO_NCON
+         DO I=1,8
+            WR(J,I) = TPXO_W(J,I)
+         ENDDO
       ENDDO
+!
+      IF( .NOT.INTERP ) THEN
+         DO J=1,NC
+            IF( IND(J).NE.0 ) THEN
+               DO I=1,8
+                  WR(IND(J),I) = 0.D0
+               ENDDO
+            ENDIF
+         ENDDO
+      ENDIF
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -873,14 +852,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION DTIME,LATITUDE,PU(TPXO_NCMX),PF(TPXO_NCMX)
+      DOUBLE PRECISION DTIME,LATITUDE,PU(*),PF(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER INDEX(TPXO_NCMX),I
-      DOUBLE PRECISION ARG(53),F(53),U(53),PI
-!
-      DATA PI/3.141592653589793D0/
+      DOUBLE PRECISION ARG(53),F(53),U(53)
+      DOUBLE PRECISION, PARAMETER :: DTR = ATAN(1.D0)/45.D0
 !
 !     INDEX GIVES CORRESPONDENCE BETWEEN CONSTIT AND RICHARD'S SUBROUTINES
 !     IN CONSTIT   M2,S2,K1,O1,N2,P1,K2,q1,2N2,mu2,nu2,L2,t2,
@@ -894,12 +872,14 @@
 !     F, U - SAME AS PF, PU IN OLD NODAL.F; ARG IS NOT NEEDED;
 !     DTIME - MJD
       CALL ARGUMENTS( DTIME,ARG,F,U )
-      PU = 0
-      PF = 1
+      DO I=1,TPXO_NCMX
+         PU(I) = 0.D0
+         PF(I) = 1.D0
+      ENDDO
       DO I = 1,TPXO_NCMX
          IF( INDEX(I).GT.0 ) THEN
 !          U IS RETURNED BY "ARGUMENTS" IN DEGREES
-           PU(I) = U(INDEX(I))*PI/180.D0
+           PU(I) = U(INDEX(I))*DTR
            PF(I) = F(INDEX(I))
          ENDIF
       ENDDO
@@ -937,14 +917,14 @@
       DOUBLE PRECISION TMP1,TMP2,TEMP1,TEMP2
       DOUBLE PRECISION COSN,COS2N,SINN,SIN2N,SIN3N
       DOUBLE PRECISION ZERO,ONE,TWO,THREE,FOUR,FIVE
-      DOUBLE PRECISION FIFTEN,THIRTY,NINETY
-      DOUBLE PRECISION PI, RAD
+      DOUBLE PRECISION NINETY
+      DOUBLE PRECISION DTR,RTD
 !
-      PARAMETER   (PI=3.141592654D0, RAD=PI/180.D0)
+      PARAMETER   (DTR=ATAN(1.D0)/45.D0, RTD=45.D0/ATAN(1.D0))
       PARAMETER   (ZERO=0.D0, ONE=1.D0)
       PARAMETER   (TWO=2.D0, THREE=3.D0, FOUR=4.D0, FIVE=5.D0)
-      PARAMETER   (FIFTEN=15.D0, THIRTY=30.D0, NINETY=90.D0)
-      PARAMETER   (PP=282.94)        ! SOLAR PERIGEE AT EPOCH 2000.
+      PARAMETER   (NINETY=90.D0)
+      PARAMETER   (PP=282.94D0)        ! SOLAR PERIGEE AT EPOCH 2000.
 !
       EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
 !
@@ -956,8 +936,8 @@
 !     --------------------------------
       CALL ASTROL( TIME1, SHPN )
       HOUR = (TIME1 - INT(TIME1))*24.D0
-      T1 = FIFTEN*HOUR
-      T2 = THIRTY*HOUR
+      T1 = 15.D0*HOUR
+      T2 = 30.D0*HOUR
       ARG( 1) = H - PP                                  ! Sa
       ARG( 2) = TWO*H                                   ! Ssa
       ARG( 3) = S - P                                   ! Mm
@@ -996,9 +976,9 @@
       ARG(36) = T2 + H - PP + 180.D0                    ! R2
       ARG(37) = T2 + TWO*H                              ! K2
       ARG(38) = T2 + S + TWO*H - PP                     ! eta2
-      ARG(39) = T2 - FIVE*S + 4.0*H + P                 ! MNS2
+      ARG(39) = T2 - FIVE*S + FOUR*H + P                ! MNS2
       ARG(40) = T2 + TWO*S - TWO*H                      ! 2SM2
-      ARG(41) = 1.5*ARG(30)                             ! M3
+      ARG(41) = 1.5D0*ARG(30)                           ! M3
       ARG(42) = ARG(19) + ARG(30)                       ! MK3
       ARG(43) = THREE*T1                                ! S3
       ARG(44) = ARG(27) + ARG(30)                       ! MN4
@@ -1009,147 +989,147 @@
       ARG(49) = FIVE*T1                                 ! S5
       ARG(50) = THREE*ARG(30)                           ! M6
       ARG(51) = THREE*T2                                ! S6
-      ARG(52) = 7.0*T1                                  ! S7
+      ARG(52) = 7.D0*T1                                 ! S7
       ARG(53) = FOUR*T2                                 ! S8
 !
 !-----------------------------------------------------------------------
 !
 !     DETERMINES NODAL CORRECTIONS F AND U
 !     ------------------------------------
-      SINN = SIN(OMEGA*RAD)
-      COSN = COS(OMEGA*RAD)
-      SIN2N = SIN(TWO*OMEGA*RAD)
-      COS2N = COS(TWO*OMEGA*RAD)
-      SIN3N = SIN(THREE*OMEGA*RAD)
-      F( 1) = ONE                                     ! Sa
-      F( 2) = ONE                                     ! Ssa
-      F( 3) = ONE - 0.130*COSN                        ! Mm
-      F( 4) = ONE                                     ! MSf
-      F( 5) = 1.043 + 0.414*COSN                      ! Mf
-      F( 6) = SQRT((ONE+.203*COSN+.040*COS2N)**2 +
-     &              (.203*SINN+.040*SIN2N)**2)        ! Mt
+      SINN = SIN(OMEGA*DTR)
+      COSN = COS(OMEGA*DTR)
+      SIN2N = SIN(TWO*OMEGA*DTR)
+      COS2N = COS(TWO*OMEGA*DTR)
+      SIN3N = SIN(THREE*OMEGA*DTR)
+      F( 1) = ONE                                         ! Sa
+      F( 2) = ONE                                         ! Ssa
+      F( 3) = ONE - 0.130D0*COSN                          ! Mm
+      F( 4) = ONE                                         ! MSf
+      F( 5) = 1.043D0 + 0.414D0*COSN                      ! Mf
+      F( 6) = SQRT((ONE+.203D0*COSN+.040D0*COS2N)**2 +
+     &              (.203D0*SINN+.040D0*SIN2N)**2)        ! Mt
 
-      F( 7) = ONE                                     ! alpha1
-      F( 8) = SQRT((1.+.188*COSN)**2+(.188*SINN)**2)  ! 2Q1
-      F( 9) = F(8)                                    ! sigma1
-      F(10) = F(8)                                    ! q1
-      F(11) = F(8)                                    ! rho1
-      F(12) = SQRT((1.0+0.189*COSN-0.0058*COS2N)**2 +
-     &             (0.189*SINN-0.0058*SIN2N)**2)      ! O1
-      F(13) = ONE                                     ! tau1
-!     TMP1  = 2.*COS(P*RAD)+.4*COS((P-OMEGA)*RAD)     ! Doodson's
-!     TMP2  = SIN(P*RAD)+.2*SIN((P-OMEGA)*RAD)
-      TMP1  = 1.36*COS(P*RAD)+.267*COS((P-OMEGA)*RAD) ! Ray's
-      TMP2  = 0.64*SIN(P*RAD)+.135*SIN((P-OMEGA)*RAD)
-      F(14) = SQRT(TMP1**2 + TMP2**2)                 ! M1
-      F(15) = SQRT((1.+.221*COSN)**2+(.221*SINN)**2)  ! chi1
-      F(16) = ONE                                     ! pi1
-      F(17) = ONE                                     ! P1
-      F(18) = ONE                                     ! S1
-      F(19) = SQRT((1.+.1158*COSN-.0029*COS2N)**2 +
-     &             (.1554*SINN-.0029*SIN2N)**2)       ! K1
-      F(20) = ONE                                     ! psi1
-      F(21) = ONE                                     ! phi1
-      F(22) = ONE                                     ! theta1
-      F(23) = SQRT((1.+.169*COSN)**2+(.227*SINN)**2)  ! J1
-      F(24) = SQRT((1.0+0.640*COSN+0.134*COS2N)**2 +
-     &             (0.640*SINN+0.134*SIN2N)**2 )      ! OO1
-      F(25) = SQRT((1.-.03731*COSN+.00052*COS2N)**2 +
-     &             (.03731*SINN-.00052*SIN2N)**2)     ! 2N2
-      F(26) = F(25)                                   ! mu2
-      F(27) = F(25)                                   ! N2
-      F(28) = F(25)                                   ! nu2
-      F(29) = ONE                                     ! M2a
-      F(30) = F(25)                                   ! M2
-      F(31) = ONE                                     ! M2b
-      F(32) = ONE                                     ! lambda2
-      TEMP1 = 1.-0.25*COS(TWO*P*RAD)
-     &        -0.11*COS((TWO*P-OMEGA)*RAD)-0.04*COSN
-      TEMP2 = 0.25*SIN(TWO*P)+0.11*SIN((TWO*P-OMEGA)*RAD)
-     &        + 0.04*SINN
-      F(33) = SQRT(TEMP1**2 + TEMP2**2)               ! L2
-      F(34) = ONE                                     ! t2
-      F(35) = ONE                                     ! S2
-      F(36) = ONE                                     ! R2
-      F(37) = SQRT((1.+.2852*COSN+.0324*COS2N)**2 +
-     &             (.3108*SINN+.0324*SIN2N)**2)       ! K2
-      F(38) = SQRT((1.+.436*COSN)**2+(.436*SINN)**2)  ! eta2
-      F(39) = F(30)**2                                ! MNS2
-      F(40) = F(30)                                   ! 2SM2
-      F(41) = ONE   ! WRONG                           ! M3
-      F(42) = F(19)*F(30)                             ! MK3
-      F(43) = ONE                                     ! S3
-      F(44) = F(30)**2                                ! MN4
-      F(45) = F(44)                                   ! M4
-      F(46) = F(44)                                   ! MS4
-      F(47) = F(30)*F(37)                             ! MK4
-      F(48) = ONE                                     ! S4
-      F(49) = ONE                                     ! S5
-      F(50) = F(30)**3                                ! M6
-      F(51) = ONE                                     ! S6
-      F(52) = ONE                                     ! S7
-      F(53) = ONE                                     ! S8
+      F( 7) = ONE                                         ! alpha1
+      F( 8) = SQRT((ONE+.188D0*COSN)**2+(.188D0*SINN)**2) ! 2Q1
+      F( 9) = F(8)                                        ! sigma1
+      F(10) = F(8)                                        ! q1
+      F(11) = F(8)                                        ! rho1
+      F(12) = SQRT((ONE+0.189D0*COSN-0.0058D0*COS2N)**2 +
+     &             (0.189D0*SINN-0.0058D0*SIN2N)**2)      ! O1
+      F(13) = ONE                                         ! tau1
+!     TMP1  = 2.D0*COS(P*DTR)+.4D0*COS((P-OMEGA)*DTR)     ! Doodson's
+!     TMP2  = SIN(P*DTR)+.2D0*SIN((P-OMEGA)*DTR)
+      TMP1  = 1.36D0*COS(P*DTR)+.267D0*COS((P-OMEGA)*DTR) ! Ray's
+      TMP2  = 0.64D0*SIN(P*DTR)+.135D0*SIN((P-OMEGA)*DTR)
+      F(14) = SQRT(TMP1**2 + TMP2**2)                     ! M1
+      F(15) = SQRT((ONE+.221D0*COSN)**2+(.221D0*SINN)**2) ! chi1
+      F(16) = ONE                                         ! pi1
+      F(17) = ONE                                         ! P1
+      F(18) = ONE                                         ! S1
+      F(19) = SQRT((ONE+.1158D0*COSN-.0029D0*COS2N)**2 +
+     &             (.1554D0*SINN-.0029D0*SIN2N)**2)       ! K1
+      F(20) = ONE                                         ! psi1
+      F(21) = ONE                                         ! phi1
+      F(22) = ONE                                         ! theta1
+      F(23) = SQRT((ONE+.169D0*COSN)**2+(.227D0*SINN)**2) ! J1
+      F(24) = SQRT((ONE+0.640D0*COSN+0.134D0*COS2N)**2 +
+     &             (0.640D0*SINN+0.134D0*SIN2N)**2 )      ! OO1
+      F(25) = SQRT((ONE-.03731D0*COSN+.00052D0*COS2N)**2 +
+     &             (.03731D0*SINN-.00052D0*SIN2N)**2)     ! 2N2
+      F(26) = F(25)                                       ! mu2
+      F(27) = F(25)                                       ! N2
+      F(28) = F(25)                                       ! nu2
+      F(29) = ONE                                         ! M2a
+      F(30) = F(25)                                       ! M2
+      F(31) = ONE                                         ! M2b
+      F(32) = ONE                                         ! lambda2
+      TEMP1 = ONE-0.25D0*COS(TWO*P*DTR)
+     &        -0.11D0*COS((TWO*P-OMEGA)*DTR)-0.04D0*COSN
+      TEMP2 = 0.25D0*SIN(TWO*P)+0.11D0*SIN((TWO*P-OMEGA)*DTR)
+     &        + 0.04D0*SINN
+      F(33) = SQRT(TEMP1**2 + TEMP2**2)                   ! L2
+      F(34) = ONE                                         ! t2
+      F(35) = ONE                                         ! S2
+      F(36) = ONE                                         ! R2
+      F(37) = SQRT((ONE+.2852D0*COSN+.0324D0*COS2N)**2 +
+     &             (.3108D0*SINN+.0324D0*SIN2N)**2)       ! K2
+      F(38) = SQRT((ONE+.436D0*COSN)**2+(.436D0*SINN)**2) ! eta2
+      F(39) = F(30)**2                                    ! MNS2
+      F(40) = F(30)                                       ! 2SM2
+      F(41) = ONE   ! WRONG                               ! M3
+      F(42) = F(19)*F(30)                                 ! MK3
+      F(43) = ONE                                         ! S3
+      F(44) = F(30)**2                                    ! MN4
+      F(45) = F(44)                                       ! M4
+      F(46) = F(30)                                       ! MS4 ! BUG IN TPXO F(46) SHOULD BE F(30) RATHER THAN F(44)
+      F(47) = F(30)*F(37)                                 ! MK4
+      F(48) = ONE                                         ! S4
+      F(49) = ONE                                         ! S5
+      F(50) = F(30)**3                                    ! M6
+      F(51) = ONE                                         ! S6
+      F(52) = ONE                                         ! S7
+      F(53) = ONE                                         ! S8
 !
 !-----------------------------------------------------------------------
 !
-      U( 1) = ZERO                                    ! Sa
-      U( 2) = ZERO                                    ! Ssa
-      U( 3) = ZERO                                    ! Mm
-      U( 4) = ZERO                                    ! MSf
-      U( 5) = -23.7*SINN + 2.7*SIN2N - 0.4*SIN3N      ! Mf
-      U( 6) = ATAN(-(.203*SINN+.040*SIN2N)/
-     &              (ONE+.203*COSN+.040*COS2N))/RAD   ! Mt
-      U( 7) = ZERO                                    ! alpha1
-      U( 8) = ATAN(.189*SINN/(1.+.189*COSN))/RAD      ! 2Q1
-      U( 9) = U(8)                                    ! sigma1
-      U(10) = U(8)                                    ! q1
-      U(11) = U(8)                                    ! rho1
-      U(12) = 10.8*SINN - 1.3*SIN2N + 0.2*SIN3N       ! O1
-      U(13) = ZERO                                    ! tau1
-      U(14) = ATAN2(TMP2,TMP1)/RAD                    ! M1
-      U(15) = ATAN(-.221*SINN/(1.+.221*COSN))/RAD     ! chi1
-      U(16) = ZERO                                    ! pi1
-      U(17) = ZERO                                    ! P1
-      U(18) = ZERO                                    ! S1
-      U(19) = ATAN((-.1554*SINN+.0029*SIN2N)/
-     &             (1.+.1158*COSN-.0029*COS2N))/RAD   ! K1
-      U(20) = ZERO                                    ! psi1
-      U(21) = ZERO                                    ! phi1
-      U(22) = ZERO                                    ! theta1
-      U(23) = ATAN(-.227*SINN/(1.+.169*COSN))/RAD     ! J1
-      U(24) = ATAN(-(.640*SINN+.134*SIN2N)/
-     &             (1.+.640*COSN+.134*COS2N))/RAD     ! OO1
-      U(25) = ATAN((-.03731*SINN+.00052*SIN2N)/
-     &             (1.-.03731*COSN+.00052*COS2N))/RAD ! 2N2
-      U(26) = U(25)                                   ! mu2
-      U(27) = U(25)                                   ! N2
-      U(28) = U(25)                                   ! nu2
-      U(29) = ZERO                                    ! M2a
-      U(30) = U(25)                                   ! M2
-      U(31) = ZERO                                    ! M2b
-      U(32) = ZERO                                    ! lambda2
-      U(33) = ATAN(-TEMP2/TEMP1)/RAD                  ! L2
-      U(34) = ZERO                                    ! t2
-      U(35) = ZERO                                    ! S2
-      U(36) = ZERO                                    ! R2
-      U(37) = ATAN(-(.3108*SINN+.0324*SIN2N)/
-     &             (1.+.2852*COSN+.0324*COS2N))/RAD   ! K2
-      U(38) = ATAN(-.436*SINN/(1.+.436*COSN))/RAD     ! eta2
-      U(39) = U(30)*TWO                               ! MNS2
-      U(40) = U(30)                                   ! 2SM2
-      U(41) = 1.5D0*U(30)                             ! M3
-      U(42) = U(30) + U(19)                           ! MK3
-      U(43) = ZERO                                    ! S3
-      U(44) = U(30)*TWO                               ! MN4
-      U(45) = U(44)                                   ! M4
-      U(46) = U(30)                                   ! MS4
-      U(47) = U(30)+U(37)                             ! MK4
-      U(48) = ZERO                                    ! S4
-      U(49) = ZERO                                    ! S5
-      U(50) = U(30)*THREE                             ! M6
-      U(51) = ZERO                                    ! S6
-      U(52) = ZERO                                    ! S7
-      U(53) = ZERO                                    ! S8
+      U( 1) = ZERO                                         ! Sa
+      U( 2) = ZERO                                         ! Ssa
+      U( 3) = ZERO                                         ! Mm
+      U( 4) = ZERO                                         ! MSf
+      U( 5) = -23.7D0*SINN + 2.7D0*SIN2N - 0.4D0*SIN3N     ! Mf
+      U( 6) = ATAN(-(.203D0*SINN+.040D0*SIN2N)/
+     &              (ONE+.203D0*COSN+.040D0*COS2N))*RTD    ! Mt
+      U( 7) = ZERO                                         ! alpha1
+      U( 8) = ATAN(.189D0*SINN/(ONE+.189D0*COSN))*RTD      ! 2Q1
+      U( 9) = U(8)                                         ! sigma1
+      U(10) = U(8)                                         ! q1
+      U(11) = U(8)                                         ! rho1
+      U(12) = 10.8D0*SINN - 1.3D0*SIN2N + 0.2D0*SIN3N      ! O1
+      U(13) = ZERO                                         ! tau1
+      U(14) = ATAN2(TMP2,TMP1)*RTD                         ! M1
+      U(15) = ATAN(-.221D0*SINN/(ONE+.221D0*COSN))*RTD     ! chi1
+      U(16) = ZERO                                         ! pi1
+      U(17) = ZERO                                         ! P1
+      U(18) = ZERO                                         ! S1
+      U(19) = ATAN((-.1554D0*SINN+.0029D0*SIN2N)/
+     &             (ONE+.1158D0*COSN-.0029D0*COS2N))*RTD   ! K1
+      U(20) = ZERO                                         ! psi1
+      U(21) = ZERO                                         ! phi1
+      U(22) = ZERO                                         ! theta1
+      U(23) = ATAN(-.227D0*SINN/(ONE+.169D0*COSN))*RTD     ! J1
+      U(24) = ATAN(-(.640D0*SINN+.134D0*SIN2N)/
+     &             (ONE+.640D0*COSN+.134D0*COS2N))*RTD     ! OO1
+      U(25) = ATAN((-.03731D0*SINN+.00052D0*SIN2N)/
+     &             (ONE-.03731D0*COSN+.00052D0*COS2N))*RTD ! 2N2
+      U(26) = U(25)                                        ! mu2
+      U(27) = U(25)                                        ! N2
+      U(28) = U(25)                                        ! nu2
+      U(29) = ZERO                                         ! M2a
+      U(30) = U(25)                                        ! M2
+      U(31) = ZERO                                         ! M2b
+      U(32) = ZERO                                         ! lambda2
+      U(33) = ATAN(-TEMP2/TEMP1)*RTD                       ! L2
+      U(34) = ZERO                                         ! t2
+      U(35) = ZERO                                         ! S2
+      U(36) = ZERO                                         ! R2
+      U(37) = ATAN(-(.3108D0*SINN+.0324D0*SIN2N)/
+     &             (ONE+.2852D0*COSN+.0324D0*COS2N))*RTD   ! K2
+      U(38) = ATAN(-.436D0*SINN/(ONE+.436D0*COSN))*RTD     ! eta2
+      U(39) = U(30)*TWO                                    ! MNS2
+      U(40) = U(30)                                        ! 2SM2
+      U(41) = 1.5D0*U(30)                                  ! M3
+      U(42) = U(30) + U(19)                                ! MK3
+      U(43) = ZERO                                         ! S3
+      U(44) = U(30)*TWO                                    ! MN4
+      U(45) = U(44)                                        ! M4
+      U(46) = U(30)                                        ! MS4
+      U(47) = U(30)+U(37)                                  ! MK4
+      U(48) = ZERO                                         ! S4
+      U(49) = ZERO                                         ! S5
+      U(50) = U(30)*THREE                                  ! M6
+      U(51) = ZERO                                         ! S6
+      U(52) = ZERO                                         ! S7
+      U(53) = ZERO                                         ! S8
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1180,7 +1160,7 @@
       INTEGER IND(NC)
       LOGICAL INTERP, L_SAL
       DOUBLE PRECISION W(TPXO_NCON,8)
-      DOUBLE PRECISION PU(TPXO_NCMX),PF(TPXO_NCMX)
+      DOUBLE PRECISION PU(*),PF(*)
       DOUBLE PRECISION TIME
       COMPLEX A(NC)
 !
@@ -1204,33 +1184,35 @@
          DO J = 1,NC
            I = IND(J)
            IF( I.NE.0 ) THEN
-        	     C(J) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &  	                   PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)))
+              C(J) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                      PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)))
             ENDIF
          ENDDO
 !        REMOVE SOLID EARTH TIDE
          IF( .NOT.L_SAL ) THEN
             DO J = 1,NC
-              A(J) = 0.
+              A(J) = CMPLX(0.D0,0.D0)
               IF( IND(J).NE.0 ) A(J) = C(J)*TPXO_BETA_SE(IND(J))
             ENDDO
          ELSE
             DO J = 1,NC
-              A(J) = C(J)*1.
+              A(J) = C(J)
             ENDDO
          ENDIF
 !
       ELSE
 !     THIS IS THE CASE WHEN W FROM MODULE WEIGHTS IS USED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         OMEGA(1:TPXO_NCON) = TPXO_OMEGA_D(1:TPXO_NCON)
-         PHASE(1:TPXO_NCON) = TPXO_PHASE_MKB(1:TPXO_NCON)
+         DO I=1,TPXO_NCON
+            OMEGA(I) = TPXO_OMEGA_D(I)
+            PHASE(I) = TPXO_PHASE_MKB(I)
+         ENDDO
 !
          DO I=1,TPXO_NCON
             C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &	                   PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)))
+     &	                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)))
          ENDDO
-         A = CMPLX(0,0)
+         A = CMPLX(0.D0,0.D0)
 !
 !        IND(J)=0 MEANS THE CONSTITUENT IS EXCLUDED
          DO I = 1,TPXO_NCON
@@ -1271,9 +1253,9 @@
       INTEGER NCON
       INTEGER IERR             ! -1 IF NOT ENOUGH CONSTITUENTS
                                !    FOR INFERENCE
-      CHARACTER*4 CID(NCON)    ! GIVEN CONSTITUENTS
-      DOUBLE PRECISION TIME              ! TIME, MJD
-      DOUBLE PRECISION DH                ! OUTPUT: CORRECTION AT GIVEN TIME
+      CHARACTER(LEN=4) CID(NCON)  ! GIVEN CONSTITUENTS
+      DOUBLE PRECISION TIME    ! TIME, MJD
+      DOUBLE PRECISION DH      ! OUTPUT: CORRECTION AT GIVEN TIME
                                ! FOR 16 MINOR CONSTITUENTS
       COMPLEX ZMAJ(NCON)       ! HC FOR GIVEN CONSTITUENTS
 !
@@ -1283,11 +1265,11 @@
       DOUBLE PRECISION HOUR,T1,T2,SHPN(4),S,H,P,OMEGA
       DOUBLE PRECISION SINN,COSN,SIN2N,COS2N
       DOUBLE PRECISION U(18),F(18),ARG(18)
-      DOUBLE PRECISION, PARAMETER:: PI=3.141592654D0
-      DOUBLE PRECISION, PARAMETER:: RAD=PI/180.D0
+      DOUBLE PRECISION, PARAMETER:: DTR=ATAN(1.D0)/45.D0
+      DOUBLE PRECISION, PARAMETER:: RTD=45.D0/ATAN(1.D0)
       DOUBLE PRECISION, PARAMETER:: PP=282.8D0
-      COMPLEX(KIND(1.D0)) ZMIN(18)
-      COMPLEX(KIND(1.D0)) Z8(8)
+      COMPLEX ZMIN(18)
+      COMPLEX Z8(8)
 !
       EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
 !
@@ -1301,7 +1283,7 @@
 !
 !     RE-ORDER TO CORRESPOND TO CID8
       IERR = 0
-      Z8 = CMPLX(0.D0,0.D0,KIND(1.D0))
+      Z8 = CMPLX(0.D0,0.D0)
       NI = 0
       DO I = 1,8
          DO J = 1,NCON
@@ -1317,92 +1299,92 @@
          RETURN
       ENDIF
 !
-      ZMIN(1)  = 0.263 *Z8(1) - 0.0252*Z8(2)  !2Q1
-      ZMIN(2)  = 0.297 *Z8(1) - 0.0264*Z8(2)  !sigma1
-      ZMIN(3)  = 0.164 *Z8(1) + 0.0048*Z8(2)  !rho1 +
-      ZMIN(4)  = 0.0140*Z8(2) + 0.0101*Z8(4)  !M1
-      ZMIN(5)  = 0.0389*Z8(2) + 0.0282*Z8(4)  !M1
-      ZMIN(6)  = 0.0064*Z8(2) + 0.0060*Z8(4)  !chi1
-      ZMIN(7)  = 0.0030*Z8(2) + 0.0171*Z8(4)  !pi1
-      ZMIN(8)  =-0.0015*Z8(2) + 0.0152*Z8(4)  !phi1
-      ZMIN(9)  =-0.0065*Z8(2) + 0.0155*Z8(4)  !theta1
-      ZMIN(10) =-0.0389*Z8(2) + 0.0836*Z8(4)  !J1 +
-      ZMIN(11) =-0.0431*Z8(2) + 0.0613*Z8(4)  !OO1 +
-      ZMIN(12) = 0.264 *Z8(5) - 0.0253*Z8(6)  !2N2 +
-      ZMIN(13) = 0.298 *Z8(5) - 0.0264*Z8(6)  !mu2 +
-      ZMIN(14) = 0.165 *Z8(5) + 0.00487*Z8(6) !nu2 +
-      ZMIN(15) = 0.0040*Z8(6) + 0.0074*Z8(7)  !lambda2
-      ZMIN(16) = 0.0131*Z8(6) + 0.0326*Z8(7)  !L2 +
-      ZMIN(17) = 0.0033*Z8(6) + 0.0082*Z8(7)  !L2 +
-      ZMIN(18) = 0.0585*Z8(7)                 !t2 +
+      ZMIN(1)  = 0.263D0 *Z8(1) - 0.0252D0*Z8(2)  ! 2Q1
+      ZMIN(2)  = 0.297D0 *Z8(1) - 0.0264D0*Z8(2)  ! sigma1
+      ZMIN(3)  = 0.164D0 *Z8(1) + 0.0048D0*Z8(2)  ! rho1 +
+      ZMIN(4)  = 0.0140D0*Z8(2) + 0.0101D0*Z8(4)  ! M1
+      ZMIN(5)  = 0.0389D0*Z8(2) + 0.0282D0*Z8(4)  ! M1
+      ZMIN(6)  = 0.0064D0*Z8(2) + 0.0060D0*Z8(4)  ! chi1
+      ZMIN(7)  = 0.0030D0*Z8(2) + 0.0171D0*Z8(4)  ! pi1
+      ZMIN(8)  =-0.0015D0*Z8(2) + 0.0152D0*Z8(4)  ! phi1
+      ZMIN(9)  =-0.0065D0*Z8(2) + 0.0155D0*Z8(4)  ! theta1
+      ZMIN(10) =-0.0389D0*Z8(2) + 0.0836D0*Z8(4)  ! J1 +
+      ZMIN(11) =-0.0431D0*Z8(2) + 0.0613D0*Z8(4)  ! OO1 +
+      ZMIN(12) = 0.264D0 *Z8(5) - 0.0253D0*Z8(6)  ! 2N2 +
+      ZMIN(13) = 0.298D0 *Z8(5) - 0.0264D0*Z8(6)  ! mu2 +
+      ZMIN(14) = 0.165D0 *Z8(5) + 0.00487D0*Z8(6) ! nu2 +
+      ZMIN(15) = 0.0040D0*Z8(6) + 0.0074D0*Z8(7)  ! lambda2
+      ZMIN(16) = 0.0131D0*Z8(6) + 0.0326D0*Z8(7)  ! L2 +
+      ZMIN(17) = 0.0033D0*Z8(6) + 0.0082D0*Z8(7)  ! L2 +
+      ZMIN(18) = 0.0585D0*Z8(7)                   ! t2 +
 !
       HOUR = (TIME - INT(TIME))*24.D0
       T1 = 15.D0*HOUR
       T2 = 30.D0*HOUR
       CALL ASTROL( TIME, SHPN )
 !
-      ARG(1)  = T1 - 4.*S + H + 2.*P - 90.    ! 2Q1
-      ARG(2)  = T1 - 4.*S + 3.*H - 90.        ! sigma1
-      ARG(3)  = T1 - 3.*S + 3.*H - P - 90.    ! rho1
-      ARG(4)  = T1 - S + H - P + 90.          ! M1
-      ARG(5)  = T1 - S + H + P + 90.          ! M1
-      ARG(6)  = T1 - S + 3.*H - P + 90.       ! chi1
-      ARG(7)  = T1 - 2.*H + PP - 90.          ! pi1
-      ARG(8)  = T1 + 3.*H + 90.               ! phi1
-      ARG(9)  = T1 + S - H + P + 90.          ! theta1
-      ARG(10) = T1 + S + H - P + 90.          ! J1
-      ARG(11) = T1 + 2.*S + H + 90.           ! OO1
-      ARG(12) = T2 - 4.*S + 2.*H + 2.*P       ! 2N2
-      ARG(13) = T2 - 4.*S + 4.*H              ! mu2
-      ARG(14) = T2 - 3.*S + 4.*H - P          ! nu2
-      ARG(15) = T2 - S + P + 180.D0           ! lambda2
-      ARG(16) = T2 - S + 2.*H - P + 180.D0    ! L2
-      ARG(17) = T2 - S + 2.*H + P             ! L2
-      ARG(18) = T2 - H + PP                   ! t2
+      ARG(1)  = T1 - 4.D0*S + H + 2.D0*P - 90.D0 ! 2Q1
+      ARG(2)  = T1 - 4.D0*S + 3.D0*H - 90.D0     ! sigma1
+      ARG(3)  = T1 - 3.D0*S + 3.D0*H - P - 90.D0 ! rho1
+      ARG(4)  = T1 - S + H - P + 90.D0           ! M1
+      ARG(5)  = T1 - S + H + P + 90.D0           ! M1
+      ARG(6)  = T1 - S + 3.D0*H - P + 90.D0      ! chi1
+      ARG(7)  = T1 - 2.D0*H + PP - 90.D0         ! pi1
+      ARG(8)  = T1 + 3.D0*H + 90.D0              ! phi1
+      ARG(9)  = T1 + S - H + P + 90.D0           ! theta1
+      ARG(10) = T1 + S + H - P + 90.D0           ! J1
+      ARG(11) = T1 + 2.D0*S + H + 90.D0          ! OO1
+      ARG(12) = T2 - 4.D0*S + 2.D0*H + 2.D0*P    ! 2N2
+      ARG(13) = T2 - 4.D0*S + 4.D0*H             ! mu2
+      ARG(14) = T2 - 3.D0*S + 4.D0*H - P         ! nu2
+      ARG(15) = T2 - S + P + 180.D0              ! lambda2
+      ARG(16) = T2 - S + 2.D0*H - P + 180.D0     ! L2
+      ARG(17) = T2 - S + 2.D0*H + P              ! L2
+      ARG(18) = T2 - H + PP                      ! t2
 !
 !     DETERMINES NODAL CORRECTIONS F AND U
-      SINN = SIN(OMEGA*RAD)
-      COSN = COS(OMEGA*RAD)
-      SIN2N = SIN(2.*OMEGA*RAD)
-      COS2N = COS(2.*OMEGA*RAD)
+      SINN = SIN(OMEGA*DTR)
+      COSN = COS(OMEGA*DTR)
+      SIN2N = SIN(2.D0*OMEGA*DTR)
+      COS2N = COS(2.D0*OMEGA*DTR)
 !
       DO I = 1,18
-        F(I) = 1.0
+        F(I) = 1.D0
       ENDDO
-      F(1) = SQRT((1.0 + 0.189*COSN - 0.0058*COS2N)**2 +
-     &            (0.189*SINN - 0.0058*SIN2N)**2)
+      F(1) = SQRT((1.D0 + 0.189D0*COSN - 0.0058D0*COS2N)**2 +
+     &            (0.189D0*SINN - 0.0058D0*SIN2N)**2)
       F(2) = F(1)
       F(3) = F(1)
-      F(4) = SQRT((1.0 + 0.185*COSN)**2 + (0.185*SINN)**2)
-      F(5) = SQRT((1.0 + 0.201*COSN)**2 + (0.201*SINN)**2)
-      F(6) = SQRT((1.0 + 0.221*COSN)**2 + (0.221*SINN)**2)
-      F(10) = SQRT((1.0 + 0.198*COSN)**2 + (0.198*SINN)**2)
-      F(11) = SQRT((1.0 + 0.640*COSN + 0.134*COS2N)**2 +
-     &             (0.640*SINN + 0.134*SIN2N)**2 )
-      F(12) = SQRT((1.0 - 0.0373*COSN)**2 + (0.0373*SINN)**2)
+      F(4) = SQRT((1.D0 + 0.185D0*COSN)**2 + (0.185D0*SINN)**2)
+      F(5) = SQRT((1.D0 + 0.201D0*COSN)**2 + (0.201D0*SINN)**2)
+      F(6) = SQRT((1.D0 + 0.221D0*COSN)**2 + (0.221D0*SINN)**2)
+      F(10) = SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2)
+      F(11) = SQRT((1.D0 + 0.640D0*COSN + 0.134D0*COS2N)**2 +
+     &             (0.640D0*SINN + 0.134D0*SIN2N)**2 )
+      F(12) = SQRT((1.D0 - 0.0373D0*COSN)**2 + (0.0373D0*SINN)**2)
       F(13) = F(12)
       F(14) = F(12)
       F(16) = F(12)
-      F(17) = SQRT((1.0 + 0.441*COSN)**2 + (0.441*SINN)**2)
+      F(17) = SQRT((1.D0 + 0.441D0*COSN)**2 + (0.441D0*SINN)**2)
 !
       DO I = 1,18
         U(I) = 0.D0
       ENDDO
-      U(1) = ATAN2(0.189*SINN - 0.0058*SIN2N,
-     &             1.0 + 0.189*COSN - 0.0058*SIN2N)/RAD
+      U(1) = ATAN2(0.189D0*SINN - 0.0058D0*SIN2N,
+     &             1.D0 + 0.189D0*COSN - 0.0058D0*SIN2N)*RTD
       U(2) = U(1)
       U(3) = U(1)
-      U(4) = ATAN2( 0.185*SINN, 1.0 + 0.185*COSN)/RAD
-      U(5) = ATAN2(-0.201*SINN, 1.0 + 0.201*COSN)/RAD
-      U(6) = ATAN2(-0.221*SINN, 1.0 + 0.221*COSN)/RAD
-      U(10) = ATAN2(-0.198*SINN, 1.0 + 0.198*COSN)/RAD
-      U(11) = ATAN2(-0.640*SINN - 0.134*SIN2N,
-     &              1.0 + 0.640*COSN + 0.134*COS2N)/RAD
-      U(12) = ATAN2(-0.0373*SINN, 1.0 - 0.0373*COSN)/RAD
+      U(4) = ATAN2( 0.185D0*SINN, 1.D0 + 0.185D0*COSN)*RTD
+      U(5) = ATAN2(-0.201D0*SINN, 1.D0 + 0.201D0*COSN)*RTD
+      U(6) = ATAN2(-0.221D0*SINN, 1.D0 + 0.221D0*COSN)*RTD
+      U(10) = ATAN2(-0.198D0*SINN, 1.D0 + 0.198D0*COSN)*RTD
+      U(11) = ATAN2(-0.640D0*SINN - 0.134D0*SIN2N,
+     &              1.D0 + 0.640D0*COSN + 0.134D0*COS2N)*RTD
+      U(12) = ATAN2(-0.0373D0*SINN, 1.D0 - 0.0373D0*COSN)*RTD
       U(13) = U(12)
       U(14) = U(12)
       U(16) = U(12)
-      U(17) = ATAN2(-0.441*SINN, 1.0 + 0.441*COSN)/RAD
+      U(17) = ATAN2(-0.441D0*SINN, 1.D0 + 0.441D0*COSN)*RTD
 !
 !     SUM OVER ALL TIDES
 !     ------------------
@@ -1410,8 +1392,8 @@
       DO I = 1,18
 !       NOTE JMH: DREAL AND DIMAG ARE NOT ACCEPTED BY NAG
 !                 DON'T KNOW WHAT TO DO
-        DH = DH + REAL(ZMIN(I))*F(I)*COS((ARG(I)+U(I))*RAD)-
-     &           AIMAG(ZMIN(I))*F(I)*SIN((ARG(I)+U(I))*RAD)
+        DH = DH + REAL(ZMIN(I))*F(I)*COS((ARG(I)+U(I))*DTR)-
+     &           AIMAG(ZMIN(I))*F(I)*SIN((ARG(I)+U(I))*DTR)
       ENDDO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1445,12 +1427,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION SHPN,TIME
+      DOUBLE PRECISION SHPN(4),TIME
 !
 !-----------------------------------------------------------------------
 !
       DOUBLE PRECISION CIRCLE,T
-      DIMENSION  SHPN(4)
       PARAMETER ( CIRCLE=360.0D0 )
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -1499,7 +1480,7 @@
 ! TELEMAC2D   V6P2                                   16/01/2012
 !***********************************************************************
 !
-!brief    CONVERTS DATE TO MJD
+!brief    CONVERTS DATE TO MJD (MODIFIED JULIAN DAYS)
 !+  INPUT:  ID - DAY, MM - MONTH, IYYY - YEAR
 !+  OUTPUT: MJD > 0 - MODIFIED JULIAN DAYS
 !+  DATE >= 11.17.1858 CORRESPONDS TO MJD = 0
@@ -1524,8 +1505,8 @@
       DATE_MJD = 0
 !     NO EARLIER DATES
       IF( IYYY.LT.1858 ) IYYY = 1858
-      IF( IYYY.EQ.1858.AND.MM.GT.11 ) MM = 11
-      IF( IYYY.EQ.1858.AND.MM.EQ.11.AND.ID.GT.17 ) ID = 17
+      IF( IYYY.EQ.1858.AND.MM.LT.11 ) MM = 11
+      IF( IYYY.EQ.1858.AND.MM.EQ.11.AND.ID.LT.17 ) ID = 17
 !
       DAYS = 0
       DO I = 1,MM-1
@@ -1536,18 +1517,18 @@
 
 !     LEAP DAY CORRECTION
       DO K = 1900,IYYY,100
-         IF( IYYY.EQ.K.AND.MM.GT.2 ) DAYS = DAYS-1
+         IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS-1
       ENDDO
       DO K = 2000,IYYY,400
-         IF( IYYY.EQ.K.AND.MM.GT.2 ) DAYS = DAYS+1
+         IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS+1
       ENDDO
 !     EACH 4TH YEAR IS LEAP YEAR
       NLEAP = INT((IYYY-1-1860)*0.25)
       IF( IYYY.GT.1860 ) NLEAP = NLEAP+1
 !     EXCEPT
       DO K = 1900,IYYY-1,100
-        IF( IYYY.GT.K ) NLEAP = NLEAP-1
-        IF( IYYY.EQ.K.AND.MM.GT.2 ) DAYS = DAYS-1
+        IF( K.LT.IYYY ) NLEAP = NLEAP-1
+        IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS-1
       ENDDO
 !     BUT EACH IN THE ROW 2000:400:... IS LEAP YEAR AGAIN
       DO K = 2000,IYYY-1,400
@@ -1564,18 +1545,18 @@
                      SUBROUTINE ALLBORD_TPXO
 !                    ***********************
 !
-     &(MESH,LIHBOR,KENT)
+     &(MESH,LIHBOR,LIUBOR,KENT,KENTU)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   06/12/2011
 !***********************************************************************
 !
-!brief    Prepare a level boundary filter to stor the TPXO constituents
+!brief    Prepare a level boundary filter to store the TPXO constituents
 !+        at the boundary. In particular,
 !+        count NPTNFR and ALLOCATE and set the filter TPXO_NFR
 !
-!note     Passing MESH and LIHBOR as arguments allows this SUBROUTINE
-!+        to be called from TELEMAC-2D or TELEMAC-3D
+!note     Passing MESH, LIHBOR and LIUBOR as arguments allows
+!+        this SUBROUTINE to be called from TELEMAC-2D or TELEMAC-3D
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        06/12/2011
@@ -1584,8 +1565,12 @@
 !+        TELEMAC-2D AND 3D
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  KENT          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+!|  KENTU         |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+!|  LIHBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+!|                |-->| (KENT IS HERE OF INTEREST)
+!|  LIUBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
 !|  MESH          |-->| 2D MESH
-!|  LIHBOR        |-->| BOUNDARY TYPE KENT IS HERE OF INTEREST
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -1597,8 +1582,8 @@
 !-----------------------------------------------------------------------
 !
       TYPE(BIEF_MESH), INTENT(IN) :: MESH
-      INTEGER, INTENT(IN) :: KENT
-      INTEGER, INTENT(IN) :: LIHBOR(*)
+      INTEGER, INTENT(IN) :: KENT,KENTU
+      INTEGER, INTENT(IN) :: LIHBOR(*),LIUBOR(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1609,10 +1594,12 @@
 !     PREPARE STORAGE ON LEVEL BOUNDARIES
 !
       ALLOCATE( TPXO_NFR(MESH%NPOIN) )
-      TPXO_NFR = 0
+      DO K=1,MESH%NPOIN
+         TPXO_NFR(K) = 0
+      ENDDO
       NPTNFR = 0
       DO K = 1,MESH%NPTFR
-         IF( LIHBOR(K).EQ.KENT ) THEN
+         IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
             NPTNFR = NPTNFR + 1
             TPXO_NFR(MESH%NBOR%I(K)) = NPTNFR
          ENDIF
@@ -1625,7 +1612,8 @@
                      SUBROUTINE CONDI_TPXO
 !                    *********************
 !
-     &(NPOIN,X,Y,H,U,V,LAMBD0,PHI0,T2D_FILES,T2DBB1,T2DBB2)
+     &(NPOIN,X,Y,H,U,V,LAMBD0,PHI0,T2D_FILES,T2DBB1,T2DBB2,
+     & MARDAT,MARTIM)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   06/12/2011
@@ -1648,6 +1636,8 @@
 !|  X,Y           |-->| COORDINATES X AND Y OF THE NODES OF THE MESH
 !|  H             |<->| COMES IN AS -ZF, TO WHICH THE TPXO FREE SURFACE
 !|                |   | WILL BE ADDED TO PRODUCE WATER DEPTH
+!|  MARDAT        |-->| DATE (YEAR, MONTH,DAY)
+!|  MARTIM        |-->| TIME (HOUR, MINUTE,SECOND)
 !|  PHI0          |-->| 
 !|  LAMBD0        |-->| 
 !|  T2DBB1        |-->| ADDRESS OF DATA BASE 1 IN T2D_FILES
@@ -1664,6 +1654,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,T2DBB1,T2DBB2
+      INTEGER, INTENT(IN)             :: MARDAT(3),MARTIM(3)
       DOUBLE PRECISION, INTENT(IN)    :: LAMBD0,PHI0
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN)
@@ -1672,20 +1663,40 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IC,I,J,K,IPOIN,IERR
+      INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M
+      INTEGER, ALLOCATABLE :: CIND(:)
+      INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
+      DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
+      DOUBLE PRECISION, PARAMETER :: PI = 4.D0*ATAN(1.D0)
+      DOUBLE PRECISION, PARAMETER :: DTR = PI/180.D0
+      DOUBLE PRECISION, PARAMETER :: RTD = 180.D0/PI
       DOUBLE PRECISION LAT,LON,SPD
+      DOUBLE PRECISION LAT0,LONG0,CONST
+      REAL PH_LIM(2),TH_LIM(2)
+      COMPLEX, ALLOCATABLE :: ZT(:,:,:)
+      COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
+      COMPLEX, ALLOCATABLE :: UV(:,:,:), ZCON(:)
+      CHARACTER(LEN=4) C_ID_MOD(TPXO_NCMX)
 !
-      INTRINSIC DTAN,DATAN
+!     N,M: SIZES OF THE GRID SUPPORTING THE TPXO MODEL
+!     NC: NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
+!     MASKT,MASKU,MASKV MASKS TO FILTER VALID AND INVALID (U,V,H) VALUES
+!     RADIUS: RADIUS OF THE EARTH
+!     LAT0,LONG0,CONST: REFERENCE LATITUDE AND LONGITUDE
+!     PH_LIM,TH_LIM: MIN AND MAX RANGES FOR PHASES AND PERIODES
+!     ZT,UT,VT,UV,ZCON: PHASES AND PERIODS FOR U, V AND H
+!     HERE DEFINED AS COMPLEX
+!     C_ID_MOD INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!
+      INTRINSIC TAN,ATAN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     USER AND CONVERTION CONSTANTS
 !
-      PI = 4.D0*DATAN(1.D0)
-      DEG2RAD = PI/180.D0
-      LAT0 = LAMBD0 * DEG2RAD
-      LONG0 = PHI0 * DEG2RAD
-      CONST = DTAN( 0.5D0*LAT0 + 0.25D0*PI )
+      LAT0 = LAMBD0 * DTR
+      LONG0 = PHI0 * DTR
+      CONST = TAN( 0.5D0*LAT0 + 0.25D0*PI )
 !
       I_MICON = .FALSE.
 !
@@ -1726,9 +1737,22 @@
 !
       ALLOCATE( TPXO_BOR(3,NPTNFR,NCON) )
       ALLOCATE( TPXO_LATFR(NPTNFR) )
-      TPXO_BOR = 0.D0
+      DO K=1,NCON
+         DO J=1,NPTNFR
+            DO I=1,3
+               TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0)
+            ENDDO
+         ENDDO
+      ENDDO
 !     AJOUTE PAR JMH 03/04/2012, A VOIR SEB ?
-      TPXO_LATFR = 0.D0
+      DO J=1,NPTNFR
+         TPXO_LATFR(J) = 0.D0
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      STIME_MJD = DATE_MJD( MARDAT(2),MARDAT(3),MARDAT(1) ) +
+     &            MARTIM(1)/24.D0+MARTIM(2)/1440.D0+MARTIM(3)/86400.D0
 !
 !-----------------------------------------------------------------------
 !
@@ -1738,7 +1762,11 @@
       IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING LEVELS'
 !
       ALLOCATE( ZT(NCON,N,M), MASKT(N,M) )
-      MASKT = 0
+      DO J=1,M
+         DO I=1,N
+            MASKT(I,J) = 0
+         ENDDO
+      ENDDO
 !
       DO IC = 1,NCON
          REWIND(T2D_FILES(T2DBB1)%LU)
@@ -1747,7 +1775,7 @@
             READ(T2D_FILES(T2DBB1)%LU)
          ENDDO
          READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
-         WHERE( ZT(IC,:,:).NE.0 ) MASKT = 1
+         WHERE( ZT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKT = 1
       ENDDO
 !
 !     INTERPOLATE TPXO IN SPACE
@@ -1758,9 +1786,9 @@
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
 !
-         LON = 180.D0/PI*( X(IPOIN)/RADIUS + LONG0 )
-         LAT = 180.D0/PI*
-     &      ( 2.D0*DATAN(CONST*DEXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
+         LON = RTD*( X(IPOIN)/RADIUS + LONG0 )
+         LAT = RTD*
+     &      ( 2.D0*ATAN(CONST*EXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
          IF( LON.GT.PH_LIM(2) ) LON = LON - 360.D0
          IF( LON.LT.PH_LIM(1) ) LON = LON + 360.D0
 !
@@ -1768,9 +1796,14 @@
      &                TH_LIM,PH_LIM,LAT,LON,ZCON,IERR,'z' )
          IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
      &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT,STIME_MJD,I_MICON )
-         IF( TPXO_NFR(IPOIN).NE.0 ) TPXO_BOR(1,TPXO_NFR(IPOIN),:) = ZCON(:)
+         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
+               TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+         ENDIF
 !###> MST@HRW: CHECKING DRY LANDS
-         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
+!         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
+         H(IPOIN) = MAX(H(IPOIN),0.D0)
 !###< MST@HRW
 !
       ENDDO
@@ -1783,9 +1816,13 @@
       IF(LNG.EQ.1) WRITE(LU,*) ' - OBTENTION DES VITESSES'
       IF(LNG.EQ.2) WRITE(LU,*) ' - ACQUIRING VELOCITIES'
 !
-      ALLOCATE( UT(NCON,N,M),VT(NCON,N,M), MASKU(N,M),MASKV(N,M) )
-      MASKU = 0
-      MASKV = 0
+      ALLOCATE( UT(NCON,N,M),VT(NCON,N,M),MASKU(N,M),MASKV(N,M) )
+      DO J=1,M
+         DO I=1,N
+            MASKU(I,J) = 0
+            MASKV(I,J) = 0
+         ENDDO
+      ENDDO
 !
       ALLOCATE( UV(2,N,M) )
       DO IC = 1,NCON
@@ -1797,8 +1834,8 @@
          READ(T2D_FILES(T2DBB2)%LU) UV
          UT(IC,:,:) = UV(1,:,:)
          VT(IC,:,:) = UV(2,:,:)
-         WHERE( UT(IC,:,:).NE.0 ) MASKU = 1
-         WHERE( VT(IC,:,:).NE.0 ) MASKV = 1
+         WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
+         WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
       ENDDO
       DEALLOCATE( UV )
 !
@@ -1810,9 +1847,9 @@
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
 !
-         LON = 180.D0/PI*( X(IPOIN)/RADIUS + LONG0 )
-         LAT = 180.D0/PI*
-     &      ( 2.D0*DATAN(CONST*DEXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
+         LON = RTD*( X(IPOIN)/RADIUS + LONG0 )
+         LAT = RTD*
+     &      ( 2.D0*ATAN(CONST*EXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
          IF( LON.GT.PH_LIM(2) ) LON = LON - 360.D0
          IF( LON.LT.PH_LIM(1) ) LON = LON + 360.D0
 !
@@ -1820,13 +1857,21 @@
      &               TH_LIM,PH_LIM,LAT,LON,ZCON,IERR,'u')
          IF( IERR.EQ.0 ) U(IPOIN) =
      &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT,STIME_MJD,I_MICON )
-         IF( TPXO_NFR(IPOIN).NE.0 ) TPXO_BOR(2,TPXO_NFR(IPOIN),:) = ZCON(:)
+         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
+               TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+          ENDIF
 !
          CALL INTERPT(VT,NCON,N,M,MASKV,
      &               TH_LIM,PH_LIM,LAT,LON,ZCON,IERR,'v')
          IF( IERR.EQ.0 ) V(IPOIN) =
      &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT,STIME_MJD,I_MICON )
-         IF( TPXO_NFR(IPOIN).NE.0 ) TPXO_BOR(3,TPXO_NFR(IPOIN),:) = ZCON(:)
+         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
+            DO K=1,NCON
+               TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
+            ENDDO
+         ENDIF
 !
 !###> MST@HRW: ADDING A CAP AT 2 M/S FOR STABILITY ON DRY LANDS
          SPD = SQRT(U(IPOIN)**2+V(IPOIN)**2)
