@@ -41,6 +41,11 @@
 !+   like in diff3d.f (messages on mass-conservation of sediment were
 !+   wrong).
 !
+!history  J-M HERVOUET (LNHE)
+!+        23/04/2012
+!+        V6P2
+!+   Values of tracers in rain taken into account.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLBORL        |-->| CONNECTIVITY TABLE OF LATERAL BOUNDARIES
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -65,7 +70,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION FLUTOT,SUR12,A1,A2,FLURAIN,D,Z_1,Z_2
+      DOUBLE PRECISION FLUTOT,SUR12,A1,A2,FLURAIN,D,Z_1,Z_2,REALRAIN
 !
       INTEGER I,L1,L2,L3,L4,N1,N2,N3,N4,IVBIL,ILIQ,IELEB
       INTEGER IPTFR,IETAGE,ITRAC
@@ -216,6 +221,16 @@
                 FLUDI(5+ITRAC) = FLUDI(5+ITRAC)
      &          +VOLU2D%R(I)*BTABOS%ADR(ITRAC)%P%R(I)
               ENDDO
+            ENDIF
+!
+!           VALUE OF TRACER IN RAIN
+!
+            IF(RAIN) THEN
+              REALRAIN=0.D0
+              DO I=1,NPOIN2
+                REALRAIN=REALRAIN+MAX(PLUIE%R(I),0.D0)
+              ENDDO
+              FLUDI(5+ITRAC)=FLUDI(5+ITRAC)+REALRAIN*TRAIN(ITRAC)
             ENDIF
 !
 !        LATERAL BOUNDARIES

@@ -780,67 +780,89 @@
 !     NUMBER OF TRACERS
 !
       INTEGER NTRAC
-!> @brief
-C
+!
+!     NUMBER OF PRESCRIBED TRACERS GIVEN
+!
       INTEGER NTRACER
-!> @brief PRINTOUT PERIOD FOR FLOATING BODIES
-C periode pour les sorties de flotteurs
+!
+!     PRINTOUT PERIOD FOR FLOATING BODIES
+!
       INTEGER FLOPRD
-!> @brief NUMBER OF DROGUES
-C nombre de flotteurs
+!
+!     NUMBER OF DROGUES
+!
       INTEGER NFLOT
-!> @brief
+!
+!     PRINTOUT PERIOD FOR RESULT FILE
+!
       INTEGER GRAPRD
-!> @brief LISTING PRINTOUT PERIOD
-C periode pour les sorties listing
+!
+!     LISTING PRINTOUT PERIOD
+!
       INTEGER LISPRD
-!> @brief NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS
-C numero du premier pas de temps pour les sorties graphiques
+!
+!     NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS
+!
       INTEGER GRADEB
-!> @brief NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS
-C numero du premier pas de temps pour les sorties listing
+!
+!     NUMBER OF FIRST TIME STEP FOR LISTING PRINTOUTS
+!
       INTEGER LISDEB
-!> @brief NUMBER OF BOTTOM SMOOTHINGS
-C nombre de lissages du fond
+!
+!     NUMBER OF BOTTOM SMOOTHINGS
+!
       INTEGER LISFON
-!> @brief NUMBER OF SUB ITERATIONS FOR NON LINEARITIES
-C nombre de sous iterations pour les non linearites
+!
+!     NUMBER OF SUB ITERATIONS FOR NON LINEARITIES
+!
       INTEGER NSOUSI
-!> @brief
-C numero du plan intermediaire
+! 
+!     TO BE REMOVED, OBSOLETE !!!!!!
+!
       INTEGER NPLINT
-!> @brief HORIZONTAL TURBULENCE MODEL
-C modele de turbulence horizontal
+!
+!     HORIZONTAL TURBULENCE MODEL
+!
       INTEGER ITURBH
-!> @brief VERTICAL TURBULENCE MODEL
-C modele de turbulence vertical
+!
+!     VERTICAL TURBULENCE MODEL
+!
       INTEGER ITURBV
-!> @brief TURBULENCE MODEL FOR THE BOTTOM
-C regime de turbulence pour le fond
+!
+!     TURBULENCE MODEL FOR THE BOTTOM
+!
       INTEGER LISRUF
-!> @brief TURBULENCE MODEL FOR LATERAL SOLID BOUNDARIES
-C regime de turbulence pour les parois laterales
+!
+!     TURBULENCE MODEL FOR LATERAL SOLID BOUNDARIES
+!
       INTEGER LISRUL
-!> @brief INITIAL GUESS FOR DEPTH
-C ordre du tir initial pour la hauteur
+!
+!     INITIAL GUESS FOR DEPTH
+!
       INTEGER IORDRH
-!> @brief SPATIAL PROJECTION TYPE
-C type de projection spatiale
+!
+!     SPATIAL PROJECTION TYPE
+!
       INTEGER PROTYP
-!> @brief
-C nombre de points sources
+!
+!     NUMBER OF SOURCE POINTS
+!
       INTEGER NSCE
-!> @brief
-C adresses des points sources dans le maillage 2d
+!
+!     ADDRESSES OF SOURCE POINTS IN THE 2D MESH
+!
       INTEGER ISCE(MAXSCE)
-!> @brief
-C adresses des plans des points sources trouves
+!
+!     PLANE NUMBERS OF SOURCE POINTS IN THE 2D MESH
+!
       INTEGER KSCE(MAXSCE)
-!> @brief
-C
+!
+!     NUMBER OF VELOCITIES OF SOURCES GIVEN
+!
       INTEGER NREJEU
-!> @brief SCHEME FOR ADVECTION OF VELOCITIES
-C schema pour la convection des vitesses
+!
+!     SCHEME FOR ADVECTION OF VELOCITIES
+!
       INTEGER SCHCVI
 !
 !     SCHEME FOR ADVECTION OF TRACERS
@@ -866,76 +888,101 @@ C schema pour la convection des vitesses
 !     SCHEME FOR DIFFUSION OF K-EPSILON
 !
       INTEGER SCHDKE
-!> @brief MAXIMUM NUMBER OF RECORDS OF FLOATING BODY POSITIONS
-C nombre maximal d'enregistrements des positions successives des flotteurs
+!
+!     MAXIMUM NUMBER OF RECORDS OF FLOATING BODY POSITIONS
+!
       INTEGER NITFLO
-!> @brief TREATMENT ON TIDAL FLATS FOR VELOCITIES
-C traitement sur les bancs decouvrants pour les vitesses
+!
+!     TREATMENT ON TIDAL FLATS FOR VELOCITIES
+!
       INTEGER TRBAVI
-!> @brief TREATMENT ON TIDAL FLATS FOR TRACERS
-C traitement sur les bancs decouvrants pour les traceurs
+!
+!     TREATMENT ON TIDAL FLATS FOR TRACERS
+!
       INTEGER TRBATA
-!> @brief TREATMENT ON TIDAL FLATS FOR K-EPSILON
-C traitement sur les bancs decouvrants pour le k-epsilon
+!
+!     TREATMENT ON TIDAL FLATS FOR K-EPSILON
+!
       INTEGER TRBAKE
-!> @brief NUMBER OF BOUNDARIES WITH PRESCRIBED DISCHARGE
-C
+!
+!     NUMBER OF BOUNDARIES WITH PRESCRIBED DISCHARGE
+!
       INTEGER NDEBIT
-!> @brief NUMBER OF BOUNDARIES WITH PRESCRIBED ELEVATION
-C
+!
+!     NUMBER OF BOUNDARIES WITH PRESCRIBED ELEVATION
+!
       INTEGER NCOTE
-!> @brief NUMBER OF BOUNDARIES WITH PRESCRIBED VELOCITY
-C
+!
+!     NUMBER OF BOUNDARIES WITH PRESCRIBED VELOCITY
+!
       INTEGER NVIT
-!> @brief ORIGINAL DATE OF TIME
-C tableau contenant la date de l'origine des temps
+!
+!     ORIGINAL DATE OF TIME
+!
       INTEGER MARDAT(3)
-!> @brief ORIGINAL HOUR OF TIME
-C tableau contenant l'heure de l'origine des temps
+!
+!     ORIGINAL HOUR OF TIME
+!
       INTEGER MARTIM(3)
-!> @brief VECTOR LENGTH
-C longueur du vecteur
+!
+!     VECTOR LENGTH
+!
       INTEGER LVMAC
-!> @brief NUMBER OF ARRAYS IN BLOCK PRIVE
-C nombre de tableaux prives
+!
+!     NUMBER OF ARRAYS IN BLOCK PRIVE
+!
       INTEGER NPRIV
-!> @brief RANK OF TEMPERATURE IN TRACERS
-C
+!
+!     RANK OF TEMPERATURE IN TRACERS
+!
       INTEGER IND_T
-!> @brief RANK OF SALINITY
-C
+!
+!     RANK OF SALINITY IN TRACERS
+!
       INTEGER IND_S
-!> @brief
-C
+!
+!     NUMBER OF POINTS IN THE ELEMENT
+!
       INTEGER NDP
-!> @brief LAW OF BOTTOM FRICTION
-C loi de frottement sur le fond
+!
+!     LAW OF BOTTOM FRICTION
+!
       INTEGER KFROT
-!> @brief LAW OF FRICTION ON LATERAL BOUNDARIES
-C loi de frottement sur les parois laterales
+!
+!     LAW OF FRICTION ON LATERAL BOUNDARIES
+!
       INTEGER KFROTL
-!> @brief MATRIX STORAGE
-C stockage des matrices
+!
+!     MATRIX STORAGE
+!
       INTEGER OPTASS
-!> @brief
-C
+!
+!     MATRIX-VECTOR PRODUCT
+!
       INTEGER PRODUC
-!> @brief OPTION FOR THE TREATMENT OF TIDAL FLATS
-C option de traitement des bancs decouvrants
+!
+!     OPTION FOR THE TREATMENT OF TIDAL FLATS
+!
       INTEGER OPTBAN
 !
 !     TREATMENT OF NEGATIVE DEPTHS
 !
       INTEGER OPT_HNEG
-!> @brief
-C
-      INTEGER OPDVIT,OPTSOU
+!
+!     OPTION FOR THE DIFFUSION OF VELOCITIES
+!
+      INTEGER OPDVIT
+!
+!     OPTION FOR THE TREATMENT OF SOURCES
+!
+      INTEGER OPTSOU
 !
 !     SUPG OPTION
 !
       INTEGER OPTSUP(4)
-!> @brief
-C
+!
+!     MATRIX STORAGE FOR 2D MATRICES
+!
       INTEGER OPTASS2D
 !
 !     3D DISCRETISATION TYPE
@@ -946,36 +993,44 @@ C
 !
       INTEGER IELM2H,IELM2V
 !
-!
+!     DISCRETISATION TYPES
 !
       INTEGER IELM0, IELMH, IELMU, IELM1, IELMX
 !
 !     NUMBER OF LAYERS OF 3D ELEMENTS (NPLAN - 1)
 !
       INTEGER NETAGE
-!> @brief
-C nombre de variables traitees dans le bilan
+!
+!     NUMBER OF VARIABLES TREATED IN MASS BALANCE
+!
       INTEGER NVBIL
-!> @brief MAXIMUM NUMBER OF HORIZONTAL PLANES WITHIN THE BED (GIBSON MODEL)
-C nombre maximum de plans horizontaux discretisant le fond vaseux (modele de gibson)
+!
+!     MAXIMUM NUMBER OF HORIZONTAL PLANES WITHIN THE BED (GIBSON MODEL)
+!
       INTEGER NPFMAX
-!> @brief NUMBER OF LAYERS WITHIN THE BED (MULTILAYER MODEL)
-C nombre de couches discretisant le fond vaseux (modele de tassement multi-couches)
+!
+!     NUMBER OF LAYERS WITHIN THE BED (MULTILAYER MODEL)
+!
       INTEGER NCOUCH
-!> @brief MIXING LENGTH MODEL
-C modele de longueur de melange
+!
+!     MIXING LENGTH MODEL
+!
       INTEGER MIXING
-!> @brief DAMPING FUNCTION
-C fonction d'amortissement
+!
+!     DAMPING FUNCTION
+!
       INTEGER DAMPING
-!> @brief VELOCITY PROFILES
-C profils de vitesse
+!
+!     VELOCITY PROFILES
+!
       INTEGER PROFVEL(MAXFRO)
-!> @brief TREATMENT OF FLUXES AT THE BOUNDARIES
-C traitement des flux aux frontieres
+!
+!     TREATMENT OF FLUXES AT THE BOUNDARIES
+!
       INTEGER DIRFLU(MAXFRO)
-!> @brief VELOCITY VERTICAL PROFILES
-C profils de vitesse sur la verticale
+!
+!     VELOCITY VERTICAL PROFILES
+!
       INTEGER VERPROVEL(MAXFRO)
 !
 !     TRACERS VERTICAL PROFILES
@@ -1077,11 +1132,11 @@ C profils de vitesse sur la verticale
 !
       INTEGER T3DBI2
 !
-!
+!     SEDIMENTOLOGICAL RESULT FILE     
 !
       INTEGER T3DSED
 !
-!     
+!     PREVIOUS COMPUTATION SEDIMENTOLOGICAL FILE   
 !
       INTEGER T3DSUS
 !
@@ -1182,7 +1237,8 @@ C profils de vitesse sur la verticale
 !
       LOGICAL BILMAS
 !
-C
+!     INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT
+!
       LOGICAL INFMAS
 !
 !     IF YES, MESH WITH SIGMA TRANSFORMATION
@@ -1228,17 +1284,14 @@ C
 !     IF YES, THERE ARE MASKED ELEMENTS
 !
       LOGICAL MSK
-!> @brief
-      LOGICAL CLIPH
-!> @brief IF YES, LISTING PRINTOUT
-C si oui, sortie listing
+!
+!     IF YES, LISTING PRINTOUT
+!
       LOGICAL LISTIN
-!> @brief IF YES, INFORMATION PRINTED ON LISTING
-C si oui, informations a restituer sur le listing
+!
+!     IF YES, INFORMATION PRINTED ON LISTING
+!
       LOGICAL INFOGR
-!> @brief IF YES, VARIABLES FOR SUBIEF3D
-C si oui, variables pour subief3d
-      LOGICAL VARSUB
 !> @brief IF YES, VALIDATION
 C si oui, validation
       LOGICAL VALID
@@ -1448,6 +1501,10 @@ C si oui, pression dynamique dans l'equation d'onde
 !     INITIAL VALUES OF TRACERS
 !
       DOUBLE PRECISION TRAC0(MAXTRA)
+!
+!     VALUES OF TRACERS IN THE RAIN
+!
+      DOUBLE PRECISION TRAIN(MAXTRA)
 !
 !     DENSITY OF THE SEDIMENT
 !

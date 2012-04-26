@@ -564,7 +564,7 @@ C       KEYWORD: STAGE-DISCHARGE CURVES
 !
         SLVDSE%EPS    = MOTREA(ADRESS(2,21))
         SLVDVI%EPS    = MOTREA(ADRESS(2,22))
-        SLVDTA(1)%EPS    = MOTREA(ADRESS(2,23))
+        SLVDTA(1)%EPS = MOTREA(ADRESS(2,23))
         IF(NTRAC.GT.1) THEN
           DO K=2,NTRAC
             SLVDTA(K)%EPS = SLVDTA(1)%EPS
@@ -579,7 +579,19 @@ C       KEYWORD: STAGE-DISCHARGE CURVES
         TETAU     = MOTREA(ADRESS(2,29))
         AGGLOH    = MOTREA(ADRESS(2,30))
         AGGLOU    = MOTREA(ADRESS(2,31))
-!       COTINT    = MOTREA(ADRESS(2,32))
+!
+!       VALUES OF TRACERS IN THE RAIN
+!
+        IF(NTRAC.GT.0) THEN
+          DO I=1,NTRAC
+            TRAIN(I) = 0.D0
+          ENDDO
+          IF(TROUVE(2,32)) THEN
+            DO I=1,DIMEN(2,32)
+              TRAIN(I) = MOTREA(ADRESS(2,32)+I-1)
+            ENDDO
+          ENDIF
+        ENDIF
 !
         NDEBIT=DIMEN(2,33)
         DO I=1,NDEBIT
@@ -736,7 +748,7 @@ C END OF SOGREAH ADDITIONS
         RAIN         = MOTLOG(ADRESS(3,15))
         INCHYD       = MOTLOG(ADRESS(3,16))
 !       QUABUB       = MOTLOG(ADRESS(3,17))
-        VARSUB       = MOTLOG(ADRESS(3,18))
+!       VARSUB       = MOTLOG(ADRESS(3,18))
         VALID        = MOTLOG(ADRESS(3,19))
         RESTART_MODE = MOTLOG(ADRESS(3,20))
         TASSE        = MOTLOG(ADRESS(3,51))
@@ -1187,7 +1199,6 @@ C     TO KEEP DHN FREE FOR CALLING CONTIN
       OPTSOU = 2
       TETAD  = 1.D0
       SPHERI = .FALSE.
-      CLIPH  = .TRUE.
 !
 !-----------------------------------------------------------------------
 ! SETS VARIABLES WHEN THE ADVECTION STEP IS NOT REQUIRED

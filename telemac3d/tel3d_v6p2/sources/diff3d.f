@@ -11,8 +11,8 @@
      & TRAV3,MESH2D,MESH3D,MTRA1,MTRA2,IELM3,MSUPG,IELM2H,IELM2V,
      & MDIFF,MATR2H,MASKBR,SVIDE,MSK,MASKEL,H,
      & NPLAN,OPTBAN,OPTDIF,TETADI,YAWCC,WCC,AGGLOD,VOLU,
-     & YASCE,NSCE,FSCE,SOURCES,TETASUPG,VELOCITY,RAIN,PLUIE,SIGMAG,
-     & IPBOT)
+     & YASCE,NSCE,FSCE,SOURCES,TETASUPG,VELOCITY,RAIN,PLUIE,TRAIN,
+     & SIGMAG,IPBOT)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P2                                   21/08/2010
@@ -49,9 +49,15 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J.M. HERVOUET (LNHE)
+!+        093/04/2012
 !+        V6P2
 !+   Void volumes tested up to free point (which may be also crushed
 !+   in case of tidal flats).
+!
+!history  J-M HERVOUET (LNHE)
+!+        23/04/2012
+!+        V6P2
+!+   Values of tracers in rain taken into account.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
@@ -139,6 +145,7 @@
 !|                |   | IMPLICITATION COEFFICIENT OF DIFFUSION
 !|                |   | IF OPTDIF = 1
 !| TETASUPG       |-->| IMPLICITATION COEFFICIENT FOR SUPG
+!| TRAIN          |-->| VALUE OF TRACER IN RAIN
 !| TRAV3          |<->| 3D WORK ARRAYS
 !| TRBAF          |-->| TREATMENT ON TIDAL FLATS FOR F
 !| VELOCITY       |-->| IF TRUE, COMPONENT IS VELOCITY: NOT USED
@@ -191,7 +198,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: SEM3D,IT1,TRAV3,MTRA1,MTRA2
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: MSUPG,MDIFF
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: MATR2H
-      DOUBLE PRECISION, INTENT(IN)    :: PLUIE(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: PLUIE(NPOIN2),TRAIN
 !
 !-----------------------------------------------------------------------
 !
@@ -286,12 +293,17 @@
 !=======================================================================
 !
 !     RAIN (ALL TRACERS) - EXPLICIT PART
+!     VALUE OF TRACER IN RAIN TAKEN INTO ACCOUNT ONLY IF RAIN POSITIVE
+!     NOT IN CASE OF EVAPORATION, HENCE THE MAX(PLUIE,0)
+!     THERE IS NO COEFFICIENT (1-TETASUPG) ON THIS TERM BECAUSE IT HAS
+!     NO IMPLICIT PART
 !
       IF(RAIN) THEN
         DO I=1,NPOIN2
           IPOIN3=NPOIN3-NPOIN2+I
-          SEM3D%R(IPOIN3)=SEM3D%R(IPOIN3)-
-     &                    PLUIE(I)*(1.D0-TETASUPG)*FN%R(IPOIN3)
+          SEM3D%R(IPOIN3)=SEM3D%R(IPOIN3)
+     &                    -PLUIE(I)*(1.D0-TETASUPG)*FN%R(IPOIN3)
+     &                    +MAX(PLUIE(I),0.D0)*TRAIN
         ENDDO
       ENDIF
 !
