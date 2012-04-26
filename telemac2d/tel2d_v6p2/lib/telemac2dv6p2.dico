@@ -2990,19 +2990,19 @@ speeded up when the system is being solved. 3 options are available:
  1 : U = U(n) 
  2 : U = 2 U(n)- U(n-1) (extrapolation)' 
  
-NOM = 'OPTION DU SCHEMA HYBRIDE' 
-NOM1 = 'HYBRID SCHEME OPTION' 
+NOM = 'FREE INTEGER 39' 
+NOM1 = 'FREE INTEGER 39' 
 TYPE = ENTIER 
 INDEX = 39 
-MNEMO = 'OPTHYB' 
-TAILLE = 4 
-DEFAUT = 1;1;1;1 
-DEFAUT1 = 1;1;1;1 
+MNEMO = '' 
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1 
-AIDE = '1: normal  2: conservation de hu ou hT  3: mass-lumping' 
-AIDE1 ='1: normal  2: conservation of hu or hT  3: mass-lumping' 
+AIDE = '' 
+AIDE1 ='' 
  
 NOM = 'MASSE VOLUMIQUE DE L''EAU' 
 NOM1 = 'WATER DENSITY' 
@@ -4972,6 +4972,18 @@ AIDE1 = ''
 / - the epicentre latitude (Y0) and
 / - the epicentre longitude (X0)
 / - the ellipse ( WxL ) area of influence'
+
+NOM = 'VALEURS DES TRACEURS DANS LA PLUIE'
+NOM1 = 'VALUES OF TRACERS IN THE RAIN'
+TYPE = REEL
+INDEX = 63
+MNEMO = 'TRAIN'
+TAILLE = 2
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = ''
+AIDE1 = ''
 
 / 
 / POUR LES LANCEURS PERL : 
