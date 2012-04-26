@@ -31,6 +31,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. VILLARET (LNHE)
+!+        01/03/2012
+!+        V6P2
+!+   Second call to condim moved upwards out of test for calling BIEF_SUITE.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -245,7 +250,7 @@
 !       READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'LECLIS'
-        CALL LECLIS(LIEBOR%I,EBOR,
+        CALL LECLIS(LIEBOR%I,LIHBOR%I,EBOR,
      &              MESH%NPTFR,MESH%NBOR%I,3,
      &              SIS_FILES(SISCLI)%LU,KENT,
      &              MESH%ISEG%I,MESH%XSEG%R,MESH%YSEG%R,MESH%NACHB%I,
@@ -843,6 +848,12 @@
 !
             IF(.NOT.PERMA.OR.PASS) THEN
 !
+             IF(DEBUG.GT.0) WRITE(LU,*) 'CONDIM_SISYPHE'
+             CALL CONDIM_SISYPHE
+     &       (U2D%R,V2D%R,QU%R,QV%R,HN%R,ZF%R,Z%R,ESOMT%R,THETAW%R,
+     &       Q%R,HW%R,TW%R,MESH%X%R,MESH%Y%R,NPOIN,AT0,PMAREE)
+             IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
+!
 !            BEWARE : THE VALUE FOR ESOMT IS NOT READ FROM THE FILE SISHYD
 !            NOTE : NAME FOR SISHYD SET TO ' ' IF COUPLING
 !
@@ -913,11 +924,6 @@
                  CALL OS('X=Y/Z   ', X=V2D, Y=QV,   Z=HN)
                ENDIF
 !
-               IF(DEBUG.GT.0) WRITE(LU,*) 'CONDIM_SISYPHE'
-               CALL CONDIM_SISYPHE
-     &        (U2D%R,V2D%R,QU%R,QV%R,HN%R,ZF%R,Z%R,ESOMT%R,THETAW%R,
-     &         Q%R,HW%R,TW%R,MESH%X%R,MESH%Y%R,NPOIN,AT0,PMAREE)
-               IF(DEBUG.GT.0) WRITE(LU,*) 'END_CONDIM_SISYPHE'
              ENDIF ! (SIS_FILES(SISHYD)%NAME(1:1) /=' ')
            ENDIF ! (NOT.PERMA.OR.PASS)
 !

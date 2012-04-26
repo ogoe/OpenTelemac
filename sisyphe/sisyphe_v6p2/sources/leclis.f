@@ -2,7 +2,7 @@
                      SUBROUTINE LECLIS
 !                    *****************
 !
-     &(LIEBOR,EBOR,NPTFR,NBOR,STDGEO,NLIM,KENT,ISEG,XSEG,YSEG,
+     &(LIEBOR,LIHBOR,EBOR,NPTFR,NBOR,STDGEO,NLIM,KENT,ISEG,XSEG,YSEG,
      & NACHB,NUMLIQ,NSICLA,AFBOR,BFBOR,BOUNDARY_COLOUR,MESH)
 !
 !***********************************************************************
@@ -55,6 +55,7 @@
 !| ISEG           |<->| NUMBER OF SEGMENTS ON THE BOUNDARY 
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| LIEBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR BED EVOLUTION
+!| LIHBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR DEPTH
 !| MESH           |<->| MESH STRUCTURE
 !| NACHB          |<->| NUMBER OF NEIGHBOUR POINT **** 
 !| NBOR           |<->| ADRESSES DES POINTS DE BORD.
@@ -76,7 +77,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)            :: NPTFR
-      INTEGER, INTENT(INOUT)         :: LIEBOR(NPTFR)
+      INTEGER, INTENT(INOUT)         :: LIEBOR(NPTFR),LIHBOR(NPTFR)
       TYPE(BIEF_OBJ),INTENT(INOUT)   :: EBOR
       INTEGER, INTENT(INOUT)         :: NBOR(NPTFR)
       INTEGER, INTENT(INOUT)         :: BOUNDARY_COLOUR(NPTFR)
@@ -104,11 +105,11 @@
         DO 40 K=1,NPTFR
 !
         IF (STDGEO.EQ.3 .AND. NCSIZE.LE.1) THEN
-          READ(NLIM,*) IBID,IBID,IBID,BID,BID,BID,BID,
+          READ(NLIM,*) LIHBOR(K),IBID,IBID,BID,BID,BID,BID,
      &                 LIEBOR(K),EBOR%ADR(1)%P%R(K),AFBOR(K),BFBOR(K),
      &                 NBOR(K),BOUNDARY_COLOUR(K)
         ELSEIF (STDGEO.EQ.3 .AND. NCSIZE.GT.1) THEN
-          READ(NLIM,*) IBID,IBID,IBID,BID,BID,BID,BID,
+          READ(NLIM,*) LIHBOR(K),IBID,IBID,BID,BID,BID,BID,
      &                 LIEBOR(K),EBOR%ADR(1)%P%R(K),AFBOR(K),BFBOR(K),
      &                 NBOR(K),BOUNDARY_COLOUR(K),
      &                 ISEG(K),XSEG(K),YSEG(K),NUMLIQ(K)

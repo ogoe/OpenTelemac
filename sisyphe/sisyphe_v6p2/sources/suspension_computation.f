@@ -706,8 +706,8 @@
      &  1, LT, NIT, OPDTRA, OPTBAN, MSK, MASKEL, MASKPT, MBOR, S,
 !               OPTSOU
      &  MASSOU, 1,     SLVTRA,FLBOR_SIS,V2DPAR,UNSV2D,OPTVF,FLBORTRA,
-     &  FLULIM,YAFLULIM,DIRFLU,.FALSE.,T8)
-!                               RAIN  ,PLUIE (NOT TRANSMITTED SO FAR)
+     &  FLULIM,YAFLULIM,DIRFLU,.FALSE.,T8    ,0.D0)
+!                               RAIN  ,PLUIE ,TRAIN
 !
       IF (DEBUG > 0) WRITE(LU,*) 'END_CVDFTR'
 !

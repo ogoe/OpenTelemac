@@ -10,6 +10,7 @@
 !
 !brief    COLLAPSE OF SAND WITH A SLOPE GREATER THAN A
 !+                STABILITY CRITERION.
+!+        For more explanation see release notes 5.8
 !
 !history  J-M HERVOUET (LNH)
 !+        16/11/2007
