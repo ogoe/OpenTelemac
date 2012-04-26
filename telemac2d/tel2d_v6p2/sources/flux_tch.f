@@ -4,7 +4,6 @@
 !
      &(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
 !
-!
 !***********************************************************************
 ! TELEMAC-2D VERSION 6.2                                     03/15/2011
 !***********************************************************************
@@ -32,6 +31,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC2D, EX_FLUX_TCH => FLUX_TCH
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -82,15 +82,15 @@
 !        INDICATOR FOR DRY CELLS
          IDRY=0
 !        INITIALIZATION
-         FLXI(1)=0.0D0
-         FLXI(2)=0.0D0
-         FLXI(3)=0.0D0
-         FLXJ(1)=0.0D0
-         FLXJ(2)=0.0D0
-         FLXJ(3)=0.0D0
+         FLXI(1)=0.D0
+         FLXI(2)=0.D0
+         FLXI(3)=0.D0
+         FLXJ(1)=0.D0
+         FLXJ(2)=0.D0
+         FLXJ(3)=0.D0
 !        RECUPERATE NODES OF THE EDGE 
-         NUBO1     = NUBO(1,NSG)
-         NUBO2     = NUBO(2,NSG)
+         NUBO1 = NUBO(1,NSG)
+         NUBO2 = NUBO(2,NSG)
 !        THEIR BATHYMETRIES
          ZF1   =    ZF(NUBO1)
          ZF2   =    ZF(NUBO2)
@@ -111,7 +111,7 @@
          ETA1     = W(1,NUBO1)+ZF1
          ETA2     = W(1,NUBO2)+ZF2
 !
-         IF(H1.GT.EPS)THEN
+         IF(H1.GT.EPS) THEN
            V21 = W(2,NUBO1)/H1
            V31 = W(3,NUBO1)/H1
          ELSE
@@ -135,10 +135,8 @@
 !
          IF(IDRY.LT.2)THEN
            CALL FLU_TCHAMEN(H1,H2,ETA1,ETA2,V21,V22,
-     &                      V31,V32,XNN,YNN,FLXI,FLXJ,G,EPS) 
-!
-! FLUX INCREMENT
-!
+     &                      V31,V32,XNN,YNN,FLXI,FLXJ,G) 
+!          FLUX INCREMENT
            CE(NUBO1,1) = CE(NUBO1,1) - RNN*FLXI(1)
            CE(NUBO1,2) = CE(NUBO1,2) - RNN*FLXI(2) 
            CE(NUBO1,3) = CE(NUBO1,3) - RNN*FLXI(3) 

@@ -4,11 +4,10 @@
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
      & HBOR,UBOR,VBOR,W,CE,FLUENT,FLUSORT,
-     & FLBOR,DTHAUT,DT,CFL,EPS,
-     & ZF,WINF)
+     & FLBOR,DTHAUT,DT,CFL,EPS,ZF,WINF)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.1                                     03/15/2011
+! TELEMAC 2D VERSION 6.2                                     03/15/2011
 !***********************************************************************
 !
 !brief  COMPUTATION OF THE CONVECTIVE FLUXES AT BOUNDARIES FOR TCHAMEN FLUX
@@ -45,6 +44,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE INTERFACE_TELEMAC2D, EX_CDL_TCH => CDL_TCH
 ! 
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -135,7 +135,7 @@
          V2  =  XNN*V2
 
          CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
-     &                       V2,V1,XNN,YNN,FLXI,FLXJ,G)
+     &                    V2,V1,XNN,YNN,FLXI,FLXJ,G)
 
 !**************************************************
 !        LIQUID BOUNDARY
@@ -189,7 +189,7 @@
           IF(IDRY.LT.2)THEN
 !         AT LEAST ONE WET CELL
             CALL FLU_TCHAMEN(H2,H1,ETA2,ETA1,U2,U1,
-     &                      V2,V1,XNN,YNN,FLXI,FLXJ,G)
+     &                       V2,V1,XNN,YNN,FLXI,FLXJ,G)
           ENDIF 
           INFLOW     = FLXI(1)*VNL
           FLUENT     = FLUENT + INFLOW

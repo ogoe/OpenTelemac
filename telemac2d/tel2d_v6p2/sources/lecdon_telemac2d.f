@@ -114,11 +114,6 @@
       OPTSUP(3) = 2
       OPTSUP(4) = 2
 !
-      OPTHYB(1) = 1
-      OPTHYB(2) = 1
-      OPTHYB(3) = 1
-      OPTHYB(4) = 1
-!
       BORNES(1) = -1000.D0
       BORNES(2) = +9000.D0
       BORNES(3) = -1000.D0
@@ -344,11 +339,7 @@
 30         CONTINUE
          ENDIF
          IORDRU    = MOTINT( ADRESS(1,38) )
-         IF(DIMEN(1,39).NE.0) THEN
-           DO 31 K=1,DIMEN(1,39)
-            OPTHYB(K) = MOTINT( ADRESS(1,39) + K-1 )
-31         CONTINUE
-         ENDIF
+!        ??????    = MOTINT( ADRESS(1,39) )
          OPTASS    = MOTINT( ADRESS(1,40) )
          MARDAT(1) = MOTINT( ADRESS(1,41) )
          MARDAT(2) = MOTINT( ADRESS(1,41) + 1 )
@@ -656,6 +647,19 @@
            COETSUNAMI(K) = MOTREA( ADRESS(2,62) + K-1 )
          ENDDO
 !
+!        VALUES OF TRACERS IN THE RAIN
+!
+         IF(NTRAC.GT.0) THEN
+           DO I=1,NTRAC
+             TRAIN(I) = 0.D0
+           ENDDO
+           IF(TROUVE(2,63).EQ.2) THEN
+             DO I=1,DIMEN(2,63)
+               TRAIN(I) = MOTREA(ADRESS(2,63)+I-1)
+             ENDDO
+           ENDIF
+         ENDIF
+!
 ! LOGICAL KEYWORDS:
 !
          IF(MOTLOG( ADRESS(3,1) )) THEN
@@ -702,7 +706,7 @@
          LINDNER   = MOTLOG( ADRESS(3,38) )
          CUMFLO    = MOTLOG( ADRESS(3,39) )
          COMFLU    = MOTLOG( ADRESS(3,40) )
-! SALINITY AND TEMPERATURE OUTPUT FOR DELWAQ
+!        SALINITY AND TEMPERATURE OUTPUT FOR DELWAQ
          SALI_DEL  = MOTLOG( ADRESS(3,41) )
          TEMP_DEL  = MOTLOG( ADRESS(3,42) )
          VELO_DEL  = MOTLOG( ADRESS(3,43) )

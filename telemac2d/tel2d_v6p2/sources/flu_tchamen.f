@@ -2,7 +2,7 @@
                         SUBROUTINE FLU_TCHAMEN
 !                       **********************
 !
-     &(H1,H2,ETA1,ETA2,U1,U2,V1,V2,XNN,YNN,FLXI,FLXJ,G,EPS)
+     &(H1,H2,ETA1,ETA2,U1,U2,V1,V2,XNN,YNN,FLXI,FLXJ,G)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6.2                                     03/15/2011
@@ -37,7 +37,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION, INTENT(IN)    :: G,H1,H2,ETA1,ETA2,U1,U2
-      DOUBLE PRECISION, INTENT(IN)    :: V1,V2,XNN,YNN,EPS
+      DOUBLE PRECISION, INTENT(IN)    :: V1,V2,XNN,YNN
       DOUBLE PRECISION, INTENT(INOUT) :: FLXI(3),FLXJ(3)
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -102,7 +102,7 @@
 !
 !     LET'S COMPUTE D_IJ
 !
-      IF(CHOICE_D.EQ.1)THEN
+      IF(CHOICE_D.EQ.1) THEN
 !
 !       ZOKAGOA'S CHOICE
 !

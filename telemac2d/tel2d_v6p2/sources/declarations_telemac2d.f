@@ -720,97 +720,124 @@
 !     TURBULENCE MODEL FOR SOLID BOUNDARIES
 ! 
       INTEGER LISRUG
-!brief
-! nombre de frontieres a debit impose
+!
+!     NUMBER OF BOUNDARIES WITH PRESCRIBED DISCHARGE
+!
       INTEGER NDEBIT
-!brief
-! nombre de frontieres a cote imposee
+!
+!     NUMBER OF BOUNDARIES WITH PRESCRIBED ELEVATION
+!
       INTEGER NCOTE
-!brief
-! nombre de frontieres a vitesse imposee
+!
+!     NUMBER OF BOUNDARIES WITH PRESCRIBED VELOCITY
+!
       INTEGER NVITES
-!brief
-! nombre de frontieres a traceur impose
+!
+!     NUMBER OF BOUNDARIES WITH PRESCRIBED TRACER
+!
       INTEGER NTRACE
-!brief
+!
+!     NUMBER OF CLANDESTINE VARIABLES
 !
       INTEGER NVARCL
-!brief VECTOR LENGTH
-! longueur du vecteur
+!
+!     VECTOR LENGTH
+! 
       INTEGER LVMAC
-!brief OPTION FOR THE TREATMENT OF TIDAL FLATS
-! option de traitement des bancs decouvrants
+!
+!     OPTION FOR THE TREATMENT OF TIDAL FLATS
+! 
       INTEGER OPTBAN
-!brief NUMBER OF DROGUES
-! nombre de flotteurs
+!
+!     NUMBER OF DROGUES
+! 
       INTEGER NFLOT
-!brief PRINTOUT PERIOD FOR DROGUES
-! periode pour les sorties flotteurs
+!
+!     PRINTOUT PERIOD FOR DROGUES
+! 
       INTEGER FLOPRD
-!brief NUMBER OF LAGRANGIAN DRIFTS
-! nombre de derives lagrangiennes
+!
+!     NUMBER OF LAGRANGIAN DRIFTS
+! 
       INTEGER NLAG
-!brief MAXIMUM NUMBER OF RECORDS OF SUCCESIVE POSITIONS OF FLOATING BODIES
-! nombre maximal d'enregistrements des positions successives des flotteurs
+!
+!     MAXIMUM NUMBER OF RECORDS OF SUCCESIVE POSITIONS OF FLOATING BODIES
+!
       INTEGER NITFLO
-!brief BOTTOM SMOOTHINGS
-! nombre de lissages du fond
+!
+!     BOTTOM SMOOTHINGS
+! 
       INTEGER LISFON
-!brief DISCRETIZATIONS IN SPACE
-! discretisations en espace
+!
+!     DISCRETIZATIONS IN SPACE
+! 
       INTEGER DISCRE(4)
-!brief
-! nombre de sources/puits
+!
+!     NUMBER OF SINK/SOURCES
+!
       INTEGER NREJET
-!brief
-! nombre de vitesses des sources donnees (si nrejeu=0 on considere que la vitesse des sources est egale a celle du courant)
+!
+!     NUMBER OF SINK/SOURCES WITH GIVEN VELOCITY
+!
       INTEGER NREJEU
-!brief
-! nombre de rejets de traceur
+!
+!     NUMBER OF SINK/SOURCES WITH GIVEN TRACER
+!
       INTEGER NREJTR
-!brief SUPG OPTION
-! option de supg
+!
+!     SUPG OPTION
+! 
       INTEGER OPTSUP(4)
-!brief HYBRID SCHEME OPTION
-! option du schema hybride
-      INTEGER OPTHYB(4)
-!brief ORIGINAL DATE OF TIME
-! tableau contenant la date de l'origine des temps
+!
+!     ORIGINAL DATE OF TIME
+! 
       INTEGER MARDAT(3)
-!brief ORIGINAL HOUR OF TIME
-! tableau contenant l'heure de l'origine des temps
+!
+!     ORIGINAL HOUR OF TIME
+! 
       INTEGER MARTIM(3)
-!brief
+!
+!     VARIOUS DISCRETISATION TIMES
 !
       INTEGER IELM0,IELM1,IELMH,IELMU,IELMT,IELMK,IELME
-!brief MATRIX STORAGE
-! stockage des matrices
+!
+!     MATRIX STORAGE
+! 
       INTEGER OPTASS
-!brief MATRIX-VECTOR PRODUCT
-! produit matrice-vecteur
+!
+!     MATRIX-VECTOR PRODUCT
+! 
       INTEGER PRODUC
-!brief NUMBER OF WEIRS
-! nombre de seuils
+!
+!     NUMBER OF WEIRS
+! 
       INTEGER NWEIRS
-!brief NUMBER OF CULVERTS
-! nombre de siphons
+!
+!     NUMBER OF CULVERTS
+! 
       INTEGER NSIPH
-!brief
+!
+!     NUMBER OF BOUNDARIES WITH GIVEN OPTION FOR LIQUID BOUNDARIES
 !
       INTEGER NTYPFR
-!brief OPTION FOR LIQUID BOUNDARIES
-! type de traitement pour les frontieres liquides
+!
+!     OPTION FOR LIQUID BOUNDARIES
+! 
       INTEGER FRTYPE(MAXFRO)
-!brief TREATMENT OF THE LINEAR SYSTEM
-! traitement du systeme lineaire
+!
+!     TREATMENT OF THE LINEAR SYSTEM
+! 
       INTEGER SOLSYS
-!brief VELOCITY PROFILES
-! option pour les profils de vitesse
+!
+!     VELOCITY PROFILES
+! 
       INTEGER PROVEL(MAXFRO)
-!brief NUMBER OF LIQUID BOUNDARIES
-! nombre de frontieres liquides
+!
+!     NUMBER OF LIQUID BOUNDARIES
+! 
       INTEGER NFRLIQ
-!brief
+!
+!     NUMBER OF SOLID BOUNDARIES
 !
       INTEGER NFRSOL
 !brief
@@ -1112,29 +1139,36 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief TIME STEP
-! pas de temps hydro
+!     TIME STEP
+! 
       DOUBLE PRECISION DT
-!brief ACCELERATION OF GRAVITY
-! acceleration de la pesanteur
+!
+!     GRAVITY ACCELERATION
+! 
       DOUBLE PRECISION GRAV
-!brief FRICTION COEFFICIENT
-! coefficient de frottement
+!
+!     FRICTION COEFFICIENT
+! 
       DOUBLE PRECISION FFON
-!brief COEFFICIENT OF CORIOLIS
-! parametre de coriolis
+!
+!     COEFFICIENT OF CORIOLIS
+! 
       DOUBLE PRECISION FCOR
-!brief COEFFICIENT OF WIND INFLUENCE
-! coefficient de frottement de l'air
+!
+!     COEFFICIENT OF WIND INFLUENCE
+! 
       DOUBLE PRECISION FAIR
-!brief
+!
+!     COMPONENTS OF WIND VELOCITY
 !
       DOUBLE PRECISION FUAIR,FVAIR
-!brief INITIAL VALUES OF TRACERS
-! valeurs initiales des traceurs
+!
+!     INITIAL VALUES OF TRACERS
+! 
       DOUBLE PRECISION TRAC0(MAXTRA)
-!brief COEFFICIENT FOR DIFFUSION OF TRACERS
-! coefficient de diffusion des traceurs
+!
+!     COEFFICIENT FOR DIFFUSION OF TRACERS
+! 
       DOUBLE PRECISION DIFNU
 !brief (SEMI-)IMPLICITATION FOR TRACERS
 ! (semi-)implicitation pour les traceurs
@@ -1333,6 +1367,10 @@
 !
       DOUBLE PRECISION COETSUNAMI(10)
 !
+!     VALUES OF TRACERS IN THE RAIN'
+!
+      DOUBLE PRECISION TRAIN(MAXTRA)
+!
 !-----------------------------------------------------------------------
 !
 !       7) STRINGS
@@ -1342,29 +1380,37 @@
 !     TITLE OF STUDY
 ! 
       CHARACTER*72 TITCAS
-!brief
+!
+!     VARIABLES FOR GRAPHIC PRINTOUT
 !
       CHARACTER*72 VARDES
-!brief INITIAL CONDITIONS
-! conditions initiales
+!
+!     INITIAL CONDITIONS
+! 
       CHARACTER*72 CDTINI
-!brief VARIABLES TO BE PRINTED
-! variables a imprimer
+!
+!     VARIABLES TO BE PRINTED
+! 
       CHARACTER*72 VARIMP
-!brief EQUATIONS
-! equations
+!
+!     EQUATIONS
+! 
       CHARACTER*20 EQUA
-!brief NAMES OF CLANDESTINE VARIABLES
-! noms des variables clandestines
+!
+!     NAMES OF CLANDESTINE VARIABLES
+! 
       CHARACTER*32 VARCLA(10)
-!brief
+!
+!     NAMES AND UNITS OF VARIABLES
 !
       CHARACTER*32 TEXTE(MAXVAR),TEXTPR(MAXVAR)
-!brief NAMES OF REMARKABLE POINTS
-! noms des points
+!
+!     NAMES OF REMARKABLE POINTS
+! 
       CHARACTER*32 NAME_PTS(100)
-!brief NAMES OF TRACERS
-! noms des traceurs
+!
+!     NAMES OF TRACERS
+! 
       CHARACTER(LEN=32) NAMETRAC(MAXVAR)
 !
 !-----------------------------------------------------------------------
@@ -1373,17 +1419,20 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief
+!     STRUCTURE WITH SOLVER FOR PROPAGATION
 !
       TYPE(SLVCFG) :: SLVPRO
-!brief STRUCTURE WITH SOLVER OPTIONS FOR K
+!
+!     STRUCTURE WITH SOLVER OPTIONS FOR K
 !
       TYPE(SLVCFG) :: SLVK
-!brief STRUCTURE WITH SOLVER OPTIONS FOR E
+!
+!     STRUCTURE WITH SOLVER OPTIONS FOR E
 !
       TYPE(SLVCFG) :: SLVEP
-!brief SOLVER FOR DIFFUSION OF TRACERS
-! solveur pour la diffusion des traceurs
+!
+!     SOLVER FOR DIFFUSION OF TRACERS
+! 
       TYPE(SLVCFG) :: SLVTRA
 !
 !-----------------------------------------------------------------------
@@ -1392,8 +1441,8 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief
-! structure du maillage
+!     MESH STRUCTURE
+!
       TYPE(BIEF_MESH) :: MESH
 !
 !-----------------------------------------------------------------------
@@ -1427,34 +1476,44 @@
 !     NUMBER OF ELEMENTS IN THE MESH
 ! 
       INTEGER, POINTER:: NELEM
-!brief MAXIMUM NUMBER OF ELEMENTS IN THE MESH
-! nombre maximal d'elements dans le maillage 2d
+!
+!     MAXIMUM NUMBER OF ELEMENTS IN THE MESH
+! 
       INTEGER, POINTER:: NELMAX
-!brief NUMBER OF BOUNDARY POINTS IN THE MESH
-! nombre de points frontiere du maillage
+!
+!     NUMBER OF BOUNDARY POINTS IN THE MESH
+! 
       INTEGER, POINTER:: NPTFR
-!brief MAXIMUM NUMBER OF BOUNDARY POINTS IN THE MESH
+!
+!     MAXIMUM NUMBER OF BOUNDARY POINTS IN THE MESH
 !
       INTEGER, POINTER:: NPTFRX
-!brief DIMENSION OF SPACE
+!
+!     DIMENSION OF SPACE
 !
       INTEGER, POINTER:: DIM
-!brief TYPE OF ELEMENT
+!
+!     TYPE OF ELEMENT
 !
       INTEGER, POINTER:: TYPELM
-!brief NUMBER OF POINTS IN THE MESH
-! nombre de points du maillage
+!
+!     NUMBER OF POINTS IN THE MESH
+! 
       INTEGER, POINTER:: NPOIN
-!brief MAXIMUM NUMBER OF POINTS IN THE MESH
+!
+!     MAXIMUM NUMBER OF POINTS IN THE MESH
 !
       INTEGER, POINTER:: NPMAX
-!brief MAXIMUM NUMBER OF POINTS NEIGHBOURS OF A POINT
+!
+!     MAXIMUM NUMBER OF POINTS NEIGHBOURS OF A POINT
 !
       INTEGER, POINTER:: MXPTVS
-!brief MAXIMUM NUMBER OF ELEMENTS NEIGHBOURS OF A POINT
+!
+!     MAXIMUM NUMBER OF ELEMENTS NEIGHBOURS OF A POINT
 !
       INTEGER, POINTER:: MXELVS
-!brief VECTOR LENGTH OF THE MACHINE
+!
+!     VECTOR LENGTH OF THE MACHINE
 !
       INTEGER, POINTER:: LV
 !
@@ -1469,75 +1528,49 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief ADJOINT VARIABLE
+!     ADJOINT VARIABLES
 !
-      TYPE(BIEF_OBJ), TARGET :: PP
-!brief ADJOINT VARIABLE
+      TYPE(BIEF_OBJ), TARGET :: PP,QQ,RR
 !
-      TYPE(BIEF_OBJ), TARGET :: QQ
-!brief ADJOINT VARIABLE
+!     MEASUREMENTS
 !
-      TYPE(BIEF_OBJ), TARGET :: RR
-!brief MEASURE
+      TYPE(BIEF_OBJ), TARGET :: UD,VD,HD
 !
-      TYPE(BIEF_OBJ), TARGET :: UD
-!brief MEASURE
+!     DIRECT VARIABLES AT ITERATION IT
 !
-      TYPE(BIEF_OBJ), TARGET :: VD
-!brief MEASURE
+      TYPE(BIEF_OBJ), TARGET :: UU,VV,HH
 !
-      TYPE(BIEF_OBJ), TARGET :: HD
-!brief DIRECT VARIABLE AT ITERATION IT
+!     DIRECT VARIABLES AT ITERATION IT+1
 !
-      TYPE(BIEF_OBJ), TARGET :: UU
-!brief DIRECT VARIABLE AT ITERATION IT
+      TYPE(BIEF_OBJ), TARGET :: UIT1,VIT1,HIT1
 !
-      TYPE(BIEF_OBJ), TARGET :: VV
-!brief DIRECT VARIABLE AT ITERATION IT
+!     BOUNDARY VALUES FOR ADJOINT VARIABLE (ONLY DIRICHLET)
 !
-      TYPE(BIEF_OBJ), TARGET :: HH
-!brief DIRECT VARIABLE AT ITERATION IT+1
+      TYPE(BIEF_OBJ), TARGET :: PBOR,QBOR,RBOR
 !
-      TYPE(BIEF_OBJ), TARGET :: UIT1
-!brief DIRECT VARIABLE AT ITERATION IT+1
-!
-      TYPE(BIEF_OBJ), TARGET :: VIT1
-!brief DIRECT VARIABLE AT ITERATION IT+1
-!
-      TYPE(BIEF_OBJ), TARGET :: HIT1
-!brief BOUNDARY VALUES FOR ADJOINT VARIABLE (ONLY DIRICHLET)
-!
-      TYPE(BIEF_OBJ), TARGET :: PBOR
-!brief BOUNDARY VALUES FOR ADJOINT VARIABLE (ONLY DIRICHLET)
-!
-      TYPE(BIEF_OBJ), TARGET :: QBOR
-!brief BOUNDARY VALUES FOR ADJOINT VARIABLE (ONLY DIRICHLET)
-!
-      TYPE(BIEF_OBJ), TARGET :: RBOR
-!brief VECTOR USED TO CHANGE THE SET OF STRICKLERS'
+!     VECTOR USED TO CHANGE THE SET OF STRICKLERS
 !
       TYPE (BIEF_OBJ) :: DESC
-!brief GRADIENT OF COST FUNCTION (ITERATION K)
+!
+!     GRADIENT OF COST FUNCTION (ITERATION K)
 !
       TYPE (BIEF_OBJ) :: GRADJ
-!brief GRADIENT OF COST FUNCTION (ITERATION K-1)
+!
+!     GRADIENT OF COST FUNCTION (ITERATION K-1)
 !
       TYPE (BIEF_OBJ) :: GRADJN
-!brief SET OF STRICKLERS' (ZONES): NEW
+!
+!     SET OF STRICKLERS (ZONES): NEW
 !
       TYPE (BIEF_OBJ) :: SETSTR
-!brief SET OF STRICKLERS' (ZONES): OLD
+!
+!     SET OF STRICKLERS' (ZONES): OLD
 !
       TYPE (BIEF_OBJ) :: SETSTR2
-!brief GRADIENT
 !
-      TYPE (BIEF_OBJ) :: ALPHA1
-!brief GRADIENT
+!     GRADIENTS
 !
-      TYPE (BIEF_OBJ) :: ALPHA2
-!brief GRADIENT
-!
-      TYPE (BIEF_OBJ) :: ALPHA3
+      TYPE (BIEF_OBJ) :: ALPHA1,ALPHA2,ALPHA3
 !
 !
 !-----------------------------------------------------------------------
@@ -1594,10 +1627,11 @@
 !
 !       4) INTEGERS
 !
-!brief NUMBER OF VARIABLES FOR LITENR (READ BY SKIPGEO)
+!     NUMBER OF VARIABLES FOR LITENR (READ BY SKIPGEO)
 !
       INTEGER NVARRES
-!brief NUMBER OF ITERATIONS FOR PARAMETERS CALIBRATION
+!
+!     NUMBER OF ITERATIONS FOR PARAMETERS CALIBRATION
 !
       INTEGER NITERA
 !
@@ -1605,13 +1639,15 @@
 !
 !        5) LOGICALS
 !
-!brief IF YES: ACTIVATES THE ADJOINT MODE IN TELEMAC2D/PROPAG
+!     IF YES: ACTIVATES THE ADJOINT MODE IN TELEMAC2D/PROPAG
 !
       LOGICAL ADJO
-!brief WHETHER THE ADJOINT SYSTEM RESULTS ARE PRINTED; NB 100=MAXVAR
+!
+!     WHETHER THE ADJOINT SYSTEM RESULTS ARE PRINTED; NB 100=MAXVAR
 !
       LOGICAL SORLEOA(100)
-!brief WHETHER ...; NB 100=MAXVAR
+!
+!     WHETHER ...; NB 100=MAXVAR
 !
       LOGICAL SORIMPA(100)
 !
@@ -1621,17 +1657,20 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief NAMES OF VARIABLES IN RES FILE
+!     NAMES OF VARIABLES IN RES FILE
 !
       CHARACTER(LEN=32) TEXRES(100)
-!brief NAMES OF VARIABLES IN RBI FILE
+!
+!     NAMES OF VARIABLES IN RBI FILE
 !
       CHARACTER(LEN=32) TEXRBI(100)
-!brief NAMES OF VARIABLES IN REF FILE
+!
+!     NAMES OF VARIABLES IN REF FILE
 !
       CHARACTER(LEN=32) TEXREF(100)
-!brief KEYWORD "PARAMETER ESTIMATION"
-! estimation de parametre
+!
+!     KEYWORD "PARAMETER ESTIMATION"
+! 
       CHARACTER(LEN=72) ESTIME
 !
 !=======================================================================
@@ -1686,7 +1725,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief TELEMAC-2D FILES
+!     TELEMAC-2D FILES
 !
       TYPE(BIEF_FILE) :: T2D_FILES(MAXLU_T2D)
 !
