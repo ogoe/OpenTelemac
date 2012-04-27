@@ -586,7 +586,7 @@ C       KEYWORD: STAGE-DISCHARGE CURVES
           DO I=1,NTRAC
             TRAIN(I) = 0.D0
           ENDDO
-          IF(TROUVE(2,32)) THEN
+          IF(TROUVE(2,32).EQ.2) THEN
             DO I=1,DIMEN(2,32)
               TRAIN(I) = MOTREA(ADRESS(2,32)+I-1)
             ENDDO
