@@ -21,12 +21,16 @@ COORDONNEES DE L'ORIGINE : 12000;350000
 /  HP C3700 MHz  compilateur HP   : 07 s 6.0  23/11/2009 (16 procs OK)
 /  HP C3700 MHz  compilateur Nag  : 19 s 6.0  25/11/2009
 /  DELL LINUX 2.8 GHz   pgi 6.2   : 04 s 6.0  24/11/2009 (16 procs OK)
-/   
-FICHIER FORTRAN                   : t2d_bumpcri_v1p0.f
-FICHIER DES CONDITIONS AUX LIMITES: geo_bumpcri_v1p0.cli
-FICHIER DE GEOMETRIE              : geo_bumpcri_v1p0.slf      
-FICHIER DE REFERENCE              : f2d_bumpcri_v1p0.slf
-FICHIER DES RESULTATS             : r2d_bumpcri_v1p0.slf
+/ 
+/  VERSION 6.2
+/ 
+/  HP C3700 MHz  compilateur HP   : 08 s 04/05/2012 
+/ 
+FICHIER FORTRAN                   : t2d_bumpcri.f
+FICHIER DES CONDITIONS AUX LIMITES: geo_bumpcri.cli
+FICHIER DE GEOMETRIE              : geo_bumpcri.slf      
+FICHIER DE REFERENCE              : f2d_bumpcri.slf
+FICHIER DES RESULTATS             : r2d_bumpcri.slf
 /----------------------------------------------------------------------/  
 /                       OPTIONS GENERALES                                 
 /----------------------------------------------------------------------/  
@@ -37,7 +41,7 @@ PERIODE POUR LES SORTIES GRAPHIQUES=100 PERIODE DE SORTIE LISTING=100
 VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,B,Q,F,H,N,O,R,Z'           
 LOI DE FROTTEMENT SUR LE FOND = 0    COEFFICIENT DE FROTTEMENT = 80.      
 COEFFICIENT DE DIFFUSION DES VITESSES = 0.                                           
-IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6   
+IMPLICITATION POUR LA HAUTEUR = 1.  IMPLICITATION POUR LA VITESSE = 1.   
 BILAN DE MASSE : OUI   INFORMATIONS SUR LE SOLVEUR : OUI                  
 CONDITIONS INITIALES : PARTICULIERES
 DEBITS IMPOSES : 0.;0.6           
