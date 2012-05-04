@@ -16,7 +16,7 @@
 /
 / Version 6.2
 /
-/ HP C3700 compilateur HP  :  57 s  6.2   04/05/2012
+/ HP C3700 compilateur HP  :  50 s  6.2   04/05/2012
 /
 EQUATIONS : 'SAINT-VENANT VF' 
 / 0:ROE 1:CINETIQUE ORDRE 1  2:CINETIQUE ORDRE 2
@@ -35,8 +35,8 @@ FICHIER DES RESULTATS              : r2d_gouttedo_cin.slf
 TITRE = 'TELEMAC 2D : GOUTTE D''EAU DANS UN BASSIN$'              
 SUITE DE CALCUL : NON                                                    
 VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,T1'                        
-VARIABLES A IMPRIMER : ''                                                                    
-PERIODE POUR LES SORTIES GRAPHIQUES : 5   PERIODE DE SORTIE LISTING = 1  
+VARIABLES A IMPRIMER : ' '                                                                    
+PERIODE POUR LES SORTIES GRAPHIQUES:100 PERIODE DE SORTIE LISTING = 10  
 LOI DE FROTTEMENT SUR LE FOND : 3    COEFFICIENT DE FROTTEMENT = 40.     
 /----------------------------------------------------------------------/ 
 /     PROPAGATION                                                        
