@@ -17,6 +17,10 @@
 /  HP C3700 compilateur HP  34 s  6.0  23/11/2009 en parallele
 /  DELL 2.8 GHz             15 s  6.0  24/11/2009 en parallele
 /
+/  Version 6.2
+/
+/  HP C3700 compilateur HP  38 s  04/05/2012 en scalaire
+/
 /**********************************************************************/
 /                                                                      /
 /           FICHIER DE DECLARATION DES MOTS CLES DU CODE               /
@@ -39,7 +43,7 @@ VALIDATION : OUI
 /     OPTIONS GENERALES
 /----------------------------------------------------------------------/
 /
-TITRE = 'test'
+TITRE = 'test des impressions sur les sections'
 SUITE DE CALCUL = OUI
 PAS DE TEMPS = 0.5
 NOMBRE DE PAS DE TEMPS =  10
@@ -58,7 +62,6 @@ DEBITS IMPOSES = 1000;10000;10;-1500;1500;8500;-8500
 /
 OPTION DE TRAITEMENT DES BANCS DECOUVRANTS = 1
 BANCS DECOUVRANTS = OUI
-COEFFICIENT DE FROTTEMENT VARIABLE EN ESPACE  : NON
 LOI DE FROTTEMENT SUR LE FOND = 3
 COEFFICIENT DE FROTTEMENT = 35.
 MODELE DE TURBULENCE = 1
