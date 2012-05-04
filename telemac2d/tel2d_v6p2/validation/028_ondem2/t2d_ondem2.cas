@@ -91,6 +91,7 @@ CONVECTION DE U ET V             = NON
 DIFFUSION DES VITESSES           = NON
 FORME DE LA CONVECTION           = 1;5
 OPTION DE SUPG                   = 1;0
+SOLVEUR : 7
 OPTION DU SOLVEUR                = 3
 PRECISION DU SOLVEUR             = 1.E-3
 PRECONDITIONNEMENT               = 2
@@ -101,6 +102,7 @@ IMPLICITATION POUR LA VITESSE    = 0.55
 MASS-LUMPING SUR H               = 1.
 STOCKAGE DES MATRICES            = 3
 PRODUIT MATRICE-VECTEUR          = 1 
+DISCRETISATIONS EN ESPACE        = 12 ; 11 
 /
 / Equation d'onde :
 /
