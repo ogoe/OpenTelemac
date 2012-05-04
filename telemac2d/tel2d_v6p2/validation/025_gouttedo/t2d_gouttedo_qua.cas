@@ -18,6 +18,10 @@ STOCKAGE DES MATRICES : 3      PRODUIT MATRICE-VECTEUR : 1
 / HP C3700 : 85 s compilateur Nag    6.0 12/02/2010
 / DEll     : ?? s compilateur INTEL  6.0 
 /
+/ Version 6.2
+/
+/ HP C3700 : 34 s compilateur HP     04/05/2012
+/
 EQUATIONS : 'SAINT-VENANT EF'
 /DUREE DU CALCUL : 4.  PAS DE TEMPS VARIABLE : OUI
 /NOMBRE DE COURANT SOUHAITE : 0.5
