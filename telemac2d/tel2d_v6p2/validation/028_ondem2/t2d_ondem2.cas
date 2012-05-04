@@ -19,6 +19,11 @@ PROCESSEURS PARALLELES : 0
 / HP C3700     : compilateur Nag   117 s    6.0  26/11/2009
 / Dell 2.8 MHz : compilateur Intel  20 s    6.0  26/11/2009
 /
+/ Version 6.2
+/
+/ HP C3700     : compilateur HP     34 s    04/05/2012
+/ Note JMH: probleme sur les amplitudes, a voir.
+/
 /-------------------------------------------------------------------/
 /
 /         TELEMAC-2D - ONDE M2 DANS LA MANCHE
@@ -85,8 +90,7 @@ COORDONNEES SPHERIQUES           = OUI
 CONVECTION DE U ET V             = NON
 DIFFUSION DES VITESSES           = NON
 FORME DE LA CONVECTION           = 1;5
-OPTION DE SUPG                   = 1;1
-SOLVEUR                          = 7
+OPTION DE SUPG                   = 1;0
 OPTION DU SOLVEUR                = 3
 PRECISION DU SOLVEUR             = 1.E-3
 PRECONDITIONNEMENT               = 2
@@ -102,6 +106,7 @@ PRODUIT MATRICE-VECTEUR          = 1
 /
 DISCRETISATIONS EN ESPACE        = 11 ; 11 
 TRAITEMENT DU SYSTEME LINEAIRE : 2  SOLVEUR : 1
+COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.9
 / 
 / Traceur
 /
