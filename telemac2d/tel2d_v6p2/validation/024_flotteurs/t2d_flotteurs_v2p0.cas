@@ -17,6 +17,11 @@
 /  Temps calcul sur HP C3700 compilateur Nag : 35 s  6.0 26/11/2009
 /  Temps calcul sur Linux compilateur pgi 6.2:  8 s  6.0 26/11/2009
 /
+/  Version 6.2
+/
+/  Temps calcul sur HP C3700 compilateur HP  : 13 s  04/05/2012
+/
+/
 /  Note : sur le fichier flot.slf, Rubens donne des mailles
 /         mal orientées, mais c'est bon quand même.
 /
