@@ -85,7 +85,7 @@
 !+            PHASES FOR EACH CONSTITUENT ARE REFERRED TO THE TIME
 !+            WHEN THE PHASE OF THE FORCING FOR THAT CONSTITUENT
 !+            IS ZERO ON THE GREENWICH MERIDIAN
-!+  - OMEGA = ANGULAR FREQUENCY OF CONSTITUENT, IN RADIANS
+!+  - OMEGA = ANGULAR FREQUENCY OF CONSTITUENT, IN RADIANS/S
 !+  TIDAL PARAMETERS TAKEN FROM RODNEY'S CONSTITUENT.H, 2/23/96:
 !+     (EXCEPT FOR ISPEC).
 !
@@ -184,7 +184,7 @@
 !brief   THE SAME ORDER IS SUPPORTED IN THE PREVIOUS SECTION (CONSTIT)
 !+  I.E. NO NEED TO CARE ABOUT THE CORRESPONDING INDICES
 !
-      ! FOR CASE OF USING MODULE WEIGHTS
+!        FOR CASE OF USING MODULE WEIGHTS
       INTEGER, PARAMETER :: TPXO_NCON = 17
 !
 !     DOUBLE PRECISION TPXO_BETA(TPXO_NCON)
@@ -244,7 +244,7 @@
 !
       INTEGER NPTNFR
       INTEGER, ALLOCATABLE :: TPXO_NFR(:)
-      DOUBLE PRECISION, ALLOCATABLE :: TPXO_LATFR(:)
+      DOUBLE PRECISION TPXO_LAT_DUMMY
       COMPLEX, ALLOCATABLE :: TPXO_BOR(:,:,:)
 !
 !-----------------------------------------------------------------------
@@ -271,16 +271,20 @@
 !warning  CONSTITUENT NAMES ARE ASSUMED TO BE ALL IN LOWER CASE
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  C_ID          |-->| NAME OF CONTITUENTS
+!|  C_ID_MOD      |-->| NAME OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!|  CIND          |<--| INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!|  NC            |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
+!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER NC,NCON
-      INTEGER CIND(NCON)
-      CHARACTER(LEN=4) C_ID(*),C_ID_MOD(*)
+      INTEGER, INTENT(IN)          :: NC,NCON
+      INTEGER, INTENT(OUT)         :: CIND(NCON)
+      CHARACTER(LEN=4), INTENT(IN) :: C_ID(*),C_ID_MOD(*)
 !
 !-----------------------------------------------------------------------
 !
@@ -313,7 +317,9 @@
 !brief
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  C_ID          |-->| NAME OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!|  IND           |<--| INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!|  NC0           |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -322,9 +328,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER NC0
-      INTEGER IND(NC0)
-      CHARACTER(LEN=4) CID(*)
+      INTEGER, INTENT(IN)          :: NC0
+      INTEGER, INTENT(OUT)         :: IND(NC0)
+      CHARACTER(LEN=4), INTENT(IN) :: CID(*)
 !
 !-----------------------------------------------------------------------
 !
@@ -344,7 +350,7 @@
          IF( IND(K).EQ.0 ) THEN
             IF(LNG.EQ.1) WRITE(LU,*) 'TPXO : ATTENTION :' //
      &         'COMPOSANTE ID ',CID(IC),' N''EST PAS PERMISE'
-            IF(LNG.EQ.2) WRITE(LU,*) 'TPXO : WARNING :' //
+            IF(LNG.EQ.2) WRITE(LU,*) 'TPXO : WARNING:' //
      &         'CONSTITUENT ID ',CID(IC),' IS NOT ALLOWED'
          ENDIF
          K = K + 1
@@ -370,14 +376,16 @@
 !+        (ALWAYS BETWEEN 1 AND N;  NEVER 0 )
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  I             |-->| INDEX TO BE SHIFTED
+!|  ISH           |-->| SHIFT
+!|  N             |-->| CLASS OF MODULO
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER I,N,ISH
+      INTEGER, INTENT(IN) :: I,N,ISH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -401,15 +409,17 @@
 !brief    RETURNS HEIGHT FROM MODEL ARRAY OF COMPLEX CONSTITUENTS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  A             |-->| ARRAY OF COMPLEX CONSTITUENTS
+!|  C             |-->| ARRAY OF COMPLEX CONSTITUENTS
+!|  NC            |-->| SIZE OF THE ARRAYS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER NC
-      COMPLEX A(NC),P(NC)
+      INTEGER, INTENT(IN) :: NC
+      COMPLEX, INTENT(IN) :: A(NC),P(NC)
 !
 !-----------------------------------------------------------------------
 !
@@ -417,16 +427,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      IF( NC.EQ.0 ) THEN
-         HEIGHT = 0.D0
-         RETURN
-      ENDIF
-!
       HEIGHT = 0.D0
+!
+      IF( NC.NE.0 ) THEN
 !     HEIGHT(I)=SUM_OF_REAL(A(I)*P(I))
-      DO I = 1,NC
-        HEIGHT = HEIGHT + REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
-      ENDDO
+         DO I = 1,NC
+            HEIGHT = HEIGHT
+     &             + REAL(P(I))*REAL(A(I))-AIMAG(P(I))*AIMAG(A(I))
+         ENDDO
+      ENDIF
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -447,19 +456,32 @@
 !+        TH_LIM AND PH_LIM GIVE LATITUDE AND LONGITUDE LIMITS OF GRID
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  IERR          |<--| ERROR INDEX
+!|  M             |-->| ONE SIZE OF ARRAY UV
+!|  MZ            |-->| MASK (=1 FOR OCEAN NODE)
+!|  N             |-->| ONE SIZE OF ARRAY UV
+!|  NT            |-->| NUMBER OF CONSTITUENTS TURNED ON (NCON)
+!|  PH_LIM        |-->| LONGITUDE LIMITS OF GRID
+!|  TH_LIM        |-->| LATITUDE LIMITS OF GRID
+!|  UV            |-->| COMPLEX ARRAY TO BE INTERPOLATED AT POINT XLAT,XLON
+!|  UV1           |<--| INTERPOLATION OF UV AT POINT XLAT,XLON
+!|  XLAT          |-->| LATITUDE OF THE POINT WHERE INTERPOLATED
+!|  XLON          |-->| LONGITUDE OF THE POINT WHERE INTERPOLATED
+!|  ZUV           |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,M,IERR
-      INTEGER MZ(N,M),NT
-      CHARACTER(LEN=1) ZUV
-      REAL TH_LIM(2),PH_LIM(2)
-      DOUBLE PRECISION XLON,XLAT
-      COMPLEX UV1(NT),UV(NT,N,M)
+      INTEGER, INTENT(IN)  :: N,M
+      INTEGER, INTENT(OUT) :: IERR
+      INTEGER, INTENT(IN)  :: MZ(N,M),NT
+      CHARACTER(LEN=1), INTENT(IN) :: ZUV
+      REAL, INTENT(IN)     :: TH_LIM(2),PH_LIM(2)
+      DOUBLE PRECISION, INTENT(IN) :: XLON,XLAT
+      COMPLEX, INTENT(IN)  :: UV(NT,N,M)
+      COMPLEX, INTENT(OUT) :: UV1(NT)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -518,7 +540,7 @@
                      SUBROUTINE BSI_WEIGHTS
 !                    **********************
 !
-     &(ZUV,THETA,PHI,THETA_LIM,PHI_LIM,DX,DY,MASK,N,M,WW,IW,JW)
+     &(ZUVM,THETA,PHI,THETA_LIM,PHI_LIM,DX,DY,MASK,N,M,WW,IW,JW)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   16/01/2012
@@ -527,7 +549,19 @@
 !brief    BILINEAR SPLINE INTERPOLATION WEIGHTS FOR DELTA-FORCING
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  DX            |-->| STEP X
+!|  DY            |-->| STEP Y
+!|  IW            |<--| INDEX FOR INTERPOLATION
+!|  JW            |<--| INDEX FOR INTERPOLATION
+!|  M             |-->| GRID DIMENSION
+!|  MASK          |-->| MASK
+!|  N             |-->| GRID DIMENSION
+!|  PHI           |-->| LONGITUDE
+!|  PHI_LIM       |-->| GRID LIMITS
+!|  THETA         |-->| LATITUDE
+!|  THETA_LIM     |-->| GRID LIMITS
+!|  WW            |<--| INTERPOLATION
+!|  ZUVM          |-->| C-GRID ZUV: 'u','v','z' ('U','V','Z')
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -536,23 +570,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER N,M
-      INTEGER MASK(N,M)             ! GRID DIMENSIONS AND MASK
-      INTEGER IW(0:1),JW(0:1)
-      CHARACTER(LEN=1) ZUV          ! C-GRID ZUV: 'u','v','z' ('U','V','Z')
-      DOUBLE PRECISION THETA, PHI   ! POINT COORDINATES
-      REAL THETA_LIM(2),PHI_LIM(2)  ! GRID LIMITS
-      DOUBLE PRECISION DX,DY        ! STEP X, STEP Y
-      DOUBLE PRECISION WW(0:1,0:1)
+      INTEGER, INTENT(IN)  :: N,M
+      INTEGER, INTENT(IN)  :: MASK(N,M)
+      INTEGER, INTENT(OUT) :: IW(0:1),JW(0:1)
+      CHARACTER(LEN=1), INTENT(IN) :: ZUVM
+      DOUBLE PRECISION, INTENT(IN)  :: THETA,PHI
+      REAL, INTENT(IN)     :: THETA_LIM(2),PHI_LIM(2)
+      DOUBLE PRECISION, INTENT(IN)  :: DX,DY
+      DOUBLE PRECISION, INTENT(OUT) :: WW(0:1,0:1)
 !
 !-----------------------------------------------------------------------
 !
       INTEGER I0,J0,I1,J1
       INTEGER SM !,IPSHFT
+      CHARACTER(LEN=1) ZUV
       DOUBLE PRECISION XI,XJ,X,Y
       DOUBLE PRECISION W00,W01,W10,W11,WTOT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      ZUV = ZUVM
 !
       IF( ZUV.EQ.'U' ) ZUV = 'u'
       IF( ZUV.EQ.'V' ) ZUV = 'v'
@@ -617,12 +654,14 @@
       X = XI - REAL(I0)
       J0 = INT(XJ)
       Y = XJ - REAL(J0)
+!
+      WW(0,0) = 0.D0
+      WW(0,1) = 0.D0
+      WW(1,0) = 0.D0
+      WW(1,1) = 0.D0
+!
 !     CHECK TO SEE IF CALCULATED INDICES ARE IN RANGE
       IF( (I0.GT.N).OR.(I0.LT.1).OR.(J0.GT.M).OR.(J0.LT.1) ) THEN
-         WW(0,0) = 0.D0
-         WW(0,1) = 0.D0
-         WW(1,0) = 0.D0
-         WW(1,1) = 0.D0
          RETURN
       ENDIF
 !
@@ -631,10 +670,6 @@
 !
       J1 = IPSHFT(J0,1,M)
       I1 = IPSHFT(I0,1,N)
-      WW(0,0) = 0.D0
-      WW(0,1) = 0.D0
-      WW(1,0) = 0.D0
-      WW(1,1) = 0.D0
       SM = MASK(I0,J0) + MASK(I0,J1) + MASK(I1,J0) + MASK(I1,J1)
       IF( SM.GT.0 ) THEN
          W00 = (1.D0-X)*(1.D0-Y)*REAL(MASK(I0,J0))
@@ -643,10 +678,6 @@
          W11 = X*Y*REAL(MASK(I1,J1))
          WTOT = W00+W01+W10+W11
          IF( WTOT.EQ.0.D0 ) THEN
-            WW(0,0) = 0.D0
-            WW(0,1) = 0.D0
-            WW(1,0) = 0.D0
-            WW(1,1) = 0.D0
             RETURN
          ENDIF
          WW(0,0) = W00/WTOT
@@ -679,7 +710,13 @@
 !brief
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  CID           |-->| GIVEN CONSTITUENTS
+!|  IND           |-->| INDICES OF GIVEN CONTITUENTS
+!|  INTERP        |<->| LOGICAL (INFERENCE OF MINOR CONSTITUENT OR NOT)
+!|  LAT           |-->| LATITUDE (DUMMY ARGUMENT)
+!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  TIME_MJD      |-->| MODIFIED JULIAN DAY
+!|  Z1            |-->| FIELD TO INTERPOLATE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -688,13 +725,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NCON !,NTIME
-      INTEGER IND(NCON)
-      LOGICAL INTERP
-      CHARACTER(LEN=4) CID(NCON)
-      DOUBLE PRECISION LAT !,ZPRED(NTIME)
-      DOUBLE PRECISION TIME_MJD !(NTIME)
-      COMPLEX Z1(NCON)
+      INTEGER, INTENT(IN) :: NCON !,NTIME
+      INTEGER, INTENT(IN) :: IND(NCON)
+      LOGICAL, INTENT(INOUT) :: INTERP
+      CHARACTER(LEN=4), INTENT(IN) :: CID(NCON)
+      DOUBLE PRECISION, INTENT(IN) :: LAT !,ZPRED(NTIME)
+      DOUBLE PRECISION, INTENT(IN) :: TIME_MJD !(NTIME)
+      COMPLEX, INTENT(IN) :: Z1(NCON)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -711,6 +748,7 @@
 !
       IF( INTERP ) CALL MKW( INTERP,IND,NCON,WW )
       ALLOCATE( A(NCON) )
+! DLAT AND LAT AR NOT USED IN NODAL
       DLAT = LAT
       IERR = 0
       DH = 0.D0
@@ -792,17 +830,20 @@ c$$$
 !brief
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  IND           |-->| INDICES OF GIVEN CONTITUENTS
+!|  INTERP        |-->| LOGICAL (INFERENCE OF MINOR CONSTITUENT OR NOT)
+!|  NC            |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  WR            |<--| FIELD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER NC
-      INTEGER IND(NC)
-      DOUBLE PRECISION WR(TPXO_NCON,8)
-      LOGICAL INTERP
+      INTEGER, INTENT(IN) :: NC
+      INTEGER, INTENT(IN) :: IND(NC)
+      DOUBLE PRECISION, INTENT(OUT) :: WR(TPXO_NCON,8)
+      LOGICAL, INTENT(IN) :: INTERP
 !
 !-----------------------------------------------------------------------
 !
@@ -845,20 +886,24 @@ c$$$
 !note     "NO1" IN CONSTIT CORRESPONDS TO "M1" IN ARGUMENTS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  DTIME         |-->| MODIFIED JULIAN DAY
+!|  LATITUDE      |-->| LATITUDE (DUMMY ARGUMENT)
+!|  PF            |<--| NODAL FACTOR F
+!|  PU            |<--| NODAL FACTOR U (IN RADIANS)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION DTIME,LATITUDE,PU(*),PF(*)
+      DOUBLE PRECISION, INTENT(IN)  :: DTIME,LATITUDE
+      DOUBLE PRECISION, INTENT(OUT) :: PU(*),PF(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER INDEX(TPXO_NCMX),I
       DOUBLE PRECISION ARG(53),F(53),U(53)
-      DOUBLE PRECISION, PARAMETER :: DTR = ATAN(1.D0)/45.D0
+      DOUBLE PRECISION :: DTR 
 !
 !     INDEX GIVES CORRESPONDENCE BETWEEN CONSTIT AND RICHARD'S SUBROUTINES
 !     IN CONSTIT   M2,S2,K1,O1,N2,P1,K2,q1,2N2,mu2,nu2,L2,t2,
@@ -867,16 +912,25 @@ c$$$
       DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
      &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
 !
+      INTRINSIC ATAN
+!
+!------------------------------------------------------------------------
+!
+      DTR=ATAN(1.D0)/45.D0
+!
 !------------------------------------------------------------------------
 !
 !     F, U - SAME AS PF, PU IN OLD NODAL.F; ARG IS NOT NEEDED;
 !     DTIME - MJD
+!     ARGUMENTS AND ASTROL SUBROUTINES SUPPLIED BY
+!     R. RAY, MARCH 1999, ATTACHED TO OTIS
       CALL ARGUMENTS( DTIME,ARG,F,U )
       DO I=1,TPXO_NCMX
          PU(I) = 0.D0
          PF(I) = 1.D0
       ENDDO
       DO I = 1,TPXO_NCMX
+!          INDEX(I).EQ.0 FOR M8 AND 2MK3
          IF( INDEX(I).GT.0 ) THEN
 !          U IS RETURNED BY "ARGUMENTS" IN DEGREES
            PU(I) = U(INDEX(I))*DTR
@@ -900,27 +954,32 @@ c$$$
 !
 !brief    CALCULATES TIDAL ARGUMENTS
 !+        KERNEL ROUTINE FOR SUBROUTINE HAT53
+!+
+!+        ARGUMENTS AND ASTROL SUBROUTINES SUPPLIED BY
+!+        R. RAY, MARCH 1999, ATTACHED TO OTIS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  ARG           |<--| EQUILIBRIUM ARGUMENTS
+!|  F             |<--| NODAL FACTOR F
+!|  TIME1         |-->| MODIFIED JULIAN DAY
+!|  U             |<--| NODAL FACTOR U (IN DEGREES)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION TIME1, ARG(*), F(*), U(*)
+      DOUBLE PRECISION, INTENT(IN)  :: TIME1
+      DOUBLE PRECISION, INTENT(OUT) :: ARG(*), F(*), U(*)
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION SHPN(4),S,H,P,OMEGA,PP,HOUR,T1,T2
       DOUBLE PRECISION TMP1,TMP2,TEMP1,TEMP2
       DOUBLE PRECISION COSN,COS2N,SINN,SIN2N,SIN3N
       DOUBLE PRECISION ZERO,ONE,TWO,THREE,FOUR,FIVE
-      DOUBLE PRECISION NINETY
-      DOUBLE PRECISION DTR,RTD
+      DOUBLE PRECISION NINETY,DTR,RTD
 !
-      PARAMETER   (DTR=ATAN(1.D0)/45.D0, RTD=45.D0/ATAN(1.D0))
       PARAMETER   (ZERO=0.D0, ONE=1.D0)
       PARAMETER   (TWO=2.D0, THREE=3.D0, FOUR=4.D0, FIVE=5.D0)
       PARAMETER   (NINETY=90.D0)
@@ -928,9 +987,14 @@ c$$$
 !
       EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
 !
-      INTRINSIC COS,SIN
+      INTRINSIC COS,SIN,ATAN
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DTR=ATAN(1.D0)/45.D0
+      RTD=45.D0/ATAN(1.D0)
+!
+!-----------------------------------------------------------------------
 !
 !     DETERMINES EQUILIBRIUM ARGUMENTS
 !     --------------------------------
@@ -1061,7 +1125,8 @@ c$$$
       F(43) = ONE                                         ! S3
       F(44) = F(30)**2                                    ! MN4
       F(45) = F(44)                                       ! M4
-      F(46) = F(30)                                       ! MS4 ! BUG IN TPXO F(46) SHOULD BE F(30) RATHER THAN F(44)
+!     BUG IN TPXO F(46) SHOULD BE EQUAL TO F(30) RATHER THAN F(44)
+      F(46) = F(30)                                       ! MS4
       F(47) = F(30)*F(37)                                 ! MK4
       F(48) = ONE                                         ! S4
       F(49) = ONE                                         ! S5
@@ -1149,20 +1214,29 @@ c$$$
 !brief    COMPUTES A MATRIX ELEMENTS FOR ONE DATA POINT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  A             |<--| MATRIX
+!|  IND           |-->| INDICES OF GIVEN CONTITUENTS
+!|  INTERP        |-->| LOGICAL (FORCED TO .FALSE.)
+!|  L_SAL         |-->| LOGICAL (.TRUE. = NO SOLID EARTH CORRECTION)
+!|  NC            |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  PF            |-->| NODAL FACTOR F
+!|  PU            |-->| NODAL FACTOR U (IN RADIANS)
+!|  TIME          |-->| TIME IN SECONDS
+!|                |   | RELATIVE TO JAN 1 1992 (48622MJD)
+!|  W             |-->| FIELD
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER NC
-      INTEGER IND(NC)
-      LOGICAL INTERP, L_SAL
-      DOUBLE PRECISION W(TPXO_NCON,8)
-      DOUBLE PRECISION PU(*),PF(*)
-      DOUBLE PRECISION TIME
-      COMPLEX A(NC)
+      INTEGER, INTENT(IN)  :: NC
+      INTEGER, INTENT(IN)  :: IND(NC)
+      LOGICAL, INTENT(IN)  :: INTERP, L_SAL
+      DOUBLE PRECISION, INTENT(IN) :: W(TPXO_NCON,8)
+      DOUBLE PRECISION, INTENT(IN) :: PU(*),PF(*)
+      DOUBLE PRECISION, INTENT(IN) :: TIME
+      COMPLEX, INTENT(OUT) :: A(NC)
 !
 !-----------------------------------------------------------------------
 !
@@ -1212,7 +1286,10 @@ c$$$
             C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
      &	                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)))
          ENDDO
-         A = CMPLX(0.D0,0.D0)
+!
+         DO J = 1,NC
+            A(J) = CMPLX(0.D0,0.D0)
+         ENDDO
 !
 !        IND(J)=0 MEANS THE CONSTITUENT IS EXCLUDED
          DO I = 1,TPXO_NCON
@@ -1241,23 +1318,27 @@ c$$$
 !
 !brief    RETURNS CORRECTION FOR THE 16 MINOR CONSTITUENTS
 !+        LISTED IN SUBROUTINE
+!+        BASED ON PERTH2 (RICHARD RAY'S PROGRAM)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  CID           |-->| GIVEN CONSTITUENTS
+!|  DH            |<--| CORRECTION AT GIVEN TIME FOR 16 MINOR CONSTITUENTS
+!|  IERR          |<--| =-1 IF NOT ENOUGH CONSTITUENTS FOR INFERENCE
+!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  TIME          |-->| TIME, MODIFIED JULIAN DAY
+!|  ZMAJ          |-->| HC FOR GIVEN CONSTITUENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NCON
-      INTEGER IERR             ! -1 IF NOT ENOUGH CONSTITUENTS
-                               !    FOR INFERENCE
-      CHARACTER(LEN=4) CID(NCON)  ! GIVEN CONSTITUENTS
-      DOUBLE PRECISION TIME    ! TIME, MJD
-      DOUBLE PRECISION DH      ! OUTPUT: CORRECTION AT GIVEN TIME
-                               ! FOR 16 MINOR CONSTITUENTS
-      COMPLEX ZMAJ(NCON)       ! HC FOR GIVEN CONSTITUENTS
+      INTEGER, INTENT(IN)  :: NCON
+      INTEGER, INTENT(OUT) :: IERR
+      CHARACTER(LEN=4), INTENT(IN)  :: CID(NCON)
+      DOUBLE PRECISION, INTENT(IN)  :: TIME
+      DOUBLE PRECISION, INTENT(OUT) :: DH
+      COMPLEX, INTENT(IN)  :: ZMAJ(NCON)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1265,8 +1346,7 @@ c$$$
       DOUBLE PRECISION HOUR,T1,T2,SHPN(4),S,H,P,OMEGA
       DOUBLE PRECISION SINN,COSN,SIN2N,COS2N
       DOUBLE PRECISION U(18),F(18),ARG(18)
-      DOUBLE PRECISION, PARAMETER:: DTR=ATAN(1.D0)/45.D0
-      DOUBLE PRECISION, PARAMETER:: RTD=45.D0/ATAN(1.D0)
+      DOUBLE PRECISION DTR,RTD
       DOUBLE PRECISION, PARAMETER:: PP=282.8D0
       COMPLEX ZMIN(18)
       COMPLEX Z8(8)
@@ -1277,7 +1357,12 @@ c$$$
       DATA CID8/'q1  ','o1  ','p1  ','k1  ',
      &          'n2  ','m2  ','s2  ','k2  '/
 !
-      INTRINSIC COS,SIN,SQRT,ATAN2
+      INTRINSIC COS,SIN,SQRT,ATAN2,ATAN
+!
+!-----------------------------------------------------------------------
+!
+      DTR=ATAN(1.D0)/45.D0
+      RTD=45.D0/ATAN(1.D0)
 !
 !-----------------------------------------------------------------------
 !
@@ -1348,43 +1433,47 @@ c$$$
       SIN2N = SIN(2.D0*OMEGA*DTR)
       COS2N = COS(2.D0*OMEGA*DTR)
 !
-      DO I = 1,18
-        F(I) = 1.D0
-      ENDDO
-      F(1) = SQRT((1.D0 + 0.189D0*COSN - 0.0058D0*COS2N)**2 +
-     &            (0.189D0*SINN - 0.0058D0*SIN2N)**2)
-      F(2) = F(1)
-      F(3) = F(1)
-      F(4) = SQRT((1.D0 + 0.185D0*COSN)**2 + (0.185D0*SINN)**2)
-      F(5) = SQRT((1.D0 + 0.201D0*COSN)**2 + (0.201D0*SINN)**2)
-      F(6) = SQRT((1.D0 + 0.221D0*COSN)**2 + (0.221D0*SINN)**2)
+      F(1)  = SQRT((1.D0 + 0.189D0*COSN - 0.0058D0*COS2N)**2 +
+     &             (0.189D0*SINN - 0.0058D0*SIN2N)**2)
+      F(2)  = F(1)
+      F(3)  = F(1)
+      F(4)  = SQRT((1.D0 + 0.185D0*COSN)**2 + (0.185D0*SINN)**2)
+      F(5)  = SQRT((1.D0 + 0.201D0*COSN)**2 + (0.201D0*SINN)**2)
+      F(6)  = SQRT((1.D0 + 0.221D0*COSN)**2 + (0.221D0*SINN)**2)
+      F(7)  = 1.D0
+      F(8)  = 1.D0
+      F(9)  = 1.D0
       F(10) = SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2)
       F(11) = SQRT((1.D0 + 0.640D0*COSN + 0.134D0*COS2N)**2 +
      &             (0.640D0*SINN + 0.134D0*SIN2N)**2 )
       F(12) = SQRT((1.D0 - 0.0373D0*COSN)**2 + (0.0373D0*SINN)**2)
       F(13) = F(12)
       F(14) = F(12)
+      F(15) = 1.D0
       F(16) = F(12)
       F(17) = SQRT((1.D0 + 0.441D0*COSN)**2 + (0.441D0*SINN)**2)
+      F(18) = 1.D0
 !
-      DO I = 1,18
-        U(I) = 0.D0
-      ENDDO
-      U(1) = ATAN2(0.189D0*SINN - 0.0058D0*SIN2N,
-     &             1.D0 + 0.189D0*COSN - 0.0058D0*SIN2N)*RTD
-      U(2) = U(1)
-      U(3) = U(1)
-      U(4) = ATAN2( 0.185D0*SINN, 1.D0 + 0.185D0*COSN)*RTD
-      U(5) = ATAN2(-0.201D0*SINN, 1.D0 + 0.201D0*COSN)*RTD
-      U(6) = ATAN2(-0.221D0*SINN, 1.D0 + 0.221D0*COSN)*RTD
+      U(1)  = ATAN2(0.189D0*SINN - 0.0058D0*SIN2N,
+     &              1.D0 + 0.189D0*COSN - 0.0058D0*SIN2N)*RTD
+      U(2)  = U(1)
+      U(3)  = U(1)
+      U(4)  = ATAN2( 0.185D0*SINN, 1.D0 + 0.185D0*COSN)*RTD
+      U(5)  = ATAN2(-0.201D0*SINN, 1.D0 + 0.201D0*COSN)*RTD
+      U(6)  = ATAN2(-0.221D0*SINN, 1.D0 + 0.221D0*COSN)*RTD
+      U(7)  = 0.D0
+      U(8)  = 0.D0
+      U(9)  = 0.D0
       U(10) = ATAN2(-0.198D0*SINN, 1.D0 + 0.198D0*COSN)*RTD
       U(11) = ATAN2(-0.640D0*SINN - 0.134D0*SIN2N,
      &              1.D0 + 0.640D0*COSN + 0.134D0*COS2N)*RTD
       U(12) = ATAN2(-0.0373D0*SINN, 1.D0 - 0.0373D0*COSN)*RTD
       U(13) = U(12)
       U(14) = U(12)
+      U(15) = 0.D0
       U(16) = U(12)
       U(17) = ATAN2(-0.441D0*SINN, 1.D0 + 0.441D0*COSN)*RTD
+      U(18) = 0.D0
 !
 !     SUM OVER ALL TIDES
 !     ------------------
@@ -1418,21 +1507,26 @@ c$$$
 !+        DERIVED BY DAVID CARTWRIGHT (PERSONAL COMM., NOV. 1990)
 !+        TIME IS UTC IN DECIMAL MJD.
 !+        ALL LONGITUDES RETURNED IN DEGREES.
+!+
+!+        ARGUMENTS AND ASTROL SUBROUTINES SUPPLIED BY
+!+        R. RAY, MARCH 1999, ATTACHED TO OTIS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|                |-->|
+!|  SHPN          |<--| ARRAY OF FOUR BASIC ASTRONOMICAL MEAN LONGITUDES
+!|                |   | S, H, P, N
+!|  TIME          |-->| MODIFIED JULIAN DAY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION SHPN(4),TIME
+      DOUBLE PRECISION, INTENT(IN)  :: TIME
+      DOUBLE PRECISION, INTENT(OUT) :: SHPN(4)
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION CIRCLE,T
-      PARAMETER ( CIRCLE=360.0D0 )
+      DOUBLE PRECISION T
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1456,15 +1550,15 @@ c$$$
 !     --------------------------------------
       SHPN(4) = 125.0445D0 -  0.05295377D0 * T
 
-      SHPN(1) = MOD(SHPN(1),CIRCLE)
-      SHPN(2) = MOD(SHPN(2),CIRCLE)
-      SHPN(3) = MOD(SHPN(3),CIRCLE)
-      SHPN(4) = MOD(SHPN(4),CIRCLE)
+      SHPN(1) = MOD(SHPN(1),360.D0)
+      SHPN(2) = MOD(SHPN(2),360.D0)
+      SHPN(3) = MOD(SHPN(3),360.D0)
+      SHPN(4) = MOD(SHPN(4),360.D0)
 
-      IF( SHPN(1).LT.0.D0 ) SHPN(1) = SHPN(1) + CIRCLE
-      IF( SHPN(2).LT.0.D0 ) SHPN(2) = SHPN(2) + CIRCLE
-      IF( SHPN(3).LT.0.D0 ) SHPN(3) = SHPN(3) + CIRCLE
-      IF( SHPN(4).LT.0.D0 ) SHPN(4) = SHPN(4) + CIRCLE
+      IF( SHPN(1).LT.0.D0 ) SHPN(1) = SHPN(1) + 360.D0
+      IF( SHPN(2).LT.0.D0 ) SHPN(2) = SHPN(2) + 360.D0
+      IF( SHPN(3).LT.0.D0 ) SHPN(3) = SHPN(3) + 360.D0
+      IF( SHPN(4).LT.0.D0 ) SHPN(4) = SHPN(4) + 360.D0
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1486,14 +1580,16 @@ c$$$
 !+  DATE >= 11.17.1858 CORRESPONDS TO MJD = 0
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  MJD           |<--|
+!|  ID            |<->| DAY
+!|  IYYY          |<->| YEAR
+!|  MM            |<->| MONTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER MM,ID,IYYY
+      INTEGER, INTENT(INOUT) :: MM,ID,IYYY
 !
 !-----------------------------------------------------------------------
 !
@@ -1523,7 +1619,7 @@ c$$$
          IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS+1
       ENDDO
 !     EACH 4TH YEAR IS LEAP YEAR
-      NLEAP = INT((IYYY-1-1860)*0.25)
+      NLEAP = INT(REAL(IYYY-1-1860)*0.25)
       IF( IYYY.GT.1860 ) NLEAP = NLEAP+1
 !     EXCEPT
       DO K = 1900,IYYY-1,100
@@ -1532,8 +1628,8 @@ c$$$
       ENDDO
 !     BUT EACH IN THE ROW 2000:400:... IS LEAP YEAR AGAIN
       DO K = 2000,IYYY-1,400
-        IF( IYYY.GT.K ) NLEAP = NLEAP+1
-        IF( IYYY.EQ.K.AND.MM.GT.2 ) DAYS = DAYS+1
+        IF( K.LT.IYYY ) NLEAP = NLEAP+1
+        IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS+1
       ENDDO
       DATE_MJD = 365*(IYYY-1858)+NLEAP+DAYS
 !
@@ -1632,18 +1728,20 @@ c$$$
 !warning  (-ZF) should be stored in H as you enter this subroutine
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  NPOIN         |-->| NUMBER OF 2D NODES IN THE MESH
-!|  X,Y           |-->| COORDINATES X AND Y OF THE NODES OF THE MESH
 !|  H             |<->| COMES IN AS -ZF, TO WHICH THE TPXO FREE SURFACE
 !|                |   | WILL BE ADDED TO PRODUCE WATER DEPTH
-!|  MARDAT        |-->| DATE (YEAR, MONTH,DAY)
+!|  LAMBD0        |-->| LATITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
+!|  MARDAT        |<->| DATE (YEAR, MONTH,DAY)
 !|  MARTIM        |-->| TIME (HOUR, MINUTE,SECOND)
-!|  PHI0          |-->| 
-!|  LAMBD0        |-->| 
+!|  NPOIN         |-->| NUMBER OF 2D NODES IN THE MESH
+!|  PHI0          |-->| LONGITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
 !|  T2DBB1        |-->| ADDRESS OF DATA BASE 1 IN T2D_FILES
 !|  T2DBB2        |-->| ADDRESS OF DATA BASE 2 IN T2D_FILES
 !|  T2D_FILES     |-->| ARRAY OF FILES
-!|  U,V           |<--| 2D DEPTH-AVERAGED VELOCITY COMPONENTS
+!|  U             |<--| 2D DEPTH-AVERAGED VELOCITY COMPONENT U
+!|  V             |<--| 2D DEPTH-AVERAGED VELOCITY COMPONENT V
+!|  X             |-->| COORDINATES X OF THE NODES OF THE MESH
+!|  Y             |-->| COORDINATES Y OF THE NODES OF THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -1654,7 +1752,8 @@ c$$$
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,T2DBB1,T2DBB2
-      INTEGER, INTENT(IN)             :: MARDAT(3),MARTIM(3)
+      INTEGER, INTENT(IN)             :: MARTIM(3)
+      INTEGER, INTENT(INOUT)          :: MARDAT(3)
       DOUBLE PRECISION, INTENT(IN)    :: LAMBD0,PHI0
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN)
@@ -1667,11 +1766,9 @@ c$$$
       INTEGER, ALLOCATABLE :: CIND(:)
       INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
       DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
-      DOUBLE PRECISION, PARAMETER :: PI = 4.D0*ATAN(1.D0)
-      DOUBLE PRECISION, PARAMETER :: DTR = PI/180.D0
-      DOUBLE PRECISION, PARAMETER :: RTD = 180.D0/PI
-      DOUBLE PRECISION LAT,LON,SPD
+      DOUBLE PRECISION PI,DTR,RTD,SPD
       DOUBLE PRECISION LAT0,LONG0,CONST
+      DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
       REAL PH_LIM(2),TH_LIM(2)
       COMPLEX, ALLOCATABLE :: ZT(:,:,:)
       COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
@@ -1690,7 +1787,13 @@ c$$$
 !
       INTRINSIC TAN,ATAN
 !
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!-----------------------------------------------------------------------
+!
+      PI = 4.D0*ATAN(1.D0)
+      DTR = PI/180.D0
+      RTD = 180.D0/PI      
+!
+!-----------------------------------------------------------------------
 !
 !     USER AND CONVERTION CONSTANTS
 !
@@ -1736,7 +1839,6 @@ c$$$
 !     PREPARE STORAGE ON LEVEL BOUNDARIES
 !
       ALLOCATE( TPXO_BOR(3,NPTNFR,NCON) )
-      ALLOCATE( TPXO_LATFR(NPTNFR) )
       DO K=1,NCON
          DO J=1,NPTNFR
             DO I=1,3
@@ -1744,15 +1846,28 @@ c$$$
             ENDDO
          ENDDO
       ENDDO
-!     AJOUTE PAR JMH 03/04/2012, A VOIR SEB ?
-      DO J=1,NPTNFR
-         TPXO_LATFR(J) = 0.D0
-      ENDDO
+!
+      TPXO_LAT_DUMMY = 0.D0
 !
 !-----------------------------------------------------------------------
 !
       STIME_MJD = DATE_MJD( MARDAT(2),MARDAT(3),MARDAT(1) ) +
      &            MARTIM(1)/24.D0+MARTIM(2)/1440.D0+MARTIM(3)/86400.D0
+!
+!-----------------------------------------------------------------------
+!
+      ALLOCATE( LON(NPOIN) )
+      ALLOCATE( LAT(NPOIN) )
+!
+      DO I = 1,NPOIN
+!
+         LON(I) = RTD*( X(I)/RADIUS + LONG0 )
+         LAT(I) = RTD*
+     &      ( 2.D0*ATAN(CONST*EXP(Y(I)/RADIUS)) - 0.5D0*PI )
+         IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
+         IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
+!
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -1786,16 +1901,10 @@ c$$$
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
 !
-         LON = RTD*( X(IPOIN)/RADIUS + LONG0 )
-         LAT = RTD*
-     &      ( 2.D0*ATAN(CONST*EXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
-         IF( LON.GT.PH_LIM(2) ) LON = LON - 360.D0
-         IF( LON.LT.PH_LIM(1) ) LON = LON + 360.D0
-!
-         CALL INTERPT( ZT,NCON,N,M,MASKT,
-     &                TH_LIM,PH_LIM,LAT,LON,ZCON,IERR,'z' )
+         CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
+     &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
          IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
-     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT,STIME_MJD,I_MICON )
+     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,I_MICON )
          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
                TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
@@ -1832,8 +1941,12 @@ c$$$
             READ(T2D_FILES(T2DBB2)%LU)
          ENDDO
          READ(T2D_FILES(T2DBB2)%LU) UV
-         UT(IC,:,:) = UV(1,:,:)
-         VT(IC,:,:) = UV(2,:,:)
+         DO J=1,M
+            DO I=1,N
+               UT(IC,I,J) = UV(1,I,J)
+               VT(IC,I,J) = UV(2,I,J)
+            ENDDO
+         ENDDO
          WHERE( UT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKU = 1
          WHERE( VT(IC,:,:).NE.CMPLX(0.D0,0.D0) ) MASKV = 1
       ENDDO
@@ -1847,26 +1960,25 @@ c$$$
       ALLOCATE( ZCON(NCON) )
       DO IPOIN = 1,NPOIN
 !
-         LON = RTD*( X(IPOIN)/RADIUS + LONG0 )
-         LAT = RTD*
-     &      ( 2.D0*ATAN(CONST*EXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
-         IF( LON.GT.PH_LIM(2) ) LON = LON - 360.D0
-         IF( LON.LT.PH_LIM(1) ) LON = LON + 360.D0
-!
-         CALL INTERPT(UT,NCON,N,M,MASKU,
-     &               TH_LIM,PH_LIM,LAT,LON,ZCON,IERR,'u')
+         CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
+     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
          IF( IERR.EQ.0 ) U(IPOIN) =
-     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT,STIME_MJD,I_MICON )
+     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,I_MICON )
          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
                TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
             ENDDO
           ENDIF
 !
-         CALL INTERPT(VT,NCON,N,M,MASKV,
-     &               TH_LIM,PH_LIM,LAT,LON,ZCON,IERR,'v')
+!    FOR NR
+!
+         LAT(IPOIN) = RTD*
+     &      ( 2.D0*ATAN(CONST*EXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
+!
+         CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
+     &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
          IF( IERR.EQ.0 ) V(IPOIN) =
-     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT,STIME_MJD,I_MICON )
+     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,I_MICON )
          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
                TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
@@ -1883,6 +1995,7 @@ c$$$
 !
       ENDDO
       DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
+      DEALLOCATE( LON,LAT )
 !
       IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
       IF(LNG.EQ.2) WRITE(LU,*) 'END OF TPXO INITIALISATION'
@@ -1930,7 +2043,7 @@ c$$$
 !
 !        TPXO_BOR(1,,) IS WATER LEVEL
          SL_TPXO = PTIDE( TPXO_BOR(1,TPXO_NFR(KFR),:),
-     &         C_ID, NCON, CCIND, TPXO_LATFR(TPXO_NFR(KFR)),
+     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
      &        ( STIME_MJD+TEMPS/86400.D0 ), I_MICON )
 !
       ENDIF
@@ -1975,9 +2088,9 @@ c$$$
       VITU_TPXO = 0.D0
       IF( TPXO_NFR(KFR).NE.0 ) THEN
 !
-         ! TPXO_BOR(2,,) IS U-VELOCITY COMPONENT
+!        TPXO_BOR(2,,) IS U-VELOCITY COMPONENT
          VITU_TPXO = PTIDE( TPXO_BOR(2,TPXO_NFR(KFR),:),
-     &         C_ID, NCON, CCIND, TPXO_LATFR(TPXO_NFR(KFR)),
+     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
      &        ( STIME_MJD+TEMPS/86400.D0 ), I_MICON )
 !
       ENDIF
@@ -2024,7 +2137,7 @@ c$$$
 !
 !        TPXO_BOR(3,,) IS V-VELOCITY COMPONENT
          VITV_TPXO = PTIDE( TPXO_BOR(3,TPXO_NFR(KFR),:),
-     &         C_ID, NCON, CCIND, TPXO_LATFR(TPXO_NFR(KFR)),
+     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
      &        ( STIME_MJD+TEMPS/86400.D0 ), I_MICON )
 !
       ENDIF
