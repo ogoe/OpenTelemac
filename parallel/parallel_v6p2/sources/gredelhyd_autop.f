@@ -590,6 +590,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
       INTEGER, INTENT(IN) :: IVAL
       INTEGER ICODE
 !     STANDARD F90 :  STOP [n] WHERE N IS A STRING OF NOT MORE
