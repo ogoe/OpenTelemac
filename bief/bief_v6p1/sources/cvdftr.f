@@ -693,7 +693,9 @@
 !         DIVIDES BY H WITH HARD-CODED CLIPPING AT 0.01
           CALL CPSTVC(SMI,T4)
           DO I=1,SMI%DIM1
-            IF(T10%R(I).LT.1.D-2) THEN
+!           CORRECTION JMH 26/04/2012
+!           IF(T10%R(I).LT.1.D-2) THEN
+            IF(H%R(I).LT.1.D-4) THEN
               T4%R(I)=0.D0
             ELSE
               T4%R(I)=SMI%R(I)/H%R(I)
