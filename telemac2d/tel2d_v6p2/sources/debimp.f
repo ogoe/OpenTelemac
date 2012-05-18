@@ -91,8 +91,6 @@
 !  THE LAST NODE ON THE BOUNDARY. IN FACT THIS SEGMENT WILL BE SOLID
 !  AND WILL HAVE A MASK ALREADY SET TO ZERO.
 !
-      IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
-!
       DO K=1,NPTFR
         IF(NUMLIQ(K).EQ.IFRLIQ) THEN
           WORK1%R(K)=MASK(K)
@@ -100,24 +98,6 @@
           WORK1%R(K)=0.D0
         ENDIF
       ENDDO
-!
-      ELSE
-!
-!     FINITE VOLUMES COUNT THE SOLID SEGMENTS CLOSE TO
-!     THE LIQUID BOUNDARIES
-!
-      DO K=1,NPTFR
-        IF(NUMLIQ(K).EQ.IFRLIQ) THEN
-          WORK1%R(K)          =MASK(K)
-!         RA ON 07/12/2010
-!         WORK1%R(KP1BOR(K,1))=MASK(K)
-!         WORK1%R(KP1BOR(K,2))=MASK(K)
-        ELSE
-          WORK1%R(K)=0.D0
-        ENDIF
-      ENDDO
-!
-      ENDIF
 !
       IELM=11
       CALL VECTOR(WORK2,'=','FLUBDF          ',IELBOR(IELM,1),

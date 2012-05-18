@@ -5,10 +5,10 @@
      &(LIMPRO,LIMDIM,MASK,LIUBOR,LIVBOR,LIHBOR,KP1BOR,NBOR,NPTFR,
      & KENT,KENTU,KSORT,KADH,KLOG,KINC,KNEU,KDIR,KDDL,KOND,
      & CLH,CLU,CLV,IELMU,U,V,GRAV,H,LT,NPOIN,NELBOR,NELMAX,MSK,MASKEL,
-     & NFRLIQ,THOMFR,NUMLIQ,FRTYPE,XNEBOR,YNEBOR,ENTET)
+     & NFRLIQ,THOMFR,NUMLIQ,FRTYPE,XNEBOR,YNEBOR,IKLBOR,ENTET)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) CHECKS THE COMPATIBILITY OF BOUNDARY CONDITIONS.
@@ -32,6 +32,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/05/2012
+!+        V6P2
+!+   Security added in LIMPRO in parallel, look for -9999.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CLH            |<->| COPY OF LIHBOR
 !| CLU            |<->| COPY OF LIUBOR
@@ -40,6 +45,7 @@
 !| FRTYPE         |-->| TYPE OF TREATMENT FOR LIQUID BOUNDARIES
 !| GRAV           |-->| GRAVITY
 !| IELMU          |-->| TYPE OF ELEMENT FOR U
+!| IKLBOR         |-->| CONNECTIVITY TABLE FOR BOUNDARY ELEMENTS
 !| KADH           |-->| CONVENTION FOR NO SLIP BOUNDARY CONDITION
 !| KDDL           |-->| CONVENTION FOR DEGREE OF FREEDOM
 !| KDIR           |-->| CONVENTION FOR DIRICHLET POINT
@@ -90,6 +96,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : MESH
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -102,6 +109,7 @@
       INTEGER, INTENT(IN) :: LIMDIM,IELMU
       INTEGER, INTENT(IN) :: NELBOR(NPTFR),LIVBOR(NPTFR),LIHBOR(NPTFR)
       INTEGER, INTENT(IN) :: LIUBOR(NPTFR),FRTYPE(NFRLIQ)
+      INTEGER, INTENT(IN) :: IKLBOR(NPTFR,*)
       INTEGER, INTENT(INOUT) :: LIMPRO(LIMDIM,6)
       INTEGER, INTENT(IN) :: KP1BOR(NPTFR),NBOR(NPTFR),NUMLIQ(NFRLIQ)
       INTEGER, INTENT(INOUT) :: CLH(NPTFR),CLU(NPTFR),CLV(NPTFR)
@@ -131,7 +139,7 @@
 !
       LOGICAL ALERTE1,ALERTE2
 !
-      INTEGER IGUILT1,IGUILT2
+      INTEGER IGUILT1,IGUILT2,ISEG
 !
       INTRINSIC MAX
 !
@@ -547,9 +555,19 @@
 !     THE POINT IN THE MIDDLE OF A SEGMENT HAS THE SAME CONDITION AS THE SEGMENT
 !
       IF(IELMU.EQ.13) THEN
-        DO K=1,NPTFR
-          LIMPRO(K+NPTFR,2)=LIMPRO(K,5)
-          LIMPRO(K+NPTFR,3)=LIMPRO(K,6)
+!       LOOP ON BOUNDARY SEGMENTS
+        DO ISEG=1,NPTFR
+          K=IKLBOR(ISEG,1)
+          KP1=KP1BOR(K)
+          IF(KP1.EQ.K) THEN
+!           SEGMENT IN ANOTHER SUB-DOMAIN
+!           FANCY VALUE TO GET A WARNING IN PARALLEL IF IT IS USED
+            LIMPRO(IKLBOR(ISEG,3),2)=-9999
+            LIMPRO(IKLBOR(ISEG,3),3)=-9999
+          ELSE
+            LIMPRO(IKLBOR(ISEG,3),2)=LIMPRO(K,5)
+            LIMPRO(IKLBOR(ISEG,3),3)=LIMPRO(K,6)
+          ENDIF
         ENDDO
       ENDIF
 !

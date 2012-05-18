@@ -40,6 +40,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. DENIS (SINETICS), J.-M. HERVOUET (LNHE)
+!+        02/05/2012
+!+        V6P2
+!+   Use of data structure MESH%ELTCAR to have the same starting element
+!+   in scalar mode and in parallel, for the treatment of characteristic
+!+   curves.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| WORK ARRAY: CELERITY OF WAVES
 !| DT             |-->| TIME STEP
@@ -130,7 +137,7 @@
       INTEGER, INTENT(IN) :: IELM,NTRAC
       INTEGER, INTENT(IN) :: KSORT,KINC,KENT,KENTU
       INTEGER, INTENT(IN) :: NBOR(NPTFR)
-      INTEGER, INTENT(IN) :: IKLE(*),IFABOR(*)
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,3),IFABOR(*)
       INTEGER, INTENT(IN) :: LIHBOR(NPTFR),LIUBOR(NPTFR),LIVBOR(NPTFR)
       INTEGER, INTENT(IN) :: FRTYPE(NFRLIQ),NUMLIQ(NPTFR)
       INTEGER, INTENT(INOUT),TARGET  :: IT1(2*NPTFR)
@@ -166,7 +173,7 @@
       DOUBLE PRECISION HMIN,HHBOR,DETADX,DETADY,TBAR(100),TT(100)
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
       DOUBLE PRECISION ZSTAR(1),ZCONV(1,1),SHZ(1),Z(1,1),UNORM,NORMZS
-      INTEGER ELM_UFIELD,ELM_VFIELD,ELM_HFIELD
+      INTEGER ELM_UFIELD,ELM_VFIELD,ELM_HFIELD,IELEM
       LOGICAL QUAD
 !
       DATA HMIN  /2.D-2/
@@ -241,12 +248,11 @@
       UFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
       VFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
       HFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
-! 
-!
-!  
+!      
       TETA=1.D0
 !     CAN BE RELAXED, TESTED UP TO 0.05 IN PALUEL BOX MODEL
 !     TETA=0.05D0  
+!
       DO K=1,NPTFR
         IF(NUMLIQ(K).NE.0) THEN
           IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
@@ -286,16 +292,34 @@
         CALL PARCOM(GZSY,2,MESH)
       ENDIF
 !
-!     REGROUPS THE POINTS WITH THOMPSON TREATMENT
-!     NPT : NUMBER OF POINTS
-!     LISPFR : LIST OF THOSE POINTS (BOUNDARY NODE NUMBERS)
+!     REGROUPS THE POINTS WITH CHARACTERISTICS TREATMENT BY THIS
+!     PROCESSOR AND BUILDS THEIR BARYCENTRIC COORDINATES
+!     NPT: NUMBER OF POINTS
+!     LISPFR: LIST OF THOSE POINTS (BOUNDARY NODE NUMBERS)
 !
       NPT=0      
       DO K=1,NPTFR
         IF(NUMLIQ(K).NE.0) THEN
-          IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
+          N=NBOR(K)
+          IF(FRTYPE(NUMLIQ(K)).EQ.2.AND.MESH%ELTCAR%I(N).NE.0) THEN 
             NPT=NPT+1
-            LISPFR(NPT)=K             
+            LISPFR(NPT)=K 
+            IELEM= MESH%ELTCAR%I(N)
+            IF(IKLE(IELEM,1).EQ.N) THEN
+              SHP(1,N)=1.D0
+              SHP(2,N)=0.D0
+              SHP(3,N)=0.D0
+            ENDIF
+            IF(IKLE(IELEM,2).EQ.N) THEN
+              SHP(1,N)=0.D0
+              SHP(2,N)=1.D0
+              SHP(3,N)=0.D0
+            ENDIF
+            IF(IKLE(IELEM,3).EQ.N) THEN
+              SHP(1,N)=0.D0
+              SHP(2,N)=0.D0
+              SHP(3,N)=1.D0
+            ENDIF           
           ENDIF
         ENDIF
       ENDDO
@@ -314,36 +338,15 @@
 !
 !     PREPARING THE CALL TO SCARACT
 !
-!     NOTE JMH: COULD BE SIMPLIFIED WITH ARRAYS NELBOR AND NULONE !!!
-      CALL GTSH11(SHP,ITRAV2,IKLE,NPOIN,NELEM,NELMAX,MSK,MASKEL%R)
-!
       DO IFR=1,NPT
         IPT=NBOR(LISPFR(IFR))
         XCONV%R(IFR) = X(IPT)
         YCONV%R(IFR) = Y(IPT)         
-        ELT_T(IFR)   = ITRAV2(IPT)
+        ELT_T(IFR)   = MESH%ELTCAR%I(IPT) 
         SHPP(1,IFR)= SHP(1,IPT)
         SHPP(2,IFR)= SHP(2,IPT)
         SHPP(3,IFR)= SHP(3,IPT)
       ENDDO
-!
-!     PROVISIONAL, SHOULD WORK WITHOUT THIS IN VERSION 6.2
-!
-      IF(NCSIZE.GT.1) THEN
-        DO K=1,NPTFR
-          UBTIL%R(K)=0.D0
-          VBTIL%R(K)=0.D0
-          HBTIL%R(K)=0.D0
-!         ZBTIL%R(K)=0.D0
-        ENDDO
-        IF(NTRAC.GT.0) THEN
-          DO ITRAC=1,NTRAC
-            DO K=1,NPTFR
-              TBTIL%ADR(ITRAC)%P%R(K)=0.D0
-            ENDDO
-          ENDDO
-        ENDIF
-      ENDIF
 !
       NOMB=4+NTRAC
       CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,X,Y,
@@ -374,7 +377,28 @@
           ENDDO
         ENDDO
       ENDIF
-      IF(NCSIZE.GT.1) THEN
+!
+!     BEFORE PARCOM_BORD ,CANCELLING VALUES OF POINTS TREATED
+!     IN ANOTHER SUB-DOMAIN
+!
+      IF(NCSIZE.GT.1) THEN      
+        DO K=1,NPTFR
+          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+            UBTIL%R(K)=0.D0
+            VBTIL%R(K)=0.D0
+            HBTIL%R(K)=0.D0
+!           ZBTIL%R(K)=0.D0          
+          ENDIF
+        ENDDO
+        IF(NTRAC.GT.0) THEN
+          DO K=1,NPTFR
+            IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+              DO ITRAC=1,NTRAC
+                TBTIL%ADR(ITRAC)%P%R(K)=0.D0 
+              ENDDO     
+            ENDIF
+          ENDDO          
+        ENDIF
         CALL PARCOM_BORD(UBTIL%R,1,MESH)
         CALL PARCOM_BORD(VBTIL%R,1,MESH)
         CALL PARCOM_BORD(HBTIL%R,1,MESH)
@@ -391,9 +415,9 @@
 !
 !     IF W1=0 IS OK, THIS PART COULD BE DONE ONLY WHEN NTRAC.GT.0
 !
-      IF(NPT.GT.0) THEN 
-        DO J=1,NPT
-          K=LISPFR(J)
+      DO K=1,NPTFR
+        IF(NUMLIQ(K).NE.0) THEN
+        IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
           N=NBOR(K)  
           UNORM=SQRT(U%R(N)**2+V%R(N)**2)
           IF(UNORM.GT.1.D-12) THEN
@@ -427,8 +451,9 @@
               TBOR%ADR(ITRAC)%P%R(K+NPTFR)=HH*(TT(ITRAC)-TBAR(ITRAC))
             ENDDO
           ENDIF       
-        ENDDO
-      ENDIF
+        ENDIF
+        ENDIF
+      ENDDO
 !
 !----------------------------------------------------------
 !     COMPUTES THE ADVECTION FIELD U + C 
@@ -466,22 +491,11 @@
         IPT=NBOR(LISPFR(IFR))
         XCONV%R(IFR) = X(IPT)
         YCONV%R(IFR) = Y(IPT)         
-        ELT_T(IFR)   = ITRAV2(IPT)
+        ELT_T(IFR)   = MESH%ELTCAR%I(IPT) 
         SHPP(1,IFR)  = SHP(1,IPT)
         SHPP(2,IFR)  = SHP(2,IPT)
         SHPP(3,IFR)  = SHP(3,IPT)
       ENDDO
-!
-!     PROVISIONAL, SHOULD WORK WITHOUT THIS IN VERSION 6.2
-!
-      IF(NCSIZE.GT.1) THEN
-        DO K=1,NPTFR
-          UBTIL%R(K)=0.D0
-          VBTIL%R(K)=0.D0
-          HBTIL%R(K)=0.D0
-          ZBTIL%R(K)=0.D0
-        ENDDO
-      ENDIF
 !
       NOMB=4
       CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,X,Y,
@@ -502,8 +516,20 @@
         VBTIL%R(K)=VBTIL%R(J)
         HBTIL%R(K)=HBTIL%R(J)
         ZBTIL%R(K)=ZBTIL%R(J)
-      ENDDO
-      IF(NCSIZE.GT.1) THEN
+      ENDDO      
+!
+!     BEFORE PARCOM_BORD ,CANCELLING VALUES OF POINTS TREATED
+!     IN ANOTHER SUB-DOMAIN
+!
+      IF(NCSIZE.GT.1) THEN      
+        DO K=1,NPTFR
+          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+            UBTIL%R(K)=0.D0
+            VBTIL%R(K)=0.D0
+            HBTIL%R(K)=0.D0
+            ZBTIL%R(K)=0.D0          
+          ENDIF
+        ENDDO
         CALL PARCOM_BORD(UBTIL%R,1,MESH)
         CALL PARCOM_BORD(VBTIL%R,1,MESH)
         CALL PARCOM_BORD(HBTIL%R,1,MESH)
@@ -514,9 +540,9 @@
 !     COMPUTES THE RIEMANN INVARIANTS W2 CARRIED BY THIS ADVECTION FIELD
 !----------------------------------------------------------------------
 !
-      IF(NPT.GT.0) THEN
-        DO J=1,NPT
-          K=LISPFR(J)
+      DO K=1,NPTFR
+        IF(NUMLIQ(K).NE.0) THEN
+        IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
           N=NBOR(K)
           UNORM=SQRT(U%R(N)**2+V%R(N)**2)
           IF(UNORM.GT.1.D-12) THEN
@@ -532,8 +558,9 @@
           HH  =HBTIL%R(K)
           UETA=UBTIL%R(K)*DETADX+VBTIL%R(K)*DETADY
           W2R(K)=(HH+ZBTIL%R(K)-ZF%R(N))*CBAR+HH*(UETA-UETABAR)                               
-        ENDDO
-      ENDIF           
+        ENDIF
+        ENDIF 
+      ENDDO          
 !
 !     COMPUTES THE ADVECTION FIELD U-C 
 !    
@@ -565,22 +592,11 @@
         IPT=NBOR(LISPFR(IFR))
         XCONV%R(IFR) = X(IPT)
         YCONV%R(IFR) = Y(IPT)         
-        ELT_T(IFR)   = ITRAV2(IPT)
+        ELT_T(IFR)   = MESH%ELTCAR%I(IPT) 
         SHPP(1,IFR)  = SHP(1,IPT)
         SHPP(2,IFR)  = SHP(2,IPT)
         SHPP(3,IFR)  = SHP(3,IPT)
       ENDDO
-!
-!     PROVISIONAL, SHOULD WORK WITHOUT THIS IN VERSION 6.2
-!
-      IF(NCSIZE.GT.1) THEN
-        DO K=1,NPTFR
-          UBTIL%R(K)=0.D0
-          VBTIL%R(K)=0.D0
-          HBTIL%R(K)=0.D0
-          ZBTIL%R(K)=0.D0
-        ENDDO
-      ENDIF
 !
       NOMB=4
       CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,X,Y,ZSTAR,
@@ -601,8 +617,20 @@
         VBTIL%R(K)=VBTIL%R(J)
         HBTIL%R(K)=HBTIL%R(J)
         ZBTIL%R(K)=ZBTIL%R(J)
-      ENDDO
-      IF(NCSIZE.GT.1) THEN
+      ENDDO      
+!
+!     BEFORE PARCOM_BORD ,CANCELLING VALUES OF POINTS TREATED
+!     IN ANOTHER SUB-DOMAIN
+!
+      IF(NCSIZE.GT.1) THEN      
+        DO K=1,NPTFR
+          IF(MESH%ELTCAR%I(NBOR(K)).EQ.0) THEN 
+            UBTIL%R(K)=0.D0
+            VBTIL%R(K)=0.D0
+            HBTIL%R(K)=0.D0
+            ZBTIL%R(K)=0.D0          
+          ENDIF
+        ENDDO
         CALL PARCOM_BORD(UBTIL%R,1,MESH)
         CALL PARCOM_BORD(VBTIL%R,1,MESH)
         CALL PARCOM_BORD(HBTIL%R,1,MESH)
@@ -611,9 +639,9 @@
 !
 ! COMPUTES THE RIEMANN INVARIANTS W3 CARRIED BY THIS ADVECTION FIELD
 !
-      IF(NPT.GT.0) THEN
-        DO J=1,NPT
-          K=LISPFR(J)
+      DO K=1,NPTFR
+        IF(NUMLIQ(K).NE.0) THEN
+        IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
           N=NBOR(K)
           UNORM=SQRT(U%R(N)**2+V%R(N)**2)
           IF(UNORM.GT.1.D-12) THEN
@@ -630,16 +658,17 @@
           HH  =HBTIL%R(K)
           UETA=UBTIL%R(K)*DETADX+VBTIL%R(K)*DETADY
           W3R(K)=(HH+ZBTIL%R(K)-ZF%R(N))*CBAR+HH*(-UETA+UETABAR)        
-        ENDDO
-      ENDIF
+        ENDIF
+        ENDIF
+      ENDDO
 !
 !----------------------------------------------------------------------
 !       RE-BUILDS THE TELEMAC-2D VARIABLES
 !----------------------------------------------------------------------       
 !
-      IF(NPT.GT.0) THEN     
-        DO J=1,NPT    
-          K=LISPFR(J)
+      DO K=1,NPTFR
+        IF(NUMLIQ(K).NE.0) THEN
+        IF(FRTYPE(NUMLIQ(K)).EQ.2) THEN
           N=NBOR(K) 
           UNORM=SQRT(U%R(N)**2+V%R(N)**2)
           IF(UNORM.GT.1.D-12) THEN
@@ -682,8 +711,9 @@
             UBOR(K)=0.D0
             VBOR(K)=0.D0
           ENDIF
-        ENDDO
-      ENDIF
+        ENDIF
+        ENDIF
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -695,7 +725,7 @@
 !      
       UFIELD%DIM1=BIEF_NBPTS(ELM_UFIELD,MESH)
       VFIELD%DIM1=BIEF_NBPTS(ELM_VFIELD,MESH)
-      HFIELD%DIM1=BIEF_NBPTS(ELM_HFIELD,MESH)           
+      HFIELD%DIM1=BIEF_NBPTS(ELM_HFIELD,MESH) 
 !
 !-----------------------------------------------------------------------
 !
