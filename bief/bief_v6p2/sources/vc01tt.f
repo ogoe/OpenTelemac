@@ -59,7 +59,7 @@
 !| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_VC01TT => VC01TT
+      USE BIEF    !, EX_VC01TT => VC01TT
 !
       IMPLICIT NONE
       INTEGER LNG,LU

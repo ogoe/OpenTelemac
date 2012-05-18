@@ -2,11 +2,11 @@
                      SUBROUTINE INTERP
 !                    *****************
 !
-     & ( U , UTILD , SHP , NDP , SHZ , ETA , ELT , NP , NPOIN2 , NPLAN ,
-     &   IELM , IKLE , NELMAX)
+     &( U , UTILD , SHP , NDP , SHZ , ETA , ELT , NP , NPOIN2 , NPLAN ,
+     &  IELM , IKLE , NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    INTERPOLATES THE VALUES OF A FUNCTION AT SOME OF THE
@@ -34,6 +34,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/05/2012
+!+        V6P2
+!+   Creation of DOXYGEN tags for automated documentation and
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |-->| 2D ELEMENT AT THE FOOT OF CHARACTERISTIC LINES.
@@ -70,10 +75,19 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IP
+      DOUBLE PRECISION SHP11,SHP12,SHP14
+      DOUBLE PRECISION SHP22,SHP23,SHP24
+      DOUBLE PRECISION SHP33,SHP31,SHP34
+!
+!     SHOULD BE SAME EPSILO THAN SCHAR11
+      DOUBLE PRECISION EPSILO
+      DATA EPSILO / 1.D-6 / 
 !
 !-----------------------------------------------------------------------
 !
-      IF(IELM.EQ.11.OR.IELM.EQ.12) THEN
+!     TO BE IMPLEMENTED FOR QUASI-BUBBLE.... AN APPROXIMATION HERE
+!
+      IF(IELM.EQ.11) THEN
 !
 !    P1 TRIANGLES
 !    ============
@@ -82,6 +96,84 @@
          UTILD(IP) = U(IKLE(ELT(IP),1),1) * SHP(1,IP)
      &             + U(IKLE(ELT(IP),2),1) * SHP(2,IP)
      &             + U(IKLE(ELT(IP),3),1) * SHP(3,IP)
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      ELSEIF(IELM.EQ.12) THEN
+!
+!    QUASI-BUBBLE TRIANGLES
+!    ======================
+!
+      DO IP = 1 , NP
+!
+!        BARYCENTRIC COORDINATES OF SUB-TRIANGLES AS A FUNCTION OF
+!        BARYCENTRIC COORDINATES OF THE ORIGINAL TRIANGLE
+!        (A NICE GEOMETRY PROBLEM...)
+!
+         SHP11=SHP(1,IP)-SHP(3,IP)
+         SHP12=SHP(2,IP)-SHP(3,IP)
+         SHP14=3.D0*SHP(3,IP)
+         SHP22=SHP(2,IP)-SHP(1,IP)
+         SHP23=SHP(3,IP)-SHP(1,IP)
+         SHP24=3.D0*SHP(1,IP)
+         SHP33=SHP(3,IP)-SHP(2,IP)
+         SHP31=SHP(1,IP)-SHP(2,IP)
+         SHP34=3.D0*SHP(2,IP)
+!
+!        FINDING IN WHICH SUB-TRIANGLE WE ARE
+!
+!        IF(     SHP11.GT.0.D0 .AND. SHP11.LT.1.D0 .AND.
+!    &           SHP12.GT.0.D0 .AND. SHP12.LT.1.D0 .AND.
+!    &           SHP14.GT.0.D0 .AND. SHP14.LT.1.D0 ) THEN
+!          UTILD(IP) = U(IKLE(ELT(IP),1),1) * SHP11
+!    &               + U(IKLE(ELT(IP),2),1) * SHP12
+!    &               + U(IKLE(ELT(IP),4),1) * SHP14
+!        ELSEIF( SHP22.GT.0.D0 .AND. SHP22.LT.1.D0 .AND.
+!    &           SHP23.GT.0.D0 .AND. SHP23.LT.1.D0 .AND.
+!    &           SHP24.GT.0.D0 .AND. SHP24.LT.1.D0 ) THEN
+!          UTILD(IP) = U(IKLE(ELT(IP),2),1) * SHP22
+!    &               + U(IKLE(ELT(IP),3),1) * SHP23
+!    &               + U(IKLE(ELT(IP),4),1) * SHP24
+!        ELSEIF( SHP33.GT.0.D0 .AND. SHP33.LT.1.D0 .AND.
+!    &           SHP31.GT.0.D0 .AND. SHP31.LT.1.D0 .AND.
+!    &           SHP34.GT.0.D0 .AND. SHP34.LT.1.D0 ) THEN
+!          UTILD(IP) = U(IKLE(ELT(IP),3),1) * SHP33
+!    &               + U(IKLE(ELT(IP),1),1) * SHP31
+!    &               + U(IKLE(ELT(IP),4),1) * SHP34
+!
+!        OPTIMISED VERSION WITH TRUNCATION ERRORS
+!        SHP14, SHP24 AND SHP34 POSITIVITY ALREADY ENSURED
+!
+         IF(     SHP11.GT.    -2.D0*EPSILO .AND. 
+     &           SHP11.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP12.GT.    -2.D0*EPSILO .AND. 
+     &           SHP12.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP14.LT.1.D0+4.D0*EPSILO ) THEN
+           UTILD(IP) = U(IKLE(ELT(IP),1),1) * SHP11
+     &               + U(IKLE(ELT(IP),2),1) * SHP12
+     &               + U(IKLE(ELT(IP),4),1) * SHP14
+         ELSEIF( SHP22.GT.    -2.D0*EPSILO .AND. 
+     &           SHP22.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP23.GT.    -2.D0*EPSILO .AND. 
+     &           SHP23.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP24.LT.1.D0+4.D0*EPSILO ) THEN
+           UTILD(IP) = U(IKLE(ELT(IP),2),1) * SHP22
+     &               + U(IKLE(ELT(IP),3),1) * SHP23
+     &               + U(IKLE(ELT(IP),4),1) * SHP24
+         ELSEIF( SHP33.GT.    -2.D0*EPSILO .AND. 
+     &           SHP33.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP31.GT.    -2.D0*EPSILO .AND. 
+     &           SHP31.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP34.LT.1.D0+4.D0*EPSILO ) THEN
+           UTILD(IP) = U(IKLE(ELT(IP),3),1) * SHP33
+     &               + U(IKLE(ELT(IP),1),1) * SHP31
+     &               + U(IKLE(ELT(IP),4),1) * SHP34
+         ELSE
+           WRITE(LU,*) 'INTERP: POINT ',IP,' NOT IN ELEMENT ',ELT(IP)
+           CALL PLANTE(1)
+           STOP
+         ENDIF
       ENDDO
 !
 !-----------------------------------------------------------------------

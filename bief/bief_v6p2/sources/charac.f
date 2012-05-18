@@ -71,7 +71,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CHARAC => CHARAC
-      USE STREAMLINE, ONLY : SCARACT
+      USE STREAMLINE, ONLY : SCARACT      
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -81,7 +81,8 @@
 !
       INTEGER         , INTENT(IN)         :: NOMB
       INTEGER         , INTENT(IN)         :: NPLAN,NPLINT,NELEM2
-      INTEGER         , INTENT(IN)         :: NPOIN2,IELM,NELMAX2
+      INTEGER         , INTENT(IN)         :: NPOIN2,NELMAX2
+      INTEGER         , INTENT(INOUT)      :: IELM
       INTEGER         , INTENT(INOUT)      :: IT1(*),IT2(*)
       INTEGER         , INTENT(INOUT)      :: IT3(*),IT4(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)         :: FN,UCONV,VCONV,WCONV
@@ -95,16 +96,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN,IELMU
-      LOGICAL INITLOC
+      INTEGER NPOIN,IELMU,IELEM
+      LOGICAL INITLOC 
+      DOUBLE PRECISION TIERS     
 !
 !-----------------------------------------------------------------------
 !
       TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7
       INTEGER, DIMENSION(:), POINTER :: IFA
-      INTEGER I,J,K,NPLOT
-      LOGICAL QUAD
-!    
+      INTEGER I,J,K,NPT
+      LOGICAL QUAD,QUAB
+!
+!-----------------------------------------------------------------------
+!
+      TIERS=1.D0/3.D0
+! 
 !-----------------------------------------------------------------------
 !  TABLEAUX DE TRAVAIL PRIS DANS LE BLOC TB
 !-----------------------------------------------------------------------
@@ -135,18 +141,43 @@
       IELMU = UCONV%ELM
 !
 !-----------------------------------------------------------------------
+!  ARE THERE QUADRATIC OR QUASI-BUBBLE VARIABLES ?
+!  AND COMPUTATION OF LARGEST NUMBER OF POINTS
+!-----------------------------------------------------------------------
+!
+      QUAD=.FALSE.
+      QUAB=.FALSE.
+      NPT=0
+      IF(FN%TYPE.EQ.4) THEN    
+        DO I=1,FN%N
+          IF(FN%ADR(I)%P%ELM.EQ.12) QUAB = .TRUE.
+          IF(FN%ADR(I)%P%ELM.EQ.13) QUAD = .TRUE.
+          NPT=MAX(NPT,FN%ADR(I)%P%DIM1)
+        ENDDO
+      ELSEIF(FN%TYPE.EQ.2) THEN
+        IF(FN%ELM.EQ.12) QUAB = .TRUE.
+        IF(FN%ELM.EQ.13) QUAD = .TRUE.
+        NPT=MAX(NPT,FN%DIM1)
+      ENDIF
+      IF(QUAB.AND.QUAD) THEN
+        WRITE(LU,*) 'CHARAC: QUADRATIC AND QUASI-BUBBLE CANNOT BE MIXED'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
 !     CHECKING SHP SIZE (ONCE A BUG...)
 !-----------------------------------------------------------------------
 !
-      IF(3*NPOIN.GT.SHP%MAXDIM1*SHP%MAXDIM2) THEN
+      IF(3*NPT.GT.SHP%MAXDIM1*SHP%MAXDIM2) THEN
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'TAILLE DE SHP:',SHP%MAXDIM1*SHP%MAXDIM2
-          WRITE(LU,*) 'TROP PETITE DANS CHARAC, ',3*NPOIN
+          WRITE(LU,*) 'TROP PETITE DANS CHARAC, ',3*NPT
           WRITE(LU,*) 'REQUISE'
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'SIZE OF SHP:',SHP%MAXDIM1*SHP%MAXDIM2
-          WRITE(LU,*) 'TOO SMALL IN CHARAC, ',3*NPOIN
+          WRITE(LU,*) 'TOO SMALL IN CHARAC, ',3*NPT
           WRITE(LU,*) 'REQUESTED'
         ENDIF
         CALL PLANTE(1)
@@ -165,40 +196,54 @@
         IFA=>MESH%IFABOR%I
       ENDIF
 !
-      CALL CPSTVC(MESH%X,T1)
-      CALL CPSTVC(MESH%Y,T2)
+      CALL OS('X=Y     ',X=T1,Y=MESH%X)
+      CALL OS('X=Y     ',X=T2,Y=MESH%Y)
 !
-      IF(NCSIZE.EQ.0) THEN
-!
-        CALL CARACT( FN , FTILD , UCONV%R , VCONV%R , WCONV%R ,
-     *               MESH%X%R,MESH%Y%R,ZSTAR%R,
-     *               T1,T2,T3%R,T4%R,T5%R,T6%R,
-     *               MESH%Z%R,SHP%R,SHZ%R,SURDET2%R,DT,IKLE2%I,IFA,
-     *               IT1,IT2,IT3,IT4,
-     *               IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     *               3,NPLAN,MESH%LV,
-     *               MSK,MASKEL%R,MESH,MESH%FAC%R,T7%R,T7,INITLOC)
-!
-      ELSEIF(NCSIZE.GE.1) THEN
-!     
-        CALL PRE_SCARACT_MAILLAGE(FN,FTILD,WCONV%R,
-     &                            MESH%X%R,MESH%Y%R,ZSTAR%R,
-     &                            T1,T2,T3%R,MESH%Z%R,SHP%R,SHZ%R,
-     &                            IKLE2%I,IT1,IT2,IELM,IELMU,NELEM2,
-     &                            NELMAX2,NPOIN,NPOIN2,
-     &                            3,NPLAN,MSK,MASKEL%R,
-     &                            MESH,T7,INITLOC,QUAD)
+!     IELM MUST BE INTENT(INOUT) BECAUSE IT IS SUCH IN CHGDIS
+      IF(QUAD) THEN    
+        CALL CHGDIS(T1,IELM,13,MESH)
+        CALL CHGDIS(T2,IELM,13,MESH)
+      ELSEIF(QUAB) THEN
+        CALL CHGDIS(T1,IELM,12,MESH)
+        CALL CHGDIS(T2,IELM,12,MESH)
+      ENDIF 
+!           
+      IF(IELM.EQ.11) THEN
+        CALL GTSH11(SHP%R,IT1,IKLE2%I,MESH%ELTCAR%I,NPOIN2,
+     &              NELEM2,NELMAX2,MESH%NSEG,QUAB,QUAD)
+      ELSEIF(IELM.EQ.41) THEN
+        DO I=1,NPLAN
+          CALL OV('X=C     ',T3%R((I-1)*NPOIN2+1:I*NPOIN2),
+     &            T3%R,T3%R,ZSTAR%R(I),NPOIN2)
+        ENDDO    
+        CALL GTSH41(SHP%R,SHZ%R,WCONV%R,IT1,IT2,IKLE2%I,MESH%ELTCAR%I,
+     &              NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
+      ELSE
+        WRITE(LU,*) 'ELEMENT NOT IMPLEMENTED IN CHARAC: ',IELM
+        CALL PLANTE(1)
+        STOP  
+      ENDIF        
 !        
-        CALL SCARACT( FN , FTILD , UCONV%R , VCONV%R , WCONV%R ,
-     &                MESH%X%R,MESH%Y%R,ZSTAR%R,
-     &                T1%R,T2%R,T3%R,T4%R,T5%R,T6%R,
-     &                MESH%Z%R,SHP%R,SHZ%R,
-     &                SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
-     &                IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     &                3,NPLAN,MESH%LV,MSK,MASKEL%R,
-     &                MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPOIN,
-     &                .TRUE.,.TRUE.)
-!
+      CALL SCARACT(FN,FTILD,UCONV%R,VCONV%R,WCONV%R,
+     &             MESH%X%R,MESH%Y%R,ZSTAR%R,
+     &             T1%R,T2%R,T3%R,T4%R,T5%R,T6%R,
+     &             MESH%Z%R,SHP%R,SHZ%R,
+     &             SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
+     &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
+     &             3,NPLAN,MESH%LV,MSK,MASKEL%R,
+     &             MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPT,
+     &             .FALSE.,.FALSE.)
+! 
+!     PARALLEL COMMUNICATION
+!    
+      IF(NCSIZE.GT.1.AND.NOMB.GT.0) THEN
+        IF(FTILD%TYPE.EQ.2) THEN 
+          CALL PARCOM(FTILD,1,MESH)               
+        ELSEIF(FTILD%TYPE.EQ.4) THEN 
+          DO I=1,NOMB          
+            CALL PARCOM(FTILD%ADR(I)%P,1,MESH) 
+          ENDDO 
+        ENDIF 
       ENDIF
 !
 !-----------------------------------------------------------------------

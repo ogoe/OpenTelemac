@@ -6,7 +6,7 @@
      & NDIAG,NSEG1,NSEG2,NBOR,KP1BOR,NPTFR,IELM1,IELN1,NSEG11)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN A MATRIX WITH EDGE-BASED STORAGE
@@ -45,6 +45,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        14/05/2012
+!+        V6P2
+!+   Bug corrected in the quadratic case.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
@@ -111,7 +116,7 @@
 !         QUADRATIC POINTS IN THE MIDDLE OF SEGMENTS
           IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
             DO IPTFR=1,NPTFR
-              DM(NBOR(IPTFR,2))=DN(IPTFR+NPTFR)
+              DM(NBOR(IPTFR,2))=DM(NBOR(IPTFR,2))+DN(IPTFR+NPTFR)
             ENDDO
           ENDIF
         ELSE
@@ -276,7 +281,7 @@
 !         QUADRATIC POINTS IN THE MIDDLE OF SEGMENTS
           IF(IELM1.EQ.13.AND.IELN1.EQ.2) THEN
             DO IPTFR=1,NPTFR
-              DM(NBOR(IPTFR,2))=DN(IPTFR+NPTFR)
+              DM(NBOR(IPTFR,2))=DM(NBOR(IPTFR,2))+DN(IPTFR+NPTFR)
             ENDDO
           ENDIF
         ELSE

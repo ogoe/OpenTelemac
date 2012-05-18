@@ -2,17 +2,17 @@
                      SUBROUTINE GTSH11
 !                    *****************
 !
-     &(SHP,ELT,IKLE,NPOIN,NELEM,NELMAX,MSK,MASKEL)
+     &(SHP,ELT,IKLE,ELTCAR,NPOIN,NELEM,NELMAX,NSEG,QUAB,QUAD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
-!brief    FIXES THE BARYCENTRIC COORDINATES OF ALL THE MESH
-!+                NODES IN THE ELEMENT TOWARDS WHICH POINTS THE
-!+                CHARACTERISTIC CURVE, FOR THE TELEMAC-2D P1 TRIANGLES
-!+                AND BEFORE TRACING BACK IN TIME THE CHARACTERISTIC
-!+                CURVES.
+!brief    Gives the starting element and the barycentric coordinates of
+!+        the head of characteristics.
+!
+!note    In most cases (linear, quadratic) ELT is a mere copy of ELTCAR,
+!+       but it will be changed in the computation of charactristics.
 !
 !history  J-M HERVOUET (LNHE)
 !+        19/08/2008
@@ -31,17 +31,23 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C. DENIS (SINETICS) & J-M HERVOUET (LNHE)
+!+        09/05/2012
+!+        V6P2
+!+   New version using ELTCAR (done in MAKE_ELTCAR called by INBIEF)      
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |<--| ELEMENT CHOSEN FOR EVERY POINT
+!| ELTCAR         |-->| STARTING ELEMENT FOR LINEAR AND QUADRATIC POINTS
 !| IKLE           |-->| CONNECTIVITY TABLE
-!| MASKEL         |-->| MASKING OF ELEMENTS
-!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
-!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
-!| NPOIN          |-->| NUMBER OF POINTS.
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSEG           |-->| NUMBER OF SEGMENTS
+!| QUAB           |-->| IF YES, THERE ARE QUASI-BUBBLE VARIABLES
+!| QUAD           |-->| IF YES, THERE ARE QUADRATIC VARIABLES
 !| SHP            |<--| BARYCENTRIC COORDINATES OF NODES IN THEIR
-!|                |   | ASSOCIATED ELEMENT "ELT".
+!|                |   | ASSOCIATED ELEMENT "ELT"
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -50,62 +56,77 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NPOIN,NELEM,NELMAX
-      INTEGER, INTENT(IN)    :: IKLE(NELMAX,3)
-      INTEGER, INTENT(INOUT) :: ELT(NPOIN)
-!
+      INTEGER, INTENT(IN)             :: NPOIN,NELEM,NELMAX,NSEG
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),ELTCAR(NPOIN)
+      INTEGER, INTENT(INOUT)          :: ELT(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELMAX)
-!
-      LOGICAL, INTENT(IN) :: MSK
+      LOGICAL, INTENT(IN)             :: QUAB,QUAD
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,N1,N2,N3
+      INTEGER I,IELEM
+      DOUBLE PRECISION TIERS
+      TIERS=1.D0/3.D0
 !
-!***********************************************************************
+!-----------------------------------------------------------------------
 !
-!     FIRST LOOP: GETS AN ELEMENT FOR ALL POINTS
-!
-      DO IELEM = 1,NELEM
-        N1=IKLE(IELEM,1)
-        ELT(N1)=IELEM
-        SHP(1,N1)=1.D0
-        SHP(2,N1)=0.D0
-        SHP(3,N1)=0.D0
-        N2=IKLE(IELEM,2)
-        ELT(N2)=IELEM
-        SHP(1,N2)=0.D0
-        SHP(2,N2)=1.D0
-        SHP(3,N2)=0.D0
-        N3=IKLE(IELEM,3)
-        ELT(N3)=IELEM
-        SHP(1,N3)=0.D0
-        SHP(2,N3)=0.D0
-        SHP(3,N3)=1.D0
-      ENDDO
-!
-!     SECOND LOOP IF MASKING: GETS AN ELEMENT WHICH IS NOT MASKED,
-!                             IF THERE IS ONE
-!
-      IF(MSK) THEN
-        DO IELEM = 1,NELEM
-          IF(MASKEL(IELEM).GT.0.5D0) THEN
-            N1=IKLE(IELEM,1)
-            ELT(N1)=IELEM
-            SHP(1,N1)=1.D0
-            SHP(2,N1)=0.D0
-            SHP(3,N1)=0.D0
-            N2=IKLE(IELEM,2)
-            ELT(N2)=IELEM
-            SHP(1,N2)=0.D0
-            SHP(2,N2)=1.D0
-            SHP(3,N2)=0.D0
-            N3=IKLE(IELEM,3)
-            ELT(N3)=IELEM
-            SHP(1,N3)=0.D0
-            SHP(2,N3)=0.D0
-            SHP(3,N3)=1.D0
+      DO I=1,NPOIN
+        IELEM=ELTCAR(I)
+        ELT(I) = IELEM 
+        IF(IELEM.NE.0) THEN
+          IF(IKLE(IELEM,1).EQ.I) THEN
+            SHP(1,I)=1.D0
+            SHP(2,I)=0.D0
+            SHP(3,I)=0.D0
+          ELSEIF(IKLE(IELEM,2).EQ.I) THEN
+            SHP(1,I)=0.D0
+            SHP(2,I)=1.D0
+            SHP(3,I)=0.D0
+          ELSEIF(IKLE(IELEM,3).EQ.I) THEN
+            SHP(1,I)=0.D0
+            SHP(2,I)=0.D0
+            SHP(3,I)=1.D0
+          ELSE
+            WRITE(LU,*) 'PROBLEM IN GTSH11'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDIF
+      ENDDO 
+      IF(QUAB) THEN
+        DO IELEM=1,NELEM
+          I=NPOIN+IELEM
+          ELT(I)=IELEM
+          SHP(1,I)=TIERS
+          SHP(2,I)=TIERS
+          SHP(3,I)=TIERS
+        ENDDO
+      ENDIF
+      IF(QUAD) THEN
+        DO I=NPOIN+1,NPOIN+NSEG
+          IELEM=ELTCAR(I)
+          ELT(I)=IELEM
+          IF(IELEM.NE.0) THEN
+            IF(IKLE(IELEM,4).EQ.I) THEN
+!             POINT 4
+              SHP(1,I)=0.5D0
+              SHP(2,I)=0.5D0
+              SHP(3,I)=0.D0
+            ELSEIF(IKLE(IELEM,5).EQ.I) THEN
+!             POINT 5
+              SHP(1,I)=0.D0
+              SHP(2,I)=0.5D0
+              SHP(3,I)=0.5D0
+            ELSEIF(IKLE(IELEM,6).EQ.I) THEN
+!             POINT 6
+              SHP(1,I)=0.5D0
+              SHP(2,I)=0.D0
+              SHP(3,I)=0.5D0
+            ELSE
+              WRITE(LU,*) 'PROBLEM IN GTSH11, QUADRATIC CASE'
+              CALL PLANTE(1)
+              STOP
+            ENDIF
           ENDIF
         ENDDO
       ENDIF

@@ -43,8 +43,8 @@ DEST          = $(PROJECT)\BIEF\BIEF_$(VERSION)\$(DIRLIB)
 SRCS= \
 bief_def.f declarations_telemac.f bief.f \
 streamline.f m_med.f \
-addblo.f  allblo.f allblo_in_block.f             \
-almesh.f     asmve1.f       attend.f  \
+addblo.f     allblo.f allblo_in_block.f             \
+almesh.f     appdots.f      asmve1.f       attend.f  \
 asmvec.f     asseg_3d.f     assex3.f      assve1.f      assvec.f \
 as3_1111_q.f as3_1111_s.f   as3_1313_q.f  as3_1313_s.f  as3_1113.f    as3_1311.f    as3_1212_q.f  as3_1212_s.f \
 as3_1112.f   as3_1211.f     as3_3131_s.f  as3_3131_q.f  as3_4141_s.f  as3_4141_q.f \
@@ -52,7 +52,7 @@ atanc.f  bief_allmat.f bief_allvec.f bief_allvec_in_block.f bief_close_files.f \
 bief_desimp.f  bief_dim1_ext.f bief_dim2_ext.f bief_ininds.f bief_init.f \
 bief_nbfel.f bief_nbmpts.f  bief_nbpel.f  bief_nbpts.f  bief_nbseg.f  bief_nbsegel.f \
 bief_open_files.f bief_sum.f bief_suite.f  bief_valida.f \
-bilant.f      caract.f      cflp11.f    cflp12.f \
+bilant.f       cflp11.f    cflp12.f \
 cflpsi.f     cflvf.f        cg1112.f      cg1113.f      cgsqua.f    cgstab.f \
 char11.f     char13.f       char41.f      charac.f      check_digits.f  check_dot.f chgdis.f  \
 clip.f       cmpobj.f       comp_fac.f  comp_ikle.f \
@@ -73,11 +73,11 @@ filter.f     find_in_sel.f  flusec.f      flux3dlim.f   flux_mask.f   fluxpr.f  
 fond.f       fonstr.f       front2.f      fropro.f      geoelt.f      gettri.f gettriebe.f gettriseg.f \
 gmres.f      godown.f       godwn1.f      goup.f    \
 goup1.f      gracjg.f       gradp.f       gsebe.f   \
-gtsh11.f     gtsh13.f       gtsh41.f      hloc.f     hvf.f ielbor.f  \
+gtsh11.f     gtsh41.f       hloc.f        hvf.f ielbor.f  \
 impvec.f     inbief.f       inclu2.f      inclus.f  \
 infcel.f     inpoly.f  \
 interp.f     invmtx.f       jultim.f      kspg11.f   ksupg.f   \
-latitu.f     leclim.f       lit.f         litenr.f   lubksb.f   ludcmp.f  lump.f  maskbd.f \
+latitu.f     leclim.f       lit.f         litenr.f   lubksb.f   ludcmp.f  lump.f  make_eltcar.f  maskbd.f \
 masktf.f     maskto.f       matrbl.f      matrix.f   matriy.f  \
 matvct.f     matvec.f       maxi.f        mer11.f   \
 mer21.f      mer41.f        mini.f        mvseg.f   \
@@ -101,7 +101,7 @@ os.f         osbd.f         osdb.f \
 osdbif.f     ov.f           ovbd.f        ovd.f \
 ovdb.f       ovd_2.f        ov_2.f        paraco.f \
 paragl.f     parcom.f       parcom2.f     parcom2_seg.f parcom_bord.f parini.f  parmoy.f \
-plante.f     positive_depths.f  pre_scaract_maillage.f   \
+plante.f     positive_depths.f    \
 prebd4.f     prebd9.f       prebdt.f \
 precd1.f     precd4.f       precd9.f      precdt.f  preverseg.f  preverebe.f \
 proxim.f     ptel11.f       pttoel.f      puog.f \

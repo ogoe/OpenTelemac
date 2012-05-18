@@ -500,7 +500,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!  COMPLEMENTS IKLE BEYOND LINEAR ELEMENTS
+!  COMPLEMENTS IKLE AND NBOR BEYOND LINEAR ELEMENTS
 !
       IF(IELM.EQ.11.AND.IELM.NE.IELMX) THEN
         IF(MESH%IKLE%DIM2.NE.BIEF_NBPEL(IELMX,MESH)) THEN
@@ -514,7 +514,8 @@
           STOP
         ENDIF
         CALL COMP_IKLE(MESH%IKLE%I,MESH%IKLBOR%I,
-     &                 MESH%ELTSEG%I,MESH%NBOR%I,
+     &                 MESH%ELTSEG%I,MESH%NBOR%I,MESH%NELBOR%I,
+     &                 MESH%NULONE%I,
      &                 IELMX,NELEM,NELMAX,NPOIN,NPTFR)
       ENDIF
 !
@@ -556,6 +557,13 @@
      &               MESH%X%R,MESH%Y%R,MESH%DPX%R,MESH%DPY%R)
 !
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+! COMPUTES THE STARTING ELEMENT FOR THE METHOD OF CHARACTERISTICS
+!
+      CALL MAKE_ELTCAR(MESH%ELTCAR%I,MESH%IKLE%I,NPOIN2,NELEM2,
+     &                 NELMAX,MESH%KNOLG%I,T1%R,IT1%I,MESH,NPLAN,IELMX)
 !
 !-----------------------------------------------------------------------
 !

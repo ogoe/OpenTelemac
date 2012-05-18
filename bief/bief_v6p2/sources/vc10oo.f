@@ -6,7 +6,7 @@
      & IKLE,NBOR,NELEM,NELMAX,W1,W2)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -22,8 +22,12 @@
 !+    ->
 !+    N IS THE OUTGOING NORMAL VECTOR TO THE ELEMENT
 !
-!warning  THE JACOBIAN MUST BE POSITIVE
+!warning  The Jacobian must be positive
 !warning  THE RESULT IS IN W IN NOT ASSEMBLED FORM
+!warning  NELEM is sometimes over-dimensioned, some boundary elements in
+!+        THE list 1 to NELEM in parallel being in another subdomain. In
+!+        this case NBOR may give a dummy value, that will cause no
+!+        crash, but the result W1 and W2 will be dummy also.
 !
 !history  J-M HERVOUET (LNH)
 !+        15/12/1994

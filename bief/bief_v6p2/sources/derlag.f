@@ -2,7 +2,7 @@
                      SUBROUTINE DERLAG
 !                    *****************
 !
-     &( U , V , DT , X , Y , IKLE , IFABOR , LT , IELM , NDP , NPOIN ,
+     &( U,V,DT,X,Y,IKLE,IFABOR,ELTCAR,LT,IELM,NDP,NPOIN,
      &  NELEM , NELMAX , SURDET , XLAG , YLAG , DX , DY ,
      &  NSP , SHPLAG , DEBLAG , FINLAG , ELTLAG , NLAG , RESUX , RESUY ,
      &  NBOR , NELBOR , NULONE , NPTFR , MSK,MASKEL,MASKPT,T8)
@@ -76,7 +76,7 @@
 !| YLAG           |<->| INSTANTANEOUS Y POSITIONS OF FLOATS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF   !, EX_DERLAG => DERLAG
+      USE BIEF, EX_DERLAG => DERLAG
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -88,7 +88,7 @@
       INTEGER         , INTENT(IN)    :: NPTFR,NELMAX
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),DT
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
-      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,NDP)
+      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,NDP),ELTCAR(NPOIN)
       INTEGER         , INTENT(IN)    :: IFABOR(NELMAX,NDP)
       DOUBLE PRECISION, INTENT(IN)    :: SURDET(NELEM)
       DOUBLE PRECISION, INTENT(INOUT) :: XLAG(NPOIN,NLAG)
@@ -131,8 +131,9 @@
 !
 !      FILLS THE SHP AND ELT (OPTIMISED)
 !
-            CALL GTSH11(SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),IKLE,NPOIN,
-     &                  NELEM,NELMAX,MSK,MASKEL)
+            CALL GTSH11(SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),IKLE,ELTCAR,
+     &                  NPOIN,NELEM,NELMAX,1,.FALSE.,.FALSE.)
+!                                          1=NSEG, WRONG VALUE, NOT USED
 !
           ELSE
 !

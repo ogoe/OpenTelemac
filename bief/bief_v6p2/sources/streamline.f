@@ -235,19 +235,6 @@
             STOP  
           ENDIF 
           NSEND=NCHARA 
-          IF(DOIT) THEN  
-            IF (TRACE) WRITE (LU,*) ' -> APPLYING JMH-ALGORITHM ' 
-            DO I=1,NCHARA  
-              IF(RTEST(HEAPCHAR(I)%IOR).GT.0.5D0) THEN 
-                NSEND=NSEND-1 
-                HEAPCOUNTS ( HEAPCHAR(I)%NEPID+1 ) =  
-     &                 HEAPCOUNTS( HEAPCHAR(I)%NEPID+1 ) - 1  
-                HEAPCHAR(I)%NEPID=-1 ! THIS IS THE MARKER FOR WIPING  
-              ENDIF  
-            END DO  
-          ELSE 
-            IF (TRACE) WRITE (LU,*) ' -> JMH-ALGORITHM -NOT- APPLIED' 
-          ENDIF 
           NLOSTCHAR=NSEND ! SAVE THE NUMBER OF MY REALLY LOST CHARS  
           IF (TRACE) WRITE (LU,'(A,A,4(1X,I6))')  
      &           ' @STREAMLINE::WIPE_HEAPED_CHAR:: ', 
@@ -551,7 +538,7 @@
   !--------------------------------------------------------------------- 
  
         SUBROUTINE INTERP_RECVCHAR_11  
-     &      (VAL,N,IKLE,ELT,SHP,NELEM,NPOIN,NRANGE,IELM) 
+     &      (VAL,N,IKLE,ELT,SHP,NELEM,NPOIN,NRANGE,IELM)
           IMPLICIT NONE 
           INTEGER LNG,LU 
           COMMON/INFO/LNG,LU 
@@ -559,26 +546,89 @@
           INTEGER, INTENT(IN) :: IKLE(NELEM,*)  
           INTEGER, INTENT(IN) :: ELT(NRANGE) 
           DOUBLE PRECISION, INTENT(IN) :: SHP(3,NRANGE) 
-          DOUBLE PRECISION, INTENT(IN) :: VAL(NPOIN) 
+          DOUBLE PRECISION, INTENT(IN) :: VAL(NPOIN)
+!
+          DOUBLE PRECISION SHP11,SHP12,SHP14
+          DOUBLE PRECISION SHP22,SHP23,SHP24
+          DOUBLE PRECISION SHP33,SHP31,SHP34
+!
+!         SHOULD BE SAME EPSILO THAN SCHAR11 AND INTERP
+          DOUBLE PRECISION EPSILO
+          DATA EPSILO / 1.D-6 /  
           INTEGER I 
-          ! 
-          IF(IELM.EQ.11.OR.IELM.EQ.12) THEN 
-          DO I=1,NRANGE 
-            IF(RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED 
-              RECVCHAR(I)%BASKET(N) =  
-     &                       VAL(IKLE(ELT(I),1)) * SHP(1,I) 
-     &                     + VAL(IKLE(ELT(I),2)) * SHP(2,I) 
-     &                     + VAL(IKLE(ELT(I),3)) * SHP(3,I) 
-!           THIS IS JUST TO AVOID A BUG ON HP COMPILER 
-            ELSEIF(RECVCHAR(I)%NEPID.LT.-1) THEN 
-              WRITE(LU,*) 'STREAMLINE  INTERP_RECVCHAR_11' 
-              WRITE(LU,*) 'NEPID OUT OF RANGE:',RECVCHAR(I)%NEPID 
-              WRITE(LU,*) 'FOR I=',I 
-              CALL PLANTE(1) 
-              STOP 
-!           END OF THIS IS JUST TO AVOID A BUG ON HP COMPILER 
-            ENDIF 
-          ENDDO 
+!
+          IF(IELM.EQ.11) THEN 
+            DO I=1,NRANGE 
+              IF(RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED 
+                RECVCHAR(I)%BASKET(N) =  
+     &                         VAL(IKLE(ELT(I),1)) * SHP(1,I) 
+     &                       + VAL(IKLE(ELT(I),2)) * SHP(2,I) 
+     &                       + VAL(IKLE(ELT(I),3)) * SHP(3,I) 
+!             THIS IS JUST TO AVOID A BUG ON HP COMPILER 
+              ELSEIF(RECVCHAR(I)%NEPID.LT.-1) THEN 
+                WRITE(LU,*) 'STREAMLINE INTERP_RECVCHAR_11' 
+                WRITE(LU,*) 'NEPID OUT OF RANGE:',RECVCHAR(I)%NEPID 
+                WRITE(LU,*) 'FOR I=',I 
+                CALL PLANTE(1) 
+                STOP 
+!             END OF THIS IS JUST TO AVOID A BUG ON HP COMPILER 
+              ENDIF 
+            ENDDO 
+          ELSEIF(IELM.EQ.12) THEN
+            DO I=1,NRANGE 
+              IF(RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED 
+                SHP11=SHP(1,I)-SHP(3,I)
+                SHP12=SHP(2,I)-SHP(3,I)
+                SHP14=3.D0*SHP(3,I)
+                SHP22=SHP(2,I)-SHP(1,I)
+                SHP23=SHP(3,I)-SHP(1,I)
+                SHP24=3.D0*SHP(1,I)
+                SHP33=SHP(3,I)-SHP(2,I)
+                SHP31=SHP(1,I)-SHP(2,I)
+                SHP34=3.D0*SHP(2,I)
+!               SEE INTERP
+                IF(     SHP11.GT.    -2.D0*EPSILO .AND. 
+     &                  SHP11.LT.1.D0+4.D0*EPSILO .AND.
+     &                  SHP12.GT.    -2.D0*EPSILO .AND. 
+     &                  SHP12.LT.1.D0+4.D0*EPSILO .AND.
+     &                  SHP14.LT.1.D0+4.D0*EPSILO ) THEN
+                        RECVCHAR(I)%BASKET(N) = 
+     &                      VAL(IKLE(ELT(I),1)) * SHP11
+     &                    + VAL(IKLE(ELT(I),2)) * SHP12
+     &                    + VAL(IKLE(ELT(I),4)) * SHP14
+                ELSEIF( SHP22.GT.    -2.D0*EPSILO .AND. 
+     &                  SHP22.LT.1.D0+4.D0*EPSILO .AND.
+     &                  SHP23.GT.    -2.D0*EPSILO .AND. 
+     &                  SHP23.LT.1.D0+4.D0*EPSILO .AND.
+     &                  SHP24.LT.1.D0+4.D0*EPSILO ) THEN
+                        RECVCHAR(I)%BASKET(N) = 
+     &                      VAL(IKLE(ELT(I),2)) * SHP22
+     &                    + VAL(IKLE(ELT(I),3)) * SHP23
+     &                    + VAL(IKLE(ELT(I),4)) * SHP24
+                ELSEIF( SHP33.GT.    -2.D0*EPSILO .AND. 
+     &                  SHP33.LT.1.D0+4.D0*EPSILO .AND.
+     &                  SHP31.GT.    -2.D0*EPSILO .AND. 
+     &                  SHP31.LT.1.D0+4.D0*EPSILO .AND.
+     &                  SHP34.LT.1.D0+4.D0*EPSILO ) THEN
+                        RECVCHAR(I)%BASKET(N) = 
+     &                      VAL(IKLE(ELT(I),3)) * SHP33
+     &                    + VAL(IKLE(ELT(I),1)) * SHP31
+     &                    + VAL(IKLE(ELT(I),4)) * SHP34
+                ELSE
+                  WRITE(LU,*) 'I=',I,' NOT LOCATED, ELT=',ELT(I)
+                  CALL PLANTE(1)
+                  STOP
+                ENDIF
+!             THIS IS JUST TO AVOID A BUG ON HP COMPILER 
+              ELSEIF(RECVCHAR(I)%NEPID.LT.-1) THEN 
+                WRITE(LU,*) 'STREAMLINE  INTERP_RECVCHAR_11' 
+                WRITE(LU,*) 'NEPID OUT OF RANGE:',RECVCHAR(I)%NEPID 
+                WRITE(LU,*) 'FOR I=',I 
+                CALL PLANTE(1) 
+                STOP 
+!             END OF THIS IS JUST TO AVOID A BUG ON HP COMPILER 
+              ENDIF 
+            ENDDO  
           ELSEIF(IELM.EQ.13) THEN 
           DO I=1,NRANGE 
             IF(RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED      
@@ -878,6 +928,21 @@
       DO IPLOT = 1 , NPLOT 
 ! 
          IEL = ELT(IPLOT) 
+!
+!        TEST: POINTS WITH IEL=0 ARE TREATED SO THAT THE FINAL
+!              INTERPOLATION GIVES 0.,
+!              AND WE SKIP TO NEXT POINT IPLOT (CYCLE)
+! 
+         IF(IEL.EQ.0) THEN
+           ELT(IPLOT)=1
+           ETA(IPLOT)=0
+           SHP(1,IPLOT)=0.D0
+           SHP(2,IPLOT)=0.D0
+           SHP(3,IPLOT)=0.D0
+           SHZ(IPLOT)=0.D0
+           CYCLE   
+         ENDIF
+!
          IET = ETA(IPLOT) 
 ! 
          I1 = IKLE2(IEL,1) 
@@ -900,13 +965,13 @@
 ! 
          NSP(IPLOT)=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL)))) 
 ! 
-      ENDDO 
+!     ENDDO 
 ! 
 !----------------------------------------------------------------------- 
 !  POUR TOUT PAS DE R-K REPETER 
 !----------------------------------------------------------------------- 
 ! 
-      DO IPLOT=1,NPLOT 
+!     DO IPLOT=1,NPLOT 
 ! 
       PAS = SENS * DT / NSP(IPLOT) 
 ! 
@@ -2389,6 +2454,18 @@
       DO IPLOT=1,NPLOT 
 ! 
       IEL = ELT(IPLOT) 
+!
+!     TEST: POINTS WITH IEL=0 ARE TREATED SO THAT THE FINAL INTERPOLATION
+!           GIVES 0., AND WE SKIP TO NEXT POINT IPLOT (CYCLE)
+!      
+      IF(IEL.EQ.0) THEN
+        ELT(IPLOT)=1
+        SHP(1,IPLOT)=0.D0
+        SHP(2,IPLOT)=0.D0
+        SHP(3,IPLOT)=0.D0
+        CYCLE      
+      ENDIF  
+!
       I1 = IKLE(IEL,1) 
       I2 = IKLE(IEL,2) 
       I3 = IKLE(IEL,3) 
@@ -2552,7 +2629,6 @@
 ! 
 !  LA, ON SAIT QUE LA FACE DE SORTIE EST UNE INTERFACE DE SOUS-DOMAINES 
 !  POINT D'INTERFACE QUI SERA TRAITE PAR LE SOUS-DOMAINE VOISIN 
-!  ON SE CONTENTE DE METTRE ICI TEST A ZERO 
 !----------------------------------------------------------------------- 
 ! 
                DENOM = DXP*DY1-DYP*DX1 
@@ -3122,7 +3198,7 @@
 ! LATER ON, IT COUNTS THE IMPLANTED TRACEBACKS LOCALISED IN MY PARTITION 
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,IGEN,NSEND,NLOSTAGAIN 
-      INTEGER NPOINT,NPOINT2  
+      INTEGER NPOINT2  
       INTEGER  P_IMAX, P_ISUM 
       EXTERNAL P_IMAX, P_ISUM 
       INTEGER LAST_NOMB,LAST_NPLOT 
@@ -3155,8 +3231,7 @@
           STOP  
         ENDIF  
 ! 
-        WRITE(LU,*) 
-     &      'STREAMLINE: USING PARALLEL VERSION OF CHARACTERISTICS 6.2' 
+        WRITE(LU,*) 'USING STREAMLINE VERSION 6.2 FOR CHARACTERISTICS' 
 ! 
 !       NOW THE VERY NECESSARY INITIALISATION PROCEDURES  
 ! 
@@ -3190,81 +3265,46 @@
 !  
 !----------------------------------------------------------------------- 
 ! 
-      IF(IELM==11) THEN  
-C 
-C----------------------------------------------------------------------- 
-C 
-        IF(.NOT.QUAD) THEN 
-! 
 !    TRIANGLES P1 
 !    ============ 
 ! 
-!      REMPLISSAGE DES SHP ET DES ELT OPTIMISE 
-! 
-         NPOINT  = NPLOT 
-         NPOINT2 = NPOIN 
-! 
-!      APPEL DU SOUS-PROGRAMME DE REMONTEE DES COURBES CARACTERISTIQUES 
-!      
-         TEST=1.D0 
-!
-         CALL SCHAR11( UCONV , VCONV , DT , NRK , X , Y , IKLE, IFABOR, 
-     &                 XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
-     &                 NPOINT, NPOINT2, NELEM , NELMAX , SURDET , -1 , 
-     &                 TEST, MESH%IFAPAR%I, MESH,NCHDIM,NCHARA) 
-! 
-        ELSEIF(QUAD) THEN 
-C              
-C 
-C         TRIANGLES P2 POUR L'UNE DES VARIABLES CONVECTEE 
-C         =============================================== 
-C 
-C         REMPLISSAGE DES SHP ET DES ELT OPTIMISE 
-C 
-          NPOINT  = NPOIN+MESH%NSEG  
-          NPOINT2 = NPOIN+MESH%NSEG  
-C 
-C         CAS NON PREVU D'UN TRACEUR QUADRATIQUE ET D'UNE VITESSE LINEAIRE 
-C       
-          IF(IELMU.NE.13)THEN 
-            IF(LNG.EQ.1) WRITE(LU,21)  
-            IF(LNG.EQ.2) WRITE(LU,22)  
-            CALL PLANTE(1) 
-            STOP 
-          ENDIF 
- 
-C 
-          IF(NCSIZE.GT.1) CALL OV('X=C     ',TEST,Y,Z,1.D0,NPOINT) 
-          CALL SCHAR11( UCONV   , VCONV , DT    , NRK , X , Y , 
-     *                  IKLE    , IFABOR  , 
-     *                  XCONV , YCONV , DX , DY ,SHP,ELT ,ITRAV1, 
-     *                  NPOINT  , NPOINT2 , NELEM , 
-     *                  NELMAX  , SURDET  , -1    , TEST, 
-     *                  MESH%IFAPAR%I, MESH ,NCHDIM,NCHARA) 
-        ENDIF 
+      IF(IELM.EQ.11) THEN  
 ! 
 !----------------------------------------------------------------------- 
 ! 
-      ELSEIF (IELM==41) THEN 
+        IF(.NOT.QUAD) THEN 
+          NPOINT2 = NPOIN
+        ELSE
+          NPOINT2 = NPOIN+MESH%NSEG
+        ENDIF  
+! 
+!       APPEL DU SOUS-PROGRAMME DE REMONTEE DES COURBES CARACTERISTIQUES 
+!      
+        CALL SCHAR11( UCONV , VCONV , DT , NRK , X , Y , IKLE, IFABOR, 
+     &                XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
+     &                NPLOT, NPOINT2, NELEM , NELMAX , SURDET , -1 , 
+     &                TEST,MESH%IFAPAR%I, MESH,NCHDIM,NCHARA) 
+! 
+!----------------------------------------------------------------------- 
+! 
+      ELSEIF(IELM.EQ.41) THEN 
 ! 
 !    PRISMES DE TELEMAC-3D 
 !    ===================== 
 ! 
-         NPOINT  = NPLOT 
          NPOINT2 = NPOIN2  
 ! 
 !      APPEL DU SOUS-PROGRAMME DE REMONTEE DES COURBES CARATERISTIQUES 
 ! 
-         IF(NCSIZE.GT.1) CALL OV('X=C     ',TEST,Y,Z,1.D0,NPOINT) 
          CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
-     &                DY,DZ,SHP,SHZ,ELT,ETA,ITRAV1,NPOINT, 
+     &                DY,DZ,SHP,SHZ,ELT,ETA,ITRAV1,NPLOT, 
      &                NPOINT2,NELEM,NPLAN,SURDET,-1, 
      &                TEST,MESH%IFAPAR%I,NCHDIM,NCHARA) 
 ! 
 !----------------------------------------------------------------------- 
 ! 
-      ELSE ! ERROR 
+      ELSE 
 ! 
         IF(LNG.EQ.1) WRITE(LU,11) IELM 
         IF(LNG.EQ.2) WRITE(LU,12) IELM 
@@ -3274,75 +3314,25 @@ C
       ENDIF 
 ! 
 !----------------------------------------------------------------------- 
-!JAJ //// THIS PART OF THE ALGORITHM REMAINS, IT IS VERY PRACTICAL  
-!    TO DETECT THESE LOST TRACEBACKS WITH THEIR HEADS  
-!    AT INTERFACE POINTS, WHICH ARE COMPLETED IN THE NEIGHBOUR  
-!    PARTITION / NOTE, THE ALGORITHM WOULD WORK WITHOUT IT AS WELL 
-!    -> PERFORMANCE (DIS)ADVANTAGES UNKNOWN 
-!    -> SEE: WIPE_HEAPED_CHAR 
-!    -> FURTHER REFERRED TO AS "JMH'S METHOD" 
-! 
-!  PROVISOIRE 
-!  TEST = NOMBRE DE SOUS-DOMAINES QUI ONT TRAITE UN POINT 
-! 
-!  AJUSTEMENT DES SHP EN FONCTION DE CE QUE L'ON A TROUVE 
-!  DANS LES AUTRES SOUS-DOMAINES (DONNE PAR TEST) 
-! 
-      IF(NCSIZE.GT.1) THEN 
-! 
-        DO IPOIN = 1,NPOINT 
-!         CONTRIBUTION OF THIS SUB-DOMAIN CANCELLED 
-!         THE RESULT WITH MAXIMUM ABSOLUTE VALUE WILL BE KEPT 
-!         HENCE IT WILL NOT BE THIS ONE 
-          IF(TEST(IPOIN).LT.0.5D0) THEN 
-            SHP(1,IPOIN) = 0.D0 
-            SHP(2,IPOIN) = 0.D0 
-            SHP(3,IPOIN) = 0.D0 
-          ENDIF 
-        ENDDO 
-! 
-!       ADDING TEST OF NEIGHBOURING SUB-DOMAINS 
-!       WILL BE USED ALSO BY WIPE_CHAR... 
-!       THIS IS NOT RELEVANT IF THE NPLOT POINTS ARE NOT LINKED TO MESH
-!       OR WITH A DIFFERENT NUMBERING (WAITING FOR VERSION 6.2...)
-        IF(DOCOM) CALL PARCOM(STEST,2,MESH) 
-! 
-        IF(TRACE) THEN  
-          DO IPOIN = 1,NPOINT 
-            IF(TEST(IPOIN).LT.0.5D0) THEN 
-!             HERE CALL ADD_CHAR.. WILL BE USEFUL   
-              IF(LNG==1) WRITE(LU,13) IPOIN  
-              IF(LNG==2) WRITE(LU,14) IPOIN 
-            ENDIF 
-          ENDDO 
-        ENDIF  
-! 
-      ENDIF 
-! 
-!----------------------------------------------------------------------- 
 ! 
 !     INTERPOLATION AU PIED DES CARACTERISTIQUES SI DEMANDE 
 ! 
       IF(NOMB.GT.0) THEN 
 ! 
-        IF(U%TYPE==2.AND.UTILD%TYPE==2) THEN 
+        IF(U%TYPE.EQ.2.AND.UTILD%TYPE.EQ.2) THEN 
 ! 
 !         U ET UTILD VECTEURS (NOMB VAUT ALORS 1) 
 !         
-          IF(U%ELM.EQ.13) THEN 
-!           INTERPOLATION DES VITESSES POUR UNE VARIABLE QUADRATIQUE   
+          IF(U%ELM.EQ.13.OR.U%ELM.EQ.12) THEN 
+!           INTERPOLATION DES VITESSES POUR UNE VARIABLE QUADRATIQUE
+!                                               OU QUASI-BULLE   
             CALL INTERP(U%R,UTILD%R,SHP,NDP,SHZ,ETA,ELT, 
-     *                  U%DIM1,U%DIM1,NPLAN,13,IKLE,NELMAX)          
+     *                  U%DIM1,U%DIM1,NPLAN,U%ELM,IKLE,NELMAX)          
           ELSE  
 !           INTERPOLATION DES VITESSES DANS LES AUTRES CAS 
             CALL INTERP(U%R,UTILD%R,SHP,NDP,SHZ,ETA,ELT, 
-     *                  NPOINT,NPOINT2,NPLAN,IELM,IKLE,NELMAX) 
-          ENDIF 
-          IF(NCSIZE.GT.1.AND.DOCOM) THEN 
-!           IF A POINT HAS BEEN TREATED SEVERAL TIMES 
-!           THE RESULT WITH MAXIMUM ABSOLUTE VALUE IS TAKEN 
-            CALL PARCOM(UTILD,1,MESH)  
-          ENDIF              
+     *                  NPLOT,NPOINT2,NPLAN,IELM,IKLE,NELMAX) 
+          ENDIF            
 ! 
         ELSEIF(U%TYPE==4.AND.UTILD%TYPE==4) THEN 
 ! 
@@ -3357,21 +3347,16 @@ C
 ! 
           DO I=1,NOMB 
 !          
-          IF(U%ADR(I)%P%ELM.EQ.13) THEN 
+          IF(U%ADR(I)%P%ELM.EQ.13.OR.U%ADR(I)%P%ELM.EQ.12) THEN 
 !           INTERPOLATION DES VITESSES POUR UNE VARIABLE QUADRATIQUE  
             CALL INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
      *                  ETA,ELT,U%ADR(I)%P%DIM1,U%ADR(I)%P%DIM1, 
-     *                  NPLAN,13,IKLE,NELMAX)          
+     *                  NPLAN,U%ADR(I)%P%ELM,IKLE,NELMAX)          
           ELSE  
 !           INTERPOLATION DES VITESSES DANS LES AUTRES CAS 
             CALL INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
-     *                  ETA,ELT,NPOINT,NPOINT2,NPLAN, 
+     *                  ETA,ELT,NPLOT,NPOINT2,NPLAN, 
      *                  IELM,IKLE,NELMAX) 
-          ENDIF 
-          IF(NCSIZE.GT.1.AND.DOCOM) THEN 
-!           IF A POINT HAS BEEN TREATED SEVERAL TIMES 
-!           THE RESULT WITH MAXIMUM ABSOLUTE VALUE IS TAKEN 
-            CALL PARCOM(UTILD%ADR(I)%P,1,MESH) 
           ENDIF 
 ! 
           ENDDO 
@@ -3403,7 +3388,7 @@ C
         ! THE TRACEBACKS COMPLETED CORRECTLY BY THE NEIGHBOURS  
         ! THE NUMBER GETS REDUCED FROM NCHARA TO NLOSTCHAR 
        
-        CALL WIPE_HEAPED_CHAR(TEST,NPOINT,DOIT,NSEND,NLOSTCHAR,NCHDIM, 
+        CALL WIPE_HEAPED_CHAR(TEST,NPLOT,DOIT,NSEND,NLOSTCHAR,NCHDIM, 
      &                        NCHARA)  
  
         IF(TRACE) CALL PRINT_HEAPCHAR  
@@ -3420,7 +3405,6 @@ C
           IGEN=0 ! NUMBER OF GENERATIONS (I.E. INTERFACE CROSSINGS ON THE WAY) 
           DO 
             IGEN=IGEN+1   
- 
             ! GET THE ARRIVING TRACEBACKS VIA ALL-TO-ALL COMMUNICATION 
             CALL GLOB_CHAR_COMM()    
  
@@ -3579,24 +3563,9 @@ C
           ENDIF  
         ENDIF 
         CALL RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV) ! DEALLOCATING 
-! 
-!       SOME POINTS ARE TREATED SEVERAL TIMES BY DIFFERENT PROCESSORS 
-!       AND GET SLIGHTLY DIFFERENT VALUES. THE LARGEST ONE IS TAKEN 
-! 
-        IF(DOCOM) THEN
-        IF(NOMB.GT.0) THEN 
-          IF(UTILD%TYPE==2) THEN 
-            CALL PARCOM(UTILD,1,MESH)               
-          ELSEIF(UTILD%TYPE==4) THEN 
-          DO I=1,NOMB          
-            CALL PARCOM(UTILD%ADR(I)%P,1,MESH) 
-          ENDDO 
-          ENDIF 
-        ENDIF
-        ENDIF 
-! 
-      ENDIF  
-! 
+!
+      ENDIF 
+!
       LAST_NOMB=NOMB 
 ! 
 !----------------------------------------------------------------------- 
