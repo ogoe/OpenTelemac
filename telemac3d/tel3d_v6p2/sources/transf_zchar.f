@@ -48,13 +48,13 @@
 !-----------------------------------------------------------------------
 !
       INTEGER, INTENT(IN)           :: NPLAN
-      INTEGER, INTENT(INOUT)        :: TRANSF
+      INTEGER, INTENT(IN)           :: TRANSF
       TYPE(BIEF_OBJ), INTENT(INOUT) :: ZCHAR,TRANSF_PLANE
       TYPE(BIEF_OBJ), INTENT(IN)    :: ZSTAR
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER IPLAN
+      INTEGER IPLAN,ITRA
 !
 !***********************************************************************
 !
@@ -65,15 +65,31 @@
 !     3: GENERALISED SIGMA TRANSFORMATION
 !
       IF(TRANSF.NE.0.AND.TRANSF.NE.5) THEN
-        TRANSF=1
+        ITRA=1
         DO IPLAN=2,NPLAN
           IF(TRANSF_PLANE%I(IPLAN).EQ.2) THEN
-            TRANSF=2
+            ITRA=2
           ENDIF
         ENDDO
+!       IF ANY PLANE WITH GIVEN ELEVATION
+!       GENERALISED SIGMA TRANSFORMATION
         DO IPLAN=2,NPLAN
-          IF(TRANSF_PLANE%I(IPLAN).EQ.3) TRANSF=3
+          IF(TRANSF_PLANE%I(IPLAN).EQ.3) ITRA=3
         ENDDO
+        IF(ITRA.NE.TRANSF) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'TRANSF_ZCHAR :'
+            WRITE(LU,*) 'LE MOT-CLE TRANSFORMATION DU MAILLAGE'
+            WRITE(LU,*) 'DEVRAIT ETRE EGAL A ',ITRA
+          ENDIF
+          IF(LNG.EQ.21) THEN
+            WRITE(LU,*) 'TRANSF_ZCHAR:'
+            WRITE(LU,*) 'THE KEYWORD MESH TRANSFORMATION'
+            WRITE(LU,*) 'SHOULD BE EQUAL TO ',ITRA
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

@@ -61,7 +61,7 @@
 !| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE 2D
 !| NPTFR          |-->| NOMBRE DE POINTS FRONTIERES DU MAILLAGE 2D
 !| NULONE         |---|
-!| RUGOL          |---|
+!| RUGOL          |-->| RUGOSITY ON LATERAL BOUNDARIES
 !| U              |-->| COMPOSANTES X DE LA VITESSE AU TEMPS N
 !| UETCAL         |---|
 !| UTANG          |---|
@@ -223,8 +223,8 @@
                IF(IELEM.GT.0) THEN
                  I3 = IKLE(IELEM,MOD(NULONE(IPTFR)+2,3)+1)
                  UTANG(IPTFR)=SQRT( U(I3,IPLAN)**2
-     &                          +V(I3,IPLAN)**2
-     &                          +W(I3,IPLAN)**2 )
+     &                             +V(I3,IPLAN)**2
+     &                             +W(I3,IPLAN)**2 )
                ELSE
                  UTANG(IPTFR)=0.D0
                ENDIF
