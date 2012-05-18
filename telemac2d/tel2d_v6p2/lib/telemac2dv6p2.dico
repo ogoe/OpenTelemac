@@ -268,23 +268,6 @@ These coefficients are applied respectively to
 14 : Edge-based N-scheme 
 Second integer must be 5'
  
-NOM = 'free integer 6' 
-NOM1 = 'free integer 6' 
-TYPE = ENTIER 
-INDEX = 6 
-MNEMO = '??????' 
-TAILLE = 0 
-DEFAUT = 1 
-DEFAUT1 = 1 
-RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
-RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-COMPORT = 
-'Foreground ("PARAMETRES NUMERIQUES*GENERAL") 
-IS VALEUR (blue)' 
-NIVEAU = -13 
-AIDE = ' ' 
-AIDE1 = ' ' 
- 
 NOM = 'PRECONDITIONNEMENT' 
 NOM1 = 'PRECONDITIONING' 
 TYPE = ENTIER 
@@ -3334,10 +3317,10 @@ NIVEAU = 2
 AIDE = 'Nombre de seuils qui seront traites par des conditions aux 
 limites. Ces seuils doivent etre decrits comme des frontieres du 
 domaine de calcul, et leurs caracteristiques sont donnees dans le 
-fichier de donnees formate 1 (voir la documentation ecrite)' 
+fichier de donnees des seuils (voir la documentation ecrite)' 
 AIDE1 = 'Number of weirs that will be treated by boundary conditions. 
 They must be described as boundaries of the domain and their features 
-are given in the formatted data file 1 (see written documentation)' 
+are given in the weir data file (see written documentation)' 
  
 NOM = 'NOMBRE DE SIPHONS' 
 NOM1 = 'NUMBER OF CULVERTS' 
@@ -3351,13 +3334,13 @@ DEFAUT1 = 0
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 2 
-AIDE = 'Nombre de siphons ou buses traites comme des termes sources ou 
+AIDE = 'Nombre de siphons traites comme des termes sources ou 
 puits. Ces siphons doivent etre decrits comme des sources dans le 
 fichier cas. Leurs caracteristiques sont donnees dans le 
-fichier de donnees formate 1 (voir la documentation ecrite)' 
+fichier de donnees des siphons (voir la documentation ecrite)' 
 AIDE1 = 'Number of culverts treated as source terms. 
 They must be described as sources in the domain and their features 
-are given in the formatted data file 1 (see written documentation)' 
+are given in the culvert data file (see written documentation)' 
  
 NOM = 'OPTION POUR LES FRONTIERES LIQUIDES' 
 NOM1 = 'OPTION FOR LIQUID BOUNDARIES' 
@@ -4985,6 +4968,68 @@ NIVEAU = 1
 AIDE = ''
 AIDE1 = ''
 
+NOM = 'NOMBRE DE BUSES' 
+NOM1 = 'NUMBER OF TUBES' 
+TYPE = ENTIER 
+INDEX = 6 
+MNEMO = 'NBUSE' 
+CONTROLE = 0; 100 
+TAILLE = 0 
+DEFAUT = 0 
+DEFAUT1 = 0 
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 2 
+AIDE = 'Nombre de buses ou ponts traites comme des termes sources ou 
+puits. Ces buses doivent etre decrits comme des sources dans le 
+fichier cas. Leurs caracteristiques sont donnees dans le 
+fichier de donnees des buses (voir la documentation ecrite)' 
+AIDE1 = 'Number of tubes or bridges treated as source terms. 
+They must be described as sources in the domain and their features 
+are given in the tubes data file (see written documentation)' 
+
+NOM = 'FICHIER DE DONNEES DES SEUILS'
+NOM1 = 'WEIRS DATA FILE'
+TYPE = CARACTERE
+INDEX = 88
+MNEMO = 'T2D_FILES(T2DSEU)%NAME' 
+SUBMIT = 'T2DSEU-READ-18;T2DSEU;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier de description des seuils présents dans le modèle' 
+AIDE1 = 'Description of weirs existing in the model' 
+
+NOM = 'FICHIER DE DONNEES DES SIPHONS'
+NOM1 = 'CULVERT DATA FILE'
+TYPE = CARACTERE
+INDEX = 89
+MNEMO = 'T2D_FILES(T2DSIP)%NAME' 
+SUBMIT = 'T2DSIP-READ-19;T2DSIP;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier de description des siphons presents dans le modele' 
+AIDE1 = 'Description of culvert existing in the model' 
+
+NOM = 'FICHIER DE DONNEES DES BUSES'
+NOM1 = 'TUBES DATA FILE'
+TYPE = CARACTERE 
+INDEX = 90
+MNEMO = 'T2D_FILES(T2DBUS)%NAME' 
+SUBMIT = 'T2DBUS-READ-20;T2DBUS;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier de description des buses/ponts presents dans le modele' 
+AIDE1 = 'Description of tubes/bridges existing in the model' 
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
@@ -4993,7 +5038,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 38 
+TAILLE = 41
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -5031,7 +5076,10 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DU MODELE DE MAREE';
          'BASE DE DONNEES DE MAREE';
          'BASE BINAIRE 1 DE DONNEES DE MAREE';
-         'BASE BINAIRE 2 DE DONNEES DE MAREE'
+         'BASE BINAIRE 2 DE DONNEES DE MAREE';
+         'FICHIER DE DONNEES DES SEUILS';
+         'FICHIER DE DONNEES DES SIPHONS';
+         'FICHIER DE DONNEES DES BUSES'
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -5069,7 +5117,10 @@ DEFAUT1 ='STEERING FILE';
          'TIDAL MODEL FILE';
          'TIDE DATA BASE';
          'BINARY DATABASE 1 FOR TIDE';
-         'BINARY DATABASE 2 FOR TIDE' 
+         'BINARY DATABASE 2 FOR TIDE'; 
+         'WEIRS DATA FILE';
+         'CULVERT DATA FILE';
+         'TUBES DATA FILE'
 RUBRIQUE  = 'FICHIERS' 
 RUBRIQUE1 = 'FILES' 
 NIVEAU = 1 
@@ -5083,7 +5134,7 @@ AIDE1= 'File names of the used files'
 //   MMM = mode (debug ou non) 
 //   PPP = plateforme 
 //   LLL = extension d'une librairie ("a" ou "lib") 
-//    |  = seperateur dans un path (/ sous Unix, \ sous NT) 
+//    |  = separateur dans un path (/ sous Unix, \ sous NT) 
 // 
 //    ex : "telemac2d|tel2d_VVV|PPP|telemac2dMMMVVV.LLL" 
  
