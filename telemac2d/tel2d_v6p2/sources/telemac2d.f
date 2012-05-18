@@ -131,7 +131,13 @@
 !history  J-M HERVOUET (LNHE)
 !+        09/08/2011
 !+        V6P1
-!+   Call to lecsnd changed
+!+   Call to lecsng changed
+!
+!history  C.COULET (ARTELIA)
+!+        30/03/2012
+!+        V6P2
+!+   Modification for adding "bridge" file and separation of weirs and
+!+   culvert files.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
@@ -742,9 +748,11 @@
 ! INITIAL WEATHER CONDITIONS
 !
       IF (VENT.OR.ATMOS) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE METEO'
         CALL METEO(PATMOS%R,WINDX%R,WINDY%R,
      &             FUAIR,FVAIR,MESH%X%R,MESH%Y%R,AT,LT,NPOIN,VENT,ATMOS,
      &             H%R,T1%R,GRAV,ROEAU,NORD,PRIVE)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE METEO'
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -752,14 +760,18 @@
 ! READS THE GEOMETRY OF SINGULARITIES
 !
       IF(NWEIRS.GT.0) THEN
+       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECSNG'
        CALL LECSNG(NWEIRS,NWRMAX,NPSING,NUMDIG%I,
      &             ZDIG%R,PHIDIG%R,IOPTAN,NPSMAX,NPOIN,
-     &             T2D_FILES(T2DFO1)%LU,NPTFR,MESH)
+     &             T2D_FILES(T2DSEU)%LU,NPTFR,MESH)
+       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECSNG'
       ENDIF
       IF(NSIPH.GT.0) THEN
-       CALL LECSIP(RELAXS,NSIPH,ENTSIP,SORSIP,SECSCE,
-     &             ALTSCE,CSSCE,CESCE,DELSCE,
-     &             ANGSCE,LSCE,MAXSCE,T2D_FILES(T2DFO1)%LU)
+       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECSIP'
+       CALL LECSIP(RELAXS,NSIPH,ENTSIP%I,SORSIP%I,SECSIP%R,
+     &             ALTSIP%R,CSSIP%R,CESIP%R,DELSIP%R,
+     &             ANGSIP%R,LSIP%R,T2D_FILES(T2DSIP)%LU,MESH)
+       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECSIP'
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -1043,6 +1055,7 @@
      &                  MASTRAIN(ITRAC))
             ENDDO
             IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BILANT'
+!
           ELSE
             FLUTSOR = 0.D0
             FLUTENT = 0.D0
@@ -1416,7 +1429,7 @@
      &             MESH%NELBOR%I,NELMAX,MSK,MASKEL%R,
      &             NFRLIQ,THOMFR,NUMLIQ%I,FRTYPE,
      &             MESH%XNEBOR%R,MESH%YNEBOR%R,MESH%IKLBOR%I,.FALSE.)
-!    *             MESH%XNEBOR%R,MESH%YNEBOR%R,MESH%IKLBOR%I, ENTET )
+!    *             MESH%XNEBOR%R,MESH%YNEBOR%R,MESH%IKLBOR%I,ENTET )
 !       WARNINGS WILL BE GIVEN AT THE SECOND CALL AFTER BORD
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPIN'
 !
@@ -1611,7 +1624,7 @@
           CALL OS('X=Y/Z   ',VCONV,VCONV,MESH%COSLAT,C)
         ENDIF
 !
-!       TREATMENT BY METHOD OF CHARACTERISTICS
+!       COMPUTATION OF CHARACTERISTICS AND INTERPOLATION
 !
         CALL CHARAC( FNCAR , FTILD  , FTILD%N  , UCONV , VCONV,S,S,
      &               DT    , IFAMAS , IELM     , NPOIN , 1 , 1,
@@ -1667,10 +1680,10 @@
 !
       IF(NSIPH.GT.0) THEN
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SIPHON'
-      CALL SIPHON(RELAXS,NSIPH,ENTSIP,SORSIP,GRAV,
-     &            H%R,ZF%R,ISCE,DSCE,SECSCE,ALTSCE,CSSCE,CESCE,
-     &            DELSCE,ANGSCE,LSCE,
-     &            NTRAC,T,TSCE,USCE,VSCE,U%R,V%R,ENTET,MAXSCE)
+      CALL SIPHON(RELAXS,NSIPH,ENTSIP%I,SORSIP%I,GRAV,
+     &            H%R,ZF%R,DSIP%R,SECSIP%R,ALTSIP%R,CSSIP%R,CESIP%R,
+     &            DELSIP%R,ANGSIP%R,LSIP%R,
+     &            NTRAC,T,TSIP,USIP%R,VSIP%R,U%R,V%R,ENTET)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SIPHON'
       ENDIF
 !
@@ -1685,7 +1698,8 @@
      &            MAREE,MARDAT,MARTIM,PHI0,OPTSOU,COUROU,NPTH,
      &            VARCL,NVARCL,VARCLA,UNSV2D,FXWAVE,FYWAVE,
      &            RAIN,RAIN_MMPD,PLUIE,T2D_FILES,T2DBI1,
-     &            BANDEC,OPTBAN)
+     &            BANDEC,OPTBAN,
+     &            NSIPH,ENTSIP%I,SORSIP%I,DSIP%R,USIP%R,VSIP%R)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROSOU'
 !
 !  PROPAGATION.
@@ -1865,7 +1879,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DIFSOU'
       CALL DIFSOU(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJTR,
      &            ISCE,DSCE2,TSCE2,MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,
-     &            MESH%FAC%R)
+     &            MESH%FAC%R,NSIPH,ENTSIP%I,SORSIP%I,DSIP%R,TSIP)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DIFSOU'
 !
 !=======================================================================
@@ -2049,7 +2063,7 @@
 !
         IF (ENTET) CALL ENTETE(13,AT,LT)
 !
-        CALL DERLAG(UCONV%R,VCONV%R,DT,MESH%X%R,MESH%Y%R,
+          CALL DERLAG(UCONV%R,VCONV%R,DT,MESH%X%R,MESH%Y%R,
      &              MESH%IKLE%I,MESH%IFABOR%I,MESH%ELTCAR%I,
      &              LT,IELM,3,NPOIN,
      &              NELEM,NELMAX,MESH%SURDET%R,

@@ -52,6 +52,11 @@
 !+   Allocation of KFRO_B as an integer instead of a real BIEF_OBJ
 !+   An overlooked bug for a long time!
 !
+!history  C.COULET (ARTELIA)
+!+        30/03/2012
+!+        V6P2
+!+   Modification for culvert management (no declared sources)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -829,6 +834,59 @@
         CALL BIEF_ALLVEC(1,ZDIG  ,'ZDIG  ',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,PHIDIG,'PHIDIG',0,1,0,MESH)
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!  ARRAYS USED FOR CULVERT
+!
+      IF(NSIPH.GT.0) THEN
+        CALL BIEF_ALLVEC(2,ENTSIP,'ENTSIP',NSIPH,1,0,MESH)
+        CALL BIEF_ALLVEC(2,SORSIP,'SORSIP',NSIPH,1,0,MESH)
+        CALL BIEF_ALLVEC(1,SECSIP,'SECSIP',NSIPH,1,0,MESH)
+        CALL BIEF_ALLVEC(1,ALTSIP,'ALTSIP',NSIPH,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CSSIP ,'CSSIP ',NSIPH,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CESIP ,'CESIP ',NSIPH,2,0,MESH)
+        CALL BIEF_ALLVEC(1,DELSIP,'DELSIP',NSIPH,2,0,MESH)
+        CALL BIEF_ALLVEC(1,ANGSIP,'ANGSIP',NSIPH,2,0,MESH)
+        CALL BIEF_ALLVEC(1,LSIP  ,'LSIP  ',NSIPH,1,0,MESH)
+        CALL BIEF_ALLVEC(1,USIP  ,'USIP  ',NSIPH,2,1,MESH)
+        CALL BIEF_ALLVEC(1,VSIP  ,'VSIP  ',NSIPH,2,1,MESH)
+        CALL BIEF_ALLVEC(1,DSIP  ,'DSIP  ',NSIPH,1,1,MESH)
+        DO I=1, NSIPH
+          DSIP%R(I)=0.D0
+        ENDDO
+        CALL ALLBLO(TSIP ,'TSIP  ')
+        IF(NTRAC.GT.0) THEN
+          CALL BIEF_ALLVEC_IN_BLOCK(TSIP,NTRAC,1,'TSIP  ',
+     &                              NSIPH,2,0,MESH)
+        ELSE
+          CALL BIEF_ALLVEC_IN_BLOCK(TSIP,1    ,1,'TSIP  ',
+     &                              NSIPH,2,0,MESH)
+        ENDIF
+      ELSE
+        CALL BIEF_ALLVEC(2,ENTSIP,'ENTSIP',0,1,0,MESH)
+        CALL BIEF_ALLVEC(2,SORSIP,'SORSIP',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,SECSIP,'SECSIP',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,ALTSIP,'ALTSIP',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CSSIP ,'CSSIP ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CESIP ,'CESIP ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,DELSIP,'DELSIP',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,ANGSIP,'ANGSIP',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,LSIP  ,'LSIP  ',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,USIP  ,'USIP  ',0,2,1,MESH)
+        CALL BIEF_ALLVEC(1,VSIP  ,'VSIP  ',0,2,1,MESH)
+        CALL BIEF_ALLVEC(1,DSIP  ,'DSIP  ',0,1,1,MESH)
+        CALL ALLBLO(TSIP ,'TSIP  ')
+        IF(NTRAC.GT.0) THEN
+          CALL BIEF_ALLVEC_IN_BLOCK(TSIP,NTRAC,1,'TSIP  ',
+     &                              0,2,0,MESH)
+        ELSE
+          CALL BIEF_ALLVEC_IN_BLOCK(TSIP,1    ,1,'TSIP  ',
+     &                              0,2,0,MESH)
+        ENDIF
+      ENDIF
+        
+!-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
 !

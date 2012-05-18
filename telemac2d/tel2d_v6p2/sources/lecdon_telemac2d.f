@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -259,12 +259,25 @@
           T2DTID=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBDD') THEN
           T2DBDD=I
-!###> SEB@HRW: SAME AS T2DBDD BUT BINARY FILE 1 (H) AND 2 (UV)
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBB1') THEN
           T2DBB1=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBB2') THEN
           T2DBB2=I
-!###< SEB@HRW
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSEU') THEN
+          T2DSEU=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DSIP') THEN
+          T2DSIP=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBUS') THEN
+          T2DBUS=I
+        ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06.AND.
+     &         I.NE.09.AND.I.NE.21.AND.I.NE.27.AND.I.NE.30.AND.
+     &         I.NE.31.AND.I.NE.32.AND.I.LE.47) THEN
+!         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
+!         HAS RECEIVED NO NAME
+          WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR IN FILES NAMES' 
+          WRITE(LU,*) 'I=',I,' NAME=',T2D_FILES(I)%TELNAME 
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ENDDO
 !
@@ -293,8 +306,7 @@
             ICONVF(K)     = MOTINT( ADRESS(1,5) + K-1 )
 20         CONTINUE
          ENDIF
-!        FREE KEYWORD
-!        ??????           = MOTINT( ADRESS(1, 6) )
+!        INDEX 6, SEE AFTER 46 (NBUSE)
          ITURB            = MOTINT( ADRESS(1, 7) )
          KFROT            = MOTINT( ADRESS(1, 8) )
          SLVTRA%NITMAX    = MOTINT( ADRESS(1, 9) )
@@ -366,6 +378,7 @@
          ENDIF
          NWEIRS    = MOTINT( ADRESS(1,45) )
          NSIPH     = MOTINT( ADRESS(1,46) )
+         NBUSE     = MOTINT( ADRESS(1, 6) )
          NTYPFR = DIMEN(1,47)
          THOMFR=.FALSE.
          IF(NTYPFR.NE.0) THEN
@@ -863,6 +876,12 @@
          T2D_FILES(T2DBB1)%NAME=MOTCAR( ADRESS(4,86) )
 !        BINARY TIDE DATABASE FILE 2 (FOR SATELLITE ALTIMETRY)
          T2D_FILES(T2DBB2)%NAME=MOTCAR( ADRESS(4,87) )
+!        WEIRS DATA FILE
+         T2D_FILES(T2DSEU)%NAME=MOTCAR( ADRESS(4,88) )
+!        CULVERT DATA FILE
+         T2D_FILES(T2DSIP)%NAME=MOTCAR( ADRESS(4,89) )
+!        BUSES/BRIDGES DATA FILE
+         T2D_FILES(T2DBUS)%NAME=MOTCAR( ADRESS(4,90) )
       IF(LISTIN) THEN
          IF(LNG.EQ.1) WRITE(LU,1000)
          IF(LNG.EQ.2) WRITE(LU,1001)

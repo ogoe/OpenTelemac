@@ -7,7 +7,7 @@
      & NREJET,NREJEU,DSCE,ISCE,T1,MESH,MSK,MASKEL,
      & MAREE,MARDAT,MARTIM,PHI0,OPTSOU,COUROU,NPTH,VARCL,NVARCL,VARCLA,
      & UNSV2D,FXWAVE,FYWAVE,RAIN,RAIN_MMPD,PLUIE,T2D_FILES,T2DBI1,
-     & BANDEC,OPTBAN)
+     & BANDEC,OPTBAN,NSIPH,ENTSIP,SORSIP,DSIP,USIP,VSIP)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -85,6 +85,11 @@
 !+        V6P2
 !+   Rain-evaporation added (after initial code provided by O. Boutron, 
 !+   Tour du Valat and O. Bertrand, Artelia-group).
+!
+!history  C.COULET (ARTELIA)
+!+        30/03/2012
+!+        V6P2
+!+   Modification for culvert management
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
@@ -185,6 +190,11 @@
       LOGICAL, INTENT(INOUT)        :: YASMH
       TYPE(BIEF_OBJ), INTENT(INOUT) :: VARCL,PLUIE
       TYPE(BIEF_FILE), INTENT(IN)   :: T2D_FILES(*)
+!
+      INTEGER          , INTENT(IN) :: NSIPH
+      INTEGER          , INTENT(IN) :: ENTSIP(NSIPH),SORSIP(NSIPH)
+      DOUBLE PRECISION , INTENT(IN) :: DSIP(NSIPH)
+      DOUBLE PRECISION , INTENT(IN) :: USIP(NSIPH,2),VSIP(NSIPH,2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -387,13 +397,51 @@
 !             MOMENTUM ADDED BY THE SOURCE
 !      -      MOMENTUM TAKEN BY THE SOURCE
               FU%R(IR)=FU%R(IR) + (VUSCE(AT,I)-UN%R(IR))*
-     &        DSCE(I)/(T1%R(IR)*MAX(HN%R(IR),0.1D0))
+     &        DSCE(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
               FV%R(IR)=FV%R(IR) + (VVSCE(AT,I)-VN%R(IR))*
-     &        DSCE(I)/(T1%R(IR)*MAX(HN%R(IR),0.1D0))
+     &        DSCE(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
             ENDIF
           ENDDO
         ENDIF
 !
+      ENDIF
+!
+!     CULVERTS
+!
+      IF(NSIPH.GT.0) THEN
+!
+        YASMH = .TRUE.
+!
+        DO I = 1 , NSIPH
+        IR = ENTSIP(I)
+          IF(IR.GT.0) THEN
+            IF(OPTSOU.EQ.1) THEN
+!             "NORMAL" VERSION
+              SMH%R(IR)=SMH%R(IR)-DSIP(I)*UNSV2D%R(IR)
+            ELSE
+!             "DIRAC" VERSION
+              SMH%R(IR)=SMH%R(IR)-DSIP(I)
+            ENDIF
+            FU%R(IR) = FU%R(IR) - (USIP(I,1)-UN%R(IR))*
+     &      DSIP(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+            FV%R(IR) = FV%R(IR) - (VSIP(I,1)-VN%R(IR))*
+     &      DSIP(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+          ENDIF
+          IR = SORSIP(I)
+          IF(IR.GT.0) THEN
+            IF(OPTSOU.EQ.1) THEN
+!             "NORMAL" VERSION
+              SMH%R(IR)=SMH%R(IR)+DSIP(I)*UNSV2D%R(IR)
+            ELSE
+!             "DIRAC" VERSION
+              SMH%R(IR)=SMH%R(IR)+DSIP(I)
+            ENDIF
+            FU%R(IR) = FU%R(IR) + (USIP(I,2)-UN%R(IR))*
+     &      DSIP(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+            FV%R(IR) = FV%R(IR) + (VSIP(I,2)-VN%R(IR))*
+     &      DSIP(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+          ENDIF
+        ENDDO
       ENDIF
 !
 !***********************************************************************

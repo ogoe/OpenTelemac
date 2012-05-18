@@ -42,6 +42,11 @@
 !+   definition, boundary points numbers. This allows a treatment
 !+   in parallel.
 !
+!history  C.COULET (ARTELIA)
+!+        30/03/2012
+!+        V6P2
+!+   Separation of weirs and culvert file
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IFIC           |-->| LOGICAL UNIT OF FORMATED DATA FILE 1
 !| IOPTAN         |<--| OPTION FOR TANGENTIAL VELOCITIES
@@ -208,11 +213,11 @@
 998   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LECSNG : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES FORMATE 1'
+        WRITE(LU,*) '         FICHIER DE DONNEES DES SEUILS'
         WRITE(LU,*) '         2EME LIGNE DU FICHIER NON CONFORME.'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LECSNG : READ ERROR ON THE'
-        WRITE(LU,*) '         FORMATTED DATA FILE 1'
+        WRITE(LU,*) '         WEIRS DATA FILE'
         WRITE(LU,*) '         AT LINE 2'
       ENDIF
       GO TO 2000
@@ -220,12 +225,12 @@
 997   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LECSNG : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES FORMATE 1'
+        WRITE(LU,*) '         FICHIER DE DONNEES DES SEUILS'
         WRITE(LU,*) '         POUR LA SINGULARITE ',N
         WRITE(LU,*) '         NOMBRE DE POINTS ILLISIBLE'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LECSNG : READ ERROR ON THE'
-        WRITE(LU,*) '         FORMATTED DATA FILE 1'
+        WRITE(LU,*) '         WEIRS DATA FILE'
         WRITE(LU,*) '         FOR SINGULARITY NUMBER ',N
         WRITE(LU,*) '         THE NUMBER OF POINTS CANNOT BE READ'
       ENDIF
@@ -234,13 +239,13 @@
 996   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LECSNG : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES FORMATE 1'
+        WRITE(LU,*) '         FICHIER DE DONNEES DES SEUILS'
         WRITE(LU,*) '         POUR LA SINGULARITE ',N
         WRITE(LU,*) '         NUMDIGS DES POINTS ILLISIBLE'
         WRITE(LU,*) '         POUR LE COTE 1'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LECSNG : READ ERROR ON THE'
-        WRITE(LU,*) '         FORMATTED DATA FILE 1'
+        WRITE(LU,*) '         WEIRS DATA FILE'
         WRITE(LU,*) '         FOR SINGULARITY NUMBER ',N
         WRITE(LU,*) '         THE NUMBER OF THE POINTS CANNOT BE READ'
         WRITE(LU,*) '         FOR SIDE NUMBER 1'
@@ -250,13 +255,13 @@
 994   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LECSNG : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES FORMATE 1'
+        WRITE(LU,*) '         FICHIER DE DONNEES DES SEUILS'
         WRITE(LU,*) '         POUR LA SINGULARITE ',N
         WRITE(LU,*) '         NUMDIGS DES POINTS ILLISIBLE'
         WRITE(LU,*) '         POUR LE COTE 2'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LECSNG : READ ERROR ON THE'
-        WRITE(LU,*) '         FORMATTED DATA FILE 1'
+        WRITE(LU,*) '         WEIRS DATA FILE'
         WRITE(LU,*) '         FOR SINGULARITY NUMBER ',N
         WRITE(LU,*) '         THE NUMBER OF THE POINTS CANNOT BE READ'
         WRITE(LU,*) '         FOR SIDE NUMBER 2'
@@ -266,12 +271,12 @@
 992   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LECSNG : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES FORMATE 1'
+        WRITE(LU,*) '         FICHIER DE DONNEES DES SEUILS'
         WRITE(LU,*) '         POUR LA SINGULARITE ',N
         WRITE(LU,*) '         COTES SUR LA DIGUE ILLISIBLES'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LECSNG : READ ERROR ON THE'
-        WRITE(LU,*) '         FORMATTED DATA FILE 1'
+        WRITE(LU,*) '         WEIRS DATA FILE'
         WRITE(LU,*) '         FOR SINGULARITY NUMBER ',N
         WRITE(LU,*) '         ELEVATIONS ON THE WEIR CANNOT BE READ'
       ENDIF
@@ -280,12 +285,12 @@
 991   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LECSNG : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES FORMATE 1'
+        WRITE(LU,*) '         FICHIER DE DONNEES DES SEUILS'
         WRITE(LU,*) '         POUR LA SINGULARITE ',N
         WRITE(LU,*) '         COEFFICIENTS DE DEBIT ILLISIBLES'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LECSNG : READ ERROR ON THE'
-        WRITE(LU,*) '         FORMATTED DATA FILE 1'
+        WRITE(LU,*) '         WEIRS DATA FILE'
         WRITE(LU,*) '         FOR SINGULARITY NUMBER ',N
         WRITE(LU,*) '         DISCHARGE COEFFICIENTS CANNOT BE READ'
       ENDIF
@@ -294,11 +299,11 @@
 900   CONTINUE
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'LECSNG : ERREUR DE LECTURE SUR LE'
-        WRITE(LU,*) '         FICHIER DE DONNEES FORMATE 1'
+        WRITE(LU,*) '         FICHIER DE DONNEES DES SEUILS'
         WRITE(LU,*) '         FIN DE FICHIER PREMATUREE'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'LECSNG : READ ERROR ON THE'
-        WRITE(LU,*) '         FORMATTED DATA FILE 1'
+        WRITE(LU,*) '         WEIRS DATA FILE'
         WRITE(LU,*) '         UNEXPECTED END OF FILE'
       ENDIF
 !

@@ -26,6 +26,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.COULET (ARTELIA)
+!+        30/03/2012
+!+        V6P2
+!+   Modification for adding "bridge" file and separation of weirs and
+!+   culvert file
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -441,6 +447,12 @@
 !
       TYPE(BIEF_OBJ),TARGET :: PLUIE
 !
+!     FOR CULVERT MANAGEMENT
+      TYPE(BIEF_OBJ),TARGET :: ENTSIP, SORSIP, SECSIP, ALTSIP
+      TYPE(BIEF_OBJ),TARGET :: CSSIP , CESIP , DELSIP, ANGSIP, LSIP
+      TYPE(BIEF_OBJ),TARGET :: USIP, VSIP, DSIP, TSIP
+!
+!
 !-----------------------------------------------------------------------
 !
 !       2) MATRICES
@@ -562,7 +574,7 @@
 !
 !     MAXIMUM RANK OF LOGICAL UNITS AS DECLARED IN SUBMIT STRINGS IN THE DICTIONARY
 !
-      INTEGER, PARAMETER :: MAXLU_T2D = 47
+      INTEGER, PARAMETER :: MAXLU_T2D = 50
 !
 !     MAXIMUM NUMBER OF POINTS ON ONE SIDE OF A SINGULARITY (READ IN THE DATA)
 ! 
@@ -664,6 +676,18 @@
 !     BINARY TIDAL MODEL DATABASES 1 AND 2 FILE NUMBER
 !
       INTEGER T2DBB1,T2DBB2
+!
+!     WEIR DATA FILE NUMBER
+!
+      INTEGER T2DSEU
+!
+!     CULVERT DATA FILE NUMBER
+!
+      INTEGER T2DSIP
+!
+!     TUBES/BRIDGES DATA FILE NUMBER
+!
+      INTEGER T2DBUS
 !
 !     GRAPHIC PRINTOUT PERIOD
 ! 
@@ -817,6 +841,10 @@
 ! 
       INTEGER NSIPH
 !
+!     NUMBER OF TUBES/BRIDGES
+! nombre de buses
+      INTEGER NBUSE
+!
 !     NUMBER OF BOUNDARIES WITH GIVEN OPTION FOR LIQUID BOUNDARIES
 !
       INTEGER NTYPFR
@@ -852,12 +880,6 @@
 !brief
 ! points les plus proches des rejets
       INTEGER ISCE(MAXSCE)
-!brief
-! numero de l'entree d'une buse dans la numerotation des sources
-      INTEGER ENTSIP(MAXSCE/2)
-!brief
-! numero de la sortie d'une buse dans la numerotation des sources
-      INTEGER SORSIP(MAXSCE/2)
 !brief OPTION FOR THE DIFFUSION OF TRACERS
 ! option pour la diffusion des traceurs
       INTEGER OPDTRA
@@ -1261,27 +1283,6 @@
 !brief VELOCITIES OF THE SOURCES ALONG Y
 ! composante v du courant aux rejets
       DOUBLE PRECISION VSCE(MAXSCE)
-!brief
-! section des siphons (numerotation des sources)
-      DOUBLE PRECISION SECSCE(MAXSCE)
-!brief
-! coefficients de perte de charge lors d'un fonctionnement en sortie
-      DOUBLE PRECISION CSSCE(MAXSCE)
-!brief
-! cote des entrees/sorties de buses
-      DOUBLE PRECISION ALTSCE(MAXSCE)
-!brief
-! coefficients de perte de charge lors d'un fonctionnement en entree
-      DOUBLE PRECISION CESCE(MAXSCE)
-!brief
-! angle des buses avec la verticale
-      DOUBLE PRECISION DELSCE(MAXSCE)
-!brief
-! angle des buses avec l'axe ox
-      DOUBLE PRECISION ANGSCE(MAXSCE)
-!brief
-! perte de charge lineaire de la conduite
-      DOUBLE PRECISION LSCE(MAXSCE)
 !
 !     UPWIND COEFFICIENTS FOR SUPG (1:u and v, 2:h, 3:tracers, 4:k and epsilon)
 !

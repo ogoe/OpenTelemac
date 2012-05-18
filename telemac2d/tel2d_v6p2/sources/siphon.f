@@ -3,8 +3,8 @@
 !                    *****************
 !
      &(RELAXS,NSIPH,ENTSIP,SORSIP,GRAV,
-     & H,ZF,ISCE,DSCE,SECSCE,ALTSCE,CSSCE,CESCE,DELSCE,ANGSCE,LSCE,
-     & NTRAC,T,TSCE,USCE,VSCE,U,V,ENTET,MAXSCE)
+     & H,ZF,DSIP,SECSIP,ALTSIP,CSSIP,CESIP,DELSIP,ANGSIP,LSIP,
+     & NTRAC,T,TSIP,USIP,VSIP,U,V,ENTET)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -44,31 +44,34 @@
 !+        V6P2
 !+   Correction of DSCE in view of available water.
 !
+!history  C.COULET (ARTELIA)
+!+        30/03/2012
+!+        V6P2
+!+   Modification for culvert management
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALTSCE         |-->| ELEVATIONS OF PIPES
-!| ANGSCE         |-->| ANGLE OF PIPES WITH AXIS OX.
-!| CESCE          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
-!| CSSCE          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
-!| DELSCE         |<--| ANGLE OF PIPES WITH VERTICAL
-!| DSCE           |<--| DISCHARGE OF SOURCES.
+!| ALTSIP         |-->| ELEVATIONS OF PIPES
+!| ANGSIP         |-->| ANGLE OF PIPES WITH AXIS OX.
+!| CESIP          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
+!| CSSIP          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
+!| DELSIP         |<--| ANGLE OF PIPES WITH VERTICAL
+!| DSIP           |<--| DISCHARGE OF CULVERT.
 !| ENTET          |-->| IF YES, PRINTING INFORMATION ON LISTING
-!| ENTSIP         |<--| INDICES OF ENTRY OF PIPE IN POINT SOURCES NUMBERING
+!| ENTSIP         |<--| INDICES OF ENTRY OF PIPE IN GLOBAL NUMBERING
 !| GRAV           |-->| GRAVITY
 !| H              |-->| DEPTH
-!| ISCE           |-->| GLOBAL NUMBER OF POINT SOURCES.
 !| LSCE           |<--| LINEAR HEAD LOSS OF PIPE
-!| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
 !| NSIPH          |-->| NUMBER OF CULVERTS
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| RELAXS         |-->| RELAXATION COEFFICIENT
-!| SECSCE         |-->| CROSS SECTION OF CULVERTS (NUMBERED AS SOURCES)
-!| SORSIP         |-->| INDICES OF PIPES EXITS IN SOURCES NUMBERING
+!| SECSIP         |-->| CROSS SECTION OF CULVERTS (NUMBERED AS SOURCES)
+!| SORSIP         |-->| INDICES OF PIPES EXITS IN GLOBAL NUMBERING
 !| T              |-->| BLOCK OF TRACERS
-!| TSCE           |-->| VALUES OF TRACERS AT SOURCES
+!| TSIP           |-->| VALUES OF TRACERS AT CULVERT EXTREMITY
 !| U              |<->| X-COMPONENT OF VELOCITY
-!| USCE           |-->| VELOCITY U OF THE SOURCES
+!| USIP           |-->| VELOCITY U AT CULVERT EXTREMITY
 !| V              |<->| Y-COMPONENT OF VELOCITY
-!| VSCE           |-->| VELOCITY V OF THE SOURCES
+!| VSIP           |-->| VELOCITY V AT CULVERT EXTREMITY
 !| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -81,21 +84,23 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NSIPH,NTRAC,MAXSCE
-      INTEGER, INTENT(IN)             :: ENTSIP(*),SORSIP(*),ISCE(*)
+      INTEGER, INTENT(IN)             :: NSIPH,NTRAC
+      INTEGER, INTENT(IN)             :: ENTSIP(NSIPH),SORSIP(NSIPH)
       LOGICAL, INTENT(IN)             :: ENTET
       DOUBLE PRECISION, INTENT(IN)    :: RELAXS,GRAV
-      DOUBLE PRECISION, INTENT(INOUT) :: USCE(*),VSCE(*),DSCE(*)
-      DOUBLE PRECISION, INTENT(INOUT) :: TSCE(MAXSCE,NTRAC)
-      DOUBLE PRECISION, INTENT(IN)    :: ANGSCE(*),LSCE(*),CESCE(*)
-      DOUBLE PRECISION, INTENT(IN)    :: CSSCE(*),DELSCE(*)
-      DOUBLE PRECISION, INTENT(IN)    :: SECSCE(*),ALTSCE(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: USIP(NSIPH,2),VSIP(NSIPH,2)
+      DOUBLE PRECISION, INTENT(INOUT) :: DSIP(NSIPH)
+      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: TSIP
+      DOUBLE PRECISION, INTENT(IN)    :: ANGSIP(NSIPH,2),LSIP(NSIPH)
+      DOUBLE PRECISION, INTENT(IN)    :: CESIP(NSIPH,2),CSSIP(NSIPH,2)
+      DOUBLE PRECISION, INTENT(IN)    :: DELSIP(NSIPH,2)
+      DOUBLE PRECISION, INTENT(IN)    :: SECSIP(NSIPH),ALTSIP(NSIPH,2)
       DOUBLE PRECISION, INTENT(IN)    :: H(*),ZF(*),U(*),V(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: T
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,I1,I2,IR1,IR2,ITRAC
+      INTEGER N,I1,I2,ITRAC
 !
       DOUBLE PRECISION SEC,L
       DOUBLE PRECISION D1,D2,S1,S2,CE1,CE2,CS1,CS2,Q,QMAX1,QMAX2
@@ -113,25 +118,22 @@
 !
 !     IDENTIFIES ENTRY / EXIT NODES
 !
-!     NUMBER OF THE CORRESPONDING SOURCES
+!     NUMBER OF THE POINTS
       I1=ENTSIP(N)
       I2=SORSIP(N)
-!     NUMBER OF THE POINTS FOR THESE SOURCES
-      IR1=ISCE(I1)
-      IR2=ISCE(I2)
 !
 !     LOADS, TAKEN AS FREE SURFACE ELEVATION
 !
-      IF(IR1.GT.0) THEN
-        S1=H(IR1)+ZF(IR1)
-        QMAX1=0.9D0*H(IR1)*V2DPAR%R(IR1)/DT
+      IF(I1.GT.0) THEN
+        S1=H(I1)+ZF(I1)
+        QMAX1=0.9D0*H(I1)*V2DPAR%R(I1)/DT
       ELSE
         S1=-1.D10
         QMAX1=-1.D10
       ENDIF
-      IF(IR2.GT.0) THEN
-        S2=H(IR2)+ZF(IR2)
-        QMAX2=0.9D0*H(IR2)*V2DPAR%R(IR2)/DT
+      IF(I2.GT.0) THEN
+        S2=H(I2)+ZF(I2)
+        QMAX2=0.9D0*H(I2)*V2DPAR%R(I2)/DT
       ELSE
         S2=-1.D10
         QMAX2=-1.D10
@@ -146,27 +148,27 @@
 !
 !     COEFFICIENTS FOR COMPUTATION OF PRESSURE LOSS
 !
-      D1=DELSCE(I1)
-      D2=DELSCE(I2)
-      CE1=CESCE(I1)
-      CE2=CESCE(I2)
-      CS1=CSSCE(I1)
-      CS2=CSSCE(I2)
-      SEC=SECSCE(I1)
-      L  =LSCE(I1)
+      D1=DELSIP(N,1)
+      D2=DELSIP(N,2)
+      CE1=CESIP(N,1)
+      CE2=CESIP(N,2)
+      CS1=CSSIP(N,1)
+      CS2=CSSIP(N,2)
+      SEC=SECSIP(N)
+      L  =LSIP(N)
 !
 !     COMPUTES THE FLOW ACCORDING TO DELTAH
 !     IF THE LINEAR PRESSURE LOSS IS NEGLIGIBLE, COULD HAVE DIFFERENT
 !     ENTRY / EXIT SECTIONS
 !
       IF(S1.GE.S2) THEN
-        IF(S1.GT.ALTSCE(I1).AND.S1.GT.ALTSCE(I2)) THEN
+        IF(S1.GT.ALTSIP(N,1).AND.S1.GT.ALTSIP(N,2)) THEN
           Q = SEC * SQRT( 2.D0*GRAV*(S1-S2)/(CE1+L+CS2) )
         ELSE
           Q=0.D0
         ENDIF
       ELSE
-        IF(S2.GT.ALTSCE(I1).AND.S2.GT.ALTSCE(I2)) THEN
+        IF(S2.GT.ALTSIP(N,1).AND.S2.GT.ALTSIP(N,2)) THEN
           Q = - SEC * SQRT( 2.D0*GRAV*(S2-S1)/(CS1+L+CE2) )
         ELSE
           Q=0.D0
@@ -176,31 +178,27 @@
 !     NOTHING HAPPENS IF THE LOADS AT THE 2 ENDS ARE LOWER THAN
 !     THE ELEVATION OF THE NOZZLES
 !
-      IF(S1.LT.ALTSCE(I1).AND.S2.LT.ALTSCE(I2)) Q=0.D0
+      IF(S1.LT.ALTSIP(N,1).AND.S2.LT.ALTSIP(N,2)) Q=0.D0
 !
-!     FILLS OUT DSCE(I2) USING RELAXATION
+!     FILLS OUT DSIP(N) USING RELAXATION
 !
-      DSCE(I2)= RELAXS * Q + (1.D0-RELAXS) * DSCE(I2)
+      DSIP(N)= RELAXS * Q + (1.D0-RELAXS) * DSIP(N)
 !
 !     LIMITATION WITH AVAILABLE WATER
 !
-      IF(DSCE(I2).GT.0.D0) THEN
-        DSCE(I2)=MIN(QMAX1,DSCE(I2))
+      IF(DSIP(N).GT.0.D0) THEN
+        DSIP(N)=MIN(QMAX1,DSIP(N))
       ELSE
-        DSCE(I2)=MAX(-QMAX2,DSCE(I2))
+        DSIP(N)=MAX(-QMAX2,DSIP(N))
       ENDIF
 !
-!     NOW POINT I1
-!
-      DSCE(I1)=-DSCE(I2)
-!
-      IF(ENTET) THEN
+      IF(ENTET.AND.DABS(DSIP(N)).GT.1D-4) THEN
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'SIPHON ',N,' DEBIT DE ',DSCE(I2),' M3/S'
+          WRITE(LU,*) 'SIPHON ',N,' DEBIT DE ',DSIP(N),' M3/S'
         ENDIF
         IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'CULVERT ',N,' DISCHARGE OF ',DSCE(I2),' M3/S'
+          WRITE(LU,*) 'CULVERT ',N,' DISCHARGE OF ',DSIP(N),' M3/S'
         ENDIF
         WRITE(LU,*) ' '
       ENDIF
@@ -208,44 +206,63 @@
 !  TREATS THE VELOCITIES AT THE SOURCES
 !  SAME APPROACH FOR VELOCITY AND TRACER
 !
-      IF(DSCE(I1).GT.0.D0) THEN
-        USCE(I1) = ( COS(D1)*DSCE(I1)/SECSCE(I1) ) * COS(ANGSCE(I1))
-        VSCE(I1) = ( COS(D1)*DSCE(I1)/SECSCE(I1) ) * SIN(ANGSCE(I1))
+      IF(DSIP(N).GT.0.D0) THEN
+        USIP(N,2) = ( COS(D2)*DSIP(N)/SECSIP(N) ) * COS(ANGSIP(N,2))
+        VSIP(N,2) = ( COS(D2)*DSIP(N)/SECSIP(N) ) * SIN(ANGSIP(N,2))
+        IF(I1.GT.0) THEN
+          USIP(N,1) = U(I1)
+          VSIP(N,1) = V(I1)
+        ELSE
+          USIP(N,1) = 0.D0
+          VSIP(N,1) = 0.D0
+        ENDIF
       ELSE
-        IF(IR1.GT.0) THEN
-          USCE(I1) = U(IR1)
-          VSCE(I1) = V(IR1)
+        USIP(N,1) = ( COS(D1)*DSIP(N)/SECSIP(N) ) * COS(ANGSIP(N,1))
+        VSIP(N,1) = ( COS(D1)*DSIP(N)/SECSIP(N) ) * SIN(ANGSIP(N,1))
+        IF(I2.GT.0) THEN
+          USIP(N,2) = U(I2)
+          VSIP(N,2) = V(I2)
+        ELSE
+          USIP(N,2) = 0.D0
+          VSIP(N,2) = 0.D0
         ENDIF
       ENDIF
-      IF(DSCE(I2).GT.0.D0) THEN
-        USCE(I2) = ( COS(D2)*DSCE(I2)/SECSCE(I2) ) * COS(ANGSCE(I2))
-        VSCE(I2) = ( COS(D2)*DSCE(I2)/SECSCE(I2) ) * SIN(ANGSCE(I2))
-      ELSE
-        IF(IR2.GT.0) THEN
-          USCE(I2) = U(IR2)
-          VSCE(I2) = V(IR2)
-        ENDIF
+      IF(NCSIZE.GT.1) THEN
+        USIP(N,1)=P_DMAX(USIP(N,1))
+        VSIP(N,1)=P_DMAX(VSIP(N,1))
+        USIP(N,2)=P_DMAX(USIP(N,2))
+        VSIP(N,2)=P_DMAX(VSIP(N,2))
       ENDIF
 !
 !  TREATS THE TRACER :
+!  NOTA : NSIPH + N <==> N,2
+!                 N <==> N,1
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-          IF(DSCE(I1).GT.0.D0) THEN
-            IF(IR2.GT.0) THEN
-              TSCE(I1,ITRAC)=T%ADR(ITRAC)%P%R(IR2)
+          IF(DSIP(N).GT.0.D0) THEN ! I1 --> I2
+            IF(I1.GT.0) THEN
+              TSIP%ADR(ITRAC)%P%R(NSIPH+N)=T%ADR(ITRAC)%P%R(I1)
+              TSIP%ADR(ITRAC)%P%R(N)      =T%ADR(ITRAC)%P%R(I1)
             ELSE
-              TSCE(I1,ITRAC)=-1.D10
+              TSIP%ADR(ITRAC)%P%R(NSIPH+N)=-1.D10
+              TSIP%ADR(ITRAC)%P%R(N)      =-1.D10
             ENDIF
-            IF(NCSIZE.GT.1) TSCE(I1,ITRAC)=P_DMAX(TSCE(I1,ITRAC))
+          ELSEIF(DSIP(N).LT.0.D0) THEN ! I2 --> I1
+            IF(I2.GT.0) THEN
+              TSIP%ADR(ITRAC)%P%R(N)      =T%ADR(ITRAC)%P%R(I2)
+              TSIP%ADR(ITRAC)%P%R(NSIPH+N)=T%ADR(ITRAC)%P%R(I2)
+            ELSE
+              TSIP%ADR(ITRAC)%P%R(N)      =-1.D10
+              TSIP%ADR(ITRAC)%P%R(NSIPH+N)=-1.D10
+            ENDIF
+!         THE CASE DSIP=0 IS NOT TREATED - LET THE TRACER FREE?
           ENDIF
-          IF(DSCE(I2).GT.0.D0) THEN
-            IF(IR1.GT.0) THEN
-              TSCE(I2,ITRAC)=T%ADR(ITRAC)%P%R(IR1)
-            ELSE
-              TSCE(I2,ITRAC)=-1.D10
-            ENDIF
-            IF(NCSIZE.GT.1) TSCE(I2,ITRAC)=P_DMAX(TSCE(I2,ITRAC))
+          IF(NCSIZE.GT.1) THEN
+            TSIP%ADR(ITRAC)%P%R(NSIPH+N)=
+     &        P_DMAX(TSIP%ADR(ITRAC)%P%R(NSIPH+N))
+            TSIP%ADR(ITRAC)%P%R(N)      =
+     &        P_DMAX(TSIP%ADR(ITRAC)%P%R(N))
           ENDIF
         ENDDO
       ENDIF

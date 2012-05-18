@@ -3,7 +3,8 @@
 !                    *****************
 !
      &(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJTR,ISCE,DSCE,TSCE,
-     & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC)
+     & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC,NSIPH,ENTSIP,SORSIP,
+     & DSIP,TSIP)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -38,10 +39,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.COULET (ARTELIA)
+!+        11/05/2012
+!+        V6P2
+!+   Modification for culvert management
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DSCE           |-->| DISCHARGE OF POINT SOURCES
+!| DSIP           |<--| DISCHARGE OF CULVERT.
 !| DT             |-->| TIME STEP
+!| ENTSIP         |-->| INDICES OF ENTRY OF PIPE IN GLOBAL NUMBERING
 !| FAC            |-->| IN PARALLEL :
 !|                |   | 1/(NUMBER OF SUB-DOMAINS OF THE POINT)
 !| HPROP          |-->| PROPAGATION DEPTH
@@ -50,7 +58,9 @@
 !| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
 !| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
 !| NREJTR         |-->| NUMBER OF POINT SOURCES AS GIVEN BY TRACERS KEYWORDS
+!| NSIPH          |-->| NUMBER OF CULVERTS
 !| NTRAC          |-->| NUMBER OF TRACERS
+!| SORSIP         |-->| INDICES OF PIPES EXITS IN GLOBAL NUMBERING
 !| TETAT          |-->| COEFFICIENT OF IMPLICITATION FOR TRACERS.
 !| TEXP           |-->| EXPLICIT SOURCE TERM.
 !| TIMP           |-->| IMPLICIT SOURCE TERM.
@@ -59,6 +69,7 @@
 !| TSCEXP         |<--| EXPLICIT SOURCE TERM OF POINT SOURCES
 !|                |   | IN TRACER EQUATION, EQUAL TO:
 !|                |   | TSCE - ( 1 - TETAT ) TN
+!| TSIP           |-->| VALUES OF TRACERS AT CULVERT EXTREMITY
 !| YASMI          |<--| IF YES, THERE ARE IMPLICIT SOURCE TERMS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -70,14 +81,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: ISCE(*),NREJTR,NTRAC
-      INTEGER, INTENT(IN)             :: MAXSCE,MAXTRA
-      LOGICAL, INTENT(INOUT)          :: YASMI(*)
-      DOUBLE PRECISION, INTENT(IN)    :: AT,DT,TETAT,DSCE(*)
-      DOUBLE PRECISION, INTENT(IN)    :: TSCE(MAXSCE,MAXTRA),FAC(*)
-      DOUBLE PRECISION, INTENT(INOUT) :: MASSOU(*)
-      TYPE(BIEF_OBJ), INTENT(IN)      :: TN,HPROP
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: TSCEXP,TEXP,TIMP
+      INTEGER          , INTENT(IN)    :: ISCE(*),NREJTR,NTRAC,NSIPH
+      INTEGER          , INTENT(IN)    :: ENTSIP(NSIPH),SORSIP(NSIPH)
+      INTEGER          , INTENT(IN)    :: MAXSCE,MAXTRA
+      LOGICAL          , INTENT(INOUT) :: YASMI(*)
+      DOUBLE PRECISION , INTENT(IN)    :: AT,DT,TETAT,DSCE(*)
+      DOUBLE PRECISION , INTENT(IN)    :: DSIP(NSIPH)
+      DOUBLE PRECISION , INTENT(IN)    :: TSCE(MAXSCE,MAXTRA),FAC(*)
+      DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN,HPROP,TSIP
+      TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TSCEXP,TEXP,TIMP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -134,41 +147,79 @@
 !
       DO ITRAC=1,NTRAC
 !
-      IF(NREJTR.GT.0) THEN
-!
-      DO I = 1 , NREJTR
-!
-        IR = ISCE(I)
-!       TEST IR.GT.0 FOR THE PARALLELISM
-        IF(IR.GT.0) THEN
-          DEBIT=DSCE(I)
-          IF(DEBIT.GT.0.D0) THEN
-            TRASCE = TSCE(I,ITRAC)
-          ELSE
-!           THE VALUE AT THE SOURCE IS TN IF THE FLOW IS OUTGOING
-            TRASCE = TN%ADR(ITRAC)%P%R(IR)
-          ENDIF
-!         SOURCE TERM ADDED TO THE MASS OF TRACER
-          IF(NCSIZE.GT.1) THEN
-!           FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
-!           (SEE CALL TO P_DSUM BELOW)
-            MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE*FAC(IR)
-          ELSE
-            MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE
-          ENDIF
-          TRASCE = TRASCE - (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
-          TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR)+TRASCE
-!
-!         THE IMPLICIT PART OF THE TERM - T * SCE
-!         IS DEALT WITH IN CVDFTR.
-!
+        IF(NREJTR.GT.0) THEN
+!       
+          DO I = 1 , NREJTR
+!         
+            IR = ISCE(I)
+!           TEST IR.GT.0 FOR THE PARALLELISM
+            IF(IR.GT.0) THEN
+              DEBIT=DSCE(I)
+              IF(DEBIT.GT.0.D0) THEN
+                TRASCE = TSCE(I,ITRAC)
+              ELSE
+!               THE VALUE AT THE SOURCE IS TN IF THE FLOW IS OUTGOING
+                TRASCE = TN%ADR(ITRAC)%P%R(IR)
+              ENDIF
+!             SOURCE TERM ADDED TO THE MASS OF TRACER
+              IF(NCSIZE.GT.1) THEN
+!               FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!               (SEE CALL TO P_DSUM BELOW)
+                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE*FAC(IR)
+              ELSE
+                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DEBIT*TRASCE
+              ENDIF
+              TRASCE = TRASCE - (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+              TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR)+TRASCE
+!         
+!             THE IMPLICIT PART OF THE TERM - T * SCE
+!             IS DEALT WITH IN CVDFTR.
+!         
+            ENDIF
+!         
+          ENDDO
+!       
+          IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
+!       
         ENDIF
 !
-      ENDDO
+        IF(NSIPH.GT.0) THEN
+          DO I = 1 , NSIPH
 !
-      IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
+            IR = ENTSIP(I)
+            IF(IR.GT.0) THEN
+              IF(NCSIZE.GT.1) THEN
+!               FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!               (SEE CALL TO P_DSUM BELOW)
+                MASSOU(ITRAC)=MASSOU(ITRAC)-DT*DSIP(I)*
+     &                        TSIP%ADR(ITRAC)%P%R(I)*FAC(IR)
+              ELSE
+                MASSOU(ITRAC)=MASSOU(ITRAC)-DT*DSIP(I)*
+     &                        TSIP%ADR(ITRAC)%P%R(I)
+              ENDIF
+              TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &           TSIP%ADR(ITRAC)%P%R(I) -
+     &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+            ENDIF
 !
-      ENDIF
+            IR = SORSIP(I)
+            IF(IR.GT.0) THEN
+              IF(NCSIZE.GT.1) THEN
+!               FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!               (SEE CALL TO P_DSUM BELOW)
+                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DSIP(I)*
+     &                        TSIP%ADR(ITRAC)%P%R(NSIPH+I)*FAC(IR)
+              ELSE
+                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DSIP(I)*
+     &                        TSIP%ADR(ITRAC)%P%R(NSIPH+I)
+              ENDIF
+              TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &           TSIP%ADR(ITRAC)%P%R(NSIPH+I) -
+     &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+            ENDIF
+          ENDDO
+          IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
+        ENDIF
 !
       ENDDO
 !
