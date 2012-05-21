@@ -1,6 +1,3 @@
-/COURBES DE TARAGE : 1;0
-/FICHIER DES COURBES DE TARAGE : tarage.txt
-/
  PROCESSEURS PARALLELES : 0
 /  ON THIS CASE DIFFERENCES BETWEEN COMPILERS ARE DUE TO TRUNCATIONS ERRORS
 /  BECAUSE OF VON KARMAN EDDIES
@@ -27,11 +24,13 @@
 /  SUR HP3700         :19 s compilateur Nag        6.0    26/11/2009
 /  Dell 2.8 MHz       : 4 s compilateur Intel      6.0    26/11/2009
 /
-FICHIER DES CONDITIONS AUX LIMITES : geo_piledepon.cli
-FICHIER DE GEOMETRIE               : geo_piledepon.slf
-FICHIER DES FRONTIERES LIQUIDES    : t2d_piledepon.lqd
-FICHIER DE REFERENCE               : f2d_piledepon_v1p0.slf
-FICHIER DES RESULTATS              : r2d_piledepon_v1p0.slf
+/  SUR HP3700         : 8 s compilateur HP         6.2    21/05/2012
+/
+FICHIER DES CONDITIONS AUX LIMITES : geo_pildepon.cli
+FICHIER DE GEOMETRIE               : geo_pildepon.slf
+FICHIER DES FRONTIERES LIQUIDES    : t2d_pildepon.lqd
+FICHIER DE REFERENCE               : f2d_pildepon.slf
+FICHIER DES RESULTATS              : r2d_pildepon.slf
 /
 /----------------------------------------------------------------------/
 / 
@@ -62,7 +61,7 @@ STOCKAGE DES MATRICES : 3
  MASS-LUMPING SUR LA VITESSE : 1.      MASS-LUMPING SUR H : 1.
 /
  TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1   PRECONDITIONNEMENT :2
- TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 8   
+/TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 8   
 /TRAITEMENT DU SYSTEME LINEAIRE : 1 SOLVEUR : 7   PRECONDITIONNEMENT :2
 / 
 CORRECTION DE CONTINUITE : OUI
