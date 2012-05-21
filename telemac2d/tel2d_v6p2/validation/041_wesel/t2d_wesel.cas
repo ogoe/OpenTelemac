@@ -44,18 +44,22 @@ MASS-LUMPING ON H : 1.
 /   43 s (DT=120)   5.9  16/10/2008  NAG:102 s, Linux PGI:30 s (MASKTO)
 /   48 s (DT=120)   6.0  27/11/2009  NAG:103 s, Linux Intel:24 s 
 /
+/   Version 6.2
+/
+/   45 s (DT=120)   21/05/2012  
+/
 /======================================================================
 / Telemac2D: Wesel-Xanten minimalistic mw-1965 Q(Wesel)
 / The Rhine River, Rhein-km 812.5 - 821.5
 /======================================================================
 /
-FORTRAN FILE                    : t2d_wessel.f
-GEOMETRY FILE                   : geo_wessel.slf
-BOUNDARY CONDITIONS FILE        : geo_wessel.cli
-RESULTS FILE                    : r2d_wessel.slf
-LIQUID BOUNDARIES FILE          : t2d_wessel.qsl
-FORMATTED DATA FILE 1           : fo1_wessel.txt
-REFERENCE FILE                  : f2d_wessel.slf
+FORTRAN FILE                    : t2d_wesel.f
+GEOMETRY FILE                   : geo_wesel.slf
+BOUNDARY CONDITIONS FILE        : geo_wesel.cli
+RESULTS FILE                    : r2d_wesel.slf
+LIQUID BOUNDARIES FILE          : t2d_wesel.qsl
+FORMATTED DATA FILE 1           : fo1_wesel.txt
+REFERENCE FILE                  : f2d_wesel.slf
 VALIDATION : YES
 /
 /----------------------------------------------
@@ -121,6 +125,8 @@ DISCRETIZATIONS IN SPACE : 11;11
 TREATMENT OF THE LINEAR SYSTEM:2 SOLVER:8 
 SOLVER ACCURACY = 1.E-5  SOLVER OPTION=3 
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 300
+IMPLICITATION FOR DEPTH : 1.
+IMPLICITATION FOR VELOCITY : 1.
 /             
 /-----------------------------------------------
 &FIN                                           
