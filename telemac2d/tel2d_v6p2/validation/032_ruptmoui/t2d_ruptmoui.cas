@@ -16,6 +16,10 @@
 / TEMPS SUR HP C3700 compilateur Nag       : 75 s    6.0  27/11/2009
 / TEMPS SUR Dell 2.8 MHz compilateur Intel : 15 s    6.0  26/11/2009
 /  
+/ Version 6.2
+/
+/ TEMPS SUR HP C3700 compilateur HP        : 27 s    21/05/2012
+/
 FICHIER FORTRAN                    : t2d_ruptmoui.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_ruptmoui.cli
 FICHIER DE GEOMETRIE               : geo_ruptmoui.slf
