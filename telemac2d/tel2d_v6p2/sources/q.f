@@ -34,9 +34,11 @@
 !+   Modification of FCT size due to modification of TRACER numbering
 !
 !history  J-M HERVOUET (LNHE)
-!+        243/02/2012
+!+        21/05/2012
 !+        V6P2
-!+   Discharge taken at mid distance between AT-DT AND AT
+!+   Discharge taken at mid distance between AT-DT AND AT, except
+!+   for finite volumes (DT unknown, and AT time of beginning of time
+!+   step in this case)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| I              |-->| NUMBER OF THE LIQUID BOUNDARY.
@@ -91,11 +93,16 @@
           CALL PLANTE(1)
           STOP
         ENDIF
-        CALL READ_FIC_FRLIQ(Q1,FCT,AT-DT,
-     &                      T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
-        CALL READ_FIC_FRLIQ(Q2,FCT,AT   ,
-     &                      T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
-        Q=(Q1+Q2)*0.5D0
+        IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
+          CALL READ_FIC_FRLIQ(Q1,FCT,AT-DT,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+          CALL READ_FIC_FRLIQ(Q2,FCT,AT   ,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+          Q=(Q1+Q2)*0.5D0
+        ELSE
+          CALL READ_FIC_FRLIQ(Q,FCT,AT   ,
+     &                        T2D_FILES(T2DIMP)%LU,ENTET,OK(I))
+        ENDIF
 !
       ENDIF
 !

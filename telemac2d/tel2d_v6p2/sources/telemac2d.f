@@ -1270,10 +1270,11 @@
       ELSE
         ENTET=.FALSE.
       ENDIF
-! --- JP RENAUD START ---
-! CONSTRAINS TELEMAC-2D OUTPUT IN THE LISTING
+! 
+!     CONSTRAINS TELEMAC-2D OUTPUT IN THE LISTING
+!
       IF (PRESENT(DOPRINT)) ENTET = ENTET .AND. DOPRINT
-! --- JP RENAUD END ---
+! 
       IF(ENTET) CALL ENTETE(2,AT,LT)
 !
 !=======================================================================
