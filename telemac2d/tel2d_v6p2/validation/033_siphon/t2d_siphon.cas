@@ -25,7 +25,7 @@
 FICHIER FORTRAN                     : t2d_siphon.f
 FICHIER DES CONDITIONS AUX LIMITES  : geo_siphon.cli
 FICHIER DE GEOMETRIE                : geo_siphon.slf
-FICHIER DE DONNEES FORMATE 1        : fo1_siphon.txt
+FICHIER DE DONNEES DES SIPHONS      : fo1_siphon.txt
 FICHIER DE REFERENCE                : f2d_siphon.slf  VALIDATION : OUI
 FICHIER DES RESULTATS               : r2d_siphon.slf
 /
@@ -49,26 +49,17 @@ LOI DE FROTTEMENT SUR LE FOND = 3     COEFFICIENT DE FROTTEMENT = 20.
 COEFFICIENT DE DIFFUSION DES VITESSES = 1.0                                     
 COTE INITIALE = 2.  CONDITIONS INITIALES = 'PARTICULIERES'           
 BANCS DECOUVRANTS = OUI
-OPTION DE TRAITEMENT DES BANCS DECOUVRANTS : 1                                                        
-ABSCISSES DES SOURCES = 100.;400.   ORDONNEES DES SOURCES = 100.;100.           
-DEBITS DES SOURCES = 0.;0.                                                      
+OPTION DE TRAITEMENT DES BANCS DECOUVRANTS : 1                                                
 NOMBRE DE SIPHONS : 1                                                           
 NOMBRE DE TRACEURS : 2   COEFFICIENT DE DIFFUSION DES TRACEURS : 1.
 VALEURS INITIALES DES TRACEURS : 100.;200.
-
-/ndu add
-VALEURS INITIALES DES TRACEURS : 100.;200.;0.;0.
-VALEURS DES TRACEURS DES SOURCES : 100.;200.;0.;0.
-/ndu end add
-
+VALEURS INITIALES DES TRACEURS : 100.;200.
 COEFFICIENT D'IMPLICITATION DES TRACEURS : 1.                
 MAXIMUM D'ITERATIONS POUR LA DIFFUSION DES TRACEURS : 40       
 PRECISION POUR LA DIFFUSION DES TRACEURS : 1.E-10 
 SOLVEUR POUR LA DIFFUSION DES TRACEURS : 7                                
 OPTION DU SOLVEUR POUR LA DIFFUSION DES TRACEURS : 2               
-PRECONDITIONNEMENT POUR LA DIFFUSION DES TRACEURS : 2             
-VITESSES DES SOURCES SELON X : 0.;0.                             
-VITESSES DES SOURCES SELON Y : 0.;0.                                                      
+PRECONDITIONNEMENT POUR LA DIFFUSION DES TRACEURS : 2                                                                  
 PROCESSEURS PARALLELES : 0 
 /
 /
