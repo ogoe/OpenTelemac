@@ -213,8 +213,9 @@ C***********************************************************************
 !
       IF(FU%ELM.EQ.12) THEN
 !
-        CALL CHGDIS(FUDRAG,11,12,MESH)
-        CALL CHGDIS(FVDRAG,11,12,MESH)
+        I=11
+        CALL CHGDIS(FUDRAG,I,12,MESH)
+        CALL CHGDIS(FVDRAG,I,12,MESH)
 !
         DO IELEM = 1 , NELEM
           I4=IKLE%I(IELEM+3*NELMAX)
