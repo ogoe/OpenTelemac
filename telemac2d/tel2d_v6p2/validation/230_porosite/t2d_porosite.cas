@@ -1,3 +1,4 @@
+PROCESSEURS PARALLELES : 0
 /
 /  sur HP C3700                     version 5.4 : 1917 s
 /  sur HP C3700                     version 5.5 : 1607 s
@@ -16,6 +17,10 @@
 /  sur HP C3700 compilateur Nag     version 6.0 : 5415 s  27/11/2009 
 /  Dell 2.8 MHz compilateur Intel   version 6.0 :  718 s  26/11/2009 
 /
+/  Version 6.2
+/
+/  HP Linux Calibre 7 8 processeurs :  46 s  22/05/2012
+/
 /-----------------------------------------------------------------------/
 /            		RIVIERE 2 PILES de PONT
 /
@@ -31,9 +36,8 @@ FICHIER DE REFERENCE               : f2d_porosite.slf
 VALIDATION : OUI
 /
 /----------------------------------------------------------------------/ 
-/                     OPTIONS GENERALES                                  
-/----------------------------------------------------------------------/
-/ 
+/                          OPTIONS GENERALES                                  
+/----------------------------------------------------------------------/ 
 /            
 EQUATIONS 					: 'SAINT-VENANT EF'
 SUITE DE CALCUL 				: NON           
@@ -41,8 +45,8 @@ VARIABLES POUR LES SORTIES GRAPHIQUES           : 'U,V,H,S,M,F,D,L'
 VARIABLES A IMPRIMER  				: '' 
 PAS DE TEMPS 					: 0.2
 NOMBRE DE PAS DE TEMPS                          : 25000                       
-PERIODE POUR LES SORTIES GRAPHIQUES		: 1000
-PERIODE DE SORTIE LISTING 			: 100 
+PERIODE POUR LES SORTIES GRAPHIQUES		: 12500
+PERIODE DE SORTIE LISTING 			: 1000 
 /
 /---------------------------------------------------------------------/
 /			CONDITIONS INITIALES
@@ -72,8 +76,8 @@ OPTION DE SUPG     				: 1;2
 COEFFICIENT DE DIFFUSION DES VITESSES 	: 0.1
 SOLVEUR : 7 OPTION DU SOLVEUR 		: 3
 PRECISION DU SOLVEUR 				: 1.E-5
-MAXIMUM D'ITERATIONS POUR LE SOLVEUR 	: 100
-IMPLICITATION POUR LA HAUTEUR 		: 0.6
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR 	        : 100
+IMPLICITATION POUR LA HAUTEUR 		        : 1.
 IMPLICITATION POUR LA VITESSE			: 0.6 
 PRECONDITIONNEMENT 				: 2   
 ORDRE DU TIR INITIAL POUR H 			: 1   
