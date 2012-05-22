@@ -21,6 +21,10 @@
 /  HP C3700 compilateur Nag 6.0        8 s  26/11/2009
 /  Dell 2.8 MHz compilateur Intel 6.0  1 s  26/11/2009
 /
+/  Version 6.2
+/
+/  HP C3700 compilateur HP  3 s  22/05/2012
+/
 FICHIER FORTRAN                    : t2d_init-2.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_init-2.cli
 FICHIER DE GEOMETRIE               : geo_init-2.slf
@@ -30,7 +34,7 @@ FICHIER DES FRONTIERES LIQUIDES    : t2d_init-2.qsl
 /      
 TITRE = 'Cas Test - 1ere mise en regime'                                        
 /                                                                               
-PERIODE POUR LES SORTIES GRAPHIQUES = 40  PERIODE DE SORTIE LISTING=10           
+PERIODE POUR LES SORTIES GRAPHIQUES = 40  PERIODE DE SORTIE LISTING=40           
 VARIABLES POUR LES SORTIES GRAPHIQUES = U,V,H,S,B                    
 VARIABLES A IMPRIMER = ' '      BILAN DE MASSE = VRAI
 SUITE DE CALCUL : NON                                     
@@ -47,5 +51,6 @@ COTE INITIALE = 265.  CONDITIONS INITIALES = 'HAUTEUR NULLE'
 OPTION POUR LES FRONTIERES LIQUIDES : 1;1 
 DISCRETISATIONS EN ESPACE : 11;11
 STOCKAGE DES MATRICES : 3   PRODUIT MATRICE-VECTEUR : 1  
-PROFILS DE VITESSE : 4;4       
+PROFILS DE VITESSE : 4;4 
+IMPLICITATION POUR LA VITESSE : 1.      
 &ETA                                                                            
