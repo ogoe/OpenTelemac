@@ -232,7 +232,7 @@ class ACTION:
       setattr(specs,'configName',options.configName)
       setattr(specs,'configFile', options.configFile)
       setattr(specs,'sortieFile',True)
-      setattr(specs,'tmpdirectory','')
+      setattr(specs,'tmpdirectory',True)
       setattr(specs,'rootDir', options.rootDir)
       setattr(specs,'version', options.version)
       setattr(specs,'wDir', options.wDir)
