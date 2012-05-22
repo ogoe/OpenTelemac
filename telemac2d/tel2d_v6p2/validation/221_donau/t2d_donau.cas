@@ -1,3 +1,4 @@
+PARALLEL PROCESSORS : 8
 /
 /  DONAU : TESTING NEW POSSIBILITIES ON FRICTION
 /          DEVELOPPED AT BAW
@@ -17,7 +18,11 @@
 /  HP C3700 compilateur HP        :  1438 s  version 6.0  24/11/2009
 /  HP C3700 compilateur Nag       :  3003 s  version 6.0  27/11/2009 
 /  Dell 2.8 MHz compilateur Intel :   688 s  version 6.0  26/11/2009
-/    
+/ 
+/  Version 6.2
+/ 
+/  HP Linux Calibre 7 8 processeurs : 36 s  22/05/2012
+/  
 /----------------------------------------------------------------------
 /                      FILE DEFINITION
 /----------------------------------------------------------------------
@@ -26,7 +31,6 @@ BOUNDARY CONDITIONS FILE                     : geo_donau.cli
 GEOMETRY FILE                                : geo_donau.slf
 FORTRAN FILE                                 : t2d_donau.f
 RESULTS FILE                                 : r2d_donau.slf
-PARALLEL PROCESSORS                          : 0
 VALIDATION                                   : YES
 REFERENCE FILE                               : f2d_donau.slf
 /
