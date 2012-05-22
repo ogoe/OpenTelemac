@@ -178,7 +178,7 @@ class splitSELAFIN():
          dtype=np.int)
 
       # ~~> NPARTS is the number of parts /!\ does not check continuity vs. missing parts
-      NPARTS = max(*NSPLIT)
+      NPARTS = max(*NSPLIT) + 1   # User numbering NSPLIT starts from 0
 
       KSPLIT = np.minimum(*(NSPLIT[self.slf.IKLE].T))
 

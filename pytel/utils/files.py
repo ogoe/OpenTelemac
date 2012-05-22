@@ -18,7 +18,7 @@
          Addition of moveFile.
 """
 """@history 15/11/2011 -- Sebastien E. Bourban
-         Addition of a progress bar to the putFileContentand addFileContent
+         Addition of a progress bar to the putFileContent and addFileContent
          methods -- had to write by line, instead of just one.
 """
 """@brief
@@ -95,6 +95,7 @@ def getFileContent(file):
 
 """
 def putFileContent(file,lines):
+   if path.exists(file): remove(file)
    SrcF = open(file,'wb')
    ibar = 0; pbar = ProgressBar(maxval=len(lines)).start()
    SrcF.write((lines[0].rstrip()).replace('\r','').replace('\n\n','\n'))

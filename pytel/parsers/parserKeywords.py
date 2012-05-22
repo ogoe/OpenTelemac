@@ -20,6 +20,11 @@
          -v <version>, reset the version read in the config file with this
          -r <root>, reset the root path read in the config file with this
 """
+"""@history 21/05/2015 -- Sebastien E. Bourban
+         Addition of the method setKeyValue, in order to force keyword values,
+         for instance, in the case of running scalar case with parallel
+         Also, scanDICO now understands the type of each keyword.
+"""
 """@brief
 """
 
@@ -111,6 +116,56 @@ def scanCAS(cas):
       keylist.pop(0)
 
    return keywords
+
+def readCAS(keywords,dico,frgb):
+
+   for key,value in keywords.iteritems():
+      kw = key
+      if kw not in dico.keys(): kw = frgb['GB'][kw]
+      if dico[kw]['TYPE'][0] == 'LOGIQUE':
+         vals = []
+         for val in value:
+            if val in ['YES','Y','TRUE','OUI','O','VRAI']: vals.append('TRUE')
+            if val in ['NO','N','FALSE','NON','N','FAUX']: vals.append('FALSE')
+         keywords.update({key:vals})
+      elif dico[kw]['TYPE'][0] in ['ENTIER','INTEGER']:
+         vals = []
+         for val in value: vals.append(int(val))
+         keywords.update({key:vals})
+      elif dico[kw]['TYPE'][0] in ['REEL','REAL']:
+         vals = []
+         for val in value: vals.append(float(val))
+         keywords.update({key:vals})
+      else:
+         vals = []
+         for val in value: vals.append(repr(val))
+         keywords.update({key:vals})
+
+   return keywords
+
+def rewriteCAS(cas):
+
+   lines = []
+   for key,val in cas.iteritems():
+
+      # ~~~> Check if final size more than 72 characters
+      if len(' ' + key + ' : ' + str(val[0])) < 73:
+         line = ''; lcur = ' ' + key + ' : ' + str(val[0])
+      else:
+         line = ' ' + key + ' :\n'; lcur = '    ' + str(val[0])
+      for v in val[1:]:
+         if len(lcur + ';'+str(v)) < 73:
+            lcur = lcur + ';'+str(v)
+         else:
+            if len(lcur) < 73:
+               line = line + lcur + ';\n'
+               lcur = '    '+str(v)
+            else:  '... warning: CAS file cannot read this value: ',lcur
+      if len(line+lcur) < 73: lines.append(line+lcur)
+      else: '... warning: CAS file cannot read this value: ',lcur
+
+   lines.append('')
+   return lines
 
 def translateCAS(cas,frgb):
    keyLines = []
@@ -355,6 +410,19 @@ def getSubmitWord(key,cas,iFS,oFS):
 
    return value
 
+def setKeyValue(key,cas,frgb,value):
+
+   if key in frgb['GB'].keys():
+      if key in cas.keys(): cas[key] = [value]
+      elif frgb['GB'][key] in cas.keys(): cas[frgb['GB'][key]] = [value]
+      else: cas.update({key:[value]})
+   if key in frgb['FR'].keys():
+      if key in cas.keys(): cas[key] = [value]
+      elif frgb['FR'][key] in cas.keys(): cas[frgb['FR'][key]] = [value]
+      else: cas.update({key:[value]})
+
+   return True
+
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
 #
@@ -435,7 +503,7 @@ if __name__ == "__main__":
          frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['version']+'.dico'))
          for casFile in cfg['VALIDATION'][mod]:
             print '... CAS file: ',casFile
-            casKeys = scanCAS(casFile)
+            casKeys = readCAS(scanCAS(casFile),dico,frgb)
                #/!\ for testing purposes ... no real use.
 
    sys.exit()

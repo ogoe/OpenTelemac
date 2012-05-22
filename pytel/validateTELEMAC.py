@@ -86,8 +86,6 @@ if __name__ == "__main__":
       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",type="string",dest="version",default='',
       help="specify the version number, default is taken from config file" )
-   #parser.add_option("-s", "--sortiefile",action="store_true",dest="sortieFile",default=False,
-   #   help="specify whether there is a sortie file, default is no" )
    parser.add_option("-a", "--action",type="string",dest="do",default='',
       help="filter specific process actions from the XML file" )
    parser.add_option("-d", "--draw",type="string",dest="draw",default='',
@@ -96,6 +94,36 @@ if __name__ == "__main__":
       help="specify the list modules, default is taken from config file" )
    parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
       help="specify whether to display on screen or save silently" )
+   parser.add_option("-w", "--workdirectory",
+                      type="string",
+                      dest="wDir",
+                      default='',
+                      help="specify whether to re-run within a defined subdirectory" )
+   parser.add_option("--hosts",
+                      type="string",
+                      dest="hosts",
+                      default='',
+                      help="specify the list of hosts available for parallel mode, ';' delimited" )
+   parser.add_option("--ncsize",
+                      type="string",
+                      dest="ncsize",
+                      default='',
+                      help="the number of processors forced in parallel mode" )
+   parser.add_option("--split",
+                      action="store_true",
+                      dest="split",
+                      default=False,
+                      help="will only do the trace (and the split in parallel) if option there" )
+   parser.add_option("--merge",
+                      action="store_true",
+                      dest="merge",
+                      default=False,
+                      help="will only do the output copying (and recollection in parallel) if option there" )
+   parser.add_option("--run",
+                      action="store_true",
+                      dest="run",
+                      default=False,
+                      help="will only run the simulation if option there" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -126,48 +154,80 @@ if __name__ == "__main__":
       import matplotlib.pyplot as plt
       plt.switch_backend('agg')
 
+   if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nScanning XML files and configurations\n\
+      print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   xmls = {}
-   for cfgname in cfgnames:
-      # still in lower case
-      if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
-      if options.version != '': cfgs[cfgname]['version'] = options.version
-      if options.modules != '': cfgs[cfgname]['modules'] = options.modules
-      cfgs[cfgname]['display'] = options.display
-      # parsing for proper naming
-      cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
-      cfg.update({ 'PWD':PWD })
+      xmls = {}
+      for cfgname in cfgnames:
+         # still in lower case
+         if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+         if options.version != '': cfgs[cfgname]['version'] = options.version
+         if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+         cfgs[cfgname]['display'] = options.display
+         # parsing for proper naming
+         cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
+         cfg.update({ 'PWD':PWD })
 
-      for codeName in cfg['VALIDATION'].keys():
-         xmlKeys = cfg['VALIDATION'][codeName]
-         if not xmls.has_key(codeName): xmls.update({codeName:{}})
-         for key in xmlKeys.keys():
-            if key != 'path':
-               if not xmls[codeName].has_key(key): xmls[codeName].update({key:{}})
-               xmlDir = path.join(xmlKeys['path'],key)
-               for xmlFile in xmlKeys[key]:
-                  xmlPath = path.join(xmlDir,xmlFile)
-                  if not xmls[codeName][key].has_key(xmlPath): xmls[codeName][key].update({xmlPath:{}})
-                  xmls[codeName][key][xmlPath].update({cfgname: { 'cfg':cfg, 'options':options } })
-   # ~~> Print summary
-   for codeName in xmls.keys():
-      print '    +> ',codeName
-      for key in xmls[codeName]:
-         print '    |    +> ',key
-         for xmlFile in xmls[codeName][key]:
-            print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
+         for xmlFile in args:
+            if not xmls.has_key(xmlFile): xmls.update({xmlFile:{}})
+            xmls[xmlFile].update({cfgname:{'cfg':cfg,'options':options}})
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for codeName in xmls.keys():
-      for key in xmls[codeName]:
-         print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
+      for xmlFile in xmls.keys():
+         print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         for xmlFile in xmls[codeName][key]:
-            runXML(xmlFile,xmls[codeName][key][xmlFile])
+         runXML(path.realpath(xmlFile),xmls[xmlFile])
+
+   else:
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
+      print '\n\nScanning XML files and configurations\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      xmls = {}
+      for cfgname in cfgnames:
+         # still in lower case
+         if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+         if options.version != '': cfgs[cfgname]['version'] = options.version
+         if options.modules != '': cfgs[cfgname]['modules'] = options.modules
+         cfgs[cfgname]['display'] = options.display
+         # parsing for proper naming
+         cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
+         cfg.update({ 'PWD':PWD })
+
+         for codeName in cfg['VALIDATION'].keys():
+            xmlKeys = cfg['VALIDATION'][codeName]
+            if not xmls.has_key(codeName): xmls.update({codeName:{}})
+            for key in xmlKeys.keys():
+               if key != 'path':
+                  if not xmls[codeName].has_key(key): xmls[codeName].update({key:{}})
+                  xmlDir = path.join(xmlKeys['path'],key)
+                  for xmlFile in xmlKeys[key]:
+                     xmlPath = path.join(xmlDir,xmlFile)
+                     if not xmls[codeName][key].has_key(xmlPath): xmls[codeName][key].update({xmlPath:{}})
+                     xmls[codeName][key][xmlPath].update({cfgname: { 'cfg':cfg, 'options':options } })
+      # ~~> Print summary
+      for codeName in xmls.keys():
+         print '    +> ',codeName
+         for key in xmls[codeName]:
+            print '    |    +> ',key
+            for xmlFile in xmls[codeName][key]:
+               print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      for codeName in xmls.keys():
+         for key in xmls[codeName]:
+            print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+            for xmlFile in xmls[codeName][key]:
+               print xmls[codeName][key][xmlFile]
+               print '\n\n\n'
+               print xmls[codeName][key][xmlFile]['eticsm']['cfg'].keys()
+               print xmls[codeName][key][xmlFile]['eticsm']['options']
+               #runXML(xmlFile,xmls[codeName][key][xmlFile])
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

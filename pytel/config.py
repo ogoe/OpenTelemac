@@ -532,6 +532,10 @@ def parseConfig_ValidateTELEMAC(cfg):
    # .. in theory, mpi could be replaced by something else (?)
    if cfgTELEMAC['PARALLEL'] != {}: get = getMPI(cfg)
    if get != {}: cfgTELEMAC.update({'MPI':get})
+   # Get hpc_cmdexec and hpc_infile for hpc option
+   # .. in theory, bsub could be replaced by another queueing system
+   if cfgTELEMAC['PARALLEL'] != {}: get = getHPC(cfg)
+   if get != {}: cfgTELEMAC.update({'HPC':get})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -700,9 +704,9 @@ def getMPI(cfgDict):
    if cfgDict.has_key('options'):
       if 'mpi' in cfgDict['options'].lower():
          mpi.update({'HOSTS':gethostname().split('.')[0]}) # /!\ defaulting on  the local hostname
-         if cfgDict.has_key('mpi_hostfile'): mpi.update({'HTFILE':cfgDict['mpi_hostfile']})
-         elif cfgDict.has_key('mpi_hosts'):
+         if cfgDict.has_key('mpi_hosts'):
             if len(cfgDict['mpi_hosts'].split()) > 0: mpi['HOSTS'] = cfgDict['mpi_hosts']
+         mpi.update({'HOSTFILE': 'MPI_HOSTFILE'})
          if cfgDict.has_key('mpi_infile'): mpi.update({'INFILE':cfgDict['mpi_infile']})
          if cfgDict.has_key('mpi_cmdexec'):
             mpi.update({'EXEC':cfgDict['mpi_cmdexec']})

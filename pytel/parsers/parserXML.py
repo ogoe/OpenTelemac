@@ -21,6 +21,10 @@
          handling of the backend display switch option for Jenkins's
          virtual boxes
 """
+"""@history 19/05/2012 -- Fabien Decung:
+         For partial compatibility issues with Python 2.6.6, replaced
+         iter() by findall()
+"""
 """@brief
 """
 
@@ -33,11 +37,11 @@ from optparse import Values
 import sys
 from socket import gethostname
 # ~~> dependencies from within pytel/parsers
-from parserKeywords import scanDICO, translateCAS, getKeyWord, getIOFilesSubmit
+from parserKeywords import scanDICO,scanCAS,readCAS,translateCAS, getKeyWord,setKeyValue, getIOFilesSubmit
 from parserSortie import getLatestSortieFiles
 from parserStrings import parseArrayPaires
 # ~~> dependencies towards the root of pytel
-from runcode import runCAS, scanCAS, checkConsistency, compilePRINCI
+from runcode import runCAS,checkConsistency,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import createDirectories,copyFile,moveFile, matchSafe
@@ -104,9 +108,9 @@ def getXMLKeys(xml,do):
          - 'output'
 """
 class ACTION:
-   active = { 'path':'','safe':'','cas':'','cfg':'','dico':'',
+   active = { 'path':'','safe':'','casFile':'','cfg':'','dico':'',
       "target": None, "code": None, "xref": None, "do": None,
-      "title": '' }
+      "title": '', "ncsize":'' }
    dids = {}
 
    def __init__(self,title=''):
@@ -115,7 +119,7 @@ class ACTION:
    def addAction(self,actions):
       self.active = getXMLKeys(actions,self.active)
       if self.dids.has_key(self.active["xref"]):
-         print '... this xref already exists:',self.active["xref"]
+         print '... you are getting me confused, this xref already exists:',self.active["xref"]
          sys.exit()
       self.dids.update({ self.active["xref"]:{} })
       self.code = self.active["code"]
@@ -123,9 +127,8 @@ class ACTION:
 
    def addCAS(self,casFile):
       self.active['path'] = path.dirname(casFile)
-      cas = scanCAS(casFile)
-      self.active['cas'] = cas
-      return cas
+      self.active['casFile'] = casFile
+      return casFile
 
    def addCFG(self,cfgname,cfg):
       self.active['cfg'] = cfgname
@@ -135,7 +138,6 @@ class ACTION:
       self.active['safe'] = path.join( path.join(self.active['path'],self.active["xref"]),cfgname )
       self.update( { cfgname: {
          'target': self.active["target"],
-         'cas': self.active['cas'],
          'safe': self.active['safe'],
          'code': self.active["code"],
          'title': self.active["title"],
@@ -147,7 +149,7 @@ class ACTION:
 
       # ~~> aliases
       xref = self.active["xref"]; cfgname = self.active['cfg']
-      cas = self.active['cas']
+      cas = self.dids[xref][cfgname]['cas']
       safe = self.active['safe']
 
       # ~~> create the safe
@@ -164,14 +166,14 @@ class ACTION:
       iFS = []; oFS = []
       for k in cas.keys():
          if dico['input'].has_key(k):
-            copyFile(path.join(self.active['path'],cas[k][0]),safe)
-            ifile = path.join(safe,cas[k][0])
+            copyFile(path.join(self.active['path'],eval(cas[k][0])),safe)
+            ifile = path.join(safe,eval(cas[k][0]))
             iFS.append([k,[ifile],dico['input'][k]])
             #if not path.isfile(ifile):
             #   print '... file does not exist ',ifile
             #   sys.exit()
          if dico['output'].has_key(k):
-            ofile = path.join(safe,cas[k][0])
+            ofile = path.join(safe,eval(cas[k][0]))
             oFS.append([k,[ofile],dico['output'][k]])
       self.updateCFG({ 'input':iFS })
       self.updateCFG({ 'output':oFS })
@@ -204,12 +206,13 @@ class ACTION:
    # ~~ Compile the PRINCI file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def compilePRINCI(self,dico,cfg,rebuild):
       if not "compile" in self.available.split(';'): return
-      value,default = getKeyWord('FICHIER FORTRAN',self.active['cas'],dico['dico'],dico['frgb'])
+      xref = self.active["xref"]; cfgname = self.active['cfg']
+      value,default = getKeyWord('FICHIER FORTRAN',self.dids[xref][cfgname]['cas'],dico['dico'],dico['frgb'])
       princiFile = ''
       if value != []:       # you do not need to compile the default executable
-         princiFile = path.join(self.active['path'],value[0])
+         princiFile = path.join(self.active['path'],eval(value[0]))
          if path.exists(princiFile):
-            exeFile = path.join(self.active['safe'],path.splitext(value[0])[0] + cfg['SYSTEM']['sfx_exe'])
+            exeFile = path.join(self.active['safe'],path.splitext(eval(value[0]))[0] + cfg['SYSTEM']['sfx_exe'])
             if not path.exists(exeFile) or cfg['REBUILD'] == 0:
                print '     +> compiling princi file: ' + path.basename(princiFile)
                copyFile(princiFile,self.active['safe'])
@@ -229,12 +232,18 @@ class ACTION:
       setattr(specs,'configName',options.configName)
       setattr(specs,'configFile', options.configFile)
       setattr(specs,'sortieFile',True)
-      setattr(specs,'wDir','')
+      setattr(specs,'tmpdirectory','')
       setattr(specs,'rootDir', options.rootDir)
       setattr(specs,'version', options.version)
-      setattr(specs,'tmpdirectory', True)
+      setattr(specs,'wDir', options.wDir)
       setattr(specs,'compileonly', False)
-      setattr(specs,'hosts', gethostname().split('.')[0]) # /!\ temporary solution
+      if options.hosts != '': setattr(specs,'hosts', options.hosts)
+      else: setattr(specs,'hosts', gethostname().split('.')[0])
+      setattr(specs,'split', options.split)
+      setattr(specs,'run', options.run)
+      setattr(specs,'merge', options.merge)
+      if options.ncsize != '': self.active["ncsize"] = options.ncsize
+      setattr(specs,'ncsize', self.active["ncsize"])
 
       # ~~> check on sorties and run
       casFile = path.join(self.active['path'],self.active["target"])
@@ -364,10 +373,10 @@ def runXML(xmlFile,xmlConfig):
    # ~~ Action analysis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    do = ACTION(title)
    print '\n... looping through the todo list'
-   for action in xmlRoot.iter("action"):
+   for action in xmlRoot.findall("action"):
 
       # ~~ Step 1. Common check for keys and CAS file ~~~~~~~~~~~~~~
-      cas = do.addCAS(path.join(path.dirname(xmlFile),do.addAction(action)))
+      casFile = do.addCAS(path.join(path.dirname(xmlFile),do.addAction(action)))
 
       # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~
       for cfgname in xmlConfig.keys():
@@ -377,6 +386,9 @@ def runXML(xmlFile,xmlConfig):
          # ~~> Parse DICO File and default IO Files (only once)
          dicoFile,dico = getDICO(cfg,do.active["code"])
          do.updateCFG({'dico':dicoFile})
+         cas = readCAS(scanCAS(casFile),dico['dico'],dico['frgb'])
+         if do.active["ncsize"] != '': setKeyValue('PROCESSEURS PARALLELES',cas,dico['frgb'],int(do.active["ncsize"]))
+         do.updateCFG({'cas':cas})
          if not checkConsistency(cas,dico['dico'],dico['frgb'],cfg): continue
 
          # ~~> Define config-split storage
@@ -422,12 +434,12 @@ def runXML(xmlFile,xmlConfig):
    print '\n... gathering targets through the plot list'
    for typePlot in ["plot1d","plot2d","plot3d","plotpv"]:
       plot.addPlotType(typePlot)
-      for ploting in xmlRoot.iter(typePlot):
+      for ploting in xmlRoot.findall(typePlot):
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
          plot.addDraw(ploting)
 
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         for layer in ploting.iter("layer"):
+         for layer in ploting.findall("layer"):
             target = plot.addLayer(layer)
 
             # ~~> round up targets and their configurations

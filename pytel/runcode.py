@@ -73,6 +73,13 @@
          Removed the dependency of the compilation of the PRINCI at run time
          from the configuration files (update or clean statements).
 """
+"""@history 12/05/2012 -- Fabien Decung & Sebastien E. Bourban
+         Modified checkConsistency so the behaviour is as follows :
+          - if parallel not in module keys => ncsize should be 0 or stop
+          - else ncsize should be 1 or more
+         Also, forces the re-writing of the CAS file in the temporary directory
+         so keywords can now be modified before running the CAS
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -91,7 +98,7 @@ from os import path,walk,mkdir,chdir,remove,system,sep,environ
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import getFileContent,putFileContent,removeDirectories,isNewer
-from parsers.parserKeywords import scanCAS,scanDICO,getKeyWord,getIOFilesSubmit
+from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
 
 # _____                   __________________________________________
@@ -107,19 +114,20 @@ def checkConsistency(cas,dico,frgb,cfg):
    # ~~ check for parallel consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
    ncsize = 0
-   if value != []: ncsize = int(value[0])
+   if value != []: ncsize = value[0]
    elif defaut != []: ncsize = int(defaut[0])
-   if ncsize > 1 and 'parallel' not in cfg['MODULES'].keys(): return False
-   if ncsize < 2 and 'paravoid' not in cfg['MODULES'].keys(): return False  # /!\ you might want to be more relaxed about this
+   if 'parallel' not in cfg['MODULES'].keys():
+      if ncsize != 0: return False
+   else: setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
 
    # ~~ check for openmi consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
    return True
 
-def processCAS(casFile,frgb):
+def processCAS(casFile,dico,frgb):
 
    # ~~ extract keywords ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cas = scanCAS(casFile)
+   cas = readCAS(scanCAS(casFile),dico,frgb)
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    lang = 1
@@ -128,12 +136,12 @@ def processCAS(casFile,frgb):
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    if lang == 1:
       print '... simulation en Francais avec ',path.basename(casFile)
-      cas.update({'FICHIER DES PARAMETRES':[casFile]})
-      cas.update({'DICTIONNAIRE':[frgb['DICO']]})
+      setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
+      setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
    if lang == 2:
       print '... running in English with ',path.basename(casFile)
-      cas.update({'STEERING FILE':[casFile]})
-      cas.update({'DICTIONARY':[frgb['DICO']]})
+      setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
+      setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
 
    return cas,lang
 
@@ -149,7 +157,7 @@ def processLIT(cas,iFiles,TMPDir,update):
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
       if iFiles.has_key(k):
-         cref = cas[k][0]
+         cref = eval(cas[k][0])
          if not path.isfile(cref):
             print '... file does not exist ',cref
             return False
@@ -159,18 +167,26 @@ def processLIT(cas,iFiles,TMPDir,update):
                if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
                   iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
                # special case for FORTRAN and CAS files in case of update
-               if iFiles[k].split(';')[5][0:7] == 'FORTRAN' or iFiles[k].split(';')[5][0:3] == 'CAS':
-                  putFileContent(crun,getFileContent(cref)+[''])
+               if iFiles[k].split(';')[5][0:7] == 'FORTRAN':
                   print ' re-copying: ', path.basename(cref),crun
+                  putFileContent(crun,getFileContent(cref)+[''])
+               elif iFiles[k].split(';')[5][0:3] == 'CAS':
+                  print ' re-writing: ', crun
+                  putFileContent(crun,rewriteCAS(cas))
                else:
                   print '   ignoring: ', path.basename(cref),crun
+                  #putFileContent(crun,getFileContent(cref)+[''])
                continue
          if iFiles[k].split(';')[3] == 'ASC':
-            putFileContent(crun,getFileContent(cref)+[''])
-            print '    copying: ', path.basename(cref),crun
+            if iFiles[k].split(';')[5][0:3] == 'CAS':
+               print ' re-writing: ', crun
+               putFileContent(crun,rewriteCAS(cas))
+            else:
+               print '    copying: ', path.basename(cref),crun
+               putFileContent(crun,getFileContent(cref)+[''])
          else:
-            shutil.copy(cref,crun)
             print '    copying: ', path.basename(cref),crun
+            shutil.copy(cref,crun)
 
    return True
 
@@ -182,7 +198,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
          if oFiles[k].split(';')[5] == 'MULTI':   # POSTEL3D
             npsize = 1
             while 1:                              # HORIZONTAL SECTION FILES
-               cref = path.join(CASDir,cas[k][0]+'_{0:03d}'.format(npsize))
+               cref = path.join(CASDir,eval(cas[k][0])+'_{0:03d}'.format(npsize))
                if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
                if not path.isfile(crun): break
@@ -195,7 +211,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
                nptime = 1
                if not path.isfile(oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)): break
                while 1:
-                  cref = path.join(CASDir,cas[k][0]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
+                  cref = path.join(CASDir,eval(cas[k][0])+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
                   if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                   crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
                   if not path.isfile(crun): break
@@ -205,7 +221,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
                   nptime = nptime + 1
                npsize = npsize + 1
          else:
-            cref = path.join(CASDir,cas[k][0])
+            cref = path.join(CASDir,eval(cas[k][0]))
             if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
             crun = oFiles[k].split(';')[1]
             if not path.isfile(crun):
@@ -250,7 +266,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
 def processCONFIG(lang):
 
    # ~~ create CONFIG ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   putFileContent('CONFIG',[str(lang),'6',''])
+   putFileContent('CONFIG',[repr(lang),'6',''])
    return True
 
 def getNCSIZE(cas,dico,frgb):
@@ -258,7 +274,7 @@ def getNCSIZE(cas,dico,frgb):
    # ~~ check keyword ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
    ncsize = -1
-   if value != []: ncsize = int(value[0])
+   if value != []: ncsize = value[0]
    elif defaut != []: ncsize = int(defaut[0])
 
    return ncsize
@@ -266,13 +282,10 @@ def getNCSIZE(cas,dico,frgb):
 def getMPICommand(cfgMPI):
    # ~~> Executable
    mpiCmd = cfgMPI['EXEC']
-   # ~~> hosts
-   hosts = 'MPI_HOSTFILE'
-   if cfgMPI.has_key('HTFILE'):
-      hosts = cfgMPI['HTFILE']
-   cfgMPI['HTFILE'] = { hosts: [] }
-   if cfgMPI.has_key('HOSTS'): cfgMPI['HTFILE'][hosts] = cfgMPI['HOSTS'].split()
-   mpiCmd = mpiCmd.replace('<hostfile>',hosts)
+   # ~~> host file
+   hostfile = ''
+   if cfgMPI.has_key('HOSTFILE'): hostfile = cfgMPI['HOSTFILE']
+   mpiCmd = mpiCmd.replace('<hostfile>',hostfile)
    # ~~> stdin file
    infile = ''
    if cfgMPI.has_key('INFILE'): infile = cfgMPI['INFILE']
@@ -294,10 +307,7 @@ def getHPCCommand(cfgHPC):
 def processPARALLEL(ncsize,wdir):
 
    # ~~ parallel case ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if ncsize >= 0:
-      putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir,''])
-   elif ncsize > 1:
-      putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir,''])
+   if ncsize > 0: putFileContent('PARAL',[str(ncsize),str(len(wdir)),wdir,''])
 
    return
 
@@ -370,6 +380,7 @@ def getGLOGEO(cas,iFiles):
 
 def runPartition(partel,cas,conlim,iFiles,ncsize):
 
+   if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
       if iFiles.has_key(k):
@@ -444,6 +455,7 @@ def runCode(exe,sortiefile):
 
 def runRecollection(gretel,cas,glogeo,oFiles,ncsize):
 
+   if ncsize < 2: return True
    # ~~ aggregate output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
       if oFiles.has_key(k):
@@ -491,7 +503,11 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if not path.exists(casFile):
       print '... inexistent CAS file: ',casFile
       return None    # /!\ should you stop or carry on ?
-   cas,lang = processCAS(casFile,frgb)
+   # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cas,lang = processCAS(casFile,dico,frgb)
+   # ~~ Forces run in parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if options.ncsize != '': setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(options.ncsize))
+   # ~~ Consistency checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not checkConsistency(cas,dico,frgb,cfg):
       print '... inconsistent CAS file: ',casFile
       print '    +> you may be using an inappropriate configuration:',cfgName
@@ -518,8 +534,9 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
             # ~~~~ Extract the CAS File name ~~~~~~~~~~~~~~~~~~~~~~~
             casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
-            if casFilePlage == []: casFilePlage = defaut
-            casFilePlage = path.join(CASDir,casFilePlage[0])
+            if casFilePlage == []: casFilePlage = defaut[0]
+            else: casFilePlage = eval(casFilePlage[0])
+            casFilePlage = path.join(CASDir,casFilePlage)
             if not path.isfile(casFilePlage):
                print '... missing coupling CAS file for',mod,': ',casFilePlage
                return None   # /!\ should you stop or carry on ?
@@ -530,7 +547,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             iFSPlage,oFSPlage = getIOFilesSubmit(frgbPlage,dicoPlage)
 
             # ~~ Read the coupled CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~
-            casPlage,lang = processCAS(casFilePlage,frgbPlage)
+            casPlage,lang = processCAS(casFilePlage,dicoPlage,frgbPlage)
             if not checkConsistency(casPlage,dicoPlage,frgbPlage,cfg):
                print '... inconsistent CAS file: ',casFilePlage
                return None   # /!\ should you stop or carry on ?
@@ -583,8 +600,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    useFile = exeFile
    value,defaut = getKeyWord('FICHIER FORTRAN',cas,dico,frgb)
    if value != []:
-      useFort = path.join(CASDir,value[0])
-      useFile = path.join(CASDir,path.splitext(value[0])[0]+cfg['SYSTEM']['sfx_exe'])
+      useFort = path.join(CASDir,eval(value[0]))
+      useFile = path.join(CASDir,path.splitext(eval(value[0]))[0]+cfg['SYSTEM']['sfx_exe'])
       # /!\ removing dependency over cfg['REBUILD']:
       if path.exists(useFile):
          if isNewer(useFile,useFort) == 1: remove(useFile)
@@ -613,7 +630,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       ncsize = getNCSIZE(cas,dico,frgb)
       
-      if ncsize > 1:
+      if ncsize > 0:
          # >>> Parallel execution configuration
          mpiCmd = ''
          if cfg.has_key('MPI') and not options.merge:
@@ -625,11 +642,11 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             mpiCmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
             mpiCmd = mpiCmd.replace('<ncsize>',str(ncsize))
             mpiCmd = mpiCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
-            hostfile = cfg['MPI']['HTFILE'].keys()[0] # only one key for now
+            hostfile = cfg['MPI']['HOSTFILE']
             # ~~> MPI host file ( may be re-written by the HPC INFILE script )
             hosts = []; n = 0
             while n < ncsize:
-               for i in cfg['MPI']['HTFILE'][hostfile]:
+               for i in cfg['MPI']['HOSTS'].split():
                   hosts.append(i); n += 1
                   if n == ncsize: break
             putFileContent(hostfile,hosts)
@@ -649,7 +666,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
                stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
                stdin = cfg['HPC']['STDIN'][stdinfile]
                stdin = stdin.replace('<sortiefile>',sortiefile)
-               stdin = stdin.replace('<hosts>',' '.join(cfg['MPI']['HTFILE'][hostfile]))
+               stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
                stdin = stdin.replace('<ncsize>',str(ncsize))
                stdin = stdin.replace('<wdir>',WDir)
                stdin = stdin.replace('<email>',options.email)
@@ -710,7 +727,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          return   # Run only: do not proceed any further
 
       # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if ncsize > 1:
+      if ncsize > 0:
          # ~~> GRETEL Executable
          exeCmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['sfx_exe'])
          # ~~> Run GRETEL
@@ -814,6 +831,11 @@ if __name__ == "__main__":
                       dest="hosts",
                       default='',
                       help="specify the list of hosts available for parallel mode, ';' delimited" )
+   parser.add_option("--ncsize",
+                      type="string",
+                      dest="ncsize",
+                      default='',
+                      help="the number of processors forced in parallel mode" )
    parser.add_option("--split",
                       action="store_true",
                       dest="split",
