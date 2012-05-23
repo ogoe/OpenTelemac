@@ -1,3 +1,4 @@
+/DEBUGGER : 1
 /
 /-------------------------------------------------------------------/
 /   TELEMAC-2D   -  VALIDATION TEST CASE NUMBER 4 -                 /
@@ -20,6 +21,10 @@
 /  HP C3700 compilateur Nag         : 122 s   version 6.0 27/11/2009
 /  Dell 2.8 MHz compilateur Intel   :  27 s   version 6.0 27/11/2009
 /
+/  Version 6.2
+/
+/  HP C3700 compilateur HP          :  50 s   23/05/2012
+/
 /----------------------------------------------
 /  COMPUTER INFORMATIONS
 /----------------------------------------------
@@ -37,7 +42,7 @@ NUMBER OF PRIVATE ARRAYS        = 1
 /
 TITLE                           = 'WAVE'
 VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,S,B,H,L,C,N'
-GRAPHIC PRINTOUT PERIOD         = 100
+GRAPHIC PRINTOUT PERIOD         = 500
 LISTING PRINTOUT PERIOD         = 100
 VALIDATION                      = YES
 TIME STEP                       = 0.0025
@@ -75,9 +80,11 @@ ADVECTION                       = NO
 INFORMATION ABOUT SOLVER        = YES
 SOLVER                          = 7
 SOLVER OPTION                   = 2
-SOLVER ACCURACY                         = 1.E-6
+SOLVER ACCURACY                 = 1.E-6
 MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 200
 INITIAL GUESS FOR H             = 2
 MATRIX STORAGE                  = 3
+IMPLICITATION FOR DEPTH         = 0.5
+IMPLICITATION FOR VELOCITY      = 0.5
 /           
 &FIN
