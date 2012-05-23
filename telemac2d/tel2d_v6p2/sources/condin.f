@@ -51,7 +51,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER ITRAC
-      INTEGER GEOSYST,NUMZONE ! TO BE INCLUDED AS KEYWORD!!!
 !
 !-----------------------------------------------------------------------
 !
@@ -87,9 +86,6 @@
       ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
      &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
         CALL OS('X=-Y    ',X=H,Y=ZF)
-!     BEFORE GEOSYST AND NUMZONE BECOME KEYWORDS. TO BE REMOVED AFTER!!!
-        GEOSYST = 5
-        NUMZONE = 30
         CALL CONDI_TPXO(NPOIN,X,Y,H%R,U%R,V%R,GEOSYST,NUMZONE,
      &                  LAMBD0,PHI0,T2D_FILES,T2DBB1,T2DBB2,
      &                  MARDAT,MARTIM)

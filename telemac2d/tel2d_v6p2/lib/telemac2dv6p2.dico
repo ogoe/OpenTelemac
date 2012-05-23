@@ -42,8 +42,8 @@
 /des fichiers vis a vis du parallelisme : 
 / 
 /  - "SCAL" :	 
-/     Même fichier pour tous les processeurs lu par tous.	 
-/     Seule la version du maître est consideree apres calcul. 
+/     Meme fichier pour tous les processeurs lu par tous.
+/     Seule la version du maitre est consideree apres calcul.
 / 
 /  - "SELAFIN" :	 
 /     Le fichier est "decompose/regroupe en sous-domaines" avec les outils 
@@ -925,7 +925,7 @@ NIVEAU = 1
 AIDE = 'Definit le pas de temps en secondes. 
 Remarque : Pour une bonne precision; il est souhaitable de choisir 
 le pas de temps de telle sorte que le nombre de Courant de propagation 
-soit inferieur à 2 ; voir 3. 
+soit inferieur a 2 ; voir 3.
 Ceci peut etre realisable en hydraulique fluviale ; mais ne l''est 
 pratiquement jamais en hydraulique maritime ou l''on peut atteindre 
 des valeurs de 50.' 
@@ -1209,7 +1209,7 @@ NIVEAU = 2
 CONTROLE = 0.5 
 AIDE = 'Fixe la valeur du coefficient d''implicitation sur C dans 
 l''etape de propagation (cf.  Note de principe). 
-Les valeurs inferieures à 0.5 donnent un schema instable.' 
+Les valeurs inferieures a 0.5 donnent un schema instable.' 
 AIDE1 = 'Sets the value of the implicitation coefficient for C 
 (the celerity of waves) in the propagation step 
 (refer to principle note). 
@@ -1228,7 +1228,7 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS, VELOCITY-CELERITY-HIGHT'
 NIVEAU = 2 
 AIDE = 'Fixe la valeur du coefficient d''implicitation sur la vitesse 
 dans l''etape de propagation (cf.  Note de principe). 
-Les valeurs inferieures à 0.5 donnent un schema instable.' 
+Les valeurs inferieures a 0.5 donnent un schema instable.' 
 AIDE1 = 'Sets the value of the implicitation coefficient for velocity 
 in the propagation step (refer to principle note). 
 Values below 0.5 result in an unstable condition.' 
@@ -1321,7 +1321,7 @@ RUBRIQUE = 'PARAMETRES NUMERIQUES, MODELE K-EPSILON'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS, K-EPSILON MODEL' 
 NIVEAU = 3 
 AIDE = 'Coefficient reducteur du pas de temps pour le modele k-epsilon 
-(qui est normalement identique à celui du systeme hydrodynamique). 
+(qui est normalement identique a celui du systeme hydrodynamique).
 Utilisation deconseillee' 
 AIDE1 = 'Time step reduction coefficient for k-epsilon model 
 (which is normally same the same as that of the hydrodynamic system) 
@@ -2059,11 +2059,11 @@ DEFAUT1 = 'V6P2'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL' 
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION' 
 NIVEAU = -3 
-AIDE = 'Numero de version des bibliothèques utilisees par TELEMAC. 
+AIDE = 'Numero de version des bibliotheques utilisees par TELEMAC.
 SUR UNE STATION DE TRAVAIL 
 5 versions sont donnees correspondant a : 
 TELEMAC,DAMO,UTILE,BIEF,HP' 
-AIDE1 = 'version number of the libraries used by TELEMAC. 
+AIDE1 = 'version number of the libraries used by TELEMAC.
 ON A WORKSTATION 
 5 numbers are given, corresponding to the libraries called: 
 TELEMAC,DAMO,UTILE,BIEF,HP' 
@@ -2310,40 +2310,49 @@ DEFAUT = 'COTE NULLE'
 DEFAUT1 = 'ZERO ELEVATION' 
 NIVEAU = 1 
 CHOIX = '"COTE NULLE"'; '"COTE CONSTANTE"'; 
-'"HAUTEUR NULLE"'; '"HAUTEUR CONSTANTE"'; '"PARTICULIERES"' 
+'"HAUTEUR NULLE"'; '"HAUTEUR CONSTANTE"'; '"PARTICULIERES"' ;
+'"ALTIMETRIE SATELLITE TPXO"'
 CHOIX1 = '"ZERO ELEVATION"'; '"CONSTANT ELEVATION"'; 
-'"ZERO DEPTH"'; '"CONSTANT DEPTH"'; '"SPECIAL"' 
+'"ZERO DEPTH"'; '"CONSTANT DEPTH"'; '"SPECIAL"' ;
+'"TPXO SATELLITE ALTIMETRY"'
 RUBRIQUE = 'EQUATIONS, CONDITIONS INITIALES' 
 RUBRIQUE1 = 'EQUATIONS, INITIAL CONDITIONS' 
 AIDE = 'Permet de definir les conditions initiales sur 
 les hauteurs d''eau. 
 Les valeurs possibles sont : 
-   - COTE NULLE. Initialise la cote de surface libre a 0. 
+   - COTE NULLE. Initialise la cote de surface libre a 0.
            Les hauteurs d''eau initiales sont alors retrouvees en 
            faisant la difference entre les cotes de surface libre 
            et du fond. 
    - COTE CONSTANTE .Initialise la cote de surface libre a la 
            valeur donnee par le mot-cle COTE INITIALE. Les hauteurs 
            d''eau initiales sont calculees comme precedemment. 
-   - HAUTEUR NULLE .Initialise les hauteurs d''eau a 0. 
+   - HAUTEUR NULLE .Initialise les hauteurs d''eau a 0.
    - HAUTEUR CONSTANTE. Initialise les hauteurs d''eau a la valeur 
            donnee par le mot-cle HAUTEUR INITIALE. 
    - PARTICULIERES. Les conditions initiales sur la hauteur d''eau 
-           doivent etre precisees dans le sous-programme CONDIN.' 
+           doivent etre precisees dans le sous-programme CONDIN.
+   - ALTIMETRIE SATELLITE TPXO. Les conditions initiales sur la hauteur
+           d''eau et les vitesses sont etiblies sur la base des donnees
+           satellite TPXO dont les 8 premiers constistuents ont ete extrait
+           et sauves dans le fichier BASE DE DONNEES DE MAREE.' 
 AIDE1 = 'Makes it possible to define the initial conditions with 
 the water depth. 
 The possible values are as follows: 
--ZERO ELEVATION-. Initializes the free surface elevation to 0. 
+   - ZERO ELEVATION-. Initializes the free surface elevation to 0.
 The initial water depths are then found by computing the difference 
 between the free surface and the bottom. 
--CONSTANT ELEVATION-. Initializes the water elevation to the value 
+   - CONSTANT ELEVATION-. Initializes the water elevation to the value
 given by the keyword -INITIAL ELEVATION-. The initial water depths 
 are computed as in the previous case. 
--ZERO DEPTH-. Initializes the water depths to 0. 
--CONSTANT DEPTH-. Initializes the water depths to the value given 
-by the key-word -INITIAL DEPTH-. 
--SPECIAL-. The initial conditions with the water depth should be 
-stated in the CONDIN subroutine' 
+   - ZERO DEPTH-. Initializes the water depths to 0.
+   - CONSTANT DEPTH-. Initializes the water depths to the value given
+by the key-word -INITIAL DEPTH-.
+   - SPECIAL-. The initial conditions with the water depth should be
+stated in the CONDIN subroutine.
+   - TPXO SATELITE ALTIMETRY. The initial conditions on the free surface and
+velocities are established from the TPXO satellite program data, the harmonic
+constituents of which are stored in the TIDE DATA BASE file.' 
  
 NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
 NOM1 = 'GEOMETRY FILE FORMAT' 
@@ -3005,7 +3014,7 @@ NOM = 'LATITUDE DU POINT ORIGINE'
 NOM1 = 'LATITUDE OF ORIGIN POINT' 
 TYPE = REEL 
 INDEX = 28 
-MNEMO = 'LAMBDO' 
+MNEMO = 'LAMBD0' 
 TAILLE = 0 
 DEFAUT = 48. 
 DEFAUT1 = 48. 
@@ -3371,8 +3380,8 @@ TAILLE = 0
 /       '2="Thompson method based on characteristics"' 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
-CHOIX = '" "="pas de biliothèque"'; 
-'"$PVM_ROOT/lib/$PVM_ARCH/libpvm3.a"="bibliothèque PVM1"' 
+CHOIX = '" "="pas de biliotheque"';
+'"$PVM_ROOT/lib/$PVM_ARCH/libpvm3.a"="bibliotheque PVM1"' 
 CHOIX1 = '" "="no library"'; 
 '"$PVM_ROOT/lib/$PVM_ARCH/libpvm3.a"="PVM1 library"' 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT' 
@@ -3390,8 +3399,8 @@ MNEMO = ''
 TAILLE = 0 
 DEFAUT = ' ' 
 DEFAUT1 = ' ' 
-CHOIX = '" "="pas de biliothèque"'; 
-'"$PVM_ROOT/lib/$PVM_ARCH/libgpvm3.a"="bibliothèque PVM2"' 
+CHOIX = '" "="pas de biliotheque"';
+'"$PVM_ROOT/lib/$PVM_ARCH/libgpvm3.a"="bibliotheque PVM2"' 
 CHOIX1 = '" "="no library"'; 
 '"$PVM_ROOT/lib/$PVM_ARCH/libgpvm3.a"="PVM2 library"' 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT' 
@@ -3721,7 +3730,7 @@ DEFAUT1 = YES
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1 
-AIDE = 'Si OUI, impression des conditions initiales dans les résultats' 
+AIDE = 'Si OUI, impression des conditions initiales dans les resultats' 
 AIDE1 = 'If YES, output of initial conditions in the results' 
  
 / NOUVEAUTES 5.2 
@@ -3910,9 +3919,9 @@ DEFAUT1 = 1.E-3;1.E-3;1.E-3;1.E-4
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1 
-AIDE = '4 nombres : précision absolue sur H, U, V, 
- et précision relative sur la fonction cout' 
-AIDE1 = '4 numbers: absolute precision on H, U V, 
+AIDE = '4 nombres : precision absolue sur H, U, V,
+ et precision relative sur la fonction cout' 
+AIDE1 = '4 numbers: absolute precision on H, U V,
  and relative precision on the cost function' 
 / 
 / NOUVEAUTES 5.3 
@@ -4375,7 +4384,7 @@ NIVEAU = 1
 /COMPORT = 'Affichage ("EQUATIONS*TRACEUR*OPTIONS TRACEUR") 
 /IS VALEUR ()'; 
 /'Foreground ("EQUATIONS*TRACEUR") IS VALEUR (brown)' 
-AIDE = 'Définit le nombre de traceurs.' 
+AIDE = 'Definit le nombre de traceurs.' 
 AIDE1 = 'Defines the number of tracers' 
 / 
 NOM = 'NOMS DES TRACEURS' 
@@ -4817,11 +4826,13 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
 NIVEAU = 1 
-AIDE = 'Constantes harmoniques extraites du fichier du modele de maree' 
-AIDE1 = 'Harmonic constants extracted from the tidalmodel file' 
+AIDE = 'Fichier de geometrie du modele dont sont extraites 
+les constantes harmoniques' 
+AIDE1 = 'Geometry file of the model from which harmonic constituents 
+are extracted' 
 
-NOM = 'BASE DE DONNEES DE MAREE' 
-NOM1 = 'TIDE DATA BASE' 
+NOM = 'BASE ASCII DE DONNEES DE MAREE' 
+NOM1 = 'ASCII DATABASE FOR TIDE' 
 TYPE = CARACTERE 
 INDEX = 85 
 MNEMO = 'T2D_FILES(T2DBDD)' 
@@ -4831,8 +4842,12 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
 NIVEAU = 1 
-AIDE = 'Base de donnees tiree du fichier du modele de maree' 
-AIDE1 = 'Tide data base extracted from the tidal model file' 
+AIDE = 'Base de donnees de constantes harmoniques 
+tirees du fichier du modele de maree. 
+Ancien nom en version 6.1 : BASE DE DONNEES DE MAREE' 
+AIDE1 = 'Tide data base of harmonic constituents 
+extracted from the tidal model file.
+Old name in 6.1 version: TIDE DATA BASE' 
 / 
 / VERSION 6.2
 /
@@ -4999,7 +5014,7 @@ DEFAUT1 = ' '
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
 NIVEAU = 1 
-AIDE = 'Fichier de description des seuils présents dans le modèle' 
+AIDE = 'Fichier de description des seuils presents dans le modele' 
 AIDE1 = 'Description of weirs existing in the model' 
 
 NOM = 'FICHIER DE DONNEES DES SIPHONS'
@@ -5029,6 +5044,172 @@ RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1 
 AIDE = 'Fichier de description des buses/ponts presents dans le modele' 
 AIDE1 = 'Description of tubes/bridges existing in the model' 
+
+NOM = 'COEFFICIENT DE CALAGE DU MARNAGE'
+NOM1 = 'COEFFICIENT TO CALIBRATE TIDAL RANGE'
+TYPE = REEL
+INDEX = 64
+MNEMO = 'CTIDE'
+TAILLE = 0
+DEFAUT = 1. 
+DEFAUT1 = 1. 
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Coefficient pour ajuster le marnage de l''onde de maree 
+aux frontieres maritimes'
+AIDE1 = 'Coefficient to calibrate the tidal range of tidal wave 
+at tidal open boundary conditions'
+
+NOM = 'COEFFICIENT DE CALAGE DES VITESSES DE COURANT'
+NOM1 = 'COEFFICIENT TO CALIBRATE TIDAL VELOCITIES'
+TYPE = REEL
+INDEX = 65
+MNEMO = 'CTIDEV'
+TAILLE = 0
+DEFAUT = -999. 
+DEFAUT1 = -999. 
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Coefficient pour ajuster les composantes de vitesse 
+de l''onde de maree aux frontieres maritimes.
+La valeur par defaut -999. signifie que c''est la racine carree 
+du COEFFICIENT DE CALAGE DU MARNAGE qui est prise'
+AIDE1 = 'Coefficient to calibrate the tidal velocities of tidal wave 
+at tidal open boundary conditions.
+Default value -999. means that the square root of 
+COEFFICIENT TO CALIBRATE TIDAL RANGE is taken'
+
+NOM = 'COEFFICIENT DE CALAGE DU NIVEAU DE MER'
+NOM1 = 'COEFFICIENT TO CALIBRATE SEA LEVEL'
+TYPE = REEL
+INDEX = 66
+MNEMO = 'MSL'
+TAILLE = 0
+DEFAUT = 0. 
+DEFAUT1 = 0. 
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Coefficient pour ajuster le niveau de mer'
+AIDE1 = 'Coefficient to calibrate the sea level'
+
+NOM = 'BASE DE DONNEES DE MAREE'
+NOM1 = 'TIDAL DATA BASE'
+TYPE = ENTIER
+INDEX = 77
+MNEMO = 'TIDALDB'
+TAILLE = 0
+DEFAUT = 1 
+DEFAUT1 = 1 
+CHOIX=
+'1="JMJ"';
+'2="TPXO"';
+'3="LEGOS-NEA"';
+'4="FES2004"'
+CHOIX1=
+'1="JMJ"';
+'2="TPXO"';
+'3="LEGOS-NEA"';
+'4="FES2004"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Pour JMJ, renseigner la localisation du fichier bdd_jmj et geofin
+dans les mots-cles BASE DE DONNEES DE MAREE et FICHIER DU MODELE DE MAREE.
+Pour TPXO, l''utilisateur doit telecharger les fichiers de constantes harmoniques 
+sur internet
+Pour LEGOS-NEA et FES2004 : pas encore disponible'
+AIDE1 = 'For JMJ, indicate the location of the files bdd_jmj and geofin with keywords 
+TIDE DATA BASE and TIDAL MODEL FILE.
+For TPXO, the user have to download files of harmonic constituents on the internet
+For LEGOS-NEA and FES2004: not available yet'
+
+NOM = 'SYSTEME GEOGRAPHIQUE'
+NOM1 = 'GEOGRAPHIC SYSTEM'
+TYPE = ENTIER
+INDEX = 78
+MNEMO = 'GEOSYST'
+TAILLE = 0
+DEFAUT = 5 
+DEFAUT1 = 5 
+CHOIX=
+'0="DEFINI PAR L''UTILISATEUR"';
+'1="WGS84 LONGITUDE/LATITUDE EN DEGRES REELS"';
+'2="WGS84 NORD UTM"';
+'3="WGS84 SUD UTM"';
+'4="LAMBERT"';
+'5="MERCATOR POUR TELEMAC"'
+CHOIX1=
+'0="DEFINED BY USER"';
+'1="WGS84 LONGITUDE/LATITUDE IN REAL DEGREES"';
+'2="WGS84 NORTHERN UTM"';
+'3="WGS84 SOUTHERN UTM"';
+'4="LAMBERT"';
+'5="MERCATOR FOR TELEMAC"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Systeme de coordonnees geographiques dans lequel est construit 
+le modele numerique. 
+Indiquer la zone correspondante avec le mot-cle '
+AIDE1 = 'Geographic coordinates system in which the numerical model is built.
+Indicate the corresponding zone with the keyword '
+
+NOM = 'NUMERO DE FUSEAU OU PROJECTION DANS LE SYSTEME GEOGRAPHIQUE'
+NOM1 = 'ZONE NUMBER IN GEOGRAPHIC SYSTEM'
+TYPE = ENTIER
+INDEX = 79
+MNEMO = 'NUMZONE'
+TAILLE = 0
+DEFAUT = 1 
+DEFAUT1 = 1 
+CHOIX=
+'1="LAMBERT 1 NORD"';
+'2="LAMBERT 2 CENTRE"';
+'3="LAMBERT 3 SUD"';
+'4="LAMBERT 4 CORSE"';
+'22="LAMBERT 2 ETENDU"';
+'30="ZONE UTM, PAR EXEMPLE"'
+CHOIX1=
+'1="LAMBERT 1 NORTH"';
+'2="LAMBERT 2 CENTER"';
+'3="LAMBERT 3 SOUTH"';
+'4="LAMBERT 4 CORSICA"';
+'22="LAMBERT 2 EXTENDED"';
+'30="UTM ZONE, E.G."'
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE = 'Numero de zone (fuseau ou type de projection) 
+lors de l''utilisation d''une projection plane. 
+Indiquer le systeme geographique dans lequel est construit le modele numerique 
+avec le mot-cle SYSTEME GEOGRAPHIQUE'
+AIDE1 = 'Number of zone when using a plane projection. 
+Indicate the geographic system in which the numerical model is built 
+with the keyword GEOGRAPHIC SYSTEM'
+
+NOM = 'INTERPOLATION DE COMPOSANTES MINEURES'
+NOM1 = 'MINOR CONSTITUENTS INFERENCE'
+TYPE = LOGIQUE
+INDEX = 46
+MNEMO = 'INTMICON'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 1
+AIDE  = 'Pour la base de donnees TPXO uniquement. 
+Interpolation de composantes harmoniques mineures 
+a partir de celles lues dans les fichiers d''entree 
+lies aux mots-cles BASE BINAIRE 1 DE DONNEES DE MAREE
+et BASE BINAIRE 2 DE DONNEES DE MAREE'
+AIDE1 = 'For TPXO tidal data base only. 
+Inference of minor constituents from the one read in input files 
+linked to keywords BINARY DATABASE 1 FOR TIDE 
+and BINARY DATABASE 2 FOR TIDE'
 
 / 
 / POUR LES LANCEURS PERL : 
@@ -5074,7 +5255,7 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE COMMANDES MIGRHYCAR';
          'FICHIER DES CONSTANTES HARMONIQUES';
          'FICHIER DU MODELE DE MAREE';
-         'BASE DE DONNEES DE MAREE';
+         'BASE ASCII DE DONNEES DE MAREE';
          'BASE BINAIRE 1 DE DONNEES DE MAREE';
          'BASE BINAIRE 2 DE DONNEES DE MAREE';
          'FICHIER DE DONNEES DES SEUILS';
@@ -5115,7 +5296,7 @@ DEFAUT1 ='STEERING FILE';
          'MIGRHYCAR STEERING FILE';
          'HARMONIC CONSTANTS FILE';
          'TIDAL MODEL FILE';
-         'TIDE DATA BASE';
+         'ASCII DATABASE FOR TIDE';
          'BINARY DATABASE 1 FOR TIDE';
          'BINARY DATABASE 2 FOR TIDE'; 
          'WEIRS DATA FILE';

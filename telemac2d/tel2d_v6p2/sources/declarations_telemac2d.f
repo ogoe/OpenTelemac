@@ -669,7 +669,7 @@
 ! 
       INTEGER T2DTID
 !
-!     TIDAL MODEL DATA BASE FILE NUMBER
+!     ASCII TIDAL MODEL DATABASE FILE NUMBER
 ! 
       INTEGER T2DBDD
 !
@@ -979,6 +979,18 @@
 !
       INTEGER OPTTSUNAMI
 !
+!     TIDAL DATA BASE
+!
+      INTEGER TIDALDB
+!
+!     GEOGRAPHIC SYSTEM
+!
+      INTEGER GEOSYST
+!
+!     ZONE NUMBER IN GEOGRAPHIC SYSTEM
+!
+      INTEGER NUMZONE
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -1154,6 +1166,10 @@
 !     IF YES, RAIN OR EVAPORATION TAKEN INTO ACCOUNT
 !  
       LOGICAL RAIN
+!
+!     IF YES, INFERENCE OF MINOR CONSTITUENTS
+!  
+      LOGICAL INTMICON
 !
 !-----------------------------------------------------------------------
 !
@@ -1371,6 +1387,18 @@
 !     VALUES OF TRACERS IN THE RAIN'
 !
       DOUBLE PRECISION TRAIN(MAXTRA)
+!
+!     COEFFICIENT TO CALIBRATE TIDAL RANGE
+!
+      DOUBLE PRECISION CTIDE
+!
+!     COEFFICIENT TO CALIBRATE TIDAL VELOCITIES
+!
+      DOUBLE PRECISION CTIDEV
+!
+!     COEFFICIENT TO CALIBRATE SEA LEVEL
+!
+      DOUBLE PRECISION MSL
 !
 !-----------------------------------------------------------------------
 !
