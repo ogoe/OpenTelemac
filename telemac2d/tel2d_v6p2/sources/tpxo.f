@@ -53,8 +53,7 @@
       IMPLICIT NONE
 !
       PRIVATE
-      PUBLIC :: ALLBORD_TPXO,CONDI_TPXO,STIME_MJD,DATE_MJD,VITU_TPXO,
-     &          VITV_TPXO,SL_TPXO
+      PUBLIC :: CONDI_TPXO,DATE_MJD,TPXO_NCMX,INTERPT,TPXO_PTIDE,DEF_CID
 !
 !-----------------------------------------------------------------------
 !
@@ -115,29 +114,75 @@
 !    &    0.,          0.,          0.,          0.,
 !    &    0./
 !
+!     ORIGINAL VALUES WITH 7 DIGITS. ACCURACY HAS BEEN INCREASED AFTER
+!
+c$$$      DATA TPXO_OMEGA_D/
+c$$$     &    1.405189D-04,1.454441D-04,7.292117D-05,6.759774D-05,
+c$$$     &    1.378797D-04,7.252295D-05,1.458423D-04,6.495854D-05,
+c$$$     &    1.352405D-04,1.355937D-04,1.382329D-04,1.431581D-04,
+c$$$     &    1.452450D-04,7.556036D-05,7.028195D-05,7.824458D-05,
+c$$$     &    6.531174D-05,0.053234D-04,0.026392D-04,0.003982D-04,
+c$$$     &    2.810377D-04,2.859630D-04,2.783984D-04,4.215566D-04,
+c$$$     &    5.620755D-04,2.134402D-04,4.363323D-04,1.503693D-04,
+c$$$     &    2.081166D-04/
+!
+!     MORE ACCURATE VALUES
+!
       DATA TPXO_OMEGA_D/
-     &    1.405189D-04,1.454441D-04,7.292117D-05,6.759774D-05,
-     &    1.378797D-04,7.252295D-05,1.458423D-04,6.495854D-05,
-     &    1.352405D-04,1.355937D-04,1.382329D-04,1.431581D-04,
-     &    1.452450D-04,7.556036D-05,7.028195D-05,7.824458D-05,
-     &    6.531174D-05,0.053234D-04,0.026392D-04,0.003982D-04,
-     &    2.810377D-04,2.859630D-04,2.783984D-04,4.215566D-04,
-     &    5.620755D-04,2.134402D-04,4.363323D-04,1.503693D-04,
-     &    2.081166D-04/
+     &    1.405189025757300D-4,1.454441043328608D-4,
+     &    7.292115854682399D-5,6.759774402890599D-5,
+     &    1.378796995659399D-4,7.252294578603680D-5,
+     &    1.458423170936480D-4,6.495854101911592D-5,
+     &    1.352404965561499D-4,1.355937008185992D-4,
+     &    1.382329038283892D-4,1.431581055855200D-4,
+     &    1.452450074605617D-4,7.556036155661405D-5,
+     &    7.028195553703394D-5,7.824457306474201D-5,
+     &    6.531174528156522D-5,5.323414517918014D-6,
+     &    2.639203009790057D-6,3.982127607872015D-7,
+     &    2.810378051514600D-4,2.859630069085908D-4,
+     &    2.783986021416699D-4,4.215567077271900D-4,
+     &    5.620756103029200D-4,2.134400611225540D-4,
+     &    4.363323129985823D-4,1.503693060899916D-4,
+     &    2.081166466046360D-4/
 !
 !brief   ASTRONOMICAL ARGUMENTS, OBTAINED WITH RICHARD RAY'S
 !+  "ARGUMENTS" AND "ASTROL", FOR JAN 1, 1992, 00:00 GREENWICH TIME
 !+  CORRECTED JULY 12, 2000
 !
+!
+!     ORIGINAL VALUES WITH 7 DIGITS. ACCURACY HAS BEEN INCREASED AFTER
+!
+c$$$      DATA TPXO_PHASE_MKB/
+c$$$     &    1.731557546D0, 0.000000000D0, 0.173003674D0, 1.558553872D0,
+c$$$     &    6.050721243D0, 6.110181633D0, 3.487600001D0, 5.877717569D0,
+c$$$     &    4.086699633D0, 3.463115091D0, 5.427136701D0, 0.553986502D0,
+c$$$     &    0.052841931D0, 2.137025284D0, 2.436575100D0, 1.929046130D0,
+c$$$     &    5.254133027D0, 1.756042456D0, 1.964021610D0, 3.487600001D0,
+c$$$     &    3.463115091D0, 1.731557546D0, 1.499093481D0, 5.194672637D0,
+c$$$     &    6.926230184D0, 1.904561220D0, 0.000000000D0, 4.551627762D0,
+c$$$     &    3.809122439D0/
+!
+!     MORE ACCURATE VALUES
+!
+!     2MK3 MAY BE WRONG, IT IS DIFFERENT FROM THE ORIGINAL VALUE
+!     M8 ARE THE SAME, MODULO TWO*PI
+!
       DATA TPXO_PHASE_MKB/
-     &    1.731557546D0, 0.000000000D0, 0.173003674D0, 1.558553872D0,
-     &    6.050721243D0, 6.110181633D0, 3.487600001D0, 5.877717569D0,
-     &    4.086699633D0, 3.463115091D0, 5.427136701D0, 0.553986502D0,
-     &    0.052841931D0, 2.137025284D0, 2.436575100D0, 1.929046130D0,
-     &    5.254133027D0, 1.756042456D0, 1.964021610D0, 3.487600001D0,
-     &    3.463115091D0, 1.731557546D0, 1.499093481D0, 5.194672637D0,
-     &    6.926230184D0, 1.904561220D0, 0.000000000D0, 4.551627762D0,
-     &    3.809122439D0/
+     &    1.73155754567656D0,  0.00000000000000D0,
+     &    0.173003673872453D0, 1.55855387180411D0,
+     &    6.05072124295143D0,  6.11018163330713D0,
+     &    3.48760000133470D0,  5.87771756907898D0,
+     &    4.08669963304672D0,  3.46311509135312D0,
+     &    5.42713670125784D0,  0.553986501991483D0,
+     &    5.284193133561309D-2,2.13702528377717D0,
+     &    2.43657509963318D0,  1.92904612953059D0,
+     &    5.25413302738539D0,  1.75604245565814D0,
+     &    1.96402160990471D0,  3.48760000133470D0,
+     &    3.46311509135312D0,  1.73155754567656D0,
+     &    1.49909348144841D0,  5.19467263702969D0,
+     &    0.643044875526663D0, 1.90456121954902D0,
+     &    0.00000000000000D0,  4.55162776150302D0,
+     &    3.29011141748067D0/
 !
 !note I AM PUTTING 0 FOR MS2, MN4 ETC. FOR NOW: CORRECT LATER
 !+ NOW THIS CORRECTION IS DONE USING THE SAL FILE (H_TPXO3_90-90.LOAD)
@@ -219,36 +264,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!       1c) TPXO -- VARIABLES USED IN CONDIN/CONDIM
-!
-!-----------------------------------------------------------------------
-!
-!     DAYS IN MODIFIED JULIAN DAYS
-!
-      DOUBLE PRECISION STIME_MJD
-!
-!     NUMBER OF CONSTITUENTS TURNED ON
-!
-      INTEGER NCON
-!
-!     WHETHER TO INTERPOLATE FOR MINOR CONSTITUENTS
-!
-      LOGICAL I_MICON
-!
-!     INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
-!
-      CHARACTER(LEN=4) C_ID(TPXO_NCMX)
-      INTEGER, ALLOCATABLE :: CCIND(:)
-!
-!     INTERPOLATED CONSTITUENTS FOR LIQUID BOUNDARY NODES
-!
-      INTEGER NPTNFR
-      INTEGER, ALLOCATABLE :: TPXO_NFR(:)
-      DOUBLE PRECISION TPXO_LAT_DUMMY
-      COMPLEX, ALLOCATABLE :: TPXO_BOR(:,:,:)
-!
-!-----------------------------------------------------------------------
-!
       SAVE
 !
 !-----------------------------------------------------------------------
@@ -256,54 +271,53 @@
       CONTAINS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!                    **********************
-                     SUBROUTINE DEF_CON_IND
-!                    **********************
-!
-     &( C_ID, NCON, C_ID_MOD, NC, CIND )
-!
-!***********************************************************************
-! TELEMAC2D   V6P2                                   16/01/2012
-!***********************************************************************
-!
-!brief    DEFINES CONSTITUENT INDICES IN A MODEL FOR GIVEN SET OF CONSTITUENTS
-!
-!warning  CONSTITUENT NAMES ARE ASSUMED TO BE ALL IN LOWER CASE
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  C_ID          |-->| NAME OF CONTITUENTS
-!|  C_ID_MOD      |-->| NAME OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
-!|  CIND          |<--| INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
-!|  NC            |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
-!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER, INTENT(IN)          :: NC,NCON
-      INTEGER, INTENT(OUT)         :: CIND(NCON)
-      CHARACTER(LEN=4), INTENT(IN) :: C_ID(*),C_ID_MOD(*)
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER IC1,IC2
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      DO IC1 = 1,NCON
-         CIND(IC1) = 0
-         DO IC2 = 1,NC
-            IF( C_ID(IC1).EQ.C_ID_MOD(IC2) ) CIND(IC1) = IC2
-         ENDDO
-      ENDDO
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      RETURN
-      END SUBROUTINE DEF_CON_IND
-
+c$$$!                    **********************
+c$$$                     SUBROUTINE DEF_CON_IND
+c$$$!                    **********************
+c$$$!
+c$$$     &( C_ID, NCON, C_ID_MOD, NC, CIND )
+c$$$!
+c$$$!***********************************************************************
+c$$$! TELEMAC2D   V6P2                                   16/01/2012
+c$$$!***********************************************************************
+c$$$!
+c$$$!brief    DEFINES CONSTITUENT INDICES IN A MODEL FOR GIVEN SET OF CONSTITUENTS
+c$$$!
+c$$$!warning  CONSTITUENT NAMES ARE ASSUMED TO BE ALL IN LOWER CASE
+c$$$!
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!|  C_ID          |-->| NAME OF CONTITUENTS
+c$$$!|  C_ID_MOD      |-->| NAME OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+c$$$!|  CIND          |<--| INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+c$$$!|  NC            |-->| NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
+c$$$!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!
+c$$$      IMPLICIT NONE
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      INTEGER, INTENT(IN)          :: NC,NCON
+c$$$      INTEGER, INTENT(OUT)         :: CIND(NCON)
+c$$$      CHARACTER(LEN=4), INTENT(IN) :: C_ID(*),C_ID_MOD(*)
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      INTEGER IC1,IC2
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      DO IC1 = 1,NCON
+c$$$         CIND(IC1) = 0
+c$$$         DO IC2 = 1,NC
+c$$$            IF( C_ID(IC1).EQ.C_ID_MOD(IC2) ) CIND(IC1) = IC2
+c$$$         ENDDO
+c$$$      ENDDO
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      RETURN
+c$$$      END SUBROUTINE DEF_CON_IND
 !                    ******************
                      SUBROUTINE DEF_CID
 !                    ******************
@@ -419,7 +433,7 @@
 !-----------------------------------------------------------------------
 !
       INTEGER, INTENT(IN) :: NC
-      COMPLEX, INTENT(IN) :: A(NC),P(NC)
+      COMPLEX(KIND(1.D0)), INTENT(IN) :: A(NC),P(NC)
 !
 !-----------------------------------------------------------------------
 !
@@ -478,10 +492,10 @@
       INTEGER, INTENT(OUT) :: IERR
       INTEGER, INTENT(IN)  :: MZ(N,M),NT
       CHARACTER(LEN=1), INTENT(IN) :: ZUV
-      REAL, INTENT(IN)     :: TH_LIM(2),PH_LIM(2)
+      DOUBLE PRECISION, INTENT(IN) :: TH_LIM(2),PH_LIM(2)
       DOUBLE PRECISION, INTENT(IN) :: XLON,XLAT
       COMPLEX, INTENT(IN)  :: UV(NT,N,M)
-      COMPLEX, INTENT(OUT) :: UV1(NT)
+      COMPLEX(KIND(1.D0)), INTENT(OUT) :: UV1(NT)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -519,7 +533,7 @@
       IF( (WW(0,0)+WW(1,0)+WW(0,1)+WW(1,1)).LT.0.01D0 ) THEN
          IERR = -2
          DO K = 1,NT
-            UV1(K) = CMPLX(0.D0,0.D0)
+            UV1(K) = CMPLX(0.D0,0.D0,KIND(1.D0))
          ENDDO
       ELSE
          IERR = 0
@@ -575,7 +589,7 @@
       INTEGER, INTENT(OUT) :: IW(0:1),JW(0:1)
       CHARACTER(LEN=1), INTENT(IN) :: ZUVM
       DOUBLE PRECISION, INTENT(IN)  :: THETA,PHI
-      REAL, INTENT(IN)     :: THETA_LIM(2),PHI_LIM(2)
+      DOUBLE PRECISION, INTENT(IN)  :: THETA_LIM(2),PHI_LIM(2)
       DOUBLE PRECISION, INTENT(IN)  :: DX,DY
       DOUBLE PRECISION, INTENT(OUT) :: WW(0:1,0:1)
 !
@@ -588,6 +602,8 @@
       DOUBLE PRECISION W00,W01,W10,W11,WTOT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!     COPY OF ZUVM (SMALL OR CAPITAL), BECAUSE ZUVM MAY NOT BE CHANGED
 !
       ZUV = ZUVM
 !
@@ -731,7 +747,7 @@
       CHARACTER(LEN=4), INTENT(IN) :: CID(NCON)
       DOUBLE PRECISION, INTENT(IN) :: LAT !,ZPRED(NTIME)
       DOUBLE PRECISION, INTENT(IN) :: TIME_MJD !(NTIME)
-      COMPLEX, INTENT(IN) :: Z1(NCON)
+      COMPLEX(KIND(1.D0)), INTENT(IN) :: Z1(NCON)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -742,7 +758,7 @@
       DOUBLE PRECISION PU(TPXO_NCMX),PF(TPXO_NCMX),DLAT
 ! NODAL ARGUMENTS SHOUD BE REAL*8
 !
-      COMPLEX, ALLOCATABLE:: A(:)
+      COMPLEX(KIND(1.D0)), ALLOCATABLE:: A(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -783,40 +799,57 @@
       RETURN
       END FUNCTION PTIDE
 
-c$$$!              ************************************
-c$$$               DOUBLE PRECISION FUNCTION TPXO_PTIDE
-c$$$!              ************************************
-c$$$!
-c$$$     &( IV,ITFR,LAT,TIME_MJD,INTERP )
-c$$$!
-c$$$!***********************************************************************
-c$$$! TELEMAC2D   V6P2                                   16/01/2012
-c$$$!***********************************************************************
-c$$$!
-c$$$!brief
-c$$$!
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!|                |-->|
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!
-c$$$      IMPLICIT NONE
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$      INTEGER IV,ITFR
-c$$$      LOGICAL INTERP
-c$$$      DOUBLE PRECISION LAT, TIME_MJD
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      TPXO_PTIDE = PTIDE( TPXO_BOR(IV,ITFR,:),
-c$$$     &                    C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      RETURN
-c$$$      END FUNCTION TPXO_PTIDE
-c$$$
+!              ************************************
+               DOUBLE PRECISION FUNCTION TPXO_PTIDE
+!              ************************************
+!
+     &( IV,KFR,TPXO_NFR,TPXO_BOR,C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
+!
+!***********************************************************************
+! TELEMAC2D   V6P2                                   16/01/2012
+!***********************************************************************
+!
+!brief
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  C_ID          |-->| NAME OF GIVEN CONSTITUENTS
+!|  CCIND         |-->| INDICES OF GIVEN CONTITUENTS
+!|  INTERP        |<->| LOGICAL (INFERENCE OF MINOR CONSTITUENT OR NOT)
+!|  IV            |-->| INDEX OF COMPONENT. 1: WATER LEVEL,
+!|                |   | 2: U-VELOCITY COMPONENT, 3: V-VELOCITY COMPONENT
+!|  KFR           |-->| BOUNDARY GLOBAL NODE NUMBER
+!|  LAT           |-->| LATITUDE (DUMMY ARGUMENT)
+!|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
+!|  TIME_MJD      |-->| MODIFIED JULIAN DAY
+!|  TPXO_BOR      |-->| ARRAY OF HARMONIC CONSTITUENTS
+!|  TPXO_NFR      |-->| ARRAY OF MARITIME BOUNDARY NODES
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      IMPLICIT NONE
+!
+!-----------------------------------------------------------------------
+!
+      INTEGER, INTENT(IN) :: IV,KFR,NCON
+      INTEGER, INTENT(IN) :: CCIND(NCON)
+      INTEGER, INTENT(IN) :: TPXO_NFR(:)
+      LOGICAL, INTENT(INOUT) :: INTERP
+      CHARACTER(LEN=4), INTENT(IN) :: C_ID(NCON)
+      DOUBLE PRECISION, INTENT(IN) :: LAT,TIME_MJD
+      COMPLEX(KIND(1.D0)), INTENT(IN) :: TPXO_BOR(:,:,:)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      TPXO_PTIDE = 0.D0
+      IF( TPXO_NFR(KFR).NE.0 ) THEN
+        TPXO_PTIDE = PTIDE( TPXO_BOR(IV,TPXO_NFR(KFR),:),
+     &                      C_ID,NCON,CCIND,LAT,TIME_MJD,INTERP )
+      ENDIF
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      RETURN
+      END FUNCTION TPXO_PTIDE
+
 !                    **************
                      SUBROUTINE MKW
 !                    **************
@@ -902,15 +935,18 @@ c$$$
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER INDEX(TPXO_NCMX),I
-      DOUBLE PRECISION ARG(53),F(53),U(53)
-      DOUBLE PRECISION :: DTR 
+!     53 CHANGED INTO 55 TO ADD M8 AND 2MK3
+      DOUBLE PRECISION ARG(55),F(55),U(55)
+      DOUBLE PRECISION DTR 
 !
 !     INDEX GIVES CORRESPONDENCE BETWEEN CONSTIT AND RICHARD'S SUBROUTINES
 !     IN CONSTIT   M2,S2,K1,O1,N2,P1,K2,q1,2N2,mu2,nu2,L2,t2,
 !                  J1,M1(no1),OO1,rho1,Mf,Mm,SSA,M4,
 !                  MS4,MN4,M6,M8,MK3,S6,2SM2,2MK3
+c$$$      DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
+c$$$     &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
       DATA INDEX/30,35,19,12,27,17,37,10,25,26,28,33,34,
-     &           23,14,24,11,5,3,2,45,46,44,50,0,42,51,40,0/
+     &           23,14,24,11,5,3,2,45,46,44,50,54,42,51,40,55/
 !
       INTRINSIC ATAN
 !
@@ -983,6 +1019,7 @@ c$$$
       PARAMETER   (ZERO=0.D0, ONE=1.D0)
       PARAMETER   (TWO=2.D0, THREE=3.D0, FOUR=4.D0, FIVE=5.D0)
       PARAMETER   (NINETY=90.D0)
+!     PP VALUE SLIGHTLY DIFFERENT FROM IN INFER_MINOR (=282.8.D0)
       PARAMETER   (PP=282.94D0)        ! SOLAR PERIGEE AT EPOCH 2000.
 !
       EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
@@ -1055,6 +1092,8 @@ c$$$
       ARG(51) = THREE*T2                                ! S6
       ARG(52) = 7.D0*T1                                 ! S7
       ARG(53) = FOUR*T2                                 ! S8
+      ARG(54) = FOUR*ARG(30)                            ! M8
+      ARG(55) = THREE*T1-FOUR*S+THREE*H-NINETY          ! 2MK3
 !
 !-----------------------------------------------------------------------
 !
@@ -1094,7 +1133,14 @@ c$$$
      &             (.1554D0*SINN-.0029D0*SIN2N)**2)       ! K1
       F(20) = ONE                                         ! psi1
       F(21) = ONE                                         ! phi1
-      F(22) = ONE                                         ! theta1
+!     BUG IN TPXO F(23) SHOULD BE EQUAL TO F(23) OR F(15) RATHER THAN ONE
+!     THETA1 IS NOT A SOLAR COMPONENT
+!     IN SCHUREMAN, THETA1 HAS THE SAME NODAL FACTORS AS
+!     CHI1 AND J1
+!     HERE, GEOMETRIC AVERAGE OF CHI1 AND J1
+c$$$      F(22) = ONE                                         ! theta1
+      F(22) = SQRT( SQRT((ONE+.221D0*COSN)**2+(.221D0*SINN)**2)
+     &             *SQRT((ONE+.169D0*COSN)**2+(.227D0*SINN)**2)) ! theta1
       F(23) = SQRT((ONE+.169D0*COSN)**2+(.227D0*SINN)**2) ! J1
       F(24) = SQRT((ONE+0.640D0*COSN+0.134D0*COS2N)**2 +
      &             (0.640D0*SINN+0.134D0*SIN2N)**2 )      ! OO1
@@ -1106,7 +1152,10 @@ c$$$
       F(29) = ONE                                         ! M2a
       F(30) = F(25)                                       ! M2
       F(31) = ONE                                         ! M2b
-      F(32) = ONE                                         ! lambda2
+!     BUG IN TPXO F(32) SHOULD BE EQUAL TO F(25) RATHER THAN ONE
+!     LIKE M2,N2,2N2,MU2,NU2
+!     LAMBDA2 IS NOT A SOLAR COMPONENT
+      F(32) = F(25)                                       ! lambda2
       TEMP1 = ONE-0.25D0*COS(TWO*P*DTR)
      &        -0.11D0*COS((TWO*P-OMEGA)*DTR)-0.04D0*COSN
       TEMP2 = 0.25D0*SIN(TWO*P)+0.11D0*SIN((TWO*P-OMEGA)*DTR)
@@ -1120,7 +1169,9 @@ c$$$
       F(38) = SQRT((ONE+.436D0*COSN)**2+(.436D0*SINN)**2) ! eta2
       F(39) = F(30)**2                                    ! MNS2
       F(40) = F(30)                                       ! 2SM2
-      F(41) = ONE   ! WRONG                               ! M3
+!     BUG IN TPXO F(41) SHOULD BE EQUAL TO F(25)**1.5D0 RATHER THAN ONE
+!     M3 IS NOT A SOLAR COMPONENT
+      F(41) = SQRT(F(30)**3)                              ! M3
       F(42) = F(19)*F(30)                                 ! MK3
       F(43) = ONE                                         ! S3
       F(44) = F(30)**2                                    ! MN4
@@ -1134,6 +1185,8 @@ c$$$
       F(51) = ONE                                         ! S6
       F(52) = ONE                                         ! S7
       F(53) = ONE                                         ! S8
+      F(54) = F(30)**4                                    ! M8
+      F(55) = F(30)**2*F(19)                              ! 2MK3
 !
 !-----------------------------------------------------------------------
 !
@@ -1160,7 +1213,15 @@ c$$$
      &             (ONE+.1158D0*COSN-.0029D0*COS2N))*RTD   ! K1
       U(20) = ZERO                                         ! psi1
       U(21) = ZERO                                         ! phi1
-      U(22) = ZERO                                         ! theta1
+!     BUG IN TPXO U(23) SHOULD BE EQUAL TO U(23) OR U(15) RATHER THAN ZERO
+!     THETA1 IS NOT A SOLAR COMPONENT
+!     IN SCHUREMAN, THETA1 HAS THE SAME NODAL FACTORS AS
+!     CHI1 AND J1
+!     HERE, ARITHMETIC AVERAGE OF CHI1 AND J1
+c$$$      U(22) = ZERO                                         ! theta1
+      U(22) = (  ATAN(-.221D0*SINN/(ONE+.221D0*COSN))
+     &         + ATAN(-.227D0*SINN/(ONE+.169D0*COSN)))     ! theta1
+     &        *RTD*0.5D0
       U(23) = ATAN(-.227D0*SINN/(ONE+.169D0*COSN))*RTD     ! J1
       U(24) = ATAN(-(.640D0*SINN+.134D0*SIN2N)/
      &             (ONE+.640D0*COSN+.134D0*COS2N))*RTD     ! OO1
@@ -1172,7 +1233,10 @@ c$$$
       U(29) = ZERO                                         ! M2a
       U(30) = U(25)                                        ! M2
       U(31) = ZERO                                         ! M2b
-      U(32) = ZERO                                         ! lambda2
+!     BUG IN TPXO U(32) SHOULD BE EQUAL TO U(25) RATHER THAN ZERO
+!     LIKE M2,N2,2N2,MU2,NU2
+!     LAMBDA2 IS NOT A SOLAR COMPONENT
+      U(32) = U(25)                                        ! lambda2
       U(33) = ATAN(-TEMP2/TEMP1)*RTD                       ! L2
       U(34) = ZERO                                         ! t2
       U(35) = ZERO                                         ! S2
@@ -1181,7 +1245,9 @@ c$$$
      &             (ONE+.2852D0*COSN+.0324D0*COS2N))*RTD   ! K2
       U(38) = ATAN(-.436D0*SINN/(ONE+.436D0*COSN))*RTD     ! eta2
       U(39) = U(30)*TWO                                    ! MNS2
-      U(40) = U(30)                                        ! 2SM2
+!     BUG IN TPXO U(40) SHOULD BE EQUAL TO -U(30) RATHER THAN U(30)
+!     2SM2 = 2S2-M2
+      U(40) = -U(30)                                       ! 2SM2
       U(41) = 1.5D0*U(30)                                  ! M3
       U(42) = U(30) + U(19)                                ! MK3
       U(43) = ZERO                                         ! S3
@@ -1195,6 +1261,8 @@ c$$$
       U(51) = ZERO                                         ! S6
       U(52) = ZERO                                         ! S7
       U(53) = ZERO                                         ! S8
+      U(54) = U(30)*FOUR                                   ! M8
+      U(55) = U(30)*TWO-U(19)                              ! 2MK3
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1236,13 +1304,13 @@ c$$$
       DOUBLE PRECISION, INTENT(IN) :: W(TPXO_NCON,8)
       DOUBLE PRECISION, INTENT(IN) :: PU(*),PF(*)
       DOUBLE PRECISION, INTENT(IN) :: TIME
-      COMPLEX, INTENT(OUT) :: A(NC)
+      COMPLEX(KIND(1.D0)), INTENT(OUT) :: A(NC)
 !
 !-----------------------------------------------------------------------
 !
       INTEGER I,J
       DOUBLE PRECISION OMEGA(TPXO_NCMX),PHASE(TPXO_NCMX)
-      COMPLEX C(TPXO_NCMX)
+      COMPLEX(KIND(1.D0)) C(TPXO_NCMX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1259,13 +1327,14 @@ c$$$
            I = IND(J)
            IF( I.NE.0 ) THEN
               C(J) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &                      PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)))
+     &                      PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                      KIND(1.D0))
             ENDIF
          ENDDO
 !        REMOVE SOLID EARTH TIDE
          IF( .NOT.L_SAL ) THEN
             DO J = 1,NC
-              A(J) = CMPLX(0.D0,0.D0)
+              A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
               IF( IND(J).NE.0 ) A(J) = C(J)*TPXO_BETA_SE(IND(J))
             ENDDO
          ELSE
@@ -1284,11 +1353,12 @@ c$$$
 !
          DO I=1,TPXO_NCON
             C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &	                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)))
+     &	                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                    KIND(1.D0))
          ENDDO
 !
          DO J = 1,NC
-            A(J) = CMPLX(0.D0,0.D0)
+            A(J) = CMPLX(0.D0,0.D0,KIND(1.D0))
          ENDDO
 !
 !        IND(J)=0 MEANS THE CONSTITUENT IS EXCLUDED
@@ -1322,7 +1392,7 @@ c$$$
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  CID           |-->| GIVEN CONSTITUENTS
-!|  DH            |<--| CORRECTION AT GIVEN TIME FOR 16 MINOR CONSTITUENTS
+!|  DH            |<->| CORRECTION AT GIVEN TIME FOR 16 MINOR CONSTITUENTS
 !|  IERR          |<--| =-1 IF NOT ENOUGH CONSTITUENTS FOR INFERENCE
 !|  NCON          |-->| NUMBER OF CONSTITUENTS TURNED ON
 !|  TIME          |-->| TIME, MODIFIED JULIAN DAY
@@ -1337,8 +1407,8 @@ c$$$
       INTEGER, INTENT(OUT) :: IERR
       CHARACTER(LEN=4), INTENT(IN)  :: CID(NCON)
       DOUBLE PRECISION, INTENT(IN)  :: TIME
-      DOUBLE PRECISION, INTENT(OUT) :: DH
-      COMPLEX, INTENT(IN)  :: ZMAJ(NCON)
+      DOUBLE PRECISION, INTENT(INOUT) :: DH
+      COMPLEX(KIND(1.D0)), INTENT(IN)  :: ZMAJ(NCON)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -1347,9 +1417,10 @@ c$$$
       DOUBLE PRECISION SINN,COSN,SIN2N,COS2N
       DOUBLE PRECISION U(18),F(18),ARG(18)
       DOUBLE PRECISION DTR,RTD
+!     PP VALUE SLIGHTLY DIFFERENT FROM IN ARGUMENTS (=282.94.D0)
       DOUBLE PRECISION, PARAMETER:: PP=282.8D0
-      COMPLEX ZMIN(18)
-      COMPLEX Z8(8)
+      COMPLEX(KIND(1.D0)) ZMIN(18)
+      COMPLEX(KIND(1.D0)) Z8(8)
 !
       EQUIVALENCE (SHPN(1),S),(SHPN(2),H),(SHPN(3),P),(SHPN(4),OMEGA)
 !
@@ -1368,7 +1439,7 @@ c$$$
 !
 !     RE-ORDER TO CORRESPOND TO CID8
       IERR = 0
-      Z8 = CMPLX(0.D0,0.D0)
+      Z8 = CMPLX(0.D0,0.D0,KIND(1.D0))
       NI = 0
       DO I = 1,8
          DO J = 1,NCON
@@ -1434,46 +1505,64 @@ c$$$
       COS2N = COS(2.D0*OMEGA*DTR)
 !
       F(1)  = SQRT((1.D0 + 0.189D0*COSN - 0.0058D0*COS2N)**2 +
-     &             (0.189D0*SINN - 0.0058D0*SIN2N)**2)
-      F(2)  = F(1)
-      F(3)  = F(1)
-      F(4)  = SQRT((1.D0 + 0.185D0*COSN)**2 + (0.185D0*SINN)**2)
-      F(5)  = SQRT((1.D0 + 0.201D0*COSN)**2 + (0.201D0*SINN)**2)
-      F(6)  = SQRT((1.D0 + 0.221D0*COSN)**2 + (0.221D0*SINN)**2)
-      F(7)  = 1.D0
-      F(8)  = 1.D0
-      F(9)  = 1.D0
-      F(10) = SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2)
+     &             (0.189D0*SINN - 0.0058D0*SIN2N)**2)             ! 2Q1
+      F(2)  = F(1)                                                 ! sigma1
+      F(3)  = F(1)                                                 ! rho1
+      F(4)  = SQRT((1.D0 + 0.185D0*COSN)**2 + (0.185D0*SINN)**2)   ! M1
+      F(5)  = SQRT((1.D0 + 0.201D0*COSN)**2 + (0.201D0*SINN)**2)   ! M1
+      F(6)  = SQRT((1.D0 + 0.221D0*COSN)**2 + (0.221D0*SINN)**2)   ! chi1
+      F(7)  = 1.D0                                                 ! pi1
+      F(8)  = 1.D0                                                 ! phi1
+!     BUG IN TPXO F(9) SHOULD BE EQUAL TO F(10) OR F(6) RATHER THAN ONE
+!     THETA1 IS NOT A SOLAR COMPONENT
+!     IN SCHUREMAN, THETA1 HAS THE SAME NODAL FACTORS AS
+!     CHI1 AND J1
+!     HERE, GEOMETRIC AVERAGE OF CHI1 AND J1
+      F(9)  = SQRT( SQRT((1.D0 + 0.221D0*COSN)**2 + (0.221D0*SINN)**2)
+     &             *SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2)) ! theta1
+      F(10) = SQRT((1.D0 + 0.198D0*COSN)**2 + (0.198D0*SINN)**2)   ! J1
       F(11) = SQRT((1.D0 + 0.640D0*COSN + 0.134D0*COS2N)**2 +
-     &             (0.640D0*SINN + 0.134D0*SIN2N)**2 )
-      F(12) = SQRT((1.D0 - 0.0373D0*COSN)**2 + (0.0373D0*SINN)**2)
-      F(13) = F(12)
-      F(14) = F(12)
-      F(15) = 1.D0
-      F(16) = F(12)
-      F(17) = SQRT((1.D0 + 0.441D0*COSN)**2 + (0.441D0*SINN)**2)
-      F(18) = 1.D0
+     &             (0.640D0*SINN + 0.134D0*SIN2N)**2 )             ! OO1
+      F(12) = SQRT((1.D0 - 0.0373D0*COSN)**2 + (0.0373D0*SINN)**2) ! 2N2
+      F(13) = F(12)                                                ! mu2
+      F(14) = F(12)                                                ! nu2
+!     BUG IN TPXO F(15) SHOULD BE EQUAL TO F(12) RATHER THAN ONE
+!     LIKE M2,N2,2N2,MU2,NU2
+!     LAMBDA2 IS NOT A SOLAR COMPONENT
+      F(15) = F(12)                                                ! lambda2
+      F(16) = F(12)                                                ! L2
+      F(17) = SQRT((1.D0 + 0.441D0*COSN)**2 + (0.441D0*SINN)**2)   ! L2
+      F(18) = 1.D0                                                 ! t2
 !
       U(1)  = ATAN2(0.189D0*SINN - 0.0058D0*SIN2N,
-     &              1.D0 + 0.189D0*COSN - 0.0058D0*SIN2N)*RTD
-      U(2)  = U(1)
-      U(3)  = U(1)
-      U(4)  = ATAN2( 0.185D0*SINN, 1.D0 + 0.185D0*COSN)*RTD
-      U(5)  = ATAN2(-0.201D0*SINN, 1.D0 + 0.201D0*COSN)*RTD
-      U(6)  = ATAN2(-0.221D0*SINN, 1.D0 + 0.221D0*COSN)*RTD
-      U(7)  = 0.D0
-      U(8)  = 0.D0
-      U(9)  = 0.D0
-      U(10) = ATAN2(-0.198D0*SINN, 1.D0 + 0.198D0*COSN)*RTD
+     &              1.D0 + 0.189D0*COSN - 0.0058D0*SIN2N)*RTD ! 2Q1
+      U(2)  = U(1)                                            ! sigma1
+      U(3)  = U(1)                                            ! rho1
+      U(4)  = ATAN2( 0.185D0*SINN, 1.D0 + 0.185D0*COSN)*RTD   ! M1
+      U(5)  = ATAN2(-0.201D0*SINN, 1.D0 + 0.201D0*COSN)*RTD   ! M1
+      U(6)  = ATAN2(-0.221D0*SINN, 1.D0 + 0.221D0*COSN)*RTD   ! chi1
+      U(7)  = 0.D0                                            ! pi1
+      U(8)  = 0.D0                                            ! phi1
+!     BUG IN TPXO U(9) SHOULD BE EQUAL TO U(10) OR U(6) RATHER THAN ZERO
+!     THETA1 IS NOT A SOLAR COMPONENT
+!     IN SCHUREMAN, THETA1 HAS THE SAME NODAL FACTORS AS
+!     CHI1 AND J1
+!     HERE, ARITHMETIC AVERAGE OF CHI1 AND J1
+      U(9)  = ( ATAN2(-0.221D0*SINN, 1.D0 + 0.221D0*COSN)
+     &        + ATAN2(-0.198D0*SINN, 1.D0 + 0.198D0*COSN))*RTD*0.5D0 ! theta1
+      U(10) = ATAN2(-0.198D0*SINN, 1.D0 + 0.198D0*COSN)*RTD   ! J1
       U(11) = ATAN2(-0.640D0*SINN - 0.134D0*SIN2N,
-     &              1.D0 + 0.640D0*COSN + 0.134D0*COS2N)*RTD
-      U(12) = ATAN2(-0.0373D0*SINN, 1.D0 - 0.0373D0*COSN)*RTD
-      U(13) = U(12)
-      U(14) = U(12)
-      U(15) = 0.D0
-      U(16) = U(12)
-      U(17) = ATAN2(-0.441D0*SINN, 1.D0 + 0.441D0*COSN)*RTD
-      U(18) = 0.D0
+     &              1.D0 + 0.640D0*COSN + 0.134D0*COS2N)*RTD  ! OO1
+      U(12) = ATAN2(-0.0373D0*SINN, 1.D0 - 0.0373D0*COSN)*RTD ! 2N2
+      U(13) = U(12)                                           ! mu2
+      U(14) = U(12)                                           ! nu2
+!     BUG IN TPXO U(15) SHOULD BE EQUAL TO U(12) RATHER THAN ZERO
+!     LIKE M2,N2,2N2,MU2,NU2
+!     LAMBDA2 IS NOT A SOLAR COMPONENT
+      U(15) = U(12)                                           ! lambda2
+      U(16) = U(12)                                           ! L2
+      U(17) = ATAN2(-0.441D0*SINN, 1.D0 + 0.441D0*COSN)*RTD   ! L2
+      U(18) = 0.D0                                            ! t2
 !
 !     SUM OVER ALL TIDES
 !     ------------------
@@ -1510,6 +1599,9 @@ c$$$
 !+
 !+        ARGUMENTS AND ASTROL SUBROUTINES SUPPLIED BY
 !+        R. RAY, MARCH 1999, ATTACHED TO OTIS
+!+
+!+        OBTAINED PRECISION IS 0.01D0 COMPARED TO SCHUREMAN FORMULAE
+!+        (SECOND OR THIRD ORDER) WHEN USED WITH DATE_MJD
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  SHPN          |<--| ARRAY OF FOUR BASIC ASTRONOMICAL MEAN LONGITUDES
@@ -1532,22 +1624,23 @@ c$$$
 !
 !     NON-VECTORIZED VERSION
 !
+!     51544.D0 CORRESPONDS TO 01/01/2000
       T = TIME - 51544.4993D0
 !
-!     MEAN LONGITUDE OF MOON
-!     ----------------------
+!     MEAN LONGITUDE OF MOON (S)
+!     --------------------------
       SHPN(1) = 218.3164D0 + 13.17639648D0 * T
 !
-!     MEAN LONGITUDE OF SUN
-!     ---------------------
+!     MEAN LONGITUDE OF SUN (H)
+!     -------------------------
       SHPN(2) = 280.4661D0 +  0.98564736D0 * T
 !
-!     MEAN LONGITUDE OF LUNAR PERIGEE
-!     -------------------------------
+!     MEAN LONGITUDE OF LUNAR PERIGEE (P)
+!     -----------------------------------
       SHPN(3) =  83.3535D0 +  0.11140353D0 * T
 !
-!     MEAN LONGITUDE OF ASCENDING LUNAR NODE
-!     --------------------------------------
+!     MEAN LONGITUDE OF ASCENDING LUNAR NODE (N)
+!     ------------------------------------------
       SHPN(4) = 125.0445D0 -  0.05295377D0 * T
 
       SHPN(1) = MOD(SHPN(1),360.D0)
@@ -1586,10 +1679,12 @@ c$$$
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER, INTENT(INOUT) :: MM,ID,IYYY
+      INTEGER, INTENT(IN) :: MM,ID,IYYY
 !
 !-----------------------------------------------------------------------
 !
@@ -1599,16 +1694,23 @@ c$$$
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DATE_MJD = 0
-!     NO EARLIER DATES
-      IF( IYYY.LT.1858 ) IYYY = 1858
-      IF( IYYY.EQ.1858.AND.MM.LT.11 ) MM = 11
-      IF( IYYY.EQ.1858.AND.MM.EQ.11.AND.ID.LT.17 ) ID = 17
+!     NO EARLIER DATES THAN NOVEMBER 17TH 1858
+      IF(     IYYY.LT.1858.OR.(IYYY.EQ.1858.AND.MM.LT.11)
+     &   .OR.(IYYY.EQ.1858.AND.MM.EQ.11.AND.ID.LT.17) ) THEN
+         IF(LNG.EQ.1) WRITE(LU,*) 'PAS DE DATES ANTERIEURES ' //
+     &                'AU 17 NOVEMBRE 1858 NE SONT PERMISES'
+         IF(LNG.EQ.2) WRITE(LU,*) 'NO EARLIER DATES ' //
+     &                'THAN NOVEMBER 17TH 1858 ARE ALLOWED'
+         CALL PLANTE(1)
+         STOP
+      ENDIF
 !
       DAYS = 0
       DO I = 1,MM-1
          DAYS = DAYS+DPM(I)
          IF( I.EQ.2.AND.INT(IYYY/4)*4.EQ.IYYY ) DAYS = DAYS+1
       ENDDO
+!     321TH DAY CORRESPONDS TO NOVEMBER 17TH FOR A NON LEAP YEAR
       DAYS = DAYS+ID-321
 
 !     LEAP DAY CORRECTION
@@ -1624,12 +1726,14 @@ c$$$
 !     EXCEPT
       DO K = 1900,IYYY-1,100
         IF( K.LT.IYYY ) NLEAP = NLEAP-1
-        IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS-1
+!     THE FOLLOWING LINE IS USELESS AS K.GE.IYYY-1
+!       IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS-1
       ENDDO
 !     BUT EACH IN THE ROW 2000:400:... IS LEAP YEAR AGAIN
       DO K = 2000,IYYY-1,400
         IF( K.LT.IYYY ) NLEAP = NLEAP+1
-        IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS+1
+!     THE FOLLOWING LINE IS USELESS AS K.GE.IYYY-1
+!       IF( K.EQ.IYYY.AND.MM.GT.2 ) DAYS = DAYS+1
       ENDDO
       DATE_MJD = 365*(IYYY-1858)+NLEAP+DAYS
 !
@@ -1637,79 +1741,79 @@ c$$$
 !
       RETURN
       END FUNCTION DATE_MJD
-!                    ***********************
-                     SUBROUTINE ALLBORD_TPXO
-!                    ***********************
-!
-     &(MESH,LIHBOR,LIUBOR,KENT,KENTU)
-!
-!***********************************************************************
-! TELEMAC2D   V6P2                                   06/12/2011
-!***********************************************************************
-!
-!brief    Prepare a level boundary filter to store the TPXO constituents
-!+        at the boundary. In particular,
-!+        count NPTNFR and ALLOCATE and set the filter TPXO_NFR
-!
-!note     Passing MESH, LIHBOR and LIUBOR as arguments allows
-!+        this SUBROUTINE to be called from TELEMAC-2D or TELEMAC-3D
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        06/12/2011
-!+        V6P2
-!+        Implementation and generalised for interfacing with
-!+        TELEMAC-2D AND 3D
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  KENT          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-!|  KENTU         |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
-!|  LIHBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
-!|                |-->| (KENT IS HERE OF INTEREST)
-!|  LIUBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
-!|  MESH          |-->| 2D MESH
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      USE BIEF
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!-----------------------------------------------------------------------
-!
-      TYPE(BIEF_MESH), INTENT(IN) :: MESH
-      INTEGER, INTENT(IN) :: KENT,KENTU
-      INTEGER, INTENT(IN) :: LIHBOR(*),LIUBOR(*)
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER     K
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-!     PREPARE STORAGE ON LEVEL BOUNDARIES
-!
-      ALLOCATE( TPXO_NFR(MESH%NPOIN) )
-      DO K=1,MESH%NPOIN
-         TPXO_NFR(K) = 0
-      ENDDO
-      NPTNFR = 0
-      DO K = 1,MESH%NPTFR
-         IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
-            NPTNFR = NPTNFR + 1
-            TPXO_NFR(MESH%NBOR%I(K)) = NPTNFR
-         ENDIF
-      ENDDO
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      END SUBROUTINE ALLBORD_TPXO
+c$$$!                    ***********************
+c$$$                     SUBROUTINE ALLBORD_TPXO
+c$$$!                    ***********************
+c$$$!
+c$$$     &(MESH,LIHBOR,LIUBOR,KENT,KENTU)
+c$$$!
+c$$$!***********************************************************************
+c$$$! TELEMAC2D   V6P2                                   06/12/2011
+c$$$!***********************************************************************
+c$$$!
+c$$$!brief    Prepare a level boundary filter to store the TPXO constituents
+c$$$!+        at the boundary. In particular,
+c$$$!+        count NPTNFR and ALLOCATE and set the filter TPXO_NFR
+c$$$!
+c$$$!note     Passing MESH, LIHBOR and LIUBOR as arguments allows
+c$$$!+        this SUBROUTINE to be called from TELEMAC-2D or TELEMAC-3D
+c$$$!
+c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+c$$$!+        06/12/2011
+c$$$!+        V6P2
+c$$$!+        Implementation and generalised for interfacing with
+c$$$!+        TELEMAC-2D AND 3D
+c$$$!
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!|  KENT          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
+c$$$!|  KENTU         |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
+c$$$!|  LIHBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
+c$$$!|                |-->| (KENT IS HERE OF INTEREST)
+c$$$!|  LIUBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
+c$$$!|  MESH          |-->| 2D MESH
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!
+c$$$      USE BIEF
+c$$$!
+c$$$      IMPLICIT NONE
+c$$$      INTEGER LNG,LU
+c$$$      COMMON/INFO/LNG,LU
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      TYPE(BIEF_MESH), INTENT(IN) :: MESH
+c$$$      INTEGER, INTENT(IN) :: KENT,KENTU
+c$$$      INTEGER, INTENT(IN) :: LIHBOR(*),LIUBOR(*)
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      INTEGER     K
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$!     PREPARE STORAGE ON LEVEL BOUNDARIES
+c$$$!
+c$$$      ALLOCATE( TPXO_NFR(MESH%NPOIN) )
+c$$$      DO K=1,MESH%NPOIN
+c$$$         TPXO_NFR(K) = 0
+c$$$      ENDDO
+c$$$      NPTNFR = 0
+c$$$      DO K = 1,MESH%NPTFR
+c$$$         IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
+c$$$            NPTNFR = NPTNFR + 1
+c$$$            TPXO_NFR(MESH%NBOR%I(K)) = NPTNFR
+c$$$         ENDIF
+c$$$      ENDDO
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      END SUBROUTINE ALLBORD_TPXO
 !                    *********************
                      SUBROUTINE CONDI_TPXO
 !                    *********************
 !
-     &(NPOIN,X,Y,H,U,V,LAMBD0,PHI0,T2D_FILES,T2DBB1,T2DBB2,
-     & MARDAT,MARTIM)
+     &(NPOIN,X,Y,H,U,V,GEOSYST,NUMZONE,LAMBD0,PHI0,T2D_FILES,
+     & T2DBB1,T2DBB2,MARDAT,MARTIM)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   06/12/2011
@@ -1728,12 +1832,14 @@ c$$$
 !warning  (-ZF) should be stored in H as you enter this subroutine
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!|  GEOSYST       |-->| TYPE OF GEOGRAPHIC SYSTEM (WGS84 LONG/LAT, UTM OR LAMBERT)
 !|  H             |<->| COMES IN AS -ZF, TO WHICH THE TPXO FREE SURFACE
 !|                |   | WILL BE ADDED TO PRODUCE WATER DEPTH
 !|  LAMBD0        |-->| LATITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
 !|  MARDAT        |<->| DATE (YEAR, MONTH,DAY)
 !|  MARTIM        |-->| TIME (HOUR, MINUTE,SECOND)
 !|  NPOIN         |-->| NUMBER OF 2D NODES IN THE MESH
+!|  NUMZONE       |-->| NUMBER OF ZONE WHEN PLANE PROJECTION (UTM OR LAMBERT)
 !|  PHI0          |-->| LONGITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
 !|  T2DBB1        |-->| ADDRESS OF DATA BASE 1 IN T2D_FILES
 !|  T2DBB2        |-->| ADDRESS OF DATA BASE 2 IN T2D_FILES
@@ -1752,6 +1858,7 @@ c$$$
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,T2DBB1,T2DBB2
+      INTEGER, INTENT(IN)             :: GEOSYST,NUMZONE
       INTEGER, INTENT(IN)             :: MARTIM(3)
       INTEGER, INTENT(INOUT)          :: MARDAT(3)
       DOUBLE PRECISION, INTENT(IN)    :: LAMBD0,PHI0
@@ -1762,28 +1869,34 @@ c$$$
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M
-      INTEGER, ALLOCATABLE :: CIND(:)
+      INTEGER IC,I,J,K,IPOIN,IERR,NC,N,M,NCON
+      INTEGER, ALLOCATABLE :: CCIND(:)
       INTEGER, ALLOCATABLE :: MASKT(:,:),MASKU(:,:),MASKV(:,:)
-      DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
       DOUBLE PRECISION PI,DTR,RTD,SPD
-      DOUBLE PRECISION LAT0,LONG0,CONST
+      DOUBLE PRECISION STIME_MJD
+      DOUBLE PRECISION XM,YM,XL,YL,XO,YO,ALPHA,RADIUS
       DOUBLE PRECISION, ALLOCATABLE :: LAT(:),LON(:)
-      REAL PH_LIM(2),TH_LIM(2)
+      DOUBLE PRECISION PH_LIM(2),TH_LIM(2)
+      REAL PH_LIM_R(2),TH_LIM_R(2)
       COMPLEX, ALLOCATABLE :: ZT(:,:,:)
       COMPLEX, ALLOCATABLE :: UT(:,:,:), VT(:,:,:)
-      COMPLEX, ALLOCATABLE :: UV(:,:,:), ZCON(:)
+      COMPLEX, ALLOCATABLE :: UV(:,:,:)
+      COMPLEX(KIND(1.D0)), ALLOCATABLE :: ZCON(:)
       CHARACTER(LEN=4) C_ID_MOD(TPXO_NCMX)
+      CHARACTER(LEN=4) C_ID(TPXO_NCMX)
+      LOGICAL INTMICON
 !
 !     N,M: SIZES OF THE GRID SUPPORTING THE TPXO MODEL
 !     NC: NUMBER OF CONSTITUENTS AVAILABLE IN THE FILE
+!     NCON: NUMBER OF CONSTITUENTS TURNED ON
 !     MASKT,MASKU,MASKV MASKS TO FILTER VALID AND INVALID (U,V,H) VALUES
-!     RADIUS: RADIUS OF THE EARTH
-!     LAT0,LONG0,CONST: REFERENCE LATITUDE AND LONGITUDE
+!     STIME_MJD: DAYS IN MODIFIED JULIAN DAYS
 !     PH_LIM,TH_LIM: MIN AND MAX RANGES FOR PHASES AND PERIODES
 !     ZT,UT,VT,UV,ZCON: PHASES AND PERIODS FOR U, V AND H
 !     HERE DEFINED AS COMPLEX
 !     C_ID_MOD INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!     CCIND: INDICES OF AVAILABLE CONTITUENTS AMONGST THE ALL POSSIBLE
+!     INTMICON: LOGICAL WHETHER TO INTERPOLATE FOR MINOR CONSTITUENTS
 !
       INTRINSIC TAN,ATAN
 !
@@ -1795,13 +1908,20 @@ c$$$
 !
 !-----------------------------------------------------------------------
 !
-!     USER AND CONVERTION CONSTANTS
+!  SPECIFIC VALUES FOR THE EXAMPLE OF A GEOGRAPHIC SYSTEM DEFINED BY
+!  THE USER
 !
-      LAT0 = LAMBD0 * DTR
-      LONG0 = PHI0 * DTR
-      CONST = TAN( 0.5D0*LAT0 + 0.25D0*PI )
+      XO =  1.2D0
+      YO = 50.D0
+!  ANGLE BETWEEN EAST AXIS ---> X AXIS (TRIGONOMETRIC DEGREES)
+      ALPHA = 40.D0
+      ALPHA = ALPHA*DTR ! IN RADIANS
+!  RADIUS: RADIUS OF THE EARTH
+      RADIUS = 6371000.D0
 !
-      I_MICON = .FALSE.
+!-----------------------------------------------------------------------
+!
+      INTMICON = .FALSE.
 !
 !-----------------------------------------------------------------------
 !
@@ -1820,7 +1940,16 @@ c$$$
 !     READ AVAILABLE DIMENSIONS
 !
       REWIND(T2D_FILES(T2DBB1)%LU)
-      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM,PH_LIM,C_ID_MOD(1:NC)
+      READ(T2D_FILES(T2DBB1)%LU) N,M,NC,TH_LIM_R,PH_LIM_R,C_ID_MOD(1:NC)
+!
+!-----------------------------------------------------------------------
+!
+!     COPY OF TH_LIM AND PH_LIM IN DOUBLE PRECISION
+!
+      TH_LIM(1) = TH_LIM_R(1)
+      TH_LIM(2) = TH_LIM_R(2)
+      PH_LIM(1) = PH_LIM_R(1)
+      PH_LIM(2) = PH_LIM_R(2)
 !
 !-----------------------------------------------------------------------
 !
@@ -1830,24 +1959,8 @@ c$$$
       DO IC = 1,NC
         C_ID(IC) = C_ID_MOD(IC)
       ENDDO
-      ALLOCATE( CIND(NCON), CCIND(NCON) )
-      CALL DEF_CON_IND( C_ID,NCON,C_ID_MOD,NC,CIND )
+      ALLOCATE( CCIND(NCON) )
       CALL DEF_CID( NCON,C_ID,CCIND )
-!
-!-----------------------------------------------------------------------
-!
-!     PREPARE STORAGE ON LEVEL BOUNDARIES
-!
-      ALLOCATE( TPXO_BOR(3,NPTNFR,NCON) )
-      DO K=1,NCON
-         DO J=1,NPTNFR
-            DO I=1,3
-               TPXO_BOR(I,J,K) = CMPLX(0.D0,0.D0)
-            ENDDO
-         ENDDO
-      ENDDO
-!
-      TPXO_LAT_DUMMY = 0.D0
 !
 !-----------------------------------------------------------------------
 !
@@ -1859,14 +1972,37 @@ c$$$
       ALLOCATE( LON(NPOIN) )
       ALLOCATE( LAT(NPOIN) )
 !
-      DO I = 1,NPOIN
+!  WGS84 NORTHERN OR SOUTHERN UTM, OR MERCATOR FOR TELEMAC
+!  WARNING!!! IN TELEMAC DICO, LAMBD0 IS LATITUDE AND PHI0 IS LONGITUDE
+!  LAMBD0 AND PHI0 ARE NOT USED FOR GEOSYST = 2 OR 3
+      IF(GEOSYST.EQ.2.OR.GEOSYST.EQ.3.OR.GEOSYST.EQ.5) THEN
+        CALL CONV_MERCATOR_TO_DEGDEC(NPOIN,X(1:NPOIN),Y(1:NPOIN),
+     &                               LON(1:NPOIN),LAT(1:NPOIN),
+     &                               GEOSYST,NUMZONE,PHI0,LAMBD0)
+!  NTF LAMBERT
+      ELSEIF(GEOSYST.EQ.4) THEN
+        CALL CONV_LAMBERT_TO_DEGDEC(NPOIN,X(1:NPOIN),Y(1:NPOIN),
+     &                              LON(1:NPOIN),LAT(1:NPOIN),
+     &                              NUMZONE)
+      ELSEIF(GEOSYST.EQ.0) THEN
+!  DEFINED BY THE USER
+!  THIS IS AN EXAMPLE
+        DO K=1,NPOIN
+          XL = X(K)
+          YL = Y(K)
+!  ROTATION WITH ALPHA ANGLE HERE
+          XM=XL*COS(ALPHA)-YL*SIN(ALPHA)
+          YL=XL*SIN(ALPHA)+YL*COS(ALPHA)
+          XL=XM
+!  TRANSLATION AND CONVERSION INTO REAL DEGREES
+          LON(K) = XO+XL/RADIUS/COS(YO*DTR)*RTD
+          LAT(K) = YO+YL/RADIUS            *RTD
+        ENDDO
+      ENDIF
 !
-         LON(I) = RTD*( X(I)/RADIUS + LONG0 )
-         LAT(I) = RTD*
-     &      ( 2.D0*ATAN(CONST*EXP(Y(I)/RADIUS)) - 0.5D0*PI )
+      DO I = 1,NPOIN
          IF( LON(I).GT.PH_LIM(2) ) LON(I) = LON(I) - 360.D0
          IF( LON(I).LT.PH_LIM(1) ) LON(I) = LON(I) + 360.D0
-!
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -1886,7 +2022,7 @@ c$$$
       DO IC = 1,NCON
          REWIND(T2D_FILES(T2DBB1)%LU)
          READ(T2D_FILES(T2DBB1)%LU)  ! HEADER LINE
-         DO K = 1,CIND(IC)-1
+         DO K = 1,IC-1
             READ(T2D_FILES(T2DBB1)%LU)
          ENDDO
          READ(T2D_FILES(T2DBB1)%LU) ( ( ZT(IC,I,J), I=1,N ), J=1,M )
@@ -1904,12 +2040,7 @@ c$$$
          CALL INTERPT( ZT,NCON,N,M,MASKT,TH_LIM,PH_LIM,
      &                 LAT(IPOIN),LON(IPOIN),ZCON,IERR,'z' )
          IF( IERR.EQ.0 ) H(IPOIN) = H(IPOIN) +
-     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,I_MICON )
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
-               TPXO_BOR(1,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-         ENDIF
+     &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !###> MST@HRW: CHECKING DRY LANDS
 !         IF(H(IPOIN).LT.0.D0) H(IPOIN) = 0.D0
          H(IPOIN) = MAX(H(IPOIN),0.D0)
@@ -1937,7 +2068,7 @@ c$$$
       DO IC = 1,NCON
          REWIND(T2D_FILES(T2DBB2)%LU)
          READ(T2D_FILES(T2DBB2)%LU)  ! HEADER LINE
-         DO K = 1,CIND(IC)-1
+         DO K = 1,IC-1
             READ(T2D_FILES(T2DBB2)%LU)
          ENDDO
          READ(T2D_FILES(T2DBB2)%LU) UV
@@ -1962,29 +2093,15 @@ c$$$
 !
          CALL INTERPT(UT,NCON,N,M,MASKU,TH_LIM,PH_LIM,
      &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
-         IF( IERR.EQ.0 ) U(IPOIN) =
-     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,I_MICON )
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
-               TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-          ENDIF
-!
-!    FOR NR
-!
-         LAT(IPOIN) = RTD*
-     &      ( 2.D0*ATAN(CONST*EXP(Y(IPOIN)/RADIUS)) - 0.5D0*PI )
+!     VELOCITY READ IN CM/S!
+         IF( IERR.EQ.0 ) U(IPOIN) = 0.01D0*
+     &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !
          CALL INTERPT(VT,NCON,N,M,MASKV,TH_LIM,PH_LIM,
      &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
-         IF( IERR.EQ.0 ) V(IPOIN) =
-     &        PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,I_MICON )
-         IF( TPXO_NFR(IPOIN).NE.0 ) THEN
-            DO K=1,NCON
-               TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
-            ENDDO
-         ENDIF
-!
+!     VELOCITY READ IN CM/S!
+         IF( IERR.EQ.0 ) V(IPOIN) = 0.01D0*
+     &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !###> MST@HRW: ADDING A CAP AT 2 M/S FOR STABILITY ON DRY LANDS
          SPD = SQRT(U(IPOIN)**2+V(IPOIN)**2)
          IF(SPD.GT.2.D0) THEN
@@ -1999,152 +2116,151 @@ c$$$
 !
       IF(LNG.EQ.1) WRITE(LU,*) 'FIN DE L''INITIALISATION TPXO'
       IF(LNG.EQ.2) WRITE(LU,*) 'END OF TPXO INITIALISATION'
-      DEALLOCATE( CIND ) ! NOW KEPT IN MEMORY FOR PTIDE =>, CCIND )
 !
 !-----------------------------------------------------------------------
 !
       END SUBROUTINE CONDI_TPXO
-!              *********************************
-               DOUBLE PRECISION FUNCTION SL_TPXO
-!              *********************************
-!
-     &(KFR,TEMPS)
-!
-!***********************************************************************
-! TELEMAC2D   V6P2                                   06/12/2011
-!***********************************************************************
-!
-!brief    Prescribes the free surface elevation based on the TPXO tidal
-!+        model, for level imposed liquid boundary
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        06/12/2011
-!+        V6P2
-!+        Implementation for interfacing with TELEMAC-2D AND 3D
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  KFR           |-->| LEVEL BOUNDARY GLOBAL NODE NUMBER
-!|  TEMPS         |-->| TIME IS SECONDS
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER, INTENT(IN) :: KFR
-      DOUBLE PRECISION, INTENT(IN) :: TEMPS
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      SL_TPXO = 0.D0
-      IF( TPXO_NFR(KFR).NE.0 ) THEN
-!
-!        TPXO_BOR(1,,) IS WATER LEVEL
-         SL_TPXO = PTIDE( TPXO_BOR(1,TPXO_NFR(KFR),:),
-     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
-     &        ( STIME_MJD+TEMPS/86400.D0 ), I_MICON )
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      END FUNCTION SL_TPXO
-!               ***********************************
-                DOUBLE PRECISION FUNCTION VITU_TPXO
-!               ***********************************
-!
-     &( KFR,TEMPS )
-!
-!***********************************************************************
-! TELEMAC2D   V6P2                                   06/12/2011
-!***********************************************************************
-!
-!brief    Prescribes the u-component of the velocity based on the
-!+        TPXO tidal model, for velcoity imposed liquid boundary
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        06/12/2011
-!+        V6P2
-!+        Implementation for interfacing with TELEMAC-2D
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  KFR           |-->| VELOCITY BOUNDARY GLOBAL NODE NUMBER
-!|  TEMPS         |-->| TIME IS SECONDS
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER, INTENT(IN) :: KFR
-      DOUBLE PRECISION, INTENT(IN) :: TEMPS
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      VITU_TPXO = 0.D0
-      IF( TPXO_NFR(KFR).NE.0 ) THEN
-!
-!        TPXO_BOR(2,,) IS U-VELOCITY COMPONENT
-         VITU_TPXO = PTIDE( TPXO_BOR(2,TPXO_NFR(KFR),:),
-     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
-     &        ( STIME_MJD+TEMPS/86400.D0 ), I_MICON )
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      END FUNCTION VITU_TPXO
-!               ***********************************
-                DOUBLE PRECISION FUNCTION VITV_TPXO
-!               ***********************************
-!
-     &( KFR,TEMPS )
-!
-!***********************************************************************
-! TELEMAC2D   V6P2                                   06/12/2011
-!***********************************************************************
-!
-!brief    Prescribes the v-component of the velocity based on the
-!+        TPXO tidal model, for velcoity imposed liquid boundary
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        06/12/2011
-!+        V6P2
-!+        Implementation for interfacing with TELEMAC-2D
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  KFR           |-->| VELOCITY BOUNDARY GLOBAL NODE NUMBER
-!|  TEMPS         |-->| TIME IS SECONDS
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!-----------------------------------------------------------------------
-!
-      INTEGER, INTENT(IN) :: KFR
-      DOUBLE PRECISION, INTENT(IN) :: TEMPS
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      VITV_TPXO = 0.D0
-      IF( TPXO_NFR(KFR).NE.0 ) THEN
-!
-!        TPXO_BOR(3,,) IS V-VELOCITY COMPONENT
-         VITV_TPXO = PTIDE( TPXO_BOR(3,TPXO_NFR(KFR),:),
-     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
-     &        ( STIME_MJD+TEMPS/86400.D0 ), I_MICON )
-!
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      END FUNCTION VITV_TPXO
+c$$$!              *********************************
+c$$$               DOUBLE PRECISION FUNCTION SL_TPXO
+c$$$!              *********************************
+c$$$!
+c$$$     &(KFR,TEMPS)
+c$$$!
+c$$$!***********************************************************************
+c$$$! TELEMAC2D   V6P2                                   06/12/2011
+c$$$!***********************************************************************
+c$$$!
+c$$$!brief    Prescribes the free surface elevation based on the TPXO tidal
+c$$$!+        model, for level imposed liquid boundary
+c$$$!
+c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+c$$$!+        06/12/2011
+c$$$!+        V6P2
+c$$$!+        Implementation for interfacing with TELEMAC-2D AND 3D
+c$$$!
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!|  KFR           |-->| LEVEL BOUNDARY GLOBAL NODE NUMBER
+c$$$!|  TEMPS         |-->| TIME IS SECONDS
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!
+c$$$      IMPLICIT NONE
+c$$$      INTEGER LNG,LU
+c$$$      COMMON/INFO/LNG,LU
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      INTEGER, INTENT(IN) :: KFR
+c$$$      DOUBLE PRECISION, INTENT(IN) :: TEMPS
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      SL_TPXO = 0.D0
+c$$$      IF( TPXO_NFR(KFR).NE.0 ) THEN
+c$$$!
+c$$$!        TPXO_BOR(1,,) IS WATER LEVEL
+c$$$         SL_TPXO = PTIDE( TPXO_BOR(1,TPXO_NFR(KFR),:),
+c$$$     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
+c$$$     &        ( STIME_MJD+TEMPS/86400.D0 ), INTMICON )
+c$$$!
+c$$$      ENDIF
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      END FUNCTION SL_TPXO
+c$$$!               ***********************************
+c$$$                DOUBLE PRECISION FUNCTION VITU_TPXO
+c$$$!               ***********************************
+c$$$!
+c$$$     &( KFR,TEMPS )
+c$$$!
+c$$$!***********************************************************************
+c$$$! TELEMAC2D   V6P2                                   06/12/2011
+c$$$!***********************************************************************
+c$$$!
+c$$$!brief    Prescribes the u-component of the velocity based on the
+c$$$!+        TPXO tidal model, for velcoity imposed liquid boundary
+c$$$!
+c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+c$$$!+        06/12/2011
+c$$$!+        V6P2
+c$$$!+        Implementation for interfacing with TELEMAC-2D
+c$$$!
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!|  KFR           |-->| VELOCITY BOUNDARY GLOBAL NODE NUMBER
+c$$$!|  TEMPS         |-->| TIME IS SECONDS
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!
+c$$$      IMPLICIT NONE
+c$$$      INTEGER LNG,LU
+c$$$      COMMON/INFO/LNG,LU
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      INTEGER, INTENT(IN) :: KFR
+c$$$      DOUBLE PRECISION, INTENT(IN) :: TEMPS
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      VITU_TPXO = 0.D0
+c$$$      IF( TPXO_NFR(KFR).NE.0 ) THEN
+c$$$!
+c$$$!        TPXO_BOR(2,,) IS U-VELOCITY COMPONENT
+c$$$         VITU_TPXO = PTIDE( TPXO_BOR(2,TPXO_NFR(KFR),:),
+c$$$     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
+c$$$     &        ( STIME_MJD+TEMPS/86400.D0 ), INTMICON )
+c$$$!
+c$$$      ENDIF
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      END FUNCTION VITU_TPXO
+c$$$!               ***********************************
+c$$$                DOUBLE PRECISION FUNCTION VITV_TPXO
+c$$$!               ***********************************
+c$$$!
+c$$$     &( KFR,TEMPS )
+c$$$!
+c$$$!***********************************************************************
+c$$$! TELEMAC2D   V6P2                                   06/12/2011
+c$$$!***********************************************************************
+c$$$!
+c$$$!brief    Prescribes the v-component of the velocity based on the
+c$$$!+        TPXO tidal model, for velcoity imposed liquid boundary
+c$$$!
+c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+c$$$!+        06/12/2011
+c$$$!+        V6P2
+c$$$!+        Implementation for interfacing with TELEMAC-2D
+c$$$!
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!|  KFR           |-->| VELOCITY BOUNDARY GLOBAL NODE NUMBER
+c$$$!|  TEMPS         |-->| TIME IS SECONDS
+c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+c$$$!
+c$$$      IMPLICIT NONE
+c$$$      INTEGER LNG,LU
+c$$$      COMMON/INFO/LNG,LU
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      INTEGER, INTENT(IN) :: KFR
+c$$$      DOUBLE PRECISION, INTENT(IN) :: TEMPS
+c$$$!
+c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+c$$$!
+c$$$      VITV_TPXO = 0.D0
+c$$$      IF( TPXO_NFR(KFR).NE.0 ) THEN
+c$$$!
+c$$$!        TPXO_BOR(3,,) IS V-VELOCITY COMPONENT
+c$$$         VITV_TPXO = PTIDE( TPXO_BOR(3,TPXO_NFR(KFR),:),
+c$$$     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
+c$$$     &        ( STIME_MJD+TEMPS/86400.D0 ), INTMICON )
+c$$$!
+c$$$      ENDIF
+c$$$!
+c$$$!-----------------------------------------------------------------------
+c$$$!
+c$$$      END FUNCTION VITV_TPXO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

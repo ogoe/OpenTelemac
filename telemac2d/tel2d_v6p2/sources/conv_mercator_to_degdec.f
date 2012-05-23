@@ -2,10 +2,10 @@
                       SUBROUTINE CONV_MERCATOR_TO_DEGDEC
 !                     **********************************
 !
-     &(NTAB,XTAB,YTAB,LAMBDATAB,PHITAB,GEOSYST,NUMZONE)
+     &(NTAB,XTAB,YTAB,LAMBDATAB,PHITAB,GEOSYST,NUMZONE,LONG0,LAT0)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   22/04/2011
+! TELEMAC2D   V6P2                                   22/04/2011
 !***********************************************************************
 !
 !brief    CONVERSION OF COORDINATES METRIC MERCATOR
@@ -15,12 +15,21 @@
 !+        22/04/2011
 !+        V6P1
 !+
+!history  C-T PHAM (LNHE)
+!+        16/05/2012
+!+        V6P2
+!+        ADD MERCATOR FOR TELEMAC
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LAMBDATAB      |<--| LONGITUDE (DECIMAL DEGREES)
+!| LAT0           |-->| LATITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
+!|                |   | BEWARE!!! IN TELEMAC PHI0 IS LONGITUDE!!!
+!| LONG0          |-->| LONGITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
+!|                |   | BEWARE!!! IN TELEMAC LAMBD0 IS LATITUDE!!!
 !| NTAB           |-->| NUMBER OF COORDINATES
 !| GEOSYST        |-->| TYPE OF GEOGRAPHIC SYSTEM
 !|                |   | 2: UTM NORTH     3: UTM SOUTH
+!|                |   | 5: MERCATOR FOR TELEMAC
 !| NUMZONE        |-->| NUMBER OF UTM ZONE
 !| PHITAB         |<--| LATITUDE (DECIMAL DEGREES)
 !| XTAB           |-->| METRIC COORDINATES (WGS84 UTM)
@@ -34,6 +43,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)           :: NTAB,GEOSYST,NUMZONE
+      DOUBLE PRECISION, INTENT(IN)  :: LAT0,LONG0
       DOUBLE PRECISION, INTENT(IN)  :: XTAB(NTAB),YTAB(NTAB)
       DOUBLE PRECISION, INTENT(OUT) :: LAMBDATAB(NTAB),PHITAB(NTAB)
 !
@@ -43,14 +53,20 @@
       DOUBLE PRECISION LAMBDAC,NNN,XS,YS,LAMBDA,PHI
       DOUBLE PRECISION PHIM,LATISO,LATISOS,ES2,EPSILON
       DOUBLE PRECISION X,Y
+      DOUBLE PRECISION DTR,RTD,CONST
       DOUBLE PRECISION CITM(5)
+      DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
       COMPLEX(KIND(1.D0)) ZPRIME,ZZZ
 !
       INTEGER I,J,K
 !
 !-----------------------------------------------------------------------
 !
-      PI = ACOS(-1.D0)
+c$$$      PI = ACOS(-1.D0)
+      PI = 4.D0*ATAN(1.D0)
+      DTR = PI/180.D0
+      RTD = 180.D0/PI
+      CONST = TAN(0.5D0*LAT0*DTR+0.25D0*PI)
 !
       EPSILON = 1.D-11
 !
@@ -91,6 +107,8 @@ c$$$      EEE = 0.081991889980000D0
      &                           + 559.D0/368640.D0*EEE8
       CITM(4) = 17.D0/30720.D0*EEE6 + 283.D0/430080.D0*EEE8
       CITM(5) = 4397.D0/41287680.D0*EEE8
+!
+      IF(GEOSYST.EQ.2.OR.GEOSYST.EQ.3) THEN
 !
 !  BEGINNING OF LOOP ON POINTS
 !
@@ -146,6 +164,14 @@ c$$$      EEE = 0.081991889980000D0
         LAMBDATAB(J) = LAMBDA
         PHITAB(J)    = PHI
       ENDDO
+!
+      ELSEIF(GEOSYST.EQ.5) THEN
+        DO J=1,NTAB
+          LAMBDATAB(J) = XTAB(J)/RADIUS*RTD + LONG0
+          PHITAB(J)    = ( 2.D0*ATAN(CONST*EXP(YTAB(J)/RADIUS))
+     &                    -0.5D0*PI)*RTD
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

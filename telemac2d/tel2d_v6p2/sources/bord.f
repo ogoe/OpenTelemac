@@ -36,12 +36,6 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  M.S.TURNBULL (HRW), N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        06/12/2011
-!+        V6P2
-!+   Addition of the TPXO tidal model by calling CONDI_TPXO
-!+      (the TPXO model being coded in DECLARATIONS_TPXO)
-!
 !history  J-M HERVOUET (LNHE)
 !+        06/04/2012
 !+        V6P2
@@ -90,7 +84,6 @@
       USE INTERFACE_TELEMAC2D, EX_BORD => BORD
       USE DECLARATIONS_TELEMAC2D, ONLY: STA_DIS_CURVES,PTS_CURVES,QZ,
      &                                  FLUX_BOUNDARIES,MAXFRO,TIDALTYPE
-      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -181,12 +174,7 @@
         ELSEIF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
           N=NBOR(K)
           IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
-          IF(TIDALTYPE.EQ.8 ) THEN
-!                        JMH: N ??????
-            Z = SL_TPXO( NBOR(K),TEMPS )
-          ELSE
-            Z = SL(IFRLIQ,N)
-          ENDIF
+          Z = SL(IFRLIQ,N)
           HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
           H%R(NBOR(K))=HBOR(K)
 !       ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
@@ -246,14 +234,8 @@
           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
             N=NBOR(K)
             IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
-            IF( TIDALTYPE.EQ.8 ) THEN
-!                                     JMH: N ?????
-              UBOR(K,1) = VITU_TPXO( NBOR(K),TEMPS )
-              VBOR(K,1) = VITV_TPXO( NBOR(K),TEMPS )
-            ELSE
-              UBOR(K,1) = - XNEBOR(K) * VIT(NUMLIQ(K),N)
-              VBOR(K,1) = - YNEBOR(K) * VIT(NUMLIQ(K),N)
-            ENDIF
+            UBOR(K,1) = - XNEBOR(K) * VIT(NUMLIQ(K),N)
+            VBOR(K,1) = - YNEBOR(K) * VIT(NUMLIQ(K),N)
           ELSEIF(PROVEL(NUMLIQ(K)).EQ.2) THEN
             UBOR(K,1) = UBOR(K,2)
             VBOR(K,1) = VBOR(K,2)
@@ -307,7 +289,7 @@
 !
 !     AUTOMATIC TIDAL BOUNDARY CONDITIONS
 !
-      IF(TIDALTYPE.GE.1 .AND. TIDALTYPE.LE.7) CALL TIDAL_MODEL_T2D()
+      IF(TIDALTYPE.GE.1) CALL TIDAL_MODEL_T2D()
 !
 !-----------------------------------------------------------------------
 !
