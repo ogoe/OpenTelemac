@@ -1,0 +1,70 @@
+<?xml version="1.0"?> 
+<!-- Validation and verification of test cases, given a list of CAS files 
+--> 
+<validation xref="bumpflu"> 
+ 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+   <meta xref="default"> 
+      <look format="png" colourbar="jet.xml" /> 
+      <data title="Sub-critical flow over a bump" author="S.E.Bourban" contact="s.bourban@hrwallingford.com" /> 
+   </meta> 
+   <meta xref="vect"> 
+      <look colour="jet.xml" /> 
+   </meta> 
+   <meta xref="line"> 
+      <look colour="k" /> 
+   </meta> 
+ 
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ do="cas;princi" are being ignored at the moment 
+-->  
+   <action xref="1" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_okada.cas" 
+       title="bumpflu scalar mode" 
+   />  
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+ 
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+   <plot1d xref="figure1" type="history" time="[0;-1]" size="[12;5]" > 
+      <layer vars="voltotal:dashline" target="2:sortie" /> 
+      <layer vars="voltotal" target="1:sortie" config="together" /> 
+   </plot1d> 
+   <plot1d xref="figure2" type="history" time="[0;-1]" size="[12;5]" > 
+      <layer vars="volfluxes" target="1:sortie" config="together" /> 
+      <layer vars="volfluxes" target="2:sortie" /> 
+   </plot1d> 
+   <plot1d xref="figure3" type="history" time="[0;-1]" size="[12;5]" > 
+      <layer vars="volerror" target="1:sortie" config="together" /> 
+      <layer vars="volerror" target="2:sortie" /> 
+   </plot1d> 
+   <plot1d xref="figure4" type="history" config="together" time="[0;-1]" size="[12;5]" > 
+      <layer vars="surface libre:line" extract="[10;1][0;1]" target="1:T2DRES" /> 
+      <layer vars="surface libre:line" extract="[10;1][0;1]" target="2:T2DRES" /> 
+   </plot1d> 
+   <plot1d xref="figure5" type="v-section" config="together" time="[-1]" size="[12;5]" > 
+      <layer vars="surface libre:line;fond:line" extract="[0;1][21;1]" target="1:T2DRES" /> 
+   </plot1d> 
+ 
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+-->  
+   <plot2d xref="figure6" size="[20;5]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d>  
+   <plot2d xref="figure7" size="[20;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>  
+   <plot2d xref="figure8" roi="[5;0][12;1.99999999]" size="[20;5]" > 
+      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+      <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[10;4]" /> 
+   </plot2d>  
+   <!-- <plot3d extract="[0;1];[21;1]"> 
+      <layer vars="BOTTOM" time="" source="1:T2DGEO" /> 
+      <layer vars="VELOCITY" time="" time="[-1]" target="1:T2DRES" /> 
+   </plot3d> 
+   <plotpv state="" /> --> 
+ 
+</validation>

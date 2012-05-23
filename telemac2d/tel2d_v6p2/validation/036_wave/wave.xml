@@ -21,7 +21,7 @@
 -->  
    <action xref="1" 
        do="translate;compile;run;cas;princi" 
-       code="telemac2d" target="t2d_weirs.cas" 
+       code="telemac2d" target="t2d_wave.cas" 
        title="weirs scalar mode" 
    />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
