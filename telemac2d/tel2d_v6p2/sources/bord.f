@@ -260,6 +260,21 @@
           ELSEIF(PROVEL(NUMLIQ(K)).EQ.3) THEN
             UBOR(K,1) = - XNEBOR(K) * UBOR(K,2)
             VBOR(K,1) = - YNEBOR(K) * UBOR(K,2)
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'FRONTIERE ',NUMLIQ(K)
+              WRITE(LU,*) 'PROFIL ',PROVEL(NUMLIQ(K)),
+     &                    ' DEMANDE AVEC VITESSES IMPOSEES'
+              WRITE(LU,*) 'COMBINAISON ILLOGIQUE'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'BOUNDARY ',NUMLIQ(K)
+              WRITE(LU,*) 'PROFILE ',PROVEL(NUMLIQ(K)),
+     &                    ' ASKED'
+              WRITE(LU,*) 'IMPOSSIBLE COMBINATION'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
           ENDIF
 !         U AND V INITIALISED WITH THE IMPOSED VALUES
           U%R(NBOR(K)) = UBOR(K,1)

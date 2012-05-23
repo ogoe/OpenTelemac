@@ -4,35 +4,19 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
-!brief    ALLOCATES THE STRUCTURES.
+!brief    Memory allocation of structures, aliases, blocks...
 !
-!history
-!+        11/07/2008
-!+
-!+   SIZE FOR LIMPRO
-!
-!history
-!+        02/10/2008
-!+
-!+   NTR=22
-!
-!history
+!history  J-M HERVOUET (LNHE)
 !+        02/04/2009
-!+
 !+   T2D_FILES(T2DGEO)%LU REPLACES NGEO
 !
 !history
 !+        26/11/2009
 !+
 !+   SPECIFIC ADVECTION IF EQUA='SAINT-VENANT VF', NO
-!
-!history  J-M HERVOUET (LNHE)
-!+        24/03/2010
-!+        V6P0
-!+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -750,12 +734,10 @@
 !
 ! ALLOCATES THE BLOCKS
 !
-!     FUNCTIONS TO ADVECT BY CHARACTERISTICS
+!     FUNCTIONS GATHERED IN A BLOCK FOR TIME N AND A BLOCK FOR TIME N+1
 !
       CALL ALLBLO(FN    , 'FN    ')
       CALL ALLBLO(F     , 'F     ')
-      CALL ALLBLO(FTILD , 'FTILD ')
-      CALL ALLBLO(FNCAR , 'FNCAR ')
 !
       CALL ADDBLO(FN,UN)
       CALL ADDBLO(FN,VN)
@@ -777,10 +759,13 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
+! 
+!     FUNCTIONS TO ADVECT BY CHARACTERISTICS
 !
-!     WITH FINITE VOLUMES OR KINETIC SCHEMES ADVECTION IS DONE
-!     IN VOLFIN
+      CALL ALLBLO(FTILD , 'FTILD ')
+      CALL ALLBLO(FNCAR , 'FNCAR ')
 !
+!     WITH FINITE VOLUMES OR KINETIC SCHEMES ADVECTION IS DONE IN VOLFIN
       IF(EQUA(1:15).NE.'SAINT-VENANT VF') THEN
         IF(CONVV(1).AND.ICONVF(1).EQ.ADV_CAR) THEN
           CALL ADDBLO(FTILD,UTILD)
