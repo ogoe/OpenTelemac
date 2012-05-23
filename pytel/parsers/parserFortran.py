@@ -699,7 +699,7 @@ def scanSources(cfgdir,cfg,BYPASS):
             'rank':1,        \
             'time':0 }
          if path.isdir(ODir) :
-            if cfg['COMPILER']['REBUILD'] > 1:
+            if cfg['COMPILER']['REBUILD'] == 2:
                who['time'] = 0
             else:
                #who['time'] = isNewer(path.join(ODir,path.splitext(path.basename(File))[0] + cfg['SYSTEM']['sfx_obj'].lower()),File)

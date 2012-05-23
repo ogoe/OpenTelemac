@@ -46,13 +46,13 @@ from os import path, walk, chdir, remove, system, environ
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
 from parsers.parserFortran import scanSources
 # ~~> dependencies towards other pytel/modules
-from utils.files import createDirectories,putFileContent
+from utils.files import createDirectories,putFileContent,isNewer
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
 
-def getTree(name,lname,list,level):
+def getTree(name,lname,list,level,rebuild):
    # ~~ Recursive tree Build ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    level = level + 1
    # ~~ prints the tree to screen:
@@ -65,8 +65,8 @@ def getTree(name,lname,list,level):
          for lib in list.keys():
             if lib != lname and list[lib].get(use) != None: libname = lib
       if list[libname].get(use) != None:
-         tTree,rTree = getTree(use,libname,list,level)
-         time = time * tTree
+         tTree,rTree = getTree(use,libname,list,level,rebuild)
+         if rebuild < 3: time = time * tTree
          if rTree > list[lname][name]['rank']: list[lname][name]['rank'] = rTree
    #if debug: print '===> call',list[lname][name]['calls']
    for call in list[lname][name]['calls'].keys():
@@ -76,8 +76,8 @@ def getTree(name,lname,list,level):
             if lib != lname and list[lib].get(call) != None:
                libname = lib
       if list[libname].get(call) != None:
-         tTree,rTree = getTree(call.strip(),libname,list,level)
-         time = time * tTree
+         tTree,rTree = getTree(call.strip(),libname,list,level,rebuild)
+         if rebuild < 3: time = time * tTree
          if rTree > list[lname][name]['rank']: list[lname][name]['rank'] = rTree
    #if debug and list[lname][name]['functions'] != []: print '===> fcts',name,list[lname][name]['functions']
    for function in list[lname][name]['functions']:
@@ -87,8 +87,8 @@ def getTree(name,lname,list,level):
             if lib != lname and list[lib].get(function) != None:
                libname = lib
       if list[libname].get(function) != None:
-         tTree,rTree = getTree(function.strip(),libname,list,level)
-         time = time * tTree
+         tTree,rTree = getTree(function.strip(),libname,list,level,rebuild)
+         if rebuild < 3: time = time * tTree
          if rTree > list[lname][name]['rank']: list[lname][name]['rank'] = rTree
    list[lname][name]['time'] = time
    rank = list[lname][name]['rank']
@@ -160,16 +160,22 @@ def createLibFiles(lname,lcfg,lprog):
 
    # LibFile is now created directly within prg[0]'s directory - /!\ hopefuly, the directory exists
    LibFile = path.join(path.join(cfg['MODULES'][lprog]['path'],lcfg),lname + cfg['version'] + cfg['SYSTEM']['sfx_lib'])
-   if cfg['COMPILER']['REBUILD'] > 0 and path.exists(LibFile): remove(LibFile)
 
    # ~~ Lists all objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
    for obj,lib in HOMERES[item]['add'] :
       Root,Suffix = path.splitext(obj)
       if lib == lname: ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['sfx_obj']+' ')
-   if ObjFiles.strip() == '' and path.exists(LibFile): return True
    for obj,lib in HOMERES[item]['tag'] :
       if lib == lname: ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['sfx_obj']+' ')
+
+   # ~~ is linkage necessary ? ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3 and path.exists(LibFile): remove(LibFile)
+   if cfg['COMPILER']['REBUILD'] > 2 and path.exists(LibFile):
+      refresh = False
+      for ObjFile in ObjFiles.split(): refresh = refresh or ( isNewer(ObjFile,LibFile) == 0 )
+      if refresh: remove(LibFile)
+   if path.exists(LibFile): return True
 
    # ~~ creation of the librairies (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe -lib /nologo /out:postel3dV5P9.lib declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj
@@ -204,7 +210,7 @@ def createExeFiles(ename,ecfg,eprog):
       LibFile = path.join(ExeDir,ename + cfg['SYSTEM']['sfx_lib'])
       ObjCmd = path.join(ExeDir,ename + '.cmdo')
       ExeCmd = path.join(ExeDir,ename + '.cmdx')
-   if cfg['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
+   #if cfg['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
 
    # ~~ Lists all libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    LibFiles = ''
@@ -218,9 +224,18 @@ def createExeFiles(ename,ecfg,eprog):
    for obj,lib in HOMERES[ename.upper()]['add'] :
       Root,Suffix = path.splitext(obj)
       if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split(): ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['sfx_obj']+' ')
-   if ObjFiles.strip() == '' and path.exists(ExeFile): return True
+   #if ObjFiles.strip() == '' and path.exists(ExeFile): return True
    for obj,lib in HOMERES[ename.upper()]['tag'] :
       if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split(): ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['sfx_obj']+' ')
+
+   # ~~ is executable necessary ? ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3 and path.exists(ExeFile): remove(ExeFile)
+   if cfg['COMPILER']['REBUILD'] > 2 and path.exists(ExeFile):
+      refresh = False
+      for ObjFile in ObjFiles.split(): refresh = refresh or ( isNewer(ObjFile,ExeFile) == 0 )
+      for LibFile in LibFiles.split(): refresh = refresh or ( isNewer(LibFile,ExeFile) == 0 )
+      if refresh: remove(ExeFile)
+   if path.exists(ExeFile): return True
 
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
@@ -351,9 +366,9 @@ if __name__ == "__main__":
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
             print '\n\nBuilding the who calls who tree for ' + item + ' and dependents\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-            debug = False
+            debug = False; rebuild = cfg['COMPILER']['REBUILD']
             MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
-            t,r = getTree(item,prg[item][0],all,0)
+            t,r = getTree(item,prg[item][0],all,0,rebuild)
             #del MAKSYSTEL['deps'][prg[item][0]]
             MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=True)
             HOMERES.update({item:MAKSYSTEL})

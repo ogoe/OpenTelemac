@@ -738,6 +738,7 @@ def getHPC(cfgDict):
    behaviours:
     - clean: rebuilt = 1, rebuild object, libs and executables
     - update: rebuilt = 2, rebuild libs and executables
+    - modify: rebuilt = 3, compile only the necessary files and rebuild libs and executables
     - system (or nothing): include all modules
    Will alos read the specif option and build the list of modules
    according to the stwiches, i.e. parallel, openmi, xdmf, etc.
@@ -759,6 +760,10 @@ def parseUserModules(cfgDict,modules):
    if proc :
       userList = proc.group('before') + ' ' + proc.group('after')
       typeBuild = 1
+   proc = re.match(re.compile(word%('modify'),re.I),userList)
+   if proc :
+      userList = proc.group('before') + ' ' + proc.group('after')
+      typeBuild = 3
    # ~~ Remove unwanted ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    word = r'(?P<before>.*?)\s*?-(?P<this>(%s)\b)\s*(?P<after>.*)\s*\Z'
    for mod in modules.keys():

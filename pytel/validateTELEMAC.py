@@ -124,6 +124,11 @@ if __name__ == "__main__":
                       dest="run",
                       default=False,
                       help="will only run the simulation if option there" )
+   parser.add_option("--bypass",
+                      action="store_true",
+                      dest="bypass",
+                      default=False,
+                      help="does not stop the validation if test cases crash" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -193,6 +198,7 @@ if __name__ == "__main__":
          if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules
          cfgs[cfgname]['display'] = options.display
+         cfgs[cfgname]['bypass'] = options.bypass
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
@@ -223,11 +229,7 @@ if __name__ == "__main__":
             print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
             for xmlFile in xmls[codeName][key]:
-               print xmls[codeName][key][xmlFile]
-               print '\n\n\n'
-               print xmls[codeName][key][xmlFile]['eticsm']['cfg'].keys()
-               print xmls[codeName][key][xmlFile]['eticsm']['options']
-               #runXML(xmlFile,xmls[codeName][key][xmlFile])
+               runXML(xmlFile,xmls[codeName][key][xmlFile])
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

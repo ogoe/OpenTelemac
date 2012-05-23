@@ -112,9 +112,13 @@ class ACTION:
       "target": None, "code": None, "xref": None, "do": None,
       "title": '', "ncsize":'' }
    dids = {}
+   bypass = False
 
    def __init__(self,title=''):
       if title != '': self.active["title"] = title
+
+   def setByPass(self,bypass):
+      self.bypass = bypas
 
    def addAction(self,actions):
       self.active = getXMLKeys(actions,self.active)
@@ -220,7 +224,7 @@ class ACTION:
                moveFile(exeFile,self.active['safe'])
          else:
             print '... I could not find your PRINCI file:',princiFile
-            sys.exit()
+            if not self.bypass: sys.exit()
             #else: you may wish to retrieve the executable for later analysis
 
    # ~~ Run the CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
