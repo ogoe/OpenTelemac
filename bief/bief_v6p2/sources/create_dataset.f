@@ -67,21 +67,12 @@
 !***********************************************************************
 !
       SELECT CASE (FFORMAT)
-        CASE ('SERAFIN ','SERAFIND') !SERAFIN)
-            CALL CREATE_DATASET_SERAFIN(
-     &                          NRES,
-     &                          TITLE,
-     &                          NVAR,
-     &                          NOMVAR,
-     &                          OUTVAR)
+        CASE ('SERAFIN ','SERAFIND') 
+            CALL CREATE_DATASET_SERAFIN(NRES,TITLE,VAR,NOMVAR,OUTVAR
+     &                                  FFORMAT)
 !
-        CASE ('MED     ') !MED)
-            CALL CREATE_DATASET_MED(
-     &                          NRES,
-     &                          TITLE,
-     &                          NVAR,
-     &                          NOMVAR,
-     &                          OUTVAR)
+        CASE ('MED     ') 
+            CALL CREATE_DATASET_MED(NRES,TITLE,NVAR,NOMVAR,OUTVAR)
 !
         CASE DEFAULT
           IF(LNG.EQ.1) THEN

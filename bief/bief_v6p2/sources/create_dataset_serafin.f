@@ -2,10 +2,10 @@
                      SUBROUTINE CREATE_DATASET_SERAFIN
 !                    *********************************
 !
-     &(NFIC,TITRE,NVAR,NOMVAR,OUTVAR)
+     &(NFIC,TITRE,NVAR,NOMVAR,OUTVAR,FFORMAT)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CREATES A DATA SET FOR A GIVEN FILE FORMAT IN THE FILE
@@ -35,7 +35,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        22/05/2012
+!+        V6P2
+!+   New argument format that is added in the title.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FFORMAT        |-->| 8 CHARACTER STRING WITH FORMAT
 !| NFIC           |-->| LOGICAL UNIT OF THE FILE
 !| NOMVAR         |-->| NAMES AND UNITS OF VARIABLES
 !| NVAR           |-->| NUMBER OF VARIABLES
@@ -53,13 +59,14 @@
 !
       INTEGER                          , INTENT(IN) :: NFIC
       CHARACTER(LEN=72)                , INTENT(IN) :: TITRE
+      CHARACTER(LEN=8)                 , INTENT(IN) :: FFORMAT
       INTEGER                          , INTENT(IN) :: NVAR
       CHARACTER(LEN=32),DIMENSION(NVAR), INTENT(IN) :: NOMVAR
       LOGICAL          ,DIMENSION(NVAR), INTENT(IN) :: OUTVAR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER           :: NSOR ! NUMBER OF VARIABLES TO WRITE
+      INTEGER           :: NSOR
       CHARACTER(LEN=80) :: TITSEL
       DOUBLE PRECISION XBID(2)
       INTEGER IB(10),ISTAT,I,IBID(1)
@@ -73,7 +80,7 @@
 !
 !   LEC/ECR 1   : NAME OF THE GEOMETRY FILE
 !
-      TITSEL = TITRE // 'SERAFIN '
+      TITSEL = TITRE // FFORMAT
       CALL ECRI2(XBID,IBID,TITSEL,80,'CH',NFIC,'STD',ISTAT)
 !
 !   LEC/ECR 2   : NUMBER OF DISCRETISATION FUNCTIONS 1 AND 2
