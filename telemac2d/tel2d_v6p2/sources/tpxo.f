@@ -2098,11 +2098,16 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
          IF( IERR.EQ.0 ) V(IPOIN) = 
      &       PTIDE( ZCON,C_ID,NCON,CCIND,LAT(IPOIN),STIME_MJD,INTMICON )
 !
-      ENDDO
-!     VELOCITY READ IN M2/S
-      CALL OS( 'X=Y/Z   ' , U , U  , H , 0.D0 , 2 , (0.D0), 0.1D0 )
-      CALL OS( 'X=Y/Z   ' , V , V  , H , 0.D0 , 2 , (0.D0), 0.1D0 )
+!     VELOCITY READ IN M/S
+         IF( H(IPOIN).GT.(0.1D0) ) THEN
+            U(IPOIN) = U(IPOIN) / H(IPOIN)
+            V(IPOIN) = V(IPOIN) / H(IPOIN)
+         ELSE
+            U(IPOIN) = 0.D0
+            V(IPOIN) = 0.D0
+         ENDIF
 !
+      ENDDO
       DEALLOCATE( UT,VT,ZCON,MASKU,MASKV )
       DEALLOCATE( LON,LAT )
 !
