@@ -351,9 +351,9 @@ def scanDICO(dicoFile):
       if keylist[0][0] != 'NOM' and keylist[1][0] != 'NOM1':
          print 'could not read NOM or NOM1 from ',keylist[0][1]
          sys.exit()
-      dico['FR'].update({keylist[0][1][0]:keylist[1][1][0]})
-      dico['GB'].update({keylist[1][1][0]:keylist[0][1][0]})
-      key = keylist[0][1][0]
+      dico['FR'].update({keylist[0][1][0].replace('"',"'"):keylist[1][1][0].replace('"',"'")})
+      dico['GB'].update({keylist[1][1][0].replace('"',"'"):keylist[0][1][0].replace('"',"'")})
+      key = keylist[0][1][0].replace('"',"'")
       words = {'NOM':keylist[0][1]}; keylist.pop(0)
       while keylist != []:
          if keylist[0][0] == 'NOM': break
