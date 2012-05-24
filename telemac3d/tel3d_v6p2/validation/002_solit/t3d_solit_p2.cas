@@ -2,8 +2,6 @@ NUMBER OF SUB ITERATIONS FOR NON LINEARITIES : 1
 /
 MATRIX STORAGE : 3
 /
-OPTION FOR THE HYDROSTATIC STEP : 2 
-/
 /
 /  PRISME AVEC 2 PLANS         : 96 s  version 5.5  17/12/2004
 /  PRISME AVEC 2 PLANS         : 91 s  version 5.5  changement de solveur
@@ -20,6 +18,10 @@ OPTION FOR THE HYDROSTATIC STEP : 2
 /  HP C3700 compilateur HP      : 51 s  version 5.9  20/10/2008
 /  HP C3700 compilateur Nag     :??? s  version 5.9  
 /  Dell 2.8 MHz compilateur pgi : 40 s  version 5.9  20/10/2008  
+/
+/  Version 6.2
+/
+/  HP C3700 compilateur HP      : 39 s  24/05/2012
 /
 TITLE = 'Solitary wave in a long channel '
 / 
@@ -55,7 +57,7 @@ MASS-BALANCE : YES
 INFORMATION ABOUT MASS-BALANCE FOR EACH LISTING PRINTOUT : NO
 /
 /PRECONDITIONING FOR PPE = 7  SOLVER FOR PPE = 6
-PRECONDITIONING FOR PPE = 7  SOLVER FOR PPE = 1
+ PRECONDITIONING FOR PPE = 2  SOLVER FOR PPE = 1
 ACCURACY FOR PPE = 1.E-6
 MAXIMUM NUMBER OF ITERATIONS FOR PPE = 500
 /

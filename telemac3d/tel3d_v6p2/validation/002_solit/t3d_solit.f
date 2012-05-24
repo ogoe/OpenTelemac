@@ -66,72 +66,77 @@
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISATION DE LA COTE DU PLAN INTERMEDIAIRE DE REFERENCE.
-!     PAR DEFAUT, CE PLAN EST PLACE ENTRE FOND ET SURFACE AU PRORATA
-!     DU PARAMETRE NPLINT.
+!     DATA TO BUILD VERTICAL COORDINATES IN CALCOT
 !
-! DOUBLED; Z => Z3%R WHICH IS MESH3D%Z
+!     TRANSF IS KEYWORD "MESH TRANSFORMATION"
+!     IF TRANSF = 0, SUBROUTINE CALCOT MUST BE IMPLEMENTED BY THE USER
 !
-      IF (NPLINT.GE.2) THEN
-        Z( (NPLINT-1)*NPOIN2+1 : NPLINT*NPOIN2 ) = COTINT
-        CALL OV( 'X=C     ' , Z((NPLINT-1)*NPOIN2+1 : NPLINT*NPOIN2),
-     &                Z, Z, COTINT , NPOIN2)
-      ENDIF
-
-! ORIG. CODE
+!     AN EQUIVALENT OF TRANSF MUST BE GIVEN FOR EVERY PLANE:
 !
-!      IF(NPLINT.GE.2) THEN
-!        DO I=1,NPOIN2
-!          Z(I,NPLINT)=COTINT
-!        END DO
-!      ENDIF
+!     POSSIBLE VALUES OF TRANSF_PLANE :
 !
-!-----------------------------------------------------------------------
+!     1 : SIGMA TRANSFORMATION WITH EVENLY SPACED PLANES
+!     2 : SIGMA TRANSFORMATION WITH PROPORTIONS GIVEN IN ZSTAR
+!     3 : PRESCRIBED ELEVATION GIVEN IN ZPLANE
 !
-!     INITIALISATION DE ZSTAR, LE RAPPORT ENTRE LA HAUTEUR D'EAU SOUS
-!     UN PLAN QUASI HORIZONTAL ET LA HAUTEUR D'EAU TOTALE
+!     STANDARD BELOW IS: EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
 !
-! CAS SANS PLAN INTERMEDIAIRE DE REFERENCE
-! ----------------------------------------
+      DO IPLAN = 1,NPLAN
+        TRANSF_PLANE%I(IPLAN)=1
+      ENDDO
 !
-!         ON DOIT AVOIR :
-!            * ZSTAR%R(1)     = 0.D0 ( PLAN DU FOND )
-!            * ZSTAR%R(NPLAN) = 1.D0 ( PLAN DE LA SURFACE LIBRE )
-!         ET POUR TOUT I COMPRIS ENTRE 1 ET NPLAN-1
-!            * ZSTAR%R(I) < ZSTAR%R(I+1)
+!     OTHER EXAMPLES:
 !
-! CAS AVEC PLAN INTERMEDIAIRE DE REFERENCE
-! ----------------------------------------
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
 !
-!         ON DOIT AVOIR :
-!            * ZSTAR%R(1)      = -1.D0 ( PLAN DU FOND )
-!            * ZSTAR%R(NPLINT) =  0.D0 ( PLAN INTERMEDIAIRE DE REFERENCE )
-!            * ZSTAR%R(NPLAN)  =  1.D0 ( PLAN DE LA SURFACE LIBRE )
-!         ET POUR TOUT I COMPRIS ENTRE 1 ET NPLAN-1
-!            * ZSTAR%R(I) < ZSTAR%R(I+1)
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
 !
-!     PAR DEFAUT, LES PLANS QUASI HORIZONTAUX SONT REGULIEREMENT ESPACES
 !
-!***********************************************************************
-!     POUR DONNER VOTRE PROPRE REPARTITION DES PLANS, MODIFIEZ LES
-!     BOUCLES 5 ET 10
-!     REMARQUE : NPLINT=1 QUAND IL N'Y A PAS DE PLAN INTERMEDIAIRE
-!     ATTENTION : EN CAS DE TRANSFORMATION SIGMA GENERALISEE,
-!     ---------   ZSTAR(2) A ZSTAR(NPLAN-1) DOIVENT ETRE MODIFIEES
-!                 ET CONTENIR LA COTE DE POSITIONNEMENT DES DIFFERENTS
-!                 PLANS DU MAILLAGE (IL VA DE SOIT QUE CELLES-CI DOIVENT
-!                 ETRE DONNEES DANS UN ORDRE STRICTEMENT CROISSANT).
-!***********************************************************************
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
 !
-      IF (NPLINT.GE.2) THEN
-        DO IPLAN = 1,NPLINT-1
-          ZSTAR%R(IPLAN) = DBLE(IPLAN-NPLINT)/DBLE(NPLINT-1)
-        END DO
-      ENDIF
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
 !
-      DO IPLAN = NPLINT,NPLAN
-        ZSTAR%R(IPLAN) = DBLE(IPLAN-NPLINT)/DBLE(NPLAN-NPLINT)
-      END DO
+!
+!     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
+!                AND SIGMA ELSEWHERE
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=1
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=-3.D0
+!
+!
+!     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
+!     DO IPLAN = 1,7
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=3.D0
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+!
 !
 !***********************************************************************
 !
@@ -201,22 +206,6 @@ C
         CALL OS('X=C     ',X=PH,C=0.D0)
         WRITE (LU,*) '        HYDROSTATIC PRESSURE INITIALISED TO ZERO.'
       ENDIF
-!
-! PRINTOUTS ABOUT THE MESH LEVEL DISTRIBUTION
-!
-      WRITE(LU,*)
-      WRITE(LU,1000)
-1000  FORMAT(80('='))
-      WRITE (LU,*) 'CONDIM: ZSTAR'
-      WRITE(LU,'(/'' NODE #1 DEPTH: '',1PG13.5,'' M'',/)')  H%R(1)
-      WRITE(LU,'('' POSITIONS OF THE PLANES, AT = '',F7.4,'' S''/)') AT 
-
-      DO IPLAN=1,NPLAN
-        WRITE(LU,'('' IPLAN = '',I2,''     ZSTAR = '',F9.6,      
-     &  ''     MAB = '',1PG13.6)')                               
-     &     IPLAN, ZSTAR%R(IPLAN), ZSTAR%R(IPLAN)*H%R(1)
-      END DO
-      WRITE(LU,*)
 !
 !-----------------------------------------------------------------------
 !
