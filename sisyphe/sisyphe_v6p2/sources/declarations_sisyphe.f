@@ -44,28 +44,28 @@
       USE BIEF_DEF
 !
 !       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
-C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-C
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF_DEF
-C
-C       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
-C
-C       1) VECTORS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       2) MATRICES (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       3) BLOCKS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
-C       4) INTEGERS
-C       5) LOGICAL VALUES
-C       6) REALS
-C       7) STRINGS
-C       8) SLVCFG STRUCTURES
-C       9) MESH STRUCTURE
-C      10) ALIASES
-C
-C-----------------------------------------------------------------------
-C
-C       1) VECTORS
-C
-C-----------------------------------------------------------------------
+!
+!       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
+!
+!       1) VECTORS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       2) MATRICES (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       3) BLOCKS (WILL BE DECLARED AS BIEF_OBJ STRUCTURES)
+!       4) INTEGERS
+!       5) LOGICAL VALUES
+!       6) REALS
+!       7) STRINGS
+!       8) SLVCFG STRUCTURES
+!       9) MESH STRUCTURE
+!      10) ALIASES
+!
+!-----------------------------------------------------------------------
+!
+!       1) VECTORS
+!
+!-----------------------------------------------------------------------
 !
 !     EVOLUTION
 !
@@ -293,173 +293,172 @@ C-----------------------------------------------------------------------
 !     SHEAR STRESS
 !
       TYPE(BIEF_OBJ), TARGET :: TOB
-!> @brief FRICTION COEFFICIENT
-C coefficient de frottement quadratique du courant
+!
+!     FRICTION COEFFICIENT
+!
       TYPE(BIEF_OBJ), TARGET :: CF
-!> @brief WAVE INDUCED SHEAR STRESS
-C contrainte de frottement en houle seule
+!
+!     WAVE INDUCED SHEAR STRESS
+!
       TYPE(BIEF_OBJ), TARGET :: TOBW
-!> @brief
-C rapport entre la contrainte de frottement de peau et la contrainte totale
+!
+!     rapport entre la contrainte de frottement de peau et la contrainte totale
+!
       TYPE(BIEF_OBJ), TARGET :: MU
-!> @brief
-C rugosite totale
+!
+!     rugosite totale
+!
       TYPE(BIEF_OBJ), TARGET :: KS
-!> @brief
-C rugosite de peau
+!
+!     rugosite de peau
+!
       TYPE(BIEF_OBJ), TARGET :: KSP
-!> @brief
-C rugosite de ride
+!
+!     rugosite de ride
+!
       TYPE(BIEF_OBJ), TARGET :: KSR
-!> @brief BED LEVEL CHANGE FOR GRAIN-FEEDING
-C
+!
+!     BED LEVEL CHANGE FOR GRAIN-FEEDING
+!
       TYPE(BIEF_OBJ), TARGET :: DZF_GF
-C
-C NON-EQUILIBRIUM BEDLOAD AND NON-UNIFORM BED MATERIA (BMD AND MGDL)
-C --------
-
-!> @brief MEAN DIAMETER OF ACTIVE-LAYER
-C diametre moyen du sediment
+!
+!     MEAN DIAMETER OF ACTIVE-LAYER
+!
       TYPE(BIEF_OBJ), TARGET :: ACLADM
-!> @brief MEAN DIAMETER OF UNDER-LAYER
-C
+!
+!     MEAN DIAMETER OF UNDER-LAYER
+!
       TYPE(BIEF_OBJ), TARGET :: UNLADM
-!> @brief NUMBER OF LAYERS FOR EACH POINT
-C
+!
+!     NUMBER OF LAYERS FOR EACH POINT
+!
       TYPE(BIEF_OBJ), TARGET :: NLAYER
-!> @brief HIDING FACTOR FOR PARTICULAR SIZE CLASS
-C
+!
+!     HIDING FACTOR FOR PARTICULAR SIZE CLASS
+!
       TYPE(BIEF_OBJ), TARGET :: HIDING
-!> @brief
-C
+!
+! 
+!
       TYPE(BIEF_OBJ), TARGET :: ELAY
-!> @brief ACTIVE STRATUM THICKNESS
-C
+!
+!     ACTIVE STRATUM THICKNESS
+!
       TYPE(BIEF_OBJ), TARGET :: ESTRAT
-C
-C SUSPENSION  (F. MENARD)
-C --------
-
-!> @brief DEPOSITION FLUX
-C
+!
+!     DEPOSITION FLUX
+!
       TYPE(BIEF_OBJ), TARGET :: FLUDP
-!> @brief DEPOSITION FLUX
-C
+!
+!     DEPOSITION FLUX
+!
       TYPE(BIEF_OBJ), TARGET :: FLUDPT
-!> @brief EROSION FLUX
-C
+!
+!     EROSION FLUX
+!
       TYPE(BIEF_OBJ), TARGET :: FLUER
-!> @brief EROSION FLUX
-C
+!
+!     EROSION FLUX
+!
       TYPE(BIEF_OBJ), TARGET :: FLUERT
-!> @brief CONCENTRATION AT TIME N
-C
+!
+!     CONCENTRATION AT TIME N
+!
       TYPE(BIEF_OBJ), TARGET :: CS
-!> @brief
-C
+!
+!
+!
       TYPE(BIEF_OBJ), TARGET :: CST, CTILD, CSTAEQ
-!> @brief IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY (DIM.NPTFR)
-C
+!
+!     IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY (DIM.NPTFR)
+!
       TYPE(BIEF_OBJ), TARGET :: CBOR
-!> @brief CONCENTRATION IN G/L
-C
+!
+!     CONCENTRATION IN G/L
+!
       TYPE(BIEF_OBJ), TARGET :: CSGL
-!> @brief COORDINATES OF VELOCITY VECTORS
-C
-      TYPE(BIEF_OBJ), TARGET ::  UCONV
-!> @brief COORDINATES OF VELOCITY VECTORS
-C
-      TYPE(BIEF_OBJ), TARGET ::  VCONV
-!> @brief PROPAGATION HEIGHT
-C
+!
+!     COMPONENTS OF VELOCITY VECTORS
+!
+      TYPE(BIEF_OBJ), TARGET ::  UCONV,VCONV
+!
+!     PROPAGATION HEIGHT
+!
       TYPE(BIEF_OBJ), TARGET :: HPROP
-!> @brief
-C
+!
+! 
+!
       TYPE(BIEF_OBJ), TARGET :: DISP,DISP_C
-!> @brief
-C
-      TYPE(BIEF_OBJ), TARGET :: AFBOR  , BFBOR
-!> @brief FLUX AT THE BOUNDARIES
-C
+!
+!     FLUX CONDITION NU DF/DN=AFBOR * F + BFBOR
+!
+      TYPE(BIEF_OBJ), TARGET :: AFBOR,BFBOR
+!
+!     FLUX AT THE BOUNDARIES
+!
       TYPE(BIEF_OBJ), TARGET :: FLBOR_SIS
-!> @brief FLUX AT THE BOUNDARIES
-C
+!
+!     FLUX AT THE BOUNDARIES FOR TRACER
+!
       TYPE(BIEF_OBJ), TARGET :: FLBORTRA
-C
-C     BOUNDARY CONDITIONS FOR SEDIMENT                     : LICBOR
-C     TYPES OF BOUNDARY CONDITIONS FOR H                   : LIHBOR
-C     TYPES OF BOUNDARY CONDITIONS FOR PROPAGATION         : LIMPRO
-C                    POINTS   :    .1:H  .2:U  .3:V
-C                    SEGMENTS :    .4:H  .5:U  .6:V
-C
-!> @brief TYPE OF BOUNDARY CONDITIONS ON SUSPENDED SAND CONCENTRATION
-C
+!
+!     BOUNDARY CONDITIONS FOR SEDIMENT                     : LICBOR
+!     TYPES OF BOUNDARY CONDITIONS FOR H                   : LIHBOR
+!     TYPES OF BOUNDARY CONDITIONS FOR PROPAGATION         : LIMPRO
+!                    POINTS   :    .1:H  .2:U  .3:V
+!                    SEGMENTS :    .4:H  .5:U  .6:V
+!
+!     TYPE OF BOUNDARY CONDITIONS ON SUSPENDED SAND CONCENTRATION
+!
       TYPE(BIEF_OBJ), TARGET :: LICBOR
-!> @brief TYPE OF BOUNDARY CONDITIONS FOR H
-C
+!
+!     TYPE OF BOUNDARY CONDITIONS FOR H
+!
       TYPE(BIEF_OBJ), TARGET :: LIHBOR
-!> @brief TYPE OF BOUNDARY CONDITIONS FOR PROPAGATION
-C
+!
+!     TYPE OF BOUNDARY CONDITIONS FOR PROPAGATION
+!
       TYPE(BIEF_OBJ), TARGET :: LIMPRO
-!> @brief
-C
+!
+!     TYPE OF BOUNDARY CONDITIONS FOR DIFFUSION
+!
       TYPE(BIEF_OBJ), TARGET :: LIMDIF
-!> @brief LAST LINE OF THE BOUNDARY CONDITION FILE
-C
+!
+!     LAST COLUMN OF THE BOUNDARY CONDITION FILE
+!
       TYPE(BIEF_OBJ), TARGET :: BOUNDARY_COLOUR
-!> @brief BOUNDARY CONDITIONS FOR TRACER (MODIFIED LITBOR)
-C
-      TYPE(BIEF_OBJ), TARGET :: CLT
-!> @brief BOUNDARY CONDITIONS FOR U
-C
-      TYPE(BIEF_OBJ), TARGET :: CLU
-!> @brief BOUNDARY CONDITIONS FOR V
-C
-      TYPE(BIEF_OBJ), TARGET :: CLV
-!> @brief WORKING ARRAY FOR ELEMENTS
-C
-      TYPE(BIEF_OBJ), TARGET :: TE1
-!> @brief WORKING ARRAY FOR ELEMENTS
-C
-      TYPE(BIEF_OBJ), TARGET :: TE2
-!> @brief WORKING ARRAY FOR ELEMENTS
-C
-      TYPE(BIEF_OBJ), TARGET :: TE3
-!> @brief COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
-C
-      TYPE(BIEF_OBJ), TARGET :: KX
-!> @brief COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
-C
-      TYPE(BIEF_OBJ), TARGET :: KY
-!> @brief COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
-C
-      TYPE(BIEF_OBJ), TARGET :: KZ
-!> @brief ARRAY THAT INDICATES WHETHER THE NON-ERODABLE BOTTOM HAS BEEN REACHED (VF)
-C
+!
+!     BOUNDARY CONDITIONS FOR TRACER, U AND V (MODIFIED LITBOR, LIUBOR,LIVBOR)
+!
+      TYPE(BIEF_OBJ), TARGET :: CLT,CLU,CLV
+!
+!     WORK ARRAYS FOR ELEMENTS
+!
+      TYPE(BIEF_OBJ), TARGET :: TE1,TE2,TE3
+!
+!     COEFFICIENTS OF THE DISPERSION TENSOR (DIM. NPOIN)
+!
+      TYPE(BIEF_OBJ), TARGET :: KX,KY,KZ
+!
+!     ARRAY SAYING WHETHER THE NON-ERODABLE BOTTOM HAS BEEN REACHED (VF)
+!
       TYPE(BIEF_OBJ), TARGET :: BREACH
-!> @brief FOR MIXED SEDIMENTS
-C
-      TYPE(BIEF_OBJ), TARGET :: FLUER_VASE
-!> @brief FOR MIXED SEDIMENTS
-C
-      TYPE(BIEF_OBJ), TARGET :: TOCE_MIXTE
-!> @brief FOR MIXED SEDIMENTS
-C
-      TYPE(BIEF_OBJ), TARGET :: MS_SABLE
-!> @brief FOR MIXED SEDIMENTS
-C
-      TYPE(BIEF_OBJ), TARGET :: MS_VASE
-C
-C-----------------------------------------------------------------------
-C
-C       2) MATRICES
-C
-C-----------------------------------------------------------------------
-C
-!> @brief
-C
+!
+!     FOR MIXED SEDIMENTS
+!
+      TYPE(BIEF_OBJ), TARGET :: FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE
+!
+!-----------------------------------------------------------------------
+!
+!       2) MATRICES
+!
+!-----------------------------------------------------------------------
+!
+!     BOUNDARY MATRIX
+!
       TYPE(BIEF_OBJ), TARGET :: MBOR
-!> @brief
+!
+!     MATRICES
 !
       TYPE(BIEF_OBJ), TARGET :: AM1_S,AM2_S
 !
@@ -504,8 +503,9 @@ C
 !     SEDIMENT COMPOSITION
 !
       TYPE(BIEF_OBJ), TARGET :: AVAI
-!> @brief LAYER THICKNESSES
-C
+!
+!     LAYER THICKNESSES
+!
       TYPE(BIEF_OBJ), TARGET :: LAYTHI
 !> @brief
 C
@@ -567,20 +567,25 @@ C
 !      MAXIMUM NUMBER OF OUTPUT VARIABLES
 !
       INTEGER, PARAMETER :: MAXVAR = 500
-!> @brief MAXIMUM NUMBER OF (LIQUID BOUNDARIES, SOLID BOUNDARIES)
-C
+!
+!     MAXIMUM NUMBER OF (LIQUID BOUNDARIES, SOLID BOUNDARIES)
+!
       INTEGER, PARAMETER :: MAXFRO = 300
-!> @brief
-C
+!
+!     NUMBER OF LIQUID, SOLID BOUNDARIES
+!
       INTEGER NFRLIQ,NFRSOL
-!> @brief
-C
+!
+!     BEGINNING AND END OF LIQUID BOUNDARIES
+!
       INTEGER DEBLIQ(MAXFRO),FINLIQ(MAXFRO)
-!> @brief
-C
+!
+!     BEGINNING AND END OF SOLID BOUNDARIES
+!
       INTEGER DEBSOL(MAXFRO),FINSOL(MAXFRO)
-!> @brief OPTION FOR THE DIFFUSION OF TRACER
-C option pour la diffusion du traceur
+!
+!     OPTION FOR THE DIFFUSION OF TRACER
+!
       INTEGER OPDTRA
 !> @brief OPTION FOR THE DISPERSION
 C option pour la dispersion
@@ -1056,74 +1061,36 @@ C
 !> @brief
 C
       TYPE(SLVCFG) :: SLVTRA
-C
-C-----------------------------------------------------------------------
-C
-C       9) MESH STRUCTURE
-C
-C-----------------------------------------------------------------------
-C
-!> @brief MESH STRUCTURE
-C
+!
+!-----------------------------------------------------------------------
+!
+!       9) MESH STRUCTURE
+!
+!-----------------------------------------------------------------------
+!
+!     MESH STRUCTURE
+!
       TYPE(BIEF_MESH) :: MESH
-C
-C-----------------------------------------------------------------------
-C
-C      10) ALIASES
-C
-C-----------------------------------------------------------------------
-C
-C       DECLARATION OF POINTERS FOR ALIASES
-C       TARGETS ARE DEFINED IN POINT_TELEMAC2D
-C
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T1
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T2
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T3
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T4
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T5
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T6
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T7
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T8
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T9
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T10
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T11
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T12
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T13
-!> @brief ALIAS FOR WORKING VECTOR IN TB
-C
-      TYPE(BIEF_OBJ),POINTER :: T14
-C
-C USEFUL COMPONENTS IN STRUCTURE MESH
-C --------
-C
-!> @brief CONNECTIVITY TABLE
-C tableaux de connectivite local-global
+!
+!-----------------------------------------------------------------------
+!
+!      10) ALIASES
+!
+!-----------------------------------------------------------------------
+!
+!     DECLARATION OF POINTERS FOR ALIASES
+!     TARGETS ARE DEFINED IN POINT_TELEMAC2D
+!
+!     ALIASES FOR WORK VECTORS IN TB
+!
+      TYPE(BIEF_OBJ),POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12
+      TYPE(BIEF_OBJ),POINTER :: T13,T14
+!
+!     USEFUL COMPONENTS IN STRUCTURE MESH
+! 
+!
+!     CONNECTIVITY TABLE
+!
       TYPE(BIEF_OBJ),   POINTER :: IKLE
 !> @brief 2D COORDINATES OF THE MESH
 C coordonnees des points du maillage
@@ -1164,15 +1131,15 @@ C
 !> @brief
 C
       INTEGER, POINTER:: LV
-C
-C-----------------------------------------------------------------------
-C
-C      11) SISYPHE FILES + INTEGER DECLARATION FOR MED APPROACH
-C
-C-----------------------------------------------------------------------
-C
-!> @brief MAXIMUM RANK OF LOGICAL UNITS AS DECLARED IN SUBMIT STRINGS IN THE DICTIONARY
-C
+!
+!-----------------------------------------------------------------------
+!
+!      11) SISYPHE FILES + INTEGER DECLARATION FOR MED APPROACH
+!
+!-----------------------------------------------------------------------
+!
+!     MAXIMUM RANK OF LOGICAL UNITS AS DECLARED IN SUBMIT STRINGS IN THE DICTIONARY
+!
       INTEGER, PARAMETER :: MAXLU_SIS = 46
 !> @brief
 C
@@ -1213,19 +1180,20 @@ C
 !> @brief
 C
       INTEGER SISSEO
-C
-C-----------------------------------------------------------------------
-C
-C      12) SECTIONS
-C
-C-----------------------------------------------------------------------
-!> @brief
-C
+!
+!     RANK OF 'FILE FOR LIQUID BOUNDARIES' IN SIS_FILES
+!
+      INTEGER SISLIQ
+!
+!-----------------------------------------------------------------------
+!
+!      12) SECTIONS
+!
+!-----------------------------------------------------------------------
+!
       TYPE (CHAIN_TYPE), ALLOCATABLE :: CHAIN(:)
-C
+!
       SAVE   ! VERY IMPORTANT
-C
+!
       END MODULE DECLARATIONS_SISYPHE
-C
-C#######################################################################
-C
+

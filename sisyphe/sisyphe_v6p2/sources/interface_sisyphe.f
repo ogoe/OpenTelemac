@@ -3,7 +3,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -467,7 +467,14 @@ C
 C
       INTERFACE
         SUBROUTINE QSFORM
+     &     (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM, 
+     &       DENS, GRAV, DSTAR, AC, QSC, QSS)
+        USE BIEF_DEF
           IMPLICIT NONE
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: U2D,V2D,TOB,HN,TETAP,MU
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: QSC, QSS
+      INTEGER,          INTENT(IN)    :: NPOIN
+      DOUBLE PRECISION, INTENT(IN)    :: XMVE, DM, DENS, GRAV, DSTAR, AC
         END SUBROUTINE
       END INTERFACE
 C
@@ -653,6 +660,3 @@ C
 !
       END MODULE INTERFACE_SISYPHE
 
-C
-C#######################################################################
-C

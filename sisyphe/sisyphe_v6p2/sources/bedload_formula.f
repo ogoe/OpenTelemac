@@ -1,4 +1,4 @@
-! CV :XKV not used - à supprimer
+! CV :XKV not used - Ã  supprimer
 !                    **************************
                      SUBROUTINE BEDLOAD_FORMULA
 !                    **************************
@@ -306,9 +306,11 @@
       ! ============================================ !
       ELSEIF (ICF == 0) THEN
          CALL QSFORM
+     &        (U2D, V2D, TOB, HN, XMVE, TETAP, MU, NPOIN, DM, 
+     &        DENS, GRAV, DSTAR, AC, QSC, QSS)
          DO I=1,NPOIN
-           QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
-           QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
+            QSC%R(I)=QSC%R(I)*AVA(I)*HIDING%R(I)
+            QSS%R(I)=QSS%R(I)*AVA(I)*HIDING%R(I)
          ENDDO
       ! ================= !
       ! IV(ELSE) - ERROR  !

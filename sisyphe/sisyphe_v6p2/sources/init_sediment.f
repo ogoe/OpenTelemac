@@ -9,7 +9,7 @@
      & CONC,NLAYER,DEBU)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -47,8 +47,8 @@
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
 !| AT0            |<->| TIME IN S
 !| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
-!| CALAC          |---| ****
-!| CALWC          |-->| ****
+!| CALAC          |-->| IF YES, SHIELDS PARAMETER FOUND IN PARAMETER FILE
+!| CALWC          |-->| IF YES, SETTLING VELOCITIES FOUND IN PARAMETER FILE
 !| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
 !| ELAY           |<->| THICKNESS OF SURFACE LAYER
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION

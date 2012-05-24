@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE BY CALL TO DAMOCLES.
@@ -81,6 +81,12 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
+!+   
+!
+!history  C.VILLARET + JMH (EDF-LNHE)
+!+        02/05/2012
+!+        V6P2
+!+  File for liquid boundaries added  
 !+   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -207,6 +213,8 @@ C
           SISSEC=I
         ELSEIF(SIS_FILES(I)%TELNAME.EQ.'SISSEO') THEN
           SISSEO=I
+        ELSEIF(SIS_FILES(I)%TELNAME.EQ.'SISLIQ') THEN
+          SISLIQ=I
         ENDIF
       ENDDO
 C
@@ -550,15 +558,15 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
         SLOPEFF=0
         DEVIA=0
       ENDIF
-C 
+! 
       MIXTE=MOTLOG(ADRESS(3,24))
-C COUPLING WITH DREDGESIM
+!     COUPLING WITH DREDGESIM
       DREDGESIM=MOTLOG(ADRESS(3,25))
-C V6P1
+!     V6P1
       KSPRED   =MOTLOG(ADRESS(3,26))
 !
 ! ################################### !
-C CHARACTER STRING KEYWORDS           !
+! CHARACTER STRING KEYWORDS           !
 ! ################################### !
 !
       TITCA            = MOTCAR( ADRESS(4, 1) )(1:72)
@@ -572,17 +580,17 @@ C CHARACTER STRING KEYWORDS           !
       SIS_FILES(SISFON)%NAME=MOTCAR( ADRESS(4,16) )
       SIS_FILES(SISRES)%FMT = MOTCAR( ADRESS(4,31) )(1:8)
       CALL MAJUS(SIS_FILES(SISRES)%FMT)
-C     RESULT FILE FORMAT FOR PREVIOUS SEDIMENTOLOGICAL
-C     COMPUTATION...
+!     RESULT FILE FORMAT FOR PREVIOUS SEDIMENTOLOGICAL
+!     COMPUTATION...
       SIS_FILES(SISPRE)%FMT = MOTCAR( ADRESS(4,34) )(1:8)
       CALL MAJUS(SIS_FILES(SISPRE)%FMT)
-C     REFERENCE FILE FORMAT
+!     REFERENCE FILE FORMAT
       SIS_FILES(SISREF)%FMT = MOTCAR( ADRESS(4,33) )(1:8)
       CALL MAJUS(SIS_FILES(22)%FMT)
-C     HYDRODYNAMIC FILE FORMAT
+!     HYDRODYNAMIC FILE FORMAT
       SIS_FILES(SISHYD)%FMT = MOTCAR( ADRESS(4,32) )(1:8)
       CALL MAJUS(SIS_FILES(SISHYD)%FMT)
-C     WAVE FILE FORMAT (COUPLING WITH TOMAWAC)
+!     WAVE FILE FORMAT (COUPLING WITH TOMAWAC)
       SIS_FILES(SISCOU)%FMT = MOTCAR( ADRESS(4,35) )(1:8)
       CALL MAJUS(SIS_FILES(SISCOU)%FMT)
       BINGEOSIS        = MOTCAR( ADRESS(4,18) )(1:3)
@@ -591,15 +599,17 @@ C     WAVE FILE FORMAT (COUPLING WITH TOMAWAC)
       BINRESSIS        = MOTCAR( ADRESS(4,21) )(1:3)
       SIS_FILES(SISREF)%NAME=MOTCAR( ADRESS(4,22) )
       BINREFSIS        = MOTCAR( ADRESS(4,23) )(1:3)
-C     DREDGESIM STEERING FILE
+!     DREDGESIM STEERING FILE
       SIS_FILES(SISMAF)%NAME = MOTCAR( ADRESS(4,27) )
-C     ******           = MOTCAR( ADRESS(4,28) )
-C     WAVE FILE
+!     ******           = MOTCAR( ADRESS(4,28) )
+!     WAVE FILE
       SIS_FILES(SISCOU)%NAME=MOTCAR( ADRESS(4,30) )
-C !JAJ ####
+!     SECTIONS
       SIS_FILES(SISSEC)%NAME=MOTCAR( ADRESS(4,36) )
       SIS_FILES(SISSEO)%NAME=MOTCAR( ADRESS(4,37) )
-C
+!     FILE FOR LIQUID BOUNDARIES
+      SIS_FILES(SISLIQ)%NAME=MOTCAR( ADRESS(4,38) )
+!
       IF(LNG.EQ.1) WRITE(LU,101)
       IF(LNG.EQ.2) WRITE(LU,102)
 101   FORMAT(1X,/,19X, '********************************************',/,
@@ -614,15 +624,15 @@ C
      &            19X, '*        CHECKING OF DATA  READ            *',/,
      &            19X, '*         IN THE STEERING FILE             *',/,
      &            19X, '********************************************',/)
-C
-C-----------------------------------------------------------------------
-C
-C LOGICALS FOR OUTPUT VARIABLES
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+! LOGICALS FOR OUTPUT VARIABLES
+!-----------------------------------------------------------------------
+!
       NOMBLAY=MAX(NOMBLAY,NCOUCH_TASS)
       NCOUCH_TASS=NOMBLAY
-C
+!
       CALL NOMVAR_SISYPHE(TEXTE,TEXTPR,MNEMO,NSICLA,UNIT,MAXVAR,
      &                    NPRIV,NOMBLAY)
       CALL SORTIE(SORTIS , MNEMO , MAXVAR , SORLEO )
