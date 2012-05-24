@@ -160,8 +160,8 @@ c$$$      USE INTERFACE_TELEMAC2D, EX_BORD_TIDE_TPXO => BORD_TIDE_TPXO
 !  SPECIFIC VALUES FOR THE EXAMPLE OF A GEOGRAPHIC SYSTEM DEFINED BY
 !  THE USER
 !
-      XO =  1.2D0
-      YO = 50.D0
+      XO =  0.0D0   ! HOW ABOUT LAMBD0 and PHI0 ?
+      YO = 51.5D0
 !  ANGLE BETWEEN EAST AXIS ---> X AXIS (TRIGONOMETRIC DEGREES)
       ALPHA = 40.D0
       ALPHA = ALPHA*DTR ! IN RADIANS
@@ -408,8 +408,8 @@ c$$$      USE INTERFACE_TELEMAC2D, EX_BORD_TIDE_TPXO => BORD_TIDE_TPXO
      &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'u')
          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
-!     VELOCITY READ IN CM/S!
-               TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)*0.01D0
+!     VELOCITY READ IN M2/S
+               TPXO_BOR(2,TPXO_NFR(IPOIN),K) = ZCON(K)
             ENDDO
           ENDIF
 !
@@ -417,8 +417,8 @@ c$$$      USE INTERFACE_TELEMAC2D, EX_BORD_TIDE_TPXO => BORD_TIDE_TPXO
      &                LAT(IPOIN),LON(IPOIN),ZCON,IERR,'v')
          IF( TPXO_NFR(IPOIN).NE.0 ) THEN
             DO K=1,NCON
-!     VELOCITY READ IN CM/S!
-               TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)*0.01D0
+!     VELOCITY READ IN M2/S
+               TPXO_BOR(3,TPXO_NFR(IPOIN),K) = ZCON(K)
             ENDDO
          ENDIF
 !
@@ -496,10 +496,12 @@ c$$$           IF(PROVEL(NUMLIQ(K)).EQ.1) THEN
      &              CTIDEV*TPXO_PTIDE(2,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
      &                                NCON,CCIND,TPXO_LAT_DUMMY,
      &                                STIME_MJD+TEMPS/86400.D0,INTMICON)
+     &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
             VBTIDE%R(K) =
      &              CTIDEV*TPXO_PTIDE(3,NBOR(K),TPXO_NFR,TPXO_BOR,C_ID,
      &                                NCON,CCIND,TPXO_LAT_DUMMY,
      &                                STIME_MJD+TEMPS/86400.D0,INTMICON)
+     &              / MAX( 0.1D0 , Z-ZF(NBOR(K)) )
 c$$$           ENDIF
 c$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
             ENDIF
