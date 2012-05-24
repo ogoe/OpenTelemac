@@ -3,9 +3,12 @@
 /   52 s SUR HP C3700 JMH  09/03/2005
 /               (nouvelle diffusion + preconditionnement)
 /   35 s SUR HP C3700 JMH  5.6 29/09/2005 (segments)
-/   40 s SUR HP C3700 JMH  5.7 13/02/2007 (Nag:87 s,Dell:22 s)
-/   37 s SUR HP C3700 JMH  5.8 26/12/2007 (Nag:86 s,Dell:21 s)
-/   32 s SUR HP C3700 JMH  5.9 20/10/2008 (Nag:?? s,Dell:19 s)
+/   40 s SUR HP C3700 JMH  5.7 13/02/2007 (Nag:87 s,Dell :22 s)
+/   37 s SUR HP C3700 JMH  5.8 26/12/2007 (Nag:86 s,Dell :21 s)
+/   32 s SUR HP C3700 JMH  5.9 20/10/2008 (Nag:?? s,Dell :19 s)
+/   ?? s SUR HP C3700 JMH  6.0 07/12/2009 (Nag:68 s,Intel:12 s)
+/   27 s SUR HP C3700 JMH  6.1 11/02/2011 
+/   26 s SUR HP C3700 JMH  6.2 24/05/2012 
 /
 /------------------------------------
 / Lock exchange test case
@@ -18,6 +21,7 @@ BOUNDARY CONDITIONS FILE : geo_lock-hydro.cli
 2D RESULT FILE           : r2d_lock-hydro.slf
 REFERENCE FILE           : f3d_lock-hydro.slf
 VALIDATION               : YES
+/
 /
 NUMBER OF TIME STEPS = 100  TIME STEP = 1.
 GRAPHIC PRINTOUT PERIOD = 100  LISTING PRINTOUT PERIOD = 10
@@ -66,6 +70,5 @@ TELEMAC-2D OPTIONS : 1;2    SOLVER FOR PROPAGATION : 1
 TIDAL FLATS : NO
 DENSITY LAW : 2
 NAMES OF TRACERS : 'SALINITY        G/L             '
-OPTION FOR THE HYDROSTATIC STEP : 1
 /
 &ETA

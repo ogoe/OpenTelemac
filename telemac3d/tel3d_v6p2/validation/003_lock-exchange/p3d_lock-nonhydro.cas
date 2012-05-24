@@ -6,7 +6,7 @@
 /**********************************************************************/
 /
 /
-FICHIER DE GEOMETRIE     : geo_lock-nonhydro.slf
+FICHIER DE GEOMETRIE     : geo_lock-hydro.slf
 FICHIER DES RESULTATS 3D       : r3d_lock-nonhydro.slf
 /
 FICHIER DES COUPES HORIZONTALES    : toH
