@@ -5,7 +5,7 @@
      &(FFORMAT,NRES,TITLE,NVAR,NOMVAR,OUTVAR)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CREATES A DATA SET FOR A GIVEN FILE FORMAT IN THE FILE
@@ -34,6 +34,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        24/05/2012
+!+        V6P2
+!+   Argument ajoute a CREATE_DATASET_SERAFIN
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FFORMAT        |-->| FILE FORMAT
@@ -68,7 +73,7 @@
 !
       SELECT CASE (FFORMAT)
         CASE ('SERAFIN ','SERAFIND') 
-            CALL CREATE_DATASET_SERAFIN(NRES,TITLE,VAR,NOMVAR,OUTVAR
+            CALL CREATE_DATASET_SERAFIN(NRES,TITLE,NVAR,NOMVAR,OUTVAR,
      &                                  FFORMAT)
 !
         CASE ('MED     ') 
