@@ -173,7 +173,7 @@ def createLibFiles(lname,lcfg,lprog):
    if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3 and path.exists(LibFile): remove(LibFile)
    if cfg['COMPILER']['REBUILD'] > 2 and path.exists(LibFile):
       refresh = False
-      for ObjFile in ObjFiles.split(): refresh = refresh or ( isNewer(ObjFile,LibFile) == 0 )
+      for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,LibFile) == 0 )
       if refresh: remove(LibFile)
    if path.exists(LibFile): return True
 
@@ -232,8 +232,8 @@ def createExeFiles(ename,ecfg,eprog):
    if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3 and path.exists(ExeFile): remove(ExeFile)
    if cfg['COMPILER']['REBUILD'] > 2 and path.exists(ExeFile):
       refresh = False
-      for ObjFile in ObjFiles.split(): refresh = refresh or ( isNewer(ObjFile,ExeFile) == 0 )
-      for LibFile in LibFiles.split(): refresh = refresh or ( isNewer(LibFile,ExeFile) == 0 )
+      for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,ExeFile) == 0 )
+      for l in LibFiles.split(): refresh = refresh or ( isNewer(l,ExeFile) == 0 )
       if refresh: remove(ExeFile)
    if path.exists(ExeFile): return True
 
