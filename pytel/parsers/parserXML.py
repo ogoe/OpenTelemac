@@ -108,14 +108,14 @@ def getXMLKeys(xml,do):
          - 'output'
 """
 class ACTION:
-   active = { 'path':'','safe':'','casFile':'','cfg':'','dico':'',
-      "target": None, "code": None, "xref": None, "do": None,
-      "title": '', "ncsize":'' }
-   dids = {}
-   bypass = False
 
    def __init__(self,title=''):
       if title != '': self.active["title"] = title
+      self.active = { 'path':'','safe':'','casFile':'','cfg':'','dico':'',
+         "target": None, "code": None, "xref": None, "do": None,
+         "title": '', "ncsize":'' }
+      self.dids = {}
+      self.bypass = False
 
    def setByPass(self,bypass):
       self.bypass = bypas
@@ -271,10 +271,12 @@ class META:
 # ____/ Primary Class: PLOT /______________________________________/
 #
 class PLOT:
-   drawing = {}; layering = {}; active = { 'type':'', 'xref':'', 'roi':'' }; dids = {}
 
    def __init__(self,title=''):
       if title != '': self.drawing["title"] = title
+      self.drawing = {}; self.layering = {}
+      self.active = { 'type':'', 'xref':'', 'roi':'' }
+      self.dids = {}
 
    def addPlotType(self,plot):   # types: plot1d, plot2d, plot3d, plotpv, ...
       self.dids.update({plot:{}})
