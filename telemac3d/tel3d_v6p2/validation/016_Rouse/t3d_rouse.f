@@ -64,7 +64,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION DELTAZ,AL
+      DOUBLE PRECISION DELTAZ,AL,AUX
 !
 !***********************************************************************
 !
@@ -243,8 +243,8 @@
          ELSE
            DELTAZ=MESH3D%Z%R(I+(IPLAN-1)*NPOIN2)-MESH3D%Z%R(I)
          ENDIF
-         U%R(I+(IPLAN-1)*NPOIN2)=
-     *                        (0.0703D0/0.41D0)*LOG(30.D0*DELTAZ/0.0162D0)
+         AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
+         U%R(I+(IPLAN-1)*NPOIN2)=(0.0703D0/0.41D0)*LOG(AUX)
         ENDDO
         ENDDO
         CALL OS( 'X=0     ' , X=V )
@@ -291,10 +291,9 @@
 !
       RETURN
       END
-
-!                    *****************
-                     SUBROUTINE CORFON
-!                    *****************
+!                    *********************
+                     SUBROUTINE T3D_CORFON
+!                    *********************
 !
      &(SZF, ST1, ST2, ZF, T1, T2, X, Y, PRIVE, NPOIN2,
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
@@ -395,8 +394,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE CORFON
-
+      END 
 !                    ***************************
                      SUBROUTINE PRERES_TELEMAC3D
 !                    ***************************
@@ -447,8 +445,8 @@
 !
       LOGICAL LEO
 !
-      INTEGER LTT,I,IPLAN,I3
-      DOUBLE PRECISION DELTAZ,U_0,U_1,V_0,V_1,C_0,C_1
+      INTEGER LTT,I,IPLAN,I3,NODE,N
+      DOUBLE PRECISION DELTAZ,U_0,U_1,V_0,V_1,C_0,C_1,ULOG,AUX
 !
       INTRINSIC SQRT,MAX
 !
@@ -473,14 +471,61 @@
 C SPECIFIQUE PROFIL DE ROUSE
 C
 C ESSAI JMH
-      IF(LT.EQ.NIT) THEN
-      PRINT*,' Z    U     C     NUT TRAC      NUT VIT '
-      DO I=1,NPLAN
-        PRINT*,MESH3D%Z%R(46+(I-1)*1188),U%R(46+(I-1)*1188), 
-     *         TA%ADR(NTRAC)%P%R(46+(I-1)*1188),
-     *         VISCTA%ADR(NTRAC)%P%ADR(3)%P%R(46+(I-1)*1188), 
-     *         VISCVI%ADR(3)%P%R(46+(I-1)*1188)    
-      ENDDO
+      N=46
+      IF(NCSIZE.GT.1) THEN
+        NODE=0
+        DO I=1,NPOIN2
+          IF(MESH2D%KNOLG%I(I).EQ.N) NODE=I
+        ENDDO
+      ELSE
+        NODE=N
+      ENDIF
+      IF(LT.EQ.NIT.AND.NODE.GT.0) THEN
+      IF(NTRAC.GT.0) THEN
+        PRINT*,'        Z                      U                  ULOG'
+        DO I=1,NPLAN
+         IF(I.EQ.1) THEN
+           DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
+     &             /2.71828182845D0**2
+         ELSE
+           DELTAZ=MESH3D%Z%R(NODE+(I-1)*NPOIN2)-MESH3D%Z%R(NODE)
+         ENDIF
+         AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
+         ULOG=(0.0703D0/0.41D0)*LOG(AUX)
+          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2),
+     &           ULOG
+        ENDDO
+        PRINT*,'         Z                  NUT VIT '
+        DO I=1,NPLAN
+          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)    
+        ENDDO
+        PRINT*,'         Z                      C               NU TRAC'
+        DO I=1,NPLAN
+          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &           TA%ADR(NTRAC)%P%R(NODE+(I-1)*NPOIN2),
+     &           VISCTA%ADR(NTRAC)%P%ADR(3)%P%R(NODE+(I-1)*NPOIN2)
+        ENDDO
+      ELSE
+        PRINT*,'        Z                       U                  ULOG'
+        DO I=1,NPLAN
+         IF(I.EQ.1) THEN
+           DELTAZ=(MESH3D%Z%R(NODE+NPOIN2)-MESH3D%Z%R(NODE))
+     &             /2.71828182845D0**2
+         ELSE
+           DELTAZ=MESH3D%Z%R(NODE+(I-1)*NPOIN2)-MESH3D%Z%R(NODE)
+         ENDIF
+         AUX=MAX(30.D0*DELTAZ/0.0162D0,1.D0)
+         ULOG=(0.0703D0/0.41D0)*LOG(AUX)
+          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),U%R(NODE+(I-1)*NPOIN2),
+     &           ULOG
+        ENDDO
+        PRINT*,'         Z                  NUT VIT '
+        DO I=1,NPLAN
+          PRINT*,MESH3D%Z%R(NODE+(I-1)*NPOIN2),
+     &           VISCVI%ADR(3)%P%R(NODE+(I-1)*NPOIN2)    
+        ENDDO
+      ENDIF
       ENDIF
 C FIN ESSAI JMH
 !
@@ -637,17 +682,16 @@ C FIN ESSAI JMH
 1000  CONTINUE
       RETURN
       END
-
 !                    *****************
                      SUBROUTINE ERODNC
 !                    *****************
 !
      &(CFDEP  , WC     , HDEP     , FLUER , TOB   , DT    ,
      & NPOIN2 , NPOIN3 , KSPRATIO , AC    , RHOS  , RHO0  , HN ,
-     & GRAV   , DMOY   , CREF     , CF )
+     & GRAV   , DMOY   , CREF     , ZREF  , CF    , ICQ   ,RUGOF)
 !
 !***********************************************************************
-! TELEMAC3D   V6P0                                   21/08/2010
+! TELEMAC3D   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODELS EROSION
@@ -676,37 +720,40 @@ C FIN ESSAI JMH
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| AC             |---|
-!| CF             |---|
-!| CFDEP          |-->| CONCENTRATION DES DEPOTS FRAIS
-!| CREF           |<->| CONCENTRATION DEQUILIBRE
-!| DMOY           |---|
-!| DT             |-->| PAS DE TEMPS HYDRAULIQUE
-!| FLUER          |<--| VALEUR DU FLUX D'EROSION
-!| GRAV           |-->| CONSTANTE GRAVITATIONNELLE
-!| HDEP           |<->| EPAISSEUR DE LA COUCHE DES DEPOTS FRAIS
-!| HN             |-->| HAUTEUR D'EAU A L'INSTANT N
-!| KSPRATIO       |---|
-!| NPOIN2         |-->| NOMBRE DE POINTS DU MAILLAGE2D
-!| NPOIN3         |---|
-!| RHO0           |---|
-!| RHOS           |-->| DENSITE DU SEDIMENT
-!| TOB            |-->| CONTRAINTE DE FROTTEMENT AU FOND
-!| WC             |-->| VITESSE DE CHUTE DU SEDIMENT
+!| AC             |-->| CRITICAL SHIELDS PARAMETER
+!| CF             |-->| QUADRATIC FRICTION COEFFICIENT (NOT USED)
+!| CFDEP          |-->| CONCENTRATION OF FRESH DEPOSIT DES DEPOTS FRAIS
+!| CREF           |<->| EQUILIBRIUM CONCENTRATION
+!| DMOY           |-->| MEAN DIAMETER OF GRAINS
+!| DT             |-->| TIME STEP
+!| FLUER          |<->| EROSION  FLUX
+!| GRAV           |-->| GRAVITY ACCELERATION
+!| HDEP           |<->| THICKNESS OF FRESH DEPOSIT (FLUID MUD LAYER)
+!| HN             |-->| WATER DEPTH AT TIME N
+!| ICQ            |-->| FLAG FOR REFERENCE CONCENTRATION FORMULA
+!| KSPRATIO       |-->| NOT USED
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| NPOIN3         |-->| NUMBER OF 3D POINTS
+!| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
+!| RHOS           |-->| SEDIMENT DENSITY
+!| RUGOF          |<->| FRICTION COEFFICIENT ON THE BOTTOM
+!| TOB            |-->| BOTTOM FRICTION
+!| WC             |-->| SETTLING VELOCITY
+!| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE INTERFACE_TELEMAC3D, EX_ERODNC => ERODNC
 !     TRIGGERS A PGI COMPILER ERROR
-!     USE INTERFACE_SISYPHE, ONLY : SUSPENSION_FREDSOE
+      USE INTERFACE_SISYPHE,ONLY:SUSPENSION_FREDSOE,SUSPENSION_VANRIJN
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
+      INTEGER, INTENT(IN)             :: NPOIN2,NPOIN3, ICQ
 !
       DOUBLE PRECISION, INTENT(INOUT) :: HDEP(NPOIN2),FLUER(NPOIN2)
 !
@@ -716,10 +763,10 @@ C FIN ESSAI JMH
       DOUBLE PRECISION, INTENT(IN)    :: KSPRATIO,AC
 !
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: DMOY,TOB,CF,HN
-      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
+      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: CREF,ZREF,RUGOF
+C
+C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+C
       INTEGER I
       DOUBLE PRECISION QS
 !
@@ -733,18 +780,19 @@ C FIN ESSAI JMH
 !
 !
 !     ZYSERMAN & FREDSOE (1994) (BY DEFAULT)
+! 
+!     SO FAR DMOY IS A CONSTANT
 !
-!     SUBROUTINE FROM SISYPHE LIBRARY
-! MODIF V6P0
-! CORRECTION FOR SKIN FRICTION (CF)
-! HERE TAKES TAUP = TOB
-!      CALL SUSPENSION_FREDSOE(DMOY,CF, TOB,HN,NPOIN2,KSPRATIO,
-!     &                        GRAV,RHO0,RHOS,1.D-6,AC,CREF,1.D-3)
-!                                            ZERO          HMIN
-!                                  TAUP
-      CALL SUSPENSION_FREDSOE(DMOY,TOB, NPOIN2,
+      IF(ICQ.EQ.1) THEN             
+        CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
+        CALL SUSPENSION_FREDSOE(DMOY%R(1),TOB, NPOIN2,
      &                        GRAV,RHO0,RHOS,1.D-6,AC,CREF)
-!                                            ZERO
+        CALL OS('X=CY    ', X=ZREF, Y=DMOY, C=2.D0)
+      ELSEIF(ICQ.EQ.3) THEN
+         CALL OS('X=CY    ', X=ZREF, Y=RUGOF, C=0.5D0)      
+         CALL SUSPENSION_VANRIJN(DMOY%R(1),TOB,NPOIN2,
+     &                 GRAV,RHO0,RHOS,1.D-06,1.D-06,AC,CREF,ZREF)
+      ENDIF
 !
 !     UNITS FOR CREF G/L, NOT LIKE IN SISYPHE
 !
@@ -776,6 +824,7 @@ C FIN ESSAI JMH
 !  MODIFICATION POUR CE CAS
         FLUER(I)=0.D0
 !  FIN DE MODIFICATION POUR CE CAS
+!
 !
       ENDDO
 !
