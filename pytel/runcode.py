@@ -506,7 +506,9 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cas,lang = processCAS(casFile,dico,frgb)
    # ~~ Forces run in parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if options.ncsize != '': setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(options.ncsize))
+   if options.ncsize != '':
+      if lang == 1: setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(options.ncsize))
+      if lang == 2: setKeyValue('PARALLEL PROCESSORS',cas,frgb,int(options.ncsize))
    # ~~ Consistency checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not checkConsistency(cas,dico,frgb,cfg):
       print '... inconsistent CAS file: ',casFile
