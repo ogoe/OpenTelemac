@@ -2,12 +2,16 @@
                      SUBROUTINE PROSOU
 !                    *****************
 !
-     &(FU,FV,SMH,    UN,VN,HN,GRAV,NORD,FAIR,WINDX,WINDY,VENT,HWIND,
-     & CORIOL,FCOR,SPHERI,YASMH,COSLAT,SINLAT,AT,LT,DT,
+     &(FU,FV,SMH,    UN,VN,HN,GRAV,NORD,
+     & FAIR,WINDX,WINDY,VENT,HWIND,CORIOL,FCOR,
+     & SPHERI,YASMH,COSLAT,SINLAT,AT,LT,DT,
      & NREJET,NREJEU,DSCE,ISCE,T1,MESH,MSK,MASKEL,
-     & MAREE,MARDAT,MARTIM,PHI0,OPTSOU,COUROU,NPTH,VARCL,NVARCL,VARCLA,
-     & UNSV2D,FXWAVE,FYWAVE,RAIN,RAIN_MMPD,PLUIE,T2D_FILES,T2DBI1,
-     & BANDEC,OPTBAN,NSIPH,ENTSIP,SORSIP,DSIP,USIP,VSIP)
+     & MAREE,MARDAT,MARTIM,PHI0,OPTSOU,
+     & COUROU,NPTH,VARCL,NVARCL,VARCLA,UNSV2D,
+     & FXWAVE,FYWAVE,RAIN,RAIN_MMPD,PLUIE,
+     & T2D_FILES,T2DBI1,BANDEC,OPTBAN,
+     & NSIPH,ENTSIP,SORSIP,DSIP,USIP,VSIP,
+     & NBUSE,ENTBUS,SORBUS,DBUS,UBUS,VBUS)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -87,9 +91,10 @@
 !+   Tour du Valat and O. Bertrand, Artelia-group).
 !
 !history  C.COULET (ARTELIA)
-!+        30/03/2012
+!+        23/05/2012
 !+        V6P2
 !+   Modification for culvert management
+!+   Addition of Tubes management
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
@@ -97,8 +102,12 @@
 !| CORIOL         |-->| IF YES, CORIOLIS FORCE
 !| COSLAT         |-->| COSINUS OF LATITUDE (SPHERICAL COORDINATES)
 !| COUROU         |-->| IF YES, WAVE DRIVEN CURRENTS TAKEN INTO ACCOUNT
+!| DSIP           |-->| DISCHARGE OF TUBES
 !| DSCE           |-->| DISCHARGE OF POINT SOURCES
+!| DSIP           |-->| DISCHARGE OF CULVERTS
 !| DT             |-->| TIME STEP IN SECONDS
+!| ENTBUS         |-->| INDICES OF ENTRY OF TUBES IN GLOBAL NUMBERING
+!| ENTSIP         |-->| INDICES OF ENTRY OF CULVERTS IN GLOBAL NUMBERING
 !| FAIR           |-->| FRICTION COEFFICIENT FOR WIND
 !| FCOR           |-->| CORIOLIS PARAMETER
 !| FU             |<->| SOURCE TERMS ON VELOCITY U
@@ -117,6 +126,7 @@
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
+!| NBUSE          |-->| NUMBER OF TUBES
 !| NORD           |-->| DIRECTION OF NORTH WITH RESPECT TO Y AXIS
 !|                |   | (TRIGONOMETRIC SENSE) IN DEGREES.
 !| NPTH           |-->| RECORD NUMBER IN THE WAVE CURRENTS FILE
@@ -124,6 +134,7 @@
 !| NREJEU         |-->| NUMBER OF POINT SOURCES WITH GIVEN VELOCITY
 !|                |   | IF NREJEU=0 VELOCITY OF SOURCES IS TAKEN EQUAL
 !|                |   | TO VELOCITY.
+!| NSIPH          |-->| NUMBER OF CULVERTS
 !| NVARCL         |-->| NUMBER OF CLANDESTINE VARIABLES
 !| OPTBAN         |-->| OPTION FOR THE TREATMENT OF TIDAL FLATS
 !| OPTSOU         |-->| OPTION FOR THE TREATMENT OF SOURCES
@@ -133,14 +144,20 @@
 !| RAIN_MMPD      |-->| RAIN OR EVAPORATION IN MM PER DAY
 !| SINLAT         |-->| SINUS OF LATITUDE (SPHERICAL COORDINATES)
 !| SMH            |-->| SOURCE TERM IN CONTINUITY EQUATION
+!| SORBUS         |-->| INDICES OF TUBES EXITS IN GLOBAL NUMBERING
+!| SORSIP         |-->| INDICES OF CULVERTS EXISTS IN GLOBAL NUMBERING
 !| SPHERI         |-->| IF TRUE : SPHERICAL COORDINATES
 !| T1             |<->| WORK BIEF_OBJ STRUCTURE
 !| T2D_FILES      |-->| BIEF_FILE STRUCTURE WITH AL TELEMAC-2D FILES
 !| T2D_BI1        |-->| RANK OF BINARY FILE 1
+!| UBUS           |-->| VELOCITY U AT TUBE EXTREMITY
 !| UNSV2D         |-->| INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!| USIP           |-->| VELOCITY U AT CULVERT EXTREMITY
+!| VBUS           |-->| VELOCITY V AT TUBE EXTREMITY
 !| VARCL          |<->| BLOCK OF CLANDESTINE VARIABLES
 !| VARCLA         |-->| NAMES OF CLANDESTINE VARIABLES
 !| VENT           |-->| IF YES, WIND IS TAKEN INTO ACCOUNT
+!| VSIP           |-->| VELOCITY V AT CULVERT EXTREMITY
 !| WINDX          |-->| FIRST COMPONENT OF WIND VELOCITY
 !| WINDY          |-->| SECOND COMPONENT OF WIND VELOCITY
 !| YASMH          |<->| IF TRUE SMH IS TAKEN INTO ACCOUNT
@@ -195,6 +212,11 @@
       INTEGER          , INTENT(IN) :: ENTSIP(NSIPH),SORSIP(NSIPH)
       DOUBLE PRECISION , INTENT(IN) :: DSIP(NSIPH)
       DOUBLE PRECISION , INTENT(IN) :: USIP(NSIPH,2),VSIP(NSIPH,2)
+!
+      INTEGER          , INTENT(IN) :: NBUSE
+      INTEGER          , INTENT(IN) :: ENTBUS(NBUSE),SORBUS(NBUSE)
+      DOUBLE PRECISION , INTENT(IN) :: DBUS(NBUSE)
+      DOUBLE PRECISION , INTENT(IN) :: UBUS(NBUSE,2),VBUS(NBUSE,2)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -440,6 +462,44 @@
      &      DSIP(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
             FV%R(IR) = FV%R(IR) + (VSIP(I,2)-VN%R(IR))*
      &      DSIP(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+          ENDIF
+        ENDDO
+      ENDIF
+!
+!     TUBES OR BRIDGES
+!
+      IF(NBUSE.GT.0) THEN
+!
+        YASMH = .TRUE.
+!
+        DO I = 1 , NBUSE
+        IR = ENTBUS(I)
+          IF(IR.GT.0) THEN
+            IF(OPTSOU.EQ.1) THEN
+!             "NORMAL" VERSION
+              SMH%R(IR)=SMH%R(IR)-DBUS(I)*UNSV2D%R(IR)
+            ELSE
+!             "DIRAC" VERSION
+              SMH%R(IR)=SMH%R(IR)-DBUS(I)
+            ENDIF
+            FU%R(IR) = FU%R(IR) - (UBUS(I,1)-UN%R(IR))*
+     &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+            FV%R(IR) = FV%R(IR) - (VBUS(I,1)-VN%R(IR))*
+     &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+          ENDIF
+          IR = SORBUS(I)
+          IF(IR.GT.0) THEN
+            IF(OPTSOU.EQ.1) THEN
+!             "NORMAL" VERSION
+              SMH%R(IR)=SMH%R(IR)+DBUS(I)*UNSV2D%R(IR)
+            ELSE
+!             "DIRAC" VERSION
+              SMH%R(IR)=SMH%R(IR)+DBUS(I)
+            ENDIF
+            FU%R(IR) = FU%R(IR) + (UBUS(I,2)-UN%R(IR))*
+     &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
+            FV%R(IR) = FV%R(IR) + (VBUS(I,2)-VN%R(IR))*
+     &      DBUS(I)*UNSV2D%R(IR)/MAX(HN%R(IR),0.1D0)
           ENDIF
         ENDDO
       ENDIF

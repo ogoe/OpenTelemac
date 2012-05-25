@@ -52,26 +52,26 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTSIP         |-->| ELEVATIONS OF PIPES
 !| ANGSIP         |-->| ANGLE OF PIPES WITH AXIS OX.
-!| CESIP          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
-!| CSSIP          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
-!| DELSIP         |<--| ANGLE OF PIPES WITH VERTICAL
-!| DSIP           |<--| DISCHARGE OF CULVERT.
+!| CESIP          |-->| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
+!| CSSIP          |-->| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
+!| DELSIP         |-->| ANGLE OF PIPES WITH VERTICAL
+!| DSIP           |-->| DISCHARGE OF CULVERT.
 !| ENTET          |-->| IF YES, PRINTING INFORMATION ON LISTING
-!| ENTSIP         |<--| INDICES OF ENTRY OF PIPE IN GLOBAL NUMBERING
+!| ENTSIP         |-->| INDICES OF ENTRY OF PIPE IN GLOBAL NUMBERING
 !| GRAV           |-->| GRAVITY
 !| H              |-->| DEPTH
-!| LSCE           |<--| LINEAR HEAD LOSS OF PIPE
+!| LSIP           |-->| LINEAR HEAD LOSS OF PIPE
 !| NSIPH          |-->| NUMBER OF CULVERTS
 !| NTRAC          |-->| NUMBER OF TRACERS
 !| RELAXS         |-->| RELAXATION COEFFICIENT
 !| SECSIP         |-->| CROSS SECTION OF CULVERTS (NUMBERED AS SOURCES)
 !| SORSIP         |-->| INDICES OF PIPES EXITS IN GLOBAL NUMBERING
 !| T              |-->| BLOCK OF TRACERS
-!| TSIP           |-->| VALUES OF TRACERS AT CULVERT EXTREMITY
-!| U              |<->| X-COMPONENT OF VELOCITY
-!| USIP           |-->| VELOCITY U AT CULVERT EXTREMITY
-!| V              |<->| Y-COMPONENT OF VELOCITY
-!| VSIP           |-->| VELOCITY V AT CULVERT EXTREMITY
+!| TSIP           |<->| VALUES OF TRACERS AT CULVERT EXTREMITY
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| USIP           |<->| VELOCITY U AT CULVERT EXTREMITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| VSIP           |<->| VELOCITY V AT CULVERT EXTREMITY
 !| ZF             |-->| ELEVATION OF BOTTOM
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

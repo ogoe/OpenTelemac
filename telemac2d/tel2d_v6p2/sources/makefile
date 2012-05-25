@@ -118,7 +118,7 @@ m_coupling_estel3d.f tpxo.f okada.f \
 homere_telemac2d.f                     \
 lecdon_telemac2d.f                     \
 akepin.f assignstr.f astro.f  bilan.f  \
-bilant1.f bord.f  bord_tidal_bc.f bord_tide.f bord_tide_tpxo.f caldt.f  \
+bilant1.f bord.f  bord_tidal_bc.f bord_tide.f bord_tide_tpxo.f buse.f  caldt.f  \
 carafr.f cdl.f cdlproj.f cdlzz.f cdl_tch.f celerite.f chpcon.f clhuvt.f  \
 clsing.f cltrac.f   coefmat.f coefro.f complim.f condin.f  condin_adj.f  \
 conv_mercator_to_degdec.f conv_lambert_to_degdec.f  \
@@ -136,7 +136,7 @@ friction_read.f friction_scan.f friction_init.f friction_choice.f \
 gestio.f  gradnod.f gradnodt.f gradz.f grad_zconv.f \
 homere_adj_t2d.f hpropa.f interpol.f  \
 href.f   incide.f   initstr.f intemp.f isitok.f  \
-kepscl.f kepsil.f   kepsin.f lagran.f  \
+kepscl.f kepsil.f   kepsin.f lagran.f lecbus.f  \
 lecsip.f lecsng.f   loiden.f loinoy.f  majtrac.f majzz.f \
 marast.f masbas2d.f maskob.f   matbou.f mesures.f meteo.f  metgra.f \
 newstr.f nodalf_pugh.f nodalupv_pugh.f nomvar_telemac2d.f output_telemac2d.f point_telemac2d.f point_adj_t2d.f  \

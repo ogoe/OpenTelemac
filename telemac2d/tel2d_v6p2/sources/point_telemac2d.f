@@ -40,6 +40,7 @@
 !+        30/03/2012
 !+        V6P2
 !+   Modification for culvert management (no declared sources)
+!+   Allocation for Tubes/Bridges
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -834,9 +835,9 @@
         CALL BIEF_ALLVEC(1,DELSIP,'DELSIP',NSIPH,2,0,MESH)
         CALL BIEF_ALLVEC(1,ANGSIP,'ANGSIP',NSIPH,2,0,MESH)
         CALL BIEF_ALLVEC(1,LSIP  ,'LSIP  ',NSIPH,1,0,MESH)
-        CALL BIEF_ALLVEC(1,USIP  ,'USIP  ',NSIPH,2,1,MESH)
-        CALL BIEF_ALLVEC(1,VSIP  ,'VSIP  ',NSIPH,2,1,MESH)
-        CALL BIEF_ALLVEC(1,DSIP  ,'DSIP  ',NSIPH,1,1,MESH)
+        CALL BIEF_ALLVEC(1,USIP  ,'USIP  ',NSIPH,2,0,MESH)
+        CALL BIEF_ALLVEC(1,VSIP  ,'VSIP  ',NSIPH,2,0,MESH)
+        CALL BIEF_ALLVEC(1,DSIP  ,'DSIP  ',NSIPH,1,0,MESH)
         DO I=1, NSIPH
           DSIP%R(I)=0.D0
         ENDDO
@@ -858,9 +859,9 @@
         CALL BIEF_ALLVEC(1,DELSIP,'DELSIP',0,2,0,MESH)
         CALL BIEF_ALLVEC(1,ANGSIP,'ANGSIP',0,2,0,MESH)
         CALL BIEF_ALLVEC(1,LSIP  ,'LSIP  ',0,1,0,MESH)
-        CALL BIEF_ALLVEC(1,USIP  ,'USIP  ',0,2,1,MESH)
-        CALL BIEF_ALLVEC(1,VSIP  ,'VSIP  ',0,2,1,MESH)
-        CALL BIEF_ALLVEC(1,DSIP  ,'DSIP  ',0,1,1,MESH)
+        CALL BIEF_ALLVEC(1,USIP  ,'USIP  ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,VSIP  ,'VSIP  ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,DSIP  ,'DSIP  ',0,1,0,MESH)
         CALL ALLBLO(TSIP ,'TSIP  ')
         IF(NTRAC.GT.0) THEN
           CALL BIEF_ALLVEC_IN_BLOCK(TSIP,NTRAC,1,'TSIP  ',
@@ -870,7 +871,60 @@
      &                              0,2,0,MESH)
         ENDIF
       ENDIF
-        
+!
+!-----------------------------------------------------------------------
+!
+!  ARRAYS USED FOR TUBES/BRIDGES
+!
+      IF(NBUSE.GT.0) THEN
+        CALL BIEF_ALLVEC(2,ENTBUS,'ENTBUS',NBUSE,1,0,MESH)
+        CALL BIEF_ALLVEC(2,SORBUS,'SORBUS',NBUSE,1,0,MESH)
+        CALL BIEF_ALLVEC(1,ALTBUS,'ALTBUS',NBUSE,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CSBUS ,'CSBUS ',NBUSE,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CEBUS ,'CEBUS ',NBUSE,2,0,MESH)
+        CALL BIEF_ALLVEC(1,ANGBUS,'ANGBUS',NBUSE,2,0,MESH)
+        CALL BIEF_ALLVEC(1,LBUS  ,'LBUS  ',NBUSE,1,0,MESH)
+        CALL BIEF_ALLVEC(1,UBUS  ,'UBUS  ',NBUSE,2,0,MESH)
+        CALL BIEF_ALLVEC(1,VBUS  ,'VBUS  ',NBUSE,2,0,MESH)
+        CALL BIEF_ALLVEC(1,DBUS  ,'DBUS  ',NBUSE,1,0,MESH)
+        CALL BIEF_ALLVEC(1,LRGBUS,'LRGBUS',NBUSE,1,0,MESH)
+        CALL BIEF_ALLVEC(1,HAUBUS,'HAUBUS',NBUSE,1,0,MESH)
+        CALL BIEF_ALLVEC(2,CLPBUS,'CLPBUS',NBUSE,1,0,MESH)
+        DO I=1, NBUSE
+          DBUS%R(I)=0.D0
+        ENDDO
+        CALL ALLBLO(TBUS ,'TBUS  ')
+        IF(NTRAC.GT.0) THEN
+          CALL BIEF_ALLVEC_IN_BLOCK(TBUS,NTRAC,1,'TBUS  ',
+     &                              NBUSE,2,0,MESH)
+        ELSE
+          CALL BIEF_ALLVEC_IN_BLOCK(TBUS,1    ,1,'TBUS  ',
+     &                              NBUSE,2,0,MESH)
+        ENDIF
+      ELSE
+        CALL BIEF_ALLVEC(2,ENTBUS,'ENTBUS',0,1,0,MESH)
+        CALL BIEF_ALLVEC(2,SORBUS,'SORBUS',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,ALTBUS,'ALTBUS',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CSBUS ,'CSBUS ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,CEBUS ,'CEBUS ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,ANGBUS,'ANGBUS',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,LBUS  ,'LBUS  ',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,UBUS  ,'UBUS  ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,VBUS  ,'VBUS  ',0,2,0,MESH)
+        CALL BIEF_ALLVEC(1,DBUS  ,'DBUS  ',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,LRGBUS,'LRGBUS',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,HAUBUS,'HAUBUS',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,CLPBUS,'CLPBUS',0,1,0,MESH)
+        CALL ALLBLO(TBUS ,'TBUS  ')
+        IF(NTRAC.GT.0) THEN
+          CALL BIEF_ALLVEC_IN_BLOCK(TBUS,NTRAC,1,'TBUS  ',
+     &                              0,2,0,MESH)
+        ELSE
+          CALL BIEF_ALLVEC_IN_BLOCK(TBUS,1    ,1,'TBUS  ',
+     &                              0,2,0,MESH)
+        ENDIF
+      ENDIF
+!        
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

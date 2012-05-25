@@ -4,7 +4,7 @@
 !
      &(TEXP,TIMP,YASMI,TSCEXP,HPROP,TN,TETAT,NREJTR,ISCE,DSCE,TSCE,
      & MAXSCE,MAXTRA,AT,DT,MASSOU,NTRAC,FAC,NSIPH,ENTSIP,SORSIP,
-     & DSIP,TSIP)
+     & DSIP,TSIP,NBUSE,ENTBUS,SORBUS,DBUS,TBUS)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -40,15 +40,18 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  C.COULET (ARTELIA)
-!+        11/05/2012
+!+        23/05/2012
 !+        V6P2
 !+   Modification for culvert management
+!+   Addition of Tubes management
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
+!| DBUS           |-->| DISCHARGE OF TUBES.
 !| DSCE           |-->| DISCHARGE OF POINT SOURCES
-!| DSIP           |<--| DISCHARGE OF CULVERT.
+!| DSIP           |-->| DISCHARGE OF CULVERT.
 !| DT             |-->| TIME STEP
+!| ENTBUS         |-->| INDICES OF ENTRY OF TUBES IN GLOBAL NUMBERING
 !| ENTSIP         |-->| INDICES OF ENTRY OF PIPE IN GLOBAL NUMBERING
 !| FAC            |-->| IN PARALLEL :
 !|                |   | 1/(NUMBER OF SUB-DOMAINS OF THE POINT)
@@ -57,10 +60,13 @@
 !| MASSOU         |<--| MASS OF TRACER ADDED BY SOURCE TERM
 !| MAXSCE         |-->| MAXIMUM NUMBER OF SOURCES
 !| MAXTRA         |-->| MAXIMUM NUMBER OF TRACERS
+!| NBUSE          |-->| NUMBER OF TUBES
 !| NREJTR         |-->| NUMBER OF POINT SOURCES AS GIVEN BY TRACERS KEYWORDS
 !| NSIPH          |-->| NUMBER OF CULVERTS
 !| NTRAC          |-->| NUMBER OF TRACERS
+!| SORBUS         |-->| INDICES OF TUBES EXITS IN GLOBAL NUMBERING
 !| SORSIP         |-->| INDICES OF PIPES EXITS IN GLOBAL NUMBERING
+!| TBUS           |-->| VALUES OF TRACERS AT TUBES EXTREMITY
 !| TETAT          |-->| COEFFICIENT OF IMPLICITATION FOR TRACERS.
 !| TEXP           |-->| EXPLICIT SOURCE TERM.
 !| TIMP           |-->| IMPLICIT SOURCE TERM.
@@ -81,15 +87,17 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER          , INTENT(IN)    :: ISCE(*),NREJTR,NTRAC,NSIPH
+      INTEGER          , INTENT(IN)    :: ISCE(*),NREJTR,NTRAC
+      INTEGER          , INTENT(IN)    :: NSIPH,NBUSE
       INTEGER          , INTENT(IN)    :: ENTSIP(NSIPH),SORSIP(NSIPH)
+      INTEGER          , INTENT(IN)    :: ENTBUS(NBUSE),SORBUS(NBUSE)
       INTEGER          , INTENT(IN)    :: MAXSCE,MAXTRA
       LOGICAL          , INTENT(INOUT) :: YASMI(*)
       DOUBLE PRECISION , INTENT(IN)    :: AT,DT,TETAT,DSCE(*)
-      DOUBLE PRECISION , INTENT(IN)    :: DSIP(NSIPH)
+      DOUBLE PRECISION , INTENT(IN)    :: DSIP(NSIPH),DBUS(NBUSE)
       DOUBLE PRECISION , INTENT(IN)    :: TSCE(MAXSCE,MAXTRA),FAC(*)
       DOUBLE PRECISION , INTENT(INOUT) :: MASSOU(*)
-      TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN,HPROP,TSIP
+      TYPE(BIEF_OBJ)   , INTENT(IN)    :: TN,HPROP,TSIP,TBUS
       TYPE(BIEF_OBJ)   , INTENT(INOUT) :: TSCEXP,TEXP,TIMP
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -215,6 +223,44 @@
               ENDIF
               TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
      &           TSIP%ADR(ITRAC)%P%R(NSIPH+I) -
+     &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+            ENDIF
+          ENDDO
+          IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
+        ENDIF
+!
+        IF(NBUSE.GT.0) THEN
+          DO I = 1 , NBUSE
+!
+            IR = ENTBUS(I)
+            IF(IR.GT.0) THEN
+              IF(NCSIZE.GT.1) THEN
+!               FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!               (SEE CALL TO P_DSUM BELOW)
+                MASSOU(ITRAC)=MASSOU(ITRAC)-DT*DBUS(I)*
+     &                        TBUS%ADR(ITRAC)%P%R(I)*FAC(IR)
+              ELSE
+                MASSOU(ITRAC)=MASSOU(ITRAC)-DT*DBUS(I)*
+     &                        TBUS%ADR(ITRAC)%P%R(I)
+              ENDIF
+              TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &           TBUS%ADR(ITRAC)%P%R(I) -
+     &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
+            ENDIF
+!
+            IR = SORBUS(I)
+            IF(IR.GT.0) THEN
+              IF(NCSIZE.GT.1) THEN
+!               FAC TO AVOID COUNTING THE POINT SEVERAL TIMES
+!               (SEE CALL TO P_DSUM BELOW)
+                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DBUS(I)*
+     &                        TBUS%ADR(ITRAC)%P%R(NBUSE+I)*FAC(IR)
+              ELSE
+                MASSOU(ITRAC)=MASSOU(ITRAC)+DT*DBUS(I)*
+     &                        TBUS%ADR(ITRAC)%P%R(NBUSE+I)
+              ENDIF
+              TSCEXP%ADR(ITRAC)%P%R(IR)=TSCEXP%ADR(ITRAC)%P%R(IR) +
+     &           TBUS%ADR(ITRAC)%P%R(NBUSE+I) -
      &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
             ENDIF
           ENDDO
