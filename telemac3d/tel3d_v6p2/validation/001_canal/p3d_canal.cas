@@ -7,7 +7,7 @@
 /
 /
 FICHIER DE GEOMETRIE     : geo_canal.slf
-FICHIER DES RESULTATS 3D       : r3d_canal_nonhydro-t3d.slf
+FICHIER DES RESULTATS 3D : r3d_canal_nonhydro.slf
 /
 FICHIER DES COUPES HORIZONTALES    : toH
 FICHIER DES COUPES VERTICALES      : tov

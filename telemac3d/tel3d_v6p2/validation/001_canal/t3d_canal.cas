@@ -17,6 +17,8 @@ STOCKAGE DES MATRICES : 3
 /         en 23 s   version 5.8  19/07/2007 (Nag:62 s Dell:16 s)
 /         en 26 s   version 5.9  17/10/2008 (Nag:63 s Dell:14 s)
 /
+/         en 22 s   version 6.2  25/05/2012 
+/
 OPTION POUR L'ETAPE HYDROSTATIQUE : 2
 IMPLICITATION POUR LA DIFFUSION : 2.
 /
@@ -28,7 +30,7 @@ IMPLICITATION POUR LA DIFFUSION : 2.
 /----------------------------------------------------------------------/
 /
 TITRE = 'TELEMAC 3D : CANAL'
-/FICHIER FORTRAN : t2d_canal.f
+/
 FICHIER DES CONDITIONS AUX LIMITES : geo_canal.cli
 FICHIER DE GEOMETRIE               : geo_canal.slf
 FICHIER DES FRONTIERES LIQUIDES    : t3d_canal.qsl
