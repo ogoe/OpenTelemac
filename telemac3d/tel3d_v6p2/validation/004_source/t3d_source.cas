@@ -1,41 +1,52 @@
+/DEBUGGER : 1
+PROCESSEURS PARALLELES : 0
 /
-STOCKAGE DES MATRICES : 1
+STOCKAGE DES MATRICES : 3
 /
 / sur HP C3700   96 s  5.5  JMH le 15/12/2004
 / sur HP C3700   77 s  5.6  JMH le 24/08/2005
 / sur HP C3700   73 s  5.7  JMH le 13/02/2007 (Nag:163 s,Dell:52 s)
 / sur HP C3700   77 s  5.8  JMH le 19/12/2007 (Nag:183 s,Dell:54 s)
 / sur HP C3700   71 s  5.9  JMH le 17/10/2008 (Nag:165 s,Dell:44 s)
+/ sur HP C3700   64 s  6.0  JMH le 04/12/2009 (Nag:132 s,Dell:23 s)
 /
-FICHIER FORTRAN                    : t3d_source_v2p0.f
-FICHIER DES CONDITIONS AUX LIMITES : geo_source_v2p0.cli
-FICHIER DE GEOMETRIE               : geo_source_v2p0.slf
-FICHIER DES RESULTATS 3D           : r3d_source_v2p0.slf
-FICHIER DES RESULTATS 2D           : r2d_source_v2p0.slf
-FICHIER DE REFERENCE               : f3d_source_v2p0.slf
+/ avec schema de convection 13 sur les traceurs, et DT = 1.1
+/
+/ sur HP C3700   50 s  6.0  JMH le 21/05/2010 (Nag:126 s,Intel:24 s)
+/ sur HP C3700   43 s  6.1  JMH le 19/01/2011 (Nag:111 s,Intel:?? s)
+/ sur HP C3700   46 s  6.2  JMH le 25/05/2012 
+/
+FICHIER DES CONDITIONS AUX LIMITES : geo_source.cli
+FICHIER DE GEOMETRIE               : geo_source.slf
+FICHIER DES RESULTATS 3D           : r3d_source.slf
+FICHIER DES RESULTATS 2D           : r2d_source.slf
+FICHIER DES SOURCES                : src_source.txt 
+FICHIER DE REFERENCE               : f3d_source.slf
 VALIDATION : OUI
 /
-NOMBRE DE PLANS HORIZONTAUX : 5         
+NOMBRE DE PLANS HORIZONTAUX : 5 
+/        
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
 /----------------------------------------------------------------------/ 
 TITRE = 'TELEMAC 3D : TEST POUR SOURCE'              
 SUITE DE CALCUL : NON                                                    
-VARIABLES POUR LES SORTIES GRAPHIQUES 2D : 'U,V,H,S,TA1,TA2,TA3'
-VARIABLES POUR LES SORTIES GRAPHIQUES 3D : 'Z,U,V,W,TA1,TA2,TA3'  
-PAS DE TEMPS = 1.0 
+VARIABLES POUR LES SORTIES GRAPHIQUES 2D : 'U,V,H,S,B,TA*'
+VARIABLES POUR LES SORTIES GRAPHIQUES 3D : 'Z,U,V,W,TA*'  
+PAS DE TEMPS = 1.1  
 NOMBRE DE PAS DE TEMPS = 1000
 PERIODE POUR LES SORTIES GRAPHIQUES : 100
 PERIODE POUR LES SORTIES LISTING    : 100
+
 CONDITIONS INITIALES              = 'COTE NULLE'
 COTES IMPOSEES	: 0;0
 DEBITS IMPOSES	: 0;40
 /----------------------------------------------------------------------/ 
 /     SOURCES                                                        
 /----------------------------------------------------------------------/
-FICHIER DES SOURCES : src_source_v2p0.txt
-ABSCISSES DES SOURCES : -20.0; 0.0
-ORDONNEES DES SOURCES :   5.0; -10.0
+/
+ABSCISSES DES SOURCES : -21.6234302520752; -0.77898901700974
+ORDONNEES DES SOURCES :   5.29613780975342; -9.99086666107178
 COTES DES SOURCES     :  -0.5; -0.5
 DEBITS DES SOURCES    :   1.0;  1.0
 VITESSE DES SOURCES SELON X  :  0.0; 0.5
@@ -48,25 +59,24 @@ VALEURS DES TRACEURS DES SOURCES  : 10.0; 10.0;  0.0;  0.0; 10.0; 10.0
 SCHEMA POUR LA DIFFUSION DES VITESSES = 1
 PRECONDITIONNEMENT POUR LA DIFFUSION DES VITESSES : 2
 MODELE DE TURBULENCE VERTICAL : 1
-SOLVEUR POUR LA PROPAGATION : 7
+SOLVEUR POUR LA PROPAGATION : 1
 MAXIMUM D'ITERATIONS POUR LA PROPAGATION : 100 
 PRECISION POUR LA PROPAGATION = 1.E-6  
-IMPLICITATION POUR LA HAUTEUR = 0.6 
+IMPLICITATION POUR LA HAUTEUR   = 0.6 
 IMPLICITATION POUR LES VITESSES = 0.6  
 PRECONDITIONNEMENT POUR LA PROPAGATION : 2    
 ORDRE DU TIR INITIAL POUR LA HAUTEUR : 1                
 /----------------------------------------------------------------------/
 BILAN DE MASSE : OUI
 INFORMATION SUR LE BILAN DE MASSE A CHAQUE SORTIE LISTING : OUI
-SCHEMA POUR LA CONVECTION DES VITESSES = 5
-SCHEMA POUR LA CONVECTION DE LA HAUTEUR = 5                 
+SCHEMA POUR LA CONVECTION DES TRACEURS = 13;13;13
 /----------------------------------------------------------------------/ 
 /     TRACEUR                                                            
 /----------------------------------------------------------------------/ 
-BANCS DECOUVRANTS : NON                                                  
+BANCS DECOUVRANTS : NON                                              
 NOMBRE DE TRACEURS = 3
 VALEURS INITIALES DES TRACEURS : 0.;0.;0.
 PRECISION POUR LA DIFFUSION DES TRACEURS = 1.E-7
-&ETA                                                                     
+/&ETA                                                                     
 &FIN
  
