@@ -108,10 +108,10 @@ DEFAUT1 = 1
 RUBRIQUE = ''
 RUBRIQUE1 = ''
 NIVEAU = 1
-AIDE = '1: PRANDTL  3: NEZU ET NAKAGAWA  
-                               4: JET   5: QUETIN   6: TSANIS'
-AIDE1 = '1: PRANDTL  3: NEZU AND NAKAGAWA  
-                               4: JET   5: QUETIN   6: TSANIS'
+AIDE = '1: PRANDTL 3: NEZU ET NAKAGAWA 5: QUETIN 6: TSANIS
+4 (jet) a ete supprime'
+AIDE1 = '1: PRANDTL 3: NEZU AND NAKAGAWA 5: QUETIN 6: TSANIS
+4 (jet) has been suppressed'
 
 NOM = 'NOMBRE DE FLOTTEURS'
 NOM1 = 'NUMBER OF DROGUES'
@@ -4463,11 +4463,11 @@ DEFAUT = 1
 DEFAUT1 = 1
 NIVEAU = 1
 AIDE = '0:utilisateur (routine CALCOT a programmer) 
-        1:sigma  2:zstar
-        3:plan horizontal fixe 4:plans horizontaux'
+        1:sigma  2:zstar 3:plans fixes 5: adaptatif
+        ce mot-clef doit etre coherent avec condim.f'
 AIDE1= '0:user defined (then routine CALCOT to be implemented)
-        1:sigma  2:zstar
-        3:horizontal fixed plane 4:horizontal planes'
+        1:sigma  2:zstar 3:horizontal fixed planes 5: adaptive mesh
+        this keyword must comply to what is done in condim.f'
 /
 /---------------------------------------------------------------------
 /
