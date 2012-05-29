@@ -1,6 +1,6 @@
-!                       *****************
-                        SUBROUTINE CORFON
-!                       *****************
+!                       *********************
+                        SUBROUTINE T3D_CORFON
+!                       *********************
 !
      &(SZF, ST1, ST2, ZF, T1, T2, X, Y, PRIVE, NPOIN2,
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
@@ -196,17 +196,6 @@ C
 ! INITIALISATION OF THE FREE SURFACE 
 !
       CALL OS ('X=Y     ', X=HN, Y=H)
-
-!-----------------------------------------------------------------------
-!
-!     INITIALISATION DE LA COTE DU PLAN INTERMEDIAIRE DE REFERENCE.
-!     PAR DEFAUT, CE PLAN EST PLACE ENTRE FOND ET SURFACE AU PRORATA
-!     DU PARAMETRE NPLINT.
-!
-      IF (NPLINT.GE.2) THEN
-        CALL OV( 'X=C     ' , Z((NPLINT-1)*NPOIN2+1 : NPLINT*NPOIN2),
-     *                Z, Z, COTINT , NPOIN2)
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -245,19 +234,10 @@ C
 !                 ETRE DONNEES DANS UN ORDRE STRICTEMENT CROISSANT).
 !***********************************************************************
 !
-      IF (NPLINT.GE.2) THEN
-        DO IPLAN = 1,NPLINT-1
-          ZSTAR%R(IPLAN) = DBLE(IPLAN-NPLINT)/DBLE(NPLINT-1)
-        END DO
-      ENDIF
+      DO IPLAN = 1,NPLAN
+        TRANSF_PLANE%I(IPLAN)=2
+      ENDDO
 !
-      DO IPLAN = NPLINT,NPLAN
-        ZSTAR%R(IPLAN) = DBLE(IPLAN-NPLINT)/DBLE(NPLAN-NPLINT)
-      END DO
-!
-C
-C - D - CGD SOGREAH
-C
       ZSTAR%R( 1) =   0.D0
       ZSTAR%R( 2) =   0.075D0
       ZSTAR%R( 3) =   0.15D0
@@ -273,9 +253,6 @@ C
       ZSTAR%R(13) =   0.97D0
       ZSTAR%R(14) =   0.99D0
       ZSTAR%R(15) =   1.D0
-C
-C - F - CGD SOGREAH
-C
 !
 !***********************************************************************
 !
