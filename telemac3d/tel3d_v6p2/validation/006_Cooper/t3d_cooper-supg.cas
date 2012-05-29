@@ -1,15 +1,3 @@
-MATRIX STORAGE : 3
-NUMBER OF PRIVATE ARRAYS : 1
-/PARALLEL PROCESSORS : 2
-/
-/ TO HAVE A SOURCE AT CONSTANT ELEVATION :
-  ELEVATION OF INTERMEDIATE REFERENCE LEVEL : -4.
- NUMBER OF THE INTERMEDIATE REFERENCE LEVEL : 7
-/
-/MESH TRANSFORMATION : 4 /change condim.f in v6p1
- MASS-LUMPING FOR DEPTH : 1.
-/ 
- MASS-LUMPING FOR DIFFUSION : 1.
 /
 /  HP C3700 : 456 s  5.5 17/12/2004
 /  HP C3700 : 367 s  5.5 09/02/2005 (diffusion horizontale nulle)
@@ -20,8 +8,6 @@ NUMBER OF PRIVATE ARRAYS : 1
 /  HP C3700 : 310 s  5.8 03/01/2008 (Nag:704 s, Dell:196 s)
 /  HP C3700 : 292 s  5.9 21/10/2008 (Nag:??? s, Dell:178 s)
 / 
-ELEMENT : PRISME
-/
 FORTRAN FILE                    : t3d_cooper-hyd.f
 BOUNDARY CONDITIONS FILE        : geo_cooper.cli
 GEOMETRY FILE                   : geo_cooper.slf
@@ -30,6 +16,15 @@ GEOMETRY FILE                   : geo_cooper.slf
 REFERENCE FILE                  : f3d_cooper-supg.slf
 VALIDATION : YES
 /
+ELEMENT : PRISME
+/
+MATRIX STORAGE : 3
+NUMBER OF PRIVATE ARRAYS : 1
+/PARALLEL PROCESSORS : 2
+/
+ MESH TRANSFORMATION : 3
+ MASS-LUMPING FOR DEPTH : 1. 
+ MASS-LUMPING FOR DIFFUSION : 1.
 /----------------------------------------------------------------------/
 TITLE : 'BOX SOURCE. Discharge = 20 m3/s. Buoyant tracer.'
 COMPUTATION CONTINUED : NO                                            
@@ -42,8 +37,7 @@ GRAPHIC PRINTOUT PERIOD = 180 / every 15 minutes
 LISTING PRINTOUT PERIOD = 12 / every minute
 /----------------------------------------------------------------------/
 SCHEME FOR ADVECTION OF VELOCITIES : 5
-SCHEME FOR ADVECTION OF DEPTH : 5
-SCHEME FOR ADVECTION OF TRACERS : 2
+SCHEME FOR ADVECTION OF TRACERS    : 2
 /SCHEME FOR DIFFUSION OF TRACERS : 0
 /COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS : 0.1
 COEFFICIENT FOR HORIZONTAL DIFFUSION OF TRACERS : 0.
