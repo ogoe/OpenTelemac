@@ -7,6 +7,9 @@ PROCESSEURS PARALLELES : 0
 /  HP C3700 : 36 s  5.7 JMH 06/02/2007 (Nag : 99 s,Dell:28 s)
 /  HP C3700 : 34 s  5.8 JMH 19/12/2007 (Nag : 96 s,Dell:29 s)
 /  HP C3700 : 35 s  5.9 JMH 29/08/2008 (Nag :102 s,Dell:28 s)
+/  HP C3700 : 26 s  6.0 JMH 21/05/2010 (Nag : 74 s,Intel:14 s)
+/  HP C3700 : 25 s  6.1 JMH 21/01/2011 (Nag : 73 s,Intel:?? s) 
+/  HP C3700 : 27 s  6.2 JMH 29/05/2012 (Nag : ?? s,Intel:?? s) 
 /
 /---------------------------------------------
 / TELEMAC-3D V5.1 NH-EULER 
