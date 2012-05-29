@@ -37,7 +37,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      INTEGER IPLAN, I,J,NSEC
+      INTEGER IPLAN, I,J,NSEC,NFO1
+      NFO1=T3D_FILES(T3DFO1)%LU
 !
 !***********************************************************************
 !
@@ -70,15 +71,15 @@
 !     FOR SPECIAL INITIAL CONDITIONS ON DEPTH, PROGRAM HERE                                                     
 !jaj free surface initialisation from a file and using surfini
 !
-      read(T3DFO1,*)
-      read(T3DFO1,*) nsec
+      read(nfo1,*)
+      read(nfo1,*) nsec
       write(lu,*) 'CONDIM: reading free surface initialisation file'
       write(lu,*) 'CONDIM: nsec = ',nsec
       write(lu,*) ' '
       write(lu,'(5(1x,a15))') 
      &    'xleft', 'yleft', 'xright', 'yright', 'water_level'
       do i=1,nsec
-        read(T3DFO1,*) t3_01%r(i), t3_02%r(i), t3_04%r(i),
+        read(nfo1,*) t3_01%r(i), t3_02%r(i), t3_04%r(i),
      &               t3_05%r(i), t3_03%r(i)
         t3_06%r(i) = t3_03%r(i)
         write(lu,'(5(1x,g15.6))') 
@@ -117,111 +118,88 @@
 !     CLIPPING OF H
 !
       DO I=1,NPOIN2
-        H%R(I)=MAX(H%R(I),HMIN)
+        H%R(I)=MAX(H%R(I),0.D0)
       ENDDO
 !
       CALL OS ('X=Y     ',X=HN,Y=H)
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISATION OF THE REFERENCE PLANE FOR DOUBLE SIGMA
-!     TRANSFORMATION
-!
-!     DEFAULT ACTION BELOW, BASED OF PLANE NUMBER.
-!
-      IF(NPLINT.GE.2) THEN
-        CALL OV( 'X=C     ' , Z((NPLINT-1)*NPOIN2+1 : NPLINT*NPOIN2),
-     *                Z, Z, COTINT , NPOIN2)
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !
-!     INITIALISATION OF ZSTAR, VERTICAL COORDINATE
-!     IN SIGMA TRANSFORMATION
+!     DATA TO BUILD VERTICAL COORDINATES IN CALCOT
 !
-!     CASE WITHOUT REFERENCE PLANE
-!     ----------------------------
+!     TRANSF IS KEYWORD "MESH TRANSFORMATION"
+!     IF TRANSF = 0, SUBROUTINE CALCOT MUST BE IMPLEMENTED BY THE USER
 !
-!         ONE MUST HAVE :
+!     AN EQUIVALENT OF TRANSF MUST BE GIVEN FOR EVERY PLANE:
 !
-!            * ZSTAR%R(1)     = 0.D0 ( BOTTOM PLANE )
-!            * ZSTAR%R(NPLAN) = 1.D0 ( FREE SURFACE PLANE )
+!     POSSIBLE VALUES OF TRANSF_PLANE :
 !
-!         AND FOR ALL I BETWEEN 1 AND NPLAN-1
+!     1 : SIGMA TRANSFORMATION WITH EVENLY SPACED PLANES
+!     2 : SIGMA TRANSFORMATION WITH PROPORTIONS GIVEN IN ZSTAR
+!     3 : PRESCRIBED ELEVATION GIVEN IN ZPLANE
 !
-!            * ZSTAR%R(I) < ZSTAR%R(I+1)
+!     STANDARD BELOW IS: EVENLY SPACED PLANES, NO OTHER DATA REQUIRED
 !
-!     CASE WITH REFERENCE PLANE
-!     -------------------------
+      DO IPLAN = 1,NPLAN
+        TRANSF_PLANE%I(IPLAN)=1
+      ENDDO
 !
-!         ONE MUST HAVE :
+!     OTHER EXAMPLES:
 !
-!            * ZSTAR%R(1)      = -1.D0 ( BOTTOM PLANE )
-!            * ZSTAR%R(NPLINT) =  0.D0 ( REFERENCE PLANE )
-!            * ZSTAR%R(NPLAN)  =  1.D0 ( FREE SURFACE PLANE )
+!     EXAMPLE 1: ALL PLANES WITH PRESCRIBED ELEVATION
 !
-!         AND FOR ALL I BETWEEN 1 AND NPLAN-1
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=3
+!     ENDDO
+!     ZPLANE%R(2)=-7.D0
+!     ZPLANE%R(3)=-4.D0
+!     ...
+!     ZPLANE%R(NPLAN-1)=-0.05D0
 !
-!            * ZSTAR%R(I) < ZSTAR%R(I+1)
 !
-!     STANDARD IS: EVENLY SPACED PLANES
+!     EXAMPLE 2: SIGMA TRANSFORMATION WITH GIVEN PROPORTIONS
 !
-!     IF NO REFERENCE PLANE : NPLINT = 1
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     ZSTAR%R(2)=0.02D0
+!     ZSTAR%R(3)=0.1D0
+!     ...
+!     ZSTAR%R(NPLAN-1)=0.95D0
 !
-!     TRANSF IS KEY-WORD "MESH TRANSFORMATION"
 !
-      IF(TRANSF.EQ.2) THEN
-        WRITE(LU,*)
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'AVEC TRANSFORMATION DU MAILLAGE = 2'
-          WRITE(LU,*) 'DONNER DANS CONDIM LES VALEURS DE ZSTAR' 
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'WITH MESH TRANSFORMATION = 2'
-          WRITE(LU,*) 'GIVE THE VALUES OF ZSTAR IN CONDIM'
-        ENDIF
-        WRITE(LU,*) 
-        CALL PLANTE(1)
-        STOP
-!       EXAMPLE WITH 3 PLANES         
-!       ZSTAR%R(1)=0.D0
-!       ZSTAR%R(2)=0.3D0
-!       ZSTAR%R(3)=1.D0  
-      ELSEIF(TRANSF.EQ.3) THEN
-        IF(NPLINT.GE.2) THEN
-          DO IPLAN = 1,NPLINT-1
-            ZSTAR%R(IPLAN) = DBLE(IPLAN-NPLINT)/DBLE(NPLINT-1)
-          ENDDO
-        ENDIF
-        DO IPLAN = NPLINT,NPLAN
-          ZSTAR%R(IPLAN) = DBLE(IPLAN-NPLINT)/DBLE(NPLAN-NPLINT)
-        ENDDO
-      ELSEIF(TRANSF.EQ.4) THEN
-        WRITE(LU,*)
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'AVEC TRANSFORMATION DU MAILLAGE = 4'
-          WRITE(LU,*) 'DONNER DANS CONDIM LES VALEURS DE ZSTAR'
-          WRITE(LU,*) 'COTES REELLES SOOUHAITEES DES PLANS' 
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'WITH MESH TRANSFORMATION = 4'
-          WRITE(LU,*) 'GIVE THE VALUES OF ZSTAR IN CONDIM'
-          WRITE(LU,*) 'REAL ELEVATION OF PLANES'
-        ENDIF
-        WRITE(LU,*) 
-        CALL PLANTE(1)
-        STOP
-!        EXAMPLE WITH 4 PLANES         
-!        ZSTAR%R(1)=-10.D0
-!        ZSTAR%R(2)=-9.D0
-!        ZSTAR%R(3)=-8.D0
-!        ZSTAR%R(4)=-7.D0
-      ELSE
-!       SIGMA TRANSFORMATION AND OTHER CASES
-        DO IPLAN = 1,NPLAN
-          ZSTAR%R(IPLAN) = DBLE(IPLAN-1)/DBLE(NPLAN-1)
-        ENDDO
-      ENDIF
+!     EXAMPLE 3: ONE PLANE (NUMBER 4) WITH PRESCRIBED ELEVATION
+!                AND SIGMA ELSEWHERE
+!
+!     DO IPLAN = 1,NPLAN
+!       TRANSF_PLANE%I(IPLAN)=1
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=-3.D0
+!
+!
+!     EXAMPLE 4: ONE PLANE WITH PRESCRIBED ELEVATION
+!                AND 2 SIGMA TRANSFORMATIONS, WITH NPLAN=7
+!                SIGMA TRANSFORMATIONS ARE MEANT BETWEEN
+!                BOTTOM, FIXED ELEVATION PLANES AND FREE SURFACE
+!                THE VALUES OF ZSTAR ARE LOCAL FOR EVERY
+!                SIGMA TRANSFORMATION: 0. FOR LOWER FIXED PLANE
+!                                      1. FOR UPPER FIXED PLANE
+!
+!     DO IPLAN = 1,7
+!       TRANSF_PLANE%I(IPLAN)=2
+!     ENDDO
+!     TRANSF_PLANE%I(4)=3
+!     ZPLANE%R(4)=3.D0
+!     ZSTAR%R(2)=0.2D0
+!     ZSTAR%R(3)=0.8D0
+!     ZSTAR%R(5)=0.1D0
+!     ZSTAR%R(6)=0.9D0
+!
+!
 !
 !***********************************************************************
 !
@@ -287,7 +265,7 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END
+      END     
 !
 !===========================================================
 ! Wesel-Xanten, The Rhine River, Rhein-km 812.5 - 821.5
