@@ -42,6 +42,12 @@
 !+  Name of variables   
 !+   
 !
+!history  P.TASSI (EDF-LNHE)
+!+        30/05/2012
+!+        V6P2
+!+  Case DSTAR > 150 AC(I) = 0.045D0   
+!+   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -193,15 +199,17 @@ C
         DO I = 1, NSICLA
           DSTAR = FDM(I)*(GRAV*DENS/VCE**2)**(1.D0/3.D0)
           IF (DSTAR <= 4.D0) THEN
-            AC(I) = 0.24*DSTAR**(-1.0D0)
+            AC(I) = 0.24D0/DSTAR
           ELSEIF (DSTAR <= 10.D0) THEN
             AC(I) = 0.14D0*DSTAR**(-0.64D0)
           ELSEIF (DSTAR <= 20.D0) THEN
             AC(I) = 0.04D0*DSTAR**(-0.1D0)
           ELSEIF (DSTAR <= 150.D0) THEN
-            AC(I) = 0.013D0*DSTAR**(0.29D0)
+            AC(I) = 0.013D0*DSTAR**0.29D0
           ELSE
-            AC(I) = 0.055D0
+!           CORRECTION 30/05/2012
+!           AC(I) = 0.055D0
+            AC(I) = 0.045D0
           ENDIF          
         ENDDO
       ENDIF
