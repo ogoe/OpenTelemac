@@ -58,6 +58,11 @@
 !+        V6P2   
 !+        Clean restart implemented.
 !
+!history  J-M HERVOUET (LNHE)
+!+        30/05/2012
+!+        V6P2   
+!+        Call to vector before call to Tel4del corrected (GRAZCO)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -1662,10 +1667,13 @@
 !     THE ASSEMBLED RESULT IN T3_04 IS NOT USED HERE
       SAVEZ     =>MESH3D%Z%R
       MESH3D%Z%R=>ZPROP%R
-      CALL VECTOR(T3_04,'=',FORMUL,IELM3,-1.D0,DM1,ZCONV,SVIDE,
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE VECTOR'
+      CALL VECTOR(T3_04,'=',FORMUL,IELM3,-1.D0,DM1,SVIDE,GRAZCO,
      &            UCONV,VCONV,SVIDE,MESH3D,MSK,MASKEL)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VECTOR'
       MESH3D%Z%R=>SAVEZ
 !     SENDS UCONV AND VCONV AS ADVECTING FIELD (SEE WAVE_EQUATION)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TEL4DEL'
       CALL TEL4DEL(NPOIN3,NPOIN2,NELEM3,MESH2D%NSEG,
      &  MESH2D%IKLE%I,MESH2D%ELTSEG%I,MESH2D%GLOSEG%I,MESH2D%ORISEG%I,
      &  MESH2D%GLOSEG%DIM1,X,Y,MESH3D%NPTFR,LIHBOR%I,MESH3D%NBOR%I,
@@ -1686,6 +1694,7 @@
      &T3D_FILES(T3DL10)%NAME,INFOGR,NELEM2,SALI_DEL,TEMP_DEL,VELO_DEL,
      &DIFF_DEL,MARDAT,MARTIM,FLODEL%R,.TRUE.,MESH3D%W%R,OPT_HNEG.EQ.2,
      &FLULIM%R,V2DPAR%R,MESH2D%KNOLG%I,MESH2D,MESH3D)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TEL4DEL'
 !
       ENDIF
 !
