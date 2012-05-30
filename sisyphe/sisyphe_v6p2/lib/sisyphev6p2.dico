@@ -1279,23 +1279,24 @@ the bed evolution of non-cohesive sand transport.'
 NOM = 'PARAMETRES DE SHIELDS'
 NOM1 = 'SHIELDS PARAMETERS'            
 TYPE = REEL
+MNEMO = 'AC'
 INDEX = 6
 TAILLE = 10
-DEFAUT = 0.047
-DEFAUT1 = 0.047
 RUBRIQUE = 'GENERAL'
 RUBRIQUE1 = 'GENERAL'
 NIVEAU = 1
 AIDE = 'Utilise pour determiner la valeur de la contrainte critique
 d''entrainement (sédiments non-cohésifs). En multiclasse, specifier la valeur 
-pour chaque classe,sinon on prend la même valeur.  Par défaut le code calcule lui 
+pour chaque classe,sinon on prend la même valeur.
+Par défaut (si aucune valeur donnee) le code calcule lui 
 même le parametre de Shields en fonction du diametre.'
 AIDE1 = 'Used to determine the critical bed shear stress value (non-cohesive sediments). 
 For multi grain size, 
 the shields parameter needs to be specified for each class. If only one 
 value is specified, the shields parameter will be considered constant. 
-The default option is to calculate the shields parameter as a function of 
-sand grain diameter.'
+The default option (no shields given in parameter file)
+is to calculate the shields parameter as a function of 
+sand grain diameter (see logical CALAC).'
 
 NOM = 'GRAVITE'
 NOM1 = 'GRAVITY ACCELERATION'             
@@ -1327,6 +1328,7 @@ NOM = 'VISCOSITE CINEMATIQUE EAU'
 NOM1 = 'WATER VISCOSITY'        
 TYPE = REEL
 INDEX = 10
+MNEMO = 'VCE'
 DEFAUT = 1.E-6
 DEFAUT1 = 1.E-6
 RUBRIQUE = 'PHYSIQUE'
@@ -2039,8 +2041,8 @@ COMPORT = 'DISPLAY %SUSPENSION% = OUI'
 AIDE = 'Pas de valeur par defaut
 Si non donne par l utilisateur, on utilise la subroutine vitchu-sisyphe : 
 formules de Stokes, Zanke ou Van Rijn, selon la taille des grains'
-AIDE1 = 'The default value is not given. If the user don t give a value,
-use the subroutine vitchu-sisyphe :
+AIDE1 = 'The default value is not given. If the user does not
+give a value, the subroutine vitchu-sisyphe is used:
 Stockes, Zanke or Van Rijn formulae depending on the grain size'
 
 NOM = 'PRISE EN COMPTE DE LA HOULE'
@@ -2979,102 +2981,6 @@ mais le flux est correct'
 AIDE1= 'Used so far only with the PSI and N schemes.
 With option 2, Dirichlet prescribed values are not obeyed,
 but the fluxes are correct'
-
-/
-/
-/ FOR PERL OR PYTHON SCRIPTS
-/
-/
-NOM = 'LISTE DES FICHIERS'
-NOM1 = 'LIST OF FILES'
-TYPE = CARACTERE
-INDEX = 99
-MNEMO = ''
-TAILLE = 15
-DEFAUT = 'FICHIER DE GEOMETRIE';
-         'FICHIER DES CONDITIONS AUX LIMITES';
-         'FICHIER DES RESULTATS';
-         'FICHIER DES FONDS';
-         'FICHIER DE REFERENCE';
-         'FICHIER PRECEDENT SEDIMENTOLOGIQUE';
-         'FICHIER DU CALCUL PRECEDENT';
-         'FICHIER HYDRODYNAMIQUE';
-         'FICHIER DE HOULE';
-         'FICHIER FORTRAN';
-         'FICHIER DES PARAMETRES';
-         'FICHIER DE DREDGESIM';
-         'DICTIONNAIRE';
-         'SECTIONS INPUT FILE';
-         'SECTIONS OUTPUT FILE'
-DEFAUT1 ='GEOMETRY FILE';
-         'BOUNDARY CONDITIONS FILE';
-         'RESULTS FILE';
-         'BOTTOM TOPOGRAPHY FILE';
-         'REFERENCE FILE';
-         'PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE';
-         'PREVIOUS COMPUTATION FILE';
-         'HYDRODYNAMIC FILE';
-         'WAVE FILE';
-         'FORTRAN FILE';
-         'STEERING FILE';
-         'DREDGESIM FILE';
-         'DICTIONARY';        
-         'SECTIONS INPUT FILE';
-         'SECTIONS OUTPUT FILE'
-         
-NOM = 'DESCRIPTION DES LIBRAIRIES'
-NOM1 = 'DESCRIPTION OF LIBRARIES'
-TYPE = CARACTERE
-INDEX = 54
-MNEMO = 'LINKLIBS'
-TAILLE = 5
-DEFAUT = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.LLL';
-'bief|bief_VVV|PPP|biefMMMVVV.LLL';
-'special|special_VVV|PPP|specialMMMVVV.LLL';
-'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'
-/'dredgesim|dredgesim_VVV|PPP|dredgesimMMMVVV.LLL'
-
-DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.LLL';
-'bief|bief_VVV|PPP|biefMMMVVV.LLL';
-'special|special_VVV|PPP|specialMMMVVV.LLL';
-'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'
-/'dredgesim|dredgesim_VVV|PPP|dredgesimMMMVVV.LLL'
-
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE  = 'Description des librairies de SISYPHE'
-AIDE1 = 'SISYPHE LIBRARIES description'
-
-NOM = 'EXECUTABLE PAR DEFAUT'
-NOM1 = 'DEFAULT EXECUTABLE'
-TYPE = CARACTERE
-INDEX = 57
-MNEMO = 'EXEDEF'
-TAILLE = 1
-DEFAUT  = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.exe'
-DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.exe'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE  = 'Executable par defaut de SISYPHE'
-AIDE1 = 'Default executable for SISYPHE'
-
-NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
-NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
-TYPE = CARACTERE
-INDEX = 58
-MNEMO = 'EXEDEFPARA'
-TAILLE = 1
-DEFAUT  = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV_MP.exe'
-DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV_MP.exe'
-RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
-RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
-NIVEAU = 1
-AIDE  = 'Executable par defaut de SISYPHE'
-AIDE1 = 'Default executable for SISYPHE'
 /
 / V6P1 CV
 /
@@ -3170,7 +3076,6 @@ NIVEAU = 1
 AIDE = '(-)'
 AIDE1 = 'Alpha coefficient of secondary current(-)'     
 /
-/
 / UM MORPHOLOGICAL FACTOR
 /
 NOM = 'MORPHOLOGICAL FACTOR'
@@ -3186,4 +3091,120 @@ NIVEAU = 1
 AIDE = '(-)'
 AIDE1 = 'Amplification for the morphological time scale(-)'     
 /
-/--eof--
+/ New file for variations in time of boundary conditions
+/
+NOM = 'FICHIER DES FRONTIERES LIQUIDES' 
+NOM1 = 'LIQUID BOUNDARIES FILE' 
+TYPE = CARACTERE 
+INDEX = 38 
+MNEMO = 'SIS_FILES(SISLIQ)%NAME' 
+SUBMIT = 'SISLIQ-READ-12;SISLIQ;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+APPARENCE = 'LISTE IS FICHIER' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier de variations en temps des conditions aux limites. 
+Les donnees de ce fichier sont sur le canal SIS_FILES(SISLIQ)%LU.' 
+AIDE1 = 'Variations in time of boundary conditions. Data of this file are read 
+on channel SIS_FILES(SISLIQ)%LU.'  
+/
+/
+/
+/ FOR PERL OR PYTHON SCRIPTS
+/
+/
+NOM = 'LISTE DES FICHIERS'
+NOM1 = 'LIST OF FILES'
+TYPE = CARACTERE
+INDEX = 99
+MNEMO = ''
+TAILLE = 16
+DEFAUT = 'FICHIER DE GEOMETRIE';
+         'FICHIER DES CONDITIONS AUX LIMITES';
+         'FICHIER DES RESULTATS';
+         'FICHIER DES FONDS';
+         'FICHIER DE REFERENCE';
+         'FICHIER PRECEDENT SEDIMENTOLOGIQUE';
+         'FICHIER DU CALCUL PRECEDENT';
+         'FICHIER HYDRODYNAMIQUE';
+         'FICHIER DE HOULE';
+         'FICHIER FORTRAN';
+         'FICHIER DES PARAMETRES';
+         'FICHIER DE DREDGESIM';
+         'DICTIONNAIRE';
+         'SECTIONS INPUT FILE';
+         'SECTIONS OUTPUT FILE';
+         'FICHIER DES FRONTIERES LIQUIDES'
+DEFAUT1 ='GEOMETRY FILE';
+         'BOUNDARY CONDITIONS FILE';
+         'RESULTS FILE';
+         'BOTTOM TOPOGRAPHY FILE';
+         'REFERENCE FILE';
+         'PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE';
+         'PREVIOUS COMPUTATION FILE';
+         'HYDRODYNAMIC FILE';
+         'WAVE FILE';
+         'FORTRAN FILE';
+         'STEERING FILE';
+         'DREDGESIM FILE';
+         'DICTIONARY';        
+         'SECTIONS INPUT FILE';
+         'SECTIONS OUTPUT FILE';
+         'LIQUID BOUNDARIES FILE'
+         
+NOM = 'DESCRIPTION DES LIBRAIRIES'
+NOM1 = 'DESCRIPTION OF LIBRARIES'
+TYPE = CARACTERE
+INDEX = 54
+MNEMO = 'LINKLIBS'
+TAILLE = 5
+DEFAUT = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.LLL';
+'bief|bief_VVV|PPP|biefMMMVVV.LLL';
+'special|special_VVV|PPP|specialMMMVVV.LLL';
+'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
+'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'
+/'dredgesim|dredgesim_VVV|PPP|dredgesimMMMVVV.LLL'
+
+DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.LLL';
+'bief|bief_VVV|PPP|biefMMMVVV.LLL';
+'special|special_VVV|PPP|specialMMMVVV.LLL';
+'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
+'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'
+/'dredgesim|dredgesim_VVV|PPP|dredgesimMMMVVV.LLL'
+
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Description des librairies de SISYPHE'
+AIDE1 = 'SISYPHE LIBRARIES description'
+
+NOM = 'EXECUTABLE PAR DEFAUT'
+NOM1 = 'DEFAULT EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 57
+MNEMO = 'EXEDEF'
+TAILLE = 1
+DEFAUT  = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.exe'
+DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable par defaut de SISYPHE'
+AIDE1 = 'Default executable for SISYPHE'
+
+NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
+NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 58
+MNEMO = 'EXEDEFPARA'
+TAILLE = 1
+DEFAUT  = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV_MP.exe'
+DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV_MP.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable par defaut de SISYPHE'
+AIDE1 = 'Default executable for SISYPHE'
+/
