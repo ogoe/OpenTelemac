@@ -1,6 +1,6 @@
-!                       *****************
-                        SUBROUTINE CORFON
-!                       *****************
+!                       *********************
+                        SUBROUTINE T3D_CORFON
+!                       *********************
 !
      &(SZF, ST1, ST2, ZF, T1, T2, X, Y, PRIVE, NPOIN2,
      & LISFON, MSK, MASKEL, MATR2D, MESH2D, S)
