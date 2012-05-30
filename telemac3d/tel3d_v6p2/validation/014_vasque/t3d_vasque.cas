@@ -1,16 +1,15 @@
-STOCKAGE DES MATRICES : 3
 /
 /   86 s SUR HP C3700 5.6  27/09/2005 (segments)
-/   90 s SUR HP C3700 5.7  13/02/2007 (Nag:218 s,Dell:70 s)
-/   84 s SUR HP C3700 5.8  19/12/2007 (Nag:209 s,Dell:76 s)
-/   81 s SUR HP C3700 5.9  17/10/2008 (Nag:200 s,Dell:72 s)
+/   90 s SUR HP C3700 5.7  13/02/2007 (Nag:218 s,Dell :70 s)
+/   84 s SUR HP C3700 5.8  19/12/2007 (Nag:209 s,Dell :76 s)
+/   81 s SUR HP C3700 5.9  17/10/2008 (Nag:200 s,Dell :72 s)
+/   62 s SUR HP C3700 6.0  21/05/2010 (Nag:158 s,Intel:33 s)
+/   63 s SUR HP C3700 6.1  21/01/2011 (Nag:??? s,Intel:?? s)
+/   60 s SUR HP C3700 6.2  30/05/2012 (Nag:??? s,Intel:?? s)
 /
 FICHIER FORTRAN                    : t3d_vasque.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_vasque.cli
 FICHIER DE GEOMETRIE               : geo_vasque.slf
-/
-ELEMENT : PRISME
-/
 FICHIER DES RESULTATS 3D           : r3d_vasque.slf
 FICHIER DES RESULTATS 2D           : r2d_vasque.slf
 FICHIER DE REFERENCE               : f3d_vasque.slf
@@ -19,9 +18,12 @@ VALIDATION : OUI
 NOMBRE DE PLANS HORIZONTAUX : 10
 /           
 /----------------------------------------------------------------------/ 
-/                     OPTIONS GENERALES                                  
+/                        OPTIONS GENERALES                             /                                 
 /----------------------------------------------------------------------/
 / 
+STOCKAGE DES MATRICES : 3
+ELEMENT : PRISME
+/
 TITRE = 'TELEMAC 3D : TEST POUR SOURCE de MASSE SUR BASSIN FERME'              
 SUITE DE CALCUL : NON                                                    
 VARIABLES POUR LES SORTIES GRAPHIQUES 2D : 'U,V,H,B,S'
@@ -60,19 +62,7 @@ LOI DE FROTTEMENT SUR LE FOND = 3
 COEFFICIENT DE DIFFUSION HORIZONTAL DES VITESSES = 0.1D0
 COEFFICIENT DE DIFFUSION VERTICAL DES VITESSES   = 0.1D0 
 /
-/ CAS AU REPOS            
-/CONDITIONS INITIALES : 'COTE CONSTANTE'
-/COTE INITIALE : -0.4
-/
-/
 VALEUR MINIMALE POUR LA HAUTEUR : -1000. 
-/
-/EQUATION D'ONDE + GRADIENT CONJUGUE
-/OPTIONS POUR TELEMAC-2D : 1;2  SOLVEUR POUR LA PROPAGATION : 1
-/SOLVEUR POUR LA DIFFUSION DES VITESSES = 1
-/PRECONDITIONNEMENT POUR LA PROPAGATION : 7
-/PRECONDITIONNEMENT POUR LA DIFFUSION DES VITESSES = 7
-/
 /
 / NON HYDROSTATIQUE
 / 
