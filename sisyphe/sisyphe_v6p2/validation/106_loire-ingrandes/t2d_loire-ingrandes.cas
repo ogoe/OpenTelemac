@@ -6,8 +6,6 @@
 / A comparer avec la figure 20 de la these de Matthieu de Linares
 / mais fait ici avec un coefficient de frottement constant.
 /
-/ Coefficient morphodynamique de 100
-/
 /----------------------------------------------------------------------/
 /
 / Dell 2.8 GHz Linux, compilateur pgi:  141 s version 5.8 JMH 18/01/2008
@@ -32,7 +30,7 @@
 FICHIER DE GEOMETRIE               = geo_loire-ingrandes.slf
 FICHIER DES CONDITIONS AUX LIMITES = geo_loire-ingrandes.cli
 FICHIER DES RESULTATS              = r2d_loire-ingrandes.slf
-FICHIER DES FRONTIERES LIQUIDES    = t2d_loire-ingrandes.qsl
+/FICHIER DES FRONTIERES LIQUIDES    = t2d_loire-ingrandes.qsl
 FICHIER FORTRAN                    = t2d_loire-ingrandes.f
 FICHIER DU CALCUL PRECEDENT        = geo_loire-ingrandes.slf
 FICHIER DE REFERENCE               = f2d_loire-ingrandes.slf
@@ -47,23 +45,27 @@ FICHIER DES PARAMETRES DE SISYPHE  = sis_loire-ingrandes.cas
 COUPLAGE AVEC = 'SISYPHE'
 /PERIODE DE COUPLAGE = 1
 PERIODE POUR LES SORTIES GRAPHIQUES   = 100
-PERIODE DE SORTIE LISTING             = 100
+PERIODE DE SORTIE LISTING             = 10
 VARIABLES POUR LES SORTIES GRAPHIQUES = 'U,V,H,S,B,L,F,W'
-INFORMATIONS SUR LE SOLVEUR           = OUI
+/INFORMATIONS SUR LE SOLVEUR           = OUI
 BILAN DE MASSE                        = OUI
 /
 /----------------------------------------------------------------------/
 /
-SUITE DE CALCUL = OUI    REMISE A ZERO DU TEMPS = OUI
+SUITE DE CALCUL = OUI    
+REMISE A ZERO DU TEMPS = OUI
 /NOMBRE DE PAS DE TEMPS                = 230400
 /hydrogramme cent fois plus court (facteur 100 dans bedload_meyer)
 /=huit jours reels en tout
-NOMBRE DE PAS DE TEMPS = 2304   PAS DE TEMPS = 3.
+NOMBRE DE PAS DE TEMPS = 2304   
+PAS DE TEMPS = 3.
 /
-CONDITIONS INITIALES = 'COTE CONSTANTE'    COTE INITIALE = 10.05
+CONDITIONS INITIALES = 'COTE CONSTANTE'    
+COTE INITIALE = 10.05
 /----------------------------------------------------------------------/
 /
-LOI DE FROTTEMENT SUR LE FOND = 3   COEFFICIENT DE FROTTEMENT = 35.
+LOI DE FROTTEMENT SUR LE FOND = 3   
+COEFFICIENT DE FROTTEMENT = 35.
 DEBITS IMPOSES      = 3990.;0.;0.
 COTES IMPOSEES      = 0;12.695;12.695
 PROFILS DE VITESSE  = 4;4;4
@@ -73,7 +75,9 @@ BANCS DECOUVRANTS   = OUI
 / PARAMETRES NUMERIQUES
 /----------------------------------------------------------------------/
 /
-TRAITEMENT DU SYSTEME LINEAIRE : 2 SOLVEUR : 1 PRECONDITIONNEMENT : 2
+TRAITEMENT DU SYSTEME LINEAIRE : 2 
+SOLVEUR : 1 
+PRECONDITIONNEMENT : 2
 COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.8
 /
 PRECONDITIONNEMENT                    = 2
@@ -89,6 +93,7 @@ IMPLICITATION POUR LA VITESSE         = 0.6
 / EQUATIONS
 /----------------------------------------------------------------------/
 /
-MODELE DE TURBULENCE = 1   COEFFICIENT DE DIFFUSION DES VITESSES = 1.
+MODELE DE TURBULENCE = 1   
+COEFFICIENT DE DIFFUSION DES VITESSES = 1.
 /
-/&ETA
+&ETA
