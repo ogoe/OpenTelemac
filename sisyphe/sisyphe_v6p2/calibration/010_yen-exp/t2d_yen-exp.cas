@@ -29,7 +29,7 @@
 /                      FILE DEFINITION
 /----------------------------------------------------------------------
 /
-COUPLING WITH                    = 'INTER-SISYPHE'
+COUPLING WITH                    = 'SISYPHE'
 /COUPLING PERIOD                  = 1
 SISYPHE STEERING FILE    = sis_yen-exp.cas
 FORTRAN FILE                     :  t2d_yen-exp.f
@@ -47,11 +47,17 @@ PREVIOUS COMPUTATION FILE        :  ini_yen-exp.slf
 TITLE : '1st try Yen-Versuch '
 /
 VARIABLES FOR GRAPHIC PRINTOUTS             : 'U,V,S,B,H,Q,M,W'
-VARIABLES TO BE PRINTED                     : ''
-TIME STEP : 0.25       NUMBER OF TIME STEPS : 72000
-GRAPHIC PRINTOUT PERIOD                     :  4000
+/VARIABLES TO BE PRINTED                     : 'U,V,S,B,H,Q,M,W'
+TIME STEP : 0.1       
 /
-LISTING PRINTOUT PERIOD                     : 1000
+/NUMBER OF TIME STEPS : 72000
+/GRAPHIC PRINTOUT PERIOD                     :  4000
+/LISTING PRINTOUT PERIOD                     : 1000
+//
+NUMBER OF TIME STEPS : 7200
+GRAPHIC PRINTOUT PERIOD                     : 400
+LISTING PRINTOUT PERIOD                     : 100
+/
 COMPUTATION CONTINUED                       : YES
 VALIDATION				    : YES
 /
