@@ -1,4 +1,5 @@
 / no influence
+POROSITE DU LIT NON COHESIF= 0.4
 /CORRECTION FROTTEMENT DE PEAU = 1
 /DEBUGGER : 1
 /
@@ -37,8 +38,6 @@ BETA =0
 /
 / +++++++++++++++++++++++++++++++++++++++++++++++++++++
 / evolution d'une bosse - transport par charriage (formule N°30)
-/ validation en VF : bosse_VF.ref
-/ validation en éléments finis : bosse.ref
 / +++++++++++++++++++++++++++++++++++++++++++++++++++++
 /
 / NOMS FICHIERS
@@ -75,10 +74,10 @@ VALEUR MINIMUM DE H = 0.1
 /
 /DUREE DU CALCUL
 / ++++++++++++++
-NOMBRE DE PAS DE TEMPS = 144
-PERIODE DE SORTIE GRAPHIQUE = 18
-PERIODE DE SORTIE LISTING = 18
-PAS DE TEMPS = 100.
+NOMBRE DE PAS DE TEMPS = 1000
+PERIODE DE SORTIE GRAPHIQUE = 100
+PERIODE DE SORTIE LISTING = 10
+PAS DE TEMPS = 10.
 /
 /FROTTEMENT ET TRANSPORT SOLIDE
 / +++++++++++++++++++++++++++++
@@ -87,9 +86,7 @@ COEFFICIENT DE FROTTEMENT = 45.57
 /
 FORMULE DE TRANSPORT SOLIDE = 30
 RAPPORT D'EVOLUTION CRITIQUE = 0.5
-/DIAMETRES DES GRAINS = 0.000150
 DIAMETRE MOYEN DES GRAINS = 0.000150
-/COEFFICIENT FONCTION DE LA POROSITE = 1.6
 /
 /&ETA
 
