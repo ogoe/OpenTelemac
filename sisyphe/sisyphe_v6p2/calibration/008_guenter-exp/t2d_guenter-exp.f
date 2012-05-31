@@ -1,189 +1,181 @@
+C#######################################################################
 C
-C pas de princi pour le calcul telemac
-C mais c'est nécessaire pour la compilation du
-C princi du calcul sisyphe
+                        PROGRAM HOMERE_TELEMAC2D
 C
-C ici test avec initialisation à + infini des tableaux.
+C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 C
-C                       *****************
-                        SUBROUTINE ALLVEC
-C                       *****************
-C
-     *( NAT , VEC , NOM , IELM , DIM2 , STATUT )
-C
-C***********************************************************************
-C BIEF VERSION 5.6            11/07/95    J-M HERVOUET (LNH) 30 87 80 18
-C***********************************************************************
-C
-C  FONCTION  : ALLOCATION EN MEMOIRE D'UNE STRUCTURE DE VECTEUR
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________
-C |   NAT          |<-- | 1: VECTEUR REEL   2:VECTEUR ENTIER
-C |   VEC          |<-- | VECTEUR A ALLOUER
-C |   NOM          | -->| NOM FORTRAN DU TABLEAU
-C |   IELM         | -->| TYPE D'ELEMENT DU VECTEUR, OU DIMENSION
-C |                |    | (SUIVANT LE STATUT, VOIR PLUS BAS)
-C |   DIM2         | -->| DEUXIEMME DIMENSION DU VECTEUR
-C |   STATUT       | -->| STATUT DU VECTEUR :
-C |                |    | 0 : VECTEUR LIBRE, IELM EST ALORS SA DIMENSION
-C |                |    | 1 : VECTEUR DEFINI SUR LE MAILLAGE
-C |                |    |     IELM EST ALORS LE TYPE D'ELEMENT
-C |                |    |     CHANGEMENT DE DISCRETISATION INTERDIT
-C |                |    | 2 : COMME 1 MAIS CHANGEMENTS AUTORISES
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-C
-      USE BIEF, EX_ALLVEC => ALLVEC
+      USE BIEF
+      USE DECLARATIONS_TELEMAC
+      USE DECLARATIONS_TELEMAC2D
+      USE DECLARATIONS_SISYPHE, ONLY : SIS_FILES,MAXLU_SIS
+      USE INTERFACE_TELEMAC2D
 C
       IMPLICIT NONE
-      INTEGER LNG,LU
+      INTEGER     LNG,LU
       COMMON/INFO/LNG,LU
 C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      INTEGER TDEB(8),TFIN(8),NCAR,IFLOT
 C
-      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: VEC
-      INTEGER         , INTENT(IN)    :: NAT,IELM,DIM2,STATUT
-      CHARACTER(LEN=6), INTENT(IN)    :: NOM
+      CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
+      CHARACTER(LEN=24), PARAMETER :: CODE2='SISYPHE                 '
 C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      CHARACTER(LEN=250) PATH
+      CHARACTER(LEN=144) MOTCAR(300),FILE_DESC(4,300)
 C
-      INTEGER ERR
-      INTRINSIC MAX
+C======================================================================
 C
-      INTEGER IMAX,I
-      DOUBLE PRECISION XMAX
+C     INITIALISES FILES (NAMES OF FILES=' ' AND LOGICAL UNITS =0)
+C     GETTING NCSIZE BY CALLING P_INIT
 C
-C-----------------------------------------------------------------------
-C  HEADER COMMON TO ALL OBJECTS
-C-----------------------------------------------------------------------
+      CALL BIEF_INIT(CODE1,PATH,NCAR,.TRUE.)
 C
-C     TO CHECK MEMORY CRASHES
+C     INITIAL TIME FOR COMPUTATION DURATION
 C
-      VEC%KEY = 123456
+      CALL DATE_AND_TIME(VALUES=TDEB)
 C
-C     TYPE OF OBJECT (HERE VECTOR)
+C     PRINTS BANNER TO LISTING
 C
-      VEC%TYPE = 2
-C
-C     NAME OF OBJECT
-C
-      VEC%NAME = NOM
-C
-C-----------------------------------------------------------------------
-C  PART SPECIFIC TO VECTORS
-C-----------------------------------------------------------------------
-C
-C     NATURE
-C
-      VEC%NAT = NAT
-C
-C     MAXIMUM SIZE PER DIMENSION
-C
-      IF(STATUT.EQ.1.OR.STATUT.EQ.2) THEN
-        VEC%MAXDIM1 = NBMPTS(IELM)
-      ELSE
-        VEC%MAXDIM1 = IELM
-      ENDIF
-C
-C     VEC%MAXDIM1 MUST BE AT LEAST 1
-C     TO AVOID BOUND CHECKING ERRORS ON SOME COMPILERS
-C
-      VEC%MAXDIM1=MAX(VEC%MAXDIM1,1)
-C
-C     DISCRETISATION
-C
-      IF(STATUT.EQ.1.OR.STATUT.EQ.2) THEN
-        VEC%ELM = IELM
-      ELSE
-        VEC%ELM = -1000
-      ENDIF
-C
-C     FIRST DIMENSION OF VECTOR
-C
-      IF(STATUT.EQ.1.OR.STATUT.EQ.2) THEN
-        VEC%DIM1 = NBPTS(IELM)
-      ELSE
-        VEC%DIM1 = IELM
-      ENDIF
-C
-C     SECOND DIMENSION OF VECTOR (VEC%DIM2 MAY BE CHANGED)
-C
-      VEC%DIM2    = DIM2
-      VEC%MAXDIM2 = DIM2
-C
-C     CASE OF DISCONTINUITY BETWEEN ELEMENTS
-C     (SEE CORRSL, VC13AA, VC13BB)
-C
-      VEC%DIMDISC = 0
-C
-C     STATUS
-C
-      VEC%STATUS = STATUT
-C
-C     INFORMATION ON CONTENT
-C
-      VEC%TYPR = '?'
-      VEC%TYPI = '?'
-C
-C     DYNAMIC ALLOCATION OF MEMORY (REAL OR INTEGER, DEPENDING OF NAT)
-C
-      IF(NAT.EQ.1) THEN
-C
-        ALLOCATE(VEC%R(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)
-C       jaj nullify the integer part 
-        NULLIFY(VEC%I)
-C
-C       FILLING ARRAY WITH BIG NUMBERS
-C       TO RAISE QUESTIONS IF NOT INITIALISED
-C
-        XMAX = HUGE(100.D0)
-        CALL OV('X=C     ',VEC%R,VEC%R,VEC%R,XMAX,
-     *          VEC%MAXDIM1*VEC%DIM2)
-C
-      ELSEIF(NAT.EQ.2) THEN
-C
-        ALLOCATE(VEC%I(VEC%MAXDIM1*VEC%DIM2),STAT=ERR)  
-C       jaj nullify the real part
-        NULLIFY(VEC%R)
-C
-C       FILLING ARRAY WITH BIG NUMBERS
-C       TO RAISE QUESTIONS IF NOT INITIALISED
-C
-        IMAX = HUGE(100)
-          DO I=1,VEC%MAXDIM1*VEC%DIM2
-            VEC%I(I) = IMAX
-          END DO
-C
-      ELSE
-        STOP 'UNKNOWN NAT IN ALLVEC'
-      ENDIF
+      IF(LNG.EQ.1) WRITE(LU,100)
+      IF(LNG.EQ.2) WRITE(LU,101)
+      WRITE(LU,102)
+100   FORMAT(/////,1X,'LISTING DE TELEMAC-2D ',78('-'))
+101   FORMAT(/////,1X,'LISTING OF TELEMAC-2D ',78('-'))
+102   FORMAT(/////,
+     &14X,'   TTTTT  EEEEE  L      EEEEE  M   M  AAAAA  CCCCC',/,
+     &14X,'     T    E      L      E      MM MM  A   A  C    ',/,
+     &14X,'     T    EEE    L      EEE    M M M  AAAAA  C    ',/,
+     &14X,'     T    E      L      E      M   M  A   A  C    ',/,
+     &14X,'     T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
+     &14X,'                                                  ',/,
+     &14X,'           2D    VERSION 6.0    FORTRAN 90        ',/,
+     &14X,'                 WITH SEVERAL TRACERS             ',/,
+     &14X,'           COUPLED WITH SISYPHE INTERNALLY        ',/,
+     &14X,/////)
 C
 C-----------------------------------------------------------------------
 C
-      IF(ERR.EQ.0) THEN
-C       IF(LNG.EQ.1) WRITE(LU,*) 'VECTEUR : ',NOM,' ALLOUE'
-C       IF(LNG.EQ.2) WRITE(LU,*) 'VECTOR: ',NOM,' ALLOCATED'
+C     READS THE STEERING FILE
+C
+      CALL LECDON_TELEMAC2D(MOTCAR,FILE_DESC,PATH,NCAR)
+C
+C-----------------------------------------------------------------------
+C
+C     OPENS THE FILES FOR TELEMAC2D
+C
+      IFLOT = 0
+      CALL BIEF_OPEN_FILES(CODE1,T2D_FILES,MAXLU_T2D,PATH,NCAR,
+     &                     INCLUS(COUPLING,'INTER'),IFLOT,1)
+C
+C-----------------------------------------------------------------------
+C
+C     ALLOCATES MEMORY
+C
+      CALL POINT_TELEMAC2D
+C
+C-----------------------------------------------------------------------
+C
+C     INITIALISES SISYPHE
+C
+      IF(INCLUS(COUPLING,'SISYPHE')) THEN
+C
+C                                       FALSE= P_INIT NOT CALLED
+        CALL BIEF_INIT(CODE2,PATH,NCAR,.FALSE.)
+C
+        IF(LNG.EQ.1) WRITE(LU,103)
+        IF(LNG.EQ.2) WRITE(LU,104)
+        WRITE(LU,105)
+103     FORMAT(/////,1X,'LISTING DE SISYPHE AVEC COUPLAGE',78('-'))
+104     FORMAT(/////,1X,'LISTING OF SISYPHE WITH COUPLING',78('-'))
+105     FORMAT(/////,
+     &  14X,'    SSSS I   SSSS Y   Y PPPP  H   H EEEEE' ,/,
+     &  14X,'   S     I  S      Y Y  P   P H   H E    ' ,/,
+     &  14X,'    SSS  I   SSS    Y   PPPP  HHHHH EEEE  ',/,
+     &  14X,'       S I      S   Y   P     H   H E     ',/,
+     &  14X,'   SSSS  I  SSSS    Y   P     H   H EEEEE' ,/,
+     &  14X,'                                          ',/,
+     &  14X,'                VERSION 6.0               ',/,
+     &  14X,'      COUPLED WITH TELEMAC-2D INTERNALLY  ',/,
+     &  14X,/////)
+C
+      CALL LECDON_SISYPHE(MOTCAR,FILE_DESC,PATH,NCAR,CODE1)
+C
+      CALL BIEF_OPEN_FILES(CODE2,SIS_FILES,MAXLU_SIS,PATH,NCAR,
+     &                     INCLUS(COUPLING,'SISYPHE'),IFLOT,2)
+      CALL POINT_SISYPHE
+C
+      ELSEIF(COUPLING(1:1).EQ.' ') THEN
+C
+C       NOTHING TO DO
+C
+      ELSEIF(INCLUS(COUPLING,'DELWAQ')) THEN
+C
+C       NOTHING TO DO
+C
       ELSE
-        IF(LNG.EQ.1) WRITE(LU,10) NOM,ERR
-        IF(LNG.EQ.2) WRITE(LU,20) NOM,ERR
-10      FORMAT(1X,'ERREUR A L''ALLOCATION DU VECTEUR : ',A6,/,1X,
-     *            'CODE D''ERREUR : ',1I6)
-20      FORMAT(1X,'ERROR DURING ALLOCATION OF VECTOR: ',A6,/,1X,
-     *            'ERROR CODE: ',1I6)
+C       ERROR
+        IF(LNG.EQ.1) WRITE(LU,*) 'CAS DE COUPLAGE INCONNU : ',COUPLING
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNEXPECTED COUPLING CASE: ',COUPLING
+        CALL PLANTE(1)
         STOP
       ENDIF
 C
+C     RESETS TELEMAC2D CONFIGURATION
+C
+      CALL CONFIG_CODE(1)
+C
+C=======================================================================
+C
+      IF(ESTIME.EQ.' ') THEN
+C
 C-----------------------------------------------------------------------
 C
-      RETURN
+C     STANDARD MODE: ONE TELEMAC2D CALL
+C
+      CALL TELEMAC2D(PASS=-1,ATDEP=0.D0,NITER=0,CODE='       ')
+C
+C-----------------------------------------------------------------------
+C
+      ELSE
+C
+C-----------------------------------------------------------------------
+C
+C       PARAMETER ESTIMATION MODE : CALLS HOMERE_ADJ_T2D
+C
+        CALL HOMERE_ADJ_T2D
+C
+      ENDIF
+C
+C=======================================================================
+C
+C     CLOSES FILES
+C
+      CALL BIEF_CLOSE_FILES(CODE1,T2D_FILES,MAXLU_T2D,.TRUE.)
+C
+      IF(INCLUS(COUPLING,'SISYPHE')) THEN
+        CALL CONFIG_CODE(2)
+        CALL BIEF_CLOSE_FILES(CODE2,SIS_FILES,MAXLU_SIS,.FALSE.)
+      ENDIF
+C
+C-----------------------------------------------------------------------
+C
+      IF(LNG.EQ.1) WRITE(LU,10)
+      IF(LNG.EQ.2) WRITE(LU,11)
+10    FORMAT(1X,///,1X,'FIN NORMALE DU PROGRAMME',///)
+11    FORMAT(1X,///,1X,'CORRECT END OF RUN',///)
+C
+C-----------------------------------------------------------------------
+C
+C     TIME OF END OF COMPUTATION
+C
+      CALL DATE_AND_TIME(VALUES=TFIN)
+      CALL ELAPSE(TDEB,TFIN)
+C
+C-----------------------------------------------------------------------
+C
+      STOP
       END
+C
+C#######################################################################
+C
 

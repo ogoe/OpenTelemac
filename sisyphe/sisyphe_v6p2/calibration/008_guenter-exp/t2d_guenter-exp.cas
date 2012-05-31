@@ -55,7 +55,7 @@ SISYPHE STEERING FILE           = sis_guenter-exp.cas
 /
 VALIDATION = OUI
 GRAPHIC PRINTOUT PERIOD         =  5000
-LISTING PRINTOUT PERIOD         =  5000
+LISTING PRINTOUT PERIOD         =  500
 VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,H,S,B,K,E,D,F,L'
 MASS-BALANCE                    = YES
 COMPUTATION CONTINUED           = YES
@@ -67,8 +67,8 @@ NUMBER OF TIME STEPS            = 50000
 /                      BOUNDARY CONDITIONS
 /----------------------------------------------------------------------
 /
-PRESCRIBED FLOWRATES            = 0.    ;0.056D0
-PRESCRIBED ELEVATIONS           = 1.09D0;0.
+PRESCRIBED FLOWRATES            = 0.; 0.0560
+PRESCRIBED ELEVATIONS           = 1.090 ; 0.
 /
 /----------------------------------------------------------------------
 /                       NUMERICAL OPTIONS
@@ -106,7 +106,7 @@ VELOCITY DIFFUSIVITY            = 1.E-6
 /                       COUPLING AND PARALLELISM
 /----------------------------------------------------------------------
 COUPLING WITH  = 'INTER-SISYPHE'
-COUPLING PERIOD = 10
+////COUPLING PERIOD = 10
 /
 &ETA
 &FIN
