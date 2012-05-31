@@ -7,7 +7,7 @@
 /  ICI SOLVEUR DIRECT (SOLVEUR : 8) POUR 
 /  AVOIR LA PRECISION DE LA MACHINE
 /
-   SOLVEUR : 8
+SOLVEUR : 8
 /
 MASS-LUMPING SUR H : 1.
 /
@@ -17,18 +17,25 @@ COUPLAGE AVEC : 'INTER-SISYPHE'
 /
 / Version 5.9
 /
-/ Dell 2.8 GHz Linux, compilateur pgi   :  ?  s
-/ Dell 2.8 GHz Linux, compilateur Intel :  7  s JMH 29/12/2008
+/ Dell 2.8 GHz Linux, compilateur pgi   :  ?  s   
+/ Dell 2.8 GHz Linux, compilateur Intel :  7  s JMH 29/12/2008  
 / HP C3700, compilateur HP              : 16  s JMH 29/12/2008
-/ HP C3700, compilateur Nag             :  ?  s
+/ HP C3700, compilateur Nag             :  ?  s    
 /
 / Version 6.0
 /
 / Dell 2.8 GHz Linux, compilateur Intel :  5  s JMH 10/12/2009
 / HP C3700, compilateur HP              : 14  s JMH 10/12/2009
-/ HP C3700, compilateur Nag             : 27  s JMH 08/12/2009
+/ HP C3700, compilateur Nag             : 27  s JMH 08/12/2009  
 /
 / Dell 2.8 GHz Linux, compilateur Intel :  7  s  CV 06/06/2010
+/
+/ Version 6.1
+/
+/ HP C3700, compilateur HP              : 15  s JMH 26/04/2011 (reference)
+/ Dell 2.8 GHz Linux, compilateur Intel :  7  s  CV 22/03/2011
+/ HP C3700, compilateur Nag             : 26  s  CV 13/04/2011  
+/ HP Z600 Linux, compilateur Intel	:  6  s	 MS 21/07/2011 
 /
 FICHIER FORTRAN                    : t2d_conservation.f
 FICHIER DES CONDITIONS AUX LIMITES : geo_conservation.cli
@@ -36,34 +43,40 @@ FICHIER DE GEOMETRIE               : geo_conservation.slf
 FICHIER DE REFERENCE               : f2d_conservation.slf
 FICHIER DES RESULTATS              : r2d_conservation.slf
 /
-/----------------------------------------------------------------------/
-/                     OPTIONS GENERALES
-/----------------------------------------------------------------------/
-TITRE = 'TELEMAC 2D : GOUTTE D''EAU DANS UN BASSIN$'
-SUITE DE CALCUL : NON
-VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,T'
-VARIABLES A IMPRIMER : ''
-PAS DE TEMPS = 0.04    NOMBRE DE PAS DE TEMPS = 100
-PERIODE POUR LES SORTIES GRAPHIQUES : 5
+/----------------------------------------------------------------------/ 
+/                     OPTIONS GENERALES                                  
+/----------------------------------------------------------------------/ 
+TITRE = 'TELEMAC 2D : GOUTTE DANS UN BASSIN'              
+SUITE DE CALCUL : NON                                                    
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,T'                        
+/VARIABLES A IMPRIMER : ''                                                
+PAS DE TEMPS = 0.04    
+NOMBRE DE PAS DE TEMPS = 100                     
+PERIODE POUR LES SORTIES GRAPHIQUES : 5   
 PERIODE POUR LES SORTIES LISTING =10
 /
-LOI DE FROTTEMENT SUR LE FOND : 3    COEFFICIENT DE FROTTEMENT = 40.
-/----------------------------------------------------------------------/
-/     PROPAGATION
-/----------------------------------------------------------------------/
-MODELE DE TURBULENCE : 1 COEFFICIENT DE DIFFUSION DES VITESSES = 0.D0
-MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100 PRECISION DU SOLVEUR = 1.E-4
-IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6
-PRECONDITIONNEMENT : 2
+LOI DE FROTTEMENT SUR LE FOND : 3    
+COEFFICIENT DE FROTTEMENT = 40.     
+/----------------------------------------------------------------------/ 
+/     PROPAGATION                                                        
+/----------------------------------------------------------------------/ 
+MODELE DE TURBULENCE : 1 
+COEFFICIENT DE DIFFUSION DES VITESSES = 0.0                                    
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR : 100
+PRECISION DU SOLVEUR = 1.E-4 
+IMPLICITATION POUR LA HAUTEUR = 1. 
+IMPLICITATION POUR LA VITESSE = 0.6  
+PRECONDITIONNEMENT : 2             
 /---------------------------------------------------------------/
-BILAN DE MASSE : OUI    VALIDATION : OUI
-CONDITIONS INITIALES : PARTICULIERES
-STOCKAGE DES MATRICES : 3
-/ POUR EQUATION D'ONDE :
-TRAITEMENT DU SYSTEME LINEAIRE : 2
-FORME DE LA CONVECTION:1;5
-OPTION DE SUPG       : 2;0
-/----------------------------------------------------------------------/
-PROCESSEURS PARALLELES : 0
-/&ETA
-
+BILAN DE MASSE : OUI    
+/ VALIDATION : OUI                               
+CONDITIONS INITIALES : PARTICULIERES     
+STOCKAGE DES MATRICES : 3        
+/ POUR EQUATION D'ONDE : 
+TRAITEMENT DU SYSTEME LINEAIRE : 2 
+FORME DE LA CONVECTION:1;5 
+OPTION DE SUPG       : 2;0   
+/----------------------------------------------------------------------/ 
+/PROCESSEURS PARALLELES : 0
+&ETA
+ 
