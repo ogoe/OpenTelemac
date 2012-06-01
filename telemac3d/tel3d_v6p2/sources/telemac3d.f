@@ -59,9 +59,10 @@
 !+        Clean restart implemented.
 !
 !history  J-M HERVOUET (LNHE)
-!+        30/05/2012
+!+        01/06/2012
 !+        V6P2   
 !+        Call to vector before call to Tel4del corrected (GRAZCO)
+!+        Initialasation of TAN after call to condim.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -397,6 +398,10 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CONDIM'
       CALL CONDIM
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIM'
+!
+!     ONLY TA IS INITIALISED IN CONDIM
+!
+      IF(NTRAC.GT.0) CALL OS ('X=Y     ', X=TAN, Y=TA)
 !
 !     COMPUTES TRANSF AND ZCHAR
 !
@@ -1122,13 +1127,10 @@
       IF(NCSIZE.GT.1) CALL OS('X=Y     ',X=VOLUNPAR,Y=VOLUPAR)
       CALL OS ( 'X=Y     ', X=UN,    Y=U     )
       CALL OS ( 'X=Y     ', X=VN,    Y=V     )
-      CALL OS ( 'X=Y     ', X=GRADZN,Y=GRADZS)
-!
       IF(NONHYD) CALL OS ( 'X=Y     ' , X=WN, Y=W)
-!
-! IS IT OK FOR THE WHOLE BLOCKS (THEIR STRUCTURE IS IDENTICAL!)
-!
-      IF (NTRAC.NE.0) CALL OS ('X=Y     ', X=TAN, Y=TA)
+      CALL OS ( 'X=Y     ', X=GRADZN,Y=GRADZS)
+!     TRACERS (IF LT=1 DONE AFTER CALL CONDIM)
+      IF(NTRAC.GT.0.AND.LT.GT.1) CALL OS ('X=Y     ', X=TAN, Y=TA)
 !
       IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
         CALL OS ( 'X=Y     ', X=AKN, Y=AK )
