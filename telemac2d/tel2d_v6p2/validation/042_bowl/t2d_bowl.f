@@ -28,8 +28,8 @@ C
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
-      DOUBLE PRECISION CC,ALPHA,X1,Y1,OMEGA,RAY
-      DOUBLE PRECISION r,CONST1,CONST2,GR
+      DOUBLE PRECISION ALPHA,X1,Y1,OMEGA,RAY
+      DOUBLE PRECISION R,CONST1,CONST2,GR,PERI,PI
       INTEGER I,ITRAC
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -70,12 +70,14 @@ C
      *       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      *       CDTINI(1:07).EQ.'SPECIAL') THEN
 C  ZONE A MODIFIER                                                      
-      CC = SQRT(4.D0*9.81D0) 
 C
 C=====================================     
 C DEFINITION DES PARAMETRES A UTILISER                        
-      ALPHA=1.6E-7
-      GR=10.0D0
+      GR=9.81D0
+      PERI=1773.D0
+!     ALPHA=1.6E-7
+      PI=4.D0*ATAN(1.D0)
+      ALPHA=PI**2/(2.D0*PERI**2*GR)
       X1=1.0D0
       Y1=-0.41884D0
       OMEGA=SQRT(8.0D0*GR*ALPHA)
@@ -176,7 +178,7 @@ C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
       LOGICAL MAS
       INTEGER I
-      DOUBLE PRECISION ALPHA, RAY2
+      DOUBLE PRECISION ALPHA, RAY2,GR,PERI,PI
 C
 C-----------------------------------------------------------------------
 C
@@ -192,7 +194,12 @@ C
 C
 C-----------------------------------------------------------------------
 C
-      ALPHA=1.6E-7
+      GR=9.81D0
+      PERI=1773.D0
+!     ALPHA=1.6E-7
+      PI=4.D0*ATAN(1.D0)
+      ALPHA=PI**2/(2.D0*PERI**2*GR)
+!     ALPHA=1.6E-7
       DO I=1,NPOIN
         RAY2=X(I)**2+Y(I)**2 
         ZF%R(I) = ALPHA*RAY2

@@ -8,7 +8,7 @@
 FORTRAN FILE                   : t2d_bowl.f            
 BOUNDARY CONDITIONS FILE       : geo_bowl.cli      
 GEOMETRY FILE                  : geo_bowl.slf                            
-RESULTS FILE                   : r2d_bowl_vf.slf
+RESULTS FILE                   : r2d_bowl_vf_gb.slf
 REFERENCE FILE                 : f2d_bowl_vf_gb.slf  VALIDATION : YES
 /
 EQUATIONS : 'SAINT-VENANT VF'
@@ -22,7 +22,7 @@ TITLE = 'TELEMAC 2D: PARABOLIC BOWL TEST-CASE'
 VARIABLES FOR GRAPHIC PRINTOUTS : 'U,V,H,S,B'                         
 VARIABLES TO BE PRINTED : ''                                                   
 TIME STEP = 0.1   
-DURATION : 1756.2
+DURATION : 1773.
 GRAPHIC PRINTOUT PERIOD :1000
 LISTING PRINTOUT PERIOD : 100
 VARIABLE TIME-STEP : YES                                             
