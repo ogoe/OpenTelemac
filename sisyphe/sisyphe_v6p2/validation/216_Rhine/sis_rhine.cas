@@ -1,0 +1,143 @@
+/======================================================================
+/ Sisyphe: Wesel-Xanten grobmodell
+/ The Rhine River, Rhein-km 805 - 825,9
+/======================================================================
+/DEBUGGER = 1
+ NUMBER OF BED LOAD MODEL LAYERS = 3
+/
+ GEOMETRY FILE             = geo_rhine.slf 
+ BOUNDARY CONDITIONS FILE  = geo_rhine.cli
+/FORTRAN FILE             = princi_sis_v6p0.f
+ RESULTS FILE             = sis_rhine.slf
+/
+/
+/ PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE = _mor_startFrac.restart
+/ COMPUTATION CONTINUED = YES
+/
+/----------------------------------------------
+/  GENERAL AND OUTPUT
+/----------------------------------------------
+ TITLE : 'Wesel-Xanten, grobmodell'
+/
+ VARIABLES FOR GRAPHIC PRINTOUTS               = 
+ 'R,M,E,H,B,U,V,KS,TOB,QS1,QS2,1A1,1A2,1A3,1A4,1A5,2A1,2A2,2A3,2A4,2A5'
+/'U,V,S,Z,H,B,E,W,TOB,KS,M,R,1A1,2A1,A,G,L,O'   Rebekka
+/'R,M,E,H,B,U,V,KS,TOB,QS1,1A1,2A1'
+/    R: nicht erodierbarer Boden
+/    M: bed-load discharge (N,P in x,y-Richtung)
+/    E: Bodenentwicklung (m)
+/    H: Water depth (m)
+/    B: Bottom elevation (m)
+/    U: velocity along x axis (m/s)
+/    V: velocity along y axis (m/s)
+/    TOB: mean bottom friction (N/m2)
+/
+ TIME STEP                                     =  30 
+/    
+/----------------------------------------------
+/ SISYPHE NUMERICAL ALGORITHMS
+/----------------------------------------------
+STEADY CASE                              = NO
+MASS-BALANCE                             = YES
+TIDAL FLATS                              = YES
+OPTION FOR THE TREATMENT OF TIDAL FLATS  = 1
+ZERO                                     = 1e-12
+TETA                                     = 0.5
+SOLVER ACCURACY                          = 1e-8
+MASS-LUMPING                             = YES
+MINIMAL VALUE OF THE WATER HEIGHT        = 0.1
+/
+/----------------------------------------------
+/ PHYSICAL PARAMETERS - HYDRODYNAMICS
+/----------------------------------------------
+/ nw97 with Nikuradse = 0.04 => Strickler = 42.75
+/ 0: glatter Boden 3*d50; 
+/1: wellenbeeinflusster Boden
+/2: Chezy; 
+/3: Stickler; 
+/4: Manning; 
+/5: Nikuradse
+/LAW OF BOTTOM FRICTION                    = 0  / 5
+ LAW OF BOTTOM FRICTION                    = 5  
+FRICTION COEFFICIENT                      = 1
+RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER = 3   / 5 DEFAULT 1--5 für law = 0
+/
+/----------------------------------------------
+/ PHYSICAL PARAMETERS - BED LOAD
+/---------------------------------------------- 
+BED-LOAD TRANSPORT FORMULA                       = 1
+/1 : Meyer-Peter Mueller
+/2 : EINSTEIN-BROWN (bed load)
+/3 : ENGELUND-HANSEN + CHOLLET ET CUNGE (VERSION 5.3)
+/30: ENGELUND-HANSEN (total)
+/4 : BIJKER (bed load + suspension)
+/5 : SOULSBY - VAN RIJN (bed load + suspension)
+/6 : HUNZIKER (uniquement granulometrie etendue)
+/7 : VAN RIJN (bed load)
+/8 : BAILARD (bed load + suspension)
+/9 : DIBAJNIA ET WATANABE (total)
+/
+/wenn shields parameter = 0 wird er berechnet  ;Default 0.047
+ SHIELDS PARAMETERS                                = 0.0    
+/ 
+/ Bei const. discharge flow oder direkter Kopplung keine richtige Funktion!
+CRITICAL EVOLUTION RATIO                         = 1000.0
+/COEFFICIENT FUNCTION OF THE POROSITY             = 1.83    /1.25
+NON COHESIVE BED POROSITY                         = 0.45355 / 0.2000
+SEDIMENT DENSITY                                 = 2650.
+OPTION FOR THE TREATMENT OF NON ERODABLE BEDS    = 3
+/FINITE VOLUMES                                   = YES
+/HIDING FACTOR FORMULA                            = 1 / bisher 4
+ HIDING FACTOR FORMULA                            = 4
+/1: Egiazaroff                    wirkt auf den Transportbeginn TauCrit
+/2: Ashida & Michiue
+/3: Hunziker mit Bed-load transport formula = 6
+/4: Karim, Holly & Jang          wirkt auf die Transportmenge Qs
+/Actung hiding factor gleich fuer alle fractionen
+/1. wert wird gelesen init_constant.f
+ NUMBER OF SIZE-CLASSES OF BED MATERIAL           = 5
+/
+ HIDING FACTOR FOR PARTICULAR SIZE CLASS          = 
+/0.85;0.85
+0.85;0.85;0.85;0.85;0.85
+/
+ D90                                              =
+ 1.0E-3; 4.0E-3; 16.0E-3; 32.0E-3; 64.0E-3
+/ 0.15; 0.15; 0.15; 0.15; 0.15 
+ MEAN DIAMETER OF THE SEDIMENT                    =  /11.815D-3
+/ bei 11.815 kein Transport
+ 0.5E-3; 2.5E-3; 10.0E-3; 24.0E-3; 48.0E-3
+/0.13; 0.13; 0.13; 0.13; 0.13 
+/
+ INITIAL FRACTION FOR PARTICULAR SIZE CLASS       =
+      0.13; 0.26; 0.39; 0.14; 0.08
+/OWI  0.13; 0.26; 0.39; 0.14; 0.08
+/UWI  0.09; 0.11; 0.40; 0.26; 0.14
+/
+/
+/CONSTANT FLOW DISCHARGE                          = YES
+/NUMBER OF ITERATIONS FOR TELEMAC                 = 100
+/ default ist 500
+/CRITERION TO UPDATE THE FLOW                     = 0.1
+/ bottom height > crit_cfd*H
+CONSTANT ACTIVE LAYER THICKNESS                  = YES  / YES
+ACTIVE LAYER THICKNESS                           = 0.10 / 0.05
+/
+/
+/
+/GRAIN-FEEDING            = NO
+SLOPE EFFECT = YES
+FORMULA FOR SLOPE EFFECT = 1    / Default = 1
+/ BETA fuer Betrag
+BETA                     = 1.3  / Default = 0.0
+FORMULA FOR DEVIATION = 1 /Default 1: Koch & Flokstra , 2: Talmon
+PARAMETER FOR DEVIATION = 0.85 /Default = 0.85, nur fuer Talmon
+SEDIMENT SLIDE = NO
+FRICTION ANGLE OF THE SEDIMENT = 35 / Default = 40
+ 
+ SECONDARY CURRENTS       = YES 
+/
+/
+/----------------------------------------------
+&ETA
+&FIN
