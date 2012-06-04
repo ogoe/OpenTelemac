@@ -1,0 +1,142 @@
+/======================================================================
+/ Telemac2D: 
+/======================================================================
+/
+/PARALLEL PROCESSORS       : 16
+/ 
+/
+ GEOMETRY FILE            :'geo_wormleaton.slf'  
+ BOUNDARY CONDITIONS FILE :'geo_wormleaton.cli'
+/
+FORTRAN FILE             :'t2d_wormleaton.f' 
+/FORMATTED RESULTS FILE   :'output_wormleaton.dat'
+/
+PREVIOUS COMPUTATION FILE :'r2d_wormleaton_init.slf' 
+/ 
+ LIQUID BOUNDARIES FILE   :'wormleaton.qsl'
+/-------------
+/     Says if a discharge-elevation curve must be used
+/     for a given boundary :NO 1:Z(Q) 2: Q(Z)'
+/
+/ STAGE-DISCHARGE CURVES      : 1
+/ STAGE-DISCHARGE CURVES FILE :'_Q_H_Beziehg.txt'
+/-------------
+/
+/FORMATTED DATA FILE 1     : './_fric.bfr'
+/FRICTION DATA FILE        : './_.tbl'
+/FORMATTED DATA FILE 2     : 'dgm_08.bfr'
+/
+/
+ RESULTS FILE                            : 'r2d_wormleaton.slf'
+/
+/
+/
+/----------------------------------------------
+/  COUPLING WITH SISYPHE 
+/----------------------------------------------
+ SISYPHE STEERING FILE            : 'sis_wormleaton.cas'
+ COUPLING WITH                    = 'INTER-SISYPHE'
+ /COUPLING PERIOD                  =    40  / = alle 3 Minuten
+/----------------------------------------------
+/  GENERAL INFORMATION - STEERING - OUTPUT
+/----------------------------------------------
+/
+ COMPUTATION CONTINUED    : YES
+ INITIAL TIME SET TO ZERO : YES
+/ 
+ TITLE : 'Donau'
+/
+/ U,V velocity, S free surface, B bottom, H water depth, D eddy viscosity, Q scalar flux, L Courant Nr. M scalar velocity, W friction coeff
+ VARIABLES FOR GRAPHIC PRINTOUTS  = 'U,V,S,B,H,Q,M,W,L'
+/
+ OUTPUT OF INITIAL CONDITIONS : YES   / for first runs 
+/
+/
+ TIME STEP                                        : 0.1
+ NUMBER OF TIME STEPS                             : 18000    / 
+ GRAPHIC PRINTOUT PERIOD                          : 1800      / 
+ LISTING PRINTOUT PERIOD                          : 18      / 
+ NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS  :  1
+/
+/CONTROL SECTIONS =653;847;496;1005;279;1224 /(=Janet_node_number+1)
+/
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+/INITIAL CONDITIONS  : 'SPECIAL'
+ INITIAL CONDITIONS  : 'CONSTANT ELEVATION'
+ INITIAL ELEVATION   :   -0.07
+/
+/----------------------------------------------
+/  BOUNDARY CONDITIONS
+/----------------------------------------------
+/ open boundaries numbered from SW anti-clockwisely
+/
+ PRESCRIBED ELEVATIONS               :     -0.07045 ;   -0.07045   
+ PRESCRIBED FLOWRATES                :      0.097   ;    0.097
+/
+/
+/
+ VELOCITY PROFILES = 4;2   / 3;0 beim modifizierten cli
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS, TURBULENCE
+/----------------------------------------------
+/
+ WATER DENSITY = 1000.0  
+/TURBULENCE MODEL = 1  VELOCITY DIFFUSIVITY = 0.01 / OK to start with
+ TURBULENCE MODEL = 2 / Elder 
+/
+/----------------------------------------------
+/  ROUGHNESS
+/----------------------------------------------
+/0: no bottom friction  1: linear friction law, 2: Chezy 3: Strickler 4: Manning 5: Nikuradse
+ LAW OF BOTTOM FRICTION = 5   
+ FRICTION COEFFICIENT   = 0.01 / 0.01-0.2 OK
+/FRICTION DATA                      = YES
+/MAXIMUM NUMBER OF FRICTION DOMAINS = 700
+/NON-SUBMERGED VEGETATION FRICTION  = NO
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+ INFORMATION ABOUT SOLVER = YES  
+ MASS-BALANCE = YES  / full info
+ MATRIX STORAGE : 3   / quicker than 1
+ TIDAL FLATS : YES  
+ OPTION FOR THE TREATMENT OF TIDAL FLATS = 3   / or 1
+ OPTION FOR THE DIFFUSION OF VELOCITIES = 2    / or 1, cheaper
+/MASS-LUMPING ON H : 1.   / not recommended, smoothens results 
+/
+/ ----> benutze -entweder- (1) oder (2)
+/-----------------------------------------------
+/ (1) OPERATOR SPLITTING (primitive equations) 
+/-----------------------------------------------
+/ solver option "grows with the mesh", experiment here 
+/TREATMENT OF THE LINEAR SYSTEM:1 SOLVER=7 SOLVER OPTION=3   
+// U;H implicit distributive;conservative
+/TYPE OF ADVECTION : 7;5  SUPG OPTION : 2;0 / try *;1 and *;2 as well
+// U;H SUPG;conservative - then 1;* better?
+//TYPE OF ADVECTION : 2;5  SUPG OPTION : 1;0 / try 1;1, 2;1, 2;2, 1;2 
+/SOLVER ACCURACY = 1.E-5  / 1.E-4..1.E-6
+/MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 50   / for solver 7 <20 OK
+//IMPLICITATION FOR DEPTH = 1. / smoothens water levels
+/-----------------------------------------------
+/ (2) CASULLI ALGORITHM  ("wave equation") 
+/-----------------------------------------------
+ TREATMENT OF THE LINEAR SYSTEM:2 SOLVER:1 
+/TYPE OF ADVECTION : 1;5              / U;H characteristics;conservative (serial!)
+ TYPE OF ADVECTION : 6;5              / U;H explicit distributive;conservative
+/SUPG OPTION :       2;0              / quasi-stationary flow aimed (2;0  NICHT OK Einlauf instabil !)
+/SUPG OPTION :       2;2              / quasi-stationary flow aimed (2;2  NICHT OK bricht ab)  
+ SUPG OPTION :       2;1              / quasi-stationary flow aimed (2;1  OK
+ SOLVER ACCURACY = 1.E-6              / 1.E-4..1.E-6 
+ MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 300                 / for solver 1 <100 OK
+/-----------------------------------------------
+/DISCRETIZATIONS IN SPACE = 11;11;11;11 /   DEFAULT
+ DISCRETIZATIONS IN SPACE = 11;11;11;11 /   11: linear   12: quasi-bubble  
+/
+/
+&ETA   / lists -all- parameters 
+&FIN                  
