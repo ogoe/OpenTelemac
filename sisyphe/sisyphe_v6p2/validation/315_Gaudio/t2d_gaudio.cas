@@ -1,0 +1,184 @@
+/ 
+/========================================================================
+/				TELEMAC2D 
+/		Gaudio: Previous computation file for 
+/				neue geometrie 		
+/========================================================================
+/
+/ Version 6.0
+/   
+/ CV 28/05/2010 CPU= 12 heures
+/
+/ Version 6.1 
+/
+/ Calibre 5 Linux, Intel   :  12863 s JMH 18/04/2011 (8 procs)
+/
+/----------------------------------------------------------------------
+/                      FILE DEFINITION
+/----------------------------------------------------------------------
+/
+/PARALLEL PROCESSORS                     = 8 / 0 for purely serial runs
+SISYPHE STEERING FILE    		= sis_gaudio.cas
+FORTRAN FILE                            = t2d_gaudio.f
+/
+GEOMETRY FILE                           = geo_gaudio.slf
+PREVIOUS COMPUTATION FILE               = t2d_gaudio_init.slf
+BOUNDARY CONDITIONS FILE                = geo_gaudio.cli
+/FORMATTED DATA FILE 2			 = .bfr
+/FRICTION DATA FILE			 = .tbl 
+/LIQUID BOUNDARIES FILE			 = qsl.dat
+/
+RESULTS FILE                            = r2d_gaudio.slf
+VALIDATION = YES 
+REFERENCE FILE = f2d_gaudio.slf
+/
+/----------------------------------------------------------------------
+/                        GENERAL OPTIONS                              
+/----------------------------------------------------------------------
+TITLE 					= 'TEST2_long' 
+/
+COMPUTATION CONTINUED                   = YES
+INITIAL TIME SET TO ZERO                = YES
+/
+VARIABLES FOR GRAPHIC PRINTOUTS         = 'U,V,H,B,S,L,Q,M,W,F,K,E,D'
+/       U     :   velocity along x axis (m/s),
+/       V     :   velocity along y axis (m/s),
+/       C     :   wave celerity (m/s),
+/       H     :   water depth (m),
+/       S     :   free surface elevation (m),
+/       B     :   bottom elevation (m),
+/       F     :   Froude number,
+/       Q     :   scalar flowrate of fluid (m2/s),
+/       T     :   tracer
+/       K     :   turbulent kinetic energy in k-epsilon model (J/kg),
+/       E     :   dissipation of turbulent energy (W/kg),
+/       D     :   turbulent viscosity of k-epsilon model (m2/s),
+/       I     :   flowrate along x axis (m2/s),
+/       J     :   flowrate along y axis (m2/s),
+/       M     :   scalar velocity (m/s),
+/       X     :   wind along x axis (m/s)
+/       Y     :   wind along y axis (m/s),
+/       P     :   air pressure (Pa),
+/       W     :   friction coefficient ,
+/       A     :   drift along x,
+/       G     :   drift along y,
+/       L     :   nombre de courant.
+/------------------------------------------------------------------------
+/  			COUPLING WITH SISYPHE 
+/------------------------------------------------------------------------
+COUPLING WITH                    = 'INTER-SISYPHE'
+COUPLING PERIOD FOR SISYPHE      =  10  /40
+/
+/CONTROL SECTIONS                 =653;847;496;1005;279;1224 /(=Janet_node_number+1)
+/
+/----------------------------------------------------------------------
+/ 				TIME STEP etc.                                                         
+/----------------------------------------------------------------------
+TIME STEP                                        = 0.01   / 0.01  2.0
+NUMBER OF TIME STEPS                             = 10800000 / with 0.01s timestep 30 h 
+/ Ausgabe alle 10 minuten
+GRAPHIC PRINTOUT PERIOD                          = 360000 /   60 min 
+LISTING PRINTOUT PERIOD                          = 360 
+NUMBER OF FIRST TIME STEP FOR GRAPHIC PRINTOUTS  =  1
+/
+/----------------------------------------------
+/  ROUGHNESS
+/----------------------------------------------
+/  
+/0: no bottom friction  
+/1: linear friction law, 
+/2: Chezy 
+/3: Strickler 
+/4: Manning 
+/5: Nikuradse
+LAW OF BOTTOM FRICTION                      = 5    
+/
+FRICTION COEFFICIENT                        = 0.00237     /0.0035
+/FRICTION DATA                      	= YES
+/MAXIMUM NUMBER OF FRICTION DOMAINS 	= 100
+/NON-SUBMERGED VEGETATION FRICTION  	= NO
+/----------------------------------------------------------------------
+/                   INITIAL AND BOUNDARY CONDITIONS
+/----------------------------------------------------------------------
+/                                               Auslauf;    Einlauf
+/PRESCRIBED ELEVATIONS             	=     	0.013;      0.013 
+PRESCRIBED ELEVATIONS			=	-0.002	    
+PRESCRIBED FLOWRATES              	=    	 0.0189;     0.0189
+/
+/INITIAL CONDITIONS                      ='CONSTANT ELEVATION'
+/INITIAL ELEVATION                       =  0.1
+/INITIAL CONDITIONS                      ='CONSTANT DEPTH'
+/INITIAL DEPTH                           =  0.1
+VELOCITY PROFILES  			= 4;4  /4;2
+/
+/----------------------------------------------------------------------
+/                       NUMERICAL OPTIONS
+/----------------------------------------------------------------------
+/
+TIDAL FLATS                                 = YES   /YES
+OPTION FOR THE TREATMENT OF TIDAL FLATS     = 1     /3:Porositaet
+MASS-BALANCE                                = YES
+NUMBER OF SUB-ITERATIONS FOR NON-LINEARITIES= 1
+SOLVER                                      = 1     
+SOLVER OPTION                               = 3 
+/2 (small meshes) to 4 or 5 (large meshes) 7 for GMRES
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER     = 300  
+PRECONDITIONING                             = 2
+/0: No preconditioning.
+/2: Diagonal preconditioning (default value).
+/3: Block diagonal preconditioning
+/5: Diagonal preconditioning with absolute value.
+/7: Crout preconditioning per element.
+/11: Gauss-Seidel EBE preconditioning
+TYPE OF ADVECTION                           = 6;5;1;1  /2;5
+/advection of velocity; depth; tracer; k und epsilon
+/1: Method of characteristics (for k-epsilon)
+/2: Centred semi implicit scheme + SUPG.
+/5: Conservative scheme + SUPG.
+/6: PSI scheme
+SUPG OPTION                                 = 2;2;2;2  /1;2;1;1
+/0: No upwind scheme.
+/1: Upwind scheme with the classic SUPG method, i.e. upwind scheme = 1.
+/2: Upwind scheme with the modified SUPG method, i.e. upwind scheme is equal to the Courant number
+/DISCRETIZATIONS IN SPACE                    = 11;11;11;11
+/11 linear triangle space discretization and the value 
+/12 quasi-bubble (not for k-epsilon model)
+MATRIX STORAGE                              = 3
+TREATMENT OF THE LINEAR SYSTEM     	    = 2 / 1:Coupled;2:SIMPLE method
+MATRIX-VECTOR PRODUCT                       = 1
+IMPLICITATION FOR DEPTH                     = 0.55
+IMPLICITATION FOR VELOCITY                  = 1.0
+MASS-LUMPING ON H                           = 0.0 / 0.
+MASS-LUMPING ON VELOCITY                    = 0.0 / 0.
+/added
+PRECONDITIONING                             = 2
+SOLVER ACCURACY                             = 1.E-6
+/FREE SURFACE GRADIENT COMPATIBILITY 	    = 0.9  /0.7
+/ Werte < 1 daempfen oszillationen in freier Oberflaeche
+/----------------------------------------------------------------------
+/                       TURBULENCE MODEL 
+/----------------------------------------------------------------------
+/
+/TURBULENCE MODEL                            = 2 /Elder
+/NON-DIMENSIONAL DISPERSION COEFFICIENTS     = 6.0;0.6
+TURBULENCE MODEL                             = 3 /k-eps
+VELOCITY DIFFUSIVITY                         = 1.E-6
+TURBULENCE MODEL FOR SOLID BOUNDARIES        = 2 / 1
+/1: smooth, 2: rough, dann wird gleiches friction law genommen, wie fuer Boden
+INFORMATION ABOUT K-EPSILON MODEL            = YES
+ROUGHNESS COEFFICIENT OF BOUNDARIES          = 0.0000141
+SOLVER FOR K-EPSILON MODEL                   = 7
+/'1="conjugate gradient"';
+/'2="conjugate residuals"';
+/'3="conjugate gradient on normal equation"';
+/'4="minimum error"';
+/'5="conjugate gradient squared"';
+/'6="conjugate gradient squared stabilised (cgstab)"';
+/'7="gmres (see option for the solver for k-epsilon model)"'
+OPTION FOR THE SOLVER FOR K-EPSILON MODEL   	= 3    /5
+MAXIMUM NUMBER OF ITERATIONS FOR K AND EPSILON  = 100
+/ACCURACY OF K					=1.E-9
+/ACCURACY OF EPSILON				=1.E-9
+/
+&ETA
+&FIN
