@@ -21,6 +21,9 @@
          Addition of a progress bar to the putFileContent and addFileContent
          methods -- had to write by line, instead of just one.
 """
+"""@history 04/06/2012 -- Fabien Decung
+         Extension of getTheseFiles to include subdirectories of source/.
+"""
 """@brief
 """
 
@@ -64,12 +67,13 @@ def getTheseFiles(root,exts):
    root = root.strip()
    files = []
    if path.exists(root) :
-      for dirpath,dirnames,filenames in walk(root) : break
-      for file in filenames :
-         for ext in exts :
-            head,tail = path.splitext(file)
-            if tail.lower() == ext.lower() :
-               files.append(path.join(dirpath,file))
+      #@note FD@EDF : allow scan of subdirectories...
+      for dirpath,dirnames,filenames in walk(root) : #break
+         if path.basename(dirpath)[0] == '.': continue
+         for file in filenames :
+            for ext in exts :
+               head,tail = path.splitext(file)
+               if tail.lower() == ext.lower() : files.append(path.join(dirpath,file))
    return files
 
 """

@@ -32,6 +32,14 @@
          This development was triggered by Christophe Coulet (Artelia-Sogreah)
          who asked about it on the open TELEMAC forum.
 """
+"""@history 04/06/2012 -- Fabien Decung
+         Allowing 'out of sources' build, compiling directly into 'ObjDir'
+         -> nice deal with subdirectories (if not, object are build in
+            dirname(odict['path']))
+         -> sources directory remains clean
+         -> allow concurrent compilation tasks (nasty behaviour with the
+            shutil.move operations)
+"""
 """@brief
 """
 
@@ -111,9 +119,9 @@ def createObjFiles(oname,oprog,odict,ocfg):
    Root,Suffix = path.splitext(oname)
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   chdir(odict['path'])
-   ObjDir = path.join(path.dirname(odict['path']),ocfg)
+   ObjDir = path.join(cfg['MODULES'][odict['libname']]['path'],ocfg)
    createDirectories(ObjDir)
+   chdir(ObjDir)
 
    # ~~ Removes exisitng objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if odict['type'] == 'M' :
@@ -132,19 +140,14 @@ def createObjFiles(oname,oprog,odict,ocfg):
       mods = mods + path.join(cfg['MODULES'][odict['libname']]['mods'].replace('<config>',cfg['MODULES'][mod]['path']),ocfg) + ' '
    #mods = mods + path.join(cfg['MODULES'][odict['libname']]['mods'].replace('<config>',cfg['MODULES'][odict['libname']]['path']),ocfg) + ' '
    cmd = cmd.replace('<mods>',mods)
-   cmd = cmd.replace('<f95name>',oname)
+   cmd = cmd.replace('<f95name>',path.join(odict['path'],oname))
    cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfg['root'])
 
    if debug : print cmd
    failure = system(cmd)
    if not failure:
-      if odict['type'] == 'M' :
-         print '   - created ' + ObjFile + ' and ' + ModFile
-         shutil.move(Root.lower()+cfg['SYSTEM']['sfx_obj'],ObjDir)
-         shutil.move(Root.lower()+cfg['SYSTEM']['sfx_mod'],ObjDir)
-      else :
-         print '   - created ' + ObjFile
-         shutil.move(Root.lower()+cfg['SYSTEM']['sfx_obj'],ObjDir)
+      if odict['type'] == 'M': print '   - created ' + ObjFile + ' and ' + ModFile
+      else: print '   - created ' + ObjFile
       odict['time'] = 1
       #and remove .f from objList
       return True
