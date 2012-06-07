@@ -75,8 +75,9 @@
       INTEGER N1,N2,N3,N4
 !
 !GM V6P1 - DIRECT COUPLING WITH TELEMAC
-      INTEGER           :: PART, IP
-      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: U_TEL,V_TEL,H_TEL
+      INTEGER           :: IP
+      INTEGER, INTENT(IN) :: PART
+      TYPE(BIEF_OBJ),    INTENT(IN)   :: U_TEL,V_TEL,H_TEL
 !GM Fin
 !
 !-----------------------------------------------------------------------
