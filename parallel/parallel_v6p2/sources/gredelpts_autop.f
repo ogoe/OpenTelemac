@@ -65,8 +65,8 @@
 !
       CHARACTER*30 RES
       CHARACTER*50 RESPAR
-      CHARACTER*11 EXTENS
-      EXTERNAL    EXTENS
+      CHARACTER*11 GREDELPTS_EXTENS
+      EXTERNAL    GREDELPTS_EXTENS
       INTRINSIC MAXVAL
 !
 !-------------------------------------------------------------------------
@@ -99,7 +99,7 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL GREDELPTS_PLANTE (-1)
         STOP
       END IF
 !
@@ -120,7 +120,7 @@
 10    CONTINUE
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL GREDELPTS_PLANTE(-1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -132,29 +132,29 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL GREDELPTS_PLANTE(-1)
       STOP
 993   CONTINUE
 !
 !     1) READS THE BEGINNING OF THE FIRST RESULTS FILE
 !
-!CC      RESPAR=RES // EXTENS(2**IDIMS-1,0)
+!CC      RESPAR=RES // GREDELPTS_EXTENS(2**IDIMS-1,0)
 !
-      RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,0)
+      RESPAR=RES(1:I_LEN) // GREDELPTS_EXTENS(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL GREDELPTS_PLANTE(-1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL GREDELPTS_PLANTE(-1)
       STOP
 995   CONTINUE
 !
@@ -176,20 +176,20 @@
 !  DYNAMICALLY ALLOCATES THE ARRAYS
 !
       ALLOCATE(NPOIN(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NPOIN')
+      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'NPOIN')
       IF(NPLAN.EQ.0) THEN
         ALLOCATE(VERIF(NPOIN2)    ,STAT=ERR)
       ELSE
         ALLOCATE(VERIF(NPOIN2*NPLAN)    ,STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL ALLOER (LU, 'VERIF')
+      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'VERIF')
 !  GLOBAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
       IF(NPLAN.EQ.0) THEN
         ALLOCATE(GLOBAL_VALUE(NPOIN2)       ,STAT=ERR)
       ELSE
         ALLOCATE(GLOBAL_VALUE(NPOIN2*NPLAN) ,STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL ALLOER (LU, 'GLOBAL_VALUE')
+      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'GLOBAL_VALUE')
 !
 !  END OF ALLOCATION ...
 !
@@ -199,12 +199,12 @@
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
+         RESPAR=RES(1:I_LEN) // GREDELPTS_EXTENS(NPROC-1,IPID)
          OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
          GO TO 999
 998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
      &                      ' USING FILE UNIT: ', FU
-         CALL PLANTE(-1)
+         CALL GREDELPTS_PLANTE(-1)
          STOP
 999      REWIND(FU)
          READ(FU) NPOIN(IPID+1)
@@ -218,10 +218,10 @@
       ELSE
          ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL ALLOER (LU, 'KNOLG')
+      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'KNOLG')
 !  LOCAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
       ALLOCATE(LOCAL_VALUE(NPOINMAX),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'LOCAL_VALUE')
+      IF(ERR.NE.0) CALL GREDELPTS_ALLOER (LU, 'LOCAL_VALUE')
 !
 ! READS KNOLG(NPOIN,NPROC)
 !
@@ -254,7 +254,7 @@
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         CALL READ_DATASET
+         CALL GREDELPTS_READ_DATASET
      &   (LOCAL_VALUE,NPOINMAX,NPOIN(IPID+1),IT,FU,ENDE)
          IF (ENDE) GOTO 3000
 ! STORES EACH DATASET
@@ -313,16 +313,16 @@
       END PROGRAM GREDELPTS_AUTOP
 !
 !
-!                       ****************************
-                        CHARACTER*11 FUNCTION EXTENS
-!                       ****************************
+!                       ***********************************
+                        CHARACTER*11 FUNCTION GREDELPTS_EXTENS
+!                       ***********************************
      &(N,IPID)
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
 !***********************************************************************
 !
-!brief       EXTENSION OF THE FILES ON EACH PROCESSOR.
+!brief       GREDELPTS_EXTENSION OF THE FILES ON EACH PROCESSOR.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -356,35 +356,35 @@
 !
       IF(N.GT.0) THEN
 !
-        EXTENS='00000-00000'
+        GREDELPTS_EXTENS='00000-00000'
 !
         IF(N.LT.10) THEN
-          WRITE(EXTENS(05:05),'(I1)') N
+          WRITE(GREDELPTS_EXTENS(05:05),'(I1)') N
         ELSEIF(N.LT.100) THEN
-          WRITE(EXTENS(04:05),'(I2)') N
+          WRITE(GREDELPTS_EXTENS(04:05),'(I2)') N
         ELSEIF(N.LT.1000) THEN
-          WRITE(EXTENS(03:05),'(I3)') N
+          WRITE(GREDELPTS_EXTENS(03:05),'(I3)') N
         ELSEIF(N.LT.10000) THEN
-          WRITE(EXTENS(02:05),'(I4)') N
+          WRITE(GREDELPTS_EXTENS(02:05),'(I4)') N
         ELSE
-          WRITE(EXTENS(01:05),'(I5)') N
+          WRITE(GREDELPTS_EXTENS(01:05),'(I5)') N
         ENDIF
 !
         IF(IPID.LT.10) THEN
-          WRITE(EXTENS(11:11),'(I1)') IPID
+          WRITE(GREDELPTS_EXTENS(11:11),'(I1)') IPID
         ELSEIF(IPID.LT.100) THEN
-          WRITE(EXTENS(10:11),'(I2)') IPID
+          WRITE(GREDELPTS_EXTENS(10:11),'(I2)') IPID
         ELSEIF(IPID.LT.1000) THEN
-          WRITE(EXTENS(09:11),'(I3)') IPID
+          WRITE(GREDELPTS_EXTENS(09:11),'(I3)') IPID
         ELSEIF(IPID.LT.10000) THEN
-          WRITE(EXTENS(08:11),'(I4)') IPID
+          WRITE(GREDELPTS_EXTENS(08:11),'(I4)') IPID
         ELSE
-          WRITE(EXTENS(07:11),'(I5)') IPID
+          WRITE(GREDELPTS_EXTENS(07:11),'(I5)') IPID
         ENDIF
 !
       ELSE
 !
-        EXTENS='       '
+        GREDELPTS_EXTENS='       '
 !
       ENDIF
 !
@@ -393,9 +393,9 @@
       RETURN
       END
 !
-!                         ***********************
-                          SUBROUTINE READ_DATASET
-!                         ***********************
+!                         ******************************
+                          SUBROUTINE GREDELPTS_READ_DATASET
+!                         ******************************
      &(LOCAL_VALUE,NPOINMAX,NPOIN,IT,FU,ENDE)
 !
 !***********************************************************************
@@ -445,9 +445,9 @@
  999  RETURN
       END
 !
-!     *****************************
-      SUBROUTINE ALLOER (N, CHFILE)
-!     *****************************
+!     ************************************
+      SUBROUTINE GREDELPTS_ALLOER (N, CHFILE)
+!     ************************************
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
@@ -476,14 +476,14 @@
       INTEGER, INTENT(IN) :: N
       CHARACTER*(*), INTENT(IN) :: CHFILE
       WRITE(N,*) 'ERROR BY ALLOCATION OF ',CHFILE
-      CALL PLANTE(-1)
+      CALL GREDELPTS_PLANTE(-1)
       STOP
-      END SUBROUTINE ALLOER
+      END SUBROUTINE GREDELPTS_ALLOER
 !
 !
-!     ***********************
-      SUBROUTINE PLANTE(IVAL)
-!     ***********************
+!     ******************************
+      SUBROUTINE GREDELPTS_PLANTE(IVAL)
+!     ******************************
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
@@ -533,4 +533,4 @@
 
 !     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
 !     CALL EXIT(ICODE)
-      END SUBROUTINE PLANTE
+      END SUBROUTINE GREDELPTS_PLANTE

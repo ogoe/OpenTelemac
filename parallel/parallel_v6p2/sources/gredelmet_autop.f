@@ -90,10 +90,10 @@
 !
       CHARACTER*30 RES
       CHARACTER*50 RESPAR
-      CHARACTER*11 EXTENS
+      CHARACTER*11 GREDELMET_EXTENS
       CHARACTER*30 CONLIM
       CHARACTER*7  FILETYPE
-      EXTERNAL    EXTENS
+      EXTERNAL    GREDELMET_EXTENS
       INTRINSIC MAXVAL
 !
       LI=5
@@ -102,7 +102,7 @@
 !HW
 !JAJ INTRODUCE YOURSELF WITH THE RELEASE DATE
 !
-      WRITE(LU,*) 'I AM GREDELMET, COUSIN OF GRETEL FROM BAW HAMBURG'
+      WRITE(LU,*) 'I AM GREDELELMET, COUSIN OF GRETEL FROM BAW HAMBURG'
       WRITE(LU,*)
 !
       WRITE (LU, ADVANCE='NO',
@@ -123,7 +123,7 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL GREDELMET_PLANTE (-1)
         STOP
       END IF
 !
@@ -144,7 +144,7 @@
 10    CONTINUE
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL GREDELMET_PLANTE(-1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -156,29 +156,29 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL GREDELMET_PLANTE(-1)
       STOP
 993   CONTINUE
 !
 !     1) READS THE BEGINNING OF THE FIRST RESULTS FILE
 !
-!CC      RESPAR=RES // EXTENS(2**IDIMS-1,0)
+!CC      RESPAR=RES // GREDELMET_EXTENS(2**IDIMS-1,0)
 !
-      RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,0)
+      RESPAR=RES(1:I_LEN) // GREDELMET_EXTENS(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL GREDELMET_PLANTE(-1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL GREDELMET_PLANTE(-1)
       STOP
 995   CONTINUE
 !
@@ -198,35 +198,35 @@
 !  DYNAMICALLY ALLOCATES THE ARRAYS
 !
       ALLOCATE(NPOIN(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NPOIN')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NPOIN')
       ALLOCATE(NOQ(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NOQ')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NOQ')
       ALLOCATE(NSEG(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NSEG')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NSEG')
       ALLOCATE(IKLESA(3,NELEM),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IKLESA')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IKLESA')
       ALLOCATE(IPOBO(NPOIN2)      ,STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IPOBO')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IPOBO')
 !  X AND Y
       ALLOCATE(XORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'XORIG')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'XORIG')
       ALLOCATE(YORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'YORIG')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'YORIG')
 !
       ALLOCATE(IFABOR(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IFABOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IFABOR')
       ALLOCATE(IKLE(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IKLE')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IKLE')
       ALLOCATE(IADR(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IADR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IADR')
       ALLOCATE(NVOIS(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NVOIS')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NVOIS')
       ALLOCATE(T3(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'T3')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'T3')
       ALLOCATE(AREA(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'AREA')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'AREA')
       ALLOCATE(NODENRS(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NODENRS')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NODENRS')
 !
 !  END OF ALLOCATION ...
 !
@@ -255,14 +255,14 @@
       OPEN(4,FILE=CONLIM,FORM='FORMATTED',ERR=996)
       GO TO 997
  996  WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',CONLIM
-      CALL PLANTE(-1)
+      CALL GREDELMET_PLANTE(-1)
       STOP
  997  CONTINUE
 !
       ALLOCATE(LIHBOR0(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'LIHBOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'LIHBOR')
       ALLOCATE(NBOR0(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NBOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NBOR')
       DO I=1,NPOIN2
         READ(4,*,END=989) LIHBOR0(I),IDUM,IDUM,RDUM,RDUM,RDUM,RDUM,
      &                    IDUM,RDUM,RDUM,RDUM,NBOR0(I),IDUM
@@ -272,21 +272,21 @@
  989  NPTFR=I-1
 !
       ALLOCATE(LIHBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'LIHBOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'LIHBOR')
       ALLOCATE(NBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NBOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NBOR')
       ALLOCATE(NELBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NELBOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NELBOR')
       ALLOCATE(NULONE(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NULONE')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'NULONE')
       ALLOCATE(KP1BOR(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'KP1BOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'KP1BOR')
       ALLOCATE(IKLBOR(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IKLBOR')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IKLBOR')
       ALLOCATE(ELTSEG(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'ELTSEG')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'ELTSEG')
       ALLOCATE(ORISEG(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'ORISEG')
+      IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'ORISEG')
 !
       MBND=0
 !
@@ -324,18 +324,18 @@
           ENDDO
         ENDDO
       IF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-        CALL VOISIN(IFABOR,NELEM2,NELEM,IELM,IKLE,
+        CALL GREDELMET_VOISIN(IFABOR,NELEM2,NELEM,IELM,IKLE,
      &              NELEM,
      &              NPOIN2,IADR,NVOIS)
         MAXNVOIS = MAXVAL(NVOIS)/2
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
-        CALL PLANTE(1)
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
       KLOG = 2 ! SOLID BOUNDARY CONDITION: IS HARD-CODED !!!
       IF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-        CALL ELEBD(NELBOR,NULONE,KP1BOR,
+        CALL GREDELMET_ELEBD(NELBOR,NULONE,KP1BOR,
      &             IFABOR,NBOR,IKLE,NELEM,
      &             IKLBOR,NELEM2,NELMAX2,
      &             NPOIN2,NPTFR2,IELM,
@@ -343,7 +343,7 @@
      &             IADR,NVOIS,T3)
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
-        CALL PLANTE(1)
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -356,15 +356,15 @@
 !
          NSEG2 = (3*NELEM+NPTFR)/2
          ALLOCATE(LENGTH(2,NSEG2+MBND),STAT=ERR)
-         IF(ERR.NE.0) CALL ALLOER (LU, 'LENGTH')
+         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'LENGTH')
          ALLOCATE(GLOSEG(NSEG2,2),STAT=ERR)
-         IF(ERR.NE.0) CALL ALLOER (LU, 'GLOSEG')
+         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'GLOSEG')
          ALLOCATE(IFROM1(NSEG2),STAT=ERR)
-         IF(ERR.NE.0) CALL ALLOER (LU, 'IFROM1')
+         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'IFROM1')
          ALLOCATE(ITOPL1(NSEG2),STAT=ERR)
-         IF(ERR.NE.0) CALL ALLOER (LU, 'ITOPL1')
+         IF(ERR.NE.0) CALL GREDELMET_ALLOER (LU, 'ITOPL1')
 !
-      CALL STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
+      CALL GREDELMET_STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
      &            NBOR,NPTFR,
      &            GLOSEG,NSEG2,    ! GLOSEG%MAXDIM1,
      &            ELTSEG,ORISEG,NSEG2,
@@ -425,8 +425,8 @@
             IFROM = GLOSEG(ISEG,1)
             ITO   = GLOSEG(ISEG,2)
               IF ( K.EQ.1 ) THEN
-                CALL FDNRST(IFROM,ITO,XORIG,YORIG,NODENRS,NPOIN2,
-     &                                IFROM1(ISEG),ITOPL1(ISEG))
+                CALL GREDELMET_FDNRST(IFROM,ITO,XORIG,YORIG,NODENRS,
+     &           NPOIN2,IFROM1(ISEG),ITOPL1(ISEG))
                 IF ( IFROM1(ISEG) .LT. 0 .AND.              !  *START*  LP 24/04/2009
      &               IFROM1(ISEG) .NE. NODENRS(IFROM) ) THEN
                   DO I = 1,NPOIN2
@@ -507,9 +507,9 @@
       STOP
       END PROGRAM GREDELMET_AUTOP
 !
-!                       ****************************
-                        CHARACTER*11 FUNCTION EXTENS
-!                       ****************************
+!                       **************************************
+                        CHARACTER*11 FUNCTION GREDELMET_EXTENS
+!                       **************************************
      &(N,IPID)
 !
 !
@@ -517,7 +517,7 @@
 ! PARALLEL   V6P0                                   21/08/2010
 !***********************************************************************
 !
-!brief    EXTENSION OF THE FILES ON EACH PROCESSOR.
+!brief    GREDELMET_EXTENSION OF THE FILES ON EACH PROCESSOR.
 !+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -552,35 +552,35 @@
 !
       IF(N.GT.0) THEN
 !
-        EXTENS='00000-00000'
+        GREDELMET_EXTENS='00000-00000'
 !
         IF(N.LT.10) THEN
-          WRITE(EXTENS(05:05),'(I1)') N
+          WRITE(GREDELMET_EXTENS(05:05),'(I1)') N
         ELSEIF(N.LT.100) THEN
-          WRITE(EXTENS(04:05),'(I2)') N
+          WRITE(GREDELMET_EXTENS(04:05),'(I2)') N
         ELSEIF(N.LT.1000) THEN
-          WRITE(EXTENS(03:05),'(I3)') N
+          WRITE(GREDELMET_EXTENS(03:05),'(I3)') N
         ELSEIF(N.LT.10000) THEN
-          WRITE(EXTENS(02:05),'(I4)') N
+          WRITE(GREDELMET_EXTENS(02:05),'(I4)') N
         ELSE
-          WRITE(EXTENS(01:05),'(I5)') N
+          WRITE(GREDELMET_EXTENS(01:05),'(I5)') N
         ENDIF
 !
         IF(IPID.LT.10) THEN
-          WRITE(EXTENS(11:11),'(I1)') IPID
+          WRITE(GREDELMET_EXTENS(11:11),'(I1)') IPID
         ELSEIF(IPID.LT.100) THEN
-          WRITE(EXTENS(10:11),'(I2)') IPID
+          WRITE(GREDELMET_EXTENS(10:11),'(I2)') IPID
         ELSEIF(IPID.LT.1000) THEN
-          WRITE(EXTENS(09:11),'(I3)') IPID
+          WRITE(GREDELMET_EXTENS(09:11),'(I3)') IPID
         ELSEIF(IPID.LT.10000) THEN
-          WRITE(EXTENS(08:11),'(I4)') IPID
+          WRITE(GREDELMET_EXTENS(08:11),'(I4)') IPID
         ELSE
-          WRITE(EXTENS(07:11),'(I5)') IPID
+          WRITE(GREDELMET_EXTENS(07:11),'(I5)') IPID
         ENDIF
 !
       ELSE
 !
-        EXTENS='       '
+        GREDELMET_EXTENS='       '
 !
       ENDIF
 !
@@ -590,9 +590,9 @@
       END
 !
 !
-!     *****************************
-      SUBROUTINE ALLOER (N, CHFILE)
-!     *****************************
+!     ***************************************
+      SUBROUTINE GREDELMET_ALLOER (N, CHFILE)
+!     ***************************************
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
@@ -621,14 +621,14 @@
       INTEGER, INTENT(IN) :: N
       CHARACTER*(*), INTENT(IN) :: CHFILE
       WRITE(N,*) 'ERROR BY ALLOCATION OF ',CHFILE
-      CALL PLANTE(-1)
+      CALL GREDELMET_PLANTE(-1)
       STOP
-      END SUBROUTINE ALLOER
+      END SUBROUTINE GREDELMET_ALLOER
 !
 !
-!     ***********************
-      SUBROUTINE PLANTE(IVAL)
-!     ***********************
+!     *********************************
+      SUBROUTINE GREDELMET_PLANTE(IVAL)
+!     *********************************
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
@@ -679,12 +679,12 @@
 
 !     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
 !     CALL EXIT(ICODE)
-      END SUBROUTINE PLANTE
+      END SUBROUTINE GREDELMET_PLANTE
 !
 !
-!                       *****************
-                        SUBROUTINE VOISIN
-!                       *****************
+!                       ***************************
+                        SUBROUTINE GREDELMET_VOISIN
+!                       ***************************
      &(IFABOR,NELEM,NELMAX,IELM,IKLE,SIZIKL,
      & NPOIN,IADR,NVOIS)
 !
@@ -770,9 +770,11 @@
       ELSE
         IF(LNG.EQ.1) WRITE(LU,98) IELM
         IF(LNG.EQ.2) WRITE(LU,99) IELM
-98      FORMAT(1X,'VOISIN: IELM=',1I6,' TYPE D''ELEMENT NON PREVU')
-99      FORMAT(1X,'VOISIN: IELM=',1I6,' TYPE OF ELEMENT NOT AVAILABLE')
-        CALL PLANTE(1)
+98      FORMAT(1X,'GREDELMET_VOISIN: IELM=',1I6,
+     &   ' TYPE D''ELEMENT NON PREVU')
+99      FORMAT(1X,'GREDELMET_VOISIN: IELM=',1I6,
+     &   ' TYPE OF ELEMENT NOT AVAILABLE')
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -788,11 +790,11 @@
       IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,1000) ERR
         IF(LNG.EQ.2) WRITE(LU,2000) ERR
-1000    FORMAT(1X,'VOISIN : ERREUR A L''ALLOCATION DE MEMOIRE : ',/,1X,
-     &            'CODE D''ERREUR : ',1I6)
-2000    FORMAT(1X,'VOISIN: ERROR DURING ALLOCATION OF MEMORY: ',/,1X,
-     &            'ERROR CODE: ',1I6)
-        CALL PLANTE(1)
+1000    FORMAT(1X,'GREDELMET_VOISIN : ERREUR A L''ALLOCATION DE MEMOIRE :
+     &   ',/,1X,'CODE D''ERREUR : ',1I6)
+2000    FORMAT(1X,'GREDELMET_VOISIN: ERROR DURING ALLOCATION OF MEMORY :
+     &   ',/,1X,'ERROR CODE: ',1I6)
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -829,11 +831,13 @@
       IF(IMAX.GT.IDIMAT) THEN
         IF(LNG.EQ.1) WRITE(LU,51) IDIMAT,IMAX
         IF(LNG.EQ.2) WRITE(LU,52) IDIMAT,IMAX
-51      FORMAT(1X,'VOISIN: TAILLE DE MAT1,2,3 (',1I9,') INSUFFISANTE',/,
+51      FORMAT(1X,'GREDELMET_VOISIN: TAILLE DE MAT1,2,3 
+     &   (',1I9,') INSUFFISANTE',/,
      &         1X,'IL FAUT AU MOINS : ',1I9)
-52      FORMAT(1X,'VOISIN: SIZE OF MAT1,2,3 (',1I9,') TOO SHORT',/,
+52      FORMAT(1X,'GREDELMET_VOISIN: SIZE OF MAT1,2,3 
+     &   (',1I9,') TOO SHORT',/,
      &         1X,'MINIMUM SIZE: ',1I9)
-        CALL PLANTE(1)
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -883,11 +887,13 @@
 !
          IF(LNG.EQ.1) WRITE(LU,82)
          IF(LNG.EQ.2) WRITE(LU,83)
-82       FORMAT(1X,'VOISIN : ERREUR DANS LE MAILLAGE       ',/,1X,
+82       FORMAT(1X,'GREDELMET_VOISIN : ERREUR DANS LE MAILLAGE
+     &    ',/,1X,
      &             '         PEUT-ETRE DES POINTS CONFONDUS')
-83       FORMAT(1X,'VOISIN : ERROR IN THE MESH             ',/,1X,
+83       FORMAT(1X,'GREDELMET_VOISIN : ERROR IN THE MESH
+     &    ',/,1X,
      &             '         MAYBE SUPERIMPOSED POINTS     ')
-         CALL PLANTE(1)
+         CALL GREDELMET_PLANTE(1)
          STOP
 !
 81       CONTINUE
@@ -906,9 +912,9 @@
       RETURN
       END
 !
-!                       ****************
-                        SUBROUTINE ELEBD
-!                       ****************
+!                       ************************************
+                        SUBROUTINE GREDELMET_ELEBD
+!                       ************************************
      &(NELBOR,NULONE,KP1BOR,IFABOR,NBOR,IKLE,SIZIKL,IKLBOR,NELEM,NELMAX,
      & NPOIN,NPTFR,IELM,LIHBOR,KLOG,T1,T2,T3)
 !
@@ -945,14 +951,14 @@
 !| IELM           |-->| TYPE D'ELEMENT.
 !|                |   | 11 : TRIANGLES.
 !|                |   | 21 : QUADRILATERES.
-!| IFABOR         |-->| TABLEAU DES VOISINS DES FACES.
+!| IFABOR         |-->| TABLEAU DES GREDELMET_VOISINS DES FACES.
 !| IKLBOR         |---|
 !| IKLE           |-->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
 !| KLOG           |-->| CONVENTION POUR LA CONDITION LIMITE DE PAROI
 !| KP1BOR         |<--| NUMERO DU POINT SUIVANT LE POINT DE BORD K.
 !| LIHBOR         |-->| TYPES DE CONDITIONS AUX LIMITES SUR H
 !| MXELVS         |-->| NOMBRE MAXIMUM D'ELEMENTS AUTOUR D'UN POINT
-!| MXPTVS         |-->| NOMBRE MAXIMUM DE VOISINS D'UN POINT
+!| MXPTVS         |-->| NOMBRE MAXIMUM DE GREDELMET_VOISINS D'UN POINT
 !| NBOR           |-->| NUMERO GLOBAL DU POINT DE BORD K.
 !| NELBOR         |<--| NUMERO DE L'ELEMENT ADJACENT AU KIEME SEGMENT
 !| NELEM          |-->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
@@ -1002,9 +1008,11 @@
       ELSE
         IF(LNG.EQ.1) WRITE(LU,900) IELM
         IF(LNG.EQ.2) WRITE(LU,901) IELM
-900     FORMAT(1X,'ELEBD : IELM=',1I6,' TYPE D''ELEMENT INCONNU')
-901     FORMAT(1X,'ELEBD: IELM=',1I6,' UNKNOWN TYPE OF ELEMENT')
-        CALL PLANTE(1)
+900     FORMAT(1X,'GREDELMET_ELEBD : IELM=',1I6,
+     &   ' TYPE D''ELEMENT INCONNU')
+901     FORMAT(1X,'GREDELMET_ELEBD: IELM=',1I6,
+     &   ' UNKNOWN TYPE OF ELEMENT')
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1118,15 +1126,17 @@
       IF(I1.EQ.0.OR.I2.EQ.0) THEN
         IF(LNG.EQ.1) WRITE(LU,810) IEL
         IF(LNG.EQ.2) WRITE(LU,811) IEL
-810     FORMAT(1X,'ELEBD: ERREUR DE NUMEROTATION DANS L''ELEMENT:',I6,/,
+810     FORMAT(1X,'GREDELMET_ELEBD:
+     &   ERREUR DE NUMEROTATION DANS L''ELEMENT:',I6,/,
      &         1X,'       CAUSE POSSIBLE :                       '   ,/,
      &         1X,'       LE FICHIER DES CONDITIONS AUX LIMITES NE'  ,/,
      &         1X,'       CORRESPOND PAS AU FICHIER DE GEOMETRIE  ')
-811     FORMAT(1X,'ELEBD: ERROR OF NUMBERING IN THE ELEMENT:',I6,
+811     FORMAT(1X,'GREDELMET_ELEBD:
+     &   ERROR OF NUMBERING IN THE ELEMENT:',I6,
      &         1X,'       POSSIBLE REASON:                       '   ,/,
      &         1X,'       THE BOUNDARY CONDITION FILE IS NOT      '  ,/,
      &         1X,'       RELEVANT TO THE GEOMETRY FILE           ')
-        CALL PLANTE(1)
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1145,9 +1155,9 @@
       RETURN
       END
 !
-!                       *****************
-                        SUBROUTINE STOSEG
-!                       *****************
+!                       ***************************
+                        SUBROUTINE GREDELMET_STOSEG
+!                       ***************************
      &(IFABOR,NELEM,NELMAX,NELMAX2,IELM,IKLE,NBOR,NPTFR,
      & GLOSEG,MAXSEG,ELTSEG,ORISEG,NSEG,KP1BOR,NELBOR,NULONE)
 !
@@ -1228,9 +1238,9 @@
       IF(IELM.NE.11.AND.IELM.NE.12.AND.IELM.NE.13.AND.IELM.NE.14) THEN
         IF (LNG.EQ.1) WRITE(LU,500) IELM
         IF (LNG.EQ.2) WRITE(LU,501) IELM
-500     FORMAT(1X,'STOSEG (BIEF) : ELEMENT NON PREVU : ',1I6)
-501     FORMAT(1X,'STOSEG (BIEF) : UNEXPECTED ELEMENT: ',1I6)
-        CALL PLANTE(1)
+500     FORMAT(1X,'GREDELMET_STOSEG (BIEF) : ELEMENT NON PREVU : ',1I6)
+501     FORMAT(1X,'GREDELMET_STOSEG (BIEF) : UNEXPECTED ELEMENT: ',1I6)
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1284,14 +1294,16 @@
             I2 = IKLE(IELEM1,NEXT(IFACE))
             IF(I1.EQ.I2) THEN
               IF(LNG.EQ.1) THEN
-               WRITE(LU,*) 'STOSEG : SEGMENT AVEC UN SEUL POINT'
+               WRITE(LU,*) 'GREDELMET_STOSEG :
+     &           SEGMENT AVEC UN SEUL POINT'
                WRITE(LU,*) '         ELEMENT ',IELEM1,' FACE ',IFACE
               ENDIF
               IF(LNG.EQ.2) THEN
-               WRITE(LU,*) 'STOSEG: EDGE MADE OF ONLY ONE POINT'
+               WRITE(LU,*) 'GREDELMET_STOSEG: 
+     &          EDGE MADE OF ONLY ONE POINT'
                WRITE(LU,*) '        ELEMENT ',IELEM1,' FACE ',IFACE
               ENDIF
-              CALL PLANTE(1)
+              CALL GREDELMET_PLANTE(1)
               STOP
             ENDIF
             ELTSEG(IELEM1,IFACE) = NSE
@@ -1324,39 +1336,39 @@
                 ELSEIF(I1.EQ.J1.AND.I2.EQ.J2) THEN
 !                 SIDE BADLY ORIENTED
                   IF(LNG.EQ.1) THEN
-                    WRITE(LU,*) 'STOSEG : MAILLAGE DEFECTUEUX'
+                    WRITE(LU,*) 'GREDELMET_STOSEG : MAILLAGE DEFECTUEUX'
                     WRITE(LU,*) '         LA FACE ',JFACE
                     WRITE(LU,*) '         DE L''ELEMENT ',IELEM2
                     WRITE(LU,*) '         EST MAL ORIENTEE'
                     WRITE(LU,*) '         (POINTS ',I1,' ET ',I2,')'
                   ENDIF
                   IF(LNG.EQ.2) THEN
-                    WRITE(LU,*) 'STOSEG: WRONG MESH'
+                    WRITE(LU,*) 'GREDELMET_STOSEG: WRONG MESH'
                     WRITE(LU,*) '        FACE ',JFACE
                     WRITE(LU,*) '        OF ELEMENT ',IELEM2
                     WRITE(LU,*) '        IS NOT WELL ORIENTED'
                     WRITE(LU,*) '         (POINTS ',I1,' AND ',I2,')'
                   ENDIF
-                  CALL PLANTE(1)
+                  CALL GREDELMET_PLANTE(1)
                   STOP
                 ENDIF
               ENDDO
 !             SIDE NOT FOUND, THIS IS AN ERROR
               IF(LNG.EQ.1) THEN
-                WRITE(LU,*) 'STOSEG : MAILLAGE DEFECTUEUX'
+                WRITE(LU,*) 'GREDELMET_STOSEG : MAILLAGE DEFECTUEUX'
                 WRITE(LU,*) '         ELEMENTS ',IELEM1,' ET ',IELEM2
                 WRITE(LU,*) '         LIES PAR LES POINTS ',I1,' ET ',I2
                 WRITE(LU,*) '         MAIS CES POINTS NE FONT PAS UNE'
                 WRITE(LU,*) '         FACE DE L''ELEMENT ',IELEM2
               ENDIF
               IF(LNG.EQ.2) THEN
-                WRITE(LU,*) 'STOSEG: WRONG MESH'
+                WRITE(LU,*) 'GREDELMET_STOSEG: WRONG MESH'
                 WRITE(LU,*) '        ELEMENTS ',IELEM1,' AND ',IELEM2
                 WRITE(LU,*) '        LINKED BY POINTS ',I1,' AND ',I2
                 WRITE(LU,*) '        BUT THESE POINTS ARE NOT AN EDGE'
                 WRITE(LU,*) '        OF ELEMENT ',IELEM2
               ENDIF
-              CALL PLANTE(1)
+              CALL GREDELMET_PLANTE(1)
               STOP
             ENDIF
 1000        CONTINUE
@@ -1371,11 +1383,13 @@
       IF(NSEG.NE.NSE) THEN
         IF (LNG.EQ.1) WRITE(LU,502) NSE,NSEG
         IF (LNG.EQ.2) WRITE(LU,503) NSE,NSEG
-502     FORMAT(1X,'STOSEG (BIEF) : MAUVAIS NOMBRE DE SEGMENTS : ',1I6,
+502     FORMAT(1X,'GREDELMET_STOSEG (BIEF) : MAUVAIS NOMBRE DE SEGMENTS
+     &   : ',1I6,
      &            '                AU LIEU DE ',1I6,' ATTENDUS')
-503     FORMAT(1X,'STOSEG (BIEF): WRONG NUMBER OF SEGMENTS : ',1I6,
+503     FORMAT(1X,'GREDELMET_STOSEG (BIEF): WRONG NUMBER OF SEGMENTS
+     &   : ',1I6,
      &            '               INSTEAD OF ',1I6,' EXPECTED')
-        CALL PLANTE(1)
+        CALL GREDELMET_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1384,9 +1398,9 @@
       RETURN
       END
 !
-!                       *****************
-                        SUBROUTINE FDNRST
-!                       *****************
+!                       ***************************
+                        SUBROUTINE GREDELMET_FDNRST
+!                       ***************************
      &(IFRM,ITO,X,Y,NODENRS,NPOIN2,IFRM1,ITOP1)
 !
 !***********************************************************************

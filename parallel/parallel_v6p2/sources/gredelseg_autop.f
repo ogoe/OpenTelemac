@@ -93,10 +93,10 @@
 !
       CHARACTER*30 RES
       CHARACTER*50 RESPAR
-      CHARACTER*11 EXTENS
+      CHARACTER*11 GREDELSEG_EXTENS
       CHARACTER*30 CONLIM
       CHARACTER*7  FILETYPE
-      EXTERNAL    EXTENS
+      EXTERNAL    GREDELSEG_EXTENS
       INTRINSIC MAXVAL
 !
       LI=5
@@ -127,7 +127,7 @@
       INQUIRE (FILE=GEO,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
-        CALL PLANTE (-1)
+        CALL GREDELSEG_PLANTE (-1)
         STOP
       END IF
 !
@@ -148,7 +148,7 @@
 10    CONTINUE
       GO TO 992
 990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEO
-      CALL PLANTE(-1)
+      CALL GREDELSEG_PLANTE(-1)
       STOP
 992   CONTINUE
 !     READS THE 10 PARAMETERS AND THE DATE
@@ -160,29 +160,29 @@
       OPEN(3,FILE=RES,FORM='UNFORMATTED',ERR=991)
       GO TO 993
 991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RES
-      CALL PLANTE(-1)
+      CALL GREDELSEG_PLANTE(-1)
       STOP
 993   CONTINUE
 !
 !     1) READS THE BEGINNING OF THE FIRST RESULTS FILE
 !
-!CC      RESPAR=RES // EXTENS(2**IDIMS-1,0)
+!CC      RESPAR=RES // GREDELSEG_EXTENS(2**IDIMS-1,0)
 !
-      RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,0)
+      RESPAR=RES(1:I_LEN) // GREDELSEG_EXTENS(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
       IF (.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', RESPAR
         WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
         WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL PLANTE(-1)
+        CALL GREDELSEG_PLANTE(-1)
         STOP
       END IF
 !
       OPEN(4,FILE=RESPAR,FORM='UNFORMATTED',ERR=994)
       GO TO 995
 994   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR
-      CALL PLANTE(-1)
+      CALL GREDELSEG_PLANTE(-1)
       STOP
 995   CONTINUE
 !
@@ -208,30 +208,30 @@
 !  DYNAMICALLY ALLOCATES THE ARRAYS
 !
       ALLOCATE(NPOIN(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NPOIN')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NPOIN')
       ALLOCATE(NOQ(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NOQ')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NOQ')
       ALLOCATE(NSEG(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NSEG')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NSEG')
       ALLOCATE(MBND(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'MBND')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'MBND')
       ALLOCATE(IKLESA(3,NELEM),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IKLESA')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'IKLESA')
       ALLOCATE(NODENRS(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NODENRS')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NODENRS')
       ALLOCATE(NPTFRL(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NPTFR2LOC')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NPTFR2LOC')
 !
       ALLOCATE(IFABOR(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IFABOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'IFABOR')
       ALLOCATE(IKLE(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IKLE')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'IKLE')
       ALLOCATE(IADR(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IADR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'IADR')
       ALLOCATE(NVOIS(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NVOIS')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NVOIS')
       ALLOCATE(T3(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'T3')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'T3')
 !
 !  END OF ALLOCATION ...
 !
@@ -251,14 +251,14 @@
       OPEN(4,FILE=CONLIM,FORM='FORMATTED',ERR=996)
       GO TO 997
  996  WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',CONLIM
-      CALL PLANTE(-1)
+      CALL GREDELSEG_PLANTE(-1)
       STOP
  997  CONTINUE
 !
       ALLOCATE(LIHBOR0(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'LIHBOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'LIHBOR')
       ALLOCATE(NBOR0(NPOIN2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NBOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NBOR')
       DO I=1,NPOIN2
         READ(4,*,END=989) LIHBOR0(I),IDUM,IDUM,RDUM,RDUM,RDUM,RDUM,
      &                    IDUM,RDUM,RDUM,RDUM,NBOR0(I),IDUM
@@ -268,21 +268,21 @@
  989  NPTFR=I-1
 !
       ALLOCATE(LIHBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'LIHBOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'LIHBOR')
       ALLOCATE(NBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NBOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NBOR')
       ALLOCATE(NELBOR(NPTFR),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NELBOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NELBOR')
       ALLOCATE(NULONE(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NULONE')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NULONE')
       ALLOCATE(KP1BOR(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'KP1BOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'KP1BOR')
       ALLOCATE(IKLBOR(NPTFR,2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'IKLBOR')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'IKLBOR')
       ALLOCATE(ELTSEG(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'ELTSEG')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'ELTSEG')
       ALLOCATE(ORISEG(NELEM,3),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'ORISEG')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'ORISEG')
 !
       MBND2=0
 !
@@ -326,12 +326,12 @@
         MAXNVOIS = MAXVAL(NVOIS)/2
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
       KLOG = 2 ! SOLID BOUNDARY CONDITION: IS HARD-CODED !!!
       IF(IELM.EQ.11.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
-        CALL ELEBD(NELBOR,NULONE,KP1BOR,
+        CALL GREDELSEG_ELEBD(NELBOR,NULONE,KP1BOR,
      &             IFABOR,NBOR,IKLE,NELEM,
      &             IKLBOR,NELEM2,NELMAX2,
      &             NPOIN2,NPTFR2,IELM,
@@ -339,7 +339,7 @@
      &             IADR,NVOIS,T3)
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
@@ -357,7 +357,7 @@
          ELSE
            ALLOCATE(VERIF(NOQ2) ,STAT=ERR)
          ENDIF
-         IF(ERR.NE.0) CALL ALLOER (LU, 'VERIFSEG')
+         IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'VERIFSEG')
 !
 !  GLOBAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
          IF(NPLAN.EQ.0) THEN
@@ -365,10 +365,10 @@
          ELSE
            ALLOCATE(GLOBAL_VALUE(NOQ2),STAT=ERR)
          ENDIF
-         IF(ERR.NE.0) CALL ALLOER (LU, 'GLOBAL_VALUE')
+         IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'GLOBAL_VALUE')
 !
          ALLOCATE(GLOSEG(NSEG2,2),STAT=ERR)
-         IF(ERR.NE.0) CALL ALLOER (LU, 'GLOSEG')
+         IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'GLOSEG')
 !
       CALL STOSEG(IFABOR,NELEM,NELMAX2,NELMAX2,IELM,IKLE,
      &            NBOR,NPTFR,
@@ -378,7 +378,7 @@
       ENDIF
 !
       ALLOCATE(SEGMENT(NPOIN2,MAXNVOIS,2),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'SEGMENT')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'SEGMENT')
 !
 ! INITIALISES SEGMENT
       DO K=1,2
@@ -410,12 +410,12 @@
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         RESPAR=RES(1:I_LEN) // EXTENS(NPROC-1,IPID)
+         RESPAR=RES(1:I_LEN) // GREDELSEG_EXTENS(NPROC-1,IPID)
          OPEN (FU,FILE=RESPAR,FORM='UNFORMATTED',ERR=998)
          GO TO 999
 998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RESPAR,
      &                      ' USING FILE UNIT: ', FU
-         CALL PLANTE(-1)
+         CALL GREDELSEG_PLANTE(-1)
          STOP
 999      REWIND(FU)
          READ(FU) FILETYPE
@@ -446,13 +446,13 @@
          ALLOCATE (NBORLOC(NPTFRMAX,NPROC),STAT=ERR)
          ALLOCATE (LIHBORLOC(NPTFRMAX,NPROC),STAT=ERR)
       ENDIF
-      IF(ERR.NE.0) CALL ALLOER (LU, 'KNOLG')
-      IF(ERR.NE.0) CALL ALLOER (LU, 'KSEGLG')
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NODENRSLOC')
-      IF(ERR.NE.0) CALL ALLOER (LU, 'NBORLOC')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'KNOLG')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'KSEGLG')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NODENRSLOC')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'NBORLOC')
 !  LOCAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
       ALLOCATE(LOCAL_VALUE(NOQMAX),STAT=ERR)
-      IF(ERR.NE.0) CALL ALLOER (LU, 'LOCAL_VALUE')
+      IF(ERR.NE.0) CALL GREDELSEG_ALLOER (LU, 'LOCAL_VALUE')
 !
 ! READS KNOLG(NPOIN,NPROC)
 !
@@ -541,8 +541,8 @@
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-! READS LOCAL X INSTEAD OF READ_DATASET
-         CALL READ_DATASET
+! READS LOCAL X INSTEAD OF GREDELSEG_READ_DATASET
+         CALL GREDELSEG_READ_DATASET
      &   (LOCAL_VALUE,NOQMAX,NOQ(IPID+1),IT,FU,ENDE)
          IF (ENDE) GOTO 3000
 ! STORES EACH DATASET
@@ -693,16 +693,16 @@
       END PROGRAM GREDELSEG_AUTOP
 !
 !
-!                       ****************************
-                        CHARACTER*11 FUNCTION EXTENS
-!                       ****************************
+!                       ***********************************
+                        CHARACTER*11 FUNCTION GREDELSEG_EXTENS
+!                       ***********************************
      &(N,IPID)
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
 !***********************************************************************
 !
-!brief       EXTENSION OF THE FILES ON EACH PROCESSOR.
+!brief       GREDELSEG_EXTENSION OF THE FILES ON EACH PROCESSOR.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -736,35 +736,35 @@
 !
       IF(N.GT.0) THEN
 !
-        EXTENS='00000-00000'
+        GREDELSEG_EXTENS='00000-00000'
 !
         IF(N.LT.10) THEN
-          WRITE(EXTENS(05:05),'(I1)') N
+          WRITE(GREDELSEG_EXTENS(05:05),'(I1)') N
         ELSEIF(N.LT.100) THEN
-          WRITE(EXTENS(04:05),'(I2)') N
+          WRITE(GREDELSEG_EXTENS(04:05),'(I2)') N
         ELSEIF(N.LT.1000) THEN
-          WRITE(EXTENS(03:05),'(I3)') N
+          WRITE(GREDELSEG_EXTENS(03:05),'(I3)') N
         ELSEIF(N.LT.10000) THEN
-          WRITE(EXTENS(02:05),'(I4)') N
+          WRITE(GREDELSEG_EXTENS(02:05),'(I4)') N
         ELSE
-          WRITE(EXTENS(01:05),'(I5)') N
+          WRITE(GREDELSEG_EXTENS(01:05),'(I5)') N
         ENDIF
 !
         IF(IPID.LT.10) THEN
-          WRITE(EXTENS(11:11),'(I1)') IPID
+          WRITE(GREDELSEG_EXTENS(11:11),'(I1)') IPID
         ELSEIF(IPID.LT.100) THEN
-          WRITE(EXTENS(10:11),'(I2)') IPID
+          WRITE(GREDELSEG_EXTENS(10:11),'(I2)') IPID
         ELSEIF(IPID.LT.1000) THEN
-          WRITE(EXTENS(09:11),'(I3)') IPID
+          WRITE(GREDELSEG_EXTENS(09:11),'(I3)') IPID
         ELSEIF(IPID.LT.10000) THEN
-          WRITE(EXTENS(08:11),'(I4)') IPID
+          WRITE(GREDELSEG_EXTENS(08:11),'(I4)') IPID
         ELSE
-          WRITE(EXTENS(07:11),'(I5)') IPID
+          WRITE(GREDELSEG_EXTENS(07:11),'(I5)') IPID
         ENDIF
 !
       ELSE
 !
-        EXTENS='       '
+        GREDELSEG_EXTENS='       '
 !
       ENDIF
 !
@@ -773,9 +773,9 @@
       RETURN
       END
 !
-!                         ***********************
-                          SUBROUTINE READ_DATASET
-!                         ***********************
+!                         ******************************
+                          SUBROUTINE GREDELSEG_READ_DATASET
+!                         ******************************
      &(LOCAL_VALUE,NPOINMAX,NPOIN,IT,FU,ENDE)
 !
 !***********************************************************************
@@ -827,7 +827,7 @@
 !
 !
 !     *****************************
-      SUBROUTINE ALLOER (N, CHFILE)
+      SUBROUTINE GREDELSEG_ALLOER (N, CHFILE)
 !     *****************************
 !
 !***********************************************************************
@@ -857,14 +857,14 @@
       INTEGER, INTENT(IN) :: N
       CHARACTER*(*), INTENT(IN) :: CHFILE
       WRITE(N,*) 'ERROR BY ALLOCATION OF ',CHFILE
-      CALL PLANTE(-1)
+      CALL GREDELSEG_PLANTE(-1)
       STOP
-      END SUBROUTINE ALLOER
+      END SUBROUTINE GREDELSEG_ALLOER
 !
 !
-!     ***********************
-      SUBROUTINE PLANTE(IVAL)
-!     ***********************
+!     *********************************
+      SUBROUTINE GREDELSEG_PLANTE(IVAL)
+!     *********************************
 !
 !***********************************************************************
 ! PARALLEL   V6P0                                   21/08/2010
@@ -914,7 +914,7 @@
 
 !     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
 !     CALL EXIT(ICODE)
-      END SUBROUTINE PLANTE
+      END SUBROUTINE GREDELSEG_PLANTE
 !
 !
 !
@@ -1008,7 +1008,7 @@
         IF(LNG.EQ.2) WRITE(LU,99) IELM
 98      FORMAT(1X,'VOISIN: IELM=',1I6,' TYPE D''ELEMENT NON PREVU')
 99      FORMAT(1X,'VOISIN: IELM=',1I6,' TYPE OF ELEMENT NOT AVAILABLE')
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1028,7 +1028,7 @@
      &            'CODE D''ERREUR : ',1I6)
 2000    FORMAT(1X,'VOISIN: ERROR DURING ALLOCATION OF MEMORY: ',/,1X,
      &            'ERROR CODE: ',1I6)
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1069,7 +1069,7 @@
      &         1X,'IL FAUT AU MOINS : ',1I9)
 52      FORMAT(1X,'VOISIN: SIZE OF MAT1,2,3 (',1I9,') TOO SHORT',/,
      &         1X,'MINIMUM SIZE: ',1I9)
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1123,7 +1123,7 @@
      &             '         PEUT-ETRE DES POINTS CONFONDUS')
 83       FORMAT(1X,'VOISIN : ERROR IN THE MESH             ',/,1X,
      &             '         MAYBE SUPERIMPOSED POINTS     ')
-         CALL PLANTE(1)
+         CALL GREDELSEG_PLANTE(1)
          STOP
 !
 81       CONTINUE
@@ -1145,7 +1145,7 @@
 !
 !
 !                       ****************
-                        SUBROUTINE ELEBD
+                        SUBROUTINE GREDELSEG_ELEBD
 !                       ****************
      &(NELBOR,NULONE,KP1BOR,IFABOR,NBOR,IKLE,SIZIKL,IKLBOR,NELEM,NELMAX,
      & NPOIN,NPTFR,IELM,LIHBOR,KLOG,T1,T2,T3)
@@ -1239,9 +1239,11 @@
       ELSE
         IF(LNG.EQ.1) WRITE(LU,900) IELM
         IF(LNG.EQ.2) WRITE(LU,901) IELM
-900     FORMAT(1X,'ELEBD : IELM=',1I6,' TYPE D''ELEMENT INCONNU')
-901     FORMAT(1X,'ELEBD: IELM=',1I6,' UNKNOWN TYPE OF ELEMENT')
-        CALL PLANTE(1)
+900     FORMAT(1X,'GREDELSEG_ELEBD : IELM=',1I6,
+     &   ' TYPE D''ELEMENT INCONNU')
+901     FORMAT(1X,'GREDELSEG_ELEBD: IELM=',1I6,
+     &   ' UNKNOWN TYPE OF ELEMENT')
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1355,15 +1357,17 @@
       IF(I1.EQ.0.OR.I2.EQ.0) THEN
         IF(LNG.EQ.1) WRITE(LU,810) IEL
         IF(LNG.EQ.2) WRITE(LU,811) IEL
-810     FORMAT(1X,'ELEBD: ERREUR DE NUMEROTATION DANS L''ELEMENT:',I6,/,
+810     FORMAT(1X,'GREDELSEG_ELEBD: ERREUR DE NUMEROTATION
+     &   DANS L''ELEMENT:',I6,/,
      &         1X,'       CAUSE POSSIBLE :                       '   ,/,
      &         1X,'       LE FICHIER DES CONDITIONS AUX LIMITES NE'  ,/,
      &         1X,'       CORRESPOND PAS AU FICHIER DE GEOMETRIE  ')
-811     FORMAT(1X,'ELEBD: ERROR OF NUMBERING IN THE ELEMENT:',I6,
+811     FORMAT(1X,'GREDELSEG_ELEBD: ERROR OF NUMBERING
+     &   IN THE ELEMENT:',I6,
      &         1X,'       POSSIBLE REASON:                       '   ,/,
      &         1X,'       THE BOUNDARY CONDITION FILE IS NOT      '  ,/,
      &         1X,'       RELEVANT TO THE GEOMETRY FILE           ')
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1467,7 +1471,7 @@
         IF (LNG.EQ.2) WRITE(LU,501) IELM
 500     FORMAT(1X,'STOSEG (BIEF) : ELEMENT NON PREVU : ',1I6)
 501     FORMAT(1X,'STOSEG (BIEF) : UNEXPECTED ELEMENT: ',1I6)
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
@@ -1528,7 +1532,7 @@
                WRITE(LU,*) 'STOSEG: EDGE MADE OF ONLY ONE POINT'
                WRITE(LU,*) '        ELEMENT ',IELEM1,' FACE ',IFACE
               ENDIF
-              CALL PLANTE(1)
+              CALL GREDELSEG_PLANTE(1)
               STOP
             ENDIF
             ELTSEG(IELEM1,IFACE) = NSE
@@ -1574,7 +1578,7 @@
                     WRITE(LU,*) '        IS NOT WELL ORIENTED'
                     WRITE(LU,*) '         (POINTS ',I1,' AND ',I2,')'
                   ENDIF
-                  CALL PLANTE(1)
+                  CALL GREDELSEG_PLANTE(1)
                   STOP
                 ENDIF
               ENDDO
@@ -1593,7 +1597,7 @@
                 WRITE(LU,*) '        BUT THESE POINTS ARE NOT AN EDGE'
                 WRITE(LU,*) '        OF ELEMENT ',IELEM2
               ENDIF
-              CALL PLANTE(1)
+              CALL GREDELSEG_PLANTE(1)
               STOP
             ENDIF
 1000        CONTINUE
@@ -1612,7 +1616,7 @@
      &            '                AU LIEU DE ',1I6,' ATTENDUS')
 503     FORMAT(1X,'STOSEG (BIEF): WRONG NUMBER OF SEGMENTS : ',1I6,
      &            '               INSTEAD OF ',1I6,' EXPECTED')
-        CALL PLANTE(1)
+        CALL GREDELSEG_PLANTE(1)
         STOP
       ENDIF
 !
