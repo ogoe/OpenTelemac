@@ -4,10 +4,10 @@
 !
      &(U,V,W,DT,X,Y,ZSTAR,Z,IKLE2,IBOR,LT,NPOIN2,NELEM2,NPLAN,NPLINT,
      & SURDET,XFLOT,YFLOT,ZFLOT,ZSFLOT,SHPFLO,SHZFLO,DEBFLO,FINFLO,
-     & ELTFLO,ETAFLO,NFLOT,NITFLO,FLOPRD)
+     & ELTFLO,ETAFLO,NFLOT,NITFLO,FLOPRD,MESH,DX,DY,DZ)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    - COMPUTES THE BARYCENTRIC COORDINATES OF A FLOAT
@@ -39,6 +39,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        07/06/2012
+!+        V6P2
+!+   Arguments MESH,DX,DY,DZ added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBFLO         |<->| NUMBERS OF TIME STEPS FOR DROPPING OF EACH DROGUE
 !| DT             |-->| TIME STEP
@@ -56,6 +61,7 @@
 !|                |   | THERE IS A LIQUID, SOLID OR PERIODIC FACE
 !| IKLE2          |-->| GLOBAL NUMBERS OF POINTS IN 2D ELEMENTS
 !| LT             |-->| CURRENT TIME STEP NUMBER
+!| MESH           |-->| MESH STRUCTURE
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NFLOT          |-->| NUMBER OF DROGUES
 !| NITFLO         |-->| MAXIMUM NUMBER OF RECORDINGS OF SUCCESSIVE
@@ -109,7 +115,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: SURDET(NELEM2)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(3,NFLOT)
       DOUBLE PRECISION, INTENT(INOUT) :: SHZFLO(NFLOT)
+      DOUBLE PRECISION, INTENT(INOUT) :: DX(NFLOT),DY(NFLOT),DZ(NFLOT)
       DOUBLE PRECISION, INTENT(IN)    :: DT
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -119,7 +127,7 @@
 !
 ! LOCAL, AUTOMATIC... (?)
 !
-      DOUBLE PRECISION DX(NFLOT),DY(NFLOT),DZ(NFLOT),TEST(NFLOT)
+      DOUBLE PRECISION TEST(NFLOT)
 !
 !-----------------------------------------------------------------------
 !
