@@ -134,7 +134,8 @@ def readCAS(keywords,dico,frgb):
          keywords.update({key:vals})
       elif dico[kw]['TYPE'][0] in ['REEL','REAL']:
          vals = []
-         for val in value: vals.append(float(val))
+         #@warning : 1.D0 is not supported by Python Float. Replaced by 1.E0
+         for val in value: vals.append(float(val.lower().replace('d','e')))
          keywords.update({key:vals})
       else:
          vals = []
