@@ -5,7 +5,7 @@
      &(NPOIN,NELEM,NPTFR,NDP,IKLES,IPOBO,IB,NFIC)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS OR COMPUTES THE VALUES OF NPOIN, NELEM, NPTFR.
@@ -52,10 +52,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(OUT) :: NPTFR
-      INTEGER, INTENT(IN)  :: NFIC,NPOIN,NELEM,NDP,IB(10)
-      INTEGER, INTENT(OUT) :: IKLES(NDP*NELEM)
-      INTEGER, INTENT(OUT) :: IPOBO(NPOIN)
+      INTEGER, INTENT(INOUT) :: NPTFR
+      INTEGER, INTENT(IN)    :: NFIC,NPOIN,NELEM,NDP,IB(10)
+      INTEGER, INTENT(INOUT) :: IKLES(NDP*NELEM)
+      INTEGER, INTENT(INOUT) :: IPOBO(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

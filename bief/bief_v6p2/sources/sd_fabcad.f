@@ -6,7 +6,7 @@
      & INDTRI,ISTRI,INX,IPX,ACTRI,XA1,XA2,DA,AC)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/07/2011
+! BIEF   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    BUILDS A COMPACT STORAGE
@@ -34,6 +34,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        08/06/2012
+!+        V6P2
+!+   Dimensions and algorithm slightly changed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<--|COMPACT STORED MATRIX WITH DIAGONAL
 !| ACTRI          |---|REAL WORKING STORAGE
@@ -58,16 +63,16 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPBLK,NSEGBLK
-      INTEGER, INTENT(IN)             :: IN(NPBLK+1),IP(NSEGBLK*2+1)
-      INTEGER, INTENT(IN)             :: ISEGIP(NSEGBLK*2+1)
+      INTEGER, INTENT(IN)             :: IN(NPBLK+1),IP(NSEGBLK*2)
+      INTEGER, INTENT(IN)             :: ISEGIP(NSEGBLK*2)
       INTEGER, INTENT(INOUT)          :: INDTRI(NPBLK)
       INTEGER, INTENT(INOUT)          :: ISTRI(NPBLK)
       INTEGER, INTENT(INOUT)          :: INX(NPBLK+1)
-      INTEGER, INTENT(INOUT)          :: IPX(NSEGBLK*2+NPBLK+1)
+      INTEGER, INTENT(INOUT)          :: IPX(NSEGBLK*2+NPBLK)
       DOUBLE PRECISION, INTENT(INOUT) :: ACTRI(NPBLK)
       DOUBLE PRECISION, INTENT(IN)    :: XA1(NSEGBLK),XA2(NSEGBLK)
       DOUBLE PRECISION, INTENT(IN)    :: DA(NPBLK)
-      DOUBLE PRECISION, INTENT(INOUT) :: AC(NSEGBLK*2+NPBLK+1)
+      DOUBLE PRECISION, INTENT(INOUT) :: AC(NSEGBLK*2+NPBLK)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -75,23 +80,34 @@
 !
 !-----------------------------------------------------------------------
 !
-!---> COMPACT STORAGE WITH THE DIAGONAL : (XADJ, ADJNCY) = (INX,IPX)
+!---> COMPACT STORAGE WITH THE DIAGONAL ADDED : (XADJ, ADJNCY) = (INX,IPX)
 !
       DO I = 1, NPBLK+1
         INX(I) = IN(I)+I-1
       ENDDO
-      J2=1
+!
+!     J2 WILL BE THE ADDRESS IN AC
+      J2=0
       DO I = 1, NPBLK
          IPX(INX(I)) = I
+!        DIAGONAL AS FIRST COEFFICIENT OF THE LIST
+         J2=J2+1
+!        NOTE: HERE J2=INX(I)
          AC(INX(I)) = DA(I)
-         DO J1 = INX(I), INX(I+1)-1
-            JN = J1-I+1
+!        LOOP ON MATRIX COEFFICIENTS OF POINT I
+!        EXCLUDING DIAGONAL TERMS AT ADDRESS INX(I)
+         DO J1 = INX(I)+1, INX(I+1)-1
+!           BACK TO ADDRESS WITHOUT THE DIAGONAL
+            JN = J1-I
             J = IP(JN)
             J2=J2+1
             ISEG = ISEGIP(JN)
             IPX(J2) = J
-            IF(ISEG.LT.0) AC(J2) = XA1(-ISEG)
-            IF(ISEG.GT.0) AC(J2) = XA2(ISEG)
+            IF(ISEG.LT.0) THEN
+              AC(J2) = XA1(-ISEG)
+            ELSEIF(ISEG.GT.0) THEN
+              AC(J2) = XA2(ISEG)
+            ENDIF
          ENDDO
       ENDDO
       DO I = 1, NPBLK

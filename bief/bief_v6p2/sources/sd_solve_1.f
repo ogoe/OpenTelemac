@@ -5,7 +5,7 @@
      &(NPOIN,NSEGB,GLOSEG,MAXSEG,DA,XA,XINC,RHS,INFOGR,TYPEXT)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/07/2011
+! BIEF   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    DIRECT RESOLUTION OF A SYMMETRICAL LINEAR SYSTEM WITH
@@ -172,6 +172,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        08/06/2012
+!+        V6P2
+!+   Dimensions changed in declarations and allocation.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DA             |-->| MATRIX DIAGONAL COEFFICIENTS
 !| XA             |-->| OFF-DIAGONAL TERM OF MATRIX 
@@ -283,12 +288,12 @@
       ENDIF
 !
       IF(SIZE_ISEGIP.EQ.0) THEN
-        ALLOCATE(ISEGIP(NSEGBLK*2+1))
-        SIZE_ISEGIP=    NSEGBLK*2+1
-      ELSEIF(           NSEGBLK*2+1.GT.SIZE_ISEGIP) THEN
+        ALLOCATE(ISEGIP(NSEGBLK*2))
+        SIZE_ISEGIP=    NSEGBLK*2
+      ELSEIF(           NSEGBLK*2.GT.SIZE_ISEGIP) THEN
         DEALLOCATE(ISEGIP)
-        ALLOCATE(ISEGIP(NSEGBLK*2+1))
-        SIZE_ISEGIP=    NSEGBLK*2+1
+        ALLOCATE(ISEGIP(NSEGBLK*2))
+        SIZE_ISEGIP=    NSEGBLK*2
       ENDIF
 !
       IF(SIZE_IW1.EQ.0) THEN
@@ -319,21 +324,21 @@
       ENDIF
 !
       IF(SIZE_IPX.EQ.0) THEN
-        ALLOCATE(IPX(NSEGBLK*2+NPBLK+1))
-        SIZE_IPX=    NSEGBLK*2+NPBLK+1
-      ELSEIF(        NSEGBLK*2+NPBLK+1.GT.SIZE_IPX) THEN
+        ALLOCATE(IPX(NSEGBLK*2+NPBLK))
+        SIZE_IPX=    NSEGBLK*2+NPBLK
+      ELSEIF(        NSEGBLK*2+NPBLK.GT.SIZE_IPX) THEN
         DEALLOCATE(IPX)
-        ALLOCATE(IPX(NSEGBLK*2+NPBLK+1))
-        SIZE_IPX=    NSEGBLK*2+NPBLK+1
+        ALLOCATE(IPX(NSEGBLK*2+NPBLK))
+        SIZE_IPX=    NSEGBLK*2+NPBLK
       ENDIF
 !
       IF(SIZE_AC.EQ.0) THEN
-        ALLOCATE(AC(NSEGBLK*2+NPBLK+1))
-        SIZE_AC=    NSEGBLK*2+NPBLK+1
-      ELSEIF(       NSEGBLK*2+NPBLK+1.GT.SIZE_AC) THEN
+        ALLOCATE(AC(NSEGBLK*2+NPBLK))
+        SIZE_AC=    NSEGBLK*2+NPBLK
+      ELSEIF(       NSEGBLK*2+NPBLK.GT.SIZE_AC) THEN
         DEALLOCATE(AC)
-        ALLOCATE(AC(NSEGBLK*2+NPBLK+1))
-        SIZE_AC=    NSEGBLK*2+NPBLK+1
+        ALLOCATE(AC(NSEGBLK*2+NPBLK))
+        SIZE_AC=    NSEGBLK*2+NPBLK
       ENDIF
 !
       IF(SIZE_ACTRI.EQ.0) THEN
@@ -368,7 +373,7 @@
 !     =======================================================================
 !
       CALL SD_STRSSD(NPBLK,NSEGBLK,GLOSEG(1,1),GLOSEG(1,2),
-     &               IN,IP,ISEGIP,IW1)
+     &               IN,IP,ISEGIP,IW1)     
 !
       IF(TYPEXT.EQ.'S') THEN
         CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,

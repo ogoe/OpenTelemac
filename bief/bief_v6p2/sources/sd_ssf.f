@@ -163,7 +163,7 @@
 !
 !----FOR EACH ROW K
 !
-      DO 18 K=1,N
+      DO 19 K=1,N
         LUK = 0
         Q(K) = N+1
 !
@@ -286,6 +286,8 @@
         JL(I) = K
 !
 18    IU(K+1) = IU(K) + LUK
+!
+19    CONTINUE
 !
       FLAG = 0
       RETURN

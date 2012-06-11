@@ -2,13 +2,13 @@
                      SUBROUTINE DERLAG
 !                    *****************
 !
-     &( U,V,DT,X,Y,IKLE,IFABOR,ELTCAR,LT,IELM,NDP,NPOIN,
-     &  NELEM , NELMAX , SURDET , XLAG , YLAG , DX , DY ,
-     &  NSP , SHPLAG , DEBLAG , FINLAG , ELTLAG , NLAG , RESUX , RESUY ,
-     &  NBOR , NELBOR , NULONE , NPTFR , MSK,MASKEL,MASKPT,T8)
+     &(U,V,DT,X,Y,IKLE,IFABOR,ELTCAR,LT,IELM,NDP,NPOIN,
+     & NELEM,NELMAX,SURDET,XLAG,YLAG,DX,DY,
+     & NSP,SHPLAG,DEBLAG,FINLAG,ELTLAG,NLAG,RESUX,RESUY,
+     & NBOR,NELBOR,NULONE,NPTFR,MSK,MASKEL,MASKPT,T8,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    - SETS THE BARYCENTRIC COORDINATES IN THE MESH,
@@ -17,6 +17,9 @@
 !+
 !+            - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
 !+                 (SUBSEQUENT TIMESTEPS).
+!
+!warning  Will not work in parallel (this would require calling scaract
+!+        instead of char11, and adaptation of scaract)
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -29,6 +32,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        07/06/2012
+!+        V6P2
+!+   Argument MESH added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBLAG         |-->| TIME STEP FOR STARTING THE COMPUTATION
@@ -46,6 +54,7 @@
 !| MASKEL         |-->| MASKING OF ELEMENTS.
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MASKPT         |-->| MASKING PER POINT.
+!| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
@@ -104,6 +113,7 @@
       INTEGER         , INTENT(IN)    :: NULONE(NPTFR)
       LOGICAL         , INTENT(IN)    :: MSK
       DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELMAX),MASKPT(NPOIN)
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -163,15 +173,15 @@
 ! NUMBER OF RUNGE-KUTTA SUB-STEPS, BY CROSSED ELEMENT
 ! ======================================================
 !
-          NRK     =  3
+          NRK  =  3
 !
 !  P1 TRIANGLES
 !  ============
 !
-          CALL CHAR11( U , V , DT , NRK , X , Y , IKLE , IFABOR ,
-     &                 XLAG(1,ILAG) , YLAG(1,ILAG) , DX , DY ,
-     &                 SHPLAG(1,1,ILAG) , ELTLAG(1,ILAG) , NSP ,
-     &                 NPOIN , NPOIN , NELEM , NELMAX , SURDET , 1 ,T8)
+          CALL CHAR11(U,V,DT,NRK,X,Y,IKLE,IFABOR,
+     &                XLAG(1,ILAG),YLAG(1,ILAG),DX,DY,
+     &                SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),NSP,
+     &                NPOIN,NPOIN,NELEM,NELMAX,SURDET,1,T8)
 !
         ENDIF
 !

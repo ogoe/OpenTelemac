@@ -131,7 +131,7 @@
 !|                |   | IS DM1*GRAD(ZCONV), SEE SOLSYS.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_CVTRVF_POS => CVTRVF_POS
+      USE BIEF
 !
       IMPLICIT NONE
       INTEGER LNG,LU

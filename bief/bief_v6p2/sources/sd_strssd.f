@@ -5,7 +5,7 @@
      &(NPBLK,NSEGBLK,GLOSEG1,GLOSEG2,IN,IP,ISEGIP,IW)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS COMPACT STORAGE
@@ -31,11 +31,16 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        08/06/2012
+!+        V6P2
+!+   Dimensions changed in declarations and allocation.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| GLOSEG1        |-->| FIRST POINT OF SEGMENTS
 !| GLOSEG2        |-->| SECOND POINT OF SEGMENTS
-!| IN             |<--| (IN, IP)COMPACT STORAGE OF EXTRADIAGONAL TERMS
-!| IP             |<--| (IN, IP)COMPACT STORAGE OF EXTRADIAGONAL TERMS
+!| IN             |<--| (IN, IP) COMPACT STORAGE OF EXTRADIAGONAL TERMS
+!| IP             |<--| (IN, IP) COMPACT STORAGE OF EXTRADIAGONAL TERMS
 !| ISEGIP         |<--| INVERSE TABLE OF CONNECTIVITY: POINT-->SEGMENT
 !| IW             |<--| NUMBER OF NEIGHBOURS OF POINTS
 !| NPBLK          |-->| NUMBER OF POINTS
@@ -52,8 +57,8 @@
 !
       INTEGER, INTENT(IN)    :: NSEGBLK,NPBLK
       INTEGER, INTENT(IN)    :: GLOSEG1(NSEGBLK),GLOSEG2(NSEGBLK)
-      INTEGER, INTENT(INOUT) :: IN(NPBLK+1),IP(NSEGBLK*2+1)
-      INTEGER, INTENT(INOUT) :: ISEGIP(NSEGBLK*2+1)
+      INTEGER, INTENT(INOUT) :: IN(NPBLK+1),IP(NSEGBLK*2)
+      INTEGER, INTENT(INOUT) :: ISEGIP(NSEGBLK*2)
       INTEGER, INTENT(INOUT) :: IW(NPBLK)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -95,13 +100,19 @@
       DO ISEG=1,NSEGBLK
         J1 = GLOSEG1(ISEG)
         J2 = GLOSEG2(ISEG)
-!--> TABLE OF CONNECTIVITY: SEGMENT ---> POINT
+!
+!-->    TABLE OF CONNECTIVITY: SEGMENT ---> POINT
+!       WILL SAY TO WHAT POINT A COEFFICIENT REFERS TO
+!
         IP(IW(J1))=J2
         IP(IW(J2))=J1
-!--> INVERSE TABLE OF CONNECTIVITY: POINT ---> SEGMENT
-!    NOTATION FOR TRIANGULAR SUPERIOR COEFF.
+!
+!-->    INVERSE TABLE OF CONNECTIVITY: POINT ---> SEGMENT
+!       WILL SAY TO WHAT SEGMENT A COEFFICIENT REFERS TO
+!
+!       NOTATION FOR TRIANGULAR SUPERIOR COEFF.
         ISEGIP(IW(J1))=-ISEG
-!    NOTATION FOR TRIANGULAR INFERIOR COEFF.
+!       NOTATION FOR TRIANGULAR INFERIOR COEFF.
         ISEGIP(IW(J2))= ISEG
 !
         IW(J1) = IW(J1) + 1

@@ -1,11 +1,11 @@
-!                    ********************
-                     LOGICAL FUNCTION EOF
-!                    ********************
+!                    *************************
+                     LOGICAL FUNCTION BIEF_EOF
+!                    *************************
 !
      &(LUNIT)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    DETECTS THE END OF A FILE:
@@ -31,6 +31,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history J-M HERVOUET (LNHE)
+!+        11/06/2012
+!+        V6P2
+!+   Name changed from eof to bief_eof (eof is a Fortran extension of
+!+   some compilers, let us avoid conflicts...)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LUNIT          |-->| LOGICAL INUT OF FILE TO BE READ
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,15 +51,23 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      EOF = .TRUE.
+      BIEF_EOF = .FALSE.
 !
-      READ ( UNIT=LUNIT , ERR=100 , END=100 )
-!
-      EOF = .FALSE.
+      READ(UNIT=LUNIT,ERR=100,END=100)
+      BACKSPACE(UNIT=LUNIT,ERR=101)
+      RETURN
 !
 100   CONTINUE
 !
-      BACKSPACE ( UNIT = LUNIT )
+      BIEF_EOF=.TRUE.
+      RETURN
+!
+101   CONTINUE
+!
+      WRITE(LU,*) 'ERROR IN FUNCTION EOF (BIEF) ERROR IN BACKSPACE'
+      WRITE(LU,*) 'AFTER A CORRECT READ, COMPILER ERROR ?'
+      WRITE(LU,*) 'A TENTATIVE BIEF_EOF=.TRUE. IS RETURNED'
+      BIEF_EOF=.TRUE.    
 !
 !-----------------------------------------------------------------------
 !

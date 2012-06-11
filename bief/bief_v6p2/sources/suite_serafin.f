@@ -6,7 +6,7 @@
      & NVARCL,TROUVE,ALIRE,LISTIN,FIN,MAXVAR,NPLAN,DT)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE OUTPUT FROM A SERAFIN RESULT FILE.
@@ -24,11 +24,6 @@
 !+
 !+   STD IS NOW A STRING OF ANY SIZE
 !
-!history  J-M HERVOUET (LNHE)
-!+        09/04/2009
-!+        V6P0
-!+
-!
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
@@ -40,6 +35,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/06/2012
+!+        V6P2
+!+   EOF changed into BIEF_EOF
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALIRE          |-->| VARIABLES TO BE READ (FOR OTHERS THE RECORD IS
@@ -249,7 +249,7 @@
 !
       DO KK=1,KNO(NPRE)
 !       TESTS THE END OF THE FILE
-        IF(EOF(NPRE)) GO TO 50
+        IF(BIEF_EOF(NPRE)) GO TO 50
         CALL LIT(AAT,W,IBID,CBID,1,'R4',NPRE,STD,ISTAT)
 !       ISTAT IS NEGATIVE : READ ERROR
         IF(ISTAT.LT.0) GO TO 40

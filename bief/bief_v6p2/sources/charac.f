@@ -46,6 +46,7 @@
 !| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
 !| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
 !| INILOC         |-->| IF YES, INITIAL POSITIONS OF POINTS (SHP) TO BE DONE
+!|                |   | NO LONGER USED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !| IT1            |<->| INTEGER WORK ARRAY
 !| IT2            |<->| INTEGER WORK ARRAY
 !| IT3            |<->| INTEGER WORK ARRAY
@@ -97,14 +98,13 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NPOIN,IELMU,IELEM
-      LOGICAL INITLOC 
       DOUBLE PRECISION TIERS     
 !
 !-----------------------------------------------------------------------
 !
       TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7
       INTEGER, DIMENSION(:), POINTER :: IFA
-      INTEGER I,J,K,NPT
+      INTEGER I,J,K,NPT,DIM1F
       LOGICAL QUAD,QUAB
 !
 !-----------------------------------------------------------------------
@@ -122,16 +122,6 @@
       T5 =>TB%ADR( 5)%P
       T6 =>TB%ADR( 6)%P
       T7 =>TB%ADR( 7)%P
-!
-!-----------------------------------------------------------------------
-!  INITIALISING THE LOCATION OF POINTS OR NOT
-!-----------------------------------------------------------------------
-!
-      IF(PRESENT(INILOC)) THEN
-        INITLOC=INILOC
-      ELSE
-        INITLOC=.TRUE.
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !  DEPLOIEMENT DE LA STRUCTURE DE MAILLAGE
@@ -211,6 +201,7 @@
       IF(IELM.EQ.11) THEN
         CALL GTSH11(SHP%R,IT1,IKLE2%I,MESH%ELTCAR%I,NPOIN2,
      &              NELEM2,NELMAX2,MESH%NSEG,QUAB,QUAD)
+        DIM1F=NPT
       ELSEIF(IELM.EQ.41) THEN
         DO I=1,NPLAN
           CALL OV('X=C     ',T3%R((I-1)*NPOIN2+1:I*NPOIN2),
@@ -218,6 +209,7 @@
         ENDDO    
         CALL GTSH41(SHP%R,SHZ%R,WCONV%R,IT1,IT2,IKLE2%I,MESH%ELTCAR%I,
      &              NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
+        DIM1F=NPOIN2
       ELSE
         WRITE(LU,*) 'ELEMENT NOT IMPLEMENTED IN CHARAC: ',IELM
         CALL PLANTE(1)
@@ -230,9 +222,7 @@
      &             MESH%Z%R,SHP%R,SHZ%R,
      &             SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
      &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     &             3,NPLAN,MESH%LV,MSK,MASKEL%R,
-     &             MESH,MESH%FAC%R,T7%R,T7,INITLOC,QUAD,NPT,
-     &             .FALSE.,.FALSE.)
+     &             3,NPLAN,MESH%LV,MSK,MASKEL%R,MESH,NPT,DIM1F)
 ! 
 !     PARALLEL COMMUNICATION
 !    

@@ -2,12 +2,12 @@
                      SUBROUTINE DERIVE
 !                    *****************
 !
-     &( U , V , DT , X , Y , IKLE , IFABOR , LT , IELM , NDP , NPOIN ,
-     &  NELEM , NELMAX , SURDET , XFLOT , YFLOT ,
-     &  SHPFLO , DEBFLO , FINFLO , ELTFLO , NFLOT , NITFLO,FLOPRD,T8)
+     &(U,V,DT,X,Y,IKLE,IFABOR,LT,IELM,NDP,NPOIN,
+     & NELEM,NELMAX,SURDET,XFLOT,YFLOT,
+     & SHPFLO,DEBFLO,FINFLO,ELTFLO,NFLOT,NITFLO,FLOPRD,T8,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    - COMPUTES THE BARYCENTRIC COORDINATES OF A FLOAT
@@ -16,6 +16,9 @@
 !+            - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
 !+                  WHICH IS CARRIED WITHOUT FRICTION BY THE CURRENT
 !+                 (SUBSEQUENT TIMESTEPS).
+!
+!warning  Will not work in parallel (this would require calling scaract
+!+        instead of char11, and adaptation of scaract)
 !
 !history  J-M JANIN (LNH)
 !+        18/08/94
@@ -34,6 +37,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        07/06/2012
+!+        V6P2
+!+   Argument MESH added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBFLO         |-->| TIME STEP FOR THE RELEASE OF FLOATS
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -48,6 +56,7 @@
 !|                |   | LIQUID OR PERIODIC BOUNDARY
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| LT             |-->| TIME STEP NUMBER.
+!| MESH           |-->| MESH STRUCTURE
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
@@ -89,6 +98,7 @@
       INTEGER         , INTENT(INOUT) :: ELTFLO(NFLOT)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(NDP,NFLOT)
       DOUBLE PRECISION, INTENT(INOUT) :: T8(NPOIN)
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
