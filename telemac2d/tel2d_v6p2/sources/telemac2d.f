@@ -2065,7 +2065,7 @@
      &              LT,IELM,3,NPOIN,
      &              NELEM,NELMAX,MESH%SURDET%R,XFLOT%R,YFLOT%R,
      &              SHPFLO%R,DEBFLO%I,FINFLO%I,ELTFLO%I,
-     &              NFLOT,NITFLO,FLOPRD,T8%R)
+     &              NFLOT,NITFLO,FLOPRD,T8%R,MESH)
 !
         IF(SPHERI) THEN
           CALL OS('X=XY    ',UCONV,MESH%COSLAT,S,C)
@@ -2083,13 +2083,13 @@
         IF (ENTET) CALL ENTETE(13,AT,LT)
 !
           CALL DERLAG(UCONV%R,VCONV%R,DT,MESH%X%R,MESH%Y%R,
-     &              MESH%IKLE%I,MESH%IFABOR%I,MESH%ELTCAR%I,
-     &              LT,IELM,3,NPOIN,
-     &              NELEM,NELMAX,MESH%SURDET%R,
-     &              XLAG%R,YLAG%R,T1%R,T2%R,IT1%I,SHPLAG%R,
-     &              DEBLAG%I,FINLAG%I,ELTLAG%I,NLAG,
-     &              T7%R,T8%R,MESH%NBOR%I,MESH%NELBOR%I,
-     &              MESH%NULONE%I,NPTFR,MSK,MASKEL%R,MASKPT%R,T8%R)
+     &                MESH%IKLE%I,MESH%IFABOR%I,MESH%ELTCAR%I,
+     &                LT,IELM,3,NPOIN,NELEM,NELMAX,MESH%SURDET%R,
+     &                XLAG%R,YLAG%R,T1%R,T2%R,IT1%I,SHPLAG%R,
+     &                DEBLAG%I,FINLAG%I,ELTLAG%I,NLAG,
+     &                T7%R,T8%R,MESH%NBOR%I,MESH%NELBOR%I,
+     &                MESH%NULONE%I,NPTFR,MSK,MASKEL%R,MASKPT%R,T8%R,
+     &                MESH)
 !
       ENDIF
 !

@@ -174,7 +174,6 @@
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
       DOUBLE PRECISION ZSTAR(1),ZCONV(1,1),SHZ(1),Z(1,1),UNORM,NORMZS
       INTEGER ELM_UFIELD,ELM_VFIELD,ELM_HFIELD,IELEM
-      LOGICAL QUAD
 !
       DATA HMIN  /2.D-2/
 !      
@@ -270,9 +269,7 @@
         ENDIF
       ENDDO
 !
-!-----------------------------------------------------------------------
-!
-      QUAD=.FALSE.     
+!----------------------------------------------------------------------- 
 !
 !     COMPUTES THE CELERITY
 !     
@@ -354,8 +351,7 @@
      *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,
      *             ETA,IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,
      *             NOMB,NPOIN,NPOIN,NDP,NPLAN,LV,MSK,MASKEL%R,
-     *             MESH,MESH%FAC%R,T7%R,T7,.FALSE.,QUAD,NPT,
-     *             .FALSE.,.FALSE.)
+     *             MESH,NPT,U%DIM1)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL, TBTIL AT BOUNDARY NODES NUMBERING
@@ -502,8 +498,7 @@
      *             ZSTAR,XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,
      *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,ETA,
      *             IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,NOMB,NPOIN,
-     *             NPOIN,NDP,NPLAN,LV,MSK,MASKEL%R,MESH,MESH%FAC%R,
-     *             T7%R,T7,.FALSE.,QUAD,NPT,.FALSE.,.FALSE.)
+     *             NPOIN,NDP,NPLAN,LV,MSK,MASKEL%R,MESH,NPT,U%DIM1)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING
@@ -603,8 +598,7 @@
      *             XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,SHPP,SHZ,
      *             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,IT3%I,IT4%I,IELM,
      *             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN, 
-     *             LV,MSK,MASKEL%R,MESH,MESH%FAC%R,T7%R,T7,
-     *             .FALSE.,QUAD,NPT,.FALSE.,.FALSE.)
+     *             LV,MSK,MASKEL%R,MESH,NPT,U%DIM1)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING
