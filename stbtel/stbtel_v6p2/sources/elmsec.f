@@ -80,7 +80,8 @@
       CHARACTER*72 CBID
 !
 !     FONCTIONS
-      LOGICAL EOF
+      LOGICAL BIEF_EOF
+      EXTERNAL BIEF_EOF
 !------------------------------------------------------------
       IF (NVAR.EQ.0) THEN
         IF (LNG.EQ.1) WRITE(LU,1012)
@@ -102,11 +103,11 @@
  10   CONTINUE
 !     ENSEMBLE DES VARIABLES STOCKEES POUR UN PAS DE TEMPS
 !     ----------------------------------------------------
-      IF (EOF(NGEO)) GOTO 12
+      IF (BIEF_EOF(NGEO)) GOTO 12
 !     LECTURE DU TEMPS
 !     ----------------
       CALL LIT(TPSFIN ,WORK,IBID,CBID,1,'R4',NGEO,STD,ISTAT)
-      IF (EOF(NGEO)) GOTO 12
+      IF (BIEF_EOF(NGEO)) GOTO 12
       NPDT = NPDT + 1
       NPSEC = 0
 !
