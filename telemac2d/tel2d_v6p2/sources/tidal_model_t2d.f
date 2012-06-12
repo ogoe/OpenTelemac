@@ -22,6 +22,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
+      USE TPXO
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -116,7 +117,7 @@
      &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
      &                      MARDAT,MARTIM,
      &                      T2D_FILES,T2DBB1,T2DBB2,
-     &                      X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0)
+     &                      X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0,INTMICON)
       ENDIF
 !
 !-----------------------------------------------------------------------

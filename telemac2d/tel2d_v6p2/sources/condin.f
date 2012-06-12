@@ -37,6 +37,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC2D
       USE TPXO
       USE OKADA
@@ -86,11 +87,12 @@
       ELSEIF(CDTINI(1:25).EQ.'ALTIMETRIE SATELLITE TPXO'.OR.
      &       CDTINI(1:24).EQ.'TPXO SATELLITE ALTIMETRY') THEN
         CALL OS('X=-Y    ',X=H,Y=ZF)
-        CALL CONDI_TPXO(NPOIN,X,Y,H%R,U%R,V%R,GEOSYST,NUMZONE,
-     &                  LAMBD0,PHI0,T2D_FILES,T2DBB1,T2DBB2,
-     &                  MARDAT,MARTIM)
-c$$$        CALL OS('X=Y/Z   ',U,U,H,0.D0,2,0.D0,0.1D0)
-c$$$        CALL OS('X=Y/Z   ',V,V,H,0.D0,2,0.D0,0.1D0)
+        CALL CONDI_TPXO(NPOIN,MESH%NPTFR,MESH%NBOR%I,
+     &                  X,Y,H%R,U%R,V%R,
+     &                  LIHBOR%I,LIUBOR%I,KENT,KENTU,
+     &                  GEOSYST,NUMZONE,LAMBD0,PHI0,
+     &                  T2D_FILES,T2DBB1,T2DBB2,
+     &                  MARDAT,MARTIM,INTMICON)
       ELSEIF(CDTINI(1:13).EQ.'PARTICULIERES'.OR.
      &       CDTINI(1:10).EQ.'PARTICULAR'.OR.
      &       CDTINI(1:07).EQ.'SPECIAL') THEN
