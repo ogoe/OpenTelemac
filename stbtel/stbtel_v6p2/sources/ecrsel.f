@@ -66,8 +66,8 @@
 !
       CHARACTER*3  STD
 !
-      LOGICAL COLOR,EOF,FUSION,OK2
-      EXTERNAL EOF
+      LOGICAL COLOR,BIEF_EOF,FUSION,OK2
+      EXTERNAL BIEF_EOF
 !
 !=======================================================================
 !
@@ -80,9 +80,9 @@
 !
       A(1) = 0.D0
       IF(NVARIN.GT.0) THEN
-         IF (EOF(NGEO)) GOTO 40
+         IF (BIEF_EOF(NGEO)) GOTO 40
          IF (OK2) THEN
-            IF (EOF(NFO1)) OK2 = .FALSE.
+            IF (BIEF_EOF(NFO1)) OK2 = .FALSE.
             IF (OK2) CALL LIT(A,W,IBID,CBID,1,'R4',NFO1,STD,ISTAT)
          ENDIF
          CALL LIT(A,W,IBID,CBID,1,'R4',NGEO,STD,ISTAT)

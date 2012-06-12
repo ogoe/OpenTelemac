@@ -79,8 +79,8 @@
       CHARACTER*32 NOMVAR
 !
       INTEGER I
-      LOGICAL COLOR,EOF
-      EXTERNAL EOF
+      LOGICAL COLOR,BIEF_EOF
+      EXTERNAL BIEF_EOF
 !
 !=======================================================================
 !
@@ -106,7 +106,7 @@
 !
       A(1) = 0.D0
       IF (NVARIN.GT.0) THEN
-         IF (EOF(NGEO)) GOTO 40
+         IF (BIEF_EOF(NGEO)) GOTO 40
          CALL LIT(A,W,IBID,CBID,1,'R4',NGEO,STD,ISTAT)
       ENDIF
       IF (STOTOT.OR.A(1).EQ.TPSFIN(1)) THEN
