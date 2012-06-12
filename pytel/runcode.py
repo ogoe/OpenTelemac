@@ -513,7 +513,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if not checkConsistency(cas,dico,frgb,cfg):
       print '... inconsistent CAS file: ',casFile
       print '    +> you may be using an inappropriate configuration:',cfgName
-      print '    +> or may be wishing for scalar mode while using parallel'
+      print '    +> or may be wishing for parallel mode while using scalar configuration'
       return None   # /!\ should you stop or carry on ?
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -692,6 +692,8 @@ def getPARALLEL(cfgDict):
       if 'parallel' in cfgDict['options'].lower():
          if cfgDict.has_key('par_path'): parallel.update({'PATH':cfgDict['par_path']})
          if cfgDict.has_key('par_cmdexec'): parallel.update({'EXEC':cfgDict['par_cmdexec']})
+         #FD : a key is mandatory here. And then we can ask for MPI & HPC
+         parallel.update({'PARALLEL':'activated'})
    return parallel
 
 """
