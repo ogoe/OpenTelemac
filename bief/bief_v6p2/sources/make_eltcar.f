@@ -14,19 +14,29 @@
 !+        parallel mode, ELTCAR(I)=0 means that the element is in another 
 !+        sub-domain.
 !
-!note     In every element a point is followed by another one:
+!note     In every triangle a point is followed by another one:
 !+        2 follows 1, 3 follows 2, 1 follows 3
-!+        For every point we choose the element where the next point 
+!+        A point cannot be followed by the same point in 2 different
+!+        triangles (if all triangles are counterclock-wise oriented).
+!+        For every point we choose the element where the next point
 !+        has the higher rank.
 !+        With quadratic interpolation, the next linear point is taken
 !+        2 follows 4, 3 follows 5, 1 follows 6
 !+        The case of quasi-bubble is obvious and not treated here: the
 !+        point is in the middle of an element, so no problem of choice
+!+
+!+        Choosing the element with highest number would be easier but
+!+        there is so far nothing like KNOLG for elements...
 !
 !history  C. DENIS (SINETICS, EDF R&D), J-M HERVOUET (LNHE, EDF R&D)
 !+        27/04/2012
 !+        V6P2
 !+
+!
+!history  J-M HERVOUET (LNHE, EDF R&D)
+!+        13/06/2012
+!+        V6P2
+!+        Prisms cut into tetrahedra added
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTCAR         |<--| ELEMENT CHOSEN FOR EVERY POINT
@@ -58,22 +68,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IELEM,N1,N2,N3,N4,N5,N6,IPLAN,NP
+      INTEGER I,IELEM,N1,N2,N3,N4,N5,N6,IPLAN,NP,I3D,K,IELEM3D
 !
-      IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41) THEN
+      IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
         NP=NPOIN2
       ELSEIF(IELM.EQ.13) THEN
         NP=NPOIN2+MESH%NSEG
       ELSE
-        WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR TETRAHEDRA'
-        WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR TETRAHEDRA'
-        WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR TETRAHEDRA'
-        WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR TETRAHEDRA'
-        WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR TETRAHEDRA'
-        WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR TETRAHEDRA'
-!       ANAYWAY WILL STOP IF CHARACTERISTICS CALLED
-!       CALL PLANTE(1)
-!       STOP
+        WRITE(LU,*) 'MAKE_ELTCAR NOT PROGRAMMED FOR IELM=',IELM
+        CALL PLANTE(1)
+        STOP
         RETURN
       ENDIF
 !
@@ -85,7 +89,7 @@
 !
 !       SIMPLE CASE: SCALAR MODE
 !
-        IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41) THEN
+        IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
 ! 
           DO IELEM = 1,NELEM2
             N1=IKLE(IELEM,1)
@@ -146,7 +150,7 @@
 !
 !       NOW IN PARALLEL, FIRST LIKE IN SCALAR BUT WITH GLOBAL NUMBERS
 !
-        IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41) THEN
+        IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
 ! 
           DO IELEM = 1,NELEM2
             N1=IKLE(IELEM,1)
@@ -220,7 +224,7 @@
           ISCORE(I)=NINT(SCORE(I))
         ENDDO
 !
-        IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41) THEN
+        IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.41.OR.IELM.EQ.51) THEN
 !
           DO IELEM = 1,NELEM2
             N1=IKLE(IELEM,1)
@@ -290,15 +294,48 @@
 !
 !     COMPLETING FOR 3D PRISMS
 !
-!     NOTE: THIS PART IS NOT USED SO FAR BY SUBROUTINE GTSH41
-!
       IF(NPLAN.GT.1) THEN
-        DO IPLAN=2,NPLAN
-          DO I=1,NPOIN2
-!           ACCORDING TO POINT AND ELEMENT NUMBERING IN PRISMS
-            ELTCAR(I+(IPLAN-1)*NPOIN2)=ELTCAR(I)+(IPLAN-1)*NELEM2
+        IF(IELM.EQ.41) THEN
+          DO IPLAN=2,NPLAN
+            DO I=1,NPOIN2
+!             ACCORDING TO POINT AND ELEMENT NUMBERING IN PRISMS
+              I3D=I+(IPLAN-1)*NPOIN2
+              IF(ELTCAR(I).GT.0) THEN
+                ELTCAR(I3D)=ELTCAR(I)+(IPLAN-1)*NELEM2
+              ELSE
+                ELTCAR(I3D)=0
+              ENDIF
+            ENDDO
           ENDDO
-        ENDDO
+        ELSEIF(IELM.EQ.51) THEN
+          DO IPLAN=2,NPLAN
+            DO I=1,NPOIN2
+              I3D=I+(IPLAN-1)*NPOIN2
+              IF(ELTCAR(I).GT.0) THEN
+!               3 TETRAHEDRA POSSIBLE CANDIDATES
+                DO K=1,3
+!                 SEE ELEMENT NUMBERING IN PRISMS CUT INTO TETRAHEDRA
+                  IELEM3D=(IPLAN-1)*3*NELEM2+(K-1)*NELEM2+ELTCAR(I)
+!                 THIS MAY HIT SEVERAL TIMES AS A POINT MAY BELONG
+!                 TO MORE THAN ONE TETRAHEDRON AT THIS LEVEL,
+!                 THE LAST HIT IS KEPT, SAME BEHAVIOUR IN SCALAR OR
+!                 PARALLEL. NOT VERY ELEGANT, BETTER IDEA ?
+                  IF(IKLE(IELEM3D,1).EQ.I3D) THEN
+                    ELTCAR(I3D)=IELEM3D 
+                  ELSEIF(IKLE(IELEM3D,2).EQ.I3D) THEN
+                    ELTCAR(I3D)=IELEM3D 
+                  ELSEIF(IKLE(IELEM3D,3).EQ.I3D) THEN
+                    ELTCAR(I3D)=IELEM3D 
+                  ELSEIF(IKLE(IELEM3D,4).EQ.I3D) THEN
+                    ELTCAR(I3D)=IELEM3D
+                  ENDIF 
+                ENDDO
+              ELSE
+                ELTCAR(I3D)=0
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

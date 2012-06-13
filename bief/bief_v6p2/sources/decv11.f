@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        12/06/2012
+!+        V6P2
+!+   Optimisation
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
@@ -66,25 +71,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      CALL OV( 'X=C     ' , TETA , TETA , TETA , 1.D0 , NELEM )
+      DO IELEM = 1 , NELEM
 !
-!-----------------------------------------------------------------------
+        SL1 = SL(IKLE(IELEM,1))
+        SL2 = SL(IKLE(IELEM,2))
+        SL3 = SL(IKLE(IELEM,3))
 !
-         DO 4 IELEM = 1 , NELEM
+        ZF1 = ZF(IKLE(IELEM,1))
+        ZF2 = ZF(IKLE(IELEM,2))
+        ZF3 = ZF(IKLE(IELEM,3))
 !
-           SL1 = SL(IKLE(IELEM,1))
-           SL2 = SL(IKLE(IELEM,2))
-           SL3 = SL(IKLE(IELEM,3))
+        IF(MAX(ZF1,ZF2,ZF3).GT.MIN(SL1,SL2,SL3)) THEN
+          TETA(IELEM) = 0.D0
+        ELSE
+          TETA(IELEM) = 1.D0
+        ENDIF
 !
-           ZF1 = ZF(IKLE(IELEM,1))
-           ZF2 = ZF(IKLE(IELEM,2))
-           ZF3 = ZF(IKLE(IELEM,3))
-!
-           IF(MAX(ZF1,ZF2,ZF3).GT.MIN(SL1,SL2,SL3)) THEN
-             TETA(IELEM) = 0.D0
-           ENDIF
-!
-4        CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

@@ -202,6 +202,7 @@
      &                   XFLOT(LTT,IFLOT) , YFLOT(LTT,IFLOT) , DX , DY ,
      &                   SHPFLO(1,IFLOT) , ELTFLO(IFLOT) , NSP ,
      &                   1 , NPOIN , NELEM , NELMAX , SURDET ,  1,T8 )
+!                        1=SENS, FOR FORWARD CHARACTERISTICS
 !
           ELSE
 !
