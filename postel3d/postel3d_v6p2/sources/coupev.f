@@ -8,7 +8,7 @@
      & TITCAS,nva3,tab,textlu,N)
 !
 !***********************************************************************
-! POSTEL3D VERSION 5.1   01/09/99   T. DENOT (LNH) 01 30 87 74 89
+! POSTEL3D VERSION 6.2   01/09/99   T. DENOT (LNH) 01 30 87 74 89
 ! FORTRAN90
 !***********************************************************************
 !
@@ -59,6 +59,8 @@
 ! SOUS-PROGRAMME APPELE PAR : POSTEL3D
 ! SOUS-PROGRAMME APPELES : ECRDEB , ECRI2
 !
+
+! JUNE 2012 - P.LANG / INGEROP : SERAFIN OUTPUT FORMAT
 !**********************************************************************
 !
       USE BIEF
@@ -71,6 +73,7 @@
 !
       DOUBLE PRECISION U(NPOIN2,JM),V(NPOIN2,JM),W(NPOIN2,JM)
       DOUBLE PRECISION Z(NPOIN2,JM)
+      
       DOUBLE PRECISION TAB1(IM,JM),TAB2(IM,JM),TAB3(IM,JM)
       DOUBLE PRECISION X2DV(50,NC2DV),Y2DV(50,NC2DV),DISTOR(NC2DV)
       DOUBLE PRECISION LGDEB,LGSEG,ALFA,COST,SINT,A1,A2,A3,U1,V1
@@ -85,7 +88,12 @@
       INTEGER ISEG,IDSEG,IFSEG
       INTEGER NVA3
 !
+!     NEW VARIABLES FOR SERAFIN FORMAT
 !
+      INTEGER IKLE(3,((IM-1)*(JM-1))*2),IPOBO(IM*JM),NUMELEM
+!
+!     END OF NEW VARIABLES
+!      
       LOGICAL FLAG
 !
       CHARACTER*32 TEXTLU(100)
@@ -101,7 +109,8 @@
 !  (ON NE SORT PAS LES VITESSES SI ON N'A PAS LES 3 COMPOSANTES
 !   ET ON NE SORT PAS LES VARIABLES QUI SERVENT A SUBIEF-3D)
 !
-! plus de z
+!     plus de z
+!
       NBV(1) = NVA3-1
       NBV(2) = 0
 !
@@ -182,11 +191,46 @@
 !    ENREGISTREMENT DES AUTRES PARAMETRES DE L'ENTETE
 !    ------------------------------------------------
 !
-         CALL ECRI2(XB,IG,CB, 5,'I',CANAL,BINCOU,ISTAT)
+! BUILD OF IKLE ARRAY. EACH QUADRANGLE IS DIVIDED INTO 2 TRIANGLES
+! NUMELEM VARIABLE MANAGES THE NUMBER OF ELEMENT
+         NUMELEM = 1
+         DO J = 1,JM-1
+           DO I = 1,IM-1
+             IKLE(1,NUMELEM) = ((J-1)*IM)+I
+             IKLE(2,NUMELEM) = ((J-1)*IM)+I+1
+             IKLE(3,NUMELEM) = ((J)*IM)+I+1
+             NUMELEM = NUMELEM+1
+             IKLE(1,NUMELEM) = ((J-1)*IM)+I
+             IKLE(2,NUMELEM) = ((J)*IM)+I+1
+             IKLE(3,NUMELEM) = ((J)*IM)+I
+             NUMELEM = NUMELEM+1
+           ENDDO
+         ENDDO
+         NUMELEM = NUMELEM-1
+CC PLG         CALL ECRI2(XB,IG,CB, 5,'I',CANAL,BINCOU,ISTAT)
+! IPARAM ARRAY SET TO ZERO EXCEPT FIRST SET TO 1
+         DO I=1,10
+           IB(I) = 0
+         ENDDO
+         IB(1) = 1
          CALL ECRI2(XB,IB,CB,10,'I',CANAL,BINCOU,ISTAT)
+! RECORD NELEM,NPOIN,NDP,1
+         IB(1) = ((IM-1)*(JM-1)) * 2
+         IB(2) = IM*JM
+         IB(3) = 3
+         IB(4) = 1
+         CALL ECRI2(XB,IB,CB,4, 'I',CANAL,BINCOU,ISTAT)
+! IKLE STORAGE
+         CALL ECRI2(XB,IKLE,CB,NUMELEM*3, 'I',CANAL,BINCOU,ISTAT)
+! IPOBO ARRAY (WITH DUMMY VALUE)
+         DO I=1,IB(2)
+           IPOBO(I) = 0
+         ENDDO
+         CALL ECRI2(XB,IPOBO,CB,IB(2), 'I',CANAL,BINCOU,ISTAT)
+! X AND Y COORDINATES
          CALL ECRI2(TAB1,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
          CALL ECRI2(TAB2,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
-         CALL ECRI2(XB,INDIC(1,1,IC),CB,IM*JM,'I',CANAL,BINCOU,ISTAT)
+! PLG        CALL ECRI2(XB,INDIC(1,1,IC),CB,IM*JM,'I',CANAL,BINCOU,ISTAT)
 !
 !-----------------------------------------------------------------------
 !
@@ -251,7 +295,6 @@
             CALL ECRI2(TAB1,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
             CALL ECRI2(TAB2,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
             CALL ECRI2(TAB3,IBID,CB,IM*JM,'R4',CANAL,BINCOU,ISTAT)
-!
 !
 ! autres variables
 !
