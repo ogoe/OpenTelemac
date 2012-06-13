@@ -86,7 +86,7 @@ filp10.f     filp11.f       filp12.f      filpol.f      flux_ef_vf.f  flux_ef_vf
 filter.f     find_in_sel.f  flusec.f      flux3dlim.f   flux_mask.f   fluxpr.f   \
 fond.f       fonstr.f       front2.f      fropro.f      geoelt.f      gettri.f gettriebe.f gettriseg.f \
 gmres.f      godown.f       godwn1.f      goup.f    \
-goup1.f      gracjg.f       gradp.f       gsebe.f   \
+goup1.f      gracjg.f       gradp.f       gregtim.f     gsebe.f   \
 gtsh11.f     gtsh41.f       hloc.f        hvf.f ielbor.f  \
 impvec.f     inbief.f       inclu2.f      inclus.f  \
 infcel.f     inpoly.f  \

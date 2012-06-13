@@ -10,7 +10,7 @@
      & SALI_DEL,TEMP_DEL,VELO_DEL,DIFF_DEL,MARDAT,MARTIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P0                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES OUT THE HYDRODYNAMIC FILE FOR DELWAQ (.HYD).
@@ -65,6 +65,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -80,9 +82,41 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ILAY,IWAQ
+      INTEGER ILAY,IWAQ,I
+      INTEGER IYEAR,IMONTH,IDAY,IHOUR,IMIN,ISEC
+      DOUBLE PRECISION REFER_DAY,JULTIM,JULIAN_DAY
+      EXTERNAL JULTIM
 !
 !-----------------------------------------------------------------------
+!
+      IF( MARDAT(1) .EQ. 1900 ) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) ' Avertissement grave :'
+          WRITE(LU,*) ' VOUS UTILISEZ L ANNEE DE REFERENCE PAR DEFAUT'
+          WRITE(LU,*) ' DE 1900 !!!'
+          WRITE(LU,*) ' PUISQUE LES TEMPS DE DELWAQ SONT COMPTES A'
+          WRITE(LU,*) ' PARTIR DE CETTE ANNEE ET S ETALENT SUR PLUS DE'
+          WRITE(LU,*) ' 68 ANS, VOUS NE POURREZ PAS EXECUTER'
+          WRITE(LU,*) ' APRES 1968 !!!'
+          WRITE(LU,*) ' SOLUTION :'
+          WRITE(LU,*) ' EDITEZ MANUELLEMENT LE FICHIER ~~~.hyd POUR'
+          WRITE(LU,*) ' MODIFIER TOUTES LES ANNEES MENTIONNEES DE'
+          WRITE(LU,*) ' 50 OU 100 ANS PLUS TARD !!!'
+          WRITE(LU,*) ' VOUS N AVEZ PAS BESOIN DE REFAIRE TOURNER'
+          WRITE(LU,*) ' L HYDRODYNAMIQUE !!!'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) ' Severe warning:'
+          WRITE(LU,*) ' YOU USE THE DEFAULT REFERENCE YEAR OF 1900!!!'
+          WRITE(LU,*) ' SINCE DELWAQ TIMES ARE COUNTED FROM THIS YEAR,'
+          WRITE(LU,*) ' AND SPAN AT MOST SOME 68 YEARS, YOU MAY NOT BE'
+          WRITE(LU,*) ' ABLE TO RUN BEYOND 1968!!!'
+          WRITE(LU,*) ' Remedy:'
+          WRITE(LU,*) ' MANUALLY EDIT THE ~~~.hyd FILE TO ADJUST ALL'
+          WRITE(LU,*) ' MENTIONED YEARS TO 50 OR 100 YEARS LATER!!!'
+          WRITE(LU,*) ' YOU NEED not RERUN THE HYDRODYNAMICS!!!'
+        ENDIF
+      ENDIF
 !
       WRITE ( NHYD, '(A)' )
      &    "task      full-coupling                              "
@@ -109,29 +143,77 @@
       WRITE ( NHYD, '(A)' )
      &    "description                                          "
       IWAQ = LEN_TRIM(TITRE)
-      WRITE ( NHYD, '(A,A,A)' )
-     &    "   '",TITRE(1:IWAQ),"'"
-      WRITE ( NHYD, '(A)' )
+      IF ( IWAQ .GT. 40 ) THEN
+         WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:40),"'"
+         IF ( IWAQ .GT. 80 ) THEN
+            WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(41:80),"'"
+            IF ( IWAQ .GT. 120 ) THEN
+               WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(81:120),"'"
+            ELSE
+               WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(81:IWAQ),"'"
+            ENDIF
+         ELSE
+            WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(41:IWAQ),"'"
+            WRITE ( NHYD, '(A)' )
      &    "   '                                    '            "
-      WRITE ( NHYD, '(A)' )
+         ENDIF
+      ELSE
+         WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:IWAQ),"'"
+         WRITE ( NHYD, '(A)' )
      &    "   '                                    '            "
+         WRITE ( NHYD, '(A)' )
+     &    "   '                                    '            "
+      ENDIF
+!      WRITE ( NHYD, '(A,A,A)' )
+!     &    "   '",TITRE(1:IWAQ),"'"
+!      WRITE ( NHYD, '(A)' )
+!     &    "   '                                    '            "
+!      WRITE ( NHYD, '(A)' )
+!     &    "   '                                    '            "
       WRITE ( NHYD, '(A)' )
      &    "end-description                                      "
-      WRITE ( NHYD, '(A,I4,I2,I2,I2,I2,I2,A)' )
-     &"reference-time           '",MARDAT(1),MARDAT(2),MARDAT(3),
-     &                             MARTIM(1),MARTIM(2),MARTIM(3),"'"
-      WRITE ( NHYD, '(A,I14,A)' )
-     &    "hydrodynamic-start-time  '",ITSTRT,"'"
-      WRITE ( NHYD, '(A,I14,A)' )
-     &    "hydrodynamic-stop-time   '",ITSTOP,"'"
+      WRITE ( NHYD, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "reference-time           '",MARDAT(1),MARDAT(2),MARDAT(3),
+     &                                 MARTIM(1),MARTIM(2),MARTIM(3),"'"
+      REFER_DAY  = JULTIM(MARDAT(1),MARDAT(2),MARDAT(3),
+     &                    MARTIM(1),MARTIM(2),MARTIM(3),0.D0)
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTRT)/(86400.D0*36525.D0)
+      CALL GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY, IHOUR, IMIN, ISEC )
+      WRITE ( NHYD, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "hydrodynamic-start-time  '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTOP)/(86400.D0*36525.D0)
+      CALL GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY, IHOUR, IMIN, ISEC )
+      WRITE ( NHYD, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "hydrodynamic-stop-time   '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
+!      IDAY  = NSTEPA/86400
+!      IHOUR = (NSTEPA-IDAY*86400)/3600
+!      IMIN  = (NSTEPA-IDAY*86400-IHOUR*3600)/60
+!      ISEC  =  NSTEPA-IDAY*86400-IHOUR*3600-IMIN*60
+!      WRITE ( NHYD, '(A,I2.2,I2.2,I2.2,A)' )
+!     &    "hydrodynamic-timestep    '00000000",IHOUR,IMIN,ISEC,"'"
       WRITE ( NHYD, '(A,I14,A)' )
      &    "hydrodynamic-timestep    '",NSTEPA,"'"
-      WRITE ( NHYD, '(A,I14,A)' )
-     &    "conversion-ref-time      '",ITSTRT,"'"
-      WRITE ( NHYD, '(A,I14,A)' )
-     &    "conversion-start-time    '",ITSTRT,"'"
-      WRITE ( NHYD, '(A,I14,A)' )
-     &    "conversion-stop-time     '",ITSTOP,"'"
+      WRITE ( NHYD, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "conversion-ref-time      '",MARDAT(1),MARDAT(2),MARDAT(3),
+     &                                 MARTIM(1),MARTIM(2),MARTIM(3),"'"
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTRT)/(86400.D0*36525.D0)
+      CALL GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY, IHOUR, IMIN, ISEC )
+      WRITE ( NHYD, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "conversion-start-time    '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTOP)/(86400.D0*36525.D0)
+      CALL GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY, IHOUR, IMIN, ISEC )
+      WRITE ( NHYD, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "conversion-stop-time     '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
+!      IDAY  = NSTEPA/86400
+!      IHOUR = (NSTEPA-IDAY*86400)/3600
+!      IMIN  = (NSTEPA-IDAY*86400-IHOUR*3600)/60
+!      ISEC  =  NSTEPA-IDAY*86400-IHOUR*3600-IMIN*60
+!      WRITE ( NHYD, '(A,I2.2,I2.2,I2.2,A)' )
+!     &    "conversion-timestep      '00000000",IHOUR,IMIN,ISEC,"'"
       WRITE ( NHYD, '(A,I14,A)' )
      &    "conversion-timestep      '",NSTEPA,"'"
       WRITE ( NHYD, '(A,I6)'  )
@@ -153,55 +235,95 @@
       WRITE ( NHYD, '(A,A,A)' )
      &    "grid-coordinates-file    '",NOMLIM(1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMSOU)
+      I    = IWAQ
+      DO WHILE ((NOMSOU(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE ( NHYD, '(A,A,A)' )
-     &    "volumes-file             '",NOMSOU(1:IWAQ),"'"
+     &    "volumes-file             '",NOMSOU(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMMAB)
+      I    = IWAQ
+      DO WHILE ((NOMMAB(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE ( NHYD, '(A,A,A)' )
-     &    "areas-file               '",NOMMAB(1:IWAQ),"'"
+     &    "areas-file               '",NOMMAB(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMCOU)
+      I    = IWAQ
+      DO WHILE ((NOMCOU(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE ( NHYD, '(A,A,A)' )
-     &    "flows-file               '",NOMCOU(1:IWAQ),"'"
+     &    "flows-file               '",NOMCOU(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMVEB)
+      I    = IWAQ
+      DO WHILE ((NOMVEB(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE ( NHYD, '(A,A,A)' )
-     &    "pointers-file            '",NOMVEB(1:IWAQ),"'"
+     &    "pointers-file            '",NOMVEB(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMMAF)
+      I    = IWAQ
+      DO WHILE ((NOMMAF(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE ( NHYD, '(A,A,A)' )
-     &    "lengths-file             '",NOMMAF(1:IWAQ),"'"
+     &    "lengths-file             '",NOMMAF(I+1:IWAQ),"'"
       IF(SALI_DEL) THEN
         IWAQ = LEN_TRIM(NOMSAL)
+        I    = IWAQ
+        DO WHILE ((NOMSAL(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE ( NHYD, '(A,A,A)' )
-     &    "salinity-file            '",NOMSAL(1:IWAQ),"'"
+     &    "salinity-file            '",NOMSAL(I+1:IWAQ),"'"
       ELSE
       WRITE ( NHYD, '(A)' )
      &    "salinity-file            none                        "
       ENDIF
       IF(TEMP_DEL) THEN
         IWAQ = LEN_TRIM(NOMTEM)
+        I    = IWAQ
+        DO WHILE ((NOMTEM(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE ( NHYD, '(A,A,A)' )
-     &    "temperature-file         '",NOMTEM(1:IWAQ),"'"
+     &    "temperature-file         '",NOMTEM(I+1:IWAQ),"'"
       ELSE
       WRITE ( NHYD, '(A)' )
      &    "temperature-file         none                        "
       ENDIF
       IF(DIFF_DEL) THEN
         IWAQ = LEN_TRIM(NOMVIS)
+        I    = IWAQ
+        DO WHILE ((NOMVIS(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE ( NHYD, '(A,A,A)' )
-     &    "vert-diffusion-file      '",NOMVIS(1:IWAQ),"'"
+     &    "vert-diffusion-file      '",NOMVIS(I+1:IWAQ),"'"
       ELSE
       WRITE ( NHYD, '(A)' )
      &    "vert-diffusion-file      none                        "
       ENDIF
       IF(VELO_DEL) THEN
         IWAQ = LEN_TRIM(NOMVEL)
+        I    = IWAQ
+        DO WHILE ((NOMVEL(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE ( NHYD, '(A,A,A)' )
-     &    "velocity-file            '",NOMVEL(1:IWAQ),"'"
+     &    "velocity-file            '",NOMVEL(I+1:IWAQ),"'"
       ELSE
       WRITE ( NHYD, '(A)' )
      &    "velocity-file            none                        "
       ENDIF
       IWAQ = LEN_TRIM(NOMINI)
+      I    = IWAQ
+      DO WHILE ((NOMINI(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE ( NHYD, '(A,A,A)' )
-     &    "surfaces-file            '",NOMINI(1:IWAQ),"'"
+     &    "surfaces-file            '",NOMINI(I+1:IWAQ),"'"
       WRITE ( NHYD, '(A)' )
      &    "total-grid-file          none                        "
       WRITE ( NHYD, '(A)' )
@@ -236,7 +358,9 @@
      &    "end-constant-dispersion                              "
       WRITE ( NHYD, '(A)' )
      &    "hydrodynamic-layers                               "
-      DO ILAY=1,NOLAY
+!      DO ILAY=1,NOLAY
+!     FROM TOP TO BOTTOM IN DELWAQ
+      DO ILAY=NOLAY,1,-1
          WRITE ( NHYD, '(F10.4)' ) F(1,ILAY)
       ENDDO
       WRITE ( NHYD, '(A)' )

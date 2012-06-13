@@ -53,6 +53,7 @@
       INTEGER NPROC
       INTEGER I_S, I_SP, I_LEN
       INTEGER IDUM, NPTFR,NSEG2,MBND
+      INTEGER IYEAR,IMONTH,IDAY,IHOUR,IMIN,ISEC
 !
       INTEGER, DIMENSION(:)  , ALLOCATABLE :: LIHBOR             ! LIHBOR(NPTFR)
       INTEGER, DIMENSION(:)  , ALLOCATABLE :: NBOR               ! NBOR(*)
@@ -60,6 +61,10 @@
 !
       REAL RDUM
       REAL,    DIMENSION(:)  , ALLOCATABLE :: F
+!
+      DOUBLE PRECISION REFER_DAY,JULIAN_DAY
+      DOUBLE PRECISION GREDELHYD_JULTIM
+      EXTERNAL         GREDELHYD_JULTIM
 !
       LOGICAL IS
 !
@@ -272,29 +277,70 @@
      &    "vertical-diffusion           calculated              "
       WRITE(3, '(A)' )
      &    "description                                          "
-      WRITE(3, '(A,A,A)' )
-     &    "   '",TITRE(1:J),"'"
-      WRITE(3, '(A)' )
+!      J = LEN_TRIM(TITRE)
+      IF ( J .GT. 40 ) THEN
+         WRITE (3, '(A,A,A)' ) "   '",TITRE(1:40),"'"
+         IF ( J .GT. 80 ) THEN
+            WRITE (3, '(A,A,A)' ) "   '",TITRE(41:80),"'"
+            IF ( J .GT. 120 ) THEN
+               WRITE (3, '(A,A,A)' ) "   '",TITRE(81:120),"'"
+            ELSE
+               WRITE (3, '(A,A,A)' ) "   '",TITRE(81:J),"'"
+            ENDIF
+         ELSE
+            WRITE (3, '(A,A,A)' ) "   '",TITRE(41:J),"'"
+            WRITE (3, '(A)' )
      &    "   '                                    '            "
-      WRITE(3, '(A)' )
+         ENDIF
+      ELSE
+         WRITE (3, '(A,A,A)' ) "   '",TITRE(1:J),"'"
+         WRITE (3, '(A)' )
      &    "   '                                    '            "
+         WRITE (3, '(A)' )
+     &    "   '                                    '            "
+      ENDIF
+!      WRITE(3, '(A,A,A)' )
+!     &    "   '",TITRE(1:J),"'"
+!      WRITE(3, '(A)' )
+!     &    "   '                                    '            "
+!      WRITE(3, '(A)' )
+!     &    "   '                                    '            "
       WRITE(3, '(A)' )
      &    "end-description                                      "
-      WRITE(3, '(A,I4,I2,I2,I2,I2,I2,A)' )
+      WRITE(3, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
      &"reference-time           '",MARDAT(1),MARDAT(2),MARDAT(3),
      &                             MARTIM(1),MARTIM(2),MARTIM(3),"'"
-      WRITE(3, '(A,I14,A)' )
-     &    "hydrodynamic-start-time  '",ITSTRT,"'"
-      WRITE(3, '(A,I14,A)' )
-     &    "hydrodynamic-stop-time   '",ITSTOP,"'"
+      REFER_DAY  = GREDELHYD_JULTIM(MARDAT(1),MARDAT(2),MARDAT(3),
+     &                              MARTIM(1),MARTIM(2),MARTIM(3),0.D0)
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTRT)/(86400.D0*36525.D0)
+      CALL GREDELHYD_GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY,
+     &                                    IHOUR, IMIN,   ISEC )
+      WRITE(3, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "hydrodynamic-start-time  '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTOP)/(86400.D0*36525.D0)
+      CALL GREDELHYD_GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY,
+     &                                    IHOUR, IMIN,   ISEC )
+      WRITE(3, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "hydrodynamic-stop-time   '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
       WRITE(3, '(A,I14,A)' )
      &    "hydrodynamic-timestep    '",NSTEPA,"'"
-      WRITE(3, '(A,I14,A)' )
-     &    "conversion-ref-time      '",ITSTRT,"'"
-      WRITE(3, '(A,I14,A)' )
-     &    "conversion-start-time    '",ITSTRT,"'"
-      WRITE(3, '(A,I14,A)' )
-     &    "conversion-stop-time     '",ITSTOP,"'"
+      WRITE(3, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "conversion-ref-time      '",MARDAT(1),MARDAT(2),MARDAT(3),
+     &                                 MARTIM(1),MARTIM(2),MARTIM(3),"'"
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTRT)/(86400.D0*36525.D0)
+      CALL GREDELHYD_GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY,
+     &                                    IHOUR, IMIN,   ISEC )
+      WRITE(3, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "conversion-start-time    '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
+      JULIAN_DAY = REFER_DAY + DBLE(ITSTOP)/(86400.D0*36525.D0)
+      CALL GREDELHYD_GREGTIM( JULIAN_DAY, IYEAR, IMONTH, IDAY,
+     &                                    IHOUR, IMIN,   ISEC )
+      WRITE(3, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
+     &    "conversion-stop-time     '",IYEAR,IMONTH,IDAY,
+     &                                 IHOUR,IMIN  ,ISEC, "'"
       WRITE(3, '(A,I14,A)' )
      &    "conversion-timestep      '",NSTEPA,"'"
       WRITE(3, '(A,I6)'  )
@@ -319,30 +365,54 @@
      &    "grid-coordinates-file    '",NOMLIM(1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)') NOMSOU(1:J)
+      I = J
+      DO WHILE ((NOMSOU(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE(3, '(A,A,A)' )
-     &    "volumes-file             '",NOMSOU(1:J),"'"
+     &    "volumes-file             '",NOMSOU(I+1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)') NOMMAB(1:J)
+      I = J
+      DO WHILE ((NOMMAB(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE(3, '(A,A,A)' )
-     &    "areas-file               '",NOMMAB(1:J),"'"
+     &    "areas-file               '",NOMMAB(I+1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)') NOMCOU(1:J)
+      I = J
+      DO WHILE ((NOMCOU(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE(3, '(A,A,A)' )
-     &    "flows-file               '",NOMCOU(1:J),"'"
+     &    "flows-file               '",NOMCOU(I+1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)') NOMVEB(1:J)
+      I = J
+      DO WHILE ((NOMVEB(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE(3, '(A,A,A)' )
-     &    "pointers-file            '",NOMVEB(1:J),"'"
+     &    "pointers-file            '",NOMVEB(I+1:J),"'"
       READ(4,'(I3)')J
       READ(4,'(A)')NOMMAF(1:J)
+      I = J
+      DO WHILE ((NOMMAF(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE(3, '(A,A,A)' )
-     &    "lengths-file             '",NOMMAF(1:J),"'"
+     &    "lengths-file             '",NOMMAF(I+1:J),"'"
       READ(4,'(L1)') SALI_DEL
       IF(SALI_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)') NOMSAL(1:J)
+        I = J
+        DO WHILE ((NOMSAL(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE(3, '(A,A,A)' )
-     &    "salinity-file            '",NOMSAL(1:J),"'"
+     &    "salinity-file            '",NOMSAL(I+1:J),"'"
       ELSE
         WRITE(3, '(A)' )
      &    "salinity-file            none                        "
@@ -351,8 +421,12 @@
       IF(TEMP_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)') NOMTEM(1:J)
+        I = J
+        DO WHILE ((NOMTEM(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE(3, '(A,A,A)' )
-     &    "temperature-file         '",NOMTEM(1:J),"'"
+     &    "temperature-file         '",NOMTEM(I+1:J),"'"
       ELSE
         WRITE(3, '(A)' )
      &    "temperature-file         none                        "
@@ -361,8 +435,12 @@
       IF(DIFF_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)') NOMVIS(1:J)
+        I = J
+        DO WHILE ((NOMVIS(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE(3, '(A,A,A)' )
-     &    "vert-diffusion-file      '",NOMVIS(1:J),"'"
+     &    "vert-diffusion-file      '",NOMVIS(I+1:J),"'"
       ELSE
         WRITE(3, '(A)' )
      &    "vert-diffusion-file      none                        "
@@ -371,16 +449,24 @@
       IF(VELO_DEL) THEN
         READ(4,'(I3)')J
         READ(4,'(A)') NOMVEL(1:J)
+        I = J
+        DO WHILE ((NOMVEL(I:I).NE.'/').AND.(I.GE.1))
+          I = I-1
+        ENDDO
         WRITE(3, '(A,A,A)' )
-     &    "velocity-file            '",NOMVEL(1:J),"'"
+     &    "velocity-file            '",NOMVEL(I+1:J),"'"
       ELSE
         WRITE(3, '(A)' )
      &    "velocity-file            none                        "
       ENDIF
       READ(4,'(I3)')J
       READ(4,'(A)') NOMINI(1:J)
+      I = J
+      DO WHILE ((NOMINI(I:I).NE.'/').AND.(I.GE.1))
+        I = I-1
+      ENDDO
       WRITE(3, '(A,A,A)' )
-     &    "surfaces-file            '",NOMINI(1:J),"'"
+     &    "surfaces-file            '",NOMINI(I+1:J),"'"
 !
       WRITE(3, '(A)' )
      &    "total-grid-file          none                        "
@@ -452,7 +538,7 @@
      &(N,IPID)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief       GREDELHYD_EXTENSION OF THE FILES ON EACH PROCESSOR.
@@ -532,7 +618,7 @@
 !     *************************************
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -568,7 +654,7 @@
 !     *******************************
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -616,3 +702,221 @@
 !     JMH 30/09/2011 WHAT IS THIS (NAG COMPILER DOES NOT KNOW)
 !     CALL EXIT(ICODE)
       END SUBROUTINE GREDELHYD_PLANTE
+!
+!               ******************************************
+                DOUBLE PRECISION FUNCTION GREDELHYD_JULTIM
+!               ******************************************
+!
+     &(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT)
+!
+!***********************************************************************
+! PARALLEL   V6P2                                   21/08/2010
+!***********************************************************************
+!
+!brief    COMPUTES THE TIME ELAPSED SINCE 31/12/1899.
+!+                EXPRESSES IT IN JULIAN CENTURIES.
+!
+!history  E. DAVID (LHF)
+!+        12/07/1995
+!+        V5P1
+!+
+!
+!history  JMH (EDF-LNHE)
+!+        03/09/2010
+!+        V6P0
+!+   For consistency, YEAR is now INTENT(IN) only
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT             |-->| TIME IN SECONDS
+!| DAY            |-->| DAY
+!| HOUR           |-->| HOUR IN UNIVERSAL TIME
+!| MIN            |-->| MINUTE IN UNIVERSAL TIME
+!| MONTH          |-->| MONTH
+!| SEC            |-->| SECOND IN UNIVERSAL TIME
+!| YEAR           |-->| YEAR
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      IMPLICIT NONE
+!
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER,          INTENT(IN) :: MONTH,DAY,HOUR,MIN,SEC,YEAR
+      DOUBLE PRECISION, INTENT(IN) :: AT
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER GREG,Y,M,YEAR2
+      DOUBLE PRECISION J
+!
+      INTRINSIC INT
+!
+      PARAMETER (GREG=15+31*(10+12*1582))
+!
+!-----------------------------------------------------------------------
+!
+      YEAR2=YEAR
+      IF(YEAR2.EQ.0) THEN
+        IF (LNG.EQ.1) WRITE (LU,100)
+        IF(LNG.EQ.2)  WRITE (LU,101)
+        STOP
+      ENDIF
+      IF(YEAR2.LT.0) YEAR2=YEAR2+1
+!
+      IF (MONTH.GT.2) THEN
+       Y=YEAR2
+       M=MONTH+1
+      ELSE
+       Y=YEAR2-1
+       M=MONTH+13
+      ENDIF
+!
+      J=INT(365.25D0*Y)+INT(30.6001D0*M)+DAY+1720995.D0
+      IF(DAY+31*(MONTH+12*YEAR2).GE.GREG) THEN
+        J=J+2-INT(0.01D0*Y)+INT(0.25D0*INT(0.01D0*Y))
+      ENDIF
+      J=J-2415020.5D0
+      GREDELHYD_JULTIM = (J+(HOUR+(MIN+(SEC+AT)/60.D0)/60.D0)/24.D0)
+     &                   / 36525.D0
+!
+!---------------------------------------------------------------
+!
+100   FORMAT (//,10X,'**********************************',
+     &         /,10X,'       FONCTION JULTIM',
+     &         /,10X,' LA VALEUR DE L''ANNEE EST NULLE',
+     &         /,10X,' CALCUL IMPOSSIBLE ...'
+     &         /,10X,'**********************************')
+101   FORMAT (//,10X,'**********************************',
+     &         /,10X,'       JULTIM FUNCTION',
+     &         /,10X,' THE VALUE FOR THE YEAR IS ZERO',
+     &         /,10X,' COMPUTATION NOT POSSIBLE ...'
+     &         /,10X,'**********************************')
+!
+!---------------------------------------------------------------
+!
+      RETURN
+      END
+!
+!                       ****************************
+                        SUBROUTINE GREDELHYD_GREGTIM
+!                       ****************************
+     &(JULTIM,YEAR,MONTH,DAY,HOUR,MIN,SEC)
+!
+!***********************************************************************
+! PARALLEL   V6P2                                   31/08/2011
+!***********************************************************************
+!
+!brief    COMPUTES THE GREGORIAN CALENDAR DATE
+!+        (YEAR,MONTH,DAY,HOUR,MIN,SEC)
+!+        GIVEN THE JULIAN DATE (JD) IN CENTURY
+!
+!history  C.-T. PHAM (EDF-LNHE)
+!+        31/08/2011
+!+        V6P2
+!+        FROM http://aa.usno.navy.mil/faq/docs/JD_Formula.php :
+!+        GDATE ALGORITHM
+!+        ORIGINAL ARTICLE: FLIEGEL AND VAN FLANDERN (1968),
+!+        A MACHINE ALGORITHM FOR PROCESSING CALENDAR DATES
+!+        FOR YEAR, MONTH AND DAY;
+!+        AND FROM DELTARES, INITIALLY WL, SECTOR WATERBEHEER & MILIEU
+!+        PROJET T0467 OR T1234.56, ANDRE HENDRIKS, V 1.01 (930429)
+!+        FOR HOUR,MIN,SEC
+!+
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DAY            |<->| DAY    (1-28, 29, 30 OR 31)
+!| HOUR           |<->| HOUR   (0-23) IN UNIVERSAL TIME
+!| JULTIM         |-->| JULIAN DAY IN CENTURY
+!| MIN            |<->| MINUTE (0-59) IN UNIVERSAL TIME
+!| MONTH          |<->| MONTH  (1-12)
+!| SEC            |<->| SECOND (0-59) IN UNIVERSAL TIME
+!| YEAR           |<->| YEAR   (-4713-..)
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      IMPLICIT NONE
+!
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER,          INTENT(INOUT) :: YEAR,MONTH,DAY,HOUR,MIN,SEC
+      DOUBLE PRECISION, INTENT(IN)    :: JULTIM
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I,J,K,L,N
+      DOUBLE PRECISION JD,JDR
+!
+      INTRINSIC INT
+!
+!-----------------------------------------------------------------------
+!
+!  JULTIM UNIT: CENTURY
+!  JD UNIT    : DAY
+!
+!  2415020 <=> 31/12/1899: DUE TO THE SHIFT IN JULTIM IN TELEMAC/BIEF
+!
+      JD=JULTIM*36525.D0+2415020.D0
+!
+      JDR=MOD(JD,1.D0)
+!
+      IF (JDR.LT.0.5D0) THEN
+        JDR = JDR+0.5D0
+      ELSE
+        JDR = JDR-0.5D0
+        JD  = JD+1.D0
+      ENDIF
+!
+      L = INT(JD)+68569
+      N = 4*L/146097
+      L = L-(146097*N+3)/4
+      I = 4000*(L+1)/1461001
+      L = L-1461*I/4+31
+      J = 80*L/2447
+      K = L-2447*J/80
+      L = J/11
+      J = J+2-12*L
+      I = 100*(N-49)+I+L
+!
+      YEAR  = I
+      MONTH = J
+      DAY   = K
+!
+      HOUR = INT(JDR*24.D0)
+      MIN  = INT(JDR*1440.D0)-60*HOUR
+      SEC  = NINT(JDR*86400.D0)-3600*HOUR-60*MIN
+!
+!  TO AVOID SEC = 60
+!
+      IF(SEC.EQ.60) THEN
+        SEC = 0
+        MIN = MIN + 1
+      ENDIF
+!
+      IF(MIN.GE.60) THEN
+        MIN  = MIN  - 60
+        HOUR = HOUR + 1
+      ENDIF
+!
+      IF(HOUR.GE.24) THEN
+        HOUR = HOUR - 24
+        DAY  = DAY  + 1
+      ENDIF
+!
+      RETURN
+      END
