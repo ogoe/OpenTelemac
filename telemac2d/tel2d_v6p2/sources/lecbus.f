@@ -18,13 +18,14 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTBUS         |<--| ELEVATION OF ENTRY AND EXIT OF TUBES
-!| ANGBUS         |<--| ANGLE OF TUBES WITH AXIS OX.
+!| ANGBUS         |<--| ANGLE OF TUBES WITH AXIS OX
+!|                |   |   AUTOMATICALLY COMPUTED BY DEFAULT
 !| CEBUS          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN INFLOW
 !| CLPBUS         |<--| INTEGER FLAG FOR FLOW DIRECTION (VALVE)
-!|                |   | 0 - BOTH DIRECTIONS
-!|                |   | 1 - ONLY FROM ENTRY TO EXIT
-!|                |   | 2 - ONLY FROM EXIT TO ENTRY
-!|                |   | 3 - NO FLOW
+!|                |   |   0 - BOTH DIRECTIONS
+!|                |   |   1 - ONLY FROM ENTRY TO EXIT
+!|                |   |   2 - ONLY FROM EXIT TO ENTRY
+!|                |   |   3 - NO FLOW
 !| CSBUS          |<--| HEAD LOSS COEFFICIENT WHEN WORKING AS AN OUTFLOW
 !| ENTBUS         |<--| INDICES OF ENTRY OF TUBES IN GLOBAL NUMBERING
 !| HAUBUS         |<--| HEIGHT OF TUBES
@@ -60,6 +61,7 @@
 !
       DOUBLE PRECISION ALT1,ALT2
       DOUBLE PRECISION ANG1,ANG2,CS1,CS2,CE1,CE2
+      DOUBLE PRECISION DX,DY,ANG
 !
       DOUBLE PRECISION PI
       PARAMETER(PI=3.141592653589D0)
@@ -75,15 +77,23 @@
      &                       CE1,CE2,CS1,CS2,
      &                       LRGBUS(N),HAUBUS(N),
      &                       CLPBUS(N),LBUS(N),
-     &                       ALT1,ALT2,ANG1,ANG2
+     &                       ALT1,ALT2
+! UNCOMMENT THE FOLLOWING LINE TO IMPOSE THE DIRECTION OF FLOW FROM THE DATA FILE
+!     &                      ,ANG1,ANG2
         CEBUS(N,1)  = CE1
         CEBUS(N,2)  = CE2
         CSBUS(N,1)  = CS1
         CSBUS(N,2)  = CS2
         ALTBUS(N,1) = ALT1
         ALTBUS(N,2) = ALT2
-        ANGBUS(N,1) = ANG1*PI/180.D0
-        ANGBUS(N,2) = ANG2*PI/180.D0
+        DX  = MESH%X%R(SORBUS(N))-MESH%X%R(ENTBUS(N))
+        DY  = MESH%Y%R(SORBUS(N))-MESH%Y%R(ENTBUS(N))
+        ANG = DATAN(DY/DX)
+        ANGBUS(N,1) = ANG
+        ANGBUS(N,2) = ANG
+! UNCOMMENT THE FOLLOWING LINE TO IMPOSE THE DIRECTION OF FLOW FROM THE DATA FILE
+!        ANGBUS(N,1) = ANG1*PI/180.D0
+!        ANGBUS(N,2) = ANG2*PI/180.D0
 10    CONTINUE
 !
 !     IN // CHECKING IF POINTS ARE IN THE DOMAIN 
