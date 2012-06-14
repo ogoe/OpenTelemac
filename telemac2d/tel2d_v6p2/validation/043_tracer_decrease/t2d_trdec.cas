@@ -1,0 +1,100 @@
+/---------------------------------------------------------------------
+/ TELEMAC2D Version v6p2 14 juin 2012
+/ TELEMAC 2D : TEST DECROISSANCE TRACEURS
+/---------------------------------------------------------------------
+
+DEBUGGER = 0
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, FICHIERS
+/---------------------------------------------------------------------
+
+NOMS DES TRACEURS                  ='Traceur 1';'Traceur 2'
+
+FICHIER DES PARAMETRES             ='t2d_trdec.cas'
+
+FICHIER DES RESULTATS              ='r2d_trdec.slf'
+
+FICHIER DES CONDITIONS AUX LIMITES ='geo_trdec.cli'
+
+FICHIER DE REFERENCE               ='f2d_trdec.slf'
+
+FICHIER DE GEOMETRIE               ='geo_trdec.slf'
+
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GENERALITES
+/---------------------------------------------------------------------
+
+VALIDATION =OUI
+
+/-------------------------------------------------------------------
+/                     OPTIONS GENERALES                               
+/-------------------------------------------------------------------
+TITRE      ='TELEMAC 2D : TEST DECROISSANCE TRACEURS'
+
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GRAPHIQUES ET LISTING
+/---------------------------------------------------------------------
+
+PERIODE DE SORTIE LISTING             =30
+
+VARIABLES POUR LES SORTIES GRAPHIQUES =H,S,B,T1,T2
+
+PERIODE POUR LES SORTIES GRAPHIQUES   =60
+
+BILAN DE MASSE                        =VRAI
+
+INFORMATIONS SUR LE SOLVEUR           =VRAI
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS
+/---------------------------------------------------------------------
+
+CONVECTION                                          =NON
+
+DIFFUSION DES VITESSES                              =NON
+
+LOI DE DEGRADATION DES TRACEURS                     =0;1
+
+VALEURS INITIALES DES TRACEURS                      =100.;200.
+
+COEFFICIENT 1 DE LA LOI DE DEGRADATION DES TRACEURS =0.0;6.0
+
+COEFFICIENT D'IMPLICITATION DES TRACEURS            =1.
+
+PRECISION POUR LA DIFFUSION DES TRACEURS            =1.E-10
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS INITIALES
+/---------------------------------------------------------------------
+
+CONDITIONS INITIALES ='COTE CONSTANTE'
+
+COTE INITIALE        =2.
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS, TRACEUR
+/---------------------------------------------------------------------
+
+NOMBRE DE TRACEURS =2
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES
+/---------------------------------------------------------------------
+
+NOMBRE DE PAS DE TEMPS =8640
+
+PAS DE TEMPS           =10.0
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, SOLVEUR
+/---------------------------------------------------------------------
+
+SOLVEUR POUR LA DIFFUSION DES TRACEURS =7
