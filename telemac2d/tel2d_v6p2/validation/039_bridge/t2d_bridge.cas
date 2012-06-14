@@ -1,0 +1,140 @@
+/---------------------------------------------------------------------
+/ TELEMAC2D Version v6p2 13 juin 2012
+/ TELEMAC 2D : TEST PONT
+/---------------------------------------------------------------------
+
+
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, FICHIERS
+/---------------------------------------------------------------------
+
+FICHIER DES RESULTATS              ='r2d_bridge.slf'
+
+FICHIER DES CONDITIONS AUX LIMITES ='geo_bridge.cli'
+
+FICHIER DES FRONTIERES LIQUIDES    ='t2d_bridge.liq'
+
+FICHIER DE GEOMETRIE               ='geo_bridge.slf'
+
+NOMS DES TRACEURS                  ='Traceur1'
+
+FICHIER DES PARAMETRES             ='t2d_bridge.cas'
+
+FICHIER DE DONNEES DES BUSES       ='fo1_bridge.txt'
+
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GENERALITES
+/---------------------------------------------------------------------
+
+/-------------------------------------------------------------------
+/                     OPTIONS GENERALES                               
+/-------------------------------------------------------------------
+TITRE ='TELEMAC 2D : TEST PONT'
+
+
+/---------------------------------------------------------------------
+/ ENTREES-SORTIES, GRAPHIQUES ET LISTING
+/---------------------------------------------------------------------
+
+PERIODE DE SORTIE LISTING             =12
+
+VARIABLES POUR LES SORTIES GRAPHIQUES =U,V,S,B,T1
+
+PERIODE POUR LES SORTIES GRAPHIQUES   =60
+
+BILAN DE MASSE                        =VRAI
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS
+/---------------------------------------------------------------------
+
+COEFFICIENT D'IMPLICITATION DES TRACEURS =1.
+
+COEFFICIENT DE FROTTEMENT                =20.
+
+/COEFFICIENT DE DIFFUSION DES TRACEURS    =1.
+
+VALEURS INITIALES DES TRACEURS           =0
+
+COEFFICIENT DE DIFFUSION DES VITESSES    =1.0
+
+LOI DE FROTTEMENT SUR LE FOND            =3
+
+PRECISION POUR LA DIFFUSION DES TRACEURS =1.E-10
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS INITIALES
+/---------------------------------------------------------------------
+
+CONDITIONS INITIALES ='COTE CONSTANTE'
+
+COTE INITIALE        =7.
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS, CONDITIONS LIMITES
+/---------------------------------------------------------------------
+
+DEBITS IMPOSES                      =0;0
+
+PROFILS DE VITESSE                  =1;4
+
+COTES IMPOSEES                      =7;0
+
+OPTION POUR LES FRONTIERES LIQUIDES =1;1
+
+VALEURS IMPOSEES DES TRACEURS       =0.0;250.0
+
+
+/---------------------------------------------------------------------
+/ EQUATIONS, TRACEUR
+/---------------------------------------------------------------------
+
+NOMBRE DE TRACEURS =1
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES
+/---------------------------------------------------------------------
+
+NOMBRE DE BUSES                   =2
+
+PAS DE TEMPS                      =5.0
+
+NOMBRE DE PAS DE TEMPS            =14400
+
+TRAITEMENT DES HAUTEURS NEGATIVES =2
+
+OPTION DE SUPG = 2;0;2;2
+
+CORRECTION DE CONTINUITE          =OUI
+
+FORME DE LA CONVECTION            =14;5;1;1
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, SOLVEUR
+/---------------------------------------------------------------------
+
+SOLVEUR POUR LA DIFFUSION DES TRACEURS =7
+
+OPTION DU SOLVEUR                      =5
+
+SOLVEUR                                =7
+
+PRECISION DU SOLVEUR                   =1.E-8
+
+
+/---------------------------------------------------------------------
+/ PARAMETRES NUMERIQUES, VITESSE-CELERITE-HAUTEUR
+/---------------------------------------------------------------------
+
+IMPLICITATION POUR LA HAUTEUR =0.55
+
+MASS-LUMPING SUR H            =1.
+
+IMPLICITATION POUR LA VITESSE =0.55
