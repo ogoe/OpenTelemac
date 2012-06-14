@@ -1104,6 +1104,8 @@
                   ZPLOT(IPLOT) = ZP - A1*DZ(IPLOT) 
                   SHZ(IPLOT) = (ZPLOT(IPLOT)-ZSTAR(IET)) 
      &                       / (ZSTAR(IET+1)-ZSTAR(IET)) 
+!                 THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!                 SENS=-1 FOR BACKWARD CHARACTERISTICS
                   ELT(IPLOT) = - SENS * ELT(IPLOT) 
 ! 
                ELSE 
@@ -1261,6 +1263,8 @@
                      YPLOT(IPLOT) = YP 
                      ZPLOT(IPLOT) = ZP 
                      SHZ  (IPLOT) = IFA 
+!                    THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!                    SENS=-1 FOR BACKWARD CHARACTERISTICS
                      ELT  (IPLOT) = - SENS * ELT(IPLOT) 
                      EXIT 
 ! 
@@ -1611,6 +1615,8 @@
             ZPLOT(IPLOT) = ZP - A1*DZ(IPLOT) 
             SHZ(IPLOT) = (ZPLOT(IPLOT)-ZSTAR(IET)) 
      &                 / (ZSTAR(IET+1)-ZSTAR(IET)) 
+!           THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!           SENS=-1 FOR BACKWARD CHARACTERISTICS
             ELT(IPLOT) = - SENS * ELT(IPLOT) 
 !           EXITING LOOP ON ISP
             EXIT
@@ -1769,6 +1775,8 @@
               YPLOT(IPLOT) = YP 
               ZPLOT(IPLOT) = ZP 
               SHZ  (IPLOT) = IFA 
+!             THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!             SENS=-1 FOR BACKWARD CHARACTERISTICS
               ELT  (IPLOT) = - SENS * ELT(IPLOT)
 !             EXITING LOOP ON ISP 
               EXIT
@@ -1956,7 +1964,7 @@
      &                DY(IPLOT)*(X(IKLE(IEL,2))-XP)) IFA = 2 
                ENDIF 
                IEL = IFABOR(IEL,IFA)  
-               IF (IEL.GT.0) THEN  ! INSIDE THE DOMAIN, MOVE TO ELEMENT IEL, BUT DO NOT STOP CHECKING SHP 
+               IF(IEL.GT.0) THEN  ! INSIDE THE DOMAIN, MOVE TO ELEMENT IEL, BUT DO NOT STOP CHECKING SHP 
                   I1 = IKLE(IEL,1) 
                   I2 = IKLE(IEL,2) 
                   I3 = IKLE(IEL,3) 
@@ -1984,7 +1992,7 @@
                I2  = IKLE(ELT(IPLOT),ISUI(IFA)) 
                DX1 = X(I2) - X(I1) 
                DY1 = Y(I2) - Y(I1) 
-               IF (IEL==-1) THEN ! SOLID BOUNDARY 
+               IF(IEL.EQ.-1) THEN ! SOLID BOUNDARY 
                   A1 = (DXP*DX1 + DYP*DY1) / (DX1**2 + DY1**2) 
                   DX(IPLOT) = A1 * DX1 
                   DY(IPLOT) = A1 * DY1 
@@ -2014,7 +2022,9 @@
                SHP(ISUI2(IFA),IPLOT) = 0.D0 
                XPLOT(IPLOT) = X(I1) + A1 * DX1 
                YPLOT(IPLOT) = Y(I1) + A1 * DY1 
-               ELT(IPLOT) = - SENS * ELT(IPLOT) ! ??? 
+!              THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!              SENS=-1 FOR BACKWARD CHARACTERISTICS
+               ELT(IPLOT) = - SENS * ELT(IPLOT)  
                ISPDONE(IPLOT) = NSP(IPLOT)+1 ! THIS WILL FORBID ENTERING FURTHER LOOPS   
                RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) ! NEW POSITION 
                RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) ! IN THE OLD ELEMENT 
@@ -2170,16 +2180,24 @@
 ! HERE WE CHECK PASSING TO THE NEIGHBOUR SUBDOMAIN AND COLLECT DATA 
 !----------------------------------------------------------------------- 
 ! 
-!              A LOST-AGAIN TRACEBACK DETECTED, ALREADY HERE    
-               IF(ADD.AND.IEL.EQ.-2) THEN  
-!                SET THE IMPLANTING PARAMETERS  
-                 IPROC=IFAPAR(IFA  ,ELT(IPLOT)) 
-                 ILOC =IFAPAR(IFA+3,ELT(IPLOT))
-!                ANOTHER ONE AS IPID, MEANS ALSO NOT LOCALISED  
-                 RECVCHAR(IPLOT)%NEPID=IPROC  
-                 RECVCHAR(IPLOT)%INE=ILOC 
-                 EXIT 
-               ENDIF  
+               IF(IEL.EQ.-2) THEN
+                 IF(ADD) THEN  
+!                  A LOST-AGAIN TRACEBACK DETECTED, ALREADY HERE    
+!                  SET THE IMPLANTING PARAMETERS  
+                   IPROC=IFAPAR(IFA  ,ELT(IPLOT)) 
+                   ILOC =IFAPAR(IFA+3,ELT(IPLOT))
+!                  ANOTHER ONE AS IPID, MEANS ALSO NOT LOCALISED  
+                   RECVCHAR(IPLOT)%NEPID=IPROC  
+                   RECVCHAR(IPLOT)%INE=ILOC 
+                 ELSE
+                   CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
+     &                               NSP(IPLOT),XPLOT(IPLOT),
+     &                               YPLOT(IPLOT),0.D0,  
+     &                               IFAPAR,NCHDIM,NCHARA )                
+                 ENDIF
+!                EXITING LOOP ON ISP 
+                 EXIT   
+               ENDIF 
 ! 
 !----------------------------------------------------------------------- 
 ! FURTHER ON, THE SPECIAL TREATMENT FOR SOLID OR LIQUID BOUNDARIES  
@@ -2195,8 +2213,8 @@
                IF(IEL.EQ.-1) THEN 
 ! 
 !----------------------------------------------------------------------- 
-!  LA, ON SAIT QUE LA FACE DE SORTIE EST UNE FRONTIERE SOLIDE 
-!  ON PROJETTE LE RELIQUAT SUR LA FRONTIERE PUIS ON SE RELOCALISE 
+!  HERE WE HAVE A SOLID BOUNDARY, VELOCITY IS PROJECTED ON THE BOUNDARY
+!  AND WE GO ON
 !----------------------------------------------------------------------- 
 ! 
                   A1 = (DXP*DX1 + DYP*DY1) / (DX1**2 + DY1**2) 
@@ -2215,26 +2233,7 @@
                ENDIF 
 ! 
 !----------------------------------------------------------------------- 
-! HERE WE DETECT PASSING TO THE NEIGHBOUR SUBDOMAIN AND COLLECT DATA 
-!----------------------------------------------------------------------- 
-! 
-               IF(IEL.EQ.-2) THEN ! INTERFACE CROSSING    
-                 CALL COLLECT_CHAR  
-     &             ( IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
-     &               NSP(IPLOT),XPLOT(IPLOT),YPLOT(IPLOT),0.D0,  
-     &               IFAPAR,NCHDIM,NCHARA ) 
-!                EXITING LOOP ON ISP 
-                 EXIT 
-               ENDIF  
-! 
-!----------------------------------------------------------------------- 
-!  LA, ON SAIT QUE LA FACE DE SORTIE EST UNE FRONTIERE LIQUIDE 
-!  ON ARRETE LA REMONTEE DES CARACTERISTIQUE (SIGNE DE ELT) 
-! 
-!     OU QUE 
-! 
-!  LA, ON SAIT QUE LA FACE DE SORTIE EST UNE INTERFACE DE SOUS-DOMAINES 
-!  POINT D'INTERFACE QUI SERA TRAITE PAR LE SOUS-DOMAINE VOISIN 
+!  HERE WE HAVE A LIQUID BOUNDARY, THE CHARACTERISTIC IS STOPPED
 !----------------------------------------------------------------------- 
 ! 
                DENOM = DXP*DY1-DYP*DX1 
@@ -2249,6 +2248,8 @@
                SHP(ISUI2(IFA),IPLOT) = 0.D0 
                XPLOT(IPLOT) = X(I1) + A1 * DX1 
                YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+!              THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!              SENS=-1 FOR BACKWARD CHARACTERISTICS
                ELT(IPLOT) = - SENS * ELT(IPLOT)
                EXIT 
 ! 
