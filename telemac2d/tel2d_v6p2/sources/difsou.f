@@ -45,6 +45,11 @@
 !+   Modification for culvert management
 !+   Addition of Tubes management
 !
+!history  C.COULET (ARTELIA)
+!+        14/06/2012
+!+        V6P2
+!+   Addition of tracer degradation law treatment
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DBUS           |-->| DISCHARGE OF TUBES.
@@ -80,6 +85,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : LOITRAC, COEF1TRAC
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -124,9 +130,16 @@
 !     IMPLICIT SOURCE TERMS (HERE SET TO ZERO)
 !
       DO ITRAC=1,NTRAC
-!       CALL OS('X=0     ',X=TIMP%ADR(ITRAC)%P)
-!       EQUIVALENT A
-        YASMI(ITRAC)=.FALSE.
+        IF(LOITRAC(ITRAC).EQ.0) THEN
+          YASMI(ITRAC)=.FALSE.
+        ELSEIF(LOITRAC(ITRAC).EQ.1) THEN
+          YASMI(ITRAC)=.TRUE.
+          CALL OS('X=CY    ',X=TIMP%ADR(ITRAC)%P,Y=HPROP,
+     &            C=-2.3/COEF1TRAC(ITRAC)/3600.D0)
+        ELSE
+          IF(LNG.EQ.1) WRITE(LU,*)
+          IF(LNG.EQ.2) WRITE(LU,*)
+        ENDIF
       ENDDO
 !
 !                                   N+1

@@ -996,6 +996,10 @@
 !
       INTEGER NUMZONE
 !
+!     LAW OF TRACERS DEGRADATION
+!
+      INTEGER LOITRAC(MAXTRA)
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -1404,6 +1408,11 @@
 !     COEFFICIENT TO CALIBRATE SEA LEVEL
 !
       DOUBLE PRECISION MSL
+!
+!     COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION
+!     (1 IN CASE OF FUTURE LAW WITH MORE COEF.)
+!
+      INTEGER COEF1TRAC(MAXTRA)
 !
 !-----------------------------------------------------------------------
 !

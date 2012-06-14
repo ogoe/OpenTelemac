@@ -470,6 +470,17 @@
 !        ZONE NUMBER WHEN USING A PLANE PROJECTION,
 !        ASSOCIATED TO GEOGRAPHIC SYSTEM (TIDAL MODEL)
          NUMZONE = MOTINT(ADRESS(1,79))
+!        LAW OF TRACERS DEGRADATION
+         IF(NTRAC.GT.0) THEN
+           DO I=1,NTRAC
+             LOITRAC(I) = 0
+           ENDDO
+           IF(TROUVE(1,80).EQ.2) THEN
+             DO I=1,DIMEN(1,80)
+               LOITRAC(I) = MOTINT(ADRESS(1,80)+I-1)
+             ENDDO
+           ENDIF
+         ENDIF
 !
 ! REAL KEYWORDS:
 !
@@ -681,6 +692,17 @@
          CTIDEV   = MOTREA( ADRESS(2,65) )
 !        COEFFICIENT TO CALIBRATE SEA LEVEL (TIDAL MODEL)
          MSL      = MOTREA( ADRESS(2,66) )
+!        COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION
+         IF(NTRAC.GT.0) THEN
+           DO I=1,NTRAC
+             COEF1TRAC(I) = 0.D0
+           ENDDO
+           IF(TROUVE(2,67).EQ.2) THEN
+             DO I=1,DIMEN(2,67)
+               COEF1TRAC(I) = MOTREA(ADRESS(2,67)+I-1)
+             ENDDO
+           ENDIF
+         ENDIF
 !
 ! LOGICAL KEYWORDS:
 !

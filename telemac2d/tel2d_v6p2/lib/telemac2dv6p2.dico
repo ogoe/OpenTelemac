@@ -5211,6 +5211,38 @@ Inference of minor constituents from the one read in input files
 linked to keywords BINARY DATABASE 1 FOR TIDE 
 and BINARY DATABASE 2 FOR TIDE'
 
+NOM = 'LOI DE DEGRADATION DES TRACEURS'
+NOM1 = 'LAW OF TRACERS DEGRADATION'
+TYPE = ENTIER
+INDEX = 80
+MNEMO = 'LOITRAC'
+TAILLE = 2
+DEFAUT = 0;0
+DEFAUT1 = 0;0
+CHOIX=
+'0="PAS DE DEGRADATION"';
+'1="LOI EN F(T90)"'
+CHOIX1=
+'0="NO DEGRADATION"';
+'1="F(T90) LAW"'
+RUBRIQUE = 'EQUATIONS';'TRACEUR';'OPTIONS TRACEUR' 
+RUBRIQUE1 = 'EQUATIONS';'TRACER';'TRACER OPTIONS' 
+NIVEAU = 1
+AIDE = 'Prise en compte d''une loi de decroissance des traceurs'
+AIDE1 = 'Take in account a law for tracers decrease'
+
+NOM = 'COEFFICIENT 1 DE LA LOI DE DEGRADATION DES TRACEURS'
+NOM1 = 'COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION'
+TYPE = REAL
+INDEX = 67
+MNEMO = 'COEF1TRAC'
+TAILLE = 2
+RUBRIQUE = 'EQUATIONS';'TRACEUR';'OPTIONS TRACEUR' 
+RUBRIQUE1 = 'EQUATIONS';'TRACER';'TRACER OPTIONS' 
+NIVEAU = 1
+AIDE = 'Coefficient 1 de la loi de decroissance des traceurs'
+AIDE1 = 'Coefficient 1 of law for tracers decrease'
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
