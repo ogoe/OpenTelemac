@@ -127,7 +127,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     IMPLICIT SOURCE TERMS (HERE SET TO ZERO)
+!     IMPLICIT SOURCE TERMS (DEPENDING ON THE LAW CHOSEN)
 !
       DO ITRAC=1,NTRAC
         IF(LOITRAC(ITRAC).EQ.0) THEN
@@ -135,7 +135,7 @@
         ELSEIF(LOITRAC(ITRAC).EQ.1) THEN
           YASMI(ITRAC)=.TRUE.
           CALL OS('X=CY    ',X=TIMP%ADR(ITRAC)%P,Y=HPROP,
-     &            C=-2.3/COEF1TRAC(ITRAC)/3600.D0)
+     &            C=-2.3D0/COEF1TRAC(ITRAC)/3600.D0)
         ELSE
           IF(LNG.EQ.1) WRITE(LU,*) 'DIFSOU : LOI NON PROGRAMMEE'
           IF(LNG.EQ.2) WRITE(LU,*) 'DIFSOU : LAW NOT IMPLEMENTED'

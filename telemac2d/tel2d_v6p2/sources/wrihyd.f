@@ -119,29 +119,29 @@
       ENDIF
 !
       WRITE ( NHYD, '(A)' )
-     &    "task      full-coupling                              "
+     &    'task      full-coupling                              '
       WRITE ( NHYD, '(A)' )
-     &    "                                                     "
+     &    '                                                     '
       WRITE ( NHYD, '(A)' )
-     &    "#                                                    "
+     &    '#                                                    '
       WRITE ( NHYD, '(A)' )
-     &    "# telemac data                                       "
+     &    '# telemac data                                       '
       WRITE ( NHYD, '(A)' )
-     &    "#                                                    "
+     &    '#                                                    '
       WRITE ( NHYD, '(A)' )
-     &    "                                                     "
+     &    '                                                     '
       WRITE ( NHYD, '(A)' )
-     &    "geometry  finite-elements                            "
+     &    'geometry  finite-elements                            '
       WRITE ( NHYD, '(A)' )
-     &    "                                                     "
+     &    '                                                     '
       WRITE ( NHYD, '(A)' )
-     &    "horizontal-aggregation       no                      "
+     &    'horizontal-aggregation       no                      '
       WRITE ( NHYD, '(A)' )
-     &    "minimum-vert-diffusion-used  no                      "
+     &    'minimum-vert-diffusion-used  no                      '
       WRITE ( NHYD, '(A)' )
-     &    "vertical-diffusion           calculated              "
+     &    'vertical-diffusion           calculated              '
       WRITE ( NHYD, '(A)' )
-     &    "description                                          "
+     &    'description                                          '
       IWAQ = LEN_TRIM(TITRE)
       IF ( IWAQ .GT. 40 ) THEN
          WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:40),"'"
@@ -236,7 +236,7 @@
      &    "grid-coordinates-file    '",NOMLIM(1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMSOU)
       I    = IWAQ
-      DO WHILE ((NOMSOU(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMSOU(I:I).NE.'/').AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE ( NHYD, '(A,A,A)' )
