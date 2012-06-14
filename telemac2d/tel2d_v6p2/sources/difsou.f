@@ -137,8 +137,8 @@
           CALL OS('X=CY    ',X=TIMP%ADR(ITRAC)%P,Y=HPROP,
      &            C=-2.3/COEF1TRAC(ITRAC)/3600.D0)
         ELSE
-          IF(LNG.EQ.1) WRITE(LU,*)
-          IF(LNG.EQ.2) WRITE(LU,*)
+          IF(LNG.EQ.1) WRITE(LU,*) 'DIFSOU : LOI NON PROGRAMMEE'
+          IF(LNG.EQ.2) WRITE(LU,*) 'DIFSOU : LAW NOT IMPLEMENTED'
         ENDIF
       ENDDO
 !
