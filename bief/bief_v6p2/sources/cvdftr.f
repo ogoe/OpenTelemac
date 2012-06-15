@@ -101,6 +101,11 @@
 !+   Rain and evaporation added (after initiative by O. Boutron, from
 !+   Tour du Valat, and O. Bertrand, Artelia group)
 !+
+!history  J-M HERVOUET (LNHE)
+!+        14/06/2012
+!+        V6P2
+!+   Mass balance programmed in case of implicit source term.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -739,15 +744,9 @@
         ENDIF
 !       COMPUTES SMI/H (DOES NOT CHECK IF H SIZE IS SUFFICIENT!!)
         IF(OPTBAN.GT.0) THEN
-!         DIVIDES BY H WITH HARD-CODED CLIPPING AT 0.01
+!         DIVIDES BY H WITH HARD-CODED CLIPPING AT 1.D-4
           CALL CPSTVC(SMI,T4)
           DO I=1,SMI%DIM1
-!           CORRECTION JMH 26/04/2012
-!           IF(T10%R(I).LT.1.D-2) THEN
-!             T4%R(I)=0.D0
-!           ELSE
-!             T4%R(I)=SMI%R(I)/H%R(I)
-!           ENDIF
             T4%R(I)=SMI%R(I)/MAX(H%R(I),1.D-4)
           ENDDO
         ELSE
@@ -799,6 +798,22 @@
 !   SOLVES THE LINEAR SYSTEM:
 !
       CALL SOLVE(F,AM1,SM,TB,SLVTRA,INFOGT,MESH,AM2)
+!                                               NOT USED HERE
+!
+!-----------------------------------------------------------------------
+!
+      IF(YASMI.AND.BILAN) THEN
+!       NOTE JMH: WE ASSUME HERE THAT AM2 HAS NOT BEEN DESTROYED IN
+!                 SOLVE (THIS WOULD BE THE CASE WITH SOME PRECONDITIONING
+!                 BUT IN THIS CASE AM2 COULD NOT BE USED BEFORE)
+        CALL MATVEC( 'X=AY    ',T2,AM2,F,C,MESH)
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM(T2,2,MESH)
+          MASSOU = MASSOU - DT*P_DOTS(T2,HPROP,MESH)
+        ELSE
+          MASSOU = MASSOU - DT*DOTS(T2,HPROP)
+        ENDIF
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

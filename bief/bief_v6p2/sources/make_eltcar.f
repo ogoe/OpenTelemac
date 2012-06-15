@@ -34,9 +34,9 @@
 !+
 !
 !history  J-M HERVOUET (LNHE, EDF R&D)
-!+        13/06/2012
+!+        14/06/2012
 !+        V6P2
-!+        Prisms cut into tetrahedra added
+!+        Prisms cut into tetrahedra added, quasi-bubble completed
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTCAR         |<--| ELEMENT CHOSEN FOR EVERY POINT
@@ -291,6 +291,14 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
+!
+!     COMPLETING FOR QUASI-BUBBLE
+!
+      IF(IELM.EQ.12) THEN
+        DO IELEM=1,NELEM2
+          ELTCAR(NPOIN2+IELEM)=IELEM
+        ENDDO
+      ENDIF     
 !
 !     COMPLETING FOR 3D PRISMS
 !
