@@ -6,12 +6,12 @@
      &   A21 , A22 , A23 ,
      &   A31 , A32 , A33 ,
      &   XMUL,SF,SU,SV,F,U,V,
-     &   XEL,YEL,SURFAC,
+     &   XEL,YEL,SURDET,
      &   IKLE1,IKLE2,IKLE3,
      &   NELEM,NELMAX,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
@@ -52,6 +52,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)  
+!+        15/06/2012
+!+        V6P2
+!+   SURFAC changed into SURDET and formulas changed accordingly
+!+   This is just optimisation.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A11            |<--| ELEMENTS OF MATRIX
 !| A12            |<--| ELEMENTS OF MATRIX
@@ -72,7 +78,7 @@
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| SF             |-->| STRUCTURE OF FUNCTIONS F
 !| SU             |-->| BIEF_OBJ STRUCTURE OF U
-!| SURFAC         |-->| AREA OF TRIANGLES
+!| SURDET         |-->| HERE = 1/(2*SURFAC)
 !| SV             |-->| BIEF_OBJ STRUCTURE OF V
 !| U              |-->| FUNCTION U USED IN THE FORMULA
 !| V              |-->| FUNCTION V USED IN THE FORMULA
@@ -103,18 +109,20 @@
       TYPE(BIEF_OBJ), INTENT(IN) :: SF,SU,SV
 !
       DOUBLE PRECISION, INTENT(IN) :: XEL(NELMAX,3),YEL(NELMAX,3)
-      DOUBLE PRECISION, INTENT(IN) :: SURFAC(NELMAX)
+      DOUBLE PRECISION, INTENT(IN) :: SURDET(NELMAX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELEM,IELMF,IELMU,IELMV
       DOUBLE PRECISION XSUR12,XSUR48,X2,X3,Y2,Y3,F1,F2,F3,DEN
-      DOUBLE PRECISION U1,U2,U3,V1,V2,V3,U123,V123
+      DOUBLE PRECISION U1,U2,U3,V1,V2,V3,U123,V123,XSUR06,XSUR24
 !
 !-----------------------------------------------------------------------
 !
       XSUR12 = XMUL/12.D0
       XSUR48 = XMUL/48.D0
+      XSUR06 = XMUL/06.D0
+      XSUR24 = XMUL/24.D0
 !
 !-----------------------------------------------------------------------
 !
@@ -147,7 +155,7 @@
       F2  =  F(IKLE2(IELEM)) - F1
       F3  =  F(IKLE3(IELEM)) - F1
 !
-      DEN = (F3*Y2 - F2*Y3) * XSUR12 / SURFAC(IELEM)
+      DEN = (F3*Y2 - F2*Y3) * XSUR06 * SURDET(IELEM)
 !
 !   EXTRADIAGONAL TERMS
 !
@@ -186,7 +194,7 @@
       F2  =  F(IKLE2(IELEM)) - F1
       F3  =  F(IKLE3(IELEM)) - F1
 !
-      DEN = (F3*X2 - F2*X3) * XSUR12 / SURFAC(IELEM)
+      DEN = (F3*X2 - F2*X3) * XSUR06 * SURDET(IELEM)
 !
 !   EXTRADIAGONAL TERMS
 !
@@ -255,7 +263,7 @@
       U123 = U1 + U2 + U3
       V123 = V1 + V2 + V3
 !
-      DEN = (F3*Y2 - F2*Y3) * XSUR48 / SURFAC(IELEM)
+      DEN = (F3*Y2 - F2*Y3) * XSUR24 * SURDET(IELEM)
 !
 !   EXTRADIAGONAL TERMS
 !
@@ -309,7 +317,7 @@
       U123 = U1 + U2 + U3
       V123 = V1 + V2 + V3
 !
-      DEN = (F3*X2 - F2*X3) * XSUR48 / SURFAC(IELEM)
+      DEN = (F3*X2 - F2*X3) * XSUR24 * SURDET(IELEM)
 !
 !   EXTRADIAGONAL TERMS
 !

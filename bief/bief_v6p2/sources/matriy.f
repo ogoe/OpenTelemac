@@ -65,6 +65,11 @@
 !+        V6P2
 !+   Argument MESH added, call to MT14TT.
 !+
+!history  J-M HERVOUET (LNHE)
+!+        15/06/2012
+!+        V6P2
+!+   Call to MT12AA modified.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -2500,7 +2505,7 @@
              CALL MT12AA(   T(1,1)   ,XM(1,AAQ(1,2,S)),XM(1,AAQ(1,3,S)),
      &                   XM(1,AAQ(2,1,S)),   T(1,2)   ,XM(1,AAQ(2,3,S)),
      &                   XM(1,AAQ(3,1,S)),XM(1,AAQ(3,2,S)),   T(1,3)   ,
-     &                   XMUL,SF,SU,SV,F,U,V,XEL,YEL,SURFAC,
+     &                   XMUL,SF,SU,SV,F,U,V,XEL,YEL,MESH%SURDET%R,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),
      &                   NELEM,NELMAX,ICOORD)
 !
