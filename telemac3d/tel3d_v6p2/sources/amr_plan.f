@@ -32,6 +32,12 @@
 !+        Parallelism
 !+
 !
+!history  J-M Hervouet (LNHE)    
+!+        12/06/2012
+!+        V6P1
+!+        MCOEFF now double precision
+!+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| GLOSEG         |-->| EDGE ADJACENCY ARRAY
@@ -78,8 +84,8 @@
       DOUBLE PRECISION, INTENT(INOUT) :: INTSOL(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: MONITOR(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: SMONITOR(NPOIN2,NPLAN)
-      INTEGER,          INTENT(INOUT) :: NEXTR(NPOIN2),MCOEFF(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: NNEIGH(NPOIN2)
+      INTEGER,          INTENT(INOUT) :: NEXTR(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: NNEIGH(NPOIN2),MCOEFF(NPOIN2)
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: SNNEIGH,SSMONITOR
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH2D,MESH3D     
 !

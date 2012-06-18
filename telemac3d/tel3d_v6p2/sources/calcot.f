@@ -97,7 +97,7 @@
         CALL AMR_PLAN(ZZ,TA%ADR(ITRAC)%P%R,'A',NPOIN2,NPLAN,
      &                MESH2D%NSEG,MESH2D%GLOSEG%I,MESH2D%GLOSEG%DIM1,
      &                T3_01%R,T3_02%R,T3_03%R,T3_04%R,T3_05%R,T3_06,
-     &                T3_06%R,IT1%I,T2_01,T2_01%R,IT3%I,MESH2D,MESH3D)
+     &                T3_06%R,IT1%I,T2_01,T2_01%R,T2_02%R,MESH2D,MESH3D)
 !
 !-----------------------------------------------------------------------
 !
