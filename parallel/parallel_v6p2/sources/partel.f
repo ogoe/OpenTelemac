@@ -37,10 +37,6 @@
 !+     CORRECTED A WRONG DIMENSION OF THE ARRAY CUT, AN ERROR
 !+     OCCURING BY A LARGER NUMBER OF PROCESSORS
 !
-!history  JAJ; MATTHIEU GONZALES DE LINARES
-!+        27/01/2003
-!+        SIXTH VERSION
-!+    CORRECTED A WRONG DIMENSION OF THE ARRAY ALLVAR
 !
 !history  J-M HERVOUET
 !+       12/03/2003
@@ -76,7 +72,6 @@
       INTEGER, PARAMETER :: MAXLENHARD = 250 ! HARD MAX FILE NAME LENGTH
       INTEGER, PARAMETER :: MAXADDCH = 10 ! MAX ADDED SUFFIX LENGTH
       INTEGER, PARAMETER :: MAXVAR = 100  ! MAX NUMBER OF VARIABLES
-      INTEGER, PARAMETER :: MAXALLVARLENGTH = 3200 ! MAXVAR*32 FOR ALLVAR
 !
       INTEGER PMETHOD
       INTEGER NVAR, NREC, NPLAN, NPTFR, NPTIR, NPTFRMAX
@@ -109,7 +104,6 @@
 !
       CHARACTER(LEN=80)  :: TITLE
       CHARACTER(LEN=32)  :: VARI, VARIABLE(MAXVAR)
-      CHARACTER(LEN=MAXALLVARLENGTH) :: ALLVAR 
       CHARACTER(LEN=MAXLENHARD)  :: NAMEINP, NAMECLI, NAMEOUT, NAMECLM
       CHARACTER(LEN=MAXLENHARD)  :: NAMEMET,NAMEEPART,NAMENPART
       CHARACTER(LEN=MAXLENHARD)  :: NAMENINPFORMAT,NAMEOUTFORMA
@@ -123,7 +117,7 @@
       INTEGER I_LEN, I_S, I_SP, I_LENCLI, I_LENINP
       INTEGER IELEM_P, IPOIN_P, IPTFR_P,JJ
 !
-      REAL XSEG, YSEG, BAL, RDUM
+      REAL XSEG, YSEG, RDUM
       DOUBLE PRECISION AREA, X1, X2, X3, Y1, Y2, Y3
       LOGICAL IS, WRT, TIMECOUNT
 !
@@ -463,27 +457,13 @@
       READ (NINP) TITLE
       READ (NINP) I, J
       NVAR = I + J 
-    
-      ALLVAR(1:41) = 'X-COORDINATE----M---,Y-COORDINATE----M---'
-      ISTART = 42
 !
-      WRITE (LU,*) 'VARIABLES ARE: '
       DO I=1,NVAR
         READ(NINP) VARI       
         VARIABLE(I) = VARI     
         DO J=1,32
           IF(VARI(J:J).EQ.' ') VARI(J:J) = '-'
-        END DO
-        ISTOP = ISTART+20
-        IF (ISTOP.GT.MAXALLVARLENGTH) THEN
-          WRITE(LU,*) 'VARIABLE NAMES TOO LONG FOR STRING ALLVAR'
-          WRITE(LU,*) 'STOPPED.'
-          CALL PARTEL_PLANTE2(-1)
-          STOP
-        ENDIF
-        ALLVAR(ISTART:ISTART) = ','
-        ALLVAR(ISTART+1:ISTOP) = VARI
-        ISTART=ISTOP+1
+        ENDDO
       ENDDO 
 !
 ! READ THE REST OF THE SELAFIN FILE
@@ -875,9 +855,6 @@ C$$$!
 ! A CHECK FIRST...
 !
 C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
-C$$$      WRITE (*,'(1X,A20)') ALLVAR(1:20)
-C$$$      WRITE (*,'(1X,A20)') ALLVAR(22:41)
-C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
 !
 !======================================================================
 ! PARTITIONING
@@ -939,17 +916,18 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
 !     
 !======================================================================   
  
-!      WRITE(LU,*) 'HERE '  
-!     KNOGL(I) =>  GLOBAL LABEL OF THE LOCAL POINT I 
+!     
+!     KNOGL(I) =>  GLOBAL LABEL OF THE LOCAL POINT I
+! 
       ALLOCATE (KNOGL(NPOIN2,NPARTS),STAT=ERR)
-      IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'KNOGL')
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'KNOGL')
       KNOGL(:,:)=0
-      
+!      
 !     NBRE_EF(I) => NUMBER OF FINITE ELEMENT CONTAINING I
 !     I IS A GLOBAL LABEL 
       ALLOCATE (NBRE_EF(NPOIN2),STAT=ERR)
       IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'NBRE_EF')
-      
+!      
       IF(NPLAN.EQ.0) THEN
          ALLOCATE (F_P(NPOIN2,NVAR+2,NPARTS),STAT=ERR)
       ELSE
@@ -1025,18 +1003,16 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
             NBRE_EF(NOEUD)=NBRE_EF(NOEUD)+1
          END DO
       END DO 
-      DO I=1,NPARTS
-         
-     
-
+      DO I=1,NPARTS    
+!
 !     LOOP OVER THE FINITE ELEMENT OF THE MESH TO COMPUTE 
 !     THE NUMBER OF THE FINITE ELEMENT AND POINTS BELONGING 
 !     TO SUBMESH I
-   
+!   
          NELEM_P(I)=0
          NPOIN_P(I)=0
          DO EF=1,NELEM2
-            IF (EPART(EF) .EQ. I) THEN
+            IF(EPART(EF).EQ.I) THEN
                NELEM_P(I)=NELEM_P(I)+1
                DO K=1,NDP_2D
                   NOEUD=IKLES((EF-1)*3+K)
@@ -1115,7 +1091,7 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
          NPTFR_P(I)=0
          NBRE_NOEUD_INTERNE=0
          NBRE_NOEUD_INTERF=0
-         
+!         
          DO J=1,NELEM_P(I)
             EF=ELELG(J,I)
             DO K=1,3
@@ -1129,7 +1105,7 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
                   IF (IRAND(NOEUD) .NE. 0) THEN
                      NPTFR_P(I)= NPTFR_P(I)+1
                   END IF
-!     MODIFICATION OF   KNOGL ET F_P
+!     MODIFICATION OF KNOGL ET F_P
                   KNOLG(NPOIN_P(I),I)=NOEUD
                   DO L=1,NVAR+2
                      F_P(NPOIN_P(I),L,I)=F(NOEUD,L)
@@ -1253,7 +1229,7 @@ C$$$      WRITE (*,'(1X,A20)') ALLVAR(43:62)
 !
 ! BOUNDARY NODES BELONGING TO THIS PARTITION
 !
-            IF ( KNOGL(NBOR(K),I) /= 0) THEN
+            IF (KNOGL(NBOR(K),I).NE.0) THEN
                J = J + 1
 !               NBOR_P(J) = NBOR(K)
                ISEG = 0
@@ -1398,17 +1374,16 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
                  IFAPAR(I,2+M,J)=IFAPAR(I,2+M,J)-1
               END IF
            END DO
-        END DO
-      
+        END DO      
 !
       WRITE(NCLM,'(I9)') NHALO(I)
       DO K=1,NHALO(I)
          WRITE (NCLM,'(7(I9,1X))') IFAPAR(I,:,K) 
       END DO 
-     
+!     
       CLOSE(NCLM)
       END DO 
-
+!
       DEALLOCATE(IFAPAR)
       DEALLOCATE(PART_P)
       DEALLOCATE(LIHBOR)
@@ -1431,33 +1406,33 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
       DEALLOCATE(CUT)
       DEALLOCATE(CUT_P)
       DEALLOCATE(SORT)
-     
-
+!     
       IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'F_P')
       ALLOCATE(IKLES_P(MAX_NELEM_P*3),STAT=ERR)
       IF(NPLAN.GT.1) THEN
         ALLOCATE(IKLES3D_P(6,MAX_NELEM_P,NPLAN-1),STAT=ERR)
       ENDIF
       IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'IKLES3D_P')
-
-      
+!      
       DO I=1,NPARTS
-         WRITE(LU,*) 'ON TRAITE LE SOUS-DOMAINE', I 
-!     ***************************************************************
-!     WRITING GEOMETRY FILES FOR ALL PARTS/PROCESSORS
 !
-      NAMEOUT(I_LENINP+1:I_LENINP+11) = PARTEL_EXTENS(NPARTS-1,I-1)
-!      WRITE(LU,*) 'WRITING GEOMETRY FILE: ',NAMEOUT      
-      OPEN(NOUT,FILE=NAMEOUT,FORM='UNFORMATTED',STATUS='UNKNOWN')      
-      REWIND(NOUT)
+        WRITE(LU,*) 'TREATING SUB-DOMAIN ', I 
 !     
-!     TITLE, THE NUMBER OF VARIABLES
+!       WRITING GEOMETRY FILES FOR ALL PARTS/PROCESSORS
+!
+        NAMEOUT(I_LENINP+1:I_LENINP+11) = PARTEL_EXTENS(NPARTS-1,I-1)
+!   
+        OPEN(NOUT,FILE=NAMEOUT,FORM='UNFORMATTED',STATUS='UNKNOWN') 
+!       
+        REWIND(NOUT)
 !     
-      WRITE(NOUT) TITLE
-      WRITE(NOUT) NVAR,0
-      DO K=1,NVAR
-         WRITE(NOUT) VARIABLE(K)
-      END DO
+!       TITLE, THE NUMBER OF VARIABLES
+!     
+        WRITE(NOUT) TITLE
+        WRITE(NOUT) NVAR,0
+        DO K=1,NVAR
+          WRITE(NOUT) VARIABLE(K)
+        ENDDO
 !     
 !     10 INTEGERS...
 ! 1.  IS THE NUMBER OF RECORDINGS IN FILES
@@ -1469,9 +1444,9 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
         IB(8) = NPTFR_P(I)
         IB(9) = NPTIR_P(I)
         WRITE(NOUT) (IB(K), K=1,10)
-        IF (IB(10).EQ.1) THEN 
-           WRITE(NOUT) DATE(1), DATE(2), DATE(3), 
-     &                TIME(1), TIME(2), TIME(3)           
+        IF(IB(10).EQ.1) THEN 
+           WRITE(NOUT) DATE(1),DATE(2),DATE(3), 
+     &                 TIME(1),TIME(2),TIME(3)           
         ENDIF 
 
         IF(NPLAN.LE.1) THEN
@@ -1484,10 +1459,10 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
         DO J=1,NELEM_P(I)
            EF=ELELG(J,I)
            DO K=1,3
-              IKLES_P((J-1)*3+K) = KNOGL(IKLES((EF-1)*3+K),I)
-           END DO
-        END DO
-        IF(NPLAN > 1) THEN
+             IKLES_P((J-1)*3+K) = KNOGL(IKLES((EF-1)*3+K),I)
+           ENDDO
+        ENDDO
+        IF(NPLAN.GT.1) THEN
            DO K = 1,NPLAN-1
               DO J = 1,NELEM_P(I)       
                 IKLES3D_P(1,J,K) = IKLES_P(1+(J-1)*3) + (K-1)*NPOIN_P(I)
@@ -1501,10 +1476,9 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
         ENDIF
 !
         IF(NPLAN.EQ.0) THEN
-           WRITE(NOUT) 
-     &          ((IKLES_P((J-1)*3+K),K=1,3),J=1,NELEM_P(I))
+          WRITE(NOUT) ((IKLES_P((J-1)*3+K),K=1,3),J=1,NELEM_P(I))
         ELSE           
-           WRITE(NOUT)
+          WRITE(NOUT)
      &         (((IKLES3D_P(L,J,K),L=1,6),J=1,NELEM_P(I)),K=1,NPLAN-1)
         ENDIF
 !     
@@ -1702,9 +1676,9 @@ C$$$      CLOSE(NNPART)
         END DO 
       ENDIF
 !      CLOSE(NINP) 
- 
-      ! IF TERMINAL POINTS GIVEN BY COORDINATES, FIND NEAREST NODES FIRST
-
+! 
+!     IF TERMINAL POINTS GIVEN BY COORDINATES, FIND NEAREST NODES FIRST
+!
       WRITE(LU,*) 'NPOIN:',NPOIN
       IF (IHOWSEC>=0) THEN 
         DO ISEC=1,NSEC
@@ -3480,7 +3454,7 @@ CD    *******************************
                  READ(NINP,*,ERR=1100,END=1200) N, N1, N2, NCOLOR(IELEM)
           READ(NINP,*,ERR=1100,END=1200) X1(IELEM), Y1(IELEM), Z1(IELEM)
                  TEMPO(N) = IELEM
-              END DO
+              ENDDO
 
           CASE (NSEC3 )
 
@@ -3572,7 +3546,7 @@ CD    *******************************
                      !
                      PRIO_NEW = SIZE_FLUXIN(NSOLS)
                      !
-                     IF (PRIO_NEW.EQ.0) THEN 
+                     IF(PRIO_NEW.EQ.0) THEN 
                         SIZE_FLUX = SIZE_FLUX + 1
                         SIZE_FLUXIN(NSOLS) = 1
                      ENDIF
@@ -3762,22 +3736,22 @@ CD    *******************************
       DEALLOCATE(NBOR2)
 !
       WRITE(LU,*) 'VOISIN31'
-
+!
       CALL PARTEL_VOISIN31 (NBTET, NBTET,NBTET,
      &  NPOINT,NPTFR,IKLE,IFABOR,NBOR)
-
+!
       WRITE(LU,*) 'FIN DE VOISIN31'
-      
+!      
       ALLOCATE(IPOBO(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER(LU,'IPOBO')
-
+!
       CALL PARTEL_ELEBD31( NELBOR, NULONE, IKLBOR,    
      &              IFABOR, NBOR, IKLE,         
      &              NBTET, NBTRI, NBTET, NPOINT, 
      &              NPTFR,IPOBO)
-
+!
       DEALLOCATE(IPOBO)
-
+!
       WRITE(LU,*) 'FIN DE PARTEL_ELEBD31'
       ALLOCATE(NUMBER_TRIA(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER(LU,'NUMBER_TRIA')
@@ -4142,12 +4116,13 @@ C$$$      NODES4(:)=-1
 !      DO IELEM = 1, NBCOLOR
 !         WRITE(LU,*) 'PRIOR',PRIORITY(IELEM)
 !      ENDDO
-      
+!      
 ! OB D
 !--------------
 ! RAJOUT POUR TENIR COMPTE DES COULEURS DES NOEUDS DE TETRAS LIES
 ! AU TRIA DE BORD ET SITUES DANS D'AUTRES SD
 !--------------
+!
       ALLOCATE(TETCOLOR(NBTET,4),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER(LU,' TETCOLOR')
       TETCOLOR(:,:)=.FALSE.
@@ -4157,36 +4132,36 @@ C$$$      NODES4(:)=-1
 !       ON NE FAIT QQE CHOSE (EVENTUELLEMENT) QUE SI IL Y A UN TRIA
 !       DE BORD (ECOLOR>0 ET NCOLOR2 !=-1). GRACE AU TRAITEMENT PRECEDENT
 !       ON S'EN REND COMPTE DIRECTEMENT VIA NCOLOR2.
-	LINTER=.FALSE.
+        LINTER=.FALSE.
         NBTETJ=NODES1(J) ! NBRE DE TETRA RATTACHES A CE NOEUD
         NI=NODES2(J)     ! ADRESSE DANS NODES3 DU PREMIER
         NF=NI+NBTETJ-1
-	IF (NCOLOR2(J) > 0) THEN
-	  ! ON CHERCHE A SAVOIR SI LE NOEUD EST A L'INTERFACE LINTER=.TRUE.
+        IF (NCOLOR2(J) > 0) THEN
+!         ON CHERCHE A SAVOIR SI LE NOEUD EST A L'INTERFACE LINTER=.TRUE.
           DO N=NI,NF       ! BOUCLE SUR LES TETRA CONTENANT LE POINT J
             NT=NODES3(N)   ! TETRA DE NUMERO LOCAL NT
-	    IF (N == NI) THEN
-	      IDDNT=EPART(NT)
-	    ELSE
-	      IF (EPART(NT) /= IDDNT) THEN
-	        LINTER=.TRUE.
-		GOTO 20     ! ON A LE RENSEIGNEMENT DEMANDE, ON SORT
-	      ENDIF
-	    ENDIF
-	  ENDDO	          ! FIN BOUCLE SUR LES TETRAS
+            IF (N.EQ.NI) THEN
+              IDDNT=EPART(NT)
+            ELSE
+              IF (EPART(NT) /= IDDNT) THEN
+                LINTER=.TRUE.
+                GOTO 20     ! ON A LE RENSEIGNEMENT DEMANDE, ON SORT
+              ENDIF
+            ENDIF
+          ENDDO	          ! FIN BOUCLE SUR LES TETRAS
    20     CONTINUE
 !         LE NOEUD J EST UN NOEUD D'INTERFACE. ON VA COMMUNIQUER AU NOEUD
 !         CORRESPONDANT DES TETRAS (SI UN TRIA DE BORD N'EST PAS SUR CETTE
 !         FACE AUXQUEL CAS LE PB EST DEJA REGLE), LA BONNE COULEUR.
-	  IF (LINTER) THEN  
+          IF (LINTER) THEN  
             DO N=NI,NF       ! BOUCLE SUR LES TETRA CONTENANT LE POINT J
               NT=NODES3(N)   ! TETRA DE NUMERO LOCAL NT
 !         ON VA TRIER LES CAS NON PATHOLOGIQUES ET TRES COURANT DE TETRA
 !         DONT UNE FACE COINCIDE AVEC CE TRIANGLE
               IF (TETTRI2(NT)>0) THEN   !TETRA CONCERNE PAR UN TRIA
-	        NIT=4*(NT-1)+1
-		NFT=NIT+TETTRI2(NT)-1
-		DO MT=NIT,NFT           ! BOUCLE SUR LES TRIA DU TETRA
+                NIT=4*(NT-1)+1
+                NFT=NIT+TETTRI2(NT)-1
+                DO MT=NIT,NFT           ! BOUCLE SUR LES TRIA DU TETRA
                   NUMTRI=TETTRI(MT)     ! NUM LOCAL DU TRIA
                   NUMTRIB=3*(NUMTRI-1)+1
                   IKLE1=IKLESTRI(NUMTRIB) ! NUMERO GLOBAUX DES NOEUDS DU TRIA
@@ -4194,28 +4169,28 @@ C$$$      NODES4(:)=-1
                   IKLE3=IKLESTRI(NUMTRIB+2)
 !                 CE POINT J APPARTIENT DEJA A UN TRIA ACOLLE AU TETRA
 !                 ON SAUTE LE TETRA NT
-		  IF ((IKLE1==J).OR.(IKLE2==J).OR.(IKLE3==J)) THEN
+                  IF ((IKLE1==J).OR.(IKLE2==J).OR.(IKLE3==J)) THEN
 ! POUR TESTS
 !                    WRITE(LU,*)'JE SAUTE LE TETRA ',NT,EPART(NT),
 !     &                          TETTRI2(NT),' NODES ',J
                     GOTO 21
                   ENDIF		  
-		ENDDO
-	      ENDIF            ! FIN SI TETTRI
+                ENDDO
+              ENDIF            ! FIN SI TETTRI
 !             LE TETRA NT EST POTENTIELLEMENT OUBLIE, ON LE TRAITE AU CAS OU
 !             LE PARTAGE SE FERA DANS ESTEL3D/READ_CONNECTIVITY
-	      NUMTETB=4*(NT-1)+1
-	      DO L=1,4
+              NUMTETB=4*(NT-1)+1
+              DO L=1,4
                 IKLE1=IKLESTET(NUMTETB+L-1) ! NUMERO GLOBAUX DES NOEUDS DU TETRA
-		IF (IKLE1==J) THEN
+                IF (IKLE1==J) THEN
                   TETCOLOR(NT,L)=(TETCOLOR(NT,L).OR..TRUE.)
                   NBRETOUCHE=NBRETOUCHE+1
                 ENDIF
-	      ENDDO  ! EN L
+              ENDDO  ! EN L
    21        CONTINUE
-	    ENDDO	          ! FIN BOUCLE SUR LES TETRAS	    		    
-	  ENDIF            ! FIN SI LINTER   
-	ENDIF             ! FIN SI SUR NCOLOR2
+             ENDDO   ! FIN BOUCLE SUR LES TETRAS	    		    
+          ENDIF   ! FIN SI LINTER   
+        ENDIF             ! FIN SI SUR NCOLOR2
       ENDDO              ! FIN BOUCLE SUR LES POINTS DE BORD     
 ! OB F
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(8),COUNT_RATE=PARSEC)
@@ -4326,10 +4301,10 @@ C OB D
 ! PRETRAITEMENT POUR LES EVENTUELS PB DE COULEURS DES NOEUDS DE TETRAS
 ! A L'INTERFACE
               IBIDC=0
-	      IF (TETCOLOR(NUMTET,1)) IBIDC=IBIDC+1000
-	      IF (TETCOLOR(NUMTET,2)) IBIDC=IBIDC+ 200
-	      IF (TETCOLOR(NUMTET,3)) IBIDC=IBIDC+  30
-	      IF (TETCOLOR(NUMTET,4)) IBIDC=IBIDC+   4
+              IF (TETCOLOR(NUMTET,1)) IBIDC=IBIDC+1000
+              IF (TETCOLOR(NUMTET,2)) IBIDC=IBIDC+ 200
+              IF (TETCOLOR(NUMTET,3)) IBIDC=IBIDC+  30
+              IF (TETCOLOR(NUMTET,4)) IBIDC=IBIDC+   4
 ! POUR MONITORING
 !              IF (IBIDC/=0) WRITE(6,*)'IDD',IDD,'PARTEL',J,COMPT,IBIDC
 ! IDEM VERSION DE REFERENCE
@@ -4506,19 +4481,19 @@ C OB F
              NT = NBSDOMVOIS-3	     
              NI=NT/6
              NF=NT-6*NI+1
-	     WRITE(NLOG2,640,ERR=113)J,(VECTNB(K),K=1,5)
-	     DO L=2,NI
-	       WRITE(NLOG2,640,ERR=113)(VECTNB(6*(L-1)+K),K=0,5)
-	     ENDDO
-	     IF (NF.EQ.1) THEN
-	       WRITE(NLOG2,641,ERR=113)VECTNB(6*NI)
-	     ELSE IF (NF.EQ.2) THEN
+             WRITE(NLOG2,640,ERR=113)J,(VECTNB(K),K=1,5)
+             DO L=2,NI
+               WRITE(NLOG2,640,ERR=113)(VECTNB(6*(L-1)+K),K=0,5)
+             ENDDO
+             IF (NF.EQ.1) THEN
+               WRITE(NLOG2,641,ERR=113)VECTNB(6*NI)
+             ELSEIF (NF.EQ.2) THEN
                WRITE(NLOG2,642,ERR=113)(VECTNB(6*NI+K),K=0,1)
-	     ELSE IF (NF.EQ.3) THEN
-	       WRITE(NLOG2,643,ERR=113)(VECTNB(6*NI+K),K=0,2)
-	     ELSE IF (NF.EQ.4) THEN
-	       WRITE(NLOG2,644,ERR=113)(VECTNB(6*NI+K),K=0,3)
-	     ELSE IF (NF.EQ.5) THEN
+             ELSEIF (NF.EQ.3) THEN
+               WRITE(NLOG2,643,ERR=113)(VECTNB(6*NI+K),K=0,2)
+             ELSEIF (NF.EQ.4) THEN
+               WRITE(NLOG2,644,ERR=113)(VECTNB(6*NI+K),K=0,3)
+             ELSEIF (NF.EQ.5) THEN
                WRITE(NLOG2,645,ERR=113)(VECTNB(6*NI+K),K=0,4)
              ENDIF
           ENDIF
