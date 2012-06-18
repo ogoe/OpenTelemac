@@ -119,29 +119,29 @@
       ENDIF
 !
       WRITE ( NHYD, '(A)' )
-     &    'task      full-coupling                              '
+     &    "task      full-coupling                              "
       WRITE ( NHYD, '(A)' )
-     &    '                                                     '
+     &    "                                                     "
       WRITE ( NHYD, '(A)' )
-     &    '#                                                    '
+     &    "#                                                    "
       WRITE ( NHYD, '(A)' )
-     &    '# telemac data                                       '
+     &    "# telemac data                                       "
       WRITE ( NHYD, '(A)' )
-     &    '#                                                    '
+     &    "#                                                    "
       WRITE ( NHYD, '(A)' )
-     &    '                                                     '
+     &    "                                                     "
       WRITE ( NHYD, '(A)' )
-     &    'geometry  finite-elements                            '
+     &    "geometry  finite-elements                            "
       WRITE ( NHYD, '(A)' )
-     &    '                                                     '
+     &    "                                                     "
       WRITE ( NHYD, '(A)' )
-     &    'horizontal-aggregation       no                      '
+     &    "horizontal-aggregation       no                      "
       WRITE ( NHYD, '(A)' )
-     &    'minimum-vert-diffusion-used  no                      '
+     &    "minimum-vert-diffusion-used  no                      "
       WRITE ( NHYD, '(A)' )
-     &    'vertical-diffusion           calculated              '
+     &    "vertical-diffusion           calculated              "
       WRITE ( NHYD, '(A)' )
-     &    'description                                          '
+     &    "description                                          "
       IWAQ = LEN_TRIM(TITRE)
       IF ( IWAQ .GT. 40 ) THEN
          WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:40),"'"
@@ -236,35 +236,40 @@
      &    "grid-coordinates-file    '",NOMLIM(1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMSOU)
       I    = IWAQ
-      DO WHILE((NOMSOU(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMSOU(I:I).NE.'/').AND.(NOMSOU(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE ( NHYD, '(A,A,A)' )
      &    "volumes-file             '",NOMSOU(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMMAB)
       I    = IWAQ
-      DO WHILE ((NOMMAB(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMMAB(I:I).NE.'/').AND.(NOMMAB(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE ( NHYD, '(A,A,A)' )
      &    "areas-file               '",NOMMAB(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMCOU)
       I    = IWAQ
-      DO WHILE ((NOMCOU(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMCOU(I:I).NE.'/').AND.(NOMCOU(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE ( NHYD, '(A,A,A)' )
      &    "flows-file               '",NOMCOU(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMVEB)
       I    = IWAQ
-      DO WHILE ((NOMVEB(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMVEB(I:I).NE.'/').AND.(NOMVEB(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE ( NHYD, '(A,A,A)' )
      &    "pointers-file            '",NOMVEB(I+1:IWAQ),"'"
       IWAQ = LEN_TRIM(NOMMAF)
       I    = IWAQ
-      DO WHILE ((NOMMAF(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMMAF(I:I).NE.'/').AND.(NOMMAF(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE ( NHYD, '(A,A,A)' )
@@ -272,7 +277,8 @@
       IF(SALI_DEL) THEN
         IWAQ = LEN_TRIM(NOMSAL)
         I    = IWAQ
-        DO WHILE ((NOMSAL(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMSAL(I:I).NE.'/').AND.(NOMSAL(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE ( NHYD, '(A,A,A)' )
@@ -284,7 +290,8 @@
       IF(TEMP_DEL) THEN
         IWAQ = LEN_TRIM(NOMTEM)
         I    = IWAQ
-        DO WHILE ((NOMTEM(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMTEM(I:I).NE.'/').AND.(NOMTEM(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE ( NHYD, '(A,A,A)' )
@@ -296,7 +303,8 @@
       IF(DIFF_DEL) THEN
         IWAQ = LEN_TRIM(NOMVIS)
         I    = IWAQ
-        DO WHILE ((NOMVIS(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMVIS(I:I).NE.'/').AND.(NOMVIS(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE ( NHYD, '(A,A,A)' )
@@ -308,7 +316,8 @@
       IF(VELO_DEL) THEN
         IWAQ = LEN_TRIM(NOMVEL)
         I    = IWAQ
-        DO WHILE ((NOMVEL(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMVEL(I:I).NE.'/').AND.(NOMVEL(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE ( NHYD, '(A,A,A)' )
@@ -319,7 +328,8 @@
       ENDIF
       IWAQ = LEN_TRIM(NOMINI)
       I    = IWAQ
-      DO WHILE ((NOMINI(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMINI(I:I).NE.'/').AND.(NOMINI(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE ( NHYD, '(A,A,A)' )

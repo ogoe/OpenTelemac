@@ -77,7 +77,7 @@
 !
       INTEGER ITSTRT,ITSTOP,ITSTEP,NSTEPA
       INTEGER MARDAT(3),MARTIM(3)
-      CHARACTER*72  TITRE
+      CHARACTER*144 TITRE
       CHARACTER*144 NOMGEO,NOMLIM
       CHARACTER*144 NOMSOU,NOMMAB,NOMCOU,NOMSAL,NOMTEM
       CHARACTER*144 NOMINI,NOMVEB,NOMMAF,NOMVEL,NOMVIS
@@ -366,7 +366,8 @@
       READ(4,'(I3)')J
       READ(4,'(A)') NOMSOU(1:J)
       I = J
-      DO WHILE ((NOMSOU(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMSOU(I:I).NE.'/').AND.(NOMSOU(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE(3, '(A,A,A)' )
@@ -374,7 +375,8 @@
       READ(4,'(I3)')J
       READ(4,'(A)') NOMMAB(1:J)
       I = J
-      DO WHILE ((NOMMAB(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMMAB(I:I).NE.'/').AND.(NOMMAB(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE(3, '(A,A,A)' )
@@ -382,7 +384,8 @@
       READ(4,'(I3)')J
       READ(4,'(A)') NOMCOU(1:J)
       I = J
-      DO WHILE ((NOMCOU(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMCOU(I:I).NE.'/').AND.(NOMCOU(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE(3, '(A,A,A)' )
@@ -390,7 +393,8 @@
       READ(4,'(I3)')J
       READ(4,'(A)') NOMVEB(1:J)
       I = J
-      DO WHILE ((NOMVEB(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMVEB(I:I).NE.'/').AND.(NOMVEB(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE(3, '(A,A,A)' )
@@ -398,7 +402,8 @@
       READ(4,'(I3)')J
       READ(4,'(A)')NOMMAF(1:J)
       I = J
-      DO WHILE ((NOMMAF(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMMAF(I:I).NE.'/').AND.(NOMMAF(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE(3, '(A,A,A)' )
@@ -408,7 +413,8 @@
         READ(4,'(I3)')J
         READ(4,'(A)') NOMSAL(1:J)
         I = J
-        DO WHILE ((NOMSAL(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMSAL(I:I).NE.'/').AND.(NOMSAL(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE(3, '(A,A,A)' )
@@ -422,7 +428,8 @@
         READ(4,'(I3)')J
         READ(4,'(A)') NOMTEM(1:J)
         I = J
-        DO WHILE ((NOMTEM(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMTEM(I:I).NE.'/').AND.(NOMTEM(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE(3, '(A,A,A)' )
@@ -436,7 +443,8 @@
         READ(4,'(I3)')J
         READ(4,'(A)') NOMVIS(1:J)
         I = J
-        DO WHILE ((NOMVIS(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMVIS(I:I).NE.'/').AND.(NOMVIS(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE(3, '(A,A,A)' )
@@ -450,7 +458,8 @@
         READ(4,'(I3)')J
         READ(4,'(A)') NOMVEL(1:J)
         I = J
-        DO WHILE ((NOMVEL(I:I).NE.'/').AND.(I.GE.1))
+        DO WHILE((NOMVEL(I:I).NE.'/').AND.(NOMVEL(I:I).NE.'\')
+     &                               .AND.(I.GE.1))
           I = I-1
         ENDDO
         WRITE(3, '(A,A,A)' )
@@ -462,7 +471,8 @@
       READ(4,'(I3)')J
       READ(4,'(A)') NOMINI(1:J)
       I = J
-      DO WHILE ((NOMINI(I:I).NE.'/').AND.(I.GE.1))
+      DO WHILE((NOMINI(I:I).NE.'/').AND.(NOMINI(I:I).NE.'\')
+     &                             .AND.(I.GE.1))
         I = I-1
       ENDDO
       WRITE(3, '(A,A,A)' )
