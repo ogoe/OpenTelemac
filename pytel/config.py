@@ -19,6 +19,10 @@
          Upgrade made to the others parseConfig_***TELEMAC just as
          previously done
 """
+"""@history 19/06/2012 -- Yoann Audouin
+         Bug corrected, replace the '<root>' in the output from getEXTERNALs
+         by the actual root of the system
+"""
 """@brief
 """
 """@details
@@ -236,9 +240,10 @@ def parseConfig_CompileTELEMAC(cfg):
    # for every module in the list of modules to account for
    # specific external includes for all or each module
    for mod in cfgTELEMAC['MODULES'].keys():
-      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod)})
-      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod)})
-      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod)})
+      print cfgTELEMAC['MODULES'][mod]['path']
+      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
 
    cfgTELEMAC.update({'COMPILER':{}})
    # Get modules: user list of module
@@ -485,9 +490,9 @@ def parseConfig_ValidateTELEMAC(cfg):
    # for every module in the list of modules to account for
    # specific external includes for all or each module
    for mod in cfgTELEMAC['MODULES'].keys():
-      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod)})
-      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod)})
-      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod)})
+      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
 
    cfgTELEMAC.update({'VALIDATION':{}})
    # Get ranks: user list of ranks to filter the list of validation cases
@@ -579,9 +584,9 @@ def parseConfig_RunningTELEMAC(cfg):
    # for every module in the list of modules to account for
    # specific external includes for all or each module
    for mod in cfgTELEMAC['MODULES'].keys():
-      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod)})
-      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod)})
-      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod)})
+      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
 
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
