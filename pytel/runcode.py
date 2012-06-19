@@ -250,12 +250,12 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       sortiefiles.append(cref)
 
       # ~~~ If in parallel, also copy the slave log files     ~~~~~~
-      # ~~~ called PEnnnnn_xxxxx.LOG for slave x of n         ~~~~~~
+      # ~~~ called PEnnnnn_xxxxx.log for slave x of n         ~~~~~~
       # ~~~ Note that n=ncsize-1; output from the Master goes ~~~~~~
       # ~~~ directly in to the sortie file                    ~~~~~~
       if ncsize > 1:
          for i in range(ncsize-1):
-            slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
+            slavefile = 'PE{0:05d}-{1:05d}.log'.format(ncsize-1,i+1)
             bs,es = path.splitext(sortiefile) # (path.basename(sortiefile))
             slogfile  = bs+'_p'+'{0:05d}'.format(i+1)+es
             crun = slavefile
@@ -388,7 +388,7 @@ def getGLOGEO(cas,iFiles):
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
 
-def runPartition(partel,cas,conlim,iFiles,ncsize):
+def runPartition(partel,cas,conlim,iFiles,ncsize,bypass):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -397,22 +397,29 @@ def runPartition(partel,cas,conlim,iFiles,ncsize):
          crun = iFiles[k].split(';')[1]
          if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
             print ' partitioning: ', path.basename(crun)   # path.basename(cas[k][0])
-            runPARTEL(partel,crun,conlim,ncsize)
+            try:
+               runPARTEL(partel,crun,conlim,ncsize,bypass)
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
             print ' duplicating: ', path.basename(crun)    # path.basename(cas[k][0])
             for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
 
-def runPARTEL(partel,file,conlim,ncsize):
+def runPARTEL(partel,file,conlim,ncsize,bypass):
 
    putFileContent('PARTEL.PAR',[file,conlim,str(ncsize),str(1),str(0),str(1),str(1),''])
-   parCmd = partel.replace('<partel.log>','PARTEL_'+file+'.LOG').split(';')
+   parCmd = partel.replace('<partel.log>','partel_'+file+'.log').split(';')
+   mes = MESSAGES(size=10)
    for p in parCmd:
-      print '    +> ',p
-      failure = system(p)
-   if failure: return False # /!\ only the last one.
-   return True
+      try:
+         print '    +> ',p
+         tail,code = mes.runCmd(p,bypass)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'runPARTEL','msg':'Could not execute the following partition task:\n      '+p},e,bypass)])
+      if code != 0: raise Exception([{'name':'runPARTEL','msg':'Could not complete partition (runcode='+str(code)+').\n      '+tail}])
+   return
 
 # ~~~ CCW: amended runCode to include optional listing file        ~~~
 # ~~~      print_twice echos the listing output to the sortie file ~~~
@@ -463,7 +470,7 @@ def runCode(exe,sortiefile):
 
    return False
 
-def runRecollection(gretel,cas,glogeo,oFiles,ncsize):
+def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
 
    if ncsize < 2: return True
    # ~~ aggregate output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -473,22 +480,32 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize):
          type = oFiles[k].split(';')[5]
          if type[0:7] == 'SELAFIN':
             print ' recollectioning: ', path.basename(crun)
-            runGRETEL(gretel,crun,glogeo,ncsize)
+            try:
+               runGRETEL(gretel,crun,glogeo,ncsize,bypass)
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
          if type[0:6] == 'DELWAQ':
             print ' recollectioning: ', path.basename(crun)
-            runGREDEL(gretel,crun,glogeo,type[6:],ncsize)
-
+            try:
+               runGREDEL(gretel,crun,glogeo,type[6:],ncsize,bypass)
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runRecollection'},e,bypass)])
    return True
 
-def runGRETEL(gretel,file,geom,ncsize):
+def runGRETEL(gretel,file,geom,ncsize,bypass):
 
    # ~~ Run GRETEL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    putFileContent('gretel_'+file+'.par',[geom,file,str(ncsize)])
-   failure = system(gretel+' < gretel_'+file+'.par >> gretel_'+file+'.log')
-   if not failure: return True
-   return False
+   mes = MESSAGES(size=10)
+   cmd = gretel+' < gretel_'+file+'.par >> gretel_'+file+'.log'
+   try:
+      tail,code = mes.runCmd(cmd,bypass)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'runGRETEL','msg':'something went wrong, I am not sure why. Please verify your compilation or the python script itself.'},e,bypass)])
+   if code != 0: raise Exception([{'name':'runGRETEL','msg':'Could not split your file (runcode='+str(code)+').\n     '+file+'\n      '+tail}])
+   return
 
-def runGREDEL(gredel,file,geom,type,ncsize):
+def runGREDEL(gredel,file,geom,type,ncsize,bypass):
 
    # ~~ Change GRETEL into GREDEL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    pg = path.dirname(gredel)
@@ -496,10 +513,13 @@ def runGREDEL(gredel,file,geom,type,ncsize):
    gredel = path.join(pg,'gredel' + type.lower() + '_autop' + eg)
    # ~~ Run GREDEL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    putFileContent('gretel_'+file+'.par',[geom,file,str(ncsize)])
-   failure = system(gredel+' < gretel_'+file+'.par >> gretel_'+file+'.log')
-   if not failure: return True
-   return False
-   
+   mes = MESSAGES(size=10)
+   cmd = gredel+' < gretel_'+file+'.par >> gretel_'+file+'.log'
+   try:
+      tail,code = mes.runCmd(cmd,bypass)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'runGREDEL','msg':'something went wrong, I am not sure why. Please verify your compilation or the python script itself.'},e,bypass)])
+   if code != 0: raise Exception([{'name':'runGREDEL','msg':'Could not split your file (runcode='+str(code)+').\n     '+file+'\n      '+tail}])
    return
 
 def runCAS(cfgName,cfg,codeName,casFile,options):
@@ -711,10 +731,16 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          # ~~> Run PARTEL
          CONLIM = getCONLIM(cas,iFS)    # Global CONLIM file
          if not options.merge:
-            runPartition(parCmd,cas,CONLIM,iFS,ncsize)
+            try:
+               runPartition(parCmd,cas,CONLIM,iFS,ncsize,options.bypass)
+            except Exception as e:
+               raise Exception([filterMessage({'name':'runCAS','msg':'Partioning primary input files of the CAS file: '+path.basename(casFile)},e,options.bypass)])
             for mod in COUPLAGE.keys():
                CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
-               runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
+               try:
+                  runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
+               except Exception as e:
+                  raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
 
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if not options.merge:
