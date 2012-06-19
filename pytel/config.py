@@ -240,7 +240,6 @@ def parseConfig_CompileTELEMAC(cfg):
    # for every module in the list of modules to account for
    # specific external includes for all or each module
    for mod in cfgTELEMAC['MODULES'].keys():
-      print cfgTELEMAC['MODULES'][mod]['path']
       cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
       cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
