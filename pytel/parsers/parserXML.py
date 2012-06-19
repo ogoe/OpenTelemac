@@ -25,6 +25,11 @@
          For partial compatibility issues with Python 2.6.6, replaced
          iter() by findall()
 """
+"""@history 18/06/2012 -- Sebastien E. Bourban & Fabien Decung
+         Calls to sys.exit() and os.system() have been progressively captured
+         into a try/except statement to better manage errors.
+         This, however, assumes that all errors are anticipated.
+"""
 """@brief
 """
 
@@ -45,6 +50,7 @@ from runcode import runCAS,checkConsistency,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import createDirectories,copyFile,moveFile, matchSafe
+from utils.messages import filterMessage
 from mtlplots.plotTELEMAC import Figure
 
 # _____                           __________________________________
@@ -76,14 +82,15 @@ def getDICO(cfg,code):
 """
 def getXMLKeys(xml,do):
 
-   done = do.copy()               # shallow copy is here sufficient
+   xcpt = []                            # try all keys for full report
+   done = do.copy()                     # shallow copy is here sufficient
    for key in done.keys():
       if not key in xml.keys():
          if done[key] == None:
-            print '... cannot find the key: ' + key
-            sys.exit()
+            xcpt.append({'name':'getXMLKeys','msg':'cannot find the key: '+key})
       else:
          done[key] = xml.attrib[key]
+   if xcpt != []: raise Exception(xcpt) # raise full report
 
    return done
 
@@ -109,22 +116,23 @@ def getXMLKeys(xml,do):
 """
 class ACTION:
 
-   def __init__(self,title=''):
+   def __init__(self,title='',bypass=True):
       if title != '': self.active["title"] = title
+      self.bypass = bypass
       self.active = { 'path':'','safe':'','casFile':'','cfg':'','dico':'',
          "target": None, "code": None, "xref": None, "do": None,
          "title": '', "ncsize":'' }
       self.dids = {}
-      self.bypass = False
-
-   def setByPass(self,bypass):
-      self.bypass = bypas
 
    def addAction(self,actions):
-      self.active = getXMLKeys(actions,self.active)
+      try:
+         i = getXMLKeys(actions,self.active)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'ACTION::addACTION'},e,self.bypass)])  # only one item here
+      else:
+         self.active = i
       if self.dids.has_key(self.active["xref"]):
-         print '... you are getting me confused, this xref already exists:',self.active["xref"]
-         sys.exit()
+         raise Exception([{'name':'ACTION::addACTION','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
       self.dids.update({ self.active["xref"]:{} })
       self.code = self.active["code"]
       return self.active["target"]
@@ -220,11 +228,13 @@ class ACTION:
             if not path.exists(exeFile) or cfg['REBUILD'] == 0:
                print '     +> compiling princi file: ' + path.basename(princiFile)
                copyFile(princiFile,self.active['safe'])
-               compilePRINCI(princiFile,self.active["code"],self.active['cfg'],cfg)
+               try:
+                  compilePRINCI(princiFile,self.active["code"],self.active['cfg'],cfg,self.bypass)
+               except Exception as e:
+                  raise Exception([filterMessage({'name':'ACTION::compilePRINCI'},e,self.bypass)])  # only one item here
                moveFile(exeFile,self.active['safe'])
          else:
-            print '... I could not find your PRINCI file:',princiFile
-            if not self.bypass: sys.exit()
+            raise Exception([{'name':'ACTION::compilePRINCI','msg':'I could not find your PRINCI file: '+princiFile}])
             #else: you may wish to retrieve the executable for later analysis
 
    # ~~ Run the CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -248,6 +258,7 @@ class ACTION:
       setattr(specs,'merge', options.merge)
       if options.ncsize != '': self.active["ncsize"] = options.ncsize
       setattr(specs,'ncsize', self.active["ncsize"])
+      setattr(specs,'bypass',self.bypass)
 
       # ~~> check on sorties and run
       casFile = path.join(self.active['path'],self.active["target"])
@@ -257,23 +268,28 @@ class ACTION:
       if matchSafe(casFile,self.active["target"]+'_*??h??min??s*.sortie',self.active['safe'],rebuild):
          print '     +> running cas file: ' + self.active["target"]
          for k in outputs: matchSafe('',path.basename(k[1][0]),self.active['safe'],2)
-         sortieFiles = runCAS(self.active['cfg'],cfg,self.active["code"],sacFile,specs)
+         try:
+            sortieFiles = runCAS(self.active['cfg'],cfg,self.active["code"],sacFile,specs)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'ACTION::runCAS'},e,self.bypass)])  # only one item here
       if sortieFiles != []: self.updateCFG({ 'sortie': sortieFiles })
 
 class META:
 
-   def __init__(self,title=''):
-
-      return
+   def __init__(self,title='',bypass=True):
+      if title != '': self.active["title"] = title
+      self.bypass = bypass
 
 #class EXTRACT:
+
 # _____                      _______________________________________
 # ____/ Primary Class: PLOT /______________________________________/
 #
 class PLOT:
 
-   def __init__(self,title=''):
+   def __init__(self,title='',bypass=True):
       if title != '': self.drawing["title"] = title
+      self.bypass = bypass
       self.drawing = {}; self.layering = {}
       self.active = { 'type':'', 'xref':'', 'roi':'' }
       self.dids = {}
@@ -288,12 +304,16 @@ class PLOT:
          "time": '[-1]', "extract": '', "vars": '', "roi": '',
          "title": '', "config": 'distinct', 'outFormat': 'png',
          'layers':[] }     # draw includes an array of layers
-      self.drawing = getXMLKeys(draw,drawing)
+      try:
+         i = getXMLKeys(draw,drawing)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'PLOT::addDraw'},e,self.bypass)])
+      else:
+         self.drawing = i
       self.active['xref'] = self.drawing["xref"]
       self.active['roi'] = self.drawing["roi"]
       if self.dids[self.active['type']].has_key(self.drawing["xref"]):
-         print '... this xref already exists:',self.drawing["xref"]
-         sys.exit()
+         raise Exception([{'name':'PLOT::addDRAW','msg':'you are getting me confused, this xref already exists: '+self.drawing["xref"]}])
       self.dids[self.active['type']].update({self.drawing["xref"]:self.drawing})
       return
 
@@ -303,7 +323,10 @@ class PLOT:
          "extract":self.drawing["extract"], "target":'',
          "title":'', "config":self.drawing["config"] }
       # ~~> reset from layer
-      self.layering = getXMLKeys(layer,layering)
+      try:
+         self.layering = getXMLKeys(layer,layering)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'PLOT::addLayer'},e,self.bypass)])
       # ~~> filling-in remaining gaps
       self.layering = self.distributeMeta(self.layering)
       return self.layering["target"]
@@ -351,8 +374,7 @@ class PLOT:
                   cfgFound = True
          oneFound = oneFound or cfgFound
       if not oneFound:
-         print '... did not find the file to draw: ',src
-         sys.exit() # this should not be a problem anymore
+         raise Exception([{'name':'PLOT::findLayerConfig','msg':'did not find the file to draw: '+src}])
       return layers
 # _____                     ________________________________________
 # ____/ XML Parser Toolbox /_______________________________________/
@@ -360,11 +382,13 @@ class PLOT:
 """
    Assumes that the directory ColourMaps is in PWD (i.e. ~root/pytel.)
 """
-def runXML(xmlFile,xmlConfig):
+def runXML(xmlFile,xmlConfig,bypass):
+
+   xcpt = []                            # try all keys for full report
 
    # ~~ Parse xmlFile ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    import xml.etree.ElementTree as XML
-   print '\n... reading XML test specification file: ' + path.basename(xmlFile)
+   print '... reading XML test specification file: ' + path.basename(xmlFile)
    f = open(xmlFile,'r')
    xmlTree = XML.parse(f)  # may need to try first and report error
    xmlRoot = xmlTree.getroot()
@@ -372,17 +396,29 @@ def runXML(xmlFile,xmlConfig):
 
    # ~~ Meta data process ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    title = ""
-   meta = META(title)
-   print '\n... acquiring meta data'
+   #meta = META(title)
+   #print '\n... acquiring meta data'
    display = False
 
    # ~~ Action analysis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   do = ACTION(title)
-   print '\n... looping through the todo list'
+   do = ACTION(title,bypass)
+   first = True
    for action in xmlRoot.findall("action"):
+      if first:
+         print '\n... looping through the todo list'
+         first = False
 
       # ~~ Step 1. Common check for keys and CAS file ~~~~~~~~~~~~~~
-      casFile = do.addCAS(path.join(path.dirname(xmlFile),do.addAction(action)))
+      try:
+         doadd = do.addAction(action)
+      except Exception as e:
+         xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
+         continue    # bypass rest of the loop
+      else:
+         casFile = do.addCAS(path.join(path.dirname(xmlFile),doadd))
+         if not path.isfile(casFile):
+            xcpt.append({'name':'runXML','msg':'could not find your CAS file'+path.basename(casFile)})
+            continue    # bypass rest of the loop
 
       # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~
       for cfgname in xmlConfig.keys():
@@ -408,7 +444,11 @@ def runXML(xmlFile,xmlConfig):
          display = display or xmlConfig[cfgname]['options'].display
 
          # ~~> Action type A. Translate the CAS file
-         if "translate" in doable.split(';'): do.translateCAS(dico,cfg['REBUILD'])
+         if "translate" in doable.split(';'):
+            try:
+               do.translateCAS(dico,cfg['REBUILD'])
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML','msg':'   +> translate'},e,bypass))
 
          # ~~> Action type B. Analysis of the CAS file
          # TODO:
@@ -427,41 +467,69 @@ def runXML(xmlFile,xmlConfig):
          # ~~> Action type D. Compilation of PRINCI file
          # Contrary to the other step, Step 8 is completed where the original CAS file is
          # (for no particularly good reason)
-         if "compile" in doable.split(';'): do.compilePRINCI(dico,cfg,cfg['REBUILD'])
+         if "compile" in doable.split(';'):
+            try:
+               do.compilePRINCI(dico,cfg,cfg['REBUILD'])
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML','msg':'   +> compile'},e,bypass))
 
          # ~~> Action type E. Running CAS files
-         if "run" in doable.split(';'): do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
+         if "run" in doable.split(';'):
+            try:
+               do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
 
    # ~~ Extraction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # did has all the IO references and the latest sortie files
 
    # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   plot = PLOT(title)
-   print '\n... gathering targets through the plot list'
+   plot = PLOT(title,bypass)
+   first = True
    for typePlot in ["plot1d","plot2d","plot3d","plotpv"]:
       plot.addPlotType(typePlot)
       for ploting in xmlRoot.findall(typePlot):
+         if first:
+            print '\n... gathering targets through the plot list'
+            first = False
          # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
-         plot.addDraw(ploting)
+         try:
+            plot.addDraw(ploting)
+         except Exception as e:
+            xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))
+            continue   # bypass the rest of the for loop
 
          # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          for layer in ploting.findall("layer"):
-            target = plot.addLayer(layer)
+            try:
+               target = plot.addLayer(layer)
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML','msg':'add layer to the list'},e,bypass))
+               continue   # bypass the rest of the for loop
 
             # ~~> round up targets and their configurations
             xref,src = target.split(':')
             if not do.dids.has_key(xref):
-               print '... could not find reference to draw the action: ' + xref
-               sys.exit()
+               xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+xref})
 
             # ~~> store layer and its configuration(s)
-            plot.targetLayer(plot.findLayerConfig(do.dids[xref],src))
+            try:
+               findlayer = plot.findLayerConfig(do.dids[xref],src)
+            except Exception as e:
+               xcpt.append(filterMessage({'name':'runXML'},e))
+               continue    # bypass the rest of the for loop
+            else:
+               plot.targetLayer(findlayer)
          plot.update(plot.drawing)
 
    # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
    # /!\ configurations cannot be called "together" or "distinct" or "oneofall"
-   print '\n... plotting figures'
+   first = True
    for typePlot in plot.dids.keys():
+      if first:
+         print '\n... plotting figures'
+         first = False
+
       for xref in plot.dids[typePlot]:
          print '    +> reference: ',xref,' of type ',typePlot
 
@@ -529,6 +597,10 @@ def runXML(xmlFile,xmlConfig):
             # ~~> plot3d
                if plot["extract"] == '': plot["extract"] = "minmax"
    """
+   # ~~ Error management ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if xcpt != []:  # raise full report
+      raise Exception({'name':'runXML','msg':'in xmlFile: '+xmlFile,'tree':xcpt})
+
    return
 
 # _____             ________________________________________________

@@ -80,6 +80,11 @@
          Also, forces the re-writing of the CAS file in the temporary directory
          so keywords can now be modified before running the CAS
 """
+"""@history 18/06/2012 -- Sebastien E. Bourban & Fabien Decung
+         Calls to sys.exit() and os.system() have been progressively captured
+         into a try/except statement to better manage errors.
+         This, however, assumes that all errors are anticipated.
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -98,6 +103,7 @@ from os import path,walk,mkdir,chdir,remove,system,sep,environ
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
 from utils.files import getFileContent,putFileContent,removeDirectories,isNewer
+from utils.messages import MESSAGES,filterMessage
 from parsers.parserKeywords import scanCAS,readCAS,rewriteCAS,scanDICO,getKeyWord,setKeyValue,getIOFilesSubmit
 from parsers.parserSortie import getLatestSortieFiles
 
@@ -154,13 +160,14 @@ def processTMP(casFile):
 
 def processLIT(cas,iFiles,TMPDir,update):
 
+   xcpt = []                            # try all files for full report
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
       if iFiles.has_key(k):
          cref = eval(cas[k][0])
          if not path.isfile(cref):
-            print '... file does not exist ',cref
-            return False
+            xcpt.append({'name':'processLIT','msg':'file does not exist: '+path.basename(cref)})
+            continue
          crun = path.join(TMPDir,iFiles[k].split(';')[1])
          if path.exists(crun) and update:
             if not isNewer(crun,cref) == 1:
@@ -188,10 +195,12 @@ def processLIT(cas,iFiles,TMPDir,update):
             print '    copying: ', path.basename(cref),crun
             shutil.copy(cref,crun)
 
-   return True
+   if xcpt != []: raise Exception(xcpt) # raise full report
+   return
 
 def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
 
+   xcpt = []                            # try all files for full report
    # ~~ copy output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for k in cas.keys():
       if oFiles.has_key(k):
@@ -203,7 +212,6 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
                crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
                if not path.isfile(crun): break
                shutil.move(crun,cref) #shutil.copy2(crun,cref)
-               #print ' copying: ', path.basename(cref)
                print '  moving: ', path.basename(cref)
                npsize = npsize + 1
             npsize = 1
@@ -216,7 +224,6 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
                   crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
                   if not path.isfile(crun): break
                   shutil.move(crun,cref) #shutil.copy2(crun,cref)
-                  #print ' copying: ', path.basename(cref)
                   print '  moving: ', path.basename(cref)
                   nptime = nptime + 1
                npsize = npsize + 1
@@ -225,10 +232,9 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
             crun = oFiles[k].split(';')[1]
             if not path.isfile(crun):
-               print '... did not create outfile ',cref,' (',crun,')'
-               return False,[]
+               xcpt.append({'name':'processECR','msg':'did not create outfile: '+path.basename(cref)+' ('+crun+')'})
+               continue
             shutil.move(crun,cref) #shutil.copy2(crun,cref)
-            #print ' copying: ', path.basename(cref)
             print '  moving: ', path.basename(cref)
 
    # ~~~ copy the sortie file(s) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,8 +243,8 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       crun = path.basename(sortiefile)
       cref = path.join(CASDir,sortiefile)
       if not path.isfile(crun):
-         print '... did not create listing file',cref,' (',crun,')'
-         return False,[]
+         xcpt.append({'name':'processECR','msg':'did not create listing file: '+path.basename(cref)+' ('+crun+')'})
+         raise Exception(xcpt) # raise full report
       shutil.copy(crun,cref)
       print ' copying: ', path.basename(cref)
       sortiefiles.append(cref)
@@ -255,13 +261,14 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
             crun = slavefile
             cref = path.join(CASDir,slogfile)
             if not path.isfile(crun):
-               print '... could not find the listing file ',crun
-               return False,[]
+               xcpt.append({'name':'processECR','msg':'could not find the listing file: '+crun})
+               raise Exception(xcpt) # raise full report
             shutil.copy(crun,cref)
             print ' copying: ',path.basename(cref)            
             sortiefiles.append(cref)
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   return True,sortiefiles
+   if xcpt != []: raise Exception(xcpt) # raise full report
+   return sortiefiles
 
 def processCONFIG(lang):
 
@@ -311,23 +318,26 @@ def processPARALLEL(ncsize,wdir):
 
    return
 
-def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
+def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir,bypass):
 
    if path.exists(f90Name) and not path.exists(useName):
    # ~~ requires compilation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       objCmd = objCmd.replace('<f95name>',f90Name)
       print objCmd
-      failure = system(objCmd)
-      if failure:
-         '... could not compile your FORTRAN. Please verify your code.'
-         return False
+      mes = MESSAGES(size=10)
+      try:
+         tail,code = mes.runCmd(objCmd,bypass)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your compiler installation.'},e,bypass)])
+      if code != 0: raise Exception([{'name':'processExecutable','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
       exeCmd = exeCmd.replace('<objs>',objName)
       exeCmd = exeCmd.replace('<exename>',path.basename(useName))
       print exeCmd
-      failure = system(exeCmd)
-      if failure:
-         '... could not create the Executable. Please look for missing libraries.'
-         return False
+      try:
+         tail,code = mes.runCmd(exeCmd,bypass)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'processExecutable','msg':'something went wrong for no reason. Please verify your external library installation.'},e,bypass)])
+      if code != 0: raise Exception([{'name':'processExecutable','msg':'could not link your executable (runcode='+str(code)+').\n      '+tail}])
    
    else:
    # ~~ default executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -338,14 +348,13 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir):
 
    return True
 
-def compilePRINCI(princiFile,codeName,cfgName,cfg):
+def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
 
    objFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo')
    exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx')
    if not path.exists(objFile) or not path.exists(exeFile):
-      print '... could not find:' + exeFile
-      print '~~~> you may need to compile your system with the configuration: ' + cfgName
-      sys.exit()
+      raise Exception([{'name':'compilePRINCI','msg':'... could not find:' + exeFile + \
+         '~~~> you may need to compile your system with the configuration: ' + cfgName }])
    objCmd = getFileContent(objFile)[0]
    exeCmd = getFileContent(exeFile)[0]
    chdir(path.dirname(princiFile))
@@ -353,9 +362,10 @@ def compilePRINCI(princiFile,codeName,cfgName,cfg):
    objFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_obj']
    exeFile = path.splitext(princiFile)[0] + cfg['SYSTEM']['sfx_exe']
    if path.exists(exeFile): remove(exeFile)
-   if not processExecutable(exeFile,objFile,princiFile,objCmd,exeCmd,''):
-      print '... could not compile:' + princiFile
-      sys.exit()
+   try:
+      processExecutable(exeFile,objFile,princiFile,objCmd,exeCmd,'',bypass)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'compilePRINCI','msg':'could not compile: ' + princiFile},e,bypass)])  # only one item here
    if path.exists(objFile): remove(objFile)
 
    return exeFile
@@ -500,9 +510,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    iFS,oFS = getIOFilesSubmit(frgb,dico)
 
    # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if not path.exists(casFile):
-      print '... inexistent CAS file: ',casFile
-      return None    # /!\ should you stop or carry on ?
+   if not path.exists(casFile): raise Exception([{'name':'runCAS','msg':'inexistent CAS file: '+casFile}])
    # ~~ Read the principal CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cas,lang = processCAS(casFile,dico,frgb)
    # ~~ Forces run in parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -511,10 +519,9 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if lang == 2: setKeyValue('PARALLEL PROCESSORS',cas,frgb,int(options.ncsize))
    # ~~ Consistency checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not checkConsistency(cas,dico,frgb,cfg):
-      print '... inconsistent CAS file: ',casFile
-      print '    +> you may be using an inappropriate configuration:',cfgName
-      print '    +> or may be wishing for parallel mode while using scalar configuration'
-      return None   # /!\ should you stop or carry on ?
+      raise Exception([{'name':'runCAS','msg':'inconsistent CAS file: '+casFile+ \
+         '    +> you may be using an inappropriate configuration: '+cfgName+ \
+         '    +> or may be wishing for parallel mode while using scalar configuration'}])
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
@@ -539,9 +546,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             if casFilePlage == []: casFilePlage = defaut[0]
             else: casFilePlage = eval(casFilePlage[0])
             casFilePlage = path.join(CASDir,casFilePlage)
-            if not path.isfile(casFilePlage):
-               print '... missing coupling CAS file for',mod,': ',casFilePlage
-               return None   # /!\ should you stop or carry on ?
+            if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
 
             # ~~~~ Read the DICO File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             dicoFilePlage = path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['version']+'.dico')
@@ -550,9 +555,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
             # ~~ Read the coupled CAS File ~~~~~~~~~~~~~~~~~~~~~~~~~
             casPlage,lang = processCAS(casFilePlage,dicoPlage,frgbPlage)
-            if not checkConsistency(casPlage,dicoPlage,frgbPlage,cfg):
-               print '... inconsistent CAS file: ',casFilePlage
-               return None   # /!\ should you stop or carry on ?
+            if not checkConsistency(casPlage,dicoPlage,frgbPlage,cfg): raise Exception([{'name':'runCAS','msg':'inconsistent CAS file: '+casFilePlage}])
 
             COUPLAGE.update({mod:{}})
             COUPLAGE[mod].update({'cas':casPlage,'frgb':frgbPlage,'iFS':iFSPlage,'oFS':oFSPlage,'dico':dicoPlage})
@@ -573,9 +576,15 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    chdir(CASDir)
    if not options.merge:
       # >>> Copy INPUT files into WDir
-      if not processLIT(cas,iFS,WDir,(options.wDir!='')): sys.exit()
+      try:
+         processLIT(cas,iFS,WDir,(options.wDir!=''))
+      except Exception as e:
+         raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
       for mod in COUPLAGE.keys():
-         if not processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,(options.wDir!='')): sys.exit()
+         try:
+            processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,(options.wDir!=''))
+         except Exception as e:
+            raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
    # >>> Placing yourself into the WDir
    chdir(WDir)
    # >>> Creating LNG file
@@ -609,22 +618,23 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          if isNewer(useFile,useFort) == 1: remove(useFile)
       #> default command line compilation and linkage
    if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo')):
-      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['version']+'.cmdo') + '\n'
-      print ' ... you have to compile this module at least: '
-      print '    +> ',codeName
-      sys.exit()
+      raise Exception([{'name':'runCAS','msg': \
+         '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['version']+'.cmdo') + '\n' + \
+         '\n ... you have to compile this module at least: '+codeName}])
    objCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo'))[0]
    if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx')):
-      print '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['version']+'.cmdx') + '\n'
-      print ' ... you have to compile this module at least: '
-      print '    +> ',codeName
-      sys.exit()
+      raise Exception([{'name':'runCAS','msg': \
+         '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+cfg['version']+'.cmdx') + '\n' + \
+         '\n ... you have to compile this module at least: '+codeName}])
    exeCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx'))[0]
    # >>> Compiling the executable if required
    exename = path.join(WDir,'out_'+path.basename(useFile))
    runCmd = exename
    if not options.merge and not options.split:
-      if not processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir): sys.exit()
+      try:
+         processExecutable(useFile,objFile,f90File,objCmd,exeCmd,CASDir,options.bypass)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
       shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
 
    if not options.compileonly:
@@ -715,18 +725,18 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             print '       ~>    run with EXE: ',path.basename(exename)
             if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
             if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
-            return             # Split only: do not proceed any further
+            return []          # Split only: do not proceed any further
          print '\n\nRunning your simulation :\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n'
          print runCmd
-         if not runCode(runCmd,sortiefile): sys.exit()
+         if not runCode(runCmd,sortiefile): raise Exception([{'name':'runCAS','msg':'fail to run\n      ' + runCmd}])
          if cfg.has_key('HPC'):
             print '\n... You must wait for the simulation to complete before using option --merge\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-            return             # Case of HPC: do not proceed any further, just wait
+            return []          # Case of HPC: do not proceed any further, just wait
       if options.run:
          print '\n\n... Your simulation has been completed but you need to re-collect files using the option --merge\n'
-         return   # Run only: do not proceed any further
+         return []  # Run only: do not proceed any further
 
       # >>> Handling the recollection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if ncsize > 0:
@@ -740,16 +750,16 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             runRecollection(exeCmd,COUPLAGE[mod]['cas'],GLOGEO,COUPLAGE[mod]['oFS'],ncsize)
 
    # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      done,files = processECR(cas,oFS,CASDir,WDir,sortiefile,ncsize)
-      if not done:
-         print '... I could not copy the output files back from the temporary directory: ' + WDir
-         sys.exit()
+      try:
+         files = processECR(cas,oFS,CASDir,WDir,sortiefile,ncsize)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+WDir},e,options.bypass)])  # only one item here
       sortiefiles.extend(files)
       for mod in COUPLAGE.keys():
-         done,files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,WDir,None,ncsize)
-         if not done:
-            print '... I could not copy the output files back from the temporary directory: ' + WDir
-            #sys.exit()
+         try:
+            files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,WDir,None,ncsize)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+WDir},e,options.bypass)])  # only one item here
          sortiefiles.extend(files)
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -890,6 +900,7 @@ if __name__ == "__main__":
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
    if options.version != '': cfgs[cfgname]['version'] = options.version
+   options.update({'bypass':False})
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
    print '\n\nRunning your CAS file for:\n\
@@ -911,6 +922,9 @@ if __name__ == "__main__":
       sys.exit()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   xcpts = MESSAGES()
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Loop over CAS Files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for casFile in casFiles:
       casFile = path.realpath(casFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
@@ -920,7 +934,17 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Run the Code from the CAS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      runCAS(cfgname,cfg,codeName,casFile,options)
+      try:
+         runCAS(cfgname,cfg,codeName,casFile,options)
+      except Exception as e:
+         xcpts.addMessages(filterMessage({'name':'_____________\nruncode::main:\n      '+path.dirname(casFile)},e,options.bypass))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if xcpts.notEmpty():
+      print '\n\nHummm ... I could not complete my work.\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
+      + xcpts.exceptMessages()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

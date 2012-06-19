@@ -119,6 +119,7 @@ def scanCAS(cas):
 
 def readCAS(keywords,dico,frgb):
 
+   outwords = keywords.copy()       # shallow copy is here sufficient
    for key,value in keywords.iteritems():
       kw = key
       if kw not in dico.keys(): kw = frgb['GB'][kw]
@@ -127,22 +128,22 @@ def readCAS(keywords,dico,frgb):
          for val in value:
             if val in ['YES','Y','TRUE','OUI','O','VRAI']: vals.append('TRUE')
             if val in ['NO','N','FALSE','NON','N','FAUX']: vals.append('FALSE')
-         keywords.update({key:vals})
+         outwords.update({key:vals})
       elif dico[kw]['TYPE'][0] in ['ENTIER','INTEGER']:
          vals = []
          for val in value: vals.append(int(val))
-         keywords.update({key:vals})
+         outwords.update({key:vals})
       elif dico[kw]['TYPE'][0] in ['REEL','REAL']:
          vals = []
          #@warning : 1.D0 is not supported by Python Float. Replaced by 1.E0
          for val in value: vals.append(float(val.lower().replace('d','e')))
-         keywords.update({key:vals})
+         outwords.update({key:vals})
       else:
          vals = []
          for val in value: vals.append(repr(val))
-         keywords.update({key:vals})
+         outwords.update({key:vals})
 
-   return keywords
+   return outwords
 
 def rewriteCAS(cas):
 
@@ -169,99 +170,64 @@ def rewriteCAS(cas):
    return lines
 
 def translateCAS(cas,frgb):
-   keyLines = []
    casLines = getFileContent(cas)
 
-   # ~~ split comments
    core = []
    for i in range(len(casLines)):
+      # ~~> scan through to remove all comments
       casLines[i] = casLines[i].replace('"""',"'''").replace('"',"'")
       proc = re.match(key_comment,casLines[i]+'/')
       head = proc.group('before').strip()
-      tail = proc.group('after').rstrip('/')
-      p = re.match(key_none,head+' ')
-      if p:
-         keyLines.insert(0,p.group('key'))
-         head = ''  # /!\ here you forget about proc.group('after')
-      if head != '':
-         core.append(head)
-         keyLines.append(head) # /!\ here you forget about tail
-      elif tail != '':
-         keyLines.append(tail)
+      # ~~> special keys starting with '&'
+      if not re.match(key_none,head+' '): core.append(head)
    casStream = ' '.join(core)
 
-   ik = 0; frLines = []; gbLines = []
-   # ~~ clean values to keep only the keys
-   while casStream != '':
-      # ~~ key
-      proc = re.match(key_equals,casStream)
-      if not proc:
-         print '... hmmm, did not see this one coming ...'
-         break
-      kw = proc.group('key').strip()
-      casStream = proc.group('after')   # still hold the separator
-      while 1:
-         p = re.match(re.compile(key_word%(kw),re.I),keyLines[ik])
-         if not p:
-            frLines.append(keyLines[ik])
-            gbLines.append(keyLines[ik])
-            ik = ik + 1
-         else:
-            keyLines[ik] = p.group('after')
-            if kw in frgb['GB'].keys():
-               frline = frgb['GB'][kw]
-               gbline = kw
-            if kw in frgb['FR'].keys():
-               frline = kw
-               gbline = frgb['FR'][kw]
+   frLines = []; gbLines = []
+   for i in range(len(casLines)):
+
+      # ~~> split comments
+      casLines[i] = casLines[i].replace('"""',"'''").replace('"',"'")
+      proc = re.match(key_comment,casLines[i]+'/')
+      head = proc.group('before').strip()
+      tail = proc.group('after').rstrip('/').strip()  # /!\ is not translated
+      # ~~ special keys starting with '&'
+      p = re.match(key_none,head+' ')
+      if p:
+         head = ''
+         tail = casLines[i].strip()
+      frline = head
+      gbline = head
+
+      if head != '' and casStream == '':
+         raise Exception([{'name':'translateCAS','msg':'could not translate this cas file after the line:\n'+head}])
+      # ~~> this is a must for multiple keywords on one line
+      while casStream != '':
+         proc = re.match(key_equals,casStream)
+         if not proc:
+            print '... hmmm, did not see this one coming ...'
             break
-      # ~~ val
-      proc = re.match(val_equals,casStream)
-      if not proc:
-         print 'no value to keyword ',kw
-         sys.exit()
-      val = []
-      while proc:
-         val.append(proc.group('val')) #.replace("'",''))
+         kw = proc.group('key').strip()
+         if kw not in head: break  # move on to next line
+
+         # ~~> translate the keyword
+         head = head.replace(kw,'',1)
+         if kw.upper() in frgb['GB'].keys(): frline = frline.replace(kw,frgb['GB'][kw],1)
+         if kw.upper() in frgb['FR'].keys(): gbline = gbline.replace(kw,frgb['FR'][kw],1)
+
+         # ~~> look for less obvious keywords
          casStream = proc.group('after')   # still hold the separator
-         while 1:
-            p = re.match(re.compile(val_word%(proc.group('val')),re.I),keyLines[ik])
-            if not p:
-               print '... could not get the values for ',kw
-               sys.exit()
-            keyLines[ik] = p.group('after')
-            if keyLines[ik] == '': ik = ik + 1
-            break
          proc = re.match(val_equals,casStream)
-      # in FRENCH
-      for i in range(len(val)):
-         if val[i] in ['YES','Y','TRUE']: val[i] = 'OUI'
-         if val[i] in ['NO','N','FALSE']: val[i] = 'NON'
-      # not more than 72 characters
-      if len(' '+frline+' : '+';'.join(val)) < 73:
-         frline = ' ' + frline + ' : ' + ';'.join(val)
-      else:
-         frline = ' ' + frline + ' :\n'
-         if len(';'.join(val)) < 70:
-            frline = frline + '   ' + ';'.join(val)
-         else:
-            frline = frline + '   ' + ';\n   '.join(val)
-      # in ENGLISH
-      for i in range(len(val)):
-         if val[i] in ['OUI','O','VRAI']: val[i] = 'TRUE'
-         if val[i] in ['NON','N','FAUX']: val[i] = 'FALSE'
-      # not more than 72 characters
-      if len(' '+gbline+' : '+';'.join(val)) < 73:
-         gbline = ' ' + gbline + ' : ' + ';'.join(val)
-      else:
-         gbline = ' ' + gbline + ' :\n'
-         if len(';'.join(val)) < 70:
-            gbline = gbline + '   ' + ';'.join(val)
-         else:
-            gbline = gbline + '   ' + ';\n   '.join(val)
+         if not proc:
+            raise Exception([{'name':'translateCAS','msg':'no value to keyword: '+kw}])
+         while proc:
+            casStream = proc.group('after')   # still hold the separator
+            proc = re.match(val_equals,casStream)
+
       # final append
-      frLines.append(frline)
-      gbLines.append(gbline)
+      if frline != '': frline = ' ' + frline
+      frLines.append(frline + tail)
+      if gbline != '': gbline = ' ' + gbline
+      gbLines.append(gbline + tail)
 
    # ~~ print FR and GB versions of the CAS file
    putFileContent(cas+'.fr',frLines)

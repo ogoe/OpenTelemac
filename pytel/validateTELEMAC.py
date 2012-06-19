@@ -44,6 +44,11 @@
          A new option (--screen) added to the command line, in order for
          Jenkins to use any Xwindows backend on its virtual boxes.
 """
+"""@history 18/06/2012 -- Sebastien E. Bourban & Fabien Decung
+         Calls to sys.exit() and os.system() have been progressively captured
+         into a try/except statement to better manage errors.
+         This, however, assumes that all errors are anticipated.
+"""
 """@brief
 """
 
@@ -52,11 +57,13 @@
 #
 # ~~> dependencies towards standard python
 import sys
+import time
 from os import path,walk,environ
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
+from utils.messages import MESSAGES,filterMessage
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -87,9 +94,9 @@ if __name__ == "__main__":
    parser.add_option("-v", "--version",type="string",dest="version",default='',
       help="specify the version number, default is taken from config file" )
    parser.add_option("-a", "--action",type="string",dest="do",default='',
-      help="filter specific process actions from the XML file" )
+      help="filter specific process actions from the XML file (none can be used)" )
    parser.add_option("-d", "--draw",type="string",dest="draw",default='',
-      help="filter specific drawing actions from the XML file" )
+      help="filter specific drawing actions from the XML file (none can be used)" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
    parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
@@ -124,11 +131,11 @@ if __name__ == "__main__":
                       dest="run",
                       default=False,
                       help="will only run the simulation if option there" )
-   parser.add_option("--bypass",
+   parser.add_option("-b","--bypass",
                       action="store_true",
                       dest="bypass",
                       default=False,
-                      help="does not stop the validation if test cases crash" )
+                      help="will bypass execution failures and try to carry on (final report at the end)" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -159,6 +166,10 @@ if __name__ == "__main__":
       import matplotlib.pyplot as plt
       plt.switch_backend('agg')
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   xcpts = MESSAGES()
+
    if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,6 +187,10 @@ if __name__ == "__main__":
          cfg.update({ 'PWD':PWD })
 
          for xmlFile in args:
+            if not path.isfile(xmlFile):
+               print '\nNot able to find your XML file: ' + xmlFile
+               print ' ... maybe something wrong with your command line'
+               sys.exit()
             if not xmls.has_key(xmlFile): xmls.update({xmlFile:{}})
             xmls[xmlFile].update({cfgname:{'cfg':cfg,'options':options}})
 
@@ -183,8 +198,11 @@ if __name__ == "__main__":
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       for xmlFile in xmls.keys():
          print '\n\nFocused validation on ' + xmlFile + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-         runXML(path.realpath(xmlFile),xmls[xmlFile])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+         try:
+            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass)
+         except Exception as e:
+            xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
 
    else:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -198,7 +216,6 @@ if __name__ == "__main__":
          if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules
          cfgs[cfgname]['display'] = options.display
-         cfgs[cfgname]['bypass'] = options.bypass
          # parsing for proper naming
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
@@ -224,15 +241,27 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      print "%s" % (time.ctime(time.time()))
       for codeName in xmls.keys():
          for key in xmls[codeName]:
             print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
             for xmlFile in xmls[codeName][key]:
-               runXML(xmlFile,xmls[codeName][key][xmlFile])
+               try:
+                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+               except Exception as e:
+                  xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+      print "%s" % (time.ctime(time.time()))
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if xcpts.notEmpty():
+      print '\n\nHummm ... I could not complete my work.\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
+      + xcpts.exceptMessages()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nMy work is done\n\n'
+   else: print '\n\nMy work is done\n\n'
 
    sys.exit()

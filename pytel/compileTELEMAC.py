@@ -40,6 +40,11 @@
          -> allow concurrent compilation tasks (nasty behaviour with the
             shutil.move operations)
 """
+"""@history 18/06/2012 -- Sebastien E. Bourban & Fabien Decung
+         Calls to sys.exit() and os.system() have been progressively captured
+         into a try/except statement to better manage errors.
+         This, however, assumes that all errors are anticipated.
+"""
 """@brief
 """
 
@@ -47,14 +52,14 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
-import shutil
 import sys
-from os import path, walk, chdir, remove, system, environ
+from os import path, walk, chdir, remove, environ
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
 from parsers.parserFortran import scanSources
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories,putFileContent,isNewer
+from utils.messages import MESSAGES,filterMessage
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -114,7 +119,7 @@ def getTree(name,lname,list,level,rebuild):
 
    return list[lname][name]['time'],rank+1
 
-def createObjFiles(oname,oprog,odict,ocfg):
+def createObjFiles(oname,oprog,odict,ocfg,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(oname)
 
@@ -144,16 +149,19 @@ def createObjFiles(oname,oprog,odict,ocfg):
    cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfg['root'])
 
    if debug : print cmd
-   failure = system(cmd)
-   if not failure:
-      if odict['type'] == 'M': print '   - created ' + ObjFile + ' and ' + ModFile
-      else: print '   - created ' + ObjFile
-      odict['time'] = 1
-      #and remove .f from objList
-      return True
-   else: return False
+   mes = MESSAGES(size=10)
+   try:
+      tail,code = mes.runCmd(cmd,bypass)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'createObjFiles','msg':'something went wrong, I am not sure why. Please verify your compiler installation or the python script itself.'},e,bypass)])
+   if code != 0: raise Exception([{'name':'createObjFiles','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
+   if odict['type'] == 'M': print '   - created ' + ObjFile + ' and ' + ModFile
+   else: print '   - created ' + ObjFile
+   odict['time'] = 1
+   #and remove .f from objList
+   return
 
-def createLibFiles(lname,lcfg,lprog):
+def createLibFiles(lname,lcfg,lprog,bypass):
    # ~~ Assumes that all objects are in <config> ~~~~~~~~~~~~~~~~~~~
    # ~~ recreates the lib regardless ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -176,7 +184,7 @@ def createLibFiles(lname,lcfg,lprog):
    if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3 and path.exists(LibFile): remove(LibFile)
    if cfg['COMPILER']['REBUILD'] > 2 and path.exists(LibFile):
       refresh = False
-      for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,LibFile) == 0 )
+      for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,LibFile) == 0 ) or ( not path.exists(o) )
       if refresh: remove(LibFile)
    if path.exists(LibFile): return True
 
@@ -187,16 +195,19 @@ def createLibFiles(lname,lcfg,lprog):
    cmd = cmd.replace('<libname>',LibFile)
 
    if debug : print cmd
-   failure = system(cmd)
-   if not failure:
-      print '   - created ' + LibFile
-      #ModDir = path.join(cfg['MODULES'][prg[item][0]]['path'],lcfg)       # moves all the libraries relevant to a TELEMAC model
-      #if path.exists(path.join(ModDir,path.basename(LibFile))): remove(path.join(ModDir,path.basename(LibFile)))
-      #shutil.move(LibFile,ModDir)                                     # in the cfgdir (ModDir) of that model
-      return True
-   else: return False
+   mes = MESSAGES(size=10)
+   try:
+      tail,code = mes.runCmd(cmd,bypass)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'createLibFiles','msg':'something went wrong, I am not sure why. Please verify your compilation or the python script itself.'},e,bypass)])
+   if code != 0: raise Exception([{'name':'createLibFiles','msg':'Could not pack your library (runcode='+str(code)+').\n      '+tail}])
+   print '   - created ' + LibFile
+   #ModDir = path.join(cfg['MODULES'][prg[item][0]]['path'],lcfg)       # moves all the libraries relevant to a TELEMAC model
+   #if path.exists(path.join(ModDir,path.basename(LibFile))): remove(path.join(ModDir,path.basename(LibFile)))
+   #shutil.move(LibFile,ModDir)                                     # in the cfgdir (ModDir) of that model
+   return
 
-def createExeFiles(ename,ecfg,eprog):
+def createExeFiles(ename,ecfg,eprog,bypass):
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ExeDir = path.join(cfg['MODULES'][eprog.lower()]['path'],ecfg)
@@ -215,31 +226,45 @@ def createExeFiles(ename,ecfg,eprog):
       ExeCmd = path.join(ExeDir,ename + '.cmdx')
    #if cfg['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
 
-   # ~~ Lists all libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~ Lists all system libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    LibFiles = ''
    for lib in HOMERES[ename.upper()]['deps'][1:]:   # /!\ [1:] to create the exe from local objs.
       #ModDir = path.join(cfg['MODULES'][eprog.lower()]['path'],ecfg)
-      LibFiles = LibFiles + path.join(ExeDir,lib.lower()+cfg['version']+cfg['SYSTEM']['sfx_lib']) + ' '
-   LibFiles = LibFiles + ' ' + cfg['MODULES'][eprog]['libs']     # parallel executable: adding MPI library
+      l = path.join(ExeDir,lib.lower()+cfg['version']+cfg['SYSTEM']['sfx_lib'])
+      if not path.exists(l): raise Exception([{'name':'createExeFiles','msg':'Library missing:\n      '+l}])
+      LibFiles = LibFiles + l + ' '
+
+   # ~~ Add external libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for lib in cfg['MODULES'][eprog]['libs'].split():
+      if not path.exists(lib): raise Exception([{'name':'createExeFiles','msg':'External library missing:\n      '+lib}])
+      LibFiles = LibFiles + lib + ' '
 
    # ~~ Lists local objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
    for obj,lib in HOMERES[ename.upper()]['add'] :
       Root,Suffix = path.splitext(obj)
-      if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split(): ObjFiles = ObjFiles + (Root.lower()+cfg['SYSTEM']['sfx_obj']+' ')
+      if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split():
+         o = Root.lower()+cfg['SYSTEM']['sfx_obj']
+         if not path.exists(o): raise Exception([{'name':'createExeFiles','msg':'Object missing:\n      '+o}])
+         ObjFiles = ObjFiles + o + ' '
    #if ObjFiles.strip() == '' and path.exists(ExeFile): return True
    for obj,lib in HOMERES[ename.upper()]['tag'] :
-      if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split(): ObjFiles = ObjFiles + (obj.lower()+cfg['SYSTEM']['sfx_obj']+' ')
+      if lib == eprog and obj.lower()+cfg['SYSTEM']['sfx_obj'] not in ObjFiles.split():
+         o = obj.lower()+cfg['SYSTEM']['sfx_obj']
+         if not path.exists(o): raise Exception([{'name':'createExeFiles','msg':'Object missing:\n      '+o}])
+         ObjFiles = ObjFiles + o +' '
 
    # ~~ is executable necessary ? ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3 and path.exists(ExeFile): remove(ExeFile)
-   if cfg['COMPILER']['REBUILD'] > 2 and path.exists(ExeFile):
-      refresh = False
-      for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,ExeFile) == 0 )
-      for l in LibFiles.split(): refresh = refresh or ( isNewer(l,ExeFile) == 0 )
-      if refresh: remove(ExeFile)
-   if path.exists(ExeFile): return True
-
+   if path.exists(ExeFile):
+      if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3: remove(ExeFile)
+   if path.exists(ExeFile):
+      if cfg['COMPILER']['REBUILD'] > 2 or cfg['COMPILER']['REBUILD'] == 0:
+         refresh = False
+         for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,ExeFile) == 0 )
+         for l in LibFiles.split(): refresh = refresh or ( isNewer(l,ExeFile) == 0 )
+         if refresh: remove(ExeFile)
+   if path.exists(ExeFile): return
+   
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
    cmd = cfg['COMPILER']['cmd_exe']
@@ -262,16 +287,24 @@ def createExeFiles(ename,ecfg,eprog):
    xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
 
    if debug : print cmd
-   failure = system(cmd)
-   if not failure:
-      print '   - created ' + ExeFile
-      putFileContent(ObjCmd,[xocmd])
-      putFileContent(ExeCmd,[xecmd])
-      return True
-   else:
+   mes = MESSAGES(size=10)
+   try:
+      tail,code = mes.runCmd(cmd,bypass)
+      if tail != '':
+         if path.exists(ObjCmd): remove(ObjCmd)
+         if path.exists(ExeCmd): remove(ExeCmd)
+   except Exception as e:
       if path.exists(ObjCmd): remove(ObjCmd)
       if path.exists(ExeCmd): remove(ExeCmd)
-      return False
+      raise Exception([filterMessage({'name':'createExeFiles','msg':'Could not link your executable. Please verify your external library installation or the python script itself.'},e,bypass)])
+   if code != 0:
+      if path.exists(ObjCmd): remove(ObjCmd)
+      if path.exists(ExeCmd): remove(ExeCmd)
+      raise Exception([{'name':'createExeFiles','msg':'something went wrong, I am not sure why (runcode='+str(code)+').\n      '+tail}])
+   print '   - created ' + ExeFile
+   putFileContent(ObjCmd,[xocmd])
+   putFileContent(ExeCmd,[xecmd])
+   return
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -319,6 +352,11 @@ if __name__ == "__main__":
                       dest="modules",
                       default='',
                       help="specify the list modules, default is taken from config file" )
+   parser.add_option("-b","--bypass",
+                      action="store_true",
+                      dest="bypass",
+                      default=False,
+                      help="will bypass execution failures and try to carry on (final report at the end)" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -330,6 +368,10 @@ if __name__ == "__main__":
             head,tail = path.splitext(file)
             if tail == '.cfg' : print '    +> ',file
       sys.exit()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   xcpts = MESSAGES()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
@@ -379,20 +421,33 @@ if __name__ == "__main__":
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             for obj,lib in HOMERES[item]['add'] :
                Root,Suffix = path.splitext(obj)
-               if not createObjFiles(obj.lower(),item,all[lib][Root.upper()],cfgname):
-                  sys.exit()
+               try:
+                  createObjFiles(obj.lower(),item,all[lib][Root.upper()],cfgname,options.bypass)
+               except Exception as e:
+                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
 
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             for lib in HOMERES[item]['deps']:
-               if not createLibFiles(lib.lower(),cfgname,prg[item][0]):
-                  sys.exit()
+               try:
+                  createLibFiles(lib.lower(),cfgname,prg[item][0],options.bypass)
+               except Exception as e:
+                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating library: '+path.basename(lib)},e,options.bypass)])
 
 # ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            if not createExeFiles(item.lower(),cfgname,prg[item][0]):
-               sys.exit()
+            try:
+               createExeFiles(item.lower(),cfgname,prg[item][0],options.bypass)
+            except Exception as e:
+               xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+item.lower()},e,options.bypass)])
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if xcpts.notEmpty():
+      print '\n\nHummm ... I could not complete my work.\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
+      + xcpts.exceptMessages()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nMy work is done\n\n'
+   else: print '\n\nMy work is done\n\n'
 
    sys.exit()
