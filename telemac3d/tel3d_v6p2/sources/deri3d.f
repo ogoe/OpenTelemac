@@ -2,7 +2,7 @@
                      SUBROUTINE DERI3D
 !                    *****************
 !
-     &(U,V,W,DT,X,Y,ZSTAR,Z,IKLE2,IBOR,LT,NPOIN2,NELEM2,NPLAN,NPLINT,
+     &(U,V,W,DT,X,Y,ZSTAR,Z,IKLE2,IFABOR,LT,NPOIN2,NELEM2,NPLAN,
      & SURDET,XFLOT,YFLOT,ZFLOT,ZSFLOT,SHPFLO,SHZFLO,DEBFLO,FINFLO,
      & ELTFLO,ETAFLO,NFLOT,NITFLO,FLOPRD,MESH,DX,DY,DZ)
 !
@@ -56,8 +56,8 @@
 !|                |   | FORCES HERE IF A DROGUE GOES OUT BY A LIQUID BOUNDARY
 !| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEN 2 RECORDINGS
 !|                |   | OF SUCCESSIVE POSITIONS OF DROGUES
-!| IBOR           |-->| NUMBERS OF ELEMENTS HAVING A COMMON FACE WITH
-!|                |   | THE ELEMENT.  IF IBOR
+!| IFABOR         |-->| NUMBERS OF ELEMENTS HAVING A COMMON FACE WITH
+!|                |   | THE ELEMENT.  IF IFABOR <0 OR 0
 !|                |   | THERE IS A LIQUID, SOLID OR PERIODIC FACE
 !| IKLE2          |-->| GLOBAL NUMBERS OF POINTS IN 2D ELEMENTS
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -67,7 +67,6 @@
 !| NITFLO         |-->| MAXIMUM NUMBER OF RECORDINGS OF SUCCESSIVE
 !|                |   | POSITIONS OF DROGUES
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
-!| NPLINT         |-->| NUMBER OF INTERMEDIATE PLANE
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| SHPFLO         |<->| INSTANTANEOUS BARYCENTRIC COORDINATES
 !|                |   | OF DROGUES IN 2DH
@@ -88,6 +87,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE STREAMLINE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -95,10 +95,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN2,NELEM2,NPLAN,NPLINT,LT
+      INTEGER, INTENT(IN) :: NPOIN2,NELEM2,NPLAN,LT
       INTEGER, INTENT(IN) :: NFLOT,NITFLO,FLOPRD
 !
-      INTEGER, INTENT(IN) :: IKLE2(NELEM2,3),IBOR(NELEM2,5,NPLAN-1)
+      INTEGER, INTENT(IN) :: IKLE2(NELEM2,3),IFABOR(NELEM2,5,NPLAN-1)
       INTEGER, INTENT(INOUT) :: DEBFLO(NFLOT), FINFLO(NFLOT)
       INTEGER, INTENT(INOUT) :: ELTFLO(NFLOT), ETAFLO(NFLOT)
 !
@@ -121,20 +121,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IPLAN,LTT,NRK,NSP(1),LTP,ISO(1)
+      INTEGER IELEM,IPLAN,LTT,NRK,NSP(1),LTP,SENS,ISPDONE(1)
       INTEGER IFLOT,N1,N2,N3
       DOUBLE PRECISION DET1,DET2,DET3,ZF,ZI,ZS
-!
-! LOCAL, AUTOMATIC... (?)
-!
-      DOUBLE PRECISION TEST(NFLOT)
+      TYPE(BIEF_OBJ) :: SVOID
 !
 !-----------------------------------------------------------------------
+!
+      SENS = 1
 !
       LTT=(LT-1)/FLOPRD + 1
       LTP=(LT-2)/FLOPRD + 1
 !
-      FLOTBOUCLE: DO IFLOT=1,NFLOT
+      DO IFLOT=1,NFLOT
 !
         IF(LT.EQ.DEBFLO(IFLOT)) THEN
 !
@@ -217,11 +216,6 @@
 !
 !-----------------------------------------------------------------------
 !
-! NUMBER OF RUNGE-KUTTA SUB-STEPS BY CROSSED ELEMENT
-! ==================================================
-!
-          NRK     =  3
-!
           XFLOT(LTT,IFLOT)  = XFLOT(LTP,IFLOT)
           YFLOT(LTT,IFLOT)  = YFLOT(LTP,IFLOT)
           ZSFLOT(LTT,IFLOT) = ZSFLOT(LTP,IFLOT)
@@ -229,13 +223,14 @@
 !  P1 PRISMS
 !  =========
 !
-          CALL CHAR41( U , V , W , DT , NRK , X , Y , ZSTAR , Z ,
-     &                 IKLE2 , IBOR , XFLOT(LTT,IFLOT) ,
-     &                 YFLOT(LTT,IFLOT) , ZSFLOT(LTT,IFLOT) , DX ,
-     &                 DY , DZ , SHPFLO(1,IFLOT) , SHZFLO(IFLOT) ,
-     &                 ELTFLO(IFLOT) , ETAFLO(IFLOT) , NSP ,
-     &                 1 , NPOIN2 , NELEM2 , NPLAN ,
-     &                 SURDET , 1 , ISO, TEST )
+          CALL SCARACT(SVOID,SVOID,U,V,W,X,Y,ZSTAR,
+     *                 XFLOT(LTT,IFLOT),YFLOT(LTT,IFLOT),
+     *                 ZSFLOT(LTT,IFLOT),DX,DY,DZ,Z,SHPFLO(1,IFLOT),
+     *                 SHZFLO(IFLOT),SURDET,DT,
+     *                 IKLE2,IFABOR,ELTFLO(IFLOT),ETAFLO(IFLOT),
+     *                 NSP,ISPDONE,41,41,NELEM2,NELEM2,
+     *                 0,MESH%NPOIN,NPOIN2,6,NPLAN,
+     *                 MESH,1,MESH%NPOIN,SENS)
 !
 !  CASE OF LOST FLOATS
 !  ===================
@@ -259,7 +254,7 @@
 !
         ENDIF
 !
-      END DO FLOTBOUCLE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -273,4 +268,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE DERI3D
+      END
