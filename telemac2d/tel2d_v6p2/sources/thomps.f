@@ -350,8 +350,7 @@
      *             ZSTAR,XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,
      *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,
      *             ETA,IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,
-     *             NOMB,NPOIN,NPOIN,NDP,NPLAN,LV,MSK,MASKEL%R,
-     *             MESH,NPT,U%DIM1)
+     *             NOMB,NPOIN,NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL, TBTIL AT BOUNDARY NODES NUMBERING
@@ -498,7 +497,7 @@
      *             ZSTAR,XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,
      *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,ETA,
      *             IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,NOMB,NPOIN,
-     *             NPOIN,NDP,NPLAN,LV,MSK,MASKEL%R,MESH,NPT,U%DIM1)
+     *             NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING
@@ -598,7 +597,7 @@
      *             XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,SHPP,SHZ,
      *             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,IT3%I,IT4%I,IELM,
      *             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN, 
-     *             LV,MSK,MASKEL%R,MESH,NPT,U%DIM1)
+     *             MESH,NPT,U%DIM1,-1)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING

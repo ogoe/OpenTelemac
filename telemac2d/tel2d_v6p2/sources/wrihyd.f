@@ -6,8 +6,7 @@
      & NSEG  , NOLAY  , NOMGEO , NOMLIM ,
      & F     , NSTEPA , NOMSOU , NOMMAB , NOMCOU ,
      & NOMINI, NOMVEB , NOMMAF , NOMSAL , NOMTEM , NOMVEL , NOMVIS ,
-     & NHYD,
-     & SALI_DEL,TEMP_DEL,VELO_DEL,DIFF_DEL,MARDAT,MARTIM)
+     & NHYD  , SALI_DEL,TEMP_DEL,VELO_DEL,DIFF_DEL,MARDAT,MARTIM)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -84,8 +83,10 @@
 !
       INTEGER ILAY,IWAQ,I
       INTEGER IYEAR,IMONTH,IDAY,IHOUR,IMIN,ISEC
-      DOUBLE PRECISION REFER_DAY,JULTIM,JULIAN_DAY
-      EXTERNAL JULTIM
+      DOUBLE PRECISION REFER_DAY,JULIAN_DAY
+!
+      DOUBLE PRECISION JULTIM
+      EXTERNAL         JULTIM
 !
 !-----------------------------------------------------------------------
 !
