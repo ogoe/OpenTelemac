@@ -2,10 +2,8 @@
                      SUBROUTINE DERLAG
 !                    *****************
 !
-     &(U,V,DT,X,Y,IKLE,IFABOR,ELTCAR,LT,IELM,NDP,NPOIN,
-     & NELEM,NELMAX,SURDET,XLAG,YLAG,DX,DY,
-     & NSP,SHPLAG,DEBLAG,FINLAG,ELTLAG,NLAG,RESUX,RESUY,
-     & NBOR,NELBOR,NULONE,NPTFR,MSK,MASKEL,MASKPT,T8,MESH)
+     &(U,V,DT,X,Y,LT,IELM,IELMU,NDP,NPOIN,NELEM,NELMAX,XLAG,YLAG,DX,DY,
+     & NSP,SHPLAG,DEBLAG,FINLAG,ELTLAG,NLAG,RESUX,RESUY,ISPDONE,MESH)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -34,9 +32,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        07/06/2012
+!+        19/06/2012
 !+        V6P2
-!+   Argument MESH added.
+!+   Adapted to call SCARACT instead of CHAR11. However further
+!+   modifications are required for parallelism.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBLAG         |-->| TIME STEP FOR STARTING THE COMPUTATION
@@ -46,36 +45,22 @@
 !| ELTLAG         |<->| ELEMENT NUMBERS OF FLOATS
 !| FINLAG         |-->| TIME STEP FOR ENDING THE COMPUTATION
 !| IELM           |-->| TYPE OF ELEMENT IN THE MESH
-!| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
-!|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
-!|                |   | BOUNDARY
-!| IKLE           |-->| CONNECTIVITY TABLE.
+!| IELMU          |-->| TYPE OF ELEMENT FOR THE VELOCITIES
 !| LT             |-->| TIME STEP NUMBER.
 !| MASKEL         |-->| MASKING OF ELEMENTS.
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MASKPT         |-->| MASKING PER POINT.
 !| MESH           |-->| MESH STRUCTURE
-!| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
-!| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
-!| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
-!|                |   | ELEMENT.
 !| NELEM          |-->| NUMBER OF ELEMENTS.
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS.
 !| NLAG           |-->| NOMBER OF FLOATS.
 !| NPOIN          |-->| NUMBER OF POINTS
-!| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSP            |-->| NUMBER OF SUB-STEPS IN THE RUNGE-KUTTA METHOD
-!| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
-!|                |   | ADJACENT ELEMENT, NULONE GIVES THE LOCAL
-!|                |   | NUMBER OF THE FIRST NODE OF THE BOUNDARY EDGE
-!|                |   | I.E. 1, 2 OR 3 FOR TRIANGLES.
 !| RESUX          |<--| ARRAY WITH SUCCESSIVE ABSCISSAE OF FLOATS
 !| RESUY          |<--| ARRAY WITH SUCCESSIVE ORDINATES OF FLOATS
 !| SHPLAG         |<->| BARYCENTRIC COORDINATES OF FLOATS
 !|                |   | IN THEIR ELEMENTS.
-!| SURDET         |-->| GEOMETRIC COEFFICIENT USED IN THE ISOPARAMETRIC
-!|                |   | TRANSFORMATION.
 !| T8             |-->| BLOCK OF WORK BIEF_OBJ STRUCTURES.
 !| U              |-->| X-COMPONENT OF VELOCITY
 !| V              |-->| Y-COMPONENT OF VELOCITY
@@ -86,6 +71,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DERLAG => DERLAG
+      USE STREAMLINE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -94,34 +80,36 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER         , INTENT(IN)    :: NPOIN,LT,IELM,NDP,NELEM,NLAG
-      INTEGER         , INTENT(IN)    :: NPTFR,NELMAX
+      INTEGER         , INTENT(IN)    :: NELMAX,IELMU
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),DT
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
-      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,NDP),ELTCAR(NPOIN)
-      INTEGER         , INTENT(IN)    :: IFABOR(NELMAX,NDP)
-      DOUBLE PRECISION, INTENT(IN)    :: SURDET(NELEM)
       DOUBLE PRECISION, INTENT(INOUT) :: XLAG(NPOIN,NLAG)
       DOUBLE PRECISION, INTENT(INOUT) :: YLAG(NPOIN,NLAG)
       INTEGER         , INTENT(INOUT) :: DEBLAG(NLAG),FINLAG(NLAG)
       INTEGER         , INTENT(INOUT) :: ELTLAG(NPOIN,NLAG)
-      DOUBLE PRECISION, INTENT(INOUT) :: T8(NPOIN)
+      INTEGER         , INTENT(INOUT) :: ISPDONE(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPOIN),DY(NPOIN)
       INTEGER         , INTENT(INOUT) :: NSP(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: RESUX(NPOIN),RESUY(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPLAG(NDP,NPOIN,NLAG)
-      INTEGER         , INTENT(IN)    :: NBOR(NPTFR),NELBOR(NPTFR)
-      INTEGER         , INTENT(IN)    :: NULONE(NPTFR)
-      LOGICAL         , INTENT(IN)    :: MSK
-      DOUBLE PRECISION, INTENT(IN)    :: MASKEL(NELMAX),MASKPT(NPOIN)
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ILAG,JLAG,LTT,NRK,IPOIN
+      INTEGER ILAG,JLAG,LTT,IPOIN,ETA(1),SENS,NPLAN
+      TYPE(BIEF_OBJ) :: SVOID
 !
-      DOUBLE PRECISION Z(1),C
+      DOUBLE PRECISION ZSTAR(1),ZCONV(1),SHZ(1),Z(1),C
 !
 !-----------------------------------------------------------------------
+!
+!     2D HERE
+!
+      NPLAN=1
+!
+!     FORWARD CHARACTERISTICS
+!
+      SENS=1
 !
       DO 10 ILAG=1,NLAG
 !
@@ -141,7 +129,8 @@
 !
 !      FILLS THE SHP AND ELT (OPTIMISED)
 !
-            CALL GTSH11(SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),IKLE,ELTCAR,
+            CALL GTSH11(SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),MESH%IKLE%I,
+     &                  MESH%ELTCAR%I,
      &                  NPOIN,NELEM,NELMAX,1,.FALSE.,.FALSE.)
 !                                          1=NSEG, WRONG VALUE, NOT USED
 !
@@ -170,18 +159,16 @@
 !
 !-----------------------------------------------------------------------
 !
-! NUMBER OF RUNGE-KUTTA SUB-STEPS, BY CROSSED ELEMENT
-! ======================================================
-!
-          NRK  =  3
-!
 !  P1 TRIANGLES
 !  ============
 !
-          CALL CHAR11(U,V,DT,NRK,X,Y,IKLE,IFABOR,
-     &                XLAG(1,ILAG),YLAG(1,ILAG),DX,DY,
-     &                SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),NSP,
-     &                NPOIN,NPOIN,NELEM,NELMAX,SURDET,1,T8)
+          CALL SCARACT(SVOID,SVOID,U,V,V,X,Y,
+     *                 ZSTAR,XLAG(1,ILAG),YLAG(1,ILAG),ZCONV,
+     *                 DX,DY,DY,Z,SHPLAG(1,1,ILAG),SHZ,MESH%SURDET%R,
+     *                 DT,MESH%IKLE%I,MESH%IFABOR%I,ELTLAG(1,ILAG),
+     *                 ETA,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
+     *                 0,NPOIN,NPOIN,NDP,NPLAN,
+     *                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS)
 !
         ENDIF
 !

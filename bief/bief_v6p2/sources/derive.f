@@ -2,9 +2,9 @@
                      SUBROUTINE DERIVE
 !                    *****************
 !
-     &(U,V,DT,X,Y,IKLE,IFABOR,LT,IELM,NDP,NPOIN,
+     &(U,V,DT,X,Y,IKLE,IFABOR,LT,IELM,IELMU,NDP,NPOIN,
      & NELEM,NELMAX,SURDET,XFLOT,YFLOT,
-     & SHPFLO,DEBFLO,FINFLO,ELTFLO,NFLOT,NITFLO,FLOPRD,T8,MESH)
+     & SHPFLO,DEBFLO,FINFLO,ELTFLO,NFLOT,NITFLO,FLOPRD,MESH)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -16,9 +16,6 @@
 !+            - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
 !+                  WHICH IS CARRIED WITHOUT FRICTION BY THE CURRENT
 !+                 (SUBSEQUENT TIMESTEPS).
-!
-!warning  Will not work in parallel (this would require calling scaract
-!+        instead of char11, and adaptation of scaract)
 !
 !history  J-M JANIN (LNH)
 !+        18/08/94
@@ -38,9 +35,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        07/06/2012
+!+        19/06/2012
 !+        V6P2
-!+   Argument MESH added.
+!+   Adapted for calling SCARACT instead of CHAR11. However parallelism
+!+   will require further modifications.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBFLO         |-->| TIME STEP FOR THE RELEASE OF FLOATS
@@ -51,12 +49,12 @@
 !| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
 !|                |   | FOR FLOATS POSITIONS.
 !| IELM           |-->| TYPE OF ELEMENT.
+!| IELMU          |-->| TYPE OF ELEMENT FOR VELOCITIES.
 !| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF ANOTHER ELEMENT
 !|                |   | IF IFABOR NEGATIVE OR 0, THE EDGE IS A
 !|                |   | LIQUID OR PERIODIC BOUNDARY
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| LT             |-->| TIME STEP NUMBER.
-!| MESH           |-->| MESH STRUCTURE
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
@@ -68,7 +66,6 @@
 !|                |   | ELEMENTS.
 !| SURDET         |-->| 1/DETERMINANT, USED IN ISOPARAMETRIC
 !|                |   | TRANSFORMATION.
-!| T8             |<->| WORK ARRAY
 !| U              |-->| X-COMPONENT OF VELOCITY
 !| V              |-->| Y-COMPONENT OF VELOCITY
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
@@ -78,6 +75,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DERIVE => DERIVE
+      USE STREAMLINE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -85,7 +83,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         , INTENT(IN)    :: NPOIN,LT,IELM,NDP,NELEM
+      INTEGER         , INTENT(IN)    :: NPOIN,LT,IELM,IELMU,NDP,NELEM
       INTEGER         , INTENT(IN)    :: NITFLO,FLOPRD,NELMAX,NFLOT
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),DT
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
@@ -97,16 +95,31 @@
       INTEGER         , INTENT(INOUT) :: DEBFLO(NFLOT),FINFLO(NFLOT)
       INTEGER         , INTENT(INOUT) :: ELTFLO(NFLOT)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(NDP,NFLOT)
-      DOUBLE PRECISION, INTENT(INOUT) :: T8(NPOIN)
-      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
+      TYPE(BIEF_MESH)                 :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER LTP,IFLOT,N1,N2,N3,NRK,IELEM,LTT,NSP(1)
+      INTEGER LTP,IFLOT,N1,N2,N3,IELEM,LTT,NSP(1),ETA(1),SENS
+      INTEGER ISPDONE(1),NPLAN,NPT
 !
-      DOUBLE PRECISION DET1,DET2,DET3,DX(1),DY(1)
+      DOUBLE PRECISION DET1,DET2,DET3,DX(1),DY(1),ZSTAR(1),ZCONV(1)
+      DOUBLE PRECISION SHZ(1),Z(1)
+!
+      TYPE(BIEF_OBJ) :: SVOID
 !
 !-----------------------------------------------------------------------
+!
+!     2D HERE
+!
+      NPLAN=1
+!
+!     SCARACT WILL TREAT 1 POINT AT A TIME
+!
+      NPT=1
+!
+!     FORWARD CHARACTERISTICS
+!
+      SENS=1
 !
       LTT=(LT-1)/FLOPRD + 1
       LTP=(LT-2)/FLOPRD + 1
@@ -130,7 +143,7 @@
 ! P1 TRIANGLES MESH
 ! ========================
 !
-            DO 20 IELEM=1,NELEM
+            DO IELEM=1,NELEM
               N1=IKLE(IELEM,1)
               N2=IKLE(IELEM,2)
               N3=IKLE(IELEM,3)
@@ -146,7 +159,7 @@
      &            -(Y(N2)-Y(N1))*(XFLOT(LTT,IFLOT)-X(N1))
               IF(DET1.GE.0.D0.AND.DET2.GE.0.D0.AND.DET3.GE.0.D0) GOTO 30
 !
-20          CONTINUE
+            ENDDO
 !
             IF(LNG.EQ.1) WRITE(LU,33) IFLOT
             IF(LNG.EQ.2) WRITE(LU,34) IFLOT
@@ -156,6 +169,7 @@
 34          FORMAT(1X,'INTERPOLATION ERROR IN DERIVE :',/,
      &             1X,'DROP POINT OF FLOAT',I6,/,
      &             1X,'OUT OF THE DOMAIN')
+            CALL PLANTE(1)
             STOP
 !
 ! ELEMENT CONTAINING THE POINT OF RELEASE, COMPUTES THE SHPFLO
@@ -185,11 +199,6 @@
 !
 !-----------------------------------------------------------------------
 !
-! NUMBER OF RUNGE-KUTTA SUB-STEPS, BY CROSSED ELEMENT
-! ======================================================
-!
-          NRK = 3
-!
           XFLOT(LTT,IFLOT) = XFLOT(LTP,IFLOT)
           YFLOT(LTT,IFLOT) = YFLOT(LTP,IFLOT)
 !
@@ -198,16 +207,19 @@
 !  P1 TRIANGLES
 !  ============
 !
-            CALL CHAR11( U , V , DT , NRK , X , Y , IKLE , IFABOR ,
-     &                   XFLOT(LTT,IFLOT) , YFLOT(LTT,IFLOT) , DX , DY ,
-     &                   SHPFLO(1,IFLOT) , ELTFLO(IFLOT) , NSP ,
-     &                   1 , NPOIN , NELEM , NELMAX , SURDET ,  1,T8 )
-!                        1=SENS, FOR FORWARD CHARACTERISTICS
+            CALL SCARACT(SVOID,SVOID,U,V,V,X,Y,
+     *                   ZSTAR,XFLOT(LTT,IFLOT),YFLOT(LTT,IFLOT),ZCONV,
+     *                   DX,DY,DY,Z,SHPFLO(1,IFLOT),SHZ,SURDET,DT,
+     *                   IKLE,IFABOR,ELTFLO(IFLOT),
+     *                   ETA,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
+     *                   0,NPOIN,NPOIN,NDP,NPLAN,
+     *                   MESH,NPT,BIEF_NBPTS(IELMU,MESH),SENS)
 !
           ELSE
 !
             IF(LNG.EQ.1) WRITE(LU,123) IELM
             IF(LNG.EQ.2) WRITE(LU,124) IELM
+            CALL PLANTE(1)
             STOP
 !
           ENDIF

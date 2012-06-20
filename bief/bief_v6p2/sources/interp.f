@@ -36,9 +36,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        11/05/2012
+!+        20/06/2012
 !+        V6P2
-!+   Creation of DOXYGEN tags for automated documentation and
+!+   Adding Quasi-bubble interpolation
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |-->| 2D ELEMENT AT THE FOOT OF CHARACTERISTIC LINES.
@@ -169,8 +169,17 @@
            UTILD(IP) = U(IKLE(ELT(IP),3),1) * SHP33
      &               + U(IKLE(ELT(IP),1),1) * SHP31
      &               + U(IKLE(ELT(IP),4),1) * SHP34
-         ELSE
+!
+!        THE FOLLOWING CASE MAY HAPPEN IN PARALLEL
+!        BECAUSE EVEN LOST CHARACTERISTICS ARE INTERPOLATED
+!        AT GENERATION 0
+!
+         ELSEIF(NCSIZE.EQ.0) THEN
            WRITE(LU,*) 'INTERP: POINT ',IP,' NOT IN ELEMENT ',ELT(IP)
+           WRITE(LU,*) 'SHP(1,IP)=',SHP(1,IP)
+           WRITE(LU,*) 'SHP(2,IP)=',SHP(2,IP)
+           WRITE(LU,*) 'SHP(3,IP)=',SHP(3,IP)
+           WRITE(LU,*) 'EPSILO=',EPSILO,' IPID=',IPID
            CALL PLANTE(1)
            STOP
          ENDIF
