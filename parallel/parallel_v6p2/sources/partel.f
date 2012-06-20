@@ -218,29 +218,7 @@
 !
       LNG=2 ! JE NE PARLE FRANCAIS, JE SUIS BARBARIEN
       LU=6  ! FORTRAN STANDARD OUPUT CHANNEL
-      LI=5  ! FORTRAN STANDARD INPUT CHANNEL
-       
-
-!----------------------------------------------------------------------
-! NAMES OF THE INPUT FILE TO EVENTUALLY GUIDE TO PARES3D
-! IF PARALLEL COMPUTATION WITH ESTEL3D 
-!
-!
-!=>FABS
-!      DO 
-!        READ(LI,'(A)')NAMEINP
-!        IF (NAMEINP /= ' ') EXITABOUT:
-!      ENDDO
-!      IF (NAMEINP(1:3)=='ES3') THEN
-! PARTEL ADAPTED TO ESTEL3D CODE
-!        CALL PARES3D(NAMEINP,LI)
-! BACK TO THE END OF PARTELABOUT:
-!        GOTO 299
-!      ELSE
-! CONTINUE WITH TELEMAC CODES
-!        REWIND LI
-!      ENDIF 
-!<=FABS
+      LI=5  ! FORTRAN STANDARD INPUT CHANNEL       
 !
 !----------------------------------------------------------------------
 ! INTRODUCE YOURSELF
@@ -291,8 +269,11 @@
         ELSE
 !=>FABS
           IF (NAMEINP(1:3)=='ES3') THEN
+!----------------------------------------------------------------------
+! NAMES OF THE INPUT FILE TO EVENTUALLY GUIDE TO PARES3D
+! IF PARALLEL COMPUTATION WITH ESTEL3D
 ! PARTEL ADAPTED TO ESTEL3D CODE
-            CALL PARES3D(NAMEINP,LI)
+            CALL PARES3D(NAMEINP,LI,FOUND)
             GOTO 299
           ELSE
 !<=FABS
@@ -3025,7 +3006,7 @@ C                       ******************
                         SUBROUTINE PARES3D
 C                       ******************
 
-     *(NAMEINP,LI)
+     *(NAMEINP,LI,IO_PARTEL_PAR)
 C
 C**********************************************************************
 C  12/11/2009 CHRISTOPHE DENIS SINETICS/I23 
@@ -3078,6 +3059,7 @@ C
 ! PARAMETRES D'APPEL DE LA ROUTINE
       CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: NAMEINP
       INTEGER,                   INTENT(IN) :: LI
+      LOGICAL,                   INTENT(IN) :: IO_PARTEL_PAR ! (True if partel.par is found...)
 ! VARIABLES LOCALES
       CHARACTER(LEN=MAXLENHARD) :: NAMELOG,NAMEINP2,NAMELOG2
       INTEGER :: NINP=10,NLOG=11,NINP2=12,NLOG2=13
@@ -3236,7 +3218,9 @@ CD********************************************************
       WRITE(LU,*)'  PARTEL: TELEMAC ESTEL3D PARTITIONER'
       WRITE(LU,*)'+-------------------------------------------------+'
       WRITE(LU,*)' READING UNV AND LOG FILES'
-! NAMES OF THE INPUT FILES:
+!     NAMES OF THE INPUT FILES:
+!
+!     Geometry file
       IF (NAMEINP.EQ.' ') THEN
         GOTO 149 
       ELSE
@@ -3244,29 +3228,51 @@ CD********************************************************
       ENDIF
       INQUIRE (FILE=NAMEINP,EXIST=IS)
       IF (.NOT.IS) GOTO 140
+!     
+!     Complementary file
       DO
-        READ(LI,'(A)')NAMELOG
+        IF( IO_PARTEL_PAR ) THEN               
+           READ(72,*) NAMELOG         
+        ELSE                          
+           WRITE(LU, ADVANCE='NO', FMT=
+     &           '(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
+           READ(LI,'(A)') NAMELOG
+        ENDIF                         
         IF (NAMELOG.EQ.' ') THEN
-          GOTO 150 
+          WRITE (LU,'('' NO FILENAME'')') 
         ELSE
-          WRITE(LU,90)NAMELOG
+          WRITE(LU,*) 'INPUT: ',NAMELOG
           EXIT
-        ENDIF
-      END DO  
+        END IF
+      END DO
       INQUIRE(FILE=NAMELOG,EXIST=IS)
       IF (.NOT.IS) GOTO 141   
+!
+!     Number of sub-domains asked
       DO 
-        READ(LI,*)NPARTS
+        IF( IO_PARTEL_PAR ) THEN                      !###> SEB@HRW
+           READ(72,*) NPARTS                  !###> SEB@HRW
+        ELSE                                  !###> SEB@HRW
+           WRITE(LU, ADVANCE='NO',FMT=
+     &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
+     &        MAXNPROC
+           READ(LI,*) NPARTS
+        ENDIF                                 !###> SEB@HRW
         IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
           WRITE(LU,
-     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I9,'']'')') 
+     &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')') 
      &      MAXNPROC
         ELSE
-          WRITE(LU,91)NPARTS
+          WRITE(LU,'('' SUB DOMAINS: '',I4)') NPARTS
           EXIT
-        ENDIF 
-      ENDDO
-      
+        END IF 
+      END DO
+!
+      WRITE(LU,FMT='(/,'' PARTITIONING OPTIONS: '')')
+!      WRITE(LU,*) '  1: DUAL  GRAPH', 
+!     & ' (EACH ELEMENT OF THE MESH BECOMES A VERTEX OF THE GRAPH)'
+!      WRITE(LU,*) '  2: NODAL GRAPH', 
+!     & ' (EACH NODE OF THE MESH BECOMES A VERTEX OF THE GRAPH)'
       
 ! FIND THE INPUT FILES CORE NAME LENGTH
       I_S  = LEN(NAMEINP)
@@ -3295,19 +3301,61 @@ CD********************************************************
 !----------------------------------------------------------------------
 ! 2A. LECTURE DU FICHIER .LOG
 !---------------
-      READ(NLOG,51,ERR=110,END=120)NPOINT
-      READ(NLOG,52,ERR=110,END=120)NELEMTOTAL
-      READ(NLOG,53,ERR=110,END=120)NBFAMILY
-      NBFAMILY=NBFAMILY+1            ! POUR TITRE DU BLOC
+! The first line contains the number of nodes after a text descriptor.
+! We read a line, locate the colon ':' to then read the number.
+      READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
+      IF (IOS .NE. 0) THEN
+         TEXTERROR='Error reading the mesh complementary file.'
+         CALL PARTEL_ALLOER2(LU,TEXTERROR)
+         CALL PARTEL_PLANTE2(1)
+      endif
+      POS =INDEX(LINE,':') + 1
+      READ(UNIT=LINE(POS:),FMT=*, IOSTAT=IOS) NPOINT
+      IF (IOS .NE. 0) THEN
+         TEXTERROR = 'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
+         CALL PARTEL_ALLOER2(LU,TEXTERROR)
+         CALL PARTEL_PLANTE2(1)
+      ENDIF
+
+! The second line contains the number of elements after a text descriptor.
+! We read a line, locate the colon ':' and then read the number.
+      READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
+      IF (IOS .NE. 0) THEN
+         TEXTERROR = 'ERROR READING THE MESH COMPLEMENTARY FILE.'
+         CALL PARTEL_ALLOER2(LU,TEXTERROR)
+         CALL PARTEL_PLANTE2(1)
+      ENDIF
+      POS =INDEX(LINE,':') + 1
+      READ(UNIT=LINE(POS:),FMT=*, IOSTAT=IOS) NELEMTOTAL
+      IF (IOS .NE. 0) THEN
+         TEXTERROR = 'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
+         CALL PARTEL_ALLOER2(LU,TEXTERROR)
+         CALL PARTEL_PLANTE2(1)
+      ENDIF    
+!     
+!     The third line contains the number of families after a text descripto.
+!     We read a line, locate the colon ':' and then read the number.
+      READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
+      IF (IOS .NE. 0) THEN
+         TEXTERROR = 'ERROR READING THE MESH COMPLEMENTARY FILE.'
+         CALL PARTEL_ALLOER2(LU,TEXTERROR)
+         CALL PARTEL_PLANTE2(1)
+      ENDIF
+      POS =INDEX(LINE,':') + 1
+      READ(UNIT=LINE(POS:),FMT=*, IOSTAT=IOS) NBFAMILY
+      IF (IOS .NE. 0) THEN
+         TEXTERROR = 'FORMAT ERROR READING THE MESH COMPLEMENTARY FILE.'
+         CALL PARTEL_ALLOER2(LU,TEXTERROR)
+         CALL PARTEL_PLANTE2(1)
+      ENDIF
+
+      NBFAMILY=NBFAMILY+1       ! POUR TITRE DU BLOC
       ALLOCATE(LOGFAMILY(NBFAMILY),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER(LU,' LOGFAMILY')
       DO I=1,NBFAMILY
-        READ(NLOG,50,ERR=111,END=120)LOGFAMILY(I) 
+         READ(NLOG,50,ERR=111,END=120)LOGFAMILY(I)
       ENDDO
       NBCOLOR=0
-
-!      READ(NLOG,531,ERR=110,END=120)NBCOLOR
-
       READ(UNIT=NLOG, FMT='(A200)', IOSTAT=IOS) LINE
       IF (IOS .NE. 0) THEN
          !         '!----------------------------------!'
