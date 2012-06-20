@@ -12,7 +12,9 @@
 /  SUR HP3700         : 413 s compilateur Nag 6.0  26/11/2009 (scalaire)     
 /  Dell 2.8 MHz       : ??? s compilateur pgi 6.0     
 /
-/  SUR HP3700         : 152 s compilateur HP  6.2  21/05/2012
+/  SUR HP3700         : 152 s compilateur HP     6.2  21/05/2012
+/  SUR Calibre 7      :  31 s compilateur Intel  6.2  20/06/2012 (1 proc)
+/  SUR Calibre 7      :   5 s compilateur Intel  6.2  20/06/2012 (8 proc)
 /
 FICHIER DES CONDITIONS AUX LIMITES : geo_pildepon.cli
 FICHIER DE GEOMETRIE               : geo_pildepon.slf
@@ -29,7 +31,7 @@ SUITE DE CALCUL = NON
 /PAS DE TEMPS = 0.2 NOMBRE DE PAS DE TEMPS = 400
 /PAS DE TEMPS = 0.4 NOMBRE DE PAS DE TEMPS = 200
 /PAS DE TEMPS = 0.8 NOMBRE DE PAS DE TEMPS = 100
-PERIODE POUR LES SORTIES GRAPHIQUES = 100
+PERIODE POUR LES SORTIES GRAPHIQUES = 800
 PERIODE DE SORTIE LISTING           = 100                              
 VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,H,B,L'                      
 DISCRETISATIONS EN ESPACE : 13 ; 11                            
