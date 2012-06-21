@@ -227,6 +227,18 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
                   print '  moving: ', path.basename(cref)
                   nptime = nptime + 1
                npsize = npsize + 1
+         elif oFiles[k].split(';')[5] == 'PARAL': # MAIN MODULE
+            npsize = 1
+            cb,ce = path.splitext(eval(cas[k][0]))
+            while 1:
+               cref = path.join(CASDir,cb+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)+ce)
+               if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
+               crun = oFiles[k].split(';')[1]+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)
+               if not path.isfile(crun): break
+               shutil.move(crun,cref) #shutil.copy2(crun,cref)
+               #print ' copying: ', path.basename(cref)
+               print '  moving: ', path.basename(cref)
+               npsize = npsize + 1
          else:
             cref = path.join(CASDir,eval(cas[k][0]))
             if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
@@ -926,7 +938,7 @@ if __name__ == "__main__":
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
    if options.version != '': cfgs[cfgname]['version'] = options.version
-   options.update({'bypass':False})
+   options.bypass = False
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
    print '\n\nRunning your CAS file for:\n\
