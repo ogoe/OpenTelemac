@@ -22,13 +22,15 @@
 !history  J-M HERVOUET (LNHE)
 !+        22/06/2012
 !+        V6P2
+!+   Use of new array ELTCAR.
 !+   Dimensions in SCARACT reviewed (previous confusion between
 !+   NPOIN and NPLOT). INTENT(OUT) changed into INTENT(INOUT) in
 !+   subroutine organise_char. NPOINT=NPLOT replaces NPOINT=NPOIN
 !+   before the call to SCHAR41. ADD_CHAR11 and ADD_CHAR41 deleted.
 !+   SCHAR11 and SCHAR41 simplified. Arguments removed in SCARACT.
-!+   SCHAR12 and SCHAR13 added.
-!+   DX,DY,DZ added to CHARAC_TYPE, and used in 2D.
+!+   SCHAR12 and SCHAR13 added. DX,DY,DZ added to CHARAC_TYPE, used in 2D.
+!+   More data saved when touching a solid boundary: XPLOT, YPLOT, DX, DY
+!+   All this ensures strict equality of scalar and parallel runs !!!!
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1790,7 +1792,13 @@
             SHP( ISUI(IFA),IPLOT) = A1 
             SHP(ISUI2(IFA),IPLOT) = 0.D0 
             XPLOT(IPLOT) = X(I1) + A1 * DX1 
-            YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+            YPLOT(IPLOT) = Y(I1) + A1 * DY1
+            IF(ADD) THEN 
+              RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+              RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+              RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+              RECVCHAR(IPLOT)%DY=DY(IPLOT)
+            ENDIF  
 ! 
             GOTO 50 
 ! 
@@ -2252,7 +2260,13 @@
               SHP( ISUI(IFA),IPLOT) = A1 
               SHP(ISUI2(IFA),IPLOT) = 0.D0 
               XPLOT(IPLOT) = X(I1) + A1 * DX1 
-              YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+              YPLOT(IPLOT) = Y(I1) + A1 * DY1
+              IF(ADD) THEN 
+                RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                RECVCHAR(IPLOT)%DY=DY(IPLOT)
+              ENDIF   
 ! 
               GOTO 50 
 ! 
@@ -2631,7 +2645,13 @@
               SHP( ISUI(IFA),IPLOT) = A1 
               SHP(ISUI2(IFA),IPLOT) = 0.D0 
               XPLOT(IPLOT) = X(I1) + A1 * DX1 
-              YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+              YPLOT(IPLOT) = Y(I1) + A1 * DY1
+              IF(ADD) THEN 
+                RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                RECVCHAR(IPLOT)%DY=DY(IPLOT)
+              ENDIF   
 ! 
               GOTO 50 
 ! 
@@ -3251,10 +3271,6 @@
 ! 
 17    FORMAT(1X,'STREAMLINE::SCARACT:: TYPE D''OBJET INCONNU : ',2I6) 
 18    FORMAT(1X,'STREAMLINE::SCARACT:: UNKNOWN TYPE OF OBJECT : ',2I6) 
-19    FORMAT(1X,'SCARACT : PARALLELISME NON PREVU EN QUADRATIQUE') 
-20    FORMAT(1X,'SCARACT: PARALLELISM NOT TREATED WITH QUADRATIC') 
-21    FORMAT(1X,'SCARACT : VITESSES LINEAIRES ET TRACEUR QUADRATIQUE') 
-22    FORMAT(1X,'SCARACT: LINEAR VELOCITY AND QUADRATIC TRACER') 
 ! 
 !----------------------------------------------------------------------- 
 ! 
