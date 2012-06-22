@@ -120,7 +120,7 @@
 !-----------------------------------------------------------------------
 !     F AND G ARE LINEAR
 !
-      IF ((IELMF.EQ.31.AND.IELMG.EQ.31).OR.
+      IF ((IELMF.EQ.31.AND.((IELMG.EQ.31).OR.(IELMG.EQ.30))).OR.
      &    (IELMF.EQ.51.AND.IELMG.EQ.51)     ) THEN
 !
       IF (ICOORD.EQ.1) THEN
@@ -140,10 +140,18 @@
          F3 = F(I3)
          F4 = F(I4)
 !
-         G1 = G(I1)
-         G2 = G(I2)
-         G3 = G(I3)
-         G4 = G(I4)
+         IF (IELMG.EQ.31) THEN
+            G1 = G(I1)
+            G2 = G(I2)
+            G3 = G(I3)
+            G4 = G(I4)
+         ELSE
+            G1 = G(IELEM)
+            G2 = G1
+            G3 = G1
+            G4 = G1
+         ENDIF
+            
 !
          F2MF1 = F2-F1
          F3MF1 = F3-F1
@@ -218,10 +226,17 @@
          F3 = F(I3)
          F4 = F(I4)
 !
-         G1 = G(I1)
-         G2 = G(I2)
-         G3 = G(I3)
-         G4 = G(I4)
+         IF (IELMG.EQ.31) THEN
+            G1 = G(I1)
+            G2 = G(I2)
+            G3 = G(I3)
+            G4 = G(I4)
+         ELSE
+            G1 = G(IELEM)
+            G2 = G1
+            G3 = G1
+            G4 = G1
+         ENDIF
 !
          F2MF1 = F2-F1
          F3MF1 = F3-F1
@@ -287,10 +302,17 @@
          F3 = F(I3)
          F4 = F(I4)
 !
-         G1 = G(I1)
-         G2 = G(I2)
-         G3 = G(I3)
-         G4 = G(I4)
+         IF (IELMG.EQ.31) THEN
+            G1 = G(I1)
+            G2 = G(I2)
+            G3 = G(I3)
+            G4 = G(I4)
+         ELSE
+            G1 = G(IELEM)
+            G2 = G1
+            G3 = G1
+            G4 = G1
+         ENDIF
 !
          F2MF1 = F2-F1
          F3MF1 = F3-F1
