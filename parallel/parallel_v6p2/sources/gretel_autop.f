@@ -55,7 +55,6 @@
       INTEGER LI
       COMMON/INFO/LNG,LU
 !
-!
       CHARACTER(LEN=30) GEO
 !
 !-------------------------------------------------------------------------
@@ -70,24 +69,10 @@
       WRITE(LU,*) 'REINCARNATED BY HOLGER WEILBEER'
       WRITE(LU,*) 'ON 20TH FEBRUARY 2003'
       WRITE(LU,*)
-        !!!!FABS: DETERMINES WHICH CONFIGURATION IT IS:
-        !!!!      ** IF THE 1ST NAME IS T2DGEO, THEN ===> TELEMAC-2D DOMAIN DECOMPOSITION
-        !!!!      OR
-        !!!!      ** IF THE 1ST NAME IS E2DSERA OR E2DVOL OR E2DSCAL, THEN
-        !!!!      ===> ESTEL-2D PARTICULATE DECOMPOSITION
-        !!!!FABS: SHOULD PERFORM SPEED TESTS TO INVESTIGATE THE DIFFERENCE
-        !!!!    : BETWEEN SCALAR AND PARALLEL MODES... SCALAR MODE APPEARS
-        !!!!    : TO BE QUICKER AND TAKE LESS SPACE.
-        !!!!FABS: THE PARTICULATE DECOMPOSITION DOES NOT MODIFY THE SERAPHIN,
-        !!!!FABS: IT IS THEREFORE BENEFICIAL TO DECLARE IN SCALAR RATHER THAN
-        !!!!FABS: IN SELAFIN: SAVES MEMORY AND TIME WHEN MERGING THE RESULTS.
-!
 !
       WRITE (LU, ADVANCE='NO',
      &    FMT='(/,'' GLOBAL GEOMETRY FILE: '')')
-!      REWIND(LI)
       READ(LI,*) GEO
- !       WRITE(LU,*) GEO
 !
       IF ((GEO.EQ.'E2DSERA').OR.(GEO.EQ.'E2DVOL')
      &       .OR.(GEO.EQ.'E2DSCAL')) THEN
@@ -103,7 +88,9 @@
 !|=======================================================================/
 !
 !
-      CALL RECOMPOSITION_PARTICULAIRE(GEO)
+      WRITE(LU,*) 'THE OPTION GEO=',GEO,' HAS BEEN REMOVED'
+      STOP
+!     CALL RECOMPOSITION_PARTICULAIRE(GEO)
 !
 !
 !|==================================================================|
@@ -136,755 +123,6 @@
       END PROGRAM GRETEL_AUTOP
 !
 !
-!         *******************************************
-          SUBROUTINE RECOMPOSITION_PARTICULAIRE (GEO)
-!         *******************************************
-!
-!***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
-!***********************************************************************
-!
-!brief       MERGES THE RESULTS FROM COMPUTATION USING PARTICULATE
-!+                DECOMPOSITION IN ESTEL-2D. ONLY MERGES THE FOLLOWING FILES:
-!+  1/ SERAFIN (E2DSERA): NO MODIFICATION.
-!+         MERE COPY OF A SINGLE FILE.
-!+  2/ VOLFIN (E2DVOL): PARTICULATE VARIABLES ARE MODIFIED.
-!+         THE VALUES STORED IN EACH PROCESSOR'S FILES ARE SUMMED UP.
-!+  3/ SCALAR RESULTS (E2DSCAL): PARTICULATE VARIABLES ARE MODIFIED.
-!+         THE VALUES ARE SUMMED UP.
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  FABIEN DECUNG (STAGIAIRE MATMECA)
-!+        18/07/2005
-!+        V4P0
-!+
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| GEO            |---|
-!| IKLE           |<->| TABLEAU DES CONNECTIVITES
-!| NELEM          |-->| NOMBRE D'ELEMENTS
-!| NELMAX         |-->| NOMBRE MAXIMUM D'ELEMENTS
-!| NPOIN          |-->| NOMBRE DE SOMMETS DU MAILLAGE
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      INTEGER LI
-      COMMON/INFO/LNG,LU
-!
-!=>FABS
-      CHARACTER(LEN=30), INTENT(IN) :: GEO
-!<=FABS
-      INTEGER IPID,ERR,FU
-      INTEGER NELEM,ECKEN,NDUM,I,J,K,NBV1,NBV2,PARAM(10)
-      INTEGER NPLAN,NPOIN2,NPOIN2LOC
-      INTEGER NPROC,NRESU,NPOINMAX
-      INTEGER I_S, I_SP, I_LEN
-!
-      INTEGER, DIMENSION(:)  , ALLOCATABLE :: NPOIN,IPOBO,VERIF,IPOBO3D
-      INTEGER, DIMENSION(:,:), ALLOCATABLE :: KNOLG
-      INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLESA,IKLE3D
-!
-      !FABS------------------------------------------------------!
-      INTEGER, DIMENSION(:)    , ALLOCATABLE   :: PART
-!=>FABS : NAG BUG
-      INTEGER, DIMENSION(:)    , ALLOCATABLE   :: PART_REP
-!<=FABS
-      REAL   , DIMENSION(:,:)  , ALLOCATABLE   :: GLOBAL_VALUE
-      REAL   , DIMENSION(:,:)  , ALLOCATABLE   :: LOCAL_VALUE
-      REAL   , DIMENSION(:)    , ALLOCATABLE   :: XORIG,YORIG
-      REAL   , DIMENSION(:)    , ALLOCATABLE   :: SOMMEPART
-      REAL   , DIMENSION(:,:,:), ALLOCATABLE   :: LOCAL_VALUELEM
-      DOUBLE PRECISION, DIMENSION (:)    , ALLOCATABLE :: SOMMERESU
-      DOUBLE PRECISION, DIMENSION (:,:,:), ALLOCATABLE :: VALUESCP
-      !FABS------------------------------------------------------!
-!
-      !FABS---------------------!
-      DOUBLE PRECISION SOMME
-      !!!!FABS: BEWARE: DO NOT DECLARE AS DOUBLE PRECISION, OTHERWISE BUUUUUG!!!
-      REAL AT
-      INTEGER NUM_PROC
-      INTEGER NBVAR,LINE,NBLINE,TEMPS
-      LOGICAL IS,ENDE,ENDEOFFILE
-      !FABS---------------------!
-!
-!      CHARACTER*32 GEO,GEOM
-!=>FABS
-      CHARACTER*32 GEOM
-!<=FABS
-!
-      CHARACTER*32 RUB,RUBENS
-      CHARACTER*32 TEXTLU(200)
-      CHARACTER*72 TITRE
-      CHARACTER*72 PTEXCL, TITLE
-      CHARACTER*80 TITSEL
-!
-      CHARACTER*11 GRETEL_EXTENS
-      EXTERNAL    GRETEL_EXTENS
-      INTEGER, INTRINSIC ::  MAXVAL
-!
-!
-!
-!
-        !!!!FABS: LI = NUMBER OF THE FILE WHERE FILENAMES AND NUMBER OF
-        !!!!    : PROCESSORS ARE READ => GRETEL.PAR (TEMPORARY DIRECTORY)
-        LI = 5
-!
-        !!!!FABS: REQUIRED BECAUSE IN PARTICULATE DECOMPOSITION, THE GEOMETRY FILE
-        !!!!    : IS NOT DECLARED IN "SELAFIN-GEOM" BUT IN "PARAL"; IT IS THEREFORE NOT WRITTEN IN GRETEL.PAR
-!
-        WRITE(LU, ADVANCE='NO', FMT=
-     &         '(/,''  PARTIAL RESULT SELAFIN FILE: <INPUT_NAME>: '')')
-        READ(LI,*) RUBENS
-!
-        IF (RUBENS.EQ.' ') THEN
-          WRITE (LU,'('' NO FILENAME'')')
-        ELSE
-          WRITE(LU,*) 'INPUT: ',RUBENS
-        END IF
-!
-        WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PROCESSORS: '')')
-        READ (LI,*) NPROC
-        WRITE (LU,*) NPROC
-!
-        !!!!FABS: NEED TO CHECK  WHETHER THE FILES ARE SERAPHIN OR VOLFIN OR SCP
-        !!!!    : BECAUSE THE MERGING METHODS DEPEND ON THE TYPE OF FILES.
-!
-        IF ((RUBENS.EQ.'E2DSERA').OR.(RUBENS.EQ.'E2DVOL')) THEN
-!
-!     COMPUTATION GEOMETRY FILE, READ UNTIL THE 10 PARAMETERS:
-!
-!
-!!!!FABS: ONLY IF GEO FILE IS DECLARED IN PARAL IN THE DICTIONARY
-!FABS-----------------------------------------!
-! I_S  = LEN (GEO)
-!        I_SP = I_S + 1
-!        DO I=1,I_S
-!         IF(GEO(I_SP-I:I_SP-I) .NE. ' ') EXIT
-!        ENDDO
-!        I_LEN=I_SP - I
-!
-! GEOM=GEO(1:I_LEN) // GRETEL_EXTENS(NPROC-1,0)
-!!!!FABS: OTHERWISE TAKE THE ROOT E2DGEO
-        GEOM = GEO
-!FABS-----------------------------------------!
-!
-      OPEN(2,FILE=GEOM,FORM='UNFORMATTED',STATUS='OLD',ERR=9990)
-      READ(2,ERR=9990)
-      READ(2,ERR=9990) NBV1,NBV2
-      DO 110 I=1,NBV1+NBV2
-        READ(2,ERR=9990)
-110    CONTINUE
-      GO TO 9992
-9990   WRITE(LU,*) 'ERROR WHEN OPENING OR READING FILE: ',GEOM
-      CALL GRETEL_PLANTE(-1)
-      STOP
-9992   CONTINUE
-!     READS THE 10 PARAMETERS AND THE DATE
-      READ(2) (PARAM(I),I=1,10)
-      IF(PARAM(10).EQ.1) READ(2) (PARAM(I),I=1,6)
-!
-!     RESULTS FILE:
-!
-      OPEN(3,FILE=RUBENS,FORM='UNFORMATTED',ERR=9991)
-      GO TO 9993
-9991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RUBENS
-      CALL GRETEL_PLANTE(-1)
-      STOP
-9993   CONTINUE
-!
-!     1) STARTS READING THE 1ST RESULT FILE
-!
-!
-        I_S  = LEN (RUBENS)
-        I_SP = I_S + 1
-        DO I=1,I_S
-         IF(RUBENS(I_SP-I:I_SP-I) .NE. ' ') EXIT
-        ENDDO
-        I_LEN=I_SP - I
-!
-        RUB=RUBENS(1:I_LEN) // GRETEL_EXTENS(NPROC-1,0)
-!
-      !!!!FABS: CHECKS THAT AT LEAST THE FIRST PARALLEL TEMPORARY FILE EXISTS
-      INQUIRE (FILE=RUB,EXIST=IS)
-      IF (.NOT.IS) THEN
-        WRITE (LU,*) 'FILE DOES NOT EXIST: ', RUB
-        WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
-        WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL GRETEL_PLANTE(-1)
-        STOP
-      END IF
-!
-      OPEN(4,FILE=RUB,FORM='UNFORMATTED',ERR=9994)
-      GO TO 9995
-9994  WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RUB
-      CALL GRETEL_PLANTE(-1)
-      STOP
-9995   CONTINUE
-!
-!
-!
-!
-!  1 : TITLE
-!
-      READ(4) TITRE
-      WRITE(LU,*) 'TITLE=',TITRE
-      TITSEL=TITRE // 'SERAPHIN'
-      WRITE(3) TITSEL
-!
-!  2 : NBV1,NBV2
-!
-      READ(4) NBV1,NBV2
-      WRITE(LU,*) 'NBV1=',NBV1,'   NBV2=',NBV2
-      WRITE(3) NBV1,NBV2
-!
-!  3 : NAMES AND UNITS OF THE VARIABLES
-!
-!
-      !!!!FABS: ALLOCATES THE PARTICULATE POINTER
-!
-      ALLOCATE (PART(1:2))
-      PART = 0
-!
-      DO 5500 I=1,NBV1
-        READ(4) TEXTLU(I)
-        WRITE(LU,*) 'VARIABLE ',I,' : ',TEXTLU(I)
-!
-        !!!!FABS: IDENTIFIES THE NUMBER OF THE VARIABLES TO SUM UP
-        !!!!      FOR PART_INS => PART(1)
-        !!!!      FOR PART_CUM => PART(2)
-!
-      IF (RUBENS.EQ.'E2DVOL') THEN
-        IF ( (TEXTLU(I).EQ.'PARTICULES INST. -')
-     &  .OR.(TEXTLU(I).EQ.'PARTICLES INST. -') ) THEN
-           PART(1) = I
-        ELSE
-           IF ( (TEXTLU(I).EQ.'PARTICULES CUM.  -' )
-     &  .OR.(TEXTLU(I).EQ.'PARTICLES CUM.  -') ) THEN
-              PART(2) = I
-           ENDIF
-       ENDIF
-      ENDIF
-      WRITE(3) TEXTLU(I)
-!
-5500  CONTINUE
-!
-!      IF ((RUBENS.EQ.'E2DVOL').AND.
-!     &   ((PART(1).EQ.0).OR.(PART(2).EQ.0))) THEN
-!       WRITE(LU,*) 'PAS RESULTATS PART INS OU CUM'
-! WRITE(LU,*) 'VERIFIER VOS SORTIES PARTICULAIRES VOLFIN'
-! CALL GRETEL_PLANTE(-1)
-!      ENDIF
-!
-!  4 : 10 PARAMETERS
-!
-      READ(4) (PARAM(I),I=1,10)
-      WRITE(LU,*) '10 PARAMETERS : ',PARAM
-      PARAM(9)=0
-      PARAM(8)=0
-      NPLAN=PARAM(7)
-      WRITE(3) (PARAM(I),I=1,10)
-! READS THE DATE (OPTIONAL) AND WRITES IT OUT
-      IF(PARAM(10).EQ.1) THEN
-        READ(4)  (PARAM(I),I=1,6)
-        WRITE(3) (PARAM(I),I=1,6)
-      ENDIF
-!
-      CLOSE(4)
-!
-!
-!  5: READS THE VARIABLES NELEM: 4 PARAMETERS
-!
-      READ(2) NELEM,NPOIN2,ECKEN,NDUM
-      WRITE(LU,*) '4 PARAMETERS IN GEOMETRY FILE'
-      WRITE(LU,*) 'NELEM=',  NELEM
-      WRITE(LU,*) 'NPOIN2=', NPOIN2
-      WRITE(LU,*) 'ECKEN=',  ECKEN
-      WRITE(LU,*) 'NDUM=',   NDUM
-!
-      IF(NPLAN.EQ.0) THEN
-        WRITE(3) NELEM,NPOIN2,ECKEN,NDUM
-      ELSE
-        WRITE(3) NELEM*(NPLAN-1),NPOIN2*NPLAN,6,NDUM
-      ENDIF
-!
-!  DYNAMICALLY ALLOCATES THE ARRAYS
-!
-      ALLOCATE(NPOIN(NPROC),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'NPOIN')
-      ALLOCATE(IKLESA(3,NELEM),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IKLESA')
-      ALLOCATE(IPOBO(NPOIN2)      ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IPOBO')
-      IF(NPLAN.EQ.0) THEN
-        ALLOCATE(VERIF(NPOIN2)    ,STAT=ERR)
-      ELSE
-        ALLOCATE(VERIF(NPOIN2*NPLAN)    ,STAT=ERR)
-      ENDIF
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'VERIF')
-!  GLOBAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
-      IF(NPLAN.EQ.0) THEN
-       ! ALLOCATE(GLOBAL_VALUE(NPOIN2,NBV1)       ,STAT=ERR)
-       ALLOCATE(GLOBAL_VALUE(NELEM,NBV1))
-      ELSE
-        ALLOCATE(GLOBAL_VALUE(NPOIN2*NPLAN,NBV1) ,STAT=ERR)
-      ENDIF
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'GLOBAL_VALUE')
-!  X AND Y
-      ALLOCATE(XORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'XORIG')
-      ALLOCATE(YORIG(NPOIN2)    ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'YORIG')
-!  RELATED TO A 3D CASE
-      IF(NPLAN.NE.0) THEN
-      ALLOCATE(IKLE3D(NELEM*(NPLAN-1),6),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IKLE3D')
-      ALLOCATE(IPOBO3D(NPOIN2*NPLAN),STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IPOBO3D')
-      ENDIF
-!
-!  END OF ALLOCATION ...
-!
-!  6 : IKLE
-!
-      READ(2)  ((IKLESA(I,J),I=1,ECKEN),J=1,NELEM)
-      WRITE(LU,*) 'WRITING IKLE'
-      IF(NPLAN.EQ.0) THEN
-        WRITE(3) ((IKLESA(I,J),I=1,ECKEN),J=1,NELEM)
-      ELSE
-!       WRITES HERE IKLE3D (WITH INVERSION OF DIMENSIONS)
-        CALL GRETEL_CPIKLE2
-     &  (IKLE3D,IKLESA,NELEM,NELEM,NPOIN2,NPLAN)
-        WRITE(3) ((IKLE3D(I,J),J=1,6),I=1,NELEM*(NPLAN-1))
-      ENDIF
-!
-!  7 : IPOBO
-!
-      READ(2)  (IPOBO(I),I=1,NPOIN2)
-      WRITE(LU,*) 'WRITING IPOBO'
-      IF(NPLAN.EQ.0) THEN
-        WRITE(3) (IPOBO(I),I=1,NPOIN2)
-      ELSE
-!       DUMMY VALUES
-        DO I=1,NPOIN2*NPLAN
-          IPOBO3D(I) = 0
-        ENDDO
-        WRITE(3) (IPOBO3D(I),I=1,NPOIN2*NPLAN)
-      ENDIF
-!
-!  8 : X AND Y, WILL BE CHECKED LATER ...
-!
-      READ(2)  (XORIG(I),I=1,NPOIN2)
-      READ(2)  (YORIG(I),I=1,NPOIN2)
-!
-!
-!------------------------------------------------------------------------------
-!
-! OPENS FILES AND READS/SKIPS HEADERS -> NPOIN(NPROC), NPOINMAX
-!
-      DO IPID = 0,NPROC-1
-         !!!!FABS: FU IS THE NUMBER OF THE TEMPORARY RESULT FILE.
-         !!!!    : CAN BE THE CAUSE OF ERRORS IN COMPUTATIONS WITH A LOT
-         !!!!    : OF PROCESSORS IF 2 PROCESSORS HAVE THE SAME FU VALUE.
-         FU = IPID + 10
-         RUB=RUBENS(1:I_LEN) // GRETEL_EXTENS(NPROC-1,IPID)
-         OPEN (FU,FILE=RUB,FORM='UNFORMATTED',ERR=9998)
-         GO TO 9999
-9998     WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RUB,
-     &                'USING FILE UNIT: ', FU
-         CALL GRETEL_PLANTE(-1)
-         STOP
-9999      REWIND(FU)
-         CALL GRETEL_SKIP_HEADER(FU,NPOIN(IPID+1),NBV1,ERR,LU)
-         IF(ERR.NE.0) THEN
-           WRITE(LU,*) 'ERROR READING FILE'
-           CALL GRETEL_PLANTE(-1)
-           STOP
-         ENDIF
-      END DO
-!
-!
-      NPOINMAX = MAXVAL(NPOIN)
-! ARRAY FOR LOCAL-GLOBAL NUMBERS, 2D-FIELD
-      IF(NPLAN.EQ.0) THEN
-         ALLOCATE (KNOLG(NPOINMAX,NPROC),STAT=ERR)
-      ELSE
-         ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
-      ENDIF
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'KNOLG')
-!  LOCAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
-        ALLOCATE(LOCAL_VALUE(NPOINMAX,NBV1)   ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'LOCAL_VALUE')
-      !!!!FABS: ALLOCATES A NEW TEMPORARY VECTOR TO STORE THE RESULTS IN
-        ALLOCATE(LOCAL_VALUELEM(0:NPROC-1,1:NELEM,1:NBV1)   ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'LOCAL_VALUELEM')
-      !!!!FABS: ALLOCATES A TEMPORARY VECTOR TO STORE THE SUMS IN
-        ALLOCATE(SOMMEPART(1:NELEM)   ,STAT=ERR)
-      IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'SOMMEPART')
-!
-      !!!! UNTIL THIS POINT, OK FOR SERAFIN AND VOLFIN
-!
-! READS KNOLG(NPOIN,NPROC)
-!
-      !!!!FABS: IS IT USEFUL TO STORE IN THE DECOMPOSITION ?... NO!
-!
-      DO IPID = 0,NPROC-1
-         FU = IPID + 10
-         IF(NPLAN.EQ.0) THEN
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1))
-         ELSE
-            READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
-         ENDIF
-      END DO
-!
-! READS LOCAL X
-!
-!
-!
-!
-        !!!!FABS: READS ALL THE TEMPORARY FILES...
-        !!!!    : READS THE X-COORDINATES
-        DO IPID = 0,NPROC-1
-        FU = IPID +10
-        READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
-        ENDDO
-!
-!
-        !!!!FABS: WITH RESPECT TO PROCESSOR 0 (+1)
-        !!!!    : WRITES THE X-COORDINATES.
-        WRITE(LU,*) 'WRITING X-COORDINATES'
-        IF(NPLAN.EQ.0) THEN
-          WRITE(3) (LOCAL_VALUE(I,1),I=1,NPOIN(1))
-        ENDIF
-!
-        !!!!FABS: READS ALL THE TEMPORARY FILES...
-        !!!!    : READS THE Y-COORDINATES
-        DO IPID = 0,NPROC-1
-        FU = IPID +10
-        READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
-        ENDDO
-!
-        !!!!FABS: WITH RESPECT TO PROCESSOR 0 (+1)
-        !!!!    : WRITES THE Y-COORDINATES
-        WRITE(LU,*) 'WRITING Y-COORDINATES'
-        IF(NPLAN.EQ.0) THEN
-          WRITE(3) (LOCAL_VALUE(I,1),I=1,NPOIN(1))
-        ENDIF
-!
-! READS DATASETS
-!
-      NRESU = 0
-!
-20000 NRESU = NRESU + 1
-!
-      IF(NPLAN.EQ.0) THEN
-        DO I=1,NPOIN2
-          VERIF(I)=0
-        ENDDO
-      ELSE
-        DO I=1,NPOIN2*NPLAN
-          VERIF(I)=0
-        ENDDO
-      ENDIF
-!
-      WRITE(LU,*)'TRY TO READ DATASET NO.',NRESU
-!
-!
-      !!!!FABS: CHECKS THE FILE TYPE  :=> SERAFIN = E2DSERA
-      !!!!    :                       :=> VOLFIN  = E2DVOL
-      !!!!    :                       :=> SCP     = E2DSCAL
-!
-!
-      IF (RUBENS.EQ.'E2DSERA') THEN
-!
-                !!! FABS: THE FILE IS A SERAFIN FILE.
-                !!!     : THE VALUES ARE CONSIDERED AT THE NODES.
-                !!!     : ONLY ONE PROCESSOR IS CONSIDERED BECAUSE
-                !!!     : THE VALUES ARE THE SAME ON EACH PROCESSOR
-!
-                !!! READS THE DATA FROM THE LAST OPEN FILE
-                CALL GRETEL_READ_DATASET
-     &   (LOCAL_VALUE,NPOINMAX,NPOIN(1),NBV1,AT,FU,ENDE)
-                IF (ENDE) GOTO 30000
-                !!!FABS: WRITES THE RESULTS IN THE FINAL FILE
-                WRITE(LU,*)'WRITING DATASET NO.',NRESU,' TIME =',AT
-                WRITE(3) AT
-                DO K = 1,NBV1
-                        IF(NPLAN.EQ.0) THEN
-                        WRITE(3) (LOCAL_VALUE(I,K),I=1,NPOIN(1))
-                        ELSE
-                        !FABS: USELESS IN THIS CASE...ISN'T IT?
-                        !WRITE(3) (LOCAL_VALUE(I,K),I=1,NPOIN(1)*NPLAN)
-                        ENDIF
-                END DO
-                GO TO 20000
-!
-        ELSE
-          IF (RUBENS.EQ.'E2DVOL') THEN
-            !!! FABS:
-            !!! THE FILE IS A VOLFIN FILE, PART_CUM AND PART_INS
-            !!! ARE MODIFIED BY THE PARALLELISATION.
-            !!! THE VALUES ARE CONSIDERED AT THE CELLS.
-            !!! DEPENDING ON THE CASE, ONE OR ALL PROCESSORS ARE CONSIDERED.
-!
-            DO IPID = 0,NPROC-1
-              !!!! FABS:
-              !!!! READS THE DATA AT EACH TIMESTEP
-              !!!! FOR ALL THE VARIABLES AND ALL THE PROCESSORS.
-              FU = IPID +10
-              CALL GRETEL_READ_DATASET_ELEM
-     &   (LOCAL_VALUELEM,NPROC,NELEM,NBV1,AT,FU,IPID,ENDE)
-              IF (ENDE) GOTO 30000
-            ENDDO
-            !!!FABS: WRITES IN THE FINAL RESULT FILE
-            WRITE(LU,*)'WRITING DATASET NO.',NRESU,' TIME =',AT
-            WRITE(3) AT
-!
-            !!!!FABS: WRITES THE RESULTS IN THE FINAL RESULT FILE
-            DO K = 1,NBV1
-              IF (NPLAN.EQ.0) THEN
-                !!! FABS:
-                !!! IN THE CASE OF PARTICULATE DATA RESULTING FROM
-                !!! PARALLELISATION, NEED TO SUM THEM UP ON ALL THE
-                !!! PROCESSORS
-                IF ( (K.NE.PART(1).AND.K.NE.PART(2)).OR.AT.EQ.0) THEN
-                !!! FABS: PARAMETER K DOES NOT DEPEND ON PARALLELISATION,
-                !!! CAN THEREFORE ONLY TAKE THE VALUES FROM PROCESSOR 0.
-                !!!
-                  WRITE(3) (LOCAL_VALUELEM(0,I,K),I=1,NELEM)
-                ELSE !( (K.NE.PART(1)...
-                  !!! FABS: DATA RESULTING FROM PARALLELISATION, THEY ARE
-                  !!! SUMMED UP ON THE NUMBER OF PROCESSORS
-                  SOMMEPART = 0.
-                  DO I= 1, NELEM
-                    DO NUM_PROC = 0, NPROC-1
-                  SOMMEPART(I)=SOMMEPART(I)+LOCAL_VALUELEM(NUM_PROC,I,K)
-                    ENDDO
-                  ENDDO
-!   IF (K.EQ.PART(2)) THEN
-                  !!! FABS:
-                  !!! THE FILE IS A CUM PARTICLES FILE, THE PARTICLES
-                  !!! INITIALLY INTRODUCED, WHICH ARE NOT PART OF THE
-                  !!! PARALLELISATION MUST BE SUBTRACTED.
-!   WRITE(3) ( SOMMEPART(I), I=1,NELEM )
-!   ELSE
-                  WRITE(3) ( SOMMEPART(I), I=1,NELEM )
-!   ENDIF
-                ENDIF !( (K.NE.PART(1)....
-              ENDIF ! (NPLAN.EQ.0)
-            ENDDO !(K = 1,NBV1)
-          ENDIF
-        GO TO 20000
-      ENDIF ! (RUBENS.EQ.'E2DSERA')
-!
-!
-30000  WRITE(LU,*) 'END OF PROGRAM, ',NRESU-1,' DATASETS FOUND'
-!
-      !!!!FABS: CLOSES THE INPUT FILE (2)
-      !!!!    : AND THE FINAL MERGED FILE (3)
-      !!!!    : AS WELL AS THE TEMPORARY FILES ON EACH PROC.
-!
-      !FABS--------------!
-      CLOSE(2)
-      CLOSE(3)
-!
-      DO IPID = 0,NPROC-1
-         FU = IPID +10
-         CLOSE (FU)
-      END DO
-      !FABS--------------!
-!
-      DEALLOCATE (PART)
-      DEALLOCATE (LOCAL_VALUELEM)
-!
-!
-      ELSE !!!! IF (RUBENS.EQ.'E2DVOL').OR.(RUBENS.EQ.'E2DSERA')
-!
-      !!!!FABS: THE FILE TO BE READ IS A SCALAR RESULTS FILE.
-!
-      OPEN(3,FILE=RUBENS,FORM='FORMATTED',ERR=99991)
-      GO TO 99993
-99991   WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RUBENS
-      CALL GRETEL_PLANTE(-1)
-      STOP
-99993 CONTINUE
-!
-!     1) STARTS READING THE 1ST RESULT FILE
-!
-!
-        I_S  = LEN (RUBENS)
-        I_SP = I_S + 1
-        DO I=1,I_S
-         IF(RUBENS(I_SP-I:I_SP-I) .NE. ' ') EXIT
-        ENDDO
-        I_LEN=I_SP - I
-!
-        RUB=RUBENS(1:I_LEN) // GRETEL_EXTENS(NPROC-1,0)
-!
-      INQUIRE (FILE=RUB,EXIST=IS)
-      IF (.NOT.IS) THEN
-        WRITE (LU,*) 'FILE DOES NOT EXIST: ', RUB
-        WRITE (LU,*) 'CHECK THE NUMBER OF PROCESSORS'
-        WRITE (LU,*) 'AND THE RESULT FILE CORE NAME'
-        CALL GRETEL_PLANTE(-1)
-        STOP
-      END IF
-!
-! OPENS FILES AND READS/SKIPS HEADERS -> NPOIN(NPROC), NPOINMAX
-!
-       ALLOCATE (PART_REP(1:8))
-       DO IPID = 0,NPROC-1
-         FU = IPID + 10
-         RUB=RUBENS(1:I_LEN) // GRETEL_EXTENS(NPROC-1,IPID)
-         OPEN (FU,FILE=RUB,FORM='FORMATTED',ERR=99998)
-         GO TO 99999
-99998      WRITE(LU,*) 'ERROR WHEN OPENING FILE: ',RUB,
-     &                 'USING FILE UNIT: ', FU
-         CALL GRETEL_PLANTE(-1)
-         STOP
-99999    REWIND(FU)
-         !!!FABS: THIS ARRAY IS ALLOCATED FROM 1 TO 8 BECAUSE THERE ARE
-         !!!      8 PARTICULATES VALUES TO RECONSTITUTE
-         !!!!!! HOT !!!!!!
-         ENDEOFFILE = .FALSE.
-         NBVAR  = 0
-         NBLINE = 0
-         NBVAR  = 0
-         DO WHILE (.NOT.ENDEOFFILE)
-           READ(FU,1981,END = 9799) PTEXCL,TITLE
-           IF (PTEXCL.EQ."'") THEN
-             IF(IPID.EQ.0) WRITE(3,1981) "'",TITLE
-             NBLINE = NBLINE + 1
-             NBVAR  = NBVAR  + 1
-             !!!! FABS: NEED TO IDENTIFY WHERE THE PARTICULATE VARIABLES ARE
-             IF (TITLE.EQ."NBPART          -'" ) PART_REP(1)=NBVAR-3
-             IF (TITLE.EQ."NBPART_OUT      -'" ) PART_REP(2)=NBVAR-3
-             IF (TITLE.EQ."NBPART_NEW      -'" ) PART_REP(3)=NBVAR-3
-             IF (TITLE.EQ."NBPART_LOST     -'" ) PART_REP(4)=NBVAR-3
-             IF (TITLE.EQ."NBPART_AT       -'" ) PART_REP(5)=NBVAR-3
-             IF (TITLE.EQ."NBPART_OUT_AT   -'" ) PART_REP(6)=NBVAR-3
-             IF (TITLE.EQ."NBPART_NEW_AT   -'" ) PART_REP(7)=NBVAR-3
-             IF (TITLE.EQ."NBPART_LOST_AT  -'" ) PART_REP(8)=NBVAR-3
-!
-           ELSE
-             !!!!FABS: FOUND THE NUMBER OF VARIABLES TO COPY
-             !!!!      GOES BACK TO THE TOP OF THE FILE TO WRITE THEM OUT
-             !!!!      NBVAR - 3: ALWAYS 3 TITLE LINES
-             !!!!      COULD JUST AS WELL USE NBLINE - 3...
-             WRITE(LU,*) 'NUMBER OF VARIABLES', NBVAR-3
-             IF ((PART_REP(1).NE.0.).AND.(PART_REP(8).NE.0.)) THEN
-               WRITE(LU,*) 'PARTICULAR VARIABLES FOUND'
-             ELSE
-               WRITE(LU,*) 'PARTICULAR VARIABLES NOT FOUND'
-               GO TO 9799
-             ENDIF
-             REWIND(FU)
-             GO TO 10190
-           ENDIF
-         END DO
-         !!!!! FABS: MODIFY? MAYBE YES, MAYBE NO
-         !!!!! THERE ARE 3 TITLE LINES !!!!
-         !!!!! MAYBE MODIFY TO CONSIDER FROM TIME?
-         !!!!! MIGHT NOT NEED IT SINCE THE 3 LINES ARE IN THE CODE: H2D_RESSCP.F
-!
-         !!!! HAS TO STORE DEPENDING ON THE TIMESTEP
-!
-10190    TEMPS = 0
-         !!!! COUNTS THE NUMBER OF TIMESTEPS
-         DO WHILE (.NOT.ENDEOFFILE)
-           READ(FU,*,END=6996) TITLE
-           TEMPS = TEMPS + 1
-         ENDDO
-!
-6996     TEMPS = TEMPS - NBLINE
-         WRITE(LU,*) 'NUMBER OF TIME STEPS', TEMPS
-!
-         IF (IPID.EQ.0) THEN
-         ALLOCATE (VALUESCP(1:TEMPS+1,0:NPROC-1,1:NBVAR-3))
-         ALLOCATE (SOMMERESU(1:8))
-         VALUESCP=0.
-         ENDIF
-!
-         !!!!TO PASS THE TITLE LINES AND COME TO THE SCALAR VALUES
-         REWIND(FU)
-         DO LINE=1,NBLINE
-           READ(FU,*) TITLE
-         ENDDO
-         !!!!READS ALL THE SCALAR VALUES BY PROCESSOR AND TIMESTEP
-         TEMPS = 0
-         DO WHILE (.NOT.ENDEOFFILE)
-           READ(FU,*,END=6969) (VALUESCP(TEMPS+1,IPID,I),I=1,NBVAR-3)
-           TEMPS = TEMPS + 1
-         ENDDO
-6969     CONTINUE
-       ENDDO
-       !!!! FABS: SHOULD NOW RECONSTITUTE THE CORRECT SUMS!!!
-       !!!! FABS: HOT !!!!
-       !!!! COPIES NON PARTICULATE DATA BACK FROM PROCESSOR 0
-       DO LINE=1,TEMPS
-         SOMMERESU = 0.
-         DO IPID=0,NPROC-1
-           !!!! SCALAR VARIABLES 1,3,5,7 DO NOT CHANGE
-           !!!! WHEREAS MUST SUM UP VARIABLES 2,4,6,8
-           DO I=1,7,2
-             SOMMERESU(I) =  VALUESCP(LINE,0,PART_REP(I))
-           ENDDO
-           DO I=2,8,2
-             SOMMERESU(I) = SOMMERESU(I)+VALUESCP(LINE,IPID,PART_REP(I))
-           ENDDO
-         ENDDO
-         !!!! REQUIRED IF VARIABLES ARE LEFT OTHER THAN THOSE RESULTING FROM PARTICULATE, ELSE...
-         IF ((PART_REP(8)+1).LE.NBVAR-3) THEN
-         !!!! TEST !!!!
-         WRITE(3,1010) (VALUESCP(LINE,0,I),I=1,PART_REP(1)-1),
-     &   (SOMMERESU(I),I=1,8),
-     &   (VALUESCP(LINE,0,I),I=PART_REP(8)+1,SIZE(VALUESCP,3))
-         ELSE
-         WRITE(3,1010) (VALUESCP(LINE,0,I),I=1,PART_REP(1)-1),
-     &   (SOMMERESU(I),I=1,8)
-         ENDIF
-       ENDDO
-       DO LINE=1,TEMPS
-       WRITE(LU,*) 'TIME',LINE
-       DO IPID=0,NPROC-1
-       ENDDO
-       ENDDO
-       GO TO 97909
-!
-9799    PRINT*, 'ERROR'
-        CALL GRETEL_PLANTE(-1)
-        STOP
-!
-97909   PRINT*, 'DATA SETS FOUND'
-        DO IPID = 0,NPROC-1
-        FU = IPID +10
-        CLOSE (FU)
-        END DO
-        CLOSE (3)
-        DEALLOCATE (VALUESCP)
-!
-1981    FORMAT (A1,A70)
-1010    FORMAT(E14.6,1X,30(E14.6,1X))
-!
-      END IF !!!! IF (RUBENS.EQ.'E2DVOL').OR.(RUBENS.EQ.'E2DSERA')
-!
-      STOP
-!
-      END SUBROUTINE RECOMPOSITION_PARTICULAIRE
-!
-!
-!
          SUBROUTINE RECOMPOSITION_DECOMP_DOMAINE (GEO)
 !
 !***********************************************************************
@@ -914,9 +152,7 @@
       INTEGER LI
       COMMON/INFO/LNG,LU
 !
-!=>FABS
       CHARACTER(LEN=30), INTENT(IN) :: GEO
-!<=FABS
 !
       INTEGER IPID,ERR,FU
       INTEGER NELEM,ECKEN,NDUM,I,J,K,NBV1,NBV2,PARAM(10)
@@ -928,14 +164,18 @@
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: KNOLG
       INTEGER, DIMENSION(:,:), ALLOCATABLE :: IKLESA,IKLE3D
 !
-!
       REAL   , DIMENSION(:,:), ALLOCATABLE :: GLOBAL_VALUE
       REAL   , DIMENSION(:,:), ALLOCATABLE :: LOCAL_VALUE
       REAL   , DIMENSION(:)  , ALLOCATABLE :: XORIG,YORIG
 !
-      REAL AT
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: GLOBAL_VALUE_D
+      DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: LOCAL_VALUE_D
+      DOUBLE PRECISION, DIMENSION(:)  , ALLOCATABLE :: XORIG_D,YORIG_D
 !
-      LOGICAL IS,ENDE
+      REAL AT
+      DOUBLE PRECISION AT_D
+!
+      LOGICAL IS,ENDE,SERAFIND_GEO,SERAFIND_RES
 !
       CHARACTER*30 RES
       CHARACTER*50 RESPAR
@@ -945,20 +185,15 @@
       CHARACTER*11 GRETEL_EXTENS
       EXTERNAL    GRETEL_EXTENS
       INTEGER, INTRINSIC ::  MAXVAL
+      INTRINSIC REAL,DBLE
 !
+!-----------------------------------------------------------------------
 !
-        LI = 5
+      LI = 5
 !
 ! READS FILE NAMES AND THE NUMBER OF PROCESSORS / PARTITIONS
 !
-!=>FABS
-!      READ(LI,*) GEO
-!        WRITE(LU,*) GEO
-!      WRITE (LU, ADVANCE='NO',
-!     &    FMT='(/,'' GLOBAL GEOMETRY FILE: '')')
-!<=FABS
-!
-      WRITE (LU, ADVANCE='NO', FMT='(/,'' RESULT FILE: '')')
+      WRITE(LU, ADVANCE='NO', FMT='(/,'' RESULT FILE: '')')
       READ(LI,*) RES
 !
       WRITE (LU,ADVANCE='NO',FMT='(/,'' NUMBER OF PROCESSORS: '')')
@@ -966,11 +201,11 @@
       WRITE (LU,*) ' '
 !
       INQUIRE (FILE=GEO,EXIST=IS)
-      IF (.NOT.IS) THEN
+      IF(.NOT.IS) THEN
         WRITE (LU,*) 'FILE DOES NOT EXIST: ', GEO
         CALL GRETEL_PLANTE (-1)
         STOP
-      END IF
+      ENDIF
 !
       I_S  = LEN (RES)
       I_SP = I_S + 1
@@ -979,11 +214,14 @@
       ENDDO
       I_LEN=I_SP - I
 !
-!
 !     COMPUTATION GEOMETRY FILE, READ UNTIL THE 10 PARAMETERS:
 !
       OPEN(2,FILE=GEO,FORM='UNFORMATTED',STATUS='OLD',ERR=990)
-      READ(2,ERR=990)
+      READ(2,ERR=990) TITSEL
+!
+      SERAFIND_GEO=.FALSE.
+      IF(TITSEL(73:80).EQ.'SERAFIND') SERAFIND_GEO=.TRUE. 
+!
       READ(2,ERR=990) NBV1,NBV2
       DO 10 I=1,NBV1+NBV2
         READ(2,ERR=990)
@@ -1008,8 +246,6 @@
 !
 !     1) STARTS READING THE 1ST RESULT FILE
 !
-!CC      RESPAR=RES // GRETEL_EXTENS(2**IDIMS-1,0)
-!
       RESPAR=RES(1:I_LEN) // GRETEL_EXTENS(NPROC-1,0)
 !
       INQUIRE (FILE=RESPAR,EXIST=IS)
@@ -1030,9 +266,10 @@
 !
 !  1 : TITLE
 !
-      READ(4) TITRE
-      WRITE(LU,*) 'TITLE=',TITRE
-      TITSEL=TITRE // 'SERAFIN'
+      READ(4) TITSEL
+      WRITE(LU,*) 'TITLE=',TITSEL
+      SERAFIND_RES=.FALSE.
+      IF(TITSEL(73:80).EQ.'SERAFIND') SERAFIND_RES=.TRUE.       
       WRITE(3) TITSEL
 !
 !  2 : NBV1,NBV2
@@ -1095,19 +332,45 @@
         ALLOCATE(VERIF(NPOIN2*NPLAN)    ,STAT=ERR)
       ENDIF
       IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'VERIF')
-!  GLOBAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
+!
+!     GLOBAL_VALUES IN SINGLE PRECISION, STORES NBV1 VALUES
+!
       IF(NPLAN.EQ.0) THEN
         ALLOCATE(GLOBAL_VALUE(NPOIN2,NBV1)       ,STAT=ERR)
       ELSE
         ALLOCATE(GLOBAL_VALUE(NPOIN2*NPLAN,NBV1) ,STAT=ERR)
       ENDIF
       IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'GLOBAL_VALUE')
-!  X AND Y
+!
+!     GLOBAL_VALUES IN DOUBLE PRECISION, STORES NBV1 VALUES
+!
+      IF(SERAFIND_GEO.OR.SERAFIND_RES) THEN  
+        IF(NPLAN.EQ.0) THEN
+          ALLOCATE(GLOBAL_VALUE_D(NPOIN2,NBV1)       ,STAT=ERR)
+        ELSE
+          ALLOCATE(GLOBAL_VALUE_D(NPOIN2*NPLAN,NBV1) ,STAT=ERR)
+        ENDIF
+        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'GLOBAL_VALUE_D')
+      ENDIF
+!
+!     X AND Y SINGLE PRECISION
+!
       ALLOCATE(XORIG(NPOIN2)    ,STAT=ERR)
       IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'XORIG')
       ALLOCATE(YORIG(NPOIN2)    ,STAT=ERR)
       IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'YORIG')
+!
+!     X AND Y DOUBLE PRECISION
+!
+      IF(SERAFIND_GEO.OR.SERAFIND_RES) THEN
+        ALLOCATE(XORIG_D(NPOIN2)    ,STAT=ERR)
+        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'XORIG_D')
+        ALLOCATE(YORIG_D(NPOIN2)    ,STAT=ERR)
+        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'YORIG_D')
+      ENDIF
+!
 !  3D
+!
       IF(NPLAN.NE.0) THEN
       ALLOCATE(IKLE3D(NELEM*(NPLAN-1),6),STAT=ERR)
       IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'IKLE3D')
@@ -1146,8 +409,17 @@
 !
 !  8 : X AND Y, WILL BE CHECKED LATER ...
 !
-      READ(2)  (XORIG(I),I=1,NPOIN2)
-      READ(2)  (YORIG(I),I=1,NPOIN2)
+      IF(SERAFIND_GEO) THEN
+        READ(2)  (XORIG_D(I),I=1,NPOIN2)
+        READ(2)  (YORIG_D(I),I=1,NPOIN2)
+        DO I=1,NPOIN2
+          XORIG(I)=REAL(XORIG_D(I))
+          YORIG(I)=REAL(YORIG_D(I))
+        ENDDO
+      ELSE
+        READ(2)  (XORIG(I),I=1,NPOIN2)
+        READ(2)  (YORIG(I),I=1,NPOIN2)
+      ENDIF
 !
 !------------------------------------------------------------------------------
 !
@@ -1169,19 +441,30 @@
            CALL GRETEL_PLANTE(-1)
            STOP
          ENDIF
-      END DO
+      ENDDO
 !
       NPOINMAX = MAXVAL(NPOIN)
-! ARRAY FOR LOCAL-GLOBAL NUMBERS, 2D-FIELD
+!
+!     ARRAY FOR LOCAL-GLOBAL NUMBERS, 2D-FIELD
+!
       IF(NPLAN.EQ.0) THEN
          ALLOCATE (KNOLG(NPOINMAX,NPROC),STAT=ERR)
       ELSE
          ALLOCATE (KNOLG(NPOINMAX/NPLAN,NPROC),STAT=ERR)
       ENDIF
       IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'KNOLG')
-!  LOCAL_VALUES, STORES THE WHOLE DATASET (NBV1-VALUES)
-        ALLOCATE(LOCAL_VALUE(NPOINMAX,NBV1)    ,STAT=ERR)
+!
+!     LOCAL_VALUES IN SINGLE PRECISION, STORES NBV1 VALUES
+!
+      ALLOCATE(LOCAL_VALUE(NPOINMAX,NBV1)    ,STAT=ERR)
       IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'LOCAL_VALUE')
+!
+!     LOCAL_VALUES IN DOUBLE PRECISION, STORES NBV1 VALUES
+!
+      IF(SERAFIND_GEO.OR.SERAFIND_RES) THEN
+        ALLOCATE(LOCAL_VALUE_D(NPOINMAX,NBV1)    ,STAT=ERR)
+        IF(ERR.NE.0) CALL GRETEL_ALLOER (LU, 'LOCAL_VALUE_D')
+      ENDIF
 !
 ! READS KNOLG(NPOIN,NPROC)
 !
@@ -1192,42 +475,75 @@
          ELSE
             READ(FU) (KNOLG(I,IPID+1),I=1,NPOIN(IPID+1)/NPLAN)
          ENDIF
-      END DO
+      ENDDO
 !
 ! READS LOCAL X
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
-         IF(NPLAN.EQ.0) THEN
-          DO I=1,NPOIN(IPID+1)
-            GLOBAL_VALUE(KNOLG(I,IPID+1),1) =
-     &       LOCAL_VALUE(      I        ,1)
-                   VERIF(KNOLG(I,IPID+1))   = 1
-          ENDDO
+         IF(SERAFIND_RES) THEN
+           READ(FU) (LOCAL_VALUE_D(I,1),I=1,NPOIN(IPID+1))
          ELSE
-          NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-          DO I=1,NPOIN2LOC
-          DO J=1,NPLAN
-            GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
-     &       LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
-                   VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
-          ENDDO
-          ENDDO
+           READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
          ENDIF
-      END DO
+         IF(NPLAN.EQ.0) THEN
+           IF(SERAFIND_RES) THEN
+             DO I=1,NPOIN(IPID+1)
+               GLOBAL_VALUE_D(KNOLG(I,IPID+1),1)=LOCAL_VALUE_D(I,1)
+               VERIF(KNOLG(I,IPID+1))   = 1
+             ENDDO
+           ELSE
+             DO I=1,NPOIN(IPID+1)
+               GLOBAL_VALUE(KNOLG(I,IPID+1),1)=LOCAL_VALUE(I,1)
+               VERIF(KNOLG(I,IPID+1))   = 1
+             ENDDO
+           ENDIF
+         ELSE
+           NPOIN2LOC = NPOIN(IPID+1)/NPLAN
+           IF(SERAFIND_RES) THEN
+             DO I=1,NPOIN2LOC
+             DO J=1,NPLAN
+               GLOBAL_VALUE_D(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &         LOCAL_VALUE_D(      I         + NPOIN2LOC*(J-1) , 1)
+               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+             ENDDO
+             ENDDO
+           ELSE
+             DO I=1,NPOIN2LOC
+             DO J=1,NPLAN
+               GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &         LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
+               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+             ENDDO
+             ENDDO
+          ENDIF
+         ENDIF
+      ENDDO
 !
-! COMPARISON WITH GLOBAL VALUES
+! COMPARISON WITH GLOBAL VALUES (ON SINGLE PRECISION VALUES)
 !
 !     IN 3D, CHECKS THE FIRST PLANE ONLY
-      DO I=1,NPOIN2
-         IF(ABS(XORIG(I)-GLOBAL_VALUE(I,1)).GT.0.1) THEN
+!
+      IF(SERAFIND_RES) THEN
+        DO I=1,NPOIN2
+          IF(ABS(XORIG(I)-GLOBAL_VALUE_D(I,1)).GT.0.1) THEN
             WRITE(LU,*) 'POINT ',I,' XORIG=',XORIG(I),
      &                ' GLOBAL_VALUE=',GLOBAL_VALUE(I,1)
             WRITE(LU,*) 'GEO IS PROBABLY NOT THE RIGHT ORIGINAL FILE'
-         ENDIF
-      ENDDO
+          ENDIF
+        ENDDO
+      ELSE
+        DO I=1,NPOIN2
+          IF(ABS(XORIG(I)-GLOBAL_VALUE(I,1)).GT.0.1) THEN
+            WRITE(LU,*) 'POINT ',I,' XORIG=',XORIG(I),
+     &                ' GLOBAL_VALUE=',GLOBAL_VALUE(I,1)
+            WRITE(LU,*) 'GEO IS PROBABLY NOT THE RIGHT ORIGINAL FILE'
+          ENDIF
+        ENDDO
+      ENDIF
+!
 ! FURTHER CHECKS
+!
       IF(NPLAN.EQ.0) THEN
         DO I=1,NPOIN2
           IF(VERIF(I).EQ.0) THEN
@@ -1241,48 +557,91 @@
           ENDIF
         ENDDO
       ENDIF
+!
 ! WRITES X
+!
       WRITE(LU,*) 'WRITING X-COORDINATES'
       IF(NPLAN.EQ.0) THEN
-         WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2)
+        IF(SERAFIND_RES) THEN
+          WRITE(3) (GLOBAL_VALUE_D(I,1),I=1,NPOIN2)
+        ELSE
+          WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2)
+        ENDIF
       ELSE
-         WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2*NPLAN)
+        IF(SERAFIND_RES) THEN
+          WRITE(3) (GLOBAL_VALUE_D(I,1),I=1,NPOIN2*NPLAN)
+        ELSE
+          WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2*NPLAN)
+        ENDIF
       ENDIF
 !
-! READS LOCAL Y
+! READS LOCAL Y (EXACTLY LIKE READS LOCAL X, COULD BE A LOOP...)
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
-         IF(NPLAN.EQ.0) THEN
-          DO I=1,NPOIN(IPID+1)
-            GLOBAL_VALUE(KNOLG(I,IPID+1),1) =
-     &       LOCAL_VALUE(      I        ,1)
-                   VERIF(KNOLG(I,IPID+1))   = 1
-          ENDDO
+         IF(SERAFIND_RES) THEN
+           READ(FU) (LOCAL_VALUE_D(I,1),I=1,NPOIN(IPID+1))
          ELSE
-          NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-          DO I=1,NPOIN2LOC
-          DO J=1,NPLAN
-            GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
-     &       LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
-                   VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
-          ENDDO
-          ENDDO
+           READ(FU) (LOCAL_VALUE(I,1),I=1,NPOIN(IPID+1))
          ENDIF
-      END DO
+         IF(NPLAN.EQ.0) THEN
+           IF(SERAFIND_RES) THEN
+             DO I=1,NPOIN(IPID+1)
+               GLOBAL_VALUE_D(KNOLG(I,IPID+1),1)=LOCAL_VALUE_D(I,1)
+               VERIF(KNOLG(I,IPID+1))   = 1
+             ENDDO
+           ELSE
+             DO I=1,NPOIN(IPID+1)
+               GLOBAL_VALUE(KNOLG(I,IPID+1),1)=LOCAL_VALUE(I,1)
+               VERIF(KNOLG(I,IPID+1))   = 1
+             ENDDO
+           ENDIF
+         ELSE
+           NPOIN2LOC = NPOIN(IPID+1)/NPLAN
+           IF(SERAFIND_RES) THEN
+             DO I=1,NPOIN2LOC
+             DO J=1,NPLAN
+               GLOBAL_VALUE_D(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &         LOCAL_VALUE_D(      I         + NPOIN2LOC*(J-1) , 1)
+               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+             ENDDO
+             ENDDO
+           ELSE
+             DO I=1,NPOIN2LOC
+             DO J=1,NPLAN
+               GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , 1)=
+     &         LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , 1)
+               VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1))  = 1
+             ENDDO
+             ENDDO
+          ENDIF
+         ENDIF
+      ENDDO
 !
 ! COMPARISON WITH GLOBAL VALUES
 !
 ! IN 3D, CHECKS THE FIRST PLANE ONLY
-      DO I=1,NPOIN2
-         IF(ABS(YORIG(I)-GLOBAL_VALUE(I,1)).GT.0.1) THEN
+!
+      IF(SERAFIND_RES) THEN
+        DO I=1,NPOIN2
+          IF(ABS(YORIG(I)-GLOBAL_VALUE_D(I,1)).GT.0.1) THEN
             WRITE(LU,*) 'POINT ',I,' YORIG=',YORIG(I),
      &                      ' GLOBAL_VALUE=',GLOBAL_VALUE(I,1)
             WRITE(LU,*) 'GEO IS PROBABLY NOT THE RIGHT ORIGINAL FILE'
-         ENDIF
-      END DO
+          ENDIF
+        ENDDO
+      ELSE
+        DO I=1,NPOIN2
+          IF(ABS(YORIG(I)-GLOBAL_VALUE(I,1)).GT.0.1) THEN
+            WRITE(LU,*) 'POINT ',I,' YORIG=',YORIG(I),
+     &                      ' GLOBAL_VALUE=',GLOBAL_VALUE(I,1)
+            WRITE(LU,*) 'GEO IS PROBABLY NOT THE RIGHT ORIGINAL FILE'
+          ENDIF
+        ENDDO
+      ENDIF
+!
 ! FURTHER CHECKS
+!
       IF(NPLAN.EQ.0) THEN
         DO I=1,NPOIN2
           IF(VERIF(I).EQ.0) THEN
@@ -1296,12 +655,22 @@
           ENDIF
         ENDDO
       ENDIF
+!
 ! WRITES Y
+!
       WRITE(LU,*) 'WRITING Y-COORDINATES'
       IF(NPLAN.EQ.0) THEN
-         WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2)
+        IF(SERAFIND_RES) THEN
+          WRITE(3) (GLOBAL_VALUE_D(I,1),I=1,NPOIN2)
+        ELSE
+          WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2)
+        ENDIF
       ELSE
-         WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2*NPLAN)
+        IF(SERAFIND_RES) THEN
+          WRITE(3) (GLOBAL_VALUE_D(I,1),I=1,NPOIN2*NPLAN)
+        ELSE
+          WRITE(3) (GLOBAL_VALUE(I,1),I=1,NPOIN2*NPLAN)
+        ENDIF
       ENDIF
 !
 ! READS DATASETS
@@ -1320,58 +689,95 @@
         ENDDO
       ENDIF
 !
-      WRITE(LU,*)'TRY TO READ DATASET NO.',NRESU
+      WRITE(LU,*) 'TRY TO READ DATASET NO.',NRESU
 !
       DO IPID = 0,NPROC-1
          FU = IPID +10
-         CALL GRETEL_READ_DATASET
-     &   (LOCAL_VALUE,NPOINMAX,NPOIN(IPID+1),NBV1,AT,FU,ENDE)
-         IF (ENDE) GOTO 3000
-! STORES EACH DATASET
+         CALL GRETEL_READ_DATASET(LOCAL_VALUE,LOCAL_VALUE_D,
+     &                            SERAFIND_RES,
+     &                            NPOINMAX,NPOIN(IPID+1),
+     &                            NBV1,AT,AT_D,FU,ENDE)
+         IF(ENDE) GOTO 3000
+!
+!        STORES EACH DATASET
+!
          IF(NPLAN.EQ.0) THEN
-            DO I=1,NPOIN(IPID+1)
-            DO K=1,NBV1
-              GLOBAL_VALUE(KNOLG(I,IPID+1),K) = LOCAL_VALUE(I,K)
-            END DO
-              VERIF(KNOLG(I,IPID+1))   = 1
-            END DO
+            IF(SERAFIND_RES) THEN
+              DO I=1,NPOIN(IPID+1)
+              DO K=1,NBV1
+                GLOBAL_VALUE_D(KNOLG(I,IPID+1),K)=LOCAL_VALUE_D(I,K)
+              ENDDO
+              VERIF(KNOLG(I,IPID+1)) = 1
+              ENDDO
+            ELSE
+              DO I=1,NPOIN(IPID+1)
+              DO K=1,NBV1
+                GLOBAL_VALUE(KNOLG(I,IPID+1),K) = LOCAL_VALUE(I,K)
+              ENDDO
+              VERIF(KNOLG(I,IPID+1)) = 1
+              ENDDO
+            ENDIF
          ELSE
             NPOIN2LOC = NPOIN(IPID+1)/NPLAN
-            DO I=1,NPOIN2LOC
-            DO J=1,NPLAN
-            DO K=1,NBV1
-            GLOBAL_VALUE(KNOLG(I,IPID+1) + NPOIN2   *(J-1) , K)=
-     &       LOCAL_VALUE(      I         + NPOIN2LOC*(J-1) , K)
-            END DO
-                   VERIF(KNOLG(I,IPID+1) + NPOIN2   *(J-1)) = 1
-            END DO
-            END DO
+            IF(SERAFIND_RES) THEN
+              DO I=1,NPOIN2LOC
+                DO J=1,NPLAN
+                  DO K=1,NBV1
+              GLOBAL_VALUE_D(KNOLG(I,IPID+1)+NPOIN2   *(J-1),K)=
+     &         LOCAL_VALUE_D(      I        +NPOIN2LOC*(J-1),K)
+                  ENDDO
+              VERIF(KNOLG(I,IPID+1) + NPOIN2*(J-1)) = 1
+                ENDDO
+              ENDDO
+            ELSE
+              DO I=1,NPOIN2LOC
+                DO J=1,NPLAN
+                  DO K=1,NBV1
+              GLOBAL_VALUE(KNOLG(I,IPID+1)+NPOIN2   *(J-1),K)=
+     &         LOCAL_VALUE(      I        +NPOIN2LOC*(J-1),K)
+                  ENDDO
+              VERIF(KNOLG(I,IPID+1) + NPOIN2*(J-1)) = 1
+                ENDDO
+              ENDDO
+            ENDIF
          ENDIF
-      END DO
+      ENDDO
+!
 ! WRITES GLOBAL DATASET
+!
       WRITE(LU,*)'WRITING DATASET NO.',NRESU,' TIME =',AT
 !
       WRITE(3) AT
       DO K = 1,NBV1
          IF(NPLAN.EQ.0) THEN
-            WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2)
+            IF(SERAFIND_RES) THEN
+              WRITE(3) (GLOBAL_VALUE_D(I,K),I=1,NPOIN2)
+            ELSE
+              WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2)
+            ENDIF
          ELSE
-            WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2*NPLAN)
+            IF(SERAFIND_RES) THEN
+              WRITE(3) (GLOBAL_VALUE_D(I,K),I=1,NPOIN2*NPLAN)
+            ELSE
+              WRITE(3) (GLOBAL_VALUE(I,K),I=1,NPOIN2*NPLAN)
+            ENDIF
          ENDIF
-      END DO
+      ENDDO
+!
 ! CHECKS ...
+!
       IF(NPLAN.EQ.0) THEN
         DO I=1,NPOIN2
           IF(VERIF(I).EQ.0) THEN
             WRITE(LU,*) 'ERROR, POINT I=',I,' FALSE FOR NRESU=',NRESU
           ENDIF
-        END DO
+        ENDDO
       ELSE
         DO I=1,NPOIN2*NPLAN
           IF(VERIF(I).EQ.0) THEN
             WRITE(LU,*) 'ERROR, POINT I=',I,' FALSE FOR NRESU=',NRESU
           ENDIF
-        END DO
+        ENDDO
       ENDIF
 !
       GO TO 2000
@@ -1380,21 +786,15 @@
 !
       CLOSE(2)
       CLOSE(3)
-!
       DO IPID = 0,NPROC-1
          FU = IPID +10
          CLOSE (FU)
-      END DO
-!
-        !!!FABS
+      ENDDO
 !
       END SUBROUTINE RECOMPOSITION_DECOMP_DOMAINE
-!
-!
-!
-!                       ****************************
+!                       ***********************************
                         CHARACTER*11 FUNCTION GRETEL_EXTENS
-!                       ****************************
+!                       ***********************************
      &(N,IPID)
 !
 !***********************************************************************
@@ -1471,11 +871,10 @@
 !
       RETURN
       END
+!                       *****************************
+                        SUBROUTINE GRETEL_SKIP_HEADER
+!                       *****************************
 !
-!
-!        ***********************************
-         SUBROUTINE GRETEL_SKIP_HEADER
-!        ***********************************
      &(FU,NPOIN,NVALUE,ERR,LU)
 !
 !***********************************************************************
@@ -1548,15 +947,15 @@
 !
  999  RETURN
       END
-!
-!
-!                         ************************************
+!                         ******************************
                           SUBROUTINE GRETEL_READ_DATASET
-!                         ************************************
-     &(LOCAL_VALUE,NPOINMAX,NPOIN,NVALUE,AT,FU,ENDE)
+!                         ******************************
+!
+     &(LOCAL_VALUE,LOCAL_VALUE_D,SERAFIND,
+     & NPOINMAX,NPOIN,NVALUE,AT,AT_D,FU,ENDE)
 !
 !***********************************************************************
-! PARALLEL   V6P0                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -1588,19 +987,32 @@
       INTEGER NPOINMAX,NPOIN,NVALUE,FU
       INTEGER IPOIN,IVALUE
 !
+      LOGICAL SERAFIND
+!
       REAL AT
+      DOUBLE PRECISION AT_D
       REAL LOCAL_VALUE(NPOINMAX,NVALUE)
+      DOUBLE PRECISION LOCAL_VALUE_D(NPOINMAX,NVALUE)
 !
       LOGICAL ENDE
 !
       ENDE = .TRUE.
 !
-      READ(FU,END=999) AT
-      DO IVALUE = 1,NVALUE
-         READ(FU,END=999) (LOCAL_VALUE(IPOIN,IVALUE),IPOIN=1,NPOIN)
-      END DO
+      IF(SERAFIND) THEN
+        READ(FU,END=999) AT_D
+        DO IVALUE = 1,NVALUE
+          READ(FU,END=999) (LOCAL_VALUE_D(IPOIN,IVALUE),IPOIN=1,NPOIN)
+        ENDDO
+      ELSE
+        READ (FU,END=999) AT
+        DO IVALUE = 1,NVALUE
+          READ(FU,END=999) (LOCAL_VALUE(IPOIN,IVALUE),IPOIN=1,NPOIN)
+        ENDDO
+      ENDIF
 !
       ENDE = .FALSE.
+!
+!-----------------------------------------------------------------------
 !
  999  RETURN
       END
