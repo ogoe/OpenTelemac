@@ -20,7 +20,7 @@
 !+          (ESPECIALLY IMPORTANT FOR COMMANDS TAKING MORE THAN ONE LINE)
 !
 !history  J-M HERVOUET (LNHE)
-!+        20/06/2012
+!+        22/06/2012
 !+        V6P2
 !+   Dimensions in SCARACT reviewed (previous confusion between
 !+   NPOIN and NPLOT). INTENT(OUT) changed into INTENT(INOUT) in
@@ -28,6 +28,7 @@
 !+   before the call to SCHAR41. ADD_CHAR11 and ADD_CHAR41 deleted.
 !+   SCHAR11 and SCHAR41 simplified. Arguments removed in SCARACT.
 !+   SCHAR12 and SCHAR13 added.
+!+   DX,DY,DZ added to CHARAC_TYPE, and used in 2D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,6 +55,9 @@
 !     THE TYPE FOR CHARACTERISTICS - LOST TRACEBACKS 
 !     DESCRIBES A TRACEBACK LEAVING A PARTITION TO ANOTHER ONE   
 !     FOR 2D WE USE 3D -> KNE AND ZP ARE OBSOLETE THEN 
+!
+!     SEE ORG_CHARAC_TYPE1 IN LIBRARY PARALLEL
+!     IT MUST BE THE SAME LOCAL TYPE
 ! 
       TYPE CHARAC_TYPE 
         SEQUENCE   ! BUT SEEMS USELESS (HENCE TRICK BELOW WITH VOID)  
@@ -64,21 +68,24 @@
         INTEGER :: IOR   ! THE POSITION OF THE TRAJECTORY -HEAD- IN MYPID [THE 2D/3D NODE OF ORIGIN] 
         INTEGER :: ISP,NSP ! NUMBERS OF RUNGE-KUTTA PASSED AS COLLECTED AND TO FOLLOW AT ALL 
         INTEGER :: VOID  ! TRICK FOR ALIGNMENT 
-        DOUBLE PRECISION :: XP,YP,ZP                ! THE (X,Y,Z)-POSITION NOW  
+        DOUBLE PRECISION :: XP,YP,ZP                ! THE (X,Y,Z)-POSITION NOW 
+        DOUBLE PRECISION :: DX,DY,DZ                ! THE DISPLACEMENTS
         DOUBLE PRECISION :: BASKET(MAX_BASKET_SIZE) ! VARIABLES INTERPOLATED AT THE FOOT   
       END TYPE CHARAC_TYPE 
 ! 
 !     ARRAY OF BLOCKLENGTHS OF TYPE COMPONENTS, NOTE THE BASKET INITIALISED TO 1 
 !
-      INTEGER, DIMENSION(12) :: CH_BLENGTH=(/1,1,1,1,1,1,1,1,1,1,1,1/)  
+      INTEGER, DIMENSION(15) :: 
+     &      CH_BLENGTH=(/1,1,1,1,1,1,1,1,1,1,1,1,1,1,1/)  
 ! 
 !     ARRAY OF DISPLACEMENTS BETWEEN BASIC COMPONENTS, HERE INITIALISED ONLY 
 ! 
-      INTEGER, DIMENSION(12) :: CH_DELTA=  (/0,0,0,0,0,0,0,0,0,0,0,0/) 
+      INTEGER, DIMENSION(15) :: 
+     &      CH_DELTA=  (/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/) 
 ! 
 !     ARRAY OF COMPONENT TYPES IN TERMS OF THE MPI COMMUNICATION 
 ! 
-      INTEGER, DIMENSION(12) :: CH_TYPES 
+      INTEGER, DIMENSION(15) :: CH_TYPES 
 ! 
 !     THE CORRESPONDING MPI TYPE
 !  
@@ -92,11 +99,12 @@
 !     WHILE COLLECTING IS DONE IN HEAPCHARS, MOST ACTIVE OPERATIONS IN RECVCHAR 
 !     SENDCHAR REQUIRED DUE TO THE SPECIFIC SORTING FOR MPI_ALLTOALLV (OPTIMISE?)  
 ! 
-      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::  
-     &                                 HEAPCHAR,SENDCHAR,RECVCHAR 
-      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE :: SENDCOUNTS, SDISPLS 
-      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE :: RECVCOUNTS, RDISPLS 
-      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE :: HEAPCOUNTS 
+      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::HEAPCHAR 
+      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::SENDCHAR 
+      TYPE (CHARAC_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::RECVCHAR 
+      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE::SENDCOUNTS,SDISPLS 
+      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE::RECVCOUNTS,RDISPLS 
+      INTEGER, ALLOCATABLE, DIMENSION(:), SAVE::HEAPCOUNTS 
 ! 
 !     WORK FIELD FOR COUNTING OCCURANCES PRO RANK / SORTING SENDCHAR
 !  
@@ -132,7 +140,7 @@
 !--------------------------------------------------------------------- 
 ! 
       SUBROUTINE ORGANISE_CHARS(NPARAM,NOMB,NCHDIM,LAST_NCHDIM) ! WATCH OUT 
-          USE BIEF_DEF, ONLY: NCSIZE,IPID 
+          USE BIEF_DEF, ONLY: NCSIZE 
           IMPLICIT NONE 
           INTEGER, INTENT(IN)    :: NPARAM,NOMB 
           INTEGER, INTENT(INOUT) :: NCHDIM,LAST_NCHDIM 
@@ -182,8 +190,8 @@
 !--------------------------------------------------------------------- 
 ! 
         SUBROUTINE COLLECT_CHAR(MYPID,IOR,MYII,IFACE,KNE, 
-     &                          ISP,NSP,XP,YP,ZP,IFAPAR, 
-     &                          NCHDIM,NCHARA) 
+     &                          ISP,NSP,XP,YP,ZP,DX,DY,DZ,
+     &                          IFAPAR,NCHDIM,NCHARA) 
           IMPLICIT NONE 
           INTEGER LNG,LU 
           COMMON/INFO/LNG,LU 
@@ -191,10 +199,10 @@
           INTEGER,  INTENT(IN) :: ISP,NSP,NCHDIM 
           INTEGER,  INTENT(IN) :: IFAPAR(6,*) 
           INTEGER,  INTENT(INOUT) :: NCHARA 
-          DOUBLE PRECISION, INTENT(IN) :: XP,YP,ZP 
+          DOUBLE PRECISION, INTENT(IN) :: XP,YP,ZP,DX,DY,DZ 
           INTEGER :: NEPID,II,III 
           ! 
-          IF(NCHARA==0) HEAPCOUNTS=0 
+          IF(NCHARA.EQ.0) HEAPCOUNTS=0 
           NEPID=IFAPAR(IFACE  ,MYII) 
           II   =IFAPAR(IFACE+3,MYII)  
           NCHARA=NCHARA+1  
@@ -214,7 +222,10 @@
           HEAPCHAR(NCHARA)%NSP=NSP     ! R-K STEPS TO BE DONE  
           HEAPCHAR(NCHARA)%XP=XP       ! X-POSITION  
           HEAPCHAR(NCHARA)%YP=YP       ! Y-POSITION  
-          HEAPCHAR(NCHARA)%ZP=ZP       ! Z-POSITION 
+          HEAPCHAR(NCHARA)%ZP=ZP       ! Z-POSITION
+          HEAPCHAR(NCHARA)%DX=DX       ! X-DISPLACEMENT  
+          HEAPCHAR(NCHARA)%DY=DY       ! Y-DISPLACEMENT   
+          HEAPCHAR(NCHARA)%DZ=DZ       ! Z-DISPLACEMENT   
 !         TAGGING THE BASKET FOR DEBUGGING 
           DO III=1,10 
             HEAPCHAR(NCHARA)%BASKET(III)=1000.D0*III+NCHARA 
@@ -268,7 +279,7 @@
           ICHA=SENDCOUNTS ! A RUNNING COUNTER PARTITION-WISE 
           DO I=1,NCHARA 
 !           HEAPCHAR(I)%NEPID+1 - THE PARTITION WE SEND TO / OR -1  
-            IF(HEAPCHAR(I)%NEPID>=0) THEN              
+            IF(HEAPCHAR(I)%NEPID.GE.0) THEN              
               N=HEAPCHAR(I)%NEPID+1  
               SENDCHAR(SDISPLS(N)+ICHA(N))=HEAPCHAR(I) 
               ICHA(N)=ICHA(N)-1 
@@ -296,8 +307,8 @@
           INTEGER, INTENT(INOUT)  :: NCHARA 
           INTEGER I  
           SENDCOUNTS=0 
-          ! DO NOT ZEROIZE NCHARA, HEAPCOUNTS / ADDING FROM GENERATIONS! 
-          ! COUNTER PARTITION-WISE, ALSO MY-OWN 
+!         DO NOT ZEROIZE NCHARA, HEAPCOUNTS / ADDING FROM GENERATIONS! 
+!         COUNTER PARTITION-WISE, ALSO MY-OWN 
           DO I=1,NARRV  
             IF(RECVCHAR(I)%NEPID==-1) THEN ! A LOCALISED TRACEBACK 
               NCHARA=NCHARA+1 
@@ -334,18 +345,18 @@
           SDISPLS(1) = 0 ! CONTIGUOUS DATA MARKER 
           DO I=2,NCSIZE 
             SDISPLS(I) = SDISPLS(I-1)+SENDCOUNTS(I-1) 
-          END DO 
+          ENDDO 
           ICHA=0 
           NSEND=0 
           DO I=1,NARRV 
             N=RECVCHAR(I)%NEPID 
-            IF (N/=-1) THEN  ! A LOST-AGAIN TRACEBACK 
+            IF (N.NE.-1) THEN  ! A LOST-AGAIN TRACEBACK 
               ICHA(N+1)=ICHA(N+1)+1 
               NSEND=NSEND+1 
               SENDCHAR(SDISPLS(N+1)+ICHA(N+1)) = RECVCHAR(I)  
             ENDIF  
-          END DO  
-          IF (TRACE.AND.NARRV>0) THEN ! DEBUGGING  
+          ENDDO  
+          IF(TRACE.AND.NARRV.GT.0) THEN ! DEBUGGING  
             WRITE (LU,*) ' @STREAMLINE::PREP_LOST_AGAIN:' 
             WRITE (LU,*) ' NSEND, NLOSTAGAIN, SUM(SENDCOUNTS): ', 
      &           NSEND, NLOSTAGAIN, SUM(SENDCOUNTS) 
@@ -364,8 +375,8 @@
      &          SENDCHAR(J)%ISP,   SENDCHAR(J)%NSP, 
      &          SENDCHAR(J)%XP,    SENDCHAR(J)%YP,    SENDCHAR(J)%ZP, 
      &       (  SENDCHAR(J)%BASKET(K), K=1,NOMB) 
-              END DO  
-            END DO  
+              ENDDO  
+            ENDDO  
           ENDIF 
           RETURN  
         END SUBROUTINE PREP_LOST_AGAIN 
@@ -385,7 +396,7 @@
           INTEGER, INTENT(IN) :: NOMB 
           INTEGER, INTENT(INOUT) :: NCHARA 
           INTEGER  :: I,J,K,N 
-          IF (NCHARA==0) RETURN ! UHM. 
+          IF (NCHARA.EQ.0) RETURN ! UHM. 
           SENDCOUNTS=HEAPCOUNTS 
           IF(TRACE) THEN 
             WRITE(LU,*) ' @STREAMLINE::PREP_SENDBACK:: NCHARA: ',NCHARA 
@@ -405,7 +416,7 @@
             ! SIGN IN THE SENDBACK ORIGIN FOR DEBUGGING PURPOSES   
             SENDCHAR(SDISPLS(N)+ICHA(N))%NEPID=IPID 
           ENDDO  
-          IF(TRACE.AND.NCHARA>0) THEN ! DEBUGGING PRINTOUTS  
+          IF(TRACE.AND.NCHARA.GT.0) THEN ! DEBUGGING PRINTOUTS  
             WRITE (LU,*) ' @STREAMLINE::PREP_SENDBACK:' 
             WRITE (LU,*) ' IPID: ',IPID 
             DO N=1,NCSIZE 
@@ -448,7 +459,7 @@
           CALL P_MPI_ALLTOALL(SENDCOUNTS,1,MPI_INTEGER,  
      &          RECVCOUNTS,1,MPI_INTEGER,  
      &          MPI_COMM_WORLD,IER) 
-          IF (IER/=MPI_SUCCESS) THEN 
+          IF (IER.NE.MPI_SUCCESS) THEN 
             WRITE(LU,*)  
      &       ' @STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALL ERROR: ',IER 
             CALL PLANTE(1)  
@@ -457,7 +468,7 @@
           DO I=2,NCSIZE 
             RDISPLS(I) = RDISPLS(I-1)+RECVCOUNTS(I-1) 
           END DO 
-          CALL P_MPI_ALLTOALLV  
+          CALL P_MPI_ALLTOALLV
      &      (SENDCHAR,SENDCOUNTS,SDISPLS,CHARACTERISTIC, 
      &       RECVCHAR,RECVCOUNTS,RDISPLS,CHARACTERISTIC, 
      &       MPI_COMM_WORLD,IER) 
@@ -488,7 +499,7 @@
           DOUBLE PRECISION, INTENT(IN) :: SHP(3,NRANGE), SHZ(NRANGE)  
           DOUBLE PRECISION, INTENT(IN) :: VAL(NPOIN2,NPLAN) 
           INTEGER I 
-          ! 
+! 
           DO I=1,NRANGE 
             IF (RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED 
               RECVCHAR(I)%BASKET(N) = 
@@ -508,7 +519,7 @@
 !           END OF THIS IS JUST TO AVOID A BUG ON HP COMPILER 
             ENDIF 
           END DO  
-          ! 
+! 
           RETURN  
         END SUBROUTINE INTERP_RECVCHAR_41 
 !         
@@ -652,7 +663,7 @@
           INTEGER, INTENT(IN) :: N,NPOIN,NOMB,NARRV 
           DOUBLE PRECISION, INTENT(INOUT) :: VAL(NPOIN) 
           INTEGER I  
-          IF (N>NOMB.OR.N>MAX_BASKET_SIZE) THEN  
+          IF (N.GT.NOMB.OR.N.GT.MAX_BASKET_SIZE) THEN  
             WRITE(LU,*)  
      &       ' @STREAMLINE::INTRODUCE_RECVCHAR ::', 
      &       ' N>NOMB.OR.N>MAX_BASKET_SIZE,',  
@@ -697,9 +708,9 @@
      &       ( HEAPCHAR(I)%BASKET(J), J=1,NOMB)  
           END DO  
         END SUBROUTINE PRINT_HEAPCHAR 
- 
-        ! PRINTS SENDCHAR STRUCTURE TO LU 
- 
+! 
+! PRINTS SENDCHAR STRUCTURE TO LU 
+! 
         SUBROUTINE PRINT_SENDCHAR(MESSAGE,NOMB,NSEND) 
           IMPLICIT NONE 
           INTEGER LNG,LU 
@@ -708,7 +719,6 @@
           CHARACTER(LEN=*), INTENT(IN) :: MESSAGE 
           INTEGER I,J 
           WRITE(LU,*) TRIM(MESSAGE)  
-          !IF (.NOT.ASSOCIATED(SENDCHAR)) RETURN 
           IF (.NOT.ALLOCATED(SENDCHAR)) RETURN 
           IF (SIZE(SENDCHAR)==0) RETURN 
           WRITE (LU,*) 'NSEND: ',NSEND  
@@ -727,9 +737,9 @@
      &       ( SENDCHAR(I)%BASKET(J), J=1,NOMB) 
           END DO  
         END SUBROUTINE PRINT_SENDCHAR 
-         
-        ! PRINTS RECVCHAR STRUCTURE TO LU  
- 
+!         
+! PRINTS RECVCHAR STRUCTURE TO LU  
+! 
         SUBROUTINE PRINT_RECVCHAR(MESSAGE,NOMB,NARRV)  
           IMPLICIT NONE 
           INTEGER LNG,LU 
@@ -1164,7 +1174,8 @@
 !             INTERFACE CROSSING 
               CALL COLLECT_CHAR  
      &            (IPID, IPLOT, ELT(IPLOT), IFA, ETA(IPLOT), ISP,  
-     &             NSP(IPLOT), XPLOT(IPLOT),YPLOT(IPLOT),ZPLOT(IPLOT),  
+     &             NSP(IPLOT), XPLOT(IPLOT),YPLOT(IPLOT),ZPLOT(IPLOT), 
+     &             DX(IPLOT),DY(IPLOT),DZ(IPLOT),  
      &             IFAPAR,NCHDIM,NCHARA) 
             ELSE 
 !             A LOST-AGAIN TRACEBACK DETECTED   
@@ -1548,7 +1559,9 @@
         IF(ADD) THEN
 !
           XPLOT(IPLOT)   = RECVCHAR(IPLOT)%XP  
-          YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP   
+          YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP 
+          DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
+          DY(IPLOT)      = RECVCHAR(IPLOT)%DY   
           ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
           NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
           ISPDONE(IPLOT) = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
@@ -1643,6 +1656,8 @@
 !         AND THE NUMBER OF STEPS DONE ALREADY   
           RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
           RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+          RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+          RECVCHAR(IPLOT)%DY=DY(IPLOT)
           RECVCHAR(IPLOT)%INE=ELT(IPLOT) 
           RECVCHAR(IPLOT)%ISP=ISP
         ENDIF 
@@ -1667,7 +1682,18 @@
           IEL = ELT(IPLOT) 
           XP = XPLOT(IPLOT) 
           YP = YPLOT(IPLOT) 
-! 
+!
+!         THE 3 LINES FORMING THE TRIANGLE CUT THE PLANE INTO 7
+!         ZONES, NUMBERED FROM 0 (INSIDE THE TRIANGLE) TO 6
+!         ISO IS THE NUMBER. FOR ISO =1,2,4, THERE IS NO AMBIGUITY
+!         AS TO THE EDGE CROSSED. FOR ISO = 3, IT CAN BE EDGE 2
+!         OR 3, FOR ISO = 5 IT CAN BE EDGE 1 OR 2, FOR ISO = 6 IT
+!         CAN BE EDGE 1 OR 3.
+!         FOR CASES 3, 5 AND 6, AN INNER PRODUCT SHOWS IF THE DIRECTION
+!         OF THE DISPLACEMENT (DX,DY) IS ON THE RIGHT OR ON THE LEFT
+!         OF THE INTERSECTION BETWEEN THE TWO EDGES, SO IT GIVES
+!         THE REAL EDGE THAT HAS BEEN CROSSED
+!
           IF(ISO.EQ.1) THEN 
             IFA = 2 
           ELSEIF (ISO.EQ.2) THEN 
@@ -1678,126 +1704,129 @@
             IFA = 2 
             IF(DX(IPLOT)*(Y(IKLE(IEL,3))-YP).LT. 
      &         DY(IPLOT)*(X(IKLE(IEL,3))-XP)) IFA = 3 
-            ELSEIF (ISO.EQ.6) THEN 
-              IFA = 3 
-              IF (DX(IPLOT)*(Y(IKLE(IEL,1))-YP).LT. 
-     &            DY(IPLOT)*(X(IKLE(IEL,1))-XP)) IFA = 1 
-            ELSE 
-              IFA = 1 
-              IF(DX(IPLOT)*(Y(IKLE(IEL,2))-YP).LT. 
-     &           DY(IPLOT)*(X(IKLE(IEL,2))-XP)) IFA = 2 
-            ENDIF 
-! 
-            IEL = IFABOR(IEL,IFA) 
-! 
-            IF(IEL.GT.0) THEN 
-! 
-!----------------------------------------------------------------------- 
-!             HERE WE ARRIVE IN ANOTHER ELEMENT
-!----------------------------------------------------------------------- 
-! 
-              I1 = IKLE(IEL,1) 
-              I2 = IKLE(IEL,2) 
-              I3 = IKLE(IEL,3) 
-! 
-              ELT(IPLOT) = IEL 
-              SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
-     &                       -(Y(I3)-Y(I2))*(XP-X(I2)))*SURDET(IEL) 
-              SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
-     &                       -(Y(I1)-Y(I3))*(XP-X(I3)))*SURDET(IEL) 
-              SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
-     &                       -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IEL) 
-! 
-              GOTO 50 
-! 
-            ENDIF
-!
-!----------------------------------------------------------------------- 
-!           HERE WE PASS TO NEIGHBOUR SUBDOMAIN AND COLLECT DATA 
-!----------------------------------------------------------------------- 
-! 
-            IF(IEL.EQ.-2) THEN   
-              IF(ADD) THEN  
-!               A LOST-AGAIN TRACEBACK DETECTED, ALREADY HERE    
-!               SET THE IMPLANTING PARAMETERS  
-                IPROC=IFAPAR(IFA  ,ELT(IPLOT)) 
-                ILOC =IFAPAR(IFA+3,ELT(IPLOT))
-!               ANOTHER ONE AS IPID, MEANS ALSO NOT LOCALISED  
-                RECVCHAR(IPLOT)%NEPID=IPROC  
-                RECVCHAR(IPLOT)%INE=ILOC 
-              ELSE
-                CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
-     &                            NSP(IPLOT),XPLOT(IPLOT),YPLOT(IPLOT),
-     &                            0.D0,IFAPAR,NCHDIM,NCHARA)                
-              ENDIF
-!             EXITING LOOP ON ISP 
-              EXIT   
-            ENDIF 
-! 
-!----------------------------------------------------------------------- 
-!           SPECIAL TREATMENT FOR SOLID OR LIQUID BOUNDARIES  
-!----------------------------------------------------------------------- 
-! 
-            DXP = DX(IPLOT) 
-            DYP = DY(IPLOT) 
-            I1  = IKLE(ELT(IPLOT),IFA) 
-            I2  = IKLE(ELT(IPLOT),ISUI(IFA)) 
-            DX1 = X(I2) - X(I1) 
-            DY1 = Y(I2) - Y(I1) 
-! 
-            IF(IEL.EQ.-1) THEN 
-! 
-!----------------------------------------------------------------------- 
-!             HERE SOLID BOUNDARY, VELOCITY IS PROJECTED ON THE BOUNDARY
-!             AND WE GO ON
-!----------------------------------------------------------------------- 
-! 
-              A1 = (DXP*DX1 + DYP*DY1) / (DX1**2 + DY1**2) 
-              DX(IPLOT) = A1 * DX1 
-              DY(IPLOT) = A1 * DY1 
-! 
-              A1 = ((XP-X(I1))*DX1+(YP-Y(I1))*DY1)/(DX1**2+DY1**2) 
-              SHP(      IFA ,IPLOT) = 1.D0 - A1 
-              SHP( ISUI(IFA),IPLOT) = A1 
-              SHP(ISUI2(IFA),IPLOT) = 0.D0 
-              XPLOT(IPLOT) = X(I1) + A1 * DX1 
-              YPLOT(IPLOT) = Y(I1) + A1 * DY1 
-! 
-              GOTO 50 
-! 
-            ELSEIF(IEL.EQ.0) THEN 
-! 
-!----------------------------------------------------------------------- 
-!             HERE WE HAVE A LIQUID BOUNDARY, THE CHARACTERISTIC IS STOPPED
-!----------------------------------------------------------------------- 
-! 
-              DENOM = DXP*DY1-DYP*DX1 
-              IF(DENOM.NE.0.D0) THEN 
-                A1  = (DXP*(YP-Y(I1))-DYP*(XP-X(I1))) / DENOM 
-              ELSE 
-                A1  = 0.D0 
-              ENDIF 
-              A1 = MAX(MIN(A1,1.D0),0.D0) 
-              SHP(      IFA ,IPLOT) = 1.D0 - A1 
-              SHP( ISUI(IFA),IPLOT) = A1 
-              SHP(ISUI2(IFA),IPLOT) = 0.D0 
-              XPLOT(IPLOT) = X(I1) + A1 * DX1 
-              YPLOT(IPLOT) = Y(I1) + A1 * DY1 
-!             THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
-!             SENS=-1 FOR BACKWARD CHARACTERISTICS
-              ELT(IPLOT) = - SENS * ELT(IPLOT)          
-              EXIT
-!
-            ELSE
-!
-              WRITE(LU,*) 'UNEXPECTED CASE IN SCHAR11'
-              WRITE(LU,*) 'IEL=',IEL
-              CALL PLANTE(1)
-              STOP
-!
-            ENDIF 
-! 
+          ELSEIF (ISO.EQ.6) THEN 
+            IFA = 3 
+            IF (DX(IPLOT)*(Y(IKLE(IEL,1))-YP).LT. 
+     &          DY(IPLOT)*(X(IKLE(IEL,1))-XP)) IFA = 1 
+          ELSE
+!           HERE CASE ISO=5 
+            IFA = 1 
+            IF(DX(IPLOT)*(Y(IKLE(IEL,2))-YP).LT. 
+     &         DY(IPLOT)*(X(IKLE(IEL,2))-XP)) IFA = 2 
           ENDIF 
+! 
+          IEL = IFABOR(IEL,IFA) 
+! 
+          IF(IEL.GT.0) THEN 
+! 
+!----------------------------------------------------------------------- 
+!           HERE WE ARRIVE IN ANOTHER ELEMENT
+!----------------------------------------------------------------------- 
+! 
+            I1 = IKLE(IEL,1) 
+            I2 = IKLE(IEL,2) 
+            I3 = IKLE(IEL,3) 
+! 
+            ELT(IPLOT) = IEL 
+            SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+     &                     -(Y(I3)-Y(I2))*(XP-X(I2)))*SURDET(IEL) 
+            SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+     &                     -(Y(I1)-Y(I3))*(XP-X(I3)))*SURDET(IEL) 
+            SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+     &                     -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IEL) 
+! 
+            GOTO 50 
+! 
+          ENDIF
+!
+!----------------------------------------------------------------------- 
+!         HERE WE PASS TO NEIGHBOUR SUBDOMAIN AND COLLECT DATA 
+!----------------------------------------------------------------------- 
+! 
+          IF(IEL.EQ.-2) THEN   
+            IF(ADD) THEN  
+!             A LOST-AGAIN TRACEBACK DETECTED, ALREADY HERE    
+!             SET THE IMPLANTING PARAMETERS  
+              IPROC=IFAPAR(IFA  ,ELT(IPLOT)) 
+              ILOC =IFAPAR(IFA+3,ELT(IPLOT))
+!             ANOTHER ONE AS IPID, MEANS ALSO NOT LOCALISED  
+              RECVCHAR(IPLOT)%NEPID=IPROC  
+              RECVCHAR(IPLOT)%INE=ILOC 
+            ELSE
+              CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
+     &                          NSP(IPLOT),
+     &                          XPLOT(IPLOT),YPLOT(IPLOT),0.D0,
+     &                          DX(IPLOT),DY(IPLOT),0.D0,
+     &                          IFAPAR,NCHDIM,NCHARA)                
+            ENDIF
+!           EXITING LOOP ON ISP 
+            EXIT   
+          ENDIF 
+! 
+!----------------------------------------------------------------------- 
+!         SPECIAL TREATMENT FOR SOLID OR LIQUID BOUNDARIES  
+!----------------------------------------------------------------------- 
+! 
+          DXP = DX(IPLOT) 
+          DYP = DY(IPLOT) 
+          I1  = IKLE(ELT(IPLOT),IFA) 
+          I2  = IKLE(ELT(IPLOT),ISUI(IFA)) 
+          DX1 = X(I2) - X(I1) 
+          DY1 = Y(I2) - Y(I1) 
+! 
+          IF(IEL.EQ.-1) THEN 
+! 
+!----------------------------------------------------------------------- 
+!           HERE SOLID BOUNDARY, VELOCITY IS PROJECTED ON THE BOUNDARY
+!           AND WE GO ON
+!----------------------------------------------------------------------- 
+! 
+            A1 = (DXP*DX1 + DYP*DY1) / (DX1**2 + DY1**2) 
+            DX(IPLOT) = A1 * DX1 
+            DY(IPLOT) = A1 * DY1 
+! 
+            A1 = ((XP-X(I1))*DX1+(YP-Y(I1))*DY1)/(DX1**2+DY1**2) 
+            SHP(      IFA ,IPLOT) = 1.D0 - A1 
+            SHP( ISUI(IFA),IPLOT) = A1 
+            SHP(ISUI2(IFA),IPLOT) = 0.D0 
+            XPLOT(IPLOT) = X(I1) + A1 * DX1 
+            YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+! 
+            GOTO 50 
+! 
+          ELSEIF(IEL.EQ.0) THEN 
+! 
+!----------------------------------------------------------------------- 
+!           HERE WE HAVE A LIQUID BOUNDARY, THE CHARACTERISTIC IS STOPPED
+!----------------------------------------------------------------------- 
+! 
+            DENOM = DXP*DY1-DYP*DX1 
+            IF(DENOM.NE.0.D0) THEN 
+              A1  = (DXP*(YP-Y(I1))-DYP*(XP-X(I1))) / DENOM 
+            ELSE 
+              A1  = 0.D0 
+            ENDIF 
+            A1 = MAX(MIN(A1,1.D0),0.D0) 
+            SHP(      IFA ,IPLOT) = 1.D0 - A1 
+            SHP( ISUI(IFA),IPLOT) = A1 
+            SHP(ISUI2(IFA),IPLOT) = 0.D0 
+            XPLOT(IPLOT) = X(I1) + A1 * DX1 
+            YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+!           THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!           SENS=-1 FOR BACKWARD CHARACTERISTICS
+            ELT(IPLOT) = - SENS * ELT(IPLOT)          
+            EXIT
+!
+          ELSE
+!
+            WRITE(LU,*) 'UNEXPECTED CASE IN SCHAR11'
+            WRITE(LU,*) 'IEL=',IEL
+            CALL PLANTE(1)
+            STOP
+!
+          ENDIF 
+! 
+        ENDIF 
 ! 
         ENDDO 
       ENDDO 
@@ -1904,7 +1933,9 @@
         IF(ADD) THEN
 !
           XPLOT(IPLOT)   = RECVCHAR(IPLOT)%XP  
-          YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP   
+          YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP  
+          DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
+          DY(IPLOT)      = RECVCHAR(IPLOT)%DY    
           ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
           NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
           ISPDONE(IPLOT) = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
@@ -2098,7 +2129,9 @@
 !         CONTINUOUS SETTING OF THE REACHED POSITION FOR IPLOT  
 !         AND THE NUMBER OF STEPS DONE ALREADY   
           RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
-          RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+          RECVCHAR(IPLOT)%YP=YPLOT(IPLOT)
+          RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+          RECVCHAR(IPLOT)%DY=DY(IPLOT)  
           RECVCHAR(IPLOT)%INE=ELT(IPLOT) 
           RECVCHAR(IPLOT)%ISP=ISP
         ENDIF 
@@ -2183,8 +2216,10 @@
                 RECVCHAR(IPLOT)%INE=ILOC 
               ELSE
                 CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
-     &                            NSP(IPLOT),XPLOT(IPLOT),YPLOT(IPLOT),
-     &                            0.D0,IFAPAR,NCHDIM,NCHARA)                
+     &                            NSP(IPLOT),
+     &                            XPLOT(IPLOT),YPLOT(IPLOT),0.D0,
+     &                            DX(IPLOT),DY(IPLOT),0.D0,
+     &                            IFAPAR,NCHDIM,NCHARA)                
               ENDIF
 !             EXITING LOOP ON ISP 
               EXIT   
@@ -2358,7 +2393,9 @@
         IF(ADD) THEN
 !
           XPLOT(IPLOT)   = RECVCHAR(IPLOT)%XP  
-          YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP   
+          YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP 
+          DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
+          DY(IPLOT)      = RECVCHAR(IPLOT)%DY   
           ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
           NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
           ISPDONE(IPLOT) = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
@@ -2471,7 +2508,9 @@
 !         CONTINUOUS SETTING OF THE REACHED POSITION FOR IPLOT  
 !         AND THE NUMBER OF STEPS DONE ALREADY   
           RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
-          RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+          RECVCHAR(IPLOT)%YP=YPLOT(IPLOT)
+          RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+          RECVCHAR(IPLOT)%DY=DY(IPLOT)  
           RECVCHAR(IPLOT)%INE=ELT(IPLOT) 
           RECVCHAR(IPLOT)%ISP=ISP
         ENDIF 
@@ -2556,8 +2595,10 @@
                 RECVCHAR(IPLOT)%INE=ILOC 
               ELSE
                 CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
-     &                            NSP(IPLOT),XPLOT(IPLOT),YPLOT(IPLOT),
-     &                            0.D0,IFAPAR,NCHDIM,NCHARA)                
+     &                            NSP(IPLOT),
+     &                            XPLOT(IPLOT),YPLOT(IPLOT),0.D0,
+     &                            DX(IPLOT),DY(IPLOT),0.D0,
+     &                            IFAPAR,NCHDIM,NCHARA)                
               ENDIF
 !             EXITING LOOP ON ISP 
               EXIT   
