@@ -57,6 +57,11 @@
 !+        V6P2
 !+      Double precision SERAFIN now possible.
 !
+!history  Y. AUDOUIN (STFC & LNHE)
+!+        25/06/2012
+!+        V6P2
+!+      Interface for latest release of METIS (>= Version 5)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -129,9 +134,11 @@
 !
 ! METISOLOGY
 !
-      INTEGER NPARTS, ETYPE, NUMFLAG, EDGECUT
+      INTEGER NPARTS, ETYPE, NUMFLAG, EDGECUT, NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPART(:), NPART(:)
-      CHARACTER(LEN=10) FMT1, FMT2, FMT3
+      INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
+      INTEGER, ALLOCATABLE :: NULLTABLE(:)
+      CHARACTER(LEN=10) :: FMT1, FMT2, FMT3
 !
 ! FOR CALLING FRONT2
 !
@@ -864,7 +871,7 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !
 !
 
-      !======================================================================
+!======================================================================
 ! STEP 2 : PARTITIONING THE MESH 
 !
 ! OTHER PARTITIONING METHODS SHOULD BE USED (SCOTCH FOR EXAMPLE)
@@ -878,16 +885,50 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
       ALLOCATE (NPART(NPOIN2),STAT=ERR)
       IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'NPART')
 !
+!----------------------------------------------------------------------
+!     NEW METIS INTERFACE (>= VERSION 5) :
+!
+!     EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS
+!     THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
+!     CF. DISCUSSION IN SECTION 4.3 (?)
+!
+      ALLOCATE (EPTR(NELEM2+1),STAT=ERR)
+      IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
+      ALLOCATE (EIND(NELEM2*NDP),STAT=ERR)
+      IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')     
+!
+      DO I=1,NELEM2+1
+         EPTR(I) = (I-1)*NDP + 1
+      ENDDO
+!     
+      K=1
+      DO I=1,NELEM2
+         DO J=1,NDP
+            EIND(K) = IKLES((I-1)*NDP+J)
+            K = K + 1
+         ENDDO   
+      ENDDO    
+!     
+!     SWITCH TO C NUMBERING
+      EIND = EIND -1
+      EPTR = EPTR -1
+!
+!     METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
+!     NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
+!     NCOMMONNODES = 3   FOR TETRAHEDRE
+!     NCOMMONNODES = 4   FOR HEXAHEDRE
+
+!
       IF (NDP==3.OR.NDP==6) THEN 
-         ETYPE = 1
+         NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
       ELSE
          WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
          CALL PARTEL_PLANTE2(-1)
          STOP
       ENDIF 
       
-! WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
-!     IS RELEVANT HERE.   
+!     WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
+!     IS RELEVANT HERE.  
 !     
 !     IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
 !     IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
@@ -895,16 +936,18 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
       NUMFLAG = 1
 !
       WRITE(LU,*) 'USING ONLY METIS_PARTMESHDUAL SUBROUTINE'
-      
+!
       WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
       IF (TIMECOUNT) THEN 
          CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
          TDEBP = TEMPS
       ENDIF
-      CALL METIS_PARTMESHDUAL 
-     &     (NELEM2, NPOIN2, IKLES, ETYPE, NUMFLAG, 
-     &     NPARTS, EDGECUT, EPART, NPART)
-     
+!     
+        CALL METIS_PARTMESHDUAL 
+     &      (NELEM2, NPOIN2, EPTR, EIND, NULLTABLE,
+     &       NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
+     &       NULLTABLE, EDGECUT, EPART, NPART)
+!     
       WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
       IF (TIMECOUNT) THEN
         CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
@@ -912,7 +955,13 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
         WRITE(LU,*) ' RUNTIME OF METIS ',
      &            (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
       ENDIF
-!      
+!
+!     DEALLOCATING TEMPORARY ARRAYS FOR METIS
+      EPART = EPART+1
+      DEALLOCATE(EPTR)
+      DEALLOCATE(EIND)
+
+      
 !======================================================================
 ! STEP 3 : ALLOCATE THE GLOBAL  ARRAYS NOT DEPENDING OF THE PARTITION
 !     
@@ -3190,6 +3239,13 @@ CD********************************************************
       INTEGER SOMFAC(3,4)
       DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /
 
+!     
+!     METISOLOGY
+!
+      INTEGER :: NCOMMONNODES
+      INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
+      INTEGER, ALLOCATABLE :: NULLTABLE(:)
+
 
 !-----------------------------------------------------------------------
 ! 1. PREAMBULE
@@ -3766,12 +3822,12 @@ CD    *******************************
 !
       DEALLOCATE(NBOR2)
 !
-      WRITE(LU,*) 'VOISIN31'
+      WRITE(LU,*) 'PARTEL_VOISIN31'
 !
       CALL PARTEL_VOISIN31 (NBTET, NBTET,NBTET,
      &  NPOINT,NPTFR,IKLE,IFABOR,NBOR)
 !
-      WRITE(LU,*) 'FIN DE VOISIN31'
+      WRITE(LU,*) 'FIN DE PARTEL_VOISIN31'
 !      
       ALLOCATE(IPOBO(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER(LU,'IPOBO')
@@ -3889,8 +3945,6 @@ C                  WRITE(*,*) N, '---> ',M
 !------------------------------------------------------- FIN VERSION F.D
 
 
-
-
 ! 3B. CONSTRUCTION DE NODES1/NODES2/NODES3: CONNECTIVITE INVERSE NOEUD > TETRA
 !     POUR L'ECRITURE A LA VOLEE DES UNV LOCAUX
 !---------------
@@ -3997,18 +4051,61 @@ C                  WRITE(*,*) N, '---> ',M
 !        DO I=1,NBTET
 !                WRITE(LU,*) 'TETTRIBETA',TETTRI2(I)
 !        ENDDO
-
-      WRITE(LU,*)' '
-      WRITE(LU,*)' STARTING METIS MESH PARTITIONING------------------+'
+!
+!----------------------------------------------------------------------
+!     NEW METIS INTERFACE (>= VERSION 5) :
+!
+!     EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS
+!     THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
+!     CF. DISCUSSION IN SECTION 4.3 (?)
+!
       ALLOCATE(EPART(NBTET),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPART')
       ALLOCATE (NPART(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'NPART')
+!
+      ALLOCATE (EPTR(NBTET+1),STAT=IERR)
+      IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
+      ALLOCATE (EIND(NBTET*4),STAT=IERR)
+      IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')
+!     
+      DO I=1,NBTET+1
+         EPTR(I) = (I-1)*4 + 1
+      ENDDO
+!     
+      K=1
+      DO I=1,NBTET
+         DO J=1,4
+            EIND(K) = IKLESTET((I-1)*4+J)
+            K = K + 1
+         ENDDO
+      ENDDO
+
+!     SWITCH TO C NUMBERING
+      EIND = EIND - 1
+      EPTR = EPTR - 1
+!
+!     METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
+!     NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
+      NCOMMONNODES = 3 ! FOR TETRAHEDRE
+!     NCOMMONNODES = 4   FOR HEXAHEDRE
+!
+!----------------------------------------------------------------------
+!    CALL METIS : MESH PARTITIONNING
+!
+!
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(5),COUNT_RATE=PARSEC)
-! PARTITIONNEMENT DES MAILLES
-      CALL METIS_PARTMESHDUAL(NBTET,NPOINT,IKLESTET,2,1,NPARTS,EDGECUT,
-     &    EPART,NPART)
+!
+      WRITE(LU,*)' '
+      WRITE(LU,*)' STARTING METIS MESH PARTITIONING------------------+'
+!
+        CALL METIS_PARTMESHDUAL
+     &      (NBTET, NPOINT, EPTR, EIND, NULLTABLE,
+     &       NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
+     &       NULLTABLE, EDGECUT, EPART, NPART)
+!
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(6),COUNT_RATE=PARSEC)
+!
       WRITE(LU,*)' '
       WRITE(LU,*)' END METIS MESH PARTITIONING------------------+'
       WRITE(LU,*)' TEMPS CONSOMME PAR  METIS ',
@@ -4017,8 +4114,13 @@ C                  WRITE(*,*) N, '---> ',M
       WRITE(LU,81) NBTET,NBTRI
       WRITE(LU,82) EDGECUT,NPARTS
       WRITE(LU,*) 'SORTIE DE METIS CORRECTE'
+!
+      EPART = EPART+1
+      DEALLOCATE(EPTR)
+      DEALLOCATE(EIND)
+!
 CD ******************************************************
-CD     LOOP  OVER THE TETRA TO COMPUTER THE NUMBER AND THE LABEL
+CD     LOOP OVER THE TETRA TO COMPUTER THE NUMBER AND THE LABEL
 CD     OF FINITE ELEMENTS ASSIGNED TO  EACH SUBDOMAIN
 CD ******************************************************
 CD     COMPUTATION OF THE MAXIMUM NUMBER OF FINITE ELEMENTS ASSIGNED TO ONE SUBDOMAIN
