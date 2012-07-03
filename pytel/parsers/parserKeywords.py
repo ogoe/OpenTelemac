@@ -126,8 +126,8 @@ def readCAS(keywords,dico,frgb):
       if dico[kw]['TYPE'][0] == 'LOGIQUE':
          vals = []
          for val in value:
-            if val in ['YES','Y','TRUE','OUI','O','VRAI']: vals.append('TRUE')
-            if val in ['NO','N','FALSE','NON','N','FAUX']: vals.append('FALSE')
+            if val.upper() in ['YES','Y','TRUE','OUI','O','VRAI']: vals.append('TRUE')
+            if val.upper() in ['NO','N','FALSE','NON','N','FAUX']: vals.append('FALSE')
          outwords.update({key:vals})
       elif dico[kw]['TYPE'][0] in ['ENTIER','INTEGER']:
          vals = []
