@@ -163,8 +163,11 @@ def rewriteCAS(cas):
                line = line + lcur + ';\n'
                lcur = '    '+str(v)
             else:  '... warning: CAS file cannot read this value: ',lcur
-      if len(line+lcur) < 73: lines.append(line+lcur)
-      else: '... warning: CAS file cannot read this value: ',lcur
+      # ~~> CCT The following test is wrong ! the test just before allow
+      #     the lines longer than 72 characters --> Cancel
+      #if len(line+lcur) < 73: lines.append(line+lcur)
+      #else: '... warning: CAS file cannot read this value: ',lcur
+      lines.append(line+lcur)
 
    lines.append('')
    return lines
