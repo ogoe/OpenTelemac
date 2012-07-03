@@ -1232,7 +1232,7 @@
 !----------------------------------------------------------------------- 
 ! 
             DENOM = DXP*DY1-DYP*DX1 
-            IF(ABS(DENOM).GT.1.D-8) THEN 
+            IF(ABS(DENOM).GT.1.D-12) THEN 
               A1 = (DXP*(YP-Y(I1))-DYP*(XP-X(I1))) / DENOM 
             ELSE 
               A1 = 0.D0 
@@ -1783,10 +1783,23 @@
 !           AND WE GO ON
 !----------------------------------------------------------------------- 
 ! 
+!           HERE A1 IS THE PARAMETRIC COORDINATE OF THE PROJECTED
+!           DISPLACEMENT ON SEGMENT I1----I2
+!
             A1 = (DXP*DX1 + DYP*DY1) / (DX1**2 + DY1**2) 
+!
+!           THE TOTAL DISPLACEMENT IS PROJECTED HERE, NOT THE REMAINING
+!           PART, BUT ONLY THE DIRECTION WILL BE USED
             DX(IPLOT) = A1 * DX1 
             DY(IPLOT) = A1 * DY1 
 ! 
+!           NOW A1 IS THE PARAMETRIC COORDINATE ON SEGMENT I1----I2
+!           OF THE POSITION OF THE ARRIVAL POINT, I.E. INTERSECTION
+!           + REMAINING DISPLACEMENT PROJECTED ON THE SEGMENT
+!           ITS VALUE MAY BE OUTSIDE THE RANGE (0,1). THE VALUE OF A1
+!           SIMPLIFIES INTO THE FOLLOWING FORMULA, BECAUSE IT IS
+!           SIMPPLY VECTOR I1----P PROJECTED ON SEGMENT I1----I2
+!
             A1 = ((XP-X(I1))*DX1+(YP-Y(I1))*DY1)/(DX1**2+DY1**2) 
             SHP(      IFA ,IPLOT) = 1.D0 - A1 
             SHP( ISUI(IFA),IPLOT) = A1 
@@ -1804,12 +1817,12 @@
 ! 
           ELSEIF(IEL.EQ.0) THEN 
 ! 
-!----------------------------------------------------------------------- 
+!------------------------------------------------------------------------ 
 !           HERE WE HAVE A LIQUID BOUNDARY, THE CHARACTERISTIC IS STOPPED
-!----------------------------------------------------------------------- 
+!------------------------------------------------------------------------ 
 ! 
             DENOM = DXP*DY1-DYP*DX1 
-            IF(DENOM.NE.0.D0) THEN 
+            IF(ABS(DENOM).GT.1.D-12) THEN 
               A1  = (DXP*(YP-Y(I1))-DYP*(XP-X(I1))) / DENOM 
             ELSE 
               A1  = 0.D0 
@@ -2277,7 +2290,7 @@
 !----------------------------------------------------------------------- 
 ! 
               DENOM = DXP*DY1-DYP*DX1 
-              IF(DENOM.NE.0.D0) THEN 
+              IF(ABS(DENOM).GT.1.D-12) THEN 
                 A1  = (DXP*(YP-Y(I1))-DYP*(XP-X(I1))) / DENOM 
               ELSE 
                 A1  = 0.D0 
@@ -2662,7 +2675,7 @@
 !----------------------------------------------------------------------- 
 ! 
               DENOM = DXP*DY1-DYP*DX1 
-              IF(DENOM.NE.0.D0) THEN 
+              IF(ABS(DENOM).GT.1.D-12) THEN 
                 A1  = (DXP*(YP-Y(I1))-DYP*(XP-X(I1))) / DENOM 
               ELSE 
                 A1  = 0.D0 

@@ -95,7 +95,7 @@
       INTEGER         , INTENT(INOUT) :: DEBFLO(NFLOT),FINFLO(NFLOT)
       INTEGER         , INTENT(INOUT) :: ELTFLO(NFLOT)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(NDP,NFLOT)
-      TYPE(BIEF_MESH)                 :: MESH
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
