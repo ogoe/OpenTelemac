@@ -870,7 +870,7 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 ! PARTITIONING
 !
 !
-
+!
 !======================================================================
 ! STEP 2 : PARTITIONING THE MESH 
 !
@@ -879,11 +879,11 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !     THE USE OF PARMETIS OR PTSCOTCH COULD BE USED FOR LARGER MESHES
 !     IF THERE WILL BE SOME MEMORY ALLOCATION PROBLEM 
 !======================================================================      
-    
-      ALLOCATE (EPART(NELEM2),STAT=ERR)
-      IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPART')
-      ALLOCATE (NPART(NPOIN2),STAT=ERR)
-      IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'NPART')
+!    
+      ALLOCATE(EPART(NELEM2),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPART')
+      ALLOCATE(NPART(NPOIN2),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'NPART')
 !
 !----------------------------------------------------------------------
 !     NEW METIS INTERFACE (>= VERSION 5) :
@@ -892,22 +892,29 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !     THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
 !     CF. DISCUSSION IN SECTION 4.3 (?)
 !
-      ALLOCATE (EPTR(NELEM2+1),STAT=ERR)
-      IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
-      ALLOCATE (EIND(NELEM2*NDP),STAT=ERR)
-      IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')     
+      ALLOCATE(EPTR(NELEM2+1),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
+      ALLOCATE(EIND(NELEM2*NDP),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')     
+!
+!     CORRECTION JMH 04/07/2012 : BELOW NDP MUST BE 3
+!     IT WOULD NOT WORK IN 3D WITH NDP=6
 !
       DO I=1,NELEM2+1
-         EPTR(I) = (I-1)*NDP + 1
+!       EPTR(I) = (I-1)*NDP + 1
+        EPTR(I) = (I-1)*3 + 1
       ENDDO
 !     
       K=1
       DO I=1,NELEM2
-         DO J=1,NDP
-            EIND(K) = IKLES((I-1)*NDP+J)
-            K = K + 1
-         ENDDO   
+!       DO J=1,NDP
+        DO J=1,3
+          EIND(K) = IKLES((I-1)*3+J)
+          K = K + 1
+        ENDDO   
       ENDDO    
+!
+!     END OF CORRECTION JMH 04/07/2012
 !     
 !     SWITCH TO C NUMBERING
       EIND = EIND -1
@@ -920,15 +927,15 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 
 !
       IF (NDP==3.OR.NDP==6) THEN 
-         NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
+         NCOMMONNODES = 2 ! FOR TRIANGLE OR PRISM
       ELSE
          WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
          CALL PARTEL_PLANTE2(-1)
          STOP
       ENDIF 
-      
+!      
 !     WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
-!     IS RELEVANT HERE.  
+!     IS RELEVANT HERE.
 !     
 !     IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
 !     IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
@@ -937,13 +944,22 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !
       WRITE(LU,*) 'USING ONLY METIS_PARTMESHDUAL SUBROUTINE'
 !
-      WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
-      IF (TIMECOUNT) THEN 
-         CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-         TDEBP = TEMPS
+      IF(TIMECOUNT) THEN 
+        CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+        TDEBP = TEMPS
       ENDIF
-!     
-        CALL METIS_PARTMESHDUAL 
+! 
+      WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
+      WRITE(LU,*) ' NPARTS=',NPARTS,' NCOMMONNODES=',NCOMMONNODES
+      WRITE(LU,*) ' WITH NELEM2=',NELEM2,' NPOIN2=',NPOIN2
+      DO K=1,NELEM2*3
+        WRITE(LU,*) 'K=',K,' EIND=',EIND(K)
+      ENDDO
+      DO K=1,NELEM2+1
+        WRITE(LU,*) 'K=',K,' EPTR=',EPTR(K)
+      ENDDO
+!    
+      CALL METIS_PARTMESHDUAL 
      &      (NELEM2, NPOIN2, EPTR, EIND, NULLTABLE,
      &       NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
      &       NULLTABLE, EDGECUT, EPART, NPART)
@@ -957,11 +973,12 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
       ENDIF
 !
 !     DEALLOCATING TEMPORARY ARRAYS FOR METIS
+!
+!     EPART IS AN ARRAY
       EPART = EPART+1
       DEALLOCATE(EPTR)
       DEALLOCATE(EIND)
-
-      
+!      
 !======================================================================
 ! STEP 3 : ALLOCATE THE GLOBAL  ARRAYS NOT DEPENDING OF THE PARTITION
 !     
@@ -1015,13 +1032,13 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
       ALLOCATE(IFAPAR(NPARTS,7,NBMAXHALO),STAT=ERR)
          IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'IFAPAR')
          IFAPAR(:,:,:)=0
-
+!
 !======================================================================
 ! STEP 4 : COMPUTE THE NUMBER OF FINITE ELEMENTS AND POINTS
 !     BELONGING TO SUBMESH I
 !
 !======================================================================   
-
+!
       
 !     FIRSTLY, ALL MPI PROCESSES  WORK ON THE WHOLE MESH
 !     ----------------------------------------------      
@@ -1617,7 +1634,7 @@ CD
               ELSE
                 WRITE(NOUT) ((F(KNOLG(J,I)+(L-1)*NPOIN2,3),
      &                        J=1,NPOIN_P(I)),L=1,NPLAN)
-              ENDIF 
+              ENDIF
             ENDIF
           ENDDO
         ENDDO
@@ -4070,17 +4087,17 @@ C                  WRITE(*,*) N, '---> ',M
       IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')
 !     
       DO I=1,NBTET+1
-         EPTR(I) = (I-1)*4 + 1
+        EPTR(I) = (I-1)*4 + 1
       ENDDO
 !     
       K=1
       DO I=1,NBTET
-         DO J=1,4
-            EIND(K) = IKLESTET((I-1)*4+J)
-            K = K + 1
-         ENDDO
+        DO J=1,4
+          EIND(K) = IKLESTET((I-1)*4+J)
+          K = K + 1
+        ENDDO
       ENDDO
-
+!
 !     SWITCH TO C NUMBERING
       EIND = EIND - 1
       EPTR = EPTR - 1
