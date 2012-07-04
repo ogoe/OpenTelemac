@@ -2741,19 +2741,6 @@ c$$$!
       ENDDO
 !BD_INCKA MODIFICATION FOR PARALLEL MODE
       NSPMAX = P_IMAX(NSPMAX)
-!         IF (IPID==7)  THEN
-!           DO IPLAN=1,NPLAN
-!             WRITE(160+IFF,*)'NSP(729,',IPLAN,')=',
-!      *        NSP(729+(IPLAN-1)*NPOIN2)
-!           ENDDO
-!         ENDIF
-!         IF (IPID==6)  THEN
-!           DO IPLAN=1,NPLAN
-!             WRITE(60+IFF,*)'NSP(1300,',IPLAN,')=',
-!      *        NSP(1300+(IPLAN-1)*NPOIN2)
-!           ENDDO
-!         ENDIF
-!
       IF(LNG.EQ.1) THEN
          WRITE(LU,*) 'NOMBRE MAX DE SOUS PAS :',NSPMAX
       ELSE

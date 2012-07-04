@@ -44,7 +44,7 @@
 !COUPLAGE Telemac-Tomawac : variables de la liste d'arguments en appel
       INTEGER,           INTENT(IN)      :: PART,NIT_TEL,PERCOU_WAC
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
-      TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
+      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: U_TEL,V_TEL,H_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: UV_WAC,VV_WAC
       DOUBLE PRECISION,  INTENT(IN)      :: DT_TEL,T_TEL
