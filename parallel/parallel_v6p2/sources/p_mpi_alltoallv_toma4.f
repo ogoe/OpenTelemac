@@ -1,6 +1,6 @@
-!                    *********************************
-                     SUBROUTINE  P_MPI_ALLTOALLV_TOMA4
-!                    *********************************
+!                    ********************************
+                     SUBROUTINE P_MPI_ALLTOALLV_TOMA4
+!                    ********************************
 !
      &(I1,I2,I3,I4,I5,I6,I7,I8,I9,I10)
 !
@@ -61,7 +61,7 @@
           DOUBLE PRECISION :: SHP1,SHP2,SHP3,SHZ,SHF
           DOUBLE PRECISION :: BP
           DOUBLE PRECISION :: F(12) ! FUNCTION VALUES AT THE 6 POINTS OF THE PRISM
-        END TYPE FONCTION_TYPE_4D
+      END TYPE FONCTION_TYPE_4D
 !
       TYPE(FONCTION_TYPE_4D) ::  I1(*), I5(*)
       INTEGER, INTENT(IN) ::  I2(*),I3(*),I4,I6(*),I7(*)

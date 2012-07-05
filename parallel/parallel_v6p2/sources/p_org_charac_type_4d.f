@@ -5,7 +5,7 @@
      &(NOMB,TRACE,CHARACTER_4D)                      
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS /
@@ -28,19 +28,24 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET
+!+        05/07/2012
+!+        V6P2
+!+   NOMB set to INTENT(IN)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NOMB           |<---| NUMBER OF VARIABLES 
-!| TRACE          |<---| IF .TRUE. TRACE EXECUTION
+!| NOMB           |--->| NUMBER OF VARIABLES 
+!| TRACE          |--->| IF .TRUE. TRACE EXECUTION
 !| CHARACTERISTIC |--->| DATATYPE FOR CHARACTERISTIC 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !         
       IMPLICIT NONE 
       INCLUDE 'mpif.h' 
 ! 
-      INTEGER, PARAMETER :: MAX_BASKET_SIZE=10 
-      INTEGER, INTENT(INOUT) :: NOMB 
-      INTEGER, INTENT(INOUT)  :: CHARACTER_4D
-      LOGICAL, INTENT(IN) ::TRACE 
+      INTEGER, PARAMETER     :: MAX_BASKET_SIZE=10 
+      INTEGER, INTENT(IN)    :: NOMB 
+      INTEGER, INTENT(INOUT) :: CHARACTER_4D
+      LOGICAL, INTENT(IN)    :: TRACE 
       TYPE CHARAC_TYPE_4D
           INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD)
           INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO
