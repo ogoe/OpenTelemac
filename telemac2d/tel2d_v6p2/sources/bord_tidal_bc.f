@@ -3,8 +3,8 @@
 !                    ************************
 !
      &(NBOR,LIHBOR,LIUBOR,NPTFR,
-     & KENT,KENTU,MESH,GEOSYST,NUMZONE,TIDALTYPE,BOUNDARY_COLOUR,MAXFRO,
-     & NFO2,NBI2,NRFO,XSHIFT,YSHIFT)
+     & KENT,KENTU,MESH,GEOSYST,NUMZONE,LAMBD0,PHI0,TIDALTYPE,
+     & BOUNDARY_COLOUR,MAXFRO,NFO2,NBI2,NRFO,XSHIFT,YSHIFT)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P1                                   18/11/2010
@@ -26,6 +26,7 @@
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| KENTU          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
 !| GEOSYST        |-->| TYPE OF GEOGRAPHIC SYSTEM (WGS84 LONG/LAT, UTM OR LAMBERT)
+!| LAMBD0         |-->| LATITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
 !| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
 !| LIUBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON U
 !| MAXFRO         |-->| MAXIMUM NUMBER OF BOUNDARIES
@@ -36,6 +37,7 @@
 !| NRFO           |-->| LOGICAL UNIT OF HARMONIC CONSTANTS FILE
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NUMZONE        |-->| NUMBER OF ZONE WHEN PLANE PROJECTION (UTM OR LAMBERT)
+!| PHI0           |-->| LONGITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
 !| TIDALTYPE      |-->| TYPE OF TIDE TO MODEL
 !| ZF             |-->| BOTTOM TOPOGRAPHY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,7 +56,7 @@
       INTEGER, INTENT(IN)            :: GEOSYST,NUMZONE,TIDALTYPE
       INTEGER, INTENT(IN)            :: LIHBOR(NPTFR),LIUBOR(NPTFR)
       INTEGER, INTENT(IN)            :: NBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)   :: XSHIFT,YSHIFT
+      DOUBLE PRECISION, INTENT(IN)   :: XSHIFT,YSHIFT,LAMBD0,PHI0
       TYPE(BIEF_OBJ), INTENT(IN)     :: BOUNDARY_COLOUR
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
 !
@@ -253,7 +255,7 @@ c$$$            IF(BOUNDARY_COLOUR%I(K).EQ.1) THEN
      &                               XBTIDE(1:NNBTIDE),
      &                               YBTIDE(1:NNBTIDE),
      &                               LAMBDA(1:NNBTIDE),PHI(1:NNBTIDE),
-     &                               GEOSYST,NUMZONE)
+     &                               GEOSYST,NUMZONE,PHI0,LAMBD0)
 !  NTF LAMBERT
       ELSEIF(GEOSYST.EQ.4) THEN
         CALL CONV_LAMBERT_TO_DEGDEC(NNBTIDE,
