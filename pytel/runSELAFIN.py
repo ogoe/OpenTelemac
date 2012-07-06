@@ -40,6 +40,12 @@
          Addition of the new code "spec" to read and print to screen the core content
          of a TOMAWAC SPECTRAL file.
 """
+"""@history 2/03/2012 -- Laure Grignon:
+         Addition of a new CombineClusterSELAFIN class to combine data
+         from a list of selafin files, each containing data for a limited
+         number of nodes in the mesh, and NoData values for the other
+         nodes.
+"""
 """@history 05/04/2012 -- Sebastien E. Bourban:
          Addition of the new SELAFIN class to expand on calcs with the crunch.
          While calcsSELAFIN calculates a time varying variables, crunchSELAFIN
@@ -80,6 +86,58 @@ from utils.progressbar import ProgressBar
 # _____                    _________________________________________
 # ____/ Secondary Classes /________________________________________/
 #
+
+class CombineClusterSELAFIN(SELAFINS):
+
+   def __init__(self, NoDataValue):
+      self.slfs = []
+      self.slf = None
+      self.NoDataValue = NoDataValue
+
+   def putContent(self,fileName): 
+ 
+      self.slf.fole = open(fileName,'wb')
+      # take list of variable from first item in the list
+      slf = self.slfs[0]
+      # slf.fole = self.slf.fole
+      idvars = []
+      self.slf.VARNAMES = slf.VARNAMES
+      self.slf.VARUNITS = slf.VARUNITS
+      self.slf.CLDNAMES = slf.CLDNAMES
+      self.slf.CLDUNITS = slf.CLDUNITS
+      self.slf.VARINDEX = slf.VARINDEX
+      self.slf.NBV1 = slf.NBV1
+      self.slf.NBV2 = slf.NBV2
+      for slf in self.slfs[1:]: # check that all files contain same list of variables
+          if self.slf.VARNAMES != slf.VARNAMES:
+              print 'All files in the list should contain same VARNAMES list'
+              return
+          if self.slf.CLDNAMES != slf.CLDNAMES:
+              print 'All files in the list should contain same CLDNAMES list'
+              return
+      ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
+      putHeaderSLF(self.slf)
+      for t in range(len(self.slf.tags['times'])):
+         ibar += 1
+         appendCoreTimeSLF(self.slf,t)
+         slf = self.slfs[0]
+         values = slf.getVALUES(t)
+         values[values == self.NoDataValue] = 0
+         check_NoDataValue_nodes = (values == self.NoDataValue) # true if no data
+         for slf in self.slfs[1:]:
+            values_this_slf = slf.getVALUES(t)
+            values_this_slf[values_this_slf == self.NoDataValue] = 0
+            values = values + values_this_slf
+            check_NoDataValue_nodes *= (values_this_slf == self.NoDataValue)
+         appendCoreVarsSLF(self.slf,values)
+         pbar.update(ibar)
+      pbar.finish()
+      self.slf.fole.close()
+
+      if check_NoDataValue_nodes.any():
+         print 'Warning : Some nodes have no value'
+      
+
 class chopSELAFIN(PARAFINS):
 
    chopFrom = 0; chopStep = 1; chopStop = -1
@@ -457,7 +515,7 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
    # valid for scan, chop and alter
-   parser.add_option("-v", "--vars",type="string",dest="xvars",default=None,help="specify which variables should remain (';'-delimited)" )
+   parser.add_option("-v", "--vars",type="string",dest="xvars",default=None,help="specify which variables should remain (','-delimited)" )
    # valid for scan and chop
    parser.add_option("-c","--core",action="store_true",dest="core",default=False,help="scan: specify whether to print statistics on the core variables" )
    parser.add_option("-f", "--from",type="string",dest="tfrom",default="1",help="chop: specify the first frame included" )
@@ -625,14 +683,14 @@ if __name__ == "__main__":
          if options.azname != None: slf.alterVALUES( options.azname, mZ=float(options.azm),pZ=float(options.azp) )
          if options.sph2ll != None:
             radius  = 6371000.
-            long0,lat0 = options.sph2ll.split(";")
+            long0,lat0 = options.sph2ll.split(":")
             long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
             const = np.tan( lat0/2. + np.pi/4. )
             slf.slf.MESHX = np.rad2deg( slf.slf.MESHX/radius + long0 )
             slf.slf.MESHY = np.rad2deg( 2.*np.arctan( const*np.exp(slf.slf.MESHY/radius) ) - np.pi/2. )
          if options.ll2sph != None:
             radius  = 6371000.
-            long0,lat0 = options.ll2sph.split(";")
+            long0,lat0 = options.ll2sph.split(":")
             long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
             slf.slf.MESHX = radius * ( np.deg2rad(slf.slf.MESHX) - long0 )
             slf.slf.MESHY = radius * ( np.log( np.tan( np.deg2rad(slf.slf.MESHY)/2. + np.pi/4. ) ) \
@@ -733,7 +791,7 @@ if __name__ == "__main__":
          slfFile = args[1]
          outFile = args[2]
          nodList = []
-         for nod in args[3].split(";"): nodList.append(int(nod))
+         for nod in args[3].split(" "): nodList.append(int(nod))
       else:
          if len(args) != 5:
             print '\nThe code "merge" here requires 2 file names, 1 file root name for the partition and 1 series of node numbers\n'
@@ -743,7 +801,7 @@ if __name__ == "__main__":
          rootFile = args[2]
          outFile = args[3]
          nodList = []
-         for nod in args[4].split(";"): nodList.append(int(nod))
+         for nod in args[4].split(" "): nodList.append(int(nod))
 
       slfFile = path.realpath(slfFile)  #/!\ to do: possible use of os.path.relpath() and comparison with os.getcwd()
       if not path.exists(slfFile):
@@ -787,7 +845,7 @@ if __name__ == "__main__":
       vars = options.xvars; calcList = []
       if options.xvars != None:
          vars = cleanQuotes(options.xvars.replace('_',' '))
-         calcList = vars.split(';')
+         calcList = vars.split(':')
       if codeName == 'calcs':
          slf = calcsSELAFIN( slfFile, times = (int(options.tfrom),int(options.tstep),int(options.tstop)), root=rootFile )
          print '   ~> Assembling the following variables together into the file:'
