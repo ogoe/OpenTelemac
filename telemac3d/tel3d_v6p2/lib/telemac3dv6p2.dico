@@ -1858,7 +1858,11 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'K="energie turbulente du modele k-epsilon (J/kg)"';
 'EPS="dissipation de l''energie turbulente (W/kg)"';
 'DP="pression dynamique (multipliee par DT/RHO)"';
-'RHO="densite relative."'
+'RHO="densite relative"';
+'P1="variable privee 1"';
+'P2="variable privee 2"';
+'P3="variable privee 3"';
+'P4="variable privee 4"'
 CHOIX1 = 'U="velocity along x axis (m/s)"';
 'V="velocity along y axis (m/s)"';
 'W="velocity along z axis (m/s)"';
@@ -1873,7 +1877,11 @@ CHOIX1 = 'U="velocity along x axis (m/s)"';
 'K="turbulent energie for k-epsilon model (J/kg)"';
 'EPS="dissipation of turbulent energie (W/kg)"';
 'DP="dynamic pressure (multiplied by DT/RHO)"';
-'RHO="relative density."'
+'RHO="relative density"';
+'P1="private variable 1"';
+'P2="private variable 2"';
+'P3="private variable 3"';
+'P4="private variable 4"'
 RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
 RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
 NIVEAU = 1
@@ -1897,8 +1905,31 @@ Les possibilites offertes sont les suivantes :
    - RI  : nombre de Richardson en cas de modele de longueur de melange,
    - K   : energie turbulente du modele k-epsilon (J/kg),
    - EPS : dissipation de l''energie turbulente (W/kg),
-   - RHO : densite relative.'
-AIDE1 = ''
+   - RHO : densite relative,
+   - P1  : variable privee 1,
+   - P2  : variable privee 2,
+   - P3  : variable privee 3,
+   - P4  : variable privee 4'
+AIDE1 = 'Names of variables to be written in the results file.
+Free choice of separator. You can ask for:
+   - U   : velocity along x (m/s),
+   - V   : velocity along y (m/s),
+   - W   : velocity along z (m/s),
+   - TAx : concentration of tracers,
+   - NUX : viscosity for U and V along x (m2/s),
+   - NUY : viscosity for U and V along y (m2/s),
+   - NUZ : viscosity for U and V along z (m2/s),
+   - NAX : viscosity for tracers along x (m2/s),
+   - NAY : viscosity for tracers along y (m2/s),
+   - NAZ : viscosity for tracers along z (m2/s),
+   - RI  : Richardson number for mixing length model,
+   - K   : turbulent kinetic energy for k-epsilon model (J/kg),
+   - EPS : dissipation of turbulent kinetic energy (W/kg),
+   - RHO : relative density,
+   - P1  : private variable 1,
+   - P2  : private variable 2,
+   - P3  : private variable 3,
+   - P4  : private variable 4'
 
 NOM = 'VARIABLES POUR LES SORTIES GRAPHIQUES 2D'
 NOM1 = 'VARIABLES FOR 2D GRAPHIC PRINTOUTS'
