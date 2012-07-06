@@ -252,7 +252,7 @@ class alterSELAFIN(PARAFINS,chopSELAFIN):
 
    def alterVARS(self,vars=None):
       if vars != None:
-         for vn in vars.split(';'):
+         for vn in vars.split(':'):
             v,n = vn.split('=')
             for iv in range(len(self.slf.VARNAMES)):
                if v.lower() in self.slf.VARNAMES[iv].lower(): self.slf.VARNAMES[iv] = n.upper()
@@ -279,7 +279,7 @@ class alterSELAFIN(PARAFINS,chopSELAFIN):
 
    def alterVALUES(self,vars=None,mZ=1,pZ=0):
       if vars != None:
-         self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(';')
+         self.alterZm = mZ; self.alterZp = pZ; self.alterZnames = vars.split(':')
 
    def getVALUES(self,t):
       VARSOR = self.getPALUES(t)
