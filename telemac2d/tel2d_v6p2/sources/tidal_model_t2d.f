@@ -102,7 +102,7 @@
      &                 NPOIN,NPTFR,AT,NCOTE,NVITES,
      &                 NUMLIQ%I,KENT,KENTU,
      &                 T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
-     &                 CTIDE,MSL,NODALCORR,T2D_FILES(T2DHAR)%LU,
+     &                 CTIDE,MSL,CTIDEV,NODALCORR,T2D_FILES(T2DHAR)%LU,
      &                 BOUNDARY_COLOUR,
      &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
      &                 MARDAT,MARTIM)
