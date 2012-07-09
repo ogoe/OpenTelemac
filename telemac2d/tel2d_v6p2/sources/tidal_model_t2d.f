@@ -91,7 +91,7 @@
         IF(TIDALBCGEN) THEN
           CALL BORD_TIDAL_BC(MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
      &                       NPTFR,KENT,KENTU,
-     &                       MESH,GEOSYST,NUMZONE,,LAMBD0,PHI0,
+     &                       MESH,GEOSYST,NUMZONE,LAMBD0,PHI0,
      &                       TIDALTYPE,BOUNDARY_COLOUR,MAXFRO,
      &                       T2D_FILES(T2DBDD)%LU,
      &                       T2D_FILES(T2DTID)%LU,
