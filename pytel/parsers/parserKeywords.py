@@ -154,7 +154,16 @@ def rewriteCAS(cas):
       if len(' ' + key + ' : ' + str(val[0])) < 73:
          line = ''; lcur = ' ' + key + ' : ' + str(val[0])
       else:
-         line = ' ' + key + ' :\n'; lcur = '    ' + str(val[0])
+         # ~~> CCT The lcur affectation create problems for the dictionnary
+         #     because the path could be greater than 72 characters
+         # --> addition of a specific test ann management of long lines
+         #line = ' ' + key + ' :\n'; lcur = '    ' + str(val[0])
+         line = ' ' + key + ' :\n'
+         if len('    ' + str(val[0])) < 73:
+            lcur = '    ' + str(val[0])
+         else:
+            line = line + '    ' + str(val[0])[0:65] + '\n'
+            lcur = '    ' + str(val[0])[65:]
       for v in val[1:]:
          if len(lcur + ';'+str(v)) < 73:
             lcur = lcur + ';'+str(v)
