@@ -5,7 +5,7 @@
      &(NTAB,XTAB,YTAB,LAMBDATAB,PHITAB,NUMZONE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   25/06/2010
+! TELEMAC2D   V6P2                                   25/06/2010
 !***********************************************************************
 !
 !brief    CONVERSION OF COORDINATES METRIC LAMBERT

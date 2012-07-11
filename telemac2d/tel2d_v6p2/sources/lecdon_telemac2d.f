@@ -350,16 +350,16 @@
             OPTSUP(K) = MOTINT( ADRESS(1,37) + K-1 )
 30         CONTINUE
          ENDIF
-         IORDRU    = MOTINT( ADRESS(1,38) )
-!        ??????    = MOTINT( ADRESS(1,39) )
-         OPTASS    = MOTINT( ADRESS(1,40) )
-         MARDAT(1) = MOTINT( ADRESS(1,41) )
-         MARDAT(2) = MOTINT( ADRESS(1,41) + 1 )
-         MARDAT(3) = MOTINT( ADRESS(1,41) + 2 )
-         MARTIM(1) = MOTINT( ADRESS(1,42) )
-         MARTIM(2) = MOTINT( ADRESS(1,42) + 1 )
-         MARTIM(3) = MOTINT( ADRESS(1,42) + 2 )
-         PRODUC    = MOTINT( ADRESS(1,43) )
+         IORDRU       = MOTINT( ADRESS(1,38) )
+         START_RECORD = MOTINT( ADRESS(1,39) )
+         OPTASS       = MOTINT( ADRESS(1,40) )
+         MARDAT(1)    = MOTINT( ADRESS(1,41) )
+         MARDAT(2)    = MOTINT( ADRESS(1,41) + 1 )
+         MARDAT(3)    = MOTINT( ADRESS(1,41) + 2 )
+         MARTIM(1)    = MOTINT( ADRESS(1,42) )
+         MARTIM(2)    = MOTINT( ADRESS(1,42) + 1 )
+         MARTIM(3)    = MOTINT( ADRESS(1,42) + 2 )
+         PRODUC       = MOTINT( ADRESS(1,43) )
          NCP=DIMEN(1,44)
          ALLOCATE(CTRLSC(NCP),STAT=ERR)
 !
@@ -510,7 +510,7 @@
              BORNES(K) = MOTREA( ADRESS(2,15) + K-1 )
            ENDDO
          ENDIF
-         EPSOUI    = MOTREA( ADRESS(2,16) )
+!        ??????    = MOTREA( ADRESS(2,16) )
          TETAC     = MOTREA( ADRESS(2,17) )
          TETAU     = MOTREA( ADRESS(2,18) )
          TETAD     = MOTREA( ADRESS(2,19) )

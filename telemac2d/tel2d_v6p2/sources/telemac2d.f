@@ -676,11 +676,12 @@
 !       FRICTION COEFFICIENT ALSO READ IN CASE IT HAS BEEN DONE
 !       BY THE USER INTERFACE (JMH 27/11/2006)
         ALIRE(19)=1
-        CALL BIEF_SUITE(VARSOR,VARCL,IBID,
+        CALL BIEF_SUITE(VARSOR,VARCL,START_RECORD,
      &                  T2D_FILES(T2DPRE)%LU,
      &                  T2D_FILES(T2DPRE)%FMT,
      &                  HIST,0,NPOIN,AT,TEXTPR,VARCLA,
-     &                  NVARCL,TROUVE,ALIRE,LISTIN,.TRUE.,MAXVAR)
+     &                  NVARCL,TROUVE,ALIRE,LISTIN,
+     &                  START_RECORD.EQ.0,MAXVAR)
         ALIRE(19)=0
         IF(RAZTIM) THEN
           AT=0.D0

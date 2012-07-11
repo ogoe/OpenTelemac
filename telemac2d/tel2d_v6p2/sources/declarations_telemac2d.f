@@ -873,76 +873,94 @@
 !     NUMBER OF SOLID BOUNDARIES
 !
       INTEGER NFRSOL
-!brief
-! numero du premier point de la frontiere liquide
-      INTEGER DEBLIQ(MAXFRO)
-!brief
-! numero du dernier point de la frontiere liquide
-      INTEGER FINLIQ(MAXFRO)
-!brief
+!
+!     RANK OF FIRST,LAST POINT OF LIQUID BOUNDARY
+!
+      INTEGER DEBLIQ(MAXFRO),FINLIQ(MAXFRO)
+!
+!     RANK OF FIRST,LAST POINT OF SOLID BOUNDARY
 !
       INTEGER DEBSOL(MAXFRO),FINSOL(MAXFRO)
-!brief
-! points les plus proches des rejets
+!
+!     NEAREST POINTS OF SOURCES
+!
       INTEGER ISCE(MAXSCE)
-!brief OPTION FOR THE DIFFUSION OF TRACERS
-! option pour la diffusion des traceurs
+!
+!     OPTION FOR THE DIFFUSION OF TRACERS
+! 
       INTEGER OPDTRA
-!brief OPTION FOR THE DIFFUSION OF VELOCITIES
-! option pour la diffusion des vitesses
+!
+!     OPTION FOR THE DIFFUSION OF VELOCITIES
+! 
       INTEGER OPDVIT
-!brief TYPE OF SOURCES
-! type des sources
+!
+!     TYPE OF SOURCES
+! 
       INTEGER OPTSOU
-!brief NUMBER OF PRIVATE ARRAYS
-! nombre de tableaux prives
+!
+!     NUMBER OF PRIVATE ARRAYS
+! 
       INTEGER NPRIV
-!brief DELWAQ PRINTOUT PERIOD
-! periode de sortie pour delwaq
+!
+!     DELWAQ PRINTOUT PERIOD
+! 
       INTEGER WAQPRD
-!brief TREATMENT OF NEGATIVE DEPTHS
-! traitement des hauteurs negatives
+!
+!     TREATMENT OF NEGATIVE DEPTHS
+! 
       INTEGER OPT_HNEG
-!brief CURRENT ITERATION NUMBER
-! numero de l'iteration courante
+!
+!     CURRENT ITERATION NUMBER
+! 
       INTEGER LT
-!brief RECORD NUMBER IN THE WAVE DRIVEN CURRENTS FILE
-! numero de l'enregistrement dans le fichier de houle
+!
+!     RECORD NUMBER IN THE WAVE DRIVEN CURRENTS FILE
+! 
       INTEGER NPTH
-!brief NUMBER OF USER-DEFINED ZONES (E.G. FOR SETTING FRICTION) IN SUBROUTINE DEF_ZONES
+!
+!     NUMBER OF USER-DEFINED ZONES (E.G. FOR SETTING FRICTION) IN SUBROUTINE DEF_ZONES
 !
       INTEGER NZONE
-!brief NUMBER OF PERIODS FOR FOURIER ANALYSIS
-! number of waves
+!
+!     NUMBER OF PERIODS FOR FOURIER ANALYSIS
+! 
       INTEGER NPERIAF
-!brief OPTION FOR PARAMETER ESTIMATION, IDENTIFICATION METHOD
-! methode d'identification
+!
+!     OPTION FOR PARAMETER ESTIMATION, IDENTIFICATION METHOD
+! 
       INTEGER OPTID
-!brief NUMBER OF REMARKABLE POINTS
+!
+!     NUMBER OF REMARKABLE POINTS
 !
       INTEGER NPTS
-!brief LIST OF REMARKABLE POINTS
-! liste de points
+!
+!     LIST OF REMARKABLE POINTS
+! 
       INTEGER LIST_PTS(100)
-!brief CHOICE OF COST-FUNCTION
-! fonction cout
+!
+!     CHOICE OF COST-FUNCTION
+! 
       INTEGER OPTCOST
-!brief MAX. NUMB. OF ITER. FOR IDENTIFICATION
-! maximum d'iterations pour l'identification
+!
+!     MAXIMUM NUMBER OF ITERATIONS FOR IDENTIFICATION
+! 
       INTEGER MAXEST
-!brief COUPLING PERIOD
+!
+!     COUPLING PERIOD (WITH SISYPHE)
+!
       INTEGER PERCOU
-!brief COUPLING PERIOD FOR TOMAWAC
+!
+!     COUPLING PERIOD FOR TOMAWAC
+!
       INTEGER PERCOU_WAC
-!brief FINITE VOLUME SCHEME
-! option schema en volumes finis
+!
+!     FINITE VOLUME SCHEME
+! 
       INTEGER OPTVF
-!brief ORIGIN OF THE COORDINATE SYSTEM
-! coordonnees de l'origine
-      INTEGER I_ORIG
-!brief ORIGIN OF THE COORDINATE SYSTEM
-! coordonnees de l'origine
-      INTEGER J_ORIG
+!
+!     ORIGINS OF THE COORDINATE SYSTEM
+! 
+      INTEGER I_ORIG,J_ORIG
 !
 !     NUMBER OF TRACERS
 ! 
@@ -999,6 +1017,10 @@
 !     LAW OF TRACERS DEGRADATION
 !
       INTEGER LOITRAC(MAXTRA)
+!
+!     RECORD NUMBER FOR RESTART
+!
+      INTEGER START_RECORD
 !
 !-----------------------------------------------------------------------
 !
@@ -1097,14 +1119,17 @@
 !     IF YES, ELEMENTS MASKED BY USER
 ! 
       LOGICAL MSKUSE
-!brief
+!
+!     TO KNOW IF A VARIABLE WILL BE EXITED ON FILE, ON LISTING
 !
       LOGICAL SORLEO(MAXVAR),SORIMP(MAXVAR)
-!brief IF YES, DENSITY EFFECTS INCLUDED
-! si oui, la masse volumique est variable
+!
+!     VARIABLE DENSITY. IF YES, DENSITY EFFECTS INCLUDED
+! 
       LOGICAL ROVAR
-!brief IF YES,TIDE GENERATING FORCE
-! si oui, force generatrice de la maree
+!
+!     TIDE GENERATING FORCE
+! 
       LOGICAL MAREE
 !
 !     IF YES, THERE IS A TREATMENT OF BOUNDARY CONDITIONS WITH 
@@ -1217,97 +1242,114 @@
 !     COEFFICIENT FOR DIFFUSION OF TRACERS
 ! 
       DOUBLE PRECISION DIFNU
-!brief (SEMI-)IMPLICITATION FOR TRACERS
-! (semi-)implicitation pour les traceurs
-      DOUBLE PRECISION TETAT
-!brief VELOCITY DIFFUSIVITY
-! coefficient de diffusion des vitesses (viscosite laminaire)
-      DOUBLE PRECISION PROPNU
-!brief
-! valeurs limites des tableaux h,u,v,t dans l'ordre suivant : hmin,hmax,umin,umax,...
-      DOUBLE PRECISION BORNES(8)
-!brief
 !
-      DOUBLE PRECISION EPSOUI
-!brief IMPLICITATION FOR DEPTH
-! implicitation pour la hauteur
+!     IMPLICITATION FOR TRACERS
+! 
+      DOUBLE PRECISION TETAT
+!
+!     VELOCITY DIFFUSIVITY
+! 
+      DOUBLE PRECISION PROPNU
+!
+!     THRESHOLD VALUES FOR STOPPING THE COMPUTATION
+! 
+      DOUBLE PRECISION BORNES(8)
+!
+!     IMPLICITATION FOR DEPTH
+! 
       DOUBLE PRECISION TETAC
-!brief IMPLICITATION FOR VELOCITY
-! implicitation pour la vitesse (u et v)
+!
+!     IMPLICITATION FOR VELOCITY
+! 
       DOUBLE PRECISION TETAU
-!brief IMPLICITATION FOR DIFFUSION OF VELOCITY
-! implicitation pour la diffusion des vitesses
+!
+!     IMPLICITATION FOR DIFFUSION OF VELOCITY
+! 
       DOUBLE PRECISION TETAD
-!brief MASS-LUMPING COEFFICIENT ON H
-! coefficient de mass-lumping sur h
+!
+!     MASS-LUMPING COEFFICIENT ON H
+! 
       DOUBLE PRECISION AGGLOC
-!brief MASS-LUMPING COEFFICIENT ON VELOCITY
-! coefficient de mass-lumping sur la vitesse
+!
+!     MASS-LUMPING COEFFICIENT ON VELOCITY
+! 
       DOUBLE PRECISION AGGLOU
-!brief MINIMUM VALUE OF DEPTH
-! valeur minimum de h
+!
+!     MINIMUM VALUE OF DEPTH
+! 
       DOUBLE PRECISION HMIN
-!brief TIME STEP REDUCTION FOR K-EPSILON MODEL
-! reduction du pas de temps pour le modele k-epsilon
+!
+!     TIME STEP REDUCTION FOR K-EPSILON MODEL
+! 
       DOUBLE PRECISION REDUC
-!brief MEAN DEPTH FOR LINEARIZATION
-! profondeur moyenne pour la linearisation
+!
+!     MEAN DEPTH FOR LINEARIZATION
+! 
       DOUBLE PRECISION HAULIN
-!brief WATER DENSITY
-! masse volumique de l'eau a temperature moyenne, quand la salinite est nulle
+!
+!     WATER DENSITY
+! 
       DOUBLE PRECISION ROEAU
-!brief LATITUDE OF ORIGIN POINT
-! latitude du point origine
+!
+!     LATITUDE OF ORIGIN POINT
+! 
       DOUBLE PRECISION LAMBD0
 !
 !     ROUGHNESS COEFFICIENT OF BOUNDARIES
 !
       DOUBLE PRECISION SB
-!brief INITIAL ELEVATION
-! cote initiale
+!
+!     INITIAL ELEVATION
+! 
       DOUBLE PRECISION COTINI
-!brief INITIAL DEPTH
-! hauteur initiale
+!
+!     INITIAL DEPTH
+! 
       DOUBLE PRECISION HAUTIN
-!brief PRESCRIBED FLOWRATES
-! tableau de debits imposes
+!
+!     PRESCRIBED FLOWRATES
+! 
       DOUBLE PRECISION DEBIT(MAXFRO)
-!brief PRESCRIBED ELEVATIONS
-! tableau de cotes de la surface libre imposees
+!
+!     PRESCRIBED ELEVATIONS
+! 
       DOUBLE PRECISION COTE(MAXFRO)
-!brief PRESCRIBED VELOCITIES
-! tableau de composantes normales de la vitesse imposees
+!
+!     PRESCRIBED VELOCITIES
+! 
       DOUBLE PRECISION VITES(MAXFRO)
-!brief PRESCRIBED TRACERS VALUES
-! tableau de valeurs du traceur imposees
+!
+!     PRESCRIBED TRACERS VALUES
+! 
       DOUBLE PRECISION TRACER(MAXFRO*MAXTRA)
-!brief
+!
+!     FLUXES AT BOUNDARIES
 !
       DOUBLE PRECISION FLUX_BOUNDARIES(MAXFRO)
-!brief ABSCISSAE OF SOURCES
-! abscisses des rejets
-      DOUBLE PRECISION XSCE(MAXSCE)
-!brief ORDINATES OF SOURCES
-! ordonnees des rejets
-      DOUBLE PRECISION YSCE(MAXSCE)
-!brief SOURCE WATER DISCHARGES TAKEN FROM THE STEERING FILE
-! debits des rejets (entrant positif)
+!
+!     ABSCISSAE, ORDINATES OF SOURCES
+! 
+      DOUBLE PRECISION XSCE(MAXSCE),YSCE(MAXSCE)
+!
+!     SOURCES WATER DISCHARGES TAKEN FROM THE STEERING FILE
+! 
       DOUBLE PRECISION DSCE(MAXSCE)
-!brief SOURCE DISCHARGES WITH VARIATION IN TIME
+!
+!     SOURCES DISCHARGES WITH VARIATION IN TIME
 !
       DOUBLE PRECISION DSCE2(MAXSCE)
-!brief SOURCE TRACER DISCHARGES TAKEN FROM THE STERING FILE
-! valeurs des traceurs aux rejets
+!
+!     SOURCES TRACER DISCHARGES TAKEN FROM THE STERING FILE
+! 
       DOUBLE PRECISION TSCE(MAXSCE,MAXTRA)
-!brief SOURCES OF TRACERS WITH VARIATIONS IN TIME
+!
+!     SOURCES OF TRACERS WITH VARIATIONS IN TIME
 !
       DOUBLE PRECISION TSCE2(MAXSCE,MAXTRA)
-!brief VELOCITIES OF THE SOURCES ALONG X
-! composante u du courant aux rejets
-      DOUBLE PRECISION USCE(MAXSCE)
-!brief VELOCITIES OF THE SOURCES ALONG Y
-! composante v du courant aux rejets
-      DOUBLE PRECISION VSCE(MAXSCE)
+!
+!     VELOCITIES OF THE SOURCES ALONG X,Y
+! 
+      DOUBLE PRECISION USCE(MAXSCE),VSCE(MAXSCE)
 !
 !     UPWIND COEFFICIENTS FOR SUPG (1:u and v, 2:h, 3:tracers, 4:k and epsilon)
 !
@@ -1624,7 +1666,7 @@
 !
 !       MATRICES
 !
-!       SYSTEM SOLVED IN PROPAG WILL BE :
+!       SYSTEM SOLVED WILL BE :
 !
 !     ( TAM1  TCM1  TCM2 )   (PP )      ( CV1 )
 !     (                  )   (   )      (     )
@@ -1633,16 +1675,9 @@
 !     ( TBM2  A32   TAM3 )   (RR )      ( CV3 )
 !
 !
-! PAY ATTENTION TO CV1, ...
-!             I USE THE SAME SYMBOLS OF THE RIGHT HAND SIDE OF DIRECT
-!             SYSTEM.
+!     MATRICES FOR ADJOINT SYSTEM
 !
-!brief
-!
-      TYPE(BIEF_OBJ), TARGET :: TAM1,TAM2,TAM3,TBM1,TBM2
-!brief
-!
-      TYPE(BIEF_OBJ), TARGET :: TCM1,TCM2
+      TYPE(BIEF_OBJ), TARGET :: TAM1,TAM2,TAM3,TBM1,TBM2,TCM1,TCM2
 !
 !-----------------------------------------------------------------------
 !
@@ -1650,25 +1685,28 @@
 !
 !-----------------------------------------------------------------------
 !
-!       BLOCKS OF MATRICES, RIGHT HAND SIDES AND UNKNOWNS
-!       FOR LINEAR SYSTEMS
+!     BLOCKS OF MATRICES, RIGHT HAND SIDES AND UNKNOWNS
+!     FOR LINEAR SYSTEMS
 !
-!brief BLOCKS OF MATRICES, RIGHT HAND SIDES FOR LINEAR SYSTEMS
+!     BLOCKS OF MATRICES, RIGHT HAND SIDES FOR LINEAR SYSTEMS
 !
       TYPE(BIEF_OBJ), TARGET :: MATADJ
-!brief BLOCKS OF UNKNOWNS FOR LINEAR SYSTEMS
+!
+!     BLOCKS OF UNKNOWNS FOR LINEAR SYSTEMS
 !
       TYPE(BIEF_OBJ), TARGET :: UNKADJ
-!brief BLOCK OF ADJOINT VARIABLES FOR OUTPUT
+!
+!     BLOCK OF ADJOINT VARIABLES FOR OUTPUT
 !
       TYPE(BIEF_OBJ), TARGET :: VARSORA
-!brief BLOCK OF DIRICHLET CONDITION FOR ADJOINT VARIABLES
+!
+!     BLOCK OF DIRICHLET CONDITION FOR ADJOINT VARIABLES
 !
       TYPE(BIEF_OBJ), TARGET :: ADJDIR
 !
 !-----------------------------------------------------------------------
 !
-!       4) INTEGERS
+!     4) INTEGERS
 !
 !     NUMBER OF VARIABLES FOR LITENR (READ BY SKIPGEO)
 !
@@ -1680,7 +1718,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!        5) LOGICALS
+!     5) LOGICALS
 !
 !     IF YES: ACTIVATES THE ADJOINT MODE IN TELEMAC2D/PROPAG
 !
@@ -1718,7 +1756,7 @@
 !
 !=======================================================================
 !
-!brief
+!     COPY OF SUBMIT STRINGS IN THE DICTIONARY
 !
       CHARACTER(LEN=144) SUBMIT(4,300)
 !
@@ -1728,38 +1766,48 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief
+!     ???????
 !
       TYPE(FRICTION_OBJ), TARGET :: FRTAB
-!brief
+!
+!     ???????
 !
       TYPE(BIEF_OBJ), TARGET :: KFROPT, NKFROT
-!brief
+!
+!     ???????
 !
       TYPE(BIEF_OBJ), TARGET :: NDEFMA, LINDDP, LINDSP
-!brief
+!
+!     ???????
 !
       TYPE(BIEF_OBJ), TARGET :: NDEF_B, KFRO_B
-!brief
+!
+!     NUMBER OF ZONES
 !
       INTEGER:: NZONES
-!brief MAXIMUM NUMBER OF FRICTION DOMAINS
-! nombre maximum de domaines de frottement
+!
+!     MAXIMUM NUMBER OF FRICTION DOMAINS
+! 
       INTEGER:: NZONMX
-!brief IF YES, NON-SUBMERGED VEGETATION FRICTION
-! si oui, frottement pour la vegetation non submergee
+!
+!     IF YES, NON-SUBMERGED VEGETATION FRICTION
+! 
       LOGICAL:: LINDNER
-!brief IF YES, FRICTION DATA
-! si oui, donnees pour le frottement
+!
+!     IF YES, FRICTION DATA
+! 
       LOGICAL:: FRICTB
-!brief DEFAULT MANNING VALUE (FOR COLEBROOK-WHITE LAW)
-! valeur par defaut du manning pour la loi de colebrook-white
+!
+!     DEFAULT MANNING VALUE (FOR COLEBROOK-WHITE LAW)
+! 
       DOUBLE PRECISION :: NDEF
-!brief DIAMETER OF ROUGHNESS ELEMENTS
-! diametre des elements de frottement
+!
+!     DIAMETER OF ROUGHNESS ELEMENTS
+! 
       DOUBLE PRECISION :: DP
-!brief SPACING OF ROUGHNESS ELEMENTS
-! espacement des elements de frottement
+!
+!     SPACING OF ROUGHNESS ELEMENTS
+! 
       DOUBLE PRECISION :: SP
 !
 !-----------------------------------------------------------------------
@@ -1778,7 +1826,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!brief
+!     ???????
 !
       TYPE (CHAIN_TYPE), ALLOCATABLE :: CHAIN(:)
 !

@@ -58,7 +58,10 @@
       DOUBLE PRECISION UNORM,AIRE,SOM,XSOM(4),YSOM(4),X4,Y4
 !     DOUBLE PRECISION, PARAMETER :: CD=1.56D0,DIAM=2.D0
       DOUBLE PRECISION, PARAMETER :: CD=1.34D0,DIAM=2.D0
-      INTEGER, PARAMETER :: N=1      
+      INTEGER, PARAMETER :: N=1  
+!
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM    
 !
 !-----------------------------------------------------------------------
 !
@@ -125,6 +128,12 @@
 !
       ENDIF
 !
+!     IN PARALLEL THE AREA MAY BE SPLIT INTO SEVERAL SUB-DOMAINS
+!
+      IF(NCSIZE.GT.0) AIRE=P_DSUM(AIRE)
+!
+!     NOW PREPARING THE DIVISION
+!
       IF(AIRE.GT.1.D-6) THEN
         SOM = 1.D0 / AIRE
       ELSE
@@ -133,6 +142,8 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
+!     DIVIDING BY THE AREA
 !
       CALL OS('X=CX    ',X=FUDRAG,C=SOM)
       CALL OS('X=CX    ',X=FVDRAG,C=SOM)

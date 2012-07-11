@@ -272,10 +272,17 @@
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'T=',AT,' HORS LIMITES'
             WRITE(LU,*) 'DU FICHIER DES FRONTIERES LIQUIDES'
+            WRITE(LU,*) 'NOMBRE DE LIGNES : ',NLIG
+            WRITE(LU,*) 'SUR CERTAINS COMPILATEURS'
+            WRITE(LU,*) 'IL FAUT AJOUTER UNE LIGNE VIDE'
+            WRITE(LU,*) 'A LA FIN DU FICHIER'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'T=',AT,' OUT OF RANGE'
             WRITE(LU,*) 'OF THE FILE OF LIQUID BOUNDARIES'
+            WRITE(LU,*) 'NUMBER OF LINES : ',NLIG
+            WRITE(LU,*) 'SOME COMPILERS REQUIRE AN'
+            WRITE(LU,*) 'EMPTY LINE AT THE END OF THE FILE'
           ENDIF
           CALL PLANTE(1)
           STOP
