@@ -3620,19 +3620,22 @@ NIVEAU = 1
 AIDE  = 'Dimension de l''espace de Krylov pour la methode GMRES (7)'
 AIDE1 = 'Dimension of Krylov space for the GMRES method (7)'
 
-NOM =  'NOMBRE DE LISSAGES DE LA VITESSE FINALE'
-NOM1 = 'NUMBER OF FINAL VELOCITY SMOOTHINGS'
-TYPE = ENTIER
-INDEX = 82
-MNEMO = 'SMOVEL'
+NOM = 'ENREGISTREMENT POUR SUITE DE CALCUL' 
+NOM1 = 'RECORD NUMBER FOR RESTART' 
+TYPE = ENTIER 
+INDEX = 82 
+MNEMO = 'START_RECORD' 
 TAILLE = 0
 DEFAUT = 0
 DEFAUT1 = 0
-RUBRIQUE = ' '
-RUBRIQUE1 = ' '
-NIVEAU = 1
-AIDE = ' '
-AIDE1 = ' '
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1 
+AIDE = 'En cas de suite de calcul, numero de l''enregistrement
+de depart dans le fichier du calcul precedent. 0 signifie
+qu''on prend le dernier enregistrement' 
+AIDE1 ='In case of COMPUTATION CONTINUED, record number to
+start from in the PREVIOUS COMPUTATION FILE' 
 
 NOM = 'OPTION DU SOLVEUR POUR LA PROJECTION'
 NOM1 = 'OPTION OF SOLVER FOR PROJECTION'
