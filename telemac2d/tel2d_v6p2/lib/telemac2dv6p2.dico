@@ -2982,19 +2982,22 @@ speeded up when the system is being solved. 3 options are available:
  1 : U = U(n) 
  2 : U = 2 U(n)- U(n-1) (extrapolation)' 
  
-NOM = 'FREE INTEGER 39' 
-NOM1 = 'FREE INTEGER 39' 
+NOM = 'ENREGISTREMENT POUR SUITE DE CALCUL' 
+NOM1 = 'RECORD NUMBER FOR RESTART' 
 TYPE = ENTIER 
 INDEX = 39 
-MNEMO = '' 
+MNEMO = 'START_RECORD' 
 TAILLE = 0
-DEFAUT = 1
-DEFAUT1 = 1
+DEFAUT = 0
+DEFAUT1 = 0
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1 
-AIDE = '' 
-AIDE1 ='' 
+AIDE = 'En cas de suite de calcul, numero de l''enregistrement
+de depart dans le fichier du calcul precedent. 0 signifie
+qu''on prend le dernier enregistrement' 
+AIDE1 ='In case of COMPUTATION CONTINUED, record number to
+start from in the PREVIOUS COMPUTATION FILE' 
  
 NOM = 'MASSE VOLUMIQUE DE L''EAU' 
 NOM1 = 'WATER DENSITY' 
