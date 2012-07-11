@@ -585,6 +585,10 @@
 !
       TYPE(BIEF_OBJ), TARGET :: WEL
 !
+!     3D VECTOR TO STORE DH AND HN IN 3D MESH (RESTART PROCEDURE)     
+!
+      TYPE(BIEF_OBJ), TARGET :: DHHN
+!
 !-----------------------------------------------------------------------
 ! (2) MATRICES
 !-----------------------------------------------------------------------
@@ -1200,6 +1204,10 @@
 !     VERTICAL VELOCITY DERIVATIVES
 !
       INTEGER LINLOG
+!
+!     RECORD NUMBER FOR RESTART
+!
+      INTEGER START_RECORD
 !
 !-----------------------------------------------------------------------
 ! (5) LOGICAL VALUES

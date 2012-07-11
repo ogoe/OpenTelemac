@@ -287,12 +287,12 @@
 !
       IF(LEO.AND.(SORG3D(19).OR.(SOREST(19).AND.LT.EQ.NIT))) THEN
         DO I=1,NPOIN2
-          T3_01%R(I       )=DH%R(I)
-          T3_01%R(I+NPOIN2)=HN%R(I)
+          DHHN%R(I       )=DH%R(I)
+          DHHN%R(I+NPOIN2)=HN%R(I)
         ENDDO
         IF(NPLAN.GT.2) THEN
           DO I=2*NPOIN2+1,NPLAN*NPOIN2
-            T3_01%R(I)=0.D0
+            DHHN%R(I)=0.D0
           ENDDO
         ENDIF
       ENDIF

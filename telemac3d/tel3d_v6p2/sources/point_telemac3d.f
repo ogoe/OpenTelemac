@@ -762,6 +762,10 @@ C K-EPSILON MODEL
         CALL BIEF_ALLVEC(1, ZFE, 'ZFE   ',  0, 1, 0,MESH2D)
       ENDIF
 !
+! 3D ARRAY TO STORE DH AND HN
+!
+      CALL BIEF_ALLVEC(1, DHHN,  'DHHN  ', IELM3,  1, 1,MESH3D)
+!
 !-----------------------------------------------------------------------
 ! DROGUES (FLOATS ...EHM, TRACERS...)
 !
@@ -1337,7 +1341,7 @@ C K-EPSILON MODEL
 ! 18 : DM1
       CALL ADDBLO(VARSO3,DM1)
 ! 19 : DH AND HN
-      CALL ADDBLO(VARSO3,T3_01)
+      CALL ADDBLO(VARSO3,DHHN)
 ! 20 : UCONVC
       CALL ADDBLO(VARSO3,UCONVC)
 ! 21 : VCONVC

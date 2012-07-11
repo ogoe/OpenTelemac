@@ -416,10 +416,11 @@
       IF(.NOT.DEBU) THEN
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SUITE'
-        CALL BIEF_SUITE(VARSO3,VARCL,IBID,
+        CALL BIEF_SUITE(VARSO3,VARCL,START_RECORD,
      &                  T3D_FILES(T3DPRE)%LU,T3D_FILES(T3DPRE)%FMT,
      &                  HIST,0,NPOIN3,AT,TEXTP3,VARCLA,NVARCL,
-     &                  TROUVE,ALIRE3D,LISTIN,.TRUE.,MAXVAR,NPLAN)
+     &                  TROUVE,ALIRE3D,LISTIN,
+     &                  START_RECORD.EQ.0,MAXVAR,NPLAN)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SUITE'
 !
         IF(RAZTIM) THEN
@@ -441,8 +442,8 @@
         IF(TROUVE(19).EQ.1) THEN
 !         RETRIEVING DH AND HN
           DO I=1,NPOIN2
-            DH%R(I)=T3_01%R(I)
-            HN%R(I)=T3_01%R(I+NPOIN2)
+            DH%R(I)=DHHN%R(I)
+            HN%R(I)=DHHN%R(I+NPOIN2)
           ENDDO
         ENDIF
 !
@@ -752,12 +753,25 @@
      &                  I_ORIG,J_ORIG)   ! COORDINATES OF THE ORIGIN
       ENDIF
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DESIMP'
+!     THESE VARIABLES ARE INITIALISED FOR THE FIRST CALL TO BIEF_DESIMP
+!
+      IF(SORG3D(14)) CALL OS('X=0     ',X=UCONV)
+      IF(SORG3D(15)) CALL OS('X=0     ',X=VCONV)
+      IF(SORG3D(16)) CALL OS('X=0     ',X=WCONV)
+      IF(SORG3D(18)) CALL OS('X=0     ',X=DM1)
+      IF(SORG3D(19)) CALL OS('X=0     ',X=DHHN)
+      IF(SORG3D(20)) CALL OS('X=0     ',X=UCONVC)
+      IF(SORG3D(21)) CALL OS('X=0     ',X=VCONVC)
+      IF(SORG3D(22)) CALL OS('X=0     ',X=UD)
+      IF(SORG3D(23)) CALL OS('X=0     ',X=VD)
+      IF(SORG3D(24)) CALL OS('X=0     ',X=WD)
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
        CALL BIEF_DESIMP(T3D_FILES(T3DRES)%FMT,VARSO3,
      &                  HIST,0,NPOIN3,T3D_FILES(T3DRES)%LU,'STD',AT,LT,
      &                  LISPRD,GRAPRD,
      &                  SORG3D,SORIM3,MAXVA3,TEXT3,GRADEB,LISDEB)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DESIMP'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF DESIMP'
 !
 !     SEDIMENTOLOGY OUTPUT
 !
@@ -2307,3 +2321,4 @@ C     ENDIF
 !
       RETURN
       END
+
