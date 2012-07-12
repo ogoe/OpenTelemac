@@ -20,7 +20,7 @@
 !+          (ESPECIALLY IMPORTANT FOR COMMANDS TAKING MORE THAN ONE LINE)
 !
 !history  J-M HERVOUET (LNHE)
-!+        22/06/2012
+!+        12/07/2012
 !+        V6P2
 !+   Use of new array ELTCAR.
 !+   Dimensions in SCARACT reviewed (previous confusion between
@@ -31,6 +31,8 @@
 !+   SCHAR12 and SCHAR13 added. DX,DY,DZ added to CHARAC_TYPE, used in 2D.
 !+   More data saved when touching a solid boundary: XPLOT, YPLOT, DX, DY
 !+   All this ensures strict equality of scalar and parallel runs !!!!
+!+   However in 3D the vertical velocity is computed in Telemac-3D and
+!+   has truncation errors, this will trigger differences.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -312,7 +314,7 @@
 !         DO NOT ZEROIZE NCHARA, HEAPCOUNTS / ADDING FROM GENERATIONS! 
 !         COUNTER PARTITION-WISE, ALSO MY-OWN 
           DO I=1,NARRV  
-            IF(RECVCHAR(I)%NEPID==-1) THEN ! A LOCALISED TRACEBACK 
+            IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! A LOCALISED TRACEBACK 
               NCHARA=NCHARA+1 
               HEAPCHAR(NCHARA) = RECVCHAR(I) ! ALREADY INTERPOLATED?  
               HEAPCOUNTS(HEAPCHAR(NCHARA)%MYPID+1) =  
@@ -323,9 +325,6 @@
             ENDIF 
           END DO  
           NLOSTAGAIN=SUM(SENDCOUNTS) 
-          IF (TRACE) WRITE(LU,'(2(A,I7))')  
-     &       ' @STREAMLINE::HEAP_FOUND:: HEAPED: ',NCHARA, 
-     &                 ' LOST-AGAIN: ',NLOSTAGAIN 
           RETURN  
         END SUBROUTINE HEAP_FOUND 
 ! 
@@ -503,7 +502,7 @@
           INTEGER I 
 ! 
           DO I=1,NRANGE 
-            IF (RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED 
+            IF (RECVCHAR(I)%NEPID.EQ.-1) THEN ! LOCALISED 
               RECVCHAR(I)%BASKET(N) = 
      &          VAL(IKLE(ELT(I),1),ETA(I))   * SHP(1,I) * (1.D0-SHZ(I)) 
      &        + VAL(IKLE(ELT(I),2),ETA(I))   * SHP(2,I) * (1.D0-SHZ(I)) 
@@ -520,7 +519,7 @@
               STOP 
 !           END OF THIS IS JUST TO AVOID A BUG ON HP COMPILER 
             ENDIF 
-          END DO  
+          ENDDO  
 ! 
           RETURN  
         END SUBROUTINE INTERP_RECVCHAR_41 
@@ -554,7 +553,7 @@
 !
           IF(IELM.EQ.11) THEN 
             DO I=1,NRANGE 
-              IF(RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED 
+              IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! LOCALISED 
                 RECVCHAR(I)%BASKET(N) =  
      &                         VAL(IKLE(ELT(I),1)) * SHP(1,I) 
      &                       + VAL(IKLE(ELT(I),2)) * SHP(2,I) 
@@ -571,7 +570,7 @@
             ENDDO 
           ELSEIF(IELM.EQ.12) THEN
             DO I=1,NRANGE 
-              IF(RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED 
+              IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! LOCALISED 
                 SHP11=SHP(1,I)-SHP(3,I)
                 SHP12=SHP(2,I)-SHP(3,I)
                 SHP14=3.D0*SHP(3,I)
@@ -626,7 +625,7 @@
             ENDDO  
           ELSEIF(IELM.EQ.13) THEN 
           DO I=1,NRANGE 
-            IF(RECVCHAR(I)%NEPID==-1) THEN ! LOCALISED      
+            IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! LOCALISED      
               RECVCHAR(I)%BASKET(N) =  
      *      VAL(IKLE(ELT(I),1)) * (2.D0*SHP(1,I)-1.D0)* SHP(1,I) 
      *     +VAL(IKLE(ELT(I),2)) * (2.D0*SHP(2,I)-1.D0)* SHP(2,I) 
@@ -869,7 +868,7 @@
 ! 
 !*********************************************************************** 
 ! 
-      USE BIEF 
+      USE BIEF
 ! 
       IMPLICIT NONE 
       INTEGER LNG,LU 
@@ -920,7 +919,10 @@
 !
         XPLOT(IPLOT)   = RECVCHAR(IPLOT)%XP  
         YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP  
-        ZPLOT(IPLOT)   = RECVCHAR(IPLOT)%ZP  
+        ZPLOT(IPLOT)   = RECVCHAR(IPLOT)%ZP 
+        DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
+        DY(IPLOT)      = RECVCHAR(IPLOT)%DY 
+        DZ(IPLOT)      = RECVCHAR(IPLOT)%DZ  
         ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
         ETA(IPLOT)     = RECVCHAR(IPLOT)%KNE 
         NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
@@ -1063,6 +1065,9 @@
           RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
           RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
           RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+          RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+          RECVCHAR(IPLOT)%DY=DY(IPLOT)
+          RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
           RECVCHAR(IPLOT)%INE=ELT(IPLOT) 
           RECVCHAR(IPLOT)%ISP=ISP 
         ENDIF
@@ -1145,7 +1150,7 @@
             IF(IEL.GT.0) THEN 
 ! 
 !----------------------------------------------------------------------- 
-!             RELOCALISING IN ADJACENt ELEMENT
+!             RELOCALISING IN ADJACENT ELEMENT
 !----------------------------------------------------------------------- 
 ! 
               I1 = IKLE2(IEL,1) 
@@ -1218,6 +1223,14 @@
               SHP(ISUI(ISUI(IFA)),IPLOT) = 0.D0 
               XPLOT(IPLOT) = X(I1) + A1 * DX1 
               YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+              IF(ADD) THEN 
+                RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                RECVCHAR(IPLOT)%DY=DY(IPLOT)
+                RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
+              ENDIF  
               ISO = ISOV 
               IF(SHP(1,IPLOT).LT.EPSILO) ISO=IBSET(ISO,2) 
               IF(SHP(2,IPLOT).LT.EPSILO) ISO=IBSET(ISO,3) 
@@ -1287,6 +1300,10 @@
               ETA(IPLOT) = IET + IFA + IFA - 1 
               SHZ(IPLOT) = (ZP-ZSTAR(ETA(IPLOT))) 
      &                   / (ZSTAR(ETA(IPLOT)+1)-ZSTAR(ETA(IPLOT))) 
+!
+              IF(ADD) THEN 
+                RECVCHAR(IPLOT)%KNE=ETA(IPLOT) 
+              ENDIF 
 ! 
               ISO = ISOH 
 ! 
@@ -1419,7 +1436,7 @@
               SHZ  (IPLOT) = IFA 
 !             THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
 !             SENS=-1 FOR BACKWARD CHARACTERISTICS
-              ELT  (IPLOT) = - SENS * ELT(IPLOT)
+              ELT(IPLOT) = - SENS * ELT(IPLOT)
 !             EXITING LOOP ON ISP 
               EXIT
 ! 
@@ -1487,27 +1504,27 @@
 ! |      NOM       |MODE|                   ROLE                       | 
 ! |________________|____|______________________________________________| 
 ! |    U,V         | -->| COMPOSANTE DE LA VITESSE DU CONVECTEUR       | 
-! |    DT          | -->| PAS DE TEMPS.                                | 
-! |    NRK         | -->| NOMBRE DE SOUS-PAS DE RUNGE-KUTTA.           | 
-! |    X,Y         | -->| COORDONNEES DES POINTS DU MAILLAGE.          | 
-! |    IKLE        | -->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE    | 
-! |                |    | ET GLOBALE.                                  | 
-! |    IFABOR      | -->| NUMEROS DES ELEMENTS AYANT UNE FACE COMMUNE  | 
-! |                |    | AVEC L'ELEMENT .  SI IFABOR<0 OU NUL         | 
-! |                |    | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE   | 
-! |  XPLOT,YPLOT   |<-->| POSITIONS SUCCESSIVES DES DERIVANTS.         | 
+! |    DT          | -->| PAS DE TEMPS.                                 
+! |    NRK         | -->| NOMBRE DE SOUS-PAS DE RUNGE-KUTTA.            
+! |    X,Y         | -->| COORDONNEES DES POINTS DU MAILLAGE.           
+! |    IKLE        | -->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE     
+! |                |    | ET GLOBALE.                                   
+! |    IFABOR      | -->| NUMEROS DES ELEMENTS AYANT UNE FACE COMMUNE   
+! |                |    | AVEC L'ELEMENT .  SI IFABOR<0 OU NUL          
+! |                |    | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE    
+! |  XPLOT,YPLOT   |<-->| POSITIONS SUCCESSIVES DES DERIVANTS.          
 ! |    DX,DY       | -- | STOCKAGE DES SOUS-PAS . | 
-! |    SHP         |<-->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES    | 
-! |                |    | COURBES CARACTERISTIQUES.                    | 
-! |    ELT         |<-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES  | 
-! |                |    | CARACTERISTIQUES.                            | 
-! |    NSP         | -- | NOMBRE DE SOUS-PAS DE RUNGE KUTTA.           | 
-! |    NPLOT       | -->| NOMBRE DE DERIVANTS.                         | 
-! |    NPOIN       | -->| NOMBRE DE POINTS DU MAILLAGE.                | 
-! |    NELEM       | -->| NOMBRE D'ELEMENTS.                           | 
-! |    NELMAX      | -->| NOMBRE MAXIMAL D'ELEMENTS DANS LE MAILLAGE 2D| 
+! |    SHP         |<-->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES     
+! |                |    | COURBES CARACTERISTIQUES.                     
+! |    ELT         |<-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES   
+! |                |    | CARACTERISTIQUES.                             
+! |    NSP         | -- | NOMBRE DE SOUS-PAS DE RUNGE KUTTA.            
+! |    NPLOT       | -->| NOMBRE DE DERIVANTS.                          
+! |    NPOIN       | -->| NOMBRE DE POINTS DU MAILLAGE.                 
+! |    NELEM       | -->| NOMBRE D'ELEMENTS.                            
+! |    NELMAX      | -->| NOMBRE MAXIMAL D'ELEMENTS DANS LE MAILLAGE 2D 
 ! |    SURDET      | -->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM. 
-! |    SENS        | -->| DESCENTE OU REMONTEE DES CARACTERISTIQUES.   | 
+! |    SENS        | -->| DESCENTE OU REMONTEE DES CARACTERISTIQUES.    
 ! |________________|____|______________________________________________| 
 !  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE) 
 !----------------------------------------------------------------------- 
@@ -3013,15 +3030,15 @@
           DO I=1,NOMB 
 !          
           IF(U%ADR(I)%P%ELM.EQ.13.OR.U%ADR(I)%P%ELM.EQ.12) THEN 
-!           INTERPOLATION DES VITESSES POUR UNE VARIABLE QUADRATIQUE  
+!           INTERPOLATION DES VARIABLES POUR UNE VARIABLE QUADRATIQUE  
             CALL INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
      *                  ETA,ELT,U%ADR(I)%P%DIM1,DIM1U, 
      *                  NPLAN,U%ADR(I)%P%ELM,IKLE,NELMAX)          
           ELSE  
-!           INTERPOLATION DES VITESSES DANS LES AUTRES CAS 
+!           INTERPOLATION DES VARIABLES DANS LES AUTRES CAS 
             CALL INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
      *                  ETA,ELT,NPLOT,DIM1U,NPLAN, 
-     *                  IELM,IKLE,NELMAX) 
+     *                  IELM,IKLE,NELMAX)
           ENDIF 
 ! 
           ENDDO  
@@ -3291,3 +3308,4 @@
       END SUBROUTINE SCARACT 
 ! 
       END MODULE STREAMLINE
+
