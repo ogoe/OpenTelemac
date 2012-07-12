@@ -60,6 +60,11 @@
 !+   Rain and evaporation added (after initiative by O. Boutron, from
 !+   Tour du Valat, and O. Bertrand, Artelia group)
 !
+!history  J-M HERVOUET   (LNHE)
+!+        12/07/2012
+!+        V6P2
+!+   T2 set to 0 to start with required in parallel
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
 !| BILAN          |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION
@@ -304,6 +309,11 @@
 !----------------------------------------
 !
       CALL CPSTVC(H,T2)
+!     T2 WILL BE THE ASSEMBLED FLBOR, INITIALISATION HERE
+!     IS USELESS EXCEPT THAT PARCOM MAY ADD UNDEFINED
+!     NUMBERS (THAT WILL NOT BE USED BUT THAT WILL STOP
+!     A COMPILER... TOO BAD!)
+      IF(NCSIZE.GT.1) CALL OS('X=0     ',X=T2)
 !
 !     INITIALIZING F AT THE OLD VALUE
 !
