@@ -13,10 +13,11 @@ C                       *****************
      &  DX,DY,OPTVF,
      &  HSTOK,HCSTOK,LOGFR,DSZ,FLUXT,FLUHBOR,FLBOR,DTN,FLUSORTN,
      &  FLUENTN,LTT,
-     &  FLUXTEMP,FLUHBTEMP,HC,SMTR,AIRST,TMAX,DTT,GAMMA,FLUX_OLD)
+     &  FLUXTEMP,FLUHBTEMP,HC,SMTR,AIRST,TMAX,DTT,GAMMA,FLUX_OLD,
+     &  MXPTVS,NEISEG)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    1. SOLVES THE PROBLEM BY A METHOD OF TYPE ROE OR BY A KINETIC 
@@ -54,6 +55,12 @@ C                       *****************
 !+        V6P1
 !+    CHANGE EXPLICIT EULER BY NEWMARK SCHEME
 !+    ADD TCHAMEN AND ZOKAGA FLUXES 
+!
+!history  R. ATA (EDF-LNHE)
+!+        07/15/2012
+!+        V6P2
+!+   ADD NEW ARGUEMENTS (MXPTVS,NEISEG)
+!+   FOR WAF SCHEME
 !
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,7 +131,7 @@ C                       *****************
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
-!|                |   | 3:ZOKAGOA, 4:TCHAMEN,4:HLLC
+!|                |   | 3:ZOKAGOA, 4:TCHAMEN,4:HLLC,5:WAF
 !| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION 
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION
@@ -145,6 +152,8 @@ C                       *****************
 !| XNEBOR,YNEBOR  |-->| NORMAL TO BOUNDARY POINTS
 !| YASMH          |-->| LOGICAL: TO TAKE INTO ACCOUNT SMH
 !| ZF             |-->| BED TOPOGRAPHY (BATHYMETRY)
+!| MXPTVS         |-->| MAX NUMBER OF NEIGHBOR FOR A NODE 
+!| NEISEG         |-->| NEIGBOR OF THE SEGMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -158,12 +167,12 @@ C                       *****************
 !
       INTEGER, INTENT(IN)    :: NPTFR,KDIR,KNEU,KDDL,DIMT,KFROT,OPTVF
       INTEGER, INTENT(IN)    :: NELEM,NPOIN,LT,NIT,NREJET,ITURB,DLIMT
-      INTEGER, INTENT(IN)    :: NTRAC,MAXSCE,MAXTRA
+      INTEGER, INTENT(IN)    :: NTRAC,MAXSCE,MAXTRA,MXPTVS
       INTEGER, INTENT(INOUT) :: LTT
       INTEGER, INTENT(IN)    :: LIMPRO(NPTFR,6),NBOR(NPTFR)
       INTEGER, INTENT(IN)    :: LIMTRA(DLIMT)
       INTEGER, INTENT(IN)    :: ISCE(NREJET)
-      INTEGER, INTENT(INOUT) :: JMI(*),LOGFR(NPOIN)
+      INTEGER, INTENT(INOUT) :: JMI(*),LOGFR(NPOIN),NEISEG(2,*)
       LOGICAL, INTENT(IN)    :: DIFVIT,DIFT,LISTIN,MSK,DTVARI,YASMH
 
       DOUBLE PRECISION, INTENT(IN) :: PROPNU,DIFNU,GAMMA
@@ -197,6 +206,8 @@ C                       *****************
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !
+!
+!
       MASSES = 0.D0  
 !
 !   COMPUTE CELL AREAS 
@@ -222,7 +233,8 @@ C                       *****************
      &            FLUSORTN,FLUENTN,DSZ,AIRST,HSTOK,HCSTOK,FLUXT,FLUHBOR,
      &            FLBOR,LOGFR,LTT,DTN,FLUXTEMP,FLUHBTEMP,HC,TMAX,DTT,
      &            TB%ADR(6)%P%R,TB%ADR(7)%P%R,TB%ADR(8)%P%R,
-     &            TB%ADR(9)%P%R,TB%ADR(10)%P%R,GAMMA,FLUX_OLD%R)
+     &            TB%ADR(9)%P%R,TB%ADR(10)%P%R,
+     &            GAMMA,FLUX_OLD%R,MXPTVS,NEISEG)
 !
 !-----------------------------------------------------------------------
 !

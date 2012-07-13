@@ -1085,6 +1085,7 @@
         CALL BIEF_ALLVEC(1,HC       ,'HC    ',2    ,MESH%NSEG,0,MESH)
         CALL BIEF_ALLVEC(1,DSZ      ,'DSZ   ',2    ,MESH%NSEG,0,MESH)
         CALL BIEF_ALLVEC(1,FLUX_OLD ,'FLUOLD',IELM1,3        ,1,MESH)
+        CALL BIEF_ALLVEC(2,NEISEG   ,'NEISEG',2    ,MESH%NSEG,0,MESH)
         IF(NTRAC.GT.0) THEN
           CALL BIEF_ALLVEC_IN_BLOCK(FLUXT    ,NTRAC,1,'FLUXT ',
      &                              MESH%NSEG,1,0,MESH)
