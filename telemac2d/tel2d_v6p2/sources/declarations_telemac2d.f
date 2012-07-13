@@ -457,6 +457,10 @@
       TYPE(BIEF_OBJ),TARGET :: CSBUS , CEBUS , DELBUS, ANGBUS, LBUS
       TYPE(BIEF_OBJ),TARGET :: UBUS, VBUS, DBUS, TBUS, CLPBUS
 !
+!      NEIGHBORS OF SEGMENT (FOR WAF SCHEME)
+!
+      TYPE(BIEF_OBJ),TARGET :: NEISEG
+!
 !
 !-----------------------------------------------------------------------
 !
