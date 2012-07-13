@@ -236,7 +236,9 @@ def createExeFiles(ename,ecfg,eprog,bypass):
 
    # ~~ Add external libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for lib in cfg['MODULES'][eprog]['libs'].split():
-      if not path.exists(lib): raise Exception([{'name':'createExeFiles','msg':'External library missing:\n      '+lib}])
+      # FD@EDF : temporary removal of the following action
+      # => interesting but we should also support LDFLAGS as -lpthread -lmpich -lmed...
+      #if not path.exists(lib): raise Exception([{'name':'createExeFiles','msg':'External library missing:\n      '+lib}])
       LibFiles = LibFiles + lib + ' '
 
    # ~~ Lists local objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
