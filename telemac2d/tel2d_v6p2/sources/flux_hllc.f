@@ -218,7 +218,7 @@
       ENDIF
       IF(SPY.EQ.0)THEN
         WRITE(LU,*)'ERROR IN HLLC FLUX ESTIMATION (FLUX_HLLC.F)'
-        CALL PALNTE(1)
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
