@@ -250,11 +250,11 @@ C   LIMITERS
 !
 !   TVD COEFFICIENTS
 !
-      wL     = 0.5D0*(1.0D0 + DSIGN(1.0,cL)*LIM_RL) !DSIGN(A,B)=|A|*SIGN(B)
-      wR     = 0.5D0*(1.0D0 - DSIGN(1.0,cR)*LIM_RR)
-      wLR    = 0.5D0*(DSIGN(1.0,cR)*LIM_RR - DSIGN(1.0,cL)*LIM_RL)
-      wLSTAR = 0.5D0*(1.0D0 + DSIGN(1.0,cSTAR)*LIM_RSTAR)
-      wRSTAR = 0.5D0*(1.0D0 - DSIGN(1.0,cSTAR)*LIM_RSTAR)
+      wL     = 0.5D0*(1.0D0 + DSIGN(1.D0,cL)*LIM_RL) !DSIGN(A,B)=|A|*SIGN(B)
+      wR     = 0.5D0*(1.0D0 - DSIGN(1.D0,cR)*LIM_RR)
+      wLR    = 0.5D0*(DSIGN(1.D0,cR)*LIM_RR - DSIGN(1.D0,cL)*LIM_RL)
+      wLSTAR = 0.5D0*(1.0D0 + DSIGN(1.D0,cSTAR)*LIM_RSTAR)
+      wRSTAR = 0.5D0*(1.0D0 - DSIGN(1.D0,cSTAR)*LIM_RSTAR)
 !
 ! FINAL FLUX (BEFORE ROTATION)
 !
