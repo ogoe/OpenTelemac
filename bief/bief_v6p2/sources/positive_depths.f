@@ -8,7 +8,7 @@
      & NAMECODE,OPTION)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    SUPPRESSES NEGATIVE DEPTHS BY A LIMITATION OF FLUXES.
@@ -30,11 +30,20 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/07/2012
+!+        V6P2
+!+   The value of transmitted fluxes is given back in FLODEL in all
+!+   cases, YAFLODEL no longer used (but left for compatibility)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL WITH FLOPOINT
+!| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE 
 !| DT             |-->| TIME STEP
 !| FLBOR          |<->| BOUNDARY FLUXES
 !| FLODEL         |<->| FLUXES GIVEN BY SEGMENT
+!|                |   | MAY BE COMPUTED HERE (SEE COMPUTE-FLODEL)
+!|                |   | OR SIMPLY GIVEN. AT THE EXIT, THE REAL FLUX 
+!|                |   | TRANSMITTED IS GIVEN BACK.
 !| FLOPOINT       |-->| FLUXES GIVEN BY POINTS (ELEMENT BY ELEMENT)
 !| FLULIM         |<--| PER SEGMENT: PERCENTAGE OF FLUX THAT HAS NOT
 !|                |   | BEEN TRANSMITTED AT THE END OF THE ALGORITHM
@@ -62,10 +71,7 @@
 !| T3             |-->| WORK ARRAY
 !| T4             |-->| WORK ARRAY
 !| UNSV2D         |-->| INVERSE OF INTEGRAL OF BASIS FUNCTIONS
-!| YAFLODEL       |-->| IF(YES) FLUXES IN FLODEL WILL NOT BE
-!|                |   | INITIALISED BY TEL4DEL (THUS WE PUT HERE
-!|                |   | THE DISCARDED FLUXES WITH A MINUS SIGN)
-!|                |   | AND TEL4DEL WILL ADD THE COMPLETE FLUXES.
+!| YAFLODEL       |-->| NOT USED
 !| YASMH          |-->| IF(YES) SMH MUST BE TAKEN INTO ACCOUNT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -486,29 +492,26 @@
 !
 !-----------------------------------------------------------------------
 !
-!     NOW PERCENTAGE OF FLUX THAT HAS BEEN TRANSMITTED
+!     NOW WE WANT:
+!     FLULIM TO BE THE PERCENTAGE OF FLUX THAT HAS BEEN TRANSMITTED
+!     FLODEL TO BE THE ACTUAL FLUX THAT HAS BEEn TRANSMITTED
+!
+!     AND WE START WITH FLULIM=THE ORIGINAL FLODEL
+!
 !     NOTE: FLULIM MAY BE DIFFERENT ON EITHER SIDE OF AN INTERFACE
 !           IN PARALLEL MODE (BUT FLUXES CORRECTED WITH FLULIM
 !           WILL BE AVERAGED SO THIS IS NOT A PROBLEM)
 !
       DO I=1,MESH%NSEG
+!       ACTUAL FLUX TRANSMITTED (=ORIGINAL-REMAINING)
+        FLODEL%R(I)=FLULIM(I)-FLODEL%R(I)
+!       PERCENTAGE OF ACTUAL FLUX WITH RESPECT TO ORIGINAL FLUX
         IF(ABS(FLULIM(I)).GT.EPS_FLUX) THEN
-          FLULIM(I)=(FLULIM(I)-FLODEL%R(I))/FLULIM(I)
+          FLULIM(I)=FLODEL%R(I)/FLULIM(I)
         ELSE
           FLULIM(I)=0.D0
         ENDIF
       ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     FLUXES CORRESPONDING TO LIMITATION ARE KEPT IN FLODEL
-!     THEY WILL BE THE INITIAL VALUE IN TEL4DEL
-!
-      IF(YAFLODEL) THEN
-        DO I=1,MESH%NSEG
-          FLODEL%R(I)=-FLODEL%R(I)
-        ENDDO
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !
