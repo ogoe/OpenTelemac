@@ -82,7 +82,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!     COMPUTES THE MATRIX/VETOR PRODUCT OF MASS X VEC
+!     COMPUTES THE MATRIX/VECTOR PRODUCT OF MASS X VEC
 !
       CALL VECTOR(T1 ,'=','MASVEC          ',VEC%ELM,
      &            1.D0,VEC,VEC,VEC,VEC,VEC,VEC,MESH,MSK,MASKEL)

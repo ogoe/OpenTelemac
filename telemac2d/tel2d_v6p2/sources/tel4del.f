@@ -8,8 +8,7 @@
      & NSOU,NOMSOU,NMAB,NOMMAB,NCOU,NOMCOU,NINI,NOMINI,NVEB,NOMVEB,
      & NMAF,NOMMAF,NCOB,NOMCOB,NSAL,NOMSAL,NTEM,NOMTEM,NVEL,NOMVEL,
      & NVIS,NOMVIS,INFOGR,NELEM2,SALI_DEL,TEMP_DEL,VELO_DEL,DIFF_DEL,
-     & MARDAT,MARTIM,FLOW,INIFLOW,W,YAFLULIM,FLULIM,V2DPAR,KNOLG,
-     & MESH2D,MESH3D)
+     & MARDAT,MARTIM,FLOW,V2DPAR,KNOLG)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                  21/08/2010
@@ -115,27 +114,29 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/07/2012
+!+
+!+   Computation of FLOW removed and let to Telemac-2D and 3D
+!+   Consequently 6 arguments  removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AAT            |-->| CURRENT TIME
 !| DDT            |-->| TIME STEP
 !| DIFF_DEL       |-->| IF YES, WRITES DIFFUSION FILE FOR DELWAQ
 !| ELTSEG         |-->| SEGMENTS COMPOSING AN ELEMENT
 !| FLOW           |<->| FLOW
-!| FLULIM         |-->| FLUX LIMITATION
 !| GLOSEG         |-->| GLOBAL NUMBERS OF POINTS OF A SEGMENT
 !| HNEW           |-->| DEPTH AT NEW TIME (2D) ELEVATION Z (3D)
 !| HPROP          |-->| DEPTH IN THE DIV(HU) TERM
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| INFOGR         |-->| IF YES, INFORMATION PRINTED ON LISTING
-!| INIFLOW        |-->| IF YES, INITIALISES FLOWS
 !| KNOLG          |-->| GLOBAL NUMBERS OF LOCAL POINTS IN PARALLEL
 !| LIHBOR         |-->| TYPE OF 2D BOUNDARIES FOR DEPTH
 !| LLT,NNIT       |-->| ITERATION NUMBER,NUMBER OF ITERATIONS
 !| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
 !| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
 !| MAXSEG         |-->| DIMENSION OF GLOSEG
-!| MESH2D         |<->| 2D MESH
-!| MESH3D         |<->| 3D MESH
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY NODES
 !| NCOB           |-->| DELWAQ STEERING FILE CANAL
 !| NCOU           |-->| FLUX CANAL
@@ -180,10 +181,8 @@
 !| V2DPAR         |-->| INTEGRAL OF TEST FUNCTIONS, ASSEMBLED IN PARALLEL
 !| VELO_DEL       |-->| IF YES, WRITES VELOCITY FILE FOR DELWAQ
 !| VISC           |-->| DIFFUSION COEFFICIENT
-!| W              |<->| COMPONENT OF HORIZONTAL VELOCITY
 !| X              |-->| COORDINATES OF HORIZONTAL MESH
 !| Y              |-->| COORDINATES OF HORIZONTAL MESH
-!| YAFLULIM       |-->| IF YES, FLUX LIMITATION
 !| ZNEW           |-->| COORDINATE OF Z
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -209,23 +208,22 @@
       DOUBLE PRECISION  , INTENT(IN) :: X(NPOIN2),Y(NPOIN2),ZNEW(NPOIN)
       DOUBLE PRECISION  , INTENT(IN) :: HPROP(NPOIN2),HNEW(NPOIN2)
       DOUBLE PRECISION  , INTENT(IN) :: AAT,DDT,V2DPAR(NPOIN2)
-      DOUBLE PRECISION  , INTENT(IN) :: U(NPOIN),V(NPOIN),FLULIM(NSEG)
+      DOUBLE PRECISION  , INTENT(IN) :: U(NPOIN),V(NPOIN)
       DOUBLE PRECISION  , INTENT(IN) :: SALI(NPOIN),TEMP(NPOIN)
       DOUBLE PRECISION  , INTENT(IN) :: VISC(NPOIN)
 !                                               NSEG EN 2D, NOQ EN 3D
-      DOUBLE PRECISION  , INTENT(INOUT) :: FLOW(*),W(NELEM,*)
+      DOUBLE PRECISION  , INTENT(INOUT) :: FLOW(*)
       CHARACTER(LEN=72) , INTENT(IN) :: TITRE
       CHARACTER(LEN=144), INTENT(IN) :: NOMSOU,NOMMAB,NOMCOU,NOMINI
       CHARACTER(LEN=144), INTENT(IN) :: NOMVEB,NOMMAF,NOMCOB,NOMSAL
       CHARACTER(LEN=144), INTENT(IN) :: NOMTEM,NOMGEO,NOMLIM,NOMVEL
       CHARACTER(LEN=144), INTENT(IN) :: NOMVIS
-      LOGICAL           , INTENT(IN) :: INFOGR,SALI_DEL,TEMP_DEL,INIFLOW
-      LOGICAL           , INTENT(IN) :: VELO_DEL,DIFF_DEL,YAFLULIM
-      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH2D,MESH3D
+      LOGICAL           , INTENT(IN) :: INFOGR,SALI_DEL,TEMP_DEL
+      LOGICAL           , INTENT(IN) :: VELO_DEL,DIFF_DEL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ERR,IOPT1
+      INTEGER ERR
       INTEGER ISTEPA            ! I  ITERATION NUMBER FOR TIME AGGREGATION
 !
       INTEGER ITSTRT            ! O  STARTTIME
@@ -253,7 +251,6 @@
       DOUBLE PRECISION , ALLOCATABLE :: SUMTEMP(:)  ! FOR TIME INTEGRATION
       DOUBLE PRECISION , ALLOCATABLE :: SUMVISC(:)  ! FOR TIME INTEGRATION
       DOUBLE PRECISION , ALLOCATABLE :: SUMVELO(:)  ! FOR TIME INTEGRATION
-      DOUBLE PRECISION , ALLOCATABLE :: W2D(:,:)    ! FOR FLUXES IN 3D
 !
 !     LOCAL SINGLE VARIABLES OR ARRAYS WITH FIXED LENGTH
 !
@@ -330,7 +327,6 @@
 !
          ALLOCATE( DIST(3,NELEM2)  ,STAT=ERR)
          ALLOCATE( LENGTH (2,NSEG+MBND) ,STAT=ERR)                   ! LP 05/04/2009
-         ALLOCATE( W2D(NELEM2,3)   ,STAT=ERR)
          ALLOCATE( IFROM1(MAXSEG)  ,STAT=ERR)                        ! LP 05/04/2009
          ALLOCATE( ITOPL1(MAXSEG)  ,STAT=ERR)                        ! LP 05/04/2009
 !
@@ -708,23 +704,6 @@
          ENDDO
       ENDDO
 !
-!        ZEROES THE FLOWS AND THE EXCHANGE AREAS
-!        NB: LAST DIRECTION OF EXCHANGE AREAS REMAINS AT HORSURF
-!
-      IF(INIFLOW) THEN
-        DO I=1,NOQF
-          FLOW(I) = 0.D0
-        ENDDO
-      ELSE
-!       3D PART SET TO ZERO (MAYBE NOT NECESSARY FOR VERTICAL FLOWS)
-!       THE PREVIOUS CODE WAS IN ERROR, SO I HOPE IT WAS NOT NECESSARY   LP 05/04/2009
-        IF(NOQ.GT.NSEG) THEN
-          DO I=NOLAY*NSEG+1,NOQF                                      !  LP 05/04/2009
-            FLOW(I) = 0.D0
-          ENDDO
-        ENDIF
-      ENDIF
-!
 !     MAKES EXCHANGE AREAS
 !
       AREAWQ(1:NOLAY*(NSEG+MBND)) = 0.D0                              !  LP 05/04/2009
@@ -763,36 +742,6 @@
       DO I=1,NOQ                                                       !  LP 05/04/2009
          IF ( AREAWQ(I) .LT. 1.0D-20 ) AREAWQ(I) = 10.D0  ! BOUNDARIES    LP 05/04/2009
       ENDDO                                                            !  LP 05/04/2009
-!
-!     NOW THE MOST IMPORTANT THING, THE TRANSPORT ITSELF
-!
-!     THE FINITE ELEMENT FLUXES PER NODE ARE IN W, THEY ARE
-!     GIVEN BY TELEMAC-2D OR 3D
-!
-!--------------------------------------------------------------------
-! DIFFERENT OPTIONS TO COMPUTE THE FLUXES (TAKEN FROM CVTRVF IN BIEF)
-!--------------------------------------------------------------------
-!
-      IOPT1 = 2
-      IF(NOLAY.EQ.1) THEN
-!
-!       2D CASE
-        CALL FLUX_EF_VF(FLOW,W,NSEG,NELEM2,ELTSEG,ORISEG,IKLE,
-     &                  INIFLOW,IOPT1)
-!
-      ELSE
-!
-!       3D CASE
-        CALL FLUX_EF_VF_3D(FLOW,W2D,W,NSEG,MESH3D%NSEG,NELEM2,
-     &                     MESH3D%NELEM,MESH2D,INIFLOW,
-     &                     IOPT1,2,MESH3D%TYPELM+1,NOLAY,
-     &                     MESH3D%IKLE%I,MESH3D%NELMAX,KNOLG)
-!                                2: HORIZONTAL FLUXES FROM TOP TO BOTTOM
-!       FLUX LIMITATION (FLULIM IS 2D, SO NUMBERING FROM TOP TO BOTTOM
-!                        MAKES NO PROBLEM)
-        IF(YAFLULIM) CALL FLUX3DLIM(FLOW,FLULIM,NOLAY,NSEG)
-!
-      ENDIF
 !
 !     WRITES THE EXCHANGE AREAS (LAST DIRECTION REMAINS AT HORSURF)
 !
