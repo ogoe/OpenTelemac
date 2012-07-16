@@ -143,7 +143,7 @@ newstr.f nodalf_pugh.f nodalupv_pugh.f nomvar_telemac2d.f output_telemac2d.f poi
 oil_spill_2d.f poros.f poro11.f \
 prebor.f preres_telemac2d.f  propag.f propag_adj.f propin_telemac2d.f  \
 prosou.f q.f  read_fic_curves.f read_fic_sources.f read_sections_telemac2d.f \
-reinit.f rescue.f resolu.f  read_fic_frliq.f \
+receding.f reinit.f rescue.f resolu.f  read_fic_frliq.f \
 rotne0.f seg_neighbors.f siphon.f sl.f smagor.f smoothing_flux.f smtrac.f \
 sorflo.f source_telemac2d.f  spectre.f sta_dis_cur.f steady.f tel4del.f telemac2d.f  testeur.f \
 thomps.f tidal_model_t2d.f tr.f trsce.f  utimp_telemac2d.f \
