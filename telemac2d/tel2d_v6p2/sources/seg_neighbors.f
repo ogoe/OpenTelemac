@@ -53,7 +53,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
       INTEGER NB1,NB2,ISEG,IS,KV
-      INTEGER I1,I2,I3,IS1,IS2,KV1,KV2,J1
+      INTEGER I1,I2,I3,IS1,IS2,KV1,KV2
       INTEGER IEL,JARET,ERR
 !
       INTEGER NUBO1,NUBO2,NV1,J,NSG
@@ -62,10 +62,8 @@
 !
       DOUBLE PRECISION EPS
       DOUBLE PRECISION UNSIX
-      DOUBLE PRECISION X1,Y1,X2,Y2,X3,Y3,RNORM
-      DOUBLE PRECISION XI1,YI1,XI2,YI2,XI3,YI3
-      DOUBLE PRECISION XG,YG,RES
-      DOUBLE PRECISION XS1,YS1,XS2,YS2,XG1,YG1
+      DOUBLE PRECISION X1,Y1,X2,Y2,X3,Y3
+      DOUBLE PRECISION XS1,YS1,XS2,YS2
 !
       DOUBLE PRECISION a,NORMNUB,XNUB12,YNUB12
       DOUBLE PRECISION XM,YM,NORM_MNUBO1,NORM_MNUBO2,NORM_JM
@@ -73,7 +71,7 @@
       DOUBLE PRECISION MINANGLE,SINANGLE 
       INTEGER, DIMENSION(:,:,:), ALLOCATABLE :: JVOIS
 !
-      INTRINSIC ABS,SQRT
+      INTRINSIC ABS
 !
 !-----------------------------------------------------------------------
 !
@@ -342,17 +340,17 @@
 ! EDGE AT CORNER
 ! FOR THE MOMENT, THE EDGE IS ITS OWN NEIGHBOR
           IF(NEISEG(1,ISEG).EQ.0)THEN
-             WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
-             WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
-             WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
-             WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
+!             WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
+!             WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
+!             WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
+!             WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
              NEISEG(1,ISEG) = ISEG
           ENDIF
           IF(NEISEG(2,ISEG).EQ.0)THEN
-             WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
-             WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
-             WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
-             WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
+!             WRITE(LU,*)'PROBLEM AT SEG_NEIGHBORS ....!'
+!             WRITE(LU,*)'SEGMENT: ',ISEG,'HAS NO NEIGHBOR'
+!             WRITE(LU,*)'ITS NODES ARE  :',NUBO1,NUBO2
+!             WRITE(LU,*)'HE WILL BE HIS OWN NEIGHBOR'
              NEISEG(2,ISEG) = ISEG
           ENDIF
 ! VERIFICATION THAT THE ROUTINE WORKS WELL
@@ -366,8 +364,8 @@
 100   CONTINUE
 ! 
       DEALLOCATE(JVOIS)
-C
-C---------------------------------------------------------------------
-C
+!
+!---------------------------------------------------------------------
+!
       RETURN
       END

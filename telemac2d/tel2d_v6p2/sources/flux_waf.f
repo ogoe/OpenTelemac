@@ -42,6 +42,7 @@
 !***********************************************************************
 !
       USE BIEF
+      USE INTERFACE_TELEMAC2D,ONLY: LIMITER 
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -65,19 +66,17 @@
       DOUBLE PRECISION                :: HR,UR,VR,PSI_R
       DOUBLE PRECISION                :: AL,AR,HSTAR,USTAR
       DOUBLE PRECISION                :: pQL,pQR,SL,SR
-      DOUBLE PRECISION                :: QSTARL(4),QSTARR(4)
-      DOUBLE PRECISION                :: QL(4),QR(4),FL(4),FR(4)
-      DOUBLE PRECISION                :: FSTARL(4),FSTARR(4)
+      DOUBLE PRECISION                :: FL(4),FR(4)
 !
       DOUBLE PRECISION                :: GSUR2,EPS,DTDX
       DOUBLE PRECISION                :: cL,cR,cSTAR,wL,wR
       DOUBLE PRECISION                :: wLR,wLSTAR,wRSTAR
       DOUBLE PRECISION                :: FLU2X,FLU2Y
-      DOUBLE PRECISION                :: U0,POND,SSTAR
+      DOUBLE PRECISION                :: U0,SSTAR
       DOUBLE PRECISION                :: FLX(4),HLLCFLX(4)
 !
       DOUBLE PRECISION                :: LIM_RL,LIM_RR,LIM_RSTAR
-      DOUBLE PRECISION                :: rL,rR,rSTAR,DELTA,LIMITER
+      DOUBLE PRECISION                :: rL,rR,rSTAR,DELTA
 !-----------------------------------------------------------------------
        EPS   = 1.E-6
        GSUR2 = G/2.0D0
