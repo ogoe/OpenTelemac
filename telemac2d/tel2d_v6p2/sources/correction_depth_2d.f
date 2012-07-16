@@ -32,10 +32,15 @@
 !+        V6P2
 !+   Rain and evaporation added
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/07/2012
+!+        V6P2
+!+   Call to receding added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| GLOSEG         |-->| GLOBAL NUMBERS OF APICES OF SEGMENTS
-!| YAFLODEL       |-->| GIVE BACK THE FLUXES THAT WERE NOT TRANSMITTED
+!| YAFLODEL       |<--| IF YES, FLODEL HAS BEEN COMPUTED
 !| YAFLULIM       |<->| IF YES, FLULIM WILL BE APPLIED TO SEGMENT FLUXES
 !|                |   | WHEN CALLING CVDFTR
 !| YASMH          |-->| THE RIGHT-HAND SIDE SMH HAS TO BE TAKEN
@@ -56,14 +61,45 @@
 !
       INTEGER, INTENT(IN)    :: DIMGLO
       INTEGER, INTENT(IN)    :: GLOSEG(DIMGLO,2)
-      LOGICAL, INTENT(IN)    :: YAFLODEL,YASMH
-      LOGICAL, INTENT(INOUT) :: YAFLULIM
+      LOGICAL, INTENT(IN)    :: YASMH
+      LOGICAL, INTENT(INOUT) :: YAFLULIM,YAFLODEL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER IOPT1
       CHARACTER(LEN=16) :: FORMUL
 !
 !-----------------------------------------------------------------------
+!
+!     CASES OF COMPUTATION OF FLODEL
+!
+      IF(  INCLUS(COUPLING,'DELWAQ')  .OR.
+     &   ((OPTBAN.EQ.1.OR.OPTBAN.EQ.3).AND.OPT_HNEG.EQ.2) ) THEN
+        FORMUL='HUGRADP         '
+        IF(SOLSYS.EQ.2) FORMUL(8:8)='2'
+!       CALL VECTOR(T1,'=',FORMUL,H%ELM,-1.D0,
+!    *              HPROP,DM1,ZCONV,UDEL,VDEL,VDEL,MESH,MSK,MASKEL)
+!                   T1 AS HUGRADP IS NOT USED AS AN ASSEMBLED VECTOR
+!                   BUT TO GET THE NON ASSEMBLED FORM MESH%W
+!       JUST LIKE CALL VECTOR BUT WITHOUT ASSEMBLING T1 BECAUSE LEGO IS SET
+!       TO FALSE
+        CALL VECTOS(T1%R,'=',FORMUL,-1.D0,
+     &              HPROP%R,DM1%R,ZCONV%R,UDEL%R,VDEL%R,VDEL%R,
+     &              HPROP,  DM1  ,ZCONV  ,UDEL  ,VDEL  ,VDEL  ,
+!                             LEGO
+     &              MESH%W%R,.TRUE.,
+     &              MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
+     &              MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
+     &              MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
+     &              BIEF_NBPTS(H%ELM,MESH),MESH%NELEM,MESH%NELMAX,
+     &              H%ELM,MESH%LV,MSK,MASKEL%R,MESH) 
+!       COMPUTING FLODEL, SO FAR IOPT1 HARDCODED OPTION
+        IOPT1=2
+        CALL FLUX_EF_VF(FLODEL%R,MESH%W%R,MESH%NSEG,MESH%NELEM,
+     &                  MESH%ELTSEG%I,MESH%ORISEG%I,
+     &                  MESH%IKLE%I,.TRUE.,IOPT1)
+        YAFLODEL=.TRUE.
+      ENDIF
 !
       IF(OPTBAN.EQ.1.OR.OPTBAN.EQ.3) THEN
       IF(DEBUG.GT.0) WRITE(LU,*) 'TRAITEMENT BANCS DECOUVRANTS'
@@ -71,36 +107,16 @@
       IF(OPT_HNEG.EQ.2) THEN
 !
 !     LIMITS FLUXES TO HAVE POSITIVE DEPTHS
-!
-      FORMUL='HUGRADP         '
-      IF(SOLSYS.EQ.2) FORMUL(8:8)='2'
-!     CALL VECTOR(T1,'=',FORMUL,H%ELM,-1.D0,
-!    *            HPROP,DM1,ZCONV,UDEL,VDEL,VDEL,MESH,MSK,MASKEL)
-!                 T1 AS HUGRADP IS NOT USED AS AN ASSEMBLED VECTOR
-!                 BUT TO GET THE NON ASSEMBLED FORM MESH%W
-!     JUST LIKE CALL VECTOR BUT WITHOUT ASSEMBLING T1 BECAUSE LEGO IS SET
-!     TO FALSE
-      CALL VECTOS(T1%R,'=',FORMUL,-1.D0,
-     &            HPROP%R,DM1%R,ZCONV%R,UDEL%R,VDEL%R,VDEL%R,
-     &            HPROP,  DM1  ,ZCONV  ,UDEL  ,VDEL  ,VDEL  ,
-!                           LEGO
-     &            MESH%W%R,.FALSE.,
-     &            MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
-     &            MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
-     &            MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
-     &            BIEF_NBPTS(H%ELM,MESH),MESH%NELEM,MESH%NELMAX,
-     &            H%ELM,MESH%LV,MSK,MASKEL%R,MESH)
-!
 !     BEWARE, WILL BE ONLY VALID FOR ADVECTION WITH UDEL,VDEL
 !     HENCE FOR TRACERS AND IF SOLSYS=2
-!
+!     FLULIM WILL BE CORRECT AT THE EXIT OF POSITIVE_DEPTHS
       YAFLULIM=.TRUE.
 !
       IF(.NOT.RAIN) THEN
 !
 !     CASE ONLY SMH OR NOTHING
 !
-      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.TRUE.,
+      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
      &                     FLBOR,DT,UNSV2D,
      &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
      &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
@@ -122,7 +138,7 @@
         CALL OS('X=Y     ',X=T5,Y=SMH)
         CALL OS('X=X+YZ  ',X=T5,Y=PLUIE,Z=V2DPAR)
       ENDIF
-      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.TRUE.,
+      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
      &                     FLBOR,DT,UNSV2D,
      &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
      &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
@@ -134,7 +150,7 @@
 !
 !     CASE ONLY RAIN
 !
-      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.TRUE.,
+      CALL POSITIVE_DEPTHS(T1,T2,T3,T4,H,HN,MESH,FLODEL,.FALSE.,
      &                     FLBOR,DT,UNSV2D,
      &                     NPOIN,GLOSEG(1:DIMGLO,1),GLOSEG(1:DIMGLO,2),
      &                     MESH%NBOR%I,MESH%NPTFR,YAFLODEL,
@@ -182,6 +198,19 @@
 !
       IF(HNEG.LT.-1.D-6) CALL OS('X=X+C   ',X=H,C=HNEG)
 !
+      ENDIF
+!
+!     HREC IS THE THRESHOLD DEPTH FOR RECEDING PROCEDURE
+!     RECEDING PROCEDURE, TO PREVENT SPURIOUS OVERWHELMING OF DYKES
+!     WHEN MESH TOO COARSE...
+!
+      IF(HREC.GT.0.D0.AND.OPT_HNEG.EQ.2) THEN
+!       HERE FLODEL HAS ALREADY BEEN BUILT, IT WILL BE MODIFIED
+        CALL CPSTVC(H,T1)
+        CALL CPSTVC(H,T2)
+        CALL RECEDING(H%R,ZF%R,HREC,V2DPAR%R,VOLU2D%R,MESH%IKLE%I,
+     &                NPOIN,MESH%NELEM,MESH%NELMAX,T1,T2,MESH,
+     &                W1,YAFLODEL,FLODEL,DT)
       ENDIF
 !
 !     OPTIONAL CLIPPING OF NEGATIVE VALUES

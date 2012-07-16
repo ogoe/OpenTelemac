@@ -510,7 +510,7 @@
              BORNES(K) = MOTREA( ADRESS(2,15) + K-1 )
            ENDDO
          ENDIF
-!        ??????    = MOTREA( ADRESS(2,16) )
+         HREC      = MOTREA( ADRESS(2,16) )
          TETAC     = MOTREA( ADRESS(2,17) )
          TETAU     = MOTREA( ADRESS(2,18) )
          TETAD     = MOTREA( ADRESS(2,19) )

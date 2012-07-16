@@ -28,6 +28,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/07/2012
+!+        V6P2
+!+   FLODEL no longer initialised, due to a different use.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP IN SECONDS
 !| FLODEL         |<->| FLUXES ALONG SEGMENTS
@@ -99,12 +104,13 @@
 10    CONTINUE
 !
 !     TAKES FLUXES DUE TO THE SMOOTHING OF NEGATIVE DEPTHS INTO ACCOUNT
+!     FLODEL NOT INITIALISED
 !
       IF(YAFLODEL) THEN
 !
         CALL FLUX_EF_VF(FLODEL%R,W1%R,MESH%NSEG,MESH%NELEM,
      &                  MESH%ELTSEG%I,MESH%ORISEG%I,
-     &                  MESH%IKLE%I,.TRUE.,0)
+     &                  MESH%IKLE%I,.FALSE.,0)
 !
       ENDIF
 !

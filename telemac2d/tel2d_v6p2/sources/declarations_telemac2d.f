@@ -1026,6 +1026,11 @@
 !
       INTEGER START_RECORD
 !
+!     COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION
+!     (1 IN CASE OF FUTURE LAW WITH MORE COEF.)
+!
+      INTEGER COEF1TRAC(MAXTRA)
+!
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -1439,7 +1444,7 @@
 !
       DOUBLE PRECISION COETSUNAMI(10)
 !
-!     VALUES OF TRACERS IN THE RAIN'
+!     VALUES OF TRACERS IN THE RAIN
 !
       DOUBLE PRECISION TRAIN(MAXTRA)
 !
@@ -1455,10 +1460,10 @@
 !
       DOUBLE PRECISION MSL
 !
-!     COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION
-!     (1 IN CASE OF FUTURE LAW WITH MORE COEF.)
+!     THRESHOLD DEPTH FOR RECEDING PROCEDURE
 !
-      INTEGER COEF1TRAC(MAXTRA)
+      DOUBLE PRECISION HREC
+!
 !
 !-----------------------------------------------------------------------
 !
