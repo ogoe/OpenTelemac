@@ -1181,19 +1181,22 @@ AIDE = 'Precision demandee pour la resolution de l''etape de propagation
 AIDE1 = 'Required accuracy for solving the propagation step 
 (refer to Principle note).' 
  
-NOM = 'REEL LIBRE 2' 
-NOM1 = 'FREE REAL 2' 
+NOM = 'PROFONDEUR LIMITE POUR PRODEDURE DE RESSUYAGE' 
+NOM1 = 'THRESHOLD DEPTH FOR RECEDING PROCEDURE' 
 TYPE = REEL 
 INDEX = 16 
-MNEMO = '' 
+MNEMO = 'HREC' 
 TAILLE = 0 
 DEFAUT = 0. 
 DEFAUT1 = 0. 
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
-NIVEAU = -13 
-AIDE = 'Non active pour l''instant' 
-AIDE1 = 'Not yet implemented' 
+NIVEAU = 2 
+AIDE = 'Si > 0., declenche la procedure de ressuyage qui evite
+le franchissement parasite des digues mal discretisees' 
+AIDE1 = 'If > 0., will trigger the receding procedure that
+avoids overwhelming of dyles which are too loosely 
+discretised ' 
  
 NOM = 'IMPLICITATION POUR LA HAUTEUR' 
 NOM1 = 'IMPLICITATION FOR DEPTH' 
