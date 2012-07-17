@@ -2059,6 +2059,26 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE RECEDING
+     &(H,ZF,HREC,V2DPAR,VOLU2D,IKLE,NPOIN,NELEM,NELMAX,DELTAH,HITS,
+     & MESH,W1,YAFLODEL,FLODEL,DT)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER,          INTENT(IN)    :: NPOIN,NELEM,NELMAX
+      INTEGER,          INTENT(IN)    :: IKLE(NELMAX,3)
+      DOUBLE PRECISION, INTENT(IN)    :: HREC,DT
+      DOUBLE PRECISION, INTENT(IN)    :: V2DPAR(NPOIN),ZF(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: VOLU2D(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),W1(NELEM,3)
+      LOGICAL,          INTENT(IN)    :: YAFLODEL
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: DELTAH,HITS,FLODEL
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE REINIT
      &(NS,NSEG,NPTFR,H,SMTR,HSTOK,HC,HCSTOK,FLUXT,FLUHBOR,DTT,NTRAC)
       USE BIEF_DEF

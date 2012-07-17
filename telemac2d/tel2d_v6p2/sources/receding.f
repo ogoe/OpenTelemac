@@ -44,9 +44,9 @@
       DOUBLE PRECISION, INTENT(IN)    :: HREC,DT
       DOUBLE PRECISION, INTENT(IN)    :: V2DPAR(NPOIN),ZF(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: VOLU2D(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: H(NPOIN),W1(NELEM,3)
       LOGICAL,          INTENT(IN)    :: YAFLODEL
-      TYPE(BIEF_OBJ),   INTENT(INOUT) :: DELTAH,HITS,W1,FLODEL
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: DELTAH,HITS,FLODEL
       TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -126,7 +126,9 @@
 !     INDUCED BY THE TRANSFERS
 !
       DO IELEM=1,NELEM
-        W1%R(IELEM)=0.D0
+        W1(IELEM,1)=0.D0
+        W1(IELEM,2)=0.D0
+        W1(IELEM,3)=0.D0
       ENDDO
 !
       CALL OS('X=0     ',X=DELTAH)
@@ -152,20 +154,20 @@
               DELTAH%R(I2)=DELTAH%R(I2)
      &                    +H(I1)*HITS%R(I1)*V2DPAR(I1)/V2DPAR(I2)
               DELTAH%R(I1)=DELTAH%R(I1)-HITS%R(I1)*H(I1)
-              W1%R(I1)=W1%R(I1)
-     &                +HITS%R(I1)*H(I1)*VOLU2D(IELEM)
-              W1%R(I2)=W1%R(I2)
-     &                -HITS%R(I1)*H(I1)*VOLU2D(IELEM)
+              W1(IELEM,1)=W1(IELEM,1)
+     &                +HITS%R(I1)*H(I1)*VOLU2D(I1)
+              W1(IELEM,2)=W1(IELEM,2)
+     &                -HITS%R(I1)*H(I1)*VOLU2D(I1)
             ENDIF
             IF(ZF(I1).GT.SL3+HREC.AND.H(I3).GT.HREC) THEN
 !             TRANSFER FROM I1 TO I3
               DELTAH%R(I3)=DELTAH%R(I3)
      &                    +H(I1)*HITS%R(I1)*V2DPAR(I1)/V2DPAR(I3)
               DELTAH%R(I1)=DELTAH%R(I1)-HITS%R(I1)*H(I1)
-              W1%R(I1)=W1%R(I1)
-     &                +HITS%R(I1)*H(I1)*VOLU2D(IELEM)
-              W1%R(I3)=W1%R(I3)
-     &                -HITS%R(I1)*H(I1)*VOLU2D(IELEM)
+              W1(IELEM,1)=W1(IELEM,1)
+     &                +HITS%R(I1)*H(I1)*VOLU2D(I1)
+              W1(IELEM,3)=W1(IELEM,3)
+     &                -HITS%R(I1)*H(I1)*VOLU2D(I1)
             ENDIF
           ENDIF
 !
@@ -177,20 +179,20 @@
               DELTAH%R(I1)=DELTAH%R(I1)
      &                    +H(I2)*HITS%R(I2)*V2DPAR(I2)/V2DPAR(I1)
               DELTAH%R(I2)=DELTAH%R(I2)-HITS%R(I2)*H(I2)
-              W1%R(I2)=W1%R(I2)
-     &                +HITS%R(I2)*H(I2)*VOLU2D(IELEM)
-              W1%R(I1)=W1%R(I1)
-     &                -HITS%R(I2)*H(I2)*VOLU2D(IELEM)
+              W1(IELEM,2)=W1(IELEM,2)
+     &                +HITS%R(I2)*H(I2)*VOLU2D(I2)
+              W1(IELEM,1)=W1(IELEM,1)
+     &                -HITS%R(I2)*H(I2)*VOLU2D(I2)
             ENDIF
             IF(ZF(I2).GT.SL3+HREC.AND.H(I3).GT.HREC) THEN
 !             TRANSFER FROM I2 TO I3
               DELTAH%R(I3)=DELTAH%R(I3)
      &                    +H(I2)*HITS%R(I2)*V2DPAR(I2)/V2DPAR(I3)
               DELTAH%R(I2)=DELTAH%R(I2)-HITS%R(I2)*H(I2)
-              W1%R(I2)=W1%R(I2)
-     &                +HITS%R(I2)*H(I2)*VOLU2D(IELEM)
-              W1%R(I3)=W1%R(I3)
-     &                -HITS%R(I2)*H(I2)*VOLU2D(IELEM)
+              W1(IELEM,2)=W1(IELEM,2)
+     &                +HITS%R(I2)*H(I2)*VOLU2D(I2)
+              W1(IELEM,3)=W1(IELEM,3)
+     &                -HITS%R(I2)*H(I2)*VOLU2D(I2)
             ENDIF
           ENDIF
 !
@@ -202,20 +204,20 @@
               DELTAH%R(I1)=DELTAH%R(I1)
      &                    +H(I3)*HITS%R(I3)*V2DPAR(I3)/V2DPAR(I1)
               DELTAH%R(I3)=DELTAH%R(I3)-HITS%R(I3)*H(I3)
-              W1%R(I3)=W1%R(I3)
-     &                +HITS%R(I3)*H(I3)*VOLU2D(IELEM)
-              W1%R(I1)=W1%R(I1)
-     &                -HITS%R(I3)*H(I3)*VOLU2D(IELEM)
+              W1(IELEM,3)=W1(IELEM,3)
+     &                +HITS%R(I3)*H(I3)*VOLU2D(I3)
+              W1(IELEM,1)=W1(IELEM,1)
+     &                -HITS%R(I3)*H(I3)*VOLU2D(I3)
             ENDIF
             IF(ZF(I3).GT.SL2+HREC.AND.H(I2).GT.HREC) THEN
 !             TRANSFER FROM I3 TO I2
               DELTAH%R(I2)=DELTAH%R(I2)
      &                    +H(I3)*HITS%R(I3)*V2DPAR(I3)/V2DPAR(I2)
               DELTAH%R(I3)=DELTAH%R(I3)-HITS%R(I3)*H(I3)
-              W1%R(I3)=W1%R(I3)
-     &                +HITS%R(I3)*H(I3)*VOLU2D(IELEM)
-              W1%R(I2)=W1%R(I2)
-     &                -HITS%R(I3)*H(I3)*VOLU2D(IELEM)
+              W1(IELEM,3)=W1(IELEM,3)
+     &                +HITS%R(I3)*H(I3)*VOLU2D(I3)
+              W1(IELEM,2)=W1(IELEM,2)
+     &                -HITS%R(I3)*H(I3)*VOLU2D(I3)
             ENDIF
           ENDIF
         ENDIF 
@@ -240,14 +242,16 @@
 !       TRANSFORMING W1 INTO FLUXES
 !
         DO IELEM=1,NELEM
-          W1%R(IELEM)=W1%R(IELEM)/DT
+          W1(IELEM,1)=W1(IELEM,1)/DT
+          W1(IELEM,2)=W1(IELEM,2)/DT
+          W1(IELEM,3)=W1(IELEM,3)/DT
         ENDDO
 !
 !       TAKES THESE FLUXES TO CORRECT FLODEL
 !
-        CALL FLUX_EF_VF(FLODEL%R,W1%R,MESH%NSEG,MESH%NELEM,
+        CALL FLUX_EF_VF(FLODEL%R,W1,MESH%NSEG,MESH%NELEM,
      &                  MESH%ELTSEG%I,MESH%ORISEG%I,
-     &                  MESH%IKLE%I,.FALSE.,0)
+     &                  MESH%IKLE%I,.FALSE.,2)
 !
       ENDIF
 !
