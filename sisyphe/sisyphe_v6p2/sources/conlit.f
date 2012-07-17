@@ -2,7 +2,8 @@
                      SUBROUTINE CONLIT
 !                    *****************
 !
-     &(NBOR)
+     &(NBOR,AT)
+!
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -46,6 +47,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINT
+!| AT             |-->| TEMPS (s)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -59,7 +61,10 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN):: NBOR(NPTFR)
-!
+! CV: 12/06...
+      DOUBLE PRECISION, INTENT(IN) :: AT
+      DOUBLE PRECISION, EXTERNAL:: CGL
+!...CV
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,K,IFRLIQ,IRANK
@@ -126,6 +131,18 @@
                IRANK=I+(IFRLIQ-1)*NSICLA
                CBOR%ADR(I)%P%R(K) = CBOR_CLASSE(IRANK)
             ENDDO
+          ENDIF
+!
+! CV 12/06 READING BOUNDARY CONDITION FILE 
+!
+          IF(LICBOR%I(K).EQ.KENT.AND.
+     *               SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
+!
+             IF(IFRLIQ.GT.0) THEN
+               DO I=1,NSICLA           
+                  CBOR%ADR(I)%P%R(K) = CGL(IFRLIQ,AT)/XMVS
+               ENDDO
+             ENDIF
           ENDIF
 !
         ENDDO

@@ -534,6 +534,10 @@ C
 !> @brief
 C
       TYPE(BIEF_OBJ), TARGET :: ZFCL_S
+!> @brief
+C
+      TYPE(BIEF_OBJ), TARGET :: ZFCL_MS
+
 !> @brief MEYER PETER MUELLER factor
 C	  
       TYPE(BIEF_OBJ), TARGET :: MPM_ARAY

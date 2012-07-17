@@ -145,11 +145,20 @@ C
       END INTERFACE
 C
       INTERFACE
-        SUBROUTINE CONLIT(NBOR)
+        SUBROUTINE CONLIT(NBOR,AT)
         USE BIEF_DEF
         IMPLICIT NONE
         INTEGER, INTENT(IN):: NBOR(*)
+        DOUBLE PRECISION, INTENT(IN):: AT
         END SUBROUTINE
+      END INTERFACE
+C 
+      INTERFACE
+        DOUBLE PRECISION FUNCTION CGL( I , AT)
+          IMPLICIT NONE
+          INTEGER, INTENT(IN) :: I
+          DOUBLE PRECISION, INTENT(IN):: AT
+        END FUNCTION
       END INTERFACE
 C
       INTERFACE
@@ -479,6 +488,18 @@ C
       END INTERFACE
 C
       INTERFACE
+        SUBROUTINE READ_FIC_CONC(CGL, WHAT , AT , NFIC , LISTIN , STAT )
+      IMPLICIT NONE
+      CHARACTER*9     , INTENT(IN)       :: WHAT
+      DOUBLE PRECISION, INTENT(IN)       :: AT
+      DOUBLE PRECISION, INTENT(INOUT)    :: CGL
+      INTEGER         , INTENT(IN)       :: NFIC
+      LOGICAL         , INTENT(IN)       :: LISTIN
+      LOGICAL         , INTENT(OUT)      :: STAT
+        END SUBROUTINE
+      END INTERFACE
+C
+      INTERFACE
        SUBROUTINE RESCUE_SISYPHE
      &(QU,QV,Q,U,V,H,S,ZF,HW,TW,THETAW,NPOIN,TROUVE,ALIRE,PASS,
      & ICF,LISTI,MAXVAR)
@@ -654,6 +675,7 @@ C
           DOUBLE PRECISION, INTENT(INOUT) :: WS
         END SUBROUTINE
       END INTERFACE
+
 !
 !======================================================================!
 !======================================================================!

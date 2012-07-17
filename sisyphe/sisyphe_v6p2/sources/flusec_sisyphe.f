@@ -72,7 +72,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NSEMAX,ERR
-      PARAMETER(NSEMAX=50)
+      PARAMETER(NSEMAX=100)
 !
       INTEGER IELEM,I1,I2,I3,ELBEST,IGBEST,ILBEST
       INTEGER ILPREC,ISEG,ISEC,NSEC,PT,DEP,ARR
@@ -94,10 +94,10 @@
       SAVE FLXC,VOLNEGC,VOLPOSC,OLD_METHOD
 !
 !-----------------------------------------------------------------------
-!
-      WRITE(LU,*) '-> ENTERING FLUSEC_SISYPHE'
-      WRITE(LU,*) 'NCP: ',NCP
-      WRITE(LU,*) 'CTRLSC: ',CTRLSC(:)
+! CV 
+!      WRITE(LU,*) '-> ENTERING FLUSEC_SISYPHE'
+!      WRITE(LU,*) 'NCP: ',NCP
+!      WRITE(LU,*) 'CTRLSC: ',CTRLSC(:)
       SUR6 = 1.D0/6.D0
       NSEC = NCP/2
 !
@@ -343,6 +343,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      WRITE(LU,*) '-> LEAVING FLUSEC_SISYPHE'
+!      WRITE(LU,*) '-> LEAVING FLUSEC_SISYPHE'
       RETURN
       END

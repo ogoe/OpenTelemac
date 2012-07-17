@@ -48,6 +48,11 @@
 !+  Case DSTAR > 150 AC(I) = 0.045D0   
 !+   
 !
+!history  P.TASSI (EDF-LNHE)
+!+        06/07/2012
+!+        V6P2
+!+  Line MIXTE=.FALSE. added. 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -79,18 +84,16 @@
 !| NLAYER         |<->| NUMBER OF BED LAYER
 !| DEBU           |-->| FLAG, RESTART ON SEDIMENTOLOGICAL FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
       USE BIEF
       USE INTERFACE_SISYPHE, EX_INIT_SEDIMENT => INIT_SEDIMENT
-!
-!      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER,           INTENT(IN)     :: NSICLA,NPOIN,NOMBLAY
       TYPE(BIEF_OBJ),    INTENT(INOUT)  :: ELAY,ZF,ZR
       TYPE(BIEF_OBJ), INTENT(INOUT)     :: MS_SABLE, MS_VASE
@@ -104,52 +107,55 @@ C
       DOUBLE PRECISION,  INTENT(INOUT)  :: FRACSED_GF(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: FDM(NSICLA),XWC(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: AC(NSICLA),TOCE_SABLE
-C
+!
       LOGICAL,           INTENT(IN)     :: SEDCO(NSICLA), DEBU
-C
-C IF SEDCO(1) OR SEDCO(2) = YES --> CONSOLIDATION MODEL
-C
+!
+!     IF SEDCO(1) OR SEDCO(2) = YES --> CONSOLIDATION MODEL
+!
       DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN,NOMBLAY)
-C
-C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER            :: I,J
       DOUBLE PRECISION   :: DENS,DSTAR
       LOGICAL            :: MIXTE
 !
 !======================================================================!
 !======================================================================!
-C                               PROGRAM                                !
+!                               PROGRAM                                !
 !======================================================================!
 !======================================================================!
 !
-C  ------ BED COMPOSITION
+!  ------ BED COMPOSITION
 !
-        CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+      CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
 !
-C     ONLY ONE CLASS
-C
+!     ONLY ONE CLASS
+!
       IF(NSICLA.EQ.1) THEN
-         DO I=1,NPOIN
+        DO I=1,NPOIN
           AVAIL(I,1,1) = 1.D0
           ACLADM%R(I) = FDM(1)
         ENDDO
-C     PURE MUD ONLY
+!       PURE MUD ONLY
         IF(SEDCO(1)) CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,
      &                               ELAY%R,NOMBLAY,CONC_VASE,
      &                                  MS_SABLE%R,MS_VASE%R,ZF%R,
      &                                  ZR%R,AVA0,CONC,NLAYER,DEBU)
-C
+!
       ELSE
-C
-C     NON-COHESIVE, MULTI-CLASSES
-C
+!
+!     NON-COHESIVE, MULTI-CLASSES
+!
         IF(.NOT.SEDCO(2)) THEN
+!
+          MIXTE=.FALSE.
+!
           CALL INIT_AVAI
-C         CALL MEAN_GRAIN_SIZE
-C THIS PART CAN BE INTEGRATED INTO INIT_AVAI
+!         CALL MEAN_GRAIN_SIZE
+!         THIS PART CAN BE INTEGRATED INTO INIT_AVAI
           DO J=1,NPOIN
             ACLADM%R(J) = 0.D0
             UNLADM%R(J) = 0.D0
@@ -163,10 +169,10 @@ C THIS PART CAN BE INTEGRATED INTO INIT_AVAI
             UNLADM%R(J)=MAX(UNLADM%R(J),0.D0)
           ENDDO
         ELSE
-C
-C        MIXED (so far only 2 classes: NON COHESIVE /COHESIVE)
-C  
-          MIXTE=.TRUE.      
+!
+!         MIXED (so far only 2 classes: NON COHESIVE /COHESIVE) 
+          MIXTE=.TRUE.
+!      
           CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,ELAY%R,
      &                  NOMBLAY,CONC_VASE,MS_SABLE%R,
      &                  MS_VASE%R,ZF%R,ZR%R,AVA0,CONC,NLAYER,DEBU)
@@ -174,26 +180,26 @@ C
             ACLADM%R(I) = FDM(1)
           ENDDO
         ENDIF
-C
+!
       ENDIF
-C
+!
       IF(LGRAFED) THEN
         DO I=1, NSICLA
           FRACSED_GF(I)=AVA0(I)
         ENDDO
       ENDIF
-C
-C     SETTLING VELOCITY
-C
+!
+!     SETTLING VELOCITY
+!
       IF(.NOT.CALWC) THEN
         DENS = (XMVS - XMVE) / XMVE
         DO I = 1, NSICLA
           CALL VITCHU_SISYPHE(XWC(I),DENS,FDM(I),GRAV,VCE)
         ENDDO
       ENDIF
-C
-C     SHIELDS PARAMETER
-C
+!
+!     SHIELDS PARAMETER
+!
       IF(.NOT.CALAC) THEN
         DENS  = (XMVS - XMVE )/ XMVE
         DO I = 1, NSICLA

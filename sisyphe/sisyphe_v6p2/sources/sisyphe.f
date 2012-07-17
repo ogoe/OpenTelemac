@@ -119,7 +119,7 @@
       DOUBLE PRECISION   :: AT,VCUMU,MASS_GF
       DOUBLE PRECISION   :: HIST(1)
       LOGICAL            :: PASS,PASS_SUSP
-      LOGICAL            :: RESU,ENTETS,CHGMSK,YAZR
+      LOGICAL            :: ENTETS,YAZR
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZF,SAVEQU,SAVEQV
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
@@ -244,8 +244,6 @@
 ! : 1          READS, PREPARES AND CONTROLS THE DATA
 !
 !=======================================================================
-!
-        RESU = .TRUE.
 !
 !       READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES
 !
@@ -972,7 +970,6 @@
 !
 ! ----    BUILDS MASKING BY ELEMENTS
 !
-          CHGMSK = .FALSE.
           CALL OS ('X=Y     ', X=MSKTMP, Y=MASKEL)
           CALL OS ('X=C     ', X=MASKEL, C=1.D0)
           IF(CODE(1:7) == 'TELEMAC') THEN
@@ -984,13 +981,6 @@
             CALL MASKTF(MASKEL%R,HN%R,HMIN,MESH%IKLE%I,
      &                  NELEM,NPOIN)
           ENDIF
-!
-          DO I=1,NELEM
-            IF(MASKEL%R(I).NE.MSKTMP%R(I)) THEN
-              CHGMSK = .TRUE.
-              EXIT
-            ENDIF
-          ENDDO
 !
 !        JMH 17/12/2009
 !
@@ -1029,7 +1019,9 @@
 !
 ! ----   READS THE BOUNDARY CONDITIONS
 !
-         CALL CONLIT(MESH%NBOR%I)
+! CV 12/06/2012
+!
+        CALL CONLIT(MESH%NBOR%I,AT0)
 !
 ! =======================================================================
 !
@@ -1214,11 +1206,17 @@
           CALL TASSEMENT(ZF,NPOIN,DTS,ELAY,T3,T2,LT,AVAIL,NSICLA,
      &                 ES,XMVS,XKV,TRANS_MASS,CONC_VASE,NCOUCH_TASS,
      &                 MS_SABLE%R,MS_VASE%R)
-        ELSEIF(ITASS.EQ.2) THEN
+        ELSEIF(ITASS.EQ.2.OR.ITASS.EQ.3) THEN
 C!!! ONLY FOR ONE CLASS
           CALL TASSEMENT_2(ZF,NPOIN,DTS,ELAY,T3,T2,LT,XMVS,XMVE,GRAV,
-     *        NCOUCH_TASS,ES,CONC_VASE,MS_VASE%R,XWC(1),
+     *        NOMBLAY,ES,CONC_VASE,MS_VASE%R,XWC(1),
      *        COEF_N,CONC_GEL,CONC_MAX)
+!        ELSEIF(ITASS.EQ.3) THEN
+C!!! ONLY FOR ONE CLASS
+!          CALL TASSEMENT_3(ZF,NPOIN,DTS,ELAY,
+!     &               T3,T2,LT,XMVS,XMVE,GRAV,NOMBLAY,
+!     &               ES,CONC_VASE,CONC,IVIDE,MS_VASE%R,XWC(1),
+!     &                 TRA01,TRA02,TRA03,CONC_GEL,COEF_N,CONC_MAX)
         ENDIF
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TASSEMENT'
 !
@@ -1316,12 +1314,15 @@ C!!! ONLY FOR ONE CLASS
 !
         IF(NCP.GT.0) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'FLUSEC_SISYPHE'
+!
+! correction CV 2/07/2012
+!
           CALL FLUSEC_SISYPHE(U2D,V2D,HN,
      &                        QSXC,QSYC,CHARR,QSXS,QSYS,SUSP,
      &                        MESH%IKLE%I,
      &                        MESH%NELMAX,MESH%NELEM,
      &                        MESH%X%R,MESH%Y%R,
-     &                        DT,NCP,CTRLSC,ENTETS,AT0,MESH%KNOGL%I)
+     &                        DTS,NCP,CTRLSC,ENTETS,AT0,MESH%KNOGL%I)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_FLUSEC_SISYPHE'
         ENDIF
 !
