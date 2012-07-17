@@ -1181,7 +1181,7 @@ AIDE = 'Precision demandee pour la resolution de l''etape de propagation
 AIDE1 = 'Required accuracy for solving the propagation step 
 (refer to Principle note).' 
  
-NOM = 'PROFONDEUR LIMITE POUR PRODEDURE DE RESSUYAGE' 
+NOM = 'PROFONDEUR LIMITE POUR PROCEDURE DE RESSUYAGE' 
 NOM1 = 'THRESHOLD DEPTH FOR RECEDING PROCEDURE' 
 TYPE = REEL 
 INDEX = 16 
