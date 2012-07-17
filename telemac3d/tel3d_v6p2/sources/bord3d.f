@@ -430,6 +430,14 @@
         ENDDO
       ENDIF
 !
+!-----------------------------------------------------------------------
+!
+!     AUTOMATIC TIDAL BOUNDARY CONDITIONS
+!
+      IF(TIDALTYPE.GE.1) CALL TIDAL_MODEL_T3D()
+!
+!-----------------------------------------------------------------------
+!
 !     PRESCRIBED DISCHARGES: FINAL TREATMENT OF VELOCITIES
 !     ----------------------------------------------------
 !

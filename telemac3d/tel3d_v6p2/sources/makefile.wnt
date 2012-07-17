@@ -117,7 +117,7 @@ nuwave_p0.f        oil_spill_3d.f phstat.f   plane_bottom.f  precon.f   prediv.f
 rhs_pressure.f     scope.f    sed3d.f    sflo3d.f   sl3.f      smago.f    smago3d.f \
 soukep.f           soukom.f   source.f   sources_sinks.f source_trac.f t3d_stress.f suised.f sumver.f \
 tassec.f           tassem.f   tbord.f    telemac3d.f  thomps_2dto3d.f thomps_bc.f  t3d_debsce.f t3d_read_fic_curves.f t3d_trsce.f \
-tfond.f            transf_zchar.f  tridw2.f  tridw3.f  trisou.f  tra_prof_z.f  tr3.f upwind.f upwindebe.f upwindseg.f \
+tfond.f            tidal_model_t3d.f     transf_zchar.f  tridw2.f  tridw3.f  trisou.f  tra_prof_z.f  tr3.f upwind.f upwindebe.f upwindseg.f \
 utimp.f            vel_prof_z.f  velres.f   \
 vermoy.f           viscke.f   viscko.f   visclip.f visclm.f \
 viscos.f           vissma.f   vitchu.f   vit3.f \

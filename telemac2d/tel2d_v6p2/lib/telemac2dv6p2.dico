@@ -4799,12 +4799,10 @@ NIVEAU = 1
 AIDE = 'Option pour les conditions aux limites de maree.
 Pour des marees reelles, l option 1 est recommandee.
 Calage possible par les mots-cles COEFFICIENT POUR CALAGE EN MARNAGE
-(seulement pour les marees schematiques)
 et COEFFICIENT POUR CALAGE EN NIVEAU.'
 AIDE1= 'Option for tidal boundary conditions.
 For real tides, option 1 is recommended.
 Possible calibration with keywords COEFFICIENT TO ADJUST TIDAL RANGE
-(only for schematic tides)
 and COEFFICIENT TO ADJUST SEA LEVEL.'
 
 NOM = 'FICHIER DES CONSTANTES HARMONIQUES' 
@@ -5073,18 +5071,18 @@ TYPE = REEL
 INDEX = 65
 MNEMO = 'CTIDEV'
 TAILLE = 0
-DEFAUT = -999. 
-DEFAUT1 = -999. 
+DEFAUT = 999999. 
+DEFAUT1 = 999999. 
 RUBRIQUE = 'PARAMETRES NUMERIQUES'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE = 'Coefficient pour ajuster les composantes de vitesse 
 de l''onde de maree aux frontieres maritimes.
-La valeur par defaut -999. signifie que c''est la racine carree 
+La valeur par defaut 999999. signifie que c''est la racine carree 
 du COEFFICIENT DE CALAGE DU MARNAGE qui est prise'
 AIDE1 = 'Coefficient to calibrate the tidal velocities of tidal wave 
 at tidal open boundary conditions.
-Default value -999. means that the square root of 
+Default value 999999. means that the square root of 
 COEFFICIENT TO CALIBRATE TIDAL RANGE is taken'
 
 NOM = 'COEFFICIENT DE CALAGE DU NIVEAU DE MER'
@@ -5124,13 +5122,14 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 1
 AIDE = 'Pour JMJ, renseigner la localisation du fichier bdd_jmj et geofin
 dans les mots-cles BASE DE DONNEES DE MAREE et FICHIER DU MODELE DE MAREE.
-Pour TPXO, l''utilisateur doit telecharger les fichiers de constantes harmoniques 
-sur internet
-Pour LEGOS-NEA et FES2004 : pas encore disponible'
+Pour TPXO et LEGOS_NEA, l''utilisateur doit telecharger
+les fichiers de constantes harmoniques sur internet.
+Pour FES2004 : pas encore disponible'
 AIDE1 = 'For JMJ, indicate the location of the files bdd_jmj and geofin with keywords 
 TIDE DATA BASE and TIDAL MODEL FILE.
-For TPXO, the user have to download files of harmonic constituents on the internet
-For LEGOS-NEA and FES2004: not available yet'
+For TPXO and LEGOS-NEA, the user have to download
+files of harmonic constituents on the internet.
+For FES2004: not yet available'
 
 NOM = 'SYSTEME GEOGRAPHIQUE'
 NOM1 = 'GEOGRAPHIC SYSTEM'

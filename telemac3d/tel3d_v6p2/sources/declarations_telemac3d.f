@@ -589,6 +589,10 @@
 !
       TYPE(BIEF_OBJ), TARGET :: DHHN
 !
+!     FOR TIDAL BOUNDARY CONDITIONS
+!
+      TYPE(BIEF_OBJ),TARGET :: HBTIDE,UBTIDE,VBTIDE,NUMTIDE
+!
 !-----------------------------------------------------------------------
 ! (2) MATRICES
 !-----------------------------------------------------------------------
@@ -1181,6 +1185,22 @@
 !
       INTEGER T3DRST
 !
+!     HARMONIC CONSTANTS FILE NUMBER
+! 
+      INTEGER T3DHAR
+!
+!     TIDAL MODEL FILE NUMBER
+! 
+      INTEGER T3DTID
+!
+!     ASCII TIDAL MODEL DATABASE FILE NUMBER
+! 
+      INTEGER T3DBDD
+!
+!     BINARY TIDAL MODEL DATABASES 1 AND 2 FILE NUMBER
+!
+      INTEGER T3DBB1,T3DBB2
+!
 !     NUMBER OF VARIABLES TO BE ADVECTED BY A GIVEN SCHEME
 !     AND THEIR LIST IN THE LIST OF ADVECTED VARIABLES
 !     S_ADV: ASSOCIATED ADVECTION SCHEME
@@ -1208,6 +1228,22 @@
 !     RECORD NUMBER FOR RESTART
 !
       INTEGER START_RECORD
+!
+!     OPTION FOR TIDAL BOUNDARY CONDITIONS
+!
+      INTEGER TIDALTYPE
+!
+!     TIDAL DATA BASE
+!
+      INTEGER TIDALDB
+!
+!     GEOGRAPHIC SYSTEM
+!
+      INTEGER GEOSYST
+!
+!     ZONE NUMBER IN GEOGRAPHIC SYSTEM
+!
+      INTEGER NUMZONE
 !
 !-----------------------------------------------------------------------
 ! (5) LOGICAL VALUES
@@ -1389,6 +1425,10 @@ C si oui, pression dynamique dans l'equation d'onde
 !     RESTART MODE (TO GENERATE A RESTART FILE)
 !
       LOGICAL RESTART_MODE
+!
+!     IF YES, INFERENCE OF MINOR CONSTITUENTS
+!  
+      LOGICAL INTMICON
 !
 !-----------------------------------------------------------------------
 ! (6) REALS
@@ -1645,6 +1685,18 @@ C parametre de shields
 !     THRESHOLD FOR VISCOSITY CORRECTION ON TIDAL FLATS
 !
       DOUBLE PRECISION HLIM
+!
+!     COEFFICIENT TO CALIBRATE TIDAL RANGE
+!
+      DOUBLE PRECISION CTIDE
+!
+!     COEFFICIENT TO CALIBRATE TIDAL VELOCITIES
+!
+      DOUBLE PRECISION CTIDEV
+!
+!     COEFFICIENT TO CALIBRATE SEA LEVEL
+!
+      DOUBLE PRECISION MSL
 !
 !-----------------------------------------------------------------------
 ! (7) STRINGS
@@ -1981,7 +2033,7 @@ C
 !
 !     MAXIMUM NUMBER OF FILES
 !
-      INTEGER, PARAMETER :: MAXLU_T3D = 44
+      INTEGER, PARAMETER :: MAXLU_T3D = 49
 !
 !     DATA STRUCTURE WITH DATA ON FILES
 !

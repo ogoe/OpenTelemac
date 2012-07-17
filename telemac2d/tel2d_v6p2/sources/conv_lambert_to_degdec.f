@@ -25,9 +25,10 @@
 !| YTAB           |-->| METRIC COORDINATES (LAMBERT)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TELEMAC2D, EX_CONV_LAMBERT_TO_DEGDEC
+     &                         => CONV_LAMBERT_TO_DEGDEC
+!
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -37,30 +38,24 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION PI
+      DOUBLE PRECISION PI,DTR,RTD
       DOUBLE PRECISION X,Y,LAMBDA,PHI
-      DOUBLE PRECISION Z,RRR
-      DOUBLE PRECISION EEE,LAMBDAC,NNN,CCC,XS,YS
-      DOUBLE PRECISION GAMMA
-      DOUBLE PRECISION PHIM,LATISO,ES2,EPSILON
-!
-      DOUBLE PRECISION AAA,GNORM
-      DOUBLE PRECISION HE
-      DOUBLE PRECISION TX,TY,TZ
-!
-      DOUBLE PRECISION CORRPHI
+      DOUBLE PRECISION LAMBDAC,EEE,ES2,NNN,CCC,XS,YS,RRR,GAMMA,LATISO
+      DOUBLE PRECISION HE,AAA,GNORM,Z,TX,TY,TZ,PHIM,EPSILON,CORRPHI
 !
       INTEGER I,J
 !
 !-----------------------------------------------------------------------
 !
-      PI = ACOS(-1.D0)
+      PI  = 4.D0*ATAN(1.D0)
+      DTR = PI/180.D0
+      RTD = 180.D0/PI
 !
       EPSILON = 1.D-11
 !
 !  LAMBDAC : PARIS MERIDIAN / GREENWICH MERIDIAN
 !
-      LAMBDAC = (2.D0+20.D0/60.D0+14.025D0/3600.D0)*PI/180.D0
+      LAMBDAC = (2.D0+20.D0/60.D0+14.025D0/3600.D0)*DTR
 !
 !  TRANSF PROJECTION CC LAMBERT X, Y --> COORD GEO LAMBERT LAMBDA, PHI
 !  (IGN: ALG0004)
@@ -191,8 +186,8 @@
 !
 !  CONVERSION INTO DECIMAL DEGREES
 !
-        LAMBDA = LAMBDA*180.D0/PI
-        PHI    = PHI*180.D0/PI
+        LAMBDA = LAMBDA*RTD
+        PHI    = PHI*RTD
 !
         LAMBDATAB(J) = LAMBDA
         PHITAB(J)    = PHI

@@ -5,7 +5,7 @@
      &(FFMN2,FFM4,NODALCORR,TEMPS,DEJA,MARDAT,MARTIM)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   23/03/2011
+! TELEMAC2D   V6P2                                   23/03/2011
 !***********************************************************************
 !
 !brief    COMPUTES NODAL FACTORS F FROM PUGH FORMULAE
@@ -26,9 +26,9 @@
 !| DEJA           |-->| LOGICAL FOR 1ST TIME STEP
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TELEMAC2D, EX_NODALF_PUGH => NODALF_PUGH
+!
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -39,7 +39,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION PI,NLUNPUGH,TJ,TJMIL,NMIL
+      DOUBLE PRECISION PI,DTR,NLUNPUGH,TJ,TJMIL,NMIL
 !
       INTEGER YEAR,MONTH,DAY,NDAY,HOUR,MINUTE,SECOND,I
 !
@@ -47,7 +47,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      PI = ACOS(-1.D0)
+      PI  = 4.D0*ATAN(1.D0)
+      DTR = PI/180.D0
 !
       IF(.NOT.DEJA) THEN
         YEAR  = MARDAT(1)
@@ -87,9 +88,9 @@
         TJMIL = DBLE(365*(YEAR-1900)+(183-1)
      &              +DINT(DBLE(YEAR-1901)/4.D0))/36525.D0
         NMIL  = DMOD(259.16D0-1934.14D0*TJMIL+0.0021D0*TJMIL**2,360.D0)
-        FFMN2 = 1.D0-0.037D0*COS(NMIL*PI/180.D0)
+        FFMN2 = 1.D0-0.037D0*COS(NMIL*DTR)
       ELSE
-        FFMN2 = 1.D0-0.037D0*COS(NLUNPUGH*PI/180.D0)
+        FFMN2 = 1.D0-0.037D0*COS(NLUNPUGH*DTR)
       ENDIF
 !
       FFM4  = FFMN2**2

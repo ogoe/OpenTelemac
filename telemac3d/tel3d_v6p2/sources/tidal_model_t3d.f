@@ -1,18 +1,18 @@
 !                    **************************
-                     SUBROUTINE TIDAL_MODEL_T2D
+                     SUBROUTINE TIDAL_MODEL_T3D
 !                    **************************
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   28/10/2010
+! TELEMAC3D   V6P2                                   27/09/2011
 !***********************************************************************
 !
 !brief    FINDS TIDAL BOUNDARY CONDITIONS AT THE OPEN SEA BOUNDARIES
 !+
 !
 !history  C-T PHAM (LNHE)
-!+        30/05/2011
-!+        V6P1
+!+        27/09/2011
+!+        V6P2
 !+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +21,7 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC
-      USE DECLARATIONS_TELEMAC2D
+      USE DECLARATIONS_TELEMAC3D
       USE INTERFACE_TELEMAC2D
       USE TPXO
 !
@@ -34,7 +34,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K,NODALCORR,ICALHW
+      INTEGER K,NODALCORR,ICALHW,NP,IBORD
       DOUBLE PRECISION XSHIFT,YSHIFT
       LOGICAL TIDALBCGEN
 !
@@ -86,9 +86,9 @@
 !
 !     FILES:
 !
-!     T2DBDD: TIDE DATA BASE
-!     T2DHAR: HARMONIC CONSTANTS FILE
-!     T2DTID: TIDAL MODEL FILE
+!     T3DBDD: TIDE DATA BASE
+!     T3DHAR: HARMONIC CONSTANTS FILE
+!     T3DTID: TIDAL MODEL FILE
 !
 !-----------------------------------------------------------------------
 !
@@ -96,53 +96,63 @@
 !
       IF(TIDALDB.EQ.1) THEN
         IF(TIDALBCGEN) THEN
-          CALL BORD_TIDAL_BC(MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
-     &                       NPTFR,KENT,KENTU,
-     &                       MESH,GEOSYST,NUMZONE,LAMBD0,PHI0,
+          CALL BORD_TIDAL_BC(MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
+     &                       NPTFR2,KENT,KENTU,
+     &                       MESH2D,GEOSYST,NUMZONE,LATIT,LONGIT,
      &                       TIDALTYPE,BOUNDARY_COLOUR,MAXFRO,
-     &                       T2D_FILES(T2DBDD)%LU,
-     &                       T2D_FILES(T2DTID)%LU,
-     &                       T2D_FILES(T2DHAR)%LU,XSHIFT,YSHIFT)
+     &                       T3D_FILES(T3DBDD)%LU,
+     &                       T3D_FILES(T3DTID)%LU,
+     &                       T3D_FILES(T3DHAR)%LU,XSHIFT,YSHIFT)
         ENDIF
 !
-        CALL BORD_TIDE(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
-     &                 NPOIN,NPTFR,AT,NCOTE,NVITES,
+        CALL BORD_TIDE(ZF%R,MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
+     &                 NPOIN2,NPTFR2,AT,NCOTE,NVIT,
      &                 NUMLIQ%I,KENT,KENTU,
-     &                 T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
-     &                 CTIDE,MSL,CTIDEV,NODALCORR,T2D_FILES(T2DHAR)%LU,
+     &                 T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
+     &                 CTIDE,MSL,CTIDEV,NODALCORR,T3D_FILES(T3DHAR)%LU,
      &                 BOUNDARY_COLOUR,
      &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
      &                 MARDAT,MARTIM)
       ELSEIF(TIDALDB.EQ.2) THEN
-        CALL BORD_TIDE_TPXO(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
-     &                      NPOIN,NPTFR,AT,NCOTE,NVITES,
-     &                      NUMLIQ%I,KENT,KENTU,MESH,
-     &                      T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
+        CALL BORD_TIDE_TPXO(ZF%R,MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
+     &                      NPOIN2,NPTFR2,AT,NCOTE,NVIT,
+     &                      NUMLIQ%I,KENT,KENTU,MESH2D,
+     &                      T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
      &                      CTIDE,MSL,CTIDEV,NODALCORR,
      &                      BOUNDARY_COLOUR,
      &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
-     &                      MARDAT,MARTIM,T2D_FILES,T2DBB1,T2DBB2,
-     &                      X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0,INTMICON)
+     &                      MARDAT,MARTIM,T3D_FILES,T3DBB1,T3DBB2,
+     &                      X,Y,GEOSYST,NUMZONE,LATIT,LONGIT,INTMICON)
+      ELSEIF(TIDALDB.EQ.3) THEN
+        CALL BORD_TIDE_LEGOS(ZF%R,MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
+     &                 NPOIN2,NPTFR2,AT,NCOTE,NVIT,
+     &                 NUMLIQ%I,KENT,KENTU,
+     &                 T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
+     &                 CTIDE,MSL,CTIDEV,NODALCORR,T3D_FILES(T3DHAR)%LU,
+     &                 BOUNDARY_COLOUR,
+     &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                 MARDAT,MARTIM)
       ENDIF
 !
 !-----------------------------------------------------------------------
 !
-      DO K=1,NPTFR
+      DO K=1,NPTFR2
         IF(NUMTIDE%I(K).GT.0) THEN
 !         POSSIBLE SMOOTHING AT THE BEGINNING
 !         IF(AT.LT.1800.D0) THEN
 !           UBTIDE%R(K) = UBTIDE%R(K)*(AT/1800.D0)
 !           VBTIDE%R(K) = VBTIDE%R(K)*(AT/1800.D0)
 !         ENDIF
-          IF(LIUBOR%I(K).EQ.KENTU) THEN
-            UBOR%R(K) = UBTIDE%R(K)
-            VBOR%R(K) = VBTIDE%R(K)
-            U%R(MESH%NBOR%I(K)) = UBOR%R(K)
-            V%R(MESH%NBOR%I(K)) = VBOR%R(K)
+          IF(LIUBOL%I(K).EQ.KENTU) THEN
+            DO NP=1,NPLAN
+              IBORD=(NP-1)*NPTFR2+K
+              UBORL%R(IBORD) = UBTIDE%R(K)
+              VBORL%R(IBORD) = VBTIDE%R(K)
+              WBORL%R(IBORD) = 0.D0
+            ENDDO
           ENDIF
           IF(LIHBOR%I(K).EQ.KENT) THEN
             HBOR%R(K) = HBTIDE%R(K)
-            H%R(MESH%NBOR%I(K)) = HBOR%R(K)
           ENDIF
         ENDIF
       ENDDO

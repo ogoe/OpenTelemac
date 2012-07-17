@@ -7,7 +7,7 @@
      & BOUNDARY_COLOUR,MAXFRO,NFO2,NBI2,NRFO,XSHIFT,YSHIFT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   18/11/2010
+! TELEMAC2D   V6P2                                   18/11/2010
 !***********************************************************************
 !
 !brief    GENERATES HARMONIC CONSTANTS FOR BOUNDARY CONDITIONS WITH TIDES

@@ -172,6 +172,31 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE BORD_TIDE_LEGOS
+     &(ZF,NBOR,LIHBOR,LIUBOR,NPOIN,NPTFR,TEMPS,NCOTE,NVITES,
+     & NUMLIQ,KENT,KENTU,NOMIMP,TIDALTYPE,CTIDE,MSL,
+     & CTIDEV,NODALCORR,NFOT,
+     & BOUNDARY_COLOUR,HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     & MARDAT,MARTIM)
+      USE BIEF_DEF
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)             :: NPOIN,NPTFR,NCOTE,NVITES,NFOT
+      INTEGER, INTENT(IN)             :: KENT,KENTU,NODALCORR
+      INTEGER, INTENT(IN)             :: LIHBOR(NPTFR),LIUBOR(NPTFR)
+      INTEGER, INTENT(IN)             :: NUMLIQ(NPTFR),NBOR(NPTFR)
+      INTEGER, INTENT(IN)             :: TIDALTYPE,MARDAT(3),MARTIM(3)
+      INTEGER, INTENT(INOUT)          :: ICALHW
+      DOUBLE PRECISION, INTENT(IN)    :: TEMPS,CTIDE,MSL,CTIDEV
+      DOUBLE PRECISION, INTENT(IN)    :: ZF(NPOIN)
+      TYPE(BIEF_OBJ), INTENT(IN)      :: BOUNDARY_COLOUR
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: NUMTIDE,UBTIDE,VBTIDE,HBTIDE
+      CHARACTER(LEN=144), INTENT(IN)  :: NOMIMP
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE BUSE
      &(RELAXB,NBUSE,ENTBUS,SORBUS,GRAV,
      & H,ZF,DBUS,LRGBUS,HAUBUS,CLPBUS,
@@ -1732,10 +1757,33 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE NODALF_SCHUREMAN
+     &(FWAVE,NODALCORR,TEMPS,DEJA,MARDAT,MARTIM)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)           :: NODALCORR,MARDAT(3),MARTIM(3)
+      DOUBLE PRECISION, INTENT(OUT) :: FWAVE(*)
+      DOUBLE PRECISION, INTENT(IN)  :: TEMPS
+      LOGICAL, INTENT(IN)           :: DEJA
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE NODALUPV_PUGH(UPVM2,UPVN2,MARDAT,MARTIM)
       IMPLICIT NONE
       INTEGER, INTENT(IN)           :: MARDAT(3),MARTIM(3)
       DOUBLE PRECISION, INTENT(OUT) :: UPVM2,UPVN2
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE NODALUPV_SCHUREMAN(UPVWAVE,WWAVE,MARDAT,MARTIM)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)           :: MARDAT(3),MARTIM(3)
+      DOUBLE PRECISION, INTENT(OUT) :: UPVWAVE(*),WWAVE(*)
         END SUBROUTINE
       END INTERFACE
 !

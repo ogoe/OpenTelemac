@@ -36,9 +36,10 @@
 !| YTAB           |-->| METRIC COORDINATES (WGS84 UTM)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_TELEMAC2D, EX_CONV_MERCATOR_TO_DEGDEC
+     &                         => CONV_MERCATOR_TO_DEGDEC
+!
       IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -49,11 +50,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION PI,EEE,AAA,FFF,EEE2,EEE4,EEE6,EEE8
-      DOUBLE PRECISION LAMBDAC,NNN,XS,YS,LAMBDA,PHI
-      DOUBLE PRECISION PHIM,LATISO,LATISOS,ES2,EPSILON
-      DOUBLE PRECISION X,Y
-      DOUBLE PRECISION DTR,RTD,CONST
+      DOUBLE PRECISION PI,DTR,RTD,CONST,AAA,FFF,EEE,EEE2,EEE4,EEE6,EEE8
+      DOUBLE PRECISION LAMBDAC,NNN,XS,YS,PHIM,LATISO,LATISOS,ES2,EPSILON
+      DOUBLE PRECISION X,Y,LAMBDA,PHI
       DOUBLE PRECISION CITM(5)
       DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
       COMPLEX(KIND(1.D0)) ZPRIME,ZZZ
@@ -62,8 +61,7 @@
 !
 !-----------------------------------------------------------------------
 !
-c$$$      PI = ACOS(-1.D0)
-      PI = 4.D0*ATAN(1.D0)
+      PI  = 4.D0*ATAN(1.D0)
       DTR = PI/180.D0
       RTD = 180.D0/PI
       CONST = TAN(0.5D0*LAT0*DTR+0.25D0*PI)
@@ -73,10 +71,10 @@ c$$$      PI = ACOS(-1.D0)
       AAA = 6378137.D0
       FFF = 1.D0/298.257223563D0
       EEE = SQRT(2.D0*FFF-FFF**2)
-c$$$      EEE = 0.081991889980000D0
+!     EEE = 0.081991889980000D0
 !
       NNN = 0.9996D0 * AAA
-      LAMBDAC = (6.D0*REAL(NUMZONE)-183.D0)*PI/180.D0 ! RADIANS
+      LAMBDAC = (6.D0*REAL(NUMZONE)-183.D0)*DTR ! RADIANS
       XS = 500000.D0
 !
 !     NORTHERN UTM
@@ -158,8 +156,8 @@ c$$$      EEE = 0.081991889980000D0
 !
 !  CONVERSION INTO DECIMAL DEGREES
 !
-        LAMBDA = LAMBDA*180.D0/PI
-        PHI    = PHI*180.D0/PI
+        LAMBDA = LAMBDA*RTD
+        PHI    = PHI*RTD
 !
         LAMBDATAB(J) = LAMBDA
         PHITAB(J)    = PHI
