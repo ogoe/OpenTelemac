@@ -7,7 +7,7 @@
      & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
      & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,GLOSEG1,GLOSEG2,NBOR,
-     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN)
+     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN,GIVEN_FLUX,FLUX_GIVEN)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -61,9 +61,10 @@
 !+   Tour du Valat, and O. Bertrand, Artelia group)
 !
 !history  J-M HERVOUET   (LNHE)
-!+        12/07/2012
+!+        17/07/2012
 !+        V6P2
 !+   T2 set to 0 to start with required in parallel
+!+   Arguments flux_given and given_flux added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -79,11 +80,15 @@
 !| FBOR           |-->| DIRICHLET CONDITIONS ON F.
 !| FLBOR          |-->| FLUXES AT BOUNDARIES
 !| FLBORTRA       |<->| TRACER FLUXES AT BOUNDARIES
+!| FLUX_GIVEN     |-->| IF GIVEN_FLUX=YES, THE FLUX IS GIVEN IN
+!|                |   | GIVEN_FLUX
 !| FN             |-->| F AT TIME T(N)
 !| FSCEXP         |-->| EXPLICIT PART OF THE SOURCE TERM
 !|                |   | EQUAL TO ZERO EVERYWHERE BUT ON SOURCES
 !|                |   | WHERE THERE IS FSCE - (1-TETAT) FN
 !|                |   | SEE DIFSOU
+!| GIVEN_FLUX     |-->| IF GIVEN_FLUX=YES, THE FLUX IS GIVEN IN
+!|                |   | GIVEN_FLUX AND WILL NOT BE COMPUTED HERE
 !| GLOSEG1        |-->| FIRST POINT OF SEGMENTS
 !| GLOSEG2        |-->| SECOND POINT OF SEGMENTS
 !| HNT,HT         |<--| WORK ARRAYS (MODIFIED DEPTHS TO TAKE MASS-LUMPING
@@ -167,6 +172,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       LOGICAL, INTENT(IN)             :: BILAN,CONV,YASMH,YAFLBOR,RAIN
       LOGICAL, INTENT(IN)             :: DIFT,MSK,ENTET,YASMI,YAFLULIM
+      LOGICAL, INTENT(IN)             :: FLUX_GIVEN
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,H,HN,DM1,ZCONV,MASKPT
       TYPE(BIEF_OBJ), INTENT(IN)      :: V2DPAR,UNSV2D,HPROP
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: F,SM,HNT,HT
@@ -174,7 +180,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR,FLBOR
-      TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
+      TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE,GIVEN_FLUX
       TYPE(BIEF_MESH)                 :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -262,6 +268,8 @@
 !
 !     CALCUL DES FLUX PAR NOEUDS
 !
+      IF(.NOT.FLUX_GIVEN) THEN
+!
       FORMUL='HUGRADP         '
       IF(SOLSYS.EQ.2) FORMUL(8:8)='2'
       CALL VECTOR(T1,'=',FORMUL,H%ELM,-1.D0,
@@ -286,6 +294,12 @@
       IF(YAFLULIM) THEN
         DO I=1,MESH%NSEG
           FXMAT(I)=FXMAT(I)*FLULIM(I)
+        ENDDO  
+      ENDIF
+!
+      ELSE
+        DO I=1,MESH%NSEG
+          FXMAT(I)=GIVEN_FLUX%R(I)
         ENDDO  
       ENDIF
 !

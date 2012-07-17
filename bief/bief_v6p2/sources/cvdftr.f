@@ -10,7 +10,8 @@
      & TETAT,AGGLOT,INFOGT,BILAN,OPTSUP,
      & ISOUSI,LT,NIT,OPDTRA,OPTBAN,MSK,MASKEL,MASKPT,MBOR,
      & S,MASSOU,OPTSOU,SLVTRA,FLBOR,V2DPAR,UNSV2D,OPTVF,FLBORTRA,
-     & FLULIM,YAFLULIM,DIRFLU,RAIN,PLUIE,TRAIN)
+     & FLULIM,YAFLULIM,DIRFLU,RAIN,PLUIE,TRAIN,
+     & GIVEN_FLUX,FLUX_GIVEN)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -102,9 +103,10 @@
 !+   Tour du Valat, and O. Bertrand, Artelia group)
 !+
 !history  J-M HERVOUET (LNHE)
-!+        14/06/2012
+!+        17/07/2012
 !+        V6P2
 !+   Mass balance programmed in case of implicit source term.
+!+   Arguments GIVEN_FLUX and FLUX_GIVEN added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
@@ -128,12 +130,16 @@
 !| FBOR           |-->| DIRICHLET CONDITIONS ON F.
 !| FLBOR          |-->| FLUXES AT BOUNDARIES
 !| FLBORTRA       |<->| TRACER FLUXES AT BOUNDARIES
+!| FLUX_GIVEN     |-->| IF GIVEN_FLUX=YES, THE FLUX IS GIVEN IN
+!|                |   | GIVEN_FLUX
 !| FN             |-->| F AT TIME T(N)
 !| FSCEXP         |-->| EXPLICIT PART OF THE SOURCE TERM
 !|                |   | EQUAL TO ZERO EVERYWHERE BUT ON SOURCES
 !|                |   | WHERE THERE IS FSCE - (1-TETAT) FN
 !|                |   | SEE DIFSOU
 !| FTILD          |-->| F AFTER ADVECTION
+!| GIVEN_FLUX     |-->| IF GIVEN_FLUX=YES, THE FLUX IS GIVEN IN
+!|                |   | GIVEN_FLUX AND WILL NOT BE COMPUTED HERE
 !| HPROP          |-->| WORK ARRAY
 !| ICONVF         |-->| OPTION FOR ADVECTION TERMS
 !|                |   | ICONVF = 1 : CHARACTERISTICS.
@@ -225,6 +231,7 @@
       DOUBLE PRECISION, INTENT(INOUT)  :: MASSOU
       LOGICAL, INTENT(IN)           :: INFOGT,BILAN,CONV,YASMH,RAIN
       LOGICAL, INTENT(IN)           :: DIFT,MSK,ENTET,YASMI,YAFLULIM
+      LOGICAL, INTENT(IN)           :: FLUX_GIVEN
       TYPE(SLVCFG), INTENT(INOUT)   :: SLVTRA
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,MASKPT,H,HN,AFBOR,BFBOR
       TYPE(BIEF_OBJ), INTENT(INOUT) :: HPROP
@@ -239,7 +246,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: VISC_S,VISC
       TYPE(BIEF_OBJ), INTENT(INOUT) :: AM1,AM2,MBOR
       TYPE(BIEF_OBJ), INTENT(INOUT) :: TB
-      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKTR
+      TYPE(BIEF_OBJ), INTENT(IN)    :: MASKTR,GIVEN_FLUX
       TYPE(BIEF_MESH) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -566,7 +573,8 @@
      &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
      &            MESH%GLOSEG%I(                 1:  MESH%GLOSEG%DIM1),
      &            MESH%GLOSEG%I(MESH%GLOSEG%DIM1+1:2*MESH%GLOSEG%DIM1),
-     &            MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,TRAIN)
+     &            MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,TRAIN,
+     &            GIVEN_FLUX,FLUX_GIVEN)
 !                             2:HARDCODED OPTION FOR ALGORITHM
 !                               INDEPENDENT OF SEGMENT NUMBERING.
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
