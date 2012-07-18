@@ -2,9 +2,9 @@ FORTRAN FILE                       : art_delft-harbour.f
 STEERING FILE                      : art_delft-harbour.cas
 BOUNDARY CONDITIONS FILE           : geo_delft-harbour.cli
 GEOMETRY FILE                      : geo_delft-harbour.slf
-RESULTS FILE                       : art_delft-harbour.slf
+RESULTS FILE                       : art_delft-harbour.res
 /
-REFERENCE FILE                     : ref_delft-harbour.slf
+REFERENCE FILE                     : ref_delft-harbour.res
 VALIDATION                         : YES
 MATRIX STORAGE                     : 3
 /

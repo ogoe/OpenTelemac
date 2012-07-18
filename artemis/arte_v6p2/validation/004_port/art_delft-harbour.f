@@ -1,3 +1,4 @@
+
 C                       ***************
                         SUBROUTINE BORH
 C                       ***************
@@ -83,9 +84,12 @@ C     VOS NOUVELLES DECLARATIONS DE VARIABLES :
 C     ---------------------------------------- 
 C                                                                       
 C JCB :                                                                       
-      INTEGER I    
+      INTEGER I   , IG,IG0 , IB,JB,IDEB,ISUIV
+      INTEGER I1,I32,I33,I42,I43,I58,I59,I82,I83
+      INTEGER I103,I104,I135,I136,I165
 C JCB
 C
+      DOUBLE PRECISION X0,Y0,KK,DEGRAD,AUXIC,AUXIS,PHASOI
 C
       PARAMETER( PI = 3.1415926535897932384626433D0)
 C
@@ -104,42 +108,67 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      TETABT(:) = TETAH
-      TETAPT(:) = 0.D0
-      ALFAPT(:) = 0.D0
-      RPT(:)    = 0.D0
-      HBT(:)    = 0.04D0
+      TETAB%R(:) = TETAH
+      TETAP%R(:) = 0.D0
+      ALFAP%R(:) = 0.D0
+      RP%R(:)    = 0.D0
+      HB%R(:)    = 0.04D0      
 C
-      DO 10 I=1,32
-	 RPT(I)=0.23D0
-	 TETAPT(I)=0.D0
- 10   CONTINUE
+
+
+      DO IB=1,NPTFR
+       JB=BOUNDARY_COLOUR%I(IB)
+                  
+      IF(JB.GE.1.AND.JB.LE.32)THEN
+         LIHBOR%I(IB)=KLOG
+	 RP%R(IB)=0.23D0
+	 TETAP%R(IB)=0.D0
+      ENDIF
 C
-      DO 20 I=33,42
-	 RPT(I)=1.D0
-	 TETAPT(I)=0.D0
- 20   CONTINUE
+      IF(JB.GE.33.AND.JB.LE.42)THEN        
+         LIHBOR%I(IB)=KLOG
+	 RP%R(IB)=1.D0
+	 TETAP%R(IB)=0.D0
+      ENDIF
 C
-      DO 30 I=58,82
-	 RPT(I)=1.D0
-	 TETAPT(I)=0.D0
- 30   CONTINUE
+       IF(JB.GE.59.AND.JB.LE.82)THEN
+         LIHBOR%I(IB)=KLOG
+	 RP%R(IB)=1.D0
+	 TETAP%R(IB)=0.D0
+      ENDIF
 C
-      DO 40 I=83,103
-	 RPT(I)=0.05D0
-	 TETAPT(I)=45.D0
- 40   CONTINUE
+      IF(JB.GE.83.AND.JB.LE.103)THEN
+         LIHBOR%I(IB)=KLOG
+	 RP%R(IB)=0.05D0
+	 TETAP%R(IB)=45.D0
+      ENDIF
 C
-      DO 50 I=104,135
-	 RPT(I)=0.05D0
-	 TETAPT(I)=0.D0
- 50   CONTINUE
+      IF(JB.GE.104.AND.JB.LE.135)THEN
+         LIHBOR%I(IB)=KLOG
+	 RP%R(IB)=0.05D0
+	 TETAP%R(IB)=0.D0
+      ENDIF
 C
-      DO 60 I=136,165
-	 RPT(I)=0.23D0
-	 TETAPT(I)=0.D0
- 60   CONTINUE
+      IF(JB.GE.136.AND.JB.LE.165)THEN
+         LIHBOR%I(IB)=KLOG
+	 RP%R(IB)=0.23D0
+	 TETAP%R(IB)=0.D0
+      ENDIF
+
+      IF(JB.GE.43.AND.JB.LE.58)THEN
+         LIHBOR%I(IB)=KINC
+         HB%R(IB)    =0.04D0
+         TETAP%R(IB) =0.D0
+         TETAB%R(IB) =TETAH
+         ALFAP%R(IB) = 0.D0
+      ENDIF
+      
+      ENDDO
+
+
+	
 C
+
 C-----------------------------------------------------------------------
 C                                                                       
       RETURN                                                            
