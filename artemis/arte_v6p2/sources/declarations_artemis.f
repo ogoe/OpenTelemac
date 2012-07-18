@@ -1,3 +1,4 @@
+C ============ DECLARATIONS_ARTEMIS DOIT VENIR AVANT TOUT LE RESTE
 !                    ***************************
                      MODULE DECLARATIONS_ARTEMIS
 !                    ***************************
@@ -30,59 +31,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF
-!
-!brief TO MANAGE THE GLOBAL BUILDING OF THE BOUNDARY
-!
-      INTEGER NPTFR_TOT
-!brief TO MANAGE THE GLOBAL BUILDING OF THE BOUNDARY
-!
-      INTEGER NPOIN_TOT
-!brief TO MANAGE THE GLOBAL BUILDING OF THE BOUNDARY
-!
-      INTEGER, ALLOCATABLE :: KP1BOR_TOT(:)
-!brief TO MANAGE THE GLOBAL BUILDING OF THE BOUNDARY
-!
-      INTEGER, ALLOCATABLE :: NBOR_TOT(:)
-!brief TO MANAGE THE GLOBAL BUILDING OF THE BOUNDARY
-!
-      INTEGER, ALLOCATABLE :: LIHBORT(:)
-!brief TO MANAGE THE GLOBAL BUILDING OF THE BOUNDARY
-!
-      INTEGER, ALLOCATABLE :: LIDIRT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: MASK1T(:),MASK2T(:)
-      DOUBLE PRECISION, ALLOCATABLE :: MASK3T(:),MASK4T(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: XT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: YT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: CGT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: KT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: CTT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: RPT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: ALFAPT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: HBT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: TETABT(:)
-!brief
-!
-      DOUBLE PRECISION, ALLOCATABLE :: TETAPT(:)
 !
 !       NOTE: THIS MODULE IS ORGANISED IN 10 PARTS
 !
@@ -178,6 +126,25 @@
 !brief IMAGINARY PART OF INCIDENT WAVE AT THE BOUNDARY
 ! partie imaginaire du potentiel impose au bord (dirichlet)
       TYPE(BIEF_OBJ), TARGET :: PHIIB
+
+!brief REAL PART OF INCIDENT POTENTIAL AT THE BOUNDARY
+! partie reelle du potentiel incident au bord 
+      TYPE(BIEF_OBJ), TARGET :: PRB
+!brief IMMAGINARY PART OF INCIDENT POTENTIAL AT THE BOUNDARY
+! partie imaginaire du potentiel incident au bord 
+      TYPE(BIEF_OBJ), TARGET :: PIB
+!brief REAL PART OF GRADIENT X COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
+! partie reele du gradient en X du potentiel incident au bord 
+      TYPE(BIEF_OBJ), TARGET :: DDXPRB
+!brief REAL PART OF GRADIENT Y COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
+! partie reele du gradient en Y du potentiel incident au bord 
+      TYPE(BIEF_OBJ), TARGET :: DDYPRB
+!brief IMMAGINARY PART OF GRADIENT X COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
+! partie imaginaire du gradient en X du potentiel incident au bord 
+      TYPE(BIEF_OBJ), TARGET :: DDXPIB
+!brief IMMAGINARY PART OF GRADIENT Y COMPONENT OF INCIDENT POTENTIAL AT THE BOUNDARY
+! partie imaginaire du gradient en Y du potentiel incident au bord 
+      TYPE(BIEF_OBJ), TARGET :: DDYPIB
 !brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: APHI1B
@@ -190,6 +157,12 @@
 !brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: DPHI1B
+!brief COEFFICIENT FOR BOUNDARY CONDITIONS 
+! coefficient pour les conditions aux limites
+      TYPE(BIEF_OBJ), TARGET :: CGRX1B
+      TYPE(BIEF_OBJ), TARGET :: CGRY1B
+      TYPE(BIEF_OBJ), TARGET :: DGRX1B
+      TYPE(BIEF_OBJ), TARGET :: DGRY1B
 !brief COEFFICIENT FOR BOUNDARY CONDITIONS
 ! coefficient pour les conditions aux limites
       TYPE(BIEF_OBJ), TARGET :: APHI2B
@@ -300,6 +273,18 @@
       TYPE(BIEF_OBJ), TARGET :: LIHBOR
 !brief
 !
+
+! 'COLOUR' OF BOUNDARY NODES (TAKEN IN BOUNDARY CONDITIONS FILE)
+      TYPE(BIEF_OBJ), TARGET :: BOUNDARY_COLOUR
+!brief
+! 'BIDON INTEGER'
+      TYPE(BIEF_OBJ), TARGET :: ITB1
+!brief
+! 'BIDON REEL
+      TYPE(BIEF_OBJ), TARGET :: TB1
+!brief
+
+
       TYPE(BIEF_OBJ), TARGET :: NUMLIQ
 !brief
 !
@@ -319,6 +304,11 @@
 !brief MASKS FOR BOUNDARY NODES, CORRESPONDS TO IMPOSED WAVES (KENT)
 ! masque pour les points de bord
       TYPE(BIEF_OBJ), TARGET :: MASK4
+!brief MASKS FOR BOUNDARY NODES, CORRESPONDS TO INCIDENT POTENTIAL (KPOT)
+! masque pour les points de bord
+      TYPE(BIEF_OBJ), TARGET :: MASK5
+
+
 !brief FLOW
 ! courant
       TYPE(BIEF_OBJ), TARGET :: UC
@@ -408,6 +398,10 @@
 ! maximum de frontieres liquides
       INTEGER, PARAMETER :: MAXFRO = 100
 !brief ORIGIN COORDINATE
+
+!     OPEN BOUNDARY WITH INCIDENT POTENTIAL 
+      INTEGER, PARAMETER :: KPOT  =  7
+
 ! coordonnee de l'origine
       INTEGER I_ORIG
 !brief ORIGIN COORDINATE
@@ -515,6 +509,13 @@
 !brief
 ! prise en compte des effets de pente/courbure
       INTEGER IPENTCO
+!brief
+      INTEGER LPER
+!brief
+      INTEGER LDIR
+      
+      
+      
 !-----------------------------------------------------------------------
 !
 !       5) LOGICAL VALUES
@@ -896,4 +897,7 @@
       SAVE
 !
       END MODULE DECLARATIONS_ARTEMIS
+
+
+
 

@@ -102,7 +102,7 @@ calcmn.f         calcqb.f         calctm.f         calcue.f         \
 calre2.f         calres.f         cntpre.f         condih.f         \
 corfon.f         dirale.f         dismoy.f         entart.f         \
 fcte1.f          fcte2.f          fwspec.f         homere_artemis.f \
-lecdon_artemis.f leclim_artemis.f masque_artemis.f nomvar_artemis.f \
+lecdon_artemis.f masque_artemis.f nomvar_artemis.f                  \
 pentco.f         perale.f         phbor.f           point_artemis.f \
 radia1.f         radia2.f         spd.f            spe.f            \
 utimp.f              

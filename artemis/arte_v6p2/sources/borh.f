@@ -15,11 +15,11 @@
 !+ ---------------------------------------
 !+ INITIALISES THE VARIABLES (DEFAULT)
 !+ ---------------------------------------
-!+      TETABT(:)=TETAH
-!+      TETAPT(:)=0.0
-!+      ALFAPT(:)=0.0
-!+      RPT(:)=0.0
-!+      HBT(:)=0.0
+!+      TETAB%R(:)=TETAH
+!+      TETAP%R(:)=0.D0
+!+      ALFAP%R(:)=0.D0
+!+      RP%R(:)=0.D0
+!+      HB%R(:)=0.D0
 !
 !history  J-M HERVOUET (LNH)
 !+
@@ -81,11 +81,11 @@
 ! INITIALISES THE VARIABLES (DEFAULT)
 ! ---------------------------------------
 !
-      TETABT(:)=TETAH
-      TETAPT(:)=0.D0
-      ALFAPT(:)=0.D0
-      RPT(:)=0.D0
-      HBT(:)=0.D0
+      TETAB%R(:)=TETAH
+      TETAP%R(:)=0.D0
+      ALFAP%R(:)=0.D0
+      RP%R(:)=0.D0
+      HB%R(:)=0.D0
 !
 !-----------------------------------------------------------------------
 !

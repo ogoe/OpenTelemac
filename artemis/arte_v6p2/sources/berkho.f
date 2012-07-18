@@ -120,6 +120,7 @@
       COMMON/INFO/LNG,LU
 !
       INTEGER I,LT,ITERMU
+
       DOUBLE PRECISION HM,HMUE,HEFF,ECRHMU,MODHMU
       DOUBLE PRECISION Q1,Q2,Q3
 !
@@ -253,6 +254,17 @@
          CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
       END IF
 !
+!     ------------------------------
+!      BOUNDARY TERM: INCIDENT POTENTIAL
+!     ------------------------------
+!
+      IF (NPTFR .GT. 0) THEN
+         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &        -1.D0,BPHI1B,S,S,S,S,S,MESH,.TRUE.,MASK5)
+         CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
+      END IF
+
+!
 !     ---------------------
 !     SECOND MEMBERS : CV1
 !     ---------------------
@@ -261,24 +273,54 @@
 !     ------------------------------
 !     BOUNDARY TERM: INCIDENT WAVE
 !     ------------------------------
+C       --- CALCUL DE i COS(TETAP) GAMMA         
+         CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
+         CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
+         CALL OS( 'X=YZ    ' , T3,CPHI1B,T2,0.D0)
+         CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+	 
+         IF (NPTFR .GT. 0) THEN
+            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK1)
+         END IF
+         CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+
+!        --- CALCUL DE GRAD(Gamma).n : REEL
+          CALL OS( 'X=Y     ' , T2,CGRX1B,SBID,0.D0)
+          CALL OS( 'X=Y     ' , T3,CGRY1B,SBID,0.D0)
+          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+          IF (NPTFR .GT. 0) THEN
+            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
+     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
+          END IF
+          CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+!     ---------------------------------
+!     BOUNDARY TERM: INCIDENT POTENTIAL
+!     ---------------------------------
+!       --- CALCUL DE i COS(TETAP) GAMMA         
          CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
          CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
          CALL OS( 'X=YZ    ' , T3,CPHI1B,T2,0.D0)
          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
          IF (NPTFR .GT. 0) THEN
             CALL VECTOR(T1,'=','MASVEC          ',IELMB,
-     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK1)
+     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK5)
          END IF
          CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
-         CALL OS( 'X=CY    ' , T1,TETAB,SBID,DEGRAD)
-         CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
-         CALL OS( 'X=SIN(Y)' , T3,T1,SBID,0.D0)
-         CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
-         IF (NPTFR .GT. 0) THEN
+
+!       --- CALCUL DE GRAD(Gamma).n : REEL
+          CALL OS( 'X=Y     ' , T2,CGRX1B,SBID,0.D0)
+          CALL OS( 'X=Y     ' , T3,CGRY1B,SBID,0.D0)
+          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+          IF (NPTFR .GT. 0) THEN
             CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
-     &           1.D0,CPHI1B,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
-         END IF
-         CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK5)
+          END IF
+          CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
+
+
 !     ------------------------------
 !     BOUNDARY TERM: FREE EXIT
 !     ------------------------------
@@ -305,6 +347,14 @@
             CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
          END IF
 !
+
+CCP
+!         IF (NCSIZE.GT.1) THEN
+!           CALL PARCOM(CV1,2,MESH)
+!	  ENDIF
+CCP
+
+
 !     ---------------------
 !     SECOND MEMBERS : CV2
 !     ---------------------
@@ -313,6 +363,7 @@
 !     ------------------------------
 !     BOUNDARY TERM: INCIDENT WAVE
 !     ------------------------------
+C     --- CALCUL DE i COS(TETAP) GAMMA : IMAGINAIRE
          CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
          CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
          CALL OS( 'X=YZ    ' , T3,DPHI1B,T2,0.D0)
@@ -322,19 +373,47 @@
      &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK1)
          END IF
          CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
-         CALL OS( 'X=CY    ' , T1,TETAB,SBID,DEGRAD)
+	 
+!        --- CALCUL DE GRAD(Gamma).n : IMAGINAIRE
+          CALL OS( 'X=Y     ' , T2,DGRX1B,SBID,0.D0)
+          CALL OS( 'X=Y     ' , T3,DGRY1B,SBID,0.D0)
+          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+
+          IF (NPTFR .GT. 0) THEN
+            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
+     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
+          END IF
+          CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+!     ---------------------------------
+!     BOUNDARY TERM: INCIDENT POTENTIAL
+!     ---------------------------------
+!     --- CALCUL DE i COS(TETAP) GAMMA : IMAGINAIRE
+         CALL OS( 'X=CY    ' , T1,TETAP,SBID,DEGRAD)
          CALL OS( 'X=COS(Y)' , T2,T1,SBID,0.D0)
-         CALL OS( 'X=SIN(Y)' , T3,T1,SBID,0.D0)
+         CALL OS( 'X=YZ    ' , T3,DPHI1B,T2,0.D0)
          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
          IF (NPTFR .GT. 0) THEN
-            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
-     &           1.D0,DPHI1B,S,S,T2,T3,S,MESH,.TRUE.,MASK1)
+            CALL VECTOR(T1,'=','MASVEC          ',IELMB,
+     &           -1.D0,T3,S,S,S,S,S,MESH,.TRUE.,MASK5)
          END IF
          CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
+	 
+!     --- CALCUL DE GRAD(Gamma).n : IMAGINAIRE
+          CALL OS( 'X=Y     ' , T2,DGRX1B,SBID,0.D0)
+          CALL OS( 'X=Y     ' , T3,DGRY1B,SBID,0.D0)
+          CALL OS( 'X=C     ' , T1, SBID , SBID , 0.D0 )
+          CALL OS( 'X=C     ' , T4, SBID , SBID , 1.D0 )
+
+          IF (NPTFR .GT. 0) THEN
+            CALL VECTOR(T1,'=','FLUBDF          ',IELMB,
+     &           1.D0,T4,S,S,T2,T3,S,MESH,.TRUE.,MASK5)
+          END IF
+          CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
 !
-!        ------------------------------
-!        BOUNDARY TERM: FREE EXIT
-!        ------------------------------
+!    ------------------------------
+!    BOUNDARY TERM: FREE EXIT
+!    ------------------------------
          IF (NPTFR .GT. 0) THEN
             CALL VECTOR(T1,'=','MASVEC          ',IELMB,
      &           1.D0,DPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
@@ -356,7 +435,12 @@
      &           1.D0,DPHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
             CALL OSDB( 'X=X+Y   ' , CV2 , T1 , SBID , CBID , MESH )
          END IF
-!
+CCP
+!          IF (NCSIZE.GT.1) THEN
+!           CALL PARCOM(CV2,2,MESH)
+!	  ENDIF
+CCP
+
 !     ----------------------------------------------------------
 !     COMPUTES THE MATRIX BM1 FOR THE MU VALUES SPECIFIED
 !     FOR THE ITERATION 'ITERMU'
@@ -372,7 +456,6 @@
 !     ADDS THE BOUNDARY TERM TO BM1
 !     -------------------------------------------
 !
-!      IF (NPTFR .GT. 0) THEN
       IF (NPTFR .GT. 0) THEN
 !        ------------------------------
 !        BOUNDARY TERM: INCIDENT WAVE
@@ -400,11 +483,20 @@
 !        ------------------------------
 !        BOUNDARY TERM: IMPOSED WAVE
 !        ------------------------------
-         IF (NPTFR .GT. 0) THEN
+      IF (NPTFR .GT. 0) THEN
             CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
      &           -1.D0,APHI4B,S,S,S,S,S,MESH,.TRUE.,MASK4)
             CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
-         END IF
+      END IF
+!        ------------------------------
+!        BOUNDARY TERM: INCIDENT POTENTIAL
+!        ------------------------------
+      IF (NPTFR .GT. 0) THEN
+         CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
+     &        -1.D0,APHI1B,S,S,S,S,S,MESH,.TRUE.,MASK5)
+         CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
+      END IF
+
 !     ---------
 !     AM2 = AM1
 !     ---------

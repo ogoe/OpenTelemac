@@ -56,7 +56,7 @@
 !
       INTEGER LT,NPERBA,I,J
       INTEGER NELBRD,NPFMAX,NELBRX
-      INTEGER LPER,LDIR
+!      INTEGER LPER,LDIR
       INTEGER ALIRE(MAXVAR)
 !
 ! VARIABLE FOR SUBROUTINE DISMOY
@@ -151,23 +151,28 @@
 !
 ! READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES.
 !
-      CALL LECLIM_ARTEMIS
-     &(LIHBOR%I,LIUBOR%I,MESH%NPTFR,MESH%NBOR%I,STDGEO,
-     & ART_FILES(ARTCLI)%LU,
-     & MESH%ISEG%I,MESH%XSEG%R,MESH%YSEG%R,MESH%NACHB%I,NUMLIQ%I,
-     & MESH%IFAPAR%I)
+! CCP : WARNING : 
+!       V6P2 LECLIM_ARTEMIS IS NOT USED ANYMORE. 
+!       IN LECLIM we use 0 0 0 0 0 0 values for KENT,KENTU, etc...
+!       This way LECLIM ONLY READ the boundary conditions file and
+!       DO NOT CHANGE the LIHBOR values
 !
+      WRITE(6,*) 'ON ENTRE DANS LECLIM'
+      CALL LECLIM (LIHBOR%I   , LIUBOR%I , ITB1%I , ITB1%I,
+     &             TB1%R      , TB1%R    , TB1%R  , TB1%R ,
+     &             TB1%R      , TB1%R    , TB1%R  ,
+     &             MESH%NPTFR , 3        ,.FALSE. ,
+     &             ART_FILES(ARTCLI)%LU,
+     &             0       , 0    , 0 ,  0 , 0 , 0,
+     &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I)
+      WRITE(6,*) 'ON SORT DE LECLIM'
+
 !-----------------------------------------------------------------------
 !
 ! COMPLEMENTS THE DATA STRUCTURE FOR BIEF
 !
       CALL INBIEF(LIHBOR%I,KLOG,IT1,IT2,IT3,LVMAC,IELM,
      &         LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA)
-      IF (NCSIZE .LE. 1) THEN
-         NPOIN_TOT=MESH%NPOIN
-         ALLOCATE(XT(NPOIN_TOT))
-         ALLOCATE(YT(NPOIN_TOT))
-      ENDIF
 !-----------------------------------------------------------------------
 !  LOOKS FOR BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE :
 !-----------------------------------------------------------------------
@@ -327,21 +332,6 @@
 !
 ! CALLS THE USER SUBROUTINE
 !
-      IF(NCSIZE.GT.1) THEN
-         CALL BUILD_GLOBAL_BOUND(MESH%KNOLG%I,MESH%NPOIN,NPOIN_TOT,
-     &        MESH%NPTFR,NPTFR_TOT,
-     &        X,Y,K%R,C%R,CG%R,LIHBOR%I,XT,
-     &        YT,KT,CTT,CGT,LIHBORT,MESH%NBOR%I,NBOR_TOT)
-      ELSE
-            DO I=1,NPOIN
-               XT(I)=X(I)
-               YT(I)=Y(I)
-            ENDDO
-            DO I=1,NPTFR
-               NBOR_TOT(I)=MESH%NBOR%I(I)
-               LIHBORT(I)=LIHBOR%I(I)
-            ENDDO
-      ENDIF
       CALL BORH
 !
 ! MASKING FOR THE BOUNDARY CONDITIONS
@@ -369,7 +359,10 @@
 !
 !=======================================================================
 !
+      WRITE(6,*) 'ENTREE DANS BERKHO'
       CALL BERKHO (LT)
+      WRITE(6,*) 'SORTIE DANS BERKHO'
+
 !
 !=======================================================================
 !
@@ -587,3 +580,16 @@
 !
       RETURN
       END
+      
+
+
+
+
+
+
+
+
+
+
+
+
