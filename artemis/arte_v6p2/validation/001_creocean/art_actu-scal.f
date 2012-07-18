@@ -79,8 +79,9 @@ C
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 C
-      INTEGER I
+      INTEGER I,IG,IG0,IPER
 C
+      DOUBLE PRECISION PHASOI,AUXIC,AUXIS,DEGRAD,X0,Y0,KK
       DOUBLE PRECISION PI
       PARAMETER( PI = 3.1415926535897932384626433D0)
 C
@@ -99,11 +100,15 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      TETABT(:) = TETAH
-      TETAPT(:) = 0.D0
-      ALFAPT(:) = 0.D0
-      RPT(:)    = 0.D0
-      HBT(:)    = 0.D0
+      TETAB%R(:) = TETAH
+      TETAP%R(:) = 0.D0
+      ALFAP%R(:) = 0.D0
+      RP%R(:)    = 0.D0
+      HB%R(:)    = 0.D0
+
+      
+
+
 C
 C**************************************************
 C CONDITIONS AUX LIMITES DES FRONTIERES SOLIDES
@@ -111,81 +116,118 @@ C**************************************************
 C   plage au Nord Est
          write(*,*) 'je suis dans bord1'
       DO 10 I = 1,1029
-         LIHBORT(I) = KLOG
-         RPT(I) = 0.05D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
+         LIHBOR%I(I) = KLOG
+         RP%R(I)     = 0.05D0
+         TETAP%R(I)  = 0.D0
+         ALFAP%R(I)  = 0.D0
  10   CONTINUE
 C   enrochements perpendiculaires a la plage
       DO 20 I = 704,784
-         LIHBORT(I) = KLOG
-         RPT(I) = 0.15D0
-         TETAPT(I) = 45.D0
-         ALFAPT(I) = 0.D0
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 0.15D0
+         TETAP%R(I) = 45.D0
+         ALFAP%R(I) = 0.D0
  20   CONTINUE
 C   plage et cote basse
       DO 30 I = 785,947 
-         LIHBORT(I) = KLOG 
-         RPT(I) = 0.05D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
+         LIHBOR%I(I) = KLOG 
+         RP%R(I) = 0.05D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
  30   CONTINUE
 C bassins du port de Borme et capitainerie (ile)
       DO 40 I = 948,1029
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
  40   CONTINUE
       DO 50 I = 1,267
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
  50   CONTINUE
 C   musoir et digue du port en enrochements
       DO 60 I = 268,331
-         LIHBORT(I) = KLOG
-         RPT(I) = 0.15D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 0.15D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
  60   CONTINUE
 C**************************************************
 C CONDITIONS AUX LIMITES DES FRONTIERES LQUIDES
 C**************************************************    
 C
+      DEGRAD=PI/180.D0
+      PHASOI=0.D0
+      AUXIC =COS(180.D0*DEGRAD)
+      AUXIS =SIN(180.D0*DEGRAD)
+
+C  --- REFERENCE POINT FOR THE PHASE
+C  -- THIS METHOD DOESN'T WORK IN PARALLEL 
+        IG0=MESH%NBOR%I(332)
+        X0=X(IG0)
+        Y0=Y(IG0)
+
+
 C limite sud: Onde Incidente
        write(*,*) 'je suis dans bord2'
       DO 70 I = 332,406
-         LIHBORT(I) = KINC
-         HBT(I) = 2.D0
-         TETABT(I) = 180.D0
-         TETAPT(I) = 63.D0
+         LIHBOR%I(I) = KINC
+         HB%R(I) = 2.D0
+         TETAB%R(I) = 180.D0
+         TETAP%R(I) = 63.D0
+C    --- PHASE
+          IG    = MESH%NBOR%I(I)
+          KK    = K%R(IG)
+          PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+          ALFAP%R(I) = PHASOI/DEGRAD
+C    --- INCREMENT
+          X0=X(IG)
+	  Y0=Y(IG)
  70   CONTINUE
 C
 C limite Est : Onde Incidente
       DO 80 I =  407,497
-         LIHBORT(I) = KINC
-         HBT(I) = 2.D0
-         TETABT(I) = 180.D0
-         TETAPT(I) = 0.D0
+         LIHBOR%I(I) = KINC
+         HB%R(I) = 2.D0
+         TETAB%R(I) = 180.D0
+         TETAP%R(I) = 0.D0
+C    --- PHASE
+          IG    = MESH%NBOR%I(I)
+          KK    = K%R(IG)
+          PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+          ALFAP%R(I) = PHASOI/DEGRAD
+C    --- INCREMENT
+          X0=X(IG)
+	  Y0=Y(IG)
  80   CONTINUE
 C
 C limite nord: Onde incidente tant que Prof>5m
       DO 90 I = 498,569
-         LIHBORT(I) = KINC
-         HBT(I) = 2.D0
-         TETABT(I) = 180.D0
-         TETAPT(I) = 73.D0
+         LIHBOR%I(I) = KINC
+         HB%R(I) = 2.D0
+         TETAB%R(I) = 180.D0
+         TETAP%R(I) = 73.D0
+C    --- PHASE
+          IG    = MESH%NBOR%I(I)
+          KK    = K%R(IG)
+          PHASOI=PHASOI+KK*AUXIC*(X(IG)-X0)+KK*AUXIS*(Y(IG)-Y0)
+          ALFAP%R(I) = PHASOI/DEGRAD
+C    --- INCREMENT
+          X0=X(IG)
+	  Y0=Y(IG)
  90   CONTINUE
 C
 C limite Nord (h<5m): paroi absorbante
       DO 100 I = 570,641
-         LIHBORT(I) = KLOG
-         RPT(I) = 0.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 0.0D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
  100   CONTINUE
-       write(*,*) 'je suis dans bord3'
+       
+       
       RETURN                                                            
       END
