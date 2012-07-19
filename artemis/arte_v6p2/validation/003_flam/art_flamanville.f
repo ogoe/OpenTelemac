@@ -1,3 +1,4 @@
+
 c                       ***************
                         SUBROUTINE BORH
 C                       ***************
@@ -79,6 +80,11 @@ C
 C
       INTEGER I
 C
+CCP
+      INTEGER IG0  , IG            
+      DOUBLE PRECISION PHASOI,AUXIC,AUXIS,DEGRAD,X0,Y0,KK
+CCP
+
       DOUBLE PRECISION PI
       PARAMETER( PI = 3.1415926535897932384626433D0)
 C
@@ -93,7 +99,7 @@ C
       LOGICAL COUPLA
 C
       INTEGER NCOW,NPTH,ISTAT,IB(4),IPARAM(100),IDATE(6)
-      INTEGER NVAR,NP,ID(2)
+      INTEGER NVAR,NP,ID(2),JB
 C
       DOUBLE PRECISION Z(1),ATT(1),RADDEG
 C
@@ -200,10 +206,10 @@ C
 C
 C        PAS DE TEMPS ET VARIABLES
 C
-         IF (NPTH.GT.1) THEN
-            DO 111 I=1,(NPTH-1)*(NVAR+1)
-               READ(NCOW)
- 111        CONTINUE
+         IF(NPTH.GT.1) THEN
+           DO 111 I=1,(NPTH-1)*(NVAR+1)
+             READ(NCOW)
+ 111       CONTINUE
          ENDIF
 C
          CALL LIT(ATT,TAB1,IB,BID,1,'R4',NCOW,BINCOW,ISTAT)
@@ -258,9 +264,9 @@ c            CALL FASPDA (X,Y,DMARTE,NPOIN,NPTFR,MESH%NBOR%I,
 c     *                XCOWA,YCOWA,DMCOWA,NP)
 c         ELSE
             
-            CALL FASPDA (XT,YT,HSARTE,NPOIN_TOT,NPTFR_TOT,NBOR_TOT,
+            CALL FASPDA (X,Y,HSARTE,NPOIN,NPTFR,MESH%NBOR%I,
      *           XCOWA,YCOWA,HSCOWA,NP)
-            CALL FASPDA (XT,YT,DMARTE,NPOIN_TOT,NPTFR_TOT,NBOR_TOT,
+            CALL FASPDA (X,Y,DMARTE,NPOIN,NPTFR,MESH%NBOR%I,
      *           XCOWA,YCOWA,DMCOWA,NP)
 c         END IF
 
@@ -282,62 +288,68 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      TETABT(:) = TETAH
-      TETAPT(:) = 0.D0
-      ALFAPT(:) = 0.D0
-      RPT(:)    = 0.D0
-      HBT(:)    = 1.D0
+      TETAB%R(:) = TETAH
+      TETAP%R(:) = 0.D0
+      ALFAP%R(:) = 0.D0
+      RP%R(:)    = 0.D0
+      HB%R(:)    = 1.D0
 C
 C ------------ 
 C PAROI SOLIDE
 C ------------ 
 C
-      DO 40 I = 1,84
-         LIHBORT(I) = KLOG
-         RPT(I) = 0.5D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
-40    CONTINUE
-      DO 42 I = 85,142
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
-42    CONTINUE
-      DO 44 I = 143,260
-         LIHBORT(I) = KLOG
-         RPT(I) = 0.5D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
-44    CONTINUE
+
+      DO I=1,NPTFR
+       JB=BOUNDARY_COLOUR%I(I)
+C ------------ 
+C PAROI SOLIDE
+C ------------ 
+C
+      IF(JB.GE.1.AND.JB.LE.84)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 0.5D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF 
+           
+      IF(JB.GE.85.AND.JB.LE.142)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF 
+     
+      IF(JB.GE.143.AND.JB.LE.260)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 0.5D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF 
 C
 C ------------ 
 C FRONTIERE ONDE INCIDENTE
 C ------------ 
 C
-      DO 50 I = 261,281
-         LIHBORT(I) = KINC
-c         IF (NCSIZE .LE. 1) THEN 
-c            HBT(I)     = HSARTE(MESH%NBOR%I(I))
-c            TETABT(I)  = DMARTE(MESH%NBOR%I(I))
-c         ELSE
-            HBT(I)     = HSARTE(NBOR_TOT(I))
-            TETABT(I)  = DMARTE(NBOR_TOT(I))
-c         END IF
-         TETAPT(I)  = 0.D0
-         ALFAPT(I)  = 0.D0
-50    CONTINUE
+      IF(JB.GE.261.AND.JB.LE.281)THEN
+         LIHBOR%I(I) = KINC
+         HB%R(I)     = HSARTE(MESH%NBOR%I(I))
+         TETAB%R(I)  = DMARTE(MESH%NBOR%I(I))
+         TETAP%R(I)  = 0.D0
+         ALFAP%R(I)  = 0.D0
+      ENDIF 
 C
 C ------------ 
 C PAROI SOLIDE
 C ------------ 
 C
-      DO 60 I = 282,302
-         LIHBORT(I) = KLOG
-         RPT(I) = 0.5D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
-60    CONTINUE
+      IF(JB.GE.282.AND.JB.LE.302)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 0.5D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF 
+      
+      ENDDO
 C
 C-----------------------------------------------------------------------
 C                                                                       

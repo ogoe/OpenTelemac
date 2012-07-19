@@ -10,10 +10,10 @@ BOUNDARY CONDITIONS FILE           : 'geo_flamanville.cli'
 GEOMETRY FILE                      : 'geo_flamanville.slf'
 BINARY DATA FILE 1                 : 'bi1_flamanville.slf'
 /
-RESULTS FILE                       : 'art_flamanville-scal.slf'
+RESULTS FILE                       : 'art_flamanville-scal.res'
 /
-VALIDATION            : YES
-REFERENCE FILE        : 'ref_flamanville.slf'
+VALIDATION                         :  YES
+REFERENCE FILE                     : 'ref_flamanville.res'
 /--------------------------------------------------------------------/
 / VARIOUS INPUTS-OUTPUTS
 /--------------------------------------------------------------------/
