@@ -70,6 +70,8 @@ C
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_ARTEMIS
+
+
 C
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -83,7 +85,7 @@ C     VOS NOUVELLES DECLARATIONS DE VARIABLES :
 C     ---------------------------------------- 
 C                                                                       
 C JCB :                                                                       
-      INTEGER I    
+      INTEGER I    , IG, IB,JB,IG0,ISUIV,IDEB
 C JCB
 C
 C
@@ -91,6 +93,10 @@ C
 C
       INTRINSIC COS,SIN
 C
+      DOUBLE PRECISION HINC,THB,AUXIC,AUXIS,DEGRAD,PHASOI
+      DOUBLE PRECISION X0,Y0,KK
+
+
 C-----------------------------------------------------------------------
 C
 C CONDITIONS AUX LIMITES
@@ -104,59 +110,112 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      TETABT(:) = TETAH
-      TETAPT(:) = 0.D0
-      ALFAPT(:) = 0.D0
-      RPT(:)    = 0.D0
-      HBT(:)    = 0.0D0
-C onde incidente 
-      DO 10 I=4101,4200
-         LIHBORT(I) = KINC
-         HBT(I) = 0.01D0
-         TETABT(I) = 0.D0
-         TETAPT(I) = 0.D0
- 10   CONTINUE
-
-         LIHBORT(1) = KINC
-         HBT(1) = 0.01D0
-         TETABT(1) = 0.D0
-         TETAPT(1) = 0.D0
-
+      WRITE(6,*) 'ON ENTRE DANS BORH'
+      TETAB%R(:) = TETAH
+      TETAP%R(:) = 0.D0
+      ALFAP%R(:) = 0.D0
+      RP%R(:)    = 0.D0
+      HB%R(:)    = 0.0D0
+      
+      PRB%R(:)   =0.D0
+      PIB%R(:)   =0.D0
+      DDXPRB%R(:)=0.D0
+      DDYPRB%R(:)=0.D0
+      DDXPIB%R(:)=0.D0
+      DDYPIB%R(:)=0.D0
+      
+      DEGRAD    =  PI/180.0D0
+      HINC	 = 0.01D0
+      THB	 = 0.D0
+      AUXIC	 = COS(THB*DEGRAD)
+      AUXIS	 = SIN(THB*DEGRAD)
+      PHASOI = 0.
+      
+      DO IB=1,NPTFR
+       JB=BOUNDARY_COLOUR%I(IB)
 
 
 C solide en y=0
-      DO 20 I=2,2000
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
- 20   CONTINUE
- 
+      IF(JB.GE.2.AND.JB.LE.2000)THEN
+         LIHBOR%I(IB) = KLOG
+         RP%R(IB) = 1.D0
+         TETAP%R(IB) = 0.D0
+         ALFAP%R(IB) = 0.D0
+      ENDIF 
 
-C solide libre (ex sortie absorbante) 
-      DO 50 I=2001,2101
-          LIHBORT(I) = KSORT
-	  TETAPT(I)=0.D0
-c         LIHBORT(I) = KLOG
-c         RPT(I) = 0.D0
-c         TETAPT(I) = 0.D0
-c         ALFAPT(I) = 0.D0
-
- 50   CONTINUE
-
+C solide libre
+      IF(JB.GE.2001.AND.JB.LE.2101)THEN
+          LIHBOR%I(IB) = KSORT
+	  TETAP%R(IB)=0.D0
+      ENDIF
+      
 C solide en y = 1.6
-      DO 60 I=2102,4100
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
- 60   CONTINUE
+      IF(JB.GE.2102.AND.JB.LE.4100)THEN
+         LIHBOR%I(IB) = KLOG
+         RP%R(IB) = 1.D0
+         TETAP%R(IB) = 0.D0
+         ALFAP%R(IB) = 0.D0
+      ENDIF
+
+C Incident wave with PHASE=0.
+      IF(JB.GE.4101.AND.JB.LE.4200)THEN
+	 LIHBOR%I(IB) = KINC
+	 HB%R(IB)    = 0.01D0
+	 TETAP%R(IB) = 0.D0
+	 ALFAP%R(IB) = 0.D0
+      ENDIF
+      IF(JB.EQ.1)THEN
+	 LIHBOR%I(IB) = KINC
+	 HB%R(IB)    = 0.01D0
+	 TETAP%R(IB) = 0.D0
+	 ALFAP%R(IB) = 0.D0
+      ENDIF
+      
+      
+      
+      
+      
+      
+
+! Example : Incident potential with phase = 0. 
+!      PHASOI=0.D0    
+!      IF(JB.GE.4101.AND.JB.LE.4200)THEN
+!	 LIHBOR%I(IB)= KPOT
+!	 IG	     = MESH%NBOR%I(IB)
+!	 KK	     = K%R(IG)
+!	 PRB%R(IB)   = HINC*GRAV/(2.0D0*OMEGA)*SIN(PHASOI)
+!	 PIB%R(IB)   =-HINC*GRAV/(2.0D0*OMEGA)*COS(PHASOI)
+!	 DDXPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*COS(PHASOI)
+!	 DDYPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*COS(PHASOI)
+!	 DDXPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*SIN(PHASOI)
+!	 DDYPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*SIN(PHASOI)
+!	 TETAP%R(IB) = 0.D0
+!	 ALFAP%R(IB) = 0.D0	
+!      ENDIF
+!      IF(JB.EQ.1)THEN
+!	 LIHBOR%I(IB) = KPOT
+!	 IG	     = MESH%NBOR%I(IB)
+!	 KK	     = K%R(IG)
+!	 PRB%R(IB)   = HINC*GRAV/(2.0D0*OMEGA)*SIN(PHASOI)
+!	 PIB%R(IB)   =-HINC*GRAV/(2.0D0*OMEGA)*COS(PHASOI)
+!	 DDXPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*COS(PHASOI)
+!	 DDYPRB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*COS(PHASOI)
+!	 DDXPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIC*SIN(PHASOI)
+!	 DDYPIB%R(IB)= HINC*GRAV/(2.0D0*OMEGA)*KK*AUXIS*SIN(PHASOI)	
+!	 TETAP%R(IB) = 0.D0
+!	 ALFAP%R(IB) = 0.D0	
+!      ENDIF
+!
+!      
+      ENDDO
+
+
 
 C-----------------------------------------------------------------------
-C                                                                       
-      RETURN                                                            
-      END                                                               
-C                       *****************
+C									 
+      RETURN								 
+      END								 
+C			*****************
                         SUBROUTINE CORFON
 C                       *****************
 C
@@ -226,7 +285,7 @@ C Variables
       D1  = 0.313
       AA  = 0.05
       LCP = 1.
-C number of wavelength on the bottom     
+C nombre de longueur d'onde sur la bathymetrie     
       NRID= 10.
 C   
       XDEBUT=25.
@@ -235,7 +294,7 @@ C
 C
 
 
-C SINUSOIDAL TOPOGRAPHY
+C bathy sinusoidale
       DO I = 1,NPOIN
        IF ( abs(X(I)-XCP).LT.(NRID*LCP/2.) ) THEN
         XRCP    = X(I)-XDEBUT
@@ -245,5 +304,19 @@ C SINUSOIDAL TOPOGRAPHY
 C
       RETURN
       END                  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

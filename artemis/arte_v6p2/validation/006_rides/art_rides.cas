@@ -10,7 +10,7 @@
 / FILES NAME
 /---------------------------------------------------------------------
 
-RESULTS FILE             = 'r2d_rides.slf'
+RESULTS FILE             = 'rides.res'
 
 
 BOUNDARY CONDITIONS FILE = 'geo_rides.cli'
@@ -19,7 +19,7 @@ FORTRAN FILE             = 'art_rides.f'
 
 GEOMETRY FILE            = 'geo_rides.slf'
 
-REFERENCE FILE           = 'f2d_rides_x.slf'
+REFERENCE FILE           = 'ref_rides_x.res'
 
 
 /---------------------------------------------------------------------
