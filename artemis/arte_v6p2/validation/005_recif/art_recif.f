@@ -1,6 +1,3 @@
-C------------------ DEBUT CAS ARTEMIS
-
-
 C                       ***************
                         SUBROUTINE BORH
 C                       ***************
@@ -79,14 +76,14 @@ C
       COMMON/INFO/LNG,LU
 C
 C
-      DOUBLE PRECISION PI,BID
+      DOUBLE PRECISION PI,BID,PHASOI
 C
 C     ---------------------------------------- 
 C     VOS NOUVELLES DECLARATIONS DE VARIABLES :
 C     ---------------------------------------- 
 C                                                                       
 C JCB :                                                                       
-      INTEGER I    
+      INTEGER I    , IB,JB
 C JCB
 C
 C
@@ -107,54 +104,56 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      TETABT(:) = TETAH
-      TETAPT(:) = 0.D0
-      ALFAPT(:) = 0.D0
-      RPT(:)    = 0.D0
-      HBT(:)    = 0.0D0
-C onde incidente 
-      DO 10 I=4101,4200
-         LIHBORT(I) = KINC
-         HBT(I) = 0.05D0
-         TETABT(I) = 0.D0
-         TETAPT(I) = 0.D0
- 10   CONTINUE
-
-         LIHBORT(1) = KINC
-         HBT(1) = 0.05D0
-         TETABT(1) = 0.D0
-         TETAPT(1) = 0.D0
-
+      TETAB%R(:) = TETAH
+      TETAP%R(:) = 0.D0
+      ALFAP%R(:) = 0.D0
+      RP%R(:)    = 0.D0
+      HB%R(:)    = 0.0D0
+C Incident wave with PHASE=0.
+      PHASOI=0.D0
+      
+      
+      DO I=1,NPTFR
+       JB=BOUNDARY_COLOUR%I(I)
+      
+      IF(JB.GE.4101.AND.JB.LE.4200)THEN
+         LIHBOR%I(I) = KINC
+         HB%R(I)     = 0.05D0
+         TETAB%R(I)  = 0.D0
+         TETAP%R(I)  = 0.D0
+	 ALFAP%R(1)  = PHASOI
+      ENDIF
+      IF(JB.EQ.1)THEN
+         LIHBOR%I(I) = KINC
+         HB%R(I)     = 0.05D0
+         TETAB%R(I)  = 0.D0
+         TETAP%R(I)  = 0.D0
+	 ALFAP%R(I)  = PHASOI
+      ENDIF
 
 
 C solide en y=0
-      DO 20 I=2,2000
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
- 20   CONTINUE
- 
+      IF(JB.GE.2.AND.JB.LE.2000)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF 
 
-C solide libre (ex sortie absorbante) 
-      DO 50 I=2001,2101
-          LIHBORT(I) = KSORT
-	  TETAPT(I)=0.D0
-c         LIHBORT(I) = KLOG
-c         RPT(I) = 0.D0
-c         TETAPT(I) = 0.D0
-c         ALFAPT(I) = 0.D0
-
- 50   CONTINUE
-
+C solide libre  
+      IF(JB.GE.2001.AND.JB.LE.2101)THEN
+          LIHBOR%I(I) = KSORT
+	  TETAP%R(I)=0.D0
+      ENDIF
 C solide en y = 1.6
-      DO 60 I=2102,4100
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 0.D0
-         ALFAPT(I) = 0.D0
- 60   CONTINUE
-
+      IF(JB.GE.2102.AND.JB.LE.4100)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 0.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF
+      
+      ENDDO
 C-----------------------------------------------------------------------
 C                                                                       
       RETURN                                                            
