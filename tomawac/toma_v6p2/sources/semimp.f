@@ -9,7 +9,7 @@
      &  CMOUT6,TPROP ,DTSI  ,ROAIR ,ROEAU ,XKAPPA,BETAM ,DECAL ,CDRAG ,
      &  ALPHA ,ZVENT ,NF    ,NPLAN ,NPOIN2,IANGNL,COEFNL,F1    ,NSITS ,
      &  SMOUT ,SFROT ,SVENT ,LVENT ,STRIF ,VENT  ,VENSTA,VX_CTE,VY_CTE,
-     &  SBREK ,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ ,IHMBJ ,IFRBJ ,BORETG,GAMATG, 
+     &  SBREK ,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ ,IHMBJ ,IFRBJ ,BORETG,GAMATG,
      &  IWHTG ,IFRTG ,ALFARO,GAMARO,GAM2RO,IDISRO,IEXPRO,IFRRO ,BETAIH,
      &  EM2SIH,IFRIH ,COEFHS,XDTBRK,NDTBRK,STRIA ,ALFLTA,RFMLTA,KSPB  ,
      &  BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT ,CIMPLI,COEFWD,COEFWE,COEFWF,
@@ -19,11 +19,11 @@
      &  TRA01 ,BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
      &  SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      &  K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
-     &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP, 
-     &  TB_FAC,MDIA  ,IANMDI,COEMDI) 
+     &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
+     &  TB_FAC,MDIA  ,IANMDI,COEMDI)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   27/06/2011
+! TOMAWAC   V6P2                                   27/06/2011
 !***********************************************************************
 !
 !brief    SOLVES THE INTEGRATION STEP OF THE SOURCE TERMS USING
@@ -77,6 +77,11 @@
 !+        27/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  U.H.MERKEL
+!+        27/06/2012
+!+        V6P2
+!+   Renamed SUM to SUME, due to NAG compiler
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
@@ -180,7 +185,7 @@
 !| NT1            |-->| NUMBER OF INTEGRATION POINT ON TETA1
 !| NVEB           |-->| LOGICAL UNIT N. OF BINARY WIND DATA FILE
 !| NVEF           |-->| LOGICAL UNIT N. OF FORMATTED WIND DATA FILE
-!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
+!| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMEPTION
 !| QINDI          |-->| CONFIGURATION INDEX
 !| RAISF          |-->| FREQUENTIAL RATIO
 !| RFMLTA         |-->| COEFFICIENT OF LTA TRIAD INTERACTION MODEL
@@ -245,7 +250,7 @@
 !| ZVENT          |-->| WIND MEASUREMENT LEVEL
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!  APPELS :    - PROGRAMME(S) APPELANT  :  WAC                    
+!  APPELS :    - PROGRAMME(S) APPELANT  :  WAC
 !  ********    - PROGRAMME(S) APPELE(S) :  USTAR1, TOTNRJ, ANAVEN,
 !                                          FREMOY, KMOYEN, OV    ,
 !                                          QWIND1, STRESS, QNLIN1,
@@ -254,7 +259,7 @@
 !                                          QBREK2, QBREK3, QBREK4,
 !                                          FPREAD, FREM01, FREM02,
 !                                          FPEPIC, QWINDL, QWIND3,
-!                                          QMOUT2, QNLIN2, QNLIN3 
+!                                          QMOUT2, QNLIN2, QNLIN3
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -300,7 +305,7 @@
       LOGICAL  PROINF, VENT , VENSTA
 !GM V6P1 - NEW SOURCE TERMS
 !....Linear wind growth declaration
-      INTEGER           LVENT 
+      INTEGER           LVENT
 !....Yan expression declarations
       DOUBLE PRECISION  CMOUT3, CMOUT4, CMOUT5, CMOUT6
 !....Westhuysen expression decalaration
@@ -316,7 +321,7 @@
       INTEGER  LBUF  , DIMBUF
       INTEGER           F_POIN(DIMBUF), T_POIN(DIMBUF)
       DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
-      INTEGER K_IF1 (1:NF1) 
+      INTEGER K_IF1 (1:NF1)
       INTEGER K_1P  (1:NT1,1:NF1), K_1M(1:NT1,1:NF1)
       INTEGER K_IF2 (1:NF2,1:NT1,1:NF1), K_IF3 (1:NF2,1:NT1,1:NF1),
      &        K_1P2P(1:NF2,1:NT1,1:NF1), K_1P2M(1:NF2,1:NT1,1:NF1),
@@ -325,10 +330,10 @@
      &        K_1M3P(1:NF2,1:NT1,1:NF1), K_1M3M(1:NF2,1:NT1,1:NF1)
       INTEGER IDCONF(1:NCONFM,1:3)
       DOUBLE PRECISION TB_V14(1:NF1)
-      DOUBLE PRECISION 
+      DOUBLE PRECISION
      &        TB_V24(1:NF2,1:NT1,1:NF1), TB_V34(1:NF2,1:NT1,1:NF1),
      &        TB_TPM(1:NF2,1:NT1,1:NF1), TB_TMP(1:NF2,1:NT1,1:NF1),
-     &        TB_FAC(1:NF2,1:NT1,1:NF1) 
+     &        TB_FAC(1:NF2,1:NT1,1:NF1)
 !GM Fin
 !
 !.....LOCAL VARIABLES
@@ -337,13 +342,13 @@
      &                 IFCAR , MF1   , MF2   , MFMAX , IDT
       DOUBLE PRECISION AUX1  , AUX2  , AUX3  , AUX4  , COEF  , DFMAX ,
      &                 DEUPI , FM1   , FM2   , TDEB  , TFIN  , VITVEN,
-     &                 VITMIN, HM0   , HM0MAX, DTN   , SUM   , AUXI  ,
+     &                 VITMIN, HM0   , HM0MAX, DTN   , SUME   , AUXI  ,
      &                 USMIN
       CHARACTER*7      CHDON
 !GM V6P1 - NEW SOURCE TERMS
 !    MDIA method local declarations
-      INTEGER           K      
-      DOUBLE PRECISION  XCCMDI(MDIA) 
+      INTEGER           K
+      DOUBLE PRECISION  XCCMDI(MDIA)
 !GM Fin
 !
       NPOIN3=NPOIN2*NPLAN
@@ -528,20 +533,20 @@
           ELSEIF (SVENT.EQ.3) THEN
             CALL QWIND3
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
-     &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD, 
+     &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
      &  COEFWE, COEFWF, COEFWH, TAUX1 , TAUX2 , TAUX3 , TAUX4 )
 !GM Fin
           ENDIF
-!          
+!
 !       ADDS THE LINEAR WIND GROWTH SOURCE TERME
 !       """""""""""""""""""""""""""""""""""""""
 !GM V6P1 - NEW SOURCE TERMS
           IF (LVENT.EQ.1) THEN
             CALL QWINDL
      &( TSTOT , FREQ  , USOLD , USNEW , TWOLD , TWNEW , TETA  , GRAVIT,
-     &  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX3 , TAUX4 , 
+     &  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX3 , TAUX4 ,
      &  TAUX5 , TAUX6 )
-          ENDIF   
+          ENDIF
 !GM Fin
 !
         ELSE
@@ -567,7 +572,7 @@
           DO K=1,MDIA
             XCCMDI(K)=XCCMDI(K)/DBLE(MDIA)
           ENDDO
-!....calls MDIA method        
+!....calls MDIA method
           DO K=1,MDIA
             CALL QNLIN2
      &( TSTOT , TSDER , IANMDI(1,1,K) , COEMDI(1,K) , NF    , NPLAN,
@@ -597,10 +602,10 @@
 !GM V6P1 - NEW SOURCE TERMS
         ELSEIF (SMOUT.EQ.2) THEN
           CALL QMOUT2
-     &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY , 
+     &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY ,
      &  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
      &  GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX3 ,
-     &  TAUX4 , TAUX5 , TAUX6 )        
+     &  TAUX4 , TAUX5 , TAUX6 )
 !GM Fin
         ENDIF
 !
@@ -774,8 +779,8 @@
 !
 !.........LOOP ON SUB-TIME STEPS FOR BREAKING
 !         = = = = = = = = = = = = = = = = = = = = = = = = = = =
-          SUM=(XDTBRK**NDTBRK-1.D0)/(XDTBRK-1.D0)
-          DTN=DTSI/SUM
+          SUME=(XDTBRK**NDTBRK-1.D0)/(XDTBRK-1.D0)
+          DTN=DTSI/SUME
 !
           DO 782 IDT=1,NDTBRK
 !         7.2 INITIALISES THE ARRAYS FOR THE SOURCE-TERMS
