@@ -21,7 +21,7 @@
 -->  
    <action xref="1" 
        do="translate;compile;run;cas;princi" 
-       code="telemac2d" target="t2d_bowl_ef_fr.cas" 
+       code="telemac2d" target="t2d_bowl_fe_fr.cas" 
        title="parabolic bowl finite elements scalar mode" 
    />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
