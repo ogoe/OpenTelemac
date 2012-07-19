@@ -5,7 +5,7 @@
      &(MARDAT,MARTIM,PHI0,NPOIN,AT,FU1,FV1,X,SINLAT,COSLAT,GRAV)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TIDAL FORCE.
@@ -27,6 +27,10 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  U.H.Merkel
+!+        17/07/2012
+!+        V6P2 - Adaption to NAG
+!!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| COSLAT         |-->| COSINUS OF LATITUDE (IN SPHERICAL COORDINATES)
@@ -34,7 +38,7 @@
 !| FV1            |<--| Y-COMPONENT OF TIDE GENERATING FORCE
 !| GRAV           |-->| GRAVITY
 !| MARDAT         |-->| DATE (YEAR, MONTH,DAY)
-!| MARTIM         |-->| TIME (HOUR, MINUTE,SECOND)
+!| MARTIM         |-->| TIME (HOUR, MINUTEUTE,SECOND)
 !| NPOIN          |-->| NUMBER OF POINTS
 !| PHI0           |-->| LONGITUDE OF ORIGIN POINT
 !| SINLAT         |-->| SINUS OF DE LATITUDE (IN SPHERICAL COORDINATES)
@@ -56,7 +60,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER YEAR,MONTH,DAY,HOUR,MIN,SEC,I
+      INTEGER YEAR,MONTH,DAY,HOUR,MINUTE,SEC,I
 !
       DOUBLE PRECISION ARL,ARS,DL,DS,AL,AS
       DOUBLE PRECISION RT,LONG,AHL,AHS,MLT,MST,LONG0
@@ -76,10 +80,10 @@
       MONTH = MARDAT(2)
       DAY   = MARDAT(3)
       HOUR  = MARTIM(1)
-      MIN   = MARTIM(2)
+      MINUTE   = MARTIM(2)
       SEC   = MARTIM(3)
 !
-! REMINDER : HOUR IN UNIVERSAL TIME |
+! REMINUTEDER : HOUR IN UNIVERSAL TIME |
 ! GENERAL REMARK : T=TERRE, L=LUNE , S=SOLEIL
 !
 ! LONG0: REFERENCE LONGITUDE IN RADIAN (0,2PI)
@@ -88,7 +92,7 @@
 !
 ! CALLS THE MAIN FUNCTION COMPUTING THE LUNAR AND SOLAR ANGLES
 !
-      CALL ASTRO(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT,ARL,ARS,DL,DS,AL,AS)
+      CALL ASTRO(YEAR,MONTH,DAY,HOUR,MINUTE,SEC,AT,ARL,ARS,DL,DS,AL,AS)
 !
 ! RT: EARTH RADIUS IN M
 !
@@ -114,7 +118,7 @@
 !
 ! SIDEREAL TIME
 !
-      TLOC1 = TSLOC(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT)
+      TLOC1 = TSLOC(YEAR,MONTH,DAY,HOUR,MINUTE,SEC,AT)
 !
       DO 10 I=1,NPOIN
 !

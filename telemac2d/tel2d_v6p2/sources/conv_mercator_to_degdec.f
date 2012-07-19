@@ -20,6 +20,10 @@
 !+        V6P2
 !+        ADD MERCATOR FOR TELEMAC
 !
+!history  U.H.Merkel
+!+        18/07/2012
+!+        V6P2 - NAG doesn't like EPSILON -> renamed to EPSI
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LAMBDATAB      |<--| LONGITUDE (DECIMAL DEGREES)
 !| LAT0           |-->| LATITUDE OF ORIGIN POINT (KEYWORD, IN DEGREES)
@@ -51,7 +55,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       DOUBLE PRECISION PI,DTR,RTD,CONST,AAA,FFF,EEE,EEE2,EEE4,EEE6,EEE8
-      DOUBLE PRECISION LAMBDAC,NNN,XS,YS,PHIM,LATISO,LATISOS,ES2,EPSILON
+      DOUBLE PRECISION LAMBDAC,NNN,XS,YS,PHIM,LATISO,LATISOS,ES2,EPSI
       DOUBLE PRECISION X,Y,LAMBDA,PHI
       DOUBLE PRECISION CITM(5)
       DOUBLE PRECISION, PARAMETER :: RADIUS = 6371000.D0
@@ -66,7 +70,7 @@
       RTD = 180.D0/PI
       CONST = TAN(0.5D0*LAT0*DTR+0.25D0*PI)
 !
-      EPSILON = 1.D-11
+      EPSI = 1.D-11
 !
       AAA = 6378137.D0
       FFF = 1.D0/298.257223563D0
@@ -146,7 +150,7 @@
 !
         I = 1
 !
-        DO WHILE (ABS(PHI-PHIM).GE.EPSILON)
+        DO WHILE (ABS(PHI-PHIM).GE.EPSI)
           PHIM = PHI
           PHI  = 2.D0*ATAN(EXP(LATISO)*( (1.D0+EEE*SIN(PHIM))
      &                                  /(1.D0-EEE*SIN(PHIM)))**ES2)

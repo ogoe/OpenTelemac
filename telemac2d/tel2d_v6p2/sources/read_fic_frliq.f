@@ -37,6 +37,10 @@
 !+        V6P2
 !+   Modification size WHAT and CHOIX due to modification of TRACER
 !
+!history  U.H.Merkel
+!+        17/07/2012
+!+        V6P2 + NAG: MAXVAL intrinsic! -> MAXVALUE
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
@@ -68,11 +72,11 @@
       INTEGER, PARAMETER :: SIZELIGN = 3000
 !
       INTEGER IVALUE,NVALUE,ILIG,NLIG,OK,J,IWHAT,IDEB,IFIN,IL1,IL2
-      INTEGER, PARAMETER :: MAXVAL=2100
+      INTEGER, PARAMETER :: MAXVALUE=2100
       DOUBLE PRECISION TL1,TL2,TETA,TOL,LASTAT
 !
       CHARACTER(LEN=SIZELIGN) :: LIGNE
-      CHARACTER*9 CHOIX(MAXVAL),LASTWHAT
+      CHARACTER*9 CHOIX(MAXVALUE),LASTWHAT
 !
       DATA TOL /1.D-3/
 !
@@ -149,15 +153,15 @@
           CALL PLANTE(1)
           STOP
           ENDIF
-        ELSEIF(NVALUE.LE.MAXVAL) THEN
+        ELSEIF(NVALUE.LE.MAXVALUE) THEN
           CHOIX(NVALUE)='         '
           CHOIX(NVALUE)(1:IFIN-IDEB+1)=LIGNE(IDEB:IFIN-1)
         ELSE
           IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'AUGMENTER MAXVAL DANS READ_FIC_FRLIQ'
+            WRITE(LU,*) 'AUGMENTER MAXVALUE DANS READ_FIC_FRLIQ'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'INCREASE MAXVAL IN READ_FIC_FRLIQ'
+            WRITE(LU,*) 'INCREASE MAXVALUE IN READ_FIC_FRLIQ'
           ENDIF
           CALL PLANTE(1)
           STOP

@@ -5,7 +5,7 @@
      & (ACOF, BCOF, CCOF, DCOF, REALS, X)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -40,6 +40,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!!
+!history  U.H.Merkel
+!+        20/07/2012
+!+        V6P2 - sign   to signum due to errors with NAG
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACOF           |-->| CONSTANT FOR X**3
@@ -62,7 +66,7 @@
 !
       DOUBLE PRECISION, PARAMETER :: PI = 3.14159265358979323846D0
       DOUBLE PRECISION            :: BA, CA, P, Q, Q2P3, U, V
-      DOUBLE PRECISION            :: EXPO, SIGN, TMP, PHI
+      DOUBLE PRECISION            :: EXPO, SIGNUM, TMP, PHI
 !
 !=======================================================================
 !=======================================================================
@@ -80,11 +84,11 @@
          REALS = 1
          EXPO  = 1.D0/3.D0
          TMP   = -Q + SQRT(Q2P3)
-         SIGN  = TMP / ABS(TMP)
-         U     = SIGN * ABS(TMP)**(EXPO)
+         SIGNUM  = TMP / ABS(TMP)
+         U     = SIGNUM * ABS(TMP)**(EXPO)
          TMP   = -Q - SQRT(Q2P3)
-         SIGN  = TMP / ABS(TMP)
-         V     = SIGN * ABS(TMP)**EXPO
+         SIGNUM  = TMP / ABS(TMP)
+         V     = SIGNUM * ABS(TMP)**EXPO
          X(1)  = (U + V) - BA
 !
       ELSE

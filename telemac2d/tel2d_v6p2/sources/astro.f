@@ -2,10 +2,10 @@
                      SUBROUTINE ASTRO
 !                    ****************
 !
-     &(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT,ARL,ARS,DL,DS,AL,AS)
+     &(YEAR,MONTH,DAY,HOUR,MINU,SEC,AT,ARL,ARS,DL,DS,AL,AS)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ASTRONOMICAL TERMS NECESSARY FOR THE
@@ -90,6 +90,10 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!!
+!history  U.H.Merkel
+!+        20/07/2012
+!+        V6P2 - min to MINU
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AL             |<--| MOON RIGHT ASCENSION
@@ -101,7 +105,7 @@
 !| DL             |<--| MOON DECLINATION
 !| DS             |<--| SUN DECLINATION
 !| HOUR           |-->| HOUR
-!| MIN            |-->| MINUTE
+!| MINU           |-->| MINUTE
 !| MONTH          |-->| DATE DU CALCUL DES TERMES ASTROS
 !| SEC            |-->| SECOND
 !| YEAR           |-->| DATE DU CALCUL DES TERMES ASTROS
@@ -113,7 +117,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: YEAR,MONTH,DAY,HOUR,MIN,SEC
+      INTEGER, INTENT(IN)             :: YEAR,MONTH,DAY,HOUR,MINU,SEC
       DOUBLE PRECISION, INTENT(IN)    :: AT
       DOUBLE PRECISION, INTENT(INOUT) :: ARL,ARS,DL,DS,AL,AS
 !
@@ -139,7 +143,7 @@
       C   = 384403.D0
       AC  = RT / C
 !
-      T   = JULTIM(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT)
+      T   = JULTIM(YEAR,MONTH,DAY,HOUR,MINU,SEC,AT)
 !
       H   = DMO ( 279.69668D0 + 36000.76892D0       * T
      &                        + 0.0003025D0         * T * T )
@@ -206,3 +210,4 @@
 !
       RETURN
       END
+

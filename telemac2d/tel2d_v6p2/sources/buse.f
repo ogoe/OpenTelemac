@@ -18,6 +18,10 @@
 !+
 !+
 !
+!history  U.H.Merkel
+!+        17/07/2012
+!+        V6P2 - Adaption to NAG
+!!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTBUS         |-->| ELEVATIONS OF TUBES
 !| ANGBUS         |-->| ANGLE OF TUBES WITH AXIS OX.
@@ -214,7 +218,7 @@
         DBUS(N)=MAX(-QMAX2,DBUS(N))
       ENDIF
 !
-      IF(ENTET.AND.DABS(DBUS(N)).GT.1.D-4) THEN
+      IF(ENTET.AND.ABS(DBUS(N)).GT.1.D-4) THEN
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'BUSE ',N,' DEBIT DE ',DBUS(N),' M3/S'

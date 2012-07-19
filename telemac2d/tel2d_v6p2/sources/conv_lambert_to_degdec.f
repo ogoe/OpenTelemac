@@ -16,6 +16,10 @@
 !+        V6P1
 !+
 !
+!history  U.H.Merkel
+!+        18/07/2012
+!+        V6P2 - NAG doesn't like EPSILON -> renamed to EPSI
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LAMBDATAB      |<--| LONGITUDE
 !| NUMZONE        |-->| NUMBER OF LAMBERT ZONE
@@ -41,7 +45,7 @@
       DOUBLE PRECISION PI,DTR,RTD
       DOUBLE PRECISION X,Y,LAMBDA,PHI
       DOUBLE PRECISION LAMBDAC,EEE,ES2,NNN,CCC,XS,YS,RRR,GAMMA,LATISO
-      DOUBLE PRECISION HE,AAA,GNORM,Z,TX,TY,TZ,PHIM,EPSILON,CORRPHI
+      DOUBLE PRECISION HE,AAA,GNORM,Z,TX,TY,TZ,PHIM,EPSI,CORRPHI
 !
       INTEGER I,J
 !
@@ -51,7 +55,7 @@
       DTR = PI/180.D0
       RTD = 180.D0/PI
 !
-      EPSILON = 1.D-11
+      EPSI = 1.D-11
 !
 !  LAMBDAC : PARIS MERIDIAN / GREENWICH MERIDIAN
 !
@@ -122,7 +126,7 @@
 !
         I = 1
 !
-        DO WHILE (ABS(PHI-PHIM).GE.EPSILON)
+        DO WHILE (ABS(PHI-PHIM).GE.EPSI)
           PHIM = PHI
           PHI  = 2.D0*ATAN(EXP(LATISO)*( (1.D0+EEE*SIN(PHIM))
      &                                  /(1.D0-EEE*SIN(PHIM)))**ES2)
@@ -172,7 +176,7 @@
 !
         I = 1
 !
-        DO WHILE (ABS(PHI-PHIM).GE.EPSILON)
+        DO WHILE (ABS(PHI-PHIM).GE.EPSI)
           PHIM = PHI
           PHI = ATAN(Z/(SQRT(X**2+Y**2)*(1.D0-(AAA*EEE**2*COS(PHIM))
      &              /(SQRT(X**2+Y**2)*SQRT(1.D0-EEE**2*SIN(PHIM)**2)))))

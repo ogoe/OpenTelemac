@@ -45,6 +45,8 @@
 !
       SAVE YEAR,HOUR,MINUTE,SECOND,NDAY
 !
+      INTRINSIC INT,MOD,DBLE,COS,ATAN
+!
 !-----------------------------------------------------------------------
 !
       PI  = 4.D0*ATAN(1.D0)
@@ -58,18 +60,18 @@
         HOUR   = MARTIM(1)
         MINUTE = MARTIM(2)
         SECOND = MARTIM(3)
-!  NUMBER OF THE DAY IN YEAR YEAR
+!       NUMBER OF THE DAY IN YEAR YEAR 
         NDAY = DAY
 !
         DO I=MONTH-1,1,-1
           IF((I.EQ.1).OR.(I.EQ.3).OR.(I.EQ.5).OR.(I.EQ.7).OR.(I.EQ.8)
-     1    .OR.(I.EQ.10)) THEN
+     &    .OR.(I.EQ.10)) THEN
             NDAY = NDAY + 31
           ELSEIF((I.EQ.4).OR.(I.EQ.6).OR.(I.EQ.9).OR.(I.EQ.11)) THEN
             NDAY = NDAY + 30
           ELSEIF(I.EQ.2) THEN
             IF((MOD(YEAR,4).NE.0)
-     1      .OR.((MOD(YEAR,100).EQ.0).AND.(MOD(YEAR,400).NE.0))) THEN
+     &      .OR.((MOD(YEAR,100).EQ.0).AND.(MOD(YEAR,400).NE.0))) THEN
               NDAY = NDAY + 28
             ELSE
               NDAY = NDAY + 29
@@ -79,15 +81,14 @@
       ENDIF
 !
       TJ = DBLE(365*(YEAR-1900)+(NDAY-1)
-     &         +DINT(DBLE(YEAR-1901)/4.D0))/36525.D0
-!     &   +(DBLE(HOUR)+DBLE(MINUTE)/60.D0+DBLE(SECOND)/3600.D0)/876600.D0
+     &         +DBLE(INT(DBLE((YEAR-1901)/4.D0))))/36525.D0
 !
-      NLUNPUGH = DMOD(259.16D0-1934.14D0*TJ+0.0021D0*TJ**2,360.D0)
+      NLUNPUGH = MOD(259.16D0-1934.14D0*TJ+0.0021D0*TJ**2,360.D0)
 !
       IF(NODALCORR.EQ.2) THEN
         TJMIL = DBLE(365*(YEAR-1900)+(183-1)
-     &              +DINT(DBLE(YEAR-1901)/4.D0))/36525.D0
-        NMIL  = DMOD(259.16D0-1934.14D0*TJMIL+0.0021D0*TJMIL**2,360.D0)
+     &              +DBLE(INT(DBLE(YEAR-1901)/4.D0)))/36525.D0
+        NMIL  = MOD(259.16D0-1934.14D0*TJMIL+0.0021D0*TJMIL**2,360.D0)
         FFMN2 = 1.D0-0.037D0*COS(NMIL*DTR)
       ELSE
         FFMN2 = 1.D0-0.037D0*COS(NLUNPUGH*DTR)

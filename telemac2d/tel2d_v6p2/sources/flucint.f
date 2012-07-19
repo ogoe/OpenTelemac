@@ -6,7 +6,7 @@
      & NORDRE,CMI,JMI,DJX,DJY,DX,DY,DJXT,DJYT,DXT,DYT,EPSWL)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES EDGE-WISE ADVECTIVE FLUXES USING THE
@@ -50,7 +50,7 @@
 !| NSEG           |-->| TOTAL NUMBER OF SGMENTS IN THE MESH
 !| NUBO           |-->| GLOBAL NUMBERS OF THE NODES FORMING THE EDGE
 !| TN             |-->| CURRENT TIME
-!| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V 
+!| UA             |-->| UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
 !| VNOCL          |-->| NORMAL VECTOR TO THE INTERFACE
 !|                |   | (2 FIRST COMPONENTS) AND
 !|                |   | LENGTH OF THE SEGMENT (3RD COMPONENT)
@@ -101,7 +101,7 @@
 !     LOOP ON GLOBAL LIST OF EDGES
 !
       DO 500 NSG=1,NSEG
-         J         = JMI(NSG)
+         J         = int(JMI(NSG))
 !
          NUBO1     = NUBO(1,NSG)
          NUBO2     = NUBO(2,NSG)
