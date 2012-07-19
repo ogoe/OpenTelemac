@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   16/05/2011
+! TOMAWAC   V6P2                                   25/06/2012
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY.
@@ -32,6 +32,11 @@
 !+   Memory allocation for new variables defined by
 !+       E. GAGNAIRE-RENOU for solving non linear source terms models
 !+       (MDIA and GQM methods)
+!
+!history  G.MATTAROLO (EDF)
+!+        25/06/2012
+!+        V6P2
+!+   Memory allocation for variables used for diffraction
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -648,6 +653,58 @@
         CALL BIEF_ALLVEC(1,ST7   ,'ST7   ', 1, 1, 0 ,MESH)
       ENDIF
 !
+!V6P2 Diffraction : allocation of bief objects if diffraction
+!                   is taken into account
+      IF(DIFFRA.GT.0) THEN
+        CALL BIEF_ALLVEC(1,SA      ,'SA    ', IELM2, 1, 2, MESH)
+        CALL BIEF_ALLVEC(1,SCCG    ,'SCCG  ', IELM2, 1, 2, MESH)
+        CALL BIEF_ALLVEC(1,SDIV    ,'SDIV  ', IELM2, 1, 2, MESH)
+        CALL BIEF_ALLVEC(1,SDELTA  ,'SDELTA', IELM2, 1, 2, MESH)
+        CALL BIEF_ALLVEC(1,SDDX    ,'SDDX  ', IELM2, 1, 2, MESH)
+        CALL BIEF_ALLVEC(1,SDDY    ,'SDDY  ', IELM2, 1, 2, MESH)
+        CALL BIEF_ALLVEC(1,SA_RMSE ,'SA_RMSE',IELM2, 1, 2, MESH)
+        CALL BIEF_ALLVEC(1,SXKONPT ,'SXKONPT',IELM2, 1, 2, MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,SA      ,'SA    ', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SCCG    ,'SCCG  ', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SDIV    ,'SDIV  ', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SDELTA  ,'SDELTA', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SDDX    ,'SDDX  ', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SDDY    ,'SDDY  ', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SA_RMSE ,'SA_RMSE',1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SXKONPT ,'SXKONPT',1, 1, 0, MESH)
+      ENDIF
+!
+      A         =>SA%R
+      CCG       =>SCCG%R
+      DIV       =>SDIV%R
+      DELTA     =>SDELTA%R
+      DDX       =>SDDX%R
+      DDY       =>SDDY%R
+      A_RMSE    =>SA_RMSE%R
+      XKONPT    =>SXKONPT%R
+!
+      NRK_C=NPOIN2*MAXNSP
+      IF(DIFFRA.GT.0) THEN
+        CALL BIEF_ALLVEC(1,SRK  ,'SRK   ', NRK_C, 1, 0, MESH)   
+        CALL BIEF_ALLVEC(1,SRX  ,'SRX   ', NRK_C, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SRY  ,'SRY   ', NRK_C, 1, 0, MESH) 
+        CALL BIEF_ALLVEC(1,SRXX ,'SRXX  ', NRK_C, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SRYY ,'SRYY  ', NRK_C, 1, 0, MESH)
+      ELSE
+        CALL BIEF_ALLVEC(1,SRK  ,'SRK   ', 1, 1, 0, MESH)   
+        CALL BIEF_ALLVEC(1,SRX  ,'SRX   ', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SRY  ,'SRY   ', 1, 1, 0, MESH) 
+        CALL BIEF_ALLVEC(1,SRXX ,'SRXX  ', 1, 1, 0, MESH)
+        CALL BIEF_ALLVEC(1,SRYY ,'SRYY  ', 1, 1, 0, MESH)
+      ENDIF
+! 
+      RK   => SRK%R  
+      RX   => SRX%R  
+      RY   => SRY%R
+      RXX   => SRXX%R  
+      RYY   => SRYY%R
+!V6P2 End diffraction
 !-----------------------------------------------------------------------
 !
 !                     **********************
@@ -803,6 +860,19 @@
         KNOGL => SKNOGL%I
         ELI   => SELI%I
         KELGL => SKELGL%I
+!
+!V6P2 Diffraction : allocation of integer arrays
+      IF(DIFFRA.GT.0) THEN
+	CALL BIEF_ALLVEC(2,SNEIGB,'SNEIGB',   NPOIN2,MAXNSP, 0, MESH)
+	CALL BIEF_ALLVEC(2,SNB_CLOSE,'SNB_CLOSE',NPOIN2, 1 , 0, MESH)
+      ELSE
+      	CALL BIEF_ALLVEC(2,SNEIGB,'SNEIGB',   1, 1, 0, MESH)
+	CALL BIEF_ALLVEC(2,SNB_CLOSE,'SNB_CLOSE', 1, 1 , 0, MESH)
+      ENDIF
+!
+      NEIGB  => SNEIGB%I
+      NB_CLOSE => SNB_CLOSE%I
+!V6P2 End diffraction
 !
 !***********************************************************************
 !

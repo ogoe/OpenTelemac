@@ -15,12 +15,12 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION       = V6P2
-V_BIEF        = V6P2
-V_DAMOCLES    = V6P2
-V_PARAVOID    = V6P2
-V_PARALLEL    = V6P2
-V_SPECIAL     = V6P2
+VERSION       = V6P1
+V_BIEF        = V6P1
+V_DAMOCLES    = V6P1
+V_PARAVOID    = V6P1
+V_PARALLEL    = V6P1
+V_SPECIAL     = V6P1
 
 
 DIRINC           = $(PROJECT)\tomawac\toma_$(VERSION)\$(DIRLIB)

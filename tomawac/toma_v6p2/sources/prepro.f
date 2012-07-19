@@ -11,7 +11,7 @@
      &  PROINF, PROMIN, MESH)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   23/06/2011
+! TOMAWAC   V6P2                                   25/06/2012
 !***********************************************************************
 !
 !brief    PREPARES ADVECTION.
@@ -40,6 +40,11 @@
 !+        23/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2012
+!+        V6P2
+!+   Modifications : possibility of taking into account diffraction
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF             |<->| ADVECTION FIELD ALONG FREQUENCY
@@ -107,6 +112,10 @@
       USE TOMAWAC_MPI
       USE INTERFACE_TOMAWAC, EX_PREPRO => PREPRO
 !BD_INCKA END OF MODIFICATION
+!
+!V6P2 Diffraction
+      USE DECLARATIONS_TOMAWAC ,ONLY : DIFFRA
+!V6P2 End diffraction
 !
       IMPLICIT NONE
 !
@@ -197,14 +206,26 @@
      &      (IFABOR(IEL,3).GT.0)) IFABOR(IEL,3)=-1
       ENDDO
 !
+!V6P2 Diffraction
+      IF(DIFFRA.EQ.0) THEN
           CALL PIEDS
      &(CX,CY,CT,DT,NRK,X,Y,TETA,IKLE2,IFABOR,ETAP1,TRA01,TRA01(1,2),
      &  TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6),SHP1(1,JF),
      &  SHP2(1,JF),SHP3(1,JF),SHZ(1,JF),ELT(1,JF),ETA(1,JF),
      &  ITR01(1,1),NPOIN3,NPOIN2,
      &  NELEM2,NPLAN,JF,SURDET,-1,ITR01(1,2))
+      ELSE
+          CALL MPOINT
+     &  (CX,CY,CT,
+     &   DT,X,Y,TETA,IKLE2,IFABOR,ETAP1,TRA01,TRA01(1,2),
+     &   TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6),SHP1(1,JF),
+     &   SHP2(1,JF),SHP3(1,JF),SHZ(1,JF),ELT(1,JF),ETA(1,JF),
+     &   ITR01(1,1),NPOIN3,
+     &   NPOIN2,NELEM2,NPLAN,JF,SURDET,-1,ITR01(1,2))
+      ENDIF   
+!V6P2 End diffraction
 !
-       ELSE
+       ELSE !(NCSIZE.GE.1)
 !
 !     READS "NEEDS FOR IP"
 !

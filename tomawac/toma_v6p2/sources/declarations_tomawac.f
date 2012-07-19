@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   21/08/2010
+! TOMAWAC   V6P2                                   25/06/2012
 !***********************************************************************
 !
 !brief    DECLARES BIEF STRUCTURES IN TOMAWAC.
@@ -36,6 +36,11 @@
 !+        V6P1
 !+   Declaration of new variables defined by
 !+       E. GAGNAIRE-RENOU for solving new source terms models.
+!
+!history  G.MATTAROLO (EDF)
+!+        25/06/2012
+!+        V6P2
+!+   Declaration of new variables for representing diffraction
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -103,6 +108,12 @@
 ! structure maillage
       TYPE(BIEF_MESH) :: MESH
 !
+!V6P2 Diffraction
+!> @brief
+! description
+      TYPE (BIEF_OBJ), TARGET :: SA, SA_RMSE, SCCG, SDELTA, SDDX, SDDY,
+     &  SDIV, SNB_CLOSE, SNEIGB, SRK, SRX, SRXX, SRY, SRYY, SXKONPT
+!V6P2 End diffraction
 !-----------------------------------------------------------------------
 !     KEYWORDS AND PARAMETERS
 !-----------------------------------------------------------------------
@@ -251,6 +262,14 @@
 ! Nombre point d integration sur omega2 - QNL4 methode GQM
       INTEGER NQ_OM2
 !GM Fin
+!V6P2 Diffraction
+!> @brief DIFFRACTION
+! prise en compte de la diffraction
+      INTEGER DIFFRA
+!> @brief STARTING TIME STEP FOR DIFFRACTION
+! Pas de temps debut diffraction 
+      INTEGER NPTDIF
+!V6P2 End diffraction
 !
 !> @brief TIME STEP
 ! pas de temps
@@ -498,7 +517,11 @@
 ! seuil2 pour elimination des configurations - QNL4, methode GQM
       DOUBLE PRECISION SEUIL2
 !GM Fin
-!
+!V6P2 Diffraction
+!> @brief SPECTRUM VARIANCE THRESHOLD FOR DIFFRACTION
+! seuil minimum de variance spectrale considere pour diffraction
+      DOUBLE PRECISION F2DIFM
+!V6P2 End diffraction
 !> @brief CONSIDERATION OF SOURCE TERMS
 ! si oui, prise en compte des termes sources
       LOGICAL TSOU
@@ -544,6 +567,11 @@
 !> @brief LIMIT SPECTRUM MODIFIED BY USER
 ! spectre aux limites modifie par l'utilisateur
       LOGICAL SPEULI
+!V6P2 Diffraction
+!> @brief DIFFRACTION FILTER
+! si oui, lissage de l amplitude locale du spectre direct.
+      LOGICAL FLTDIF
+!V6P2 End Diffraction
 !> @brief TITLE!!!!!!!!!!
 ! titre du cas de calcul
       CHARACTER (len=72) :: TITCAS
@@ -638,6 +666,14 @@
 ! declaration for QNL4 - GQM method
       DOUBLE PRECISION F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
 !GM Fin
+!
+!V6P2 Diffraction
+!> @brief NAME
+! description
+      INTEGER, PARAMETER :: MAXNSP = 30
+      INTEGER, PARAMETER :: NRD = 30
+      INTEGER :: NRK_C
+!V6P2 End diffraction
 !
 !> @brief
       INTEGER, PARAMETER :: MAXVAR = 35
@@ -965,6 +1001,13 @@
 !
       INTEGER, DIMENSION(:), POINTER :: ITRB1 , ITR03 , KNI , KNOGL ,
      & ELI , KELGL , ITR31 , ITR32 , ITR33
+!
+!V6P2 Diffraction
+      INTEGER, DIMENSION(:), POINTER ::   NB_CLOSE, NEIGB
+      DOUBLE PRECISION, DIMENSION(:), POINTER :: A, A_RMSE, CCG, DELTA,
+     & DIV, DDX, DDY, RK, RX, RXX, RY, RYY, XKONPT
+!V6P2 End diffraction
+
 !> @brief GEOMETRY FILE
 ! fichier de geometrie
       INTEGER :: WACGEO

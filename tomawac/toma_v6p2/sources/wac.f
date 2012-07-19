@@ -6,7 +6,7 @@
      & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   29/06/2011
+! TOMAWAC   V6P2                                   25/06/2012
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE OF TOMAWAC
@@ -44,7 +44,7 @@
 !COUPLAGE Telemac-Tomawac : variables de la liste d'arguments en appel
       INTEGER,           INTENT(IN)      :: PART,NIT_TEL,PERCOU_WAC
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
-      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: U_TEL,V_TEL,H_TEL
+      TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: UV_WAC,VV_WAC
       DOUBLE PRECISION,  INTENT(IN)      :: DT_TEL,T_TEL
@@ -190,6 +190,47 @@
      &            LVMAC,IELM2,LAMBD0,SPHE,MESH,ST1,ST2,1,1,EQUA)
       IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE INBIEF'
 !
+!-----------------------------------------------------------------------
+!V6P2 Diffraction : FREEMESH METHOD
+      IF(DIFFRA.GT.0) THEN
+        IF(NCSIZE.GT.1)THEN
+	   IF(LNG.EQ.1) THEN
+             WRITE(LU,*) ''
+             WRITE(LU,*) '***************************************'
+             WRITE(LU,*) ' ATTENTION : LA VERSION ACTUELLE DE    '
+             WRITE(LU,*) ' TOMAWAC NE PERMET PAS DE SIMULER LA   '
+             WRITE(LU,*) ' DIFFRACTION EN PARALLEL               '
+             WRITE(LU,*) '***************************************'
+           ELSE
+             WRITE(LU,*) ''
+             WRITE(LU,*) '***************************************'
+             WRITE(LU,*) ' ATTENTION : DIFFRACTION CANNOT BE     '
+             WRITE(LU,*) ' SIMULATED WHEN RUNNING TOMAWAC IN THE '
+             WRITE(LU,*) ' PARALLEL MODE                         '
+             WRITE(LU,*) '***************************************'
+           ENDIF
+           CALL PLANTE(1)
+           STOP
+	ENDIF
+	WRITE(LU,*) '****************************************'
+        WRITE(LU,*) 'DIFFRACTION IS TAKEN INTO ACCOUNT      '
+	WRITE(LU,*) 'STARTING FROM TIME STEP ',NPTDIF
+	IF(DIFFRA.EQ.1)THEN
+	  WRITE(LU,*) 'MILD SLOPE EQUATION FORMULATION'
+	ELSE
+	  WRITE(LU,*)'REVISED MILD SLOPE EQUATION FORMULATION'
+	ENDIF
+	WRITE(LU,*) '****************************************'
+!    SETS UP OF THE SUBDOMAINS FOR THE FREEMSESH METHOD
+!    AND CALCULATES THE INVERSE MATRICES FOR EACH SUBDOMAIN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FREEMESH'
+        CALL FRMSET(MESH%X%R, MESH%Y%R,SNEIGB%I,SNB_CLOSE%I,
+     &              NPOIN2  , MAXNSP , NRD    , NELEM2 ,
+     &              MESH%IKLE%I,SRK%R, SRX%R  ,SRY%R   ,
+     &              SRXX%R  , SRYY%R )
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FREEMESH'
+      ENDIF
+!V6P2 End diffraction
 !-----------------------------------------------------------------------
 !
 ! LECTURE DE LA COTE DU FOND (ZF) SUR LE FICHIER DE GEOMETRIE
@@ -704,6 +745,38 @@
         ENDIF
       ENDIF
 !Fin cycle IF((MAREE.AND.LT.EQ.LT1).OR.(PART.EQ.1.AND.LT_WAC.EQ.1))
+!------------------------------------------------------------------
+!V6P2 Diffraction : diffraction term calculation
+      IF(DIFFRA.GT.0) THEN
+        IF(LT.EQ.NPTDIF)THEN
+	  WRITE(LU,*)'*********************************'
+	  WRITE(LU,*)'DIFFRACTION IS TAKEN INTO ACCOUNT'
+	  WRITE(LU,*)'*********************************'
+	ENDIF
+	IF(LT.GE.NPTDIF) THEN
+	  IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDIF'
+          CALL PREDIF
+     & ( SCX%R    , SCY%R     , SCT%R    , DT    ,
+     &   MESH%X%R  , MESH%Y%R , STETA%R ,
+     &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
+     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1%R ,
+     &   SSHP2%R  , SSHP3%R   , SSHZ%R   , 
+     &   SELT%I   , SETA%I    , SDEPTH%R,
+     &   SDZX%R    , SDZY%R   , 
+     &   SXK%R     , SCG%R    , 
+     &   SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
+     &   NPLAN    , NF        , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
+     &   SPHE     , PROINF    , SA%R     , SDFR%R  , 
+     &   SF%R,SCCG%R,SDIV%R   , SDELTA%R , SDDX%R  ,
+     &   SDDY%R   , F2DIFM    , NBOR     , NPTFR   ,
+     &   SXKONPT%R , SRK%R    , SRX%R    ,
+     &   SRY%R    , SRXX%R    , SRYY%R   , SNEIGB%I,
+     &   SNB_CLOSE%I, DIFFRA  , MAXNSP   , FLTDIF   )
+	  IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIF'
+        ENDIF
+      ENDIF
+!V6P2 End diffraction
+!-------------------------------------------------------------------
 !
 !.....11.3 PROPAGATION (INTERPOLATION AU PIED DES CARACTERISTIQUES).
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

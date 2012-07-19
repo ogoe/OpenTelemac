@@ -7,7 +7,7 @@
      & ELI , KNOGL , KNI , NELE2L , NPOI2L ,IFABOR,GOODELT)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   20/06/2011
+! TOMAWAC   V6P2                                   25/06/2012
 !***********************************************************************
 !
 !brief    FOR COWADIS "PRISMS", AND BEFORE TRACING BACK IN TIME
@@ -38,6 +38,11 @@
 !+        20/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  G.MATTAROLO (EDF - LNHE)
+!+        23/06/2012
+!+        V6P2
+!+   Modifications : possibility of taking into account diffraction
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELI            |-->| WORK TABLE
@@ -81,6 +86,9 @@
 !|       ZCONV    |   | CHARACETRISTIC
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+!V6P2 Diffraction
+      USE DECLARATIONS_TOMAWAC , ONLY : DIFFRA
+!V6P2 End diffraction
       IMPLICIT NONE
 !
       INTEGER NPOIN2,NELEM2,NELE2L,NPLAN,NPOI2L
@@ -389,7 +397,13 @@
 !
          DO 170 IPOIG=1,NPOIN2
 !
-           IF (W(IPOIG,IPLAN).GT.0.D0) THEN
+!V6P2 Diffraction
+           IF(DIFFRA.GT.0) THEN
+              ETA(IPOIG,IPLAN) = IPLAN
+              SHZ(IPOIG,IPLAN) = 0.D0
+!V6P2 End diffraction
+!           IF (W(IPOIG,IPLAN).GT.0.D0) THEN
+           ELSEIF (W(IPOIG,IPLAN).GT.0.D0) THEN
               IF (IPLAN.EQ.1) THEN
                 ETA(IPOIG,1) = NPLAN
                 SHZ(IPOIG,1) = 1.D0

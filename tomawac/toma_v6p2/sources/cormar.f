@@ -67,16 +67,17 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER          NPC , NPM, NVHMA, NVCOU,LT
+      INTEGER          NPC , NPM, NVHMA, NVCOU
+      INTEGER          LT
       DOUBLE PRECISION AT, TC1, TC2 , TV1, TV2, TM1 , TM2
 !
-!GM V6P1 - DIRECT COUPLING WITH TELEMAC
-      INTEGER,INTENT(IN)           :: PART
-      TYPE(BIEF_OBJ),INTENT(INOUT) :: U_TEL,V_TEL,H_TEL
-!GM Fin
-!
 !     LOCAL VARIABLES
-      INTEGER N1,N2,N3,N4,IP
+      INTEGER N1,N2,N3,N4
+!
+!GM V6P1 - DIRECT COUPLING WITH TELEMAC
+      INTEGER           :: PART, IP
+      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: U_TEL,V_TEL,H_TEL
+!GM Fin
 !
 !-----------------------------------------------------------------------
 !         UPDATES THE TIDAL CURRENT AND WATER LEVEL ARRAYS

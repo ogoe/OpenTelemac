@@ -5,7 +5,7 @@
      & (FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   21/06/2011
+! TOMAWAC   V6P2                                   25/06/2012
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -38,6 +38,10 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  G.MATTAROLO (EDF - LNHE)
+!+        25/06/2012
+!+        V6P2
+!+   Declaration of new keywords for representing diffraction
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
 !| FILE_DESC      |-->| STORES THE FILES 'SUBMIT' ATTRIBUTES
@@ -254,6 +258,10 @@
       NQ_TE1 = MOTINT( ADRESS(1, 43) )
       NQ_OM2 = MOTINT( ADRESS(1, 44) )
 !GM Fin
+!V6P2 Diffraction
+      DIFFRA = MOTINT( ADRESS(1, 45) )
+      NPTDIF = MOTINT( ADRESS(1, 46) )
+!V6P2 End diffraction
 !     GEOMETRY FILE STANDARD
       STDGEO = 3
 !
@@ -361,6 +369,9 @@
       SEUIL1 = MOTREA( ADRESS(2, 78) )
       SEUIL2 = MOTREA( ADRESS(2, 79) )
 !GM Fin
+!V6P2 Diffraction
+      F2DIFM = MOTREA( ADRESS(2, 80) )
+!V6P2 End diffraction
 !
 ! LOGICAL KEYWORDS
 !
@@ -378,6 +389,9 @@
       MAREE  = MOTLOG( ADRESS(3, 12) )
       TRIGO  = MOTLOG( ADRESS(3, 13) )
       SPEULI = MOTLOG( ADRESS(3, 14) )
+!V6P2 Diffraction
+      FLTDIF = MOTLOG( ADRESS(3, 15) )
+!V6P2 End diffraction
 !
 ! STRING KEYWORDS
 !
