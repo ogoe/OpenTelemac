@@ -1,3 +1,6 @@
+!-----------------------------------------------------------------------
+
+
 C                       ***************
                         SUBROUTINE BORH
 C                       ***************
@@ -75,7 +78,7 @@ C
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 C
-      INTEGER I
+      INTEGER I,JB
 C
       DOUBLE PRECISION PI,BID
       PARAMETER( PI = 3.1415926535897932384626433D0)
@@ -95,51 +98,61 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      TETABT(:) = TETAH
-      TETAPT(:) = 0.D0
-      ALFAPT(:) = 0.D0
-      RPT(:)    = 0.D0
-      HBT(:)    = 1.D0
+      TETAB%R(:) = TETAH
+      TETAP%R(:) = 0.D0
+      ALFAP%R(:) = 0.D0
+      RP%R(:)    = 0.D0
+      HB%R(:)    = 1.D0
 C
+
+      DO I=1,NPTFR
+       JB=BOUNDARY_COLOUR%I(I)
 C -----------------------------
 C EXEMPLE DE CONDITIONS LIMITES  :
 C
 C                                                                       
 C PAROIS SOLIDES                                                        
-      DO 10 I = 2,139
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 90.D0
-         ALFAPT(I) = 0.D0
- 10   CONTINUE
-      DO 20 I = 146,283
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 90.D0
-         ALFAPT(I) = 0.D0
- 20   CONTINUE
+      IF(JB.GE.2.AND.JB.LE.139)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 90.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF      
+      IF(JB.GE.146.AND.JB.LE.283)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 90.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF      
 C
 C   
 C PAROIS AUX FRONTIERES OUVERTES                                        
 C
-      DO 30 I = 140,145
-         LIHBORT(I) = KSORT
-         TETAPT(I) = 0.D0
- 30   CONTINUE
+      IF(JB.GE.140.AND.JB.LE.145)THEN
+         LIHBOR%I(I) = KSORT
+         TETAP%R(I) = 0.D0
+      ENDIF      
 C
 C
 C FRONTIERE ONDE INCIDENTE
 C
-      DO 40 I = 284,288
-         LIHBORT(I) = KINC
-         HBT(I) = 0.202D0
-         TETABT(I) = 0.D0
-         TETAPT(I) = 0.D0
- 40   CONTINUE
-      LIHBORT(1) = KINC
-      HBT(1) = 0.202D0
-      TETABT(1) = 0.D0
-      TETAPT(1) = 0.D0
+      IF(JB.GE.284.AND.JB.LE.288)THEN
+       LIHBOR%I(I) = KINC
+       HB%R(I) = 0.202D0
+       TETAB%R(I) = 0.D0
+       TETAP%R(I) = 0.D0
+       ALFAP%R(I) = 0.D0
+      ENDIF      
+      
+      IF(JB.EQ.1)THEN
+       LIHBOR%I(I) = KINC
+       HB%R(I) = 0.202D0
+       TETAB%R(I) = 0.D0
+       TETAP%R(I) = 0.D0
+       ALFAP%R(I) = 0.D0
+      ENDIF  
+      
+      ENDDO    
 C                                                        
 C POUR UN CALCUL EN HOULE ALEATOIRE MULTIDIRECTIONNELLE, LE CODE        
 C CALCULE LES DIRECTIONS DE PROPAGATION A PARTIR DES DONNEES DU FICHIER 
