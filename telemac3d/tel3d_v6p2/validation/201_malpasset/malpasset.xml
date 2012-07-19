@@ -21,7 +21,7 @@
 -->  
    <action xref="1" 
        do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_malpasset_p0.cas" 
+       code="telemac3d" target="t3d_malpasset_pos.cas" 
        title="malpasset scalar mode" 
    />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
