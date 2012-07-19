@@ -75,7 +75,7 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER          IP    , JP    , JF    , NEWM  , NEWM1 , KH
-      DOUBLE PRECISION F0    , UK    , DEUPI , AUXI  , Y     , Z
+      DOUBLE PRECISION F0    , UK    , DEUPI , AUXI , Y(1) , Z
       DOUBLE PRECISION FNEW  , UNSLRF
       LOGICAL          IMP
 !
@@ -91,9 +91,9 @@
 !
       DEUPI=2.D0*3.141592654D0
       F0=FREQ(1)
-      UNSLRF=1.0D0/DLOG(RAISF)
+      UNSLRF=1.0D0/LOG(RAISF)
 !
-      CALL OV( 'X=C     ' , FA , Y , Z , 0.D0 , NPOIN2*NPLAN*NF)
+      CALL OV( 'X=C     ' , FA , Y , Y , 0.D0 , NPOIN2*NPLAN*NF)
 !
       DO JF=1,NF
 !
@@ -111,7 +111,7 @@
             UK=SINTET(JP)*UC(IP)+COSTET(JP)*VC(IP)
             Z=UK*XK(IP,JF)/DEUPI
 !
-            IF (DABS(Z)/FREQ(JF).LT.1.0D-3) THEN
+            IF (ABS(Z)/FREQ(JF).LT.1.0D-3) THEN
               KNEW (IP)=JP
               NEWF (IP)=JF
               NEWF1(IP)=-1
@@ -137,7 +137,7 @@
               IF (FNEW.LT.F0/RAISF) THEN
                 NEWF(IP)=-1
               ELSE
-                NEWF(IP)=INT(1.0D0+DLOG(FNEW/F0)*UNSLRF)
+                NEWF(IP)=INT(1.0D0+LOG(FNEW/F0)*UNSLRF)
               ENDIF
 !
 !             -------------------------------------------------------
