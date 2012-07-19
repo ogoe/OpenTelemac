@@ -21,7 +21,7 @@
 -->  
    <action xref="1" 
        do="translate;compile;run;cas;princi" 
-       code="telemac3d" target="t3d_pluie.cas" 
+       code="telemac3d" target="t3d_thomson.cas" 
        title="pluie scalar mode" 
    />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
