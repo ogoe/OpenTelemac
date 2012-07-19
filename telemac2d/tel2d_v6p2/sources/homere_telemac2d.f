@@ -35,7 +35,7 @@
       CHARACTER(LEN=24), PARAMETER :: CODE3='TOMAWAC                 '
 !
       CHARACTER(LEN=250) PATH
-      CHARACTER(LEN=144) MOTCAR(300),FILE_DESC(4,300)
+      CHARACTER(LEN=144) MOTCAR(MAXKEY),FILE_DESC(4,MAXKEY)
 !
 !======================================================================
 !

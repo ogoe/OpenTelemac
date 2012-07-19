@@ -48,9 +48,9 @@
 !
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
-      CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,300)
-      CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(300)
-!                                                 NMAX
+      CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEY)
+      CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(MAXKEY)
+!                                                 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,K,ERR,ITRAC,NTRTOT
@@ -73,14 +73,12 @@
 !
 !     ARRAYS USED IN THE DAMOCLES CALL
 !
-      INTEGER, PARAMETER :: NMAX = 300
-!
-      INTEGER              ADRESS(4,NMAX),DIMEN(4,NMAX)
-      DOUBLE PRECISION     MOTREA(NMAX)
-      INTEGER              MOTINT(NMAX)
-      LOGICAL              MOTLOG(NMAX)
-      CHARACTER*72         MOTCLE(4,NMAX,2)
-      INTEGER              TROUVE(4,NMAX)
+      INTEGER              ADRESS(4,MAXKEY),DIMEN(4,MAXKEY)
+      DOUBLE PRECISION     MOTREA(MAXKEY)
+      INTEGER              MOTINT(MAXKEY)
+      LOGICAL              MOTLOG(MAXKEY)
+      CHARACTER*72         MOTCLE(4,MAXKEY,2)
+      INTEGER              TROUVE(4,MAXKEY)
       LOGICAL DOC
 !
 !     END OF DECLARATIONS FOR DAMOCLES CALL :
@@ -137,7 +135,7 @@
 !
 ! INITIALISES THE VARIABLES FOR DAMOCLES CALL :
 !
-      DO 10 K=1,NMAX
+      DO 10 K=1,MAXKEY
 !       A FILENAME NOT GIVEN BY DAMOCLES WILL BE RECOGNIZED AS A WHITE SPACE
 !       (IT MAY BE THAT NOT ALL COMPILERS WILL INITIALISE LIKE THAT)
         MOTCAR(K)(1:1)=' '
@@ -171,7 +169,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      CALL DAMOCLE( ADRESS , DIMEN , NMAX   , DOC     , LNG    , LU ,
+      CALL DAMOCLE( ADRESS , DIMEN  , MAXKEY , DOC     , LNG    , LU ,
      &              MOTINT , MOTREA , MOTLOG , MOTCAR  , MOTCLE ,
      &              TROUVE , 2      , 3      , .FALSE. , FILE_DESC )
 !
