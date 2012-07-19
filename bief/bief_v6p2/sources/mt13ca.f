@@ -11,7 +11,7 @@
      &   XMUL,XEL,YEL,NELEM,NELMAX,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
@@ -177,10 +177,10 @@
 !
         ENDIF
 !
-200       FORMAT(1X,'MT13CA (BIEF) : COMPOSANTE IMPOSSIBLE ',
-     &              1I6,' VERIFIER ICOORD')
-201       FORMAT(1X,'MT13CA (BIEF) : IMPOSSIBLE COMPONENT ',
-     &              1I6,' CHECK ICOORD')
+200     FORMAT(1X,'MT13CA (BIEF) : COMPOSANTE IMPOSSIBLE ',
+     &         1I6,' VERIFIER ICOORD')
+201     FORMAT(1X,'MT13CA (BIEF) : IMPOSSIBLE COMPONENT ',
+     &         1I6,' CHECK ICOORD')
 !
 !-----------------------------------------------------------------------
 !

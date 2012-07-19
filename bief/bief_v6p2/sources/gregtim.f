@@ -1,8 +1,8 @@
-!                            ******************      
+!                            ******************
                              SUBROUTINE GREGTIM
-!                            ******************      
+!                            ******************
 !
-     &(JULTIM,YEAR,MONTH,DAY,HOUR,MIN,SEC)
+     &(JULTIM,YEAR,MONTH,DAY,HOUR,MINU,SEC)
 !
 !
 !***********************************************************************
@@ -26,6 +26,12 @@
 !+        FOR HOUR,MIN,SEC
 !+
 !
+!history  U.H.Merkel
+!+        19/07/2012
+!+        V6P2
+!         Renamed MIN -> MINU because of Problems with NAG Compiler
+!
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DAY            |<->| DAY    (1-28, 29, 30 OR 31)
 !| HOUR           |<->| HOUR   (0-23) IN UNIVERSAL TIME
@@ -43,7 +49,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,          INTENT(INOUT) :: YEAR,MONTH,DAY,HOUR,MIN,SEC
+      INTEGER,          INTENT(INOUT) :: YEAR,MONTH,DAY,HOUR,MINU,SEC
       DOUBLE PRECISION, INTENT(IN)    :: JULTIM
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -87,18 +93,18 @@
       DAY   = K
 !
       HOUR = INT(JDR*24.D0)
-      MIN  = INT(JDR*1440.D0)-60*HOUR
-      SEC  = NINT(JDR*86400.D0)-3600*HOUR-60*MIN
+      MINU  = INT(JDR*1440.D0)-60*HOUR
+      SEC  = NINT(JDR*86400.D0)-3600*HOUR-60*MINU
 !
 !  TO AVOID SEC = 60
 !
       IF(SEC.EQ.60) THEN
         SEC = 0
-        MIN = MIN + 1
+        MINU = MINU + 1
       ENDIF
 !
-      IF(MIN.GE.60) THEN
-        MIN  = MIN  - 60
+      IF(MINU.GE.60) THEN
+        MINU  = MINU  - 60
         HOUR = HOUR + 1
       ENDIF
 !

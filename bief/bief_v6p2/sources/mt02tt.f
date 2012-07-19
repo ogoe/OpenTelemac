@@ -45,6 +45,11 @@
 !+        V6P2
 !+   Element 51 now treated separately.
 !
+!history  U.H.MErkel
+!+        18/07/2012
+!+        V6P2
+!+    Replaced EPSILON with EPSI due to nag compiler problems
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -108,8 +113,8 @@
       DOUBLE PRECISION AUX,AUXX,AUXXX
       DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,AUX5,AUX6,AUX7,AUX8,AUX9
 !
-      DOUBLE PRECISION EPSILON
-      DATA EPSILON/1.D-4/
+      DOUBLE PRECISION EPSI
+      DATA EPSI/1.D-4/
 !
 !***********************************************************************
 !
@@ -250,9 +255,9 @@
       IL1=IL1-ILOW
       IL2=IL2-ILOW
       IL3=IL3-ILOW
-      IL4=IL4-ILOW 
+      IL4=IL4-ILOW
 !     DZ1, DZ2, DZ3, DZ4 WILL BE THE DELTA(Z) ABOVE OR BELOW EVERY POINT IN
-!     THE ORIGINAL PRISM     
+!     THE ORIGINAL PRISM
       IF(IL1.EQ.0) THEN
         DZ1=Z(I1+NPOIN2)-Z(I1)
       ELSE
@@ -272,14 +277,14 @@
         DZ4=Z(I4+NPOIN2)-Z(I4)
       ELSE
         DZ4=Z(I4)-Z(I4-NPOIN2)
-      ENDIF        
+      ENDIF
 !
 !     SEE MT02PP FOR A SIMILAR LIMITATION
 !     DIFFUSION CONNECTIONS CUT IF ONE POINT IS CRUSHED IN THE ELEMENT
 !     THIS IS NECESSARY TO AVOID A MASS ERROR
-! 
-      IF(DZ1.LT.EPSILON.OR.DZ2.LT.EPSILON.OR.
-     &   DZ3.LT.EPSILON.OR.DZ4.LT.EPSILON ) THEN     
+!
+      IF(DZ1.LT.EPSI.OR.DZ2.LT.EPSI.OR.
+     &   DZ3.LT.EPSI.OR.DZ4.LT.EPSI ) THEN
         HTOT=0.D0
         VTOT=0.D0
         WTOT=0.D0

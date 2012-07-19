@@ -7,7 +7,7 @@
      &  W1,W2,W3,W4,W5,W6,FORMUL)
 !
 !***********************************************************************
-! BIEF   V6P1                                         23/06/2011
+! BIEF   V6P2                                         23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE PRODUCT OF THE DIFFUSION MATRIX BY FUNCTION U
@@ -15,9 +15,14 @@
 !         F, G AND H ARE THE DIFFUSION COEFFICIENTS ALONG X, Y AND Z
 !
 !
-!history  J-M HERVOUET (LNHE)    
+!history  J-M HERVOUET (LNHE)
 !+        23/06/2011
 !+        V6P1
+!
+!history  U.H.MErkel
+!+        18/07/2012
+!+        V6P2
+!+   Replaced EPSILON with EPSI due to nag compiler problems
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -84,8 +89,8 @@
       INTEGER I1,I2,I3,I4,I5,I6,IELEM
       LOGICAL INCHYD
 !
-      DOUBLE PRECISION EPSILON
-      DATA             EPSILON/1.D-4/
+      DOUBLE PRECISION EPSI
+      DATA             EPSI/1.D-4/
 !
 !***********************************************************************
 !
@@ -158,7 +163,7 @@
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSILON.OR.H2.LT.EPSILON.OR.H3.LT.EPSILON ) THEN
+     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
            AUX = 0.D0
            NUXMOY=0.D0
            NUYMOY=0.D0
@@ -358,7 +363,7 @@
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSILON.OR.H2.LT.EPSILON.OR.H3.LT.EPSILON ) THEN
+     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
            NF1=0.D0
            NF2=0.D0
            NF3=0.D0

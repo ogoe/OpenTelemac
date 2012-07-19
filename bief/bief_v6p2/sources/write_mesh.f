@@ -5,7 +5,7 @@
      &(FFORMAT,NFILE,MESH,NPLAN,DATE,TIME,I_ORIG,J_ORIG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    WRITES THE MESH, DESCRIBED BY THE BIEF_MESH STRUCTURE
@@ -30,6 +30,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  U.H.Merkel
+!+        21/07/2012
+!+        V6P2
+!+   Changed to work with NAG
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DATE           |-->| 3 INTEGERS (YEAR, MONTH, DAY)
@@ -60,6 +65,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      double precision dI_ORIG, dJ_ORIG
+
 !***********************************************************************
 !     IF(DEBUG) CALL PROC_BEGIN('WRITE_MESH')
 !***********************************************************************
@@ -74,7 +81,9 @@
      &                             I_ORIG,J_ORIG,
      &                             FFORMAT)
         CASE ('MED     ')
-           CALL WRITE_MESH_MED(NFILE,MESH,DBLE(I_ORIG),DBLE(J_ORIG))
+           dI_ORIG = DBLE(I_ORIG)
+           dJ_ORIG = DBLE(J_ORIG)
+           CALL WRITE_MESH_MED(NFILE,MESH,dI_ORIG,dJ_ORIG)
         CASE DEFAULT
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'WRITE_MESH : MAUVAIS FORMAT : ',FFORMAT

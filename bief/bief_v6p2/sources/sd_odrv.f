@@ -5,7 +5,7 @@
      &(N,IA,JA,A,P,IP,NSP,ISP,PATH,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    DRIVER FOR SPARSE MATRIX REORDERING ROUTINE.
@@ -89,6 +89,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  U.H.Merkel
+!+        2012
+!+        V6P2
+!+   Changed MAX to MAXU for NAG Compiler
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |<--| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | NONZERO ENTRIES IN (THE UPPER TRIANGLE OF) M,
@@ -154,7 +159,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER V,L,HEAD,TMP,Q,NEXT,MAX
+      INTEGER V,L,HEAD,TMP,Q,NEXT,MAXU
       LOGICAL DFLAG
 !
 !-----------------------------------------------------------------------
@@ -167,14 +172,14 @@
 !----ALLOCATES STORAGE AND FINDS MINIMUM DEGREE ORDERING
 !
       IF((PATH-1)*(PATH-2)*(PATH-4).NE.0) GO TO 1
-      MAX = (NSP-N)/2
+      MAXU = (NSP-N)/2
       V    = 1
-      L    = V     +  MAX
-      HEAD = L     +  MAX
+      L    = V     +  MAXU
+      HEAD = L     +  MAXU
       NEXT = HEAD  +  N
-      IF(MAX.LT.N) GO TO 110
+      IF(MAXU.LT.N) GO TO 110
 !
-      CALL SD_MD(N,IA,JA,MAX,ISP(V),ISP(L),ISP(HEAD),P,IP,ISP(V),FLAG)
+      CALL SD_MD(N,IA,JA,MAXU,ISP(V),ISP(L),ISP(HEAD),P,IP,ISP(V),FLAG)
 !
       IF(FLAG.NE.0) GO TO 100
 !

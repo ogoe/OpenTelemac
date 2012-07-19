@@ -2,10 +2,10 @@
                      SUBROUTINE SD_MDI
 !                    *****************
 !
-     &(N,IA,JA,MAX,V,L,HEAD,LAST,NEXT,MARK,TAG,FLAG)
+     &(N,IA,JA,MAXIMUM,V,L,HEAD,LAST,NEXT,MARK,TAG,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    INITIALISES.
@@ -29,24 +29,29 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  U.H.MErkel
+!+        2012
+!+        V6P2
+!+   Changed MAX to MAXIMUM for NAG Compiler
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLAG           |<--| FLAG - INTEGER ERROR FLAG;  VALUES AND THEIR 
+!| FLAG           |<--| FLAG - INTEGER ERROR FLAG;  VALUES AND THEIR
 !|                |   | MEANINGS ARE : 0      NO ERRORS DETECTED
 !|                |   |         9*N + VI  INSUFFICIENT STORAGE IN MDI
 !| HEAD           |<--| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
 !| IA, JA         |-->| COMPACT STORAGE STRUCTURE OF MATRIX
 !| L              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !| LAST           |---| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
-!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
-!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;
 !|                |   | DIMENSION = N
 !| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
-!| MAX            |-->| DECLARED DIMENSION OF THE ONE-DIMENSIONAL ARRAYS
-!|                |   | V AND L; 
+!| MAXIMUM        |-->| DECLARED DIMENSION OF THE ONE-DIMENSIONAL ARRAYS
+!|                |   | V AND L;
 !| N              |-->| RANK OF MATRIX
 !| NEXT           |<--| INVERSE OF THE PERMUTATION RETURNED IN LAST
 !|                |   | DIMENSION = N
-!| TAG            |-->| SEE DEFINITION IN INTERNAL PARAMATERS OF SD_MD.f 
+!| TAG            |-->| SEE DEFINITION IN INTERNAL PARAMATERS OF SD_MD.f
 !| V              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -58,7 +63,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: N,MAX,IA(*),JA(*)
+      INTEGER, INTENT(IN)    :: N,MAXIMUM,IA(*),JA(*)
       INTEGER, INTENT(INOUT) :: V(*),L(*),HEAD(*),LAST(*)
       INTEGER, INTENT(INOUT) :: NEXT(*),MARK(*),TAG,FLAG
 !
@@ -85,7 +90,7 @@
         DO 2 J=JMIN,JMAX
           VJ = JA(J)
           IF(VI.GE.VJ) GO TO 2
-          IF(SFS.GE.MAX) GO TO 101
+          IF(SFS.GE.MAXIMUM) GO TO 101
 !
 !------ENTERS VJ IN ELEMENT LIST FOR VI
 !

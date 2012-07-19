@@ -2,10 +2,10 @@
                      DOUBLE PRECISION FUNCTION TSLOC
 !                    *******************************
 !
-     & (YEAR,MONTH,DAY,HOUR,MINUTE,SEC,AT)
+     & (YEAR,MONTH,DAY,HOUR,MINU,SEC,AT)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE LOCAL SIDEREAL TIME IN RADIAN FOR
@@ -45,6 +45,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  U.H.MERKEL
+!+        21/08/2010
+!+        V6P2
+!+   Min renamed minute due to NAG COMPILER issues
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DAY            |-->| DAY
@@ -63,7 +68,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)          :: MONTH,DAY,HOUR,MINUTE,SEC
+      INTEGER, INTENT(IN)          :: MONTH,DAY,HOUR,MINU,SEC
       INTEGER, INTENT(INOUT)       :: YEAR
       DOUBLE PRECISION, INTENT(IN) :: AT
 !
@@ -76,7 +81,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      ATR = AT + ( HOUR * 60.D0 + MINUTE ) * 60.D0 + SEC
+      ATR = AT + ( HOUR * 60.D0 + MINU ) * 60.D0 + SEC
       AT1 = INT ( ATR / ( 24.D0 * 3600.D0 ) ) * ( 24.D0 * 3600.D0 )
       ATR = ATR - AT1
       T = JULTIM(YEAR,MONTH,DAY,0,0,0,AT1)

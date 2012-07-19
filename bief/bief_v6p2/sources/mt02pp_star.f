@@ -6,7 +6,7 @@
      & FORMUL,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DIFFUSION MATRIX AS IN MT02PP BUT HERE
@@ -56,7 +56,7 @@
 !history  JMH
 !+        15/03/2010
 !+
-!+   PARAMETER EPSILON ADDED
+!+   PARAMETER EPSI ADDED
 !
 !history  J-M HERVOUET (LNHE)     ; F  LEPEINTRE (LNH)
 !+        20/05/2010
@@ -74,6 +74,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  U.H.MErkel
+!+        18/07/2012
+!+        V6P2
+!+   Replaced EPSILON with EPSI due to nag compiler problems
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
@@ -138,8 +143,8 @@
 !
       INTEGER I1,I2,I3,I4,I5,I6,IELEM,II4,II5,II6,NPOU0
 !
-      DOUBLE PRECISION EPSILON
-      DATA EPSILON/1.D-4/
+      DOUBLE PRECISION EPSI
+      DATA EPSI/1.D-4/
 !
 !***********************************************************************
 !
@@ -226,7 +231,7 @@
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSILON.OR.H2.LT.EPSILON.OR.H3.LT.EPSILON ) THEN
+     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
            NH1=0.D0
            NH2=0.D0
            NH3=0.D0
@@ -332,7 +337,7 @@
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSILON.OR.H2.LT.EPSILON.OR.H3.LT.EPSILON ) THEN
+     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
            NF1=0.D0
            NF2=0.D0
            NF3=0.D0
@@ -544,7 +549,7 @@
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSILON.OR.H2.LT.EPSILON.OR.H3.LT.EPSILON ) THEN
+     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
            NF1=0.D0
            NF2=0.D0
            NF3=0.D0
@@ -751,7 +756,7 @@
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
-     &       H1.LT.EPSILON.OR.H2.LT.EPSILON.OR.H3.LT.EPSILON ) THEN
+     &       H1.LT.EPSI.OR.H2.LT.EPSI.OR.H3.LT.EPSI ) THEN
            NF1=0.D0
            NF2=0.D0
            NF3=0.D0

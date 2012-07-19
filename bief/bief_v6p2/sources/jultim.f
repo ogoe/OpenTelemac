@@ -2,10 +2,10 @@
                      DOUBLE PRECISION FUNCTION JULTIM
 !                    ********************************
 !
-     &(YEAR,MONTH,DAY,HOUR,MIN,SEC,AT)
+     &(YEAR,MONTH,DAY,HOUR,MINU,SEC,AT)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE TIME ELAPSED SINCE 31/12/1899.
@@ -50,7 +50,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER,          INTENT(IN) :: MONTH,DAY,HOUR,MIN,SEC,YEAR
+      INTEGER,          INTENT(IN) :: MONTH,DAY,HOUR,MINU,SEC,YEAR
       DOUBLE PRECISION, INTENT(IN) :: AT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -85,7 +85,7 @@
         J=J+2-INT(0.01D0*Y)+INT(0.25D0*INT(0.01D0*Y))
       ENDIF
       J=J-2415020.5D0
-      JULTIM=(J+(HOUR+(MIN+(SEC+AT)/60.D0)/60.D0)/24.D0)/36525.D0
+      JULTIM=(J+(HOUR+(MINU+(SEC+AT)/60.D0)/60.D0)/24.D0)/36525.D0
 !
 !---------------------------------------------------------------
 !

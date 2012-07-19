@@ -2,10 +2,10 @@
                      SUBROUTINE SD_MD
 !                    ****************
 !
-     &(N,IA,JA,MAX,V,L,HEAD,LAST,NEXT,MARK,FLAG)
+     &(N,IA,JA,MAXU,V,L,HEAD,LAST,NEXT,MARK,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/07/2011
+! BIEF   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    MINIMUM DEGREE ALGORITHM (BASED ON ELEMENT MODEL).
@@ -99,21 +99,26 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  U.H.MErkel
+!+        2012
+!+        V6P2
+!+   Changed MAX to MAXU for NAG Compiler
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FLAG           |<--| FLAG - INTEGER ERROR FLAG;  VALUES AND THEIR 
+!| FLAG           |<--| FLAG - INTEGER ERROR FLAG;  VALUES AND THEIR
 !|                |   | MEANINGS ARE : 0      NO ERRORS DETECTED
 !|                |   |               11N+1  INSUFFICIENT STORAGE IN MD
 !| HEAD           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
 !| IA, JA         |-->| SYMETRICAL COMPACT STORAGE OF MATRIX
 !| L              |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=MAX
 !| LAST           |---| INTEGER ONE-DIMENSIONAL ARRAY USED TO RETURN THE
-!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M 
-!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;  
+!|                |   | PERMUTATION OF THE ROWS AND COLUMNS OF M
+!|                |   | CORRESPONDING TO THE MINIMUM DEGREE ORDERING;
 !|                |   | DIMENSION = N
 !| MARK           |---| INTEGER ONE-DIMENSIONAL WORK ARRAY;DIMENSION=N
-!| MAX            |-->| DECLARED DIMENSION OF THE ONE-DIMENSIONAL ARRAYS
+!| MAXU           |-->| DECLARED DIMENSION OF THE ONE-DIMENSIONAL ARRAYS
 !|                |   | V AND L; MAX MUST BE AT LEAST  N+2K,  WHERE K IS
-!|                |   | THE NUMBER OF NONZEROES IN THE STRICT UPPER 
+!|                |   | THE NUMBER OF NONZEROES IN THE STRICT UPPER
 !|                |   | TRIANGLE OF M
 !| N              |-->| DIMENSION OF SYSTEM
 !| NEXT           |<--| INVERSE OF THE PERMUTATION RETURNED IN LAST
@@ -129,8 +134,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: N,MAX
-      INTEGER, INTENT(INOUT) :: IA(*),JA(*),V(MAX),L(MAX),HEAD(N)
+      INTEGER, INTENT(IN)    :: N,MAXU
+      INTEGER, INTENT(INOUT) :: IA(*),JA(*),V(MAXU),L(MAXU),HEAD(N)
       INTEGER, INTENT(INOUT) :: LAST(N),NEXT(N),MARK(N),FLAG
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -143,7 +148,7 @@
 !----INITIALISES
 !
       TAG = 0
-      CALL SD_MDI(N,IA,JA,MAX,V,L,HEAD,LAST,NEXT,MARK,TAG,FLAG)
+      CALL SD_MDI(N,IA,JA,MAXU,V,L,HEAD,LAST,NEXT,MARK,TAG,FLAG)
       IF(FLAG.NE.0)  RETURN
 !
       K = 0

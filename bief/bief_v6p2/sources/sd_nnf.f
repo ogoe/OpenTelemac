@@ -5,7 +5,7 @@
      &(N,R,C,IC,IA,JA,A,Z,B,IL,JL,L,LMAX,D,IU,JU,U,UMAX,ROW,TMP,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    NUMERIC LDU-FACTORISATION OF SPARSE NONSYMMETRICAL
@@ -24,7 +24,7 @@
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
 !
-!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
+!         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS
 !         FOR CLARITY
 !
 !history  E. RAZAFINDRAKOTO (LNH)
@@ -45,12 +45,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| A              |-->| NONZERO ENTRIES OF THE COEFFICIENT MATRIX M, 
+!| A              |-->| NONZERO ENTRIES OF THE COEFFICIENT MATRIX M,
 !|                |   | STORED BY ROWS
-!| B              |-->| RIGHT-HAND SIDE B ; 
+!| B              |-->| RIGHT-HAND SIDE B ;
 !| C              |-->| ORDERING OF THE COLUMNS OF MATRIX
 !| D              |<--| DIAGONAL FACTORIZED OF MATRIX
-!| FLAG           |<--| INDICATOR ERROR : 
+!| FLAG           |<--| INDICATOR ERROR :
 !|                |   |= 4*N + 1:INSUFFICIENT STORAGE FOR L
 !|                |   |= 7*N + 1:INSUFFICIENT STORAGE FOR U
 !| IA, JA         |-->| STRUCTURE OF A NONSYMMETRICAL MATRIX
@@ -62,7 +62,7 @@
 !| LMAX           |-->| PREVISIONAL MAXIMUM DIMENSION OF JL
 !| N              |-->| RANK OF MATRIX
 !| R              |-->| ORDERING OF THE ROWS OF MATRIX
-!| ROW            |---| REAL ONE-DIMENSIONAL WORK ARRAY 
+!| ROW            |---| REAL ONE-DIMENSIONAL WORK ARRAY
 !| TMP            |---| REAL ONE-DIMENSIONAL WORK ARRAY
 !| U              |<--| UPPER FACTORIZED TRIANGULAR MATRIX
 !| UMAX           |-->| PREVISIONAL MAXIMUM DIMENSION OF JU
@@ -136,7 +136,7 @@
         IMAX = IL(K+1) - 1
         IF(IMAX.GT.IMIN) THEN
           DO I=IMIN,IMAX
-            LI = - ROW(JL(I))
+            LI = INT(- ROW(JL(I)))   !!! UHM
 !           IF L IS NOT REQUIRED, THEN COMMENT OUT THE FOLLOWING LINE
             L(I) = - LI
             BSUM = BSUM + LI * TMP(JL(I))

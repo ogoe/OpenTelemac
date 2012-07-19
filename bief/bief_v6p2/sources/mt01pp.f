@@ -39,6 +39,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  U.H.MErkel
+!+        18/07/2012
+!+        V6P2
+!+   Replaced EPSILON with EPSI due to nag compiler problems
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| NELEM          |-->| NUMBER OF ELEMENTS
@@ -70,8 +75,8 @@
       INTEGER IELEM
       DOUBLE PRECISION SUR360,COEF,H1,H2,H3,HT
 !
-      DOUBLE PRECISION EPSILON
-      DATA EPSILON/1.D-3/
+      DOUBLE PRECISION EPSI
+      DATA EPSI/1.D-3/
 !
 !-----------------------------------------------------------------------
 !
@@ -85,9 +90,9 @@
 !
 !        TREATS HERE THE DRY ZONES
 !
-         H1 = MAX(Z(IKLE(IELEM,4)) - Z(IKLE(IELEM,1)),EPSILON) * COEF
-         H2 = MAX(Z(IKLE(IELEM,5)) - Z(IKLE(IELEM,2)),EPSILON) * COEF
-         H3 = MAX(Z(IKLE(IELEM,6)) - Z(IKLE(IELEM,3)),EPSILON) * COEF
+         H1 = MAX(Z(IKLE(IELEM,4)) - Z(IKLE(IELEM,1)),EPSI) * COEF
+         H2 = MAX(Z(IKLE(IELEM,5)) - Z(IKLE(IELEM,2)),EPSI) * COEF
+         H3 = MAX(Z(IKLE(IELEM,6)) - Z(IKLE(IELEM,3)),EPSI) * COEF
          HT = H1 + H2 + H3
 !
 !-----------------------------------------------------------------------
