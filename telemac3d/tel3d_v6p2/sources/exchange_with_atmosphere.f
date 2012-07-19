@@ -181,7 +181,7 @@
       RETURN
       END SUBROUTINE SOLRAD
 !                        *********************
-	                 INTEGER FUNCTION LEAP
+                         INTEGER FUNCTION LEAP
 !                        *********************
 !
      &(IYEAR)
@@ -360,7 +360,7 @@
 !  ATMOSPHERE RADIATION
       EMI_AIR = 0.937D-5*((T_AIR+273.15D0)**2)
       RAY_ATM = 0.97D0*EMI_AIR*BOLT*(T_AIR+273.15D0)**4 ! WHY 0.95D0???
-     &                *(1.D0+NUA*(CLOUD/8.D0)**2)	
+     &                *(1.D0+NUA*(CLOUD/8.D0)**2)
 !  WATER RADIATION
       RAY_EAU = EMI_EAU*BOLT*(TREEL+273.15D0)**4
 !

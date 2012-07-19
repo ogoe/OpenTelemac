@@ -123,6 +123,15 @@
      &                      HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
      &                      MARDAT,MARTIM,T2D_FILES,T2DBB1,T2DBB2,
      &                      X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0,INTMICON)
+      ELSEIF(TIDALDB.EQ.3) THEN
+        CALL BORD_TIDE_LEGOS(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
+     &                       NPOIN,NPTFR,AT,NCOTE,NVITES,
+     &                       NUMLIQ%I,KENT,KENTU,
+     &                       T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
+     &                       CTIDE,MSL,CTIDEV,NODALCORR,
+     &                       T2D_FILES(T2DHAR)%LU,BOUNDARY_COLOUR,
+     &                       HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                       MARDAT,MARTIM)
       ENDIF
 !
 !-----------------------------------------------------------------------

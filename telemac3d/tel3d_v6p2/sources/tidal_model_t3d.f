@@ -125,13 +125,13 @@
      &                      X,Y,GEOSYST,NUMZONE,LATIT,LONGIT,INTMICON)
       ELSEIF(TIDALDB.EQ.3) THEN
         CALL BORD_TIDE_LEGOS(ZF%R,MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
-     &                 NPOIN2,NPTFR2,AT,NCOTE,NVIT,
-     &                 NUMLIQ%I,KENT,KENTU,
-     &                 T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
-     &                 CTIDE,MSL,CTIDEV,NODALCORR,T3D_FILES(T3DHAR)%LU,
-     &                 BOUNDARY_COLOUR,
-     &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
-     &                 MARDAT,MARTIM)
+     &                       NPOIN2,NPTFR2,AT,NCOTE,NVIT,
+     &                       NUMLIQ%I,KENT,KENTU,
+     &                       T3D_FILES(T3DIMP)%NAME,TIDALTYPE,
+     &                       CTIDE,MSL,CTIDEV,NODALCORR,
+     &                       T3D_FILES(T3DHAR)%LU,BOUNDARY_COLOUR,
+     &                       HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
+     &                       MARDAT,MARTIM)
       ENDIF
 !
 !-----------------------------------------------------------------------
