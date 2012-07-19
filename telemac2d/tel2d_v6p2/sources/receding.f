@@ -14,9 +14,9 @@
 !+        keyword THRESHOLD DEPTH FOR RECEDING PROCEDURE.
 !
 !history  J-M HERVOUET (LNHE)
-!+        16/07/2012
+!+        17/07/2012
 !+        V6P2
-!+
+!+  First version, adapted to tracer advection and parallelism.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
@@ -155,9 +155,9 @@
      &                    +H(I1)*HITS%R(I1)*V2DPAR(I1)/V2DPAR(I2)
               DELTAH%R(I1)=DELTAH%R(I1)-HITS%R(I1)*H(I1)
               W1(IELEM,1)=W1(IELEM,1)
-     &                +HITS%R(I1)*H(I1)*VOLU2D(I1)
+     &                +HITS%R(I1)*H(I1)*V2DPAR(I1)
               W1(IELEM,2)=W1(IELEM,2)
-     &                -HITS%R(I1)*H(I1)*VOLU2D(I1)
+     &                -HITS%R(I1)*H(I1)*V2DPAR(I1)
             ENDIF
             IF(ZF(I1).GT.SL3+HREC.AND.H(I3).GT.HREC) THEN
 !             TRANSFER FROM I1 TO I3
@@ -165,9 +165,9 @@
      &                    +H(I1)*HITS%R(I1)*V2DPAR(I1)/V2DPAR(I3)
               DELTAH%R(I1)=DELTAH%R(I1)-HITS%R(I1)*H(I1)
               W1(IELEM,1)=W1(IELEM,1)
-     &                +HITS%R(I1)*H(I1)*VOLU2D(I1)
+     &                +HITS%R(I1)*H(I1)*V2DPAR(I1)
               W1(IELEM,3)=W1(IELEM,3)
-     &                -HITS%R(I1)*H(I1)*VOLU2D(I1)
+     &                -HITS%R(I1)*H(I1)*V2DPAR(I1)
             ENDIF
           ENDIF
 !
@@ -180,9 +180,9 @@
      &                    +H(I2)*HITS%R(I2)*V2DPAR(I2)/V2DPAR(I1)
               DELTAH%R(I2)=DELTAH%R(I2)-HITS%R(I2)*H(I2)
               W1(IELEM,2)=W1(IELEM,2)
-     &                +HITS%R(I2)*H(I2)*VOLU2D(I2)
+     &                +HITS%R(I2)*H(I2)*V2DPAR(I2)
               W1(IELEM,1)=W1(IELEM,1)
-     &                -HITS%R(I2)*H(I2)*VOLU2D(I2)
+     &                -HITS%R(I2)*H(I2)*V2DPAR(I2)
             ENDIF
             IF(ZF(I2).GT.SL3+HREC.AND.H(I3).GT.HREC) THEN
 !             TRANSFER FROM I2 TO I3
@@ -190,9 +190,9 @@
      &                    +H(I2)*HITS%R(I2)*V2DPAR(I2)/V2DPAR(I3)
               DELTAH%R(I2)=DELTAH%R(I2)-HITS%R(I2)*H(I2)
               W1(IELEM,2)=W1(IELEM,2)
-     &                +HITS%R(I2)*H(I2)*VOLU2D(I2)
+     &                +HITS%R(I2)*H(I2)*V2DPAR(I2)
               W1(IELEM,3)=W1(IELEM,3)
-     &                -HITS%R(I2)*H(I2)*VOLU2D(I2)
+     &                -HITS%R(I2)*H(I2)*V2DPAR(I2)
             ENDIF
           ENDIF
 !
@@ -205,9 +205,9 @@
      &                    +H(I3)*HITS%R(I3)*V2DPAR(I3)/V2DPAR(I1)
               DELTAH%R(I3)=DELTAH%R(I3)-HITS%R(I3)*H(I3)
               W1(IELEM,3)=W1(IELEM,3)
-     &                +HITS%R(I3)*H(I3)*VOLU2D(I3)
+     &                +HITS%R(I3)*H(I3)*V2DPAR(I3)
               W1(IELEM,1)=W1(IELEM,1)
-     &                -HITS%R(I3)*H(I3)*VOLU2D(I3)
+     &                -HITS%R(I3)*H(I3)*V2DPAR(I3)
             ENDIF
             IF(ZF(I3).GT.SL2+HREC.AND.H(I2).GT.HREC) THEN
 !             TRANSFER FROM I3 TO I2
@@ -215,9 +215,9 @@
      &                    +H(I3)*HITS%R(I3)*V2DPAR(I3)/V2DPAR(I2)
               DELTAH%R(I3)=DELTAH%R(I3)-HITS%R(I3)*H(I3)
               W1(IELEM,3)=W1(IELEM,3)
-     &                +HITS%R(I3)*H(I3)*VOLU2D(I3)
+     &                +HITS%R(I3)*H(I3)*V2DPAR(I3)
               W1(IELEM,2)=W1(IELEM,2)
-     &                -HITS%R(I3)*H(I3)*VOLU2D(I3)
+     &                -HITS%R(I3)*H(I3)*V2DPAR(I3)
             ENDIF
           ENDIF
         ENDIF 
