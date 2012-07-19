@@ -1,6 +1,6 @@
 /---------------------------------------------------------------------
-/ ARTEMIS Version v6p1 28 juin 2011
-/ REFLEXION AUTOURS D'UN OBSTACLE ELLIPTIQUE
+/ ARTEMIS Version v6p2 juillet 2012
+/ REFLECTION ON AN ELLIPTICAL OBSTACLE
 /---------------------------------------------------------------------
 
 
@@ -26,7 +26,7 @@ REFERENCE FILE           = 'f2d_bosse_x.slf'
 / GENERAL SETTINGS
 /---------------------------------------------------------------------
 
-TITLE ='REFLECTION ON AN ELIPTICAL OBSTACLE'
+TITLE ='REFLECTION ON AN ELLIPTICAL OBSTACLE'
 
 
 /---------------------------------------------------------------------

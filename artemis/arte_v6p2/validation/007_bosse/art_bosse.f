@@ -1,3 +1,6 @@
+
+
+
 C                       ***************
                         SUBROUTINE BORH
 C                       ***************
@@ -83,7 +86,7 @@ C     VOS NOUVELLES DECLARATIONS DE VARIABLES :
 C     ---------------------------------------- 
 C                                                                       
 C JCB :                                                                       
-      INTEGER I    
+      INTEGER I    ,JB
 C JCB
 C
 C
@@ -104,54 +107,58 @@ C                         ------
 C ---------------------------------------
 C INITIALISATION DES VARIABLES PAR DEFAUT
 C ---------------------------------------
-      TETABT(:) = TETAH
-      TETAPT(:) = 0.D0
-      ALFAPT(:) = 0.D0
-      RPT(:)    = 0.D0
-      HBT(:)    = 0.0D0
-C onde incidente 
-      DO 10 I=2201,3200
-         LIHBORT(I) = KINC
-         HBT(I)     = 0.01D0
-         TETABT(I)  = 0.D0
-         TETAPT(I)  = 0.D0
- 10   CONTINUE
+      TETAB%R(:) = TETAH
+      TETAP%R(:) = 0.D0
+      ALFAP%R(:) = 0.D0
+      RP%R(:)    = 0.D0
+      HB%R(:)    = 0.0D0
 
-         LIHBORT(1) = KINC
-         HBT(1)     = 0.01D0
-         TETABT(1)  = 0.D0
-         TETAPT(1)  = 0.D0
+
+      DO I=1,NPTFR
+       JB=BOUNDARY_COLOUR%I(I)
+
+C onde incidente 
+      IF(JB.GE.2201.AND.JB.LE.3200)THEN
+         LIHBOR%I(I) = KINC
+         HB%R(I)     = 0.01D0
+         TETAB%R(I)  = 0.D0
+         TETAP%R(I)  = 0.D0
+	 ALFAP%R(I)  = 0.D0
+      ENDIF
+      IF(JB.EQ.1)THEN
+         LIHBOR%I(I) = KINC
+         HB%R(I)     = 0.01D0
+         TETAB%R(I)  = 0.D0
+         TETAP%R(I)  = 0.D0
+	 ALFAP%R(I)  = 0.D0
+      ENDIF
 
 
 
 C solide en y=0
-      DO 20 I=2,600
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 90.D0
-         ALFAPT(I) = 0.D0
- 20   CONTINUE
+      IF(JB.GE.2.AND.JB.LE.600)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 90.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF
  
 
-C solide libre (ex sortie absorbante) 
-      DO 50 I=601,1601
-          LIHBORT(I) = KSORT
-	  TETAPT(I)=0.D0
-c         LIHBORT(I) = KLOG
-c         RPT(I) = 0.D0
-c         TETAPT(I) = 0.D0
-c         ALFAPT(I) = 0.D0
-
- 50   CONTINUE
+C solide libre  
+      IF(JB.GE.601.AND.JB.LE.1601)THEN
+          LIHBOR%I(I) = KSORT
+	  TETAP%R(I)=0.D0
+      ENDIF
 
 C solide en y = 1.6
-      DO 60 I=1602,2200
-         LIHBORT(I) = KLOG
-         RPT(I) = 1.D0
-         TETAPT(I) = 90.D0
-         ALFAPT(I) = 0.D0
- 60   CONTINUE
-
+      IF(JB.GE.1602.AND.JB.LE.2200)THEN
+         LIHBOR%I(I) = KLOG
+         RP%R(I) = 1.D0
+         TETAP%R(I) = 90.D0
+         ALFAP%R(I) = 0.D0
+      ENDIF
+      
+      ENDDO
 C-----------------------------------------------------------------------
 C                                                                       
       RETURN                                                            
