@@ -1,41 +1,38 @@
 /---------------------------------------------------------------------
 / ARTEMIS Version v6p2 juillet 2012
-/ REFLECTION ON AN ELLIPTICAL OBSTACLE
+/ Breaking of monochromatic wave
 /---------------------------------------------------------------------
-
-
-
 
 /---------------------------------------------------------------------
 / FILE INPUTS - OUTPUTS
 /---------------------------------------------------------------------
 
 
-RESULTS FILE             = 'r2d_bosse.slf'
+RESULTS FILE              ='art_breaking_Dally.slf'
 
-BOUNDARY CONDITIONS FILE = 'geo_bosse.cli'
+BOUNDARY CONDITIONS FILE  ='cli_breaking.slf'
 
-FORTRAN FILE             = 'art_bosse.f'
+FORTRAN FILE              ='art_breaking.f'
 
-GEOMETRY FILE            = 'geo_bosse.slf'
+GEOMETRY FILE             ='geo_breaking.slf'
 
-REFERENCE FILE           = 'f2d_bosse_x.slf'
+REFERENCE FILE            ='ref_art_breaking_Dally.slf'
 
 
 /---------------------------------------------------------------------
 / GENERAL SETTINGS
 /---------------------------------------------------------------------
 
-TITLE ='REFLECTION ON AN ELLIPTICAL OBSTACLE'
+TITLE ='BREAKING OF MONOCHROMATIC WAVE'
 
 
 /---------------------------------------------------------------------
 / LISTING
 /---------------------------------------------------------------------
 
-WAVE HEIGHTS SMOOTHING          = NO
+WAVE HEIGHTS SMOOTHING           = NO
 
-VARIABLES FOR GRAPHIC PRINTOUTS ='HS,PHAS,ZF,INC,QB,C'
+VARIABLES FOR GRAPHIC PRINTOUTS  ='HS,PHAS,ZS,ZF,C,CG,QB'
 
 /---------------------------------------------------------------------
 / INITIAL CONDITIONS
@@ -43,32 +40,44 @@ VARIABLES FOR GRAPHIC PRINTOUTS ='HS,PHAS,ZF,INC,QB,C'
 
 INITIAL CONDITIONS   ='CONSTANT ELEVATION'
 
-INITIAL WATER LEVEL  =0.4957
+INITIAL WATER LEVEL  = 0.
 
 
 /--------------------------------------------------------------------/
 / OPTIONS
 /--------------------------------------------------------------------/
-MATRIX STORAGE =3
 
+MATRIX STORAGE = 3
 
 /---------------------------------------------------------------------
 / NUMERICAL PARAMETERS
 /---------------------------------------------------------------------
 
-SOLVER =8
+SOLVER = 8
 
+/for parallel calculations using n processors
+/add PARALLEL PROCESSORS = n
+/replace SOLVER = 8 by SOLVER = 3
+
+DISSIPATION RELAXATION = 0.25
 
 /---------------------------------------------------------------------
 / PHYSICAL PARAMETERS
 /---------------------------------------------------------------------
 
-BREAKING = NO
+BREAKING        = YES
+BREAKING LAW    = 2
 
-RAPIDLY VARYING TOPOGRAPHY = 3
+PRECONDITIONING = 2
 
-WAVE PERIOD =0.8174
+WAVE PERIOD     = 1.79
+
+DIRECTION OF WAVE PROPAGATION = 0.
+
+KDALLY = 0.25
+GDALLY = 0.4 
 
 /---------------------------------------------------------------------
 VALIDATION : YES
 /---------------------------------------------------------------------
+
