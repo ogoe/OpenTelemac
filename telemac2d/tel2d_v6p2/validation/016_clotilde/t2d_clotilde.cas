@@ -1,6 +1,5 @@
 /
-/  SUITE DE CALCUL, EN PARALLELE, AVEC VALIDATION
-/  ET FLUX A TRAVERS DES SECTIONS
+/  SUITE DE CALCUL, AVEC VALIDATION ET FLUX A TRAVERS DES SECTIONS
 /
 /  41 s  sur HP C3700     5.5  22/11/2004
 /  26 s sur DELL 2.8 GHz  5.6  23/11/2005 en scalaire
@@ -19,7 +18,9 @@
 /
 /  Version 6.2
 /
-/  HP C3700 compilateur HP  38 s  04/05/2012 en scalaire
+/  HP C3700  compilateur HP 38 s 04/05/2012 en scalaire
+/  Calibre 7 compilateur HP  7 s 20/07/2012 en scalaire 
+/                           (also tested with 64 procs)
 /
 /**********************************************************************/
 /                                                                      /
@@ -38,8 +39,8 @@ FICHIER DU CALCUL PRECEDENT        : ini_clotilde.slf
 FICHIER DES RESULTATS              : r2d_clotilde.slf
 FICHIER DE REFERENCE               : f2d_clotilde.slf
 VALIDATION : OUI
-/----------------------------------------------------------------------/
-/    
+/
+/----------------------------------------------------------------------/   
 /     OPTIONS GENERALES
 /----------------------------------------------------------------------/
 /
@@ -79,14 +80,11 @@ PRECISION DU SOLVEUR = 1.E-6
 SOLVEUR : 7   OPTION DU SOLVEUR : 3
 CLIPPING DE H         : NON
 /
-////////////////////////////////////////////////////////////////////////
-SECTIONS DE CONTROLE = 23411;8831;
-23411;45656;45656;9648;9648;45898;45898;15699;
-15699;45416;45416;33954;33954;45490;45490;18645;18645;45677;45677;13498;
-13498;45723;45723;15930;15930;45786;45786;22543;22543;45800;45800;34465;
-34465;45864;45864;42187;42187;45538;45538;8831
-/amont barrage de Donzere : 20 sections
+/amont barrage de Donzere : 21 sections
 /
- PROCESSEURS PARALLELES = 0
+FICHIER DES SECTIONS DE CONTROLE : t2d_clotilde.sec
+FICHIER DE SORTIE DES SECTIONS DE CONTROLE : t2d_clotilde.sct
+/
+PROCESSEURS PARALLELES = 0
 /
 &FIN
