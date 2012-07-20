@@ -84,7 +84,7 @@ anacos.f anamar.f anaven.f angles.f bornes.f \
 condiw.f conw4d.f conwac.f corfon.f \
 cormar.f couple.f couuti.f cqueue.f \
 delfra.f dump2d.f \
-ecrete.f ecrspe.f f1f1f1.f\
+ecrete.f ecrspe.f filt_sa.f f1f1f1.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f fsprd1.f \
 fsprd2.f fsprd3.f \
 gammln.f gauleg.f\

@@ -103,7 +103,7 @@ anacos.f anamar.f anaven.f angles.f bornes.f \
 condiw.f conw4d.f conwac.f corfon.f \
 cormar.f couple.f couuti.f cqueue.f \
 delfra.f diffrac.f dump2d.f \
-ecrete.f ecrspe.f f1f1f1.f filt_SA.f\
+ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
 fsprd2.f fsprd3.f \
 gammln.f gauleg.f grad_alfa.f grad_ccg.f grad_d.f grad_kon.f \
