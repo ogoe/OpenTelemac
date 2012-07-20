@@ -944,8 +944,10 @@ sub RunPartel       # (geo, cli, NCSIZE, sec, secname); #jaj added sec, secname)
   if (@_[4] eq "") {$ifsec=0;} else {$ifsec=1;}          #jaj
   print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n$ifsec\n@_[3]\n";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
- #Lancement PARTEL, append outputs
+# partel outputs redirected to a file
   $command=join "",$PathParall,"partel < partel.par >> partel.log";
+# this line will redirect partel outputs to screen or listing instead of partel.log
+# $command=join "",$PathParall,"partel < partel.par ";
   $ret = system ("$command");
   return $ret;
 }#RunPartel (end)

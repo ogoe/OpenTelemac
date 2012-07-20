@@ -864,7 +864,11 @@ $GENERIQUE    = basename($ARGV[0],"");
 #PLG
 $GENERIQUE1   = $GENERIQUE;
 shift(@ARGV);
-$WORKING      = $$;
+#$WORKING      = $$;
+#UHM take PBS-JOBID if available
+$WORKING      = $ENV{"JOBID"};
+if ( $WORKING eq "" )                      #UHM take PARENT PID
+       { $WORKING      = $$; }
 $DEBUG        = "pasdebug";
 $LNG          = "2";
 $SUITE        = "";

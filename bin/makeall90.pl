@@ -39,9 +39,6 @@
 #Stbtel
 	"stbtel|stbtel_v6p2|sources",
 
-#Spartacus2d
-	"spartacus2d|spartacus2d_v6p2|sources",
-
 );
 
 #--------------------Usage----------------------------
