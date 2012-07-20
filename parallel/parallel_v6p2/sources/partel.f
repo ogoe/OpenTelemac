@@ -109,7 +109,7 @@
       REAL TIMES, TIMED
       DOUBLE PRECISION TIMES_D, TIMED_D
 !
-      INTEGER :: NINP=10, NCLI=11, NMET=12,NINPFORMAT=52
+      INTEGER :: NINP=10, NCLI=11, NMET=12,NSCT=13,NINPFORMAT=52
       INTEGER :: NEPART=15, NNPART=16, NOUT=17, NCLM=18
       INTEGER TIME(3),DATE(3),TIME_TMP(3), DATE_TMP(3)
 !
@@ -379,7 +379,7 @@
       END DO
 !
 ! #### THE SECTIONS FILE NAME 
-
+!
       DO
         IF( FOUND ) THEN                      !###> SEB@HRW
            READ(72,*) I                       !###> SEB@HRW
@@ -389,32 +389,30 @@
            READ(LI,*) I
         ENDIF                                 !###> SEB@HRW
         IF ( I<0 .OR. I>1 ) THEN
-          WRITE(LU,
-     &    '('' PLEASE ANSWER 1:YES OR 0:NO '')') 
+          WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')') 
         ELSE
           WRITE(LU,'('' INPUT: '',I4)') I
           EXIT
         END IF 
       END DO
       IF (I==1) WITH_SECTIONS=.TRUE.
-
-!###> SEB@HRW
-      IF( FOUND ) CLOSE(72)
-!###< SEB@HRW
-
-
+!
       IF (WITH_SECTIONS) THEN 
         DO
           WRITE(LU, ADVANCE='NO', FMT=
      &      '(/,'' CONTROL SECTIONS FILE NAME (OR RETURN) : '')')
-          READ(LI,'(A)') NAMESEC
+          IF(FOUND) THEN
+            READ(72,'(A)') NAMESEC
+          ELSE
+            READ(LI,'(A)') NAMESEC
+          ENDIF
           IF (NAMESEC.EQ.' ') THEN
             WRITE (LU,'('' NO FILENAME '')') 
           ELSE
             WRITE(LU,*) 'INPUT: ',NAMESEC
             EXIT
           ENDIF
-        END DO
+        ENDDO
 !  
         INQUIRE (FILE=NAMESEC,EXIST=IS)
         IF (.NOT.IS) THEN
@@ -423,6 +421,11 @@
           STOP
         ENDIF  
       ENDIF
+!
+!###> SEB@HRW
+      IF( FOUND ) CLOSE(72)
+!###< SEB@HRW
+!
 !
 ! FIND THE INPUT FILE CORE NAME LENGTH
 !
@@ -1720,26 +1723,31 @@ C$$$      CLOSE(NNPART)
       IF (NPLAN.NE.0) WITH_SECTIONS=.FALSE.
       IF (WITH_SECTIONS) THEN ! PRESENTLY, FOR TELEMAC2D, EV. SISYPHE 
 !
-      WRITE(LU,*) 'DEALING WITH SECTIONS'
-      OPEN (NINP,FILE=TRIM(NAMESEC),FORM='FORMATTED',STATUS='OLD') 
-      READ (NINP,*) ! COMMENT LINE
-      READ (NINP,*) NSEC, IHOWSEC
+      WRITE(LU,*) 'DEALING WITH SECTIONS WITH FILE ',TRIM(NAMESEC)
+      OPEN (NSCT,FILE=TRIM(NAMESEC),FORM='FORMATTED',STATUS='OLD') 
+      READ (NSCT,*) ! COMMENT LINE
+      READ (NSCT,*) NSEC, IHOWSEC
       IF (.NOT.ALLOCATED(CHAIN)) ALLOCATE (CHAIN(NSEC))
       IF (IHOWSEC<0) THEN 
         DO ISEC=1,NSEC
-          READ (NINP,*) CHAIN(ISEC)%DESCR
-          READ (NINP,*) CHAIN(ISEC)%NPAIR(:)
-          CHAIN(ISEC)%XYBEG(:)= (/F(CHAIN(ISEC)%NPAIR(1),1),
-     &                            F(CHAIN(ISEC)%NPAIR(1),2)/)
-          CHAIN(ISEC)%XYEND(:)= (/F(CHAIN(ISEC)%NPAIR(2),1),
-     &                            F(CHAIN(ISEC)%NPAIR(2),2)/)
-        END DO 
+          READ (NSCT,*) CHAIN(ISEC)%DESCR
+          READ (NSCT,*) CHAIN(ISEC)%NPAIR(:)
+          CHAIN(ISEC)%XYBEG(1)=F(CHAIN(ISEC)%NPAIR(1),1)
+          CHAIN(ISEC)%XYBEG(2)=F(CHAIN(ISEC)%NPAIR(1),2)
+          CHAIN(ISEC)%XYEND(1)=F(CHAIN(ISEC)%NPAIR(2),1)
+          CHAIN(ISEC)%XYEND(2)=F(CHAIN(ISEC)%NPAIR(2),2)
+          WRITE(LU,*) 'SECTION ',CHAIN(ISEC)%DESCR
+          WRITE(LU,*) 'BEGINS AT X=',CHAIN(ISEC)%XYBEG(1),
+     &                         ' Y=',CHAIN(ISEC)%XYBEG(2)
+          WRITE(LU,*) 'ENDS   AT X=',CHAIN(ISEC)%XYEND(1),
+     &                         ' Y=',CHAIN(ISEC)%XYEND(2)
+        ENDDO 
       ELSE
         DO ISEC=1,NSEC
-          READ (NINP,*) CHAIN(ISEC)%DESCR
-          READ (NINP,*) CHAIN(ISEC)%XYBEG(:), CHAIN(ISEC)%XYEND(:)
+          READ (NSCT,*) CHAIN(ISEC)%DESCR
+          READ (NSCT,*) CHAIN(ISEC)%XYBEG(:), CHAIN(ISEC)%XYEND(:)
           CHAIN(ISEC)%NPAIR(:)=0
-        END DO 
+        ENDDO 
       ENDIF
 ! 
 !     IF TERMINAL POINTS GIVEN BY COORDINATES, FIND NEAREST NODES FIRST

@@ -52,7 +52,7 @@ C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
       INTEGER, PARAMETER :: MAX_BASKET_SIZE=10 
 !
-!     NOTE JMH: CHARAC_TYPE IS NOT USED HERE !!!  CH NOT USED
+!     NOTE JMH: CHARAC_TYPE IS NOT USED HERE !!!  CH NOT USED SAVE FOR TRACE
 !
       TYPE CHARAC_TYPE 
         SEQUENCE                  
