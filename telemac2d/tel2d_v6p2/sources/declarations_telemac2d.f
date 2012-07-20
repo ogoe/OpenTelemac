@@ -1835,7 +1835,8 @@
 !
 !-----------------------------------------------------------------------
 !
-!     ???????
+!     FOR CONTROL SECTIONS
+!     ALLOCATED AND INITIALISED IN READ_SECTIONS_TELEMAC2D
 !
       TYPE (CHAIN_TYPE), ALLOCATABLE :: CHAIN(:)
 !

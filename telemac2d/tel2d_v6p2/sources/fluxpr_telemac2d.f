@@ -247,9 +247,13 @@
           INIT=.FALSE.
           IF ((NCSIZE.GT.1 .AND. IPID.EQ.0).OR.(NCSIZE.LE.1)) THEN
             NSEO=T2D_FILES(T2DSEO)%LU
-            WRITE(NSEO,*) 'TITLE = "FLUXES FOR ',TRIM(TITCAS),'"'
-            WRITE(NSEO,*) 'VARIABLES = T',
-     &         (' '//TRIM(CHAIN(ISEC)%DESCR), ISEC=1,NSEC)
+            IF(LNG.EQ.1) THEN
+              WRITE(NSEO,*) 'TITRE = "FLUX POUR ',TRIM(TITCAS),'"'
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(NSEO,*) 'TITLE = "FLUXES FOR ',TRIM(TITCAS),'"'
+            ENDIF
+            WRITE(NSEO,*) 'VARIABLES = TIME',
+     &         (' '//TRIM(CHAIN(ISEC)%DESCR),ISEC=1,NSEC)
           ENDIF
           IF (NCSIZE.GT.1) THEN
             ALLOCATE (WORK(NSEC), STAT=ERR)
