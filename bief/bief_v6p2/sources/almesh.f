@@ -34,6 +34,12 @@
 !+   Calls to eleb3d and eleb3dt changed. Calls of READGEO3 and CPIKLE2
 !+   and CPIKLE3 swapped (now KNOLG used in CPIKLE3).
 !
+!history  J-M HERVOUET (LNHE)
+!+        20/07/2012
+!+        V6P2
+!+   Finding the original number of nodes in parallel, and completing
+!+   KNOLG for upper planes in 3D.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| NAME IN 20 CHARACTERS TO ENABLE DIFFERENT
 !|                |   | OPTIONS. OPTIONS ARE:
@@ -80,7 +86,7 @@
 !
       INTEGER D,IELM0,IELM1,STOCFG,IELB0,IELB1,NSEG,NNPMAX
       INTEGER NNPTFRX,NNELEB,ERR,NNELMAX,NNPLAN,NPOIN,NPTFR,NELEM
-      INTEGER MXPTVS,MXELVS,NDP,IB(10),IELEM,NSEGBOR
+      INTEGER MXPTVS,MXELVS,NDP,IB(10),IELEM,NSEGBOR,IPLAN,NPOIN_GLOB
 !
 !     TEMPORARY CONNECTIVITY TABLE
 !
@@ -90,8 +96,8 @@
 !
       INTEGER, ALLOCATABLE :: IPOBO(:)
 !
-      INTEGER IELB0V,IELB1V,I,NPOIN_MAX
-      INTEGER, EXTERNAL :: P_ISUM
+      INTEGER IELB0V,IELB1V,I
+      INTEGER, EXTERNAL :: P_ISUM,P_IMAX
 !
 !-----------------------------------------------------------------------
 !
@@ -675,6 +681,9 @@
       ALLOCATE(MESH%LIST_SEND_SEG)
       ALLOCATE(MESH%NH_COM_SEG)
 !
+!     DATA STRUCTURE IN PARALLEL (KNOGL WILL BE ALLOCATED
+!                                 FURTHER DOWN)
+!
       IF(NCSIZE.GT.1) THEN
 !
         CALL BIEF_ALLVEC(2,MESH%KNOLG,'KNOLG ',
@@ -683,14 +692,6 @@
      &                   NBMAXNSHARE*NPTIR,1,0,MESH)
         CALL BIEF_ALLVEC(2,MESH%ISEG ,'ISEG  ',
      &                   IELBOR(IELM1,1)  ,1,1,MESH)
-! FH-JAJ
-! FOR THE SIZE OF KNOGL, WE NEED THE NUMBER OF NODES
-! WE CAN'T HAVE THIS VALUE, THEN WE TAKE THE SUM OF THE NODES
-! OF EACH SUB-MESH (VALUE BIGGER THAN THE NUMBER OF NODES IN THE MESH)
-! THE SIZE OF KNOGL IS THUS EVER BIGGER THAN THE NUMBER OF NODES IN THE MESH
-        NPOIN_MAX = P_ISUM(MESH%NPOIN)
-        CALL BIEF_ALLVEC(2,MESH%KNOGL,'KNOGL ',NPOIN_MAX,1,0,MESH)
-! FH-JAJ
         CALL BIEF_ALLVEC(2,MESH%INDPU,'INDPU ',
      &                   IELM1              ,1,1,MESH)
         CALL BIEF_ALLVEC(2,MESH%NHP  ,'NHP   ',
@@ -709,7 +710,6 @@
         CALL BIEF_ALLVEC(2,MESH%KNOLG ,'KNOLG ',0,1,0,MESH)
         CALL BIEF_ALLVEC(2,MESH%NACHB ,'NACHB ',0,1,0,MESH)
         CALL BIEF_ALLVEC(2,MESH%ISEG  ,'ISEG  ',0,1,0,MESH)
-        CALL BIEF_ALLVEC(2,MESH%KNOGL ,'KNOGL ',0,1,0,MESH)
         CALL BIEF_ALLVEC(2,MESH%INDPU ,'INDPU ',0,1,0,MESH)
         CALL BIEF_ALLVEC(2,MESH%NHP   ,'NHP   ',0,1,0,MESH)
         CALL BIEF_ALLVEC(2,MESH%NHM   ,'NHM   ',0,1,0,MESH)
@@ -793,16 +793,44 @@
 !
       ENDIF
 !
-!     COMPLEMENTS ARRAYS X, Y FOR PRISMS AND TETRAHEDRONS
+!     NOW WE HAVE KNOGL IN 2D
+!     FINDING THE NUMBER OF POINTS IN THE ORIGINAL MESH
+!     = MAXIMUM OF ALL KNOLG OF ALL SUB-DOMAINS
+!
+      NPOIN_GLOB=0
+      IF(NCSIZE.GT.1) THEN
+        DO I=1,NPOIN
+          NPOIN_GLOB=MAX(NPOIN_GLOB,MESH%KNOLG%I(I))
+        ENDDO
+        NPOIN_GLOB=P_IMAX(NPOIN_GLOB)
+      ENDIF
+!
+!     NOW WE HAVE NPOIN_GLOB, WE CAN ALLOCATE KNOGL
+!     (WITH SIZE 0 IF NOT IN PARALLEL)
+!
+      CALL BIEF_ALLVEC(2,MESH%KNOGL,'KNOGL ',
+     &                   NPOIN_GLOB,1,0,MESH)
+!
+!     COMPLEMENTS: ARRAYS X, Y FOR PRISMS AND TETRAHEDRONS
+!                  KNOLG FOR PRISMS AND TETRAHEDRONS     
 !
       IF(IELM.EQ.41.OR.IELM.EQ.51) THEN
-        DO I = 2,NNPLAN
-          CALL OV_2( 'X=Y     ' , MESH%X%R,I, MESH%X%R,1,
+        DO IPLAN = 2,NNPLAN
+          CALL OV_2( 'X=Y     ' , MESH%X%R,IPLAN, MESH%X%R,1,
      &                            MESH%X%R,1, 0.D0, NNPMAX,NPOIN)
-          CALL OV_2( 'X=Y     ' , MESH%Y%R,I, MESH%Y%R,1,
+          CALL OV_2( 'X=Y     ' , MESH%Y%R,IPLAN, MESH%Y%R,1,
      &                            MESH%Y%R,1, 0.D0, NNPMAX,NPOIN)
-        END DO
+        ENDDO
+        IF(NCSIZE.GT.1) THEN
+          DO IPLAN = 2,NNPLAN
+            DO I=1,NPOIN
+              MESH%KNOLG%I(I+(IPLAN-1)*NPOIN)=
+     &        MESH%KNOLG%I(I)+(IPLAN-1)*NPOIN_GLOB             
+            ENDDO
+          ENDDO
+        ENDIF
       ENDIF
+!
 !
 !  WATCH OUT - D Y N A M I T E
 !

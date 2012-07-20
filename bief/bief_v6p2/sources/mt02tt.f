@@ -45,7 +45,7 @@
 !+        V6P2
 !+   Element 51 now treated separately.
 !
-!history  U.H.MErkel
+!history  U.H. Merkel
 !+        18/07/2012
 !+        V6P2
 !+    Replaced EPSILON with EPSI due to nag compiler problems

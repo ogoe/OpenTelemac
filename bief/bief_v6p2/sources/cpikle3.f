@@ -160,7 +160,7 @@
 !history  J-M HERVOUET (LNH)
 !+        28/11/2011
 !+        V6P2
-!+   Use of KNOGL in case of parallelism, to get the same splitting of 
+!+   Use of KNOLG in case of parallelism, to get the same splitting of 
 !+   than in scalar mode. Loops on planes and elements swapped.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

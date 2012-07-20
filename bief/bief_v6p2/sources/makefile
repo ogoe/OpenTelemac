@@ -83,7 +83,7 @@ dmo.f        dot.f          dots.f        downup.f  \
 dwnup1.f     ecrgeo.f       ecri2.f       elapse.f      elebd.f       eleb3d.f eleb3dt.f \
 elebd31.f    bief_eof.f     equnor.f      errmin.f      errmax.f    extens.f fasp.f  \
 filp10.f     filp11.f       filp12.f      filpol.f      flux_ef_vf.f  flux_ef_vf_3d.f \
-filter.f     find_in_sel.f  flusec.f      flux3dlim.f   flux_mask.f   fluxpr.f   \
+filter.f     find_in_sel.f  flux3dlim.f   flux_mask.f   fluxpr.f   \
 fond.f       fonstr.f       front2.f      fropro.f      geoelt.f      gettri.f gettriebe.f gettriseg.f \
 gmres.f      godown.f       godwn1.f      goup.f    \
 goup1.f      gracjg.f       gradp.f       gregtim.f     gsebe.f   \
