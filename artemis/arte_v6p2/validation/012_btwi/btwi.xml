@@ -21,7 +21,7 @@
 --> 
    <action xref="1"
        do="translate;compile;run;cas;princi"
-       code="artemis" target="bwti.cas"
+       code="artemis" target="btwi.cas"
        title="bwti scalar mode"
    /> 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
