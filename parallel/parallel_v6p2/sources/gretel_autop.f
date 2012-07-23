@@ -747,7 +747,16 @@
 !
       WRITE(LU,*)'WRITING DATASET NO.',NRESU,' TIME =',AT
 !
-      WRITE(3) AT
+!     TIME
+!
+      IF(SERAFIND_RES) THEN
+        WRITE(3) AT_D
+      ELSE
+        WRITE(3) AT
+      ENDIF
+!
+!     VARIABLES
+!
       DO K = 1,NBV1
          IF(NPLAN.EQ.0) THEN
             IF(SERAFIND_RES) THEN
