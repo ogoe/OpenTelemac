@@ -132,12 +132,12 @@
 !
 !     IN 3D FILES
 !                                                        U V
-!                                            U V W V     C C          
-!                                            C C C O   D O O      
-!                                            O O O L D H N N     
-!                                        D   N N N U M H V V U V W 
-!                  Z U V W       K E     P   V V V N 1 N C C D D D  
-      DATA ALIRE3D/1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,1,1,1,1,1,1,1,1,0,0,
+!                                            U V W       C C          
+!                                            C C C     D O O      
+!                                            O O O   D H N N     
+!                                        D   N N N   M H V V U V W 
+!                  Z U V W       K E     P   V V V   1 N C C D D D  
+      DATA ALIRE3D/1,1,1,1,0,0,0,1,1,0,0,1,0,1,1,1,0,1,1,1,1,1,1,1,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &             0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/
@@ -526,10 +526,21 @@
      &  SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,.FALSE.,MASKEL)
       ENDIF
 !
-!     IF NEW COMPUTATION OR VOLUN NOT IN PREVIOUS RESULT FILE
+!     IF NEW COMPUTATION OR DHHN NOT IN PREVIOUS RESULT FILE
 !
-      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(17).NE.1)) THEN
+      IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(19).NE.1)) THEN
         CALL OS('X=Y     ',X=VOLUN,Y=VOLU)
+      ELSE
+!       COMPUTING THE CORRECT VOLUN (ASSUMING AGGLOH HAS NOT CHANGED..)
+        CALL CALCOT(Z,HN%R)
+        CALL VECTOR(VOLUN, '=', 'MASBAS          ',IELM3,1.D0-AGGLOH,
+     &    SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,.FALSE.,MASKEL)
+        IF(AGGLOH.GT.1.D-6) THEN
+          CALL VECTOR(VOLUN, '+', 'MASBAS2         ',IELM3,AGGLOH,
+     &    SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,.FALSE.,MASKEL)
+        ENDIF
+!       RESTORING Z DONE WITH H
+        CALL CALCOT(Z,H%R)
       ENDIF
 !
       IF(NCSIZE.GT.1) THEN
