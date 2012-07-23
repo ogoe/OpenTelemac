@@ -39,6 +39,7 @@
 !| F             |-->| FREQUENCY FOR WHICH ENERGY DENSITY IS CALCULATED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_ARTEMIS, EX_SPE => SPE
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU

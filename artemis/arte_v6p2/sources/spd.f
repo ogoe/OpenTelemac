@@ -47,6 +47,7 @@
 !| TETA           |-->| ANGLE FOR CONSIDERED WAVE PROPAGATION 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE INTERFACE_ARTEMIS, EX_SPD => SPD
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU

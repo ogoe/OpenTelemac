@@ -48,6 +48,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE INTERFACE_ARTEMIS, EX_PERALE=> PERALE
+      USE INTERFACE_ARTEMIS, ONLY: SPE
       USE BIEF
 !
       IMPLICIT NONE

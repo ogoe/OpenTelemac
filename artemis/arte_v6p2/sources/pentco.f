@@ -81,6 +81,7 @@
 !-----------------------------------------------------------------------
 !
       USE BIEF
+      USE INTERFACE_ARTEMIS,ONLY: FCTE1,FCTE2
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_ARTEMIS
 !
@@ -103,8 +104,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION FCTE1, FCTE2, XX
-      EXTERNAL FCTE1, FCTE2
+      DOUBLE PRECISION XX
+!      EXTERNAL FCTE1, FCTE2
 !
 ! MASS MATRIX
 !
