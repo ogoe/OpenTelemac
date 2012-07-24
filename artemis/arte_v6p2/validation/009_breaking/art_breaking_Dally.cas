@@ -18,6 +18,7 @@ GEOMETRY FILE             ='geo_breaking.slf'
 
 REFERENCE FILE            ='ref_art_breaking_Dally.slf'
 
+STEERING FILE             ='art_breaking_Dally.cas'
 
 /---------------------------------------------------------------------
 / GENERAL SETTINGS
@@ -47,7 +48,7 @@ INITIAL WATER LEVEL  = 0.
 / OPTIONS
 /--------------------------------------------------------------------/
 
-MATRIX STORAGE = 3
+MATRIX STORAGE    : 3
 
 /---------------------------------------------------------------------
 / NUMERICAL PARAMETERS
