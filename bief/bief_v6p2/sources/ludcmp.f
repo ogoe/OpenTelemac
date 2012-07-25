@@ -5,7 +5,7 @@
      &(A,N,NP,INDX)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    GIVEN A MATRIX A(1:N,1:N), WITH PHYSICAL DIMENSION NP
@@ -36,6 +36,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        25/07/2012
+!+        V6P2
+!+   Correction of one test of division by 0.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM
 !| INDX           |-->| ADDRESS IN RIGHT-HAND SIDE
@@ -58,6 +63,7 @@
       DOUBLE PRECISION D
       INTEGER I,IMAX,J,K
       DOUBLE PRECISION AAMAX,DUM,XSOM,VV(500)
+      DOUBLE PRECISION, PARAMETER:: TINY=1.D-20 
 !
 !------------------------------------------------------------------------
 !
@@ -70,7 +76,7 @@
         DO J=1,N
           IF(ABS(A(I,J)).GT.AAMAX) AAMAX=ABS(A(I,J))
         ENDDO
-        IF(AAMAX.LT.1.D-20) THEN
+        IF(AAMAX.LT.TINY) THEN
           WRITE(LU,*) 'SINGULAR MATRIX IN LUDCMP'
           CALL PLANTE(1)
           STOP
@@ -112,7 +118,7 @@
             VV(IMAX)=VV(J) ! ALSO INTERCHANGES THE SCALE FACTOR
          ENDIF
          INDX(J)=IMAX
-         A(J,J)=MAX(A(J,J),1.D-20)
+         IF(ABS(A(J,J)).LT.TINY) A(J,J)=TINY
 !
 !  IF THE PIVOT ELEMENT IS 0 THE MATRIX IS SINGULAR (AT LEAST TO THE
 !  PRECISION OF THE ALGORITHM)

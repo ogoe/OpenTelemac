@@ -76,7 +76,7 @@
           DO J=II,I-1
            XSOM=XSOM-A(I,J)*B(J)
           ENDDO
-        ELSEIF(XSOM.NE.0.) THEN
+        ELSEIF(XSOM.NE.0.D0) THEN
           II=I ! A NONZERO ELEMENT WAS ENCOUNTERED, SO FROM NOW ON
                ! WILL HAVE TO DO THE SUMS IN THE ABOVE LOOP
         ENDIF
