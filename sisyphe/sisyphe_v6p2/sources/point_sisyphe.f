@@ -177,6 +177,7 @@ C-----------------------------------------------------------------------
       CALL BIEF_ALLVEC(1,AFBOR , 'AFBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,BFBOR , 'BFBOR ', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBOR , 'FLBOR ', IELBT, 1, 1,MESH)
+      CALL BIEF_ALLVEC(1,Q2BOR , 'Q2BOR ', IELBT, 1, 1,MESH)
 C     BOUNDARY FLUX FOR CALL TO CVDFTR
       CALL BIEF_ALLVEC(1,FLBOR_SIS , 'FLBORS', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBORTRA  , 'FLBTRA', IELBT, 1, 1,MESH)
@@ -264,14 +265,10 @@ C     FOR MIXED SEDIMENTS
 ! CV V6P2 ...new variables for consolidation model
       ALLOCATE(CONC(NPOIN,NOMBLAY))           ! THICKNESS OF EACH CLASS
 !
-!      IF (TASS) THEN
-         ALLOCATE(IVIDE(NPOIN,NOMBLAY+1)) ! FRACTION OF EACH CLASS FOR EACH LAYER
-!      ENDIF
-! .... CV
-
-      
-
-      !================================================================!
+      ALLOCATE(IVIDE(NPOIN,NOMBLAY+1)) ! FRACTION OF EACH CLASS FOR EACH LAYER
+!
+!      
+!
       CALL ALLBLO(MASKTR, 'MASKTR') ! MASK OF THE BOUNDARY CONDITIONS
       CALL ALLBLO(EBOR  , 'EBOR  ') ! BOUNDARY CONDITIONS
       CALL ALLBLO(QBOR  , 'QBOR  ') ! BOUNDARY CONDITIONS

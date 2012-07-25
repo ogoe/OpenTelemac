@@ -9,7 +9,7 @@
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -246,9 +246,11 @@
 !=======================================================================
 !
 !       READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES
+!       EBOR IS READ HERE FOR THE FIRST CLASS ONLY
+!       SEE CONLIT FOR OTHER CLASSES
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'LECLIS'
-        CALL LECLIS(LIEBOR%I,LIHBOR%I,EBOR,
+        CALL LECLIS(LIEBOR%I,LIHBOR%I,LIQBOR%I,EBOR%ADR(1)%P,Q2BOR,
      &              MESH%NPTFR,MESH%NBOR%I,3,
      &              SIS_FILES(SISCLI)%LU,KENT,
      &              MESH%ISEG%I,MESH%XSEG%R,MESH%YSEG%R,MESH%NACHB%I,
@@ -333,7 +335,8 @@
 !
         IF(MSK) CALL OS ('X=C     ', X=MASKEL, C=1.D0)
 !
-!       BUILDS THE MASK
+!       BUILDING THE MASK FOR LIQUID BOUNDARIES
+!       A SEGMENT IS LIQUID IF BOTH ENDS ARE NOT SOLID
 !
         DO K = 1, MESH%NPTFR
           IF(LIEBOR%I(K).NE.2.AND.LIEBOR%I(MESH%KP1BOR%I(K)).NE.2) THEN
@@ -341,7 +344,8 @@
           ELSE
             MASK%R(K) = 0.D0
           ENDIF
-          LIQBOR%I(K) = KSORT
+! JMH 24/07/2012: NOW READ IN LECLIS
+!         LIQBOR%I(K) = KSORT
         ENDDO
 !
 !=======================================================================
@@ -578,7 +582,9 @@
 !       NOW COMPUTES FUNCTIONS OF U2D,V2D,HN AND ZF
 !
 !       FREE SURFACE
+        IF(DEBUG.GT.0) WRITE(LU,*) 'FREE SURFACE'
         CALL OS('X=Y+Z   ', X=Z, Y=ZF, Z=HN)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END FREE SURFACE'
 !
         IF(CODE(1:7).NE.'TELEMAC') THEN
 !         PRODUCT H*
@@ -619,9 +625,11 @@
 !
 !        COMPUTES AREAS (WITHOUT MASKING)
 !
+         IF(DEBUG.GT.0) WRITE(LU,*) 'VECTOR FOR VOLU2D'
          CALL VECTOR(VOLU2D,'=','MASBAS          ',
      &               IELMH_SIS,1.D0,
      &               T1,T1,T1,T1,T1,T1,MESH,.FALSE.,MASKEL)
+         IF(DEBUG.GT.0) WRITE(LU,*) 'END VECTOR FOR VOLU2D'
 !        V2DPAR : LIKE VOLU2D BUT IN PARALLEL VALUES COMPLETED AT
 !                 INTERFACES BETWEEN SUBDOMAINS
          CALL OS('X=Y     ',X=V2DPAR,Y=VOLU2D)
@@ -636,8 +644,10 @@
 !                                      IF COMPUTATION CONTINUED, I.E. DEBU)
 !
          IF(.NOT.DEBU.OR..NOT.YAZR) THEN
+           IF(DEBUG.GT.0) WRITE(LU,*) 'NOEROD'
            CALL NOEROD(HN%R,ZF%R,ZR%R,Z%R,MESH%X%R,
      &                 MESH%Y%R,NPOIN,CHOIX,NLISS)
+           IF(DEBUG.GT.0) WRITE(LU,*) 'END NOEROD'
          ENDIF
 !
 !        INITIALISATION FOR SEDIMENT
@@ -1012,16 +1022,16 @@
          IF(ENTET.AND.ISOUS.EQ.NSOUS) ENTETS=.TRUE.
 !
 !---------------------------------------------------------------------
-!        FRICTION COEFFICIENT VARIABLE IN TIME
+!       FRICTION COEFFICIENT VARIABLE IN TIME
 !---------------------------------------------------------------------
 !
-         CALL CORSTR_SISYPHE
+        CALL CORSTR_SISYPHE
 !
-! ----   READS THE BOUNDARY CONDITIONS
+! ----  TREATS THE BOUNDARY CONDITIONS
 !
-! CV 12/06/2012
-!
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CONLIT'
         CALL CONLIT(MESH%NBOR%I,AT0)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'END CONLIT'
 !
 ! =======================================================================
 !

@@ -168,8 +168,10 @@
       TYPE(BIEF_OBJ), TARGET :: EBOR
 !
 !     IMPOSED SOLID TRANSPORT AT THE BOUNDARY
+!     QBOR : IN M3/S, FOR EVERY CLASS
+!     Q2BOR: IN M2/S, TOTAL, READ IN THE BOUNDARY CONDITIONS FILE
 !
-      TYPE(BIEF_OBJ), TARGET :: QBOR
+      TYPE(BIEF_OBJ), TARGET :: QBOR,Q2BOR
 !
 !     ZF VALUES ON BOUNDARIES
 !
@@ -696,14 +698,17 @@ C
       INTEGER HIDFAC
 !
       INTEGER :: LOADMETH
-!> @brief DEBUGGER
-C debugger
+!
+!     DEBUGGER
+!
       INTEGER :: DEBUG
-!> @brief REFERENCE CONCENTRATION FORMULA
-C formule pour la concentration de reference
+!
+!     REFERENCE CONCENTRATION FORMULA
+!
       INTEGER :: ICQ
-!> @brief NUMBER OF CONTROL SECTIONS POINTS
-C
+!
+!     NUMBER OF CONTROL SECTIONS POINTS
+!
       INTEGER NCP
 !
 !     ARRAY CONTAINING THE GLOBAL NUMBER OF THE POINTS IN THE CONTROL SECTIONS
@@ -733,14 +738,18 @@ C
 !     TREATMENT OF FLUXES AT THE BOUNDARIES
 !
       INTEGER DIRFLU
-C
-C-----------------------------------------------------------------------
-C
-C       5) LOGICAL VALUES
-C
-C-----------------------------------------------------------------------
-C
-C
+!
+!     NUMBER OF GIVEN SSOLID DISCHARGES GIVEN BY USER
+!
+      INTEGER NSOLDIS
+!
+!-----------------------------------------------------------------------
+!
+!       5) LOGICAL VALUES
+!
+!-----------------------------------------------------------------------
+!
+!
 !> @brief GRAPHICAL OUTPUT
 C
       LOGICAL :: SORLEO(MAXVAR)
@@ -991,15 +1000,20 @@ C
       DOUBLE PRECISION :: PI
 !> @brief Meyer Peter Mueller-Coefficient 
       DOUBLE PRECISION :: MPM
-!> @brief Secondary Current Alpha Coefficient
+!
+!     Secondary Current Alpha Coefficient
+!
       DOUBLE PRECISION :: ALPHA
-!> @brief Morphological Factor
+!
+!     Morphological Factor
+!
       DOUBLE PRECISION :: MOFAC
 !> @brief ZERO OF THE CODE
 C
       DOUBLE PRECISION :: ZERO
-!> @brief B VALUE FOR THE BIJKER FORMULA
-C coefficient b de la formule de bijker
+!
+!     B VALUE FOR THE BIJKER FORMULA
+!
       DOUBLE PRECISION :: BIJK
 !
 !     MUD CONCENTRATION AT BOUNDARIES FOR EACH CLASS
@@ -1025,6 +1039,10 @@ C coefficient b de la formule de bijker
 !     THIEBOT MODEL
 ! 
       DOUBLE PRECISION :: CONC_GEL, COEF_N,CONC_MAX
+!
+!     PRESCRIBED SOLID DISCHARGES
+! 
+      DOUBLE PRECISION :: SOLDIS(MAXFRO)
 !
 !-----------------------------------------------------------------------
 !

@@ -4,9 +4,8 @@
 !
      &(NBOR,AT)
 !
-!
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    ALLOWS TO IMPOSE TIME VARYING BOUNDARY CONDITIONS
@@ -45,6 +44,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  P. TASSI & J-M HERVOUET (LNHE)
+!+        24/07/2012
+!+        V6P2
+!+   Dealing with new key-word "prescribed solid discharges"
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINT
 !| AT             |-->| TEMPS (s)
@@ -60,14 +64,41 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN):: NBOR(NPTFR)
-! CV: 12/06...
+      INTEGER, INTENT(IN)          :: NBOR(NPTFR)
       DOUBLE PRECISION, INTENT(IN) :: AT
-      DOUBLE PRECISION, EXTERNAL:: CGL
-!...CV
+!
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,K,IFRLIQ,IRANK
+      INTEGER YADEB(MAXFRO)
+      DOUBLE PRECISION RATIO
+!
+      INTEGER, EXTERNAL          :: P_IMAX
+      DOUBLE PRECISION, EXTERNAL :: CGL
+!
+!-----------------------------------------------------------------------
+!
+!     INITIALISATION OF YADEB
+!
+      IF(NFRLIQ.GE.1) THEN
+        DO I=1,NFRLIQ
+          YADEB(I)=0
+        ENDDO
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     DISTRIBUTING THE (TOTAL) PRESCRIBED EVOLUTION TAKEN IN THE
+!     BOUNDARY CONDITIONS FILE WITH RESPECT TO FRACTIONS IN THE
+!     FIRST LAYER
+!
+      IF(NSICLA.GT.1) THEN
+        DO I=NSICLA,1,-1
+          DO K=1,NPTFR
+            EBOR%ADR(I)%P%R(K)=AVAIL(NBOR(K),1,I)*EBOR%ADR(1)%P%R(K)
+          ENDDO
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -80,6 +111,10 @@
         IF(LIEBOR%I(K).EQ.KADH) THEN
           LIEBOR%I(K)= KLOG
         ENDIF
+!
+!       CASES WHERE WE HAVE A PRESCRIBED DISCHARGE
+!
+        IF(LIQBOR%I(K).EQ.KENT) YADEB(NUMLIQ%I(K))=1       
 !
 !       DIRICHLET CONDITIONS
 !       EITHER ON EVOLUTION OR ON SOLID DISCHARGE
@@ -105,6 +140,32 @@
 !       ENDIF
 !
       ENDDO
+!
+!     DEALING WITH PRESCRIBED SOLID DISCHARGES
+!
+      IF(NFRLIQ.GT.0) THEN
+        DO IFRLIQ=1,NFRLIQ
+          IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
+          IF(YADEB(IFRLIQ).EQ.1) THEN
+            CALL DISIMP(SOLDIS(IFRLIQ),Q2BOR,NUMLIQ%I,
+     &                  IFRLIQ,NSOLDIS,T5,QBOR%ADR(1)%P,
+!                             MASK OF LIQUID BOUNDARIES DONE IN SISYPHE
+     &                  NPTFR,MASK%R,MESH)
+!           MULTICLASS CASE (AS FOR EBOR ABOVE)
+            IF(NSICLA.GT.1) THEN
+              DO I=NSICLA,1,-1
+                DO K=1,NPTFR
+                  IF(NUMLIQ%I(K).EQ.IFRLIQ.AND.
+     &               LIQBOR%I(K).EQ.KENT) THEN
+                    QBOR%ADR(I)%P%R(K)=
+     &                             AVAIL(NBOR(K),1,I)*QBOR%ADR(1)%P%R(K)
+                  ENDIF
+                ENDDO
+              ENDDO          
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !     LICBOR : BOUNDARY CONDITION FOR SEDIMENT CONCENTRATION
@@ -133,11 +194,10 @@
             ENDDO
           ENDIF
 !
-! CV 12/06 READING BOUNDARY CONDITION FILE 
+!         READING BOUNDARY CONDITION FILE 
 !
           IF(LICBOR%I(K).EQ.KENT.AND.
-     *               SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
-!
+     *                         SIS_FILES(SISLIQ)%NAME(1:1).NE.' ') THEN
              IF(IFRLIQ.GT.0) THEN
                DO I=1,NSICLA           
                   CBOR%ADR(I)%P%R(K) = CGL(IFRLIQ,AT)/XMVS
@@ -152,4 +212,4 @@
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE CONLIT
+      END 

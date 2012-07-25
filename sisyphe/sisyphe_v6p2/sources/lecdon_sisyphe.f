@@ -351,8 +351,7 @@ C     CONTROL SECTIONS
 ! REAL KEYWORDS   !
 ! ############### !
 !
-      ! NON-EQUILIBIRUM BEDLOAD
-      ! ------------------------
+!     NON-EQUILIBIRUM BEDLOAD
       LS0         = 1.D0
 !
       RC          = MOTREA( ADRESS(2,  1) )
@@ -469,16 +468,26 @@ C     CONTROL SECTIONS
           TRANS_MASS(K)=MOTREA( ADRESS(2,33) + K-1 )
         ENDDO
       ENDIF
-C
-C V6P1
-C THIEBOT MULTI LAYER MODEL 
-C ITASS=2
+!
+! V6P1
+! THIEBOT MULTI LAYER MODEL 
+! ITASS=2
+!
       CONC_GEL=MOTREA( ADRESS(2,38))
       COEF_N= MOTREA( ADRESS(2,39))
       CONC_MAX=MOTREA( ADRESS(2,50))
-C
-C       HIDING EXPOSURE MULTI GRAIN MODEL
-C +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+!
+!     PRESCRIBED SOLID DISCHARGES
+!
+      NSOLDIS=DIMENS(2,51)
+      IF(NSOLDIS.GT.0) THEN
+        DO K=1,NSOLDIS
+          SOLDIS(K)=MOTREA(ADRESS(2,51)+K-1)
+        ENDDO
+      ENDIF
+!
+!     HIDING EXPOSURE MULTI GRAIN MODEL
+! 
       DO K=1,NSICLA
          HIDI(K)  = MOTREA( ADRESS(2,253) + K-1 )
          IF (TROUVE(2,255).EQ.1) THEN

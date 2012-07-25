@@ -364,17 +364,17 @@
 1033  FORMAT(1X,'VOLUME PERDU                  : ',G16.7,' M3'
      &         ,'  ( SI <0 VOLUME SORTI )')
 1110  FORMAT(1X,'FRONTIERE ',1I3,' FLUX EN CHARRIAGE = ',G16.7,
-     &          ' ( M3/S  >0 = ENTRANT )')
+     &          ' M3/S >0=ENTRANT, AVEC VIDES')
 1111  FORMAT(1X,'TOTAL         FLUX EN CHARRIAGE = ',G16.7,
-     &          ' ( M3/S  >0 = ENTRANT )')
+     &          ' M3/S >0=ENTRANT, AVEC VIDES')
 1112  FORMAT(1X,'DEPOT DE SUSPENSION SUR LE FOND = ',G16.7,
      &          ' ( M3/S )')
 2000  FORMAT(1X,'MASS-BALANCE (IN VOLUME, INCLUDING VOID): ')
 2010  FORMAT(1X,'SUM OF THE EVOLUTIONS : ',G16.7,' M3')
 2020  FORMAT(1X,'PRESCRIBED FLOW       : ',G16.7,' M3/S'
-     &         ,'  ( M3/S  >0 = ENTERING )')
+     &         ,'  M3/S >0=ENTERING, WITH VOIDS')
 2021  FORMAT(1X,'FREE FLOW             : ',G16.7,' M3/S'
-     &         ,'  ( M3/S  >0 = ENTERING )')
+     &         ,'  M3/S >0=ENTERING, WITH VOIDS')
 2030  FORMAT(1X,'SUM OF THE CUMULATED EVOLUTIONS : ',G16.7)
 2031  FORMAT(1X,'VOLUME THAT ENTERED THE DOMAIN  : ',G16.7,' M3'
      &         ,'  ( IF <0 EXIT )')

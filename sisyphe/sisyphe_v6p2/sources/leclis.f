@@ -2,11 +2,12 @@
                      SUBROUTINE LECLIS
 !                    *****************
 !
-     &(LIEBOR,LIHBOR,EBOR,NPTFR,NBOR,STDGEO,NLIM,KENT,ISEG,XSEG,YSEG,
+     &(LIEBOR,LIHBOR,LIQBOR,EBOR,Q2BOR,NPTFR,NBOR,
+     & STDGEO,NLIM,KENT,ISEG,XSEG,YSEG,
      & NACHB,NUMLIQ,NSICLA,AFBOR,BFBOR,BOUNDARY_COLOUR,MESH)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief    READS THE BOUNDARY CONDITION FILE AND
@@ -47,6 +48,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        23/07/2012
+!+        V5P9
+!+   Q2BOR added
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR          |<->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
 !| BFBOR          |<->| BOUNDARY CONDITION ON F: NU*DF/DN=AFBOR*F+BFBOR
@@ -56,6 +62,7 @@
 !| KENT           |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
 !| LIEBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR BED EVOLUTION
 !| LIHBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR DEPTH
+!| LIQBOR         |<->| TYPE OF BOUNDARY CONDITIONS FOR SOLID DISCHARGE
 !| MESH           |<->| MESH STRUCTURE
 !| NACHB          |<->| NUMBER OF NEIGHBOUR POINT **** 
 !| NBOR           |<->| ADRESSES DES POINTS DE BORD.
@@ -63,6 +70,7 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !| NUMLIQ         |-->| LIQUID BOUNDARY NUMBER OF BOUNDARY POINTS
+!| Q2BOR          |<->| PRESCRIBED SOLID DISCHARGES ON THE BOUNDARY 
 !| STDGEO         |-->| STANDARD OF GEOMETRY FILE
 !| XSEG           |---| A SUPPRIMER
 !| YSEG           |---| A SUPPRIMER
@@ -78,7 +86,8 @@
 !
       INTEGER, INTENT(IN)            :: NPTFR
       INTEGER, INTENT(INOUT)         :: LIEBOR(NPTFR),LIHBOR(NPTFR)
-      TYPE(BIEF_OBJ),INTENT(INOUT)   :: EBOR
+      INTEGER, INTENT(INOUT)         :: LIQBOR(NPTFR)
+      TYPE(BIEF_OBJ),INTENT(INOUT)   :: EBOR,Q2BOR
       INTEGER, INTENT(INOUT)         :: NBOR(NPTFR)
       INTEGER, INTENT(INOUT)         :: BOUNDARY_COLOUR(NPTFR)
       INTEGER, INTENT(IN)            :: STDGEO,NLIM,KENT,NSICLA
@@ -104,13 +113,15 @@
 !
         DO 40 K=1,NPTFR
 !
-        IF (STDGEO.EQ.3 .AND. NCSIZE.LE.1) THEN
-          READ(NLIM,*) LIHBOR(K),IBID,IBID,BID,BID,BID,BID,
-     &                 LIEBOR(K),EBOR%ADR(1)%P%R(K),AFBOR(K),BFBOR(K),
+        IF(STDGEO.EQ.3 .AND. NCSIZE.LE.1) THEN
+          READ(NLIM,*) LIHBOR(K),LIQBOR(K),IBID,Q2BOR%R(K),
+     &                 BID,BID,BID,
+     &                 LIEBOR(K),EBOR%R(K),AFBOR(K),BFBOR(K),
      &                 NBOR(K),BOUNDARY_COLOUR(K)
-        ELSEIF (STDGEO.EQ.3 .AND. NCSIZE.GT.1) THEN
-          READ(NLIM,*) LIHBOR(K),IBID,IBID,BID,BID,BID,BID,
-     &                 LIEBOR(K),EBOR%ADR(1)%P%R(K),AFBOR(K),BFBOR(K),
+        ELSEIF(STDGEO.EQ.3 .AND. NCSIZE.GT.1) THEN
+          READ(NLIM,*) LIHBOR(K),LIQBOR(K),IBID,Q2BOR%R(K),
+     &                 BID,BID,BID,
+     &                 LIEBOR(K),EBOR%R(K),AFBOR(K),BFBOR(K),
      &                 NBOR(K),BOUNDARY_COLOUR(K),
      &                 ISEG(K),XSEG(K),YSEG(K),NUMLIQ(K)
 !
@@ -143,14 +154,16 @@
 !
         DO K=1,NPTFR
 !
-          IF(LIEBOR(K).NE.KENT) EBOR%ADR(1)%P%R(K)=0.D0
+          IF(LIEBOR(K).NE.KENT) EBOR%R(K)=0.D0
+!
+!         NOW DONE IN CONLIT WITH A COEFFICIENT AVAIL
 !
 !         COPIES THE SAME EBOR FOR ALL CLASSES
-          IF(NSICLA.GE.2) THEN
-            DO I=2,NSICLA
-              EBOR%ADR(I)%P%R(K)=EBOR%ADR(1)%P%R(K)
-            ENDDO
-          ENDIF
+!         IF(NSICLA.GE.2) THEN
+!           DO I=2,NSICLA
+!             EBOR%ADR(I)%P%R(K)=EBOR%ADR(1)%P%R(K)
+!           ENDDO
+!         ENDIF
 !
         ENDDO
 !
@@ -161,8 +174,8 @@
       IF(NCSIZE.GT.1) THEN
         READ(NLIM,*) PTIR
         IF(NPTIR.NE.PTIR) THEN
-          IF(LNG==1) WRITE(LU,151) NPTIR,PTIR
-          IF(LNG==2) WRITE(LU,152) NPTIR,PTIR
+          IF(LNG.EQ.1) WRITE(LU,151) NPTIR,PTIR
+          IF(LNG.EQ.2) WRITE(LU,152) NPTIR,PTIR
 151       FORMAT(1X,'LECLIS : INCOHERENCE ENTRE GEOMETRIE ',/,1X,
      &              '         ET CONDITIONS AUX LIMITES'   ,/,1X,I6,
      &    ' POINTS INTERFACE DANS LA GEOMETRIE',/,1X,I6,
