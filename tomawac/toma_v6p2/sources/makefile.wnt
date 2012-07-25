@@ -15,12 +15,12 @@
 #
 #--- Definitions pour SYSTEME TELEMAC
 !include <$(SYSTELCFG)\cfgmak.mak>
-VERSION       = V6P1
-V_BIEF        = V6P1
-V_DAMOCLES    = V6P1
-V_PARAVOID    = V6P1
-V_PARALLEL    = V6P1
-V_SPECIAL     = V6P1
+VERSION       = V6P2
+V_BIEF        = V6P2
+V_DAMOCLES    = V6P2
+V_PARAVOID    = V6P2
+V_PARALLEL    = V6P2
+V_SPECIAL     = V6P2
 
 
 DIRINC           = $(PROJECT)\tomawac\toma_$(VERSION)\$(DIRLIB)
@@ -83,24 +83,24 @@ declarations_tomawac.f interface_tomawac.f tomawac_mpi.f tomawac_mpi_tools.f\
 anacos.f anamar.f anaven.f angles.f bornes.f \
 condiw.f conw4d.f conwac.f corfon.f \
 cormar.f couple.f couuti.f cqueue.f \
-delfra.f dump2d.f \
-ecrete.f ecrspe.f filt_sa.f f1f1f1.f\
-foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f fsprd1.f \
+delfra.f diffrac.f dump2d.f \
+ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
+foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
 fsprd2.f fsprd3.f \
-gammln.f gauleg.f\
+gammln.f gauleg.f grad_alfa.f grad_ccg.f grad_d.f grad_kon.f \
 homere_tomawac.f \
-impr.f inip4d.f iniphy.f inipie.f  initab.f \
+impr.f inip4d.f iniphy.f inipie.f  initab.f invert.f \
 intang.f inter4d.f interp_tomawac.f \
 kerbou.f kmoyen.f \
 lecdoi.f lecdon.f lecdon_tomawac.f lecham.f leclim_tomawac.f lecsui.f \
-lecuti.f limwac.f  preleo_mpi.f \
-maruti.f nomvar_tomawac.f noudon.f noumar.f \
-pied4d.f pieds.f point_tomawac.f preleo.f \
+lecuti.f limwac.f preleo_mpi.f \
+maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
+pied4d.f pieds.f point_tomawac.f predif.f preleo.f \
 prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \
 qbbj78.f qbrek1.f qbrek2.f qbrek3.f qbrek4.f qfrot1.f qgauss.f \
 qmout1.f qmout2.f qnlin1.f qnlin2.f qnlin3.f \
 qtria1.f qtria2.f qwind1.f qwind2.f qwind3.f qwindl.f \
-radiat.f \
+radiat.f rpi_intr.f rpi_invr.f \
 semimp.f sor3d.f speini.f spejon.f spetma.f spread.f stress.f \
 tautot.f temp.f tetmoy.f totnrj.f transf.f \
 ustar1.f ustar2.f \

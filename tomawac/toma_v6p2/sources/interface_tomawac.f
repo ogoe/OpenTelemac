@@ -777,30 +777,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!V6P2 New subroutine
-      INTERFACE
-        SUBROUTINE LUBKSB
-     &( A    , N     , NP    , INDX  , B     )
-      IMPLICIT NONE
-      INTEGER N,NP,INDX(N)
-      DOUBLE PRECISION  A(NP,NP),B(NP)
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
-!V6P2 New subroutine
-      INTERFACE
-        SUBROUTINE LUDCMP
-     &( A    , N     , NP    , INDX  , D     )
-      IMPLICIT NONE
-      INTEGER N,NP,INDX(N)
-      DOUBLE PRECISION D, A(NP,NP)
-        END SUBROUTINE
-      END INTERFACE
-!
-!-----------------------------------------------------------------------
-!
       INTERFACE
         SUBROUTINE MARUTI
      &(X,Y,NPOIN,NMAR, BINMAR,NBOR,NPTFR,AT,DDC,TV1,TV2,

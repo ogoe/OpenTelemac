@@ -59,16 +59,33 @@
 !     """"""""""""""" 
       INTEGER IP, IPOIN, IP2, I 
       INTEGER ICLM, J, IELEM, ICLM2, ICLM3, ILM 
-      INTEGER ILM_POIN(NPOIN2,8), CLM(NPOIN2), KACC(NPOIN2) 
-      INTEGER M, ICST, ICST2, NCST, IP_S, ILP 
-      INTEGER NB_C(NPOIN2), SUR_P(NPOIN2,8), L(2) 
-      INTEGER STACK(NPOIN2), STACK2(NPOIN2) 
-      LOGICAL ALREADY_POM(NPOIN2) 
- 
-      DOUBLE PRECISION MINDIST(NPOIN2)  
+      INTEGER M, ICST, ICST2, NCST, IP_S, ILP, L(2) 
       DOUBLE PRECISION AC,QUO,RAD1 
+      INTEGER,ALLOCATABLE:: ILM_POIN(:,:), CLM(:), KACC(:) 
+      INTEGER,ALLOCATABLE:: NB_C(:), SUR_P(:,:)
+      INTEGER,ALLOCATABLE:: STACK(:), STACK2(:) 
+      LOGICAL,ALLOCATABLE:: ALREADY_POM(:) 
+      DOUBLE PRECISION,ALLOCATABLE:: MINDIST(:)
+      
+      LOGICAL DEJA
+      DATA DEJA/.FALSE./
+      
+      SAVE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
+      IF(.NOT.DEJA)THEN
+         ALLOCATE(ILM_POIN(NPOIN2,8))
+	 ALLOCATE(CLM(NPOIN2))
+	 ALLOCATE(KACC(NPOIN2))
+	 ALLOCATE(NB_C(NPOIN2))
+	 ALLOCATE(SUR_P(NPOIN2,8))
+	 ALLOCATE(STACK(NPOIN2))
+	 ALLOCATE(STACK2(NPOIN2))
+	 ALLOCATE(ALREADY_POM(NPOIN2))
+	 ALLOCATE(MINDIST(NPOIN2))
+	 DEJA=.TRUE.
+      ENDIF
+
 ! ILM_POIN array with the elements to which a point belongs 
 ! CLM(IP) array with the number of elements for each point 
 !  for IP belong to the elements  ILM_POIN(CLM(IP-1)+1:CLM(IP)) 

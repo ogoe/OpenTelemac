@@ -76,13 +76,12 @@
 ! 
       INTEGER LNG,LU       
       COMMON/INFO/ LNG,LU 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
-!.....VARIABLES IN ARGUMENT 
-!     """""""""""""""""""" 
-! 
-      INTEGER NF, NPLAN, NPOIN2, NPTFR, IFF 
-      INTEGER MAXNSP, NB_CLOSE(NPOIN2), NEIGB(NPOIN2,MAXNSP) 
-      INTEGER DIFFRA, NBOR(NPTFR) 
+      INTEGER NF,NPLAN,NPOIN2,NPTFR,IFF,MAXNSP
+      INTEGER NB_CLOSE(NPOIN2),NEIGB(NPOIN2,MAXNSP) 
+      INTEGER DIFFRA,NBOR(NPTFR) 
       DOUBLE PRECISION CX(NPOIN2,NPLAN), CY(NPOIN2,NPLAN) 
       DOUBLE PRECISION CT(NPOIN2,NPLAN), FREQ(NF) 
       DOUBLE PRECISION CG(NPOIN2,NF), XK(NPOIN2,NF) 
@@ -101,19 +100,36 @@
       DOUBLE PRECISION RXX(MAXNSP,NPOIN2), RYY(MAXNSP,NPOIN2) 
       DOUBLE PRECISION XKONPT(NPOIN2) 
       LOGICAL PROINF,SPHE, FLTDIF 
-! 
-!.....LOCAL VARIABLES 
-!     """"""""""""""" 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!      
       INTEGER I, IP, IPOIN 
       DOUBLE PRECISION DDDN,DSDNSK,DEUKD,DPI 
-      DOUBLE PRECISION CDELTA,DELTAN ,SQRDELTA(NPOIN2) 
-      DOUBLE PRECISION SQRCCG(NPOIN2),A_RMSE(NPOIN2) 
+      DOUBLE PRECISION CDELTA,DELTAN
       DOUBLE PRECISION S_RMSE_IN, WJUNK, WJUNK2 
-      DOUBLE PRECISION  FRDK(NPOIN2,2),FRDA(NPOIN2,2),SCDA(NPOIN2,3) 
-      LOGICAL L_DELTA(NPOIN2) 
+      DOUBLE PRECISION,ALLOCATABLE:: SQRDELTA(:) 
+      DOUBLE PRECISION,ALLOCATABLE:: SQRCCG(:),A_RMSE(:) 
+      DOUBLE PRECISION,ALLOCATABLE:: FRDK(:,:),FRDA(:,:),SCDA(:,:) 
+      LOGICAL,ALLOCATABLE:: L_DELTA(:) 
+!      
+      LOGICAL DEJA
+      DATA DEJA/.FALSE./
+!      
+      SAVE
 ! 
 !*********************************************************************** 
 ! 
+      IF(.NOT.DEJA)THEN
+         ALLOCATE(SQRDELTA(NPOIN2))
+	 ALLOCATE(SQRCCG(NPOIN2))
+	 ALLOCATE(A_RMSE(NPOIN2))
+	 ALLOCATE(FRDK(NPOIN2,2))
+	 ALLOCATE(FRDA(NPOIN2,2))
+	 ALLOCATE(SCDA(NPOIN2,3))
+	 ALLOCATE(L_DELTA(NPOIN2))
+	 DEJA=.TRUE.
+      ENDIF
+!
       DPI=6.283185307D0 
 ! 
 !----------------------------------------------------------------------- 
@@ -157,7 +173,7 @@
 !     """"""""""""""""""""""	  
       DO  IPOIN=1,NPOIN2  
         CCG(IPOIN) = CG(IPOIN,IFF)*DPI*FREQ(IFF)/XK(IPOIN,IFF) 
-        XKONPT(IPOIN)=1./(XK(IPOIN,IFF)**2)  
+        XKONPT(IPOIN)=1.D0/(XK(IPOIN,IFF)**2)  
         SQRCCG(IPOIN)=SQRT(ABS(CCG(IPOIN))) 
       ENDDO 
 ! 
@@ -179,7 +195,7 @@
 !Filtering the local amplitudes of directional spectra 
 	IF(FLTDIF) CALL FILT_SA 
 ! 
-        CALL 	 GRAD_ALFA 
+        CALL GRAD_ALFA 
        	FRDA(:,1)=DDX 
        	FRDA(:,2)=DDY      	 
 !DIFFRA=1 - Mean Slope Equation model 
@@ -218,9 +234,9 @@
         DO IPOIN = 1,NPOIN2 
             L_DELTA(IPOIN)=.TRUE. 
             IF(F(IPOIN,IP,IFF).LE.EPS) THEN 
-              DELTA(IPOIN) = 0. 
+              DELTA(IPOIN) = 0.D0 
               L_DELTA(IPOIN)=.FALSE.   
-              SQRDELTA(IPOIN) =1.0 
+              SQRDELTA(IPOIN) =1.D0 
             ELSE 
 !DIFFRA=1 - Mean Slope Equation model 
 !DIFFRA=2 - Revised Mean Slope Equation model 
@@ -231,19 +247,19 @@
 	        DELTA(IPOIN)=(DIV(IPOIN)/A(IPOIN)) 
               ENDIF 
 ! 
-              IF( DELTA(IPOIN).LE.-1.0) THEN 
-                SQRDELTA(IPOIN) =1.0 
+              IF( DELTA(IPOIN).LE.-1.D0) THEN 
+                SQRDELTA(IPOIN) =1.D0 
                 L_DELTA(IPOIN)=.FALSE. 
-                DELTA(IPOIN)= 0.0  
+                DELTA(IPOIN)= 0.D0  
               ELSE 
                 SQRDELTA(IPOIN) = SQRT(1.D0+DELTA(IPOIN)) 
                 L_DELTA(IPOIN)=.TRUE. 
               ENDIF 
 ! 
               IF ((SQRDELTA(IPOIN)).LE.EPS) THEN  
-                SQRDELTA(IPOIN) =1.0  
+                SQRDELTA(IPOIN) =1.D0  
                 L_DELTA(IPOIN)=.FALSE. 
-                DELTA(IPOIN)= 0.0  
+                DELTA(IPOIN)= 0.D0  
               ENDIF 
            ENDIF 
         ENDDO 
@@ -251,8 +267,8 @@
         DO I = 1,NPTFR 
           IPOIN = NBOR(I) 
           L_DELTA(IPOIN)=.FALSE. 
-          SQRDELTA(IPOIN) =1.0 
-          DELTA(IPOIN)= 0.0  
+          SQRDELTA(IPOIN) =1.D0 
+          DELTA(IPOIN)= 0.D0  
         ENDDO 
 ! 
 !.....DELTA GRADIENT COMPUTATION 
@@ -270,7 +286,7 @@
             SQRDELTA(IPOIN) =1.0            
             WJUNK=0.D0      
           ENDIF 
- 
+! 
           DDDN=-SINTET(IP)*DZY(IPOIN)+COSTET(IP)*DZX(IPOIN)           
           DEUKD=2.D0*XK(IPOIN,IFF)*DEPTH(IPOIN)	 
           IF (DEUKD.GT.7.D2) THEN 
@@ -278,8 +294,8 @@
 	  ELSE 
 	    DSDNSK=DPI*FREQ(IFF)*SQRDELTA(IPOIN)/SINH(DEUKD)          
           ENDIF           
-    
-            WJUNK2=DSDNSK*DDDN           
+!    
+          WJUNK2=DSDNSK*DDDN           
           CT(IPOIN,IP)=-WJUNK2-WJUNK 
           CX(IPOIN,IP)=CG(IPOIN,IFF)*SQRDELTA(IPOIN)*SINTET(IP) 
           CY(IPOIN,IP)=CG(IPOIN,IFF)*SQRDELTA(IPOIN)*COSTET(IP)        

@@ -1,6 +1,7 @@
 !                       ***************** 
                         SUBROUTINE INVERT 
-!                       ***************** 
+!                       *****************
+! 
      &( RN    , N     , NP    ) 
 ! 
 !*********************************************************************** 
@@ -39,7 +40,7 @@
 !.....LOCAL VARIABLES 
 !     """"""""""""""" 
       INTEGER INDX(NP),I,J 
-      DOUBLE PRECISION Y(NP,NP),D, A(NP,NP) 
+      DOUBLE PRECISION Y(NP,NP), A(NP,NP) 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       A=RN 
@@ -49,7 +50,7 @@
         ENDDO 
         Y(I,I)=1. 
       ENDDO 
-      CALL LUDCMP(A,N,NP,INDX,D) 
+      CALL LUDCMP(A,N,NP,INDX) 
       DO J=1,N 
         CALL LUBKSB(A,N,NP,INDX,Y(1,J)) 
       ENDDO 

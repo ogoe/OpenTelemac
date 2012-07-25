@@ -112,7 +112,7 @@ impr.f inip4d.f iniphy.f inipie.f  initab.f invert.f \
 intang.f inter4d.f interp_tomawac.f \
 kerbou.f kmoyen.f \
 lecdoi.f lecdon.f lecdon_tomawac.f lecham.f leclim_tomawac.f lecsui.f \
-lecuti.f limwac.f  lubksb.f ludcmp.f preleo_mpi.f \
+lecuti.f limwac.f preleo_mpi.f \
 maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
 pied4d.f pieds.f point_tomawac.f predif.f preleo.f \
 prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \

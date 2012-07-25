@@ -66,13 +66,24 @@
 !     """"""""""""""" 
       INTEGER IP, IPOIN, IP1, IPOIN1, NDER 
  
-      DOUBLE PRECISION WU_OM(MAXNSP), ZETA(NPOIN2) 
+      DOUBLE PRECISION,ALLOCATABLE:: WU_OM(:), ZETA(:) 
       DOUBLE PRECISION WZ,WZX1,WZY1,WZX2,WZY2 
  
       LOGICAL FFUNC 
-!       FFD the field function where data are coming from.  
+      LOGICAL DEJA
+      
+      DATA DEJA/.FALSE./
+      
+      SAVE
 !************************************************************************ 
 ! 
+       IF(.NOT.DEJA)THEN
+          ALLOCATE(WU_OM(MAXNSP))
+	  ALLOCATE(ZETA(NPOIN2))
+	  DEJA=.TRUE.
+       ENDIF
+
+!       FFD the field function where data are coming from. 
        DO IP1 =1,NB_CLOSE(I) 
           IPOIN=NEIGB(I,IP1) 
           WU_OM(IP1)=FFD(IPOIN) 
