@@ -50,6 +50,11 @@
 !+        V6P2
 !+   Addition of tracer degradation law treatment
 !
+!history  J-M HERVOUET (LNHE)
+!+        26/07/2012
+!+        V6P2
+!+   In parallel, P_DSUM on MASSOU must be done once at the end
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| DBUS           |-->| DISCHARGE OF TUBES.
@@ -200,13 +205,10 @@
 !         
           ENDDO
 !       
-          IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
-!       
         ENDIF
 !
         IF(NSIPH.GT.0) THEN
           DO I = 1 , NSIPH
-!
             IR = ENTSIP(I)
             IF(IR.GT.0) THEN
               IF(NCSIZE.GT.1) THEN
@@ -222,7 +224,6 @@
      &           TSIP%ADR(ITRAC)%P%R(I) -
      &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
             ENDIF
-!
             IR = SORSIP(I)
             IF(IR.GT.0) THEN
               IF(NCSIZE.GT.1) THEN
@@ -239,12 +240,10 @@
      &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
             ENDIF
           ENDDO
-          IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
         ENDIF
 !
         IF(NBUSE.GT.0) THEN
           DO I = 1 , NBUSE
-!
             IR = ENTBUS(I)
             IF(IR.GT.0) THEN
               IF(NCSIZE.GT.1) THEN
@@ -260,7 +259,6 @@
      &           TBUS%ADR(ITRAC)%P%R(I) -
      &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
             ENDIF
-!
             IR = SORBUS(I)
             IF(IR.GT.0) THEN
               IF(NCSIZE.GT.1) THEN
@@ -277,7 +275,11 @@
      &           (1.D0 - TETAT) * TN%ADR(ITRAC)%P%R(IR)
             ENDIF
           ENDDO
-          IF(NCSIZE.GT.1) MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
+        ENDIF
+!
+        IF(NCSIZE.GT.1.AND.
+     &     (NREJTR.GT.0.OR.NSIPH.GT.0.OR.NBUSE.GT.0)) THEN
+          MASSOU(ITRAC)=P_DSUM(MASSOU(ITRAC))
         ENDIF
 !
       ENDDO

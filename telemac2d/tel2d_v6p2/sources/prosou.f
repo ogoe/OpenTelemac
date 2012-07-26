@@ -473,7 +473,7 @@
         YASMH = .TRUE.
 !
         DO I = 1 , NBUSE
-        IR = ENTBUS(I)
+          IR = ENTBUS(I)
           IF(IR.GT.0) THEN
             IF(OPTSOU.EQ.1) THEN
 !             "NORMAL" VERSION
