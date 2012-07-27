@@ -24,6 +24,16 @@
        code="telemac2d" target="t2d_pildepon.cas" 
        title="pildepon scalar mode" 
    />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_pildepon_cin.cas" 
+       title="pildepon scalar mode" 
+   />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_pildepon_qua.cas" 
+       title="pildepon scalar mode" 
+   />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
