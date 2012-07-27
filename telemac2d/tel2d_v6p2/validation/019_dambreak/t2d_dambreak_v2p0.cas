@@ -51,7 +51,7 @@ INITIAL CONDITIONS              = 'PARTICULAR'
 /  PHYSICAL PARAMETERS
 /----------------------------------------------
 /
-LAW OF BOTTOM FRICTION          = 0.
+LAW OF BOTTOM FRICTION          = 0
 TURBULENCE MODEL                = 1
 VELOCITY DIFFUSIVITY            = 0.
 /
