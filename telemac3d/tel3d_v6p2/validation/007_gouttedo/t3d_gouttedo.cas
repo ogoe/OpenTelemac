@@ -1,5 +1,5 @@
 STOCKAGE DES MATRICES : 3
-PROCESSEURS PARALLELES : 0
+PROCESSEURS PARALLELES : 8
 /
 /  Sur HP 3700 (CHP70K2) : 107 s  version 5.5  30/11/2004
 /  Sur HP 3700 (CHP70K2) :  88 s  version 5.5  04/03/2005 (nouvelle diffusion)
@@ -30,7 +30,9 @@ NOMBRE DE PLANS HORIZONTAUX : 3
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
 /----------------------------------------------------------------------/ 
-TITRE = 'TELEMAC 3D : GOUTTE D''EAU DANS UN BASSIN$'              
+/ provisionally not accepted by python
+/TITRE = 'TELEMAC 3D : GOUTTE D''EAU DANS UN BASSIN$'     
+TITRE = 'TELEMAC 3D : GOUTTE D EAU DANS UN BASSIN$'             
 SUITE DE CALCUL : NON                                                    
 VARIABLES POUR LES SORTIES GRAPHIQUES 2D : 'U,V,H'                        
 VARIABLES POUR LES SORTIES GRAPHIQUES 3D : 'Z,U,V,W'                        
