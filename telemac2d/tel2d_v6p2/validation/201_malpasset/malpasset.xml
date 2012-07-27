@@ -24,6 +24,26 @@
        code="telemac2d" target="t2d_malpasset-small.cas" 
        title="malpasset scalar mode" 
    />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_malpasset-large.cas" 
+       title="malpasset scalar mode" 
+   /> 
+   <action xref="3" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_malpasset-small_cin.cas" 
+       title="malpasset scalar mode" 
+   />  
+   <action xref="4" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_malpasset-small_pos.cas" 
+       title="malpasset scalar mode" 
+   />  
+   <action xref="5" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_malpasset-small_prim.cas" 
+       title="malpasset scalar mode" 
+   />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
