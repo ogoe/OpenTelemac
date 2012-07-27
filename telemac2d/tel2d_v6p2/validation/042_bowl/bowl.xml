@@ -24,6 +24,16 @@
        code="telemac2d" target="t2d_bowl_fe_fr.cas" 
        title="parabolic bowl finite elements scalar mode" 
    />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_bowl_vf_fr.cas" 
+       title="parabolic bowl finite elements scalar mode" 
+   />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_bowl_vf_gb.cas" 
+       title="parabolic bowl finite elements scalar mode" 
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
