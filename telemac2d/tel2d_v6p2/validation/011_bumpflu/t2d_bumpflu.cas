@@ -20,7 +20,8 @@ PROCESSEURS PARALLELES : 0
 / 
 /  Version 6.2
 /
-/  HP C3700 compilateur HP        : 11 s   6.2  04/05/2012  
+/  HP C3700 compilateur HP        : 11 s   6.2  04/05/2012 
+/  HP Z600 compilateur HP         :  3 s   6.2  27/07/2012 (test python)
 /   
 FICHIER FORTRAN                   : t2d_bumpflu.f
 FICHIER DES CONDITIONS AUX LIMITES: geo_bumpflu.cli
