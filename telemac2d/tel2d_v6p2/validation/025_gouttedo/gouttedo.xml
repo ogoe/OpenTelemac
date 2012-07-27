@@ -24,6 +24,16 @@
        code="telemac2d" target="t2d_gouttedo.cas"
        title="gouttedo scalar mode"
    /> 
+   <action xref="2"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_gouttedo_cin.cas"
+       title="gouttedo scalar mode"
+   /> 
+   <action xref="3"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_gouttedo_qua.cas"
+       title="gouttedo scalar mode"
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
