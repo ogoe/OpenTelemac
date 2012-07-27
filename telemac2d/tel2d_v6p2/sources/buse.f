@@ -15,13 +15,19 @@
 !
 !history  C. COULET (ARTELIA)
 !+        23/05/2012
-!+
+!+     First version.
 !+
 !
 !history  U.H.Merkel
 !+        17/07/2012
-!+        V6P2 - Adaption to NAG
-!!
+!+        V6P2
+!+     Adaption to NAG.
+!
+!history  J-M HERVOUET (LNHE)
+!+        27/07/2012
+!+        V6P2 
+!+     Correction in parallel.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTBUS         |-->| ELEVATIONS OF TUBES
 !| ANGBUS         |-->| ANGLE OF TUBES WITH AXIS OX.
@@ -86,8 +92,8 @@
 !
       INTRINSIC SQRT,COS,SIN
 !
-      DOUBLE PRECISION P_DMAX
-      EXTERNAL         P_DMAX
+      DOUBLE PRECISION P_DMAX,P_DMIN
+      EXTERNAL         P_DMAX,P_DMIN
 !
 !-----------------------------------------------------------------------
 !
@@ -107,22 +113,22 @@
         S1=H(I1)+ZF(I1)
         QMAX1=0.9D0*H(I1)*V2DPAR%R(I1)/DT
       ELSE
-        S1=-1.D10
-        QMAX1=-1.D10
+        S1=0.D0
+        QMAX1=0.D0
       ENDIF
       IF(I2.GT.0) THEN
         S2=H(I2)+ZF(I2)
         QMAX2=0.9D0*H(I2)*V2DPAR%R(I2)/DT
       ELSE
-        S2=-1.D10
-        QMAX2=-1.D10
+        S2=0.D0
+        QMAX2=0.D0
       ENDIF
 !     CASE WHERE ONE OF THE ENDS IS NOT IN THE SUB-DOMAIN
       IF(NCSIZE.GT.1) THEN
-        S1=P_DMAX(S1)
-        S2=P_DMAX(S2)
-        QMAX1=P_DMAX(QMAX1)
-        QMAX2=P_DMAX(QMAX2)
+        S1=P_DMAX(S1)+P_DMIN(S1)
+        S2=P_DMAX(S2)+P_DMIN(S2)
+        QMAX1=P_DMAX(QMAX1)+P_DMIN(QMAX1)
+        QMAX2=P_DMAX(QMAX2)+P_DMIN(QMAX2)
       ENDIF
 !
 !     COEFFICIENTS FOR COMPUTATION OF PRESSURE LOSS
@@ -147,11 +153,11 @@
 !
           IF(S1.LT.(RD1+HAUT).AND.S1.LT.(RD2+HAUT)) THEN
 !           FREE SURFACE FLOW WHICH FOLLOW A WEIR LAW
-            IF(S2.GT.(0.6667*(S1-RD2)+RD2)) THEN
+            IF(S2.GT.(0.666666667D0*(S1-RD2)+RD2)) THEN
               Q = LARG * SQRT( 2.D0*GRAV*(S1-S2)/(CE1+L+CS2) )*(S2-RD2)
               SECT = (S2-RD2) * LARG
             ELSE
-              Q = LARG * SQRT( 2.D0*GRAV ) * (S1-RD1)**1.5D0 * 0.385
+              Q = LARG * SQRT(2.D0*GRAV) * (S1-RD1)**1.5D0 * 0.385D0
               SECT = (S1-RD1) * LARG
             ENDIF
           ELSE
@@ -242,6 +248,10 @@
           UBUS(N,1) = 0.D0
           VBUS(N,1) = 0.D0
         ENDIF
+        IF(NCSIZE.GT.1) THEN
+          UBUS(N,1)=P_DMAX(UBUS(N,1))+P_DMIN(UBUS(N,1))
+          VBUS(N,1)=P_DMAX(VBUS(N,1))+P_DMIN(VBUS(N,1))
+        ENDIF
       ELSE
         UBUS(N,1) = ( DBUS(N)/SECT ) * COS(ANGBUS(N,1))
         VBUS(N,1) = ( DBUS(N)/SECT ) * SIN(ANGBUS(N,1))
@@ -252,43 +262,44 @@
           UBUS(N,2) = 0.D0
           VBUS(N,2) = 0.D0
         ENDIF
-      ENDIF
-      IF(NCSIZE.GT.1) THEN
-        UBUS(N,1)=P_DMAX(UBUS(N,1))
-        VBUS(N,1)=P_DMAX(VBUS(N,1))
-        UBUS(N,2)=P_DMAX(UBUS(N,2))
-        VBUS(N,2)=P_DMAX(VBUS(N,2))
+        IF(NCSIZE.GT.1) THEN
+          UBUS(N,2)=P_DMAX(UBUS(N,2))+P_DMIN(UBUS(N,2))
+          VBUS(N,2)=P_DMAX(VBUS(N,2))+P_DMIN(VBUS(N,2))
+        ENDIF
       ENDIF
 !
-!  TREATS THE TRACER :
-!  NOTA : NBUSE + N <==> N,2
-!                 N <==> N,1
+!     TREATS THE TRACER :
+!     NOTA : NBUSE + N <==> N,2
+!                    N <==> N,1
 !
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
-          IF(DBUS(N).GT.0.D0) THEN ! I1 --> I2
+          IF(DBUS(N).GE.0.D0) THEN ! I1 --> I2
+!           CASE DBUS(N)=0.D0 NOT CLEAR, BUT A VALUE HAS TO BE
+!           GIVEN HERE, LEST IT IS USED AFTER 
             IF(I1.GT.0) THEN
               TBUS%ADR(ITRAC)%P%R(NBUSE+N)=T%ADR(ITRAC)%P%R(I1)
               TBUS%ADR(ITRAC)%P%R(N)      =T%ADR(ITRAC)%P%R(I1)
             ELSE
-              TBUS%ADR(ITRAC)%P%R(NBUSE+N)=-1.D10
-              TBUS%ADR(ITRAC)%P%R(N)      =-1.D10
+              TBUS%ADR(ITRAC)%P%R(NBUSE+N)=0.D0
+              TBUS%ADR(ITRAC)%P%R(N)      =0.D0
             ENDIF
-          ELSEIF(DBUS(N).LT.0.D0) THEN ! I2 --> I1
+          ELSE ! I2 --> I1
             IF(I2.GT.0) THEN
               TBUS%ADR(ITRAC)%P%R(N)      =T%ADR(ITRAC)%P%R(I2)
               TBUS%ADR(ITRAC)%P%R(NBUSE+N)=T%ADR(ITRAC)%P%R(I2)
             ELSE
-              TBUS%ADR(ITRAC)%P%R(N)      =-1.D10
-              TBUS%ADR(ITRAC)%P%R(NBUSE+N)=-1.D10
+              TBUS%ADR(ITRAC)%P%R(N)      =0.D0
+              TBUS%ADR(ITRAC)%P%R(NBUSE+N)=0.D0
             ENDIF
-!         THE CASE DBUS=0 IS NOT TREATED - LET THE TRACER FREE?
           ENDIF
           IF(NCSIZE.GT.1) THEN
             TBUS%ADR(ITRAC)%P%R(NBUSE+N)=
      &        P_DMAX(TBUS%ADR(ITRAC)%P%R(NBUSE+N))
+     &       +P_DMIN(TBUS%ADR(ITRAC)%P%R(NBUSE+N))
             TBUS%ADR(ITRAC)%P%R(N)      =
      &        P_DMAX(TBUS%ADR(ITRAC)%P%R(N))
+     &       +P_DMIN(TBUS%ADR(ITRAC)%P%R(N))
           ENDIF
         ENDDO
       ENDIF
