@@ -24,6 +24,11 @@
        code="telemac2d" target="t2d_dambreak_v1p0.cas"
        title="dambreak scalar mode"
    /> 
+   <action xref="2"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_dambreak_v2p0.cas"
+       title="dambreak scalar mode"
+   /> 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
