@@ -23,6 +23,11 @@
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_canal.cas" 
        title="canal scalar mode" 
+   /> 
+   <action xref="1" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac3d" target="t3d_canal-nonhydro.cas" 
+       title="canal scalar mode" 
    />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
