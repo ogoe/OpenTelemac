@@ -28,8 +28,10 @@ NOMBRE DE PLANS HORIZONTAUX : 3
 /LONGUEUR DU VECTEUR : 1             
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
-/----------------------------------------------------------------------/ 
-TITRE = 'TELEMAC 3D : GOUTTE D''EAU DANS UN BASSIN$'              
+/----------------------------------------------------------------------/
+/ provisionally not accepted by python 
+/TITRE = 'TELEMAC 3D : GOUTTE D''EAU DANS UN BASSIN$'
+TITRE = 'TELEMAC 3D : GOUTTE D EAU DANS UN BASSIN$'              
 SUITE DE CALCUL : NON                                                    
 VARIABLES POUR LES SORTIES GRAPHIQUES 2D : 'U,V,H'                        
 VARIABLES POUR LES SORTIES GRAPHIQUES 3D : 'Z,U,V,W'                        
