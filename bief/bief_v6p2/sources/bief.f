@@ -56,10 +56,10 @@
         SUBROUTINE BIEF_ALLVEC(NAT,VEC,NOM,IELM,DIM2,STATUT,MESH)
           USE BIEF_DEF
           IMPLICIT NONE
-          TYPE(BIEF_OBJ) , INTENT(INOUT)        :: VEC
-          INTEGER        , INTENT(IN)           :: NAT,IELM
-          INTEGER        , INTENT(IN), OPTIONAL :: DIM2,STATUT
-          CHARACTER*6    , INTENT(IN)           :: NOM
+          TYPE(BIEF_OBJ) , INTENT(INOUT):: VEC
+          INTEGER        , INTENT(IN)   :: NAT,IELM
+          INTEGER        , INTENT(IN)   :: DIM2,STATUT
+          CHARACTER*6    , INTENT(IN)   :: NOM
           TYPE(BIEF_MESH) , INTENT(IN)  :: MESH
         END SUBROUTINE
 !
@@ -3347,9 +3347,9 @@
           INTEGER,          INTENT(IN), OPTIONAL    :: IOPT
           DOUBLE PRECISION, INTENT(IN), OPTIONAL    :: INFINI
           DOUBLE PRECISION, INTENT(IN), OPTIONAL    :: ZERO
-          TYPE(BIEF_OBJ),   INTENT(INOUT), OPTIONAL :: X
-          TYPE(BIEF_OBJ),   INTENT(IN)   , OPTIONAL :: Y,Z
-          DOUBLE PRECISION, INTENT(IN)   , OPTIONAL :: C
+          TYPE(BIEF_OBJ),   INTENT(INOUT), OPTIONAL, TARGET :: X
+          TYPE(BIEF_OBJ),   INTENT(IN)   , OPTIONAL, TARGET :: Y,Z
+          DOUBLE PRECISION, INTENT(IN)   ,OPTIONAL :: C
           CHARACTER(LEN=8), INTENT(IN)              :: OP
         END SUBROUTINE
 !
@@ -4051,7 +4051,7 @@
           IMPLICIT NONE
           TYPE(SLVCFG), INTENT(INOUT)    :: CFG
           LOGICAL, INTENT(IN)            :: INFOGR
-          TYPE(BIEF_OBJ), INTENT(INOUT)  :: X,B
+          TYPE(BIEF_OBJ), TARGET, INTENT(INOUT) :: X,B
           TYPE(BIEF_OBJ), INTENT(INOUT)  :: TB
           TYPE(BIEF_OBJ), INTENT(INOUT)  :: A,AUX
           TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
