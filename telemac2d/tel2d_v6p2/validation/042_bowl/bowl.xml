@@ -29,7 +29,7 @@
        code="telemac2d" target="t2d_bowl_vf_fr.cas" 
        title="parabolic bowl finite elements scalar mode" 
    />  
-   <action xref="2" 
+   <action xref="3" 
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_bowl_vf_gb.cas" 
        title="parabolic bowl finite elements scalar mode" 
