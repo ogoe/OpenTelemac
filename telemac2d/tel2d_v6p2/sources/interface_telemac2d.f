@@ -7,10 +7,6 @@
 ! TELEMAC2D 6.2
 !***********************************************************************
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-      USE BIEF_DEF
 !
 !-----------------------------------------------------------------------
 !
@@ -1476,11 +1472,12 @@
 !
       INTERFACE
         SUBROUTINE LECDON_TELEMAC2D(MOTCAR,FILE_DESC,PATH,NCAR)
+      USE DECLARATIONS_TELEMAC2D
       IMPLICIT NONE
       INTEGER, INTENT(IN)               :: NCAR
       CHARACTER(LEN=250), INTENT(IN)    :: PATH
-      CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,300)
-      CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(300)
+      CHARACTER(LEN=144), INTENT(INOUT) :: FILE_DESC(4,MAXKEY)
+      CHARACTER(LEN=144), INTENT(INOUT) :: MOTCAR(MAXKEY)
         END SUBROUTINE
       END INTERFACE
 !
