@@ -17,7 +17,7 @@
 !+   Creation 
 ! 
 !history  J-M HERVOUET (LNHE) 
-!+        26/07/2012 
+!+        30/07/2012 
 !+        V6P2 
 !+   Parallelism 
 !
@@ -62,10 +62,10 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER N,I,EBUS,SBUS
+      INTEGER N,I
 ! 
-      DOUBLE PRECISION ALT1,ALT2,XSOR,YSOR,XENT,YENT
-      DOUBLE PRECISION ANG1,ANG2,CS1,CS2,CE1,CE2 
+      DOUBLE PRECISION XSOR,YSOR,XENT,YENT
+      DOUBLE PRECISION ANG1,ANG2 
       DOUBLE PRECISION DX,DY,ANG 
 ! 
       DOUBLE PRECISION PI 
@@ -81,37 +81,19 @@
 ! 
       DO 10 N=1,NBUSE 
         READ(IFIC,*,ERR=997) ENTBUS(N),SORBUS(N), 
-     &                       CE1,CE2,CS1,CS2, 
+     &                       CEBUS(N,1),CEBUS(N,2),
+     &                       CSBUS(N,1),CSBUS(N,2), 
      &                       LRGBUS(N),HAUBUS(N), 
      &                       CLPBUS(N),LBUS(N), 
-     &                       ALT1,ALT2 
+     &                       ALTBUS(N,1),ALTBUS(N,2) 
 ! UNCOMMENT THE FOLLOWING LINE TO IMPOSE THE DIRECTION OF FLOW FROM THE DATA FILE 
 !     &                      ,ANG1,ANG2 
 !
-!     IN // CHECKING IF POINTS ARE IN THE DOMAIN, AND GLOBAL VALUES
-!     REPLACED BY THE LOCAL VALUES FOR FURTHER USE  
+!       IN // GLOBAL VALUES REPLACED BY THE LOCAL VALUES FOR FURTHER USE  
 ! 
-        IF(NCSIZE.GT.1) THEN 
-          EBUS = ENTBUS(N)
-          SBUS = SORBUS(N)
-          ENTBUS(N) = 0
-          SORBUS(N) = 0 
-          DO I=1,MESH%NPOIN 
-            IF(EBUS.EQ.MESH%KNOLG%I(I)) THEN 
-              ENTBUS(N) = I 
-            ENDIF  
-            IF(SBUS.EQ.MESH%KNOLG%I(I)) THEN 
-              SORBUS(N) = I 
-            ENDIF
-          ENDDO  
-        ENDIF 
+        ENTBUS(N)=GLOBAL_TO_LOCAL_POINT(ENTBUS(N),MESH) 
+        SORBUS(N)=GLOBAL_TO_LOCAL_POINT(SORBUS(N),MESH)         
 !
-        CEBUS(N,1)  = CE1 
-        CEBUS(N,2)  = CE2 
-        CSBUS(N,1)  = CS1 
-        CSBUS(N,2)  = CS2 
-        ALTBUS(N,1) = ALT1 
-        ALTBUS(N,2) = ALT2 
         IF(ENTBUS(N).GT.0) THEN
           XENT=MESH%X%R(ENTBUS(N))
           YENT=MESH%Y%R(ENTBUS(N))
@@ -194,4 +176,4 @@
 !----------------------------------------------------------------------- 
 ! 
       RETURN 
-      END 
+      END
