@@ -53,7 +53,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE INTERFACE_ARTEMIS, EX_DIRALE => DIRALE 
       USE INTERFACE_ARTEMIS, ONLY: SPD
 !
       IMPLICIT NONE
