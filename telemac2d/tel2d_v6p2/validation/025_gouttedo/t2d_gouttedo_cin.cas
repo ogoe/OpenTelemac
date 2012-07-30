@@ -32,7 +32,7 @@ FICHIER DES RESULTATS              : r2d_gouttedo_cin.slf
 /----------------------------------------------------------------------/ 
 /                     OPTIONS GENERALES                                  
 /----------------------------------------------------------------------/ 
-TITRE = 'TELEMAC 2D : GOUTTE D''EAU DANS UN BASSIN$'              
+TITRE = 'TELEMAC 2D : GOUTTE D EAU DANS UN BASSIN$'              
 SUITE DE CALCUL : NON                                                    
 VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,H,T1'                        
 VARIABLES A IMPRIMER : ' '                                                                    
