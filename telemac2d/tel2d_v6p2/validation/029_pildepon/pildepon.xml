@@ -29,7 +29,7 @@
        code="telemac2d" target="t2d_pildepon_cin.cas" 
        title="pildepon scalar mode" 
    />  
-   <action xref="2" 
+   <action xref="3" 
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_pildepon_qua.cas" 
        title="pildepon scalar mode" 
