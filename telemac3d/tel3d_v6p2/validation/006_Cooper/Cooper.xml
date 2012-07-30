@@ -1,7 +1,7 @@
 <?xml version="1.0"?> 
 <!-- Validation and verification of test cases, given a list of CAS files 
 --> 
-<validation xref="case"> 
+<validation xref="Cooper"> 
  
 <!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
@@ -29,7 +29,7 @@
        code="telemac3d" target="t3d_cooper-hyd.cas" 
        title="Cooper scalar mode" 
    /> 
-   <action xref="2" 
+   <action xref="3" 
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_cooper-supg.cas" 
        title="Cooper scalar mode" 
