@@ -139,9 +139,17 @@ bedload_interact.f         conlit.f                   point_sisyphe.f  \
 corstr_sisyphe.f           predes.f                         maxslope.f \
 init_transport.f          init_mixte.f   init_compo_coh.f      init_zero.f\
 init_sediment.f            ks_sisyphe.f               tassement_2.f\
-sisyphe.f                 read_sections_sisyphe.f   \
+sisyphe.f                 read_sections_sisyphe.f   suspension_sandflow.f \
 rescue_sisyphe_notperma.f \
-tassement.f               read_fic_conc.f            cgl.f
+tassement.f               read_fic_conc.f            cgl.f \
+db.f cvsp_add_fraction.f cvsp_add_section.f cvsp_alt.f \
+cvsp_check_f.f cvsp_check_steady.f \
+cvsp_compress_brut.f \
+cvsp_compress_clean.f cvsp_compress_dp.f cvsp_init.f \
+cvsp_init_from_layers.f 	cvsp_integrate_volume.f cvsp_main.f\
+cvsp_make_actlay.f cvsp_outputfiles.f cvsp_p.f\
+cvsp_rm_fraction.f cvsp_write_profile.f layers_p.f\
+cvsp_output_init.f lecdon_split_outputpoints.f
 
 #------- Objets
 #
