@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V6P2                                   18/06/2012
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE BY CALL TO DAMOCLES.
@@ -89,6 +89,17 @@
 !+  File for liquid boundaries added  
 !+   
 !
+!history  JWI
+!+        31/05/2012
+!+        V6P2
+!+  added one increment to include wave orbital velocities
+!+  (SORLEO(I+28+(NOMBLAY+4)*NSICLA+NOMBLAY).OR.
+!
+!history  PAT (LNHE)
+!+        18/06/2012
+!+        V6P2
+!+   updated version with HRW's development 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -130,6 +141,8 @@ C
       CHARACTER(LEN=250) :: NOM_CAS
       CHARACTER(LEN=250) :: NOM_DIC
       CHARACTER*72       :: MOTCLE(4,NMAX,2)
+
+      CHARACTER(LEN=250) TEMPVAR
 C
 C-----------------------------------------------------------------------
 C
@@ -341,17 +354,31 @@ C     CONTROL SECTIONS
       I_ORIG = MOTINT( ADRESS(1,43)   )
       J_ORIG = MOTINT( ADRESS(1,43)+1 )
       DEBUG  = MOTINT( ADRESS(1,44)   )
-! 
-      ICR  =   MOTINT(ADRESS(1,46)   )
-! 
-      IKS  =   MOTINT(ADRESS(1,47)   )
 !
+      ICR  =   MOTINT(ADRESS(1,46)   )
+!
+      IKS  =   MOTINT(ADRESS(1,47)   )
+
+
+!// UHM //
+
+      VSMTYPE     =   MOTINT(ADRESS(1,53)   )
+      PRO_MAX_MAX =   MAX(NSICLA*4+4,MOTINT(ADRESS(1,49) ))
+      CVSMPPERIOD =   MOTINT(ADRESS(1,50)   )
+      if (CVSMPPERIOD.eq.0) CVSMPPERIOD = LEOPR
+      ALT_MODEL   =   MOTINT(ADRESS(1,52)   )
+
+
+!// UHM //
+
+
 !
 ! ############### !
 ! REAL KEYWORDS   !
 ! ############### !
 !
-!     NON-EQUILIBIRUM BEDLOAD
+      ! NON-EQUILIBRIRUM BEDLOAD
+      ! ------------------------
       LS0         = 1.D0
 !
       RC          = MOTREA( ADRESS(2,  1) )
@@ -502,9 +529,9 @@ C
 C UM: MPM-Factor
       MPM         = MOTREA( ADRESS(2,260) )
 C UM: ALPHA-Factor
-      ALPHA       = MOTREA( ADRESS(2,261) )	  
+      ALPHA       = MOTREA( ADRESS(2,261) )
 C UM: MOFAC-Factor
-      MOFAC       = MOTREA( ADRESS(2,262) )	  
+      MOFAC       = MOTREA( ADRESS(2,262) )
 
       ! ################## !
       ! LOGICAL KEYWORDS !
@@ -567,7 +594,7 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
         SLOPEFF=0
         DEVIA=0
       ENDIF
-! 
+!
       MIXTE=MOTLOG(ADRESS(3,24))
 !     COUPLING WITH DREDGESIM
       DREDGESIM=MOTLOG(ADRESS(3,25))
@@ -618,7 +645,12 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
       SIS_FILES(SISSEO)%NAME=MOTCAR( ADRESS(4,37) )
 !     FILE FOR LIQUID BOUNDARIES
       SIS_FILES(SISLIQ)%NAME=MOTCAR( ADRESS(4,38) )
-!
+
+	  !UHM FOR CVSP, But its not Beautiful
+      TEMPVAR  =   MOTCAR(ADRESS(4,51)   )
+      call LECDON_SPLIT_OUTPUTPOINTS(TEMPVAR,CVSMOUTPUT,CVSM_OUT_FULL)
+	  !UHM
+
       IF(LNG.EQ.1) WRITE(LU,101)
       IF(LNG.EQ.2) WRITE(LU,102)
 101   FORMAT(1X,/,19X, '********************************************',/,
@@ -649,9 +681,11 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
 !
       DO I = 1, 4
          IF ((NPRIV.LT.I).AND.
-     &       (SORLEO(I+27+(NOMBLAY+4)*NSICLA+NOMBLAY).OR.
-     &        SORIMP(I+27+(NOMBLAY+4)*NSICLA+NOMBLAY))) THEN
-            NPRIV=MAX(NPRIV,I)
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+     &       (SORLEO(I+28+(NOMBLAY+4)*NSICLA+NOMBLAY).OR.
+     &        SORIMP(I+28+(NOMBLAY+4)*NSICLA+NOMBLAY))) THEN
+! JWI END
+  	            NPRIV=MAX(NPRIV,I)
          ENDIF
       ENDDO
 C
@@ -666,14 +700,16 @@ C        SORIMP(25+4*NSICLA)=.FALSE.
 C        SORIMP(26+4*NSICLA)=.FALSE.
       ENDIF
 C   
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
       IF(.NOT.CHARR) THEN
-        SORLEO(22+(NOMBLAY+2)*NSICLA)=.FALSE.
         SORLEO(23+(NOMBLAY+2)*NSICLA)=.FALSE.
         SORLEO(24+(NOMBLAY+2)*NSICLA)=.FALSE.
-        SORIMP(22+(NOMBLAY+2)*NSICLA)=.FALSE.
+        SORLEO(25+(NOMBLAY+2)*NSICLA)=.FALSE.
         SORIMP(23+(NOMBLAY+2)*NSICLA)=.FALSE.
         SORIMP(24+(NOMBLAY+2)*NSICLA)=.FALSE.
+        SORIMP(25+(NOMBLAY+2)*NSICLA)=.FALSE.
       ENDIF
+! JWI END
 C
 C-----------------------------------------------------------------------
 C
@@ -831,7 +867,7 @@ C
      &   RESOL.NE.ADV_LPO   .AND.RESOL.NE.ADV_NSC   .AND.
      &   RESOL.NE.ADV_PSI   .AND.RESOL.NE.ADV_LPO_TF.AND.
      &   RESOL.NE.ADV_NSC_TF                              ) THEN
-         IF (LNG.EQ.1) WRITE(LU,302) RESOL 
+         IF (LNG.EQ.1) WRITE(LU,302) RESOL
          IF (LNG.EQ.2) WRITE(LU,303) RESOL
 302      FORMAT(1X,'METHODE DE RESOLUTION NON PROGRAMMEE : ',1I6)
 303      FORMAT(1X,'RESOLVING METHOD NOT IMPLEMENTED : ',1I6)
@@ -928,7 +964,7 @@ C CV : si première couche est  vide cela n'est pas correct
 C
       IF(MIXTE) THEN
 C
-C       FILLS VOIDS WITH MUD: 
+C       FILLS VOIDS WITH MUD:
 C CV: vérifier que la concentration en cohésif est non nulle
 C
         CSF_SABLE= 1.D0
