@@ -5,7 +5,7 @@
      &(TEXTE,TEXTPR,MNEMO,NSICLA,UNIT,MAXVAR,NPRIV,NOMBLAY)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V6P2                                   18/06/2012
 !***********************************************************************
 !
 !brief    GIVES THE VARIABLE NAMES FOR THE RESULTS AND
@@ -42,6 +42,16 @@
 !+        17/01/2012
 !+        V6P2
 !+   Adaptation to greater numbers of layers and classes (up to 99 each)
+!
+!history  JWI (HRW) 
+!+        14/06/2012
+!+        V6P2
+!+   Increment of one to include wave orbital velocities  
+!
+!history  PAT (LNHE)
+!+        18/06/2012
+!+        V6P2
+!+   updated version with HRW's development 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MAXVAR         |-->| MAXIMUM NUMBER OF OUTPUT VARIABLES
@@ -225,6 +235,10 @@
         TEXTE(19) = 'RUGOSITE TOTALE M               '
         TEXTE(20) = 'FROT. PEAU MU                   '
         TEXTE(21) = 'MEAN DIAMETER M                 '
+
+! JWI 31/05/2012 - added line to include wave orbital velocities
+        TEXTE(22)  = 'BOTTOM VELOCITY M/S             '
+! JWI END
 !
 !       THIS IS DONE ABOVE
 !
@@ -243,12 +257,14 @@
         ENDDO
 !
         ADD=NSICLA*(NOMBLAY+2)
-        TEXTE(22+ADD)='QS BEDLOAD      M2/S            '
-        TEXTE(23+ADD)='QS BEDLOAD X    M2/S            '
-        TEXTE(24+ADD)='QS BEDLOAD Y    M2/S            '
-        TEXTE(25+ADD)='QS SUSPENSION   M2/S            '
-        TEXTE(26+ADD)='QS SUSPENSION X M2/S            '
-        TEXTE(27+ADD)='QS SUSPENSION Y M2/S            '
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+        TEXTE(23+ADD)='QS BEDLOAD      M2/S            '
+        TEXTE(24+ADD)='QS BEDLOAD X    M2/S            '
+        TEXTE(25+ADD)='QS BEDLOAD Y    M2/S            '
+        TEXTE(26+ADD)='QS SUSPENSION   M2/S            '
+        TEXTE(27+ADD)='QS SUSPENSION X M2/S            '
+        TEXTE(28+ADD)='QS SUSPENSION Y M2/S            '
+! JWI END
 !
       ELSE
 !
@@ -275,6 +291,9 @@
         TEXTE(19)  = 'RUGOSITE TOTALE.M               '
         TEXTE(20)  = 'CORR FROTT PEAU MU              '
         TEXTE(21)  = 'DIAMETRE MOYEN  M               '
+! JWI 31/05/2012 - added line to include wave orbital velocities
+        TEXTE(22)  = 'VITESSE FOND    M/S             '
+! JWI END
 !
 !       THIS IS DONE ABOVE
 !
@@ -286,32 +305,40 @@
 !       ENDDO
 !
         DO I=1,NSICLA
-          TEXTE(21+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
-          MNEMO(21+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
-          TEXTE(21+I+(NOMBLAY+1)*NSICLA) = TEXTE_CS(I)
-          MNEMO(21+I+(NOMBLAY+1)*NSICLA) = MNEMO_CS(I)
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+          TEXTE(22+I+NOMBLAY*NSICLA)     = TEXTE_QS(I)
+          MNEMO(22+I+NOMBLAY*NSICLA)     = MNEMO_QS(I)
+          TEXTE(22+I+(NOMBLAY+1)*NSICLA) = TEXTE_CS(I)
+          MNEMO(22+I+(NOMBLAY+1)*NSICLA) = MNEMO_CS(I)
+! JWI END
         ENDDO
 !
         ADD=NSICLA*(NOMBLAY+2)
-        TEXTE(22+ADD)='QS CHARRIAGE    M2/S            '
-        TEXTE(23+ADD)='QS CHARRIAGE X  M2/S            '
-        TEXTE(24+ADD)='QS CHARRIAGE Y  M2/S            '
-        TEXTE(25+ADD)='QS SUSPENSION   M2/S            '
-        TEXTE(26+ADD)='QS SUSPENSION X M2/S            '
-        TEXTE(27+ADD)='QS SUSPENSION Y M2/S            '
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+        TEXTE(23+ADD)='QS CHARRIAGE    M2/S            '
+        TEXTE(24+ADD)='QS CHARRIAGE X  M2/S            '
+        TEXTE(25+ADD)='QS CHARRIAGE Y  M2/S            '
+        TEXTE(26+ADD)='QS SUSPENSION   M2/S            '
+        TEXTE(27+ADD)='QS SUSPENSION X M2/S            '
+        TEXTE(28+ADD)='QS SUSPENSION Y M2/S            '
+! JWI END
 !
       ENDIF
 !
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
       DO I=1,NSICLA
-        TEXTE(27+I+NSICLA*(NOMBLAY+2)) = TEXTE_QSC(I)
-        MNEMO(27+I+NSICLA*(NOMBLAY+2)) = MNEMO_QSC(I)
-        TEXTE(27+I+NSICLA*(NOMBLAY+3)) = TEXTE_QSS(I)
-        MNEMO(27+I+NSICLA*(NOMBLAY+3)) = MNEMO_QSS(I)
+        TEXTE(28+I+NSICLA*(NOMBLAY+2)) = TEXTE_QSC(I)
+        MNEMO(28+I+NSICLA*(NOMBLAY+2)) = MNEMO_QSC(I)
+        TEXTE(28+I+NSICLA*(NOMBLAY+3)) = TEXTE_QSS(I)
+        MNEMO(28+I+NSICLA*(NOMBLAY+3)) = MNEMO_QSS(I)
+! JWI END
       ENDDO
 !
       DO I=1,NOMBLAY
-        TEXTE(27+I+NSICLA*(NOMBLAY+4)) = TEXTE_ES(I)
-        MNEMO(27+I+NSICLA*(NOMBLAY+4)) = MNEMO_ES(I)
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+        TEXTE(28+I+NSICLA*(NOMBLAY+4)) = TEXTE_ES(I)
+        MNEMO(28+I+NSICLA*(NOMBLAY+4)) = MNEMO_ES(I)
+! JWI END
       ENDDO
 ! V6P2
       DO I=1,NOMBLAY
@@ -323,16 +350,20 @@
        ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY
 ! ... V6P2
 !
-      TEXTE(28+ADD)='PRIVE 1                         '
-      TEXTE(29+ADD)='PRIVE 2                         '
-      TEXTE(30+ADD)='PRIVE 3                         '
-      TEXTE(31+ADD)='PRIVE 4                         '
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+      TEXTE(29+ADD)='PRIVE 1                         '
+      TEXTE(30+ADD)='PRIVE 2                         '
+      TEXTE(31+ADD)='PRIVE 3                         '
+      TEXTE(32+ADD)='PRIVE 4                         '   
+! JWI END                
 !     NPRIV MAY BE GREATER THAN 4
 !     TEXTE(31+ADD)='PRIVE 5                         '
 !
-      DO I=1,31+NSICLA*(NOMBLAY+4)+2*NOMBLAY
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+      DO I=1,32+NSICLA*(NOMBLAY+4)+2*NOMBLAY
         TEXTPR(I)=TEXTE(I)
       ENDDO
+! JWI END
 !
 !-----------------------------------------------------------------------
 !
@@ -381,26 +412,35 @@
 !     D50
       MNEMO(21)   = 'D50     '
 !
-      MNEMO(22+NSICLA*(NOMBLAY+2)) = 'QSBL    '
-      MNEMO(23+NSICLA*(NOMBLAY+2)) = 'QSBLX   '
-      MNEMO(24+NSICLA*(NOMBLAY+2)) = 'QSBLY   '
-      MNEMO(25+NSICLA*(NOMBLAY+2)) = 'QSSUSP  '
-      MNEMO(26+NSICLA*(NOMBLAY+2)) = 'QSSUSPX '
-      MNEMO(27+NSICLA*(NOMBLAY+2)) = 'QSSUSPY '
+! JWI 31/05/2012 - added line to include wave orbital velocities
+      MNEMO(22)   = 'UWB     '
+! JWI END
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+      MNEMO(23+NSICLA*(NOMBLAY+2)) = 'QSBL    '
+      MNEMO(24+NSICLA*(NOMBLAY+2)) = 'QSBLX   '
+      MNEMO(25+NSICLA*(NOMBLAY+2)) = 'QSBLY   '
+      MNEMO(26+NSICLA*(NOMBLAY+2)) = 'QSSUSP  '
+      MNEMO(27+NSICLA*(NOMBLAY+2)) = 'QSSUSPX '
+      MNEMO(28+NSICLA*(NOMBLAY+2)) = 'QSSUSPY '
+! JWI END
 !CV
 !V6P2      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY
       ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY
-      MNEMO(28+ADD) = 'A       '
-      MNEMO(29+ADD) = 'G       '
-      MNEMO(30+ADD) = 'L       '
-      MNEMO(31+ADD) = 'O       '
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+      MNEMO(29+ADD) = 'A       '
+      MNEMO(30+ADD) = 'G       '
+      MNEMO(31+ADD) = 'L       '
+      MNEMO(32+ADD) = 'O       '
+! JWI END
 !     THE NUMBER OF PRIVATE ARRAYS IS A KEYWORD
 !     MNEMO(31+ADD) = '????????'
 !
 !----------------------------
 !CV V6P2 
 !      ADD=NSICLA*(NOMBLAY+4)+NOMBLAY+27+MAX(NPRIV,4)
-      ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY+27+MAX(NPRIV,4)
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+      ADD=NSICLA*(NOMBLAY+4)+2*NOMBLAY+28+MAX(NPRIV,4)
+! JWI END
       IF(ADD.LT.MAXVAR) THEN
         DO I=ADD+1,MAXVAR
           MNEMO(I) =' '
