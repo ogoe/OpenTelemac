@@ -9,14 +9,13 @@
      & UNORM,U2D,V2D,HN,CF,MU,TOB,TOBW,UW,TW,THETAW,FW,HOULE,
      & AVAIL,ACLADM,UNLADM,KSP,KSR,KS,
      & ICF,HIDFAC,XMVS,XMVE,GRAV,VCE,HMIN,KARMAN,
-     & ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,
+     & ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,CSRATIO,
      & CMAX,CS,CS0,UCONV,VCONV,CORR_CONV,SECCURRENT,BIJK,
      & IELMT,MESH,FDM,XWC,FD90,SEDCO,VITCE,PARTHENIADES,VITCD,
      & U3D,V3D,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
-! simplified calculation of transport rates for initalization
+! SISYPHE   V6P2                                   21/07/2011
 !***********************************************************************
 !
 !brief
@@ -62,7 +61,16 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!
+!history  MAK (HRW)
+!+        31/05/2012
+!+        V6P2
+!+  Include CSRATIO
+!
+!history  PAT (LNHE)
+!+        18/06/2012
+!+        V6P2
+!+   updated version with HRW's development for Soulsby-van Rijn's concentration
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -78,6 +86,7 @@
 !| CS             |<->| CONCENTRATION AT TIME N
 !| CS0            |-->| CONCENTRATION AT TIME 0
 !| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| CSRATIO        |<->| EQUILIBRIUM CONCENTRATION FOR SOULSBY-VAN RIJN EQ.
 !| DEBUG          |-->| FLAG FOR DEBUGGING
 !| FD90           |-->| DIAMETER D90
 !| FDM            |-->| DIAMETER DM FOR EACH CLASS 
@@ -174,7 +183,8 @@
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: QS_C, QSXC, QSYC, CALFA,SALFA
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: T1,T2,T3,T4,T5,T6,T7,T8
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: T9,T10,T11,T12,T14
-      TYPE(BIEF_OBJ),    INTENT(INOUT) :: ZREF,CSTAEQ,CS,UCONV,VCONV
+      TYPE(BIEF_OBJ),    INTENT(INOUT) :: ZREF,CSTAEQ,CSRATIO
+      TYPE(BIEF_OBJ),    INTENT(INOUT) :: CS,UCONV,VCONV
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: QS_S,QS,QSCL_C,QSCL_S
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: COEFPN
       TYPE(BIEF_OBJ),    INTENT(INOUT) :: QSCLXS,QSCLYS,QSCL
@@ -184,7 +194,7 @@
       DOUBLE PRECISION,  INTENT(IN)    :: PARTHENIADES,BIJK,XWC(NSICLA)
       DOUBLE PRECISION,  INTENT(IN)    :: FD90(NSICLA),CS0(NSICLA)
       DOUBLE PRECISION,  INTENT(IN)    :: VITCE,VITCD
-      DOUBLE PRECISION,  INTENT(INOUT) :: AC(NSICLA),CMAX,FDM(NSICLA)
+      DOUBLE PRECISION,  INTENT(INOUT) :: AC(NSICLA),CMAX,FDM(NSICLA) 
       DOUBLE PRECISION,  INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
 !
       TYPE(BIEF_OBJ),    INTENT(IN)    :: U3D,V3D
@@ -324,6 +334,12 @@
                 ELSEIF(ICQ.EQ.3) THEN
                   CALL SUSPENSION_VANRIJN(FDM(I),T8,NPOIN,
      &               GRAV,XMVE,XMVS,VCE,ZERO,AC(I), CSTAEQ,ZREF)
+               ELSEIF(ICQ.EQ.4) THEN
+                  CSRATIO%R=1D0;   
+                  CALL SUSPENSION_SANDFLOW(FDM(I),FD90(I),T8,NPOIN,
+!     mak     &                GRAV,XMVE,XMVS,ZERO,AC(I),CSTAEQ,ZREF,HN,U2D,V2D,T2)
+     &         GRAV,XMVE,XMVS,ZERO,AC(I),CSTAEQ,ZREF,HN,U2D,V2D,CSRATIO)
+!      Cannot initialise to non-zero values as T2 not computed yet! 
                 ENDIF
 !               ROUSE CONCENTRATION PROFILE IS ASSUMED BASED ON TOTAL FRICTION
 !               VELOCITY
