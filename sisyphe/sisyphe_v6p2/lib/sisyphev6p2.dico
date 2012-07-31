@@ -100,6 +100,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'R="fonds non erodables"';
 'W="hauteur de houle"';
 'X="periode de houle"';
+'UWB="wave orbital velocity (m/s)"';
 'KS="coefficient de Rugosité totale (m)"';
 'TOB="Contrainte de frottement(N/m2)"';
 'MU = "Coefficient de correction pour frottement de peau"';
@@ -114,6 +115,7 @@ CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
 'kCONC="concentration of bed layer k"';
 'QSi="debit solide pour la classe i"';
 'CSi="concentration volumique ou g/l pour la classe i"';
+'CSAT="concentration volumique equil. ou g/l"';
 'A="variable supplementaire A"';
 'G="variable supplementaire G"';
 'L="variable supplementaire L"';
@@ -143,6 +145,7 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 'QSBL="bed load transport rate (m2/s)"';
 'W="wave height"';
 'X="wave period"';
+'UWB="wave orbital velocity (m/s)"';
 '1Ai="fraction of sediment of class i in the first layer"';
 '2Ai="fraction of sediment of class i in the second layer"';
 'kAi="fraction of sediment of class i in the k layer"';
@@ -150,6 +153,7 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 'kCONC="concentration of bed layer k"';
 'QSi="bed load transport rate of sediment of class i"';
 'CSi="concentration volumic or mass concentration for class i"';
+'CSAT="saturated concentration (kg/m3)"';
 'A="supplementary variable A"';
 'G="supplementary variable G"';
 'L="supplementary variable L"';
@@ -231,6 +235,7 @@ CHOIX1= 'U="velocity along x axis (m/s)"';
 '*ES = "thicknes of bed layer i"';
 '*CONC= "concentration of bed layer i "';
 'CSi="concentration for class i"';
+'CSAT="saturated concentration (kg/m3)"';
 'A="supplementary variable A"';
 'G="supplementary variable G"';
 'L="supplementary variable L"';
@@ -2373,12 +2378,14 @@ NIVEAU = 2
 AIDE = '1 : formule de Zyserman et Fredsoe 
         2 : methode de Bijker. La concentration au fond 
         est reliee au taux de transport par charriage  
-        3 : formule de Van Rijn (1987)'        
+        3 : formule de Van Rijn (1987)     
+        4 : formule de Soulsy_van Rijn' 
 AIDE1 = '1 : Zysderman and Fredsoe, equilibrium formula
          2: Bijker method. The near bed concentration 
          is related to the bedload . This option cannot be used 
          without bedload transport
-         3: Van Rijn formula '
+         3: Van Rijn formula 
+         4: Soulsby_van Rijn formula'
 /        
 NOM = 'CORRECTION DU CHAMP CONVECTEUR'
 NOM1 = 'CORRECTION ON CONVECTION VELOCITY'
@@ -3110,6 +3117,21 @@ Les donnees de ce fichier sont sur le canal SIS_FILES(SISLIQ)%LU.'
 AIDE1 = 'Variations in time of boundary conditions. Data of this file are read 
 on channel SIS_FILES(SISLIQ)%LU.'  
 /
+NOM = 'DEBITS SOLIDES IMPOSES' 
+NOM1 = 'PRESCRIBED SOLID DISCHARGES' 
+TYPE = REEL 
+INDEX = 51 
+MNEMO = 'SOLDIS' 
+TAILLE = 2 
+RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES' 
+RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'  
+NIVEAU = 1 
+AIDE = ' Valeurs des debits solides imposes aux frontieres
+liquides entrantes (m3/s sans les vides).
+Une valeur par frontiere liquide' 
+AIDE1 = 'Values of prescribed solid discharges
+at the inflow boundaries (m3/s without voids).
+One value per liquid boundary' 
 /
 /
 / FOR PERL OR PYTHON SCRIPTS
@@ -3208,3 +3230,126 @@ NIVEAU = 1
 AIDE  = 'Executable par defaut de SISYPHE'
 AIDE1 = 'Default executable for SISYPHE'
 /
+
+
+
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'VERTICAL GRAIN SORTING MODEL'
+NOM1 = 'VERTICAL GRAIN SORTING MODEL'
+TYPE = ENTIER
+INDEX = 53
+MNEMO = 'VSMTYPE'
+TAILLE = 0
+DEFAUT  = 0
+DEFAUT1 = 0
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Defines the model of the vertical grain sorting:
+        0 = HR-VSM = Layer Model (Classic Hirano / Ribberink approach)
+        1 = C-VSM (Continous Vertical Grain Sorting Model)'
+/
+
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM MAXIMUM SECTIONS'
+NOM1 = 'C-VSM MAXIMUM SECTIONS'
+TYPE = ENTIER
+INDEX = 49
+MNEMO = 'PRO_MAX_MAX'
+TAILLE = 0
+DEFAUT  = 200
+DEFAUT1 = 200
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Defines the maximum discretisation of the
+         Continous Vertical Sorting Model:
+         Should be bigger than 8xNumber of Fractions.
+         The bigger the higher the RAM requirements,
+         but the faster and accurater the
+         bookkeeping of the sediments.'
+/
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM FULL PRINTOUT PERIOD'
+NOM1 = 'C-VSM FULL PRINTOUT PERIOD'
+TYPE = ENTIER
+INDEX = 50
+MNEMO = 'CVSMPPERIOD'
+TAILLE = 0
+DEFAUT  = 0
+DEFAUT1 = 0
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Number of Timesteps to next printout
+         of the full C-VSM. These printouts are highly
+         time and disc consuming.
+         0 = Coupled to GRAPHIC PRINTOUT PERIOD
+         >0 = Own printout period for the C-VSM'
+/
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM PRINTOUT SELECTION'
+NOM1 = 'C-VSM PRINTOUT SELECTION'
+TYPE = CARACTERE
+INDEX = 51
+MNEMO = 'CVSMOUTPUT'
+TAILLE = 0
+DEFAUT  = 0;0;0;0;0;0;0;0;0;0;0;0;0
+DEFAUT1 = 0;0;0;0;0;0;0;0;0;0;0;0;0
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Printout the C-VSM for the whole model as SELAFIN
+         or / and for some nodes as .VSP.CSV file.
+         Give Up to 100 INTEGER numbers separated by ";"
+         0 = Full model .-> .RES
+         N = 1,2...NPOINT; 2D-ID of a SELFIN MESH POINT ->.CSV'
+/
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM DYNAMIC ALT MODEL'
+NOM1 = 'C-VSM DYNAMIC ALT MODEL'
+TYPE = ENTIER
+INDEX = 52
+MNEMO = 'ALT_MODEL'
+TAILLE = 0
+DEFAUT  = 5
+DEFAUT1 = 5
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'MODEL FOR ACTIVE LAYER THICKNESS
+         0 = ELAY0 (Keyword: ACTIVE LAYER THICKNESS)
+         1 = Hunziker & Günther
+         2 = Fredsoe & Deigaard (1992)
+         3 = van RIJN (1993)
+         4 = Wong (2006)
+         5 = Malcharek (2003)
+         6 = 3*d50 within last time steps ALT'
+/
+
+
