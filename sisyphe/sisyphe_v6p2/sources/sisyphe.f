@@ -9,7 +9,7 @@
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V6P2                                   31/07/2012
 !***********************************************************************
 !
 !brief
@@ -36,11 +36,37 @@
 !+        V6P2
 !+   Second call to condim moved upwards out of test for calling BIEF_SUITE.
 !
+!history  MAK (HRW) 
+!+        31/05/2012
+!+        V6P2
+!+   modifications to include CSRATIO       
+!
+!history  JWI (HRW) 
+!+        14/06/2012
+!+        V6P2
+!+   added (several) lines to use wave orbital velocities directly if found in hydro file
+!
+!history  PAT (LNHE)
+!+        18/06/2012
+!+        V6P2
+!+   updated version with HRW's development (wave orbital velocities) + Soulsby-van Rijn's concentration
+!
+!history CV (LNHE) 
+!+ 		 12/06/2012
+!+       V6P2 
+!+    added AT0 to CALL CONLIT(MESH%NBOR%I,AT0)
+!
+!history CV (LNHE) 
+!+       02/07/2012 
+!+       V6P2 
+!+ DT changed to DTS in CALL FLUSEC_SISYPHE
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
 !| CODE           |-->| NAME OF CALLING PROGRAMME (TELEMAC2D OR 3D)
 !| CONSTFLOW      |<->| LOGICAL, CONSTANT FLOW DISCHARGE OR NOT (A SUPPRIMER)
+!| CSRATIO        |<->| EQUILIBRIUM CONCENTRATION FOR SOULSBY-VAN RIJN EQ.
 !| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
 !|                |   | IS DM1*GRAD(ZCONV)
 !| DT_TEL         |-->| TIME STEP FROM TELEMAC
@@ -119,10 +145,13 @@
       DOUBLE PRECISION   :: AT,VCUMU,MASS_GF
       DOUBLE PRECISION   :: HIST(1)
       LOGICAL            :: PASS,PASS_SUSP
-      LOGICAL            :: ENTETS,YAZR
+      LOGICAL            :: RESU,ENTETS,CHGMSK,YAZR
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZF,SAVEQU,SAVEQV
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
+      DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEUW
+! JWI END
 !
       ! SAVES LOCAL VARIABLES
       ! --------------------------------
@@ -169,6 +198,10 @@
 !     PART 1 : INITIALISATION
 !------------------------------------------------------------------
 !
+
+            PERCOU = PERICOU !UHM!!!!!!!
+
+
       IF(PART==0.OR.PART==-1) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'INITIALIZATION'
 !
@@ -184,6 +217,9 @@
           ALIRE(12)=1
           ALIRE(13)=1
           ALIRE(14)=1
+! JWI 31/05/2012 - added line to include wave orbital velocities
+          ALIRE(22)=1
+! JWI END
         ENDIF
 !
 !       READS THE SEDIMENTOLOGICAL DATA IN THE CONTINUATION FILE
@@ -198,23 +234,30 @@
           ALIRE(21)=1
 !         READS AVAI FROM THE PREVIOUS COMPUTATION FILE
           DO I=1,NSICLA*NOMBLAY
-            ALIRE(21+I)=1
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+            ALIRE(22+I)=1
+! JWI END
           ENDDO
 !         READS CS (CONCENTRATION) FROM THE PREVIOUS COMPUTATION FILE
           IF(SUSP) THEN
             DO I=1,NSICLA
-             ALIRE(21+(NOMBLAY+1)*NSICLA+I)=1
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+             ALIRE(22+(NOMBLAY+1)*NSICLA+I)=1
+! JWI END
             ENDDO
           ENDIF
 !         READS THE LAYER THICKNESSES
           DO I=1,NOMBLAY
-            ALIRE(27+(NOMBLAY+4)*NSICLA+I)=1
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+            ALIRE(28+(NOMBLAY+4)*NSICLA+I)=1
+! JWI END
           ENDDO
         ENDIF
 !V6P2 CV lecture concentration des couches
           IF(TASS) THEN
           DO I=1,NOMBLAY
-            ALIRE(27+(NOMBLAY+4)*NSICLA+I+NOMBLAY)=1
+! PAT 14/06/2012 - added 1 to include wave orbital velocities
+            ALIRE(28+(NOMBLAY+4)*NSICLA+I+NOMBLAY)=1
           ENDDO
         ENDIF
 !
@@ -244,6 +287,8 @@
 ! : 1          READS, PREPARES AND CONTROLS THE DATA
 !
 !=======================================================================
+!
+        RESU = .TRUE.
 !
 !       READS THE BOUNDARY CONDITIONS AND INDICES FOR THE BOUNDARY NODES
 !       EBOR IS READ HERE FOR THE FIRST CLASS ONLY
@@ -471,6 +516,23 @@
               IF(TROUVE(12).EQ.1) HW%TYPR='Q'
               IF(TROUVE(13).EQ.1) TW%TYPR='Q'
               IF(TROUVE(14).EQ.1) THETAW%TYPR='Q'
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
+              IF(TROUVE(22).EQ.1) UW%TYPR='Q'
+              IF(UW%TYPR=='Q') THEN
+                WRITE(LU,*)
+                WRITE(LU,*) 'WAVE RESULTS IN :',SIS_FILES(SISHYD)%NAME
+                WRITE(LU,*)
+      WRITE(LU,*) 'BOTTOM VELOCITY FOUND; THESE WILL BE USED DIRECTLY'
+                WRITE(LU,*)
+              ELSEIF(HW%TYPR=='Q'.AND.TW%TYPR=='Q') THEN
+                WRITE(LU,*)
+                WRITE(LU,*) 'WAVE RESULTS IN :',SIS_FILES(SISHYD)%NAME
+                WRITE(LU,*)
+      WRITE(LU,*) 'WAVE HEIGHT AND PERIOD FOUND; BOTTOM VELOCITY'
+                WRITE(LU,*) 'WILL BE COMPUTED IN CALCUW'
+                WRITE(LU,*)
+              ENDIF
+! JWI END
             ENDIF
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_BIEF_SUITE'
             IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
@@ -598,7 +660,11 @@
 !       CHECKS THE WAVE DATA
 !
         IF(HOULE) THEN
-          IF(HW%TYPR    .NE.'Q'.OR.
+! JWI 31/05/2012 - added/modified lines to include wave orbital velocities
+         IF(UW%TYPR    .EQ.'Q') THEN
+!          IF(HW%TYPR    .NE.'Q'.OR.
+         ELSEIF(HW%TYPR    .NE.'Q'.OR.
+! JWI END
      &       TW%TYPR    .NE.'Q'.OR.
      &       THETAW%TYPR.NE.'Q') THEN
             WRITE(LU,*) ' '
@@ -672,8 +738,12 @@
 !  WAVE ORBITAL VELOCITY
 ! =====================================================================
         IF(HOULE) THEN
-          CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
-        ENDIF
+! JWI 31/05/2012 - added lines to use wave orbital velocities directly if found in hydro file; otherwise compute with CALCUW
+          IF(UW%TYPR    .NE.'Q') THEN
+            CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
+          ENDIF
+! JWI END
+           ENDIF
 ! ======================================================================
         IF(DEBUG.GT.0) WRITE(LU,*) 'TOB_SISYPHE'
         CALL TOB_SISYPHE(TOB,TOBW,MU,KS,KSP,KSR,CF,FW,
@@ -693,7 +763,8 @@
      &     UNORM,U2D,V2D,HN,CF,MU,TOB,TOBW,UW,TW,THETAW,FW,HOULE,
      &     AVAIL,ACLADM,UNLADM,KSP,KSR,KS,
      &     ICF,HIDFAC,XMVS,XMVE,GRAV,VCE,HMIN,KARMAN,
-     &     ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,
+!mak     &     ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,
+     &     ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,CSRATIO,
      &     CMAX,CS,CS0,UCONV,VCONV,CORR_CONV,SECCURRENT,BIJK,
      &     IELMT,MESH,FDM,XWC,FD90,SEDCO,VITCE,PARTHENIADES,VITCD,
      &     U3D,V3D,CODE)
@@ -846,6 +917,19 @@
             ELSE
               ENTET = .FALSE.
             ENDIF
+
+!
+!  ----     PRINTOUTS TO C-VSP !!! UHM
+!
+
+            CVSM_OUT  = .FALSE.
+            if(CVSMPPERIOD*((LT)/CVSMPPERIOD) == (LT)) THEN
+              CVSM_OUT = .TRUE.
+            else
+              CVSM_OUT = .FALSE.
+            endif
+
+
 !
 !----       READS AND UPDATES H AND ZF
 !----       IF 1ST PASS OR UNSTEADY AND NO COUPLING
@@ -874,10 +958,16 @@
                SAVEQU=>QU%R
                SAVEQV=>QV%R
                SAVEZ =>Z%R
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
+               IF(HOULE.AND.UW%TYPR=='Q') SAVEUW=>UW%R
+! JWI END
                ZF%R  =>T4%R
                QU%R  =>DEL_QU%R
                QV%R  =>DEL_QV%R
                Z%R   =>DEL_Z%R
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
+               IF(HOULE.AND.UW%TYPR=='Q') UW%R  =>DEL_UW%R
+! JWI END
 !
                NUMDEB=NUMDEB+1
 !
@@ -900,12 +990,19 @@
                QU%R=>SAVEQU
                QV%R=>SAVEQV
                Z%R=>SAVEZ
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
+               IF(HOULE.AND.UW%TYPR=='Q') UW%R=>SAVEUW
+! JWI END
 !
 !              INCREMENT OF QU, QV AND Z PER SUB-TIME-STEP
                DO I = 1,NPOIN
                  DEL_QU%R(I) = (DEL_QU%R(I)-QU%R(I))/NSOUS
                  DEL_QV%R(I) = (DEL_QV%R(I)-QV%R(I))/NSOUS
                  DEL_Z%R(I)  = (DEL_Z%R(I) -Z%R(I)) /NSOUS
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
+                 IF(HOULE.AND.UW%TYPR=='Q') DEL_UW%R(I) = 
+     &                (DEL_UW%R(I)-UW%R(I))/NSOUS
+! JWI END
                ENDDO
 !
 !              UPDATES UNSTEADY HYDRO
@@ -1022,7 +1119,7 @@
          IF(ENTET.AND.ISOUS.EQ.NSOUS) ENTETS=.TRUE.
 !
 !---------------------------------------------------------------------
-!       FRICTION COEFFICIENT VARIABLE IN TIME
+!        FRICTION COEFFICIENT VARIABLE IN TIME
 !---------------------------------------------------------------------
 !
         CALL CORSTR_SISYPHE
@@ -1050,7 +1147,10 @@
 !  ---   WAVE ORBITAL VELOCITY --> UW
 !
          IF(HOULE) THEN
-           CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file; otherwise compute with CALCUW
+           IF(UW%TYPR    .NE.'Q') THEN
+             CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
+           ENDIF
          ENDIF
 !
           CALL TOB_SISYPHE
@@ -1095,17 +1195,25 @@
 !
 !         UPDATES THE LAYERS  --> ELAY
 !
-          IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
-            IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
-            CALL LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+!! PAT !!           print*,'VSMTYPE: ',VSMTYPE
+          if(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
+            if(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
+            if(VSMTYPE.eq.0) THEN !UHM
+            call LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-            IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
-          ELSE
-            CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
-          ENDIF
+            else !UHM
+            !UHM
+            call CVSP_MAIN(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+            endif !UHM
+            if(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
+          else
+            call OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+          endif
 ! END OF BEDLOAD
-        ENDIF
+        endif
       ! ********************** !
       ! SUSPENSION COMPUTATION !
       ! ********************** !
@@ -1113,7 +1221,7 @@
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'SUSPENSION_MAIN'
           CALL SUSPENSION_MAIN
-     &(SLVTRA,HN,HN_TEL,MU,TOB,FDM,KSP,KSR,KS,
+     &(SLVTRA,HN,HN_TEL,MU,TOB,FDM,FD90,KSP,KSR,KS,
      & VOLU2D,V2DPAR,UNSV2D,AFBOR,BFBOR,ZF,LICBOR,
      & IFAMAS,MASKEL,MASKPT,U2D,V2D,NSICLA,
      & NPOIN,NPTFR,IELMT,OPTDIF,RESOL,LT,NIT,OPTBAN,OPTSUP,
@@ -1122,12 +1230,13 @@
      & KARMAN,XMVE,XMVS,VCE,HMIN,XWC,VITCD,VITCE,PARTHENIADES,
      & BILMA,MSK,CHARR,IMP_INFLOW_C,MESH,ZF_S,CS,
      & CST,CTILD,CBOR,DISP,IT1,IT2,IT3,IT4,TB,T1,T2,T3,T4,T5,T6,
-     & T7,T8,T9,T10,T11,T12,W1,TE1,CLT,TE2,TE3,S,AM1_S,AM2_S,MBOR,
+     & T7,T8,T9,T10,T11,T12,T14,W1,TE1,CLT,TE2,TE3,S,AM1_S,AM2_S,MBOR,
      & ELAY,LIMDIF,MASKTR,TETA_SUSP,AC,
      & MASED0,MASINI,MASTEN,MASTOU,ES,AVAIL,ENTETS,PASS_SUSP,
      & ZFCL_S,HPROP,FLUDPT,FLUDP,FLUER,DISP_C,KX,KY,KZ,UCONV,
      & VCONV,QSXS,QSYS,QSCLXS,QSCLYS,QSCL_S,QS_S,QS_C,
-     & CSTAEQ,ICQ,MASTCP,MASFIN,MASDEPT,MASDEP,MASSOU,CORR_CONV,
+!MAK  & CSTAEQ,ICQ,MASTCP,MASFIN,MASDEPT,MASDEP,MASSOU,CORR_CONV,
+     & CSTAEQ,CSRATIO,ICQ,MASTCP,MASFIN,MASDEPT,MASDEP,MASSOU,CORR_CONV,
      & ZREF,SEDCO,VISC_TEL,CODE,DIFT,DM1,UCONV_TEL,VCONV_TEL,
      & ZCONV,SOLSYS,FLBOR_TEL,FLBOR_SIS,FLBORTRA,NUMLIQ%I,NFRLIQ,
      & MIXTE,NCOUCH_TASS,CONC_VASE,TOCE_VASE,TOCE_SABLE,
@@ -1142,15 +1251,22 @@
 !      REDEFINES THE LAYER OF ERODABLE SEDIMENT
 !      EXTENDED GRANULOMETRY (TO BE REPLACED WITH NOMBLAY>1
 !
-        IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
-          IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
-          CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+           print*,'VSMTYPE: ',VSMTYPE
+        if(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
+          if(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
+          if (VSMTYPE.eq.0) THEN !UHM
+          call LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &               ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &               AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
-        ELSE
-          CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
-        ENDIF
+          else !UHM
+          call CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &               ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &               AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+          endif ! UHM
+          if(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
+        else
+          call OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+        endif
 ! END OF SUSPENSION
       ENDIF
 !
@@ -1347,6 +1463,10 @@ C!!! ONLY FOR ONE CLASS
             CALL OS('X=X+Y   ', X=QU, Y=DEL_QU)
             CALL OS('X=X+Y   ', X=QV, Y=DEL_QV)
             CALL OS('X=X+Y   ', X=Z , Y=DEL_Z)
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
+            IF(HOULE.AND.UW%TYPR=='Q') 
+     &      CALL OS('X=X+Y   ', X=UW, Y=DEL_UW)
+! JWI END
           ENDIF
           CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
 !         CLIPS NEGATIVE DEPTHS
