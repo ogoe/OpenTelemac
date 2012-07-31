@@ -51,6 +51,26 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  MAK (HRW)
+!+        31/05/2012
+!+        V6P2
+!+    Added bief object for CSRATIO
+!
+!history  JWI (HRW)
+!+        31/05/2012
+!+        V6P2
+!+    Added line to use wave orbital velocities directly if found in hydro file
+!
+!history  PAT (LNHE)
+!+        18/06/2012
+!+        V6P2
+!+   updated version with HRW's development 
+!
+!history  CV (LNHE)
+!+        01/07/2012
+!+        V6P2
+!+   added bloc ZFCL_MS for evolution for each class due to sloping bed effects
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       USE BIEF
       USE DECLARATIONS_SISYPHE
@@ -126,6 +146,9 @@ C-----------------------------------------------------------------------
       CALL BIEF_ALLVEC(1,QV    , 'QV    ', IELMT, 1, 2,MESH) ! Y FLOWRATE
       CALL BIEF_ALLVEC(1,DEL_QU, 'DEL_QU', IELMT, 1, 2,MESH) ! INCREMENT OF QU IF HYDRO
       CALL BIEF_ALLVEC(1,DEL_QV, 'DEL_QV', IELMT, 1, 2,MESH) ! INCREMENT OF QV IF HYDRO
+! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
+      CALL BIEF_ALLVEC(1,DEL_UW, 'DEL_UW', IELMT, 1, 2,MESH) ! INCREMENT OF QV IF HYDRO
+! JWI END
       CALL BIEF_ALLVEC(1,U2D   , 'U2D   ', IELMT, 1, 2,MESH) ! X VELOCITY
       CALL BIEF_ALLVEC(1,V2D   , 'V2D   ', IELMT, 1, 2,MESH) ! Y VELOCITY
       CALL BIEF_ALLVEC(1,QS    , 'QS    ', IELMT, 1, 2,MESH) ! TRANSPORT RATE
@@ -182,6 +205,8 @@ C     BOUNDARY FLUX FOR CALL TO CVDFTR
       CALL BIEF_ALLVEC(1,FLBOR_SIS , 'FLBORS', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,FLBORTRA  , 'FLBTRA', IELBT, 1, 1,MESH)
       CALL BIEF_ALLVEC(1,CSTAEQ, 'CSTAEQ', IELMT, 1, 2,MESH)
+!     MAK ADDITION
+      CALL BIEF_ALLVEC(1,CSRATIO, 'CSRATIO', IELMT, 1, 2,MESH)
       CALL BIEF_ALLVEC(1,HN    , 'HN    ', IELMH_SIS, 1, 2,MESH) ! WATER DEPTH
       CALL BIEF_ALLVEC(1,HCLIP , 'HCLIP ', IELMH_SIS, 1, 2,MESH) ! CLIPPING WATER DEPTH
       CALL BIEF_ALLVEC(1,HPROP , 'HPROP ', IELMH_SIS, 1, 1,MESH)
@@ -467,6 +492,9 @@ C     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
 CV 2010
       CALL ADDBLO(VARSOR, ACLADM)             ! 21
 C CV +1
+! JWI 31/05/2012 - added line to include wave orbital velocities
+      CALL ADDBLO(VARSOR, UW  )               ! 22
+! JWI END
 C     AVAI: FROM 22 TO 21+NOMBLAY*NSICLA
 C
       DO I = 1,NOMBLAY*NSICLA
@@ -529,8 +557,10 @@ C
           CALL ADDBLO(VARSOR,VARCL%ADR(I)%P)
 ! CV 2010 +1         
 ! CV   V6P2   ??    
+! JWI 31/05/2012 - added 1 to include wave orbital velocities
 !         SORLEO(27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY+I)=.TRUE.
-           SORLEO(27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY+I)=.TRUE.
+           SORLEO(28+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY+I)=.TRUE.
+! JWI END
         ENDDO
       ENDIF
 !
