@@ -28,6 +28,9 @@
       USE DECLARATIONS_SISYPHE
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
       INTEGER,          INTENT(IN)   :: J
       INTEGER,          INTENT(IN)   :: I
       double precision, INTENT(IN)    :: Z_HIGH
@@ -42,10 +45,9 @@
       integer l_cnt, mycase, f_cnt, revcnt, helper, lastcase, JG, k
       logical ret,cvsp_check_f
       LOGICAL, EXTERNAL:: DB
-
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
+!
        JG = J
        if (NCSIZE.gt.1) JG = mesh%knolg%I(J)
 
@@ -135,8 +137,6 @@
                mycase  = mycase  + 1000000
                lastcase = 3
 
-      !if(db(JG,0).eqv..true.) print*,'  CASE 1000000'
-
 
       !Layer totally inside one section (Case dZZd)
       elseif ((dhig >= Z_HIGH) .AND.
@@ -211,7 +211,7 @@
 
       !Debug!Debug!Debug!Debug!Debug!Debug
       if (0.5D0*(fhig+flow)*(dhig-dlow) < 0.D0) then
-      write(*,fmt='(A,1X,2(I11,1X),11(G20.10,1X)),1X,I11')
+      write(LU,fmt='(A,1X,2(I11,1X),11(G20.10,1X),1X,I11)')
      &   'Integrate_Vol_ER_TMP:<0:'
      &   ,JG, I, AT, fhig,flow,dhig,dlow, dhig-dlow, revcnt,
      &         PRO_F(j,revcnt-1,f_cnt),PRO_F(j,revcnt,f_cnt),
