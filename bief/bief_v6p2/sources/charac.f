@@ -4,7 +4,7 @@
 !
      &( FN  , FTILD  , NOMB   , UCONV  , VCONV , WCONV  , ZSTAR ,
      &  DT  , IFAMAS , IELM   , NPOIN2 , NPLAN , NPLINT ,
-     &  MSK , MASKEL , SHP,SHZ , TB    , IT1,IT2,IT3,IT4,MESH ,
+     &  MSK , MASKEL , SHP,SHZ , TB    , IT1,IT2,IT3,ISUB,MESH ,
      &  NELEM2,NELMAX2,IKLE2,SURDET2   , INILOC)
 !
 !***********************************************************************
@@ -45,12 +45,11 @@
 !|                |   |                   41 : PRISM IN TELEMAC3D
 !| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
 !| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
-!| INILOC         |-->| IF YES, INITIAL POSITIONS OF POINTS (SHP) TO BE DONE
-!|                |   | NO LONGER USED !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !| IT1            |<->| INTEGER WORK ARRAY
 !| IT2            |<->| INTEGER WORK ARRAY
-!| IT3            |<->| INTEGER WORK ARRAY
-!| IT4            |<->| INTEGER WORK ARRAY
+!| IT3            |<->| INTEGER WORK ARRAY: NO LONGER USED !!!!!!!!!!!!
+!| ISUB           |<--| IN PARALLEL, WILL BE THE SUB-DOMAIN OF THE FOOT
+!|                |   | OF THE CHARACTERISTIC.
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
@@ -85,7 +84,7 @@
       INTEGER         , INTENT(IN)         :: NPOIN2,NELMAX2
       INTEGER         , INTENT(INOUT)      :: IELM
       INTEGER         , INTENT(INOUT)      :: IT1(*),IT2(*)
-      INTEGER         , INTENT(INOUT)      :: IT3(*),IT4(*)
+      INTEGER         , INTENT(INOUT)      :: IT3(*),ISUB(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)         :: FN,UCONV,VCONV,WCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)         :: ZSTAR,MASKEL,IKLE2,SURDET2
       TYPE(BIEF_OBJ)  , INTENT(INOUT)      :: FTILD,TB,SHP,SHZ
@@ -220,11 +219,16 @@
      &             MESH%X%R,MESH%Y%R,ZSTAR%R,
      &             T1%R,T2%R,T3%R,T4%R,T5%R,T6%R,
      &             MESH%Z%R,SHP%R,SHZ%R,
-     &             SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
+     &             SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,ISUB,
      &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
      &             3,NPLAN,MESH,NPT,DIM1F,-1)
 ! 
-!     PARALLEL COMMUNICATION
+!     PARALLEL COMMUNICATION: THE VALUE WITH HIGHEST ABSOLUTE VALUE
+!                             IS KEPT. WE ASSUME THAT INTERFACE POINTS
+!                             NOT TREATED BY A SUB-DOMAIN HAVE RECEIVED
+!                             A FTILD=0.D0, THIS IS THE CASE BECAUSE
+!                             POINTS IPLOT WITH ELT(IPLOT)=0
+!                             ARE RETURNED WITH ALL SHP=0.D0
 !    
       IF(NCSIZE.GT.1.AND.NOMB.GT.0) THEN
         IF(FTILD%TYPE.EQ.2) THEN 

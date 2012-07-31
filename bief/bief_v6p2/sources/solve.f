@@ -138,7 +138,6 @@
 !
       TYPE(BIEF_OBJ), INTENT(INOUT) :: A,AUX
 !
-!      INTEGER, INTENT(IN)            :: LT
       LOGICAL, INTENT(IN) :: INFOGR
 !
 !     MESH STRUCTURE

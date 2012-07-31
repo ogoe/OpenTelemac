@@ -20,7 +20,7 @@
 !+          (ESPECIALLY IMPORTANT FOR COMMANDS TAKING MORE THAN ONE LINE)
 !
 !history  J-M HERVOUET (LNHE)
-!+        12/07/2012
+!+        31/07/2012
 !+        V6P2
 !+   Use of new array ELTCAR.
 !+   Dimensions in SCARACT reviewed (previous confusion between
@@ -28,11 +28,12 @@
 !+   subroutine organise_char. NPOINT=NPLOT replaces NPOINT=NPOIN
 !+   before the call to SCHAR41. ADD_CHAR11 and ADD_CHAR41 deleted.
 !+   SCHAR11 and SCHAR41 simplified. Arguments removed in SCARACT.
-!+   SCHAR12 and SCHAR13 added. DX,DY,DZ added to CHARAC_TYPE, used in 2D.
+!+   SCHAR12 and SCHAR13 added. DX,DY,DZ added to CHARAC_TYPE.
 !+   More data saved when touching a solid boundary: XPLOT, YPLOT, DX, DY
 !+   All this ensures strict equality of scalar and parallel runs !!!!
 !+   However in 3D the vertical velocity is computed in Telemac-3D and
 !+   has truncation errors, this will trigger differences.
+!+   Now the sub-domain at the foot of the characteristic is returned
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -657,24 +658,43 @@
 ! STRUCTURES, N BEING THE POSITION IN THE BASKET FOR A GIVEN VARIABLE  
 !--------------------------------------------------------------------- 
 ! 
-        SUBROUTINE INTRODUCE_RECVCHAR(VAL,N,NPOIN,NOMB,NARRV)  
+        SUBROUTINE INTRODUCE_RECVCHAR(VAL,NOMB,NARRV,ISUB)
+          USE BIEF  
           IMPLICIT NONE 
           INTEGER LNG,LU 
           COMMON/INFO/LNG,LU 
-          INTEGER, INTENT(IN) :: N,NPOIN,NOMB,NARRV 
-          DOUBLE PRECISION, INTENT(INOUT) :: VAL(NPOIN) 
-          INTEGER I  
-          IF (N.GT.NOMB.OR.N.GT.MAX_BASKET_SIZE) THEN  
-            WRITE(LU,*)  
-     &       ' @STREAMLINE::INTRODUCE_RECVCHAR ::', 
-     &       ' N>NOMB.OR.N>MAX_BASKET_SIZE,',  
-     &       ' N,NOMB,MAX_BASKET_SIZE : ',N,NOMB,MAX_BASKET_SIZE 
+          INTEGER, INTENT(IN)    :: NOMB,NARRV
+          INTEGER, INTENT(INOUT) :: ISUB(*)
+          TYPE(BIEF_OBJ), INTENT(INOUT) :: VAL 
+          INTEGER I,N  
+          IF(NOMB.GT.MAX_BASKET_SIZE) THEN  
+            WRITE(LU,*) 'STREAMLINE::INTRODUCE_RECVCHAR' 
+            WRITE(LU,*) 'NOMB>MAX_BASKET_SIZE'  
+            WRITE(LU,*) 'NOMB,MAX_BASKET_SIZE=',NOMB,MAX_BASKET_SIZE 
             CALL PLANTE(1) 
             STOP  
-          ENDIF  
+          ENDIF
+!         SUB-DOMAIN WHERE IS THE FOOT OF THE CHARACTERISTIC
           DO I=1,NARRV 
-            VAL(RECVCHAR(I)%IOR)=RECVCHAR(I)%BASKET(N) 
-          ENDDO  
+            ISUB(RECVCHAR(I)%IOR)=RECVCHAR(I)%NEPID  
+          ENDDO
+!         NOW THE INTERPOLATION, DEPENDING ON TYPE           
+          IF(VAL%TYPE.EQ.2) THEN 
+            DO I=1,NARRV 
+              VAL%R(RECVCHAR(I)%IOR)=RECVCHAR(I)%BASKET(1) 
+            ENDDO 
+          ELSEIF(VAL%TYPE.EQ.4) THEN
+            DO N=1,NOMB
+              DO I=1,NARRV 
+                VAL%ADR(N)%P%R(RECVCHAR(I)%IOR)=RECVCHAR(I)%BASKET(N) 
+              ENDDO
+            ENDDO
+          ELSE
+            WRITE(LU,*)'STREAMLINE::INTRODUCE_RECVCHAR'
+            WRITE(LU,*)'VAL%TYPE=',VAL%TYPE 
+            CALL PLANTE(1) 
+            STOP  
+          ENDIF 
           RETURN  
         END SUBROUTINE INTRODUCE_RECVCHAR 
 ! 
@@ -792,8 +812,8 @@
 ! 
      &( U , V , W , DT , NRK , X , Y , ZSTAR , Z , IKLE2 , IBOR , 
      &  XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP , SHZ , ELT , ETA , 
-     &  NSP   , NPLOT , NPOIN2 , NELEM2 , NPLAN , SURDET , 
-     &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD,ISPDONE) 
+     &  NPLOT , NPOIN2 , NELEM2 , NPLAN , SURDET , 
+     &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           28/04/93     J-M JANIN (LNH) 30 87 72 84 
@@ -852,7 +872,6 @@
 ! |    ELT         |<-->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE  | 
 ! |                |    | NOEUD.                                       | 
 ! |    ETA         |<-->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.| 
-! |    NSP         | -- | NOMBRE DE SOUS-PAS DE RUNGE KUTTA.           | 
 ! |    NPLOT       | -->| NOMBRE DE DERIVANTS.                         | 
 ! |    NPOIN2      | -->| NOMBRE DE POINTS DU MAILLAGE 2D.             | 
 ! |    NELEM2      | -->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.            | 
@@ -879,7 +898,7 @@
       INTEGER         , INTENT(IN)    :: SENS,NPLAN,NCHDIM 
       INTEGER         , INTENT(IN)    :: NPOIN2,NELEM2,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE2(NELEM2,3) 
-      INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NSP(NPLOT),NCHARA 
+      INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN) 
       DOUBLE PRECISION, INTENT(IN)    :: W(NPOIN2,NPLAN),SURDET(NELEM2) 
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
@@ -892,12 +911,11 @@
       INTEGER         , INTENT(IN)    :: IBOR(NELEM2,5,NPLAN-1) 
       INTEGER         , INTENT(INOUT) :: ETA(NPLOT) 
       INTEGER         , INTENT(IN)    :: IFAPAR(6,*) 
-      LOGICAL, INTENT(IN)             :: ADD
-      INTEGER         , INTENT(INOUT) :: ISPDONE(NPLOT) 
+      LOGICAL, INTENT(IN)             :: ADD 
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER IELE,ISO,IPROC,ILOC 
+      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP 
       INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3) 
 ! 
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,DENOM 
@@ -925,8 +943,8 @@
         DZ(IPLOT)      = RECVCHAR(IPLOT)%DZ  
         ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
         ETA(IPLOT)     = RECVCHAR(IPLOT)%KNE 
-        NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
-        ISPDONE(IPLOT) = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
+        NSP            = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
+        ISPDONE        = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
         IEL = ELT(IPLOT) 
         IET = ETA(IPLOT)  
         XP  = XPLOT(IPLOT) 
@@ -976,20 +994,20 @@
      &       + V(I1,IET+1)*SHP(1,IPLOT)*SHZ(IPLOT) 
      &       + V(I2,IET+1)*SHP(2,IPLOT)*SHZ(IPLOT) 
      &       + V(I3,IET+1)*SHP(3,IPLOT)*SHZ(IPLOT) 
-         NSP(IPLOT)=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL)))) 
-         ISPDONE(IPLOT)=1
+         NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL)))) 
+         ISPDONE=1
 !
         ENDIF
 ! 
-        PAS = SENS * DT / NSP(IPLOT) 
+        PAS = SENS * DT / NSP
 ! 
 !       LOOP ON RUNGE-KUTTA SUB-STEPS
 !
-!       COMPILER MUST DO NOTHING IF ISPDONE(IPLOT)>NSP(IPLOT)
-!       IN MODE "ADD", ISP = ISPDONE(IPLOT) HAS NOT BEEN FULLY DONE
+!       COMPILER MUST DO NOTHING IF ISPDONE>NSP
+!       IN MODE "ADD", ISP = ISPDONE HAS NOT BEEN FULLY DONE
 !       IT IS RESTARTED HERE
 !
-      DO ISP = ISPDONE(IPLOT) , NSP(IPLOT) 
+      DO ISP = ISPDONE,NSP 
 ! 
 !----------------------------------------------------------------------- 
 !       LOCALISING THE ARRIVAL POINT
@@ -1001,7 +1019,7 @@
 !                     CHARACTERISTICS GONE IN ANOTHER SUB-DOMAIN SKIPPED                   
 !
         IF(ADD) THEN
-          IF(ISP.EQ.ISPDONE(IPLOT)) GO TO 50
+          IF(ISP.EQ.ISPDONE) GO TO 50
           IF(RECVCHAR(IPLOT)%NEPID.NE.-1) CYCLE 
         ENDIF
 !
@@ -1181,7 +1199,7 @@
 !             INTERFACE CROSSING 
               CALL COLLECT_CHAR  
      &            (IPID, IPLOT, ELT(IPLOT), IFA, ETA(IPLOT), ISP,  
-     &             NSP(IPLOT), XPLOT(IPLOT),YPLOT(IPLOT),ZPLOT(IPLOT), 
+     &             NSP, XPLOT(IPLOT),YPLOT(IPLOT),ZPLOT(IPLOT), 
      &             DX(IPLOT),DY(IPLOT),DZ(IPLOT),  
      &             IFAPAR,NCHDIM,NCHARA) 
             ELSE 
@@ -1467,9 +1485,9 @@
                         SUBROUTINE SCHAR11 
 !                       ****************** 
 ! 
-     &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT,NSP, 
+     &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT, 
      & NPLOT,NPOIN,NELEM,NELMAX,SURDET,SENS, 
-     & IFAPAR,MESH,NCHDIM,NCHARA,ADD,ISPDONE) 
+     & IFAPAR,MESH,NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -1517,8 +1535,7 @@
 ! |    SHP         |<-->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES     
 ! |                |    | COURBES CARACTERISTIQUES.                     
 ! |    ELT         |<-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES   
-! |                |    | CARACTERISTIQUES.                             
-! |    NSP         | -- | NOMBRE DE SOUS-PAS DE RUNGE KUTTA.            
+! |                |    | CARACTERISTIQUES.                                        
 ! |    NPLOT       | -->| NOMBRE DE DERIVANTS.                          
 ! |    NPOIN       | -->| NOMBRE DE POINTS DU MAILLAGE.                 
 ! |    NELEM       | -->| NOMBRE D'ELEMENTS.                            
@@ -1545,7 +1562,6 @@
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE(NELMAX,3),IFABOR(NELMAX,3) 
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      INTEGER         , INTENT(OUT)   :: NSP(NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM) 
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
@@ -1555,12 +1571,11 @@
       INTEGER, INTENT(IN)             :: IFAPAR(6,*) 
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH
       LOGICAL, INTENT(IN)             :: ADD
-      INTEGER         , INTENT(INOUT) :: ISPDONE(NPLOT) 
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !      
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,ISO,IFA,ISUI(3),ISUI2(3)
-      INTEGER IPROC,ILOC
+      INTEGER IPLOT,ISP,I1,I2,I3,IEL,ISO,IFA,ISUI(3),ISUI2(3),ISPDONE
+      INTEGER IPROC,ILOC,NSP
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM 
 ! 
       DATA ISUI   / 2 , 3 , 1 / 
@@ -1582,8 +1597,8 @@
           DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
           DY(IPLOT)      = RECVCHAR(IPLOT)%DY   
           ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
-          NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
-          ISPDONE(IPLOT) = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
+          NSP            = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
+          ISPDONE        = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
           IEL = ELT(IPLOT) 
           XP  = XPLOT(IPLOT) 
           YP  = YPLOT(IPLOT)  
@@ -1619,20 +1634,19 @@
      &                            +U(I3)*SHP(3,IPLOT) 
           DYP = V(I1)*SHP(1,IPLOT)+V(I2)*SHP(2,IPLOT) 
      &                            +V(I3)*SHP(3,IPLOT) 
-          NSP(IPLOT)=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*
-     &                                                    SURDET(IEL))))   
-          ISPDONE(IPLOT)=1
+          NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL))))   
+          ISPDONE=1
         ENDIF
 !
-        PAS = SENS * DT / NSP(IPLOT) 
+        PAS = SENS * DT / NSP 
 ! 
 !       LOOP ON RUNGE-KUTTA SUB-STEPS
 !
-!       COMPILER MUST DO NOTHING IF ISPDONE(IPLOT)>NSP(IPLOT)
-!       IN MODE "ADD", ISP = ISPDONE(IPLOT) HAS NOT BEEN FULLY DONE
+!       COMPILER MUST DO NOTHING IF ISPDONE>NSP
+!       IN MODE "ADD", ISP = ISPDONE HAS NOT BEEN FULLY DONE
 !       IT IS RESTARTED HERE
 !
-        DO ISP=ISPDONE(IPLOT),NSP(IPLOT) 
+        DO ISP=ISPDONE,NSP 
 !
 !----------------------------------------------------------------------- 
 !       LOCALISING THE ARRIVAL POINT
@@ -1642,7 +1656,7 @@
 !                     CHARACTERISTICS GONE IN ANOTHER SUB-DOMAIN SKIPPED                   
 !
         IF(ADD) THEN
-          IF(ISP.EQ.ISPDONE(IPLOT)) GO TO 50
+          IF(ISP.EQ.ISPDONE) GO TO 50
           IF(RECVCHAR(IPLOT)%NEPID.NE.-1) CYCLE 
         ENDIF
 !                       
@@ -1772,8 +1786,7 @@
               RECVCHAR(IPLOT)%NEPID=IPROC  
               RECVCHAR(IPLOT)%INE=ILOC 
             ELSE
-              CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
-     &                          NSP(IPLOT),
+              CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,NSP,
      &                          XPLOT(IPLOT),YPLOT(IPLOT),0.D0,
      &                          DX(IPLOT),DY(IPLOT),0.D0,
      &                          IFAPAR,NCHDIM,NCHARA)                
@@ -1877,9 +1890,9 @@
                         SUBROUTINE SCHAR12 
 !                       ****************** 
 ! 
-     &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT,NSP, 
+     &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT, 
      & NPLOT,NPOIN,NELEM,NELMAX,SURDET,SENS, 
-     & IFAPAR,MESH,NCHDIM,NCHARA,ADD,ISPDONE) 
+     & IFAPAR,MESH,NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -1909,7 +1922,6 @@
 ! |                |    | COURBES CARACTERISTIQUES.                    | 
 ! |    ELT         |<-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES  | 
 ! |                |    | CARACTERISTIQUES.                            | 
-! |    NSP         | -- | NOMBRE DE SOUS-PAS DE RUNGE KUTTA.           | 
 ! |    NPLOT       | -->| NOMBRE DE DERIVANTS.                         | 
 ! |    NPOIN       | -->| NOMBRE DE POINTS DU MAILLAGE.                | 
 ! |    NELEM       | -->| NOMBRE D'ELEMENTS.                           | 
@@ -1935,7 +1947,6 @@
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3) 
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      INTEGER         , INTENT(OUT)   :: NSP(NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM) 
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
@@ -1944,13 +1955,12 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       INTEGER, INTENT(IN)             :: IFAPAR(6,*) 
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH
-      LOGICAL, INTENT(IN)             :: ADD
-      INTEGER         , INTENT(INOUT) :: ISPDONE(NPLOT) 
+      LOGICAL, INTENT(IN)             :: ADD 
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !      
       INTEGER IPLOT,ISP,I1,I2,I3,I4,I5,I6,IEL,ISO,IFA,ISUI(3),ISUI2(3)
-      INTEGER IPROC,ILOC
+      INTEGER IPROC,ILOC,ISPDONE,NSP
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
       DOUBLE PRECISION SHP11,SHP12,SHP14
       DOUBLE PRECISION SHP22,SHP23,SHP24
@@ -1975,8 +1985,8 @@
           DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
           DY(IPLOT)      = RECVCHAR(IPLOT)%DY    
           ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
-          NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
-          ISPDONE(IPLOT) = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
+          NSP            = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
+          ISPDONE        = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
           IEL = ELT(IPLOT) 
           XP  = XPLOT(IPLOT) 
           YP  = YPLOT(IPLOT)  
@@ -2066,20 +2076,19 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-          NSP(IPLOT)=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*
-     &                                                    SURDET(IEL))))   
-          ISPDONE(IPLOT)=1
+          NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL))))   
+          ISPDONE=1
         ENDIF
 !
-        PAS = SENS * DT / NSP(IPLOT) 
+        PAS = SENS*DT/NSP 
 ! 
 !       LOOP ON RUNGE-KUTTA SUB-STEPS
 !
-!       COMPILER MUST DO NOTHING IF ISPDONE(IPLOT)>NSP(IPLOT)
-!       IN MODE "ADD", ISP = ISPDONE(IPLOT) HAS NOT BEEN FULLY DONE
+!       COMPILER MUST DO NOTHING IF ISPDONE>NSP
+!       IN MODE "ADD", ISP = ISPDONE HAS NOT BEEN FULLY DONE
 !       IT IS RESTARTED HERE
 !
-        DO ISP=ISPDONE(IPLOT),NSP(IPLOT) 
+        DO ISP=ISPDONE,NSP 
 !
 !----------------------------------------------------------------------- 
 !       LOCALISING THE ARRIVAL POINT
@@ -2089,7 +2098,7 @@
 !                     CHARACTERISTICS GONE IN ANOTHER SUB-DOMAIN SKIPPED                   
 !
         IF(ADD) THEN
-          IF(ISP.EQ.ISPDONE(IPLOT)) GO TO 50
+          IF(ISP.EQ.ISPDONE) GO TO 50
           IF(RECVCHAR(IPLOT)%NEPID.NE.-1) CYCLE 
         ENDIF
 !                       
@@ -2253,8 +2262,7 @@
                 RECVCHAR(IPLOT)%NEPID=IPROC  
                 RECVCHAR(IPLOT)%INE=ILOC 
               ELSE
-                CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
-     &                            NSP(IPLOT),
+                CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,NSP,
      &                            XPLOT(IPLOT),YPLOT(IPLOT),0.D0,
      &                            DX(IPLOT),DY(IPLOT),0.D0,
      &                            IFAPAR,NCHDIM,NCHARA)                
@@ -2346,9 +2354,9 @@
                         SUBROUTINE SCHAR13 
 !                       ****************** 
 ! 
-     &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT,NSP, 
+     &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT, 
      & NPLOT,NPOIN,NELEM,NELMAX,SURDET,SENS, 
-     & IFAPAR,MESH,NCHDIM,NCHARA,ADD,ISPDONE) 
+     & IFAPAR,MESH,NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -2377,8 +2385,7 @@
 ! |    SHP         |<-->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES    | 
 ! |                |    | COURBES CARACTERISTIQUES.                    | 
 ! |    ELT         |<-->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES  | 
-! |                |    | CARACTERISTIQUES.                            | 
-! |    NSP         | -- | NOMBRE DE SOUS-PAS DE RUNGE KUTTA.           | 
+! |                |    | CARACTERISTIQUES.                            |  
 ! |    NPLOT       | -->| NOMBRE DE DERIVANTS.                         | 
 ! |    NPOIN       | -->| NOMBRE DE POINTS DU MAILLAGE.                | 
 ! |    NELEM       | -->| NOMBRE D'ELEMENTS.                           | 
@@ -2404,7 +2411,6 @@
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3) 
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      INTEGER         , INTENT(OUT)   :: NSP(NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM) 
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
@@ -2414,12 +2420,11 @@
       INTEGER, INTENT(IN)             :: IFAPAR(6,*) 
       TYPE (BIEF_MESH), INTENT(INOUT) :: MESH
       LOGICAL, INTENT(IN)             :: ADD
-      INTEGER         , INTENT(INOUT) :: ISPDONE(NPLOT) 
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !      
       INTEGER IPLOT,ISP,I1,I2,I3,I4,I5,I6,IEL,ISO,IFA,ISUI(3),ISUI2(3)
-      INTEGER IPROC,ILOC
+      INTEGER IPROC,ILOC,ISPDONE,NSP
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM 
 ! 
       DATA ISUI   / 2 , 3 , 1 / 
@@ -2441,8 +2446,8 @@
           DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
           DY(IPLOT)      = RECVCHAR(IPLOT)%DY   
           ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
-          NSP(IPLOT)     = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
-          ISPDONE(IPLOT) = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
+          NSP            = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
+          ISPDONE        = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
           IEL = ELT(IPLOT) 
           XP  = XPLOT(IPLOT) 
           YP  = YPLOT(IPLOT)  
@@ -2489,20 +2494,19 @@
      &        + V(I4)*4.D0*SHP(1,IPLOT)*SHP(2,IPLOT)
      &        + V(I5)*4.D0*SHP(2,IPLOT)*SHP(3,IPLOT)
      &        + V(I6)*4.D0*SHP(3,IPLOT)*SHP(1,IPLOT)
-          NSP(IPLOT)=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*
-     &                                                    SURDET(IEL))))   
-          ISPDONE(IPLOT)=1
+          NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL))))   
+          ISPDONE=1
         ENDIF
 !
-        PAS = SENS * DT / NSP(IPLOT) 
+        PAS = SENS*DT/NSP 
 ! 
 !       LOOP ON RUNGE-KUTTA SUB-STEPS
 !
-!       COMPILER MUST DO NOTHING IF ISPDONE(IPLOT)>NSP(IPLOT)
-!       IN MODE "ADD", ISP = ISPDONE(IPLOT) HAS NOT BEEN FULLY DONE
+!       COMPILER MUST DO NOTHING IF ISPDONE>NSP
+!       IN MODE "ADD", ISP = ISPDONE HAS NOT BEEN FULLY DONE
 !       IT IS RESTARTED HERE
 !
-        DO ISP=ISPDONE(IPLOT),NSP(IPLOT) 
+        DO ISP=ISPDONE,NSP 
 !
 !----------------------------------------------------------------------- 
 !       LOCALISING THE ARRIVAL POINT
@@ -2512,7 +2516,7 @@
 !                     CHARACTERISTICS GONE IN ANOTHER SUB-DOMAIN SKIPPED                   
 !
         IF(ADD) THEN
-          IF(ISP.EQ.ISPDONE(IPLOT)) GO TO 50
+          IF(ISP.EQ.ISPDONE) GO TO 50
           IF(RECVCHAR(IPLOT)%NEPID.NE.-1) CYCLE 
         ENDIF
 !                       
@@ -2638,8 +2642,7 @@
                 RECVCHAR(IPLOT)%NEPID=IPROC  
                 RECVCHAR(IPLOT)%INE=ILOC 
               ELSE
-                CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,  
-     &                            NSP(IPLOT),
+                CALL COLLECT_CHAR(IPID,IPLOT,ELT(IPLOT),IFA,0,ISP,NSP,
      &                            XPLOT(IPLOT),YPLOT(IPLOT),0.D0,
      &                            DX(IPLOT),DY(IPLOT),0.D0,
      &                            IFAPAR,NCHDIM,NCHARA)                
@@ -2743,7 +2746,7 @@
 ! 
      &(U , UTILD , UCONV , VCONV , WCONV , X , Y , ZSTAR , 
      & XCONV , YCONV , ZCONV , DX , DY , DZ , Z , SHP , SHZ , SURDET , 
-     & DT , IKLE , IFABOR , ELT , ETA , ITRAV1, ITRAV2, IELM , 
+     & DT , IKLE , IFABOR , ELT , ETA , ITRAV1, ISUB, IELM , 
      & IELMU , NELEM , NELMAX , NOMB , NPOIN , NPOIN2 , NDP , NPLAN ,  
      & MESH ,NPLOT,DIM1U, SENS) 
 ! 
@@ -2790,8 +2793,10 @@
 ! |                |    | CARACTERISTIQUES.                              
 ! |   ETA          | -- | NUMEROS DES ETAGES AU PIED DES COURBES         
 ! |                |    | CARACTERISTIQUES (POUR TEL3D).                 
-! |   ITRAV1       | -- | TABLEAU DE TRAVAIL ENTIER.                     
-! |   ITRAV2       | -- | TABLEAU DE TRAVAIL ENTIER.                     
+! |   ITRAV1       | -- | TABLEAU DE TRAVAIL ENTIER. NOT USED !!!!!!!!                     
+! |   ISUB         |<-- | IN SCALAR MODE: NOT USED
+! |                |    | IN PARALLEL: RETURNS THE SUB-DOMAIN WHERE IS
+! |                |    | THE FOOT OF THE CHARACTERISTIC                     
 ! |   IELM         | -->| TYPE D'ELEMENT : 11 : TRIANGLE P1              
 ! |                |    |                  21 : QUADRANGLE P1            
 ! |                |    |                  41 : PRISME DE TEL3D          
@@ -2845,7 +2850,7 @@
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,NDP) 
       INTEGER, INTENT(IN)             :: IFABOR(NELMAX,*) 
       INTEGER, INTENT(INOUT)          :: ELT(NPLOT),ETA(NPLOT) 
-      INTEGER, INTENT(INOUT)          :: ITRAV1(NPLOT),ITRAV2(NPLOT) 
+      INTEGER, INTENT(INOUT)          :: ITRAV1(NPLOT),ISUB(NPLOT) 
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH 	 
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
@@ -2941,23 +2946,23 @@
         IF(IELMU.EQ.11) THEN
 !    
           CALL SCHAR11(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                 XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
+     &                 XCONV,YCONV,DX,DY,SHP,ELT,
      &                 NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,.FALSE.,ITRAV2)  
+     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,.FALSE.)  
 !
         ELSEIF(IELMU.EQ.12) THEN
 !    
           CALL SCHAR12(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                 XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
+     &                 XCONV,YCONV,DX,DY,SHP,ELT, 
      &                 NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,.FALSE.,ITRAV2)  
+     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,.FALSE.)  
 !
         ELSEIF(IELMU.EQ.13) THEN
 !     
           CALL SCHAR13(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                 XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
+     &                 XCONV,YCONV,DX,DY,SHP,ELT, 
      &                 NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,.FALSE.,ITRAV2)
+     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,.FALSE.)
 !
         ELSE
           WRITE(LU,*) 'WRONG DISCRETISATION OF VELOCITY:',IELMU
@@ -2976,9 +2981,9 @@
 ! 
          CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
-     &                DY,DZ,SHP,SHZ,ELT,ETA,ITRAV1,NPLOT, 
+     &                DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
      &                DIM1U,NELEM,NPLAN,SURDET,SENS, 
-     &                MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.,ITRAV2) 
+     &                MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.) 
 ! 
 !----------------------------------------------------------------------- 
 ! 
@@ -2992,7 +2997,19 @@
       ENDIF 
 ! 
 !----------------------------------------------------------------------- 
+!
+!     ISUB : SUB-DOMAIN WHERE IS THE FOOT OF THE CCHARACTERISTIC
+!            IT IS HERE INITIALISED AS THE STARTING SUB-DOMAIN
+!            AND WILL BE UPDATED LATER FOR LOST TRACEBACKS.
+!
+      IF(NCSIZE.GT.1) THEN
+        DO I=1,NPLOT
+          ISUB(I)=IPID
+        ENDDO
+      ENDIF 
 ! 
+!----------------------------------------------------------------------- 
+!
 !     INTERPOLATION (IF ANY VARIABLE TO INTERPOLATE)
 !
 !     IN PARALLEL IT WILL BE DONE HERE FOR ALL POINTS, EVEN THOSE
@@ -3121,27 +3138,27 @@
               IF(IELMU.EQ.11) THEN
 !
                 CALL SCHAR11(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                       XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
+     &                       XCONV,YCONV,DX,DY,SHP,ELT, 
      &                       NARRV,DIM1U,NELEM,NELMAX,SURDET,SENS, 
      &                       MESH%IFAPAR%I,MESH,NCHDIM,NARRV,
-     &                       .TRUE.,ITRAV2)
+     &                       .TRUE.)
 !
               ELSEIF(IELMU.EQ.12) THEN
 !
                 CALL SCHAR12(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                       XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
+     &                       XCONV,YCONV,DX,DY,SHP,ELT, 
      &                       NARRV,DIM1U,NELEM,NELMAX,SURDET,SENS, 
      &                       MESH%IFAPAR%I,MESH,NCHDIM,NARRV,
-     &                       .TRUE.,ITRAV2)
+     &                       .TRUE.)
 !
 !
               ELSEIF(IELMU.EQ.13) THEN
 !
                 CALL SCHAR13(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                       XCONV,YCONV,DX,DY,SHP,ELT,ITRAV1, 
+     &                       XCONV,YCONV,DX,DY,SHP,ELT, 
      &                       NARRV,DIM1U,NELEM,NELMAX,SURDET,SENS, 
      &                       MESH%IFAPAR%I,MESH,NCHDIM,NARRV,
-     &                       .TRUE.,ITRAV2)
+     &                       .TRUE.)
 !
               ELSE
                 WRITE(LU,*) 'WRONG DISCRETISATION OF VELOCITY:',IELMU
@@ -3153,9 +3170,9 @@
 !
               CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                     Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
-     &                     DY,DZ,SHP,SHZ,ELT,ETA,ITRAV1,NARRV, 
+     &                     DY,DZ,SHP,SHZ,ELT,ETA,NARRV, 
      &                     DIM1U,NELEM,NPLAN,SURDET,SENS, 
-     &                     MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.,ITRAV2)
+     &                     MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
 !
             ENDIF  
  
@@ -3259,24 +3276,9 @@
           ENDIF   
 ! 
 !         INTRODUCE THE VALUES FROM THE RECEIVED TRACEBACK BASKETS  
-!         NOTE THAT IN 3D, NPOIN->NPOIN3 / WE DO NOT DISTINGUISH 11 AND 41 
 ! 
-          IF(NARRV.GT.0) THEN  
-            IF(UTILD%TYPE.EQ.2) THEN 
-              CALL INTRODUCE_RECVCHAR(UTILD%R,1,UTILD%DIM1,NOMB,NARRV)  
-            ELSEIF(UTILD%TYPE.EQ.4) THEN 
-              DO I=1,NOMB 
-                CALL INTRODUCE_RECVCHAR(UTILD%ADR(I)%P%R,I, 
-     &                                  UTILD%ADR(I)%P%DIM1, 
-     &                                  NOMB,NARRV)  
-              ENDDO 
-            ELSE  
-              WRITE(LU,*)  
-     &          'STREAMLINE::SCARACT :: UTILD%TYPE: ',UTILD%TYPE 
-              CALL PLANTE(1) 
-              STOP  
-            ENDIF  
-          ENDIF  
+          IF(NARRV.GT.0) CALL INTRODUCE_RECVCHAR(UTILD,NOMB,NARRV,ISUB)  
+! 
         ENDIF 
         CALL RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV) ! DEALLOCATING 
 !
@@ -3308,4 +3310,3 @@
       END SUBROUTINE SCARACT 
 ! 
       END MODULE STREAMLINE
-
