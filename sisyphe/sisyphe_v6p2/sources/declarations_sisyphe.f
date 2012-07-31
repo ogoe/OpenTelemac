@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V6P2                                   30/07/2012
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINCIPAL SISYPHE VARIABLES
@@ -37,6 +37,23 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  MAK (HRW)
+!+        01/01/2012
+!+        V6P2
+!+   CHANGE create parameter for ratio depth averaged and reference concentration.
+!+   CSRATIO
+!
+!history  JWI (HRW)
+!+        31/05/2012
+!+        V6P2
+!+ added lines to include wave orbital velocities
+!+ TYPE(BIEF_OBJ), TARGET :: DEL_UW
+!
+!history  CV (EDF)
+!+        30/07/2012
+!+        V6P2
+!+ added new variable ZFCL_MS 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,6 +131,11 @@
 !     INCREMENTS OF FLOW RATE COMPONENTS WHEN READING AN HYDRO FILE
 !
       TYPE(BIEF_OBJ), TARGET :: DEL_QV
+! JWI 31/05/2012 - added lines to include wave orbital velocities
+!> @brief INCREMENTS OF WAVE ORBITAL VELOCITY WHEN READING AN HYDRO FILE
+C
+      TYPE(BIEF_OBJ), TARGET :: DEL_UW
+! JWI END
 !
 !     FLOW RATE
 !
@@ -367,10 +389,10 @@
 !     CONCENTRATION AT TIME N
 !
       TYPE(BIEF_OBJ), TARGET :: CS
-!
-!
-!
-      TYPE(BIEF_OBJ), TARGET :: CST, CTILD, CSTAEQ
+
+!     MAK CHANGE create parameter for ratio depth averaged and reference concentration.
+!     TYPE(BIEF_OBJ), TARGET :: CST, CTILD, CSTAEQ
+      TYPE(BIEF_OBJ), TARGET :: CST, CTILD, CSTAEQ, CSRATIO
 !
 !     IMPOSED SUSPENDED SAND CONCENTRATION AT THE BOUNDARY (DIM.NPTFR)
 !
@@ -493,6 +515,19 @@
 !     BLOCK OF VARIABLES FOR OUTPUT
 !
       TYPE(BIEF_OBJ), TARGET :: VARSOR
+
+! UHM / PAT
+
+!     VERTICAL SORTING PROFILE: FRACTION FOR EACH LAYER, CLASS, POINT
+
+      DOUBLE PRECISION,DIMENSION(:,:,:),TARGET,ALLOCATABLE::PRO_F
+
+!     VERTICAL SORTING PROFILE: DEPTH FOR EACH LAYER, CLASS, POINT
+
+      DOUBLE PRECISION,DIMENSION(:,:,:),TARGET,ALLOCATABLE::PRO_D
+
+! UHM / PAT
+
 !
 !     SEDIMENT FRACTION FOR EACH LAYER, CLASS, POINT
 !
@@ -569,6 +604,9 @@ C
 !-----------------------------------------------------------------------
 !
 !      KEYWORDS AND PARAMETERS
+
+!     Maximum Layer Number in a VERTICAL SORTING PROFILE FOR EACH POINT (UHM)
+      INTEGER, ALLOCATABLE :: PRO_MAX(:)
 !
 !      MAXIMUM NUMBER OF OUTPUT VARIABLES
 !
@@ -742,6 +780,30 @@ C
 !     NUMBER OF GIVEN SSOLID DISCHARGES GIVEN BY USER
 !
       INTEGER NSOLDIS
+
+!// UHM // For the Continous Vertical Sorting MODEL
+!
+!     Type of the Vertical Grain Sorting: Hirano Layers or Continous-VSM
+!
+      INTEGER VSMTYPE
+!
+!     Maximum Number of Profile SECTIONS
+!
+      INTEGER PRO_MAX_MAX
+!
+!     Printout Period for Full Vertical Sorting Model: PRO_D & PRO_F
+!
+      INTEGER CVSMPPERIOD
+!
+!     CHOOSE POINTS or FULL MODEL AS PRINTOUT
+!
+      INTEGER CVSMOUTPUT(100)    !Limited to 100 for no specific reason
+!
+!     CHOOSE A MODEL FOR ESTIMATION OF A DYNAMIC ACTIVE LAYER THICKNESS
+!
+      INTEGER ALT_MODEL
+
+!// UHM //
 !
 !-----------------------------------------------------------------------
 !
@@ -750,6 +812,14 @@ C
 !-----------------------------------------------------------------------
 !
 !
+!  C-VSM WRITES OUT (OR NOT) IN THIS TIMESTEP
+C
+      LOGICAL :: CVSM_OUT !UHM
+
+!  C-VSM_FULL WRITES OUT (OR NOT) EVER
+C
+      LOGICAL :: CVSM_OUT_FULL !UHM
+
 !> @brief GRAPHICAL OUTPUT
 C
       LOGICAL :: SORLEO(MAXVAR)
