@@ -3,7 +3,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V6P2                                   30/07/2012
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -166,7 +166,53 @@ C
         IMPLICIT NONE
         END SUBROUTINE
       END INTERFACE
-!
+
+C UHM + PAT: required to compile with Python
+      INTERFACE
+         double precision Function CVSP_INTEGRATE_VOLUME
+     &(J,I,Z_HIGH,Z_LOW,a)
+         IMPLICIT NONE
+         INTEGER,          INTENT(IN)   :: J
+         INTEGER,          INTENT(IN)   :: I
+         double precision, INTENT(IN)    :: Z_HIGH
+         double precision, INTENT(IN)    :: Z_LOW
+         double precision, INTENT(out)   :: a(10)
+         END FUNCTION
+      END INTERFACE
+C
+
+C UHM + PAT
+      INTERFACE
+         LOGICAL FUNCTION CVSP_CHECK_F
+     &        (J,K, SOMETEXT)
+         IMPLICIT NONE
+      INTEGER,          INTENT(IN)    :: J
+      INTEGER,          INTENT(IN)    :: K
+      character*10,     INTENT(IN)    :: SOMETEXT
+         END FUNCTION
+      END INTERFACE
+C     
+      
+C UHM + PAT
+      INTERFACE
+         double precision function CVSP_ALT(J, FORMULA)
+         IMPLICIT NONE
+         INTEGER,          INTENT(IN)    :: J
+         INTEGER,          INTENT(IN)    :: FORMULA
+         END FUNCTION
+      END INTERFACE
+C
+
+C UHM + PAT
+      INTERFACE
+         LOGICAL FUNCTION DB(J_GLOBAL, TimeStamp)
+         IMPLICIT NONE
+         INTEGER, INTENT(IN)    :: J_Global
+         INTEGER, INTENT(IN)    :: TimeStamp
+         END FUNCTION
+      END INTERFACE
+C
+
       INTERFACE
         SUBROUTINE DEBUG_SISYPHE (NAME, ILOOP, NLOOP)
         USE BIEF_DEF
@@ -326,7 +372,8 @@ C
      &   UNORM, U2D,V2D,HN,CF,MU,TOB,TOBW,UW,TW,THETAW, FW,HOULE,
      &   AVAIL, ACLADM,UNLADM,KSP, KSR,KS,
      &   ICF,HIDFAC,XMVS,XMVE,GRAV,VCE,HMIN, KARMAN,
-     &   ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,
+  !mak     &   ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,
+     &   ZERO,PI,AC,IMP_INFLOW_C,ZREF,ICQ,CSTAEQ,CSRATIO,
      &   CMAX,CS,CS0,UCONV,VCONV,CORR_CONV,SECCURRENT,BIJK,
      &   IELMT, MESH, FDM,XWC,FD90,SEDCO,VITCE,PARTHENIADES,VITCD,
      &    U3D,V3D,CODE)
@@ -345,7 +392,9 @@ C
        TYPE(BIEF_OBJ), INTENT(INOUT) :: QS_C, QSXC, QSYC, CALFA,SALFA
        TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2,T3,T4,T5,T6,T7,T8
        TYPE(BIEF_OBJ), INTENT(INOUT) :: T9,T10,T11,T12,T14
-       TYPE(BIEF_OBJ), INTENT(INOUT) :: ZREF,CSTAEQ,CS,UCONV,VCONV
+      !mak       TYPE(BIEF_OBJ), INTENT(INOUT) :: ZREF,CSTAEQ,CS,UCONV,VCONV
+       TYPE(BIEF_OBJ), INTENT(INOUT) :: ZREF,CSTAEQ,CS
+       TYPE(BIEF_OBJ), INTENT(INOUT) :: UCONV,VCONV,CSRATIO
        TYPE(BIEF_OBJ), INTENT(INOUT) :: QS_S,QS,QSCL_C,QSCL_S
        TYPE(BIEF_OBJ),  INTENT(INOUT) :: COEFPN
        TYPE(BIEF_OBJ),  INTENT(INOUT) :: QSCLXS,QSCLYS,QSCL
