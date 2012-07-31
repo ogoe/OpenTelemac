@@ -2,11 +2,11 @@
                    SUBROUTINE SUSPENSION_EROSION
 !                  *****************************
 !
-     &(TAUP,HN,FDM,AVA,NPOIN,CHARR,XMVE,XMVS,VCE,GRAV,HMIN,XWC,
-     & ZERO,ZREF,AC,FLUER,CSTAEQ,QSC,ICQ,DEBUG)
+     &(TAUP,HN,FDM,FD90,AVA,NPOIN,CHARR,XMVE,XMVS,VCE,GRAV,HMIN,XWC,
+     & ZERO,ZREF,AC,FLUER,CSTAEQ,QSC,ICQ,U2D,V2D,CSRATIO,T14,DEBUG)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   01/07/2012
 !***********************************************************************
 !
 !brief    COMPUTES THE FLUX OF DEPOSITION AND EROSION.
@@ -38,6 +38,15 @@
 !+        V6P1
 !+   Name of variables   
 !+   
+!history  MAK (HRW)
+!+        31/05/2012
+!+        V6P2
+!+  Include CSRATIO
+!
+!history  PAT (LNHE)
+!+        18/06/2012
+!+        V6P2
+!+  updated version with HRW's development: Soulsby-van Rijn's concentration
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER (SHOULD BE INPUT ONLY)
@@ -45,6 +54,7 @@
 !| AVA            |-->| VOLUME PERCENT OF SEDIMENT CLASS IN THE TOP ACTIVE LAYER
 !| CHARR          |-->| LOGICAL, IF BEDLOAD OR NOT
 !| CSTAEQ         |<->| EQUILIBRIUM CONCENTRATION
+!| CSRATIO        |<->| EQUILIBRIUM CONCENTRATION FOR SOULBY-VAN RIJN EQ.
 !| DEBUG          |-->| FLAG FOR DEBUGGING
 !| FLUER          |<->| EROSION FLUX
 !| GRAV           |-->| ACCELERATION OF GRAVITY
@@ -71,10 +81,11 @@
       ! 2/ GLOBAL VARIABLES
       ! -------------------
       TYPE (BIEF_OBJ),  INTENT(IN)    :: TAUP,HN,ZREF,QSC
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: U2D,V2D,CSRATIO,T14
       INTEGER,          INTENT(IN)    :: NPOIN,DEBUG,ICQ
       LOGICAL,          INTENT(IN)    :: CHARR
       DOUBLE PRECISION, INTENT(IN)    :: XMVE,XMVS,GRAV,HMIN,XWC,VCE
-      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN),ZERO,FDM
+      DOUBLE PRECISION, INTENT(IN)    :: AVA(NPOIN),ZERO,FDM,FD90
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUER,CSTAEQ
       DOUBLE PRECISION, INTENT(INOUT) :: AC
 
@@ -120,6 +131,16 @@
      &                          VCE,ZERO,AC,CSTAEQ,ZREF)
         IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_VANRIJN'
         DO I=1,NPOIN
+          CSTAEQ%R(I)=CSTAEQ%R(I)*AVA(I)
+        ENDDO
+        CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC) 
+      ELSEIF(ICQ.EQ.4) THEN
+        IF(DEBUG > 0) WRITE(LU,*) 'SUSPENSION_SANDFLOW'
+        CALL SUSPENSION_SANDFLOW(FDM,FD90,TAUP,NPOIN,GRAV,XMVE,XMVS,
+!mak     &              ZERO,AC,CSTAEQ,ZREF,HN,U2D,V2D,T2)
+     &              ZERO,AC,CSTAEQ,ZREF,HN,U2D,V2D,CSRATIO)
+        IF(DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_SANDFLOW'
+        DO I=1,NPOIN 
           CSTAEQ%R(I)=CSTAEQ%R(I)*AVA(I)
         ENDDO
         CALL OS('X=CY    ', X=FLUER, Y=CSTAEQ, C=XWC) 
