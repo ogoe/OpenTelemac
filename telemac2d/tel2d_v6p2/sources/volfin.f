@@ -131,7 +131,7 @@ C                       *****************
 !| NUBO           |-->| GLOBAL INDICES OF EDGE EXTREMITIES
 !| OPTVF          |-->| OPTION OF THE SCHEME
 !|                |   | 0:ROE, 1:KINETIC ORDRE 1,2:KINETIC ORDRE 2
-!|                |   | 3:ZOKAGOA, 4:TCHAMEN,4:HLLC,5:WAF
+!|                |   | 3:ZOKAGOA, 4:TCHAMEN,5:HLLC,6:WAF
 !| PROPNU         |-->| COEFFICIENT OF MOLECULAR DIFFUSION 
 !| QU,QV          |<->| FLOW COMPOENENTS AT TIME N THEN AT TIME  N+1
 !| SMH            |-->| SOURCE TERMS FOR CONTINUITY EQUATION

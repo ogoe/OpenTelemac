@@ -66,11 +66,17 @@
         EPSL = 0.01D0
 !
         DO IS=1,NS
-          SIGMAX = H(IS)
-          UA2    = U(IS)
-          UA3    = V(IS)                                       
-          UNORM=SQRT(UA2*UA2 + UA3*UA3)
-          SIGMAX= MAX(EPSL, RA3*SQRT(SIGMAX) +UNORM )
+          
+          IF(H(IS).LT.0.D0)THEN
+            SIGMAX = MAX(H(IS),0.0D0)
+            WRITE(LU,*) 'CALDT WARNING : NEGATIVE WATER DEPTH'
+            WRITE(LU,*) '               FOR NODE',IS
+          ELSE
+            UA2    = U(IS)
+            UA3    = V(IS)                                       
+            UNORM=SQRT(UA2*UA2 + UA3*UA3)
+            SIGMAX= MAX(EPSL, RA3*SQRT(SIGMAX) +UNORM )
+          ENDIF
           DT = MIN(DT, CFL*DTHAUT(IS)/SIGMAX)
         ENDDO
 !
@@ -82,13 +88,20 @@
         EPSL = 0.01D0
 C
         DO IS=1,NS
-          SIGMAX = G*H(IS)
-          UA2    = U(IS)
-          UA3    = V(IS)                                       
-          UNORM=SQRT(UA2*UA2 + UA3*UA3)
-          SIGMAX= MAX(EPSL, SQRT(SIGMAX) +UNORM )
+          
+          IF(H(IS).LT.0.D0)THEN
+            SIGMAX = MAX(G*H(IS),0.0D0)
+            WRITE(LU,*) 'CALDT WARNING : NEGATIVE WATER DEPTH'
+            WRITE(LU,*) '               FOR NODE',IS
+          ELSE
+            UA2    = U(IS)
+            UA3    = V(IS)                                       
+            UNORM=SQRT(UA2*UA2 + UA3*UA3)
+            SIGMAX= MAX(EPSL, SQRT(SIGMAX) +UNORM )
+          ENDIF
 !         DTHAUT=|Ci|/Sum(Lij) IS THE CHOICE OF INRIA
 !         WE CAN CHANGE FOR MIN(CMI) FOR INSTANCE
+
           DT = MIN(DT, CFL*DTHAUT(IS)/SIGMAX)
         ENDDO
 !

@@ -956,20 +956,6 @@ C-----------------------------------------------------------------------
      &         NVMAX,NELEM,NELMAX,NSEG,NEISEG)
 !
       ENDIF
-!
-!    INITIALIZATION FOR TRACER
-!
-       IF(NTRAC.GT.0) THEN
-         DO ITRAC=1,NTRAC
-           MASSOU(ITRAC) = 0.D0
-           FLUTENT(ITRAC)= 0.D0
-           FLUTSOR(ITRAC)= 0.D0
-           DO IS=1,NPOIN
-             HTN%ADR(ITRAC)%P%R(IS) = HN(IS) * TN%ADR(ITRAC)%P%R(IS)
-           ENDDO
-           CALL OS('X=Y     ',X=T%ADR(ITRAC)%P,Y=TN%ADR(ITRAC)%P)
-         ENDDO
-       ENDIF
 !-----------------------------------------------------------------------
 !     COPY VARIABLES INTO W
 !

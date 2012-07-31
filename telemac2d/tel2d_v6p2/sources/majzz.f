@@ -33,7 +33,7 @@
 !|  ZF            |-->|  BATHYMETRIES
 !|  CF            |-->|  FRICTION COEFFICIENTS
 !|  EPS           |-->|  TOLERANCE FOR WATER DEPTH
-!|  KFROT         |-->|  LOGICAL! FRICTION OF NO FRICTION
+!|  KFROT         |-->|  LOGICAL! FRICTION OR NO FRICTION
 !|  SMH           |-->|  MASS SOURCE
 !|  HN,QU;QV      |-->|  H, HU AND HV AT TN
 !|  LT            |-->|  CURRENT TIME ITERATION 
