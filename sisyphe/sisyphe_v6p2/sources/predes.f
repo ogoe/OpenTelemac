@@ -5,7 +5,7 @@
      &(LLT,AAT)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   01/07/2012
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -32,6 +32,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  P. TASSI (EDF)
+!+        01/07/2012
+!+        V6P2
+!+   Bug correction discharge along y
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AAT            |-->| CURRENT TIME (FOR BUILDING SOLUTIONS)
