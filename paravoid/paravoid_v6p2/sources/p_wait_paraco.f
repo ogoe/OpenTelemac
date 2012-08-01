@@ -38,7 +38,7 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER IBUF(*), NB, IER
+      INTEGER,INTENT(IN) :: IBUF(*),NB
 !
 !-----------------------------------------------------------------------
 !

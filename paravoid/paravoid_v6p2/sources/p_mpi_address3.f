@@ -41,8 +41,9 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      DOUBLE PRECISION LOCATION(*)
-      INTEGER ADDRESS,IER
+      DOUBLE PRECISION, INTENT(IN)            :: LOCATION(*)
+      INTEGER, INTENT(OUT)                    :: IER
+      INTEGER, INTENT(OUT) :: ADDRESS
 !
 !-----------------------------------------------------------------------
 !

@@ -37,9 +37,9 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU 
 ! 
-      INTEGER, INTENT(INOUT) :: NOMB 
+      INTEGER, INTENT(IN)     :: NOMB 
       INTEGER, INTENT(INOUT)  :: CHARACTERISTIC 
-      LOGICAL, INTENT(IN) ::TRACE 
+      LOGICAL, INTENT(IN)     :: TRACE 
 !
 !-----------------------------------------------------------------------
 !

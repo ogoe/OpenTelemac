@@ -51,8 +51,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE CHARAC_TYPE_4D
-        SEQUENCE
-!
+      SEQUENCE
         INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD)
         INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO
         INTEGER :: INE   ! THE LOCAL 2D ELEMENT NR THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION
@@ -63,12 +62,12 @@
         DOUBLE PRECISION :: XP,YP,ZP,FP                ! THE (X,Y,Z)-POSITION NOW
         DOUBLE PRECISION :: DX,DY,DZ,DF                ! THE (X,Y,Z)-POSITION NOW
         DOUBLE PRECISION :: BASKET(12) ! VARIABLES INTERPOLATED AT THE FOOT
-!
       END TYPE CHARAC_TYPE_4D
 !
-      TYPE(CHARAC_TYPE_4D) ::  I1(*), I5(*)
-      INTEGER, INTENT(IN) ::  I2(*),I3(*),I4,I6(*),I7(*)
-      INTEGER, INTENT(IN) :: I8,I9,I10
+      TYPE(CHARAC_TYPE_4D), INTENT(IN) :: I1(*)
+      TYPE(CHARAC_TYPE_4D), INTENT(OUT):: I5(*)
+      INTEGER, INTENT(IN)  ::  I2(*),I3(*),I4,I6(*),I7(*),I8,I9
+      INTEGER, INTENT(OUT) ::  I10
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

@@ -40,7 +40,9 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER LOCATION,ADDRESS,IER
+      INTEGER, INTENT(IN)                    :: LOCATION
+      INTEGER, INTENT(OUT)                   :: IER
+      INTEGER, INTENT(OUT) :: ADDRESS
 !
 !-----------------------------------------------------------------------
 !

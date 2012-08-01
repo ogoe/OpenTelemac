@@ -51,8 +51,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE FONCTION_TYPE_4D
-!
-        SEQUENCE
+      SEQUENCE
         INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD)
         INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO
         INTEGER :: INE   ! THE LOCAL 2D ELEMENT NR THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION
@@ -63,13 +62,13 @@
         DOUBLE PRECISION :: XP,YP,ZP,FP               ! THE (X,Y,Z)-POSITION NOW
         DOUBLE PRECISION :: SHP1,SHP2,SHP3,SHZ,SHF
         DOUBLE PRECISION :: BP
-        DOUBLE PRECISION :: F(12) ! FUNCTION VALUES AT THE 6 POINT OF THE PRISME
-!
+        DOUBLE PRECISION :: F(12) ! FUNCTION VALUES AT THE 6 POINTS OF THE PRISM
       END TYPE FONCTION_TYPE_4D
 !
-      TYPE(FONCTION_TYPE_4D) ::  I1(*), I5(*)
-      INTEGER, INTENT(IN) ::  I2(*),I3(*),I4,I6(*),I7(*)
-      INTEGER, INTENT(IN) :: I8,I9,I10
+      TYPE(FONCTION_TYPE_4D), INTENT(IN)  :: I1(*)
+      TYPE(FONCTION_TYPE_4D), INTENT(OUT) :: I5(*)
+      INTEGER, INTENT(IN)  :: I2(*),I3(*),I4,I6(*),I7(*),I8,I9
+      INTEGER, INTENT(OUT) :: I10
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

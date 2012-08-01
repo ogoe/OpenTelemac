@@ -71,8 +71,8 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NBYTES,DEST,TYPE
-      DOUBLE PRECISION BUFFER(*)
+      INTEGER, INTENT(IN)          :: NBYTES,DEST,TYPE
+      DOUBLE PRECISION, INTENT(IN) :: BUFFER(*)
 !
 !----------------------------------------------------------------------
 !
