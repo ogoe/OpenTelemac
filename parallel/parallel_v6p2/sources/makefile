@@ -71,7 +71,8 @@ INSTALL	      = cp
 
 MAKEFILE      = makefile
 
-SRCS	      = errpvm.f \
+SRCS	      = interface_parallel.f \
+		errpvm.f \
 		get_mpi_parameters.f \
 		org_charac_type1.f \
 		p_org_fonction_type.f \
@@ -107,8 +108,7 @@ SRCS	      = errpvm.f \
 		p_iwrit_c.f \
 		p_mpi_alltoallv_toma2.f \
 		p_mpi_alltoallv_toma3.f \
-		p_mpi_alltoallv_toma4.f \
-		build_global_bound.f
+		p_mpi_alltoallv_toma4.f
 
 SRCS_PARTEL= partel.f
 SRCS_GRETEL= gretel_autop.f
