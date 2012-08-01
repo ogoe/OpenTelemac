@@ -38,6 +38,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+!     USE INTERFACE_PARALLEL
       IMPLICIT NONE   
       PRIVATE
 ! 
@@ -77,20 +78,6 @@
         DOUBLE PRECISION :: DX,DY,DZ                ! THE DISPLACEMENTS
         DOUBLE PRECISION :: BASKET(MAX_BASKET_SIZE) ! VARIABLES INTERPOLATED AT THE FOOT   
       END TYPE CHARAC_TYPE 
-! 
-!     ARRAY OF BLOCKLENGTHS OF TYPE COMPONENTS, NOTE THE BASKET INITIALISED TO 1 
-!
-      INTEGER, DIMENSION(15) :: 
-     &      CH_BLENGTH=(/1,1,1,1,1,1,1,1,1,1,1,1,1,1,1/)  
-! 
-!     ARRAY OF DISPLACEMENTS BETWEEN BASIC COMPONENTS, HERE INITIALISED ONLY 
-! 
-      INTEGER, DIMENSION(15) :: 
-     &      CH_DELTA=  (/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/) 
-! 
-!     ARRAY OF COMPONENT TYPES IN TERMS OF THE MPI COMMUNICATION 
-! 
-      INTEGER, DIMENSION(15) :: CH_TYPES 
 ! 
 !     THE CORRESPONDING MPI TYPE
 !  
@@ -459,8 +446,8 @@
           COMMON/INFO/LNG,LU 
           INTEGER :: I,IER 
           CALL P_MPI_ALLTOALL(SENDCOUNTS,1,MPI_INTEGER,  
-     &          RECVCOUNTS,1,MPI_INTEGER,  
-     &          MPI_COMM_WORLD,IER) 
+     &                        RECVCOUNTS,1,MPI_INTEGER,  
+     &                        MPI_COMM_WORLD,IER) 
           IF (IER.NE.MPI_SUCCESS) THEN 
             WRITE(LU,*)  
      &       ' @STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALL ERROR: ',IER 

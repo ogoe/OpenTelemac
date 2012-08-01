@@ -96,19 +96,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN,IELMU,IELEM
-      DOUBLE PRECISION TIERS     
+      INTEGER NPOIN,IELMU,IELEM     
 !
 !-----------------------------------------------------------------------
 !
-      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7
+      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6
       INTEGER, DIMENSION(:), POINTER :: IFA
       INTEGER I,J,K,NPT,DIM1F
       LOGICAL QUAD,QUAB
-!
-!-----------------------------------------------------------------------
-!
-      TIERS=1.D0/3.D0
 ! 
 !-----------------------------------------------------------------------
 !  TABLEAUX DE TRAVAIL PRIS DANS LE BLOC TB
@@ -120,7 +115,6 @@
       T4 =>TB%ADR( 4)%P
       T5 =>TB%ADR( 5)%P
       T6 =>TB%ADR( 6)%P
-      T7 =>TB%ADR( 7)%P
 !
 !-----------------------------------------------------------------------
 !  DEPLOIEMENT DE LA STRUCTURE DE MAILLAGE
