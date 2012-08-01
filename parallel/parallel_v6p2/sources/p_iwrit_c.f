@@ -44,8 +44,14 @@
 !
       INCLUDE 'mpif.h'
 !
-      INTEGER NBYTES,DEST,ITAG,IREQ,IER
-      CHARACTER(LEN=*) BUFFER
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)          :: NBYTES,DEST,ITAG,IREQ
+      CHARACTER(LEN=*), INTENT(IN) :: BUFFER
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IER
 !
 !-----------------------------------------------------------------------
 !

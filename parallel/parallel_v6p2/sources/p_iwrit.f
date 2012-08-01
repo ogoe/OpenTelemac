@@ -44,8 +44,14 @@
 !
       INCLUDE 'mpif.h'
 !
-      INTEGER NBYTES,DEST,ITAG,IREQ,IER
-      DOUBLE PRECISION BUFFER(*)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)          :: NBYTES,DEST,ITAG,IREQ
+      DOUBLE PRECISION, INTENT(IN) :: BUFFER(*)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IER
 !
 !-----------------------------------------------------------------------
 !

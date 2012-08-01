@@ -74,7 +74,6 @@ MAKEFILE      = makefile
 SRCS	      = errpvm.f \
 		get_mpi_parameters.f \
 		org_charac_type1.f \
-		p_org_charac_type.f \
 		p_org_fonction_type.f \
 		p_org_charac_type_4d.f \
 		p_org_fonction_type_4d.f \
@@ -106,7 +105,6 @@ SRCS	      = errpvm.f \
 		p_writ.f \
 		p_iwrit.f \
 		p_iwrit_c.f \
-		p_mpi_alltoallv_toma1.f \
 		p_mpi_alltoallv_toma2.f \
 		p_mpi_alltoallv_toma3.f \
 		p_mpi_alltoallv_toma4.f \
@@ -140,7 +138,7 @@ SHELL	      = /bin/sh
 # Definition des cibles
 #
 
-all:		$(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL)
+all:		modules $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL)
 
 $(LIBRARY):	$(OBJS)
 		$(MESSAGE) "Archive $(LIBRARY) ..."
@@ -222,7 +220,16 @@ libcray:
 
 #------- Modules
 #
+MODS =   interface_parallel.o
 
+modules:	$(MODS)
+		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
+		  DIR="`whoami`@`uname -n`:`pwd`" ; \
+		  remsh $(NAME_CIBLE) -l $(USR_CIBLE) \
+		  "cd workdir/compilation ;\
+		  rcp *.mod $$DIR/. ";\
+		  mv *.mod $(DEST)/.; fi;
+		@echo "=> Transfert des modules effectue !"
 .f.o:
 	@echo "=> Compilation de $< :"
 	@if [ ! -d ../$(DIRLIB) ]; then \

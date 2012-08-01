@@ -1,11 +1,11 @@
-!                    ***************************
-                     SUBROUTINE  P_MPI_ALLTOALLV
-!                    ***************************
+!                    **************************
+                     SUBROUTINE P_MPI_ALLTOALLV
+!                    **************************
 !
      &(I1,I2,I3,I4,I5,I6,I7,I8,I9,I10)
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                  21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_ALLTOALLV.
@@ -33,7 +33,7 @@
 !|                |   | PROCESSOR 
 !| I3             |-->| DISPLACEMENT ARRAY FOR THE SEND BUFFER 
 !| I4             |-->| DATA TYPE OF SEND BUFFER ELEMENTS
-!| I5             |-->| RECEIVE BUFFER
+!| I5             |<--| RECEIVE BUFFER
 !| I6             |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT 
 !|                |   | CAN BE RECEIVED FROM EACH PROCESSOR
 !| I7             |-->| DISPLACEMENT ARRAY FOR THE RECEIVE BUFFER 
@@ -48,8 +48,23 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: I1(*),I2(*),I3(*),I4,I5(*),I6(*),I7(*)
-      INTEGER, INTENT(IN) :: I8,I9,I10
+      TYPE CHARAC_TYPE 
+        SEQUENCE   ! BUT SEEMS USELESS (HENCE TRICK BELOW WITH VOID)  
+        INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD) 
+        INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO  
+        INTEGER :: INE   ! THE LOCAL 2D ELEMENT NR THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
+        INTEGER :: KNE   ! THE LOCAL LEVEL THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
+        INTEGER :: IOR   ! THE POSITION OF THE TRAJECTORY -HEAD- IN MYPID [THE 2D/3D NODE OF ORIGIN] 
+        INTEGER :: ISP,NSP ! NUMBERS OF RUNGE-KUTTA PASSED AS COLLECTED AND TO FOLLOW AT ALL 
+        INTEGER :: VOID  ! TRICK FOR ALIGNMENT 
+        DOUBLE PRECISION :: XP,YP,ZP                ! THE (X,Y,Z)-POSITION NOW 
+        DOUBLE PRECISION :: DX,DY,DZ                ! THE DISPLACEMENTS
+        DOUBLE PRECISION :: BASKET(10) ! VARIABLES INTERPOLATED AT THE FOOT   
+      END TYPE CHARAC_TYPE 
+      INTEGER, INTENT(IN)  :: I2(*),I3(*),I4,I6(*),I7(*),I8,I9
+      INTEGER, INTENT(OUT) :: I10
+      TYPE(CHARAC_TYPE), INTENT(IN)  :: I1(*)
+      TYPE(CHARAC_TYPE), INTENT(OUT) :: I5(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

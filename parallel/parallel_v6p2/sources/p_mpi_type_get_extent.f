@@ -1,11 +1,11 @@
-!                    *********************************
-                     SUBROUTINE  P_MPI_TYPE_GET_EXTENT
-!                    *********************************
+!                    ********************************
+                     SUBROUTINE P_MPI_TYPE_GET_EXTENT
+!                    ********************************
 !
      &(I1,I2,I3,IERR)
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_TYPE_GET_EXTENT.
@@ -31,18 +31,19 @@
 !| I1             |-->|  DATATYPE
 !| I2             |<--|  LOWER BOUND OF THE DATATYPE
 !| I3             |<--|  EXTENT OF THE DATATYPE
-!| IERR           |---|  ERROR VALUE
+!| IERR           |<--|  ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
-      INTEGER LNG,LU,IERR
+      INTEGER LNG,LU
       COMMON/INFO/LNG,LU
       INCLUDE 'mpif.h'
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER (KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: I2,I3
-      INTEGER, INTENT(INOUT) :: I1
+      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: I2,I3
+      INTEGER, INTENT(INOUT)                        :: I1
+      INTEGER, INTENT(OUT)                          :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

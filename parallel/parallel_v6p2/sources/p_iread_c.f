@@ -44,8 +44,14 @@
 !
       INCLUDE 'mpif.h'
 !
-      INTEGER NBYTES,SOURCE,ITAG,IREQ,IER
-      CHARACTER(LEN=*) BUFFER
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)           :: NBYTES,SOURCE,ITAG,IREQ
+      CHARACTER(LEN=*), INTENT(OUT) :: BUFFER
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IER
 !
 !-----------------------------------------------------------------------
 !     RECEIVES DATA

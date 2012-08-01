@@ -1,11 +1,11 @@
-!                    ************************************
-                     SUBROUTINE  P_MPI_TYPE_CREATE_STRUCT
-!                    ************************************
+!                    ***********************************
+                     SUBROUTINE P_MPI_TYPE_CREATE_STRUCT
+!                    ***********************************
 !
      &(I1,I2,I3,I4,I5,I6)
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_TYPE_STRUCT.
@@ -37,16 +37,18 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
-       include "mpif.h"
-
+!
+      include "mpif.h"
+!
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: I1,I5,I6
-      INTEGER, INTENT(IN) :: I2(I1),I4(I1)
-      INTEGER  (KIND=MPI_ADDRESS_KIND) :: I3(I1)
+      INTEGER, INTENT(IN)                           :: I1,I6
+      INTEGER, INTENT(OUT)                          :: I5
+      INTEGER, INTENT(IN)                           :: I2(I1),I4(I1)
+      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: I3(I1)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

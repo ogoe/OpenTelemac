@@ -44,11 +44,19 @@
 !
       INCLUDE 'mpif.h'
 !
-      INTEGER NBYTES,SOURCE,ITAG,IREQ,IER
-      DOUBLE PRECISION BUFFER(*)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: NBYTES,SOURCE,ITAG,IREQ
+      DOUBLE PRECISION, INTENT(OUT) :: BUFFER(*)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IER
 !
 !-----------------------------------------------------------------------
+!
 !     RECEIVES DATA
+!
 !-----------------------------------------------------------------------
 !
       CALL MPI_IRECV(BUFFER,NBYTES,MPI_BYTE,SOURCE,ITAG,

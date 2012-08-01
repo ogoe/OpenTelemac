@@ -36,11 +36,16 @@
 !         
       IMPLICIT NONE 
       INCLUDE 'mpif.h' 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
-      INTEGER, PARAMETER :: MAX_BASKET_SIZE=10 
       INTEGER, INTENT(INOUT) :: NOMB 
-      INTEGER, INTENT(INOUT)  :: FONCTION_4D
-      LOGICAL, INTENT(IN) ::TRACE 
+      INTEGER, INTENT(INOUT) :: FONCTION_4D
+      LOGICAL, INTENT(IN)    :: TRACE 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, PARAMETER :: MAX_BASKET_SIZE=10 
       TYPE FONCTION_TYPE_4D
           INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD)
           INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO

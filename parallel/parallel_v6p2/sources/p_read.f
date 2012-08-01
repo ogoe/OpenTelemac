@@ -5,7 +5,7 @@
      &(BUFFER,NBYTES,SOURCE,TYPE)
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    RECEIVES DATA.
@@ -48,7 +48,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BUFFER         |-->| ZONE TAMPON POUR LES DONNEES
+!| BUFFER         |<--| ZONE TAMPON POUR LES DONNEES
 !|                |   | BUFFER / PUFFERFELD
 !| NBYTES         |-->| NOMBRE DE BYTES A TRANSMETTRE
 !|                |   | LENGTH IN BYTES / LAENGE IN BYTES
@@ -71,11 +71,19 @@
 !
       INCLUDE 'mpif.h'
 !
-      INTEGER NBYTES,SOURCE,TYPE,STATUS(MPI_STATUS_SIZE),IER
-      DOUBLE PRECISION BUFFER(*)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: NBYTES,SOURCE,TYPE
+      DOUBLE PRECISION, INTENT(OUT) :: BUFFER(*)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER STATUS(MPI_STATUS_SIZE)
+      INTEGER IER
 !
 !-----------------------------------------------------------------------
-! RECEIVES DATA
+!
+!     RECEIVES DATA
 !
       CALL MPI_RECV(BUFFER,NBYTES,MPI_BYTE,SOURCE,4711,
      &              MPI_COMM_WORLD,STATUS,IER)

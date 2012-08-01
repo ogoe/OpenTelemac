@@ -5,7 +5,7 @@
      &(I1,I2,I3,I4,I5,I6,I7,I8)
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_ALLTOALL.
@@ -32,12 +32,12 @@
 !| I2             |-->| SPECIFIES THE NUMBER OF ELEMENTS TO SEND TO EACH
 !|                |   | PROCESSOR  
 !| I3             |-->| DATA TYPE OF SEND BUFFER ELEMENTS
-!| I4             |-->| RECEIVE BUFFER
+!| I4             |<--| RECEIVE BUFFER
 !| I5             |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT 
 !|                |   | CAN BE RECEIVED FROM EACH PROCESSOR 
 !| I6             |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
 !| I7             |-->| COMMUNICATOR 
-!| I8             |-->| ERROR VALUE 
+!| I8             |<--| ERROR VALUE 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -46,7 +46,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: I1(*),I2,I3,I4(*),I5,I6,I7,I8
+      INTEGER, INTENT(IN)  :: I1(*),I2,I3,I5,I6,I7
+      INTEGER, INTENT(OUT) :: I4(*),I8
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

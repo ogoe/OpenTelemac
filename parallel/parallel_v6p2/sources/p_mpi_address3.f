@@ -40,11 +40,14 @@
       COMMON/INFO/LNG,LU
 !
       INCLUDE 'mpif.h'
-      DOUBLE PRECISION LOCATION(*)
-      INTEGER IER
-      INTEGER (MPI_ADDRESS_KIND) ADDRESS
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION, INTENT(IN)            :: LOCATION(*)
+      INTEGER, INTENT(OUT)                    :: IER
+      INTEGER (MPI_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CALL MPI_GET_ADDRESS(LOCATION,ADDRESS,IER)
 !

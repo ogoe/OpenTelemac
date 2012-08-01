@@ -5,7 +5,7 @@
      *(LOCATION,ADDRESS,IER)
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_ADDRESS.
@@ -39,11 +39,14 @@
       COMMON/INFO/LNG,LU
 !
       INCLUDE 'mpif.h'
-      INTEGER LOCATION
-      INTEGER (MPI_ADDRESS_KIND) ADDRESS
-      INTEGER IER
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)                    :: LOCATION
+      INTEGER, INTENT(OUT)                   :: IER
+      INTEGER(MPI_ADDRESS_KIND), INTENT(OUT) :: ADDRESS
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       CALL MPI_GET_ADDRESS(LOCATION,ADDRESS,IER)
 !

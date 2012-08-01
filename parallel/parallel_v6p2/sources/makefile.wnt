@@ -59,7 +59,6 @@ SRCS	      = \
     errpvm.f \
 		get_mpi_parameters.f \
 		org_charac_type1.f \
-		p_org_charac_type.f \
 		p_org_fonction_type.f \
 		p_org_charac_type_4d.f \
 		p_org_fonction_type_4d.f \
@@ -91,7 +90,6 @@ SRCS	      = \
 		p_writ.f \
 		p_iwrit.f \
 		p_iwrit_c.f \
-		p_mpi_alltoallv_toma1.f \
 		p_mpi_alltoallv_toma2.f \
 		p_mpi_alltoallv_toma3.f \
 		p_mpi_alltoallv_toma4.f \
@@ -120,7 +118,7 @@ OBJS_DIFFSEL= $(SRCS_DIFFSEL:.f=.obj)
 #------------------------ Cibles
 #
 #--- La librairie (non installée)
-all: $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL)
+all: $(MODS) $(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL)
 
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
@@ -197,3 +195,13 @@ libprofile:
 	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
 	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
 	nmake /f makefile.wnt install  "MODE=p"
+
+#------- Modules
+#
+MODS = *.obj
+
+interface_parallel.obj:
+    $(F90) $(F90_PROJ) interface_parallel.f
+    if EXIST $(DEST)\interface_parallel.mod del /f $(DEST)\interface_parallel.mod
+	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+    move interface_parallel.mod $(DEST)
