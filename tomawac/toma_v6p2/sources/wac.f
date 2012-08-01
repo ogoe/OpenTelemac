@@ -194,12 +194,12 @@
 !V6P2 Diffraction : FREEMESH METHOD
       IF(DIFFRA.GT.0) THEN
         IF(NCSIZE.GT.1)THEN
-	   IF(LNG.EQ.1) THEN
+          IF(LNG.EQ.1) THEN
              WRITE(LU,*) ''
              WRITE(LU,*) '***************************************'
              WRITE(LU,*) ' ATTENTION : LA VERSION ACTUELLE DE    '
              WRITE(LU,*) ' TOMAWAC NE PERMET PAS DE SIMULER LA   '
-             WRITE(LU,*) ' DIFFRACTION EN PARALLEL               '
+             WRITE(LU,*) ' DIFFRACTION EN PARALLELE              '
              WRITE(LU,*) '***************************************'
            ELSE
              WRITE(LU,*) ''
@@ -211,16 +211,16 @@
            ENDIF
            CALL PLANTE(1)
            STOP
-	ENDIF
-	WRITE(LU,*) '****************************************'
+        ENDIF
+        WRITE(LU,*) '****************************************'
         WRITE(LU,*) 'DIFFRACTION IS TAKEN INTO ACCOUNT      '
-	WRITE(LU,*) 'STARTING FROM TIME STEP ',NPTDIF
-	IF(DIFFRA.EQ.1)THEN
-	  WRITE(LU,*) 'MILD SLOPE EQUATION FORMULATION'
-	ELSE
-	  WRITE(LU,*)'REVISED MILD SLOPE EQUATION FORMULATION'
-	ENDIF
-	WRITE(LU,*) '****************************************'
+        WRITE(LU,*) 'STARTING FROM TIME STEP ',NPTDIF
+        IF(DIFFRA.EQ.1)THEN
+          WRITE(LU,*) 'MILD SLOPE EQUATION FORMULATION'
+        ELSE
+          WRITE(LU,*)'REVISED MILD SLOPE EQUATION FORMULATION'
+        ENDIF
+        WRITE(LU,*) '****************************************'
 !    SETS UP OF THE SUBDOMAINS FOR THE FREEMSESH METHOD
 !    AND CALCULATES THE INVERSE MATRICES FOR EACH SUBDOMAIN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FREEMESH'
@@ -749,12 +749,12 @@
 !V6P2 Diffraction : diffraction term calculation
       IF(DIFFRA.GT.0) THEN
         IF(LT.EQ.NPTDIF)THEN
-	  WRITE(LU,*)'*********************************'
-	  WRITE(LU,*)'DIFFRACTION IS TAKEN INTO ACCOUNT'
-	  WRITE(LU,*)'*********************************'
-	ENDIF
-	IF(LT.GE.NPTDIF) THEN
-	  IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDIF'
+          WRITE(LU,*)'*********************************'
+          WRITE(LU,*)'DIFFRACTION IS TAKEN INTO ACCOUNT'
+          WRITE(LU,*)'*********************************'
+        ENDIF
+        IF(LT.GE.NPTDIF) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDIF'
           CALL PREDIF
      & ( SCX%R    , SCY%R     , SCT%R    , DT    ,
      &   MESH%X%R  , MESH%Y%R , STETA%R ,
@@ -772,7 +772,7 @@
      &   SXKONPT%R , SRK%R    , SRX%R    ,
      &   SRY%R    , SRXX%R    , SRYY%R   , SNEIGB%I,
      &   SNB_CLOSE%I, DIFFRA  , MAXNSP   , FLTDIF   )
-	  IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIF'
+         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIF'
         ENDIF
       ENDIF
 !V6P2 End diffraction

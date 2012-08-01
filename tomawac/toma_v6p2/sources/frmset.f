@@ -1,6 +1,7 @@
 !                       ***************** 
                         SUBROUTINE FRMSET 
 !                       ***************** 
+!
      &( X     , Y     , NEIGB , NB_CLOSE, NPOIN2,MAXNSP, NRD, NELEM2, 
      &  IKLE  , RK    , RX    , RY    , RXX   , RYY ) 
 ! 
@@ -75,15 +76,15 @@
 ! 
       IF(.NOT.DEJA)THEN
          ALLOCATE(ILM_POIN(NPOIN2,8))
-	 ALLOCATE(CLM(NPOIN2))
-	 ALLOCATE(KACC(NPOIN2))
-	 ALLOCATE(NB_C(NPOIN2))
-	 ALLOCATE(SUR_P(NPOIN2,8))
-	 ALLOCATE(STACK(NPOIN2))
-	 ALLOCATE(STACK2(NPOIN2))
-	 ALLOCATE(ALREADY_POM(NPOIN2))
-	 ALLOCATE(MINDIST(NPOIN2))
-	 DEJA=.TRUE.
+         ALLOCATE(CLM(NPOIN2))
+         ALLOCATE(KACC(NPOIN2))
+         ALLOCATE(NB_C(NPOIN2))
+         ALLOCATE(SUR_P(NPOIN2,8))
+         ALLOCATE(STACK(NPOIN2))
+         ALLOCATE(STACK2(NPOIN2))
+         ALLOCATE(ALREADY_POM(NPOIN2))
+         ALLOCATE(MINDIST(NPOIN2))
+         DEJA=.TRUE.
       ENDIF
 
 ! ILM_POIN array with the elements to which a point belongs 
@@ -145,7 +146,7 @@
             NB_C(IPOIN)=NB_C(IPOIN)+1 
             SUR_P(IPOIN,NB_C(IPOIN)) =L(M)  
             ALREADY_POM(L(M)) =.TRUE. 
-	   ENDIF 
+           ENDIF 
           ENDDO 
 !    
         ENDDO 

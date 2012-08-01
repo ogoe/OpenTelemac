@@ -121,13 +121,13 @@
 ! 
       IF(.NOT.DEJA)THEN
          ALLOCATE(SQRDELTA(NPOIN2))
-	 ALLOCATE(SQRCCG(NPOIN2))
-	 ALLOCATE(A_RMSE(NPOIN2))
-	 ALLOCATE(FRDK(NPOIN2,2))
-	 ALLOCATE(FRDA(NPOIN2,2))
-	 ALLOCATE(SCDA(NPOIN2,3))
-	 ALLOCATE(L_DELTA(NPOIN2))
-	 DEJA=.TRUE.
+         ALLOCATE(SQRCCG(NPOIN2))
+         ALLOCATE(A_RMSE(NPOIN2))
+         ALLOCATE(FRDK(NPOIN2,2))
+         ALLOCATE(FRDA(NPOIN2,2))
+         ALLOCATE(SCDA(NPOIN2,3))
+         ALLOCATE(L_DELTA(NPOIN2))
+         DEJA=.TRUE.
       ENDIF
 !
       DPI=6.283185307D0 
@@ -186,14 +186,14 @@
           A(IPOIN) = (2.D0*(F(IPOIN,IP,IFF) * DFREQ(IFF)* 
      &               DPI/NPLAN))**(0.5D0) 
           IF(DIFFRA.EQ.2)THEN 
-	    S_RMSE_IN=XK(IPOIN,IFF)*SQRCCG(IPOIN) 
+            S_RMSE_IN=XK(IPOIN,IFF)*SQRCCG(IPOIN) 
             A_RMSE(IPOIN) =A(IPOIN)*S_RMSE_IN 
             A(IPOIN)=A_RMSE(IPOIN) 
-	  ENDIF 
+          ENDIF 
         ENDDO 
 ! 
 !Filtering the local amplitudes of directional spectra 
-	IF(FLTDIF) CALL FILT_SA 
+        IF(FLTDIF) CALL FILT_SA 
 ! 
         CALL GRAD_ALFA 
        	FRDA(:,1)=DDX 
@@ -219,11 +219,11 @@
 !DIFFRA=1 - Mean Slope Equation model 
 !DIFFRA=2 - Revised Mean Slope Equation model 
           IF(DIFFRA.EQ.1)THEN 
-	    DIV(IPOIN)=CCG(IPOIN)*SCDA(IPOIN,3) 
+            DIV(IPOIN)=CCG(IPOIN)*SCDA(IPOIN,3) 
      &              + FRDK(IPOIN,1)*FRDA(IPOIN,1) 
      &              + FRDK(IPOIN,2)*FRDA(IPOIN,2) 
-	  ELSE 
-	    DIV(IPOIN)=XKONPT(IPOIN)*SCDA(IPOIN,3) 
+          ELSE 
+            DIV(IPOIN)=XKONPT(IPOIN)*SCDA(IPOIN,3) 
      &              + FRDK(IPOIN,1)*FRDA(IPOIN,1) 
      &              + FRDK(IPOIN,2)*FRDA(IPOIN,2) 
           ENDIF 
@@ -241,10 +241,10 @@
 !DIFFRA=1 - Mean Slope Equation model 
 !DIFFRA=2 - Revised Mean Slope Equation model 
               IF(DIFFRA.EQ.1) THEN 
-	        DELTA(IPOIN)=DIV(IPOIN)*XKONPT(IPOIN)/ 
+                DELTA(IPOIN)=DIV(IPOIN)*XKONPT(IPOIN)/ 
      &		     (CCG(IPOIN)*A(IPOIN)) 
               ELSE 
-	        DELTA(IPOIN)=(DIV(IPOIN)/A(IPOIN)) 
+                DELTA(IPOIN)=(DIV(IPOIN)/A(IPOIN)) 
               ENDIF 
 ! 
               IF( DELTA(IPOIN).LE.-1.D0) THEN 
@@ -290,9 +290,9 @@
           DDDN=-SINTET(IP)*DZY(IPOIN)+COSTET(IP)*DZX(IPOIN)           
           DEUKD=2.D0*XK(IPOIN,IFF)*DEPTH(IPOIN)	 
           IF (DEUKD.GT.7.D2) THEN 
-	    DSDNSK=0.D0 
-	  ELSE 
-	    DSDNSK=DPI*FREQ(IFF)*SQRDELTA(IPOIN)/SINH(DEUKD)          
+            DSDNSK=0.D0 
+          ELSE 
+            DSDNSK=DPI*FREQ(IFF)*SQRDELTA(IPOIN)/SINH(DEUKD)          
           ENDIF           
 !    
           WJUNK2=DSDNSK*DDDN           

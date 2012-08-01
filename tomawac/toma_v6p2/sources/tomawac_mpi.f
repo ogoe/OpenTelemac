@@ -27,6 +27,7 @@
       INTEGER :: KNE            ! THE LOCAL LEVEL THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION
       INTEGER :: IOR            ! THE POSITION OF THE TRAJECTORY -HEAD- IN MYPID [THE 2D/3D NODE OF ORIGIN]
       INTEGER :: ISP,NSP        ! NUMBERS OF RUNGE-KUTTA PASSED AS COLLECTED AND TO FOLLOW AT ALL
+      INTEGER :: VOID
       DOUBLE PRECISION :: XP,YP,ZP ! THE (X,Y,Z)-POSITION NOW
       DOUBLE PRECISION :: DX,DY,DZ ! THE (X,Y,Z)-POSITION NOW
       DOUBLE PRECISION :: BASKET(10) ! VARIABLES INTERPOLATED AT THE FOOT
@@ -170,92 +171,7 @@
   ! HOWEVER WE APPLY MPI_TYPE_EXTENT TO ESTIMATE THE BASKET FIELD
   !   / UP TO DATE NO CHECKING OF THE MPI ERROR STATUS /
   !---------------------------------------------------------------------
-c$$$        SUBROUTINE ORG_CHARAC_TYPE(NOMB)
-c$$$          IMPLICIT NONE
-c$$$          INTEGER, INTENT(IN) :: NOMB
-c$$$          INTEGER INTEX, IBASE, IER, ILB, IUB
-c$$$          TYPE(CHARAC_TYPE) :: CH
-c$$$          INTEGER LNG,LU
-c$$$          COMMON/INFO/LNG,LU
-c$$$!         NOTE JMH : P_MPI_ADDRESS 2 AND 3 ARE IN PARALLEL LIBRARY
-c$$$!                    THEY ALL CALL P_MPI_ADDRESS BUT WITH DIFFERENT
-c$$$!                    DATA TYPES (THIS IS TO ENABLE COMPILING BY NAG)
-c$$$          CALL P_MPI_ADDRESS (CH%MYPID,  CH_DELTA(1),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NEPID,  CH_DELTA(2),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%INE,    CH_DELTA(3),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%KNE,    CH_DELTA(4),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%IOR,    CH_DELTA(5),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%ISP,    CH_DELTA(6),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NSP,    CH_DELTA(7),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%XP,     CH_DELTA(8),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%YP,     CH_DELTA(9),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%ZP,     CH_DELTA(10), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%DX,     CH_DELTA(11),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%DY,     CH_DELTA(12),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%DZ,     CH_DELTA(13), IER)
-c$$$          CALL P_MPI_ADDRESS3(CH%BASKET, CH_DELTA(14), IER) ! BASKET STATIC
-c$$$!
-c$$$!         ORIGINAL CODE:
-c$$$!
-c$$$!         CALL P_MPI_ADDRESS (CH%MYPID,  CH_DELTA(1),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%NEPID,  CH_DELTA(2),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%INE,    CH_DELTA(3),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%KNE,    CH_DELTA(4),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%IOR,    CH_DELTA(5),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%ISP,    CH_DELTA(6),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%NSP,    CH_DELTA(7),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%XP,     CH_DELTA(8),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%YP,     CH_DELTA(9),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%ZP,     CH_DELTA(10), IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%BASKET, CH_DELTA(11), IER) ! BASKET STATIC
-c$$$!
-c$$$          CALL P_MPI_TYPE_EXTENT(MPI_REAL8,INTEX,IER)
-c$$$          ! MARKING THE END OF THE TYPE
-c$$$          CH_DELTA(15) = CH_DELTA(14) + MAX_BASKET_SIZE*INTEX ! MPI_UB POSITION
-c$$$          IBASE = CH_DELTA(1)
-c$$$          CH_DELTA = CH_DELTA - IBASE ! RELATIVE ADDRESSES
-c$$$          IF (NOMB>0.AND.NOMB<=MAX_BASKET_SIZE) THEN
-c$$$            CH_BLENGTH(14) = NOMB ! CH%BASKET RANGE APPLIED FOR COMMUNICATION
-c$$$          ELSE
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE::',
-c$$$     &        ' NOMB NOT IN RANGE [1..MAX_BASKET_SIZE]'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE, NOMB: ',MAX_BASKET_SIZE,NOMB
-c$$$            CALL PLANTE(1)
-c$$$            STOP
-c$$$          ENDIF
-c$$$          CH_TYPES(1)=MPI_INTEGER
-c$$$          CH_TYPES(2)=MPI_INTEGER
-c$$$          CH_TYPES(3)=MPI_INTEGER
-c$$$          CH_TYPES(4)=MPI_INTEGER
-c$$$          CH_TYPES(5)=MPI_INTEGER
-c$$$          CH_TYPES(6)=MPI_INTEGER
-c$$$          CH_TYPES(7)=MPI_INTEGER
-c$$$          CH_TYPES(8)=MPI_REAL8
-c$$$          CH_TYPES(9)=MPI_REAL8
-c$$$          CH_TYPES(10)=MPI_REAL8
-c$$$          CH_TYPES(11)=MPI_REAL8
-c$$$          CH_TYPES(12)=MPI_REAL8
-c$$$          CH_TYPES(13)=MPI_REAL8
-c$$$          CH_TYPES(14)=MPI_REAL8
-c$$$          CH_TYPES(15)=MPI_UB       ! THE TYPE UPPER BOUND MARKER
-c$$$          CALL P_MPI_TYPE_STRUCT(15,CH_BLENGTH,CH_DELTA,CH_TYPES,
-c$$$     &                         CHARACTERISTIC,IER)
-c$$$          CALL P_MPI_TYPE_COMMIT(CHARACTERISTIC,IER)
-c$$$          CALL P_MPI_TYPE_LB (CHARACTERISTIC, ILB, IER)
-c$$$          CALL P_MPI_TYPE_UB (CHARACTERISTIC, IUB, IER)
-c$$$          IF (TRACE) THEN
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE:'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE: ', MAX_BASKET_SIZE
-c$$$            WRITE(LU,*) ' SIZE(CH%BASKET): ',SIZE(CH%BASKET)
-c$$$            WRITE(LU,*) ' CH_DELTA: ',CH_DELTA
-c$$$            WRITE(LU,*) ' CH_BLENGTH: ',CH_BLENGTH
-c$$$            WRITE(LU,*) ' CH_TYPES: ',CH_TYPES
-c$$$            WRITE(LU,*) ' COMMITING MPI_TYPE_STRUCT: ', CHARACTERISTIC
-c$$$            WRITE(LU,*) ' MPI_TYPE_LB, MPI_TYPE_UB: ',ILB, IUB
-c$$$          ENDIF
-c$$$          IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
-c$$$          RETURN
-c$$$        END SUBROUTINE ORG_CHARAC_TYPE
+
 !
         SUBROUTINE DEORG_CHARAC_TYPE
           IMPLICIT NONE
@@ -265,179 +181,6 @@ c$$$        END SUBROUTINE ORG_CHARAC_TYPE
           RETURN
         END SUBROUTINE DEORG_CHARAC_TYPE
 !
-c$$$        SUBROUTINE ORG_FONCTION_TYPE(NOMB)
-c$$$          IMPLICIT NONE
-c$$$          INTEGER, INTENT(IN) :: NOMB
-c$$$          INTEGER INTEX, IBASE, IER, ILB, IUB
-c$$$          TYPE(FONCTION_TYPE) :: CH
-c$$$          INTEGER LNG,LU
-c$$$          COMMON/INFO/LNG,LU
-c$$$!         NOTE JMH : P_MPI_ADDRESS 2 AND 3 ARE IN PARALLEL LIBRARY
-c$$$!                    THEY ALL CALL P_MPI_ADDRESS BUT WITH DIFFERENT
-c$$$!                    DATA TYPES (THIS IS TO ENABLE COMPILING BY NAG)
-c$$$          CALL P_MPI_ADDRESS (CH%MYPID,  FC_DELTA(1),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NEPID,  FC_DELTA(2),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%INE,    FC_DELTA(3),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%KNE,    FC_DELTA(4),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%IOR,    FC_DELTA(5),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%ISP,    FC_DELTA(6),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NSP,    FC_DELTA(7),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%XP,     FC_DELTA(8),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%YP,     FC_DELTA(9),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%ZP,     FC_DELTA(10), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHP1,   FC_DELTA(11), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHP2,   FC_DELTA(12), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHP3,   FC_DELTA(13), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHZ,    FC_DELTA(14), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%BP,     FC_DELTA(15), IER)
-c$$$          CALL P_MPI_ADDRESS3(CH%F,      FC_DELTA(16), IER)
-c$$$!
-c$$$!
-c$$$!         ORIGINAL CODE:
-c$$$!
-c$$$!         CALL P_MPI_ADDRESS (CH%MYPID,  CH_DELTA(1),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%NEPID,  CH_DELTA(2),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%INE,    CH_DELTA(3),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%KNE,    CH_DELTA(4),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%IOR,    CH_DELTA(5),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%ISP,    CH_DELTA(6),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%NSP,    CH_DELTA(7),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%XP,     CH_DELTA(8),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%YP,     CH_DELTA(9),  IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%ZP,     CH_DELTA(10), IER)
-c$$$!         CALL P_MPI_ADDRESS (CH%BASKET, CH_DELTA(11), IER) ! BASKET STATIC
-c$$$!
-c$$$          CALL P_MPI_TYPE_EXTENT(MPI_REAL8,INTEX,IER)
-c$$$          ! MARKING THE END OF THE TYPE
-c$$$          FC_DELTA(17) = FC_DELTA(16) + 6*INTEX ! MPI_UB POSITION
-c$$$          IBASE = FC_DELTA(1)
-c$$$          FC_DELTA = FC_DELTA - IBASE ! RELATIVE ADDRESSES
-c$$$          IF (NOMB>0.AND.NOMB<=6) THEN
-c$$$            FC_BLENGTH(16) = NOMB ! CH%BASKET RANGE APPLIED FOR COMMUNICATION
-c$$$          ELSE
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE::',
-c$$$     &        ' NOMB NOT IN RANGE [1..MAX_BASKET_SIZE]'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE, NOMB: ',6
-c$$$            CALL PLANTE(1)
-c$$$            STOP
-c$$$          ENDIF
-c$$$          FC_TYPES(1)=MPI_INTEGER
-c$$$          FC_TYPES(2)=MPI_INTEGER
-c$$$          FC_TYPES(3)=MPI_INTEGER
-c$$$          FC_TYPES(4)=MPI_INTEGER
-c$$$          FC_TYPES(5)=MPI_INTEGER
-c$$$          FC_TYPES(6)=MPI_INTEGER
-c$$$          FC_TYPES(7)=MPI_INTEGER
-c$$$          FC_TYPES(8)=MPI_REAL8
-c$$$          FC_TYPES(9)=MPI_REAL8
-c$$$          FC_TYPES(10)=MPI_REAL8
-c$$$          FC_TYPES(11)=MPI_REAL8
-c$$$          FC_TYPES(12)=MPI_REAL8
-c$$$          FC_TYPES(13)=MPI_REAL8
-c$$$          FC_TYPES(14)=MPI_REAL8
-c$$$          FC_TYPES(15)=MPI_REAL8
-c$$$          FC_TYPES(16)=MPI_REAL8
-c$$$          FC_TYPES(17)=MPI_UB       ! THE TYPE UPPER BOUND MARKER
-c$$$          CALL P_MPI_TYPE_STRUCT(17,FC_BLENGTH,FC_DELTA,FC_TYPES,
-c$$$     &                         FONCTION,IER)
-c$$$          CALL P_MPI_TYPE_COMMIT(FONCTION,IER)
-c$$$          CALL P_MPI_TYPE_LB (FONCTION, ILB, IER)
-c$$$          CALL P_MPI_TYPE_UB (FONCTION, IUB, IER)
-c$$$          IF (TRACE) THEN
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE:'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE: ', 6
-c$$$            WRITE(LU,*) ' SIZE(CH%BASKET): ',SIZE(CH%F)
-c$$$            WRITE(LU,*) ' CH_DELTA: ',FC_DELTA
-c$$$            WRITE(LU,*) ' CH_BLENGTH: ',FC_BLENGTH
-c$$$            WRITE(LU,*) ' CH_TYPES: ',FC_TYPES
-c$$$            WRITE(LU,*) ' COMMITING MPI_TYPE_STRUCT: ', FONCTION
-c$$$            WRITE(LU,*) ' MPI_TYPE_LB, MPI_TYPE_UB: ',ILB, IUB
-c$$$          ENDIF
-c$$$          IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
-c$$$          RETURN
-c$$$        END SUBROUTINE ORG_FONCTION_TYPE
-c$$$!
-c$$$        SUBROUTINE ORG_CHARAC_TYPE_4D(NOMB)
-c$$$          IMPLICIT NONE
-c$$$          INTEGER, INTENT(IN) :: NOMB
-c$$$          INTEGER INTEX, IBASE, IER, ILB, IUB
-c$$$          TYPE(CHARAC_TYPE_4D) :: CH
-c$$$          INTEGER LNG,LU
-c$$$          COMMON/INFO/LNG,LU
-c$$$!         NOTE JMH : P_MPI_ADDRESS 2 AND 3 ARE IN PARALLEL LIBRARY
-c$$$!                    THEY ALL CALL P_MPI_ADDRESS BUT WITH DIFFERENT
-c$$$!                    DATA TYPES (THIS IS TO ENABLE COMPILING BY NAG)
-c$$$          CALL P_MPI_ADDRESS (CH%MYPID,  CH_DELTA_4D(1),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NEPID,  CH_DELTA_4D(2),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%INE,    CH_DELTA_4D(3),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%KNE,    CH_DELTA_4D(4),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%FNE,    CH_DELTA_4D(5),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%IOR,    CH_DELTA_4D(6),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%ISP,    CH_DELTA_4D(7),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NSP,    CH_DELTA_4D(8),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%XP,     CH_DELTA_4D(9),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%YP,     CH_DELTA_4D(10), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%ZP,     CH_DELTA_4D(11), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%FP,     CH_DELTA_4D(12), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%DX,     CH_DELTA_4D(13), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%DY,     CH_DELTA_4D(14), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%DZ,     CH_DELTA_4D(15), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%DF,     CH_DELTA_4D(16), IER)
-c$$$          CALL P_MPI_ADDRESS3(CH%BASKET, CH_DELTA_4D(17), IER) ! BASKET STATIC
-c$$$!
-c$$$!
-c$$$          CALL P_MPI_TYPE_EXTENT(MPI_REAL8,INTEX,IER)
-c$$$          ! MARKING THE END OF THE TYPE
-c$$$          CH_DELTA_4D(18) = CH_DELTA_4D(17) + MAX_BASKET_SIZE*INTEX ! MPI_UB POSITION
-c$$$          IBASE = CH_DELTA_4D(1)
-c$$$          CH_DELTA_4D = CH_DELTA_4D - IBASE ! RELATIVE ADDRESSES
-c$$$          IF (NOMB>0.AND.NOMB<=MAX_BASKET_SIZE) THEN
-c$$$            CH_BLENGTH_4D(17) = NOMB ! CH%BASKET RANGE APPLIED FOR COMMUNICATION
-c$$$          ELSE
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE::',
-c$$$     &        ' NOMB NOT IN RANGE [1..MAX_BASKET_SIZE]'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE, NOMB: ',MAX_BASKET_SIZE,NOMB
-c$$$            CALL PLANTE(1)
-c$$$            STOP
-c$$$          ENDIF
-c$$$          CH_TYPES_4D(1)=MPI_INTEGER
-c$$$          CH_TYPES_4D(2)=MPI_INTEGER
-c$$$          CH_TYPES_4D(3)=MPI_INTEGER
-c$$$          CH_TYPES_4D(4)=MPI_INTEGER
-c$$$          CH_TYPES_4D(5)=MPI_INTEGER
-c$$$          CH_TYPES_4D(6)=MPI_INTEGER
-c$$$          CH_TYPES_4D(7)=MPI_INTEGER
-c$$$          CH_TYPES_4D(8)=MPI_INTEGER
-c$$$          CH_TYPES_4D(9)=MPI_REAL8
-c$$$          CH_TYPES_4D(10)=MPI_REAL8
-c$$$          CH_TYPES_4D(11)=MPI_REAL8
-c$$$          CH_TYPES_4D(12)=MPI_REAL8
-c$$$          CH_TYPES_4D(13)=MPI_REAL8
-c$$$          CH_TYPES_4D(14)=MPI_REAL8
-c$$$          CH_TYPES_4D(15)=MPI_REAL8
-c$$$          CH_TYPES_4D(16)=MPI_REAL8
-c$$$          CH_TYPES_4D(17)=MPI_REAL8
-c$$$          CH_TYPES_4D(18)=MPI_UB       ! THE TYPE UPPER BOUND MARKER
-c$$$!
-c$$$          CALL P_MPI_TYPE_STRUCT(18,CH_BLENGTH_4D,CH_DELTA_4D,
-c$$$     &                         CH_TYPES_4D,CHARACTER_4D,IER)
-c$$$          CALL P_MPI_TYPE_COMMIT(CHARACTER_4D,IER)
-c$$$          CALL P_MPI_TYPE_LB (CHARACTER_4D, ILB, IER)
-c$$$          CALL P_MPI_TYPE_UB (CHARACTER_4D, IUB, IER)
-c$$$          IF (TRACE) THEN
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE_4D:'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE: ', MAX_BASKET_SIZE
-c$$$            WRITE(LU,*) ' SIZE(CH%BASKET): ',SIZE(CH%BASKET)
-c$$$            WRITE(LU,*) ' CH_DELTA_4D: ',CH_DELTA_4D
-c$$$            WRITE(LU,*) ' CH_BLENGTH: ',CH_BLENGTH_4D
-c$$$            WRITE(LU,*) ' CH_TYPES_4D: ',CH_TYPES_4D
-c$$$            WRITE(LU,*) ' COMMITING MPI_TYPE_STRUCT: ', CHARACTER_4D
-c$$$            WRITE(LU,*) ' MPI_TYPE_LB, MPI_TYPE_UB: ',ILB, IUB
-c$$$          ENDIF
-c$$$          IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
-c$$$          RETURN
-c$$$        END SUBROUTINE ORG_CHARAC_TYPE_4D
-c$$$!
         SUBROUTINE DEORG_CHARAC_TYPE_4D
           IMPLICIT NONE
           INTEGER IER
@@ -445,93 +188,6 @@ c$$$!
           CALL P_MPI_TYPE_FREE (FONCTION_4D,IER)
           RETURN
         END SUBROUTINE DEORG_CHARAC_TYPE_4D
-!
-c$$$        SUBROUTINE ORG_FONCTION_TYPE_4D(NOMB)
-c$$$          IMPLICIT NONE
-c$$$          INTEGER, INTENT(IN) :: NOMB
-c$$$          INTEGER INTEX, IBASE, IER, ILB, IUB
-c$$$          TYPE(FONCTION_TYPE_4D) :: CH
-c$$$          INTEGER LNG,LU
-c$$$          COMMON/INFO/LNG,LU
-c$$$!         NOTE JMH : P_MPI_ADDRESS 2 AND 3 ARE IN PARALLEL LIBRARY
-c$$$!                    THEY ALL CALL P_MPI_ADDRESS BUT WITH DIFFERENT
-c$$$!                    DATA TYPES (THIS IS TO ENABLE COMPILING BY NAG)
-c$$$          CALL P_MPI_ADDRESS (CH%MYPID,  FC_DELTA_4D(1),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NEPID,  FC_DELTA_4D(2),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%INE,    FC_DELTA_4D(3),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%KNE,    FC_DELTA_4D(4),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%FNE,    FC_DELTA_4D(5),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%IOR,    FC_DELTA_4D(6),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%ISP,    FC_DELTA_4D(7),  IER)
-c$$$          CALL P_MPI_ADDRESS (CH%NSP,    FC_DELTA_4D(8),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%XP,     FC_DELTA_4D(9),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%YP,     FC_DELTA_4D(10),  IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%ZP,     FC_DELTA_4D(11), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%FP,     FC_DELTA_4D(12), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHP1,   FC_DELTA_4D(13), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHP2,   FC_DELTA_4D(14), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHP3,   FC_DELTA_4D(15), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHZ,    FC_DELTA_4D(16), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%SHF,    FC_DELTA_4D(17), IER)
-c$$$          CALL P_MPI_ADDRESS2(CH%BP,     FC_DELTA_4D(18), IER)
-c$$$          CALL P_MPI_ADDRESS3(CH%F,      FC_DELTA_4D(19), IER)
-c$$$!
-c$$$!
-c$$$          CALL P_MPI_TYPE_EXTENT(MPI_REAL8,INTEX,IER)
-c$$$          ! MARKING THE END OF THE TYPE
-c$$$          FC_DELTA_4D(20) = FC_DELTA_4D(19) + 12*INTEX ! MPI_UB POSITION
-c$$$          IBASE = FC_DELTA_4D(1)
-c$$$          FC_DELTA_4D = FC_DELTA_4D - IBASE ! RELATIVE ADDRESSES
-c$$$          IF (NOMB>0.AND.NOMB<=12) THEN
-c$$$            FC_BLENGTH_4D(19) = NOMB ! CH%BASKET RANGE APPLIED FOR COMMUNICATION
-c$$$          ELSE
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE::',
-c$$$     &        ' NOMB NOT IN RANGE [1..MAX_BASKET_SIZE]'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE, NOMB: ',6
-c$$$            CALL PLANTE(1)
-c$$$            STOP
-c$$$          ENDIF
-c$$$          FC_TYPES_4D(1)=MPI_INTEGER
-c$$$          FC_TYPES_4D(2)=MPI_INTEGER
-c$$$          FC_TYPES_4D(3)=MPI_INTEGER
-c$$$          FC_TYPES_4D(4)=MPI_INTEGER
-c$$$          FC_TYPES_4D(5)=MPI_INTEGER
-c$$$          FC_TYPES_4D(6)=MPI_INTEGER
-c$$$          FC_TYPES_4D(7)=MPI_INTEGER
-c$$$          FC_TYPES_4D(8)=MPI_INTEGER
-c$$$          FC_TYPES_4D(9)=MPI_REAL8
-c$$$          FC_TYPES_4D(10)=MPI_REAL8
-c$$$          FC_TYPES_4D(11)=MPI_REAL8
-c$$$          FC_TYPES_4D(12)=MPI_REAL8
-c$$$          FC_TYPES_4D(13)=MPI_REAL8
-c$$$          FC_TYPES_4D(14)=MPI_REAL8
-c$$$          FC_TYPES_4D(15)=MPI_REAL8
-c$$$          FC_TYPES_4D(16)=MPI_REAL8
-c$$$          FC_TYPES_4D(17)=MPI_REAL8
-c$$$          FC_TYPES_4D(18)=MPI_REAL8
-c$$$          FC_TYPES_4D(19)=MPI_REAL8
-c$$$          FC_TYPES_4D(20)=MPI_UB       ! THE TYPE UPPER BOUND MARKER
-c$$$          CALL P_MPI_TYPE_STRUCT(20,FC_BLENGTH_4D,FC_DELTA_4D,
-c$$$     &                         FC_TYPES_4D,FONCTION_4D,IER)
-c$$$          CALL P_MPI_TYPE_COMMIT(FONCTION_4D,IER)
-c$$$          CALL P_MPI_TYPE_LB (FONCTION_4D, ILB, IER)
-c$$$          CALL P_MPI_TYPE_UB (FONCTION_4D, IUB, IER)
-c$$$          IF (TRACE) THEN
-c$$$            WRITE(LU,*) ' @STREAMLINE::ORG_CHARAC_TYPE:'
-c$$$            WRITE(LU,*) ' MAX_BASKET_SIZE: ', 12
-c$$$            WRITE(LU,*) ' SIZE(CH%BASKET): ',SIZE(CH%F)
-c$$$            WRITE(LU,*) ' CH_DELTA_4D: ',FC_DELTA_4D
-c$$$            WRITE(LU,*) ' CH_BLENGTH_4D: ',FC_BLENGTH_4D
-c$$$            WRITE(LU,*) ' CH_TYPES_4D: ',FC_TYPES_4D
-c$$$            WRITE(LU,*) ' COMMITING MPI_TYPE_STRUCT: ', FONCTION_4D
-c$$$            WRITE(LU,*) ' MPI_TYPE_LB, MPI_TYPE_UB: ',ILB, IUB
-c$$$          ENDIF
-c$$$          IF (TRACE) WRITE(LU,*) ' -> LEAVING ORG_CHARAC_TYPE'
-c$$$          RETURN
-c$$$        END SUBROUTINE ORG_FONCTION_TYPE_4D
-c$$$!
-c$$$!
-!
 !
         SUBROUTINE COLLECT_CHAR(MYPID,IOR,MYII,IFACE,KNE,
      &                          ISP,NSP,XP,YP,ZP,DX,DY,DZ,IFAPAR,
@@ -786,7 +442,7 @@ c$$$!
           IF (.NOT.ALLOCATED(SENDCHAR)) ALLOCATE(SENDCHAR(NCHDIM,NFREQ))
           IF (.NOT.ALLOCATED(RECVCHAR)) ALLOCATE(RECVCHAR(NCHDIM,NFREQ))
           IF (.NOT.ALLOCATED(HEAPCHAR)) ALLOCATE(HEAPCHAR(NCHDIM,NFREQ))
-          CALL P_ORG_CHARAC_TYPE(NOMB,TRACE,CHARACTERISTIC) ! COMMITS THE CHARACTERISTICS TYPE FOR COMM.
+          CALL ORG_CHARAC_TYPE1(NOMB,TRACE,CHARACTERISTIC) ! COMMITS THE CHARACTERISTICS TYPE FOR COMM.
           CALL P_ORG_FONCTION_TYPE(6,TRACE,FONCTION)
           RETURN
         END SUBROUTINE ORGANISE_CHARS
@@ -829,9 +485,9 @@ c$$$!
         END SUBROUTINE ORGANISE_CHARS_4D
 !
 !
-!                       *****************
+!                       ************************
                         SUBROUTINE PIEDS_TOMAWAC
-!                       *****************
+!                       ************************
 !
      &  (U , V , W , DT , NRK , X , Y , TETA , IKLE2 , IFABOR , ETAS ,
      &   XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP1 , SHP2 , SHP3 ,
@@ -1475,8 +1131,8 @@ c$$$!
           INTEGER :: I,IER
 !
           CALL P_MPI_ALLTOALL(SENDCOUNTS(:,IFREQ),1,MPI_INTEGER,
-     &          RECVCOUNTS(:,IFREQ),1,MPI_INTEGER,
-     &          MPI_COMM_WORLD,IER)
+     &                        RECVCOUNTS(:,IFREQ),1,MPI_INTEGER,
+     &                        MPI_COMM_WORLD,IER)
           IF (IER/=MPI_SUCCESS) THEN
             WRITE(LU,*)
      &       ' @STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALL ERROR: ',IER
@@ -1486,7 +1142,7 @@ c$$$!
           DO I=2,NCSIZE
             RDISPLS(I,IFREQ) = RDISPLS(I-1,IFREQ)+RECVCOUNTS(I-1,IFREQ)
           END DO
-          CALL P_MPI_ALLTOALLV_TOMA1
+          CALL P_MPI_ALLTOALLV
      &      (SENDCHAR(:,IFREQ),SENDCOUNTS(:,IFREQ),SDISPLS(:,IFREQ),
      &       CHARACTERISTIC,
      &       RECVCHAR(:,IFREQ),RECVCOUNTS(:,IFREQ),RDISPLS(:,IFREQ),
@@ -1589,9 +1245,9 @@ c$$$!
 !-----------------------------------------------------------------------
 ! JAJ PINXIT BASED ON CHAR11 FRI JUL 18 14:30:18 CEST 2008
 !
-!                       *********************
+!                       ****************************
                         SUBROUTINE PIEDS_TOMAWAC_MPI
-!                       *********************
+!                       ****************************
 !
      & ( U , V , W , DT , NRK , X ,Y,TETA,IKLE2,IFABOR ,ETAS,
      &   XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP1,SHP2,SHP3
