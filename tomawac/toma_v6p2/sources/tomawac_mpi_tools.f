@@ -269,8 +269,8 @@
 !
 !
           CALL P_MPI_ALLTOALL(SENDCOUNTS_AGAIN(:),1,MPI_INTEGER,
-     &          RECVCOUNTS_AGAIN(:),1,MPI_INTEGER,
-     &          MPI_COMM_WORLD,IER)
+     &                        RECVCOUNTS_AGAIN(:),1,MPI_INTEGER,
+     &                        MPI_COMM_WORLD,IER)
 !
           SDISPLS_AGAIN(1) = 0 ! CONTIGUOUS DATA MARKER
           DO I=2,NCSIZE
@@ -700,17 +700,13 @@
            S_DISP(I) = S_DISP(I-1)+NSPE_SEND(I-1)
            R_DISP(I) = R_DISP(I-1)+NSPE_RECV(I-1)
           ENDDO
-          CALL P_MPI_ALLTOALLV
+          CALL P_MPI_ALLTOALL
      &      (NSEND_LEO,NSPE_SEND,S_DISP,
-     &       MPI_INTEGER,
      &       NRECV_LEO,NSPE_RECV,R_DISP,
-     &       MPI_INTEGER,
      &       MPI_COMM_WORLD,IER)
-          CALL P_MPI_ALLTOALLV
+          CALL P_MPI_ALLTOALL
      &      (NPID_SEND,NSPE_SEND,S_DISP,
-     &       MPI_INTEGER,
      &       NPID_RECV,NSPE_RECV,R_DISP,
-     &       MPI_INTEGER,
      &       MPI_COMM_WORLD,IER)
           IF (IPID==0) THEN
              DO I=1,NLEO
