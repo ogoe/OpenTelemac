@@ -21,8 +21,8 @@
 --> 
    <action xref="1"
        do="translate;compile;run;cas;princi"
-       code="sisyphe" target="sis_loire-ingrandes.cas"
-       title="loire-ingrandes scalar mode"
+       code="telemac2d" target="sis_loire-ingrandes.cas"
+       title="loire-ingrandes T2D+SIS"
    /> 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
