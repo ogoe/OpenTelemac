@@ -7,7 +7,7 @@
    /!\ This section is being ignored at the moment -->
    <meta xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="bosse-analyt" author="sisyphe" contact="www.opentelemac.org" />
+      <data title="canal" author="telemac2d" contact="www.opentelemac.org" />
    </meta>
    <meta xref="vect">
       <look colour="jet.xml" />
