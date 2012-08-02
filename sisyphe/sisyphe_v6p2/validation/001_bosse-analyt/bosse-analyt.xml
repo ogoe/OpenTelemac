@@ -22,7 +22,7 @@
    <action xref="1"
        do="translate;compile;run;cas;princi"
        code="sisyphe" target="sis_bosse.cas"
-       title="bosse-analyt scalar mode"
+       title="bosse-analyt scalar mode sisyphe only"
    /> 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
