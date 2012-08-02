@@ -35,7 +35,7 @@
 TITLE                                          =  'crue '
 / maillage de base DX=10 m 
 /                  7000 points environ
-FORTRAN FILE : princi.f
+FORTRAN FILE : t2d_lazare.f
 GEOMETRY FILE                                  =  geo_lazare-t2d.slf 
 BOUNDARY CONDITIONS FILE                       = geo_lazare-t2d.cli
 / uniform grain
@@ -57,9 +57,14 @@ REFERENCE FILE                                 = f2d_lazare.slf
 /LISTING PRINTOUT PERIOD                        =   8640
 /  si SCHEMA PSI:
  TIME STEP                                      =  5.
- NUMBER OF TIME STEPS                           =  172800
- GRAPHIC PRINTOUT PERIOD                        =  17280
- LISTING PRINTOUT PERIOD                        =  1000
+/ NUMBER OF TIME STEPS                           =  172800
+/NUMBER OF TIME STEPS                           =  172800
+/GRAPHIC PRINTOUT PERIOD                        =  17280
+/LISTING PRINTOUT PERIOD                        =  1000
+/ for automatic validation purposes...
+NUMBER OF TIME STEPS                           =  17280
+GRAPHIC PRINTOUT PERIOD                        =  1728
+LISTING PRINTOUT PERIOD                        =  500
 /
 / TIME STEP                                      =  2.5
 /NUMBER OF TIME STEPS                           =  345600
