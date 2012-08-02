@@ -21,8 +21,8 @@
 --> 
    <action xref="1"
        do="translate;compile;run;cas;princi"
-       code="sisyphe" target="sis_conservation.cas"
-       title="conservation scalar mode"
+       code="telemac2d" target="sis_conservation.cas"
+       title="conservation T2D+SIS"
    /> 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
