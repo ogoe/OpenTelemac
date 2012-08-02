@@ -131,14 +131,18 @@ C
       IMPLICIT NONE 
       INTEGER LNG,LU 
       COMMON/INFO/LNG,LU 
-C 
-      INTEGER NPOIN , CHOIX , NLISS , I 
-C 
-      DOUBLE PRECISION   Z(NPOIN) , ZF(NPOIN)    , ZR(NPOIN) 
-      DOUBLE PRECISION   X(NPOIN) , Y(NPOIN), H(NPOIN) 
-C 
-C----------------------------------------------------------------------- 
-C 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN):: NPOIN , CHOIX
+      INTEGER, INTENT(INOUT):: NLISS
+!
+      DOUBLE PRECISION, INTENT(IN)::  Z(NPOIN) , ZF(NPOIN)
+      DOUBLE PRECISION , INTENT(IN)::  X(NPOIN) , Y(NPOIN), H(NPOIN)
+      DOUBLE PRECISION , INTENT(INOUT)::  ZR(NPOIN)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  k , n  
       DOUBLE PRECISION c 
 C 
