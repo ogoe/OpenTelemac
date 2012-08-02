@@ -315,8 +315,8 @@
 !
 !
           CALL P_MPI_ALLTOALL(SENDCOUNTS_AGAIN(:),1,MPI_INTEGER,
-     &          RECVCOUNTS_AGAIN(:),1,MPI_INTEGER,
-     &          MPI_COMM_WORLD,IER)
+     &                        RECVCOUNTS_AGAIN(:),1,MPI_INTEGER,
+     &                        MPI_COMM_WORLD,IER)
 !
           SDISPLS_AGAIN(1) = 0 ! CONTIGUOUS DATA MARKER
           DO I=2,NCSIZE
@@ -639,6 +639,10 @@
              SENDCOUNTS(:,FREQ) = 0
          END SUBROUTINE RESET_COUNT
 !
+!        NOTE JMH : DEMANDER A AMELIE LAUGIER
+!                   UN TRAITEMENT PLUS SIMPLE DE L'ECRITURE
+!                   DES SPECTRES EN PARALLELE
+!
          SUBROUTINE SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
      &                           NRECV_LEO)
           USE BIEF
@@ -679,8 +683,8 @@
 !
           NSPE_SEND(1) = SPE_SEND
           CALL P_MPI_ALLTOALL(NSPE_SEND(:),1,MPI_INTEGER,
-     &          NSPE_RECV(:),1,MPI_INTEGER,
-     &          MPI_COMM_WORLD,IER)
+     &                        NSPE_RECV(:),1,MPI_INTEGER,
+     &                        MPI_COMM_WORLD,IER)
 !
           II = 0
           DO I=1,NLEO
@@ -700,13 +704,17 @@
            S_DISP(I) = S_DISP(I-1)+NSPE_SEND(I-1)
            R_DISP(I) = R_DISP(I-1)+NSPE_RECV(I-1)
           ENDDO
-          CALL P_MPI_ALLTOALL
+          CALL P_MPI_ALLTOALLV_I
      &      (NSEND_LEO,NSPE_SEND,S_DISP,
+     &       MPI_INTEGER,
      &       NRECV_LEO,NSPE_RECV,R_DISP,
+     &       MPI_INTEGER,
      &       MPI_COMM_WORLD,IER)
-          CALL P_MPI_ALLTOALL
+          CALL P_MPI_ALLTOALLV_I
      &      (NPID_SEND,NSPE_SEND,S_DISP,
+     &       MPI_INTEGER,
      &       NPID_RECV,NSPE_RECV,R_DISP,
+     &       MPI_INTEGER,
      &       MPI_COMM_WORLD,IER)
           IF (IPID==0) THEN
              DO I=1,NLEO
