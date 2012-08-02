@@ -5,7 +5,7 @@
      &(NOMB,TRACE,CHARACTERISTIC)                      
 !
 !***********************************************************************
-! PARAVOID   V6P1                                   21/08/2010
+! PARAVOID   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS /
