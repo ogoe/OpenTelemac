@@ -5,7 +5,7 @@
      &(NOMB,TRACE,FONCTION_4D)                      
 !
 !***********************************************************************
-! PARALLEL   V6P1                                   21/08/2010
+! PARALLEL   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS /
@@ -29,7 +29,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NOMB           |<---| NUMBER OF VARIABLES 
+!| NOMB           |--->| NUMBER OF VARIABLES 
 !| TRACE          |<---| IF .TRUE. TRACE EXECUTION
 !| CHARACTERISTIC |--->| DATATYPE FOR CHARACTERISTIC 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,7 +39,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
-      INTEGER, INTENT(INOUT) :: NOMB 
+      INTEGER, INTENT(IN)    :: NOMB 
       INTEGER, INTENT(INOUT) :: FONCTION_4D
       LOGICAL, INTENT(IN)    :: TRACE 
 !
