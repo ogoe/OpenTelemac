@@ -3,9 +3,6 @@
 !                    *************************
 !
 !
-! This is a copy from library parallel
-!
-!
 !***********************************************************************
 ! PARALLEL VERSION 6.2                                  31/07/2012
 !***********************************************************************
@@ -167,6 +164,12 @@
         INTEGER, INTENT(OUT) :: I10
         TYPE(CHARAC_TYPE), INTENT(IN)  :: I1(*)
         TYPE(CHARAC_TYPE), INTENT(OUT) :: I5(*)
+      END SUBROUTINE
+!
+      SUBROUTINE P_MPI_ALLTOALLV_I(I1,I2,I3,I4,I5,I6,I7,I8,I9,I10)
+        IMPLICIT NONE
+        INTEGER, INTENT(IN)  :: I1(*),I2(*),I3(*),I4,I6(*),I7(*),I8,I9
+        INTEGER, INTENT(OUT) :: I5(*),I10
       END SUBROUTINE
 !
       SUBROUTINE P_MPI_ALLTOALLV_TOMA2(I1,I2,I3,I4,I5,I6,I7,I8,I9,I10)
