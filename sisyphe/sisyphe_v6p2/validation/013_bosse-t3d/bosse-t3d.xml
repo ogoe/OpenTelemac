@@ -22,7 +22,7 @@
    <action xref="1"
        do="translate;compile;run;cas;princi"
        code="telemac3d" target="t3d_bosse-t3d.cas"
-       title="bosse-t3d"
+       title="bosse-t3d T3D+SIS"
    /> 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
