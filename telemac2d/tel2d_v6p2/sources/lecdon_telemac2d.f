@@ -27,6 +27,17 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.COULET (ARTELIA)
+!+        30/03/2012
+!+        V6P2
+!+   Modification for adding "bridge" file and separation of weirs and
+!+   culvert file
+!
+!history  C.COULET / A.MASSON (ARTELIA) / P. CHASSE (CETMEF)
+!+        19/07/2012
+!+        V6P2
+!+   Modification for adding breaches management during simulation
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -267,6 +278,8 @@
           T2DSIP=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBUS') THEN
           T2DBUS=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBRC') THEN
+          T2DBRC=I
         ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06.AND.
      &         I.NE.09.AND.I.NE.21.AND.I.NE.27.AND.I.NE.30.AND.
      &         I.NE.31.AND.I.NE.32.AND.I.LE.47) THEN
@@ -759,6 +772,8 @@
          INTMICON  = MOTLOG( ADRESS(3,46) )
 !
          IF(.NOT.DEFZON) NZONE=0
+!        BREACHES
+         BRECHE    = MOTLOG( ADRESS(3,2) )
 !
 ! CHARACTER STRING KEYWORDS : SOME ARE USED BY THE LAUNCHING
 !                             PROCEDURE
@@ -913,6 +928,8 @@
          T2D_FILES(T2DSIP)%NAME=MOTCAR( ADRESS(4,89) )
 !        BUSES/BRIDGES DATA FILE
          T2D_FILES(T2DBUS)%NAME=MOTCAR( ADRESS(4,90) )
+!        BREACHES DATA FILE
+         T2D_FILES(T2DBRC)%NAME=MOTCAR( ADRESS(4,91) )
       IF(LISTIN) THEN
          IF(LNG.EQ.1) WRITE(LU,1000)
          IF(LNG.EQ.2) WRITE(LU,1001)

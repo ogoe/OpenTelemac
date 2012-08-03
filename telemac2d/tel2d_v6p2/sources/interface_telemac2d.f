@@ -193,6 +193,14 @@
 !-----------------------------------------------------------------------
 !
       INTERFACE
+        SUBROUTINE BREACH
+      IMPLICIT NONE
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
         SUBROUTINE BUSE
      &(RELAXB,NBUSE,ENTBUS,SORBUS,GRAV,
      & H,ZF,DBUS,LRGBUS,HAUBUS,CLPBUS,
@@ -1444,6 +1452,16 @@
       IMPLICIT NONE
       INTEGER, INTENT(IN)    :: NLAG
       INTEGER, INTENT(INOUT) :: DEBLAG(NLAG) , FINLAG(NLAG)
+        END SUBROUTINE
+      END INTERFACE
+!
+!-----------------------------------------------------------------------
+!
+      INTERFACE
+        SUBROUTINE LECBREACH
+     &(IFIC)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)    :: IFIC
         END SUBROUTINE
       END INTERFACE
 !

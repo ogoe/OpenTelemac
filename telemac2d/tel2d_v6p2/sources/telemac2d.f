@@ -144,6 +144,11 @@
 !+        V6P1
 !+   Call to TEL4DEL modified.
 !
+!history  P. CHASSE (CETMEF) / C.COULET (ARTELIA)
+!+        03/08/2012
+!+        V6P2
+!+   Modification for adding breaches management during simulation
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -744,6 +749,17 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
+! INITIAL BREACHES CONDITIONS
+!
+      IF (BRECHE) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BREACH'
+        CALL BREACH
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM BREACH'
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!-----------------------------------------------------------------------
 !
 ! READS THE GEOMETRY OF SINGULARITIES
 !
@@ -998,7 +1014,8 @@
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING HPROPA'
       CALL HPROPA(HPROP,H,H,PROLIN,HAULIN,TETAC,NSOUSI)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM HPROPA APPEL DE CHPCON'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM HPROPA'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DE CHPCON'
       CALL CHPCON(UCONV,VCONV,U,V,U,V,TETAU)
       IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHPCON'
       IF(SOLSYS.EQ.2) THEN
@@ -1206,6 +1223,12 @@
       ENDIF
 !
       LT = LT + 1
+!
+      IF(BRECHE) THEN
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING BREACH'
+        CALL BREACH
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM BREACH'
+      ENDIF
 !
       IF(DTVARI.AND.EQUA(1:15).NE.'SAINT-VENANT VF') THEN
 !       COURANT NUMBER FOR PSI SCHEME IN P1

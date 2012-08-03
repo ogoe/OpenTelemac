@@ -32,6 +32,11 @@
 !+   Modification for adding "bridge" file and separation of weirs and
 !+   culvert file
 !
+!history  C.COULET / A.MASSON (ARTELIA) / P. CHASSE (CETMEF)
+!+        19/07/2012
+!+        V6P2
+!+   Modification for adding breaches management during simulation
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -461,6 +466,10 @@
 !
       TYPE(BIEF_OBJ),TARGET :: NEISEG
 !
+!     FOR BREACHES MANAGEMENT
+      TYPE(BIEF_OBJ),TARGET :: OPTNBR, TDECBR, DURBR, ZFINBR, ZDECBR
+      TYPE(BIEF_OBJ),TARGET :: NUMPSD, NBNDBR, INDBR, ZCRBR
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -567,7 +576,7 @@
 !
 !     MAXIMUM NUMBER OF LIQUID / SOLID BOUNDARIES
 !
-      INTEGER, PARAMETER :: MAXFRO = 300
+      INTEGER, PARAMETER :: MAXFRO = 3000
 !
 !     MAXIMUM NUMBER OF OUTPUT VARIABLES
 !
@@ -701,6 +710,10 @@
 !     TUBES/BRIDGES DATA FILE NUMBER
 !
       INTEGER T2DBUS
+!
+!     BREACHES DATA FILE NUMBER
+!
+      INTEGER T2DBRC
 !
 !     GRAPHIC PRINTOUT PERIOD
 ! 
@@ -1030,10 +1043,10 @@
 !
       INTEGER START_RECORD
 !
-!     COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION
-!     (1 IN CASE OF FUTURE LAW WITH MORE COEF.)
+!     NUMBER OF BREACHES
 !
-      INTEGER COEF1TRAC(MAXTRA)
+      INTEGER NBRECH
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -1217,6 +1230,10 @@
 !     IF YES, INFERENCE OF MINOR CONSTITUENTS
 !  
       LOGICAL INTMICON
+!
+!     IF YES, THE USER WANTS TO DEFINE BREACHES
+!  
+      LOGICAL BRECHE
 !
 !-----------------------------------------------------------------------
 !
@@ -1463,6 +1480,10 @@
 !     COEFFICIENT TO CALIBRATE SEA LEVEL
 !
       DOUBLE PRECISION MSL
+!
+!     COEFFICIENT 1 FOR LAW OF TRACERS DEGRADATION
+!     (1 IN CASE OF FUTURE LAW WITH MORE COEF.)
+      DOUBLE PRECISION COEF1TRAC(MAXTRA)
 !
 !     THRESHOLD DEPTH FOR RECEDING PROCEDURE
 !

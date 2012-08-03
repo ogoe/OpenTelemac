@@ -2507,20 +2507,6 @@ AIDE = 'Prise en compte ou non de la diffusion du traceur passif.'
 AIDE1 = 'The diffusion of the passive tracer is taken into account 
 or ignored.' 
  
-NOM = 'logique libre 2' 
-NOM1 = 'logique libre 2' 
-TYPE = LOGIQUE 
-INDEX = 2 
-MNEMO = '' 
-TAILLE = 0 
-DEFAUT = NON 
-DEFAUT1 = NO 
-RUBRIQUE = 'EQUATIONS';'TRACEUR' 
-RUBRIQUE1 = 'EQUATIONS';'TRACER' 
-NIVEAU = 1 
-AIDE = '' 
-AIDE1 = '' 
- 
 NOM = 'SORTIE LISTING' 
 NOM1 = 'LISTING PRINTOUT' 
 TYPE = LOGIQUE 
@@ -5248,6 +5234,38 @@ NIVEAU = 1
 AIDE = 'Coefficient 1 de la loi de decroissance des traceurs'
 AIDE1 = 'Coefficient 1 of law for tracers decrease'
 
+NOM = 'BRECHE' 
+NOM1 = 'BREACH' 
+TYPE = LOGIQUE 
+INDEX = 2 
+MNEMO = 'BRECHE' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NO 
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 1 
+AIDE = 'Prise en compte de breches dans le calcul par 
+modification altimetrique dans le maillage. La description 
+des breches se fait avec le fichier de donnees des breches.' 
+AIDE1 = 'Take in account some breaches during the computation
+by modifying the bottom level of the mesh. Brech description 
+is done with the breaches data file.' 
+ 
+NOM = 'FICHIER DE DONNEES DES BRECHES'
+NOM1 = 'BREACHES DATA FILE'
+TYPE = CARACTERE 
+INDEX = 91
+MNEMO = 'T2D_FILES(T2DBRC)%NAME' 
+SUBMIT = 'T2DBUS-READ-21;T2DBRC;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier de description des breches' 
+AIDE1 = 'Description of breaches' 
+
 / 
 / POUR LES LANCEURS PERL : 
 / 
@@ -5297,7 +5315,8 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'BASE BINAIRE 2 DE DONNEES DE MAREE';
          'FICHIER DE DONNEES DES SEUILS';
          'FICHIER DE DONNEES DES SIPHONS';
-         'FICHIER DE DONNEES DES BUSES'
+         'FICHIER DE DONNEES DES BUSES';
+         'FICHIER DE DONNEES DES BRECHES'
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -5338,7 +5357,8 @@ DEFAUT1 ='STEERING FILE';
          'BINARY DATABASE 2 FOR TIDE'; 
          'WEIRS DATA FILE';
          'CULVERT DATA FILE';
-         'TUBES DATA FILE'
+         'TUBES DATA FILE';
+         'BREACHES DATA FILE'
 RUBRIQUE  = 'FICHIERS' 
 RUBRIQUE1 = 'FILES' 
 NIVEAU = 1 
