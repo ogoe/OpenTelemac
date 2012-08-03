@@ -146,7 +146,7 @@ def putInS(file,head,fileType,poly,type=None):
    # ~~ Write body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    for ip,it in zip(poly,type):
       il = len(ip)
-      if it != 0 and not isClose(ip[0],ip[len(ip)-1]): il += it
+      if il != 0 and not isClose(ip[0],ip[len(ip)-1]): il += it
       core.append(str(il)+' 0')  #TODO: you should use proper values
       if fileType == 'i2s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1]))

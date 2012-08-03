@@ -20,10 +20,14 @@
          -v <version>, reset the version read in the config file with this
          -r <root>, reset the root path read in the config file with this
 """
-"""@history 21/05/2015 -- Sebastien E. Bourban
+"""@history 21/05/2012 -- Sebastien E. Bourban
          Addition of the method setKeyValue, in order to force keyword values,
          for instance, in the case of running scalar case with parallel
          Also, scanDICO now understands the type of each keyword.
+"""
+"""@history 10/07/2012 -- Christophe Coulet
+         Addition of a specific test and management of long lines because some
+         variables, such as the path could be greater than 72 characters.
 """
 """@brief
 """
@@ -135,7 +139,6 @@ def readCAS(keywords,dico,frgb):
          outwords.update({key:vals})
       elif dico[kw]['TYPE'][0] in ['REEL','REAL']:
          vals = []
-         #@warning : 1.D0 is not supported by Python Float. Replaced by 1.E0
          for val in value: vals.append(float(val.lower().replace('d','e')))
          outwords.update({key:vals})
       else:
@@ -154,16 +157,12 @@ def rewriteCAS(cas):
       if len(' ' + key + ' : ' + str(val[0])) < 73:
          line = ''; lcur = ' ' + key + ' : ' + str(val[0])
       else:
-         # ~~> CCT The lcur affectation create problems for the dictionnary
-         #     because the path could be greater than 72 characters
-         # --> addition of a specific test ann management of long lines
-         #line = ' ' + key + ' :\n'; lcur = '    ' + str(val[0])
          line = ' ' + key + ' :\n'
-         if len('    ' + str(val[0])) < 73:
-            lcur = '    ' + str(val[0])
+         if len('    ' + str(val[0])) < 73: lcur = '    ' + str(val[0])
          else:
-            line = line + '    ' + str(val[0])[0:65] + '\n'
-            lcur = '    ' + str(val[0])[65:]
+            lcur = ''
+            for i in range(len(str(val[0]))/65+1):
+               lcur = lcur + '    ' + ( str(val[0])+65*' ' )[65*i:65*i+65] + '\n'
       for v in val[1:]:
          if len(lcur + ';'+str(v)) < 73:
             lcur = lcur + ';'+str(v)
@@ -172,10 +171,6 @@ def rewriteCAS(cas):
                line = line + lcur + ';\n'
                lcur = '    '+str(v)
             else:  '... warning: CAS file cannot read this value: ',lcur
-      # ~~> CCT The following test is wrong ! the test just before allow
-      #     the lines longer than 72 characters --> Cancel
-      #if len(line+lcur) < 73: lines.append(line+lcur)
-      #else: '... warning: CAS file cannot read this value: ',lcur
       lines.append(line+lcur)
 
    lines.append('')
