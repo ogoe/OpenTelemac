@@ -24,6 +24,9 @@
 """@history 04/06/2012 -- Fabien Decung
          Extension of getTheseFiles to include subdirectories of source/.
 """
+"""@history 31/05/2012 -- Sebastien E. Bourban
+         Addition of a simple unzipping method (unzip)
+"""
 """@brief
 """
 
@@ -36,8 +39,9 @@ import shutil
 import time
 import difflib
 import optparse
-from os import path,walk,mkdir,getcwd,chdir,remove,rmdir,listdir,stat
+from os import path,walk,mkdir,getcwd,chdir,remove,rmdir,listdir,stat,makedirs
 from fnmatch import fnmatch #,translate
+from zipfile import ZipFile as zipfile
 from distutils.archive_util import make_archive
 from distutils.dep_util import newer
 # ~~> dependencies towards other modules
@@ -215,6 +219,19 @@ def zip(zname,bname,form):
    zipfile = make_archive(zname,form,base_dir=path.basename(bname))
    chdir(cpath)
    return zipfile
+"""
+    bname is a the root directory where the archive is to be extracted --
+"""
+def unzip(zipName,bname):
+   z = zipfile(path.realpath(zipName))
+   cpath = getcwd()
+   chdir(bname)
+   for f in z.namelist():
+      if f.endswith('/'):
+         if not path.exists(f): makedirs(f)
+      else: z.extract(f)
+   chdir(cpath)
+   return
 
 # _____               ______________________________________________
 # ____/ Diff Toolbox /_____________________________________________/

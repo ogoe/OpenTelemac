@@ -117,7 +117,7 @@ def getDistancePointToLine( (xo,yo),(x1,y1),(x2,y2) ):
 
 def getTriangleArea( (x1,y1),(x2,y2),(x3,y3) ):
    # half the vector product
-   return 0.5 * ( ( x2-x1 )*( y3-y1 ) - ( x3-x1 )*( y2-y1 ) )
+   return 0.5 * math.abs( ( x2-x1 )*( y3-y1 ) - ( x3-x1 )*( y2-y1 ) )
 
 def getConeSinAngle( (x1,y1),(x2,y2),(x3,y3) ):
    # S = ac.sin(B)/2 = det / 2
@@ -144,10 +144,12 @@ def getConeAngle( (x1,y1),(x2,y2),(x3,y3) ):
    return 0
    """
 
-def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3) ):
+def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3), size=5 ):
 
    l1,l2,l3 = getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
-   if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 : return [ l1, l2, l3 ]
+   accuracy = np.power(10.0, -size+np.floor(np.log10(abs(l1))))
+   #if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 : return [ l1, l2, l3 ]
+   if l1 >= -accuracy and l1 <= 1.0+accuracy and l2 >= -accuracy and l2 <= 1.0+accuracy and l3 >= -accuracy and l3 <= 1.0+accuracy : return [ l1, l2, l3 ]
    return []
 
 def isInsidePoly( (xo,yo), poly ):
@@ -162,12 +164,14 @@ def isInsidePoly( (xo,yo), poly ):
                if p1[1] != p2[1]: xints = (yo-p1[1])*(p2[0]-p1[0])/(p2[1]-p1[1])+p1[0]
                if p1[0] == p2[0] or xo <= xints: inside = not inside
       p1 = p2
+   for p1 in poly:
+      if isClose( [xo,yo],p1,size=10 ): inside = True
    return inside
 
 def isClose( p1,p2,size=5 ):
 
    if ( p2 == [] or p1 == [] ): return False
-   s = 1.e-5 + abs(np.max(p1+p2))
+   s = 1.e-5 + abs(max(p1)+max(p2))
    accuracy = np.power(10.0, -size+np.floor(np.log10(s)))
 
    return getNorm2( p1[0:2],p2[0:2] ) < accuracy
