@@ -117,6 +117,10 @@ from parsers.parserSortie import getLatestSortieFiles
 
 def checkConsistency(cas,dico,frgb,cfg):
 
+   # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
+   lang = 1
+   if cas.keys()[0] not in frgb['FR'].keys(): lang = 2
+
    # ~~ check for parallel consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
    ncsize = 0
@@ -124,7 +128,9 @@ def checkConsistency(cas,dico,frgb,cfg):
    elif defaut != []: ncsize = int(defaut[0])
    if 'parallel' not in cfg['MODULES'].keys():
       if ncsize != 0: return False
-   else: setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
+   else:
+      if lang == 1: setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
+      if lang == 2: setKeyValue('PARALLEL PROCESSORS',cas,frgb,max(ncsize,1))
 
    # ~~ check for openmi consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
@@ -198,7 +204,7 @@ def processLIT(cas,iFiles,TMPDir,update):
    if xcpt != []: raise Exception(xcpt) # raise full report
    return
 
-def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
+def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
 
    xcpt = []                            # try all files for full report
    # ~~ copy output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -267,7 +273,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize):
       # ~~~ directly in to the sortie file                    ~~~~~~
       if ncsize > 1:
          for i in range(ncsize-1):
-            slavefile = 'PE{0:05d}-{1:05d}.log'.format(ncsize-1,i+1)
+            slavefile = 'PE{0:05d}-{1:05d}.LOG'.format(ncsize-1,i+1)
             bs,es = path.splitext(sortiefile) # (path.basename(sortiefile))
             slogfile  = bs+'_p'+'{0:05d}'.format(i+1)+es
             crun = slavefile
@@ -750,7 +756,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             for mod in COUPLAGE.keys():
                CONLIM = getCONLIM(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
                try:
-                  runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize)
+                  runPartition(parCmd,COUPLAGE[mod]['cas'],CONLIM,COUPLAGE[mod]['iFS'],ncsize,options.bypass)
                except Exception as e:
                   raise Exception([filterMessage({'name':'runCAS','msg':'Partioning coupling input files'},e,options.bypass)])
 
@@ -782,20 +788,20 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          exeCmd = path.join(PARDir,'gretel_autop'+cfg['SYSTEM']['sfx_exe'])
          # ~~> Run GRETEL
          GLOGEO = getGLOGEO(cas,iFS)    # Global GEO file
-         runRecollection(exeCmd,cas,GLOGEO,oFS,ncsize)
+         runRecollection(exeCmd,cas,GLOGEO,oFS,ncsize,options.bypass)
          for mod in COUPLAGE.keys():
             GLOGEO = getGLOGEO(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'])
-            runRecollection(exeCmd,COUPLAGE[mod]['cas'],GLOGEO,COUPLAGE[mod]['oFS'],ncsize)
+            runRecollection(exeCmd,COUPLAGE[mod]['cas'],GLOGEO,COUPLAGE[mod]['oFS'],ncsize,options.bypass)
 
    # ~~ Handling all output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       try:
-         files = processECR(cas,oFS,CASDir,WDir,sortiefile,ncsize)
+         files = processECR(cas,oFS,CASDir,WDir,sortiefile,ncsize,options.bypass)
       except Exception as e:
          raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+WDir},e,options.bypass)])  # only one item here
       sortiefiles.extend(files)
       for mod in COUPLAGE.keys():
          try:
-            files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,WDir,None,ncsize)
+            files = processECR(COUPLAGE[mod]['cas'],COUPLAGE[mod]['oFS'],CASDir,WDir,None,ncsize,options.bypass)
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS','msg':'I could not copy the output files back from the temporary directory:\n      '+WDir},e,options.bypass)])  # only one item here
          sortiefiles.extend(files)
