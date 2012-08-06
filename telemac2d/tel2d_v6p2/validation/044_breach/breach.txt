@@ -39,7 +39,7 @@
 # Definition de la Breche aval
 # Option pour la gestion de l'ouverture
 1
-# Instant d'ouverture de la breche (-9999.0 = gestion automatique)
+# Instant d'ouverture de la breche
 2000.0
 # Duree d'ouverture de la breche (0.0 = ouverture instantanee)
 600.0

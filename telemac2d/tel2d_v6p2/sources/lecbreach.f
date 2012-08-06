@@ -92,9 +92,10 @@
         READ(IFIC,*,ERR=995) DURBR%R(N)
         READ(IFIC,*,END=900) ! COMMENT LINE
         READ(IFIC,*,ERR=994) ZFINBR%R(N)
+        READ(IFIC,*,END=900) ! COMMENT LINE
         IF(OPTNBR%I(N).EQ.3) THEN
-          READ(IFIC,*,END=900) ! COMMENT LINE
           READ(IFIC,*,ERR=993) NUMPSD%I(N)
+          READ(IFIC,*,END=900) ! COMMENT LINE
           IF(NCSIZE.GT.1) THEN 
             Num = NUMPSD%I(N)
             NUMPSD%I(N) = 0
@@ -105,12 +106,12 @@
             ENDDO  
           ENDIF 
         ENDIF
-        READ(IFIC,*,END=900) ! COMMENT LINE
         IF(OPTNBR%I(N).NE.1) THEN
           READ(IFIC,*,ERR=992) ZDECBR%R(N)
           READ(IFIC,*,END=900) ! COMMENT LINE
         ENDIF
         READ(IFIC,*,ERR=991) Nbl
+        READ(IFIC,*,END=900) ! COMMENT LINE
 !
 !       ALLOCATION OF LOCAL VARIABLE TO READ BREACH DEFINITION
         ISTAT = 0
@@ -132,7 +133,6 @@
 20      FORMAT(1X,'ERROR DURING ALLOCATION OF VECTOR: ',A6,/,1X,
      &            'ERROR CODE: ',1I6)
 !
-        READ(IFIC,*,END=900) ! COMMENT LINE
         DO M = 1, Nbl
            READ(IFIC,*,ERR=990) Xl(M), Yl(M)
         ENDDO

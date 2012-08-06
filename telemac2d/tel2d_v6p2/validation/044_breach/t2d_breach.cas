@@ -20,11 +20,15 @@ FICHIER DU CALCUL PRECEDENT        ='ini_breach.slf'
 
 FICHIER DE DONNEES DES BRECHES     ='breach.txt'
 
+FICHIER DE REFERENCE               ='f2d_breach.slf'
+
 /---------------------------------------------------------------------
 / ENTREES-SORTIES, GENERALITES
 /---------------------------------------------------------------------
 
 SUITE DE CALCUL =true
+
+VALIDATION      = OUI
 
 /-------------------------------------------------------------------
 /---/
@@ -96,7 +100,7 @@ PAS DE TEMPS                               =0.5
 
 OPTION DE SUPG                             =1;2
 
-DUREE DU CALCUL                            =15000
+DUREE DU CALCUL                            =2700
 
 CORRECTION DE CONTINUITE                   =true
 

@@ -47,7 +47,7 @@
         WRITE (LU,*) 'LECTURE DONNEES BRECHE = OK'
 !
         DO I = 1, NBRECH
-           ZCRBR%R(I) = 0.D0
+           ZCRBR%R(I) = -HUGE(100.D0)
            DO J = 1, NBNDBR%I(I)
               K = INDBR%ADR(I)%P%I(J)
               IF(ZF%R(K).GT.ZCRBR%R(I)) THEN
@@ -93,7 +93,7 @@
            IF(NCSIZE.GT.1) THEN
              Zw = P_DMAX(Zw)+P_DMIN(Zw)
            ENDIF
-           IF(Zc.GT.ZDECBR%R(I)) THEN
+           IF(Zw.GT.ZDECBR%R(I)) THEN
              IF(LNG.EQ.1) WRITE(LU,10) I, AT
              IF(LNG.EQ.2) WRITE(LU,20) I, AT
              TDECBR%R(I) = AT
@@ -102,17 +102,19 @@
 !
          AT1 = TDECBR%R(I)
          AT2 = AT1 + DURBR%R(I)
-         IF((AT.GT.AT1).AND.(AT.LT.AT2)) THEN
-           DO J = 1, NBNDBR%I(I)
-              IF(DURBR%R(I).LT.1D-4) THEN
-                Zb = ZFINBR%R(I)
-              ELSE
-                Zb = ZCRBR%R(I)+(ZFINBR%R(I)-ZCRBR%R(I))/(AT2-AT1)
-     &               *(AT-AT1)
-              ENDIF
-              K = INDBR%ADR(I)%P%I(J)
-              ZF%R(K)=MAX(ZF%R(K), Zb)
-           ENDDO
+         IF(AT1.GT.0.D0) THEN
+           IF(AT.GT.AT1) THEN
+             IF(AT.GT.AT2) THEN
+               Zb = ZFINBR%R(I)
+             ELSE
+               Zb = ZCRBR%R(I)+(ZFINBR%R(I)-ZCRBR%R(I))/(AT2-AT1)
+     &              *(AT-AT1)
+             ENDIF
+             DO J = 1, NBNDBR%I(I)
+                K = INDBR%ADR(I)%P%I(J)
+                ZF%R(K)=MIN(ZF%R(K), Zb)
+             ENDDO
+           ENDIF
          ENDIF
       ENDDO
 !
