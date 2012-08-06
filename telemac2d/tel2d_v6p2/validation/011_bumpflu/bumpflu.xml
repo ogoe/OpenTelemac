@@ -30,20 +30,20 @@
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
    <plot1d xref="figure1" type="history" time="[0;-1]" size="[12;5]" > 
-      <layer vars="voltotal:dashline" target="2:sortie" /> 
+<!--      <layer vars="voltotal:dashline" target="2:sortie" />  -->
       <layer vars="voltotal" target="1:sortie" config="together" /> 
    </plot1d> 
    <plot1d xref="figure2" type="history" time="[0;-1]" size="[12;5]" > 
       <layer vars="volfluxes" target="1:sortie" config="together" /> 
-      <layer vars="volfluxes" target="2:sortie" /> 
+<!--       <layer vars="volfluxes" target="2:sortie" /> -->
    </plot1d> 
    <plot1d xref="figure3" type="history" time="[0;-1]" size="[12;5]" > 
       <layer vars="volerror" target="1:sortie" config="together" /> 
-      <layer vars="volerror" target="2:sortie" /> 
+<!--       <layer vars="volerror" target="2:sortie" /> -->
    </plot1d> 
    <plot1d xref="figure4" type="history" config="together" time="[0;-1]" size="[12;5]" > 
       <layer vars="surface libre:line" extract="[10;1][0;1]" target="1:T2DRES" /> 
-      <layer vars="surface libre:line" extract="[10;1][0;1]" target="2:T2DRES" /> 
+<!--       <layer vars="surface libre:line" extract="[10;1][0;1]" target="2:T2DRES" /> -->
    </plot1d> 
    <plot1d xref="figure5" type="v-section" config="together" time="[-1]" size="[12;5]" > 
       <layer vars="surface libre:line;fond:line" extract="[0;1][21;1]" target="1:T2DRES" /> 
