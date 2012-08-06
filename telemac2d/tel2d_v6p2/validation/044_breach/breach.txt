@@ -1,0 +1,54 @@
+# Nombre de Breches
+3
+# Largeur d'emprise du polygone de définition de la breche
+15.0
+# Definition de la Breche amont
+# Option pour la gestion de l'ouverture
+2
+# Duree d'ouverture de la breche (0.0 = ouverture instantanee)
+0.0
+# Cote finale de la breche
+5.9
+# Cote de controle de la breche
+7.2
+# Nombre de points decrivant la polyligne
+4
+# Description de la polyligne
+2000.0 37.5
+2041.0 37.5
+2082.0 37.5
+2100.0 37.5
+# Definition de la Breche centrale
+# Option pour la gestion de l'ouverture
+3
+# Duree d'ouverture de la breche (0.0 = ouverture instantanee)
+300.0
+# Cote finale de la breche
+5.5
+# Numéro (maillage global) du point de controle de la breche
+9406
+# Cote de controle de la breche
+6.0
+# Nombre de points decrivant la polyligne
+4
+# Description de la polyligne
+2450.0 37.5
+2500.0 37.5
+2520.0 37.5
+2550.0 37.5
+# Definition de la Breche aval
+# Option pour la gestion de l'ouverture
+1
+# Instant d'ouverture de la breche (-9999.0 = gestion automatique)
+2000.0
+# Duree d'ouverture de la breche (0.0 = ouverture instantanee)
+600.0
+# Cote finale de la breche
+5.0
+# Nombre de points decrivant la polyligne
+4
+# Description de la polyligne
+2900.0 37.5
+2920.0 37.5
+2950.0 37.5
+3000.0 37.5
