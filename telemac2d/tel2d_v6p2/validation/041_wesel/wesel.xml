@@ -24,6 +24,11 @@
        code="telemac2d" target="t2d_wesel.cas" 
        title="wesel scalar mode" 
    />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_wesel_pos.cas" 
+       title="wesel scalar mode" 
+   />  
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
