@@ -160,7 +160,7 @@
         DS=DSQRT(DX*DX+DY*DY)
         IF(DS.GT.0.D0) THEN
           U1 = DX/DS
-          U2 = DX/DS
+          U2 = DY/DS
         ELSE
           IF(LNG.EQ.1)
      &      WRITE(LU,*) 'PROBLEME DANS LA DEFINITION DE LA BRECHE :',N
@@ -183,7 +183,7 @@
            DS=DSQRT(DX*DX+DY*DY)
            IF(DS.GT.0.D0) THEN
              U1 = DX/DS
-             U2 = DX/DS
+             U2 = DY/DS
            ELSE
              IF(LNG.EQ.1)
      &         WRITE(LU,*) 'PROBLEME DANS LA DEFINITION DE LA BRECHE :',N
