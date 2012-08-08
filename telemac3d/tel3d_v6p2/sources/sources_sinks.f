@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE SOURCE TERMS TO ADD IN 2D AND 3D
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        08/08/2012
+!+        V6P2
+!+   Correction of SMH with rain in parallel.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,15 +92,18 @@
 !     RAIN AND EVAPORATION (NEGATIVE RAIN)
 !
       IF(RAIN) THEN
-!       PLUIE IS NON ASSEMBLED IN PARALLEL
+!       PLUIE MUST BE NON ASSEMBLED IN PARALLEL
         CALL OS('X=CY    ',X=PLUIE,Y=VOLU2D,C=RAIN_MMPD/86400000.D0)
-        CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
         IF(NCSIZE.GT.1) THEN
 !         USING V2DPAR AVOIDS A CALL PARCOM OF A COPY OF PLUIE
           CALL OS('X=CY    ',X=PARAPLUIE,Y=V2DPAR,
      &                       C=RAIN_MMPD/86400000.D0)
-!       ELSE
+!         SMH MUST BE ASSEMBLED IN PARALLEL
+          CALL OS('X=X+Y   ',X=SMH,Y=PARAPLUIE)
+        ELSE
 !         PARAPLUIE%R=>PLUIE%R  ! DONE ONCE FOR ALL IN POINT_TELEMAC3D
+!         BUT PARAPLUIE ALLOCATED WITH SIZE 0 CANNOT BE USED AS BIEF_OBJ
+          CALL OS('X=X+Y   ',X=SMH,Y=PLUIE)
         ENDIF
       ENDIF
 !
