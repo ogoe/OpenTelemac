@@ -44,7 +44,12 @@
 !+        24/01/2012
 !+        V6P2
 !+   Combination of tests with YACCVF and OPTHNEG=2 corrected (this goes
-!+   with a correction in precon.f). 
+!+   with a correction in precon.f).
+!
+!history  J-M HERVOUET(LNHE)
+!+        08/07/2012
+!+        V6P2
+!+   Rain taken into account on prescribed depths to compute FLUEXT.  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BYPASS         |---| IF YES, BYPASS VOID VOLUMES
@@ -222,6 +227,14 @@
 !
       CALL OSDB( 'X=Y     ' , FLUEXT , TRA02 , TRA02 , 0.D0 , MESH3 )
 !
+!
+!     IF(RAIN) THEN
+!       DO I=1,NPOIN2
+!         FLUEXT%R((NPLAN-1)*NPOIN2+I)=
+!    &    FLUEXT%R((NPLAN-1)*NPOIN2+I)+PLUIE%R(I)
+!       ENDDO
+!     ENDIF
+!
 !-----------------------------------------------------------------------
 !
 !     COMPUTATION OF FLUEXT ON POINTS WITH PRESCRIBED DEPTH
@@ -235,13 +248,22 @@
         DO IPTFR = 1,NPTFR
           IF(LIHBOR(IPTFR).EQ.KENT) THEN
             FLBOR%R(IPTFR)=0.D0
-            DO IPLAN = 1,NPLAN
+            DO IPLAN = 1,NPLAN-1
               I=(IPLAN-1)*NPOIN2+MESH2%NBOR%I(IPTFR)
 !             FLUEXT COMPUTED TO SOLVE CONTINUITY IN 3D
 !             WITH ASSUMPTION THAT W* IS ZERO.
               FLUEXT%R(I)=FLUINT%R(I)+(VOLUN%R(I)-VOLU%R(I))/DT
               FLBOR%R(IPTFR)=FLBOR%R(IPTFR)+FLUEXT%R(I)
             ENDDO
+!           LAST PLANE, RAIN MUST BE TAKEN INTO ACCOUNT
+            I=(NPLAN-1)*NPOIN2+MESH2%NBOR%I(IPTFR)
+            IF(RAIN) THEN
+              FLUEXT%R(I)=FLUINT%R(I)+(VOLUN%R(I)-VOLU%R(I))/DT
+     &                   +PLUIE%R(MESH2%NBOR%I(IPTFR))
+            ELSE
+              FLUEXT%R(I)=FLUINT%R(I)+(VOLUN%R(I)-VOLU%R(I))/DT
+            ENDIF
+            FLBOR%R(IPTFR)=FLBOR%R(IPTFR)+FLUEXT%R(I)
 !
 !           CHECKING THAT SUM OF FLUEXT IS STILL EQUAL TO FLBOR
 !           IN THIS CASE DO NOT COMPUTE FLBOR ABOVE
@@ -254,8 +276,6 @@
 !           IF(ABS(SUM_FLUEXT-FLBOR%R(IPTFR)).GT.1.D-10) THEN
 !             PRINT*,'PROBLEM AT POINT ',IPTFR
 !             PRINT*,'FLBOR= ',FLBOR%R(IPTFR),' SUM_FLUEXT=',SUM_FLUEXT
-!             STOP
-!             POSSIBLE CORRECTION
 !             DO IPLAN = 1,NPLAN
 !               I=(IPLAN-1)*NPOIN2+MESH2%NBOR%I(IPTFR)
 !               FLUEXT%R(I)=FLUEXT%R(I)*(FLBOR%R(IPTFR)/SUM_FLUEXT)
