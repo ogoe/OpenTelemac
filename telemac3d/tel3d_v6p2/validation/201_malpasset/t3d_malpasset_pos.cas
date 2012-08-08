@@ -32,7 +32,7 @@ STOCKAGE DES MATRICES : 3
 /
 /  981 s le 29/12/2011 (HP Unix)
 /  ??? s le ????       (HP Z600 Linux calibre 5 avec 1 processeur )
-/   44 s le 31/05/2012 (HP Z600 Linux calibre 5 avec 8 processeurs)
+/   36 s le 08/08/2012 (HP Z600 Linux calibre 7 avec 8 processeurs)
 /
 /
 SOLVEUR POUR LA PROPAGATION=2

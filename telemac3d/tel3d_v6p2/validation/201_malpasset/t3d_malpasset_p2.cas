@@ -1,4 +1,4 @@
-PROCESSEURS PARALLELES : 0
+PROCESSEURS PARALLELES : 8
 STOCKAGE DES MATRICES : 3
 /
 /  AVEC 2 PLANS : PAS DE TEMPS = 1.  5884 S 
@@ -21,7 +21,7 @@ STOCKAGE DES MATRICES : 3
 /  AVEC 2 PLANS : 697 s 6.0 JMH le 04/12/2009 (Nag:1663 s,Intel:305 s)
 /  AVEC 2 PLANS : 718 s 6.1 JMH le 21/01/2011 (HP Unix              )              
 /  AVEC 2 PLANS :  34 s 6.1 JMH le 29/12/2010 (HP Z600 Linux 8 procs)
-/  AVEC 2 PLANS :  26 s 6.2 JMH le 30/05/2012 (HP Z600 Linux 8 procs)
+/  AVEC 2 PLANS :  20 s 6.2 JMH le 08/08/2012 (HP Z600 Linux 8 procs)
 /
 /**********************************************************************/                      
 /
