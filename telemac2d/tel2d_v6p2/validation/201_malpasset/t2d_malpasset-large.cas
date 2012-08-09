@@ -1,6 +1,6 @@
 /
 /DEBUGGER : 1
- PROCESSEURS PARALLELES : 0
+ PROCESSEURS PARALLELES : 7
 /
 / VERSION 5.7  29/03/2007 HP C3700 750 MHz         : 12102 s
 / VERSION 5.7  29/03/2007 Dell compilateur pgi 6.2 :  5886 s
@@ -13,7 +13,15 @@
 /
 / Version 6.2
 /
-/ 08/06/2012 HP Linux compilateur Intel : 106 s (8 procs)
+/ done with PERIODE POUR LES SORTIES GRAPHIQUES=4000
+/ 08/08/2012 HP Linux compilateur Intel : 545 s (1 proc )
+/ 08/08/2012 HP Linux compilateur Intel : 264 s (2 procs)
+/ 08/08/2012 HP Linux compilateur Intel : 181 s (3 procs)
+/ 08/08/2012 HP Linux compilateur Intel : 140 s (4 procs)
+/ 08/08/2012 HP Linux compilateur Intel : 122 s (5 procs)
+/ 08/08/2012 HP Linux compilateur Intel : 102 s (6 procs)
+/ 08/08/2012 HP Linux compilateur Intel : 096 s (7 procs)
+/ 08/08/2012 HP Linux compilateur Intel : 085 s (8 procs)
 /
 FICHIER DE GEOMETRIE  = geo_malpasset-large.slf
 FICHIER FORTRAN       = t2d_malpasset-large.f
@@ -30,7 +38,7 @@ PERIODE POUR LES SORTIES GRAPHIQUES = 400
 PERIODE DE SORTIE LISTING = 200
 PRECONDITIONNEMENT = 2
 BANCS DECOUVRANTS = VRAI
-FORME DE LA CONVECTION = 6;5
+FORME DE LA CONVECTION = 1;5
         OPTION DE SUPG = 0;0
 MAXIMUM D'ITERATIONS POUR LE SOLVEUR = 200
 SOLVEUR = 7  OPTION DU SOLVEUR = 3  PRECISION DU SOLVEUR = 0.0001
