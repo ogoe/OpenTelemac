@@ -3924,17 +3924,31 @@ TYPE = ENTIER
 INDEX = 62 
 MNEMO = 'OPTVF' 
 TAILLE = 0 
-DEFAUT = 0 
-DEFAUT1 = 0 
-CHOIX = '0="schema de Roe"';'1="cinetique ordre 1"'; 
-'2="cinetique ordre 2"' 
-CHOIX1 = '0="Roe scheme"';'1="kinetic order 1"'; 
-'2="kinetic order 2"' 
+DEFAUT = 1 
+DEFAUT1 = 1 
+CHOIX = '0="schema de Roe"';
+'1="schéma cinetique ordre 1"'; 
+'2="schéma cinetique ordre 2"' ; 
+'3="schéma Zokagoa ordre 1"'; 
+'4="schéma Tchamen ordre 1"'; 
+'5="schéma HLLC ordre 1"'; 
+'6="schéma WAF ordre 2"'
+CHOIX1 = '0="Roe scheme"';
+'1="kinetic order 1"'; 
+'2="kinetic order 2"; 
+'3="Zokagoa scheme order 1"'; 
+'4="Tchamen scheme order 1"'; 
+'5="HLLC scheme order 1"'; 
+'6="WAF scheme order 2"'
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
 NIVEAU = 1 
-AIDE  = '0 : schema de Roe 1 : cinetique ordre 1  2 : cinetique ordre 2' 
-AIDE1 = '0: Roe scheme     1: kinetic order 1     2: kinetic order 2 ' 
+AIDE  = '0 : schema de Roe 1 : cinetique ordre 1  2 : cinetique ordre 2
+3 : schema de Zokagoa 4 : schema de Tchamen 5 : HLLC ordre 1  
+6 : WAF ordre 2'
+AIDE1 = '0: Roe scheme     1: kinetic order 1     2: kinetic order 2 
+3 : Zokagoa scheme 4 : Tchamen scheme 5 : HLLC order 1  
+6 : WAF order 2'
 / 
 / NOUVEAUTES 5.4  
 / 
