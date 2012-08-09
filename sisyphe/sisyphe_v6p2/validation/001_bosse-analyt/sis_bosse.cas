@@ -43,6 +43,7 @@ BETA =0
 / NOMS FICHIERS
 / +++++++++++++
 /
+FORMAT DU FICHIER DE GEOMETRIE = SERAFIN
 FICHIER DE GEOMETRIE = geo_bosse.slf
 FICHIER FORTRAN      = sis_bosse.f
 /
