@@ -164,7 +164,7 @@ def processTMP(casFile):
 
    return TMPDir
 
-def processLIT(cas,iFiles,TMPDir,update):
+def processLIT(cas,iFiles,TMPDir,ncsize,update):
 
    xcpt = []                            # try all files for full report
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -178,7 +178,12 @@ def processLIT(cas,iFiles,TMPDir,update):
          if path.exists(crun) and update:
             if not isNewer(crun,cref) == 1:
                if iFiles[k].split(';')[5][0:7] == 'SELAFIN' or iFiles[k].split(';')[5][0:5] == 'PARAL':
-                  iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
+                  # ~~> check if all files are there before skipping
+                  found = True
+                  for npsize in range(ncsize):
+                     if not path.isfile(crun+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)): found = False
+                  # ~~> skip if all files are there
+                  if found: iFiles[k] = iFiles[k].replace('SELAFIN','DONE').replace('PARAL','DONE')
                # special case for FORTRAN and CAS files in case of update
                if iFiles[k].split(';')[5][0:7] == 'FORTRAN':
                   print ' re-copying: ', path.basename(cref),crun
@@ -560,6 +565,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       raise Exception([{'name':'runCAS','msg':'inconsistent CAS file: '+casFile+ \
          '    +> you may be using an inappropriate configuration: '+cfgName+ \
          '    +> or may be wishing for parallel mode while using scalar configuration'}])
+   ncsize = getNCSIZE(cas,dico,frgb)
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
@@ -615,12 +621,12 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if not options.merge:
       # >>> Copy INPUT files into WDir
       try:
-         processLIT(cas,iFS,WDir,(options.wDir!=''))
+         processLIT(cas,iFS,WDir,ncsize,(options.wDir!=''))
       except Exception as e:
          raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
       for mod in COUPLAGE.keys():
          try:
-            processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,(options.wDir!=''))
+            processLIT(COUPLAGE[mod]['cas'],COUPLAGE[mod]['iFS'],WDir,ncsize,(options.wDir!=''))
          except Exception as e:
             raise Exception([filterMessage({'name':'runCAS'},e,options.bypass)])  # only one item here
    # >>> Placing yourself into the WDir
@@ -678,8 +684,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if not options.compileonly:
 
    # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      ncsize = getNCSIZE(cas,dico,frgb)
-      
       if ncsize > 0:
          # >>> Parallel execution configuration
          mpiCmd = ''
