@@ -79,13 +79,14 @@ if __name__ == "__main__":
 # ~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   CFGNAME = ''
+   USETELCFG = ''
+   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
    PWD = path.dirname(sys.argv[0])
    SYSTELCFG = path.join(path.dirname(PWD),'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
    parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
-   parser.add_option("-c", "--configname",type="string",dest="configName",default=CFGNAME,
+   parser.add_option("-c", "--configname",type="string",dest="configName",default=USETELCFG,
       help="specify configuration name, default is the first found in the configuration file" )
    parser.add_option("-f", "--configfile",type="string",dest="configFile",default=SYSTELCFG,
       help="specify configuration file, default is systel.cfg" )

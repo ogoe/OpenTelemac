@@ -856,7 +856,8 @@ if __name__ == "__main__":
 # ~~~~ Reads config file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nLoading Options and Configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   CFGNAME = ''
+   USETELCFG = ''
+   if environ.has_key('USETELCFG'): USETELCFG = environ['USETELCFG']
    PWD = path.dirname(path.dirname(sys.argv[0]))
    SYSTELCFG = path.join(PWD,'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
@@ -865,7 +866,7 @@ if __name__ == "__main__":
    parser.add_option("-c", "--configname",
                       type="string",
                       dest="configName",
-                      default=CFGNAME,
+                      default=USETELCFG,
                       help="specify configuration name, default is randomly found in the configuration file" )
    parser.add_option("-f", "--configfile",
                       type="string",
