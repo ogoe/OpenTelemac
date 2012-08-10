@@ -81,7 +81,7 @@ def scanCAS(cas):
    # ~~ clean comments
    core = []
    for i in range(len(casLines)):
-      line = casLines[i].replace('"""',"'''").replace('"',"'")
+      line = casLines[i].replace('"""',"'''").replace('"',"'").replace("''",'"')
       proc = re.match(key_comment,line+'/')
       line = proc.group('before').strip() + ' '
       proc = re.match(emptyline,line)
