@@ -2,7 +2,7 @@
                           SUBROUTINE AMR_PLAN
 !                         *******************
 !
-     &(ZVALS,OBJSOL,REFTYPE,NPOIN2,NPLAN,NSEG2,GLOSEG,DIMGLO,
+     &(HMIN,ZVALS,OBJSOL,REFTYPE,NPOIN2,NPLAN,NSEG2,GLOSEG,DIMGLO,
      & Z0,NEWZ,ZEXT,INTSOL,MONITOR,SSMONITOR,SMONITOR,NEXTR,SNNEIGH,
      & NNEIGH,MCOEFF,MESH2D,MESH3D)
 !
@@ -37,6 +37,12 @@
 !+        V6P1
 !+        MCOEFF now double precision
 !+
+!
+!history  S.E. Bourban (HRW)
+!+        28/07/2012
+!+        V6P2
+!+        Further development of the AMR method so it works with
+!+        wetting and drying (bypassing method based on HMIN)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -77,6 +83,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: OBJSOL(NPOIN2,NPLAN)
       CHARACTER,        INTENT(IN)    :: REFTYPE
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
+      DOUBLE PRECISION, INTENT(IN)    :: HMIN
       DOUBLE PRECISION, INTENT(INOUT) :: ZVALS(NPOIN2,NPLAN) 
       DOUBLE PRECISION, INTENT(INOUT) :: Z0(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: NEWZ(NPOIN2,NPLAN)
@@ -173,7 +180,9 @@
                  MCOEFF(IPOIN) = ABS(DSDZ)
                ENDIF
             ENDDO              ! IPLAN = 1,NPLAN-1
-            MCOEFF(IPOIN) = 100.D0/(MCOEFF(IPOIN)**2+0.01D0)
+            IF( MCOEFF(IPOIN).GT.(0.01) ) THEN
+               MCOEFF(IPOIN) = 100.D0/(MCOEFF(IPOIN)**2)
+            ENDIF
          ENDDO                 ! IPOIN = 1,NPOIN2
       ELSEIF (REFTYPE .EQ. 'C') THEN
          WRITE(LU,*) 'AMR_PLAN: CURVATURE-BASED REFINEMENT NOT
