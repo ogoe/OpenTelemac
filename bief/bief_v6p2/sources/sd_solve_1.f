@@ -265,7 +265,6 @@
         MEMFACTOR = 15
       ENDIF
       NSP=MEMFACTOR*(NPBLK+4*NSEGBLK)
-!     NSP=16*(NPBLK+4*NSEGBLK)
       ESP=MEMFACTOR*(NPBLK+4*NSEGBLK)
 !
 !     2. ALLOCATES ARRAYS (OR REALLOCATES IF TOO SMALL)
@@ -392,14 +391,17 @@
       CALL SD_STRSSD(NPBLK,NSEGBLK,GLOSEG(1,1),GLOSEG(1,2),
      &               IN,IP,ISEGIP,IW1)     
 !
-      IF(TYPEXT.EQ.'S') THEN
-        CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
-     &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA,DA,AC)
+!     JMH 10/08/2012: IN ALL CASES THE FULL SYSTEM IS BUILT, SO WHAT ??
+!
+!     IF(TYPEXT.EQ.'S') THEN
+!       CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
+!    &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA,DA,AC)
 !                             ISTRI
-      ELSE
+!     ELSE
         CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
      &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA(NSEGBLK+1),DA,AC)
-      ENDIF
+!     ENDIF
+!
 !
 !     4. MINIMUM DEGREE PERMUTATION (YSMP PACKAGE)
 !     =======================================================================

@@ -5,7 +5,7 @@
      &(N,P,IP,IA,JA,A,B,Z,NSP,ISP,RSP,ESP,PATH,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    DRIVER FOR SPARSE MATRIX REORDERING ROUTINE.
@@ -117,6 +117,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        10/08/2012
+!+        V6P2
+!+   RATIO set to 1 and removed.
+!+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |<--| REAL ONE-DIMENSIONAL ARRAY CONTAINING THE
 !|                |   | NONZERO ENTRIES IN (THE UPPER TRIANGLE OF) M,
@@ -192,17 +197,15 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)    :: N,NSP,PATH
-      INTEGER, INTENT(INOUT) :: FLAG,P(*),IP(*),IA(*),JA(*),ISP(*),ESP
+      INTEGER, INTENT(INOUT) :: FLAG,P(N),IP(*),IA(*),JA(*),ISP(*),ESP
       DOUBLE PRECISION, INTENT(IN)    :: B(N)
       DOUBLE PRECISION, INTENT(INOUT) :: A(1),Z(N),RSP(NSP)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER RATIO,Q,MARK,D,U,TMP,UMAX,IJU,IU,IL,JL,JU,JUMAX
+      INTEGER Q,MARK,D,U,TMP,UMAX,IJU,IU,IL,JL,JU,JUMAX
 !
 !-----------------------------------------------------------------------
-!
-      DATA RATIO/2/
 !
 !----VALIDATES PATH SPECIFICATION
 !
@@ -214,7 +217,7 @@
       IU    = IJU     +  N
       JL    = IU      +  N+1
       JU    = JL      +  N
-      Q     = (NSP+1) -  N
+      Q     = NSP+1   -  N
       MARK  = Q       -  N
       JUMAX = MARK    - JU
 !
@@ -226,14 +229,15 @@
 !
 !----ALLOCATES STORAGE AND FACTORS M NUMERICALLY
 !
-1     IL   = JU      + ISP(IJU+(N-1))
-      TMP  = ((IL-1)+(RATIO-1)) / RATIO  +  1
-      D    = TMP     + N
+1     CONTINUE
+      IL   = JU      + ISP(IJU+N-1)
+      D    = IL      + N
       U    = D       + N
       UMAX = (NSP+1) - U
       ESP  = UMAX    - (ISP(IU+N)-1)
 !
-      IF ((PATH-1) * (PATH-2) * (PATH-5) * (PATH-6) .NE. 0)  GO TO 2
+      IF(PATH.NE.1.AND.PATH.NE.2.AND.
+     &   PATH.NE.5.AND.PATH.NE.6) GO TO 2
       IF (UMAX.LE.0)  GO TO 110
       CALL SD_SNF(N,P,IP,IA,JA,A,
      &            RSP(D),ISP(IJU),ISP(JU),ISP(IU),RSP(U),UMAX,
@@ -245,7 +249,7 @@
 2     IF((PATH-1) * (PATH-2) * (PATH-3) .NE. 0)  GO TO 3
       IF (UMAX.LE.0)  GO TO 110
       CALL SD_SNS(N,P,RSP(D),ISP(IJU),ISP(JU),
-     &            ISP(IU),RSP(U),Z,B,RSP(TMP))
+     &            ISP(IU),RSP(U),Z,B,RSP(IL))
 !
 3     RETURN
 !

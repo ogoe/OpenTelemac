@@ -54,8 +54,9 @@
       INTEGER I,ISEG,JSEG
 !
 !----------------------------------------------
-!     INFO :      NPBLK = NPOIN*NBLOC
-!                 NSEGBLK=NSEG*4 + 2*NPOIN
+!     INFO :     NPBLK = NPOIN*NBLOC
+!                NSEGBLK=NSEG*4 + 2*NPOIN
+! NOTE JMH : NO  NSEGBLK=NSEG*4 +   NPOIN !!!!
 !----------------------------------------------
 !
 !     MATRIX ASSEMBLES TOTAL BLOCKS:
@@ -64,40 +65,43 @@
 !
       JSEG=0
 !
-!     BLOCK 1
-!     ------
+!     BLOCK 1 (EXTRA-DIAGONAL TERMS)
+!     ------------------------------
 !
       DO ISEG=1,NSEG
-         JSEG=JSEG+1
-         GLOSEG4(JSEG)= GLOSEGB(ISEG,1)
-         GLOSEG4(JSEG+NSEGBLK)= GLOSEGB(ISEG,2)
+        JSEG=JSEG+1
+        GLOSEG4(JSEG)= GLOSEGB(ISEG,1)
+        GLOSEG4(JSEG+NSEGBLK)= GLOSEGB(ISEG,2)
       ENDDO
 !
-!     BLOCKS 2 AND 3 (EXTRA-DIAG)
-!     ------------------------
+!     BLOCKS 2 AND 3 (PREVIOUSLY DIAGONAL TERMS)
+!     ------------------------------------------
 !
       DO I=1,NPOIN
-         JSEG=JSEG+1
-         GLOSEG4(JSEG)= I
-         GLOSEG4(JSEG+NSEGBLK)= I+NPOIN
+        JSEG=JSEG+1
+        GLOSEG4(JSEG)= I
+        GLOSEG4(JSEG+NSEGBLK)= I+NPOIN
       ENDDO
 !
+!     BLOCKS 2 AND 3 (EXTRA-DIAGONAL TERMS)
+!     -------------------------------------
+!
       DO ISEG=1,NSEG
-         JSEG=JSEG+1
-         GLOSEG4(JSEG)= GLOSEGB(ISEG,1)
-         GLOSEG4(JSEG+NSEGBLK)= GLOSEGB(ISEG,2)+ NPOIN
-         JSEG=JSEG+1
-         GLOSEG4(JSEG)= GLOSEGB(ISEG,2)
-         GLOSEG4(JSEG+NSEGBLK)= GLOSEGB(ISEG,1)+ NPOIN
+        JSEG=JSEG+1
+        GLOSEG4(JSEG)= GLOSEGB(ISEG,1)
+        GLOSEG4(JSEG+NSEGBLK)= GLOSEGB(ISEG,2)+ NPOIN
+        JSEG=JSEG+1
+        GLOSEG4(JSEG)= GLOSEGB(ISEG,2)
+        GLOSEG4(JSEG+NSEGBLK)= GLOSEGB(ISEG,1)+ NPOIN
       ENDDO
 !
-!     BLOCK 4 (EXTRA)
-!     --------------
+!     BLOCK 4 (EXTRA-DIAGONAL TERMS)
+!     ------------------------------
 !
       DO ISEG=1,NSEG
-         JSEG=JSEG+1
-         GLOSEG4(JSEG)         = GLOSEGB(ISEG,1)+NPOIN
-         GLOSEG4(JSEG+NSEGBLK) = GLOSEGB(ISEG,2)+NPOIN
+        JSEG=JSEG+1
+        GLOSEG4(JSEG)         = GLOSEGB(ISEG,1)+NPOIN
+        GLOSEG4(JSEG+NSEGBLK) = GLOSEGB(ISEG,2)+NPOIN
       ENDDO
 !
 !-----------------------------------------------------------------------
