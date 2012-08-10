@@ -24,6 +24,16 @@
        code="telemac3d" target="t3d_solit_p2.cas" 
        title="solit scalar mode" 
    />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac3d" target="t3d_solit_p3.cas" 
+       title="solit scalar mode" 
+   />
+   <action xref="3" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac3d" target="t3d_solit_p4.cas" 
+       title="solit scalar mode" 
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
