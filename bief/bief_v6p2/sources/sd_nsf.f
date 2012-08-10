@@ -5,7 +5,7 @@
      &(N,R,IC,IA,JA,IL,JL,JLMAX,IU,JU,JUMAX,Q,IM,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P0                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    SYMBOLIC LDU-FACTORISATION OF A NONSYMMETRICAL
@@ -36,7 +36,6 @@
 !+       \           SIZE = N.
 !
 !note     IMPORTANT : INSPIRED FROM PACKAGE CMLIB3 - YALE UNIVERSITE-YSMP
-!
 !         DON'T HESITATE TO CHANGE IN/OUTPUT VARIABLES COMMENTS 
 !         FOR CLARITY
 !
@@ -82,16 +81,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N
-      INTEGER R(*),IC(*),IA(*),JA(*),IL(*),JL(*)
-      INTEGER IU(*),JU(*),Q(*),IM(*),FLAG,QM,VJ
+      INTEGER, INTENT(IN) :: N,JLMAX,JUMAX
+      INTEGER R(*),IC(*),IA(*),JA(*),IL(N+1),JL(JLMAX)
+      INTEGER IU(N+1),JU(JUMAX),Q(N+1),IM(N),FLAG,QM
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     JLPTR - POINTS TO THE LAST POSITION USED IN  JL
 !     JUPTR - POINTS TO THE LAST POSITION USED IN  JU
 !
-      INTEGER JLPTR,JUPTR,JLMAX,JUMAX,I,J,K,M,JMIN,JMAX
+      INTEGER JLPTR,JUPTR,I,J,K,M,JMIN,JMAX,VJ
 !
 !-----------------------------------------------------------------------
 !

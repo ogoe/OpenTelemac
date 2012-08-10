@@ -77,7 +77,7 @@
 !
       INTEGER R(*),C(*),IC(*),IA(*),JA(*),N
       INTEGER IL(*),JL(*),LMAX,IU(*),JU(*),UMAX,FLAG
-      DOUBLE PRECISION A(*),Z(*),B(*),L(*),D(*),U(*),ROW(*),TMP(*)
+      DOUBLE PRECISION A(*),Z(*),B(*),L(*),D(*),U(*),ROW(N),TMP(N)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

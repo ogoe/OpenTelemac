@@ -104,6 +104,12 @@
 !+        V6P2
 !+   Call to preverseg and preverebe modified.
 !+
+!
+!history  J.PARISI (HRW)
+!+        9/08/2012
+!+        V6P2
+!+   Call to SD_SOLVE_4 modified.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->| MATRIX OF THE SYSTEM (OR BLOCK OF MATRICES)
 !| AUX            |-->| MATRIX FOR PRECONDITIONING.
@@ -281,7 +287,8 @@
      &                    A%ADR(3)%P%X%R,A%ADR(4)%P%X%R,
      &                    X%ADR(1)%P%R,X%ADR(2)%P%R,
      &                    B%ADR(1)%P%R,B%ADR(2)%P%R,INFOGR,
-     &                    A%ADR(1)%P%TYPEXT)
+     &                    A%ADR(1)%P%TYPEXT,A%ADR(2)%P%TYPEXT,
+     &                    A%ADR(3)%P%TYPEXT,A%ADR(4)%P%TYPEXT)
 !       ELSEIF(S.EQ.3) THEN
         ELSE
           IF(LNG.EQ.1) WRITE(LU,301) S

@@ -5,7 +5,7 @@
      &(N,R,C,IC,IA,JA,A,B,Z,NSP,ISP,RSP,ESP,PATH,FLAG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/07/2011
+! BIEF   V6P2                                    21/07/2011
 !***********************************************************************
 !
 !brief    DRIVER FOR SUBROUTINES TO SOLVE SPARSE NONSYMMETRICAL
@@ -178,6 +178,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        10/08/2012
+!+        V6P2
+!+   LRATIO set to 1 instead of 2 and suppressed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->|NONZERO ENTRIES OF THE COEFFICIENT MATRIX M, 
 !|                |   |STORED BY ROWS
@@ -241,36 +246,33 @@
 !
       INTEGER IL,JL,IU,JU,JLMAX,JUTMP,JUMAX,J,L,LMAX
 !
-!  SET LRATIO EQUAL TO THE RATIO BETWEEN THE LENGTH OF FLOATING POINT
-!  AND INTEGER ARRAY DATA;  E. G., LRATIO = 1 FOR (REAL, INTEGER),
-!  LRATIO = 2 FOR (DOUBLE PRECISION, INTEGER)
-!
-      INTEGER LRATIO
-      DATA LRATIO/2/
-!
 !-----------------------------------------------------------------------
 !
-      IF(PATH.LT.1.OR.5.LT.PATH) GO TO 111
+      IF(PATH.LT.1.OR.PATH.GT.5) GO TO 111
+!
 !  ******  INITIALISES AND DIVIDES UP TEMPORARY STORAGE  ***************
+!
       IL = 1
       IU = IL + N+1
       JL = IU + N+1
 !
 !  ******  CALLS NSF IF FLAG IS SET  ***********************************
-      IF ((PATH-1) * (PATH-5) .NE. 0)  GO TO 2
-      VMAX = (LRATIO*NSP + 1 - JL) - (N+1) - N
+!
+      IF(PATH.NE.1.AND.PATH.NE.5)  GO TO 2
+      VMAX = NSP - JL - 2*N
       JLMAX = VMAX/2
       Q = JL + JLMAX
       IM = Q + (N+1)
       JUTMP = IM  +   N
-      JUMAX = LRATIO*NSP + 1 - JUTMP
-      ESP = VMAX/LRATIO
-      IF (JLMAX.LE.0 .OR. JUMAX.LE.0)  GO TO 110
-      CALL SD_NSF(N,R,IC,IA,JA,
-     &        ISP(IL),ISP(JL),JLMAX,ISP(IU),ISP(JUTMP),JUMAX,
-     &        ISP(Q),ISP(IM),FLAG)
+      JUMAX = NSP + 1 - JUTMP
+      ESP = VMAX
+      IF(JLMAX.LE.0.OR.JUMAX.LE.0)  GO TO 110
+      CALL SD_NSF(N,R,IC,IA,JA,ISP(IL),ISP(JL),JLMAX,ISP(IU),
+     &            ISP(JUTMP),JUMAX,ISP(Q),ISP(IM),FLAG)
       IF (FLAG.NE.0)  GO TO 100
+!
 !  ******  MOVES JU NEXT TO JL  ****************************************
+!
       JLMAX = ISP(IL+N)-1
       JU    = JL + JLMAX
       JUMAX = ISP(IU+N)-1
@@ -281,11 +283,12 @@
       ENDIF
 !
 !  ******  CALLS REMAINING SUBROUTINES  ********************************
+!
 2     CONTINUE
       JLMAX = ISP(IL+N)-1
       JU    = JL  + JLMAX
       JUMAX = ISP(IU+N)-1
-      L     = (JU + JUMAX - 2 + LRATIO)  /  LRATIO    +    1
+      L     = JU + JUMAX 
       LMAX  = JLMAX
       D     = L   + LMAX
       U     = D   + N
@@ -294,26 +297,28 @@
       UMAX  = TMP - U
       ESP = UMAX - JUMAX
 !
-      IF((PATH-1)*(PATH-2).NE.0) GO TO 3
-        IF(UMAX.LE.0) GO TO 110
-          CALL SD_NNF(N,R,C,IC,IA,JA,A,Z,B,
-     &                ISP(IL),ISP(JL),RSP(L),LMAX,RSP(D),
-     &                ISP(IU),ISP(JU),RSP(U),UMAX,
-     &                RSP(ROW),RSP(TMP),FLAG)
-          IF(FLAG.NE.0) GO TO 100
-          RETURN
+      IF(PATH.NE.1.AND.PATH.NE.2) GO TO 3
+      IF(UMAX.LE.0) GO TO 110
+      CALL SD_NNF(N,R,C,IC,IA,JA,A,Z,B,
+     &            ISP(IL),ISP(JL),RSP(L),LMAX,RSP(D),
+     &            ISP(IU),ISP(JU),RSP(U),UMAX,
+     &            RSP(ROW),RSP(TMP),FLAG)
+      IF(FLAG.NE.0) GO TO 100
+      RETURN
 !
-   3    IF ((PATH-3) .NE. 0)  GO TO 4
-          CALL SD_NNS
-     &       (N,  R, C,
-     &        ISP(IL), ISP(JL), RSP(L),  RSP(D),
-     &          ISP(IU), ISP(JU), RSP(U),
-     &        Z,  B,  RSP(TMP))
+3     IF(PATH.NE.3)  GO TO 4
+      CALL SD_NNS(N,R,C,ISP(IL),ISP(JL),RSP(L),RSP(D),
+     &            ISP(IU),ISP(JU),RSP(U),Z,B,RSP(TMP))
 !
-4     IF((PATH-4).NE.0) GO TO 5
+4     IF(PATH.NE.4) GO TO 5
           CALL SD_NNT(N,R,C,ISP(IL),ISP(JL),RSP(L),RSP(D),
      &                ISP(IU),ISP(JU),RSP(U),Z,B,RSP(TMP))
+!
+!-----------------------------------------------------------------------
+!
 5     RETURN
+!
+!-----------------------------------------------------------------------
 !
 ! ** ERROR:  ERROR DETECTED IN NSF, NNF, NNS, OR NNT
 100   RETURN
@@ -322,5 +327,8 @@
       RETURN
 ! ** ERROR:  ILLEGAL PATH SPECIFICATION
 111   FLAG = 11*N + 1
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

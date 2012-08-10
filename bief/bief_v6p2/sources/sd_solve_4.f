@@ -3,10 +3,10 @@
 !                    *********************
 !
      &(NPOIN,NSEGB,GLOSEGB,DAB1,DAB2,DAB3,DAB4,XAB1,XAB2,XAB3,XAB4,
-     & XX1,XX2,CVB1,CVB2,INFOGR,TYPEXT)
+     & XX1,XX2,CVB1,CVB2,INFOGR,TYPEXT1,TYPEXT2,TYPEXT3,TYPEXT4)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/07/2011
+! BIEF   V6P2                                   08/2012
 !***********************************************************************
 !
 !brief    DIRECT RESOLUTION OF A SYSTEM 2 X 2 WITH
@@ -33,6 +33,10 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J.PARISI (HRW)
+!+        09/08/2012
+!+        V6P2
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CVB1,CVB2      |-->| SECOND MEMBERS OF THE 2 SUB-SYSTEMS
 !| DABX           |-->| DIAGONAL TERMS OF SUB-MATRIX X
@@ -40,7 +44,10 @@
 !| INFOGR         |-->| IF, YES INFORMATIONS ON LISTING
 !| NPOIN          |-->| NOMBRE D'INCONNUES
 !| NSEGB          |-->| NOMBRE DE SEGMENTS
-!| TYPEXT         |-->| = 'S' : SYMETRIC MATRIX
+!| TYPEXT1        |-->| TYPE OF MATRIX STORAGE : BLOCK 1
+!| TYPEXT2        |-->| TYPE OF MATRIX STORAGE : BLOCK 2
+!| TYPEXT3        |-->| TYPE OF MATRIX STORAGE : BLOCK 3
+!| TYPEXT4        |-->| TYPE OF MATRIX STORAGE : BLOCK 4
 !| XABX           |-->| OFF-DIAGONAL TERMS OF SUB-MATRIX X
 !| XX1,XX2        |<--| SOLUTIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,11 +65,12 @@
       LOGICAL, INTENT(IN) :: INFOGR
       DOUBLE PRECISION, INTENT(IN)    :: DAB1(NPOIN),DAB2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: DAB3(NPOIN),DAB4(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: XAB1(NSEGB),XAB2(NSEGB)
-      DOUBLE PRECISION, INTENT(IN)    :: XAB3(NSEGB),XAB4(NSEGB)
+      DOUBLE PRECISION, INTENT(IN)    :: XAB1(*),XAB2(*)
+      DOUBLE PRECISION, INTENT(IN)    :: XAB3(*),XAB4(*)
       DOUBLE PRECISION, INTENT(INOUT) :: XX1(NPOIN),XX2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: CVB1(NPOIN),CVB2(NPOIN)
-      CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT
+      CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT1,TYPEXT2
+      CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT3,TYPEXT4
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -144,20 +152,24 @@
       CALL SD_STRSG4(NPOIN,NSEGB,GLOSEGB,NPBLK,NSEGBLK,GLOSEG4)
 !
       CALL SD_FABSG4(NPOIN,NSEGB,DAB1,DAB2,DAB3,DAB4,
-     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA)
+     &               XAB1,XAB2,XAB3,XAB4,NPBLK,NSEGBLK,DA,XA,
+     &               TYPEXT1,TYPEXT2,TYPEXT3,TYPEXT4)
 !
 !     3. SOLVES LIKE A STANDARD SYMMETRICAL MATRIX
 !     ==================================================
 !
+!     HERE TYPEXT1 IS TENTATIVE ACTUALLY IT WOULD BE BETTER TO
+!     DECLARE THE SYSTEM AS ALWAYS NON-SYMMETRIC
+!
       CALL SD_SOLVE_1(NPBLK,NSEGBLK,GLOSEG4,NSEGBLK,DA,XA,
-     &                XINC,RHS,INFOGR,TYPEXT)
+     &                XINC,RHS,INFOGR,TYPEXT1)
 !
 !     4. RECOVERS THE UNKNOWNS
 !     =============================
 !
       DO I=1,NPOIN
-        XX1(I)= XINC(I)
-        XX2(I)= XINC(I+NPOIN)
+        XX1(I) = XINC(I)
+        XX2(I) = XINC(I+NPOIN)
       ENDDO
 !
 !-----------------------------------------------------------------------

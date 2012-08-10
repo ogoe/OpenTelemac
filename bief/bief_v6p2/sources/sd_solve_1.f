@@ -173,9 +173,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        08/06/2012
+!+        10/08/2012
 !+        V6P2
-!+   Dimensions changed in declarations and allocation.
+!+   Dimensions changed in declarations and allocation. Size of ISP
+!+   doubled in non symmetric cases.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DA             |-->| MATRIX DIAGONAL COEFFICIENTS
@@ -264,6 +265,7 @@
         MEMFACTOR = 15
       ENDIF
       NSP=MEMFACTOR*(NPBLK+4*NSEGBLK)
+!     NSP=16*(NPBLK+4*NSEGBLK)
       ESP=MEMFACTOR*(NPBLK+4*NSEGBLK)
 !
 !     2. ALLOCATES ARRAYS (OR REALLOCATES IF TOO SMALL)
@@ -350,13 +352,28 @@
         SIZE_ACTRI=    NPBLK
       ENDIF
 !
-      IF(SIZE_ISP.EQ.0) THEN
-        ALLOCATE(ISP(NSP))
-        SIZE_ISP=    NSP
-      ELSEIF(        NSP.GT.SIZE_ISP) THEN
-        DEALLOCATE(ISP)
-        ALLOCATE(ISP(NSP))
-        SIZE_ISP=    NSP
+      IF(TYPEXT.EQ.'S') THEN
+!
+        IF(SIZE_ISP.EQ.0) THEN
+          ALLOCATE(ISP(NSP))
+          SIZE_ISP=    NSP
+        ELSEIF(        NSP.GT.SIZE_ISP) THEN
+          DEALLOCATE(ISP)
+          ALLOCATE(ISP(NSP))
+          SIZE_ISP=    NSP
+        ENDIF
+!
+      ELSE
+!
+        IF(SIZE_ISP.EQ.0) THEN
+          ALLOCATE(ISP(2*NSP))
+          SIZE_ISP=    2*NSP
+        ELSEIF(      2*NSP.GT.SIZE_ISP) THEN
+          DEALLOCATE(ISP)
+          ALLOCATE(ISP(2*NSP))
+          SIZE_ISP=    2*NSP
+        ENDIF
+!
       ENDIF
 !
       IF(SIZE_RSP.EQ.0) THEN
@@ -418,6 +435,7 @@
       ENDIF
 !
       IF(TYPEXT.EQ.'S') THEN
+!
       IF(FLAG.NE.0) THEN
         IERR=FLAG-8*NPBLK
         IF(IERR.GT.0) THEN
@@ -440,6 +458,7 @@
         CALL PLANTE(1)
         STOP
       ENDIF
+!
       ELSE
 !
 !---> COMMENTS THE ERROR: FLAG_SD_NDRV:
@@ -456,29 +475,30 @@
 !            8N+K   ZERO PIVOT  --  ROW = K
 !           10N+1   INSUFFICIENT STORAGE IN NDRV
 !           11N+1   ILLEGAL PATH SPECIFICATION (INDIC)
-      IF(FLAG.NE.0) THEN
-        IERR=INT(FLAG/NPBLK)
-        IF(IERR.EQ.3.OR.IERR.EQ.5.OR.IERR.EQ.8) THEN
-          IERRK=FLAG-IERR*NPBLK
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'MATRICE AVEC PIVOT NUL A LA LIGNE'
-            WRITE(LU,*) IERRK
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'MATRIX WITH ZERO PIVOT AT ROW'
-            WRITE(LU,*) IERRK
-          ENDIF
-        ELSE
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'AUGMENTER LE FACTEUR MEMOIRE (MEMFACTOR)',
-     &                  ' DANS LE SOUS-PROGRAMME SD_SOLVE_1'
-          ELSEIF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'INCREASE THE MEMORY FACTOR (MEMFACTOR)',
-     &                  ' IN SUBROUTINE SD_SOLVE_1'
+!
+        IF(FLAG.NE.0) THEN
+          IERR=INT(FLAG/NPBLK)
+          IF(IERR.EQ.3.OR.IERR.EQ.5.OR.IERR.EQ.8) THEN
+            IERRK=FLAG-IERR*NPBLK
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'MATRICE AVEC PIVOT NUL A LA LIGNE'
+              WRITE(LU,*) IERRK
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'MATRIX WITH ZERO PIVOT AT ROW'
+              WRITE(LU,*) IERRK
+            ENDIF
+          ELSE
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'AUGMENTER LE FACTEUR MEMOIRE (MEMFACTOR)',
+     &                    ' DANS LE SOUS-PROGRAMME SD_SOLVE_1'
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'INCREASE THE MEMORY FACTOR (MEMFACTOR)',
+     &                    ' IN SUBROUTINE SD_SOLVE_1'
           ENDIF
         ENDIF
         CALL PLANTE(1)
         STOP
-      ENDIF
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
