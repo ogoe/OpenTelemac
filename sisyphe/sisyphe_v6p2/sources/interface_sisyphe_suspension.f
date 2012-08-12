@@ -400,22 +400,6 @@
 
 
       !================================================================!
-      SUBROUTINE SUSPENSION_NERBED
-      !----------------------------------------------------------------!
-     &  (ZR, ELAY, AVA, HN, NPOIN, DT, CSF, HMIN, FLUDP, FLUER, ZF_S)
-      !----------------------------------------------------------------!
-      USE BIEF
-      IMPLICIT NONE
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: ZR,ELAY,AVA,HN,ZF_S
-      INTEGER,          INTENT(IN)    :: NPOIN
-      DOUBLE PRECISION, INTENT(IN)    :: DT,CSF,HMIN
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUDP,FLUER
-      !----------------------------------------------------------------!
-      END SUBROUTINE SUSPENSION_NERBED
-      !================================================================!
-
-
-      !================================================================!
         SUBROUTINE SUSPENSION_ROUSE
       !================================================================!
 
