@@ -1114,6 +1114,11 @@ C
 ! 
       DOUBLE PRECISION :: SOLDIS(MAXFRO)
 !
+!     FOR MASS BALANCE OF COHESIVE SEDIMENT
+!
+      DOUBLE PRECISION :: MASV0,MASVT
+!
+!
 !-----------------------------------------------------------------------
 !
 !       7) STRINGS
