@@ -302,7 +302,7 @@ def scanDICO(dicoFile):
       if not proc: break
       kw = proc.group('key').strip()
       if kw not in dicokeys:
-         print 'unknown key ',kw
+         print 'unknown key ',kw,proc.group('after'),dicoStream
          sys.exit()
       dicoStream = proc.group('after')   # still hold the separator
       # ~~ val
