@@ -3935,7 +3935,7 @@ CHOIX = '0="schema de Roe"';
 '6="schéma WAF ordre 2"'
 CHOIX1 = '0="Roe scheme"';
 '1="kinetic order 1"'; 
-'2="kinetic order 2"; 
+'2="kinetic order 2"'; 
 '3="Zokagoa scheme order 1"'; 
 '4="Tchamen scheme order 1"'; 
 '5="HLLC scheme order 1"'; 
