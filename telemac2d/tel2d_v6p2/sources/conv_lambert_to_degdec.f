@@ -33,6 +33,8 @@
      &                         => CONV_LAMBERT_TO_DEGDEC
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -102,6 +104,25 @@
         CCC = 11745793.39D0
         XS  = 600000.D0
         YS  = 8199695.768D0
+!  LAMBERT 93
+      ELSEIF(NUMZONE.EQ.93) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE (LU,*) 'CONVERSION DE LAMBERT 93 PAS ENCORE IMPLEMENTEE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE (LU,*) 'CONVERSION FROM LAMBERT 93 NOT YET IMPLEMENTED'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE (LU,*) 'NUMERO DE PROJECTION LAMBERT',NUMZONE,'INCONNUE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE (LU,*) 'UNKNOWN NUMBER OF LAMBERT PROJECTION',NUMZONE
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       DO J=1,NTAB

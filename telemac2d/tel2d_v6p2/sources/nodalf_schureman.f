@@ -48,9 +48,11 @@
 !
       SAVE YEAR,HOUR,MINUTE,SECOND,NDAY
 !
+      INTRINSIC INT,MOD,DBLE,COS,ATAN
+!
 !-----------------------------------------------------------------------
 !
-      PI  = ACOS(-1.D0)
+      PI  = 4.D0*ATAN(1.D0)
       TWOPI = 2.D0*PI
       DTR = PI/180.D0
 !
@@ -83,8 +85,9 @@
       ENDIF
 !
       TJ = DBLE(365*(YEAR-1900)+(NDAY-1)
-     &         +DINT(DBLE(YEAR-1901)/4.D0))/36525.D0
-!     &   +(DBLE(HOUR)+DBLE(MINUTE)/60.D0+DBLE(SECOND)/3600.D0)/876600.D0
+     &         +DBLE(INT(DBLE(YEAR-1901)/4.D0)))/36525.D0
+     &   +(DBLE(HOUR)+DBLE(MINUTE)/60.D0+DBLE(SECOND)/3600.D0)/876600.D0
+     &   +TEMPS/3.15576D9
 !
 !-----------------------------------------------------------------------
 !
@@ -92,15 +95,15 @@
 ! IN DEGREES
 ! TJ TIME ELAPSED SINCE 01/01/1900 AT 0 H, IN JULIAN CENTURY
 !
-      PLUN = DMOD(334.3837215D0+  4069.0322056D0*TJ-1.03444D-2*TJ**2,
-     1            360.D0)
-      NLUN = DMOD(259.1560564D0-  1934.1423972D0*TJ+ 2.1056D-3*TJ**2,
-     1            360.D0)
+      PLUN = MOD(334.3837215D0+  4069.0322056D0*TJ-1.03444D-2*TJ**2,
+     &           360.D0)
+      NLUN = MOD(259.1560564D0-  1934.1423972D0*TJ+ 2.1056D-3*TJ**2,
+     &           360.D0)
 !
 ! CONVERSION IN RADIANS
 ! FROM NOW, EVERY ANGLE IS IN RADIAN
-      PLUN = DMOD(PLUN*DTR,TWOPI)
-      NLUN = DMOD(NLUN*DTR,TWOPI)
+      PLUN = MOD(PLUN*DTR,TWOPI)
+      NLUN = MOD(NLUN*DTR,TWOPI)
 !
       IF (PLUN.LT.0.D0) PLUN = PLUN + TWOPI
       IF (NLUN.LT.0.D0) NLUN = NLUN + TWOPI

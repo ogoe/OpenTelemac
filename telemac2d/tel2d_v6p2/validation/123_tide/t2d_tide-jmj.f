@@ -42,8 +42,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER K,NODALCORR,ICALHW
-      DOUBLE PRECISION XSHIFT,YSHIFT
-      LOGICAL TIDALBCGEN
+      DOUBLE PRECISION XSHIFT,YSHIFT,BETA
+      LOGICAL TIDALBCGEN,TM2S2N2EQUAL
 !
 !-----------------------------------------------------------------------
 !
@@ -85,11 +85,26 @@
 !
       ICALHW = 0
 !
+!     TM2S2N2EQUAL: LOGICAL TO IMPOSE THE PERIODS OF S2 AND N2 WAVES
+!                   TO BE EQUAL TO THE PERIOD OF M2 WAVE
+!                   DEFAULT = .FALSE.
+!                   FOR SCHEMATIC TIDES MODELLING ONLY! 
+!                   FOR JMJ DATA BASE ONLY AT THE MOMENT
+!
+      TM2S2N2EQUAL = .FALSE.
+!
 !     OPTIONAL SHIFT OF COORDINATES
 !     FOR JMJ DATA BASE ONLY AT THE MOMENT
 !
       XSHIFT =  +7000.D0
       YSHIFT = +11400.D0
+!
+!     BETA: OPTIONAL ANGLE (IN DEGREES) BETWEEN LAMBERT AND MERCATOR-JMJ
+!           REFERENCES (EAST OR X AXES, TRIGONOMETRIC)
+!           DEFAULT=0.D0 DEGREES
+!           FOR JMJ DATA BASE ONLY AT THE MOMENT
+!
+      BETA = -4.D0
 !
 !     FILES:
 !
@@ -109,17 +124,17 @@
      &                       TIDALTYPE,BOUNDARY_COLOUR,MAXFRO,
      &                       T2D_FILES(T2DBDD)%LU,
      &                       T2D_FILES(T2DTID)%LU,
-     &                       T2D_FILES(T2DHAR)%LU,XSHIFT,YSHIFT)
+     &                       T2D_FILES(T2DHAR)%LU,XSHIFT,YSHIFT,BETA)
         ENDIF
 !
         CALL BORD_TIDE(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
-     &                 NPOIN,NPTFR,AT,NCOTE,NVITES,
+     &                 NPOIN,NPTFR,AT,DT,NCOTE,NVITES,
      &                 NUMLIQ%I,KENT,KENTU,
      &                 T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
      &                 CTIDE,MSL,CTIDEV,NODALCORR,T2D_FILES(T2DHAR)%LU,
      &                 BOUNDARY_COLOUR,
      &                 HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
-     &                 MARDAT,MARTIM)
+     &                 MARDAT,MARTIM,TM2S2N2EQUAL)
       ELSEIF(TIDALDB.EQ.2) THEN
         CALL BORD_TIDE_TPXO(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
      &                      NPOIN,NPTFR,AT,NCOTE,NVITES,
@@ -132,13 +147,30 @@
      &                      X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0,INTMICON)
       ELSEIF(TIDALDB.EQ.3) THEN
         CALL BORD_TIDE_LEGOS(ZF%R,MESH%NBOR%I,LIHBOR%I,LIUBOR%I,
-     &                       NPOIN,NPTFR,AT,NCOTE,NVITES,
+     &                       NPOIN,NPTFR,AT,DT,NCOTE,NVITES,
      &                       NUMLIQ%I,KENT,KENTU,
      &                       T2D_FILES(T2DIMP)%NAME,TIDALTYPE,
      &                       CTIDE,MSL,CTIDEV,NODALCORR,
      &                       T2D_FILES(T2DHAR)%LU,BOUNDARY_COLOUR,
      &                       HBTIDE,UBTIDE,VBTIDE,NUMTIDE,ICALHW,
      &                       MARDAT,MARTIM)
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE (LU,*) 'BASE DE DONNEES DE MAREE NON TRAITEE.'
+          WRITE (LU,*) 'CHOIX POSSIBLES :'
+          WRITE (LU,*) '  -1 : JMJ ;'
+          WRITE (LU,*) '  -2 : TPXO ;'
+          WRITE (LU,*) '  -3 : LEGOS-NEA.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE (LU,*) 'TIDAL DATA BASE NOT TAKEN INTO ACCOUNT.'
+          WRITE (LU,*) 'POSSIBLE CHOICES:'
+          WRITE (LU,*) '  -1: JMJ,'
+          WRITE (LU,*) '  -2: TPXO,'
+          WRITE (LU,*) '  -3: LEGOS-NEA.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

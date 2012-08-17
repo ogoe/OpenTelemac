@@ -186,7 +186,8 @@
              U2 = DY/DS
            ELSE
              IF(LNG.EQ.1)
-     &         WRITE(LU,*) 'PROBLEME DANS LA DEFINITION DE LA BRECHE :',N
+     &         WRITE(LU,*) 'PROBLEME DANS LA DEFINITION DE LA BRECHE :',
+     &                     N
              IF(LNG.EQ.2)
      &         WRITE(LU,*) 'PROBLEM IN DEFINITION OF BREACH :',N
              CALL PLANTE(1)
@@ -229,7 +230,8 @@
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LECBREACH :'
             WRITE(LU,*) 'PLUS DE ',INDBR%MAXBLOCK,' (',N,')'
-            WRITE(LU,*) 'VECTEURS DEMANDES, CHANGER MAXBLOCK DANS ALLBLO.'
+            WRITE(LU,*) 'VECTEURS DEMANDES,'
+            WRITE(LU,*) 'CHANGER MAXBLOCK DANS ALLBLO.'
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'LECBREACH:'
@@ -370,7 +372,8 @@ C
         WRITE(LU,*) 'BRECHE : ERREUR DE LECTURE SUR LE'
         WRITE(LU,*) '         FICHIER DE DONNEES DES BRECHES'
         WRITE(LU,*) '         POUR LA BRECHE ',N
-        WRITE(LU,*) '         LE NOMBRE DE POINTS DE LA LIGNE EST ILLISIBLE'
+        WRITE(LU,*) '         LE NOMBRE DE POINTS DE LA LIGNE EST'
+        WRITE(LU,*) '         ILLISIBLE'
       ELSEIF(LNG.EQ.2) THEN
         WRITE(LU,*) 'BRECHE : READ ERROR ON THE'
         WRITE(LU,*) '         BREACHES DATA FILE'
