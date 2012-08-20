@@ -233,3 +233,15 @@ m_coupling_estel3d.o:
     if EXIST $(DIRINC)\m_coupling_estel3d.mod del /f $(DIRINC)\m_coupling_estel3d.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move m_coupling_estel3d.mod $(DIRINC)
+
+tpxo.o:
+    $(F90) $(F90_PROJ) tpxo.f
+    if EXIST $(DIRINC)\tpxo.mod del /f $(DIRINC)\tpxo.mod
+	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+    move tpxo.mod $(DIRINC)
+
+okada.o:
+    $(F90) $(F90_PROJ) okada.f
+    if EXIST $(DIRINC)\okada.mod del /f $(DIRINC)\okada.mod
+	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+    move okada.mod $(DIRINC)
