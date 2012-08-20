@@ -55,7 +55,7 @@ LKLIB         = parallel$(MODE)$(VERSION).lib  \
 #
 #------- Sources Fortran
 
-SRCS	      = interface_parallel \
+SRCS	      = interface_parallel.f \
 		errpvm.f \
 		get_mpi_parameters.f \
 		org_charac_type1.f \
