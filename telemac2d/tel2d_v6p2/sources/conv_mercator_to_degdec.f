@@ -44,6 +44,8 @@
      &                         => CONV_MERCATOR_TO_DEGDEC
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -76,6 +78,34 @@
       FFF = 1.D0/298.257223563D0
       EEE = SQRT(2.D0*FFF-FFF**2)
 !     EEE = 0.081991889980000D0
+!
+      IF(GEOSYST.EQ.2.EQ.NUMZONE.EQ.-1) THEN
+!     NORTHERN UTM
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'VALEUR PAR DEFAUT INCORRECTE POUR LE NUMERO'
+          WRITE(LU,*) 'DE ZONE UTM. A CHOISIR ENTRE 1 ET 60.'
+          WRITE(LU,*) 'PAR EXEMPLE ENTRE 30 ET 32 EN FRANCE.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'INCORRECT DEFAULT VALUE FOR UTM ZONE.'
+          WRITE(LU,*) 'TO BE CHOSEN BETWEEN 1 AND 60.'
+          WRITE(LU,*) 'E.G. BETWEEN 30 AND 32 FOR FRANCE.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ELSEIF(GEOSYST.EQ.3.EQ.NUMZONE.EQ.-1) THEN
+!     SOUTHERN UTM
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'VALEUR PAR DEFAUT INCORRECTE POUR LE NUMERO'
+          WRITE(LU,*) 'DE ZONE UTM. A CHOISIR ENTRE 1 ET 60.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'INCORRECT DEFAULT VALUE FOR UTM ZONE.'
+          WRITE(LU,*) 'TO BE CHOSEN BETWEEN 1 AND 60.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
       NNN = 0.9996D0 * AAA
       LAMBDAC = (6.D0*REAL(NUMZONE)-183.D0)*DTR ! RADIANS

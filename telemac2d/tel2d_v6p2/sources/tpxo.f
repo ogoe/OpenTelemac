@@ -832,7 +832,15 @@ c$$$      END SUBROUTINE DEF_CON_IND
 ! TELEMAC2D   V6P2                                   16/01/2012
 !***********************************************************************
 !
-!brief
+!brief    Prescribes the free surface elevation, u or v-component
+!+        of the velocity based on the TPXO tidal model,
+!+        for level or velocity imposed liquid boundary
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW), C.-T. PHAM (LNHE)
+!+        06/12/2011
+!+        V6P2
+!+        Implementation for interfacing with TELEMAC-2D AND 3D
+!+        from old HRW functions SL_TPXO, VITU_TPXO, VITV_TPXO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  C_ID          |-->| NAME OF GIVEN CONSTITUENTS
@@ -1767,73 +1775,6 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
       RETURN
       END FUNCTION DATE_MJD
-c$$$!                    ***********************
-c$$$                     SUBROUTINE ALLBORD_TPXO
-c$$$!                    ***********************
-c$$$!
-c$$$     &(MESH,LIHBOR,LIUBOR,KENT,KENTU)
-c$$$!
-c$$$!***********************************************************************
-c$$$! TELEMAC2D   V6P2                                   06/12/2011
-c$$$!***********************************************************************
-c$$$!
-c$$$!brief    Prepare a level boundary filter to store the TPXO constituents
-c$$$!+        at the boundary. In particular,
-c$$$!+        count NPTNFR and ALLOCATE and set the filter TPXO_NFR
-c$$$!
-c$$$!note     Passing MESH, LIHBOR and LIUBOR as arguments allows
-c$$$!+        this SUBROUTINE to be called from TELEMAC-2D or TELEMAC-3D
-c$$$!
-c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-c$$$!+        06/12/2011
-c$$$!+        V6P2
-c$$$!+        Implementation and generalised for interfacing with
-c$$$!+        TELEMAC-2D AND 3D
-c$$$!
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!|  KENT          |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VALUE
-c$$$!|  KENTU         |-->| CONVENTION FOR LIQUID INPUT WITH PRESCRIBED VELOCITY
-c$$$!|  LIHBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
-c$$$!|                |-->| (KENT IS HERE OF INTEREST)
-c$$$!|  LIUBOR        |-->| TYPE OF BOUNDARY CONDITIONS ON VELOCITY
-c$$$!|  MESH          |-->| 2D MESH
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!
-c$$$      USE BIEF
-c$$$!
-c$$$      IMPLICIT NONE
-c$$$      INTEGER LNG,LU
-c$$$      COMMON/INFO/LNG,LU
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      TYPE(BIEF_MESH), INTENT(IN) :: MESH
-c$$$      INTEGER, INTENT(IN) :: KENT,KENTU
-c$$$      INTEGER, INTENT(IN) :: LIHBOR(*),LIUBOR(*)
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      INTEGER     K
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$!     PREPARE STORAGE ON LEVEL BOUNDARIES
-c$$$!
-c$$$      ALLOCATE( TPXO_NFR(MESH%NPOIN) )
-c$$$      DO K=1,MESH%NPOIN
-c$$$         TPXO_NFR(K) = 0
-c$$$      ENDDO
-c$$$      NPTNFR = 0
-c$$$      DO K = 1,MESH%NPTFR
-c$$$         IF( LIHBOR(K).EQ.KENT.OR.LIUBOR(K).EQ.KENTU ) THEN
-c$$$            NPTNFR = NPTNFR + 1
-c$$$            TPXO_NFR(MESH%NBOR%I(K)) = NPTNFR
-c$$$         ENDIF
-c$$$      ENDDO
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$      END SUBROUTINE ALLBORD_TPXO
 !                    *********************
                      SUBROUTINE CONDI_TPXO
 !                    *********************
@@ -1846,15 +1787,18 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
 ! TELEMAC2D   V6P2                                   06/12/2011
 !***********************************************************************
 !
-!brief
+!brief    Prepare a level boundary filter to store the TPXO constituents
+!+        at the boundary. In particular,
+!+        count NPTNFR and ALLOCATE and set the filter TPXO_NFR
 !
-!note     Passing NPOIN, X,Y and H as arguments allows this SUBROUTINE
-!+        to be called from TELEMAC-2D or TELEMAC-3D
+!note     Passing NPOIN, LIHBOR, LIUBOR, X, Y and H as arguments allows
+!+        this SUBROUTINE to be called from TELEMAC-2D or TELEMAC-3D
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        06/12/2011
 !+        V6P2
-!+        Generalised for interfacing with TELEMAC-2D AND 3D
+!+        Implementation and generalised for interfacing with
+!+        TELEMAC-2D AND 3D
 !
 !warning  (-ZF) should be stored in H as you enter this subroutine
 !
@@ -2047,6 +1991,12 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
         CALL CONV_LAMBERT_TO_DEGDEC(NPOIN,X(1:NPOIN),Y(1:NPOIN),
      &                              LON(1:NPOIN),LAT(1:NPOIN),
      &                              NUMZONE)
+!  WGS84 LONGITUDE/LATITUDE
+      ELSEIF(GEOSYST.EQ.1) THEN
+        DO K=1,NPOIN
+          LON(K) = X(K)
+          LAT(K) = Y(K)
+        ENDDO
       ELSEIF(GEOSYST.EQ.0) THEN
 !  DEFINED BY THE USER
 !  THIS IS AN EXAMPLE
@@ -2061,6 +2011,60 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
           LON(K) = XO+XL/RADIUS/COS(YO*DTR)*RTD
           LAT(K) = YO+YL/RADIUS            *RTD
         ENDDO
+      ELSEIF(GEOSYST.EQ.-1) THEN
+!  DEFAULT VALUE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'VALEUR PAR DEFAUT INCORRECTE POUR LE SYSTEME'
+          WRITE(LU,*) 'GEOGRAPHIQUE. CHOISIR PARMI LES CHOIX POSSIBLES'
+          WRITE(LU,*) 'OU IMPLEMENTEZ LA CONVERSION'
+          WRITE(LU,*) 'VOUS-MEME AVEC LE CHOIX 0 DANS BORD_TIDAL_BC.F :'
+          WRITE(LU,*) '0 : DEFINI PAR L UTILISATEUR ;'
+          WRITE(LU,*) '1 : WGS84 LONGITUDE/LATITUDE IN DEGRES REELS ;'
+          WRITE(LU,*) '2 : WGS84 NORD UTM ;'
+          WRITE(LU,*) '3 : WGS84 SUD UTM ;'
+          WRITE(LU,*) '4 : LAMBERT ;'
+          WRITE(LU,*) '5 : MERCATOR POUR TELEMAC.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'INCORRECT DEFAULT VALUE FOR THE GEOGRAPHIC'
+          WRITE(LU,*) 'SYSTEM. TO BE CHOSEN AMONG THE POSSIBLE CHOICES'
+          WRITE(LU,*) 'OR IMPLEMENT THE CONVERSION'
+          WRITE(LU,*) 'BY YOURSELF WITH CHOICE 0 IN BORD_TIDAL_BC.F:'
+          WRITE(LU,*) '0: DEFINED BY USER,'
+          WRITE(LU,*) '1: WGS84 LONGITUDE/LATITUDE IN REAL DEGREES,'
+          WRITE(LU,*) '2: WGS84 NORTHERN UTM,'
+          WRITE(LU,*) '3: WGS84 SOUTHERN UTM,'
+          WRITE(LU,*) '4: LAMBERT,'
+          WRITE(LU,*) '5: MERCATOR FOR TELEMAC.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'SYSTEME GEOGRAPHIQUE DE COORDONNEES NON TRAITE.'
+          WRITE(LU,*) 'CHANGEZ DE SYSTEME OU IMPLEMENTEZ LA CONVERSION'
+          WRITE(LU,*) 'VOUS-MEME AVEC LE CHOIX 0 DANS BORD_TIDAL_BC.F :'
+          WRITE(LU,*) '0 : DEFINI PAR L UTILISATEUR ;'
+          WRITE(LU,*) '1 : WGS84 LONGITUDE/LATITUDE IN DEGRES REELS ;'
+          WRITE(LU,*) '2 : WGS84 NORD UTM ;'
+          WRITE(LU,*) '3 : WGS84 SUD UTM ;'
+          WRITE(LU,*) '4 : LAMBERT ;'
+          WRITE(LU,*) '5 : MERCATOR POUR TELEMAC.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'GEOGRAPHIC SYSTEM FOR COORDINATES'
+          WRITE(LU,*) 'NOT TAKEN INTO ACCOUNT.'
+          WRITE(LU,*) 'CHANGE THE SYSTEM OR IMPLEMENT THE CONVERSION'
+          WRITE(LU,*) 'BY YOURSELF WITH CHOICE 0 IN BORD_TIDAL_BC.F:'
+          WRITE(LU,*) '0: DEFINED BY USER,'
+          WRITE(LU,*) '1: WGS84 LONGITUDE/LATITUDE IN REAL DEGREES,'
+          WRITE(LU,*) '2: WGS84 NORTHERN UTM,'
+          WRITE(LU,*) '3: WGS84 SOUTHERN UTM,'
+          WRITE(LU,*) '4: LAMBERT,'
+          WRITE(LU,*) '5: MERCATOR FOR TELEMAC.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       DO I = 1,NPOIN
@@ -2382,14 +2386,19 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
 !  TEST TO CHECK CORRECT VALUES FOR TIDALTYPE
 !
       IF(.NOT.DEJA) THEN
-        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
+c$$$        IF(TIDALTYPE.LT.1.OR.TIDALTYPE.GT.6) THEN
+        IF(TIDALTYPE.NE.1) THEN
           IF(LNG.EQ.1) THEN
-            WRITE (LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
-            WRITE (LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
+            WRITE(LU,*) 'MAUVAISE VALEUR POUR TIDALTYPE =',TIDALTYPE
+            WRITE(LU,*) 'ELLE DOIT ETRE EGALE A 1 ACTUELLEMENT'
+            WRITE(LU,*) 'AVEC LA BASE DE DONNEES DE MAREE TPXO'
+c$$$            WRITE(LU,*) 'ELLE DOIT ETRE COMPRISE ENTRE 1 ET 6'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE (LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
-            WRITE (LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
+            WRITE(LU,*) 'UNEXPECTED VALUE FOR TIDALTYPE=',TIDALTYPE
+            WRITE(LU,*) 'IT MUST BE CHOSEN EQUAL TO 1 CURRENTLY'
+            WRITE(LU,*) 'WITH TPXO TIDAL DATA BASE'
+c$$$            WRITE(LU,*) 'IT MUST BE CHOSEN BETWEEN 1 AND 6'
           ENDIF
           CALL PLANTE(1)
           STOP
@@ -2499,6 +2508,12 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
         CALL CONV_LAMBERT_TO_DEGDEC(NPOIN,X(1:NPOIN),Y(1:NPOIN),
      &                              LON(1:NPOIN),LAT(1:NPOIN),
      &                              NUMZONE)
+!  WGS84 LONGITUDE/LATITUDE
+      ELSEIF(GEOSYST.EQ.1) THEN
+        DO K=1,NPOIN
+          LON(K) = X(K)
+          LAT(K) = Y(K)
+        ENDDO
       ELSEIF(GEOSYST.EQ.0) THEN
 !  DEFINED BY THE USER
 !  THIS IS AN EXAMPLE
@@ -2513,6 +2528,60 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
           LON(K) = XO+XL/RADIUS/COS(YO*DTR)*RTD
           LAT(K) = YO+YL/RADIUS            *RTD
         ENDDO
+      ELSEIF(GEOSYST.EQ.-1) THEN
+!  DEFAULT VALUE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'VALEUR PAR DEFAUT INCORRECTE POUR LE SYSTEME'
+          WRITE(LU,*) 'GEOGRAPHIQUE. CHOISIR PARMI LES CHOIX POSSIBLES'
+          WRITE(LU,*) 'OU IMPLEMENTEZ LA CONVERSION'
+          WRITE(LU,*) 'VOUS-MEME AVEC LE CHOIX 0 DANS BORD_TIDAL_BC.F :'
+          WRITE(LU,*) '0 : DEFINI PAR L UTILISATEUR ;'
+          WRITE(LU,*) '1 : WGS84 LONGITUDE/LATITUDE IN DEGRES REELS ;'
+          WRITE(LU,*) '2 : WGS84 NORD UTM ;'
+          WRITE(LU,*) '3 : WGS84 SUD UTM ;'
+          WRITE(LU,*) '4 : LAMBERT ;'
+          WRITE(LU,*) '5 : MERCATOR POUR TELEMAC.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'INCORRECT DEFAULT VALUE FOR THE GEOGRAPHIC'
+          WRITE(LU,*) 'SYSTEM. TO BE CHOSEN AMONG THE POSSIBLE CHOICES'
+          WRITE(LU,*) 'OR IMPLEMENT THE CONVERSION'
+          WRITE(LU,*) 'BY YOURSELF WITH CHOICE 0 IN BORD_TIDAL_BC.F:'
+          WRITE(LU,*) '0: DEFINED BY USER,'
+          WRITE(LU,*) '1: WGS84 LONGITUDE/LATITUDE IN REAL DEGREES,'
+          WRITE(LU,*) '2: WGS84 NORTHERN UTM,'
+          WRITE(LU,*) '3: WGS84 SOUTHERN UTM,'
+          WRITE(LU,*) '4: LAMBERT,'
+          WRITE(LU,*) '5: MERCATOR FOR TELEMAC.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'SYSTEME GEOGRAPHIQUE DE COORDONNEES NON TRAITE.'
+          WRITE(LU,*) 'CHANGEZ DE SYSTEME OU IMPLEMENTEZ LA CONVERSION'
+          WRITE(LU,*) 'VOUS-MEME AVEC LE CHOIX 0 DANS BORD_TIDAL_BC.F :'
+          WRITE(LU,*) '0 : DEFINI PAR L UTILISATEUR ;'
+          WRITE(LU,*) '1 : WGS84 LONGITUDE/LATITUDE IN DEGRES REELS ;'
+          WRITE(LU,*) '2 : WGS84 NORD UTM ;'
+          WRITE(LU,*) '3 : WGS84 SUD UTM ;'
+          WRITE(LU,*) '4 : LAMBERT ;'
+          WRITE(LU,*) '5 : MERCATOR POUR TELEMAC.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'GEOGRAPHIC SYSTEM FOR COORDINATES'
+          WRITE(LU,*) 'NOT TAKEN INTO ACCOUNT.'
+          WRITE(LU,*) 'CHANGE THE SYSTEM OR IMPLEMENT THE CONVERSION'
+          WRITE(LU,*) 'BY YOURSELF WITH CHOICE 0 IN BORD_TIDAL_BC.F:'
+          WRITE(LU,*) '0: DEFINED BY USER,'
+          WRITE(LU,*) '1: WGS84 LONGITUDE/LATITUDE IN REAL DEGREES,'
+          WRITE(LU,*) '2: WGS84 NORTHERN UTM,'
+          WRITE(LU,*) '3: WGS84 SOUTHERN UTM,'
+          WRITE(LU,*) '4: LAMBERT,'
+          WRITE(LU,*) '5: MERCATOR FOR TELEMAC.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
       DO I = 1,NPOIN
@@ -2649,7 +2718,7 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
         IF(LIHBOR(K).EQ.KENT) THEN
 !         BEGINNING OF PRESCRIBED DEPTHS
 !
-          IF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
+c$$$          IF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
 !
 !  TYPE OF TIDE TO MODEL
 !  1: REAL TIDE
@@ -2668,15 +2737,15 @@ c$$$      END SUBROUTINE ALLBORD_TPXO
 c$$$            ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
             ENDIF
 !         ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
-          ENDIF
+c$$$          ENDIF
         ENDIF
 !
 !  VELOCITY IMPOSED: ONE USES THE OUTGOING DIRECTION
 !                    PROVIDED BY THE USER.
 !
-c$$$      IF(LIUBOR(K).EQ.KENTU) THEN
-      IF(LIUBOR(K).EQ.KENTU.AND.
-     &  (NVITES.NE.0.OR.NOMIMP(1:1).NE.' ')) THEN
+      IF(LIUBOR(K).EQ.KENTU) THEN
+c$$$      IF(LIUBOR(K).EQ.KENTU.AND.
+c$$$     &  (NVITES.NE.0.OR.NOMIMP(1:1).NE.' ')) THEN
 !
 !       POINTS ON WEIRS HAVE NUMLIQ(K)=0
         IF(NUMLIQ(K).GT.0) THEN
@@ -2721,147 +2790,6 @@ c$$$          ELSEIF(TIDALTYPE.GE.2.AND.TIDALTYPE.LE.6) THEN
 !
       RETURN
       END SUBROUTINE BORD_TIDE_TPXO
-c$$$!              *********************************
-c$$$               DOUBLE PRECISION FUNCTION SL_TPXO
-c$$$!              *********************************
-c$$$!
-c$$$     &(KFR,TEMPS)
-c$$$!
-c$$$!***********************************************************************
-c$$$! TELEMAC2D   V6P2                                   06/12/2011
-c$$$!***********************************************************************
-c$$$!
-c$$$!brief    Prescribes the free surface elevation based on the TPXO tidal
-c$$$!+        model, for level imposed liquid boundary
-c$$$!
-c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-c$$$!+        06/12/2011
-c$$$!+        V6P2
-c$$$!+        Implementation for interfacing with TELEMAC-2D AND 3D
-c$$$!
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!|  KFR           |-->| LEVEL BOUNDARY GLOBAL NODE NUMBER
-c$$$!|  TEMPS         |-->| TIME IS SECONDS
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!
-c$$$      IMPLICIT NONE
-c$$$      INTEGER LNG,LU
-c$$$      COMMON/INFO/LNG,LU
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      INTEGER, INTENT(IN) :: KFR
-c$$$      DOUBLE PRECISION, INTENT(IN) :: TEMPS
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      SL_TPXO = 0.D0
-c$$$      IF( TPXO_NFR(KFR).NE.0 ) THEN
-c$$$!
-c$$$!        TPXO_BOR(1,,) IS WATER LEVEL
-c$$$         SL_TPXO = PTIDE( TPXO_BOR(1,TPXO_NFR(KFR),:),
-c$$$     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
-c$$$     &        ( STIME_MJD+TEMPS/86400.D0 ), INTMICON )
-c$$$!
-c$$$      ENDIF
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$      END FUNCTION SL_TPXO
-c$$$!               ***********************************
-c$$$                DOUBLE PRECISION FUNCTION VITU_TPXO
-c$$$!               ***********************************
-c$$$!
-c$$$     &( KFR,TEMPS )
-c$$$!
-c$$$!***********************************************************************
-c$$$! TELEMAC2D   V6P2                                   06/12/2011
-c$$$!***********************************************************************
-c$$$!
-c$$$!brief    Prescribes the u-component of the velocity based on the
-c$$$!+        TPXO tidal model, for velcoity imposed liquid boundary
-c$$$!
-c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-c$$$!+        06/12/2011
-c$$$!+        V6P2
-c$$$!+        Implementation for interfacing with TELEMAC-2D
-c$$$!
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!|  KFR           |-->| VELOCITY BOUNDARY GLOBAL NODE NUMBER
-c$$$!|  TEMPS         |-->| TIME IS SECONDS
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!
-c$$$      IMPLICIT NONE
-c$$$      INTEGER LNG,LU
-c$$$      COMMON/INFO/LNG,LU
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      INTEGER, INTENT(IN) :: KFR
-c$$$      DOUBLE PRECISION, INTENT(IN) :: TEMPS
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      VITU_TPXO = 0.D0
-c$$$      IF( TPXO_NFR(KFR).NE.0 ) THEN
-c$$$!
-c$$$!        TPXO_BOR(2,,) IS U-VELOCITY COMPONENT
-c$$$         VITU_TPXO = PTIDE( TPXO_BOR(2,TPXO_NFR(KFR),:),
-c$$$     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
-c$$$     &        ( STIME_MJD+TEMPS/86400.D0 ), INTMICON )
-c$$$!
-c$$$      ENDIF
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$      END FUNCTION VITU_TPXO
-c$$$!               ***********************************
-c$$$                DOUBLE PRECISION FUNCTION VITV_TPXO
-c$$$!               ***********************************
-c$$$!
-c$$$     &( KFR,TEMPS )
-c$$$!
-c$$$!***********************************************************************
-c$$$! TELEMAC2D   V6P2                                   06/12/2011
-c$$$!***********************************************************************
-c$$$!
-c$$$!brief    Prescribes the v-component of the velocity based on the
-c$$$!+        TPXO tidal model, for velcoity imposed liquid boundary
-c$$$!
-c$$$!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-c$$$!+        06/12/2011
-c$$$!+        V6P2
-c$$$!+        Implementation for interfacing with TELEMAC-2D
-c$$$!
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!|  KFR           |-->| VELOCITY BOUNDARY GLOBAL NODE NUMBER
-c$$$!|  TEMPS         |-->| TIME IS SECONDS
-c$$$!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-c$$$!
-c$$$      IMPLICIT NONE
-c$$$      INTEGER LNG,LU
-c$$$      COMMON/INFO/LNG,LU
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      INTEGER, INTENT(IN) :: KFR
-c$$$      DOUBLE PRECISION, INTENT(IN) :: TEMPS
-c$$$!
-c$$$!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-c$$$!
-c$$$      VITV_TPXO = 0.D0
-c$$$      IF( TPXO_NFR(KFR).NE.0 ) THEN
-c$$$!
-c$$$!        TPXO_BOR(3,,) IS V-VELOCITY COMPONENT
-c$$$         VITV_TPXO = PTIDE( TPXO_BOR(3,TPXO_NFR(KFR),:),
-c$$$     &         C_ID, NCON, CCIND, TPXO_LAT_DUMMY,
-c$$$     &        ( STIME_MJD+TEMPS/86400.D0 ), INTMICON )
-c$$$!
-c$$$      ENDIF
-c$$$!
-c$$$!-----------------------------------------------------------------------
-c$$$!
-c$$$      END FUNCTION VITV_TPXO
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !

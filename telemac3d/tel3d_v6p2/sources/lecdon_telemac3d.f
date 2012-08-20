@@ -2062,5 +2062,94 @@ C  CHECKS THE EXISTENCE OF RELEVANT TRACERS FOR THE DENSITY LAW
 !
 !-----------------------------------------------------------------------
 !
+!  CHOICE FOR TIDAL DATA BASE TO DO BY THE USER
+!
+      IF(TIDALTYPE.NE.0.AND.TIDALDB.EQ.-1) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'CHOISIR LA BASE DE DONNEES DE MAREE'
+          WRITE(LU,*) 'PARMI LES CHOIX POSSIBLES :'
+          WRITE(LU,*) '  -1 : JMJ ;'
+          WRITE(LU,*) '  -2 : TPXO ;'
+          WRITE(LU,*) '  -3 : LEGOS-NEA.'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'CHOOSE THE TIDAL DATA BASE'
+          WRITE(LU,*) 'AMONG THE POSSIBLE CHOICES:'
+          WRITE(LU,*) '  -1: JMJ,'
+          WRITE(LU,*) '  -2: TPXO,'
+          WRITE(LU,*) '  -3: LEGOS-NEA.'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!  CHECKS THE EXISTENCE OF TIDAL DATA BASE FILES WHEN USING TPXO
+!
+      IF(TIDALTYPE.NE.0.AND.TIDALDB.EQ.2
+     &   .AND.T3D_FILES(T3DBB1)%NAME(1:1).EQ.'') THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'POUR UTILISER LA BASE DE DONNEES DE MAREE TPXO'
+          WRITE(LU,*) 'DONNER LE FICHIER'
+          WRITE(LU,*) 'BASE BINAIRE 1 DE DONNEES DE MAREE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'TO USE TPXO TIDAL DATA BASE'
+          WRITE(LU,*) 'PLEASE GIVE A BINARY DATABASE 1 FOR TIDE FILE'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ELSEIF(TIDALTYPE.NE.0.AND.TIDALDB.EQ.2
+     &       .AND.T3D_FILES(T3DBB2)%NAME(1:1).EQ.'') THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'POUR UTILISER LA BASE DE DONNEES DE MAREE TPXO'
+          WRITE(LU,*) 'DONNER LE FICHIER'
+          WRITE(LU,*) 'BASE BINAIRE 2 DE DONNEES DE MAREE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'TO USE TPXO TIDAL DATA BASE'
+          WRITE(LU,*) 'PLEASE GIVE A BINARY DATABASE 2 FOR TIDE FILE'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!  POSITIVE COEFFICIENT TO CALIBRATE TIDAL RANGE EXPECTED
+!
+      IF(CTIDE.LT.0) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'LE COEFFICIENT DE CALAGE DU MARNAGE'
+          WRITE(LU,*) 'DOIT ETRE POSITIF OU NUL'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'COEFFICIENT TO CALIBRATE TIDAL RANGE'
+          WRITE(LU,*) 'HAVE TO BE GREATER OR EQUAL 0'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!  POSITIVE COEFFICIENT TO CALIBRATE TIDAL VELOCITIES EXPECTED
+!
+      IF(CTIDEV.LT.0) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'LE COEFFICIENT DE CALAGE DES VITESSES DE COURANT'
+          WRITE(LU,*) 'DOIT ETRE POSITIF OU NUL'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'COEFFICIENT TO CALIBRATE TIDAL VELOCITIES'
+          WRITE(LU,*) 'HAVE TO BE GREATER OR EQUAL 0'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

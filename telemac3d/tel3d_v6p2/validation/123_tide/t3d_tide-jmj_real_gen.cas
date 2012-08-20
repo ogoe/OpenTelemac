@@ -43,6 +43,7 @@ OPTION FOR LIQUID BOUNDARIES                    : 2
 /                       TIDE CONDITIONS
 /--------------------------------------------------
 OPTION FOR TIDAL BOUNDARY CONDITIONS            : 1
+TIDAL DATA BASE                                 : 1
 /COEFFICIENT TO CALIBRATE TIDAL RANGE            : 1.
 COEFFICIENT TO CALIBRATE SEA LEVEL              : 5.6
 GEOGRAPHIC SYSTEM                               : 4
