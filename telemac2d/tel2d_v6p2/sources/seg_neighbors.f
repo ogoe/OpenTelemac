@@ -2,8 +2,7 @@
                         SUBROUTINE SEG_NEIGHBORS
 !                       ************************
 !
-     & ( XX,YY,IKLE ,NPOIN,
-     &   NVMAX,NELEM,NELMAX,NSEG, NEISEG)
+     &(XX,YY,IKLE,NPOIN,NVMAX,NELEM,NELMAX,NSEG,NEISEG)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6.2                                       18/06/11
@@ -14,12 +13,13 @@
 !  FUNCTION  : INSPIRED FROM INFCEL.F
 !
 !              SEG_NEIGHBOUR: TABLE (NSEG,2) THAT CONTAINS THE RIGTH AND
-!                            LEFT NEIGHBOUR SEGMENTS OF A GIVEN SEGMENT
+!                             LEFT NEIGHBOUR SEGMENTS OF A GIVEN SEGMENT
 !                            (USEFUL FOR 2ND ORDRE RECONSTRUCTION OF FV)
 !
 !history  RIADH ATA (EDF R&D-LNHE)
 !+        07/15/2012
-!+
+!+        V6P2
+!+   First version.
 !
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +33,8 @@
 ! !________________|____|______________________________________________|
 !  MODE: -->( UNCHANGEABLE INPUT ),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
 !-----------------------------------------------------------------------
-!     - CALLINF SUBROUTINE(S) : HYD_WAF                             
+!
+!     - CALLING SUBROUTINE(S) : HYD_WAF                             
 ! 
 !***********************************************************************
 !
@@ -62,8 +63,6 @@
 !
       DOUBLE PRECISION EPS
       DOUBLE PRECISION UNSIX
-      DOUBLE PRECISION X1,Y1,X2,Y2,X3,Y3
-      DOUBLE PRECISION XS1,YS1,XS2,YS2
 !
       DOUBLE PRECISION a,NORMNUB,XNUB12,YNUB12
       DOUBLE PRECISION XM,YM,NORM_MNUBO1,NORM_MNUBO2,NORM_JM
@@ -71,7 +70,7 @@
       DOUBLE PRECISION MINANGLE,SINANGLE 
       INTEGER, DIMENSION(:,:,:), ALLOCATABLE :: JVOIS
 !
-      INTRINSIC ABS
+      INTRINSIC ABS,SQRT
 !
 !-----------------------------------------------------------------------
 !
@@ -104,9 +103,9 @@
 !
 !  -->  ORIENTATION.
 !
-      NEX (1) = 2
-      NEX (2) = 3
-      NEX (3) = 1
+      NEX(1) = 2
+      NEX(2) = 3
+      NEX(3) = 1
 !
 !      LOOP OVER ELEMENTS
 !     ***********************
@@ -116,15 +115,6 @@
         I1 = IKLE(IEL,1)
         I2 = IKLE(IEL,2)
         I3 = IKLE(IEL,3)
-!
-        X1 = XX( I1 )
-        Y1 = YY( I1 )
-!
-        X2 = XX( I2 )
-        Y2 = YY( I2 )
-!
-        X3 = XX( I3 )
-        Y3 = YY( I3 )
 !
         NU(1) = I1
         NU(2) = I2
@@ -158,7 +148,7 @@
 !  -->    CONSTRUCTION OF EDGES AND NEIGHBORS.
 !
           ISEG = ISEG + 1
-
+!
           JVOIS(IS2,KV2,1) = IS1
           JVOIS(IS1,KV1,2) = ISEG
           JVOIS(IS2,KV2,2) = ISEG
@@ -168,7 +158,7 @@
           NUBO (2, ISEG) = IS2
 !
           UNSIX = ABS(UNSIX)
-
+!
           GO TO 48
 !
  44       CONTINUE
@@ -198,20 +188,14 @@
         NUB1 = NUBO(1,ISEG)
         IF(NUB1.LT.0) THEN
 !
-!           THIS IS A BOUNDARY EDGE
+!        THIS IS A BOUNDARY EDGE
 !
           NUBO(1,ISEG) = - NUBO(1,ISEG)
           IS1=NUBO(1,ISEG)
           IS2=NUBO(2,ISEG)
 !
-         XS1 = XX(IS1)
-         YS1 = YY(IS1)
-         XS2 = XX(IS2)
-         YS2 = YY(IS2)
-!
         ENDIF
 50    CONTINUE
-
 !
 !---------------------------------------------------------------------
 !
@@ -221,7 +205,6 @@
 !    WHICH ARE STOCKED IN THE VECTOR JVOIS(I,NVMAX,1)
 !    THESE NEIGNBOURS J ARE LINKED TO I VIA THE SEGMENTS STOCKED IN THE VECTOR 
 !    JVOIS(I,NVMAX,2)
-
 !
 ! 
 !    INITIALISATION 
@@ -238,7 +221,7 @@
          XNUB12 = XX(NUBO2)-XX(NUBO1)
          YNUB12 = YY(NUBO2)-YY(NUBO1)
 !        ITS NORM
-         NORMNUB =DSQRT(XNUB12**2 + YNUB12**2)
+         NORMNUB =SQRT(XNUB12**2 + YNUB12**2)
          IF(NORMNUB.LE.EPS) THEN
              WRITE(LU,*)'PROBLEM: SEGMENT LENGTH =0'
              WRITE(LU,*)'WE ARE IN SEG_NEIGHBORS.F'
@@ -246,13 +229,14 @@
              WRITE(LU,*)'NODES ARE  :',NUBO1,NUBO2
              CALL PLANTE(1)
              STOP
-          ENDIF
+         ENDIF
 !        INITALIALIZE MINANGLE
          MINANGLE = 1.E10
 !
 !        LET'S START WITH NUBO1
 !
-!        LET'S RECUPERATE ITS NEIGHBORS
+!        LET'S RETRIEVE ITS NEIGHBORS
+!
           DO NV1= 1,NVMAX
              J   = JVOIS(NUBO1,NV1,1)
              NSG = JVOIS(NUBO1,NV1,2)
@@ -267,9 +251,9 @@
                XM = XX(NUBO1) + a*XNUB12
                YM = YY(NUBO1) + a*YNUB12
 !              NORM OF MNUBO1 AND MNUBO2
-               NORM_MNUBO1 = DSQRT((XM-XX(NUBO1))**2 + 
+               NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
      &                             (YM-YY(NUBO1))**2)
-               NORM_MNUBO2 = DSQRT((XM-XX(NUBO2))**2 + 
+               NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
      &                             (YM-YY(NUBO2))**2)
 !              MAKE THE DECISION: THE FOLLOWING "IF" ELIMINATES THE CASES:
 !                               1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
@@ -277,9 +261,9 @@
                IF((NORM_MNUBO1+NORM_MNUBO2).GE.NORMNUB
      &       .AND. NORM_MNUBO2.GE.NORM_MNUBO1) THEN
 !                 NORM OF JM
-                  NORM_JM= DSQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
+                  NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
 !                 NORM OF JNUBO1
-                  NORM_JNUBO1 = DSQRT((XX(J)-XX(NUBO1))**2 + 
+                  NORM_JNUBO1 = SQRT((XX(J)-XX(NUBO1))**2 + 
      &                                (YY(J)-YY(NUBO1))**2) 
 !                 SIN OF THETA
                   SINANGLE = NORM_JM/(NORM_JNUBO1+EPS)
@@ -292,7 +276,7 @@
              ENDIF
           ENDDO
 !
-!           DO THE SAME FOR NUBO2
+!         DO THE SAME FOR NUBO2
 !
 !        INITALIALIZE MINANGLE
          MINANGLE = 1.E10
@@ -311,9 +295,9 @@
                XM = XX(NUBO1) + a*XNUB12
                YM = YY(NUBO1) + a*YNUB12
 !              NORM OF MNUBO1 AND MNUBO2
-               NORM_MNUBO1 = DSQRT((XM-XX(NUBO1))**2 + 
+               NORM_MNUBO1 = SQRT((XM-XX(NUBO1))**2 + 
      &                             (YM-YY(NUBO1))**2)
-               NORM_MNUBO2 = DSQRT((XM-XX(NUBO2))**2 + 
+               NORM_MNUBO2 = SQRT((XM-XX(NUBO2))**2 + 
      &                             (YM-YY(NUBO2))**2)
 !              MAKE THE DECISION: THE FOLLOWING IF ELIMINATES THE CASES:
 !                               1- WHERE M IS BETWEEN NUB1 AND NUB2(N1--M--N2)
@@ -321,9 +305,9 @@
                IF((NORM_MNUBO1+NORM_MNUBO2).GE.NORMNUB
      &           .AND.NORM_MNUBO1.GE.NORM_MNUBO2)THEN
 !                 NORM OF JM
-                  NORM_JM= DSQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
+                  NORM_JM= SQRT((XX(J)-XM)**2 + (YY(J)-YM)**2) 
 !                 NORM OF JNUBO2
-                  NORM_JNUBO2 = DSQRT((XX(J)-XX(NUBO2))**2 + 
+                  NORM_JNUBO2 = SQRT((XX(J)-XX(NUBO2))**2 + 
      &                                (YY(J)-YY(NUBO2))**2) 
 !                 SIN OF THETA
                   SINANGLE = NORM_JM/(NORM_JNUBO2+EPS)
