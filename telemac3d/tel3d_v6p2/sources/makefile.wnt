@@ -198,7 +198,7 @@ libprofile:
 
 #------- Modules
 #
-MODS = declarations_telemac3d.obj interface_telemac3d.obj
+MODS = declarations_telemac3d.obj interface_telemac3d.obj exchange_with_atmosphere.obj
 
 declarations_telemac3d.obj:
     $(F90) $(F90_PROJ) declarations_telemac3d.f
@@ -211,3 +211,9 @@ interface_telemac3d.obj:
     if EXIST $(DIRINC)\interface_telemac3d.mod del /f $(DIRINC)\interface_telemac3d.mod
 	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move interface_telemac3d.mod $(DIRINC)
+
+exchange_with_atmosphere.obj:
+    $(F90) $(F90_PROJ) exchange_with_atmosphere.f  
+    if EXIST $(DIRINC)\exchange_with_atmosphere.mod del /f $(DIRINC)\exchange_with_atmosphere.mod
+	  if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+    move exchange_with_atmosphere.mod $(DIRINC)

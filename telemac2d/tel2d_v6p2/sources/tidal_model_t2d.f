@@ -111,7 +111,7 @@
 !
       IF(TIDALDB.EQ.1) THEN
         IF(TIDALBCGEN) THEN
-          IF(T2D_FILES(T2DBDD)%NAME.EQ.' ') THEN
+          IF(T2D_FILES(T2DBDD)%NAME(1:1).EQ.' ') THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'POUR GENERER LE FICHIER DES CONSTANTES'
               WRITE(LU,*) 'HARMONIQUES POUR LA BASE DE DONNEES DE JMJ,'
@@ -126,7 +126,7 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-          IF(T2D_FILES(T2DTID)%NAME.EQ.' ') THEN
+          IF(T2D_FILES(T2DTID)%NAME(1:1).EQ.' ') THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'POUR GENERER LE FICHIER DES CONSTANTES'
               WRITE(LU,*) 'HARMONIQUES POUR LA BASE DE DONNEES DE JMJ,'
@@ -140,7 +140,7 @@
             CALL PLANTE(1)
             STOP
           ENDIF
-          IF(T2D_FILES(T2DHAR)%NAME.EQ.' ') THEN
+          IF(T2D_FILES(T2DHAR)%NAME(1:1).EQ.' ') THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'DONNER LE FICHIER DES CONSTANTES HARMONIQUES'
             ENDIF
@@ -159,7 +159,7 @@
      &                       T2D_FILES(T2DHAR)%LU,XSHIFT,YSHIFT,BETA)
         ENDIF
 !
-        IF(T2D_FILES(T2DHAR)%NAME.EQ.' ') THEN
+        IF(T2D_FILES(T2DHAR)%NAME(1:1).EQ.' ') THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'DONNER LE FICHIER DES CONSTANTES HARMONIQUES.'
           ENDIF
@@ -188,7 +188,7 @@
      &                      MARDAT,MARTIM,T2D_FILES,T2DBB1,T2DBB2,
      &                      X,Y,GEOSYST,NUMZONE,LAMBD0,PHI0,INTMICON)
       ELSEIF(TIDALDB.EQ.3) THEN
-        IF(T2D_FILES(T2DHAR)%NAME.EQ.' ') THEN
+        IF(T2D_FILES(T2DHAR)%NAME(1:1).EQ.' ') THEN
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'DONNER LE FICHIER DES CONSTANTES HARMONIQUES.'
           ENDIF
