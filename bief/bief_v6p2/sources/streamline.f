@@ -958,7 +958,7 @@
 !        AND WE SKIP TO NEXT POINT IPLOT (CYCLE)
          IF(IEL.EQ.0) THEN
            ELT(IPLOT)=1
-           ETA(IPLOT)=0
+           ETA(IPLOT)=1
            SHP(1,IPLOT)=0.D0
            SHP(2,IPLOT)=0.D0
            SHP(3,IPLOT)=0.D0
