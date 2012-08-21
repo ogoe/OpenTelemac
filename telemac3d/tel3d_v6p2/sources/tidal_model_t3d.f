@@ -111,6 +111,45 @@
 !
       IF(TIDALDB.EQ.1) THEN
         IF(TIDALBCGEN) THEN
+          IF(T3D_FILES(T3DBDD)%NAME.EQ.' ') THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'POUR GENERER LE FICHIER DES CONSTANTES'
+              WRITE(LU,*) 'HARMONIQUES POUR LA BASE DE DONNEES DE JMJ,'
+              WRITE(LU,*) 'DONNER LE FICHIER'
+              WRITE(LU,*) 'BASE ASCII DE DONNEES DE MAREE.'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'TO GENERATE THE HARMONIC CONTANTS FILE'
+              WRITE(LU,*) 'FOR JMJ DATA BASE, PLEASE GIVE'
+              WRITE(LU,*) 'ASCII DATABASE FOR TIDE FILE.'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(T3D_FILES(T3DTID)%NAME.EQ.' ') THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'POUR GENERER LE FICHIER DES CONSTANTES'
+              WRITE(LU,*) 'HARMONIQUES POUR LA BASE DE DONNEES DE JMJ,'
+              WRITE(LU,*) 'DONNER LE FICHIER DU MODELE DE MAREE.'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'TO GENERATE THE HARMONIC CONTANTS FILE'
+              WRITE(LU,*) 'FOR JMJ DATA BASE, PLEASE GIVE'
+              WRITE(LU,*) 'THE TIDAL MODEL FILE'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(T3D_FILES(T3DHAR)%NAME.EQ.' ') THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'DONNER LE FICHIER DES CONSTANTES HARMONIQUES'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) 'PLEASE GIVE THE HARMONIC CONTANTS FILE.'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
           CALL BORD_TIDAL_BC(MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
      &                       NPTFR2,KENT,KENTU,
      &                       MESH2D,GEOSYST,NUMZONE,LATIT,LONGIT,
@@ -120,6 +159,16 @@
      &                       T3D_FILES(T3DHAR)%LU,XSHIFT,YSHIFT,BETA0)
         ENDIF
 !
+        IF(T3D_FILES(T3DHAR)%NAME.EQ.' ') THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'DONNER LE FICHIER DES CONSTANTES HARMONIQUES.'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'PLEASE GIVE THE HARMONIC CONTANTS FILE.'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         CALL BORD_TIDE(ZF%R,MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
      &                 NPOIN2,NPTFR2,AT,DT,NCOTE,NVIT,
      &                 NUMLIQ%I,KENT,KENTU,
@@ -139,6 +188,16 @@
      &                      MARDAT,MARTIM,T3D_FILES,T3DBB1,T3DBB2,
      &                      X,Y,GEOSYST,NUMZONE,LATIT,LONGIT,INTMICON)
       ELSEIF(TIDALDB.EQ.3) THEN
+        IF(T3D_FILES(T3DHAR)%NAME.EQ.' ') THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'DONNER LE FICHIER DES CONSTANTES HARMONIQUES.'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'PLEASE GIVE THE HARMONIC CONTANTS FILE.'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         CALL BORD_TIDE_LEGOS(ZF%R,MESH2D%NBOR%I,LIHBOR%I,LIUBOL%I,
      &                       NPOIN2,NPTFR2,AT,DT,NCOTE,NVIT,
      &                       NUMLIQ%I,KENT,KENTU,

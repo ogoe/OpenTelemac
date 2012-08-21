@@ -25,10 +25,10 @@ REFERENCE FILE                     : r2d_tide-jmj_real_gen.slf
 /COMPUTATION CONTINUED                           : NO
 VARIABLES FOR GRAPHIC PRINTOUTS                 : 'U,V,H,S,M'
 /VARIABLES TO BE PRINTED                        : ''
-TIME STEP                                       : 6.
-NUMBER OF TIME STEPS                            : 7500
-GRAPHIC PRINTOUT PERIOD                         : 150
-LISTING PRINTOUT PERIOD                         : 1500
+TIME STEP                                       : 60.
+NUMBER OF TIME STEPS                            : 750
+GRAPHIC PRINTOUT PERIOD                         : 15
+LISTING PRINTOUT PERIOD                         : 150
 MASS-BALANCE                                    : YES
 /
 /----------------------------------------------------------------------/
@@ -80,7 +80,7 @@ CORIOLIS COEFFICIENT                            : 1.10E-4
 /
 DISCRETIZATIONS IN SPACE                        : 11 ; 11 
 MATRIX STORAGE                                  : 3
-FREE SURFACE GRADIENT COMPATIBILITY             : 0.9
+FREE SURFACE GRADIENT COMPATIBILITY             : 0.5
 /
 TREATMENT OF THE LINEAR SYSTEM                  : 2
 /

@@ -66,7 +66,7 @@ SCHEME FOR ADVECTION OF DEPTH                   : 5
 SUPG OPTION                                     : 0;0
 NON-HYDROSTATIC VERSION                         : YES
 MATRIX STORAGE                                  : 3
-FREE SURFACE GRADIENT COMPATIBILITY             : 0.9
+FREE SURFACE GRADIENT COMPATIBILITY             : 0.5
 TREATMENT OF FLUXES AT THE BOUNDARIES           : 1;1
 /
 ACCURACY FOR DIFFUSION OF VELOCITIES            : 1.E-6
