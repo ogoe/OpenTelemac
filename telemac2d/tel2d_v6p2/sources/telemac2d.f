@@ -406,7 +406,7 @@
 !  CHANGES FROM GLOBAL TO LOCAL IN LIST OF POINTS IN PARALLEL
 !-----------------------------------------------------------------------
 !
-      IF(NPTS.GT.0.AND.NCSIZE.GT.0) THEN
+      IF(NPTS.GT.0.AND.NCSIZE.GT.1) THEN
         DO I=1,NPTS
           LIST_PTS(I)=MESH%KNOGL%I(LIST_PTS(I))
         ENDDO

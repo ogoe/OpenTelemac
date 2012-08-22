@@ -152,7 +152,7 @@
             WRITE(LU,*) ' '
             DO N=1,NPTS
 !             IN PARALLEL POINT DOES NOT ALWAYS EXIST, MAYBE ELSEWHERE
-              IF(NCSIZE.GT.0) THEN
+              IF(NCSIZE.GT.1) THEN
                 WRITE(LU,*) NAME_PTS(N),' : ',
      &                    P_DMIN(VARSOR%ADR(I)%P%R(LIST_PTS(N)))+
      &                    P_DMAX(VARSOR%ADR(I)%P%R(LIST_PTS(N)))
