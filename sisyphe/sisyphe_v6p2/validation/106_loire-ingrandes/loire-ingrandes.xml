@@ -21,7 +21,7 @@
 --> 
    <action xref="1"
        do="translate;compile;run;cas;princi"
-       code="telemac2d" target="sis_loire-ingrandes.cas"
+       code="telemac2d" target="t2d_loire-ingrandes.cas"
        title="loire-ingrandes T2D+SIS"
    /> 
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
