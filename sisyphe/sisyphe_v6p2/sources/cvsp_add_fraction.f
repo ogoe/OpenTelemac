@@ -1,6 +1,6 @@
-!                    ************************
+!                    ****************************
                      SUBROUTINE CVSP_ADD_FRACTION
-!                    ************************
+!                    ****************************
 !
      &(J, I, dZFCL, EVL)
 !
@@ -19,7 +19,7 @@
 !| dZFCL          |<--| EVOLUTION of FRACTION I [m]
 !| EVL            |<--| EVOLUTION of all FRACTIONS [m]
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
       USE DECLARATIONS_SISYPHE
 !
       IMPLICIT NONE
@@ -28,17 +28,17 @@
       doUBLE PRECISION, INTENT(IN)    :: dZFCL
       doUBLE PRECISION, INTENT(IN)    :: EVL
 
-      doubleprecision STR_OLD, STR_NEW, temp1, temp2, AT
+      double precision STR_OLD, STR_NEW, temp1, temp2, AT
       integer II
       logical ret, CVSP_CHECK_F
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
         AT = DT*LT/PERCOU
-
+!
     ! Makes sure that there is no influence on the profile points below
     ! By inserting a section with 0 strength if it doesn't exist already
-
+!
        !Checks for breakpoint (= 0 strength)
           if (PRO_MAX(J).gt.2) then
           if (PRO_D(J,PRO_MAX(J)-1,1).gt.PRO_D(J,PRO_MAX(J)-2,1)) Then
@@ -100,7 +100,7 @@
         endif
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-        RETURN
+      RETURN
       END SUBROUTINE CVSP_ADD_FRACTION
 
 

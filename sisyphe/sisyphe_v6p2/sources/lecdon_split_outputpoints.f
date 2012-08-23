@@ -1,11 +1,11 @@
-!     *****************
-      SUBROUTINE LECDON_SPLIT_OUTPUTPOINTS
-!     *****************
+!                 ************************************
+                  SUBROUTINE LECDON_SPLIT_OUTPUTPOINTS
+!                 ************************************
 !
-     &     ( INT_LIST, POINT_ARRAY, FULLOUTPUT)
+     &(INT_LIST, POINT_ARRAY, FULLOUTPUT)
 !
 !***********************************************************************
-!     BIEF   V6P1                                   21/08/2010
+! SISYPHE   V6P2                                  21/08/2010
 !***********************************************************************
 !
 !brief    SPLITS A LIST OF INTEGERS and RETURNS AN ARRAY WITH THEM
@@ -21,11 +21,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!
-      CHARACTER*(*), INTENT(INOUT) :: INT_LIST
+      CHARACTER(LEN=*), INTENT(INOUT) :: INT_LIST
       INTEGER, INTENT(INOUT) :: POINT_ARRAY(100)
       LOGICAL, INTENT(INOUT) :: FULLOUTPUT
 !
@@ -48,7 +49,7 @@
       C(2) = '|'
       LONG = LEN(INT_LIST)
       if (LONG.EQ.0) THEN
-        print *, 'Lecdon_SPLIT String Error'
+        WRITE(LU,*) 'Lecdon_SPLIT String Error'
         call PLANTE(1)
         STOP
       endif
@@ -81,22 +82,18 @@
       GOTO 10
 !
 30    CONTINUE
-
 !
 !     Builds The POINT_ARRAY
 !
-        FULLOUTPUT = .FALSE.
-        do J=1,100
-            POINT_ARRAY(J) = -1
-        enddo
-        do J=1,NMOT
-            Read(Mot(j),* ) POINT_ARRAY(j)
-            !Print *, 'UHM_SPLIT_: ', J, POINT_ARRAY(J)
-            if (POINT_ARRAY(J).eq.0) FULLOUTPUT = .TRUE.
-        enddo
-
-
-
+      FULLOUTPUT = .FALSE.
+      do J=1,100
+        POINT_ARRAY(J) = -1
+      enddo
+      do J=1,NMOT
+        Read(Mot(j),* ) POINT_ARRAY(j)
+        if (POINT_ARRAY(J).eq.0) FULLOUTPUT = .TRUE.
+      enddo
+!
 !-----------------------------------------------------------------------
 !
       RETURN

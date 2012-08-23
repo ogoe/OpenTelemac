@@ -66,7 +66,7 @@
       INTEGER, INTENT(IN)          :: IKLE(NELMAX,*)
       INTEGER, INTENT(IN)          :: CTRLSC(NCP),KNOGL(*)
       DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),TPS,DT
-       LOGICAL, INTENT(IN)          :: INFO,SUSP,CHARR
+      LOGICAL, INTENT(IN)          :: INFO,SUSP,CHARR
       TYPE(BIEF_OBJ), INTENT(IN)   :: U,V,H,QSXC,QSYC,QSXS,QSYS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

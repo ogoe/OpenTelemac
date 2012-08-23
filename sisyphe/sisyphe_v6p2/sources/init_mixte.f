@@ -1,3 +1,6 @@
+! Changement de l'appel a init_compo_coh: le nombre de couches est fixe 
+! Test pour assurer que la somme des couches = ZF-ZR
+! Calcul du bilan de masse initial
 !                    *********************
                      SUBROUTINE INIT_MIXTE
 !                    *********************

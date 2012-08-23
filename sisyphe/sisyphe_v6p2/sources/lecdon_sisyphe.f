@@ -1,3 +1,4 @@
+!CV verrouillafez options pour sediments mixte
 !                    *************************
                      SUBROUTINE LECDON_SISYPHE
 !                    *************************
@@ -972,6 +973,13 @@ C       FILLS VOIDS WITH MUD:
 C CV: vérifier que la concentration en cohésif est non nulle
 C
         CSF_SABLE= 1.D0
+CV: verrouiller les options
+        NSICLA=2
+        SEDCO(1)=.FALSE.
+        SEDCO(2)=.TRUE.
+        CHARR=.FALSE.
+        SUSP=.TRUE.
+CV
       ELSE
         CSF_SABLE= (1.D0-XKV)
       ENDIF
