@@ -117,7 +117,7 @@
 ! 
          DO J=1,NPOIN 
 !
-	    ELAY(J)=ZF(J)-ZR(J)
+           ELAY(J)=ZF(J)-ZR(J)
 !
 !
 !       THE HEIGHT OF SEDIMENT (SUM OF ES) MUST BE EQUAL TO ZF-ZR
@@ -169,7 +169,7 @@
                ELAY(I)=ELAY(I)+ES(I,J)
              ENDDO
            ELSE
-	      ELAY(I)=ES(I,1)
+             ELAY(I)=ES(I,1)
            ENDIF	   
 !
            DIFF= (ZF(I)-ZR(I)) - ELAY(I)
@@ -195,17 +195,17 @@
 !                = SUM (ES)
        DO I = 1, NPOIN
          EST=0.D0
-	 ELAY(I)= ZF(I)-ZR(I)
+         ELAY(I)= ZF(I)-ZR(I)
          DO J= 1, NOMBLAY
-	   EST=EST+ES(I,J)
-	 ENDDO
-	 DIFF=ABS(EST-ELAY(I))
-	 IF(DIFF.GT.1.D-08) THEN
-	    PRINT *,'ERREUR POINT I'   
+           EST=EST+ES(I,J)
+         ENDDO
+         DIFF=ABS(EST-ELAY(I))
+         IF(DIFF.GT.1.D-08) THEN
+            WRITE(LU,*) 'ERREUR POINT I'   
      *       , I, 'ELAY=',ELAY(I), 'EST=', EST
             CALL PLANTE(1)
-	    STOP
-	 ENDIF    
+            STOP
+         ENDIF    
        ENDDO          
 !
 !  COMPUTING THE INITIAL MASSES OF MUD AND SAND

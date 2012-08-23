@@ -158,13 +158,13 @@ C
 	   
 ! REACTUALISATION DU ELAY
       DO I = 1, NPOIN
-	ELAY(I)= 0.D0
+        ELAY(I)= 0.D0
         DO J= 1, NOMBLAY
-	   ELAY(I)=ELAY(I)+ES(I,J)
-	ENDDO 
+          ELAY(I)=ELAY(I)+ES(I,J)
+        ENDDO 
       ENDDO	   
 
-
+!
 !======================================================================!
 !======================================================================!
 !
