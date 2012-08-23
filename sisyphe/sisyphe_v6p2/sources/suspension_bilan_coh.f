@@ -1,6 +1,4 @@
-! NOUVELLE SUBROUTINE : CALCUL DU BILAN EN MASSE EN COHESIF
-! 
-!     		      ***************************
+!     		     ***************************
                      SUBROUTINE SUSPENSION_BILAN_COH
 !                    ***************************
 !
@@ -11,62 +9,15 @@
      &  VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P2                                   22/08/2011
 !***********************************************************************
 !
-!brief    MASS-BALANCE FOR THE SUSPENSION.
+!brief    MASS-BALANCE FOR THE COHESIVE.
 !
-!history  C. MOULIN (LNH)
-!+        13/12/2000
-!+        V5P1
-!+
-!
-!history  M. GONZALES DE LINARES
-!+        **/05/2003
-!+        V5P4
-!+
-!
-!history  F. HUVELIN
-!+        22/12/2004
-!+        V5P6
-!+
-!
-!history  J-M HERVOUET
-!+        29/10/2007
-!+        V5P8
-!+   CORRECTIONS IN PARALLEL MODE
-!
-!history
-!+        05/05/2008
-!+
-!+   COMPUTES THE MASS ACCOUNTING FOR MASS-LUMPING
-!
-!history
-!+        28/05/2008
-!+
-!+   FLUX GIVEN BY BOUNDARIES
-!
-!history
-!+        10/06/2008
-!+
-!+   TRACER FLUX GIVEN BY FLBORTRA (FROM CVDFTR)
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!history  C.VILLARET (EDF-LNHE), P.TASSI (EDF-LNHE)
+!history  C.VILLARET (EDF-LNHE)
 !+        19/07/2011
-!+        V6P1
-!+   Name of variables   
+!+        V6P2
+!+   New subroutine: mass balance for cohesive sediments   
 !+   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
