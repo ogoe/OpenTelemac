@@ -51,6 +51,13 @@
 !+        V6P2
 !+   Rain taken into account on prescribed depths to compute FLUEXT.  
 !
+!history  J-M HERVOUET(LNHE)
+!+        23/08/2012
+!+        V6P2
+!+   Call of FLUX3DLIM with extended cases (OPT_HNEG=2) to have a better
+!+   FLUINT that is consistent with the new continuity equation after a
+!+   call to positive_depths.  
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BYPASS         |---| IF YES, BYPASS VOID VOLUMES
 !| DM1            |-->| THE PIECE-WISE CONSTANT PART OF ADVECTION FIELD
@@ -176,15 +183,19 @@
       ENDIF
 !
 !     COMPUTING POINT TO POINT FLUXES:
-!     FOR ADVECTION SCHEMES ADV_LEO OR ADV_LEO_TF
+!     FOR ADVECTION SCHEMES ADV_LEO OR ADV_LEO_TF, TO HAVE FLODEL
+!     OR IN CASE THERE IS A LIMITATION WITH FLULIM (OPT_HNEG=2) BECAUSE
+!     IN THAT CASE A NEW FLUINT CONSISTENT WITH THE NEW CONTINUITY
+!     EQUATION MUST BE BUILT
 !
 !     HERE THE CONVENTION FOR SEGMENTS, DUE TO THE CHOICE OF FLUINT, IS
 !     THAT A SEGMENT WITH POSITIVE FLUX IS MEANT WITH A FLOW FROM POINT 2
 !     TO POINT 1.
 !
 !     NOT YET DONE FOR TETRAHEDRA
+      IF(IELM3.EQ.41) THEN
 !
-      IF(IELM3.EQ.41.AND.YACVVF) THEN
+      IF(YACVVF.OR.OPT_HNEG.EQ.2) THEN
 !
         IOPT=2
 !       BEWARE, WITH IELM3=51 RETURNS FLODEL IN 2D
@@ -203,6 +214,8 @@
           CALL ASSEG_3D(FLODEL%R,FLUINT%R,NPOIN3,NPLAN,MESH2%NSEG,
      &                  MESH3%GLOSEG%I,MESH3%GLOSEG%DIM1,.TRUE.)
         ENDIF
+!
+      ENDIF
 !
       ENDIF
 !
