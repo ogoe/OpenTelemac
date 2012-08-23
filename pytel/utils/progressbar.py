@@ -11,6 +11,10 @@
  /    `-'|    www.hrwallingford.com         innovation.edf.com   |    )  )  )
 !________!                                                        `--'   `--
 """
+"""@history 23/08/2012 -- Fabien Decung:
+         Only show bar in terminals by default
+         (better for Jenkins console outputs)
+"""
 """@history 13/12/2011 -- Sebastien E. Bourban:
          Modifying the good work of Nilton Volpato to apply it to the
          TELEMAC system
@@ -65,6 +69,16 @@ import signal
 #    abstractmethod = lambda fn: fn
 #else:
 #    AbstractWidget = ABCMeta('AbstractWidget', (object,), {})
+
+# FD@EDF : idea taken from Dendright from Clint module
+# Only show bar in terminals by default
+# (better for Jenkins console outputs, piping, logging etc.)
+# However it is said that sys.stderr may not always support .isatty(),
+# e.g. when it has been replaced by something that partially implements the File interface
+try:
+    hide_default = not sys.stderr.isatty()
+except AttributeError: # output does not support isatty()
+    hide_default = True
 
 class UnknownLength: pass
 
@@ -440,12 +454,13 @@ class ProgressBar(object):
       if not self.start_time: self.start_time = time.time()
       self.seconds_elapsed = time.time() - self.start_time
       self.prev_percentage = self.percentage()
-      if value != self.maxval:
-          self.fd.write(self._format_line() + carriage)
-      else:
-          self.finished = True
-          self.fd.write(' '*79+'\r') # /!\ remove the progress bar from display
-          #self.fd.write(self._format_line() + '\n') or with carriage
+      if not hide_default:
+          if value != self.maxval:
+              self.fd.write(self._format_line() + carriage)
+          else:
+              self.finished = True
+              self.fd.write(' '*79+'\r') # /!\ remove the progress bar from display
+              #self.fd.write(self._format_line() + '\n') or with carriage
 
    def write(self, str, value):
       "Move the progress bar along."
