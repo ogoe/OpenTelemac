@@ -173,10 +173,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        10/08/2012
+!+        23/08/2012
 !+        V6P2
-!+   Dimensions changed in declarations and allocation. Size of ISP
-!+   doubled in non symmetric cases.
+!+   Size of ISP doubled in non symmetric cases.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DA             |-->| MATRIX DIAGONAL COEFFICIENTS
@@ -289,12 +288,12 @@
       ENDIF
 !
       IF(SIZE_ISEGIP.EQ.0) THEN
-        ALLOCATE(ISEGIP(NSEGBLK*2))
-        SIZE_ISEGIP=    NSEGBLK*2
-      ELSEIF(           NSEGBLK*2.GT.SIZE_ISEGIP) THEN
+        ALLOCATE(ISEGIP(NSEGBLK*2+1))
+        SIZE_ISEGIP=    NSEGBLK*2+1
+      ELSEIF(           NSEGBLK*2+1.GT.SIZE_ISEGIP) THEN
         DEALLOCATE(ISEGIP)
-        ALLOCATE(ISEGIP(NSEGBLK*2))
-        SIZE_ISEGIP=    NSEGBLK*2
+        ALLOCATE(ISEGIP(NSEGBLK*2+1))
+        SIZE_ISEGIP=    NSEGBLK*2+1
       ENDIF
 !
       IF(SIZE_IW1.EQ.0) THEN
@@ -325,21 +324,21 @@
       ENDIF
 !
       IF(SIZE_IPX.EQ.0) THEN
-        ALLOCATE(IPX(NSEGBLK*2+NPBLK))
-        SIZE_IPX=    NSEGBLK*2+NPBLK
-      ELSEIF(        NSEGBLK*2+NPBLK.GT.SIZE_IPX) THEN
+        ALLOCATE(IPX(NSEGBLK*2+NPBLK+1))
+        SIZE_IPX=    NSEGBLK*2+NPBLK+1
+      ELSEIF(        NSEGBLK*2+NPBLK+1.GT.SIZE_IPX) THEN
         DEALLOCATE(IPX)
-        ALLOCATE(IPX(NSEGBLK*2+NPBLK))
-        SIZE_IPX=    NSEGBLK*2+NPBLK
+        ALLOCATE(IPX(NSEGBLK*2+NPBLK+1))
+        SIZE_IPX=    NSEGBLK*2+NPBLK+1
       ENDIF
 !
       IF(SIZE_AC.EQ.0) THEN
-        ALLOCATE(AC(NSEGBLK*2+NPBLK))
-        SIZE_AC=    NSEGBLK*2+NPBLK
-      ELSEIF(       NSEGBLK*2+NPBLK.GT.SIZE_AC) THEN
+        ALLOCATE(AC(NSEGBLK*2+NPBLK+1))
+        SIZE_AC=    NSEGBLK*2+NPBLK+1
+      ELSEIF(       NSEGBLK*2+NPBLK+1.GT.SIZE_AC) THEN
         DEALLOCATE(AC)
-        ALLOCATE(AC(NSEGBLK*2+NPBLK))
-        SIZE_AC=    NSEGBLK*2+NPBLK
+        ALLOCATE(AC(NSEGBLK*2+NPBLK+1))
+        SIZE_AC=    NSEGBLK*2+NPBLK+1
       ENDIF
 !
       IF(SIZE_ACTRI.EQ.0) THEN
@@ -389,19 +388,16 @@
 !     =======================================================================
 !
       CALL SD_STRSSD(NPBLK,NSEGBLK,GLOSEG(1,1),GLOSEG(1,2),
-     &               IN,IP,ISEGIP,IW1)     
+     &               IN,IP,ISEGIP,IW1)
 !
-!     JMH 10/08/2012: IN ALL CASES THE FULL SYSTEM IS BUILT, SO WHAT ??
-!
-!     IF(TYPEXT.EQ.'S') THEN
-!       CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
-!    &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA,DA,AC)
+      IF(TYPEXT.EQ.'S') THEN
+        CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
+     &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA,DA,AC)
 !                             ISTRI
-!     ELSE
+      ELSE
         CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
      &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA(NSEGBLK+1),DA,AC)
-!     ENDIF
-!
+      ENDIF
 !
 !     4. MINIMUM DEGREE PERMUTATION (YSMP PACKAGE)
 !     =======================================================================
@@ -437,7 +433,6 @@
       ENDIF
 !
       IF(TYPEXT.EQ.'S') THEN
-!
       IF(FLAG.NE.0) THEN
         IERR=FLAG-8*NPBLK
         IF(IERR.GT.0) THEN
@@ -460,7 +455,6 @@
         CALL PLANTE(1)
         STOP
       ENDIF
-!
       ELSE
 !
 !---> COMMENTS THE ERROR: FLAG_SD_NDRV:
@@ -477,30 +471,29 @@
 !            8N+K   ZERO PIVOT  --  ROW = K
 !           10N+1   INSUFFICIENT STORAGE IN NDRV
 !           11N+1   ILLEGAL PATH SPECIFICATION (INDIC)
-!
-        IF(FLAG.NE.0) THEN
-          IERR=INT(FLAG/NPBLK)
-          IF(IERR.EQ.3.OR.IERR.EQ.5.OR.IERR.EQ.8) THEN
-            IERRK=FLAG-IERR*NPBLK
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'MATRICE AVEC PIVOT NUL A LA LIGNE'
-              WRITE(LU,*) IERRK
-            ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'MATRIX WITH ZERO PIVOT AT ROW'
-              WRITE(LU,*) IERRK
-            ENDIF
-          ELSE
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'AUGMENTER LE FACTEUR MEMOIRE (MEMFACTOR)',
-     &                    ' DANS LE SOUS-PROGRAMME SD_SOLVE_1'
-            ELSEIF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'INCREASE THE MEMORY FACTOR (MEMFACTOR)',
-     &                    ' IN SUBROUTINE SD_SOLVE_1'
+      IF(FLAG.NE.0) THEN
+        IERR=INT(FLAG/NPBLK)
+        IF(IERR.EQ.3.OR.IERR.EQ.5.OR.IERR.EQ.8) THEN
+          IERRK=FLAG-IERR*NPBLK
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'MATRICE AVEC PIVOT NUL A LA LIGNE'
+            WRITE(LU,*) IERRK
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'MATRIX WITH ZERO PIVOT AT ROW'
+            WRITE(LU,*) IERRK
+          ENDIF
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'AUGMENTER LE FACTEUR MEMOIRE (MEMFACTOR)',
+     &                  ' DANS LE SOUS-PROGRAMME SD_SOLVE_1'
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'INCREASE THE MEMORY FACTOR (MEMFACTOR)',
+     &                  ' IN SUBROUTINE SD_SOLVE_1'
           ENDIF
         ENDIF
         CALL PLANTE(1)
         STOP
-        ENDIF
+      ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------
