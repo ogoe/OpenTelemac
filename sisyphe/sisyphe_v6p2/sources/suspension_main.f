@@ -77,6 +77,11 @@
 !+   updated version with HRW's development for Soulsby-van Rijn's concentration
 !+       V6P2    
 !
+!history  C. VILLARET
+!+        21/08/2012
+!+        V6P2
+!+    Added call variable to suspension_computation     
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -409,7 +414,7 @@
      & VCONV_TEL,SOLSYS,FLBOR_TEL,FLBOR_SIS,FLBORTRA,CODE,VOLU2D,
      & V2DPAR,UNSV2D,NUMLIQ,NFRLIQ,LICBOR,MIXTE,AVAIL,NSICLA,ES,
      & NOMBLAY,CONC_VASE,TOCE_VASE,TOCE_SABLE,
-     & FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS,DIRFLU,
+     & FLUER_VASE,TOCE_MIXTE,MS_SABLE%R,MS_VASE%R,TASS,DIRFLU,
      & QSCLXS%ADR(I)%P,QSCLYS%ADR(I)%P)
          IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_COMPUTATION'
 !

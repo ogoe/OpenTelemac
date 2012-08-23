@@ -3,7 +3,7 @@
 !                    **************************
 !
      &(ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES,
-     & CONC_VASE,NOMBLAY)
+     & CONC_VASE,NOMBLAY,ELAY)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -32,40 +32,46 @@
 !+        19/07/2011
 !+        V6P1
 !+   Name of variables   
-!+   
+!+ 
+!history  C.VILLARET (EDF-LNHE)
+!+        21/08/2012
+!+        V6P2
+!+   Added new input argument (ELAY)
+!+     
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CONC_VASE      |-->|  INPUT CONCENTRATION OF EACH LAYER (IN KG/M3)
-!| CSF            |-->|  SAND BED CONCENTRATION (NOT USED)
 !| DT             |-->| TIME STEP
+!| ELAY           |<->| TOTAl THICKNESS OF SEDIMENT BED
+!| ES             |<->| THICKNESS OF SEDIMENT BED LAYERS
 !| FLUDP          |<->| DEPOSITION FLUX
 !| FLUER          |<->| EROSION FLUX
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
-!| NOMBLAY    |-->| NUMBER OF VERTICAL BED LAYERS
+!| NOMBLAY        |-->| NUMBER OF VERTICAL BED LAYERS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| QFLUX          |---| NET EROSION MINUS DEPOSITION RATE
-!| SEDCO          |-->| LOGICAL, SEDIMENT COHESIVE OR NOT
 !| XMVS           |-->| WATER DENSITY
 !| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
+      USE INTERFACE_SISYPHE,EX_SUSPENSION_EVOL => SUSPENSION_EVOL
       USE BIEF
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
       ! 2/ GLOBAL VARIABLES
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: ZFCL_S,FLUDP,FLUER,QFLUX
-      DOUBLE PRECISION, INTENT(IN)    :: DT, XMVS
-      INTEGER, INTENT(IN) :: NPOIN,NOMBLAY
-      DOUBLE PRECISION, INTENT(IN) :: CONC_VASE(NOMBLAY)
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN,NOMBLAY)
-      DOUBLE PRECISION,  INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
+      TYPE (BIEF_OBJ),  INTENT(INOUT)   :: ZFCL_S,FLUDP,FLUER,QFLUX
+      DOUBLE PRECISION, INTENT(IN)      :: DT, XMVS
+      INTEGER, INTENT(IN)               :: NPOIN,NOMBLAY
+      DOUBLE PRECISION, INTENT(IN)      :: CONC_VASE(NOMBLAY)
+      DOUBLE PRECISION,  INTENT(INOUT)  :: MS_VASE(NPOIN,NOMBLAY)
+      DOUBLE PRECISION,  INTENT(INOUT)  :: ES(NPOIN,NOMBLAY)
+      DOUBLE PRECISION,   INTENT(INOUT) :: ELAY(NPOIN)
 !
       ! 3/ LOCAL VARIABLES
       ! ------------------
       INTEGER :: I,J
 !
-      DOUBLE PRECISION ZERO, MER
+      DOUBLE PRECISION ZERO, EVOL,DIFF
 !
 !======================================================================!
 !======================================================================!
@@ -74,77 +80,91 @@
 !======================================================================!
 !
        ZERO = 1.D-08
+
 ! 
 ! COMPUTES THE SEDIMENT FLUX DURING EACH TIMESTEP
 !  QFLUX IS IN KG/M2 (MUD CONC ARE ALSO IN KG/M3) 
 ! 
            CALL OS('X=Y-Z   ', X=QFLUX, Y=FLUDP, Z=FLUER)
-           CALL OS('X=CX    ', X=QFLUX, C=DT)
-           CALL OS('X=CX    ', X=QFLUX, C=XMVS)
+           CALL OS('X=CX    ', X=QFLUX, C=DT*XMVS)
+!
+!           PRINT*,'MASSE DEPOSEE: ', DOTS(QFLUX,VOLU2D)
 C
          IF(NOMBLAY.EQ.1)  THEN
-              CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX, 
-     &             C=1.D0/CONC_VASE(1))
+             CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX,C=1.D0/CONC_VASE(1))
+             DO I = 1, NPOIN
+               ES(I,1)= ES(I,1)+ZFCL_S%R(I)
+             ENDDO
 !
          ELSE
              DO I = 1, NPOIN
 !
 ! DEPOSITION IN THE FIRST LAYER
 !
-             IF (QFLUX%R(I).GT.ZERO) THEN
+             IF(QFLUX%R(I).GE.ZERO) THEN
                 ZFCL_S%R(I) = QFLUX%R(I) / CONC_VASE(1)
-                MS_VASE(I,1) = MS_VASE (I,1) +QFLUX%R(I)
-! correction LAV 26/08/2011
-                ES(I,1)= MS_VASE(I,1)/CONC_VASE(1)
-!
-              ELSEIF(QFLUX%R(I).LT.ZERO) THEN
+                ES(I,1)=ES(I,1)+ZFCL_S%R(I)
+             ELSEIF(QFLUX%R(I).LT.ZERO) THEN
 !
 ! EROSION OF SUCCESSIVE LAYERS
 !
 !
                 ZFCL_S%R(I) = 0.D0
-                MER = - QFLUX%R(I)
 !
                 DO J = 1, NOMBLAY
 !
 ! CONC ARE IN KG/M3
 !
-                 IF (MER.LE.MS_VASE(I,J)) THEN
-                   MS_VASE(I,J)= MS_VASE(I,J) - MER
-                   ZFCL_S%R(I)= ZFCL_S%R(I) - MER/CONC_VASE(J)
-                   ES(I,J)= MS_VASE(I,J)/CONC_VASE(J)
+                 IF(-QFLUX%R(I).LE.CONC_VASE(J)*ES(I,J)) THEN
+!                  Last layer to be eroded
+                   ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC_VASE(J)
+                   ES(I,J)=MAX(ES(I,J)+QFLUX%R(I)/CONC_VASE(J),0.D0)             
                    GO TO 40
-!
-                ELSE
-!
-! EROSION OF THE WHOLE LAYER
-!
-                   MER= MER - MS_VASE(I,J)
-                   ZFCL_S%R(I)= ZFCL_S%R(I) -ES(I,J)
-!     &                MS_VASE(I,J)/CONC_VASE(J)
-                   MS_VASE(I,J)=0.D0
+                 ELSE
+!                  EROSION OF THE WHOLE LAYER
+                   QFLUX%R(I)=QFLUX%R(I)+CONC_VASE(J)*ES(I,J)
+                   ZFCL_S%R(I)=ZFCL_S%R(I) - ES(I,J)
                    ES(I,J) = 0.D0
-! 
-               ENDIF
+                 ENDIF
 ! END OF THE LOOP ON THE LAYERS
-             ENDDO
+!
+               ENDDO
+!
+!
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'ATTENTION COUCHES VIDES: NOEUD I=',I
           ENDIF
           IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'BEWARE, ALL LAYERS EMPTY, NODE I=',I
           ENDIF
-!          CALL PLANTE(1)
-!          STOP
+          CALL PLANTE(1)
+          STOP
 ! END EROSION
           ENDIF
-!
-  40      CONTINUE
+   40     CONTINUE
 !
 ! END OF THE LOOP ON THE NODES
 !
         ENDDO
       ENDIF
+!
+!CV reactualisation des MS_VASE
+!
+           DO J = 1, NOMBLAY
+               DO I = 1, NPOIN
+                 MS_VASE(I,J)=CONC_VASE(J)*ES(I,J)
+               ENDDO
+           ENDDO
+	   
+! REACTUALISATION DU ELAY
+      DO I = 1, NPOIN
+	ELAY(I)= 0.D0
+        DO J= 1, NOMBLAY
+	   ELAY(I)=ELAY(I)+ES(I,J)
+	ENDDO 
+      ENDDO	   
+
+
 !======================================================================!
 !======================================================================!
 !

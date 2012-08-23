@@ -1,3 +1,8 @@
+! modif appel suspension_erosion_coh (simplification des arguments
+! arguments M_VASE est un tableau en double precision
+! modif de la limitation du Fluer en présence des fonds rigides
+! appel de suspension_bilan_coh
+! 
 !                    *********************************
                      SUBROUTINE SUSPENSION_COMPUTATION
 !                    *********************************
@@ -118,10 +123,18 @@
 !+        V6P2
 !+  Include CSRATIO
 !
-!history  PAT (LNHE)
+!history  PAT (P. TASSI) (EDF & LNHE)
 !+        18/06/2012
 !+        V6P2
 !+   updated version with HRW's development Soulsby-van Rijn's concentration
+!
+!history  C. VILLARET (EDF & LNHE)
+!+        18/06/2012
+!+        V6P2
+!+   modification call to suspension_erosion_coh (simplified)
+!+   arguments for M_VASE in double precision
+!+   modification for limitation of FLUER with rigid lid
+!+   calling to suspension_bilan_coh
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -309,7 +322,8 @@
       TYPE (BIEF_OBJ),  INTENT(IN), TARGET    :: HN,HN_TEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: UCONV,VCONV
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MU,KSP,KSR,KS
-      TYPE (BIEF_OBJ),  INTENT(IN)    :: TOB,ELAY,LICBOR
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: TOB,LICBOR
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: ELAY
       TYPE (BIEF_OBJ),  INTENT(IN)    :: AFBOR,BFBOR
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASKEL,MASKPT,IFAMAS
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: MASKTR,LIMDIF,CLT
@@ -322,6 +336,7 @@
       INTEGER,          INTENT(IN)    :: NUMLIQ(NFRLIQ)
       DOUBLE PRECISION, INTENT(IN)    :: CSF_VASE, TETA_SUSP, DT, MASED0
       DOUBLE PRECISION, INTENT(IN)    :: XWC,FDM,FD90
+! FD90
       DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE,AVA(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN, XMVE, XMVS,VCE, GRAV
       DOUBLE PRECISION, INTENT(IN)    :: VITCD,VITCE,PARTHENIADES,HMIN
@@ -340,10 +355,14 @@
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: ZFCL_S
       TYPE (BIEF_OBJ),  INTENT(IN)    :: UCONV_TEL,VCONV_TEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUDPT,FLUDP,FLUER,FLBORTRA
+!mak      TYPE (BIEF_OBJ),  INTENT(INOUT) :: HPROP, DISP_C, CSTAEQ
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: HPROP, DISP_C, CSTAEQ,CSRATIO
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUER_VASE,TOCE_MIXTE
-      TYPE (BIEF_OBJ),  INTENT(INOUT) :: MS_SABLE,MS_VASE,QSCLXS,QSCLYS
-      DOUBLE PRECISION, INTENT(INOUT) :: MASFIN,MASDEPT,MASDEP
+CV      TYPE (BIEF_OBJ),  INTENT(INOUT) :: MS_SABLE,MS_VASE,QSCLXS,QSCLYS
+      TYPE (BIEF_OBJ),  INTENT(INOUT)  :: QSCLXS,QSCLYS
+      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN, NOMBLAY)
+      DOUBLE PRECISION,  INTENT(INOUT) :: MS_SABLE(NPOIN, NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT)  :: MASFIN,MASDEPT,MASDEP
       DOUBLE PRECISION, INTENT(IN)    :: ZERO
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
@@ -369,6 +388,9 @@
       LOGICAL          :: YASMI2,YAFLULIM
       TYPE (BIEF_OBJ),  POINTER :: HOLD
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_UCONV,SAVE_VCONV
+! Ajout CV
+      DOUBLE PRECISION :: MSTOT
+      INTEGER 	       ::J
 !
 !     IN CHARAC IELMT IS INTENT(INOUT)
       IELMT=IELM
@@ -514,17 +536,34 @@
 !       MUD ONLY 
 !
         ELSE
-          CALL SUSPENSION_EROSION_COH(T4,NPOIN,XMVE,XMVS,GRAV,VITCE,
-     &                                PARTHENIADES,ZERO, DEBUG,
-     &                                FLUER,ES,TOCE_VASE,NOMBLAY,
-     &                                DT,MS_VASE%R,TASS)
-! attention only Good if NOMBLAY = 1
-          IF(.NOT.TASS) THEN
+!  CV : debut modifs
+!        CALL SUSPENSION_EROSION_COH(T4,NPOIN,XMVE,XMVS,GRAV,
+!     &                                PARTHENIADES,ZERO, DEBUG,
+!     &                                FLUER,ES,TOCE_VASE,NOMBLAY,
+!     &                                DT,MS_VASE%R,TASS)
+!        IF(NOMBLAY.EQ.1) THEN
+!             DO I=1,NPOIN
+!              FLUER%R(I)=MIN(FLUER%R(I),MS_VASE(I,1)/DT/XMVS)
+!            ENDDO
+!        ENDDO
+           CALL SUSPENSION_EROSION_COH(T4,NPOIN,XMVS,
+     &                      PARTHENIADES,ZERO,FLUER,
+     &                      TOCE_VASE,NOMBLAY,DT,MS_VASE)
+! 
+           IF(NOMBLAY.EQ.1) THEN
+             DO I=1,NPOIN
+              FLUER%R(I)=MIN(FLUER%R(I),MS_VASE(I,1)/DT/XMVS)
+            ENDDO
+          ELSE
             DO I=1,NPOIN
-              FLUER%R(I)=MIN(FLUER%R(I),ELAY%R(I)*CONC_VASE(1)/DT/XMVS)
+              MSTOT=0.D0   
+              DO J=1,NOMBLAY
+                MSTOT=MSTOT+MS_VASE(I,J)
+              ENDDO
+              FLUER%R(I)=MIN(FLUER%R(I),MSTOT/DT/XMVS)
             ENDDO
           ENDIF
-        ENDIF
+         ENDIF
 !
 !       MIXED SEDIMENT
 !       FIRST CLASS= SAND, SECOND CLASS = MUD
@@ -539,8 +578,8 @@
      &                               ZREF,AC,CSTAEQ,QS_C,ICQ,DEBUG,
      &                               AVAIL,NSICLA,ES,TOCE_VASE,
      &                               TOCE_SABLE,NOMBLAY,
-     &                               DT,TOCE_MIXTE%R,MS_SABLE%R,
-     &                               MS_VASE%R)
+     &                               DT,TOCE_MIXTE%R,MS_SABLE,
+     &                               MS_VASE)
           IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_FLUX_MOY'
         ENDIF
         IF(SEDCO) CALL OS('X=Y     ',X=FLUER, Y=FLUER_VASE)
@@ -712,6 +751,7 @@
       ENDIF
 !
       IF (DEBUG > 0) WRITE(LU,*) 'APPEL DE CVDFTR'
+!      
       CALL CVDFTR
      & (CST, CTILD, CS, T2,
 !                            H         HTILD
@@ -746,16 +786,14 @@
 !     COMPUTES EVOLUTION AND UPDATES DATA
 !     TASS TO BE PASSED IN ARGUMENT
 !
-!    CV: Cela n'est pas correct pour les sediments mixtes
-!         SUSPENSION_EVOL est a revoir
-!
+       
        IF(.NOT.SEDCO) THEN
          CALL OS('X=Y-Z   ', X=ZFCL_S, Y=FLUDP, Z=FLUER)
          CALL OS('X=CX    ', X=ZFCL_S, C=DT/CSF_SABLE)
        ELSE
          CALL SUSPENSION_EVOL(ZFCL_S,FLUDP,FLUER,DT,
-     &                        NPOIN,XMVS,T3,MS_VASE%R,ES,
-     &                        CONC_VASE,NOMBLAY)
+     &                       NPOIN,XMVS,T3,MS_VASE,ES,
+     &                   CONC_VASE,NOMBLAY,ELAY%R)
        ENDIF
 !
 !     WRITES OUT THE MIN/MAX VALUES TO THE LISTING
@@ -765,21 +803,32 @@
         CALL SUSPENSION_LISTING(MESH,CST,ZFCL_S,UCONV,VCONV,
      &                          MASKEL,IELMT,DT,MSK,T1)
         IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_LISTING'
-      ENDIF
+      ENDIF 
 !
 !     MASS-BALANCE FOR THE SUSPENSION
 !
       IF(BILMA) THEN
-        IF(SEDCO) CSF = CONC_VASE(1)/XMVS
-        IF(.NOT.SEDCO) CSF = CSF_SABLE
+        IF(SEDCO) THEN
+         IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN_COH'
+         CALL SUSPENSION_BILAN_COH
+     &        (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,XMVS,
+     &        MS_VASE,NOMBLAY,NPOIN,
+     &        MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
+     &        MASINI,T1,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
+     &        NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
+        IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN'
+        IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN_COH'
+       ELSE
         IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BILAN'
         CALL SUSPENSION_BILAN
      &        (MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,
-     &         DT,CSF,MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
+     &         DT,CSF_SABLE,MASSOU,MASED0,MSK,ENTETS,MASTEN,MASTOU,
      &         MASINI,T2,T3,MASFIN,MASDEPT,MASDEP,AGGLOT,VOLU2D,
      &         NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
         IF(DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_BILAN'
-      ENDIF
+       ENDIF
+       ENDIF    
+!
 !
       CALL OS('X=Y     ', X=CS, Y=CST)
 !
@@ -800,3 +849,4 @@
 !
       RETURN
       END
+!

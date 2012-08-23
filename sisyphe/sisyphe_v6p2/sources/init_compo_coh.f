@@ -2,7 +2,7 @@
                      SUBROUTINE INIT_COMPO_COH
 !                    *************************
 !
-     &(NCOUCHES)
+     &(ES,CONC_VASE,CONC,NPOIN,NOMBLAY,NSICLA,AVAIL,AVA0)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -12,47 +12,12 @@
 !+                VARIATION IN SPACE.
 !
 !warning  USER SUBROUTINE; MUST BE CODED BY THE USER
-!code
-!+  EXAMPLE:
-!+      NCOUCHES(J) = 10
-!+      ES(J,1) = 1.D0
-!+      ES(J,2) = 1.D0
-!+      ES(J,3) = 1.D0
-!+      ES(J,4) = 1.D0
-!+      ES(J,5) = 1.D0
-!+      ES(J,6) = 1.D0
-!+      ES(J,7) = 1.D0
-!+      ES(J,8) = 1.D0
-!+      ES(J,9) = 1.D0
-!+        DO I = 1, NSICLA
-!+          DO K = 1, NCOUCHES(J)
-!+          AVAIL(J,K,I) = AVA0(I)
-!+          ENDDO
-!+        ENDDO
 !
-!history  MATTHIEU GONZALES DE LINARES
-!+        2002
-!+        V6P0
-!+
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
-!
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| NCOUCHES       |-->| NUMBER OF LAYER FOR EACH POINT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_SISYPHE
+      USE INTERFACE_SISYPHE, EX_INIT_COMPO_COH=> INIT_COMPO_COH
+      USE DECLARATIONS_SISYPHE, ONLY : NLAYMAX
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -60,16 +25,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !    
-      INTEGER, INTENT (INOUT):: NCOUCHES(*)
-      DOUBLE PRECISION EPAI_VASE(NLAYMAX),EPAI_SABLE(NLAYMAX)
+      INTEGER, INTENT(IN)              :: NPOIN,NOMBLAY,NSICLA
+      DOUBLE PRECISION, INTENT(INOUT)  :: ES(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(IN)     :: CONC_VASE(NOMBLAY)
+      DOUBLE PRECISION,  INTENT(INOUT) :: CONC(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT)  :: AVAIL(NPOIN,NOMBLAY,NSICLA)
+      DOUBLE PRECISION, INTENT(IN)     :: AVA0(NSICLA)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      DOUBLE PRECISION  EPAI_VASE(NLAYMAX),EPAI_SABLE(NLAYMAX)
+
       INTEGER I,J
 !
 !-----------------------------------------------------------------------
-!
-!     EXAMPLE FOR NOMBLAY = 10
+!    EXAMPLE FOR NOMBLAY = 10
 !
 !     EPAI_VASE(1)=0.0525D0
 !     EPAI_VASE(2)=0.0385D0
@@ -81,40 +51,45 @@
 !     EPAI_VASE(8)=1.5071D0
 !     EPAI_VASE(9)=0.86410D0
 !     EPAI_VASE(9)=0.80D0
+!          
 !
 !     HERE A CONSTANT
 !
       DO J= 1,NOMBLAY
         EPAI_VASE(J) = 0.1D0
+!        IF(NSICLA.GT.1) THEN
+!          EPAI_SABLE(J) = AVA0(1)/AVA0(2)*EPAI_VASE(J)
+!        ENDDO
       ENDDO
-!
 !-----------------------------------------------------------------------
 !
-!     INITIALISING THE NUMBER OF LAYERS
+!     INITIALISING OF LAYER THICKNESS AND CONC 
 !        
-      DO I=1,NPOIN
-        NCOUCHES(I) = NOMBLAY
-      ENDDO
-!
+ 
 !     BY DEFAULT : UNIFORM BED COMPOSITION (KEY WORDS)
+!     V6P3: IT WILL BE POSSIBLE TO HAVE A SPATIAL DISTRIBUTION OF THE BED CONC
+!     V6P2: SO FAR THE MUD CONC IS CONSTANT PER LAYER 
+!     si mixte: calculer aussi les AVAI!
 !
-      DO J= 1,NOMBLAY
-        DO I=1,NPOIN
-          CONC(I,J)=CONC_VASE(J)
-          ES(I,J)  =EPAI_VASE(J)
-        ENDDO
+       DO I=1,NPOIN
+        DO J= 1,NOMBLAY
+!
+          CONC(I,J) = CONC_VASE(J)
+          ES(I,J)   = EPAI_VASE(J)
+!
+!          IF(NSICLA.GT.1) THEN
+!              ES(I,J)= ES(I,J) + EPAI_SABLE(J)
+!              IF(ES(I,J).GE.1.D-6) THEN
+! Class 1 is for sand, class 2 is mud
+!                AVAIL(I,J,1)= EPAI_SABLE(J)/ES(I,J)
+!                AVAIL(I,J,2)= EPAI_VASE(J)/ES(I,J)
+!             ELSE
+!              AVAIL(I,J,1)= 0.D0
+!              AVAIL(I,J,2)= 0.D0
+!             ENDIF
+!
+         ENDDO
       ENDDO
-!
-      IF(NSICLA.GT.1) THEN
-        DO J=1,NOMBLAY
-          EPAI_SABLE(J) = AVA0(1)/AVA0(2)*EPAI_VASE(J)
-        ENDDO
-        DO J=1,NOMBLAY
-          DO I=1,NPOIN
-            ES(I,J) = ES(I,J) + EPAI_SABLE(J)
-          ENDDO 
-        ENDDO
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !
