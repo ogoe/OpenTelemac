@@ -41,6 +41,11 @@
 !+        V6P2
 !+   Adaptation to element 51 (prisms cut into tetrahedrons)
 !
+!history  J.-M. HERVOUET (LNHE)
+!+        24/08/2012
+!+        V6P2
+!+   Computation of fluxes and assembly swapped in intermediate planes.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FLOW           |<--| FLUX
 !| IELM3          |-->| DISCRETISATION IN 3D 
@@ -89,7 +94,7 @@
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
-      INTEGER IPLAN,N1,N2,IELEM,I1,I2,I3,S1,S2,S3,IT,IELEM3D,K,L      
+      INTEGER IPLAN,N1,N2,N3,N4,IELEM,I1,I2,I3,S1,S2,S3,IT,IELEM3D,K,L      
 !
 !     TETRA : WILL GIVE THE LOCAL NUMBERS OF POINTS IN THE PRISM
 !             THE 0 CORRESPOND TO SITUATIONS
@@ -131,7 +136,23 @@
 !     ADDS FLUXES ON HORIZONTAL SEGMENTS (FOR SEGMENT NUMBERING IN 3D
 !                                         SEE STOSEG41 IN BIEF)
 !
+!     FOR INTERMEDIATE PLANES
+!     HERE WE HAVE THE CHOICE OF COMPUTING THE FLUXES BEFORE OR AFTER
+!     ASSEMBLING ON VERTICAL. UP TO VERSION 6.1, ASSEMBLY WAS DONE FIRST
+!     FROM VERSION 6.2 ON WE COMPUTE THE FLUXES FIRST AND ASSEMBLE AFTER
+!     THIS IS MORE COMPATIBLE WITH DISTRIBUTIVE SCHEMES THAT COMPUTE
+!     THEIR FLUXES AT ELEMENT LEVEL. THEN THE FLUX LIMITATION DONE
+!     IN NA_FLUX3D_LIM WILL BE COMPATIBLE.
+!
       DO IPLAN=1,NPLAN
+!
+        IF(SENS.EQ.1) THEN
+          N1=(IPLAN-1    )*NSEG2D+1
+          N2= IPLAN       *NSEG2D
+        ELSE
+          N1=(  NPLAN-IPLAN)*NSEG2D+1
+          N2=(1+NPLAN-IPLAN)*NSEG2D
+        ENDIF
 !
 !       POINTS 1, 2 AND 3 OF UPPER LEVEL
         IF(IPLAN.EQ.1) THEN
@@ -141,35 +162,44 @@
             W2D(IELEM,2)=W3D(IELEM,2)
             W2D(IELEM,3)=W3D(IELEM,3)
           ENDDO
+          CALL FLUX_EF_VF(FLOW(N1:N2),W2D,NSEG2D,NELEM2,
+     &                    MESH2D%ELTSEG%I,MESH2D%ORISEG%I,
+     &                    MESH2D%IKLE%I,INIFLO,IOPT)
         ELSEIF(IPLAN.EQ.NPLAN) THEN
 !         LAST PLANE: ONLY POINTS 4, 5 AND 6 OF LOWER LEVEL
-          N1=NELEM2*(IPLAN-2)
+          N3=NELEM2*(IPLAN-2)
           DO IELEM=1,NELEM2
-            W2D(IELEM,1)=W3D(N1+IELEM,4)
-            W2D(IELEM,2)=W3D(N1+IELEM,5)
-            W2D(IELEM,3)=W3D(N1+IELEM,6)
+            W2D(IELEM,1)=W3D(N3+IELEM,4)
+            W2D(IELEM,2)=W3D(N3+IELEM,5)
+            W2D(IELEM,3)=W3D(N3+IELEM,6)
           ENDDO
+          CALL FLUX_EF_VF(FLOW(N1:N2),W2D,NSEG2D,NELEM2,
+     &                    MESH2D%ELTSEG%I,MESH2D%ORISEG%I,
+     &                    MESH2D%IKLE%I,INIFLO,IOPT)
         ELSE
 !       INTERMEDIATE PLANE
-!         POINTS 4, 5 AND 6 OF LOWER LEVEL + 1, 2, 3 OF UPPER LEVEL
-          N1=NELEM2*(IPLAN-2)
-          N2=N1+NELEM2
+!         POINTS 4, 5 AND 6 OF LOWER LEVEL 
+          N3=NELEM2*(IPLAN-2)
           DO IELEM=1,NELEM2
-            W2D(IELEM,1)=W3D(N1+IELEM,4)+W3D(N2+IELEM,1)
-            W2D(IELEM,2)=W3D(N1+IELEM,5)+W3D(N2+IELEM,2)
-            W2D(IELEM,3)=W3D(N1+IELEM,6)+W3D(N2+IELEM,3)
+            W2D(IELEM,1)=W3D(N3+IELEM,4)
+            W2D(IELEM,2)=W3D(N3+IELEM,5)
+            W2D(IELEM,3)=W3D(N3+IELEM,6)
           ENDDO
+          CALL FLUX_EF_VF(FLOW(N1:N2),W2D,NSEG2D,NELEM2,
+     &                    MESH2D%ELTSEG%I,MESH2D%ORISEG%I,
+     &                    MESH2D%IKLE%I,INIFLO,IOPT)
+!         POINTS 1, 2, 3 OF UPPER LEVEL
+          N4=N3+NELEM2
+          DO IELEM=1,NELEM2
+            W2D(IELEM,1)=W3D(N4+IELEM,1)
+            W2D(IELEM,2)=W3D(N4+IELEM,2)
+            W2D(IELEM,3)=W3D(N4+IELEM,3)
+          ENDDO
+          CALL FLUX_EF_VF(FLOW(N1:N2),W2D,NSEG2D,NELEM2,
+     &                    MESH2D%ELTSEG%I,MESH2D%ORISEG%I,
+     &                    MESH2D%IKLE%I,.FALSE.,IOPT)
+!                                       !!!!!!!
         ENDIF
-        IF(SENS.EQ.1) THEN
-          N1=(IPLAN-1    )*NSEG2D+1
-          N2= IPLAN       *NSEG2D
-        ELSE
-          N1=(  NPLAN-IPLAN)*NSEG2D+1
-          N2=(1+NPLAN-IPLAN)*NSEG2D
-        ENDIF
-        CALL FLUX_EF_VF(FLOW(N1:N2),W2D,NSEG2D,NELEM2,
-     &                  MESH2D%ELTSEG%I,MESH2D%ORISEG%I,
-     &                  MESH2D%IKLE%I,INIFLO,IOPT)
 !
       ENDDO
 !

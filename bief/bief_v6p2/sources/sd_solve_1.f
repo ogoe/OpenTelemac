@@ -391,9 +391,12 @@
      &               IN,IP,ISEGIP,IW1)
 !
       IF(TYPEXT.EQ.'S') THEN
+!       XA IS THE OFF-DIAGONAL TERMS AND MAY COME DIRECTLY FROM TELEMAC
+!       HENCE THE LOWER TRIANGULAR PART MAY NOT BE BUILT, WE GIVE TWICE XA
+!       INSTEAD OF XA,XA(NSEGBLK+1)
         CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
      &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA,DA,AC)
-!                             ISTRI
+!                             ISTRI                !!
       ELSE
         CALL SD_FABCAD(NPBLK,NSEGBLK,IN,IP,ISEGIP,
      &                 INDTRI,IW1,INX,IPX,ACTRI,XA,XA(NSEGBLK+1),DA,AC)
