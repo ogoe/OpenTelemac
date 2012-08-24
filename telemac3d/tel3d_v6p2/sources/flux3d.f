@@ -54,10 +54,8 @@
 !history  J-M HERVOUET(LNHE)
 !+        23/08/2012
 !+        V6P2
-!+   Call of FLUX3DLIM with extended cases (OPT_HNEG=2) to have a better
-!+   FLUINT that is consistent with the new continuity equation after a
-!+   call to positive_depths. Call to na_flux3d_lim added to limit the 
-!+   non assembled fluxes stored into WEL.  
+!+   Call to na_flux3d_lim added to limit the non assembled fluxes
+!+   stored into WEL and subsequent re-assembly of FLUINT. 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BYPASS         |---| IF YES, BYPASS VOID VOLUMES
@@ -111,7 +109,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC, ONLY : ADV_NSC,ADV_PSI,ADV_NSC_TF
+      USE DECLARATIONS_TELEMAC,   ONLY : ADV_NSC,ADV_PSI,ADV_NSC_TF
+      USE DECLARATIONS_TELEMAC3D, ONLY : LV
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -172,13 +171,17 @@
           DO I=1,6*MESH3%NELEM
             WEL%R(I)=MESH3%W%R(I)
           ENDDO
-!         LIMITATION OF NON-ASSEMBLED FLUXES STORED IN WEL
           IF(OPT_HNEG.EQ.2) THEN
+!           LIMITATION OF NON-ASSEMBLED FLUXES STORED IN WEL
             CALL NA_FLUX3D_LIM(WEL%R,FLULIM%R,
      &                         MESH2%NSEG,
      &                         MESH3%NELEM,MESH3%NELMAX,
      &                         MESH2%NELEM,MESH2%NELMAX,
      &                         MESH2%ELTSEG%I,MESH2%ORISEG%I)
+!           REASSEMBLING FLUINT
+            CALL ASSVEC(FLUINT%R,MESH3%IKLE%I,NPOIN3,MESH3%NELEM,
+     &                MESH3%NELMAX,IELM3,WEL%R,.TRUE.,
+     &                LV,MSK,MASKEL%R,6)
           ENDIF
         ELSEIF(IELM3.EQ.51) THEN
           DO I=1,4*MESH3%NELEM
@@ -204,7 +207,7 @@
 !     NOT YET DONE FOR TETRAHEDRA
       IF(IELM3.EQ.41) THEN
 !
-      IF(YACVVF.OR.OPT_HNEG.EQ.2) THEN
+      IF(YACVVF) THEN
 !
         IOPT=2
 !       BEWARE, WITH IELM3=51 RETURNS FLODEL IN 2D
