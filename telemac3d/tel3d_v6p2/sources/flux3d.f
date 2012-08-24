@@ -56,7 +56,8 @@
 !+        V6P2
 !+   Call of FLUX3DLIM with extended cases (OPT_HNEG=2) to have a better
 !+   FLUINT that is consistent with the new continuity equation after a
-!+   call to positive_depths.  
+!+   call to positive_depths. Call to na_flux3d_lim added to limit the 
+!+   non assembled fluxes stored into WEL.  
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BYPASS         |---| IF YES, BYPASS VOID VOLUMES
@@ -133,8 +134,8 @@
       TYPE(BIEF_OBJ), INTENT(INOUT) :: SVIDE,TRA01,TRA02,TRA03,W1,TRAV2
       TYPE(BIEF_MESH), INTENT(INOUT):: MESH3, MESH2
 !
-      DOUBLE PRECISION, INTENT(IN)    :: DT
-      LOGICAL, INTENT(IN)             :: MSK,SIGMAG,RAIN,YACVVF,BYPASS
+      DOUBLE PRECISION, INTENT(IN)  :: DT
+      LOGICAL, INTENT(IN)           :: MSK,SIGMAG,RAIN,YACVVF,BYPASS
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -171,6 +172,14 @@
           DO I=1,6*MESH3%NELEM
             WEL%R(I)=MESH3%W%R(I)
           ENDDO
+!         LIMITATION OF NON-ASSEMBLED FLUXES STORED IN WEL
+          IF(OPT_HNEG.EQ.2) THEN
+            CALL NA_FLUX3D_LIM(WEL%R,FLULIM%R,
+     &                         MESH2%NSEG,
+     &                         MESH3%NELEM,MESH3%NELMAX,
+     &                         MESH2%NELEM,MESH2%NELMAX,
+     &                         MESH2%ELTSEG%I,MESH2%ORISEG%I)
+          ENDIF
         ELSEIF(IELM3.EQ.51) THEN
           DO I=1,4*MESH3%NELEM
             WEL%R(I)=MESH3%W%R(I)
@@ -317,7 +326,7 @@
 !
       ENDIF
 !
-!  ASSEMBLED VERSION OF FLUEXT
+!     ASSEMBLED VERSION OF FLUEXT
 !
       IF(NCSIZE.GT.1) THEN
         CALL OS('X=Y     ',X=FLUEXTPAR,Y=FLUEXT)
