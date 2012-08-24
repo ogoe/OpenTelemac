@@ -101,7 +101,7 @@
 
       do J=1,NPOIN
         if (Z%R(J)-ZF%R(J).lt.0.D0) then
-         print *, 'UHM_Z.lt.ZF_Bef ',AT,Z%R(J),ZF%R(j),HN%R(J),
+         WRITE(LU,*) 'UHM_Z.lt.ZF_Bef ',AT,Z%R(J),ZF%R(j),HN%R(J),
      &            (Z%R(J)-ZF%R(J))-HN%R(J)
             call CVSP_P('./ERR/','Z_', J)
             !call PLANTE(1)
@@ -253,7 +253,7 @@
 
       do J=1,NPOIN
         if (Z%R(J)-ZF%R(J).lt.0.D0) then
-            print *, 'UHM_Z.lt.ZF ', I,AT,Z%R(J),ZF%R(j),HN%R(J),
+         WRITE(LU,*) 'UHM_Z.lt.ZF ', I,AT,Z%R(J),ZF%R(j),HN%R(J),
      &            (Z%R(J)-ZF%R(J))-HN%R(J)
             call CVSP_P('./ERR/','Z_', J)
  !           call PLANTE(1)

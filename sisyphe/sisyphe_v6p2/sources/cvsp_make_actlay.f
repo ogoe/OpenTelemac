@@ -21,6 +21,8 @@
       USE DECLARATIONS_SISYPHE
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 
       logical db
       integer  I,J,K,M, JL, JG, II
@@ -120,9 +122,9 @@
                     asum = AVAIL(J,K,I) + asum
 
                 if ((AVAIL(J,K,I)>1+ZERO)) then
-                       print *,  "MAKE_AL_", J, K, I, AT,
+             WRITE(LU,*) "MAKE_AL_", J, K, I, AT,
      &                 AVAIL(J,K,I), a(I), ES(J,K),Z_HIGH,Z_LOW, ES(J,K)
-                 print *,"ES,ALT,ELAY0,newalt",ES(J,K),ALT,ELAY0,new_alt
+             WRITE(LU,*) "ES,ALT,ELAY0,newalt",ES(J,K),ALT,ELAY0,new_alt
                        call plante(1)
                 endif
                 enddo !I=1,NSICLA
@@ -145,7 +147,7 @@
               else ! sumes > ueberdeckung
 
 
-                Print*,'UHM_NOW_OBSOLETE',J, K, I, AT
+             WRITE(LU,*) 'UHM_NOW_OBSOLETE',J, K, I, AT
                 call plante(1)
                 !! REMOVE THIS CASE if YOU HAVEN'T SEENN THIS FOR A LONG TIME
 
@@ -246,8 +248,8 @@
         ! Not enough space for Nlayer
         do k=1,1 !NLAYER%I(J)
           if(ES(J,K).EQ.0.D0) THEN
-            print*,'Not enough space for Nlayer',j
-            print*,'Possible Error !!! Rigid BED? ',NLAYER%I(J)-1
+            WRITE(LU,*) 'Not enough space for Nlayer',j
+            WRITE(LU,*) 'Possible Error !!! Rigid BED? ',NLAYER%I(J)-1
             NLAYER%I(J) = NLAYER%I(J)-1
             exit
           endif

@@ -12,8 +12,6 @@
 !+        Vertical Sorting Profil between 2 Depth Z-Coordinates Z_HIGH & Z_LOW
 !+
 !
-!
-!
 !history  UWE MERKEL
 !+        2011
 !
@@ -269,7 +267,7 @@
                !Leads again to floating point truncation errors ...
                 if ((ABS(sumup).GT.1.D-5)) then
                     call CVSP_P('./ERR/','IV_E',JG)
-                    print *, 'Integrate Volume ACCURRACY!!!', Sumup, JG
+                WRITE(LU,*) 'Integrate Volume ACCURRACY!!!', Sumup, JG
                     do K = 1, Pro_MAX(J)
                         ! removes numeric instabilities
                     ret =  CVSP_CHECK_F(J,K,' IV_FiX:   ')

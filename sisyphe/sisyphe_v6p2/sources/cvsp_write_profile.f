@@ -1,37 +1,38 @@
-C                       *****************
+!                       *****************
                         SUBROUTINE CVSP_WRITE_PROFILE()
-C                       *****************
-C
-C
-C***********************************************************************
-C TELEMAC 2D VERSION 6.1          01/04/2012    U.Merkel
-C***********************************************************************
-C
-C
-C  FUNCTION  : WRITES USER OUTPUT IN SELFIN or SELAFIND
-C              HAS TO BE INITIALIZED BEFOR WITH CVSP_OUTPUT_INIT
-C
-!// TOdo (!!!UHM!!!#1#): MED FILE NOT SUPPORTED
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS USED
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |________________|____|______________________________________________
-C MODE : -->(doNNEE NON MODifIEE), <--(RESULTAT), <-->(doNNEE MODifIEE)
-C-----------------------------------------------------------------------
-C
+!                       *****************
+!
+!***********************************************************************
+! SISYPHE   V6P2                                   30/07/2012
+!***********************************************************************
+!
+!brief    CVSP_WRITE_PROFILE
+!
+!history  UWE MERKEL
+!+        2011-07-20
+!
+!history  PAT (Pablo Tassi)
+!+        2012-08-24
+!
+! add WRITE(LU,*)
+! + secure programming
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| -              |---|
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
-      !USE DECLARATIONS_TELEMAC2D
       USE CVSP_OUTPUTFILES
       USE DECLARATIONS_SISYPHE
-      !& , only: PRO_D,PRO_F,PRO_MAX,FDM,TOB,PRO_MAX_MAX
+
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
 
       Integer I,J,K
       double precision bsum, sumerr, AT
 
-      print *, 'CVSP_WRITE_PROFILE on CPU ', IPID
+       WRITE(LU,*) 'CVSP_WRITE_PROFILE on CPU ', IPID
 
     !--------------------------------------------
     !CHOOSE WHAT YOU WANT TO HAVE IN VSPRES
@@ -126,7 +127,8 @@ C
             URBLOC2dHYD%ADR(6)%P => Ur2dHYD(6)
 
 
-      USERPRINTCOUNT = USERPRINTCOUNT + 1  ! Add this to time because TECPLOT doesn't support multiple TIME STAMPS in one file.
+      USERPRINTCOUNT = USERPRINTCOUNT + 1  
+! Add this to time because TECPLOT doesn't support multiple TIME STAMPS in one file.
       USERTIME= AT + USERPRINTCOUNT / 1.0D5
 
 

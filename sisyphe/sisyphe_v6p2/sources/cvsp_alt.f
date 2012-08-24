@@ -15,8 +15,6 @@
 !history  UWE MERKEL
 !+        2011-07-20
 !
-!
-!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX of a POINT in MESH
 !| FORMULA        |<--| WHICH FORMULA TO USE TO CALCULATE THE ALT

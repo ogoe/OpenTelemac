@@ -24,6 +24,9 @@
       USE CVSP_OUTPUTFILES
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+
       INTEGER,          INTENT(IN)    :: J
       INTEGER,          INTENT(IN)    :: I
       doUBLE PRECISION, INTENT(IN)    :: dZFCL
@@ -156,7 +159,7 @@
 
             if (PRO_D(J,PRO_MAX(J)-cntr,1).lt.
      &          PRO_D(J,PRO_MAX(J)-cntr-1,1)) then
-               print*,'Depthinversion!!!',JG,PRO_MAX(J)-cntr,PRO_MAX(J),
+          WRITE(LU,*) 'Depthinversion!!!',JG,PRO_MAX(J)-cntr,PRO_MAX(J),
      &           PROTH, EROSTRENGTH
                 call plante(1)
             endif

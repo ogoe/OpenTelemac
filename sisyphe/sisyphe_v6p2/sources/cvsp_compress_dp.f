@@ -32,9 +32,12 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       integer  I,K, cntr_erase, MarkerMax, MarkerCnt,  ttt, NNN, JG
       integer  maxpos, m, mmm, MarkerMAXold, MarkerMAXveryold
-      integer Marker(PRO_MAX_MAX), MarkerTemp(PRO_MAX_MAX)      !used to mark nodes that will be kept
-      double precision Loss(PRO_MAX_MAX)                         !stores the fraction errors that will occure if the point is eleminated from current profile
-      double precision MaxDist, sum_nsicla                       !stores the maximum distance of any node in the current loop
+      integer Marker(PRO_MAX_MAX), MarkerTemp(PRO_MAX_MAX)      
+!used to mark nodes that will be kept
+      double precision Loss(PRO_MAX_MAX)                         
+!stores the fraction errors that will occure if the point is eleminated from current profile
+      double precision MaxDist, sum_nsicla                       
+!stores the maximum distance of any node in the current loop
       double precision  FI, FJ, FK, DI, DJ, DK, thresh
       logical dummy, stopit, Normalize_Fraction !, db
 ! PAT
