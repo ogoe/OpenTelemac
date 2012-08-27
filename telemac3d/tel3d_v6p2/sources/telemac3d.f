@@ -148,6 +148,9 @@
         DO I=ADR_TRAC,ADR_TRAC+NTRAC-1
           ALIRE3D(I)=1
         ENDDO
+        DO I=37,36+NTRAC
+          ALIRE2D(I)=1
+        ENDDO
       ENDIF
 !
 !=======================================================================
