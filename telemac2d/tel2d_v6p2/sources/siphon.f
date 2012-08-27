@@ -126,14 +126,14 @@
 !
       IF(I1.GT.0) THEN
         S1=H(I1)+ZF(I1)
-        QMAX1=0.9D0*H(I1)*V2DPAR%R(I1)/DT
+        QMAX1=0.9D0*MAX(H(I1),0.D0)*V2DPAR%R(I1)/DT
       ELSE
         S1=-1.D10
         QMAX1=-1.D10
       ENDIF
       IF(I2.GT.0) THEN
         S2=H(I2)+ZF(I2)
-        QMAX2=0.9D0*H(I2)*V2DPAR%R(I2)/DT
+        QMAX2=0.9D0*MAX(H(I2),0.D0)*V2DPAR%R(I2)/DT
       ELSE
         S2=-1.D10
         QMAX2=-1.D10
