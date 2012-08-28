@@ -436,6 +436,8 @@ if __name__ == "__main__":
                       dest="version",
                       default='',
                       help="specify the version number, default is taken from config file" )
+   parser.add_option("-k","--rank",type="string",dest="rank",default='all',
+      help="the suite of validation ranks (all by defult)" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -466,6 +468,7 @@ if __name__ == "__main__":
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
       if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
+      if options.rank != '': cfgs[cfgname]['val_rank'] = options.rank
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
 
       debug = True

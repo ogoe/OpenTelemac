@@ -49,6 +49,10 @@
          into a try/except statement to better manage errors.
          This, however, assumes that all errors are anticipated.
 """
+"""@history 28/08/2012 -- Sebastien E. Bourban
+         A new option (--rank) added to the command line, in order for
+         Jenkins to select ranking depending on the day of the week.
+"""
 """@brief
 """
 
@@ -102,41 +106,22 @@ if __name__ == "__main__":
       help="specify the list modules, default is taken from config file" )
    parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
       help="specify whether to display on screen or save silently" )
-   parser.add_option("-w", "--workdirectory",
-                      type="string",
-                      dest="wDir",
-                      default='',
-                      help="specify whether to re-run within a defined subdirectory" )
-   parser.add_option("--hosts",
-                      type="string",
-                      dest="hosts",
-                      default='',
-                      help="specify the list of hosts available for parallel mode, ';' delimited" )
-   parser.add_option("--ncsize",
-                      type="string",
-                      dest="ncsize",
-                      default='',
-                      help="the number of processors forced in parallel mode" )
-   parser.add_option("--split",
-                      action="store_true",
-                      dest="split",
-                      default=False,
-                      help="will only do the trace (and the split in parallel) if option there" )
-   parser.add_option("--merge",
-                      action="store_true",
-                      dest="merge",
-                      default=False,
-                      help="will only do the output copying (and recollection in parallel) if option there" )
-   parser.add_option("--run",
-                      action="store_true",
-                      dest="run",
-                      default=False,
-                      help="will only run the simulation if option there" )
-   parser.add_option("-b","--bypass",
-                      action="store_true",
-                      dest="bypass",
-                      default=False,
-                      help="will bypass execution failures and try to carry on (final report at the end)" )
+   parser.add_option("-w", "--workdirectory",type="string",dest="wDir",default='',
+      help="specify whether to re-run within a defined subdirectory" )
+   parser.add_option("--hosts",type="string",dest="hosts",default='',
+      help="specify the list of hosts available for parallel mode, ';' delimited" )
+   parser.add_option("--ncsize",type="string",dest="ncsize",default='',
+      help="the number of processors forced in parallel mode" )
+   parser.add_option("--split",action="store_true",dest="split",default=False,
+      help="will only do the trace (and the split in parallel) if option there" )
+   parser.add_option("--merge",action="store_true",dest="merge",default=False,
+      help="will only do the output copying (and recollection in parallel) if option there" )
+   parser.add_option("--run",action="store_true",dest="run",default=False,
+      help="will only run the simulation if option there" )
+   parser.add_option("-b","--bypass",action="store_true",dest="bypass",default=False,
+      help="will bypass execution failures and try to carry on (final report at the end)" )
+   parser.add_option("-k","--rank",type="string",dest="rank",default='',
+      help="the suite of validation ranks (all by default)" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -218,6 +203,7 @@ if __name__ == "__main__":
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
+         if options.rank != '': cfgs[cfgname]['val_rank'] = options.rank
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
 

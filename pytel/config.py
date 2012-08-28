@@ -500,7 +500,8 @@ def parseConfig_ValidateTELEMAC(cfg):
    # in which 'n' means all ranks equal to n,
    # in which '>n' means all ranks greater than n,
    # where 'n', '>n', and '<n' can be combined if necessary
-   val_ranks = parseValidationRanks(cfg)
+   if not cfg.has_key('val_rank'): val_ranks = range(10)
+   else: val_ranks = parseValidationRanks(cfg['val_rank'])
    # Get validation: user list of module and there associated directories
    # in which 'system' means all existing modules,
    # and in which 'update' means a continuation, ignoring previously completed runs
@@ -810,13 +811,9 @@ def parseUserModules(cfgDict,modules):
     - >n: includes all numbers above n
     - n: includes the number n
 """
-def parseValidationRanks(cfgDict):
-
-   # ~~ Key not here ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if not cfgDict.has_key('val_rank'): return range(10)
+def parseValidationRanks(userList):
 
    # ~~ 'all' in key ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   userList = cfgDict['val_rank']
    word = r'(?P<before>.*)\s*(?P<this>(\b(%s)\b))\s*(?P<after>.*)\s*\Z'
    proc = re.match(re.compile(word%('all'),re.I),userList)
    if proc : return range(10)
@@ -907,19 +904,25 @@ if __name__ == "__main__":
          sys.exit()
       cfgnames = [options.configName]
 
-   print '\n' + options.configFile + '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 #  /!\  for testing purposes ... no real use
    for cfgname in cfgnames:
+      print '\n\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
       if options.version != '': cfgs[cfgname]['version'] = options.version
       # parsing for proper naming
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
-      print '\n'+cfgname + ': \n    '
+      print cfgname + ': \n    '
       print '    +> root:    ',cfgs[cfgname]['root']
       print '    +> version: ',cfgs[cfgname]['version']
       print '    +> module:  ',' / '.join(cfg['MODULES'])
+
+   print '\n\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
    
    sys.exit()

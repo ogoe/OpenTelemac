@@ -30,6 +30,10 @@
          into a try/except statement to better manage errors.
          This, however, assumes that all errors are anticipated.
 """
+"""@history 19/03/2011 -- Sebastien E. Bourban:
+         Now capable of running/tranlating, etc. coupled simulations
+         "links" has been added to the active aciton list.
+"""
 """@brief
 """
 
@@ -49,7 +53,7 @@ from parserStrings import parseArrayPaires
 from runcode import runCAS,checkConsistency,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from utils.files import createDirectories,copyFile,moveFile, matchSafe
+from utils.files import getFileContent,putFileContent,createDirectories,copyFile,moveFile, matchSafe
 from utils.messages import filterMessage
 from mtlplots.plotTELEMAC import Figure
 
@@ -67,10 +71,10 @@ def getDICO(cfg,code):
    if dicoFile not in DICOS.keys():
       print '    +> register this DICO file: ' + dicoFile
       frgb,dico = scanDICO(dicoFile)
-      iFS,oFS = getIOFilesSubmit(frgb,dico)
-      globals()['DICOS'].update({dicoFile:{ 'frgb':frgb, 'dico':dico, 'input':iFS, 'output':oFS }})
+      idico,odico = getIOFilesSubmit(frgb,dico)
+      globals()['DICOS'].update({dicoFile:{ 'frgb':frgb, 'dico':dico, 'input':idico, 'output':odico }})
 
-   return dicoFile,DICOS[dicoFile]
+   return dicoFile
 
 # _____                      _______________________________________
 # ____/ General XML Toolbox /______________________________________/
@@ -94,6 +98,31 @@ def getXMLKeys(xml,do):
 
    return done
 
+def setSafe(casFile,cas,idico,odico,safe):
+
+   copyFile(casFile,safe)   # TODO: look at relative paths
+   wDir = path.dirname(casFile)
+
+   # ~~> process sortie files if any
+   sacFile = path.join(safe,casFile)
+   sortieFiles = getLatestSortieFiles(sacFile)
+
+   # ~~> process input / output
+   iFS = []; oFS = []
+   for k in cas.keys():
+      if idico.has_key(k):
+         copyFile(path.join(wDir,eval(cas[k][0])),safe)
+         ifile = path.join(safe,eval(cas[k][0]))
+         iFS.append([k,[ifile],idico[k]])
+         #if not path.isfile(ifile):
+         #   print '... file does not exist ',ifile
+         #   sys.exit()
+      if odico.has_key(k):
+         ofile = path.join(safe,eval(cas[k][0]))
+         oFS.append([k,[ofile],odico[k]])
+
+   return sortieFiles,iFS,oFS
+
 # _____                        _____________________________________
 # ____/ Primary Class: ACTION /____________________________________/
 #
@@ -116,10 +145,10 @@ def getXMLKeys(xml,do):
 """
 class ACTION:
 
-   def __init__(self,title='',bypass=True):
+   def __init__(self,xmlFile,title='',bypass=True):
       if title != '': self.active["title"] = title
       self.bypass = bypass
-      self.active = { 'path':'','safe':'','casFile':'','cfg':'','dico':'',
+      self.active = { 'path':path.dirname(xmlFile),'safe':'','cfg':'','dico':'',
          "target": None, "code": None, "xref": None, "do": None,
          "title": '', "ncsize":'' }
       self.dids = {}
@@ -137,63 +166,24 @@ class ACTION:
       self.code = self.active["code"]
       return self.active["target"]
 
-   def addCAS(self,casFile):
-      self.active['path'] = path.dirname(casFile)
-      self.active['casFile'] = casFile
-      return casFile
-
    def addCFG(self,cfgname,cfg):
       self.active['cfg'] = cfgname
       if not self.active["code"] in cfg['MODULES'].keys():
          print '... do not know about:' + self.active["code"] + ' in configuration:' + cfgname
          return False
       self.active['safe'] = path.join( path.join(self.active['path'],self.active["xref"]),cfgname )
-      self.update( { cfgname: {
+      self.dids[self.active["xref"]].update( { cfgname: {
          'target': self.active["target"],
          'safe': self.active['safe'],
          'code': self.active["code"],
+         "links": {},
+         'path': self.active['path'],
          'title': self.active["title"],
          'cmaps': path.join(cfg['PWD'],'ColourMaps')
          } } )
       return True
 
-   def setSafe(self,dico):
-
-      # ~~> aliases
-      xref = self.active["xref"]; cfgname = self.active['cfg']
-      cas = self.dids[xref][cfgname]['cas']
-      safe = self.active['safe']
-
-      # ~~> create the safe
-      casFile = path.join(self.active['path'],self.active["target"])
-      createDirectories(self.active['safe'])
-      copyFile(casFile,self.active['safe'])   # TODO: look at relative paths
-
-      # ~~> process sortie files if any
-      sacFile = path.join(self.active['safe'],self.active["target"])
-      sortieFiles = getLatestSortieFiles(sacFile)
-      if sortieFiles != []: self.updateCFG({ 'sortie': sortieFiles })
-
-      # ~~> process input / output
-      iFS = []; oFS = []
-      for k in cas.keys():
-         if dico['input'].has_key(k):
-            copyFile(path.join(self.active['path'],eval(cas[k][0])),safe)
-            ifile = path.join(safe,eval(cas[k][0]))
-            iFS.append([k,[ifile],dico['input'][k]])
-            #if not path.isfile(ifile):
-            #   print '... file does not exist ',ifile
-            #   sys.exit()
-         if dico['output'].has_key(k):
-            ofile = path.join(safe,eval(cas[k][0]))
-            oFS.append([k,[ofile],dico['output'][k]])
-      self.updateCFG({ 'input':iFS })
-      self.updateCFG({ 'output':oFS })
-
-      return
-
    def updateCFG(self,d): self.dids[self.active["xref"]][self.active['cfg']].update( d )
-   def update(self,c): self.dids[self.active["xref"]].update( c )
 
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #   Available actions
@@ -204,38 +194,76 @@ class ACTION:
    def comparePRINCI(self): return
 
    # ~~ Translate the CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   def translateCAS(self,dico,rebuild):
+   def translateCAS(self,rebuild):
       if not "translate" in self.available.split(';'): return
-      casFile = path.join(self.active['path'],self.active["target"])
-      sacFile = path.join(self.active['safe'],self.active["target"])
-      oneup = path.dirname(self.active['safe'])            # copied one level up
-      if matchSafe(casFile,self.active["target"]+'.??',oneup,rebuild):
-         print '     +> translate cas file: ' + self.active["target"]
-         casfr,casgb = translateCAS(sacFile,dico['frgb'])  #/!\ removes comments at end of lines
+      xref = self.active["xref"]; cfgname = self.active['cfg']
+      active = self.dids[xref][cfgname]
+      # ~~> principal CAS file
+      casFile = path.join(active['path'],active["target"])
+      sacFile = path.join(active['safe'],active["target"])
+      oneup = path.dirname(active['safe'])            # copied one level up
+      if matchSafe(casFile,active["target"]+'.??',oneup,rebuild):
+         print '     +> translate cas file: ' + active["target"]
+         casfr,casgb = translateCAS(sacFile,DICOS[active['dico']]['frgb'])  #/!\ removes comments at end of lines
          moveFile(casfr,oneup)
          moveFile(casgb,oneup)
+      # ~~> associated CAS files
+      for mod in active["links"]:
+         link = active["links"][mod]
+         casFile = path.join(active['path'],link['target'])
+         sacFile = path.join(active['safe'],link['target'])
+         if matchSafe(casFile,link['target']+'.??',oneup,rebuild):
+            print '     +> translate cas file: ' + link['target']
+            casfr,casgb = translateCAS(sacFile,DICOS[link['dico']]['frgb'])  #/!\ removes comments at end of lines
+            moveFile(casfr,oneup)
+            moveFile(casgb,oneup)
 
    # ~~ Compile the PRINCI file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   def compilePRINCI(self,dico,cfg,rebuild):
+   def compilePRINCI(self,cfg,rebuild):
       if not "compile" in self.available.split(';'): return
       xref = self.active["xref"]; cfgname = self.active['cfg']
-      value,default = getKeyWord('FICHIER FORTRAN',self.dids[xref][cfgname]['cas'],dico['dico'],dico['frgb'])
-      princiFile = ''
+      active = self.dids[xref][cfgname]
+      confirmed = False
+      # ~~> principal PRINCI file
+      value,default = getKeyWord('FICHIER FORTRAN',active['cas'],DICOS[active['dico']]['dico'],DICOS[active['dico']]['frgb'])
+      princiFile = ''; princiSafe = ''
       if value != []:       # you do not need to compile the default executable
-         princiFile = path.join(self.active['path'],eval(value[0]))
+         princiFile = path.join(active['path'],eval(value[0]))
          if path.exists(princiFile):
-            exeFile = path.join(self.active['safe'],path.splitext(eval(value[0]))[0] + cfg['SYSTEM']['sfx_exe'])
+            exeFile = path.join(active['safe'],path.splitext(eval(value[0]))[0] + cfg['SYSTEM']['sfx_exe'])
             if not path.exists(exeFile) or cfg['REBUILD'] == 0:
                print '     +> compiling princi file: ' + path.basename(princiFile)
-               copyFile(princiFile,self.active['safe'])
-               try:
-                  compilePRINCI(princiFile,self.active["code"],self.active['cfg'],cfg,self.bypass)
-               except Exception as e:
-                  raise Exception([filterMessage({'name':'ACTION::compilePRINCI'},e,self.bypass)])  # only one item here
-               moveFile(exeFile,self.active['safe'])
+               copyFile(princiFile,active['safe'])
+               princiSafe = path.join(active['safe'],path.basename(princiFile))
+               confirmed = True
          else:
             raise Exception([{'name':'ACTION::compilePRINCI','msg':'I could not find your PRINCI file: '+princiFile}])
-            #else: you may wish to retrieve the executable for later analysis
+      # ~~> associated PRINCI file
+      for mod in active["links"]:
+         link = active["links"][mod]
+         value,default = getKeyWord('FICHIER FORTRAN',link['cas'],DICOS[link['dico']]['dico'],DICOS[link['dico']]['frgb'])
+         princiFilePlage = ''
+         if value != []:       # you do not need to compile the default executable
+            princiFilePlage = path.join(active['path'],eval(value[0]))
+            if path.exists(princiFilePlage):
+               if princiSafe != '':
+                  putFileContent(princiSafe,getFileContent(princiSafe)+['']+getFileContent(princiFilePlage))
+               else:
+                  print '     +> compiling princi file: ' + path.basename(princiFilePlage)
+                  exeFile = path.join(active['safe'],path.splitext(eval(value[0]))[0] + cfg['SYSTEM']['sfx_exe'])
+                  princiSafe = path.join(active['safe'],path.basename(princiFilePlage))
+                  copyFile(princiFilePlage,active['safe'])
+               confirmed = True
+            else:
+               raise Exception([{'name':'ACTION::compilePRINCI','msg':'I could not find your PRINCI file: '+princiFilePlage}])
+      if confirmed:
+         try:
+            compilePRINCI(princiSafe,active["code"],self.active['cfg'],cfg,self.bypass)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'ACTION::compilePRINCI'},e,self.bypass)])  # only one item here
+         #moveFile(exeFile,active['safe'])
+         print '       ~> compilation successful ! created: ' + path.basename(exeFile)
+      #else: you may wish to retrieve the executable for later analysis
 
    # ~~ Run the CAS file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    def runCAS(self,options,cfg,rebuild):
@@ -401,7 +429,7 @@ def runXML(xmlFile,xmlConfig,bypass):
    display = False
 
    # ~~ Action analysis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   do = ACTION(title,bypass)
+   do = ACTION(xmlFile,title,bypass)
    first = True
    for action in xmlRoot.findall("action"):
       if first:
@@ -415,7 +443,7 @@ def runXML(xmlFile,xmlConfig,bypass):
          xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
          continue    # bypass rest of the loop
       else:
-         casFile = do.addCAS(path.join(path.dirname(xmlFile),doadd))
+         casFile = path.join(do.active['path'],doadd)
          if not path.isfile(casFile):
             xcpt.append({'name':'runXML','msg':'could not find your CAS file'+path.basename(casFile)})
             continue    # bypass rest of the loop
@@ -423,19 +451,57 @@ def runXML(xmlFile,xmlConfig,bypass):
       # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~
       for cfgname in xmlConfig.keys():
          cfg = xmlConfig[cfgname]['cfg']
-         if not do.addCFG(cfgname,cfg): contine
+         if not do.addCFG(cfgname,cfg): continue
 
-         # ~~> Parse DICO File and default IO Files (only once)
-         dicoFile,dico = getDICO(cfg,do.active["code"])
+         # ~~> Parse DICO File and its IO Files default (only once)
+         dicoFile = getDICO(cfg,do.active["code"])
          do.updateCFG({'dico':dicoFile})
-         cas = readCAS(scanCAS(casFile),dico['dico'],dico['frgb'])
-         if do.active["ncsize"] != '': setKeyValue('PROCESSEURS PARALLELES',cas,dico['frgb'],int(do.active["ncsize"]))
+         dico = DICOS[dicoFile]['dico']
+         frgb = DICOS[dicoFile]['frgb']
+         cas = readCAS(scanCAS(casFile),dico,frgb)
+         if do.active["ncsize"] != '': setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
          do.updateCFG({'cas':cas})
-         if not checkConsistency(cas,dico['dico'],dico['frgb'],cfg): continue
+         if not checkConsistency(cas,dico,frgb,cfg): continue
 
+         # ~~> Create the safe
+         createDirectories(do.active['safe'])
+         idico = DICOS[dicoFile]['input']
+         odico = DICOS[dicoFile]['output']
          # ~~> Define config-split storage
-         do.setSafe(dico)   # TODO: look at relative paths
-         
+         sortieFiles,iFS,oFS = setSafe(casFile,cas,idico,odico,do.active['safe'])   # TODO: look at relative paths
+         if sortieFiles != []: do.updateCFG({ 'sortie': sortieFiles })
+         do.updateCFG({ 'input':iFS })
+         do.updateCFG({ 'output':oFS })
+
+         # ~~> Case of coupling
+         cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
+         links = {}
+         for cplage in cplages:
+            for mod in cfg['MODULES'].keys():
+               if mod in cplage.lower():
+                  # ~~> Extract the CAS File name
+                  casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
+                  if casFilePlage == []: casFilePlage = defaut[0]
+                  else: casFilePlage = eval(casFilePlage[0])
+                  casFilePlage = path.join(path.dirname(casFile),casFilePlage)
+                  if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
+                  # ~~> Read the DICO File
+                  dicoFilePlage = getDICO(cfg,mod)
+                  dicoPlage = DICOS[dicoFilePlage]['dico']
+                  frgbPlage = DICOS[dicoFilePlage]['frgb']
+                  # ~~> Read the coupled CAS File
+                  casPlage = readCAS(scanCAS(casFilePlage),dicoPlage,frgbPlage)
+                  # ~~> Fill-in the safe
+                  idicoPlage = DICOS[dicoFilePlage]['input']
+                  odicoPlage = DICOS[dicoFilePlage]['output']
+                  sortiePlage,iFSPlage,oFSPlage = setSafe(casFilePlage,casPlage,idicoPlage,odicoPlage,do.active['safe'])   # TODO: look at relative paths
+                  links.update({mod:{}})
+                  links[mod].update({ 'code':mod, 'target':path.basename(casFilePlage),
+                     'cas':casPlage, 'frgb':frgbPlage, 'dico':dicoFilePlage,
+                     'iFS':iFSPlage, 'oFS':oFSPlage, 'sortie':sortiePlage })
+                  if sortiePlage != []: links[mod].update({ 'sortie':sortiePlage })
+         if links != {}: do.updateCFG({ "links":links })
+
          # ~~ Step 3. Complete all actions ~~~~~~~~~~~~~~~~~~~~~~~~~
          # options.do takes: translate;run;compile and none
          doable = xmlConfig[cfgname]['options'].do
@@ -446,7 +512,7 @@ def runXML(xmlFile,xmlConfig,bypass):
          # ~~> Action type A. Translate the CAS file
          if "translate" in doable.split(';'):
             try:
-               do.translateCAS(dico,cfg['REBUILD'])
+               do.translateCAS(cfg['REBUILD'])
             except Exception as e:
                xcpt.append(filterMessage({'name':'runXML','msg':'   +> translate'},e,bypass))
 
@@ -469,7 +535,7 @@ def runXML(xmlFile,xmlConfig,bypass):
          # (for no particularly good reason)
          if "compile" in doable.split(';'):
             try:
-               do.compilePRINCI(dico,cfg,cfg['REBUILD'])
+               do.compilePRINCI(cfg,cfg['REBUILD'])
             except Exception as e:
                xcpt.append(filterMessage({'name':'runXML','msg':'   +> compile'},e,bypass))
 
