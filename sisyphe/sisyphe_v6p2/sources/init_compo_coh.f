@@ -12,7 +12,15 @@
 !+                VARIATION IN SPACE.
 !
 !warning  USER SUBROUTINE; MUST BE CODED BY THE USER
-!
+!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AVA0           |-->| VOLUME PERCENT 
+!| AVAIL          |<->| VOLUME PERCENT OF EACH CLASS
+!| CONC           |<->| CONC OF EACH BED LAYER (KG/M3)
+!| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
+!| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| NOMBLAY        |-->| NUMBER OF LAYERS FOR CONSOLIDATION
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSICLA         |-->| NUMBER OF SIZE CLASSES FOR BED MATERIALS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -57,9 +65,9 @@
 !
       DO J= 1,NOMBLAY
         EPAI_VASE(J) = 0.1D0
-!        IF(NSICLA.GT.1) THEN
-!          EPAI_SABLE(J) = AVA0(1)/AVA0(2)*EPAI_VASE(J)
-!        ENDDO
+        IF(NSICLA.GT.1) THEN
+          EPAI_SABLE(J) = AVA0(1)/AVA0(2)*EPAI_VASE(J)
+        ENDIF
       ENDDO
 !-----------------------------------------------------------------------
 !
@@ -77,16 +85,17 @@
           CONC(I,J) = CONC_VASE(J)
           ES(I,J)   = EPAI_VASE(J)
 !
-!          IF(NSICLA.GT.1) THEN
-!              ES(I,J)= ES(I,J) + EPAI_SABLE(J)
-!              IF(ES(I,J).GE.1.D-6) THEN
+          IF(NSICLA.GT.1) THEN
+              ES(I,J)= ES(I,J) + EPAI_SABLE(J)
+              IF(ES(I,J).GE.1.D-6) THEN
 ! Class 1 is for sand, class 2 is mud
-!                AVAIL(I,J,1)= EPAI_SABLE(J)/ES(I,J)
-!                AVAIL(I,J,2)= EPAI_VASE(J)/ES(I,J)
-!             ELSE
-!              AVAIL(I,J,1)= 0.D0
-!              AVAIL(I,J,2)= 0.D0
-!             ENDIF
+                AVAIL(I,J,1)= EPAI_SABLE(J)/ES(I,J)
+                AVAIL(I,J,2)= EPAI_VASE(J)/ES(I,J)
+             ELSE
+              AVAIL(I,J,1)= AVA0(1)
+              AVAIL(I,J,2)= AVA0(2)
+             ENDIF
+	  ENDIF   
 !
          ENDDO
       ENDDO

@@ -4,9 +4,9 @@
 !
      &(NSICLA,ELAY,ZF,ZR,NPOIN,AVAIL,FRACSED_GF,AVA0,
      & LGRAFED,CALWC,XMVS,XMVE,GRAV,VCE,XWC,FDM,
-     & CALAC,AC,SEDCO,ES,NOMBLAY,CONC_VASE,
+     & CALAC,AC,SEDCO,ES,ES_SABLE, ES_VASE ,NOMBLAY,CONC_VASE,
      & MS_SABLE,MS_VASE,ACLADM,UNLADM,TOCE_SABLE,
-     & CONC,NLAYER,DEBU)
+     & CONC,NLAYER,DEBU,MIXTE)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -63,12 +63,17 @@
 !| CONC_VASE      |<->| MUD CONCENTRATION FOR EACH LAYER
 !| ELAY           |<->| THICKNESS OF SURFACE LAYER
 !| ES             |<->| LAYER THICKNESSES AS DOUBLE PRECISION
+!| ES_SABLE       |<->| LAYER THICKNESSES OF SAND AS DOUBLE PRECISION
+!| ES_VASE        |<->| LAYER THICKNESSES OF MUD AS DOUBLE PRECISION
 !| FDM            |-->| DIAMETER DM FOR EACH CLASS 
 !| FRACSED_GF     |-->|(A SUPPRIMER)
 !| GRAV           |-->| ACCELERATION OF GRAVITY
 !| LGRAFED        |-->|(A SUPPRIMER)
 !| MS_SABLE       |<->| MASS OF SAND PER LAYER (KG/M2)
 !| MS_VASE        |<->| MASS OF MUD PER LAYER (KG/M2)
+!| ES_SABLE       |<->| THICKNESS OF SAND LAYER (M)
+!| ES_VASE        |<->| THICKNESS OF MUD LAYER  (M)
+!| MIXTE          |<->| SEDIMENT MIXTE  (SABLE /VASE)
 !| NOMBLAY        |-->| NUMBER OF BED LAYERS 
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NSICLA         |-->| NUMBER OF SEDIMENT CLASSES
@@ -87,7 +92,7 @@
 !
       USE BIEF
       USE INTERFACE_SISYPHE, EX_INIT_SEDIMENT => INIT_SEDIMENT
-!
+
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -107,20 +112,18 @@
       DOUBLE PRECISION,  INTENT(INOUT)  :: FRACSED_GF(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: FDM(NSICLA),XWC(NSICLA)
       DOUBLE PRECISION,  INTENT(INOUT)  :: AC(NSICLA),TOCE_SABLE
-!
       LOGICAL,           INTENT(IN)     :: SEDCO(NSICLA), DEBU
-!
-!     IF SEDCO(1) OR SEDCO(2) = YES --> CONSOLIDATION MODEL
-!
+      LOGICAL,           INTENT(IN)     :: MIXTE
       DOUBLE PRECISION, INTENT(IN)    :: CONC_VASE(NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES_SABLE(NPOIN,NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT) :: ES_VASE(NPOIN,NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: CONC(NPOIN,NOMBLAY)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER            :: I,J
       DOUBLE PRECISION   :: DENS,DSTAR
-      LOGICAL            :: MIXTE
 !
 !======================================================================!
 !======================================================================!
@@ -141,17 +144,17 @@
         ENDDO
 !       PURE MUD ONLY
         IF(SEDCO(1)) CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,
+     &                               ES_SABLE, ES_VASE,
      &                               ELAY%R,NOMBLAY,CONC_VASE,
-     &                                  MS_SABLE%R,MS_VASE%R,ZF%R,
-     &                                  ZR%R,AVA0,CONC,NLAYER,DEBU)
+     &                                MS_SABLE%R,MS_VASE%R,ZF%R,
+     &                               ZR%R,AVA0,CONC,DEBU,.FALSE.)
 !
       ELSE
 !
 !     NON-COHESIVE, MULTI-CLASSES
 !
-        IF(.NOT.SEDCO(2)) THEN
+        IF(.NOT.MIXTE) THEN
 !
-          MIXTE=.FALSE.
 !
           CALL INIT_AVAI
 !         CALL MEAN_GRAIN_SIZE
@@ -169,13 +172,11 @@
             UNLADM%R(J)=MAX(UNLADM%R(J),0.D0)
           ENDDO
         ELSE
-!
-!         MIXED (so far only 2 classes: NON COHESIVE /COHESIVE) 
-          MIXTE=.TRUE.
 !      
-          CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,ELAY%R,
-     &                  NOMBLAY,CONC_VASE,MS_SABLE%R,
-     &                  MS_VASE%R,ZF%R,ZR%R,AVA0,CONC,NLAYER,DEBU)
+          CALL INIT_MIXTE(XMVS,NPOIN,AVAIL,NSICLA,ES,
+     &               ES_SABLE, ES_VASE, ELAY%R,
+     &               NOMBLAY,CONC_VASE,MS_SABLE%R,
+     &               MS_VASE%R,ZF%R,ZR%R,AVA0,CONC,DEBU,MIXTE)
           DO I=1,NPOIN
             ACLADM%R(I) = FDM(1)
           ENDDO

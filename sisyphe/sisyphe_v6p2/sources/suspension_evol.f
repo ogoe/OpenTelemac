@@ -2,8 +2,8 @@
                      SUBROUTINE SUSPENSION_EVOL
 !                    **************************
 !
-     &(ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES,
-     & CONC_VASE,NOMBLAY,ELAY)
+     &(ZFCL_S,FLUDP,FLUER,DT, NPOIN,XMVS, QFLUX,MS_VASE,ES_VASE,
+     & CONC,NOMBLAY)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -40,9 +40,9 @@
 !+     
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AVAI           |<->| PERCENT OF MUD CLASS PER LAYER 
 !| CONC_VASE      |-->|  INPUT CONCENTRATION OF EACH LAYER (IN KG/M3)
 !| DT             |-->| TIME STEP
-!| ELAY           |<->| TOTAl THICKNESS OF SEDIMENT BED
 !| ES             |<->| THICKNESS OF SEDIMENT BED LAYERS
 !| FLUDP          |<->| DEPOSITION FLUX
 !| FLUER          |<->| EROSION FLUX
@@ -51,7 +51,7 @@
 !| NPOIN          |-->| NUMBER OF POINTS
 !| QFLUX          |---| NET EROSION MINUS DEPOSITION RATE
 !| XMVS           |-->| WATER DENSITY
-!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT 
+!| ZFCL_S         |<->| BED EVOLUTION PER CLASS, DUE TO SUSPENDED SEDIMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       USE INTERFACE_SISYPHE,EX_SUSPENSION_EVOL => SUSPENSION_EVOL
       USE BIEF
@@ -62,10 +62,9 @@
       TYPE (BIEF_OBJ),  INTENT(INOUT)   :: ZFCL_S,FLUDP,FLUER,QFLUX
       DOUBLE PRECISION, INTENT(IN)      :: DT, XMVS
       INTEGER, INTENT(IN)               :: NPOIN,NOMBLAY
-      DOUBLE PRECISION, INTENT(IN)      :: CONC_VASE(NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT)   :: CONC(NPOIN,NOMBLAY)
       DOUBLE PRECISION,  INTENT(INOUT)  :: MS_VASE(NPOIN,NOMBLAY)
-      DOUBLE PRECISION,  INTENT(INOUT)  :: ES(NPOIN,NOMBLAY)
-      DOUBLE PRECISION,   INTENT(INOUT) :: ELAY(NPOIN)
+      DOUBLE PRECISION,  INTENT(INOUT)  :: ES_VASE(NPOIN,NOMBLAY)
 !
       ! 3/ LOCAL VARIABLES
       ! ------------------
@@ -91,9 +90,10 @@
 !           PRINT*,'MASSE DEPOSEE: ', DOTS(QFLUX,VOLU2D)
 C
          IF(NOMBLAY.EQ.1)  THEN
-             CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX,C=1.D0/CONC_VASE(1))
+CV             CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX,C=1.D0/CONC_VASE(1))
              DO I = 1, NPOIN
-               ES(I,1)= ES(I,1)+ZFCL_S%R(I)
+               ZFCL_S%R(I)=QFLUX%R(I)/CONC(I,1)
+               ES_VASE(I,1)= ES_VASE(I,1)+ZFCL_S%R(I)
              ENDDO
 !
          ELSE
@@ -102,8 +102,9 @@ C
 ! DEPOSITION IN THE FIRST LAYER
 !
              IF(QFLUX%R(I).GE.ZERO) THEN
-                ZFCL_S%R(I) = QFLUX%R(I) / CONC_VASE(1)
-                ES(I,1)=ES(I,1)+ZFCL_S%R(I)
+!                ZFCL_S%R(I) = QFLUX%R(I) / CONC_VASE(1)
+                ZFCL_S%R(I) = QFLUX%R(I) / CONC(I,1)
+                ES_VASE(I,1)=ES_VASE(I,1)+ZFCL_S%R(I)
              ELSEIF(QFLUX%R(I).LT.ZERO) THEN
 !
 ! EROSION OF SUCCESSIVE LAYERS
@@ -115,16 +116,20 @@ C
 !
 ! CONC ARE IN KG/M3
 !
-                 IF(-QFLUX%R(I).LE.CONC_VASE(J)*ES(I,J)) THEN
+!                 IF(-QFLUX%R(I).LE.CONC_VASE(J)*ES(I,J)) THEN
+                 IF(-QFLUX%R(I).LE.CONC(I,J)*ES_VASE(I,J)) THEN
 !                  Last layer to be eroded
-                   ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC_VASE(J)
-                   ES(I,J)=MAX(ES(I,J)+QFLUX%R(I)/CONC_VASE(J),0.D0)             
-                   GO TO 40
+!                   ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC_VASE(J)
+                   ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC(I,J)
+                   ES_VASE(I,J)=ES_VASE(I,J)+
+     *                    MAX(QFLUX%R(I)/CONC(I,J),0.D0)    
+                    GO TO 40
                  ELSE
 !                  EROSION OF THE WHOLE LAYER
-                   QFLUX%R(I)=QFLUX%R(I)+CONC_VASE(J)*ES(I,J)
-                   ZFCL_S%R(I)=ZFCL_S%R(I) - ES(I,J)
-                   ES(I,J) = 0.D0
+!                   QFLUX%R(I)=QFLUX%R(I)+CONC_VASE(J)*ES(I,J)
+                    QFLUX%R(I)=QFLUX%R(I)+CONC(I,J)*ES_VASE(I,J)
+                    ZFCL_S%R(I)=ZFCL_S%R(I) - ES_VASE(I,J)
+                    ES_VASE(I,J) = 0.D0
                  ENDIF
 ! END OF THE LOOP ON THE LAYERS
 !
@@ -152,19 +157,12 @@ C
 !
            DO J = 1, NOMBLAY
                DO I = 1, NPOIN
-                 MS_VASE(I,J)=CONC_VASE(J)*ES(I,J)
-               ENDDO
+                   MS_VASE(I,J)=CONC(I,J)*ES_VASE(I,J)
+              ENDDO
            ENDDO
-	   
-! REACTUALISATION DU ELAY
-      DO I = 1, NPOIN
-        ELAY(I)= 0.D0
-        DO J= 1, NOMBLAY
-          ELAY(I)=ELAY(I)+ES(I,J)
-        ENDDO 
-      ENDDO	   
+	   	   
 
-!
+
 !======================================================================!
 !======================================================================!
 !

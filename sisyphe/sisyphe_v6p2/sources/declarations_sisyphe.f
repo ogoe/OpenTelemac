@@ -988,9 +988,6 @@ C concentrations initiales en suspension
 !> @brief MASS EXCHANGED BY SOURCE TERM
 C
       DOUBLE PRECISION MASSOU
-!> @brief VOLUME CONCENTRATION OF THE COHESIVE BED
-C concentration volumique du lit cohesif
-      DOUBLE PRECISION CSF_VASE
 !> @brief
 C
       DOUBLE PRECISION CSF_SABLE
@@ -1055,6 +1052,11 @@ C
 !> @brief
 C
       DOUBLE PRECISION :: MASDEP(NSICLM), MASDEPT(NSICLM)
+!> @brief
+C CV: masse du lit sedimentaire pour bilan mixte et cohesif
+!     FOR MASS BALANCE OF COHESIVE SEDIMENT AND MIXTE
+      DOUBLE PRECISION :: MASVT,MASV0,MASST,MASS0
+!..
 !!> @brief FOR NON-EQUILIBIRUM BEDLOAD
 C
       DOUBLE PRECISION :: LS0
@@ -1124,7 +1126,7 @@ C
 !
 !     FOR MASS BALANCE OF COHESIVE SEDIMENT
 !
-      DOUBLE PRECISION :: MASV0,MASVT
+      DOUBLE PRECISION :: MASBED0,MASBED
 !
 !
 !-----------------------------------------------------------------------
