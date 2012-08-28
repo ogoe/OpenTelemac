@@ -728,12 +728,12 @@ C
         IF(NDEBIT.GE.IFRLIQ) THEN
           IF(NCSIZE.GT.1) YADEB(IFRLIQ)=P_IMAX(YADEB(IFRLIQ))
            IF(YADEB(IFRLIQ).EQ.1) THEN 
-           CALL DEBIMP3D(Q3(IFRLIQ,AT,INFOGR),
-     &                   UBORL%R,VBORL%R,WBORL%R,
-     &                   U,V,H,NUMLIQ%I,IFRLIQ,T3_01,T3_02,T3_03,
-     &                   NPTFR2,NETAGE,MASK%ADR(MSK1)%P%R,
-     &                   MESH3D,EQUA,NPOIN2,
-     &                   IELM2V,SIGMAG,SVIDE,MASKBR,ZPROP)     
+           CALL DEBIMP_3D(Q3(IFRLIQ,AT,INFOGR),
+     &                    UBORL%R,VBORL%R,WBORL%R,
+     &                    U,V,NUMLIQ%I,NUMLIQ_ELM%I,IFRLIQ,T3_02,
+     &                    NPTFR2,NETAGE,MASK_3D%ADR(MSK1)%P,
+     &                    MESH3D,EQUA,IELM2V,SVIDE,MASKTR,
+     &                    MESH3D%NELEB)    
            ENDIF
           ELSE
           IF(LNG.EQ.1) WRITE(LU,400) IFRLIQ
