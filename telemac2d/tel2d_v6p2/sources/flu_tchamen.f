@@ -42,11 +42,10 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSG,J,IVAR,IS,K,ILIM 
+      INTEGER IVAR 
 !
-      DOUBLE PRECISION VNX,VNY,VNL,ZF1,ZF2
+      DOUBLE PRECISION ZF1,ZF2
       DOUBLE PRECISION FLUIJ_20
-      DOUBLE PRECISION SIGMAX,UNORM
 !
       INTEGER CHOICE_D
       DOUBLE PRECISION GSUR2,DIJS2

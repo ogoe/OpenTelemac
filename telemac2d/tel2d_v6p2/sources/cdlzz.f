@@ -3,8 +3,7 @@
 !                       ****************
 !
      &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
-     & HBOR,UBOR,VBOR,W,CE,FLUENT,FLUSORT,
-     & FLBOR,DTHAUT,DT,CFL,EPS,ZF,WINF)
+     & W,CE,FLUENT,FLUSORT,FLBOR,EPS,ZF,WINF)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6.1                                     03/15/2011
@@ -28,16 +27,10 @@
 !|  KDIR          |-->|  CONVENTION FOR DIRICHLET POINTS
 !|  KNEU          |-->|  CONVENTION FOR NEUMANN POINTS
 !|  G             |-->|  GRAVITY CONSTANT
-!|  HBOR          |-->|  IMPOSED VALUES FOR H
-!|  UBOR          |-->|  IMPOSED VALUES FOR U
-!|  VBOR          |-->|  IMPOSED VALUES FOR V
 !|  W             |-->|  UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
 !|  CE            |<->|  FLUX 
 !|  FLUENT,FLUSORT|<--|  IN AND OUT MASS FLUX
 !|  FLBOR         |<--|  IN AND OUT WATER MASS FLUX
-!|  DTHAUT        |-->|  CHARACTERISTIC LENGTH (DX) FOR CFL
-!|  DT            |<->|  TIME STEP
-!|  CFL           |-->|  CFL NUMBER
 !|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
 !|  ZF            |-->|  BATHYMETRY
 !|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS 
@@ -54,10 +47,9 @@
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,KDDL
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),W(3,NS),DTHAUT(*)
-      DOUBLE PRECISION, INTENT(IN)    :: UBOR(NPTFR),VBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: G,CFL,EPS,ZF(NS)
-      DOUBLE PRECISION, INTENT(IN)    :: DT,WINF(3,NPTFR)
+      DOUBLE PRECISION, INTENT(IN)    :: W(3,NS)
+      DOUBLE PRECISION, INTENT(IN)    :: G,EPS,ZF(NS)
+      DOUBLE PRECISION, INTENT(IN)    :: WINF(3,NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLBOR
 !
@@ -66,7 +58,7 @@
       INTEGER IS,K,NIT,IDRY    
 !    
       DOUBLE PRECISION VNX,VNY,XNN,YNN,VNL
-      DOUBLE PRECISION :: FLXI(3),FLXJ(3),H1,U10,U1,V1,ETA1,FLUIJ_20
+      DOUBLE PRECISION :: FLXI(3),FLXJ(3),H1,U10,U1,V1,ETA1
       DOUBLE PRECISION :: H2,ETA2,U2,V2
       DOUBLE PRECISION :: INFLOW,OUTFLOW
 !

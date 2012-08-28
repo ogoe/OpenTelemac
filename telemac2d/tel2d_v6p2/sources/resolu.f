@@ -216,7 +216,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC,FCHOICE,ERR
+      INTEGER I,IS,K,ICIN,IVIS,NORDRE,ITRAC
 !
       DOUBLE PRECISION XNC,W1,DMIN,BETA,TEST
 !                                                                       
@@ -479,9 +479,9 @@ C
 !
 ! TIME INTEGRATION 
 !
-      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
+      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU)     
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)     
 !
 !-----------------------------------------------------------------------
 !
@@ -668,22 +668,21 @@ C
 !-----------------------------------------------------------------------
 ! FLUX COMPUTATION
 
-      CALL FLUXZZ(NPOIN,NSEG,NUBO,G,X,Y,W,ZF,VNOIN,FLUX,AIRS)
+      CALL FLUXZZ(NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,FLUX)
 
 !BOUNDARY CONDITIONS
 
        CALL CDLZZ(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,G,HBOR,UBOR,VBOR,W,FLUX,FLUENT,FLUSORT,
-     &             FLBOR,DTHAUT,
-     &             DT,CFLWTD,EPS,ZF,WINF)
+     &             KDDL,G,W,FLUX,FLUENT,FLUSORT,
+     &             FLBOR,EPS,ZF,WINF)
 !
 !-----------------------------------------------------------------------
 !
 ! TIME INTEGRATION 
 !
-      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
+      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &          HN,QU,QV,LT,GAMMA,
-     &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU) 
+     &          NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G) 
 !
 !-----------------------------------------------------------------------
 
@@ -771,7 +770,7 @@ C-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 ! FLUX COMPUTATION
 
-      CALL FLUX_TCH(NPOIN,NSEG,NUBO,G,X,Y,W,ZF,VNOIN,FLUX,AIRS)
+      CALL FLUX_TCH(NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,FLUX)
 
 !BOUNDARY CONDITIONS
 
@@ -784,9 +783,9 @@ C-----------------------------------------------------------------------
 !
 ! TIME INTEGRATION 
 !
-      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
+      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU)     
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)     
 !
 !
 !-----------------------------------------------------------------------
@@ -871,22 +870,20 @@ C-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !  FLUX COMPUTATION
 !
-      CALL HYD_HLLC(NPOIN,NSEG,NUBO,G,X,Y,W,ZF,VNOIN,FLUX,AIRS)
+      CALL HYD_HLLC(NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,FLUX)
 !
 ! BOUNDARY CONDITIONS
 !
        CALL CDL_HLLC(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,G,HBOR,UBOR,VBOR,W,FLUX,FLUENT,FLUSORT,
-     &             FLBOR,DTHAUT,
-     &             DT,CFLWTD,EPS,ZF,WINF)
+     &             KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,EPS,WINF)
 !
 !-----------------------------------------------------------------------
 !
 !  TIME INTEGRATION 
 !                                                                       
-      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
+      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU)     
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)     
 !
 !
 !-----------------------------------------------------------------------
@@ -983,22 +980,20 @@ C-----------------------------------------------------------------------
 !  FLUX COMPUTATION
        CALL HYD_WAF
 !
-     &    (NPOIN,NSEG,NUBO,G,X,Y,W,ZF,VNOIN,DT,DTHAUT,
-     &     FLUX,AIRS,NEISEG)
+     &    (NPOIN,NSEG,NUBO,G,W,ZF,VNOIN,DT,DTHAUT,FLUX,NEISEG)
 !
 ! BOUNDARY CONDITIONS
 !
        CALL CDL_WAF(NPOIN,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,
-     &             KDDL,G,HBOR,UBOR,VBOR,W,FLUX,FLUENT,FLUSORT,
-     &             FLBOR,DTHAUT,DT,CFLWTD,EPS,ZF,WINF)
+     &             KDDL,W,FLUX,FLUENT,FLUSORT,FLBOR,DTHAUT,DT,EPS,WINF)
 !
 !-----------------------------------------------------------------------
 !
 !  TIME INTEGRATION 
 !
-      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
+      CALL MAJZZ(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      &           HN,QU,QV,LT,GAMMA,
-     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU)
+     &           NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
 !
 !-----------------------------------------------------------------------
 !

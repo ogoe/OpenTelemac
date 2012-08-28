@@ -2,7 +2,7 @@
                         SUBROUTINE HYD_WAF
 !                       *******************
 
-     &(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,DT,DTHAUT,CE,AIRS,NEISEG)
+     &(NS,NSEG,NUBO,G,W,ZF,VNOCL,DT,DTHAUT,CE,NEISEG)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6P2                                          R. ATA
@@ -22,16 +22,13 @@
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
 ! !  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |
-! |  G             | -->|  GRAVITY                                     |
-! |  X,Y           | -->|  COORDINATES OF NODES                        |
+! |  G             | -->|  GRAVITY                                     |                    |
 ! |  W             | -->|  W(1,IS) = H,  W(2,IS)=U  ,W(3,IS)=V         |
 ! |  ZF            | -->|  BATHYMETRIES                                |
 ! !  VNOCL         | -->|  OUTWARD UNIT NORMALS                        |
 ! !                |    |   (2 FIRST COMPONENTS) AND                   |
 ! !                |    |   SEGMENT LENGTH  (THIRD COMPONENT)          |
-! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |
-! |                |    |                                              |
-! |  AIRS          | -->|  AREA OF CELLS                               |
+! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |                          |
 ! |  NEISEG        | -->|   NEIGBOR OF THE SEGMENT                     |
 ! !________________|____|______________________________________________|
 !  MODE: -->( UNCHANGEABLE INPUT ),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
@@ -50,31 +47,25 @@
 !
       INTEGER, INTENT(IN) :: NS,NSEG
       INTEGER, INTENT(IN) :: NUBO(2,NSEG),NEISEG(2,NSEG)
-      DOUBLE PRECISION, INTENT(IN)    :: X(NS),Y(NS)
-      DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG),AIRS(*)
+      DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG)
       DOUBLE PRECISION, INTENT(IN)    :: G,W(3,NS)
       DOUBLE PRECISION, INTENT(IN)    :: DTHAUT(*)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),DT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSG,NUBO1,NUBO2,J,IVAR,IS,K,IDRY     
+      INTEGER    :: NSG,NUBO1,NUBO2,IVAR,IS,IDRY  
+      INTEGER    :: NUBOL,NUBOR,SEG1,SEG2
 !
-      DOUBLE PRECISION VNX,VNY,VNL,ZF1,ZF2,XNN,YNN,RNN
-      DOUBLE PRECISION V21,V22,V31,V32,U10
-      DOUBLE PRECISION HI,HI0,HIJ,CIJ,V210,V220
-      DOUBLE PRECISION HJ,HJ0,HJI,CJI,DZIJ,DZJI,Z_STAR_IJ
-      DOUBLE PRECISION HGZI,HGZJ,HDXZ1,HDYZ1,HDXZ2,HDYZ2
-      DOUBLE PRECISION FLU11,FLUIJ_2,FLUIJ_3,FLU12,FLU22
-      DOUBLE PRECISION FLUIJ_20,DX
-      DOUBLE PRECISION SIGMAX,UNORM
-!
-      DOUBLE PRECISION      :: HL_UP,HR_UP
-      DOUBLE PRECISION      :: VL_UP,VR_UP
-      DOUBLE PRECISION      :: PSIL_UP,PSIR_UP
-      INTEGER               :: NUBOL,NUBOR,SEG1,SEG2
-!
-      DOUBLE PRECISION FLUIJ_1,H1,H2,EPS,FLX(4)
+      DOUBLE PRECISION :: H1,H2,EPS,FLX(4)
+      DOUBLE PRECISION :: ZF1,ZF2,XNN,YNN,RNN
+      DOUBLE PRECISION :: V21,V22,V31,V32,DX
+      DOUBLE PRECISION :: HIJ,HJI,DZIJ,DZJI,Z_STAR_IJ
+      DOUBLE PRECISION :: HGZI,HGZJ,HDXZ1,HDYZ1,HDXZ2,HDYZ2
+      DOUBLE PRECISION :: HL_UP,HR_UP
+      DOUBLE PRECISION :: VL_UP,VR_UP
+      DOUBLE PRECISION :: PSIL_UP,PSIR_UP
+
 !  XI = X/T, AT THE (X,T) DIAGRAMM, WE COMPUETE THE FLUX AT XI = 0
       DOUBLE PRECISION,PARAMETER :: XI=0.0D0
 ! PSI1 AND PSI2 ARE TRACER 

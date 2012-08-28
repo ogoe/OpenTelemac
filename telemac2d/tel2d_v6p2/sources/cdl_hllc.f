@@ -2,10 +2,8 @@
                         SUBROUTINE CDL_HLLC
 !                       ********************                             
 !                                                                       
-     &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,G,
-     & HBOR,UBOR,VBOR,W,CE,FLUENT,FLUSORT,
-     & FLBOR,DTHAUT,DT,CFL,EPS,
-     & ZF,WINF)
+     &(NS,NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KDIR,KNEU,KDDL,
+     & W,CE,FLUENT,FLUSORT,FLBOR,EPS,WINF)
 !                                                                       
 !
 !***********************************************************************
@@ -29,19 +27,11 @@
 !|  XNEBOR,YNEBOR |-->|  UNIT OUTWARD NORMAL COMPONENTS AT BOUNDARY POINTS
 !|  KDIR          |-->|  CONVENTION FOR DIRICHLET POINTS
 !|  KNEU          |-->|  CONVENTION FOR NEUMANN POINTS
-!|  G             |-->|  GRAVITY CONSTANT
-!|  HBOR          |-->|  IMPOSED VALUES FOR H
-!|  UBOR          |-->|  IMPOSED VALUES FOR U
-!|  VBOR          |-->|  IMPOSED VALUES FOR V
 !|  W             |-->|  UA(1,IS) = H,  UA(2,IS)=U  ,UA(3,IS)=V
 !|  CE            |<->|  FLUX 
 !|  FLUENT,FLUSORT|<--|  IN AND OUT MASS FLUX
 !|  FLBOR         |<--|  IN AND OUT WATER MASS FLUX
-!|  DTHAUT        |-->|  CHARACTERISTIC LENGTH (DX) FOR CFL
-!|  DT            |<->|  TIME STEP
-!|  CFL           |-->|  CFL NUMBER
 !|  EPS           |-->|  TOLERANCE FOR WATER DEPTH DIVISION 
-!|  ZF            |-->|  BATHYMETRY
 !|  WINF          |-->|  PRESCRIBED BOUNDARY CONDITIONS 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -56,19 +46,17 @@
       INTEGER, INTENT(IN)             :: NS,NPTFR,KDIR,KNEU,KDDL
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: HBOR(NPTFR),W(3,NS),DTHAUT(*)
-      DOUBLE PRECISION, INTENT(IN)    :: UBOR(NPTFR),VBOR(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: G,CFL,EPS,ZF(NS)
-      DOUBLE PRECISION, INTENT(INOUT) :: DT,WINF(3,NPTFR)
+      DOUBLE PRECISION, INTENT(IN)    :: W(3,NS),EPS
+      DOUBLE PRECISION, INTENT(INOUT) :: WINF(3,NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3),FLUENT,FLUSORT
       TYPE(BIEF_OBJ) , INTENT(INOUT)  :: FLBOR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IS,K,NIT,IDRY    
+      INTEGER IS,K,IDRY    
 !    
-      DOUBLE PRECISION VNX,VNY,XNN,YNN,VNL
-      DOUBLE PRECISION :: FLX(4),H1,U10,U1,V1,FLUIJ_20
+      DOUBLE PRECISION :: VNX,VNY,XNN,YNN,VNL
+      DOUBLE PRECISION :: FLX(4),H1,U10,U1,V1
       DOUBLE PRECISION :: H2,U2,V2
       DOUBLE PRECISION :: INFLOW,OUTFLOW
       DOUBLE PRECISION,PARAMETER ::XI=0.0D0

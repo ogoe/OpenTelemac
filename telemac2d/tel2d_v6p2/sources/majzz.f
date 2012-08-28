@@ -2,9 +2,9 @@
                         SUBROUTINE MAJZZ  
 !                       ****************
 !  
-     &(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,ZF,CF,EPS,KFROT,SMH,
+     &(W,FLUX,FLUX_OLD,AIRS,DT,NPOIN,CF,KFROT,SMH,
      & HN,QU,QV,LT,GAMMA,
-     & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU)
+     & NPTFR,NBOR,LIMPRO,XNEBOR,YNEBOR,KNEU,G)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                         03/15/2011
@@ -21,28 +21,27 @@
 !+        03/15/2011
 !+        V6P1
 !+    CHANGE EXPLICIT EULER BY NEWMARK SCHEME
-!+     GAMMA FIXES THE SCHEME ACCURACY (SEE BELOW) 
+!+    GAMMA FIXES THE SCHEME ACCURACY (SEE BELOW) 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!|  W             |<--|  (H,HU,HV)
+!|  AIRS          |-->|  CELL AREAS
+!|  CF            |-->|  FRICTION COEFFICIENTS
+!|  DT            |-->|  TIME STEP
 !|  FLUX          |-->|  FLUX AT TN+1
 !|  FLUX_OLD      |-->|  FLUX AT TN
-!|  AIRS          |-->|  CELL AREAS
-!|  DT            |-->|  TIME STEP
-!|  NPOIN         |-->|  TOTAL NUMBER OF NODES
-!|  ZF            |-->|  BATHYMETRIES
-!|  CF            |-->|  FRICTION COEFFICIENTS
-!|  EPS           |-->|  TOLERANCE FOR WATER DEPTH
-!|  KFROT         |-->|  LOGICAL! FRICTION OR NO FRICTION
-!|  SMH           |-->|  MASS SOURCE
-!|  HN,QU;QV      |-->|  H, HU AND HV AT TN
-!|  LT            |-->|  CURRENT TIME ITERATION 
+!|  G             |-->|  GRAVITY
 !|  GAMMA         |-->|  NEWMARK PARAMETER (SEE BELOW)
-!|  NPTFR         |-->|  TOTAL NUMNER OF BOUNDARY NODES
-!|  NBOR          |-->|  GLOBAL INDEX OF BOUNDARY NODES
-!|  LIMPRO        |-->|  BC TYPE
-!|  XNEBOR,YNEBOR |-->|  X AND Y COMPONENT OF THE OUTWARD UNIT NORMAL
+!|  HN,QU;QV      |-->|  H, HU AND HV AT TN
+!|  KFROT         |-->|  LOGICAL! FRICTION OR NO FRICTION
 !|  KNEU          |-->|  CONVENTION FOR NEUMANN POINT
+!|  LIMPRO        |-->|  BC TYPE
+!|  LT            |-->|  CURRENT TIME ITERATION 
+!|  NBOR          |-->|  GLOBAL INDEX OF BOUNDARY NODES
+!|  NPOIN         |-->|  TOTAL NUMBER OF NODES
+!|  NPTFR         |-->|  TOTAL NUMNER OF BOUNDARY NODES
+!|  SMH           |-->|  MASS SOURCE
+!|  XNEBOR,YNEBOR |-->|  X AND Y COMPONENT OF THE OUTWARD UNIT NORMAL
+!|  W             |<--|  (H,HU,HV)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -56,18 +55,19 @@
       INTEGER, INTENT(IN)             :: NBOR(NPTFR),LIMPRO(NPTFR,6)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
       DOUBLE PRECISION, INTENT(INOUT) :: W(3,NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: FLUX(NPOIN,3),DT,EPS
+      DOUBLE PRECISION, INTENT(IN)    :: FLUX(NPOIN,3),DT
       DOUBLE PRECISION, INTENT(IN)    :: FLUX_OLD(NPOIN,3),GAMMA
-      DOUBLE PRECISION, INTENT(IN)    :: AIRS(NPOIN),ZF(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AIRS(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: CF(NPOIN),SMH(NPOIN) 
       DOUBLE PRECISION, INTENT(IN)    :: HN(NPOIN),QU(NPOIN),QV(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: G
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
       INTEGER I 
 ! 
       DOUBLE PRECISION FACT,UNMGAMMA
-      DOUBLE PRECISION, PARAMETER :: G = 9.81D0
+
 !
 !=======================
 !---- TEST FOR DT
@@ -133,7 +133,7 @@
            WRITE(LU,*) 'MAJZZ: ERREUR: COEFFICIENT DE NEWMARK DOIT ...'
            WRITE(LU,*) '... ETRE ENTRE 0 ET 1: ',GAMMA
         ELSEIF(LNG.EQ.2) THEN 
-           WRITE(LU,*) 'MAJZZ: ERROR:NEMARK COEFFICIENT MUST...'
+           WRITE(LU,*) 'MAJZZ: ERROR:NEWMARK COEFFICIENT MUST...'
            WRITE(LU,*) '... BE BETWEEN 0 AND 1: ',GAMMA
         ENDIF
         CALL PLANTE(1)

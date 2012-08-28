@@ -2,7 +2,7 @@
                      SUBROUTINE FLUX_TCH
 !                    *******************
 !
-     &(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
+     &(NS,NSEG,NUBO,G,W,ZF,VNOCL,CE)
 !
 !***********************************************************************
 ! TELEMAC-2D VERSION 6.2                                     03/15/2011
@@ -16,18 +16,21 @@
 !+        06/01/2012
 !+        V6P1
 !+
+!history  R. ATA (EDF-LNHE)
+!+        28/08/2012
+!+        V6P2 
+!+     cleaning up unused variables
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|  NS            |-->|  TOTAL NUMBER OF NODES
 !|  NSEG          |-->|  TOTAL NUMBER OF EDGES
 !|  NUBO          |-->|  GLOBAL NUMBERS (INDEX) OF EDGE EXTREMITIES
 !|  G             |-->|  GRAVITY CONSTANT
-!|  X,Y           |-->|  X AND Y COORDINATES
 !|  W             |-->|  (H,HU,HV)
 !|  ZF            |-->|  BATHYMETRIES
 !|  VNOCL         |-->|  OUTWARD UNIT NORMAL (XNN,YNN, SEGMENT LENGTH)
 !|  CE            |<--|  FLUX INCREMENT
-!|  AIRS          |-->|  CELL AREAS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -41,25 +44,19 @@
 !
       INTEGER, INTENT(IN)             :: NS,NSEG
       INTEGER, INTENT(IN)             :: NUBO(2,NSEG)
-      DOUBLE PRECISION, INTENT(IN)    :: X(NS),Y(NS)
-      DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG),AIRS(*)
+      DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG)
       DOUBLE PRECISION, INTENT(IN)    :: G,W(3,NS)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSG,NUBO1,NUBO2,J,IVAR,IS,K,IDRY     
+      INTEGER NSG,NUBO1,NUBO2,IVAR,IS,IDRY     
 !
-      DOUBLE PRECISION VNX,VNY,VNL,ZF1,ZF2,XNN,YNN,RNN
+      DOUBLE PRECISION ZF1,ZF2,XNN,YNN,RNN
       DOUBLE PRECISION V21,V22,V31,V32
-      DOUBLE PRECISION HI,HI0,HIJ,CIJ,V210,V220
-      DOUBLE PRECISION HJ,HJ0,HJI,CJI,DZIJ,DZJI
-      DOUBLE PRECISION FLU11,FLUIJ_2,FLUIJ_3,FLU12,FLU22
-      DOUBLE PRECISION FLUIJ_20
-      DOUBLE PRECISION SIGMAX,UNORM
 !
-      DOUBLE PRECISION FLUIJ_1,H1,H2,EPS,FLXI(3),FLXJ(3)
-      DOUBLE PRECISION ETA1,ETA2,U_IJ,D_IJ,C_IJ,C_I,C_J
+      DOUBLE PRECISION H1,H2,EPS,FLXI(3),FLXJ(3)
+      DOUBLE PRECISION ETA1,ETA2
 !
 !-----------------------------------------------------------------------
 !

@@ -2,7 +2,7 @@
                         SUBROUTINE HYD_HLLC
 !                       *******************
 
-     &(NS,NSEG,NUBO,G,X,Y,W,ZF,VNOCL,CE,AIRS)
+     &(NS,NSEG,NUBO,G,W,ZF,VNOCL,CE)
 !
 !***********************************************************************
 ! TELEMAC 2D VERSION 6.2                                         R. ATA
@@ -22,8 +22,7 @@
 ! |  NS            | -->|  NUMBER OF TOTAL MESH NODES                  |
 ! |  NSEG          | -->|  NUMBER OF TOTAL MESH EDGES                  |
 ! !  NUBO          ! -->!  GLOBAL NUMBER OF EDGE EXTREMITIES           |
-! |  G             | -->|  GRAVITY                                     |
-! |  X,Y           | -->|  COORDINATES OF NODES                        |
+! |  G             | -->|  GRAVITY                                     |                    |
 ! |  W             | -->|  W(1,IS) = H,  W(2,IS)=U  ,W(3,IS)=V         |
 ! |  ZF            | -->|  BATHYMETRIES                                |
 ! |  VNOCL         | -->|  OUTWARD UNIT NORMALS                        |
@@ -31,7 +30,6 @@
 ! |                |    |   SEGMENT LENGTH  (THIRD COMPONENT)          |
 ! |  CE            |<-->|  FLUX  INCREMENTS AT INTERNAL FACES          |
 ! |                |    |                                              |
-! |  AIRS          | -->|  AREA OF CELLS                               |
 ! !________________|____|______________________________________________!
 !  MODE: -->( UNCHANGEABLE INPUT ),<--(OUTPUT),<-->(CHANGEABLE INPUT)   
 !-----------------------------------------------------------------------
@@ -49,21 +47,19 @@
 !
       INTEGER, INTENT(IN) :: NS,NSEG
       INTEGER, INTENT(IN) :: NUBO(2,NSEG)
-      DOUBLE PRECISION, INTENT(IN)    :: X(NS),Y(NS)
-      DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG),AIRS(*)
+      DOUBLE PRECISION, INTENT(IN)    :: ZF(NS),VNOCL(3,NSEG)
       DOUBLE PRECISION, INTENT(IN)    :: G,W(3,NS)
       DOUBLE PRECISION, INTENT(INOUT) :: CE(NS,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSG,NUBO1,NUBO2,J,IVAR,IS,K,IDRY   
+      INTEGER NSG,NUBO1,NUBO2,IVAR,IS,IDRY   
 !
-      DOUBLE PRECISION VNX,VNY,VNL,ZF1,ZF2,XNN,YNN,RNN
-      DOUBLE PRECISION V21,V22,V31,V32,U10
-      DOUBLE PRECISION HI,HI0,HIJ,CIJ,V210,V220
-      DOUBLE PRECISION HJ,HJ0,HJI,CJI,DZIJ,DZJI,Z_STAR_IJ
+      DOUBLE PRECISION ZF1,ZF2,XNN,YNN,RNN
+      DOUBLE PRECISION V21,V22,V31,V32
+      DOUBLE PRECISION HIJ
+      DOUBLE PRECISION HJI,DZIJ,DZJI
       DOUBLE PRECISION HGZI,HGZJ,HDXZ1,HDYZ1,HDXZ2,HDYZ2
-      DOUBLE PRECISION ZR,ETA1,ETA2
 !
       DOUBLE PRECISION H1,H2,EPS,FLX(4)
       LOGICAL          ROT
