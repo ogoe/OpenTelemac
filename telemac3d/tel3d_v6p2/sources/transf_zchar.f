@@ -82,7 +82,7 @@
             WRITE(LU,*) 'LE MOT-CLE TRANSFORMATION DU MAILLAGE'
             WRITE(LU,*) 'DEVRAIT ETRE EGAL A ',ITRA
           ENDIF
-          IF(LNG.EQ.21) THEN
+          IF(LNG.EQ.2) THEN
             WRITE(LU,*) 'TRANSF_ZCHAR:'
             WRITE(LU,*) 'THE KEYWORD MESH TRANSFORMATION'
             WRITE(LU,*) 'SHOULD BE EQUAL TO ',ITRA
