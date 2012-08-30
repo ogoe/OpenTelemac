@@ -125,26 +125,26 @@
 !-----------------------------------------------------------------------
 !    EXAMPLE FOR NOMBLAY = 10
 !
-!     EPAI_VASE(1)=0.0525D0
-!     EPAI_VASE(2)=0.0385D0
-!     EPAI_VASE(3)=0.03995D0
-!     EPAI_VASE(4)=0.0437D0
-!     EPAI_VASE(5)=0.0517D0
-!     EPAI_VASE(6)=0.1259D0
-!     EPAI_VASE(7)=0.4889D0
-!     EPAI_VASE(8)=1.5071D0
-!     EPAI_VASE(9)=0.86410D0
-!     EPAI_VASE(9)=0.80D0
+!      EPAI_VASE(1)=0.0525D0
+!      EPAI_VASE(2)=0.0385D0
+!      EPAI_VASE(3)=0.03995D0
+!      EPAI_VASE(4)=0.0437D0
+!      EPAI_VASE(5)=0.0517D0
+!      EPAI_VASE(6)=0.1259D0
+!      EPAI_VASE(7)=0.4889D0
+!      EPAI_VASE(8)=1.5071D0
+!      EPAI_VASE(9)=0.86410D0
+!      EPAI_VASE(9)=0.80D0
 !          
 !
 !     HERE A CONSTANT
 !
-!!      DO J= 1,NOMBLAY
-!!        EPAI_VASE(J) = 0.1D0
-!        IF(NSICLA.GT.1) THEN
-!          EPAI_SABLE(J) = AVA0(1)/AVA0(2)*EPAI_VASE(J)
-!        ENDDO
-!!      ENDDO
+      DO J= 1,NOMBLAY
+         EPAI_VASE(J) = 1.0D0
+         IF(NSICLA.GT.1) THEN
+            EPAI_SABLE(J) = AVA0(1)/AVA0(2)*EPAI_VASE(J)
+         ENDIF
+      ENDDO
 !-----------------------------------------------------------------------
 !
 !     INITIALISING OF LAYER THICKNESS AND CONC 
@@ -162,17 +162,18 @@
           ES(I,J)   = EPAI_VASE(J)
 !          print*, I, J, CONC(I,J), ES(I,J)
 !
-!          IF(NSICLA.GT.1) THEN
-!              ES(I,J)= ES(I,J) + EPAI_SABLE(J)
-!              IF(ES(I,J).GE.1.D-6) THEN
-! Class 1 is for sand, class 2 is mud
-!                AVAIL(I,J,1)= EPAI_SABLE(J)/ES(I,J)
-!                AVAIL(I,J,2)= EPAI_VASE(J)/ES(I,J)
-!             ELSE
-!              AVAIL(I,J,1)= 0.D0
-!              AVAIL(I,J,2)= 0.D0
-!             ENDIF
-!
+          IF(NSICLA.GT.1) THEN
+              ES(I,J)= ES(I,J) + EPAI_SABLE(J)
+               IF(ES(I,J).GE.1.D-6) THEN
+!! Class 1 is for sand, class 2 is mud
+                 AVAIL(I,J,1)= EPAI_SABLE(J)/ES(I,J)
+                 AVAIL(I,J,2)= EPAI_VASE(J)/ES(I,J)
+              ELSE
+               AVAIL(I,J,1)= 0.D0
+              AVAIL(I,J,2)= 0.D0
+              ENDIF
+           ENDIF
+!!
          ENDDO
       ENDDO
 !
