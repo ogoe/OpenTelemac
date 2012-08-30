@@ -28,6 +28,7 @@
 """@history 10/07/2012 -- Christophe Coulet
          Addition of a specific test and management of long lines because some
          variables, such as the path could be greater than 72 characters.
+         Update (FD,30/08/212) : '<73' changed to '<72' (bug in 015_bosse_mixte)
 """
 """@brief
 """
@@ -164,10 +165,10 @@ def rewriteCAS(cas):
             for i in range(len(str(val[0]))/65+1):
                lcur = lcur + '    ' + ( str(val[0])+65*' ' )[65*i:65*i+65] + '\n'
       for v in val[1:]:
-         if len(lcur + ';'+str(v)) < 73:
+         if len(lcur + ';'+str(v)) < 72:
             lcur = lcur + ';'+str(v)
          else:
-            if len(lcur) < 73:
+            if len(lcur) < 72:
                line = line + lcur + ';\n'
                lcur = '    '+str(v)
             else:  '... warning: CAS file cannot read this value: ',lcur
