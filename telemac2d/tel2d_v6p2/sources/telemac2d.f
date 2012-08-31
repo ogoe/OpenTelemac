@@ -698,7 +698,7 @@
 !  INITIALISES PARAMETERS SPECIFIC TO FINITE VOLUMES
 !
 !-----------------------------------------------------------------------
-!
+!   
       IF(EQUA(1:15).EQ.'SAINT-VENANT VF') THEN
 !
         CALL OS( 'X=YZ    ' , QU , U , H , C )

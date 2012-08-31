@@ -977,6 +977,21 @@
       IF (EQUA(1:15).EQ.'SAINT-VENANT FV') EQUA(14:15)='VF'
 !
 !-----------------------------------------------------------------------
+!  NO PARALLELISME YET FOR FV
+!-----------------------------------------------------------------------
+!
+      IF(EQUA(1:15).EQ.'SAINT-VENANT VF'.AND.NCSIZE.GT.1) THEN
+        WRITE(LU,*)'++++++++++++++++++++++++++++++++++++++++++++++++++'
+        IF(LNG.EQ.1) WRITE(LU,1) NCSIZE
+        IF(LNG.EQ.2) WRITE(LU,2) NCSIZE
+1       FORMAT(1X,'NPROC =',1I6,' PARALLELISME NON DISPONIBLE POUR VF')
+2       FORMAT(1X,'NPROC =',1I6,' PARALLEL OPTION NOT AVAILABLE FOR FV')
+         WRITE(LU,*)'++++++++++++++++++++++++++++++++++++++++++++++++++'
+        CALL PLANTE(1)
+        STOP
+       
+      ENDIF
+!-----------------------------------------------------------------------
 !  NAME OF THE VARIABLES FOR THE RESULTS AND GEOMETRY FILES:
 !-----------------------------------------------------------------------
 !
