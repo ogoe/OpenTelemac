@@ -23,8 +23,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  R. KOPMANN, U.MERKEL
-!         20/03/2011
-!         V6P1 
+!+         20/03/2011
+!+         V6P1
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELMU          |-->| TYPE OF ELEMENT FOR VELOCITY

@@ -15,6 +15,7 @@
 !+        22/04/2011
 !+        V6P1
 !+
+!
 !history  C-T PHAM (LNHE)
 !+        16/05/2012
 !+        V6P2
@@ -22,7 +23,8 @@
 !
 !history  U.H.Merkel
 !+        18/07/2012
-!+        V6P2 - NAG doesn't like EPSILON -> renamed to EPSI
+!+        V6P2
+!+  NAG doesn't like EPSILON -> renamed to EPSI
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LAMBDATAB      |<--| LONGITUDE (DECIMAL DEGREES)

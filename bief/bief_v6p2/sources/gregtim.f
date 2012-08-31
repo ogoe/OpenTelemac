@@ -29,7 +29,7 @@
 !history  U.H.Merkel
 !+        19/07/2012
 !+        V6P2
-!         Renamed MIN -> MINU because of Problems with NAG Compiler
+!+        Renamed MIN -> MINU because of Problems with NAG Compiler
 !
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

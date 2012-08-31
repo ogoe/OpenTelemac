@@ -1005,14 +1005,15 @@ def parseDoxyWrap(lines):
    # ~~ Clean the wrap ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # remove the the last item of the wrap,
    # which is empty since it gets set just after the pcl_close
-   wrap.pop(len(wrap)-1)
+   ##>wrap.pop(len(wrap)-1)
 
    # ~~ Parse the DOXYGEN tags ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    doxy = []; name = ''
    for w in wrap:
-      n,d = parseDoxyHeader(w)
-      if name == '': name = n   #/!\ here takes the first name of the file
-      doxy.extend([(name,n,d,w)])
+      if w != []:
+         n,d = parseDoxyHeader(w)
+         if name == '': name = n   #/!\ here takes the first name of the file
+         doxy.extend([(name,n,d,w)])
 
    return doxy
 

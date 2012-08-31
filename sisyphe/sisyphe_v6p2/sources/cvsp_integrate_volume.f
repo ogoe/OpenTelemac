@@ -1,5 +1,5 @@
 !        ************************************************
-         double precision Function CVSP_INTEGRATE_VOLUME
+         DOUBLE PRECISION FUNCTION CVSP_INTEGRATE_VOLUME
 !        ************************************************
 !
      &(J,I,Z_HIGH,Z_LOW,a)
@@ -14,6 +14,8 @@
 !
 !history  UWE MERKEL
 !+        2011
+!+
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX of a POINT in MESH
@@ -282,4 +284,4 @@
 !
 !
         RETURN
-      END Function CVSP_INTEGRATE_VOLUME
+      END FUNCTION CVSP_INTEGRATE_VOLUME

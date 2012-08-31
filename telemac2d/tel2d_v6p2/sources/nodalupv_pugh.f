@@ -18,7 +18,8 @@
 !
 !history  U.H.Merkel
 !+        18/07/2012
-!+        V6P2 - NAG doesn't like DINT
+!+        V6P2
+!+   NAG doesn't like DINT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MARDAT         |-->| DATE (YEAR, MONTH,DAY)

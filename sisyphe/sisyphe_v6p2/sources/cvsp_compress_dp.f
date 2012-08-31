@@ -9,13 +9,15 @@
 !
 !brief    Compresses a Vertical Sorting Profile in Point J to prevent
 !+        extensiv groth of section / node numbers
-!
-!         With a douglas Peuker like Algorithm
-!         The algorithm is modified: instead from "Point to Line Distances"
-!          to the "Sum of Fraction Errors" !!!
+!+
+!+         With a douglas Peuker like Algorithm
+!+         The algorithm is modified: instead from "Point to Line Distances"
+!+          to the "Sum of Fraction Errors" !!!
 !
 !history  UWE MERKEL
 !+        2011-07-20
+!+
+!+
 !
 !!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX of a POINT in MESH

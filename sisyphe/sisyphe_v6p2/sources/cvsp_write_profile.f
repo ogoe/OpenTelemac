@@ -10,12 +10,14 @@
 !
 !history  UWE MERKEL
 !+        2011-07-20
+!+
+!+
 !
 !history  PAT (Pablo Tassi)
 !+        2012-08-24
-!
-! add WRITE(LU,*)
-! + secure programming
+!+
+!+ add WRITE(LU,*)
+!+ secure programming
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| -              |---|

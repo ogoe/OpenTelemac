@@ -1,5 +1,5 @@
 !                    ************************
-                     LOGICAL Function CVSP_CHECK_F
+                     LOGICAL FUNCTION CVSP_CHECK_F
 !                    ************************
 !
      &(J,K, SOMETEXT)
@@ -13,6 +13,8 @@
 !
 !history  UWE MERKEL
 !+        2011-08-19
+!+        V6P2
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX of a POINT in MESH
@@ -98,4 +100,4 @@
 !
 
         RETURN
-      END Function CVSP_CHECK_F
+      END FUNCTION CVSP_CHECK_F

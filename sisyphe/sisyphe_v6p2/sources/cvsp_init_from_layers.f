@@ -1,5 +1,5 @@
 !                    **********************************
-                     SUBROUTINE CVSP_INIT_from_LAYERS()
+                     SUBROUTINE CVSP_INIT_FROM_LAYERS()
 !                    **********************************
 !
 !
@@ -11,6 +11,8 @@
 !
 !history  UWE MERKEL
 !+        2012-04-19
+!+
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !|           |---|
@@ -84,4 +86,4 @@
         RETURN
 
 
-      END SUBROUTINE CVSP_INIT_from_LAYERS
+      END SUBROUTINE CVSP_INIT_FROM_LAYERS

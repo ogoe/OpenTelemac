@@ -93,7 +93,8 @@
 !!
 !history  U.H.Merkel
 !+        20/07/2012
-!+        V6P2 - min to MINU
+!+        V6P2
+!+    min to MINU
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AL             |<--| MOON RIGHT ASCENSION

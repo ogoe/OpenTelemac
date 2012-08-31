@@ -18,7 +18,9 @@
 !
 !history  RIADH ATA (EDF R&D-LNHE)
 !+        07/15/2012
+!+        V6P2
 !+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  DT            | -->|  TIME STEP                                   |
 ! |  DX            | -->|  CHAACTERISTIC LENGTH (FOR COURANT NUMBER)   |

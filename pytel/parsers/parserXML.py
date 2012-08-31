@@ -286,6 +286,7 @@ class ACTION:
       setattr(specs,'merge', options.merge)
       if options.ncsize != '': self.active["ncsize"] = options.ncsize
       setattr(specs,'ncsize', self.active["ncsize"])
+      setattr(specs,'nctile', '1')    # default but should not be used for validation
       setattr(specs,'bypass',self.bypass)
 
       # ~~> check on sorties and run

@@ -52,7 +52,8 @@
 !
 !history  U.H.Merkel
 !+        17/07/2012
-!+        V6P2 + NAG: MAXVAL intrinsic! -> MAXVALUE
+!+        V6P2
+!+   NAG: MAXVAL intrinsic! -> MAXVALUE
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS

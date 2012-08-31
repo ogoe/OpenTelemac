@@ -1,5 +1,5 @@
 !        ************************************************
-         LOGICAL FUNCTION db(J_GLOBAL, TimeStamp)
+         LOGICAL FUNCTION DB(J_GLOBAL, TIMESTAMP)
 !        ************************************************
 !
 !
@@ -13,6 +13,8 @@
 !
 !history  UWE MERKEL
 !+        2011
+!+
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J_Global              |<--| Point ID
@@ -68,4 +70,4 @@
             !if ( (J.eq.2032).and.(LT.ge.TimeStamp)) db = .true.
             !if ( (J.eq.186).and.(LT.ge.TimeStamp)) db = .true.
 
-        end function db
+        END FUNCTION DB

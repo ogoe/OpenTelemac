@@ -16,6 +16,7 @@
 !
 !history  JACEK A. JANKOWSKI PINXIT
 !+        **/03/99
+!+
 !+   FORTRAN95 VERSION
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -32,6 +33,7 @@
 !
 !history  C. VILLARET, P. TASSI
 !+        02/02/2011
+!+        V6P1
 !+   Introducing logarithmic derivatives of velocities.
 !+
 !

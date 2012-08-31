@@ -18,6 +18,8 @@
 !history  C. VILLARET & P. TASSI
 !+        24/07/2011
 !+        name of variables
+!+
+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKS            |-->| FLAG, CHOICE OF BED ROUGHNESS PREDICTOR
 !| KS             |<->| TOTAL BED ROUGHNESS

@@ -9,13 +9,15 @@
 !
 !brief    Compresses a Vertical Sorting Profile in Point J to prevent
 !+        extensiv groth of section / node numbers
-!
-!         Brutal Version
-!         In case of emergency, if no other algorithm is allowed to compress,
-!         to prevent PRO_MAX_MAX overflow
+!+
+!+         Brutal Version
+!+         In case of emergency, if no other algorithm is allowed to compress,
+!+         to prevent PRO_MAX_MAX overflow
 !
 !history  UWE MERKEL
 !+        2011-12-23
+!+
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX of a POINT in MESH

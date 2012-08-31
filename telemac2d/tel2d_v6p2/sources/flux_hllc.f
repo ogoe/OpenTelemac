@@ -18,7 +18,9 @@
 !
 !history  RIADH ATA (EDF R&D-LNHE)
 !+        07/15/2012
+!+        V6P2
 !+
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  FLX           | <--|  FLUX COMPONENTS AT THE INTERFACE            |
 ! |  H1,H2         | -->|  LEFT AND RIGHT WATER DEPTHS                 |

@@ -11,7 +11,10 @@
 !brief    REMOVES (parts) of a fraction after Erosion
 !+        from the Vertical Sorting Profile;
 !
-!history  Uwe Merkel 2012-02-02
+!history  Uwe Merkel
+!+        2012-02-02
+!+        V6P2
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX of a POINT in MESH

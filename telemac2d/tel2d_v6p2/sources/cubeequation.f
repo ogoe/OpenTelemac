@@ -9,6 +9,7 @@
 !***********************************************************************
 !
 !brief
+!
 !code
 !+   RESOLUTION OF THE EQUATION OF AX**3+BX**2+CX+D=0 (E1)
 !+
@@ -40,10 +41,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
-!!
+!
 !history  U.H.Merkel
 !+        20/07/2012
-!+        V6P2 - sign   to signum due to errors with NAG
+!+        V6P2
+!+    sign   to signum due to errors with NAG
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACOF           |-->| CONSTANT FOR X**3

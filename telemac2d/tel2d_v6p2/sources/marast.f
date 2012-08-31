@@ -29,7 +29,8 @@
 !
 !history  U.H.Merkel
 !+        17/07/2012
-!+        V6P2 - Adaption to NAG
+!+        V6P2
+!+    Adaption to NAG
 !!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS

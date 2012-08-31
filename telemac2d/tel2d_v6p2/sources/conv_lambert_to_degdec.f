@@ -18,7 +18,8 @@
 !
 !history  U.H.Merkel
 !+        18/07/2012
-!+        V6P2 - NAG doesn't like EPSILON -> renamed to EPSI
+!+        V6P2
+!+  NAG doesn't like EPSILON -> renamed to EPSI
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LAMBDATAB      |<--| LONGITUDE

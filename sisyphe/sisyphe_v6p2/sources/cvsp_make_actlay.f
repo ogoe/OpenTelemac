@@ -1,5 +1,5 @@
 !                    **************************
-                     SUBROUTINE CVSP_MAKE_ActLay()
+                     SUBROUTINE CVSP_MAKE_ACTLAY()
 !                    **************************
 !
 !
@@ -13,6 +13,8 @@
 !
 !history  U.Merkel & REBEKKA KOPMANN
 !+        2012
+!+
+!+
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -340,4 +342,4 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
         RETURN
-      END SUBROUTINE CVSP_MAKE_ActLay
+      END SUBROUTINE CVSP_MAKE_ACTLAY

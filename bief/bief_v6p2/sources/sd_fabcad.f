@@ -26,13 +26,13 @@
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
 !
 !history  E. RAZAFINDRAKOTO (LNH)
 !+        21/11/11
 !+        V6P1
-!
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
+!+
 !
 !history  J-M HERVOUET (LNHE)
 !+        08/06/2012

@@ -85,6 +85,12 @@
          into a try/except statement to better manage errors.
          This, however, assumes that all errors are anticipated.
 """
+"""@history 29/08/2012 -- Sebastien E. Bourban
+         Additonal option --nctile setting the number of cores per node.
+         In the case of HPC use, the variable <ncsize> is replaced by ncsize,
+            and now two other variables are available: <nctile> and <ncnodes>.
+         ncsize must be ncnodes x nctile.
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -566,6 +572,10 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          '    +> you may be using an inappropriate configuration: '+cfgName+ \
          '    +> or may be wishing for parallel mode while using scalar configuration'}])
    ncsize = getNCSIZE(cas,dico,frgb)
+   nctile = max( 1,int(options.nctile) )
+   ncnodes = int(ncsize/nctile)
+   if ncnodes*nctile != ncsize:
+      raise Exception([{'name':'runCAS','msg':'ncsize not a multiple of nctile'}])
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CASDir = path.dirname(casFile)
@@ -714,6 +724,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             # ~~> HPC Command line ( except <exename> )
             hpcCmd = getHPCCommand(cfg['HPC']) # /!\ cfg['HPC'] is also modified
             hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
+            hpcCmd = hpcCmd.replace('<nctile>',str(nctile))
+            hpcCmd = hpcCmd.replace('<ncnodes>',str(ncnodes))
             hpcCmd = hpcCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
             # ~~> HPC queueing script
             if cfg['HPC'].has_key('STDIN'):
@@ -722,6 +734,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
                stdin = stdin.replace('<sortiefile>',sortiefile)
                stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
                stdin = stdin.replace('<ncsize>',str(ncsize))
+               stdin = stdin.replace('<nctile>',str(nctile))
+               stdin = stdin.replace('<ncnodes>',str(ncnodes))
                stdin = stdin.replace('<wdir>',WDir)
                stdin = stdin.replace('<email>',options.email)
                stdin = stdin.replace('<jobname>',options.jobname)
@@ -897,6 +911,11 @@ if __name__ == "__main__":
                       dest="ncsize",
                       default='',
                       help="the number of processors forced in parallel mode" )
+   parser.add_option("--nctile",
+                      type="string",
+                      dest="nctile",
+                      default='1',
+                      help="the number of core per node. ncsize/nctile is the number of compute nodes" )
    parser.add_option("--split",
                       action="store_true",
                       dest="split",
