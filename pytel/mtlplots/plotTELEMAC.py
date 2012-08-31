@@ -35,6 +35,15 @@ import sys
 from os import path
 from struct import unpack
 import numpy as np
+# FD@EDF : Forces not to use any Xwindows backend for Jenkins (see utils/progressbar.py)
+try:
+    hide_default = not sys.stderr.isatty()
+except AttributeError: # output does not support isatty()
+    hide_default = True
+if hide_default:
+   # Use of Agg must be done before importing matplotlib.pyplot
+   import matplotlib as mpl
+   mpl.use('Agg')
 import matplotlib.pyplot as plt
 # ~~> dependencies from within pytel/parsers
 from myplot1d import drawHistoryLines,drawPolylineLines
@@ -356,7 +365,16 @@ class Figure(Figure1D,Figure2D):
       if self.typePlot == "plot1d":
          Figure1D.draw(self,type,what,(self.plt,self.fig))
       elif self.typePlot == "plot2d":
-         Figure2D.draw(self,type,what,(self.plt,self.fig))
+         try:
+            import plt.tricontour
+            tricontour_loaded = True
+         except:
+            tricontour_loaded = False
+         if tricontour_loaded:
+            Figure2D.draw(self,type,what,(self.plt,self.fig))
+         else:
+            print '\ntricontour not available on your system'
+            print ' ... unable to plot 2D figures'
       else:
          print '... do not know how to draw this type: ' + type
          sys.exit()
