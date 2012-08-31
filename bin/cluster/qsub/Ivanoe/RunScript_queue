@@ -1,0 +1,42 @@
+#!/bin/bash
+#
+# Generation of scripts based on the telemac's architecture and
+# on the PBS system. Those scripts are inspired by scripts
+# written by Hugues Prisker and Tanguy Courau.
+# The principle looks like: a file called $jobname is created and
+# submitted by the following command: qsub $jobname
+#
+# Inputs are:
+#   -the name of the job (jobname),
+#   -the number of processors (and not the number of nodes),
+#   -the code to be used (codename),
+#   -and the name of the case (casename)
+#   -and the name of the queue (queuename)
+#
+########################################################################
+#
+# F. Decung. EDF R&D LNHE. 24/01/2011 (script cluster Ivanoe)
+#
+########################################################################
+#
+if [ $# -ge 3 ]
+then
+ jobname=$1
+ nbprocs=$2
+ codename=$3
+ casename=$4
+# queuename=$5
+# walltime=06:00:00 # ????
+# if [ $# = 6 ]
+# then
+#  walltime=$6
+# fi
+else
+  echo  "Stop     : Erreur dans les arguments"
+  echo  "Syntaxe  : RunScript jobname nbprocs codename casename " #queuename [walltime] "
+  echo  "Exemple  : RunScript_queue Berre 8 telemac3d cas_berre " #parall_8 168:00:00 "
+#  echo  "Warning  : Walltime optionnel. 6 heures seulement par defaut (Clamart2)"
+  exit
+fi
+#
+python $HOMETEL/bin/cluster/qsub/Ivanoe/RunScript_queue.py -job $jobname -ncsize $nbprocs -code $codename -case $casename # -queue $queuename

@@ -1,0 +1,57 @@
+/DEBUGGER : 1
+/
+   PROCESSEURS PARALLELES : 0
+   STOCKAGE DES MATRICES : 3
+/  ON THIS CASE DIFFERENCES BETWEEN COMPILERS ARE DUE TO TRUNCATIONS ERRORS
+/  BECAUSE OF VON KARMAN EDDIES
+/
+/  SUR HP3700         : 194 s compilateur HP  5.9  16/10/2008    
+/  Dell 2.8 MHz       : 119 s compilateur pgi 5.9  16/10/2008    
+/
+/  SUR HP3700         : 191 s compilateur HP  6.0  24/11/2009
+/  SUR HP3700         : 413 s compilateur Nag 6.0  26/11/2009 (scalaire)     
+/  Dell 2.8 MHz       : ??? s compilateur pgi 6.0     
+/
+/  SUR HP3700         : 152 s compilateur HP     6.2  21/05/2012
+/  SUR Calibre 7      :  31 s compilateur Intel  6.2  20/06/2012 (1 proc)
+/  SUR Calibre 7      :   5 s compilateur Intel  6.2  20/06/2012 (8 proc)
+/
+FICHIER DES CONDITIONS AUX LIMITES : geo_pildepon.cli
+FICHIER DE GEOMETRIE               : geo_pildepon.slf
+FICHIER DES FRONTIERES LIQUIDES    : t2d_pildepon.lqd
+FICHIER DE REFERENCE               : f2d_pildepon_qua.slf
+FICHIER DES RESULTATS              : r2d_pildepon_qua.slf
+/
+/----------------------------------------------------------------------/
+/ 
+VALIDATION : OUI
+TITRE = 'TELEMAC 2D : RIVIERE AVEC DEUX PILES DE PONT$'  
+SUITE DE CALCUL = NON
+ PAS DE TEMPS = 0.1 NOMBRE DE PAS DE TEMPS = 800
+/PAS DE TEMPS = 0.2 NOMBRE DE PAS DE TEMPS = 400
+/PAS DE TEMPS = 0.4 NOMBRE DE PAS DE TEMPS = 200
+/PAS DE TEMPS = 0.8 NOMBRE DE PAS DE TEMPS = 100
+PERIODE POUR LES SORTIES GRAPHIQUES = 800
+PERIODE DE SORTIE LISTING           = 100                              
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,H,B,L'                      
+DISCRETISATIONS EN ESPACE : 13 ; 11                            
+FORME DE LA CONVECTION : 1;5        MODELE DE TURBULENCE = 1            
+    OPTION DE SUPG     : 1;2                                          
+LOI DE FROTTEMENT SUR LE FOND = 3     COEFFICIENT DE FROTTEMENT = 40.    
+PROPAGATION = OUI      COEFFICIENT DE DIFFUSION DES VITESSES = 0.005                                                 
+IMPLICITATION POUR LA HAUTEUR = 0.6 IMPLICITATION POUR LA VITESSE = 0.6
+INFORMATIONS SUR LE SOLVEUR : OUI        BILAN DE MASSE : OUI           
+SOLVEUR : 1   PRECONDITIONNEMENT : 2   ORDRE DU TIR INITIAL POUR H : 1
+PRECISION DU SOLVEUR = 1.E-5    
+OPTION DU SOLVEUR : 1       CONDITIONS INITIALES : 'COTE NULLE'                                     
+/DEBITS IMPOSES : 0.;62.     COTES IMPOSEES : 0.;0.
+/  
+PROFILS DE VITESSE : 3;1
+/ 
+/ AJOUTE POUR EQUATION D'ONDE GENERALISEE
+ MASS-LUMPING SUR LA VITESSE : 1.      MASS-LUMPING SUR H : 1.
+/
+TRAITEMENT DU SYSTEME LINEAIRE : 1 SOLVEUR : 7 PRECONDITIONNEMENT : 2
+/ 
+CORRECTION DE CONTINUITE : OUI
+&ETA                                                                     

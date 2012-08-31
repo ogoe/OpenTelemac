@@ -1,0 +1,34 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Try to launch the TELEMAC system on BG/P
+#
+#------------------------------F. Decung - 2010-------
+#
+#---------------------------------------
+# Etape 1 : Verification des arguments
+#
+if [ $# -ge 5 ]
+then
+ jobname=$1
+ nbprocs=$2
+ codename=$3
+ casename=$4
+ queuename=$5
+ walltime= # No default on BG/P
+ if [ $# -ge 6 ]
+ then
+  walltime=$6
+ fi
+else
+  echo  "Stop     : Erreur dans les arguments"
+  echo  "Syntaxe  : RunScript jobname nbprocs codename casename queuename "
+  echo  "Exemple  : RunScript_queue Berre 8 telemac3d cas_berre BGP64_1H  "
+  echo  "Warning  : Walltime de la classe par defaut (BlueGene/P)"
+  exit
+fi
+#---------------------------------------
+# Etape 2... : Lancement en plusieurs etapes du systeme TELEMAC
+#
+bgp.run.py -job $jobname -ncsize $nbprocs -code $codename -cas $casename -queue $queuename $7 $8 $9
+#python bgp.run.py -job $jobname -ncsize $nbprocs -code $codename -cas $casename -queue $queuename -wall $walltime $7 $8 $9

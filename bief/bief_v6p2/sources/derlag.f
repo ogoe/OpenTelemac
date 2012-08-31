@@ -1,0 +1,216 @@
+!                    *****************
+                     SUBROUTINE DERLAG
+!                    *****************
+!
+     &(U,V,DT,X,Y,LT,IELM,IELMU,NDP,NPOIN,NELEM,NELMAX,XLAG,YLAG,DX,DY,
+     & NSP,SHPLAG,DEBLAG,FINLAG,ELTLAG,NLAG,RESUX,RESUY,ISPDONE,MESH)
+!
+!***********************************************************************
+! BIEF   V6P2                                   21/08/2010
+!***********************************************************************
+!
+!brief    - SETS THE BARYCENTRIC COORDINATES IN THE MESH,
+!+                  AT THE START OF COMPUTATION FOR EACH DRIFTING FLOAT.
+!+                  HERE WE COMPUTE THE LAGRANGIAN DRIFT.
+!+
+!+            - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
+!+                 (SUBSEQUENT TIMESTEPS).
+!
+!warning  Will not work in parallel (this would require calling scaract
+!+        instead of char11, and adaptation of scaract)
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        19/06/2012
+!+        V6P2
+!+   Adapted to call SCARACT instead of CHAR11. However further
+!+   modifications are required for parallelism.
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DEBLAG         |-->| TIME STEP FOR STARTING THE COMPUTATION
+!| DT             |-->| TIME STEP
+!| DX             |<->| WORK ARRAY
+!| DY             |<->| WORK ARRAY
+!| ELTLAG         |<->| ELEMENT NUMBERS OF FLOATS
+!| FINLAG         |-->| TIME STEP FOR ENDING THE COMPUTATION
+!| IELM           |-->| TYPE OF ELEMENT IN THE MESH
+!| IELMU          |-->| TYPE OF ELEMENT FOR THE VELOCITIES
+!| LT             |-->| TIME STEP NUMBER.
+!| MASKEL         |-->| MASKING OF ELEMENTS.
+!|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
+!| MASKPT         |-->| MASKING PER POINT.
+!| MESH           |-->| MESH STRUCTURE
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT
+!| NELEM          |-->| NUMBER OF ELEMENTS.
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS.
+!| NLAG           |-->| NOMBER OF FLOATS.
+!| NPOIN          |-->| NUMBER OF POINTS
+!| NSP            |-->| NUMBER OF SUB-STEPS IN THE RUNGE-KUTTA METHOD
+!| RESUX          |<--| ARRAY WITH SUCCESSIVE ABSCISSAE OF FLOATS
+!| RESUY          |<--| ARRAY WITH SUCCESSIVE ORDINATES OF FLOATS
+!| SHPLAG         |<->| BARYCENTRIC COORDINATES OF FLOATS
+!|                |   | IN THEIR ELEMENTS.
+!| T8             |-->| BLOCK OF WORK BIEF_OBJ STRUCTURES.
+!| U              |-->| X-COMPONENT OF VELOCITY
+!| V              |-->| Y-COMPONENT OF VELOCITY
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XLAG           |<->| INSTANTANEOUS X POSITIONS OF FLOATS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YLAG           |<->| INSTANTANEOUS Y POSITIONS OF FLOATS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF, EX_DERLAG => DERLAG
+      USE STREAMLINE
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER         , INTENT(IN)    :: NPOIN,LT,IELM,NDP,NELEM,NLAG
+      INTEGER         , INTENT(IN)    :: NELMAX,IELMU
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),DT
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: XLAG(NPOIN,NLAG)
+      DOUBLE PRECISION, INTENT(INOUT) :: YLAG(NPOIN,NLAG)
+      INTEGER         , INTENT(INOUT) :: DEBLAG(NLAG),FINLAG(NLAG)
+      INTEGER         , INTENT(INOUT) :: ELTLAG(NPOIN,NLAG)
+      INTEGER         , INTENT(INOUT) :: ISPDONE(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: DX(NPOIN),DY(NPOIN)
+      INTEGER         , INTENT(INOUT) :: NSP(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: RESUX(NPOIN),RESUY(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHPLAG(NDP,NPOIN,NLAG)
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER ILAG,JLAG,LTT,IPOIN,ETA(1),SENS,NPLAN
+      TYPE(BIEF_OBJ) :: SVOID
+!
+      DOUBLE PRECISION ZSTAR(1),ZCONV(1),SHZ(1),Z(1),C
+!
+!-----------------------------------------------------------------------
+!
+!     2D HERE
+!
+      NPLAN=1
+!
+!     FORWARD CHARACTERISTICS
+!
+      SENS=1
+!
+      DO 10 ILAG=1,NLAG
+!
+        IF(LT.EQ.DEBLAG(ILAG)) THEN
+!
+!-----------------------------------------------------------------------
+!
+!   - SETS THE BARYCENTRIC COORDINATES IN THE MESH , AT THE START
+!     OF COMPUTATION FOR EACH FLOAT
+!
+!-----------------------------------------------------------------------
+!
+          IF(IELM.EQ.11) THEN
+!
+!  P1 TRIANGLES
+!  ============
+!
+!      FILLS THE SHP AND ELT (OPTIMISED)
+!
+            CALL GTSH11(SHPLAG(1,1,ILAG),ELTLAG(1,ILAG),MESH%IKLE%I,
+     &                  MESH%ELTCAR%I,
+     &                  NPOIN,NELEM,NELMAX,1,.FALSE.,.FALSE.)
+!                                          1=NSEG, WRONG VALUE, NOT USED
+!
+          ELSE
+!
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) IELM,' : ELEMENT NON PREVU DANS DERLAG'
+            ENDIF
+            IF(LNG.EQ.2) THEN
+              WRITE(LU,*) IELM,': ELEMENT NOT IMPLEMENTED IN DERLAG'
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+!
+          ENDIF
+!
+          CALL OV( 'X=Y     ' , XLAG(1,ILAG) , X , Z , C , NPOIN )
+          CALL OV( 'X=Y     ' , YLAG(1,ILAG) , Y , Z , C , NPOIN )
+!
+        ELSEIF(LT.GT.DEBLAG(ILAG).AND.LT.LE.FINLAG(ILAG)) THEN
+!
+!-----------------------------------------------------------------------
+!
+!   - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT
+!     (SUBSEQUENT TIMESTEPS)
+!
+!-----------------------------------------------------------------------
+!
+!  P1 TRIANGLES
+!  ============
+!
+          CALL SCARACT(SVOID,SVOID,U,V,V,X,Y,
+     *                 ZSTAR,XLAG(1,ILAG),YLAG(1,ILAG),ZCONV,
+     *                 DX,DY,DY,Z,SHPLAG(1,1,ILAG),SHZ,MESH%SURDET%R,
+     *                 DT,MESH%IKLE%I,MESH%IFABOR%I,ELTLAG(1,ILAG),
+     *                 ETA,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
+     *                 0,NPOIN,NPOIN,NDP,NPLAN,
+     *                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS)
+!
+        ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!   - CANCELS THE FLOATS LEAVING THE DOMAIN
+!
+!-----------------------------------------------------------------------
+!
+        IF(LT.EQ.FINLAG(ILAG)) THEN
+          DO IPOIN=1,NPOIN
+            IF(ELTLAG(IPOIN,ILAG).LE.0) THEN
+              XLAG(IPOIN,ILAG) = X(IPOIN)
+              YLAG(IPOIN,ILAG) = Y(IPOIN)
+            ENDIF
+          ENDDO
+        ENDIF
+!
+10    CONTINUE
+!
+!-----------------------------------------------------------------------
+!
+!   - STORAGE FOR RESULTS OUTPUT OF THE LAST COMPUTED FLOAT
+!
+!-----------------------------------------------------------------------
+!
+      CALL OV( 'X=C     ' , RESUX , Y , Z , 0.D0 , NPOIN )
+      CALL OV( 'X=C     ' , RESUY , Y , Z , 0.D0 , NPOIN )
+      LTT=0
+      JLAG=1
+      DO ILAG=1,NLAG
+        IF(FINLAG(ILAG).GT.LTT.AND.FINLAG(ILAG).LE.LT) THEN
+          LTT=FINLAG(ILAG)
+          JLAG=ILAG
+        ENDIF
+      ENDDO
+      IF(LTT.NE.0) THEN
+        CALL OV( 'X=Y-Z   ' , RESUX , XLAG(1,JLAG) , X , C , NPOIN )
+        CALL OV( 'X=Y-Z   ' , RESUY , YLAG(1,JLAG) , Y , C , NPOIN )
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END

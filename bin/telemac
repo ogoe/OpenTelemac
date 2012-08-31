@@ -1,0 +1,1 @@
+java -classpath $HOME/bin/classes/swingall.jar:$HOME/bin/classes telemac.Telemac $1
