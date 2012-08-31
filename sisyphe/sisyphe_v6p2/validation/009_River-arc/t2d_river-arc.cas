@@ -12,6 +12,10 @@
 /
 / Dell 2.8 GHz Linux, compilateur Intel : 88 s  CV 07/06/2010
 /
+/ Version 6.2  
+/
+/ HP C3700, compilateur HP              : 471 s  JMH 29/09/2009
+/
 /----------------------------------------------------------------------/
 /                                                                      /
 /        FICHIER DE DECLARATION DES MOTS CLES DU CODE TELEMAC          /
