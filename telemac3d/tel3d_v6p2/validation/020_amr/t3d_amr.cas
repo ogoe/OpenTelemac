@@ -7,7 +7,7 @@ MESH TRANSFORMATION : 5
 /
 /--------------------------------------------------------------------/
 /
-PARALLEL PROCESSORS : 8
+/PARALLEL PROCESSORS : 8
 /
 FORTRAN FILE                : t3d_amr.f
 BOUNDARY CONDITIONS FILE    : geo_amr.cli
