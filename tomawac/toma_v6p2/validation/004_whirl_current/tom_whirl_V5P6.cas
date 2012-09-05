@@ -2,7 +2,7 @@
 /             FICHIER DES PARAMETRES DE TOMAWAC                      /
 /********************************************************************/
 /MODE TROISIEME GENERATION = OUI
-PROCESSEURS PARALLELES = 3
+/PROCESSEURS PARALLELES = 3
 /--------------------------------------------------------------------/
 /     FICHIERS
 /--------------------------------------------------------------------/
