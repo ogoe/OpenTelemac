@@ -2,12 +2,12 @@
                           SUBROUTINE AMR_PLAN
 !                         *******************
 !
-     &(HMIN,ZVALS,OBJSOL,REFTYPE,NPOIN2,NPLAN,NSEG2,GLOSEG,DIMGLO,
+     &(ZVALS,OBJSOL,REFTYPE,NPOIN2,NPLAN,NSEG2,GLOSEG,DIMGLO,
      & Z0,NEWZ,ZEXT,INTSOL,MONITOR,SSMONITOR,SMONITOR,NEXTR,SNNEIGH,
      & NNEIGH,MCOEFF,MESH2D,MESH3D)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   25/05/2011
+! TELEMAC3D   V6P2                                   25/05/2011
 !***********************************************************************
 !
 !brief    This subroutine, called from CALCOT, is designed to adaptively
@@ -43,6 +43,7 @@
 !+        V6P2
 !+        Further development of the AMR method so it works with
 !+        wetting and drying (bypassing method based on HMIN)
+!+        Note: suppressed by JMH (HMIN not used and missing in call)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
@@ -83,7 +84,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: OBJSOL(NPOIN2,NPLAN)
       CHARACTER,        INTENT(IN)    :: REFTYPE
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
-      DOUBLE PRECISION, INTENT(IN)    :: HMIN
       DOUBLE PRECISION, INTENT(INOUT) :: ZVALS(NPOIN2,NPLAN) 
       DOUBLE PRECISION, INTENT(INOUT) :: Z0(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: NEWZ(NPOIN2,NPLAN)
