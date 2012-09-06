@@ -5,7 +5,7 @@
      &(FLOW,FLULIM,NPLAN,NSEG2D,NPOIN2,OPT)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    LIMITS 3D HORIZONTAL EDGE BY EDGE FLUXES ON POINTS.
@@ -28,9 +28,10 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        19/05/09
+!+        06/09/2012
 !+        V6P2
 !+   Option OPT added for crossed segments. Argument NPOIN2 added.
+!+   Prisms and prisms cut into tetrahedra now treated.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FLOW           |-->| FLUXES (SIZE OF FLOW MAY NOT EXCEED
@@ -41,7 +42,9 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NSEG2D         |-->| NUMBER OF SEGMENTS IN 2D
 !| OPT            |-->| 1: HORIZONTAL SEGMENTS
-!|                |   | 2: HORIZONTAL AND CROSSED SEGMENTS
+!|                |   | 2: HORIZONTAL AND CROSSED SEGMENTS FOR PRISMS
+!|                |   | 3: HORIZONTAL AND CROSSED SEGMENTS FOR PRISMS
+!|                |   |    CUT INTO TETRAHEDRA
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -80,6 +83,8 @@
 !
       IF(OPT.EQ.2) THEN
 !
+!       FOR PRISMS
+!
         OTHERS=NPLAN*NSEG2D+NPOIN2*(NPLAN-1)
         DO IPLAN=1,NPLAN-1
           DO ISEG=1,NSEG2D
@@ -89,6 +94,29 @@
             FLOW(ISEG3D)=FLOW(ISEG3D)*FLULIM(ISEG)
           ENDDO
         ENDDO
+!
+      ELSEIF(OPT.EQ.3) THEN
+!
+!       FOR PRISMS CUT INTO TETRAHEDRA
+!
+        OTHERS=NPLAN*NSEG2D+NPOIN2*(NPLAN-1)
+        DO IPLAN=1,NPLAN-1
+          DO ISEG=1,NSEG2D
+            ISEG3D=ISEG+(IPLAN-1)*NSEG2D+OTHERS
+            FLOW(ISEG3D)=FLOW(ISEG3D)*FLULIM(ISEG)
+          ENDDO
+        ENDDO
+!
+      ELSEIF(OPT.NE.1) THEN
+!
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'FLUX3DLIM : OPT NON PREVU : ',OPT
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'FLUX3DLIM : UNEXPECTED OPT:',OPT
+        ENDIF
+        CALL PLANTE(1)
+        STOP
 !
       ENDIF
 !
