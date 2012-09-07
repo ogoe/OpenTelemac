@@ -121,8 +121,8 @@ CV             CALL OS('X=CY    ', X=ZFCL_S,Y= QFLUX,C=1.D0/CONC_VASE(1))
 !                  Last layer to be eroded
 !                   ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC_VASE(J)
                    ZFCL_S%R(I)= ZFCL_S%R(I)+QFLUX%R(I)/CONC(I,J)
-                   ES_VASE(I,J)=ES_VASE(I,J)+
-     *                    MAX(QFLUX%R(I)/CONC(I,J),0.D0)    
+                   ES_VASE(I,J)=ES_VASE(I,J)-
+     *                    MAX(-QFLUX%R(I)/CONC(I,J),0.D0)    
                     GO TO 40
                  ELSE
 !                  EROSION OF THE WHOLE LAYER

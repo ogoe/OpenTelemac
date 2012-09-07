@@ -434,21 +434,21 @@
 ! REACTUALISATION DU ELAY ET DES AVAI fait dans suspension_MAIN
        IF(SEDCO(1).OR.MIXTE) THEN
          DO I = 1, NPOIN
-	  ELAY%R(I)= 0.D0
+          ELAY%R(I)= 0.D0
           DO J= 1, NOMBLAY
             ES(I,J) = ES_VASE(I,J)
             IF(MIXTE) THEN
-		ES(I,J)= ES_VASE (I,J) + ES_SABLE(I,J)
+                ES(I,J)= ES_VASE (I,J) + ES_SABLE(I,J)
                 IF(ES(I,J).GT.1.D-04) THEN
                   AVAIL(I,J,1)= ES_SABLE(I,J)/ES(I,J)
                   AVAIL (I,J,2)= ES_VASE(I,J)/ES(I,J)
                 ELSE
                  AVAIL(I,J,1)=0.5 D0
-		 AVAIL(I,J,2)=0.5 D0  
+                 AVAIL(I,J,2)=0.5 D0  
                ENDIF      
           ENDIF
-	    ELAY%R(I)=ELAY%R(I)+ES(I,J)
-	  ENDDO 
+          ELAY%R(I)=ELAY%R(I)+ES(I,J)
+          ENDDO 
          ENDDO	      
        ENDIF
 !
