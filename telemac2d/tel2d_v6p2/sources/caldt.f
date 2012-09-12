@@ -51,57 +51,53 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
       INTEGER IS
-      DOUBLE PRECISION RA3,EPSL,SIGMAX ,UA2, UA3, UNORM  
+      LOGICAL DEJA
+      DOUBLE PRECISION RA,RA3,EPSL,SIGMAX,UA2,UA3,UNORM  
 !
 !-----------------------------------------------------------------------
 !
+      DEJA=.FALSE.
+      DT = 1.E+12
+      EPSL = 0.01D0
+
       IF(ICIN.EQ.1.OR.ICIN.EQ.2) THEN
-!
 !       KINETIC SCHEME
 !
         RA3 = SQRT(1.5D0*G)
-!
-        DT = 1.E+12
-        EPSL = 0.01D0
-!
         DO IS=1,NS
           
-          IF(H(IS).LT.0.D0)THEN
-            SIGMAX = MAX(H(IS),0.0D0)
+          IF(H(IS).LT.0.D0.AND.LISTIN.AND..NOT.DEJA)THEN
             WRITE(LU,*) 'CALDT WARNING : NEGATIVE WATER DEPTH'
-            WRITE(LU,*) '               FOR NODE',IS
+            WRITE(LU,*) ' SEE NODE:',IS,' FOR EXAMPLE'
+            DEJA = .TRUE.
           ELSE
+            SIGMAX = H(IS)
             UA2    = U(IS)
             UA3    = V(IS)                                       
             UNORM=SQRT(UA2*UA2 + UA3*UA3)
             SIGMAX= MAX(EPSL, RA3*SQRT(SIGMAX) +UNORM )
+            DT = MIN(DT, CFL*DTHAUT(IS)/SIGMAX)
           ENDIF
-          DT = MIN(DT, CFL*DTHAUT(IS)/SIGMAX)
         ENDDO
 !
       ELSEIF(ICIN.EQ.0.OR.ICIN.EQ.3.OR.ICIN.EQ.4.OR.ICIN.EQ.5) THEN
-!
 !     SCHEMES OF ROE, ZOKAGOA, TCHAMEN, HLLC AND WAF
 !
-        DT = 1.E+12
-        EPSL = 0.01D0
-C
-        DO IS=1,NS
-          
-          IF(H(IS).LT.0.D0)THEN
-            SIGMAX = MAX(G*H(IS),0.0D0)
+        RA =SQRT(G)
+        DO IS=1,NS        
+          IF(H(IS).LT.0.D0.AND.LISTIN.AND..NOT.DEJA)THEN
             WRITE(LU,*) 'CALDT WARNING : NEGATIVE WATER DEPTH'
-            WRITE(LU,*) '               FOR NODE',IS
+            WRITE(LU,*) ' SEE NODE:',IS,' FOR EXAMPLE'
+            DEJA = .TRUE.
           ELSE
             UA2    = U(IS)
             UA3    = V(IS)                                       
             UNORM=SQRT(UA2*UA2 + UA3*UA3)
-            SIGMAX= MAX(EPSL, SQRT(SIGMAX) +UNORM )
+            SIGMAX= MAX(EPSL, RA*SQRT(H(IS))+UNORM )
+!           DTHAUT=|Ci|/Sum(Lij) IS THE CHOICE OF INRIA
+!            WE CAN CHANGE FOR MIN(CMI) FOR INSTANCE
+            DT = MIN(DT, CFL*DTHAUT(IS)/SIGMAX)
           ENDIF
-!         DTHAUT=|Ci|/Sum(Lij) IS THE CHOICE OF INRIA
-!         WE CAN CHANGE FOR MIN(CMI) FOR INSTANCE
-
-          DT = MIN(DT, CFL*DTHAUT(IS)/SIGMAX)
         ENDDO
 !
       ELSE
