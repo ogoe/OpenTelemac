@@ -99,7 +99,7 @@
       IELEB = 0
       DO IELEM = 1,NELEM
          DO J = 1,4
-            IF (IFABOR(IELEM,J)== 0) THEN
+            IF(IFABOR(IELEM,J).EQ.0.OR.IFABOR(IELEM,J).EQ.-1) THEN
                IELEB           = IELEB + 1
                IF ( IELEB .GT. NELEB ) THEN
                  IF(LNG.EQ.1) WRITE(LU,101)
@@ -116,9 +116,9 @@
                IKLBOR(IELEB,1) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(1,J)))
                IKLBOR(IELEB,2) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(2,J)))
                IKLBOR(IELEB,3) = IPOBO(IKLE(NELBOR(IELEB),SOMFAC(3,J)))
-            END IF
-         END DO
-      END DO
+            ENDIF
+         ENDDO
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

@@ -6,7 +6,7 @@
      & LAMBD0,SPHERI,MESH,T1,T2,OPTASS,PRODUC,EQUA,MESH2D)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE DATA STRUCTURE FOR BIEF.
@@ -56,6 +56,11 @@
 !+   Checking elements for building GLOSEG. New optional argument MESH2D.
 !+   for prisms split into tetrahedrons (call of STOSEG51)
 !
+!history  J-M HERVOUET (LNHE) ; REGINA NEBAUER; LAM MINH PHUONG; EMILE RAZAFINDRAKOTO
+!+        10/09/2012
+!+        V6P2
+!+   Different call to VOISIN31, and call added for IELM=51
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
 !| IELMX          |-->| THE MORE COMPLEX ELEMENT USED (FOR MEMORY)
@@ -98,7 +103,7 @@
       INTEGER I,IELEM,NELEM,NELMAX,NPTFR,NPOIN,IELM
       INTEGER MXPTVS,NPLAN
       INTEGER LV,NDP,IDP,I1,I2,I3,NPOIN2
-      INTEGER NPTFR2,NELEM2,NELMAX2,NELEB2,NELEB
+      INTEGER NPTFR2,NELEM2,NELMAX2,NELEB
 !
       DOUBLE PRECISION C,Z(1),X2,X3,Y2,Y3
 !
@@ -129,7 +134,6 @@
         NELEM2  =NELEM
         NELMAX2 =NELMAX
         NPTFR2  =NPTFR
-        NELEB2  =NELEB
         NPLAN   =1
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
@@ -190,12 +194,7 @@
      &              MESH%IKLE%DIM1,
      &              NPOIN2,MESH%NACHB%I,MESH%NBOR%I,NPTFR2,IT1%I,IT2%I)
 !
-      ELSEIF (IELM.EQ.31) THEN
-        CALL VOISIN31(MESH%IFABOR%I,NELEM2,NELMAX2,IELM,MESH%IKLE%I,
-     &                MESH%IKLE%DIM1,
-     &                NPOIN2,MESH%NACHB%I,MESH%NBOR%I,NPTFR2,
-     &                LIHBOR,KLOG,IKLESTR,1,NELEB2)
-      ELSE
+      ELSEIF(IELM.NE.31) THEN
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
         CALL PLANTE(1)
         STOP
@@ -208,6 +207,8 @@
 !       CASES WITH A FIRST CALL IN 2D
 !
         MXPTVS = MESH%MXPTVS
+!       HERE IFABOR FOR IELM=51 MUST STILL BE 2D
+!       SO VOISIN31 CALLED LATER
         CALL ELEBD(MESH%NELBOR%I,MESH%NULONE%I,MESH%KP1BOR%I,
      &             MESH%IFABOR%I,MESH%NBOR%I,MESH%IKLE%I,MESH%IKLE%DIM1,
      &             MESH%IKLBOR%I,NELEM2,NELMAX2,NPOIN2,NPTFR2,IELM,
@@ -222,9 +223,13 @@
 !
 !       BUILDING ARRAYS FOR TETRAHEDRONS
 !
+        CALL VOISIN31(MESH%IFABOR%I,NELEM,NELMAX,IELM,MESH%IKLE%I,
+     &                MESH%IKLE%DIM1,NPOIN,MESH%NBOR%I,NPTFR,
+     &                LIHBOR,KLOG,MESH%INDPU%I)
+!
         CALL ELEBD31(MESH%NELBOR%I,MESH%NULONE%I,MESH%IKLBOR%I,
      &               MESH%IFABOR%I,MESH%NBOR%I,MESH%IKLE%I,
-     &               NELEM2,NELEB2,NELMAX2,NPOIN2,NPTFR2,IELM)
+     &               NELEM,NELEB,NELMAX,NPOIN,NPTFR,IELM)
 !
       ELSEIF(IELM.EQ.41) THEN
 !
@@ -461,6 +466,15 @@
         CALL PLANTE(1)
         STOP
 !
+      ENDIF
+!
+!     NOW THE 3D VALUE OF IFABOR IS BUILT FOR PRISMS CUT INTO
+!     TETRAHEDRA (UP TO STOSEG51 A 2D VALUE WAS USED)
+!
+      IF(IELM.EQ.51) THEN
+        CALL VOISIN31(MESH%IFABOR%I,NELEM,NELMAX,IELM,MESH%IKLE%I,
+     &                MESH%IKLE%DIM1,NPOIN,MESH%NBOR%I,NPTFR,
+     &                LIHBOR,KLOG,MESH%INDPU%I)
       ENDIF
 !
 !-----------------------------------------------------------------------

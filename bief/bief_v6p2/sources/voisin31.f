@@ -2,11 +2,11 @@
                      SUBROUTINE VOISIN31
 !                    *******************
 !
-     &(IFABOR,NELEM,NELMAX,IELM,IKLE,SIZIKL,
-     & NPOIN,NACHB,NBOR,NPTFR,LIHBOR,KLOG,IKLESTR,NELEMTOTAL,NELEB2)
+     &(IFABOR,NELEM,NELMAX,IELM,IKLE,SIZIKL,NPOIN,NBOR,NPTFR,
+     & LIHBOR,KLOG,INDPU)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE ARRAY IFABOR, WHERE IFABOR(IELEM, IFACE) IS
@@ -31,16 +31,22 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        10/09/2012
+!+        V6P3
+!+   Treatment of prisms cut into tetrahedra added (IELM=51)
+!+   and simplifications.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| 31: TETRAHEDRA
+!|                |   | 51: PRISMS CUT INTO TETRAHEDRA
 !| IFABOR         |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
 !|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID
 !|                |   | BOUNDARY
 !| IKLE           |-->| CONNECTIVITY TABLE.
-!| IKLESTR        |-->| CONNECTIVITY TABLE OF BOUNDARY TRIANGLES ?
+!| INDPU          |-->| IF NOT 0, INTERFACE POINT IN PARALLEL
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
-!| NACHB          |-->| IN PARALLELISM ,INFORMATION ON NEIGHBOURS
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELEMTOTAL     |-->| NUMBER OF BOUNDARY TRIANGLES ?
@@ -58,23 +64,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN   ) :: IELM
-      INTEGER, INTENT(IN   ) :: NPTFR
-      INTEGER, INTENT(IN   ) :: NELEM
-      INTEGER, INTENT(IN   ) :: NELMAX
-      INTEGER, INTENT(IN   ) :: NPOIN
-      INTEGER, INTENT(IN   ) :: SIZIKL
-      INTEGER, INTENT(IN   ) :: NBOR(NPTFR)
-      INTEGER, INTENT(IN   ) :: NACHB(NBMAXNSHARE,NPTIR)
-!     NOTE: THE SECOND DIMENSION OF IFABOR AND IKLE ARE
-!     EXPLICITLY GIVEN, BECAUSE WE'RE DEALING WITH TETRAHEDRONS
-      INTEGER, INTENT(INOUT) :: IFABOR(NELMAX,4)
-      INTEGER, INTENT(IN   ) :: IKLE(SIZIKL,4)
-      INTEGER, INTENT(IN   ) :: LIHBOR(NPTFR)
-      INTEGER, INTENT(IN   ) :: KLOG
-      INTEGER, INTENT(IN   ) :: NELEMTOTAL
-      INTEGER, INTENT(IN   ) :: IKLESTR(NELEMTOTAL,3)
-      INTEGER, INTENT(IN   ) :: NELEB2
+      INTEGER, INTENT(IN)   :: IELM,NPTFR,NELEM,NELMAX,NPOIN,SIZIKL,KLOG
+      INTEGER, INTENT(IN)   :: NBOR(NPTFR)
+      INTEGER, INTENT(INOUT):: IFABOR(NELMAX,4)
+      INTEGER, INTENT(IN)   :: IKLE(SIZIKL,4),LIHBOR(NPTFR)
+      INTEGER, INTENT(IN)   :: INDPU(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -86,7 +80,7 @@
       INTEGER, DIMENSION(:  ), ALLOCATABLE :: NBOR_INV
       ! ARRAY DEFINING THE NUMBER OF ELEMENT (TETRAHEDRONS) NEIGHBOURING
       ! A NODE
-      INTEGER, DIMENSION(:  ), ALLOCATABLE :: NVOIS
+      INTEGER, DIMENSION(:), ALLOCATABLE :: NVOIS
       ! ARRAY DEFINING THE IDENTIFIERS OF THE ELEMENTS NEIGHBOURING
       ! EACH NODE
       INTEGER, DIMENSION(:  ), ALLOCATABLE :: NEIGH
@@ -127,22 +121,20 @@
       INTEGER :: IR1,IR2,IR3,IR4,IR5,IR6,COMPT
       LOGICAL :: BORD
 !
-!   ~~~~~~~~~~~~~~~~~~~~~~~
 !     DEFINES THE FOUR TRIANGLES OF THE TETRAHEDRON: THE FIRST
 !     DIMENSION IS THE NUMBER OF THE TRIANGLE, THE SECOND GIVES
 !     THE NODE NUMBERS OF THE NODES OF TETRAHEDRONS WHICH DEFINE IT.
       INTEGER SOMFAC(3,4)
-      DATA SOMFAC /  1,2,3 , 4,1,2 , 2,3,4 , 3,4,1   /
+      DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1 /
+!
 !-----------------------------------------------------------------------
 ! START
 !-----------------------------------------------------------------------
-!
-!
-!
+! 
 ! CHECKS FIRST THAT WE ARE INDEED DEALING WITH TETRAHEDRONS. IF NOT,
 ! GOODBYE.
 !
-      IF(IELM.EQ.31) THEN
+      IF(IELM.EQ.31.OR.IELM.EQ.51) THEN
        NFACE = 4
       ELSE
        IF(LNG.EQ.1) WRITE(LU,98) IELM
@@ -154,6 +146,7 @@
       ENDIF
 !
 ! ALLOCATES TEMPORARY ARRAYS
+!
       ALLOCATE(NBOR_INV(NPOIN),STAT=ERR)
       IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) THEN
@@ -166,6 +159,7 @@
       ENDIF
 !
 ! ALLOCATES TEMPORARY ARRAYS
+!
       ALLOCATE(NVOIS(NPOIN),STAT=ERR)
       IF(ERR.NE.0) THEN
         IF(LNG.EQ.1) THEN
@@ -183,11 +177,12 @@
 ! COMPUTES THE NUMBER OF ELEMENTS NEIGHBOURING EACH NODE OF THE MESH.
 ! RESULT: NVOIS(INOEUD) GIVES THE NUMBER OF ELEMENTS NEIGHBOURING
 ! NODE INOEUD
+!
       ! INITIALISES THE NEIGHBOURING ELEMENT COUNTER TO 0
       !
-      DO I = 1, NPOIN
+      DO I = 1,NPOIN
         NVOIS(I) = 0
-      END DO
+      ENDDO
       ! COUNTS THE NEIGHBOURING ELEMENTS
       ! USING THE CONNECTIVITY TABLE, THE COUNTER IS INCREMENTED
       ! EACH TIME THAT AN ELEMENT REFERENCES NODE IPOIN
@@ -199,8 +194,9 @@
           IPOIN        = IKLE( IELEM , INOEUD )
           ! INCREMENT THE COUNTER
           NVOIS(IPOIN) = NVOIS(IPOIN) + 1
-        END DO
-      END DO
+        ENDDO
+      ENDDO
+!
 !-----------------------------------------------------------------------
 ! STEP 2: DETERMINES THE SIZE OF ARRAY NEIGH() AND OF AUXILIARY
 ! ARRAY TO INDEX NEIGH. ALLOCATES NEIGH
@@ -212,12 +208,14 @@
 ! ADDRESS OF THE ENTRIES FOR A GIVEN NODE. THIS ARRAY HAS AS MANY
 ! ENTRIES AS THERE ARE NODES.
 ! WILL ALSO COMPUTE THE MAXIMUM NUMBER OF NEIGHBOURS, SOME TIME.
+!
       ! THE FIRST ENTRY IN THE ID OF THE NEIGHBOURS ARRAY IS 1
       ADR       = 1
       IADR(1)   = ADR
       ! THE MAX NUMBER OF NEIGHBOURING ELEMENTS
       NV        = NVOIS(1)
       NMXVOISIN = NV
+!
       DO IPOIN = 2,NPOIN
           ! ADDRESS FOR THE OTHER ENTRIES:
           ADR         = ADR + NV
@@ -225,7 +223,8 @@
           NV          = NVOIS(IPOIN)
           ! IDENTIFIES THE MAX. NUMBER OF NEIGHBOURS
           NMXVOISIN   = MAX(NMXVOISIN,NV)
-      END DO
+      ENDDO
+!
       ! THE TOTAL NUMBER OF NEIGHBOURING ELEMENTS FOR ALL THE NODES
       ! GIVES THE SIZE OF THE NEIGHBOURS ARRAY:
       IMAX = IADR(NPOIN) + NVOIS(NPOIN)
@@ -244,7 +243,10 @@
 !
       ! RE-INITIALISES THE COUNTER OF THE NEIGHBOURING ELEMENTS TO 0,
       ! TO KNOW WHERE WE ARE AT
-      NVOIS(:) = 0
+      DO I = 1,NPOIN
+        NVOIS(I) = 0
+      ENDDO
+!     NVOIS(:) = 0
       ! FOR EACH NODE OF THE ELEMENTS, STORES THE IDENTIFIER
       DO INOEUD = 1, 4  ! LOOP ON THE ELEMENT NODES
         DO IELEM=1,NELEM ! LOOP ON THE ELEMENTS
@@ -254,8 +256,8 @@
           NVOIS(IPOIN) = NV
           ! STORES THE IDENTIFIER OF THE NEIGHBOURING ELEMENT IN THE ARRAY
           NEIGH(IADR(IPOIN)+NV) = IELEM
-        END DO ! END OF LOOP ELEMENTS
-      END DO  ! END OF LOOP NODES
+        ENDDO ! END OF LOOP ELEMENTS
+      ENDDO  ! END OF LOOP NODES
 !
 !-----------------------------------------------------------------------
 ! STEP 4: IDENTIFIES COMMON FACES OF THE TETRAHEDRONS AND FILLS IN
@@ -304,7 +306,9 @@
       ALLOCATE(VOIS_TRI(NBTRI,2),STAT=ERR)
       IF(ERR.NE.0) GOTO 999
 !
-      IFABOR(:,:) = 0
+!     ALL FACES PRESUMED SOLID TO START WITH...
+!
+      IFABOR(:,:) = -1
 !
       ! LOOP ON ALL THE NODES IN THE MESH
       DO IPOIN = 1, NPOIN
@@ -411,90 +415,37 @@
       DEALLOCATE(VOIS_TRI)
 !
 !-----------------------------------------------------------------------
-! STEP 5: FACES BETWEEN DIFFERENT COMPUTATION DOMAIN (DECOMPOSITION OF
-! DOMAIN): LEAVE THIS TO DOMAIN SPECIALISTS !
+!     STEP 5: FACES BETWEEN DIFFERENT COMPUTATION DOMAIN 
 !-----------------------------------------------------------------------
 !
-!  COULD TRY SOMETHING A BIT LIGHTER
-!  USING INDPU FOR EXAMPLE
+      IF(NCSIZE.GT.1) THEN
 !
-      IF (NCSIZE.GT.1) THEN
+        DO IFACE=1,NFACE
+          DO IELEM=1,NELEM
+!           IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
+!           IT IS ASSIGNED A VALUE OF -2
 !
-        DO 61 IFACE=1,NFACE
-          DO 71 IELEM=1,NELEM
+            I1=IKLE(IELEM,SOMFAC(1,IFACE))
+            I2=IKLE(IELEM,SOMFAC(2,IFACE))
+            I3=IKLE(IELEM,SOMFAC(3,IFACE))
 !
-!  SOME BOUNDARY SIDES ARE INTERFACES BETWEEN SUB-DOMAINS IN
-!  ACTUAL FACT: THEY ARE ASSIGNED A VALUE -2 INSTEAD OF 0
+            IF( INDPU(I1).NE.0.AND.
+     &          INDPU(I2).NE.0.AND.
+     &          INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
 !
-!      IF(IFABOR(IELEM,IFACE).EQ.-1) THEN
-            IF (IFABOR(IELEM,IFACE).EQ.0) THEN
-!
-         I1 = IKLE( IELEM , SOMFAC(1,IFACE) )
-         I2 = IKLE( IELEM , SOMFAC(2,IFACE) )
-         I3 = IKLE( IELEM , SOMFAC(3,IFACE) )
-!
-         IR1=0
-         IR2=0
-         IR3=0
-!
-         DO J=1,NPTIR
-           IF(I1.EQ.NACHB(1,J)) IR1=1
-           IF(I2.EQ.NACHB(1,J)) IR2=1
-           IF(I3.EQ.NACHB(1,J)) IR3=1
-         ENDDO
-!
-! POSSIBLY SET TO -2 FR IFABOR --> INTERFACE MESH
-! OTHERWISE VALUE STAYS 0 --> BOUNDARY MESH
-              IF (IR1.EQ.1.AND.IR2.EQ.1.AND.IR3.EQ.1) THEN
-!               PRINT*,'THESE ARE INTERFACE NODES'
-! THESE 3 NODES ARE INTERFACE NODES; DO THEY CORRESPOND TO A
-! (VIRTUAL) INTERFACE TRIANGLE OR TO A BOUNDARY TRIANGLE ?
-                BORD=.FALSE.
-                IR4=0
-                IR5=0
-                IR6=0
-                DO 55 J=1,NPTFR
-                  IF (I1.EQ.NBOR(J)) IR5=1
-                  IF (I2.EQ.NBOR(J)) IR4=1
-                  IF (I3.EQ.NBOR(J)) IR6=1
-55              CONTINUE
-! THEY ARE ALSO BOUNDARY NODES
-                IF (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1) THEN
-!
-                  DO J=1,NELEB2
-! IT IS A BOUNDARY TRIANGLE
-                    COMPT=0
-                    DO I=1,3
-!                     IF (IKLETR(J,I)==I1) COMPT=COMPT+1
-!                     IF (IKLETR(J,I)==I2) COMPT=COMPT+10
-!                     IF (IKLETR(J,I)==I3) COMPT=COMPT+100
-! GOOD SCENARIO BUT PB OF COMPILATION WITH BIEF
-                      IF (IKLESTR(J,I)==I1) COMPT=COMPT+1
-                      IF (IKLESTR(J,I)==I2) COMPT=COMPT+10
-                      IF (IKLESTR(J,I)==I3) COMPT=COMPT+100
-                    ENDDO
-! THESE 3 NODES INDEED BELONG TO THE SAME BOUNDARY TRIANGLE
-                    IF (COMPT==111) THEN
-                      BORD=.TRUE.
-!                     PRINT*,'VERTICES OF A BOUNDARY TRIANGLE'
-                      EXIT
-                    ENDIF
-                  ENDDO
-                ENDIF
-!                IF (IR5.EQ.0.OR.IR4.EQ.0.OR.IR6.EQ.0) THEN
-                IF (.NOT.BORD) THEN
-! THESE 3 NODES BELONG TO AN INTERFACE MESH
-!                 PRINT*, 'INTERFACE NODES'
-                  IFABOR(IELEM,IFACE)=-2
-                ENDIF
-              ENDIF
-!
-            ENDIF
-!
-71        CONTINUE
-61      CONTINUE
+          ENDDO
+        ENDDO
 !
       ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     JMH: WITH ELEMENT 51 THE DIFFERENCE BETWEEN SOLID AND LIQUID
+!          BOUNDARIES IS DONE LATER
+!          AND I DOUBT THAT THE CODE BELOW WITH LIHBOR CAN WORK WITH
+!          REAL TETRAHEDRA
+!
+      IF(IELM.EQ.51) GO TO 1000
 !
 !-----------------------------------------------------------------------
 !
@@ -542,15 +493,18 @@
 100    CONTINUE
 90    CONTINUE
 !
+!
+1000  CONTINUE
+!
 !-----------------------------------------------------------------------
 !
       RETURN
 !
 !-----------------------------------------------------------------------
 !
-999   IF(LNG.EQ.1) WRITE(LU,1000) ERR
+999   IF(LNG.EQ.1) WRITE(LU,3000) ERR
       IF(LNG.EQ.2) WRITE(LU,2000) ERR
-1000  FORMAT(1X,'VOISIN31 : ERREUR A L''ALLOCATION DE MEMOIRE :',/,1X,
+3000  FORMAT(1X,'VOISIN31 : ERREUR A L''ALLOCATION DE MEMOIRE :',/,1X,
      &            'CODE D''ERREUR : ',1I6)
 2000  FORMAT(1X,'VOISIN31: ERROR DURING ALLOCATION OF MEMORY: ',/,1X,
      &            'ERROR CODE: ',1I6)
