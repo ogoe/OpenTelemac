@@ -64,6 +64,11 @@
 !+        Call to vector before call to Tel4del corrected (GRAZCO)
 !+        Initialasation of TAN after call to condim.
 !
+!history  J-M HERVOUET (LNHE)
+!+        10/09/2012
+!+        V6P3   
+!+        Call to IFAB3DT added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -263,12 +268,22 @@
 !
 ! COMPLETES IFABOR IN 3D
 !
-      CALL IFAB3D
-     & (MESH3D%IFABOR%I, LIUBOF%I, LIUBOL%I, LIUBOS%I,
-     &  MESH2D%KP1BOR%I, MESH2D%NELBOR%I,
-     &  MESH2D%NULONE%I, IKLE2%I,
-     &  NELEM2, NPOIN2, NPTFR2, NPLAN, NPLINT, NETAGE,
-     &  KLOG,TRANSF)
+      IF(IELM3.EQ.41) THEN
+        CALL IFAB3D
+     &   (MESH3D%IFABOR%I,LIUBOF%I,LIUBOL%I,LIUBOS%I,
+     &    MESH2D%KP1BOR%I,MESH2D%NELBOR%I,
+     &    MESH2D%NULONE%I,IKLE2%I,
+     &    NELEM2,NPOIN2,NPTFR2,NPLAN,NPLINT,NETAGE,
+     &    KLOG,TRANSF)
+      ELSEIF(IELM3.EQ.51) THEN
+        CALL IFAB3DT
+     &   (MESH3D%IFABOR%I, 
+     &    MESH2D%IFABOR%I,LIUBOF%I,LIUBOL%I,LIUBOS%I,
+     &    MESH2D%KP1BOR%I,MESH2D%NELBOR%I,
+     &    MESH2D%NULONE%I,IKLE2%I,IKLE3%I,
+     &    NELEM2,MESH3D%NELMAX,NPOIN2,NPTFR2,NPLAN,NPLINT,NETAGE,
+     &    KLOG,TRANSF)
+      ENDIF
 !
 ! CONTROLS MESH
 !

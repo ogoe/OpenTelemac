@@ -951,6 +951,26 @@ C
 C-----------------------------------------------------------------------
 C
       INTERFACE
+        SUBROUTINE IFAB3DT
+     &(IFABOR,IFABOR2D,LIUBOF,LIUBOL,LIUBOS,KP1BOR,NELBOR,NULONE,
+     & IKLE2,IKLE,NELEM2,NELMAX,
+     & NPOIN2,NPTFR,NPLAN,NPLINT,NETAGE,KLOG,TRANSF)
+      IMPLICIT NONE
+      INTEGER, INTENT(IN)          :: NELEM2,NPOIN2,NETAGE,NPLAN,TRANSF
+      INTEGER, INTENT(IN)          :: NPTFR,NPLINT,KLOG,NELMAX
+      INTEGER, INTENT(INOUT)       :: IFABOR(NELMAX,4)
+      INTEGER, INTENT(IN)          :: IFABOR2D(NELEM2,3)
+      INTEGER, INTENT(IN)          :: LIUBOF(NPOIN2),LIUBOS(NPOIN2)
+      INTEGER, INTENT(IN)          :: LIUBOL(NPTFR,NPLAN)
+      INTEGER, INTENT(IN)          :: IKLE2(NELEM2,3),IKLE(NELMAX,4)
+      INTEGER, INTENT(IN)          :: NULONE(NPTFR,2)
+      INTEGER, INTENT(IN)          :: KP1BOR(NPTFR), NELBOR(NPTFR)
+        END SUBROUTINE
+      END INTERFACE
+C
+C-----------------------------------------------------------------------
+C
+      INTERFACE
         SUBROUTINE IMPSED
      &(IVIDE , EPAI  , CONC  , TEMP  , HDEP  , PDEPOT,
      & FLUER , ZR    , ZF    , TA    , WC    , X     ,
