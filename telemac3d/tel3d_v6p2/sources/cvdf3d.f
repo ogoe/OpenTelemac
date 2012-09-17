@@ -19,7 +19,7 @@
      & FLODEL,FLOPAR,SIGMAG,IPBOT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE ADVECTION-DIFFUSION STEP.
@@ -51,6 +51,12 @@
 !+        V6P2
 !+   Call to MURD3D modified
 !+
+!history  J.M. HERVOUET (LNHE)
+!+        17/09/2012
+!+        V6P3
+!+   S0F%TYPR now restored at the end, for a possible new use if there
+!+   iterations for non linearities.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBORF         |-->| LOGARITHMIC LAW FOR COMPONENT ON THE BOTTOM:
 !|                |   |  NU*DF/DN = AFBORF*U + BFBORF
@@ -153,7 +159,7 @@
 !| T3_04          |<->| BIEF_OBJ STRUCTURE FOR LOCAL WORK
 !| TETADI         |<->| IMPLICITATION RATE FOR DIFFUSION
 !| TRAIN          |-->| VALUE OF TRACER IN RAIN
-!| TRAV3          |<->| 3D WORK ARRAYS
+!| TRAV3          |<->| BLOCK OF 3D BIEF_OBJ STRUCTURES (AT LEAST 10)
 !| TRBAF          |-->| TREATMENT ON TIDAL FLATS FOR F
 !| VISCF          |<->| VISCOSITY COEFFICIENTS
 !|                |   | VISCF(*,1 OR 2) HORIZONTAL VISCOSITY
@@ -185,7 +191,8 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FD, FC, FN
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: S0F, S1F, VISCF
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: S1F, VISCF
+      TYPE(BIEF_OBJ), TARGET, INTENT(INOUT)   :: S0F
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: LIFBOL, LIFBOF, LIFBOS
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: FBORL, FBORF, FBORS
       TYPE(BIEF_OBJ), INTENT(IN)      :: AFBORL, AFBORF, AFBORS
@@ -226,7 +233,8 @@
       INTEGER IP,K,NPTFR,IPLAN,IPTFR,IS,IPTFR2,I,IIS,PARA,DIM1X
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
       DOUBLE PRECISION STOFD,TETASUPG
-      TYPE(BIEF_OBJ), POINTER :: VOLUME
+      CHARACTER(LEN=1) :: S0FTYPR
+      TYPE(BIEF_OBJ), POINTER :: VOLUME,S0F2
 !
 !     FUNCTIONS
 !
@@ -240,6 +248,10 @@
 !     FOR DIMENSIONING XA AND XB IN MURD3D.
 !
       DIM1X=BIEF_DIM2_EXT(IELM3,IELM3,1,'Q',MESH3D)
+!
+!     SAVING S0F%TYPR
+!
+      S0FTYPR=S0F%TYPR
 !
 !     DEALING WITH A VELOCITY ?
 !      
@@ -343,20 +355,25 @@
 !=======================================================================
 !
 !     WITH DISTRIBUTIVE SCHEMES, RIGHT-HAND SIDE MUST BE
-!     IN INTEGRATED FORM (BEWARE, ORIGINAL S0F THUS MODIFIED)
+!     IN INTEGRATED FORM 
 !
       IF(SCHCF.EQ.ADV_NSC.OR.SCHCF.EQ.ADV_PSI.OR.SCHCF.EQ.ADV_LPO.OR.
      &   SCHCF.EQ.ADV_NSC_TF.OR.SCHCF.EQ.ADV_LPO_TF) THEN
 !
+!       S0F2 WILL BE MASS-MATRIX * S0F ASSEMBLED IN PARALLEL
+!
+        S0F2=>TRAV3%ADR(10)%P
+        S0F2%TYPR=S0F%TYPR
+!
         IF(S0F%TYPR.NE.'0') THEN
 !
-          CALL VECTOR(S0F,'=','MASVEC          ',IELM3,1.D0,
+          CALL VECTOR(S0F2,'=','MASVEC          ',IELM3,1.D0,
      &                S0F,S0F,S0F,S0F,S0F,S0F,MESH3D,MSK,MASKEL)
-          IF(NCSIZE.GT.1) CALL PARCOM(S0F,2,MESH3D)
+          IF(NCSIZE.GT.1) CALL PARCOM(S0F2,2,MESH3D)
 !
-        ENDIF
+        ENDIF        
 !
-      ENDIF
+      ENDIF      
 !
 !-----------------------------------------------------------------------
 !
@@ -381,7 +398,7 @@
      &              T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &              IKLE3%I,MESH3D,
      &              NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
-     &              CALFLU,FLUXF,FLUEXT%R,S0F,NSCE,SOURCES,FSCE,
+     &              CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
      &              RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
      &              TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &              FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
@@ -389,7 +406,6 @@
 !
 !       S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !       IF DIFF3D IS CALLED AFTER
-!       CALL OS('X=C     ',X=S0F,C=0.D0)
         S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
@@ -403,7 +419,7 @@
      &               T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &               IKLE3%I,MESH3D,
      &               NELEM3,NPOIN3,DT,SCHCF,LV,MSK,MASKEL%R,INFOR,
-     &               CALFLU,FLUXF,FLUEXT%R,S0F,NSCE,SOURCES,FSCE,
+     &               CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
      &               RAIN,PARAPLUIE%R,TRAIN,NPOIN2,
      &               TRAV3%ADR(5)%P,TRAV3%ADR(6)%P,MASKPT%R,OPTBAN,
      &               FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
@@ -411,8 +427,6 @@
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
-!
-!        CALL OS('X=C     ',X=S0F,C=0.D0)
          S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
@@ -426,7 +440,7 @@
      &                   T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &                   MESH2D,MESH3D,
      &                   NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
-     &                   CALFLU,FLUXF,FLUEXT%R,S0F,NSCE,SOURCES,FSCE,
+     &                   CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
      &                   RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
      &                   FLODEL%R,FLOPAR%R,MESH3D%GLOSEG%I,
      &                   MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
@@ -436,8 +450,6 @@
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
-!
-!        CALL OS('X=C     ',X=S0F,C=0.D0)
          S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
@@ -453,7 +465,7 @@
      &                   T3_02%R,T3_03%R,T3_04%R,T3_02,T3_03,T3_04,
      &                   MESH2D,MESH3D,
      &                   NELEM3,NPOIN3,DT,SCHCF,MSK,MASKEL%R,INFOR,
-     &                   CALFLU,FLUXF,FLUEXT%R,S0F,NSCE,SOURCES,FSCE,
+     &                   CALFLU,FLUXF,FLUEXT%R,S0F2,NSCE,SOURCES,FSCE,
      &                   RAIN,PARAPLUIE%R,TRAIN,NPOIN2,OPTBAN,
      &                   MURD_TF%X%R(1     :MESH3D%NSEG     ),
      &                   MURD_TF%X%R(1+PARA:MESH3D%NSEG+PARA),
@@ -465,8 +477,6 @@
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
-!
-!        CALL OS('X=C     ',X=S0F,C=0.D0)
          S0F%TYPR='0'
 !
 !-----------------------------------------------------------------------
@@ -661,6 +671,11 @@
       DO IP=1,NPTFR3
         LIFBOL%I(IP)=LIFBOL%I(IP+NPTFR3)
       ENDDO
+!
+!     S0F%TYPR RESTORED (S0F MAY BE USED ELSEWHERE, E.G. IN A FURTHER
+!                        SUB ITERATION)
+!
+      S0F%TYPR=S0FTYPR
 !
 !-----------------------------------------------------------------------
 !

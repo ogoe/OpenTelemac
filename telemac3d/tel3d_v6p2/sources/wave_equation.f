@@ -5,7 +5,7 @@
      &(LT,ISOUSI)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION AND PROPAGATION STEP IN 3D USING THE WAVE
@@ -50,13 +50,24 @@
 !
 !history  J-M HERVOUET (LNHE)
 !+        15/09/2011
+!+        V6P1
 !+
 !+   Call to NUWAVE_P0 modified
 !
 !history  J-M HERVOUET (LNHE)
 !+        02/04/2012
+!+        V6P2
 !+
 !+   Initialization of DH moved to telemac3d.f
+!
+!history  J-M HERVOUET (LNHE)
+!+        17/09/2012
+!+        V6P3
+!+
+!+   Using S0U is now double-checked by the advection scheme to know if
+!+   S0U has been treated before. S0U%TYPR is no longer cancelled in
+!+   CVDF3D, otherwise S0U is forgotten if there are iterations for non
+!+   linearities.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
@@ -186,7 +197,13 @@
         CALL OS('X=Y     ',X=VC,Y=VD)
       ENDIF
 !
-      IF(S0U%TYPR.NE.'0') THEN
+      IF(  (SCHCVI.EQ.ADV_NSC.OR.
+     &      SCHCVI.EQ.ADV_PSI.OR.
+     &      SCHCVI.EQ.ADV_LPO.OR.
+     &      SCHCVI.EQ.ADV_NSC_TF.OR.
+     &      SCHCVI.EQ.ADV_LPO_TF).AND.S0U%TYPR.NE.'0') THEN
+!       CASES WHERE S0U MUST BE TAKEN INTO ACCOUNT:
+!       IT IS NOT 0 AND IT HAS NOT BEEN TREATED BY THE ADVECTION SCHEME
         DO I=1,U%DIM1
           I2=MOD(I-1,NPOIN2)+1
           T3_01%R(I)=UC%R(I)
@@ -195,6 +212,7 @@
      &    +DT*(S0V%R(I)-T3_02%R(I)-TETAZCOMP*GRAV*GRADZN%ADR(2)%P%R(I2))
         ENDDO
       ELSE
+!       FORMULA WITHOUT S0U
         DO I=1,U%DIM1
           I2=MOD(I-1,NPOIN2)+1
           T3_01%R(I)=UC%R(I)
