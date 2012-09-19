@@ -213,10 +213,10 @@
 !
         VISC = CMU * AK(N)**2 / EP(N)
 !
-        S2 = (  2.D0 * (DUDX%R(N)**2+DVDY%R(N)**2+DWDZ%R(N)**2)
-     &                  + ( DUDY%R(N)+DVDX%R(N) )**2
-     &                  + ( DUDZ%R(N)+DWDX%R(N) )**2
-     &                  + ( DVDZ%R(N)+DWDY%R(N) )**2  )
+        S2 = 2.D0 * (DUDX%R(N)**2+DVDY%R(N)**2+DWDZ%R(N)**2)
+     &            + ( DUDY%R(N)+DVDX%R(N) )**2
+     &            + ( DUDZ%R(N)+DWDX%R(N) )**2
+     &            + ( DVDZ%R(N)+DWDY%R(N) )**2  
 !
 !       RICHARDSON NUMBER (BETWEEN 0. AND 100.)
         RI(N)=-GRAV*DTADZ%R(N)/MAX(S2,1.D-10)

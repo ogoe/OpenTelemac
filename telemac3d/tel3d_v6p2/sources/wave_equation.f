@@ -61,7 +61,7 @@
 !+   Initialization of DH moved to telemac3d.f
 !
 !history  J-M HERVOUET (LNHE)
-!+        17/09/2012
+!+        19/09/2012
 !+        V6P3
 !+
 !+   Using S0U is now double-checked by the advection scheme to know if
@@ -197,13 +197,14 @@
         CALL OS('X=Y     ',X=VC,Y=VD)
       ENDIF
 !
-      IF(  (SCHCVI.EQ.ADV_NSC.OR.
-     &      SCHCVI.EQ.ADV_PSI.OR.
-     &      SCHCVI.EQ.ADV_LPO.OR.
-     &      SCHCVI.EQ.ADV_NSC_TF.OR.
-     &      SCHCVI.EQ.ADV_LPO_TF).AND.S0U%TYPR.NE.'0') THEN
+      IF(  (SCHCVI.NE.ADV_NSC.AND.
+     &      SCHCVI.NE.ADV_PSI.AND.
+     &      SCHCVI.NE.ADV_LPO.AND.
+     &      SCHCVI.NE.ADV_NSC_TF.AND.
+     &      SCHCVI.NE.ADV_LPO_TF).AND.S0U%TYPR.NE.'0') THEN
 !       CASES WHERE S0U MUST BE TAKEN INTO ACCOUNT:
 !       IT IS NOT 0 AND IT HAS NOT BEEN TREATED BY THE ADVECTION SCHEME
+!       (SO FAR ACTUALLY CASES ADV_SUPG AND ADV_CAR)
         DO I=1,U%DIM1
           I2=MOD(I-1,NPOIN2)+1
           T3_01%R(I)=UC%R(I)
