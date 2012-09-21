@@ -8,7 +8,7 @@
      &  NELEM2,NELMAX2,IKLE2,SURDET2   , INILOC)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS THE METHOD OF CHARACTERISTICS
@@ -36,6 +36,11 @@
 !+        V6P2
 !+   NPOIN instead of NPOIN2 in the call to SCARACT at the position
 !+   of argument NPLOT (goes with corrections in Streamline.f)
+!
+!history  J-M HERVOUET (LNHE)
+!+        21/09/2012
+!+        V6P3
+!+   Case of tetrahedra of type 51 treated (call of gtsh31)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
@@ -195,14 +200,20 @@
         CALL GTSH11(SHP%R,IT1,IKLE2%I,MESH%ELTCAR%I,NPOIN2,
      &              NELEM2,NELMAX2,MESH%NSEG,QUAB,QUAD)
         DIM1F=NPT
-      ELSEIF(IELM.EQ.41) THEN
+      ELSEIF(IELM.EQ.41.OR.IELM.EQ.51) THEN
         DO I=1,NPLAN
           CALL OV('X=C     ',T3%R((I-1)*NPOIN2+1:I*NPOIN2),
      &            T3%R,T3%R,ZSTAR%R(I),NPOIN2)
-        ENDDO    
-        CALL GTSH41(SHP%R,SHZ%R,WCONV%R,IT1,IT2,IKLE2%I,MESH%ELTCAR%I,
-     &              NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
-        DIM1F=NPOIN2
+        ENDDO 
+        IF(IELM.EQ.41) THEN   
+          CALL GTSH41(SHP%R,SHZ%R,WCONV%R,IT1,IT2,IKLE2%I,
+     &                MESH%ELTCAR%I,NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
+          DIM1F=NPOIN2
+        ELSEIF(IELM.EQ.51) THEN
+          CALL GTSH31(SHP%R,IT1,MESH%IKLE%I,
+     &                MESH%ELTCAR%I,NPOIN,MESH%NELMAX)
+          DIM1F=NPT
+        ENDIF
       ELSE
         WRITE(LU,*) 'ELEMENT NOT IMPLEMENTED IN CHARAC: ',IELM
         CALL PLANTE(1)

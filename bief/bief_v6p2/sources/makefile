@@ -87,7 +87,7 @@ filter.f     find_in_sel.f  flux3dlim.f   flux_mask.f   fluxpr.f   \
 fond.f       fonstr.f       front2.f      fropro.f      geoelt.f      gettri.f gettriebe.f gettriseg.f \
 global_to_local_point.f     gmres.f      godown.f       godwn1.f      goup.f    \
 goup1.f      gracjg.f       gradp.f       gregtim.f     gsebe.f   \
-gtsh11.f     gtsh41.f       hloc.f        hvf.f ielbor.f  \
+gtsh11.f     gtsh31.f       gtsh41.f       hloc.f        hvf.f ielbor.f  \
 impvec.f     inbief.f       inclu2.f      inclus.f  \
 infcel.f     inpoly.f  \
 interp.f     invmtx.f       jultim.f      kspg11.f   ksupg.f   \

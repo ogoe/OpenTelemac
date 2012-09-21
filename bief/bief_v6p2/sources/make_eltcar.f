@@ -6,7 +6,7 @@
      & IELM)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    For every point in the mesh, gives an element that contains
@@ -37,6 +37,11 @@
 !+        14/06/2012
 !+        V6P2
 !+        Prisms cut into tetrahedra added, quasi-bubble completed
+!
+!history  J-M HERVOUET (LNHE, EDF R&D)
+!+        21/09/2012
+!+        V6P3
+!+        Correction of IELEM3D in tetrahedra part (1st use 1st bug...)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELTCAR         |<--| ELEMENT CHOSEN FOR EVERY POINT
@@ -323,7 +328,7 @@
 !               3 TETRAHEDRA POSSIBLE CANDIDATES
                 DO K=1,3
 !                 SEE ELEMENT NUMBERING IN PRISMS CUT INTO TETRAHEDRA
-                  IELEM3D=(IPLAN-1)*3*NELEM2+(K-1)*NELEM2+ELTCAR(I)
+                  IELEM3D=(IPLAN-2)*3*NELEM2+(K-1)*NELEM2+ELTCAR(I)
 !                 THIS MAY HIT SEVERAL TIMES AS A POINT MAY BELONG
 !                 TO MORE THAN ONE TETRAHEDRON AT THIS LEVEL,
 !                 THE LAST HIT IS KEPT, SAME BEHAVIOUR IN SCALAR OR
