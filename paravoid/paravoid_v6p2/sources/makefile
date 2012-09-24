@@ -78,7 +78,7 @@ SHELL	      = /bin/sh
 # Definition des cibles
 #
 
-all:		create_workdir $(LIBRARY) delete_workdir
+all:		create_workdir modules  $(LIBRARY) delete_workdir
 
 $(LIBRARY):	$(OBJS)
 		$(MESSAGE) "Archive $(LIBRARY) ..."
@@ -146,11 +146,26 @@ delete_workdir :
 		  remsh $(NAME_CIBLE) -l $(USR_CIBLE) \
 		  "cd workdir ;  rm -rf compilation " ; fi
 
+ 
+#------- Modules
+#
+MODS =   interface_parallel.o
+
+modules:	$(MODS)
+		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
+		  DIR="`whoami`@`uname -n`:`pwd`" ; \
+		  remsh $(NAME_CIBLE) -l $(USR_CIBLE) \
+		  "cd workdir/compilation ;\
+		  rcp *.mod $$DIR/. ";\
+		  mv *.mod $(DEST)/.; fi;
+		@echo "=> Transfert des modules effectue !"
 
 #------- Regles de compilation des sources FORTRAN
 
 .f.o:
 	@echo "=> Compilation de $< :"
+	@if [ ! -d ../$(DIRLIB) ]; then \
+	echo "creation du repertoire $(DIRLIB)";mkdir ../$(DIRLIB); fi
 	@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
           DIR="`whoami`@`uname -n`:`pwd`" ; \
           remsh $(NAME_CIBLE) -l $(USR_CIBLE) \
