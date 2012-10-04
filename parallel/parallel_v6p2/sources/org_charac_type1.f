@@ -5,7 +5,7 @@
      &(NOMB,TRACE,CHARACTERISTIC)                      
 !
 !***********************************************************************
-! PARALLEL   V6P2                                   21/08/2010
+! PARALLEL   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    MPI TYPE FOR TYPE CHARAC_TYPE - CHARACTERISTICS /
@@ -33,6 +33,11 @@
 !+   DX,DY and DZ added. Problem of integer 8 treated as a double 
 !+   solved. Much clearer now.
 !+
+!history  J-M HERVOUET
+!+        04/10/2012
+!+        V6P3
+!+   NOMB = 0 now allowed
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NOMB           |<---| NUMBER OF VARIABLES 
 !| TRACE          |<---| IF .TRUE. TRACE EXECUTION
@@ -108,11 +113,11 @@ C
 !     ADDRESS AFTER THE BASKET
       CH_DELTA(16)=CH_DELTA(15)+INTEX*MAX_BASKET_SIZE         
 !     
-      IF(NOMB.GT.0.AND.NOMB.LE.MAX_BASKET_SIZE) THEN  
+      IF(NOMB.GE.0.AND.NOMB.LE.MAX_BASKET_SIZE) THEN  
         CH_BLENGTH(15) = NOMB  ! CH%BASKET RANGE APPLIED FOR COMMUNICATION   
       ELSE 
         WRITE(LU,*) ' PARALLEL::ORG_CHARAC_TYPE1::', 
-     &        ' NOMB NOT IN RANGE [1..MAX_BASKET_SIZE]' 
+     &        ' NOMB NOT IN RANGE [0..MAX_BASKET_SIZE]' 
         WRITE(LU,*) ' MAX_BASKET_SIZE, NOMB: ',MAX_BASKET_SIZE,NOMB 
         CALL PLANTE(1) 
         STOP  
@@ -165,4 +170,4 @@ C
 !----------------------------------------------------------------------
 !     
       RETURN  
-      END SUBROUTINE ORG_CHARAC_TYPE1 
+      END SUBROUTINE ORG_CHARAC_TYPE1
