@@ -60,6 +60,7 @@ from samplers.polygons import isClockwise
 ken_header = re.compile(r'[#:]')
 
 asc_FileType = re.compile(r':FileType\s(?P<type>\b\w\w\w\b)') #\s(?P<after>[^\Z]*)\Z')
+asc_AttributeName = re.compile(r':AttributeName\s(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z')
 
 var_1int = re.compile(r'(?P<before>[^+-]*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z')
 var_1dbl = re.compile(r'(?P<number>[+-]?(|[^a-zA-Z(,])(?:(\d+(|\.)\d*[dDeE](\+|\-)?\d+|\d+\.\d+)(\b|[^a-zA-Z,)])))[\s,;]*(?P<after>[^\Z]*)\Z')
@@ -86,11 +87,20 @@ def getInS(file):
    core = getFileContent(file)
 
    # ~~ Parse head ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   icore = 0
+   icore = 0; atrbut = {}; natrbut = 0
    while re.match(ken_header,core[icore]):
       # ~~> instruction FileType
       proc = re.match(asc_FileType,core[icore])
       if proc: fileType = proc.group('type').lower()
+      # ~~> instruction AttributeName
+      proc = re.match(asc_AttributeName,core[icore])
+      if proc:
+         natrbut += 1
+         if natrbut == int(proc.group('number')):
+            atrbut.update({natrbut:[proc.group('after').strip()]})
+         else:
+            print '... Could not read the order of your Attributes:',core[icore]
+            sys.exit()
       # ... more instruction coming ...
       icore += 1
    head = core[0:icore]
@@ -105,8 +115,13 @@ def getInS(file):
       if not proc:
          print '\nCould not parse the following polyline header: '+core[icore]
          sys.exit()
-      nrec = int(proc.group('number')); icore += 1
-      xyi = []
+      nrec = int(proc.group('number'))
+      a = proc.group('after').strip().split()
+      if len(a) != natrbut:
+         print '... Could not find the correct number of attribute:',core[icore]
+         sys.exit()
+      for i in atrbut.keys(): atrbut[i].append(a[i-1])
+      xyi = []; icore += 1
       for irec in range(nrec):
          proc = re.match(var_2dbl,core[icore+irec])
          if not proc:
@@ -123,7 +138,7 @@ def getInS(file):
       npoin += len(xyi)
       icore += nrec
 
-   return head,fileType,npoin,poly,type
+   return head,fileType,npoin,poly,type,atrbut
 
 def putInS(file,head,fileType,poly,type=None):
 
@@ -168,7 +183,7 @@ class InS:
    def __init__(self,fileName):
       self.fileName = fileName
       if fileName != '':
-         self.head,self.fileType,self.npoin,self.poly,self.type = getInS(self.fileName)
+         self.head,self.fileType,self.npoin,self.poly,self.type,self.atrbut = getInS(self.fileName)
 
    def putContent(self,fileName):
       putInS(fileName,self.head,self.fileType,self.poly,self.type)
