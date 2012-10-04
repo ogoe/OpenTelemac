@@ -53,8 +53,6 @@ class InS2Shp(InS):
       radius  = 6371000.
       long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
       const = np.tan( lat0/2. + np.pi/4. )
-      print self.poly
-      sys.exit()
       for poly in self.poly:
          for ip in range(len(poly)):
             poly[ip] = [np.rad2deg( poly[ip][0]/radius + long0 ),np.rad2deg( 2.*np.arctan( const*np.exp(poly[ip][1]/radius) ) - np.pi/2. )]
