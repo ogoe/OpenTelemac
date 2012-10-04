@@ -45,7 +45,6 @@ class InS2Shp(InS):
 
    def __init__(self,fileName):
       InS.__init__(self,fileName)
-      print '~~>',fileName
       if self.fileName != '':
          self.head,self.fileType,self.npoin,self.poly,self.type,self.atrbut = getInS(self.fileName)
 
