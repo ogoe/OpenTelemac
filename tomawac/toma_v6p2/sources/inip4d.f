@@ -2,7 +2,7 @@
                      SUBROUTINE INIP4D
 !                    *****************
 !
-     &( U , V , T , W , X , Y , SHP1 ,SHP2 , SHP3 , SHT , SHF , ELT ,
+     &( U , V , T , W , X , Y , SHP , SHT , SHF , ELT ,
      & ETA , FRE , XCONV , YCONV , TCONV, FCONV , TETA , FREQ ,IKLE2 ,
      & NPOIN2 , NELEM2 , NPLAN  , IFF , NF  ,IFABOR,GOODELT)
 !
@@ -93,8 +93,8 @@
       DOUBLE PRECISION X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION XCONV(NPOIN2,NPLAN),YCONV(NPOIN2,NPLAN)
       DOUBLE PRECISION TCONV(NPOIN2,NPLAN),FCONV(NPOIN2,NPLAN)
-      DOUBLE PRECISION SHP1(NPOIN2,NPLAN),SHP2(NPOIN2,NPLAN)
-      DOUBLE PRECISION SHP3(NPOIN2,NPLAN),SHT(NPOIN2,NPLAN)
+      DOUBLE PRECISION SHP(3,NPOIN2,NPLAN)
+      DOUBLE PRECISION SHT(NPOIN2,NPLAN)
       DOUBLE PRECISION SHF(NPOIN2,NPLAN)
       DOUBLE PRECISION DET1,DET2,EPS
       INTEGER IFABOR(NELEM2,7),GOODELT(NPOIN2,NPLAN)
@@ -107,6 +107,9 @@
        DATA EPS /0.D0 /
 !-----------------------------------------------------------------------
 !
+
+       GO TO 3333
+
 !  INITIALISES THE POINTS TO ADVECT
 !
       GOODELT = 0
@@ -119,9 +122,11 @@
 90        CONTINUE
 60      CONTINUE
 !
+3333     CONTINUE
 !-----------------------------------------------------------------------
         DO 10 IPLAN=1,NPLAN
 !
+      GO TO 3334
 !-----------------------------------------------------------------------
 !  INITIALLY FILLS IN THE SHP AND ELT
 !  (NOTE: FOR LATERAL BOUNDARY POINTS, THERE MAY NOT BE AN ELEMENT
@@ -131,19 +136,19 @@
 !
             N1=IKLE2(IELEM,1)
                ELT(N1,IPLAN) = IELEM
-               SHP1(N1,IPLAN) = 1.D0
-               SHP2(N1,IPLAN) = 0.D0
-               SHP3(N1,IPLAN) = 0.D0
+               SHP(1,N1,IPLAN) = 1.D0
+               SHP(2,N1,IPLAN) = 0.D0
+               SHP(3,N1,IPLAN) = 0.D0
             N1=IKLE2(IELEM,2)
                ELT(N1,IPLAN) = IELEM
-               SHP1(N1,IPLAN) = 0.D0
-               SHP2(N1,IPLAN) = 1.D0
-               SHP3(N1,IPLAN) = 0.D0
+               SHP(1,N1,IPLAN) = 0.D0
+               SHP(2,N1,IPLAN) = 1.D0
+               SHP(3,N1,IPLAN) = 0.D0
             N1=IKLE2(IELEM,3)
                ELT(N1,IPLAN) = IELEM
-               SHP1(N1,IPLAN) = 0.D0
-               SHP2(N1,IPLAN) = 0.D0
-               SHP3(N1,IPLAN) = 1.D0
+               SHP(1,N1,IPLAN) = 0.D0
+               SHP(2,N1,IPLAN) = 0.D0
+               SHP(3,N1,IPLAN) = 1.D0
 20       CONTINUE
 !
 !-----------------------------------------------------------------------
@@ -161,35 +166,35 @@
 !
           IF ((IFABOR(IELEM,1)==-2)) THEN
              ELT(N1,IPLAN) = IELEM
-             SHP1(N1,IPLAN) = 1.D0
-             SHP2(N1,IPLAN) = 0.D0
-             SHP3(N1,IPLAN) = 0.D0
+             SHP(1,N1,IPLAN) = 1.D0
+             SHP(2,N1,IPLAN) = 0.D0
+             SHP(3,N1,IPLAN) = 0.D0
              ELT(N2,IPLAN) = IELEM
-             SHP1(N2,IPLAN) = 0.D0
-             SHP2(N2,IPLAN) = 1.D0
-             SHP3(N2,IPLAN) = 0.D0
+             SHP(1,N2,IPLAN) = 0.D0
+             SHP(2,N2,IPLAN) = 1.D0
+             SHP(3,N2,IPLAN) = 0.D0
           ENDIF
 !
           IF ((IFABOR(IELEM,2)==-2)) THEN
              ELT(N2,IPLAN) = IELEM
-             SHP1(N2,IPLAN) = 0.D0
-             SHP2(N2,IPLAN) = 1.D0
-             SHP3(N2,IPLAN) = 0.D0
+             SHP(1,N2,IPLAN) = 0.D0
+             SHP(2,N2,IPLAN) = 1.D0
+             SHP(3,N2,IPLAN) = 0.D0
              ELT(N3,IPLAN) = IELEM
-             SHP1(N3,IPLAN) = 0.D0
-             SHP2(N3,IPLAN) = 0.D0
-             SHP3(N3,IPLAN) = 1.D0
+             SHP(1,N3,IPLAN) = 0.D0
+             SHP(2,N3,IPLAN) = 0.D0
+             SHP(3,N3,IPLAN) = 1.D0
           ENDIF
 !
           IF ((IFABOR(IELEM,3)==-2)) THEN
              ELT(N3,IPLAN) = IELEM
-             SHP1(N3,IPLAN) = 0.D0
-             SHP2(N3,IPLAN) = 0.D0
-             SHP3(N3,IPLAN) = 1.D0
+             SHP(1,N3,IPLAN) = 0.D0
+             SHP(2,N3,IPLAN) = 0.D0
+             SHP(3,N3,IPLAN) = 1.D0
              ELT(N1,IPLAN) = IELEM
-             SHP1(N1,IPLAN) = 1.D0
-             SHP2(N1,IPLAN) = 0.D0
-             SHP3(N1,IPLAN) = 0.D0
+             SHP(1,N1,IPLAN) = 1.D0
+             SHP(2,N1,IPLAN) = 0.D0
+             SHP(3,N1,IPLAN) = 0.D0
           ENDIF
 !
 450       CONTINUE
@@ -206,9 +211,9 @@
       DET2=(Y(N3)-Y(N1))*U(N1,IPLAN)-(X(N3)-X(N1))*V(N1,IPLAN)
           IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
              ELT(N1,IPLAN) = IELEM
-             SHP1(N1,IPLAN) = 1.D0
-             SHP2(N1,IPLAN) = 0.D0
-             SHP3(N1,IPLAN) = 0.D0
+             SHP(1,N1,IPLAN) = 1.D0
+             SHP(2,N1,IPLAN) = 0.D0
+             SHP(3,N1,IPLAN) = 0.D0
              GOODELT(N1,IPLAN) = 1
           ENDIF
 !
@@ -216,9 +221,9 @@
       DET2=(Y(N1)-Y(N2))*U(N2,IPLAN)-(X(N1)-X(N2))*V(N2,IPLAN)
           IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
              ELT(N2,IPLAN) = IELEM
-             SHP1(N2,IPLAN) = 0.D0
-             SHP2(N2,IPLAN) = 1.D0
-             SHP3(N2,IPLAN) = 0.D0
+             SHP(1,N2,IPLAN) = 0.D0
+             SHP(2,N2,IPLAN) = 1.D0
+             SHP(3,N2,IPLAN) = 0.D0
              GOODELT(N2,IPLAN) = 1
           ENDIF
 !
@@ -226,9 +231,9 @@
       DET2=(Y(N2)-Y(N3))*U(N3,IPLAN)-(X(N2)-X(N3))*V(N3,IPLAN)
           IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
              ELT(N3,IPLAN) = IELEM
-             SHP1(N3,IPLAN) = 0.D0
-             SHP2(N3,IPLAN) = 0.D0
-             SHP3(N3,IPLAN) = 1.D0
+             SHP(1,N3,IPLAN) = 0.D0
+             SHP(2,N3,IPLAN) = 0.D0
+             SHP(3,N3,IPLAN) = 1.D0
              GOODELT(N3,IPLAN) = 1
           ENDIF
 !
@@ -279,8 +284,10 @@
 !-----------------------------------------------------------------------
 !  FILLS IN THE SHT, ETA, SHF AND FRE, POINT BY POINT
 !
+3334    CONTINUE
          DO 70 IPOIN=1,NPOIN2
 !
+          GO TO 3335
            IF (T(IPOIN,IPLAN).GT.0.D0) THEN
             IF (IPLAN.EQ.1) THEN
                 ETA(IPOIN,1) = NPLAN
@@ -294,14 +301,15 @@
               ETA(IPOIN,IPLAN) = IPLAN
               SHT(IPOIN,IPLAN) = 0.D0
            ENDIF
+3335     CONTINUE
 !
            IF (((W(IPOIN,IPLAN).GT.0.D0).AND.(IFF.NE.1)).OR.
      &             (IFF.EQ.NF)) THEN
-            FRE(IPOIN,IPLAN) = IFF-1
-            SHF(IPOIN,IPLAN) = 1.D0
+             FRE(IPOIN,IPLAN) = IFF-1
+             SHF(IPOIN,IPLAN) = 1.D0
            ELSE
-            FRE(IPOIN,IPLAN) = IFF
-            SHF(IPOIN,IPLAN) = 0.D0
+             FRE(IPOIN,IPLAN) = IFF
+             SHF(IPOIN,IPLAN) = 0.D0
            ENDIF
 70       CONTINUE
 !

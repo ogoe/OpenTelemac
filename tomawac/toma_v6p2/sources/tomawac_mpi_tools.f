@@ -68,12 +68,13 @@
 !
 !
        SUBROUTINE ALLOC_LOCAL(NARRIV,FREQ,NF,NLOSTAGAIN,
-     &                      NUMBERLOST,NARRSUM)
+     &                        NUMBERLOST,NARRSUM)
          USE BIEF
          USE TOMAWAC_MPI
          IMPLICIT NONE
-         INTEGER, INTENT(INOUT) :: NARRIV,NLOSTAGAIN,NUMBERLOST,
-     &                            NF,NARRSUM,FREQ
+         INTEGER, INTENT(INOUT) :: NARRIV,NLOSTAGAIN,NUMBERLOST
+         INTEGER, INTENT(INOUT) :: NARRSUM,FREQ
+         INTEGER, INTENT(IN)    :: NF
          INTEGER P_ISUM,P_IMAX
          EXTERNAL P_ISUM,P_IMAX
 !
@@ -109,7 +110,8 @@
          USE TOMAWAC_MPI
          IMPLICIT NONE
          INTEGER, INTENT(INOUT) :: NARRIV,NLOSTAGAIN,NUMBERLOST,
-     &                            NF,NARRSUM,FREQ
+     &                             NARRSUM,FREQ
+         INTEGER, INTENT(IN) :: NF
          INTEGER P_ISUM,P_IMAX
          EXTERNAL P_ISUM,P_IMAX
 !

@@ -3,8 +3,8 @@
 !                       ***************** 
 ! 
      &(CX    , CY    , CT    , DT    , X     , Y     , TETA  , COSTET, 
-     & SINTET, FREQ  , IKLE2 , IFABOR, ETAP1 , TRA01 , SHP1  , SHP2  ,  
-     & SHP3  , SHZ   , ELT   , ETA   , DEPTH , DZX   , DZY   , XK    ,  
+     & SINTET, FREQ  , IKLE2 , IFABOR, ETAP1 , TRA01 , SHP   ,  
+     & SHZ   , ELT   , ETA   , DEPTH , DZX   , DZY   , XK    ,  
      & CG    , ITR01 , NPOIN3, NPOIN2, NELEM2, NPLAN , NF    , SURDET,  
      & COURAN, SPHE  , PROINF, A     , DFREQ , F     , CCG   , DIV   ,  
      & DELTA , DDX   , DDY   , EPS   , NBOR  , NPTFR , XKONPT, RK    ,  
@@ -85,7 +85,7 @@
 !| RXX            |-->| ARRAY USED IN THE MESHFREE TECHNIQUE 
 !| RY             |-->| ARRAY USED IN THE MESHFREE TECHNIQUE 
 !| RYY            |-->| ARRAY USED IN THE MESHFREE TECHNIQUE 
-!| SHP1,SHP2,SHP3 |<->| BARYCENTRIC COORDINATES OF THE NODES IN 
+!| SHP            |<->| BARYCENTRIC COORDINATES OF THE NODES IN 
 !|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT" 
 !| SHZ            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE  
 !|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA" 
@@ -100,13 +100,14 @@
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
+      USE BIEF
       IMPLICIT NONE 
 ! 
       INTEGER LNG,LU 
       COMMON/INFO/ LNG,LU 
-! 
-!.....VARIABLES IN ARGUMENT 
-!     """"""""""""""""""""" 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!    
       INTEGER NPOIN3,NPOIN2,NELEM2,NPLAN,NF,NPTFR,MAXNSP 
       INTEGER NBOR(NPTFR) , DIFFRA 
       INTEGER ITR01(NPOIN3,3) 
@@ -118,8 +119,6 @@
       DOUBLE PRECISION RK(MAXNSP,NPOIN2) 
       DOUBLE PRECISION RX(MAXNSP,NPOIN2), RY(MAXNSP,NPOIN2)   
       DOUBLE PRECISION RXX(MAXNSP,NPOIN2),RYY(MAXNSP,NPOIN2) 
-      DOUBLE PRECISION SHP1(NPOIN3,NF) , SHP2(NPOIN3,NF) 
-      DOUBLE PRECISION SHP3(NPOIN3,NF) , SHZ(NPOIN3,NF) 
       DOUBLE PRECISION X(NPOIN2),Y(NPOIN2) 
       DOUBLE PRECISION XK(NPOIN2,NF),CG(NPOIN2,NF) 
       DOUBLE PRECISION TETA(NPLAN),FREQ(NF) 
@@ -133,10 +132,11 @@
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF) 
       DOUBLE PRECISION CCG(NPOIN2),DIV(NPOIN2) 
       DOUBLE PRECISION DELTA(NPOIN2), XKONPT(NPOIN2) 
-      LOGICAL COURAN,SPHE,PROINF, FLTDIF 
-! 
-!.....LOCAL VARIABLES 
-!     """"""""""""""" 
+      LOGICAL COURAN,SPHE,PROINF, FLTDIF
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: SHP,SHZ 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER IFF 
       INTEGER,DIMENSION(:,:,:), ALLOCATABLE :: GOODELT 
 ! 
@@ -169,16 +169,19 @@
 !      DETERMINES THE FOOT OF THE CHARACTERISTICS 
 ! 
          CALL INIPIE 
-     &  (CX,CY,CT,X,Y,SHP1(1,IFF),SHP2(1,IFF),SHP3(1,IFF),SHZ(1,IFF), 
-     &   ELT(1,IFF),ETA(1,IFF), 
+     &  (CX,CY,CT,X,Y,SHP%ADR(IFF)%P%R,
+     &                SHZ%ADR(IFF)%P%R,ELT(1,IFF),ETA(1,IFF), 
      &   TRA01,TRA01(1,2),TRA01(1,3),TETA,IKLE2,NPOIN2,NELEM2,NPLAN, 
      &       ITR01,ITR01,ITR01,NELEM2,NPOIN2,IFABOR,GOODELT(1,1,IFF)) 
 ! 
          CALL MPOINT 
      &  (CX,CY,CT, 
      &   DT,X,Y,TETA,IKLE2,IFABOR,ETAP1,TRA01,TRA01(1,2), 
-     &   TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6),SHP1(1,IFF), 
-     &   SHP2(1,IFF),SHP3(1,IFF),SHZ(1,IFF),ELT(1,IFF),ETA(1,IFF), 
+     &   TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6), 
+     &   SHP%ADR(IFF)%P%R(         1:  NPOIN3),
+     &   SHP%ADR(IFF)%P%R(  NPOIN3+1:2*NPOIN3),
+     &   SHP%ADR(IFF)%P%R(2*NPOIN3+1:3*NPOIN3),
+     &   SHZ%ADR(IFF)%P%R,ELT(1,IFF),ETA(1,IFF), 
      &   ITR01(1,1),NPOIN3, 
      &   NPOIN2,NELEM2,NPLAN,IFF,SURDET,-1,ITR01(1,2)) 
 ! 
@@ -208,7 +211,7 @@
              WRITE(LU,*) ' WATER LEVELS ARE CONSIDERED           ' 
              WRITE(LU,*) '***************************************' 
            ENDIF 
-           CALL PLANTE(0) 
+           CALL PLANTE(1) 
            STOP 
 ! 
        ENDIF 

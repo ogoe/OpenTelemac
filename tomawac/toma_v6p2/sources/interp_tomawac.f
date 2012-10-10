@@ -2,7 +2,7 @@
                      SUBROUTINE INTERP_TOMAWAC
 !                    *************************
 !
-     & ( F , B , SHP1 , SHP2 , SHP3 , SHZ , ELT , ETA , IKLE2,
+     & ( F , B , SHP , SHZ , ELT , ETA , IKLE2,
      &   ETAP1, NPOIN2 , NELEM2 , NPLAN , TRA01)
 !
 !***********************************************************************
@@ -64,8 +64,7 @@
       INTEGER I,I3D,TYPE
       INTEGER IPOIN
       DOUBLE PRECISION F(NPOIN2,NPLAN),TRA01(NPOIN2,NPLAN)
-      DOUBLE PRECISION SHP3(NPOIN2,NPLAN),B(NPOIN2)
-      DOUBLE PRECISION SHP1(NPOIN2,NPLAN),SHP2(NPOIN2,NPLAN)
+      DOUBLE PRECISION SHP(3,NPOIN2,NPLAN),B(NPOIN2)
       DOUBLE PRECISION SHZ(NPOIN2,NPLAN),UMSHZ
 !
       INTEGER IKLE2(NELEM2,3),ELT(NPOIN2,NPLAN),ETA(NPOIN2,NPLAN)
@@ -126,15 +125,15 @@
          IPOIN3=IKLE2(ELT(IP,IPLAN),3)
          UMSHZ=1.D0-SHZ(IP,IPLAN)
            F(IP,IPLAN)=
-     &      ((TRA01(IPOIN1,ETAG) * SHP1(IP,IPLAN)
-     &      + TRA01(IPOIN2,ETAG) * SHP2(IP,IPLAN)
-     &      + TRA01(IPOIN3,ETAG) * SHP3(IP,IPLAN)) * UMSHZ
-     &     +( TRA01(IPOIN1,ETAGP1) * SHP1(IP,IPLAN)
-     &      + TRA01(IPOIN2,ETAGP1) * SHP2(IP,IPLAN)
-     &      + TRA01(IPOIN3,ETAGP1) * SHP3(IP,IPLAN))
+     &      ((TRA01(IPOIN1,ETAG)   * SHP(1,IP,IPLAN)
+     &      + TRA01(IPOIN2,ETAG)   * SHP(2,IP,IPLAN)
+     &      + TRA01(IPOIN3,ETAG)   * SHP(3,IP,IPLAN)) * UMSHZ
+     &     +( TRA01(IPOIN1,ETAGP1) * SHP(1,IP,IPLAN)
+     &      + TRA01(IPOIN2,ETAGP1) * SHP(2,IP,IPLAN)
+     &      + TRA01(IPOIN3,ETAGP1) * SHP(3,IP,IPLAN))
      &       * SHZ(IP,IPLAN) ) /B(IP)
-         IF (F(IP,IPLAN).LT.0.D0) THEN
-            F(IP,IPLAN)=0.D0
+         IF(F(IP,IPLAN).LT.0.D0) THEN
+           F(IP,IPLAN)=0.D0
          ENDIF
 20      CONTINUE
 10    CONTINUE

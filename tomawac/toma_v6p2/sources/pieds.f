@@ -3,7 +3,7 @@
 !                    ****************
 !
      &  (U , V , W , DT , NRK , X , Y , TETA , IKLE2 , IFABOR , ETAS ,
-     &   XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP1 , SHP2 , SHP3 ,
+     &   XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP ,
      &   SHZ , ELT , ETA , NSP , NPLOT , NPOIN2 , NELEM2 , NPLAN ,
      &   IFF , SURDET , SENS , ISO )
 !
@@ -67,7 +67,7 @@
 !| NRK            |-->| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
 !| NSP            |<--| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
 !| SENS           |-->| DESCENTE OU REMONTEE DES CARACTERISTIQUES.
-!| SHP1,SHP2,SHP3 |<->| BARYCENTRIC COORDINATES OF THE NODES IN
+!| SHP            |<->| BARYCENTRIC COORDINATES OF THE NODES IN
 !|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
 !| SHZ            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
 !|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
@@ -93,7 +93,7 @@
       DOUBLE PRECISION W(NPOIN2,NPLAN)
       DOUBLE PRECISION XPLOT(NPLOT),YPLOT(NPLOT),ZPLOT(NPLOT)
       DOUBLE PRECISION SURDET(NELEM2),SHZ(NPLOT)
-      DOUBLE PRECISION SHP1(NPLOT),SHP2(NPLOT),SHP3(NPLOT)
+      DOUBLE PRECISION SHP(3,NPLOT)
       DOUBLE PRECISION X(NPOIN2),Y(NPOIN2),TETA(NPLAN+1)
       DOUBLE PRECISION DX(NPLOT),DY(NPLOT),DZ(NPLOT)
       DOUBLE PRECISION PAS,DT,A1,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP
@@ -130,26 +130,26 @@
             I2 = IKLE2(IEL,2)
             I3 = IKLE2(IEL,3)
 !
-         DXP = U(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + U(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + U(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + U(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT)
-     &       + U(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT)
-     &       + U(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT)
+         DXP = U(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + U(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + U(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + U(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT)
+     &       + U(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT)
+     &       + U(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT)
 !
-         DYP = V(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + V(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + V(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + V(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT)
-     &       + V(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT)
-     &       + V(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT)
+         DYP = V(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + V(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + V(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + V(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT)
+     &       + V(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT)
+     &       + V(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT)
 !
-         DZP = W(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + W(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + W(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT))
-     &       + W(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT)
-     &       + W(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT)
-     &       + W(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT)
+         DZP = W(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + W(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + W(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
+     &       + W(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT)
+     &       + W(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT)
+     &       + W(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT)
 !
          NSP(IPLOT)= MAX(INT(NRK*DT*ABS(DZP/(TETA(IET)-TETA(IET+1)))),
      &         INT(NRK*DT*SQRT((DXP*DXP+DYP*DYP)*SURDET(IEL))) )
@@ -195,38 +195,38 @@
                PAS = SENS * DT / NSP(IPLOT)
 !
                DX(IPLOT) =
-     & ( U(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + U(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + U(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + U(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT)
-     & + U(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT)
-     & + U(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT) ) * PAS
+     & ( U(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + U(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + U(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + U(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT)
+     & + U(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT)
+     & + U(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT) ) * PAS
 !
                DY(IPLOT) =
-     & ( V(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + V(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + V(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + V(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT)
-     & + V(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT)
-     & + V(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT) ) * PAS
+     & ( V(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + V(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + V(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + V(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT)
+     & + V(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT)
+     & + V(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT) ) * PAS
 !
                DZ(IPLOT) =
-     & ( W(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + W(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + W(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT))
-     & + W(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT)
-     & + W(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT)
-     & + W(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT) ) * PAS
+     & ( W(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + W(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + W(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
+     & + W(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT)
+     & + W(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT)
+     & + W(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT) ) * PAS
 !
                XP = XPLOT(IPLOT) + DX(IPLOT)
                YP = YPLOT(IPLOT) + DY(IPLOT)
                ZP = ZPLOT(IPLOT) + DZ(IPLOT)
 !
-               SHP1(IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2))
+               SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2))
      &                        -(Y(I3)-Y(I2))*(XP-X(I2))) * SURDET(IEL)
-               SHP2(IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3))
+               SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3))
      &                        -(Y(I1)-Y(I3))*(XP-X(I3))) * SURDET(IEL)
-               SHP3(IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
+               SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
      &                        -(Y(I2)-Y(I1))*(XP-X(I1))) * SURDET(IEL)
                SHZ(IPLOT) = (ZP-TETA(IET)) / (TETA(IET+1)-TETA(IET))
 !               IF (ABS(SHZ(IPLOT)).GT.2.5D0 ) THEN
@@ -240,11 +240,11 @@
                YPLOT(IPLOT) = YP
                ZPLOT(IPLOT) = ZP
 !
-               IF (SHP1(IPLOT).LT.EPSILO)
+               IF (SHP(1,IPLOT).LT.EPSILO)
      &              ISO(IPLOT)=IBSET(ISO(IPLOT),2)
-               IF (SHP2(IPLOT).LT.EPSILO)
+               IF (SHP(2,IPLOT).LT.EPSILO)
      &              ISO(IPLOT)=IBSET(ISO(IPLOT),3)
-               IF (SHP3(IPLOT).LT.EPSILO)
+               IF (SHP(3,IPLOT).LT.EPSILO)
      &              ISO(IPLOT)=IBSET(ISO(IPLOT),4)
 !
                IF  (SHZ(IPLOT).LT.EPSILO)
@@ -336,18 +336,18 @@
                      I3 = IKLE2(IEL,3)
 !
                      ELT(IPLOT) = IEL
-                     SHP1(IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2))
+                     SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2))
      &                           -(Y(I3)-Y(I2))*(XP-X(I2)))*SURDET(IEL)
-                     SHP2(IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3))
+                     SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3))
      &                           -(Y(I1)-Y(I3))*(XP-X(I3)))*SURDET(IEL)
-                     SHP3(IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
+                     SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
      &                           -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IEL)
 !
                      ISO(IPLOT) = ISOV
 !
-         IF (SHP1(IPLOT).LT.EPSILO) ISO(IPLOT)=IBSET(ISO(IPLOT),2)
-         IF (SHP2(IPLOT).LT.EPSILO) ISO(IPLOT)=IBSET(ISO(IPLOT),3)
-         IF (SHP3(IPLOT).LT.EPSILO) ISO(IPLOT)=IBSET(ISO(IPLOT),4)
+         IF (SHP(1,IPLOT).LT.EPSILO) ISO(IPLOT)=IBSET(ISO(IPLOT),2)
+         IF (SHP(2,IPLOT).LT.EPSILO) ISO(IPLOT)=IBSET(ISO(IPLOT),3)
+         IF (SHP(3,IPLOT).LT.EPSILO) ISO(IPLOT)=IBSET(ISO(IPLOT),4)
 !
                      GOTO 50
 !
@@ -366,9 +366,9 @@
 !  SETS SHP TO 0, END OF TRACING BACK
 !-----------------------------------------------------------------------
 !
-                     SHP1(IPLOT) = 0.D0
-                     SHP2(IPLOT) = 0.D0
-                     SHP3(IPLOT) = 0.D0
+                     SHP(1,IPLOT) = 0.D0
+                     SHP(2,IPLOT) = 0.D0
+                     SHP(3,IPLOT) = 0.D0
                      ELT(IPLOT) = - SENS * ELT(IPLOT)
                      NSP(IPLOT) = ISP
                      GOTO 40
@@ -387,17 +387,17 @@
                   IF (A1.LT.EPSI) A1 = 0.D0
 !FGB
                   IF (IFA.EQ.1) THEN
-                    SHP1(IPLOT) = 1.D0 - A1
-                    SHP2(IPLOT) = A1
-                    SHP3(IPLOT) = 0.D0
+                    SHP(1,IPLOT) = 1.D0 - A1
+                    SHP(2,IPLOT) = A1
+                    SHP(3,IPLOT) = 0.D0
                   ELSEIF (IFA.EQ.2) THEN
-                    SHP2(IPLOT) = 1.D0 - A1
-                    SHP3(IPLOT) = A1
-                    SHP1(IPLOT) = 0.D0
+                    SHP(2,IPLOT) = 1.D0 - A1
+                    SHP(3,IPLOT) = A1
+                    SHP(1,IPLOT) = 0.D0
                   ELSE
-                    SHP3(IPLOT) = 1.D0 - A1
-                    SHP1(IPLOT) = A1
-                    SHP2(IPLOT) = 0.D0
+                    SHP(3,IPLOT) = 1.D0 - A1
+                    SHP(1,IPLOT) = A1
+                    SHP(2,IPLOT) = 0.D0
                   ENDIF
                   XPLOT(IPLOT) = X(I1) + A1 * DX1
                   YPLOT(IPLOT) = Y(I1) + A1 * DY1
@@ -456,7 +456,7 @@
                   ELSE
 !
 !         WRITE(LU,*)'YA UN PROBLEME',IEL,IPLOT
-!         WRITE(LU,*)'SHP',SHP1(IPLOT),SHP2(IPLOT),SHP3(IPLOT)
+!         WRITE(LU,*)'SHP',SHP(1,IPLOT),SHP(2,IPLOT),SHP(3,IPLOT)
 !         WRITE(LU,*)'SHZ',SHZ(IPLOT)
 !         WRITE(LU,*)'DXYZ',DX(IPLOT),DY(IPLOT),DZ(IPLOT)
 !         WRITE(LU,*)'XYZ',XPLOT(IPLOT),YPLOT(IPLOT),ZPLOT(IPLOT)

@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P2                                   25/06/2012
+! TOMAWAC   V6P3                                   25/06/2012
 !***********************************************************************
 !
 !brief    ALLOCATES MEMORY.
@@ -49,7 +49,7 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER MEMT5,ITAMP,IELBT,IELM0,IELB1,CFG(2),NC,NS,I
+      INTEGER IELBT,IELM0,IELB1,CFG(2),NC,NS,I
       INTEGER  P_IMAX
       EXTERNAL P_IMAX
 !
@@ -66,18 +66,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      IELM0  = 10
-      IELM2  = 11
+      IELM0 = 10
+      IELM2 = 11
+      IELM3 = 41
       IELB1 = IELBOR(IELM2,1)
       CFG(1) = 1
       CFG(2) = 1
 !
 !-----------------------------------------------------------------------
 !
-!     ALLOCATES THE MESH STRUCTURE
+!     ALLOCATES THE 2D MESH STRUCTURE
 !
       CALL ALMESH(MESH,'MESH  ',IELM2,SPHE,CFG,WAC_FILES(WACGEO)%LU,
      &            EQUA,FILE_FORMAT=WAC_FILES(WACGEO)%FMT)
+!
+!     ALLOCATES THE 3D MESH STRUCTURE
+!
+      CALL ALMESH(MESH3D,'MESH3D',IELM3,SPHE,CFG,WAC_FILES(WACGEO)%LU,
+     &            EQUA,NPLAN=NPLAN,FILE_FORMAT=WAC_FILES(WACGEO)%FMT)
 !
 !     ALIAS FOR CERTAIN COMPONENTS OF MESH
 !
@@ -117,21 +123,34 @@
       ENDIF
       NPOIN3_G=NPOIN2_G*NPLAN
 !
+! JMH 05/10/2012 :
+!
+      IF(NCSIZE.GT.1) THEN
+        CALL BIEF_ALLVEC(2,IKLE_EXT,'IK_EXT',P_IMAX(NELEM2),3,0,MESH)
+      ELSE
+!       HERE POINTING IKLE_EXT%I ON IKLE2 WOULD WORK ALSO...
+        CALL BIEF_ALLVEC(2,IKLE_EXT,'IK_EXT',NELEM2,3,0,MESH)
+      ENDIF      
+!
 !-----------------------------------------------------------------------
 !
 !     VARIABLES 4D TO ADVECT
+!
       CALL BIEF_ALLVEC(1,SF,'SF    ',NPOIN3*NF , 1 , 0 ,MESH)
 !
 !     COEFFICIENT B FOR ADVECTION
+!
       CALL BIEF_ALLVEC(1,SB,'SB    ',NPOIN2*NF , 1 , 0 ,MESH)
 !
 !     ARRAY OF DISCRETISED FREQUENCIES, AND OF DELTA F
+!
       CALL BIEF_ALLVEC(1,SFR,'SFR   ' ,NF , 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SDFR,'SDFR  ',NF , 1 , 0 ,MESH)
       FREQ     =>SFR%R
       DFREQ    =>SDFR%R
 !
 !     "PHYSICAL" VARIABLES OF SIZE NPOIN3
+!
       CALL BIEF_ALLVEC(1,SXK,'SXK   ',NPOIN2*NF, 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SCG,'SCG   ',NPOIN2*NF, 1 , 0 ,MESH)
 !
@@ -176,38 +195,37 @@
       CG    =>SCG%R
       FBOR  =>SFBOR%R
 !
+      CALL ALLBLO(SSHP1,'SSHP1 ')
+      CALL ALLBLO(SSHZ ,'SSHZ  ')
+      CALL ALLBLO(SSHF ,'SSHF  ')
+!
       IF(PROP) THEN
 !       FOOT OF THE CHARACTERISTICS
-        CALL BIEF_ALLVEC(1,SSHP1,'SSHP1 ',NS , 1 , 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SSHP2,'SSHP2 ',NS , 1 , 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SSHP3,'SSHP3 ',NS , 1 , 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SSHZ ,'SSHZ  ',NS , 1 , 0 ,MESH)
+        CALL BIEF_ALLVEC_IN_BLOCK(SSHP1,NF,1,'SHP   ',NPOIN3,3,0,MESH)
+        CALL BIEF_ALLVEC_IN_BLOCK(SSHZ ,NF,1,'SHZ   ',NPOIN3,1,0,MESH)
 !
         CALL BIEF_ALLVEC(1,SCX,'SCX   ',NC , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SCY,'SCY   ',NC , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SCT,'SCT   ',NC , 1 , 0 ,MESH)
 !
         IF(COURAN.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
-          CALL BIEF_ALLVEC(1,SSHF,'SSHF  ',NS , 1 , 0 ,MESH)
+          CALL BIEF_ALLVEC_IN_BLOCK(SSHF,NF,1,'SHF   ',NPOIN3,1,0,MESH)
           CALL BIEF_ALLVEC(1,SCF ,'SCF   ',NC , 1 , 0 ,MESH)
         ELSE
-          CALL BIEF_ALLVEC(1,SSHF  ,'SSHF  ', 1, 1, 0 ,MESH)
+          CALL BIEF_ALLVEC_IN_BLOCK(SSHF ,NF,1,'SHF   ',1,1,0,MESH)
           CALL BIEF_ALLVEC(1,SCF   ,'SCF   ', 1, 1, 0 ,MESH)
         ENDIF
       ELSE
-        CALL BIEF_ALLVEC(1,SSHP1 ,'SSHP1 ', 1, 1, 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SSHP2 ,'SSHP2 ', 1, 1, 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SSHP3 ,'SSHP3 ', 1, 1, 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SSHZ  ,'SSHZ  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC_IN_BLOCK(SSHP1,NF,1,'SHP   ',1,3,0,MESH)
+        CALL BIEF_ALLVEC_IN_BLOCK(SSHZ ,NF,1,'SHZ   ',1,1,0,MESH)
         CALL BIEF_ALLVEC(1,SCX   ,'SCX   ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(1,SCY   ,'SCY   ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(1,SCT   ,'SCT   ', 1, 1, 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SSHF  ,'SSHF  ', 1, 1, 0 ,MESH)
+!       CALL BIEF_ALLVEC(1,SSHF  ,'SSHF  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC_IN_BLOCK(SSHF ,NF,1,'SHF   ',1,1,0,MESH)
         CALL BIEF_ALLVEC(1,SCF   ,'SCF   ', 1, 1, 0 ,MESH)
       ENDIF
-      SHP1  =>SSHP1%R
-      SHP2  =>SSHP2%R
-      SHP3  =>SSHP3%R
+!
       SHZ   =>SSHZ%R
       CX    =>SCX%R
       CY    =>SCY%R
@@ -384,9 +402,8 @@
       COSTET   =>SCOSTE%R
       SINTET   =>SSINTE%R
 !
-!
-!
 !     POINTERS FOR WORKING ARRAYS (BY POINTS AND ELEMENTS)
+!
       CALL BIEF_ALLVEC(1,ST0, 'ST0   ',IELM2 , 1 , 2 ,MESH)
       CALL BIEF_ALLVEC(1,ST1, 'ST1   ',IELM2 , 1 , 2 ,MESH)
       CALL BIEF_ALLVEC(1,ST2, 'ST2   ',IELM2 , 1 , 2 ,MESH)
@@ -403,9 +420,8 @@
 !     POINTERS FOR MATRICES, AM1 SYMMETRICAL MATRIX
       CALL BIEF_ALLMAT(AM1,'AM1   ',IELM2,IELM2,CFG,'Q','S',MESH)
 !
-!
-!
 !     VARIOUS WORKING ARRAYS
+!
       CALL BIEF_ALLVEC(1,SW1,   'SW1   ',NELEM2 , 4 , 0 ,MESH)
       W1      =>SW1%R
       CALL BIEF_ALLVEC(1,STRA31,'STRA31',NPOIN2 , 1 , 0 ,MESH)
@@ -433,18 +449,16 @@
       TRA41   => STRA41%R
       TRA42   => STRA42%R
 !
+      CALL BIEF_ALLVEC(1,STRA02,'STRA02',NPOIN3*NF,2, 0 ,MESH)
+      TRA02 =>STRA02%R
 !
+!     VARIOUS WORKING ARRAYS
 !
-        CALL BIEF_ALLVEC(1,STRA02,'STRA02',NPOIN3*NF,2, 0 ,MESH)
-        TRA02 =>STRA02%R
+      CALL BIEF_ALLVEC(1,STRA01,'STRA01',NPOIN3_G,8,0,MESH)
 !
-!.......VARIOUS WORKING ARRAYS
-!
-        CALL BIEF_ALLVEC(1,STRA01,'STRA01',NPOIN3_G,8,0,MESH)
-!
-        CALL BIEF_ALLVEC(1,STRAB1,'STRAB1', 1, 1, 0 ,MESH)
-        TRA01   =>STRA01%R
-        TRAB1   =>STRAB1%R
+      CALL BIEF_ALLVEC(1,STRAB1,'STRAB1', 1, 1, 0 ,MESH)
+      TRA01   =>STRA01%R
+      TRAB1   =>STRAB1%R
 !
         IF (TSOU) THEN
           CALL BIEF_ALLVEC(1,STOLD,'STOLD ',NPOIN3 , 1 , 0 ,MESH)
@@ -722,9 +736,14 @@
 !
 ! FOOT OF THE CHARACTERISTICS
 !
-      IF (PROP) THEN
-        CALL BIEF_ALLVEC(2,SELT,'SELT  ',NS , 1 , 0 ,MESH)
-        CALL BIEF_ALLVEC(2,SETA,'SETA  ',NS , 1 , 0 ,MESH)
+      IF(PROP) THEN
+        CALL BIEF_ALLVEC(2,SELT ,'SELT  ',NS , 1 , 0 ,MESH)
+        CALL BIEF_ALLVEC(2,SETA ,'SETA  ',NS , 1 , 0 ,MESH)
+        IF(NCSIZE.GT.1) THEN
+          CALL BIEF_ALLVEC(2,SISUB,'SISUB ',NS , 1, 0 ,MESH)
+        ELSE
+          CALL BIEF_ALLVEC(2,SISUB,'SISUB ', 1 , 1, 0 ,MESH)
+        ENDIF
         IF (COURAN.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
           CALL BIEF_ALLVEC(2,SFRE,'SFRE  ',NS , 1 , 0 ,MESH)
         ELSE
@@ -733,10 +752,12 @@
       ELSE
         CALL BIEF_ALLVEC(2,SELT  ,'SELT  ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(2,SETA  ,'SETA  ', 1, 1, 0 ,MESH)
+        CALL BIEF_ALLVEC(2,SISUB ,'SISUB ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(2,SFRE  ,'SFRE  ', 1, 1, 0 ,MESH)
       ENDIF
       ELT   => SELT%I
       ETA   => SETA%I
+      ISUB  => SISUB%I
       FRE   => SFRE%I
 !
 ! USEFUL ARRAY FOR THE CHARACTERISTICS
@@ -753,15 +774,14 @@
       ITR32   => SITR32%I
       ITR33   => SITR33%I
 !
+!     WORKING ARRAYS OF INTEGERS
 !
-!
-!.......WORKING ARRAYS OF INTEGERS
-        CALL BIEF_ALLVEC(2,SITR03,'SITR03', 1, 1, 0 ,MESH)
-        CALL BIEF_ALLVEC(2,SITRB1,'SITRB1', 1, 1, 0 ,MESH)
-        ITR03 => SITR03%I
-        ITRB1 => SITRB1%I
-        CALL BIEF_ALLVEC(2,SITR01,'SITR01',NPOIN3 ,3,0,MESH)
-        ITR01 => SITR01%I
+      CALL BIEF_ALLVEC(2,SITR03,'SITR03', 1, 1, 0 ,MESH)
+      CALL BIEF_ALLVEC(2,SITRB1,'SITRB1', 1, 1, 0 ,MESH)
+      ITR03 => SITR03%I
+      ITRB1 => SITRB1%I
+      CALL BIEF_ALLVEC(2,SITR01,'SITR01',NPOIN3 ,3,0,MESH)
+      ITR01 => SITR01%I
 !
 !.......NON-LINEAR INTERACTIONS
 !GM V6P1 - NEW SOURCE TERMS
@@ -861,7 +881,6 @@
         ELI   => SELI%I
         KELGL => SKELGL%I
 !
-!V6P2 Diffraction : allocation of integer arrays
       IF(DIFFRA.GT.0) THEN
         CALL BIEF_ALLVEC(2,SNEIGB,'SNEIGB',   NPOIN2,MAXNSP, 0, MESH)
         CALL BIEF_ALLVEC(2,SNB_CLOSE,'SNB_CLOSE',NPOIN2, 1 , 0, MESH)
@@ -872,7 +891,20 @@
 !
       NEIGB  => SNEIGB%I
       NB_CLOSE => SNB_CLOSE%I
-!V6P2 End diffraction
+!
+!     ADDED BY JMH FOR CHARACTERISTICS
+!
+      CALL ALLBLO(TB, 'TB    ')
+      CALL BIEF_ALLVEC_IN_BLOCK(TB,8,1,'TB    ',IELM3,1,2,MESH3D)
+!
+      T3_01 => TB%ADR(01)%P
+      T3_02 => TB%ADR(02)%P
+      T3_03 => TB%ADR(03)%P
+      T3_04 => TB%ADR(04)%P
+      T3_05 => TB%ADR(05)%P
+      T3_06 => TB%ADR(06)%P
+      T3_07 => TB%ADR(07)%P
+      T3_08 => TB%ADR(08)%P
 !
 !***********************************************************************
 !
@@ -886,6 +918,8 @@
    23 FORMAT(1X,///,21X,'*************************************',/,
      &21X,              '*    END OF MEMORY ORGANIZATION:    *',/,
      &21X,              '*************************************',/)
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

@@ -42,8 +42,8 @@
 ! 
       IMPLICIT NONE 
 ! 
-!.....VARIABLES IN ARGUMENT 
-!     """""""""""""""""""" 
+!     VARIABLES IN ARGUMENT 
+!     
       INTEGER NPOIN2, MAXNSP, I 
       INTEGER NEIGB(NPOIN2,MAXNSP), NB_CLOSE(NPOIN2) 
        
@@ -54,45 +54,46 @@
       DOUBLE PRECISION RX_D(MAXNSP), RY_D(MAXNSP)   
       DOUBLE PRECISION RXX_D(MAXNSP), RYY_D(MAXNSP) 
 ! 
-!.....LOCAL VARIABLES 
-!     """"""""""""""" 
+!     LOCAL VARIABLES 
+!     
       INTEGER IP, IPOIN, IP1, IPOIN1, NP 
  
       DOUBLE PRECISION, ALLOCATABLE:: RK_I(:,:), RN(:,:) 
       DOUBLE PRECISION, ALLOCATABLE:: RX_I(:,:), RY_I(:,:)   
       DOUBLE PRECISION, ALLOCATABLE:: RXX_I(:,:), RYY_I(:,:) 
       DOUBLE PRECISION, ALLOCATABLE:: RAD1(:,:) 
-       
+!       
       DOUBLE PRECISION DC, WZ, WZX1, WZY1, WZX2, WZY2
-      
+!      
       LOGICAL DEJA
       DATA DEJA /.FALSE./
-      
+!      
       SAVE
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
-       IF(.NOT.DEJA)THEN
-          ALLOCATE(RK_I(MAXNSP,MAXNSP))
-	  ALLOCATE(RN(MAXNSP,MAXNSP))
-          ALLOCATE(RX_I(MAXNSP,MAXNSP))
-          ALLOCATE(RY_I(MAXNSP,MAXNSP))
-          ALLOCATE(RXX_I(MAXNSP,MAXNSP))
-          ALLOCATE(RYY_I(MAXNSP,MAXNSP))
-          ALLOCATE(RAD1(MAXNSP,MAXNSP))
-          DEJA=.TRUE.
-       ENDIF
-
-       DO IP1 =1,NB_CLOSE(I) 
-          IP=NEIGB(I,IP1) 
+      IF(.NOT.DEJA)THEN
+        ALLOCATE(RK_I(MAXNSP,MAXNSP))
+        ALLOCATE(RN(MAXNSP,MAXNSP))
+        ALLOCATE(RX_I(MAXNSP,MAXNSP))
+        ALLOCATE(RY_I(MAXNSP,MAXNSP))
+        ALLOCATE(RXX_I(MAXNSP,MAXNSP))
+        ALLOCATE(RYY_I(MAXNSP,MAXNSP))
+        ALLOCATE(RAD1(MAXNSP,MAXNSP))
+        DEJA=.TRUE.
+      ENDIF
+!
+      DO IP1 =1,NB_CLOSE(I) 
+        IP=NEIGB(I,IP1) 
         DO IPOIN1 =1,NB_CLOSE(I) 
           IPOIN=NEIGB(I,IPOIN1) 
           RAD1(IP1,IPOIN1)=(X(IP)-X(IPOIN))**2+(Y(IP)-Y(IPOIN))**2 
         ENDDO 
-       ENDDO 
+      ENDDO 
 ! 
-       DO IP1 =1,NB_CLOSE(I) 
-          IP=NEIGB(I,IP1) 
-          DC=MINDIST(I) 
+      DO IP1 =1,NB_CLOSE(I) 
+        IP=NEIGB(I,IP1) 
+        DC=MINDIST(I) 
         DO IPOIN1 =1,NB_CLOSE(I) 
           IPOIN=NEIGB(I,IPOIN1) 
           RK_I(IP1,IPOIN1)=(RAD1(IP1,IPOIN1)+(AC*DC)**2)**QUO 
@@ -118,7 +119,7 @@
        RN=RK_I   
        NP=NB_CLOSE(I) 
 ! 
-      CALL INVERT(RN,NP,MAXNSP) 
+       CALL INVERT(RN,NP,MAXNSP) 
 ! 
        DO IP1 =1,NB_CLOSE(I) 
          WZ=0.D0 

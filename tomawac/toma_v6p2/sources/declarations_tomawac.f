@@ -50,10 +50,6 @@
 !
 !     DECLARES BIEF STRUCTURES
 !
-!-----------------------------------------------------------------------
-!     OLD ARGUMENTS FOR WAC (VECTORS AND MATRICES)
-!-----------------------------------------------------------------------
-!
 !> @brief
 ! variables 4d a convecter
       TYPE (BIEF_OBJ), TARGET :: SF
@@ -74,12 +70,6 @@
       TYPE (BIEF_OBJ), TARGET :: SSHP1
 !> @brief
 ! tableau des pieds des caracteristiques
-      TYPE (BIEF_OBJ), TARGET :: SSHP2
-!> @brief
-! tableau des pieds des caracteristiques
-      TYPE (BIEF_OBJ), TARGET :: SSHP3
-!> @brief
-! tableau des pieds des caracteristiques
       TYPE (BIEF_OBJ), TARGET :: SSHZ
 !> @brief
 !
@@ -91,10 +81,6 @@
      & SFBOR,AM1,STSDER,STSTOT,ST0,ST1,ST2,ST3,ST4,ST5,
      & ST6,ST7,BST1,VARSOR,ST00,STRA15,STRA16,STRA40,
      & BOUNDARY_COLOUR
-!> @brief
-! structure maillage
-      TYPE (BIEF_OBJ), TARGET :: XMESH
-!> @brief
 !
       TYPE (BIEF_OBJ), TARGET :: STRA01, STRAB1, STOLD , STNEW,STRA31,
      & STRA32, STRA33, STRA34, STRA35, STRA36, STRA37, STRA38, STRA39,
@@ -103,26 +89,42 @@
      & STRA63, STRA64, STRA65, STRA66, STRA02, SW1 , SPRIVE, SIBOR ,
      & SLIFBR, SLIQ, SELT, SETA, SFRE, SETAP1, SIAGNL, SITR11, SITR12,
      & SITR13, SITR01, SITRB1,SITR03,SKNI,SKNOGL,SELI, SKELGL, SITR31,
-     & SITR32, SITR33, SBETA
-!> @brief
-! structure maillage
-      TYPE(BIEF_MESH) :: MESH
+     & SITR32, SITR33, SBETA,SISUB
 !
-!V6P2 Diffraction
-!> @brief
-! description
-      TYPE (BIEF_OBJ), TARGET :: SA, SA_RMSE, SCCG, SDELTA, SDDX, SDDY,
-     &  SDIV, SNB_CLOSE, SNEIGB, SRK, SRX, SRXX, SRY, SRYY, SXKONPT
-!V6P2 End diffraction
+!     BLOCK OF BIEF_OBJ STRUCTURES
+!
+      TYPE(BIEF_OBJ) :: TB
+!
+!     EXTENSION OF IKLE2 (WITH LARGER NUMBER OF ELEMENTS)
+!
+      TYPE(BIEF_OBJ) :: IKLE_EXT
+!
+!
+!     BIEF_OBJ STRUCTURES FOR ARRAYS OF DIMENSION NPOIN3
+!
+      TYPE(BIEF_OBJ), POINTER :: T3_01,T3_02,T3_03,T3_04,T3_05,T3_06
+      TYPE(BIEF_OBJ), POINTER :: T3_07,T3_08
+!
+!     MESH STRUCTURES FOR 2D AND 3D
+!
+      TYPE(BIEF_MESH) :: MESH,MESH3D
+!
+!     DIFFRACTION
+!
+      TYPE(BIEF_OBJ), TARGET :: SA, SA_RMSE, SCCG, SDELTA, SDDX, SDDY
+      TYPE(BIEF_OBJ), TARGET :: SDIV, SNB_CLOSE, SNEIGB
+      TYPE(BIEF_OBJ), TARGET :: SRK, SRX, SRXX, SRY, SRYY, SXKONPT
+!
 !-----------------------------------------------------------------------
 !     KEYWORDS AND PARAMETERS
 !-----------------------------------------------------------------------
 !
-!> @brief NUMBER OF DISCRETISED DIRECTIONS
-! nombre de directions de discretisation
+!     NUMBER OF DISCRETISED DIRECTIONS
+! 
       INTEGER NPLAN
-!> @brief NUMBER OF DISCRETISED FREQUENCIES
-! nombre de frequences de discretisation
+!
+!     NUMBER OF DISCRETISED FREQUENCIES
+! 
       INTEGER NF
 !> @brief PERIOD FOR LISTING PRINTOUTS
 ! periode pour les sorties listing
@@ -615,9 +617,13 @@
       INTEGER STDGEO
 !> @brief
       CHARACTER*20 EQUA
-!> @brief
-      INTEGER IELM2
-!> @brief NPOIN2*NPLAN
+!
+!     TYPE OF ELEMENT IN 2D, 3D
+!
+      INTEGER IELM2,IELM3
+!
+!     NPOIN2*NPLAN
+!
       INTEGER NPOIN3
 !> @brief NPOIN2 OF MESH BEFORE PARTITIONING, NPOIN3_G=NPOIN2_G*NPLAN
       INTEGER NPOIN2_G,NPOIN3_G
@@ -761,15 +767,6 @@
 !> @brief
 ! champ convecteur selon freq. relat.
       DOUBLE PRECISION, DIMENSION(:) , POINTER ::  CF
-!> @brief
-! coordonnees barycentriques 2d au pied des courbes caracteristiques
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  SHP1
-!> @brief
-! coordonnees barycentriques 2d au pied des courbes caracteristiques
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  SHP2
-!> @brief
-! coordonnees barycentriques 2d au pied des courbes caracteristiques
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  SHP3
 !> @brief
 ! coordonnees barycentriques suivant z des noeuds dans leurs etages "eta" associes
       DOUBLE PRECISION, DIMENSION(:) , POINTER ::  SHZ
@@ -974,14 +971,13 @@
 ! type des conditions a la limite sur f(libre / impose)
       INTEGER, DIMENSION(:), POINTER :: LIFBOR
 !> @brief
-!
-      INTEGER, DIMENSION(:), POINTER :: NUMLIQ
-!> @brief
 ! numeros des elements 2d choisis pour chaque noeud
       INTEGER, DIMENSION(:), POINTER :: ELT
 !> @brief
 ! numeros des directions/etages choisis pour chaque noeud
       INTEGER, DIMENSION(:), POINTER :: ETA
+! numeros des Sous-domaines ou sont les pieds des caracteristiques
+      INTEGER, DIMENSION(:), POINTER :: ISUB
 !> @brief
 ! numeros des frequences choisies pour chaque noeud
       INTEGER, DIMENSION(:), POINTER :: FRE

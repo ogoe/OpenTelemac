@@ -55,7 +55,7 @@
 !
 !     VARIABLES DECLAREES LOCALEMENT DANS LA PROCEDURE.
 !
-      INTEGER NVARCL,LT,LT1,NRK,NPV,NPC,NPM
+      INTEGER LT,LT1,NRK,NPV,NPC,NPM
       INTEGER NOLEO(99)
       LOGICAL ISLEO(99)
       INTEGER DATE(3),TIME(3),NPTL,IP
@@ -66,7 +66,7 @@
       DOUBLE PRECISION LAMBD0,C,Z(1),DEUPI,DTSI
       DOUBLE PRECISION AT    ,TV1,TV2,TC1,TC2,TM1,TM2
       DOUBLE PRECISION VITVEN, VITMIN
-      INTEGER  ADC , MDC , JDC , HDC, I1, I2, NVHMA,NVCOU
+      INTEGER  ADC , MDC , JDC , HDC, NVHMA,NVCOU
       INTEGER NBD
       LOGICAL IMPRES, DEBRES
 !
@@ -148,8 +148,7 @@
       DEUPI =2.D0*3.14159265358979D0
 !
 !.....1.3 PARAMETRES GENERAUX DU CALCUL.
-!     """""""""""""""""""""""""""""""""
-      NVARCL=0
+!     
       NPTL  =NPOIN3*NF
 !
 !.....1.4 INITIALISATION DES TABLEAUX DATE ET TIME
@@ -170,27 +169,52 @@
 !=====C================================================================
 !
 !COUPLAGE TELEMAC-TOMAWAC : initialisation
+!
       IF(PART.LE.0) THEN
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM'
-      CALL LECLIM_TOMAWAC
-     &(SLIFBR%I,SFBOR%R,NPTFR,NBOR,STDGEO,WAC_FILES(WACCLI)%LU,
-!BD_INCKA modif //
-!    *  MESH%ISEG%I,MESH%XSEG%R,MESH%YSEG%R,MESH%NACHB%I )
-     &  MESH%ISEG%I,MESH%XSEG%R,MESH%YSEG%R,MESH%NACHB%I ,MESH,
-     &  BOUNDARY_COLOUR%I)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE LECLIM'
-!BD_INCKA fin modif //
 !
 !-----------------------------------------------------------------------
 !
-! COMPLEMENT DE LA STRUCTURE DE DONNEES POUR BIEF
+! MESH ORGANISATION - 2D LEVEL
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INBIEF'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM POUR MESH2D'
+      CALL LECLIM
+     & (SLIFBR%I,SITR31%I,SITR31%I,SITR31%I,SFBOR%R,STRA01%R,STRA01%R,
+     &  STRA01%R,STRA01%R,STRA01%R,STRA01%R,NPTFR,3,.FALSE.,
+     &  WAC_FILES(WACCLI)%LU,
+     &  KENT,KENTU,KSORT,KADH,KLOG,KINC,SITR31%I,MESH)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE LECLIM'
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INBIEF POUR MESH2D'
       CALL INBIEF(SLIFBR%I,KLOG,SITR31,SITR32,SITR33,
-     &            LVMAC,IELM2,LAMBD0,SPHE,MESH,ST1,ST2,1,1,EQUA)
+     &            LVMAC,IELM2,LAMBD0,SPHE,MESH,STRA01,STRA02,1,1,EQUA)
       IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE INBIEF'
 !
+! EXTENSION OF IKLE2 (SEE CALL TO POST_INTERP IN PROPA)
+!
+      CALL BUILD_IKLE_EXT(IKLE_EXT%I,IKLE_EXT%DIM1,IKLE2,NELEM2)
+!
+! MESH ORGANISATION - 3D LEVEL
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM POUR MESH3D'
+      CALL LECLIM
+     & (SLIFBR%I,SITR31%I,SITR31%I,SITR31%I,SFBOR%R,STRA01%R,STRA01%R,
+     &  STRA01%R,STRA01%R,STRA01%R,STRA01%R,NPTFR,3,.FALSE.,
+     &  WAC_FILES(WACCLI)%LU,
+     &  KENT,KENTU,KSORT,KADH,KLOG,KINC,SITR31%I,MESH3D)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE LECLIM'
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INBIEF POUR MESH3D'
+      CALL INBIEF(SLIFBR%I,KLOG,SITR31,SITR32,SITR33,
+     &            LVMAC,IELM3,LAMBD0,SPHE,MESH3D,
+     &            STRA01,STRA02,1,1,EQUA)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE INBIEF'
+!
+!     3D IFABOR
+!
+      CALL IFABTOM(MESH3D%IFABOR%I,NELEM2,NPLAN-1)
+!
 !-----------------------------------------------------------------------
+!
 !V6P2 Diffraction : FREEMESH METHOD
       IF(DIFFRA.GT.0) THEN
         IF(NCSIZE.GT.1)THEN
@@ -215,7 +239,7 @@
         WRITE(LU,*) '****************************************'
         WRITE(LU,*) 'DIFFRACTION IS TAKEN INTO ACCOUNT      '
         WRITE(LU,*) 'STARTING FROM TIME STEP ',NPTDIF
-        IF(DIFFRA.EQ.1)THEN
+        IF(DIFFRA.EQ.1) THEN
           WRITE(LU,*) 'MILD SLOPE EQUATION FORMULATION'
         ELSE
           WRITE(LU,*)'REVISED MILD SLOPE EQUATION FORMULATION'
@@ -503,8 +527,7 @@
 !=====C
 !  7  C AFFECTATION DES CONDITIONS AUX LIMITES A L'INSTANT INITIAL.
 !=====C============================================================
-      I1=NF+1
-      I2=NF+NPLAN
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMWAC'
       CALL LIMWAC
      &(SF%R    , SFBOR%R , SLIFBR%I , NPTFR  , NPLAN , NF    ,
@@ -596,28 +619,28 @@
 !=====C
 !  10 C PREPARATION DE LA PROPAGATION (REMONTEE DES CARACTERISTIQUES).
 !=====C===============================================================
+!
       IF (PROP) THEN
         CALL IMPR(LISPRD,LT,AT,LT,1)
         CALL IMPR(LISPRD,LT,AT,LT,2)
         NRK=3
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 1'
-!COUPLAGE TELEMAC-TOMAWAC : modification de la liste
-!       d'arguments d'appel
+!
         CALL PREPRO
-     & ( SCX%R    , SCY%R     , SCT%R    , SCF%R   , DT    ,
-     &   NRK      , MESH%X%R  , MESH%Y%R , STETA%R ,
-     &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
-     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1%R ,
-     &   SSHP2%R  , SSHP3%R   , SSHZ%R   , SSHF%R  ,
+     & ( SCX      , SCY       , SCT      , SCF     , DT  ,
+     &   NRK      , MESH%X%R  , MESH%Y%R , STETA   ,
+     &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I   ,
+     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
+     &   SSHZ     , SSHF      ,
      &   SELT%I   , SETA%I    , SFRE%I   , SDEPTH%R,
      &   SDZHDT%R , SDZX%R    , SDZY%R   , SUC%R   ,
      &   SVC%R    , SDUX%R    , SDUY%R   , SDVX%R  ,
      &   SDVY%R   , SXK%R     , SCG%R    , SCOSF%R ,
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
-!     *   NPLAN    , NF        , MESH%SURDET%R, COURAN,
      &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.0,
-     &   SPHE     , PROINF   , PROMIN,MESH)
+     &   SPHE     , PROINF   , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
+     &   IELM3    , DIFFRA   , ISUB)
 !Fin COUPLAGE
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 1'
 !
@@ -724,14 +747,13 @@
          CALL IMPR(LISPRD,LT,AT,LT,2)
          NRK=3
          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 2'
-!COUPLAGE TELEMAC-TOMAWAC : modification de la liste
-!       d'arguments d'appel
+!
          CALL PREPRO
-     & ( SCX%R    , SCY%R     , SCT%R    , SCF%R   , DT    ,
-     &   NRK      , MESH%X%R  , MESH%Y%R , STETA%R ,
-     &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
-     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1%R ,
-     &   SSHP2%R  , SSHP3%R   , SSHZ%R   , SSHF%R  ,
+     & ( SCX      , SCY       , SCT      , SCF     , DT  ,
+     &   NRK      , MESH%X%R  , MESH%Y%R , STETA   ,
+     &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I   ,
+     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
+     &   SSHZ     , SSHF      ,
      &   SELT%I   , SETA%I    , SFRE%I   , SDEPTH%R,
      &   SDZHDT%R , SDZX%R    , SDZY%R   , SUC%R   ,
      &   SVC%R    , SDUX%R    , SDUY%R   , SDVX%R  ,
@@ -739,7 +761,8 @@
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
 !     &   NPLAN    , NF        , MESH%SURDET%R, COURAN,
      &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
-     &   SPHE     , PROINF    , PROMIN   , MESH)
+     &   SPHE     , PROINF    , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
+     &   IELM3    , DIFFRA    , ISUB )
 !Fin COUPLAGE
          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 2'
         ENDIF
@@ -759,8 +782,7 @@
      & ( SCX%R    , SCY%R     , SCT%R    , DT    ,
      &   MESH%X%R  , MESH%Y%R , STETA%R ,
      &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
-     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1%R ,
-     &   SSHP2%R  , SSHP3%R   , SSHZ%R   , 
+     &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 , SSHZ    , 
      &   SELT%I   , SETA%I    , SDEPTH%R,
      &   SDZX%R    , SDZY%R   , 
      &   SXK%R     , SCG%R    , 
@@ -779,25 +801,21 @@
 !-------------------------------------------------------------------
 !
 !.....11.3 PROPAGATION (INTERPOLATION AU PIED DES CARACTERISTIQUES).
-!     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-      IF (PROP) THEN
+!     
+      IF(PROP) THEN
         CALL IMPR(LISPRD,LT,AT,LT,5)
-!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPA'
-!COUPLAGE TELEMAC-TOMAWAC : modification de la liste
-!       d'arguments d'appel
         CALL PROPA
-     &( SF%R       , SB%R    , SSHP1%R, SSHP2%R, SSHP3%R,
-     &  SSHZ%R     , SSHF%R  , SELT%I , SETA%I , SFRE%I ,
-     &  MESH%IKLE%I, SETAP1%I, NPOIN3    , NPOIN2    , NELEM2,
-!     *  NPLAN         , NF   , COURAN    ,STRA01%R   , STRA02%R )
-     &  NPLAN , NF , COURAN.OR.PART.EQ.1 ,STRA01%R   , STRA02%R )
-!Fin COUPLAGE
+     &( SF%R       , SB%R    , SSHP1, 
+     &  SSHZ       , SSHF    , SELT%I , SETA%I , SFRE%I ,
+     &  MESH%IKLE%I, IKLE_EXT, SETAP1%I, NPOIN3    , NPOIN2    , NELEM2,
+     &  NPLAN , NF , COURAN.OR.PART.EQ.1 ,STRA01%R   , STRA02%R ,
+     &  ITR01 , T3_01 , T3_02, ISUB, MESH3D)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPA'
        ENDIF
 !
 !.....11.4 INTEGRATION DES TERMES SOURCES.
-!     """"""""""""""""""""""""""""""""""""
+!     
       IF (TSOU) THEN
         CALL IMPR(LISPRD,LT,AT,NSITS,4)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SEMIMP'
@@ -917,8 +935,6 @@
         CALL SOR3D
      &( SF%R  , NPLAN  , NF       , STETA%R   , SFR%R ,
      &  NELEM2, NPOIN2 , AT       , SUC%R     , SVC%R ,
-!     *  SUV%R , SVV%R  , SDEPTH%R , VENT      , COURAN   ,
-!     *  MAREE , TITCAS , WAC_FILES(WACRBI)%LU , BINRBI    )
      &  SUV%R , SVV%R  , SDEPTH%R , VENT     , COURAN.OR.PART.EQ.1,
      &  MAREE.OR.PART.EQ.1 , TITCAS , WAC_FILES(WACRBI)%LU ,
      &  BINRBI    )

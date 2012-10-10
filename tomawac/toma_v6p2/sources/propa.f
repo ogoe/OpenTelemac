@@ -2,11 +2,12 @@
                      SUBROUTINE PROPA
 !                    ****************
 !
-     &   (F,B,SHP1,SHP2,SHP3,SHZ,SHF,ELT,ETA,FRE,IKLE2,ETAP1,
-     &    NPOIN3,NPOIN2,NELEM2,NPLAN,NF,COURAN,TRA01,TRA02)
+     &(F,B,SHP,SHZ,SHF,ELT,ETA,FRE,IKLE2,IKLE_EXT,
+     & ETAP1,NPOIN3,NPOIN2,NELEM2,
+     & NPLAN,NF,COURAN,TRA01,TRA02,ITR01,T3_01,T3_02,ISUB,MESH3D)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   23/06/2011
+! TOMAWAC   V6P3                                   23/06/2011
 !***********************************************************************
 !
 !brief    ADVECTION STEP.
@@ -55,7 +56,7 @@
 !| NPOIN3         |-->| NPOIN2*NPLAN
 !| SHF            |-->| BARYCENTRIC COORDINATES ALONG F OF THE 
 !|                |   | NODES IN THEIR ASSOCIATED FREQUENCIES "FRE"
-!| SHP1,SHP2,SHP3 |-->| BARYCENTRIC COORDINATES OF THE NODES IN
+!| SHP            |-->| BARYCENTRIC COORDINATES OF THE NODES IN
 !|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT"
 !| SHZ            |-->| BARYCENTRIC COORDINATES ALONG TETA OF THE 
 !|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA"
@@ -66,49 +67,85 @@
       USE BIEF
       USE INTERFACE_TOMAWAC, EX_PROPA => PROPA
       USE TOMAWAC_MPI
+      USE STREAMLINE, ONLY : POST_INTERP
 !
       IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NPOIN3,NPOIN2,NELEM2,NPLAN,NF
 !
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION SHP1(NPOIN3,NF) , SHP2(NPOIN3,NF)
-      DOUBLE PRECISION SHP3(NPOIN3,NF) , SHZ(NPOIN3,NF)
-      DOUBLE PRECISION SHF(NPOIN3,NF)
-      DOUBLE PRECISION B(NPOIN2,NF)
+      DOUBLE PRECISION, INTENT(IN) :: B(NPOIN2,NF)
       DOUBLE PRECISION TRA01(NPOIN3,8),TRA02(NPOIN2,NPLAN,NF)
-      INTEGER ELT(NPOIN3,NF),ETA(NPOIN3,NF),FRE(NPOIN3,NF)
+      INTEGER, INTENT(INOUT) :: ELT(NPOIN3,NF),ETA(NPOIN3,NF)
+      INTEGER, INTENT(IN) :: FRE(NPOIN3,NF),ISUB(NPOIN3,NF)
+      INTEGER, INTENT(INOUT) :: ITR01(NPOIN3*3)
       INTEGER IKLE2(NELEM2,3),ETAP1(NPLAN)
-      LOGICAL COURAN
-      REAL WW(1)
+      LOGICAL, INTENT(IN)            :: COURAN
+      TYPE(BIEF_OBJ), INTENT(INOUT)  :: SHP,SHZ,SHF,T3_01,T3_02
+      TYPE(BIEF_OBJ), INTENT(IN)     :: IKLE_EXT
+      TYPE(BIEF_MESH), INTENT(INOUT) :: MESH3D
 !
-      DOUBLE PRECISION X(1)
-      INTEGER IFF,I,ISTAT,LU, IB(1)
-      CHARACTER*3 CAR
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IFF,I,ISTAT,I3,IPLAN
+      DOUBLE PRECISION BID
 !
 !----------------------------------------------------------------------
 !
-      LU=6
+      IF(.NOT.COURAN) THEN
 !
-        IF (.NOT.COURAN) THEN
+        DO IFF=1,NF
 !
-         DO 300 IFF=1,NF
+!           JMH: A QUOI SERT CE IFREQ ??? (QUI VAUT NF POUR FINIR)
+!           IFREQ = IFF
+!           CALL INTERP_TOMAWAC(F(1,IFF),B(1,IFF),
+!    &                          SHP%ADR(IFF)%P%R,
+!    &                          SHZ%ADR(IFF)%P%R,ELT(1,IFF),
+!    &                          ETA(1,IFF),IKLE2,
+!    &                          ETAP1,NPOIN2,NELEM2,NPLAN,TRA01)
 !
-            IFREQ = IFF
-            CALL INTERP_TOMAWAC
-     &        (F(1,1,IFF),B(1,IFF),SHP1(1,IFF),SHP2(1,IFF),
-     &             SHP3(1,IFF),SHZ(1,IFF),ELT(1,IFF),ETA(1,IFF),IKLE2,
-     &         ETAP1,NPOIN2,NELEM2,NPLAN,TRA01)
+!         COPY OF F*B INTO T3_01
 !
-300      CONTINUE
+          DO IPLAN=1,NPLAN
+            DO I=1,NPOIN2
+              I3=I+(IPLAN-1)*NPOIN2
+              T3_01%R(I3)=F(I,IPLAN,IFF)*B(I,IFF) 
+            ENDDO
+          ENDDO
 !
-        ELSE
+          CALL POST_INTERP(T3_01,T3_02,SHP%ADR(IFF)%P%R,
+     &                     SHZ%ADR(IFF)%P%R,IKLE_EXT%I,
+     &                     IKLE_EXT%DIM1,1,
+     &                     NPOIN2,ELT(1,IFF),ETA(1,IFF),
+     &                     ISUB(1,IFF),3,NPLAN,41,41,NPOIN3,
+     &                     NPOIN2,TRA01,TRA02,ITR01(1:NPOIN3),
+     &                     ITR01(NPOIN3+1:2*NPOIN3),NPOIN3,.TRUE.)
+!                                                        PERIODICITY                                                         
+          IF(NCSIZE.GT.1) CALL PARCOM(T3_02,1,MESH3D)                    
 !
-            CALL INTER4D
-     &       (F,B,SHP1,SHP2,SHP3,SHZ,SHF,ELT,ETA,
-     &        FRE,IKLE2,ETAP1,NPOIN2,NELEM2,NPLAN,NF,TRA02)
+!         FINAL COMPUTATION OF F
 !
-        ENDIF
+          DO IPLAN=1,NPLAN
+            DO I=1,NPOIN2
+              I3=I+(IPLAN-1)*NPOIN2
+!             JMH: WHY ???
+              T3_02%R(I3)=MAX(0.D0,T3_02%R(I3))
+              F(I,IPLAN,IFF)=T3_02%R(I3)/B(I,IFF) 
+            ENDDO
+          ENDDO
+!
+        ENDDO
+!
+      ELSE
+!
+        CALL INTER4D(F,B,SHP,SHZ,SHF,ELT,ETA,
+     &             FRE,IKLE2,ETAP1,NPOIN2,NPOIN3,NELEM2,NPLAN,NF,TRA02)
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

@@ -2,7 +2,7 @@
                      SUBROUTINE INIPIE
 !                    *****************
 !
-     &( U , V , W , X , Y , SHP1 ,SHP2 , SHP3 , SHZ , ELT , ETA ,
+     &( U , V , W , X , Y , SHP , SHZ , ELT , ETA ,
      & XCONV , YCONV , ZCONV, TETA , IKLE2 , NPOIN2 , NELEM2 , NPLAN  ,
      & ELI , KNOGL , KNI , NELE2L , NPOI2L ,IFABOR,GOODELT)
 !
@@ -98,8 +98,8 @@
       DOUBLE PRECISION X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION XCONV(NPOI2L,NPLAN),YCONV(NPOI2L,NPLAN)
       DOUBLE PRECISION ZCONV(NPOI2L,NPLAN)
-      DOUBLE PRECISION SHP1(NPOI2L,NPLAN),SHP2(NPOI2L,NPLAN)
-      DOUBLE PRECISION SHP3(NPOI2L,NPLAN),SHZ(NPOI2L,NPLAN)
+      DOUBLE PRECISION SHP(3,NPOI2L,NPLAN)
+      DOUBLE PRECISION SHZ(NPOI2L,NPLAN)
       DOUBLE PRECISION DET1,DET2,EPS
 !
       INTEGER ELI(NELE2L),KNOGL(NPOIN2),KNI(NPOI2L)
@@ -115,16 +115,7 @@
 !  INITIALISES THE POINTS TO ADVECT
 !
       GOODELT = 0
-      IF (NPOI2L.NE.NPOIN2) THEN
-        DO 60 IP=1,NPLAN
-          DO 90 IPOIL=1,NPOI2L
-            IPOIG=KNI(IPOIL)
-            XCONV(IPOIL,IP)=X(IPOIG)
-            YCONV(IPOIL,IP)=Y(IPOIG)
-            ZCONV(IPOIL,IP)=TETA(IP)
-90        CONTINUE
-60      CONTINUE
-      ELSE
+
         DO 160 IP=1,NPLAN
           DO 190 IPOIG=1,NPOIN2
             XCONV(IPOIG,IP)=X(IPOIG)
@@ -132,137 +123,28 @@
             ZCONV(IPOIG,IP)=TETA(IP)
 190       CONTINUE
 160     CONTINUE
-      ENDIF
+
 !
 !-----------------------------------------------------------------------
 !
       DO 10 IPLAN=1,NPLAN
 !
-      IF (NELE2L.NE.NELEM2) THEN
-!***********************************************************************
-!     IN PARALLEL MODE
-!***********************************************************************
-!-----------------------------------------------------------------------
-!  INITIALLY FILLS IN THE SHP AND ELT
-!  (NOTE: FOR LATERAL BOUNDARY POINTS, THERE MAY NOT BE AN ELEMENT
-!  TOWARDS WHICH -(U, V) POINTS).
-!
-         DO 20 IEL2 = 1,NELE2L
-            IELEM=ELI(IEL2)
-!
-            N1G=IKLE2(IELEM,1)
-            N1L=KNOGL(N1G)
-!            WRITE(LU,*)'IEL2' ,IELEM,N1G,N1L
-               ELT(N1L,IPLAN) = IELEM
-               SHP1(N1L,IPLAN) = 1.D0
-               SHP2(N1L,IPLAN) = 0.D0
-               SHP3(N1L,IPLAN) = 0.D0
-            N1G=IKLE2(IELEM,2)
-            N1L=KNOGL(N1G)
-!            WRITE(LU,*)'IEL2' ,IELEM,N1G,N1L
-               ELT(N1L,IPLAN) = IELEM
-               SHP1(N1L,IPLAN) = 0.D0
-               SHP2(N1L,IPLAN) = 1.D0
-               SHP3(N1L,IPLAN) = 0.D0
-            N1G=IKLE2(IELEM,3)
-            N1L=KNOGL(N1G)
-!            WRITE(LU,*)'IEL2' ,IELEM,N1G,N1L
-               ELT(N1L,IPLAN) = IELEM
-               SHP1(N1L,IPLAN) = 0.D0
-               SHP2(N1L,IPLAN) = 0.D0
-               SHP3(N1L,IPLAN) = 1.D0
-20       CONTINUE
-!
-!-----------------------------------------------------------------------
-!  FILLS IN THE SHP AND ELT, ELEMENT BY ELEMENT, FOR THE POINTS IN
-!  THE ELEMENT FOR WHICH -(U, V) POINTS TOWARDS THIS ELEMENT.
-!
-        DO 50 IEL2=1,NELE2L
-          IELEM=ELI(IEL2)
-!
-          N1G=IKLE2(IELEM,1)
-          N1L=KNOGL(N1G)
-          N2G=IKLE2(IELEM,2)
-          N2L=KNOGL(N2G)
-          N3G=IKLE2(IELEM,3)
-          N3L=KNOGL(N3G)
-!
-! DET1 = (NINI+1,UNILAG)  DET2 = (UNILAG,NINI-1)
-! ----------------------------------------------
-!
-      DET1=(X(N2G)-X(N1G))*V(N1G,IPLAN)-(Y(N2G)-Y(N1G))*U(N1G,IPLAN)
-      DET2=(Y(N3G)-Y(N1G))*U(N1G,IPLAN)-(X(N3G)-X(N1G))*V(N1G,IPLAN)
-          IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
-             ELT(N1L,IPLAN) = IELEM
-             SHP1(N1L,IPLAN) = 1.D0
-             SHP2(N1L,IPLAN) = 0.D0
-             SHP3(N1L,IPLAN) = 0.D0
-          ENDIF
-!
-      DET1=(X(N3G)-X(N2G))*V(N2G,IPLAN)-(Y(N3G)-Y(N2G))*U(N2G,IPLAN)
-      DET2=(Y(N1G)-Y(N2G))*U(N2G,IPLAN)-(X(N1G)-X(N2G))*V(N2G,IPLAN)
-          IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
-             ELT(N2L,IPLAN) = IELEM
-             SHP1(N2L,IPLAN) = 0.D0
-             SHP2(N2L,IPLAN) = 1.D0
-             SHP3(N2L,IPLAN) = 0.D0
-          ENDIF
-!
-      DET1=(X(N1G)-X(N3G))*V(N3G,IPLAN)-(Y(N1G)-Y(N3G))*U(N3G,IPLAN)
-      DET2=(Y(N2G)-Y(N3G))*U(N3G,IPLAN)-(X(N2G)-X(N3G))*V(N3G,IPLAN)
-          IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
-             ELT(N3L,IPLAN) = IELEM
-             SHP1(N3L,IPLAN) = 0.D0
-             SHP2(N3L,IPLAN) = 0.D0
-             SHP3(N3L,IPLAN) = 1.D0
-          ENDIF
-!
-50       CONTINUE
-!
-!-----------------------------------------------------------------------
-!  FILLS IN THE SHZ AND ETA, POINT BY POINT.
-!
-         DO 70 IPOIL=1,NPOI2L
-            IPOIG=KNI(IPOIL)
-!
-           IF (W(IPOIG,IPLAN).GT.0.D0) THEN
-              IF (IPLAN.EQ.1) THEN
-                ETA(IPOIL,1) = NPLAN
-                SHZ(IPOIL,1) = 1.D0
-                ZCONV(IPOIL,1)=TETA(NPLAN+1)
-              ELSE
-                ETA(IPOIL,IPLAN) = IPLAN-1
-                SHZ(IPOIL,IPLAN) = 1.D0
-              ENDIF
-           ELSE
-              ETA(IPOIL,IPLAN) = IPLAN
-              SHZ(IPOIL,IPLAN) = 0.D0
-           ENDIF
-!
-70       CONTINUE
-!
-!***********************************************************************
-!     END OF COMPUTATION IN PARALLEL MODE
-!***********************************************************************
-!
-      ELSE
-!
          DO 120 IELEM = 1,NELEM2
             N1G=IKLE2(IELEM,1)
                ELT(N1G,IPLAN) = IELEM
-               SHP1(N1G,IPLAN) = 1.D0
-               SHP2(N1G,IPLAN) = 0.D0
-               SHP3(N1G,IPLAN) = 0.D0
+               SHP(1,N1G,IPLAN) = 1.D0
+               SHP(2,N1G,IPLAN) = 0.D0
+               SHP(3,N1G,IPLAN) = 0.D0
             N1G=IKLE2(IELEM,2)
                ELT(N1G,IPLAN) = IELEM
-               SHP1(N1G,IPLAN) = 0.D0
-               SHP2(N1G,IPLAN) = 1.D0
-               SHP3(N1G,IPLAN) = 0.D0
+               SHP(1,N1G,IPLAN) = 0.D0
+               SHP(2,N1G,IPLAN) = 1.D0
+               SHP(3,N1G,IPLAN) = 0.D0
             N1G=IKLE2(IELEM,3)
                ELT(N1G,IPLAN) = IELEM
-               SHP1(N1G,IPLAN) = 0.D0
-               SHP2(N1G,IPLAN) = 0.D0
-               SHP3(N1G,IPLAN) = 1.D0
+               SHP(1,N1G,IPLAN) = 0.D0
+               SHP(2,N1G,IPLAN) = 0.D0
+               SHP(3,N1G,IPLAN) = 1.D0
 120      CONTINUE
 !
 !
@@ -277,35 +159,35 @@
 !
           IF ((IFABOR(IELEM,1)==-2)) THEN
              ELT(N1G,IPLAN) = IELEM
-             SHP1(N1G,IPLAN) = 1.D0
-             SHP2(N1G,IPLAN) = 0.D0
-             SHP3(N1G,IPLAN) = 0.D0
+             SHP(1,N1G,IPLAN) = 1.D0
+             SHP(2,N1G,IPLAN) = 0.D0
+             SHP(3,N1G,IPLAN) = 0.D0
              ELT(N2G,IPLAN) = IELEM
-             SHP1(N2G,IPLAN) = 0.D0
-             SHP2(N2G,IPLAN) = 1.D0
-             SHP3(N2G,IPLAN) = 0.D0
+             SHP(1,N2G,IPLAN) = 0.D0
+             SHP(2,N2G,IPLAN) = 1.D0
+             SHP(3,N2G,IPLAN) = 0.D0
           ENDIF
 !
           IF ((IFABOR(IELEM,2)==-2)) THEN
              ELT(N2G,IPLAN) = IELEM
-             SHP1(N2G,IPLAN) = 0.D0
-             SHP2(N2G,IPLAN) = 1.D0
-             SHP3(N2G,IPLAN) = 0.D0
+             SHP(1,N2G,IPLAN) = 0.D0
+             SHP(2,N2G,IPLAN) = 1.D0
+             SHP(3,N2G,IPLAN) = 0.D0
              ELT(N3G,IPLAN) = IELEM
-             SHP1(N3G,IPLAN) = 0.D0
-             SHP2(N3G,IPLAN) = 0.D0
-             SHP3(N3G,IPLAN) = 1.D0
+             SHP(1,N3G,IPLAN) = 0.D0
+             SHP(2,N3G,IPLAN) = 0.D0
+             SHP(3,N3G,IPLAN) = 1.D0
           ENDIF
 !
           IF ((IFABOR(IELEM,3)==-2)) THEN
              ELT(N3G,IPLAN) = IELEM
-             SHP1(N3G,IPLAN) = 0.D0
-             SHP2(N3G,IPLAN) = 0.D0
-             SHP3(N3G,IPLAN) = 1.D0
+             SHP(1,N3G,IPLAN) = 0.D0
+             SHP(2,N3G,IPLAN) = 0.D0
+             SHP(3,N3G,IPLAN) = 1.D0
              ELT(N1G,IPLAN) = IELEM
-             SHP1(N1G,IPLAN) = 1.D0
-             SHP2(N1G,IPLAN) = 0.D0
-             SHP3(N1G,IPLAN) = 0.D0
+             SHP(1,N1G,IPLAN) = 1.D0
+             SHP(2,N1G,IPLAN) = 0.D0
+             SHP(3,N1G,IPLAN) = 0.D0
           ENDIF
 !
 450       CONTINUE
@@ -322,9 +204,9 @@
       DET2=(Y(N3G)-Y(N1G))*U(N1G,IPLAN)-(X(N3G)-X(N1G))*V(N1G,IPLAN)
       IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
              ELT(N1G,IPLAN) = IELEM
-             SHP1(N1G,IPLAN) = 1.D0
-             SHP2(N1G,IPLAN) = 0.D0
-             SHP3(N1G,IPLAN) = 0.D0
+             SHP(1,N1G,IPLAN) = 1.D0
+             SHP(2,N1G,IPLAN) = 0.D0
+             SHP(3,N1G,IPLAN) = 0.D0
              GOODELT(N1G,IPLAN) = 1
       ENDIF
 !
@@ -332,9 +214,9 @@
       DET2=(Y(N1G)-Y(N2G))*U(N2G,IPLAN)-(X(N1G)-X(N2G))*V(N2G,IPLAN)
       IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
              ELT(N2G,IPLAN) = IELEM
-             SHP1(N2G,IPLAN) = 0.D0
-             SHP2(N2G,IPLAN) = 1.D0
-             SHP3(N2G,IPLAN) = 0.D0
+             SHP(1,N2G,IPLAN) = 0.D0
+             SHP(2,N2G,IPLAN) = 1.D0
+             SHP(3,N2G,IPLAN) = 0.D0
              GOODELT(N2G,IPLAN) = 1
       ENDIF
 !
@@ -342,9 +224,9 @@
       DET2=(Y(N2G)-Y(N3G))*U(N3G,IPLAN)-(X(N2G)-X(N3G))*V(N3G,IPLAN)
       IF (DET1.LE.EPS.AND.DET2.LE.EPS) THEN
              ELT(N3G,IPLAN) = IELEM
-             SHP1(N3G,IPLAN) = 0.D0
-             SHP2(N3G,IPLAN) = 0.D0
-             SHP3(N3G,IPLAN) = 1.D0
+             SHP(1,N3G,IPLAN) = 0.D0
+             SHP(2,N3G,IPLAN) = 0.D0
+             SHP(3,N3G,IPLAN) = 1.D0
              GOODELT(N3G,IPLAN) = 1
       ENDIF
 !
@@ -418,11 +300,6 @@
            ENDIF
 !
 170       CONTINUE
-!
-!-----------------------------------------------------------------------
-!       END OF SCALAR COMPUTATION
-!-----------------------------------------------------------------------
-       ENDIF
 !
 10    CONTINUE
 !

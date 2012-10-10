@@ -88,11 +88,11 @@ ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
 fsprd2.f fsprd3.f \
 gammln.f gauleg.f grad_alfa.f grad_ccg.f grad_d.f grad_kon.f \
-homere_tomawac.f \
+homere_tomawac.f ifabtom.f \
 impr.f inip4d.f iniphy.f inipie.f  initab.f invert.f \
 intang.f inter4d.f interp_tomawac.f \
 kerbou.f kmoyen.f \
-lecdoi.f lecdon.f lecdon_tomawac.f lecham.f leclim_tomawac.f lecsui.f \
+lecdoi.f lecdon.f lecdon_tomawac.f lecham.f  lecsui.f \
 lecuti.f limwac.f preleo_mpi.f \
 maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
 pied4d.f pieds.f point_tomawac.f predif.f preleo.f \
