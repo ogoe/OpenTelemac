@@ -4,11 +4,11 @@
 !
      &( FN  , FTILD  , NOMB   , UCONV  , VCONV , WCONV  , ZSTAR ,
      &  DT  , IFAMAS , IELM   , NPOIN2 , NPLAN , NPLINT ,
-     &  MSK , MASKEL , SHP,SHZ , TB    , IT1,IT2,IT3,ISUB,MESH ,
-     &  NELEM2,NELMAX2,IKLE2,SURDET2   , INILOC)
+     &  MSK , MASKEL , SHP,SHZ , TB    , IT1,IT2,IT3,IT4,MESH ,
+     &  NELEM2,NELMAX2,IKLE2,SURDET2   , APOST , PERIODIC )
 !
 !***********************************************************************
-! BIEF   V6P3                                   21/08/2010
+! BIEF   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS THE METHOD OF CHARACTERISTICS
@@ -37,11 +37,6 @@
 !+   NPOIN instead of NPOIN2 in the call to SCARACT at the position
 !+   of argument NPLOT (goes with corrections in Streamline.f)
 !
-!history  J-M HERVOUET (LNHE)
-!+        21/09/2012
-!+        V6P3
-!+   Case of tetrahedra of type 51 treated (call of gtsh31)
-!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
 !| FN             |-->| VARIABLES AT TIME N .
@@ -50,11 +45,12 @@
 !|                |   |                   41 : PRISM IN TELEMAC3D
 !| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
 !| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
+!| APOST          |-->| IF YES, DATA MUST BE KEPT FOR A POSTERIORI
+!|                |   | INTERPOLATION
 !| IT1            |<->| INTEGER WORK ARRAY
 !| IT2            |<->| INTEGER WORK ARRAY
-!| IT3            |<->| INTEGER WORK ARRAY: NO LONGER USED !!!!!!!!!!!!
-!| ISUB           |<--| IN PARALLEL, WILL BE THE SUB-DOMAIN OF THE FOOT
-!|                |   | OF THE CHARACTERISTIC.
+!| IT3            |<->| INTEGER WORK ARRAY
+!| IT4            |<->| INTEGER WORK ARRAY
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
@@ -65,6 +61,7 @@
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPLINT         |---| NOT USED
 !| NPOIN2         |-->| NUMBER OF POINTS IN THE 2D MESH
+!| PERIODIC       |-->| IF YES, PERIODIC VERSION ON THE VERTICAL
 !| SHP            |<->| BARYCENTRIC COORDINATES OF POINTS IN TRIANGLES
 !| SHZ            |<->| BARYCENTRIC COORDINATES ON VERTICAL
 !| SURDET2        |-->| GEOMETRIC COEFFICIENT USED IN PARAMETRIC TRANSFORMATION
@@ -76,7 +73,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CHARAC => CHARAC
-      USE STREAMLINE, ONLY : SCARACT      
+      USE STREAMLINE, ONLY : SCARACT,POST_INTERP  
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -89,7 +86,7 @@
       INTEGER         , INTENT(IN)         :: NPOIN2,NELMAX2
       INTEGER         , INTENT(INOUT)      :: IELM
       INTEGER         , INTENT(INOUT)      :: IT1(*),IT2(*)
-      INTEGER         , INTENT(INOUT)      :: IT3(*),ISUB(*)
+      INTEGER         , INTENT(INOUT)      :: IT3(*),IT4(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)         :: FN,UCONV,VCONV,WCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)         :: ZSTAR,MASKEL,IKLE2,SURDET2
       TYPE(BIEF_OBJ)  , INTENT(INOUT)      :: FTILD,TB,SHP,SHZ
@@ -97,18 +94,35 @@
       DOUBLE PRECISION, INTENT(IN)         :: DT
       TYPE(BIEF_MESH) , INTENT(INOUT)      :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET :: IFAMAS
-      LOGICAL, OPTIONAL, INTENT(IN)        :: INILOC
+      LOGICAL, OPTIONAL, INTENT(IN)        :: APOST, PERIODIC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN,IELMU,IELEM     
+      INTEGER NPOIN,IELMU,IELEM,SIZEBUF    
 !
 !-----------------------------------------------------------------------
 !
-      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6
+      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7
       INTEGER, DIMENSION(:), POINTER :: IFA
       INTEGER I,J,K,NPT,DIM1F
-      LOGICAL QUAD,QUAB
+      LOGICAL QUAD,QUAB,DEJA,POST,PERIO
+      DATA DEJA/.FALSE./   
+!
+      INTRINSIC MIN
+!
+!     ENABLING A POSTERIORI INTERPOLATION
+!
+      IF(PRESENT(APOST)) THEN
+        POST=APOST
+      ELSE
+        POST=.FALSE.      
+      ENDIF
+
+      IF(PRESENT(PERIODIC)) THEN
+        PERIO=PERIODIC
+      ELSE
+        PERIO=.FALSE.      
+      ENDIF
 ! 
 !-----------------------------------------------------------------------
 !  TABLEAUX DE TRAVAIL PRIS DANS LE BLOC TB
@@ -120,6 +134,7 @@
       T4 =>TB%ADR( 4)%P
       T5 =>TB%ADR( 5)%P
       T6 =>TB%ADR( 6)%P
+      T7 =>TB%ADR( 7)%P
 !
 !-----------------------------------------------------------------------
 !  DEPLOIEMENT DE LA STRUCTURE DE MAILLAGE
@@ -127,6 +142,21 @@
 !
       NPOIN = MESH%NPOIN
       IELMU = UCONV%ELM
+!
+!     PREPARING WORK ARRAYS
+!
+!     THE OFF-DIAGONAL TERMS OF WORK MATRIX IN MESH WILL BE USED AS
+!     SHPBUF(3,SIZEBUF)
+!
+      SIZEBUF=(MESH%M%X%DIM1*MESH%M%X%DIM2)/3
+!
+!     T7 WILL BE USED AS SHZBUF(SIZEBUF)
+!
+      SIZEBUF=MIN(SIZEBUF,T7%DIM1)
+!
+!     IT3 WILL BE USED AS ELTBUF
+!
+      SIZEBUF=MIN(SIZEBUF,NPOIN)
 !
 !-----------------------------------------------------------------------
 !  ARE THERE QUADRATIC OR QUASI-BUBBLE VARIABLES ?
@@ -200,20 +230,14 @@
         CALL GTSH11(SHP%R,IT1,IKLE2%I,MESH%ELTCAR%I,NPOIN2,
      &              NELEM2,NELMAX2,MESH%NSEG,QUAB,QUAD)
         DIM1F=NPT
-      ELSEIF(IELM.EQ.41.OR.IELM.EQ.51) THEN
+      ELSEIF(IELM.EQ.41) THEN
         DO I=1,NPLAN
           CALL OV('X=C     ',T3%R((I-1)*NPOIN2+1:I*NPOIN2),
      &            T3%R,T3%R,ZSTAR%R(I),NPOIN2)
-        ENDDO 
-        IF(IELM.EQ.41) THEN   
-          CALL GTSH41(SHP%R,SHZ%R,WCONV%R,IT1,IT2,IKLE2%I,
-     &                MESH%ELTCAR%I,NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
-          DIM1F=NPOIN2
-        ELSEIF(IELM.EQ.51) THEN
-          CALL GTSH31(SHP%R,IT1,MESH%IKLE%I,
-     &                MESH%ELTCAR%I,NPOIN,MESH%NELMAX)
-          DIM1F=NPT
-        ENDIF
+        ENDDO    
+        CALL GTSH41(SHP%R,SHZ%R,WCONV%R,IT1,IT2,IKLE2%I,MESH%ELTCAR%I,
+     &              NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
+        DIM1F=NPOIN2
       ELSE
         WRITE(LU,*) 'ELEMENT NOT IMPLEMENTED IN CHARAC: ',IELM
         CALL PLANTE(1)
@@ -224,16 +248,12 @@
      &             MESH%X%R,MESH%Y%R,ZSTAR%R,
      &             T1%R,T2%R,T3%R,T4%R,T5%R,T6%R,
      &             MESH%Z%R,SHP%R,SHZ%R,
-     &             SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,ISUB,
+     &             SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
      &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     &             3,NPLAN,MESH,NPT,DIM1F,-1)
+     &             3,NPLAN,MESH,NPT,DIM1F,-1,
+     &             MESH%M%X%R,T7%R,SIZEBUF,POST,PERIO)  
 ! 
-!     PARALLEL COMMUNICATION: THE VALUE WITH HIGHEST ABSOLUTE VALUE
-!                             IS KEPT. WE ASSUME THAT INTERFACE POINTS
-!                             NOT TREATED BY A SUB-DOMAIN HAVE RECEIVED
-!                             A FTILD=0.D0, THIS IS THE CASE BECAUSE
-!                             POINTS IPLOT WITH ELT(IPLOT)=0
-!                             ARE RETURNED WITH ALL SHP=0.D0
+!     PARALLEL COMMUNICATION
 !    
       IF(NCSIZE.GT.1.AND.NOMB.GT.0) THEN
         IF(FTILD%TYPE.EQ.2) THEN 

@@ -100,6 +100,7 @@
       TYPE(BIEF_OBJ) :: SVOID
 !
       DOUBLE PRECISION ZSTAR(1),ZCONV(1),SHZ(1),Z(1),C
+      DOUBLE PRECISION SHPBUF(3,1),SHZBUF(1)
 !
 !-----------------------------------------------------------------------
 !
@@ -168,7 +169,9 @@
      *                 DT,MESH%IKLE%I,MESH%IFABOR%I,ELTLAG(1,ILAG),
      *                 ETA,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
      *                 0,NPOIN,NPOIN,NDP,NPLAN,
-     *                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS)
+     *                 MESH,NPOIN,BIEF_NBPTS(IELMU,MESH),SENS,
+!                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
+     *                 SHPBUF,SHZBUF,1,.FALSE.,.FALSE.)
 !
         ENDIF
 !

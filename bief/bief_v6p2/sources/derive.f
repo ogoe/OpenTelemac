@@ -103,6 +103,7 @@
       INTEGER ISPDONE(1),NPLAN,NPT
 !
       DOUBLE PRECISION DET1,DET2,DET3,DX(1),DY(1),ZSTAR(1),ZCONV(1)
+      DOUBLE PRECISION SHPBUF(3,1),SHZBUF(1)
       DOUBLE PRECISION SHZ(1),Z(1)
 !
       TYPE(BIEF_OBJ) :: SVOID
@@ -213,7 +214,9 @@
      *                   IKLE,IFABOR,ELTFLO(IFLOT),
      *                   ETA,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
      *                   0,NPOIN,NPOIN,NDP,NPLAN,
-     *                   MESH,NPT,BIEF_NBPTS(IELMU,MESH),SENS)
+     *                   MESH,NPT,BIEF_NBPTS(IELMU,MESH),SENS,
+!                        PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
+     *                   SHPBUF,SHZBUF,1,.FALSE.,.FALSE.)
 !
           ELSE
 !

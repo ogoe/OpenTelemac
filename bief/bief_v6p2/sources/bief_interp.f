@@ -1,12 +1,12 @@
-!                    *****************
-                     SUBROUTINE INTERP
-!                    *****************
+!                    **********************
+                     SUBROUTINE BIEF_INTERP
+!                    **********************
 !
      &( U , UTILD , SHP , NDP , SHZ , ETA , ELT , NP , NPOIN2 , NPLAN ,
-     &  IELM , IKLE , NELMAX)
+     &  IELM , IKLE , NELMAX , PERIODIC )
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    INTERPOLATES THE VALUES OF A FUNCTION AT SOME OF THE
@@ -58,7 +58,7 @@
 !| UTILD          |<--| INTERPOLATED VALUES.
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_INTERP => INTERP
+      USE BIEF, EX_BIEF_INTERP => BIEF_INTERP
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -71,17 +71,25 @@
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: SHP(NDP,NP),SHZ(NP)
       DOUBLE PRECISION, INTENT(INOUT) :: UTILD(NP)
+      LOGICAL, OPTIONAL, INTENT(IN)   :: PERIODIC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IP
+      INTEGER IP,ETAP1
       DOUBLE PRECISION SHP11,SHP12,SHP14
       DOUBLE PRECISION SHP22,SHP23,SHP24
       DOUBLE PRECISION SHP33,SHP31,SHP34
+      LOGICAL PERIO
 !
 !     SHOULD BE SAME EPSILO THAN SCHAR11
       DOUBLE PRECISION EPSILO
-      DATA EPSILO / 1.D-6 / 
+      DATA EPSILO / 1.D-6 /
+!
+      IF(PRESENT(PERIODIC)) THEN
+        PERIO=PERIODIC
+      ELSE
+        PERIO=.FALSE.      
+      ENDIF 
 !
 !-----------------------------------------------------------------------
 !
@@ -211,15 +219,32 @@
 !    TELEMAC-3D PRISMS
 !    =====================
 !
-      DO IP = 1 , NP
-         UTILD(IP) =
-     &     U(IKLE(ELT(IP),1),ETA(IP))   * SHP(1,IP) * (1.D0-SHZ(IP))
-     &   + U(IKLE(ELT(IP),2),ETA(IP))   * SHP(2,IP) * (1.D0-SHZ(IP))
-     &   + U(IKLE(ELT(IP),3),ETA(IP))   * SHP(3,IP) * (1.D0-SHZ(IP))
-     &   + U(IKLE(ELT(IP),1),ETA(IP)+1) * SHP(1,IP) * SHZ(IP)
-     &   + U(IKLE(ELT(IP),2),ETA(IP)+1) * SHP(2,IP) * SHZ(IP)
-     &   + U(IKLE(ELT(IP),3),ETA(IP)+1) * SHP(3,IP) * SHZ(IP)
-      ENDDO
+      IF(PERIO) THEN      
+        DO IP = 1 , NP
+          IF(ETA(IP).EQ.NPLAN) THEN
+            ETAP1=1
+          ELSE
+            ETAP1=ETA(IP)+1
+          ENDIF
+          UTILD(IP) =
+     &     ( U(IKLE(ELT(IP),1),ETA(IP)) * SHP(1,IP) 
+     &     + U(IKLE(ELT(IP),2),ETA(IP)) * SHP(2,IP) 
+     &     + U(IKLE(ELT(IP),3),ETA(IP)) * SHP(3,IP) ) * (1.D0-SHZ(IP))
+     &   + ( U(IKLE(ELT(IP),1),ETAP1)   * SHP(1,IP) 
+     &     + U(IKLE(ELT(IP),2),ETAP1)   * SHP(2,IP) 
+     &     + U(IKLE(ELT(IP),3),ETAP1)   * SHP(3,IP) ) * SHZ(IP)
+        ENDDO
+      ELSE
+        DO IP = 1 , NP
+          UTILD(IP) =
+     &      U(IKLE(ELT(IP),1),ETA(IP))   * SHP(1,IP) * (1.D0-SHZ(IP))
+     &    + U(IKLE(ELT(IP),2),ETA(IP))   * SHP(2,IP) * (1.D0-SHZ(IP))
+     &    + U(IKLE(ELT(IP),3),ETA(IP))   * SHP(3,IP) * (1.D0-SHZ(IP))
+     &    + U(IKLE(ELT(IP),1),ETA(IP)+1) * SHP(1,IP) * SHZ(IP)
+     &    + U(IKLE(ELT(IP),2),ETA(IP)+1) * SHP(2,IP) * SHZ(IP)
+     &    + U(IKLE(ELT(IP),3),ETA(IP)+1) * SHP(3,IP) * SHZ(IP)
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -227,8 +252,8 @@
 !
         IF(LNG.EQ.1) WRITE(LU,11) IELM
         IF(LNG.EQ.2) WRITE(LU,12) IELM
-11      FORMAT(1X,'INTERP : TYPE D''ELEMENT INCONNU : ',I6)
-12      FORMAT(1X,'INTERP : UNKNOWN TYPE OF ELEMENT : ',I6)
+11      FORMAT(1X,'BIEF_INTERP : TYPE D''ELEMENT INCONNU : ',I6)
+12      FORMAT(1X,'BIEF_INTERP : UNKNOWN TYPE OF ELEMENT : ',I6)
         CALL PLANTE(1)
         STOP
 !
