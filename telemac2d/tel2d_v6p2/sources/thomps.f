@@ -9,7 +9,8 @@
      & MESH,XNEBOR,YNEBOR,NPOIN,NPTFR,DT,GRAV,
      & NTRAC,NFRLIQ,KSORT,KINC,KENT,KENTU,LV,MSK,MASKEL,
      & NELMAX,IELM,SHPP,NUMLIQ,SHP,
-     & DX_T,DY_T,DZ_T,IT3,IT4,HFIELD,UFIELD,VFIELD,ZS,GZSX,GZSY)
+     & DX_T,DY_T,DZ_T,IT3,IT4,HFIELD,UFIELD,VFIELD,ZS,GZSX,GZSY,
+     & SHPBUF)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P2                                   21/08/2010
@@ -161,7 +162,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: UCONV,VCONV,C,U,V
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: H,T,TBOR,TBTIL,IT3,IT4
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: HFIELD,UFIELD,VFIELD,ZS
-      TYPE(BIEF_OBJ), INTENT(INOUT)   :: GZSX,GZSY
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: GZSX,GZSY,SHPBUF
       TYPE(BIEF_OBJ), INTENT(IN)      :: ZF,LITBOR
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
 !
@@ -173,7 +174,7 @@
       DOUBLE PRECISION HMIN,HHBOR,DETADX,DETADY,TBAR(100),TT(100)
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
       DOUBLE PRECISION ZSTAR(1),ZCONV(1,1),SHZ(1),Z(1,1),UNORM,NORMZS
-      INTEGER ELM_UFIELD,ELM_VFIELD,ELM_HFIELD,IELEM
+      INTEGER ELM_UFIELD,ELM_VFIELD,ELM_HFIELD,IELEM,SIZEBUF
 !
       DATA HMIN  /2.D-2/
 !      
@@ -189,6 +190,10 @@
       I=MAX(1,NPTFR)
       LISPFR=>IT1(1:I)
       ELT_T =>IT1(I+1:2*I)
+!
+!     SIZE OF BUFFER FOR SHP
+!
+      SIZEBUF=SHPBUF%DIM1/3
 !
 !-----------------------------------------------------------------------
 !
@@ -350,7 +355,8 @@
      *             ZSTAR,XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,
      *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,
      *             ETA,IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,
-     *             NOMB,NPOIN,NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1)
+     *             NOMB,NPOIN,NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1,
+     *             SHPBUF%R,SHPBUF%R,SIZEBUF,.FALSE.,.FALSE.)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL, TBTIL AT BOUNDARY NODES NUMBERING
@@ -497,7 +503,8 @@
      *             ZSTAR,XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,
      *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,ETA,
      *             IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,NOMB,NPOIN,
-     *             NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1)
+     *             NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1,
+     *             SHPBUF%R,SHPBUF%R,SIZEBUF,.FALSE.,.FALSE.)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING
@@ -597,7 +604,8 @@
      *             XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,SHPP,SHZ,
      *             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,IT3%I,IT4%I,IELM,
      *             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN, 
-     *             MESH,NPT,U%DIM1,-1)
+     *             MESH,NPT,U%DIM1,-1,
+     *             SHPBUF%R,SHPBUF%R,SIZEBUF,.FALSE.,.FALSE.)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING

@@ -1614,7 +1614,7 @@
      &            NFRLIQ,KSORT,KINC,KENT,KENTU,MESH%LV,MSK,MASKEL,
      &            NELMAX,IELM,T5%R,NUMLIQ%I,BM1%X%R,
      &            T12%R,T13%R,T14%R,IT3,IT4,
-     &            T17,T18,T19,T20,T21,T22)
+     &            T17,T18,T19,T20,T21,T22,W1)
       IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM THOMPS'
 !
       ENDIF
