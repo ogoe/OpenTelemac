@@ -125,6 +125,7 @@
       INTEGER IFLOT,N1,N2,N3
       DOUBLE PRECISION DET1,DET2,DET3,ZF,ZI,ZS
       TYPE(BIEF_OBJ) :: SVOID
+      DOUBLE PRECISION SHPBUF(3,1),SHZBUF(1)
 !
 !-----------------------------------------------------------------------
 !
@@ -230,7 +231,9 @@
      *                 IKLE2,IFABOR,ELTFLO(IFLOT),ETAFLO(IFLOT),
      *                 NSP,ISPDONE,41,41,NELEM2,NELEM2,
      *                 0,MESH%NPOIN,NPOIN2,6,NPLAN,
-     *                 MESH,1,MESH%NPOIN,SENS)
+     *                 MESH,1,MESH%NPOIN,SENS,
+!                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
+     *                 SHPBUF,SHZBUF,1,.FALSE.,.FALSE.)
 !
 !  CASE OF LOST FLOATS
 !  ===================
