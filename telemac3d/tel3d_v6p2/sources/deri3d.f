@@ -121,11 +121,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELEM,IPLAN,LTT,NRK,NSP(1),LTP,SENS,ISPDONE(1)
+      INTEGER IELEM,IPLAN,LTT,NRK,NSP(1),LTP,SENS,ISPDONE(1),FREBUF(1)
+      INTEGER FRE(1)
       INTEGER IFLOT,N1,N2,N3
       DOUBLE PRECISION DET1,DET2,DET3,ZF,ZI,ZS
       TYPE(BIEF_OBJ) :: SVOID
-      DOUBLE PRECISION SHPBUF(3,1),SHZBUF(1)
+      DOUBLE PRECISION SHPBUF(3,1),SHZBUF(1),FCONV(1)
 !
 !-----------------------------------------------------------------------
 !
@@ -224,16 +225,19 @@
 !  P1 PRISMS
 !  =========
 !
-          CALL SCARACT(SVOID,SVOID,U,V,W,X,Y,ZSTAR,
+          CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
      *                 XFLOT(LTT,IFLOT),YFLOT(LTT,IFLOT),
-     *                 ZSFLOT(LTT,IFLOT),DX,DY,DZ,Z,SHPFLO(1,IFLOT),
-     *                 SHZFLO(IFLOT),SURDET,DT,
+     *                 ZSFLOT(LTT,IFLOT),FCONV,
+     *                 DX,DY,DZ,DZ,Z,SHPFLO(1,IFLOT),
+     *                 SHZFLO(IFLOT),SHZFLO(IFLOT),SURDET,DT,
      *                 IKLE2,IFABOR,ELTFLO(IFLOT),ETAFLO(IFLOT),
+     *                 FRE,
      *                 NSP,ISPDONE,41,41,NELEM2,NELEM2,
-     *                 0,MESH%NPOIN,NPOIN2,6,NPLAN,
+     *                 0,MESH%NPOIN,NPOIN2,6,NPLAN,1,
      *                 MESH,1,MESH%NPOIN,SENS,
 !                      PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
-     *                 SHPBUF,SHZBUF,1,.FALSE.,.FALSE.)
+     *                 SHPBUF,SHZBUF,SHZBUF,FREBUF,1,
+     *                 .FALSE.,.FALSE.,.FALSE.)
 !
 !  CASE OF LOST FLOATS
 !  ===================
