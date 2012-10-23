@@ -2,10 +2,12 @@
                      SUBROUTINE CHARAC
 !                    *****************
 !
-     &( FN  , FTILD  , NOMB   , UCONV  , VCONV , WCONV  , ZSTAR ,
-     &  DT  , IFAMAS , IELM   , NPOIN2 , NPLAN , NPLINT ,
-     &  MSK , MASKEL , SHP,SHZ , TB    , IT1,IT2,IT3,IT4,MESH ,
-     &  NELEM2,NELMAX2,IKLE2,SURDET2   , APOST , PERIODIC )
+     &( FN    , FTILD  , NOMB  , UCONV  , VCONV , WCONV  , FRCONV , 
+     &  ZSTAR , FREQ   ,
+     &  DT    , IFAMAS , IELM  , NPOIN2 , NPLAN , JF     , NF     ,
+     &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT ,
+     &  ETA   , FRE    , IT3   , ISUB   , FREBUF, MESH   ,
+     &  NELEM2, NELMAX2, IKLE2 , SURDET2, APOST , PERIODIC )
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -47,23 +49,30 @@
 !| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
 !| APOST          |-->| IF YES, DATA MUST BE KEPT FOR A POSTERIORI
 !|                |   | INTERPOLATION
-!| IT1            |<->| INTEGER WORK ARRAY
-!| IT2            |<->| INTEGER WORK ARRAY
+!| ELT            |<->| ARRIVAL ELEMENT
+!| ETA            |<->| ARRIVAL LAYER (IN 3D WITH PRISMS)
+!| FRCONV         |-->| FREQUENCY COMPONENT OF ADVECTION FIELD
+!| FRE            |<->| ARRIVAL FREQUENCY (IN 4D)
+!| FREBUF         |<->| INTEGER WORK ARRAY (IN 4D)
+!| FREQ           |-->| DISCRETISED FREQUENCIES (IN 4D).
+!|                |   | IF NOT TOMAWAC, MUST BE ZSTAR !!!!!!!!!!!
+!| JF             |-->| FREQUENCY (IN A RANGE OF 1 TO NF)
 !| IT3            |<->| INTEGER WORK ARRAY
-!| IT4            |<->| INTEGER WORK ARRAY
+!| ISUB           |<->| ARRIVAL SUB-DOMAIN (IN PARALLEL)
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
+!| NF             |-->| NUMBER OF FREQUENCIES (IN 4D)
 !| NOMB           |-->| NUMBER OF VARIABLES TO BE ADVECTED
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
-!| NPLINT         |---| NOT USED
 !| NPOIN2         |-->| NUMBER OF POINTS IN THE 2D MESH
 !| PERIODIC       |-->| IF YES, PERIODIC VERSION ON THE VERTICAL
 !| SHP            |<->| BARYCENTRIC COORDINATES OF POINTS IN TRIANGLES
 !| SHZ            |<->| BARYCENTRIC COORDINATES ON VERTICAL
+!| SHF            |<->| BARYCENTRIC COORDINATES ON THE FREQUENCY AXIS
 !| SURDET2        |-->| GEOMETRIC COEFFICIENT USED IN PARAMETRIC TRANSFORMATION
 !| TB             |<->| BLOCK CONTAINING THE BIEF_OBJ WORK ARRAYS
 !| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
@@ -73,7 +82,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_CHARAC => CHARAC
-      USE STREAMLINE, ONLY : SCARACT,POST_INTERP  
+      USE STREAMLINE, ONLY : SCARACT  
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -82,19 +91,21 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER         , INTENT(IN)         :: NOMB
-      INTEGER         , INTENT(IN)         :: NPLAN,NPLINT,NELEM2
+      INTEGER         , INTENT(IN)         :: NPLAN,JF,NF,NELEM2
       INTEGER         , INTENT(IN)         :: NPOIN2,NELMAX2
       INTEGER         , INTENT(INOUT)      :: IELM
-      INTEGER         , INTENT(INOUT)      :: IT1(*),IT2(*)
-      INTEGER         , INTENT(INOUT)      :: IT3(*),IT4(*)
+      INTEGER         , INTENT(INOUT)      :: ELT(*),ETA(*),FRE(*)
+      INTEGER         , INTENT(INOUT)      :: IT3(*),ISUB(*),FREBUF(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)         :: FN,UCONV,VCONV,WCONV
+      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FRCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)         :: ZSTAR,MASKEL,IKLE2,SURDET2
-      TYPE(BIEF_OBJ)  , INTENT(INOUT)      :: FTILD,TB,SHP,SHZ
+      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FREQ
+      TYPE(BIEF_OBJ)  , INTENT(INOUT)      :: FTILD,TB,SHP,SHZ,SHF
       LOGICAL         , INTENT(IN)         :: MSK
       DOUBLE PRECISION, INTENT(IN)         :: DT
       TYPE(BIEF_MESH) , INTENT(INOUT)      :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET :: IFAMAS
-      LOGICAL, OPTIONAL, INTENT(IN)        :: APOST, PERIODIC
+      LOGICAL, OPTIONAL, INTENT(IN)        :: APOST,PERIODIC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -102,10 +113,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7
+      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10
       INTEGER, DIMENSION(:), POINTER :: IFA
       INTEGER I,J,K,NPT,DIM1F
-      LOGICAL QUAD,QUAB,DEJA,POST,PERIO
+      LOGICAL QUAD,QUAB,DEJA,POST,PERIO,YA4D
       DATA DEJA/.FALSE./   
 !
       INTRINSIC MIN
@@ -117,24 +128,51 @@
       ELSE
         POST=.FALSE.      
       ENDIF
-
+!
       IF(PRESENT(PERIODIC)) THEN
         PERIO=PERIODIC
       ELSE
         PERIO=.FALSE.      
+      ENDIF
+!
+!     YA4D: 4 DIMENSIONS (TOMAWAC).
+!     WE LOOK IF FREQ AND ZSTAR HAVE A DIFFERENT NAME.
+!
+      IF(FREQ%NAME.NE.ZSTAR%NAME) THEN
+        YA4D=.TRUE.
+      ELSE
+        YA4D=.FALSE.
       ENDIF
 ! 
 !-----------------------------------------------------------------------
 !  TABLEAUX DE TRAVAIL PRIS DANS LE BLOC TB
 !-----------------------------------------------------------------------
 !
-      T1 =>TB%ADR( 1)%P
-      T2 =>TB%ADR( 2)%P
-      T3 =>TB%ADR( 3)%P
-      T4 =>TB%ADR( 4)%P
-      T5 =>TB%ADR( 5)%P
-      T6 =>TB%ADR( 6)%P
-      T7 =>TB%ADR( 7)%P
+      IF(TB%N.GE.10) THEN
+        T1 =>TB%ADR( 1)%P
+        T2 =>TB%ADR( 2)%P
+        T3 =>TB%ADR( 3)%P
+        T4 =>TB%ADR( 4)%P
+        T5 =>TB%ADR( 5)%P
+        T6 =>TB%ADR( 6)%P
+        T7 =>TB%ADR( 7)%P
+        T8 =>TB%ADR( 8)%P
+        T9 =>TB%ADR( 9)%P
+        T10=>TB%ADR(10)%P
+      ELSE
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'TAILLE DU BLOC TB:',TB%N
+          WRITE(LU,*) 'TROP PETITE DANS CHARAC'
+          WRITE(LU,*) '10 REQUIS'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'SIZE OF BLOCK TB:',TB%N
+          WRITE(LU,*) 'TOO SMALL IN CHARAC'
+          WRITE(LU,*) '10 REQUESTED'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !  DEPLOIEMENT DE LA STRUCTURE DE MAILLAGE
@@ -214,6 +252,8 @@
         IFA=>MESH%IFABOR%I
       ENDIF
 !
+!     STARTING X AND Y OF POINTS (T1=XCONV AND T2=YCONV)
+!
       CALL OS('X=Y     ',X=T1,Y=MESH%X)
       CALL OS('X=Y     ',X=T2,Y=MESH%Y)
 !
@@ -227,16 +267,22 @@
       ENDIF 
 !           
       IF(IELM.EQ.11) THEN
-        CALL GTSH11(SHP%R,IT1,IKLE2%I,MESH%ELTCAR%I,NPOIN2,
+        CALL GTSH11(SHP%R,ELT,IKLE2%I,MESH%ELTCAR%I,NPOIN2,
      &              NELEM2,NELMAX2,MESH%NSEG,QUAB,QUAD)
         DIM1F=NPT
       ELSEIF(IELM.EQ.41) THEN
+!       STARTING Z OF POINTS (T3=ZCONV)
         DO I=1,NPLAN
           CALL OV('X=C     ',T3%R((I-1)*NPOIN2+1:I*NPOIN2),
      &            T3%R,T3%R,ZSTAR%R(I),NPOIN2)
-        ENDDO    
-        CALL GTSH41(SHP%R,SHZ%R,WCONV%R,IT1,IT2,IKLE2%I,MESH%ELTCAR%I,
-     &              NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
+        ENDDO 
+!       IN 4D, STARTING F OF POINTS (T9=FCONV)
+        IF(YA4D) THEN
+          CALL OV('X=C     ',T9%R,T9%R,T9%R,FREQ%R(JF),NPOIN2*NPLAN)
+        ENDIF   
+        CALL GTSH41(SHP%R,SHZ%R,SHF%R,WCONV%R,FRCONV%R,
+     &              ELT,ETA,FRE,IKLE2%I,MESH%ELTCAR%I,
+     &              NPOIN2,NELMAX2,NPLAN,JF,NF,YA4D)
         DIM1F=NPOIN2
       ELSE
         WRITE(LU,*) 'ELEMENT NOT IMPLEMENTED IN CHARAC: ',IELM
@@ -244,14 +290,16 @@
         STOP  
       ENDIF        
 !        
-      CALL SCARACT(FN,FTILD,UCONV%R,VCONV%R,WCONV%R,
-     &             MESH%X%R,MESH%Y%R,ZSTAR%R,
-     &             T1%R,T2%R,T3%R,T4%R,T5%R,T6%R,
-     &             MESH%Z%R,SHP%R,SHZ%R,
-     &             SURDET2%R,DT,IKLE2%I,IFA,IT1,IT2,IT3,IT4,
+      CALL SCARACT(FN,FTILD,UCONV%R,VCONV%R,WCONV%R,FRCONV%R,
+     &             MESH%X%R,MESH%Y%R,ZSTAR%R,FREQ%R,
+!                  XCONV YCONV ZCONV FCONV DX   DY   DZ   DF
+     &             T1%R ,T2%R ,T3%R ,T9%R ,T4%R,T5%R,T6%R,T8%R,
+     &             MESH%Z%R,SHP%R,SHZ%R,SHF%R,
+     &             SURDET2%R,DT,IKLE2%I,IFA,ELT,ETA,FRE,IT3,ISUB,
      &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
-     &             3,NPLAN,MESH,NPT,DIM1F,-1,
-     &             MESH%M%X%R,T7%R,SIZEBUF,POST,PERIO)  
+     &             3,NPLAN,NF,MESH,NPT,DIM1F,-1,
+     &             MESH%M%X%R,T7%R,T10%R,FREBUF,SIZEBUF,
+     &             POST,PERIO,YA4D)  
 ! 
 !     PARALLEL COMMUNICATION
 !    

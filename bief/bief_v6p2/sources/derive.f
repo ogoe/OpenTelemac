@@ -99,12 +99,12 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER LTP,IFLOT,N1,N2,N3,IELEM,LTT,NSP(1),ETA(1),SENS
-      INTEGER ISPDONE(1),NPLAN,NPT
+      INTEGER LTP,IFLOT,N1,N2,N3,IELEM,LTT,NSP(1),ETA(1),SENS,FRE(1)
+      INTEGER ISPDONE(1),NPLAN,NPT,FREBUF(1)
 !
       DOUBLE PRECISION DET1,DET2,DET3,DX(1),DY(1),ZSTAR(1),ZCONV(1)
       DOUBLE PRECISION SHPBUF(3,1),SHZBUF(1)
-      DOUBLE PRECISION SHZ(1),Z(1)
+      DOUBLE PRECISION SHZ(1),Z(1),SHF(1)
 !
       TYPE(BIEF_OBJ) :: SVOID
 !
@@ -208,15 +208,18 @@
 !  P1 TRIANGLES
 !  ============
 !
-            CALL SCARACT(SVOID,SVOID,U,V,V,X,Y,
-     *                   ZSTAR,XFLOT(LTT,IFLOT),YFLOT(LTT,IFLOT),ZCONV,
-     *                   DX,DY,DY,Z,SHPFLO(1,IFLOT),SHZ,SURDET,DT,
+            CALL SCARACT(SVOID,SVOID,U,V,V,V,X,Y,
+     *                   ZSTAR,ZSTAR,
+     &                   XFLOT(LTT,IFLOT),YFLOT(LTT,IFLOT),ZCONV,ZCONV,
+     *                   DX,DY,DY,DY,Z,SHPFLO(1,IFLOT),
+     &                   SHZ,SHF,SURDET,DT,
      *                   IKLE,IFABOR,ELTFLO(IFLOT),
-     *                   ETA,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
-     *                   0,NPOIN,NPOIN,NDP,NPLAN,
+     *                   ETA,FRE,NSP,ISPDONE,IELM,IELMU,NELEM,NELMAX,
+     *                   0,NPOIN,NPOIN,NDP,NPLAN,1,
      *                   MESH,NPT,BIEF_NBPTS(IELMU,MESH),SENS,
 !                        PROVISIONAL, THIS WILL NOT WORK IN PARALLEL            
-     *                   SHPBUF,SHZBUF,1,.FALSE.,.FALSE.)
+     *                   SHPBUF,SHZBUF,SHZBUF,FREBUF,1,
+     *                   .FALSE.,.FALSE.,.FALSE.)
 !
           ELSE
 !

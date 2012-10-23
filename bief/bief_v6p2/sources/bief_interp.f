@@ -2,8 +2,8 @@
                      SUBROUTINE BIEF_INTERP
 !                    **********************
 !
-     &( U , UTILD , SHP , NDP , SHZ , ETA , ELT , NP , NPOIN2 , NPLAN ,
-     &  IELM , IKLE , NELMAX , PERIODIC )
+     &( U , UTILD , SHP , NDP , SHZ , ETA , SHF , FRE , ELT , NP , 
+     &  NPOIN2 , NPLAN , IELM , IKLE , NELMAX , PERIO , YA4D )
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -40,6 +40,11 @@
 !+        V6P2
 !+   Adding Quasi-bubble interpolation
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/10/2012
+!+        V6P3
+!+   Adding interpolation with periodicity and 4D.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |-->| 2D ELEMENT AT THE FOOT OF CHARACTERISTIC LINES.
 !| ETA            |-->| LAYER NUMBER AT THE FOOT OF CHARACTERISTIC LINES.
@@ -56,6 +61,7 @@
 !|                |   | CHARACTERISTIC LINES (FOR TELEMAC-3D)
 !| U              |-->| VALUES AT NODES FOR INTERPOLATION.
 !| UTILD          |<--| INTERPOLATED VALUES.
+!| YA4D           |-->| IF YES, 4 DIMENSIONS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_BIEF_INTERP => BIEF_INTERP
@@ -66,34 +72,25 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NP,NELMAX,NPLAN,NPOIN2,NDP,IELM
-      INTEGER, INTENT(IN) :: IKLE(NELMAX,*),ELT(NP),ETA(NP)
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,*),ELT(NP),ETA(NP),FRE(NP)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN)
-      DOUBLE PRECISION, INTENT(IN)    :: SHP(NDP,NP),SHZ(NP)
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN,*)
+      DOUBLE PRECISION, INTENT(IN)    :: SHP(NDP,NP),SHZ(NP),SHF(NP)
       DOUBLE PRECISION, INTENT(INOUT) :: UTILD(NP)
-      LOGICAL, OPTIONAL, INTENT(IN)   :: PERIODIC
+      LOGICAL, INTENT(IN)             :: PERIO,YA4D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IP,ETAP1
+      INTEGER IP,ETAP1,I1,I2,I3,IFR
       DOUBLE PRECISION SHP11,SHP12,SHP14
       DOUBLE PRECISION SHP22,SHP23,SHP24
-      DOUBLE PRECISION SHP33,SHP31,SHP34
-      LOGICAL PERIO
+      DOUBLE PRECISION SHP33,SHP31,SHP34,UMSHZ,UMSHF
 !
 !     SHOULD BE SAME EPSILO THAN SCHAR11
       DOUBLE PRECISION EPSILO
       DATA EPSILO / 1.D-6 /
 !
-      IF(PRESENT(PERIODIC)) THEN
-        PERIO=PERIODIC
-      ELSE
-        PERIO=.FALSE.      
-      ENDIF 
-!
 !-----------------------------------------------------------------------
-!
-!     TO BE IMPLEMENTED FOR QUASI-BUBBLE.... AN APPROXIMATION HERE
 !
       IF(IELM.EQ.11) THEN
 !
@@ -101,9 +98,9 @@
 !    ============
 !
       DO IP = 1 , NP
-         UTILD(IP) = U(IKLE(ELT(IP),1),1) * SHP(1,IP)
-     &             + U(IKLE(ELT(IP),2),1) * SHP(2,IP)
-     &             + U(IKLE(ELT(IP),3),1) * SHP(3,IP)
+         UTILD(IP) = U(IKLE(ELT(IP),1),1,1) * SHP(1,IP)
+     &             + U(IKLE(ELT(IP),2),1,1) * SHP(2,IP)
+     &             + U(IKLE(ELT(IP),3),1,1) * SHP(3,IP)
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -134,21 +131,21 @@
 !        IF(     SHP11.GT.0.D0 .AND. SHP11.LT.1.D0 .AND.
 !    &           SHP12.GT.0.D0 .AND. SHP12.LT.1.D0 .AND.
 !    &           SHP14.GT.0.D0 .AND. SHP14.LT.1.D0 ) THEN
-!          UTILD(IP) = U(IKLE(ELT(IP),1),1) * SHP11
-!    &               + U(IKLE(ELT(IP),2),1) * SHP12
-!    &               + U(IKLE(ELT(IP),4),1) * SHP14
+!          UTILD(IP) = U(IKLE(ELT(IP),1),1,1) * SHP11
+!    &               + U(IKLE(ELT(IP),2),1,1) * SHP12
+!    &               + U(IKLE(ELT(IP),4),1,1) * SHP14
 !        ELSEIF( SHP22.GT.0.D0 .AND. SHP22.LT.1.D0 .AND.
 !    &           SHP23.GT.0.D0 .AND. SHP23.LT.1.D0 .AND.
 !    &           SHP24.GT.0.D0 .AND. SHP24.LT.1.D0 ) THEN
-!          UTILD(IP) = U(IKLE(ELT(IP),2),1) * SHP22
-!    &               + U(IKLE(ELT(IP),3),1) * SHP23
-!    &               + U(IKLE(ELT(IP),4),1) * SHP24
+!          UTILD(IP) = U(IKLE(ELT(IP),2),1,1) * SHP22
+!    &               + U(IKLE(ELT(IP),3),1,1) * SHP23
+!    &               + U(IKLE(ELT(IP),4),1,1) * SHP24
 !        ELSEIF( SHP33.GT.0.D0 .AND. SHP33.LT.1.D0 .AND.
 !    &           SHP31.GT.0.D0 .AND. SHP31.LT.1.D0 .AND.
 !    &           SHP34.GT.0.D0 .AND. SHP34.LT.1.D0 ) THEN
-!          UTILD(IP) = U(IKLE(ELT(IP),3),1) * SHP33
-!    &               + U(IKLE(ELT(IP),1),1) * SHP31
-!    &               + U(IKLE(ELT(IP),4),1) * SHP34
+!          UTILD(IP) = U(IKLE(ELT(IP),3),1,1) * SHP33
+!    &               + U(IKLE(ELT(IP),1),1,1) * SHP31
+!    &               + U(IKLE(ELT(IP),4),1,1) * SHP34
 !
 !        OPTIMISED VERSION WITH TRUNCATION ERRORS
 !        SHP14, SHP24 AND SHP34 POSITIVITY ALREADY ENSURED
@@ -158,25 +155,25 @@
      &           SHP12.GT.    -2.D0*EPSILO .AND. 
      &           SHP12.LT.1.D0+4.D0*EPSILO .AND.
      &           SHP14.LT.1.D0+4.D0*EPSILO ) THEN
-           UTILD(IP) = U(IKLE(ELT(IP),1),1) * SHP11
-     &               + U(IKLE(ELT(IP),2),1) * SHP12
-     &               + U(IKLE(ELT(IP),4),1) * SHP14
+           UTILD(IP) = U(IKLE(ELT(IP),1),1,1) * SHP11
+     &               + U(IKLE(ELT(IP),2),1,1) * SHP12
+     &               + U(IKLE(ELT(IP),4),1,1) * SHP14
          ELSEIF( SHP22.GT.    -2.D0*EPSILO .AND. 
      &           SHP22.LT.1.D0+4.D0*EPSILO .AND.
      &           SHP23.GT.    -2.D0*EPSILO .AND. 
      &           SHP23.LT.1.D0+4.D0*EPSILO .AND.
      &           SHP24.LT.1.D0+4.D0*EPSILO ) THEN
-           UTILD(IP) = U(IKLE(ELT(IP),2),1) * SHP22
-     &               + U(IKLE(ELT(IP),3),1) * SHP23
-     &               + U(IKLE(ELT(IP),4),1) * SHP24
+           UTILD(IP) = U(IKLE(ELT(IP),2),1,1) * SHP22
+     &               + U(IKLE(ELT(IP),3),1,1) * SHP23
+     &               + U(IKLE(ELT(IP),4),1,1) * SHP24
          ELSEIF( SHP33.GT.    -2.D0*EPSILO .AND. 
      &           SHP33.LT.1.D0+4.D0*EPSILO .AND.
      &           SHP31.GT.    -2.D0*EPSILO .AND. 
      &           SHP31.LT.1.D0+4.D0*EPSILO .AND.
      &           SHP34.LT.1.D0+4.D0*EPSILO ) THEN
-           UTILD(IP) = U(IKLE(ELT(IP),3),1) * SHP33
-     &               + U(IKLE(ELT(IP),1),1) * SHP31
-     &               + U(IKLE(ELT(IP),4),1) * SHP34
+           UTILD(IP) = U(IKLE(ELT(IP),3),1,1) * SHP33
+     &               + U(IKLE(ELT(IP),1),1,1) * SHP31
+     &               + U(IKLE(ELT(IP),4),1,1) * SHP34
 !
 !        THE FOLLOWING CASE MAY HAPPEN IN PARALLEL
 !        BECAUSE EVEN LOST CHARACTERISTICS ARE INTERPOLATED
@@ -201,15 +198,15 @@
 !    ============
 !
       DO IP = 1 , NP
-         UTILD(IP) = U(IKLE(ELT(IP),1),1) *
+         UTILD(IP) = U(IKLE(ELT(IP),1),1,1) *
      &               (2.D0*SHP(1,IP)-1.D0)* SHP(1,IP)
-     &             + U(IKLE(ELT(IP),2),1) *
+     &             + U(IKLE(ELT(IP),2),1,1) *
      &               (2.D0*SHP(2,IP)-1.D0)* SHP(2,IP)
-     &             + U(IKLE(ELT(IP),3),1) *
+     &             + U(IKLE(ELT(IP),3),1,1) *
      &               (2.D0*SHP(3,IP)-1.D0)* SHP(3,IP)
-     &             + U(IKLE(ELT(IP),4),1) * 4.D0 * SHP(1,IP)*SHP(2,IP)
-     &             + U(IKLE(ELT(IP),5),1) * 4.D0 * SHP(2,IP)*SHP(3,IP)
-     &             + U(IKLE(ELT(IP),6),1) * 4.D0 * SHP(3,IP)*SHP(1,IP)
+     &             + U(IKLE(ELT(IP),4),1,1) * 4.D0 * SHP(1,IP)*SHP(2,IP)
+     &             + U(IKLE(ELT(IP),5),1,1) * 4.D0 * SHP(2,IP)*SHP(3,IP)
+     &             + U(IKLE(ELT(IP),6),1,1) * 4.D0 * SHP(3,IP)*SHP(1,IP)
       ENDDO
 !
 !------------------------------------------------------------------------
@@ -219,30 +216,60 @@
 !    TELEMAC-3D PRISMS
 !    =====================
 !
-      IF(PERIO) THEN      
-        DO IP = 1 , NP
-          IF(ETA(IP).EQ.NPLAN) THEN
-            ETAP1=1
-          ELSE
-            ETAP1=ETA(IP)+1
-          ENDIF
-          UTILD(IP) =
-     &     ( U(IKLE(ELT(IP),1),ETA(IP)) * SHP(1,IP) 
-     &     + U(IKLE(ELT(IP),2),ETA(IP)) * SHP(2,IP) 
-     &     + U(IKLE(ELT(IP),3),ETA(IP)) * SHP(3,IP) ) * (1.D0-SHZ(IP))
-     &   + ( U(IKLE(ELT(IP),1),ETAP1)   * SHP(1,IP) 
-     &     + U(IKLE(ELT(IP),2),ETAP1)   * SHP(2,IP) 
-     &     + U(IKLE(ELT(IP),3),ETAP1)   * SHP(3,IP) ) * SHZ(IP)
-        ENDDO
+      IF(PERIO) THEN 
+        IF(YA4D) THEN
+          DO IP = 1 , NP
+            I1=IKLE(ELT(IP),1)
+            I2=IKLE(ELT(IP),2)
+            I3=IKLE(ELT(IP),3)
+            UMSHZ=1.D0-SHZ(IP)
+            UMSHF=1.D0-SHF(IP)
+            IF(ETA(IP).EQ.NPLAN) THEN
+              ETAP1=1
+            ELSE
+              ETAP1=ETA(IP)+1
+            ENDIF
+            IFR=FRE(IP)
+            UTILD(IP) =   UMSHF *
+     &        ((U(I1,ETA(IP),IFR  ) * SHP(1,IP)
+     &        + U(I2,ETA(IP),IFR  ) * SHP(2,IP)
+     &        + U(I3,ETA(IP),IFR  ) * SHP(3,IP)) * UMSHZ
+     &       +( U(I1,ETAP1  ,IFR  ) * SHP(1,IP)
+     &        + U(I2,ETAP1  ,IFR  ) * SHP(2,IP)
+     &        + U(I3,ETAP1  ,IFR  ) * SHP(3,IP)) * SHZ(IP) )
+     &                 + SHF(IP) *
+     &        ((U(I1,ETA(IP),IFR+1) * SHP(1,IP)
+     &        + U(I2,ETA(IP),IFR+1) * SHP(2,IP)
+     &        + U(I3,ETA(IP),IFR+1) * SHP(3,IP)) * UMSHZ
+     &       +( U(I1,ETAP1  ,IFR+1) * SHP(1,IP)
+     &        + U(I2,ETAP1  ,IFR+1) * SHP(2,IP)
+     &        + U(I3,ETAP1  ,IFR+1) * SHP(3,IP)) * SHZ(IP) )
+          ENDDO 
+        ELSE     
+          DO IP = 1 , NP
+            IF(ETA(IP).EQ.NPLAN) THEN
+              ETAP1=1
+            ELSE
+              ETAP1=ETA(IP)+1
+            ENDIF
+            UTILD(IP) =
+     &       (U(IKLE(ELT(IP),1),ETA(IP),1)*SHP(1,IP) 
+     &       +U(IKLE(ELT(IP),2),ETA(IP),1)*SHP(2,IP) 
+     &       +U(IKLE(ELT(IP),3),ETA(IP),1)*SHP(3,IP))*(1.D0-SHZ(IP))
+     &     + (U(IKLE(ELT(IP),1),ETAP1,1)  *SHP(1,IP) 
+     &       +U(IKLE(ELT(IP),2),ETAP1,1)  *SHP(2,IP) 
+     &       +U(IKLE(ELT(IP),3),ETAP1,1)  *SHP(3,IP))*SHZ(IP)
+          ENDDO
+        ENDIF
       ELSE
         DO IP = 1 , NP
           UTILD(IP) =
-     &      U(IKLE(ELT(IP),1),ETA(IP))   * SHP(1,IP) * (1.D0-SHZ(IP))
-     &    + U(IKLE(ELT(IP),2),ETA(IP))   * SHP(2,IP) * (1.D0-SHZ(IP))
-     &    + U(IKLE(ELT(IP),3),ETA(IP))   * SHP(3,IP) * (1.D0-SHZ(IP))
-     &    + U(IKLE(ELT(IP),1),ETA(IP)+1) * SHP(1,IP) * SHZ(IP)
-     &    + U(IKLE(ELT(IP),2),ETA(IP)+1) * SHP(2,IP) * SHZ(IP)
-     &    + U(IKLE(ELT(IP),3),ETA(IP)+1) * SHP(3,IP) * SHZ(IP)
+     &      U(IKLE(ELT(IP),1),ETA(IP),1)   * SHP(1,IP) * (1.D0-SHZ(IP))
+     &    + U(IKLE(ELT(IP),2),ETA(IP),1)   * SHP(2,IP) * (1.D0-SHZ(IP))
+     &    + U(IKLE(ELT(IP),3),ETA(IP),1)   * SHP(3,IP) * (1.D0-SHZ(IP))
+     &    + U(IKLE(ELT(IP),1),ETA(IP)+1,1) * SHP(1,IP) * SHZ(IP)
+     &    + U(IKLE(ELT(IP),2),ETA(IP)+1,1) * SHP(2,IP) * SHZ(IP)
+     &    + U(IKLE(ELT(IP),3),ETA(IP)+1,1) * SHP(3,IP) * SHZ(IP)
         ENDDO
       ENDIF
 !

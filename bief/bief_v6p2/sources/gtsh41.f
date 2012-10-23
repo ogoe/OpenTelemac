@@ -2,7 +2,8 @@
                      SUBROUTINE GTSH41
 !                    *****************
 !
-     &(SHP,SHZ,WS,ELT,ETA,IKLE,ELTCAR,NPOIN2,NELMAX2,NPLAN,QUAB,QUAD)
+     &(SHP,SHZ,SHF,WS,FS,ELT,ETA,FRE,IKLE,ELTCAR,
+     & NPOIN2,NELMAX2,NPLAN,JF,NF,YA4D)
 !
 !***********************************************************************
 ! BIEF   V6P2                                   21/08/2010
@@ -57,18 +58,21 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN2,NELMAX2,NPLAN
+      INTEGER, INTENT(IN)             :: NPOIN2,NELMAX2,NPLAN,JF,NF
       INTEGER, INTENT(IN)             :: IKLE(NELMAX2,*),ELTCAR(*)
       INTEGER, INTENT(INOUT)          :: ELT(NPOIN2,NPLAN)
       INTEGER, INTENT(INOUT)          :: ETA(NPOIN2,NPLAN)
+      INTEGER, INTENT(INOUT)          :: FRE(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: SHZ(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHF(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: WS(NPOIN2,NPLAN)
-      LOGICAL, INTENT(IN)             :: QUAB,QUAD
+      DOUBLE PRECISION, INTENT(IN)    :: FS(NPOIN2,NPLAN)
+      LOGICAL         , INTENT(IN)    :: YA4D 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IELEM,IPLAN
+      INTEGER I,IELEM,IPLAN,IF
 !
 !-----------------------------------------------------------------------
 !
@@ -123,6 +127,22 @@
           ENDIF
         ENDDO
       ENDDO
+!
+!     NOW FRE AND SHF, DONE DEPENDING ON THE FREQUENCY VELOCITY
+!
+      IF(YA4D) THEN
+        DO IPLAN = 1,NPLAN
+          DO I=1,NPOIN2
+            IF((FS(I,IPLAN).GT.0.D0.AND.JF.NE.1).OR.JF.EQ.NF) THEN
+              FRE(I,IPLAN) = JF-1
+              SHF(I,IPLAN) = 1.D0
+            ELSE
+              FRE(I,IPLAN) = JF
+              SHF(I,IPLAN) = 0.D0
+            ENDIF
+          ENDDO
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
