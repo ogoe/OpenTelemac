@@ -154,7 +154,7 @@
       CALL BIEF_ALLVEC(1,SXK,'SXK   ',NPOIN2*NF, 1 , 0 ,MESH)
       CALL BIEF_ALLVEC(1,SCG,'SCG   ',NPOIN2*NF, 1 , 0 ,MESH)
 !
-      IF (TSOU) THEN
+      IF(TSOU) THEN
         CALL BIEF_ALLVEC(1,STSDER,'STSDER',NF*NPOIN3 , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,STSTOT,'STSTOT',NF*NPOIN3 , 1 , 0 ,MESH)
         CALL BIEF_ALLVEC(1,SDF_LIM,'SDF_LIM',NPOIN2*NF, 1 , 0 ,MESH)
@@ -380,7 +380,7 @@
 !
 !
 !
-      IF (SPHE) THEN
+      IF(SPHE) THEN
          CALL BIEF_ALLVEC(1,SCOSF,'SCOSF ',IELM2 , 1 , 2 ,MESH)
          CALL BIEF_ALLVEC(1,STGF,'STGF  ',IELM2 , 1 , 2 ,MESH)
       ELSE
@@ -895,7 +895,7 @@
 !     ADDED BY JMH FOR CHARACTERISTICS
 !
       CALL ALLBLO(TB, 'TB    ')
-      CALL BIEF_ALLVEC_IN_BLOCK(TB,8,1,'TB    ',IELM3,1,2,MESH3D)
+      CALL BIEF_ALLVEC_IN_BLOCK(TB,10,1,'TB    ',IELM3,1,2,MESH3D)
 !
       T3_01 => TB%ADR(01)%P
       T3_02 => TB%ADR(02)%P
@@ -905,6 +905,8 @@
       T3_06 => TB%ADR(06)%P
       T3_07 => TB%ADR(07)%P
       T3_08 => TB%ADR(08)%P
+      T3_09 => TB%ADR(09)%P
+      T3_10 => TB%ADR(10)%P
 !
 !***********************************************************************
 !

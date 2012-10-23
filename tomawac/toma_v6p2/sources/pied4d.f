@@ -358,7 +358,7 @@
 !
               ISOT = IAND(ISO(IPLOT), 3)
               ISOF = IAND(ISO(IPLOT),12)/4
-            ISOV = IAND(ISO(IPLOT),15)
+              ISOV = IAND(ISO(IPLOT),15)
               ISOH = IAND(ISO(IPLOT),112)
               IEL = ELT(IPLOT)
               IET = ETA(IPLOT)

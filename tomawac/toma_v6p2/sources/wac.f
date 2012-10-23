@@ -630,7 +630,7 @@
         CALL PREPRO
      & ( SCX      , SCY       , SCT      , SCF     , DT  ,
      &   NRK      , MESH%X%R  , MESH%Y%R , STETA   ,
-     &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I   ,
+     &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
      &   SSHZ     , SSHF      ,
      &   SELT%I   , SETA%I    , SFRE%I   , SDEPTH%R,
@@ -751,7 +751,7 @@
          CALL PREPRO
      & ( SCX      , SCY       , SCT      , SCF     , DT  ,
      &   NRK      , MESH%X%R  , MESH%Y%R , STETA   ,
-     &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I   ,
+     &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
      &   SSHZ     , SSHF      ,
      &   SELT%I   , SETA%I    , SFRE%I   , SDEPTH%R,
@@ -808,8 +808,8 @@
         CALL PROPA
      &( SF%R       , SB%R    , SSHP1, 
      &  SSHZ       , SSHF    , SELT%I , SETA%I , SFRE%I ,
-     &  MESH%IKLE%I, IKLE_EXT, SETAP1%I, NPOIN3    , NPOIN2    , NELEM2,
-     &  NPLAN , NF , COURAN.OR.PART.EQ.1 ,STRA01%R   , STRA02%R ,
+     &  MESH%IKLE%I, IKLE_EXT, SETAP1%I, NPOIN3    ,NPOIN2,NELEM2,
+     &  NPLAN , NF , COURAN.OR.PART.EQ.1 ,STRA01%R ,STRA02,
      &  ITR01 , T3_01 , T3_02, ISUB, MESH3D)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPA'
        ENDIF
