@@ -1649,11 +1649,12 @@
 !       COMPUTATION OF CHARACTERISTICS AND INTERPOLATION
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING CHARAC'
-        CALL CHARAC( FNCAR , FTILD  , FTILD%N  , UCONV , VCONV,S,S,
-     &               DT    , IFAMAS , IELM     , NPOIN , 1 , 1,
-     &               MSK   , MASKEL , BM1%X    , BM1%D , TB   ,
-     &               IT1%I , IT2%I  , IT3%I    , IT4%I , MESH ,
-     &               MESH%NELEM,MESH%NELMAX,MESH%IKLE,MESH%SURDET)
+        CALL CHARAC(FNCAR , FTILD  , FTILD%N  , UCONV , VCONV,S,S,S,S,
+     &              DT    , IFAMAS , IELM     , NPOIN , 1,1,1,
+     &              MSK   , MASKEL , BM1%X    , BM1%D , BM1%D , TB   ,
+     &              IT1%I , IT2%I  , IT2%I    ,IT3%I  , IT4%I , IT2%I,
+     &              MESH  , MESH%NELEM        ,MESH%NELMAX    ,
+     &              MESH%IKLE,MESH%SURDET)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHARAC'
 !
         IF(SPHERI) THEN

@@ -170,7 +170,8 @@
 !
       INTEGER, DIMENSION(:), POINTER  :: LISPFR
       INTEGER, DIMENSION(:),POINTER :: ELT_T
-      INTEGER K,NPT,J,ITRAC,N,NOMB,NDP,NPLAN,IELMU,ETA(1),I,IFR,IPT              
+      INTEGER K,NPT,J,ITRAC,N,NOMB,NDP,NPLAN,IELMU,ETA(1),I,IFR,IPT
+      INTEGER FREBUF(1)              
       DOUBLE PRECISION HMIN,HHBOR,DETADX,DETADY,TBAR(100),TT(100)
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
       DOUBLE PRECISION ZSTAR(1),ZCONV(1,1),SHZ(1),Z(1,1),UNORM,NORMZS
@@ -351,12 +352,16 @@
       ENDDO
 !
       NOMB=4+NTRAC
-      CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,X,Y,
-     *             ZSTAR,XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,
-     *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,
-     *             ETA,IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,
-     *             NOMB,NPOIN,NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1,
-     *             SHPBUF%R,SHPBUF%R,SIZEBUF,.FALSE.,.FALSE.)
+      CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,VCONV%R,
+     &             X,Y,
+     &             ZSTAR,ZSTAR,XCONV%R,YCONV%R,ZCONV,ZCONV,
+     &             DX_T,DY_T,DZ_T,DZ_T,Z,
+     &             SHPP,SHZ,SHZ,
+     &             SURDET,DT,IKLE,IFABOR,ELT_T,
+     &             ETA,ETA,IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,
+     &             NOMB,NPOIN,NPOIN,NDP,NPLAN,1,MESH,NPT,U%DIM1,-1,
+     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF,
+     &             .FALSE.,.FALSE.,.FALSE.)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL, TBTIL AT BOUNDARY NODES NUMBERING
@@ -499,12 +504,16 @@
       ENDDO
 !
       NOMB=4
-      CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,X,Y,
-     *             ZSTAR,XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,
-     *             SHPP,SHZ,SURDET,DT,IKLE,IFABOR,ELT_T,ETA,
-     *             IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,NOMB,NPOIN,
-     *             NPOIN,NDP,NPLAN,MESH,NPT,U%DIM1,-1,
-     *             SHPBUF%R,SHPBUF%R,SIZEBUF,.FALSE.,.FALSE.)
+      CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,VCONV%R,
+     &             X,Y,
+     &             ZSTAR,ZSTAR,XCONV%R,YCONV%R,ZCONV,ZCONV,
+     &             DX_T,DY_T,DZ_T,DZ_T,Z,
+     &             SHPP,SHZ,SHZ,
+     &             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,ETA,
+     &             IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,NOMB,NPOIN,
+     &             NPOIN,NDP,NPLAN,1,MESH,NPT,U%DIM1,-1,
+     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF,
+     &             .FALSE.,.FALSE.,.FALSE.)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING
@@ -600,12 +609,16 @@
       ENDDO
 !
       NOMB=4
-      CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,X,Y,ZSTAR,
-     *             XCONV%R,YCONV%R,ZCONV,DX_T,DY_T,DZ_T,Z,SHPP,SHZ,
-     *             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,IT3%I,IT4%I,IELM,
-     *             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN, 
-     *             MESH,NPT,U%DIM1,-1,
-     *             SHPBUF%R,SHPBUF%R,SIZEBUF,.FALSE.,.FALSE.)
+      CALL SCARACT(FNCAR1,FTILD1,UCONV%R,VCONV%R,VCONV%R,VCONV%R,
+     &             X,Y,ZSTAR,ZSTAR,
+     &             XCONV%R,YCONV%R,ZCONV,ZCONV,
+     &             DX_T,DY_T,DZ_T,DZ_T,Z,SHPP,SHZ,SHZ,
+     &             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,ETA,
+     &             IT3%I,IT4%I,IELM,
+     &             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN,1, 
+     &             MESH,NPT,U%DIM1,-1,
+     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF,
+     &             .FALSE.,.FALSE.,.FALSE.)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING
