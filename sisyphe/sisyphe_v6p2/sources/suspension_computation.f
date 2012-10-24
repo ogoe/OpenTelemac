@@ -658,13 +658,13 @@
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
       IF(RESOL == 1) THEN
-         IF (DEBUG > 0) WRITE(LU,*) 'CHARAC'
-         CALL CHARAC(CS,CTILD,1,UCONV,VCONV,S,S,DT,IFAMAS,
-     &               IELMT, NPOIN,1,1,MSK,MASKEL,AM1_S%X,AM1_S%D,
-     &               TB,IT1%I,IT2%I,IT3%I,IT4%I,
-     &               MESH,MESH%NELEM,MESH%NELMAX,MESH%IKLE,
-     &               MESH%SURDET)
-         IF (DEBUG > 0) WRITE(LU,*) 'END_CHARAC'
+        IF (DEBUG > 0) WRITE(LU,*) 'CHARAC'
+        CALL CHARAC(CS,CTILD,1,UCONV,VCONV,S,S,S,S,DT,IFAMAS,
+     &              IELMT,NPOIN,1,1,1,
+     &              MSK,MASKEL,AM1_S%X,AM1_S%D,AM1_S%D,
+     &              TB,IT1%I,IT2%I,IT2%I,IT3%I,IT4%I,IT2%I,
+     &              MESH,MESH%NELEM,MESH%NELMAX,MESH%IKLE,MESH%SURDET)
+        IF (DEBUG > 0) WRITE(LU,*) 'END_CHARAC'
       ENDIF
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
