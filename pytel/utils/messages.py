@@ -127,7 +127,7 @@ class MESSAGES:
          return self.tail,proc.returncode
       if os.system(exe):
          print '... The following command failed for the reason above\n'+exe
-         sys.exit()
+         sys.exit(1)
       return '',0
 
    def bufferScreen(self,pipe):
