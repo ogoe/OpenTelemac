@@ -2048,7 +2048,8 @@
      &                   / (ZSTAR(ETA(IPLOT)+1)-ZSTAR(ETA(IPLOT))) 
 !
               IF(ADD) THEN 
-                RECVCHAR(IPLOT)%KNE=ETA(IPLOT) 
+                RECVCHAR(IPLOT)%KNE=ETA(IPLOT)
+                RECVCHAR(IPLOT)%ZP=ZP
               ENDIF 
 ! 
               ISO = ISOH 
@@ -2727,12 +2728,6 @@
               SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1))
      &                       -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IEL)
 !
-!             NOTE JMH: CES 4 LIGNES NE SERVENT A RIEN ???????????? 
-!             ISO = ISOV
-!             IF(SHP(1,IPLOT).LT.EPSILO) ISO=IBSET(ISO,4)
-!             IF(SHP(2,IPLOT).LT.EPSILO) ISO=IBSET(ISO,5)
-!             IF(SHP(3,IPLOT).LT.EPSILO) ISO=IBSET(ISO,6)
-!
               GOTO 50
 !
             ENDIF
@@ -2755,7 +2750,8 @@
 !               PROCESSOR NUMBER   
                 RECVCHAR(IPLOT)%NEPID=IFAPAR(IFA,ELT(IPLOT))
                 RECVCHAR(IPLOT)%INE=IFAPAR(IFA+3,ELT(IPLOT))  
-                RECVCHAR(IPLOT)%KNE=ETA(IPLOT)       
+                RECVCHAR(IPLOT)%KNE=ETA(IPLOT) 
+                RECVCHAR(IPLOT)%IFR=FRE(IPLOT)      
               ENDIF
 !             EXITING LOOP ON ISP
               EXIT
@@ -2852,6 +2848,7 @@
 !
               IF(ADD) THEN 
                 RECVCHAR(IPLOT)%KNE=ETA(IPLOT) 
+                RECVCHAR(IPLOT)%ZP=ZP
               ENDIF
 !
               GO TO 50
@@ -4311,7 +4308,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: DZ(NPLOT),DF(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(NDP,NPLOT),SHZ(NPLOT) 
-      DOUBLE PRECISION, INTENT(INOUT) :: SHF(NDP,NPLOT)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHF(NPLOT)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPBUF(NDP,SIZEBUF)
       DOUBLE PRECISION, INTENT(INOUT) :: SHZBUF(SIZEBUF)
       DOUBLE PRECISION, INTENT(INOUT) :: SHFBUF(SIZEBUF)
