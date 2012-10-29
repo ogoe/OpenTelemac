@@ -17,7 +17,7 @@ jobname    = ''
 ncsize     = ''
 code       = ''
 queue      = ''
-walltime   = ''
+walltime   = '168:00:00'
 option     = ''
 sourcefile = ''
 #
@@ -78,7 +78,7 @@ def create_run_slurm():
 #SBATCH --ntasks=%(ncsize)s
 #SBATCH --partition=%(queue)s
 ##SBATCH --exclude=cn[0000-0000,0000]
-#SBATCH --exclusive
+##SBATCH --exclusive
 srun hostname | sort > mpid.conf
 for line in $(echo | cat mpid.conf)
 do
