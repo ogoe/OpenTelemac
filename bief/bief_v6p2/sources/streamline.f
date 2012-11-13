@@ -108,6 +108,31 @@
 !  
       LOGICAL :: TRACE=.FALSE. 
 ! 
+!     TO OPTIMISE PERIODICITY
+!
+      INTEGER, PARAMETER :: NPLANMAX=200
+      INTEGER ETA1(NPLANMAX)
+      DATA ETA1/002,003,004,005,006,007,008,009,010,011,
+     &          012,013,014,015,016,017,018,019,020,021,
+     &          022,023,024,025,026,027,028,029,030,031,
+     &          032,033,034,035,036,037,038,039,040,041,
+     &          042,043,044,045,046,047,048,049,050,051,
+     &          052,053,054,055,056,057,058,059,060,061,
+     &          062,063,064,065,066,067,068,069,070,071,
+     &          072,073,074,075,076,077,078,079,080,081,
+     &          082,083,084,085,086,087,088,089,090,091,
+     &          092,093,094,095,096,097,098,099,100,101,
+     &          102,103,104,105,106,107,108,109,110,111,
+     &          112,113,114,115,116,117,118,119,120,121,
+     &          122,123,124,125,126,127,128,129,130,131,
+     &          132,133,134,135,136,137,138,139,140,141,
+     &          142,143,144,145,146,147,148,149,150,151,
+     &          152,153,154,155,156,157,158,159,160,161,
+     &          162,163,164,165,166,167,168,169,170,171,
+     &          172,173,174,175,176,177,178,179,180,181,
+     &          182,183,184,185,186,187,188,189,190,191,
+     &          192,193,194,195,196,197,198,199,200,201/
+!  
       CONTAINS  
 ! 
 !--------------------------------------------------------------------- 
@@ -457,6 +482,7 @@
 !
           IF(NOMB.GT.0) THEN
             IF(PERIO) THEN
+              ETA1(NPLAN)=1
               IF(YA4D) THEN
                 DO I=1,NRANGE 
                   IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! LOCALISED
@@ -465,11 +491,7 @@
                     I3=IKLE(ELT(I),3)
                     UMSHZ=1.D0-SHZ(I)
                     UMSHF=1.D0-SHF(I)
-                    IF(ETA(I).EQ.NPLAN) THEN
-                      ETAP1=1
-                    ELSE
-                      ETAP1=ETA(I)+1
-                    ENDIF
+                    ETAP1=ETA1(ETA(I))
                     IFR=FRE(I)
                     RECVCHAR(I)%BASKET(N) = UMSHF *
      &        ((VAL(I1,ETA(I),IFR  ) * SHP(1,I)
@@ -498,18 +520,14 @@
               ELSE
                 DO I=1,NRANGE 
                   IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! LOCALISED
-                    IF(ETA(I).EQ.NPLAN) THEN
-                      ETAP1=1
-                    ELSE
-                      ETAP1=ETA(I)+1
-                    ENDIF 
+                    ETAP1=ETA1(ETA(I))
                     RECVCHAR(I)%BASKET(N) = 
-     &           VAL(IKLE(ELT(I),1),ETA(I),1)*SHP(1,I)*(1.D0-SHZ(I)) 
-     &          +VAL(IKLE(ELT(I),2),ETA(I),1)*SHP(2,I)*(1.D0-SHZ(I)) 
-     &          +VAL(IKLE(ELT(I),3),ETA(I),1)*SHP(3,I)*(1.D0-SHZ(I)) 
-     &          +VAL(IKLE(ELT(I),1),ETAP1 ,1)*SHP(1,I)*SHZ(I) 
-     &          +VAL(IKLE(ELT(I),2),ETAP1 ,1)*SHP(2,I)*SHZ(I) 
-     &          +VAL(IKLE(ELT(I),3),ETAP1 ,1)*SHP(3,I)*SHZ(I) 
+     &          (VAL(IKLE(ELT(I),1),ETA(I),1)*SHP(1,I) 
+     &          +VAL(IKLE(ELT(I),2),ETA(I),1)*SHP(2,I) 
+     &          +VAL(IKLE(ELT(I),3),ETA(I),1)*SHP(3,I))*(1.D0-SHZ(I)) 
+     &         +(VAL(IKLE(ELT(I),1),ETAP1 ,1)*SHP(1,I) 
+     &          +VAL(IKLE(ELT(I),2),ETAP1 ,1)*SHP(2,I)
+     &          +VAL(IKLE(ELT(I),3),ETAP1 ,1)*SHP(3,I))*SHZ(I) 
 !                 THIS IS JUST TO AVOID A BUG ON HP COMPILER 
                   ELSEIF(RECVCHAR(I)%NEPID.LT.-1) THEN 
                     WRITE(LU,*) 'STREAMLINE INTERP_RECVCHAR_11' 
@@ -521,16 +539,18 @@
                   ENDIF 
                 ENDDO
               ENDIF
+!             RESTORING THE ORIGINAL ETA1
+              ETA1(NPLAN)=NPLAN+1
             ELSE
               DO I=1,NRANGE 
               IF(RECVCHAR(I)%NEPID.EQ.-1) THEN ! LOCALISED 
                 RECVCHAR(I)%BASKET(N) = 
-     &            VAL(IKLE(ELT(I),1),ETA(I),1)  *SHP(1,I)*(1.D0-SHZ(I)) 
-     &          + VAL(IKLE(ELT(I),2),ETA(I),1)  *SHP(2,I)*(1.D0-SHZ(I)) 
-     &          + VAL(IKLE(ELT(I),3),ETA(I),1)  *SHP(3,I)*(1.D0-SHZ(I)) 
-     &          + VAL(IKLE(ELT(I),1),ETA(I)+1,1)*SHP(1,I)*SHZ(I) 
-     &          + VAL(IKLE(ELT(I),2),ETA(I)+1,1)*SHP(2,I)*SHZ(I) 
-     &          + VAL(IKLE(ELT(I),3),ETA(I)+1,1)*SHP(3,I)*SHZ(I) 
+     &          ( VAL(IKLE(ELT(I),1),ETA(I),1)  *SHP(1,I) 
+     &          + VAL(IKLE(ELT(I),2),ETA(I),1)  *SHP(2,I)
+     &          + VAL(IKLE(ELT(I),3),ETA(I),1)  *SHP(3,I))*(1.D0-SHZ(I)) 
+     &         +( VAL(IKLE(ELT(I),1),ETA(I)+1,1)*SHP(1,I) 
+     &          + VAL(IKLE(ELT(I),2),ETA(I)+1,1)*SHP(2,I) 
+     &          + VAL(IKLE(ELT(I),3),ETA(I)+1,1)*SHP(3,I))*SHZ(I) 
 !             THIS IS JUST TO AVOID A BUG ON HP COMPILER 
               ELSEIF(RECVCHAR(I)%NEPID.LT.-1) THEN 
                 WRITE(LU,*) 'STREAMLINE  INTERP_RECVCHAR_11' 
@@ -1003,18 +1023,18 @@
          I1 = IKLE2(IEL,1) 
          I2 = IKLE2(IEL,2) 
          I3 = IKLE2(IEL,3)  
-         DXP = U(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &       + U(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &       + U(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &       + U(I1,IET+1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &       + U(I2,IET+1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &       + U(I3,IET+1)*SHP(3,IPLOT)*SHZ(IPLOT)  
-         DYP = V(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &       + V(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &       + V(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &       + V(I1,IET+1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &       + V(I2,IET+1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &       + V(I3,IET+1)*SHP(3,IPLOT)*SHZ(IPLOT) 
+         DXP =( U(I1,IET  )*SHP(1,IPLOT) 
+     &        + U(I2,IET  )*SHP(2,IPLOT)
+     &        + U(I3,IET  )*SHP(3,IPLOT) )*(1.D0-SHZ(IPLOT)) 
+     &       +( U(I1,IET+1)*SHP(1,IPLOT) 
+     &        + U(I2,IET+1)*SHP(2,IPLOT) 
+     &        + U(I3,IET+1)*SHP(3,IPLOT) )*SHZ(IPLOT)  
+         DYP =( V(I1,IET  )*SHP(1,IPLOT) 
+     &        + V(I2,IET  )*SHP(2,IPLOT) 
+     &        + V(I3,IET  )*SHP(3,IPLOT) )*(1.D0-SHZ(IPLOT)) 
+     &       +( V(I1,IET+1)*SHP(1,IPLOT)
+     &        + V(I2,IET+1)*SHP(2,IPLOT) 
+     &        + V(I3,IET+1)*SHP(3,IPLOT) )*SHZ(IPLOT) 
          NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL)))) 
          ISPDONE=1
 !
@@ -1050,19 +1070,19 @@
         I2 = IKLE2(IEL,2) 
         I3 = IKLE2(IEL,3) 
 ! 
-        DX(IPLOT) = ( U(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + U(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + U(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + U(I1,IET+1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &              + U(I2,IET+1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &              + U(I3,IET+1)*SHP(3,IPLOT)*SHZ(IPLOT) ) * PAS 
+        DX(IPLOT) = ((U(I1,IET  )*SHP(1,IPLOT) 
+     &              + U(I2,IET  )*SHP(2,IPLOT) 
+     &              + U(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &              +(U(I1,IET+1)*SHP(1,IPLOT) 
+     &              + U(I2,IET+1)*SHP(2,IPLOT) 
+     &              + U(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) ) * PAS 
 ! 
-        DY(IPLOT) = ( V(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + V(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + V(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + V(I1,IET+1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &              + V(I2,IET+1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &              + V(I3,IET+1)*SHP(3,IPLOT)*SHZ(IPLOT) ) * PAS 
+        DY(IPLOT) = ((V(I1,IET  )*SHP(1,IPLOT)
+     &              + V(I2,IET  )*SHP(2,IPLOT) 
+     &              + V(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &              +(V(I1,IET+1)*SHP(1,IPLOT) 
+     &              + V(I2,IET+1)*SHP(2,IPLOT) 
+     &              + V(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) ) * PAS 
 ! 
         DELTAZ =  (Z(I1,IET+1)-Z(I1,IET))*SHP(1,IPLOT) 
      &          + (Z(I2,IET+1)-Z(I2,IET))*SHP(2,IPLOT) 
@@ -1071,12 +1091,12 @@
         IF(DELTAZ.GT.EPSDZ) THEN 
 !         DIVISION BY DELTAZ IS DUE TO THE FACT THAT W IS  
 !         W* MULTIPLIED BY DELTAZ (IT STEMS FROM TRIDW2 IN TELEMAC3D) 
-          DZ(IPLOT) = ( W(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &                + W(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &                + W(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &                + W(I1,IET+1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &                + W(I2,IET+1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &                + W(I3,IET+1)*SHP(3,IPLOT)*SHZ(IPLOT) )   
+          DZ(IPLOT) = ((W(I1,IET  )*SHP(1,IPLOT) 
+     &                + W(I2,IET  )*SHP(2,IPLOT) 
+     &                + W(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &                +(W(I1,IET+1)*SHP(1,IPLOT) 
+     &                + W(I2,IET+1)*SHP(2,IPLOT)
+     &                + W(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) )   
      &                * PAS * (ZSTAR(IET+1)-ZSTAR(IET)) / DELTAZ 
         ELSE 
           DZ(IPLOT) = 0.D0 
@@ -1486,7 +1506,6 @@
 ! 
       RETURN 
       END SUBROUTINE SCHAR41
-
 !                       ********************** 
                         SUBROUTINE SCHAR41_PER 
 !                       ********************** 
@@ -1614,6 +1633,8 @@
       DATA EPSILO / -1.D-6 / 
       DATA EPSDZ  /1.D-4/ 
 ! 
+      ETA1(NPLAN)=1
+!
 !----------------------------------------------------------------------- 
 !     FOR EVERY POINT 
 !----------------------------------------------------------------------- 
@@ -1724,28 +1745,26 @@
 !
         IEL = ELT(IPLOT) 
         IET = ETA(IPLOT) 
-!!  PERIODICITY IETP1 REPLACES IET+1 (BUT NOT ALWAYS)
-        IETP1=IET+1
-!       THIS CAN ONLY HAPPEN WITH PERIODICITY, OTHERWISE TOP AND BOTTOM
-!       CANNOT BE TRESPASSED
-        IF(IET.EQ.NPLAN) IETP1=1 
+!!      PERIODICITY IETP1 REPLACES IET+1 (BUT NOT ALWAYS)
+        IETP1=ETA1(IET)
+!
         I1 = IKLE2(IEL,1) 
         I2 = IKLE2(IEL,2) 
         I3 = IKLE2(IEL,3) 
 ! 
-        DX(IPLOT) = ( U(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + U(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + U(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + U(I1,IETP1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &              + U(I2,IETP1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &              + U(I3,IETP1)*SHP(3,IPLOT)*SHZ(IPLOT) ) * PAS 
+        DX(IPLOT) = ((U(I1,IET  )*SHP(1,IPLOT)
+     &              + U(I2,IET  )*SHP(2,IPLOT) 
+     &              + U(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &              +(U(I1,IETP1)*SHP(1,IPLOT) 
+     &              + U(I2,IETP1)*SHP(2,IPLOT) 
+     &              + U(I3,IETP1)*SHP(3,IPLOT))*SHZ(IPLOT) )*PAS 
 ! 
-        DY(IPLOT) = ( V(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + V(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + V(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &              + V(I1,IETP1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &              + V(I2,IETP1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &              + V(I3,IETP1)*SHP(3,IPLOT)*SHZ(IPLOT) ) * PAS 
+        DY(IPLOT) = ((V(I1,IET  )*SHP(1,IPLOT) 
+     &              + V(I2,IET  )*SHP(2,IPLOT) 
+     &              + V(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &              +(V(I1,IETP1)*SHP(1,IPLOT) 
+     &              + V(I2,IETP1)*SHP(2,IPLOT) 
+     &              + V(I3,IETP1)*SHP(3,IPLOT))*SHZ(IPLOT) )*PAS 
 !! PERIODICITY, NO DELTA, Z NEVER USED
 !       DELTAZ =  (Z(I1,IET+1)-Z(I1,IET))*SHP(1,IPLOT) 
 !    &          + (Z(I2,IET+1)-Z(I2,IET))*SHP(2,IPLOT) 
@@ -1754,12 +1773,12 @@
 !       IF(DELTAZ.GT.EPSDZ) THEN 
 !         DIVISION BY DELTAZ IS DUE TO THE FACT THAT W IS  
 !         W* MULTIPLIED BY DELTAZ (IT STEMS FROM TRIDW2 IN TELEMAC3D) 
-          DZ(IPLOT) = ( W(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &                + W(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &                + W(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
-     &                + W(I1,IETP1)*SHP(1,IPLOT)*SHZ(IPLOT) 
-     &                + W(I2,IETP1)*SHP(2,IPLOT)*SHZ(IPLOT) 
-     &                + W(I3,IETP1)*SHP(3,IPLOT)*SHZ(IPLOT) )
+          DZ(IPLOT) = ((W(I1,IET  )*SHP(1,IPLOT)
+     &                + W(I2,IET  )*SHP(2,IPLOT) 
+     &                + W(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &                +(W(I1,IETP1)*SHP(1,IPLOT)
+     &                + W(I2,IETP1)*SHP(2,IPLOT) 
+     &                + W(I3,IETP1)*SHP(3,IPLOT))*SHZ(IPLOT))
 !! PERIODICITY, PAS DE DELTAZ 
 !    &                * PAS * (ZSTAR(IET+1)-ZSTAR(IET)) / DELTAZ   
      &                * PAS 
@@ -2134,18 +2153,18 @@
      &                      + V(I2,IET2)*SHP(2,IPLOT) 
      &                      + V(I3,IET2)*SHP(3,IPLOT) ) * PAS2 
 ! 
-                DELTAZ =  (Z(I1,IET+1)-Z(I1,IET))*SHP(1,IPLOT) 
-     &                  + (Z(I2,IET+1)-Z(I2,IET))*SHP(2,IPLOT) 
-     &                  + (Z(I3,IET+1)-Z(I3,IET))*SHP(3,IPLOT) 
+!               DELTAZ =  (Z(I1,IET+1)-Z(I1,IET))*SHP(1,IPLOT) 
+!    &                  + (Z(I2,IET+1)-Z(I2,IET))*SHP(2,IPLOT) 
+!    &                  + (Z(I3,IET+1)-Z(I3,IET))*SHP(3,IPLOT) 
 ! 
-                IF(DELTAZ.GT.EPSDZ) THEN 
+!               IF(DELTAZ.GT.EPSDZ) THEN 
                   DZ(IPLOT) = ( W(I1,IET2)*SHP(1,IPLOT) 
      &                        + W(I2,IET2)*SHP(2,IPLOT) 
      &                        + W(I3,IET2)*SHP(3,IPLOT) ) * PAS2 
-     &                        * (ZSTAR(IET+1)-ZSTAR(IET)) / DELTAZ 
-                ELSE 
-                  DZ(IPLOT) = 0.D0 
-                ENDIF 
+!    &                        * (ZSTAR(IET+1)-ZSTAR(IET)) / DELTAZ 
+!               ELSE 
+!                 DZ(IPLOT) = 0.D0 
+!               ENDIF 
 ! 
                 XP = XP + DX(IPLOT) 
                 YP = YP + DY(IPLOT) 
@@ -2196,6 +2215,10 @@
 ! 
         ENDDO 
       ENDDO 
+!
+!     RESTORING ORIGINAL ETA1
+!
+      ETA1(NPLAN)=NPLAN+1
 ! 
 !----------------------------------------------------------------------- 
 ! 
@@ -2334,6 +2357,8 @@
       DATA EPSILO / -1.D-6 / 
       DATA EPSDZ  /1.D-4/ 
 !   
+      ETA1(NPLAN)=1
+! 
 !----------------------------------------------------------------------- 
 !     FOR EVERY POINT 
 !----------------------------------------------------------------------- 
@@ -2400,64 +2425,64 @@
          I3 = IKLE2(IEL,3) 
 !        HERE IET+1 IS ALWAYS < NPLAN+1 (SEE GTSH41) 
          DXP =(1.D0-SHF(IPLOT))*
-     &          ( U(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + U(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + U(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + U(I1,IET+1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + U(I2,IET+1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + U(I3,IET+1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((U(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &          + U(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &          + U(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(U(I1,IET+1,IFR)*SHP(1,IPLOT)
+     &          + U(I2,IET+1,IFR)*SHP(2,IPLOT)
+     &          + U(I3,IET+1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &          ( U(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + U(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + U(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + U(I1,IET+1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + U(I2,IET+1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + U(I3,IET+1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((U(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &          + U(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &          + U(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(U(I1,IET+1,IFR+1)*SHP(1,IPLOT)
+     &          + U(I2,IET+1,IFR+1)*SHP(2,IPLOT)
+     &          + U(I3,IET+1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT))
 !
          DYP =(1.D0-SHF(IPLOT))*
-     &          ( V(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + V(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + V(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + V(I1,IET+1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + V(I2,IET+1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + V(I3,IET+1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((V(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &          + V(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &          + V(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(V(I1,IET+1,IFR)*SHP(1,IPLOT)
+     &          + V(I2,IET+1,IFR)*SHP(2,IPLOT)
+     &          + V(I3,IET+1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &          ( V(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + V(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + V(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + V(I1,IET+1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + V(I2,IET+1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + V(I3,IET+1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((V(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &          + V(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &          + V(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(V(I1,IET+1,IFR+1)*SHP(1,IPLOT)
+     &          + V(I2,IET+1,IFR+1)*SHP(2,IPLOT)
+     &          + V(I3,IET+1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT))
 !
          DZP =(1.D0-SHF(IPLOT))*
-     &          ( W(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + W(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + W(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + W(I1,IET+1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + W(I2,IET+1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + W(I3,IET+1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((W(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &          + W(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &          + W(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(W(I1,IET+1,IFR)*SHP(1,IPLOT)
+     &          + W(I2,IET+1,IFR)*SHP(2,IPLOT)
+     &          + W(I3,IET+1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &          ( W(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + W(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + W(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + W(I1,IET+1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + W(I2,IET+1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + W(I3,IET+1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((W(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &          + W(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &          + W(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(W(I1,IET+1,IFR+1)*SHP(1,IPLOT)
+     &          + W(I2,IET+1,IFR+1)*SHP(2,IPLOT)
+     &          + W(I3,IET+1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT))
 !
          DFP =(1.D0-SHF(IPLOT))*
-     &          ( F(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + F(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + F(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + F(I1,IET+1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + F(I2,IET+1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + F(I3,IET+1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((F(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &          + F(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &          + F(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(F(I1,IET+1,IFR)*SHP(1,IPLOT)
+     &          + F(I2,IET+1,IFR)*SHP(2,IPLOT)
+     &          + F(I3,IET+1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &          ( F(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + F(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + F(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &          + F(I1,IET+1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &          + F(I2,IET+1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &          + F(I3,IET+1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &          ((F(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &          + F(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &          + F(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &          +(F(I1,IET+1,IFR+1)*SHP(1,IPLOT)
+     &          + F(I2,IET+1,IFR+1)*SHP(2,IPLOT)
+     &          + F(I3,IET+1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT))
 !
          NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL))))
          NSP=MAX(NSP,INT(NRK*DT*ABS(DZP/(ZSTAR(IET+1)-ZSTAR(IET)))))
@@ -2495,74 +2520,71 @@
         IEL = ELT(IPLOT) 
         IET = ETA(IPLOT) 
         IFR = FRE(IPLOT)
-!!  PERIODICITY IETP1 REPLACES IET+1 (BUT NOT ALWAYS)
-        IETP1=IET+1
-!       THIS CAN ONLY HAPPEN WITH PERIODICITY, OTHERWISE TOP AND BOTTOM
-!       CANNOT BE TRESPASSED
-        IF(IET.EQ.NPLAN) IETP1=1 
+!!      PERIODICITY IETP1 REPLACES IET+1 (BUT NOT ALWAYS)
+        IETP1=ETA1(IET)
         I1 = IKLE2(IEL,1) 
         I2 = IKLE2(IEL,2) 
         I3 = IKLE2(IEL,3) 
 !
          DX(IPLOT) = ( (1.D0-SHF(IPLOT))*
-     &      ( U(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + U(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + U(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + U(I1,IETP1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + U(I2,IETP1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + U(I3,IETP1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &      ((U(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &      + U(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &      + U(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(U(I1,IETP1,IFR)*SHP(1,IPLOT)
+     &      + U(I2,IETP1,IFR)*SHP(2,IPLOT)
+     &      + U(I3,IETP1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &      ( U(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + U(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + U(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + U(I1,IETP1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + U(I2,IETP1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + U(I3,IETP1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT)) )*PAS
+     &      ((U(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &      + U(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &      + U(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(U(I1,IETP1,IFR+1)*SHP(1,IPLOT)
+     &      + U(I2,IETP1,IFR+1)*SHP(2,IPLOT)
+     &      + U(I3,IETP1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT)))*PAS
 !
          DY(IPLOT) = ( (1.D0-SHF(IPLOT))*
-     &      ( V(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + V(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + V(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + V(I1,IETP1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + V(I2,IETP1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + V(I3,IETP1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &      ((V(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &      + V(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &      + V(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(V(I1,IETP1,IFR)*SHP(1,IPLOT)
+     &      + V(I2,IETP1,IFR)*SHP(2,IPLOT)
+     &      + V(I3,IETP1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &      ( V(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + V(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + V(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + V(I1,IETP1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + V(I2,IETP1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + V(I3,IETP1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT)) )*PAS
+     &      ((V(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &      + V(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &      + V(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(V(I1,IETP1,IFR+1)*SHP(1,IPLOT)
+     &      + V(I2,IETP1,IFR+1)*SHP(2,IPLOT)
+     &      + V(I3,IETP1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT)))*PAS
 !
          DZ(IPLOT) = ( (1.D0-SHF(IPLOT))*
-     &      ( W(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + W(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + W(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + W(I1,IETP1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + W(I2,IETP1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + W(I3,IETP1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &      ((W(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &      + W(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &      + W(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(W(I1,IETP1,IFR)*SHP(1,IPLOT)
+     &      + W(I2,IETP1,IFR)*SHP(2,IPLOT)
+     &      + W(I3,IETP1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &      ( W(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + W(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + W(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + W(I1,IETP1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + W(I2,IETP1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + W(I3,IETP1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT)) )*PAS
+     &      ((W(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &      + W(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &      + W(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(W(I1,IETP1,IFR+1)*SHP(1,IPLOT)
+     &      + W(I2,IETP1,IFR+1)*SHP(2,IPLOT)
+     &      + W(I3,IETP1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT)))*PAS
 !
          DF(IPLOT) = ( (1.D0-SHF(IPLOT))*
-     &      ( F(I1,IET  ,IFR)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + F(I2,IET  ,IFR)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + F(I3,IET  ,IFR)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + F(I1,IETP1,IFR)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + F(I2,IETP1,IFR)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + F(I3,IETP1,IFR)*SHP(3,IPLOT)*SHZ(IPLOT))
+     &      ((F(I1,IET  ,IFR)*SHP(1,IPLOT)
+     &      + F(I2,IET  ,IFR)*SHP(2,IPLOT)
+     &      + F(I3,IET  ,IFR)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(F(I1,IETP1,IFR)*SHP(1,IPLOT)
+     &      + F(I2,IETP1,IFR)*SHP(2,IPLOT)
+     &      + F(I3,IETP1,IFR)*SHP(3,IPLOT))*SHZ(IPLOT))
      &        + SHF(IPLOT)*
-     &      ( F(I1,IET  ,IFR+1)*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + F(I2,IET  ,IFR+1)*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + F(I3,IET  ,IFR+1)*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT))
-     &      + F(I1,IETP1,IFR+1)*SHP(1,IPLOT)*SHZ(IPLOT)
-     &      + F(I2,IETP1,IFR+1)*SHP(2,IPLOT)*SHZ(IPLOT)
-     &      + F(I3,IETP1,IFR+1)*SHP(3,IPLOT)*SHZ(IPLOT)) )*PAS
+     &      ((F(I1,IET  ,IFR+1)*SHP(1,IPLOT)
+     &      + F(I2,IET  ,IFR+1)*SHP(2,IPLOT)
+     &      + F(I3,IET  ,IFR+1)*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT))
+     &      +(F(I1,IETP1,IFR+1)*SHP(1,IPLOT)
+     &      + F(I2,IETP1,IFR+1)*SHP(2,IPLOT)
+     &      + F(I3,IETP1,IFR+1)*SHP(3,IPLOT))*SHZ(IPLOT)) )*PAS
 ! 
         XP = XPLOT(IPLOT) + DX(IPLOT) 
         YP = YPLOT(IPLOT) + DY(IPLOT) 
@@ -2914,7 +2936,11 @@
         ENDIF
 ! 
         ENDDO 
-      ENDDO 
+      ENDDO
+!
+!     RESTORING ORIGINAL ETA1
+!
+      ETA1(NPLAN)=NPLAN+1 
 ! 
 !----------------------------------------------------------------------- 
 ! 
@@ -4805,6 +4831,295 @@
 ! 
       RETURN  
       END SUBROUTINE SCARACT 
+!                    **********************
+                     SUBROUTINE BIEF_INTERP
+!                    **********************
+!
+     &( U , UTILD , SHP , NDP , SHZ , ETA , SHF , FRE , ELT , NP , 
+     &  NPOIN2 , NPLAN , IELM , IKLE , NELMAX , PERIO , YA4D )
+!
+!***********************************************************************
+! BIEF   V6P3                                   21/08/2010
+!***********************************************************************
+!
+!brief    INTERPOLATES THE VALUES OF A FUNCTION AT SOME OF THE
+!+                MESH NODES ACCORDING TO THE BARYCENTRIC COORDINATES
+!+                OF THE POINTS AND THE VALUES AT THE NODES OF THE
+!+                FUNCTION.
+!
+!warning  DOES NOT WORK IF THE PROVIDED BARYCENTRIC COORDINATES
+!+            DO NOT CORRESPOND TO THE ELEMENT OF THE FUNCTION
+!warning  ELEMENTS OTHER THAN 11, 21 AND 41 ARE NOT IMPLEMENTED
+!
+!history  J-M JANIN (LNH)
+!+        28/04/93
+!+        V5P1
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        20/06/2012
+!+        V6P2
+!+   Adding Quasi-bubble interpolation
+!
+!history  J-M HERVOUET (LNHE)
+!+        16/10/2012
+!+        V6P3
+!+   Adding interpolation with periodicity and 4D.
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ELT            |-->| 2D ELEMENT AT THE FOOT OF CHARACTERISTIC LINES.
+!| ETA            |-->| LAYER NUMBER AT THE FOOT OF CHARACTERISTIC LINES.
+!| IELM           |-->| TYPE OF ELEMENT.
+!| IKLE           |-->| CONNECTIVITY TABLE.
+!| NDP            |-->| NUMBER OF POINTS PER ELEMENT FOR U.
+!| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NP             |-->| NOMBER OF POINTS TO BE INTERPOLATED.
+!| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D
+!| SHP            |-->| 2D BARYCENTRIC COORDINATES AT THE FOOT OF
+!|                |   | CHARACTERISTIC LINES.
+!| SHZ            |-->| BARYCENTRIC COORDINATES ALONG Z AT THE FOOT OF
+!|                |   | CHARACTERISTIC LINES (FOR TELEMAC-3D)
+!| U              |-->| VALUES AT NODES FOR INTERPOLATION.
+!| UTILD          |<--| INTERPOLATED VALUES.
+!| YA4D           |-->| IF YES, 4 DIMENSIONS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: NP,NELMAX,NPLAN,NPOIN2,NDP,IELM
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,*),ELT(NP),ETA(NP),FRE(NP)
+!
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN,*)
+      DOUBLE PRECISION, INTENT(IN)    :: SHP(NDP,NP),SHZ(NP),SHF(NP)
+      DOUBLE PRECISION, INTENT(INOUT) :: UTILD(NP)
+      LOGICAL, INTENT(IN)             :: PERIO,YA4D
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IP,ETAP1,I1,I2,I3,IFR
+      DOUBLE PRECISION SHP11,SHP12,SHP14
+      DOUBLE PRECISION SHP22,SHP23,SHP24
+      DOUBLE PRECISION SHP33,SHP31,SHP34,UMSHZ,UMSHF
+!
+!     SHOULD BE SAME EPSILO THAN SCHAR11
+      DOUBLE PRECISION EPSILO
+      DATA EPSILO / 1.D-6 /
+!
+!-----------------------------------------------------------------------
+!
+      IF(IELM.EQ.11) THEN
+!
+!    P1 TRIANGLES
+!    ============
+!
+      DO IP = 1 , NP
+         UTILD(IP) = U(IKLE(ELT(IP),1),1,1) * SHP(1,IP)
+     &             + U(IKLE(ELT(IP),2),1,1) * SHP(2,IP)
+     &             + U(IKLE(ELT(IP),3),1,1) * SHP(3,IP)
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      ELSEIF(IELM.EQ.12) THEN
+!
+!    QUASI-BUBBLE TRIANGLES
+!    ======================
+!
+      DO IP = 1 , NP
+!
+!        BARYCENTRIC COORDINATES OF SUB-TRIANGLES AS A FUNCTION OF
+!        BARYCENTRIC COORDINATES OF THE ORIGINAL TRIANGLE
+!        (A NICE GEOMETRY PROBLEM...)
+!
+         SHP11=SHP(1,IP)-SHP(3,IP)
+         SHP12=SHP(2,IP)-SHP(3,IP)
+         SHP14=3.D0*SHP(3,IP)
+         SHP22=SHP(2,IP)-SHP(1,IP)
+         SHP23=SHP(3,IP)-SHP(1,IP)
+         SHP24=3.D0*SHP(1,IP)
+         SHP33=SHP(3,IP)-SHP(2,IP)
+         SHP31=SHP(1,IP)-SHP(2,IP)
+         SHP34=3.D0*SHP(2,IP)
+!
+!        FINDING IN WHICH SUB-TRIANGLE WE ARE
+!
+!        IF(     SHP11.GT.0.D0 .AND. SHP11.LT.1.D0 .AND.
+!    &           SHP12.GT.0.D0 .AND. SHP12.LT.1.D0 .AND.
+!    &           SHP14.GT.0.D0 .AND. SHP14.LT.1.D0 ) THEN
+!          UTILD(IP) = U(IKLE(ELT(IP),1),1,1) * SHP11
+!    &               + U(IKLE(ELT(IP),2),1,1) * SHP12
+!    &               + U(IKLE(ELT(IP),4),1,1) * SHP14
+!        ELSEIF( SHP22.GT.0.D0 .AND. SHP22.LT.1.D0 .AND.
+!    &           SHP23.GT.0.D0 .AND. SHP23.LT.1.D0 .AND.
+!    &           SHP24.GT.0.D0 .AND. SHP24.LT.1.D0 ) THEN
+!          UTILD(IP) = U(IKLE(ELT(IP),2),1,1) * SHP22
+!    &               + U(IKLE(ELT(IP),3),1,1) * SHP23
+!    &               + U(IKLE(ELT(IP),4),1,1) * SHP24
+!        ELSEIF( SHP33.GT.0.D0 .AND. SHP33.LT.1.D0 .AND.
+!    &           SHP31.GT.0.D0 .AND. SHP31.LT.1.D0 .AND.
+!    &           SHP34.GT.0.D0 .AND. SHP34.LT.1.D0 ) THEN
+!          UTILD(IP) = U(IKLE(ELT(IP),3),1,1) * SHP33
+!    &               + U(IKLE(ELT(IP),1),1,1) * SHP31
+!    &               + U(IKLE(ELT(IP),4),1,1) * SHP34
+!
+!        OPTIMISED VERSION WITH TRUNCATION ERRORS
+!        SHP14, SHP24 AND SHP34 POSITIVITY ALREADY ENSURED
+!
+         IF(     SHP11.GT.    -2.D0*EPSILO .AND. 
+     &           SHP11.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP12.GT.    -2.D0*EPSILO .AND. 
+     &           SHP12.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP14.LT.1.D0+4.D0*EPSILO ) THEN
+           UTILD(IP) = U(IKLE(ELT(IP),1),1,1) * SHP11
+     &               + U(IKLE(ELT(IP),2),1,1) * SHP12
+     &               + U(IKLE(ELT(IP),4),1,1) * SHP14
+         ELSEIF( SHP22.GT.    -2.D0*EPSILO .AND. 
+     &           SHP22.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP23.GT.    -2.D0*EPSILO .AND. 
+     &           SHP23.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP24.LT.1.D0+4.D0*EPSILO ) THEN
+           UTILD(IP) = U(IKLE(ELT(IP),2),1,1) * SHP22
+     &               + U(IKLE(ELT(IP),3),1,1) * SHP23
+     &               + U(IKLE(ELT(IP),4),1,1) * SHP24
+         ELSEIF( SHP33.GT.    -2.D0*EPSILO .AND. 
+     &           SHP33.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP31.GT.    -2.D0*EPSILO .AND. 
+     &           SHP31.LT.1.D0+4.D0*EPSILO .AND.
+     &           SHP34.LT.1.D0+4.D0*EPSILO ) THEN
+           UTILD(IP) = U(IKLE(ELT(IP),3),1,1) * SHP33
+     &               + U(IKLE(ELT(IP),1),1,1) * SHP31
+     &               + U(IKLE(ELT(IP),4),1,1) * SHP34
+!
+!        THE FOLLOWING CASE MAY HAPPEN IN PARALLEL
+!        BECAUSE EVEN LOST CHARACTERISTICS ARE INTERPOLATED
+!        AT GENERATION 0
+!
+         ELSEIF(NCSIZE.EQ.0) THEN
+           WRITE(LU,*) 'INTERP: POINT ',IP,' NOT IN ELEMENT ',ELT(IP)
+           WRITE(LU,*) 'SHP(1,IP)=',SHP(1,IP)
+           WRITE(LU,*) 'SHP(2,IP)=',SHP(2,IP)
+           WRITE(LU,*) 'SHP(3,IP)=',SHP(3,IP)
+           WRITE(LU,*) 'EPSILO=',EPSILO,' IPID=',IPID
+           CALL PLANTE(1)
+           STOP
+         ENDIF
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+      ELSEIF(IELM.EQ.13) THEN
+!
+!    P2 TRIANGLES
+!    ============
+!
+      DO IP = 1 , NP
+         UTILD(IP) = U(IKLE(ELT(IP),1),1,1) *
+     &               (2.D0*SHP(1,IP)-1.D0)* SHP(1,IP)
+     &             + U(IKLE(ELT(IP),2),1,1) *
+     &               (2.D0*SHP(2,IP)-1.D0)* SHP(2,IP)
+     &             + U(IKLE(ELT(IP),3),1,1) *
+     &               (2.D0*SHP(3,IP)-1.D0)* SHP(3,IP)
+     &             + U(IKLE(ELT(IP),4),1,1) * 4.D0 * SHP(1,IP)*SHP(2,IP)
+     &             + U(IKLE(ELT(IP),5),1,1) * 4.D0 * SHP(2,IP)*SHP(3,IP)
+     &             + U(IKLE(ELT(IP),6),1,1) * 4.D0 * SHP(3,IP)*SHP(1,IP)
+      ENDDO
+!
+!------------------------------------------------------------------------
+!
+      ELSEIF(IELM.EQ.41) THEN
+!
+      IF(PERIO) ETA1(NPLAN)=1
+!
+!    TELEMAC-3D PRISMS
+!    =====================
+!
+      IF(PERIO) THEN 
+        IF(YA4D) THEN
+          DO IP = 1 , NP
+            I1=IKLE(ELT(IP),1)
+            I2=IKLE(ELT(IP),2)
+            I3=IKLE(ELT(IP),3)
+            UMSHZ=1.D0-SHZ(IP)
+            UMSHF=1.D0-SHF(IP)
+            ETAP1=ETA1(ETA(IP))
+            IFR=FRE(IP)
+            UTILD(IP) =   UMSHF *
+     &        ((U(I1,ETA(IP),IFR  ) * SHP(1,IP)
+     &        + U(I2,ETA(IP),IFR  ) * SHP(2,IP)
+     &        + U(I3,ETA(IP),IFR  ) * SHP(3,IP)) * UMSHZ
+     &       +( U(I1,ETAP1  ,IFR  ) * SHP(1,IP)
+     &        + U(I2,ETAP1  ,IFR  ) * SHP(2,IP)
+     &        + U(I3,ETAP1  ,IFR  ) * SHP(3,IP)) * SHZ(IP) )
+     &                 + SHF(IP) *
+     &        ((U(I1,ETA(IP),IFR+1) * SHP(1,IP)
+     &        + U(I2,ETA(IP),IFR+1) * SHP(2,IP)
+     &        + U(I3,ETA(IP),IFR+1) * SHP(3,IP)) * UMSHZ
+     &       +( U(I1,ETAP1  ,IFR+1) * SHP(1,IP)
+     &        + U(I2,ETAP1  ,IFR+1) * SHP(2,IP)
+     &        + U(I3,ETAP1  ,IFR+1) * SHP(3,IP)) * SHZ(IP) )
+          ENDDO 
+        ELSE     
+          DO IP = 1 , NP
+            ETAP1=ETA1(ETA(IP))
+            UTILD(IP) =
+     &       (U(IKLE(ELT(IP),1),ETA(IP),1)*SHP(1,IP) 
+     &       +U(IKLE(ELT(IP),2),ETA(IP),1)*SHP(2,IP) 
+     &       +U(IKLE(ELT(IP),3),ETA(IP),1)*SHP(3,IP))*(1.D0-SHZ(IP))
+     &     + (U(IKLE(ELT(IP),1),ETAP1,1)  *SHP(1,IP) 
+     &       +U(IKLE(ELT(IP),2),ETAP1,1)  *SHP(2,IP) 
+     &       +U(IKLE(ELT(IP),3),ETAP1,1)  *SHP(3,IP))*SHZ(IP)
+          ENDDO
+        ENDIF
+      ELSE
+        DO IP = 1 , NP
+          UTILD(IP) =
+     &    ( U(IKLE(ELT(IP),1),ETA(IP),1)   * SHP(1,IP) 
+     &    + U(IKLE(ELT(IP),2),ETA(IP),1)   * SHP(2,IP)
+     &    + U(IKLE(ELT(IP),3),ETA(IP),1)   * SHP(3,IP) ) *(1.D0-SHZ(IP))
+     &  + ( U(IKLE(ELT(IP),1),ETA(IP)+1,1) * SHP(1,IP) 
+     &    + U(IKLE(ELT(IP),2),ETA(IP)+1,1) * SHP(2,IP) 
+     &    + U(IKLE(ELT(IP),3),ETA(IP)+1,1) * SHP(3,IP) ) * SHZ(IP)
+        ENDDO
+      ENDIF
+!
+!     RESTORING THE ORIGINAL ETA1
+      IF(PERIO) ETA1(NPLAN)=NPLAN+1
+!
+!-----------------------------------------------------------------------
+!
+      ELSE
+!
+        IF(LNG.EQ.1) WRITE(LU,11) IELM
+        IF(LNG.EQ.2) WRITE(LU,12) IELM
+11      FORMAT(1X,'BIEF_INTERP : TYPE D''ELEMENT INCONNU : ',I6)
+12      FORMAT(1X,'BIEF_INTERP : UNKNOWN TYPE OF ELEMENT : ',I6)
+        CALL PLANTE(1)
+        STOP
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END SUBROUTINE BIEF_INTERP
 !                       ********************** 
                         SUBROUTINE POST_INTERP
 !                       ********************** 

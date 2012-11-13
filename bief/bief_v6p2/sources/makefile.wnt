@@ -76,7 +76,7 @@ goup1.f      gracjg.f       gradp.f       gregtim.f     gsebe.f   \
 gtsh11.f     gtsh31.f       gtsh41.f      hloc.f        hvf.f ielbor.f  \
 impvec.f     inbief.f       inclu2.f      inclus.f  \
 infcel.f     inpoly.f  \
-bief_interp.f     invmtx.f       jultim.f      kspg11.f   ksupg.f   \
+invmtx.f     jultim.f       kspg11.f   ksupg.f   \
 latitu.f     leclim.f       lit.f         litenr.f   lubksb.f   ludcmp.f  lump.f  make_eltcar.f  maskbd.f \
 masktf.f     maskto.f       matrbl.f      matrix.f   matriy.f  \
 matvct.f     matvec.f       maxi.f        mer11.f   \
