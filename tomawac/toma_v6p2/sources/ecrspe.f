@@ -81,11 +81,9 @@
       USE TOMAWAC_MPI_TOOLS
 !
       IMPLICIT NONE
-      COMMON/ECRSPE_MPI/SPE_SEND
-      INTEGER ::SPE_SEND
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  NPOIN2, NLEO  , NSCO  , NF , NK , NPLAN
       INTEGER  NOLEO(NLEO)   , INUTIL(1)
       INTEGER  DATE(3),TIME(3)
@@ -93,13 +91,15 @@
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF) , TETA(NPLAN), FREQ(NF)
       DOUBLE PRECISION B(NPOIN2,NPLAN)
       INTEGER  LT
-!
       LOGICAL DEBRES
       CHARACTER*72 TITCAS
       CHARACTER(LEN=*)   BINSCO
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      COMMON/ECRSPE_MPI/SPE_SEND
+      INTEGER ::SPE_SEND
+!
       INTEGER  ISTAT , II    , JF    , K     , IB(10)
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
       INTEGER  IBID(1), NELEM, NPSPE
@@ -156,6 +156,7 @@
 !=====C
 !  1  C FOR THE FIRST PRINTED TIME STEP, WRITES OUT THE HEADER TO THE FILE
 !=====C================================================================
+!
       IF (DEBRES) THEN
 !
 !.......2.1 NAME OF THE VARIABLES
@@ -215,12 +216,15 @@
         ENDDO
         MESHF%NBOR%I=0
         DO II = 1,NPLAN
-           MESHF%NBOR%I(II) = II
+          MESHF%NBOR%I(II) = II
         ENDDO
         DO II = NPLAN+1,2*NPLAN
-           MESHF%NBOR%I(II)=NPLAN+1+NPSPE-II
+          MESHF%NBOR%I(II)=NPLAN+1+NPSPE-II
         ENDDO
         MESHF%KNOLG%I = 0
+        
+!       
+!        
 !BD_INCKA IN PARALLEL MODE, INITIALISES THE VALUES OF MPI PARAMETERS
       IF (NCSIZE.GT.1)         CALL GET_MPI_PARAMETERS(MPI_INTEGER,
      &                          MPI_REAL8,MPI_UB,
@@ -229,7 +233,7 @@
 !BD_INCKA IN PARALLEL MODE, ASSOCIATES THE SUB-DOMAIN NODE NUMBERS
 ! WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
 !
-!       NOTE JMH : DEMANDER A AMELIE LAUGIER SA METHODE ET LA REPRENDRE
+!       NOTE JMH : DEMANDER A AMELIE LAUGEL SA METHODE ET LA REPRENDRE
 !
         IF (NCSIZE.GT.1) THEN
         CALL SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
@@ -243,6 +247,7 @@
         ! THE DATA ARE CREATED IN THE FILE: NRES, AND IS
         ! CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
         ! CONTAINED IN THE FILE.
+!
         CALL CREATE_DATASET(BINSCO, ! RESULTS FILE FORMAT
      &                      NSCO,   ! LU FOR RESULTS FILE
      &                      TITCAS, ! TITLE
@@ -261,14 +266,16 @@
      &                  DATE,   ! START DATE
      &                  TIME,   ! START TIME
      &                  0,0)    ! COORDINATES OF THE ORIGIN.
+!   
         ENDIF
 !
       ENDIF
+!
 !BD_INCKA IN PARALLEL MODE, ASSOCIATES THE SUB-DOMAIN NODE NUMBERS
 ! WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
        IF (NCSIZE.GT.1) THEN
         CALL SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
-     &                           NRECV_LEO)
+     &                    NRECV_LEO)
         CALL TEXTE_SENDRECV(TEXTE,NLEO,NPSPE,ISLEO,NRECV_LEO)
        ENDIF
 !BD_INCKA END OF MODIFICATION
@@ -279,13 +286,22 @@
 !.....3.1 WRITES OUTPUT AT TIME 'AT'
 !     """"""""""""""""""""""""
       AAT(1) = AT
-      ALLOCATE(BVARSOR%ADR(NLEO))
-      DO II=1,NLEO
-        ALLOCATE(BVARSOR%ADR(II)%P)
-        ALLOCATE(BVARSOR%ADR(II)%P%R(NPSPE))
-        BVARSOR%ADR(II)%P%DIM1 = NPSPE
-        BVARSOR%ADR(II)%P%ELM  = 21
-      ENDDO
+!
+!     MODIF JMH 13/11/2012
+!
+      CALL ALLBLO(BVARSOR,'BVARSO')
+      CALL BIEF_ALLVEC_IN_BLOCK(BVARSOR,NLEO,
+     &                          1,'BVAR  ',NPSPE,1,0,MESHF)
+!     ALLOCATE(BVARSOR%ADR(NLEO))
+!     DO II=1,NLEO
+!       ALLOCATE(BVARSOR%ADR(II)%P)
+!       ALLOCATE(BVARSOR%ADR(II)%P%R(NPSPE))
+!       BVARSOR%ADR(II)%P%DIM1 = NPSPE
+!       BVARSOR%ADR(II)%P%ELM  = 21
+!     ENDDO
+!
+!     FIN MODIF JMH 13/11/2012
+!
       DO ILEO=1,NLEO
         II=NOLEO(ILEO)
         DO JF=1,NF
@@ -296,15 +312,17 @@
       ENDDO
 !
 !BD_INCKA MODIFICATION FOR PARALLEL MODE
-      IF (NCSIZE.GT.1) THEN
+!
+      IF(NCSIZE.GT.1) THEN
         CALL BVARSOR_SENDRECV(BVARSOR,NLEO,NPSPE,ISLEO,NRECV_LEO)
-        IF (IPID==0) CALL WRITE_DATA(BINSCO,NSCO,99,AT,LT,SORLEO,TEXTE,
-     &                BVARSOR,NPSPE)
+        IF(IPID==0) CALL WRITE_DATA(BINSCO,NSCO,99,AT,LT,SORLEO,TEXTE,
+     &                              BVARSOR,NPSPE)
       ELSE
         CALL WRITE_DATA(BINSCO,NSCO,99,AT,LT,SORLEO,TEXTE,
-     &                BVARSOR,NPSPE)
+     &                  BVARSOR,NPSPE)
       ENDIF
 !
+!-----------------------------------------------------------------------
 !
       RETURN
       END

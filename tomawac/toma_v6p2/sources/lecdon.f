@@ -292,7 +292,7 @@
           CALL LIT(BDX(1),W,IB,C,1,'R4',NDON,BINDON,ISTAT)
           ATT=BDX(1)
           DO 90 I=1,NVAR
-            IF (I.EQ.ID(1)) THEN
+            IF(I.EQ.ID(1)) THEN
                CALL LIT(UR,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
             ELSEIF (I.EQ.ID(2)) THEN
                CALL LIT(VR,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
@@ -331,12 +331,13 @@
 !     ------------------------------------------------------------------
 !       READS A USER-DEFINED FORMAT
 !     ------------------------------------------------------------------
+!
         IF(CHDON(1:1).EQ.'C') THEN
 !         READS A CURRENT FIELD
               CALL COUUTI
      &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.,0.,0.,0.,
      &     NP,XRELV,YRELV,UR,VR,TRA03,TRA03,TRA03,TRA03,NPMAX)
-        ELSEIF(CHDON(1:1).EQ.'V' .OR. CHDON(1:1).EQ.'W') THEN
+        ELSEIF(CHDON(1:1).EQ.'V'.OR.CHDON(1:1).EQ.'W') THEN
 !         READS A WIND FIELD
           CALL VENUTI
      &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.D0,0.D0,0.D0,0.D0,
@@ -353,7 +354,7 @@
 !
       ELSE
         WRITE(LU,*)'***********************************************'
-        IF (LNG.EQ.1) THEN
+        IF(LNG.EQ.1) THEN
           WRITE(LU,*)'LECDON : INDICATEUR DE FORMAT INCONNU   '
           WRITE(LU,*)'         POUR LE FICHIER DES DONNEES :',INDIC
         ELSE

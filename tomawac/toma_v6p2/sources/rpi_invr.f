@@ -1,6 +1,7 @@
 !                       ******************* 
                         SUBROUTINE RPI_INVR 
-!                       ******************* 
+!                       *******************
+! 
      &( X     , Y     , NEIGB , NB_CLOSE, RK_D , RX_D , RY_D  , RXX_D , 
      &  RYY_D , NPOIN2, I     , QUO   , AC    , MAXNSP, MINDIST ) 
 ! 
@@ -45,8 +46,8 @@
 !     VARIABLES IN ARGUMENT 
 !     
       INTEGER NPOIN2, MAXNSP, I 
-      INTEGER NEIGB(NPOIN2,MAXNSP), NB_CLOSE(NPOIN2) 
-       
+      INTEGER NEIGB(NPOIN2,MAXNSP),NB_CLOSE(NPOIN2) 
+!       
       DOUBLE PRECISION QUO, AC 
       DOUBLE PRECISION X(NPOIN2), Y(NPOIN2) 
       DOUBLE PRECISION MINDIST(NPOIN2)        

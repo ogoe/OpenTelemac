@@ -41,7 +41,8 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-!COUPLAGE Telemac-Tomawac : variables de la liste d'arguments en appel
+!     COUPLAGE Telemac-Tomawac : variables de la liste d'arguments en appel
+!
       INTEGER,           INTENT(IN)      :: PART,NIT_TEL,PERCOU_WAC
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
       TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
@@ -64,16 +65,13 @@
 !     TV2 TEMPS CORRESPONDANT AU VENT 2
 !
       DOUBLE PRECISION LAMBD0,C,Z(1),DEUPI,DTSI
-      DOUBLE PRECISION AT    ,TV1,TV2,TC1,TC2,TM1,TM2
-      DOUBLE PRECISION VITVEN, VITMIN
-      INTEGER  ADC , MDC , JDC , HDC, NVHMA,NVCOU
-      INTEGER NBD
+      DOUBLE PRECISION AT,TV1,TV2,TC1,TC2,TM1,TM2
+      DOUBLE PRECISION VITVEN,VITMIN
+      INTEGER  ADC , MDC , JDC , HDC, NVHMA,NVCOU,NBD,K
       LOGICAL IMPRES, DEBRES
 !
       INTEGER, ALLOCATABLE :: QINDI(:)
-!V6P1 Variable declaree localement pour les termes source
-      INTEGER K
-!Fin V6P1
+!
       LOGICAL DEJA
       DATA DEJA/.FALSE./
 !
@@ -94,6 +92,7 @@
 !=====C======================================
 !COUPLAGE : verification des conditions pour le couplage
 !           TELEMAC-TOMAWAC
+!
       IF(PART.GE.0) THEN
         IF(MAREE.OR.COUSTA.OR.DONTEL) THEN
            IF(LNG.EQ.1) THEN
@@ -260,9 +259,9 @@
 ! LECTURE DE LA COTE DU FOND (ZF) SUR LE FICHIER DE GEOMETRIE
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FONSTR'
-      CALL FONSTR (ST1,SZF,ST2,ST3,WAC_FILES(WACGEO)%LU,
-     &             WAC_FILES(WACFON)%LU,WAC_FILES(WACFON)%NAME,MESH,
-     &             1.D0,.TRUE.)
+      CALL FONSTR(ST1,SZF,ST2,ST3,WAC_FILES(WACGEO)%LU,
+     &            WAC_FILES(WACFON)%LU,WAC_FILES(WACFON)%NAME,MESH,
+     &            1.D0,.TRUE.)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FONSTR'
 !
 ! CORRECTION EVENTUELLE DES VALEURS DU FOND (OU CALCUL DU FOND SI CELA
@@ -271,13 +270,14 @@
 ! DE TOMAWAC).
 ! DANS LE CAS DE COUPLAGE AVEC TELEMAC, ON LIT LE FOND A PARTIR DU
 ! MODELE TELEMAC ET CORFON N EST PAS UTILISE
+!
       IF(PART.LT.0)THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORFON'
         CALL CORFON
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORFON'
       ENDIF
 !
-!.....CALCUL DE LA PROFONDEUR D'EAU (TABLEAU DEPTH)
+!     CALCUL DE LA PROFONDEUR D'EAU (TABLEAU DEPTH)
 !
       DO IP=1,NPOIN2
         DEPTH(IP)=ZREPOS-ZF(IP)
@@ -369,7 +369,7 @@
 !  3  C UTILISATION (EVENTUELLE) DE LA VARIABLE TELEMAC.
 !=====C=================================================
 !COUPLAGE
-!      IF (DONTEL) THEN
+!      
       IF (DONTEL.AND.PART.LT.0) THEN
 !Fin COUPLAGE
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE VARTEL'
@@ -388,14 +388,14 @@
              WRITE(LU,*) ' ! PROFONDEUR NEGATIVE ! '
              WRITE(LU,*) '   ARRET DU PROGRAMME    '
              WRITE(LU,*) '*************************'
-             CALL PLANTE(0)
+             CALL PLANTE(1)
            ELSE
              WRITE(LU,*) ''
              WRITE(LU,*) '**************************'
              WRITE(LU,*) ' ! NEGATIVE WATER DEPTH ! '
              WRITE(LU,*) '   END OF THE COMPUTATION '
              WRITE(LU,*) '**************************'
-             CALL PLANTE(0)
+             CALL PLANTE(1)
            ENDIF
          ENDIF
       ENDDO
@@ -455,8 +455,7 @@
 !
 !.....5.1 INITIALISATION DE LA CONTRAINTE DE HOULE INITIALE.
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""
-      CALL OV ( 'X=C     ' ,STRA41%R, STRA32%R , STRA33%R,
-     &                      0.D0 , NPOIN2 )
+      CALL OV ('X=C     ',STRA41%R,STRA32%R,STRA33%R,0.D0,NPOIN2)
 !
 !.....5.2 CALCUL DE U* ET Z0 SELON LA METHODE CONSIDEREE.
 !     """""""""""""""""""""""""""""""""""""""""""""""""""

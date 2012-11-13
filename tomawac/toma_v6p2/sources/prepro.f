@@ -8,7 +8,7 @@
      &  DEPTH , DZHDT , DZX   , DZY   , U     , V     , DUX   , DUY   ,
      &  DVX   , DVY   , XK    , CG    , COSF  , TGF   , ITR01 , NPOIN3,
      &  NPOIN2, NELEM2, NPLAN , NF    , SURDET, COURAN, SPHE  ,
-     &  PROINF, PROMIN, MESH  , MESH3D,SIKLE2,TB,IELM3, DIFFRA, ISUB)
+     &  PROINF, PROMIN, MESH  , MESH3D, SIKLE2, TB,IELM3, DIFFRA, ISUB)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   25/06/2012
@@ -156,17 +156,19 @@
       INTEGER          NARRSUM,IFF
       TYPE(BIEF_OBJ) :: BID
 !
+!     JUST FOR CALL INIPIE FOR DIFFRACTION, TO BE REMOVED
+!
       INTEGER,DIMENSION(:,:,:), ALLOCATABLE :: GOODELT
-      DOUBLE PRECISION,DIMENSION(:,:), ALLOCATABLE :: TES
+!
       LOGICAL DEJA
       DATA DEJA/.FALSE./
+!
       SAVE
 !
 !----------------------------------------------------------------------
 !
       IF(.NOT.DEJA) THEN
         ALLOCATE(GOODELT(NPOIN2,NPLAN,NF))
-        ALLOCATE(TES(NPOIN2,NPLAN))
         DEJA=.TRUE.
       ENDIF
 !
@@ -224,6 +226,14 @@
      &                .TRUE.)
 !    
       ELSE
+!
+          CALL INIPIE
+     &( CX%R,CY%R,CT%R,X,Y,
+     &  SHP%ADR(JF)%P%R,
+     &  SHZ%ADR(JF)%P%R,
+     &  ELT(1,JF),ETA(1,JF),
+     &  TRA01,TRA01(1,2),TRA01(1,3),TETA%R,IKLE2,NPOIN2,NELEM2,NPLAN,
+     &  ITR01,ITR01,ITR01,NELEM2,NPOIN2,IFABOR,GOODELT(1,1,JF))
 !
           CALL MPOINT
      &  (CX%R,CY%R,CT%R,

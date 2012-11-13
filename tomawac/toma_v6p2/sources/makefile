@@ -108,13 +108,13 @@ foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
 fsprd2.f fsprd3.f \
 gammln.f gauleg.f grad_alfa.f grad_ccg.f grad_d.f grad_kon.f \
 homere_tomawac.f \
-ifabtom.f impr.f inip4d.f iniphy.f inipie.f  initab.f invert.f \
-intang.f inter4d.f interp_tomawac.f \
+ifabtom.f impr.f  iniphy.f inipie.f initab.f invert.f \
+intang.f   \
 kerbou.f kmoyen.f \
 lecdoi.f lecdon.f lecdon_tomawac.f lecham.f lecsui.f \
 lecuti.f limwac.f preleo_mpi.f \
 maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
-pied4d.f pieds.f point_tomawac.f predif.f preleo.f \
+point_tomawac.f predif.f preleo.f \
 prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \
 qbbj78.f qbrek1.f qbrek2.f qbrek3.f qbrek4.f qfrot1.f qgauss.f \
 qmout1.f qmout2.f qnlin1.f qnlin2.f qnlin3.f \
