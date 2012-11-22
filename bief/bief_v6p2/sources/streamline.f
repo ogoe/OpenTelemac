@@ -1620,12 +1620,15 @@
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP 
+      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP,NSPMAX 
       INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3) 
       INTEGER IETP1 
 ! 
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,DENOM 
       DOUBLE PRECISION DELTAZ,EPSDZ,PAS2 
+!
+      INTEGER  P_IMAX 
+      EXTERNAL P_IMAX
 ! 
       INTRINSIC ABS , INT , MAX , SQRT 
 ! 
@@ -1633,6 +1636,7 @@
       DATA EPSILO / -1.D-6 / 
       DATA EPSDZ  /1.D-4/ 
 ! 
+      NSPMAX=1
       ETA1(NPLAN)=1
 !
 !----------------------------------------------------------------------- 
@@ -1713,6 +1717,7 @@
      &       + W(I3,IET+1)*SHP(3,IPLOT)*SHZ(IPLOT)
 !
          NSP=MAX(NSP,INT(NRK*DT*ABS(DZP/(ZSTAR(IET+1)-ZSTAR(IET)))))
+         NSPMAX = MAX(NSPMAX,NSP)
 !!       END PERIODICITY
 !
          ISPDONE=1
@@ -2214,7 +2219,16 @@
         ENDIF 
 ! 
         ENDDO 
-      ENDDO 
+      ENDDO
+! 
+      IF(.NOT.ADD) THEN
+        IF(NCSIZE.GT.1) NSPMAX=P_IMAX(NSPMAX) 
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'NOMBRE MAX DE SOUS PAS :',NSPMAX
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'NUMBER OF SUB-ITERATIONS :',NSPMAX
+        ENDIF
+      ENDIF
 !
 !     RESTORING ORIGINAL ETA1
 !
@@ -2344,19 +2358,23 @@
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP 
+      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP,NSPMAX 
       INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,ISOF,ISOT
       INTEGER IETP1,IFA,ISUI(3),IFR
 ! 
       DOUBLE PRECISION PAS,EPSILO,A1,A2,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,FP 
       DOUBLE PRECISION DELTAZ,EPSDZ,PAS2,DFP,DENOM 
-! 
+!
+      INTEGER  P_IMAX 
+      EXTERNAL P_IMAX
+!  
       INTRINSIC ABS , INT , MAX , SQRT 
 ! 
       DATA ISUI   / 2 , 3 , 1 / 
       DATA EPSILO / -1.D-6 / 
       DATA EPSDZ  /1.D-4/ 
-!   
+! 
+      NSPMAX=1  
       ETA1(NPLAN)=1
 ! 
 !----------------------------------------------------------------------- 
@@ -2487,6 +2505,7 @@
          NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL))))
          NSP=MAX(NSP,INT(NRK*DT*ABS(DZP/(ZSTAR(IET+1)-ZSTAR(IET)))))
          NSP=MAX(NSP,INT(NRK*DT*ABS(DFP/(FREQ(IFR)-FREQ(IFR+1)))))
+         NSPMAX=MAX(NSP,NSPMAX)
 !!       END PERIODICITY
 !
          ISPDONE=1
@@ -2937,6 +2956,15 @@
 ! 
         ENDDO 
       ENDDO
+!
+      IF(.NOT.ADD) THEN
+        IF(NCSIZE.GT.1) NSPMAX=P_IMAX(NSPMAX) 
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'NOMBRE MAX DE SOUS PAS :',NSPMAX
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'NUMBER OF SUB-ITERATIONS :',NSPMAX
+        ENDIF
+      ENDIF
 !
 !     RESTORING ORIGINAL ETA1
 !

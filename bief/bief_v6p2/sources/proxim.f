@@ -5,7 +5,7 @@
      &(IP,XP,YP,X,Y,NP,NPOIN,IKLE,NELEM,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    IDENTIFIES THE POINTS OF THE MESH CLOSEST TO A SET
@@ -27,6 +27,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        16/11/2012
+!+        V6P3
+!+   Write statements added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLE           |-->| CONNECTIVITY TABLE.
@@ -100,14 +105,21 @@
           ENDIF
 20      CONTINUE
         IF(IP(K).EQ.0) THEN
-          IF(LNG.EQ.1) WRITE(LU,*) 'POINT SOURCE ',K,' HORS DOMAINE'
-          IF(LNG.EQ.2) WRITE(LU,*) 'SOURCE POINT ',K,' OUTSIDE DOMAIN'
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'POINT SOURCE OU SPECTRE ',K,' HORS DOMAINE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'SPECTRUM OR SOURCE POINT ',K,' OUTSIDE DOMAIN'
+          ENDIF
           IF(NCSIZE.LE.1) THEN
             WRITE(LU,*) ' '
             IF(LNG.EQ.1) WRITE(LU,*) 'INTERDIT EN MODE SCALAIRE'
             IF(LNG.EQ.2) WRITE(LU,*) 'NOT ALLOWED IN SCALAR MODE'
             CALL PLANTE(1)
             STOP
+          ELSE
+            IF(LNG.EQ.1) WRITE(LU,*) 'POSSIBLE EN MODE PARALLELE'
+            IF(LNG.EQ.2) WRITE(LU,*) 'NOT A MISTAKE IN PARALLEL MODE'
           ENDIF
         ELSE
           IF(LNG.EQ.1) THEN
@@ -133,11 +145,13 @@
           WRITE(LU,*) ' '
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'EN MODE PARALLELE LES SOURCES PONCTUELLES'
+            WRITE(LU,*) 'OU LES POINTS DE SPECTRE (TOMAWAC)'
             WRITE(LU,*) 'DOIVENT COINCIDER EXACTEMENT AVEC DES POINTS'
             WRITE(LU,*) 'DU MAILLAGE, POUR LA SOURCE ',K,' CHOISIR :'
           ENDIF
           IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'IN PARALLEL SOURCES MUST COINCIDE WITH'
+            WRITE(LU,*) 'IN PARALLEL SOURCES OR SPECTRUM POINTS'
+            WRITE(LU,*) 'MUST COINCIDE WITH'
             WRITE(LU,*) 'NODES IN THE MESH, FOR SOURCE',K,' CHOOSE:'
           ENDIF
           WRITE(LU,*) 'X=',XX,' Y=',YY

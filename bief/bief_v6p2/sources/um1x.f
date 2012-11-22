@@ -52,7 +52,7 @@
 !| X              |<->| X AND X' (IN SITU TRANSFORMATION)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_UM1X => UM1X
+      USE BIEF !, EX_UM1X => UM1X
 !
       IMPLICIT NONE
       INTEGER LNG,LU

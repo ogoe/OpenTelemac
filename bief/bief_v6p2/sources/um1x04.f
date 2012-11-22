@@ -33,7 +33,7 @@
 !| X2             |-->| LOWER UNKNOWN
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_UM1X04 => UM1X04
+      USE BIEF   !, EX_UM1X04 => UM1X04
 !
       IMPLICIT NONE
       INTEGER LNG,LU
