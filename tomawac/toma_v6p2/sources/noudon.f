@@ -7,7 +7,7 @@
      & TRA, U1 , V1 , U2 , V2   , INDIC, CHDON , NVAR)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   21/06/2011
+! TOMAWAC   V6P3                                  21/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CURRENT / WIND VELOCITY
@@ -37,6 +37,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF - LNHE)
+!+        16/11/2012
+!+        V6P3
+!+   Only SELAFIN format with same mesh kept.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| BINDON         |-->| DATA FILE BINARY
@@ -63,7 +68,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TOMAWAC ,ONLY : MESH
       USE INTERFACE_TOMAWAC, EX_NOUDON => NOUDON
       IMPLICIT NONE
 !
@@ -87,11 +91,11 @@
 !-----------------------------------------------------------------------
 !
       REAL, ALLOCATABLE :: W(:)
-      ALLOCATE(W(NP))
+      ALLOCATE(W(NPOIN))
 !
 !-----------------------------------------------------------------------
 !
-      IF (AT.GT.TV2) THEN
+      IF(AT.GT.TV2) THEN
 !
 !       ----------------------------------------------------------------
 !       GOES TO NEXT RECORD : 2 BECOMES 1 AND READS A NEW 2
@@ -106,41 +110,7 @@
           WRITE(LU,*) '   NOUDON : READING A NEW RECORDING'
         ENDIF
 !
-        IF (INDIC.EQ.1) THEN
-!
-!     ------------------------------------------------------------------
-!          READS A FORMATTED FINITE DIFFERENCES FILE OF TYPE: WAM CYCLE 4
-!     ------------------------------------------------------------------
- 90        CONTINUE
-!          READS THE DATE OF THE RECORD
-           READ(NDON,*,END=100,ERR=100) DAT2
-           CALL TEMP(TV2,DAT2,DDC)
-!          READS THE DATA
-           READ(NDON,*,END=100,ERR=100)
-           READ(NDON,20,END=100,ERR=100) (UR(I),I=1,NP)
-           READ(NDON,*,END=100,ERR=100)
-           READ(NDON,20,END=100,ERR=100) (VR(I),I=1,NP)
-!
-           IF (TV2.LT.AT) THEN
-             IF(LNG.EQ.1) THEN
-               WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT ..'
-             ELSE
-               WRITE(LU,*) ' NOUDON : JUMP OF 1 RECORDED DATA SERIES'
-             ENDIF
-             TV1=TV2
-             CALL FASP(X,Y,U1,NPOIN,XRELV,YRELV,UR,NP,NBOR,
-     &                                       MESH%KP1BOR%I,NPTFR,0.D0)
-             CALL FASP(X,Y,V1,NPOIN,XRELV,YRELV,VR,NP,NBOR,
-     &                                       MESH%KP1BOR%I,NPTFR,0.D0)
-             GOTO 90
-           ENDIF
-!
-           CALL FASP(X,Y,U2,NPOIN,XRELV,YRELV,UR,NP,NBOR,MESH%KP1BOR%I,
-     &                                                    NPTFR,0.D0)
-           CALL FASP(X,Y,V2,NPOIN,XRELV,YRELV,VR,NP,NBOR,MESH%KP1BOR%I,
-     &                                                    NPTFR,0.D0)
-!
-        ELSEIF (INDIC.EQ.3) THEN
+        IF(INDIC.EQ.3) THEN
 !
 !     ------------------------------------------------------------------
 !       READS A SELAFIN FILE OF TYPE: TELEMAC
@@ -152,60 +122,54 @@
 !       READS THE DATE OF THE RECORD
         CALL LIT(DAT2B,W,IW,C1,1,'R4',NDON,BINDON,ISTAT)
         IF(CHDON(1:1).EQ.'C') THEN
-         TV2=DAT2B(1)
+          TV2=DAT2B(1)
         ELSE
-         DAT2=DAT2B(1)*1.D2
-         CALL TEMP(TV2,DAT2,DDC)
+          DAT2=DAT2B(1)*1.D2
+          CALL TEMP(TV2,DAT2,DDC)
         ENDIF
 !      READS THE DATA
        DO I =1,NVAR
-        IF(I.EQ.ID(1)) THEN
-         CALL LIT(UR,W,IW,C1,NP,'R4',NDON,BINDON,ISTAT)
-        ELSEIF(I.EQ.ID(2)) THEN
-         CALL LIT(VR,W,IW,C1,NP,'R4',NDON,BINDON,ISTAT)
-        ELSE
-         READ(NDON)
-        ENDIF
+         IF(I.EQ.ID(1)) THEN
+           CALL LIT(U2,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+         ELSEIF(I.EQ.ID(2)) THEN
+           CALL LIT(V2,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+         ELSE
+           READ(NDON)
+         ENDIF
        ENDDO
 !
-        IF (TV2.LT.AT) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT ..'
-          ELSE
-            WRITE(LU,*) ' NOUDON : JUMP OF 1 RECORDED DATA SERIES'
-          ENDIF
-          TV1=TV2
-!         INTERPOLATES IN SPACE
-          CALL FASP(X,Y,U1,NPOIN,XRELV,YRELV,UR,NP,NBOR,MESH%KP1BOR%I,
-     &                                                    NPTFR,0.D0)
-          CALL FASP(X,Y,V1,NPOIN,XRELV,YRELV,VR,NP,NBOR,MESH%KP1BOR%I,
-     &                                                    NPTFR,0.D0)
-          GOTO 95
-        ENDIF
+       IF(TV2.LT.AT) THEN
+         IF(LNG.EQ.1) THEN
+           WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT ..'
+         ELSEIF(LNG.EQ.2) THEN
+           WRITE(LU,*) ' NOUDON : JUMP OF 1 RECORDED DATA SERIES'
+         ENDIF
+         TV1=TV2
+!        INTERPOLATES IN SPACE
+         CALL OV('X=Y     ',U1,U2,U2,0.D0,NPOIN)
+         CALL OV('X=Y     ',V1,V2,V2,0.D0,NPOIN)
+!        CALL FASP(X,Y,U1,NPOIN,XRELV,YRELV,UR,NP,NBOR,MESH%KP1BOR%I,
+!    &                                                   NPTFR,0.D0)
+!        CALL FASP(X,Y,V1,NPOIN,XRELV,YRELV,VR,NP,NBOR,MESH%KP1BOR%I,
+!    &                                                   NPTFR,0.D0)
+         GOTO 95
+       ENDIF
 !
-        WRITE(LU,*) 'T',CHDON,'1:',TV1
-        WRITE(LU,*) 'T',CHDON,'2:',TV2
+       WRITE(LU,*) 'T',CHDON,'1:',TV1
+       WRITE(LU,*) 'T',CHDON,'2:',TV2
 !
-!       INTERPOLATES IN SPACE
-        CALL FASP(X,Y,U2,NPOIN,XRELV,YRELV,UR,NP,NBOR,MESH%KP1BOR%I,
-     &                                                    NPTFR,0.D0)
-        CALL FASP(X,Y,V2,NPOIN,XRELV,YRELV,VR,NP,NBOR,MESH%KP1BOR%I,
-     &                                                    NPTFR,0.D0)
-!
-        ELSEIF (INDIC.EQ.4) THEN
+       ELSEIF (INDIC.EQ.4) THEN
 !
 !     ------------------------------------------------------------------
 !        READS A USER-DEFINED FILE FORMAT
 !     ------------------------------------------------------------------
 !
           IF(CHDON(1:1).EQ.'C') THEN
-          CALL COUUTI
-     &    (X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &     NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NP)
+            CALL COUUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
+     &                  NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NP)
           ELSE
-          CALL VENUTI
-     &    (X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &     NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NP)
+            CALL VENUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
+     &                  NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NP)
           ENDIF
 !
 !
@@ -228,10 +192,10 @@
 !       --------------------------------------------------------------
 !
       COEF=(AT-TV1)/(TV2-TV1)
-      DO 60 I=1,NPOIN
-         UV(I)=(U2(I)-U1(I))*COEF+U1(I)
-         VV(I)=(V2(I)-V1(I))*COEF+V1(I)
-60    CONTINUE
+      DO I=1,NPOIN
+        UV(I)=(U2(I)-U1(I))*COEF+U1(I)
+        VV(I)=(V2(I)-V1(I))*COEF+V1(I)
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
@@ -258,3 +222,4 @@
 !
       RETURN
       END
+

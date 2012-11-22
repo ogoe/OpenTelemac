@@ -79,9 +79,8 @@
       INTEGER  JP    , JF    , IP
       DOUBLE PRECISION AUX   , DEUPI , C1    , C2
 !
-!
       DEUPI = 6.283185307D0
-      C1 = - CMOUT1*DEUPI**9.D0/GRAVIT**4.D0
+      C1 = - CMOUT1*DEUPI**9/GRAVIT**4
       C2 = - CMOUT1*DEUPI
 !
       IF (PROINF) THEN
@@ -90,7 +89,7 @@
 !.......WORKING ARRAY (THIS TERM ONLY DEPENDS ON THE POINT IN SPACE)
 !       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
         DO IP=1,NPOIN2
-          TAUX1(IP) = C1 * ENRJ(IP)**2.D0 * FMOY(IP)**9.D0
+          TAUX1(IP) = C1 * ENRJ(IP)**2 * FMOY(IP)**9
         ENDDO
 !
 !.......LOOP OVER DISCRETISED FREQUENCIES
@@ -100,8 +99,8 @@
 !.........COMPUTES THE BETA COEFFICIENT : QMOUT1 = BETA * F
 !         """"""""""""""""""""""""""""""""""""""""""""""
           DO IP=1,NPOIN2
-            AUX = (FREQ(JF)/FMOY(IP))**2.D0
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT2)*AUX+CMOUT2*AUX**2.D0)
+            AUX = (FREQ(JF)/FMOY(IP))**2
+            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT2)*AUX+CMOUT2*AUX**2)
           ENDDO
 !
 !.........TAKES THE SOURCE TERM INTO ACCOUNT
@@ -120,7 +119,7 @@
 !.......WORKING ARRAY (THIS TERM ONLY DEPENDS ON THE POINT IN SPACE)
 !       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
         DO IP=1,NPOIN2
-          TAUX1(IP) = C2 * ENRJ(IP)**2.D0 * FMOY(IP) * XKMOY(IP)**4.D0
+          TAUX1(IP) = C2 * ENRJ(IP)**2 * FMOY(IP) * XKMOY(IP)**4
         ENDDO
 !
 !.......LOOP OVER THE DISCRETISED FREQUENCIES
@@ -131,7 +130,7 @@
 !         """"""""""""""""""""""""""""""""""""""""""""""
           DO IP=1,NPOIN2
             AUX = XK(IP,JF) / XKMOY(IP)
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT2)*AUX+CMOUT2*AUX**2.D0)
+            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT2)*AUX+CMOUT2*AUX**2)
           ENDDO
 !
 !.........TAKES THE SOURCE TERM INTO ACCOUNT

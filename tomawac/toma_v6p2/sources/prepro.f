@@ -112,8 +112,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE TOMAWAC_MPI_TOOLS
-      USE TOMAWAC_MPI
       USE INTERFACE_TOMAWAC, EX_PREPRO => PREPRO
 !
       IMPLICIT NONE
@@ -167,14 +165,6 @@
 !
 !----------------------------------------------------------------------
 !
-      IF(.NOT.DEJA) THEN
-        ALLOCATE(GOODELT(NPOIN2,NPLAN,NF))
-        DEJA=.TRUE.
-      ENDIF
-!
-!----------------------------------------------------------------------
-!
-      NFREQ=NF
       IF (.NOT.COURAN) THEN
 !
 !   -------------------------------------------------------------------
@@ -191,7 +181,7 @@
          CALL CONWAC
      &( CY%R  , CX%R  , CT%R , XK    , CG    , COSF  , TGF   , DEPTH ,
      &  DZY   , DZX   , FREQ%R , COSTET, SINTET, NPOIN2, NPLAN , JF  ,
-     &  NF    , PROINF, SPHE , PROMIN, TRA01 , TRA01(1,2)    )
+     &  NF    , PROINF, SPHE , PROMIN, TRA01 , TRA01(1,2) )
 !
 !      ----------------------------------------------------------------         
 !
@@ -226,6 +216,11 @@
      &                .TRUE.)
 !    
       ELSE
+!
+          IF(.NOT.DEJA) THEN
+            ALLOCATE(GOODELT(NPOIN2,NPLAN,NF))
+            DEJA=.TRUE.
+          ENDIF
 !
           CALL INIPIE
      &( CX%R,CY%R,CT%R,X,Y,

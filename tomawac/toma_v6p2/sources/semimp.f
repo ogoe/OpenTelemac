@@ -408,11 +408,11 @@
         ENDIF
       ENDIF
 !
-!
 !     -----------------------------------------------------------------
 !     START OF THE MAIN LOOP ON THE NUMBER OF TIME STEPS (NSITS)
 !     FOR INTEGRATION OF THE SOURCE TERMS, BY PROPAGATION TIME STEP
 !     -----------------------------------------------------------------
+!
       DO 100 ISITS=1,NSITS
 !
 !
@@ -428,6 +428,7 @@
 !
 !         2.1 UPDATES THE WIND FIELD FOR DATE TFIN
 !         ---------------------------------------------------
+!
           CHDON='VENT   '
           IF (NOMVEB(1:1).NE.' ') THEN
             CALL NOUDON
@@ -505,8 +506,8 @@
         DO IFF=1,NF
           DO JP=1,NPLAN
             DO IP=1,NPOIN2
-              TSTOT(IP,JP,IFF)=0.0D0
-              TSDER(IP,JP,IFF)=0.0D0
+              TSTOT(IP,JP,IFF)=0.D0
+              TSDER(IP,JP,IFF)=0.D0
             ENDDO
           ENDDO
         ENDDO
@@ -788,7 +789,7 @@
           DO IFF=1,NF
             DO JP=1,NPLAN
               DO IP=1,NPOIN2
-                TSTOT(IP,JP,IFF)=0.0D0
+                TSTOT(IP,JP,IFF)=0.D0
               ENDDO
             ENDDO
           ENDDO

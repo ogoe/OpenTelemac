@@ -105,9 +105,12 @@
         ELSE
           CHDON='CURRENT'
         ENDIF
+!
 !       READS IN THE TIDAL CURRRENT
-        IF((WAC_FILES(WACCOF)%NAME(1:1).EQ.' ').AND.
-     &                (WAC_FILES(WACCOB)%NAME(1:1).EQ.' ')) THEN
+!
+!       JMH 16/11/2012 : formatted file suppressed     
+!
+        IF(WAC_FILES(WACCOB)%NAME(1:1).EQ.' ') THEN
           WRITE(LU,*) 'FICHIER ANALYTIQUE POUR COURANT'
           CALL ANAMAR
      &    ( SUC%R  , SVC%R   , STRA31%R, SZM1%R   ,
@@ -127,17 +130,6 @@
      &      '==> INITIALISATION OF TIDAL CURRENT VELOCITIES IN ANAMAR'
           ENDIF
         ELSE
-          IF (WAC_FILES(WACCOF)%NAME(1:1).NE.' ') THEN
-!           READS IN THE TIDAL CURRENTS FROM FORMATTED DATA FILE
-            CALL LECDOI
-     &      ( SUC%R  , SVC%R   , MESH%X%R, MESH%Y%R ,
-     &        NPOIN2, WAC_FILES(WACCOF)%LU , BINCOU, NBOR , NPTFR,
-     &        AT , DDC , TC1, TC2, NPC   ,
-     &        SXRELC%R, SYRELC%R,
-     &        TRA01(1:NPOIN3_G) , TRA01(NP0:NP1) , TRA01(NP2:NP3),
-     &        SUC1%R , SVC1%R, SUC2%R, SVC2%R,
-     &        INDIC , NPOIN3_G, CHDON, NVCOU)
-          ELSE
 !           READS IN THE TIDAL CURRENT FROM BINARY FILE
             CALL LECDOI
      &      ( SUC%R  , SVC%R   , MESH%X%R, MESH%Y%R ,
@@ -147,7 +139,6 @@
      &        TRA01(1:NPOIN3_G) , TRA01(NP0:NP1) , TRA01(NP2:NP3),
      &        SUC1%R , SVC1%R, SUC2%R, SVC2%R,
      &        INDIC , NPOIN3_G, CHDON, NVCOU )
-          ENDIF
         ENDIF
 !
 !       READS IN THE TIDAL WATER LEVEL
@@ -284,7 +275,7 @@
           ENDIF
         ELSE
           IF (WAC_FILES(WACVEF)%NAME(1:1).NE.' ') THEN
-           IF (VENSTA) THEN
+           IF(VENSTA) THEN
              CALL LECDON
      &      ( SUV%R  , SVV%R   , MESH%X%R, MESH%Y%R ,
      &        NPOIN2 , WAC_FILES(WACVEF)%LU   , BINVEN ,
@@ -301,7 +292,7 @@
      &        INDIV , NPOIN3_G, CHDON, IBID )
            ENDIF
           ELSE
-           IF (VENSTA) THEN
+           IF(VENSTA) THEN
              CALL LECDON
      &      ( SUV%R  , SVV%R   , MESH%X%R, MESH%Y%R ,
      &        NPOIN2 , WAC_FILES(WACVEB)%LU   , BINVEN ,
@@ -332,7 +323,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!
 !     INITIALISES FREQ AND DFREQ, THE FREQUENCIES OF PROPAGATION
 !     ARE DISTRIBUTED USING AN EXPONENTIAL LAW
 !
@@ -355,3 +345,4 @@
 !
       RETURN
       END
+

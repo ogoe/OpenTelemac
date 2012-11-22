@@ -98,7 +98,7 @@ MAKEFILE      = makefile
 #------- Sources Fortran
 
 SRCS= \
-declarations_tomawac.f interface_tomawac.f tomawac_mpi.f tomawac_mpi_tools.f\
+declarations_tomawac.f interface_tomawac.f \
 anacos.f anamar.f anaven.f angles.f bornes.f \
 condiw.f conw4d.f conwac.f corfon.f \
 cormar.f couple.f couuti.f cqueue.f \
@@ -112,9 +112,9 @@ ifabtom.f impr.f  iniphy.f inipie.f initab.f invert.f \
 intang.f   \
 kerbou.f kmoyen.f \
 lecdoi.f lecdon.f lecdon_tomawac.f lecham.f lecsui.f \
-lecuti.f limwac.f preleo_mpi.f \
+lecuti.f limwac.f  \
 maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
-point_tomawac.f predif.f preleo.f \
+point_tomawac.f predif.f  \
 prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \
 qbbj78.f qbrek1.f qbrek2.f qbrek3.f qbrek4.f qfrot1.f qgauss.f \
 qmout1.f qmout2.f qnlin1.f qnlin2.f qnlin3.f \
@@ -270,7 +270,7 @@ transfert_modules: create_workdir
  
 #------- Modules
 #
-MODS = declarations_tomawac.o tomawac_mpi.o tomawac_mpi_tools.o 
+MODS = declarations_tomawac.o  
 
 modules:	$(MODS)
 		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \

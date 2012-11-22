@@ -91,7 +91,8 @@
       R=6400.D3
       DEUPI=6.283185307D0
 !
-      IF (PROINF) THEN
+      IF(PROINF) THEN
+!
 !-----------------------------------------------------------------------
 !     INFINITE WATER DEPTH ...
 !-----------------------------------------------------------------------
@@ -101,10 +102,12 @@
           TRA02(JP)=GSQP/FREQ(JF)*SINTET(JP)
         ENDDO
 !
-        IF (.NOT.SPHE) THEN
+        IF(.NOT.SPHE) THEN
+!
 !       ----------------------------------------------------------------
 !       ... AND IN CARTESIAN COORDINATE SYSTEM
 !       ----------------------------------------------------------------
+!
           DO IP=1,NPOIN2
             DO JP=1,NPLAN
               CX(IP,JP)=TRA01(JP)
@@ -133,23 +136,26 @@
 !
 !
       ELSE
+!
 !-----------------------------------------------------------------------
 !     FINITE WATER DEPTH ....
 !-----------------------------------------------------------------------
 !
-        IF (.NOT.SPHE) THEN
+        IF(.NOT.SPHE) THEN
+!
 !       ----------------------------------------------------------------
 !       ... AND IN CARTESIAN COORDINATE SYSTEM
 !       ----------------------------------------------------------------
+!
           DO IP=1,NPOIN2
-            IF (DEPTH(IP).GT.PROMIN) THEN
+            IF(DEPTH(IP).GT.PROMIN) THEN
               DO JP=1,NPLAN
                 DDDN=-SINTET(JP)*DZX(IP)+COSTET(JP)*DZY(IP)
                 CX(IP,JP)=CG(IP,JF)*COSTET(JP)
                 CY(IP,JP)=CG(IP,JF)*SINTET(JP)
-                DEUKD=2.0D0*XK(IP,JF)*DEPTH(IP)
-                IF (DEUKD.GT.7.0D2) THEN
-                  DSDNSK=0.0D0
+                DEUKD=2.D0*XK(IP,JF)*DEPTH(IP)
+                IF(DEUKD.GT.7.D2) THEN
+                  DSDNSK=0.D0
                 ELSE
                   DSDNSK=DEUPI*FREQ(JF)/SINH(DEUKD)
                 ENDIF
@@ -157,21 +163,23 @@
               ENDDO
             ELSE
               DO JP=1,NPLAN
-                CX(IP,JP)=0.0D0
-                CY(IP,JP)=0.0D0
-                CT(IP,JP)=0.0D0
+                CX(IP,JP)=0.D0
+                CY(IP,JP)=0.D0
+                CT(IP,JP)=0.D0
               ENDDO
             ENDIF
           ENDDO
 !
         ELSE
+!
 !       ----------------------------------------------------------------
 !       ... AND IN SPHERICAL COORDINATE SYSTEM
 !       ----------------------------------------------------------------
+!
           SR=1.D0/R
           GRADEG=180.D0/3.1415926D0
           DO IP=1,NPOIN2
-            IF (DEPTH(IP).GT.PROMIN) THEN
+            IF(DEPTH(IP).GT.PROMIN) THEN
               SRCF=SR/COSF(IP)
               TFSR=TGF(IP)*SR
               DO JP=1,NPLAN
@@ -198,6 +206,7 @@
         ENDIF
 !
       ENDIF
+!
 !-----------------------------------------------------------------------
 !
       RETURN

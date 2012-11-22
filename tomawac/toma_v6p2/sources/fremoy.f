@@ -2,8 +2,7 @@
                      SUBROUTINE FREMOY
 !                    *****************
 !
-     &( FMOY  , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2,
-     &  AUX1  , AUX2  )
+     &(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,AUX1,AUX2)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   15/06/2011

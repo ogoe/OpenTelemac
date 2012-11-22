@@ -96,7 +96,7 @@
       DEUPI  = 6.283185307D0
       DTETAR = DEUPI/DBLE(NPLAN)
       DIMPLI = 1.0D0-CIMPLI
-      C1     = - CMOUT5*DEUPI**9.D0/GRAVIT**4.D0
+      C1     = - CMOUT5*DEUPI**9/GRAVIT**4
       C2     = - CMOUT5*DEUPI
       w      = 25.D0
 ! 
@@ -106,7 +106,7 @@
 !.......WORK ARRAY (TERM DEPENDING ONLY ON THE SPATIAL MESH NODE)
 !       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
         DO IP = 1,NPOIN2
-          TAUX1(IP) = C1 * ENRJ(IP)**2.D0 * FMOY(IP)**9.D0
+          TAUX1(IP) = C1 * ENRJ(IP)**2 * FMOY(IP)**9
         ENDDO
 !
 !.......LOOP ON THE DISCRETISED FREQUENCIES
@@ -120,8 +120,8 @@
             ENDDO
 !            
             CPHAS = DEUPI * FREQ(IFF) / XK(IP,IFF)
-            P0O=3.D0+TANH(w*(USOLD(IP)/CPHAS-0.1D0))
-            P0N=3.D0+TANH(w*(USNEW(IP)/CPHAS-0.1D0))            
+            P0O=3.D0+TANH(W*(USOLD(IP)/CPHAS-0.1D0))
+            P0N=3.D0+TANH(W*(USNEW(IP)/CPHAS-0.1D0))            
 !            
             CG1 = 0.5D0*GRAVIT/(DEUPI * FREQ(IFF))
             B   = CG1*(XK(IP,IFF)**3)*F_INT/DEUPI
@@ -139,8 +139,8 @@
 !
 !.........COMPUTES THE NON-BREAK BETA
 !         """"""""""""""""""""""""
-            AUX = (FREQ(IFF)/FMOY(IP))**2.D0
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT6)*AUX+CMOUT6*AUX**2.D0)
+            AUX = (FREQ(IFF)/FMOY(IP))**2
+            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT6)*AUX+CMOUT6*AUX**2)
 !
 !.........COMPUTES THE TOTAL BETA
 !         """"""""""""""""""""            
@@ -165,7 +165,7 @@
 !.......WORK ARRAY (TERM DEPENDING ONLY ON THE SPATIAL MESH NODE)
 !       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
         DO IP=1,NPOIN2
-          TAUX1(IP) = C2 * ENRJ(IP)**2.D0 * FMOY(IP) * XKMOY(IP)**4.D0
+          TAUX1(IP) = C2 * ENRJ(IP)**2 * FMOY(IP) * XKMOY(IP)**4
         ENDDO 
 !
 !.......LOOP ON THE DISCRETISED FREQUENCIES
@@ -203,7 +203,7 @@
 !.........COMPUTES THE NON-BREAK BETA
 !         """"""""""""""""""""""""
             AUX = XK(IP,IFF) / XKMOY(IP)
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT6)*AUX+CMOUT6*AUX**2.D0)
+            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT6)*AUX+CMOUT6*AUX**2)
 !
 !.........COMPUTES THE TOTAL BETA
 !         """"""""""""""""""""            

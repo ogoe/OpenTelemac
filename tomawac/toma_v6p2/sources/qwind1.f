@@ -101,7 +101,7 @@
 !
 !
       DEUPI = 2.D0* 3.14159265358978D0
-      C1 = DEUPI * (ROAIR/ROEAU) * (BETAM/XKAPPA**2.D0)
+      C1 = DEUPI * (ROAIR/ROEAU) * (BETAM/XKAPPA**2)
       DIMPLI=1.0D0-CIMPLI
 !
 !.....COMPUTES (1ST PASS) THE DIRECTIONAL DEPENDENCES
@@ -128,8 +128,8 @@
 !.......COMPUTES (1ST PASS) THE FREQUENCIES (OMEGA AND UETOILE/CPHASE)
 !       """""""""""""""""""""""""""""""""""""""""""""""""
         DO IP=1,NPOIN2
-          OMOLD(IP) = GRAVIT * Z0OLD(IP) / CPHAS(IP)**2.D0
-          OMNEW(IP) = GRAVIT * Z0NEW(IP) / CPHAS(IP)**2.D0
+          OMOLD(IP) = GRAVIT * Z0OLD(IP) / CPHAS(IP)**2
+          OMNEW(IP) = GRAVIT * Z0NEW(IP) / CPHAS(IP)**2
           USO(IP) = (USOLD(IP) / CPHAS(IP)) + DECAL
           USN(IP) = (USNEW(IP) / CPHAS(IP)) + DECAL
         ENDDO
@@ -151,7 +151,7 @@
               ZLOGMU = DLOG(OMOLD(IP)) + XKAPPA/XX
               IF (ZLOGMU.LT.0.D0) THEN
                 BETAO(IP) = CONST*OMOLD(IP)*EXP(XKAPPA/XX)*
-     &                          ZLOGMU**4.D0*XX**2.D0
+     &                          ZLOGMU**4*XX**2
               ENDIF
             ENDIF
           ENDDO
@@ -161,7 +161,7 @@
               ZLOGMU = DLOG(OMNEW(IP)) + XKAPPA/XX
               IF (ZLOGMU.LT.0.D0) THEN
                 BETAN(IP) = CONST*OMNEW(IP)*EXP(XKAPPA/XX)*
-     &                          ZLOGMU**4.D0*XX**2.D0
+     &                          ZLOGMU**4*XX**2
               ENDIF
             ENDIF
           ENDDO

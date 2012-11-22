@@ -3,11 +3,11 @@
 !                    *****************
 !
      &( F     , B     , TETA  , NPLAN , FREQ  , NF    , NK    ,
-     &  NPOIN2, AT    , LT    , AUXIL , INUTIL, NOLEO , NLEO  , NSCO  ,
-     &  BINSCO, DEBRES, TITCAS, DATE  , TIME ,ISLEO ,KNOLG)
+     &  NPOIN2, AT    , LT    , AUXIL , NOLEO , NLEO  , NSCO  ,
+     &  BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   15/06/2011
+! TOMAWAC   V6P3                                   15/06/2011
 !***********************************************************************
 !
 !brief    WRITES OUT THE DIRECTIONAL VARIANCE SPECTRUM
@@ -51,6 +51,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  A. LAUGEL & J-M HERVOUET (EDF - LNHE)
+!+        22/11/2012
+!+        V6P3
+!+   Parallelism treated with files.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
@@ -77,28 +82,27 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE TOMAWAC_MPI
-      USE TOMAWAC_MPI_TOOLS
 !
       IMPLICIT NONE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER  NPOIN2, NLEO  , NSCO  , NF , NK , NPLAN
-      INTEGER  NOLEO(NLEO)   , INUTIL(1)
-      INTEGER  DATE(3),TIME(3)
-      DOUBLE PRECISION AT    , AUXIL(NPLAN,NK), AAT(1)
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF) , TETA(NPLAN), FREQ(NF)
-      DOUBLE PRECISION B(NPOIN2,NPLAN)
-      INTEGER  LT
-      LOGICAL DEBRES
-      CHARACTER*72 TITCAS
-      CHARACTER(LEN=*)   BINSCO
+      INTEGER, INTENT(IN)             :: NPOIN2,NLEO,NSCO,NF,NK,NPLAN
+      INTEGER, INTENT(IN)             :: KNOLG(NPOIN2)
+      INTEGER, INTENT(IN)             :: NOLEO(NLEO)
+      INTEGER, INTENT(IN)             :: DATE(3),TIME(3)
+      DOUBLE PRECISION, INTENT(IN)    :: AT
+      DOUBLE PRECISION, INTENT(INOUT) :: AUXIL(NPLAN,NK)
+      DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: TETA(NPLAN),FREQ(NF)
+      DOUBLE PRECISION, INTENT(IN)    :: B(NPOIN2,NPLAN)
+      INTEGER, INTENT(IN)             :: LT
+      LOGICAL, INTENT(IN)             :: DEBRES
+      CHARACTER(LEN=72), INTENT(IN)   :: TITCAS
+      CHARACTER(LEN=*) , INTENT(IN)   :: BINSCO
+      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      COMMON/ECRSPE_MPI/SPE_SEND
-      INTEGER ::SPE_SEND
 !
       INTEGER  ISTAT , II    , JF    , K     , IB(10)
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
@@ -108,61 +112,48 @@
       CHARACTER*6  NUM
       CHARACTER*2  CC
       CHARACTER*1  C0    , C1    , C2    , C3    , C4    , C5    , C6
-!BD_INCKA ADDS A GRID ON THE FREQUENCIES AND PLANES
       TYPE(BIEF_MESH) :: MESHF
       LOGICAL         :: SORLEO(99)
-      INTEGER :: I,IER
-      INTEGER, ALLOCATABLE :: IKLE(:) ! GLOBAL CONNECTIVITY
-      TYPE(BIEF_OBJ)  :: BVARSOR
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
-      INTEGER, DIMENSION(NLEO) :: NRECV_LEO
-      LOGICAL         :: ISLEO(NLEO) !
-      INTEGER, DIMENSION(NCSIZE) :: NSPE_RECV
-      INTEGER :: KNOLG(NPOIN2)
-!BD_INCKA
-!BD_INCKA END OF MODIFICATION
+      INTEGER :: I,IER      
+      DOUBLE PRECISION AAT(1)
+      REAL W(1)
+      CHARACTER(LEN=11) EXTENS
+      EXTERNAL          EXTENS
+!
+      SAVE
+!
+!-----------------------------------------------------------------------
 !
       NPSPE=NF*NPLAN
       NELEM=(NF-1)*NPLAN
-      SORLEO = .FALSE.
+!     SORLEO = .FALSE.
       DO ILEO=1,NLEO
-          KAMP1=NOLEO(ILEO)
-          IF (NCSIZE.GT.1) KAMP1=KNOLG(NOLEO(ILEO))
-          KAMP2=MOD(KAMP1,100000)
-          KAMP3=MOD(KAMP2,10000)
-          KAMP4=MOD(KAMP3,1000)
-          KAMP5=MOD(KAMP4,100)
-          KAMP6=MOD(KAMP5,10)
-!          IF(ILEO.GT.9) THEN
-!            C0='1'
-!          ELSE
-!            C0='0'
-!          ENDIF
-!          CC=C0//CHAR(48+MOD(ILEO,10))
-          CC=CHAR(48+INT(ILEO/10))//CHAR(48+MOD(ILEO,10))
-          C1=CHAR(48+INT(KAMP1/100000))
-          C2=CHAR(48+INT(KAMP2/10000))
-          C3=CHAR(48+INT(KAMP3/1000))
-          C4=CHAR(48+INT(KAMP4/100))
-          C5=CHAR(48+INT(KAMP5/10))
-          C6=CHAR(48+KAMP6)
-          NUM=C1//C2//C3//C4//C5//C6
-          TEXTE(ILEO)='F'//CC//' PT2D'//NUM//'  UNITE SI       '
-          IF (.NOT.ISLEO(ILEO)) TEXTE(ILEO) =
-     &     'POINT HORS MAILLAGE             '
-          SORLEO(ILEO) = .TRUE.
+        KAMP1=NOLEO(ILEO)
+        IF(NCSIZE.GT.1) KAMP1=KNOLG(NOLEO(ILEO))
+        KAMP2=MOD(KAMP1,100000)
+        KAMP3=MOD(KAMP2,10000)
+        KAMP4=MOD(KAMP3,1000)
+        KAMP5=MOD(KAMP4,100)
+        KAMP6=MOD(KAMP5,10)
+        CC=CHAR(48+ILEO/10)//CHAR(48+MOD(ILEO,10))
+        C1=CHAR(48+KAMP1/100000)
+        C2=CHAR(48+KAMP2/10000)
+        C3=CHAR(48+KAMP3/1000)
+        C4=CHAR(48+KAMP4/100)
+        C5=CHAR(48+KAMP5/10)
+        C6=CHAR(48+KAMP6)
+        NUM=C1//C2//C3//C4//C5//C6
+        TEXTE(ILEO)='F'//CC//' PT2D'//NUM//'  UNITE SI       '
+        SORLEO(ILEO) = .TRUE.
       ENDDO
 !
-!=====C
-!  1  C FOR THE FIRST PRINTED TIME STEP, WRITES OUT THE HEADER TO THE FILE
-!=====C================================================================
+!     FOR THE FIRST PRINTED TIME STEP, WRITES OUT THE HEADER TO THE FILE
 !
-      IF (DEBRES) THEN
+      IF(DEBRES) THEN
 !
-!.......2.1 NAME OF THE VARIABLES
-!       """""""""""""""""""""""""""""""""""""
-!BD_INCKA CREATES MESHF, MESH ASSOCIATED WITH DISCRETISATION
-!         IN FREQUENCY AND DIRECTION
+!       CREATES MESHF, MESH ASSOCIATED WITH DISCRETISATION
+!       IN FREQUENCY AND DIRECTION
+!
         ALLOCATE(MESHF%TYPELM)
         ALLOCATE(MESHF%NELEM)
         ALLOCATE(MESHF%NPOIN)
@@ -181,36 +172,27 @@
         MESHF%NELEM  = NELEM
         MESHF%NPOIN  = NPSPE
         MESHF%DIM    = 2
-        ALLOCATE(IKLE(4*NELEM))
         II=0
         DO JF=1,NF-1
           DO K=1,NPLAN
            II=II+1
-           IKLE(II)=MOD(II,NPLAN)+1+(JF-1)*NPLAN
+           MESHF%IKLE%I(II)=MOD(II,NPLAN)+1+(JF-1)*NPLAN
           ENDDO
         ENDDO
         DO II=1,NELEM
-          IKLE(II+NELEM)=II
-          IKLE(II+2*NELEM)=II+NPLAN
-          IKLE(II+3*NELEM)=IKLE(II)+NPLAN
+          MESHF%IKLE%I(II+NELEM)=II
+          MESHF%IKLE%I(II+2*NELEM)=II+NPLAN
+          MESHF%IKLE%I(II+3*NELEM)=MESHF%IKLE%I(II)+NPLAN
         ENDDO
-        MESHF%IKLE%I=IKLE
 !
-!        DEALLOCATE(IKLE)
-!        DEALLOCATE(IPOBO)
-!
-!.......2.9 WRITES OUT THE ARRAYS X AND Y
-!       """"""""""""""""""""""""""""""""
+!       WRITES OUT THE ARRAYS X AND Y
+!       
         ALLOCATE(MESHF%X%R(NPLAN*NF))
         ALLOCATE(MESHF%Y%R(NPLAN*NF))
-        MESHF%NPTFR = 2*NPLAN!+2*(NF-2)
+        MESHF%NPTFR = 2*NPLAN
         DO JF=1,NF
           DO II=1,NPLAN
             MESHF%X%R(II+NPLAN*(JF-1))=FREQ(JF)*SIN(TETA(II))
-          ENDDO
-        ENDDO
-        DO JF=1,NF
-          DO II=1,NPLAN
             MESHF%Y%R(II+NPLAN*(JF-1))=FREQ(JF)*COS(TETA(II))
           ENDDO
         ENDDO
@@ -222,104 +204,94 @@
           MESHF%NBOR%I(II)=NPLAN+1+NPSPE-II
         ENDDO
         MESHF%KNOLG%I = 0
-        
-!       
-!        
-!BD_INCKA IN PARALLEL MODE, INITIALISES THE VALUES OF MPI PARAMETERS
-      IF (NCSIZE.GT.1)         CALL GET_MPI_PARAMETERS(MPI_INTEGER,
-     &                          MPI_REAL8,MPI_UB,
-     &                          MPI_COMM_WORLD,MPI_SUCCESS)
-!BD_INCKA END OF MODIFICATION
-!BD_INCKA IN PARALLEL MODE, ASSOCIATES THE SUB-DOMAIN NODE NUMBERS
-! WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
 !
-!       NOTE JMH : DEMANDER A AMELIE LAUGEL SA METHODE ET LA REPRENDRE
+!       IN PARALLEL ONLY PROCESSOR 0 CREATES THE FILE
 !
-        IF (NCSIZE.GT.1) THEN
-        CALL SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
-     &                           NRECV_LEO)
-        CALL TEXTE_SENDRECV(TEXTE(1:NLEO),NLEO,NPSPE,ISLEO,NRECV_LEO)
-        ENDIF
+        IF(IPID.EQ.0) THEN
 !
-!BD_INCKA END OF MODIFICATION
-        IF (((NCSIZE.GT.1).AND.(IPID==0)).OR.NCSIZE.LE.1) THEN
-        ! CREATES DATA FILE USING A GIVEN FILE FORMAT : FORMAT_RES.
-        ! THE DATA ARE CREATED IN THE FILE: NRES, AND IS
-        ! CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
-        ! CONTAINED IN THE FILE.
+!         CREATES DATA FILE USING A GIVEN FILE FORMAT : FORMAT_RES.
+!         THE DATA ARE CREATED IN THE FILE: NRES, AND IS
+!         CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
+!         CONTAINED IN THE FILE.
 !
-        CALL CREATE_DATASET(BINSCO, ! RESULTS FILE FORMAT
-     &                      NSCO,   ! LU FOR RESULTS FILE
-     &                      TITCAS, ! TITLE
-     &                      NLEO,   ! MAX NUMBER OF OUTPUT VARIABLES
-     &                      TEXTE,  ! NAMES OF OUTPUT VARIABLES
-     &                      SORLEO) ! PRINT TO FILE OR NOT
-        ! WRITES THE MESH IN THE OUTPUT FILE :
-        ! IN PARALLEL, REQUIRES NCSIZE AND NPTIR.
-        ! THE REST OF THE INFORMATION IS IN MESH.
-        ! ALSO WRITES : START DATE/TIME AND COORDINATES OF THE
-        ! ORIGIN.
-        CALL WRITE_MESH(BINSCO, ! RESULTS FILE FORMAT
-     &                  NSCO,   ! LU FOR RESULTS FILE
-     &                  MESHF,  ! CHARACTERISES MESH
-     &                  1,      ! NUMBER OF PLANES /NA/
-     &                  DATE,   ! START DATE
-     &                  TIME,   ! START TIME
-     &                  0,0)    ! COORDINATES OF THE ORIGIN.
+          CALL CREATE_DATASET(BINSCO, ! RESULTS FILE FORMAT
+     &                        NSCO,   ! LU FOR RESULTS FILE
+     &                        TITCAS, ! TITLE
+     &                        NLEO,   ! MAX NUMBER OF OUTPUT VARIABLES
+     &                        TEXTE,  ! NAMES OF OUTPUT VARIABLES
+     &                        SORLEO) ! PRINT TO FILE OR NOT
+!
+!         WRITES THE MESH IN THE OUTPUT FILE
+!
+          CALL WRITE_MESH(BINSCO, ! RESULTS FILE FORMAT
+     &                    NSCO,   ! LU FOR RESULTS FILE
+     &                    MESHF,  ! CHARACTERISES MESH
+     &                    1,      ! NUMBER OF PLANES 
+     &                    DATE,   ! START DATE
+     &                    TIME,   ! START TIME
+     &                    0,0)    ! COORDINATES OF THE ORIGIN.  
 !   
         ENDIF
 !
       ENDIF
 !
-!BD_INCKA IN PARALLEL MODE, ASSOCIATES THE SUB-DOMAIN NODE NUMBERS
-! WITH THE POINTS WHERE SPECTRAL OUTPUT IS REQUIRED
-       IF (NCSIZE.GT.1) THEN
-        CALL SPECTRE_SEND(SPE_SEND,NSPE_RECV,NLEO,ISLEO,
-     &                    NRECV_LEO)
-        CALL TEXTE_SENDRECV(TEXTE,NLEO,NPSPE,ISLEO,NRECV_LEO)
-       ENDIF
-!BD_INCKA END OF MODIFICATION
-!=====C
-!  3  C RECORDS THE CURRENT TIME STEP
-!=====C========================================
+!     RECORDS THE CURRENT TIME STEP
 !
-!.....3.1 WRITES OUTPUT AT TIME 'AT'
-!     """"""""""""""""""""""""
-      AAT(1) = AT
-!
-!     MODIF JMH 13/11/2012
-!
-      CALL ALLBLO(BVARSOR,'BVARSO')
-      CALL BIEF_ALLVEC_IN_BLOCK(BVARSOR,NLEO,
-     &                          1,'BVAR  ',NPSPE,1,0,MESHF)
-!     ALLOCATE(BVARSOR%ADR(NLEO))
-!     DO II=1,NLEO
-!       ALLOCATE(BVARSOR%ADR(II)%P)
-!       ALLOCATE(BVARSOR%ADR(II)%P%R(NPSPE))
-!       BVARSOR%ADR(II)%P%DIM1 = NPSPE
-!       BVARSOR%ADR(II)%P%ELM  = 21
-!     ENDDO
-!
-!     FIN MODIF JMH 13/11/2012
-!
-      DO ILEO=1,NLEO
-        II=NOLEO(ILEO)
-        DO JF=1,NF
-          DO K=1,NPLAN
-            BVARSOR%ADR(ILEO)%P%R(K+(JF-1)*NPLAN)=F(II,K,JF)
-          ENDDO
-        ENDDO
-      ENDDO
-!
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
+      IF(IPID.EQ.0) THEN
+        AAT(1) = AT
+        CALL ECRI2(AAT,IBID,C,1,'R4',NSCO,'STD',ISTAT)
+      ENDIF   
 !
       IF(NCSIZE.GT.1) THEN
-        CALL BVARSOR_SENDRECV(BVARSOR,NLEO,NPSPE,ISLEO,NRECV_LEO)
-        IF(IPID==0) CALL WRITE_DATA(BINSCO,NSCO,99,AT,LT,SORLEO,TEXTE,
-     &                              BVARSOR,NPSPE)
+!
+!       1) EVERY PROCESSOR WRITES ITS OWN POINTS
+!          MESH%ELTCAR IS USED AS FOR THE CHARACTERISTICS
+!
+        DO ILEO=1,NLEO
+          II=NOLEO(ILEO)
+          IF(II.GT.0) THEN
+          IF(MESH%ELTCAR%I(II).NE.0) THEN
+            DO JF=1,NF
+              DO K=1,NPLAN
+                AUXIL(K,JF)=F(II,K,JF)
+              ENDDO
+            ENDDO
+            OPEN(99,FILE=EXTENS(NLEO,ILEO),
+     &              FORM='UNFORMATTED',STATUS='NEW')
+            CALL ECRI2(AUXIL,IBID,C,NPSPE,'R8',99,'STD',ISTAT)
+            CLOSE(99)
+          ENDIF
+          ENDIF
+        ENDDO
+!
+!       WAITING COMPLETION OF THE WORK BY ALL PROCESSORS
+!
+        CALL P_SYNC
+!
+!       2) PROCESSOR 0 READS ALL FILES AND MERGES IN THE FINAL FILE
+!
+        IF(IPID.EQ.0) THEN
+          DO ILEO=1,NLEO
+            OPEN(99,FILE=EXTENS(NLEO,ILEO),
+     &              FORM='UNFORMATTED',STATUS='OLD')
+            CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',99,'STD',ISTAT)
+            CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
+            CLOSE(99,STATUS='DELETE')
+          ENDDO
+        ENDIF
+!
       ELSE
-        CALL WRITE_DATA(BINSCO,NSCO,99,AT,LT,SORLEO,TEXTE,
-     &                  BVARSOR,NPSPE)
+!
+        DO ILEO=1,NLEO
+          II=NOLEO(ILEO)
+          DO JF=1,NF
+            DO K=1,NPLAN
+              AUXIL(K,JF)=F(II,K,JF)
+            ENDDO
+          ENDDO
+          CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
+        ENDDO
+!
       ENDIF
 !
 !-----------------------------------------------------------------------

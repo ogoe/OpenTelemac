@@ -72,6 +72,7 @@
 !-----C-------------------------------------------------------C
 !-----C  SUMS UP THE DISCRETISED PART OF THE SPECTRUM         C
 !-----C-------------------------------------------------------C
+!
       DO 20 JF = 1,NF-1
         AUX1=DFREQ(JF)*DTETAR
         DO 10 JP = 1,NPLAN
