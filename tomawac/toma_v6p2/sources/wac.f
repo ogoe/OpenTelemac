@@ -56,7 +56,7 @@
 !
 !     VARIABLES DECLAREES LOCALEMENT DANS LA PROCEDURE.
 !
-      INTEGER LT,LT1,NRK
+      INTEGER LT,LT1
       INTEGER NOLEO(99)
       INTEGER DATE(3),TIME(3),NPTL,IP
 !
@@ -64,7 +64,7 @@
 !     TV2 TEMPS CORRESPONDANT AU VENT 2
 !
       DOUBLE PRECISION LAMBD0,C,Z(1),DEUPI,DTSI
-      DOUBLE PRECISION AT,TV1,TV2,TC1,TC2,TM1,TM2
+      DOUBLE PRECISION AT,AT0,TV1,TV2,TC1,TC2,TM1,TM2
       DOUBLE PRECISION VITVEN,VITMIN
       INTEGER  ADC , MDC , JDC , HDC, NVHMA,NVCOU,NBD,K
       LOGICAL IMPRES, DEBRES
@@ -326,41 +326,32 @@
       LT=0
       DTSI=DT/NSITS
 !
-      IF (SUIT) THEN
+      IF(SUIT) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECSUI'
-!COUPLAGE TELEMAC-TOMAWAC : modification de la liste
-!       d'arguments d'appel pour prise en compte du courant
         CALL LECSUI
      &( SF%R    , NPLAN   , NF      , STETA%R, SFR%R  ,
      &  NELEM2  , NPOIN2  , AT      , SUC%R  , SVC%R  ,
      &  SUC1%R  , SVC1%R  , SUC2%R  , SVC2%R , SUV%R  ,
      &  SVV%R   , SUV1%R  , SVV1%R  , SUV2%R , SVV2%R ,
-!     *  VENT    , TV1     , TV2     , COUSTA ,
      &  VENT    , TV1     , TV2     , COUSTA.OR.PART.EQ.0 ,
      &  WAC_FILES(WACPRE)%LU ,
      &  BINPRE  , SDEPTH%R, TC1 , TC2 , ZM1 , ZM2 ,
-!     *  SDZHDT%R, TM1     , TM2     , MAREE )
      &  SDZHDT%R, TM1     , TM2     , MAREE.OR.PART.EQ.0 )
-!Fin COUPLAGE
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECSUI'
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CONDIW'
-! COUPLAGE TELEMAC-TOMAWAC : si PART=0, courants et hauteur d'eau
-!  passes par TELEMAC
         CALL CONDIW
      &( AT, LT , DEUPI , TC1 , TC2 , TV1, TV2, TM1, TM2, 
      &  NVHMA  , NVCOU , PART , U_TEL, V_TEL, H_TEL )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
-!
         IF(PART.EQ.0) THEN
           DO IP=1,NPOIN2
             SDZHDT%R(IP)=0.D0
-!           IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
             IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=PROMIN
           ENDDO
         ENDIF
-!Fin COUPLAGE
       ENDIF
+      AT0=AT
 !
 !
 !
@@ -620,7 +611,6 @@
       IF (PROP) THEN
         CALL IMPR(LISPRD,LT,AT,LT,1)
         CALL IMPR(LISPRD,LT,AT,LT,2)
-        NRK=3
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 1'
 !
@@ -637,7 +627,7 @@
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
      &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.0,
      &   SPHE     , PROINF   , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
-     &   IELM3    , DIFFRA   , ISUB)
+     &   IELM3    , DIFFRA   , MAREE ,ISUB)
 !Fin COUPLAGE
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 1'
 !
@@ -676,8 +666,9 @@
 !.....11.1 AFFECTATION DE LA DATE DE FIN DU PAS DE TEMPS COURANT.
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
       AT=AT+DT
-!Calcul de LT
-      LT=NINT(AT/DT)
+!Calcul de LT (NOTE JMH: WHY NOT LT=LT+1 ?)
+      LT=NINT((AT-AT0)/DT)
+!
 !Fin COUPLAGE
 !
       CALL IMPR(LISPRD,LT,AT,LT,3)
@@ -742,7 +733,6 @@
         IF (PROP) THEN
          CALL IMPR(LISPRD,LT,AT,LT,1)
          CALL IMPR(LISPRD,LT,AT,LT,2)
-         NRK=3
          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 2'
 !
          CALL PREPRO
@@ -758,7 +748,7 @@
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
      &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
      &   SPHE     , PROINF    , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
-     &   IELM3    , DIFFRA    , ISUB )
+     &   IELM3    , DIFFRA    , MAREE ,ISUB )
 !Fin COUPLAGE
          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREPRO 2'
         ENDIF
@@ -916,42 +906,32 @@
       IF(PART.EQ.1) NIT=DUMMY
 !Fin COUPLAGE
 !
-!COUPLAGE TELEMAC-TOMAWAC : pour impressions globales et
-!     validation il faut verifier qu'on est bien a la fin de la
-!     simulation TOMAWAC : on fait un cycle IF qui sera ferme
-!     apres l'appel de BIEF_VALIDA.
-      IF(ABS(AT-NIT*DT).LT.1.D-6) THEN
-!Fin COUPLAGE
-      IF (GLOB)  THEN
-        CALL IMPR(LISPRD,NIT,AT,NIT,6)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SOR3D'
-!COUPLAGE TELEMAC-TOMAWAC : prise en compte du courant et
-!       de la hauteur d'eau dans la liste des arguments
-!       d'appel
-        CALL SOR3D
-     &( SF%R  , NPLAN  , NF       , STETA%R   , SFR%R ,
-     &  NELEM2, NPOIN2 , AT       , SUC%R     , SVC%R ,
-     &  SUV%R , SVV%R  , SDEPTH%R , VENT     , COURAN.OR.PART.EQ.1,
-     &  MAREE.OR.PART.EQ.1 , TITCAS , WAC_FILES(WACRBI)%LU ,
-     &  BINRBI    )
-!Fin COUPLAGE
+      IF(ABS(AT-AT0-NIT*DT).LT.1.D-6) THEN
 !
-        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOR3D'
-      ENDIF
+        IF(GLOB)  THEN
+          CALL IMPR(LISPRD,NIT,AT,NIT,6)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SOR3D'
+          CALL SOR3D
+     &(   SF%R  , NPLAN  , NF       , STETA%R   , SFR%R ,
+     &    NELEM2, NPOIN2 , AT       , SUC%R     , SVC%R ,
+     &    SUV%R , SVV%R  , SDEPTH%R , VENT      , COURAN.OR.PART.EQ.1,
+     &    MAREE.OR.PART.EQ.1 , TITCAS , WAC_FILES(WACRBI)%LU ,
+     &    BINRBI    )
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOR3D'
+        ENDIF
 !
 !----------------------------------------------------------------------
 !
-!  VALIDATION DES RESULTATS SUR LE FICHIER DE REFERENCES
+!       VALIDATION DES RESULTATS SUR LE FICHIER DE REFERENCES
 !
-      IF(VALID) CALL BIEF_VALIDA(BST1,TEXTE,
-     &                   WAC_FILES(WACREF)%LU,WAC_FILES(WACREF)%FMT,
-     &                   VARSOR,TEXTE,
-     &                   WAC_FILES(WACRES)%LU,WAC_FILES(WACRES)%FMT,
-     &                   MAXVAR,NPOIN2,NIT,NIT,ALIRE)
+        IF(VALID) CALL BIEF_VALIDA(BST1,TEXTE,
+     &                     WAC_FILES(WACREF)%LU,WAC_FILES(WACREF)%FMT,
+     &                     VARSOR,TEXTE,
+     &                     WAC_FILES(WACRES)%LU,WAC_FILES(WACRES)%FMT,
+     &                     MAXVAR,NPOIN2,NIT,NIT,ALIRE)
 !
-!COUPLAGE TELEMAC-TOMAWAC : fin du cycle IF(ABS(AT-NIT*DT).LT.1.D-6)
       ENDIF
-!Fin COUPLAGE
+!
 !----------------------------------------------------------------------
 !
       RETURN

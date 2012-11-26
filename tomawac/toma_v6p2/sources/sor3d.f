@@ -6,7 +6,7 @@
      & COURAN,MAREE,TITRE,NR3D,BINR3D)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   28/06/2011
+! TOMAWAC   V6P3                                   28/06/2011
 !***********************************************************************
 !
 !brief    WRITES DATA NECESSARY TO RESUME COMPUTATION
@@ -33,6 +33,11 @@
 !+        28/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  J-M HERVOUET (EDF - LNHE)
+!+        26/11/2012
+!+        V6P3
+!+   Correction of bugs and double precision.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -94,33 +99,35 @@
 ! WRITES TIME
 !
       ATT(1)=AT
-      CALL ECRI2(ATT,IB,CAR,1,'R4',NR3D,BINR3D,ISTAT)
+      CALL ECRI2(ATT,IB,CAR,1,'R8',NR3D,BINR3D,ISTAT)
 !
 ! WRITES TETA
 !
-      CALL ECRI2(TETA,IB,CAR,NPLAN,'R4',NR3D,BINR3D,ISTAT)
+      CALL ECRI2(TETA,IB,CAR,NPLAN+1,'R8',NR3D,BINR3D,ISTAT)
 !
 ! WRITES FREQ
 !
-      CALL ECRI2(FREQ,IB,CAR,NF,'R4',NR3D,BINR3D,ISTAT)
+      CALL ECRI2(FREQ,IB,CAR,NF,'R8',NR3D,BINR3D,ISTAT)
 !
 ! WRITES F
 !
       NTOT=NPOIN2*NPLAN*NF
-      CALL ECRI2(F,IB,CAR,NTOT,'R4',NR3D,BINR3D,ISTAT)
+      CALL ECRI2(F,IB,CAR,NTOT,'R8',NR3D,BINR3D,ISTAT)
 !
 ! WRITES U,V,UV,VV (IF HAS TO)
 !
-      IF (COURAN) THEN
-      CALL ECRI2(U ,IB,CAR,NPOIN2,'R4',NR3D,BINR3D,ISTAT)
-      CALL ECRI2(V ,IB,CAR,NPOIN2,'R4',NR3D,BINR3D,ISTAT)
+      IF(COURAN) THEN
+        CALL ECRI2(U ,IB,CAR,NPOIN2,'R8',NR3D,BINR3D,ISTAT)
+        CALL ECRI2(V ,IB,CAR,NPOIN2,'R8',NR3D,BINR3D,ISTAT)
       ENDIF
-      IF (VENT) THEN
-      CALL ECRI2(UV,IB,CAR,NPOIN2,'R4',NR3D,BINR3D,ISTAT)
-      CALL ECRI2(VV,IB,CAR,NPOIN2,'R4',NR3D,BINR3D,ISTAT)
+!
+      IF(VENT) THEN
+        CALL ECRI2(UV,IB,CAR,NPOIN2,'R8',NR3D,BINR3D,ISTAT)
+        CALL ECRI2(VV,IB,CAR,NPOIN2,'R8',NR3D,BINR3D,ISTAT)
       ENDIF
-      IF (MAREE) THEN
-      CALL ECRI2(DEPTH,IB,CAR,NPOIN2,'R4',NR3D,BINR3D,ISTAT)
+!
+      IF(MAREE) THEN
+        CALL ECRI2(DEPTH,IB,CAR,NPOIN2,'R8',NR3D,BINR3D,ISTAT)
       ENDIF
 !
 !-----------------------------------------------------------------------

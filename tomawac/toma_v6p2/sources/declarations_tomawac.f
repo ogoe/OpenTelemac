@@ -575,7 +575,7 @@
 !V6P2 End Diffraction
 !> @brief TITLE!!!!!!!!!!
 ! titre du cas de calcul
-      CHARACTER (len=72) :: TITCAS
+      CHARACTER (LEN=80) :: TITCAS
 !> @brief VARIABLES FOR 2D GRAPHIC PRINTOUTS
 ! variables pour les sorties graphiques 2d
       CHARACTER (72) :: SORT2D

@@ -8,7 +8,8 @@
      &  DEPTH , DZHDT , DZX   , DZY   , U     , V     , DUX   , DUY   ,
      &  DVX   , DVY   , XK    , CG    , COSF  , TGF   , ITR01 , NPOIN3,
      &  NPOIN2, NELEM2, NPLAN , NF    , SURDET, COURAN, SPHE  ,
-     &  PROINF, PROMIN, MESH  , MESH3D, SIKLE2, TB,IELM3, DIFFRA, ISUB)
+     &  PROINF, PROMIN, MESH  , MESH3D, SIKLE2, TB,IELM3, DIFFRA, 
+     &  MAREE , ISUB)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   25/06/2012
@@ -139,7 +140,7 @@
       INTEGER, INTENT(IN) :: IKLE2(NELEM2,3)
       INTEGER, INTENT(IN) :: ETAP1(NPLAN)
       INTEGER, INTENT(INOUT) :: ITR01(NPOIN3,3),IFABOR(NELEM2,7)
-      LOGICAL, INTENT(IN) :: COURAN,SPHE,PROINF
+      LOGICAL, INTENT(IN) :: COURAN,SPHE,PROINF,MAREE
       TYPE(BIEF_OBJ), INTENT(INOUT) :: SHP,SHZ,SHF,CX,CY,CT,CF,TB
       TYPE(BIEF_OBJ), INTENT(IN)    :: SIKLE2,TETA,FREQ
       TYPE(BIEF_MESH), INTENT(INOUT):: MESH,MESH3D
@@ -184,40 +185,42 @@
         I1=IKLE2(IEL,1)
         I2=IKLE2(IEL,2)
         I3=IKLE2(IEL,3)
-        IF((DEPTH(I1).LT.PROMIN).AND.(DEPTH(I2).LT.PROMIN).AND.
-     &     (IFABOR(IEL,1).GT.0)) IFABOR(IEL,1)=-1
-        IF((DEPTH(I2).LT.PROMIN).AND.(DEPTH(I3).LT.PROMIN).AND.
-     &     (IFABOR(IEL,2).GT.0)) IFABOR(IEL,2)=-1
-        IF((DEPTH(I3).LT.PROMIN).AND.(DEPTH(I1).LT.PROMIN).AND.
-     &     (IFABOR(IEL,3).GT.0)) IFABOR(IEL,3)=-1
+        IF(DEPTH(I1).LT.PROMIN.AND.DEPTH(I2).LT.PROMIN.AND.
+     &     IFABOR(IEL,1).GT.0) IFABOR(IEL,1)=-1
+        IF(DEPTH(I2).LT.PROMIN.AND.DEPTH(I3).LT.PROMIN.AND.
+     &     IFABOR(IEL,2).GT.0) IFABOR(IEL,2)=-1
+        IF(DEPTH(I3).LT.PROMIN.AND.DEPTH(I1).LT.PROMIN.AND.
+     &     IFABOR(IEL,3).GT.0) IFABOR(IEL,3)=-1
       ENDDO
 !
       IF(DIFFRA.EQ.0) THEN      
 !
-!         CALLING CHARAC WITH NOMB=0, FN AND FTILD, THOUGH NOT USED
-!         WILL GIVE THE NUMBER OF POINTS, HENCE SHZ
+!       CALLING CHARAC WITH NOMB=0, FN AND FTILD, THOUGH NOT USED
+!       WILL GIVE THE NUMBER OF POINTS, HENCE SHZ
 !
-          CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
-     &                CX,CY,CT,CT,TETA,TETA,DT,MESH3D%IFABOR,IELM3,
-     &                NPOIN2,NPLAN,1,1,.FALSE.,BID,SHP%ADR(JF)%P,
-     &                SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,TB,
-     &                ELT(1,JF),ETA(1,JF),ETA(1,JF),ITR01,
-     &                ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
-     &                SIKLE2,
-     &                MESH%SURDET,
-!                     A POSTERIORI INTERPOLATION
-     &                .TRUE.,
-!                     AND PERIODICITY 
-     &                .TRUE.)
+        WRITE(LU,*) 'FREQUENCE :',JF
+!
+        CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
+     &              CX,CY,CT,CT,TETA,TETA,DT,MESH3D%IFABOR,IELM3,
+     &              NPOIN2,NPLAN,1,1,.FALSE.,BID,SHP%ADR(JF)%P,
+     &              SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,TB,
+     &              ELT(1,JF),ETA(1,JF),ETA(1,JF),ITR01,
+     &              ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
+     &              SIKLE2,
+     &              MESH%SURDET,
+!                   A POSTERIORI INTERPOLATION
+     &              .TRUE.,
+!                   AND PERIODICITY 
+     &              .TRUE.)
 !    
       ELSE
 !
-          IF(.NOT.DEJA) THEN
-            ALLOCATE(GOODELT(NPOIN2,NPLAN,NF))
-            DEJA=.TRUE.
-          ENDIF
+        IF(.NOT.DEJA) THEN
+          ALLOCATE(GOODELT(NPOIN2,NPLAN,NF))
+          DEJA=.TRUE.
+        ENDIF
 !
-          CALL INIPIE
+        CALL INIPIE
      &( CX%R,CY%R,CT%R,X,Y,
      &  SHP%ADR(JF)%P%R,
      &  SHZ%ADR(JF)%P%R,
@@ -225,7 +228,7 @@
      &  TRA01,TRA01(1,2),TRA01(1,3),TETA%R,IKLE2,NPOIN2,NELEM2,NPLAN,
      &  ITR01,ITR01,ITR01,NELEM2,NPOIN2,IFABOR,GOODELT(1,1,JF))
 !
-          CALL MPOINT
+        CALL MPOINT
      &  (CX%R,CY%R,CT%R,
      &   DT,X,Y,TETA%R,IKLE2,IFABOR,ETAP1,TRA01,TRA01(1,2),
      &   TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6),
@@ -252,11 +255,14 @@
         CALL CONW4D(CY%R,CX%R,CT%R,CF%R,
      &              V,U,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      &              DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
-     &              JF,NF,PROINF,SPHE,COURAN,TRA01,TRA01(1,2))
+     &              JF,NF,PROINF,SPHE,COURAN,MAREE,
+     &              TRA01,TRA01(1,2))
 !
       ENDDO
 !
       DO JF=1,NF       
+!
+        WRITE(LU,*) 'FREQUENCE :',JF
 !
         CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
      &              CX,CY,CT,CF,TETA,FREQ,DT,MESH3D%IFABOR,IELM3,
@@ -269,8 +275,6 @@
      &              .TRUE.,
 !                   AND PERIODICITY 
      &              .TRUE.)   
-!
-        WRITE(LU,*) 'FREQUENCE :',JF
 !
       ENDDO
 !

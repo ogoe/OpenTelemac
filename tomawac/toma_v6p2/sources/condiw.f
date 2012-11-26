@@ -92,7 +92,7 @@
 !
 !   INITIALISES THE TIDAL CURRENT AND WATER LEVEL
 !
-      IF (MAREE) THEN
+      IF(MAREE) THEN
         IF(LNG.EQ.1) THEN
           CHDON='COURANT'
         ELSE
@@ -171,9 +171,9 @@
 !   INITIALISES THE CURRENT
 !   AND READS IN A TELEMAC VARIABLE (OPTIONAL)
 !
-      IF ((COUSTA).OR.(DONTEL)) THEN
-        IF ((WAC_FILES(WACCOF)%NAME(1:1).EQ.' ').AND.
-     &                 (WAC_FILES(WACCOB)%NAME(1:1).EQ.' ')) THEN
+      IF(COUSTA.OR.DONTEL) THEN
+        IF(WAC_FILES(WACCOF)%NAME(1:1).EQ.' '.AND.
+     &     WAC_FILES(WACCOB)%NAME(1:1).EQ.' ') THEN
           IF(COUSTA) THEN
              CALL ANACOS
      &      ( SUC%R, SVC%R, MESH%X%R, MESH%Y%R, NPOIN2)
@@ -191,7 +191,7 @@
      &         '==> INITIALISATION OF CURRENT VELOCITIES IN ANACOS'
              ENDIF
           ELSE
-             IF (LNG.EQ.1) THEN
+             IF(LNG.EQ.1) THEN
                WRITE(LU,*)'RELECTURE D''UNE VARIABLE TELEMAC IMPOSSIBLE'
              ELSE
                WRITE(LU,*)' READING OF A TELEMAC DATA IMPOSSIBLE '
