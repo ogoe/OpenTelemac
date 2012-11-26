@@ -3,8 +3,7 @@
 !                    *****************
 !
      &(ZM , DZHDT, X  , Y  , NPOIN2, NDON , BINDON, NBOR , NPTFR,
-     & AT , DDC  , TM1, TM2, NP    , XRELV, YRELV , ZR   , TRA  ,
-     & Z1 , Z2   , INDIM, IDHMA , NVHMA )
+     & AT , DDC  , TM1, TM2, Z1 , Z2, INDIM, IDHMA , NVHMA )
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   21/06/2011
@@ -35,7 +34,7 @@
 !history  J-M HERVOUET (EDF - LNHE)
 !+        16/11/2012
 !+        V6P3
-!+   Only SELAFIN format with same mesh kept.
+!+   Only SELAFIN format with same mesh kept. Arguments removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -46,21 +45,16 @@
 !| INDIM          |-->| FILE FORMAT
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
-!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NVHMA          |-->| N.OF VARIABLES OF THE FORMATTED WATER LEVEL FILE
 !| TM1            |<->| TIME T1 IN THE DATA FILE
 !| TM2            |<->| TIME T2 IN THE DATA FILE
-!| TRA            |<->| WORK TABLE
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
-!| XRELV          |<--| TABLE OF THE ABSCISSAE OF THE FILE POINTS
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| YRELV          |<--| TABLE OF THE ORDINATES OF THE FILE POINTS
 !| Z1             |<->| TIDAL HEIGTH AT TIME TM1, AT THE MESH POINTS
 !| Z2             |<->| TIDAL HEIGTH AT TIME TM2, AT THE MESH POINTS
 !| ZM             |<--| TIDAL HEIGTH AT TIME AT, AT THE MESH POINTS
-!| ZR             |<->| TABLE OF THE TIDAL HEIGHTS READ IN THE DATA FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -70,20 +64,23 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NP,NDON,NPOIN2,NPTFR,INDIM,I,ISTAT,IW(1)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NBOR(NPTFR,2), IDHMA,NVHMA
+      INTEGER, INTENT(IN)             :: NDON,NPOIN2,NPTFR
+      INTEGER, INTENT(IN)             :: INDIM,IDHMA,NVHMA
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2) ,Y(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZM(NPOIN2),DZHDT(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: Z1(NPOIN2),Z2(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
+      DOUBLE PRECISION, INTENT(INOUT) :: TM1,TM2
+      CHARACTER(LEN=3), INTENT(IN)    :: BINDON
 !
-      DOUBLE PRECISION X(NPOIN2) ,Y(NPOIN2)
-      DOUBLE PRECISION ZM(NPOIN2),ZR(NP), DZHDT(NPOIN2)
-      DOUBLE PRECISION Z1(NPOIN2),Z2(NPOIN2)
-      DOUBLE PRECISION XRELV(NP),YRELV(NP),TRA(NP)
-      DOUBLE PRECISION AT,TM1,TM2
-      DOUBLE PRECISION DDC,DAT2,DAT2B(1),Z(1),C,COE1,COE2,ATT
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*3 BINDON, C1
-!
-!-----------------------------------------------------------------------
+      INTEGER I,ISTAT,IW(1)
+      DOUBLE PRECISION DAT2B(1),Z(1),C,COE1,COE2,ATT
+      CHARACTER(LEN=3) C1
 !
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPOIN2))
@@ -120,7 +117,7 @@
 !       READS THE DATA
         DO I =1,NVHMA
           IF(I.EQ.IDHMA) THEN
-            CALL LIT(Z2,W,IW,C1,NP,'R4',NDON,BINDON,ISTAT)
+            CALL LIT(Z2,W,IW,C1,NPOIN2,'R4',NDON,BINDON,ISTAT)
           ELSE
             READ(NDON)
           ENDIF
@@ -133,7 +130,7 @@
             WRITE(LU,*) ' NOUMAR : JUMP OF 1 RECORDED DATA SERIES'
           ENDIF
           TM1=TM2
-          CALL OV('X=Y     ',Z1,Z2,Z2,0.D0,NP)
+          CALL OV('X=Y     ',Z1,Z2,Z2,0.D0,NPOIN2)
           GOTO 95
         ENDIF
 !
@@ -147,7 +144,7 @@
 !     ------------------------------------------------------------------
 !
           CALL MARUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,AT,DDC,TM1,TM2,
-     &                NP,XRELV,YRELV,ZR,Z1,Z2,NP)
+     &                Z1,Z2)
 !
         ELSE
 !
@@ -189,10 +186,6 @@
       ENDDO
 !
 !-----------------------------------------------------------------------
-!
-!     FORMATS
-!
-20    FORMAT (10F6.2)
 !
       DEALLOCATE(W)
       RETURN

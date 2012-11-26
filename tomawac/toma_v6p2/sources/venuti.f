@@ -2,11 +2,10 @@
                      SUBROUTINE VENUTI
 !                    *****************
 !
-     &(X,Y,NPOIN,NVEN, BINVEN,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     & NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NPMAX)
+     &(X,Y,NPOIN,NVEN,BINVEN,NBOR,NPTFR,AT,DDC,TV1,TV2,U1,V1,U2,V2)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   29/06/2011
+! TOMAWAC   V6P3                                  29/06/2011
 !***********************************************************************
 !
 !brief    READS THE WINDS FROM A USED-DEFINED FILE FORMAT.
@@ -53,13 +52,17 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF-LNHE)
+!+        23/11/20012
+!+        V6P3
+!+   XRELV, YRELV, UR, VR, NPMAX, NP removed, must be declared locally 
+!+   if necessary.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| BINVEN         |-->| WIND FILE BINARY
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
-!| NP             |-->| NUMBER OF POINTS READ FROM THE FILE
-!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
 !| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NVEN           |-->| LOGICAL UNIT NUMBER OF THE WIND DATA FILE
@@ -67,11 +70,8 @@
 !| TV2            |-->| TIME T2 IN THE WIND FILE
 !| U1,V1          |<->| WIND VALUES AT TIME T1 IN THE CURRENTS FILE
 !| U2,V2          |<->| WIND VALUES AT TIME T2 IN THE CURRENTS FILE
-!| UR,VR          |<->| TABLE OF THE VALUES READ IN THE CURRENT FILE
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| XRELV          |<->| TABLE OF THE ABSCISSES OF WIND FILE POINTS
-!| YRELV          |<->| TABLE OF THE ORDINATES OF WIND FILE POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -79,21 +79,27 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER NVEN,NPOIN,NPMAX,NP,NPTFR,NBOR(NPTFR,2)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION X(NPOIN),Y(NPOIN)
-      DOUBLE PRECISION XRELV(NPMAX),YRELV(NPMAX), UR(NPMAX),VR(NPMAX)
-      DOUBLE PRECISION U1(NPMAX),V1(NPMAX),U2(NPMAX),V2(NPMAX)
-      DOUBLE PRECISION AT,DDC,TV1,TV2
+      INTEGER, INTENT(IN)             :: NVEN,NPOIN,NPTFR
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: U1(NPOIN),V1(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: U2(NPOIN),V2(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,TV1,TV2
+      CHARACTER(LEN=3), INTENT(IN)    :: BINVEN
 !
-      CHARACTER*3 BINVEN
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       WRITE(LU,*) '*********************************************'
       WRITE(LU,*) '  VOUS FAITES APPEL A LA PROCEDURE VENUTI    '
       WRITE(LU,*) '    (FORMAT DU FICHIER DES VENTS = 4)        '
       WRITE(LU,*) '     MAIS VOUS NE L''AVEZ PAS MODIFIEE       '
       WRITE(LU,*) '*********************************************'
-      CALL PLANTE(0)
+      CALL PLANTE(1)
+      STOP
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

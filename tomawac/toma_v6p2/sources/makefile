@@ -112,7 +112,7 @@ ifabtom.f impr.f  iniphy.f inipie.f initab.f invert.f \
 intang.f   \
 kerbou.f kmoyen.f \
 lecdoi.f lecdon.f lecdon_tomawac.f lecham.f lecsui.f \
-lecuti.f limwac.f  \
+limwac.f  \
 maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
 point_tomawac.f predif.f  \
 prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \

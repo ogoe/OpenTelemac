@@ -76,8 +76,7 @@
       TYPE (BIEF_OBJ), TARGET ::SCX,SCY,SCT,SCF,SSHF,SXK,SCG ,
      & SZF,SDEPTH,SUC,SVC,SUC1,SVC1,SUC2,SVC2,SDZHDT,SDZX ,
      & SDZY,SDF_LIM,SUV,SVV,SUV1,SVV1,SUV2,SVV2,SZM1,SZM2,
-     & SXRELV,SYRELV,SXRELC,SYRELC,SXRELM,SYRELM,SCOSF,STGF,
-     & SDUX,SDUY,SDVX,SDVY,STETA,SCOSTE,SSINTE,SSURDE,
+     & SCOSF,STGF,SDUX,SDUY,SDVX,SDVY,STETA,SCOSTE,SSINTE,SSURDE,
      & SFBOR,AM1,STSDER,STSTOT,ST0,ST1,ST2,ST3,ST4,ST5,
      & ST6,ST7,BST1,VARSOR,ST00,STRA15,STRA16,STRA40,
      & BOUNDARY_COLOUR
@@ -625,8 +624,6 @@
 !     NPOIN2*NPLAN
 !
       INTEGER NPOIN3
-!> @brief NPOIN2 OF MESH BEFORE PARTITIONING, NPOIN3_G=NPOIN2_G*NPLAN
-      INTEGER NPOIN2_G,NPOIN3_G
 !
 !GM V6P1 - NEW SOURCE TERMS
 !> @brief
@@ -842,24 +839,6 @@
 !> @brief
 ! hauteur de la maree par rapport a zrepos a t2
       DOUBLE PRECISION, DIMENSION(:) , POINTER ::  ZM2
-!> @brief
-! abscisses des points releves du vent
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  XRELV
-!> @brief
-! ordonnees des points releves du vent
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  YRELV
-!> @brief
-! abscisses des points releves du courant
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  XRELC
-!> @brief
-! ordonnees des points releves du courant
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  YRELC
-!> @brief
-! abscisses des points releves de la hauteur de maree
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  XRELM
-!> @brief
-! ordonnees des points releves de la hauteur de maree
-      DOUBLE PRECISION, DIMENSION(:) , POINTER ::  YRELM
 !> @brief
 ! frequences de discretisation
       DOUBLE PRECISION, DIMENSION(:) , POINTER ::  FREQ

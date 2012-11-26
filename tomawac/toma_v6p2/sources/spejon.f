@@ -64,11 +64,11 @@
       DOUBLE PRECISION COEF  , ARG1   , ARG2  , ARG3  , SIG   , FF
 !
 !
-      IF (FP.GT.FPMIN) THEN
+      IF(FP.GT.FPMIN) THEN
         COEF=AL*GRAVIT**2/DEUPI**4
         DO 100 JF=1,NF
           FF=FREQ(JF)
-          IF (FF.LT.FP) THEN
+          IF(FF.LT.FP) THEN
             SIG=SIGMAA
           ELSE
             SIG=SIGMAB

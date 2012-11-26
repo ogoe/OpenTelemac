@@ -56,7 +56,7 @@
 !
 !     VARIABLES DECLAREES LOCALEMENT DANS LA PROCEDURE.
 !
-      INTEGER LT,LT1,NRK,NPV,NPC,NPM
+      INTEGER LT,LT1,NRK
       INTEGER NOLEO(99)
       INTEGER DATE(3),TIME(3),NPTL,IP
 !
@@ -348,7 +348,7 @@
 ! COUPLAGE TELEMAC-TOMAWAC : si PART=0, courants et hauteur d'eau
 !  passes par TELEMAC
         CALL CONDIW
-     &( AT, LT , DEUPI , TC1 , TC2 , NPC, TV1, TV2, NPV, TM1, TM2, NPM,
+     &( AT, LT , DEUPI , TC1 , TC2 , TV1, TV2, TM1, TM2, 
      &  NVHMA  , NVCOU , PART , U_TEL, V_TEL, H_TEL )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
 !
@@ -603,8 +603,8 @@
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
         CALL ECRSPE
-     &( SF%R    , STRA01%R , STETA%R, NPLAN ,
-     &  SFR%R   , NF  , NF   , NPOIN2      , AT ,LT ,
+     &( SF%R    , STETA%R, NPLAN ,
+     &  SFR%R   , NF  , NF   , NPOIN2      , AT ,
      &  STRA01%R, NOLEO , NPLEO , WAC_FILES(WACLEO)%LU ,
      &  WAC_FILES(WACLEO)%FMT, DEBRES , TITCAS , DATE , TIME ,
      &  MESH%KNOLG%I ,MESH )
@@ -626,7 +626,7 @@
 !
         CALL PREPRO
      & ( SCX      , SCY       , SCT      , SCF     , DT  ,
-     &   NRK      , MESH%X%R  , MESH%Y%R , STETA   ,
+     &   MESH%X%R , MESH%Y%R  , STETA    ,
      &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
      &   SSHZ     , SSHF      ,
@@ -725,7 +725,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORMAR'       
         CALL CORMAR
      &( AT    , LT    , TC1   , TC2   , TV1   , TV2   , TM1   , TM2   ,
-     &  NPC   , NPM   , NVHMA , NVCOU , PART, U_TEL, V_TEL , H_TEL  )
+     &  NVHMA , NVCOU , PART, U_TEL, V_TEL , H_TEL  )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CORMAR'
         DO IP=1,NPOIN2
           IF (DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
@@ -747,7 +747,7 @@
 !
          CALL PREPRO
      & ( SCX      , SCY       , SCT      , SCF     , DT  ,
-     &   NRK      , MESH%X%R  , MESH%Y%R , STETA   ,
+     &   MESH%X%R , MESH%Y%R  , STETA    ,
      &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
      &   SSHZ     , SSHF      ,
@@ -756,7 +756,6 @@
      &   SVC%R    , SDUX%R    , SDUY%R   , SDVX%R  ,
      &   SDVY%R   , SXK%R     , SCG%R    , SCOSF%R ,
      &   STGF%R   , SITR01%I  , NPOIN3   , NPOIN2  , NELEM2,
-!     &   NPLAN    , NF        , MESH%SURDET%R, COURAN,
      &   NPLAN    , NF    , MESH%SURDET%R, COURAN.OR.PART.EQ.1,
      &   SPHE     , PROINF    , PROMIN,MESH,MESH3D,MESH%IKLE,TB,
      &   IELM3    , DIFFRA    , ISUB )
@@ -805,7 +804,7 @@
         CALL PROPA
      &( SF%R       , SB%R    , SSHP1, 
      &  SSHZ       , SSHF    , SELT%I , SETA%I , SFRE%I ,
-     &  MESH%IKLE%I, IKLE_EXT, SETAP1%I, NPOIN3    ,NPOIN2,NELEM2,
+     &  IKLE_EXT   , NPOIN3  , NPOIN2 , NELEM2,
      &  NPLAN , NF , COURAN.OR.PART.EQ.1 ,STRA01%R ,STRA02,
      &  ITR01 , T3_01 , T3_02, ISUB, MESH3D)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPA'
@@ -818,7 +817,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SEMIMP'
         CALL SEMIMP(SF%R, SXK%R, SFR%R, SDFR%R, SDEPTH%R, SUV%R, SVV%R ,
      &  MESH%X%R, MESH%Y%R, WAC_FILES(WACVEB)%LU, WAC_FILES(WACVEF)%LU ,
-     &  NBOR, NPTFR, DDC,TV1,TV2,NPV, SXRELV%R, SYRELV%R, SUV1%R,SVV1%R,
+     &  NBOR, NPTFR, DDC,TV1,TV2,SUV1%R,SVV1%R,
      &  SUV2%R,SVV2%R,STETA%R,SSINTE%R,SCOSTE%R,INDIV,TAILF,RAISF      ,
      &  GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,CMOUT6,AT,DTSI,
      &  ROAIR,ROEAU,XKAPPA,BETAM,DECAL,CDRAG,ALPHA,ZVENT,NF,NPLAN      ,
@@ -831,7 +830,7 @@
      &  WAC_FILES(WACVEF)%NAME,BINVEN,NBD,QINDI,STRA41%R,STRA42%R      ,
      &  STRA43%R,STRA44%R,STSTOT%R,STSDER%R,STOLD%R,STNEW%R,STRA31%R   ,
      &  STRA32%R,STRA33%R,STRA34%R,STRA35%R,STRA36%R,STRA37%R,STRA38%R ,
-     &  STRA39%R,ST1%R,ST2%R,ST3%R,ST4%R,STRA01%R,SBETA%R,NQ_TE1,NQ_OM2,
+     &  STRA39%R,ST1%R,ST2%R,ST3%R,ST4%R,SBETA%R,NQ_TE1,NQ_OM2,
      &  NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,F_POIN, T_POIN,
      &  F_COEF,F_PROJ,TB_SCA,K_IF1,K_1P,K_1M,K_IF2,K_IF3,K_1P2P,K_1P2M,
      &  K_1P3P,K_1P3M,K_1M2P,K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,
@@ -882,8 +881,8 @@
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
          CALL ECRSPE
-     &( STRA02%R, STRA01%R , STETA%R, NPLAN ,
-     &  SFR%R   , NF  , NF   , NPOIN2      , AT ,LT ,
+     &( STRA02%R, STETA%R, NPLAN ,
+     &  SFR%R   , NF  , NF   , NPOIN2      , AT ,
      &  STRA01%R, NOLEO  , NPLEO, WAC_FILES(WACLEO)%LU,
      &  WAC_FILES(WACLEO)%FMT, DEBRES, TITCAS, DATE, TIME,
      &  MESH%KNOLG%I , MESH )

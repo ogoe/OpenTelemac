@@ -70,34 +70,34 @@
         COEF=AL*GRAVIT**2/DEUPI**4
         DO 100 JF=1,NF
           FF=FREQ(JF)
-          IF (FF.LT.FP) THEN
+          IF(FF.LT.FP) THEN
             SIG=SIGMAA
           ELSE
             SIG=SIGMAB
           ENDIF
           ARG1=0.5D0*((FF-FP)/(SIG*FP))**2
-          IF (ARG1.LT.99.D0) THEN
+          IF(ARG1.LT.99.D0) THEN
             ARG1=GAMMA**EXP(-ARG1)
           ELSE
             ARG1=1.D0
           ENDIF
           ARG2=1.25D0*(FP/FF)**4
-          IF (ARG2.LT.99.D0) THEN
+          IF(ARG2.LT.99.D0) THEN
             ARG2=EXP(-ARG2)
           ELSE
             ARG2=0.D0
           ENDIF
           ARG3=COEF/FF**5
           OMEGH=DEUPI*FF*SQRT(DEPTH/GRAVIT)
-          IF (OMEGH.LT.1.D0) THEN
-            ARG4=0.5D0*OMEGH*OMEGH
-          ELSEIF (OMEGH.LT.2.D0) THEN
+          IF(OMEGH.LT.1.D0) THEN
+            ARG4=0.5D0*OMEGH**2
+          ELSEIF(OMEGH.LT.2.D0) THEN
             ARG4=1.D0-0.5D0*(2.D0-OMEGH)**2
           ELSE
             ARG4=1.D0
           ENDIF
           SPEC(JF)=ARG1*ARG2*ARG3*ARG4
-          IF (SPEC(JF).LT.E2FMIN) SPEC(JF)=0.D0
+          IF(SPEC(JF).LT.E2FMIN) SPEC(JF)=0.D0
   100   CONTINUE
       ELSE
         DO 150 JF=1,NF

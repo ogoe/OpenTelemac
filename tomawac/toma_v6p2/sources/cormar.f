@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( AT    , LT    , TC1   , TC2   , TV1   , TV2   , TM1   , TM2   ,
-     &  NPC   , NPM   , NVHMA , NVCOU , PART  , U_TEL , V_TEL , H_TEL )
+     &  NVHMA , NVCOU , PART  , U_TEL , V_TEL , H_TEL )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   14/06/2011
@@ -42,8 +42,6 @@
 !| AT             |-->| COMPUTATION TIME
 !| H_TEL          |-->| TELEMAC WATER DEPTH
 !| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
-!| NPC            |-->| NUMBER OF POINTS OF THE CURRENT FILE
-!| NPM            |-->| NUMBER OF POINTS OF THE WATER HEIGHT FILE
 !| NVCOU          |<--| NUMBER OF VARIABLES OF THE FORMATTED CURRENT FILE
 !| NVHMA          |<--| N.OF VARIABLES OF THE FORMATTED WATER LEVEL FILE
 !| PART           |-->| FLAG FOR DIRECT COUPLING WITH TELEMAC
@@ -70,15 +68,14 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER LT
-      INTEGER NPC , NPM, NVHMA, NVCOU
+      INTEGER NVHMA, NVCOU
       DOUBLE PRECISION AT, TC1, TC2 , TV1, TV2, TM1 , TM2
       INTEGER, INTENT(IN)        :: PART
       TYPE(BIEF_OBJ), INTENT(IN) :: U_TEL,V_TEL,H_TEL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     LOCAL VARIABLES
-      INTEGER N1,N2,N3,N4,IP
+      INTEGER IP
 !
 !-----------------------------------------------------------------------
 !         UPDATES THE TIDAL CURRENT AND WATER LEVEL ARRAYS
@@ -87,25 +84,18 @@
 !            UPDATES THE CURRENT AT TIME 'AT'
 !         ---------------------------------------------
 !
-      N1=NPOIN3_G+1
-      N2=2*NPOIN3_G
-      N3=N2+1
-      N4=3*NPOIN3_G
-!
-      IF (WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN
+      IF(WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN
         CALL NOUDON
      & ( SUC%R , SVC%R  , MESH%X%R, MESH%Y%R, NPOIN2     ,
      &   WAC_FILES(WACCOB)%LU , BINCOU , NBOR      , NPTFR , AT , DDC ,
-     &   TC1      , TC2       , NPC        , SXRELC%R, SYRELC%R,
-     &   TRA01(1:NPOIN3_G),TRA01(N1:N2),TRA01(N3:N4) ,
+     &   TC1      , TC2       , 
      &   SUC1%R, SVC1%R , SUC2%R  , SVC2%R  , INDIC  ,
      &   'COURANT', NVCOU     )
       ELSEIF (WAC_FILES(WACCOF)%NAME(1:1).NE.' ') THEN
         CALL NOUDON
      & ( SUC%R , SVC%R  , MESH%X%R, MESH%Y%R, NPOIN2     ,
      &   WAC_FILES(WACCOF)%LU  , BINCOU , NBOR   , NPTFR , AT , DDC   ,
-     &   TC1      , TC2       , NPC        , SXRELC%R, SYRELC%R,
-     &   TRA01(1:NPOIN3_G),TRA01(N1:N2),TRA01(N3:N4) ,
+     &   TC1      , TC2       , 
      &   SUC1%R, SVC1%R , SUC2%R  , SVC2%R  , INDIC  ,
      &   'COURANT', NVCOU )
       ELSE
@@ -127,15 +117,13 @@
       IF (WAC_FILES(WACMAB)%NAME(1:1).NE.' ') THEN
         CALL NOUMAR
      & (TRA01(1:NPOIN2) , SDZHDT%R, MESH%X%R , MESH%Y%R ,
-     &  NPOIN2,WAC_FILES(WACMAB)%LU,BINMAR,NBOR,NPTFR,AT    , DDC ,
-     &  TM1     , TM2   , NPM        , SXRELM%R , SYRELM%R ,
-     &  TRA01(N1:N2), TRA01(N3:N4), ZM1, ZM2 , INDIM , IDHMA , NVHMA)
+     &  NPOIN2,WAC_FILES(WACMAB)%LU,BINMAR,NBOR,NPTFR,AT,DDC,
+     &  TM1,TM2,ZM1,ZM2,INDIM,IDHMA,NVHMA)
       ELSEIF (WAC_FILES(WACMAF)%NAME(1:1).NE.' ') THEN
         CALL NOUMAR
      & (TRA01(1:NPOIN2) , SDZHDT%R, MESH%X%R , MESH%Y%R ,
-     &  NPOIN2 ,WAC_FILES(WACMAF)%LU,BINMAR,NBOR,NPTFR,AT   , DDC ,
-     &  TM1     , TM2   , NPM        , SXRELM%R , SYRELM%R ,
-     &  TRA01(N1:N2), TRA01(N3:N4), ZM1, ZM2 , INDIM , IDHMA , NVHMA)
+     &  NPOIN2,WAC_FILES(WACMAF)%LU,BINMAR,NBOR,NPTFR,AT,DDC,
+     &  TM1,TM2,ZM1,ZM2,INDIM,IDHMA,NVHMA)
       ELSE
         IF((WAC_FILES(WACCOF)%NAME(1:1).NE.' ').OR.
      &     (WAC_FILES(WACCOB)%NAME(1:1).NE.' ')) THEN
@@ -146,7 +134,6 @@
        ENDIF
       ENDIF
 !
-!GM V6P1 - DIRECT COUPLING WITH TELEMAC
       IF(PART.LT.0) THEN
         CALL OV('X=X+Y   ', SDEPTH%R , TRA01(1:NPOIN2) , ST0%R ,
      &         0.D0 , NPOIN2)

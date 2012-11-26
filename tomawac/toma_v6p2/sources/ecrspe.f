@@ -2,8 +2,8 @@
                      SUBROUTINE ECRSPE
 !                    *****************
 !
-     &( F     , B     , TETA  , NPLAN , FREQ  , NF    , NK    ,
-     &  NPOIN2, AT    , LT    , AUXIL , NOLEO , NLEO  , NSCO  ,
+     &( F     , TETA  , NPLAN , FREQ  , NF    , NK    ,
+     &  NPOIN2, AT    , AUXIL , NOLEO , NLEO  , NSCO  ,
      &  BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH )
 !
 !***********************************************************************
@@ -59,7 +59,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
-!| B              |-->| JACOBIAN TO TRANSFORM N(KX,KY) INTO F(FR,TETA)
 !| BINSCO         |-->| SPECTRUM FILE FORMAT
 !| DATE           |-->| START DATE
 !| DEBRES         |-->| LOGICAL INDICATING THE FIRST TIME STEP TO PRINT
@@ -68,7 +67,6 @@
 !| INUTIL         |<->| WORK TABLE
 !| ISLEO          |-->| ARRAY OF LOGICAL
 !| KNOLG          |-->| ARRAY LINKING LOCAL TO GLOBAL INDEXES IN PARALL
-!| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NK             |-->| DUMMY VARIABLE
 !| NLEO           |-->| NUMBER OF SPECTRUM PRINTOUT POINTS
@@ -95,8 +93,6 @@
       DOUBLE PRECISION, INTENT(INOUT) :: AUXIL(NPLAN,NK)
       DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN)    :: TETA(NPLAN),FREQ(NF)
-      DOUBLE PRECISION, INTENT(IN)    :: B(NPOIN2,NPLAN)
-      INTEGER, INTENT(IN)             :: LT
       LOGICAL, INTENT(IN)             :: DEBRES
       CHARACTER(LEN=72), INTENT(IN)   :: TITCAS
       CHARACTER(LEN=*) , INTENT(IN)   :: BINSCO
@@ -104,17 +100,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER  ISTAT , II    , JF    , K     , IB(10)
+      INTEGER  ISTAT , II    , JF    , K 
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
       INTEGER  IBID(1), NELEM, NPSPE
       CHARACTER*72 C
       CHARACTER*32 TEXTE(99)
       CHARACTER*6  NUM
       CHARACTER*2  CC
-      CHARACTER*1  C0    , C1    , C2    , C3    , C4    , C5    , C6
+      CHARACTER*1  C1,C2,C3,C4,C5,C6
       TYPE(BIEF_MESH) :: MESHF
-      LOGICAL         :: SORLEO(99)
-      INTEGER :: I,IER      
+      LOGICAL         :: SORLEO(99)    
       DOUBLE PRECISION AAT(1)
       REAL W(1)
       CHARACTER(LEN=11) EXTENS

@@ -3,8 +3,8 @@
 !                    *****************
 !
      &( F     ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
-     &  NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,NP    ,XRELV ,
-     &  YRELV ,U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
+     &  NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,
+     &  U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
      &  TAILF ,RAISF ,GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,
      &  CMOUT6,TPROP ,DTSI  ,ROAIR ,ROEAU ,XKAPPA,BETAM ,DECAL ,CDRAG ,
      &  ALPHA ,ZVENT ,NF    ,NPLAN ,NPOIN2,IANGNL,COEFNL,F1    ,NSITS ,
@@ -16,7 +16,7 @@
      &  COEFWH,NOMVEB,NOMVEF,BINVEN,NBD   ,QINDI ,TAUWAV,USOLD ,TWOLD ,
      &  Z0OLD ,TSTOT ,TSDER ,TOLD  ,TNEW  ,VARIAN,FMOY  ,XKMOY ,USNEW ,
      &  Z0NEW ,TWNEW ,TAUX1 ,TAUX2 ,TAUX3 ,TAUX4 ,TAUX5 ,TAUX6 ,TAUX7 ,
-     &  TRA01 ,BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
+     &  BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
      &  SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      &  K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
@@ -220,7 +220,6 @@
 !| TNEW           |<->| WORK TABLE
 !| TOLD           |<->| WORK TABLE
 !| TPROP          |-->| COMPUTATION TIME
-!| TRA01          |<->| WORK TABLE
 !| TSDER          |<--| DERIVED PART OF THE SOURCE TERM CONTRIBUTION
 !| TSTOT          |<--| TOTAL PART OF THE SOURCE TERM CONTRIBUTION
 !| TV1            |<->| TIME T1 IN THE WIND FILE
@@ -242,9 +241,7 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !| XKAPPA         |-->| VON KARMAN CONSTANT
 !| XKMOY          |<--| AVERAGE WAVE NUMBER
-!| XRELV          |<->| TABLE OF THE ABSCISSES OF WIND FILE POINTS
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| YRELV          |<->| TABLE OF THE ORDINATES OF WIND FILE POINTS
 !| Z0NEW          |<->| SURFACE ROUGHNESS LENGTH AT TIME N+1
 !| Z0OLD          |<->| SURFACE ROUGHNESS LENGTH AT TIME N
 !| ZVENT          |-->| WIND MEASUREMENT LEVEL
@@ -273,7 +270,7 @@
      &                 NVEF  , LIMIT ,
      &                 SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC ,
      &                 IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO ,
-     &                 IEXPRO, IFRIH , NDTBRK, NP    , IDISRO, STRIA ,
+     &                 IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA ,
      &                 NBOR(NPTFR)   , IANGNL(NPLAN,8)
       INTEGER          NBD   , QINDI(NBD)
       DOUBLE PRECISION TAILF , CFROT1, GRAVIT, RAISF , DTSI  , TPROP ,
@@ -296,10 +293,9 @@
      &                    F(NPOIN2,NPLAN,NF),   XK(NPOIN2,NF)        ,
      &                    DF_LIM(NPOIN2,NF) ,
      &                 TSDER(NPOIN2,NPLAN,NF),TSTOT(NPOIN2,NPLAN,NF) ,
-     &                 FREQ(NF), DFREQ(NF), XRELV(NP), YRELV(NP)     ,
+     &                 FREQ(NF), DFREQ(NF), 
      &                 TOLD(NPOIN2,NPLAN), TNEW(NPOIN2,NPLAN)
       DOUBLE PRECISION BETA(NPOIN2)
-      DOUBLE PRECISION TRA01(NPOIN2,NPLAN)
       CHARACTER*144 NOMVEB, NOMVEF
       CHARACTER*3 BINVEN
       LOGICAL  PROINF, VENT , VENSTA
@@ -433,15 +429,13 @@
           IF (NOMVEB(1:1).NE.' ') THEN
             CALL NOUDON
      &( VENTX , VENTY , X     , Y     , NPOIN2, NVEB  , BINVEN, NBOR  ,
-     &  NPTFR , TFIN  , DDC   , TV1   , TV2   , NP    , XRELV , YRELV ,
-     &  TOLD  , TNEW  , TRA01 , U1    , V1    , U2    , V2    ,
-     &  INDIC , CHDON , 2 )
+     &  NPTFR , TFIN  , DDC   , TV1   , TV2   , 
+     &  U1    , V1    , U2    , V2    , INDIC , CHDON , 2 )
           ELSEIF (NOMVEF(1:1).NE.' ') THEN
             CALL NOUDON
      &( VENTX , VENTY , X     , Y     , NPOIN2, NVEF  , BINVEN, NBOR  ,
-     &  NPTFR , TFIN  , DDC   , TV1   , TV2   , NP    , XRELV , YRELV ,
-     &  TOLD  , TNEW  , TRA01 , U1    , V1    , U2    , V2    ,
-     &  INDIC , CHDON , 2 )
+     &  NPTFR , TFIN  , DDC   , TV1   , TV2   , 
+     &  U1    , V1    , U2    , V2    , INDIC , CHDON , 2 )
           ELSE
             CALL ANAVEN
      &( VENTX , VENTY , X     , Y     , NPOIN2, TFIN  , DDC   , VX_CTE,

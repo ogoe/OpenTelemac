@@ -3,8 +3,8 @@
 !                    *****************
 !
      &( ZM , DZHDT, X    , Y     , NPOIN2, NDON , BINDON, NBOR  , NPTFR,
-     &  AT , DDC  , TM1  , TM2   , NP   , XRELV , YRELV , ZR   ,
-     &  Z1 , Z2   , INDIM, NPMAX , IDHMA, NVAR  )
+     &  AT , DDC  , TM1  , TM2   , 
+     &  Z1 , Z2   , INDIM, IDHMA, NVAR  )
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   21/06/2011
@@ -45,7 +45,7 @@
 !history  J-M HERVOUET (EDF - LNHE)
 !+        16/11/2012
 !+        V6P3
-!+   Only SELAFIN format with same mesh kept.
+!+   Only SELAFIN format with same mesh kept. Arguments removed
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -56,21 +56,16 @@
 !| INDIM          |-->| FILE FORMAT
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
-!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
-!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NVAR           |<--| NUMBER OF VARIABLES READ FROM THE DATA FILE
 !| TM1            |<--| TIME T1 IN THE DATA FILE
 !| TM2            |<--| TIME T2 IN THE DATA FILE
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
-!| XRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| YRELV          |<->| TABLE OF THE ORDINATES OF DATA FILE POINTS
 !| Z1             |<->| DATA AT TIME TM1 AT THE MESH POINTS
 !| Z2             |<->| DATA AT TIME TM2 AT THE MESH POINTS
 !| ZM             |<--| DATA AT TIME AT, AT THE MESH POINTS
-!| ZR             |<->| TABLE OF THE VALUES READ IN THE DATA FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -80,24 +75,27 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER NP,NDON,NPOIN2,NPTFR,INDIM,NCOL,NLIG,BID,I,J
-      INTEGER NVAR,NI,ISTAT,IB(10),IDHMA
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPMAX,NBOR(NPTFR,2)
+      INTEGER, INTENT(IN)             :: NDON,NPOIN2,NPTFR,INDIM,IDHMA
+      INTEGER, INTENT(INOUT)          :: NVAR
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZM(NPOIN2),DZHDT(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: Z1(NPOIN2),Z2(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
+      DOUBLE PRECISION, INTENT(INOUT) :: TM1,TM2
+      CHARACTER(LEN=3), INTENT(IN)    :: BINDON
 !
-      DOUBLE PRECISION X(NPOIN2)    , Y(NPOIN2)
-      DOUBLE PRECISION ZM(NPOIN2)   , DZHDT(NPOIN2)
-      DOUBLE PRECISION XRELV(NPMAX), YRELV(NPMAX)
-      DOUBLE PRECISION ZR(NPMAX)   , Z1(NPMAX)   , Z2(NPMAX)
-      DOUBLE PRECISION XMAX,XMIN,YMAX,YMIN,DX,DY,AT,TM1,TM2
-      DOUBLE PRECISION DDC,DAT1,DAT2,Z(1),ATT, ATB(1)
-      DOUBLE PRECISION COE1, COE2
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER NP,I,ISTAT,IB(10)
+      DOUBLE PRECISION COE1,COE2,Z(1),ATT,ATB(1)
+      CHARACTER(LEN=3) C
+      CHARACTER(LEN=72) TITCAS
+      CHARACTER(LEN=32) TEXTE(10)
+!
       REAL, ALLOCATABLE :: W(:)
-!
-      CHARACTER*3  BINDON,C
-      CHARACTER*72 TITCAS
-      CHARACTER*32 TEXTE(10)
-!
       ALLOCATE(W(NPOIN2))
 !
 !-----------------------------------------------------------------------
@@ -114,25 +112,24 @@
 !
 !      READS TITLE
 !
-       CALL LIT(X,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
 !
 !      READS NUMBER OF VARIABLES AND THEIR NAMES
 !
-       CALL LIT(X,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
        NVAR=IB(1)
-       DO 80 I=1,NVAR
-         CALL LIT(X,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
-80     CONTINUE
+       DO I=1,NVAR
+         CALL LIT(Z,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
+       ENDDO
 !
 !      FORMAT AND GEOMETRY
 !
-       CALL LIT(X,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
        IF(IB(10).EQ.1) THEN
-         CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
+         CALL LIT(Z,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
        ENDIF
-       CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
        NP=IB(2)
-       NI=IB(1)*IB(3)
        WRITE(LU,*) '--------------------------------------------'
        IF(LNG.EQ.1) THEN
          WRITE(LU,*)'LECHAM : LECTURE DU FICHIER TELEMAC'
@@ -164,8 +161,6 @@
 !
 !      X AND Y
 !
-!      CALL LIT(XRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-!      CALL LIT(YRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
        READ(NDON)
        READ(NDON)
 !
@@ -219,7 +214,7 @@
       ELSEIF (INDIM.EQ.4) THEN
 !       READS A USER-DEFINED FORMAT
         CALL MARUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,AT,DDC,TM1,TM2,
-     &              NP,XRELV,YRELV,ZR,Z1,Z2,NPMAX)
+     &              Z1,Z2)
 !
       ELSE
         WRITE(LU,*) '************************************************'
@@ -254,9 +249,9 @@
       ENDIF
       COE2=(AT-TM1)/COE1
       DO I=1,NPOIN2
-         ATT     = (Z2(I)-Z1(I))
-         ZM(I)   = ATT*COE2+Z1(I)
-         DZHDT(I)= ATT/COE1
+        ATT     = (Z2(I)-Z1(I))
+        ZM(I)   = ATT*COE2+Z1(I)
+        DZHDT(I)= ATT/COE1
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -264,11 +259,6 @@
       DEALLOCATE(W)
 !
 !-----------------------------------------------------------------------
-!
-!     FORMATS
-!
-10    FORMAT (2I4,4F9.3,2I2)
-20    FORMAT (10F6.2)
 !
       RETURN
 !
@@ -285,6 +275,8 @@
       ENDIF
       WRITE(LU,*)'**********************************************'
       CALL PLANTE(1)
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

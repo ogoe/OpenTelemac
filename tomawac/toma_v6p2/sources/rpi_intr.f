@@ -78,9 +78,9 @@
 !************************************************************************ 
 ! 
        IF(.NOT.DEJA)THEN
-          ALLOCATE(WU_OM(MAXNSP))
-	  ALLOCATE(ZETA(NPOIN2))
-	  DEJA=.TRUE.
+         ALLOCATE(WU_OM(MAXNSP))
+         ALLOCATE(ZETA(NPOIN2))
+         DEJA=.TRUE.
        ENDIF
 
 !       FFD the field function where data are coming from. 

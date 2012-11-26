@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TOMAWAC   V6P2                                   21/08/2010
+! TOMAWAC   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    MAIN PROGRAM FOR TOMAWAC.
@@ -47,7 +47,7 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER NCAR,IFLOT
+      INTEGER TDEB(8),TFIN(8),NCAR,IFLOT
 !
       CHARACTER(LEN=24), PARAMETER :: CODE='TOMAWAC                '
 !
@@ -55,6 +55,10 @@
       CHARACTER(LEN=144) FILE_DESC(4,300)
 !
       CALL BIEF_INIT(CODE,PATH,NCAR,.TRUE.)
+!
+!     INITIAL TIME FOR COMPUTATION DURATION
+!
+      CALL DATE_AND_TIME(VALUES=TDEB)
 !
 !-----------------------------------------------------------------------
 !     EN TETE   -  HEADING
@@ -133,6 +137,13 @@
       IF (LNG.EQ.2) WRITE(LU,20)
 10    FORMAT(1X,////,1X,'FIN NORMALE DU PROGRAMME',/////)
 20    FORMAT(1X,////,1X,'CORRECT END OF RUN',/////)
+!
+!-----------------------------------------------------------------------
+!
+!     TIME OF END OF COMPUTATION
+!
+      CALL DATE_AND_TIME(VALUES=TFIN)
+      CALL ELAPSE(TDEB,TFIN)
 !
 !-----------------------------------------------------------------------
 !

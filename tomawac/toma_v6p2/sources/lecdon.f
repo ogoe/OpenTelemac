@@ -2,9 +2,8 @@
                      SUBROUTINE LECDON
 !                    *****************
 !
-     &( U , V , X, Y, NPOIN2, NDON, BINDON, NBOR, NPTFR, XRELV, YRELV,
-     &  UR, VR, TRA01,TRA02,TRA03,IDTEL,NPTT,DONTEL,COURAN,INDIC,NPMAX,
-     &  CHDON)
+     &( U , V , X, Y, NPOIN2, NDON, BINDON, NBOR, NPTFR,TRA03,
+     &  IDTEL,NPTT,DONTEL,COURAN,INDIC,CHDON)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   21/06/2011
@@ -51,20 +50,15 @@
 !| INDIC          |-->| FILE FORMAT
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
-!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NPTT           |-->| TIME STEP NUMBER IN TELEMAC FILE
-!| TRA01          |<->| WORK TABLE
-!| TRA02          |<->| WORK TABLE
 !| TRA03          |<->| WORK TABLE
 !| U              |<--| CURRENT OR WIND ALONG X AT THE MESH POINTS
 !| UR,VR          |<->| TABLE OF THE VALUES READ IN THE DATA FILE
 !| V              |<--| CURRENT OR WIND ALONG Y AT THE MESH POINTS
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| XRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
-!| YRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -73,25 +67,25 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER NP,NDON,NPOIN2,NPTFR,INDIC,NCOL,NLIG,BID,I,J
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPMAX,NBOR(NPTFR,2)
+      INTEGER, INTENT(IN)             :: NDON,NPOIN2,NPTFR,INDIC,NPTT
+      INTEGER, INTENT(IN)             :: IDTEL
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN2),V(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA03(NPOIN2)
+      CHARACTER(LEN=3), INTENT(IN)    :: BINDON
+      CHARACTER(LEN=7), INTENT(IN)    :: CHDON
+      LOGICAL, INTENT(IN)             :: DONTEL,COURAN
 !
-      DOUBLE PRECISION X(NPOIN2),Y(NPOIN2),U(NPOIN2),V(NPOIN2)
-      DOUBLE PRECISION TRA01(NPMAX),TRA02(NPMAX),TRA03(NPOIN2)
-      DOUBLE PRECISION XRELV(NPMAX),YRELV(NPMAX),UR(NPMAX),VR(NPMAX)
-      DOUBLE PRECISION XMAX,XMIN,YMAX,YMIN,DX,DY,ATT,BDX(2)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NVAR,IB(10),ISTAT,NPTT,ID(3),IDTEL
-!
-      CHARACTER*3  BINDON,C
-      CHARACTER*7  CHDON
-      CHARACTER*32 TEXTE(20)
-      CHARACTER*72 TITCAS
-!
-      LOGICAL DONTEL,COURAN
-!
-!-----------------------------------------------------------------------
+      INTEGER NP,I,J,NVAR,IB(10),ISTAT,ID(3)
+      DOUBLE PRECISION ATT,BDX(2),Z(1)
+      CHARACTER(LEN=3) C
+      CHARACTER(LEN=32) TEXTE(20)
+      CHARACTER(LEN=72) TITCAS
 !
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPOIN2))
@@ -100,7 +94,7 @@
 !     READS THE POINTS FROM LOGICAL UNIT NDON
 !-----------------------------------------------------------------------
 !
-      IF (INDIC.EQ.3) THEN
+      IF(INDIC.EQ.3) THEN
 !
 !     ------------------------------------------------------------------
 !     TELEMAC-LIKE FORMAT - MESH CAN BE DIFFERENT
@@ -109,20 +103,20 @@
 !
 !         READS TITLE
 !
-          CALL LIT(X,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
+          CALL LIT(Z,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
 !
 !         READS NUMBER OF VARIABLES AND THEIR NAMES
 !
-          CALL LIT(X,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
+          CALL LIT(Z,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
           NVAR=IB(1)
           DO I=1,NVAR
-            CALL LIT(X,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
+            CALL LIT(Z,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
           ENDDO
 !
 !         FORMAT AND GEOMETRY
 !
           READ(NDON)
-          CALL LIT(X,W,IB,C,4,'I ',NDON,BINDON,ISTAT)
+          CALL LIT(Z,W,IB,C,4,'I ',NDON,BINDON,ISTAT)
           NP=IB(2)
           WRITE(LU,*)
      &        '-----------------------------------------------------'
@@ -151,15 +145,13 @@
 !
 !         X AND Y
 !
-!         CALL LIT(XRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-!         CALL LIT(YRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
           READ(NDON)
           READ(NDON)
 !
 !         TIME STEP AND VARIABLES
 !
           DO 110 J=1,(NPTT-1)*(NVAR+1)
-             READ(NDON)
+            READ(NDON)
 110       CONTINUE
 !
           IF(DONTEL) ID(3)=IDTEL
@@ -213,12 +205,13 @@
 !         READS A CURRENT FIELD
           CALL COUUTI
      &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.D0,0.D0,0.D0,0.D0,
-     &     NP,XRELV,YRELV,UR,VR,TRA03,TRA03,TRA03,TRA03,NPMAX)
+     &     TRA03,TRA03,TRA03,TRA03)
         ELSEIF(CHDON(1:1).EQ.'V'.OR.CHDON(1:1).EQ.'W') THEN
 !         READS A WIND FIELD
+!         NOTE JMH : THERE SHOULD BE U AND V SOMEWHERE HERE ????
           CALL VENUTI
      &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.D0,0.D0,0.D0,0.D0,
-     &     NP,XRELV,YRELV,UR,VR,TRA03,TRA03,TRA03,TRA03,NPMAX)
+     &     TRA03,TRA03,TRA03,TRA03)
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LE TYPE DE DONNEES A LIRE EST INCONNU'
@@ -244,11 +237,6 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!
-!     FORMATS
-!
-10    FORMAT (2I4,4F9.3,2I2)
-20    FORMAT (10F6.2)
 !
       DEALLOCATE(W)
 !

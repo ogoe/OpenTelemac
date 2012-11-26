@@ -2,11 +2,10 @@
                      SUBROUTINE MARUTI
 !                    *****************
 !
-     &(X,Y,NPOIN,NMAR, BINMAR,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     & NP,XRELV,YRELV,ZR,Z1,Z2,NPMAX)
+     &(X,Y,NPOIN,NMAR,BINMAR,NBOR,NPTFR,AT,DDC,TV1,TV2,Z1,Z2)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   21/06/2011
+! TOMAWAC   V6P3                                  21/06/2011
 !***********************************************************************
 !
 !brief    READS THE TIDES IN A USER-DEFINED FILE FORMAT.
@@ -51,47 +50,52 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF-LNHE)
+!+        23/11/20012
+!+        V6P3
+!+   XRELV, YRELV, ZR removed, must be declared locally 
+!+   if necessary.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| BINMAR         |-->| TIDAL WATER LEVEL FILE BINARY
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NMAR           |-->| LOGICAL UNIT NUMBER OF TIDAL WATER LEVEL FILE 
-!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
-!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
 !| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| TV1            |-->| TIME T1 IN THE TIDAL WATER LEVEL FILE
 !| TV2            |-->| TIME T2 IN THE TIDAL WATER LEVEL FILE
 !| X,Y            |-->| COORDONNEES DU MAILLAGE
-!| XRELV          |<->| ABSCISSES OF TIDAL WATER LEVEL FILE POINTS
-!| YRELV          |<->| ORDINATES OF TIDAL WATER LEVEL FILE POINTS
 !| Z1             |<->| TIDAL LEVEL AT TV1 IN TIDAL WATER LEVEL FILE
 !| Z2             |<->| TIDAL LEVEL AT TV2 IN TIDAL WATER LEVEL FILE
-!| ZR             |<->| TABLE OF VALUES READ IN TIDAL WATER LEVEL FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC ,ONLY : MESH
       IMPLICIT NONE
 !
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER NMAR,NPOIN,NPMAX,NP,NPTFR,NBOR(NPTFR,2)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION X(NPOIN),Y(NPOIN)
-      DOUBLE PRECISION XRELV(NPMAX),YRELV(NPMAX), ZR(NPMAX)
-      DOUBLE PRECISION Z1(NPMAX),Z2(NPMAX)
-      DOUBLE PRECISION AT,DDC,TV1,TV2
+      INTEGER, INTENT(IN)             :: NMAR,NPOIN,NPTFR
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: Z1(NPOIN),Z2(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,TV1,TV2
+      CHARACTER(LEN=3), INTENT(IN)    :: BINMAR
 !
-      CHARACTER*3 BINMAR
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       WRITE(LU,*) '*********************************************'
       WRITE(LU,*) '  VOUS FAITES APPEL A LA PROCEDURE MARUTI    '
-      WRITE(LU,*) '    (FORMAT DU FICHIER DES MAREES = 3)     '
+      WRITE(LU,*) '    (FORMAT DU FICHIER DES MAREES = 4)     '
       WRITE(LU,*) '     MAIS VOUS NE L''AVEZ PAS MODIFIEE       '
       WRITE(LU,*) '*********************************************'
-      CALL PLANTE(0)
+      CALL PLANTE(1)
+      STOP
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

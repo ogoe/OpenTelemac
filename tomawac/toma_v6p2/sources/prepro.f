@@ -2,7 +2,7 @@
                      SUBROUTINE PREPRO
 !                    *****************
 !
-     &( CX    , CY    , CT    , CF    , DT    , NRK   , X     , Y     ,
+     &( CX    , CY    , CT    , CF    , DT    , X     , Y     ,
      &  TETA  , COSTET, SINTET, FREQ  , IKLE2 , IFABOR, ETAP1 , TRA01 ,
      &  SHP   , SHZ   , SHF   , ELT   , ETA   , FRE   ,
      &  DEPTH , DZHDT , DZX   , DZY   , U     , V     , DUX   , DUY   ,
@@ -88,7 +88,6 @@
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPOIN3         |-->| NPOIN2*NPLAN
-!| NRK            |-->| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS
 !| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMPTION
 !| PROMIN         |-->| MINIMUM VALUE OF WATER DEPTH
 !| SHF            |<->| BARYCENTRIC COORDINATES ALONG F OF THE 
@@ -121,7 +120,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NRK,NPOIN3,NPOIN2,NELEM2,NPLAN,NF,DIFFRA
+      INTEGER, INTENT(IN)    :: NPOIN3,NPOIN2,NELEM2,NPLAN,NF,DIFFRA
       INTEGER, INTENT(INOUT) :: IELM3
       DOUBLE PRECISION, INTENT(IN) :: DT,PROMIN
       DOUBLE PRECISION DZHDT(NPOIN2)
@@ -147,11 +146,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER JF,I,ISTAT,IEL,I1,I2,I3,I4
-      CHARACTER*3 CAR
-      INTEGER          LAST_NOMB,NLOSTAGAIN,NUMBER,IER,NRECV,NUMBERLOST
-      INTEGER          ITE,IP,IPLAN,NBB,IPOIN
-      INTEGER          NARRSUM,IFF
+      INTEGER JF,IEL,I1,I2,I3
       TYPE(BIEF_OBJ) :: BID
 !
 !     JUST FOR CALL INIPIE FOR DIFFRACTION, TO BE REMOVED

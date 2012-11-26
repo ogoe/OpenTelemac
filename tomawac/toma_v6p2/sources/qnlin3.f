@@ -127,7 +127,7 @@
      *                  KT1P3P, KT1P3M, KT1M2P, KT1M2M, KT1M3P, KT1M3M,
      *                  JT1P2P, JT1P2M, JT1P3P, JT1P3M, JT1M2P, JT1M2M,
      *                  JT1M3P, JT1M3M
-      DOUBLE PRECISION  PI    , DEUPI , GRAVIT
+      DOUBLE PRECISION  GRAVIT
       DOUBLE PRECISION  V1_4  , V2_4  , V3_4  , Q_2P3M, Q_2M3P, FACTOR,
      *                  T_2P3M, T_2M3P, S_2P3M, S_2M3P, SCAL_T, T2P3M ,
      *                  T2M3P , SP0   , SP1P  , SP1M  , SP1P2P, SP1P2M,
@@ -138,9 +138,7 @@
      *                  AUX00 , AUX01 , AUX02 , AUX03 , AUX04 , AUX05 ,
      *                  AUX06 , AUX07 , AUX08 , AUX09 , AUX10
 !
-!Initialisation of PI  , DEUPI , GRAVIT     
-      PI=3.141592654D0
-      DEUPI=2.D0*PI
+!Initialisation of GRAVIT     
       GRAVIT=9.81D0
 !
 !=======================================================================

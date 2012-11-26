@@ -2,11 +2,8 @@
                      SUBROUTINE LECDOI
 !                    *****************
 !
-!    XRELV, YRELV, UR, VR, TRA, NPMAX A SUPPRIMER
-!
      &( UD , VD  , X  , Y  , NPOIN2, NDON , BINDON, NBOR , NPTFR,
-     &  AT , DDC , TV1, TV2, NP   , XRELV, YRELV , UR   , VR   ,
-     &  TRA, U1  , V1 , U2 , V2   , INDIC, NPMAX , CHDON, NVAR )
+     &  AT , DDC , TV1, TV2, U1  , V1 , U2 , V2   , INDIC, CHDON, NVAR )
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   20/06/2011
@@ -47,7 +44,8 @@
 !history  J-M HERVOUET (EDF - LNHE)
 !+        16/11/2012
 !+        V6P3
-!+   Only SELAFIN format with same mesh kept.
+!+   Only SELAFIN format with same mesh kept. A number of arguments
+!+   removed
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -57,54 +55,51 @@
 !| INDIC          |-->| FILE FORMAT
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
-!| NP             |<->| NUMBER OF POINTS READ FROM THE FILE
-!| NPMAX          |-->| MAXIMUM NUMBER OF POINTS THAT CAN BE READ
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NVAR           |<--| NUMBER OF VARIABLES READ
-!| TRA            |-->| WORK TABLE
 !| TV1            |<->| DATA TIME T1
 !| TV2            |<->| DATA TIME T2
 !| U1,V1          |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE
 !| U2,V2          |<->| DATA VALUES AT TIME TV2 IN THE DATA FILE
 !| UD,VD          |<--| DATA VALUES INTERPOLATED OVEER THE MESH NODES
-!| UR,VR          |<->| TABLE OF THE VALUES READ IN THE DATA FILE
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
-!| XRELV          |<->| TABLE OF THE ABSCISSES OF DATA FILE POINTS
-!| X              |-->| ORDINATES OF POINTS IN THE MESH
-!| YRELV          |<->| TABLE OF THE ORDINATES OF DATA FILE POINTS
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-!      USE DECLARATIONS_TOMAWAC ,ONLY : MESH
       USE INTERFACE_TOMAWAC, EX_LECDOI => LECDOI
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER NP,NDON,NPOIN2,NPTFR,INDIC,NCOL,NLIG,BID,I,J
-      INTEGER NVAR,ISTAT,IB(10),ID(2)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPMAX,NBOR(NPTFR,2)
+      INTEGER, INTENT(IN)             :: NDON,NPOIN2,NPTFR,INDIC
+      INTEGER, INTENT(INOUT)          :: NVAR
+      INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UD(NPOIN2),VD(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: U1(NPOIN2),V1(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: U2(NPOIN2),V2(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
+      DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
+      CHARACTER(LEN=3), INTENT(IN)    :: BINDON
+      CHARACTER(LEN=7), INTENT(IN)    :: CHDON
 !
-      DOUBLE PRECISION X(NPOIN2)    , Y(NPOIN2)
-      DOUBLE PRECISION UD(NPOIN2)   , VD(NPOIN2)
-      DOUBLE PRECISION XRELV(NPMAX) , YRELV(NPMAX)
-      DOUBLE PRECISION UR(NPMAX)    , VR(NPMAX), TRA(NPMAX)
-      DOUBLE PRECISION U1(NPOIN2)   , V1(NPOIN2)
-      DOUBLE PRECISION U2(NPOIN2)   , V2(NPOIN2)
-      DOUBLE PRECISION AT,TV1,TV2
-      DOUBLE PRECISION DDC,DAT1,DAT2,COEF,Z(1),ATT, ATB(1)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*3  BINDON,C
-      CHARACTER*7  CHDON
-      CHARACTER*72 TITCAS
-      CHARACTER*32 TEXTE(10)
+      INTEGER NP,I
+      INTEGER ISTAT,IB(10),ID(2)
+      CHARACTER(LEN=3) C
+      DOUBLE PRECISION COEF,ATT,ATB(1),Z(1)
+      CHARACTER(LEN=72) TITCAS
+      CHARACTER(LEN=32) TEXTE(10)
 !
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPOIN2))
-!
 !
 !-----------------------------------------------------------------------
 !     READS THE POINTS FROM LOGICAL UNIT NDON
@@ -123,23 +118,23 @@
 !
 !      READS TITLE
 !
-       CALL LIT(X,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,TITCAS,72,'CH',NDON,BINDON,ISTAT)
 !
 !      READS NUMBER OF VARIABLES AND THEIR NAMES
 !
-       CALL LIT(X,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,C,2,'I ',NDON,BINDON,ISTAT)
        NVAR=IB(1)
        DO I=1,NVAR
-         CALL LIT(X,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
+         CALL LIT(Z,W,IB,TEXTE(I),32,'CH',NDON,BINDON,ISTAT)
        ENDDO
 !
 !      FORMAT AND GEOMETRY
 !
-       CALL LIT(X,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
        IF(IB(10).EQ.1) THEN
-         CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
+         CALL LIT(Z,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
        ENDIF
-       CALL LIT(X,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
+       CALL LIT(Z,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
        NP=IB(2)
        WRITE(LU,*) '--------------------------------------------'
        IF(LNG.EQ.1) THEN
@@ -176,8 +171,6 @@
 !
 !      X AND Y
 !
-!      CALL LIT(XRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-!      CALL LIT(YRELV,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
        READ(NDON)
        READ(NDON)
 !
@@ -209,9 +202,9 @@
 110    CONTINUE
        DO I=1,NVAR
          IF(I.EQ.ID(1)) THEN
-           CALL LIT(U1,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
+           CALL LIT(U1,W,IB,C,NPOIN2,'R4',NDON,BINDON,ISTAT)
          ELSEIF(I.EQ.ID(2)) THEN
-           CALL LIT(V1,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
+           CALL LIT(V1,W,IB,C,NPOIN2,'R4',NDON,BINDON,ISTAT)
          ELSE
            READ(NDON)
          ENDIF
@@ -231,26 +224,27 @@
 !
        DO I =1,NVAR
          IF(I.EQ.ID(1)) THEN
-           CALL LIT(U2,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
+           CALL LIT(U2,W,IB,C,NPOIN2,'R4',NDON,BINDON,ISTAT)
          ELSEIF(I.EQ.ID(2)) THEN
-           CALL LIT(V2,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
+           CALL LIT(V2,W,IB,C,NPOIN2,'R4',NDON,BINDON,ISTAT)
          ELSE
            READ(NDON)
          ENDIF
        ENDDO
        WRITE(LU,*) 'T',CHDON,'1:',TV1
-       WRITE(LU,*) 'T',CHDON,'2:',TV2                                                NPTFR,1.D-6)
+       WRITE(LU,*) 'T',CHDON,'2:',TV2
 !
       ELSEIF (INDIC.EQ.4) THEN
+!
 !       READS A USER-DEFINED FORMAT
         IF(CHDON(1:1).EQ.'C') THEN
 !         READS A CURRENT FIELD
           CALL COUUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &                NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NPMAX)
+     &                U1,V1,U2,V2)
         ELSEIF(CHDON(1:1).EQ.'V' .OR. CHDON(1:1).EQ.'W') THEN
 !         READS A WIND FIELD
           CALL VENUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &                NP,XRELV,YRELV,UR,VR,U1,V1,U2,V2,NPMAX)
+     &                U1,V1,U2,V2)
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LE TYPE DE DONNEES A LIRE EST INCONNU'

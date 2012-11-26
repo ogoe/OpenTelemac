@@ -80,14 +80,14 @@
         FTH = DIREC(JP)
 !
         ARGUM = COS(FTH-TETA1)
-        IF (ARGUM.GT.0.D0) THEN
+        IF(ARGUM.GT.0.D0) THEN
           FRA1=DELT1*ARGUM**(2.D0*SPRED1)
         ELSE
           FRA1=0.D0
         ENDIF
 !
         ARGUM = COS(FTH-TETA2)
-        IF (ARGUM.GT.0.D0) THEN
+        IF(ARGUM.GT.0.D0) THEN
           FRA2=DELT2*ARGUM**(2.D0*SPRED2)
         ELSE
           FRA2=0.D0

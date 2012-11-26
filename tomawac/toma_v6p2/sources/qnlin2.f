@@ -82,7 +82,7 @@
      * JP1P_0, JP1P_1, JP1M_0, JP1M_1, JP2P_0, JP2P_1, JP2M_0, JP2M_1,
      * JP3P_0, JP3P_1, JP3M_0, JP3M_1, JP4P_0, JP4P_1, JP4M_0, JP4M_1
       DOUBLE PRECISION US1PM4, US1MM4, US1PL4, US1ML4
-	DOUBLE PRECISION FREQ  , XXFAC , TERM1 , W     ,
+      DOUBLE PRECISION FREQ  , XXFAC , TERM1 , W     ,
      * C01   , C02   , C03   , C04   , C05   , C06   , C07   , C08   ,
      * C09   , C10   , C11   , C12   , C13   , C14   , C15   , C16   ,
      * D01   , D02   , D03   , D04   , D05   , D06   , D07   , D08   ,
