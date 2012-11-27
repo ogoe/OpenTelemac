@@ -3,14 +3,18 @@
 !                    *****************
 !
      &(F,NPLAN,NF,TETA,FREQ,NELEM2,NPOIN2,AT,UC,VC,UC1,VC1,UC2,VC2,
-     & UV,VV,UV1,VV1,UV2,VV2,VENT,TV1,TV2,
-     & COURAN,NPRE,BINPRE,DEPTH,TC1,TC2,ZM1,ZM2,DZHDT,TM1,TM2,MAREE)
+     & UV,VV,UV1,VV1,UV2,VV2,VENT,TV1,TV2,COURAN,NPRE,BINPRE,DEPTH,
+     & TC1,TC2,ZM1,ZM2,DZHDT,TM1,TM2,MAREE,TRA01)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   21/06/2011
 !***********************************************************************
 !
 !brief    READS THE DATA FOR A CONTINUATION OF COMPUTATION.
+!
+!warning  Parameters MAREE, COURAN or VENT must not be changed between
+!+        2 runs. This would require an extra implementation consisting
+!+        of checking the names of variables.
 !
 !history  F MARCOS (LNH)
 !+        01/02/95
@@ -37,7 +41,8 @@
 !history  J-M HERVOUET (EDF - LNHE)
 !+        26/11/2012
 !+        V6P3
-!+   Correction of bugs and double precision.
+!+   Correction of bugs and double precision. Changing file format
+!+   for domain decomposition.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -58,6 +63,7 @@
 !| TETA           |<--| DISCRETIZED DIRECTIONS
 !| TM1            |<--| TIME T1 OF TIDE IN PREVIOUS COMPUTATION FILE
 !| TM2            |<--| TIME T2 OF TIDE IN PREVIOUS COMPUTATION FILE
+!| TRA01          |<--| DOUBLE PRECISION WORK TABLE OF SIZE NPOIN2*NPLAN
 !| TV1            |<--| TIME T1 OF WIND IN PREVIOUS COMPUTATION FILE
 !| TV2            |<--| TIME T2 OF WIND IN PREVIOUS COMPUTATION FILE
 !| UC, VC         |<--| CURRENT VELOCITY COMPONENTS
@@ -78,36 +84,95 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-      INTEGER NPRE,NF,NPLAN,NELEM2,NPOIN2
-      INTEGER I,ISTAT,IB(2),NTOT
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF),AT,ATT(1)
-      DOUBLE PRECISION TETA(NPLAN+1),FREQ(NF),TV1,TV2
-      DOUBLE PRECISION UC(NPOIN2),VC(NPOIN2),UV(NPOIN2),VV(NPOIN2)
-      DOUBLE PRECISION UV1(NPOIN2),VV1(NPOIN2),UV2(NPOIN2),VV2(NPOIN2)
-      DOUBLE PRECISION UC1(NPOIN2),VC1(NPOIN2),UC2(NPOIN2),VC2(NPOIN2)
-      DOUBLE PRECISION DEPTH(NPOIN2),ZM1(NPOIN2),ZM2(NPOIN2)
-      DOUBLE PRECISION DZHDT(NPOIN2)
-      DOUBLE PRECISION TC1,TC2,TM1,TM2
+      INTEGER, INTENT(IN)             :: NPRE,NF,NPLAN,NELEM2,NPOIN2
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF),AT
+      DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2,TC1,TC2,TM1,TM2
+      DOUBLE PRECISION, INTENT(INOUT) :: TETA(NPLAN+1),FREQ(NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: UC(NPOIN2),VC(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UV(NPOIN2),VV(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UV1(NPOIN2),VV1(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UV2(NPOIN2),VV2(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UC1(NPOIN2),VC1(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UC2(NPOIN2),VC2(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: DEPTH(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZM1(NPOIN2),ZM2(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: DZHDT(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2*NPLAN)
+      LOGICAL, INTENT(IN)             :: COURAN,VENT,MAREE
+      CHARACTER(LEN=3), INTENT(IN)    :: BINPRE
 !
-      LOGICAL COURAN,VENT,MAREE
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CHARACTER*3 BINPRE
-      CHARACTER*72 CAR
+      INTEGER I,ISTAT,NPOIN,NVAR,NPL,LAST,IB(1)
+      CHARACTER(LEN=72) CAR
 !
-      DOUBLE PRECISION PI,Z(1)
+      INTEGER, PARAMETER :: NFMAX = 200
+      CHARACTER(LEN=32) TEXTE(NFMAX+2)
+!
+      DOUBLE PRECISION PI,Z(1),ATT(1)
       REAL, ALLOCATABLE :: W(:)
-      ALLOCATE(W(NPOIN2*NPLAN*NF))
+      ALLOCATE(W(NPOIN2*NPLAN))
 !
       PI=3.141592653589793D0
 !
 !***********************************************************************
 !
-      REWIND NPRE
+      CALL SKIPGEO(NPRE,CAR,NPOIN,NVAR,TEXTE,NPL)
 !
-!     READS TITLE
+      IF(NPL.NE.NPLAN) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'LECSUI : MAUVAIS NOMBRE DE PLANS DANS LE FICHIER'
+          WRITE(LU,*) '         DU CALCUL PRECEDENT : ',NPL,' TROUVE'
+          WRITE(LU,*) '                               ',NPLAN,' ATTENDU'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'LECSUI: BAD NUMBER OF PLANES IN THE PREVIOUS'
+          WRITE(LU,*) '        COMPUTATION FILE : ',NPL,' FOUND'
+          WRITE(LU,*) '                           ',NPLAN,' EXPECTED'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
-      CALL LIT(F,W,IB,CAR,72,'CH',NPRE,BINPRE,ISTAT)
+      IF(NPOIN.NE.NPLAN*NPOIN2) THEN
+        IF(LNG.EQ.1) THEN
+         WRITE(LU,*) 'LECSUI : MAUVAIS NOMBRE DE POINTS DANS LE FICHIER'
+         WRITE(LU,*) '         DU CALCUL PRECEDENT : ',NPOIN,' TROUVE'
+         WRITE(LU,*) '                               ',NPOIN2,' ATTENDU'
+        ELSEIF(LNG.EQ.2) THEN
+         WRITE(LU,*) 'LECSUI: BAD NUMBER OF POINTS IN THE PREVIOUS'
+         WRITE(LU,*) '        COMPUTATION FILE : ',NPOIN,' FOUND'
+         WRITE(LU,*) '                           ',NPOIN2,' EXPECTED'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(COURAN.OR.VENT) THEN
+        I=NVAR-2
+      ELSE
+        I=NVAR-1
+      ENDIF
+!
+      IF(I.NE.NF) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'LECSUI : MAUVAIS NOMBRE DE FREQUENCES'
+          WRITE(LU,*) '         DANS LE FICHIER'
+          WRITE(LU,*) '         DU CALCUL PRECEDENT : ',I,' TROUVE'
+          WRITE(LU,*) '                               ',NF,' ATTENDU'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'LECSUI : BAD NUMBER OF FREQUENCIES'
+          WRITE(LU,*) '         IN THE PREVIOUS'
+          WRITE(LU,*) '         COMPUTATION FILE : ',I,' FOUND'
+          WRITE(LU,*) '                            ',NF,' EXPECTED'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!     PRINTS TITLE
+!
       WRITE(LU,*) ' '
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) '**** SUITE DE CALCUL ****'
@@ -119,96 +184,50 @@
         WRITE(LU,*) 'TITLE OF THE PREVIOUS COMPUTATION :',CAR
       ENDIF
 !
-!     READS NPLAN, NF AND PERFORMS CHECK
-!
-      CALL LIT(F,W,IB,CAR,2,'I ',NPRE,BINPRE,ISTAT)
-      IF(IB(1).NE.NPLAN.OR.IB(2).NE.NF) THEN
-       IF(LNG.EQ.1) THEN
-         WRITE(LU,*) '**** ERREUR DANS LECSUI : ****'
-         WRITE(LU,*) 'LE NOMBRE DE DIRECTIONS ET/OU CELUI DE FREQUENCES'
-         WRITE(LU,*) ' NE CORRESPOND PAS'
-         WRITE(LU,*) 'VALEURS LUES : NDIR=',IB(1),' NF=',IB(2)
-         WRITE(LU,*) 'VALEURS ATTENDUES : NDIR=',NPLAN,' NF=',NF
-       ELSE
-         WRITE(LU,*) '**** ERROR IN LECSUI : ****'
-         WRITE(LU,*) 'THE NUMBER OF DIRECTIONS AND/OR FREQUENCIES'
-         WRITE(LU,*) '   IS NOT CORRESPONDING '
-         WRITE(LU,*) 'READ VALUES : NDIR=',IB(1),' NF=',IB(2)
-         WRITE(LU,*) 'EXPECTED VALUES : NDIR=',NPLAN,' NF=',NF
-       ENDIF
-       CALL PLANTE(1)
-       STOP
-      ENDIF
-!
-!     READS NELEM2, NPOIN2 AND PERFORMS CHECK
-!
-      CALL LIT(F,W,IB,CAR,2,'I ',NPRE,BINPRE,ISTAT)
-      IF(IB(1).NE.NELEM2.OR.IB(2).NE.NPOIN2) THEN
-       IF(LNG.EQ.1) THEN
-         WRITE(LU,*) '**** ERREUR DANS LECSUI ****'
-         WRITE(LU,*) 'LE NOMBRE DE POINTS ET/OU CELUI D''ELEMENTS 2D NE'
-         WRITE(LU,*) 'CORRESPOND PAS'
-         WRITE(LU,*) 'VALEURS LUES : NELEM2=',IB(1),' NPOIN2=',IB(2)
-         WRITE(LU,*) 'VALEURS ATTENDUES : NELEM2=',NELEM2,
-     &               ' NPOIN2=',NPOIN2
-       ELSE
-         WRITE(LU,*) '**** ERROR IN LECSUI : ****'
-         WRITE(LU,*) 'THE NUMBER OF POINTS AND/OR 2D ELEMENTS '
-         WRITE(LU,*) '   IS NOT CORRESPONDING '
-         WRITE(LU,*) 'READ VALUES     : NELEM2=',IB(1),' NPOIN2=',IB(2)
-         WRITE(LU,*) 'EXPECTED VALUES : NELEM2=',NELEM2,
-     &               ' NPOIN2=',NPOIN2
-       ENDIF
-       CALL PLANTE(1)
-       STOP
-      ENDIF
-!
 !     READS TIME
 !
       CALL LIT(ATT,W,IB,CAR,1,'R8',NPRE,BINPRE,ISTAT)
       AT = ATT(1)
       IF(LNG.EQ.1) THEN
-         WRITE(LU,*) '- REPRISE DE CALCUL AU TEMPS  ',AT
-      ELSE
-         WRITE(LU,*) '- COMPUTATIONAL RESUMPTION AT TIME ',AT
+        WRITE(LU,*) '- REPRISE DE CALCUL AU TEMPS  ',AT
+      ELSEIF(LNG.EQ.2) THEN
+        WRITE(LU,*) '- COMPUTATIONAL RESUMPTION AT TIME ',AT
       ENDIF
-!
-!     READS TETA
-!
-      CALL LIT(TETA,W,IB,CAR,NPLAN+1,'R8',NPRE,BINPRE,ISTAT)
-!   
-      IF(LNG.EQ.1) THEN
-        WRITE(LU,*) 'DISTRIBUTION DES DIRECTIONS :'
-      ELSE
-        WRITE(LU,*) 'DISTRIBUTION OF THE DIRECTIONS:'
-      ENDIF
-      DO I=1,NPLAN+1
-        WRITE(LU,*) 'DIRECTION : ',I,' ANGLE = ',
-     &               TETA(I)*180.D0/PI,' DEGRES'
-      ENDDO
-!
-!     READS FREQ
-!
-      CALL LIT(FREQ,W,IB,CAR,NF,'R8',NPRE,BINPRE,ISTAT)
-      IF(LNG.EQ.1) THEN
-        WRITE(LU,*) 'DISTRIBUTION DES FREQUENCES :'
-      ELSE
-        WRITE(LU,*) 'DISTRIBUTION OF THE FREQUENCIES:'
-      ENDIF
-      DO I=1,NF
-        WRITE(LU,*) '       ',FREQ(I),' HERTZ'
-      ENDDO
 !
 !     READS F
 !
-      NTOT=NPOIN2*NPLAN*NF
-      CALL LIT(F,W,IB,CAR,NTOT,'R8',NPRE,BINPRE,ISTAT)
+      DO I=1,NF
+        CALL LIT(F(1,1,I),W,IB,CAR,NPOIN2*NPLAN,
+     &           'R8',NPRE,BINPRE,ISTAT)
+      ENDDO
 !
-!     READS U,V,UV,VV IF HAS TO
+!     READS DEPTH (ALWAYS WRITTEN, EVEN IF NOT RELEVANT)
+!
+      IF(MAREE) THEN
+        CALL LIT(DEPTH,W,IB,CAR,NPOIN2,'R8',NPRE,BINPRE,ISTAT)
+!       SETS TRIPLETS U,V,TV1 AND 2 TO UV,VV,AT
+        TM1=AT
+        TM2=AT
+        CALL OV( 'X=Y     ' , ZM1 , DEPTH , Z , 0.D0   , NPOIN2)
+        CALL OV( 'X=Y     ' , ZM2 , DEPTH , Z , 0.D0   , NPOIN2)
+        CALL OV( 'X=C     ' , DZHDT , DEPTH , Z , 0.D0 , NPOIN2)
+      ELSE
+        CALL LIT(TRA01,W,IB,CAR,1,'R8',NPRE,BINPRE,ISTAT)
+      ENDIF
+!
+!     READS UC,VC,UV,VV IF HAS TO
+!
+      IF(COURAN.OR.VENT) THEN
+        IF(VENT) THEN
+          CALL LIT(TRA01,W,IB,CAR,4*NPOIN2,'R8',NPRE,BINPRE,ISTAT)
+        ELSE
+          CALL LIT(TRA01,W,IB,CAR,2*NPOIN2,'R8',NPRE,BINPRE,ISTAT)
+        ENDIF
+      ENDIF
 !
       IF(COURAN) THEN
-        CALL LIT(UC ,W,IB,CAR,NPOIN2,'R8',NPRE,BINPRE,ISTAT)
-        CALL LIT(VC ,W,IB,CAR,NPOIN2,'R8',NPRE,BINPRE,ISTAT)   
+        CALL OV('X=Y     ',UC,TRA01(       1:  NPOIN2),Z,0.D0,NPOIN2)
+        CALL OV('X=Y     ',VC,TRA01(NPOIN2+1:2*NPOIN2),Z,0.D0,NPOIN2)
 !       SETS TRIPLETS U,V,TV1 AND 2 TO UV,VV,AT
         TC1=AT
         TC2=AT
@@ -219,8 +238,8 @@
       ENDIF
 !
       IF(VENT) THEN
-        CALL LIT(UV,W,IB,CAR,NPOIN2,'R8',NPRE,BINPRE,ISTAT)
-        CALL LIT(VV,W,IB,CAR,NPOIN2,'R8',NPRE,BINPRE,ISTAT)
+        CALL OV('X=Y     ',UV,TRA01(2*NPOIN2+1:3*NPOIN2),Z,0.D0,NPOIN2)
+        CALL OV('X=Y     ',VV,TRA01(3*NPOIN2+1:4*NPOIN2),Z,0.D0,NPOIN2)
 !       SETS TRIPLETS U,V,TV1 AND 2 TO UV,VV,AT
         TV1=AT
         TV2=AT
@@ -228,16 +247,6 @@
         CALL OV( 'X=Y     ' , UV2 , UV , Z , 0.D0 , NPOIN2)
         CALL OV( 'X=Y     ' , VV1 , VV , Z , 0.D0 , NPOIN2)
         CALL OV( 'X=Y     ' , VV2 , VV , Z , 0.D0 , NPOIN2)
-      ENDIF
-!
-      IF(MAREE) THEN
-        CALL LIT(DEPTH,W,IB,CAR,NPOIN2,'R8',NPRE,BINPRE,ISTAT)
-!       SETS TRIPLETS U,V,TV1 AND 2 TO UV,VV,AT
-        TM1=AT
-        TM2=AT
-        CALL OV( 'X=Y     ' , ZM1 , DEPTH , Z , 0.D0   , NPOIN2)
-        CALL OV( 'X=Y     ' , ZM2 , DEPTH , Z , 0.D0   , NPOIN2)
-        CALL OV( 'X=C     ' , DZHDT , DEPTH , Z , 0.D0 , NPOIN2)
       ENDIF
 !
 !-----------------------------------------------------------------------

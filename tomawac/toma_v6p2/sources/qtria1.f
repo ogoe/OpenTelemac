@@ -70,7 +70,7 @@
      &                  FPS2  , CPHS2 , XKPS2 , URS   , RIND  , FMAX  ,
      &                  F2P   , CPH2P , XK2P  , CGR2P , E2P   , EPS2  ,
      &                  OMP   , OM2P  , COEF  , D     , DEUKD ,
-     &                  SPLUS , SMOIN , DMOIN , DPLUS , FP    , XKP
+     &                  SPLUS , SMOIN ,FP    , XKP
       PARAMETER(DEUPI=2.D0*3.141592654D0)
 !
 !.....FUNCTION / FORMULATION
@@ -136,13 +136,8 @@
               DO IPL=1,NPLAN
                 EPS2=(1.D0-RIND)*F(IPO,IPL,IIND)+RIND*F(IPO,IPL,IIND+1)
                 SPLUS = ALFLTA*RPS2*BIF*(EPS2-2.D0*F(IPO,IPL,IFF))*EPS2
-                DPLUS = ALFLTA*RPS2*BIF*(-2.D0*EPS2)
-                IF (SPLUS.LT.0.D0) THEN
-                  SPLUS = 0.D0
-                  DPLUS = 0.D0
-                ENDIF
+                IF(SPLUS.LT.0.D0) SPLUS = 0.D0
                 TSTOT(IPO,IPL,IFF) = TSTOT(IPO,IPL,IFF) + SPLUS
-!                TSDER(IPO,IPL,IFF) = TSDER(IPO,IPL,IFF) + DPLUS
               ENDDO
             ENDIF
 !
@@ -169,13 +164,8 @@
                 E2P = (1.D0-RIND)*F(IPO,IPL,IIND)+RIND*F(IPO,IPL,IIND+1)
                 SMOIN = 2.D0*ALFLTA*RP*BIF*F(IPO,IPL,IFF)
      &                *(F(IPO,IPL,IFF)-2.D0*E2P)
-                DMOIN = 4.D0*ALFLTA*RP*BIF*(F(IPO,IPL,IFF)-E2P)
-                IF (SMOIN.LT.0.D0) THEN
-                  SMOIN = 0.D0
-                  DMOIN = 0.D0
-                ENDIF
+                IF(SMOIN.LT.0.D0) SMOIN = 0.D0
                 TSTOT(IPO,IPL,IFF) = TSTOT(IPO,IPL,IFF) - SMOIN
-!                TSDER(IPO,IPL,IFF) = TSDER(IPO,IPL,IFF) - DMOIN
               ENDDO
             ENDIF
 !

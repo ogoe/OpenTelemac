@@ -66,7 +66,7 @@
       DOUBLE PRECISION LAMBD0,C,Z(1),DEUPI,DTSI
       DOUBLE PRECISION AT,AT0,TV1,TV2,TC1,TC2,TM1,TM2
       DOUBLE PRECISION VITVEN,VITMIN
-      INTEGER  ADC , MDC , JDC , HDC, NVHMA,NVCOU,NBD,K
+      INTEGER ADC,MDC,JDC,HDC,NVHMA,NVCOU,NBD,K,IPLAN,IFREQ
       LOGICAL IMPRES, DEBRES
 !
       INTEGER, ALLOCATABLE :: QINDI(:)
@@ -326,6 +326,26 @@
       LT=0
       DTSI=DT/NSITS
 !
+!-----------------------------------------------------------------------
+!
+!     INITIALISES TETA
+!     BY DEFAULT THE DIRECTIONS OF PROPAGATION ARE EVENLY DISTRIBUTED
+!
+      DO IPLAN = 1,NPLAN+1
+        TETA(IPLAN) = (IPLAN-1)*DEUPI/NPLAN
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
+!     INITIALISES FREQ AND DFREQ, THE FREQUENCIES OF PROPAGATION
+!     ARE DISTRIBUTED USING AN EXPONENTIAL LAW
+!
+      DO IFREQ = 1,NF
+        FREQ(IFREQ) = F1*RAISF**(IFREQ-1)
+      ENDDO
+!
+!-----------------------------------------------------------------------
+!
       IF(SUIT) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECSUI'
         CALL LECSUI
@@ -336,12 +356,12 @@
      &  VENT    , TV1     , TV2     , COUSTA.OR.PART.EQ.0 ,
      &  WAC_FILES(WACPRE)%LU ,
      &  BINPRE  , SDEPTH%R, TC1 , TC2 , ZM1 , ZM2 ,
-     &  SDZHDT%R, TM1     , TM2     , MAREE.OR.PART.EQ.0 )
+     &  SDZHDT%R, TM1     , TM2     , MAREE.OR.PART.EQ.0 ,TRA01)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECSUI'
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CONDIW'
         CALL CONDIW
-     &( AT, LT , DEUPI , TC1 , TC2 , TV1, TV2, TM1, TM2, 
+     &( AT, LT , TC1 , TC2 , TV1, TV2, TM1, TM2, 
      &  NVHMA  , NVCOU , PART , U_TEL, V_TEL, H_TEL )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
         IF(PART.EQ.0) THEN
@@ -352,7 +372,6 @@
         ENDIF
       ENDIF
       AT0=AT
-!
 !
 !
 !=====C
@@ -908,7 +927,7 @@
 !
       IF(ABS(AT-AT0-NIT*DT).LT.1.D-6) THEN
 !
-        IF(GLOB)  THEN
+        IF(GLOB) THEN
           CALL IMPR(LISPRD,NIT,AT,NIT,6)
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SOR3D'
           CALL SOR3D
@@ -916,7 +935,7 @@
      &    NELEM2, NPOIN2 , AT       , SUC%R     , SVC%R ,
      &    SUV%R , SVV%R  , SDEPTH%R , VENT      , COURAN.OR.PART.EQ.1,
      &    MAREE.OR.PART.EQ.1 , TITCAS , WAC_FILES(WACRBI)%LU ,
-     &    BINRBI    )
+     &    BINRBI ,TRA01,MESH3D )
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOR3D'
         ENDIF
 !

@@ -2,7 +2,7 @@
                      SUBROUTINE CONDIW
 !                    *****************
 !
-     &( AT, LT , DPI, TC1, TC2, TV1, TV2, TM1, TM2 , 
+     &( AT, LT , TC1, TC2, TV1, TV2, TM1, TM2 , 
      &  NVHMA  , NVCOU, PART , U_TEL, V_TEL , H_TEL )
 !
 !***********************************************************************
@@ -45,7 +45,6 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |<--| COMPUTATION TIME
-!| DPI            |---| 2*PI
 !| H_TEL          |-->| TELEMAC WATER DEPTH
 !| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
 !| NVCOU          |---| NUMBER OF VARIABLES OF THE FORMATTED CURRENT FILE
@@ -75,13 +74,12 @@
 !
       INTEGER, INTENT(IN)             :: PART,LT
       INTEGER, INTENT(INOUT)          :: NVHMA,NVCOU
-      DOUBLE PRECISION, INTENT(IN)    :: DPI
       DOUBLE PRECISION, INTENT(INOUT) :: AT,TC1,TC2,TV1,TV2,TM1,TM2
       TYPE(BIEF_OBJ), INTENT(IN)      :: U_TEL,V_TEL,H_TEL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IPLAN,IFREQ,IBID
+      INTEGER IBID
       CHARACTER(LEN=7) CHDON
 !
 !-----------------------------------------------------------------------
@@ -196,7 +194,7 @@
              ELSE
                WRITE(LU,*)' READING OF A TELEMAC DATA IMPOSSIBLE '
              ENDIF
-             CALL PLANTE(0)
+             CALL PLANTE(1)
           ENDIF
         ELSE
           IF(LNG.EQ.1) THEN
@@ -285,24 +283,6 @@
           ENDIF
          ENDIF
       ENDIF
-!
-!-----------------------------------------------------------------------
-!
-!   INITIALISES TETA
-!     BY DEFAULT THE DIRECTIONS OF PROPAGATION ARE EVENLY DISTRIBUTED
-!
-      DO IPLAN = 1,NPLAN+1
-        TETA(IPLAN) = (IPLAN-1)*DPI/NPLAN
-      ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     INITIALISES FREQ AND DFREQ, THE FREQUENCIES OF PROPAGATION
-!     ARE DISTRIBUTED USING AN EXPONENTIAL LAW
-!
-      DO IFREQ = 1,NF
-        FREQ(IFREQ) = F1*RAISF**(IFREQ-1)
-      ENDDO
 !
 !-----------------------------------------------------------------------
 !
