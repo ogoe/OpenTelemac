@@ -1,4 +1,5 @@
 
+
 C======================================================================C
 C  Fichier FORTRAN de cas-test de validation de TOMAWAC V5P6.          C
 C                                                                      C
@@ -373,7 +374,7 @@ C
      * SIGMAL, SIGMBL, GAMMAL, FPICL , HM0L  , APHILL, TETA1L, SPRE1L,
      * TETA2L, SPRE2L, XLAMDL, X ,Y  , KENT  , KSORT , NFO1  , NBI1  ,
      * BINBI1, UV    , VV    , SPEULI, VENT  , VENSTA, GRAVIT, DEUPI , 
-     * PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL )
+     * PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
 C
 C***********************************************************************
 C TOMAWAC   V1.0            01/02/95        F. MARCOS  (LNH) 30 87 72 66
@@ -431,6 +432,7 @@ C
 C
       INTEGER NPLAN,NF,NPOIN2,NPTFR,LT,NPRIV
 C
+      INTEGER, INTENT(IN) :: BOUNDARY_COLOUR(NPTFR)
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF),X(NPOIN2),Y(NPOIN2)
       DOUBLE PRECISION FBOR(NPTFR,NPLAN,NF),TETA(NPLAN),FREQ(NF)
       DOUBLE PRECISION UV(NPOIN2),VV(NPOIN2), SPEC(NF), FRA(NPLAN)
@@ -443,7 +445,7 @@ C
 C
       LOGICAL SPEULI, VENT, VENSTA
 C
-      INTEGER NBOR(NPTFR),LIFBOR(NPTFR),NFO1,NBI1,NPB,IFREQ
+      INTEGER NBOR(NPTFR),LIFBOR(NPTFR),NFO1,NBI1,IFREQ
       INTEGER KENT,KSORT,IFF,IPLAN,IPTFR,LIMSPE,FRABL
 C
       DOUBLE PRECISION, ALLOCATABLE :: TRAV(:)
@@ -467,7 +469,6 @@ C
 C   LIFBOR(IPTFR)=KENT OU KSORT
 C
       IF (LIMSPE.EQ.0 .AND. .NOT.SPEULI) RETURN
-      NPB=1
       FLAG=.FALSE.
       IF (VENT .AND. (LIMSPE.EQ.1 .OR. LIMSPE.EQ.2 .OR. LIMSPE.EQ.3
      * .OR. LIMSPE.EQ.5)) FLAG=.TRUE.
@@ -477,11 +478,9 @@ C     ---------------------------------------------------------------
       IF (LT.LT.1) THEN
         IF (FLAG) THEN
           ALLOCATE(UV2D(1:NPTFR),VV2D(1:NPTFR))
-          NPB=NPTFR
         ENDIF
         IF (LIMSPE.EQ.7 .OR. SPEULI) THEN
           ALLOCATE(PROF(1:NPTFR))
-          NPB=NPTFR
         ENDIF
       ENDIF
 C
