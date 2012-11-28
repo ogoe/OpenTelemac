@@ -4,7 +4,7 @@
 !
      &( CX    , CY    , CT    , XK    , CG    , COSF  , TGF   , DEPTH ,
      &  DZX   , DZY   , FREQ  , COSTET, SINTET, NPOIN2, NPLAN , JF    ,
-     &  NF    , PROINF, SPHE  , PROMIN, TRA01 , TRA02 )
+     &  NF    , PROINF, SPHE  , PROMIN, TRA01 )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   14/068/2011
@@ -38,6 +38,12 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF-LNHE)
+!+        27/11/2012
+!+        V6P3
+!+   Optimisation (loops on NPOIN2 and NPLAN swapped to get smaller 
+!+   strides, work array TRA01 differently used, etc.)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CG             |-->| DISCRETIZED GROUP VELOCITY
 !| COSF           |-->| COSINE OF THE LATITUDES OF THE POINTS 2D
@@ -59,33 +65,35 @@
 !| SPHE           |-->| LOGICAL INDICATING SPHERICAL COORD ASSUMPTION
 !| TGF            |-->| TANGENT OF THE LATITUDES OF THE POINTS 2D
 !| TRA01          |<->| WORK TABLE
-!| TRA02          |<->| WORK TABLE
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """""""""""""""""""""
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      INTEGER          NF    , NPLAN , NPOIN2, JF
-      DOUBLE PRECISION PROMIN
-      DOUBLE PRECISION DEPTH(NPOIN2) , DZX(NPOIN2)   , DZY(NPOIN2)
-      DOUBLE PRECISION COSF(NPOIN2)  , TGF(NPOIN2)   , FREQ(NF)
-      DOUBLE PRECISION COSTET(NPLAN) , SINTET(NPLAN)
-      DOUBLE PRECISION TRA01(NPLAN)  , TRA02(NPLAN)
-      DOUBLE PRECISION CG(NPOIN2,NF) , XK(NPOIN2,NF)
-      DOUBLE PRECISION CX(NPOIN2,NPLAN),CY(NPOIN2,NPLAN)
-      DOUBLE PRECISION CT(NPOIN2,NPLAN)
-      LOGICAL          PROINF, SPHE
 !
-!.....LOCAL VARIABLES
-!     """"""""""""""""""
-      INTEGER          JP    , IP
-      DOUBLE PRECISION GSQP  , SR    , R     , SRCF  , TFSR
-      DOUBLE PRECISION DDDN  , DSDNSK, GRADEG, DEUKD , DEUPI
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2,JF
+      DOUBLE PRECISION, INTENT(IN)    :: PROMIN
+      DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: DZX(NPOIN2),DZY(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: COSF(NPOIN2),TGF(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF)
+      DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPLAN)
+      DOUBLE PRECISION, INTENT(IN)    :: CG(NPOIN2,NF),XK(NPOIN2,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: CX(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: CY(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: CT(NPOIN2,NPLAN)
+      LOGICAL, INTENT(IN)             :: PROINF,SPHE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER JP,IP
+      DOUBLE PRECISION GSQP,SR,R,SRCF,TFSR
+      DOUBLE PRECISION DDDN,GRADEG,DEUKD,DEUPI,TR1,TR2
 !
       GSQP=0.780654996D0
       R=6400.D3
@@ -97,9 +105,57 @@
 !     INFINITE WATER DEPTH ...
 !-----------------------------------------------------------------------
 !
-        DO JP=1,NPLAN
-          TRA01(JP)=GSQP/FREQ(JF)*COSTET(JP)
-          TRA02(JP)=GSQP/FREQ(JF)*SINTET(JP)
+        IF(.NOT.SPHE) THEN
+!
+!       ----------------------------------------------------------------
+!       ... AND IN CARTESIAN COORDINATE SYSTEM
+!       ----------------------------------------------------------------
+!
+          DO JP=1,NPLAN
+            TR1=GSQP/FREQ(JF)*COSTET(JP)
+            TR2=GSQP/FREQ(JF)*SINTET(JP)
+            DO IP=1,NPOIN2
+              CX(IP,JP)=TR1
+              CY(IP,JP)=TR2
+              CT(IP,JP)=0.D0
+            ENDDO
+          ENDDO
+!
+        ELSE
+!
+!       ----------------------------------------------------------------
+!       ... AND IN SPHERICAL COORDINATE SYSTEM
+!       ----------------------------------------------------------------
+!
+          SR=1.D0/R
+          GRADEG=180.D0/3.1415926D0
+          DO JP=1,NPLAN
+            TR1=GSQP/FREQ(JF)*COSTET(JP)
+            TR2=GSQP/FREQ(JF)*SINTET(JP)
+            DO IP=1,NPOIN2
+              SRCF=SR/COSF(IP)
+              TFSR=TGF(IP)*SR
+              CX(IP,JP)=TR1*SR*GRADEG
+              CY(IP,JP)=TR2*SRCF*GRADEG
+              CT(IP,JP)=TR2*TFSR
+            ENDDO
+          ENDDO
+!
+        ENDIF
+!
+      ELSE
+!
+!-----------------------------------------------------------------------
+!     FINITE WATER DEPTH ....
+!-----------------------------------------------------------------------
+!
+        DO IP=1,NPOIN2
+          DEUKD=2.D0*XK(IP,JF)*DEPTH(IP)
+          IF(DEUKD.GT.7.D2) THEN
+            TRA01(IP)=0.D0
+          ELSE
+            TRA01(IP)=DEUPI*FREQ(JF)/SINH(DEUKD)
+          ENDIF
         ENDDO
 !
         IF(.NOT.SPHE) THEN
@@ -108,66 +164,19 @@
 !       ... AND IN CARTESIAN COORDINATE SYSTEM
 !       ----------------------------------------------------------------
 !
-          DO IP=1,NPOIN2
-            DO JP=1,NPLAN
-              CX(IP,JP)=TRA01(JP)
-              CY(IP,JP)=TRA02(JP)
-              CT(IP,JP)=0.D0
-            ENDDO
-          ENDDO
-!
-        ELSE
-!       ----------------------------------------------------------------
-!       ... AND IN SPHERICAL COORDINATE SYSTEM
-!       ----------------------------------------------------------------
-          SR=1.D0/R
-          GRADEG=180.D0/3.1415926D0
-          DO IP=1,NPOIN2
-            SRCF=SR/COSF(IP)
-            TFSR=TGF(IP)*SR
-            DO JP=1,NPLAN
-              CX(IP,JP)=TRA01(JP)*SR*GRADEG
-              CY(IP,JP)=TRA02(JP)*SRCF*GRADEG
-              CT(IP,JP)=TRA02(JP)*TFSR
-            ENDDO
-          ENDDO
-!
-        ENDIF
-!
-!
-      ELSE
-!
-!-----------------------------------------------------------------------
-!     FINITE WATER DEPTH ....
-!-----------------------------------------------------------------------
-!
-        IF(.NOT.SPHE) THEN
-!
-!       ----------------------------------------------------------------
-!       ... AND IN CARTESIAN COORDINATE SYSTEM
-!       ----------------------------------------------------------------
-!
-          DO IP=1,NPOIN2
-            IF(DEPTH(IP).GT.PROMIN) THEN
-              DO JP=1,NPLAN
+          DO JP=1,NPLAN
+            DO IP=1,NPOIN2
+              IF(DEPTH(IP).GT.PROMIN) THEN
                 DDDN=-SINTET(JP)*DZX(IP)+COSTET(JP)*DZY(IP)
                 CX(IP,JP)=CG(IP,JF)*COSTET(JP)
                 CY(IP,JP)=CG(IP,JF)*SINTET(JP)
-                DEUKD=2.D0*XK(IP,JF)*DEPTH(IP)
-                IF(DEUKD.GT.7.D2) THEN
-                  DSDNSK=0.D0
-                ELSE
-                  DSDNSK=DEUPI*FREQ(JF)/SINH(DEUKD)
-                ENDIF
-                CT(IP,JP)=-DSDNSK*DDDN
-              ENDDO
-            ELSE
-              DO JP=1,NPLAN
+                CT(IP,JP)=-TRA01(IP)*DDDN
+              ELSE
                 CX(IP,JP)=0.D0
                 CY(IP,JP)=0.D0
                 CT(IP,JP)=0.D0
-              ENDDO
-            ENDIF
+              ENDIF
+            ENDDO
           ENDDO
 !
         ELSE
@@ -176,31 +185,24 @@
 !       ... AND IN SPHERICAL COORDINATE SYSTEM
 !       ----------------------------------------------------------------
 !
-          SR=1.D0/R
           GRADEG=180.D0/3.1415926D0
-          DO IP=1,NPOIN2
-            IF(DEPTH(IP).GT.PROMIN) THEN
-              SRCF=SR/COSF(IP)
-              TFSR=TGF(IP)*SR
-              DO JP=1,NPLAN
+          SR=1.D0/R
+          DO JP=1,NPLAN
+            DO IP=1,NPOIN2
+              IF(DEPTH(IP).GT.PROMIN) THEN
+                SRCF=SR/COSF(IP)
+                TFSR=SR*TGF(IP)              
                 DDDN=-SINTET(JP)*DZX(IP)*SR+COSTET(JP)*DZY(IP)*SRCF
                 CX(IP,JP)=(CG(IP,JF)*COSTET(JP))*SR*GRADEG
                 CY(IP,JP)=(CG(IP,JF)*SINTET(JP))*SRCF*GRADEG
-                DEUKD=2.D0*XK(IP,JF)*DEPTH(IP)
-                IF (DEUKD.GT.7.D2) THEN
-                  DSDNSK=0.D0
-                ELSE
-                  DSDNSK=DEUPI*FREQ(JF)/SINH(DEUKD)
-                ENDIF
-                CT(IP,JP)=CG(IP,JF)*SINTET(JP)*TFSR-DSDNSK*DDDN*GRADEG
-              ENDDO
-            ELSE
-              DO JP=1,NPLAN
+                CT(IP,JP)=CG(IP,JF)*SINTET(JP)*TFSR
+     &                   -TRA01(IP)*DDDN*GRADEG
+              ELSE
                 CX(IP,JP)=0.0D0
                 CY(IP,JP)=0.0D0
                 CT(IP,JP)=0.0D0
-              ENDDO
-            ENDIF
+              ENDIF
+            ENDDO
           ENDDO
 !
         ENDIF

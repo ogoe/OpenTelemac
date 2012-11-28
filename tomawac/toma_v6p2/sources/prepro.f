@@ -177,7 +177,7 @@
          CALL CONWAC
      &( CY%R  , CX%R  , CT%R , XK    , CG    , COSF  , TGF   , DEPTH ,
      &  DZY   , DZX   , FREQ%R , COSTET, SINTET, NPOIN2, NPLAN , JF  ,
-     &  NF    , PROINF, SPHE , PROMIN, TRA01 , TRA01(1,2) )
+     &  NF    , PROINF, SPHE , PROMIN, TRA01)
 !
 !      ----------------------------------------------------------------         
 !
@@ -255,8 +255,7 @@
         CALL CONW4D(CY%R,CX%R,CT%R,CF%R,
      &              V,U,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      &              DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
-     &              JF,NF,PROINF,SPHE,COURAN,MAREE,
-     &              TRA01,TRA01(1,2))
+     &              JF,NF,PROINF,SPHE,COURAN,MAREE,TRA01)
 !
       ENDDO
 !
