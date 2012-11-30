@@ -53,6 +53,8 @@
 !| XLAMD          |-->| DIA STANDARD CONFIGURATION LAMBDA COEFFICIENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : GRADEG
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -64,26 +66,27 @@
 !
 !.....LOCAL VARIABLES
 !     """"""""""""""""""
-      DOUBLE PRECISION CNVD  , AUX
+      DOUBLE PRECISION AUX
 !
 !
 !.....1. CHECKS THAT LAMBDA RANGES BETWEEN 0 AND 0.5.
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""
-      IF ((XLAMD.LT.0.D0).OR.(XLAMD.GT.0.5D0)) THEN
+!
+      IF(XLAMD.LT.0.D0.OR.XLAMD.GT.0.5D0) THEN
         IF(LNG.EQ.1) THEN
-           WRITE(LU,1001) XLAMD
+          WRITE(LU,1001) XLAMD
         ELSE
-           WRITE(LU,1002) XLAMD
+          WRITE(LU,1002) XLAMD
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
 !.....2. COMPUTES TETA_PLUS (DTPLUS) AND TETA_MOINS (DTMOIN).
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""
-      CNVD=180.D0/3.141592654D0
       AUX=2.D0*XLAMD*(1.D0+XLAMD*XLAMD)
-      DTPLUS=ACOS( (1.D0+AUX)/(1.D0+XLAMD)**2 )*CNVD
-      DTMOIN=ACOS( (1.D0-AUX)/(1.D0-XLAMD)**2 )*CNVD
+      DTPLUS=ACOS( (1.D0+AUX)/(1.D0+XLAMD)**2 )*GRADEG
+      DTMOIN=ACOS( (1.D0-AUX)/(1.D0-XLAMD)**2 )*GRADEG
 !
 !
  1001 FORMAT('/!/-----------------------------------------------/!/'/

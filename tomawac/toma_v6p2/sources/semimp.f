@@ -259,6 +259,7 @@
 !                                          QMOUT2, QNLIN2, QNLIN3
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -334,10 +335,10 @@
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
-      INTEGER          ISITS , NPOIN3, NPOIN4, IFF   , IP    , JP    ,
+      INTEGER          ISITS , IFF   , IP    , JP    ,
      &                 IFCAR , MF1   , MF2   , MFMAX , IDT
       DOUBLE PRECISION AUX1  , AUX2  , AUX3  , AUX4  , COEF  , DFMAX ,
-     &                 DEUPI , FM1   , FM2   , TDEB  , TFIN  , VITVEN,
+     &                 FM1   , FM2   , TDEB  , TFIN  , VITVEN,
      &                 VITMIN, HM0   , HM0MAX, DTN   , SUME   , AUXI  ,
      &                 USMIN
       CHARACTER*7      CHDON
@@ -347,15 +348,13 @@
       DOUBLE PRECISION  XCCMDI(MDIA)
 !GM Fin
 !
-      NPOIN3=NPOIN2*NPLAN
-      NPOIN4=NPOIN3*NF
-      DEUPI=2.D0*3.141592654D0
       VITMIN=1.D-3
 !
 !     -----------------------------------------------------------------
 !     CHOPS THE SPECTRUM IN ACCORDANCE WITH THE BATHYMETRY
 !     -----------------------------------------------------------------
-      IF (.NOT.PROINF) THEN
+!
+      IF(.NOT.PROINF) THEN
 !
 !       0.1 COMPUTES THE TOTAL VARIANCE OF THE SPECTRUM
 !       --------------------------------------------
@@ -395,7 +394,7 @@
           TWNEW(IP)=TWOLD(IP)
         ENDDO
 !
-        IF ((SVENT.GE.2).OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
+        IF (SVENT.GE.2.OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
      &                                (SMOUT.EQ.2.AND.SVENT.NE.1)) THEN
           DO IP=1,NPOIN2
             USNEW(IP)=USOLD(IP)
@@ -524,25 +523,22 @@
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
      &  TWNEW , TETA  , ROAIR , ROEAU , GRAVIT, NF    , NPLAN , NPOIN2,
      &  CIMPLI, TAUX1 , TAUX2 , TAUX3 , TAUX4 , TAUX5 )
-!GM V6P1 - NEW SOURCE TERMS
           ELSEIF (SVENT.EQ.3) THEN
             CALL QWIND3
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
      &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
      &  COEFWE, COEFWF, COEFWH, TAUX1 , TAUX2 , TAUX3 , TAUX4 )
-!GM Fin
+!
           ENDIF
 !
 !       ADDS THE LINEAR WIND GROWTH SOURCE TERME
 !       """""""""""""""""""""""""""""""""""""""
-!GM V6P1 - NEW SOURCE TERMS
+!
           IF (LVENT.EQ.1) THEN
-            CALL QWINDL
-     &( TSTOT , FREQ  , USOLD , USNEW , TWOLD , TWNEW , TETA  , GRAVIT,
-     &  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX3 , TAUX4 ,
-     &  TAUX5 , TAUX6 )
+            CALL QWINDL(TSTOT,FREQ,USOLD,USNEW,TWOLD,TWNEW,TETA, 
+     &                  NF,NPLAN,NPOIN2,CIMPLI,TAUX1,TAUX2,TAUX3,
+     &                  TAUX4,TAUX5,TAUX6)
           ENDIF
-!GM Fin
 !
         ELSE
           DO IP=1,NPOIN2
@@ -790,72 +786,76 @@
 !
 !         7.3 COMPUTES THE TOTAL VARIANCE OF THE SPECTRUM
 !         --------------------------------------------
-          CALL TOTNRJ
-     &( VARIAN, F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2)
+!
+          CALL TOTNRJ(VARIAN,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
 !         7.4 COMPUTES THE WAVE BREAKING CONTRIBUTION
 !         --------------------------------------
-          GOTO (761,762,763,764), SBREK
-          IF(SBREK.NE.0) THEN
-           IF(LNG.EQ.1) THEN
-           WRITE(LU,*) 'TYPE DE DEFERLEMENT NON IMPLANTE...SBREK=',SBREK
-           WRITE(LU,*) 'PAS DE PRISE EN COMPTE DU DEFERLEMENT'
-           ELSE
-           WRITE(LU,*) 'BREAKING FORMULATION NOT PROGRAMMED...SBREK=',
-     &                  SBREK
-           WRITE(LU,*) 'NO CONSIDERATION OF THE DEPTH-INDUCED BREAKING'
-           ENDIF
-          ENDIF
-          GOTO 769
 !
 !         7.4.1 BREAKING ACCORDING TO BATTJES AND JANSSEN (1978)
 !         - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  761     CONTINUE
+!
+          IF(SBREK.EQ.1) THEN
+!
           CALL QBREK1
      &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , ALFABJ, GAMBJ1,
      &  GAMBJ2, IQBBJ , IHMBJ , NF    , NPLAN , NPOIN2, BETA )
-          GOTO 769
+!
 !
 !         7.4.2 BREAKING ACCORDING TO THORNTON AND GUZA (1983)
 !         - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  762     CONTINUE
+!
+          ELSEIF(SBREK.EQ.2) THEN
+!  
           CALL QBREK2
      &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , BORETG, GAMATG,
      &  IWHTG , NF    , NPLAN , NPOIN2, BETA )
-          GOTO 769
+!
 !
 !         7.4.3 BREAKING ACCORDING TO ROELVINK (1993)
 !         - - - - - - - - - - - - - - - - - - - - - -
-  763     CONTINUE
+!
+          ELSEIF(SBREK.EQ.3) THEN
+!
           CALL QBREK3
      &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , ALFARO, GAMARO,
      &  GAM2RO, IEXPRO, IDISRO, NF    , NPLAN , NPOIN2, BETA )
-          GOTO 769
+!
 !
 !         7.4.4 BREAKING ACCORDING TO IZUMIYA AND HORIKAWA (1984)
 !         - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  764     CONTINUE
-          CALL QBREK4
-     &( TSTOT , TSDER , F     , TAUX3 , VARIAN, DEPTH , BETAIH, EM2SIH,
-     &  GRAVIT, NF    , NPLAN , NPOIN2, BETA )
-          GOTO 769
 !
-  769     CONTINUE
+          ELSEIF(SBREK.EQ.4) THEN
+!
+          CALL QBREK4
+     &( TSTOT , TSDER , F     ,TAUX3,VARIAN,DEPTH,BETAIH,EM2SIH,
+     &  GRAVIT, NF    , NPLAN , NPOIN2, BETA )
+!
+          ELSEIF(SBREK.NE.0) THEN
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*) 'TYPE DE DEFERLEMENT NON IMPLANTE : ',SBREK
+            ELSE
+              WRITE(LU,*) 'BREAKING FORMULATION NOT PROGRAMMED: ',
+     &                     SBREK
+            ENDIF
+            CALL PLANTE(1)
+            STOP
+          ENDIF
 !
 !       7.5 NON-LINEAR INTERACTIONS BETWEEN FREQUENCY TRIPLETS
 !       -----------------------------------------------------------
-          IF (STRIA.EQ.1) THEN
+          IF(STRIA.EQ.1) THEN
             CALL FREMOY
      &( FMOY  , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2,
      &  TAUX1 , TAUX2 )
             CALL QTRIA1
-     &( F     , XK    , FREQ  , DEPTH , RAISF , GRAVIT, ALFLTA, RFMLTA,
+     &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
      &  NF    , NPLAN , NPOIN2, TSTOT , TSDER , VARIAN, FMOY  )
 !
-        ELSEIF (STRIA.EQ.2) THEN
+        ELSEIF(STRIA.EQ.2) THEN
             CALL QTRIA2
      &( F     , XK    , FREQ  , DFREQ , DEPTH , TETA  , SINTET, COSTET ,
-     &  KSPB  , BDISPB, BDSSPB, RAISF , GRAVIT, NF    , NPLAN , NPOIN2 ,
+     &  KSPB  , BDISPB, BDSSPB, RAISF , NF    , NPLAN , NPOIN2 ,
      &  NBD   , QINDI , TSTOT , TSDER )
         ENDIF
 !
@@ -890,6 +890,7 @@
 !
 !
   100 CONTINUE
+!
 !     -----------------------------------------------------------------
 !     END OF THE MAIN LOOP ON THE NUMBER OF TIME STEPS (NSITS)
 !     FOR INTEGRATION OF THE SOURCE TERMS, BY PROPAGATION TIME STEP

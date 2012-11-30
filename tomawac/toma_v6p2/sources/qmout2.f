@@ -70,6 +70,8 @@
 !  - THE CONSTANT CMOUT6 (Delta) UTILISED IN WESTHUYSEN (2007)
 !                                    IS EQUAL TO 0
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -91,9 +93,10 @@
 !     """""""""""""""""
       INTEGER    JP  ,  IFF, IP
       DOUBLE PRECISION  PO , AUX, DIMPLI , C1 , C2 , P0O  , P0N
-      DOUBLE PRECISION  B  , w  , DEUPI  , DTETAR  , CPHAS, F_INT, CG1
+      DOUBLE PRECISION  B  , w  , DTETAR  , CPHAS, F_INT, CG1
+!
+      INTRINSIC SQRT
 !      
-      DEUPI  = 6.283185307D0
       DTETAR = DEUPI/DBLE(NPLAN)
       DIMPLI = 1.0D0-CIMPLI
       C1     = - CMOUT5*DEUPI**9/GRAVIT**4
@@ -179,8 +182,8 @@
             ENDDO
 !            
             CPHAS = DEUPI * FREQ(IFF) / XK(IP,IFF)
-            P0O=3.D0+TANH(w*(USOLD(IP)/CPHAS-0.1D0))
-            P0N=3.D0+TANH(w*(USNEW(IP)/CPHAS-0.1D0))            
+            P0O=3.D0+TANH(W*(USOLD(IP)/CPHAS-0.1D0))
+            P0N=3.D0+TANH(W*(USNEW(IP)/CPHAS-0.1D0))            
 !                        
             CG1= DEUPI*FREQ(IFF)/XK(IP,IFF)*(0.5D0+XK(IP,IFF)*DEPTH(IP)
      *                               /DSINH(2.D0*XK(IP,IFF)*DEPTH(IP)))
@@ -195,10 +198,10 @@
 !         """"""""""""""""""""            
             BETAO(IP)=-CMOUT3*(B/CMOUT4)**(P0O/2.D0)
      *        *(TANH(XK(IP,IFF)*DEPTH(IP)))**((2.D0-P0O)/4.D0)
-     *                            *GRAVIT**(0.5D0)*XK(IP,IFF)**(0.5D0)
+     *                    *SQRT(GRAVIT*XK(IP,IFF))
             BETAN(IP)=-CMOUT3*(B/CMOUT4)**(P0N/2.D0)
      *        *(TANH(XK(IP,IFF)*DEPTH(IP)))**((2.D0-P0N)/4.D0)
-     *                            *GRAVIT**(0.5D0)*XK(IP,IFF)**(0.5D0)
+     *                    *SQRT(GRAVIT*XK(IP,IFF))
 !
 !.........COMPUTES THE NON-BREAK BETA
 !         """"""""""""""""""""""""

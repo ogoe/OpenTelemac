@@ -77,6 +77,8 @@
 !| Z0OLD          |-->| SURFACE ROUGHNESS LENGTH AT TIME N
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -96,13 +98,10 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION DEUPI , C1 , DIREC , CONST , DIMPLI
-      DOUBLE PRECISION XX    , ZLOGMU
+      DOUBLE PRECISION C1,DIREC,CONST,DIMPLI,XX,ZLOGMU
 !
-!
-      DEUPI = 2.D0* 3.14159265358978D0
       C1 = DEUPI * (ROAIR/ROEAU) * (BETAM/XKAPPA**2)
-      DIMPLI=1.0D0-CIMPLI
+      DIMPLI=1.D0-CIMPLI
 !
 !.....COMPUTES (1ST PASS) THE DIRECTIONAL DEPENDENCES
 !     """"""""""""""""""""""""""""""""""""""""""""""
@@ -146,20 +145,20 @@
 !.........COMPUTES THE SOURCE TERM
 !         """"""""""""""""""""""
           DO IP=1,NPOIN2
-            IF (TOLD(IP,JP).GT.0.01D0) THEN
+            IF(TOLD(IP,JP).GT.0.01D0) THEN
               XX = USO(IP) * TOLD(IP,JP)
-              ZLOGMU = DLOG(OMOLD(IP)) + XKAPPA/XX
-              IF (ZLOGMU.LT.0.D0) THEN
+              ZLOGMU = LOG(OMOLD(IP)) + XKAPPA/XX
+              IF(ZLOGMU.LT.0.D0) THEN
                 BETAO(IP) = CONST*OMOLD(IP)*EXP(XKAPPA/XX)*
      &                          ZLOGMU**4*XX**2
               ENDIF
             ENDIF
           ENDDO
           DO IP=1,NPOIN2
-            IF (TNEW(IP,JP).GT.0.01D0) THEN
+            IF(TNEW(IP,JP).GT.0.01D0) THEN
               XX = USN(IP) * TNEW(IP,JP)
-              ZLOGMU = DLOG(OMNEW(IP)) + XKAPPA/XX
-              IF (ZLOGMU.LT.0.D0) THEN
+              ZLOGMU = LOG(OMNEW(IP)) + XKAPPA/XX
+              IF(ZLOGMU.LT.0.D0) THEN
                 BETAN(IP) = CONST*OMNEW(IP)*EXP(XKAPPA/XX)*
      &                          ZLOGMU**4*XX**2
               ENDIF

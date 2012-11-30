@@ -81,6 +81,8 @@
 !| XLAMDA         |-->| WEIGHTING FACTOR FOR FRA
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -96,13 +98,12 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  NPOIN4, IP    , JF    , JP
-      DOUBLE PRECISION GX    , GXU   , UG     , AL    , FP    , DEUPI
+      DOUBLE PRECISION GX    , GXU   , UG     , AL    , FP
       DOUBLE PRECISION UVMIN  , COEFA , COEFB , COEFD
       DOUBLE PRECISION COEFE , UVENT , FPMIN  , SPR1  , SPR2  , XLAM
       DOUBLE PRECISION TET1  , TET2  , COEF
 !
 !
-      DEUPI = 6.283185307D0
       NPOIN4= NPOIN2*NPLAN*NF
       UVMIN = 1.D-6
       COEFA = 2.84D0
@@ -112,12 +113,12 @@
       GX    = GRAVIT*FETCH
       FPMIN = 1.D-4
 !
-!
 !     ===========================================================
 !     INITIAL SPECTRUM IS ZERO EVERYWHERE (INISPE=0)
 !     (ALSO WORKS TO INITIALISE TO OTHER VALUES)
 !     ===========================================================
-      CALL OV ( 'X=C     ' , F      , F , F , 0.D0 , NPOIN4 )
+!
+      CALL OV ('X=C     ',F,F,F,0.D0,NPOIN4)
       IF (INISPE.EQ.0) RETURN
 !
 !
@@ -127,6 +128,7 @@
 !     IF ZERO WIND     -E(F): ZERO
 !                      -FRA : ZERO
 !     ===========================================================
+!
       IF (INISPE.EQ.1) THEN
 !
         DO 100 IP=1,NPOIN2

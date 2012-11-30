@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( POWER , F     , FREQ  , DFREQ , CG    , TAILF , NF    , NPLAN ,
-     &  NPOIN2, ROEAU , GRAVIT)
+     &  NPOIN2, ROEAU )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   29/06/2011
@@ -59,6 +59,8 @@
 !| TAILF          |-->| FACTEUR DE QUEUE DU SPECTRE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -66,7 +68,7 @@
       INTEGER          NF    , NPLAN , NPOIN2
       DOUBLE PRECISION TAILF , POWER(NPOIN2), FREQ(NF), DFREQ(NF)
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF), CG(NPOIN2,NF)
-      DOUBLE PRECISION GRAVIT, ROEAU
+      DOUBLE PRECISION ROEAU
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
@@ -74,7 +76,7 @@
       DOUBLE PRECISION AUX1  , DTETAR, ROGER
 !
 !
-      DTETAR=2.D0*3.14159265D0/DBLE(NPLAN)
+      DTETAR=DEUPI/DBLE(NPLAN)
       ROGER=ROEAU*GRAVIT/1000.D0
       DO IP=1,NPOIN2
         POWER(IP)=0.D0
@@ -95,8 +97,9 @@
 !-----C-------------------------------------------------------------C
 !-----C  TAKES THE HIGH FREQUENCY PART INTO ACCOUNT (OPTIONAL)      C
 !-----C-------------------------------------------------------------C
-      IF (TAILF.GT.1.D0) THEN
-        AUX1=DTETAR*GRAVIT/(4.D0*3.14159265D0*TAILF)
+!
+      IF(TAILF.GT.1.D0) THEN
+        AUX1=DTETAR*GRAVIT/(2.D0*DEUPI*TAILF)
         DO JP=1,NPLAN
           DO IP=1,NPOIN2
             POWER(IP)=POWER(IP) + F(IP,JP,NF)*AUX1
@@ -107,6 +110,7 @@
 !-----C-------------------------------------------------------------C
 !-----C  CONVERTS TO KW/M  (MULTIPLIES BY RO.G/1000)                C
 !-----C-------------------------------------------------------------C
+!
       DO IP=1,NPOIN2
         POWER(IP)=POWER(IP)*ROGER
       ENDDO

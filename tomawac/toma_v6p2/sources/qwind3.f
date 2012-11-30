@@ -61,6 +61,8 @@
 !
 !**********************************************************************
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -78,11 +80,10 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , IFF   , IP
-      DOUBLE PRECISION DEUPI , DIREC , CONST
+      DOUBLE PRECISION DIREC , CONST
       DOUBLE PRECISION INTERO, INTERN , CPHAS  , DIMPLI
 !
 !
-      DEUPI = 2.D0* 3.14159265358978D0
       DIMPLI= 1.0D0-CIMPLI
 !      
 !
@@ -129,4 +130,4 @@
 !
       RETURN
       END
-!
+

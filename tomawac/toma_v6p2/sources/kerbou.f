@@ -1,11 +1,11 @@
-!                    ***************
-                     FUNCTION KERBOU
-!                    ***************
+!                    ********************************
+                     DOUBLE PRECISION FUNCTION KERBOU
+!                    ********************************
 !
      &( XK1   , XK2   , FREQ1  , FREQ2  , DEPTH , TETA1 , TETA2 )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   20/06/2011
+! TOMAWAC   V6P3                                   20/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE COUPLING COEFFICIENT.
@@ -42,31 +42,33 @@
 !| XK2            |-->| WAVE NUMBER OF COMPONENT 2
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : PI,DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      DOUBLE PRECISION  XK1, XK2, FREQ1, FREQ2 , TETA1 , TETA2
-      DOUBLE PRECISION  DEPTH
-      DOUBLE PRECISION  KERBOU
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
-      DOUBLE PRECISION  VAR1 , VAR2 , VAR3 , VAR4 , DANG
-      DOUBLE PRECISION  PI , DEUPI , GRAVIT
-      PARAMETER(PI=3.141592654D0, DEUPI=2.D0*PI )
-      PARAMETER(GRAVIT=9.81D0)
+      DOUBLE PRECISION, INTENT(IN) :: XK1,XK2,FREQ1,FREQ2,TETA1,TETA2
+      DOUBLE PRECISION, INTENT(IN) :: DEPTH
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      VAR1  = XK1*XK1
-      VAR2  = XK2*XK2
+      DOUBLE PRECISION VAR1,VAR2,VAR3,VAR4,DANG
+!
+      INTRINSIC COS
+!
+!-----------------------------------------------------------------------
+!
+      VAR1  = XK1**2
+      VAR2  = XK2**2
       VAR3  = XK1*XK2
-      VAR4  = DEUPI*DEUPI*FREQ1*FREQ2
-      DANG  = DCOS(TETA1-TETA2)
+      VAR4  = DEUPI**2*FREQ1*FREQ2
+      DANG  = COS(TETA1-TETA2)
 !
       KERBOU = GRAVIT*0.5D0*(VAR1+VAR2+2.D0*VAR3*DANG) +
-     &         (VAR4/VAR3)*((VAR1+VAR2)*DANG+VAR3*(1+DANG*DANG))/
-     &         DEPTH
+     &         (VAR4/VAR3)*((VAR1+VAR2)*DANG+VAR3*(1.D0+DANG**2))/DEPTH
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

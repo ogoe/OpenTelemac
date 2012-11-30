@@ -49,6 +49,8 @@
 !| XK             |<--| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT,R2
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -61,15 +63,10 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER          IP    , JF
-      DOUBLE PRECISION DEUPI2, DEUPI , XG    , DPDSUG, AUX2
-      DOUBLE PRECISION AUX1  , AUX3  , DEUKD , R2
+      DOUBLE PRECISION DEUPI2,DPDSUG,AUX2,AUX1,AUX3,DEUKD 
 !
-!
-      XG=9.81D0
-      DEUPI=2.D0*3.14159265D0
-      DEUPI2=DEUPI*DEUPI
-      DPDSUG=DEUPI2/XG
-      R2=(6400.D3)**2
+      DEUPI2=DEUPI**2
+      DPDSUG=DEUPI2/GRAVIT
 !
       IF (PROINF) THEN
 !                               +----------------------+
@@ -77,7 +74,7 @@
 !                               +----------------------+
         DO 310 JF=1,NF
           AUX1=DPDSUG*(FREQ(JF))**2
-          AUX3=0.5D0*XG/(DEUPI*FREQ(JF))
+          AUX3=0.5D0*GRAVIT/(DEUPI*FREQ(JF))
           DO 320 IP=1,NPOIN2
             XK(IP,JF)=AUX1
             CG(IP,JF)=AUX3

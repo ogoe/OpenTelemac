@@ -58,6 +58,8 @@
 !| VARIAN         |<--| WORK TABLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRADEG
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -73,13 +75,11 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  IP    , JP    , JF
-      DOUBLE PRECISION AUXC  , AUXS  , DEUPI , DFDTET, DTETAR, AUXI
-      DOUBLE PRECISION CNVD  , SEUIL , COEFT
+      DOUBLE PRECISION AUXC  , AUXS  , DFDTET, DTETAR, AUXI
+      DOUBLE PRECISION SEUIL , COEFT
 !
 !
       SEUIL=1.D-20
-      DEUPI=2.D0*3.14159265D0
-      CNVD =360.D0/DEUPI
       DTETAR=DEUPI/DBLE(NPLAN)
 !
       DO 10 IP=1,NPOIN2
@@ -139,7 +139,7 @@
           AUXS=SINMOY(IP)/VARIAN(IP)
           AUXC=COSMOY(IP)/VARIAN(IP)
           AUXI=MIN(DSQRT(AUXS*AUXS+AUXC*AUXC),1.D0)
-          DIRSPR(IP)=DSQRT(2.D0*(1.D0-AUXI))*CNVD
+          DIRSPR(IP)=DSQRT(2.D0*(1.D0-AUXI))*GRADEG
         ELSE
           DIRSPR(IP)=SEUIL
         ENDIF

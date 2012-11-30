@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( F     , XK    , FREQ  , DFREQ , DEPTH , TETA  , SINTET, COSTET ,
-     &  KSPB  , BDISPB, BDSSPB, RAISF , GRAVIT, NF    , NPLAN , NPOIN2 ,
+     &  KSPB  , BDISPB, BDSSPB, RAISF , NF    , NPLAN , NPOIN2 ,
      &  NBD   , INDI  , TSTOT , TSDER )
 !
 !***********************************************************************
@@ -59,6 +59,8 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : PI,DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -71,7 +73,7 @@
       DOUBLE PRECISION  RAISF , DFREQ(NF) , FREQ(NF), DEPTH(NPOIN2)
       DOUBLE PRECISION  TETA(NPLAN) , SINTET(NPLAN) , COSTET(NPLAN)
       DOUBLE PRECISION  TSTOT(NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION  GRAVIT , BMS , BMSP
+      DOUBLE PRECISION  BMS , BMSP
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
@@ -83,11 +85,10 @@
       DOUBLE PRECISION  VR1 , VR2 , VR3 , TK1 , TK2 , TK3
       DOUBLE PRECISION  BK1 , BK2 , BK3 , D12 , D21 , DEP2
       DOUBLE PRECISION  FILT , BISP , BDISPB , BDSSPB
-      DOUBLE PRECISION  PI  , DEUPI , DEUPI2 , KSPB
+      DOUBLE PRECISION  DEUPI2 , KSPB
       DOUBLE PRECISION  VAR1 , XC1 , XC2 , XC3
-      PARAMETER(PI=3.141592654D0, DEUPI=2.D0*PI )
 !
-      INTEGER           NBD, INDI(NBD), IP1, IP3
+      INTEGER NBD, INDI(NBD), IP1, IP3
 !
 !
 !.....EXTERNAL FUNCTIONS
@@ -100,9 +101,9 @@
       DTETA = TETA(2)-TETA(1)
       BMS  = 1.D0/15.D0
       BMSP = BMS + 1.D0/3.D0
-      DEUPI2 = DEUPI*DEUPI
+      DEUPI2 = DEUPI**2
       FREQ0  = FREQ(1)
-      LRAISF = DLOG(RAISF)
+      LRAISF = LOG(RAISF)
       RAISM1 = RAISF-1.D0
 !
       DO 200 IFF = 1,NF
@@ -112,11 +113,11 @@
         FREQ2 = FREQ3-FREQ1
         IF(FREQ2.LE.FREQ0) THEN
           GOTO 201
-        END IF
-        FR1    = 1.D0 + DLOG(FREQ2/FREQ0)/LRAISF
-        IFR    = IDINT(FR1)
-        FR1    = FR1 - DBLE(IFR)
-        FR1    = (RAISF**FR1-1.D0)/RAISM1
+        ENDIF
+        FR1 = 1.D0 + LOG(FREQ2/FREQ0)/LRAISF
+        IFR = IDINT(FR1)
+        FR1 = FR1 - DBLE(IFR)
+        FR1 = (RAISF**FR1-1.D0)/RAISM1
         DO 202 IP3 = 1,NBD
          IPL = INDI(IP3)
          DO 203 IP1 = 1,NBD
@@ -140,7 +141,7 @@
 !         WITHIN THE ANGULAR SECTOR DEFINED BY THE USER (VARIABLES
 !         BDISPB AND BDSSPB) ARE NOT TAKEN INTO ACCOUNT
              GOTO 205
-          END IF
+          ENDIF
 !
           AP2    = (TETA2-TETA(1))/DTETA
           IPM    = IDINT(AP2)
@@ -152,19 +153,16 @@
 !.........COMPUTES COUPLING COEFFICIENTS
 !         """"""""""""""""""""""""""""""""""""
 !         R(P-M,M)
-          VR1 = KERBOU
-     &(   XK1 , XK2   , FREQ1 , FREQ2 , DEP , TETA(JPL) , TETA2     )
+          VR1 = KERBOU(XK1,XK2,FREQ1,FREQ2,DEP,TETA(JPL),TETA2)
 !         R(M-P,P)
-          VR2 = KERBOU
-     &(   -XK1, XK3   , -FREQ1, FREQ3 , DEP , TETA(JPL) , TETA(IPL) )
+          VR2 = KERBOU(-XK1,XK3,-FREQ1,FREQ3,DEP,TETA(JPL),TETA(IPL))
 !         R(-M,P)
-          VR3 = KERBOU
-     &(   -XK2  , XK3 , -FREQ2, FREQ3 , DEP , TETA2     , TETA(IPL) )
+          VR3 = KERBOU(-XK2,XK3,-FREQ2,FREQ3,DEP,TETA2,TETA(IPL))
 !
           FILT = KSPB/((XK2-K2NL)**2+KSPB*KSPB)
           FILT = -0.5D0*FILT/XK2
 !
-          DEP2 = DEP*DEP
+          DEP2 = DEP**2
           VAR1 = 2.D0*BMS*DEP2
           XC1  = VAR1*XK3*XK3
           XC2  = VAR1*XK2*XK2
@@ -199,9 +197,8 @@
           VR3   = 2.D0*DFREQ(IFF)*DTETA*VR3/BK3
 !
           TSTOT(IPO,IPL,IFF) = TSTOT(IPO,IPL,IFF) + VR1*BISP
-!          TSDER(IPO,IPL,IFF) = TSDER(IPO,IPL,IFF) + VR1*D12
           TSTOT(IPO,JPL,JFF) = TSTOT(IPO,JPL,JFF) - VR3*BISP
-!          TSDER(IPO,JPL,JFF) = TSDER(IPO,JPL,JFF) - VR3*D21
+!          
  205      CONTINUE
  203     CONTINUE
  202    CONTINUE

@@ -76,6 +76,8 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,USDPI,SR,GRADEG,GRAVIT
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -98,22 +100,18 @@
       DOUBLE PRECISION, INTENT(IN)    :: DVX(NPOIN2),DVY(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: COSF(NPOIN2),TGF(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2)
       LOGICAL, INTENT(IN)             :: PROINF,SPHE,COURAN,MAREE
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IP,IPOIN
-      DOUBLE PRECISION GSQP,SR,R,SRCF,TFSR
-      DOUBLE PRECISION DDDN,DSDNSK,LSDUDN,GRADEG,LSDUDS
-      DOUBLE PRECISION DSDD,USGD,USDPI,DEUPI,DEUKD,TR1,TR2
+      DOUBLE PRECISION GSQP,SRCF,TFSR,DDDN,LSDUDN,LSDUDS
+      DOUBLE PRECISION USGD,DEUKD,TR1,TR2
 !
 !***********************************************************************
 !
-      GSQP=0.780654996D0
-      R=6400.D3
-      USDPI=0.159154943D0
-      DEUPI=6.283185307D0
+      GSQP=GRAVIT/(2.D0*DEUPI)
 !
 !-----------------------------------------------------------------------
 !     INFINITE WATER DEPTH ...
@@ -161,9 +159,7 @@
 !       ----------------------------------------------------------------
 !
         ELSE
-!
-          SR=1.D0/R
-          GRADEG=180.D0/3.1415926D0        
+!   
           DO IP=1,NPLAN
             TR1=GSQP/FREQ(JF)*COSTET(IP)
             TR2=GSQP/FREQ(JF)*SINTET(IP)
@@ -285,8 +281,6 @@
 !
         ELSE
 !
-          SR=1.D0/R
-          GRADEG=180.D0/3.1415926D0
           DO IPOIN=1,NPOIN2
             DEUKD=2.D0*XK(IPOIN,JF)*DEPTH(IPOIN)
             IF(DEUKD.GT.7.D2) THEN

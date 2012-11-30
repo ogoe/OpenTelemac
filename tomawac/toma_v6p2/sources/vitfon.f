@@ -2,8 +2,7 @@
                      SUBROUTINE VITFON
 !                    *****************
 !
-     &( UWBM  , F     , XK    , DEPTH , DFREQ , NF    , NPOIN2, NPLAN ,
-     &      GRAVIT, BETA  )
+     &(UWBM,F, XK , DEPTH , DFREQ , NF    , NPOIN2, NPLAN ,BETA  )
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   29/06/2011
@@ -39,7 +38,6 @@
 !| DEPTH          |-->| WATER DEPTH
 !| DFREQ          |-->| FREQUENCY STEPS BETWEEN DISCRETIZED FREQUENCIES
 !| F              |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
-!| GRAVIT         |-->| GRAVITY ACCELERATION
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
@@ -47,46 +45,53 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER  NF    , NPLAN , NPOIN2
-      DOUBLE PRECISION GRAVIT
-      DOUBLE PRECISION UWBM(NPOIN2), DEPTH(NPOIN2), BETA(NPOIN2)
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF), XK(NPOIN2,NF), DFREQ(NF)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(INOUT) :: UWBM(NPOIN2),BETA(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2),DFREQ(NF)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  IP    , JP    , JF
-      DOUBLE PRECISION DEUPI , DTETAR, DEUKD , COEF
+      DOUBLE PRECISION DTETAR, DEUKD , COEF
 !
+      INTRINSIC SQRT,SINH,MIN
 !
-      DEUPI=2.D0*3.14159265D0
+!-----------------------------------------------------------------------
+!
       DTETAR=DEUPI/FLOAT(NPLAN)
 !
-      DO 30 IP = 1,NPOIN2
+      DO IP = 1,NPOIN2
         UWBM(IP) = 0.D0
-   30 CONTINUE
+      ENDDO
 !
-!.....SUMS UP THE DISCRETISED PART OF THE SPECTRUM
-!     """"""""""""""""""""""""""""""""""""""""""""""""
-      DO 20 JF = 1,NF
+!     SUMS UP THE DISCRETISED PART OF THE SPECTRUM
+!     
+      DO JF = 1,NF
         COEF=2.D0*GRAVIT*DFREQ(JF)*DTETAR
-        DO 25 IP = 1,NPOIN2
+        DO IP = 1,NPOIN2
           DEUKD = MIN(2.D0*DEPTH(IP)*XK(IP,JF),7.D2)
           BETA(IP) = COEF*XK(IP,JF)/SINH(DEUKD)
-   25   CONTINUE
-        DO 10 JP = 1,NPLAN
-          DO 5 IP=1,NPOIN2
+        ENDDO
+        DO JP = 1,NPLAN
+          DO IP=1,NPOIN2
             UWBM(IP) = UWBM(IP) + F(IP,JP,JF)*BETA(IP)
-    5     CONTINUE
-   10   CONTINUE
-   20 CONTINUE
+          ENDDO
+        ENDDO
+      ENDDO
 !
-      DO 35 IP=1,NPOIN2
-        UWBM(IP) = DSQRT(UWBM(IP))
-   35 CONTINUE
+      DO IP=1,NPOIN2
+        UWBM(IP) = SQRT(UWBM(IP))
+      ENDDO
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

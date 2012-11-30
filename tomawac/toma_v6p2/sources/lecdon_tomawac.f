@@ -59,9 +59,8 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-! DEGRAD = CONVERSION FACTOR FROM DEGREES TO RADIANS
-      DOUBLE PRECISION DEGRAD, PIS2
-      PARAMETER(DEGRAD=0.01745329252D0, PIS2=1.570796327D0)
+!-----------------------------------------------------------------------
+!
       CHARACTER*8      MNEMO(MAXVAR)
       INTEGER          K
 !
@@ -470,12 +469,12 @@
         SVENT=0
       ENDIF
       IF(TRIGO) THEN
-        TETA1  = PIS2-TETA1
-        TETA2  = PIS2-TETA2
-        TETA1L = PIS2-TETA1L
-        TETA2L = PIS2-TETA2L
-        BDISPB = PIS2-BDISPB
-        BDSSPB = PIS2-BDSSPB
+        TETA1  = PISUR2-TETA1
+        TETA2  = PISUR2-TETA2
+        TETA1L = PISUR2-TETA1L
+        TETA2L = PISUR2-TETA2L
+        BDISPB = PISUR2-BDISPB
+        BDSSPB = PISUR2-BDSSPB
       ENDIF
       IF(LIMIT.LT.0.OR.LIMIT.GT.2) THEN
         IF(LNG.EQ.1) THEN

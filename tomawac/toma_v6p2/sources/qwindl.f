@@ -2,7 +2,7 @@
                         SUBROUTINE QWINDL
 !                       *****************
 !
-     &( TSTOT , FREQ  , USOLD , USNEW , TWOLD , TWNEW , TETA  , GRAVIT,
+     &( TSTOT , FREQ  , USOLD , USNEW , TWOLD , TWNEW , TETA  , 
      &  NF    , NPLAN , NPOIN2, CIMPLI, USN   , USO   , ALPHAN, ALPHAO, 
      &  FPMO  , FPMN )
 !
@@ -37,7 +37,6 @@
 !| FPMN           |<->| WORK TABLE
 !| FPMO           |<->| WORK TABLE
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
-!| GRAVIT         |-->| GRAVITY ACCELERATION
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
@@ -57,12 +56,14 @@
 !  ********    - PROGRAMME(S) APPELE(S) :    -
 !**********************************************************************
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
 !     """""""""""""""""""""
       INTEGER     NF ,  NPLAN         , NPOIN2
-      DOUBLE PRECISION  GRAVIT        , CIMPLI
+      DOUBLE PRECISION  CIMPLI
       DOUBLE PRECISION  FREQ(NF)      , TETA(NPLAN)
       DOUBLE PRECISION  FPMO(NPOIN2)  , FPMN(NPOIN2)
       DOUBLE PRECISION  TWOLD(NPOIN2) , TWNEW(NPOIN2) , USNEW(NPOIN2)
@@ -73,11 +74,10 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF   , IP
-      DOUBLE PRECISION  C1  , DIREC , CONSTO , CONSTN ,DEUPI , DIMPLI
+      DOUBLE PRECISION  C1  , DIREC , CONSTO , CONSTN ,DIMPLI
 !
 !
-      C1 = 1.5D-3 * GRAVIT**(-2) 
-      DEUPI = 2.D0* 3.14159265358978D0
+      C1 = 1.5D-3 / GRAVIT**2
       DIMPLI=1.0D0-CIMPLI
 !
 !.....LOOP ON THE DISCRETISED DIRECTIONS

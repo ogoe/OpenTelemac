@@ -59,6 +59,7 @@
 !| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : PISUR2,DEUPI
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -72,7 +73,7 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , IFF   , IP
-      DOUBLE PRECISION COEF1 , COEF2 , SEUIL , PIS2  , DEUPI
+      DOUBLE PRECISION COEF1 , COEF2 , SEUIL 
       DOUBLE PRECISION A     , XM    , SIGMA , BX    , FN
 !
 !.....EXTERNAL FUNCTIONS
@@ -80,24 +81,22 @@
       DOUBLE PRECISION   GAMMLN, QGAUSS
       EXTERNAL           GAMMLN, QGAUSS
 !
-      PARAMETER (PIS2 = 1.570796327D0 , DEUPI = 6.283185307D0)
-!
 !
       SEUIL  = 1.D-6
       COEF1  = -2.D0*ALFARO
-      COEF2  = 8.D0/(GAMARO*GAMARO)
+      COEF2  = 8.D0/(GAMARO**2)
 !
-      IF (IDISRO.EQ.1) THEN
+      IF(IDISRO.EQ.1) THEN
 !
 !.......COMPUTES THE LINEAR COEFFICIENT BETA (WEIBULL FIT)
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""
         DO 40 IP = 1,NPOIN2
           IF (VARIAN(IP).GT.SEUIL) THEN
             BX    = COEF2*VARIAN(IP)/(DEPTH(IP)*DEPTH(IP))
-            SIGMA = DSQRT(8.D0*VARIAN(IP))/DEPTH(IP)
-            XM    = 1.D0 + 0.7D0*(DTAN(PIS2*SIGMA/GAM2RO))**2
-            A     = DEXP(XM*(GAMMLN(1.D0+1.D0/XM,DEUPI)))
-            IF (XM.GT.98.D0) THEN
+            SIGMA = SQRT(8.D0*VARIAN(IP))/DEPTH(IP)
+            XM    = 1.D0 + 0.7D0*(TAN(PISUR2*SIGMA/GAM2RO))**2
+            A     = EXP(XM*(GAMMLN(1.D0+1.D0/XM,DEUPI)))
+            IF(XM.GT.98.D0) THEN
                FN = 1.D0
             ELSE
                FN = QGAUSS(BX,IEXPRO,A,XM)
@@ -113,7 +112,7 @@
 !.......COMPUTES THE LINEAR COEFFICIENT BETA (RAYLEIGH FIT)
 !       """"""""""""""""""""""""""""""""""""""""""""""""""""""
         DO 50 IP = 1,NPOIN2
-          BX = COEF2*VARIAN(IP)/(DEPTH(IP)*DEPTH(IP))
+          BX = COEF2*VARIAN(IP)/(DEPTH(IP)**2)
           XM = 1.D0
           A  = 1.D0
           FN = QGAUSS(BX,IEXPRO,A,XM)
@@ -121,13 +120,12 @@
    50   CONTINUE
       ENDIF
 !
-!.....TAKES THE SOURCE TERM INTO ACCOUNT
-!     """"""""""""""""""""""""""""""""
+!     TAKES THE SOURCE TERM INTO ACCOUNT
+!     
       DO 10 IFF = 1,NF
         DO 20 JP = 1,NPLAN
           DO 30 IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-!            TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF)+BETA(IP)
    30     CONTINUE
    20   CONTINUE
    10 CONTINUE

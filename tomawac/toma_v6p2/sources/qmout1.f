@@ -62,6 +62,8 @@
 !| XKMOY          |-->| AVERAGE WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -77,9 +79,8 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION AUX   , DEUPI , C1    , C2
+      DOUBLE PRECISION AUX   , C1    , C2
 !
-      DEUPI = 6.283185307D0
       C1 = - CMOUT1*DEUPI**9/GRAVIT**4
       C2 = - CMOUT1*DEUPI
 !

@@ -72,6 +72,8 @@
 !| XKONPT         |<--| ARRAY USED FOR COMPUTING DIFFRACTION PARAMETER 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE 
 ! 
       INTEGER LNG,LU       
@@ -104,7 +106,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !      
       INTEGER I, IP, IPOIN 
-      DOUBLE PRECISION DDDN,DSDNSK,DEUKD,DPI 
+      DOUBLE PRECISION DDDN,DSDNSK,DEUKD
       DOUBLE PRECISION CDELTA,DELTAN
       DOUBLE PRECISION S_RMSE_IN, WJUNK, WJUNK2 
       DOUBLE PRECISION,ALLOCATABLE:: SQRDELTA(:) 
@@ -129,8 +131,6 @@
          ALLOCATE(L_DELTA(NPOIN2))
          DEJA=.TRUE.
       ENDIF
-!
-      DPI=6.283185307D0 
 ! 
 !----------------------------------------------------------------------- 
 !     INFINITE WATER DEPTH ... 
@@ -171,8 +171,8 @@
 !     """"""""""""""""""""""""""""""""" 
 !.....CCG VECTOR COMPUTATION 
 !     """"""""""""""""""""""	  
-      DO  IPOIN=1,NPOIN2  
-        CCG(IPOIN) = CG(IPOIN,IFF)*DPI*FREQ(IFF)/XK(IPOIN,IFF) 
+      DO IPOIN=1,NPOIN2  
+        CCG(IPOIN) = CG(IPOIN,IFF)*DEUPI*FREQ(IFF)/XK(IPOIN,IFF) 
         XKONPT(IPOIN)=1.D0/(XK(IPOIN,IFF)**2)  
         SQRCCG(IPOIN)=SQRT(ABS(CCG(IPOIN))) 
       ENDDO 
@@ -184,7 +184,7 @@
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""" 
         DO IPOIN = 1,NPOIN2 
           A(IPOIN) = (2.D0*(F(IPOIN,IP,IFF) * DFREQ(IFF)* 
-     &               DPI/NPLAN))**(0.5D0) 
+     &               DEUPI/NPLAN))**(0.5D0) 
           IF(DIFFRA.EQ.2)THEN 
             S_RMSE_IN=XK(IPOIN,IFF)*SQRCCG(IPOIN) 
             A_RMSE(IPOIN) =A(IPOIN)*S_RMSE_IN 
@@ -292,7 +292,7 @@
           IF (DEUKD.GT.7.D2) THEN 
             DSDNSK=0.D0 
           ELSE 
-            DSDNSK=DPI*FREQ(IFF)*SQRDELTA(IPOIN)/SINH(DEUKD)          
+            DSDNSK=DEUPI*FREQ(IFF)*SQRDELTA(IPOIN)/SINH(DEUKD)          
           ENDIF           
 !    
           WJUNK2=DSDNSK*DDDN           

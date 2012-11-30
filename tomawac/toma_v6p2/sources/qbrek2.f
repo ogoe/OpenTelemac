@@ -56,6 +56,8 @@
 !| VARIAN         |-->| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -69,12 +71,11 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , IFF   , IP
-      DOUBLE PRECISION COEF  , GAMMA2, DEUPI
+      DOUBLE PRECISION COEF  , GAMMA2
 !
 !
-      DEUPI  = 6.283185307D0
-      GAMMA2 = GAMATG*GAMATG
-      COEF   = -24.D0*DSQRT(DEUPI)*BORETG**3/GAMMA2
+      GAMMA2 = GAMATG**2
+      COEF   = -24.D0*SQRT(DEUPI)*BORETG**3/GAMMA2
 !
       IF (IWHTG.EQ.1) THEN
 !

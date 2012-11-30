@@ -28,6 +28,8 @@
 !| W_LEG          |<--| WEIGHTS FOR THE GAUSS-LEGENDRE QUADRATURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : PI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -38,9 +40,8 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER           I     , M     , J
-      DOUBLE PRECISION  EPS   , PI    , Z     , P1    , P2    , P3    ,
+      DOUBLE PRECISION  EPS   , Z     , P1    , P2    , P3    ,
      *                  PP    , Z1
-      PARAMETER        (PI=3.141592654D0)
       PARAMETER        (EPS=3.D-14)
 !
 !
@@ -61,7 +62,7 @@
         IF (ABS(Z-Z1).GT.EPS) GOTO 1
         X_LEG(I)=-Z
         X_LEG(NPOIN+1-I)=Z
-        W_LEG(I)=2.D0/((1.D0-Z*Z)*PP*PP)
+        W_LEG(I)=2.D0/((1.D0-Z**2)*PP**2)
         W_LEG(NPOIN+1-I)=W_LEG(I)
       ENDDO
 !

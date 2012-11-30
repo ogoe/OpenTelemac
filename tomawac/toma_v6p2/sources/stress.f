@@ -64,6 +64,8 @@
 !| Z0NEW          |-->| SURFACE ROUGHNESS LENGTH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -79,14 +81,13 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  IP    , JP    , JF    , JTOT  , J
-      DOUBLE PRECISION DEUPI , DTETAR, FRMAX , COEF1 , COEF2 , TTAUHF
+      DOUBLE PRECISION DTETAR, FRMAX , COEF1 , COEF2 , TTAUHF
       DOUBLE PRECISION USTAR , ALFA  , COSTMP, C1    , C2    , DIREC
       DOUBLE PRECISION Y     , OMEGA , CM    , ZX    , ZARG  , ZMU
       DOUBLE PRECISION ZLOG  , ZBETA , UST   , Z0    , UST2  , ALF2
       DOUBLE PRECISION CONST1, OMEGAM, X0    , YC    , DELY  , AUX
 !
 !
-      DEUPI = 6.283185307D0
       DTETAR= DEUPI/DBLE(NPLAN)
       FRMAX = FREQ(NF)
       COEF1 = DTETAR*DEUPI**4*FRMAX**5/GRAVIT**2
@@ -104,7 +105,6 @@
         DO 120 JP=1,NPLAN
           C1=AUX*SINTET(JP)
           C2=AUX*COSTET(JP)
-!
           DO 100 IP=1,NPOIN2
             XTAUW(IP)=XTAUW(IP)+TSTOT(IP,JP,JF)*C1
             YTAUW(IP)=YTAUW(IP)+TSTOT(IP,JP,JF)*C2
@@ -128,7 +128,7 @@
 !
       JTOT  = 50
       CONST1= BETAM/XKAPPA**2
-      OMEGAM= 6.283185307D0*FRMAX
+      OMEGAM= DEUPI*FRMAX
       X0    = 0.05D0
 !
       DO 173 IP=1,NPOIN2
@@ -159,7 +159,7 @@
           CM    = GRAVIT/OMEGA
           ZX    = UST/CM +DECAL
           ZARG  = MIN(XKAPPA/ZX,20.D0)
-          ZMU   = MIN(GRAVIT*Z0/CM**2*DEXP(ZARG),1.D0)
+          ZMU   = MIN(GRAVIT*Z0/CM**2*EXP(ZARG),1.D0)
           ZLOG  = MIN(DLOG(ZMU),0.D0)
           ZBETA = CONST1*ZMU*ZLOG**4
           TTAUHF= TTAUHF+ZBETA/Y*DELY

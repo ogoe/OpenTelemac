@@ -2,7 +2,7 @@
                      SUBROUTINE PROPA
 !                    ****************
 !
-     &(F,B,SHP,SHZ,SHF,ELT,ETA,FRE,IKLE_EXT,NPOIN3,NPOIN2,NELEM2,
+     &(F,B,SHP,SHZ,SHF,ELT,ETA,FRE,IKLE_EXT,NPOIN3,NPOIN2,
      & NPLAN,NF,COURAN,TRA01,TRA02,ITR01,T3_01,T3_02,ISUB,MESH3D)
 !
 !***********************************************************************
@@ -47,7 +47,6 @@
 !|                |   | POINTS TO BE ADVECTED
 !| IKLE_EXT       |-->| TRANSITION BETWEEN LOCAL AND GLOBAL NUMBERING
 !|                |   | OF THE 2D MESH (IN AN EXTENDED FORM)
-!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D MESH
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
@@ -72,7 +71,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN3,NPOIN2,NELEM2,NPLAN,NF
+      INTEGER NPOIN3,NPOIN2,NPLAN,NF
 !
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF)
       DOUBLE PRECISION, INTENT(IN) :: B(NPOIN2,NF)

@@ -31,23 +31,21 @@
 !       
 !.....CALCULATES THE GRADIENT OF 1/K^2 FOR DIFFRACTION
 !     """""""""""""""""""""""""""""""""""""""""""""""
-      CALL OV ( 'X=C     ' , SW1%R, ST1%R, ST2%R,
-     *                       1.D0 , NELEM2 )
 !     
 !.....DERIVEES EN X
       CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SXKONPT,
-     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
 !
       CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
-     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
       CALL OV('X=Y/Z   ',SDDX%R,ST1%R,ST4%R,C,NPOIN2)
 !
 !.....DERIVEES EN Y
       CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SXKONPT,
-     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
 !
       CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
-     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,SW1)
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
       CALL OV('X=Y/Z   ',SDDY%R,ST1%R,ST4%R,C,NPOIN2)
 !
 !-----------------------------------------------------------------------

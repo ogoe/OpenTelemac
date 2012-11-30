@@ -2,7 +2,7 @@
                      SUBROUTINE QTRIA1
 !                    *****************
 !
-     &( F     , XK    , FREQ  , DEPTH , RAISF , GRAVIT, ALFLTA, RFMLTA,
+     &( F     , XK    , FREQ  , DEPTH , RAISF , ALFLTA, RFMLTA,
      &  NF    , NPLAN , NPOIN2, TSTOT , TSDER , FTOT  , FMOY  )
 !
 !***********************************************************************
@@ -52,6 +52,8 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : GRAVIT,DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -60,18 +62,17 @@
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF),XK(NPOIN2,NF)
       DOUBLE PRECISION RAISF,FREQ(NF),DEPTH(NPOIN2)
       DOUBLE PRECISION TSTOT(NPOIN2,NPLAN,NF),TSDER(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION GRAVIT,ALFLTA,RFMLTA
+      DOUBLE PRECISION ALFLTA,RFMLTA
       DOUBLE PRECISION FTOT(NPOIN2),FMOY(NPOIN2)
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER           IIND  , IFMA  , IFF   , IPL   , IPO
-      DOUBLE PRECISION  CPH   , CGR   , BIF   , RPS2  , RP    , DEUPI ,
+      DOUBLE PRECISION  CPH   , CGR   , BIF   , RPS2  , RP    , 
      &                  FPS2  , CPHS2 , XKPS2 , URS   , RIND  , FMAX  ,
      &                  F2P   , CPH2P , XK2P  , CGR2P , E2P   , EPS2  ,
      &                  OMP   , OM2P  , COEF  , D     , DEUKD ,
      &                  SPLUS , SMOIN ,FP    , XKP
-      PARAMETER(DEUPI=2.D0*3.141592654D0)
 !
 !.....FUNCTION / FORMULATION
 !     """"""""""""""""
@@ -80,7 +81,7 @@
      &   (GRAVIT*DD+(2.D0/15.D0)*GRAVIT*DD**3*K2P**2-0.4D0*(O2P*DD)**2)
 !
 !
-      COEF  = GRAVIT*DSQRT(2.D0)
+      COEF = GRAVIT*SQRT(2.D0)
 !
       DO IPO=1,NPOIN2
 !

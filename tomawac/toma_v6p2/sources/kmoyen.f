@@ -52,6 +52,7 @@
 !| XKMOY          |<--| AVERAGE WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -65,16 +66,14 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  IPLAN , JF    , IP
-      DOUBLE PRECISION COEFF , PI    , SEUIL , CTE1  , CTE2  , AUX4
+      DOUBLE PRECISION COEFF , SEUIL , CTE1  , CTE2  , AUX4
 !
-!
-      PI = 3.141592654D0
       SEUIL = 1.D-20
-      COEFF = SQRT(9.806D0)/(2.D0*PI)
-      DO 30 IP = 1,NPOIN2
+      COEFF = SQRT(GRAVIT)/DEUPI
+      DO IP = 1,NPOIN2
         AUX1(IP) = 0.D0
         AUX2(IP) = 0.D0
-   30 CONTINUE
+      ENDDO
 !
 !.....SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM
 !     """"""""""""""""""""""""""""""""""""""""""""""""

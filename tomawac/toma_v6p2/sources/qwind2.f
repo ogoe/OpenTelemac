@@ -73,6 +73,8 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -89,10 +91,9 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION DEUPI , C1    , DIREC , CONST , DIMPLI
+      DOUBLE PRECISION C1    , DIREC , CONST , DIMPLI
 !
 !
-      DEUPI = 2.D0* 3.14159265358978D0
       C1 = 0.25D0 * (ROAIR/ROEAU) * DEUPI
       DIMPLI=1.0D0-CIMPLI
 !

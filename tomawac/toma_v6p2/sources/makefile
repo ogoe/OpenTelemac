@@ -111,8 +111,7 @@ homere_tomawac.f \
 ifabtom.f impr.f  iniphy.f inipie.f initab.f invert.f \
 intang.f   \
 kerbou.f kmoyen.f \
-lecdoi.f lecdon.f lecdon_tomawac.f lecham.f lecsui.f \
-limwac.f  \
+lecdoi.f lecdon.f lecdon_tomawac.f lecham.f lecsui.f limwac.f  \
 maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
 point_tomawac.f predif.f  \
 prenl1.f prenl2.f prenl3.f prepro.f preqt2.f propa.f \
@@ -121,7 +120,7 @@ qmout1.f qmout2.f qnlin1.f qnlin2.f qnlin3.f \
 qtria1.f qtria2.f qwind1.f qwind2.f qwind3.f qwindl.f \
 radiat.f rpi_intr.f rpi_invr.f \
 semimp.f sor3d.f speini.f spejon.f spetma.f spread.f stress.f \
-tautot.f temp.f tetmoy.f totnrj.f transf.f \
+tautot.f temp.f tetmoy.f totnrj.f tomawac_constants.f transf.f \
 ustar1.f ustar2.f \
 vartel.f venuti.f vitfon.f \
 wac.f wnscou.f wpower.f 

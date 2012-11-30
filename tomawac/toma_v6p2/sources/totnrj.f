@@ -2,7 +2,7 @@
                      SUBROUTINE TOTNRJ
 !                    *****************
 !
-     &( VARIAN, F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2)
+     &(VARIAN,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   28/06/2011
@@ -50,6 +50,8 @@
 !| VARIAN         |<--| SPECTRUM VARIANCE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -64,10 +66,10 @@
       DOUBLE PRECISION AUX1  , DTETAR
 !
 !
-      DTETAR=2.D0*3.14159265D0/FLOAT(NPLAN)
-      DO 30 IP = 1,NPOIN2
+      DTETAR=DEUPI/FLOAT(NPLAN)
+      DO IP = 1,NPOIN2
         VARIAN(IP) = 0.D0
-30    CONTINUE
+      ENDDO
 !
 !-----C-------------------------------------------------------C
 !-----C  SUMS UP THE DISCRETISED PART OF THE SPECTRUM         C
@@ -85,7 +87,8 @@
 !-----C-------------------------------------------------------------C
 !-----C  TAKES THE HIGH FREQUENCY PART INTO ACCOUNT (OPTIONAL)      C
 !-----C-------------------------------------------------------------C
-      IF (TAILF.GT.1.D0) THEN
+!
+      IF(TAILF.GT.1.D0) THEN
         AUX1=DTETAR*(DFREQ(NF)+FREQ(NF)/(TAILF-1.D0))
       ELSE
         AUX1=DTETAR*DFREQ(NF)

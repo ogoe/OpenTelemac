@@ -29,12 +29,11 @@
       USE DECLARATIONS_TOMAWAC 
 ! 
       IMPLICIT NONE 
-      DOUBLE PRECISION C 
+!
       LISFON =1 
- 
-      CALL OV('X=C     ', SW1%R, ST1%R, ST2%R, 1.D0, NPOIN2) 
+!
       CALL FILTER(SA,.TRUE.,ST1,ST2,AM1,'MATMAS          ', 
-     *          1.D0,ST1,ST1,ST1,ST1,ST1,ST1,MESH,.FALSE.,SW1,LISFON) 
+     *            1.D0,ST1,ST1,ST1,ST1,ST1,ST1,MESH,.FALSE.,ST1,LISFON) 
        
 ! 
 !----------------------------------------------------------------------- 

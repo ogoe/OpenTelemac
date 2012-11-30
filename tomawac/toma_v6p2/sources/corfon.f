@@ -51,11 +51,8 @@
 !
       IF(LISFON.GT.0) THEN
 !
-!       W1 ( EX MASKEL) SET TO 1
-        CALL OV('X=C     ', SW1%R, ST1%R, ST2%R, 1.D0, NELEM2)
-!
         CALL FILTER(SZF,.TRUE.,ST1,ST2,AM1,'MATMAS          ',
-     &          1.D0,ST1,ST1,ST1,ST1,ST1,ST1,MESH,.FALSE.,SW1,LISFON)
+     &          1.D0,ST1,ST1,ST1,ST1,ST1,ST1,MESH,.FALSE.,ST1,LISFON)
 !
       ENDIF
 !

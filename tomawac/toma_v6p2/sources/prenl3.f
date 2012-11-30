@@ -90,6 +90,8 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : PI,DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -125,7 +127,6 @@
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
-      DOUBLE PRECISION  PI    , DEUPI , GRAVIT
       INTEGER           JF    , JT    , JF1   , JT1   , NF1P1 , IAUX
       INTEGER           IQ_TE1, IQ_OM2
       DOUBLE PRECISION  EPSI_A, AUX   , CCC   , DENO  , AAA   , DP2SG
@@ -152,11 +153,6 @@
       DOUBLE PRECISION  COUPLE
       EXTERNAL          COUPLE
 !
-!
-!....Initialisation of PI , DEUPI , GRAVIT     
-      PI=3.141592654D0
-      DEUPI=2.D0*PI
-      GRAVIT=9.81D0
       DTETAR=DEUPI/DBLE(NT)
 !
 !=======================================================================
@@ -165,8 +161,8 @@
       DO JF=1,DIMBUF
         F_POIN(JF)=0
         T_POIN(JF)=0
-        F_COEF(JF)=0.0D0
-        F_PROJ(JF)=0.0D0
+        F_COEF(JF)=0.D0
+        F_PROJ(JF)=0.D0
         TB_SCA(JF)=0.0D0
       ENDDO
       DO JF=1,LBUF
@@ -318,7 +314,7 @@
           V2=W2*(1.D0+V1)
           V2_4=V2**4
           TB_V24(IQ_OM2,JT1,JF1)=V2_4
-            K_IF2 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)+DLOG(V2)/DLOG(RAISF))
+          K_IF2 (IQ_OM2,JT1,JF1)=NINT(DBLE(LBUF)+DLOG(V2)/DLOG(RAISF))
           W3=1.D0-W2
           V3=1.D0+V1-V2
           V3_4=V3**4

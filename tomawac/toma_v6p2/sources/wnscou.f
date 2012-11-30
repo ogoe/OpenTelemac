@@ -48,6 +48,8 @@
 !| FREQ           |-->| DISCRETIZED FREQUENCY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -57,12 +59,10 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  I
-      DOUBLE PRECISION P(9)  , EPS   , XG    , DEUPI , XK0   , XK0D
+      DOUBLE PRECISION P(9)  , EPS   , XK0   , XK0D
       DOUBLE PRECISION AUX   , A     , Y     , YI    , OM
 !
-      DATA DEUPI/6.28318531D0/
       DATA EPS/0.0001D0/
-      DATA XG/9.806D0/
       DATA P/0.66667D0,0.35550D0,0.16084D0,0.06320D0,0.02174D0,
      &       0.00654D0,0.00171D0,0.00039D0,0.00011D0/
 !
@@ -70,7 +70,7 @@
 !
 !.....COMPUTES THE ANGULAR FREQUENCY (OM), K0 AND K0D
       OM=FREQ*DEUPI
-      XK0=OM*OM/XG
+      XK0=OM**2/GRAVIT
       XK0D=XK0*DEPTH
 !
 !.....DETERMINES THE METHOD OF RESOLUTION DEPENDING ON THE VALUE OF XK0D
@@ -86,7 +86,7 @@
           AUX=AUX+P(I)*YI
    12   CONTINUE
         AUX=Y+1.D0/AUX
-        CK2=OM/SQRT(XG*DEPTH/AUX)
+        CK2=OM/SQRT(GRAVIT*DEPTH/AUX)
 !
       ELSEIF (XK0D.LE.5.6) THEN
 !.......ITERATIVE METHOD (FROM HUNT 9TH ORDER)
@@ -98,7 +98,7 @@
           AUX=AUX+P(I)*YI
    11   CONTINUE
         AUX=Y+1.D0/AUX
-        CK2=OM/SQRT(XG*DEPTH/AUX)
+        CK2=OM/SQRT(GRAVIT*DEPTH/AUX)
     2   CONTINUE
         A=CK2
         CK2=XK0/TANH(A*DEPTH)

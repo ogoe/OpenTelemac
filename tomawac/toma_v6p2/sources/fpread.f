@@ -53,6 +53,8 @@
 !| TAILF          |-->| SPECTRUM QUEUE FACTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -69,11 +71,11 @@
 !
 !
       SEUIL =1.D-20
-      DTETAR=2.D0*3.141592654D0/DBLE(NPLAN)
-      DO 10 IP = 1,NPOIN2
+      DTETAR=DEUPI/DBLE(NPLAN)
+      DO IP = 1,NPOIN2
         FREAD(IP)=0.D0
         DENOM(IP)=0.D0
-   10 CONTINUE
+      ENDDO
 !
 !-----C-------------------------------------------------------C
 !-----C SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM     C

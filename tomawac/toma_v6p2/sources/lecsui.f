@@ -111,11 +111,9 @@
       INTEGER, PARAMETER :: NFMAX = 200
       CHARACTER(LEN=32) TEXTE(NFMAX+2)
 !
-      DOUBLE PRECISION PI,Z(1),ATT(1)
+      DOUBLE PRECISION Z(1),ATT(1)
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPOIN2*NPLAN))
-!
-      PI=3.141592653589793D0
 !
 !***********************************************************************
 !

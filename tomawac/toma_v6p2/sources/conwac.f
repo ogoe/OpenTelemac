@@ -68,6 +68,8 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : GRADEG,DEUPI,SR,GRAVIT
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -82,7 +84,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: COSF(NPOIN2),TGF(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF)
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN)
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: CG(NPOIN2,NF),XK(NPOIN2,NF)
       DOUBLE PRECISION, INTENT(INOUT) :: CX(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: CY(NPOIN2,NPLAN)
@@ -92,12 +94,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER JP,IP
-      DOUBLE PRECISION GSQP,SR,R,SRCF,TFSR
-      DOUBLE PRECISION DDDN,GRADEG,DEUKD,DEUPI,TR1,TR2
+      DOUBLE PRECISION GSQP,SRCF,TFSR,DDDN,DEUKD,TR1,TR2
 !
-      GSQP=0.780654996D0
-      R=6400.D3
-      DEUPI=6.283185307D0
+      GSQP=GRAVIT/(2.D0*DEUPI)
 !
       IF(PROINF) THEN
 !
@@ -127,8 +126,6 @@
 !       ... AND IN SPHERICAL COORDINATE SYSTEM
 !       ----------------------------------------------------------------
 !
-          SR=1.D0/R
-          GRADEG=180.D0/3.1415926D0
           DO JP=1,NPLAN
             TR1=GSQP/FREQ(JF)*COSTET(JP)
             TR2=GSQP/FREQ(JF)*SINTET(JP)
@@ -185,8 +182,6 @@
 !       ... AND IN SPHERICAL COORDINATE SYSTEM
 !       ----------------------------------------------------------------
 !
-          GRADEG=180.D0/3.1415926D0
-          SR=1.D0/R
           DO JP=1,NPLAN
             DO IP=1,NPOIN2
               IF(DEPTH(IP).GT.PROMIN) THEN

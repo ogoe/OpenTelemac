@@ -60,6 +60,8 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : USDPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
@@ -75,25 +77,24 @@
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER          IP    , JP    , JF    , NEWM  , NEWM1 , KH
-      DOUBLE PRECISION F0    , UK    , DEUPI , AUXI , Y(1) , Z
+      DOUBLE PRECISION F0    , UK    , AUXI , Y(1) , Z
       DOUBLE PRECISION FNEW  , UNSLRF
       LOGICAL          IMP
-!
 !
 !-----------------------------------------------------------------------
 !     CHANGES ONLY THE END DATES
 !-----------------------------------------------------------------------
+!
       IMP=.FALSE.
       IF ((LT.GE.GRADEB).AND.(MOD(LT-GRADEB,GRAPRD).EQ.0)) IMP=.TRUE.
       IF (.NOT.(IMP)) RETURN
+!
 !-----------------------------------------------------------------------
 !
-!
-      DEUPI=2.D0*3.141592654D0
       F0=FREQ(1)
-      UNSLRF=1.0D0/LOG(RAISF)
+      UNSLRF=1.D0/LOG(RAISF)
 !
-      CALL OV( 'X=C     ' , FA , Y , Y , 0.D0 , NPOIN2*NPLAN*NF)
+      CALL OV('X=C     ',FA,Y,Y,0.D0,NPOIN2*NPLAN*NF)
 !
       DO JF=1,NF
 !
@@ -109,21 +110,23 @@
 !           ONLY IF THE RELATIVE VARIATION Z/FREQ_REL IS SIGNIFICANT
 !           ---------------------------------------------------------
             UK=SINTET(JP)*UC(IP)+COSTET(JP)*VC(IP)
-            Z=UK*XK(IP,JF)/DEUPI
 !
-            IF (ABS(Z)/FREQ(JF).LT.1.0D-3) THEN
+            Z=UK*XK(IP,JF)*USDPI
+!
+            IF(ABS(Z)/FREQ(JF).LT.1.D-3) THEN
               KNEW (IP)=JP
               NEWF (IP)=JF
               NEWF1(IP)=-1
               TAUX1(IP)=FR(IP,JP,JF)
-              TAUX2(IP)=0.0D0
+              TAUX2(IP)=0.D0
             ELSE
 !
 !             -------------------------------------------------------
 !             COMPUTES FNEW AND KNEW
 !             -------------------------------------------------------
+!
               FNEW = FREQ(JF)+Z
-              IF (FNEW.GT.0.D0) THEN
+              IF(FNEW.GT.0.D0) THEN
                 KNEW(IP)=JP
               ELSE
                 KNEW(IP)=1+MOD(JP+NPLAN/2-1,NPLAN)
@@ -134,16 +137,18 @@
 !             COMPUTES NEWF: INDEX OF THE DISCRETISED FREQUENCY
 !             IMMEDIATELY LOWER THAN FNEW
 !             -------------------------------------------------------
-              IF (FNEW.LT.F0/RAISF) THEN
+!
+              IF(FNEW.LT.F0/RAISF) THEN
                 NEWF(IP)=-1
               ELSE
-                NEWF(IP)=INT(1.0D0+LOG(FNEW/F0)*UNSLRF)
+                NEWF(IP)=INT(1.D0+LOG(FNEW/F0)*UNSLRF)
               ENDIF
 !
 !             -------------------------------------------------------
 !             COMPUTES THE COEFFICIENTS AND INDICES FOR THE PROJECTION
 !             -------------------------------------------------------
-              IF ((NEWF(IP).LT.NF).AND.(NEWF(IP).GE.1)) THEN
+!
+              IF((NEWF(IP).LT.NF).AND.(NEWF(IP).GE.1)) THEN
                 NEWF1(IP)=NEWF(IP)+1
                 AUXI=FR(IP,JP,JF)*DFREQ(JF)
      &               /(FREQ(NEWF1(IP))-FREQ(NEWF(IP)))
@@ -171,12 +176,13 @@
 !         -------------------------------------------------------
 !         PROJECTS THE SPECTRUM
 !         -------------------------------------------------------
+!
           DO IP=1,NPOIN2
             NEWM =NEWF (IP)
             NEWM1=NEWF1(IP)
             KH=KNEW(IP)
-            IF (NEWM .NE.-1) FA(IP,KH,NEWM )=FA(IP,KH,NEWM )+TAUX1(IP)
-            IF (NEWM1.NE.-1) FA(IP,KH,NEWM1)=FA(IP,KH,NEWM1)+TAUX2(IP)
+            IF(NEWM .NE.-1) FA(IP,KH,NEWM )=FA(IP,KH,NEWM )+TAUX1(IP)
+            IF(NEWM1.NE.-1) FA(IP,KH,NEWM1)=FA(IP,KH,NEWM1)+TAUX2(IP)
           ENDDO
 !
         ENDDO

@@ -41,7 +41,7 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-!     COUPLAGE Telemac-Tomawac : variables de la liste d'arguments en appel
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER,           INTENT(IN)      :: PART,NIT_TEL,PERCOU_WAC
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
@@ -49,22 +49,20 @@
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: UV_WAC,VV_WAC
       DOUBLE PRECISION,  INTENT(IN)      :: DT_TEL,T_TEL
-!Variables rajoutees pour le couplage et declarees localement
-      DOUBLE PRECISION    :: DT_MIN, DT_MAX
-      INTEGER          DUMMY, LT_WAC
-!Fin COUPLAGE
 !
-!     VARIABLES DECLAREES LOCALEMENT DANS LA PROCEDURE.
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION DT_MIN,DT_MAX
+      INTEGER          DUMMY,LT_WAC
 !
       INTEGER LT,LT1
       INTEGER NOLEO(99)
-      INTEGER DATE(3),TIME(3),NPTL,IP
+      INTEGER DATE(3),TIME(3),IP
 !
 !     TV1 TEMPS CORRESPONDANT AU VENT 1
 !     TV2 TEMPS CORRESPONDANT AU VENT 2
 !
-      DOUBLE PRECISION LAMBD0,C,Z(1),DEUPI,DTSI
-      DOUBLE PRECISION AT,AT0,TV1,TV2,TC1,TC2,TM1,TM2
+      DOUBLE PRECISION LAMBD0,DTSI,AT,AT0,TV1,TV2,TC1,TC2,TM1,TM2
       DOUBLE PRECISION VITVEN,VITMIN
       INTEGER ADC,MDC,JDC,HDC,NVHMA,NVCOU,NBD,K,IPLAN,IFREQ
       LOGICAL IMPRES, DEBRES
@@ -78,6 +76,15 @@
 !     VERY IMPORTANT WITH CODE COUPLING
 !
       SAVE
+!
+!-----------------------------------------------------------------------
+!
+!     SETTING CONSTANTS (PI, GRAVITY, ETC.)
+!
+      CALL TOMAWAC_CONSTANTS
+!
+!-----------------------------------------------------------------------
+!
 !
 !     QINDI ALLOCATED ONLY AT FIRST CALL
 !
@@ -140,15 +147,6 @@
         ENDIF
       ENDIF
 !
-!.....1.2 CONSTANTES PHYSIQUES.
-!     """""""""""""""""""""""""
-      GRAVIT=9.806D0
-      DEUPI =2.D0*3.14159265358979D0
-!
-!.....1.3 PARAMETRES GENERAUX DU CALCUL.
-!     
-      NPTL  =NPOIN3*NF
-!
 !.....1.4 INITIALISATION DES TABLEAUX DATE ET TIME
 !     """"""""""""""""""""""""""""""""""""""""""""
       ADC=INT(DDC*1.D-8)
@@ -176,15 +174,15 @@
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM POUR MESH2D'
       CALL LECLIM
-     & (SLIFBR%I,SITR31%I,SITR31%I,SITR31%I,SFBOR%R,STRA01%R,STRA01%R,
-     &  STRA01%R,STRA01%R,STRA01%R,STRA01%R,NPTFR,3,.FALSE.,
+     & (SLIFBR%I,SITR31%I,SITR31%I,SITR31%I,SFBOR%R,STSDER%R,STSDER%R,
+     &  STSDER%R,STSDER%R,STSDER%R,STSDER%R,NPTFR,3,.FALSE.,
      &  WAC_FILES(WACCLI)%LU,
      &  KENT,KENTU,KSORT,KADH,KLOG,KINC,SITR31%I,MESH)
       IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE LECLIM'
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INBIEF POUR MESH2D'
       CALL INBIEF(SLIFBR%I,KLOG,SITR31,SITR32,SITR33,
-     &            LVMAC,IELM2,LAMBD0,SPHE,MESH,STRA01,STRA02,1,1,EQUA)
+     &            LVMAC,IELM2,LAMBD0,SPHE,MESH,STSDER,STSTOT,1,1,EQUA)
       IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE INBIEF'
 !
 ! EXTENSION OF IKLE2 (SEE CALL TO POST_INTERP IN PROPA)
@@ -195,8 +193,8 @@
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM POUR MESH3D'
       CALL LECLIM
-     & (SLIFBR%I,SITR31%I,SITR31%I,SITR31%I,SFBOR%R,STRA01%R,STRA01%R,
-     &  STRA01%R,STRA01%R,STRA01%R,STRA01%R,NPTFR,3,.FALSE.,
+     & (SLIFBR%I,SITR31%I,SITR31%I,SITR31%I,SFBOR%R,STSDER%R,STSDER%R,
+     &  STSDER%R,STSDER%R,STSDER%R,STSDER%R,NPTFR,3,.FALSE.,
      &  WAC_FILES(WACCLI)%LU,
      &  KENT,KENTU,KSORT,KADH,KLOG,KINC,SITR31%I,MESH3D)
       IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE LECLIM'
@@ -204,7 +202,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INBIEF POUR MESH3D'
       CALL INBIEF(SLIFBR%I,KLOG,SITR31,SITR32,SITR33,
      &            LVMAC,IELM3,LAMBD0,SPHE,MESH3D,
-     &            STRA01,STRA02,1,1,EQUA)
+     &            STSDER,STSTOT,1,1,EQUA)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE INBIEF'
 !
 !     3D IFABOR
@@ -348,21 +346,19 @@
 !
       IF(SUIT) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECSUI'
-        CALL LECSUI
-     &( SF%R    , NPLAN   , NF      , STETA%R, SFR%R  ,
-     &  NELEM2  , NPOIN2  , AT      , SUC%R  , SVC%R  ,
-     &  SUC1%R  , SVC1%R  , SUC2%R  , SVC2%R , SUV%R  ,
-     &  SVV%R   , SUV1%R  , SVV1%R  , SUV2%R , SVV2%R ,
-     &  VENT    , TV1     , TV2     , COUSTA.OR.PART.EQ.0 ,
-     &  WAC_FILES(WACPRE)%LU ,
-     &  BINPRE  , SDEPTH%R, TC1 , TC2 , ZM1 , ZM2 ,
-     &  SDZHDT%R, TM1     , TM2     , MAREE.OR.PART.EQ.0 ,TRA01)
+        CALL LECSUI(SF%R  ,NPLAN ,NF    ,STETA%R, SFR%R  ,
+     &              NELEM2,NPOIN2,AT    ,SUC%R  , SVC%R  ,
+     &              SUC1%R,SVC1%R,SUC2%R,SVC2%R , SUV%R  ,
+     &              SVV%R ,SUV1%R,SVV1%R,SUV2%R , SVV2%R ,
+     &              VENT  ,TV1   ,TV2   ,COUSTA.OR.PART.EQ.0 ,
+     &              WAC_FILES(WACPRE)%LU,
+     &              BINPRE,SDEPTH%R,TC1,TC2,ZM1,ZM2,
+     &              SDZHDT%R,TM1,TM2,MAREE.OR.PART.EQ.0,STSDER%R)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LECSUI'
       ELSE
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CONDIW'
-        CALL CONDIW
-     &( AT, LT , TC1 , TC2 , TV1, TV2, TM1, TM2, 
-     &  NVHMA  , NVCOU , PART , U_TEL, V_TEL, H_TEL )
+        CALL CONDIW(AT,LT,TC1,TC2,TV1,TV2,TM1,TM2, 
+     &              NVHMA,NVCOU,PART,U_TEL,V_TEL,H_TEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
         IF(PART.EQ.0) THEN
           DO IP=1,NPOIN2
@@ -588,18 +584,18 @@
 !     """"""""""""""""""""""""""""""""""""""""""
       IMPRES=.FALSE.
       DEBRES=.FALSE.
-      IF (LT.EQ.GRADEB) THEN
+      IF(LT.EQ.GRADEB) THEN
         IMPRES=.TRUE.
         DEBRES=.TRUE.
       ENDIF
 !
-      IF (IMPRES) THEN
+      IF(IMPRES) THEN
 !
 !.....9.3 IMPRESSION (EVENTUELLE) DES VARIABLES SUR LE MAILLAGE 2D.
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
-        CALL DUMP2D(LT,DEUPI,SF%R,NPTL)
+        CALL DUMP2D(LT,SF%R,NPOIN3*NF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
@@ -615,7 +611,7 @@
         CALL ECRSPE
      &( SF%R    , STETA%R, NPLAN ,
      &  SFR%R   , NF  , NF   , NPOIN2      , AT ,
-     &  STRA01%R, NOLEO , NPLEO , WAC_FILES(WACLEO)%LU ,
+     &  STSDER%R, NOLEO , NPLEO , WAC_FILES(WACLEO)%LU ,
      &  WAC_FILES(WACLEO)%FMT, DEBRES , TITCAS , DATE , TIME ,
      &  MESH%KNOLG%I ,MESH )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE ECRSPE'
@@ -634,7 +630,8 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 1'
 !
         CALL PREPRO
-     & ( SCX      , SCY       , SCT      , SCF     , DT  ,
+!        EX-SCX      EX-SCY (MEMORY OPTIMISATION)
+     & ( STSDER    , STSTOT   , SCT      , SCF     , DT  ,
      &   MESH%X%R , MESH%Y%R  , STETA    ,
      &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
@@ -755,7 +752,8 @@
          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 2'
 !
          CALL PREPRO
-     & ( SCX      , SCY       , SCT      , SCF     , DT  ,
+!        EX-SCX      EX-SCY (MEMORY OPTIMISATION)
+     & ( STSDER    , STSTOT     , SCT      , SCF     , DT  ,
      &   MESH%X%R , MESH%Y%R  , STETA    ,
      &   SCOSTE%R , SSINTE%R  , SFR      , MESH%IKLE%I   ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 ,
@@ -784,7 +782,8 @@
         IF(LT.GE.NPTDIF) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDIF'
           CALL PREDIF
-     & ( SCX%R    , SCY%R     , SCT%R    , DT    ,
+!        EX-SCX%R     EX-SCY%R (MEMORY OPTIMISATION)
+     & ( STSDER%R   , STSTOT%R     , SCT%R    , DT    ,
      &   MESH%X%R  , MESH%Y%R , STETA%R ,
      &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 , SSHZ    , 
@@ -810,23 +809,23 @@
       IF(PROP) THEN
         CALL IMPR(LISPRD,LT,AT,LT,5)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROPA'
-        CALL PROPA
-     &( SF%R       , SB%R    , SSHP1, 
-     &  SSHZ       , SSHF    , SELT%I , SETA%I , SFRE%I ,
-     &  IKLE_EXT   , NPOIN3  , NPOIN2 , NELEM2,
-     &  NPLAN , NF , COURAN.OR.PART.EQ.1 ,STRA01%R ,STRA02,
-     &  ITR01 , T3_01 , T3_02, ISUB, MESH3D)
+        CALL PROPA(SF%R,SB%R,SSHP1, 
+     &             SSHZ,SSHF,SELT%I,SETA%I,SFRE%I,
+     &             IKLE_EXT,NPOIN3,NPOIN2, 
+!                                               WORK ARRAYS HERE
+     &             NPLAN,NF,COURAN.OR.PART.EQ.1,STSDER%R,STSTOT,
+     &             ITR01,T3_01,T3_02,ISUB,MESH3D)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPA'
        ENDIF
 !
 !.....11.4 INTEGRATION DES TERMES SOURCES.
-!     
-      IF (TSOU) THEN
+!   
+      IF(TSOU) THEN
         CALL IMPR(LISPRD,LT,AT,NSITS,4)
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SEMIMP'
-        CALL SEMIMP(SF%R, SXK%R, SFR%R, SDFR%R, SDEPTH%R, SUV%R, SVV%R ,
-     &  MESH%X%R, MESH%Y%R, WAC_FILES(WACVEB)%LU, WAC_FILES(WACVEF)%LU ,
-     &  NBOR, NPTFR, DDC,TV1,TV2,SUV1%R,SVV1%R,
+        CALL SEMIMP(SF%R,SXK%R,SFR%R,SDFR%R,SDEPTH%R, SUV%R, SVV%R ,
+     &  MESH%X%R,MESH%Y%R,WAC_FILES(WACVEB)%LU,WAC_FILES(WACVEF)%LU ,
+     &  NBOR,NPTFR,DDC,TV1,TV2,SUV1%R,SVV1%R,
      &  SUV2%R,SVV2%R,STETA%R,SSINTE%R,SCOSTE%R,INDIV,TAILF,RAISF      ,
      &  GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,CMOUT6,AT,DTSI,
      &  ROAIR,ROEAU,XKAPPA,BETAM,DECAL,CDRAG,ALPHA,ZVENT,NF,NPLAN      ,
@@ -840,67 +839,75 @@
      &  STRA43%R,STRA44%R,STSTOT%R,STSDER%R,STOLD%R,STNEW%R,STRA31%R   ,
      &  STRA32%R,STRA33%R,STRA34%R,STRA35%R,STRA36%R,STRA37%R,STRA38%R ,
      &  STRA39%R,ST1%R,ST2%R,ST3%R,ST4%R,SBETA%R,NQ_TE1,NQ_OM2,
-     &  NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,F_POIN, T_POIN,
+     &  NF1,NF2,NT1,NCONF,NCONFM,SEUIL,LBUF,DIMBUF,F_POIN,T_POIN,
      &  F_COEF,F_PROJ,TB_SCA,K_IF1,K_1P,K_1M,K_IF2,K_IF3,K_1P2P,K_1P2M,
      &  K_1P3P,K_1P3M,K_1M2P,K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,
-     &  TB_V34, TB_TPM, TB_TMP ,TB_FAC, MDIA  , IANMDI, COEMDI)
+     &  TB_V34,TB_TPM,TB_TMP,TB_FAC,MDIA,IANMDI,COEMDI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SEMIMP'
-      ENDIF
-!
-!.....11.5 PASSAGE (EVENTUEL) EN FREQUENCE ABSOLUE.
-!     """""""""""""""""""""""""""""""""""""""""""""
-!COUPLAGE TELEMAC-TOMAWAC : prise en compte du courant
-!      IF (COURAN) THEN
-      IF (COURAN.OR.PART.EQ.1) THEN
-!Fin COUPLAGE
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TRANSF'
-        CALL TRANSF
-     &( STRA02%R      , SF%R  , SFR%R , SDFR%R, SCOSTE%R      ,
-     &  SSINTE%R      , SUC%R , SVC%R , SXK%R , SITR11%I      ,
-     &  SITR12%I      , SITR13%I      , STRA31%R      , STRA32%R      ,
-     &  NPOIN2, NPLAN , NF    , RAISF , LT    , GRADEB, GRAPRD)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TRANSF'
-      ELSE
-        CALL OV ( 'X=Y     ' ,STRA02%R, SF%R , Z , C , NPOIN3*NF )
       ENDIF
 !
 !.....11.6 TEST POUR SAVOIR SI ON IMPRIME OU PAS.
 !     """""""""""""""""""""""""""""""""""""""""""
       IMPRES=.FALSE.
       DEBRES=.FALSE.
-      IF ((LT.GE.GRADEB).AND.(MOD(LT-GRADEB,GRAPRD).EQ.0)) IMPRES=.TRUE.
-      IF (LT.EQ.GRADEB) DEBRES=.TRUE.
+      IF(LT.GE.GRADEB.AND.MOD(LT-GRADEB,GRAPRD).EQ.0) IMPRES=.TRUE.
+      IF(LT.EQ.GRADEB) DEBRES=.TRUE.
 !
-      IF (IMPRES) THEN
+      IF(IMPRES) THEN
+!
+!.....11.5 PASSAGE EN FREQUENCE ABSOLUE.
+!     """""""""""""""""""""""""""""""""""""""""""""
+!
+        IF(COURAN.OR.PART.EQ.1) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE TRANSF'
+          CALL TRANSF
+!         WORK ARRAY UNTIL CALL ECRSPE BELOW
+     &(   STSTOT%R , SF%R  , SFR%R , SDFR%R, SCOSTE%R,
+     &    SSINTE%R , SUC%R , SVC%R , SXK%R , SITR11%I,
+     &    SITR12%I , SITR13%I      , STRA31%R, STRA32%R,
+     &    NPOIN2   , NPLAN , NF    , RAISF , LT , GRADEB, GRAPRD)
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE TRANSF'
+        ENDIF
 !
 !.....11.7 IMPRESSION (EVENTUELLE) DES VARIABLES SUR LE MAILLAGE 2D.
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
-         CALL DUMP2D(LT, DEUPI, STRA02%R, NPTL )
-         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
+        IF(COURAN.OR.PART.EQ.1) THEN
+          CALL DUMP2D(LT,STSTOT%R,NPOIN3*NF)
+        ELSE
+          CALL DUMP2D(LT,SF%R,NPOIN3*NF)
+        ENDIF
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
 !
-         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
-         CALL BIEF_DESIMP(WAC_FILES(WACRES)%FMT,VARSOR,
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
+        CALL BIEF_DESIMP(WAC_FILES(WACRES)%FMT,VARSOR,
      &            HIST,0,NPOIN2,WAC_FILES(WACRES)%LU,'STD',AT,
      &            LT,GRAPRD,GRAPRD,
      &            SORLEO,SORIMP,MAXVAR,TEXTE,GRADEB,GRADEB)
-         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
 !.....11.8 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
-         CALL ECRSPE
-     &( STRA02%R, STETA%R, NPLAN ,
-     &  SFR%R   , NF  , NF   , NPOIN2      , AT ,
-     &  STRA01%R, NOLEO  , NPLEO, WAC_FILES(WACLEO)%LU,
-     &  WAC_FILES(WACLEO)%FMT, DEBRES, TITCAS, DATE, TIME,
-     &  MESH%KNOLG%I , MESH )
-         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE ECRSPE'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
+        IF(COURAN.OR.PART.EQ.1) THEN
+          CALL ECRSPE(STSTOT%R,STETA%R,NPLAN,
+     &                SFR%R,NF,NF,NPOIN2,AT,
+     &                STSDER%R,NOLEO,NPLEO,WAC_FILES(WACLEO)%LU,
+     &                WAC_FILES(WACLEO)%FMT,DEBRES,TITCAS,DATE,TIME,
+     &                MESH%KNOLG%I,MESH)
+        ELSE
+          CALL ECRSPE(SF%R,STETA%R,NPLAN,
+     &                SFR%R,NF,NF,NPOIN2,AT,
+     &                STSDER%R,NOLEO,NPLEO,WAC_FILES(WACLEO)%LU,
+     &                WAC_FILES(WACLEO)%FMT,DEBRES,TITCAS,DATE,TIME,
+     &                MESH%KNOLG%I,MESH)
+        ENDIF
+        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE ECRSPE'
 !
       ENDIF
 !
-!COUPLAGE TELEMAC-TOMAWAC : passage a TELEMAC des valeurs
-!         de force FX, FY et des vents (si presents)
+!     Passage a TELEMAC des valeurs de FX, FY et des vents (si presents)
+!
       IF(PART.EQ.1.AND.LT_WAC.EQ.NIT) THEN
         CALL OV('X=Y     ',FX_WAC%R,STRA51%R,STRA51%R,0.D0,NPOIN2)
         CALL OV('X=Y     ',FY_WAC%R,STRA52%R,STRA52%R,0.D0,NPOIN2)
@@ -909,7 +916,6 @@
           CALL OV('X=Y     ',VV_WAC%R,SVV%R,SVV%R,0.D0,NPOIN2)
         ENDIF
       ENDIF
-!Fin COUPLAGE
 !
    10 CONTINUE
 !
@@ -930,12 +936,12 @@
         IF(GLOB) THEN
           CALL IMPR(LISPRD,NIT,AT,NIT,6)
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SOR3D'
-          CALL SOR3D
-     &(   SF%R  , NPLAN  , NF       , STETA%R   , SFR%R ,
-     &    NELEM2, NPOIN2 , AT       , SUC%R     , SVC%R ,
-     &    SUV%R , SVV%R  , SDEPTH%R , VENT      , COURAN.OR.PART.EQ.1,
-     &    MAREE.OR.PART.EQ.1 , TITCAS , WAC_FILES(WACRBI)%LU ,
-     &    BINRBI ,TRA01,MESH3D )
+          CALL SOR3D(SF%R,NPLAN,NF,STETA%R,SFR%R,
+     &               NELEM2,NPOIN2,AT,SUC%R,SVC%R,
+     &               SUV%R,SVV%R,SDEPTH%R,VENT,
+     &               COURAN.OR.PART.EQ.1,
+     &               MAREE.OR.PART.EQ.1,TITCAS,WAC_FILES(WACRBI)%LU,
+     &               BINRBI,STSDER%R,MESH3D)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOR3D'
         ENDIF
 !

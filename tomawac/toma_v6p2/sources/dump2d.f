@@ -2,10 +2,10 @@
                      SUBROUTINE DUMP2D
 !                    *****************
 !
-     &( LT , DEUPI , XF1 , NP1 )
+     &( LT , XF1 , NP1 )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   15/06/2011
+! TOMAWAC   V6P3                                   15/06/2011
 !***********************************************************************
 !
 !brief    WRITES OUT WAVE, WIND, CURRENT, BATHYMETRY, ...
@@ -40,7 +40,6 @@
 !+   Translation of French names of the variables in argument
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEUPI          |-->| 2.PI
 !| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
 !| NP1            |-->| NPOIN2.NPLAN.NF
 !| XF1            |-->| VARIANCE DENSITY DIRECTIONAL SPECTRUM
@@ -51,16 +50,20 @@
 !
       IMPLICIT NONE
 !
-      INTEGER          LT    , I1    , I2    , NP1   , IP
-      DOUBLE PRECISION DEUPI , RADDEG, PIS2  , U10   , FMIN  , FMAX
-      DOUBLE PRECISION XF1(NP1)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER, INTENT(IN)          :: LT,NP1
+      DOUBLE PRECISION, INTENT(IN) :: XF1(NP1)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER          I1    , I2    , IP
+      DOUBLE PRECISION RADDEG, U10   , FMIN  , FMAX
 !
       RADDEG=57.29577951D0
-      PIS2=1.570796327D0
+!
       FMIN=FREQ(1)
       FMAX=FREQ(NF)
-!
 !
 !=====C====================================
 !     C COMPUTES THE SELECTED VARIABLES
@@ -68,54 +71,64 @@
 ! THE ORDER IN WHICH THE VARIABLES ARE COMPUTED DOES NOT CORRESPOND TO THAT OF
 ! THE GRAPHICAL OUTPUT IN AN EFFORT TO LIMIT THE NUMBER OF WORKING ARRAYS.
 !
-!     -------------------------------RADIATION STRESSES
+!     ------------------------------- RADIATION STRESSES
+!
       I1=NPOIN3*NF+1
       I2=I1+NPOIN2*NF
-      IF (.NOT.PROINF) THEN
-        IF ( SORLEO(11).OR.SORLEO(12).OR.SORLEO(13).OR.
-     &       SORLEO(14).OR.SORLEO(15) ) CALL RADIAT
+      IF(.NOT.PROINF) THEN
+        IF(SORLEO(11).OR.SORLEO(12).OR.SORLEO(13).OR.
+     &     SORLEO(14).OR.SORLEO(15) ) CALL RADIAT
      &( STRA51%R, STRA52%R, STRA53%R, STRA54%R, STRA55%R,
-     &  SXK%R   , XF1        , SCG%R   , SDEPTH%R,
-     &  TRA02(I1:I2),STRA36%R, STRA37%R, STRA38%R, STRA39%R,
+     &  SXK%R   , XF1     , SCG%R   , SDEPTH%R,
+!       WORK TABLE HERE
+     &  STSDER%R(I1:I2),STRA36%R, STRA37%R, STRA38%R, STRA39%R,
      &  NPOIN2)
       ENDIF
-!     -------------------------------DIRECTIONAL SPREADING
-      IF (SORLEO(4)) THEN
+!
+!     ------------------------------- DIRECTIONAL SPREADING
+!
+      IF(SORLEO(4)) THEN
         CALL SPREAD
-     &( STRA31%R, XF1        , SCOSTE%R, SSINTE%R, NPLAN ,
-     &  SFR%R   , SDFR%R  , NF         , NPOIN2     , TAILF      ,
-     &  STRA34%R, STRA35%R, STRA36%R, STRA37%R, STRA38%R,
+     &( STRA31%R,XF1,SCOSTE%R,SSINTE%R,NPLAN ,
+     &  SFR%R,SDFR%R,NF,NPOIN2,TAILF,
+     &  STRA34%R,STRA35%R,STRA36%R,STRA37%R,STRA38%R,
      &  STRA39%R)
       ENDIF
-!     -------------------------------MEAN DIRECTION
-      IF (SORLEO(3)) THEN
-       CALL TETMOY
-     &( STRA32%R, XF1   , SCOSTE%R, SSINTE%R, NPLAN , FREQ  ,
-     &  SDFR%R  , NF    , NPOIN2     , TAILF      , STRA36%R   ,
+!
+!     ------------------------------- MEAN DIRECTION
+!
+      IF(SORLEO(3)) THEN
+        CALL TETMOY
+     &( STRA32%R, XF1 , SCOSTE%R, SSINTE%R, NPLAN , FREQ ,
+     &  SDFR%R  , NF  , NPOIN2  , TAILF, STRA36%R ,
      &  STRA37%R, STRA38%R, STRA39%R )
-       IF (TRIGO) THEN
-         DO IP=1,NPOIN2
-           TRA32(IP)=(PIS2-TRA32(IP))*RADDEG
-         ENDDO
-       ELSE
-         DO IP=1,NPOIN2
-           TRA32(IP)=TRA32(IP)*RADDEG
-         ENDDO
-       ENDIF
+        IF(TRIGO) THEN
+          DO IP=1,NPOIN2
+            TRA32(IP)=(PISUR2-TRA32(IP))*RADDEG
+          ENDDO
+        ELSE
+          DO IP=1,NPOIN2
+            TRA32(IP)=TRA32(IP)*RADDEG
+          ENDDO
+        ENDIF
       ENDIF
-!     -------------------------------MEAN FREQUENCY FMOY
-      IF (SORLEO(18).OR.SORLEO(28)) THEN
+!
+!     ------------------------------- MEAN FREQUENCY FMOY
+!
+      IF(SORLEO(18).OR.SORLEO(28)) THEN
         CALL FREMOY
      &( STRA33%R, XF1   , SFR%R   , SDFR%R  , TAILF , NF  ,
      &  NPLAN      , NPOIN2, STRA38%R, STRA39%R)
-        IF (SORLEO(28)) THEN
+        IF(SORLEO(28)) THEN
           DO IP=1,NPOIN2
             TRA61(IP)=1.D0/MIN(MAX(TRA33(IP),FMIN),FMAX)
           ENDDO
         ENDIF
       ENDIF
-!     -------------------------------MEAN FREQUENCY FM01
-      IF (SORLEO(19).OR.SORLEO(29)) THEN
+!
+!     ------------------------------- MEAN FREQUENCY FM01
+!
+      IF(SORLEO(19).OR.SORLEO(29)) THEN
         CALL FREM01
      &( STRA34%R, XF1   , SFR%R   , SDFR%R  , TAILF , NF  ,
      &  NPLAN      , NPOIN2, STRA38%R, STRA39%R)
@@ -125,7 +138,9 @@
           ENDDO
         ENDIF
       ENDIF
-!     -------------------------------MEAN FREQUENCY FM02
+!
+!     ------------------------------- MEAN FREQUENCY FM02
+!
       IF (SORLEO(20).OR.SORLEO(30)) THEN
         CALL FREM02
      &( STRA35%R, XF1   , SFR%R   , SDFR%R  , TAILF , NF  ,
@@ -136,7 +151,9 @@
           ENDDO
         ENDIF
       ENDIF
-!     -------------------------------DISCRETE PEAK FREQUENCY
+!
+!     ------------------------------- DISCRETE PEAK FREQUENCY
+!
       IF (SORLEO(21).OR.SORLEO(31)) THEN
         CALL FREPIC
      &( STRA36%R, XF1   , SFR%R , NF   , NPLAN , NPOIN2,
@@ -147,7 +164,9 @@
           ENDDO
         ENDIF
       ENDIF
-!     -------------------------------PEAK FREQUENCY (READ 5TH ORDER)
+!
+!     ------------------------------- PEAK FREQUENCY (READ 5TH ORDER)
+!
       IF (SORLEO(22).OR.SORLEO(32)) THEN
         CALL FPREAD
      &( STRA56%R, XF1   , SFR%R, SDFR%R  , NF   , NPLAN ,
@@ -158,7 +177,9 @@
           ENDDO
         ENDIF
       ENDIF
-!     -------------------------------PEAK FREQUENCY (READ 8TH ORDER)
+!
+!     ------------------------------- PEAK FREQUENCY (READ 8TH ORDER)
+!
       IF (SORLEO(23).OR.SORLEO(33)) THEN
         CALL FPREAD
      &( STRA57%R, XF1   , SFR%R , SDFR%R  , NF   , NPLAN ,
@@ -170,9 +191,11 @@
         ENDIF
       ENDIF
 !
-      IF (VENT) THEN
-!       -------------------------------DRAG COEFFICIENT
-        IF (SORLEO(25)) THEN
+      IF(VENT) THEN
+!
+!       ------------------------------- DRAG COEFFICIENT
+!
+        IF(SORLEO(25)) THEN
           DO IP=1,NPOIN2
             U10=UV(IP)**2+VV(IP)**2
             IF (U10.GT.1.D-6) THEN
@@ -183,32 +206,40 @@
           ENDDO
         ENDIF
       ENDIF
-!       -------------------------------BOTTOM SPEED
-      IF (.NOT.PROINF) THEN
-        IF (SORLEO(16)) THEN
-          CALL VITFON
-     &( STRA59%R, XF1   , SXK%R , SDEPTH%R, SDFR%R , NF   ,
-     &  NPOIN2     , NPLAN , GRAVIT   , STRA39%R)
+!
+!       ------------------------------- BOTTOM SPEED
+!
+      IF(.NOT.PROINF) THEN
+        IF(SORLEO(16)) THEN
+          CALL VITFON(STRA59%R,XF1,SXK%R,SDEPTH%R,SDFR%R,NF,
+     &                NPOIN2,NPLAN,STRA39%R)
         ENDIF
       ENDIF
-!     -------------------------------VARIANCE
-      IF (SORLEO(1).OR.SORLEO(2)) THEN
+!
+!     ------------------------------- VARIANCE
+!
+      IF(SORLEO(1).OR.SORLEO(2)) THEN
         CALL TOTNRJ
      &( STRA37%R , XF1   , SFR%R  , SDFR%R , TAILF ,
      &  NF  , NPLAN , NPOIN2)
-!     -------------------------------SIGNIFICANT WAVE HEIGHT
-        IF (SORLEO(2)) THEN
+!
+!     ------------------------------- SIGNIFICANT WAVE HEIGHT
+!
+        IF(SORLEO(2)) THEN
           DO IP=1,NPOIN2
             TRA38(IP)=4.D0*SQRT(TRA37(IP))
           ENDDO
         ENDIF
       ENDIF
-!     -------------------------------POWER PER UNIT LENGTH
-      IF (SORLEO(34)) THEN
-        CALL WPOWER
-     &( STRA60%R, XF1   , SFR%R  , SDFR%R , SCG%R  , TAILF , NF   ,
-     &  NPLAN , NPOIN2, ROEAU , GRAVIT)
+!
+!     ------------------------------- POWER PER UNIT LENGTH
+!
+      IF(SORLEO(34)) THEN
+        CALL WPOWER(STRA60%R,XF1,SFR%R,SDFR%R,SCG%R,TAILF,NF,
+     &              NPLAN,NPOIN2,ROEAU)
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

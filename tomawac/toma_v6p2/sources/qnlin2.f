@@ -59,6 +59,8 @@
 !                                                                     !
 !  APPELS :    - PROGRAMME(S) APPELANT  :  SEMIMP                     !
 !  ********    - PROGRAMME(S) APPELE(S) :  CQUEUE                     !
+!
+      USE DECLARATIONS_TOMAWAC, ONLY : GRAVIT
 !                                                                     !
       IMPLICIT NONE
 !
@@ -225,7 +227,7 @@
 !.......COMPUTES THE MULTIPLICATIVE COEFFICIENT (IN F**11) AND TAKES
 !       INTO ACCOUNT THE CORRECTION TERM IN FINITE DEPTH
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""""
-        XXFAC= 0.5D0 * XCOEF / 9.81**4 * FREQ**11
+        XXFAC= 0.5D0 * XCOEF / GRAVIT**4 * FREQ**11
         IF (PROINF) THEN
           DO IP=1,NPOIN2
             TAUX1(IP) = XXFAC
