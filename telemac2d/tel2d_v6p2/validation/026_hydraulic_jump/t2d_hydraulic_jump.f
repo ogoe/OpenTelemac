@@ -231,8 +231,8 @@ C
       COMMON/FORFC1/A
       COMMON/HCRIT/YCRIT                                                     
 C                                                                         
-      EXTERNAL FC1,F                                                   
-      DOUBLE PRECISION FC1,F                                           
+      EXTERNAL F                                                   
+      DOUBLE PRECISION F                                           
 C                                                                         
       INTRINSIC REAL                                                      
 C                                                                         
