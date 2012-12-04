@@ -130,7 +130,7 @@
                 KNEW(IP)=JP
               ELSE
                 KNEW(IP)=1+MOD(JP+NPLAN/2-1,NPLAN)
-                FNEW=-FNEW
+                FNEW=0.D0
               ENDIF
 !
 !             -------------------------------------------------------
