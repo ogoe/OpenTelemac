@@ -260,6 +260,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
       INTEGER LNG,LU
@@ -292,13 +293,13 @@
      &                  TAUX6(NPOIN2), TAUX7(NPOIN2) , COEFNL(16)    ,
      &                    TETA(NPLAN), SINTET(NPLAN) , COSTET(NPLAN) ,
      &                    F(NPOIN2,NPLAN,NF),   XK(NPOIN2,NF)        ,
-     &                    DF_LIM(NPOIN2,NF) ,
+     &                    DF_LIM(NPOIN2) ,
      &                 TSDER(NPOIN2,NPLAN,NF),TSTOT(NPOIN2,NPLAN,NF) ,
      &                 FREQ(NF), DFREQ(NF), 
      &                 TOLD(NPOIN2,NPLAN), TNEW(NPOIN2,NPLAN)
       DOUBLE PRECISION BETA(NPOIN2)
-      CHARACTER*144 NOMVEB, NOMVEF
-      CHARACTER*3 BINVEN
+      CHARACTER(LEN=144) NOMVEB, NOMVEF
+      CHARACTER(LEN=3) BINVEN
       LOGICAL  PROINF, VENT , VENSTA
 !GM V6P1 - NEW SOURCE TERMS
 !....Linear wind growth declaration
@@ -337,7 +338,7 @@
 !     """""""""""""""""
       INTEGER          ISITS , IFF   , IP    , JP    ,
      &                 IFCAR , MF1   , MF2   , MFMAX , IDT
-      DOUBLE PRECISION AUX1  , AUX2  , AUX3  , AUX4  , COEF  , DFMAX ,
+      DOUBLE PRECISION AUX1  , AUX2  , AUX3  , AUX4  , COEF  , 
      &                 FM1   , FM2   , TDEB  , TFIN  , VITVEN,
      &                 VITMIN, HM0   , HM0MAX, DTN   , SUME   , AUXI  ,
      &                 USMIN
@@ -446,7 +447,7 @@
 !
           DO IP=1,NPOIN2
             VITVEN=SQRT(VENTX(IP)**2+VENTY(IP)**2)
-            IF (VITVEN.GT.VITMIN) THEN
+            IF(VITVEN.GT.VITMIN) THEN
               TWNEW(IP)=ATAN2(VENTX(IP),VENTY(IP))
             ELSE
               TWNEW(IP)=0.D0
@@ -585,13 +586,13 @@
 !
 !       4.4 WHITE-CAPPING DISSIPATION
 !       -------------------------------------------------
-        IF (SMOUT.EQ.1) THEN
+        IF(SMOUT.EQ.1) THEN
           CALL QMOUT1
      &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY ,
      &  PROINF, CMOUT1, CMOUT2, GRAVIT, NF    , NPLAN , NPOIN2, TAUX1 ,
      &  TAUX2 )
 !GM V6P1 - NEW SOURCE TERMS
-        ELSEIF (SMOUT.EQ.2) THEN
+        ELSEIF(SMOUT.EQ.2) THEN
           CALL QMOUT2
      &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY ,
      &  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
@@ -602,59 +603,66 @@
 !
 !       4.5 BOTTOM FRICTION DISSIPATION
 !       -------------------------------------------
-        IF ((SFROT.EQ.1).AND.(.NOT.PROINF)) CALL QFROT1
+        IF(SFROT.EQ.1.AND..NOT.PROINF) CALL QFROT1
      &( TSTOT , TSDER , F     , XK    , DEPTH , CFROT1, GRAVIT, NF    ,
      &  NPLAN , NPOIN2, TAUX1 )
-!.......4.6 COMPUTES THE LIMITING FACTOR OF GROWTH
-!       ------------------------------------
-!.......NO LIMITING FACTOR (VERY HIGH VALUE IN ACTUAL FACTS)
-        IF (LIMIT.EQ.0) THEN
-          AUXI=1.D99
-          DO IFF=1,NF
-            DO IP=1,NPOIN2
-              DF_LIM(IP,IFF)=AUXI
-            ENDDO
-          ENDDO
-!
-!.......LIMITING FACTOR TAKEN FROM WAM-CYCLE 4
-        ELSEIF (LIMIT.EQ.1) THEN
-!          COEF=6.4D-7*GRAVIT**2*DTSI/1200.D0
-          COEF=0.62D-4*DTSI/1200.D0
-          DO IFF=1,NF
-            AUXI=COEF/FREQ(IFF)**5
-            DO IP=1,NPOIN2
-              DF_LIM(IP,IFF)=AUXI
-            ENDDO
-          ENDDO
-!
-!.......LIMITING FACTOR FROM HERSBACH AND JANSSEN (1999), WITHOUT UETOILE
-        ELSEIF (LIMIT.EQ.2) THEN
-          COEF=3.0D-7*GRAVIT*FREQ(NF)*DTSI
-          DO IFF=1,NF
-            AUXI=COEF/FREQ(IFF)**4
-            USMIN=GRAVIT*5.6D-3/FREQ(IFF)
-            DO IP=1,NPOIN2
-              DF_LIM(IP,IFF)=AUXI*MAX(USNEW(IP),USMIN)
-            ENDDO
-          ENDDO
-        ENDIF
-!
 !
 !       5. UPDATES THE SPECTRUM - TAKES THE SOURCE TERMS INTO ACCOUNT
 !         (GENERATION, WHITECAPPING AND QUADRUPLET INTERACTIONS)
 !       ==============================================================
 !
+!
+!       JMH 04/12/2012: COMPUTATION OF LIMITING FACTOR INSERTED
+!                       IN THE LOOP TO HAVE DF_LIM(NPOIN2) INSTEAD
+!                       OF DF_LIM(NPOIN2,NF)
+!
+!
         DO IFF=1,NF
-          DO JP=1,NPLAN
+!         NO LIMITING FACTOR
+          IF(LIMIT.EQ.0) THEN
+            AUXI=1.D99
             DO IP=1,NPOIN2
-              DFMAX=DF_LIM(IP,IFF)
-              AUX1=MAX( 1.D0-DTSI*TSDER(IP,JP,IFF)*CIMPLI , 1.D0 )
-              AUX2=DTSI*TSTOT(IP,JP,IFF)/AUX1
-              AUX3=MIN( ABS(AUX2) , DFMAX )
-              AUX4=SIGN(AUX3,AUX2)
-              F(IP,JP,IFF)=MAX( F(IP,JP,IFF)+AUX4 , 0.D0 )
+              DF_LIM(IP)=AUXI
             ENDDO
-          ENDDO
+!         LIMITING FACTOR TAKEN FROM WAM-CYCLE 4
+          ELSEIF(LIMIT.EQ.1) THEN
+            COEF=0.62D-4*DTSI/1200.D0
+            AUXI=COEF/FREQ(IFF)**5
+            DO IP=1,NPOIN2
+              DF_LIM(IP)=AUXI
+            ENDDO
+!         LIMITING FACTOR FROM HERSBACH AND JANSSEN (1999)
+          ELSEIF(LIMIT.EQ.2) THEN
+            COEF=3.D-7*GRAVIT*FREQ(NF)*DTSI
+            AUXI=COEF/FREQ(IFF)**4
+            USMIN=GRAVIT*5.6D-3/FREQ(IFF)
+            DO IP=1,NPOIN2
+              DF_LIM(IP)=AUXI*MAX(USNEW(IP),USMIN)
+            ENDDO
+          ELSE
+            WRITE(LU,*) 'UNKNOWN LIMITING FACTOR:',LIMIT
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(LIMIT.NE.0) THEN
+            DO JP=1,NPLAN
+              DO IP=1,NPOIN2
+                AUX1=MAX(1.D0-DTSI*TSDER(IP,JP,IFF)*CIMPLI,1.D0)
+                AUX2=DTSI*TSTOT(IP,JP,IFF)/AUX1
+                AUX3=MIN(ABS(AUX2),DF_LIM(IP))
+                AUX4=SIGN(AUX3,AUX2)
+                F(IP,JP,IFF)=MAX(F(IP,JP,IFF)+AUX4,0.D0)
+              ENDDO
+            ENDDO
+          ELSE
+            DO JP=1,NPLAN
+              DO IP=1,NPOIN2
+                AUX1=MAX(1.D0-DTSI*TSDER(IP,JP,IFF)*CIMPLI,1.D0)
+                AUX2=DTSI*TSTOT(IP,JP,IFF)/AUX1
+                F(IP,JP,IFF)=MAX(F(IP,JP,IFF)+AUX2,0.D0)
+              ENDDO
+            ENDDO
+          ENDIF
         ENDDO
 !
 !
@@ -663,9 +671,9 @@
 !
 !       6.1 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
 !       ----------------------------------------------
-        CALL FREMOY
-     &( FMOY  , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2,
-     &  TAUX1 , TAUX2 )
+!
+        CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
+     &              TAUX1,TAUX2)
 !
         AUX1=GRAVIT/(7.D0*DEUPI*FREQ(1))
         AUX2=2.5D0/FREQ(1)
@@ -677,32 +685,35 @@
 !           THIS FREQUENCY IS THE MAXIMUM OF (FM1=4.*FPM ; FM2=2.5*FMOY).
 !           ITS INDEX IS MFMAX.
 !       -------------------------------------------------------------
+!
           FM1 =AUX1/(USNEW(IP)+1.D-90)
           FM2 =AUX2*FMOY(IP)
           MF1=INT(AUX3*LOG10(FM1)+1.D0)
           MF2=INT(AUX3*LOG10(FM2)+1.D0)
-          MFMAX=MIN( MAX(MF1,MF2) , NF )
+          MFMAX=MIN(MAX(MF1,MF2),NF)
 !
 !       6.3 MODIFIES THE HIGH FREQUENCY PART OF THE SPECTRUM
 !           A DECREASE IN F**(-TAILF) IS IMPOSED BEYOND
 !           FREQ(MFMAX).  (TAILF=5 IN WAM-CYCLE 4)
-!       --------------------------------------------------------
+!       -------------------------------------------------------------
+!
           DO IFF=MFMAX+1,NF
             AUX4=(FREQ(MFMAX)/FREQ(IFF))**TAILF
             DO JP=1,NPLAN
               F(IP,JP,IFF)=AUX4*F(IP,JP,MFMAX)
             ENDDO
           ENDDO
+!
         ENDDO
 !
 !       7. TAKES THE BREAKING SOURCE TERM INTO ACCOUNT
 !       =================================================
 !
-        IF (((SBREK.GT.0).OR.(STRIA.GT.0)).AND.(.NOT.PROINF)) THEN
+        IF((SBREK.GT.0.OR.STRIA.GT.0).AND..NOT.PROINF) THEN
 !
 !         7.1 COMPUTES A REPRESENTATIVE FREQUENCY
 !         ------------------------------------------
-          IF ((SBREK.GT.0).AND.(SBREK.LT.5)) THEN
+          IF (SBREK.GT.0.AND.SBREK.LT.5) THEN
             IF (SBREK.EQ.1) IFCAR = IFRBJ
             IF (SBREK.EQ.2) IFCAR = IFRTG
             IF (SBREK.GE.3) IFCAR = IFRRO
@@ -720,6 +731,7 @@
 !
 !           MEAN FREQUENCY FMOY
 !           - - - - - - - - - - - -
+!
   751       CONTINUE
             DO IP=1,NPOIN2
               TAUX3(IP)=FMOY(IP)
@@ -880,7 +892,7 @@
 !
 !       8. TRANSFERS DATA FROM NEW TO OLD FOR THE NEXT TIME STEP
 !       ==============================================================
-        IF (VENT) THEN
+        IF(VENT) THEN
           DO IP=1,NPOIN2
             USOLD(IP)=USNEW(IP)
             Z0OLD(IP)=Z0NEW(IP)
@@ -898,3 +910,4 @@
 !
       RETURN
       END
+

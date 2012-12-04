@@ -59,7 +59,7 @@
 !.....LOCAL VARIABLES 
 !     """"""""""""""" 
       INTEGER IP, IPOIN, IP2, I 
-      INTEGER ICLM, J, IELEM, ICLM2, ICLM3, ILM 
+      INTEGER ICLM, J, IELEM,ILM 
       INTEGER M, ICST, ICST2, NCST, IP_S, ILP, L(2) 
       DOUBLE PRECISION AC,QUO,RAD1 
       INTEGER,ALLOCATABLE:: ILM_POIN(:,:), CLM(:), KACC(:) 
@@ -86,11 +86,11 @@
          ALLOCATE(MINDIST(NPOIN2))
          DEJA=.TRUE.
       ENDIF
-
+!
 ! ILM_POIN array with the elements to which a point belongs 
 ! CLM(IP) array with the number of elements for each point 
 !  for IP belong to the elements  ILM_POIN(CLM(IP-1)+1:CLM(IP)) 
-      ICLM2=0 
+! 
       DO IPOIN =1, NPOIN2 
         ICLM=0 
         DO  IELEM=1,NELEM2 

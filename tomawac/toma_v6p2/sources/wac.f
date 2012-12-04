@@ -369,53 +369,39 @@
       ENDIF
       AT0=AT
 !
-!
-!=====C
-!  3  C UTILISATION (EVENTUELLE) DE LA VARIABLE TELEMAC.
-!=====C=================================================
-!COUPLAGE
-!      
-      IF (DONTEL.AND.PART.LT.0) THEN
-!Fin COUPLAGE
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE VARTEL'
-        CALL VARTEL
-     &( STRA31%R, MESH%X%R, MESH%Y%R, SDEPTH%R,
-     &  SUC%R   , SVC%R   , ZREPOS     , STRA32%R,
-     &  SF%R    , NPLAN      , NF         , NPOIN2     )
-        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE VARTEL'
-      ENDIF
-!
       DO IP=1,NPOIN2
-         IF(DEPTH(IP).LE.0.D0) THEN
-           IF(LNG.EQ.1) THEN
-             WRITE(LU,*) ''
-             WRITE(LU,*) '*************************'
-             WRITE(LU,*) ' ! PROFONDEUR NEGATIVE ! '
-             WRITE(LU,*) '   ARRET DU PROGRAMME    '
-             WRITE(LU,*) '*************************'
-             CALL PLANTE(1)
-           ELSE
-             WRITE(LU,*) ''
-             WRITE(LU,*) '**************************'
-             WRITE(LU,*) ' ! NEGATIVE WATER DEPTH ! '
-             WRITE(LU,*) '   END OF THE COMPUTATION '
-             WRITE(LU,*) '**************************'
-             CALL PLANTE(1)
-           ENDIF
-         ENDIF
+        IF(DEPTH(IP).LE.0.D0) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) ''
+            WRITE(LU,*) '*************************'
+            WRITE(LU,*) ' ! PROFONDEUR NEGATIVE ! '
+            WRITE(LU,*) '   ARRET DU PROGRAMME    '
+            WRITE(LU,*) '*************************'
+            CALL PLANTE(1)
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) ''
+            WRITE(LU,*) '**************************'
+            WRITE(LU,*) ' ! NEGATIVE WATER DEPTH ! '
+            WRITE(LU,*) '   END OF THE COMPUTATION '
+            WRITE(LU,*) '**************************'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDDO
-!
-!
 !
 !=====C
 !  4  C CALCULS PREPARATOIRES POUR INTERACTIONS NON-LINEAIRES.
 !=====C=======================================================
 !.....DIA method (Hasselmann et al., 1985)
+!
       IF(STRIF.EQ.1) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL1'
         CALL PRENL1( IANGNL, COEFNL, NPLAN , NF , RAISF , XLAMD )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL1'
+!
 !.....MDIA method (Tolman, 2004)
+!
       ELSEIF (STRIF.EQ.2) THEN
 !.....Setting parametres for MDIA
         XLAMDI(1)=0.075D0
@@ -429,13 +415,13 @@
 !        
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL2'
         DO K=1,MDIA
-          CALL PRENL2
-     *( IANMDI(1,1,K) , COEMDI(1,K), NPLAN , NF , RAISF ,
-     *  XLAMDI(K), XMUMDI(K))
+          CALL PRENL2(IANMDI(1,1,K),COEMDI(1,K),NPLAN,NF,RAISF,
+     *                XLAMDI(K),XMUMDI(K))
         ENDDO
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL2'
 !        
-!.....GQM method (Lavrenov, 2001)   
+!.....GQM method (Lavrenov, 2001)
+!   
       ELSEIF(STRIF.EQ.3) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRENL3'
         CALL PRENL3
@@ -448,7 +434,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRENL3'
       ENDIF       
 !
-      IF (STRIA.EQ.2) THEN
+      IF(STRIA.EQ.2) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREQT2'
         CALL PREQT2(STETA%R,NPLAN,BDISPB,BDSSPB,NBD,QINDI)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREQT2'
@@ -460,7 +446,7 @@
 !
 !.....5.1 INITIALISATION DE LA CONTRAINTE DE HOULE INITIALE.
 !     """"""""""""""""""""""""""""""""""""""""""""""""""""""
-      CALL OV ('X=C     ',STRA41%R,STRA32%R,STRA33%R,0.D0,NPOIN2)
+      CALL OV('X=C     ',STRA41%R,STRA32%R,STRA33%R,0.D0,NPOIN2)
 !
 !.....5.2 CALCUL DE U* ET Z0 SELON LA METHODE CONSIDEREE.
 !     """""""""""""""""""""""""""""""""""""""""""""""""""
@@ -472,22 +458,20 @@
      &  CDRAG    , ALPHA    , XKAPPA   , ZVENT , GRAVIT,
      &  NPOIN2   )
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR1'
-!V6P1 termes source
         ELSEIF (SVENT.GE.2) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
           CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2'
-        ELSEIF ((SVENT.EQ.0).AND.(LVENT.EQ.1)) THEN
+        ELSEIF (SVENT.EQ.0.AND.LVENT.EQ.1) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
           CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2' 
-        ELSEIF ((SVENT.EQ.0).AND.(LVENT.EQ.0).AND.(SMOUT.EQ.2)) THEN
+        ELSEIF (SVENT.EQ.0.AND.LVENT.EQ.0.AND.SMOUT.EQ.2) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE USTAR2'
           CALL USTAR2(STRA42%R,SUV%R,SVV%R,NPOIN2)
           IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE USTAR2'    
-!V6P1 Fin
         ELSE
-          IF (LNG.EQ.1) THEN
+          IF(LNG.EQ.1) THEN
             WRITE(LU,*)
      &      'PB DANS WAC : VENT PRESENT, MAIS SVENT NON CORRECT'
           ELSE

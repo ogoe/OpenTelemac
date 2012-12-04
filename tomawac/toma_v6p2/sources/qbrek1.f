@@ -97,9 +97,9 @@
 !
 !..........COMPUTES THE MAXIMUM WAVE HEIGHT
 !          """""""""""""""""""""""""""""""""""""""
-           IF (IHMBJ.EQ.1) THEN
+           IF(IHMBJ.EQ.1) THEN
              HM  = GAMBJ2*DEPTH(IP)
-           ELSEIF (IHMBJ.EQ.2) THEN
+           ELSEIF(IHMBJ.EQ.2) THEN
              CALL WNSCOU(XKCAR,FCAR(IP),DEPTH(IP))
              XK8 = GAMBJ1/XKCAR
              HM  = XK8*DTANH(GAMBJ2*DEPTH(IP)/XK8)
@@ -107,7 +107,7 @@
 !
 !..........COMPUTES THE FRACTION OF BREAKING WAVES
 !          """"""""""""""""""""""""""""""""""""""""""""
-           B   = DSQRT(8.D0*VARIAN(IP))/HM
+           B   = SQRT(8.D0*VARIAN(IP))/HM
            QB  = QBBJ78(B,IQBBJ)
 !
            BETA(IP) = COEF*QB*FCAR(IP)*HM*HM/VARIAN(IP)
@@ -122,7 +122,6 @@
         DO 20 JP = 1,NPLAN
           DO 30 IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-!           TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF)+BETA(IP)
    30     CONTINUE
    20   CONTINUE
    10 CONTINUE

@@ -58,9 +58,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          I1    , I2    , IP
-      DOUBLE PRECISION RADDEG, U10   , FMIN  , FMAX
-!
-      RADDEG=57.29577951D0
+      DOUBLE PRECISION U10   , FMIN  , FMAX
 !
       FMIN=FREQ(1)
       FMAX=FREQ(NF)
@@ -104,11 +102,11 @@
      &  STRA37%R, STRA38%R, STRA39%R )
         IF(TRIGO) THEN
           DO IP=1,NPOIN2
-            TRA32(IP)=(PISUR2-TRA32(IP))*RADDEG
+            TRA32(IP)=(PISUR2-TRA32(IP))*GRADEG
           ENDDO
         ELSE
           DO IP=1,NPOIN2
-            TRA32(IP)=TRA32(IP)*RADDEG
+            TRA32(IP)=TRA32(IP)*GRADEG
           ENDDO
         ENDIF
       ENDIF

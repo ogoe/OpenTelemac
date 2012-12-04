@@ -76,8 +76,10 @@
 !.....DETERMINES THE METHOD OF RESOLUTION DEPENDING ON THE VALUE OF XK0D
 !     ================================================================
 !
-      IF (XK0D.LE.3.2) THEN
+      IF(XK0D.LE.3.2D0) THEN
+!
 !.......EXPLICIT METHOD (HUNT 9TH ORDER)
+!
         Y=XK0*DEPTH
         AUX=1.D0
         YI=1.D0
@@ -88,8 +90,10 @@
         AUX=Y+1.D0/AUX
         CK2=OM/SQRT(GRAVIT*DEPTH/AUX)
 !
-      ELSEIF (XK0D.LE.5.6) THEN
+      ELSEIF(XK0D.LE.5.6D0) THEN
+!
 !.......ITERATIVE METHOD (FROM HUNT 9TH ORDER)
+!
         Y=XK0*DEPTH
         AUX=1.D0
         YI=1.D0
@@ -107,8 +111,11 @@
     3   CONTINUE
 !
       ELSE
+!
 !.......APPROXIMATION OF INFINITE DEPTH
+!
         CK2=XK0
+!
       ENDIF
 !
       RETURN
