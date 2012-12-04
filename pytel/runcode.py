@@ -205,7 +205,13 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update):
             if iFiles[k].split(';')[5][0:3] == 'CAS':
                print ' re-writing: ', crun
                putFileContent(crun,rewriteCAS(cas))
+               # An input mesh may be a binary or an ascii file
+               # It depends on the selected format (Selafin, Ideas, Med)
+            elif iFiles[k].split(';')[5][0:12] == 'SELAFIN-GEOM':
+               print '    copying: ', path.basename(cref),crun
+               shutil.copy(cref,crun)
             else:
+               # FD : this is not a true copy. Why ?
                print '    copying: ', path.basename(cref),crun
                putFileContent(crun,getFileContent(cref)+[''])
          else:
@@ -244,14 +250,14 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                   print '  moving: ', path.basename(cref)
                   nptime = nptime + 1
                npsize = npsize + 1
-         elif oFiles[k].split(';')[5] == 'PARAL': # MAIN MODULE
+         elif oFiles[k].split(';')[5] == 'PARAL' and ncsize > 1: # MAIN MODULE
             npsize = 1
             cb,ce = path.splitext(eval(cas[k][0]))
             while 1:
                cref = path.join(CASDir,cb+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)+ce)
                if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                crun = oFiles[k].split(';')[1]+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)
-               if not path.isfile(crun): break
+               if not path.isfile(crun):break
                shutil.move(crun,cref) #shutil.copy2(crun,cref)
                #print ' copying: ', path.basename(cref)
                print '  moving: ', path.basename(cref)
