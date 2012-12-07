@@ -19,6 +19,10 @@
          into a try/except statement to better manage errors.
       This, however, assumes that all errors are anticipated.
 """
+"""@history 05/12/2012 -- Sebastien E. Bourban
+   Addition of a better capture of errors, particulalry when the error is
+      not thrown through runCmd.
+"""
 """@brief
       Catching and reporting on sys.exit / os.system errors
 """
@@ -28,6 +32,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
+import traceback
 import os
 import threading
 from subprocess import *
@@ -49,7 +54,10 @@ def filterMessage(d,e=None,bypass=True):
             for i in e.args: message.append(i)
             cd.update({'tree':message})
          else:
-            cd = {'name':'uncontroled error from python:','msg':repr(e)}
+            cd = {'name':'uncontroled error from python:','msg':repr(e)+ 
+               '\n~~~~~~~~~~~~~~~~~~\n'+
+               ''.join(traceback.format_exception(*sys.exc_info()))+
+               '~~~~~~~~~~~~~~~~~~'}
             if d.has_key('name'): cd['name'] = d['name']+':\n      '+cd['name']
             if d.has_key('msg'): cd['msg'] = d['msg']+':\n      '+cd['msg']
          if bypass: return cd
@@ -141,5 +149,5 @@ class MESSAGES:
          else:
             lastlineempty = False
             self.tail = self.tail +'\n'+ dat
-      if len(self.tail.split('\n')) > self.size: self.tail = '\n'.join((self.tail.split('\n'))[-self.size:])
-
+      if len(self.tail.split('\n')) > self.size: self.tail = '\n'.join((self.tail.split('\n'))[-self.size:]) 
+   
