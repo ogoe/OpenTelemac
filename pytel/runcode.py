@@ -508,7 +508,8 @@ def runCode(exe,sortiefile):
    #       a zero return code is returned, indicating successful completion.
    proc.wait()
    if proc.returncode == 0: return True
-
+   raise Exception({'name':'runCode','msg':'Fail to run\n'+exe+
+      '\n~~~~~~~~~~~~~~~~~~\n'+str(proc.stderr.read().strip())+'\n~~~~~~~~~~~~~~~~~~'})
    return False
 
 def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
@@ -801,9 +802,9 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
             if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
             return []          # Split only: do not proceed any further
          print '\n\nRunning your simulation :\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n'
-         print runCmd
-         if not runCode(runCmd,sortiefile): raise Exception([{'name':'runCAS','msg':'fail to run\n      ' + runCmd}])
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+         print runCmd+'\n\n'
+         if not runCode(runCmd,sortiefile): raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
          if cfg.has_key('HPC'):
             print '\n... You must wait for the simulation to complete before using option --merge\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
