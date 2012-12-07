@@ -745,24 +745,6 @@ def getEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, i
 
 """
    Extract full user defined comand line
-   for the compilation, linkage and execution of the sources
-"""
-#def getCOMPILER(cfgDict):
-#   # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   compiler = {}
-#   cmd_obj = ''
-#   if cfgDict.has_key('cmd_obj'): cmd_obj = cfgDict['cmd_obj']
-#   compiler.update({'cmd_obj':cmd_obj})
-#   cmd_lib = ''
-#   if cfgDict.has_key('cmd_lib'): cmd_lib = cfgDict['cmd_lib']
-#   compiler.update({'cmd_lib':cmd_lib})
-#   cmd_exe = ''
-#   if cfgDict.has_key('cmd_exe'): cmd_exe = cfgDict['cmd_exe']
-#   compiler.update({'cmd_exe':cmd_exe})
-#   return compiler
-
-"""
-   Extract full user defined comand line
    for the treatment of the option 'parallel'
 """
 def getPARALLEL(cfgDict):
