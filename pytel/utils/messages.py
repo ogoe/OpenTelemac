@@ -20,7 +20,7 @@
       This, however, assumes that all errors are anticipated.
 """
 """@history 05/12/2012 -- Sebastien E. Bourban
-   Addition of a better capture of errors, particulalry when the error is
+   Addition of a better capture of errors, particularly when the error is
       not thrown through runCmd.
 """
 """@brief
