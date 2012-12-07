@@ -91,6 +91,12 @@
             and now two other variables are available: <nctile> and <ncnodes>.
          ncsize must be ncnodes x nctile.
 """
+"""@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Simplifying call to parseConfigFile, which now takes two arguments
+      options.configFile, and options.configName and return one or more
+      valid configurations in an array. Testing for validity is now done
+      within config.py
+"""
 """@brief
          runcode is the execution launcher for all TELEMAC modules
 """
@@ -257,7 +263,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                cref = path.join(CASDir,cb+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)+ce)
                if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                crun = oFiles[k].split(';')[1]+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)
-               if not path.isfile(crun):break
+               if not path.isfile(crun): break
                shutil.move(crun,cref) #shutil.copy2(crun,cref)
                #print ' copying: ', path.basename(cref)
                print '  moving: ', path.basename(cref)
@@ -960,16 +966,8 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile)
-   cfgnames = cfgs.keys()
-   cfgname = options.configName
-   if options.configName == '':
-      cfgname = cfgnames[0]
-   if cfgname not in cfgnames:
-      print '\nNot able to get to find your configuration in the configuration file: ' + options.configFile + '\n'
-      print ' ... use instead:'
-      for cfgname in cfgnames : print '    +> ',cfgname
-      sys.exit()
+   cfgs = parseConfigFile(options.configFile,options.configName)
+   cfgname = cfgs.keys()[0]
 
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
@@ -982,6 +980,7 @@ if __name__ == "__main__":
    print '    +> configuration: ' +  cfgname
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> version        ' +  cfgs[cfgname]['version']
+   print '    +> options:       ' +  cfgs[cfgname]['options']
    if options.wDir != '':
       print '    +> directory      ' +  options.wDir
       options.tmpdirectory = False
@@ -990,8 +989,7 @@ if __name__ == "__main__":
 
 # >>> Check wether the config has been compiled for the runcode
    if options.compileonly: cfg['REBUILD'] = 2
-   cfg.update({'TELCOD':codeName})
-   if codeName not in cfg['MODULES']:
+   if codeName not in cfg['MODULES'].keys():
       print '\nThe code requested is not installed on this system : ' + codeName + '\n'
       sys.exit()
 
