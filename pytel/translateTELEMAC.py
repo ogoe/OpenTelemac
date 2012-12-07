@@ -7,11 +7,18 @@
          linux calls. This is a temporary solution as "/usr/bin/env" is not
          strickly portable cross operating systems
 """
+"""@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Simplifying call to parseConfigFile, which now takes two arguments
+      options.configFile, and options.configName and return one or more
+      valid configurations in an array. Testing for validity is now done
+      within config.py
+"""
+
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 from config import OptionParser,parseConfigFile, parseConfig_TranslateTELEMAC
-from os import path,walk,mkdir,remove
+from os import path,walk,mkdir,remove, environ
 from utils import getTheseFiles,getFileContent,putFileContent
 import sys
 import re
@@ -481,12 +488,8 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cfgname = options.configName
-   if options.configName == '':
-      cfgname = parseConfigFile(options.configFile).keys()[0]
-   if cfgname not in parseConfigFile(options.configFile).keys():
-      print '\nNot able to get to find your configurtaion in the configuration file: ' + options.configFile + '\n'
-      sys.exit()
+   cfgs = parseConfigFile(options.configFile,options.configName)
+   cfgname = cfgs.keys()[0]
 
    cfg = parseConfig_TranslateTELEMAC(cfgname)[cfgname]
 

@@ -30,6 +30,12 @@
          variables, such as the path could be greater than 72 characters.
          Update (FD,30/08/212) : '<73' changed to '<72' (bug in 015_bosse_mixte)
 """
+"""@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Simplifying call to parseConfigFile, which now takes two arguments
+      options.configFile, and options.configName and return one or more
+      valid configurations in an array. Testing for validity is now done
+      within config.py
+"""
 """@brief
 """
 
@@ -38,7 +44,7 @@
 #
 # ~~> dependencies towards standard python
 import re
-from os import path,walk
+from os import path,walk,environ
 import sys
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
@@ -453,18 +459,10 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile)
-   cfgnames = cfgs.keys()
-   if options.configName != '':
-      if options.configName not in cfgnames:
-         print '\nNot able to find your configuration in the configuration file: ' + options.configFile + '\n'
-         print ' ... use instead:'
-         for cfgname in cfgnames : print '    +> ',cfgname
-         sys.exit()
-      cfgnames = [options.configName]
+   cfgs = parseConfigFile(options.configFile,options.configName)
 
    #  /!\  for testing purposes ... no real use
-   for cfgname in cfgnames:
+   for cfgname in cfgs.keys():
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
       if options.version != '': cfgs[cfgname]['version'] = options.version

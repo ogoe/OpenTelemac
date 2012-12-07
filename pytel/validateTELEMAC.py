@@ -53,6 +53,12 @@
          A new option (--rank) added to the command line, in order for
          Jenkins to select ranking depending on the day of the week.
 """
+"""@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Simplifying call to parseConfigFile, which now takes two arguments
+      options.configFile, and options.configName and return one or more
+      valid configurations in an array. Testing for validity is now done
+      within config.py
+"""
 """@brief
 """
 
@@ -136,16 +142,8 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile)
-   cfgnames = cfgs.keys()
-   if options.configName != '':
-      if options.configName not in cfgnames:
-         print '\nNot able to find your configuration in the configuration file: ' + options.configFile + '\n'
-         print ' ... use instead:'
-         for cfgname in cfgnames : print '    +> ',cfgname
-         sys.exit()
-      cfgnames = [options.configName]
-
+   cfgs = parseConfigFile(options.configFile,options.configName)
+   
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
    if not options.display:
@@ -162,7 +160,7 @@ if __name__ == "__main__":
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}
-      for cfgname in cfgnames:
+      for cfgname in cfgs.keys():
          # still in lower case
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          if options.version != '': cfgs[cfgname]['version'] = options.version
@@ -196,7 +194,7 @@ if __name__ == "__main__":
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}
-      for cfgname in cfgnames:
+      for cfgname in cfgs.keys():
          # still in lower case
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          if options.version != '': cfgs[cfgname]['version'] = options.version

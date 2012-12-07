@@ -23,6 +23,23 @@
          Bug corrected, replace the '<root>' in the output from getEXTERNALs
          by the actual root of the system
 """
+"""@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Allowing users to define own a new section, "general", with own user
+      keys as well as own user keys within each configuration.
+      User keys are then replaced throughout all other values whenever [userkey]
+      is used, such as (where fflags is an arbitrary user key):
+fflags:     -c -O3 -ffixed-line-length-132 -fconvert=big-endian -frecord-marker=4
+cmd_obj:    gfortran [fflags] <mods> <incs> <f95name>
+   Note that if -c or USETELCFG is set, the replacement of user keys will only
+      be done for that configuration
+"""
+"""@history 05/12/2012 -- Sebastien E. Bourban
+   Allowing the user to set keys such as cmd_exe, cmd_obj and cmd_lib per
+      module (for instance cmd_exe_parallel). For this, cfgTELEMAC['COMPILER']
+      has been removed and replaced with a COMPILER for each module, just as
+      for the incs, libs and mods.
+   Also works where _all is not set, i.e. incs or incs_all work the same magic.
+"""
 """@brief
 """
 """@details
@@ -156,7 +173,7 @@ CONFIGS = {}
    and their key/values -- Returns a dictionary of all configs in
    the files that are highlighted in [Configurations]
 """
-def getConfigs(file):
+def getConfigs(file,name):
    # ~~ Read Configuration File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgfile = ConfigParser.RawConfigParser()
    try:
@@ -165,31 +182,60 @@ def getConfigs(file):
       parser.error("Could not access required parameters in config file")
       sys.exit()
    # ~~ Read Config Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if cfgfile.get('Configurations','configs') == '' :
-      print '\nPlease specify Configurations in config file \n'
+   cfgs = cfgfile.get('Configurations','configs')
+   if cfgs == '' :
+      print '\nPlease specify appropriate configuration names for key Configuration in config file\n'
       sys.exit()
+   # ~~ Filter Config Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cfgnames = cfgs.split()
+   if name != '':
+      if name not in cfgnames:
+         print '\nNot able to find your configuration in the configuration file: ' + file + '\n'
+         print ' ... use instead:'
+         for cfg in cfgnames : print '    +> ',cfg
+         sys.exit()
+      cfgnames = [name]
+   # ~~ Verify presence of configs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for cfg in cfgnames:
+      if cfg not in cfgfile.sections():
+         print '\nNot able to find the configuration [' + cfg + '] in the configuration file: ' + file
+         sys.exit()
+   # ~~ Read General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   try:
+      general = dict(cfgfile.items('general'))
+   except:
+      general = {}
    # ~~ Loads Configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    configs = {}
-   for cfg in cfgfile.get('Configurations','configs').split() :
+   for cfg in cfgnames :
       configs.update({cfg:dict(cfgfile.items(cfg))}) # convert all keys in lower case !
 
-   return configs
+   return general,configs
 
 """
    Get the name of the config file from command line arguments
    and store its rough content in a dict -- Returns the dict
    set globals CONFIGS
 """
-def parseConfigFile(file):
-   #
+def parseConfigFile(file,name):
    # ~~ Parse CFG File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #
-   if file == '': file = options.configFile
    print "... parsing configuration file: " + file
-   configDict = getConfigs(file)
-   if configDict == {}:
-      print '\nPlease specify configuration in config file \n'
-      sys.exit()
+   generalDict,configDict = getConfigs(file,name)
+   # ~~ Replacing user keys throughout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   key_sqbrack = re.compile(r'(?P<before>.*?)\[(?P<key>[\w_.-~=+]*)\](?P<after>[^\Z]*)\Z')
+   for cfgname in configDict.keys():
+      # ~~> making sure cfgname also includes all keys from general
+      for genkey in generalDict.keys() :
+         if not configDict[cfgname].has_key(genkey): configDict[cfgname].update({genkey:generalDict[genkey]})
+      # ~~> replacing [key] by its value
+      for cfgkey in configDict[cfgname].keys():
+         proc = re.match(key_sqbrack,configDict[cfgname][cfgkey])
+         if proc:
+            k = proc.group('key')
+            if configDict[cfgname].has_key(k): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace('['+k+']',generalDict[k])
+            elif environ.has_key(k): configDict[cfgname][cfgkey] = configDict[cfgname][cfgkey].replace('['+k+']',environ[k])
+            else:
+               print '... Could not find your special key ',k,' in key ',cfgkey,' of configuration ',cfgname
    globals()["CONFIGS"] = configDict
    return configDict
 
@@ -231,6 +277,9 @@ def parseConfig_CompileTELEMAC(cfg):
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
    cfgTELEMAC.update({'version':get})
+   # Get options for printing purposes
+   get = getConfigKey(cfg,'options',False,False).lower()
+   cfgTELEMAC.update({'options':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -240,9 +289,15 @@ def parseConfig_CompileTELEMAC(cfg):
    # for every module in the list of modules to account for
    # specific external includes for all or each module
    for mod in cfgTELEMAC['MODULES'].keys():
-      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
-      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
-      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'mods':addEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'incs':addEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'libs':addEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
+   # Get cmd_obj: ... cmd_lib: ... cmd_exe: ...
+   # the compiler dependent command lines to create obj, lib and exe
+   for mod in cfgTELEMAC['MODULES'].keys():
+      cfgTELEMAC['MODULES'][mod].update({'xobj':getEXTERNALs(cfg,'cmd_obj',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'xlib':getEXTERNALs(cfg,'cmd_lib',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'xexe':getEXTERNALs(cfg,'cmd_exe',mod).replace('<root>',cfgTELEMAC['root'])})
 
    cfgTELEMAC.update({'COMPILER':{}})
    # Get modules: user list of module
@@ -260,11 +315,6 @@ def parseConfig_CompileTELEMAC(cfg):
    for mod in get.split():
       if mod not in cfgTELEMAC['MODULES'].keys():
          del cfgTELEMAC['COMPILER']['MODULES'][cfgTELEMAC['COMPILER']['MODULES'].index(mod)]
-   # Get cmd_obj: ... cmd_lib: ... cmd_exe: ...
-   # the compiler dependent command lines to create obj, lib and exe
-   # respectively
-   get = getCOMPILER(cfg)
-   cfgTELEMAC['COMPILER'].update(get)
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -299,6 +349,9 @@ def parseConfig_TranslateTELEMAC(cfg):
    # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'version':get})
+   # Get options for printing purposes
+   get = getConfigKey(cfg,'options',False,False).lower()
+   cfgTELEMAC.update({'options':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -337,6 +390,9 @@ def parseConfig_TranslateCAS(cfg):
    # using the template ... teldir\*\*telver\
    get = getConfigKey(CONFIGS[cfg],'version',True,True).lower()
    cfgTELEMAC[cfg].update({'version':get})
+   # Get options for printing purposes
+   get = getConfigKey(cfg,'options',False,False).lower()
+   cfgTELEMAC.update({'options':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -384,6 +440,9 @@ def parseConfig_DoxygenTELEMAC(cfg):
    # Get destination doxydocs: ...
    get = getConfigKey(cfg,'doxydocs',True,True).lower()
    cfgTELEMAC.update({'doxydocs':get})
+   # Get options for printing purposes
+   get = getConfigKey(cfg,'options',False,False).lower()
+   cfgTELEMAC.update({'options':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -440,6 +499,9 @@ def parseConfig_CompactTELEMAC(cfg):
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
    cfgTELEMAC.update({'version':get})
+   # Get options for printing purposes
+   get = getConfigKey(cfg,'options',False,False).lower()
+   cfgTELEMAC.update({'options':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -480,6 +542,9 @@ def parseConfig_ValidateTELEMAC(cfg):
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
    cfgTELEMAC.update({'version':get})
+   # Get options for printing purposes
+   get = getConfigKey(cfg,'options',False,False).lower()
+   cfgTELEMAC.update({'options':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
@@ -489,9 +554,9 @@ def parseConfig_ValidateTELEMAC(cfg):
    # for every module in the list of modules to account for
    # specific external includes for all or each module
    for mod in cfgTELEMAC['MODULES'].keys():
-      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
-      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
-      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'mods':addEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'incs':addEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
+      cfgTELEMAC['MODULES'][mod].update({'libs':addEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
 
    cfgTELEMAC.update({'VALIDATION':{}})
    # Get ranks: user list of ranks to filter the list of validation cases
@@ -575,18 +640,14 @@ def parseConfig_RunningTELEMAC(cfg):
    # using the template ... teldir\*\*telver\
    get = getConfigKey(cfg,'version',True,True).lower()
    cfgTELEMAC.update({'version':get})
+   # Get options for printing purposes
+   get = getConfigKey(cfg,'options',False,False).lower()
+   cfgTELEMAC.update({'options':get})
 
    # Deduce the actual list of modules existing within the root teldir,
    # identified by matching the directory structure to the template
    # teldir\module_name\*telver\
    cfgTELEMAC.update({'MODULES':getFolders_ModulesTELEMAC(cfgTELEMAC['root'],cfgTELEMAC['version'])})
-   # Get libs_all: ... libs_artemis: ... mods_all: ... etc.
-   # for every module in the list of modules to account for
-   # specific external includes for all or each module
-   for mod in cfgTELEMAC['MODULES'].keys():
-      cfgTELEMAC['MODULES'][mod].update({'mods':getEXTERNALs(cfg,'mods',mod).replace('<root>',cfgTELEMAC['root'])})
-      cfgTELEMAC['MODULES'][mod].update({'incs':getEXTERNALs(cfg,'incs',mod).replace('<root>',cfgTELEMAC['root'])})
-      cfgTELEMAC['MODULES'][mod].update({'libs':getEXTERNALs(cfg,'libs',mod).replace('<root>',cfgTELEMAC['root'])})
 
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
@@ -661,30 +722,44 @@ def getFolders_ModulesTELEMAC(root,dirname):
    whether a lib, a mod or an include following the template
    key ext_all and ext_..., with ext = mods, incs, libs
 """
-def getEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, incs, libs
+def addEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, incs, libs, cmd_*
    # ~~ Loads External Dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    extList = ''
-   if cfgDict.has_key(ext+'_all'): extList = cfgDict[ext+'_all']
+   if cfgDict.has_key(ext): extList = cfgDict[ext]
+   if cfgDict.has_key(ext+'_all'): extList = extList + ' ' + cfgDict[ext+'_all']
    if cfgDict.has_key(ext+'_'+mod): extList = extList + ' ' + cfgDict[ext+'_'+mod]
+   return extList
+
+"""
+   Etract links to user defined external dependencies
+   whether a lib, a mod or an include following the template
+   key ext_all and ext_..., with ext = cmd_obj, cmd_lib, cmd_exe
+"""
+def getEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, incs, libs, cmd_*
+   # ~~ Loads External Dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   extList = ''
+   if cfgDict.has_key(ext): extList = cfgDict[ext]
+   if cfgDict.has_key(ext+'_all'): extList = cfgDict[ext+'_all']
+   if cfgDict.has_key(ext+'_'+mod): extList = cfgDict[ext+'_'+mod]
    return extList
 
 """
    Extract full user defined comand line
    for the compilation, linkage and execution of the sources
 """
-def getCOMPILER(cfgDict):
-   # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   compiler = {}
-   cmd_obj = ''
-   if cfgDict.has_key('cmd_obj'): cmd_obj = cfgDict['cmd_obj']
-   compiler.update({'cmd_obj':cmd_obj})
-   cmd_lib = ''
-   if cfgDict.has_key('cmd_lib'): cmd_lib = cfgDict['cmd_lib']
-   compiler.update({'cmd_lib':cmd_lib})
-   cmd_exe = ''
-   if cfgDict.has_key('cmd_exe'): cmd_exe = cfgDict['cmd_exe']
-   compiler.update({'cmd_exe':cmd_exe})
-   return compiler
+#def getCOMPILER(cfgDict):
+#   # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#   compiler = {}
+#   cmd_obj = ''
+#   if cfgDict.has_key('cmd_obj'): cmd_obj = cfgDict['cmd_obj']
+#   compiler.update({'cmd_obj':cmd_obj})
+#   cmd_lib = ''
+#   if cfgDict.has_key('cmd_lib'): cmd_lib = cfgDict['cmd_lib']
+#   compiler.update({'cmd_lib':cmd_lib})
+#   cmd_exe = ''
+#   if cfgDict.has_key('cmd_exe'): cmd_exe = cfgDict['cmd_exe']
+#   compiler.update({'cmd_exe':cmd_exe})
+#   return compiler
 
 """
    Extract full user defined comand line
@@ -894,18 +969,10 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile)
-   cfgnames = cfgs.keys()
-   if options.configName != '':
-      if options.configName not in cfgnames:
-         print '\nNot able to find your configuration in the configuration file: ' + options.configFile + '\n'
-         print ' ... use instead:'
-         for cfgname in cfgnames : print '    +> ',cfgname
-         sys.exit()
-      cfgnames = [options.configName]
+   cfgs = parseConfigFile(options.configFile,options.configName)
 
 #  /!\  for testing purposes ... no real use
-   for cfgname in cfgnames:
+   for cfgname in cfgs.keys():
       print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       # still in lower case
@@ -918,6 +985,7 @@ if __name__ == "__main__":
       print '    +> root:    ',cfgs[cfgname]['root']
       print '    +> version: ',cfgs[cfgname]['version']
       print '    +> module:  ',' / '.join(cfg['MODULES'])
+      print '    +> options: ',cfgs[cfgname]['options']
 
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'

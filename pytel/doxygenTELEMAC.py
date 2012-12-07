@@ -38,6 +38,12 @@
          This development was triggered by Christophe Coulet (Artelia-Sogreah)
          who asked about it on the open TELEMAC forum.
 """
+"""@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Simplifying call to parseConfigFile, which now takes two arguments
+      options.configFile, and options.configName and return one or more
+      valid configurations in an array. Testing for validity is now done
+      within config.py
+"""
 """@brief
 """
 
@@ -517,16 +523,8 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile)
-   cfgnames = cfgs.keys()
-   cfgname = options.configName
-   if options.configName == '':
-      cfgname = cfgnames[0]
-   if cfgname not in cfgnames:
-      print '\nNot able to get to find your configurtaion in the configuration file: ' + options.configFile + '\n'
-      print ' ... use instead:'
-      for cfgname in cfgnames : print '    +> ',cfgname
-      sys.exit()
+   cfgs = parseConfigFile(options.configFile,options.configName)
+   cfgname = cfgs.keys()[0]
 
    # still in lower case
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
@@ -544,7 +542,8 @@ if __name__ == "__main__":
    print '    +> configuration: ' +  cfgname
    print '    +> root:          ' +  cfgs[cfgname]['root']
    print '    +> version:       ' +  cfgs[cfgname]['version']
-   print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
+   print '    +> modules:       ' +  cfgs[cfgname]['modules']
+   print '    +> options:       ' +  cfgs[cfgname]['options'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
    # ~~ Scans all source files to build a relation database ~~

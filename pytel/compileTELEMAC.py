@@ -45,6 +45,19 @@
          into a try/except statement to better manage errors.
          This, however, assumes that all errors are anticipated.
 """
+"""@history 04/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Simplifying call to parseConfigFile, which now takes two arguments
+      options.configFile, and options.configName and return one or more
+      valid configurations in an array. Testing for validity is now done
+      within config.py
+"""
+"""@history 05/12/2012 -- Sebastien E. Bourban
+   Allowing the cmd_exe, cmd_lib and cmd_obj to be module specific, with the
+      option to have the former as defaults, but reseting the specifics with
+      cmd_exe_parallel (for instance)
+   As a consequence cmd = cfg['COMPILER']['cmd_obj'] is replaced by
+      cmd = cfg['COMPILER']['MODULES'][odict['libname']]['xobj'], etc.
+"""
 """@brief
 """
 
@@ -53,12 +66,13 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import path, walk, chdir, remove, environ
+from os import path, sep, walk, chdir, remove, environ
+import ConfigParser
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
 from parsers.parserFortran import scanSources
 # ~~> dependencies towards other pytel/modules
-from utils.files import createDirectories,putFileContent,isNewer
+from utils.files import createDirectories,getFileContent,putFileContent,addFileContent,isNewer
 from utils.messages import MESSAGES,filterMessage
 
 # _____                  ___________________________________________
@@ -119,6 +133,7 @@ def getTree(name,lname,list,level,rebuild):
 
    return list[lname][name]['time'],rank+1
 
+
 def createObjFiles(oname,oprog,odict,ocfg,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(oname)
@@ -137,7 +152,7 @@ def createObjFiles(oname,oprog,odict,ocfg,bypass):
 
    # ~~ creation of the module (according to makefile.wnt + systel.ini):
    # ~~ ifort.exe /c /Ot /names:uppercase /convert:big_endian /extend_source:132 /include:..\..\..\postel3d\postel3d_V5P9\1 declarations_postel3d.f
-   cmd = cfg['COMPILER']['cmd_obj']
+   cmd = cfg['MODULES'][odict['libname']]['xobj']
    incs = cfg['MODULES'][odict['libname']]['incs']
    cmd = cmd.replace('<incs>',incs)
    mods = ''
@@ -190,7 +205,7 @@ def createLibFiles(lname,lcfg,lprog,bypass):
 
    # ~~ creation of the librairies (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe -lib /nologo /out:postel3dV5P9.lib declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj
-   cmd = cfg['COMPILER']['cmd_lib']
+   cmd = cfg['MODULES'][lname]['xlib']
    cmd = cmd.replace('<objs>',ObjFiles)
    cmd = cmd.replace('<libname>',LibFile)
 
@@ -269,12 +284,12 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
-   cmd = cfg['COMPILER']['cmd_exe']
+   cmd = cfg['MODULES'][eprog]['xexe']
    cmd = cmd.replace('<libs>',LibFiles)
    cmd = cmd.replace('<objs>',ObjFiles)
    cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfg['root'])
 
-   xocmd = cfg['COMPILER']['cmd_obj']
+   xocmd = cfg['MODULES'][eprog]['xobj']
    xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
    mods = ''
    for mod in HOMERES[ename.upper()]['deps']:
@@ -283,7 +298,7 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    # <f95name> ... still to be replaced
    xocmd = xocmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
 
-   xecmd = cfg['COMPILER']['cmd_exe']
+   xecmd = cfg['MODULES'][eprog]['xexe']
    xecmd = xecmd.replace('<libs>',LibFile + ' ' + LibFiles)
    # <exename> and <objs> ... still to be replaced
    xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
@@ -378,17 +393,9 @@ if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile)
-   cfgnames = cfgs.keys()
-   if options.configName != '':
-      if options.configName not in cfgnames:
-         print '\nNot able to find your configuration in the configuration file: ' + options.configFile + '\n'
-         print ' ... use instead:'
-         for cfgname in cfgnames : print '    +> ',cfgname
-         sys.exit()
-      cfgnames = [options.configName]
+   cfgs = parseConfigFile(options.configFile,options.configName)
 
-   for cfgname in cfgnames:
+   for cfgname in cfgs.keys():
       # still in lower case
       if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
       if options.version != '': cfgs[cfgname]['version'] = options.version
@@ -400,7 +407,8 @@ if __name__ == "__main__":
       print '    +> configuration: ' +  cfgname
       print '    +> root:          ' +  cfgs[cfgname]['root']
       print '    +> version:       ' +  cfgs[cfgname]['version']
-      print '    +> modules:       ' +  cfgs[cfgname]['modules'] + '\n\n\
+      print '    +> modules:       ' +  cfgs[cfgname]['modules']
+      print '    +> options:       ' +  cfgs[cfgname]['options'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
