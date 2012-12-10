@@ -2,8 +2,7 @@
                      SUBROUTINE FSPRD2
 !                    *****************
 !
-     &( FRA   , DIREC , NPLAN , SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA,
-     &  DEUPI )
+     &( FRA   , DIREC , NPLAN , SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   15/06/2011
@@ -53,22 +52,22 @@
 !| XLAMDA         |-->| WEIGHTING FACTOR FOR FRA
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : PI,DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
       INTEGER  NPLAN
-      DOUBLE PRECISION SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA, DEUPI
+      DOUBLE PRECISION SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA
       DOUBLE PRECISION FRA(NPLAN)    , DIREC(NPLAN)
 !
 !.....LOCAL VARIABLES
 !     """""""""""""""""
       INTEGER  JP
       DOUBLE PRECISION DELT1 , DELT2 , FTH   , FRA1  , FRA2  , ARGUM
-      DOUBLE PRECISION PI    , C1    , C2
+      DOUBLE PRECISION C1    , C2
 !
-!
-      PI=DEUPI/2.D0
       IF (SPRED1.GT.1.D-4) THEN
         DELT1 = 1.D0/(SPRED1*SQRT(DEUPI))
         C1    = -0.5/(SPRED1*SPRED1)
@@ -89,7 +88,7 @@
 !
         ARGUM = FTH-TETA1
    50   CONTINUE
-        IF (ARGUM.LT.-PI) THEN
+        IF(ARGUM.LT.-PI) THEN
           ARGUM=ARGUM+DEUPI
           GOTO 50
         ENDIF

@@ -6,7 +6,7 @@
      &  NVHMA , NVCOU , PART  , U_TEL , V_TEL , H_TEL )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   14/06/2011
+! TOMAWAC   V6P3                                   14/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES ARRAYS OF PHYSICAL PARAMETERS.
@@ -37,6 +37,11 @@
 !+        14/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  J-M HERVOUET (EDF - LNHE)
+!+        07/12/2012
+!+        V6P3
+!+   Taking into account tidal flats + various optimisations.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -105,16 +110,15 @@
      &   NPOIN2     , AT   , DDC , LT )
       ENDIF
 !
-!GM V6P1-Direct coupling TELEMAC-TOMAWAC : current speed is updated
       IF(PART.EQ.1) THEN
         CALL OV('X=Y     ',SUC%R,U_TEL%R,U_TEL%R,0.D0,NPOIN2)
         CALL OV('X=Y     ',SVC%R,V_TEL%R,V_TEL%R,0.D0,NPOIN2)
       ENDIF
-!GM Fin
+!
 !            UPDATES THE WATER DEPTH AT TIME 'AT'
 !         ------------------------------------------------------
 !
-      IF (WAC_FILES(WACMAB)%NAME(1:1).NE.' ') THEN
+      IF(WAC_FILES(WACMAB)%NAME(1:1).NE.' ') THEN
         CALL NOUMAR
      & (TRA01(1:NPOIN2) , SDZHDT%R, MESH%X%R , MESH%Y%R ,
      &  NPOIN2,WAC_FILES(WACMAB)%LU,BINMAR,NBOR,NPTFR,AT,DDC,
@@ -125,8 +129,8 @@
      &  NPOIN2,WAC_FILES(WACMAF)%LU,BINMAR,NBOR,NPTFR,AT,DDC,
      &  TM1,TM2,ZM1,ZM2,INDIM,IDHMA,NVHMA)
       ELSE
-        IF((WAC_FILES(WACCOF)%NAME(1:1).NE.' ').OR.
-     &     (WAC_FILES(WACCOB)%NAME(1:1).NE.' ')) THEN
+        IF(WAC_FILES(WACCOF)%NAME(1:1).NE.' '.OR.
+     &     WAC_FILES(WACCOB)%NAME(1:1).NE.' ') THEN
           CALL ANAMAR
      &   ( SUC%R   , SVC%R   , TRA01(1:NPOIN2), ZM1 , ZM2 ,
      &     SDZHDT%R, MESH%X%R, MESH%Y%R    , NPOIN2    ,
@@ -136,10 +140,8 @@
 !
       IF(PART.LT.0) THEN
         CALL OV('X=X+Y   ', SDEPTH%R , TRA01(1:NPOIN2) , ST0%R ,
-     &         0.D0 , NPOIN2)
-      ENDIF
-!
-      IF(PART.EQ.1) THEN
+     &          0.D0 , NPOIN2)
+      ELSEIF(PART.EQ.1) THEN
 !..... water depth time gradient is updated
 !     (SDEPTH has still water depth values of the previous time step)
         DO IP=1,NPOIN2
@@ -150,59 +152,51 @@
       ENDIF
 !GM Fin
 !
-!            UPDATES THE CURRENT AND WATER DEPTH
-!                GRADIENTS AT TIME 'AT'
-!         ------------------------------------------------------
+!     UPDATES THE CURRENT AND WATER DEPTH GRADIENTS AT TIME 'AT'
 !
-      CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDEPTH,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(SDZX,'=','GRADF          X',IELM2,1.D0,SDEPTH,
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(SDZY,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
 !
-      CALL VECTOR(ST2,'=','GRADF          X',IELM2,1.D0,SUC,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(SDUX,'=','GRADF          X',IELM2,1.D0,SUC,
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(SDUY,'=','GRADF          Y',IELM2,1.D0,SUC,
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
 !
-      CALL VECTOR(ST3,'=','GRADF          X',IELM2,1.D0,SVC,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(SDVX,'=','GRADF          X',IELM2,1.D0,SVC,
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(SDVY,'=','GRADF          Y',IELM2,1.D0,SVC,
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
 !
-      CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
-       IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST2,2,MESH)
-          CALL PARCOM(ST3,2,MESH)
-          CALL PARCOM(ST4,2,MESH)
-       ENDIF
-!BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
+!     INTEGRAL OF TEST FUNCTIONS
 !
-      CALL OV('X=Y/Z   ',SDZX%R,ST1%R,ST4%R,0.D0,NPOIN2)
-      CALL OV('X=Y/Z   ',SDUX%R,ST2%R,ST4%R,0.D0,NPOIN2)
-      CALL OV('X=Y/Z   ',SDVX%R,ST3%R,ST4%R,0.D0,NPOIN2)
+      CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,ST0,
+     &            ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
 !
-      CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      IF(NCSIZE.GT.1) THEN
+        CALL PARCOM(SDZX,2,MESH)
+        CALL PARCOM(SDUX,2,MESH)
+        CALL PARCOM(SDVX,2,MESH)
+        CALL PARCOM(SDZY,2,MESH)
+        CALL PARCOM(SDUY,2,MESH)
+        CALL PARCOM(SDVY,2,MESH)
+        CALL PARCOM(ST0,2,MESH)
+      ENDIF
 !
-      CALL VECTOR(ST2,'=','GRADF          Y',IELM2,1.D0,SUC,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=1/Y   ',ST0%R ,ST0%R,ST0%R,0.D0,NPOIN2)
 !
-      CALL VECTOR(ST3,'=','GRADF          Y',IELM2,1.D0,SVC,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+!     DIVISION BY INTEGRAL OF TEST FUNCTIONS TO GET NODAL VALUES
 !
-      CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
-       IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST2,2,MESH)
-          CALL PARCOM(ST3,2,MESH)
-          CALL PARCOM(ST4,2,MESH)
-       ENDIF
-!BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
-!
-      CALL OV('X=Y/Z   ',SDZY%R,ST1%R,ST4%R,0.D0,NPOIN2)
-      CALL OV('X=Y/Z   ',SDUY%R,ST2%R,ST4%R,0.D0,NPOIN2)
-      CALL OV('X=Y/Z   ',SDVY%R,ST3%R,ST4%R,0.D0,NPOIN2)
+      CALL OV('X=XY    ',SDZX%R,ST0%R,ST0%R,0.D0,NPOIN2)
+      CALL OV('X=XY    ',SDUX%R,ST0%R,ST0%R,0.D0,NPOIN2)
+      CALL OV('X=XY    ',SDVX%R,ST0%R,ST0%R,0.D0,NPOIN2)
+      CALL OV('X=XY    ',SDZY%R,ST0%R,ST0%R,0.D0,NPOIN2)
+      CALL OV('X=XY    ',SDUY%R,ST0%R,ST0%R,0.D0,NPOIN2)
+      CALL OV('X=XY    ',SDVY%R,ST0%R,ST0%R,0.D0,NPOIN2)
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

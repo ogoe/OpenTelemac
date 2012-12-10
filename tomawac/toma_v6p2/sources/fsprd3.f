@@ -2,8 +2,7 @@
                      SUBROUTINE FSPRD3
 !                    *****************
 !
-     &( FRA   , DIREC , NPLAN , SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA,
-     &  DEUPI )
+     &( FRA   , DIREC , NPLAN , SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA)
 !
 !***********************************************************************
 ! TOMAWAC   V6P1                                   15/06/2011
@@ -49,12 +48,14 @@
 !| XLAMDA         |-->| WEIGHTING FACTOR FOR FRA
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
 !
 !.....VARIABLES IN ARGUMENT
 !     """"""""""""""""""""
       INTEGER  NPLAN
-      DOUBLE PRECISION SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA, DEUPI
+      DOUBLE PRECISION SPRED1, TETA1 , SPRED2, TETA2 , XLAMDA
       DOUBLE PRECISION FRA(NPLAN)    , DIREC(NPLAN)
 !
 !.....LOCAL VARIABLES

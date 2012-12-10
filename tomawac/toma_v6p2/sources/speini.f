@@ -85,8 +85,11 @@
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
+      INTEGER LNG,LU
+      COMMON/INFO/ LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  NPOIN2, NPLAN , NF    , INISPE, FRABI
       DOUBLE PRECISION GRAVIT, FREMAX, FETCH , SIGMAA, SIGMAB, GAMMA
       DOUBLE PRECISION FPIC  , HM0   , ALPHIL, TETA1 , SPRED1, TETA2
@@ -95,14 +98,13 @@
       DOUBLE PRECISION UV(NPOIN2) , VV(NPOIN2), DEPTH(NPOIN2)
       DOUBLE PRECISION F(NPOIN2,NPLAN,NF)
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
-      INTEGER  NPOIN4, IP    , JF    , JP
-      DOUBLE PRECISION GX    , GXU   , UG     , AL    , FP
-      DOUBLE PRECISION UVMIN  , COEFA , COEFB , COEFD
-      DOUBLE PRECISION COEFE , UVENT , FPMIN  , SPR1  , SPR2  , XLAM
-      DOUBLE PRECISION TET1  , TET2  , COEF
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER  NPOIN4, IP    , JF    , JP
+      DOUBLE PRECISION GX    , GXU   , UG    , AL    , FP
+      DOUBLE PRECISION UVMIN , COEFA , COEFB , COEFD
+      DOUBLE PRECISION COEFE , UVENT , FPMIN , SPR1  , SPR2  , XLAM
+      DOUBLE PRECISION TET1  , TET2  , COEF
 !
       NPOIN4= NPOIN2*NPLAN*NF
       UVMIN = 1.D-6
@@ -118,9 +120,9 @@
 !     (ALSO WORKS TO INITIALISE TO OTHER VALUES)
 !     ===========================================================
 !
-      CALL OV ('X=C     ',F,F,F,0.D0,NPOIN4)
-      IF (INISPE.EQ.0) RETURN
+      IF(INISPE.EQ.0) THEN
 !
+      CALL OV ('X=C     ',F,F,F,0.D0,NPOIN4)
 !
 !     ==/ INISPE = 1 /===========================================
 !     IF NON ZERO WIND -E(F): JONSWAP FUNCTION OF THE WIND (AL,FP)
@@ -129,7 +131,7 @@
 !                      -FRA : ZERO
 !     ===========================================================
 !
-      IF (INISPE.EQ.1) THEN
+      ELSEIF(INISPE.EQ.1) THEN
 !
         DO 100 IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
@@ -155,26 +157,20 @@
             TET2=0.D0
             XLAM=1.D0
             IF(FRABI.EQ.2) THEN
-              CALL FSPRD2
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD2(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ELSEIF(FRABI.EQ.3) THEN
-              CALL FSPRD3
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD3(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ELSE
-              CALL FSPRD1
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ENDIF
 !
 !...........COMPUTES THE DIRECTIONAL SPECTRUM
 !           """""""""""""""""""""""""""""""
-            DO 140 JF=1,NF
-              DO 150 JP=1,NPLAN
+            DO JF=1,NF
+              DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
-  150         CONTINUE
-  140       CONTINUE
+              ENDDO
+            ENDDO
           ENDIF
 !
   100   CONTINUE
@@ -219,26 +215,20 @@
           TET2=0.D0
           XLAM=1.D0
           IF(FRABI.EQ.2) THEN
-            CALL FSPRD2
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD2(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSEIF(FRABI.EQ.3) THEN
-            CALL FSPRD3
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD3(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSE
-            CALL FSPRD1
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ENDIF
 !
 !.........COMPUTES THE DIRECTIONAL SPECTRUM
 !         """""""""""""""""""""""""""""""
-          DO 240 JF=1,NF
-            DO 250 JP=1,NPLAN
+          DO JF=1,NF
+            DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
-  250       CONTINUE
-  240     CONTINUE
+            ENDDO
+          ENDDO
 !
   200   CONTINUE
 !
@@ -252,7 +242,7 @@
 !
         DO 300 IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
-          IF (UVENT.GT.UVMIN) THEN
+          IF(UVENT.GT.UVMIN) THEN
 !
 !...........COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
 !           """""""""""""""""""""""""""""""""""""""""
@@ -270,26 +260,20 @@
             TET2=0.D0
             XLAM=1.D0
             IF(FRABI.EQ.2) THEN
-              CALL FSPRD2
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD2(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ELSEIF(FRABI.EQ.3) THEN
-              CALL FSPRD3
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD3(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ELSE
-              CALL FSPRD1
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ENDIF
 !
 !...........COMPUTES THE DIRECTIONAL SPECTRUM
 !           """""""""""""""""""""""""""""""
-            DO 340 JF=1,NF
-              DO 350 JP=1,NPLAN
+            DO JF=1,NF
+              DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
-  350         CONTINUE
-  340       CONTINUE
+              ENDDO
+            ENDDO
           ENDIF
 !
   300   CONTINUE
@@ -320,26 +304,20 @@
           TET2=TETA2
           XLAM=XLAMDA
           IF(FRABI.EQ.2) THEN
-            CALL FSPRD2
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD2(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSEIF(FRABI.EQ.3) THEN
-            CALL FSPRD3
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD3(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSE
-            CALL FSPRD1
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ENDIF
 !
 !.........COMPUTES THE DIRECTIONAL SPECTRUM
 !         """""""""""""""""""""""""""""""
-          DO 440 JF=1,NF
-            DO 450 JP=1,NPLAN
+          DO JF=1,NF
+            DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
-  450       CONTINUE
-  440     CONTINUE
+            ENDDO
+          ENDDO
 !
   400   CONTINUE
 !
@@ -358,42 +336,36 @@
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
           IF (UVENT.GT.UVMIN) THEN
 !
-!...........COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!           """""""""""""""""""""""""""""""""""""""""
+!           COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
+!           
             AL=COEF
             FP = FPIC
             CALL SPEJON
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
-!...........COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!           """""""""""""""""""""""""""""""""""""""""""""""
+!           COMPUTES THE DIRECTIONAL SPREADING FUNCTION
+!           
             SPR1=SPRED1
             TET1=ATAN2(UV(IP),VV(IP))
             SPR2=1.D0
             TET2=0.D0
             XLAM=1.D0
             IF(FRABI.EQ.2) THEN
-              CALL FSPRD2
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD2(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ELSEIF(FRABI.EQ.3) THEN
-              CALL FSPRD3
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD3(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ELSE
-              CALL FSPRD1
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+              CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ENDIF
 !
-!...........COMPUTES THE DIRECTIONAL SPECTRUM
-!           """""""""""""""""""""""""""""""
-            DO 540 JF=1,NF
-              DO 550 JP=1,NPLAN
+!           COMPUTES THE DIRECTIONAL SPECTRUM
+!           
+            DO JF=1,NF
+              DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
-  550         CONTINUE
-  540       CONTINUE
+              ENDDO
+            ENDDO
           ENDIF
 !
   500   CONTINUE
@@ -411,42 +383,36 @@
 !
         DO 600 IP=1,NPOIN2
 !
-!.........COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!         """""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
+!         
           AL = COEF
           FP = FPIC
           CALL SPEJON
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
-!.........COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         """""""""""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
+!         
           SPR1=SPRED1
           TET1=TETA1
           SPR2=SPRED2
           TET2=TETA2
           XLAM=XLAMDA
           IF(FRABI.EQ.2) THEN
-            CALL FSPRD2
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD2(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSEIF(FRABI.EQ.3) THEN
-            CALL FSPRD3
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD3(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSE
-            CALL FSPRD1
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ENDIF
 !
 !.........COMPUTES THE DIRECTIONAL SPECTRUM
 !         """""""""""""""""""""""""""""""
-          DO 640 JF=1,NF
-            DO 650 JP=1,NPLAN
+          DO JF=1,NF
+            DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
-  650       CONTINUE
-  640     CONTINUE
+            ENDDO
+          ENDDO
 !
   600   CONTINUE
 !
@@ -463,8 +429,8 @@
 !
         DO 700 IP=1,NPOIN2
 !
-!.........COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!         """""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
+!         
           AL = COEF
           FP = FPIC
 !
@@ -472,37 +438,39 @@
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
      &  DEUPI , GRAVIT, E2FMIN, FPMIN , DEPTH(IP) )
 !
-!.........COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         """""""""""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
+!         
           SPR1=SPRED1
           TET1=TETA1
           SPR2=SPRED2
           TET2=TETA2
           XLAM=XLAMDA
           IF(FRABI.EQ.2) THEN
-            CALL FSPRD2
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD2(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSEIF(FRABI.EQ.3) THEN
-            CALL FSPRD3
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD3(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ELSE
-            CALL FSPRD1
-     &( FRA   , TETA  , NPLAN , SPR1  , TET1  , SPR2  , TET2  , XLAM  ,
-     &  DEUPI )
+            CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ENDIF
 !
-!.........COMPUTES THE THE DIRECTIONAL SPECTRUM
-!         """""""""""""""""""""""""""""""
-          DO 740 JF=1,NF
-            DO 750 JP=1,NPLAN
+!         COMPUTES THE THE DIRECTIONAL SPECTRUM
+!         
+          DO JF=1,NF
+            DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
-  750       CONTINUE
-  740     CONTINUE
+            ENDDO
+          ENDDO
 !
   700   CONTINUE
+!
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*) 'SPEINI: OPTION INCONNUE : ',INISPE
+        IF(LNG.EQ.1) WRITE(LU,*) 'SPEINI: UNKNOWN OPTION: ',INISPE
+        CALL PLANTE(1)
+        STOP
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

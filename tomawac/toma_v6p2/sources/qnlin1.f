@@ -145,7 +145,7 @@
         DO 100 IP=1,NPOIN2
           TERM1 = MAX(0.75D0*DEPTH(IP)*XKMOY(IP),0.5D0)
           DFINI(IP) = 1.D0+(5.5D0/TERM1)*(1.D0-0.833D0*TERM1)
-     &               *DEXP(-1.25D0*TERM1)
+     &               *EXP(-1.25D0*TERM1)
   100   CONTINUE
       ENDIF
 !

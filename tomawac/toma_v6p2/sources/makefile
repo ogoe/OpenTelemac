@@ -101,15 +101,11 @@ SRCS= \
 declarations_tomawac.f interface_tomawac.f \
 anacos.f anamar.f anaven.f angles.f bornes.f \
 condiw.f conw4d.f conwac.f corfon.f \
-cormar.f couple.f couuti.f cqueue.f \
-delfra.f diffrac.f dump2d.f \
+cormar.f couple.f couuti.f cqueue.f delfra.f diffrac.f dump2d.f \
 ecrete.f ecrspe.f f1f1f1.f filt_sa.f\
 foncro.f fpread.f frem01.f frem02.f fremoy.f frepic.f frmset.f fsprd1.f \
-fsprd2.f fsprd3.f \
-gammln.f gauleg.f grad_alfa.f grad_ccg.f grad_d.f grad_kon.f \
-homere_tomawac.f \
-ifabtom.f impr.f  iniphy.f inipie.f initab.f invert.f \
-intang.f   \
+fsprd2.f fsprd3.f gammln.f gauleg.f homere_tomawac.f \
+ifabtom.f impr.f  iniphy.f inipie.f initab.f invert.f intang.f   \
 kerbou.f kmoyen.f \
 lecdoi.f lecdon.f lecdon_tomawac.f lecham.f lecsui.f limwac.f  \
 maruti.f mpoint.f nomvar_tomawac.f noudon.f noumar.f \
@@ -121,8 +117,7 @@ qtria1.f qtria2.f qwind1.f qwind2.f qwind3.f qwindl.f \
 radiat.f rpi_intr.f rpi_invr.f \
 semimp.f sor3d.f  speini.f spejon.f spetma.f spread.f stress.f \
 tautot.f temp.f   tetmoy.f totnrj.f tomawac_constants.f transf.f \
-ustar1.f ustar2.f venuti.f vitfon.f \
-wac.f    wnscou.f wpower.f 
+ustar1.f ustar2.f venuti.f vitfon.f wac.f wnscou.f wpower.f 
 
 #
 #------- Objets

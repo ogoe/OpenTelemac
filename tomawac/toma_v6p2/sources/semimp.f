@@ -367,7 +367,7 @@
 !
         DO IP=1,NPOIN2
           HM0MAX=COEFHS*DEPTH(IP)
-          HM0 =MAX(4.D0*DSQRT(VARIAN(IP)),1.D-20)
+          HM0 =MAX(4.D0*SQRT(VARIAN(IP)),1.D-20)
           TAUX1(IP)=MIN((HM0MAX/HM0)**2,1.D0)
         ENDDO
 !

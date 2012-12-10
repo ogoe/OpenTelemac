@@ -28,6 +28,12 @@
 !+        V6P2 
 !+   Modification for V6P2 
 ! 
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        10/12/2012
+!+        V6P3 
+!+   4 subroutines GRAD-... inlined and removed from the tomawac library
+!+   The inlined part has to be optimised... very strangely written... 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 !| A              |<--| AMPLITUDE OF DIRECTIONAL SPECTRUM 
 !| CCG            |<--| GROUP VELOCITY TIMES PHASE VELOCITY 
@@ -72,7 +78,9 @@
 !| XKONPT         |<--| ARRAY USED FOR COMPUTING DIFFRACTION PARAMETER 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+      USE BIEF
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,ST1,ST0,ST4,IELM2,SA,MESH,
+     &                                 SCCG,SDELTA,SXKONPT,SDDX,SDDY
 !
       IMPLICIT NONE 
 ! 
@@ -136,24 +144,24 @@
 !     INFINITE WATER DEPTH ... 
 !----------------------------------------------------------------------- 
 ! 
-      IF (PROINF) THEN 
-           IF(LNG.EQ.1) THEN 
-             WRITE(LU,*) '' 
-             WRITE(LU,*) '***************************************' 
-             WRITE(LU,*) ' ATTENTION : LA DIFFRACTION N''EST PAS ' 
-             WRITE(LU,*) ' PRISE EN COMPTE DANS LE CAS D''UNE    ' 
-             WRITE(LU,*) ' PROFONDEUR INFINIE                    ' 
-             WRITE(LU,*) '***************************************' 
-           ELSE 
-             WRITE(LU,*) '' 
-             WRITE(LU,*) '***************************************' 
-             WRITE(LU,*) ' ATTENTION : DIFFRACTION IS NOT TAKEN  ' 
-             WRITE(LU,*) ' INTO ACCOUNT IN THE CASE OF INFINITE  ' 
-             WRITE(LU,*) ' WATER DEPTH                           ' 
-             WRITE(LU,*) '***************************************' 
-           ENDIF 
-           CALL PLANTE(0) 
-           STOP 
+      IF(PROINF) THEN 
+        IF(LNG.EQ.1) THEN 
+          WRITE(LU,*) '' 
+          WRITE(LU,*) '***************************************' 
+          WRITE(LU,*) ' ATTENTION : LA DIFFRACTION N''EST PAS ' 
+          WRITE(LU,*) ' PRISE EN COMPTE DANS LE CAS D''UNE    ' 
+          WRITE(LU,*) ' PROFONDEUR INFINIE                    ' 
+          WRITE(LU,*) '***************************************' 
+        ELSE 
+          WRITE(LU,*) '' 
+          WRITE(LU,*) '***************************************' 
+          WRITE(LU,*) ' ATTENTION : DIFFRACTION IS NOT TAKEN  ' 
+          WRITE(LU,*) ' INTO ACCOUNT IN THE CASE OF INFINITE  ' 
+          WRITE(LU,*) ' WATER DEPTH                           ' 
+          WRITE(LU,*) '***************************************' 
+        ENDIF 
+        CALL PLANTE(1) 
+        STOP 
 ! 
 !----------------------------------------------------------------------- 
 !     FINITE DEPTH 
@@ -167,18 +175,18 @@
 ! 
       IF (.NOT.SPHE) THEN 
 ! 
-!.....DIFFRACTION IS TAKEN INTO ACCOUNT 
-!     """"""""""""""""""""""""""""""""" 
-!.....CCG VECTOR COMPUTATION 
-!     """"""""""""""""""""""	  
+!     DIFFRACTION IS TAKEN INTO ACCOUNT 
+!     
+!     CCG VECTOR COMPUTATION 
+!       
       DO IPOIN=1,NPOIN2  
         CCG(IPOIN) = CG(IPOIN,IFF)*DEUPI*FREQ(IFF)/XK(IPOIN,IFF) 
         XKONPT(IPOIN)=1.D0/(XK(IPOIN,IFF)**2)  
         SQRCCG(IPOIN)=SQRT(ABS(CCG(IPOIN))) 
       ENDDO 
 ! 
-!.....LOOP OVER THE DIRECTIONS 
-!     """""""""""""""""""""""""  
+!     LOOP OVER THE DIRECTIONS 
+!      
       DO 220 IP = 1,NPLAN 
 !.....COMPUTATION OF LOCAL AMPLITUDES OF DIRECTIONAL SPECTRA 
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""" 
@@ -195,15 +203,57 @@
 !Filtering the local amplitudes of directional spectra 
         IF(FLTDIF) CALL FILT_SA 
 ! 
-        CALL GRAD_ALFA 
+!       CALL GRAD_ALFA
+!       THIS WAS GRAD_ALFA
+!       DERIVEES EN X
+      CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SA,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDX%R,ST1%R,ST4%R,0.D0,NPOIN2)
+!      DERIVEES EN Y
+      CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SA,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDY%R,ST1%R,ST4%R,0.D0,NPOIN2)
+!       END OF GRAD_ALFA 
        	FRDA(:,1)=DDX 
        	FRDA(:,2)=DDY      	 
 !DIFFRA=1 - Mean Slope Equation model 
 !DIFFRA=2 - Revised Mean Slope Equation model 
         IF(DIFFRA.EQ.1)THEN 
-          CALL GRAD_CCG 
+!         CALL GRAD_CCG
+!         THIS WAS GRAD_CCG
+!         DERIVEES EN X
+      CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SCCG,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDX%R,ST1%R,ST4%R,0.D0,NPOIN2)
+!        DERIVEES EN Y
+      CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SCCG,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDY%R,ST1%R,ST4%R,0.D0,NPOIN2)
+!         END OF GRAD_CCG 
         ELSE 
-          CALL GRAD_KON 
+!         CALL GRAD_KON
+!         THIS WAS GRAD_KON
+!         DERIVEES EN X
+      CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SXKONPT,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDX%R,ST1%R,ST4%R,0.D0,NPOIN2)
+!      DERIVEES EN Y
+      CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SXKONPT,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDY%R,ST1%R,ST4%R,0.D0,NPOIN2)
+!         END OF GRAD_KON 
         ENDIF  
        	FRDK(:,1)=DDX         
        	FRDK(:,2)=DDY     
@@ -273,8 +323,22 @@
 ! 
 !.....DELTA GRADIENT COMPUTATION 
 !     """""""""""""""""""""""""""        
-        CALL GRAD_D 
-! 
+!     CALL GRAD_D
+!     THIS WAS GRAD_D :  
+!.....DERIVEES EN X
+      CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDELTA,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDX%R,ST1%R,ST4%R,0.D0,NPOIN2)
+!.....DERIVEES EN Y
+      CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDELTA,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
+     * ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      CALL OV('X=Y/Z   ',SDDY%R,ST1%R,ST4%R,0.D0,NPOIN2) 
+!     END OF GRAD_D 
+!
 !     calculation of CG_n =CG(1+delta)^0.5 
 !     and of transfer rates Cx,Cy,Ctheta 
         DO IPOIN=1,NPOIN2 

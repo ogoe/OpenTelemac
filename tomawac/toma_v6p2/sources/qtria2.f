@@ -59,7 +59,7 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : PI,DEUPI,GRAVIT
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
 !
       IMPLICIT NONE
 !

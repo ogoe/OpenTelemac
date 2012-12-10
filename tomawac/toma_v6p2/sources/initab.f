@@ -2,10 +2,10 @@
                      SUBROUTINE INITAB
 !                    *****************
 !
-     & (IBOR1,IFABOR1,NELEM2_DIM,PART)
+     &(IBOR1,IFABOR1,NELEM2_DIM,PART)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   20/06/2011
+! TOMAWAC   V6P3                                   20/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES USEFUL ARRAYS.
@@ -43,6 +43,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF - LNHE)
+!+        07/12/2012
+!+        V6P3
+!+   Optimisation.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IBOR1          |<--| WORK TABLE
 !| IFABOR1        |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
@@ -58,143 +63,110 @@
 !
       IMPLICIT NONE
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)    :: PART,NELEM2_DIM
+      INTEGER, INTENT(IN)    :: IFABOR1(NELEM2_DIM,3)
+      INTEGER, INTENT(INOUT) :: IBOR1(NELEM2_DIM,7)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       DOUBLE PRECISION Z,C
-!
-!$DC$ : NPOIN2 -> NPOIN2_DIM TO DIMENSION ARRAYS
-!
-!     INTEGER IBOR1(NELEM2,7),IFABOR1(NELEM2,3)
-      INTEGER NELEM2_DIM
-      INTEGER IBOR1(NELEM2_DIM,7),IFABOR1(NELEM2_DIM,3)
-      INTEGER          IPLAN, IPOIN, IELEM2, IFREQ
+      INTEGER IPLAN, IPOIN, IELEM2, IFREQ
       DOUBLE PRECISION AUXI
 !
-!GM V6P1 - COUPLING WITH TELEMAC
-      INTEGER PART
-!GM Fin
 !-----------------------------------------------------------------------
 !
       DO IPLAN = 1,NPLAN
-         COSTET(IPLAN) = COS(TETA(IPLAN))
-         SINTET(IPLAN) = SIN(TETA(IPLAN))
-         IF (ABS(COSTET(IPLAN)).LT.1.D-10) COSTET(IPLAN)=0.D0
-         IF (ABS(SINTET(IPLAN)).LT.1.D-10) SINTET(IPLAN)=0.D0
-         IF (IPLAN.LT.NPLAN) THEN
-            ETAP1(IPLAN)=IPLAN+1
-         ELSE
-            ETAP1(IPLAN)=1
-         ENDIF
+        COSTET(IPLAN) = COS(TETA(IPLAN))
+        SINTET(IPLAN) = SIN(TETA(IPLAN))
+        ETAP1(IPLAN)=IPLAN+1
+      ENDDO
+      ETAP1(NPLAN)=1
+!
+      AUXI=(RAISF-1.D0)/2.D0
+      DFREQ(1)=AUXI*FREQ(1)
+      DFREQ(NF)=AUXI*FREQ(NF-1)
+      DO IFREQ = 2,NF-1
+        DFREQ(IFREQ) = AUXI*(FREQ(IFREQ)+FREQ(IFREQ-1))
+        DO IPOIN=1,NPOIN2
+          B(IPOIN+(IFREQ-1)*NPOIN2)=0.D0
+        ENDDO
       ENDDO
 !
-       AUXI=(RAISF-1.D0)/2.D0
-       DFREQ(1)=AUXI*FREQ(1)
-       DFREQ(NF)=AUXI*FREQ(NF-1)
-       DO IFREQ = 2,NF-1
-         DFREQ(IFREQ) = AUXI*(FREQ(IFREQ)+FREQ(IFREQ-1))
-         DO IPOIN=1,NPOIN2
-           B(IPOIN+(IFREQ-1)*NPOIN2)=0.D0
-         ENDDO
-       ENDDO
-!
       IF(SPHE) THEN
-         DO 30 IPOIN=1,NPOIN2
-           COSF(IPOIN)=COS(Y(IPOIN)*DEGRAD)
-           TGF(IPOIN)=TAN(Y(IPOIN)*DEGRAD)
-30       CONTINUE
+        DO IPOIN=1,NPOIN2
+          COSF(IPOIN)=COS(Y(IPOIN)*DEGRAD)
+          TGF(IPOIN)=TAN(Y(IPOIN)*DEGRAD)
+        ENDDO
       ENDIF
 !
-      DO 40 IELEM2=1,NELEM2
-         IBOR1(IELEM2,1)=IFABOR1(IELEM2,1)
-         IBOR1(IELEM2,2)=IFABOR1(IELEM2,2)
-         IBOR1(IELEM2,3)=IFABOR1(IELEM2,3)
-         IBOR1(IELEM2,4)=1
-         IBOR1(IELEM2,5)=1
-         IBOR1(IELEM2,6)=1
-         IBOR1(IELEM2,7)=1
-40    CONTINUE
+      DO IELEM2=1,NELEM2
+        IBOR1(IELEM2,1)=IFABOR1(IELEM2,1)
+        IBOR1(IELEM2,2)=IFABOR1(IELEM2,2)
+        IBOR1(IELEM2,3)=IFABOR1(IELEM2,3)
+        IBOR1(IELEM2,4)=1
+        IBOR1(IELEM2,5)=1
+        IBOR1(IELEM2,6)=1
+        IBOR1(IELEM2,7)=1
+      ENDDO
 !
-! INITIALISES THE VARIABLE BETA
+!     INITIALISES THE VARIABLE BETA
+!
       DO IPOIN=1,NPOIN2
         BETA(IPOIN)=0.D0
       ENDDO
 !
-! INITIALISES THE GRADIENTS OF DEPTH, U AND V
+!     INITIALISES THE GRADIENTS OF DEPTH, U AND V
 !
-      IF (.NOT.PROINF)
-     &CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDEPTH,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
 !
-!GM V6P1 - COUPLING WITH TELEMAC
-      IF (COURAN.OR.PART.EQ.0) THEN
-!GM Fin
-      CALL VECTOR(ST2,'=','GRADF          X',IELM2,1.D0,SUC,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+!     INVERSE OF INTEGRAL OF TEST FUNCTIONS
 !
-      CALL VECTOR(ST3,'=','GRADF          X',IELM2,1.D0,SVC,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      IF(.NOT.PROINF.OR.COURAN.OR.PART.EQ.0) THEN
+        CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,MESH%X,
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        IF(NCSIZE.GT.1) CALL PARCOM(ST0,2,MESH)
+        CALL OV('X=1/Y   ',ST0%R,ST0%R,ST0%R,C,NPOIN2)
       ENDIF
 !
-      CALL VECTOR(ST4,'=','GRADF          X',IELM2,1.D0,MESH%X,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+!     NOW PROJECTED GRADIENTS DIVIDED BY INTEGRALS OF TEST FUNCTIONS
 !
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
-       IF(NCSIZE.GT.1) THEN
-          IF (.NOT.PROINF) CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST4,2,MESH)
-!GM V6P1 - COUPLING WITH TELEMAC
-          IF (COURAN.OR.PART.EQ.0) THEN
-!GM Fin
-            CALL PARCOM(ST2,2,MESH)
-            CALL PARCOM(ST3,2,MESH)
-          ENDIF
-       ENDIF
-!BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
-      IF (.NOT.PROINF)
-     & CALL OV('X=Y/Z   ',SDZX%R,ST1%R,ST4%R,C,NPOIN2)
-!GM V6P1 - COUPLING WITH TELEMAC
-      IF (COURAN.OR.PART.EQ.0) THEN
-!GM Fin
-       CALL OV('X=Y/Z   ',SDUX%R,ST2%R,ST4%R,C,NPOIN2)
-       CALL OV('X=Y/Z   ',SDVX%R,ST3%R,ST4%R,C,NPOIN2)
+      IF(.NOT.PROINF) THEN
+        CALL VECTOR(SDZX,'=','GRADF          X',IELM2,1.D0,SDEPTH,
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        CALL VECTOR(SDZY,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM(SDZX,2,MESH)
+          CALL PARCOM(SDZY,2,MESH)
+        ENDIF
+        CALL OV('X=XY    ',SDZX%R,ST0%R,ST0%R,C,NPOIN2)
+        CALL OV('X=XY    ',SDZY%R,ST0%R,ST0%R,C,NPOIN2)
       ENDIF
 !
-      IF (.NOT.PROINF)
-     & CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDEPTH,
-     &  ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-!
-!GM V6P1 - COUPLING WITH TELEMAC
-      IF (COURAN.OR.PART.EQ.0) THEN
-!GM Fin
-       CALL VECTOR(ST2,'=','GRADF          Y',IELM2,1.D0,SUC,
-     &  ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-!
-      CALL VECTOR(ST3,'=','GRADF          Y',IELM2,1.D0,SVC,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-      ENDIF
-!
-      CALL VECTOR(ST4,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
-     & ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-!
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
-       IF(NCSIZE.GT.1) THEN
-          IF (.NOT.PROINF) CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST4,2,MESH)
-!GM V6P1 - COUPLING WITH TELEMAC
-          IF (COURAN.OR.PART.EQ.0) THEN
-!GM Fin
-            CALL PARCOM(ST2,2,MESH)
-            CALL PARCOM(ST3,2,MESH)
-          ENDIF
-       ENDIF
-!BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
-      IF (.NOT.PROINF)
-     & CALL OV('X=Y/Z   ',SDZY%R,ST1%R,ST4%R,C,NPOIN2)
-!GM V6P1 - COUPLING WITH TELEMAC
-      IF (COURAN.OR.PART.EQ.0) THEN
-!GM Fin
-       CALL OV('X=Y/Z   ',SDUY%R,ST2%R,ST4%R,C,NPOIN2)
-       CALL OV('X=Y/Z   ',SDVY%R,ST3%R,ST4%R,C,NPOIN2)
+      IF(COURAN.OR.PART.EQ.0) THEN
+        CALL VECTOR(SDUX,'=','GRADF          X',IELM2,1.D0,SUC,
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        CALL VECTOR(SDVX,'=','GRADF          X',IELM2,1.D0,SVC,
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        CALL VECTOR(SDUY,'=','GRADF          Y',IELM2,1.D0,SUC,
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        CALL VECTOR(SDVY,'=','GRADF          Y',IELM2,1.D0,SVC,
+     &              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        IF(NCSIZE.GT.1) THEN
+          CALL PARCOM(SDUX,2,MESH)
+          CALL PARCOM(SDVX,2,MESH)
+          CALL PARCOM(SDUY,2,MESH)
+          CALL PARCOM(SDVY,2,MESH)
+        ENDIF
+        CALL OV('X=XY    ',SDUX%R,ST0%R,ST0%R,C,NPOIN2)
+        CALL OV('X=XY    ',SDVX%R,ST0%R,ST0%R,C,NPOIN2)
+        CALL OV('X=XY    ',SDUY%R,ST0%R,ST0%R,C,NPOIN2)
+        CALL OV('X=XY    ',SDVY%R,ST0%R,ST0%R,C,NPOIN2)
       ENDIF
 !
 !-----------------------------------------------------------------------
+!
       RETURN
       END
+
