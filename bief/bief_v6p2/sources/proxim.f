@@ -130,7 +130,7 @@
             WRITE(LU,*) 'SOURCE POINT ',K,' PUT ON POINT ',IP(K)
             WRITE(LU,*) 'LOCATED AT ',SQRT(DIST2),' METRES'
           ENDIF
-          IF(SQRT(DIST2).GT.1.D-6.AND.NCSIZE.GT.1) THEN
+          IF(SQRT(DIST2).GT.1.D-4.AND.NCSIZE.GT.1) THEN
             XX=X(IP(K))
             YY=Y(IP(K))
             ALERT=1.D0
