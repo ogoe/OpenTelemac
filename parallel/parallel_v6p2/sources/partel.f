@@ -142,9 +142,6 @@
 !
 ! FOR CALLING FRONT2
 !
-      INTEGER, PARAMETER :: MAXFRO = 300   ! MAX NUMBER OF BOUNDARIES
-      INTEGER NFRLIQ, NFRSOL, DEBLIQ(MAXFRO), FINLIQ(MAXFRO)
-      INTEGER DEBSOL(MAXFRO), FINSOL(MAXFRO)
       INTEGER, ALLOCATABLE :: DEJAVU(:), KP1BOR(:,:)
 !
 ! FOR CALLING BIEF MESH SUBROUTINES (TO BE OPTIMISED SOON):
@@ -216,7 +213,7 @@
       INTEGER, PARAMETER :: NSEMAX=500 ! MAX NUMBER OF SEGMENTS IN A SECTION 
       INTEGER, ALLOCATABLE :: LISTE(:,:), ANPBEG(:),ANPEND(:) 
       INTEGER :: NSEC, IHOWSEC, ISEC, IELEM, IM(1), IN(1), NPBEG, NPEND 
-      INTEGER :: NCP, PT, I1,I2,I3, ARR,DEP, ILPREC,ILBEST,ELBEST,IGBEST 
+      INTEGER :: NCP, PT, I1,I2,I3, ARR,DEP, ILPREC,ILBEST,ELBEST,IGBEST
       DOUBLE PRECISION :: XA, YA, DISTB, DISTE, DMINB, DMINE
       DOUBLE PRECISION :: DIST1, DIST2, DIST3, DIST
       CHARACTER(LEN=MAXLENHARD) :: NAMESEC
@@ -246,7 +243,7 @@
       WRITE(LU,*) ' '
       WRITE(LU,*) '+-------------------------------------------------+'
       WRITE(LU,*) '  PARTEL: TELEMAC SELAFIN METISOLOGIC PARTITIONER'
-      WRITE(LU,*) '                                                   '          
+      WRITE(LU,*) '                                                   '
       WRITE(LU,*) '  REBEKKA KOPMANN & JACEK A. JANKOWSKI (BAW)'
       WRITE(LU,*) '                 JEAN-MICHEL HERVOUET (LNHE)'
       WRITE(LU,*) '                 CHRISTOPHE DENIS     (SINETICS) '
@@ -491,7 +488,7 @@
       NREC  = IB(1)
       NPLAN = IB(7) 
       IF(IB(10).EQ.1) THEN 
-        READ(NINP) DATE(1),DATE(2),DATE(3),TIME(1),TIME(2),TIME(3)        
+        READ(NINP) DATE(1),DATE(2),DATE(3),TIME(1),TIME(2),TIME(3)
       ENDIF 
 !
       READ(NINP) NELEM,NPOIN,NDP,NDUM
@@ -819,8 +816,8 @@
 !         CALL FLUSH(89)
          CLOSE(89)
       END IF
-      CALL PARTEL_FRONT2 (NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,
-     &             LIHBOR,LIUBOR,F(1:NPOIN2,1),F(1:NPOIN2,2),
+      CALL PARTEL_FRONT2 
+     &             (LIHBOR,LIUBOR,F(1:NPOIN2,1),F(1:NPOIN2,2),
      &             NBOR,KP1BOR(1:NPTFR,1),DEJAVU,NPOIN2,NPTFR,
      &             2,.TRUE.,NUMLIQ,NUMSOL,NPTFRMAX)  
 !
@@ -2223,9 +2220,9 @@ C                       ************************
                         SUBROUTINE PARTEL_FRONT2
 C                       ************************
 C
-     *(NFRLIQ,NFRSOL,DEBLIQ,FINLIQ,DEBSOL,FINSOL,LIHBOR,LIUBOR,
-     * X,Y,NBOR,KP1BOR,DEJAVU,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ,NUMSOL,
-     * NPTFRMAX)
+     &(LIHBOR,LIUBOR,
+     & X,Y,NBOR,KP1BOR,DEJAVU,NPOIN,NPTFR,KLOG,LISTIN,NUMLIQ,NUMSOL,
+     & NPTFRMAX)
 C
 C***********************************************************************
 C BIEF VERSION 5.5           04/05/04    J-M HERVOUET  01 30 87 80 18
@@ -2273,26 +2270,13 @@ C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C
       INTEGER, INTENT(IN) :: NPOIN,NPTFR,KLOG,NPTFRMAX
-      INTEGER, INTENT(OUT) :: NFRLIQ,NFRSOL
-C                                    *=MAXFRO (300 DANS TELEMAC-2D)
-      INTEGER, INTENT(OUT) :: DEBLIQ(*),FINLIQ(*),DEBSOL(*),FINSOL(*)
-CCCCCCMOULINEC BEGIN
       INTEGER , INTENT(IN) :: LIHBOR(NPTFRMAX),LIUBOR(NPTFRMAX)
-C      INTEGER , INTENT(IN) :: LIHBOR(NPTFR),LIUBOR(NPTFR)
-CCCCCCMOULINEC END
       REAL, INTENT(IN) :: X(NPOIN) , Y(NPOIN)
-CCCCCCMOULINEC BEGIN
       INTEGER, INTENT(IN) :: NBOR(2*NPTFRMAX),KP1BOR(NPTFR)
-C      INTEGER, INTENT(IN) :: NBOR(NPTFR),KP1BOR(NPTFR)
-CCCCCCMOULINEC END
       INTEGER, INTENT(OUT) :: DEJAVU(NPTFR)
       LOGICAL, INTENT(IN) :: LISTIN
-CCCCCCMOULINEC BEGIN
       INTEGER, INTENT(OUT) :: NUMLIQ(NPTFRMAX)
       INTEGER, INTENT(OUT) :: NUMSOL(NPTFRMAX)
-C      INTEGER, INTENT(OUT) :: NUMLIQ(NPTFR)
-C      INTEGER, INTENT(OUT) :: NUMSOL(NPTFR)
-CCCCCCMOULINEC END
 C
 C+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 C 
@@ -2301,6 +2285,10 @@ C
       LOGICAL SOLF,LIQF,SOLD,LIQD
 C
       REAL MINNS,MAXNS,EPS,YMIN,NS
+C
+      INTEGER :: NFRLIQ,NFRSOL
+      INTEGER, ALLOCATABLE :: DEBLIQ(:),FINLIQ(:),DEBSOL(:),FINSOL(:)
+      INTEGER :: ERR
 C
       INTRINSIC ABS
 C
@@ -2313,8 +2301,6 @@ C  NILE   : NOMBRE D'ILES
 C
       DO 10 K=1,NPTFR
         DEJAVU(K) = 0
-        NUMLIQ(K) = 0
-        NUMSOL(K) = 0
 10    CONTINUE
 C
       NILE = 0
@@ -2367,6 +2353,141 @@ C
 C  NUMEROTATION ET REPERAGE DES FRONTIERES DU CONTOUR COMMENCANT
 C  AU POINT IDEP.
 C
+      K = IDEP
+C
+C NATURE DU PREMIER SEGMENT
+C
+C     LOI DE DOMINANCE DU SOLIDE SUR LE LIQUIDE
+      IF(LIHBOR(K).EQ.KLOG.OR.LIHBOR(KP1BOR(K)).EQ.KLOG) THEN
+C       LE PREMIER SEGMENT EST SOLIDE
+        NFRSOL = NFRSOL + 1
+      ELSE
+C       LE PREMIER SEGMENT EST LIQUIDE
+        NFRLIQ = NFRLIQ + 1
+      ENDIF
+C
+      DEJAVU(K) = 1
+      KPREV = K
+      K = KP1BOR(K)
+C
+50    CONTINUE
+C
+C RECHERCHE DES POINTS DE TRANSITION A PARTIR DU POINT SUIVANT IDEB
+C
+C ON CHERCHE AUSSI LES CAS DE POINTS ISOLES POUR DETECTER LES ERREURS
+C DANS LES DONNEES.
+C
+      L1 = LIHBOR(KPREV)
+      L2 = LIHBOR(K)
+      L3 = LIHBOR(KP1BOR(K))
+C
+      IF(L1.EQ.KLOG.AND.L2.NE.KLOG.AND.L3.NE.KLOG) THEN
+C     TRANSITION SOLIDE-LIQUIDE AU POINT K
+        NFRLIQ = NFRLIQ + 1
+      ELSEIF(L1.NE.KLOG.AND.L2.NE.KLOG.AND.L3.EQ.KLOG) THEN
+C     TRANSITION LIQUIDE-SOLIDE AU POINT K
+        NFRSOL = NFRSOL + 1
+      ELSEIF(L1.NE.KLOG.AND.L2.NE.KLOG.AND.L3.NE.KLOG) THEN
+C     RECHERCHE DES TRANSITIONS LIQUIDE-LIQUIDE AU POINT K
+        IF(L2.NE.L3.OR.LIUBOR(K).NE.LIUBOR(KP1BOR(K))) THEN
+          NFRLIQ = NFRLIQ + 1
+        ENDIF
+      ELSEIF(L1.EQ.KLOG.AND.L2.NE.KLOG.AND.L3.EQ.KLOG) THEN
+C     ERREUR DANS LES DONNEES
+        IF(LNG.EQ.1) WRITE(LU,102) K
+        IF(LNG.EQ.2) WRITE(LU,103) K
+        CALL PARTEL_PLANTE2(-1)
+        STOP
+      ELSEIF(L1.NE.KLOG.AND.L2.EQ.KLOG.AND.L3.NE.KLOG) THEN
+C     ERREUR DANS LES DONNEES
+        IF(LNG.EQ.1) WRITE(LU,104) K
+        IF(LNG.EQ.2) WRITE(LU,105) K
+        CALL PARTEL_PLANTE2(-1)
+        STOP
+      ENDIF
+C
+      DEJAVU(K) = 1
+      KPREV = K
+      K = KP1BOR(K)
+      IF(K.NE.IDEP) GO TO 50
+C
+C-----------------------------------------------------------------------
+C
+C  ON REGARDE S'IL RESTE DES CONTOURS :
+C
+      DO 60 K = 1 , NPTFR
+        IF(DEJAVU(K).EQ.0) THEN
+          IDEP = K
+          NILE = NILE + 1
+          GO TO 20
+        ENDIF
+60    CONTINUE
+C
+C-----------------------------------------------------------------------
+C
+      ALLOCATE(DEBSOL(NFRSOL),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'DEBSOL')
+      DEBSOL(:)=0
+      ALLOCATE(FINSOL(NFRSOL),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'FINSOL')
+      FINSOL(:)=0
+      ALLOCATE(DEBLIQ(NFRLIQ),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'DEBLIQ')
+      DEBLIQ(:)=0
+      ALLOCATE(FINLIQ(NFRLIQ),STAT=ERR)
+      IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'FINLIQ')
+      FINLIQ(:)=0
+C
+      NILE = 0
+      IDEP = 1
+      NFRLIQ = 0
+      NFRSOL = 0
+C
+C-----------------------------------------------------------------------
+C
+C  ON REVIENDRA A L'ETIQUETTE 201 S'IL Y A AU MOINS UNE ILE
+C
+201   CONTINUE
+C
+C  RECHERCHE DU POINT LE PLUS SUD-OUEST (IL PEUT Y EN AVOIR PLUSIEURS)
+C
+      MINNS = X(NBOR(IDEP)) + Y(NBOR(IDEP))
+      MAXNS = MINNS
+      YMIN  = Y(NBOR(IDEP))
+C
+      DO 301 K = 1 , NPTFR
+      IF(DEJAVU(K).EQ.0) THEN
+        NS = X(NBOR(K)) + Y(NBOR(K))
+        IF(NS.LT.MINNS) THEN
+         IDEP = K
+         MINNS = NS
+         YMIN = Y(NBOR(K))
+        ENDIF
+        IF(NS.GT.MAXNS) MAXNS = NS
+      ENDIF
+301   CONTINUE
+C
+      EPS = (MAXNS-MINNS) * 1.D-4
+C
+C  CHOIX DU POINT LE PLUS SUD PARMI LES CANDIDATS SUD-OUEST
+C
+      DO 401 K = 1 , NPTFR
+      IF(DEJAVU(K).EQ.0) THEN
+        NS = X(NBOR(K)) + Y(NBOR(K))
+        IF(ABS(MINNS-NS).LT.EPS) THEN
+          IF(Y(NBOR(K)).LT.YMIN) THEN
+           IDEP = K
+           YMIN = Y(NBOR(K))
+          ENDIF
+        ENDIF
+      ENDIF
+401   CONTINUE
+C
+C-----------------------------------------------------------------------
+C
+C  NUMEROTATION ET REPERAGE DES FRONTIERES DU CONTOUR COMMENCANT
+C  AU POINT IDEP.
+C
 C  SOLD = .TRUE. : LA FRONTIERE AU DEPART DE IDEP EST SOLIDE
 C  LIQD = .TRUE. : LA FRONTIERE AU DEPART DE IDEP EST LIQUIDE
 C  SOLF = .TRUE. : LA FRONTIERE AU RETOUR A IDEP EST SOLIDE
@@ -2402,7 +2523,7 @@ C
       KPREV = K
       K = KP1BOR(K)
 C
-50    CONTINUE
+501   CONTINUE
 C
 C RECHERCHE DES POINTS DE TRANSITION A PARTIR DU POINT SUIVANT IDEB
 C
@@ -2451,7 +2572,7 @@ C
       DEJAVU(K) = 1
       KPREV = K
       K = KP1BOR(K)
-      IF(K.NE.IDEP) GO TO 50
+      IF(K.NE.IDEP) GO TO 501
 C
 C  CAS D'UN CHANGEMENT DE FRONTIERE AU POINT DE DEPART IDEP
 C
@@ -2503,18 +2624,20 @@ C-----------------------------------------------------------------------
 C
 C  ON REGARDE S'IL RESTE DES CONTOURS :
 C
-      DO 60 K = 1 , NPTFR
+      DO 601 K = 1 , NPTFR
         IF(DEJAVU(K).EQ.0) THEN
           IDEP = K
           NILE = NILE + 1
-          GO TO 20
+          GO TO 201
         ENDIF
-60    CONTINUE
+601   CONTINUE
+C
 C
 C-----------------------------------------------------------------------
 C
       DO 79 K=1,NPTFR
-        NUMLIQ(K)=0
+        NUMLIQ(K) = 0
+        NUMSOL(K) = 0
 79    CONTINUE
 C
 C  IMPRESSION DES RESULTATS ET CALCUL DE NUMLIQ
@@ -2581,37 +2704,42 @@ C
 110     CONTINUE
       ENDIF
 C
+      DEALLOCATE(DEBSOL)
+      DEALLOCATE(FINSOL)
+      DEALLOCATE(DEBLIQ)
+      DEALLOCATE(FINLIQ)
+C
 C-----------------------------------------------------------------------
 C
 C  FORMATS
 C
-69    FORMAT(/,1X,'IL Y A ',1I3,' ILE(S) DANS LE DOMAINE')
-169   FORMAT(/,1X,'THERE IS ',1I3,' ISLAND(S) IN THE DOMAIN')
-70    FORMAT(/,1X,'IL Y A ',1I3,' FRONTIERE(S) LIQUIDE(S) :')
-170   FORMAT(/,1X,'THERE IS ',1I3,' LIQUID BOUNDARIES:')
-100   FORMAT(/,1X,'IL Y A ',1I3,' FRONTIERE(S) SOLIDE(S) :')
-101   FORMAT(/,1X,'THERE IS ',1I3,' SOLID BOUNDARIES:')
-102   FORMAT(/,1X,'FRONT2 : ERREUR AU POINT DE BORD ',1I5,
+69    FORMAT(/,1X,'IL Y A ',1I9,' ILE(S) DANS LE DOMAINE')
+169   FORMAT(/,1X,'THERE IS ',1I9,' ISLAND(S) IN THE DOMAIN')
+70    FORMAT(/,1X,'IL Y A ',1I9,' FRONTIERE(S) LIQUIDE(S) :')
+170   FORMAT(/,1X,'THERE IS ',1I9,' LIQUID BOUNDARIES:')
+100   FORMAT(/,1X,'IL Y A ',1I9,' FRONTIERE(S) SOLIDE(S) :')
+101   FORMAT(/,1X,'THERE IS ',1I9,' SOLID BOUNDARIES:')
+102   FORMAT(/,1X,'FRONT2 : ERREUR AU POINT DE BORD ',1I9,
      *       /,1X,'         POINT LIQUIDE ENTRE DEUX POINTS SOLIDES')
-103   FORMAT(/,1X,'FRONT2 : ERROR AT BOUNDARY POINT ',1I5,
+103   FORMAT(/,1X,'FRONT2 : ERROR AT BOUNDARY POINT ',1I9,
      *       /,1X,'         LIQUID POINT BETWEEN TWO SOLID POINTS')
-104   FORMAT(/,1X,'FRONT2 : ERREUR AU POINT DE BORD ',1I5,
+104   FORMAT(/,1X,'FRONT2 : ERREUR AU POINT DE BORD ',1I9,
      *       /,1X,'         POINT SOLIDE ENTRE DEUX POINTS LIQUIDES')
-105   FORMAT(/,1X,'FRONT2 : ERROR AT BOUNDARY POINT ',1I5,
+105   FORMAT(/,1X,'FRONT2 : ERROR AT BOUNDARY POINT ',1I9,
      *       /,1X,'         SOLID POINT BETWEEN TWO LIQUID POINTS')
-90    FORMAT(/,1X,'FRONTIERE ',1I3,' : ',/,1X,
-     *            ' DEBUT AU POINT DE BORD ',1I8,
-     *            ' , DE NUMERO GLOBAL ',1I8,/,1X,
+90    FORMAT(/,1X,'FRONTIERE ',1I9,' : ',/,1X,
+     *            ' DEBUT AU POINT DE BORD ',1I9,
+     *            ' , DE NUMERO GLOBAL ',1I9,/,1X,
      *            ' ET DE COORDONNEES : ',G16.7,3X,G16.7,
-     *       /,1X,' FIN AU POINT DE BORD ',1I8,
-     *            ' , DE NUMERO GLOBAL ',1I8,/,1X,
+     *       /,1X,' FIN AU POINT DE BORD ',1I9,
+     *            ' , DE NUMERO GLOBAL ',1I9,/,1X,
      *            ' ET DE COORDONNEES : ',G16.7,3X,G16.7)
-190   FORMAT(/,1X,'BOUNDARY ',1I3,' : ',/,1X,
-     *            ' BEGINS AT BOUNDARY POINT: ',1I8,
-     *            ' , WITH GLOBAL NUMBER: ',1I8,/,1X,
+190   FORMAT(/,1X,'BOUNDARY ',1I9,' : ',/,1X,
+     *            ' BEGINS AT BOUNDARY POINT: ',1I9,
+     *            ' , WITH GLOBAL NUMBER: ',1I9,/,1X,
      *            ' AND COORDINATES: ',G16.7,3X,G16.7,
-     *       /,1X,' ENDS AT BOUNDARY POINT: ',1I8,
-     *            ' , WITH GLOBAL NUMBER: ',1I8,/,1X,
+     *       /,1X,' ENDS AT BOUNDARY POINT: ',1I9,
+     *            ' , WITH GLOBAL NUMBER: ',1I9,/,1X,
      *            ' AND COORDINATES: ',G16.7,3X,G16.7)
 C
 C-----------------------------------------------------------------------
@@ -2620,15 +2748,15 @@ C
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'FRONT2 : DEPASSEMENT DE TABLEAUX'
           WRITE(LU,*) '         AUGMENTER MAXFRO DANS LE CODE APPELANT' 
-          WRITE(LU,*) '         A LA VALEUR ',MAX(NILE,NFRSOL,NFRLIQ)             
+          WRITE(LU,*) '         A LA VALEUR ',MAX(NILE,NFRSOL,NFRLIQ)
         ENDIF
         IF(LNG.EQ.2) THEN
           WRITE(LU,*) 'FRONT2: SIZE OF ARRAYS EXCEEDED'
           WRITE(LU,*) '        INCREASE MAXFRO IN THE CALLING PROGRAM' 
-          WRITE(LU,*) '        UP TO THE VALUE ',MAX(NILE,NFRSOL,NFRLIQ)             
+          WRITE(LU,*) '        UP TO THE VALUE ',MAX(NILE,NFRSOL,NFRLIQ)
         ENDIF
-        CALL PARTEL_PLANTE2(-1)
-        STOP
+!!! CM        CALL PARTEL_PLANTE2(-1)
+!!! CM        STOP
       ENDIF
 C
 C-----------------------------------------------------------------------
@@ -3650,7 +3778,7 @@ CD    *******************************
                    IF (NSOLS.GT.0.AND.NSOLS.LT.100) THEN
 
                       IF ( NSOLS > NCOL ) THEN
-                         WRITE(LU,*) 'COLOR ID POUR SURFACES EXTERNES ', 
+                         WRITE(LU,*) 'COLOR ID POUR SURFACES EXTERNES ',
      &                        ' TROP GRAND. LA LIMITE EST : ',NCOL
                       END IF
 
@@ -3658,7 +3786,7 @@ CD    *******************************
 
                       IF ( PRIO_NEW .EQ. 0 ) THEN
                          WRITE(LU,*) ' NUMERO DE FACE NON DECLARE',
-     &                        'DANS LE TABLEAU UTILISATEUR LOGFAMILY ',      
+     &                        'DANS LE TABLEAU UTILISATEUR LOGFAMILY ',
      &                        'VOIR LE FICHIER DES PARAMETRES '
                          CALL PARTEL_PLANTE2(1)
                       END IF
@@ -3704,7 +3832,7 @@ CD    *******************************
                             GLOB_2_LOC(IKL) = NPTFR        
                             IPTFR           = NPTFR
 
-                         END IF                                                        
+                         END IF
                          
                     ENDDO  ! LOOP OVER THE NODES OF THE ELEMENT
 
@@ -4347,7 +4475,7 @@ C$$$      NODES4(:)=-1
 !                    WRITE(LU,*)'JE SAUTE LE TETRA ',NT,EPART(NT),
 !     &                          TETTRI2(NT),' NODES ',J
                     GOTO 21
-                  ENDIF		  
+                  ENDIF	
                 ENDDO
               ENDIF            ! FIN SI TETTRI
 !             LE TETRA NT EST POTENTIELLEMENT OUBLIE, ON LE TRAITE AU CAS OU
@@ -4651,7 +4779,7 @@ C OB F
               ENDIF 
             ENDDO  ! EN K
 !            WRITE(NLOG2,561,ERR=113)J,(VECTNB(K),K=1,NBSDOMVOIS-3)
-             NT = NBSDOMVOIS-3	     
+             NT = NBSDOMVOIS-3
              NI=NT/6
              NF=NT-6*NI+1
              WRITE(NLOG2,640,ERR=113)J,(VECTNB(K),K=1,5)
@@ -4843,7 +4971,7 @@ C OB F
       GOTO 999
   147 TEXTERROR='! PROBLEM WHILE WRITING: '//NAMEINP2//' !'
       GOTO 999
-  148 TEXTERROR='! SEVERAL ELEMENTS MAY BE FORGOTTEN BY PARTITIONNING !' 
+  148 TEXTERROR='! SEVERAL ELEMENTS MAY BE FORGOTTEN BY PARTITIONNING !'
       GOTO 999
   149 TEXTERROR='! NO INPUT UNV FILE !' 
       GOTO 999
@@ -4898,7 +5026,7 @@ C OB F
 ! |    IKLBOR      |<-- | NUMERO LOCAL DES NOEUDS A PARTIR D'UN ELEMENT
 ! |                |    |  DE BORD
 ! |    IFABOR      | -->| TABLEAU DES VOISINS DES FACES.
-! |    NBOR        | -->| NUMERO GLOBAL D'UN NOEUD A PARTIR DU NÃÃÂÂÃÃÂÃÂÃÂÃÂÃÂÂ° LOCAL
+! |    NBOR        | -->| NUMERO GLOBAL D'UN NOEUD A PARTIR DU NUMERO LOCAL
 ! |    IKLE        | -->| NUMEROS GLOBAUX DES POINTS DE CHAQUE ELEMENT.
 ! |    NBTET       | -->| NOMBRE TOTAL D'ELEMENTS DANS LE MAILLAGE.
 ! |    NPOINT      | -->| NOMBRE TOTAL DE POINTS DU DOMAINE.
