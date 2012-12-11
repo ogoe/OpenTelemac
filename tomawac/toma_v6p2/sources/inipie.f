@@ -4,7 +4,7 @@
 !
      &( U , V , W , X , Y , SHP , SHZ , ELT , ETA ,
      & XCONV , YCONV , ZCONV, TETA , IKLE2 , NPOIN2 , NELEM2 , NPLAN  ,
-     & ELI , KNOGL , KNI , NELE2L , NPOI2L ,IFABOR,GOODELT)
+     & ELI , KNOGL , KNI , NELE2L , NPOI2L ,IFABOR )
 !
 !***********************************************************************
 ! TOMAWAC   V6P2                                   25/06/2012
@@ -50,18 +50,6 @@
 !|                |   | POINTS TO BE ADVECTED
 !| ETA            |<--| NUMBERS OF THE LAYERS OF THE
 !|                |   | POINTS TO BE ADVECTED
-!| GOODELT        |<->| CHARACTERISTIC IDENTIFIER
-!|                |   | = 1 CORRECT ELEMENT FOR TRACING BACK THE CHARACT.
-!|                |   | = 2001 CORRECT ELEMENT AT 2 PROCS BOUNDARY
-!|                |   | = 2000 WRONG ELEMENT AT 2 PROCS BOUNDARY
-!|                |   | = 1101 CORRECT ELEMENT AT 2 PROCS BOUNDARY + 
-!|                |   |   SOLID BOUNDARY
-!|                |   | = 1100 WRONG ELEMENT AT 2 PROCS BOUNDARY + 
-!|                |   |   SOLID BOUNDARY
-!|                |   | = 1011 CORRECT ELEMENT AT 2 PROCS BOUNDARY + 
-!|                |   |   LIQUID BOUNDARY
-!|                |   | = 1010 WRONG ELEMENT AT 2 PROCS BOUNDARY + 
-!|                |   |   LIQUID BOUNDARY
 !| IFABOR1        |-->| ELEMENTS BEHIND THE EDGES OF A TRIANGLE
 !|                |   | IF NEGATIVE OR ZERO, THE EDGE IS A LIQUID,
 !|                |   | SOLID OR PERIODIC BOUNDARY
@@ -105,7 +93,7 @@
       INTEGER ELI(NELE2L),KNOGL(NPOIN2),KNI(NPOI2L)
       INTEGER IKLE2(NELEM2,3),ELT(NPOI2L,NPLAN),ETA(NPOI2L,NPLAN)
       INTEGER N1L,N2L,N3L,N1G,N2G,N3G,IPOIL,IPOIG,IELEM,IEL2,IPLAN,IP
-      INTEGER IFABOR(NELEM2,5),GOODELT(NPOI2L,NPLAN)
+      INTEGER IFABOR(NELEM2,5)
       DOUBLE PRECISION EPS2
 !
 !      DATA EPS / 1.D-6 /
@@ -114,8 +102,6 @@
 !
 !  INITIALISES THE POINTS TO ADVECT
 !
-      GOODELT = 0
-
         DO 160 IP=1,NPLAN
           DO 190 IPOIG=1,NPOIN2
             XCONV(IPOIG,IP)=X(IPOIG)
@@ -207,7 +193,6 @@
              SHP(1,N1G,IPLAN) = 1.D0
              SHP(2,N1G,IPLAN) = 0.D0
              SHP(3,N1G,IPLAN) = 0.D0
-             GOODELT(N1G,IPLAN) = 1
       ENDIF
 !
       DET1=(X(N3G)-X(N2G))*V(N2G,IPLAN)-(Y(N3G)-Y(N2G))*U(N2G,IPLAN)
@@ -217,7 +202,6 @@
              SHP(1,N2G,IPLAN) = 0.D0
              SHP(2,N2G,IPLAN) = 1.D0
              SHP(3,N2G,IPLAN) = 0.D0
-             GOODELT(N2G,IPLAN) = 1
       ENDIF
 !
       DET1=(X(N1G)-X(N3G))*V(N3G,IPLAN)-(Y(N1G)-Y(N3G))*U(N3G,IPLAN)
@@ -227,52 +211,9 @@
              SHP(1,N3G,IPLAN) = 0.D0
              SHP(2,N3G,IPLAN) = 0.D0
              SHP(3,N3G,IPLAN) = 1.D0
-             GOODELT(N3G,IPLAN) = 1
       ENDIF
 !
 150       CONTINUE
-!
-         DO 230 IELEM = 1,NELEM2
-            N1G=IKLE2(IELEM,1)
-            N2G=IKLE2(IELEM,2)
-            N3G=IKLE2(IELEM,3)
-          IF (IFABOR(IELEM,1)==0) GOODELT(N1G,IPLAN)=
-     &                                        GOODELT(N1G,IPLAN)+10
-          IF (IFABOR(IELEM,1)==0) GOODELT(N2G,IPLAN)=
-     &                                        GOODELT(N2G,IPLAN)+10
-          IF (IFABOR(IELEM,2)==0) GOODELT(N2G,IPLAN)=
-     &                                        GOODELT(N2G,IPLAN)+10
-          IF (IFABOR(IELEM,2)==0) GOODELT(N3G,IPLAN)=
-     &                                        GOODELT(N3G,IPLAN)+10
-          IF (IFABOR(IELEM,3)==0) GOODELT(N3G,IPLAN)=
-     &                                        GOODELT(N3G,IPLAN)+10
-          IF (IFABOR(IELEM,3)==0) GOODELT(N1G,IPLAN)=
-     &                                        GOODELT(N1G,IPLAN)+10
-          IF (IFABOR(IELEM,1)==-1) GOODELT(N1G,IPLAN)=
-     &                                        GOODELT(N1G,IPLAN)+100
-          IF (IFABOR(IELEM,1)==-1) GOODELT(N2G,IPLAN)=
-     &                                        GOODELT(N2G,IPLAN)+100
-          IF (IFABOR(IELEM,2)==-1) GOODELT(N2G,IPLAN)=
-     &                                        GOODELT(N2G,IPLAN)+100
-          IF (IFABOR(IELEM,2)==-1) GOODELT(N3G,IPLAN)=
-     &                                        GOODELT(N3G,IPLAN)+100
-          IF (IFABOR(IELEM,3)==-1) GOODELT(N3G,IPLAN)=
-     &                                        GOODELT(N3G,IPLAN)+100
-          IF (IFABOR(IELEM,3)==-1) GOODELT(N1G,IPLAN)=
-     &                                        GOODELT(N1G,IPLAN)+100
-          IF (IFABOR(IELEM,1)==-2) GOODELT(N1G,IPLAN)=
-     &                                       GOODELT(N1G,IPLAN)+1000
-          IF (IFABOR(IELEM,1)==-2) GOODELT(N2G,IPLAN)=
-     &                                       GOODELT(N2G,IPLAN)+1000
-          IF (IFABOR(IELEM,2)==-2) GOODELT(N2G,IPLAN)=
-     &                                       GOODELT(N2G,IPLAN)+1000
-          IF (IFABOR(IELEM,2)==-2) GOODELT(N3G,IPLAN)=
-     &                                       GOODELT(N3G,IPLAN)+1000
-          IF (IFABOR(IELEM,3)==-2) GOODELT(N1G,IPLAN)=
-     &                                       GOODELT(N1G,IPLAN)+1000
-          IF (IFABOR(IELEM,3)==-2) GOODELT(N3G,IPLAN)=
-     &                                       GOODELT(N3G,IPLAN)+1000
-230      CONTINUE
 !
 !-----------------------------------------------------------------------
 !  FILLS IN THE SHZ AND ETA, POINT BY POINT.

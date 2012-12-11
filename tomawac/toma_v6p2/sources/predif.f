@@ -138,7 +138,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IFF 
-      INTEGER,DIMENSION(:,:,:), ALLOCATABLE :: GOODELT 
 ! 
 !---------------------------------------------------------------------- 
 ! 
@@ -150,7 +149,6 @@
 !   RELATIVE = ABSOLUTE => ADVECTION IN 3D 
 !   SEPARATES OUT THE FREQUENCIES 
 ! 
-        ALLOCATE(GOODELT(NPOIN2,NPLAN,NF)) 
         DO 200 IFF=1,NF 
 ! 
 ! 
@@ -168,26 +166,23 @@
 ! 
 !      DETERMINES THE FOOT OF THE CHARACTERISTICS 
 ! 
-         CALL INIPIE 
-     &  (CX,CY,CT,X,Y,SHP%ADR(IFF)%P%R,
-     &                SHZ%ADR(IFF)%P%R,ELT(1,IFF),ETA(1,IFF), 
-     &   TRA01,TRA01(1,2),TRA01(1,3),TETA,IKLE2,NPOIN2,NELEM2,NPLAN, 
-     &       ITR01,ITR01,ITR01,NELEM2,NPOIN2,IFABOR,GOODELT(1,1,IFF)) 
+         CALL INIPIE(CX,CY,CT,X,Y,SHP%ADR(IFF)%P%R,
+     &               SHZ%ADR(IFF)%P%R,ELT(1,IFF),ETA(1,IFF), 
+     &               TRA01,TRA01(1,2),TRA01(1,3),
+     &               TETA,IKLE2,NPOIN2,NELEM2,NPLAN, 
+     &               ITR01,ITR01,ITR01,NELEM2,NPOIN2,IFABOR) 
 ! 
          CALL MPOINT 
      &  (CX,CY,CT, 
      &   DT,X,Y,TETA,IKLE2,IFABOR,ETAP1,TRA01,TRA01(1,2), 
      &   TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6), 
-     &   SHP%ADR(IFF)%P%R(         1:  NPOIN3),
-     &   SHP%ADR(IFF)%P%R(  NPOIN3+1:2*NPOIN3),
-     &   SHP%ADR(IFF)%P%R(2*NPOIN3+1:3*NPOIN3),
+     &   SHP%ADR(IFF)%P%R,
      &   SHZ%ADR(IFF)%P%R,ELT(1,IFF),ETA(1,IFF), 
      &   ITR01(1,1),NPOIN3, 
      &   NPOIN2,NELEM2,NPLAN,IFF,SURDET,-1,ITR01(1,2)) 
 ! 
 ! 
 200    CONTINUE 
-       DEALLOCATE(GOODELT) 
 ! 
       ELSE 
 ! 
@@ -219,4 +214,4 @@
 !---------------------------------------------------------------------- 
 ! 
       RETURN 
-      END 
+      END

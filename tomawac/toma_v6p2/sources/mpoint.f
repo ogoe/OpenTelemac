@@ -4,7 +4,7 @@
 ! 
      &( U     , V     , W     , DT    , X     , Y     , TETA  , IKLE2 , 
      &  IFABOR, ETAS  , XPLOT , YPLOT , ZPLOT , DX    , DY    , DZ    , 
-     &  SHP1  , SHP2  , SHP3  , SHZ   , ELT   , ETA   , NSP   , NPLOT , 
+     &  SHP   , SHZ   , ELT   , ETA   , NSP   , NPLOT , 
      &  NPOIN2, NELEM2, NPLAN , IFF   , SURDET, SENS  , ISO ) 
 ! 
 !*********************************************************************** 
@@ -49,7 +49,7 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH 
 !| NSP            |<--| NUMBER OF RUNGE-KUTTA SUB-ITERATIONS 
 !| SENS           |-->| DESCENTE OU REMONTEE DES CARACTERISTIQUES. 
-!| SHP1,SHP2,SHP3 |<->| BARYCENTRIC COORDINATES OF THE NODES IN 
+!| SHP            |<->| BARYCENTRIC COORDINATES OF THE NODES IN 
 !|                |   | THEIR ASSOCIATED 2D ELEMENT "ELT" 
 !| SHZ            |<->| BARYCENTRIC COORDINATES ALONG TETA OF THE  
 !|                |   | NODES IN THEIR ASSOCIATED LAYER "ETA" 
@@ -80,7 +80,7 @@
       DOUBLE PRECISION W(NPOIN2,NPLAN) 
       DOUBLE PRECISION XPLOT(NPLOT), YPLOT(NPLOT), ZPLOT(NPLOT) 
       DOUBLE PRECISION SHZ(NPLOT), SURDET(NELEM2) 
-      DOUBLE PRECISION SHP1(NPLOT), SHP2(NPLOT), SHP3(NPLOT) 
+      DOUBLE PRECISION SHP(3,NPLOT)
       DOUBLE PRECISION X(NPOIN2), Y(NPOIN2), TETA(NPLAN+1) 
       DOUBLE PRECISION DX(NPLOT), DY(NPLOT), DZ(NPLOT) 
 ! 
@@ -177,30 +177,30 @@ CMIC$ DO PARALLEL VECTOR
                
             ELSE 
                U_mp(IPLOT) = COEF1*U(I1_P(IPLOT),I1_T(IPLOT))- 
-     & ( U(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + U(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + U(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + U(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT) 
-     & + U(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT) 
-     & + U(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT) ) * COEF2  
+     & ( U(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + U(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + U(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + U(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT) 
+     & + U(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT) 
+     & + U(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT) ) * COEF2  
 ! 
 ! 
                V_mp(IPLOT) = COEF1*V(I1_P(IPLOT),I1_T(IPLOT))- 
-     & ( V(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + V(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + V(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + V(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT) 
-     & + V(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT) 
-     & + V(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT) ) * COEF2 
+     & ( V(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + V(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + V(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + V(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT) 
+     & + V(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT) 
+     & + V(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT) ) * COEF2 
 ! 
 ! 
                W_mp(IPLOT) = COEF1*W(I1_P(IPLOT),I1_T(IPLOT))- 
-     & ( W(I1,IET  )*SHP1(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + W(I2,IET  )*SHP2(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + W(I3,IET  )*SHP3(IPLOT)*(1.D0-SHZ(IPLOT)) 
-     & + W(I1,ETAS(IET))*SHP1(IPLOT)*SHZ(IPLOT) 
-     & + W(I2,ETAS(IET))*SHP2(IPLOT)*SHZ(IPLOT) 
-     & + W(I3,ETAS(IET))*SHP3(IPLOT)*SHZ(IPLOT) ) *COEF2 
+     & ( W(I1,IET  )*SHP(1,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + W(I2,IET  )*SHP(2,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + W(I3,IET  )*SHP(3,IPLOT)*(1.D0-SHZ(IPLOT)) 
+     & + W(I1,ETAS(IET))*SHP(1,IPLOT)*SHZ(IPLOT) 
+     & + W(I2,ETAS(IET))*SHP(2,IPLOT)*SHZ(IPLOT) 
+     & + W(I3,ETAS(IET))*SHP(3,IPLOT)*SHZ(IPLOT) ) *COEF2 
 ! 
              ENDIF 
 ! 
@@ -215,11 +215,11 @@ CMIC$ DO PARALLEL VECTOR
              IF (ZP.GT.DEUPI) ZP=ZP-int(ZP/DEUPI)*DEUPI 
              IF (ZP.LT.0.D0) ZP=ZP+(int(abs(ZP)/DEUPI)+1)*DEUPI 
 ! 
-             SHP1(IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+             SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
      &                      -(Y(I3)-Y(I2))*(XP-X(I2))) * SURDET(IEL) 
-             SHP2(IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+             SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
      &                      -(Y(I1)-Y(I3))*(XP-X(I3))) * SURDET(IEL) 
-             SHP3(IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+             SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
      &                      -(Y(I2)-Y(I1))*(XP-X(I1))) * SURDET(IEL) 
 ! 
              ZPLOT(IPLOT) = ZP 
@@ -270,11 +270,11 @@ CMIC$ DO PARALLEL VECTOR
             XPLOT(IPLOT) = XP 
             YPLOT(IPLOT) = YP 
 ! 
-            IF (SHP1(IPLOT).LT.EPSILO) 
+            IF (SHP(1,IPLOT).LT.EPSILO) 
      &           ISO(IPLOT)=IBSET(ISO(IPLOT),2) 
-            IF (SHP2(IPLOT).LT.EPSILO) 
+            IF (SHP(2,IPLOT).LT.EPSILO) 
      &           ISO(IPLOT)=IBSET(ISO(IPLOT),3) 
-            IF (SHP3(IPLOT).LT.EPSILO) 
+            IF (SHP(3,IPLOT).LT.EPSILO) 
      &           ISO(IPLOT)=IBSET(ISO(IPLOT),4) 
 ! 
 ! 
@@ -367,20 +367,20 @@ CMIC$ DO PARALLEL VECTOR
                      I3 = IKLE2(IEL,3) 
 ! 
                      ELT(IPLOT) = IEL 
-                     SHP1(IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+                     SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
      &                           -(Y(I3)-Y(I2))*(XP-X(I2)))*SURDET(IEL) 
-                     SHP2(IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+                     SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
      &                           -(Y(I1)-Y(I3))*(XP-X(I3)))*SURDET(IEL) 
-                     SHP3(IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+                     SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
      &                           -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IEL) 
 ! 
                      ISO(IPLOT) = ISOV 
 ! 
-                     IF (SHP1(IPLOT).LT.EPSILO) 
+                     IF (SHP(1,IPLOT).LT.EPSILO) 
      &	                ISO(IPLOT)=IBSET(ISO(IPLOT),2) 
-                     IF (SHP2(IPLOT).LT.EPSILO) 
+                     IF (SHP(2,IPLOT).LT.EPSILO) 
      &		        ISO(IPLOT)=IBSET(ISO(IPLOT),3) 
-                     IF (SHP3(IPLOT).LT.EPSILO) 
+                     IF (SHP(3,IPLOT).LT.EPSILO) 
      &  		ISO(IPLOT)=IBSET(ISO(IPLOT),4) 
 ! 
                      GOTO 50 
@@ -401,9 +401,9 @@ CMIC$ DO PARALLEL VECTOR
 !  SETS SHP TO 0, END OF TRACING BACK 
 !----------------------------------------------------------------------- 
 ! 
-                     SHP1(IPLOT) = 0.D0 
-                     SHP2(IPLOT) = 0.D0 
-                     SHP3(IPLOT) = 0.D0 
+                     SHP(1,IPLOT) = 0.D0 
+                     SHP(2,IPLOT) = 0.D0 
+                     SHP(3,IPLOT) = 0.D0 
                      ELT(IPLOT) = - SENS * ELT(IPLOT) 
                      NSP(IPLOT) = ISP 
                      GOTO 40 
@@ -417,9 +417,9 @@ CMIC$ DO PARALLEL VECTOR
 ! 
                   IF((DXP*DY1-DYP*DX1).EQ.0.D0) THEN 
                    A1=0 
-                   SHP1(IPLOT) = 0.D0 
-                   SHP2(IPLOT) = 0.D0 
-                   SHP3(IPLOT) = 0.D0 
+                   SHP(1,IPLOT) = 0.D0 
+                   SHP(2,IPLOT) = 0.D0 
+                   SHP(3,IPLOT) = 0.D0 
                    ELT(IPLOT) = - SENS * ELT(IPLOT) 
                    NSP(IPLOT) = ISP 
                    GOTO 40 
@@ -433,17 +433,17 @@ CFBG                  IF (A1.LT.0.D0) A1 = 0.D0
                   IF (A1.LT.EPSI) A1 = 0.D0 
 CFGB 
                   IF (IFA.EQ.1) THEN 
-                    SHP1(IPLOT) = 1.D0 - A1 
-                    SHP2(IPLOT) = A1 
-                    SHP3(IPLOT) = 0.D0 
+                    SHP(1,IPLOT) = 1.D0 - A1 
+                    SHP(2,IPLOT) = A1 
+                    SHP(3,IPLOT) = 0.D0 
                   ELSEIF (IFA.EQ.2) THEN 
-                    SHP2(IPLOT) = 1.D0 - A1 
-                    SHP3(IPLOT) = A1 
-                    SHP1(IPLOT) = 0.D0 
+                    SHP(2,IPLOT) = 1.D0 - A1 
+                    SHP(3,IPLOT) = A1 
+                    SHP(1,IPLOT) = 0.D0 
                   ELSE 
-                    SHP3(IPLOT) = 1.D0 - A1 
-                    SHP1(IPLOT) = A1 
-                    SHP2(IPLOT) = 0.D0 
+                    SHP(3,IPLOT) = 1.D0 - A1 
+                    SHP(1,IPLOT) = A1 
+                    SHP(2,IPLOT) = 0.D0 
                   ENDIF 
                   XPLOT(IPLOT) = X(I1) + A1 * DX1 
                   YPLOT(IPLOT) = Y(I1) + A1 * DY1 
@@ -452,9 +452,9 @@ CFGB
                   ELSEIF((ABS(DYP).GT.ABS(DXP)).AND.(DYP.NE.0.D0))THEN 
                      A1 = (YP-YPLOT(IPLOT))/DYP 
                   ELSEIF ((DXP.EQ.0.D0).OR.(DYP.EQ.0.D0)) THEN 
-                     SHP1(IPLOT) = 0.D0 
-                     SHP2(IPLOT) = 0.D0 
-                     SHP3(IPLOT) = 0.D0 
+                     SHP(1,IPLOT) = 0.D0 
+                     SHP(2,IPLOT) = 0.D0 
+                     SHP(3,IPLOT) = 0.D0 
                      ELT(IPLOT) = - SENS * ELT(IPLOT) 
                      NSP(IPLOT) = ISP 
                      GOTO 40 
@@ -562,7 +562,7 @@ CFGB
                   ELSE 
 ! 
 !         WRITE(LU,*)'YA UN PROBLEME',IEL,IPLOT 
-!         WRITE(LU,*)'SHP',SHP1(IPLOT),SHP2(IPLOT),SHP3(IPLOT) 
+!         WRITE(LU,*)'SHP',SHP(1,IPLOT),SHP(2,IPLOT),SHP(3,IPLOT) 
 !         WRITE(LU,*)'SHZ',SHZ(IPLOT) 
 !         WRITE(LU,*)'DXYZ',DX(IPLOT),DY(IPLOT),DZ(IPLOT) 
 !         WRITE(LU,*)'XYZ',XPLOT(IPLOT),YPLOT(IPLOT),ZPLOT(IPLOT) 
@@ -574,18 +574,9 @@ CFGB
             ENDIF 
 ! 
 40       CONTINUE 
-CMIC$ END DO 
-CMIC$ END PARALLEL 
 20    CONTINUE 
-! 
-      IF (IFF.EQ.5) THEN 
-        DO IPLOT=1,NPLOT 
-           IEL = ELT(IPLOT) 
-           IET = ETA(IPLOT) 
-        ENDDO 
-      ENDIF 
 ! 
 !----------------------------------------------------------------------- 
 ! 
       RETURN 
-      END 
+      END

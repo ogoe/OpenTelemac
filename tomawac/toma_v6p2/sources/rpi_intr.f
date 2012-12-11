@@ -1,9 +1,10 @@
 !                       ******************* 
                         SUBROUTINE RPI_INTR 
-!             		******************* 
-     &( NEIGB , NB_CLOSE, RK  , RX    , RY    , RXX   , RYY   , 
-     &  NPOIN2, I     , MAXNSP, FFD   , FIRDIV, SECDIV, FRSTDIV, 
-     &  SCNDDIV) 
+!             		*******************
+! 
+     &(NEIGB , NB_CLOSE, RK      , RX  , RY      , RXX     , RYY , 
+     & NPOIN2, I       , MAXNSP  , FFD , FIRDIV1 , FIRDIV2 , 
+     & SECDIV, FRSTDIV , SCNDDIV) 
 ! 
 !*********************************************************************** 
 ! TOMAWAC   V6P2                                   25/06/2012 
@@ -57,8 +58,8 @@
       DOUBLE PRECISION RK(MAXNSP) 
       DOUBLE PRECISION RX(MAXNSP), RY(MAXNSP)   
       DOUBLE PRECISION RXX(MAXNSP), RYY(MAXNSP) 
-      DOUBLE PRECISION FIRDIV(NPOIN2,2), SECDIV(NPOIN2,3) 
-      DOUBLE PRECISION FFD(NPOIN2) 
+      DOUBLE PRECISION FIRDIV1(NPOIN2), SECDIV(NPOIN2,3) 
+      DOUBLE PRECISION FFD(NPOIN2),FIRDIV2(NPOIN2) 
        
       LOGICAL FRSTDIV, SCNDDIV 
 ! 
@@ -73,8 +74,9 @@
       LOGICAL DEJA
       
       DATA DEJA/.FALSE./
-      
+!      
       SAVE
+!
 !************************************************************************ 
 ! 
        IF(.NOT.DEJA)THEN
@@ -91,18 +93,18 @@
 !   
 !     Calculate derivatives in IPOIN         
 ! 
-       IF(FRSTDIV) THEN       !C   first derivative 
+       IF(FRSTDIV) THEN
          WZX1=0.D0 
          WZY1=0.D0 
          DO IP1 =1,NB_CLOSE(I) 
            WZX1=WZX1+RX(IP1)*WU_OM(IP1) 
            WZY1=WZY1+RY(IP1)*WU_OM(IP1)           
          ENDDO  
-         FIRDIV(I,1)= WZX1 
-         FIRDIV(I,2)= WZY1 
+         FIRDIV1(I)= WZX1 
+         FIRDIV2(I)= WZY1 
        ENDIF 
  
-       IF(SCNDDIV) THEN       !C   second derivative 
+       IF(SCNDDIV) THEN
          WZX2=0.D0 
          WZY2=0.D0 
          DO IP1 =1,NB_CLOSE(I)     
@@ -114,15 +116,7 @@
          SECDIV(I,3)= WZX2+WZY2     
        ENDIF 
 ! 
-! in case we want the estimation of the FFunction : test version only 
-!       IF(.FFUNC) THEN        
-!         WZ=0.D0  
-!         DO IPOIN1 =1,NB_CLOSE(I) 
-!           WZ=WZ+RK(IPOIN1)*WU_OM(IPOIN1) 
-!         ENDDO  
-!         ZETA(I)= WZ   
-!       ENDIF 
- 
-  
+!----------------------------------------------------------------------- 
+!  
       RETURN 
-      END                   
+      END  
