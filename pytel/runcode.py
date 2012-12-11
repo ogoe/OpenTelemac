@@ -704,78 +704,89 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
       shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
 
-   if not options.compileonly:
-
    # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      if ncsize > 0:
-         # >>> Parallel execution configuration
-         mpiCmd = ''
-         if cfg.has_key('MPI') and not options.merge:
-            # ~~> MPI host file provided through the command line
-            if options.hosts != '':
-               if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(';',' ')
-               else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(';',' ')} )
-            # ~~> MPI Command line ( except <exename> )
-            mpiCmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
-            mpiCmd = mpiCmd.replace('<ncsize>',str(ncsize))
-            mpiCmd = mpiCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
-            hostfile = cfg['MPI']['HOSTFILE']
-            # ~~> MPI host file ( may be re-written by the HPC INFILE script )
-            hosts = []; n = 0
-            while n < ncsize:
-               for i in cfg['MPI']['HOSTS'].split():
-                  hosts.append(i); n += 1
-                  if n == ncsize: break
-            putFileContent(hostfile,hosts)
+   if ncsize > 0:
+      # >>> Parallel execution configuration
+      mpiCmd = ''
+      if cfg.has_key('MPI') and not options.merge:
+         # ~~> MPI host file provided through the command line
+         if options.hosts != '':
+            if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(';',' ')
+            else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(';',' ')} )
+         # ~~> MPI Command line ( except <exename> )
+         mpiCmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
+         mpiCmd = mpiCmd.replace('<ncsize>',str(ncsize))
+         mpiCmd = mpiCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
+         hostfile = cfg['MPI']['HOSTFILE']
+         # ~~> MPI host file ( may be re-written by the HPC INFILE script )
+         hosts = []; n = 0
+         while n < ncsize:
+            for i in cfg['MPI']['HOSTS'].split():
+               hosts.append(i); n += 1
+               if n == ncsize: break
+         putFileContent(hostfile,hosts)
 
-            # >>> Replace running command
-            runCmd = mpiCmd.replace('<exename>',exename)
+         # >>> Replace running command
+         runCmd = mpiCmd.replace('<exename>',exename)
 
-         # >>> HPC execution configuration
-         hpcCmd = ''
-         if cfg.has_key('HPC') and not options.merge:
-            # ~~> HPC Command line ( except <exename> )
-            hpcCmd = getHPCCommand(cfg['HPC']) # /!\ cfg['HPC'] is also modified
+      # >>> HPC execution configuration
+      hpcCmd = ''
+      if cfg.has_key('HPC') and not options.merge:
+         # ~~> HPC Command line ( except <exename> )
+         hpcCmd = getHPCCommand(cfg['HPC']) # /!\ cfg['HPC'] is also modified
+         hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
+         hpcCmd = hpcCmd.replace('<nctile>',str(nctile))
+         hpcCmd = hpcCmd.replace('<ncnodes>',str(ncnodes))
+         hpcCmd = hpcCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
+         # ~~> HPC queueing script
+         if cfg['HPC'].has_key('STDIN'):
+            stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
+            stdin = cfg['HPC']['STDIN'][stdinfile]
+            stdin = stdin.replace('<sortiefile>',sortiefile)
+            stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
+            stdin = stdin.replace('<ncsize>',str(ncsize))
+            stdin = stdin.replace('<nctile>',str(nctile))
+            stdin = stdin.replace('<ncnodes>',str(ncnodes))
+            stdin = stdin.replace('<wdir>',WDir)
+            stdin = stdin.replace('<email>',options.email)
+            stdin = stdin.replace('<jobname>',options.jobname)
+            stdin = stdin.replace('\n ','\n')
+            if cfg.has_key('MPI'):
+               stdin = stdin.replace('<mpi_cmdexec>',mpiCmd)
+               stdin = stdin.replace('<exename>',exename)
+               stdin = stdin.replace('<hostfile>',hostfile)
+            putFileContent(stdinfile,stdin.split('\n'))
             hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
-            hpcCmd = hpcCmd.replace('<nctile>',str(nctile))
-            hpcCmd = hpcCmd.replace('<ncnodes>',str(ncnodes))
-            hpcCmd = hpcCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
-            # ~~> HPC queueing script
-            if cfg['HPC'].has_key('STDIN'):
-               stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
-               stdin = cfg['HPC']['STDIN'][stdinfile]
-               stdin = stdin.replace('<sortiefile>',sortiefile)
-               stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
-               stdin = stdin.replace('<ncsize>',str(ncsize))
-               stdin = stdin.replace('<nctile>',str(nctile))
-               stdin = stdin.replace('<ncnodes>',str(ncnodes))
-               stdin = stdin.replace('<wdir>',WDir)
-               stdin = stdin.replace('<email>',options.email)
-               stdin = stdin.replace('<jobname>',options.jobname)
-               stdin = stdin.replace('\n ','\n')
-               if cfg.has_key('MPI'):
-                  stdin = stdin.replace('<mpi_cmdexec>',mpiCmd)
-                  stdin = stdin.replace('<exename>',exename)
-                  stdin = stdin.replace('<hostfile>',hostfile)
-               putFileContent(stdinfile,stdin.split('\n'))
-               hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
 
-            # >>> Replace running command
-            runCmd = hpcCmd.replace('<mpi_cmdexec>',mpiCmd)
-            runCmd = hpcCmd.replace('<exename>',exename)
+         # >>> Replace running command
+         runCmd = hpcCmd.replace('<mpi_cmdexec>',mpiCmd)
+         runCmd = hpcCmd.replace('<exename>',exename)
 
-         # >>> Parallel tools
-         # ~~> Path
-         PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
-         if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
-         # ~~> Call to PARTEL
-         parCmd = path.join('<config>'+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
-         if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
-         parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
-         parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
-         # ~~> Creating the PARA files
-         if not options.merge: processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
+      # >>> Parallel tools
+      # ~~> Path
+      PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
+      if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
+      # ~~> Call to PARTEL
+      parCmd = path.join('<config>'+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
+      if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
+      parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
+      parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
+      # ~~> Creating the PARA files
+      if not options.merge: processPARALLEL(ncsize,WDir+sep)  # /!\ Make sure WDir works in UNC convention
 
+
+   if options.compileonly:
+      print '\n\n... Your simulation is ready for launch and you can now :\n'
+      print '    +> re-run without option -x (--compileonly) or with option --run\n'
+      print '    +> or run the following command within : ',path.basename(WDir)
+      print '       ~>    run with EXE: ',path.basename(exename)
+      if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
+      if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
+      return []
+
+   # ~~ Handling the partionning ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if not options.compileonly:
+      if ncsize > 0:
          # >>> Running the partionning
          # ~~> Run PARTEL
          CONLIM = getCONLIM(cas,iFS)    # Global CONLIM file
@@ -794,12 +805,15 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       # >>> Running the Executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if not options.merge:
          if options.split:
-            print '\n\n... Your simulation is ready for launch and you can now :\n'
-            print '    +> re-run without option --split or with option --run\n'
-            print '    +> or run the following command within : ',WDir
-            print '       ~>    run with EXE: ',path.basename(exename)
-            if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
-            if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
+            if path.exists(exename):
+               print '\n\n... Unless you wish to re-compile your executable, your simulation is ready for launch and you can now :\n'
+               print '    +> re-run without option --split or with option --run'
+               print '    +> or run the following command within : ',path.basename(WDir)
+               print '       ~>    run with EXE: ',path.basename(exename)
+               if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
+               if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
+            else:
+               print '\n\n... Your simulation is almost ready for launch. You need to compile your executable with the option -x (--compileonly)\n'
             return []          # Split only: do not proceed any further
          print '\n\nRunning your simulation :\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
@@ -839,7 +853,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
    # ~~ Handling Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    chdir(CASDir)
-   if options.tmpdirectory or options.compileonly: removeDirectories(WDir)
+   if options.tmpdirectory: removeDirectories(WDir)
 
    return sortiefiles
 
@@ -974,6 +988,15 @@ if __name__ == "__main__":
    if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
    if options.version != '': cfgs[cfgname]['version'] = options.version
    options.bypass = False
+   if options.split or options.merge or options.run:
+      if options.wDir == '':
+         print '\nPlease use option -w (--workdirectory) with either of the options --split, --run or --merge\n'
+         sys.exit()
+   if (options.split and options.merge) or (options.split and options.run) or (options.split and options.compileonly) or \
+      (options.merge and options.run) or (options.merge and options.compileonly) or \
+      (options.run and options.compileonly):
+      print '\nOnly one of the options --split, --run, --merge or --compileonly (-x) can be used at a time'
+      sys.exit()
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
    print '\n\nRunning your CAS file for:\n\
