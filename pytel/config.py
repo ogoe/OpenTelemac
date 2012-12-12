@@ -40,6 +40,14 @@ cmd_obj:    gfortran [fflags] <mods> <incs> <f95name>
       for the incs, libs and mods.
    Also works where _all is not set, i.e. incs or incs_all work the same magic.
 """
+"""@history 12/12/2012 -- Sebastien E. Bourban
+   Addition of the --delete option to purge unwanted configuration-related
+      sub-directories. Note that it will not remove the configuration from the
+      config file.
+   If the unwanted configuration does not exist in the config file anymore, it
+      will read the [general] section, trying to guess the root and the version at
+      the very least. One can also use -r and -v to inform of these values.
+"""
 """@brief
 """
 """@details
@@ -155,6 +163,7 @@ from os import path, walk, listdir, environ
 from socket import gethostname
 import ConfigParser
 from optparse import OptionParser
+from utils.files import removeDirectories
 
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
@@ -173,7 +182,7 @@ CONFIGS = {}
    and their key/values -- Returns a dictionary of all configs in
    the files that are highlighted in [Configurations]
 """
-def getConfigs(file,name):
+def getConfigs(file,name,bypass=False):
    # ~~ Read Configuration File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgfile = ConfigParser.RawConfigParser()
    try:
@@ -190,16 +199,20 @@ def getConfigs(file,name):
    cfgnames = cfgs.split()
    if name != '':
       if name not in cfgnames:
-         print '\nNot able to find your configuration in the configuration file: ' + file + '\n'
-         print ' ... use instead:'
-         for cfg in cfgnames : print '    +> ',cfg
-         sys.exit()
+         print '\nNot able to find your configuration [' + name + '] in the configuration file: ' + file
+         if bypass: print ' ... will try to gess the configuration from the general keys and move on ...'
+         else:
+            print '\n ... use instead:'
+            for cfg in cfgnames : print '    +> ',cfg
+            sys.exit()
+         
       cfgnames = [name]
    # ~~ Verify presence of configs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for cfg in cfgnames:
-      if cfg not in cfgfile.sections():
-         print '\nNot able to find the configuration [' + cfg + '] in the configuration file: ' + file
-         sys.exit()
+   if not bypass:
+      for cfg in cfgnames:
+         if cfg not in cfgfile.sections():
+            print '\nNot able to find the configuration [' + cfg + '] in the configuration file: ' + file
+            sys.exit()
    # ~~ Read General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    try:
       general = dict(cfgfile.items('general'))
@@ -208,7 +221,10 @@ def getConfigs(file,name):
    # ~~ Loads Configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    configs = {}
    for cfg in cfgnames :
-      configs.update({cfg:dict(cfgfile.items(cfg))}) # convert all keys in lower case !
+      try:
+         configs.update({cfg:dict(cfgfile.items(cfg))}) # convert all keys in lower case !
+      except:
+         configs.update({cfg:{}})
 
    return general,configs
 
@@ -217,10 +233,11 @@ def getConfigs(file,name):
    and store its rough content in a dict -- Returns the dict
    set globals CONFIGS
 """
-def parseConfigFile(file,name):
+def parseConfigFile(file,name,bypass=False):
    # ~~ Parse CFG File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print "... parsing configuration file: " + file
-   generalDict,configDict = getConfigs(file,name)
+   generalDict,configDict = getConfigs(file,name,bypass)
+   
    # ~~ Replacing user keys throughout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    key_sqbrack = re.compile(r'(?P<before>.*?)\[(?P<key>[\w_.-~=+]*)\](?P<after>[^\Z]*)\Z')
    for cfgname in configDict.keys():
@@ -246,11 +263,12 @@ def parseConfigFile(file,name):
 def getConfigKey(cfg,key,there,empty):
    # ~~ Get the root of the System ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if there and not cfg.has_key(key):
-      print ('\nKey %s required in configuration \n' % (key))
+      print ('\nKey %s required in configuration (or on the command line as an option) \n' % (key))
       sys.exit()
    if empty and cfg[key] == '':
       print ('\nKey %s required non empty field \n' % (key))
       sys.exit()
+   if not cfg.has_key(key): return ''
    return cfg[key]
 
 # _____                  ___________________________________________
@@ -937,7 +955,15 @@ if __name__ == "__main__":
                       dest="version",
                       default='',
                       help="specify the version number, default is taken from config file" )
+   parser.add_option("--delete",
+                      action="store_true",
+                      dest="configDelete",
+                      default=False,
+                      help="remove the directories in relation to the named configuration(s)" )
    options, args = parser.parse_args()
+   
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
       dircfg = path.dirname(options.configFile)
@@ -949,11 +975,8 @@ if __name__ == "__main__":
             if tail == '.cfg' : print '    +> ',file
       sys.exit()
 
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
-   cfgs = parseConfigFile(options.configFile,options.configName)
+   cfgs = parseConfigFile(options.configFile,options.configName,True)
 
-#  /!\  for testing purposes ... no real use
    for cfgname in cfgs.keys():
       print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
@@ -964,11 +987,20 @@ if __name__ == "__main__":
       cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
       print cfgname + ': \n    '
-      print '    +> root:    ',cfgs[cfgname]['root']
-      print '    +> version: ',cfgs[cfgname]['version']
-      print '    +> module:  ',' / '.join(cfg['MODULES'])
-      print '    +> options: ',cfgs[cfgname]['options']
-
+      print '    +> root:    ',cfg['root']
+      print '    +> version: ',cfg['version']
+      print '    +> module:  ',' / '.join(cfg['MODULES'].keys())
+      print '    +> options: ',cfg['options']
+      if options.configDelete:
+         found = False
+         for mod in cfg['MODULES'].keys():
+            cfgDir = path.join(cfg['MODULES'][mod]['path'],cfgname)
+            if path.exists(cfgDir):
+               found = True
+               removeDirectories(cfgDir)
+         if found: print '\ndeleted!'
+         else: print '\nfound nothing to delete!'
+   
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
