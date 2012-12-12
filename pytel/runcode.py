@@ -395,7 +395,7 @@ def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
    exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx')
    if not path.exists(objFile) or not path.exists(exeFile):
       raise Exception([{'name':'compilePRINCI','msg':'... could not find:' + exeFile + \
-         '~~~> you may need to compile your system with the configuration: ' + cfgName }])
+         '\n    ~~~> you may need to compile your system with the configuration: ' + cfgName }])
    objCmd = getFileContent(objFile)[0]
    exeCmd = getFileContent(exeFile)[0]
    chdir(path.dirname(princiFile))
@@ -680,9 +680,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if value != []:
       useFort = path.join(CASDir,eval(value[0]))
       useFile = path.join(CASDir,path.splitext(eval(value[0]))[0]+cfg['SYSTEM']['sfx_exe'])
-      # /!\ removing dependency over cfg['REBUILD']:
       if path.exists(useFile):
-         if isNewer(useFile,useFort) == 1: remove(useFile)
+         if isNewer(useFile,useFort) == 1 or cfg['REBUILD'] == 1 : remove(useFile)
       #> default command line compilation and linkage
    if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo')):
       raise Exception([{'name':'runCAS','msg': \
@@ -1012,7 +1011,7 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
 # >>> Check wether the config has been compiled for the runcode
-   if options.compileonly: cfg['REBUILD'] = 2
+   if options.compileonly: cfg['REBUILD'] = 1
    if codeName not in cfg['MODULES'].keys():
       print '\nThe code requested is not installed on this system : ' + codeName + '\n'
       sys.exit()
