@@ -1907,7 +1907,7 @@ C$$$      CLOSE(NNPART)
              IF (IM(1)==IN(1)) THEN  
                CHAIN(ISEC)%LISTE(ISEG,3)=IM(1) 
              ELSE ! THEY BELONG TO DIFFERENT SUBDOMAINS? HOW COME?
-               WRITE(LU,*) 'IMPOSSIBLE CASE (1) BY SECTIONS???'
+               WRITE(LU,*) 'IMPOSSIBLE CASE (1) BY SECTIONS'
                CALL PARTEL_PLANTE2(-1)
                STOP
              ENDIF 
@@ -1919,7 +1919,7 @@ C$$$      CLOSE(NNPART)
               IF ( KNOGL(CHAIN(ISEC)%LISTE(ISEG,2),IM(1))>0 ) THEN  
                 CHAIN(ISEC)%LISTE(ISEG,3) = IM(1) 
               ELSE 
-                WRITE(LU,*) 'IMPOSSIBLE CASE (2) BY SECTIONS???'
+                WRITE(LU,*) 'IMPOSSIBLE CASE (2) BY SECTIONS'
                 CALL PARTEL_PLANTE2(-1)
                 STOP
               ENDIF 
@@ -1928,7 +1928,7 @@ C$$$      CLOSE(NNPART)
               IF ( KNOGL(CHAIN(ISEC)%LISTE(ISEG,1),IN(1))>0 ) THEN  
                 CHAIN(ISEC)%LISTE(ISEG,3) = IN(1) 
               ELSE 
-                WRITE(LU,*) 'IMPOSSIBLE CASE (3) BY SECTIONS???'
+                WRITE(LU,*) 'IMPOSSIBLE CASE (3) BY SECTIONS'
                 CALL PARTEL_PLANTE2(-1)
                 STOP
               ENDIF 
@@ -1969,7 +1969,7 @@ C$$$      CLOSE(NNPART)
               IF (.NOT.FOUND) THEN 
                 WRITE(LU,*) 'BY SECTION WITH NODES: ',
      &            CHAIN(ISEC)%LISTE(ISEG,1),CHAIN(ISEC)%LISTE(ISEG,2)
-                WRITE(LU,*) 'IMPOSSIBLE CASE (4) BY SECTIONS???'
+                WRITE(LU,*) 'IMPOSSIBLE CASE (4) BY SECTIONS'
                 CALL PARTEL_PLANTE2(-1)
                 STOP
               ENDIF 
