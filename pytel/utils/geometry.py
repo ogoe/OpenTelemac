@@ -152,7 +152,7 @@ def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3), size=5 ):
    if l1 >= -accuracy and l1 <= 1.0+accuracy and l2 >= -accuracy and l2 <= 1.0+accuracy and l3 >= -accuracy and l3 <= 1.0+accuracy : return [ l1, l2, l3 ]
    return []
 
-def isInsidePoly( (xo,yo), poly ):
+def isInsidePoly( (xo,yo), poly, close=True ):
 # ... by the "Ray Casting Method".
    inside = False
    p1 = poly[0]
@@ -164,8 +164,9 @@ def isInsidePoly( (xo,yo), poly ):
                if p1[1] != p2[1]: xints = (yo-p1[1])*(p2[0]-p1[0])/(p2[1]-p1[1])+p1[0]
                if p1[0] == p2[0] or xo <= xints: inside = not inside
       p1 = p2
-   for p1 in poly:
-      if isClose( [xo,yo],p1,size=10 ): inside = True
+   if close:
+      for p1 in poly:
+         if isClose( [xo,yo],p1,size=10 ): inside = True
    return inside
 
 def isClose( p1,p2,size=5 ):
