@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief
@@ -65,9 +65,9 @@
 !+        Initialasation of TAN after call to condim.
 !
 !history  J-M HERVOUET (LNHE)
-!+        10/09/2012
+!+        18/129/2012
 !+        V6P3   
-!+        Call to IFAB3DT added.
+!+        Call to IFAB3DT added, arguments of cstkep removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -273,7 +273,7 @@
      &   (MESH3D%IFABOR%I,LIUBOF%I,LIUBOL%I,LIUBOS%I,
      &    MESH2D%KP1BOR%I,MESH2D%NELBOR%I,
      &    MESH2D%NULONE%I,IKLE2%I,
-     &    NELEM2,NPOIN2,NPTFR2,NPLAN,NPLINT,NETAGE,
+     &    NELEM2,NPOIN2,NPTFR2,NPLAN,NETAGE,
      &    KLOG,TRANSF)
       ELSEIF(IELM3.EQ.51) THEN
         CALL IFAB3DT
@@ -281,7 +281,7 @@
      &    MESH2D%IFABOR%I,LIUBOF%I,LIUBOL%I,LIUBOS%I,
      &    MESH2D%KP1BOR%I,MESH2D%NELBOR%I,
      &    MESH2D%NULONE%I,IKLE2%I,IKLE3%I,
-     &    NELEM2,MESH3D%NELMAX,NPOIN2,NPTFR2,NPLAN,NPLINT,NETAGE,
+     &    NELEM2,MESH3D%NELMAX,NPOIN2,NPTFR2,NPLAN,NETAGE,
      &    KLOG,TRANSF)
       ENDIF
 !
@@ -372,9 +372,7 @@
 !
 !     SETS TURBULENCE CONSTANTS (ALL MODELS)
 !
-      CALL CSTKEP(KARMAN,CMU,C1,C2,SIGMAK,SIGMAE,VIRT,SCHMIT,
-     &            KMIN,KMAX,EMIN,EMAX,PRANDTL,ALPHA,BETA,BETAS,OMSTAR,
-     &            ITURBV)
+      CALL CSTKEP
 !
 ! INITIALISES DILATATION COEFFICIENTS AND REFERENCE VALUES
 ! FOR ALL ACTIVE TRACERS, DEFAULT RHO = RHO0

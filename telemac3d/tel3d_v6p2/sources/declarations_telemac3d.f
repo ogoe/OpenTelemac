@@ -750,7 +750,8 @@
 !-----------------------------------------------------------------------
 ! (4) INTEGERS
 !-----------------------------------------------------------------------
-! KEYWORDS AND PARAMETERS
+!
+!     KEYWORDS AND PARAMETERS
 !
 !     MAXIMUM OF SOURCE POINTS
 !
@@ -824,10 +825,6 @@
 !     NUMBER OF SUB ITERATIONS FOR NON LINEARITIES
 !
       INTEGER NSOUSI
-! 
-!     TO BE REMOVED, OBSOLETE !!!!!!
-!
-      INTEGER NPLINT
 !
 !     HORIZONTAL TURBULENCE MODEL
 !
@@ -1245,11 +1242,15 @@
 !
       INTEGER NUMZONE
 !
+!     FOR MONITORING K-EPSILON MODEL (SEE SUBROUTINE CSTKEP)
+!
+      INTEGER OPTPROD,LIMKF,LIMEF,LIMKS,LIMES
+!
 !-----------------------------------------------------------------------
 ! (5) LOGICAL VALUES
 !-----------------------------------------------------------------------
 !
-! LOGICAL STEERING PARAMETERS
+!     LOGICAL STEERING PARAMETERS
 !
       LOGICAL DEBU,   PROP
 !
@@ -1336,38 +1337,49 @@
 !     IF YES, INFORMATION PRINTED ON LISTING
 !
       LOGICAL INFOGR
-!> @brief IF YES, VALIDATION
-C si oui, validation
+!
+!     IF YES, VALIDATION
+!
       LOGICAL VALID
-!> @brief IF YES, MULTILAYER CONSOLIDATION MODEL
-C si oui, modele de tassement multi-couches
+!
+!     IF YES, MULTILAYER CONSOLIDATION MODEL
+!
       LOGICAL TASSE
-!> @brief IF YES, GIBSON CONSOLIDATION MODEL
-C si oui, modele de tassement de gibson
+!
+!     IF YES, GIBSON CONSOLIDATION MODEL
+!
       LOGICAL GIBSON
-!> @brief IF YES, INFLUENCE OF TURBULENCE ON SETTLING VELOCITY
-C si oui, influence de la turbulence sur la vitesse de chute
+!
+!     IF YES, INFLUENCE OF TURBULENCE ON SETTLING VELOCITY
+!
       LOGICAL TURBWC
-!> @brief IF YES, COHESIVE SEDIMENT
-C si oui, sediment cohesif
+!
+!     IF YES, COHESIVE SEDIMENT
+!
       LOGICAL SEDCO
-!> @brief IF YES, NON-HYDROSTATIC VERSION
-C si oui, version non-hydrostatique
+!
+!     IF YES, NON-HYDROSTATIC VERSION
+!
       LOGICAL NONHYD
-!> @brief
-C
+!
+!     CONSISTENT PROJECTION (OBSOLETE...)
+!
       LOGICAL CONPRO
-!> @brief FOR INITIALISATION OF K-EPSILON (SET IN CONDIM)
-C
+!
+!     FOR INITIALISATION OF K-EPSILON (SET IN CONDIM)
+!
       LOGICAL AKEP
-!> @brief FOR INITIALISATION OF K-OMEGA (SET IN CONDIM)
-C
+!
+!     FOR INITIALISATION OF K-OMEGA (SET IN CONDIM)
+!
       LOGICAL AKOM
-!> @brief IF YES, INITIAL TIME RESET TO ZERO IN A COMPUTATION CONTINUED
-C si oui, remise a zero du temps
+!
+!     IF YES, INITIAL TIME RESET TO ZERO IN A COMPUTATION CONTINUED
+!
       LOGICAL RAZTIM
-!> @brief IF YES, DYNAMIC PRESSURE IN WAVE EQUATION
-C si oui, pression dynamique dans l'equation d'onde
+!
+!     IF YES, DYNAMIC PRESSURE IN WAVE EQUATION
+!
       LOGICAL DPWAVEQ
 !
 !     IF YES, DYNAMIC BOUNDARY CONDITION
@@ -1429,6 +1441,10 @@ C si oui, pression dynamique dans l'equation d'onde
 !     IF YES, INFERENCE OF MINOR CONSTITUENTS
 !  
       LOGICAL INTMICON
+!
+!     FOR MONITORING K-EPSILON MODEL (SEE SUBROUTINE CSTKEP)
+!
+      LOGICAL CLIPK,CLIPE,YAP,WSIK
 !
 !-----------------------------------------------------------------------
 ! (6) REALS
@@ -1601,65 +1617,65 @@ C si oui, pression dynamique dans l'equation d'onde
 !     CONSTANT SEDIMENT SETTLING VELOCITY (M/S)
 !
       DOUBLE PRECISION WCHU0
-!> @brief MEAN DIAMETER OF THE SEDIMENT
-C diametre moyen des grains
+!
+!     MEAN DIAMETER OF THE SEDIMENT
+!
       DOUBLE PRECISION D50
-!> @brief GEOGRAPHICAL LATITUDE IN GRAD, POSITIVE FOR NORTHERN AND NEGATIVE ON SOUTHERN HEMISPHERE
-C
+!
+!     GEOGRAPHICAL LATITUDE IN GRAD, POSITIVE FOR NORTHERN AND NEGATIVE ON SOUTHERN HEMISPHERE
+!
       DOUBLE PRECISION PHILAT
-!> @brief UPWIND COEFFICIENT (BETWEEN 0 AND 1)
-C
+!
+!     UPWIND COEFFICIENT (BETWEEN 0 AND 1)
+!
       DOUBLE PRECISION DELTA
-!> @brief HORIZONTAL CORIOLIS PARAMETERS
-C
-      DOUBLE PRECISION FHOR
-!> @brief VERTICAL CORIOLIS PARAMETERS
-C
-      DOUBLE PRECISION FVER
-!> @brief LATITUDE OF THE ORIGIN POINT
-C latitude du point origine
-      DOUBLE PRECISION LATIT
-!> @brief LONGITUDE OF THE ORIGIN POINT
-C longitude du point origine
-      DOUBLE PRECISION LONGIT
-!> @brief NORTH
-C nord
+!
+!     HORIZONTAL AND VERTICAL CORIOLIS PARAMETERS
+!
+      DOUBLE PRECISION FHOR,FVER
+!
+!     LATITUDEAND LONGITUDE OF THE ORIGIN POINT
+!
+      DOUBLE PRECISION LATIT,LONGIT
+!
+!     NORTH
+!
       DOUBLE PRECISION NORD
-!> @brief FREE SURFACE GRADIENT COMPATIBILITY IN WAVE EQUATION
-C compatibilite du gradient de surface libre
+!
+!     FREE SURFACE GRADIENT COMPATIBILITY IN WAVE EQUATION
+!
       DOUBLE PRECISION TETAZCOMP
-!> @brief ABSCISSAE F SOURCES
-C abscisses des sources
-      DOUBLE PRECISION XSCE(MAXSCE)
-!> @brief ORDINATES OF SOURCES
-C ordonnees des sources
-      DOUBLE PRECISION YSCE(MAXSCE)
-!> @brief ELEVATIONS OF SOURCES
-C cotes des points sources donnes
-      DOUBLE PRECISION ZSCE(MAXSCE)
-!> @brief VELOCITIES OF THE SOURCES ALONG X
-C vitesse des sources selon x
-      DOUBLE PRECISION USCE(MAXSCE)
-!> @brief VELOCITIES OF THE SOURCES ALONG Y
-C vitesse des sources selon y
-      DOUBLE PRECISION VSCE(MAXSCE)
-!> @brief WATER DISCHARGE OF SOURCES TAKEN FROM STEERING FILE
-C debits des sources dans le fichier cas
+!
+!     ABSCISSAE, ORDINATES AND ELEVATIONS OF SOURCES
+!
+      DOUBLE PRECISION XSCE(MAXSCE),YSCE(MAXSCE),ZSCE(MAXSCE)
+!
+!     VELOCITIES OF THE SOURCES ALONG X, Y
+!
+      DOUBLE PRECISION USCE(MAXSCE),VSCE(MAXSCE)
+!
+!     WATER DISCHARGE OF SOURCES TAKEN FROM STEERING FILE
+!
       DOUBLE PRECISION QSCE(MAXSCE)
-!> @brief WATER DISCHARGE OF SOURCES COMPUTED WITH T3D_DEBSCE (VARIATIONS IN TIME)
-C debits des sources calcule dans t3d_debsce
+!
+!     WATER DISCHARGE OF SOURCES COMPUTED WITH T3D_DEBSCE (VARIATIONS IN TIME)
+!
       DOUBLE PRECISION QSCE2(MAXSCE)
-!> @brief VALUE OF THE TRACERS AT THE SOURCES TAKEN FROM STEERING FILE
-C valeurs des traceurs des sources dans le fichier cas
+!
+!     VALUE OF THE TRACERS AT THE SOURCES TAKEN FROM STEERING FILE
+!
       DOUBLE PRECISION TASCE(MAXSCE,MAXTRA)
-!> @brief PRESCRIBED VALUES OF TRACERS AT LIQUID BOUNDARIES
-C valeurs imposees des traceurs
+!
+!     PRESCRIBED VALUES OF TRACERS AT LIQUID BOUNDARIES
+!
       DOUBLE PRECISION TRACER(MAXFRO*MAXTRA)
-!> @brief RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER
-C ratio entre la rugosite de peau et le diametre moyen des grains
+!
+!     RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER
+!
       DOUBLE PRECISION KSPRATIO
-!> @brief SHIELDS PARAMETER
-C parametre de shields
+!
+!     SHIELDS PARAMETER
+!
       DOUBLE PRECISION AC
 !
 !     FLUX AT BOUNDARIES
@@ -1705,59 +1721,77 @@ C parametre de shields
 !     TITLE
 !
       CHARACTER(LEN=72) TITCAS
-!> @brief
-C
+!
+!     VARIABLES FOR GRAPHIC PRINTOUTS
+!
       CHARACTER(LEN=72) SORT3D,SORT2D
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=72) VARIMP
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=72) VARIM3
-!> @brief INITIAL CONDITIONS
-C conditions initiales
+!
+!     INITIAL CONDITIONS
+!
       CHARACTER(LEN=72) CDTINI
-!> @brief ELEMENT
-C element
+!
+!     CHOICE OF ELEMENT
+!
       CHARACTER(LEN=72) ELEMENT
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=3)  BINGEO
-!> @brief
-C binaire du fichier de resultats
+!
+!
+!
       CHARACTER(LEN=3)  BINRES
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=3)  BINPRE
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=3)  BINHYD
-!> @brief
-C
+!
+!     CHOICE OF EQUATIONS TO SOLVE
+!
       CHARACTER(LEN=20) EQUA
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=32) VARCLA(10)
-!> @brief NAMES OF VARIABLES RECOGNISED FROM RESULTS AND GEOMETRY FILES
-C noms des variables reconnues dans les fichiers de resultat et de geometrie
+!
+!     NAMES OF VARIABLES RECOGNISED FROM RESULTS AND GEOMETRY FILES
+!
       CHARACTER(LEN=32) TEXTE(MAXVAR)
-!> @brief NAMES OF VARIABLES RECOGNISED FROM PREVIOUS COMPUTATION FILE
-C noms des variables reconnues dans le fichier de calcul precedent
+!
+!     NAMES OF VARIABLES RECOGNISED FROM PREVIOUS COMPUTATION FILE
+!
       CHARACTER(LEN=32) TEXTPR(MAXVAR)
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=32) TEXT3(MAXVA3)
-!> @brief
-C
+!
+!
+!
       CHARACTER(LEN=32) TEXTP3(MAXVA3)
-!> @brief
-C binaire du fichier des resultats sedimentologiques
+!
+!
+!
       CHARACTER(LEN=3) BIRSED
-!> @brief
-C binaire du fichier du calcul sedimentologique precedent
+!
+!
+!
       CHARACTER(LEN=3) BISUIS
-!> @brief NAMES OF TRACERS
-C noms des traceurs
+!
+!
+!
       CHARACTER(LEN=32) NAMETRAC(32)
 C
 C-----------------------------------------------------------------------
@@ -1846,152 +1880,187 @@ C maillage 2d
 !     2D WORKING MATRIX ALLOCATED WITH THE MESH
 !
       TYPE(BIEF_OBJ), POINTER :: MTRA2D
-!> @brief 2D ELEMENT-ORIENTED WORKING FIELD ALLOCATED WITH THE MESH
-C tableau de travail
+!
+!     2D ELEMENT-ORIENTED WORKING FIELD ALLOCATED WITH THE MESH
+!
       TYPE(BIEF_OBJ), POINTER :: W2
-!> @brief 3D ELEMENT-ORIENTED WORKING FIELD ALLOCATED WITH THE MESH
-C tableau de travail
+!
+!     3D ELEMENT-ORIENTED WORKING FIELD ALLOCATED WITH THE MESH
+!
       TYPE(BIEF_OBJ), POINTER :: W1
-!> @brief BASE TRIANGLE SURFACES
-C
+!
+!     BASE TRIANGLE SURFACES
+!
       TYPE(BIEF_OBJ), POINTER :: SURFA2
-!> @brief TRIANGLE SURFACES, IN 3D
-C
+!
+!     TRIANGLE SURFACES, IN 3D
+!
       TYPE(BIEF_OBJ), POINTER :: SURFA3
-!> @brief LATERAL BOUNDARY NORMAL VECTORS DEFINED AT THE NODES
-C composantes du vecteur normal aux points frontieres
+!
+!     LATERAL BOUNDARY NORMAL VECTORS DEFINED AT THE NODES
+!
       TYPE(BIEF_OBJ), POINTER :: XNEBOR2
-!> @brief LATERAL BOUNDARY NORMAL VECTORS DEFINED AT THE NODES
-C composantes du vecteur normal aux points frontieres
+!
+!     LATERAL BOUNDARY NORMAL VECTORS DEFINED AT THE NODES
+!
       TYPE(BIEF_OBJ), POINTER :: YNEBOR2
-!> @brief 2D NORMAL VECTORS DEFINED PER BOUNDARY SEGMENT
-C
+!
+!     2D NORMAL VECTORS DEFINED PER BOUNDARY SEGMENT
+!
       TYPE(BIEF_OBJ), POINTER :: XSGBOR2
-!> @brief 2D NORMAL VECTORS DEFINED PER BOUNDARY SEGMENT
-C
+!
+!     2D NORMAL VECTORS DEFINED PER BOUNDARY SEGMENT
+!
       TYPE(BIEF_OBJ), POINTER :: YSGBOR2
-!> @brief 3D NORMAL VECTORS DEFINED PER BOUNDARY ELEMENT
-C
+!
+!     3D NORMAL VECTORS DEFINED PER BOUNDARY ELEMENT
+!
       TYPE(BIEF_OBJ), POINTER :: XSGBOR3
-!> @brief 3D NORMAL VECTORS DEFINED PER BOUNDARY ELEMENT
-C
+!
+!     3D NORMAL VECTORS DEFINED PER BOUNDARY ELEMENT
+!
       TYPE(BIEF_OBJ), POINTER :: YSGBOR3
-!> @brief 3D NORMAL VECTORS DEFINED PER BOUNDARY ELEMENT
-C
+!
+!     3D NORMAL VECTORS DEFINED PER BOUNDARY ELEMENT
+!
       TYPE(BIEF_OBJ), POINTER :: ZSGBOR3
-!> @brief CONNECTIVITY TABLES IN 2D  : (ELEMENT NUMBER AND LOCAL NODE NUMBER) --> GLOBAL NODE NUMBER
-C table de connectivite pour les elements 2d
+!
+!     CONNECTIVITY TABLES IN 2D  : (ELEMENT NUMBER AND LOCAL NODE NUMBER) --> GLOBAL NODE NUMBER
+!
       TYPE(BIEF_OBJ), POINTER :: IKLE2
-!> @brief CONNECTIVITY TABLES IN 3D : (ELEMENT NUMBER AND LOCAL NODE NUMBER) --> GLOBAL NODE NUMBER
-C table de connectivite pour les elements 3d
+!
+!     CONNECTIVITY TABLES IN 3D : (ELEMENT NUMBER AND LOCAL NODE NUMBER) --> GLOBAL NODE NUMBER
+!
       TYPE(BIEF_OBJ), POINTER :: IKLE3
-!> @brief CONNECTIVITY TABLES IN 2D : (NODE BOUNDARY NUMBER) --> GLOBAL NODE NUMBER
-C correspondance numerotation frontiere et numerotation globale en 2d
+!
+!     CONNECTIVITY TABLES IN 2D : (NODE BOUNDARY NUMBER) --> GLOBAL NODE NUMBER
+!
       TYPE(BIEF_OBJ), POINTER :: NBOR2
-!> @brief CONNECTIVITY TABLES IN 3D : (NODE BOUNDARY NUMBER) --> GLOBAL NODE NUMBER
-C correspondance numerotation frontiere et numerotation globale en 3d
+!
+!     CONNECTIVITY TABLES IN 3D : (NODE BOUNDARY NUMBER) --> GLOBAL NODE NUMBER
+!
       TYPE(BIEF_OBJ), POINTER :: NBOR3
-!> @brief COORDINATES OF POINTS IN THE 3D MESH
-C coordonnees du maillage 3d
+!
+!     COORDINATES OF POINTS IN THE 3D MESH
+!
       DOUBLE PRECISION, DIMENSION(:), POINTER :: X
-!> @brief COORDINATES OF POINTS IN THE 3D MESH
-C coordonnees du maillage 3d
+!
+!     COORDINATES OF POINTS IN THE 3D MESH
+!
       DOUBLE PRECISION, DIMENSION(:), POINTER :: Y
-!> @brief COORDINATES OF POINTS IN THE 3D MESH
-C coordonnees du maillage 3d
+!
+!     COORDINATES OF POINTS IN THE 3D MESH
+!
       DOUBLE PRECISION, DIMENSION(:), POINTER :: Z
-!> @brief NUMBER OF ELEMENTS IN THE 2D MESH
-C nombre total d'elements dans le maillage 2d
+!
+!     NUMBER OF ELEMENTS IN THE 2D MESH
+!
       INTEGER, POINTER:: NELEM2
-!> @brief NUMBER OF ELEMENTS IN THE 3D MESH
-C nombre total d'elements dans le maillage 3d
+!
+!     NUMBER OF ELEMENTS IN THE 3D MESH
+!
       INTEGER, POINTER:: NELEM3
-!> @brief MAXIMUM NUMBER OF ELEMENTS IN THE 2D MESH
-C nombre maximal d'elements dans le maillage 2d
+!
+!     MAXIMUM NUMBER OF ELEMENTS IN THE 2D MESH
+!
       INTEGER, POINTER:: NELMAX2
-!> @brief MAXIMUM NUMBER OF ELEMENTS IN THE 3D MESH
-C nombre maximal d'elements dans le maillage 3d
+!
+!     MAXIMUM NUMBER OF ELEMENTS IN THE 3D MESH
+!
       INTEGER, POINTER:: NELMAX3
-!> @brief NUMBER OF BOUNDARY POINTS IN THE 2D MESH
-C nombre de points frontiere du maillage 2d
+!
+!     NUMBER OF BOUNDARY POINTS IN THE 2D MESH
+!
       INTEGER, POINTER:: NPTFR2
-!> @brief NUMBER OF BOUNDARY POINTS IN THE 3D MESH
-C nombre de points sur les cotes 3d
+!
+!     NUMBER OF BOUNDARY POINTS IN THE 3D MESH
+!
       INTEGER, POINTER:: NPTFR3
-!> @brief
-C
+!
+!
+!
       INTEGER, POINTER:: NELEB, NELEBX
-!> @brief MAXIMUM NUMBER OF BOUNDARY POINTS IN THE 2D MESH
-C
+!
+!     MAXIMUM NUMBER OF BOUNDARY POINTS IN THE 2D MESH
+!
       INTEGER, POINTER:: NPTFRX2
-!> @brief MAXIMUM NUMBER OF BOUNDARY POINTS IN THE 3D MESH
-C
+!
+!     MAXIMUM NUMBER OF BOUNDARY POINTS IN THE 3D MESH
+!
       INTEGER, POINTER:: NPTFRX3
-!> @brief DIMENSION OF 2D SPACE
-C
+!
+!     DIMENSION OF 2D SPACE
+!
       INTEGER, POINTER:: DIM2
-!> @brief DIMENSION OF 3D SPACE
-C
+!
+!     DIMENSION OF 3D SPACE
+!
       INTEGER, POINTER:: DIM3
-!> @brief TYPE OF 2D ELEMENT
-C
+!
+!     TYPE OF 2D ELEMENT
+!
       INTEGER, POINTER:: TYPELM2
-!> @brief TYPE OF 3D ELEMENT
-C
+!
+!     TYPE OF 3D ELEMENT
+!
       INTEGER, POINTER:: TYPELM3
-!> @brief NUMBER OF POINTS IN THE 2D MESH
-C nombre de points du maillage 2d
+!
+!     NUMBER OF POINTS IN THE 2D MESH
+!
       INTEGER, POINTER:: NPOIN2
-!> @brief NUMBER OF POINTS IN THE 3D MESH
-C nombre de points du maillage 3d
+!
+!     NUMBER OF POINTS IN THE 3D MESH
+!
       INTEGER, POINTER:: NPOIN3
-!> @brief MAXIMUM NUMBER OF POINTS IN THE 2D MESH
-C
+!
+!     MAXIMUM NUMBER OF POINTS IN THE 2D MESH
+!
       INTEGER, POINTER:: NPMAX2
-!> @brief MAXIMUM NUMBER OF POINTS IN THE 3D MESH
-C
+!
+!     MAXIMUM NUMBER OF POINTS IN THE 3D MESH
+!
       INTEGER, POINTER:: NPMAX3
-!> @brief MAXIMUM NUMBER OF POINTS NEIGHBOURS OF A POINT IN 2D
-C
+!
+!     MAXIMUM NUMBER OF POINTS NEIGHBOURS OF A POINT IN 2D
+!
       INTEGER, POINTER:: MXPTVS2
-!> @brief MAXIMUM NUMBER OF POINTS NEIGHBOURS OF A POINT IN 3D
-C
+!
+!     MAXIMUM NUMBER OF POINTS NEIGHBOURS OF A POINT IN 3D
+!
       INTEGER, POINTER:: MXPTVS3
-!> @brief MAXIMUM NUMBER OF ELEMENTS NEIGHBOURS OF A POINT IN 2D
-C
+!
+!     MAXIMUM NUMBER OF ELEMENTS NEIGHBOURS OF A POINT IN 2D
+!
       INTEGER, POINTER:: MXELVS2
-!> @brief MAXIMUM NUMBER OF ELEMENTS NEIGHBOURS OF A POINT IN 3D
-C
+!
+!     MAXIMUM NUMBER OF ELEMENTS NEIGHBOURS OF A POINT IN 3D
+!
       INTEGER, POINTER:: MXELVS3
-!> @brief VECTOR LENGTH OF THE MACHINE (LV2=LV3, FOR SIGMA MESH)
-C longueur du vecteur pour la vectorisation
+!
+!     VECTOR LENGTH OF THE MACHINE (LV2=LV3, FOR SIGMA MESH)
+!
       INTEGER, POINTER:: LV
-C
-C-----------------------------------------------------------------------
-C (11) CONSTANTS INITIALISED IN CSTKEP AND CREF_FREDSOE (FOR ZREF)
-C-----------------------------------------------------------------------
-C
-!> @brief VON KARMAN CONSTANT
-C constante de karman
+!
+!-----------------------------------------------------------------------
+! (11) CONSTANTS INITIALISED IN CSTKEP AND CREF_FREDSOE (FOR ZREF)
+!-----------------------------------------------------------------------
+!
+!
+!     FOR MONITORING K-EPSILON MODEL (SEE SUBROUTINE CSTKEP)
+!
+      DOUBLE PRECISION PERNORM2,PERPROD,RIMIN,RIMAX
+!
+!     VON KARMAN CONSTANT
+!
       DOUBLE PRECISION :: KARMAN
-!> @brief K-EPSILON CONSTANT
-C constante du modele k-epsilon
+!
+!     K-EPSILON CONSTANT
+!
       DOUBLE PRECISION :: CMU
-!> @brief K-EPSILON CONSTANT
-C constante du modele k-epsilon
-      DOUBLE PRECISION :: C1
-!> @brief K-EPSILON CONSTANT
-C constante du modele k-epsilon
-      DOUBLE PRECISION :: C2
-!> @brief K-EPSILON CONSTANT
-C constante du modele k-epsilon
-      DOUBLE PRECISION :: SIGMAK
-!> @brief K-EPSILON CONSTANT
-C constante du modele k-epsilon
-      DOUBLE PRECISION :: SIGMAE
-!> @brief K-EPSILON CONSTANT
-C constante du modele k-epsilon
-      DOUBLE PRECISION :: VIRT
+!
+!     K-EPSILON CONSTANTS
+!
+      DOUBLE PRECISION :: C1,C2,SIGMAK,SIGMAE,VIRT
 !
 !     SCHMIDT NUMBER
 !
@@ -2024,12 +2093,13 @@ C constante du modele k-epsilon
 !
 !
       TYPE(BIEF_OBJ), TARGET :: ZREF
-C-----------------------------------------------------------------------
-C
-C      12) TELEMAC-3D FILES
-C
-C-----------------------------------------------------------------------
-C
+!
+!-----------------------------------------------------------------------
+!
+!      12) TELEMAC-3D FILES
+!
+!-----------------------------------------------------------------------
+!
 !
 !     MAXIMUM NUMBER OF FILES
 !

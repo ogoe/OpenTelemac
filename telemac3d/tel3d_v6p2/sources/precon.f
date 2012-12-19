@@ -95,9 +95,9 @@
      &                                   N_ADV,BYPASS,WEL,MMURD,MURD_TF,
      &                                   WSCONV,VOLU2D,NONHYD,GRADEB,
      &                                   ITURBV,MTRA2,FC3D,IT1,IT2,IT3,
-     &                                   IT4,TRAV3,GRADEB,ZCONV,IKLE2,
+     &                                   IT4,TRAV3,ZCONV,IKLE2,
      &                                   UCONVC,VCONVC,OPT_HNEG,WCONV,
-     &                                   ZCHAR,NELEM2,NPLINT,MSUPG,
+     &                                   ZCHAR,NELEM2,MSUPG,
      &                                   UNSV2D,NSCE,SOURCES,SEM2D,
      &      U,GRADZF,SEM3D,DSSUDT,OPTBAN,INFOGR
 !

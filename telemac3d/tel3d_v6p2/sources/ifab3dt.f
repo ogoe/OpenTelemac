@@ -4,7 +4,7 @@
 !
      &(IFABOR,IFABOR2D,LIUBOF,LIUBOL,LIUBOS,KP1BOR,NELBOR,NULONE,
      & IKLE2,IKLE,NELEM2,NELMAX,
-     & NPOIN2,NPTFR,NPLAN,NPLINT,NETAGE,KLOG,TRANSF)
+     & NPOIN2,NPTFR,NPLAN,NETAGE,KLOG,TRANSF)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P3                                   10/09/2012
@@ -37,7 +37,6 @@
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 3D
 !| NETAGE         |-->| NUMBER OF PLANES - 1
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
-!| NPLINT         |-->| NUMBER OF INTERMEDIATE PLANE
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D
 !| NPTFR          |-->| NUMBER OF 2D BOUNDARY POINTS
 !| NULONE         |-->| GOES WITH ARRAY NELBOR. NELBOR GIVES THE 
@@ -57,7 +56,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)          :: NELEM2,NPOIN2,NETAGE,NPLAN,TRANSF
-      INTEGER, INTENT(IN)          :: NPTFR,NPLINT,KLOG,NELMAX
+      INTEGER, INTENT(IN)          :: NPTFR,KLOG,NELMAX
       INTEGER, INTENT(INOUT)       :: IFABOR(NELMAX,4)
       INTEGER, INTENT(IN)          :: IFABOR2D(NELEM2,3)
       INTEGER, INTENT(IN)          :: LIUBOF(NPOIN2),LIUBOS(NPOIN2)

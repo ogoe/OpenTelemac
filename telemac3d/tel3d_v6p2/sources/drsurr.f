@@ -6,7 +6,7 @@
      &  IND_T,IND_S)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES DELTAR = (RHO-RHO0)/RHO0.
@@ -38,6 +38,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        18/12/2012
+!+        V6P3
+!+   Comments changed, RHO0 had two meanings, now RHOREF and RHO0.
+!+   Name of corresponding keyword changed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETAC          |-->| -(1/RHO)*(DRHO/DT) FOR TRACERS WHEN CONSTANT
 !| DELTAR         |<->| (RHO-RHO0)/RHO0
@@ -46,7 +52,7 @@
 !| IND_T          |-->| INDEX FOR TEMPERATURE
 !| NTRAC          |-->| NUMBER OF ACTIVE TRACERS
 !| RHO            |<->| WATER DENSITY
-!| RHO0           |-->| WATER DENSITY AT REFERENCE CONCENTRATION
+!| RHO0           |-->| AVERAGE WATER DENSITY IN THE DOMAIN
 !| RHOS           |-->| SEDIMENT DENSITY
 !| SEDI           |-->| IF YES, THERE IS SEDIMENT
 !| T0AC           |-->| REFERENCE CONCENTRATION OF TRACERS
@@ -79,9 +85,9 @@
         IF(DENLAW.EQ.1) THEN
 !
 !        LAW ACCORDING TO TEMPERATURE
-!        RHO = RHO0(1-(7(T-T0)**2)*1.E-6)
-!                                               -3
-!        WITH T0=4degC   AND   RHO0=999.972 KG.M
+!        RHO = RHOREF(1-(7(T-T0)**2)*1.E-6)
+!                                                 -3
+!        WITH T0=4degC   AND   RHOREF=999.972 KG.M
 !
 !        NOTE: ONLY THE GRADIENT OF DELTAR APPEARS IN EQUATIONS
 !
@@ -94,10 +100,10 @@
         ELSEIF(DENLAW.EQ.2) THEN
 !
 !        LAW ACCORDING TO SALINITY S
-!        RHO = RHO0(1+750S*1.E-6)
+!        RHO = RHOREF(1+750S*1.E-6)
 !
-!                              -3
-!        WITH RHO0=999.972 KG.M
+!                                -3
+!        WITH RHOREF=999.972 KG.M
 !
          CALL OS( 'X=CY    ',X=RHO,Y=TA%ADR(IND_S)%P,C=750.D-6)
          CALL OS( 'X=X+C   ',X=RHO,C=1.D0)
@@ -106,9 +112,9 @@
         ELSEIF(DENLAW.EQ.3) THEN
 !
 !        LAW ACCORDING TO BOTH TEMPERATURE AND SALINITY
-!        RHO = RHO0(1-(7(T-T0)**2-750S)*1.E-6)
-!                                               -3
-!        WITH T0=4degC   AND   RHO0=999.972 KG.M
+!        RHO = RHOREF(1-(7(T-T0)**2-750S)*1.E-6)
+!                                                 -3
+!        WITH T0=4degC   AND   RHOREF=999.972 KG.M
 !
          CALL OS( 'X=Y+C   ',X=RHO,Y=TA%ADR(IND_T)%P,C=-4.D0  )
          CALL OS( 'X=XY    ',X=RHO,Y=RHO)

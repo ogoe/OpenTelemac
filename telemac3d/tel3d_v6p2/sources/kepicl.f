@@ -57,6 +57,8 @@
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS IN 2D
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_TELEMAC3D, ONLY : LIMKF,LIMEF,LIMKS,LIMES
+!
       USE BIEF
 !
       IMPLICIT NONE
@@ -105,15 +107,33 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO IPOIN2 = 1,NPOIN2
-        IF(LIUBOF(IPOIN2).EQ.KSORT) THEN
-          LIKBOF(IPOIN2) = KSORT
-          LIEBOF(IPOIN2) = KSORT
-        ELSE
+      IF(LIMKF.EQ.2) THEN
+        DO IPOIN2 = 1,NPOIN2
           LIKBOF(IPOIN2) = KENT
+        ENDDO
+      ELSE
+        DO IPOIN2 = 1,NPOIN2
+          IF(LIUBOF(IPOIN2).EQ.KSORT) THEN
+            LIKBOF(IPOIN2) = KSORT
+          ELSE
+            LIKBOF(IPOIN2) = KENT
+          ENDIF
+        ENDDO
+      ENDIF
+!
+      IF(LIMEF.EQ.2) THEN
+        DO IPOIN2 = 1,NPOIN2
           LIEBOF(IPOIN2) = KENT
-        ENDIF
-      ENDDO
+        ENDDO
+      ELSE
+        DO IPOIN2 = 1,NPOIN2
+          IF(LIUBOF(IPOIN2).EQ.KSORT) THEN
+            LIEBOF(IPOIN2) = KSORT
+          ELSE
+            LIEBOF(IPOIN2) = KENT
+          ENDIF
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -121,12 +141,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      DO IPOIN2 = 1,NPOIN2
-        LIKBOS(IPOIN2) = KSORT
-        LIEBOS(IPOIN2) = KSORT
-      ENDDO
+      IF(LIMES.EQ.2) THEN
+        DO IPOIN2 = 1,NPOIN2
+          LIKBOS(IPOIN2) = KENT
+        ENDDO
+      ELSE
+        DO IPOIN2 = 1,NPOIN2
+          LIKBOS(IPOIN2) = KSORT
+        ENDDO
+      ENDIF
+!
+      IF(LIMKS.EQ.2) THEN
+        DO IPOIN2 = 1,NPOIN2
+          LIEBOS(IPOIN2) = KENT
+        ENDDO
+      ELSE
+        DO IPOIN2 = 1,NPOIN2
+          LIEBOS(IPOIN2) = KSORT
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

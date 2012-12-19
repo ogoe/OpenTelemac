@@ -58,6 +58,8 @@
       CHARACTER(LEN=144) :: LIGNE
       CHARACTER(LEN=1)   :: WHAT
 !
+      INTRINSIC CHAR
+!
 !-----------------------------------------------------------------------
 !
       NMAXPTS=0
@@ -76,7 +78,8 @@
 !     IDENTIFIES FIRST CHARACTER OF NAME
 2     CONTINUE
       IDEB=1
-      IF(LIGNE(IDEB:IDEB).EQ.' ') THEN
+!     SKIPPING SPACES OR TABS
+      IF(LIGNE(IDEB:IDEB).EQ.' '.OR.LIGNE(IDEB:IDEB).EQ.CHAR(9)) THEN
         IDEB=IDEB+1
         IF(IDEB.EQ.145) THEN
           READ(NFIC,FMT='(A)') LIGNE
