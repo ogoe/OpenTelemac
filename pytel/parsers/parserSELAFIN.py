@@ -62,8 +62,8 @@
 # ~~> dependencies towards standard python
 from struct import unpack,pack
 import sys
-from os import path,walk,getcwd
-from fnmatch import fnmatch
+from os import path,getcwd
+import glob
 import numpy as np
 # ~~> dependencies towards other modules
 #np.set_printoptions(precision=16)
@@ -199,7 +199,7 @@ def subsetVariablesSLF(vars,ALLVARS):
    for ivar in range(len(v)):
       vi = v[ivar].split(':')[0]
       for jvar in range(len(ALLVARS)):
-         if vi.lower() in ALLVARS[jvar].strip().lower():
+         if vi.lower() in ALLVARS[jvar].lower():  #.strip()
             ids.append(jvar)
             names.append(ALLVARS[jvar].strip())
    if len(ids) < len(v):
@@ -214,7 +214,7 @@ def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,va
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    subset = time  # /!\ History requires 2 values
    if time[0] < 0: subset = [ 0,max( 0, len(tags['cores']) + time[0] ) ]
-   if time[1] < 0: subset = [ time[0],max( 0, len(tags['cores']) + time[1] ) ]
+   if time[1] < 0: subset = [ time[0],max( 0, len(tags['cores']) + time[1] + 1 ) ]
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    z = np.zeros((len(varsIndexes),len(bn),len(tags['cores'])))
@@ -250,7 +250,7 @@ def getEdgesSLF(IKLE):
 def getNeighboursSLF(IKLE):
 
    neighbours = {}; ne = []; insiders = {}
-   print '    +> start listing neighbours of edges'
+   #print '    +> start listing neighbours of edges'
    ibar = 0; pbar = ProgressBar(maxval=(3*len(IKLE))).start()
    for e,i in zip(IKLE,range(len(IKLE))):
       nk = neighbours.keys(); ne.append({})
@@ -266,7 +266,7 @@ def getNeighboursSLF(IKLE):
             ne[j][(e[(k+1)%3],e[k])] = i
             insiders.update({(e[k],e[(k+1)%3]):[i,j]})
             del neighbours[(e[k],e[(k+1)%3])]
-   pbar.write('    +> listing neighbours of edges completed',ibar)
+   #pbar.write('    +> listing neighbours of edges completed',ibar)
    pbar.finish()
 
    return ne,neighbours,insiders
@@ -734,6 +734,7 @@ class SELAFIN:
       if varsIndexes == []: varsIndexes = self.VARINDEX
 
       # ~~ Ordering the nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # This assumes that nodes starts at 1
       onodes = np.sort(np.array( zip(range(len(nodes)),nodes), dtype=[ ('0',int),('1',int) ] ),order='1')
 
       # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -911,7 +912,7 @@ class PARAFINS(SELAFINS):
       self.slf = SELAFIN(fileName)
       if root != None:
          # ~~> Loading the individual headers
-         self.add(root)
+         self.addRoot(root)
          # ~~> Making sure there are all inter-compatible
          if self.suite and self.merge:
             self.slf.tags = self.slfs[0].tags
@@ -926,18 +927,15 @@ class PARAFINS(SELAFINS):
          self.mapPOIN = np.zeros(self.slf.NPOIN3,dtype=np.int)
          for i,slf in zip(range(len(self.slfs)),self.slfs): self.mapPOIN[slf.IPOBO-1] = i
 
-   def add(self,root):
+   def addRoot(self,root):
       # ~~> list all entries
       diroot = path.dirname(root)
-      if path.dirname(root) == '': diroot = getcwd()
-      for dp,dn,filenames in walk(diroot): break
+      if path.dirname(root).strip() == '': diroot = getcwd()
       root = path.join(diroot,path.basename(root))
+      slfnames = glob.glob(root+'?????-?????')
       # ~~> match expression
-      slfnames = []
-      for fo in filenames:
-         if fnmatch(fo,path.basename(root)+'?????-?????'): slfnames.append(path.join(dp,fo))
       if slfnames == []:
-         print "... Could not find any sub-files to the root: ",path.basename(root)
+         print "... Could not find any sub-files to the root: ",root
          return []
       npsize = len(slfnames)
       for nptime in range(npsize):
@@ -949,7 +947,8 @@ class PARAFINS(SELAFINS):
       ibar = 0; pbar = ProgressBar(maxval=len(slfnames)).start()
       for file in sorted(slfnames):
          ibar += 1; pbar.write('         ~> '+path.basename(file),ibar)
-         SELAFINS.add(self,file)
+         slf = SELAFIN(file)
+         self.slfs.append(slf)
          pbar.update(ibar)
       pbar.finish()
       return
