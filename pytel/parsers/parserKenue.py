@@ -110,6 +110,9 @@ def getInS(file):
    # This is also fairly fast, so you might not need a progress bar
    poly = []; type = []; npoin = 0
    while icore < len(core):
+      if core[icore].strip() == '':
+         icore += 1
+         continue
       # ~~> polygon head
       proc = re.match(var_1int,core[icore])
       if not proc:
@@ -118,16 +121,27 @@ def getInS(file):
       nrec = int(proc.group('number'))
       a = proc.group('after').strip().split()
       if len(a) != natrbut:
-         print '... Could not find the correct number of attribute:',core[icore]
+         print '... Could not find the correct number of attribute:',core[icore],', ',natrbut,' expected'
          sys.exit()
       for i in atrbut.keys(): atrbut[i].append(a[i-1])
       xyi = []; icore += 1
       for irec in range(nrec):
-         proc = re.match(var_2dbl,core[icore+irec])
+         nbres = core[icore+irec].split()
+         proc = re.match(var_1dbl,nbres[0])
          if not proc:
-            print '\nCould not parse the following polyline record: '+core[icore+irec+1]
-            sys.exit()
-         xyi.append([float(proc.group('number1')),float(proc.group('number2'))])
+            proc = re.match(var_1int,nbres[0])
+            if not proc:
+               print '\nCould not parse the following polyline record: '+core[icore+irec]
+               sys.exit()
+         nbres[0] = float(proc.group('number'))
+         proc = re.match(var_1dbl,nbres[1])
+         if not proc:
+            proc = re.match(var_1int,nbres[1])
+            if not proc:
+               print '\nCould not parse the following polyline record: '+core[icore+irec]
+               sys.exit()
+         nbres[1] = float(proc.group('number'))
+         xyi.append(nbres)
       if xyi != []:
          cls = 0
          if isClose(xyi[0],xyi[len(xyi)-1],size=10) :
@@ -140,7 +154,7 @@ def getInS(file):
 
    return head,fileType,npoin,poly,type,atrbut
 
-def putInS(file,head,fileType,poly,type=None):
+def putInS(file,head,fileType,poly,type=None,atrbut=None):
 
    # ~~ Write head ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if head != []: core = head
@@ -158,11 +172,18 @@ def putInS(file,head,fileType,poly,type=None):
          if isClose(ip[0],ip[len(ip)-1]): type.append(True)
          else: type.append(False)
 
+   # ~~ Look for closed lines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if atrbut == None:
+      atrbut = {1:['name']}
+      for p in poly: atrbut[1].append('0')
+
    # ~~ Write body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for ip,it in zip(poly,type):
+   for i,ip,it in zip(range(len(poly)),poly,type):
       il = len(ip)
       if il != 0 and not isClose(ip[0],ip[len(ip)-1]): il += it
-      core.append(str(il)+' 0')  #TODO: you should use proper values
+      line = str(il)
+      for a in range(len(atrbut.keys())): line  = line + ' ' + atrbut[a+1][i+1]
+      core.append(line)
       if fileType == 'i2s':
          for xyi in ip: core.append(str(xyi[0])+' '+str(xyi[1]))
          if il != len(ip): core.append(str(ip[0][0])+' '+str(ip[0][1]))
@@ -186,7 +207,23 @@ class InS:
          self.head,self.fileType,self.npoin,self.poly,self.type,self.atrbut = getInS(self.fileName)
 
    def putContent(self,fileName):
-      putInS(fileName,self.head,self.fileType,self.poly,self.type)
+      putInS(fileName,self.head,self.fileType,self.poly,self.type,self.atrbut)
+
+   def sph2ll(self,(long0,lat0)):
+      radius  = 6371000.
+      long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+      const = np.tan( lat0/2. + np.pi/4. )
+      for poly in self.poly:
+         for ip in range(len(poly)):
+            poly[ip] = [np.rad2deg( poly[ip][0]/radius + long0 ),np.rad2deg( 2.*np.arctan( const*np.exp(poly[ip][1]/radius) ) - np.pi/2. )]
+
+   def ll2sph(self,(long0,lat0)):
+      radius  = 6371000.
+      long0 = np.deg2rad(float(long0)); lat0 = np.deg2rad(float(lat0))
+      const = np.tan( lat0/2. + np.pi/4. )
+      for poly in self.poly:
+         for ip in range(len(poly)):
+            poly[ip] = [radius * ( np.deg2rad(poly[ip][0]) - long0 ),radius * ( np.log( np.tan( np.deg2rad(poly[ip][1])/2. + np.pi/4. ) ) - np.log( const ) )]
 
    def removeDuplicates(self):
       ibar = 0; pbar = ProgressBar(maxval=self.npoin).start()
