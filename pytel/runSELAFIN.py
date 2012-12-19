@@ -87,57 +87,6 @@ from utils.progressbar import ProgressBar
 # ____/ Secondary Classes /________________________________________/
 #
 
-class CombineClusterSELAFIN(SELAFINS):
-
-   def __init__(self, NoDataValue):
-      self.slfs = []
-      self.slf = None
-      self.NoDataValue = NoDataValue
-
-   def putContent(self,fileName): 
- 
-      self.slf.fole = open(fileName,'wb')
-      # take list of variable from first item in the list
-      slf = self.slfs[0]
-      # slf.fole = self.slf.fole
-      idvars = []
-      self.slf.VARNAMES = slf.VARNAMES
-      self.slf.VARUNITS = slf.VARUNITS
-      self.slf.CLDNAMES = slf.CLDNAMES
-      self.slf.CLDUNITS = slf.CLDUNITS
-      self.slf.VARINDEX = slf.VARINDEX
-      self.slf.NBV1 = slf.NBV1
-      self.slf.NBV2 = slf.NBV2
-      for slf in self.slfs[1:]: # check that all files contain same list of variables
-          if self.slf.VARNAMES != slf.VARNAMES:
-              print 'All files in the list should contain same VARNAMES list'
-              return
-          if self.slf.CLDNAMES != slf.CLDNAMES:
-              print 'All files in the list should contain same CLDNAMES list'
-              return
-      ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
-      putHeaderSLF(self.slf)
-      for t in range(len(self.slf.tags['times'])):
-         ibar += 1
-         appendCoreTimeSLF(self.slf,t)
-         slf = self.slfs[0]
-         values = slf.getVALUES(t)
-         values[values == self.NoDataValue] = 0
-         check_NoDataValue_nodes = (values == self.NoDataValue) # true if no data
-         for slf in self.slfs[1:]:
-            values_this_slf = slf.getVALUES(t)
-            values_this_slf[values_this_slf == self.NoDataValue] = 0
-            values = values + values_this_slf
-            check_NoDataValue_nodes *= (values_this_slf == self.NoDataValue)
-         appendCoreVarsSLF(self.slf,values)
-         pbar.update(ibar)
-      pbar.finish()
-      self.slf.fole.close()
-
-      if check_NoDataValue_nodes.any():
-         print 'Warning : Some nodes have no value'
-      
-
 class chopSELAFIN(PARAFINS):
 
    chopFrom = 0; chopStep = 1; chopStop = -1
