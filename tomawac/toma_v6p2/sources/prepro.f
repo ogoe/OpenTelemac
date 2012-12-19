@@ -187,45 +187,20 @@
      &     IFABOR(IEL,3).GT.0) IFABOR(IEL,3)=-1
       ENDDO
 !
-      IF(DIFFRA.EQ.0) THEN      
+      WRITE(LU,*) 'FREQUENCE :',JF
 !
-!       CALLING CHARAC WITH NOMB=0, FN AND FTILD, THOUGH NOT USED
-!       WILL GIVE THE NUMBER OF POINTS, HENCE SHZ
-!
-        WRITE(LU,*) 'FREQUENCE :',JF
-!
-        CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
-     &              CX,CY,CT,CT,TETA,TETA,DT,MESH3D%IFABOR,IELM3,
-     &              NPOIN2,NPLAN,1,1,.FALSE.,BID,SHP%ADR(JF)%P,
-     &              SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,TB,
-     &              ELT(1,JF),ETA(1,JF),ETA(1,JF),ITR01,
-     &              ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
-     &              SIKLE2,
-     &              MESH%SURDET,
-!                   A POSTERIORI INTERPOLATION
-     &              .TRUE.,
-!                   AND PERIODICITY 
-     &              .TRUE.)
-!    
-      ELSE
-!
-        CALL INIPIE
-     &( CX%R,CY%R,CT%R,X,Y,
-     &  SHP%ADR(JF)%P%R,
-     &  SHZ%ADR(JF)%P%R,
-     &  ELT(1,JF),ETA(1,JF),
-     &  TRA01,TRA01(1,2),TRA01(1,3),TETA%R,IKLE2,NPOIN2,NELEM2,NPLAN,
-     &  ITR01,ITR01,ITR01,NELEM2,NPOIN2,IFABOR)
-!
-        CALL MPOINT
-     &  (CX%R,CY%R,CT%R,
-     &   DT,X,Y,TETA%R,IKLE2,IFABOR,ETAP1,TRA01,TRA01(1,2),
-     &   TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6),
-     &   SHP%ADR(JF)%P%R,SHZ%ADR(JF)%P%R,ELT(1,JF),ETA(1,JF),
-     &   ITR01(1,1),NPOIN3,
-     &   NPOIN2,NELEM2,NPLAN,JF,SURDET,-1,ITR01(1,2))
-!
-      ENDIF   
+      CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
+     &            CX,CY,CT,CT,TETA,TETA,DT,MESH3D%IFABOR,IELM3,
+     &            NPOIN2,NPLAN,1,1,.FALSE.,BID,SHP%ADR(JF)%P,
+     &            SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,TB,
+     &            ELT(1,JF),ETA(1,JF),ETA(1,JF),ITR01,
+     &            ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
+     &            SIKLE2,
+     &            MESH%SURDET,
+!                 A POSTERIORI INTERPOLATION
+     &            .TRUE.,
+!                 AND PERIODICITY 
+     &            .TRUE.)
 !
 200   CONTINUE
 !

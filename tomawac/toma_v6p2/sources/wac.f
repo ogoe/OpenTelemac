@@ -711,7 +711,7 @@
 !COUPLAGE TELEMAC-TOMAWAC : en cas de couplage, actualisation
 !         des courants et de l'hauteur d'eau (et de leurs gradients)
 !         tous les DT_TEL
-      IF((MAREE.AND.LT.EQ.LT1).OR.
+      IF(MAREE.AND.LT.EQ.LT1.OR.
      &   (PART.EQ.1.AND.LT_WAC.EQ.1)) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CORMAR'       
         CALL CORMAR
@@ -723,14 +723,15 @@
         ENDDO
 !
 !......11.3.1 PREPARATION DE LA PROPAGATION (REMONTEE DES CARACTERISTIQUES).
-!      """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!      
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INIPHY'
         CALL INIPHY
      & ( SXK%R  , SCG%R , SB%R , SDEPTH%R , SFR%R  ,
      &   SCOSF%R, NPOIN2   , NF      , PROINF      , SPHE      )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE INIPHY'
 !
-        IF (PROP) THEN
+        IF(PROP) THEN
+!
          CALL IMPR(LISPRD,LT,AT,LT,1)
          CALL IMPR(LISPRD,LT,AT,LT,2)
          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREPRO 2'
@@ -767,8 +768,8 @@
           IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREDIF'
           CALL PREDIF
 !        EX-SCX%R     EX-SCY%R (MEMORY OPTIMISATION)
-     & ( STSDER%R   , STSTOT%R     , SCT%R    , DT    ,
-     &   MESH%X%R  , MESH%Y%R , STETA%R ,
+     & ( STSDER   , STSTOT    , SCT    , DT    ,
+     &   MESH%X%R  , MESH%Y%R , STETA ,
      &   SCOSTE%R , SSINTE%R  , SFR%R    , MESH%IKLE%I     ,
      &   SIBOR%I  , SETAP1%I  , STRA01%R , SSHP1 , SSHZ    , 
      &   SELT%I   , SETA%I    , SDEPTH%R,
@@ -781,7 +782,8 @@
      &   SDDY%R   , F2DIFM    , NBOR     , NPTFR   ,
      &   SXKONPT%R , SRK%R    , SRX%R    ,
      &   SRY%R    , SRXX%R    , SRYY%R   , SNEIGB%I,
-     &   SNB_CLOSE%I, DIFFRA  , MAXNSP   , FLTDIF   )
+     &   SNB_CLOSE%I, DIFFRA  , MAXNSP   , FLTDIF  ,
+     &   MESH3D,MESH,IELM3,TB,ISUB,MESH%IKLE)
          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREDIF'
         ENDIF
       ENDIF
