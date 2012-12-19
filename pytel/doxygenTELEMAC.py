@@ -547,7 +547,7 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
    # ~~ Scans all source files to build a relation database ~~
-   fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,BYPASS)
+   fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,BYPASS)
 
    # ~~ Scann all source files to update Doxygen ~~~~~~~~~~~~~~~~
    for mod in fic.keys():
@@ -558,7 +558,7 @@ if __name__ == "__main__":
          # ~~ Read the content of the source file ~~~~~~~~~~~~
          ilines = getFileContent(ifile)
          # ~~ Update its Doxygen content ~~~~~~~~~~~~~~~~~~~~~
-         olines = createDOXYGEN(ifile,ilines,mod,all)
+         olines = createDOXYGEN(ifile,ilines,mod,racine)
          # ~~ Make sure the distination exists ~~~~~~~~~~~~~~~
          ofile = ifile.replace(cfg['root'],cfg['doxydocs'])
          createDirectories(path.dirname(ofile))

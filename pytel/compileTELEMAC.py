@@ -412,7 +412,7 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,BYPASS)
+      fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,BYPASS)
 
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
       HOMERES = {}
@@ -424,7 +424,7 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
             debug = False; rebuild = cfg['COMPILER']['REBUILD']
             MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
-            t,r = getTree(item,prg[item][0],all,0,rebuild)
+            t,r = getTree(item,prg[item][0],racine,0,rebuild)
             #del MAKSYSTEL['deps'][prg[item][0]]
             MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=True)
             HOMERES.update({item:MAKSYSTEL})
@@ -433,7 +433,7 @@ if __name__ == "__main__":
             for obj,lib in HOMERES[item]['add'] :
                Root,Suffix = path.splitext(obj)
                try:
-                  createObjFiles(obj.lower(),item,all[lib][Root.upper()],cfgname,options.bypass)
+                  createObjFiles(obj.lower(),item,racine[lib][Root.upper()],cfgname,options.bypass)
                except Exception as e:
                   xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
 

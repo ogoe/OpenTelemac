@@ -1091,7 +1091,7 @@ if __name__ == "__main__":
       # ~~ Scans all source files to build a relation database ~~~~~
       print '\n\nScanning the source code\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,False)
+      fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,False)
       
    sys.exit()
 
