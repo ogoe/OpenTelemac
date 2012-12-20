@@ -3,7 +3,7 @@
 !                    *******************
 !
      &(IFABOR,NELEM,NELMAX,IELM,IKLE,SIZIKL,NPOIN,NBOR,NPTFR,
-     & LIHBOR,KLOG,INDPU,IKLESTR,NELEB)
+     & LIHBOR,KLOG,INDPU,IKLESTR,NELEB2)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -50,7 +50,7 @@
 !| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
-!| NELEB          |-->| NUMBER OF BOUNDARY TRIANGLES
+!| NELEB2         |-->| NUMBER OF BOUNDARY TRIANGLES (oversized)
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
@@ -70,8 +70,8 @@
       INTEGER, INTENT(INOUT):: IFABOR(NELMAX,4)
       INTEGER, INTENT(IN)   :: IKLE(SIZIKL,4),LIHBOR(NPTFR)
       INTEGER, INTENT(IN)   :: INDPU(NPOIN)
-      INTEGER, INTENT(IN)   :: IKLESTR(NELEB,3)
-      INTEGER, INTENT(IN)   :: NELEB
+      INTEGER, INTENT(IN)   :: NELEB2
+      INTEGER, INTENT(IN)   :: IKLESTR(NELEB2,3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -121,7 +121,7 @@
 !
       INTEGER :: I,J,K      ! USEFUL ...
 !
-      INTEGER :: IR1,IR2,IR3,IR4,IR5,IR6,COMPT
+      INTEGER :: IR4,IR5,IR6,COMPT
       LOGICAL :: BORD
 !
 !     DEFINES THE FOUR TRIANGLES OF THE TETRAHEDRON: THE FIRST
@@ -490,7 +490,7 @@
 !     THEY ARE ALSO BOUNDARY NODES
                         IF (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1) THEN
 !     
-                           DO J=1,NELEB
+                           DO J=1,NELEB2
 !     IT IS A BOUNDARY TRIANGLE
                               COMPT=0
                               DO I=1,3
