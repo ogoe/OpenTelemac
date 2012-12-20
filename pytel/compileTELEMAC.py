@@ -529,6 +529,9 @@ if __name__ == "__main__":
                print '\nUpdating your cmdf file for compilation with no scan for ' + item + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
                ForDir = path.join(cfg['MODULES'][prg[item][0]]['path'],cfgname)
+               # YA: If the config is compiled for the first time the folder does not exist
+               # So we need to create it
+               if not path.exists(ForDir): createDirectories(ForDir)
                if 'homere' in item.lower() or 'systeme' in item.lower():
                   ForCmd = path.join(ForDir,prg[item][0] + cfgs[cfgname]['version'] + '.cmdf')
                else:
