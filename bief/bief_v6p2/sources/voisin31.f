@@ -3,7 +3,7 @@
 !                    *******************
 !
      &(IFABOR,NELEM,NELMAX,IELM,IKLE,SIZIKL,NPOIN,NBOR,NPTFR,
-     & LIHBOR,KLOG,INDPU)
+     & LIHBOR,KLOG,INDPU,IKLESTR,NELEB)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -45,11 +45,12 @@
 !|                |   | BOUNDARY
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| INDPU          |-->| IF NOT 0, INTERFACE POINT IN PARALLEL
+!| IKLESTR        |-->| CONNECTIVITY TABLE OF BOUNDARY TRIANGLES
 !| KLOG           |-->| CONVENTION FOR SOLID BOUNDARY
 !| LIHBOR         |-->| TYPE OF BOUNDARY CONDITIONS ON DEPTH
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
-!| NELEMTOTAL     |-->| NUMBER OF BOUNDARY TRIANGLES ?
+!| NELEB          |-->| NUMBER OF BOUNDARY TRIANGLES
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
@@ -69,6 +70,8 @@
       INTEGER, INTENT(INOUT):: IFABOR(NELMAX,4)
       INTEGER, INTENT(IN)   :: IKLE(SIZIKL,4),LIHBOR(NPTFR)
       INTEGER, INTENT(IN)   :: INDPU(NPOIN)
+      INTEGER, INTENT(IN)   :: IKLESTR(NELEB,3)
+      INTEGER, INTENT(IN)   :: NELEB
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -308,6 +311,7 @@
 !
 !     ALL FACES PRESUMED SOLID TO START WITH...
 !
+      ! ASSUMING SOLID BOUNDARIES EVERYWHERE
       IFABOR(:,:) = -1
 !
       ! LOOP ON ALL THE NODES IN THE MESH
@@ -335,7 +339,7 @@
                   ! IF THIS SIDE ALREADY HAS A NEIGHBOUR, THAT'S
                   ! ENOUGH AND GOES TO NEXT.
                   ! OTHERWISE, LOOKS FOR IT...
-                  IF ( IFABOR(IELEM,IFACE) .EQ. 0 ) THEN
+                  IF ( IFABOR(IELEM,IFACE) .LE. 0 ) THEN
                   ! EACH FACE DEFINES A TRIANGLE. THE TRIANGLE IS
                   ! GIVEN BY 3 NODES.
                   I1 = IKLE(IELEM,SOMFAC(1,IFACE))
@@ -419,24 +423,101 @@
 !-----------------------------------------------------------------------
 !
       IF(NCSIZE.GT.1) THEN
-!
-        DO IFACE=1,NFACE
-          DO IELEM=1,NELEM
-!           IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
-!           IT IS ASSIGNED A VALUE OF -2
-!
-            I1=IKLE(IELEM,SOMFAC(1,IFACE))
-            I2=IKLE(IELEM,SOMFAC(2,IFACE))
-            I3=IKLE(IELEM,SOMFAC(3,IFACE))
-!
-            IF( INDPU(I1).NE.0.AND.
-     &          INDPU(I2).NE.0.AND.
-     &          INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
-!
-          ENDDO
-        ENDDO
-!
+         !
+         ! WHY A DIFFERENT ALGORITHM ?
+         ! a) Partitionning method : 51 submeshes are obtained from a 2D mesh
+         ! b) No iklestr is available 
+         ! c) Some pathological cases with 31
+         IF (IELM.EQ.51) THEN
+            !
+            DO IFACE=1,NFACE
+               DO IELEM=1,NELEM
+!     IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
+!     IT IS ASSIGNED A VALUE OF -2
+!     
+                  I1=IKLE(IELEM,SOMFAC(1,IFACE))
+                  I2=IKLE(IELEM,SOMFAC(2,IFACE))
+                  I3=IKLE(IELEM,SOMFAC(3,IFACE))
+!     
+                  IF( INDPU(I1).NE.0.AND.
+     &                 INDPU(I2).NE.0.AND.
+     &                 INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
+!     
+               ENDDO
+            ENDDO
+!     
+         ELSE IF (IELM.EQ.31) THEN
+!     
+            DO IFACE=1,NFACE
+               DO IELEM=1,NELEM
+!     IF A FACE HAS 3 POINTS WHICH ARE INTERFACES BETWEEN SUB-DOMAINS
+!     IT IS ASSIGNED A VALUE OF -2
+                  
+!     PATHOLOGIC CASES (THANKS TO OLIVIER BOITEAU, EDF R&D/SINETICS)
+!     a) 3 nodes may have INDPU /= 0, this doesn't mean automatically
+!     that the triangle is an interface one (case of true unstructured tetra mesh)
+!     b) a border triangle may have INDPU /= 0 on its 3 nodes
+!     => priority to border triangles
+!     c) 3 nodes of a triangle may be on the boundary and have INDPU /= 0
+!     this doesn't mean automatically that the triangle is on the boundary.
+                  
+                  IF (IFABOR(IELEM,IFACE).EQ.-1) THEN
+!     
+                     I1=IKLE(IELEM,SOMFAC(1,IFACE))
+                     I2=IKLE(IELEM,SOMFAC(2,IFACE))
+                     I3=IKLE(IELEM,SOMFAC(3,IFACE))
+                     
+                     IF ( INDPU(I1).NE.0.AND.
+     &                    INDPU(I2).NE.0.AND.
+     &                    INDPU(I3).NE.0     ) THEN
+                        
+!     THESE ARE INTERFACE NODES; DO THEY CORRESPOND TO A
+!     (VIRTUAL) INTERFACE TRIANGLE OR TO A BOUNDARY TRIANGLE ?
+                        
+!     THE FOLLOWING TEST IS NOT SUFFICIENT
+!     IF (.NOT. (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1)) IFABOR(IELEM,IFACE)=-2
+!     
+                        BORD=.FALSE.
+                        IR4=0
+                        IR5=0
+                        IR6=0
+                        DO 55 J=1,NPTFR
+                           IF (I1.EQ.NBOR(J)) IR5=1
+                           IF (I2.EQ.NBOR(J)) IR4=1
+                           IF (I3.EQ.NBOR(J)) IR6=1
+ 55                     CONTINUE
+                        
+!     THEY ARE ALSO BOUNDARY NODES
+                        IF (IR5.EQ.1.AND.IR4.EQ.1.AND.IR6.EQ.1) THEN
+!     
+                           DO J=1,NELEB
+!     IT IS A BOUNDARY TRIANGLE
+                              COMPT=0
+                              DO I=1,3
+                                 IF (IKLESTR(J,I)==I1) COMPT=COMPT+1
+                                 IF (IKLESTR(J,I)==I2) COMPT=COMPT+10
+                                 IF (IKLESTR(J,I)==I3) COMPT=COMPT+100
+                              ENDDO
+!     THESE 3 NODES INDEED BELONG TO THE SAME BOUNDARY TRIANGLE
+                              IF (COMPT==111) THEN
+                                 BORD=.TRUE.
+!     PRINT*,'VERTICES OF A BOUNDARY TRIANGLE'
+                                 EXIT
+                              ENDIF                         
+                           ENDDO
+                        ENDIF                        
+                        IF (.NOT.BORD) THEN
+!     THESE 3 NODES BELONG TO AN INTERFACE MESH
+!     PRINT*, 'INTERFACE NODES'
+                           IFABOR(IELEM,IFACE)=-2
+                        ENDIF
+                     ENDIF
+                  ENDIF
+               ENDDO
+            ENDDO
+         ENDIF
       ENDIF
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -445,7 +526,7 @@
 !          AND I DOUBT THAT THE CODE BELOW WITH LIHBOR CAN WORK WITH
 !          REAL TETRAHEDRA
 !
-      IF(IELM.EQ.51) GO TO 1000
+      IF((IELM.EQ.51).OR.(IELM.EQ.31)) GO TO 1000
 !
 !-----------------------------------------------------------------------
 !
