@@ -22,8 +22,13 @@
    <action xref="1"
        do="translate;compile;run;cas;princi"
        code="sisyphe" target="sis_glissement.cas"
-       title="glissement sisyphe only"
-   /> 
+       title="glissement sisyphe only scalar mode"
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="sisyphe" target="sis_glissement.cas"
+       title="glissement sisyphe only parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

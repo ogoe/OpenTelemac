@@ -28,7 +28,18 @@
        do="translate;compile;run;cas;princi"
        code="telemac3d" target="t3d_piledepon-nonhydro.cas"
        title="pildepon scalar mode"
+   />
+   <action xref="3"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_piledepon.cas"
+       title="pildepon parallel mode"
    /> 
+   <action xref="4"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_piledepon-nonhydro.cas"
+       title="pildepon parallel mode"
+   />
+   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

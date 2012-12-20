@@ -22,8 +22,13 @@
    <action xref="1"
        do="translate;compile;run;cas;princi"
        code="telemac3d" target="t3d_bosse-t3d.cas"
-       title="bosse-t3d T3D+SIS"
-   /> 
+       title="bosse-t3d scalar mode T3D+SIS"
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_bosse-t3d.cas"
+       title="bosse-t3d T3D+SIS parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

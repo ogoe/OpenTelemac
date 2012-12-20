@@ -23,7 +23,12 @@
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_V.cas" 
        title="V scalar mode" 
-   />  
+   />
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_V.cas" 
+       title="V parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

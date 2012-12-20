@@ -22,8 +22,13 @@
    <action xref="1"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_cons_mixte-t2d.cas"
-       title="concentration mixte T2D+SIS"
-   /> 
+       title="concentration mixte T2D+SIS scalar mode"
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_cons_mixte-t2d.cas"
+       title="concentration mixte T2D+SIS parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

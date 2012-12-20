@@ -28,7 +28,17 @@
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_lock-nonhydro.cas" 
        title="lock-exchange scalar mode" 
-   /> 
+   />
+   <action xref="3" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_lock-hydro.cas" 
+       title="lock-exchange parallel mode" 
+   />  
+   <action xref="4" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_lock-nonhydro.cas" 
+       title="lock-exchange parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

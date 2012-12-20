@@ -33,7 +33,22 @@
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_cooper-supg.cas" 
        title="Cooper scalar mode" 
+   />
+   <action xref="4" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_cooper.cas" 
+       title="Cooper parallel mode" 
+   />  
+   <action xref="5" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_cooper-hyd.cas" 
+       title="Cooper parallel mode" 
    /> 
+   <action xref="6" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_cooper-supg.cas" 
+       title="Cooper parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

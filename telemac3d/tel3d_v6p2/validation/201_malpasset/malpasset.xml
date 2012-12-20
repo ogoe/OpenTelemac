@@ -38,7 +38,27 @@
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_malpasset_large.cas" 
        title="malpasset scalar mode" 
+   />
+   <action xref="5" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_malpasset_p2.cas" 
+       title="malpasset parallel mode" 
+   />  
+   <action xref="6" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_malpasset_p6.cas" 
+       title="malpasset parallel mode" 
+   />  
+   <action xref="7" 
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac3d" target="t3d_malpasset_pos.cas" 
+       title="malpasset parallel mode" 
    /> 
+   <action xref="8" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_malpasset_large.cas" 
+       title="malpasset parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

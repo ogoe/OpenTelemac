@@ -22,8 +22,13 @@
    <action xref="1" 
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_pluie.cas" 
-       title="pluie scalar mode" 
-   />  
+       title="pluie parallel mode" 
+   />
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac3d" target="t3d_pluie.cas" 
+       title="pluie parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
