@@ -147,7 +147,7 @@ def getConeAngle( (x1,y1),(x2,y2),(x3,y3) ):
 def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3), size=5 ):
 
    l1,l2,l3 = getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
-   accuracy = np.power(10.0, -size+np.floor(np.log10(abs(l1))))
+   accuracy = np.power(10.0, -size+np.floor(np.log10(abs(l1+l2+l3))))
    #if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 : return [ l1, l2, l3 ]
    if l1 >= -accuracy and l1 <= 1.0+accuracy and l2 >= -accuracy and l2 <= 1.0+accuracy and l3 >= -accuracy and l3 <= 1.0+accuracy : return [ l1, l2, l3 ]
    return []

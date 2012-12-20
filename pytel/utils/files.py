@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """@author Sebastien E. Bourban, Noemie Durand and Alain Weisgerber
 """
 """@note ... this work is based on a collaborative effort between
@@ -155,12 +154,6 @@ def copyFiles(pi,po):
 def copyFile(fi,po):
    if path.exists(path.join(po,path.basename(fi))): remove(path.join(po,path.basename(fi)))
    if path.isfile(fi): shutil.copy(fi,po)
-   return
-"""
-"""
-def copyFile2File(fi,fo):
-   if path.exists(path.join(path.dirname(fo),path.basename(fi))): remove(path.join(path.dirname(fo),path.basename(fi)))
-   if path.isfile(fi): shutil.copy(fi,fo)
    return
 """
 """

@@ -134,6 +134,50 @@ def getTree(name,lname,list,level,rebuild):
    return list[lname][name]['time'],rank+1
 
 
+def putScanContent(file,content):
+   lines = []
+   if content.has_key('general'):
+      lines.append('[general]'+'\n'+'path: '+content['general']['path']+'\n'+'module: '+content['general']['module'])
+      lines.append('liborder: '+' '.join(content['general']['liborder']))
+      lines.append('version: '+content['general']['version']+'\n'+'name: '+content['general']['name'])
+   for lib in content.keys():
+      if lib == 'general': continue
+      lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path']+'\n'+'files: '+'\n  '.join(content[lib]['files']))
+   putFileContent(file,lines)
+   return
+
+def getScanContent(file,bypass):
+   content = {}
+   # ~~ Read Configuration File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cfgfile = ConfigParser.RawConfigParser()
+   try:
+      cfgfile.read(file)
+   except Exception as e:
+      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not read the required parameters in the cmdf-scan file: '+file},e,bypass)])
+   # ~~ Read General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   try:
+      general = dict(cfgfile.items('general'))
+   except Exception as e:
+      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not find the general section in the cmdf-scan file: '+file},e,bypass)])
+   if not general.has_key('path'): raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the general section of the cmdf-scan file:'+file}])
+   if not general.has_key('module'): raise Exception([{'name':'getScanContent','msg':'Could not find the key module in the general section of the cmdf-scan file:'+file}])
+   if not general.has_key('liborder'): raise Exception([{'name':'getScanContent','msg':'Could not find the key liborder in the general section of the cmdf-scan file:'+file}])
+   if not general.has_key('version'): raise Exception([{'name':'getScanContent','msg':'Could not find the key version in the general section of the cmdf-scan file:'+file}])
+   if not general.has_key('name'): raise Exception([{'name':'getScanContent','msg':'Could not find the key name in the general section of the cmdf-scan file:'+file}])
+   general['liborder'] = general['liborder'].split()
+   content.update({'general':general})
+   # ~~ Filter all libraries and files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   for lib in cfgfile.sections():
+      if lib == 'general': continue
+      if lib not in content['general']['liborder']: raise Exception([{'name':'getScanContent','msg':'Found a section not in the [general] liborder key ' + lib + ' of the cmdf-scan file:'+file}])
+      content.update({lib:dict(cfgfile.items(lib))})
+      if not content[lib].has_key('path'): raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the section ' + lib + ' of the cmdf-scan file:'+file}])
+      if not content[lib].has_key('files'): raise Exception([{'name':'getScanContent','msg':'Could not find the key files in the section ' + lib + ' of the cmdf-scan file:'+file}])
+      content[lib]['files'] = content[lib]['files'].replace('\n',' ').replace('  ',' ').split()
+   for lib in content['general']['liborder']:
+      if lib not in content.keys(): raise Exception([{'name':'getScanContent','msg':'The reference ' + lib + ' in the [general] liborder key is not defined in your cmdf-scan file:'+file}])
+   return content
+
 def createObjFiles(oname,oprog,odict,ocfg,bypass):
    # ~~ Assumes that the source filenames are in lower case ~~~~~~~~
    Root,Suffix = path.splitext(oname)
@@ -197,7 +241,7 @@ def createLibFiles(lname,lcfg,lprog,bypass):
 
    # ~~ is linkage necessary ? ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 3 and path.exists(LibFile): remove(LibFile)
-   if cfg['COMPILER']['REBUILD'] > 2 and path.exists(LibFile):
+   if path.exists(LibFile):
       refresh = False
       for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,LibFile) == 0 ) or ( not path.exists(o) )
       if refresh: remove(LibFile)
@@ -288,7 +332,7 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    cmd = cmd.replace('<libs>',LibFiles)
    cmd = cmd.replace('<objs>',ObjFiles)
    cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfg['root'])
-
+   
    xocmd = cfg['MODULES'][eprog]['xobj']
    xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
    mods = ''
@@ -297,12 +341,12 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    xocmd = xocmd.replace('<mods>',mods)
    # <f95name> ... still to be replaced
    xocmd = xocmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
-
+   
    xecmd = cfg['MODULES'][eprog]['xexe']
    xecmd = xecmd.replace('<libs>',LibFile + ' ' + LibFiles)
    # <exename> and <objs> ... still to be replaced
    xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
-
+   
    if debug : print cmd
    mes = MESSAGES(size=10)
    try:
@@ -375,6 +419,11 @@ if __name__ == "__main__":
                       dest="bypass",
                       default=False,
                       help="will bypass execution failures and try to carry on (final report at the end)" )
+   parser.add_option("-x","--noscan",
+                      action="store_true",
+                      dest="noscan",
+                      default=False,
+                      help="will bypass the scan of sources by checking only the cmdf files present" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -411,44 +460,118 @@ if __name__ == "__main__":
       print '    +> options:       ' +  cfgs[cfgname]['options'] + '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
+      if options.noscan:
+# ~~ Scans all cmdf files found in all modules ~~~~~~~~~~~~~~~~~~~~~
+         cmdfFiles = {}; HOMERES = {} 
+         for mod in cfg['COMPILER']['MODULES']:
+            cmdfFiles.update({mod:{}})
+            for verpath,vernames,file in walk(path.join(cfgs[cfgname]['root'],mod)) : break
+            for vername in vernames:
+               if cfgs[cfgname]['version'] in vername:
+                  for p,d,filenames in walk(path.join(verpath,vername+sep+cfgname)) : break
+                  for file in filenames:
+                     if path.splitext(file)[1] == '.cmdf':
+                        try: cmdf = getScanContent(path.join(p,file),options.bypass)
+                        except Exception as e:
+                           xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Scanning the cmdf file: '+path.basename(file)},e,options.bypass)])
+                        cmdfFiles[mod].update({cmdf['general']['name']:cmdf})
+            MAKSYSTEL = {'add':[],'tag':[],'deps':cmdf['general']['liborder']}
+# ~~ Look whether .o older than .f ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            for item in cmdfFiles[mod].keys():
+               HOMERES.update({item:MAKSYSTEL})
+               for lib in cmdfFiles[mod][item].keys():
+                  if lib == 'general': continue
+                  for file in cmdfFiles[mod][item][lib]['files'] :
+                     srcName = cmdfFiles[mod][item][lib]['path'] + sep + file
+                     objName = path.dirname(cmdfFiles[mod][item][lib]['path']) + sep + cfgname +sep + path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj']
+                     if isNewer(srcName,objName) == 1:
+                        HOMERES[item]['tag'].append((path.splitext(file)[0],lib))
+                     else:
+                        HOMERES[item]['add'].append((file,lib))
+# ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               for obj,lib in HOMERES[item]['add'] :
+                  Root,Suffix = path.splitext(obj)
+                  try:
+                     createObjFiles(obj.lower(),item,{'libname':lib,'type':'','path':cmdfFiles[mod][item][lib]['path']},cfgname,options.bypass)
+                  except Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
+# ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               for lib in HOMERES[item]['deps']:
+                  try:
+                     createLibFiles(lib,cfgname,mod,options.bypass)
+                  except Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating library: '+path.basename(lib)},e,options.bypass)])
+# ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+               try:
+                  createExeFiles(item.lower(),cfgname,mod,options.bypass)
+               except Exception as e:
+                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+ item.lower()},e,options.bypass)])
+
+      else:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
-      fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,BYPASS)
+         fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,BYPASS)
 
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
-      HOMERES = {}
-      for item in prg.keys() :
-         if prg[item][0] in cfg['COMPILER']['MODULES']:
-
+         HOMERES = {}
+         for item in prg.keys() :
+            if prg[item][0] in cfg['COMPILER']['MODULES']:
+               
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
-            print '\n\nBuilding the who calls who tree for ' + item + ' and dependents\n\
+               print '\n\nBuilding the who calls who tree for ' + item + ' and dependents\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+               debug = False; rebuild = cfg['COMPILER']['REBUILD']
+               MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
+               t,r = getTree(item,prg[item][0],all,0,rebuild)
+               #del MAKSYSTEL['deps'][prg[item][0]]
+               MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=True) # /!\ careful of MAKSYSTEL['deps'][1:]
+               HOMERES.update({item:MAKSYSTEL})
+# ~~ Prepare the cmdf file to avoid future scans ~~~~~~~~~~~~~~~~~~~
+               print '\nUpdating your cmdf file for compilation with no scan for ' + item + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-            debug = False; rebuild = cfg['COMPILER']['REBUILD']
-            MAKSYSTEL = {'add':[],'tag':[],'deps':{}}
-            t,r = getTree(item,prg[item][0],racine,0,rebuild)
-            #del MAKSYSTEL['deps'][prg[item][0]]
-            MAKSYSTEL['deps'] = sorted(MAKSYSTEL['deps'],key=MAKSYSTEL['deps'].get,reverse=True)
-            HOMERES.update({item:MAKSYSTEL})
+               ForDir = path.join(cfg['MODULES'][prg[item][0]]['path'],cfgname)
+               if 'homere' in item.lower() or 'systeme' in item.lower():
+                  ForCmd = path.join(ForDir,prg[item][0] + cfgs[cfgname]['version'] + '.cmdf')
+               else:
+                  ForCmd = path.join(ForDir,item.lower() + cfgs[cfgname]['version'] + '.cmdf')
+               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
+               for obj,lib in HOMERES[item]['add']:
+                  fic = all[lib][path.splitext(obj)[0].upper()]
+                  if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
+                  FileList[lib]['files'].append(fic['file'])
+               for obj,lib in HOMERES[item]['tag']:
+                  fic = all[lib][path.splitext(obj)[0].upper()]
+                  if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
+                  FileList[lib]['files'].append(fic['file'])
+               if True or not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,FileList)
+               else:
+                  FixeList = getScanContent(ForCmd,options.bypass)
+                  for lib in FileList.keys():
+                     if lib == 'general': continue
+                     if FixeList.has_key(lib):
+                        for fic in FileList[lib]['files']:
+                           if fic not in FixeList[lib]['files']: FixeList[lib]['files'].append(fic)
+                  putScanContent(ForCmd,FixeList)
 
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            for obj,lib in HOMERES[item]['add'] :
-               Root,Suffix = path.splitext(obj)
-               try:
-                  createObjFiles(obj.lower(),item,racine[lib][Root.upper()],cfgname,options.bypass)
-               except Exception as e:
-                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
+               for obj,lib in HOMERES[item]['add'] :
+                  Root,Suffix = path.splitext(obj)
+                  try:
+                     createObjFiles(obj.lower(),item,all[lib][Root.upper()],cfgname,options.bypass)
+                  except Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
 
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            for lib in HOMERES[item]['deps']:
-               try:
-                  createLibFiles(lib.lower(),cfgname,prg[item][0],options.bypass)
-               except Exception as e:
-                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating library: '+path.basename(lib)},e,options.bypass)])
+               for lib in HOMERES[item]['deps']:
+                  try:
+                     createLibFiles(lib.lower(),cfgname,prg[item][0],options.bypass)
+                  except Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating library: '+path.basename(lib)},e,options.bypass)])
 
 # ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            try:
-               createExeFiles(item.lower(),cfgname,prg[item][0],options.bypass)
-            except Exception as e:
-               xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+item.lower()},e,options.bypass)])
+               try:
+                  createExeFiles(item.lower(),cfgname,prg[item][0],options.bypass)
+               except Exception as e:
+                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+item.lower()},e,options.bypass)])
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

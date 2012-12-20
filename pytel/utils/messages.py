@@ -131,7 +131,8 @@ class MESSAGES:
          t1.join()
          proc.wait()
          if proc.returncode != 0 and self.tail == '':
-            self.tail = 'I was unable to capture the execution error. Please re-run without bypass option.'
+            self.tail = 'I was only able to capture the following execution error. You may wish to re-run without bypass option.'+ \
+               '\n~~~~~~~~~~~~~~~~~~\n'+str(proc.stderr.read().strip())+'\n~~~~~~~~~~~~~~~~~~'
          return self.tail,proc.returncode
       if os.system(exe):
          print '... The following command failed for the reason above\n'+exe
