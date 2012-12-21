@@ -7,7 +7,7 @@
      & NTRAC,T,TSIP,USIP,VSIP,U,V,ENTET)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    TREATS SIPHONS.
@@ -192,7 +192,7 @@
         DSIP(N)=MAX(-QMAX2,DSIP(N))
       ENDIF
 !
-      IF(ENTET.AND.DABS(DSIP(N)).GT.1D-4) THEN
+      IF(ENTET) THEN
         WRITE(LU,*) ' '
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'SIPHON ',N,' DEBIT DE ',DSIP(N),' M3/S'

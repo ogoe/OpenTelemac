@@ -85,7 +85,7 @@
 !
       INTEGER DIR,DDL,OND,IELMT,IELMH
 !
-      DOUBLE PRECISION ERREUT,PERDUE
+      DOUBLE PRECISION PERDUE
       DOUBLE PRECISION FLUXT,MASBOR
       DOUBLE PRECISION FLTDIR,FLTDDL,FLTOND
       DOUBLE PRECISION C,RELATI,DENOM
@@ -216,14 +216,6 @@
 !
 !     PROVISIONAL, TO BE PROGRAMMED
       MASBOR = 0.D0
-!
-!=======================================================================
-!
-!   CALCULATES THE ERROR ON THE MASS FOR THIS STEP
-!   IS NULL FOR ALL THE HYDRO TIME STEPS WHERE IT DOES NOT UPDATE
-!   THE TRACER
-!
-      ERREUT = MASTR1(ITRAC) + MASSOU - MASTR2(ITRAC) - FLUXT
 !
 !=======================================================================
 !

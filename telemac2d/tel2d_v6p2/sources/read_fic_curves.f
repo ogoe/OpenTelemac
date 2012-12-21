@@ -5,7 +5,7 @@
      &(NFIC,NFRLIQ,STA_DIS_CURVES,PTS_CURVES)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS STAGE-DISCHARGE CURVES IN THEIR FILE (STORED IN QZ)
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        13/12/2012
+!+        V6P3
+!+   Now works with tabs as well as spaces as delimiters
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NFIC           |-->| LOGICAL UNIT OF FILE
@@ -53,6 +58,8 @@
       CHARACTER(LEN=144) :: LIGNE
       CHARACTER(LEN=1)   :: WHAT
 !
+      INTRINSIC CHAR
+!
 !-----------------------------------------------------------------------
 !
       NMAXPTS=0
@@ -71,7 +78,8 @@
 !     IDENTIFIES FIRST CHARACTER OF NAME
 2     CONTINUE
       IDEB=1
-      IF(LIGNE(IDEB:IDEB).EQ.' ') THEN
+!     SKIPPING SPACES OR TABS
+      IF(LIGNE(IDEB:IDEB).EQ.' '.OR.LIGNE(IDEB:IDEB).EQ.CHAR(9)) THEN
         IDEB=IDEB+1
         IF(IDEB.EQ.145) THEN
           READ(NFIC,FMT='(A)') LIGNE

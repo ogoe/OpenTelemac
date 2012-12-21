@@ -5,7 +5,7 @@
      &( Q , WHAT , AT , NFIC , LISTIN , STAT )
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   07/10/2011
+! TELEMAC2D   V6P3                                   07/10/2011
 !***********************************************************************
 !
 !brief    READS AND INTERPOLATES VALUES IN THE SOURCE FILE.
@@ -55,6 +55,11 @@
 !+        V6P2
 !+   NAG: MAXVAL intrinsic! -> MAXVALUE
 !
+!history  J-M HERVOUET (LNHE)
+!+        13/12/2012
+!+        V6P3
+!+   Now works with tabs as well as spaces as delimiters
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME IN SECONDS
 !| LISTIN         |-->| IF YES, PRINTS INFORMATION
@@ -99,7 +104,7 @@
 !
       SAVE INFIC,TIME,CHOIX,IL1,IL2,TL1,TL2,NVALUE,LASTWHAT,LASTAT,NLIG
 !
-      INTRINSIC ABS
+      INTRINSIC ABS,CHAR
 !
 !-----------------------------------------------------------------------
 !
@@ -120,13 +125,17 @@
 40      IDEB = IFIN
 !
 !       IDENTIFIES FIRST CHARACTER OF NAME
-50      IF(LIGNE(IDEB:IDEB).EQ.' '.AND.IDEB.LT.SIZELIGN) THEN
+!
+!       SKIPPING SPACES AND TABS
+50      IF((LIGNE(IDEB:IDEB).EQ.' '.OR.LIGNE(IDEB:IDEB).EQ.CHAR(9))
+     &     .AND.IDEB.LT.SIZELIGN) THEN
           IDEB=IDEB+1
           GO TO 50
         ENDIF
 !       IDENTIFIES LAST CHARACTER OF NAME
         IFIN = IDEB
-60      IF(LIGNE(IFIN:IFIN).NE.' '.AND.IFIN.LT.SIZELIGN) THEN
+60      IF(LIGNE(IFIN:IFIN).NE.' '.AND.LIGNE(IFIN:IFIN).NE.CHAR(9)
+     &     .AND.IFIN.LT.SIZELIGN) THEN
           IFIN=IFIN+1
           GO TO 60
         ENDIF
