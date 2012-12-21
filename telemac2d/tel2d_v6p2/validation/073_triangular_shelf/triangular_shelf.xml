@@ -23,18 +23,40 @@
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_triangular_shelf.cas"
        title="triangular_shelf scalar mode"
-   /> 
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_triangular_shelf.cas"
+       title="triangular_shelf parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../073_triangular_shelf/triangular_shelf.xml
--->
+   <plot1d xref="Gages1" type="history" config="together" time="[0;-1]" size="[12;5]" > 
+      <layer vars="free surface:line" extract="[7.5;0]" target="1:T2DRES" />
+	  <layer vars="free surface:line" extract="[7.5;0]" target="2:T2DRES" />
+   </plot1d>
+   <plot1d xref="Gages2" type="history" config="together" time="[0;-1]" size="[12;5]" > 
+      <layer vars="free surface:line" extract="[17;-5]" target="1:T2DRES" />
+	  <layer vars="free surface:line" extract="[17;-5]" target="2:T2DRES" />
+   </plot1d>
+   <plot1d xref="Gages3" type="history" config="together" time="[0;-1]" size="[12;5]" > 
+      <layer vars="free surface:line" extract="[25;0]" target="1:T2DRES" />
+   </plot1d>
+
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../073_triangular_shelf/triangular_shelf.xml
--->
+   <plot2d xref="Mesh" size="[12;8]" > 
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Bathy" size="[12;8]" > 
+	  <layer vars="bottom:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="FreeSurface" size="[12;8]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[11]" /> 
+   </plot2d> 
 
 </validation>

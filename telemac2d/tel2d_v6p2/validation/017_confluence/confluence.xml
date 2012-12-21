@@ -23,18 +23,25 @@
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_confluence.cas"
        title="confluence scalar mode"
-   /> 
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_confluence.cas"
+       title="confluence parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Water depth" size="[20;5]" > 
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="Velocity" size="[20;5]" > 
+      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>  
 
 </validation>

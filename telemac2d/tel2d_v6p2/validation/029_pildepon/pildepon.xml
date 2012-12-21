@@ -33,7 +33,22 @@
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_pildepon_qua.cas" 
        title="pildepon scalar mode" 
+   />
+   <action xref="4" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_pildepon.cas" 
+       title="pildepon parallel mode" 
    />  
+   <action xref="5" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_pildepon_cin.cas" 
+       title="pildepon parallel mode" 
+   />  
+   <action xref="6" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_pildepon_qua.cas" 
+       title="pildepon parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  
@@ -41,10 +56,19 @@
    --> 
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
 --> 
+
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-  --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
+  -->
+   <plot2d xref="Bottom" size="[10;10]" > 
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>    
+   <plot2d xref="Velocity map" size="[10;10]" > 
+      <layer vars="vitesse:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>   
+   <plot2d xref="Velocity arrows" size="[10;10]" >   
+      <layer vars="vitesse:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[20;20]" /> 
+   </plot2d>
+
  
 </validation> 

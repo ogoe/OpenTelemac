@@ -28,18 +28,61 @@
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_dambreak_v2p0.cas"
        title="dambreak scalar mode"
+   />
+   <action xref="3"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_dambreak_v1p0.cas"
+       title="dambreak scalar mode"
    /> 
+   <action xref="4"
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_dambreak_v2p0.cas"
+       title="dambreak parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-
+   <plot1d xref="Water Depth v1" type="v-section" size="[12;5]" config="together">
+      <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[0]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[10]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[20]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[30]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[40]"/>
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[50]"/>
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[60]"/>	  
+   </plot1d>
+   <plot1d xref="Velocity U v1" type="v-section" size="[12;5]" config="together">
+      <layer vars="velocity u:line" extract="[0;10][20;10]" target="1:T2DRES" time="[0]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="1:T2DRES" time="[10]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="1:T2DRES" time="[20]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="1:T2DRES" time="[30]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="1:T2DRES" time="[40]"/>
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="1:T2DRES" time="[50]"/>
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="1:T2DRES" time="[60]"/>	  
+<!--   </plot1d>
+   <plot1d xref="Water Depth v2" type="v-section" size="[12;5]" config="together">
+      <layer vars="water depth:line" extract="[0;10][20;10]" target="2:T2DRES" time="[0]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="2:T2DRES" time="[10]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="2:T2DRES" time="[20]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="2:T2DRES" time="[30]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="2:T2DRES" time="[40]"/>
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="2:T2DRES" time="[50]"/>
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="2:T2DRES" time="[60]"/>	  
+   </plot1d>
+   <plot1d xref="Velocity U v2" type="v-section" size="[12;5]" config="together">
+      <layer vars="velocity u:line" extract="[0;10][20;10]" target="2:T2DRES" time="[0]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="2:T2DRES" time="[10]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="2:T2DRES" time="[20]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="2:T2DRES" time="[30]"/> 
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="2:T2DRES" time="[40]"/>
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="2:T2DRES" time="[50]"/>
+	  <layer vars="velocity u:line" extract="[0;10][20;10]" target="2:T2DRES" time="[60]"/>	  
+   </plot1d>
+  -->   
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+
 
 </validation>

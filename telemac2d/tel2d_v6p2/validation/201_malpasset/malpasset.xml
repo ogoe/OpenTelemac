@@ -43,7 +43,32 @@
        do="translate;compile;run;cas;princi" 
        code="telemac2d" target="t2d_malpasset-small_prim.cas" 
        title="malpasset scalar mode" 
+   />
+   <action xref="6" 
+       do="translate;compile;run;cas;princi" ncsize="4"  
+       code="telemac2d" target="t2d_malpasset-small.cas" 
+       title="malpasset parallel mode" 
    />  
+   <action xref="7" 
+       do="translate;compile;run;cas;princi" ncsize="4"  
+       code="telemac2d" target="t2d_malpasset-large.cas" 
+       title="malpasset parallel mode" 
+   /> 
+   <action xref="8" 
+       do="translate;compile;run;cas;princi" ncsize="4"  
+       code="telemac2d" target="t2d_malpasset-small_cin.cas" 
+       title="malpasset parallel mode" 
+   />  
+   <action xref="9" 
+       do="translate;compile;run;cas;princi" ncsize="4"  
+       code="telemac2d" target="t2d_malpasset-small_pos.cas" 
+       title="malpasset parallel mode" 
+   />  
+   <action xref="10" 
+       do="translate;compile;run;cas;princi" ncsize="4"  
+       code="telemac2d" target="t2d_malpasset-small_prim.cas" 
+       title="malpasset parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

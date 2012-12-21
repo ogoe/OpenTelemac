@@ -23,7 +23,12 @@
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_ondem2.cas"
        title="ondem2 scalar mode"
-   /> 
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="telemac2d" target="t2d_ondem2.cas"
+       title="ondem2 parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -34,7 +39,11 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Amplitude" size="[10;10]" > 
+      <layer vars="AMPLI PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="Phase" size="[10;10]" > 
+      <layer vars="PHASE PERIODE 1:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
 
 </validation>
