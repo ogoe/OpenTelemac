@@ -534,11 +534,16 @@ def runXML(xmlFile,xmlConfig,bypass):
          # ~~> Action type D. Compilation of PRINCI file
          # Contrary to the other step, Step 8 is completed where the original CAS file is
          # (for no particularly good reason)
-         if "compile" in doable.split(';'):
-            try:
-               do.compilePRINCI(cfg,cfg['REBUILD'])
-            except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML','msg':'   +> compile'},e,bypass))
+        # YA: Removed because generating error when coupling copying the merged fortran file 
+        # as the main module file
+        # runcode is compiling the code anyway so what is the point of this action?
+        # TODO:
+        #    See what to do of this action
+        #if "compile" in doable.split(';'):
+        #   try:
+        #      do.compilePRINCI(cfg,cfg['REBUILD'])
+        #   except Exception as e:
+        #      xcpt.append(filterMessage({'name':'runXML','msg':'   +> compile'},e,bypass))
 
          # ~~> Action type E. Running CAS files
          if "run" in doable.split(';'):
