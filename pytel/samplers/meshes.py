@@ -159,7 +159,7 @@ def xysLocateMesh(xys,IKLE,MESHX,MESHY,tree=None,neighbours=None):
       else:
          obr = bo
          oet = eo
-      ipt.append[xyo]; iet.append(oet); ibr.append(obr)
+      ipt.append(xyo); iet.append(oet); ibr.append(obr)
 
    return (ipt,iet,ibr),tree,neighbours
 
@@ -197,20 +197,20 @@ def crossMesh(polyline,IKLE,MESHX,MESHY,tree=None,neighbours=None):
          found,rayi,neighbours = xyTraceMesh(eo,xyo,xyi,IKLE,MESHX,MESHY,neighbours)
          #print 'rayc'
          for j in range(rayi['n'])[(rayi['n']-1)::-1]:
-            print rayi['e'][j],rayi['xy'][j]
+            #print rayi['e'][j],rayi['xy'][j]
             ipt.append(rayi['xy'][j]); iet.append(rayi['e'][j]); ibr.append(rayi['b'][j])
       elif bi != [] and bo == []:
       # it is necessary to reverse the ray for a case with first end outside
          found,rayo,neighbours = xyTraceMesh(ei,xyi,xyo,IKLE,MESHX,MESHY,neighbours)
          #print 'rayd'
          for j in range(rayo['n']): #[(rayo['n']-1)::-1]:
-            print rayo['e'][j],rayo['xy'][j]
+            #print rayo['e'][j],rayo['xy'][j]
             ipt.append(rayo['xy'][j]); iet.append(rayo['e'][j]); ibr.append(rayo['b'][j])
       else:
          found,rayi,neighbours = xyTraceMesh(eo,xyo,xyi,IKLE,MESHX,MESHY,neighbours)
          #print 'raye'
          for j in range(rayi['n'])[(rayi['n']-1)::-1]:
-            print rayi['e'][j],rayi['xy'][j]
+            #print rayi['e'][j],rayi['xy'][j]
             ipt.append(rayi['xy'][j]); iet.append(rayi['e'][j]); ibr.append(rayi['b'][j])
 
       xyo = xyi; bo = bi; eo = ei

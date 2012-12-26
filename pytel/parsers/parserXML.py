@@ -632,10 +632,10 @@ def runXML(xmlFile,xmlConfig,bypass):
          for cfglist in alayers:
             # ~~> Figure name
             if len(alayers) == 1:
-               figureName = '.'.join([xref,draw['outFormat']])
+               figureName = '.'.join([xref.replace(' ','_'),draw['outFormat']])
             else:
                nbFig += 1
-               figureName = '.'.join([xref,str(nbFig),draw['outFormat']])
+               figureName = '.'.join([xref.replace(' ','_'),str(nbFig),draw['outFormat']])
             print '       ~> saved as: ',figureName
             figureName = path.join(path.dirname(xmlFile),figureName)
             # ~~> Figure size
