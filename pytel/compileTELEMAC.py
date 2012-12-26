@@ -58,6 +58,11 @@
    As a consequence cmd = cfg['COMPILER']['cmd_obj'] is replaced by
       cmd = cfg['COMPILER']['MODULES'][odict['libname']]['xobj'], etc.
 """
+"""@history 12/12/2012 -- Juliette Parisi and Sebastien E. Bourban
+   Allowing the compilation to be carried out based on the CMDF file,
+      created on first build, without having to re-scan the entire
+      source code.
+"""
 """@brief
 """
 
@@ -482,12 +487,15 @@ if __name__ == "__main__":
                for lib in cmdfFiles[mod][item].keys():
                   if lib == 'general': continue
                   for file in cmdfFiles[mod][item][lib]['files'] :
-                     srcName = cmdfFiles[mod][item][lib]['path'] + sep + file
+                     srcName = cmdfFiles[mod][item][lib]['path'] + sep + file                        
                      objName = path.dirname(cmdfFiles[mod][item][lib]['path']) + sep + cfgname +sep + path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj']
-                     if isNewer(srcName,objName) == 1:
-                        HOMERES[item]['tag'].append((path.splitext(file)[0],lib))
-                     else:
-                        HOMERES[item]['add'].append((file,lib))
+                     try:
+                        if isNewer(srcName,objName) == 1:
+                           HOMERES[item]['tag'].append((path.splitext(file)[0],lib))
+                        else:
+                           HOMERES[item]['add'].append((file,lib))
+                     except Exception as e:
+                           xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)},e,options.bypass)])
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                for obj,lib in HOMERES[item]['add'] :
                   Root,Suffix = path.splitext(obj)
@@ -529,8 +537,6 @@ if __name__ == "__main__":
                print '\nUpdating your cmdf file for compilation with no scan for ' + item + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
                ForDir = path.join(cfg['MODULES'][prg[item][0]]['path'],cfgname)
-               # YA: If the config is compiled for the first time the folder does not exist
-               # So we need to create it
                if not path.exists(ForDir): createDirectories(ForDir)
                if 'homere' in item.lower() or 'systeme' in item.lower():
                   ForCmd = path.join(ForDir,prg[item][0] + cfgs[cfgname]['version'] + '.cmdf')
