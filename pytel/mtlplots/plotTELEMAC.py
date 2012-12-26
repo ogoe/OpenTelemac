@@ -54,7 +54,8 @@ from myplot2d import drawMesh2DElements,drawMeshLines, \
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent
 from parsers.parserSortie import getValueHistorySortie
-from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,parseSLF,crossLocateMeshSLF,xyLocateMeshSLF,getValuePolylineSLF,subsetVariablesSLF
+from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,parseSLF,getValuePolylineSLF,subsetVariablesSLF
+from samplers.meshes import crossMesh,xysLocateMesh
 from parsers.parserStrings import parseArrayPaires
 
 # _____                   __________________________________________
@@ -226,8 +227,8 @@ class Figure1D:
          if what['type'] == 'history':
             # ~~> Extract data
             vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
-            support = xyLocateMeshSLF(what["extract"],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
-            data = getValueHistorySLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
+            support,tree,neighbours = xysLocateMesh(what["extract"],slf.IKLE,slf.MESHX,slf.MESHY)
+            data = getValueHistorySLF(slf.file,slf.tags,what['time'],(support[1],slf.IKLE[support[1]],support[2]),slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
             # ~~> Deco
             if what.has_key('roi'):
                if what['roi'] != []: deco['roi'] = what['roi']
@@ -237,8 +238,8 @@ class Figure1D:
          elif what['type'] == 'v-section':
             # ~~> Extract data
             vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
-            support = crossLocateMeshSLF(what["extract"],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
-            data = getValuePolylineSLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
+            support,tree,neighbours = crossMesh(what["extract"],slf.IKLE,slf.MESHX,slf.MESHY)
+            data = getValuePolylineSLF(slf.file,slf.tags,what['time'],(support[0],slf.IKLE[support[1]],support[2]),slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
             # ~~> Deco
             deco['roi'] = [ [np.min(slf.MESHX),np.min(slf.MESHY)], [np.max(slf.MESHX),np.max(slf.MESHY)] ]
             if what.has_key('roi'):
@@ -321,7 +322,8 @@ class Figure2D:
                         dy = (ymax-ymin)/what['extract'][0][1]
                         grid = np.meshgrid(np.arange(xmin, xmax+dx, dx),np.arange(ymin, ymax+dy, dy))
                         MESHX = np.concatenate(grid[0]); MESHY = np.concatenate(grid[1])
-                        le,ln,bn = xyLocateMeshSLF(np.dstack((MESHX,MESHY))[0],slf.NELEM3,slf.IKLE,slf.MESHX,slf.MESHY)
+                        support,tree,neighbours = xysLocateMesh(np.dstack((MESHX,MESHY))[0],slf.IKLE,slf.MESHX,slf.MESHY)
+                        le,ln,bn = support[1],slf.IKLE[support[1]],support[2]
                         VARSOR = [np.zeros(len(le),np.float32),np.zeros(len(le),np.float32)]
                         for xy in range(len(bn)):
                            if le[xy] >= 0:
@@ -353,7 +355,7 @@ class Figure2D:
 
 class Figure(Figure1D,Figure2D):
    plt = None; fig = None
-
+   
    def __init__(self,type,plot,display,figureName):
       self.typePlot = type
       self.figureName = figureName
@@ -365,16 +367,17 @@ class Figure(Figure1D,Figure2D):
       if self.typePlot == "plot1d":
          Figure1D.draw(self,type,what,(self.plt,self.fig))
       elif self.typePlot == "plot2d":
-         try:
-            import plt.tricontour
-            tricontour_loaded = True
-         except:
-            tricontour_loaded = False
-         if tricontour_loaded:
-            Figure2D.draw(self,type,what,(self.plt,self.fig))
-         else:
-            print '\ntricontour not available on your system'
-            print ' ... unable to plot 2D figures'
+         Figure2D.draw(self,type,what,(self.plt,self.fig))
+         #try:
+         #   import plt.tricontour
+         #   tricontour_loaded = True
+         #except:
+         #   tricontour_loaded = False
+         #if tricontour_loaded:
+         #   Figure2D.draw(self,type,what,(self.plt,self.fig))
+         #else:
+         #   print '\ntricontour not available on your system'
+         #   print ' ... unable to plot 2D figures'
       else:
          print '... do not know how to draw this type: ' + type
          sys.exit()

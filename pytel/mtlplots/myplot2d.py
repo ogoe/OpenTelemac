@@ -167,8 +167,12 @@ def drawLabeledTriContours(plt,(x,y,ikle,z),deco):
    # ex: plt.tricontour(x,y,ikle, z, linewidths=0.5, colors='k')
    # ex:                     , linewidths=np.arange(.5, 4, .5),
    # ex: colors=('r', 'green', 'blue', (1,1,0), '#afeeee', '0.5')
-   cs = plt.tricontour( x,y,ikle, z , levels, linewidths=np.arange(.5,4,.5))
-   
+   try:
+      cs = plt.tricontour( x,y,ikle, z , levels, linewidths=np.arange(.5,4,.5))
+   except:
+      print '\ntricontour not available on your system'
+      print ' ... unable to plot 2D figures'
+      
    # + inline of clabel() can be either:
    #    0 (the label is written on top of the contour)
    #    1 (the label makes a whole in the contour)

@@ -45,15 +45,9 @@
          + putContent writes both the content to a standard CONLIM file
            or a parallel CONLIM file.
 """
-"""@history 29/02/2012 -- Sebastien E. Bourban:
-         A new class has been added to replace the time-consuming part of
-         PARTEL: class splitSELAFIN.
-         This class has a number of methods but in particular:
-         __init__ and putContent
-         + __init__: reads the content of a standard CONLIM file, a SELAFIN file
-           and if there, a SEQUENCE file from METIS (PARTEL_PRELIM)
-         + putContent writes first all SELAFINs and then go on preparing the
-           information necessary for the CONLIMs split before printing.
+"""@history 12/12/2012 -- Sebastien E. Bourban:
+         Massively speeding up the cross-sectioning through meshes, which
+            is now implemented within samplers / meshes.py
 """
 
 # _____          ___________________________________________________
@@ -66,7 +60,6 @@ from os import path,getcwd
 import glob
 import numpy as np
 # ~~> dependencies towards other modules
-#np.set_printoptions(precision=16)
 # ~~> dependencies towards other pytel/modules
 from utils.geometry import isClose,isInsideTriangle,getBarycentricWeights,getSegmentIntersection
 from utils.progressbar import ProgressBar
@@ -210,11 +203,18 @@ def subsetVariablesSLF(vars,ALLVARS):
    return ids,names
 
 def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName) ):
-
+   # TODO: rework subset of time properly
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    subset = time  # /!\ History requires 2 values
-   if time[0] < 0: subset = [ 0,max( 0, len(tags['cores']) + time[0] ) ]
-   if time[1] < 0: subset = [ time[0],max( 0, len(tags['cores']) + time[1] + 1 ) ]
+   if len(time) < 1:
+      print "... Could not find a time frame to extract"
+      sys.exit()
+   subset = []
+   for i in range(len(time)):
+      subset.append(int(time[i]))
+      if time[i] < 0: subset[i] = [ max( 0, len(tags['cores']) + time[i] ) ]
+   #if time[0] < 0: subset = [ 0,max( 0, len(tags['cores']) + time[0] ) ]
+   #if time[1] < 0: subset = [ time[0],max( 0, len(tags['cores']) + time[1] + 1 ) ]
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    z = np.zeros((len(varsIndexes),len(bn),len(tags['cores'])))
@@ -234,263 +234,106 @@ def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,va
 
    return ('Time (s)',tags['times']),[(TITLE,varsName,le,z)]
 
-def getEdgesSLF(IKLE):
+def getEdgesSLF(IKLE,MESHX,MESHY):
 
-   edges = []
-   ibar = 0; pbar = ProgressBar(maxval=len(IKLE)).start()
-   for e in IKLE:
-      pbar.update(ibar); ibar += 1
-      if (e[0],e[1]) not in edges: edges.append((e[1],e[0]))
-      if (e[1],e[2]) not in edges: edges.append((e[2],e[1]))
-      if (e[2],e[0]) not in edges: edges.append((e[0],e[2]))
-   pbar.finish()
+   try:
+      from matplotlib.tri import Triangulation
+      edges = Triangulation(MESHX,MESHY,IKLE).get_cpp_triangulation().get_edges()
+   except:
+      #print '... you are in bad luck !'
+      #print '       ~>  without matplotlib based on python 2.7, this operation takes ages'
+      edges = []
+      ibar = 0; pbar = ProgressBar(maxval=len(IKLE)).start()
+      for e in IKLE:
+         pbar.update(ibar); ibar += 1
+         if [e[0],e[1]] not in edges: edges.append([e[1],e[0]])
+         if [e[1],e[2]] not in edges: edges.append([e[2],e[1]])
+         if [e[2],e[0]] not in edges: edges.append([e[0],e[2]])
+      pbar.finish()
 
    return edges
 
-def getNeighboursSLF(IKLE):
+def getNeighboursSLF(IKLE,MESHX,MESHY):
 
-   neighbours = {}; ne = []; insiders = {}
+   try:
+      from matplotlib.tri import Triangulation
+      neighbours = Triangulation(MESHX,MESHY,IKLE).get_cpp_triangulation().get_neighbors()
+   except:
+      #print '... you are in bad luck !'
+      #print '       ~>  without matplotlib based on python 2.7, this operation takes a little longer'
+      neighbours,i,o = getNeighbourhoodSLF(IKLE)
+
+   return neighbours
+
+def getNeighbourhoodSLF(IKLE):
+
+   ne = []; insiders = {}; bounders = {}
    #print '    +> start listing neighbours of edges'
    ibar = 0; pbar = ProgressBar(maxval=(3*len(IKLE))).start()
    for e,i in zip(IKLE,range(len(IKLE))):
-      nk = neighbours.keys(); ne.append({})
+      nk = bounders.keys()
       for k in [0,1,2]:
          pbar.update(ibar); ibar += 1
-         ne[i].update({ (e[k],e[(k+1)%3]):-1, (e[(k+1)%3],e[k]):-1 })
-         if (e[k],e[(k+1)%3]) not in nk: neighbours.update({ (e[(k+1)%3],e[k]):i })
+         if (e[k],e[(k+1)%3]) not in nk: bounders.update({ (e[(k+1)%3],e[k]):i })
          else:
-            j = neighbours[(e[k],e[(k+1)%3])]
-            ne[i][(e[k],e[(k+1)%3])] = j
-            ne[i][(e[(k+1)%3],e[k])] = j
-            ne[j][(e[k],e[(k+1)%3])] = i
-            ne[j][(e[(k+1)%3],e[k])] = i
+            j = bounders[(e[k],e[(k+1)%3])]
             insiders.update({(e[k],e[(k+1)%3]):[i,j]})
-            del neighbours[(e[k],e[(k+1)%3])]
+            del bounders[(e[k],e[(k+1)%3])]
+   ibar = 0
+   neighbours = - np.ones((len(IKLE),3),dtype=np.int)
+   for e,i in zip(IKLE,range(len(IKLE))):
+      for k in [0,1,2]:
+         pbar.update(ibar); ibar += 1
+         if insiders.has_key((e[k],e[(k+1)%3])):
+            a,b = insiders[(e[k],e[(k+1)%3])]
+            if a == i: neighbours[i][k] = b
+            if b == i: neighbours[i][k] = a
+         if insiders.has_key((e[(k+1)%3],e[k])):
+            a,b = insiders[(e[(k+1)%3],e[k])]
+            if a == i: neighbours[i][k] = b
+            if b == i: neighbours[i][k] = a
    #pbar.write('    +> listing neighbours of edges completed',ibar)
    pbar.finish()
 
-   return ne,neighbours,insiders
+   return neighbours,insiders,bounders
 
-"""
-   This function return the element number for the triangle including xyo=(xo,yo)
-      or -1 if the (xo,yo) is outside the mesh
-   It should be noted that (xo,yo) are arrays so only one search is necessary for
-      multiple pairs
-   Return: locate, and array of integers of size len(xyo)
-"""
-def xyLocateMeshSLF(xyo,NELEM,IKLE,MESHX,MESHY):
-   
-   locate = - np.ones((len(xyo)), dtype=np.int)
-   locatn = - np.ones((len(xyo),3), dtype=np.int)
-   bryctr = np.zeros((len(xyo),3))
-   
-   for e in range(NELEM):
-      p = [ IKLE[e][0], IKLE[e][1], IKLE[e][2] ]
-      for io in range(len(xyo)):
-         b0 = isInsideTriangle( xyo[io],(MESHX[p[0]],MESHY[p[0]]),(MESHX[p[1]],MESHY[p[1]]),(MESHX[p[2]],MESHY[p[2]]) )
-         if b0 != []:
-            locate[io] = e; locatn[io] = p; bryctr[io] = b0
-
-   return locate,locatn,bryctr
-
-def dichoLocateMeshSLF(rank,(e1,e2),(p1,p2),NELEM,IKLE,MESHX,MESHY):
-   
-   # ~~ Split in two sub-segments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   x0 = 0.5 * ( p1[0]+p2[0] ); y0 = 0.5 * ( p1[1]+p2[1] )
-   p0 = [ x0,y0 ]
-   e12 = [e1,e2]; p = []; e = []
-   
-   # ~~ Position the middle point ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   # ~~> just in case e1 is your match
-   f0 = False
-   if e1 >= 0:
-      br = isInsideTriangle( np.asarray(p0), (MESHX[IKLE[e1][0]],MESHY[IKLE[e1][0]]),(MESHX[IKLE[e1][1]],MESHY[IKLE[e1][1]]),(MESHX[IKLE[e1][2]],MESHY[IKLE[e1][2]]) )
-      if br != []:
-         e0 = e1
-         f0 = True
-   # ~~> just in case e2 is your match
-   if not f0 and e2 >= 0:
-      br = isInsideTriangle( np.asarray(p0), (MESHX[IKLE[e2][0]],MESHY[IKLE[e2][0]]),(MESHX[IKLE[e2][1]],MESHY[IKLE[e2][1]]),(MESHX[IKLE[e2][2]],MESHY[IKLE[e2][2]]) )
-      if br != []:
-         e0 = e2
-         f0 = True
-   # ~~> eventually search through the whole grid
-   if not f0:
-      le,ln,br = xyLocateMeshSLF(np.asarray([p0]),NELEM,IKLE,MESHX,MESHY)
-      e0 = le[0]
-      f0 = True
-
-   # ~~ Limit the number of useless dichotomies ~~~~~~~~~~~~~~~~~~~~
-
-   # ~~> should you not have found a mesh position
-   if not f0:
-      rank = rank + 1
-      if rank > 3: return p,e
-   # ~~> should the split be ridicoulously small
-   else:
-      sizem = 0.3 * min( max(MESHX[IKLE[e0]])-min(MESHX[IKLE[e0]]), max(MESHY[IKLE[e0]])-min(MESHY[IKLE[e0]]) )
-      siz10 = max( max(p1[0],p0[0])-min(p1[0],p0[0]), max(p1[1],p0[1])-min(p1[1],p0[1]) )
-      siz02 = max( max(p0[0],p2[0])-min(p0[0],p2[0]), max(p0[1],p2[1])-min(p0[1],p2[1]) )
-      if sizem > min(siz10,siz02): rank = rank + 1
-      if rank > 3: return p,e
-
-   e10 = []; e02 = []
-   p10 = []; p02 = []
-
-   # ~~ First sub-segment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   # ~~> if e1 == e0, you are about to go out ...
-   if e1 == e0 and e1 >= 0:
-      pi = []
-      for i in [0,1,2]:
-         pi.extend( getSegmentIntersection( ( MESHX[IKLE[e0][i%3]],MESHY[IKLE[e0][i%3]] ),
-            ( MESHX[IKLE[e0][(i+1)%3]],MESHY[IKLE[e0][(i+1)%3]] ),
-            ( p1[0],p1[1] ), ( p2[0],p2[1] ) ) )
-      if pi == []: return p,e
-      elif len(pi) == 1:
-         p.extend(pi)
-         e.append(e0)
-      else:
-         p00 = [ 0.5*( pi[0][0]+pi[1][0] ), 0.5*( pi[0][1]+pi[1][1] ) ]
-         for i in [0,1,2]:
-            p.extend( getSegmentIntersection( ( MESHX[IKLE[e0][i%3]],MESHY[IKLE[e0][i%3]] ),
-               ( MESHX[IKLE[e0][(i+1)%3]],MESHY[IKLE[e0][(i+1)%3]] ),
-               ( p1[0],p1[1] ), ( p00[0],p00[1] ) ) )
-         e.append(e0)
-         for i in [0,1,2]:
-            p.extend( getSegmentIntersection( ( MESHX[IKLE[e0][i%3]],MESHY[IKLE[e0][i%3]] ),
-               ( MESHX[IKLE[e0][(i+1)%3]],MESHY[IKLE[e0][(i+1)%3]] ),
-               ( p00[0],p00[1] ), ( p2[0],p2[1] ) ) )
-         e.append(e0)
-   # ~~> further split required
-   elif e1 >= 0 or e0 >= 0:
-      p10,e10 = dichoLocateMeshSLF(rank,(e1,e0),(p1,p0),NELEM,IKLE,MESHX,MESHY)
-
-   for pj in p10: #p.append(pi)
-      if p != []:
-         if not isClose(pj,p[len(p)-1]):
-            p.append(pj)
-            e.append(e10.pop(0))
-         else: e10.pop(0)
-      else:
-         p.append(pj)
-         e.append(e10.pop(0))
-   if len(e10) > 0: print e10
-
-   # ~~ Second sub-segment ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   # ~~> if e1 == e0, you are about to go out ...
-   if e2 == e0 and e2 >= 0:
-      pi = []
-      for i in [0,1,2]:
-         pi.extend( getSegmentIntersection( ( MESHX[IKLE[e0][i%3]],MESHY[IKLE[e0][i%3]] ),
-            ( MESHX[IKLE[e0][(i+1)%3]],MESHY[IKLE[e0][(i+1)%3]] ),
-            ( p1[0],p1[1] ), ( p2[0],p2[1] ) ) )
-      if pi == []: return p,e
-      elif len(pi) == 1:
-         p.extend(pi)
-         e.append(e0)
-      else:
-         p00 = [ 0.5*( pi[0][0]+pi[1][0] ), 0.5*( pi[0][1]+pi[1][1] ) ]
-         for i in [0,1,2]:
-            p.extend( getSegmentIntersection( ( MESHX[IKLE[e0][i%3]],MESHY[IKLE[e0][i%3]] ),
-               ( MESHX[IKLE[e0][(i+1)%3]],MESHY[IKLE[e0][(i+1)%3]] ),
-               ( p1[0],p1[1] ), ( p00[0],p00[1] ) ) )
-         e.append(e0)
-         for i in [0,1,2]:
-            p.extend( getSegmentIntersection( ( MESHX[IKLE[e0][i%3]],MESHY[IKLE[e0][i%3]] ),
-               ( MESHX[IKLE[e0][(i+1)%3]],MESHY[IKLE[e0][(i+1)%3]] ),
-               ( p00[0],p00[1] ), ( p2[0],p2[1] ) ) )
-         e.append(e0)
-   # ~~> further split required
-   elif e2 >= 0 or e0 >= 0:
-      p02,e02 = dichoLocateMeshSLF(rank,(e0,e2),(p0,p2),NELEM,IKLE,MESHX,MESHY)
-
-   for pj in p02: #p.append(pi)
-      if p != []:
-         if not isClose(pj,p[len(p)-1]):
-            p.append(pj)
-            e.append(e02.pop(0))
-         else: e02.pop(0)
-      else:
-         p.append(pj)
-         e.append(e02.pop(0))
-   if len(e02) > 0: print e02
-
-   return p,e
-
-def crossLocateMeshSLF(polyline,NELEM,IKLE,MESHX,MESHY):
-
-   # ~~ Nodes of the polyline ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   polyle,polyln,polybr = xyLocateMeshSLF(polyline,NELEM,IKLE,MESHX,MESHY)
-
-   # ~~ Intersection nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ipt = []; iet = []; ibr = []
-   for li in range(len(polyline)-1):
-
-      # ~~> Intersected nodes on the polyline ~~~~~~~~~~~~~~~~~~~~~~
-      p,e = dichoLocateMeshSLF(0,(-1,-1),(polyline[li],polyline[li+1]),NELEM,IKLE,MESHX,MESHY)
-
-      # ~~> First node on the sub-polyline ~~~~~~~~~~~~~~~~~~~~~~~~~
-      ei = polyle[li]
-      if ei >= 0:
-         pi = polyline[li]
-         if p != []:
-            if not isClose(pi,p[0]):
-               ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
-               ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
-         else:
-            ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
-            ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
-
-      # ~~> You may duplicate the nodes at either end ~~~~~~~~~~~~~~
-      for pi,ei in zip(p,e):
-         ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
-         ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
-
-   # ~~> Last node on the polyline ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ei = polyle[len(polyle)-1]
-   if ei >= 0:
-      pi = polyline[len(polyle)-1]
-      if ipt != []:
-         if not isClose(pi,ipt[len(ipt)-1]):
-            ipt.append(pi); iet.append([IKLE[ei][0],IKLE[ei][1],IKLE[ei][2]])
-            ibr.append( getBarycentricWeights(pi,(MESHX[IKLE[ei][0]],MESHY[IKLE[ei][0]]),(MESHX[IKLE[ei][1]],MESHY[IKLE[ei][1]]),(MESHX[IKLE[ei][2]],MESHY[IKLE[ei][2]])) )
-
-   return ipt,iet,ibr
 
 def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName)):
-   # TODO: you may have one or two values, the later defining an animation
-
+   # TODO: rework subset of time properly, particularly with 2 frames or more, whether
+   #    they define a range or a series of frames. The later is assumed for now
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   subset = [ time[0] ]
-   if time[0] < 0: subset = [ max( 0, len(tags['cores']) + time[0] ) ]
+   if len(time) < 1:
+      print "... Could not find a time frame to extract"
+      sys.exit()
+   subset = []
+   for i in range(len(time)):
+      subset.append(int(time[i]))
+      if time[i] < 0: subset[i] = [ max( 0, len(tags['cores']) + time[i] ) ]
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsIndexes),len(p))) #,len(tags['cores'])))
+   z = np.zeros((len(varsIndexes),len(subset),len(p))) #,len(tags['cores'])))
    # ~~ Extract distances along ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # TODO: convert x into a numpy array calculation
    d = 0.0
    x = [ d ]
    for xy in range(len(p)-1):
       d = d + np.sqrt( np.power(p[xy+1][0]-p[xy][0],2) + np.power(p[xy+1][1]-p[xy][1],2) )
       x.append(d)
    # ~~ Extract data along line ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #for t in range(len(tags['cores'])): ... see the TODO above
-   t = int(subset[0])
-   f.seek(tags['cores'][t])
-   f.read(4+4+4)
-   for ivar in range(NVAR):
-      f.read(4)
-      if ivar in varsIndexes:
-         VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
-         for xy in range(len(p)):
-            z[varsIndexes.index(ivar)][xy] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
-      else:
-         f.read(4*NPOIN3)
-      f.read(4)
+   for it,t in zip(range(len(subset)),subset):   # /!\ assumes a series of frames
+      f.seek(tags['cores'][t])
+      f.read(4+4+4)
+      for ivar in range(NVAR):
+         f.read(4)
+         if ivar in varsIndexes:
+            VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
+            for xy in range(len(p)):
+               z[varsIndexes.index(ivar)][it][xy] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
+         else:
+            f.read(4*NPOIN3)
+         f.read(4)
 
-   return ('Distance (m)',x),[(TITLE,varsName,z)]
+   return ('Distance (m)',x),[(TITLE,varsName,subset,z)]
 
 def putSLF(slf):
 

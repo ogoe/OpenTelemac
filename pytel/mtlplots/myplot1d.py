@@ -68,6 +68,12 @@ def drawPolylineLines(plt,(x,ys),deco):
          for i in range(len(y0)):
             #plt.ylabel(n0[i])
             plt.plot(x0,y0[i])
+      elif dim == 3:
+         n0,n1,n2,y0 = y
+         for i in range(len(y0)):
+            for j in range(len(y0[i])):
+               #plt.ylabel(str(n1[i]))
+               plt.plot(x0,y0[i][j])
 
       if deco['grid']: plt.grid(True)
 
