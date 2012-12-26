@@ -588,7 +588,7 @@ def runXML(xmlFile,xmlConfig,bypass):
             try:
                findlayer = plot.findLayerConfig(do.dids[xref],src)
             except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML'},e))
+               xcpt.append(filterMessage({'name':'runXML','msg':'could not find reference to draw the action: '+xref},e))
                continue    # bypass the rest of the for loop
             else:
                plot.targetLayer(findlayer)
