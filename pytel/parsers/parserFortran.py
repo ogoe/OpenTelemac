@@ -676,6 +676,9 @@ def scanSources(cfgdir,cfg,BYPASS):
       # ~~ Scans the sources that are relevant to the model ~~~~~~~~
       SrcDir = path.join(cfg['MODULES'][mod]['path'],'sources')     # assumes the sources are under ./sources
       FileList = getTheseFiles(SrcDir,['.f','.f90'])
+      if len(FileList) == 0:
+         print '... found an empty module: ' + mod
+         sys.exit()
       ODir = path.join(cfg['MODULES'][mod]['path'],cfgdir)
 
       print '... now scanning ', path.basename(cfg['MODULES'][mod]['path'])
