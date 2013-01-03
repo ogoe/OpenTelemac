@@ -69,7 +69,7 @@
       INTEGER, INTENT(IN)   :: NBOR(NPTFR)
       INTEGER, INTENT(INOUT):: IFABOR(NELMAX,4)
       INTEGER, INTENT(IN)   :: IKLE(SIZIKL,4),LIHBOR(NPTFR)
-      INTEGER, INTENT(IN)   :: INDPU(NPOIN)
+      INTEGER, INTENT(IN)   :: INDPU(*)
       INTEGER, INTENT(IN)   :: NELEB2
       INTEGER, INTENT(IN)   :: IKLESTR(NELEB2,3)
 !
@@ -440,8 +440,8 @@
                   I3=IKLE(IELEM,SOMFAC(3,IFACE))
 !     
                   IF( INDPU(I1).NE.0.AND.
-     &                 INDPU(I2).NE.0.AND.
-     &                 INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
+     &                INDPU(I2).NE.0.AND.
+     &                INDPU(I3).NE.0     ) IFABOR(IELEM,IFACE)=-2
 !     
                ENDDO
             ENDDO

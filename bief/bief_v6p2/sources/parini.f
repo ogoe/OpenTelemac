@@ -34,30 +34,31 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| FAC            |<--| 1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
-!| IFAPAR         |-->| IFAPAR(1:3,IELEM)=PROCESSOR NUMBERS BEHIND THE
-!|                |   | 3 ELEMENT EDGES  (NUMBERS FROM 0 TO NCSIZE-1)
-!|                |   | IFAPAR(4:6,IELEM): -LOCAL- ELEMENT NUMBERS
-!|                |   | BEHIND THE 3 EDGES
-!| INDPU          |<--| INDEX TABLE : IF 0: NOT AN INTERFACE POINT
-!|                |   |               IF NOT 0: ADDRESS IN THE LIST
-!|                |   |               OF BOUNDARY POINTS.
-!| MESH           |-->| MESH STRUCTURE
-!| NACHB          |-->| IF 'IL' IS THE LOCAL RANK OF A NEIGHBOURING
-!|                |   | SUB-DOMAIN AND 'IP' ONE INTERFACE POINT
-!|                |   | NACHB(IL,IP) WILL BE THE REAL NUMBER OF THIS
-!|                |   | NEIGHBOURING SUB-DOMAIN
-!|                |   | THE LIST IN NACHB IS ORDERED WITH THE
-!|                |   | GLOBAL NUMBERS OF POINTS (HENCE THE POINTS
-!|                |   | WILL BE FOUND IN THE SAME ORDER BY ALL
-!|                |   | PROCESSORS)
-!| NB_NEIGHB      |<--| NUMBER OF NEIGHBOURING SUB-DOMAINS (FOR POINTS)
-!| NB_NEIGHB_SEG  |<--| NUMBER OF NEIGHBOURING SUB-DOMAINS (FOR EDGES)
-!| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
-!| NHM            |<--| NODE NUMBERS OF PROCESSORS WITH SMALLER RANK
-!| NHP            |<--| NODE NUMBERS OF PROCESSORS WITH LARGER RANK
-!| NPLAN          |-->| NUMBER OF PLANES IN 3D
-!| NPOIN          |-->| NUMBER OF POINTS
+!| FAC              |<--| 1/(NUMBER OF NEIGHBOURING SUB-DOMAINS)
+!| IFAPAR           |-->| IFAPAR(1:3,IELEM)=PROCESSOR NUMBERS BEHIND THE
+!|                  |   | 3 ELEMENT EDGES  (NUMBERS FROM 0 TO NCSIZE-1)
+!|                  |   | IFAPAR(4:6,IELEM): -LOCAL- ELEMENT NUMBERS
+!|                  |   | BEHIND THE 3 EDGES
+!| INDPU            |<--| INDEX TABLE : IF 0: NOT AN INTERFACE POINT
+!|                  |   |               IF NOT 0: ADDRESS IN THE LIST
+!|                  |   |               OF BOUNDARY POINTS.
+!| MESH             |-->| MESH STRUCTURE
+!| NACHB            |-->| IF 'IL' IS THE LOCAL RANK OF A NEIGHBOURING
+!|                  |   | SUB-DOMAIN AND 'IP' ONE INTERFACE POINT
+!|                  |   | NACHB(IL,IP) WILL BE THE REAL NUMBER OF THIS
+!|                  |   | NEIGHBOURING SUB-DOMAIN
+!|                  |   | THE LIST IN NACHB IS ORDERED WITH THE
+!|                  |   | GLOBAL NUMBERS OF POINTS (HENCE THE POINTS
+!|                  |   | WILL BE FOUND IN THE SAME ORDER BY ALL
+!|                  |   | PROCESSORS)
+!| NB_NEIGHB        |<--| NUMBER OF NEIGHBOURING SUB-DOMAINS (FOR POINTS)
+!| NB_NEIGHB_SEG    |<--| NUMBER OF NEIGHBOURING SUB-DOMAINS (FOR EDGES)
+!| NB_NEIGHB_PT_SEG |<--| NUMBER OF SEGMENTS SHARED WITH A NEIGHBOUR
+!| NELEM2           |-->| NUMBER OF ELEMENTS IN 2D
+!| NHM              |<--| NODE NUMBERS OF PROCESSORS WITH SMALLER RANK
+!| NHP              |<--| NODE NUMBERS OF PROCESSORS WITH LARGER RANK
+!| NPLAN            |-->| NUMBER OF PLANES IN 3D
+!| NPOIN            |-->| NUMBER OF POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_PARINI => PARINI

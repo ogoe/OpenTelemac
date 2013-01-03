@@ -93,7 +93,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(DIMENS(IELM1).NE.MESH%DIM) THEN
+      IF( (DIMENS(IELM1).NE.MESH%DIM) .AND. 
+     &    (IELM1.NE.81.AND.IELM2.NE.81) ) THEN
 !        BOUNDARY MATRIX : NOT TREATED HERE
          IF (LNG.EQ.1) WRITE(LU,100) NAME
          IF (LNG.EQ.2) WRITE(LU,101) NAME
@@ -105,7 +106,13 @@
          STOP
       ENDIF
 !
-      NELEM  = MESH%NELEM
+      IF(DIMENS(IELM1).EQ.MESH%DIM) THEN
+!       NORMAL MATRIX
+        NELEM  = MESH%NELEM
+      ELSE
+!       BOUNDARY MATRIX
+        NELEM  = MESH%NELEB
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -227,6 +234,23 @@
      &                    ELTSEG(1,4),ELTSEG(1,5),ELTSEG(1,6),
      &                    ORISEG(1,1),ORISEG(1,2),ORISEG(1,3),
      &                    ORISEG(1,4),ORISEG(1,5),ORISEG(1,6))
+        ENDIF
+!
+      ELSEIF(IELM1.EQ.81.AND.IELM2.EQ.81) THEN
+!
+!       TETRAHEDRONS MATRIX
+!
+        IF(TYPEXT.EQ.'S') THEN
+          CALL AS3_8181_S(XM,BIEF_NBSEG(IELM1,MESH),
+     &                    XMT,DIM1XMT,DIM2XMT,STOXMT,
+     &                    NELMAX,NELEM,
+     &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3))
+        ELSEIF(TYPEXT.EQ.'Q') THEN
+          CALL AS3_8181_Q(XM,BIEF_NBSEG(IELM1,MESH),
+     &                    XMT,DIM1XMT,DIM2XMT,STOXMT,
+     &                    NELMAX,NELEM,
+     &                    ELTSEG(1,1),ELTSEG(1,2),ELTSEG(1,3),
+     &                    ORISEG(1,1),ORISEG(1,2),ORISEG(1,3))
         ENDIF
 !
       ELSE

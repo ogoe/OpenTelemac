@@ -50,6 +50,11 @@
 !+        25/08/2011
 !+        V6P2
 !+   NBSEG and NBSEGEL added for element 51 
+!
+!history  F. DECUNG (LNHE) 
+!+        01/01/2013
+!+        V6P3
+!+   NBSEG added for elements 31 and 81
 !+
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NDS            |<--| ARRAY IN BIEF_MESH STRUCTURE FOR STORING
@@ -66,6 +71,8 @@
 !| NSEGBOR        |-->| NUMBER OF BOUNDARY SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF_DEF, ONLY : NCSIZE
+
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -240,11 +247,13 @@
 !
 !C 3D MESH
       NDS(31,1) = NPOIN
-!     NDS(31,2) = ?????
+      !SEEMS TO BE "EXACT" IN SCALAR BUT NOT IN PARALLEL...
+      !NDS(31,2) = NELEM + NPOIN + 0.75*NELEB - 0.5*NPTFR
+      NDS(31,2) = NELEM + NPOIN + NELEB + NPTFR
       NDS(31,3) = 4
       NDS(31,4) = 4
       NDS(31,5) = NPMAX
-!     NDS(31,6) = ?????
+      NDS(31,6) = 6
 !
 !-----------------------------------------------------------------------
 !
@@ -360,7 +369,7 @@
 !     NDS(80,2) = ?????
       NDS(80,3) = 1
       NDS(80,4) = 3
-      NDS(80,5) = 3*NELEB
+      NDS(80,5) = NELEB !3*NELEB
 !     NDS(80,6) = ??????
 !
 !-----------------------------------------------------------------------
@@ -369,7 +378,10 @@
 !         MESH
 !
       NDS(81,1) = NPTFR
-!     NDS(81,2) = ?????????
+!     A BIT DIFFERENT FROM NDS(11,2)
+!     ADAPTED TO A SURFACE OF A 3D MESH
+!     (WHICH IS A "BIDIMENSIONAL" SURFACE)
+      NDS(81,2) = (3*NELEB)/2 + NPTFR
       NDS(81,3) = 3
       NDS(81,4) = 3
       NDS(81,5) = NPTFR

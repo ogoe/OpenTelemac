@@ -51,7 +51,7 @@
       ELSEIF(IELM.EQ.13) THEN
         IELBOR = 2
       ELSEIF(IELM.EQ.30) THEN
-        IELBOR = 10
+        IELBOR = 80
       ELSEIF(IELM.EQ.31) THEN
         IELBOR = 81
       ELSEIF(IELM.EQ.51.AND.I.EQ.1) THEN

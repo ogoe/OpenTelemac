@@ -61,7 +61,7 @@ addblo.f  allblo.f allblo_in_block.f             \
 almesh.f     appdots.f      asmve1.f       attend.f  \
 asmvec.f     asseg_3d.f     assex3.f      assve1.f      assvec.f \
 as3_1111_q.f as3_1111_s.f   as3_1313_q.f  as3_1313_s.f  as3_1113.f    as3_1311.f    as3_1212_q.f  as3_1212_s.f \
-as3_1112.f   as3_1211.f     as3_3131_s.f  as3_3131_q.f  as3_4141_s.f  as3_4141_q.f \
+as3_1112.f   as3_1211.f     as3_3131_s.f  as3_3131_q.f  as3_4141_s.f  as3_4141_q.f as3_8181_s.f as3_8181_q.f \
 atanc.f  bief_allmat.f bief_allvec.f bief_allvec_in_block.f bief_close_files.f \
 bief_desimp.f  bief_dim1_ext.f bief_dim2_ext.f bief_ininds.f bief_init.f \
 bief_nbfel.f bief_nbmpts.f  bief_nbpel.f  bief_nbpts.f  bief_nbseg.f  bief_nbsegel.f \
@@ -108,7 +108,7 @@ mt13ba.f     mt13bb.f       mt13cc.f      mt13ca.f  mt14pp.f  mt14tt.f mt99aa.f 
 mt99bb.f     mv0202.f       mv0303.f      mv0304.f  mv0306.f \
 mult_interface_seg.f        mv0403.f      mv0404.f  mv0603.f      \
 mv0606.f     mw0303.f       mxptel.f      mxptel31.f na_flux3d_lim.f  normab.f    \
-om.f         omseg.f        omsegbor.f    om0101.f  om1101.f  om1111.f  \
+om.f         omseg.f        omborseg.f    omsegbor.f    om0101.f  om1101.f  om1111.f  \
 om1112.f     om1113.f       om1201.f      om1211.f  om1302.f  om1311.f  om2121.f  om3181.f \
 om4111.f     om4121.f       om4141.f      om5111.f  om5161.f  opass.f \
 os.f         osbd.f         osdb.f \
@@ -128,7 +128,7 @@ sd_ssf.f     sd_strssd.f    sd_strtri.f   sd_strsg4.f   sd_fabcad.f sd_fabsg4.f 
 sd_ndrv.f    sd_nnf.f       sd_nns.f      sd_nnt.f      sd_nsf.f \
 segbor.f     share_3d_fluxes.f            skipgeo.f     slop10.f      slopes.f \
 solaux.f     solve.f        somme.f       somme2.f      sortie.f \
-stoseg.f     stoseg41.f     stoseg51.f    strche.f      suite_serafin.f surv11.f \
+stoseg.f     stoseg31.f stoseg41.f     stoseg51.f    strche.f      suite_serafin.f surv11.f \
 survol.f      time_in_seconds.f           tnomer.f       tracvf.f      trid3d.f      tsloc.f       topogr.f  tvf.f \
 um1x.f       um1x04.f       um1x09.f       \
 vc00aa.f     vc00bb.f       vc00cc.f      vc00pp.f      vc00ft.f \

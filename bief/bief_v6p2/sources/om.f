@@ -54,6 +54,12 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  F. DECUNG (LNHE)
+!+        01/01/2013
+!+        V6P3
+!+   omborseg added : operations on matrices with an edge-based storage
+!         where N is a boundary matrix
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT USED IN OPERATION OP
 !| D              |-->| A DIAGONAL MATRIX
@@ -73,16 +79,19 @@
 !
       DOUBLE PRECISION, INTENT(IN)    :: C
       CHARACTER(LEN=8), INTENT(IN)    :: OP
-      TYPE(BIEF_OBJ)  , INTENT(INOUT) :: M
-      TYPE(BIEF_OBJ)  , INTENT(IN)    :: N,D
+      TYPE(BIEF_OBJ)  , INTENT(INOUT), TARGET :: M
+      TYPE(BIEF_OBJ)  , INTENT(IN)   , TARGET :: N
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: D
       TYPE(BIEF_MESH) , INTENT(IN)    :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELM1,IELM2,IELN1,IELN2,NELEM,NELMAX
-      INTEGER NDIAGM,NDIAGN,NDIAGX,NSEG1,NSEG2
+      INTEGER NDIAGM,NDIAGN,NDIAGX,MSEG1,MSEG2,NSEG1,NSEG2
       INTEGER STOM,STON,NPOIN,NPTFR,NPTFX,MDIAGX
       INTEGER SIZXN,SZMXN,NETAGE
+!
+      TYPE(BIEF_OBJ), POINTER :: NN
 !
       CHARACTER*1 TYPDIM,TYPEXM,TYPDIN,TYPEXN
 !
@@ -138,15 +147,21 @@
 !-----------------------------------------------------------------------
 !
 !  EXTRACTS THE CHARACTERISTICS OF MATRIX N (OPTIONAL)
+      IF(INCLUS(OP,'0')) THEN
+         NN => M
+      ELSE
+         NN => N
+      ENDIF
+         
       IF(INCLUS(OP,'N')) THEN
-        TYPDIN = N%TYPDIA
-        TYPEXN = N%TYPEXT
-        STON   = N%STO
-        NDIAGN = N%D%DIM1
-        NDIAGX = N%D%MAXDIM1
+        TYPDIN = NN%TYPDIA
+        TYPEXN = NN%TYPEXT
+        STON   = NN%STO
+        NDIAGN = NN%D%DIM1
+        NDIAGX = NN%D%MAXDIM1
 !
-        SIZXN = N%X%DIM1
-        SZMXN = N%X%MAXDIM1
+        SIZXN = NN%X%DIM1
+        SZMXN = NN%X%MAXDIM1
 !
 ! 07/02/03 : DIVISION BY NDIAGN=0 AVOIDED (SUBDOMAIN WITHOUT BOUNDARY POINTS
 !            IN PARALLEL). COURTESY OLIVER GOETHEL (HANNOVER UNIVERSITY)
@@ -157,8 +172,8 @@
           NETAGE = 0
         ENDIF
 !
-        IELN1 = N%ELMLIN
-        IELN2 = N%ELMCOL
+        IELN1 = NN%ELMLIN
+        IELN2 = NN%ELMCOL
         IF(NDIAGN.GT.MDIAGX) THEN
          IF(LNG.EQ.1) WRITE(LU,400) M%NAME
          IF(LNG.EQ.2) WRITE(LU,401) M%NAME
@@ -203,7 +218,7 @@
 !     ELEMENTS WITH 2 POINTS
 !
       CALL OM0101(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                 N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
+     &                 NN%D%R,TYPDIN,NN%X%R,TYPEXN, D%R,C,
      &                 IKLE,NELEM,NELMAX,NDIAGM)
 !
 !
@@ -220,13 +235,13 @@
      &      (IELN1.EQ.81.AND.IELN2.EQ.81)         ) THEN
 !
           CALL OM1111(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                     N%D%R,TYPDIN,N%X%R,TYPEXN,D%R,C,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
      &                     IKLE,NELEM,NELMAX,NDIAGM)
 !
         ELSEIF(IELN1.EQ.1.AND.IELN2.EQ.1) THEN
 !
           CALL OM1101(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                     N%D%R,TYPDIN,N%X%R,TYPEXN, C,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                     MESH%NULONE%I,MESH%NELBOR%I,
      &                     MESH%NBOR%I,
      &                     NELMAX,NDIAGM,NDIAGN,NDIAGX)
@@ -236,8 +251,8 @@
           IF (LNG.EQ.2) WRITE(LU,101) M%NAME
           IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
           IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-          IF (LNG.EQ.1) WRITE(LU,150) N%NAME
-          IF (LNG.EQ.2) WRITE(LU,151) N%NAME
+          IF (LNG.EQ.1) WRITE(LU,150) NN%NAME
+          IF (LNG.EQ.2) WRITE(LU,151) NN%NAME
           IF (LNG.EQ.1) WRITE(LU,250) IELN1,IELN2
           IF (LNG.EQ.2) WRITE(LU,251) IELN1,IELN2
           IF (LNG.EQ.1) WRITE(LU,300)
@@ -261,13 +276,13 @@
      &        (IELN1.EQ.12.AND.IELN2.EQ.12)      ) THEN
 !
           CALL OM2121(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
+     &                NN%D%R,TYPDIN,NN%X%R,TYPEXN, D%R,C,
      &                IKLE,NELEM,NELMAX,NDIAGM)
         ELSEIF(  (IELM1.EQ.12.AND.IELM2.EQ.12) .AND.
      &           (IELN1.EQ.1 .AND.IELN2.EQ.1 )   ) THEN
 !
           CALL OM1201(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                     N%D%R,TYPDIN,N%X%R,TYPEXN, C,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                     MESH%NULONE%I,MESH%NELBOR%I,
      &                     MESH%NBOR%I,
      &                     NELMAX,NDIAGM,NDIAGN,NDIAGX)
@@ -276,7 +291,7 @@
 !         PRISMS SPLIT IN TETRAHEDRONS M INTERIOR MATRIX
 !                                      N LATERAL BOUNDARY MATRIX
           CALL OM5161(OP,M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                N%D%R,TYPDIN,N%X%R,TYPEXN,C,
+     &                NN%D%R,TYPDIN,NN%X%R,TYPEXN,C,
      &                MESH%NULONE%I,MESH%NELBOR%I,MESH%NBOR%I,
      &                NELMAX,NDIAGN,SIZXN,SZMXN)
 !
@@ -285,7 +300,7 @@
 !         NOT STRUCTURED TETRAHEDRONS    M INTERIOR MATRIX
 !                                        N LATERAL BOUNDARY MATRIX
           CALL OM3181(OP,M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                N%D%R,TYPDIN,N%X%R,TYPEXN,C,
+     &                NN%D%R,TYPDIN,NN%X%R,TYPEXN,C,
      &                MESH%NULONE%I,MESH%NELBOR%I,MESH%NBOR%I,
      &                NELMAX,NDIAGN,MESH%NELEB,SZMXN)
 !
@@ -295,7 +310,7 @@
 !                                      N BOTTOM (NB) OR SURFACE (NS) BOUNDARY MATRIX
 !                                      OPERATIONS M+NB AND M+NS
           CALL OM5111(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                N%D%R,TYPDIN,N%X%R,TYPEXN, C,
+     &                NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                NDIAGN,NDIAGX,SIZXN,SZMXN,NETAGE,NELMAX)
 !
         ELSE
@@ -303,8 +318,8 @@
           IF (LNG.EQ.2) WRITE(LU,101) M%NAME
           IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
           IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-          IF (LNG.EQ.1) WRITE(LU,150) N%NAME
-          IF (LNG.EQ.2) WRITE(LU,151) N%NAME
+          IF (LNG.EQ.1) WRITE(LU,150) NN%NAME
+          IF (LNG.EQ.2) WRITE(LU,151) NN%NAME
           IF (LNG.EQ.1) WRITE(LU,250) IELN1,IELN2
           IF (LNG.EQ.2) WRITE(LU,251) IELN1,IELN2
           IF (LNG.EQ.1) WRITE(LU,300)
@@ -320,15 +335,15 @@
         IF((IELN1.EQ.11.AND.IELN2.EQ.12).OR.
      &     (IELN1.EQ.12.AND.IELN2.EQ.11.AND.OP(1:4).EQ.'M=TN')) THEN
           CALL OM1112(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                     N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, D%R,C,
      &                     IKLE,NELEM,NELMAX,NDIAGM)
         ELSE
           IF (LNG.EQ.1) WRITE(LU,100) M%NAME
           IF (LNG.EQ.2) WRITE(LU,101) M%NAME
           IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
           IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-          IF (LNG.EQ.1) WRITE(LU,150) N%NAME
-          IF (LNG.EQ.2) WRITE(LU,151) N%NAME
+          IF (LNG.EQ.1) WRITE(LU,150) NN%NAME
+          IF (LNG.EQ.2) WRITE(LU,151) NN%NAME
           IF (LNG.EQ.1) WRITE(LU,250) IELN1,IELN2
           IF (LNG.EQ.2) WRITE(LU,251) IELN1,IELN2
           IF (LNG.EQ.1) WRITE(LU,300)
@@ -344,15 +359,15 @@
         IF((IELN1.EQ.12.AND.IELN2.EQ.11).OR.
      &     (IELN1.EQ.11.AND.IELN2.EQ.12.AND.OP(1:4).EQ.'M=TN')) THEN
           CALL OM1211(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
+     &                NN%D%R,TYPDIN,NN%X%R,TYPEXN, D%R,C,
      &                IKLE,NELEM,NELMAX,NDIAGM)
         ELSE
           IF (LNG.EQ.1) WRITE(LU,100) M%NAME
           IF (LNG.EQ.2) WRITE(LU,101) M%NAME
           IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
           IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-          IF (LNG.EQ.1) WRITE(LU,150) N%NAME
-          IF (LNG.EQ.2) WRITE(LU,151) N%NAME
+          IF (LNG.EQ.1) WRITE(LU,150) NN%NAME
+          IF (LNG.EQ.2) WRITE(LU,151) NN%NAME
           IF (LNG.EQ.1) WRITE(LU,250) IELN1,IELN2
           IF (LNG.EQ.2) WRITE(LU,251) IELN1,IELN2
           IF (LNG.EQ.1) WRITE(LU,300)
@@ -370,27 +385,27 @@
      &      (IELN1.EQ.13.AND.IELN2.EQ.13)        ) THEN
 !
           CALL OM4141(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
+     &                NN%D%R,TYPDIN,NN%X%R,TYPEXN, D%R,C,
      &                IKLE,NELEM,NELMAX,NDIAGM)
 !
         ELSEIF(IELN1.EQ.71.AND.IELN2.EQ.71) THEN
 !
           CALL OM4121(OP,M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                   N%D%R,TYPDIN,N%X%R,TYPEXN,C,
+     &                   NN%D%R,TYPDIN,NN%X%R,TYPEXN,C,
      &                   MESH%NULONE%I,MESH%NELBOR%I,MESH%NBOR%I,
      &                   NELMAX,NDIAGN,SIZXN,SZMXN)
 !
         ELSEIF(IELN1.EQ.11.AND.IELN2.EQ.11) THEN
 !
           CALL OM4111(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                     N%D%R,TYPDIN,N%X%R,TYPEXN, C,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                     NDIAGN,NDIAGX,SIZXN,SZMXN,NETAGE,NELMAX)
 !
         ELSEIF(  (IELM1.EQ.13.AND.IELM2.EQ.13) .AND.
      &           (IELN1.EQ.2 .AND.IELN2.EQ.2 )   ) THEN
 !
           CALL OM1302(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                     N%D%R,TYPDIN,N%X%R,TYPEXN, C,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, C,
      &                     MESH%NULONE%I,MESH%NELBOR%I,
      &                     MESH%NBOR%I,
      &                     NELMAX,NDIAGM,NPTFR,NPTFX)
@@ -400,8 +415,8 @@
           IF (LNG.EQ.2) WRITE(LU,101) M%NAME
           IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
           IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-          IF (LNG.EQ.1) WRITE(LU,150) N%NAME
-          IF (LNG.EQ.2) WRITE(LU,151) N%NAME
+          IF (LNG.EQ.1) WRITE(LU,150) NN%NAME
+          IF (LNG.EQ.2) WRITE(LU,151) NN%NAME
           IF (LNG.EQ.1) WRITE(LU,250) IELN1,IELN2
           IF (LNG.EQ.2) WRITE(LU,251) IELN1,IELN2
           IF (LNG.EQ.1) WRITE(LU,300)
@@ -417,15 +432,15 @@
         IF((IELN1.EQ.11.AND.IELN2.EQ.13).OR.
      &     (IELN1.EQ.13.AND.IELN2.EQ.11.AND.OP(1:4).EQ.'M=TN')) THEN
           CALL OM1113(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                     N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
+     &                     NN%D%R,TYPDIN,NN%X%R,TYPEXN, D%R,C,
      &                     IKLE,NELEM,NELMAX,NDIAGM)
         ELSE
           IF (LNG.EQ.1) WRITE(LU,100) M%NAME
           IF (LNG.EQ.2) WRITE(LU,101) M%NAME
           IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
           IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-          IF (LNG.EQ.1) WRITE(LU,150) N%NAME
-          IF (LNG.EQ.2) WRITE(LU,151) N%NAME
+          IF (LNG.EQ.1) WRITE(LU,150) NN%NAME
+          IF (LNG.EQ.2) WRITE(LU,151) NN%NAME
           IF (LNG.EQ.1) WRITE(LU,250) IELN1,IELN2
           IF (LNG.EQ.2) WRITE(LU,251) IELN1,IELN2
           IF (LNG.EQ.1) WRITE(LU,300)
@@ -441,15 +456,15 @@
         IF((IELN1.EQ.13.AND.IELN2.EQ.11).OR.
      &     (IELN1.EQ.11.AND.IELN2.EQ.13.AND.OP(1:4).EQ.'M=TN')) THEN
           CALL OM1311(OP , M%D%R,TYPDIM,M%X%R,TYPEXM ,
-     &                N%D%R,TYPDIN,N%X%R,TYPEXN, D%R,C,
+     &                NN%D%R,TYPDIN,NN%X%R,TYPEXN, D%R,C,
      &                IKLE,NELEM,NELMAX,NDIAGM)
         ELSE
           IF (LNG.EQ.1) WRITE(LU,100) M%NAME
           IF (LNG.EQ.2) WRITE(LU,101) M%NAME
           IF (LNG.EQ.1) WRITE(LU,200) IELM1,IELM2
           IF (LNG.EQ.2) WRITE(LU,201) IELM1,IELM2
-          IF (LNG.EQ.1) WRITE(LU,150) N%NAME
-          IF (LNG.EQ.2) WRITE(LU,151) N%NAME
+          IF (LNG.EQ.1) WRITE(LU,150) NN%NAME
+          IF (LNG.EQ.2) WRITE(LU,151) NN%NAME
           IF (LNG.EQ.1) WRITE(LU,250) IELN1,IELN2
           IF (LNG.EQ.2) WRITE(LU,251) IELN1,IELN2
           IF (LNG.EQ.1) WRITE(LU,300)
@@ -477,14 +492,31 @@
 !
 !  STORAGE BY SEGMENT
 !
-        IF(M%ELMCOL.NE.N%ELMCOL.OR.M%ELMLIN.NE.N%ELMLIN) THEN
-          WRITE(LU,*) 'M ET N DE STRUCTURES DIFFERENTES'
-          CALL PLANTE(1)
-          STOP
-        ENDIF
+        IF(M%ELMCOL.NE.NN%ELMCOL.OR.M%ELMLIN.NE.NN%ELMLIN) THEN
+!          WRITE(LU,*) 'M ET N DE STRUCTURES DIFFERENTES',M%ELMCOL
+!          CALL PLANTE(1)
+!          STOP
 !
-        NSEG1 = BIEF_NBSEG(M%ELMLIN,MESH)
-        NSEG2 = BIEF_NBSEG(M%ELMCOL,MESH)
+!     EDGE-BASED STORAGE FOR M AN N
+!     THIS CAN HAPPEN ONLY WHEN N IS A BOUNDARY MATRIX (FD : REALLY?)
+!     TESTED SO FAR FOR TETRA (81) AND TRIANGLES (31)  
+!     BORDER SEGMENTS ARE LINKED TO THE NSEGBOR FIRST SEGMENTS
+!
+           MSEG1 = BIEF_NBSEG(M%ELMLIN,MESH)
+           MSEG2 = BIEF_NBSEG(M%ELMCOL,MESH)
+           NSEG1 = BIEF_NBSEG(NN%ELMLIN,MESH)
+           NSEG2 = BIEF_NBSEG(NN%ELMCOL,MESH)
+!     
+           CALL OMBORSEG(OP,M%D%R,TYPDIM,M%X%R,TYPEXM,
+     &          NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
+     &          NDIAGN,MSEG1,MSEG2,NSEG1,NSEG2,MESH%GLOSEG%I,
+     &          MESH%GLOSEG%MAXDIM1,
+     &          MESH%NBOR%I,MESH%NPTFR)          
+!
+        ELSE
+!
+           NSEG1 = BIEF_NBSEG(M%ELMLIN,MESH)
+           NSEG2 = BIEF_NBSEG(M%ELMCOL,MESH)
 !
 !       IN LINEAR-QUADRATIC RECTANGULAR MATRICES, PURELY QUADRATIC
 !       SEGMENTS ARE NOT CONSIDERED (NUMBER 13,14 AND 15, SO 3 PER ELEMENT)
@@ -499,32 +531,34 @@
 !       SEGMENTS ARE NOT CONSIDERED (NUMBER 13,14 AND 15, SO 3 PER ELEMENT)
 !
         CALL OMSEG(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                  N%D%R,TYPDIN,N%X%R,TYPEXN,D%R,C,
+     &                  NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
      &                  NDIAGM,NSEG1,NSEG2,MESH%GLOSEG%I,
      &                  MESH%GLOSEG%MAXDIM1)
 !
+        ENDIF
+!     
       ELSEIF(STOM.EQ.3.AND.STON.EQ.1) THEN
 !
 !       EDGE-BASED STORAGE FOR M AND EBE FOR N
 !       THIS CAN HAPPEN ONLY WHEN N IS A BOUNDARY MATRIX
 !
-        IF(  (M%ELMLIN.EQ.11.AND.M%ELMCOL.EQ.11.AND.
-     &        N%ELMLIN.EQ.1 .AND.N%ELMCOL.EQ.1) .OR.
-     &       (M%ELMLIN.EQ.12.AND.M%ELMCOL.EQ.12.AND.
-     &        N%ELMLIN.EQ.1 .AND.N%ELMCOL.EQ.1) .OR.
-     &       (M%ELMLIN.EQ.13.AND.M%ELMCOL.EQ.13.AND.
-     &        N%ELMLIN.EQ.1 .AND.N%ELMCOL.EQ.1) .OR.
-     &       (M%ELMLIN.EQ.13.AND.M%ELMCOL.EQ.13.AND.
-     &        N%ELMLIN.EQ.2 .AND.N%ELMCOL.EQ.2)      ) THEN
+        IF(  ( M%ELMLIN.EQ.11.AND. M%ELMCOL.EQ.11.AND.
+     &        NN%ELMLIN.EQ.1 .AND.NN%ELMCOL.EQ.1) .OR.
+     &       ( M%ELMLIN.EQ.12.AND. M%ELMCOL.EQ.12.AND.
+     &        NN%ELMLIN.EQ.1 .AND.NN%ELMCOL.EQ.1) .OR.
+     &       ( M%ELMLIN.EQ.13.AND. M%ELMCOL.EQ.13.AND.
+     &        NN%ELMLIN.EQ.1 .AND.NN%ELMCOL.EQ.1) .OR.
+     &       ( M%ELMLIN.EQ.13.AND. M%ELMCOL.EQ.13.AND.
+     &        NN%ELMLIN.EQ.2 .AND.NN%ELMCOL.EQ.2)      ) THEN
 !
           NSEG1 = BIEF_NBSEG(M%ELMLIN,MESH)
           NSEG2 = BIEF_NBSEG(M%ELMCOL,MESH)
 !
           CALL OMSEGBOR(OP , M%D%R,TYPDIM,M%X%R,TYPEXM,
-     &                       N%D%R,TYPDIN,N%X%R,TYPEXN,D%R,C,
+     &                       NN%D%R,TYPDIN,NN%X%R,TYPEXN,D%R,C,
      &                       NDIAGM,NSEG1,NSEG2,MESH%NBOR%I,
      &                       MESH%KP1BOR%I,NPTFR,
-     &                       M%ELMLIN,N%ELMLIN,
+     &                       M%ELMLIN,NN%ELMLIN,
      &                       BIEF_NBSEG(11,MESH))
 !
         ELSE
@@ -532,9 +566,9 @@
           WRITE(LU,*) '     M%ELMLIN=',M%ELMLIN
           WRITE(LU,*) '     M%ELMCOL=',M%ELMCOL
           WRITE(LU,*) '     M%NAME=',M%NAME
-          WRITE(LU,*) '     N%ELMLIN=',N%ELMLIN
-          WRITE(LU,*) '     N%ELMCOL=',N%ELMCOL
-          WRITE(LU,*) '     N%NAME=',N%NAME
+          WRITE(LU,*) '     NN%ELMLIN=',NN%ELMLIN
+          WRITE(LU,*) '     NN%ELMCOL=',NN%ELMCOL
+          WRITE(LU,*) '     NN%NAME=',NN%NAME
           WRITE(LU,*) '     IMPLEMENTATION MISSING'
           CALL PLANTE(1)
           STOP
