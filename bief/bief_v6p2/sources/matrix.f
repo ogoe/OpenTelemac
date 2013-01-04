@@ -5,7 +5,7 @@
      &(M,OP,FORMUL,IELM1,IELM2,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN MATRICES.
@@ -63,6 +63,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        25/12/2012
+!+        V6P3
+!+   Arguments added to MATRIY
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
@@ -166,6 +171,7 @@
      &              XMUL,F,G,H,U,V,W,
      &              F%R,G%R,H%R,U%R,V%R,W%R,
      &              MESH%W%R,LEGO,XX,YY,ZZ,
+     &              MESH%X%R,MESH%Y%R,MESH%Z%R,
      &              SURFAC,IKLE,MESH%NBOR%I ,
      &              NELEM,NELMAX,IELM1,IELM2,SS,
      &              MESH%NPOIN/BIEF_NBPTS(11,MESH),

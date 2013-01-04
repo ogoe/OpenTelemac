@@ -4,11 +4,11 @@
 !
      &(FORMUL,XM,TYPDIA,TYPEXT,
      & XMUL,SF,SG,SH,SU,SV,SW,F,G,H,U,V,W,T,LEGO,
-     & XEL,YEL,ZEL,SURFAC,IKLE,NBOR,
+     & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,IKLE,NBOR,
      & NELEM,NELMAX,IELM1,IELM2,S,NPLAN,MESH)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    OPERATIONS BETWEEN MATRICES.
@@ -70,6 +70,12 @@
 !+        V6P2
 !+   Call to MT12AA modified.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        25/12/2012
+!+        V6P3
+!+   Arguments XPT, YPT and ZPT added, various XEL, YEL and ZEL changed
+!+   into XPT, etc. in the calls to 3D matrices.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -103,7 +109,7 @@
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_MATRIY => MATRIY
+      USE BIEF   !, EX_MATRIY => MATRIY
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -119,6 +125,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: F(*),G(*),H(*),U(*),V(*),W(*)
       DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX)
       DOUBLE PRECISION, INTENT(IN)    :: XEL(*),YEL(*),ZEL(*)
+      DOUBLE PRECISION, INTENT(IN)    :: XPT(*),YPT(*),ZPT(*)
       DOUBLE PRECISION, INTENT(IN)    :: XMUL
       DOUBLE PRECISION, INTENT(INOUT) :: XM(NELMAX,*),T(NELMAX,*)
       CHARACTER(LEN=16), INTENT(IN)   :: FORMUL
@@ -447,7 +454,7 @@
 !.......................................................................
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
-             CALL MT01PP(T,XM,XMUL,ZEL,SURFAC,IKLE,NELEM,NELMAX)
+             CALL MT01PP(T,XM,XMUL,ZPT,SURFAC,IKLE,NELEM,NELMAX)
 !
              TYPDIA='Q'
              TYPEXT='S'
@@ -480,7 +487,7 @@
 !.......................................................................
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
-             CALL MT01TT(T,XM,XMUL,XEL,YEL,ZEL,IKLE,NELEM,NELMAX)
+             CALL MT01TT(T,XM,XMUL,XPT,YPT,ZPT,IKLE,NELEM,NELMAX)
 !
              TYPDIA='Q'
              TYPEXT='S'
@@ -687,7 +694,7 @@
           IF(FORMUL(7:7).EQ.'*') THEN
 !           COMPUTATION BASED ON THE TRANSFORMED MESH
             CALL MT02PP_STAR(T,XM,XMUL,SF,SG,SH,F,G,H,
-     &                      XEL,YEL,ZEL,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
+     &                      XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
      &                      FORMUL,NPLAN)
             IF(FORMUL(10:13).EQ.'1234') THEN
               TYPEXT='S'
@@ -703,9 +710,9 @@
           ELSE
 !           COMPUTATION IN REAL MESH
 !           CALL MT02PT(T,XM,XMUL,SF,SG,SH,F,G,H,
-!    *                  XEL,YEL,ZEL,IKLE,NELEM,NELMAX,INCHYD)
+!    *                  XPT,YPT,ZPT,IKLE,NELEM,NELMAX,INCHYD)
             CALL MT02PP(T,XM,XMUL,SF,SG,SH,F,G,H,
-     &                  XEL,YEL,ZEL,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
+     &                  XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
      &                  FORMUL,NPLAN)
             TYPEXT='S'
           ENDIF
@@ -741,7 +748,7 @@
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
 !
           CALL MT02TT(T,XM,XMUL,SF,SG,SH,F,G,H,
-     &                XEL,YEL,ZEL,IKLE,NELEM,NELMAX,INCHYD,
+     &                XPT,YPT,ZPT,IKLE,NELEM,NELMAX,INCHYD,
      &                BIEF_NBPTS(11,MESH))
 !
           TYPDIA='Q'
@@ -1070,7 +1077,7 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
              CALL MT04PP(T,XM,XMUL,SU,SV,SW,U,V,W,
-     &                   XEL,YEL,ZEL,SURFAC,IKLE,NELEM,NELMAX,FORMUL)
+     &                   XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,FORMUL)
 !
              TYPDIA='Q'
              IF(FORMUL(7:7).EQ.'2') THEN
@@ -1108,7 +1115,7 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
              CALL MT04TT(T,XM,XMUL,SU,SV,SW,U,V,W,
-     &                   XEL,YEL,ZEL,IKLE,NELEM,NELMAX,FORMUL)
+     &                   XPT,YPT,ZPT,IKLE,NELEM,NELMAX,FORMUL)
 !
              TYPDIA='Q'
              IF(FORMUL(7:7).EQ.'2') THEN
@@ -1301,7 +1308,7 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
              CALL MT05PP(T,XM,XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &                   XEL,YEL,ZEL,IKLE,NELEM,NELMAX,SURFAC,SIGMAG,
+     &                   XPT,YPT,ZPT,IKLE,NELEM,NELMAX,SURFAC,SIGMAG,
      &                   SPECAD,NPLAN)
 !
              TYPDIA='Q'
@@ -1336,7 +1343,7 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
              CALL MT05TT(T,XM,XMUL,SU,SV,SW,U,V,W,
-     &                   XEL,YEL,ZEL,IKLE,NELEM,NELMAX)
+     &                   XPT,YPT,ZPT,IKLE,NELEM,NELMAX)
 !
              TYPDIA='Q'
              TYPEXT='Q'
@@ -1438,7 +1445,7 @@
      & (   T(1,1)   ,XM(1,AAS(1,2,S)),XM(1,AAS(1,3,S)),
      &                      T(1,2)   ,XM(1,AAS(2,3,S)),
      &                                       T(1,3)   ,
-     &          XMUL,SF,F,XEL,YEL,ZEL,
+     &          XMUL,SF,F,XPT,YPT,ZPT,
      &          IKLE(1,1),IKLE(1,2),IKLE(1,3),
      &          NBOR,NELEM,NELMAX)
 !
@@ -1447,7 +1454,7 @@
      & (   T(1,1)   ,XM(1,AAS(1,2,S)),XM(1,AAS(1,3,S)),
      &                      T(1,2)   ,XM(1,AAS(2,3,S)),
      &                                       T(1,3)   ,
-     &          XMUL,SF,F,SU,U,XEL,YEL,ZEL,
+     &          XMUL,SF,F,SU,U,XPT,YPT,ZPT,
      &          IKLE(1,1),IKLE(1,2),IKLE(1,3),
      &          NBOR,NELEM,NELMAX)
       ENDIF
@@ -1574,7 +1581,7 @@
      &                      T(1,2)   ,XM(1,FFS(2,3,S)),XM(1,FFS(2,4,S)),
      &                                       T(1,3)   ,XM(1,FFS(3,4,S)),
      &                                                        T(1,4)   ,
-     &         XMUL,SF,F,XEL,YEL,ZEL,
+     &         XMUL,SF,F,XPT,YPT,ZPT,
      &         IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &         NBOR,NELEM,NELMAX)
 !
@@ -1681,8 +1688,7 @@
 !.......................................................................
 !         P1 PRISM COLUMN ELEMENT
           IF (IELM2.EQ.41) THEN
-             CALL MT06PP(T,XM,
-     &                   XMUL,SF,F,ZEL,SURFAC,IKLE,NELEM,NELMAX)
+             CALL MT06PP(T,XM,XMUL,SF,F,ZPT,SURFAC,IKLE,NELEM,NELMAX)
 !
              TYPDIA='Q'
              TYPEXT='S'
@@ -1725,7 +1731,7 @@
           IF (IELM2.EQ.31.OR.IELM2.EQ.51) THEN
              CALL MT06TT(T,XM,
      &                   XMUL,SF,F,
-     &                   XEL,YEL,ZEL,IKLE,NELEM,NELMAX)
+     &                   XPT,YPT,ZPT,IKLE,NELEM,NELMAX)
 !
              TYPDIA='Q'
              TYPEXT='S'
@@ -2113,7 +2119,7 @@
 !.......................................................................
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.31.OR.IELM2.EQ.51) THEN
-             CALL MT08TT(T,XM,XMUL,XEL,YEL,ZEL,SF,F,IKLE,NELEM,NELMAX)
+             CALL MT08TT(T,XM,XMUL,XPT,YPT,ZPT,SF,F,IKLE,NELEM,NELMAX)
              TYPDIA='Q'
              TYPEXT='Q'
 !
@@ -2874,7 +2880,7 @@
           IF(IELM2.EQ.41) THEN
              CALL MT14PP(T,XM,PPQ(1,1,S),LEGO,
      &                   XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &                   XEL,YEL,ZEL,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,
+     &                   XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,
      &                   SPECAD)
 !
             TYPDIA='Q'
@@ -2912,7 +2918,7 @@
           IF(IELM2.EQ.51) THEN
             CALL MT14TT(T,XM,PPQ(1,1,S),LEGO,
      &                  XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &                  XEL,YEL,ZEL,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,
+     &                  XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,
      &                  SPECAD,NPLAN,BIEF_NBPTS(11,MESH))
             TYPDIA='Q'
             TYPEXT='Q'

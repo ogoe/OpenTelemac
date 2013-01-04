@@ -5,7 +5,7 @@
      &(XEL,X,MESH)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    GOES FROM A VECTOR BY POINTS TO A VECTOR BY ELEMENTS.
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNH)
+!+        03/01/2013
+!+        V6P3
+!+    Adding 3D cases.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| MESH           |-->| MESH STRUCTURE
@@ -57,6 +62,14 @@
       IF(X%ELM.EQ.11) THEN
 !
         CALL PTEL11(XEL%R,X%R,MESH%IKLE%I,MESH%NELMAX,MESH%NELEM)
+!
+      ELSEIF(X%ELM.EQ.31.OR.X%ELM.EQ.51) THEN
+!
+        CALL PTEL31(XEL%R,X%R,MESH%IKLE%I,MESH%NELMAX,MESH%NELEM)
+!
+      ELSEIF(X%ELM.EQ.41) THEN
+!
+        CALL PTEL41(XEL%R,X%R,MESH%IKLE%I,MESH%NELMAX,MESH%NELEM)
 !
       ELSE
        IF (LNG.EQ.1) WRITE(LU,100) X%ELM

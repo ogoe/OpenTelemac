@@ -5,11 +5,11 @@
      &(VEC,OP,FORMUL,
      & XMUL,F,G,H,U,V,W,SF,SG,SH,SU,SV,SW,
      & T,LEGO,
-     & XEL,YEL,ZEL, SURFAC,IKLE,NBOR,
+     & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,IKLE,NBOR,
      & XNOR,YNOR,ZNOR,NPT,NELEM,NELMAX,IELM1,LV,MSK,MASKEL,MESH)
 !
 !***********************************************************************
-! BIEF   V6P2                                  21/08/2010
+! BIEF   V6P3                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -54,6 +54,12 @@
 !+        V6P2
 !+   Call of VC13TT modified.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        25/12/2012
+!+        V6P3
+!+   Arguments XPT, YPT and ZPT added, various XEL, YEL and ZEL changed
+!+   into XPT, etc. in the calls to 3D vectors.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA 
 !| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
@@ -93,7 +99,7 @@
 !| ZNOR           |-->| Z-COMPONENT OF NORMAL VECTOR
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF !, EX_VECTOS => VECTOS
+      USE BIEF, EX_VECTOS => VECTOS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -106,6 +112,7 @@
 !
       DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX)
       DOUBLE PRECISION, INTENT(IN)    :: XEL(*),YEL(*),ZEL(*)
+      DOUBLE PRECISION, INTENT(IN)    :: XPT(*),YPT(*),ZPT(*)
       DOUBLE PRECISION, INTENT(IN)    :: XNOR(*),YNOR(*),ZNOR(*)
       DOUBLE PRECISION, INTENT(INOUT) :: T(NELMAX,*),VEC(*)
       DOUBLE PRECISION, INTENT(IN)    :: XMUL,MASKEL(NELMAX)
@@ -179,7 +186,7 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-          CALL VC00PP(XMUL,ZEL,SURFAC,
+          CALL VC00PP(XMUL,ZPT,SURFAC,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                T(1,3),T(1,4),T(1,5),T(1,6),FORMUL)
@@ -190,7 +197,7 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-          CALL VC00TT(XMUL,XEL,YEL,ZEL,SURFAC,
+          CALL VC00TT(XMUL,XPT,YPT,ZPT,SURFAC,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4),FORMUL,
      &                BIEF_NBPTS(11,MESH),BIEF_NBPTS(10,MESH),IELM1)
@@ -202,7 +209,7 @@
 !
         ELSEIF(IELM1.EQ.61) THEN
 !
-             CALL VC00FT(XMUL,XEL,YEL,ZEL,
+             CALL VC00FT(XMUL,XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
      &                   NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
 !
@@ -214,7 +221,7 @@
         ELSEIF(IELM1.EQ.71) THEN
 !
 !              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
-               CALL VC00FF(XMUL,XEL,YEL,ZEL,
+               CALL VC00FF(XMUL,XPT,YPT,ZPT,
      &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
      &                     NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
@@ -264,12 +271,12 @@
 !
            IF(FORMUL(7:7).NE.'2') THEN
 !
-              CALL VC01FT(XMUL,SF,F,XEL,YEL,ZEL,
+              CALL VC01FT(XMUL,SF,F,XPT,YPT,ZPT,
      &             IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
      &             NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
            ELSE
 !
-              CALL VC01FT2(XMUL,SF,F,SG,G,XEL,YEL,ZEL,
+              CALL VC01FT2(XMUL,SF,F,SG,G,XPT,YPT,ZPT,
      &             IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
      &             NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
            ENDIF
@@ -301,7 +308,7 @@
         ELSEIF(IELM1.EQ.71) THEN
 !
 !              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
-               CALL VC01FF(XMUL,SF,F,XEL,YEL,ZEL,
+               CALL VC01FF(XMUL,SF,F,XPT,YPT,ZPT,
      &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
      &                     NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
@@ -311,7 +318,7 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-             CALL VC01PP(XMUL,SF,F,ZEL,SURFAC,
+             CALL VC01PP(XMUL,SF,F,ZPT,SURFAC,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6))
@@ -322,7 +329,7 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-             CALL VC01TT(XMUL,SF,F,XEL,YEL,ZEL,
+             CALL VC01TT(XMUL,SF,F,XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
@@ -332,7 +339,7 @@
 !
         ELSEIF(IELM1.EQ.30) THEN
 !
-             CALL VC01TT0(XMUL,SF,F,XEL,YEL,ZEL,
+             CALL VC01TT0(XMUL,SF,F,XPT,YPT,ZPT,
      &                   IKLE(:,1),IKLE(:,2),IKLE(:,3),IKLE(:,4),
      &                   NELEM,NELMAX,VEC)
 !
@@ -374,7 +381,7 @@
 !
         IF(IELM1.EQ.41.AND.FORMUL(8:8).EQ.'*') THEN
 !
-          CALL VC02PP_STAR(XMUL,SF,SG,SH,SU,F,G,H,U,XEL,YEL,ZEL,SURFAC,
+          CALL VC02PP_STAR(XMUL,SF,SG,SH,SU,F,G,H,U,XPT,YPT,ZPT,SURFAC,
      &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                     IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),
      &                     T(1,2),T(1,3),T(1,4),T(1,5),T(1,6),FORMUL)
@@ -479,7 +486,7 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-          CALL VC04PP(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XEL,YEL,ZEL,
+          CALL VC04PP(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XPT,YPT,ZPT,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                T(1,3),T(1,4),T(1,5),T(1,6),SPECAD,FORMUL,
@@ -492,7 +499,7 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-          CALL VC04TT(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XEL,YEL,ZEL,
+          CALL VC04TT(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XPT,YPT,ZPT,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                NELEM,NELMAX,T(1,1),T(1,2),
      &                T(1,3),T(1,4),FORMUL,SPECAD,
@@ -544,7 +551,7 @@
 !
         ELSEIF(IELM1.EQ.61) THEN
 !
-          CALL VC05FT(XMUL,SU,SV,U,V,XEL,YEL,ZEL,
+          CALL VC05FT(XMUL,SU,SV,U,V,XPT,YPT,ZPT,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
      &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
 !
@@ -552,7 +559,7 @@
 !
         ELSEIF(IELM1.EQ.71) THEN
 !
-          CALL VC05FF(XMUL,SU,SV,U,V,XEL,YEL,ZEL,
+          CALL VC05FF(XMUL,SU,SV,U,V,XPT,YPT,ZPT,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
      &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
@@ -638,7 +645,7 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-             CALL VC08PP(XMUL,SF,SU,SV,SW,F,U,V,W,XEL,YEL,ZEL,
+             CALL VC08PP(XMUL,SF,SU,SV,SW,F,U,V,W,XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6))
@@ -649,7 +656,7 @@
 !
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
-             CALL VC08TT(XMUL,SF,SU,SV,SW,F,U,V,W,XEL,YEL,ZEL,
+             CALL VC08TT(XMUL,SF,SU,SV,SW,F,U,V,W,XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4))
@@ -675,8 +682,6 @@
 !
         ENDIF
 !
-! A.D. MODIFICATION 25/11/04
-!
 !=======================================================================
 !     VECTOR U GRAD(F) 2
 !=======================================================================
@@ -701,7 +706,7 @@
 !
         IF(IELM1.EQ.41) THEN
 !
-             CALL VC18PP(XMUL,SF,SU,SV,F,U,V,XEL,YEL,ZEL,
+             CALL VC18PP(XMUL,SF,SU,SV,F,U,V,XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3))
@@ -731,7 +736,6 @@
 !
         ENDIF
 !
-!  A.D. END OF MODIFICATION 25/11/04
 !=======================================================================
 !     VECTOR Q GRAD(F)
 !=======================================================================
@@ -849,7 +853,7 @@
 !
         IF(IELM1.EQ.11) THEN
 !
-! CHECKS IF G IS DISC P1
+! CHECKS IF G IS DISCONTINUOUS P1
 !
          IF (SG%DIM1.EQ.NELEM.AND.SG%DIM2.EQ.3.AND.
      &       SG%DIMDISC.EQ.11) THEN
@@ -894,7 +898,7 @@
         ELSEIF(IELM1.EQ.41) THEN
 !
              CALL VC11PP(XMUL,SF,SG,F,G,
-     &                   XEL,YEL,ZEL,
+     &                   XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD)
@@ -906,7 +910,7 @@
         ELSEIF(IELM1.EQ.31.OR.IELM1.EQ.51) THEN
 !
              CALL VC11TT(XMUL,SF,SG,F,G,
-     &                   XEL,YEL,ZEL,
+     &                   XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),ICOORD)
@@ -921,11 +925,11 @@
 ! CALLING ASSVEC AT THE END OF THE SUBROUTINE.
 !
              CALL VC11TT0(XMUL,SF,SG,F,G,
-     &                   XEL,YEL,ZEL,
-     &                   IKLE(1:NELEM,1),IKLE(1:NELEM,2),
-     &                   IKLE(1:NELEM,3),IKLE(1:NELEM,4),
-     &                   NELEM,MESH%NPOIN,
-     &                   VEC,ICOORD)
+     &                    XPT,YPT,ZPT,
+     &                    IKLE(1:NELEM,1),IKLE(1:NELEM,2),
+     &                    IKLE(1:NELEM,3),IKLE(1:NELEM,4),
+     &                    NELEM,MESH%NPOIN,
+     &                    VEC,ICOORD)
 !
 !
 !-----------------------------------------------------------------------
@@ -1031,13 +1035,13 @@
 !
              IF(FORMUL(1:15).EQ.'GRADF(X,Y)     ') THEN
 !            SIMPLIFIED FORMULATION FOR EFFICIENCY AND ACCURACY
-             CALL VC13PP2(XMUL,SF,F,XEL,YEL,ZEL,
+             CALL VC13PP2(XMUL,SF,F,XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD)
              ELSEIF( FORMUL(8:15).EQ.'        ') THEN
 !                    FORMUL(6:7) IS LEFT FOR OPTIONS
-             CALL VC13PP(XMUL,SF,F,XEL,YEL,ZEL,
+             CALL VC13PP(XMUL,SF,F,XPT,YPT,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD,FORMUL)
@@ -1058,7 +1062,7 @@
              IF(FORMUL(1:5).EQ.'GRADF'.AND.
      &          FORMUL(8:15).EQ.'        ') THEN
 !              FORMUL(6:7) IS LEFT FOR OPTIONS
-               CALL VC13TT(XMUL,SF,F,XEL,YEL,ZEL,
+               CALL VC13TT(XMUL,SF,F,XPT,YPT,ZPT,
      &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                     NELEM,NELMAX,T(1,1),T(1,2),
      &                     T(1,3),T(1,4),ICOORD,FORMUL)

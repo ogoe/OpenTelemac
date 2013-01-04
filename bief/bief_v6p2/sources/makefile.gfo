@@ -104,7 +104,7 @@ paragl.f     parcom.f       parcom2.f     parcom2_seg.f parcom_bord.f parini.f  
 plante.f     positive_depths.f    \
 prebd4.f     prebd9.f       prebdt.f \
 precd1.f     precd4.f       precd9.f      precdt.f  preverseg.f  preverebe.f \
-proxim.f     ptel11.f       pttoel.f      puog.f \
+proxim.f     ptel11.f       ptel31.f      ptel41.f  pttoel.f      puog.f \
 puog1.f      p_dot.f        p_dots.f      readgeo1.f \
 readgeo2.f   readgeo3.f     read_config.f read_submit.f remseg.f  rem11.f \
 rem21.f      rem41.f        remont.f      rescjg.f \

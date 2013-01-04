@@ -56,10 +56,15 @@
 !+   Checking elements for building GLOSEG. New optional argument MESH2D.
 !+   for prisms split into tetrahedrons (call of STOSEG51)
 !
-!history  J-M HERVOUET (LNHE) ; REGINA NEBAUER; LAM MINH PHUONG; EMILE RAZAFINDRAKOTO
+!history  J-M HERVOUET (LNHE) 
 !+        10/09/2012
 !+        V6P2
 !+   Different call to VOISIN31, and call added for IELM=51
+!
+!history  J-M HERVOUET (LNHE) 
+!+        030/01/2013
+!+        V6P3
+!+   XEL, YEL and ZEL now built in 3D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -303,19 +308,12 @@
 !
         CALL LATITU(MESH%COSLAT%R,MESH%SINLAT%R,LAMBD0,MESH%Y%R,NPOIN)
         CALL CORLAT
-!
-! RELEASE 5.5
         CALL CPSTVC(MESH%X,T1)
         CALL CPSTVC(MESH%Y,T2)
         DO I=1,NPOIN
           T1%R(I)=MESH%X%R(I)*MESH%COSLAT%R(I)
           T2%R(I)=MESH%Y%R(I)*MESH%COSLAT%R(I)
         ENDDO
-!
-! RELEASE 5.4 (IN PARAMETER ESTIMATION COSLAT MAY HAVE BEEN CHANGED
-!              INTO QUASI-BUBBLE BY A PREVIOUS RUN, AND OS STOPS)
-!       CALL OS( 'X=YZ    ' , T1 , MESH%X , MESH%COSLAT , C )
-!       CALL OS( 'X=YZ    ' , T2 , MESH%Y , MESH%COSLAT , C )
 !
       ELSE
 !
@@ -326,27 +324,35 @@
 !
 !-----------------------------------------------------------------------
 !
-!  CONVERTS TO COORDINATES BY ELEMENTS (ONLY IN TRIANGLES)
+!     CONVERTS TO COORDINATES BY ELEMENTS (STARTING WITH X AND Y)
 !
-      IF(IELM.EQ.11) THEN
+      CALL PTTOEL(MESH%XEL,T1,MESH)
+      CALL PTTOEL(MESH%YEL,T2,MESH)
 !
-        CALL PTTOEL(MESH%XEL,T1,MESH)
-        CALL PTTOEL(MESH%YEL,T2,MESH)
+!     CONVERTS TO A LOCAL SYSTEM IN X AND Y, WITH POINT 1 AT ORIGIN
 !
-!  CONVERTS TO A LOCAL SYSTEM IN X AND Y
-!
-        DO 10 IDP=2,NDP
+      DO IDP=2,NDP
         CALL OV_2('X=X-Y   ',MESH%XEL%R,IDP,
      &                       MESH%XEL%R,1  ,
-     &                       MESH%XEL%R,1  , C , NELMAX , NELEM )
+     &                       MESH%XEL%R,1  , 0.D0 , NELMAX , NELEM )
         CALL OV_2('X=X-Y   ',MESH%YEL%R,IDP,
      &                       MESH%YEL%R,1  ,
-     &                       MESH%YEL%R,1  , C , NELMAX , NELEM )
-10      CONTINUE
+     &                       MESH%YEL%R,1  , 0.D0 , NELMAX , NELEM )
+      ENDDO
 !
-        CALL OV('X=C     ', MESH%XEL%R , Z , Z , 0.D0 , NELEM )
-        CALL OV('X=C     ', MESH%YEL%R , Z , Z , 0.D0 , NELEM )
+      CALL OV('X=C     ', MESH%XEL%R , Z , Z , 0.D0 , NELEM )
+      CALL OV('X=C     ', MESH%YEL%R , Z , Z , 0.D0 , NELEM )
 !
+!     NOW IDEM FOR Z
+!
+      IF(MESH%DIM.EQ.3) THEN
+        CALL PTTOEL(MESH%ZEL,MESH%Z,MESH)
+        DO IDP=2,NDP
+          CALL OV_2('X=X-Y   ',MESH%ZEL%R,IDP,
+     &                         MESH%ZEL%R,1  ,
+     &                         MESH%ZEL%R,1  , 0.D0 , NELMAX , NELEM )
+        ENDDO 
+        CALL OV('X=C     ', MESH%ZEL%R , Z , Z , 0.D0 , NELEM )
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -364,41 +370,38 @@
 !
         IF(SPHERI) THEN
 !
-         DO IELEM = 1 , NELEM
-!
-         I1 = MESH%IKLE%I(IELEM)
-         I2 = MESH%IKLE%I(IELEM+NELMAX)
-         I3 = MESH%IKLE%I(IELEM+2*NELMAX)
-         X2 = - MESH%X%R(I1) + MESH%X%R(I2)
-         X3 = - MESH%X%R(I1) + MESH%X%R(I3)
-         Y2 = - MESH%Y%R(I1) + MESH%Y%R(I2)
-         Y3 = - MESH%Y%R(I1) + MESH%Y%R(I3)
-!
-         MESH%SURDET%R(IELEM) = 1.D0 / (X2*Y3 - X3*Y2)
-!
-         ENDDO
+          DO IELEM = 1 , NELEM
+            I1 = MESH%IKLE%I(IELEM)
+            I2 = MESH%IKLE%I(IELEM+NELMAX)
+            I3 = MESH%IKLE%I(IELEM+2*NELMAX)
+            X2 = - MESH%X%R(I1) + MESH%X%R(I2)
+            X3 = - MESH%X%R(I1) + MESH%X%R(I3)
+            Y2 = - MESH%Y%R(I1) + MESH%Y%R(I2)
+            Y3 = - MESH%Y%R(I1) + MESH%Y%R(I3)
+            MESH%SURDET%R(IELEM) = 1.D0 / (X2*Y3 - X3*Y2)
+          ENDDO
 !
         ENDIF
 !
       ELSEIF(IELM.EQ.41.OR.IELM.EQ.51.OR.IELM.EQ.31) THEN
 !
-!        FOR PRISMS, SURFAC IS THE SURFACE OF THE TRIANGLES
+!       FOR PRISMS, SURFAC IS THE SURFACE OF THE TRIANGLES
 !
-         DO IELEM = 1 , NELEM
+        DO IELEM = 1 , NELEM
+          I1 = MESH%IKLE%I(IELEM)
+          I2 = MESH%IKLE%I(IELEM+NELMAX)
+          I3 = MESH%IKLE%I(IELEM+2*NELMAX)
+          X2 = - MESH%X%R(I1) + MESH%X%R(I2)
+          X3 = - MESH%X%R(I1) + MESH%X%R(I3)
+          Y2 = - MESH%Y%R(I1) + MESH%Y%R(I2)
+          Y3 = - MESH%Y%R(I1) + MESH%Y%R(I3)
+          MESH%SURFAC%R(IELEM) = 0.5D0 * (X2*Y3 - X3*Y2)
+        ENDDO
 !
-         I1 = MESH%IKLE%I(IELEM)
-         I2 = MESH%IKLE%I(IELEM+NELMAX)
-         I3 = MESH%IKLE%I(IELEM+2*NELMAX)
-         X2 = - MESH%X%R(I1) + MESH%X%R(I2)
-         X3 = - MESH%X%R(I1) + MESH%X%R(I3)
-         Y2 = - MESH%Y%R(I1) + MESH%Y%R(I2)
-         Y3 = - MESH%Y%R(I1) + MESH%Y%R(I3)
-!
-         MESH%SURFAC%R(IELEM) = 0.5D0 * (X2*Y3 - X3*Y2)
-!
-         ENDDO
       ELSE
         WRITE(LU,*) 'UNEXPECTED ELEMENT IN INBIEF:',IELM
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

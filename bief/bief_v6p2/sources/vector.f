@@ -5,7 +5,7 @@
      &(VEC,OP,FORMUL,IELM1,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES VECTORS.
@@ -53,6 +53,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        25/12/2012
+!+        V6P3
+!+   Arguments added to VECTOS
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
@@ -151,6 +156,7 @@
      &              F%R,G%R,H%R,U%R,V%R,W%R,
      &              F,G,H,U,V,W,MESH%W%R,LEGO,
      &              MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
+     &              MESH%X%R    , MESH%Y%R    , MESH%Z%R  ,
      &              MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
      &              MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
      &              NPT,MESH%NELEM,MESH%NELMAX,
@@ -162,7 +168,8 @@
           CALL VECTOS(VEC%R,OP,FORMUL,XMUL,
      &                F%R,G%R,H%R,U%R,V%R,W%R,
      &                F,G,H,U,V,W,MESH%W%R,LEGO,
-     &                MESH%X%R,MESH%Y%R,MESH%Z%R  ,
+     &                MESH%X%R, MESH%Y%R, MESH%Z%R  ,
+     &                MESH%X%R, MESH%Y%R, MESH%Z%R  ,
      &                MESH%LGSEG%R,MESH%IKLBOR%I,MESH%NBOR%I,
      &                MESH%XSGBOR%R,MESH%YSGBOR%R,MESH%ZSGBOR%R,
      &                NPT,MESH%NELEB,MESH%NELEBX,
