@@ -365,11 +365,11 @@
 !     80) P0 BOUNDARY TRIANGLES FOR TETRAHEDRONS IN AN UNSTRUCTURED 3D
 !         MESH
 !
-      NDS(80,1) = NPTFR
+      NDS(80,1) = NELEB
 !     NDS(80,2) = ?????
       NDS(80,3) = 1
       NDS(80,4) = 3
-      NDS(80,5) = NELEB !3*NELEB
+      NDS(80,5) = NELEB
 !     NDS(80,6) = ??????
 !
 !-----------------------------------------------------------------------

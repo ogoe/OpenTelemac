@@ -870,7 +870,6 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
         TIMESTEP2 = local_timestep_2d
         local_timestep_2d = local_timestep_2d + 1
       endif
-      write(*,*) 'call for ',TIMESTEP,NNAMECODE(1)
 
       ! PUISQU'IL Y A DES VALEURS SUR VECTEURS LIBRE ...
       ! ON DETERMINE LE TYPE DE VARIABLE QU'UNE SEULE FOIS ET CROISE LES
