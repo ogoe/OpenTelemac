@@ -89,8 +89,7 @@
 !                             LEGO
      &              MESH%W%R,.TRUE.,
      &              MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
-                    ! Suppose to be xpt, Ypt, ZPT but not used yet
-     &              MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
+     &              MESH%X%R    , MESH%Y%R    , MESH%Z%R  ,
      &              MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
      &              MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
      &              BIEF_NBPTS(H%ELM,MESH),MESH%NELEM,MESH%NELMAX,
