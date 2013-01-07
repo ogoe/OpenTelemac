@@ -183,6 +183,8 @@
 !                           LEGO
      &            MESH%W%R,.FALSE.,
      &            MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
+!                 Suppose to be XPT, YPT, ZPT But not used yet
+     &            MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
      &            MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
      &            MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
      &            BIEF_NBPTS(QSX%ELM,MESH),MESH%NELEM,MESH%NELMAX,
