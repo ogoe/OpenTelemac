@@ -75,6 +75,11 @@
 !+  Optimisation, and FLBCLA built and kept for use in bilan_sisyphe
 !+  Treatment of QBOR added     
 !
+!history  J-M HERVOUET (EDF-LNHE)
+!+        25/12/2012
+!+        V6P3
+!+  3 arguments added to VECTOS.    
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIMGLO         |-->| FIRST DIMENSION OF GLOSEG
 !| DT             |-->| TIME STEP
@@ -183,8 +188,7 @@
 !                           LEGO
      &            MESH%W%R,.FALSE.,
      &            MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
-!                 Suppose to be XPT, YPT, ZPT But not used yet
-     &            MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
+     &            MESH%X%R    , MESH%Y%R    , MESH%Z%R  ,
      &            MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
      &            MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
      &            BIEF_NBPTS(QSX%ELM,MESH),MESH%NELEM,MESH%NELMAX,

@@ -208,7 +208,7 @@
 !
       IF(CODE(1:9).EQ.'TELEMAC3D') THEN
         DO I=1,NPOIN
-          U3DNORM=SQRT(U3D%R(I)*U3D%R(I)+V3D%R(I)*V3D%R(I))
+          U3DNORM=SQRT(U3D%R(I)**2+V3D%R(I)**2)
           IF(U3DNORM.GE.1.D-12) THEN
             CALFA%R(I)=U3D%R(I)/U3DNORM
             SALFA%R(I)=V3D%R(I)/U3DNORM

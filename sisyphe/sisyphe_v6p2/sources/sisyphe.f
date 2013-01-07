@@ -1198,23 +1198,21 @@
 !
 !         UPDATES THE LAYERS  --> ELAY
 !
-!! PAT !!           print*,'VSMTYPE: ',VSMTYPE
-          if(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
-            if(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
-            if(VSMTYPE.eq.0) THEN !UHM
-            call LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
-     &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
-     &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-            else !UHM
-            !UHM
-            call CVSP_MAIN(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
-     &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
-     &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-            endif !UHM
-            if(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
-          else
-            call OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
-          endif
+          IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
+            IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
+            IF(VSMTYPE.EQ.0) THEN 
+              CALL LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                   ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                   AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+            ELSE
+              CALL CVSP_MAIN(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                       ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                       AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+            ENDIF 
+            IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
+          ELSE
+            CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+          ENDIF
 ! END OF BEDLOAD
         endif
       ! ********************** !
@@ -1253,22 +1251,21 @@
 !      REDEFINES THE LAYER OF ERODABLE SEDIMENT
 !      EXTENDED GRANULOMETRY (TO BE REPLACED WITH NOMBLAY>1
 !
-!           print*,'VSMTYPE: ',VSMTYPE
-        if(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
-          if(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
-          if (VSMTYPE.eq.0) THEN !UHM
-          call LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+        IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
+          IF (VSMTYPE.eq.0) THEN !UHM
+          CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &               ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &               AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          else !UHM
-          call CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+          ELSE !UHM
+          CALL CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &               ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
      &               AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          endif ! UHM
-          if(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
-        else
-          call OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
-        endif
+          ENDIF ! UHM
+          IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
+        ELSE
+          CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+        ENDIF
 ! END OF SUSPENSION
       ENDIF
 !
