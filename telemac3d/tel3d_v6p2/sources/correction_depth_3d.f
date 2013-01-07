@@ -85,8 +85,7 @@
 !                                 LEGO
      &                MESH3D%W%R,.FALSE.,
      &                MESH3D%XEL%R,MESH3D%YEL%R,MESH3D%ZEL%R,
-                      ! Suppose to be XPT, YPT, ZPT but not used yet
-     &                MESH3D%XEL%R,MESH3D%YEL%R,MESH3D%ZEL%R,
+     &                MESH3D%X%R,MESH3D%Y%R,MESH3D%Z%R,
      &                MESH3D%SURFAC%R,MESH3D%IKLE%I,MESH3D%NBOR%I,
      &                MESH3D%XSGBOR%R,MESH3D%YSGBOR%R,MESH3D%ZSGBOR%R,
      &                BIEF_NBPTS(IELM3,MESH3D),MESH3D%NELEM,
