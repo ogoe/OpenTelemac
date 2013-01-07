@@ -63,8 +63,8 @@
         XEL(IELEM,2)=X(IKLE(IELEM,2))
         XEL(IELEM,3)=X(IKLE(IELEM,3))
         XEL(IELEM,4)=X(IKLE(IELEM,4))
-        XEL(IELEM,4)=X(IKLE(IELEM,5))
-        XEL(IELEM,4)=X(IKLE(IELEM,6))
+        XEL(IELEM,5)=X(IKLE(IELEM,5))
+        XEL(IELEM,6)=X(IKLE(IELEM,6))
 !
       ENDDO
 !
