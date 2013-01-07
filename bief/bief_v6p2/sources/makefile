@@ -128,7 +128,7 @@ sd_ssf.f     sd_strssd.f    sd_strtri.f   sd_strsg4.f   sd_fabcad.f sd_fabsg4.f 
 sd_ndrv.f    sd_nnf.f       sd_nns.f      sd_nnt.f      sd_nsf.f \
 segbor.f     share_3d_fluxes.f            skipgeo.f     slop10.f      slopes.f \
 solaux.f     solve.f        somme.f       somme2.f      sortie.f \
-stoseg.f     stoseg31.f stoseg41.f     stoseg51.f    strche.f      suite_serafin.f surv11.f \
+stoseg.f     stoseg31.f     stoseg41.f     stoseg51.f    strche.f      suite_serafin.f surv11.f \
 survol.f      time_in_seconds.f           tnomer.f       tracvf.f      trid3d.f      tsloc.f       topogr.f  tvf.f \
 um1x.f       um1x04.f       um1x09.f       \
 vc00aa.f     vc00bb.f       vc00cc.f      vc00pp.f      vc00ft.f \

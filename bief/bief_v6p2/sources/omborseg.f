@@ -20,15 +20,7 @@
 !+
 !+   THE RESULT IS MATRIX M.
 !+
-!+      OP = 'M=N     '  : COPIES N IN M
-!+      OP = 'M=CN    '  : MULTIPLIES N BY C
-!+      OP = 'M=M+CN  '  : ADDS CN TO M
-!+      OP = 'M=TN    '  : COPIES TRANSPOSE OF N IN M
-!+      OP = 'M=M+TN  '  : ADDS TRANSPOSE(N) TO M
-!+      OP = 'M=M+CTN '  : ADDS C TRANSPOSE(N) TO M
 !+      OP = 'M=M+N   '  : ADDS N TO M
-!+      OP = 'M=M-ND  '  : SUBTRACTS ND FROM M
-!+      OP = 'M=M-DN  '  : SUBTRACTS DN FROM M
 !
 !history  F. DECUNG (LNHE)
 !+        V6P3
@@ -92,84 +84,26 @@
 !
       INTRINSIC MIN
 !
-      INTEGER ISEG,DIMX,DIMY
-!
       DOUBLE PRECISION Y(1),Z(1)
 !
-!-----------------------------------------------------------------------
+      INTEGER DIMX,DIMY
 !
-!     ARRAYS XM AND XN ARE BASICALLY OF SIZE XM(DIMX,1 OR 2)
-!     BUT IN THE CASE OF RECTANGULAR MATRICES OTHER DATA ARE STORED
-!     BEYOND XM(2*DIMX)
+!-----------------------------------------------------------------------
+!     BASICALLY, FOR SQUARED MATRICES :
+!     XM(1:NSEG) <=> XN(1:NSEG) 
+!     XM(DIMX+1:DIMX+NSEG) <=> XN(NSEG+1:2*NSEG) 
 !
       DIMX=MIN(MSEG1,MSEG2)
-      DIMY=MAX(NSEG1,NSEG2)     
+      DIMY=MAX(NSEG1,NSEG2)
 !
-      IF(OP(3:8).EQ.'N     ') THEN
+      IF(OP(3:8).EQ.'M+N   ') THEN
 !
-        IF(TYPDIN(1:1).EQ.'Q') THEN
-          CALL OVDB( 'X=Y     ' , DM , DN , Z , C , NBOR, NDIAG )
-        ELSEIF(TYPDIN(1:1).EQ.'I'.OR.TYPDIN(1:1).EQ.'0') THEN
-!         NOTHING TO DO, ONLY NEEDS TO COPY TYPDIN
-        ELSE
-           IF (LNG.EQ.1) WRITE(LU,5) TYPDIN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,6) TYPDIN(1:1)
-5          FORMAT(1X,'OMBORSEG (BIEF) : TYPDIN INCONNU :',A1)
-6          FORMAT(1X,'OMBORSEG (BIEF) : TYPDIN UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
-        ENDIF
-        TYPDIM(1:1)=TYPDIN(1:1)
+        CALL OVDB( 'X=X+Y   ' , DM , DN , Z , C , NBOR, NDIAG )
 !
         IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=Y     ' , XM , XN , Z , C , NSEG1 )
-        ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           CALL OV( 'X=Y     ' , XM , XN , Z , C , NSEG1+NSEG2 )
-        ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-10         FORMAT(1X,'OMBORSEG (BIEF) : TYPEXN INCONNU :',A1)
-11         FORMAT(1X,'OMBORSEG (BIEF) : TYPEXN UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
-        ENDIF
-        TYPEXM(1:1)=TYPEXN(1:1)
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'CN    ') THEN
-!
-        CALL OVDB( 'X=CY    ' , DM , DN , Z , C , NBOR, NDIAG )
-!
-        IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=CY    ' , XM , XN , Z , C , NSEG1 )
-        ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           CALL OV( 'X=CY    ' , XM , XN , Z , C , NSEG1+NSEG2 )
-        ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
-        ENDIF
-!
-        TYPDIM(1:1)=TYPDIN(1:1)
-        TYPEXM(1:1)=TYPEXN(1:1)
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'M+CN  ' .OR.
-     &      (OP(3:8).EQ.'M+CTN ').AND.TYPEXN(1:1).NE.'Q') THEN
-!
-        IF(TYPDIN(1:1).EQ.'I') THEN
-          CALL OVDB( 'X=X+C   ' , DM , DN , Z , C , NBOR, NDIAG )
-        ELSEIF(TYPDIN(1:1).NE.'0') THEN
-          CALL OVDB( 'X=X+CY  ' , DM , DN , Z , C , NBOR, NDIAG )
-        ENDIF
-!
-        IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=X+CY  ' , XM , XN , Z , C , NSEG1 )
+           CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG2 )
            IF(TYPEXM(1:1).EQ.'Q') THEN
-             CALL OV( 'X=X+CY  ' , XM(DIMX+1:DIMX+NSEG1) ,XN,Z,C,NSEG1)
+           CALL OV( 'X=X+Y   ' , XM(DIMX+1:DIMX+NSEG2) , XN ,Z,C,NSEG2)
            ENDIF
         ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
            IF(TYPEXM(1:1).NE.'Q') THEN
@@ -184,203 +118,18 @@
              CALL PLANTE(1)
              STOP
            ENDIF
-           CALL OV( 'X=X+CY  ' , XM , XN , Z , C , NSEG1+NSEG2 )
-        ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
-        ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'M+CTN ') THEN
-!
-!  THE CASES WHERE N IS SYMMETRICAL ARE TREATED WITH M=M+CN
-!
-        CALL OVDB( 'X=X+CY  ' , DM , DN , Z , C , NBOR, NDIAG )
-!
-        IF(NSEG1.NE.NSEG2) THEN
-          WRITE(LU,*) 'M+CTN : RECTANGULAR MATRIX NOT IMPLEMENTED'
-          STOP
-        ENDIF
-        IF(TYPEXN(1:1).EQ.'Q') THEN
-           IF(TYPEXM(1:1).NE.'Q') THEN
-             IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-           CALL OV( 'X=X+CY  ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
-           CALL OV( 'X=X+CY  ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
-        ELSE
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
-        ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'TN    ') THEN
-!
-        CALL OVDB( 'X=Y     ' , DM , DN , Z , C , NBOR, NDIAG )
-!
-        IF(TYPEXN(1:1).EQ.'S') THEN
-           CALL OV( 'X=Y     ' , XM , XN , Z , C , NSEG1 )
-        ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           IF(TYPEXM(1:1).NE.'S'.AND.NSEG1.NE.NSEG2) THEN
-             WRITE(LU,*) 'TN : RECTANGULAR MATRIX NOT IMPLEMENTED'
-             STOP
-           ENDIF
-           CALL OV( 'X=Y     ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
-           CALL OV( 'X=Y     ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
-        ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
-        ENDIF
-        TYPDIM(1:1)=TYPDIN(1:1)
-        TYPEXM(1:1)=TYPEXN(1:1)
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'M+N   '.OR.
-     &      (OP(3:8).EQ.'M+TN  ').AND.TYPEXN(1:1).NE.'Q') THEN
-!
-        CALL OVDB( 'X=X+Y   ' , DM , DN , Z , C , NBOR, NDIAG )
-!
-        IF(TYPEXN(1:1).EQ.'S') THEN
            CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG2 )
-           IF(TYPEXM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X+Y   ' , XM(DIMY+1:DIMY+NSEG2) , XN ,Z,C,NSEG2)
-           ENDIF
-        ELSEIF(TYPEXN(1:1).EQ.'Q') THEN
-           IF(TYPEXM(1:1).NE.'Q') THEN
-             IF (LNG.EQ.1) WRITE(LU,99) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             IF (LNG.EQ.2) WRITE(LU,98) TYPEXM(1:1),OP(1:8),TYPEXN(1:1)
-             CALL PLANTE(1)
-             STOP
-           ENDIF
-           CALL OV( 'X=X+Y   ' , XM , XN , Z , C , NSEG2 ) ! FD : NOT SURE HERE
+           CALL OV( 'X=X+Y   ' , 
+     &          XM(DIMX+1:DIMX+NSEG2) , 
+     &          XN(DIMY+1:DIMY+NSEG2) ,Z,C,NSEG2)
         ELSEIF(TYPEXN(1:1).NE.'0') THEN
            IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
            IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
+10         FORMAT(1X,'OMBORSEG (BIEF) : TYPEXN INCONNU :',A1)
+11         FORMAT(1X,'OMBORSEG (BIEF) : TYPEXN UNKNOWN :',A1)
            CALL PLANTE(1)
            STOP
         ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'M+TN  ') THEN
-!
-!     THE CASE WHERE N IS SYMMETRICAL HAS ALREADY BEEN TREATED
-!
-        CALL OVDB( 'X=X+Y   ' , DM , DN , Z , C , NBOR, NDIAG )
-!
-        IF(NSEG1.NE.NSEG2) THEN
-          WRITE(LU,*) 'M+TN : RECTANGULAR MATRIX NOT IMPLEMENTED'
-          STOP
-        ENDIF
-        IF(TYPEXM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X+Y   ' , XM , XN(DIMX+1:DIMX+NSEG1) ,Z,C,NSEG1)
-           CALL OV( 'X=X+Y   ' , XM(DIMX+1:DIMX+NSEG1) , XN ,Z,C,NSEG1)
-        ELSEIF(TYPEXN(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-           IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-           CALL PLANTE(1)
-           STOP
-        ENDIF
-        TYPDIM(1:1)=TYPDIN(1:1)
-        TYPEXM(1:1)=TYPEXN(1:1)
-!
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'M-DN  ') THEN
-!
-!   DIAGONAL TERMS
-!
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X-YZ  ' , DM , DN , D , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-12         FORMAT(1X,'OMBORSEG (BIEF) : TYPDIM INCONNU :',A1)
-13         FORMAT(1X,'OMBORSEG (BIEF) : TYPDIM UNKNOWN :',A1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
-!
-!   EXTRADIAGONAL TERMS
-!
-         IF(TYPEXM(1:1).EQ.'Q') THEN
-           IF(TYPEXN(1:1).EQ.'Q') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     )=XM(ISEG     )-XN(ISEG     )*D(GLOSEG(ISEG,1))
-            XM(ISEG+DIMX)=XM(ISEG+DIMX)-XN(ISEG+DIMX)*D(GLOSEG(ISEG,2))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).EQ.'S') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     ) = XM(ISEG     ) - XN(ISEG) * D(GLOSEG(ISEG,1))
-            XM(ISEG+DIMX) = XM(ISEG+DIMX) - XN(ISEG) * D(GLOSEG(ISEG,2))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).NE.'0') THEN
-            IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-            IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-            CALL PLANTE(1)
-            STOP
-           ENDIF
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
-172       FORMAT(1X,'OMBORSEG (BIEF) : TYPEXM NON PREVU : ',A1)
-173       FORMAT(1X,'OMBORSEG (BIEF) : TYPEXM NOT AVAILABLE : ',A1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
-!
-!-----------------------------------------------------------------------
-!
-      ELSEIF(OP(3:8).EQ.'M-ND  ') THEN
-!
-!   DIAGONAL TERMS
-!
-         IF(TYPDIM(1:1).EQ.'Q') THEN
-           CALL OV( 'X=X-YZ  ' , DM , DN , D , C , NDIAG )
-         ELSEIF(TYPDIM(1:1).NE.'0') THEN
-           IF (LNG.EQ.1) WRITE(LU,12) TYPDIM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,13) TYPDIM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
-!
-!   EXTRADIAGONAL TERMS
-!
-         IF(TYPEXM(1:1).EQ.'Q') THEN
-           IF(TYPEXN(1:1).EQ.'Q') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     )=XM(ISEG     )-XN(ISEG     )*D(GLOSEG(ISEG,2))
-            XM(ISEG+DIMX)=XM(ISEG+DIMX)-XN(ISEG+DIMX)*D(GLOSEG(ISEG,1))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).EQ.'S') THEN
-           DO ISEG = 1 , NSEG1
-            XM(ISEG     ) = XM(ISEG     ) - XN(ISEG) * D(GLOSEG(ISEG,2))
-            XM(ISEG+DIMX) = XM(ISEG+DIMX) - XN(ISEG) * D(GLOSEG(ISEG,1))
-           ENDDO
-           ELSEIF(TYPEXN(1:1).NE.'0') THEN
-            IF (LNG.EQ.1) WRITE(LU,10) TYPEXN(1:1)
-            IF (LNG.EQ.2) WRITE(LU,11) TYPEXN(1:1)
-            CALL PLANTE(1)
-            STOP
-           ENDIF
-         ELSE
-           IF (LNG.EQ.1) WRITE(LU,172) TYPEXM(1:1)
-           IF (LNG.EQ.2) WRITE(LU,173) TYPEXM(1:1)
-           CALL PLANTE(1)
-           STOP
-         ENDIF
 !
 !-----------------------------------------------------------------------
 !

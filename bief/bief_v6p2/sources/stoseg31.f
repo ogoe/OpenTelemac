@@ -4,8 +4,9 @@
 !
      &(NPOIN,NELEM,NELEB,NELMAX,IELM,MXELVS,IKLE,IKLBOR,
      & NBOR,NPTFR,
-     & GLOSEG,NSEG,NSEGBOR,
-     & ELTSEG,ORISEG,KNOLG)
+     & GLOSEG,MAXSEG,GLOSEGBOR,MAXSEGBOR,NSEG,NSEGBOR,
+     & ELTSEG,ELTSEGBOR,ORISEG,ORISEGBOR,
+     & KNOLG,NDS)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   01/01/2013
@@ -27,11 +28,13 @@
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| KNOLG          |-->| GLOBAL NUMBER OF A LOCAL POINT IN PARALLEL
-!| MAXSEG         |<--| MAXIMUM NUMBER OF SEGMENTS
+!| MAXSEG         |<--| MAXIMUM NUMBER OF SEGMENTS (INTERNALS + EXTERNALS)
+!| MAXSEGBOR      |<--| MAXIMUM NUMBER OF SEGMENTS (EXTERNALS)
 !| NPOIN          |-->| NUMBER OF POINTS
 !| NELEM          |-->| NUMBER OF ELEMENTS IN THE MESH
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 3D
 !| NSEG           |<--| NUMBER OF SEGMENTS OF THE MESH
+!| NSEGBOR        |<--| NUMBER OF BORDER SEGMENTS OF THE MESH
 !| ORISEG         |<--| ORIENTATION OF SEGMENTS OF EVERY TRIANGLE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -46,23 +49,24 @@
 !
       INTEGER, INTENT(IN)    :: NELMAX,IELM
       INTEGER, INTENT(IN)    :: NPOIN,NELEM,NELEB,MXELVS,NPTFR
+      INTEGER, INTENT(IN)    :: MAXSEG,MAXSEGBOR
       INTEGER, INTENT(INOUT) :: NSEG,NSEGBOR
       INTEGER, INTENT(IN)    :: IKLE(NELMAX,4),IKLBOR(NELEB,3)
-      INTEGER, INTENT(INOUT) :: GLOSEG(NSEG,2)
-      INTEGER, INTENT(INOUT) :: ELTSEG(NELMAX,6)
-      INTEGER, INTENT(INOUT) :: ORISEG(NELMAX,6)
-      INTEGER, INTENT(IN)    :: KNOLG(*)
       INTEGER, INTENT(IN)    :: NBOR(NPTFR)
+      INTEGER, INTENT(INOUT) :: GLOSEG(MAXSEG,2),GLOSEGBOR(MAXSEGBOR,2)
+      INTEGER, INTENT(INOUT) :: ELTSEG(NELMAX,6),ELTSEGBOR(NELEB,3)
+      INTEGER, INTENT(INOUT) :: ORISEG(NELMAX,6),ORISEGBOR(NELEB,3)
+      INTEGER, INTENT(IN)    :: KNOLG(NPOIN)
+      INTEGER, INTENT(INOUT) :: NDS(0:81,7)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NSE,NSEBOR,NSEBOR2,XSEG,COUNT,ERR2
+      INTEGER NSE,NSEBOR,NSEBOR2,XSEG,COUNT
       INTEGER ISEG,JSEG
       INTEGER I,J,IKL,I1,I2,J1,J2,IG1,IG2,IK1,IK2
       INTEGER IELEM,IVOIS,IELEB,IVOISB
 !
       INTEGER,DIMENSION(:,:),ALLOCATABLE ::IND_ELEM, IND_ELEB
-      INTEGER,DIMENSION(:,:),ALLOCATABLE ::ORISEGBOR,GLOSEGBOR,ELTSEGBOR
       INTEGER :: IPOBO(NPOIN)
 !
       LOGICAL FOUND, ERR
@@ -79,57 +83,13 @@
         STOP
       ENDIF
 !
-!     ALLOCATE ARRAYS FOR TEMPORARY STORING BORDER SEGMENTS
-!
-      ALLOCATE (GLOSEGBOR(NSEGBOR,2),STAT=ERR2)
-      IF(ERR2.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'STOSEG31 : ALLOCATION DE GLOSEGBOR DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'STOSEG31 : WRONG ALLOCATION OF GLOSEGBOR'
-        ENDIF
-        STOP
-      ENDIF
-      ALLOCATE (ORISEGBOR(NELMAX,3),STAT=ERR2)
-      IF(ERR2.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'STOSEG31 : ALLOCATION DE ORISEGBOR DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'STOSEG31 : WRONG ALLOCATION OF ORISEGBOR'
-        ENDIF
-        STOP
-      ENDIF
-      ALLOCATE (ELTSEGBOR(NELEB,3),STAT=ERR2)
-      IF(ERR2.NE.0) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'STOSEG31 : ALLOCATION DE ELTSEGBOR DEFECTUEUSE'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'STOSEG31 : WRONG ALLOCATION OF ELTSEGBOR'
-        ENDIF
-        STOP
-      ENDIF
-!
 !     INITIALISES ELTSEG, ORISEG, GLOSEG
 !
-      DO IELEM = 1, NELEM
-         DO ISEG = 1, 6 ! BIEF_NBSEGEL(IELM1, MESH) ie. IELM1 = 31
-            ELTSEG(IELEM,ISEG) = 0
-            ORISEG(IELEM,ISEG) = 0
-         ENDDO
-      ENDDO
       DO IELEB = 1, NELEB
-         DO ISEG = 1, 3         ! BIEF_NBSEGEL(IELM2, MESH) ie. IELM2 = 81
+         DO ISEG = 1, 3 ! BIEF_NBSEGEL(IELM2, MESH) ie. IELM2 = 81
             ELTSEGBOR(IELEB,ISEG) = 0
             ORISEGBOR(IELEB,ISEG) = 0
          ENDDO
-      ENDDO
-!
-      DO ISEG = 1, NSEG
-         GLOSEG(ISEG,1) = 0
-         GLOSEG(ISEG,2) = 0
       ENDDO
 !
       DO ISEG = 1, NSEGBOR
@@ -158,7 +118,7 @@
 !
       DO I = 1, 4
          DO IELEM = 1, NELEM
-            IKL = IKLE(IELEM,I)            
+            IKL = IKLE(IELEM,I)
             IND_ELEM(IKL,1)=IND_ELEM(IKL,1)+1
             IND_ELEM(IKL,IND_ELEM(IKL,1)+1)=IELEM
          ENDDO
@@ -381,6 +341,20 @@
 !
 !-----------------------------------------------------------------------
 !
+!     INITIALISES ELTSEG, ORISEG, GLOSEG
+!
+      DO IELEM = 1, NELEM
+         DO ISEG = 1, 6 ! BIEF_NBSEGEL(IELM1, MESH) ie. IELM1 = 31
+            ELTSEG(IELEM,ISEG) = 0
+            ORISEG(IELEM,ISEG) = 0
+         ENDDO
+      ENDDO
+!     
+      DO ISEG = 1, NSEG
+         GLOSEG(ISEG,1) = 0
+         GLOSEG(ISEG,2) = 0
+      ENDDO
+!     
 !     LOOP ON ELEMENTS FOR NUMBERING INTERNAL SEGMENTS AND FILLING:
 !     GLOSEG, ELTSEG, ORISEG
 !
@@ -409,7 +383,7 @@
                 STOP
                ENDIF
 !
-!     THIS SEGMENT IS A BORDER SEGMENT
+!     THIS SEGMENT IS A BORDER SEGMENT ? PATHOLOGIC CASES ?
                IF (IPOBO(I1).NE.0 .AND. IPOBO(I2).NE.0) THEN
                   FOUND = .FALSE.
 !     FOR DOUBLE CHECKING COUNTING OF BORDER SEGMENT
@@ -425,7 +399,7 @@
                               XSEG = ELTSEGBOR(IELEB,JSEG)
                               FOUND = .TRUE.
                               NSEBOR2 = NSEBOR2 + 1
-                           FOUND = .TRUE.
+                              FOUND = .TRUE.
                            ENDIF
                            IF (FOUND) EXIT
                         ENDDO
@@ -579,8 +553,8 @@
       NSEG    = NSE
       NSEGBOR = NSEBOR
 !     UPDATE NDS WHICH OVER-ESTIMATES NSEG ?
-!      NDS(31,2) = NSE
-!      NDS(81,2) = NSEBOR
+      NDS(31,2) = NSE
+      NDS(81,2) = NSEBOR
 !
 !-----------------------------------------------------------------------
 !
@@ -632,10 +606,8 @@
                ENDIF
             ENDIF
          ENDDO
-      ENDDO
-!     
-      DEALLOCATE(GLOSEGBOR,ORISEGBOR,ELTSEGBOR)
-!     
+      ENDDO     
+!
 !-----------------------------------------------------------------------
 !
       RETURN

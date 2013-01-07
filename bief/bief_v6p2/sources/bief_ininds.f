@@ -249,7 +249,7 @@
       NDS(31,1) = NPOIN
       !SEEMS TO BE "EXACT" IN SCALAR BUT NOT IN PARALLEL...
       !NDS(31,2) = NELEM + NPOIN + 0.75*NELEB - 0.5*NPTFR
-      NDS(31,2) = NELEM + NPOIN + NELEB + NPTFR
+      NDS(31,2) = NELEM + 3*NPOIN + (3*NELEB)/2 + NPTFR
       NDS(31,3) = 4
       NDS(31,4) = 4
       NDS(31,5) = NPMAX

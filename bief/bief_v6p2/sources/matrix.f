@@ -114,6 +114,7 @@
 !
       INTEGER NELMAX,NELEM,NPT,SS
       INTEGER, DIMENSION(:), POINTER :: IKLE
+      INTEGER, DIMENSION(:), POINTER :: ELTSEG,ORISEG
       DOUBLE PRECISION, DIMENSION(:), POINTER :: SURFAC,XX,YY,ZZ
       DOUBLE PRECISION C
       LOGICAL LEGO
@@ -141,6 +142,8 @@
         XX=>MESH%XEL%R
         YY=>MESH%YEL%R
         ZZ=>MESH%ZEL%R
+        ELTSEG=>MESH%ELTSEG%I
+        ORISEG=>MESH%ORISEG%I
       ELSE
 !       BOUNDARY MATRIX
         NELEM  = MESH%NELEB
@@ -150,6 +153,8 @@
         XX=>MESH%X%R
         YY=>MESH%Y%R
         ZZ=>MESH%Z%R
+        ELTSEG=>MESH%ELTSEGBOR%I
+        ORISEG=>MESH%ORISEGBOR%I
       ENDIF
 !
 !     MATRIY FILLS THE DIAGONAL AND EXTRA DIAGONAL TERMS
@@ -237,7 +242,7 @@
      &                  BIEF_DIM1_EXT(IELM1,IELM2,MESH%M%STO,
      &                                MESH%M%TYPEXT,MESH),
      &                  2,
-     &                  MESH,MESH%NELMAX,MESH%ELTSEG%I,MESH%ORISEG%I)
+     &                  MESH,NELMAX,ELTSEG,ORISEG)
           ELSE
             CALL ASSEX3(MESH%MSEG%X%R,MESH%M%STO,MESH%M%NAME,
      &                  MESH%M%ELMLIN,MESH%M%ELMCOL,
@@ -247,7 +252,7 @@
      &                  BIEF_DIM2_EXT(IELM1,IELM2,MESH%M%STO,
      &                                MESH%M%TYPEXT,MESH),
      &                  1,
-     &                  MESH,MESH%NELMAX,MESH%ELTSEG%I,MESH%ORISEG%I)
+     &                  MESH,NELMAX,ELTSEG,ORISEG)
           ENDIF
         ENDIF
         MESH%MSEG%TYPEXT=MESH%M%TYPEXT
