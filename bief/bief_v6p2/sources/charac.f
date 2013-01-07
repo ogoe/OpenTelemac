@@ -10,7 +10,7 @@
      &  NELEM2, NELMAX2, IKLE2 , SURDET2, APOST , PERIODIC )
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS THE METHOD OF CHARACTERISTICS
@@ -116,8 +116,7 @@
       TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10
       INTEGER, DIMENSION(:), POINTER :: IFA
       INTEGER I,J,K,NPT,DIM1F
-      LOGICAL QUAD,QUAB,DEJA,POST,PERIO,YA4D
-      DATA DEJA/.FALSE./   
+      LOGICAL QUAD,QUAB,POST,PERIO,YA4D  
 !
       INTRINSIC MIN
 !
