@@ -23,18 +23,27 @@
        do="translate;compile;run;cas;princi"
        code="artemis" target="art_recif.cas"
        title="recif scalar mode"
-   /> 
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="artemis" target="art_recif.cas"
+       title="recif parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
 
+   
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[12;5]" > 
+      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="WaveHeight" size="[12;5]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>   
+
 
 </validation>

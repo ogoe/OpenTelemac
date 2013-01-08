@@ -23,7 +23,12 @@
        do="translate;compile;run;cas;princi"
        code="artemis" target="art_breaking_Dally.cas"
        title="breaking scalar mode"
-   /> 
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="artemis" target="art_breaking_Dally.cas"
+       title="breaking parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -31,10 +36,22 @@
    -->
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
-
+   <plot1d xref="SectionY0.5" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="[34;0.5][42.5;0.538]" target="1:ARTRES" time="[0]" /> 
+   </plot1d> 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[12;2]" > 
+      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Bathy" size="[12;2]" > 
+      <layer vars="bottom:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="WaveHeight" size="[12;2]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>   
+   <plot2d xref="Breaking" roi="[33;0][43;1]" size="[12;2]" > 
+      <layer vars="qb:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
 
 </validation>

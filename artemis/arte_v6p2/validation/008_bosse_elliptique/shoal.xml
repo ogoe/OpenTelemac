@@ -23,17 +23,31 @@
        do="translate;compile;run;cas;princi"
        code="artemis" target="art_shoal.cas"
        title="elliptic shoal scalar mode"
-   /> 
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="artemis" target="art_shoal.cas"
+       title="elliptic shoal parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
+   <plot1d xref="SectionX15.5" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="[15.6;7.99][15.6;19.95]" target="1:ARTRES" time="[0]" /> 
+   </plot1d>
+   <plot1d xref="SectionY14" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="[10.5;14.1][19.9;14.04]" target="1:ARTRES" time="[0]" /> 
+   </plot1d>    
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
+   <plot2d xref="WaveHeight" size="[10;10]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="together" /> 
+   </plot2d>  
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
 

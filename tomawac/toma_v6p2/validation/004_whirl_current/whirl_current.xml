@@ -23,7 +23,12 @@
        do="translate;compile;run;cas;princi" 
        code="tomawac" target="tom_whirl.cas" 
        title="whirl_current scalar mode" 
-   />  
+   />
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="tomawac" target="tom_whirl.cas" 
+       title="whirl_current parallel mode" 
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

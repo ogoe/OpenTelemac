@@ -24,6 +24,11 @@
        code="artemis" target="kochin.cas"
        title="Incident potential from kochin function"
    /> 
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="artemis" target="kochin.cas"
+       title="Incident potential from kochin function parallel"
+   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -34,7 +39,17 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[8;8]" > 
+      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="WaveHeight" size="[8;8]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="RealPotential" size="[8;8]" > 
+      <layer vars="real potential:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="ImagPotential" size="[8;8]" > 
+      <layer vars="imag potential:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
 
 </validation>

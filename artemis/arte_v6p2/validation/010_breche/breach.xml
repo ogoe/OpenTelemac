@@ -31,9 +31,20 @@
    -->
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
-
+   <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="[0;915][1800;915]" target="1:ARTRES"  time="[0]" /> 
+   </plot1d>
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
+   <plot2d xref="Mesh" size="[10;10]" > 
+      <layer vars="bottom:mesh" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="WaveHeight" size="[10;10]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>   
+   <plot2d xref="Free Surface" size="[10;10]" > 
+      <layer vars="free surface:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>  
 <!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
 -->
 

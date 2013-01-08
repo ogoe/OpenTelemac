@@ -23,18 +23,35 @@
        do="translate;compile;run;cas;princi"
        code="artemis" target="art_friction.cas"
        title="friction scalar mode"
-   /> 
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="artemis" target="art_friction.cas"
+       title="friction parallel mode"
+   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-
+  <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="[0;0.6][19.9;0.6]" time="[0]" target="1:ARTRES" /> 
+   </plot1d> 
+ 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[12;4]" > 
+      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+   </plot2d>
+<!--   <plot2d xref="Bathy" size="[12;4]" > 
+      <layer vars="bottom:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
+   -->
+   <plot2d xref="Wave height" size="[12;4]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Free Surface" size="[12;4]" > 
+      <layer vars="free surface:map" time="[-1]" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
 
 </validation>
