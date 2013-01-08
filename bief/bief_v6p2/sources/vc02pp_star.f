@@ -14,16 +14,20 @@
 !         CORRESPONDS TO MATRIX COMPUTED IN MT02PP_STAR
 !         F, G AND H ARE THE DIFFUSION COEFFICIENTS ALONG X, Y AND Z
 !
-!
 !history  J-M HERVOUET (LNHE)
 !+        23/06/2011
 !+        V6P1
-!+
+!+   First version
 !
-!history  U.H.MErkel
+!history  U.H. MERKEL
 !+        18/07/2012
 !+        V6P2
 !+   Replaced EPSILON with EPSI due to nag compiler problems
+!
+!history  J-M HERVOUET (EDF R&D LNHE) 
+!+        07/01/2013
+!+        V6P3
+!+   X and Y are now given per element.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -47,10 +51,10 @@
 !| W4             |<--| RESULT IN NON ASSEMBLED FORM
 !| W5             |<--| RESULT IN NON ASSEMBLED FORM
 !| W6             |<--| RESULT IN NON ASSEMBLED FORM
-!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
-!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !| XMUL           |-->| MULTIPLICATION COEFFICIENT
-!| Z              |-->| ELEVATIONS OF POINTS
+!| Z              |-->| ELEVATIONS OF POINTS, PER POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF  !  , EX_VC04PP => VC04PP
@@ -65,7 +69,8 @@
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX),IKLE3(NELMAX)
       INTEGER, INTENT(IN) :: IKLE4(NELMAX),IKLE5(NELMAX),IKLE6(NELMAX)
 !
-      DOUBLE PRECISION, INTENT(IN)   ::X(*),Y(*),Z(*),SURFAC(*)
+      DOUBLE PRECISION, INTENT(IN)   ::X(NELMAX,6),Y(NELMAX,6),Z(*)
+      DOUBLE PRECISION, INTENT(IN)   ::SURFAC(*)
       DOUBLE PRECISION, INTENT(INOUT)::W1(NELMAX),W2(NELMAX),W3(NELMAX)
       DOUBLE PRECISION, INTENT(INOUT)::W4(NELMAX),W5(NELMAX),W6(NELMAX)
       DOUBLE PRECISION, INTENT(IN)   ::XMUL
@@ -157,10 +162,15 @@
          H2 = Z(I5) - Z(I2)
          H3 = Z(I6) - Z(I3)
 !
-         X2 = X(I2)-X(I1)
-         X3 = X(I3)-X(I1)
-         Y2 = Y(I2)-Y(I1)
-         Y3 = Y(I3)-Y(I1)
+!        X2 = X(I2)-X(I1)
+!        X3 = X(I3)-X(I1)
+!        Y2 = Y(I2)-Y(I1)
+!        Y3 = Y(I3)-Y(I1)
+!
+         X2=X(IELEM,2)
+         X3=X(IELEM,3)
+         Y2=Y(IELEM,2)
+         Y3=Y(IELEM,3)
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.
@@ -357,10 +367,15 @@
          H2 = Z(I5) - Z(I2)
          H3 = Z(I6) - Z(I3)
 !
-         X2 = X(I2)-X(I1)
-         X3 = X(I3)-X(I1)
-         Y2 = Y(I2)-Y(I1)
-         Y3 = Y(I3)-Y(I1)
+!        X2 = X(I2)-X(I1)
+!        X3 = X(I3)-X(I1)
+!        Y2 = Y(I2)-Y(I1)
+!        Y3 = Y(I3)-Y(I1)
+!
+         X2=X(IELEM,2)
+         X3=X(IELEM,3)
+         Y2=Y(IELEM,2)
+         Y3=Y(IELEM,3)
 !
          IF((INCHYD.AND.MAX(Z(I1),Z(I2),Z(I3)).GT.
      &                  MIN(Z(I4),Z(I5),Z(I6)))    .OR.

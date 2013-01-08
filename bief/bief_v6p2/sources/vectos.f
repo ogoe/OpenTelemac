@@ -55,7 +55,7 @@
 !+   Call of VC13TT modified.
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        25/12/2012
+!+        07/01/2013
 !+        V6P3
 !+   Arguments XPT, YPT and ZPT added, various XEL, YEL and ZEL changed
 !+   into XPT, etc. in the calls to 3D vectors.
@@ -381,7 +381,7 @@
 !
         IF(IELM1.EQ.41.AND.FORMUL(8:8).EQ.'*') THEN
 !
-          CALL VC02PP_STAR(XMUL,SF,SG,SH,SU,F,G,H,U,XPT,YPT,ZPT,SURFAC,
+          CALL VC02PP_STAR(XMUL,SF,SG,SH,SU,F,G,H,U,XEL,YEL,ZPT,SURFAC,
      &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                     IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),
      &                     T(1,2),T(1,3),T(1,4),T(1,5),T(1,6),FORMUL)
@@ -486,7 +486,7 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-          CALL VC04PP(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XPT,YPT,ZPT,
+          CALL VC04PP(XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,XEL,YEL,ZPT,
      &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                T(1,3),T(1,4),T(1,5),T(1,6),SPECAD,FORMUL,
@@ -645,7 +645,7 @@
 !
         ELSEIF(IELM1.EQ.41) THEN
 !
-             CALL VC08PP(XMUL,SF,SU,SV,SW,F,U,V,W,XPT,YPT,ZPT,
+             CALL VC08PP(XMUL,SF,SU,SV,SW,F,U,V,W,XEL,YEL,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6))
@@ -706,7 +706,7 @@
 !
         IF(IELM1.EQ.41) THEN
 !
-             CALL VC18PP(XMUL,SF,SU,SV,F,U,V,XPT,YPT,ZPT,
+             CALL VC18PP(XMUL,SF,SU,SV,F,U,V,XEL,YEL,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3))
@@ -898,7 +898,7 @@
         ELSEIF(IELM1.EQ.41) THEN
 !
              CALL VC11PP(XMUL,SF,SG,F,G,
-     &                   XPT,YPT,ZPT,
+     &                   XEL,YEL,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD)
@@ -1035,13 +1035,13 @@
 !
              IF(FORMUL(1:15).EQ.'GRADF(X,Y)     ') THEN
 !            SIMPLIFIED FORMULATION FOR EFFICIENCY AND ACCURACY
-             CALL VC13PP2(XMUL,SF,F,XPT,YPT,ZPT,
+             CALL VC13PP2(XMUL,SF,F,XEL,YEL,ZPT,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD)
              ELSEIF( FORMUL(8:15).EQ.'        ') THEN
 !                    FORMUL(6:7) IS LEFT FOR OPTIONS
-             CALL VC13PP(XMUL,SF,F,XPT,YPT,ZPT,
+             CALL VC13PP(XMUL,SF,F,XEL,YEL,ZPT,SURFAC,
      &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
      &                   IKLE(1,5),IKLE(1,6),NELEM,NELMAX,T(1,1),T(1,2),
      &                   T(1,3),T(1,4),T(1,5),T(1,6),ICOORD,FORMUL)

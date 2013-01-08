@@ -62,9 +62,9 @@
 !+   Different call to VOISIN31, and call added for IELM=51
 !
 !history  J-M HERVOUET (LNHE) 
-!+        030/01/2013
+!+        07/01/2013
 !+        V6P3
-!+   XEL, YEL and ZEL now built in 3D.
+!+   XEL, YEL now built in 3D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -317,6 +317,8 @@
 !
       ELSE
 !
+!       NOTE: IN 3D MESH%X AND MESH%Y FULLY BUILT IN ALMESH
+!
         CALL OS( 'X=Y     ' , X=T1 , Y=MESH%X )
         CALL OS( 'X=Y     ' , X=T2 , Y=MESH%Y )
 !
@@ -343,17 +345,17 @@
       CALL OV('X=C     ', MESH%XEL%R , Z , Z , 0.D0 , NELEM )
       CALL OV('X=C     ', MESH%YEL%R , Z , Z , 0.D0 , NELEM )
 !
-!     NOW IDEM FOR Z
+!     IF DONE FOR Z (BUT IN MOVING MESHES SHOULD NOT BE USED !!!!)
 !
-      IF(MESH%DIM.EQ.3) THEN
-        CALL PTTOEL(MESH%ZEL,MESH%Z,MESH)
-        DO IDP=2,NDP
-          CALL OV_2('X=X-Y   ',MESH%ZEL%R,IDP,
-     &                         MESH%ZEL%R,1  ,
-     &                         MESH%ZEL%R,1  , 0.D0 , NELMAX , NELEM )
-        ENDDO 
-        CALL OV('X=C     ', MESH%ZEL%R , Z , Z , 0.D0 , NELEM )
-      ENDIF
+!     IF(MESH%DIM.EQ.3) THEN
+!       CALL PTTOEL(MESH%ZEL,MESH%Z,MESH)
+!       DO IDP=2,NDP
+!         CALL OV_2('X=X-Y   ',MESH%ZEL%R,IDP,
+!    &                         MESH%ZEL%R,1  ,
+!    &                         MESH%ZEL%R,1  , 0.D0 , NELMAX , NELEM )
+!       ENDDO 
+!       CALL OV('X=C     ', MESH%ZEL%R , Z , Z , 0.D0 , NELEM )
+!     ENDIF
 !
 !-----------------------------------------------------------------------
 !

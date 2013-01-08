@@ -2,11 +2,12 @@
                      SUBROUTINE VC13PP
 !                    *****************
 !
-     &(XMUL,SF,F,X,Y,Z,IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
+     &(XMUL,SF,F,X,Y,Z,SURFAC,
+     & IKLE1,IKLE2,IKLE3,IKLE4,IKLE5,IKLE6,NELEM,NELMAX,
      & W1,W2,W3,W4,W5,W6,ICOORD,FORMUL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -47,6 +48,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D LNHE) 
+!+        07/01/2013
+!+        V6P3
+!+   X and Y are now given per element.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
 !| FORMUL         |-->| SEE AT THE END OF THE SUBROUTINE
@@ -83,8 +89,9 @@
       INTEGER, INTENT(IN) :: NELEM,NELMAX,ICOORD
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX),IKLE3(NELMAX)
       INTEGER, INTENT(IN) :: IKLE4(NELMAX),IKLE5(NELMAX),IKLE6(NELMAX)
-!
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),Z(*)
+!                                                               NPOIN
+      DOUBLE PRECISION, INTENT(IN) :: X(NELMAX,6),Y(NELMAX,6),Z(*)
+      DOUBLE PRECISION, INTENT(IN) :: SURFAC(NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) ::W1(NELMAX),W2(NELMAX),W3(NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) ::W4(NELMAX),W5(NELMAX),W6(NELMAX)
       DOUBLE PRECISION, INTENT(IN) :: XMUL
@@ -97,7 +104,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION XS48,XS144,F1,F2,F3,F4,F5,F6,XMU
+      DOUBLE PRECISION XS24,XS144,F1,F2,F3,F4,F5,F6,XMU
       DOUBLE PRECISION X2,X3,Y2,Y3,Z1,Z2,Z3,Z4,Z5,Z6
       INTEGER I1,I2,I3,I4,I5,I6,IELEM,IELMF
 !
@@ -105,7 +112,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      XS48  = XMUL/48.D0
+      XS24  = XMUL/24.D0
       XS144 = XMUL/144.D0
 !
 !-----------------------------------------------------------------------
@@ -142,8 +149,11 @@
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         Y2  =  Y(I2) - Y(I1)
-         Y3  =  Y(I3) - Y(I1)
+!        Y2  =  Y(I2) - Y(I1)
+!        Y3  =  Y(I3) - Y(I1)
+         Y2  =  Y(IELEM,2)
+         Y3  =  Y(IELEM,3)
+!
          Z2  =  Z(I2) - Z(I1)
          Z3  =  Z(I3) - Z(I1)
          Z4  =  Z(I4) - Z(I1)
@@ -230,8 +240,11 @@
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         X2  =  X(I2) - X(I1)
-         X3  =  X(I3) - X(I1)
+!        X2  =  X(I2) - X(I1)
+!        X3  =  X(I3) - X(I1)
+         X2  =  X(IELEM,2)
+         X3  =  X(IELEM,3)
+!
          Z2  =  Z(I2) - Z(I1)
          Z3  =  Z(I3) - Z(I1)
          Z4  =  Z(I4) - Z(I1)
@@ -319,12 +332,13 @@
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         X2  =  X(I2) - X(I1)
-         X3  =  X(I3) - X(I1)
-         Y2  =  Y(I2) - Y(I1)
-         Y3  =  Y(I3) - Y(I1)
+!        X2  =  X(I2) - X(I1)
+!        X3  =  X(I3) - X(I1)
+!        Y2  =  Y(I2) - Y(I1)
+!        Y3  =  Y(I3) - Y(I1)
 !
-         XMU  = XS48*(X2*Y3-X3*Y2)
+!        XMU  = XS48*(X2*Y3-X3*Y2)
+         XMU  = XS24*SURFAC(IELEM)
 !
 !        NOT LUMPED VERSION
 !        DIFF = (F4+F5+F6) - (F1+F2+F3)

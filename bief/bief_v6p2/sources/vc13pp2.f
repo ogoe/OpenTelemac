@@ -7,7 +7,7 @@
      & W1,W2,W3,W4,W5,W6,ICOORD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -45,11 +45,16 @@
 !+   Translation of French comments within the FORTRAN sources into
 !+   English comments
 !
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!history  N.DURAND (HRW), S.E. BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D LNHE) 
+!+        07/01/2013
+!+        V6P3
+!+   X and Y are now given per element.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -71,9 +76,10 @@
 !| W4             |<--| RESULT IN NON ASSEMBLED FORM
 !| W5             |<--| RESULT IN NON ASSEMBLED FORM
 !| W6             |<--| RESULT IN NON ASSEMBLED FORM
-!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
 !| XMUL           |-->| MULTIPLICATION COEFFICIENT
-!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| Z              |-->| Z-COORDINATES OF POINTS IN THE MESH, PER POINT !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF !, EX_VC13PP2 => VC13PP2
@@ -88,7 +94,7 @@
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX),IKLE3(NELMAX)
       INTEGER, INTENT(IN) :: IKLE4(NELMAX),IKLE5(NELMAX),IKLE6(NELMAX)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*),Z(*)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NELMAX,6),Y(NELMAX,6),Z(*)
       DOUBLE PRECISION, INTENT(INOUT) ::W1(NELMAX),W2(NELMAX),W3(NELMAX)
       DOUBLE PRECISION, INTENT(INOUT) ::W4(NELMAX),W5(NELMAX),W6(NELMAX)
       DOUBLE PRECISION, INTENT(IN)    :: XMUL
@@ -137,10 +143,10 @@
          F2 = F(I2)
          F3 = F(I3)
 !
-!  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
+!        REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         Y2  =  Y(I2) - Y(I1)
-         Y3  =  Y(I3) - Y(I1)
+         Y2  =  Y(IELEM,2)
+         Y3  =  Y(IELEM,3)
 !
          FX6 = Y2*(F1-F3) + Y3*(F2-F1)
 !
@@ -165,7 +171,7 @@
 !
 !  DERIVATIVE WRT Y
 !
-      DO 4 IELEM = 1 , NELEM
+      DO IELEM = 1 , NELEM
 !
          I1 = IKLE1(IELEM)
          I2 = IKLE2(IELEM)
@@ -178,10 +184,10 @@
          F2 = F(I2)
          F3 = F(I3)
 !
-!  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
+!        REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         X2  =  X(I2) - X(I1)
-         X3  =  X(I3) - X(I1)
+         X2  =  X(IELEM,2)
+         X3  =  X(IELEM,3)
 !
          FY6 = X2*(F3-F1) + X3*(F1-F2)
 !
@@ -198,7 +204,7 @@
          W5(IELEM) = W2(IELEM)
          W6(IELEM) = W3(IELEM)
 !
-4        CONTINUE
+         ENDDO
 !
       ELSE
 !

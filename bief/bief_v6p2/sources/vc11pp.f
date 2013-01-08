@@ -7,7 +7,7 @@
      &  W1,W2,W3,W4,W5,W6 , ICOORD )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE FOLLOWING VECTOR IN FINITE ELEMENTS:
@@ -56,6 +56,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D LNHE) 
+!+        07/01/2013
+!+        V6P3
+!+   X and Y are now given per element.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA
 !| G              |-->| FUNCTION USED IN THE VECTOR FORMULA
@@ -94,9 +99,10 @@
       INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX),IKLE3(NELMAX)
       INTEGER, INTENT(IN) :: IKLE4(NELMAX),IKLE5(NELMAX),IKLE6(NELMAX)
 !
-      DOUBLE PRECISION, INTENT(IN)   ::X(*),Y(*),Z(*),XMUL
-      DOUBLE PRECISION, INTENT(INOUT)::W1(NELMAX),W2(NELMAX),W3(NELMAX)
-      DOUBLE PRECISION, INTENT(INOUT)::W4(NELMAX),W5(NELMAX),W6(NELMAX)
+      DOUBLE PRECISION, INTENT(IN)   :: X(NELMAX,6),Y(NELMAX,6),Z(*)
+      DOUBLE PRECISION, INTENT(IN)   :: XMUL
+      DOUBLE PRECISION, INTENT(INOUT):: W1(NELMAX),W2(NELMAX),W3(NELMAX)
+      DOUBLE PRECISION, INTENT(INOUT):: W4(NELMAX),W5(NELMAX),W6(NELMAX)
 !
 !     STRUCTURES OF F, G, H, U, V, W AND REAL DATA
 !
@@ -158,8 +164,12 @@
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         Y2  =  Y(I2) - Y(I1)
-         Y3  =  Y(I3) - Y(I1)
+!        Y2  =  Y(I2) - Y(I1)
+!        Y3  =  Y(I3) - Y(I1)
+!
+         Y2 = Y(IELEM,2)
+         Y3 = Y(IELEM,3)
+!
          Z1  =  Z(I1)
          Z2  =  Z(I2)
          Z3  =  Z(I3)
@@ -405,8 +415,12 @@
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT (ORIGIN IN 1)
 !
-         X2  =  X(I2) - X(I1)
-         X3  =  X(I3) - X(I1)
+!        X2  =  X(I2) - X(I1)
+!        X3  =  X(I3) - X(I1)
+!
+         X2 = X(IELEM,2)
+         X3 = X(IELEM,3)
+!
          Z1  =  Z(I1)
          Z2  =  Z(I2)
          Z3  =  Z(I3)
@@ -651,10 +665,16 @@
 !
 !  REAL COORDINATES OF THE POINTS OF THE ELEMENT
 !
-         X2  =  X(I2) - X(I1)
-         X3  =  X(I3) - X(I1)
-         Y2  =  Y(I2) - Y(I1)
-         Y3  =  Y(I3) - Y(I1)
+!        X2  =  X(I2) - X(I1)
+!        X3  =  X(I3) - X(I1)
+!        Y2  =  Y(I2) - Y(I1)
+!        Y3  =  Y(I3) - Y(I1)
+!
+         X2 = X(IELEM,2)
+         X3 = X(IELEM,3)
+         Y2 = Y(IELEM,2)
+         Y3 = Y(IELEM,3)
+!
          XMU  = XS720*(X2*Y3-X3*Y2)
 !
 !     VC11PP_Z (FROM MAPLE)
@@ -733,6 +753,8 @@
  1301  FORMAT(1X,'CASE NOT IMPLEMENTED')
 !
       ENDIF
+!
 !-----------------------------------------------------------------------
+!
       RETURN
       END
