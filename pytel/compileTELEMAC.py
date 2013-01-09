@@ -544,11 +544,17 @@ if __name__ == "__main__":
                   ForCmd = path.join(ForDir,item.lower() + cfgs[cfgname]['version'] + '.cmdf')
                FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
                for obj,lib in HOMERES[item]['add']:
-                  fic = all[lib][path.splitext(obj)[0].upper()]
+                  try:
+                     fic = all[lib][path.splitext(obj)[0].upper()]
+                  except  Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
                   if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
                   FileList[lib]['files'].append(fic['file'])
                for obj,lib in HOMERES[item]['tag']:
-                  fic = all[lib][path.splitext(obj)[0].upper()]
+                  try:
+                     fic = all[lib][path.splitext(obj)[0].upper()]
+                  except  Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
                   if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
                   FileList[lib]['files'].append(fic['file'])
                if True or not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,FileList)
