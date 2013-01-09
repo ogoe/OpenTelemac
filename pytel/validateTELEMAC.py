@@ -67,7 +67,9 @@
 #
 # ~~> dependencies towards standard python
 import sys
+import csv
 import time
+from datetime import date
 from os import path,walk,environ
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
@@ -194,8 +196,14 @@ if __name__ == "__main__":
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}
+      # Variables needed to generate the Validattion report
+      cas=[]
+      config=[]
+      module=[]
+      status=[]
       for cfgname in cfgs.keys():
          # still in lower case
+         root = cfgs[cfgname]['root']
          if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
          if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules
@@ -221,22 +229,42 @@ if __name__ == "__main__":
          print '    +> ',codeName
          for key in xmls[codeName]:
             print '    |    +> ',key
+            module.append(codeName)
+            cas.append(key)
+            status.append('NotRun')
             for xmlFile in xmls[codeName][key]:
                print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
+               config.append(xmls[codeName][key][xmlFile].keys())
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print "%s" % (time.ctime(time.time()))
       for codeName in xmls.keys():
+         i = 0
          for key in xmls[codeName]:
             print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
             for xmlFile in xmls[codeName][key]:
                try:
+                  tic = time.clock()
                   runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+                  toc = time.clock()
+                  ttime = toc-tic
+                  status[i]= ttime
+                  i += 1
                except Exception as e:
+                  status[i]= 'failed'
                   xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
       print "%s" % (time.ctime(time.time()))
+      d = date.today()
+      # Writes the Validation Report in a CSV file
+      print '\n\nWritting Validation Report.\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      with open(root + '//' + d.isoformat()+ '_' + 'ValidationReport.csv', 'wb') as f:
+         spamwriter = csv.writer(f, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+         spamwriter.writerow(['Name','Module','Config','Status'])
+         for j in range(len(cas)):
+             spamwriter.writerow([cas[j],module[j],config[j][0],status[j]])
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
