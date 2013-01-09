@@ -308,7 +308,7 @@ def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,var
    subset = []
    for i in range(len(time)):
       subset.append(int(time[i]))
-      if time[i] < 0: subset[i] = [ max( 0, len(tags['cores']) + time[i] ) ]
+      if time[i] < 0: subset[i] = max( 0, len(tags['cores']) + time[i] )
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    z = np.zeros((len(varsIndexes),len(subset),len(p))) #,len(tags['cores'])))

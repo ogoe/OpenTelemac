@@ -50,7 +50,7 @@ def parseArrayPaires(s):
          if procd:
             p.append(float(procd.group('number')))
          elif proci:
-            p.append(float(proci.group('number')))
+            p.append(int(proci.group('number')))
          else:
             print '... could not parse the array: ' + s
             sys.exit()

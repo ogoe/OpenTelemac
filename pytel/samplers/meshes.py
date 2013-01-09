@@ -113,17 +113,24 @@ def traceRay2XY(IKLE,MESHX,MESHY,neighbours,ei,xyi,en,xyn):
    accuracy = np.power(10.0, -5+np.floor(np.log10(abs(ax+bx+cx+ay+by+cy))))
    if pnt['d'][0] < accuracy: return True,pnt
 
-   # ~~> get the ray through to the neighbouring edges
+   # ~~> get the ray through to the farthest neighbouring edges
+   ks = []; ds = []
    for k in [0,1,2]:
       xyj = getSegmentIntersection( (MESHX[IKLE[en][k]],MESHY[IKLE[en][k]]),(MESHX[IKLE[en][(k+1)%3]],MESHY[IKLE[en][(k+1)%3]]),xyi,xyn )
       if xyj == []: continue         # there are no intersection with that edges
       ej = neighbours[en][k]
-      if ej == ei: continue          # you should not back back on your ray
+      if ej == ei: continue          # you should not back track on your ray
       xyj = xyj[0]
       dij = np.power(xyi[0]-xyj[0],2) + np.power(xyi[1]-xyj[1],2)
-      djn = np.power(xyn[0]-xyj[0],2) + np.power(xyn[1]-xyj[1],2)
-      if djn < accuracy: continue    # /!\ this may be a problem
-      
+      ks.append(k)
+      ds.append(dij)
+   k = ks[np.argmax(ds)]
+   ej = neighbours[en][k]
+   xyj = getSegmentIntersection( (MESHX[IKLE[en][k]],MESHY[IKLE[en][k]]),(MESHX[IKLE[en][(k+1)%3]],MESHY[IKLE[en][(k+1)%3]]),xyi,xyn )[0]
+   djn = np.power(xyn[0]-xyj[0],2) + np.power(xyn[1]-xyj[1],2)
+
+   # ~~> Possible recursive call
+   if True or djn > accuracy:    # /!\ this may be a problem
       if ej < 0:
          # you have reach the end of the line
          bj = getBarycentricWeights( xyj,(ax,ay),(bx,by),(cx,cy) )
@@ -173,7 +180,7 @@ def crossMesh(polyline,IKLE,MESHX,MESHY,tree=None,neighbours=None):
    xelms = []; xbrys = []
    xyo = polyline[0]
    eo,bo,tree = nearLocateMesh(xyo,IKLE,MESHX,MESHY,tree)
-
+   
    for i in range(len(polyline)-1):
       xyi = polyline[i+1]
       ei,bi,tree = nearLocateMesh(xyi,IKLE,MESHX,MESHY,tree)
@@ -208,7 +215,7 @@ def crossMesh(polyline,IKLE,MESHX,MESHY,tree=None,neighbours=None):
             ipt.append(rayo['xy'][j]); iet.append(rayo['e'][j]); ibr.append(rayo['b'][j])
       else:
          found,rayi,neighbours = xyTraceMesh(eo,xyo,xyi,IKLE,MESHX,MESHY,neighbours)
-         #print 'raye'
+         #print 'rayi',rayi
          for j in range(rayi['n'])[(rayi['n']-1)::-1]:
             #print rayi['e'][j],rayi['xy'][j]
             ipt.append(rayi['xy'][j]); iet.append(rayi['e'][j]); ibr.append(rayi['b'][j])

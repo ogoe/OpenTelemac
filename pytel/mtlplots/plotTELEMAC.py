@@ -426,7 +426,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Debuging drawFigure1D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   if True:
+   if False:
    # ~~ sortie file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       draw = { 'title':'openTELEMAC','type':'sortie' }
       figure = Figure('plot1d',draw,True,'')
@@ -437,12 +437,12 @@ if __name__ == "__main__":
 
       figure.show()
 
-   if True:
+   if False:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      draw = { 'title':'openTELEMAC','type':'SELAFIN' }
+      draw = { 'title':'openTELEMAC','type':'SELAFIN','size':[[10,5]] }
       figure = Figure('plot1d',draw,True,'')
 
-      fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\r2d_bumpflu_v1p0.slf'
+      fileName = 'C:\\home\\opentelemac\\trunk\\telemac2d\\tel2d_v6p2\\validation\\011_bumpflu\\f2d_bumpflu.slf'
       figure.draw( draw['type'], { 'file':fileName, 'type': 'history',
          'extract': parseArrayPaires('[10;1][0;1]'),
          'time':parseArrayPaires("[0;-1]")[0],'vars': 'surface libre:time' })
@@ -451,12 +451,12 @@ if __name__ == "__main__":
 
    if True:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      draw = { 'title':'openTELEMAC','type':'SELAFIN' }
+      draw = { 'title':'openTELEMAC','type':'SELAFIN','size':[[10,5]] }
       figure = Figure('plot1d',draw,True,'')
 
-      fileName = 'C:\\opentelemac\\validation\\telemac2d\\tel2d_v6p2\\011_bumpflu\\1\\wing95s\\r2d_bumpflu_v1p0.slf'
+      fileName = 'C:\\home\\opentelemac\\trunk\\telemac2d\\tel2d_v6p2\\validation\\011_bumpflu\\f2d_bumpflu.slf'
       figure.draw( draw['type'], { 'file':fileName, 'type': 'v-section',
-         'extract': parseArrayPaires('[0.0;1.0][20;1.0]'),
+         'extract': parseArrayPaires('[0.0;1.0][20.0;1.0]'),
          'time':parseArrayPaires("[-1]")[0],'vars': 'surface libre:distance;fond:distance' })
 
       figure.show()
@@ -464,7 +464,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Debuging drawFigure2D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   if True:
+   if False:
    # ~~ SELAFIN file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       draw = { 'title':'openTELEMAC','type':'SELAFIN' }
       figure = Figure('plot2d',draw,True,'')
@@ -478,7 +478,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Debuging drawFigure2D ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   if True:
+   if False:
    # ~~ SPECTRAL file ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       draw = { 'title':'openTELEMAC','type':'WACLEO' }
       figure = Figure('plot2d',draw,True,'')
