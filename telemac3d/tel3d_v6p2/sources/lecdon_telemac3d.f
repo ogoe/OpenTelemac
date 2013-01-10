@@ -394,6 +394,7 @@
         MARTIM(3)     = MOTINT( ADRESS(1,92) + 2 )
         OPTDIF        = MOTINT( ADRESS(1,93) )
 C       HYDSTEP       = MOTINT( ADRESS(1,94) )
+        DIRFLU(0)=0
         DO K=1,MAXFRO
           PROFVEL(K)=1
           DIRFLU(K)=1

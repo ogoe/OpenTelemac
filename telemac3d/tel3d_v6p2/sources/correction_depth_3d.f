@@ -75,26 +75,14 @@
           FORMUL = 'VGRADP 2     HOR'
           SAVEZ     =>MESH3D%Z%R
           MESH3D%Z%R=>ZPROP%R
-!         CALL VECTOR(T3_01,'=',FORMUL,IELM3,-1.D0,DM1,GRAZCO,GRAZCO,
-!    *                UCONV,VCONV,VCONV,MESH3D,MSK,MASKEL)
-!         EQUIVALENT TO CALL VECTOR BUT WITHOUT ASSEMBLING T3_01
-!         BECAUSE ARGUMENT LEGO IS SET TO FALSE :
-          CALL VECTOS(T3_01%R,'=',FORMUL,-1.D0,
-     &                DM1%R,GRAZCO%R,GRAZCO%R,UCONV%R,VCONV%R,VCONV%R,
-     &                DM1,  GRAZCO,  GRAZCO,  UCONV,  VCONV,  VCONV,
-!                                 LEGO
-     &                MESH3D%W%R,.FALSE.,
-     &                MESH3D%XEL%R,MESH3D%YEL%R,MESH3D%ZEL%R,
-     &                MESH3D%X%R,MESH3D%Y%R,MESH3D%Z%R,
-     &                MESH3D%SURFAC%R,MESH3D%IKLE%I,MESH3D%NBOR%I,
-     &                MESH3D%XSGBOR%R,MESH3D%YSGBOR%R,MESH3D%ZSGBOR%R,
-     &                BIEF_NBPTS(IELM3,MESH3D),MESH3D%NELEM,
-     &                MESH3D%NELMAX,
-     &                IELM3,MESH3D%LV,MSK,MASKEL%R,MESH3D)
+!
+!         HERE T3_01 IS NOT REALLY USED, WE USE THE NON ASSEMBLED
+!         FORM MESH3D%W, WHICH IS HERE ALSO W3D, HENCE LEGO=.FALSE.
+!         
+          CALL VECTOR(T3_01,'=',FORMUL,IELM3,-1.D0,DM1,GRAZCO,GRAZCO,
+     *                UCONV,VCONV,VCONV,MESH3D,MSK,MASKEL,LEGO=.FALSE.)
+!
           MESH3D%Z%R=>SAVEZ
-!                     T3_01 IS NOT USED AS AN ASSEMBLED VECTOR
-!                     BUT TO GET THE NON ASSEMBLED FORM MESH3D%W,
-!                     WHICH IS HERE ALSO W3D
 !
 !         CALCULATES 3D FLODEL (NOTE JMH: THIS WILL BE REDONE IN FLUX3D
 !                                         OPTIMISATION MAYBE POSSIBLE  )

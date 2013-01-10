@@ -7,7 +7,7 @@
      &  NBOR3,DT,MSK,IELM3,NUMLIQ,DIRFLU,NFRLIQ)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES ADVECTION FOR ADVECTED VARIABLES
@@ -36,7 +36,7 @@
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CALFLU         |-->| INDICATE IF FLUX IS CALCULATED FOR BALANCE
-!| DIRFLU         |-->|
+!| DIRFLU         |-->| TYPE OF BOUNDARY CONDITION FOR FLUXES
 !| DT             |-->| TIME STEP
 !| FBORL          |<->| DIRICHLET CONDITIONS
 !| FLUEXT         |-->| OUTPUT FLUX BY NODE
@@ -73,7 +73,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: DT
       DOUBLE PRECISION, INTENT(INOUT) :: FLUXF
       INTEGER, INTENT(IN)             :: SCHCF,NPTFR3,NFRLIQ,IELM3
-      INTEGER, INTENT(IN)             :: NUMLIQ(*),DIRFLU(*)
+      INTEGER, INTENT(IN)             :: NUMLIQ(*),DIRFLU(0:NFRLIQ)
       LOGICAL, INTENT(IN)             :: CALFLU,MSK
       TYPE(BIEF_OBJ), INTENT(IN)      :: MASKEL,NBOR3,VOLUNPAR
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3D
@@ -146,7 +146,6 @@
         IF(NPTFR3.GT.0) THEN
 !
         DO IP=1,NPTFR3
-          IF(NUMLIQ(IP).GE.1) THEN
           IF(DIRFLU(NUMLIQ(IP)).EQ.2.AND.LIFBOL%I(IP).EQ.KENT) THEN
             I=NBOR3%I(IP)
             LAMBDA=-FLUEXTPAR%R(I)*DT/
@@ -162,7 +161,6 @@
 !           AVOIDS A DIRICHLET TREATMENT HEREAFTER AND BY DIFF3D -
 !           WILL BE RESTORED AFTER DIFF3D
             LIFBOL%I(IP)=KSORT
-          ENDIF
           ENDIF
         ENDDO
 !
