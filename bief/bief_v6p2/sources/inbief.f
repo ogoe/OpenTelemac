@@ -416,9 +416,9 @@
       CALL NORMAB(MESH%XNEBOR%R,MESH%YNEBOR%R,
      &            MESH%XSGBOR%R,MESH%YSGBOR%R,
      &            MESH%DISBOR%R,MESH%SURFAC%R,NELMAX,
-     &            MESH%NBOR%I,MESH%KP1BOR%I,MESH%NELBOR%I,
-     &            MESH%LGSEG%R,NPTFR,
-     &            MESH%X%R,MESH%Y%R,MESH,T1)
+     &            MESH%KP1BOR%I,MESH%NELBOR%I,
+     &            MESH%NULONE%I,MESH%LGSEG%R,NPTFR,MESH,T1,
+     &            MESH%XEL%R,MESH%YEL%R)
 !
       ENDIF
 !

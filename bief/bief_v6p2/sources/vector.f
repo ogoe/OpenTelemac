@@ -2,7 +2,7 @@
                      SUBROUTINE VECTOR
 !                    *****************
 !
-     &(VEC,OP,FORMUL,IELM1,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL)
+     &(VEC,OP,FORMUL,IELM1,XMUL,F,G,H,U,V,W,MESH,MSK,MASKEL,LEGO)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -32,10 +32,6 @@
 !+  40 : TELEMAC-3D P0 PRISMS   1
 !+  41 : TELEMAC-3D P1 PRISMS   6
 !
-!history  REGINA NEBAUER
-!+        22/09/05
-!+
-!+
 !
 !history  JM HERVOUET (LNHE)
 !+        25/06/2008
@@ -94,12 +90,20 @@
       CHARACTER(LEN=1),  INTENT(IN)    :: OP
       TYPE(BIEF_OBJ),    INTENT(IN)    :: F,G,H,U,V,W,MASKEL
       TYPE(BIEF_MESH),   INTENT(INOUT) :: MESH
+      LOGICAL, OPTIONAL, INTENT(IN)    :: LEGO
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER  :: NPT   ! NUMBER OF POINTS PER ELEMENT
-      LOGICAL  :: LEGO  ! ASSEMBLY OR NOT
-      INTEGER  :: IELM0 ! P0 DISCRETISATION
+      INTEGER  :: NPT                  ! NUMBER OF POINTS PER ELEMENT
+      INTEGER  :: DIM1T                ! FIRST DIMENSION OF T IN VECTOS
+      LOGICAL  :: LLEGO                ! ASSEMBLY OR NOT
+      INTEGER  :: IELM0                ! P0 DISCRETISATION
+!
+      IF(PRESENT(LEGO)) THEN
+        LLEGO=LEGO
+      ELSE
+        LLEGO=.TRUE.
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !  POSSIBLE CHANGE OF DISCRETISATION
@@ -137,44 +141,35 @@
 !
 ! ASSEMBLY: NOT PERFORMED FOR VECTORS
 ! RESULT OF P0 DISCRETISATION
-! LEGO IS SET TO TRUE IF THE RESULTANT VECTOR DISCRETISATION
+! LLEGO IS SET TO TRUE IF THE RESULTANT VECTOR DISCRETISATION
 ! IS P1, FALSE OTHERWISE.
 !
       IELM0 = 10*(IELM1/10)
-      LEGO  = IELM0 .NE. IELM1
-!
-! MODIFICATION: IN THE FUTURE VARIABLE LEGO IS PASSED IN ARGUMENT
+      IF(IELM0.EQ.IELM1) LLEGO=.FALSE.
 !
 !-----------------------------------------------------------------------
 !  CALLS THE SUBROUTINE THAT SHUNTS AND ASSEMBLES
 !-----------------------------------------------------------------------
 !
       IF(DIMENS(IELM1).EQ.MESH%DIM) THEN
-!       NORMAL VECTOR: CALL WITH SURFAC, IKLE, NELEM, NELMAX
-!                                XEL, YEL, ZEL
+        DIM1T=MESH%NELMAX
+      ELSE
+        DIM1T=MESH%NELEBX
+      ENDIF
+!
+      IF(DIMENS(IELM1).EQ.MESH%DIM.OR.MESH%NELEB.GT.0) THEN
+!
         CALL VECTOS(VEC%R,OP,FORMUL,XMUL,
      &              F%R,G%R,H%R,U%R,V%R,W%R,
-     &              F,G,H,U,V,W,MESH%W%R,LEGO,
-     &              MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
-     &              MESH%X%R    , MESH%Y%R    , MESH%Z%R  ,
-     &              MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
+     &              F,G,H,U,V,W,MESH%W%R,LLEGO,
+     &              MESH%XEL%R   , MESH%YEL%R   , MESH%ZEL%R  ,
+     &              MESH%X%R     , MESH%Y%R     , MESH%Z%R    ,
+     &              MESH%SURFAC%R, MESH%LGSEG%R ,
+     &              MESH%IKLE%I  , MESH%IKLBOR%I, MESH%NBOR%I ,
      &              MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
-     &              NPT,MESH%NELEM,MESH%NELMAX,
-     &              IELM1,MESH%LV,MSK,MASKEL%R,MESH)
-      ELSE
-!       BOUNDARY VECTOR: CALL WITH LGSEG, IKLBOR, NELEB, NELEBX
-!                                  X, Y, Z
-        IF(MESH%NELEB.GT.0) THEN
-          CALL VECTOS(VEC%R,OP,FORMUL,XMUL,
-     &                F%R,G%R,H%R,U%R,V%R,W%R,
-     &                F,G,H,U,V,W,MESH%W%R,LEGO,
-     &                MESH%X%R, MESH%Y%R, MESH%Z%R  ,
-     &                MESH%X%R, MESH%Y%R, MESH%Z%R  ,
-     &                MESH%LGSEG%R,MESH%IKLBOR%I,MESH%NBOR%I,
-     &                MESH%XSGBOR%R,MESH%YSGBOR%R,MESH%ZSGBOR%R,
-     &                NPT,MESH%NELEB,MESH%NELEBX,
-     &                IELM1,MESH%LV,MSK,MASKEL%R,MESH)
-        ENDIF
+     &              NPT,MESH%NELEM,MESH%NELEB,
+     &              MESH%NELMAX,MESH%NELEBX,
+     &              IELM1,MESH%LV,MSK,MASKEL%R,MESH,DIM1T)
 !
       ENDIF
 !

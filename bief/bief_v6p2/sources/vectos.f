@@ -5,8 +5,9 @@
      &(VEC,OP,FORMUL,
      & XMUL,F,G,H,U,V,W,SF,SG,SH,SU,SV,SW,
      & T,LEGO,
-     & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,IKLE,NBOR,
-     & XNOR,YNOR,ZNOR,NPT,NELEM,NELMAX,IELM1,LV,MSK,MASKEL,MESH)
+     & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,LGSEG,IKLE,IKLBOR,NBOR,
+     & XNOR,YNOR,ZNOR,NPT,NELEM,NELEB,NELMAX,NELEBX,
+     & IELM1,LV,MSK,MASKEL,MESH,DIM1T)
 !
 !***********************************************************************
 ! BIEF   V6P3                                  21/08/2010
@@ -61,21 +62,28 @@
 !+   into XPT, etc. in the calls to 3D vectors.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| DIM1T          |-->| FIRST DIMENSION OF T (NELMAX OR NELEBX)
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA 
 !| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
 !| G              |-->| FUNCTION USED IN THE VECTOR FORMULA 
 !| H              |-->| FUNCTION USED IN THE VECTOR FORMULA 
 !| IELM1          |-->| TYPE OF ELEMENT
+!| IKLBOR         |-->| CONNECTIVITY TABLE OF BOUNDARY ELEMENTS.
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| LEGO           |-->| IF YES : THE VECTOR WILL BE ASSEMBLED
+!| LGSEG          |-->| LENGTH OF BOUNDARY SEGMENTS
 !| LV             |-->| VECTOR LENGTH OF THE MACHINE
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
+!| NELEM_AS       |-->| NUMBER OF ELEMENTS FOR THE CALL TO ASSVEC
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NELMAX_AS      |-->| MAXIMUM NUMBER OF ELEMENTS FOR THE CALL TO ASSVEC
 !| NPT            |-->| NOMBRE OF POINTS OF VECTOR.
 !| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
 !| SF             |-->| BIEF_OBJ STRUCTURE OF F
@@ -107,14 +115,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NELMAX,NPT,NELEM,IELM1,LV
-      INTEGER, INTENT(IN) :: IKLE(NELMAX,*),NBOR(*)
+      INTEGER, INTENT(IN) :: NELMAX,NPT,NELEM,IELM1,LV,NELEB,NELEBX
+      INTEGER, INTENT(IN) :: DIM1T
+      INTEGER, INTENT(IN) :: IKLE(NELMAX,*),NBOR(*),IKLBOR(NELEBX,*)
 !
-      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX)
+      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX),LGSEG(NELEB)
       DOUBLE PRECISION, INTENT(IN)    :: XEL(*),YEL(*),ZEL(*)
       DOUBLE PRECISION, INTENT(IN)    :: XPT(*),YPT(*),ZPT(*)
       DOUBLE PRECISION, INTENT(IN)    :: XNOR(*),YNOR(*),ZNOR(*)
-      DOUBLE PRECISION, INTENT(INOUT) :: T(NELMAX,*),VEC(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: T(DIM1T,*),VEC(*)
       DOUBLE PRECISION, INTENT(IN)    :: XMUL,MASKEL(NELMAX)
 !
 !     STRUCTURES OF FUNCTIONS F, G, H, U, V, W AND REAL DATA
@@ -210,8 +219,8 @@
         ELSEIF(IELM1.EQ.61) THEN
 !
              CALL VC00FT(XMUL,XPT,YPT,ZPT,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
-     &                   NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
+     &                   IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),NBOR,
+     &                   NELEB,NELEBX,T(1,1),T(1,2),T(1,3))
 !
 !
 !-----------------------------------------------------------------------
@@ -222,8 +231,9 @@
 !
 !              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
                CALL VC00FF(XMUL,XPT,YPT,ZPT,
-     &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
-     &                     NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
+     &                     IKLBOR(1,1),IKLBOR(1,2),
+     &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
+     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
 !-----------------------------------------------------------------------
 !       OTHER
@@ -272,13 +282,15 @@
            IF(FORMUL(7:7).NE.'2') THEN
 !
               CALL VC01FT(XMUL,SF,F,XPT,YPT,ZPT,
-     &             IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
-     &             NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
+     &                    IKLBOR(1,1),IKLBOR(1,2),
+     &                    IKLBOR(1,3),NBOR,
+     &                    NELEB,NELEBX,T(1,1),T(1,2),T(1,3))
            ELSE
 !
               CALL VC01FT2(XMUL,SF,F,SG,G,XPT,YPT,ZPT,
-     &             IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
-     &             NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
+     &                     IKLBOR(1,1),IKLBOR(1,2),
+     &                     IKLBOR(1,3),NBOR,
+     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3))
            ENDIF
 !
 !-----------------------------------------------------------------------
@@ -297,20 +309,21 @@
 !
         ELSEIF(IELM1.EQ.1) THEN
 !
-             CALL VC01OO(XMUL,SF,F,SURFAC,
-     &                   IKLE(1,1),IKLE(1,2),NBOR,NELEM,NELMAX,
+             CALL VC01OO(XMUL,SF,F,LGSEG,
+     &                   IKLBOR(1,1),IKLBOR(1,2),NBOR,NELEB,NELEBX,
      &                   T(1,1),T(1,2)  )
 !
 !-----------------------------------------------------------------------
 !
-!       ELEMENT P1 QUADRILATERAL
+!       ELEMENT P1 QUADRILATERAL (IN A 3D MESH OF PRISMS)
 !
         ELSEIF(IELM1.EQ.71) THEN
 !
 !              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
                CALL VC01FF(XMUL,SF,F,XPT,YPT,ZPT,
-     &                     IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
-     &                     NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
+     &                     IKLBOR(1,1),IKLBOR(1,2),
+     &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
+     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
 !-----------------------------------------------------------------------
 !
@@ -536,39 +549,29 @@
 !
 !-----------------------------------------------------------------------
 !
-!       ELEMENT P1 TRIANGLE (BOTTOM OR SURFACE OF A 3D MESH ?)
-!
-        IF(IELM1.EQ.11) THEN
-!
-             CALL VC05AA(XMUL,SW,W,SURFAC,
-     &                   IKLE(1,1),IKLE(1,2),IKLE(1,3),NELEM,NELMAX,
-     &                   T(1,1),T(1,2),T(1,3) )
-!
-!-----------------------------------------------------------------------
-!
 !       ELEMENT P1 TRIANGLE FOR VERTICAL SIDES OF THE PRISMS SPLIT
 !       IN TETRAHEDRONS
 !
-        ELSEIF(IELM1.EQ.61) THEN
+        IF(IELM1.EQ.61) THEN
 !
           CALL VC05FT(XMUL,SU,SV,U,V,XPT,YPT,ZPT,
-     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),NBOR,
-     &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3))
+     &                IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),NBOR,
+     &                NELEB,NELEBX,T(1,1),T(1,2),T(1,3))
 !
 !       ELEMENT P1 QUADRILATERAL FOR VERTICAL SIDES OF THE PRISMS
 !
         ELSEIF(IELM1.EQ.71) THEN
 !
           CALL VC05FF(XMUL,SU,SV,U,V,XPT,YPT,ZPT,
-     &                IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),NBOR,
-     &                NELEM,NELMAX,T(1,1),T(1,2),T(1,3),T(1,4))
+     &                IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),IKLBOR(1,4),
+     &                NBOR,NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4))
 !
 !       ELEMENT LINEAR SEGMENT
 !
         ELSEIF(IELM1.EQ.1) THEN
 !
-          CALL VC05OO(XMUL,SU,SV,U,V,XNOR,YNOR,SURFAC,
-     &                IKLE,NBOR,NELEM,NELMAX,T(1,1),T(1,2))
+          CALL VC05OO(XMUL,SU,SV,U,V,XNOR,YNOR,LGSEG,
+     &                IKLBOR,NBOR,NELEB,NELEBX,T(1,1),T(1,2))
 !
 !-----------------------------------------------------------------------
 !       OTHER
@@ -807,8 +810,8 @@
 !
         IF(IELM1.EQ.1) THEN
 !
-             CALL VC10OO(XMUL,SF,SU,SV,F,U,V,XNOR,YNOR,SURFAC,
-     &                   IKLE,NBOR,NELEM,NELMAX,T(1,1),T(1,2)  )
+             CALL VC10OO(XMUL,SF,SU,SV,F,U,V,XNOR,YNOR,LGSEG,
+     &                   IKLBOR,NBOR,NELEB,NELEBX,T(1,1),T(1,2))
 !
 !-----------------------------------------------------------------------
 !       OTHER
@@ -1342,8 +1345,13 @@
           STOP
         ENDIF
 !
-        CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
-     &              T,INIT,LV,MSK,MASKEL,BIEF_NBPEL(IELM1,MESH))
+        IF(DIMENS(IELM1).EQ.MESH%DIM) THEN
+          CALL ASSVEC(VEC, IKLE, NPT ,NELEM,NELMAX,IELM1,
+     &                T,INIT,LV,MSK,MASKEL,BIEF_NBPEL(IELM1,MESH))
+        ELSEIF(NELEB.GT.0) THEN
+          CALL ASSVEC(VEC, IKLBOR, NPT ,NELEB,NELEBX,IELM1,
+     &                T,INIT,LV,MSK,MASKEL,BIEF_NBPEL(IELM1,MESH))
+        ENDIF
 !
       ENDIF
 !

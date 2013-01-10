@@ -35,6 +35,13 @@
 !+   has truncation errors, this will trigger differences.
 !+   Now the sub-domain at the foot of the characteristic is returned
 !
+!history  J-M HERVOUET (LNHE)
+!+        08/01/2013
+!+        V6P3
+!+   Advection subroutines from Tomawac re-implemented here
+!+   See SCHAR41_PER and SCHAR41_PER_4D
+!+   A posteriori interpolation now possible in all cases.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -163,7 +170,7 @@
           IMPLICIT NONE 
           INTEGER, INTENT(IN)    :: NPARAM,NOMB 
           INTEGER, INTENT(INOUT) :: NCHDIM,LAST_NCHDIM 
-          INTEGER I,ISIZE 
+          INTEGER ISIZE 
           IF (.NOT.ALLOCATED(HEAPCOUNTS)) ALLOCATE(HEAPCOUNTS(NCSIZE)) 
           IF (.NOT.ALLOCATED(SENDCOUNTS)) ALLOCATE(SENDCOUNTS(NCSIZE)) 
           IF (.NOT.ALLOCATED(RECVCOUNTS)) ALLOCATE(RECVCOUNTS(NCSIZE)) 
@@ -219,7 +226,7 @@
           INTEGER,  INTENT(IN) :: IFAPAR(6,*) 
           INTEGER,  INTENT(INOUT) :: NCHARA 
           DOUBLE PRECISION, INTENT(IN) :: XP,YP,ZP,FP,DX,DY,DZ,DF 
-          INTEGER :: NEPID,II,III 
+          INTEGER :: NEPID,II 
           ! 
           IF(NCHARA.EQ.0) HEAPCOUNTS=0 
           NEPID=IFAPAR(IFACE  ,MYII) 
@@ -248,10 +255,6 @@
           HEAPCHAR(NCHARA)%DY=DY       ! Y-DISPLACEMENT   
           HEAPCHAR(NCHARA)%DZ=DZ       ! Z-DISPLACEMENT 
           HEAPCHAR(NCHARA)%DF=DF       ! F-DISPLACEMENT  
-!         TAGGING THE BASKET FOR DEBUGGING 
-!         DO III=1,10 
-!           HEAPCHAR(NCHARA)%BASKET(III)=1000.D0*III+NCHARA 
-!         ENDDO 
 ! 
           HEAPCOUNTS(NEPID+1)=HEAPCOUNTS(NEPID+1)+1 
 ! 
@@ -360,7 +363,7 @@
           COMMON/INFO/LNG,LU 
           INTEGER,INTENT(IN)   :: NOMB,NLOSTAGAIN,NARRV 
           INTEGER, INTENT(OUT) :: NSEND 
-          INTEGER I,J,K,N 
+          INTEGER I,N 
           SDISPLS(1) = 0 ! CONTIGUOUS DATA MARKER 
           DO I=2,NCSIZE 
             SDISPLS(I) = SDISPLS(I-1)+SENDCOUNTS(I-1) 
@@ -392,7 +395,7 @@
           COMMON/INFO/LNG,LU 
           INTEGER, INTENT(IN) :: NOMB 
           INTEGER, INTENT(INOUT) :: NCHARA 
-          INTEGER  :: I,J,K,N 
+          INTEGER  :: I,N 
           IF (NCHARA.EQ.0) RETURN ! UHM. 
           SENDCOUNTS=HEAPCOUNTS 
           SDISPLS(1) = 0 ! CONTIGUOUS DATA 
@@ -956,7 +959,7 @@
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP 
+      INTEGER IELE,ISO,ISPDONE,NSP 
       INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3) 
 ! 
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,DENOM 
@@ -1620,12 +1623,12 @@
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP,NSPMAX 
+      INTEGER IELE,ISO,ISPDONE,NSP,NSPMAX 
       INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3) 
       INTEGER IETP1 
 ! 
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,DENOM 
-      DOUBLE PRECISION DELTAZ,EPSDZ,PAS2 
+      DOUBLE PRECISION EPSDZ,PAS2 
 !
       INTEGER  P_IMAX 
       EXTERNAL P_IMAX
@@ -2358,8 +2361,8 @@
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER IELE,ISO,IPROC,ILOC,ISPDONE,NSP,NSPMAX 
-      INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,ISOF,ISOT
+      INTEGER ISO,ISPDONE,NSP,NSPMAX 
+      INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,ISOH,ISOV,ISOF,ISOT
       INTEGER IETP1,IFA,ISUI(3),IFR
 ! 
       DOUBLE PRECISION PAS,EPSILO,A1,A2,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,FP 
@@ -2738,12 +2741,12 @@
       	    ENDIF
           ELSE
       	    IFA = ISOF + 5
-          ENDIF
-!
-!         IEL = IBOR(IEL,IFA,IET)
-          IEL = IBOR(IEL,IFA,1)          
+          ENDIF        
 !
           IF(IFA.LE.3) THEN
+!
+!         IEL = IBOR(IEL,IFA,IET)
+          IEL = IBOR(IEL,IFA,1)  
 !
 !-----------------------------------------------------------------------
 !  HERE: THE EXIT FACE OF THE PRISM IS A RECTANGULAR FACE
@@ -2859,6 +2862,9 @@
 !
           ELSEIF(IFA.LE.5) THEN
 !
+!         IEL = IBOR(IEL,IFA,IET)
+          IEL = IBOR(IEL,IFA,1)  
+!
 !-----------------------------------------------------------------------
 !  HERE: THE EXIT FACE OF THE PRISM IS A TRIANGULAR FACE IN Z
 !  =====================================================================
@@ -2911,6 +2917,9 @@
 !  =====================================================================
 !-----------------------------------------------------------------------
 !
+!           IBOR IS NOT REALLY BUILT FOR IFA = 6 OR 7 BUT IS ALWAYS 1.
+!           IEL = IBOR(IEL,IFA,1)  
+            IEL=1
             IFA = IFA - 6
 !
             IF(IFA.EQ.1.AND.IFR.EQ.NF-1) IEL=-1
@@ -4379,9 +4388,8 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER NRK,I,II,IPOIN,ISTOP 
+      INTEGER NRK,I,ISTOP 
       INTEGER, POINTER, DIMENSION(:)  :: ETABUF
-      DOUBLE PRECISION C 
 ! 
 !----------------------------------------------------------------------- 
 !      

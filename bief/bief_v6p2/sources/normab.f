@@ -2,11 +2,11 @@
                      SUBROUTINE NORMAB
 !                    *****************
 !
-     &(XNEBOR,YNEBOR,XSGBOR,YSGBOR,DISBOR,SURFAC,NELEM,
-     & NBOR,KP1BOR,NELBOR,LGSEG,NPTFR,X,Y,MESH,T1)
+     &(XNEBOR,YNEBOR,XSGBOR,YSGBOR,DISBOR,SURFAC,NELMAX,
+     & KP1BOR,NELBOR,NULONE,LGSEG,NPTFR,MESH,T1,XEL,YEL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    1) COMPUTES THE COMPONENTS OF THE OUTGOING NORMAL VECTOR
@@ -37,7 +37,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        26/06/2008
 !+        V5P9
-!+
+!+   Modifications for parallelism.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -51,23 +51,29 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        10/01/2013
+!+        V6P3
+!+   LGSEG now computed with coordinates per element (XEL and YEL)
+!+   This is important in spherical coordinates.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DISBOR         |<--| DISTANCE FROM BOUNDARY POINT TO CLOSER 
 !|                |   | INNER POINT
 !| KP1BOR         |-->| GIVES THE NEXT BOUNDARY POINT IN A CONTOUR
 !| LGSEG          |<--| LENGTH OF BOUNDARY SEGMENTS
 !| MESH           |-->| MESH STRUCTURE
-!| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
 !|                |   | ELEMENT.
-!| NELEM          |-->| NUMBER OF ELEMENTS
+!| NULONE         |-->| NUMBER OF FIRST POINT OF SEGMENT IN ADJACENT ELEMENT
+!| NELMAX         |-->| NUMBER OF ELEMENTS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| SURFAC         |-->| AREA OF TRIANGLES
 !| T1             |<->| BIEF_OBJ STRUCTURE FOR WORK ARRAY
-!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| XEL            |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
 !| XNEBOR         |<--| COMPONANT ALONG X OF VECTOR NORMAL TO POINT
 !| XSGBOR         |<--| COMPONANT ALONG X OF VECTOR NORMAL TO SEGMENT
-!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| YEL            |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
 !| XNEBOR         |<--| COMPONANT ALONG Y OF VECTOR NORMAL TO POINT
 !| YSGBOR         |<--| COMPONANT ALONG Y OF VECTOR NORMAL TO SEGMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,21 +86,25 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPTFR,NELEM
-      INTEGER, INTENT(IN) :: NBOR(NPTFR),KP1BOR(NPTFR),NELBOR(NPTFR)
+      INTEGER, INTENT(IN) :: NPTFR,NELMAX
+      INTEGER, INTENT(IN) :: KP1BOR(NPTFR),NELBOR(NPTFR),NULONE(NPTFR)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: XNEBOR(NPTFR,2),YNEBOR(NPTFR,2)
       DOUBLE PRECISION, INTENT(INOUT) :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
       DOUBLE PRECISION, INTENT(INOUT) :: DISBOR(NPTFR),LGSEG(NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELEM),X(*),Y(*)
+      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX)
+      DOUBLE PRECISION, INTENT(IN)    :: XEL(NELMAX,3),YEL(NELMAX,3)
 !
       TYPE(BIEF_OBJ), INTENT(INOUT)  :: T1
       TYPE(BIEF_MESH), INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER K1,K2,N1,N2,IELEM
+      INTEGER K1,K2,N1,N2,IELEM,I1,I2
       DOUBLE PRECISION X12,Y12,XNORM,X1,X2,Y1,Y2,Z(1)
+!
+      INTEGER NEXT(3)
+      DATA NEXT / 2,3,1 /
 !
       INTRINSIC SQRT
 !
@@ -120,13 +130,15 @@
         DO K1=1,NPTFR
 !
           K2=KP1BOR(K1)
+!         IF SEGMENT IN THE DOMAIN (IN PARALLEL IT MAY NOT BE)
           IF(K2.NE.K1) THEN
-            N1=NBOR(K1)
-            N2=NBOR(K2)
-            X1 = X(N1)
-            Y1 = Y(N1)
-            X2 = X(N2)
-            Y2 = Y(N2)
+            IELEM=NELBOR(K1)
+            I1=NULONE(K1)
+            I2=NEXT(I1)
+            X1=XEL(IELEM,I1)
+            Y1=YEL(IELEM,I1)
+            X2=XEL(IELEM,I2)
+            Y2=YEL(IELEM,I2)
             X12 = X2 - X1
             Y12 = Y2 - Y1
 !           LENGTH OF THE BOUNDARY SEGMENT
