@@ -203,8 +203,10 @@ if __name__ == "__main__":
       status=[]
       for cfgname in cfgs.keys():
          # still in lower case
-         root = cfgs[cfgname]['root']
-         if options.rootDir != '': cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+         if options.rootDir != '': 
+            cfgs[cfgname]['root'] = path.abspath(options.rootDir)
+            root = path.abspath(options.rootDir)
+         else : root = cfgs[cfgname]['root']   
          if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules
          cfgs[cfgname]['display'] = options.display
