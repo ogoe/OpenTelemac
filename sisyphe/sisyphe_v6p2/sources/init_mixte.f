@@ -93,10 +93,8 @@
 !
 !     LOCAL VARIABLES
 !
-      INTEGER I,J,K
+      INTEGER I,J,K,NK
       DOUBLE PRECISION HAUTSED,TEST1
-! Ajout CV
-      INTEGER NK
       DOUBLE PRECISION DIFF,EST
       DOUBLE PRECISION, EXTERNAL :: P_DSUM
 !
@@ -117,19 +115,20 @@
           CALL INIT_COMPO_COH(ES,CONC_VASE,CONC,NPOIN,
      *       NOMBLAY,NSICLA,AVAIL,AVA0)
 !
-! Recalcul des epaisseurs pour satisfaire : Sum (ES)=ZF-ZR
+!         Recalcul des epaisseurs pour satisfaire : Sum (ES)=ZF-ZR
 ! 
-         DO I=1,NPOIN 
+          DO I=1,NPOIN 
 !
-           ELAY(I)=ZF(I)-ZR(I)
+            ELAY(I)=ZF(I)-ZR(I)
 !
 !
-!       THE HEIGHT OF SEDIMENT (SUM OF ES) MUST BE EQUAL TO ZF-ZR
-!       IF SO, THE HEIGHT OF THE LAST LAYER IS REDUCED
-!       IF THERE ARE LAYERS UNDER ZR, THEY ARE NOT TAKEN INTO ACCOUNT
+!           THE HEIGHT OF SEDIMENT (SUM OF ES) MUST BE EQUAL TO ZF-ZR
+!           IF SO, THE HEIGHT OF THE LAST LAYER IS REDUCED
+!           IF THERE ARE LAYERS UNDER ZR, THEY ARE NOT TAKEN INTO ACCOUNT
 !
             HAUTSED = 0.D0
 !
+            NK=0
             DO K=1,NOMBLAY
 !
               IF(HAUTSED + ES(I,K) .GE. ELAY(I)) THEN
@@ -144,7 +143,7 @@
 !	   
 144        CONTINUE
 !
-!!       FOR CLEAN OUTPUTS
+!          FOR CLEAN OUTPUTS
 !
            IF(NK.LT.NOMBLAY) THEN
              DO K=NK+1,NOMBLAY
@@ -152,8 +151,8 @@
              ENDDO
            ENDIF
 !
-!        THE THICKNESS OF THE LAST LAYER IS ENLARGED SO THAT
-!        THE HEIGHT OF SEDIMENT (SUM OF ES) IS EQUAL TO ZF-ZR
+!          THE THICKNESS OF THE LAST LAYER IS ENLARGED SO THAT
+!          THE HEIGHT OF SEDIMENT (SUM OF ES) IS EQUAL TO ZF-ZR
 !
            IF(HAUTSED.LT.ELAY(I)) THEN
              ES(I,NOMBLAY)=ES(I,NOMBLAY)+ELAY(I)-HAUTSED
@@ -162,7 +161,8 @@
          ENDDO
 
        ELSE
-! En cas de suite de calcul       
+!
+!       En cas de suite de calcul       
 !       Check that sum of layers (simple precision) is equal to ZF-ZR 
 !
          DO I=1,NPOIN

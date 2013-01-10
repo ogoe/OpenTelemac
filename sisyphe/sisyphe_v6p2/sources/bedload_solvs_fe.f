@@ -176,23 +176,11 @@
         ENDIF
       ENDDO
 !
-!     CALL VECTOR(T1,'=','VGRADP          ',QSX%ELM,-1.D0,
-!    *            S,S,S,QSX,QSY,S,MESH,MSK,MASKEL)
-!                 T1 AS HUGRADP IS NOT USED AS AN ASSEMBLED VECTOR
-!                 BUT TO GET THE NON ASSEMBLED FORM MESH%W
-!     JUST LIKE CALL VECTOR BUT WITHOUT ASSEMBLING T1 BECAUSE LEGO IS SET
-!     TO FALSE (ONLY NON ASSEMBLED MESH%W%R IS USED AFTER)
-      CALL VECTOS(T1%R,'=','VGRADP          ',-1.D0,
-     &            S%R,S%R,S%R,QSX%R,QSY%R,S%R,
-     &            S,S,S,QSX,QSY,S,
-!                           LEGO
-     &            MESH%W%R,.FALSE.,
-     &            MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
-     &            MESH%X%R    , MESH%Y%R    , MESH%Z%R  ,
-     &            MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
-     &            MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
-     &            BIEF_NBPTS(QSX%ELM,MESH),MESH%NELEM,MESH%NELMAX,
-     &            QSX%ELM,MESH%LV,MSK,MASKEL%R,MESH)
+!     HERE T1 MAY NOT BE ASSEMBLED, WE WORK DIRECTLY ON MESH%W%R AFTER
+!     ADD LEGO=.FALSE. WHEN IT IS AN OPTIONAL ARGUMENT
+!
+      CALL VECTOR(T1,'=','VGRADP          ',QSX%ELM,-1.D0,
+     *            S,S,S,QSX,QSY,S,MESH,MSK,MASKEL)
 !
       CALL POSITIVE_DEPTHS(T1,T2,T3,T4,HZ,HZN,MESH,
      &                     FLODEL,.TRUE.,FLBCLA,DT,UNSV2D,NPOIN,

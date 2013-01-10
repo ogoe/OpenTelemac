@@ -12,7 +12,7 @@
      & FLBCLA,LIQBOR,QBOR)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/07/2011
+! SISYPHE   V6P3                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE EVOLUTION FOR THE BEDLOAD TRANSPORT.
@@ -43,6 +43,11 @@
 !+        27/01/2012
 !+        V6P2
 !+  Argument ICLA added     
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        09/01/2013
+!+        V6P3
+!+  Pointer FLULIM added to avoid a hidden temporary array allocation    
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |-->| MEAN DIAMETER OF SEDIMENT
@@ -137,10 +142,15 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          :: J
+      DOUBLE PRECISION, POINTER :: FLULIM(:)
 !
 !=======================================================================
 !                               PROGRAM                                
 !=======================================================================
+!
+!     POINTER TO A WORK ARRAY
+!
+      FLULIM => MESH%MSEG%X%R(MESH%NSEG+1:2*MESH%NSEG)
 !
 !     SLOPE EFFECT
 !
@@ -184,8 +194,7 @@
      &                        LIMTEC,DTS,MSK,ENTET,T1,T2,T3,T4,T8,
      &                        ZFCL,T12,T13,MESH%GLOSEG%I,
      &                        MESH%GLOSEG%DIM1,MESH%MSEG%X,
-     &                        MESH%MSEG%X%R(MESH%NSEG+1:2*MESH%NSEG),
-     &                        MESH%NSEG,UNSV2D,CSF_SABLE,ICLA,
+     &                        FLULIM,MESH%NSEG,UNSV2D,CSF_SABLE,ICLA,
      &                        FLBCLA%ADR(ICLA)%P,AVA,LIQBOR,QBOR)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_SOLVS_FE'
       ENDIF
