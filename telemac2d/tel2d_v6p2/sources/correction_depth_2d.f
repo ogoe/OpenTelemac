@@ -77,23 +77,15 @@
      &   ((OPTBAN.EQ.1.OR.OPTBAN.EQ.3).AND.OPT_HNEG.EQ.2) ) THEN
         FORMUL='HUGRADP         '
         IF(SOLSYS.EQ.2) FORMUL(8:8)='2'
-!       CALL VECTOR(T1,'=',FORMUL,H%ELM,-1.D0,
-!    *              HPROP,DM1,ZCONV,UDEL,VDEL,VDEL,MESH,MSK,MASKEL)
+!
+!       HERE ASSEMBLING T1 IS NOT USEFUL, HENCE LEGO=.FALSE.
+!
+        CALL VECTOR(T1,'=',FORMUL,H%ELM,-1.D0,
+     &              HPROP,DM1,ZCONV,UDEL,VDEL,VDEL,MESH,MSK,MASKEL,
+     &              LEGO=.FALSE.)
 !                   T1 AS HUGRADP IS NOT USED AS AN ASSEMBLED VECTOR
 !                   BUT TO GET THE NON ASSEMBLED FORM MESH%W
-!       JUST LIKE CALL VECTOR BUT WITHOUT ASSEMBLING T1 BECAUSE LEGO IS SET
-!       TO FALSE
-        CALL VECTOS(T1%R,'=',FORMUL,-1.D0,
-     &              HPROP%R,DM1%R,ZCONV%R,UDEL%R,VDEL%R,VDEL%R,
-     &              HPROP,  DM1  ,ZCONV  ,UDEL  ,VDEL  ,VDEL  ,
-!                             LEGO
-     &              MESH%W%R,.TRUE.,
-     &              MESH%XEL%R  , MESH%YEL%R  , MESH%ZEL%R  ,
-     &              MESH%X%R    , MESH%Y%R    , MESH%Z%R  ,
-     &              MESH%SURFAC%R,MESH%IKLE%I,MESH%NBOR%I,
-     &              MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
-     &              BIEF_NBPTS(H%ELM,MESH),MESH%NELEM,MESH%NELMAX,
-     &              H%ELM,MESH%LV,MSK,MASKEL%R,MESH) 
+!
 !       COMPUTING FLODEL, SO FAR IOPT1 HARDCODED OPTION
         IOPT1=2
         CALL FLUX_EF_VF(FLODEL%R,MESH%W%R,MESH%NSEG,MESH%NELEM,
