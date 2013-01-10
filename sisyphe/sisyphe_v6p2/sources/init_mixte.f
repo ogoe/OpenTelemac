@@ -66,7 +66,7 @@
       USE DECLARATIONS_SISYPHE, ONLY :MASVT,MASV0,T1,BILMA,VOLU2D
       USE DECLARATIONS_SISYPHE, ONLY :MASST,MASS0,T2
 !
-       IMPLICIT NONE
+      IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
@@ -159,7 +159,7 @@
            ENDIF
 !
          ENDDO
-
+!
        ELSE
 !
 !       En cas de suite de calcul       
@@ -261,27 +261,20 @@
 	  ENDIF  
        ENDIF                   
 !
-      !----------------------------------------------------------------!
 001   FORMAT(1X,'MASSE INITIALE DU LIT DE VASE  : ', G20.11, ' KG')
-      !----------------------------------------------------------------!
 002   FORMAT(1X,'INITIAL MASS OF THE MUD BED: ', G20.11, ' KG')
-      !----------------------------------------------------------------!
-      !----------------------------------------------------------------!
 010    FORMAT(1X,'MASSE INITIALE DU LIT DE VASE  : ', G20.11, ' KG',
-     *   /,1X,'MASSE INITIALE DU LIT DE SABLE : ', G20.11, ' KG')
-      !----------------------------------------------------------------!
+     *      /,1X,'MASSE INITIALE DU LIT DE SABLE : ', G20.11, ' KG')
 020   FORMAT(1X,'INITIAL MASS OF THE MUD BED: ', G20.11, ' KG',
-     *   /,1X,'INITIAL MASS OF THE SAND BED: ', G20.11, ' KG')
-
-      !----------------------------------------------------------------!
-
+     *     /,1X,'INITIAL MASS OF THE SAND BED: ', G20.11, ' KG')
+!
 !-----------------------------------------------------------------------
 !
 1800  FORMAT(1X,'IL Y A PLUS DE ',1I6,' COUCHES DANS LA STRATIFICATION')
 1815  FORMAT(1X,'THERE ARE MORE THAN ',1I6,' LAYERS IN STRATIFICATION')
 !
 !-----------------------------------------------------------------------
-
+!
       RETURN
       END
 
