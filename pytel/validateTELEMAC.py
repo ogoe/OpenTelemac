@@ -254,6 +254,7 @@ if __name__ == "__main__":
                   i += 1
                except Exception as e:
                   status[i]= 'failed'
+                  i += 1
                   xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
       print "%s" % (time.ctime(time.time()))
       d = date.today()
