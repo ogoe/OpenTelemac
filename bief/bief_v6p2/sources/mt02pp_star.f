@@ -6,7 +6,7 @@
      & FORMUL,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE DIFFUSION MATRIX AS IN MT02PP BUT HERE
@@ -80,6 +80,11 @@
 !+        V6P2
 !+   Replaced EPSILON with EPSI due to nag compiler problems
 !
+!history  J-M HERVOUET (LNHE)
+!+        11/01/2013
+!+        V6P3
+!+   XEL and YEL sent instead of XPT and YPT.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
@@ -95,9 +100,9 @@
 !| SH             |-->| STRUCTURE OF FUNCTIONS H
 !| SURFAC         |-->| AREA OF 2D ELEMENTS
 !| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
-!| X              |-->| ABSCISSAE OF POINTS
-!| Y              |-->| ORDINATES OF POINTS
-!| Z              |-->| ELEVATIONS OF POINTS
+!| X              |-->| ABSCISSAE OF POINTS, PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS, PER ELEMENT
+!| Z              |-->| ELEVATIONS OF POINTS, PER POINT
 !| XM             |<->| OFF-DIAGONAL TERMS
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,7 +129,7 @@
 !
       TYPE(BIEF_OBJ), INTENT(IN)      :: SF,SG,SH
 !
-      DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*),Z(*)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NELMAX,6),Y(NELMAX,6),Z(*)
 !
       LOGICAL, INTENT(IN)             :: INCHYD
       CHARACTER(LEN=16), INTENT(IN)   :: FORMUL
@@ -246,10 +251,14 @@
 !
 !        DIFFUSION ALONG PLANES
 !
-         X2 = X(I2)-X(I1)
-         X3 = X(I3)-X(I1)
-         Y2 = Y(I2)-Y(I1)
-         Y3 = Y(I3)-Y(I1)
+!        X2 = X(I2)-X(I1)
+!        X3 = X(I3)-X(I1)
+!        Y2 = Y(I2)-Y(I1)
+!        Y3 = Y(I3)-Y(I1)
+         X2 = X(IELEM,2)
+         X3 = X(IELEM,3)
+         Y2 = Y(IELEM,2)
+         Y3 = Y(IELEM,3)
 !
          X2X3  = X2*X3
          Y2Y3  = Y2*Y3
@@ -369,10 +378,14 @@
            NUYMOY=(G(I1)+G(I2)+G(I3)+G(I4)+G(I5)+G(I6))/6.D0
          ENDIF
 !
-         X2 = X(I2)-X(I1)
-         X3 = X(I3)-X(I1)
-         Y2 = Y(I2)-Y(I1)
-         Y3 = Y(I3)-Y(I1)
+!        X2 = X(I2)-X(I1)
+!        X3 = X(I3)-X(I1)
+!        Y2 = Y(I2)-Y(I1)
+!        Y3 = Y(I3)-Y(I1)
+         X2 = X(IELEM,2)
+         X3 = X(IELEM,3)
+         Y2 = Y(IELEM,2)
+         Y3 = Y(IELEM,3)
 !
          X2X3  = X2*X3
          Y2Y3  = Y2*Y3
@@ -581,10 +594,14 @@
            NUYMOY=(G(I1)+G(I2)+G(I3)+G(I4)+G(I5)+G(I6))/6.D0
          ENDIF
 !
-         X2 = X(I2)-X(I1)
-         X3 = X(I3)-X(I1)
-         Y2 = Y(I2)-Y(I1)
-         Y3 = Y(I3)-Y(I1)
+!        X2 = X(I2)-X(I1)
+!        X3 = X(I3)-X(I1)
+!        Y2 = Y(I2)-Y(I1)
+!        Y3 = Y(I3)-Y(I1)
+         X2 = X(IELEM,2)
+         X3 = X(IELEM,3)
+         Y2 = Y(IELEM,2)
+         Y3 = Y(IELEM,3)
 !
          X2X3  = X2*X3
          Y2Y3  = Y2*Y3
@@ -786,10 +803,14 @@
            NUYMOY=(G(I1)+G(I2)+G(I3)+G(I4)+G(I5)+G(I6))/6.D0
          ENDIF
 !
-         X2 = X(I2)-X(I1)
-         X3 = X(I3)-X(I1)
-         Y2 = Y(I2)-Y(I1)
-         Y3 = Y(I3)-Y(I1)
+!        X2 = X(I2)-X(I1)
+!        X3 = X(I3)-X(I1)
+!        Y2 = Y(I2)-Y(I1)
+!        Y3 = Y(I3)-Y(I1)
+         X2 = X(IELEM,2)
+         X3 = X(IELEM,3)
+         Y2 = Y(IELEM,2)
+         Y3 = Y(IELEM,3)
 !
 !        AVERAGE OF NORMAL VECTOR TO PLANES (NOT NORMED)
 !        ONE CAN CHECK THAT WE GET -1 0 OR 0 -1 WITH Z=X OR Z=Y

@@ -71,8 +71,6 @@
 !| NSEGBOR        |-->| NUMBER OF BOUNDARY SEGMENTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF_DEF, ONLY : NCSIZE
-
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU

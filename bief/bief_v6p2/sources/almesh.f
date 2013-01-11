@@ -97,7 +97,7 @@
       INTEGER, ALLOCATABLE :: IPOBO(:)
 !
       INTEGER IELB0V,IELB1V,I
-      INTEGER, EXTERNAL :: P_ISUM,P_IMAX
+      INTEGER, EXTERNAL :: P_IMAX
 !
 !-----------------------------------------------------------------------
 !

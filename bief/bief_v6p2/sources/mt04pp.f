@@ -5,7 +5,7 @@
      &( T,XM,XMUL,SU,SV,SW,U,V,W,X,Y,Z,SURFAC,IKLE,NELEM,NELMAX,FORMUL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MATRIX U GRAG (PSII) U GRAD (PSIJ).
@@ -57,6 +57,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/01/2013
+!+        V6P3
+!+   XEL and YEL sent instead of XPT and YPT for X and Y.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FORMUL         |-->| FORMULA DESCRIBING THE RESULTING MATRIX
 !| IKLE           |-->| CONNECTIVITY TABLE.
@@ -70,9 +75,9 @@
 !| U              |-->| FUNCTION USED IN THE FORMULA
 !| V              |-->| FUNCTION USED IN THE FORMULA
 !| W              |-->| FUNCTION USED IN THE FORMULA
-!| X              |-->| ABSCISSAE OF POINTS
-!| Y              |-->| ORDINATES OF POINTS
-!| Z              |-->| ELEVATIONS OF POINTS
+!| X              |-->| ABSCISSAE OF POINTS, PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS, PER ELEMENT
+!| Z              |-->| ELEVATIONS OF POINTS, STILL PER POINTS !!!
 !| XM             |<->| OFF-DIAGONAL TERMS
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -97,7 +102,7 @@
 !     STRUCTURES OF      U, V, W
       TYPE(BIEF_OBJ), INTENT(IN) :: SU,SV,SW
 !
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),Z(*)
+      DOUBLE PRECISION, INTENT(IN) :: X(NELMAX,6),Y(NELMAX,6),Z(*)
 !
       CHARACTER(LEN=16), INTENT(IN) :: FORMUL
 !
@@ -153,10 +158,14 @@
       I5 = IKLE(IELEM,5)
       I6 = IKLE(IELEM,6)
 !
-      X2  =  X(I2) - X(I1)
-      X3  =  X(I3) - X(I1)
-      Y2  =  Y(I2) - Y(I1)
-      Y3  =  Y(I3) - Y(I1)
+!     X2  =  X(I2) - X(I1)
+!     X3  =  X(I3) - X(I1)
+!     Y2  =  Y(I2) - Y(I1)
+!     Y3  =  Y(I3) - Y(I1)
+      X2  =  X(IELEM,2)
+      X3  =  X(IELEM,3) 
+      Y2  =  Y(IELEM,2)
+      Y3  =  Y(IELEM,3) 
 !
       U0 = (U(I1)+U(I2)+U(I3)+U(I4)+U(I5)+U(I6))/6.D0
       V0 = (V(I1)+V(I2)+V(I3)+V(I4)+V(I5)+V(I6))/6.D0
@@ -200,10 +209,15 @@
       I5 = IKLE(IELEM,5)
       I6 = IKLE(IELEM,6)
 !
-      X2  =  X(I2) - X(I1)
-      X3  =  X(I3) - X(I1)
-      Y2  =  Y(I2) - Y(I1)
-      Y3  =  Y(I3) - Y(I1)
+!     X2  =  X(I2) - X(I1)
+!     X3  =  X(I3) - X(I1)
+!     Y2  =  Y(I2) - Y(I1)
+!     Y3  =  Y(I3) - Y(I1)
+      X2  =  X(IELEM,2)
+      X3  =  X(IELEM,3) 
+      Y2  =  Y(IELEM,2)
+      Y3  =  Y(IELEM,3) 
+!
 !     VELOCITIES CONSIDERED CONSTANT
       U0 = (U(I1)+U(I2)+U(I3)+U(I4)+U(I5)+U(I6))/6.D0
       V0 = (V(I1)+V(I2)+V(I3)+V(I4)+V(I5)+V(I6))/6.D0

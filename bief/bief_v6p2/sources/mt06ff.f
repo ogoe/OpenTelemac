@@ -6,10 +6,11 @@
      &        A22 , A23 , A24 ,
      &              A33 , A34 ,
      &                    A44 ,
-     &  XMUL,SF,F,X,Y,Z,IKLE1,IKLE2,IKLE3,IKLE4,NBOR,NELEM,NELMAX)
+     &  XMUL,SF,F,X,Y,Z,IKLE1,IKLE2,IKLE3,IKLE4,NBOR,NELBOR,
+     &  NULONE,NELEB,NELEBX,NELMAX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE COEFFICIENTS OF THE FOLLOWING MATRIX:
@@ -41,6 +42,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/01/2013
+!+        V6P3
+!+   ARguments added, XEL and YEL sent instead of XPT and YPT for X and Y.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A11            |<--| ELEMENTS OF MATRIX
 !| A12            |<--| ELEMENTS OF MATRIX
@@ -57,8 +63,11 @@
 !| IKLE2          |-->| SECOND POINTS OF QUADRILATERALS
 !| IKLE3          |-->| THIRD POINTS OF QUADRILATERALS
 !| IKLE4          |-->| FOURTH POINTS OF QUADRILATERALS
+!| NELBOR         |-->| ADJACENT ELEMENT NUMBER
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NULONE         |-->| LOCAL NUMBERING OF BOUNDARY ELEMENT IN ADJACENT
+!|                |   | ELEMENT.
 !| SF             |-->| BIEF_OBJ STRUCTURE OF F
 !| SURFAC         |-->| AREA OF TRIANGLES
 !| XMUL           |-->| MULTIPLICATION FACTOR
@@ -72,9 +81,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NBOR(*),NELEM,NELMAX
-      INTEGER, INTENT(IN) :: IKLE1(NELMAX),IKLE2(NELMAX)
-      INTEGER, INTENT(IN) :: IKLE3(NELMAX),IKLE4(NELMAX)
+      INTEGER, INTENT(IN) :: NELEB,NELEBX,NELMAX
+      INTEGER, INTENT(IN) :: NBOR(*),NELBOR(NELEBX),NULONE(NELEBX,4)
+      INTEGER, INTENT(IN) :: IKLE1(NELEBX),IKLE2(NELEBX)
+      INTEGER, INTENT(IN) :: IKLE3(NELEBX),IKLE4(NELEBX)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: A11(*),A12(*),A13(*),A14(*)
       DOUBLE PRECISION, INTENT(INOUT) ::        A22(*),A23(*),A24(*)
@@ -87,7 +97,7 @@
 !     STRUCTURE OF F
       TYPE(BIEF_OBJ), INTENT(IN) :: SF
 !
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),Z(*)
+      DOUBLE PRECISION, INTENT(IN) :: X(NELMAX,6),Y(NELMAX,6),Z(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -95,7 +105,7 @@
 !
 !     DECLARATIONS SPECIFIC TO THIS SUBROUTINE
 !
-      INTEGER IELMF,I1,I2,I3,I4,IELEM
+      INTEGER IELMF,I1,I2,I3,I4,IELEM,IEL,J1,J2
 !
       DOUBLE PRECISION SUR720,AL,S1,S2,S11112,S11122,S11222,S12222
       DOUBLE PRECISION F14,F23,F1114,F2223,F2333,F1444
@@ -112,49 +122,74 @@
 !
          SUR720  = XMUL/720.D0
 !
-!   LOOP ON THE BOUNDARY SIDES
+!        LOOP ON THE BOUNDARY SIDES
 !
-         DO 1 IELEM = 1,NELEM
+         DO 1 IELEM = 1,NELEB
 !
-!  GLOBAL NUMBERING OF THE SIDE VERTICES
+           IEL=NELBOR(IELEM)
 !
-            I1 = IKLE1(IELEM)
-            I2 = IKLE2(IELEM)
-            I3 = IKLE3(IELEM)
-            I4 = IKLE4(IELEM)
+           IF(IEL.GT.0) THEN
 !
-            AL = SQRT((X(NBOR(I2))-X(NBOR(I1)))**2
-     &               +(Y(NBOR(I2))-Y(NBOR(I1)))**2) * SUR720
+!            ELEMENT IN DOMAIN
+!      
+!            GLOBAL NUMBERING OF THE SIDE VERTICES
 !
-            S1 = (Z(NBOR(I4)) - Z(NBOR(I1))) * AL
-            S2 = (Z(NBOR(I3)) - Z(NBOR(I2))) * AL
-            S11112 = S1 + S1 + S1 + S1 + S2
-            S11122 = S1 + S1 + S1 + S2 + S2
-            S11222 = S1 + S1 + S2 + S2 + S2
-            S12222 = S1 + S2 + S2 + S2 + S2
+             I1 = IKLE1(IELEM)
+             I2 = IKLE2(IELEM)
+             I3 = IKLE3(IELEM)
+             I4 = IKLE4(IELEM)
 !
-            F14 = F(I1) + F(I4)
-            F23 = F(I2) + F(I3)
-            F1114 = F(I1) + F(I1) + F14
-            F2223 = F(I2) + F(I2) + F23
-            F2333 = F23 + F(I3) + F(I3)
-            F1444 = F14 + F(I4) + F(I4)
+             J1=NULONE(IELEM,1)
+             J2=NULONE(IELEM,2)
+             AL = SQRT((X(IEL,J2)-X(IEL,J1))**2
+     &                +(Y(IEL,J2)-Y(IEL,J1))**2) * SUR720
 !
-!  DIAGONAL TERMS
+             S1 = (Z(NBOR(I4)) - Z(NBOR(I1))) * AL
+             S2 = (Z(NBOR(I3)) - Z(NBOR(I2))) * AL
+             S11112 = S1 + S1 + S1 + S1 + S2
+             S11122 = S1 + S1 + S1 + S2 + S2
+             S11222 = S1 + S1 + S2 + S2 + S2
+             S12222 = S1 + S2 + S2 + S2 + S2
 !
-            A11(IELEM) = 3*F1114*S11112 + F2223*S11122
-            A22(IELEM) = 3*F2223*S12222 + F1114*S11222
-            A33(IELEM) = 3*F2333*S12222 + F1444*S11222
-            A44(IELEM) = 3*F1444*S11112 + F2333*S11122
+             F14 = F(I1) + F(I4)
+             F23 = F(I2) + F(I3)
+             F1114 = F(I1) + F(I1) + F14
+             F2223 = F(I2) + F(I2) + F23
+             F2333 = F23 + F(I3) + F(I3)
+             F1444 = F14 + F(I4) + F(I4)
 !
-!  ELEMENTS OFF THE DIAGONAL
+!            DIAGONAL TERMS
 !
-            A12(IELEM) = F1114*S11122 + F2223*S11222
-            A13(IELEM) =   F14*S11122 +   F23*S11222
-            A14(IELEM) = 3*F14*S11112 +   F23*S11122
-            A23(IELEM) = 3*F23*S12222 +   F14*S11222
-            A24(IELEM) = A13(IELEM)
-            A34(IELEM) = F2333*S11222 + F1444*S11122
+             A11(IELEM) = 3*F1114*S11112 + F2223*S11122
+             A22(IELEM) = 3*F2223*S12222 + F1114*S11222
+             A33(IELEM) = 3*F2333*S12222 + F1444*S11222
+             A44(IELEM) = 3*F1444*S11112 + F2333*S11122
+!
+!            ELEMENTS OFF THE DIAGONAL
+!
+             A12(IELEM) = F1114*S11122 + F2223*S11222
+             A13(IELEM) =   F14*S11122 +   F23*S11222
+             A14(IELEM) = 3*F14*S11112 +   F23*S11122
+             A23(IELEM) = 3*F23*S12222 +   F14*S11222
+             A24(IELEM) = A13(IELEM)
+             A34(IELEM) = F2333*S11222 + F1444*S11122
+!
+           ELSE
+!
+!            ELEMENT NOT IN DOMAIN (PARALLELISM)
+!
+             A11(IELEM) = 0.D0
+             A22(IELEM) = 0.D0
+             A33(IELEM) = 0.D0
+             A44(IELEM) = 0.D0
+             A12(IELEM) = 0.D0
+             A13(IELEM) = 0.D0
+             A14(IELEM) = 0.D0
+             A23(IELEM) = 0.D0
+             A24(IELEM) = 0.D0
+             A34(IELEM) = 0.D0
+!
+           ENDIF
 !
 1        CONTINUE
 !

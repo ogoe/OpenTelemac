@@ -42,12 +42,12 @@
 !+
 !+-----------------------------------------------------------------------
 !
-!history  JM HERVOUET (LNHE)
+!history  J-M HERVOUET (EDF R&D, LNHE)
 !+        25/06/2008
 !+
 !+   DOES NOT CALL MATRIY IF NUMBER OF ELEMENTS IS 0
 !
-!history  JMH
+!history  J-M HERVOUET (EDF R&D, LNHE)
 !+        14/10/2009
 !+        V6P0
 !+   ARGUMENTS ADDED TO ASSEX3
@@ -65,7 +65,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        25/12/2012
+!+        11/01/2013
 !+        V6P3
 !+   Arguments added to MATRIY
 !
@@ -115,7 +115,6 @@
       INTEGER NELMAX,NELEM,NPT,SS
       INTEGER, DIMENSION(:), POINTER :: IKLE
       INTEGER, DIMENSION(:), POINTER :: ELTSEG,ORISEG
-      DOUBLE PRECISION, DIMENSION(:), POINTER :: SURFAC,XX,YY,ZZ
       DOUBLE PRECISION C
       LOGICAL LEGO
 !
@@ -138,10 +137,6 @@
         NELEM  = MESH%NELEM
         NELMAX = MESH%NELMAX
         IKLE   =>MESH%IKLE%I
-        SURFAC =>MESH%SURFAC%R
-        XX=>MESH%XEL%R
-        YY=>MESH%YEL%R
-        ZZ=>MESH%ZEL%R
         ELTSEG=>MESH%ELTSEG%I
         ORISEG=>MESH%ORISEG%I
       ELSE
@@ -149,10 +144,6 @@
         NELEM  = MESH%NELEB
         NELMAX = MESH%NELEBX
         IKLE   =>MESH%IKLBOR%I
-        SURFAC =>MESH%LGSEG%R
-        XX=>MESH%X%R
-        YY=>MESH%Y%R
-        ZZ=>MESH%Z%R
         ELTSEG=>MESH%ELTSEGBOR%I
         ORISEG=>MESH%ORISEGBOR%I
       ENDIF
@@ -175,12 +166,15 @@
      &              MESH%M%TYPDIA,MESH%M%TYPEXT,
      &              XMUL,F,G,H,U,V,W,
      &              F%R,G%R,H%R,U%R,V%R,W%R,
-     &              MESH%W%R,LEGO,XX,YY,ZZ,
+     &              MESH%W%R,LEGO,
+     &              MESH%XEL%R,MESH%YEL%R,MESH%ZEL%R,
      &              MESH%X%R,MESH%Y%R,MESH%Z%R,
-     &              SURFAC,IKLE,MESH%NBOR%I ,
-     &              NELEM,NELMAX,IELM1,IELM2,SS,
-     &              MESH%NPOIN/BIEF_NBPTS(11,MESH),
-     &              MESH)
+     &              MESH%SURFAC%R,MESH%LGSEG%R,
+     &              MESH%IKLE%I,MESH%IKLBOR%I,MESH%NBOR%I,
+     &              MESH%NELBOR%I,MESH%NULONE%I,
+     &              MESH%NELEM,MESH%NELMAX,
+     &              MESH%NELEB,MESH%NELEBX,IELM1,IELM2,SS,
+     &              MESH%NPOIN/BIEF_NBPTS(11,MESH),MESH)
       ENDIF
 !
 !  UPDATES THE INFORMATION OF THE MATRIX
@@ -230,9 +224,15 @@
         MESH%MSEG%TYPDIA(1:1)='Q'
 !       ASSEMBLES EXTRA-DIAGONAL TERMS
         IF(MESH%M%TYPEXT.EQ.'Q'.OR.MESH%M%TYPEXT.EQ.'S') THEN
+!
+!       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
 !       CASE OF MATRICES WITH INVERTED STORAGE OF OFF-DIAGONAL TERMS
 !       SO FAR ONLY MAMURD. SEE INVERSION OF DIM1_EXT AND DIM2_EXT
 !       AND 2 INSTEAD OF 1 FOR STOXMT
+!
+!       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
           IF(FORMUL(1:6).EQ.'MAMURD') THEN
             CALL ASSEX3(MESH%MSEG%X%R,MESH%M%STO,MESH%M%NAME,
      &                  MESH%M%ELMLIN,MESH%M%ELMCOL,

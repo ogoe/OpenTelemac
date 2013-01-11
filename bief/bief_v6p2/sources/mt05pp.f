@@ -6,7 +6,7 @@
      & X,Y,Z,IKLE,NELEM,NELMAX,SURFAC,SIGMAG,SPECAD,NPLAN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS THE MATVGR MATRIX.
@@ -47,6 +47,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/01/2013
+!+        V6P3
+!+   XEL and YEL sent instead of XPT and YPT for X and Y.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| G              |-->| FUNCTION USED IN THE FORMULA
@@ -68,9 +73,9 @@
 !| U              |-->| FUNCTION USED IN THE FORMULA
 !| V              |-->| FUNCTION USED IN THE FORMULA
 !| W              |-->| FUNCTION USED IN THE FORMULA
-!| X              |-->| ABSCISSAE OF POINTS
-!| Y              |-->| ORDINATES OF POINTS
-!| Z              |-->| ELEVATIONS OF POINTS
+!| X              |-->| ABSCISSAE OF POINTS, PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS, PER ELEMENT
+!| Z              |-->| ELEVATIONS OF POINTS, PER POINTS !!!!
 !| XM             |<->| OFF-DIAGONAL TERMS
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,7 +101,7 @@
 !
       TYPE(BIEF_OBJ), INTENT(IN)      :: SU,SV,SW,SF,SG,SH
 !
-      DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*),Z(*)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NELMAX,6),Y(NELMAX,6),Z(*)
       LOGICAL, INTENT(IN)             :: SIGMAG,SPECAD
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -167,10 +172,14 @@
          I5 = IKLE(IELEM,5)
          I6 = IKLE(IELEM,6)
 !
-         X2  =   X(I2) - X(I1)
-         X3  =   X(I3) - X(I1)
-         Y2  =   Y(I2) - Y(I1)
-         Y3  =   Y(I3) - Y(I1)
+!        X2  =  X(I2) - X(I1)
+!        X3  =  X(I3) - X(I1)
+!        Y2  =  Y(I2) - Y(I1)
+!        Y3  =  Y(I3) - Y(I1)
+         X2  =  X(IELEM,2)
+         X3  =  X(IELEM,3) 
+         Y2  =  Y(IELEM,2)
+         Y3  =  Y(IELEM,3) 
 !
          U1  =  U(I1)
          U2  =  U(I2)
@@ -345,10 +354,14 @@
          I5 = IKLE(IELEM,5)
          I6 = IKLE(IELEM,6)
 !
-         X2  =   X(I2) - X(I1)
-         X3  =   X(I3) - X(I1)
-         Y2  =   Y(I2) - Y(I1)
-         Y3  =   Y(I3) - Y(I1)
+!        X2  =  X(I2) - X(I1)
+!        X3  =  X(I3) - X(I1)
+!        Y2  =  Y(I2) - Y(I1)
+!        Y3  =  Y(I3) - Y(I1)
+         X2  =  X(IELEM,2)
+         X3  =  X(IELEM,3) 
+         Y2  =  Y(IELEM,2)
+         Y3  =  Y(IELEM,3) 
 !
          DET= X2*Y3-X3*Y2
          IELEM2 = MOD(IELEM-1,NELEM2) + 1
@@ -575,10 +588,14 @@
          HH2=MAX(H2,1.D-6)
          HH3=MAX(H3,1.D-6)
 !
-         X2  =   X(I2) - X(I1)
-         X3  =   X(I3) - X(I1)
-         Y2  =   Y(I2) - Y(I1)
-         Y3  =   Y(I3) - Y(I1)
+!        X2  =  X(I2) - X(I1)
+!        X3  =  X(I3) - X(I1)
+!        Y2  =  Y(I2) - Y(I1)
+!        Y3  =  Y(I3) - Y(I1)
+         X2  =  X(IELEM,2)
+         X3  =  X(IELEM,3) 
+         Y2  =  Y(IELEM,2)
+         Y3  =  Y(IELEM,3) 
 !
          U1=DZ1*U(I1)/HH1
          U2=DZ2*U(I2)/HH2

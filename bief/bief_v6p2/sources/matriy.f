@@ -4,8 +4,8 @@
 !
      &(FORMUL,XM,TYPDIA,TYPEXT,
      & XMUL,SF,SG,SH,SU,SV,SW,F,G,H,U,V,W,T,LEGO,
-     & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,IKLE,NBOR,
-     & NELEM,NELMAX,IELM1,IELM2,S,NPLAN,MESH)
+     & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,LGSEG,IKLE,IKLBOR,NBOR,NELBOR,
+     & NULONE,NELEM,NELMAX,NELEB,NELEBX,IELM1,IELM2,S,NPLAN,MESH)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -15,6 +15,11 @@
 !+
 !+            THE MATRIX IS IDENTIFIED BY THE FORMULATION IN
 !+                CHARACTER STRING FORMUL.
+!
+!warning  Coordinates per element (XEL, YEL, ZEL) or coordinates per 
+!+        points (XPT,YPT, ZPT) may be used, depending on element and 
+!+        formula. ZEL is not built in 3D (as the mesh may be moving).
+!
 !code
 !+-----------------------------------------------------------------------
 !+
@@ -71,10 +76,11 @@
 !+   Call to MT12AA modified.
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        25/12/2012
+!+        11/01/2013
 !+        V6P3
 !+   Arguments XPT, YPT and ZPT added, various XEL, YEL and ZEL changed
-!+   into XPT, etc. in the calls to 3D matrices.
+!+   into XPT, etc. in the calls to 3D matrices. Arguments NELEBD,
+!+   NELEBX,IKLBOR,NELBOR,NULONE.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
@@ -83,11 +89,18 @@
 !| H              |-->| FUNCTION USED IN THE FORMULA
 !| IELM1          |-->| TYPE OF ELEMENT FOR LINES
 !| IELM2          |-->| TYPE OF ELEMENT FOR COLUMNS
+!| IKLBOR         |-->| BOUNDARY ELEMENTS CONNECTIVITY TABLE.
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| LEGO           |-->| IF YES: ASSEMBLE THE DIAGONAL
+!| LGSEG          |-->| LENGTH OF SEGMENTS ON 2D BOUNDARIES
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELBOR         |-->| ADJACENT ELEMENT NUMBER
+!| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
+!| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
+!| NULONE         |-->| LOCAL NUMBERING OF BOUNDARY ELEMENT IN ADJACENT
+!|                |   | ELEMENT.
 !| S              |-->| TYPE OF MATRIX STORAGE
 !| SF             |-->| STRUCTURE OF FUNCTIONS F
 !| SG             |-->| STRUCTURE OF FUNCTIONS G
@@ -118,12 +131,15 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NELMAX,NELEM,IELM1,IELM2,S
-      INTEGER, INTENT(IN)             :: NPLAN
+      INTEGER, INTENT(IN)             :: NPLAN,NELEB,NELEBX
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),NBOR(*)
+      INTEGER, INTENT(IN)             :: IKLBOR(NELEBX,*)
+      INTEGER, INTENT(IN)             :: NELBOR(NELEBX)
+      INTEGER, INTENT(IN)             :: NULONE(NELEBX,*)
       LOGICAL, INTENT(INOUT)          :: LEGO
       TYPE(BIEF_OBJ), INTENT(IN)      :: SF,SG,SH,SU,SV,SW
       DOUBLE PRECISION, INTENT(IN)    :: F(*),G(*),H(*),U(*),V(*),W(*)
-      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX)
+      DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX),LGSEG(NELEBX)
       DOUBLE PRECISION, INTENT(IN)    :: XEL(*),YEL(*),ZEL(*)
       DOUBLE PRECISION, INTENT(IN)    :: XPT(*),YPT(*),ZPT(*)
       DOUBLE PRECISION, INTENT(IN)    :: XMUL
@@ -421,7 +437,7 @@
           IF(IELM2.EQ.1.AND.S.EQ.1) THEN
              CALL MT01OO(   T(1,1)   ,XM(1,OOS(1,2,S)),
      &                                       T(1,2)   ,
-     &                   XMUL,SURFAC,NELEM,NELMAX)
+     &                   XMUL,LGSEG,NELEB,NELEBX)
 !
              TYPDIA='Q'
              TYPEXT='S'
@@ -694,7 +710,7 @@
           IF(FORMUL(7:7).EQ.'*') THEN
 !           COMPUTATION BASED ON THE TRANSFORMED MESH
             CALL MT02PP_STAR(T,XM,XMUL,SF,SG,SH,F,G,H,
-     &                      XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
+     &                      XEL,YEL,ZPT,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
      &                      FORMUL,NPLAN)
             IF(FORMUL(10:13).EQ.'1234') THEN
               TYPEXT='S'
@@ -712,7 +728,7 @@
 !           CALL MT02PT(T,XM,XMUL,SF,SG,SH,F,G,H,
 !    *                  XPT,YPT,ZPT,IKLE,NELEM,NELMAX,INCHYD)
             CALL MT02PP(T,XM,XMUL,SF,SG,SH,F,G,H,
-     &                  XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
+     &                  XEL,YEL,ZPT,SURFAC,IKLE,NELEM,NELMAX,INCHYD,
      &                  FORMUL,NPLAN)
             TYPEXT='S'
           ENDIF
@@ -1077,7 +1093,7 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
              CALL MT04PP(T,XM,XMUL,SU,SV,SW,U,V,W,
-     &                   XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,FORMUL)
+     &                   XEL,YEL,ZPT,SURFAC,IKLE,NELEM,NELMAX,FORMUL)
 !
              TYPDIA='Q'
              IF(FORMUL(7:7).EQ.'2') THEN
@@ -1308,7 +1324,7 @@
 !         P1 PRISM COLUMN ELEMENT
           IF(IELM2.EQ.41) THEN
              CALL MT05PP(T,XM,XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &                   XPT,YPT,ZPT,IKLE,NELEM,NELMAX,SURFAC,SIGMAG,
+     &                   XEL,YEL,ZPT,IKLE,NELEM,NELMAX,SURFAC,SIGMAG,
      &                   SPECAD,NPLAN)
 !
              TYPDIA='Q'
@@ -1446,8 +1462,8 @@
      &                      T(1,2)   ,XM(1,AAS(2,3,S)),
      &                                       T(1,3)   ,
      &          XMUL,SF,F,XPT,YPT,ZPT,
-     &          IKLE(1,1),IKLE(1,2),IKLE(1,3),
-     &          NBOR,NELEM,NELMAX)
+     &          IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),
+     &          NBOR,NELEB,NELEBX)
 !
       ELSE
                 CALL MT06FT2
@@ -1455,8 +1471,8 @@
      &                      T(1,2)   ,XM(1,AAS(2,3,S)),
      &                                       T(1,3)   ,
      &          XMUL,SF,F,SU,U,XPT,YPT,ZPT,
-     &          IKLE(1,1),IKLE(1,2),IKLE(1,3),
-     &          NBOR,NELEM,NELMAX)
+     &          IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),
+     &          NBOR,NELEB,NELEBX)
       ENDIF
             TYPDIA='Q'
             TYPEXT='S'
@@ -1581,9 +1597,9 @@
      &                      T(1,2)   ,XM(1,FFS(2,3,S)),XM(1,FFS(2,4,S)),
      &                                       T(1,3)   ,XM(1,FFS(3,4,S)),
      &                                                        T(1,4)   ,
-     &         XMUL,SF,F,XPT,YPT,ZPT,
-     &         IKLE(1,1),IKLE(1,2),IKLE(1,3),IKLE(1,4),
-     &         NBOR,NELEM,NELMAX)
+     &         XMUL,SF,F,XEL,YEL,ZPT,
+     &         IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),IKLBOR(1,4),
+     &         NBOR,NELBOR,NULONE,NELEB,NELEBX,NELMAX)
 !
                TYPDIA='Q'
                TYPEXT='S'
@@ -1617,8 +1633,8 @@
           IF(IELM2.EQ.1.AND.S.EQ.1) THEN
              CALL MT06OO(   T(1,1)   ,XM(1,OOS(1,2,S)),
      &                                       T(1,2)   ,
-     &                   XMUL,SF,F,SURFAC,IKLE(1,1),IKLE(1,2),
-     &                   NBOR,NELEM,NELMAX)
+     &                   XMUL,SF,F,LGSEG,IKLBOR(1,1),IKLBOR(1,2),
+     &                   NBOR,NELEB,NELEBX)
 !
              TYPDIA='Q'
              TYPEXT='S'
@@ -1655,8 +1671,8 @@
      & (   T(1,1)   ,XM(1,AAS(1,2,S)),XM(1,AAS(1,3,S)),
      &                      T(1,2)   ,XM(1,AAS(2,3,S)),
      &                                       T(1,3)   ,
-     &        XMUL,SF,F,SURFAC,IKLE(1,1),IKLE(1,2),IKLE(1,3),
-     &                   NBOR,NELEM,NELMAX)
+     &        XMUL,SF,F,LGSEG,IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),
+     &                   NBOR,NELEB,NELEBX)
 !
              TYPDIA='Q'
              TYPEXT='S'
@@ -1692,8 +1708,7 @@
 !
              TYPDIA='Q'
              TYPEXT='S'
-!             CALL SETDIA(M,'Q')
-!             CALL SETEXT(M,'S')
+!
 !.......................................................................
 !         OTHER
 !.......................................................................
@@ -1735,8 +1750,7 @@
 !
              TYPDIA='Q'
              TYPEXT='S'
-!             CALL SETDIA(M,'Q')
-!             CALL SETEXT(M,'S')
+!
 !.......................................................................
 !         OTHER
 !.......................................................................
@@ -2880,8 +2894,7 @@
           IF(IELM2.EQ.41) THEN
              CALL MT14PP(T,XM,PPQ(1,1,S),LEGO,
      &                   XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &                   XPT,YPT,ZPT,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,
-     &                   SPECAD)
+     &                   SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD)
 !
             TYPDIA='Q'
             TYPEXT='Q'

@@ -3,10 +3,10 @@
 !                    *****************
 !
      &( T,XM,PPQ,LEGO,XMUL,SU,SV,SW,U,V,W,SF,SG,SH,F,G,H,
-     &  X,Y,Z,SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD)
+     &  SURFAC,IKLE,NELEM,NELMAX,SIGMAG,SPECAD)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                  21/08/2010
 !***********************************************************************
 !
 !brief    BUILDS COEFFICIENTS LAMBDA(I,J) FOR N-TYPE MURD SCHEME.
@@ -55,6 +55,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/01/2013
+!+        V6P3
+!+   ARguments X,Y,Z removed.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE FORMULA
 !| G              |-->| FUNCTION USED IN THE FORMULA
@@ -77,9 +82,6 @@
 !| U              |-->| FUNCTION USED IN THE FORMULA
 !| V              |-->| FUNCTION USED IN THE FORMULA
 !| W              |-->| FUNCTION USED IN THE FORMULA
-!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
-!| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
 !| XM             |<->| OFF-DIAGONAL TERMS
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,7 +109,6 @@
 !
       TYPE(BIEF_OBJ), INTENT(IN) :: SU,SV,SW,SF,SG,SH
 !
-      DOUBLE PRECISION, INTENT(IN) :: X(*),Y(*),Z(*)
       DOUBLE PRECISION, INTENT(IN) :: SURFAC(NELMAX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

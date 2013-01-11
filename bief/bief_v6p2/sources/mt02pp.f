@@ -89,9 +89,9 @@
 !| SH             |-->| STRUCTURE OF FUNCTIONS H
 !| SURFAC         |-->| AREA OF 2D ELEMENTS
 !| T              |<->| WORK ARRAY FOR ELEMENT BY ELEMENT DIAGONAL
-!| X              |-->| ABSCISSAE OF POINTS
-!| Y              |-->| ORDINATES OF POINTS
-!| Z              |-->| ELEVATIONS OF POINTS
+!| X              |-->| ABSCISSAE OF POINTS, PER ELEMENT
+!| Y              |-->| ORDINATES OF POINTS, PER ELEMENT
+!| Z              |-->| ELEVATIONS OF POINTS, PER POINT
 !| XM             |<->| OFF-DIAGONAL TERMS
 !| XMUL           |-->| COEFFICIENT FOR MULTIPLICATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -117,7 +117,7 @@
 !
       TYPE(BIEF_OBJ), INTENT(IN)      :: SF,SG,SH
 !
-      DOUBLE PRECISION, INTENT(IN)    :: X(*),Y(*),Z(*)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NELMAX,6),Y(NELMAX,6),Z(*)
 !
       LOGICAL, INTENT(IN)             :: INCHYD
       CHARACTER(LEN=16), INTENT(IN)   :: FORMUL
@@ -223,9 +223,11 @@
          SH1=H1+H2+H3
          SHH=H1*H1+H2*H2+H3*H3
 !
-         D1=Y(I2)-Y(I3)
-         D2=Y(I3)-Y(I1)
-         D3=Y(I1)-Y(I2)
+         D1=Y(IELEM,2)-Y(IELEM,3)
+!        D2=Y(IELEM,3)-Y(IELEM,1)
+         D2=Y(IELEM,3)
+!        D3=Y(IELEM,1)-Y(IELEM,2)
+         D3=          -Y(IELEM,2)
 !
          D=XS2880/SURFAC(IELEM)
 !
@@ -346,9 +348,11 @@
 !
 !-----------------------------------------------------------------------
 !
-         D1=X(I3)-X(I2)
-         D2=X(I1)-X(I3)
-         D3=X(I2)-X(I1)
+         D1=X(IELEM,3)-X(IELEM,2)
+!        D2=X(IELEM,1)-X(IELEM,3)
+         D2=          -X(IELEM,3)
+!        D3=X(IELEM,2)-X(IELEM,1)
+         D3=X(IELEM,2)
 !
          RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
          RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
@@ -511,9 +515,11 @@
          SH1=H1+H2+H3
          SHH=H1*H1+H2*H2+H3*H3
 !
-         D1=Y(I2)-Y(I3)
-         D2=Y(I3)-Y(I1)
-         D3=Y(I1)-Y(I2)
+         D1=Y(IELEM,2)-Y(IELEM,3)
+!        D2=Y(IELEM,3)-Y(IELEM,1)
+         D2=Y(IELEM,3)
+!        D3=Y(IELEM,1)-Y(IELEM,2)
+         D3=          -Y(IELEM,2)
 !
          D=XS2880/SURFAC(IELEM)
 !
@@ -633,9 +639,11 @@
 !
 !-----------------------------------------------------------------------
 !
-         D1=X(I3)-X(I2)
-         D2=X(I1)-X(I3)
-         D3=X(I2)-X(I1)
+         D1=X(IELEM,3)-X(IELEM,2)
+!        D2=X(IELEM,1)-X(IELEM,3)
+         D2=          -X(IELEM,3)
+!        D3=X(IELEM,2)-X(IELEM,1)
+         D3=X(IELEM,2)
 !
          RI=-(Z(I1)*D1+Z(I2)*D2+Z(I3)*D3)
          RS=-(Z(I4)*D1+Z(I5)*D2+Z(I6)*D3)
