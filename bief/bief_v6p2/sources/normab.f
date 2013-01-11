@@ -87,7 +87,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NPTFR,NELMAX
-      INTEGER, INTENT(IN) :: KP1BOR(NPTFR),NELBOR(NPTFR),NULONE(NPTFR)
+      INTEGER, INTENT(IN) :: KP1BOR(NPTFR),NELBOR(NPTFR),NULONE(NPTFR,2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: XNEBOR(NPTFR,2),YNEBOR(NPTFR,2)
       DOUBLE PRECISION, INTENT(INOUT) :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
@@ -102,9 +102,6 @@
 !
       INTEGER K1,K2,N1,N2,IELEM,I1,I2
       DOUBLE PRECISION X12,Y12,XNORM,X1,X2,Y1,Y2,Z(1)
-!
-      INTEGER NEXT(3)
-      DATA NEXT / 2,3,1 /
 !
       INTRINSIC SQRT
 !
@@ -133,8 +130,8 @@
 !         IF SEGMENT IN THE DOMAIN (IN PARALLEL IT MAY NOT BE)
           IF(K2.NE.K1) THEN
             IELEM=NELBOR(K1)
-            I1=NULONE(K1)
-            I2=NEXT(I1)
+            I1=NULONE(K1,1)
+            I2=NULONE(K1,2)
             X1=XEL(IELEM,I1)
             Y1=YEL(IELEM,I1)
             X2=XEL(IELEM,I2)

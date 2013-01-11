@@ -51,7 +51,7 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        25/12/2012
+!+        11/01/2013
 !+        V6P3
 !+   Arguments added to VECTOS
 !
@@ -169,7 +169,8 @@
      &              MESH%XSGBOR%R, MESH%YSGBOR%R, MESH%ZSGBOR%R,
      &              NPT,MESH%NELEM,MESH%NELEB,
      &              MESH%NELMAX,MESH%NELEBX,
-     &              IELM1,MESH%LV,MSK,MASKEL%R,MESH,DIM1T)
+     &              IELM1,MESH%LV,MSK,MASKEL%R,MESH,DIM1T,
+     &              MESH%NELBOR%I,MESH%NULONE%I)
 !
       ENDIF
 !

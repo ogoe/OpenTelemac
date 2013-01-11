@@ -7,7 +7,7 @@
      & T,LEGO,
      & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,LGSEG,IKLE,IKLBOR,NBOR,
      & XNOR,YNOR,ZNOR,NPT,NELEM,NELEB,NELMAX,NELEBX,
-     & IELM1,LV,MSK,MASKEL,MESH,DIM1T)
+     & IELM1,LV,MSK,MASKEL,MESH,DIM1T,NELBOR,NULONE)
 !
 !***********************************************************************
 ! BIEF   V6P3                                  21/08/2010
@@ -78,13 +78,16 @@
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
+!| NELBOR         |-->| ADJACENT ELEMENT NUMBER
 !| NELEB          |-->| NUMBER OF BOUNDARY ELEMENTS
 !| NELEBX         |-->| MAXIMUM NUMBER OF BOUNDARY ELEMENTS
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELEM_AS       |-->| NUMBER OF ELEMENTS FOR THE CALL TO ASSVEC
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
 !| NELMAX_AS      |-->| MAXIMUM NUMBER OF ELEMENTS FOR THE CALL TO ASSVEC
-!| NPT            |-->| NOMBRE OF POINTS OF VECTOR.
+!| NPT            |-->| NUMBER OF POINTS OF VECTOR.
+!| NULONE         |-->| LOCAL NUMBERING OF BOUNDARY ELEMENT IN ADJACENT
+!|                |   | ELEMENT.
 !| OP             |-->| OPERATION TO BE DONE (SEE ABOVE)
 !| SF             |-->| BIEF_OBJ STRUCTURE OF F
 !| SG             |-->| BIEF_OBJ STRUCTURE OF G
@@ -118,6 +121,7 @@
       INTEGER, INTENT(IN) :: NELMAX,NPT,NELEM,IELM1,LV,NELEB,NELEBX
       INTEGER, INTENT(IN) :: DIM1T
       INTEGER, INTENT(IN) :: IKLE(NELMAX,*),NBOR(*),IKLBOR(NELEBX,*)
+      INTEGER, INTENT(IN) :: NELBOR(NELEBX),NULONE(NELEBX,*)
 !
       DOUBLE PRECISION, INTENT(IN)    :: SURFAC(NELMAX),LGSEG(NELEB)
       DOUBLE PRECISION, INTENT(IN)    :: XEL(*),YEL(*),ZEL(*)
@@ -233,7 +237,8 @@
                CALL VC00FF(XMUL,XPT,YPT,ZPT,
      &                     IKLBOR(1,1),IKLBOR(1,2),
      &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
-     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4))
+     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
+     &                     NELBOR,NULONE,NELMAX)
 !
 !-----------------------------------------------------------------------
 !       OTHER
@@ -323,7 +328,8 @@
                CALL VC01FF(XMUL,SF,F,XPT,YPT,ZPT,
      &                     IKLBOR(1,1),IKLBOR(1,2),
      &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
-     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4))
+     &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
+     &                     NELBOR,NULONE,NELMAX)
 !
 !-----------------------------------------------------------------------
 !
@@ -562,9 +568,10 @@
 !
         ELSEIF(IELM1.EQ.71) THEN
 !
-          CALL VC05FF(XMUL,SU,SV,U,V,XPT,YPT,ZPT,
+          CALL VC05FF(XMUL,SU,SV,U,V,XEL,YEL,ZPT,
      &                IKLBOR(1,1),IKLBOR(1,2),IKLBOR(1,3),IKLBOR(1,4),
-     &                NBOR,NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4))
+     &                NBOR,NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
+     &                NELBOR,NULONE,NELMAX)
 !
 !       ELEMENT LINEAR SEGMENT
 !

@@ -102,7 +102,7 @@
 !
       INTEGER IELEM,IELMF
       DOUBLE PRECISION X2,X3,Y2,Y3,F1,F2,F3,F4,F5,F6
-      DOUBLE PRECISION XSUR30,XSUR60,XSUR120
+      DOUBLE PRECISION XSUR30,XSUR120
       DOUBLE PRECISION XSUR90,XSUR360
 !
 !-----------------------------------------------------------------------
@@ -111,7 +111,6 @@
 !-----------------------------------------------------------------------
 !
       XSUR30  = XMUL/30.D0
-      XSUR60  = XMUL/60.D0
       XSUR120 = XMUL/120.D0
       XSUR90  = XMUL/90.D0
       XSUR360 = XMUL/360.D0

@@ -114,13 +114,11 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELEM,IELMF,IELMU,IELMV
-      DOUBLE PRECISION XSUR12,XSUR48,X2,X3,Y2,Y3,F1,F2,F3,DEN
+      DOUBLE PRECISION X2,X3,Y2,Y3,F1,F2,F3,DEN
       DOUBLE PRECISION U1,U2,U3,V1,V2,V3,U123,V123,XSUR06,XSUR24
 !
 !-----------------------------------------------------------------------
 !
-      XSUR12 = XMUL/12.D0
-      XSUR48 = XMUL/48.D0
       XSUR06 = XMUL/06.D0
       XSUR24 = XMUL/24.D0
 !

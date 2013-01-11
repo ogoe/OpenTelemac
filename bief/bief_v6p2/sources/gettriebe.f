@@ -105,7 +105,6 @@
 !     INTEGER ISEGT(6,2)
 !     DATA ISEGT/1,2,3,1,2,3,2,3,1,4,4,4/
 !      
-      LOGICAL YA
 !
 !-----------------------------------------------------------------------
 !
@@ -154,7 +153,6 @@
 !
       ELSEIF(IELM3.EQ.51) THEN
 !
-        YA=.FALSE.
         DO IPLAN=1,NPLAN-1
           DO IELEM=1,NELEM2
 !
