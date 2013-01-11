@@ -128,7 +128,7 @@
 !
             HAUTSED = 0.D0
 !
-            NK=0
+            NK=NOMBLAY
             DO K=1,NOMBLAY
 !
               IF(HAUTSED + ES(I,K) .GE. ELAY(I)) THEN
