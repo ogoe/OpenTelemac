@@ -631,9 +631,10 @@
 !-----------------------------------------------------------------------
 !
 !
-!     TRACERS AT PREVIOUS TIME STEP
+!     TRACERS AT PREVIOUS TIME STEP (TAN IN VERSIONS PRIOR TO 6.3
+!                                    WHICH WAS A CONFLICT WITH TANgent)
 !
-      TYPE(BIEF_OBJ), TARGET :: TAN
+      TYPE(BIEF_OBJ), TARGET :: TRN
 !
 !     TRACERS AFTER ADVECTION
 !

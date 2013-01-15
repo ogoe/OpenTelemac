@@ -461,7 +461,7 @@ C THEY ARE DEFINED IN DECLARATIONS
 !
 !=======================================================================
 !
-      CALL ALLBLO(TAN      ,'TAN   ')
+      CALL ALLBLO(TRN      ,'TRN   ')
       CALL ALLBLO(TAC      ,'TAC   ')
       CALL ALLBLO(TA       ,'TA    ')
       CALL ALLBLO(S0TA     ,'S0TA  ')
@@ -500,8 +500,8 @@ C THEY ARE DEFINED IN DECLARATIONS
 !                                 TO PUT IN THE CALL TO CONLIM
 !                                 AND CALL TO TEL4DEL
 !
-      CALL BIEF_ALLVEC_IN_BLOCK(TAN,    NTRAC,
-     *                          1, 'TAN   ', IELM, 1, STATUT,MESH3D)
+      CALL BIEF_ALLVEC_IN_BLOCK(TRN,    NTRAC,
+     *                          1, 'TRN   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TAC,    NTRAC,
      *                          1, 'TAC   ', IELM, 1, STATUT,MESH3D)
       CALL BIEF_ALLVEC_IN_BLOCK(TA,     MAX(NTRAC,1),
@@ -889,7 +889,7 @@ C K-EPSILON MODEL
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           CALL ADDBLO(BL_FC ,    TAC%ADR(ITRAC)%P)
-          CALL ADDBLO(BL_FN ,    TAN%ADR(ITRAC)%P)
+          CALL ADDBLO(BL_FN ,    TRN%ADR(ITRAC)%P)
           CALL ADDBLO(BL_S0F,   S0TA%ADR(ITRAC)%P)
           CALL ADDBLO(BL_FSC, TA_SCE%ADR(ITRAC)%P)
           CALL ADDBLO(BL_BOL, LITABL%ADR(ITRAC)%P)
@@ -927,7 +927,7 @@ C K-EPSILON MODEL
       IF(NTRAC.GT.0) THEN
         DO ITRAC=1,NTRAC
           IF(SCHCTA(ITRAC).EQ.ADV_CAR) THEN  
-            CALL ADDBLO(FN3D,TAN%ADR(ITRAC)%P)
+            CALL ADDBLO(FN3D,TRN%ADR(ITRAC)%P)
             CALL ADDBLO(FC3D,TAC%ADR(ITRAC)%P)
           ENDIF 
         ENDDO

@@ -62,12 +62,17 @@
 !+        01/06/2012
 !+        V6P2   
 !+        Call to vector before call to Tel4del corrected (GRAZCO)
-!+        Initialasation of TAN after call to condim.
+!+        Initialisation of TAN after call to condim.
 !
 !history  J-M HERVOUET (LNHE)
 !+        18/129/2012
 !+        V6P3   
 !+        Call to IFAB3DT added, arguments of cstkep removed.
+!
+!history  J-M HERVOUET (LNHE)
+!+        15/01/2013
+!+        V6P3   
+!+        TAN renamed TRN
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -420,7 +425,7 @@
 !
 !     ONLY TA IS INITIALISED IN CONDIM
 !
-      IF(NTRAC.GT.0) CALL OS ('X=Y     ', X=TAN, Y=TA)
+      IF(NTRAC.GT.0) CALL OS ('X=Y     ', X=TRN, Y=TA)
 !
 !     COMPUTES TRANSF AND ZCHAR
 !
@@ -1166,7 +1171,7 @@
 !=======================================================================
 !
 ! SAVES H, TA, TP, AK, EP
-! IN    HN,TAN,TPN,AKN,EPN
+! IN    HN,TRN,TPN,AKN,EPN
 !
       CALL OS ( 'X=Y     ', X=HN,    Y=H     )
       CALL OS ( 'X=Y     ', X=VOLUN, Y=VOLU  )
@@ -1176,7 +1181,7 @@
       IF(NONHYD) CALL OS ( 'X=Y     ' , X=WN, Y=W)
       CALL OS ( 'X=Y     ', X=GRADZN,Y=GRADZS)
 !     TRACERS (IF LT=1 DONE AFTER CALL CONDIM)
-      IF(NTRAC.GT.0.AND.LT.GT.1) CALL OS ('X=Y     ', X=TAN, Y=TA)
+      IF(NTRAC.GT.0.AND.LT.GT.1) CALL OS ('X=Y     ', X=TRN, Y=TA)
 !
       IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
         CALL OS ( 'X=Y     ', X=AKN, Y=AK )
@@ -1454,7 +1459,7 @@
           DO ITRAC=1,NTRAC
             DO IP=1,NPTFR3
               TRBORSAVE%ADR(ITRAC)%P%R(IP)=
-     &        TAN%ADR(ITRAC)%P%R(NBOR3%I(IP))
+     &        TRN%ADR(ITRAC)%P%R(NBOR3%I(IP))
             ENDDO
           ENDDO
         ENDIF
@@ -1487,7 +1492,7 @@
         IF(NTRAC.GT.0) THEN
           DO ITRAC=1,NTRAC
             DO IP=1,NPTFR3
-          TAN%ADR(ITRAC)%P%R(NBOR3%I(IP))=TRBORSAVE%ADR(ITRAC)%P%R(IP)
+          TRN%ADR(ITRAC)%P%R(NBOR3%I(IP))=TRBORSAVE%ADR(ITRAC)%P%R(IP)
             ENDDO
           ENDDO
         ENDIF
@@ -2118,7 +2123,7 @@
           ENDIF
 !
           CALL CVDF3D
-     &   (TA%ADR(ITRAC)%P,TAC%ADR(ITRAC)%P,TAN%ADR(ITRAC)%P,
+     &   (TA%ADR(ITRAC)%P,TAC%ADR(ITRAC)%P,TRN%ADR(ITRAC)%P,
      &   VISCTA%ADR(ITRAC)%P,SIGMTA,
      &   S0TA%ADR(ITRAC)%P,.TRUE.,S1TA%ADR(ITRAC)%P,.TRUE.,
      &   TABORL%ADR(ITRAC)%P,TABORF%ADR(ITRAC)%P,TABORS%ADR(ITRAC)%P,
