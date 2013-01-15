@@ -721,49 +721,94 @@
 !======================================================================
 C     WRITE(LU,*) ' '
 !
+      WRITE(LU,*) 'BEGIN PARTITIONING WITH METIS'
+!     NEW METIS INTERFACE (>= VERSION 5) :
+!     
+!     EPTR, EIND: THESE ARRAYS SPECIFIES CONTAINS
+!     IKLES IN CSR FORMAT               
+!     
       ALLOCATE (EPART(NELEM2),STAT=ERR)
       IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPART')
       ALLOCATE (NPART(NPOIN2),STAT=ERR)
       IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'NPART')
 !
-      IF (NDP==3.OR.NDP==6) THEN
-         ETYPE = 1
-      ELSE
-         WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
-         CALL PARTEL_PARA_PLANTE2(-1)
-         STOP
-      ENDIF
-!
-!   IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
-!   IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
-!
-      NUMFLAG = 1
-!
-      IF (TIMECOUNT) THEN
-         CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-         TDEBP = TEMPS
-      ENDIF
-!
+      ! If metis was run previously just read the results
       IF (DECOUP .EQ. 0) THEN
-         OPEN(UNIT=32,FILE='RESULT_SEQ_METIS')
-         DO I=1,NELEM2
-            READ(32,*) EPART(I)
-         END DO
-         CLOSE(32)
+        OPEN(UNIT=32,FILE='RESULT_SEQ_METIS')
+        DO I=1,NELEM2
+           READ(32,*) EPART(I)
+        END DO
+        CLOSE(32)
       ELSE
-         CALL METIS_PARTMESHDUAL
-     &        (NELEM2, NPOIN2, IKLES, ETYPE, NUMFLAG,
-     &        NPARTS, EDGECUT, EPART, NPART)
-      END IF
+        ALLOCATE (EPTR(NELEM2+1),STAT=ERR)
+        IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
+        ALLOCATE (EIND(NELEM2*NDP),STAT=ERR)
+        IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')     
+!       
+        DO I=1,NELEM2+1
+           EPTR(I) = (I-1)*NDP + 1
+        ENDDO
+!       
+        K=1
+        DO I=1,NELEM2
+           DO J=1,NDP
+              EIND(K) = IKLES((I-1)*NDP+J)
+              K = K + 1
+           ENDDO   
+        ENDDO    
+!       
+!       SWITCH TO C NUMBERING
+        EIND = EIND -1
+        EPTR = EPTR -1
+!       
+!       METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
+!       NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
+!       NCOMMONNODES = 3   FOR TETRAHEDRE
+!       NCOMMONNODES = 4   FOR HEXAHEDRE
+        
+!       
+        IF (NDP==3.OR.NDP==6) THEN 
+           NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
+        ELSE
+           WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
+           CALL PARTEL_PLANTE2(-1)
+           STOP
+        ENDIF 
+        
+!       WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
+!       IS RELEVANT HERE.  
+!       
+!       IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
+!       IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
+!       
+        NUMFLAG = 1
+!       
+        WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
+        IF (TIMECOUNT) THEN 
+           CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+           TDEBP = TEMPS
+        ENDIF
+!       
+          CALL METIS_PARTMESHDUAL 
+     &        (NELEM2, NPOIN2, EPTR, EIND, NULLTABLE,
+     &         NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
+     &         NULLTABLE, EDGECUT, EPART, NPART)
+!       
+        WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
+        IF (TIMECOUNT) THEN
+          CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+          TFINP = TEMPS
+          WRITE(LU,*) ' RUNTIME OF METIS ',
+     &              (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
+        ENDIF
+!       
+!       DEALLOCATING TEMPORARY ARRAYS FOR METIS
+!       SWITCHING EPART TO FORTRAN NUMBERING (1...N)      
+        EPART = EPART+1
+        DEALLOCATE(EPTR)
+        DEALLOCATE(EIND)
+      ENDIF
 !
-      IF (TIMECOUNT) THEN
-         CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-         TFINP = TEMPS
-         IF (ID .EQ. 0) THEN
-         WRITE(LU,*) ' RUNTIME ',
-     &            (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
-      ENDIF
-      ENDIF
 
 !======================================================================
 !   STEP 3 : ALLOCATE THE GLOBAL  ARRAYS NOT DEPENDING OF THE PARTITION
