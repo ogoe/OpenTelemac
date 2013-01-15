@@ -234,7 +234,7 @@
         ELSEIF(IELM1.EQ.71) THEN
 !
 !              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
-               CALL VC00FF(XMUL,XPT,YPT,ZPT,
+               CALL VC00FF(XMUL,XEL,YEL,ZPT,
      &                     IKLBOR(1,1),IKLBOR(1,2),
      &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
      &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),
@@ -325,7 +325,7 @@
         ELSEIF(IELM1.EQ.71) THEN
 !
 !              FOR VERTICAL RECTANGULAR SIDES OF THE PRISMS
-               CALL VC01FF(XMUL,SF,F,XPT,YPT,ZPT,
+               CALL VC01FF(XMUL,SF,F,XEL,YEL,ZPT,
      &                     IKLBOR(1,1),IKLBOR(1,2),
      &                     IKLBOR(1,3),IKLBOR(1,4),NBOR,
      &                     NELEB,NELEBX,T(1,1),T(1,2),T(1,3),T(1,4),

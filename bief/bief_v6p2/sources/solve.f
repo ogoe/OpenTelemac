@@ -72,8 +72,7 @@
 !+                     I
 !+       11            I  GAUSS-SEIDEL'S PRECONDITIONING BY ELEMENT
 !+                     I
-!+       13            I  PRECONDITIONING MATRIX SUPPLIED BY THE
-!+                     I  SUBROUTINE CALLING
+!+       13            I  PRECONDITIONING MATRIX SUPPLIED BY THE USER
 !+                     I
 !+-----------------------------------------------------------------------
 !

@@ -59,10 +59,10 @@
 !| W2             |<--| RESULT IN NON ASSEMBLED FORM
 !| W3             |<--| RESULT IN NON ASSEMBLED FORM
 !| W4             |<--| RESULT IN NON ASSEMBLED FORM
-!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH, PER ELEMENT
 !| XMUL           |-->| MULTIPLICATION COEFFICIENT
-!| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH, PER ELEMENT
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH, PER POINT !!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -97,7 +97,6 @@
 !
 !***********************************************************************
 !
-      PRINT*,'VC00FF'
       XSUR24 = XMUL/24.D0
 !
 !   LOOP ON THE BOUNDARY SIDES
