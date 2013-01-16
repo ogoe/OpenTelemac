@@ -26,6 +26,10 @@
       valid configurations in an array. Testing for validity is now done
       within config.py
 """
+"""@history 10/01/2013 -- Yoann Audouin
+   ScanSources goes through subdirectories as well now ignore 
+   hidden directories
+"""
 """@brief
 """
 
@@ -35,7 +39,7 @@
 # ~~> dependencies towards standard python
 import re
 import sys
-from os import path,walk, environ
+from os import path,walk, environ, sep, listdir
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
 # ~~> dependencies towards other pytel/modules
@@ -675,7 +679,14 @@ def scanSources(cfgdir,cfg,BYPASS):
       fic.update({mod:{}})
       # ~~ Scans the sources that are relevant to the model ~~~~~~~~
       SrcDir = path.join(cfg['MODULES'][mod]['path'],'sources')     # assumes the sources are under ./sources
-      FileList = getTheseFiles(SrcDir,['.f','.f90'])
+
+      # In case of subdirectories loop on the subdirectories as well
+      FileList = getTheseFiles(SrcDir,['.f','.f90','.F','.F90'])
+      for subDir in listdir(SrcDir): 
+         if path.isdir(path.join(SrcDir,subDir)) and subDir[0] != '.':
+            print "Scanning subfolder "+subDir
+            subDirFileList = getTheseFiles(SrcDir+subDir,['.f','.f90','.F','.F90'])
+            FileList.extend(subDirFileList)
       if len(FileList) == 0:
          print '... found an empty module: ' + mod
          sys.exit()
@@ -692,8 +703,8 @@ def scanSources(cfgdir,cfg,BYPASS):
          if not fic.has_key(mod): fic.update({mod:{}})
          fic[mod].update({File:[]})
          #pbar.write(File,ibar)
-         who = { 'path':path.abspath(path.dirname(File)), \
-            'file':path.basename(File), \
+         who = { 'path':SrcDir, \
+            'file':File.replace(SrcDir+sep,''), \
             'libname':mod,   \
             'type':'',       \
             'name':'',       \
