@@ -56,7 +56,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ISEG,IELEB,IELEM
+      INTEGER ISEG,IELEM
 !
 !-----------------------------------------------------------------------
 !
@@ -75,22 +75,22 @@
       DO IELEM = 1,NELEM
 !         TERM 12
           XM(ELTSEG1(IELEM)+NSEG*(ORISEG1(IELEM)-1))
-     &  = XM(ELTSEG1(IELEM)+NSEG*(ORISEG1(IELEM)-1)) + XMT(IELEB,01)
+     &  = XM(ELTSEG1(IELEM)+NSEG*(ORISEG1(IELEM)-1)) + XMT(IELEM,01)
 !         TERM 23
           XM(ELTSEG2(IELEM)+NSEG*(ORISEG2(IELEM)-1))
-     &  = XM(ELTSEG2(IELEM)+NSEG*(ORISEG2(IELEM)-1)) + XMT(IELEB,02)
+     &  = XM(ELTSEG2(IELEM)+NSEG*(ORISEG2(IELEM)-1)) + XMT(IELEM,02)
 !         TERM 31
           XM(ELTSEG3(IELEM)+NSEG*(ORISEG3(IELEM)-1))
-     &  = XM(ELTSEG3(IELEM)+NSEG*(ORISEG3(IELEM)-1)) + XMT(IELEB,06)
+     &  = XM(ELTSEG3(IELEM)+NSEG*(ORISEG3(IELEM)-1)) + XMT(IELEM,06)
 !         TERM 21
           XM(ELTSEG1(IELEM)+NSEG*(2-ORISEG1(IELEM)))
-     &  = XM(ELTSEG1(IELEM)+NSEG*(2-ORISEG1(IELEM))) + XMT(IELEB,04)
+     &  = XM(ELTSEG1(IELEM)+NSEG*(2-ORISEG1(IELEM))) + XMT(IELEM,04)
 !         TERM 32
           XM(ELTSEG2(IELEM)+NSEG*(2-ORISEG2(IELEM)))
-     &  = XM(ELTSEG2(IELEM)+NSEG*(2-ORISEG2(IELEM))) + XMT(IELEB,05)
+     &  = XM(ELTSEG2(IELEM)+NSEG*(2-ORISEG2(IELEM))) + XMT(IELEM,05)
 !         TERM 13
           XM(ELTSEG3(IELEM)+NSEG*(2-ORISEG3(IELEM)))
-     &  = XM(ELTSEG3(IELEM)+NSEG*(2-ORISEG3(IELEM))) + XMT(IELEB,03)
+     &  = XM(ELTSEG3(IELEM)+NSEG*(2-ORISEG3(IELEM))) + XMT(IELEM,03)
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -100,22 +100,22 @@
       DO IELEM = 1,NELEM
 !         TERM 12
           XM(ELTSEG1(IELEM)+NSEG*(ORISEG1(IELEM)-1))
-     &  = XM(ELTSEG1(IELEM)+NSEG*(ORISEG1(IELEM)-1)) + XMT(01,IELEB)
+     &  = XM(ELTSEG1(IELEM)+NSEG*(ORISEG1(IELEM)-1)) + XMT(01,IELEM)
 !         TERM 23
           XM(ELTSEG2(IELEM)+NSEG*(ORISEG2(IELEM)-1))
-     &  = XM(ELTSEG2(IELEM)+NSEG*(ORISEG2(IELEM)-1)) + XMT(02,IELEB)
+     &  = XM(ELTSEG2(IELEM)+NSEG*(ORISEG2(IELEM)-1)) + XMT(02,IELEM)
 !         TERM 31
           XM(ELTSEG3(IELEM)+NSEG*(ORISEG3(IELEM)-1))
-     &  = XM(ELTSEG3(IELEM)+NSEG*(ORISEG3(IELEM)-1)) + XMT(06,IELEB)
+     &  = XM(ELTSEG3(IELEM)+NSEG*(ORISEG3(IELEM)-1)) + XMT(06,IELEM)
 !         TERM 21
           XM(ELTSEG1(IELEM)+NSEG*(2-ORISEG1(IELEM)))
-     &  = XM(ELTSEG1(IELEM)+NSEG*(2-ORISEG1(IELEM))) + XMT(04,IELEB)
+     &  = XM(ELTSEG1(IELEM)+NSEG*(2-ORISEG1(IELEM))) + XMT(04,IELEM)
 !         TERM 32
           XM(ELTSEG2(IELEM)+NSEG*(2-ORISEG2(IELEM)))
-     &  = XM(ELTSEG2(IELEM)+NSEG*(2-ORISEG2(IELEM))) + XMT(05,IELEB)
+     &  = XM(ELTSEG2(IELEM)+NSEG*(2-ORISEG2(IELEM))) + XMT(05,IELEM)
 !         TERM 13
           XM(ELTSEG3(IELEM)+NSEG*(2-ORISEG3(IELEM)))
-     &  = XM(ELTSEG3(IELEM)+NSEG*(2-ORISEG3(IELEM))) + XMT(03,IELEB)
+     &  = XM(ELTSEG3(IELEM)+NSEG*(2-ORISEG3(IELEM))) + XMT(03,IELEM)
       ENDDO
 !
 !-----------------------------------------------------------------------
