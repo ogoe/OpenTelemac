@@ -95,7 +95,7 @@ SRCS	      = interface_parallel.f \
 		p_mpi_alltoallv_toma3.f \
 		p_mpi_alltoallv_toma4.f
 
-SRCS_PARTEL= partel.f
+SRCS_PARTEL= partel.F
 SRCS_GRETEL= gretel_autop.f
 SRCS_GREDELPTS= gredelpts_autop.f
 SRCS_GREDELSEG= gredelseg_autop.f
@@ -106,8 +106,8 @@ SRCS_DIFFSEL=diffsel.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.obj)
-OBJS_PARTEL = $(SRCS_PARTEL:.f=.obj)
+OBJS = $(SRCS:.f=.obj) $(SRCS:.F=.obj)
+OBJS_PARTEL = $(SRCS_PARTEL:.f=.obj) $(SRCS_PARTEL:.F=.obj)
 OBJS_GRETEL = $(SRCS_GRETEL:.f=.obj)
 OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.obj)
 OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.obj)
