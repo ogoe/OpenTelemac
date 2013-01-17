@@ -29,6 +29,7 @@
 """@history 10/01/2013 -- Yoann Audouin
    ScanSources goes through subdirectories as well now ignore 
    hidden directories
+   Adding scan of .F and .F90 files as well
 """
 """@brief
 """
