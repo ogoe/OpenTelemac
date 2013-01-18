@@ -105,7 +105,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,IELEM,NELEM,NELMAX,NPTFR,NPOIN,IELM
+      INTEGER I,IELEM,NELEM,NELMAX,NPTFR,NPOIN,IELM,IPLAN,I3D
       INTEGER MXPTVS,NPLAN
       INTEGER LV,NDP,IDP,I1,I2,I3,NPOIN2
       INTEGER NPTFR2,NELEM2,NELMAX2,NELEB2,NELEB
@@ -304,32 +304,59 @@
 !
 !-----------------------------------------------------------------------
 !
-      IF(SPHERI.AND.IELM.EQ.11) THEN
+!     MERCATOR PROJECTION (TRIANGLES AND PRISMS ONLY)
 !
-        CALL LATITU(MESH%COSLAT%R,MESH%SINLAT%R,LAMBD0,MESH%Y%R,NPOIN)
+      IF(SPHERI.AND.IELM.NE.11.AND.IELM.NE.41) THEN
+        IF(LNG.EQ.1) WRITE(LU,398)
+        IF(LNG.EQ.2) WRITE(LU,399)
+398     FORMAT(1X,'INBIEF (BIEF) : ELEMENT NON PROGRAMME',/,1X,
+     &            'EN PROJECTION DE MERCATOR : ',1I3)
+399     FORMAT(1X,'INBIEF (BIEF) : ELEMENT NOT IMPLEMENTED WITH',/,1X,
+     &            'MERCATOR PROJECTION:',1I3)
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      IF(SPHERI) THEN
+!
+        CALL LATITU(MESH%COSLAT%R,MESH%SINLAT%R,LAMBD0,MESH%Y%R,NPOIN2)
         CALL CORLAT
         CALL CPSTVC(MESH%X,T1)
         CALL CPSTVC(MESH%Y,T2)
-        DO I=1,NPOIN
-          T1%R(I)=MESH%X%R(I)*MESH%COSLAT%R(I)
-          T2%R(I)=MESH%Y%R(I)*MESH%COSLAT%R(I)
-        ENDDO
+!
+        IF(IELM.EQ.11.OR.IELM.EQ.41) THEN
+          DO I=1,NPOIN2
+            T1%R(I)=MESH%X%R(I)*MESH%COSLAT%R(I)
+            T2%R(I)=MESH%Y%R(I)*MESH%COSLAT%R(I)
+          ENDDO
+        ENDIF
+!       COMPLETING UPPER LAYERS FOR 3D MESHES     
+        IF(IELM.EQ.41) THEN
+          DO IPLAN=2,NPLAN
+            DO I=1,NPOIN2
+              I3D=(IPLAN-1)*NPOIN2+I
+              T1%R(I3D)=MESH%X%R(I3D)*MESH%COSLAT%R(I)
+              T2%R(I3D)=MESH%Y%R(I3D)*MESH%COSLAT%R(I)
+            ENDDO
+          ENDDO
+        ENDIF
+!
+!       CONVERTS TO COORDINATES BY ELEMENTS (STARTING WITH X AND Y)
+        CALL PTTOEL(MESH%XEL,T1,MESH)
+        CALL PTTOEL(MESH%YEL,T2,MESH)       
 !
       ELSE
 !
 !       NOTE: IN 3D MESH%X AND MESH%Y FULLY BUILT IN ALMESH
 !
-        CALL OS( 'X=Y     ' , X=T1 , Y=MESH%X )
-        CALL OS( 'X=Y     ' , X=T2 , Y=MESH%Y )
+!       CONVERTS TO COORDINATES BY ELEMENTS (STARTING WITH X AND Y)
+!
+        CALL PTTOEL(MESH%XEL,MESH%X,MESH)
+        CALL PTTOEL(MESH%YEL,MESH%Y,MESH)
 !
       ENDIF
 !
 !-----------------------------------------------------------------------
-!
-!     CONVERTS TO COORDINATES BY ELEMENTS (STARTING WITH X AND Y)
-!
-      CALL PTTOEL(MESH%XEL,T1,MESH)
-      CALL PTTOEL(MESH%YEL,T2,MESH)
 !
 !     CONVERTS TO A LOCAL SYSTEM IN X AND Y, WITH POINT 1 AT ORIGIN
 !
@@ -588,3 +615,4 @@
 !
       RETURN
       END
+

@@ -120,7 +120,7 @@ um1x.f       um1x04.f       um1x09.f       \
 vc00aa.f     vc00bb.f       vc00cc.f      vc00pp.f      vc00ft.f \
 vc00ff.f     vc00tt.f       vc01aa.f       \
 vc01bb.f     vc01ff.f       vc01ft.f      vc01ft2.f     vc01oo.f      vc01pp.f  vc01tt.f  vc01tt0.f \
-vc02pp_star.f               vc03aa.f      vc03bb.f      vc04aa.f      vc04pp.f  vc05oo.f  vc05aa.f  vc04tt.f \
+vc02pp_star.f               vc03aa.f      vc03bb.f      vc04aa.f      vc04pp.f  vc05oo.f  vc04tt.f \
 vc05ff.f     vc05ft.f       vc08aa.f      vc08bb.f      vc08cc.f  vc08pp.f  vc08tt.f \
 vc09aa.f     vc10oo.f       vc11aa.f      vc11aa2.f \
 vc11bb.f     vc11pp.f       vc11tt.f      vc11tt0.f \

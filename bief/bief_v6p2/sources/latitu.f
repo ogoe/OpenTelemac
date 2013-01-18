@@ -5,7 +5,7 @@
      &(COSLAT,SINLAT,LAMBD0,  Y,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ARRAYS THAT DEPEND ON THE LATITUDE
@@ -27,6 +27,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  C-T PHAM (R&D, LNHE)
+!+        17/01/2013
+!+        V6P3
+!+   More precise value of Earth radius.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COSLAT         |<--| COSINUS OF LAMBDA0
@@ -59,26 +64,26 @@
 !
 ! EARTH RADIUS
 !
-      SURR = 1.D0 / 6400000.D0
+      SURR = 1.D0 / 6370000.D0
 !
 !-----------------------------------------------------------------------
 !
       PISUR4 = ATAN(1.D0)
       PISUR2 = PISUR4 + PISUR4
 !
-!  LAMBD0/2 IN RADIANS
+!     LAMBD0/2 IN RADIANS
 !
       LB2RAD = LAMBD0 * PISUR4 / 90.D0
 !
-!  1/COS(LAMBDA),COS(LAMBDA),SIN(LAMBDA)
+!     1/COS(LAMBDA),COS(LAMBDA),SIN(LAMBDA)
 !
-      DO 10 I = 1 , NPOIN
+      DO I = 1 , NPOIN
 !
         XLAMB = 2.D0* ATAN(EXP(Y(I)*SURR)*TAN(LB2RAD+PISUR4))-PISUR2
         COSLAT(I) = COS(XLAMB)
         SINLAT(I) = SIN(XLAMB)
 !
-10    CONTINUE
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !
