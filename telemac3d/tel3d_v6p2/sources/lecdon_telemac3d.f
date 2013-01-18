@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE USING DAMOCLES.
@@ -40,6 +40,11 @@
 !+        02/04/2012
 !+        V6P2
 !+   A clean restart implemented: RESTART_MODE and restart file.
+!
+!history  J-M HERVOUET (LNHE)
+!+        18/01/2013
+!+        V6P3
+!+   Keyword for spherical coordinates added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
