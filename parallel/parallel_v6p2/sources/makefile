@@ -122,8 +122,8 @@ SRCS_DIFFSEL=diffsel.f
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f.F=.o)
-OBJS_PARTEL = $(SRCS_PARTEL:.f.F=.o)
+OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
+OBJS_PARTEL = $(subst .F,.o,$(subst .f,.o,$(SRCS_PARTEL)))
 OBJS_GRETEL = $(SRCS_GRETEL:.f=.o)
 OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.o)
 OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.o)
@@ -220,6 +220,27 @@ libcray:
 		remsh $(NAME_CRAY) -l $(USR_CRAY) "rm -rf compilation "
 		
 #------- Regles de compilation des sources FORTRAN
+
+.F.o:
+	@echo "=> Compilation de $< :"
+	@if [ ! -d ../$(DIRLIB) ]; then \
+	echo "creation du repertoire $(DIRLIB)";mkdir ../$(DIRLIB); fi
+	@if [ "$(DIRLIB)" = "unicos" ]; then \
+          DIR="`whoami`@`uname -n`:`pwd`" ; \
+          remsh $(NAME_CRAY) -l $(USR_CRAY) \
+	  "cd compilation ;\
+	  rcp $$DIR/$(<F) . ;\
+	  $(FC_CRAY) $(FCFLAG_CRAY) $(<F) ;\
+	  rm $(*F).f ;\
+	  rcp $(*F).o $$DIR/. ";\
+	else \
+	  $(FC) $(FFLAGS) $< ; fi;
+	@if [ -r *.mod ]; then \
+	 echo "Transfert du module $(@F:.o=.mod) ";\
+	 cp  *.mod $(DEST)/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 echo "Transfert du module $(@F:.o=.MOD) ";\
+	 cp  *.MOD $(DEST)/.; /bin/rm *.MOD; fi;
 
 .f.o:
 	@echo "=> Compilation de $< :"

@@ -63,6 +63,10 @@
       created on first build, without having to re-scan the entire
       source code.
 """
+"""@history 18/01/2013 -- Yoann Audouin
+   Change compilation behaviour alway read the cmdf file even if we do a scan
+   So that the compilation part is the same with or without the scan
+"""
 """@brief
 """
 
@@ -488,7 +492,11 @@ if __name__ == "__main__":
                ForDir = path.join(cfg['MODULES'][prg[item][0]]['path'],cfgname)
                # If this is the first time we are compiling the cfgname subfolder might not exists
                # If it is the case we create one
-               if not path.exists(ForDir): mkdir(ForDir)
+               if not path.exists(ForDir): 
+                  try:
+                     mkdir(ForDir) 
+                  except Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Failed to create folder : '+ForDir},e,options.bypass)])
                if 'homere' in item.lower() or 'systeme' in item.lower():
                   ForCmd = path.join(ForDir,prg[item][0] + cfgs[cfgname]['version'] + '.cmdf')
                else:
@@ -531,8 +539,10 @@ if __name__ == "__main__":
          for vername in vernames:
             if cfgs[cfgname]['version'] in vername:
                if not path.isdir(path.join(verpath,vername+sep+cfgname)):
-                  print '\nError while reading the cmdf file\nFirst time compiling the telemac system with this configuration? \
-                         \nRemove the -x/--noscan option\nYou need to run the scan once before using that option'
+                  print '\nError while searching the cmdf file\n\
+                         The subfolder'+cfgname+' does not exist\n\
+                         First time compiling the telemac system with this configuration?\n\
+                         Remove the -x/--noscan option\nYou need to run the scan once before using that option'
                   sys.exit()
                for p,d,filenames in walk(path.join(verpath,vername+sep+cfgname)) : break
                for file in filenames:

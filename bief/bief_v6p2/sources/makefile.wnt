@@ -42,7 +42,7 @@ DEST          = $(PROJECT)\BIEF\BIEF_$(VERSION)\$(DIRLIB)
 
 SRCS= \
 bief_def.f declarations_telemac.f bief.f \
-streamline.f m_med.f \
+streamline.f m_med.F \
 addblo.f  allblo.f allblo_in_block.f             \
 almesh.f     appdots.f      asmve1.f       attend.f  \
 asmvec.f     asseg_3d.f     assex3.f      assve1.f      assvec.f \
@@ -131,7 +131,7 @@ voisin.f     voisin31.f     waitfor.f     write_data.f write_data_serafin.f   wr
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.obj) 
+OBJS = $(subst .F,.obj,$(subst .f,.obj,$(SRCS)))
 
 #
 # ------------------------ Cibles
@@ -198,7 +198,7 @@ bief.obj:
     move bief.mod $(DEST)
 
 m_med.obj:
-    $(F90) $(F90_PROJ) m_med.f  
+    $(F90) $(F90_PROJ) m_med.F  
     if EXIST $(DEST)\m_med.mod del /f $(DEST)\m_med.mod
   	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
     move m_med.mod $(DEST)
