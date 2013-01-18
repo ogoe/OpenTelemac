@@ -793,7 +793,20 @@
         CALL OS( 'X=X+CY  ' , X=VCONVC, Y=V  , C=     TETAU )
       ENDIF
 !
+!     MERCATOR PROJECTION, ADVECTING FIELD MODIFIED FOR CHARACTERISTICS
+!
+      IF(SPHERI) THEN
+        DO IPLAN=1,NPLAN
+          DO I=1,NPOIN2
+            I3D=(IPLAN-1)*NPOIN2+I
+            UCONVC%R(I3D)=UCONVC%R(I3D)/MESH3D%COSLAT%R(I)
+            VCONVC%R(I3D)=VCONVC%R(I3D)/MESH3D%COSLAT%R(I)
+          ENDDO
+        ENDDO
+      ENDIF
+!
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

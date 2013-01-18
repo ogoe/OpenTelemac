@@ -132,6 +132,7 @@
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE INTERFACE_TELEMAC3D, EX_TRISOU => TRISOU
+      USE DECLARATIONS_TELEMAC3D, ONLY : SPHERI
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -165,15 +166,15 @@
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: TA
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: PRIVE
       TYPE(BIEF_OBJ),   INTENT(INOUT) :: DELTAR
-      TYPE(BIEF_MESH)                 :: MESH3
-      TYPE(BIEF_OBJ),  INTENT(INOUT)  :: GRADZSX
-      TYPE(BIEF_OBJ),  INTENT(INOUT)  :: GRADZSY
-      TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH2D
-      TYPE(BIEF_OBJ),  INTENT(IN)     :: Z3
-      TYPE (BIEF_OBJ), INTENT(IN)     :: SMASKEL
-      TYPE (BIEF_OBJ), INTENT(INOUT)  :: SVIDE
-      TYPE (BIEF_OBJ), INTENT(INOUT)  :: TRAV2, FU2
-      TYPE(BIEF_OBJ),  INTENT(INOUT)  :: SVOLU,SMU,SMV
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH3
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: GRADZSX
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: GRADZSY
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH2D
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: Z3
+      TYPE(BIEF_OBJ),   INTENT(IN)    :: SMASKEL
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: SVIDE
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: TRAV2, FU2
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: SVOLU,SMU,SMV
 !
 !                                 * = NSCE
       INTEGER, INTENT(IN) :: ISCE(*),KSCE(*)
@@ -187,8 +188,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELEM3,IPLAN,IETAGE,IZ,IZM,IZS,ERR,NP,I3D
-      DOUBLE PRECISION A,OMEGA,PI,COSNORD,SINNORD,CORI,BETA0Y,FF0
-      LOGICAL CORIVAR
+      DOUBLE PRECISION A,OMEGA,PI,CORI
 !
       INTEGER I,OPTFLO
       CHARACTER(LEN=15) FORMUL
@@ -465,49 +465,27 @@
 !
       IF(CORIOL) THEN
 !
-         IF(SCV1%TYPR.EQ.'0') THEN
-           CALL OS( 'X=0     ' , X=SCV1 )
-           CALL OS( 'X=0     ' , X=SCV2 )
-           SCV1%TYPR='Q'
-           SCV2%TYPR='Q'
-         ENDIF
+        IF(SCV1%TYPR.EQ.'0') THEN
+          CALL OS( 'X=0     ' , X=SCV1 )
+          CALL OS( 'X=0     ' , X=SCV2 )
+          SCV1%TYPR='Q'
+          SCV2%TYPR='Q'
+        ENDIF
 !
-         PI=ACOS(-1.D0)
-         OMEGA=2.D0*PI/86164.D0
+!       HERE THE VERTICAL VELOCITY IS NEGLECTED
 !
-! - NORD IS THE ANGLE BETWEEN NORTH AND THE USER'S Y AXIS
+        IF(SPHERI) THEN
 !
-         COSNORD=COS(PI*NORD/180.D0)
-         SINNORD=SIN(PI*NORD/180.D0)
+          PI=ACOS(-1.D0)
+          OMEGA=2.D0*PI/86164.D0
 !
-! - IF CORIOLIS FORCE DEPENDS ON Y COORDINATE (DEFAULT)
-!
-        CORIVAR=.FALSE.
-!
-        IF(CORIVAR) THEN
-!
-          FF0=2.D0*OMEGA*SIN(LATIT*PI/180.D0)
-!
-          DO I=1,NPOIN3
-!
-!                            6.37D6 : EARTH RADIUS
-          BETA0Y=(2.D0*OMEGA/6.37D6)*COS(LATIT*PI/180.D0)
-     &                              *(Y(I)*COSNORD-X(I)*SINNORD)
-          CORI=FF0+BETA0Y
-!
-          IF(10.D0*BETA0Y.GE.FF0)THEN
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'TRISOU : APPROX. BETA NON VALIDE'
-            ELSE
-              WRITE(LU,*) 'TRISOU: BETA APPROX. NOT VALID'
-            ENDIF
-            CALL PLANTE(1)
-            STOP
-          ENDIF
-!
-          CV1(I)=CV1(I)+VN3(I)*CORI
-          CV2(I)=CV2(I)-UN3(I)*CORI
-!
+          DO IPLAN=1,NPLAN
+            DO I=1,NPOIN2
+              CORI=2.D0*OMEGA*MESH2D%SINLAT%R(I)
+              I3=(IPLAN-1)*NPOIN2+I
+              CV1(I3)=CV1(I3)+VN3(I3)*CORI
+              CV2(I3)=CV2(I3)-UN3(I3)*CORI
+            ENDDO
           ENDDO
 !
         ELSE
@@ -648,3 +626,4 @@
 !
       RETURN
       END
+

@@ -777,7 +777,7 @@ C END OF SOGREAH ADDITIONS
         INFMAS       = MOTLOG(ADRESS(3,14))
         RAIN         = MOTLOG(ADRESS(3,15))
         INCHYD       = MOTLOG(ADRESS(3,16))
-!       QUABUB       = MOTLOG(ADRESS(3,17))
+        SPHERI       = MOTLOG(ADRESS(3,17))
 !       VARSUB       = MOTLOG(ADRESS(3,18))
         VALID        = MOTLOG(ADRESS(3,19))
         RESTART_MODE = MOTLOG(ADRESS(3,20))
@@ -1243,7 +1243,6 @@ C     TO KEEP DHN FREE FOR CALLING CONTIN
 !     HERE 2 BECAUSE IT WILL AVOID AN INTEGRATION OF SMH IN PROPAG
       OPTSOU = 2
       TETAD  = 1.D0
-      SPHERI = .FALSE.
 !
 !-----------------------------------------------------------------------
 ! SETS VARIABLES WHEN THE ADVECTION STEP IS NOT REQUIRED
