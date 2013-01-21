@@ -206,7 +206,7 @@ if __name__ == "__main__":
          if options.rootDir != '': 
             cfgs[cfgname]['root'] = path.abspath(options.rootDir)
             root = path.abspath(options.rootDir)
-         else : root = cfgs[cfgname]['root']   
+         else : root = cfgs[cfgname]['root']  
          if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules
          cfgs[cfgname]['display'] = options.display
@@ -263,8 +263,8 @@ if __name__ == "__main__":
       # Writes the Validation Report in a CSV file
       print '\n\nWritting Validation Report.\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      with open(root + '//' + d.isoformat()+ '_' + 'ValidationReport.csv', 'wb') as f:
-         spamwriter = csv.writer(f, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
+      with open(path.join(root,d.isoformat()+ '_' + 'ValidationReport.csv'), 'wb') as f:
+         spamwriter = csv.writer(f, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
          spamwriter.writerow(['Name','Module','Config','Status'])
          for j in range(len(cas)):
              spamwriter.writerow([cas[j],module[j],config[j][0],status[j]])
