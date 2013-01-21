@@ -3,10 +3,10 @@
 !                    *****************
 !
      &( FX    , FY    , SXX   , SXY   , SYY   , XK1   , FS    , CG1   ,
-     &  DEPTH1, CGSUC1, DSXXDX, DSXYDX, DSXYDY, DSYYDY, NPOIN2_DIM    )
+     &  DEPTH1, CGSUC1, DSXXDX, DSXYDX, DSXYDY, DSYYDY )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   27/06/2011
+! TOMAWAC   V6P3                                  27/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE RADIATION STRESSES AND DRIVING FORCES
@@ -54,7 +54,7 @@
 !| FS             |-->| DIRECTIONAL SPECTRUM
 !| FX             |<--| DRIVING FORCE ALONG X
 !| FY             |<--| DRIVING FORCE ALONG Y
-!| NPOIN2_DIM     |-->| NUMBER OF POINTS IN 2D MESH
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| SXX            |<--| RADIATION STRESS ALONG XX
 !| SXY            |<--| RADIATION STRESS ALONG XY
 !| SYY            |<--| RADIATION STRESS ALONG YY
@@ -66,21 +66,17 @@
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
+!     VARIABLES IN ARGUMENT
 !
-      INTEGER NPOIN2_DIM
-      DOUBLE PRECISION FS(NPOIN2_DIM,NPLAN,NF),CG1(NPOIN2_DIM,NF)
-      DOUBLE PRECISION DEPTH1(NPOIN2_DIM), CGSUC1(NPOIN2_DIM,NF)
-      DOUBLE PRECISION XK1(NPOIN2_DIM,NF)
-      DOUBLE PRECISION DSXXDX(NPOIN2_DIM),DSXYDX(NPOIN2_DIM),
-     &                 FX(NPOIN2_DIM)
-      DOUBLE PRECISION DSXYDY(NPOIN2_DIM),DSYYDY(NPOIN2_DIM),
-     &                 FY(NPOIN2_DIM)
-      DOUBLE PRECISION SXX(NPOIN2_DIM),SXY(NPOIN2_DIM),SYY(NPOIN2_DIM)
+      DOUBLE PRECISION FS(NPOIN2,NPLAN,NF),CG1(NPOIN2,NF)
+      DOUBLE PRECISION DEPTH1(NPOIN2), CGSUC1(NPOIN2,NF)
+      DOUBLE PRECISION XK1(NPOIN2,NF)
+      DOUBLE PRECISION DSXXDX(NPOIN2),DSXYDX(NPOIN2),FX(NPOIN2)
+      DOUBLE PRECISION DSXYDY(NPOIN2),DSYYDY(NPOIN2),FY(NPOIN2)
+      DOUBLE PRECISION SXX(NPOIN2),SXY(NPOIN2),SYY(NPOIN2)
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+!     LOCAL VARIABLES
+!     
       INTEGER  JP    , JF    , IP
       DOUBLE PRECISION COEF  , COCO  , SISI  , SICO  , OMEGA 
       DOUBLE PRECISION DTETAR, C
@@ -93,8 +89,8 @@
         SYY(IP) = 0.D0
       ENDDO
 !
-!.....COMPUTES THE WORKING ARRAY N = CG/C
-!     """"""""""""""""""""""""""""""""""""""""""""
+!     COMPUTES THE WORKING ARRAY N = CG/C
+!    
       DO JF = 1,NF
         OMEGA=DEUPI*FREQ(JF)
         DO IP=1,NPOIN2
@@ -102,11 +98,11 @@
         ENDDO
       ENDDO
 !
-!.....COMPUTES THE RADIATION STRESSES INTEGRATED OVER THE SPECTRUM
-!.....(SUMS UP THE DISCRETISED PART OF THE SPECTRUM)
-!     """""""""""""""""""""""""""""""""""""""""""""""""
+!     COMPUTES THE RADIATION STRESSES INTEGRATED OVER THE SPECTRUM
+!     SUMS UP THE DISCRETISED PART OF THE SPECTRUM
+!     
       DO JP=1,NPLAN
-        COCO=COSTET(JP)*COSTET(JP)
+        COCO=COSTET(JP)**2
         SICO=SINTET(JP)*COSTET(JP)
         SISI=SINTET(JP)*SINTET(JP)
         DO JF=1,NF
@@ -122,10 +118,18 @@
         ENDDO
       ENDDO
 !
-!.....COMPUTES THE GRADIENTS IN SPACE OF THE RADIATION STRESSES
-!     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!     COMPUTES THE GRADIENTS IN SPACE OF THE RADIATION STRESSES
+! 
 !
-!.....DERIVATIVE IN X
+!     INVERSE OF INTEGRALS OF TEST FUNCTIONS
+!
+      CALL VECTOR(ST0,'=','MASBAS          ',IELM2,1.D0,
+     &            ST0,ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+      IF(NCSIZE.GT.1) CALL PARCOM(ST0,2,MESH)
+      CALL OS('X=1/Y   ',X=ST0,Y=ST0)
+!    
+!     DERIVATIVE IN X
+!
       CALL OV('X=Y     ',T4,SXX,T3,C,NPOIN2)
       CALL VECTOR
      & (ST1,'=','GRADF          X',IELM2,1.D0,ST4,
@@ -136,21 +140,16 @@
      & (ST2,'=','GRADF          X',IELM2,1.D0,ST4,
      &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
 !
-      CALL VECTOR
-     & (ST3,'=','GRADF          X',IELM2,1.D0,MESH%X,
-     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
+      IF(NCSIZE.GT.1) THEN
+        CALL PARCOM(ST1,2,MESH)
+        CALL PARCOM(ST2,2,MESH)
+      ENDIF
 !
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
-       IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST2,2,MESH)
-          CALL PARCOM(ST3,2,MESH)
-       ENDIF
-!BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
-      CALL OV('X=Y/Z   ',DSXXDX,T1,T3,C,NPOIN2)
-      CALL OV('X=Y/Z   ',DSXYDX,T2,T3,C,NPOIN2)
+      CALL OV('X=YZ    ',DSXXDX,T1,ST0%R,C,NPOIN2)
+      CALL OV('X=YZ    ',DSXYDX,T2,ST0%R,C,NPOIN2)
 !
-!.....DERIVATIVE IN Y
+!     DERIVATIVE IN Y
+!
       CALL OV('X=Y     ',T4,SYY,T3,C,NPOIN2)
       CALL VECTOR
      & (ST1,'=','GRADF          Y',IELM2,1.D0,ST4,
@@ -161,27 +160,22 @@
      & (ST2,'=','GRADF          Y',IELM2,1.D0,ST4,
      &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
 !
-      CALL VECTOR
-     & (ST3,'=','GRADF          Y',IELM2,1.D0,MESH%Y,
-     &  ST3,ST3,ST3,ST3,ST3,MESH,.FALSE.,ST3)
+      IF(NCSIZE.GT.1) THEN
+        CALL PARCOM(ST1,2,MESH)
+        CALL PARCOM(ST2,2,MESH)
+      ENDIF
 !
-!BD_INCKA MODIFICATION FOR PARALLEL MODE
-       IF(NCSIZE.GT.1) THEN
-          CALL PARCOM(ST1,2,MESH)
-          CALL PARCOM(ST2,2,MESH)
-          CALL PARCOM(ST3,2,MESH)
-       ENDIF
-!BD_INCKA END OF MODIFICATION FOR PARALLEL MODE
-      CALL OV('X=Y/Z   ',DSYYDY,T1,T3,C,NPOIN2)
-      CALL OV('X=Y/Z   ',DSXYDY,T2,T3,C,NPOIN2)
+      CALL OV('X=YZ    ',DSYYDY,T1,ST0%R,C,NPOIN2)
+      CALL OV('X=YZ    ',DSXYDY,T2,ST0%R,C,NPOIN2)
 !
-!
-!.....COMPUTES THE DRIVING FORCES FOR WAVE-INDUCED CURRENTS
-!     """""""""""""""""""""""""""""""""""""""""""""""""""""
+!     COMPUTES THE DRIVING FORCES FOR WAVE-INDUCED CURRENTS
+!     
       DO IP=1,NPOIN2
         FX(IP)= - (DSXXDX(IP)+DSXYDY(IP))/DEPTH1(IP)
         FY(IP)= - (DSXYDX(IP)+DSYYDY(IP))/DEPTH1(IP)
       ENDDO
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

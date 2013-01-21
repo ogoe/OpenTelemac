@@ -122,7 +122,7 @@
 !
       IF(INISPE.EQ.0) THEN
 !
-      CALL OV ('X=C     ',F,F,F,0.D0,NPOIN4)
+      CALL OV('X=C     ',F,F,F,0.D0,NPOIN4)
 !
 !     ==/ INISPE = 1 /===========================================
 !     IF NON ZERO WIND -E(F): JONSWAP FUNCTION OF THE WIND (AL,FP)
@@ -137,8 +137,8 @@
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
           IF (UVENT.GT.UVMIN) THEN
 !
-!...........COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!           """""""""""""""""""""""""""""""""""""""""
+!           COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
+!           
             GXU=GX/(UVENT*UVENT)
             UG = UVENT/GRAVIT
             FP = MAX(0.13D0,COEFA*GXU**COEFD)
@@ -149,8 +149,8 @@
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
-!...........COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!           """""""""""""""""""""""""""""""""""""""""""""""
+!           COMPUTES THE DIRECTIONAL SPREADING FUNCTION
+!           
             SPR1=SPRED1
             TET1=ATAN2(UV(IP),VV(IP))
             SPR2=1.D0
@@ -164,8 +164,8 @@
               CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ENDIF
 !
-!...........COMPUTES THE DIRECTIONAL SPECTRUM
-!           """""""""""""""""""""""""""""""
+!           COMPUTES THE DIRECTIONAL SPECTRUM
+!           
             DO JF=1,NF
               DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -181,15 +181,16 @@
 !     IF ZERO WIND     -E(F): PARAMETERISED JONSWAP (AL,FP)
 !                      -FRA : PARAMETERISED UNIMODAL
 !     ===========================================================
+!
       ELSEIF (INISPE.EQ.2) THEN
 !
         DO 200 IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
 !
-!.........COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!         """""""""""""""""""""""""""""""""""""""""
-          IF (UVENT.GT.UVMIN) THEN
-            GXU=GX/(UVENT*UVENT)
+!         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
+!         
+          IF(UVENT.GT.UVMIN) THEN
+            GXU=GX/UVENT**2
             UG = UVENT/GRAVIT
             FP = MAX(0.13D0,COEFA*GXU**COEFD)
             FP = MIN(FP,FREMAX*UG)
@@ -203,8 +204,8 @@
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
-!.........COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         """""""""""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
+!         
           IF (UVENT.GT.UVMIN) THEN
             TET1=ATAN2(UV(IP),VV(IP))
           ELSE
@@ -222,8 +223,8 @@
             CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ENDIF
 !
-!.........COMPUTES THE DIRECTIONAL SPECTRUM
-!         """""""""""""""""""""""""""""""
+!         COMPUTES THE DIRECTIONAL SPECTRUM
+!         
           DO JF=1,NF
             DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -238,6 +239,7 @@
 !     IF ZERO WIND     -E(F): ZERO
 !                      -FRA : ZERO
 !     ===========================================================
+!
       ELSEIF (INISPE.EQ.3) THEN
 !
         DO 300 IP=1,NPOIN2
@@ -252,8 +254,8 @@
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
-!...........COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!           """""""""""""""""""""""""""""""""""""""""""""""
+!           COMPUTES THE DIRECTIONAL SPREADING FUNCTION
+!           
             SPR1=SPRED1
             TET1=ATAN2(UV(IP),VV(IP))
             SPR2=1.D0
@@ -267,8 +269,8 @@
               CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
             ENDIF
 !
-!...........COMPUTES THE DIRECTIONAL SPECTRUM
-!           """""""""""""""""""""""""""""""
+!           COMPUTES THE DIRECTIONAL SPECTRUM
+!           
             DO JF=1,NF
               DO JP=1,NPLAN
                 F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -284,20 +286,21 @@
 !     IF ZERO WIND     -E(F): PARAMETERISED JONSWAP (AL,FP)
 !                      -FRA : PARAMETERISED UNIMODAL
 !     ===========================================================
+!
       ELSEIF (INISPE.EQ.4) THEN
 !
         DO 400 IP=1,NPOIN2
 !
-!.........COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
-!         """""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE FREQUENCY SPECTRUM (JONSWAP)
+!        
           AL = ALPHIL
           FP = FPIC
           CALL SPEJON
      &( SPEC  , FREQ  , NF    , AL    , FP     , GAMMA , SIGMAA, SIGMAB,
      &  DEUPI , GRAVIT, E2FMIN, FPMIN )
 !
-!.........COMPUTES THE DIRECTIONAL SPREADING FUNCTION
-!         """""""""""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE DIRECTIONAL SPREADING FUNCTION
+!         
           SPR1=SPRED1
           TET1=TETA1
           SPR2=SPRED2
@@ -311,8 +314,8 @@
             CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ENDIF
 !
-!.........COMPUTES THE DIRECTIONAL SPECTRUM
-!         """""""""""""""""""""""""""""""
+!         COMPUTES THE DIRECTIONAL SPECTRUM
+!         
           DO JF=1,NF
             DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -327,10 +330,11 @@
 !     IF ZERO WIND     -E(F): ZERO
 !                      -FRA : ZERO
 !     ===========================================================
+!
       ELSEIF (INISPE.EQ.5) THEN
 !
         COEF=0.0624D0/(0.230D0+0.0336D0*GAMMA-0.185D0/(1.9D0+GAMMA))
-     &      *(DEUPI*FPIC)**4*HM0*HM0/GRAVIT**2
+     &      *(DEUPI*FPIC)**4*HM0**2/GRAVIT**2
 !
         DO 500 IP=1,NPOIN2
           UVENT=SQRT(UV(IP)**2+VV(IP)**2)
@@ -376,10 +380,11 @@
 !     IF ZERO WIND     -E(F): PARAMETERISED JONSWAP (HM0,FP)
 !                      -FRA : PARAMETERISED UNIMODAL
 !     ===========================================================
+!
       ELSEIF (INISPE.EQ.6) THEN
 !
         COEF=0.0624D0/(0.230D0+0.0336D0*GAMMA-0.185D0/(1.9D0+GAMMA))
-     &      *(DEUPI*FPIC)**4*HM0*HM0/GRAVIT**2
+     &      *(DEUPI*FPIC)**4*HM0**2/GRAVIT**2
 !
         DO 600 IP=1,NPOIN2
 !
@@ -406,8 +411,8 @@
             CALL FSPRD1(FRA,TETA,NPLAN,SPR1,TET1,SPR2,TET2,XLAM)
           ENDIF
 !
-!.........COMPUTES THE DIRECTIONAL SPECTRUM
-!         """""""""""""""""""""""""""""""
+!         COMPUTES THE DIRECTIONAL SPECTRUM
+!         
           DO JF=1,NF
             DO JP=1,NPLAN
               F(IP,JP,JF)=SPEC(JF)*FRA(JP)
@@ -422,10 +427,11 @@
 !     IF ZERO WIND     -E(F): PARAMETERISED TMA (HM0,FP)
 !                      -FRA : PARAMETERISED UNIMODAL
 !     ===========================================================
+!
       ELSEIF (INISPE.EQ.7) THEN
 !
         COEF=0.0624D0/(0.230D0+0.0336D0*GAMMA-0.185D0/(1.9D0+GAMMA))
-     &      *(DEUPI*FPIC)**4*HM0*HM0/GRAVIT**2
+     &      *(DEUPI*FPIC)**4*HM0**2/GRAVIT**2
 !
         DO 700 IP=1,NPOIN2
 !

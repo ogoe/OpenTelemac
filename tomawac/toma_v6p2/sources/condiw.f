@@ -6,7 +6,7 @@
      &  NVHMA  , NVCOU, PART , U_TEL, V_TEL , H_TEL )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   10/06/2011
+! TOMAWAC   V6P3                                   10/06/2011
 !***********************************************************************
 !
 !brief    INITIALISES THE ARRAYS WITH PHYSICAL PARAMETERS.
@@ -14,11 +14,6 @@
 !history  F.MARCOS (LNH)
 !+        01/02/95
 !+        V1P0
-!+
-!
-!history
-!+        25/08/2000
-!+        V5P0
 !+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -42,6 +37,11 @@
 !+        08/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        21/01/2013
+!+        V6P3
+!+   Calls modified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |<--| COMPUTATION TIME
@@ -79,7 +79,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IBID
+      INTEGER IBID,UL
       CHARACTER(LEN=7) CHDON
 !
 !-----------------------------------------------------------------------
@@ -88,53 +88,52 @@
 !
 !-----------------------------------------------------------------------
 !
-!   INITIALISES THE TIDAL CURRENT AND WATER LEVEL
+!     INITIALISES THE TIDAL CURRENT AND WATER LEVEL
 !
       IF(MAREE) THEN
+!
         IF(LNG.EQ.1) THEN
           CHDON='COURANT'
         ELSE
           CHDON='CURRENT'
         ENDIF
 !
-!       READS IN THE TIDAL CURRRENT
+!       READS IN THE TIDAL CURRRENT AND (OPTIONAL) DEPTH
 !
 !       JMH 16/11/2012 : formatted file suppressed     
 !
         IF(WAC_FILES(WACCOB)%NAME(1:1).EQ.' ') THEN
-          WRITE(LU,*) 'FICHIER ANALYTIQUE POUR COURANT'
-          CALL ANAMAR
-     &    ( SUC%R  , SVC%R   , STRA31%R, SZM1%R   ,
-     &      SZM2%R , SDZHDT%R, MESH%X%R, MESH%Y%R ,
-     &      NPOIN2    , AT  , DDC  , LT         )
           WRITE(LU,*) ' '
-          IF (LNG.EQ.1) THEN
+          IF(LNG.EQ.1) THEN
             WRITE(LU,*)'PRISE EN COMPTE D''UN COURANT DE MAREE'
             WRITE(LU,*)
      &      'MAIS PAS DE FICHIER DES COURANTS (OU DONNEES TELEMAC)'
             WRITE(LU,*)
      &      '==> LE COURANT DE MAREE EST INITIALISE DANS ANAMAR'
-          ELSE
+          ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*)'USE OF TIDAL CURRENT VELOCITIES'
             WRITE(LU,*)'BUT NO CURRENT FILE (NEITHER TELEMAC DATA FILE)'
             WRITE(LU,*)
      &      '==> INITIALISATION OF TIDAL CURRENT VELOCITIES IN ANAMAR'
           ENDIF
+          WRITE(LU,*) ' '
+          CALL ANAMAR(SUC%R,SVC%R,STRA31%R,SZM1%R,
+     &                SZM2%R,SDZHDT%R,MESH%X%R,MESH%Y%R ,
+     &                NPOIN2,AT,DDC,LT)
         ELSE
-!           READS IN THE TIDAL CURRENT FROM BINARY FILE
-            CALL LECDOI
-     &      ( SUC%R  , SVC%R   , MESH%X%R, MESH%Y%R ,
-     &        NPOIN2, WAC_FILES(WACCOB)%LU , BINCOU, NBOR , NPTFR,
-     &        AT , DDC , TC1, TC2, SUC1%R , SVC1%R, SUC2%R, SVC2%R,
-     &        INDIC , CHDON, NVCOU )
+!         READS IN THE TIDAL CURRENT FROM BINARY FILE
+          CALL LECDOI(SUC%R,SVC%R,MESH%X%R,MESH%Y%R,
+     &                NPOIN2,WAC_FILES(WACCOB)%LU,BINCOU,NBOR,NPTFR,
+     &                AT,DDC,TC1,TC2,SUC1%R,SVC1%R,SUC2%R,SVC2%R,
+     &                INDIC,CHDON,NVCOU)
         ENDIF
 !
 !       READS IN THE TIDAL WATER LEVEL
 !
-        IF((WAC_FILES(WACMAF)%NAME(1:1).EQ.' ').AND.
-     &                       (WAC_FILES(WACMAB)%NAME(1:1).EQ.' ')) THEN
-          IF((WAC_FILES(WACCOF)%NAME.NE.' ').OR.
-     &       (WAC_FILES(WACCOB)%NAME.NE.' ')) THEN
+        IF(WAC_FILES(WACMAF)%NAME(1:1).EQ.' '.AND.
+     &     WAC_FILES(WACMAB)%NAME(1:1).EQ.' ') THEN
+          IF(WAC_FILES(WACCOF)%NAME.NE.' '.OR.
+     &       WAC_FILES(WACCOB)%NAME.NE.' ') THEN
             CALL ANAMAR
      &    ( SUC%R  , SVC%R   , STRA31%R, SZM1%R   ,
      &      SZM2%R , SDZHDT%R, MESH%X%R, MESH%Y%R ,
@@ -148,73 +147,65 @@
      &      '==> INITIALISATION OF TIDAL WATER LEVEL IN ANAMAR'
           ENDIF
         ELSE
-          IF (WAC_FILES(WACMAF)%NAME(1:1).NE.' ') THEN
+          IF(WAC_FILES(WACMAF)%NAME(1:1).NE.' ') THEN
             WRITE(LU,*) 'LECTURE COURANT DANS FICHIER LECHAM MAF'
-            CALL LECHAM
-     &      ( STRA31%R, SDZHDT%R, MESH%X%R, MESH%Y%R ,
-     &        NPOIN2, WAC_FILES(WACMAF)%LU, BINMAR, NBOR  ,
-     &        NPTFR, AT   , DDC , TM1  , TM2   , 
-     &        SZM1%R, SZM2%R,INDIM, IDHMA ,NVHMA )
-           ELSE
-            CALL LECHAM
-     &      ( STRA31%R, SDZHDT%R, MESH%X%R, MESH%Y%R ,
-     &        NPOIN2, WAC_FILES(WACMAB)%LU , BINMAR, NBOR  ,
-     &        NPTFR, AT   , DDC , TM1  , TM2   ,SZM1%R, SZM2%R,
-     &        INDIM, IDHMA , NVHMA )
-           ENDIF
+            UL=WAC_FILES(WACMAF)%LU
+          ELSE
+            WRITE(LU,*) 'LECTURE COURANT DANS FICHIER LECHAM MAB'
+            UL=WAC_FILES(WACMAB)%LU
+          ENDIF
+          CALL LECHAM(STRA31%R,SDZHDT%R,MESH%X%R,MESH%Y%R,
+     &                NPOIN2,UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2, 
+     &                SZM1%R,SZM2%R,INDIM,IDHMA,NVHMA)
         ENDIF
         CALL OV('X=X+Y   ',SDEPTH%R,STRA31%R,ST1%R,0.D0,NPOIN2)
+!
       ENDIF
 !
-!   INITIALISES THE CURRENT
-!   AND READS IN A TELEMAC VARIABLE (OPTIONAL)
+!     INITIALISES THE CURRENT
 !
-      IF(COUSTA.OR.DONTEL) THEN
+      IF(COUSTA) THEN
         IF(WAC_FILES(WACCOF)%NAME(1:1).EQ.' '.AND.
      &     WAC_FILES(WACCOB)%NAME(1:1).EQ.' ') THEN
           IF(COUSTA) THEN
-             CALL ANACOS
-     &      ( SUC%R, SVC%R, MESH%X%R, MESH%Y%R, NPOIN2)
-             WRITE(LU,*)' '
-             IF (LNG.EQ.1) THEN
-               WRITE(LU,*)'PRISE EN COMPTE D''UN COURANT'
-               WRITE(LU,*)
-     &         'MAIS PAS DE FICHIER DES COURANTS (OU DONNEES TELEMAC)'
-               WRITE(LU,*)'==> LE COURANT EST INITIALISE DANS ANACOS'
-             ELSE
-               WRITE(LU,*)'USE OF CURRENT VELOCITIES'
-               WRITE(LU,*)
-     &         'BUT NO CURRENT FILE (NEITHER TELEMAC DATA FILE)'
-               WRITE(LU,*)
-     &         '==> INITIALISATION OF CURRENT VELOCITIES IN ANACOS'
-             ENDIF
+            CALL ANACOS(SUC%R,SVC%R,MESH%X%R,MESH%Y%R,NPOIN2)
+            WRITE(LU,*)' '
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*)'PRISE EN COMPTE D''UN COURANT'
+              WRITE(LU,*)
+     &        'MAIS PAS DE FICHIER DES COURANTS (OU DONNEES TELEMAC)'
+              WRITE(LU,*)'==> LE COURANT EST INITIALISE DANS ANACOS'
+            ELSEIF(LNG.EQ.2) THEN
+              WRITE(LU,*)'USE OF CURRENT VELOCITIES'
+              WRITE(LU,*)
+     &        'BUT NO CURRENT FILE (NEITHER TELEMAC DATA FILE)'
+              WRITE(LU,*)
+     &        '==> INITIALISATION OF CURRENT VELOCITIES IN ANACOS'
+            ENDIF
           ELSE
-             IF(LNG.EQ.1) THEN
-               WRITE(LU,*)'RELECTURE D''UNE VARIABLE TELEMAC IMPOSSIBLE'
-             ELSE
-               WRITE(LU,*)' READING OF A TELEMAC DATA IMPOSSIBLE '
-             ENDIF
-             CALL PLANTE(1)
+            IF(LNG.EQ.1) THEN
+              WRITE(LU,*)'RELECTURE D''UNE VARIABLE TELEMAC IMPOSSIBLE'
+            ELSE
+              WRITE(LU,*)' READING OF A TELEMAC DATA IMPOSSIBLE '
+            ENDIF
+            CALL PLANTE(1)
+            STOP
           ENDIF
         ELSE
-          IF(LNG.EQ.1) THEN
-            CHDON='COURANT'
+          IF(WAC_FILES(WACCOF)%NAME(1:1).NE.' ') THEN
+            UL=WAC_FILES(WACCOF)%LU
           ELSE
-            CHDON='CURRENT'
+            UL=WAC_FILES(WACCOB)%LU
           ENDIF
-          IF (WAC_FILES(WACCOF)%NAME(1:1).NE.' ') THEN
-             CALL LECDON
-     &      ( SUC%R  , SVC%R   , MESH%X%R, MESH%Y%R ,
-     &        NPOIN2 , WAC_FILES(WACCOF)%LU   , BINCOU ,
-     &        NBOR , NPTFR,STRA31%R,
-     &        IDTEL, NPTT , DONTEL, COUSTA, INDIC  , CHDON)
-          ELSE
-             CALL LECDON
-     &      ( SUC%R  , SVC%R   , MESH%X%R, MESH%Y%R ,
-     &        NPOIN2 , WAC_FILES(WACCOB)%LU   , BINCOU ,
-     &        NBOR , NPTFR, STRA31%R,
-     &        IDTEL, NPTT , DONTEL, COUSTA, INDIC  , CHDON)
-          ENDIF
+!         HERE DEPTH READ AS THIRD VARIABLE
+          CALL LECDON(SUC%R,'VITESSE U       M/S             ',
+     &                      'VELOCITY U      M/S             ',2,    
+     &                SVC%R,'VITESSE V       M/S             ',
+     &                      'VELOCITY V      M/S             ',2, 
+     &                SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &                         'WATER DEPTH     M               ',1, 
+     &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINCOU,NBOR,NPTFR,
+     &                NPTT,INDIC,'COURANT')
         ENDIF
         DZHDT = 0.D0
       ENDIF
@@ -236,52 +227,43 @@
           CHDON='WIND   '
         ENDIF
 !
-        IF (WAC_FILES(WACVEF)%NAME(1:1).EQ.' '.AND.
-     &      WAC_FILES(WACVEB)%NAME(1:1).EQ.' '     ) THEN
-          CALL ANAVEN
-     &   ( SUV%R, SVV%R, MESH%X%R, MESH%Y%R ,
-     &     NPOIN2,AT,DDC,VX_CTE,VY_CTE)
-          WRITE(LU,*)' '
-          IF (LNG.EQ.1) THEN
+        IF(WAC_FILES(WACVEF)%NAME(1:1).EQ.' '.AND.
+     &     WAC_FILES(WACVEB)%NAME(1:1).EQ.' '     ) THEN
+          WRITE(LU,*) ' '
+          IF(LNG.EQ.1) THEN
             WRITE(LU,*)'PRISE EN COMPTE D''UN VENT'
             WRITE(LU,*)'MAIS PAS DE FICHIER DE VENT'
             WRITE(LU,*)'==> LE VENT EST INITIALISE DANS ANAVEN'
-          ELSE
+          ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*)'USE OF WIND VELOCITIES'
             WRITE(LU,*)'BUT NO WIND FILE '
             WRITE(LU,*)'==> INITIALISATION OF WIND VELOCITIES IN ANAVEN'
           ENDIF
+          WRITE(LU,*) ' '
+          CALL ANAVEN(SUV%R,SVV%R,MESH%X%R,MESH%Y%R,
+     &                NPOIN2,AT,DDC,VX_CTE,VY_CTE)
         ELSE
-          IF (WAC_FILES(WACVEF)%NAME(1:1).NE.' ') THEN
-           IF(VENSTA) THEN
-             CALL LECDON
-     &      ( SUV%R  , SVV%R   , MESH%X%R, MESH%Y%R ,
-     &        NPOIN2 , WAC_FILES(WACVEF)%LU   , BINVEN ,
-     &        NBOR , NPTFR, STRA31%R,
-     &        IDTEL, NPTT , .FALSE., VENSTA, INDIV  , CHDON)
-           ELSE
-            CALL LECDOI
-     &      ( SUV%R , SVV%R , MESH%X%R , MESH%Y%R ,
-     &        NPOIN2, WAC_FILES(WACVEF)%LU , BINVEN, NBOR , NPTFR,
-     &        AT , DDC , TV1, TV2,SUV1%R , SVV1%R, SUV2%R, SVV2%R,
-     &        INDIV , CHDON, IBID )
-           ENDIF
+          IF(WAC_FILES(WACVEF)%NAME(1:1).NE.' ') THEN
+            UL=WAC_FILES(WACVEF)%LU
           ELSE
-           IF(VENSTA) THEN
-             CALL LECDON
-     &      ( SUV%R  , SVV%R   , MESH%X%R, MESH%Y%R ,
-     &        NPOIN2 , WAC_FILES(WACVEB)%LU   , BINVEN ,
-     &        NBOR , NPTFR,STRA31%R,
-     &        IDTEL, NPTT , .FALSE., VENSTA, INDIV  ,CHDON)
-           ELSE
-            CALL LECDOI
-     &      ( SUV%R , SVV%R , MESH%X%R , MESH%Y%R ,
-     &        NPOIN2, WAC_FILES(WACVEB)%LU, BINVEN, NBOR , NPTFR,
-     &        AT , DDC , TV1, TV2, SUV1%R , SVV1%R, SUV2%R, SVV2%R,
-     &        INDIV , CHDON, IBID )
-           ENDIF
+            UL=WAC_FILES(WACVEB)%LU
           ENDIF
-         ENDIF
+          IF(VENSTA) THEN
+            CALL LECDON(SUV%R,'VENT X          M/S             ',
+     &                        'WIND ALONG X    M/S             ',2,    
+     &                  SVV%R,'VENT Y          M/S             ',
+     &                        'WIND ALONG Y    M/S             ',2, 
+     &                  SVV%R,'????????????????????????????????',
+     &                        '????????????????????????????????',0, 
+     &                  MESH%X%R,MESH%Y%R,NPOIN2,UL,BINVEN,NBOR,NPTFR,
+     &                  NPTT,INDIC,'WIND   ')
+          ELSE
+            CALL LECDOI(SUV%R,SVV%R,MESH%X%R,MESH%Y%R,
+     &                  NPOIN2,UL,BINVEN,NBOR,NPTFR,
+     &                  AT,DDC,TV1,TV2,SUV1%R,SVV1%R,SUV2%R,SVV2%R,
+     &                  INDIV,CHDON,IBID)
+          ENDIF
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

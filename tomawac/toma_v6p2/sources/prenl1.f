@@ -79,6 +79,7 @@
       DOUBLE PRECISION DELTA1, DELTA2, DTMOIN, DTPLUS, DTETAD
       DOUBLE PRECISION APLUS , AMOIN , BPLUS , BMOIN , FPLUS , FMOIN
 !
+      INTRINSIC LOG,DBLE,INT
 !
 !=====C---------------------------------------------------C
 !  1  C COMPUTATIONS RELATED TO ANGULAR INTERPOLATION     C
@@ -119,10 +120,10 @@
 !=====C---------------------------------------------------C
 !  2  C COMPUTATIONS RELATED TO FREQUENCY INTERPOLATION   C
 !=====C---------------------------------------------------C
-      FPLUS=DLOG(1.D0+XLAMD)/DLOG(RAISF)
-      FMOIN=DLOG(1.D0-XLAMD)/DLOG(RAISF)
-      BPLUS=(RAISF**(FPLUS-IDINT(FPLUS)     )-1.D0)/(RAISF-1.D0)
-      BMOIN=(RAISF**(FMOIN-IDINT(FMOIN)+1.D0)-1.D0)/(RAISF-1.D0)
+      FPLUS=LOG(1.D0+XLAMD)/LOG(RAISF)
+      FMOIN=LOG(1.D0-XLAMD)/LOG(RAISF)
+      BPLUS=(RAISF**(FPLUS-INT(FPLUS)     )-1.D0)/(RAISF-1.D0)
+      BMOIN=(RAISF**(FMOIN-INT(FMOIN)+1.D0)-1.D0)/(RAISF-1.D0)
 !
 !
 !=====C---------------------------------------------------C
@@ -141,7 +142,7 @@
       COEFNL(11)=1.D0/(1.D0+XLAMD)**4
       COEFNL(12)=1.D0/(1.D0-XLAMD)**4
       COEFNL(13)=DBLE(1)
-      COEFNL(14)=DBLE(NF+IDINT(1.D0-FMOIN))
+      COEFNL(14)=DBLE(NF+INT(1.D0-FMOIN))
 !
       RETURN
       END

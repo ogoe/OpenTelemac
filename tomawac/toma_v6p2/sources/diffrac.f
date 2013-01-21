@@ -79,7 +79,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       USE BIEF
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,ST1,ST0,ST4,IELM2,SA,MESH,
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,ST1,ST0,IELM2,SA,MESH,
      &                                 SCCG,SDELTA,SXKONPT,SDDX,SDDY
 !
       IMPLICIT NONE 

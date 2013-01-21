@@ -7,7 +7,7 @@
      &  TAUX3 , TAUX4 , TAUX5 , DFINI )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   24/06/2011
+! TOMAWAC   V6P3                                   24/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE NON-LINEAR INTERACTIONS
@@ -86,20 +86,24 @@
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER  NPOIN2, NPLAN , NF
-      INTEGER  IANGNL(NPLAN,8)
-      DOUBLE PRECISION F1  , RAISF , TAILF
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF), COEFNL(16)
-      DOUBLE PRECISION TSTOT(NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION TAUX1(NPOIN2), TAUX2(NPOIN2), TAUX3(NPOIN2)
-      DOUBLE PRECISION TAUX4(NPOIN2), TAUX5(NPOIN2), XKMOY(NPOIN2)
-      DOUBLE PRECISION DFINI(NPOIN2), DEPTH(NPOIN2)
-      LOGICAL  PROINF
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+      INTEGER, INTENT(IN)             :: NPOIN2,NPLAN,NF
+      INTEGER, INTENT(IN)             :: IANGNL(NPLAN,8)
+      DOUBLE PRECISION, INTENT(IN)    :: F1,RAISF,TAILF
+      DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF),COEFNL(16)
+      DOUBLE PRECISION, INTENT(IN)    :: XKMOY(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TAUX1(NPOIN2),TAUX2(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TAUX3(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TAUX4(NPOIN2),TAUX5(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: DFINI(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
+      LOGICAL, INTENT(IN)             :: PROINF
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  JBP0  , JFP0  , JFP1  , JFM0  , JFM1  , JFP   , JFM
       INTEGER  JBP1  , JB    , JBM0  , JBM1  , IMAGE , JP
       INTEGER  JPP0  , JPP1  , JPM0  , JPM1  , IP    , KAUX  , JF
@@ -112,9 +116,10 @@
       DOUBLE PRECISION C7    , C8    , D7    , D8    , C7SQ  , C8SQ
       DOUBLE PRECISION TERM3 , FDEJF , FREQ
 !
+!-----------------------------------------------------------------------
 !
-!.....RECOVERS THE COEFFICIENTS COMPUTED IN 'PRENL1'
-!     """"""""""""""""""""""""""""""""""""""""""""""""""
+!     RECOVERS THE COEFFICIENTS COMPUTED IN 'PRENL1'
+!    
       C1    = COEFNL( 1)
       C2    = COEFNL( 2)
       C3    = COEFNL( 3)
@@ -129,57 +134,56 @@
       US1ML4= COEFNL(12)
       JFMIN = NINT(COEFNL(13))
       JFMAX = NINT(COEFNL(14))
-      C1SQ  = C1*C1
-      C2SQ  = C2*C2
-      C3SQ  = C3*C3
-      C4SQ  = C4*C4
-      C5SQ  = C5*C5
-      C6SQ  = C6*C6
-      C7SQ  = C7*C7
-      C8SQ  = C8*C8
+      C1SQ  = C1**2
+      C2SQ  = C2**2
+      C3SQ  = C3**2
+      C4SQ  = C4**2
+      C5SQ  = C5**2
+      C6SQ  = C6**2
+      C7SQ  = C7**2
+      C8SQ  = C8**2
 !
-!.....CORRECTION FACTOR FOR FINITE WATER DEPTH
-!     """"""""""""""""""""""""""""""""""""""""""""
-      IF (.NOT.PROINF) THEN
-!
-        DO 100 IP=1,NPOIN2
+!     CORRECTION FACTOR FOR FINITE WATER DEPTH
+!     
+      IF(.NOT.PROINF) THEN
+        DO IP=1,NPOIN2
           TERM1 = MAX(0.75D0*DEPTH(IP)*XKMOY(IP),0.5D0)
           DFINI(IP) = 1.D0+(5.5D0/TERM1)*(1.D0-0.833D0*TERM1)
-     &               *EXP(-1.25D0*TERM1)
-  100   CONTINUE
+     &               /EXP(MIN(1.25D0*TERM1,7.D2))
+        ENDDO
       ENDIF
 !
-!.....FIRST LOOP ON THE FREQUENCIES
-!     """""""""""""""""""""""""""""""""""
+!     FIRST LOOP ON THE FREQUENCIES
+!     
       DO 200 JF=JFMIN,JFMAX
 !
-!.......COMPUTES THE CONSIDERED FREQUENCY
-!       """"""""""""""""""""""""""""""""""
+!       COMPUTES THE CONSIDERED FREQUENCY
+!       
         FREQ = F1*RAISF**(JF-1)
 !
-!.......GETS THE INDICES OF THE FREQUENCIES EITHER SIDE OF THE
+!       GETS THE INDICES OF THE FREQUENCIES EITHER SIDE OF THE
 !       'MAX' FREQUENCY: FREQ(JFP0)
-!       """""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!       
         JFP0=JF+JFP
         JFP1=JFP0+1
 !
-!.......GETS THE INDICES OF THE FREQUENCIES EITHER SIDE OF THE
+!       GETS THE INDICES OF THE FREQUENCIES EITHER SIDE OF THE
 !       'MIN' FREQUENCY: FREQ(JFM0)
-!       """""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!       
         JFM0=JF+JFM-1
         JFM1=JFM0+1
 !
-!.......LIMITS THE INDICES TO NF AND TAKES INTO ACCOUNT ANALYTICALLY
+!       LIMITS THE INDICES TO NF AND TAKES INTO ACCOUNT ANALYTICALLY
 !       THE SPECTRUM TAIL (DECREASE IN -TAILF).
-!       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!      
         CALL CQUEUE( NF , RAISF , TAILF , JFP1 , JBP1 , COEFP1 )
         CALL CQUEUE( NF , RAISF , TAILF , JFP0 , JBP0 , COEFP0 )
         CALL CQUEUE( NF , RAISF , TAILF , JF   , JB   , COEFJF )
         CALL CQUEUE( NF , RAISF , TAILF , JFM1 , JBM1 , COEFM1 )
         CALL CQUEUE( NF , RAISF , TAILF , JFM0 , JBM0 , COEFM0 )
 !
-!.......INTERPOLATION COEFFICIENTS FOR THE MODIFIED SPECTRUM
-!       """""""""""""""""""""""""""""""""""""""""""""""""
+!       INTERPOLATION COEFFICIENTS FOR THE MODIFIED SPECTRUM
+!       
         D1=C1*COEFP0*US1PL4
         D2=C2*COEFP0*US1PL4
         D3=C3*COEFP1*US1PL4
@@ -189,35 +193,37 @@
         D7=C7*COEFM1*US1ML4
         D8=C8*COEFM1*US1ML4
 !
-!.......COMPUTES THE MULTIPLICATIVE COEFFICIENT (IN F**11) AND TAKES
+!       COMPUTES THE MULTIPLICATIVE COEFFICIENT (IN F**11) AND TAKES
 !       INTO ACCOUNT THE CORRECTION TERM IN FINITE DEPTH
-!       """""""""""""""""""""""""""""""""""""""""""""""""""""""
+!       
         XXFAC= 3000.D0*FREQ**11
-        IF (PROINF) THEN
-          DO 210 IP=1,NPOIN2
+        IF(PROINF) THEN
+          DO IP=1,NPOIN2
             TAUX1(IP) = XXFAC
-  210     CONTINUE
+          ENDDO
         ELSE
-          DO 220 IP=1,NPOIN2
+          DO IP=1,NPOIN2
             TAUX1(IP) = DFINI(IP)*XXFAC
-  220     CONTINUE
+          ENDDO
         ENDIF
 !
-!.......SECOND LOOP ON ANGULAR SYMMETRY
-!       """""""""""""""""""""""""""""""""""""""
+!       SECOND LOOP ON ANGULAR SYMMETRY
+!       
         DO 300 IMAGE=1,2
-       KAUX=(IMAGE-1)*4
 !
-!........THIRD LOOP ON THE DIRECTIONS
-!        """"""""""""""""""""""""""""""""""""
+         KAUX=(IMAGE-1)*4
+!
+!        THIRD LOOP ON THE DIRECTIONS
+!        
          DO 400 JP=1,NPLAN
+!
           JPP0 = IANGNL(JP,KAUX+1)
           JPP1 = IANGNL(JP,KAUX+2)
           JPM0 = IANGNL(JP,KAUX+3)
           JPM1 = IANGNL(JP,KAUX+4)
 !
-!
           IF (JFM0.LT.1) THEN
+!
 !........./-------------------------------------------------------/
 !........./ AT LEAST ONE OF THE FREQUENCIES IS LOWER THAN FREQ(1) /
 !........./ THE SPECTRUM F- WITH FREQUENCY (1-XLAMD).FREQ IS ZERO /
@@ -260,11 +266,13 @@
            TSDER(IP,JPP0,JFP1)=TSDER(IP,JPP0,JFP1)+TAUX5(IP)*C3SQ
            TSDER(IP,JPP1,JFP1)=TSDER(IP,JPP1,JFP1)+TAUX5(IP)*C4SQ
   530     CONTINUE
+!
           ENDIF
           ENDIF
           ENDIF
 !
           ELSE
+!
 !........./--------------------------------------------------------/
 !........./ FREQUENCIES F-, F, F+ MAY HAVE ENERGY                  /
 !........./--------------------------------------------------------/
@@ -328,6 +336,7 @@
            TSDER(IP,JPP0,JFP1)=TSDER(IP,JPP0,JFP1)+TAUX5(IP)*C3SQ
            TSDER(IP,JPP1,JFP1)=TSDER(IP,JPP1,JFP1)+TAUX5(IP)*C4SQ
   750     CONTINUE
+!
           ENDIF
           ENDIF
           ENDIF
@@ -341,6 +350,8 @@
   300   CONTINUE
 !
   200 CONTINUE
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

@@ -3,11 +3,11 @@
 !                    *****************
 !
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
-     &  TWNEW , TETA  , ROAIR , ROEAU , GRAVIT, NF    , NPLAN , NPOIN2,
-     &  CIMPLI, CPHAS , USN   , USO   , BETAN , BETAO )
+     &  TWNEW , TETA  , ROAIR , ROEAU , NF    , NPLAN , NPOIN2,
+     &  CIMPLI, USN   , USO   )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   27/06/2011
+! TOMAWAC   V6P3                                   27/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE WAVE GENERATION
@@ -48,14 +48,15 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF/LNHE)
+!+        23/12/2012
+!+        V6P3
+!+   A first optimisation.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| BETAN          |<--| WORK TABLE
-!| BETAO          |<--| WORK TABLE
 !| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERMS
-!| CPHAS          |<--| WORK TABLE
 !| F              |-->| DIRECTIONAL SPECTRUM
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
-!| GRAVIT         |-->| GRAVITY ACCELERATION
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
@@ -73,66 +74,67 @@
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,USDPI
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER  NF    , NPLAN , NPOIN2
-      DOUBLE PRECISION GRAVIT, ROAIR , ROEAU , CIMPLI
-      DOUBLE PRECISION  FREQ(NF)    , TETA(NPLAN)
-      DOUBLE PRECISION TWOLD(NPOIN2), TWNEW(NPOIN2), USNEW(NPOIN2)
-      DOUBLE PRECISION BETAO(NPOIN2), BETAN(NPOIN2), USOLD(NPOIN2)
-      DOUBLE PRECISION CPHAS(NPOIN2),   USO(NPOIN2),   USN(NPOIN2)
-      DOUBLE PRECISION TSTOT(NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION     F(NPOIN2,NPLAN,NF),    XK(NPOIN2,NF)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
-      INTEGER  JP    , JF    , IP
-      DOUBLE PRECISION C1    , DIREC , CONST , DIMPLI
+      INTEGER, INTENT(IN)            :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)   :: ROAIR,ROEAU,CIMPLI
+      DOUBLE PRECISION, INTENT(IN)   :: FREQ(NF),TETA(NPLAN)
+      DOUBLE PRECISION, INTENT(IN)   :: TWOLD(NPOIN2),TWNEW(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)   :: USNEW(NPOIN2),USOLD(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT):: USO(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT):: USN(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT):: TSTOT(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT):: TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)   :: F(NPOIN2,NPLAN,NF),XK(NPOIN2,NF)
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER JP,JF,IP
+      DOUBLE PRECISION C1,DIREC,CONST,COEPHAS,SURDEUPIFREQ,BETAO,BETAN
+!
+!-----------------------------------------------------------------------
 !
       C1 = 0.25D0 * (ROAIR/ROEAU) * DEUPI
-      DIMPLI=1.0D0-CIMPLI
 !
-!.....LOOP ON THE DISCRETISED DIRECTIONS
-!     """"""""""""""""""""""""""""""""""""""""""""
+!     ARRAYS DEPENDING ONLY ON POINTS AND DIRECTION
+!     COULD BE OPTIMISED MORE BY DECOMPOSING THE COS...
+!
       DO JP=1,NPLAN
-!
-!.......COMPUTES (1ST PASS) THE DIRECTIONAL DEPENDENCES
-!       """"""""""""""""""""""""""""""""""""""""""""""
         DIREC=TETA(JP)
         DO IP=1,NPOIN2
-          USO(IP)=USOLD(IP)*COS(DIREC-TWOLD(IP))
-          USN(IP)=USNEW(IP)*COS(DIREC-TWNEW(IP))
+          USO(IP,JP)=28.D0*USOLD(IP)*COS(DIREC-TWOLD(IP))
+          USN(IP,JP)=28.D0*USNEW(IP)*COS(DIREC-TWNEW(IP))
         ENDDO
+      ENDDO
 !
-!.......LOOP ON THE DISCRETISED FREQUENCIES
-!       """"""""""""""""""""""""""""""""""""""""""""
-        DO JF=1,NF
-          CONST=C1*FREQ(JF)
+!     LOOP ON THE DISCRETISED DIRECTIONS
 !
-!.........COMPUTES THE PROPORTIONALITY FACTORS BETA
-!         """"""""""""""""""""""""""""""""""""""""""""""""
+      DO JF=1,NF
+        CONST=C1*FREQ(JF)
+        SURDEUPIFREQ=USDPI/FREQ(JF)
+        DO JP=1,NPLAN
+!
+!         COMPUTES THE PROPORTIONALITY FACTORS BETA
+!         AND TAKES THE SOURCE TERM INTO ACCOUNT
+!         
           DO IP=1,NPOIN2
-            CPHAS(IP) = DEUPI * FREQ(JF) / XK(IP,JF)
-            BETAO(IP)=MAX(28.D0*USO(IP)/CPHAS(IP)-1.D0,0.D0)*CONST
-            BETAN(IP)=MAX(28.D0*USN(IP)/CPHAS(IP)-1.D0,0.D0)*CONST
-          ENDDO
-!
-!.........TAKES THE SOURCE TERM INTO ACCOUNT
-!         """"""""""""""""""""""""""""""""
-          DO IP=1,NPOIN2
+            COEPHAS = XK(IP,JF)*SURDEUPIFREQ
+            BETAO=MAX(USO(IP,JP)*COEPHAS-1.D0,0.D0)*CONST
+            BETAN=MAX(USN(IP,JP)*COEPHAS-1.D0,0.D0)*CONST
             TSTOT(IP,JP,JF) = TSTOT(IP,JP,JF)
-     &             + (DIMPLI*BETAO(IP)+CIMPLI*BETAN(IP)) * F(IP,JP,JF)
-            TSDER(IP,JP,JF) = TSDER(IP,JP,JF) + BETAN(IP)
+     &                      + (BETAO+CIMPLI*(BETAN-BETAO))*F(IP,JP,JF)
+            TSDER(IP,JP,JF)=TSDER(IP,JP,JF)+BETAN
           ENDDO
 !
         ENDDO
 !
       ENDDO
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

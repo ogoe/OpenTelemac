@@ -150,9 +150,6 @@
       INTEGER JF,IEL,I1,I2,I3
       TYPE(BIEF_OBJ) :: BID
 !
-      LOGICAL DEJA
-      DATA DEJA/.FALSE./
-!
 !----------------------------------------------------------------------
 !
       IF(.NOT.COURAN) THEN
@@ -169,8 +166,8 @@
 !      COMPUTES THE ADVECTION FIELD
 !
          CALL CONWAC
-     &( CY%R  , CX%R  , CT%R , XK    , CG    , COSF  , TGF   , DEPTH ,
-     &  DZY   , DZX   , FREQ%R , COSTET, SINTET, NPOIN2, NPLAN , JF  ,
+     &( CX%R  , CY%R  , CT%R , XK    , CG    , COSF  , TGF   , DEPTH ,
+     &  DZX   , DZY   , FREQ%R , COSTET, SINTET, NPOIN2, NPLAN , JF  ,
      &  NF    , PROINF, SPHE , PROMIN, TRA01)
 !
 !      ----------------------------------------------------------------         
@@ -213,8 +210,8 @@
 !
       DO JF=1,NF
 !
-        CALL CONW4D(CY%R,CX%R,CT%R,CF%R,
-     &              V,U,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
+        CALL CONW4D(CX%R,CY%R,CT%R,CF%R,
+     &              U,V,XK,CG,COSF,TGF,DEPTH,DZHDT,DZY,DZX,DVY,DVX,
      &              DUY,DUX,FREQ%R,COSTET,SINTET,NPOIN2,NPLAN,
      &              JF,NF,PROINF,SPHE,COURAN,MAREE,TRA01)
 !

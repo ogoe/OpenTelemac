@@ -4,11 +4,10 @@
 !
      *( TSTOT , TSDER , F     , XK    , ENRJ  , FREQ  , FMOY  , XKMOY , 
      *  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
-     *  GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , BETA  , BETAO ,
-     *  BETAN , BETOTO, BETOTN)
+     *  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 ,F_INT  , BETOTO, BETOTN)
 !
 !**********************************************************************
-! TOMAWAC   V6P1                                   23/06/2011
+! TOMAWAC   V6P3                                  23/06/2011
 !**********************************************************************
 !
 !brief   COMPUTES THE CONTRIBUTION OF THE WHITECAPPING SINK TERM USING
@@ -27,10 +26,13 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF/LNHE)
+!+        23/12/2012
+!+        V6P3
+!+   A first optimisation + limitation of SINH argument
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETA           |<->| WORK TABLE
-!| BETAN          |<->| WORK TABLE
-!| BETAO          |<->| WORK TABLE
 !| BETOTN         |<->| WORK TABLE
 !| BETOTO         |<->| WORK TABLE
 !| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERM INTEG.
@@ -43,7 +45,6 @@
 !| F              |-->| DIRECTIONAL SPECTRUM
 !| FMOY           |-->| MEAN SPECTRAL FRQUENCY FMOY
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
-!| GRAVIT         |-->| GRAVITY ACCELERATION
 !| XK             |-->| DISCRETIZED WAVE NUMBER
 !| XKMOY          |-->| AVERAGE WAVE NUMBER
 !| NF             |-->| NUMBER OF FREQUENCIES
@@ -59,8 +60,9 @@
 !  APPELS :    - PROGRAMME(S) APPELANT  : SEMIMP
 !  ********    - PROGRAMME(S) APPELE(S) :    -
 !
-!  REMARCS :
-!  ***********
+!  REMARKS:
+!  ********
+!
 !  - THE CONSTANT CMOUT3 (Cdis,break) UTILISED IN WESTHUYSEN (2007)
 !                                    IS EQUAL TO 5.0*10^(-5)
 !  - THE CONSTANT CMOUT4 (Br) UTILISED IN WESTHUYSEN (2007)
@@ -70,162 +72,146 @@
 !  - THE CONSTANT CMOUT6 (Delta) UTILISED IN WESTHUYSEN (2007)
 !                                    IS EQUAL TO 0
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER   NF  , NPLAN , NPOIN2
-      DOUBLE PRECISION CMOUT3, CMOUT4, GRAVIT
-      DOUBLE PRECISION CMOUT5, CMOUT6, CIMPLI
-      DOUBLE PRECISION USNEW (NPOIN2), USOLD (NPOIN2)
-      DOUBLE PRECISION FREQ  (NF)    , DEPTH (NPOIN2), FMOY(NPOIN2) 
-      DOUBLE PRECISION ENRJ  (NPOIN2), XKMOY (NPOIN2)
-      DOUBLE PRECISION BETAN (NPOIN2), BETAO (NPOIN2)
-      DOUBLE PRECISION BETA  (NPOIN2), TAUX1 (NPOIN2)
-      DOUBLE PRECISION BETOTO(NPOIN2), BETOTN(NPOIN2)
-      DOUBLE PRECISION TSTOT (NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION F     (NPOIN2,NPLAN,NF), XK   (NPOIN2,NF)
-      LOGICAL PROINF
+      INTEGER LNG,LU
+      COMMON/INFO/ LNG,LU
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
-      INTEGER    JP  ,  IFF, IP
-      DOUBLE PRECISION  PO , AUX, DIMPLI , C1 , C2 , P0O  , P0N
-      DOUBLE PRECISION  B  , w  , DTETAR  , CPHAS, F_INT, CG1
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTRINSIC SQRT
-!      
-      DTETAR = DEUPI/DBLE(NPLAN)
-      DIMPLI = 1.0D0-CIMPLI
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: CMOUT3,CMOUT4
+      DOUBLE PRECISION, INTENT(IN)    :: CMOUT5,CMOUT6,CIMPLI
+      DOUBLE PRECISION, INTENT(IN)    :: USNEW(NPOIN2),USOLD(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DEPTH(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: FMOY(NPOIN2),XK(NPOIN2,NF) 
+      DOUBLE PRECISION, INTENT(IN)    :: ENRJ(NPOIN2),XKMOY(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: F_INT(NPOIN2),TAUX1(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: BETOTO(NPOIN2),BETOTN(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: F(NPOIN2,NPLAN,NF)
+      LOGICAL, INTENT(IN)             :: PROINF
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER JP,IFF,IP
+      DOUBLE PRECISION PO,AUX,C1,C2,C3,P0O,P0N,W,SURDEUPIFREQ,B,DTETAR
+      DOUBLE PRECISION BETAO,BETAN,CPHAS,CG1,SQBSCMOUT4,BETA,DEUKD,KD 
+      DOUBLE PRECISION SURCMOUT4 
+!
+      INTRINSIC SQRT,TANH,DBLE,SINH
+!
+!-----------------------------------------------------------------------
+!
+!     DTETAR = DEUPI/DBLE(NPLAN)
+!     F_INT WAS DIVIDED BY DEUPI AFTER IN FORMULAS, DIVISION REMOVED
+      DTETAR = 1.D0/DBLE(NPLAN)
       C1     = - CMOUT5*DEUPI**9/GRAVIT**4
       C2     = - CMOUT5*DEUPI
-      w      = 25.D0
-! 
-      IF (PROINF) THEN   
-!     ---------------- DEEP WATER CASE
+      W = 25.D0
+      SURCMOUT4 = 1.D0/CMOUT4
 !
-!.......WORK ARRAY (TERM DEPENDING ONLY ON THE SPATIAL MESH NODE)
-!       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+      IF(PROINF) THEN   
+!       DEEP WATER CASE, ARRAY DEPENDING ONLY ON THE SPATIAL MESH NODE       
         DO IP = 1,NPOIN2
           TAUX1(IP) = C1 * ENRJ(IP)**2 * FMOY(IP)**9
         ENDDO
-!
-!.......LOOP ON THE DISCRETISED FREQUENCIES
-!       """""""""""""""""""""""""""""""""""""""""""
-        DO IFF = 1,NF
-!
-          DO IP = 1,NPOIN2
-            F_INT=0.D0
-            DO JP = 1,NPLAN
-              F_INT=F_INT+F(IP,JP,IFF)*DTETAR
-            ENDDO
-!            
-            CPHAS = DEUPI * FREQ(IFF) / XK(IP,IFF)
-            P0O=3.D0+TANH(W*(USOLD(IP)/CPHAS-0.1D0))
-            P0N=3.D0+TANH(W*(USNEW(IP)/CPHAS-0.1D0))            
-!            
-            CG1 = 0.5D0*GRAVIT/(DEUPI * FREQ(IFF))
-            B   = CG1*(XK(IP,IFF)**3)*F_INT/DEUPI
-!            
-!..........COMPUTES THE BREAK/NON-BREAK TRANSITION
-!          """""""""""""""""""""""""""""""""""""""
-            PO  = 1/2.D0*(1+TANH(10.D0*((B/CMOUT4)**(0.5D0)-1.D0)))
-!                         
-!.........COMPUTES THE BREAK BETA
-!         """"""""""""""""""""            
-            BETAO(IP)=-CMOUT3*(B/CMOUT4)**(P0O/2.D0)
-     *                              *GRAVIT**(0.5D0)*XK(IP,IFF)**(0.5)
-            BETAN(IP)=-CMOUT3*(B/CMOUT4)**(P0N/2.D0)
-     *                              *GRAVIT**(0.5D0)*XK(IP,IFF)**(0.5)
-!
-!.........COMPUTES THE NON-BREAK BETA
-!         """"""""""""""""""""""""
-            AUX = (FREQ(IFF)/FMOY(IP))**2
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT6)*AUX+CMOUT6*AUX**2)
-!
-!.........COMPUTES THE TOTAL BETA
-!         """"""""""""""""""""            
-            BETOTO(IP)=(1-PO)*BETA(IP)+PO*BETAO(IP)
-            BETOTN(IP)=(1-PO)*BETA(IP)+PO*BETAN(IP)
-          ENDDO                    
-!
-!.........TAKES THE SOURCE TERM INTO ACCOUNT
-!         """"""""""""""""""""""""""""""""
-          DO JP = 1,NPLAN
-            DO IP = 1,NPOIN2
-              TSTOT(IP,JP,IFF)=TSTOT(IP,JP,IFF)
-     *              +(DIMPLI*BETOTO(IP)+CIMPLI*BETOTN(IP))*F(IP,JP,IFF)
-              TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF) + BETOTN(IP)
-            ENDDO
-          ENDDO
-        ENDDO
-!        
       ELSE
-!     ---------------- FINITE DEPTH CASE
-!
-!.......WORK ARRAY (TERM DEPENDING ONLY ON THE SPATIAL MESH NODE)
-!       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!       FINITE DEPTH CASE
         DO IP=1,NPOIN2
           TAUX1(IP) = C2 * ENRJ(IP)**2 * FMOY(IP) * XKMOY(IP)**4
         ENDDO 
+      ENDIF
 !
-!.......LOOP ON THE DISCRETISED FREQUENCIES
-!       """""""""""""""""""""""""""""""""""""""""""
-        DO IFF = 1,NF
+!     LOOP ON THE DISCRETISED FREQUENCIES
+! 
+      DO IFF=1,NF
+!       
+        SURDEUPIFREQ=1.D0/(DEUPI*FREQ(IFF))
+!
+        DO IP=1,NPOIN2
+          F_INT(IP)=F(IP,1,IFF)
+        ENDDO
+        DO JP=2,NPLAN
+          DO IP=1,NPOIN2
+            F_INT(IP)=F_INT(IP)+F(IP,JP,IFF)
+          ENDDO
+        ENDDO
+        DO IP=1,NPOIN2
+          F_INT(IP)=F_INT(IP)*DTETAR
+        ENDDO
+!
+        IF(PROINF) THEN
 !
           DO IP = 1,NPOIN2
-            F_INT=0.D0
-            DO JP = 1,NPLAN
-              F_INT=F_INT+F(IP,JP,IFF)*DTETAR
-            ENDDO
-!            
-            CPHAS = DEUPI * FREQ(IFF) / XK(IP,IFF)
-            P0O=3.D0+TANH(W*(USOLD(IP)/CPHAS-0.1D0))
-            P0N=3.D0+TANH(W*(USNEW(IP)/CPHAS-0.1D0))            
-!                        
-            CG1= DEUPI*FREQ(IFF)/XK(IP,IFF)*(0.5D0+XK(IP,IFF)*DEPTH(IP)
-     *                               /DSINH(2.D0*XK(IP,IFF)*DEPTH(IP)))
-
-            B   = CG1*(XK(IP,IFF)**3)*F_INT/DEUPI
-!            
-!..........COMPUTES THE BREAK/NON-BREAK TRANSITION
-!          """""""""""""""""""""""""""""""""""""""
-            PO  = 1/2.D0*(1+TANH(10.D0*((B/CMOUT4)**(0.5D0)-1.D0)))
-!                         
-!.........COMPUTES THE BREAK BETA
-!         """"""""""""""""""""            
-            BETAO(IP)=-CMOUT3*(B/CMOUT4)**(P0O/2.D0)
-     *        *(TANH(XK(IP,IFF)*DEPTH(IP)))**((2.D0-P0O)/4.D0)
-     *                    *SQRT(GRAVIT*XK(IP,IFF))
-            BETAN(IP)=-CMOUT3*(B/CMOUT4)**(P0N/2.D0)
-     *        *(TANH(XK(IP,IFF)*DEPTH(IP)))**((2.D0-P0N)/4.D0)
-     *                    *SQRT(GRAVIT*XK(IP,IFF))
 !
-!.........COMPUTES THE NON-BREAK BETA
-!         """"""""""""""""""""""""
+            CPHAS = XK(IP,IFF)*SURDEUPIFREQ
+            P0O=3.D0+TANH(W*(USOLD(IP)*CPHAS-0.1D0))
+            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))                       
+            CG1 = 0.5D0*GRAVIT*SURDEUPIFREQ
+            B   = CG1*F_INT(IP)*XK(IP,IFF)**3
+            SQBSCMOUT4=SQRT(B*SURCMOUT4)           
+!           COMPUTES THE BREAK/NON-BREAK TRANSITION          
+            PO = 0.5D0*(1.D0+TANH(10.D0*(SQBSCMOUT4-1.D0)))                         
+!           COMPUTES THE BREAK BETA
+            C3=-CMOUT3*SQRT(GRAVIT*XK(IP,IFF))                    
+            BETAO=C3*SQBSCMOUT4**P0O
+            BETAN=C3*SQBSCMOUT4**P0N
+!           COMPUTES THE NON-BREAK BETA         
+            AUX = (FREQ(IFF)/FMOY(IP))**2
+            BETA=TAUX1(IP)*AUX*(1.D0-CMOUT6+CMOUT6*AUX)
+!           COMPUTES THE TOTAL BETA                   
+            BETOTO(IP)=BETA+PO*(BETAO-BETA)
+            BETOTN(IP)=BETA+PO*(BETAN-BETA)
+!
+          ENDDO
+!
+        ELSE
+!
+          DO IP = 1,NPOIN2
+! 
+            CPHAS = XK(IP,IFF)*SURDEUPIFREQ              
+            KD=MIN(XK(IP,IFF)*DEPTH(IP),350.D0)
+            DEUKD=KD+KD                                            
+            CG1=( 0.5D0+XK(IP,IFF)*DEPTH(IP)/SINH(DEUKD) )/CPHAS           
+            B = CG1*F_INT(IP)*XK(IP,IFF)**3          
+            SQBSCMOUT4=SQRT(B*SURCMOUT4)                                        
+!           COMPUTES THE BREAK BETA
+            C3=-CMOUT3*SQRT(GRAVIT*XK(IP,IFF))         
+            AUX=TANH(KD) 
+            P0O=3.D0+TANH(W*(USOLD(IP)*CPHAS-0.1D0))
+            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))                     
+            BETAO=C3*SQBSCMOUT4**P0O*AUX**((2.D0-P0O)*0.25D0)
+            BETAN=C3*SQBSCMOUT4**P0N*AUX**((2.D0-P0N)*0.25D0)
+!           COMPUTES THE NON-BREAK BETA
             AUX = XK(IP,IFF) / XKMOY(IP)
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT6)*AUX+CMOUT6*AUX**2)
+!           COMPUTES THE TOTAL BETA
+            BETA=TAUX1(IP)*AUX*(1.D0-CMOUT6+CMOUT6*AUX)
+!           COMPUTES THE BREAK/NON-BREAK TRANSITION          
+            PO = 0.5D0*(1.D0+TANH(10.D0*(SQBSCMOUT4-1.D0)))  
+            BETOTO(IP)=BETA+PO*(BETAO-BETA)
+            BETOTN(IP)=BETA+PO*(BETAN-BETA)
 !
-!.........COMPUTES THE TOTAL BETA
-!         """"""""""""""""""""            
-            BETOTO(IP)=(1-PO)*BETA(IP)+PO*BETAO(IP)
-            BETOTN(IP)=(1-PO)*BETA(IP)+PO*BETAN(IP)
-          ENDDO                    
+          ENDDO     
 !
-!.........TAKES THE SOURCE TERM INTO ACCOUNT
-!         """"""""""""""""""""""""""""""""
-          DO JP = 1,NPLAN
-            DO IP = 1,NPOIN2
-              TSTOT(IP,JP,IFF)=TSTOT(IP,JP,IFF)
-     *              +(DIMPLI*BETOTO(IP)+CIMPLI*BETOTN(IP))*F(IP,JP,IFF)
-              TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF) + BETOTN(IP)
-            ENDDO
+        ENDIF                    
+!
+!       TAKES THE SOURCE TERM INTO ACCOUNT
+!      
+        DO JP = 1,NPLAN
+          DO IP = 1,NPOIN2
+            TSTOT(IP,JP,IFF)=TSTOT(IP,JP,IFF)
+     *      +(BETOTO(IP)+CIMPLI*(BETOTN(IP)-BETOTO(IP)))*F(IP,JP,IFF)
+            TSDER(IP,JP,IFF)=TSDER(IP,JP,IFF) + BETOTN(IP)
           ENDDO
         ENDDO
 !
-      ENDIF
+      ENDDO
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

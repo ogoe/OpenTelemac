@@ -91,6 +91,8 @@
 !
       INTEGER IFF,I,I3,IPLAN
 !
+      INTRINSIC MAX
+!
 !----------------------------------------------------------------------
 !
 !     WITH CURRENT ALL FUNCTION MUST BE BUILT BEFORE INTERPOLATION
@@ -144,9 +146,8 @@
         DO IPLAN=1,NPLAN
           DO I=1,NPOIN2
             I3=I+(IPLAN-1)*NPOIN2
-!           JMH: WHY ???
-            T3_02%R(I3)=MAX(0.D0,T3_02%R(I3))
-            F(I,IPLAN,IFF)=T3_02%R(I3)/B(I,IFF) 
+!           MAX(..,0.D0) SEEMS NECESSARY, WHERE F BECOMES < 0 ??
+            F(I,IPLAN,IFF)=MAX(T3_02%R(I3)/B(I,IFF),0.D0) 
           ENDDO
         ENDDO
 !

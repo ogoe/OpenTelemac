@@ -277,8 +277,7 @@
 !     CALCUL DE LA PROFONDEUR D'EAU (TABLEAU DEPTH)
 !
       DO IP=1,NPOIN2
-        DEPTH(IP)=ZREPOS-ZF(IP)
-        IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
+        DEPTH(IP)=MAX(ZREPOS-ZF(IP),0.9D0*PROMIN)
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -360,12 +359,14 @@
         CALL CONDIW(AT,LT,TC1,TC2,TV1,TV2,TM1,TM2, 
      &              NVHMA,NVCOU,PART,U_TEL,V_TEL,H_TEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
-        IF(PART.EQ.0) THEN
+!
+!       JMH: DEPTH MAY BE INITIALISED IN CONDIW
+!       IF(PART.EQ.0) THEN
           DO IP=1,NPOIN2
             SDZHDT%R(IP)=0.D0
-            IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=PROMIN
+            IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
           ENDDO
-        ENDIF
+!       ENDIF
       ENDIF
       AT0=AT
 !
@@ -802,7 +803,7 @@
      &             NPLAN,NF,COURAN.OR.PART.EQ.1,STSDER%R,STSTOT,
      &             ITR01,T3_01,T3_02,ISUB,MESH3D)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROPA'
-       ENDIF
+      ENDIF
 !
 !.....11.4 INTEGRATION DES TERMES SOURCES.
 !   

@@ -7,14 +7,12 @@
      &  NF    , PROINF, SPHE  , PROMIN, TRA01 )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   14/068/2011
+! TOMAWAC   V6P3                                   14/068/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE ADVECTION FIELD (3D WITHOUT CURRENT).
 !
-!warning  IN THIS CASE THE X AXIS IS VERTICAL ORIENTED UPWARDS AND
-!+            THE Y AXIS IS HORIZONTAL ORIENTED TOWARDS THE RIGHT;
-!+            TETA IS THE DIRECTION WRT NORTH, CLOCKWISE
+!warning  TETA IS THE DIRECTION WRT NORTH, CLOCKWISE
 !
 !history  M. BENOIT (EDF LNHE)
 !+        19/01/2004
@@ -25,37 +23,37 @@
 !+        13/07/2010
 !+        V6P0
 !+   Translation of French comments within the FORTRAN sources into
-!+   English comments
+!+   English comments.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        21/08/2010
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
+!+   cross-referencing of the FORTRAN sources.
 !
 !history  G.MATTAROLO (EDF - LNHE)
 !+        14/06/2011
 !+        V6P1
-!+   Translation of French names of the variables in argument
+!+   Translation of French names of the variables in argument.
 !
 !history  J-M HERVOUET (EDF-LNHE)
 !+        27/11/2012
 !+        V6P3
 !+   Optimisation (loops on NPOIN2 and NPLAN swapped to get smaller 
-!+   strides, work array TRA01 differently used, etc.)
+!+   strides, work array TRA01 differently used, etc.).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CG             |-->| DISCRETIZED GROUP VELOCITY
 !| COSF           |-->| COSINE OF THE LATITUDES OF THE POINTS 2D
 !| COSTET         |-->| COSINE OF TETA ANGLE
-!| CX             |<--| ADVECTION FIELD ALONG X(OR PHI)
-!| CY             |<--| ADVECTION FIELD ALONG Y(OR LAMBDA)
+!| CY             |<--| ADVECTION FIELD ALONG X(OR PHI)
+!| CX             |<--| ADVECTION FIELD ALONG Y(OR LAMBDA)
 !| CT             |<--| ADVECTION FIELD ALONG TETA
 !| DEPTH          |-->| WATER DEPTH
-!| DZX            |-->| SEA BOTTOM SLOPE ALONG X
-!| DZY            |-->| SEA BOTTOM SLOPE ALONG Y
+!| DZY            |-->| SEA BOTTOM SLOPE ALONG X
+!| DZX            |-->| SEA BOTTOM SLOPE ALONG Y
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
-!| JF             |-->| INDEX OF THE FREQUENCY
+!| JF             |-->| INDEX OF THE FREQUENCX
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
@@ -80,14 +78,14 @@
       INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2,JF
       DOUBLE PRECISION, INTENT(IN)    :: PROMIN
       DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: DZX(NPOIN2),DZY(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: DZY(NPOIN2),DZX(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: COSF(NPOIN2),TGF(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF)
       DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: TRA01(NPOIN2)
       DOUBLE PRECISION, INTENT(IN)    :: CG(NPOIN2,NF),XK(NPOIN2,NF)
-      DOUBLE PRECISION, INTENT(INOUT) :: CX(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: CY(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: CX(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(INOUT) :: CT(NPOIN2,NPLAN)
       LOGICAL, INTENT(IN)             :: PROINF,SPHE
 !
@@ -114,8 +112,8 @@
             TR1=GSQP/FREQ(JF)*COSTET(JP)
             TR2=GSQP/FREQ(JF)*SINTET(JP)
             DO IP=1,NPOIN2
-              CX(IP,JP)=TR1
-              CY(IP,JP)=TR2
+              CY(IP,JP)=TR1
+              CX(IP,JP)=TR2
               CT(IP,JP)=0.D0
             ENDDO
           ENDDO
@@ -132,8 +130,8 @@
             DO IP=1,NPOIN2
               SRCF=SR/COSF(IP)
               TFSR=TGF(IP)*SR
-              CX(IP,JP)=TR1*SR*GRADEG
-              CY(IP,JP)=TR2*SRCF*GRADEG
+              CY(IP,JP)=TR1*SR*GRADEG
+              CX(IP,JP)=TR2*SRCF*GRADEG
               CT(IP,JP)=TR2*TFSR
             ENDDO
           ENDDO
@@ -164,13 +162,13 @@
           DO JP=1,NPLAN
             DO IP=1,NPOIN2
               IF(DEPTH(IP).GT.PROMIN) THEN
-                DDDN=-SINTET(JP)*DZX(IP)+COSTET(JP)*DZY(IP)
-                CX(IP,JP)=CG(IP,JF)*COSTET(JP)
-                CY(IP,JP)=CG(IP,JF)*SINTET(JP)
+                DDDN=-SINTET(JP)*DZY(IP)+COSTET(JP)*DZX(IP)
+                CY(IP,JP)=CG(IP,JF)*COSTET(JP)
+                CX(IP,JP)=CG(IP,JF)*SINTET(JP)
                 CT(IP,JP)=-TRA01(IP)*DDDN
               ELSE
-                CX(IP,JP)=0.D0
                 CY(IP,JP)=0.D0
+                CX(IP,JP)=0.D0
                 CT(IP,JP)=0.D0
               ENDIF
             ENDDO
@@ -187,14 +185,14 @@
               IF(DEPTH(IP).GT.PROMIN) THEN
                 SRCF=SR/COSF(IP)
                 TFSR=SR*TGF(IP)              
-                DDDN=-SINTET(JP)*DZX(IP)*SR+COSTET(JP)*DZY(IP)*SRCF
-                CX(IP,JP)=(CG(IP,JF)*COSTET(JP))*SR*GRADEG
-                CY(IP,JP)=(CG(IP,JF)*SINTET(JP))*SRCF*GRADEG
+                DDDN=-SINTET(JP)*DZY(IP)*SR+COSTET(JP)*DZX(IP)*SRCF
+                CY(IP,JP)=(CG(IP,JF)*COSTET(JP))*SR*GRADEG
+                CX(IP,JP)=(CG(IP,JF)*SINTET(JP))*SRCF*GRADEG
                 CT(IP,JP)=CG(IP,JF)*SINTET(JP)*TFSR
      &                   -TRA01(IP)*DDDN*GRADEG
               ELSE
-                CX(IP,JP)=0.0D0
                 CY(IP,JP)=0.0D0
+                CX(IP,JP)=0.0D0
                 CT(IP,JP)=0.0D0
               ENDIF
             ENDDO

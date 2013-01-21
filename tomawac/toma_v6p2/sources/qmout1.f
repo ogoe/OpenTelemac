@@ -3,11 +3,10 @@
 !                    *****************
 !
      &( TSTOT , TSDER , F     , XK    , ENRJ  , FREQ  , FMOY  , XKMOY ,
-     &  PROINF, CMOUT1, CMOUT2, GRAVIT, NF    , NPLAN , NPOIN2, TAUX1 ,
-     &  BETA  )
+     &  PROINF, CMOUT1, CMOUT2, NF  , NPLAN , NPOIN2, TAUX1   , BETA  )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   23/06/2011
+! TOMAWAC   V6P3                                   23/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE WHITECAPPING
@@ -50,7 +49,6 @@
 !| F              |-->| DIRECTIONAL SPECTRUM
 !| FMOY           |-->| MEAN SPECTRAL FRQUENCY FMOY
 !| FREQ           |-->| DISCRETIZED FREQUENCIES
-!| GRAVIT         |-->| GRAVITY ACCELERATION
 !| NF             |-->| NUMBER OF FREQUENCIES
 !| NPLAN          |-->| NUMBER OF DIRECTIONS
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
@@ -62,22 +60,25 @@
 !| XKMOY          |-->| AVERAGE WAVE NUMBER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER  NF    , NPLAN , NPOIN2
-      DOUBLE PRECISION CMOUT1, CMOUT2, GRAVIT
-      DOUBLE PRECISION XKMOY(NPOIN2), ENRJ(NPOIN2) ,  BETA(NPOIN2)
-      DOUBLE PRECISION      FREQ(NF), FMOY(NPOIN2) , TAUX1(NPOIN2)
-      DOUBLE PRECISION TSTOT(NPOIN2,NPLAN,NF), TSDER(NPOIN2,NPLAN,NF)
-      DOUBLE PRECISION     F(NPOIN2,NPLAN,NF),    XK(NPOIN2,NF)
-      LOGICAL PROINF
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: CMOUT1,CMOUT2
+      DOUBLE PRECISION, INTENT(IN)    :: XKMOY(NPOIN2),ENRJ(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),FMOY(NPOIN2) 
+      DOUBLE PRECISION, INTENT(INOUT) :: TAUX1(NPOIN2),BETA(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSDER(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF)
+      LOGICAL, INTENT(IN)             :: PROINF
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  JP    , JF    , IP
       DOUBLE PRECISION AUX   , C1    , C2
 !
@@ -85,57 +86,60 @@
       C2 = - CMOUT1*DEUPI
 !
       IF (PROINF) THEN
-!     ---------------- INFINITE WATER DEPTH (USES F).
 !
-!.......WORKING ARRAY (THIS TERM ONLY DEPENDS ON THE POINT IN SPACE)
-!       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!       INFINITE WATER DEPTH (USES F).
+!
+!       WORKING ARRAY (THIS TERM ONLY DEPENDS ON THE POINT IN SPACE)
+!       
         DO IP=1,NPOIN2
           TAUX1(IP) = C1 * ENRJ(IP)**2 * FMOY(IP)**9
         ENDDO
 !
-!.......LOOP OVER DISCRETISED FREQUENCIES
-!       """""""""""""""""""""""""""""""""""""""""""
+!       LOOP OVER DISCRETISED FREQUENCIES
+!       
         DO JF=1,NF
 !
-!.........COMPUTES THE BETA COEFFICIENT : QMOUT1 = BETA * F
-!         """"""""""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE BETA COEFFICIENT : QMOUT1 = BETA * F
+!         
           DO IP=1,NPOIN2
             AUX = (FREQ(JF)/FMOY(IP))**2
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT2)*AUX+CMOUT2*AUX**2)
+            BETA(IP)=TAUX1(IP)*AUX*(1.D0-CMOUT2+CMOUT2*AUX)
           ENDDO
 !
-!.........TAKES THE SOURCE TERM INTO ACCOUNT
-!         """"""""""""""""""""""""""""""""
+!         TAKES THE SOURCE TERM INTO ACCOUNT
+!         
           DO JP=1,NPLAN
             DO IP=1,NPOIN2
               TSTOT(IP,JP,JF) = TSTOT(IP,JP,JF)+BETA(IP)*F(IP,JP,JF)
               TSDER(IP,JP,JF) = TSDER(IP,JP,JF)+BETA(IP)
             ENDDO
           ENDDO
+!
         ENDDO
 !
       ELSE
-!     ---------------- FINITE WATER DEPTH (USES K).
 !
-!.......WORKING ARRAY (THIS TERM ONLY DEPENDS ON THE POINT IN SPACE)
-!       """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!       FINITE WATER DEPTH (USES K).
+!
+!       WORKING ARRAY (THIS TERM ONLY DEPENDS ON THE POINT IN SPACE)
+!    
         DO IP=1,NPOIN2
           TAUX1(IP) = C2 * ENRJ(IP)**2 * FMOY(IP) * XKMOY(IP)**4
         ENDDO
 !
-!.......LOOP OVER THE DISCRETISED FREQUENCIES
-!       """""""""""""""""""""""""""""""""""""""""""
+!       LOOP OVER THE DISCRETISED FREQUENCIES
+!       
         DO JF=1,NF
 !
-!.........COMPUTES THE BETA COEFFICIENT : QMOUT1 = BETA * F
-!         """"""""""""""""""""""""""""""""""""""""""""""
+!         COMPUTES THE BETA COEFFICIENT : QMOUT1 = BETA * F
+!     
           DO IP=1,NPOIN2
             AUX = XK(IP,JF) / XKMOY(IP)
-            BETA(IP)=TAUX1(IP)*((1.D0-CMOUT2)*AUX+CMOUT2*AUX**2)
+            BETA(IP)=TAUX1(IP)*AUX*(1.D0-CMOUT2+CMOUT2*AUX)
           ENDDO
 !
-!.........TAKES THE SOURCE TERM INTO ACCOUNT
-!         """"""""""""""""""""""""""""""""
+!         TAKES THE SOURCE TERM INTO ACCOUNT
+!         
           DO JP=1,NPLAN
             DO IP=1,NPOIN2
               TSTOT(IP,JP,JF) = TSTOT(IP,JP,JF)+BETA(IP)*F(IP,JP,JF)
@@ -145,6 +149,8 @@
         ENDDO
 !
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

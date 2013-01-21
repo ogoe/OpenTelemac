@@ -82,10 +82,10 @@
 !.......COMPUTES THE LINEAR COEFFICIENT BETA : QBREK2 = BETA * F
 !       WITH THE WEIGHT FUNCTION W(H) = CONSTANT
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""""
-        DO 25 IP = 1,NPOIN2
-          BETA(IP) = COEF*8.D0*VARIAN(IP)**2.5D0*FCAR(IP)
+        DO IP = 1,NPOIN2
+          BETA(IP) = COEF*8.D0*SQRT(VARIAN(IP)**5)*FCAR(IP)
      &             /(GAMMA2*DEPTH(IP)**5)
-   25   CONTINUE
+        ENDDO
 !
       ELSEIF (IWHTG.EQ.2) THEN
 !
@@ -93,9 +93,9 @@
 !       WITH THE WEIGHT FUNCTION W(H) != CONSTANT
 !       """""""""""""""""""""""""""""""""""""""""""""""""""""""
         DO 35 IP = 1,NPOIN2
-          BETA(IP) = (COEF*VARIAN(IP)**1.5D0*FCAR(IP)/
-     &                DEPTH(IP)**3)*(1.D0-1.D0/(1.D0+VARIAN(IP)*8.D0
-     &                /(GAMMA2*DEPTH(IP)*DEPTH(IP)))**2.5D0)
+          BETA(IP) = (COEF*SQRT(VARIAN(IP)**3)*FCAR(IP)/
+     &              DEPTH(IP)**3)*(1.D0-1.D0/(1.D0+VARIAN(IP)*8.D0
+     &              /(GAMMA2*DEPTH(IP)*DEPTH(IP)))**2.5D0)
   35    CONTINUE
       ENDIF
 !
@@ -103,10 +103,9 @@
 !     """"""""""""""""""""""""""""""""
       DO 10 IFF = 1,NF
         DO 20 JP = 1,NPLAN
-          DO 30 IP = 1,NPOIN2
+          DO IP = 1,NPOIN2
             TSTOT(IP,JP,IFF) = TSTOT(IP,JP,IFF)+BETA(IP)*F(IP,JP,IFF)
-!            TSDER(IP,JP,IFF) = TSDER(IP,JP,IFF)+BETA(IP)
-   30     CONTINUE
+          ENDDO
    20   CONTINUE
    10 CONTINUE
 !

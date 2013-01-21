@@ -110,7 +110,7 @@
            B   = SQRT(8.D0*VARIAN(IP))/HM
            QB  = QBBJ78(B,IQBBJ)
 !
-           BETA(IP) = COEF*QB*FCAR(IP)*HM*HM/VARIAN(IP)
+           BETA(IP) = COEF*QB*FCAR(IP)*HM**2/VARIAN(IP)
          ELSE
            BETA(IP) = 0.D0
          ENDIF

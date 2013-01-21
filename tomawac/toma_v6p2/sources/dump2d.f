@@ -79,8 +79,7 @@
      &( STRA51%R, STRA52%R, STRA53%R, STRA54%R, STRA55%R,
      &  SXK%R   , XF1     , SCG%R   , SDEPTH%R,
 !       WORK TABLE HERE
-     &  STSDER%R(I1:I2),STRA36%R, STRA37%R, STRA38%R, STRA39%R,
-     &  NPOIN2)
+     &  STSDER%R(I1:I2),STRA36%R, STRA37%R, STRA38%R, STRA39%R)
       ENDIF
 !
 !     ------------------------------- DIRECTIONAL SPREADING

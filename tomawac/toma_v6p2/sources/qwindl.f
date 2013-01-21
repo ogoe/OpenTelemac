@@ -3,11 +3,10 @@
 !                       *****************
 !
      &( TSTOT , FREQ  , USOLD , USNEW , TWOLD , TWNEW , TETA  , 
-     &  NF    , NPLAN , NPOIN2, CIMPLI, USN   , USO   , ALPHAN, ALPHAO, 
-     &  FPMO  , FPMN )
+     &  NF    , NPLAN , NPOIN2, CIMPLI, USN   , USO   , FPMO  , FPMN )
 !
 !**********************************************************************
-! TOMAWAC   V6P1                                   27/06/2011
+! TOMAWAC   V6P3                                   27/06/2011
 !**********************************************************************
 !
 !brief    COMPUTES THE CONTRIBUTION OF THE LINEAR WAVE GENERATION
@@ -30,9 +29,12 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF/LNHE)
+!+        23/12/2012
+!+        V6P3
+!+   A first optimisation.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| ALPHAN         |<->| WORK TABLE
-!| ALPHAO         |<->| WORK TABLE
 !| CIMPLI         |-->| IMPLICITATION COEFFICIENT FOR SOURCE TERMS
 !| FPMN           |<->| WORK TABLE
 !| FPMO           |<->| WORK TABLE
@@ -60,63 +62,64 @@
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """""""""""""""""""""
-      INTEGER     NF ,  NPLAN         , NPOIN2
-      DOUBLE PRECISION  CIMPLI
-      DOUBLE PRECISION  FREQ(NF)      , TETA(NPLAN)
-      DOUBLE PRECISION  FPMO(NPOIN2)  , FPMN(NPOIN2)
-      DOUBLE PRECISION  TWOLD(NPOIN2) , TWNEW(NPOIN2) , USNEW(NPOIN2)
-      DOUBLE PRECISION  ALPHAO(NPOIN2), ALPHAN(NPOIN2), USOLD(NPOIN2)
-      DOUBLE PRECISION  USO(NPOIN2)   , USN(NPOIN2)
-      DOUBLE PRECISION  TSTOT(NPOIN2,NPLAN,NF)  
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
-      INTEGER  JP    , JF   , IP
-      DOUBLE PRECISION  C1  , DIREC , CONSTO , CONSTN ,DIMPLI
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: CIMPLI
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),TETA(NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: FPMO(NPOIN2),FPMN(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: TWOLD(NPOIN2),TWNEW(NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: USNEW(NPOIN2),USOLD(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: USO(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: USN(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: TSTOT(NPOIN2,NPLAN,NF)  
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      C1 = 1.5D-3 / GRAVIT**2
-      DIMPLI=1.0D0-CIMPLI
+      INTEGER JP,JF,IP
+      DOUBLE PRECISION C1,C2,DIREC,ALPHAN,ALPHAO,SURFREQ4
 !
-!.....LOOP ON THE DISCRETISED DIRECTIONS
-!     """"""""""""""""""""""""""""""""""""""""""""
-      DO JP=1,NPLAN
+      INTRINSIC MAX,COS,EXP
 !
-!.......PRECALCULATION OF THE DIRECTIONALS DEPENDENCES
-!       """"""""""""""""""""""""""""""""""""""""""""""
+!-----------------------------------------------------------------------
+!
+      C1 = 1.5D-3/GRAVIT**2
+      C2 = GRAVIT/(DEUPI*28.D0)
+!
+!     ARRAYS DEPENDING ONLY ON POINTS
+!
+      DO IP=1,NPOIN2
+        FPMO(IP)=(C2/MAX(USOLD(IP),1.D-90))**4
+        FPMN(IP)=(C2/MAX(USNEW(IP),1.D-90))**4
+      ENDDO
+!
+!     ARRAYS DEPENDING ONLY ON POINTS AND DIRECTIONS
+!     COULD BE OPTIMISED MORE BY DECOMPOSING THE COS...
+!
+      DO JP=1,NPLAN      
         DIREC=TETA(JP)
         DO IP=1,NPOIN2
-          USO(IP)=USOLD(IP)*COS(DIREC-TWOLD(IP))
-          USN(IP)=USNEW(IP)*COS(DIREC-TWNEW(IP))
-          FPMO(IP)=GRAVIT/(DEUPI*28*(USOLD(IP)+1.D-90))
-          FPMN(IP)=GRAVIT/(DEUPI*28*(USNEW(IP)+1.D-90))
+          USO(IP,JP)=C1*(MAX(USOLD(IP)*COS(DIREC-TWOLD(IP)),0.D0))**4
+          USN(IP,JP)=C1*(MAX(USNEW(IP)*COS(DIREC-TWNEW(IP)),0.D0))**4
         ENDDO
+      ENDDO  
 !
-!.....LOOP ON THE DISCRETISED FREQUENCIES
-!     """"""""""""""""""""""""""""""""""""""""""""
-        DO JF=1,NF
-!
-!.........COMPUTES THE PROPORTIONALITY COEFFICIENTS BETA.
-!         """"""""""""""""""""""""""""""""""""""""""""""""
+!     LOOP ON THE DISCRETISED FREQUENCIES
+!   
+      DO JF=1,NF
+        SURFREQ4=1.D0/FREQ(JF)**4
+        DO JP=1,NPLAN         
           DO IP=1,NPOIN2
-            CONSTO=C1*EXP(-(FREQ(JF)/FPMO(IP))**(-4))
-            CONSTN=C1*EXP(-(FREQ(JF)/FPMN(IP))**(-4))
-            ALPHAO(IP)=CONSTO*(MAX(USO(IP),0.D0))**4
-            ALPHAN(IP)=CONSTN*(MAX(USN(IP),0.D0))**4
-          ENDDO
-!
-!.........TAKES THE SOURCE TERM INTO ACCOUNT
-!         """"""""""""""""""""""""""""""""
-          DO IP=1,NPOIN2
+            ALPHAO=USO(IP,JP)*EXP( -FPMO(IP)*SURFREQ4 )
+            ALPHAN=USN(IP,JP)*EXP( -FPMN(IP)*SURFREQ4 )
+!           TAKES THE SOURCE TERM INTO ACCOUNT        
             TSTOT(IP,JP,JF) = TSTOT(IP,JP,JF)
-     *                    + (DIMPLI*ALPHAO(IP) + CIMPLI*ALPHAN(IP))
+     *                      + (ALPHAO + CIMPLI*(ALPHAN-ALPHAO))
           ENDDO
-!
         ENDDO
-!
       ENDDO
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

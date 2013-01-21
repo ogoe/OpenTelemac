@@ -259,49 +259,47 @@
 !                                          QMOUT2, QNLIN2, QNLIN3
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02
 !
       IMPLICIT NONE
 !
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER          NPOIN2, NPLAN , NF    , NSITS , NPTFR , NVEB  ,
-     &                 NVEF  , LIMIT ,
-     &                 SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC ,
-     &                 IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO ,
-     &                 IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA ,
-     &                 NBOR(NPTFR)   , IANGNL(NPLAN,8)
-      INTEGER          NBD   , QINDI(NBD)
-      DOUBLE PRECISION TAILF , CFROT1, GRAVIT, RAISF , DTSI  , TPROP ,
-     &                 CMOUT1, CMOUT2, DDC   , TV1   , TV2   , ZVENT ,
-     &                 ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG ,
-     &                 ALPHA , GAMBJ1, GAMBJ2, ALFABJ, BORETG, GAMATG,
-     &                 COEFHS, VX_CTE, VY_CTE, CIMPLI,
-     &                 GAMARO, ALFARO, GAM2RO, EM2SIH, BETAIH, XDTBRK,
-     &                 ALFLTA, RFMLTA, KSPB  , BDISPB, BDSSPB, F1
-      DOUBLE PRECISION  DEPTH(NPOIN2), USNEW(NPOIN2) , USOLD(NPOIN2) ,
-     &                 VARIAN(NPOIN2),  FMOY(NPOIN2) , XKMOY(NPOIN2) ,
-     &                  TWOLD(NPOIN2), TWNEW(NPOIN2) , Z0OLD(NPOIN2) ,
-     &                  Z0NEW(NPOIN2), VENTX(NPOIN2) , VENTY(NPOIN2) ,
-     &                     U1(NPOIN2),    U2(NPOIN2) ,    V1(NPOIN2) ,
-     &                     V2(NPOIN2),     X(NPOIN2) ,     Y(NPOIN2) ,
-     &                 TAUWAV(NPOIN2), TAUX1(NPOIN2) , TAUX2(NPOIN2) ,
-     &                  TAUX3(NPOIN2), TAUX4(NPOIN2) , TAUX5(NPOIN2) ,
-     &                  TAUX6(NPOIN2), TAUX7(NPOIN2) , COEFNL(16)    ,
-     &                    TETA(NPLAN), SINTET(NPLAN) , COSTET(NPLAN) ,
-     &                    F(NPOIN2,NPLAN,NF),   XK(NPOIN2,NF)        ,
-     &                    DF_LIM(NPOIN2) ,
-     &                 TSDER(NPOIN2,NPLAN,NF),TSTOT(NPOIN2,NPLAN,NF) ,
-     &                 FREQ(NF), DFREQ(NF), 
-     &                 TOLD(NPOIN2,NPLAN), TNEW(NPOIN2,NPLAN)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER NPOIN2,NPLAN,NF,NSITS,NPTFR,NVEB,NVEF,LIMIT 
+      INTEGER SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC
+      INTEGER IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO
+      INTEGER IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA
+      INTEGER NBOR(NPTFR)   , IANGNL(NPLAN,8)
+      INTEGER NBD   , QINDI(NBD)
+      DOUBLE PRECISION TAILF , CFROT1, GRAVIT, RAISF , DTSI  , TPROP
+      DOUBLE PRECISION CMOUT1, CMOUT2, DDC   , TV1   , TV2   , ZVENT 
+      DOUBLE PRECISION ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG 
+      DOUBLE PRECISION ALPHA , GAMBJ1, GAMBJ2, ALFABJ, BORETG, GAMATG
+      DOUBLE PRECISION COEFHS, VX_CTE, VY_CTE, CIMPLI
+      DOUBLE PRECISION GAMARO, ALFARO, GAM2RO, EM2SIH, BETAIH, XDTBRK
+      DOUBLE PRECISION ALFLTA, RFMLTA, KSPB  , BDISPB, BDSSPB, F1
+      DOUBLE PRECISION DEPTH(NPOIN2), USNEW(NPOIN2) , USOLD(NPOIN2) 
+      DOUBLE PRECISION VARIAN(NPOIN2),  FMOY(NPOIN2) , XKMOY(NPOIN2)
+      DOUBLE PRECISION TWOLD(NPOIN2), TWNEW(NPOIN2) , Z0OLD(NPOIN2) 
+      DOUBLE PRECISION Z0NEW(NPOIN2), VENTX(NPOIN2) , VENTY(NPOIN2) 
+      DOUBLE PRECISION U1(NPOIN2),    U2(NPOIN2) ,    V1(NPOIN2) 
+      DOUBLE PRECISION V2(NPOIN2),     X(NPOIN2) ,     Y(NPOIN2) 
+      DOUBLE PRECISION TAUWAV(NPOIN2), TAUX1(NPOIN2) , TAUX2(NPOIN2) 
+      DOUBLE PRECISION TAUX3(NPOIN2), TAUX4(NPOIN2) , TAUX5(NPOIN2) 
+      DOUBLE PRECISION TAUX6(NPOIN2), TAUX7(NPOIN2) , COEFNL(16)    
+      DOUBLE PRECISION TETA(NPLAN), SINTET(NPLAN) , COSTET(NPLAN) 
+      DOUBLE PRECISION F(NPOIN2,NPLAN,NF),XK(NPOIN2,NF)       
+      DOUBLE PRECISION DF_LIM(NPOIN2) 
+      DOUBLE PRECISION TSDER(NPOIN2,NPLAN,NF),TSTOT(NPOIN2,NPLAN,NF) 
+      DOUBLE PRECISION FREQ(NF), DFREQ(NF)
+      DOUBLE PRECISION TOLD(NPOIN2,NPLAN), TNEW(NPOIN2,NPLAN)
       DOUBLE PRECISION BETA(NPOIN2)
       CHARACTER(LEN=144) NOMVEB, NOMVEF
       CHARACTER(LEN=3) BINVEN
       LOGICAL  PROINF, VENT , VENSTA
-!GM V6P1 - NEW SOURCE TERMS
 !....Linear wind growth declaration
       INTEGER           LVENT
 !....Yan expression declarations
@@ -321,46 +319,44 @@
       DOUBLE PRECISION  F_COEF(DIMBUF), F_PROJ(DIMBUF), TB_SCA(DIMBUF)
       INTEGER K_IF1 (1:NF1)
       INTEGER K_1P  (1:NT1,1:NF1), K_1M(1:NT1,1:NF1)
-      INTEGER K_IF2 (1:NF2,1:NT1,1:NF1), K_IF3 (1:NF2,1:NT1,1:NF1),
-     &        K_1P2P(1:NF2,1:NT1,1:NF1), K_1P2M(1:NF2,1:NT1,1:NF1),
-     &        K_1P3P(1:NF2,1:NT1,1:NF1), K_1P3M(1:NF2,1:NT1,1:NF1),
-     &        K_1M2P(1:NF2,1:NT1,1:NF1), K_1M2M(1:NF2,1:NT1,1:NF1),
-     &        K_1M3P(1:NF2,1:NT1,1:NF1), K_1M3M(1:NF2,1:NT1,1:NF1)
+      INTEGER K_IF2 (1:NF2,1:NT1,1:NF1), K_IF3 (1:NF2,1:NT1,1:NF1)
+      INTEGER K_1P2P(1:NF2,1:NT1,1:NF1), K_1P2M(1:NF2,1:NT1,1:NF1)
+      INTEGER K_1P3P(1:NF2,1:NT1,1:NF1), K_1P3M(1:NF2,1:NT1,1:NF1)
+      INTEGER K_1M2P(1:NF2,1:NT1,1:NF1), K_1M2M(1:NF2,1:NT1,1:NF1)
+      INTEGER K_1M3P(1:NF2,1:NT1,1:NF1), K_1M3M(1:NF2,1:NT1,1:NF1)
       INTEGER IDCONF(1:NCONFM,1:3)
       DOUBLE PRECISION TB_V14(1:NF1)
-      DOUBLE PRECISION
-     &        TB_V24(1:NF2,1:NT1,1:NF1), TB_V34(1:NF2,1:NT1,1:NF1),
-     &        TB_TPM(1:NF2,1:NT1,1:NF1), TB_TMP(1:NF2,1:NT1,1:NF1),
-     &        TB_FAC(1:NF2,1:NT1,1:NF1)
-!GM Fin
+      DOUBLE PRECISION TB_V24(1:NF2,1:NT1,1:NF1)
+      DOUBLE PRECISION TB_V34(1:NF2,1:NT1,1:NF1)
+      DOUBLE PRECISION TB_TPM(1:NF2,1:NT1,1:NF1)
+      DOUBLE PRECISION TB_TMP(1:NF2,1:NT1,1:NF1)
+      DOUBLE PRECISION TB_FAC(1:NF2,1:NT1,1:NF1)
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
-      INTEGER          ISITS , IFF   , IP    , JP    ,
-     &                 IFCAR , MF1   , MF2   , MFMAX , IDT
-      DOUBLE PRECISION AUX1  , AUX2  , AUX3  , AUX4  , COEF  , 
-     &                 FM1   , FM2   , TDEB  , TFIN  , VITVEN,
-     &                 VITMIN, HM0   , HM0MAX, DTN   , SUME   , AUXI  ,
-     &                 USMIN
-      CHARACTER*7      CHDON
-!GM V6P1 - NEW SOURCE TERMS
-!    MDIA method local declarations
-      INTEGER           K
-      DOUBLE PRECISION  XCCMDI(MDIA)
-!GM Fin
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR , MF1  , MF2   , MFMAX , IDT
+      DOUBLE PRECISION AUX1  , AUX2 , AUX3  , AUX4  , COEF   
+      DOUBLE PRECISION FM1   , FM2  , TDEB  , TFIN  , VITVEN
+      DOUBLE PRECISION VITMIN, HM0  , HM0MAX, DTN   , SUME , AUXI
+      DOUBLE PRECISION USMIN
+      CHARACTER(LEN=7) CHDON
+!                              MDIA, HERE HARDCODED    
+      DOUBLE PRECISION  XCCMDI(4)
+!
+!-----------------------------------------------------------------------
 !
       VITMIN=1.D-3
 !
-!     -----------------------------------------------------------------
+!     ------------------------------------------------------------------
 !     CHOPS THE SPECTRUM IN ACCORDANCE WITH THE BATHYMETRY
 !     -----------------------------------------------------------------
 !
       IF(.NOT.PROINF) THEN
 !
 !       0.1 COMPUTES THE TOTAL VARIANCE OF THE SPECTRUM
-!       --------------------------------------------
-        CALL TOTNRJ
-     &( VARIAN, F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2)
+!       -----------------------------------------------
+!
+        CALL TOTNRJ(VARIAN,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
 !       0.2 COMPUTES THE CORRECTION COEFFICIENT ON THE SPECTRUM
 !       -------------------------------------------------------
@@ -390,7 +386,8 @@
 !     STEP. (THIS IS BECAUSE ARRAYS TWNEW, USNEW AND Z0NEW ARE WORKING
 !     ARRAYS USED IN DUMP2D BETWEEN 2 CALLS TO SEMIMP).
 !     ----------------------------------------------------------------
-      IF (VENT.AND.VENSTA) THEN
+!
+      IF(VENT.AND.VENSTA) THEN
         DO IP=1,NPOIN2
           TWNEW(IP)=TWOLD(IP)
         ENDDO
@@ -411,35 +408,30 @@
 !
       DO 100 ISITS=1,NSITS
 !
-!
 !       1. ASSIGNS THE START AND END DATES OF TIME STEP
-!       =========================================================
+!       ===============================================
+!
         TDEB=TPROP-DBLE(NSITS-ISITS+1)*DTSI
         TFIN=TDEB+DTSI
 !
 !
 !       2. UPDATES (IF HAS TO) THE WIND ARRAYS
-!       =================================================
-        IF (VENT.AND..NOT.VENSTA) THEN
+!       ======================================
+!
+        IF(VENT.AND..NOT.VENSTA) THEN
 !
 !         2.1 UPDATES THE WIND FIELD FOR DATE TFIN
 !         ---------------------------------------------------
 !
           CHDON='VENT   '
-          IF (NOMVEB(1:1).NE.' ') THEN
-            CALL NOUDON
-     &( VENTX , VENTY , X     , Y     , NPOIN2, NVEB  , BINVEN, NBOR  ,
-     &  NPTFR , TFIN  , DDC   , TV1   , TV2   , 
-     &  U1    , V1    , U2    , V2    , INDIC , CHDON , 2 )
-          ELSEIF (NOMVEF(1:1).NE.' ') THEN
-            CALL NOUDON
-     &( VENTX , VENTY , X     , Y     , NPOIN2, NVEF  , BINVEN, NBOR  ,
-     &  NPTFR , TFIN  , DDC   , TV1   , TV2   , 
-     &  U1    , V1    , U2    , V2    , INDIC , CHDON , 2 )
+          IF(NOMVEB(1:1).NE.' '.OR.NOMVEF(1:1).NE.' ') THEN
+            IF(NOMVEF(1:1).NE.' ') NVENT=NVEF
+            IF(NOMVEB(1:1).NE.' ') NVENT=NVEB
+            CALL NOUDON(VENTX,VENTY,X,Y,NPOIN2,NVENT,BINVEN,NBOR,
+     &                  NPTFR,TFIN,DDC,TV1,TV2,U1,V1,U2,V2,INDIC,
+     &                  CHDON,2)
           ELSE
-            CALL ANAVEN
-     &( VENTX , VENTY , X     , Y     , NPOIN2, TFIN  , DDC   , VX_CTE,
-     &  VY_CTE)
+            CALL ANAVEN(VENTX,VENTY,X,Y,NPOIN2,TFIN,DDC,VX_CTE,VY_CTE)
           ENDIF
 !
 !         2.2 COMPUTES THE WIND DIRECTION
@@ -456,17 +448,15 @@
 !
 !         2.3 COMPUTES THE FRICTION VELOCITIES AND ROUGHNESS LENGTHS
 !         ------------------------------------------------------------
-!GM V6P1 - NEW SOURCE TERMS
-          IF ((SVENT.GE.2).OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
+!
+          IF (SVENT.GE.2.OR.(LVENT.EQ.1.AND.SVENT.NE.1).OR.
      &                                    (SMOUT.EQ.2.AND.SVENT.NE.1))
      &                    CALL USTAR2( USNEW , VENTX , VENTY , NPOIN2)
         ENDIF
-!GM Fin
 !
-        IF (VENT) THEN
-          IF (SVENT.EQ.1) CALL USTAR1
-     &( USNEW , Z0NEW , TAUWAV, VENTX , VENTY , CDRAG , ALPHA , XKAPPA,
-     &  ZVENT , GRAVIT, NPOIN2)
+        IF(VENT.AND.SVENT.EQ.1) THEN
+          CALL USTAR1(USNEW,Z0NEW,TAUWAV,VENTX,VENTY,
+     &                CDRAG,ALPHA,XKAPPA,ZVENT,GRAVIT,NPOIN2)
         ENDIF
 !
 !
@@ -474,18 +464,18 @@
 !       =========================================================
 !
 !       3.1 COMPUTES THE TOTAL VARIANCE OF THE SPECTRUM
-!       --------------------------------------------
-        CALL TOTNRJ
-     &( VARIAN, F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2)
+!       -----------------------------------------------
+!
+        CALL TOTNRJ(VARIAN,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2)
 !
 !       3.2 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
-!       ----------------------------------------------
-        CALL FREMOY
-     &( FMOY  , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN , NPOIN2,
-     &  TAUX1 , TAUX2 )
+!       -----------------------------------------------
+!
+        CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
+     &              TAUX1,TAUX2)
 !
 !       3.3 COMPUTES THE MEAN WAVE NUMBER OF THE SPECTRUM
-!       ---------------------------------------------
+!       -------------------------------------------------
         CALL KMOYEN
      &( XKMOY , XK    , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN ,
      &  NPOIN2, TAUX1 , TAUX2 , TAUX3 )
@@ -507,9 +497,10 @@
         ENDDO
 !
 !       4.2 GENERATION BY WIND
-!       ---------------------------
-        IF (VENT) THEN
-          IF (SVENT.EQ.1) THEN
+!       ----------------------
+!
+        IF(VENT) THEN
+          IF(SVENT.EQ.1) THEN
             CALL QWIND1
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
      &  TWNEW , Z0OLD , Z0NEW , TETA  , ROAIR , ROEAU , BETAM , XKAPPA,
@@ -519,12 +510,12 @@
      &( TAUWAV, TSTOT , F     , USNEW , TWNEW , Z0NEW , FREQ  , DFREQ ,
      &  TETA  , SINTET, COSTET, ROAIR , ROEAU , XKAPPA, BETAM , DECAL ,
      &  GRAVIT, NPOIN2, NPLAN , NF    , TAUX1 , TAUX2 , TAUX3 )
-          ELSEIF (SVENT.EQ.2) THEN
+          ELSEIF(SVENT.EQ.2) THEN
             CALL QWIND2
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
-     &  TWNEW , TETA  , ROAIR , ROEAU , GRAVIT, NF    , NPLAN , NPOIN2,
-     &  CIMPLI, TAUX1 , TAUX2 , TAUX3 , TAUX4 , TAUX5 )
-          ELSEIF (SVENT.EQ.3) THEN
+     &  TWNEW , TETA  , ROAIR , ROEAU , NF    , NPLAN , NPOIN2,
+     &  CIMPLI, T3_01%R,T3_02%R )
+          ELSEIF(SVENT.EQ.3) THEN
             CALL QWIND3
      &( TSTOT , TSDER , F     , XK    , FREQ  , USOLD , USNEW , TWOLD ,
      &  TWNEW , TETA  , GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, COEFWD,
@@ -535,28 +526,32 @@
 !       ADDS THE LINEAR WIND GROWTH SOURCE TERME
 !       """""""""""""""""""""""""""""""""""""""
 !
-          IF (LVENT.EQ.1) THEN
+          IF(LVENT.EQ.1) THEN
             CALL QWINDL(TSTOT,FREQ,USOLD,USNEW,TWOLD,TWNEW,TETA, 
-     &                  NF,NPLAN,NPOIN2,CIMPLI,TAUX1,TAUX2,TAUX3,
-     &                  TAUX4,TAUX5,TAUX6)
+     &                  NF,NPLAN,NPOIN2,CIMPLI,T3_01%R,T3_02%R,
+     &                  TAUX5,TAUX6)
           ENDIF
 !
         ELSE
+!
           DO IP=1,NPOIN2
             USNEW(IP)=0.D0
           ENDDO
+!
         ENDIF
 !
 !       4.3 NON-LINEAR INTERACTIONS BETWEEN QUADRUPLETS
-!       --------------------------------------------------------------
-        IF (STRIF.EQ.1) THEN
-          CALL QNLIN1
-     &( TSTOT , TSDER , IANGNL, COEFNL, NF    , NPLAN , F1    , RAISF ,
-     &  TAILF , PROINF, NPOIN2, F     , DEPTH , XKMOY , TAUX1 , TAUX2 ,
-     &  TAUX3 , TAUX4 , TAUX5 , TAUX6 )
-!GM V6P1 - NEW SOURCE TERMS
+!       -----------------------------------------------
+!
+        IF(STRIF.EQ.1) THEN
+!
+          CALL QNLIN1(TSTOT,TSDER,IANGNL,COEFNL,NF,NPLAN,F1,RAISF,
+     &                TAILF,PROINF,NPOIN2,F,DEPTH,XKMOY,TAUX1,TAUX2,
+     &                TAUX3,TAUX4,TAUX5,TAUX6)
+!
         ELSEIF (STRIF.EQ.2) THEN
-!.....sets XCCMDI values for MDIA method
+!
+!         sets XCCMDI values for MDIA method
           XCCMDI(1)=8.360D7
           XCCMDI(2)=7.280D7
           XCCMDI(3)=3.340D7
@@ -564,7 +559,7 @@
           DO K=1,MDIA
             XCCMDI(K)=XCCMDI(K)/DBLE(MDIA)
           ENDDO
-!....calls MDIA method
+!         alls MDIA method
           DO K=1,MDIA
             CALL QNLIN2
      &( TSTOT , TSDER , IANMDI(1,1,K) , COEMDI(1,K) , NF    , NPLAN,
@@ -583,26 +578,27 @@
 !GM Fin
         ENDIF
 !
-!
 !       4.4 WHITE-CAPPING DISSIPATION
 !       -------------------------------------------------
+!
         IF(SMOUT.EQ.1) THEN
+!
           CALL QMOUT1
      &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY ,
-     &  PROINF, CMOUT1, CMOUT2, GRAVIT, NF    , NPLAN , NPOIN2, TAUX1 ,
-     &  TAUX2 )
-!GM V6P1 - NEW SOURCE TERMS
+     &  PROINF, CMOUT1, CMOUT2, NF    , NPLAN , NPOIN2, TAUX1 , TAUX2 )
+!
         ELSEIF(SMOUT.EQ.2) THEN
+!
           CALL QMOUT2
      &( TSTOT , TSDER , F     , XK    , VARIAN, FREQ  , FMOY  , XKMOY ,
      &  USOLD , USNEW , DEPTH , PROINF, CMOUT3, CMOUT4, CMOUT5, CMOUT6,
-     &  GRAVIT, NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX3 ,
-     &  TAUX4 , TAUX5 , TAUX6 )
-!GM Fin
+     &  NF    , NPLAN , NPOIN2, CIMPLI, TAUX1 , TAUX2 , TAUX5 , TAUX6 )
+!
         ENDIF
 !
 !       4.5 BOTTOM FRICTION DISSIPATION
-!       -------------------------------------------
+!       -------------------------------
+!
         IF(SFROT.EQ.1.AND..NOT.PROINF) CALL QFROT1
      &( TSTOT , TSDER , F     , XK    , DEPTH , CFROT1, GRAVIT, NF    ,
      &  NPLAN , NPOIN2, TAUX1 )
@@ -618,14 +614,8 @@
 !
 !
         DO IFF=1,NF
-!         NO LIMITING FACTOR
-          IF(LIMIT.EQ.0) THEN
-            AUXI=1.D99
-            DO IP=1,NPOIN2
-              DF_LIM(IP)=AUXI
-            ENDDO
 !         LIMITING FACTOR TAKEN FROM WAM-CYCLE 4
-          ELSEIF(LIMIT.EQ.1) THEN
+          IF(LIMIT.EQ.1) THEN
             COEF=0.62D-4*DTSI/1200.D0
             AUXI=COEF/FREQ(IFF)**5
             DO IP=1,NPOIN2
@@ -639,7 +629,7 @@
             DO IP=1,NPOIN2
               DF_LIM(IP)=AUXI*MAX(USNEW(IP),USMIN)
             ENDDO
-          ELSE
+          ELSEIF(LIMIT.NE.0) THEN
             WRITE(LU,*) 'UNKNOWN LIMITING FACTOR:',LIMIT
             CALL PLANTE(1)
             STOP
@@ -686,7 +676,7 @@
 !           ITS INDEX IS MFMAX.
 !       -------------------------------------------------------------
 !
-          FM1 =AUX1/(USNEW(IP)+1.D-90)
+          FM1 =AUX1/MAX(USNEW(IP),1.D-90)
           FM2 =AUX2*FMOY(IP)
           MF1=INT(AUX3*LOG10(FM1)+1.D0)
           MF2=INT(AUX3*LOG10(FM2)+1.D0)
@@ -910,4 +900,3 @@
 !
       RETURN
       END
-

@@ -47,7 +47,7 @@
 !| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
 !| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
-!| NVAR           |-->| NUMBER OF VARIABLES READ
+!| NVAR           |-->| NUMBER OF VARIABLES TO BE READ
 !| TV1            |<->| TIME T1 IN THE DATA FILE
 !| TV2            |<->| TIME T2 IN THE DATA FILE
 !| U1,V1          |<->| DATA INTERPOLATED OVER THE 2D MESH AT TIME TV1
@@ -66,9 +66,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NDON,NPOIN,NPTFR,INDIC
+      INTEGER, INTENT(IN)             :: NDON,NPOIN,NPTFR,INDIC,NVAR
       INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
-      INTEGER, INTENT(INOUT)          :: NVAR
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: UV(NPOIN),VV(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: U1(NPOIN),V1(NPOIN)

@@ -2,8 +2,10 @@
                      SUBROUTINE LECDON
 !                    *****************
 !
-     &( U , V , X, Y, NPOIN2, NDON, BINDON, NBOR, NPTFR,TRA03,
-     &  IDTEL,NPTT,DONTEL,COURAN,INDIC,CHDON)
+     &(F1,NAME1FR,NAME1GB,MODE1,
+     & F2,NAME2FR,NAME2GB,MODE2,
+     & F3,NAME3FR,NAME3GB,MODE3,
+     & X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,NPTT,INDIC,CHDON)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   21/06/2011
@@ -41,20 +43,34 @@
 !+        V6P3
 !+   Only SELAFIN format with same mesh kept.
 !
+!history  J-M HERVOUET (EDF - LNHE)
+!+        21/01/2013
+!+        V6P3
+!+   Generalised for reading 3 variables with given names.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BINDON         |-->| BINAIRE DU FICHIER DES DONNEES  (INDIC>2)
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
-!| COURAN         |-->| LOGICAL INDICATING IF THERE IS A CURRENT
-!| DONTEL         |-->| LOGICAL INDICATING RECOVERY OF TELEMAC DATA ITEM
-!| IDTEL          |-->| RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED
+!| F1             |<--| FIRST VARIABLE TO READ 
+!| F2             |<--| SECOND VARIABLE TO READ 
+!| F3             |<--| THIRD VARIABLE TO READ 
 !| INDIC          |-->| FILE FORMAT
+!| MODE1          |-->| MODE: 0= DO NOT READ
+!|                |   |       1= READ IF PRESENT
+!| MODE2          |-->| LIKE MODE1 FOR SECOND VARIABLE
+!| MODE3          |-->| LIKE MODE1 FOR THIRD VARIABLE
+!| NAME1FR        |-->| FRENCH NAME OF FIRST VARIABLE
+!| NAME2FR        |-->| FRENCH NAME OF SECOND VARIABLE
+!| NAME3FR        |-->| FRENCH NAME OF THIRD VARIABLE
+!| NAME1GB        |-->| ENGLISH NAME OF FIRST VARIABLE
+!| NAME2GB        |-->| ENGLISH NAME OF SECOND VARIABLE
+!| NAME3GB        |-->| ENGLISH NAME OF THIRD VARIABLE
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NPTT           |-->| TIME STEP NUMBER IN TELEMAC FILE
 !| TRA03          |<->| WORK TABLE
-!| U              |<--| CURRENT OR WIND ALONG X AT THE MESH POINTS
 !| UR,VR          |<->| TABLE OF THE VALUES READ IN THE DATA FILE
 !| V              |<--| CURRENT OR WIND ALONG Y AT THE MESH POINTS
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
@@ -70,25 +86,39 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NDON,NPOIN2,NPTFR,INDIC,NPTT
-      INTEGER, INTENT(IN)             :: IDTEL
+      INTEGER, INTENT(IN)             :: MODE1,MODE2,MODE3
       INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: U(NPOIN2),V(NPOIN2)
-      DOUBLE PRECISION, INTENT(INOUT) :: TRA03(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: F1(NPOIN2),F2(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: F3(NPOIN2)
       CHARACTER(LEN=3), INTENT(IN)    :: BINDON
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
-      LOGICAL, INTENT(IN)             :: DONTEL,COURAN
+      CHARACTER(LEN=32),INTENT(IN)    :: NAME1FR,NAME2FR,NAME3FR
+      CHARACTER(LEN=32),INTENT(IN)    :: NAME1GB,NAME2GB,NAME3GB
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NP,I,J,NVAR,IB(10),ISTAT,ID(3)
+      INTEGER NP,I,J,NVAR,IB(10),ISTAT,MODE(3)
       DOUBLE PRECISION ATT,BDX(2),Z(1)
       CHARACTER(LEN=3) C
-      CHARACTER(LEN=32) TEXTE(20)
+      CHARACTER(LEN=32) TEXTE(30),NAMEFR(3),NAMEGB(3)
       CHARACTER(LEN=72) TITCAS
+      LOGICAL TROUVE(3),VOID
 !
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPOIN2))
+!
+!-----------------------------------------------------------------------
+!
+      MODE(1)=MODE1
+      MODE(2)=MODE2
+      MODE(3)=MODE3
+      NAMEFR(1)=NAME1FR
+      NAMEFR(2)=NAME2FR
+      NAMEFR(3)=NAME3FR
+      NAMEGB(1)=NAME1GB
+      NAMEGB(2)=NAME2GB
+      NAMEGB(3)=NAME3GB
 !
 !-----------------------------------------------------------------------
 !     READS THE POINTS FROM LOGICAL UNIT NDON
@@ -97,8 +127,7 @@
       IF(INDIC.EQ.3) THEN
 !
 !     ------------------------------------------------------------------
-!     TELEMAC-LIKE FORMAT - MESH CAN BE DIFFERENT
-!          (BINARY)                 FROM COWADIS MESH
+!     SERAFIN FORMAT 
 !     ------------------------------------------------------------------
 !
 !         READS TITLE
@@ -150,52 +179,67 @@
 !
 !         TIME STEP AND VARIABLES
 !
-          DO 110 J=1,(NPTT-1)*(NVAR+1)
+          DO J=1,(NPTT-1)*(NVAR+1)
             READ(NDON)
-110       CONTINUE
-!
-          IF(DONTEL) ID(3)=IDTEL
-          IF(COURAN) THEN
-            ID(1)=1
-            ID(2)=2
-          ENDIF
+          ENDDO
 !
           CALL LIT(BDX(1),W,IB,C,1,'R4',NDON,BINDON,ISTAT)
           ATT=BDX(1)
-          DO 90 I=1,NVAR
-            IF(I.EQ.ID(1)) THEN
-              CALL LIT(U,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-            ELSEIF (I.EQ.ID(2)) THEN
-              CALL LIT(V,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-            ELSEIF ((I.EQ.ID(3)).AND.(DONTEL)) THEN
-              CALL LIT(TRA03,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
-            ELSE
-              READ(NDON)
-            ENDIF
-90        CONTINUE
 !
-!      WRITES TO THE LISTING
-!
-          IF (LNG.EQ.1) THEN
+          IF(LNG.EQ.1) THEN
             WRITE(LU,*)'         TITRE DU CAS TELEMAC : '
             WRITE(LU,*)'           ',TITCAS
             WRITE(LU,*)'         TEMPS DE TELEMAC : ',ATT
-            WRITE(LU,*)'         VARIABLES DE TELEMAC RETENUE(S) : '
-          ELSE
+          ELSEIF(LNG.EQ.2) THEN
             WRITE(LU,*)'         TITLE OF TELEMAC CASE : '
             WRITE(LU,*)'           ',TITCAS
             WRITE(LU,*)'         TIME OF TELEMAC RECORD : ',ATT
-            WRITE(LU,*)'         VARIABLE(S) OF TELEMAC READ : '
           ENDIF
-          IF(COURAN) THEN
-            WRITE(LU,*)'           ',TEXTE(ID(1))
-            WRITE(LU,*)'           ',TEXTE(ID(2))
-          ENDIF
-          IF(DONTEL)  WRITE(LU,*) '           ',TEXTE(ID(3))
-          WRITE(LU,*)
-     &        '-----------------------------------------------------'
 !
-      ELSEIF (INDIC.EQ.4) THEN
+          TROUVE(1)=.FALSE.
+          TROUVE(2)=.FALSE.
+          TROUVE(3)=.FALSE.
+          DO I=1,NVAR
+            VOID=.TRUE.
+            DO J=1,3
+              IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
+     &          MODE(J).GT.0) THEN
+                IF(J.EQ.1) THEN
+                  CALL LIT(F1,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
+                ELSEIF(J.EQ.2) THEN
+                  CALL LIT(F2,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
+                ELSEIF(J.EQ.3) THEN
+                  CALL LIT(F3,W,IB,C,NP,'R4',NDON,BINDON,ISTAT)
+                ENDIF
+                TROUVE(J)=.TRUE.
+                VOID=.FALSE.
+              ENDIF
+            ENDDO
+            IF(VOID) READ(NDON)
+          ENDDO
+          DO J=1,3
+            IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'LECDON : VARIABLE ',J,' NON TROUVEE'
+                WRITE(LU,*) NAMEFR(J),' OU ',NAMEGB(J)
+              ELSEIF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'LECDON: VARIABLE ',NAME1GB,' NOT FOUND'
+                WRITE(LU,*) NAMEFR(J),' OR ',NAMEGB(J)
+              ENDIF
+              CALL PLANTE(1)
+              STOP
+            ELSEIF(MODE(J).GT.0) THEN
+              IF(LNG.EQ.1) THEN
+                WRITE(LU,*) 'VARIABLE ',J,' LUE (',
+     &                      NAMEFR(J),' OU ',NAMEGB(J),')'
+              ELSEIF(LNG.EQ.2) THEN
+                WRITE(LU,*) 'VARIABLE ',J,' READ (',
+     &                      NAMEFR(J),' OR ',NAMEGB(J),')'
+              ENDIF
+            ENDIF
+          ENDDO
+!
+      ELSEIF(INDIC.EQ.4) THEN
 !
 !     ------------------------------------------------------------------
 !       READS A USER-DEFINED FORMAT
@@ -203,24 +247,23 @@
 !
         IF(CHDON(1:1).EQ.'C') THEN
 !         READS A CURRENT FIELD
-          CALL COUUTI
-     &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.D0,0.D0,0.D0,0.D0,
-     &     TRA03,TRA03,TRA03,TRA03)
-        ELSEIF(CHDON(1:1).EQ.'V'.OR.CHDON(1:1).EQ.'W') THEN
+!         NOTE JMH : THERE SHOULD BE F1, F2, F3 SOMEWHERE HERE ????
+          CALL COUUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
+     &                0.D0,0.D0,0.D0,0.D0,F3,F3,F3,F3)
+        ELSEIF(CHDON(1:1).EQ.'W') THEN
 !         READS A WIND FIELD
-!         NOTE JMH : THERE SHOULD BE U AND V SOMEWHERE HERE ????
-          CALL VENUTI
-     &    (X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,0.D0,0.D0,0.D0,0.D0,
-     &     TRA03,TRA03,TRA03,TRA03)
+!         NOTE JMH : THERE SHOULD BE F1, F2, F3 SOMEWHERE HERE ????
+          CALL VENUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
+     &                0.D0,0.D0,0.D0,0.D0,F3,F3,F3,F3)
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LE TYPE DE DONNEES A LIRE EST INCONNU'
           ELSE
             WRITE(LU,*) 'UNKNOWN DATA'
           ENDIF
-            CALL PLANTE(1)
-            STOP
-         ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
       ELSE
         WRITE(LU,*)'***********************************************'
@@ -260,4 +303,3 @@
 !
       RETURN
       END
-

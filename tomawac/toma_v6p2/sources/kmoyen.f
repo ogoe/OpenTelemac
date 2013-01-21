@@ -2,11 +2,10 @@
                      SUBROUTINE KMOYEN
 !                    *****************
 !
-     &( XKMOY , XK    , F     , FREQ  , DFREQ , TAILF , NF    , NPLAN ,
-     &  NPOIN2, AUX1  , AUX2  , AUX3  )
+     &(XKMOY,XK,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,AUX1,AUX2,AUX3)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   20/06/2011
+! TOMAWAC   V6P3                                   20/06/2011
 !***********************************************************************
 !
 !brief    COMPUTES THE AVERAGE WAVE NUMBER FOR ALL THE NODES
@@ -37,6 +36,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        18/01/2013
+!+        V6P3
+!+   ARITHMETIC AVERAGE WHEN ENERGY WEIGHTED AVERAGE IS NOT POSSIBLE   
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AUX1           |<->| WORK TABLE
 !| AUX2           |<->| WORK TABLE
@@ -53,72 +57,89 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,GRAVIT
+!
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER  NF    , NPLAN , NPOIN2
-      DOUBLE PRECISION TAILF
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF), XK(NPOIN2,NF)
-      DOUBLE PRECISION FREQ(NF)  , DFREQ(NF) , XKMOY(NPOIN2)
-      DOUBLE PRECISION AUX1(NPOIN2) , AUX2(NPOIN2) , AUX3(NPOIN2)
+      INTEGER LNG,LU
+      COMMON/INFO/ LNG,LU
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)             :: NF,NPLAN,NPOIN2
+      DOUBLE PRECISION, INTENT(IN)    :: TAILF
+      DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: XK(NPOIN2,NF)
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF),DFREQ(NF) 
+      DOUBLE PRECISION, INTENT(INOUT) :: AUX1(NPOIN2),AUX2(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: AUX3(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: XKMOY(NPOIN2)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER  IPLAN , JF    , IP
       DOUBLE PRECISION COEFF , SEUIL , CTE1  , CTE2  , AUX4
 !
+!-----------------------------------------------------------------------
+!
       SEUIL = 1.D-20
       COEFF = SQRT(GRAVIT)/DEUPI
+!
       DO IP = 1,NPOIN2
         AUX1(IP) = 0.D0
         AUX2(IP) = 0.D0
       ENDDO
 !
-!.....SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM
-!     """"""""""""""""""""""""""""""""""""""""""""""""
-      DO 20 JF = 1,NF
+!     SUMS UP THE CONTRIBUTIONS FOR THE DISCRETISED PART OF THE SPECTRUM
+!     
+      DO JF = 1,NF
+!
         AUX4=DFREQ(JF)
 !
-        DO 15 IP=1,NPOIN2
+        DO IP=1,NPOIN2
           AUX3(IP) = 0.D0
-   15   CONTINUE
-        DO 10 IPLAN = 1,NPLAN
-          DO 5 IP=1,NPOIN2
+        ENDDO
+        DO IPLAN = 1,NPLAN
+          DO IP=1,NPOIN2
             AUX3(IP) = AUX3(IP) + F(IP,IPLAN,JF)
-    5     CONTINUE
-   10   CONTINUE
+          ENDDO
+        ENDDO
 !
-        DO 25 IP = 1,NPOIN2
+        DO IP = 1,NPOIN2
           AUX1(IP)=AUX1(IP)+AUX3(IP)*AUX4
           AUX2(IP)=AUX2(IP)+AUX3(IP)/SQRT(XK(IP,JF))*AUX4
-   25   CONTINUE
+        ENDDO
 !
-   20 CONTINUE
+      ENDDO
 !
-!.....(OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART
-!     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
-      IF (TAILF.GT.1.D0) THEN
+!     (OPTIONALLY) TAKES INTO ACCOUNT THE HIGH-FREQUENCY PART
+!     
+      IF(TAILF.GT.1.D0) THEN
         CTE1=FREQ(NF)/(TAILF-1.D0)
         CTE2=COEFF/TAILF
-      ELSE
-        CTE1=0.D0
-        CTE2=0.D0
+        DO IP=1,NPOIN2
+          AUX1(IP) = AUX1(IP) + AUX3(IP)*CTE1
+          AUX2(IP) = AUX2(IP) + AUX3(IP)*CTE2
+        ENDDO
       ENDIF
-      DO 45 IP=1,NPOIN2
-        AUX1(IP) = AUX1(IP) + AUX3(IP)*CTE1
-        AUX2(IP) = AUX2(IP) + AUX3(IP)*CTE2
-   45 CONTINUE
 !
-!.....COMPUTES THE AVERAGE WAVE NUMBER
-!     """"""""""""""""""""""""""""""
-      DO 50 IP=1,NPOIN2
-        IF (AUX2(IP).LT.SEUIL) THEN
-          XKMOY(IP) = 1.D0
+!     COMPUTES THE AVERAGE WAVE NUMBER
+!     
+      DO IP=1,NPOIN2
+        IF(AUX2(IP).LT.SEUIL) THEN
+!         XKMOY(IP) = 1.D0
+!         JMH ON 18/01/2013 : ARITHMETIC AVERAGE WHEN ENERGY WEIGHTED
+!                             AVERAGE IS NOT POSSIBLE         
+          XKMOY(IP)=XK(IP,1)
+          DO JF=2,NF
+            XKMOY(IP)=XKMOY(IP)+XK(IP,JF)
+          ENDDO          
+          XKMOY(IP)=XKMOY(IP)/NF          
         ELSE
           XKMOY(IP) = (AUX1(IP)/AUX2(IP))**2
         ENDIF
-   50 CONTINUE
+      ENDDO
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

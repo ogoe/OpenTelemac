@@ -50,28 +50,35 @@
 !
 !     DECLARES BIEF STRUCTURES
 !
-!> @brief
-! variables 4d a convecter
+!     variables 4d a convecter
+!
       TYPE (BIEF_OBJ), TARGET :: SF
-!> @brief
-! coefficient b pour convection
+!
+!     coefficient b pour convection
+!
       TYPE (BIEF_OBJ), TARGET :: SB
-!> @brief
-! tableaux des frequences de discretisation
+!
+!     tableaux des frequences de discretisation
+!
       TYPE (BIEF_OBJ), TARGET :: SFR
-!> @brief
-! tableaux des pas de frequence
+!
+!     tableaux des pas de frequence
+!
       TYPE (BIEF_OBJ), TARGET :: SDFR
-!> @brief
-! tableaux pour les interactions non lineaires
+!
+!     tableaux pour les interactions non lineaires
+!
       TYPE (BIEF_OBJ), TARGET :: SCOEF
-!> @brief
-! tableau des pieds des caracteristiques
+!
+!     tableau des pieds des caracteristiques
+!
       TYPE (BIEF_OBJ), TARGET :: SSHP1
-!> @brief
-! tableau des pieds des caracteristiques
+!
+!     tableau des pieds des caracteristiques
+!
       TYPE (BIEF_OBJ), TARGET :: SSHZ
-!> @brief
+!
+!
 !
       TYPE (BIEF_OBJ), TARGET ::SCT,SCF,SSHF,SXK,SCG ,
      & SZF,SDEPTH,SUC,SVC,SUC1,SVC1,SUC2,SVC2,SDZHDT,SDZX ,
@@ -124,41 +131,53 @@
 !     NUMBER OF DISCRETISED FREQUENCIES
 ! 
       INTEGER NF
-!> @brief PERIOD FOR LISTING PRINTOUTS
-! periode pour les sorties listing
+!
+!     PERIOD FOR LISTING PRINTOUTS
+! 
       INTEGER LISPRD
-!> @brief PERIOD FOR GRAPHIC PRINTOUTS
-! periode pour les sorties graphiques
+!
+!     PERIOD FOR GRAPHIC PRINTOUTS
+! 
       INTEGER GRAPRD
-!> @brief NUMBER OF TIME STEP
-! nombre de pas de temps
+!
+!     NUMBER OF TIME STEP
+! 
       INTEGER NIT
-!> @brief TIDE REFRESHING PERIOD
-! periode d'actualisation de la maree
+!
+!     TIDE REFRESHING PERIOD
+! 
       INTEGER LAM
-!> @brief RANK OF THE WATER LEVEL DATA IN THE TELEMAC FILE
-! rang du niveau de la maree dans le fichier telemac
+!
+!     RANK OF THE WATER LEVEL DATA IN THE TELEMAC FILE
+! 
       INTEGER IDHMA
-!> @brief NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS
-! numero de la premiere iteration pour les sorties graphiques
+!
+!     NUMBER OF FIRST ITERATION FOR GRAPHICS PRINTOUTS
+! 
       INTEGER GRADEB
-!> @brief NUMBER OF BOTTOM SMOOTHINGS
-! nombre de lissages du fond
+!
+!     NUMBER OF BOTTOM SMOOTHINGS
+! 
       INTEGER LISFON
-!> @brief WIND GENERATION
-! indicateur de type de terme input par vent
+!
+!     WIND GENERATION
+!     
       INTEGER SVENT
-!> @brief WHITECAPPING DISSIPATION
-! indicateur de type de terme moutonnement
+!
+!     WHITECAPPING DISSIPATION
+! 
       INTEGER SMOUT
-!> @brief BOTTOM FRICTION DISSIPATION
-! indicateur de type de terme frottement
+!
+!     BOTTOM FRICTION DISSIPATION
+! 
       INTEGER SFROT
-!> @brief NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
-! indicateur de type de terme interactions non_lineaires
+!
+!     NON-LINEAR TRANSFERS BETWEEN FREQUENCIES
+! 
       INTEGER STRIF
-!> @brief DEPTH-INDUCED BREAKING DISSIPATION
-! indicateur de type de terme deferlement
+!
+!     DEPTH-INDUCED BREAKING DISSIPATION
+! 
       INTEGER SBREK
 !> @brief DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD
 ! modele deferlement bj : mode calcul de qb
@@ -358,8 +377,9 @@
 !> @brief IMPLICITATION COEFFICIENT FOR SOURCE TERMS
 ! coefficient implicitation pour termes sources
       DOUBLE PRECISION CIMPLI
-!> @brief INITIAL STILL WATER LEVEL
-! cote initiale du plan d'eau au repos
+!
+!     INITIAL STILL WATER LEVEL
+! 
       DOUBLE PRECISION ZREPOS
 !> @brief TRIADS 1 (LTA) COEFFICIENT ALPHA
 ! triads 1 (lta) constante alpha
