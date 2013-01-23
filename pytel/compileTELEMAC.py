@@ -540,7 +540,8 @@ if __name__ == "__main__":
             if cfgs[cfgname]['version'] in vername:
                # While going through the modules if ti is the first time we run the compilation the cfgnale folder
                # will not exist
-               if not path.isdir(path.join(verpath,vername+sep+cfgname)):mkdir(path.join(verpath,vername+sep+cfgname)
+               if not path.isdir(path.join(verpath,vername+sep+cfgname)) : 
+                  mkdir(path.join(verpath,vername+sep+cfgname))
                for p,d,filenames in walk(path.join(verpath,vername+sep+cfgname)) : break
                for file in filenames:
                   if path.splitext(file)[1] == '.cmdf':
