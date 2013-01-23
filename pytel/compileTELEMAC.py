@@ -538,12 +538,9 @@ if __name__ == "__main__":
          for verpath,vernames,file in walk(path.join(cfgs[cfgname]['root'],mod)) : break
          for vername in vernames:
             if cfgs[cfgname]['version'] in vername:
-               if not path.isdir(path.join(verpath,vername+sep+cfgname)):
-                  print '\nError while searching the cmdf file\n\
-                         The subfolder '+cfgname+' in '+verpath+sep+vername+' does not exist\n\
-                         First time compiling the telemac system with this configuration?\n\
-                         Remove the -x/--noscan option\nYou need to run the scan once before using that option'
-                  sys.exit()
+               # While going through the modules if ti is the first time we run the compilation the cfgnale folder
+               # will not exist
+               if not path.isdir(path.join(verpath,vername+sep+cfgname)):mkdir(path.join(verpath,vername+sep+cfgname)
                for p,d,filenames in walk(path.join(verpath,vername+sep+cfgname)) : break
                for file in filenames:
                   if path.splitext(file)[1] == '.cmdf':
