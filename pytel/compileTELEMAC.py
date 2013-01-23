@@ -495,7 +495,7 @@ if __name__ == "__main__":
                if not path.exists(ForDir): 
                   try:
                      mkdir(ForDir) 
-                  except Exception as e:
+                  except OSError as e:
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Failed to create folder : '+ForDir},e,options.bypass)])
                if 'homere' in item.lower() or 'systeme' in item.lower():
                   ForCmd = path.join(ForDir,prg[item][0] + cfgs[cfgname]['version'] + '.cmdf')
@@ -540,7 +540,7 @@ if __name__ == "__main__":
             if cfgs[cfgname]['version'] in vername:
                if not path.isdir(path.join(verpath,vername+sep+cfgname)):
                   print '\nError while searching the cmdf file\n\
-                         The subfolder'+cfgname+' does not exist\n\
+                         The subfolder '+cfgname+' in '+verpath+sep+vername+' does not exist\n\
                          First time compiling the telemac system with this configuration?\n\
                          Remove the -x/--noscan option\nYou need to run the scan once before using that option'
                   sys.exit()
