@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <meta xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="bj78" author="artemis" contact="www.opentelemac.org" />
+   </meta>
+   <meta xref="vect">
+      <look colour="jet.xml" />
+   </meta>
+   <meta xref="line">
+      <look colour="k" />
+   </meta>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1"
+       do="translate;compile;run;cas;princi"
+       code="artemis" target="art_bj78-scal.cas"
+       title="bj78 scalar mode"
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="artemis" target="art_bj78-scal.cas"
+       title="bj78 parallel mode"
+   />   
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+   <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="[-6;0.4][14;0.4]" target="1:ARTRES" time="[0]" /> 
+   </plot1d>
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[10;3]" > 
+      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Bathy" size="[10;3]" > 
+      <layer vars="bottom:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="WaveHeight" size="[10;3]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
+   </plot2d>   
+
+</validation>

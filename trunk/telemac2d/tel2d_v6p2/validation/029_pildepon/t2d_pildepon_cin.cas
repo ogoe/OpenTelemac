@@ -1,0 +1,41 @@
+/DEBUGGER : 1
+/
+/  SUR HP C3700 compilateur HP : 312 s     5.8  22/11/2007
+/  SUR HP C3700 compilateur Nag: 946 s     5.8  21/12/2007
+/  Dell 2.8 GHz Linux pgi      : 128 s     5.8  19/12/2007
+/
+/  SUR HP C3700 compilateur HP : 291 s     5.9  16/10/2008 
+/  SUR HP C3700 compilateur Nag: 932 s     5.9  17/10/2008
+/  Dell 2.8 GHz Linux pgi      : 128 s     5.9  16/10/2008
+/
+/  SUR HP C3700 compilateur HP : 292 s     6.0  24/11/2009 
+/  SUR HP C3700 compilateur Nag: 898 s     6.0  26/11/2009
+/  Dell 2.8 GHz Linux pgi      : ??? s     6.0  26/11/2009
+/
+/  SUR HP C3700 compilateur HP : 392 s     6.0  24/11/2009 
+/
+FICHIER DES CONDITIONS AUX LIMITES : geo_pildepon.cli
+FICHIER DE GEOMETRIE               : geo_pildepon.slf
+FICHIER DES FRONTIERES LIQUIDES    : t2d_pildepon.lqd
+FICHIER DE REFERENCE               : f2d_pildepon_cin.slf
+FICHIER DES RESULTATS              : r2d_pildepon_cin.slf
+/
+/----------------------------------------------------------------------/
+EQUATIONS : 'SAINT-VENANT VF' 
+/ 0 : ROE 1 : CINETIQUE ORDRE 1  2 : CINETIQUE ORDRE 2
+SCHEMA EN VOLUMES FINIS : 2     PAS DE TEMPS VARIABLE : OUI
+DUREE DU CALCUL : 80.        PAS DE TEMPS = 0.4
+/NOMBRE DE TRACEURS : 1
+/----------------------------------------------------------------------/ 
+VALIDATION : OUI
+TITRE = 'TELEMAC 2D : RIVIERE AVEC DEUX PILES DE PONT$'  
+SUITE DE CALCUL = NON
+/
+PERIODE POUR LES SORTIES GRAPHIQUES = 1000
+PERIODE DE SORTIE LISTING           = 100                             
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,H,B,L,T1'                                
+LOI DE FROTTEMENT SUR LE FOND = 3     COEFFICIENT DE FROTTEMENT = 40.    
+CONDITIONS INITIALES : 'COTE NULLE'                                     
+DEBITS IMPOSES : 0.;62.     COTES IMPOSEES : 0.;0.  
+/ 
+&ETA                                                                     

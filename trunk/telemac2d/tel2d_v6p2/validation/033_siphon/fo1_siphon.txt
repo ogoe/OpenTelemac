@@ -1,0 +1,4 @@
+Relaxation,  Nombre de siphons                                                  
+    0.2               1                                                         
+I1   I2  d1  d2  Ce1  Ce2  Cs1  Cs2   S12   L12   z1    z2    a1   a2            
+199  640  90. 0.  0.5  0.5   1.   1.    5.   0.2   0.3   0.1   0.   90.           

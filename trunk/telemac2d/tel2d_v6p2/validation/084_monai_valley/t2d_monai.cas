@@ -1,0 +1,74 @@
+/
+/-------------------------------------------------------------------/
+/   TELEMAC-2D   -  VALIDATION TEST CASE  -                         /
+/                       MONAI VALLEY                                /
+/-------------------------------------------------------------------/
+/
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+/
+GEOMETRY FILE                   = geo_monai.slf
+FORTRAN FILE                    = t2d_monai.f
+BOUNDARY CONDITIONS FILE        = geo_monai.cli
+RESULTS FILE                    = r2d_monai.slf
+REFERENCE FILE                  = f2d_monai.slf
+LIQUID BOUNDARIES FILE          = initial_wave.prn
+NUMBER OF PRIVATE ARRAYS        = 1
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITLE                           = 'MONAI VALLEY'
+VARIABLES FOR GRAPHIC PRINTOUTS = 'U,V,S,B,H'
+GRAPHIC PRINTOUT PERIOD         = 400
+LISTING PRINTOUT PERIOD         = 400
+TIME STEP                       = 0.05
+EQUATIONS                       = 'SAINT-VENANT VF'
+FINITE VOLUME SCHEME            = 2
+VARIABLE TIME-STEP              = YES
+DURATION                        = 22.5
+/
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED           = NO
+INITIAL CONDITIONS              = 'CONSTANT ELEVATION'
+INITIAL ELEVATION               = 0
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION          = 2
+FRICTION COEFFICIENT            = 180
+TURBULENCE MODEL                = 1
+DIFFUSION OF VELOCITY           = NO
+/
+/----------------------------------------------
+/  BOUNDARY CONDITIONS
+/----------------------------------------------
+/
+PRESCRIBED FLOWRATES            = 0.0
+PRESCRIBED ELEVATIONS           = 0.0
+OPTION FOR LIQUID BOUNDARIES    = 2
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+PROPAGATION                     = YES      
+ADVECTION                       = NO
+INFORMATION ABOUT SOLVER        = YES
+SOLVER                          = 7
+SOLVER OPTION                   = 2
+SOLVER ACCURACY                         = 1.E-6
+MAXIMUM NUMBER OF ITERATIONS FOR SOLVER = 200
+INITIAL GUESS FOR H             = 1
+MATRIX STORAGE                  = 3
+/ 
+VALIDATION                      = YES          
+&FIN

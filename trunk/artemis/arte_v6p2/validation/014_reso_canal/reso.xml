@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="case">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <meta xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="reso_canal" author="artemis" contact="www.opentelemac.org" />
+   </meta>
+   <meta xref="vect">
+      <look colour="jet.xml" />
+   </meta>
+   <meta xref="line">
+      <look colour="k" />
+   </meta>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1"
+       do="translate;compile;run;cas;princi"
+       code="artemis" target="reso.cas"
+       title="Resonance in a flume"
+   />
+   <action xref="2"
+       do="translate;compile;run;cas;princi" ncsize="4"
+       code="artemis" target="reso.cas"
+       title="Resonance in a flume parallel"
+   />   
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+   <plot1d xref="Period" type="history" config="together" time="[0;-1]" size="[12;5]" > 
+      <layer vars="wave height:line" extract="[2700;2000]" target="1:ARTRES" />
+   </plot1d> 
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[7;10]" > 
+      <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Wave height" size="[7;10]" > 
+      <layer vars="wave height:map" target="1:ARTRES" config="together" time="[-5]" /> 
+   </plot2d>   
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+
+</validation>

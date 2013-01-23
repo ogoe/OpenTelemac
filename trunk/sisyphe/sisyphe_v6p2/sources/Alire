@@ -1,0 +1,107 @@
+Modif CV 01/11 
++++++++++++++ 
+ 
+Predicteurd de rides  
+-------------------- 
+Declarations_sisyphe.f 
+logical 
+	KSPRED: nouveau mot clé 
+Integer 
+        IKS : IKS= 3 VAn Rijn 
+ 
+Sisyphe.f : appel de Tob_sisyphe 
+Tob_siysphe.f 
+Lecdon.f: KFROT = 5 imposé dans lecdon.f 
+ 
+Integration modif BAW 
+--------------------- 
+- Couplage Telemac 3D 
+- Effet de pente 
+ 
+ 
+Modifs JMH 02/12/2010 
++++++++++++++++++++++ 
+bedloadsolidischarge.f : appel a effet de pente, Calfa et Salfa 
+                         toujours faits 
+bedload_effpnt.f : calcul de Calfa et Salfa enleve. 
+ 
+Modifs CV Tassement 
++++++++++++++++++++++ 
+Modele de Tassement : ITASS 
+ITASS=1: Modele de walther Multicouches 
+ITASS = 2 ... 
+ 
++++++++++++++++++++ 
+Janvier 2011 
+ 
+Ajout de ACLADM en sortie (variabble 22) 
+ ---> modif des subroutines nomvar.f, point_sisyphe.f, et dans lecdon.f 
+ --> modif des variables alire et trouve dans sisyphe.f 
+ --->                                         init_transport.f 
+Bugs correction cas permanent sisyphe.f 
+ 
+ 
++++++++++++++++++ 
+Sisyphe.f pb de temps initial en cas de suite de calcul 
+rajout de  
+          AT0=T_TEL 
+  
+ 
+Bug sur init_avai.f 
+vider les couches non definies 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+01/03/2011
++++++++++
+ICQ = 3 : formule de concentration à l'équilibre de Van Rijn (1987)
+
+
+suspension_Vanrijn
+suspension_computation
+suspension_erosion
+init_transport 
+interface_sisyphe
+suspension_main 
+
+Envoi la viscosit (VCE) a suspension_VAnrijn
+VCE--> SUSPENSION_MAIN---> SUSP_COMPUTATION --->SUSP_EROSION---> SUSPENSION_VR
+appel de suspension_Van RIJN aussi dans suspension_flux_mixte
+-----------------------------      dans init_transport
+
+restructuration de suspension_computation
+DÃ©placer le calcul d'Ã©rosion avant le dÃ©pÃŽt (pour regrouper le calcul du ZREF etdu CSTAEQ qui dÃ©pendent du ICQ
+Regrouper le calcul de la vitesse de convection avec la résolution numérique 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+04/03/2011 : BUG
+++++++++++
+envoyer le FDM(I) dans suspension_main et l'utiliser pour le calcul du trnansport 
+(jusqu'à présent c'est le diamètre moyen qui est utilisé!!!)
+
+suspension_main
+remplacer ACLADM par FDM(I)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+15/03/2011
+++++++++++
+changement du BAW
+dico : ajouts des mots clés: MP, ALPHA,MOFAC
+declarations_sisyphe
+bedload_seccurrent.f
+bedload_meyer
+suspension_fredsoe
+lecdon_sisyphe
+sisyphe.f
+init_transport
+
+31/03/2011
++++++++++++
+on remplace la variable XKV par la porosit� XKV = N porosit�
+	- dico chang� 
+	- lecdon : CSF_SABLE = (1-porosit�)  
+	- changement de bedload_solidischarge: XKV elimin�
+	- bedload_main: apr�s evol: ZFCL =ZFCL/CSF_SABLE
+	- bedload_evol: 
+	 avant appel � bedload_solvs_fe 
+	 le tableau T13 : ELAY multipli� par CSF_SABLE
+	 - bedload_nerbed_vf tableau T3 chang� 
+	 envoyer CSF_SABLE = (1-porosit�) en argument? 

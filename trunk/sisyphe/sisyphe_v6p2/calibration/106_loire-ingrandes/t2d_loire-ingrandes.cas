@@ -1,0 +1,98 @@
+/----------------------------------------------------------------------/
+/ CRUE DE LA LOIRE A INGRANDES
+/ Bathymetrie initiale du 20-21 janvier 2004
+/ Evolution entre le 20 et le 28 janvier 2004
+/ A comparer avec la figure 20 de la these de Matthieu de Linares
+/ mais fait ici avec un coefficient de frottement constant.
+/
+/----------------------------------------------------------------------/
+/
+/ Dell 2.8 GHz Linux, compilateur pgi:  141 s version 5.8 JMH 18/01/2008
+/ HP C3700, compilateur HP           :  191 s version 5.8 JMH 17/01/2008
+/ HP C3700, compilateur Nag          :  504 s version 5.8 JMH 24/01/2008
+/
+/ Version 5.9
+/
+/ Dell 2.8 GHz Linux, compilateur intel :   94 s JMH 29/12/2008
+/ HP C3700, compilateur HP              :  191 s JMH 29/12/2008
+/
+/ Version 6.0 (note JMH, j'ai l'impression que les temps au-dessus
+/              ne correspondent pas à ce cas).
+/
+/ HP C3700, compilateur HP              :  613 s JMH 09/12/2009
+/ Dell 2.8 GHz Linux, compilateur intel :  154 s JMH 10/12/2009
+/ HP C3700, compilateur Nag             :  685 s JMH 08/12/2009
+/
+/ Dell 2.8 GHz Linux, compilateur intel :  91 s CV  07/06/2010
+/----------------------------------------------------------------------/
+/
+FICHIER DE GEOMETRIE               = geo_loire-ingrandes.slf
+FICHIER DES CONDITIONS AUX LIMITES = geo_loire-ingrandes.cli
+FICHIER DES RESULTATS              = r2d_loire-ingrandes.slf
+/FICHIER DES FRONTIERES LIQUIDES    = t2d_loire-ingrandes.qsl
+FICHIER FORTRAN                    = t2d_loire-ingrandes.f
+FICHIER DU CALCUL PRECEDENT        = geo_loire-ingrandes.slf
+FICHIER DE REFERENCE               = f2d_loire-ingrandes.slf
+VALIDATION : OUI
+/
+/----------------------------------------------------------------------/
+/ OPTIONS GENERALES
+/----------------------------------------------------------------------/
+/
+TITRE = 'Fresnes couplage'
+FICHIER DES PARAMETRES DE SISYPHE  = sis_loire-ingrandes.cas
+COUPLAGE AVEC = 'SISYPHE'
+/PERIODE DE COUPLAGE = 1
+PERIODE POUR LES SORTIES GRAPHIQUES   = 2304
+PERIODE DE SORTIE LISTING             = 10
+VARIABLES POUR LES SORTIES GRAPHIQUES = 'U,V,H,S,B,L,F,W'
+/INFORMATIONS SUR LE SOLVEUR           = OUI
+BILAN DE MASSE                        = OUI
+/
+/----------------------------------------------------------------------/
+/
+SUITE DE CALCUL = OUI    
+REMISE A ZERO DU TEMPS = OUI
+/NOMBRE DE PAS DE TEMPS                = 230400
+/hydrogramme cent fois plus court (facteur 100 dans bedload_meyer)
+/=huit jours reels en tout
+NOMBRE DE PAS DE TEMPS = 2304   
+PAS DE TEMPS = 3.
+/
+CONDITIONS INITIALES = 'COTE CONSTANTE'    
+COTE INITIALE = 10.05
+/----------------------------------------------------------------------/
+/
+LOI DE FROTTEMENT SUR LE FOND = 3   
+COEFFICIENT DE FROTTEMENT = 35.
+DEBITS IMPOSES      = 3990.;0.;0.
+COTES IMPOSEES      = 0;12.695;12.695
+PROFILS DE VITESSE  = 4;4;4
+BANCS DECOUVRANTS   = OUI
+/
+/----------------------------------------------------------------------/
+/ PARAMETRES NUMERIQUES
+/----------------------------------------------------------------------/
+/
+TRAITEMENT DU SYSTEME LINEAIRE : 2 
+SOLVEUR : 1 
+PRECONDITIONNEMENT : 2
+COMPATIBILITE DU GRADIENT DE SURFACE LIBRE : 0.8
+/
+PRECONDITIONNEMENT                    = 2
+FORME DE LA CONVECTION                = 1;5
+MAXIMUM D'ITERATIONS POUR LE SOLVEUR  = 100
+PRECISION DU SOLVEUR                  = 1.E-6
+MASS-LUMPING SUR H                    = 1.
+MASS-LUMPING SUR LA VITESSE           = 1.
+IMPLICITATION POUR LA HAUTEUR         = 1.
+IMPLICITATION POUR LA VITESSE         = 1.
+/
+/----------------------------------------------------------------------/
+/ EQUATIONS
+/----------------------------------------------------------------------/
+/
+MODELE DE TURBULENCE = 1   
+COEFFICIENT DE DIFFUSION DES VITESSES = 1.
+/
+&ETA

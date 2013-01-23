@@ -1,0 +1,14 @@
+#!/bin/sh
+#-----------------------------------------------------
+#
+# Lancement sous Unix du code SISYPHE
+#
+#------------------------------DeltaCAD-Septembre98---
+#
+PERL5LIB=`getperl5lib`
+export PERL5LIB
+#
+PERLPATH=`getperlpath`
+export PERLPATH
+#
+$PERLPATH/perl -x -S runtel.pl sisyphe $1 $2 $3 $4 $5

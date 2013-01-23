@@ -1,0 +1,57 @@
+PROCESSEURS PARALLELES : 0
+COORDONNEES DE L'ORIGINE : 12000;350000
+/
+/  HP C3700 MHz                   : 17 s 5.5  22/11/2004
+/  DELL LINUX 2.8 GHz   pgi 5.2   : 11 s 5.6  27/12/2005
+/
+/  HP C3700 MHz  compilateur HP   : 14 s 5.7  17/04/2007
+/  HP C3700 MHz  compilateur Nag  : 34 s 5.7  17/04/2007
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 10 s 5.7  19/04/2007
+/
+/  HP C3700 MHz  compilateur HP   : 14 s 5.8  13/11/2007 
+/  HP C3700 MHz  compilateur Nag  : 33 s 5.8  20/12/2007
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 12 s 5.8  22/11/2007 
+/
+/  HP C3700 MHz  compilateur HP   : 14 s 5.9  15/10/2008 (16 procs OK)
+/  HP C3700 MHz  compilateur Nag  : 35 s 5.9  16/10/2008
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 10 s 5.9  15/10/2008
+/ 
+/  PARAMETERS CHANGED
+/
+/  HP C3700 MHz  compilateur HP   : 07 s 6.0  23/11/2009 (16 procs OK)
+/  HP C3700 MHz  compilateur Nag  : 19 s 6.0  25/11/2009
+/  DELL LINUX 2.8 GHz   pgi 6.2   : 04 s 6.0  24/11/2009 (16 procs OK)
+/ 
+/  VERSION 6.2
+/ 
+/  HP C3700 MHz  compilateur HP   : 08 s 04/05/2012 
+/ 
+FICHIER FORTRAN                   : t2d_bumpcri.f
+FICHIER DES CONDITIONS AUX LIMITES: geo_bumpcri.cli
+FICHIER DE GEOMETRIE              : geo_bumpcri.slf      
+FICHIER DE REFERENCE              : f2d_bumpcri.slf
+FICHIER DES RESULTATS             : r2d_bumpcri.slf
+/----------------------------------------------------------------------/  
+/                       OPTIONS GENERALES                                 
+/----------------------------------------------------------------------/  
+TITRE = 'TELEMAC 2D : ECOULEMENT TRANSCRITIQUE SUR UN OBSTACLE$'          
+SUITE DE CALCUL = NON                                                     
+PAS DE TEMPS = 0.03        NOMBRE DE PAS DE TEMPS = 1000                 
+PERIODE POUR LES SORTIES GRAPHIQUES=100 PERIODE DE SORTIE LISTING=100   
+VARIABLES POUR LES SORTIES GRAPHIQUES : 'U,V,S,B,Q,F,H,N,O,R,Z'           
+LOI DE FROTTEMENT SUR LE FOND = 0    COEFFICIENT DE FROTTEMENT = 80.      
+COEFFICIENT DE DIFFUSION DES VITESSES = 0.                                           
+IMPLICITATION POUR LA HAUTEUR = 1.  IMPLICITATION POUR LA VITESSE = 1.   
+BILAN DE MASSE : OUI   INFORMATIONS SUR LE SOLVEUR : OUI                  
+CONDITIONS INITIALES : PARTICULIERES
+DEBITS IMPOSES : 0.;0.6           
+VALIDATION  : OUI  
+NOMBRE DE TABLEAUX PRIVES : 4                                                     
+/----------------------------------------------------------------------/  
+FORME DE LA CONVECTION : 1;5                                              
+        OPTION DE SUPG : 1;2                                       
+DISCRETISATIONS EN ESPACE : 11 ; 11 
+TRAITEMENT DU SYSTEME LINEAIRE : 2
+PRECISION DU SOLVEUR = 1.E-5  SOLVEUR : 1   
+CORRECTION DE CONTINUITE : OUI                                     
+&ETA                                                                      

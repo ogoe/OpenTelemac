@@ -1,0 +1,5 @@
+echo '....reseting sources protections '
+chmod u=+rw,g=+r,o=+r *.f
+chmod u=+rwx,g=+rx,o=+rx *.o
+exit
+
