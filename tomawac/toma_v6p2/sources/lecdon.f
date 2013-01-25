@@ -5,7 +5,7 @@
      &(F1,NAME1FR,NAME1GB,MODE1,
      & F2,NAME2FR,NAME2GB,MODE2,
      & F3,NAME3FR,NAME3GB,MODE3,
-     & X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,NPTT,INDIC,CHDON)
+     & X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,NPTT,INDIC,CHDON,TEXTE,TROUVE)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   21/06/2011
@@ -70,9 +70,8 @@
 !| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| NPTT           |-->| TIME STEP NUMBER IN TELEMAC FILE
-!| TRA03          |<->| WORK TABLE
-!| UR,VR          |<->| TABLE OF THE VALUES READ IN THE DATA FILE
-!| V              |<--| CURRENT OR WIND ALONG Y AT THE MESH POINTS
+!| TEXTE          |<->| NAME OF VARIABLES IN THE SERAFIN FILE
+!| TROUVE         |<->| 3 LOGICAL, WILL SAY IF VARIABLES HAVE BEEN FOUND
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -95,15 +94,19 @@
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1FR,NAME2FR,NAME3FR
       CHARACTER(LEN=32),INTENT(IN)    :: NAME1GB,NAME2GB,NAME3GB
+      CHARACTER(LEN=32),INTENT(INOUT) :: TEXTE(30)
+      LOGICAL, INTENT(INOUT)          :: TROUVE(3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER NP,I,J,NVAR,IB(10),ISTAT,MODE(3)
       DOUBLE PRECISION ATT,BDX(2),Z(1)
       CHARACTER(LEN=3) C
-      CHARACTER(LEN=32) TEXTE(30),NAMEFR(3),NAMEGB(3)
+      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
       CHARACTER(LEN=72) TITCAS
-      LOGICAL TROUVE(3),VOID
+      LOGICAL VOID
+!
+      INTRINSIC TRIM
 !
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPOIN2))
@@ -144,8 +147,12 @@
 !
 !         FORMAT AND GEOMETRY
 !
-          READ(NDON)
-          CALL LIT(Z,W,IB,C,4,'I ',NDON,BINDON,ISTAT)
+          CALL LIT(Z,W,IB,C,10,'I ',NDON,BINDON,ISTAT)
+          IF(IB(10).EQ.1) THEN
+!           THIS IS THE DATE : YEAR, MONTH, DAY, HOUR, MINUTE, SECOND
+            CALL LIT(Z,W,IB,C,6,'I ',NDON,BINDON,ISTAT)
+          ENDIF
+          CALL LIT(Z,W,IB,C, 4,'I ',NDON,BINDON,ISTAT)
           NP=IB(2)
           WRITE(LU,*)
      &        '-----------------------------------------------------'
@@ -186,6 +193,8 @@
           CALL LIT(BDX(1),W,IB,C,1,'R4',NDON,BINDON,ISTAT)
           ATT=BDX(1)
 !
+!         HERE THE DATE SHOULD BE TAKEN INTO ACCOUNT IF PRESENT
+!
           IF(LNG.EQ.1) THEN
             WRITE(LU,*)'         TITRE DU CAS TELEMAC : '
             WRITE(LU,*)'           ',TITCAS
@@ -221,20 +230,24 @@
             IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'LECDON : VARIABLE ',J,' NON TROUVEE'
-                WRITE(LU,*) NAMEFR(J),' OU ',NAMEGB(J)
+                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
+     &                      TRIM(NAMEGB(J)(1:16))
               ELSEIF(LNG.EQ.2) THEN
                 WRITE(LU,*) 'LECDON: VARIABLE ',NAME1GB,' NOT FOUND'
-                WRITE(LU,*) NAMEFR(J),' OR ',NAMEGB(J)
+                WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
+     &                      TRIM(NAMEGB(J)(1:16))
               ENDIF
               CALL PLANTE(1)
               STOP
-            ELSEIF(MODE(J).GT.0) THEN
+            ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'VARIABLE ',J,' LUE (',
-     &                      NAMEFR(J),' OU ',NAMEGB(J),')'
+     &                      TRIM(NAMEFR(J)(1:16)),' OU ',
+     &                      TRIM(NAMEGB(J)(1:16))
               ELSEIF(LNG.EQ.2) THEN
                 WRITE(LU,*) 'VARIABLE ',J,' READ (',
-     &                      NAMEFR(J),' OR ',NAMEGB(J),')'
+     &                      TRIM(NAMEFR(J)(1:16)),' OR ',
+     &                      TRIM(NAMEGB(J)(1:16))
               ENDIF
             ENDIF
           ENDDO
@@ -247,14 +260,12 @@
 !
         IF(CHDON(1:1).EQ.'C') THEN
 !         READS A CURRENT FIELD
-!         NOTE JMH : THERE SHOULD BE F1, F2, F3 SOMEWHERE HERE ????
           CALL COUUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
-     &                0.D0,0.D0,0.D0,0.D0,F3,F3,F3,F3)
+     &                0.D0,0.D0,0.D0,0.D0,F1,F2,F1,F2)
         ELSEIF(CHDON(1:1).EQ.'W') THEN
 !         READS A WIND FIELD
-!         NOTE JMH : THERE SHOULD BE F1, F2, F3 SOMEWHERE HERE ????
           CALL VENUTI(X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
-     &                0.D0,0.D0,0.D0,0.D0,F3,F3,F3,F3)
+     &                0.D0,0.D0,0.D0,0.D0,F1,F2,F1,F2)
         ELSE
           IF(LNG.EQ.1) THEN
             WRITE(LU,*) 'LE TYPE DE DONNEES A LIRE EST INCONNU'

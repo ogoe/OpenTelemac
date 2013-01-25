@@ -80,7 +80,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IBID,UL
-      CHARACTER(LEN=7) CHDON
+      LOGICAL TROUVE(3)
 !
 !-----------------------------------------------------------------------
 !
@@ -90,13 +90,11 @@
 !
 !     INITIALISES THE TIDAL CURRENT AND WATER LEVEL
 !
-      IF(MAREE) THEN
+      TROUVE(1)=.FALSE.
+      TROUVE(2)=.FALSE.
+      TROUVE(3)=.FALSE.
 !
-        IF(LNG.EQ.1) THEN
-          CHDON='COURANT'
-        ELSE
-          CHDON='CURRENT'
-        ENDIF
+      IF(MAREE) THEN
 !
 !       READS IN THE TIDAL CURRRENT AND (OPTIONAL) DEPTH
 !
@@ -121,15 +119,32 @@
      &                SZM2%R,SDZHDT%R,MESH%X%R,MESH%Y%R ,
      &                NPOIN2,AT,DDC,LT)
         ELSE
-!         READS IN THE TIDAL CURRENT FROM BINARY FILE
-          CALL LECDOI(SUC%R,SVC%R,MESH%X%R,MESH%Y%R,
+!
+!         READS IN THE CURRENTS FROM BINARY FILE, AND POSSIBLY THE DEPTH
+!
+          CALL LECDOI(SUC%R,'VITESSE U       M/S             ',
+     &                      'VELOCITY U      M/S             ',2,    
+     &                SVC%R,'VITESSE V       M/S             ',
+     &                      'VELOCITY V      M/S             ',2, 
+     &                SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &                         'WATER DEPTH     M               ',1, 
+     &                MESH%X%R,MESH%Y%R,
      &                NPOIN2,WAC_FILES(WACCOB)%LU,BINCOU,NBOR,NPTFR,
-     &                AT,DDC,TC1,TC2,SUC1%R,SVC1%R,SUC2%R,SVC2%R,
-     &                INDIC,CHDON,NVCOU)
+     &                AT,DDC,TC1,TC2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
+     &                SZM1%R,SZM2%R,INDIC,'COURANT',NVCOU,TEXCOB,TROUVE)
+!         IF DEPTH READ
+          IF(TROUVE(3)) THEN
+            CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
+            CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TC2-TC1),NPOIN2)
+          ELSE
+            CALL OV('X=C     ',DZHDT,DZHDT,DZHDT,0.D0,NPOIN2)
+          ENDIF
+!
         ENDIF
 !
-!       READS IN THE TIDAL WATER LEVEL
+!       READS IN THE TIDAL WATER LEVEL IF NOT FOUND IN CURRENT FILE
 !
+        IF(.NOT.TROUVE(3)) THEN
         IF(WAC_FILES(WACMAF)%NAME(1:1).EQ.' '.AND.
      &     WAC_FILES(WACMAB)%NAME(1:1).EQ.' ') THEN
           IF(WAC_FILES(WACCOF)%NAME.NE.' '.OR.
@@ -148,21 +163,31 @@
           ENDIF
         ELSE
           IF(WAC_FILES(WACMAF)%NAME(1:1).NE.' ') THEN
-            WRITE(LU,*) 'LECTURE COURANT DANS FICHIER LECHAM MAF'
+            IF(LNG.EQ.1) WRITE(LU,*) 'LECTURE HAUTEUR DANS FICHIER MAF'
+            IF(LNG.EQ.2) WRITE(LU,*) 'READING DEPTH IN FILE MAF'
             UL=WAC_FILES(WACMAF)%LU
           ELSE
-            WRITE(LU,*) 'LECTURE COURANT DANS FICHIER LECHAM MAB'
+            IF(LNG.EQ.1) WRITE(LU,*) 'LECTURE HAUTEUR DANS FICHIER MAB'
+            IF(LNG.EQ.1) WRITE(LU,*) 'READING DEPTH IN FILE MAB'
             UL=WAC_FILES(WACMAB)%LU
           ENDIF
-          CALL LECHAM(STRA31%R,SDZHDT%R,MESH%X%R,MESH%Y%R,
-     &                NPOIN2,UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2, 
-     &                SZM1%R,SZM2%R,INDIM,IDHMA,NVHMA)
+          CALL LECDOI(SUC%R,'VITESSE U       M/S             ',
+     &                      'VELOCITY U      M/S             ',0,    
+     &                SVC%R,'VITESSE V       M/S             ',
+     &                      'VELOCITY V      M/S             ',0, 
+     &                SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &                         'WATER DEPTH     M               ',2, 
+     &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINMAR,NBOR,NPTFR,
+     &                AT,DDC,TM1,TM2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
+     &                SZM1%R,SZM2%R,INDIM,'HAUTEUR',NVHMA,TEXMAB,TROUVE)
+          CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
+          CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TM2-TM1),NPOIN2)
         ENDIF
-        CALL OV('X=X+Y   ',SDEPTH%R,STRA31%R,ST1%R,0.D0,NPOIN2)
 !
       ENDIF
+      ENDIF
 !
-!     INITIALISES THE CURRENT
+!     INITIALISES THE CONSTANT CURRENT
 !
       IF(COUSTA) THEN
         IF(WAC_FILES(WACCOF)%NAME(1:1).EQ.' '.AND.
@@ -197,7 +222,7 @@
           ELSE
             UL=WAC_FILES(WACCOB)%LU
           ENDIF
-!         HERE DEPTH READ AS THIRD VARIABLE
+!         HERE DEPTH POSSIBLY READ AS THIRD VARIABLE
           CALL LECDON(SUC%R,'VITESSE U       M/S             ',
      &                      'VELOCITY U      M/S             ',2,    
      &                SVC%R,'VITESSE V       M/S             ',
@@ -205,9 +230,9 @@
      &                SDEPTH%R,'HAUTEUR D''EAU   M               ',
      &                         'WATER DEPTH     M               ',1, 
      &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINCOU,NBOR,NPTFR,
-     &                NPTT,INDIC,'COURANT')
+     &                NPTT,INDIC,'COURANT',TEXCOB,TROUVE)
         ENDIF
-        DZHDT = 0.D0
+        CALL OV('X=C     ',DZHDT,DZHDT,DZHDT,0.D0,NPOIN2)
       ENDIF
 !
       IF(PART.EQ.0) THEN
@@ -221,11 +246,6 @@
 !   INITIALISES THE WIND
 !
       IF(VENT) THEN
-        IF(LNG.EQ.1) THEN
-          CHDON='VENT   '
-        ELSEIF(LNG.EQ.2) THEN
-          CHDON='WIND   '
-        ENDIF
 !
         IF(WAC_FILES(WACVEF)%NAME(1:1).EQ.' '.AND.
      &     WAC_FILES(WACVEB)%NAME(1:1).EQ.' '     ) THEN
@@ -256,12 +276,19 @@
      &                  SVV%R,'????????????????????????????????',
      &                        '????????????????????????????????',0, 
      &                  MESH%X%R,MESH%Y%R,NPOIN2,UL,BINVEN,NBOR,NPTFR,
-     &                  NPTT,INDIC,'WIND   ')
+     &                  NPTT,INDIV,'WIND   ',TEXVEB,TROUVE)
           ELSE
-            CALL LECDOI(SUV%R,SVV%R,MESH%X%R,MESH%Y%R,
+            CALL LECDOI(SUV%R,'VENT X          M/S             ',
+     &                        'WIND ALONG X    M/S             ',2, 
+     &                  SVV%R,'VENT Y          M/S             ',
+     &                        'WIND ALONG Y    M/S             ',2, 
+     &                  SVV%R,'????????????????????????????????',
+     &                        '????????????????????????????????',0, 
+     &                  MESH%X%R,MESH%Y%R,
      &                  NPOIN2,UL,BINVEN,NBOR,NPTFR,
-     &                  AT,DDC,TV1,TV2,SUV1%R,SVV1%R,SUV2%R,SVV2%R,
-     &                  INDIV,CHDON,IBID)
+     &                  AT,DDC,TV1,TV2,SUV1%R,SUV2%R,SVV1%R,SVV2%R,
+     &                  SVV1%R,SVV2%R,INDIV,'VENT   ',IBID,TEXVEB,
+     &                  TROUVE)
           ENDIF
         ENDIF
       ENDIF
@@ -270,14 +297,14 @@
 !
 !     INITIALISES F
 !
-      CALL SPEINI
-     &  ( SF%R  , TRA01(1:NF)   , TRA01(NF+1:NF+NPLAN),
-     &    SUV%R , SVV%R      , SFR%R  , STETA%R  , GRAVIT,
-     &    FREMAX   , FETCH , SIGMAA, SIGMAB , GAMMA  , FPIC  , HM0   ,
-     &    ALPHIL   , TETA1 , SPRED1, TETA2  , SPRED2 , XLAMDA, NPOIN2,
-     &    NPLAN    , NF    , INISPE, E2FMIN , DEPTH  , FRABI  )
+      CALL SPEINI(SF%R,TRA01(1:NF),TRA01(NF+1:NF+NPLAN),
+     &            SUV%R,SVV%R,SFR%R,STETA%R,GRAVIT,
+     &            FREMAX,FETCH,SIGMAA,SIGMAB,GAMMA,FPIC,HM0,
+     &            ALPHIL,TETA1,SPRED1,TETA2,SPRED2,XLAMDA,NPOIN2,
+     &            NPLAN,NF,INISPE,E2FMIN,DEPTH,FRABI)
 !
 !-----------------------------------------------------------------------
 !
       RETURN
       END
+

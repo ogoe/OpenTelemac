@@ -282,34 +282,35 @@
 !
 !-----------------------------------------------------------------------
 !
-! PREPARATION DES SORTIES GRAPHIQUES
+!     PREPARATION DES SORTIES GRAPHIQUES
 !
-        ! CREATION DU JEU DE DONNEES POUR UN FORMAT DE FICHIER
-        ! FORMAT_RES.
-        ! LE JEU DE DONNEES EST CREE DANS LE FICHIER NRES, ET EST
-        ! DEFINIT PAR UN TITRE ET LES VARIABLES A ECRIRE.
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CREATE_DATASET'
-        CALL CREATE_DATASET(WAC_FILES(WACRES)%FMT, ! FORMAT FICHIER RESULTAT
-     &                      WAC_FILES(WACRES)%LU,  ! LU FICHIER RESULTAT
-     &                      TITCAS,     ! TITRE DE L'ETUDE
-     &                      MAXVAR,     ! MAX VARIABLES SORTIE
-     &                      TEXTE,      ! NOMS VARIABLES SORTIE
-     &                      SORLEO)     ! SORTIE OU PAS DES VARIABLES
-        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CREATE_DATASET'
-        ! ECRITURE DU MAILLAGE DANS LE FICHIER SORTIE :
-        ! SI ON EST ON PARALLEL, FAUT L'INDIQUER VIA NCSIZE ET NPTIR.
-        ! LES AUTRES INFORMATIONS SONT DANS MESH.
-        ! EN PLUS : DATE/TEMPS DE DEPART ET LES COORDONNEES DE
-        ! L'ORIGINE.
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_MESH'
-        CALL WRITE_MESH(WAC_FILES(WACRES)%FMT, ! FORMAT FICHIER RESULTAT
-     &                  WAC_FILES(WACRES)%LU,  ! LU FICHIER RESULTAT
-     &                  MESH,          ! DESCRIPTEUR MAILLAGE
-     &                  1,             ! NOMBRE DE PLAN /NA/
-     &                  DATE,          ! DATE DEBUT
-     &                  TIME,          ! HEURE DEBUT
-     &                  I_ORIG,J_ORIG) ! COORDONNEES DE L'ORIGINE.
-        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_MESH'
+!     CREATION DU JEU DE DONNEES POUR UN FORMAT DE FICHIER FORMAT_RES.
+!     LE JEU DE DONNEES EST CREE DANS LE FICHIER NRES, ET EST DEFINI  
+!     PAR UN TITRE ET LES VARIABLES A ECRIRE.
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE CREATE_DATASET'
+      CALL CREATE_DATASET(WAC_FILES(WACRES)%FMT, ! FORMAT FICHIER RESULTAT
+     &                    WAC_FILES(WACRES)%LU,  ! LU FICHIER RESULTAT
+     &                    TITCAS,     ! TITRE DE L'ETUDE
+     &                    MAXVAR,     ! MAX VARIABLES SORTIE
+     &                    TEXTE,      ! NOMS VARIABLES SORTIE
+     &                    SORLEO)     ! SORTIE OU PAS DES VARIABLES
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CREATE_DATASET'
+!
+!     ECRITURE DU MAILLAGE DANS LE FICHIER SORTIE :
+!     SI ON EST ON PARALLEL, FAUT L'INDIQUER VIA NCSIZE ET NPTIR.
+!     LES AUTRES INFORMATIONS SONT DANS MESH.
+!     EN PLUS : DATE/TEMPS DE DEPART ET LES COORDONNEES DE L'ORIGINE.
+!
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE WRITE_MESH'
+      CALL WRITE_MESH(WAC_FILES(WACRES)%FMT, ! FORMAT FICHIER RESULTAT
+     &                WAC_FILES(WACRES)%LU,  ! LU FICHIER RESULTAT
+     &                MESH,          ! DESCRIPTEUR MAILLAGE
+     &                1,             ! NOMBRE DE PLAN /NA/
+     &                DATE,          ! DATE DEBUT
+     &                TIME,          ! HEURE DEBUT
+     &                I_ORIG,J_ORIG) ! COORDONNEES DE L'ORIGINE.
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE WRITE_MESH'
 !
 !-----------------------------------------------------------------------
 !
@@ -320,6 +321,7 @@
 !=====C INITIALISATION DES VECTEURS DE DISCRETISATION, DU COURANT,
 !  2  C DU VENT ET DU SPECTRE DE VARIANCE.
 !=====C===========================================================
+!
       LT=0
       DTSI=DT/NSITS
 !
@@ -561,8 +563,10 @@
 !     """""""""""""""""""""""""""""""""""""""""""""""""""""""
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROXIM'
-      CALL PROXIM(NOLEO,XLEO,YLEO,MESH%X%R,MESH%Y%R,
-     &            NPLEO,NPOIN2,MESH%IKLE%I,NELEM2,NELEM2)
+      IF(NPLEO.GT.0) THEN
+        CALL PROXIM(NOLEO,XLEO,YLEO,MESH%X%R,MESH%Y%R,
+     &              NPLEO,NPOIN2,MESH%IKLE%I,NELEM2,NELEM2)
+      ENDIF
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROXIM'
 !
 !.....9.2 TEST POUR SAVOIR SI ON IMPRIME OU PAS.

@@ -6,13 +6,15 @@
      &  AT  , DDC , LT  )
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   08/06/2011
+! TOMAWAC   V6P3                                   08/06/2011
 !***********************************************************************
 !
 !brief    SPECIFIES AN ANALYTICAL TIDE :
 !+                WATER LEVEL AND CURRENT SPEED ARE VARIABLE IN TIME.
 !
-!warning  USER SUBROUTINE; MUST BE CODED BY THE USER; THIS IS MERELY AN EXAMPLE
+!warning  User subroutine; Must be coded by the user; Here only an example
+!+        Now depth is requested, unlike free surface elevation in
+!+        versions up to 6.2  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !code
 !+      UCONST=0.D0
 !+      VCONST=0.D0
@@ -46,6 +48,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        23/01/20103
+!+        V6P3
+!+   Now depth is requested, not elevation above z0 !!!!!!!!!!!!
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
@@ -56,9 +63,9 @@
 !| VC             |-->| CURRENT VELOCITY ALONG Y AT THE MESH POINTS
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
-!| ZM             |<--| TIDAL HEIGTH AT TIME AT, AT THE MESH POINTS
-!| ZM1            |-->| TIDAL HEIGTH AT TIME TM1, AT THE MESH POINTS
-!| ZM2            |-->| TIDAL HEIGTH AT TIME TM2, AT THE MESH POINTS
+!| ZM             |<--| DEPTH AT TIME AT, AT THE MESH POINTS
+!| ZM1            |-->| DEPTH AT TIME TM1, AT THE MESH POINTS
+!| ZM2            |-->| DEPTH AT TIME TM2, AT THE MESH POINTS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -66,16 +73,17 @@
       INTEGER LNG,LU
       COMMON/INFO/ LNG,LU
 !
-!.....VARIABLES IN ARGUMENT
-!     """"""""""""""""""""
-      INTEGER  NPOIN2
-      INTEGER  LT
-      DOUBLE PRECISION AT    , DDC
-      DOUBLE PRECISION X (NPOIN2), Y (NPOIN2), ZM1(NPOIN2), ZM2(NPOIN2)
-      DOUBLE PRECISION UC(NPOIN2), VC(NPOIN2), DZHDT(NPOIN2),ZM(NPOIN2)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """""""""""""""""
+      INTEGER, INTENT(IN)             :: NPOIN2,LT
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZM1(NPOIN2),ZM2(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: UC(NPOIN2),VC(NPOIN2)
+      DOUBLE PRECISION, INTENT(INOUT) :: DZHDT(NPOIN2),ZM(NPOIN2)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       INTEGER          IP, I, J
       DOUBLE PRECISION UCONST, VCONST
 !
@@ -89,10 +97,11 @@
       DO 100 IP=1,NPOIN2
         UC(IP)   = UCONST
         VC(IP)   = VCONST
-        ZM(IP)   = 0.D0
+        ZM(IP)   = 3.D0
         DZHDT(IP)= 0.D0
   100 CONTINUE
 !
+!-----------------------------------------------------------------------
 !
       RETURN
       END

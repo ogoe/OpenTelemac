@@ -1012,22 +1012,28 @@
 !> @brief BINARY WINDS FILE
 ! fichier des vents binaire
       INTEGER :: WACVEB
-!> @brief FORMATTED WINDS FILE
-! fichier des vents formate
+!
+!     FORMATTED WINDS FILE
+! 
       INTEGER :: WACVEF
-!> @brief PARALLELISM FILE
-! fichier de parallelisme
+!
+!     PARALLELISM FILE (???)
+!  
       INTEGER :: WACPAR
-!> @brief VALIDATION FILE
-! fichier de reference
+!
+!     VALIDATION FILE
+! 
       INTEGER :: WACREF
-!> @brief BINARY TIDAL WATER LEVEL FILE
-! fichier du niveau de la maree binaire
+!
+!     BINARY TIDAL WATER LEVEL FILE
+! 
       INTEGER :: WACMAB
-!> @brief FORMATTED TIDAL WATER LEVEL FILE
-! fichier du niveau de la maree formate
+!
+!     FORMATTED TIDAL WATER LEVEL FILE
+! 
       INTEGER :: WACMAF
-!> @brief
+!
+!     MAXIMUM OF LOGICAL UNITS NUMBERS
 !
       INTEGER, PARAMETER :: MAXLU_WAC = 44
 !
@@ -1039,6 +1045,11 @@
 !
       DOUBLE PRECISION :: PI,DEUPI,GRAVIT,PISUR2,GRADEG,DEGRAD
       DOUBLE PRECISION :: SR,R2,USDPI
+!
+!     FOR READING NAMES OF VARIABLES IN SERAFIN DATA FILES
+!     30 IS HERE A MAXIMUM OF VARIABLES PER FILE
+!
+      CHARACTER(LEN=32) :: TEXCOB(30),TEXMAB(30),TEXVEB(30)
 !
       SAVE
 !

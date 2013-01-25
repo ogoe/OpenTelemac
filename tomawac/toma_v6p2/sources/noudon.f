@@ -2,9 +2,11 @@
                      SUBROUTINE NOUDON
 !                    *****************
 !
-     &(UV , VV , X  , Y  , NPOIN, NDON , BINDON, NBOR, NPTFR,
-     & AT , DDC, TV1, TV2, 
-     & U1 , V1 , U2 , V2   , INDIC, CHDON , NVAR)
+     &(F1,NAME1FR,NAME1GB,MODE1,
+     & F2,NAME2FR,NAME2GB,MODE2,
+     & F3,NAME3FR,NAME3GB,MODE3,X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,
+     & AT,DDC,TV1,TV2,F11,F12,F21,F22,F31,F32,INDIC,CHDON,NVAR,TEXTE,
+     & TROUVE)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                  21/06/2011
@@ -42,7 +44,26 @@
 !| BINDON         |-->| DATA FILE BINARY
 !| CHDON          |-->| NAME OF THE VARIABLE READ FROM THE DATA FILE
 !| DDC            |-->| DATE OF COMPUTATION BEGINNING
+!| F1             |<--| FIRST VARIABLE TO READ 
+!| F2             |<--| SECOND VARIABLE TO READ 
+!| F3             |<--| THIRD VARIABLE TO READ 
+!| F11            |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE FOR F1
+!| F12            |<->| DATA VALUES AT TIME TV2 IN THE DATA FILE FOR F1
+!| F21            |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE FOR F2
+!| F22            |<->| DATA VALUES AT TIME TV2 IN THE DATA FILE FOR F2
+!| F31            |<->| DATA VALUES AT TIME TV1 IN THE DATA FILE FOR F3
+!| F32            |<->| DATA VALUES AT TIME TV2 IN THE DATA FILE FOR F3
 !| INDIC          |-->| FILE FORMAT
+!| MODE1          |-->| MODE: 0= DO NOT READ
+!|                |   |       1= READ IF PRESENT
+!| MODE2          |-->| LIKE MODE1 FOR SECOND VARIABLE
+!| MODE3          |-->| LIKE MODE1 FOR THIRD VARIABLE
+!| NAME1FR        |-->| FRENCH NAME OF FIRST VARIABLE
+!| NAME2FR        |-->| FRENCH NAME OF SECOND VARIABLE
+!| NAME3FR        |-->| FRENCH NAME OF THIRD VARIABLE
+!| NAME1GB        |-->| ENGLISH NAME OF FIRST VARIABLE
+!| NAME2GB        |-->| ENGLISH NAME OF SECOND VARIABLE
+!| NAME3GB        |-->| ENGLISH NAME OF THIRD VARIABLE
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NDON           |-->| LOGICAL UNIT NUMBER OF THA DATA FILE
 !| NPOIN          |-->| NUMBER OF POINTS IN 2D MESH
@@ -50,9 +71,6 @@
 !| NVAR           |-->| NUMBER OF VARIABLES TO BE READ
 !| TV1            |<->| TIME T1 IN THE DATA FILE
 !| TV2            |<->| TIME T2 IN THE DATA FILE
-!| U1,V1          |<->| DATA INTERPOLATED OVER THE 2D MESH AT TIME TV1
-!| U2,V2          |<->| DATA INTERPOLATED OVER THE 2D MESH AT TIME TV2
-!| UV,VV          |<--| DATA INTERPOLATED OVER THE 2D MESH AT TIME AT
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,40 +85,55 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NDON,NPOIN,NPTFR,INDIC,NVAR
+      INTEGER, INTENT(IN)             :: MODE1,MODE2,MODE3
       INTEGER, INTENT(IN)             :: NBOR(NPTFR,2)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: UV(NPOIN),VV(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: U1(NPOIN),V1(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: U2(NPOIN),V2(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: F1(NPOIN),F2(NPOIN),F3(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: F11(NPOIN),F21(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: F12(NPOIN),F22(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: F31(NPOIN),F32(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
       DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
       CHARACTER(LEN=3), INTENT(IN)    :: BINDON
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
+      CHARACTER(LEN=32),INTENT(IN)    :: NAME1FR,NAME2FR,NAME3FR
+      CHARACTER(LEN=32),INTENT(IN)    :: NAME1GB,NAME2GB,NAME3GB
+      CHARACTER(LEN=32),INTENT(IN)    :: TEXTE(30)
+      LOGICAL, INTENT(INOUT)          :: TROUVE(3)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER I,ISTAT,IW(1),ID(2)
+      INTEGER I,J,ISTAT,IW(1),MODE(3)
       DOUBLE PRECISION DAT2,DAT2B(1),Z(1),C,COEF
       CHARACTER(LEN=3) C1
+      CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
+      LOGICAL VOID
+!
+      INTRINSIC TRIM
 !
       REAL, ALLOCATABLE :: W(:)
       ALLOCATE(W(NPOIN))
 !
 !-----------------------------------------------------------------------
 !
-      IF(AT.GT.TV2) THEN
+      MODE(1)=MODE1
+      MODE(2)=MODE2
+      MODE(3)=MODE3
+      NAMEFR(1)=NAME1FR
+      NAMEFR(2)=NAME2FR
+      NAMEFR(3)=NAME3FR
+      NAMEGB(1)=NAME1GB
+      NAMEGB(2)=NAME2GB
+      NAMEGB(3)=NAME3GB
 !
-!       ----------------------------------------------------------------
-!       GOES TO NEXT RECORD : 2 BECOMES 1 AND READS A NEW 2
-!       ----------------------------------------------------------------
-        TV1=TV2
-        CALL OV('X=Y     ', U1 , U2 , Z , C , NPOIN)
-        CALL OV('X=Y     ', V1 , V2 , Z , C , NPOIN)
+!-----------------------------------------------------------------------
+!
+      IF(AT.GT.TV2) THEN
 !
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) '   NOUDON : LECTURE D''UN NOUVEL ENREGISTREMENT'
-        ELSE
-          WRITE(LU,*) '   NOUDON : READING A NEW RECORDING'
+        ELSEIF(LNG.EQ.2) THEN
+          WRITE(LU,*) '   NOUDON : READING A NEW RECORD'
         ENDIF
 !
         IF(INDIC.EQ.3) THEN
@@ -109,42 +142,83 @@
 !       READS A SELAFIN FILE OF TYPE: TELEMAC
 !     ------------------------------------------------------------------
 !
-        ID(1)=1
-        ID(2)=2
  95     CONTINUE
+!
+!       ----------------------------------------------------------------
+!       GOES TO NEXT RECORD : 2 BECOMES 1 AND READS A NEW 2
+!       ----------------------------------------------------------------    
+!
+        TV1=TV2   
+!
 !       READS THE DATE OF THE RECORD
         CALL LIT(DAT2B,W,IW,C1,1,'R4',NDON,BINDON,ISTAT)
-        IF(CHDON(1:1).EQ.'C') THEN
-          TV2=DAT2B(1)
-        ELSE
-          DAT2=DAT2B(1)*1.D2
-          CALL TEMP(TV2,DAT2,DDC)
-        ENDIF
+        TV2=DAT2B(1)
+!
+!       HERE THE POSSIBLE DATE IN THE FILE SHOULD BE TRANSMITTED
+!
 !      READS THE DATA
+!
+       TROUVE(1)=.FALSE.
+       TROUVE(2)=.FALSE.
+       TROUVE(3)=.FALSE.
        DO I =1,NVAR
-         IF(I.EQ.ID(1)) THEN
-           CALL LIT(U2,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-         ELSEIF(I.EQ.ID(2)) THEN
-           CALL LIT(V2,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
-         ELSE
-           READ(NDON)
-         ENDIF
+         VOID=.TRUE.
+         DO J=1,3
+           IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
+     &       MODE(J).GT.0) THEN
+             IF(J.EQ.1) THEN
+               CALL OV('X=Y     ', F11 , F12 , Z , C , NPOIN)
+               CALL LIT(F12,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+             ELSEIF(J.EQ.2) THEN
+               CALL OV('X=Y     ', F21 , F22 , Z , C , NPOIN)
+               CALL LIT(F22,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+             ELSEIF(J.EQ.3) THEN
+               CALL OV('X=Y     ', F31 , F32 , Z , C , NPOIN)
+               CALL LIT(F32,W,IW,C1,NPOIN,'R4',NDON,BINDON,ISTAT)
+             ENDIF
+             TROUVE(J)=.TRUE.
+             VOID=.FALSE.
+           ENDIF
+         ENDDO
+         IF(VOID) READ(NDON)
        ENDDO
 !
        IF(TV2.LT.AT) THEN
          IF(LNG.EQ.1) THEN
-           WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT ..'
+           WRITE(LU,*) ' NOUDON : ON SAUTE 1 ENREGISTREMENT'
          ELSEIF(LNG.EQ.2) THEN
-           WRITE(LU,*) ' NOUDON : JUMP OF 1 RECORDED DATA SERIES'
+           WRITE(LU,*) ' NOUDON: JUMP OF 1 DATA RECORD'
          ENDIF
-         TV1=TV2
-         CALL OV('X=Y     ',U1,U2,U2,0.D0,NPOIN)
-         CALL OV('X=Y     ',V1,V2,V2,0.D0,NPOIN)
-         GOTO 95
+         GO TO 95
        ENDIF
 !
-       WRITE(LU,*) 'T',CHDON,'1:',TV1
-       WRITE(LU,*) 'T',CHDON,'2:',TV2
+       DO J=1,3
+         IF(MODE(J).EQ.2.AND..NOT.TROUVE(J)) THEN
+           IF(LNG.EQ.1) THEN
+             WRITE(LU,*) 'NOUDON : VARIABLE ',J,' NON TROUVEE'
+             WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OU ',
+     &                   TRIM(NAMEGB(J)(1:16))
+           ELSEIF(LNG.EQ.2) THEN
+             WRITE(LU,*) 'NOUDON: VARIABLE ',NAME1GB,' NOT FOUND'
+             WRITE(LU,*) TRIM(NAMEFR(J)(1:16)),' OR ',
+     &                   TRIM(NAMEGB(J)(1:16))
+           ENDIF
+           CALL PLANTE(1)
+           STOP
+         ELSEIF(MODE(J).GT.0.AND.TROUVE(J)) THEN
+           IF(LNG.EQ.1) THEN
+             WRITE(LU,*) 'VARIABLE ',J,' LUE (',
+     &       TRIM(NAMEFR(J)(1:16)),' OU ',
+     &       TRIM(NAMEGB(J)(1:16)),') AU TEMPS ',AT
+             WRITE(LU,*) 'PAR INTERPOLATION ENTRE T=',TV1,' ET ',TV2
+           ELSEIF(LNG.EQ.2) THEN
+             WRITE(LU,*) 'VARIABLE ',J,' READ (',
+     &       TRIM(NAMEFR(J)(1:16)),' OR ',
+     &       TRIM(NAMEGB(J)(1:16)),') AT TIME ',AT
+             WRITE(LU,*) 'BY INTERPOLATION BETWEEN T=',TV1,' AND ',TV2
+           ENDIF
+         ENDIF
+       ENDDO
 !
        ELSEIF (INDIC.EQ.4) THEN
 !
@@ -154,10 +228,13 @@
 !
           IF(CHDON(1:1).EQ.'C') THEN
             CALL COUUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &                  U1,V1,U2,V2)
-          ELSE
+     &                  F11,F21,F12,F22)
+          ELSEIF(CHDON(1:1).EQ.'V'.OR.CHDON(1:1).EQ.'W') THEN
             CALL VENUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
-     &                  U1,V1,U2,V2)
+     &                  F11,F21,F12,F22)
+          ELSEIF(CHDON(1:1).EQ.'H') THEN
+            CALL MARUTI(X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,AT,DDC,TV1,TV2,
+     &                  F31,F32)
           ENDIF
 !
         ELSE
@@ -180,8 +257,8 @@
 !
       COEF=(AT-TV1)/(TV2-TV1)
       DO I=1,NPOIN
-        UV(I)=(U2(I)-U1(I))*COEF+U1(I)
-        VV(I)=(V2(I)-V1(I))*COEF+V1(I)
+        F1(I)=(F12(I)-F11(I))*COEF+F11(I)
+        F2(I)=(F22(I)-F21(I))*COEF+F21(I)
       ENDDO
 !
 !-----------------------------------------------------------------------
@@ -203,6 +280,7 @@
       ENDIF
       WRITE(LU,*)'*********************************************'
       CALL PLANTE(1)
+      STOP
 !
 !-----------------------------------------------------------------------
 !
