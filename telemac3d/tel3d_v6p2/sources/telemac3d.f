@@ -70,9 +70,10 @@
 !+        Call to IFAB3DT added, arguments of cstkep removed.
 !
 !history  J-M HERVOUET (LNHE)
-!+        15/01/2013
+!+        25/01/2013
 !+        V6P3   
-!+        TAN renamed TRN
+!+        TAN renamed TRN, copy of TRN on TA moved from after CONDIM to
+!+        after BIEF_SUITE, FLULIM set to 1 before first call to PRECON 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -415,10 +416,6 @@
       CALL CONDIM
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIM'
 !
-!     ONLY TA IS INITIALISED IN CONDIM
-!
-      IF(NTRAC.GT.0) CALL OS ('X=Y     ', X=TRN, Y=TA)
-!
 !     COMPUTES TRANSF AND ZCHAR
 !
       CALL TRANSF_ZCHAR(TRANSF,ZCHAR,ZSTAR,TRANSF_PLANE,NPLAN)
@@ -468,6 +465,10 @@
         ENDIF
 !
       ENDIF 
+!
+!     ONLY TA IS INITIALISED IN CONDIM OR BIEF_SUITE
+!
+      IF(NTRAC.GT.0) CALL OS ('X=Y     ', X=TRN, Y=TA)
 !
 !     INITIALISES SEDIMENT PROPERTIES
 !
@@ -989,6 +990,15 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE SOURCES_SINKS'  
       CALL SOURCES_SINKS
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOURCES_SINKS'
+!
+!     FLULIM NOT INITIALISED AND USED IN PRECON, THROUGH FLUX3D
+!
+      IF(OPT_HNEG.EQ.2) THEN
+        DO I=1,MESH2D%NSEG
+          FLULIM%R(I)=1.D0
+        ENDDO
+      ENDIF
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE PRECON'
 !
       CALL PRECON(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
@@ -1172,7 +1182,7 @@
       CALL OS ( 'X=Y     ', X=VN,    Y=V     )
       IF(NONHYD) CALL OS ( 'X=Y     ' , X=WN, Y=W)
       CALL OS ( 'X=Y     ', X=GRADZN,Y=GRADZS)
-!     TRACERS (IF LT=1 DONE AFTER CALL CONDIM)
+!     TRACERS (IF LT=1 DONE AFTER CALL CONDIM AND BIEF_SUITE)
       IF(NTRAC.GT.0.AND.LT.GT.1) CALL OS ('X=Y     ', X=TRN, Y=TA)
 !
       IF(ITURBV.EQ.3.OR.ITURBV.EQ.7) THEN
@@ -2133,7 +2143,7 @@
      &   TRAV3,MESH2D,MATR2H,H,OPTBAN,OPTDIF,TETATRA,
      &   YAWCHU,WCHU,AGGLOD,NSCE,SOURCES,TA_SCE%ADR(ITRAC)%P%R,
      &   NUMLIQ%I,DIRFLU,NFRLIQ,VOLUT,ZT,ZPROP,CALCRAIN(5+ITRAC),
-     &   PLUIE,PARAPLUIE,TRAIN(ITRAC),FLODEL,FLOPAR,SIGMAG,IPBOT%I)
+     &   PLUIE,PARAPLUIE,TRAIN(ITRAC),FLODEL,FLOPAR,SIGMAG,IPBOT%I)     
 !
 !         NEWDIF=.FALSE. (POSSIBLE IF SIGMTA UNCHANGED)
 !
