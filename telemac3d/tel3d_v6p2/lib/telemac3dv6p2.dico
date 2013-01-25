@@ -155,7 +155,7 @@ NOM = 'PERIODE POUR LES SORTIES GRAPHIQUES'
 NOM1 = 'GRAPHIC PRINTOUT PERIOD'
 TYPE = ENTIER
 INDEX = 7
-MNEMO = 'exemple de chaine avec une cote en colonne 72                '
+MNEMO = 'GRAPRD'
 TAILLE = 0
 DEFAUT = 1
 DEFAUT1 = 1
@@ -564,7 +564,7 @@ NOM = 'SCHEMA POUR LA DIFFUSION DES VITESSES'
 NOM1 = 'SCHEME FOR DIFFUSION OF VELOCITIES'
 TYPE = ENTIER
 INDEX = 23
-MNEMO = ''
+MNEMO = 'SCHDVI'
 TAILLE = 0
 CHOIX = '0="PAS DE DIFFUSION"';
         '1="IMPLICITE"'
@@ -1414,8 +1414,8 @@ NIVEAU = 1
 AIDE = 'Valeur du traceur pour laquelle la densite est donnee.'
 AIDE1 = 'Reference value of tracers corresponding to given density'
 
-NOM = 'MASSE VOLUMIQUE DE REFERENCE'
-NOM1 = 'DENSITY FOR STANDARD VALUE'
+NOM = 'MASSE VOLUMIQUE MOYENNE DE L''EAU'
+NOM1 = 'AVERAGE WATER DENSITY'
 TYPE = REEL
 INDEX = 10
 MNEMO = 'RHO0'
@@ -1425,8 +1425,8 @@ DEFAUT1 = 1025.
 RUBRIQUE = 'CONSTANTES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL CONSTANTS'
 NIVEAU = 1
-AIDE = 'Valeur de la densite a la concentration de reference.'
-AIDE1 = 'Density'
+AIDE = 'Valeur de la densite moyenne dans le domaine, voir DRSURR'
+AIDE1 = 'Average water density in the domain, see subroutine drsurr'
 
 NOM = 'COEFFICIENT DE FROTTEMENT POUR LE FOND'
 NOM1 = 'FRICTION COEFFICIENT FOR THE BOTTOM'
@@ -2788,20 +2788,29 @@ NIVEAU = 1
 AIDE = 'permet de filtrer les inconsistances hydrostatiques'
 AIDE1 = 'allows to filter hydrostatic inconsistancies'
 
-NOM = 'OPTION QUASI-BULLE'
-NOM1 = 'QUASI-BUBBLE OPTION'
-TYPE = LOGIQUE
-INDEX = 17
-MNEMO = 'QUABUB'
-TAILLE = 0
-DEFAUT = NON
-DEFAUT1 = NO
+NOM = 'COORDONNEES SPHERIQUES' 
+NOM1 = 'SPHERICAL COORDINATES' 
+TYPE = LOGIQUE 
+INDEX = 17 
+MNEMO = 'SPHERI' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NO 
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
-NIVEAU = 1
-AIDE = 'calcule la SL avec l option quasi bulle' 
-AIDE1 = 'allows computing the free surface with 
-the quasi-bubble elements option'
+NIVEAU = 1 
+AIDE = 'Choix des coordonnees spheriques pour la realisation du calcul 
+( pour les grands domaines de calcul). 
+Attention : cette option est etroitement liee au maillage qui doit avoir 
+ete saisi sur une carte marine en projection de Mercator. 
+Il faut de plus relever sur la carte la LATITUDE DU POINT ORIGINE 
+(autre mot-cle) qui correspond dans le maillage a l''ordonnee y = 0.' 
+AIDE1 = 'Selection of spherical coordinates to perform the computation 
+(for large computation domains). 
+Warning: this option is closely related to the mesh that should have 
+been entered onto a nautical chart drawn as per Mercator projection 
+The LATITUDE OF ORIGIN POINT (another keyword), which corresponds to 
+ordinate y=0 in the mesh, must moreover be given.' 
 
 NOM = 'FREE LOGICAL'
 NOM1 = 'FREE LOGICAL'
@@ -3564,7 +3573,7 @@ TYPE = ENTIER
 INDEX = 79
 MNEMO = ''
 TAILLE = 0
-DEFAUT = 6
+DEFAUT = 1
 DEFAUT1 = 1
 CHOIX = '1="GRADIENT CONJUGE"';
         '2="RESIDU CONJUGE"';
@@ -3948,10 +3957,10 @@ AIDE = ''
 AIDE1 = ''
 
 NOM = 'LATITUDE DU POINT ORIGINE'
-NOM1 = 'LATITUDE OF THE ORIGIN POINT'
+NOM1 = 'LATITUDE OF ORIGIN POINT'
 TYPE = REEL
 INDEX = 77
-MNEMO = 'LATITU'
+MNEMO = 'LATIT'
 TAILLE = 0
 DEFAUT = 0.E0
 DEFAUT1 = 0.E0
@@ -3962,7 +3971,7 @@ AIDE = ''
 AIDE1 = ''
 
 NOM = 'LONGITUDE DU POINT ORIGINE'
-NOM1 = 'LONGITUDE OF THE ORIGIN POINT'
+NOM1 = 'LONGITUDE OF ORIGIN POINT'
 TYPE = REEL
 INDEX = 78
 MNEMO = 'LONGIT'
@@ -4113,8 +4122,8 @@ TYPE = ENTIER
 INDEX = 87
 MNEMO = 'OPTASS'
 TAILLE = 0
-DEFAUT = 1
-DEFAUT1 = 1
+DEFAUT = 3
+DEFAUT1 = 3
 RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
 RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
 NIVEAU = 1
