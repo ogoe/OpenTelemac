@@ -124,22 +124,23 @@ def traceRay2XY(IKLE,MESHX,MESHY,neighbours,ei,xyi,en,xyn):
       dij = np.power(xyi[0]-xyj[0],2) + np.power(xyi[1]-xyj[1],2)
       ks.append(k)
       ds.append(dij)
-   k = ks[np.argmax(ds)]
-   ej = neighbours[en][k]
-   xyj = getSegmentIntersection( (MESHX[IKLE[en][k]],MESHY[IKLE[en][k]]),(MESHX[IKLE[en][(k+1)%3]],MESHY[IKLE[en][(k+1)%3]]),xyi,xyn )[0]
-   djn = np.power(xyn[0]-xyj[0],2) + np.power(xyn[1]-xyj[1],2)
+   if ds != []:
+      k = ks[np.argmax(ds)]
+      ej = neighbours[en][k]
+      xyj = getSegmentIntersection( (MESHX[IKLE[en][k]],MESHY[IKLE[en][k]]),(MESHX[IKLE[en][(k+1)%3]],MESHY[IKLE[en][(k+1)%3]]),xyi,xyn )[0]
+      djn = np.power(xyn[0]-xyj[0],2) + np.power(xyn[1]-xyj[1],2)
 
-   # ~~> Possible recursive call
-   if True or djn > accuracy:    # /!\ this may be a problem
-      if ej < 0:
-         # you have reach the end of the line
-         bj = getBarycentricWeights( xyj,(ax,ay),(bx,by),(cx,cy) )
-         pnt['n'] += 1; pnt['xy'].insert(0,xyj); pnt['e'].insert(0,en); pnt['b'].insert(0,bj); pnt['d'].insert(0,djn)
-         return djn<accuracy,pnt
-      else:
-         found,ray = traceRay2XY(IKLE,MESHX,MESHY,neighbours,en,xyj,ej,xyn)
-         ray['n'] += 1; ray['xy'].append(xyi); ray['e'].append(en); ray['b'].append(bi); ray['d'].append(dij)
-         return found,ray         
+      # ~~> Possible recursive call
+      if True or djn > accuracy:    # /!\ this may be a problem
+         if ej < 0:
+            # you have reach the end of the line
+            bj = getBarycentricWeights( xyj,(ax,ay),(bx,by),(cx,cy) )
+            pnt['n'] += 1; pnt['xy'].insert(0,xyj); pnt['e'].insert(0,en); pnt['b'].insert(0,bj); pnt['d'].insert(0,djn)
+            return djn<accuracy,pnt
+         else:
+            found,ray = traceRay2XY(IKLE,MESHX,MESHY,neighbours,en,xyj,ej,xyn)
+            ray['n'] += 1; ray['xy'].append(xyi); ray['e'].append(en); ray['b'].append(bi); ray['d'].append(dij)
+            return found,ray
 
    # ~~> convergence on having found the appropriate triangle
    bn = isInsideTriangle( xyn,(ax,ay),(bx,by),(cx,cy) )
