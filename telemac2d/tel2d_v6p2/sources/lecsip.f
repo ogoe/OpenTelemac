@@ -14,7 +14,6 @@
 !history  V. GUINOT   (LHF)
 !+        19/04/1996
 !+
-!+
 !
 !history  J.-M. HERVOUET (LNH)
 !+        03/10/1996
@@ -37,6 +36,11 @@
 !+        10/05/2012
 !+        V6P2
 !+   Modification of culvert file
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        25/01/2013
+!+        V6P3
+!+   Bug corrected in parallel.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTSIP         |<--| ELEVATION OF ENTRY AND EXIT OF PIPES
@@ -71,7 +75,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N
+      INTEGER N,I
+      LOGICAL NOT_HERE
 !
       DOUBLE PRECISION DELTA1,DELTA2,ALT1,ALT2
       DOUBLE PRECISION ANG1,ANG2,CS1,CS2,CE1,CE2
@@ -102,16 +107,13 @@
         ANGSIP(N,2) = ANG2*PI/180.D0
 10    CONTINUE
 !
-!     IN // CHECKING IF POINTS ARE IN THE DOMAIN 
+!     IN // THE POINTS ARE GIVEN THEIR LOCAL NUMBER
+!           OR 0 IF NOT IN THE SUB-DOMAIN
 !
       IF(NCSIZE.GT.1) THEN
         DO N=1,NSIPH
-          IF(ENTSIP(N).NE.MESH%KNOLG%I(ENTSIP(N))) THEN
-            ENTSIP(N) = 0
-          ENDIF 
-          IF(SORSIP(N).NE.MESH%KNOLG%I(SORSIP(N))) THEN
-            SORSIP(N) = 0
-          ENDIF 
+          ENTSIP(N)=GLOBAL_TO_LOCAL_POINT(ENTSIP(N),MESH)
+          SORSIP(N)=GLOBAL_TO_LOCAL_POINT(SORSIP(N),MESH)
         ENDDO
       ENDIF
 !

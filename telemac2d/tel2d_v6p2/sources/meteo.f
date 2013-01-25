@@ -74,6 +74,15 @@
 !
 !-----------------------------------------------------------------------
 !
+!     DATA THAT YOU DECLARE AND READ HERE ONCE IN A FILE MAY HAVE TO BE
+!     KEPT BECAUSE THIS SUBROUTINE IS CALLED AT EVERY TIME STEP.
+!     WITHOUT THE SAVE COMMAND, ALL LOCAL DATA ARE FORGOTTEN IN THE NEXT
+!     CALL.
+!
+      SAVE
+!
+!-----------------------------------------------------------------------
+!
 !     BEWARE, HERE ONLY ONE COMPUTATION AT FIRST TIMESTEP
 !
       IF(LT.EQ.0) THEN

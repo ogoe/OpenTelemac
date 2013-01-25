@@ -19,6 +19,13 @@
 !brief    TREATS LIQUID BOUNDARIES USING THOMPSON METHOD
 !+                BASED ON CHARACTERISTICS.
 !
+!warning  This is probably not correct with spherical coordinates,
+!+        because in this case with characteristics we divide the 
+!+        advection field by cos(latitude). This is only possible if
+!+        U is different from UCONV, which is not done in the theory 
+!+        as non linear terms are dealt with. Here the advected
+!+        velocity U and the advection field UCONV are the same.
+!
 !history  J-M HERVOUET (LNHE)
 !+        01/09/2008
 !+

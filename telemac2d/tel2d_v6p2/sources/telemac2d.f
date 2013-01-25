@@ -677,6 +677,20 @@
      &                  NVARCL,TROUVE,ALIRE,LISTIN,
      &                  START_RECORD.EQ.0,MAXVAR)
         ALIRE(19)=0
+        IF(INCLUS(COUPLING,'SISYPHE').AND.TROUVE(6).NE.1) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'SUITE DE CALCUL ET COUPLAGE AVEC SISYPHE :'
+            WRITE(LU,*) 'LE FOND DOIT ETRE DANS LE FICHIER DU CALCUL'
+            WRITE(LU,*) 'PRECEDENT'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'COMPUTATION CONTINUED, COUPLING WITH SISYPHE :'
+            WRITE(LU,*) 'THE BOTTOM MUST BE IN THE PREVIOUS COMPUTATION'
+            WRITE(LU,*) 'FILE'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
         IF(RAZTIM) THEN
           AT=0.D0
           IF(LNG.EQ.1) WRITE(LU,*) 'TEMPS ECOULE REMIS A ZERO'
