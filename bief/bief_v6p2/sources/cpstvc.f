@@ -71,11 +71,11 @@
         IF(LNG.EQ.1) WRITE(LU,300) X%NAME,SIZEX,Y%NAME,SIZEY
         IF(LNG.EQ.2) WRITE(LU,301) X%NAME,SIZEX,Y%NAME,SIZEY
  300    FORMAT(1X,'CPSTVC : CAS NON PREVU POUR X ET Y:',/,1X,
-     &            'X=',A6,' TAILLE         :',1I6,/,1X,
-     &            'Y=',A6,' TAILLE MAXIMUM :',1I6)
+     &            'X=',A6,' TAILLE         :',1I8,/,1X,
+     &            'Y=',A6,' TAILLE MAXIMUM :',1I8)
  301    FORMAT(1X,'CPSTVC : FORBIDDEN CASE FOR X AND Y:',/,1X,
-     &            'X=',A6,' SIZE        :',1I6,/,1X,
-     &            'Y=',A6,' MAXIMUM SIZE:',1I6)
+     &            'X=',A6,' SIZE        :',1I8,/,1X,
+     &            'Y=',A6,' MAXIMUM SIZE:',1I8)
         CALL PLANTE(1)
         STOP
       ENDIF
