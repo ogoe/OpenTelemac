@@ -1,3 +1,7 @@
+/
+/  4 elements and 5 points in this case : will not work in parallel !!!!!
+/
+PROCESSEURS PARALLELES : 0
 /DEBUGGER : 1
 /--------------------------------------------------------------------/
 /             FICHIER DES PARAMETRES DE TOMAWAC                      /
