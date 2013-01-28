@@ -42,6 +42,13 @@
 !+   See SCHAR41_PER and SCHAR41_PER_4D
 !+   A posteriori interpolation now possible in all cases.
 !
+!history  J-M HERVOUET (LNHE)
+!+        28/01/2013
+!+        V6P3
+!+   Bug corrected in PREP_SENDBACK, IF(NCHARA.EQ.0) RETURN causes bugs
+!+   when one processor has nothing to send, some arrays were not
+!+   initialised.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -396,21 +403,26 @@
           INTEGER, INTENT(IN) :: NOMB 
           INTEGER, INTENT(INOUT) :: NCHARA 
           INTEGER  :: I,N 
-          IF (NCHARA.EQ.0) RETURN ! UHM. 
+!         JMH 28/01/2013: THIS RETURN SEEMS A BUG "AB ORIGINE"
+!                         WITH THE UHM EXPRESSING DOUBTS OF THE
+!                         AUTHOR...
+!         IF (NCHARA.EQ.0) RETURN ! UHM. 
           SENDCOUNTS=HEAPCOUNTS 
           SDISPLS(1) = 0 ! CONTIGUOUS DATA 
           DO I=2,NCSIZE 
             SDISPLS(I) = SDISPLS(I-1)+SENDCOUNTS(I-1) 
           ENDDO 
           ICHA=0 
-          DO I=1,NCHARA     
-!           MYPID+1 - IS THE -ORIGIN- PARTITION  
-            N=HEAPCHAR(I)%MYPID+1  
-            ICHA(N)=ICHA(N)+1 
-            SENDCHAR(SDISPLS(N)+ICHA(N))=HEAPCHAR(I) 
-!           SIGN IN THE SENDBACK ORIGIN FOR DEBUGGING PURPOSES   
-            SENDCHAR(SDISPLS(N)+ICHA(N))%NEPID=IPID 
-          ENDDO  
+          IF(NCHARA.GT.0) THEN
+            DO I=1,NCHARA     
+!             MYPID+1 - IS THE -ORIGIN- PARTITION  
+              N=HEAPCHAR(I)%MYPID+1  
+              ICHA(N)=ICHA(N)+1 
+              SENDCHAR(SDISPLS(N)+ICHA(N))=HEAPCHAR(I) 
+!             SIGN IN THE SENDBACK ORIGIN FOR DEBUGGING PURPOSES   
+              SENDCHAR(SDISPLS(N)+ICHA(N))%NEPID=IPID 
+            ENDDO
+          ENDIF  
           HEAPCOUNTS=0 
           NCHARA=0 
           RETURN  
