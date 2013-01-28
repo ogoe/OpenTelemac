@@ -37,6 +37,7 @@
 !+        25/06/2012
 !+        V6P2
 !+   Memory allocation for variables used for diffraction
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -233,6 +234,8 @@
 !     NAMECODE IS IN DECLARATIONS_TELEMAC AND IS MONITORED BY
 !     SUBROUTINE CONFIG_CODE
 !
+      CALL BIEF_ALLVEC(1,SDZHDT,'SDZHDT',IELM2 , 1 , 2 ,MESH)
+!
       IF(COURAN.OR.DONTEL.OR.NAMECODE(1:7).EQ.'TELEMAC') THEN
         CALL BIEF_ALLVEC(1,SUC ,'SUC   ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,SVC ,'SVC   ',IELM2 , 1 , 2 ,MESH)
@@ -240,7 +243,6 @@
         CALL BIEF_ALLVEC(1,SDUY,'SDUY  ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,SDVX,'SDVX  ',IELM2 , 1 , 2 ,MESH)
         CALL BIEF_ALLVEC(1,SDVY,'SDVY  ',IELM2 , 1 , 2 ,MESH)
-        CALL BIEF_ALLVEC(1,SDZHDT,'SDZHDT',IELM2 , 1 , 2 ,MESH)
       ELSE
         CALL BIEF_ALLVEC(1,SUC   ,'SUC   ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(1,SVC   ,'SVC   ', 1, 1, 0 ,MESH)
@@ -248,7 +250,6 @@
         CALL BIEF_ALLVEC(1,SDUY  ,'SDUY  ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(1,SDVX  ,'SDVX  ', 1, 1, 0 ,MESH)
         CALL BIEF_ALLVEC(1,SDVY  ,'SDVY  ', 1, 1, 0 ,MESH)
-        CALL BIEF_ALLVEC(1,SDZHDT,'SDZHDT', 1, 1, 0 ,MESH)
       ENDIF
       UC      =>SUC%R
       VC      =>SVC%R

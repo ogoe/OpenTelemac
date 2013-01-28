@@ -345,6 +345,12 @@
 !
 !-----------------------------------------------------------------------
 !
+!     INITIALISING DZHDT (BUT MAYBE REDONE IN LECSUI OR CONDIW)
+!
+      DO IP=1,NPOIN2
+        SDZHDT%R(IP)=0.D0
+      ENDDO
+!
       IF(SUIT) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECSUI'
         CALL LECSUI(SF%R  ,NPLAN ,NF    ,STETA%R, SFR%R  ,
@@ -361,14 +367,10 @@
         CALL CONDIW(AT,LT,TC1,TC2,TV1,TV2,TM1,TM2, 
      &              NVHMA,NVCOU,PART,U_TEL,V_TEL,H_TEL)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE CONDIW'
-!
-!       JMH: DEPTH MAY BE INITIALISED IN CONDIW
-!       IF(PART.EQ.0) THEN
-          DO IP=1,NPOIN2
-            SDZHDT%R(IP)=0.D0
-            IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
-          ENDDO
-!       ENDIF
+!       JMH: DEPTH MAY BE MODIFIED IN CONDIW
+        DO IP=1,NPOIN2
+          IF(DEPTH(IP).LT.PROMIN) DEPTH(IP)=0.9D0*PROMIN
+        ENDDO
       ENDIF
       AT0=AT
 !
