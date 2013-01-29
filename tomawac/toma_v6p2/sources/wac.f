@@ -13,6 +13,12 @@
 !+               SOLVES THE EQUATION FOR THE
 !+               DIRECTIONAL WAVE SPECTRUM
 !
+!history  J-M HERVOUET (EDF - LNHE)
+!+        29/01/2013
+!+        V6P3
+!+   Radiation stresses for Telemac now computed independently of the
+!+   printouts on results file.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
 !| DT_TEL         |-->| TELEMAC MODEL TIME STEP
@@ -502,12 +508,12 @@
         ENDDO
       ENDIF
 !
-!
-!
 !=====C
 !  6  C INITIALISATION DE CERTAINS TABLEAUX UTILES.
 !=====C============================================
-!COUPLAGE TELEMAC-TOMAWAC si PART=0
+!
+!     COUPLAGE TELEMAC-TOMAWAC si PART=0
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INITAB'
       CALL INITAB( SIBOR%I, MESH%IFABOR%I, NELEM2, PART)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE INITAB'
@@ -515,7 +521,6 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE IMPR'
       CALL IMPR(LISPRD,LT,AT,LT,3)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE IMPR'
-!
 !
 !=====C
 !  7  C AFFECTATION DES CONDITIONS AUX LIMITES A L'INSTANT INITIAL.
@@ -535,11 +540,10 @@
      & DEPTH   , FRABL   , BOUNDARY_COLOUR%I)
        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
 !
-!
-!
 !=====C CALCUL DES NOMBRES D'ONDE (XK), DE LA VITESSE DE GROUPE (CG) ET
 !  8  C DU FACTEUR DE PASSAGE (B) EN SPECTRE DE VARIANCE EN (FR,TETA).
 !=====C=================================================================
+!
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE INIPHY'
       CALL INIPHY
      &( SXK%R   , SCG%R , SB%R , SDEPTH%R , SFR%R ,
@@ -556,13 +560,12 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE ECRETE'
       ENDIF
 !
-!
 !=====C
 !  9  C SORTIES GRAPHIQUES (EVENTUELLES) A L'ETAT INITIAL.
 !=====C===================================================
 !
 !.....9.1 CHOIX DES POINTS DE SORTIE DU SPECTRE DIRECTIONNEL.
-!     """""""""""""""""""""""""""""""""""""""""""""""""""""""
+!     
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PROXIM'
       IF(NPLEO.GT.0) THEN
@@ -572,7 +575,7 @@
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PROXIM'
 !
 !.....9.2 TEST POUR SAVOIR SI ON IMPRIME OU PAS.
-!     """"""""""""""""""""""""""""""""""""""""""
+!     
       IMPRES=.FALSE.
       DEBRES=.FALSE.
       IF(LT.EQ.GRADEB) THEN
@@ -583,9 +586,13 @@
       IF(IMPRES) THEN
 !
 !.....9.3 IMPRESSION (EVENTUELLE) DES VARIABLES SUR LE MAILLAGE 2D.
-!     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
+!
+!       THE VARIABLES ARE COMPUTED HERE WITH THE ORIGINAL SPECTRUM
+!       DONE IN SPEINI, THERE IS NO CALL TRANSF BEFORE BECAUSE
+!       CURRENTS ARE NOT TAKEN INTO ACCOUNT IN SPEINI
+!
         CALL DUMP2D(LT,SF%R,NPOIN3*NF)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
 !
@@ -597,7 +604,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
 !.....9.4 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
-!     """""""""""""""""""""""""""""""""""""""""""""""""""""""
+!    
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
         CALL ECRSPE
      &( SF%R    , STETA%R, NPLAN ,
@@ -609,12 +616,12 @@
 !
       ENDIF
 !
-!
 !=====C
 !  10 C PREPARATION DE LA PROPAGATION (REMONTEE DES CARACTERISTIQUES).
 !=====C===============================================================
 !
-      IF (PROP) THEN
+      IF(PROP) THEN
+!
         CALL IMPR(LISPRD,LT,AT,LT,1)
         CALL IMPR(LISPRD,LT,AT,LT,2)
 !
@@ -671,7 +678,7 @@
       DO 10 LT_WAC=1,NIT
 !
 !.....11.1 AFFECTATION DE LA DATE DE FIN DU PAS DE TEMPS COURANT.
-!     """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!    
       AT=AT+DT
 !Calcul de LT (NOTE JMH: WHY NOT LT=LT+1 ?)
       LT=NINT((AT-AT0)/DT)
@@ -680,8 +687,8 @@
 !
       CALL IMPR(LISPRD,LT,AT,LT,3)
 !
-!.....11.2 AFFECTATION DES CONDITIONS AUX LIMITES.
-!     """"""""""""""""""""""""""""""""""""""""""""
+!     11.2 AFFECTATION DES CONDITIONS AUX LIMITES.
+!     
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LIMWAC'
       CALL LIMWAC
      &(SF%R    , SFBOR%R , SLIFBR%I , NPTFR  , NPLAN , NF    ,
@@ -696,25 +703,25 @@
      & DEPTH      , FRABL   ,BOUNDARY_COLOUR%I)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE LIMWAC'
 !
-!.....11.2b MISE A ZERO DU SPECTRE SUR LES POINTS OU PROF < PROMIN
-!     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!     11.2b MISE A ZERO DU SPECTRE SUR LES POINTS OU PROF < PROMIN
+!     
       IF (.NOT.PROINF) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRETE'
         CALL ECRETE( SF%R    , SDEPTH%R, NPOIN2, NPLAN , NF , PROMIN)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE ECRETE'
       ENDIF
 !
-      IF (MAREE) THEN
-       LT1=MAX((LT/LAM)*LAM,2)
-       IF (LT.EQ.LT1) THEN
-        DO IP=1,NPOIN2
-          DEPTH(IP)=ZREPOS-ZF(IP)
-        ENDDO
-       ENDIF
+      IF(MAREE) THEN
+        LT1=MAX((LT/LAM)*LAM,2)
+        IF(LT.EQ.LT1) THEN
+          DO IP=1,NPOIN2
+            DEPTH(IP)=ZREPOS-ZF(IP)
+          ENDDO
+        ENDIF
       ENDIF
 !
 !......11.3 A JOUR DE LA BATHY ET DES COURANTS
-!      """"""""""""""""""""""""""""""""""""""""
+!      
 !COUPLAGE TELEMAC-TOMAWAC : en cas de couplage, actualisation
 !         des courants et de l'hauteur d'eau (et de leurs gradients)
 !         tous les DT_TEL
@@ -863,13 +870,13 @@
         ENDIF
 !
 !.....11.7 IMPRESSION (EVENTUELLE) DES VARIABLES SUR LE MAILLAGE 2D.
-!     """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!     
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DUMP2D'
         IF(COURAN.OR.PART.EQ.1) THEN
           CALL DUMP2D(LT,STSTOT%R,NPOIN3*NF)
         ELSE
           CALL DUMP2D(LT,SF%R,NPOIN3*NF)
-        ENDIF
+        ENDIF       
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DUMP2D'
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE BIEF_DESIMP'
@@ -880,7 +887,7 @@
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE BIEF_DESIMP'
 !
 !.....11.8 IMPRESSION (EVENTUELLE) DES SPECTRES DIRECTIONNELS.
-!     """"""""""""""""""""""""""""""""""""""""""""""""""""""""
+!     
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE ECRSPE'
         IF(COURAN.OR.PART.EQ.1) THEN
           CALL ECRSPE(STSTOT%R,STETA%R,NPLAN,
@@ -899,11 +906,22 @@
 !
       ENDIF
 !
-!     Passage a TELEMAC des valeurs de FX, FY et des vents (si presents)
+!     RADIATION STRESSES COMPUTED HERE FOR TELEMAC INDEPENDENTLY
+!     OF THE PRINTS TO RESULT FILE, WHICH IS NOT MANDATORY  
 !
       IF(PART.EQ.1.AND.LT_WAC.EQ.NIT) THEN
-        CALL OV('X=Y     ',FX_WAC%R,STRA51%R,STRA51%R,0.D0,NPOIN2)
-        CALL OV('X=Y     ',FY_WAC%R,STRA52%R,STRA52%R,0.D0,NPOIN2)
+!       STSTOT WORK ARRAY (ABSOLUTE FREQUENCY) FOR CALL RADIAT BELOW
+        CALL TRANSF(STSTOT%R , SF%R  , SFR%R , SDFR%R, SCOSTE%R,
+     &              SSINTE%R , SUC%R , SVC%R , SXK%R , SITR11%I,
+     &              SITR12%I , SITR13%I      , STRA31%R, STRA32%R,
+     &              NPOIN2   , NPLAN , NF    , RAISF ,
+!                   TO FORCE THE WORK WHATEVER LT,GRADEB,GRAPRD
+     &              1,1,1)                   
+        CALL RADIAT(FX_WAC%R,FY_WAC%R,STRA53%R,STRA54%R,STRA55%R,
+     &              SXK%R,STSTOT%R,SCG%R,SDEPTH%R,
+!                   STSDER%R WORK TABLE HERE
+     &              STSDER%R,
+     &              STRA36%R,STRA37%R,STRA38%R,STRA39%R)        
         IF(VENT) THEN
           CALL OV('X=Y     ',UV_WAC%R,SUV%R,SUV%R,0.D0,NPOIN2)
           CALL OV('X=Y     ',VV_WAC%R,SVV%R,SVV%R,0.D0,NPOIN2)

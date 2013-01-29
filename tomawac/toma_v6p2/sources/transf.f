@@ -86,8 +86,8 @@
 !-----------------------------------------------------------------------
 !
       IMP=.FALSE.
-      IF ((LT.GE.GRADEB).AND.(MOD(LT-GRADEB,GRAPRD).EQ.0)) IMP=.TRUE.
-      IF (.NOT.(IMP)) RETURN
+      IF(LT.GE.GRADEB.AND.MOD(LT-GRADEB,GRAPRD).EQ.0) IMP=.TRUE.
+      IF(.NOT.IMP) RETURN
 !
 !-----------------------------------------------------------------------
 !
