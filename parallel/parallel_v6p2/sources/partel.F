@@ -262,18 +262,16 @@
       WRITE(LU,*) '  REBEKKA KOPMANN & JACEK A. JANKOWSKI (BAW)'
       WRITE(LU,*) '                 JEAN-MICHEL HERVOUET (LNHE)'
       WRITE(LU,*) '                 CHRISTOPHE DENIS     (SINETICS) '
+      WRITE(LU,*) '                 YOANN AUDOUIN        (LNHE) '
       WRITE(LU,*) '  PARTEL (C) COPYRIGHT 2000-2002 '
       WRITE(LU,*) '  BUNDESANSTALT FUER WASSERBAU, KARLSRUHE'
       WRITE(LU,*) ' '
-      WRITE(LU,*) '  METIS 4.0.1 (C) COPYRIGHT 1998 '
+      WRITE(LU,*) '  METIS 5.0.2 (C) COPYRIGHT 2012 '
       WRITE(LU,*) '  REGENTS OF THE UNIVERSITY OF MINNESOTA '
       WRITE(LU,*) ' '
-      WRITE(LU,*) '  BIEF 5.9 (C) COPYRIGHT 2008 EDF'
+      WRITE(LU,*) '  BIEF 6.2 (C) COPYRIGHT 2012 EDF'
       WRITE(LU,*) '+-------------------------------------------------+'
       WRITE(LU,*) ' '
-!JAJ ////
-      WRITE(LU,*) '  => THIS IS A PRELIMINARY DEVELOPMENT VERSION '
-      WRITE(LU,*) '     DATED:  TUE JAN 27 11:11:20 CET 2009'
       WRITE(LU,*) ' '
       WRITE(LU,*) '  MAXIMUM NUMBER OF PARTITIONS: ',MAXNPROC
       WRITE(LU,*) ' '
@@ -283,23 +281,20 @@
 !----------------------------------------------------------------------
 ! NAMES OF THE INPUT FILES:
 !
-!###> SEB@HRW
       INQUIRE(FILE='partel.par',EXIST=FOUND)
       IF( FOUND ) OPEN(UNIT=72,FILE='partel.par')
-!###< SEB@HRW
 
       DO 
-        IF( FOUND ) THEN                      !###> SEB@HRW
-           READ(72,*) NAMEINP                 !###> SEB@HRW
-        ELSE                                  !###> SEB@HRW
+        IF( FOUND ) THEN                  
+           READ(72,*) NAMEINP             
+        ELSE                              
            WRITE(LU, ADVANCE='NO', FMT=
      &         '(/,'' SELAFIN INPUT NAME <INPUT_NAME>: '')')
            READ(LI,'(A)') NAMEINP
-        ENDIF                                 !###> SEB@HRW
+        ENDIF                            
         IF (NAMEINP.EQ.' ') THEN
           WRITE (LU,'('' NO FILENAME'')') 
         ELSE
-!=>FABS
           IF (NAMEINP(1:3)=='ES3') THEN
 !----------------------------------------------------------------------
 ! NAMES OF THE INPUT FILE TO EVENTUALLY GUIDE TO PARES3D
@@ -308,13 +303,10 @@
             CALL PARES3D(NAMEINP,LI,FOUND)
             GOTO 299
           ELSE
-!<=FABS
 ! CONTINUE WITH TELEMAC CODES
             WRITE(LU,*) 'INPUT: ',NAMEINP
             EXIT 
-!=>FABS
           ENDIF
-!<=FABS
         END IF  
       END DO
 
@@ -326,13 +318,13 @@
       END IF  
 !
       DO
-        IF( FOUND ) THEN                      !###> SEB@HRW
-           READ(72,*) NAMECLI                 !###> SEB@HRW
-        ELSE                                  !###> SEB@HRW
+        IF( FOUND ) THEN                      
+           READ(72,*) NAMECLI                 
+        ELSE                                  
            WRITE(LU, ADVANCE='NO', FMT=
      &           '(/,'' BOUNDARY CONDITIONS FILE NAME : '')')
            READ(LI,'(A)') NAMECLI
-        ENDIF                                 !###> SEB@HRW
+        ENDIF                                
         IF (NAMECLI.EQ.' ') THEN
           WRITE (LU,'('' NO FILENAME'')') 
         ELSE
@@ -349,14 +341,14 @@
       END IF  
 !
       DO 
-        IF( FOUND ) THEN                      !###> SEB@HRW
-           READ(72,*) NPARTS                  !###> SEB@HRW
-        ELSE                                  !###> SEB@HRW
+        IF( FOUND ) THEN                     
+           READ(72,*) NPARTS                 
+        ELSE                                 
            WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' NUMBER OF PARTITIONS <NPARTS> [2 -'',I6,'']: '')') 
      &        MAXNPROC
            READ(LI,*) NPARTS
-        ENDIF                                 !###> SEB@HRW
+        ENDIF                               
         IF ( (NPARTS > MAXNPROC) .OR. (NPARTS < 2) ) THEN
           WRITE(LU,
      &    '('' NUMBER OF PARTITIONS MUST BE IN [2 -'',I6,'']'')') 
@@ -368,19 +360,16 @@
       END DO
 !
       WRITE(LU,FMT='(/,'' PARTITIONING OPTIONS: '')')
-!      WRITE(LU,*) '  1: DUAL  GRAPH', 
-!     & ' (EACH ELEMENT OF THE MESH BECOMES A VERTEX OF THE GRAPH)'
-!      WRITE(LU,*) '  2: NODAL GRAPH', 
-!     & ' (EACH NODE OF THE MESH BECOMES A VERTEX OF THE GRAPH)'
 
       DO 
-        IF( FOUND ) THEN                      !###> SEB@HRW
-           READ(72,*) PMETHOD                 !###> SEB@HRW
-        ELSE                                  !###> SEB@HRW
+        IF( FOUND ) THEN                     
+           READ(72,*) PMETHOD                
+        ELSE                                 
            WRITE(LU, ADVANCE='NO',FMT=
-     &    '(/,'' PARTITIONING METHOD <PMETHOD> [1 OR 2]: '')') 
+     &    '(/,'' PARTITIONING METHOD <PMETHOD> 
+     &    [1 (metis) OR 2 (scotch)]: '')') 
            READ(LI,*) PMETHOD
-        ENDIF                                 !###> SEB@HRW
+        ENDIF                                 
         IF ( (PMETHOD > 2) .OR. (PMETHOD < 1) ) THEN
           WRITE(LU,
      &    '('' PARTITIONING METHOD MUST BE 1 OR 2'')') 
@@ -393,13 +382,13 @@
 ! #### THE SECTIONS FILE NAME 
 !
       DO
-        IF( FOUND ) THEN                      !###> SEB@HRW
-           READ(72,*) I                       !###> SEB@HRW
-        ELSE                                  !###> SEB@HRW
+        IF( FOUND ) THEN                      
+           READ(72,*) I                       
+        ELSE                                  
            WRITE(LU, ADVANCE='NO',FMT=
      &    '(/,'' WITH SECTIONS? [1:YES 0:NO]: '')') 
            READ(LI,*) I
-        ENDIF                                 !###> SEB@HRW
+        ENDIF                                
         IF ( I<0 .OR. I>1 ) THEN
           WRITE(LU,'('' PLEASE ANSWER 1:YES OR 0:NO '')') 
         ELSE
@@ -434,9 +423,7 @@
         ENDIF  
       ENDIF
 !
-!###> SEB@HRW
       IF( FOUND ) CLOSE(72)
-!###< SEB@HRW
 !
 !
 ! FIND THE INPUT FILE CORE NAME LENGTH
@@ -596,18 +583,8 @@
 !
       READ(NINP) (IRAND(J),J=1,NPOIN)
 !
-! COMPUTATION OF NPTFR DONE LATER WITH THE BOUNDARY CONDITIONS FILE
-! (MODIFICATION BY J-M HERVOUET ON 10/04/02)
 ! IRAND IS NOT ALWAYS CORRECT AND MAY LEAD TO ERRORS
-!
-! NUMBER OF BOUNDARY POINTS IN 2D MESH
-!      NPTFR = 0
-!      DO J=1,NPOIN2
-!        IF(IRAND(J).NE.0) NPTFR = NPTFR+1
-!      END DO 
-!      WRITE (LU,*) ' '
-!      WRITE (LU,*) 'NPTFR NUMBER OF BOUNDARY NODES IN 2D MESH',NPTFR
-!      WRITE (LU,*) ' '
+! THE BO0UNDARY FILE IS USED INSTEAD
 !
 ! X-, Y-COORDINATES
 !
@@ -739,19 +716,10 @@
      &             HBOR(K),UBOR(K),VBOR(K),AUBOR(K),LITBOR(K),
      &             TBOR(K),ATBOR(K),BTBOR(K),NBOR(K),CHECK(K)
 !
-!     NOW CHECK IS THE BOUNDARY NODE COLOUR
-!     IF(CHECK(K).NE.K) THEN
-!       WRITE(LU,*) 'ERROR IN BOUNDARY CONDITIONS FILE AT LINE ',K
-!       CALL PARTEL_PLANTE2(-1)
-!       STOP
-!     ENDIF
       K=K+1
       GOTO 900
  901  CONTINUE
       NPTFR = K-1
-!      WRITE (LU,*) ' '
-!      WRITE (LU,*) 'NUMBER OF BOUNDARY NODES IN 2D MESH: ',NPTFR
-!      WRITE (LU,*) ' '
       CLOSE(NCLI)
 !
 !----------------------------------------------------------------------
@@ -769,7 +737,6 @@
       IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'DEJAVU')
       ALLOCATE (KP1BOR(NPTFR,2),STAT=ERR)
       IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'KP1BOR')
-!JAJ----------V ////
 !     CHANGED NELEM TO NELEM2, NDP TO 3 HUH! 
 !     CAUSING ERRORS WHEN 3D RESTART/REFERENCE FILES ARE PARTITIONED
 !     AND BC FILE IS WRITTEN AGAIN (WHAT FOR, ACTUALLY???) 
@@ -806,15 +773,11 @@
       CALL PARTEL_VOISIN(IFABOR, NELEM2, NELEM2, 11, IKLE, NELEM2,
      &                   NPOIN2, IT1, IT2)
 !
-!      WRITE(LU,'(/,'' CALLING ELEBD'')')
-!
       CALL PARTEL_ELEBD (NELBOR, NULONE, KP1BOR, IFABOR, NBOR, IKLE, 
      &                   NELEM2, IKLBOR, NELEM2, NELEM2, NPTFRMAX,
      &                   NPOIN2, NPTFR, 11, LIHBOR, 2, IFANUM,
      &                   1, ISEGF, IT1, IT2, IT3,NPOIN_TOT )
 !
-!      WRITE(LU,'(/,'' BOUNDARY TYPE NUMBERING USING FRONT2'')')
-!      
       IF (NAMEINP(1:3)== 'ART') THEN
          OPEN(UNIT=89,FILE='FRONT_GLOB.DAT')
          WRITE(89,*) NPOIN_TOT
@@ -828,7 +791,6 @@
          DO K=1,NPTFR
             WRITE(89,*) KP1BOR(K,2)
          END DO 
-!         CALL FLUSH(89)
          CLOSE(89)
       END IF
       CALL PARTEL_FRONT2 
@@ -841,45 +803,11 @@
 !!!!      DEALLOCATE (IFABOR)
       DEALLOCATE (IFANUM)
       DEALLOCATE (IKLBOR)
-!     DEALLOCATE (NELBOR)
       DEALLOCATE (NULONE)
       DEALLOCATE (ISEGF)
-!      DEALLOCATE (IKLE) !JAJ #### WE NEED IT FOR SECTIONS 
       DEALLOCATE (IT1)
       DEALLOCATE (IT2)
       DEALLOCATE (IT3)
-!    COMMENTED BY CD 
-
-!----------------------------------------------------------------------
-! OPEN AND REWRITE METIS SOFTWARE INPUT FILES
-! NOT NECESSARY IF VISUALISATION OR MANUAL DECOMPOSITIONS 
-! ARE NOT REQUIRED
-!
-C$$$      WRITE(LU,*) ' '
-C$$$      WRITE(LU,*) '---------------------------'
-C$$$      WRITE(LU,*) ' METIS & PMVIS INPUT FILES '
-C$$$      WRITE(LU,*) '---------------------------'
-C$$$      WRITE(LU,*) ' '
-C$$$!
-C$$$      OPEN(NMET,FILE=NAMEMET,STATUS='UNKNOWN',FORM='FORMATTED')
-C$$$      REWIND NMET
-C$$$      WRITE(LU,*) 'INPUT FILE FOR PARTITIONING: ', NAMEMET
-C$$$!
-C$$$! THE FIRST LINE IS NOT NECESSARY IN THE LATEST VERSION
-C$$$! WE WRITE THE FILES USING C CONVENTION
-C$$$!
-C$$$! HERE THE IKLE 2D IS WRITTEN, EVEN IN 3D (HENCE NDP CONSIDERED TO BE 3)
-C$$$!
-C$$$      WRITE(NMET,*) NELEM2,'1'
-C$$$      DO K=1,NELEM2
-C$$$        WRITE(NMET,'(3(I7,1X))') (IKLES((K-1)*3+J)-1, J=1,3)
-C$$$      END DO
-C$$$      CLOSE(NMET)
-C$$$!
-! WRITE THE NODE COORDINATES FOR VISUALISATION 
-! A CHECK FIRST...
-!
-C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !
 !======================================================================
 ! PARTITIONING
@@ -1370,7 +1298,8 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !        FILLING IFAPAR
 !
          NHALO(I)=0
-         DO J=1,NBRE_EF_I  ! ON PARCOURT JUSTE LES ELEMENTS FINIS INTERFACES POUR                             ! DETERMINER DES HALO
+         DO J=1,NBRE_EF_I  ! ON PARCOURT JUSTE LES ELEMENTS FINIS INTERFACES POUR   
+                           ! DETERMINER DES HALO
             EF=EF_I(J)
             HALO=.FALSE.
             IFALOC(:)=IFABOR(EF,:)
@@ -1451,16 +1380,9 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 ! NBOR_P CANNOT BE USED, IT IS NOT FULLY FILLED WITH DATA
 !
            ISO = 0
-!     MODIF JMH ON 10/03/2003 : CHECKING IF THE ADJACENT ELEMENT IS NOT IN THE
+!     CHECKING IF THE ADJACENT ELEMENT IS NOT IN THE
 !     SUB-DOMAIN
            IF (EPART(NELBOR(K)).NE.I) THEN
-!     THIS WAS A TEST : IF NEXT BOUNDARY POINT NOT IN THE SUBDOMAIN
-!     BUT IT CAN BE IN WHEREAS THE SEGMENT IS NOT.
-!     IF ( KNOGL(NBOR(M)) == 0 ) THEN
-!                  WRITE(LU,*) 
-!     &                 'GLOBAL BOUNDARY LEAVES @NODE (#G,#L): ',
-!     &                 NBOR(K), KNOGL(NBOR(K),I),
-!     &                 ' --> (#G) ', NBOR(M)
 !     
                   ISEG = NBOR(M)
                   IF(SERAFIND) THEN
@@ -1475,7 +1397,7 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !     
             M = KP1BOR(K,2)
 !     
-!     MODIF JMH ON 10/03/2003 : SAME AS ABOVE, BUT PREVIOUS SEGMENT ,THUS M, NOT K
+!     SAME AS ABOVE, BUT PREVIOUS SEGMENT ,THUS M, NOT K
             IF (EPART(NELBOR(M)).NE.I) THEN
                ISEG = -NBOR(M)
                IF(SERAFIND) THEN
@@ -1496,8 +1418,6 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
                WRITE(LU,*) 'ISOLATED BOUNDARY POINT', 
      &              NBOR(K), KNOGL(NBOR(K),I)
             ENDIF
-!     
-!            NBOR_P(J) = IRAND_P(KNOGL(NBOR(K)))
 !     
 !     WRITE A LINE OF THE FIRST (CLASSICAL) PART OF THE BOUNDARY FILE
 ! CONCERNING THE NODE WHICH HAS BEEN RESEARCHED
@@ -1721,14 +1641,14 @@ C$$$      WRITE (LU,'(/,'' AS COORDINATES FOR VISUALISATION TAKEN: '')')
 !
 ! TIME STAMP (SECONDS) 
 !
-CD
-CD   -------------------------------------------------------------------
-CD   MODIFICATION TO PUT ALL THE RECORDINGS IN PARALLEL 
-CD   GEO FILE 08/06/2011
-CD   -------------------------------------------------------------------
-CD     FIRST STEP : CLOSE/REOPEN/REWIND THE FILE AND READ ALL THE RECORDINGS UNTIL
-CD     THOSE CONCERNING THE TIME-DEPENDENT  VARIABLES
-CD
+!!
+!!   -------------------------------------------------------------------
+!!   MODIFICATION TO PUT ALL THE RECORDINGS IN PARALLEL 
+!!   GEO FILE 08/06/2011
+!!   -------------------------------------------------------------------
+!!     FIRST STEP : CLOSE/REOPEN/REWIND THE FILE AND READ ALL THE RECORDINGS UNTIL
+!!     THOSE CONCERNING THE TIME-DEPENDENT  VARIABLES
+!!
         CLOSE(NINP)
         OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
         REWIND(NINP)
@@ -1799,81 +1719,6 @@ CD   -------------------------------------------------------------------
 CD   END OF THE MODIFICATION TO PUT ALL THE
 CD   RECORDINGS IN PARALLEL GEO FILE 08/06/2011
 CD   -------------------------------------------------------------------
-!
-! CD I HAVE COMMENTED THIS ... AVOIDING MULTIPLES FILES MAKING BUG ON SGI
-!
-!======================================================================
-! WRITING EPART AND NPART 
-!
-C$$$      CHCH='00000'
-C$$$      IF (NPARTS<10) THEN
-C$$$        WRITE (CHCH(5:5),'(I1)') NPARTS
-C$$$        NAMEEPART=NAMEINP(1:I_LENINP) // '.EPART.' // CHCH(5:5)
-C$$$        NAMENPART=NAMEINP(1:I_LENINP) // '.NPART.' // CHCH(5:5)
-C$$$      ELSEIF (NPARTS<100) THEN
-C$$$        WRITE (CHCH(4:5),'(I2)') NPARTS
-C$$$        NAMEEPART=NAMEINP(1:I_LENINP) // '.EPART.' // CHCH(4:5)
-C$$$        NAMENPART=NAMEINP(1:I_LENINP) // '.NPART.' // CHCH(4:5)
-C$$$      ELSEIF (NPARTS<1000) THEN
-C$$$        WRITE (CHCH(3:5),'(I3)') NPARTS
-C$$$        NAMEEPART=NAMEINP(1:I_LENINP) // '.EPART.' // CHCH(3:5)
-C$$$        NAMENPART=NAMEINP(1:I_LENINP) // '.NPART.' // CHCH(3:5)
-C$$$      ELSEIF (NPARTS<10000) THEN
-C$$$        WRITE (CHCH(2:5),'(I4)') NPARTS
-C$$$        NAMEEPART=NAMEINP(1:I_LENINP) // '.EPART.' // CHCH(2:5)
-C$$$        NAMENPART=NAMEINP(1:I_LENINP) // '.NPART.' // CHCH(2:5)
-C$$$      ELSE 
-C$$$        WRITE (CHCH(1:5),'(I5)') NPARTS
-C$$$        NAMEEPART=NAMEINP(1:I_LENINP) // '.EPART.' // CHCH(1:5)
-C$$$        NAMENPART=NAMEINP(1:I_LENINP) // '.NPART.' // CHCH(1:5)
-C$$$      ENDIF
-C$$$!
-C$$$      WRITE(LU,*) ' '
-C$$$      WRITE(LU,*) '------------------'
-C$$$      WRITE(LU,*) ' PARTITION FILES  '
-C$$$      WRITE(LU,*) '------------------'
-C$$$      WRITE(LU,*) ' '
-C$$$!
-C$$$      OPEN(NEPART,FILE=NAMEEPART,STATUS='UNKNOWN',FORM='FORMATTED')
-C$$$      REWIND NEPART
-C$$$      WRITE(LU,*) 'ELEMENT PARTITION FILE: ', NAMEEPART
-C$$$!
-C$$$      OPEN(NNPART,FILE=NAMENPART,STATUS='UNKNOWN',FORM='FORMATTED')
-C$$$      REWIND NNPART
-C$$$      WRITE(LU,*) 'NODE PARTITION FILE: ', NAMENPART
-C$$$!
-C$$$! OUTPUT ABSOLUTELY THE SAME AS FROM PARTDNMESH (A C-PROGRAM)
-C$$$! THAT'S WHY 1 SUBSTRACTED AND THE FORMATS
-C$$$!
-C$$$      FMT1 = '(I1)'
-C$$$      FMT2 = '(I2)'
-C$$$      FMT3 = '(I3)'
-C$$$!
-C$$$      DO J=1,NELEM2
-C$$$         K = EPART(J) - 1
-C$$$         IF (K<10) THEN
-C$$$           WRITE (NEPART,FMT=FMT1) K
-C$$$         ELSEIF (K<100) THEN
-C$$$           WRITE (NEPART,FMT=FMT2) K
-C$$$         ELSE 
-C$$$           WRITE (NEPART,FMT=FMT3) K
-C$$$         ENDIF
-C$$$      END DO
-C$$$      CLOSE(NEPART)
-C$$$!
-C$$$      DO J=1,NPOIN2
-C$$$         K = NPART(J) - 1
-C$$$         IF (K<10) THEN
-C$$$           WRITE (NNPART,FMT=FMT1) K
-C$$$         ELSEIF (K<100) THEN
-C$$$           WRITE (NNPART,FMT=FMT2) K
-C$$$         ELSE
-C$$$           WRITE (NNPART,FMT=FMT3) K
-C$$$         ENDIF
-C$$$      END DO
-C$$$      CLOSE(NNPART)
-!
-!
 ! //// JAJ: LA FINITA COMMEDIA FOR PARALLEL CHARACTERISTICS, BYE! 
 !----------------------------------------------------------------------
 ! !JAJ #### DEAL WITH SECTIONS 

@@ -531,7 +531,7 @@ if __name__ == "__main__":
       cmdfFiles = {}; HOMERES = {} 
       #Liborder in the cmdf file is incorrect using fixed order instead
       #TODO: Solve order error
-      LIBDEPS = ['special', 'paravoid', 'parallel', 'mumpsvoid', 'damocles', 'bief', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'estel3d', 'telemac2d', 'telemac3d']
+      LIBDEPS = ['special', 'paravoid', 'parallel', 'mumpsvoid', 'damocles', 'bief', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d']
       rebuild = cfg['COMPILER']['REBUILD']
       for mod in cfg['COMPILER']['MODULES']:
          cmdfFiles.update({mod:{}})
