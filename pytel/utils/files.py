@@ -164,7 +164,9 @@ def copyFile2File(fi,fo):
 """
 """
 def moveFile(fi,po):
-   if path.exists(path.join(po,path.basename(fi))): remove(path.join(po,path.basename(fi)))
+   if path.exists(path.join(po,path.basename(fi))):
+      remove(path.join(po,path.basename(fi)))
+      time.sleep(5) # /!\ addition for windows operating system
    if path.exists(fi): shutil.move(fi,po)
    return
 
@@ -174,9 +176,18 @@ def moveFile(fi,po):
 """
 def removeDirectories(root):
    for p, pdirs, pfiles in walk(root, topdown=False):
-       for f in pfiles: remove(path.join(p,f))
-       for d in pdirs: rmdir(path.join(p,d))
-   rmdir(root)
+      for f in pfiles: remove(path.join(p,f))
+      for d in pdirs:
+         try:
+            rmdir(path.join(p,d))
+         except:
+            time.sleep(5) # /!\ addition for windows operating system
+            rmdir(path.join(p,d))
+   try:
+      rmdir(root)
+   except:
+      time.sleep(5) # /!\ addition for windows operating system
+      rmdir(root)
    return
 
 """
