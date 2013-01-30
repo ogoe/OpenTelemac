@@ -3,7 +3,7 @@
 #------------------------Systeme TELEMAC V5P3-------------runtel.pl----
 #
 #	Procedures de lancement simplifie d'un code
-#           du système TELEMAC
+#           du systeme TELEMAC
 #
 # SYNTAXE
 #	runtel.pl nom_code [-D] [-C|-F] [-s|b|n|d heure] [cas]
@@ -42,7 +42,7 @@
 #               delete_$PARA$WORKING pour effacer le calcul lance en batch
 #
 #      14) Allocation des fichiers sur des canaux predefinis (FORT.xx)
-#	   dans le repertoire de travail apres contrÂle de leur existence.
+#	   dans le repertoire de travail apres contrÃÂle de leur existence.
 #      15) Compilation du programme principal fournis par l'utilisateur
 #	   et edition de liens avec les bibliotheques ad-hoc.
 #      16) Lancement de TELEMAC
@@ -210,31 +210,31 @@
 #
 #          date    : 26/06/2000 A. Bas (Steria)
 #          objet   : On ne cree plus le repertoire core sur le fuji car ca ne passe pas
-#                  : On utilise les chemins complets des fichiers de paramÉtres (REPLANCE)
+#                  : On utilise les chemins complets des fichiers de paramÃÂtres (REPLANCE)
 #
 #          date    : Juillet 2000 - DeltaCAD
 #          objet   : Introduction de la protection sous WindowsNT
 #
 #          date    : Septembre 2001 - DeltaCAD
-#          objet   : Amélioration de la gestion des versions
+#          objet   : AmÃ©lioration de la gestion des versions
 #                    Suppression des branches "share" (executables damo)
 #                    Exploitation du dictionnaire et fichier cas par modules Perl
 #
 #          date    : Mars 2003 - BAW Karlsruhe (jaj)
 #          objet   : Nouvelles fonctionnalites :
 #                     - localisation du repertoire temporaire
-#                     - option de suppression ou non du répertoire temporaire après calcul
-#                     - compilation/link préalable à l'acquisition des fichiers et
+#                     - option de suppression ou non du rÃ©pertoire temporaire aprÃ¨s calcul
+#                     - compilation/link prÃ©alable Ã  l'acquisition des fichiers et
 #                       option de compilation/link seul "-cl"
-#                     - amélioration de la détection et gestion des erreurs
-#                     - mot clef LK_LIB_SPECIAL pour des librairies spécifiques
+#                     - amÃ©lioration de la dÃ©tection et gestion des erreurs
+#                     - mot clef LK_LIB_SPECIAL pour des librairies spÃ©cifiques
 #                     - fichier global "mpi_telemac.conf"
 #
 #          date    : Juin 2003 - DeltaCAD
 #          objet   : Couplage des codes TELEMAC2D et SISYPHE
 #
 #          date    : Avril 2010 - BAW Karlsruhe (jaj) et SINETICS (C. Denis)
-#          objet   : Prise en compte des sections de contrÃÂ´les en // (jaj)
+#          objet   : Prise en compte des sections de contrÃ´les en // (jaj)
 #                  : Ajout des cibles pour Mumps (C. Denis)
 #
 #------------------------Systeme TELEMAC V5P3--------------------------
@@ -252,15 +252,15 @@ BEGIN
   if($ENV{"OS"} eq "Windows_NT") {$ps="\\";}   #Windows NT
                             else {$ps="/"; }   #Unix/Linux
 
-#Localiser les modules dans le répertoire 'bin'
-  $project=`getproject`;  unshift (@INC, "$project$ps"."bin");
+#Localiser les modules dans le rÃ©pertoire 'bin'
+  $project=`getproject`;  unshift (@INC, "$project$ps"."bin.bgq");
 
 #Verification des modules
-  if ( ! -e "$project$ps"."bin$ps"."tm_info.pm") 
+  if ( ! -e "$project$ps"."bin.bgq$ps"."tm_info.pm") 
        {die "FATAL : Module <tm_info> inaccessible.\n";}
   eval (require 'tm_info.pm'); 
   die "FATAL : Module <tm_info> incorrect ($@)"  if  ($@);
-  if ( ! -e "$project$ps"."bin$ps"."tm_casdico.pm") 
+  if ( ! -e "$project$ps"."bin.bgq$ps"."tm_casdico.pm") 
        {die "FATAL : Module <tm_casdico> inaccessible.\n";}
   eval (require 'tm_casdico.pm'); 
   die "FATAL : Module <tm_casdico> incorrect ($@)"  if  ($@);
@@ -270,6 +270,7 @@ BEGIN
 ######################################################
 #   /  Routines                /
 ######################################################
+
 #-------------
 sub CatchError
 #-------------
@@ -352,7 +353,7 @@ sub fillHashFromBloc
 #$_[0]      : Le chemin complet du fichier a lire.
 #$_[1]      : Le nom du bloc a considerer.
 #$_[2]      : La "hashe table" ou seront stockees comme cles
-#             En cas d'erreur, une entree de de type est retournée :
+#             En cas d'erreur, une entree de de type est retournÃ©e :
 #              ("H_ERROR","Error msg")
 #--------------------
 #
@@ -410,7 +411,8 @@ sub fillHashFromBloc
 	    }
 #Traduire les marqueurs : <TELEMAC_HOME>, <DIRLIB>
         $val =~ s/<TELEMAC_HOME>/$hash{"PROJECT"}/g;
-        $val =~ s/<DIRLIB>/$hash{"HOSTTYPE"}/g;
+# PLG INGEROP        $val =~ s/<DIRLIB>/$hash{"HOSTTYPE"}/g;
+        $val =~ s/<DIRLIB>/$hash{"DIRLIB"}/g;
 
 	    $hash{$var}=$val;
 	}
@@ -520,7 +522,7 @@ sub suitvalid {
 		"PREVIOUS COMPUTATION FILE", $PRECEDENT);
 	print "\n"; }
 
-    if ($VALIDATION eq "T") {         # CORRECTION ($VALIDA)   $DCSA$ à verif
+    if ($VALIDATION eq "T") {         # CORRECTION ($VALIDA)   $DCSA$ ÃÂ  verif
 	print "\n";
 	ecrire ("IL EXISTE UNE VALIDATION POUR VOTRE CALCUL", "VALIDATION IS ASKED");
 	print "\n";
@@ -537,80 +539,6 @@ sub heure_plusun() {
 	if ($hour eq 24) { $hour = 0; }
     }
 }
-#-------------
-sub checkSetProt
-#-------------
-#Definition : Verifie la validité des paramètres de protection
-#             definis dans le Hash transmis (par reference)
-#             Definit les variables d'environnement contenant les
-#             parametres de protection
-#Return     : code de retour : 1=ok, sinon 0.
-#             Entree ('H_ERROR', msg) pour message d'erreur
-{
-#Args
-     my ($env2);
-     my ($hashref); ($hashref) = @_;     #Carefull (List context)
-#Verif noms des parametres
-    if (  not (    exists($hashref->{'Functions'})
-                && exists($hashref->{'StartPeriod'})
-                && exists($hashref->{'EndPeriod'})
-                && exists($hashref->{'Ptype'})
-                && exists($hashref->{'Hostid'})
-                && exists($hashref->{'Password'})
-        )     )
-#PLG
-       { $hashref->{'H_ERROR'} = "Invalid licence parameters for $GENERIQUE1";
-         return(0);
-       }
-
-#Verif de la validité de quelques valeurs
-
-#Function value
-    if ( ($hashref->{'Functions'} & 16384 ) != 16384 )
-#PLG
-       { $hashref->{'H_ERROR'} = "Invalid Function parameter value for $GENERIQUE1 licence";
-         return(0);  }
-#Ptype value
-    if ( ($hashref->{'Ptype'} & 16384 ) != 16384 )
-#PLG
-       { $hashref->{'H_ERROR'} = "Invalid Ptype parameter value for $GENERIQUE1 licence";
-         return(0);  }
-#StartPeriod value
-    if (     (  substr($hashref->{'StartPeriod'}, 4,1) ne "/" )
-          || (  substr($hashref->{'StartPeriod'}, 7,1) ne "/" )
-          || (  length($hashref->{'StartPeriod'})  != 10      )   )
-#PLG
-       { $hashref->{'H_ERROR'} = "Invalid StartPeriod parameter value for $GENERIQUE1 licence";
-         return(0);  }
-#EndPeriod value
-    if (     (  substr($hashref->{'EndPeriod'}, 4,1) ne "/" )
-          || (  substr($hashref->{'EndPeriod'}, 7,1) ne "/" )
-          || (  length($hashref->{'EndPeriod'})  != 10      )   )
-#PLG
-       { $hashref->{'H_ERROR'} = "Invalid EndPeriod parameter value for $GENERIQUE1 licence";
-         return(0);  }
-#HostId value
-    if ( length($hashref->{'Hostid'})  < 4      )
-#PLG
-       { $hashref->{'H_ERROR'} = "Invalid Hostid parameter value for $GENERIQUE1 licence";
-         return(0);  }
-#Password value
-    if ( length($hashref->{'Password'})  != 16      )
-#PLG
-       { $hashref->{'H_ERROR'} = "Invalid Password parameter value for $GENERIQUE1 licence";
-         return(0);  }
-
-#Transmission au code des parametres de protection via les
-#variables d'environnement
-#PLG
-      $ENV{"STELP1"}=join "_", uc($GENERIQUE1), $hashref->{'Functions'}, $hashref->{'Ptype'};
-      $env2=join "_", $hashref->{'StartPeriod'}, $hashref->{'EndPeriod'}, $hashref->{'Hostid'};
-      $env2 =~ s/\///g;
-      $ENV{"STELP2"}=$env2;
-      $ENV{"STELP3"}=$hashref->{'Password'};
-#Fin - OK
-return(1);
-} #End checkSetProt()
 
 #-------------
 sub ecrire_variable_fichier
@@ -643,9 +571,9 @@ sub ecrire_variable_fichier
 sub desc_fichiers_acqui_resti
 #-------------
 #--- Ecriture des descriptions des fichiers a acquerir/restituer
-#        ("LISTE DES FICHIERS"/"LIST OF FILES" les énumère)
+#        ("LISTE DES FICHIERS"/"LIST OF FILES" les ÃÂ©numÃÂ¨re)
 #  - FH        : handle du fichier
-#  - %motsdic  : mots clefs à considérer (reference)
+#  - %motsdic  : mots clefs Ã  considÃ©rer (reference)
 #  - i0        : numero du premier fichier
 #  - DICO      : DICTIONNAIRE
 #  - CAS       : CAS
@@ -663,7 +591,7 @@ sub desc_fichiers_acqui_resti
    }
 #
 #--- Ecriture des descriptions des fichiers a acquerir/restituer
-#        ("LISTE DES FICHIERS"/"LIST OF FILES" les énumère)
+#        ("LISTE DES FICHIERS"/"LIST OF FILES" les Ã©numÃ¨re)
 #
 my @vals   = tm_casdico::recup_valeur_mot($refMots, "LISTE DES FICHIERS");   #fr
 my @valsgb = tm_casdico::recup_valeur_mot($refMots, "LIST OF FILES");        #gb
@@ -687,32 +615,32 @@ for($i=0;$i<@vals;$i++)
     @vals2 = tm_casdico::recup_valeur_mot($refMots,$vals[$i]); 
     @vals2[0]=~s/^\s*$//;
         
-#Cas d'un fichier de type FORTRAN : le repérer pour compilation avec son nom
+#Cas d'un fichier de type FORTRAN : le repÃÂ©rer pour compilation avec son nom
 #d'acquisition (valable pour plusieurs FORTRANs)
     if (@valsd[0]=~/;FORTRAN/) 
       {my @items=split (/;/,@valsd[0]);
-       my  $fn=join "�",@vals2[0],@items[1];
+       my  $fn=join ";",@vals2[0],@items[1];
        printf $FH "push(\@FORTRANS,\"$fn\");\n";
        next;
       }
-#Cas d'un fichier de type FORTINC : le repérer pour l'acquérir en même
+#Cas d'un fichier de type FORTINC : le repÃÂ©rer pour l'acquÃÂ©rir en mÃÂªme
 #temps que les Fortrans
     if (@valsd[0]=~/;FORTINC/) 
       {my @items=split (/;/,@valsd[0]);
-       my  $fn=join "�",@vals2[0],@items[1];
+       my  $fn=join ";",@vals2[0],@items[1];
        printf $FH "push(\@FORTINC,\"$fn\");\n";
        next;
       }
 
-#Cas d'un fichier de type CONLIM : le repérer pour PARTEL
+#Cas d'un fichier de type CONLIM : le repÃÂ©rer pour PARTEL
     if (@valsd[0]=~/;CONLIM/) 
      {printf $FH "push(\@conlimDSC,\"@valsd[0]\");\n"; }
 
-#Cas d'un fichier de type SECTION : le repÃÂÃÂ©rer pour PARTEL #### !jaj
+#Cas d'un fichier de type SECTION : le repÃÂ©rer pour PARTEL #### !jaj
     if (@valsd[0]=~/;SECTION/) 
      {printf $FH "push(\@sectionDSC,\"@valsd[0]\");\n"; }
     
-#Cas d'un fichier de type SELAFIN-GEOM : le repérer pour GRETEL
+#Cas d'un fichier de type SELAFIN-GEOM : le repÃÂ©rer pour GRETEL
     if (@valsd[0]=~/;SELAFIN-GEOM/) 
      {printf $FH "push(\@selgeomDSC,\"@valsd[0]\");\n"; }
     
@@ -724,7 +652,7 @@ for($i=0;$i<@vals;$i++)
 #Cas d'un fichier de type DICO : valeur dans $mDICO
     if (@valsd[0]=~/;DICO/)   { @vals2[0]=$mDICO; }
 
-#Ecriture des données du fichier pour son acquisition/restitution par 'runcode'   
+#Ecriture des donnÃÂ©es du fichier pour son acquisition/restitution par 'runcode'   
     printf $FH "\@FLNG1=(\@FLNG1,\"@vals[$i]\"".");\n"; 
     printf $FH "\@FLNG2=(\@FLNG2,\"@valsgb[$i]\"".");\n"; 
     printf $FH "\@FDESC=(\@FDESC,\"@valsd[0]\"".");\n"; 
@@ -747,7 +675,7 @@ sub get_code_params
 #  - lng      
 #  - versdef  
 #-------------
-#Definition : Retourne les caractéristiques d'un code 
+#Definition : Retourne les caractÃÂ©ristiques d'un code 
 {
 #Initialisations/recup arguments
   my $refH  = @_[0];
@@ -770,22 +698,6 @@ if ($NOMCOD eq "stbtel")    {    $$refCH    = "STBTEL$ps"."STBTEL_";
                                  $$refRAC   = "STBTEL";
                                  $$refLNG   = $$refH{"LNGSTB"};
                                  $$refVER   = $$refH{"VERSSTB"};            }
-if ($NOMCOD eq "tsef")      {    $$refCH    = "TSEF$ps"."TSE_";
-                                 $$refRAC   = "TSEF";
-                                 $$refLNG   = $ENV{"LNGTSE"};
-                                 $$refVER   = $$refH{"VERSTSE"};            }
-if ($NOMCOD eq "subief2d")  {    $$refCH    = "subief2d$ps"."subief2d_";
-                                 $$refRAC   = "SUBIEF2D";
-                                 $$refLNG   = $$refH{"LNGSUB"};
-                                 $$refVER   = $$refH{"VERSSUB"};            }
-if ($NOMCOD eq "trapes")    {    $$refCH    = "trapes$ps"."trapes_";
-                                 $$refRAC   = "TRAPES";
-                                 $$refLNG   = $$refH{"LNGSUB"};
-                                 $$refVER   = $$refH{"VERSSUB"};            }
-if ($NOMCOD eq "subief3d")  {    $$refCH    = "subief3d$ps"."subief3d_";
-                                 $$refRAC   = "SUBIEF3D";
-                                 $$refLNG   = $$refH{"LNGSUB"};
-                                 $$refVER   = $$refH{"VERSSUB"};            }
 if ($NOMCOD eq "postel3d")  {    $$refCH    = "POSTEL3D$ps"."POSTEL3D_";
                                  $$refRAC   = "POSTEL3D";
                                  $$refLNG   = $$refH{"LNGPOSTE"};
@@ -827,7 +739,7 @@ $$refCH=~tr/A-Z/a-z/;
 #-------------
 sub get_mots
 #-------------
-#--- Acquisition des mots clé à partir des fichiers
+#--- Acquisition des mots clÃÂ© ÃÂ  partir des fichiers
 #    cas et dico
 #E:
 #  - NOMCOD  : nom du code
@@ -929,9 +841,9 @@ sub jajbanner
 {
   #return; # ...ehm, we love banners indicating which versions WE use, don't WE?
   printf "\n";
-  printf "====================================================\n";
-  printf " Telemac System V5P5 - Perl scripts version V5P5-0 \n";
-  printf "====================================================\n";
+  printf "=========================================================\n";
+  printf " Telemac System 5.6 to 6.2 - Perl scripts version 6.2    \n";
+  printf "=========================================================\n";
   printf "$_[0]\n";
   printf "\n";
 }
@@ -952,7 +864,11 @@ $GENERIQUE    = basename($ARGV[0],"");
 #PLG
 $GENERIQUE1   = $GENERIQUE;
 shift(@ARGV);
-$WORKING      = $$;
+#$WORKING      = $$;
+#UHM take PBS-JOBID if available
+$WORKING      = $ENV{"JOBID"};
+if ( $WORKING eq "" )                      #UHM take PARENT PID
+       { $WORKING      = $$; }
 $DEBUG        = "pasdebug";
 $LNG          = "2";
 $SUITE        = "";
@@ -961,8 +877,7 @@ $PRECEDENT    = "";
 $PROJECT      = $ENV{"PROJECT"};
 $MODE         = "";
 $FFLAGS       = " ";
-$MPICONF      = "mpi_telemac.conf";
-$MPIRUNTXT    = "mpirun.txt";
+$MPICONF       = "mpi_telemac.conf";
 
 @FORTRANS=(); @FORTINC=();
 @conlimDSC=(); @selgeomDSC=(); @sectionDSC=();
@@ -1126,7 +1041,8 @@ if ($PARA eq "") { $PARA = "cas"; }  # Valeur par defaut
 $REPLANCE  = dirname($PARA);
 $PARA      = basename($PARA);
 $REP       = "$PARA$WORKING"."_tmp";
-$dirlib    =$hash{"HOSTTYPE"};
+# PLG INGEROP $dirlib    =$hash{"HOSTTYPE"};
+$dirlib    =$hash{"DIRLIB"};
 $PROJECT   =$hash{"PROJECT"};
 $PERLPATH  =$hash{"PERLPATH"};
 $libExt    =$hash{"LIB_OPT_LIBEXT"};
@@ -1231,9 +1147,6 @@ if ($st == 0)
            "The steering file does not exist");
     usage();
   }
-#PLG
-# Verification et gestion des protection mise après le traitement couplage
-# Telemac/Sisyphe
 
 ######################################################
 #   /  DEBUT DES TACHES DE GESTION DE FICHIERS
@@ -1294,10 +1207,6 @@ close (F)  or die "## Error : Close the $filename file is impossible\n";
 
 if ($NCSIZE > 0) { 
   $LOCMPICONF = "$REPLANCE"."$ps$MPICONF"; 
-#########moulinec (direct copy of mpirun.txt in the working directory)
-  $LOCMPIRUNTXT = "$REPLANCE"."$ps$MPIRUNTXT"; 
-  copy("$LOCMPIRUNTXT", ".$ps");
-#########moulinec
   $GLOMPICONF = "$PROJECT"."$ps"."install"."$ps"."$dirlib"."$ps"."$MPICONF";
   #printf "$LOCMPICONF \n";
   #printf "$GLOMPICONF \n";
@@ -1408,7 +1317,7 @@ if (scalar(@vals) == 0)
   {  ecrire("ERREUR : Mot clef du dictionnaire 'NUMERO DE VERSION' non defini",
             "ERROR : undefined dictionary parameter 'NUMERO DE VERSION'");
      exit 1;}
-$vs=@vals[0];          #traitement spécifique pour accepter la forme
+$vs=@vals[0];          #traitement specifique pour accepter la forme
 if (@vals > 1)         #         V5P2;V5P2;V5P1;V5P1
   { for ($i=1;$i<@vals;$i++)  { $vs=$vs.",@vals[i]";}
   }
@@ -1431,14 +1340,14 @@ if ($ier != 0)
 #
 if ($GENERIQUE eq "telemac2d" || $GENERIQUE eq "telemac3d")
   { 
-     @vals = tm_casdico::recup_valeur_mot(\%motsEtude, "FICHIER DES PARAMETRES DE SISYPHE"); 
-     if ((scalar(@vals) != 0) && (@vals[0] ne "") )
-       { 
 #print "COUPLAGE T2D OU T3D /SISYPHE ! \n";
 #PLG
+     @vals = tm_casdico::recup_valeur_mot(\%motsEtude,"FICHIER DES PARAMETRES DE SISYPHE"); 
+     if ((scalar(@vals) != 0) && (@vals[0] ne "") )
+       { 
        if ($GENERIQUE eq "telemac2d") {$GENERIQUE1 = "TEL2DSIS"};
        if ($GENERIQUE eq "telemac3d") {$GENERIQUE1 = "TEL3DSIS"};
-#       print "COUPLAGE T2D OU T3D /SISYPHE $GENERIQUE1! \n";
+#      printf "COUPLAGE T2D OU T3D /SISYPHE $GENERIQUE1! \n";
          $sCAS ="$REPLANCE"."$ps"."@vals[0]";
          get_code_params (\%hash,"sisyphe",\$sCHEMIN,
                           \$sRACINE,\$sLNG,\$sVERSDEF);
@@ -1451,6 +1360,29 @@ if ($GENERIQUE eq "telemac2d" || $GENERIQUE eq "telemac3d")
          if ($ier != 0)
            {  ecrire("ERREUR : Probleme dans l'analyse des fichiers SISYPHE",
                      "ERROR : problem during SISYPHE files analysis");
+              exit 1;
+           }
+       }
+#print "COUPLAGE T2D /TOMAWAC ! \n";
+#PLG
+     @vals = tm_casdico::recup_valeur_mot(\%motsEtude,"FICHIER DES PARAMETRES DE TOMAWAC"); 
+     if ((scalar(@vals) != 0) && (@vals[0] ne "") )
+       { 
+       if ($GENERIQUE eq "telemac2d") {$GENERIQUE1 = "TEL2DTOM"};
+       if ($GENERIQUE eq "telemac3d") {$GENERIQUE1 = "TEL3DTOM"};
+#       printf "COUPLAGE T2D OU T3D /TOMAWAC $GENERIQUE1! \n";
+         $sCAS ="$REPLANCE"."$ps"."@vals[0]";
+         get_code_params (\%hash,"tomawac",\$sCHEMIN,
+                          \$sRACINE,\$sLNG,\$sVERSDEF);
+  
+         %smotsEtude=get_mots ("tomawac",$PROJECT,$sCHEMIN,$sVERSDEF,
+                               $sCAS,\$sDICO,\$sVERS);
+# marquer le changement de code
+         printf F "\@FDESC=(\@FDESC,\"NEWCODE;.;.;.;.;.\");\n"; 
+         $ier=desc_fichiers_acqui_resti (F, \%smotsEtude, \$i0fic, $sDICO, $sCAS);
+         if ($ier != 0)
+           {  ecrire("ERREUR : Probleme dans l'analyse des fichiers TOMAWAC",
+                     "ERROR : problem during TOMAWAC files analysis");
               exit 1;
            }
        }
@@ -1485,47 +1417,6 @@ if ($GENERIQUE eq "estel3d")
        }
   }
 
-
-#####################################################################
-#   / Gestion/Verification des protections sous WindowsNT /
-#####################################################################
-#PLG
-
-if($ENV{"OS"} eq "Windows_NT")
-  {
-# Lecture du  fichier sysprot.ini
-     my $sysprotIni=$systelIni;
-     $sysprotIni =~ s/systel\.ini/sysprot\.ini/;
-     if ( ! -e "$sysprotIni" )
-        {  print "ERROR : Licence configuration file '$sysprotIni' not found !\n";
-           exit;   }
-#Remplissage du Hash de definition des parametres de protection
-     %hprot=();
-     %hprot=fillHashFromBloc($sysprotIni,uc($GENERIQUE1),%hprot);
-     if ( defined $hprot{"H_ERROR"} )                        #Erreur : bloc pas trouvé
-            { print "ERROR : No licence information for $GENERIQUE1 :\n";
-              print "        $hprot{\"H_ERROR\"}\n";
-              exit; }
-     if ( scalar(keys %hprot) < 6 )                          #Erreur : pas 6 elements
-            { print "ERROR : Invalid licence parameters for $GENERIQUE1\n";
-              print "        (not enough parameters)\n";
-              exit; }
-#Verif de chaque parametre
-     if ( checkSetProt(\%hprot) != 1 )                       #Erreur de validite
-            { print "ERROR : $hprot{\"H_ERROR\"}\n";
-              exit; }
-  } #if WindowsNT
-
-if($ENV{"OS"} eq "Windows_NT")
-  {      #réinstancier les variable d'environnement de protection
-    printf F "\$ENV{\"STELP1\"}   = \"$ENV{\"STELP1\"}\";\n";
-    printf F "\$ENV{\"STELP2\"}   = \"$ENV{\"STELP2\"}\";\n";
-    printf F "\$ENV{\"STELP3\"}   = \"$ENV{\"STELP3\"}\";\n";
-         #transmettre les info UNCPATH
-    ecrire_variable_fichier (F,"UNCPATH");
-    ecrire_variable_fichier (F,"TM_UNCPATH");
-  }
-
 #--- DESCRIPTION DES LIBRAIRIES
 @vals = tm_casdico::recup_valeur_mot(\%motsEtude, "DESCRIPTION DES LIBRAIRIES"); 
 if (scalar(@vals) == 0)
@@ -1556,7 +1447,7 @@ ecrire_variable_fichier(F,"EXEDEFPARA", @vals[0]);
 #----------------------------------
 #------ ajout du fichier runcode.pl
 #----------------------------------
-$filename3=join "", $PROJECT,$ps,"bin",$ps,"runcode.pl";
+$filename3=join "", $PROJECT,$ps,"bin.bgq",$ps,"runcode.pl";
 open (F3, "<$filename3") or die "## Error : Open the $filename3 file is impossible\n";
 while($LIGNE = <F3>) 
   {                                             #Lecture et ajout des lignes du
@@ -1638,7 +1529,7 @@ printf F "    if ( \$pid ne \"\" ) \n";
 printf F "      { \$ret=`kill -9 \$pid`; \n";
 printf F "        print \"job  \$pid  killed\\n\"; \n";
 printf F "      } \n";
-# RBR 09-07/2004 Modif pour géstion UNIX et WIN
+# RBR 09-07/2004 Modif pour gÃÂ©stion UNIX et WIN
 #RBR printf F "  } \n";
 
 printf F "if ( chdir(\"$REP\") )\n";
@@ -1802,7 +1693,7 @@ if ($lancement eq "interactif" ) {
   if ( $Lret eq "False" ) {
     print "## Error : System command failed for $command :$?\n";
     $errorexe = "1";
-    ####exit 1;  
+    ####exit 1;    
   }
 #jaj
     ecrire("Execution terminee: $GENERIQUE.bat", 
@@ -1838,7 +1729,11 @@ if ( $errorexe eq "1" )
 
   if ( ($errcomplink ne "1") && ($errorexe ne "1") &&
        ($MODE ne "p") && ($DELWORKDIR ne "0") ) {
-    $command=join "","./", "delete_",$PARA,$WORKING,$fileToDelete;
+########moulinec
+    $command=join "", "delete_",$PARA,$WORKING,$fileToDelete;
+# Don't work on Windows. On linux, add a "." to your PATH
+####    $command=join "","./", "delete_",$PARA,$WORKING,$fileToDelete;
+########moulinec
     $Lret=CatchError($command,"","");
     if ( $Lret eq "False" ) {
       print "## Error : System command failed for $command :$?\n";

@@ -7,7 +7,7 @@
 #
 # Lanceur generique de niveau 2 des codes sur Systeme TELEMAC.
 #
-# Ce script est exploitÃÂ© par le lanceur de niveau 1 "runtel.pl"
+# Ce script est exploite par le lanceur de niveau 1 "runtel.pl"
 # pour construire le script de conduite d'une execution d'un code.
 #
 # AUTEUR : DeltaCAD - 1999
@@ -40,7 +40,7 @@
 #
 #          date    : 26/06/2000
 #          objet   : On utilise les chemins complets pour le fichier
-#                    de paramÃÂtres
+#                    de parametres
 #
 #          date    : 22/06/2000
 #          objet   : On renomme les anciens fichiers de resultats : *.old
@@ -53,10 +53,10 @@
 #          objet   : Remplacement de PVM par MPI
 #
 #          date    : Septembre 2001 - DeltaCAD
-#          objet   : AmÃÂ©lioration de la gestion des versions
+#          objet   : Amelioration de la gestion des versions
 #                    Localisation des modules fortran90 dans les branches des codes
 #
-#          date    : Mai 20018- Pascal Vezolle (IBM)
+#          date    : Mai 2008- Pascal Vezolle (IBM)
 #          object  : Modication des functions sub list_extens_file_names, restihpextens, acquihpextens
 #                    pour un grand nombre de processors (maximun: 99999)
 #
@@ -64,7 +64,7 @@
 #          object  : modifications for coupling with Delwaq in parallel mode.
 #
 #          date    : Avril 2010 - BAW Karlsruhe (jaj) et Sinetics (C. Denis)
-#          objet   : Prise en compte des sections de contrÃÂÃÂ´les en // (jaj)
+#          objet   : Prise en compte des sections de controles en // (jaj)
 #                  : Ajout des cibles pour Mumps (C. Denis)
 #
 #------------------------Systeme TELEMAC V5P2--------------------------
@@ -106,7 +106,7 @@ if ($NCSIZE < 1 && $CALCIUM ne "OUI" )
   $LIBPARALL  = "";
   $LIBMUMPS=$libmumpsseq;
   $LIB_SYS = "";
-  if($ENV{"OS"} eq "Windows_NT")  {$LIB_SYS = "advapi32.lib netapi32.lib";}
+# PLG INGEROP  if($ENV{"OS"} eq "Windows_NT")  {$LIB_SYS = "advapi32.lib netapi32.lib";}
   $LIB_CALCIUM = "";
   }
 else { #parallele
@@ -130,9 +130,10 @@ else { #parallele
   #Cas WindowsNT
   if($ENV{"OS"} eq "Windows_NT")     # Librairies pour WindowsNT
     {
-     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
-                " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
-                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
+     $LIB_SYS = " $LIB_SYS "
+#PLG INGEROP     $LIB_SYS = " $LIB_SYS wsock32.lib kernel32.lib libc.lib gdi32.lib winspool.lib".
+#PLG INGEROP                " comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib".
+#PLG INGEROP                " netapi32.lib uuid.lib oldnames.lib dfconsol.lib";
     }
 
 } #($NCSIZE < 2 && $CALCIUM ne "OUI" )
@@ -369,7 +370,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
 {#acquihpPARAL
  my $FIL1 = @_[0];      #nom utilisateur du fichier
  my $FIL2 = @_[1];      #nom (de base) du fichier pour le code apres acquisition
- my $modepar =@_[2];    #type d'acquisition parallÃÂ¨le : SCAL, SELAFIN ou PARAL
+ my $modepar =@_[2];    #type d'acquisition parallèle : SCAL, SELAFIN ou PARAL
  my $conlimFIC =@_[3];  #nom du fichier des CONDITIONS LIMITES (pour PARTEL)
  my $autopar =@_[4];    #mode parallelisme automatique ou non
  my $secFIC=@_[5];      #the sections input file workdir name #jaj
@@ -399,7 +400,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
 #
 #---- Les fichiers "SELAFIN" sont a decouper avec PARTEL en
 #      mode "autopar"
-#     Sinon, les utiliser comme prÃÂ©-dÃÂ©coupÃÂ©s avec les fonctions
+#     Sinon, les utiliser comme pré-découpés avec les fonctions
 #     "extens"
   if ( ($modepar =~ /SELAFIN/)  )
    {
@@ -449,7 +450,7 @@ sub acquihpPARAL    # (ficnam, ficnamcode, modepar, conlimFIC, autopar, secFIC, 
    {
       @lfic=list_extens_file_names($FIL1, $NCSIZE);
 #
-#------- En manuel, copier les fichiers qui doivent prÃÂ©-exister
+#------- En manuel, copier les fichiers qui doivent pré-exister
 #
    	  if ($autopar eq "0")    
    	    { foreach (@lfic)
@@ -614,6 +615,9 @@ sub erreurresti {
 sub restihp {
  $FIL1 = @_[0];
  $FIL2 = @_[1];
+# modif juillet 2007 RN : copie en cas de fichiers decoupes : 
+# reprendre le nom de base, restituer les fichiers avec les
+# extensions.
 #
 # Modif 18/01/00 : renommer les fichiers plutot que les copier
 #
@@ -621,6 +625,7 @@ sub restihp {
 #
 # Modif 22/06/00 A. Bas (Steria) : on renome l ancien fichier par nom.old
 #
+print "dans restihp";
 if (-e $FIL2 )
         {
         if (-e $FIL2.".old")
@@ -644,9 +649,9 @@ sub restihpmulti
  $DIR="$REP";
  opendir (HDIR,$DIR);
 
-# recherche des fichiers FORT.xx_* dans le repertoire tmp
+# 
 
- foreach (grep {/^$FIL1\_/i} readdir (HDIR))
+ foreach (grep {/$FIL1/} readdir (HDIR))
  {
    $NEW = $_;
    $NEW =~ s/$FIL1/$FIL2/;
@@ -662,7 +667,6 @@ sub restihpmulti
         rename ($NEW, $NEW.".old");
         }
     copy ("$DIR$ps"."$_", "$NEW") || erreurresti($_);
-
  }
 }
 
@@ -676,7 +680,7 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
  my $FIL1 = @_[0];      #nom (de base) du fichier pour le code apres acquisition
  my $FIL2 = @_[1];      #nom utilisateur du fichier
  my $ficGEOM = @_[2];   #nom du fichier GEOMETRIE du code
- my $modepar =@_[3];    #type de gestion parallÃÂ¨le : SCAL, SELAFIN ou PARAL
+ my $modepar =@_[3];    #type de gestion parallèle : SCAL, SELAFIN ou PARAL
  my $autopar =@_[4];    #mode parallelisme automatique ou non 
 
 #
@@ -684,7 +688,8 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
 #
   if  ($modepar =~ /SCAL/)
    {
-   	 restihp ( $FIL1, $FIL2);
+   	 # RN - more general : restihp ( $FIL1, $FIL2);
+   	 restihpmulti ( $FIL1, $FIL2);
    	 return;
    }
 #
@@ -914,7 +919,8 @@ sub restihpPARAL    # (ficnamcode, ficnam, ficGEOM, modepar, autopar)
   	  foreach (@lfic)
    	        {
                my $f2=$_; $f2=~s/$FIL1/$FIL2/;
-               restihp  ("$_",$f2);
+               # RN : restihp  ("$_",$f2);
+               restihpmulti  ("$_",$f2);
    	        }
    	  return;
     }
@@ -938,9 +944,11 @@ sub RunPartel       # (geo, cli, NCSIZE, sec, secname); #jaj added sec, secname)
   if (@_[4] eq "") {$ifsec=0;} else {$ifsec=1;}          #jaj
   print FPAR "@_[0]\n@_[1]\n@_[2]\n1\n$ifsec\n@_[3]\n";  #jaj
   close(FPAR) or die "File \'partel.par\' cannot be closed!";
- #Lancement PARTEL, append outputs
+# partel outputs redirected to a file
   $command=join "",$PathParall,"partel < partel.par >> partel.log";
-  $ret = system ("$command");
+# this line will redirect partel outputs to screen or listing instead of partel.log
+# $command=join "",$PathParall,"partel < partel.par ";
+  $ret = system ("srun -n 1 $command");
   return $ret;
 }#RunPartel (end)
 
@@ -958,7 +966,7 @@ sub RunGretel       # (geo, res, NCSIZE);
   close(FPAR) or die "File \'gretel.par\' cannot be closed!";
  #Lancement GRETEL, append outputs
   $command=join "",$PathParall,"gretel < gretel.par >> gretel.log";
-  $ret = system ("$command");
+  $ret = system ("srun -n 1 $command");
   return $ret;
 }#RunGretel (end)
 
@@ -976,7 +984,7 @@ sub RunGredelpts       # (geo, res, NCSIZE);
   close(FPAR) or die "File \'gredelpts.par\' cannot be closed!";
  #Lancement GREDELPTS, append outputs
   $command=join "",$PathParall,"gredelpts < gredelpts.par >> gredelpts.log";
-  $ret = system ("$command");
+  $ret = system ("srun -n 1 $command");
   return $ret;
 }#RunGredelpts (end)
 
@@ -994,7 +1002,7 @@ sub RunGredelseg       # (geo, res, NCSIZE);
   close(FPAR) or die "File \'gredelseg.par\' cannot be closed!";
  #Lancement GREDELSEG, append outputs
   $command=join "",$PathParall,"gredelseg < gredelseg.par >> gredelseg.log";
-  $ret = system ("$command");
+  $ret = system ("srun -n 1 $command");
   return $ret;
 }#RunGredelseg (end)
 
@@ -1012,7 +1020,7 @@ sub RunGredelmet       # (geo, res, NCSIZE);
   close(FPAR) or die "File \'gredelmet.par\' cannot be closed!";
  #Lancement GREDELMET, append outputs
   $command=join "",$PathParall,"gredelmet < gredelmet.par >> gredelmet.log";
-  $ret = system ("$command");
+  $ret = system ("srun -n 1 $command");
   return $ret;
 }#RunGredelmet (end)
 
@@ -1030,7 +1038,7 @@ sub RunGredelhyd       # (geo, res, NCSIZE);
   close(FPAR) or die "File \'gredelhyd.par\' cannot be closed!";
  #Lancement GREDELHYD, append outputs
   $command=join "",$PathParall,"gredelhyd < gredelhyd.par >> gredelhyd.log";
-  $ret = system ("$command");
+  $ret = system ("srun -n 1 $command");
   return $ret;
 }#RunGredelhyd (end)
 
@@ -1052,6 +1060,10 @@ if ($ret == 0)
   }
 open (F, "<$MPICONF") or die "## Error : Open the $MPICONF file is impossible\n";
 
+#--- Preparation fichier de run "mpirun.txt"
+
+open (F2, ">mpirun.txt") or die "## Error : Open the 'mpirun.txt' file is impossible\n";
+
 if($ENV{"OS"} eq "Windows_NT")                #MPICH.NT specific
   {
     my $s1="$REPLANCE";
@@ -1068,27 +1080,38 @@ if($ENV{"OS"} eq "Windows_NT")                #MPICH.NT specific
 my $ideb=0;
 while ($LIGNE=<F>)
 {
-    $FIRST_CAR = substr( $LIGNE, 0,1);
-    if ( $FIRST_CAR ne '#' )                    # sauter les commentaires
-    {
-	($LIGNE, $TMP)  = split(/\n/,$LIGNE);     # On enleve le NewLine a la fin
-	$LIGNE =~ s/ *$//;                        # On enleve les espaces terminaux
+  $FIRST_CAR = substr( $LIGNE, 0,1);
+  if ( $FIRST_CAR ne '#' )                    # sauter les commentaires
+   {
+    ($LIGNE, $TMP)  = split(/\n/,$LIGNE);     # On enleve le NewLine a la fin
+    $LIGNE =~ s/ *$//;                        # On enleve les espaces terminaux
 
 #----- Nombre de processeurs
 
-	if ($ideb == 0)
-	{ $MPI_NPROC=$LIGNE; $ideb++;}
+    if ($ideb == 0)
+      { $MPI_NPROC=$LIGNE; $ideb++;}
+    else
+#----- Traitement de l'info (Host, NbProc)   
+      {
+        my ($hostmpi, $nbprochost)=($LIGNE=~/^\s*(\S*)\s*(\S*)\s*$/);
+        if($ENV{"OS"} eq "Windows_NT")                
+                { print F2 "$hostmpi $nbprochost\n";} #MPICH.NT specific
+        else    { for ($k=0;$k<$nbprochost;$k++)
+                     { print F2 "$hostmpi\n";}       #MPICH.Unix
+                }
+      }
 #------ lignes suivantes
 
-    } # if '#'
+   } # if '#'
 } # while <F>
 
 close(F)  or die "## Error : Close the $MPICONF file is impossible\n";
-
+close(F2) or die "## Error : Close the 'mpirun.txt' file is impossible\n";
 
 #Conserver le fichier "mpirun.txt" qui a ete utilise
 #jaj
 #copy("mpirun.txt","..$ps" );
+copy("mpirun.txt","$REPLANCE$ps" );
 
 return 0;
 
@@ -1123,7 +1146,7 @@ chdir($Directory_tmp) or die "## Error : chdir \"$Directory_tmp\" impossible :$!
    @FicFortToCompile=();
    foreach $FORTFIC (@FORTRANS)
    {
-   ($FORTRAN,$FORAC)=split (/�/,$FORTFIC);
+   ($FORTRAN,$FORAC)=split (/;/,$FORTFIC);
     if ($FORTRAN ne "DEFAUT")
       { acquihp($FORTRAN, $FORAC);        #mot clef "FICHIER FORTRAN"
         ecrire_FicTitrVal("FICHIER FORTRAN","FORTRAN FILE", $FORTRAN);
@@ -1132,13 +1155,13 @@ chdir($Directory_tmp) or die "## Error : chdir \"$Directory_tmp\" impossible :$!
 #On ajoute les fichiers Fortran inclus (FORTINC)
       foreach $FORTFIC (@FORTINC)
       {
-      ($FORTR,$FORAC)=split (/�/,$FORTFIC);
+      ($FORTR,$FORAC)=split (/;/,$FORTFIC);
       acquihp($FORTR, $FORAC);        #mot clef "FICHIER FORTRAN"
       ecrire_FicTitrVal("FICHIER FORTRAN INCLU","FORTRAN INCLUDE FILE", $FORTR);
       }
    }#foreach FORTFIC
    $FORTRAN=@FORTRANS[0];                #pour le nom de l'exe local
-   ($FORTRAN,$TMP)=split (/�/,$FORTRAN); #sur la base du premier FORTRAN
+   ($FORTRAN,$TMP)=split (/;/,$FORTRAN); #sur la base du premier FORTRAN
 
 # now do all the compilation and link actions  
 
@@ -1175,7 +1198,7 @@ if ($FORTRAN ne "DEFAUT")                        # Executable par defaut ?
     my @lisf=@FORTRANS; push(@lisf,@FORTINC);
     foreach $FORTFIC (@lisf)
       {
-      ($FORTR,$FORAC)=split (/�/,$FORTFIC);
+      ($FORTR,$FORAC)=split (/;/,$FORTFIC);
        if (-e "$REPLANCE"."$ps$FORTR")
           {
            ($z,$z,$z,$z,$z,$z,$z,$z,$z,$m2time,$z,$z,$z) = 
@@ -1210,28 +1233,15 @@ if ($FORTRAN ne "DEFAUT")                        # Executable par defaut ?
   printf " $compile $INCDIR @FicFortToCompile \n";
   $TMP  = `$compile $INCDIR @FicFortToCompile`;
   
-#Traitement des erreurs de compilation
+# Traitement des erreurs de compilation
   $errcomp=0;
   @FicToLink=();
   foreach $f (@FicFortToCompile)
-    { 
-#####MOULINEC
-	printf "FORTRAN $f \n";
-	$fobj=$f;
-	$fobjtmp=$f;
-	$lastfobj=chop($fobjtmp);
-	printf "LLAST $lastfobj \n";
-	if ($lastfobj eq "f") {
-	    printf "FORTRAN FF $fobj $lastfobj \n";
-	    $fobj=~s/\.f/\.$objExt/g;
-	} elsif ( $lastfobj eq "0") {
-	    printf "FORTRAN 00 $fobj $lastfobj \n";
-	    $fobj=~s/\.f90/\.$objExt/g;
-	}
-	push (@FicToLink,$fobj);
-	printf " @FicToLink $fobj  \n";
-#####MOULINEC
-
+    { $fobj=$f;
+# Fortran files may be with .f90 or .f extension
+      $fobj=~s/\.f90/\.$objExt/g;
+      $fobj=~s/\.f/\.$objExt/g;
+      push (@FicToLink,$fobj);
       if (not(-e $fobj)) {$errcomp=1;}
     }
   if (($TMP=~/error|erreur/i) || ($errcomp!=0)) # tests erreurs
@@ -1263,10 +1273,12 @@ printf "\n";
 ecrire("*** EDITION DE LIENS ***", "*** LINKING ***");
 print "\n";
 
-if ($NCSIZE > 0 )   #cas parallÃÂ¨le : MPIlink
+if ($NCSIZE > 0 )   #cas parallèle : MPIlink
   {
     $dolink=$lkmpi;
     $dolink=~s/<EXE>/$EXEFILE/;
+#   version Uwe Merkel, ne marche pas sur LInux ????
+#   $dolink=~s/<EXE>/.\$EXEFILE/;
     $dolink=~s/<OBJS>/@FicToLink/;
     $dolink=~s/<LIBS>/$BIBLI/;
   }
@@ -1402,7 +1414,7 @@ print "\n";
 #sa7   acquihp($DICO, "FORT.2");
 #sa7 
 
-# les fichiers CONDITIONS LIMITES pour le parallÃÂ©lisme doivent ÃÂªtre "acqui" par
+# les fichiers CONDITIONS LIMITES pour le parallelisme doivent etre "acqui" par
 # avance pour pouvoir utiliser PARTEL
   if ( ( $NCSIZE > 1) && (scalar(@conlimDSC) >=1 )  )
     {
@@ -1441,7 +1453,7 @@ foreach (@FDESC)
 {
     ($varnam,$ficnamcod,$oblig,$fictyp,$ficmod,$modepar) = split (/;/,$_);
 
-#detecter le changement de code (couplage) et changer de fichier C.L.
+#detecter le changement de code (couplage) et changer de fichier C.L. et sections #jaj
     if ($varnam eq "NEWCODE") 
        {$iclCOD++; 
         $conlimF=@clF[$iclCOD]; 
@@ -1532,6 +1544,8 @@ if ($NCSIZE > 0 )
 {
   $cmd_runmpi=$runmpi;
   $cmd_runmpi=~s/<EXE>/$EXEFILE/;
+# version Uwe Merkel, ne marche pas sur Linux ???  
+# $cmd_runmpi=~s/<EXE>/.\$EXEFILE/;
   $cmd_runmpi=~s/<N>/$NCSIZE/;
   
   ecrire(" lancement MPI : $cmd_runmpi",
@@ -1592,13 +1606,20 @@ if($ENV{"OS"} eq "Windows_NT")
 else
 #Unix interactif ecran pour eviter la bufferisation
 {
-
+#########moulinec
+#######      $command=join "",$cmd_tim," $EXEFILE";               #mode Normal
       $command=join "",$cmd_tim," ./","$EXEFILE";               #mode Normal
-
+#########moulinec
       if ($DEBUG eq "debug")
-           { $command=join "",$rundebug," $EXEFILE";}      #mode Debug
-      if ( $MODE eq   "p"  )
-           { $command=join "",$runprofile," $EXEFILE";}    #mode Profile
+#########moulinec
+           { $command=join "",$rundebug," ./","$EXEFILE";}      #mode Debug
+####       { $command=join "",$rundebug," $EXEFILE";}      #mode Debug
+#########moulinec
+      if ( $MODE eq "p"  )
+#########moulinec
+           { $command=join "",$runprofile," ./","$EXEFILE";}    #mode Profile
+####       { $command=join "",$runprofile," $EXEFILE";}    #mode Profile
+#########moulinec
       if ($NCSIZE > 0 )
            { #jaj 
              #$Directory_tmp=join "", $REPLANCE,$ps,$REP;
@@ -1718,9 +1739,11 @@ foreach (@FDESC)
         { restihpPARAL  ( "$ficnamcod", $$varnam, $geomF, $modepar, $AUTOPAR); }
       else
         {
-          if ($modepar =~ /MULTI/)
-                { restihpmulti  ( "$ficnamcod", "$$varnam");}
-          else  { restihp       ( "$ficnamcod", "$$varnam");}
+	# RN : always use multi ...
+#          if ($modepar =~ /MULTI/)
+#                { restihpmulti  ( "$ficnamcod", "$$varnam");}
+#          else  { restihp       ( "$ficnamcod", "$$varnam");}
+             restihpmulti  ( "$ficnamcod", "$$varnam");
         }
     }
     $i++;
