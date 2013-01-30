@@ -2,6 +2,7 @@
 import sys, os, shutil
 import subprocess
 from time import strftime
+from optparse import OptionParser
 # ------------------------------------------------------------#
 # Objectif : lanceur TELEMAC sur cluster
 #
@@ -10,16 +11,9 @@ from time import strftime
 # Global variable and default values of input parameters
 # ------------------------------------------------------------#
 # Debug
-ok_submit = True
-verbose    = False
 filename   = 'run.slurm'
-jobname    = ''
-ncsize     = ''
 code       = ''
-queue      = ''
-walltime   = '168:00:00'
-option     = ''
-sourcefile = ''
+case       = ''
 #
 # ------------------------------------------------------------#
 #
@@ -64,9 +58,9 @@ errorbgp = ['WARN','ERROR','killed by']
 #
 # Create 'run.slurm' : file containing instruction for Slurm
 # ------------------------------------------------------------#
-def create_run_slurm():
+def create_run_slurm(options):
 
-    if verbose:
+    if options.verbose:
         print bcolors.OKGREEN + "function    : create_run_slurm" + bcolors.ENDC
         
     loadfile = \
@@ -94,10 +88,10 @@ rm -f mpitasks mpitasks.conf mpid.conf
     run_file = open(filename, mode='w')
 
     srcfile = ''
-    if sourcefile <> '':
-        srcfile = 'source %s'%sourcefile
+    if options.sourcefile <> '':
+        srcfile = 'source %s'%options.sourcefile
         
-    run_file.write(loadfile %{'jobname':jobname,'ncsize':ncsize,'queue':queue,'walltime':walltime,'code':code,'option':option,'case':case,'srcfile':srcfile,'time':strftime("%Y-%m-%d_%H:%M:%S")})
+    run_file.write(loadfile %{'jobname':options.jobname,'ncsize':options.ncsize,'queue':options.queue,'walltime':options.walltime,'code':code,'option':options.option,'case':case,'srcfile':srcfile,'time':strftime("%Y-%m-%d_%H:%M:%S")})
     run_file.close()
     os.system('chmod 744 %s'%filename)
     
@@ -106,8 +100,8 @@ rm -f mpitasks mpitasks.conf mpid.conf
 #
 # Soumission du 'file'
 # ------------------------------------------------------------#
-def submit(cmd):
-    if verbose:
+def submit(cmd,options):
+    if options.verbose:
         print bcolors.OKGREEN + "function    : submit" + bcolors.ENDC
         #    os.system('llsubmit %s' %file)
     try:
@@ -131,44 +125,63 @@ __date__ ="$01-Jan-2011 00:00:00$"
 
 if __name__ == "__main__":
     
-    if '-verbose' in sys.argv:
-        # if then, print everything it could...
-        verbose = True
-        sys.argv.remove('-verbose')
-    elif '-s' in sys.argv:
-        # if then, cree run.slurm mais ne soumet pas le job
-        ok_submit = False
-        sys.argv.remove('-s')
-    elif '-help' in sys.argv or '-h' in sys.argv:
-        # if then, printout the help page
-        print bcolors.OKGREEN + "usage : ./script.py [-h|prefix|source...]" + bcolors.ENDC
-        print bcolors.OKGREEN + "  -h       : print this page" + bcolors.ENDC
-        print bcolors.OKGREEN + "  -verbose : un peu plus causant" + bcolors.ENDC
-        print bcolors.OKGREEN + "  -s : cree run.slurm mais ne soumet pas le job" + bcolors.ENDC
-        print bcolors.OKGREEN + "RunScript_queue JOB 8 telemac3s cas.txt queuelist [walltime] [sourcefile] [option]" + bcolors.ENDC
-        print bcolors.OKGREEN + "RunScript_queue JOB 8 telemac3s cas.txt queuelist 01:00:00 $SOURCEFILE -t" + bcolors.ENDC
-        print '';
-        sys.exit(1)
+   parser = OptionParser("usage: %prog code cas.txt [options] \nuse -h for more help.")
+   parser.add_option("-j", "--jobname",
+                      type="string",
+                      dest="jobname",
+                      default='job_unamed',
+                      help="specify a jobname for HPC queue tracking" )
+   parser.add_option("-n", "--ncsize",
+                      type="string",
+                      dest="ncsize",
+                      default=1,
+                      help="the number of processors forced in parallel mode" )
+   parser.add_option("-q", "--queue",
+                      type="string",
+                      dest="queue",
+                      default='compute',
+                      help="specify queue used, default is queue compute" )
+   parser.add_option("-w", "--walltime",
+                      type="string",
+                      dest="walltime",
+                      default='01:00:00',
+                      help="specify the wall time for the job, default is an hour" )
+   parser.add_option("--source-file",
+                      type="string",
+                      dest="sourcefile",
+                      default='',
+                      help="specify a file to be sourced before the run of the job" )
+   parser.add_option("--options",
+                      type="string",
+                      dest="option",
+                      default='',
+                      help="Options to be added to the telemac run (-t, -s,...)"  )
+   parser.add_option("-s", "--slurm-only",
+                      action="store_false",
+                      dest="ok_submit",
+                      default=True,
+                      help="Only generate the slurm batch does not launch it, default is no" )
+   parser.add_option("-v", "--verbose",
+                      action="store_true",
+                      dest="verbose",
+                      default=False,
+                      help="Only generate the slurm batch does not launch it, default is no" )
+   options, args = parser.parse_args()
+   if (len(args) < 2):
+      print '\nThe name of the module to run and one CAS file at least are required\n'
+      parser.print_help()
+      sys.exit(1)
 
-    # Parse arguments...
-    jobname = sys.argv[1]
-    ncsize = sys.argv[2]
-    code = sys.argv[3]
-    case = sys.argv[4]
-    queue = sys.argv[5]
-    if len(sys.argv) > 6:
-        walltime = sys.argv[6]
-    if len(sys.argv) > 7:
-        sourcefile = sys.argv[7]
-    if len(sys.argv) > 8:
-        option = sys.argv[8]
+   # Parse arguments...
+   code = args[0]
+   case = args[1]
    
-    create_run_slurm()
-    if ok_submit:
-        submit('sbatch %s'%filename)
-        # -----------------------------------------# -----------------------------------------#
-        # Lancement du calcul
-        # -----------------------------------------# -----------------------------------------#
-        print bcolors.HEADER + "------------      Calcul sur BlueGeneQ a ete lance  ----------" + bcolors.ENDC
-    else:
-        print bcolors.HEADER + "------------     Fichier de lancement run.slurm ok  ----------" + bcolors.ENDC
+   create_run_slurm(options)
+   if options.ok_submit:
+       submit('sbatch %s'%options.filename,options)
+       # -----------------------------------------# -----------------------------------------#
+       # Lancement du calcul
+       # -----------------------------------------# -----------------------------------------#
+       print bcolors.HEADER + "------------      Calcul sur BlueGeneQ a ete lance  ----------" + bcolors.ENDC
+   else:
+       print bcolors.HEADER + "------------     Fichier de lancement run.slurm ok  ----------" + bcolors.ENDC
