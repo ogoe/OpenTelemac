@@ -1,0 +1,174 @@
+#!/usr/bin/env python
+import sys, os, shutil
+import subprocess
+from time import strftime
+# ------------------------------------------------------------#
+# Objectif : lanceur TELEMAC sur cluster
+#
+# ------------------------------------------------------------#
+#
+# Global variable and default values of input parameters
+# ------------------------------------------------------------#
+# Debug
+ok_submit = True
+verbose    = False
+filename   = 'run.slurm'
+jobname    = ''
+ncsize     = ''
+code       = ''
+queue      = ''
+walltime   = '168:00:00'
+option     = ''
+sourcefile = ''
+#
+# ------------------------------------------------------------#
+#
+# Print with color in Xterm
+# ------------------------------------------------------------#
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
+    def disable(self):
+        self.HEADER = ''
+        self.OKBLUE = ''
+        self.OKGREEN = ''
+        self.WARNING = ''
+        self.FAIL = ''
+        self.ENDC = ''
+# ------------------------------------------------------------#        
+# Error raised by LoadLeveler
+# ------------------------------------------------------------#
+errorbgp = ['WARN','ERROR','killed by']
+# ------------------------------------------------------------#
+#
+
+##def submit():
+##    if verbose:
+##        print bcolors.OKBLUE + "OS:%s ; Platform:%s"%(self.name,self.arch) + bcolors.ENDC
+        
+##    for item in self.hosttype:
+##        print bcolors.OKBLUE + "hosttype : %s"%item + bcolors.ENDC
+        
+##    if verbose:
+##        print bcolors.OKGREEN + "function    : launch_phe" + bcolors.ENDC
+##        os.system('%s %s' %(code,cas))
+        
+##    return
+
+# ------------------------------------------------------------#
+#
+# Create 'run.slurm' : file containing instruction for Slurm
+# ------------------------------------------------------------#
+def create_run_slurm():
+
+    if verbose:
+        print bcolors.OKGREEN + "function    : create_run_slurm" + bcolors.ENDC
+        
+    loadfile = \
+"""#!/bin/bash
+#SBATCH --job-name=%(jobname)s
+#SBATCH --output=%(jobname)s.%(time)s.out
+#SBATCH --error=%(jobname)s.%(time)s.err
+#SBATCH --time=%(walltime)s
+#SBATCH --ntasks=%(ncsize)s
+#SBATCH --partition=%(queue)s
+##SBATCH --exclude=cn[0000-0000,0000]
+##SBATCH --exclusive
+srun hostname | sort > mpid.conf
+for line in $(echo | cat mpid.conf)
+do
+  echo -e "$line 1"
+done > mpitasks.conf
+echo %(ncsize)s > mpitasks | cat mpitasks mpitasks.conf > mpi_telemac.conf
+#
+rm -f mpitasks mpitasks.conf mpid.conf
+%(srcfile)s
+%(code)s %(option)s %(case)s
+"""
+    
+    run_file = open(filename, mode='w')
+
+    srcfile = ''
+    if sourcefile <> '':
+        srcfile = 'source %s'%sourcefile
+        
+    run_file.write(loadfile %{'jobname':jobname,'ncsize':ncsize,'queue':queue,'walltime':walltime,'code':code,'option':option,'case':case,'srcfile':srcfile,'time':strftime("%Y-%m-%d_%H:%M:%S")})
+    run_file.close()
+    os.system('chmod 744 %s'%filename)
+    
+    return
+# ------------------------------------------------------------#
+#
+# Soumission du 'file'
+# ------------------------------------------------------------#
+def submit(cmd):
+    if verbose:
+        print bcolors.OKGREEN + "function    : submit" + bcolors.ENDC
+        #    os.system('llsubmit %s' %file)
+    try:
+        print bcolors.HEADER + "Soumission de la commande : %s..."%(cmd) + bcolors.ENDC
+        returnsubmit = subprocess.call(cmd,shell=True)
+        if returnsubmit:
+            print bcolors.FAIL + "Cmd %s failure with return code:%s" %(cmd,returnsubmit) + bcolors.ENDC
+            sys.exit(1)
+    except OSError, message:
+        print bcolors.FAIL + "Execution failed!\n %s" %message + bcolors.ENDC
+        sys.exit(1)
+    return
+
+# ------------------------------------------------------------#
+#
+# Fonction : MAIN
+# read variables from command line, one by one:
+# ------------------------------------------------------------#
+__author__="Fabien Decung"
+__date__ ="$01-Jan-2011 00:00:00$"
+
+if __name__ == "__main__":
+    
+    if '-verbose' in sys.argv:
+        # if then, print everything it could...
+        verbose = True
+        sys.argv.remove('-verbose')
+    elif '-s' in sys.argv:
+        # if then, cree run.slurm mais ne soumet pas le job
+        ok_submit = False
+        sys.argv.remove('-s')
+    elif '-help' in sys.argv or '-h' in sys.argv:
+        # if then, printout the help page
+        print bcolors.OKGREEN + "usage : ./script.py [-h|prefix|source...]" + bcolors.ENDC
+        print bcolors.OKGREEN + "  -h       : print this page" + bcolors.ENDC
+        print bcolors.OKGREEN + "  -verbose : un peu plus causant" + bcolors.ENDC
+        print bcolors.OKGREEN + "  -s : cree run.slurm mais ne soumet pas le job" + bcolors.ENDC
+        print bcolors.OKGREEN + "RunScript_queue JOB 8 telemac3s cas.txt queuelist [walltime] [sourcefile] [option]" + bcolors.ENDC
+        print bcolors.OKGREEN + "RunScript_queue JOB 8 telemac3s cas.txt queuelist 01:00:00 $SOURCEFILE -t" + bcolors.ENDC
+        print '';
+        sys.exit(1)
+
+    # Parse arguments...
+    jobname = sys.argv[1]
+    ncsize = sys.argv[2]
+    code = sys.argv[3]
+    case = sys.argv[4]
+    queue = sys.argv[5]
+    if len(sys.argv) > 6:
+        walltime = sys.argv[6]
+    if len(sys.argv) > 7:
+        sourcefile = sys.argv[7]
+    if len(sys.argv) > 8:
+        option = sys.argv[8]
+   
+    create_run_slurm()
+    if ok_submit:
+        submit('sbatch %s'%filename)
+        # -----------------------------------------# -----------------------------------------#
+        # Lancement du calcul
+        # -----------------------------------------# -----------------------------------------#
+        print bcolors.HEADER + "------------      Calcul sur BlueGeneQ a ete lance  ----------" + bcolors.ENDC
+    else:
+        print bcolors.HEADER + "------------     Fichier de lancement run.slurm ok  ----------" + bcolors.ENDC
