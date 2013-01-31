@@ -259,7 +259,8 @@
 !                                          QMOUT2, QNLIN2, QNLIN3
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,MESH
+      USE INTERFACE_TOMAWAC, EX_SEMIMP => SEMIMP
 !
       IMPLICIT NONE
 !
@@ -334,14 +335,15 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR , MF1  , MF2   , MFMAX , IDT
-      DOUBLE PRECISION AUX1  , AUX2 , AUX3  , AUX4  , COEF   
-      DOUBLE PRECISION FM1   , FM2  , TDEB  , TFIN  , VITVEN
-      DOUBLE PRECISION VITMIN, HM0  , HM0MAX, DTN   , SUME , AUXI
-      DOUBLE PRECISION USMIN
+      INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR,MF1,MF2,MFMAX,IDT,NV
+      DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,COEF   
+      DOUBLE PRECISION FM1,FM2,TDEB,TFIN,VITVEN
+      DOUBLE PRECISION VITMIN,HM0,HM0MAX,DTN,SUME,AUXI,USMIN
       CHARACTER(LEN=7) CHDON
 !                              MDIA, HERE HARDCODED    
       DOUBLE PRECISION  XCCMDI(4)
+!
+      LOGICAL TROUVE(3)
 !
 !-----------------------------------------------------------------------
 !
@@ -411,7 +413,7 @@
 !       1. ASSIGNS THE START AND END DATES OF TIME STEP
 !       ===============================================
 !
-        TDEB=TPROP-DBLE(NSITS-ISITS+1)*DTSI
+        TDEB=TPROP-(NSITS-ISITS+1)*DTSI
         TFIN=TDEB+DTSI
 !
 !
@@ -425,11 +427,24 @@
 !
           CHDON='VENT   '
           IF(NOMVEB(1:1).NE.' '.OR.NOMVEF(1:1).NE.' ') THEN
-            IF(NOMVEF(1:1).NE.' ') NVENT=NVEF
-            IF(NOMVEB(1:1).NE.' ') NVENT=NVEB
-            CALL NOUDON(VENTX,VENTY,X,Y,NPOIN2,NVENT,BINVEN,NBOR,
-     &                  NPTFR,TFIN,DDC,TV1,TV2,U1,V1,U2,V2,INDIC,
-     &                  CHDON,2)
+            IF(NOMVEF(1:1).NE.' ') THEN
+              NVENT=NVEF
+            ELSE
+              NVENT=NVEB
+            ENDIF
+!           CALL NOUDON(VENTX,VENTY,X,Y,NPOIN2,NVENT,BINVEN,NBOR,
+!    &                  NPTFR,TFIN,DDC,TV1,TV2,U1,V1,U2,V2,INDIC,
+!    &                  CHDON,2)
+            CALL NOUDON(VENTX,'VENT X          M/S             ',
+     &                        'WIND ALONG X    M/S             ',2,    
+     &                  VENTY,'VENT Y          M/S             ',
+     &                        'WIND ALONG Y    M/S             ',2, 
+     &                  VENTY,'????????????????????????????????',
+     &                        '????????????????????????????????',0, 
+     &                  MESH%X%R,MESH%Y%R,NPOIN2,
+     &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2, 
+     &                  U1,U2,V1,V2,V1,V2,INDIC,
+     &                  'WIND   ',NV,TEXVEB,TROUVE)
           ELSE
             CALL ANAVEN(VENTX,VENTY,X,Y,NPOIN2,TFIN,DDC,VX_CTE,VY_CTE)
           ENDIF
