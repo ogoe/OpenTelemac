@@ -49,7 +49,22 @@
  
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml 
---> 
- 
+   <plot2d xref="Mesh" size="[10;8]" > 
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[10;8]" > 
+      <layer vars="bottom:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="FreeSurface_tf" size="[10;8]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="VelocityV_tf" size="[10;8]" > 
+      <layer vars="velocity V:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="FreeSurface_tf_pos" size="[10;8]" > 
+      <layer vars="free surface:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="VelocityV_tf_pos" size="[10;8]" > 
+      <layer vars="velocity V:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>    
 </validation> 

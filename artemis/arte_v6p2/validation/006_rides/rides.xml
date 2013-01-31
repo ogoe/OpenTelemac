@@ -34,10 +34,10 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!--   <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
-      <layer vars="wave height:line" extract="[5;1][35;1]" target="1:ARTRES" time="[0]" /> 
+   <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
+      <layer vars="wave height:line" extract="[15;1][20;1]" target="1:ARTRES" time="[0]" /> 
    </plot1d>
-    -->  
+
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
    <plot2d xref="Mesh" size="[12;4]" > 

@@ -34,8 +34,9 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot1d xref="BottomProfile" type="v-section" config="oneofall" time="[-1]" size="[12;5]" > 
+      <layer vars="bottom:line" extract="[15;0][15;6]" target="1:T2DRES" /> 
+   </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
@@ -45,13 +46,15 @@
    <plot2d xref="Velocity" size="[20;7]" > 
       <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
    </plot2d>
-   <plot2d xref="Velocity ROI t1" roi="[11;3][17;6]" size="[20;7]" > 
+   <plot2d xref="VelocityROItf" roi="[11;3][17;6]" size="[20;7]" > 
       <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
-      <layer vars="velocity:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[10;5]" /> 
+<!--      <layer vars="velocity:angle" target="1:T2DRES" config="oneofall" time="[-1]" extract="[10;5]" />
+-->
    </plot2d>
-   <plot2d xref="Velocity ROI t0" roi="[11;3][17;6]" size="[20;7]" > 
+   <plot2d xref="VelocityROIt0" roi="[11;3][17;6]" size="[20;7]" > 
       <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[0]" /> 
-      <layer vars="velocity:angle" target="1:T2DRES" config="oneofall" time="[0]" extract="[10;5]" /> 
+<!--      <layer vars="velocity:angle" target="1:T2DRES" config="oneofall" time="[0]" extract="[10;5]" />
+  --> 
    </plot2d>   
 
 </validation>

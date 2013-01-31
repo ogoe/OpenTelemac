@@ -39,7 +39,17 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[7;7]" > 
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[7;7]" > 
+      <layer vars="bottom:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Water depth" size="[7;7]" > 
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="Velocity" size="[7;7]" > 
+      <layer vars="velocity:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>  
 
 </validation>

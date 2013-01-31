@@ -31,5 +31,19 @@
    />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
- 
+   
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+  -->
+    <plot2d xref="Mesh" size="[8;8]" > 
+      <layer vars="bottom:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="FreeSurfacet0" size="[8;8]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[0]" /> 
+   </plot2d>
+   <plot2d xref="FreeSurfacet3" size="[8;8]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[3]" /> 
+   </plot2d>
+   <plot2d xref="FreeSurfacetf" size="[8;8]" > 
+      <layer vars="free surface:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
 </validation>

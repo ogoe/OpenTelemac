@@ -113,31 +113,31 @@ C
                                                                     
 C PAROIS SOLIDES
       IF(JB.GE.242.AND.JB.LE.268)THEN
-	 LIHBOR%I(I)=KLOG
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=0.D0
-	 ALFAP%R(I)=0.D0
+         LIHBOR%I(I)=KLOG
+         RP%R(I)=1.D0
+         TETAP%R(I)=0.D0
+         ALFAP%R(I)=0.D0
       ENDIF 
       IF(JB.GE.294.AND.JB.LE.320)THEN
-	 LIHBOR%I(I)=KLOG
-	 RP%R(I)=1.D0
-	 TETAP%R(I)=0.D0
-	 ALFAP%R(I)=0.D0
+         LIHBOR%I(I)=KLOG
+         RP%R(I)=1.D0
+         TETAP%R(I)=0.D0
+         ALFAP%R(I)=0.D0
       ENDIF 
 C
 C PAROIS LIQUIDES -FRONTIERE LIBRE
 C
       IF(JB.GE.1.AND.JB.LE.241)THEN
-	 LIHBOR%I(I)=KSORT
+         LIHBOR%I(I)=KSORT
       ENDIF 
 C
 C PAROIS LIQUIDES - FRONTIERE ONDE INCIDENTE
 C
       IF(JB.GE.269.AND.JB.LE.293)THEN
-	 LIHBOR%I(I)=KINC
-	 HB%R(I)=1.D0
+         LIHBOR%I(I)=KINC
+         HB%R(I)=1.D0
          TETAB%R(I)=0.
-	 ALFAP%R(I)=0.D0
+         ALFAP%R(I)=0.D0
       ENDIF 
       ENDDO
 C
@@ -209,7 +209,7 @@ C
 C
       ENDIF
 C
-			 
+
 
 C-----------------------------------------------------------------------
 C
@@ -305,8 +305,8 @@ C
 !            CHANGES THE ORIGIN
 !
       DO I=1,NPOIN
-	 X(I)=X(I)*274.87D0/300.D0
-	 Y(I)=Y(I)*274.87D0/300.D0	
+         X(I)=X(I)*274.87D0/300.D0
+         Y(I)=Y(I)*274.87D0/300.D0
       ENDDO
 !
 !-----------------------------------------------------------------------

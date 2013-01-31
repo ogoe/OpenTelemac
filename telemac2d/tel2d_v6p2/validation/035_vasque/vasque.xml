@@ -34,12 +34,35 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot1d xref="FreeSurface_Y5" type="v-section" size="[12;5]" config="together">
+      <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[0]"/> 
+	  <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[1]"/> 
+	  <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[2]"/> 
+	  <layer vars="surface libre:line" extract="[0;5][46;5]" target="1:T2DRES" time="[-1]"/> 
+   </plot1d>
+   <plot1d xref="WaterDepth_Y5" type="v-section" size="[12;5]" config="together">
+      <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[0]"/> 
+	  <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[1]"/> 
+	  <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[2]"/> 
+	  <layer vars="hauteur d'eau:line" extract="[0;5][46;5]" target="1:T2DRES" time="[-1]"/> 
+   </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
-
+   <plot2d xref="Mesh" size="[10;5]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="Bathy" size="[10;5]" > 
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d>   
+   <plot2d xref="FreeSurface_t1" size="[10;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
+   </plot2d>
+   <plot2d xref="FreeSurface_t2" size="[10;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[2]" /> 
+   </plot2d>  
+   <plot2d xref="FreeSurface_t3" size="[10;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[3]" /> 
+   </plot2d>
+   
 </validation>

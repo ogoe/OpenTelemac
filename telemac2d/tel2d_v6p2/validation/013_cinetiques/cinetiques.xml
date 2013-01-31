@@ -34,12 +34,20 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot1d xref="FreeSurface1d" type="v-section" config="together" size="[12;5]" >
+      <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[0]"/>   
+      <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[10]"/> 
+	  <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[20]"/> 
+	  <layer vars="hauteur d'eau:line" extract="[2;10][18;10]" target="1:T2DRES" time="[30]"/> 
+   </plot1d> 
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[7;7]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+    <plot2d xref="FreeSurface" size="[7;7]" > 
+      <layer vars="hauteur d'eau:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
 
 </validation>

@@ -34,12 +34,32 @@
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot1d xref="VolumeTotal" type="history" time="[0;-1]" size="[12;5]" > 
+      <layer vars="voltotal" target="1:sortie" config="together" /> 
+   </plot1d> 
+   <plot1d xref="VolumesFluxes" type="history" time="[0;-1]" size="[12;5]" > 
+      <layer vars="volfluxes" target="1:sortie" config="together" /> 
+   </plot1d> 
+   <plot1d xref="VolumeError" type="history" time="[0;-1]" size="[12;5]" > 
+      <layer vars="volerror" target="1:sortie" config="together" /> 
+   </plot1d> 
+   <plot1d xref="FreeSurfaceTimeSeries" type="history" config="together" time="[0;-1]" size="[12;5]" > 
+      <layer vars="surface libre:line" extract="[10;1][0;1]" target="1:T2DRES" /> 
+   </plot1d> 
+   <plot1d xref="Profiles" type="v-section" config="together" time="[-1]" size="[12;5]" > 
+      <layer vars="surface libre:line;fond:line" extract="[0;1][21;1]" target="1:T2DRES" /> 
+   </plot1d> 
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[20;5]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[20;5]" > 
+      <layer vars="fond:mesh" target="1:T2DRES" config="oneofall" /> 
+   </plot2d> 
+    <plot2d xref="FreeSurface" size="[20;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
 
 </validation>

@@ -43,10 +43,6 @@
    <plot2d xref="Mesh" size="[12;4]" > 
       <layer vars="bottom:mesh" target="1:ARTGEO" config="oneofall" /> 
    </plot2d>
-<!--   <plot2d xref="Bathy" size="[12;4]" > 
-      <layer vars="bottom:map" target="1:ARTRES" config="oneofall" /> 
-   </plot2d>
-   -->
    <plot2d xref="Wave height" size="[12;4]" > 
       <layer vars="wave height:map" target="1:ARTRES" config="oneofall" /> 
    </plot2d> 

@@ -39,7 +39,20 @@
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[10;5]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[10;5]" > 
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="FreeSurface_t1" size="[10;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
+   </plot2d>
+   <plot2d xref="FreeSurface_tf" size="[10;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="Turb_Visco_tf" size="[10;5]" > 
+      <layer vars="viscosite turb:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
 
 </validation>

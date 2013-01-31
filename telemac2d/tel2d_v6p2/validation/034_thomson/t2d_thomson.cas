@@ -1,6 +1,6 @@
 /
 DEBUGGER : 0
-PARALLEL PROCESSORS             = 8
+/PARALLEL PROCESSORS             = 8
 /
 /-------------------------------------------------------------------/
 /   TELEMAC-2D       VALIDATION TEST CASE NUMBER                    /

@@ -7,7 +7,7 @@
    /!\ This section is being ignored at the moment -->
    <meta xref="default">
       <look format="png" colourbar="jet.xml" />
-      <data title="siphon" author="telemac2d" contact="www.opentelemac.org" />
+      <data title="thomson" author="telemac2d" contact="www.opentelemac.org" />
    </meta>
    <meta xref="vect">
       <look colour="jet.xml" />
@@ -22,24 +22,42 @@
    <action xref="1"
        do="translate;compile;run;cas;princi"
        code="telemac2d" target="t2d_thomson.cas"
-       title="siphon scalar mode"
-   />
+       title="thomson scalar mode"
+   /> 
    <action xref="2"
        do="translate;compile;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_thomson.cas"
-       title="siphon parallel mode"
-   />   
+       title="thomson parallel mode" 
+   />
+   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot1d xref="WaterDepth_Y10" type="v-section" size="[12;5]" config="together">
+      <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[0]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[2]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[4]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[6]"/> 
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[8]"/>
+	  <layer vars="water depth:line" extract="[0;10][20;10]" target="1:T2DRES" time="[-1]"/>
+   </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
-<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
--->
+   <plot2d xref="Mesh" size="[10;10]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="WaterDepth_t0" size="[10;10]" > 
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[0]" /> 
+   </plot2d>
+   <plot2d xref="WaterDepth_t5" size="[10;10]" > 
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[5]" /> 
+   </plot2d>
+   <plot2d xref="WaterDepth_tf" size="[10;10]" > 
+      <layer vars="water depth:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
 
+  
 </validation>
