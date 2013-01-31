@@ -74,7 +74,7 @@
 !
       INTEGER LT
       INTEGER NVHMA, NVCOU
-      DOUBLE PRECISION AT, TC1, TC2 , TV1, TV2, TM1 , TM2
+      DOUBLE PRECISION AT,TC1,TC2,TV1,TV2,TM1,TM2
       INTEGER, INTENT(IN)        :: PART
       TYPE(BIEF_OBJ), INTENT(IN) :: U_TEL,V_TEL,H_TEL
 !
@@ -98,11 +98,11 @@
         ELSE
           UL=WAC_FILES(WACCOF)%LU
         ENDIF
-        CALL NOUDON(SUC%R,'VITESSE U       M/S             ',
+        CALL NOUDON(SUC%R,NAMEU,
      &                    'VELOCITY U      M/S             ',2,    
-     &              SVC%R,'VITESSE V       M/S             ',
+     &              SVC%R,NAMEV,
      &                    'VELOCITY V      M/S             ',2, 
-     &              SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &              SDEPTH%R,NAMEH,
      &                       'WATER DEPTH     M               ',1,
      &              MESH%X%R,MESH%Y%R,NPOIN2,
      &              UL,BINCOU,NBOR,NPTFR,AT,DDC,TC1,TC2, 
@@ -138,11 +138,11 @@
           UL=WAC_FILES(WACMAF)%LU
         ENDIF
 !
-        CALL NOUDON(SUC%R,'VITESSE U       M/S             ',
+        CALL NOUDON(SUC%R,NAMEU,
      &                    'VELOCITY U      M/S             ',0,    
-     &              SVC%R,'VITESSE V       M/S             ',
+     &              SVC%R,NAMEV,
      &                    'VELOCITY V      M/S             ',0, 
-     &              SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &              SDEPTH%R,NAMEH,
      &                       'WATER DEPTH     M               ',2,
      &              MESH%X%R,MESH%Y%R,NPOIN2,
      &              UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2, 
@@ -219,4 +219,3 @@
 !
       RETURN
       END
-

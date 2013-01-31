@@ -243,11 +243,11 @@
               IF(LNG.EQ.1) THEN
                 WRITE(LU,*) 'VARIABLE ',J,' LUE (',
      &                      TRIM(NAMEFR(J)(1:16)),' OU ',
-     &                      TRIM(NAMEGB(J)(1:16))
+     &                      TRIM(NAMEGB(J)(1:16)),')'
               ELSEIF(LNG.EQ.2) THEN
                 WRITE(LU,*) 'VARIABLE ',J,' READ (',
      &                      TRIM(NAMEFR(J)(1:16)),' OR ',
-     &                      TRIM(NAMEGB(J)(1:16))
+     &                      TRIM(NAMEGB(J)(1:16)),')'
               ENDIF
             ENDIF
           ENDDO

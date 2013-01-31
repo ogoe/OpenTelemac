@@ -122,11 +122,11 @@
 !
 !         READS IN THE CURRENTS FROM BINARY FILE, AND POSSIBLY THE DEPTH
 !
-          CALL LECDOI(SUC%R,'VITESSE U       M/S             ',
+          CALL LECDOI(SUC%R,NAMEU,
      &                      'VELOCITY U      M/S             ',2,    
-     &                SVC%R,'VITESSE V       M/S             ',
+     &                SVC%R,NAMEV,
      &                      'VELOCITY V      M/S             ',2, 
-     &                SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &                SDEPTH%R,NAMEH,
      &                         'WATER DEPTH     M               ',1, 
      &                MESH%X%R,MESH%Y%R,
      &                NPOIN2,WAC_FILES(WACCOB)%LU,BINCOU,NBOR,NPTFR,
@@ -171,11 +171,11 @@
             IF(LNG.EQ.1) WRITE(LU,*) 'READING DEPTH IN FILE MAB'
             UL=WAC_FILES(WACMAB)%LU
           ENDIF
-          CALL LECDOI(SUC%R,'VITESSE U       M/S             ',
+          CALL LECDOI(SUC%R,NAMEU,
      &                      'VELOCITY U      M/S             ',0,    
-     &                SVC%R,'VITESSE V       M/S             ',
+     &                SVC%R,NAMEV,
      &                      'VELOCITY V      M/S             ',0, 
-     &                SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &                SDEPTH%R,NAMEH,
      &                         'WATER DEPTH     M               ',2, 
      &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINMAR,NBOR,NPTFR,
      &                AT,DDC,TM1,TM2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
@@ -223,11 +223,11 @@
             UL=WAC_FILES(WACCOB)%LU
           ENDIF
 !         HERE DEPTH POSSIBLY READ AS THIRD VARIABLE
-          CALL LECDON(SUC%R,'VITESSE U       M/S             ',
+          CALL LECDON(SUC%R,NAMEU,
      &                      'VELOCITY U      M/S             ',2,    
-     &                SVC%R,'VITESSE V       M/S             ',
+     &                SVC%R,NAMEV,
      &                      'VELOCITY V      M/S             ',2, 
-     &                SDEPTH%R,'HAUTEUR D''EAU   M               ',
+     &                SDEPTH%R,NAMEH,
      &                         'WATER DEPTH     M               ',1, 
      &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINCOU,NBOR,NPTFR,
      &                NPTT,INDIC,'COURANT',TEXCOB,TROUVE)
@@ -269,18 +269,18 @@
             UL=WAC_FILES(WACVEB)%LU
           ENDIF
           IF(VENSTA) THEN
-            CALL LECDON(SUV%R,'VENT X          M/S             ',
+            CALL LECDON(SUV%R,NAMEWX,
      &                        'WIND ALONG X    M/S             ',2,    
-     &                  SVV%R,'VENT Y          M/S             ',
+     &                  SVV%R,NAMEWY,
      &                        'WIND ALONG Y    M/S             ',2, 
      &                  SVV%R,'????????????????????????????????',
      &                        '????????????????????????????????',0, 
      &                  MESH%X%R,MESH%Y%R,NPOIN2,UL,BINVEN,NBOR,NPTFR,
      &                  NPTT,INDIV,'WIND   ',TEXVEB,TROUVE)
           ELSE
-            CALL LECDOI(SUV%R,'VENT X          M/S             ',
+            CALL LECDOI(SUV%R,NAMEWX,
      &                        'WIND ALONG X    M/S             ',2, 
-     &                  SVV%R,'VENT Y          M/S             ',
+     &                  SVV%R,NAMEWY,
      &                        'WIND ALONG Y    M/S             ',2, 
      &                  SVV%R,'????????????????????????????????',
      &                        '????????????????????????????????',0, 
@@ -307,4 +307,3 @@
 !
       RETURN
       END
-

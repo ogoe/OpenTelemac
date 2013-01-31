@@ -2,25 +2,25 @@
                      SUBROUTINE SEMIMP
 !                    *****************
 !
-     &( F     ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
-     &  NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,
-     &  U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
-     &  TAILF ,RAISF ,GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,
-     &  CMOUT6,TPROP ,DTSI  ,ROAIR ,ROEAU ,XKAPPA,BETAM ,DECAL ,CDRAG ,
-     &  ALPHA ,ZVENT ,NF    ,NPLAN ,NPOIN2,IANGNL,COEFNL,F1    ,NSITS ,
-     &  SMOUT ,SFROT ,SVENT ,LVENT ,STRIF ,VENT  ,VENSTA,VX_CTE,VY_CTE,
-     &  SBREK ,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ ,IHMBJ ,IFRBJ ,BORETG,GAMATG,
-     &  IWHTG ,IFRTG ,ALFARO,GAMARO,GAM2RO,IDISRO,IEXPRO,IFRRO ,BETAIH,
-     &  EM2SIH,IFRIH ,COEFHS,XDTBRK,NDTBRK,STRIA ,ALFLTA,RFMLTA,KSPB  ,
-     &  BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT ,CIMPLI,COEFWD,COEFWE,COEFWF,
-     &  COEFWH,NOMVEB,NOMVEF,BINVEN,NBD   ,QINDI ,TAUWAV,USOLD ,TWOLD ,
-     &  Z0OLD ,TSTOT ,TSDER ,TOLD  ,TNEW  ,VARIAN,FMOY  ,XKMOY ,USNEW ,
-     &  Z0NEW ,TWNEW ,TAUX1 ,TAUX2 ,TAUX3 ,TAUX4 ,TAUX5 ,TAUX6 ,TAUX7 ,
-     &  BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
-     &  SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
-     &  K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
-     &  K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
-     &  TB_FAC,MDIA  ,IANMDI,COEMDI)
+     &(F     ,XK    ,FREQ  ,DFREQ ,DEPTH ,VENTX ,VENTY ,X     ,Y     ,
+     & NVEB  ,NVEF  ,NBOR  ,NPTFR ,DDC   ,TV1   ,TV2   ,
+     & U1    ,V1    ,U2    ,V2    ,TETA  ,SINTET,COSTET,INDIC ,
+     & TAILF ,RAISF ,GRAVIT,CFROT1,CMOUT1,CMOUT2,CMOUT3,CMOUT4,CMOUT5,
+     & CMOUT6,TPROP ,DTSI  ,ROAIR ,ROEAU ,XKAPPA,BETAM ,DECAL ,CDRAG ,
+     & ALPHA ,ZVENT ,NF    ,NPLAN ,NPOIN2,IANGNL,COEFNL,F1    ,NSITS ,
+     & SMOUT ,SFROT ,SVENT ,LVENT ,STRIF ,VENT  ,VENSTA,VX_CTE,VY_CTE,
+     & SBREK ,ALFABJ,GAMBJ1,GAMBJ2,IQBBJ ,IHMBJ ,IFRBJ ,BORETG,GAMATG,
+     & IWHTG ,IFRTG ,ALFARO,GAMARO,GAM2RO,IDISRO,IEXPRO,IFRRO ,BETAIH,
+     & EM2SIH,IFRIH ,COEFHS,XDTBRK,NDTBRK,STRIA ,ALFLTA,RFMLTA,KSPB  ,
+     & BDISPB,BDSSPB,PROINF,DF_LIM,LIMIT ,CIMPLI,COEFWD,COEFWE,COEFWF,
+     & COEFWH,NOMVEB,NOMVEF,BINVEN,NBD   ,QINDI ,TAUWAV,USOLD ,TWOLD ,
+     & Z0OLD ,TSTOT ,TSDER ,TOLD  ,TNEW  ,VARIAN,FMOY  ,XKMOY ,USNEW ,
+     & Z0NEW ,TWNEW ,TAUX1 ,TAUX2 ,TAUX3 ,TAUX4 ,TAUX5 ,TAUX6 ,TAUX7 ,
+     & BETA  ,NQ_TE1,NQ_OM2,NF1   ,NF2   ,NT1   ,NCONF ,NCONFM,
+     & SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
+     & K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
+     & K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
+     & TB_FAC,MDIA  ,IANMDI,COEMDI)
 !
 !***********************************************************************
 ! TOMAWAC   V6P2                                   27/06/2011
@@ -259,7 +259,8 @@
 !                                          QMOUT2, QNLIN2, QNLIN3
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,MESH
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,MESH,
+     &                                 NAMEWX,NAMEWY
       USE INTERFACE_TOMAWAC, EX_SEMIMP => SEMIMP
 !
       IMPLICIT NONE
@@ -335,7 +336,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR,MF1,MF2,MFMAX,IDT,NV
+      INTEGER ISITS,IFF,IP,JP,K,NVENT,IFCAR,MF1,MF2,MFMAX,IDT
       DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,COEF   
       DOUBLE PRECISION FM1,FM2,TDEB,TFIN,VITVEN
       DOUBLE PRECISION VITMIN,HM0,HM0MAX,DTN,SUME,AUXI,USMIN
@@ -435,16 +436,16 @@
 !           CALL NOUDON(VENTX,VENTY,X,Y,NPOIN2,NVENT,BINVEN,NBOR,
 !    &                  NPTFR,TFIN,DDC,TV1,TV2,U1,V1,U2,V2,INDIC,
 !    &                  CHDON,2)
-            CALL NOUDON(VENTX,'VENT X          M/S             ',
+            CALL NOUDON(VENTX,NAMEWX,
      &                        'WIND ALONG X    M/S             ',2,    
-     &                  VENTY,'VENT Y          M/S             ',
+     &                  VENTY,NAMEWY,
      &                        'WIND ALONG Y    M/S             ',2, 
      &                  VENTY,'????????????????????????????????',
      &                        '????????????????????????????????',0, 
      &                  MESH%X%R,MESH%Y%R,NPOIN2,
      &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2, 
      &                  U1,U2,V1,V2,V1,V2,INDIC,
-     &                  'WIND   ',NV,TEXVEB,TROUVE)
+     &                  'WIND   ',2,TEXVEB,TROUVE)
           ELSE
             CALL ANAVEN(VENTX,VENTY,X,Y,NPOIN2,TFIN,DDC,VX_CTE,VY_CTE)
           ENDIF

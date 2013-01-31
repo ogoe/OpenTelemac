@@ -967,50 +967,62 @@
       INTEGER, DIMENSION(:), POINTER :: KNI , KNOGL  
       INTEGER, DIMENSION(:), POINTER :: ELI,ITR31,ITR32,ITR33
 !
-!V6P2 Diffraction
+!     Diffraction
+!
       INTEGER, DIMENSION(:), POINTER ::   NB_CLOSE, NEIGB
       DOUBLE PRECISION, DIMENSION(:), POINTER :: A, A_RMSE, CCG, DELTA,
-     & DIV, DDX, DDY, RK, RX, RXX, RY, RYY, XKONPT
-!V6P2 End diffraction
-
-!> @brief GEOMETRY FILE
-! fichier de geometrie
+     &                DIV, DDX, DDY, RK, RX, RXX, RY, RYY, XKONPT
+!
+!     GEOMETRY FILE
+! 
       INTEGER :: WACGEO
-!> @brief STEERING FILE
-! fichier des parametres
+!
+!     STEERING FILE
+! 
       INTEGER :: WACCAS
-!> @brief BOUNDARY CONDITIONS FILE
-! fichier des conditions aux limites
+!
+!     BOUNDARY CONDITIONS FILE
+! 
       INTEGER :: WACCLI
-!> @brief BOTTOM TOPOGRAPHY FILE
-! fichier des fonds
+!
+!     BOTTOM TOPOGRAPHY FILE
+! 
       INTEGER :: WACFON
-!> @brief 2D RESULTS FILE
-! fichier des resultats 2d
+!
+!     2D RESULTS FILE
+! 
       INTEGER :: WACRES
-!> @brief PUNCTUAL RESULTS FILE
-! fichier des resultats ponctuels
+!
+!     PUNCTUAL RESULTS FILE
+!
       INTEGER :: WACLEO
-!> @brief PREVIOUS COMPUTATION FILE
-! fichier du calcul precedent
+!
+!     PREVIOUS COMPUTATION FILE
+! 
       INTEGER :: WACPRE
-!> @brief GLOBAL RESULT FILE
-! fichier des resultats globaux
+!
+!     GLOBAL RESULT FILE
+! 
       INTEGER :: WACRBI
-!> @brief BINARY CURRENTS FILE
-! fichier des courants binaire
+!
+!     BINARY CURRENTS FILE
+! 
       INTEGER :: WACCOB
-!> @brief FORMATTED CURRENTS FILE
-! fichier des courants formate
+!
+!     FORMATTED CURRENTS FILE
+! 
       INTEGER :: WACCOF
-!> @brief BINARY FILE 1
-! fichier binaire 1
+!
+!     BINARY FILE 1
+! 
       INTEGER :: WACBI1
-!> @brief FORMATTED FILE 1
-! fichier formate 1
+!
+!     FORMATTED FILE 1
+! 
       INTEGER :: WACFO1
-!> @brief BINARY WINDS FILE
-! fichier des vents binaire
+!
+!     BINARY WINDS FILE
+! 
       INTEGER :: WACVEB
 !
 !     FORMATTED WINDS FILE
@@ -1050,6 +1062,12 @@
 !     30 IS HERE A MAXIMUM OF VARIABLES PER FILE
 !
       CHARACTER(LEN=32) :: TEXCOB(30),TEXMAB(30),TEXVEB(30)
+!
+!     NAMES OF VARIABLES IN SERAFIN DATA FILES (VELOCITY ALONG X AND Y
+!                                               WIND ALONG X AND Y
+!                                               DEPTH)
+!
+      CHARACTER(LEN=32) :: NAMEU,NAMEV,NAMEWX,NAMEWY,NAMEH
 !
       SAVE
 !
