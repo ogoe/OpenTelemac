@@ -6,13 +6,13 @@
      & HN,TRA01,GRAV,ROEAU,NORD,PRIVE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES ATMOSPHERIC PRESSURE AND WIND VELOCITY FIELDS
 !+               (IN GENERAL FROM INPUT DATA FILES).
 !
-!warning  MUST BE ADAPTED BY USER
+!warning  CAN BE ADAPTED BY USER
 !
 !history  J-M HERVOUET (LNHE)
 !+        02/01/2004
@@ -30,6 +30,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        30/01/2013
+!+        V6P3
+!+   Now 2 options with an example for reading a file. 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT,LT          |-->| TIME, ITERATION NUMBER
@@ -53,6 +58,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
+      USE DECLARATIONS_TELEMAC2D, ONLY : T2DFO1,T2D_FILES,LISTIN
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -70,7 +76,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION P0,Z(1)
+      INTEGER MY_OPTION,UL
+      DOUBLE PRECISION P0,Z(1),AT1,AT2,FUAIR1,FUAIR2,FVAIR1,FVAIR2,COEF
+      DOUBLE PRECISION UAIR,VAIR
 !
 !-----------------------------------------------------------------------
 !
@@ -83,34 +91,112 @@
 !
 !-----------------------------------------------------------------------
 !
+!     CHOOSE YOUR OPTION !!!
+!
+!     1: CONSTANTS GIVEN BY THE KEYWORDS:
+!        AIR PRESSURE (GIVEN HERE AS P0, NO KEYWORD)
+!        WIND VELOCITY ALONG X (HERE FUAIR)
+!        WIND VELOCITY ALONG Y (HERE FVAIR)
+!        THEY WILL BE SET ONCE FOR ALL BEFORE THE FIRST ITERATION (LT=0)
+!
+!     2: CONSTANT IN SPACE WIND COMPONENTS OF VELOCITY GIVEN IN THE FILE
+!        FO1_WIND DECLARED AS FORMATTED DATA FILE 1 = FO1_WIND 
+!
+      MY_OPTION = 1
+!
+!-----------------------------------------------------------------------
+!
 !     BEWARE, HERE ONLY ONE COMPUTATION AT FIRST TIMESTEP
 !
       IF(LT.EQ.0) THEN
 !
-!-----------------------------------------------------------------------
-!
-!     ATMOSPHERIC PRESSURE
-!
-      IF(ATMOS) THEN
-        P0 = 100000.D0
-        CALL OV( 'X=C     ' , PATMOS , Y , Z , P0 , NPOIN )
-      ENDIF
+        UL=T2D_FILES(T2DFO1)%LU
 !
 !-----------------------------------------------------------------------
 !
-!     WIND : IN THIS CASE THE WIND IS CONSTANT,
-!            VALUE GIVEN IN STEERING FILE.
+!       ATMOSPHERIC PRESSURE
 !
-!     MAY REQUIRE A ROTATION,
-!     DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
+        IF(ATMOS) THEN
+          P0 = 100000.D0
+          CALL OV( 'X=C     ' , PATMOS , Y , Z , P0 , NPOIN )
+        ENDIF
 !
-      IF(VENT) THEN
-        CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
-        CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
+!-----------------------------------------------------------------------
+!
+!       WIND : IN THIS CASE THE WIND IS CONSTANT,
+!              VALUE GIVEN IN STEERING FILE.
+!
+!       MAY REQUIRE A ROTATION,
+!       DEPENDING ON THE SYSTEM IN WHICH THE WIND VELOCITY WAS SUPPLIED
+!
+        IF(VENT) THEN
+          CALL OV( 'X=C     ' , WINDX , Y , Z , FUAIR , NPOIN )
+          CALL OV( 'X=C     ' , WINDY , Y , Z , FVAIR , NPOIN )
+        ENDIF
+!
+        IF(MY_OPTION.EQ.2) THEN
+!         JUMPING TWO LINES OF COMMENTS
+          READ(UL,*,ERR=100,END=200)
+          READ(UL,*,ERR=100,END=200)
+!         READING THE FIRST TWO LINES OF DATA
+          READ(UL,*,ERR=100,END=200) AT1,FUAIR1,FVAIR1
+          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
+        ENDIF
+!
       ENDIF
 !
-!     END OF IF(LT.EQ.0)
+!-----------------------------------------------------------------------
+!
+      IF(MY_OPTION.EQ.2.AND.VENT) THEN
+!
+!       JUMPING TWO LINES OF COMMENTS
+!
+10      CONTINUE
+        IF(AT.GE.AT1.AND.AT.LT.AT2) THEN
+          IF(AT2-AT1.GT.1.D-6) THEN
+            COEF=(AT-AT1)/(AT2-AT1)
+          ELSE
+            COEF=0.D0
+          ENDIF
+          UAIR=FUAIR1+COEF*(FUAIR2-FUAIR1)
+          VAIR=FVAIR1+COEF*(FVAIR2-FVAIR1)
+          IF(LISTIN) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 'VENT A T=',AT,' UAIR=',UAIR,
+     &                                              ' VAIR=',VAIR
+            IF(LNG.EQ.2) WRITE(LU,*) 'WIND AT T=',AT,' UAIR=',UAIR,
+     &                                               ' VAIR=',VAIR
+          ENDIF
+        ELSE
+          AT1=AT2
+          FUAIR1=FUAIR2
+          FVAIR1=FVAIR2
+          READ(UL,*,ERR=100,END=200) AT2,FUAIR2,FVAIR2
+          GO TO 10
+        ENDIF
+!
+        CALL OV('X=C     ',WINDX,Y,Z,UAIR,NPOIN)
+        CALL OV('X=C     ',WINDY,Y,Z,VAIR,NPOIN)    
+!
       ENDIF
+!
+      RETURN
+!
+!-----------------------------------------------------------------------
+! 
+100   CONTINUE
+      WRITE(LU,*) ' '
+      WRITE(LU,*) 'METEO'
+      IF(LNG.EQ.1) WRITE(LU,*) 'ERREUR DANS LE FICHIER DE VENT'
+      IF(LNG.EQ.2) WRITE(LU,*) 'ERROR IN THE WIND FILE'
+      CALL PLANTE(1)
+      STOP  
+200   CONTINUE
+      WRITE(LU,*) ' '
+      WRITE(LU,*) 'METEO'
+      IF(LNG.EQ.1) WRITE(LU,*) 'FIN PREMATUREE DU FICHIER DE VENT'
+      IF(LNG.EQ.2) WRITE(LU,*) 'WIND FILE TOO SHORT'
+      CALL PLANTE(1)
+      STOP           
 !
 !-----------------------------------------------------------------------
 !
