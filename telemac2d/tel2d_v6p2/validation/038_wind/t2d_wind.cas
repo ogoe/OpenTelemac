@@ -1,4 +1,6 @@
 /
+/ See Fortran file to have an example of subroutine meteo.
+/
 /-------------------------------------------------------------------/
 /   TELEMAC-2D  -  VALIDATION TEST CASE NUMBER 10 -  12/2001        /
 /                            WIND SET-UP                            /
@@ -34,6 +36,7 @@ BOUNDARY CONDITIONS FILE        = geo_wind.cli
 RESULTS FILE                    = r2d_wind.slf
 REFERENCE FILE                  = f2d_wind.slf
 PREVIOUS COMPUTATION FILE       = ini_wind.slf
+FORMATTED DATA FILE 1           = fo1_wind
 PARALLEL PROCESSORS             = 0
 /
 /
