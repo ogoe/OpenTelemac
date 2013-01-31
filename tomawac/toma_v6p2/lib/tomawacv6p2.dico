@@ -4904,3 +4904,39 @@ RUBRIQUE1 = 'GENERAL'
 NIVEAU = 1 
 AIDE= 'Pour imprimer la sequence des appels, mettre 1' 
 AIDE1 = 'If 1, calls of subroutines will be printed in the listing' 
+/ 
+/ ADDED BY JMH ON 31/01/2013 
+/ 
+NOM = 'NOMS DES VARIABLES' 
+NOM1 = 'NAMES OF VARIABLES' 
+TYPE = CARACTERE 
+INDEX = 45 
+MNEMO = 'NAMEU,NAMEV,NAMEWX,NAMEWY,NAMEH' 
+TAILLE = 5
+DEFAUT  = 'VITESSE U       M/S             ';
+          'VITESSE V       M/S             ';
+          'VENT X          M/S             ';
+          'VENT Y          M/S             ';
+          'HAUTEUR D''EAU   M               '
+/ FRENCH IS HERE INTENTIONAL, NOT A MISTAKE
+DEFAUT1 = 'VITESSE U       M/S             ';
+          'VITESSE V       M/S             ';
+          'VENT X          M/S             ';
+          'VENT Y          M/S             ';
+          'HAUTEUR D''EAU   M               '
+NIVEAU = 2 
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE' 
+AIDE = 'Nom des variables dans les fichiers au format SERAFIN
+        1: Vitesse U
+        2: Vitesse V
+        3: Vitesse du vent suivant X
+        4: Vitesse du vent suivant Y
+        5: Profondeur' 
+AIDE1= 'Names of variables in SERAFIN format files 
+        1: Velocity U
+        2: Velocity V
+        3: Wind velocity along X
+        4: Wind velocity along Y
+        5: Depth' 
+/
