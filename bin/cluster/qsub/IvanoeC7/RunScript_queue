@@ -85,7 +85,7 @@ rm -f mpitasks mpitasks.conf mpid.conf
 %(code)s %(option)s %(case)s
 """
     
-    run_file = open(options.filename, mode='w')
+    run_file = open(filename, mode='w')
 
     srcfile = ''
     if options.sourcefile <> '':
