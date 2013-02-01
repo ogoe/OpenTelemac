@@ -4390,7 +4390,7 @@ NOM = 'BINAIRE DU FICHIER DU NIVEAU DE LA MAREE'
 NOM1 = 'TIDAL WATER LEVEL FILE BINARY' 
 TYPE = CARACTERE 
 INDEX = 37 
-MNEMO = 'Variable BINMAR' 
+MNEMO = 'BINMAR' 
 TAILLE= 0 
 DEFAUT = 'STD' 
 DEFAUT1 = 'STD' 
@@ -4939,4 +4939,52 @@ AIDE1= 'Names of variables in SERAFIN format files
         3: Wind velocity along X
         4: Wind velocity along Y
         5: Depth' 
+/
+NOM = 'UNITE DE TEMPS DU FICHIER DES COURANTS' 
+NOM1 = 'TIME UNIT IN CURRENTS FILE' 
+TYPE = REEL 
+INDEX = 81 
+MNEMO = 'UNITCOB' 
+TAILLE= 0 
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE'  
+NIVEAU = 2 
+AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
+est donne en heures' 
+AIDE1 = 'Unit given in seconds, for example 3600. if time
+is given in hours'
+/
+NOM = 'UNITE DE TEMPS DU FICHIER DU NIVEAU DE LA MARE' 
+NOM1 = 'TIME UNIT IN TIDAL WATER LEVEL FILE' 
+TYPE = REEL 
+INDEX = 82 
+MNEMO = 'UNITMAB' 
+TAILLE= 0 
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE'  
+NIVEAU = 2 
+AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
+est donne en heures' 
+AIDE1 = 'Unit given in seconds, for example 3600. if time
+is given in hours'
+/
+NOM = 'UNITE DE TEMPS DU FICHIER DES VENTS' 
+NOM1 = 'TIME UNIT IN WINDS FILE' 
+TYPE = REEL 
+INDEX = 83 
+MNEMO = 'UNITVEB' 
+TAILLE= 0 
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE'  
+NIVEAU = 2 
+AIDE = 'Unite donnee en secondes, par exemple 3600. si le temps
+est donne en heures' 
+AIDE1 = 'Unit given in seconds, for example 3600. if time
+is given in hours'
 /
