@@ -643,10 +643,10 @@
       CHARACTER(LEN=32) :: CHA
       INTEGER           :: COMP_NUM,i
       LOGICAL           :: ISVECTOR   
-      CHARACTER(LEN=16),DIMENSION(:),allocatable :: NAME2  
-      CHARACTER(LEN=16),DIMENSION(:),allocatable :: VUNIT2    
-      CHARACTER(LEN=16),DIMENSION(:),allocatable :: VAR_NAME
-      CHARACTER(LEN=16),DIMENSION(:),allocatable :: VAR_UNIT
+      CHARACTER(LEN=16),DIMENSION(:),ALLOCATABLE :: NAME2  
+      CHARACTER(LEN=16),DIMENSION(:),ALLOCATABLE :: VUNIT2    
+      CHARACTER(LEN=16),DIMENSION(:),ALLOCATABLE :: VAR_NAME
+      CHARACTER(LEN=16),DIMENSION(:),ALLOCATABLE :: VAR_UNIT
 !LOCAL DECLARATION
       INTEGER           :: NB_VAR
 !
@@ -675,7 +675,7 @@
         NOMVAR2   = NOMVAR(IVAR)
         CALL BLANC2_(NOMVAR2)
         FIELD_NAME = NOMVAR2(1:16)//CHAR(0)
-        COMP_NAME = NOMVAR2(1:16)//char(0)
+        COMP_NAME = NOMVAR2(1:16)//CHAR(0)
         COMP_UNIT = NOMVAR2(17:32)//CHAR(0)
         NCOMP     = 1 
         TYP_MED   = MED_FLOAT64        
@@ -838,9 +838,9 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
       CHARACTER(LEN=64) :: FIELD_NAME ! NAME OF THE MED FIELD
       CHARACTER(LEN=32) :: NOMVAR2   ! MED NAME OF THE VARIABLE
 !
-      INTEGER         , DIMENSION(:), allocatable :: IDATAVAR
-      DOUBLE PRECISION, DIMENSION(:), allocatable :: DATAVAR
-      DOUBLE PRECISION, DIMENSION(:), allocatable,save :: DEF_MAP
+      INTEGER         , DIMENSION(:), ALLOCATABLE :: IDATAVAR
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: DATAVAR
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE,SAVE :: DEF_MAP
       CHARACTER(LEN=32) :: CHA
       INTEGER           :: COMP_NUM
       LOGICAL           :: ISVECTOR  
@@ -854,7 +854,7 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
       ! Setting the meshname
       MESHNAME = 'MESH'//char(0)
       ! Get the mesh dimension
-      call mmhnan(RES_FILE,MESHNAME,DIMMESH,CRET)
+      CALL MMHNAN(RES_FILE,MESHNAME,DIMMESH,CRET)
       CALL MED_CHECK_CRET(CRET,'MMHNAN')
       ! The timestep are to be counted consecutively from 1
       ! We use the local variable local_timestep_2d to recount the timestep
@@ -863,13 +863,13 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
       ! function is called
       ! The function is called twice in 3D 
       ! Defining which timstep to use
-      if(NNAMECODE(1).eq.'TELEMAC3D') then
-        TIMESTEP2 = local_timestep_3d
-        local_timestep_3d = local_timestep_3d + 1
-      else if (NNAMECODE(1).eq.'TELEMAC2D') then
-        TIMESTEP2 = local_timestep_2d
-        local_timestep_2d = local_timestep_2d + 1
-      endif
+      IF(NNAMECODE(1).EQ.'TELEMAC3D') THEN
+        TIMESTEP2 = LOCAL_TIMESTEP_3D
+        LOCAL_TIMESTEP_3D = LOCAL_TIMESTEP_3D + 1
+      ELSE IF (NNAMECODE(1).EQ.'TELEMAC2D') THEN
+        TIMESTEP2 = LOCAL_TIMESTEP_2D
+        LOCAL_TIMESTEP_2D = LOCAL_TIMESTEP_2D + 1
+      ENDIF
 
       ! PUISQU'IL Y A DES VALEURS SUR VECTEURS LIBRE ...
       ! ON DETERMINE LE TYPE DE VARIABLE QU'UNE SEULE FOIS ET CROISE LES
@@ -938,7 +938,7 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
             allocate(DATAVAR(1:NDATA))
             allocate(IDATAVAR(1:NDATA))
             IDATAVAR(1:NDATA) = BVARSOR%ADR(IVAR)%P%I(1:NDATA)
-            DATAVAR(1:NDATA) = dble(IDATAVAR(1:NDATA))
+            DATAVAR(1:NDATA) = DBLE(IDATAVAR(1:NDATA))
           ENDIF
         endif
 
@@ -979,7 +979,7 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
           CALL BLANC2_(NOMVAR2)
           FIELD_NAME = NOMVAR2(1:16)//CHAR(0)
           NDATA   =  BVARSOR%ADR(1)%P%DIM1
-          if (TIMESTEP==0) allocate(DEF_MAP(1:NDATA*3))
+          IF (TIMESTEP==0) ALLOCATE(DEF_MAP(1:NDATA*3))
           if (TIMESTEP==0) DEF_MAP(1:2*NDATA)        = 0.0d0  
           if (TIMESTEP==0) DEF_MAP(2*NDATA+1:3*NDATA)= 
      *                                BVARSOR%ADR(1)%P%R(1:NDATA)
@@ -1008,7 +1008,7 @@ Cbrief    WRITE DATA VALUES ON A MESH INTO THE MED DATA FILE.
      *                DATAVAR,             ! VALUES TABLE
      *                CRET)                ! RETURN CODE
           CALL MED_CHECK_CRET(CRET,'MFDRVW')
-          deallocate(DATAVAR)          
+          DEALLOCATE(DATAVAR)          
       ENDIF
 !
 #else
@@ -1091,8 +1091,8 @@ Cbrief    READING RESULTS FROM A MED FILE
       TYPE(BIEF_OBJ), INTENT(INOUT) :: VARSOR,CLAND
       INTEGER, INTENT(IN), OPTIONAL :: NPLAN
       INTEGER, INTENT(IN)           :: NHIST,NVARCL,MAXVAR,RES_FILE
-      DOUBLE PRECISION, INTENT(OUT), OPTIONAL :: DT
-      INTEGER, INTENT(OUT), OPTIONAL :: NDT
+      DOUBLE PRECISION, INTENT(INOUT), OPTIONAL :: DT
+      INTEGER, INTENT(INOUT), OPTIONAL :: NDT
       INTEGER                       :: NUMDEB,NPOIN,TROUVE(MAXVAR)
       INTEGER                       :: ALIRE(MAXVAR)        
       CHARACTER(LEN=*)              :: STD
@@ -1119,8 +1119,8 @@ Cbrief    READING RESULTS FROM A MED FILE
 !     DUMMY OUTPUT ARGUMENT NEED FOR CALCUL
       INTEGER           :: I,NGAUSS,NUMDT,NUMO,NMAA,TYP,NCOMP,NUMDT2
       CHARACTER(LEN=64) :: CHA,CHA2,MESHNAME2
-      CHARACTER(LEN=16), allocatable :: COMP(:), UNIT(:)
-      character(len=16) :: DTUNIT
+      CHARACTER(LEN=16), ALLOCATABLE :: COMP(:), UNIT(:)
+      CHARACTER(LEN=16) :: DTUNIT
       LOGICAL :: ISVECTOR,LOCAL
       INTEGER :: COMP_NUM,DIMVEC,NFIELD,IDUM
 !
