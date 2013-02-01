@@ -174,12 +174,12 @@ if __name__ == "__main__":
       sys.exit(1)
 
    
-    create_run_slurm(options)
-    if options.ok_submit:
-        submit('sbatch %s'%options.filename,options)
-        # -----------------------------------------# -----------------------------------------#
-        # Lancement du calcul
-        # -----------------------------------------# -----------------------------------------#
-        print bcolors.HEADER + "------------      Calcul sur Ivanoe a ete lance    ----------" + bcolors.ENDC
-    else:
-        print bcolors.HEADER + "------------     Fichier de lancement run.slurm ok  ----------" + bcolors.ENDC
+   create_run_slurm(options)
+   if options.ok_submit:
+       submit('sbatch %s'%options.filename,options)
+       # -----------------------------------------# -----------------------------------------#
+       # Lancement du calcul
+       # -----------------------------------------# -----------------------------------------#
+       print bcolors.HEADER + "------------      Calcul sur Ivanoe a ete lance    ----------" + bcolors.ENDC
+   else:
+       print bcolors.HEADER + "------------     Fichier de lancement run.slurm ok  ----------" + bcolors.ENDC
