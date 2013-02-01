@@ -176,7 +176,7 @@ if __name__ == "__main__":
    
    create_run_slurm(options)
    if options.ok_submit:
-       submit('sbatch %s'%options.filename,options)
+       submit('sbatch %s'%filename,options)
        # -----------------------------------------# -----------------------------------------#
        # Lancement du calcul
        # -----------------------------------------# -----------------------------------------#

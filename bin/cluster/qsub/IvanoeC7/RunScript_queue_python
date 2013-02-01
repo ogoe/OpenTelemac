@@ -84,7 +84,7 @@ rm -f mpitasks mpitasks.conf mpid.conf
 %(code)s --hosts ${hosts} %(case)s --ncsize %(ncsize)s
 """
     
-    run_file = open(options.filename, mode='w')
+    run_file = open(filename, mode='w')
 
     srcfile = ''
     if options.sourcefile <> '':

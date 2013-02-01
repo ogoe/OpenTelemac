@@ -85,7 +85,7 @@ rm -f mpitasks mpitasks.conf mpid.conf
 %(code)s %(option)s %(case)s
 """
     
-    run_file = open(options.filename, mode='w')
+    run_file = open(filename, mode='w')
 
     srcfile = ''
     if options.sourcefile <> '':
@@ -178,7 +178,7 @@ if __name__ == "__main__":
    
    create_run_slurm(options)
    if options.ok_submit:
-       submit('sbatch %s'%options.filename,options)
+       submit('sbatch %s'%filename,options)
        # -----------------------------------------# -----------------------------------------#
        # Lancement du calcul
        # -----------------------------------------# -----------------------------------------#
