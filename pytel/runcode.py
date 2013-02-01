@@ -710,8 +710,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if cfg.has_key('MPI') and not options.merge:
          # ~~> MPI host file provided through the command line
          if options.hosts != '':
-            if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(';',' ')
-            else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(';',' ')} )
+            if cfg['MPI'].has_key('HOSTS'): cfg['MPI']['HOSTS'] = options.hosts.replace(':',' ')
+            else: cfg['MPI'].update( {'HOSTS':options.hosts.replace(':',' ')} )
          # ~~> MPI Command line ( except <exename> )
          mpiCmd = getMPICommand(cfg['MPI']) # /!\ cfg['MPI'] is also modified
          mpiCmd = mpiCmd.replace('<ncsize>',str(ncsize))
@@ -931,7 +931,7 @@ if __name__ == "__main__":
                       type="string",
                       dest="hosts",
                       default='',
-                      help="specify the list of hosts available for parallel mode, ';' delimited" )
+                      help="specify the list of hosts available for parallel mode, ':' delimited" )
    parser.add_option("--ncsize",
                       type="string",
                       dest="ncsize",
