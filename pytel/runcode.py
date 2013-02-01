@@ -680,6 +680,7 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    if value != []:
       useFort = path.join(CASDir,eval(value[0]))
       useFile = path.join(CASDir,path.splitext(eval(value[0]))[0]+cfg['SYSTEM']['sfx_exe'])
+      # /!\ removing dependency over cfg['REBUILD']:
       if path.exists(useFile):
          if isNewer(useFile,useFort) == 1 or cfg['REBUILD'] == 1 : remove(useFile)
       #> default command line compilation and linkage
@@ -702,6 +703,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       except Exception as e:
          raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
       shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
+
+   if not options.compileonly:
 
    # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if ncsize > 0:
@@ -727,39 +730,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
          # >>> Replace running command
          runCmd = mpiCmd.replace('<exename>',exename)
-
-      # >>> HPC execution configuration
-      hpcCmd = ''
-      if cfg.has_key('HPC') and not options.merge:
-         # ~~> HPC Command line ( except <exename> )
-         hpcCmd = getHPCCommand(cfg['HPC']) # /!\ cfg['HPC'] is also modified
-         hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
-         hpcCmd = hpcCmd.replace('<nctile>',str(nctile))
-         hpcCmd = hpcCmd.replace('<ncnodes>',str(ncnodes))
-         hpcCmd = hpcCmd.replace('<wdir>',WDir)   # /!\ Make sure WDir works in UNC convention
-         # ~~> HPC queueing script
-         if cfg['HPC'].has_key('STDIN'):
-            stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
-            stdin = cfg['HPC']['STDIN'][stdinfile]
-            stdin = stdin.replace('<sortiefile>',sortiefile)
-            stdin = stdin.replace('<hosts>',cfg['MPI']['HOSTS'])
-            stdin = stdin.replace('<ncsize>',str(ncsize))
-            stdin = stdin.replace('<nctile>',str(nctile))
-            stdin = stdin.replace('<ncnodes>',str(ncnodes))
-            stdin = stdin.replace('<wdir>',WDir)
-            stdin = stdin.replace('<email>',options.email)
-            stdin = stdin.replace('<jobname>',options.jobname)
-            stdin = stdin.replace('\n ','\n')
-            if cfg.has_key('MPI'):
-               stdin = stdin.replace('<mpi_cmdexec>',mpiCmd)
-               stdin = stdin.replace('<exename>',exename)
-               stdin = stdin.replace('<hostfile>',hostfile)
-            putFileContent(stdinfile,stdin.split('\n'))
-            hpcCmd = hpcCmd.replace('<ncsize>',str(ncsize))
-
-         # >>> Replace running command
-         runCmd = hpcCmd.replace('<mpi_cmdexec>',mpiCmd)
-         runCmd = hpcCmd.replace('<exename>',exename)
 
       # >>> Parallel tools
       # ~~> Path
@@ -810,7 +780,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
                print '    +> or run the following command within : ',path.basename(WDir)
                print '       ~>    run with EXE: ',path.basename(exename)
                if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
-               if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
             else:
                print '\n\n... Your simulation is almost ready for launch. You need to compile your executable with the option -x (--compileonly)\n'
             return []          # Split only: do not proceed any further
@@ -818,10 +787,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          print runCmd+'\n\n'
          if not runCode(runCmd,sortiefile): raise Exception([filterMessage({'name':'runCAS','msg':'Did not seem to catch that error...'})])
-         if cfg.has_key('HPC'):
-            print '\n... You must wait for the simulation to complete before using option --merge\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-            return []          # Case of HPC: do not proceed any further, just wait
       if options.run:
          print '\n\n... Your simulation has been completed but you need to re-collect files using the option --merge\n'
          return []  # Run only: do not proceed any further
@@ -920,8 +885,18 @@ if __name__ == "__main__":
    parser.add_option("--jobname",
                       type="string",
                       dest="jobname",
-                      default='project',
+                      default='job_unamed',
                       help="specify a jobname for HPC queue tracking" )
+   parser.add_option("--queue",
+                      type="string",
+                      dest="hpc_queue",
+                      default='',
+                      help="specify a queue for HPC queue tracking" )
+   parser.add_option("--walltime",
+                      type="string",
+                      dest="walltime",
+                      default='01:00:00',
+                      help="specify a walltime for HPC queue tracking" )
    parser.add_option("--email",
                       type="string",
                       dest="email",
@@ -931,7 +906,7 @@ if __name__ == "__main__":
                       type="string",
                       dest="hosts",
                       default='',
-                      help="specify the list of hosts available for parallel mode, ':' delimited" )
+                      help="specify the list of hosts available for parallel mode, ';' delimited" )
    parser.add_option("--ncsize",
                       type="string",
                       dest="ncsize",
@@ -957,6 +932,11 @@ if __name__ == "__main__":
                       dest="run",
                       default=False,
                       help="will only run the simulation if option there" )
+   parser.add_option("--hpc",
+                      action="store_true",
+                      dest="hpc",
+                      default=False,
+                      help="Run hpc_cmdexec instead of runcode.py" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -998,6 +978,52 @@ if __name__ == "__main__":
       sys.exit()
    # parsing for proper naming
    cfg = parseConfig_RunningTELEMAC(cfgs[cfgname])
+   # in case we are launching on a cluster
+   if cfg.has_key('HPC') and options.hpc: 
+      ncsize = int(options.ncsize)
+      nctile = max( 1,int(options.nctile) )
+      ncnodes = int(ncsize/nctile)
+      hpcCmd = getHPCCommand(cfg['HPC'])
+      if cfg['HPC'].has_key('STDIN'):
+         stdinfile = cfg['HPC']['STDIN'].keys()[0] # only one key for now
+         stdin = cfg['HPC']['STDIN'][stdinfile]
+         # Recreate the options for runcode.py
+         hpc_options = ''
+         if options.configName != '': hpc_options = hpc_options + ' -c ' + options.configName
+         if options.configFile != '': hpc_options = hpc_options + ' -f ' + options.configFile
+         if options.rootDir != '': hpc_options = hpc_options + ' -r ' + options.rootDir
+         if options.version != '': hpc_options = hpc_options + ' -v ' + options.version
+         if options.sortieFile: hpc_options = hpc_options + ' -s '
+         if options.tmpdirectory: hpc_options = hpc_options + ' -t '
+         if options.compileonly: hpc_options = hpc_options + ' -x '
+         if options.wDir != '': hpc_options = hpc_options + ' -w ' + options.wDir
+         if options.ncsize != '': hpc_options = hpc_options + ' --ncsize ' + options.ncsize
+         if options.split: hpc_options = hpc_options + ' --split '
+         if options.merge: hpc_options = hpc_options + ' --merge '
+         if options.run: hpc_options = hpc_options + ' --run '
+         print 'hpc_options '+hpc_options
+         # Replace the parameter in the hpc_stdin script
+         stdin = stdin.replace('<options>',hpc_options)
+         stdin = stdin.replace('<ncsize>',str(ncsize))
+         stdin = stdin.replace('<nctile>',str(nctile))
+         stdin = stdin.replace('<ncnodes>',str(ncnodes))
+         stdin = stdin.replace('<wdir>',options.wDir)
+         stdin = stdin.replace('<email>',options.email)
+         stdin = stdin.replace('<time>',strftime("%Y-%m-%d-%Hh%Mmin%Ss", gmtime()))
+         stdin = stdin.replace('<jobname>',options.jobname)
+         stdin = stdin.replace('<queue>',options.hpc_queue)
+         stdin = stdin.replace('<walltime>',options.walltime)
+         stdin = stdin.replace('<codename>',codeName)
+         casFilesStr = ''
+         for cas in casFiles:
+           casFilesStr = casFilesStr + ' ' + cas
+         stdin = stdin.replace('<casfiles>',casFilesStr)
+         putFileContent(stdinfile,stdin.split('\n'))
+      print '\n\nRunning python in hpc mode\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      runCode(hpcCmd,None)
+      sys.exit()
+      
    print '\n\nRunning your CAS file for:\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
    print '    +> configuration: ' +  cfgname
