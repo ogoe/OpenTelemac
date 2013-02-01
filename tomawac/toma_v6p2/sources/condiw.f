@@ -3,7 +3,7 @@
 !                    *****************
 !
      &( AT, LT , TC1, TC2, TV1, TV2, TM1, TM2 , 
-     &  NVHMA  , NVCOU, PART , U_TEL, V_TEL , H_TEL )
+     &  NVHMA,NVCOU,NVWIN, PART , U_TEL, V_TEL , H_TEL )
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   10/06/2011
@@ -47,8 +47,9 @@
 !| AT             |<--| COMPUTATION TIME
 !| H_TEL          |-->| TELEMAC WATER DEPTH
 !| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
-!| NVCOU          |---| NUMBER OF VARIABLES OF THE FORMATTED CURRENT FILE
-!| NVHMA          |<--| N.OF VARIABLES OF THE FORMATTED WATER LEVEL FILE
+!| NVCOU          |---| NUMBER OF VARIABLES OF THE CURRENT FILE
+!| NVHMA          |<--| N.OF VARIABLES OF THE WATER LEVEL FILE
+!| NVWIN          |<--| N.OF VARIABLES OF THE WIND FILE
 !| PART           |-->| FLAG FOR DIRECT COUPLING WITH TELEMAC
 !| TC1            |<--| TIME T1 IN THE CURRENT FILE
 !| TC2            |<--| TIME T2 IN THE CURRENT FILE
@@ -73,7 +74,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: PART,LT
-      INTEGER, INTENT(INOUT)          :: NVHMA,NVCOU
+      INTEGER, INTENT(INOUT)          :: NVHMA,NVCOU,NVWIN
       DOUBLE PRECISION, INTENT(INOUT) :: AT,TC1,TC2,TV1,TV2,TM1,TM2
       TYPE(BIEF_OBJ), INTENT(IN)      :: U_TEL,V_TEL,H_TEL
 !
@@ -131,7 +132,8 @@
      &                MESH%X%R,MESH%Y%R,
      &                NPOIN2,WAC_FILES(WACCOB)%LU,BINCOU,NBOR,NPTFR,
      &                AT,DDC,TC1,TC2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
-     &                SZM1%R,SZM2%R,INDIC,'COURANT',NVCOU,TEXCOB,TROUVE)
+     &                SZM1%R,SZM2%R,INDIC,'COURANT',NVCOU,TEXCOB,TROUVE,
+     &                UNITCOB)
 !         IF DEPTH READ
           IF(TROUVE(3)) THEN
             CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
@@ -179,7 +181,8 @@
      &                         'WATER DEPTH     M               ',2, 
      &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINMAR,NBOR,NPTFR,
      &                AT,DDC,TM1,TM2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
-     &                SZM1%R,SZM2%R,INDIM,'HAUTEUR',NVHMA,TEXMAB,TROUVE)
+     &                SZM1%R,SZM2%R,INDIM,'HAUTEUR',NVHMA,TEXMAB,TROUVE,
+     &                UNITMAB)
           CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
           CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TM2-TM1),NPOIN2)
         ENDIF
@@ -287,8 +290,8 @@
      &                  MESH%X%R,MESH%Y%R,
      &                  NPOIN2,UL,BINVEN,NBOR,NPTFR,
      &                  AT,DDC,TV1,TV2,SUV1%R,SUV2%R,SVV1%R,SVV2%R,
-     &                  SVV1%R,SVV2%R,INDIV,'VENT   ',IBID,TEXVEB,
-     &                  TROUVE)
+     &                  SVV1%R,SVV2%R,INDIV,'VENT   ',NVWIN,TEXVEB,
+     &                  TROUVE,UNITVEB)
           ENDIF
         ENDIF
       ENDIF

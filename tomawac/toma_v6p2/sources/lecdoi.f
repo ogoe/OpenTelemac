@@ -7,7 +7,7 @@
      & F3,NAME3FR,NAME3GB,MODE3,
      & X,Y,NPOIN2,NDON,BINDON,NBOR,NPTFR,
      & AT,DDC,TV1,TV2,F11,F12,F21,F22,F31,F32,INDIC,CHDON,NVAR,TEXTE,
-     & TROUVE)
+     & TROUVE,UNITIME)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   20/06/2011
@@ -90,6 +90,7 @@
 !| TROUVE         |<->| 3 LOGICAL, WILL SAY IF VARIABLES HAVE BEEN FOUND
 !| TV1            |<->| DATA TIME T1
 !| TV2            |<->| DATA TIME T2
+!| UNITIME        |-->| UNIT OF TIME IN FILE
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,7 +115,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: F11(NPOIN2),F12(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: F21(NPOIN2),F22(NPOIN2)
       DOUBLE PRECISION, INTENT(INOUT) :: F31(NPOIN2),F32(NPOIN2)
-      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,UNITIME
       DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
       CHARACTER(LEN=3), INTENT(IN)    :: BINDON
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
@@ -224,7 +225,7 @@
 !       TIME STEP AND VARIABLES
 !
         CALL LIT(ATB,W,IB,C,1,'R4',NDON,BINDON,ISTAT)
-        TV1=ATB(1)
+        TV1=ATB(1)*UNITIME
 !
 !       HERE THE DATE, IF PRESENT, SHOULD BE TAKEN INTO ACCOUNT
 !
@@ -295,7 +296,7 @@
         ENDDO
 !
         CALL LIT(ATB,W,IB,C,1,'R4',NDON,BINDON,ISTAT)
-        TV2=ATB(1)
+        TV2=ATB(1)*UNITIME
         IF(TV2.LT.AT) THEN
           TV1=TV2
           GOTO 110

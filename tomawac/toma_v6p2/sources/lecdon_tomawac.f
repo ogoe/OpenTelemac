@@ -5,7 +5,7 @@
      & (FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! TOMAWAC   V6P2                                   25/06/2012
+! TOMAWAC   V6P3                                   25/06/2012
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -42,6 +42,12 @@
 !+        25/06/2012
 !+        V6P2
 !+   Declaration of new keywords for representing diffraction
+!
+!history  J-M HERVOUET (EDF R&D LNHE)
+!+        01/02/2013
+!+        V6P3
+!+   New keywords added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
 !| FILE_DESC      |-->| STORES THE FILES 'SUBMIT' ATTRIBUTES
@@ -355,7 +361,6 @@
       VX_CTE = MOTREA( ADRESS(2, 66) )
       VY_CTE = MOTREA( ADRESS(2, 67) )
       CIMPLI = MOTREA( ADRESS(2, 68) )
-!GM V6P1 - NEW SOURCE TERMS
       COEFWD = MOTREA( ADRESS(2, 69) )
       COEFWE = MOTREA( ADRESS(2, 70) )
       COEFWF = MOTREA( ADRESS(2, 71) )
@@ -367,10 +372,11 @@
       SEUIL  = MOTREA( ADRESS(2, 77) )
       SEUIL1 = MOTREA( ADRESS(2, 78) )
       SEUIL2 = MOTREA( ADRESS(2, 79) )
-!GM Fin
-!V6P2 Diffraction
       F2DIFM = MOTREA( ADRESS(2, 80) )
-!V6P2 End diffraction
+!     TIME UNITS IN FILES
+      UNITCOB= MOTREA( ADRESS(2, 81) )
+      UNITMAB= MOTREA( ADRESS(2, 82) )
+      UNITVEB= MOTREA( ADRESS(2, 83) )
 !
 ! LOGICAL KEYWORDS
 !
@@ -388,9 +394,7 @@
       MAREE  = MOTLOG( ADRESS(3, 12) )
       TRIGO  = MOTLOG( ADRESS(3, 13) )
       SPEULI = MOTLOG( ADRESS(3, 14) )
-!V6P2 Diffraction
       FLTDIF = MOTLOG( ADRESS(3, 15) )
-!V6P2 End diffraction
 !
 ! STRING KEYWORDS
 !

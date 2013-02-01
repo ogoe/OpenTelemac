@@ -6,7 +6,7 @@
      & F2,NAME2FR,NAME2GB,MODE2,
      & F3,NAME3FR,NAME3GB,MODE3,X,Y,NPOIN,NDON,BINDON,NBOR,NPTFR,
      & AT,DDC,TV1,TV2,F11,F12,F21,F22,F31,F32,INDIC,CHDON,NVAR,TEXTE,
-     & TROUVE)
+     & TROUVE,UNITIME)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                  21/06/2011
@@ -71,6 +71,7 @@
 !| NVAR           |-->| NUMBER OF VARIABLES TO BE READ
 !| TV1            |<->| TIME T1 IN THE DATA FILE
 !| TV2            |<->| TIME T2 IN THE DATA FILE
+!| UNITIME        |-->| UNIT OF TIME IN FILE
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,7 +93,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: F11(NPOIN),F21(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: F12(NPOIN),F22(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: F31(NPOIN),F32(NPOIN)
-      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC
+      DOUBLE PRECISION, INTENT(IN)    :: AT,DDC,UNITIME
       DOUBLE PRECISION, INTENT(INOUT) :: TV1,TV2
       CHARACTER(LEN=3), INTENT(IN)    :: BINDON
       CHARACTER(LEN=7), INTENT(IN)    :: CHDON
@@ -152,18 +153,18 @@
 !
 !       READS THE DATE OF THE RECORD
         CALL LIT(DAT2B,W,IW,C1,1,'R4',NDON,BINDON,ISTAT)
-        TV2=DAT2B(1)
+        TV2=DAT2B(1)*UNITIME
 !
 !       HERE THE POSSIBLE DATE IN THE FILE SHOULD BE TRANSMITTED
 !
-!      READS THE DATA
+!       READS THE DATA
 !
-       TROUVE(1)=.FALSE.
-       TROUVE(2)=.FALSE.
-       TROUVE(3)=.FALSE.
-       DO I =1,NVAR
-         VOID=.TRUE.
-         DO J=1,3
+        TROUVE(1)=.FALSE.
+        TROUVE(2)=.FALSE.
+        TROUVE(3)=.FALSE.
+        DO I =1,NVAR
+          VOID=.TRUE.
+          DO J=1,3
            IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
      &       MODE(J).GT.0) THEN
              IF(J.EQ.1) THEN

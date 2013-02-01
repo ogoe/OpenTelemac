@@ -20,7 +20,7 @@
      & SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      & K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      & K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
-     & TB_FAC,MDIA  ,IANMDI,COEMDI)
+     & TB_FAC,MDIA  ,IANMDI,COEMDI,NVWIN)
 !
 !***********************************************************************
 ! TOMAWAC   V6P2                                   27/06/2011
@@ -185,6 +185,7 @@
 !| NT1            |-->| NUMBER OF INTEGRATION POINT ON TETA1
 !| NVEB           |-->| LOGICAL UNIT N. OF BINARY WIND DATA FILE
 !| NVEF           |-->| LOGICAL UNIT N. OF FORMATTED WIND DATA FILE
+!| NVWIN          |-->| NUMBER OF VARIABLES IN THE WIND FILE.
 !| PROINF         |-->| LOGICAL INDICATING INFINITE DEPTH ASSUMEPTION
 !| QINDI          |-->| CONFIGURATION INDEX
 !| RAISF          |-->| FREQUENTIAL RATIO
@@ -260,7 +261,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,MESH,
-     &                                 NAMEWX,NAMEWY
+     &                                 NAMEWX,NAMEWY,UNITVEB
       USE INTERFACE_TOMAWAC, EX_SEMIMP => SEMIMP
 !
       IMPLICIT NONE
@@ -270,7 +271,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN2,NPLAN,NF,NSITS,NPTFR,NVEB,NVEF,LIMIT 
+      INTEGER NPOIN2,NPLAN,NF,NSITS,NPTFR,NVEB,NVEF,LIMIT,NVWIN 
       INTEGER SMOUT , SFROT , SVENT , STRIF , SBREK , INDIC
       INTEGER IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO
       INTEGER IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA
@@ -433,9 +434,6 @@
             ELSE
               NVENT=NVEB
             ENDIF
-!           CALL NOUDON(VENTX,VENTY,X,Y,NPOIN2,NVENT,BINVEN,NBOR,
-!    &                  NPTFR,TFIN,DDC,TV1,TV2,U1,V1,U2,V2,INDIC,
-!    &                  CHDON,2)
             CALL NOUDON(VENTX,NAMEWX,
      &                        'WIND ALONG X    M/S             ',2,    
      &                  VENTY,NAMEWY,
@@ -445,7 +443,7 @@
      &                  MESH%X%R,MESH%Y%R,NPOIN2,
      &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2, 
      &                  U1,U2,V1,V2,V1,V2,INDIC,
-     &                  'WIND   ',2,TEXVEB,TROUVE)
+     &                  'WIND   ',NVWIN,TEXVEB,TROUVE,UNITVEB)
           ELSE
             CALL ANAVEN(VENTX,VENTY,X,Y,NPOIN2,TFIN,DDC,VX_CTE,VY_CTE)
           ENDIF

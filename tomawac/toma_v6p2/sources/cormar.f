@@ -107,7 +107,7 @@
      &              MESH%X%R,MESH%Y%R,NPOIN2,
      &              UL,BINCOU,NBOR,NPTFR,AT,DDC,TC1,TC2, 
      &              SUC1%R,SUC2%R,SVC1%R,SVC2%R,ZM1,ZM2,INDIC,
-     &              'COURANT',NVCOU,TEXCOB,TROUVE)
+     &              'COURANT',NVCOU,TEXCOB,TROUVE,UNITCOB)
         IF(TROUVE(3)) THEN
           CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
           CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TC2-TC1),NPOIN2)
@@ -147,7 +147,7 @@
      &              MESH%X%R,MESH%Y%R,NPOIN2,
      &              UL,BINMAR,NBOR,NPTFR,AT,DDC,TM1,TM2, 
      &              SUC1%R,SUC2%R,SVC1%R,SVC2%R,ZM1,ZM2,INDIM,
-     &              'HAUTEUR',NVHMA,TEXCOB,TROUVE)
+     &              'HAUTEUR',NVHMA,TEXMAB,TROUVE,UNITMAB)
         CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
         CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TM2-TM1),NPOIN2)
 !
