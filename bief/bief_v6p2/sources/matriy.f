@@ -5,7 +5,8 @@
      &(FORMUL,XM,TYPDIA,TYPEXT,
      & XMUL,SF,SG,SH,SU,SV,SW,F,G,H,U,V,W,T,LEGO,
      & XEL,YEL,ZEL,XPT,YPT,ZPT,SURFAC,LGSEG,IKLE,IKLBOR,NBOR,NELBOR,
-     & NULONE,NELEM,NELMAX,NELEB,NELEBX,IELM1,IELM2,S,NPLAN,MESH)
+     & NULONE,NELEM,NELMAX,NELEB,NELEBX,IELM1,IELM2,S,NPLAN,MESH,
+     & SIZEXMT)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -131,7 +132,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NELMAX,NELEM,IELM1,IELM2,S
-      INTEGER, INTENT(IN)             :: NPLAN,NELEB,NELEBX
+      INTEGER, INTENT(IN)             :: NPLAN,NELEB,NELEBX,SIZEXMT
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),NBOR(*)
       INTEGER, INTENT(IN)             :: IKLBOR(NELEBX,*)
       INTEGER, INTENT(IN)             :: NELBOR(NELEBX)
@@ -143,7 +144,7 @@
       DOUBLE PRECISION, INTENT(IN)    :: XEL(*),YEL(*),ZEL(*)
       DOUBLE PRECISION, INTENT(IN)    :: XPT(*),YPT(*),ZPT(*)
       DOUBLE PRECISION, INTENT(IN)    :: XMUL
-      DOUBLE PRECISION, INTENT(INOUT) :: XM(NELMAX,*),T(NELMAX,*)
+      DOUBLE PRECISION, INTENT(INOUT) :: XM(SIZEXMT,*),T(SIZEXMT,*)
       CHARACTER(LEN=16), INTENT(IN)   :: FORMUL
       CHARACTER(LEN=1), INTENT(INOUT) :: TYPDIA,TYPEXT
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
