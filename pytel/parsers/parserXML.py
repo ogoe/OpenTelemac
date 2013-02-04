@@ -41,6 +41,7 @@
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
+import time
 from os import path
 from optparse import Values
 import sys
@@ -302,7 +303,7 @@ class ACTION:
          except Exception as e:
             raise Exception([filterMessage({'name':'ACTION::runCAS'},e,self.bypass)])  # only one item here
       if sortieFiles != []: self.updateCFG({ 'sortie': sortieFiles })
-
+      
 class META:
 
    def __init__(self,title='',bypass=True):
@@ -411,7 +412,7 @@ class PLOT:
 """
    Assumes that the directory ColourMaps is in PWD (i.e. ~root/pytel.)
 """
-def runXML(xmlFile,xmlConfig,bypass):
+def runXML(xmlFile,xmlConfig,cpu,bypass):
 
    xcpt = []                            # try all keys for full report
 
@@ -432,7 +433,9 @@ def runXML(xmlFile,xmlConfig,bypass):
    # ~~ Action analysis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    do = ACTION(xmlFile,title,bypass)
    first = True
+   actionnumber = 0
    for action in xmlRoot.findall("action"):
+      actionnumber += 1
       if first:
          print '\n... looping through the todo list'
          first = False
@@ -548,8 +551,15 @@ def runXML(xmlFile,xmlConfig,bypass):
          # ~~> Action type E. Running CAS files
          if "run" in doable.split(';'):
             try:
+               tic = time.clock()
                do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
+               toc = time.clock()
+               ttime = toc-tic
+               if actionnumber == 1 :cpu = ttime
+               else : continue
             except Exception as e:
+               if actionnumber == 1 : cpu = 'failed'
+               else : continue
                xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
 
    # ~~ Extraction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -672,8 +682,8 @@ def runXML(xmlFile,xmlConfig,bypass):
    # ~~ Error management ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpt != []:  # raise full report
       raise Exception({'name':'runXML','msg':'in xmlFile: '+xmlFile,'tree':xcpt})
-
-   return
+   
+   return cpu
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

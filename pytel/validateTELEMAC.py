@@ -59,6 +59,11 @@
       valid configurations in an array. Testing for validity is now done
       within config.py
 """
+"""@history 04/02/2013 -- Juliette Parisi
+         Validation Reports written, only with the bypass option.
+         One report for the build and one report for the Analysis
+         (Plots, Data extraction, etc)
+"""
 """@brief
 """
 
@@ -67,7 +72,6 @@
 #
 # ~~> dependencies towards standard python
 import sys
-import csv
 import time
 from datetime import date
 from os import path,walk,environ
@@ -75,6 +79,7 @@ from os import path,walk,environ
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
+from parsers.parserCSV import putDataCSV
 from utils.messages import MESSAGES,filterMessage
 
 # _____             ________________________________________________
@@ -183,10 +188,11 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       for xmlFile in xmls.keys():
+         cpu=[]
          print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
          try:
-            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass)
+            runXML(path.realpath(xmlFile),xmls[xmlFile],cpu,options.bypass)
          except Exception as e:
             xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
 
@@ -196,11 +202,22 @@ if __name__ == "__main__":
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}
-      # Variables needed to generate the Validattion report
+# ~~~~ Variables needed to generate the Validattion report ~~~~~~~~~
+      casbuilt=[]
+      casbuilt.append('TestCase')
       cas=[]
-      config=[]
+      cas.append('TestCase')
+      configbuilt=[]
+      configbuilt.append('Configuration')
+      modulebuilt=[]
+      modulebuilt.append('Module')
       module=[]
+      module.append('Module')
+      cpubuilt=[]
+      cpubuilt.append('Duration(s)')
       status=[]
+      status.append('Duration(s)')
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
       for cfgname in cfgs.keys():
          # still in lower case
          if options.rootDir != '': 
@@ -231,53 +248,65 @@ if __name__ == "__main__":
          print '    +> ',codeName
          for key in xmls[codeName]:
             print '    |    +> ',key
-            module.append(codeName)
             cas.append(key)
-            status.append('NotRun')
+            module.append(codeName)
             for xmlFile in xmls[codeName][key]:
                print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
-               config.append(xmls[codeName][key][xmlFile].keys())
+               for i in xmls[codeName][key][xmlFile].keys():
+                  casbuilt.append(key)
+                  modulebuilt.append(codeName)
+                  configbuilt.append(i)
+                  cpubuilt.append('failed')
+               
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print "%s" % (time.ctime(time.time()))
+      cpu=[]
+      i=1
       for codeName in xmls.keys():
-         i = 0
          for key in xmls[codeName]:
             print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-            for xmlFile in xmls[codeName][key]:
+            for xmlFile in xmls[codeName][key]:        
                try:
                   tic = time.clock()
-                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+                  cpubuilt[i] = runXML(xmlFile,xmls[codeName][key][xmlFile],cpu,options.bypass)
                   toc = time.clock()
                   ttime = toc-tic
-                  status[i]= ttime
+                  status.append(ttime)
                   i += 1
-               except Exception as e:
-                  status[i]= 'failed'
+               except Exception as e: 
+                  status.append('failed')
                   i += 1
                   xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
       print "%s" % (time.ctime(time.time()))
-      d = date.today()
-      # Writes the Validation Report in a CSV file
-      print '\n\nWritting Validation Report.\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      with open(path.join(root,d.isoformat()+ '_' + 'ValidationReport.csv'), 'wb') as f:
-         spamwriter = csv.writer(f, delimiter=',',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-         spamwriter.writerow(['Name','Module','Config','Status'])
-         for j in range(len(cas)):
-             spamwriter.writerow([cas[j],module[j],config[j][0],status[j]])
-
+ 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():
       print '\n\nHummm ... I could not complete my work.\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
       + xcpts.exceptMessages()
-
+    
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    else: print '\n\nMy work is done\n\n'
+   
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
+# ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
+   print '\n\nWritting Validation Report.\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+   d = date.today()
+   columnsbuilt = []
+   columns = []
+   ReportFilePlots = path.join(root,d.isoformat()+ '_' + 'ValidationReportPlots.csv')
+   columns = [cas,module,status]
+   putDataCSV(ReportFilePlots,columns)
+   ReportFileBuilt = path.join(root,d.isoformat()+ '_' + 'ValidationReportBuilt.csv') 
+   columnsbuilt = [casbuilt,modulebuilt,configbuilt,cpubuilt]
+   putDataCSV(ReportFileBuilt,columnsbuilt)
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
 
    sys.exit()
