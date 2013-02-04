@@ -704,8 +704,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
          raise Exception([filterMessage({'name':'runCAS','msg':'could not compile: ' + path.basename(useFile)},e,options.bypass)])  # only one item here
       shutil.move(path.basename(useFile),exename) # rename executable because of firewall issues
 
-   if not options.compileonly:
-
    # ~~ Handling the parallelisation ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if ncsize > 0:
       # >>> Parallel execution configuration
