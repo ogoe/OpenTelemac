@@ -138,7 +138,7 @@ if __name__ == "__main__":
    parser.add_option("-q", "--queue",
                       type="string",
                       dest="queue",
-                      default='compute',
+                      default='bgq',
                       help="specify queue used, default is queue compute" )
    parser.add_option("-w", "--walltime",
                       type="string",
