@@ -73,14 +73,6 @@ def create_run_slurm(options):
 #SBATCH --partition=%(queue)s
 ##SBATCH --exclude=cn[0000-0000,0000]
 ##SBATCH --exclusive
-srun hostname | sort > mpid.conf
-for line in $(echo | cat mpid.conf)
-do
-  echo -e "$line 1"
-done > mpitasks.conf
-echo %(ncsize)s > mpitasks | cat mpitasks mpitasks.conf > mpi_telemac.conf
-#
-rm -f mpitasks mpitasks.conf mpid.conf
 %(srcfile)s
 %(code)s %(option)s %(case)s
 """

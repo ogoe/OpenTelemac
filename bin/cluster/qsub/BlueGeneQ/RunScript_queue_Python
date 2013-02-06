@@ -71,17 +71,8 @@ def create_run_slurm(options):
 #SBATCH --partition=%(queue)s
 ##SBATCH --exclude=cn[0000-0000,0000]
 ##SBATCH --exclusive
-srun hostname | sort > mpid.conf
-hosts=''
-for line in $(echo | cat mpid.conf)
-do
-  hosts="${hosts}:${line}"
-done
-hosts=${hosts:1:${#hosts}}
-#
-rm -f mpitasks mpitasks.conf mpid.conf
 %(srcfile)s
-%(code)s --hosts ${hosts} %(case)s --ncsize %(ncsize)s
+%(code)s %(case)s --ncsize %(ncsize)s
 """
     
     run_file = open(filename, mode='w')
