@@ -38,7 +38,6 @@ import sys
 import shutil
 import time
 import difflib
-import optparse
 from os import path,walk,mkdir,getcwd,chdir,remove,rmdir,listdir,stat,makedirs
 from fnmatch import fnmatch #,translate
 from zipfile import ZipFile as zipfile
@@ -105,12 +104,13 @@ def getFileContent(file):
 def putFileContent(file,lines):
    if path.exists(file): remove(file)
    SrcF = open(file,'wb')
-   ibar = 0; pbar = ProgressBar(maxval=len(lines)).start()
-   SrcF.write((lines[0].rstrip()).replace('\r','').replace('\n\n','\n'))
-   for line in lines[1:]:
-      pbar.update(ibar); ibar += 1
-      SrcF.write('\n'+(line.rstrip()).replace('\r','').replace('\n\n','\n'))
-   pbar.finish()
+   if len(lines)>0:
+      ibar = 0; pbar = ProgressBar(maxval=len(lines)).start()
+      SrcF.write((lines[0].rstrip()).replace('\r','').replace('\n\n','\n'))
+      for line in lines[1:]:
+         pbar.update(ibar); ibar += 1
+         SrcF.write('\n'+(line.rstrip()).replace('\r','').replace('\n\n','\n'))
+      pbar.finish()
    SrcF.close()
    return
 """
@@ -208,7 +208,7 @@ def matchSafe(fi,ex,safe,ck):
    exnames = []
    for fo in filenames:
       if fnmatch(fo,ex):
-         if ck > 1:
+         if ck > 1:  #TODO: try except if file access not granted
             remove(path.join(dp,fo))
             continue
          exnames.append(path.join(dp,fo))
@@ -292,67 +292,8 @@ __author__="Sebastien Bourban"
 __date__ ="$19-Jul-2010 08:51:29$"
 
 if __name__ == "__main__":
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Loading comand line options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nLoading command line options\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   # Configure the option parser
-   parser = optparse.OptionParser("usage: %prog [options] fromfile tofile [outfile]\nuse -h for more help.")
-   parser.add_option("-c", "--context",
-                       action="store_true",
-                       dest="context",
-                       default=False,
-                       help='Produce a context format diff (default)')
-   parser.add_option("-u", "--unified",
-                       action="store_true",
-                       dest="unified",
-                       default=False,
-                       help='Produce a unified format diff')
-   parser.add_option("-m", "--html",
-                       action="store_true",
-                       dest="html",
-                       default=False,
-                       help='Produce HTML side by side diff (can use -c and -l in conjunction)')
-   parser.add_option("-n", "--ndiff",
-                       action="store_true",
-                       dest="ndiff",
-                       default=False,
-                       help='Produce a ndiff format diff')
-   parser.add_option("-l", "--ablines",
-                       dest="ablines",
-                       type="int",
-                       default=3,
-                       help='Set number of before/after context lines (default 3)')
-   options, args = parser.parse_args()
+   debug = False
 
-   if len(args) < 2:
-      print '\nFrom-File and To-File are required at least\n'
-      parser.print_help()
-      sys.exit()
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   oFile = ''
-   if len(args) == 2:
-      fFile, tFile = args
-   elif len(args) == 3:
-      fFile, tFile, oFile = args
-   else:
-      print '\nFrom-File and To-File are required at least\n'
-      parser.print_help()
-
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Execute diff ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   print '\n\nDifferenciating:\n    +> ' + fFile + '\nand +> ' + tFile + '\n\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   # ~~> use of writelines because diff is a generator
-   diff = diffTextFiles(fFile,tFile,options)
-   if oFile != '':
-      of = open(oFile,'wb')
-      of.writelines( diff )
-      of.close()
-   else:
-      sys.stdout.writelines( diff )
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    print '\n\nMy work is done\n\n'

@@ -40,11 +40,12 @@
 # ~~> dependencies towards standard python
 import re
 import sys
-from os import path,walk, environ, sep, listdir
+from os import path,walk,remove, environ, sep, listdir
 # ~~> dependencies towards the root of pytel
+sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import getTheseFiles,isNewer,addToList
+from utils.files import getTheseFiles,isNewer,addToList,addFileContent,getFileContent,putFileContent,diffTextFiles
 from utils.progressbar import ProgressBar
 
 debug = False
@@ -1077,10 +1078,45 @@ if __name__ == "__main__":
                       dest="version",
                       default='',
                       help="specify the version number, default is taken from config file" )
+   parser.add_option("-m", "--modules",
+                      type="string",
+                      dest="modules",
+                      default='',
+                      help="specify the list modules, default is taken from config file" )
+   parser.add_option("-x","--noscan",
+                      action="store_true",
+                      dest="noscan",
+                      default=False,
+                      help="will bypass the scan of sources by checking only the cmdf files present" )
+   parser.add_option("--context",
+                       action="store_true",
+                       dest="context",
+                       default=False,
+                       help='Produce a context format diff (default)')
+   parser.add_option("--unified",
+                       action="store_true",
+                       dest="unified",
+                       default=False,
+                       help='Produce a unified format diff')
+   parser.add_option("--html",
+                       action="store_true",
+                       dest="html",
+                       default=False,
+                       help='Produce HTML side by side diff (can use -c and -l in conjunction)')
+   parser.add_option("--ndiff",
+                       action="store_true",
+                       dest="ndiff",
+                       default=False,
+                       help='Produce a ndiff format diff')
+   parser.add_option("--ablines",
+                       dest="ablines",
+                       type="int",
+                       default=3,
+                       help='Set number of before/after context lines (default 3)')
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
-      dircfg = path.dirname(options.configFile)
+      dircfg = path.abspath(path.dirname(options.configFile))
       if path.isdir(dircfg) :
          print ' ... in directory: ' + dircfg + '\n ... use instead: '
          for dirpath,dirnames,filenames in walk(dircfg) : break
@@ -1090,23 +1126,110 @@ if __name__ == "__main__":
       sys.exit()
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
+# ~~~~ Works for only one configuration ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
+   cfgname = cfgs.keys()[0]
+   if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
+   if options.version != '': cfgs[cfgname]['version'] = options.version
+   cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
-   #  /!\  for testing purposes ... no real use
-   for cfgname in cfgs.keys():
-      # still in lower case
-      if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
-      if options.version != '': cfgs[cfgname]['version'] = options.version
-      # parsing for proper naming
-      cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Reads command line arguments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if len(args) < 2:
+      print '\nAn action name and at least one file are required\n'
+      parser.print_help()
+      sys.exit()
+   codeName = args[0]
 
-      debug = True
-
-      # ~~ Scans all source files to build a relation database ~~~~~
-      print '\n\nScanning the source code\n\
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Comparison with standard PRINCI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if codeName == 'princi':
+      if len(args[1:]) > 1: 
+         print '\nOnly one PRINCI file can be processed at a time\n'
+         sys.exit()
+      difFile = args[1]
+      print '\n\nScanning Fortran\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      fic,mdl,sbt,fct,prg,dep,racine = scanSources(cfgname,cfg,False)
-      
-   sys.exit()
 
+      # ~~> Scans the user PRINCI file
+      print '      ~> scanning your PRINCI file: ',path.basename(difFile)
+      SrcF = open(difFile,'r')
+      if path.splitext(path.basename(difFile))[1].lower() in ['.f90','.f95']:
+         flines = delContinuedsF90(delComments(SrcF))        # Strips the F90+ commented lines
+      else:
+         flines = delContinuedsF77(delComments(SrcF))        # Strips the F77 commented lines
+      SrcF.close()                                           # and deletes the continuation characters
+      pFiles = []
+      print '        +> found:'
+      while flines != []:
+         code,w,face,ctns,flines = parsePrincipalWrap(flines)
+         pFiles.append(w[1])
+         print '            - ',w[1]
+      if pFiles == []:
+         print '         ... nothing !'
+         print '\n... This does not seem a Fortran file I can read.\n'
+         sys.exit()
+
+      # ~~> Get and store original version of files
+      print '      ~> scanning the entire system: '
+      oFiles = {}
+      print '        +> found:'
+      if not options.noscan:
+         for mod in cfg['MODULES']:
+            for oFile in getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f','.f90']):
+               SrcF = open(oFile,'r')
+               if path.splitext(path.basename(oFile))[1].lower() in ['.f90','.f95']:
+                  flines = delContinuedsF90(delComments(SrcF))
+               else:
+                  flines = delContinuedsF77(delComments(SrcF))
+               SrcF.close()
+               code,w,face,ctns,flines = parsePrincipalWrap(flines)
+               if w[1] in pFiles:
+                  oFiles.update({w[1]:oFile})
+                  print '            - ',path.basename(oFile),' in ',mod
+      else:
+         print '\n... Option with noscan not implemented yet ...\n'
+         sys.exit()
+      if oFiles == {}:
+         print '         ... nothing !'
+         print '\n... Your program does not seem to be related to the system in this configuration.\n'
+         sys.exit()
+      oriFile = path.splitext(difFile)[0]+'.original'+path.splitext(difFile)[1]
+      putFileContent(oriFile,[])
+      for p in pFiles:
+         if p in oFiles.keys():
+            addFileContent(oriFile,getFileContent(oFiles[p]))
+
+      # ~~> Execute diff 
+      print '\n\nDifferenciating:\n    +> ' + oriFile + '\nand +> ' + difFile + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      # ~~> use of writelines because diff is a generator
+      diff = diffTextFiles(oriFile,difFile,options)
+      remove(oriFile)
+      if options.html:
+         htmlFile = path.splitext(difFile)[0]+'.html'
+         of = open(htmlFile,'wb')
+         of.writelines( diff )
+         of.close()
+         print '\n      ~> produced: ',htmlFile,'\n'
+      elif options.unified:
+         diffFile = path.splitext(difFile)[0]+'.diff'
+         of = open(diffFile,'wb')
+         of.writelines( diff )
+         of.close()
+         print '\n      ~> produced: ',diffFile,'\n'
+      else:
+         sys.stdout.writelines( diff )
+
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   else:
+      print '\nDo not know what to do with this code name: ',codeName
+      sys.exit()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print '\n\nMy work is done\n\n'
+
+   sys.exit()
