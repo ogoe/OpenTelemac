@@ -35,6 +35,7 @@
    Adding the functionality of displaying changes (html/diff) made
       to a PRINCI file by comparing individual subroutines to their
       original version.
+   Further capability to compare changes made between 2 PRINCI files.
 """
 """@brief
 """
@@ -1150,61 +1151,63 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Comparison with standard PRINCI ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if codeName == 'princi':
-      if len(args[1:]) > 1: 
-         print '\nOnly one PRINCI file can be processed at a time\n'
-         sys.exit()
-      difFile = args[1]
       print '\n\nScanning Fortran\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
 
-      # ~~> Scans the user PRINCI file
-      print '      ~> scanning your PRINCI file: ',path.basename(difFile)
-      SrcF = open(difFile,'r')
-      if path.splitext(path.basename(difFile))[1].lower() in ['.f90','.f95']:
-         flines = delContinuedsF90(delComments(SrcF))        # Strips the F90+ commented lines
-      else:
-         flines = delContinuedsF77(delComments(SrcF))        # Strips the F77 commented lines
-      SrcF.close()                                           # and deletes the continuation characters
-      pFiles = []
-      print '        +> found:'
-      while flines != []:
-         code,w,face,ctns,flines = parsePrincipalWrap(flines)
-         pFiles.append(w[1])
-         print '            - ',w[1]
-      if pFiles == []:
-         print '         ... nothing !'
-         print '\n... This does not seem a Fortran file I can read.\n'
-         sys.exit()
+      if len(args[1:]) >= 1:
+         difFile = args[1]
+         # ~~> Scans the first user PRINCI file
+         print '      ~> scanning your PRINCI file: ',path.basename(difFile)
+         SrcF = open(difFile,'r')
+         if path.splitext(path.basename(difFile))[1].lower() in ['.f90','.f95']:
+            flines = delContinuedsF90(delComments(SrcF))        # Strips the F90+ commented lines
+         else:
+            flines = delContinuedsF77(delComments(SrcF))        # Strips the F77 commented lines
+         SrcF.close()                                           # and deletes the continuation characters
+         pFiles = []
+         print '        +> found:'
+         while flines != []:
+            code,w,face,ctns,flines = parsePrincipalWrap(flines)
+            pFiles.append(w[1])
+            print '            - ',w[1]
+         if pFiles == []:
+            print '         ... nothing !'
+            print '\n... This does not seem a Fortran file I can read.\n'
+            sys.exit()
 
-      # ~~> Get and store original version of files
-      print '      ~> scanning the entire system: '
-      oFiles = {}
-      print '        +> found:'
-      if not options.noscan:
-         for mod in cfg['MODULES']:
-            for oFile in getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f','.f90']):
-               SrcF = open(oFile,'r')
-               if path.splitext(path.basename(oFile))[1].lower() in ['.f90','.f95']:
-                  flines = delContinuedsF90(delComments(SrcF))
-               else:
-                  flines = delContinuedsF77(delComments(SrcF))
-               SrcF.close()
-               code,w,face,ctns,flines = parsePrincipalWrap(flines)
-               if w[1] in pFiles:
-                  oFiles.update({w[1]:oFile})
-                  print '            - ',w[1],' in ',path.basename(oFile),' in ',mod
-      else:
-         print '\n... Option with noscan not implemented yet ...\n'
-         sys.exit()
-      if oFiles == {}:
-         print '         ... nothing !'
-         print '\n... Your program does not seem to be related to the system in this configuration.\n'
-         sys.exit()
-      oriFile = path.splitext(difFile)[0]+'.original'+path.splitext(difFile)[1]
-      putFileContent(oriFile,[])
-      for p in pFiles:
-         if p in oFiles.keys():
-            addFileContent(oriFile,getFileContent(oFiles[p]))
+      if len(args[1:]) == 1: # if only one PRINCI ...
+         # ~~> Get and store original version of files
+         print '      ~> scanning the entire system: '
+         oFiles = {}
+         print '        +> found:'
+         if not options.noscan:
+            for mod in cfg['MODULES']:
+               for oFile in getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f','.f90']):
+                  SrcF = open(oFile,'r')
+                  if path.splitext(path.basename(oFile))[1].lower() in ['.f90','.f95']:
+                     flines = delContinuedsF90(delComments(SrcF))
+                  else:
+                     flines = delContinuedsF77(delComments(SrcF))
+                  SrcF.close()
+                  code,w,face,ctns,flines = parsePrincipalWrap(flines)
+                  if w[1] in pFiles:
+                     oFiles.update({w[1]:oFile})
+                     print '            - ',w[1],' in ',path.basename(oFile),' in ',mod
+         else:
+            print '\n... Option with noscan not implemented yet ...\n'
+            sys.exit()
+         if oFiles == {}:
+            print '         ... nothing !'
+            print '\n... Your program does not seem to be related to the system in this configuration.\n'
+            sys.exit()
+         oriFile = path.splitext(difFile)[0]+'.original'+path.splitext(difFile)[1]
+         putFileContent(oriFile,[])
+         for p in pFiles:
+            if p in oFiles.keys():
+               addFileContent(oriFile,getFileContent(oFiles[p]))
+
+      elif len(args[1:]) == 2: # case of two PRINCI files ...
+         oriFile = args[2]
 
       # ~~> Execute diff 
       print '\n\nDifferenciating:\n    +> ' + oriFile + '\nand +> ' + difFile + '\n\
