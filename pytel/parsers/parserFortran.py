@@ -31,6 +31,11 @@
    hidden directories
    Adding scan of .F and .F90 files as well
 """
+"""@history 06/02/2013 -- Sebastien E. Bourban
+   Adding the functionality of displaying changes (html/diff) made
+      to a PRINCI file by comparing individual subroutines to their
+      original version.
+"""
 """@brief
 """
 
@@ -1131,6 +1136,7 @@ if __name__ == "__main__":
    cfgname = cfgs.keys()[0]
    if options.rootDir != '': cfgs[cfgname]['root'] = options.rootDir
    if options.version != '': cfgs[cfgname]['version'] = options.version
+   if options.modules != '': cfgs[cfgname]['modules'] = options.modules
    cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1186,7 +1192,7 @@ if __name__ == "__main__":
                code,w,face,ctns,flines = parsePrincipalWrap(flines)
                if w[1] in pFiles:
                   oFiles.update({w[1]:oFile})
-                  print '            - ',path.basename(oFile),' in ',mod
+                  print '            - ',w[1],' in ',path.basename(oFile),' in ',mod
       else:
          print '\n... Option with noscan not implemented yet ...\n'
          sys.exit()
