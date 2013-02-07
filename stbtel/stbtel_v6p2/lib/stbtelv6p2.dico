@@ -448,7 +448,7 @@ NOM = 'FICHIER DES PARAMETRES'
 NOM1 = 'STEERING FILE'
 TYPE = CARACTERE
 INDEX = 4
-SUBMIT = 'INUTILE;FORT.3;OBLIG;ASC;LIT;CAS'
+SUBMIT = 'INUTILE;STBCAS;OBLIG;ASC;LIT;CAS'
 DEFAUT = ' '
 DEFAUT1 = ' '
 MNEMO = ''
@@ -747,7 +747,7 @@ NOM = 'DICTIONNAIRE'
 NOM1 = 'DICTIONARY'
 TYPE = CARACTERE
 INDEX = 16
-SUBMIT = 'INUTILE;FORT.2;OBLIG;ASC;LIT;DICO'
+SUBMIT = 'INUTILE;STBDICO;OBLIG;ASC;LIT;DICO'
 DEFAUT  = 'stbtelV6P2.dico'
 DEFAUT1 = 'stbtelV6P2.dico'
 MNEMO = ''
@@ -852,6 +852,193 @@ AIDE1 =
 'When treating dry elements elimination, specify that
 all time steps are to be stored in the results file.'
 
+/======================================================================/
+/        FICHIER DE DECLARATION DES MOTS CLES DU CODE STBTEL
+/                   AJOUT POUR LA VERSION  6.2 
+/                   
+/======================================================================/
+NOM = 'DEBUG'
+NOM1 = 'DEBUG'
+TYPE = LOGIQUE
+INDEX = 12
+DEFAUT = NON
+DEFAUT1 = NO
+MNEMO = 'DEBUG'
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE =
+'Permet d activer le mode debuggage.'
+AIDE1 =
+'Activate the debug mode.'
+
+NOM = 'CONVERTISSEUR'
+NOM1 = 'CONVERTER'
+TYPE = LOGIQUE
+INDEX = 13
+DEFAUT = NON
+DEFAUT1 = NO
+MNEMO = 'CONVER'
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE =
+'Permet d activer le module de conversion.'
+AIDE1 =
+'Activate the conversion module.'
+
+NOM = 'SELAFIN EN DOUBLE PRECISION'
+NOM1 = 'SELAFIN IN DOUBLE PRECISION'
+TYPE = LOGIQUE
+INDEX = 14
+DEFAUT = NON
+DEFAUT1 = NO
+MNEMO = 'SELAFIN_DOUBLE'
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE =
+'Precise que le fichier selafin est en double precision'
+AIDE1 =
+'Precize that the selafin file is in double precision'
+
+NOM = 'FORMAT DU FICHIER D ENTREE'
+NOM1 = 'INPUT FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 22
+DEFAUT = 'SELAFIN'
+DEFAUT1 = 'SELAFIN'
+MNEMO = 'INFMT'
+CHOIX = 'SELAFIN';
+'MED';
+'UNV';
+'CGNS'
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE = 'Specifie le format du fichier d entree'
+AIDE1 = 'Specify input file format'
+
+NOM = 'FORMAT DU FICHIER DE SORTIE'
+NOM1 = 'OUTPUT FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 23
+DEFAUT = 'SELAFIN'
+DEFAUT1 = 'SELAFIN'
+MNEMO = 'OUTFMT'
+CHOIX = 'SELAFIN';
+'MED';
+'UNV';
+'CGNS';
+'VTK';
+'CGNS'
+RUBRIQUE = 'CONVERTISSEUR'
+RUBRIQUE1 = 'CONVERTER'
+NIVEAU = 1
+AIDE = 'Specifie le format du fichier de sortie'
+AIDE1 = 'Specify output file format'
+
+NOM = 'FICHIER D ENTREE'
+NOM1 = 'INPUT FILE'
+TYPE = CARACTERE
+INDEX = 24
+SUBMIT='INUTILE;STBINP;OBLIG;BIN;LIT;PARAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+MNEMO = 'INFILE'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE =
+'Nom du fichier a convertir.'
+AIDE1 =
+'Name of the file to convert.'
+
+NOM = 'FICHIER DE SORTIE'
+NOM1 = 'OUTPUT FILE'
+TYPE = CARACTERE
+INDEX = 25
+SUBMIT='INUTILE;STBOUT;OBLIG;BIN;ECR;MULTI2'
+DEFAUT = ' '
+DEFAUT1 = ' '
+MNEMO = 'OUTFILE'
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE =
+'Nom du fichier converti'
+AIDE1 =
+'Name of the converted file'
+
+NOM = 'FICHIER DES CONDITIONS LIMITES'
+NOM1 = 'BOUNDARY FILE'
+TYPE = CARACTERE
+INDEX = 26
+SUBMIT='INUTILE;STBBND;FACUL;ASC;LIT;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+MNEMO = 'LIMFILE'
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE =
+'Nom du fichier des conditions limites'
+AIDE1 =
+'Name of the boundary condition file'
+
+NOM = 'FICHIER LOG'
+NOM1 = 'LOG FILE'
+TYPE = CARACTERE
+INDEX = 27
+SUBMIT='INUTILE;STBLOG;FACUL;ASC;LIT;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+MNEMO = 'LOGFILE'
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE =
+'Nom du fichier complementaire pour le format UNV'
+AIDE1 =
+'Name of the complementary file for the UNV format'
+
+NOM = 'FICHIER DES CONDITIONS LIMITES EN SORTIE'
+NOM1 = 'OUTPUT BOUNDARY FILE'
+TYPE = CARACTERE
+INDEX = 28
+SUBMIT='INUTILE;STBOBD;FACUL;ASC;ECR;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+MNEMO = 'OUTBNDFILE'
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE =
+'Nom du fichier des conditions limites pour le fichier converti'
+AIDE1 =
+'Name of the boundary file for the converted file'
+
+NOM = 'FICHIER LOG EN SORTIE'
+NOM1 = 'OUTPUT LOG FILE'
+TYPE = CARACTERE
+INDEX = 29
+SUBMIT='INUTILE;STBOLG;FACUL;ASC;ECR;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+MNEMO = 'OUTLOGFILE'
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+NIVEAU = 1
+AIDE =
+'Nom du fichier complementaire pour le fichier converti'
+AIDE1 =
+'Name of the complementary file for the converted file'
+
 //----Librairies du code-------------------------------------------
 //
 //Conventions de notation :
@@ -929,7 +1116,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE
 INDEX = 57
 MNEMO = ''
-TAILLE = 8
+TAILLE = 14
 DEFAUT = 'FICHIER UNIVERSEL';
          'FICHIER DE GEOMETRIE POUR TELEMAC';
          'FICHIER DES CONDITIONS AUX LIMITES';
@@ -937,7 +1124,13 @@ DEFAUT = 'FICHIER UNIVERSEL';
          'FICHIERS DES FONDS';
          'FICHIER FORTRAN';
          'FICHIER DES PARAMETRES';
-         'DICTIONNAIRE'
+         'DICTIONNAIRE';
+         'FICHIER D ENTREE';
+         'FICHIER DE SORTIE';
+         'FICHIER DES CONDITIONS LIMITES';
+         'FICHIER LOG';
+         'FICHIER DES CONDITIONS LIMITES EN SORTIE';
+         'FICHIER LOG EN SORTIE'
 DEFAUT1 ='UNIVERSAL FILE';
          'GEOMETRY FILE FOR TELEMAC';
          'BOUNDARY CONDITIONS FILE';
@@ -945,7 +1138,13 @@ DEFAUT1 ='UNIVERSAL FILE';
          'BOTTOM TOPOGRAPHY FILES';
          'FORTRAN FILE';
          'STEERING FILE';
-         'DICTIONARY'
+         'DICTIONARY';
+         'INPUT FILE';
+         'OUTPUT FILE';
+         'BOUNDARY FILE';
+         'LOG FILE';
+         'OUTPUT BOUNDARY FILE';
+         'OUTPUT LOG FILE'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1

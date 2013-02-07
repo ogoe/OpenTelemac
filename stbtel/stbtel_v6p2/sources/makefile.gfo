@@ -104,11 +104,19 @@ stbtel.f             \
 surcon.f             \
 verifi.f             \
 verifs.f             \
-voisin_stbtel.f
+voisin_stbtel.f      \
+conv_lim.f           \
+lib_vtk_io.F         \
+conv_med.F           \
+conv_serafin.f       \
+conv_vtk.F           \
+conv_cgns.F          \
+conv_unv.f           \
+converter.f          
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
 
 #
 # ------------------------ Cibles

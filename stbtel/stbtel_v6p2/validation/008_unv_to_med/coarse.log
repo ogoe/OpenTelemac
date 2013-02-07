@@ -1,0 +1,18 @@
+ Total no. of nodes                   :    34519
+ Total no. of elements                :    196475
+ Total no. of families                :    12
+ List of families, family_id, color_id :
+GEOM : 1, 0
+INFLOW : 2, 1
+GEOM_INFLOW : 3, 4
+SIDE : 4, 4
+OUTFLOW : 5, 2
+BODY : 6, 1
+CURVES : 7, 0
+NODES : 8, 0
+MESH : 9, 0
+SIDERIGHT : 10, 3
+INSIDE : 11, 0
+B_INSIDE : 12, 2
+ Total number of external faces       :    4
+ Priority for the external faces      :    1 2 3 4

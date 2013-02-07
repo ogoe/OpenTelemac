@@ -110,7 +110,7 @@ import shutil
 import threading
 from time import gmtime, strftime
 from subprocess import *
-from os import path,walk,mkdir,chdir,remove,system,sep,environ
+from os import path,walk,mkdir,chdir,remove,system,sep,environ,listdir
 # ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
@@ -268,6 +268,13 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                #print ' copying: ', path.basename(cref)
                print '  moving: ', path.basename(cref)
                npsize = npsize + 1
+         elif oFiles[k].split(';')[5] == 'MULTI2':
+            for crun in listdir('.') :
+               if crun.count(oFiles[k].split(';')[1]) == 1:
+                  cref = path.join(CASDir,crun.lower().replace(oFiles[k].split(';')[1].lower(),eval(cas[k][0]).split('.')[0])) + '.' + eval(cas[k][0]).split('.')[1]
+                  if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
+                  shutil.move(crun,cref)
+                  print '  moving: ', path.basename(cref)
          else:
             cref = path.join(CASDir,eval(cas[k][0]))
             if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')

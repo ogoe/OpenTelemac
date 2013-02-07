@@ -85,7 +85,7 @@ MAKEFILE      = makefile
 #------- Sources Fortran
 
 SRCS= \
-declarations_stbtel.f   \
+declarations_stbtel.F   \
 homere_stbtel.f             \
 circul.f             \
 cordep.f             \
@@ -127,12 +127,20 @@ stbtel.f             \
 surcon.f             \
 verifi.f             \
 verifs.f             \
-voisin_stbtel.f
+voisin_stbtel.f      \
+conv_lim.f           \
+lib_vtk_io.F         \
+conv_med.F           \
+conv_serafin.f       \
+conv_vtk.F           \
+conv_cgns.F          \
+conv_unv.f           \
+converter.f          
 
 #
 #------- Objets
 #
-OBJS = $(SRCS:.f=.o)
+OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
 
 PRINT	      = pr
 
@@ -245,7 +253,7 @@ transfert_modules: create_workdir
 
 #------- Modules
 #
-MODS = declarations_stbtel.o
+MODS = declarations_stbtel.o lib_vtk_io.o conv_lim.o conv_unv.o conv_vtk.o conv_serafin.o conv_med.o conv_cgns.o
 
 modules:	$(MODS)
 		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \

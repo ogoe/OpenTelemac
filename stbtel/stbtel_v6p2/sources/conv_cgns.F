@@ -1,0 +1,462 @@
+      MODULE CONV_CGNS
+      CONTAINS
+!                       ***************** 
+                        SUBROUTINE READ_CGNS 
+!                       *****************
+     &(CGNSFILE)
+!
+!***********************************************************************
+! STBTEL   V6P1                                   11/07/2011
+!***********************************************************************
+!
+!BRIEF    READS A FILE OF CGNS FORMAT AND FILL THE MESH OBJECT
+!                        
+!HISTORY  Y.AUDOUIN (EDF)
+!+        11/07/2011
+!+        V6P1
+!+   CREATION OF THE FILE
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CGNSFILE        |-->| NAME OF THE CGNS FILE IN THE TEMPORARY FOLDER
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE DECLARATIONS_STBTEL
+!      
+      IMPLICIT NONE      
+      ! LANGAE AND OUTPUT VALUE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+#if defined(HAVE_CGNS)      
+      INCLUDE 'cgnslib_f.h'
+#endif      
+!      
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=MAXLENHARD), INTENT(IN) :: CGNSFILE
+
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+#if defined(HAVE_CGNS)      
+      INTEGER :: IERR
+      INTEGER :: I, J
+      INTEGER :: ITIME, IVAR
+      CHARACTER*32 :: CGNSNAME, SOLNAME, VARNAME
+      INTEGER :: ICELLDIM, IPHYSDIM
+      INTEGER :: INDEX_BASE, INDEX_ZONE, INDEX_COORD, INDEX_SECTION
+      INTEGER :: INDEX_FLOW, INDEX_FIELD
+      INTEGER :: ISIZE(3,3), IDATA(2)
+      INTEGER, ALLOCATABLE :: IELEM(:,:), PARENT(:)
+      INTEGER :: NBDYELEM
+      INTEGER :: TYPGEO
+      INTEGER :: PARENT_FLAG
+      INTEGER :: ISTART, IEND
+      INTEGER :: DATATYPE, GRIDLOCATION
+!      
+      WRITE(LU,*) '----------------------------------------------------'
+      IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING READING OF CGNS FILE'
+      IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT LECTURE DU FICHIER CGNS'
+      WRITE(LU,*) '----------------------------------------------------'
+!      
+!-----------------------------------------------------------------------
+!
+      CALL CG_OPEN_F(CGNSFILE,CG_MODE_READ,NINP,IERR)
+      CALL FNCT_CHECK(IERR,'CG_OPEN_F')
+      !READ BASE
+      INDEX_BASE = 1
+      CALL CG_BASE_READ_F(NINP,INDEX_BASE,CGNSNAME,MESH2%NDIM,IPHYSDIM,
+     &                     IERR)
+      CALL FNCT_CHECK(IERR,'CG_BASE_READ_F')
+      if(LNG.EQ.1) THEN
+      IF(DEBUG) WRITE(LU,*) 'NOM DE LA BASE :', CGNSNAME
+      IF(DEBUG) WRITE(LU,*) 'MESH2%NDIM :', MESH2%NDIM
+      endif
+      IF(LNG.EQ.2) THEN
+      IF(DEBUG) WRITE(LU,*) 'BASENAME:', CGNSNAME
+      IF(DEBUG) WRITE(LU,*) 'MESH2%NDIM:', MESH2%NDIM
+      ENDIF
+      ! READ ZONE INFORMATION
+      INDEX_ZONE = 1
+      CALL CG_ZONE_READ_F(NINP,INDEX_BASE,INDEX_ZONE,CGNSNAME,
+     &                     ISIZE(1,:),IERR)
+      CALL FNCT_CHECK(IERR,'CG_ZONE_READ_F')
+      MESH2%NPOIN = ISIZE(1,1)
+      MESH2%TITLE = CGNSNAME
+      IF(LNG.EQ.1) THEN
+      IF(DEBUG) WRITE(LU,*) 'NOM DE LA ZONE : ',CGNSNAME
+      IF(DEBUG) WRITE(LU,*) 'NOMBRE DE POINTS : ',MESH2%NPOIN
+      ENDIF
+      IF(LNG.EQ.2) THEN
+      IF(DEBUG) WRITE(LU,*) 'ZONENAME: ',CGNSNAME
+      IF(DEBUG) WRITE(LU,*) 'NUMBER OF POINTS: ',MESH2%NPOIN
+      ENDIF
+      ! READ COORDINATES 
+      ALLOCATE(MESH2%X(MESH2%NPOIN),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATION MESH2%X')
+      CALL CG_COORD_READ_F(NINP,INDEX_BASE,INDEX_ZONE,'CoordinateX',
+     &                      REALDOUBLE,1,MESH2%NPOIN,MESH2%X,IERR)
+      CALL FNCT_CHECK(IERR,'CG_COORD_READ_F X')
+      ALLOCATE(MESH2%Y(MESH2%NPOIN),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATION MESH2%X')
+      CALL CG_COORD_READ_F(NINP,INDEX_BASE,INDEX_ZONE,'CoordinateY',
+     &                      REALDOUBLE,1,MESH2%NPOIN,MESH2%Y,IERR)
+      CALL FNCT_CHECK(IERR,'CG_COORD_READ_F Y')
+      IF(MESH2%NDIM.EQ.3) THEN
+        ALLOCATE(MESH2%Z(MESH2%NPOIN),STAT=IERR)
+        CALL FNCT_CHECK(IERR,'ALLOCATION MESH2%X')
+      CALL CG_COORD_READ_F(NINP,INDEX_BASE,INDEX_ZONE,'CoordinateZ',
+     &                      REALDOUBLE,1,MESH2%NPOIN,MESH2%Z,IERR)
+      CALL FNCT_CHECK(IERR,'CG_COORD_READ_F Z')
+      ENDIF
+      ! IDENTIFY THE ELEMENT TYPE
+      INDEX_SECTION = 1
+      CALL CG_SECTION_READ_F(NINP,INDEX_BASE,INDEX_ZONE,
+     &   INDEX_SECTION,CGNSNAME,TYPGEO,ISTART,IEND,NBDYELEM,
+     &   PARENT_FLAG,IERR)
+      CALL FNCT_CHECK(IERR,'CG_SECTION_READ_F')
+      ! COUNTING THE NUMBER OF ELEMENTS
+      MESH2%NELEM = IEND
+      SELECT CASE (TYPGEO)
+      CASE(TRI_3)
+        MESH2%TYPE_ELEM = TYPE_TRIA3
+        MESH2%NDP = 3
+      CASE(QUAD_4)
+        MESH2%TYPE_ELEM = TYPE_QUAD4
+        MESH2%NDP = 4
+      CASE(TETRA_4)
+        MESH2%TYPE_ELEM = TYPE_TETRA4
+        MESH2%NDP = 4
+      CASE(PENTA_6)
+        MESH2%TYPE_ELEM = TYPE_PRISM6
+        MESH2%NDP = 6
+      END SELECT
+      ! SET ELEMENT CONNECTIVITY:
+      ALLOCATE(IELEM(MESH2%NDP,MESH2%NELEM),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATE IELEM')
+      ! READING THE CONNECTIVITY TABLE 
+      CALL CG_ELEMENTS_READ_F(NINP,INDEX_BASE,INDEX_ZONE,INDEX_SECTION,
+     &          IELEM,PARENT,IERR)
+      CALL FNCT_CHECK(IERR,'CG_ELEMENTS_READ_F')
+      ! BUILDING THE CONNECTIVITY TABLE
+      ALLOCATE(MESH2%IKLES(MESH2%NELEM*MESH2%NDP),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATION MESH2%IKLES')
+      DO I=1,MESH2%NELEM
+        DO J=1,MESH2%NDP
+          MESH2%IKLES((I-1)*MESH2%NDP+J) = IELEM(J,I)
+        ENDDO
+      ENDDO
+      DEALLOCATE(IELEM)
+      ! SETTING MESH_OBJECT VALUES
+      ALLOCATE(MESH2%IPOBO(MESH2%NPOIN),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%IPOBO')
+      MESH2%IPOBO(:) = 0
+      ALLOCATE(MESH2%NAMECOO(MESH2%NDIM),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%NAMECOO')
+      ALLOCATE(MESH2%UNITCOO(MESH2%NDIM),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%UNITCOO')
+      MESH2%NAMECOO(1) = 'X'
+      MESH2%UNITCOO(1) = 'M'
+      MESH2%NAMECOO(2) = 'Y'
+      MESH2%UNITCOO(2) = 'M'
+      IF(MESH2%NDIM.EQ.3) THEN
+        MESH2%NAMECOO(3) = 'Z'
+        MESH2%UNITCOO(3) = 'M'
+      ENDIF
+      DO I=1,MESH2%NDIM
+        CALL BLANC2USCORE(MESH2%NAMECOO(I),16)
+        CALL BLANC2USCORE(MESH2%UNITCOO(I),16)
+        ! CHANGING IB IF IN 3D
+        MESH2%IB(7) = 1
+      ENDDO
+
+      ! RESULTS INFORMATIONS
+      ! READING THE NUMBER OF TIMSTEP
+      CALL CG_BITER_READ_F(NINP,INDEX_BASE,CGNSNAME,MESH2%TIMESTEP,IERR)
+      CALL FNCT_CHECK(IERR,'CG_BITER_READ_F')
+      IF (DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 'NOMBRE DE PAS DE TEMPS :',
+     &           MESH2%TIMESTEP
+      IF (DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 'NUMBER OF TIMESTEP:',
+     &           MESH2%TIMESTEP
+      ! IF WE HAVE RESULTS
+      IF(MESH2%TIMESTEP.NE.0) THEN
+        ! LOOPING FOR EACH TIME STEP
+        DO ITIME=1,MESH2%TIMESTEP
+          ! READ FLOW SOLUTION NODE
+          CALL CG_SOL_INFO_F(NINP,INDEX_BASE,INDEX_ZONE,ITIME,SOLNAME,
+     &                       GRIDLOCATION,IERR)
+          CALL FNCT_CHECK(IERR,'CG_SOL_INFO_F '//I2CHAR(ITIME))
+          IF (DEBUG) WRITE(LU,*) 'SOLUTION NAME : ',SOLNAME
+          ! IF THE FIRST LOOP IDENTIFY THE NUMBER OF VARIABLES
+          ! AND ALLOCATION RESULTS
+          IF(ITIME.EQ.1) THEN
+            CALL CG_NFIELDS_F(NINP,INDEX_BASE,INDEX_ZONE,ITIME,
+     &                        MESH2%NVAR,IERR)
+            CALL FNCT_CHECK(IERR,'CG_NFIELDS_F')
+            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+     &             'NOMBRE DE VARIABLES :',MESH2%NVAR
+            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+     &             'NUMBER OF VARIABLES:',MESH2%NVAR
+            ALLOCATE(MESH2%RESULTS(MESH2%TIMESTEP,MESH2%NVAR,
+     &                             MESH2%NPOIN),STAT=IERR)
+            CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%RESULTS')
+            ALLOCATE(MESH2%NAMEVAR(MESH2%NVAR),STAT=IERR)
+            CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%NAMEVAR')
+            ALLOCATE(MESH2%UNITVAR(MESH2%NVAR),STAT=IERR)
+            CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%UNITVAR')
+          ENDIF
+          !   WRITE FLOW SOLUTION (USER MUST USE SIDS-STANDARD NAMES HERE)
+          DO IVAR=1,MESH2%NVAR
+            CALL CG_FIELD_INFO_F(NINP,INDEX_BASE,INDEX_ZONE,ITIME,
+     &                           IVAR,DATATYPE,VARNAME,IERR)
+            CALL FNCT_CHECK(IERR,'CG_FIELD_INFO_F '//I2CHAR(IVAR))
+            IF(DEBUG.AND.(LNG.EQ.1)) WRITE(LU,*) 
+     &              'NOM DE LA VARIABLE :',VARNAME
+            IF(DEBUG.AND.(LNG.EQ.2)) WRITE(LU,*) 
+     &              'NAME OF THE VARIABLE:',VARNAME
+            ! IF FIRST TIME STEP SAVING VAR NAMES
+            IF (ITIME.EQ.1) THEN
+              MESH2%NAMEVAR(IVAR) = VARNAME(1:16)
+              MESH2%UNITVAR(IVAR) = VARNAME(16:32)
+              CALL BLANC2USCORE(MESH2%NAMEVAR(IVAR),16)
+              CALL BLANC2USCORE(MESH2%UNITVAR(IVAR),16)
+            ENDIF
+            ! READING RESULTS
+            CALL CG_FIELD_READ_F(NINP,INDEX_BASE,INDEX_ZONE,ITIME,
+     &                           VARNAME,REALDOUBLE,1,MESH2%NPOIN,
+     &                           MESH2%RESULTS(ITIME,IVAR,:),IERR)
+            CALL FNCT_CHECK(IERR,'CG_FIELD_READ_F '//I2CHAR(IVAR))
+          ENDDO
+        ENDDO
+        ! READING THE TIME TABLE
+        ! GO TO BASEITERATIVEDATA LEVEL
+        CALL CG_GOTO_F(NINP,INDEX_BASE,IERR,'BaseIterativeData_t',
+     &                 1,'end')
+        CALL FNCT_CHECK(IERR,'CG_GOTO_F')
+        ALLOCATE(MESH2%TIMES(MESH2%TIMESTEP),STAT=IERR)
+        CALL FNCT_CHECK(IERR,'ALLOCATE MESH2%TIMES')
+        ! THERE IS NORAMLY ONLY ONE TABLE UNDER THE BASE ITERATIVE NODE
+        CALL CG_ARRAY_READ_F(1,MESH2%TIMES,IERR)
+        CALL FNCT_CHECK(IERR,'CG_ARRAY_READ_F')
+      ENDIF
+      ! CLOSE CGNS CFILE
+      CALL CG_CLOSE_F(NINP,IERR)
+      CALL FNCT_CHECK(IERR,'CG_CLOSE_F')
+!      
+!-----------------------------------------------------------------------
+!
+      WRITE(LU,*) '----------------------------------------------------'
+      IF(LNG.EQ.1) WRITE(LU,*) '------FIN LECTURE DU FICHIER CGNS'
+      IF(LNG.EQ.2) WRITE(LU,*) '------ENDING READING OF CGNS FILE'
+      WRITE(LU,*) '----------------------------------------------------'
+#else
+      IF(LNG.EQ.1) WRITE(LU,*)
+     &       'ERREUR : TENTATIVE DE LECTURE DE FICHIER ',
+     &       'CGNS SANS LA BILOTHEQUE CGNS'
+      IF(LNG.EQ.2) WRITE(LU,*)
+     &       'ERROR : TRYING TO READ CGNS FILE WITHOUT CGNS LIBRARY'
+      CALL PLANTE2(-1)      
+#endif
+! ENDIF HAVE_CGNS      
+      END SUBROUTINE
+!                       ***************** 
+                        SUBROUTINE WRITE_CGNS 
+!                       *****************
+     &(CGNSFILE)
+!
+!***********************************************************************
+! STBTEL   V6P1                                   11/07/2011
+!***********************************************************************
+!
+!BRIEF    WRITE A FILE OF CGNS FORMAT WITH THE MESH OBJECT
+!+        INFORMATIONS
+!                        
+!HISTORY  Y.AUDOUIN (EDF)
+!+        11/07/2011
+!+        V6P1
+!+   CREATION OF THE FILE
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| CGNSFILE        |-->| NAME OF THE CGNS FILE
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE DECLARATIONS_STBTEL
+      IMPLICIT NONE
+      ! LANGAE AND OUTPUT VALUE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+#if defined(HAVE_CGNS)      
+      INCLUDE 'cgnslib_f.h'
+#endif      
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      CHARACTER(LEN=MAXLENHARD)  CGNSFILE
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+#if defined (HAVE_CGNS)
+      INTEGER :: IERR
+      INTEGER :: I, J
+      INTEGER :: ITIME, IVAR
+      CHARACTER*32 :: BASENAME, ZONENAME
+      CHARACTER*32 :: VARNAME
+      INTEGER :: ICELLDIM, IPHYSDIM
+      INTEGER :: INDEX_BASE, INDEX_ZONE, INDEX_COORD, INDEX_SECTION
+      INTEGER :: INDEX_FLOW, INDEX_FIELD
+      INTEGER :: ISIZE(3,3), IDATA(2)
+      INTEGER, ALLOCATABLE :: IELEM(:,:)
+      INTEGER :: NBDYELEM
+      INTEGER :: TYPGEO
+      CHARACTER*32, ALLOCATABLE :: SOLNAME(:)
+!
+      WRITE(LU,*) '----------------------------------------------------'
+      IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT ECRITURE DU FICHIER CGNS'
+      IF(LNG.EQ.2) WRITE(LU,*) '------BEGINNING WRITTING OF CGNS FILE'
+      WRITE(LU,*) '----------------------------------------------------'
+!      
+!-----------------------------------------------------------------------
+!
+
+      CALL CG_OPEN_F(CGNSFILE,CG_MODE_WRITE,NOUT,IERR)
+      CALL FNCT_CHECK(IERR,'CG_OPEN_F')
+      !CREATE BASE (USER CAN GIVE ANY NAME)
+      BASENAME='BASE'
+      ICELLDIM=MESH2%NDIM
+      IPHYSDIM=MESH2%NDIM
+      CALL CG_BASE_WRITE_F(NOUT,BASENAME,ICELLDIM,IPHYSDIM,
+     &                     INDEX_BASE,IERR)
+      CALL FNCT_CHECK(IERR,'CG_BASE_WRITE_F')
+      !  DEFINE ZONE NAME (USER CAN GIVE ANY NAME)
+      ZONENAME = MESH2%TITLE(1:32)
+      ISIZE=0
+      ! NUMBER OF POINTS
+      ISIZE(1,1)=MESH2%NPOIN
+      ! NUMBER OF ELEMENTS
+      ISIZE(1,2)=MESH2%NELEM
+      ! CREATE ZONE
+      CALL CG_ZONE_WRITE_F(NOUT,INDEX_BASE,ZONENAME,ISIZE,
+     &                     UNSTRUCTURED,INDEX_ZONE,IERR)
+      CALL FNCT_CHECK(IERR,'CG_ZONE_WRITE_F')
+      ! WRITE GRID COORDINATES (USER MUST USE SIDS-STANDARD NAMES HERE)
+      CALL CG_COORD_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,REALDOUBLE,
+     &                      'CoordinateX',MESH2%X,INDEX_COORD,IERR)
+      CALL FNCT_CHECK(IERR,'CG_COORD_WRITE_F X')
+      CALL CG_COORD_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,REALDOUBLE,
+     &                      'CoordinateY',MESH2%Y,INDEX_COORD,IERR)
+      CALL FNCT_CHECK(IERR,'CG_COORD_WRITE_F Y')
+      IF(MESH2%NDIM.EQ.3) THEN
+        CALL CG_COORD_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,REALDOUBLE,
+     &                        'CoordinateZ',MESH2%Z,INDEX_COORD,IERR)
+      CALL FNCT_CHECK(IERR,'CG_COORD_WRITE_F Z')
+      ENDIF
+      ! SET ELEMENT CONNECTIVITY:
+      ALLOCATE(IELEM(MESH2%NDP,MESH2%NELEM),STAT=IERR)
+      CALL FNCT_CHECK(IERR,'ALLOCATE IELEM')
+      ! BUILDING THE CONNECTIVITY TABLE
+      DO I=1,MESH2%NELEM
+        DO J=1,MESH2%NDP
+          IELEM(J,I)=MESH2%IKLES((I-1)*MESH2%NDP+J)
+        ENDDO
+      ENDDO
+      ! UNSORTED BOUNDARY ELEMENTS
+      NBDYELEM=0
+      ! DEFINES THE CGNS TYPE
+      ! WRITE ELEMENT CONNECTIVITY 
+      SELECT CASE (MESH2%TYPE_ELEM)
+      CASE(TYPE_TRIA3)
+        CALL CG_SECTION_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
+     &   'Elem',TRI_3,1,MESH2%NELEM,NBDYELEM,IELEM,
+     &   INDEX_SECTION,IERR)
+      CASE(TYPE_QUAD4)
+        CALL CG_SECTION_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
+     &   'Elem',QUAD_4,1,MESH2%NELEM,NBDYELEM,IELEM,
+     &   INDEX_SECTION,IERR)
+      CASE(TYPE_TETRA4)
+        CALL CG_SECTION_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
+     &   'Elem',TETRA_4,1,MESH2%NELEM,NBDYELEM,IELEM,
+     &   INDEX_SECTION,IERR)
+      CASE(TYPE_PRISM6)
+        CALL CG_SECTION_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
+     &   'Elem',PENTA_6,1,MESH2%NELEM,NBDYELEM,IELEM,
+     &   INDEX_SECTION,IERR)
+      END SELECT
+      CALL FNCT_CHECK(IERR,'CG_SECTION_WRITE_F')
+      DEALLOCATE(IELEM)
+      
+      ! RESULTS INFORMATIONS
+      ! IF WE HAVE RESULTS
+      IF(MESH2%TIMESTEP.NE.0) THEN
+        !   DEFINE SOLUTION NAMES (USER CAN GIVE ANY NAMES)
+        ALLOCATE(SOLNAME(MESH2%TIMESTEP),STAT=IERR)
+        CALL FNCT_CHECK(IERR,'ALLOCATION SOLNAME')
+        DO I=1,MESH2%TIMESTEP
+          SOLNAME(i) = 'Test'//I2CHAR(I)
+        ENDDO
+        ! LOOPING FOR EACH TIME STEP
+        DO ITIME=1,MESH2%TIMESTEP
+          !   CREATE FLOW SOLUTION NODE
+          CALL CG_SOL_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
+     &                        SOLNAME(ITIME),VERTEX,INDEX_FLOW,IERR)
+          CALL FNCT_CHECK(IERR,'CG_SOL_WRITE_F '//I2CHAR(ITIME))
+          !   WRITE FLOW SOLUTION (USER MUST USE SIDS-STANDARD NAMES HERE)
+          DO IVAR=1,MESH2%NVAR
+            ! DECLARING A NEW VARIABLE
+            VARNAME = MESH2%NAMEVAR(IVAR)
+            CALL CG_FIELD_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
+     &               INDEX_FLOW,REALDOUBLE,VARNAME,
+     &               MESH2%RESULTS(ITIME,IVAR,:),INDEX_FIELD,IERR)
+            CALL FNCT_CHECK(IERR,'CG_FIELD_WRITE_F '//I2CHAR(IVAR))
+          ENDDO
+        ENDDO
+        ! CREATE BASEITERATIVEDATA
+        CALL CG_BITER_WRITE_F(NOUT,INDEX_BASE,'TimeIterValues',
+     &       MESH2%TIMESTEP,IERR)
+        CALL FNCT_CHECK(IERR,'CG_BITER_WRITE_F')
+        ! GO TO BASEITERATIVEDATA LEVEL AND WRITE TIME VALUES
+        CALL CG_GOTO_F(NOUT,INDEX_BASE,IERR,'BaseIterativeData_t',
+     &                 1,'end')
+        CALL FNCT_CHECK(IERR,'CG_GOTO_F')
+        CALL CG_ARRAY_WRITE_F('TimeValues',REALDOUBLE,1,MESH2%TIMESTEP
+     &                        ,MESH2%TIMES,IERR)
+        CALL FNCT_CHECK(IERR,'CG_ARRAY_WRITE_F')
+        ! CREATE ZONEITERATIVEDATA
+        CALL CG_ZITER_WRITE_F(NOUT,INDEX_BASE,INDEX_ZONE,
+     &                        'ZoneIterativeData',IERR)
+        CALL FNCT_CHECK(IERR,'CG_ZITER_WRITE_F')
+        ! GO TO ZONEITERATIVEDATA LEVEL AND GIVE INFO TELLING WHICH
+        ! FLOW SOLUTION CORRESPONDS WITH WHICH TIME (SOLNAME(1) CORRESPONDS
+        ! WITH TIME(1), SOLNAME(2) WITH TIME(2), AND SOLNAME(3) WITH TIME(3))
+        CALL CG_GOTO_F(NOUT,INDEX_BASE,IERR,'Zone_t',
+     &           INDEX_ZONE,'ZoneIterativeData_t',1,'end')
+        CALL FNCT_CHECK(IERR,'CG_GOTO_F BIS')
+        IDATA(1)=32
+        IDATA(2)=MESH2%TIMESTEP
+        CALL CG_ARRAY_WRITE_F('FlowSolutionPointers',CHARACTER,2,IDATA,
+     &                     SOLNAME,IERR)
+        CALL FNCT_CHECK(IERR,'CG_ARRAY_WRITE_F BIS')
+        ! ADD SIMULATIONTYPE
+        CALL CG_SIMULATION_TYPE_WRITE_F(NOUT,INDEX_BASE,
+     &               TIMEACCURATE,IERR)
+        CALL FNCT_CHECK(IERR,'CG_SIMULATION_TYPE_WRITE_F')
+      ENDIF
+      ! CLOSE CGNS CFILE
+      CALL CG_CLOSE_F(NOUT,IERR)
+      CALL FNCT_CHECK(IERR,'CG_CLOSE_F')
+!      
+!-----------------------------------------------------------------------
+!
+      WRITE(LU,*) '----------------------------------------------------'
+      IF(LNG.EQ.1) WRITE(LU,*) '------FIN ECRITURE DU FICHIER CGNS'
+      IF(LNG.EQ.2) WRITE(LU,*) '------ENDING WRITTING OF CGNS FILE'
+      WRITE(LU,*) '----------------------------------------------------'
+#else
+      IF(LNG.EQ.1) WRITE(LU,*)'ERREUR : TENTATIVE D ECRITURE D UN ',
+     &            'FICHIER CGNS SANS LA BIBLIOTHEQUE'
+      IF(LNG.EQ.2) WRITE(LU,*)'ERROR : TRYING TO WRITE CGNS FILE ',
+     &            'WITHOUT CGNS LIBRARY'
+      CALL PLANTE2(-1)      
+#endif
+! ENDIF HAVE_CGNS      
+      END SUBROUTINE
+      END MODULE

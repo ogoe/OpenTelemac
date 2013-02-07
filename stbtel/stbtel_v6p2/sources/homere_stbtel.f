@@ -3,7 +3,7 @@
 !                       *********************
 !
 !***********************************************************************
-!  STBTEL VERSION 5.9     19/02/2009   J-M HERVOUET (LNH) 01 30 87 80 18
+!  STBTEL VERSION 6.2     19/02/2009   J-M HERVOUET (LNH) 01 30 87 80 18
 !
 !***********************************************************************
 !
@@ -44,6 +44,8 @@
       CHARACTER*11 TYPELE
       CHARACTER*80 TITRE
       CHARACTER*6  PRECIS
+
+      CHARACTER*11 STRING_EXTENS
 !
       COMMON/GEO/ MESH , NDP , NPOIN , NELEM , NPMAX , NELMAX
 !
@@ -63,6 +65,12 @@
       NFON=23
       NFO1=26
       NFO2=27
+      NINP=28
+      NOUT=29
+      NBND=30
+      NLOG=31
+      NOBND=32
+      NOLOG=33
       NOMGEO=' '
       NOMFO1=' '
       NOMFO2=' '
@@ -74,11 +82,17 @@
       NOMCAS=' '
       NOMLIM=' '
       NOMRES=' '
+      INFILE=' '
+      OUTFILE=' '
+      BOUNDFILE=' '
+      LOGFILE=' '
+      OUTBNDFILE=' '
+      OUTLOGFILE=' '
       CALL P_INIT(PATH,NCAR,IPID,NCSIZE)
       CALL READ_CONFIG(LNG,LU,PATH,NCAR)
       FORTXY(NGEO) ='FORT.1'
-      FORTXY(NCLE) ='FORT.2'
-      FORTXY(NCAS) ='FORT.3'
+      FORTXY(NCLE) ='STBDICO'
+      FORTXY(NCAS) ='STBCAS'
       FORTXY(NLIM) ='FORT.7'
       FORTXY(NRES) ='FORT.8'
       FORTXY(NSOU) ='FORT.11'
@@ -87,6 +101,12 @@
       FORTXY(NFON) ='FORT.23'
       FORTXY(NFO1) ='FORT.26'
       FORTXY(NFO2) ='FORT.27'
+      FORTXY(NINP) ='STBINP'
+      FORTXY(NOUT) ='STBOUT'
+      FORTXY(NBND) ='STBBND'
+      FORTXY(NLOG) ='STBLOG'
+      FORTXY(NOBND) ='STBOBD'
+      FORTXY(NOLOG) ='STBOLG'
 !
       TDEB = TIME_IN_SECONDS()
 !
@@ -103,7 +123,7 @@
      &14X,'   SSSSS    T    BBBB     T    EEEE   L    ',/,
      &14X,'       S    T    B   B    T    E      L    ',/,
      &14X,'   SSSSS    T    BBBB     T    EEEEE  LLLLL',//,
-     &14X,'            VERSION 6.0  FORTRAN 90                 ',/////)
+     &14X,'            VERSION 6.2  FORTRAN 90                 ',/////)
 !
 !=======================================================================
 ! LECTURE DU FICHIER CAS
@@ -112,6 +132,17 @@
       OPEN(NCLE , FILE=FORTXY(NCLE) , FORM='FORMATTED'  ,ACTION='READ')
       OPEN(NCAS , FILE=FORTXY(NCAS) , FORM='FORMATTED'  ,ACTION='READ')
       CALL LECDON_STBTEL
+! CHECK IF WE SWITCH TO THE CONVERTER PROGRAM
+      IF(CONVER) THEN
+        IF (BOUNDFILE.EQ.' ')  FORTXY(NBND) = ' '
+        IF (LOGFILE.EQ.' ')    FORTXY(NLOG) = ' '
+        IF (OUTBNDFILE.EQ.' ') FORTXY(NOBND) = ' '
+        IF (OUTLOGFILE.EQ.' ') FORTXY(NOLOG) = ' '
+        CALL CONVERTER(FORTXY(NINP),FORTXY(NLOG),FORTXY(NBND),
+     &                 FORTXY(NOUT),FORTXY(NOLOG),FORTXY(NOBND))
+        ! GO TO THE END OF STBTEL
+        GOTO 666
+      ENDIF
 !
 !     LE FICHIER UNIVERSEL EST DE TYPE BINAIRE OU FORMATE
 !
@@ -166,7 +197,7 @@
         OPEN (NFO1, FILE='FORT.26',FORM='UNFORMATTED',ACTION='READ')
       ENDIF
 !
-! CANAUX DU FICHIER FOND1 et SUIVANTS
+! CANAUX DU FICHIER FOND1 ET SUIVANTS
 !
       IF(NBFOND.NE.0) THEN
         NFOND(1) = 23
@@ -239,7 +270,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      TFIN = TIME_IN_SECONDS()
+666   TFIN = TIME_IN_SECONDS()
       IF(LNG.EQ.1) THEN
         WRITE(LU,*) 'DUREE DU CALCUL : ',TFIN-TDEB,' SECONDES'
       ENDIF

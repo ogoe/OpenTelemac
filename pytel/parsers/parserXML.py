@@ -235,6 +235,7 @@ class ACTION:
             if not path.exists(exeFile) or cfg['REBUILD'] == 0:
                print '     +> compiling princi file: ' + path.basename(princiFile)
                copyFile(princiFile,active['safe'])
+               print '*********copying '+princiFile+' '+active['safe']
                princiSafe = path.join(active['safe'],path.basename(princiFile))
                confirmed = True
          else:
@@ -248,11 +249,13 @@ class ACTION:
             princiFilePlage = path.join(active['path'],eval(value[0]))
             if path.exists(princiFilePlage):
                if princiSafe != '':
+                  print '*********adding content of '+path.basename(princiFilePlage)+' to '+princiSafe
                   putFileContent(princiSafe,getFileContent(princiSafe)+['']+getFileContent(princiFilePlage))
                else:
                   print '     +> compiling princi file: ' + path.basename(princiFilePlage)
                   exeFile = path.join(active['safe'],path.splitext(eval(value[0]))[0] + cfg['SYSTEM']['sfx_exe'])
                   princiSafe = path.join(active['safe'],path.basename(princiFilePlage))
+                  print '*********copying '+path.basename(princiFilePlage)+ ' ' + active['safe']
                   copyFile(princiFilePlage,active['safe'])
                confirmed = True
             else:

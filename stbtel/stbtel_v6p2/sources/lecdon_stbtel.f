@@ -144,6 +144,9 @@
       ELISEC = MOTLOG  (ADRES(3,9))
       ELPSEC = MOTLOG  (ADRES(3,10))
       STOTOT = MOTLOG  (ADRES(3,11))
+      DEBUG  = MOTLOG  (ADRES(3,12))
+      CONVER = MOTLOG  (ADRES(3,13))
+      SERAFIN_DOUBLE = MOTLOG  (ADRES(3,14))
 !
 !-----------------------------------------------------------------------
 ! MOTS CLE DE TYPE CARACTERE
@@ -178,9 +181,17 @@
       NOMLIM = MOTCAR( ADRES(4, 7) )
       NOMRES = MOTCAR( ADRES(4, 6) )
       NOMFO1 = MOTCAR( ADRES(4,15) )
+      INFILE = MOTCAR( ADRES(4,24) )
+      OUTFILE = MOTCAR( ADRES(4,25) )
+      BOUNDFILE = MOTCAR( ADRES(4,26) )
+      LOGFILE = MOTCAR( ADRES(4,27) )
+      OUTBNDFILE = MOTCAR( ADRES(4,28) )
+      OUTLOGFILE = MOTCAR( ADRES(4,29) )
 !
       STD       = MOTCAR ( ADRES(4,11))(1:3)
       MAILLE    = MOTCAR ( ADRES(4,14))(1:9)
+      INFMT     = MOTCAR ( ADRES(4,22))(1:9)
+      OUTFMT    = MOTCAR ( ADRES(4,23))(1:9)
 !
       FUSION = .FALSE.
       IF (MOTCAR(ADRES(4,15)).NE.' '.AND.MAILLE.EQ.'SELAFIN')
