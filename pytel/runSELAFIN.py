@@ -40,12 +40,6 @@
          Addition of the new code "spec" to read and print to screen the core content
          of a TOMAWAC SPECTRAL file.
 """
-"""@history 2/03/2012 -- Laure Grignon:
-         Addition of a new CombineClusterSELAFIN class to combine data
-         from a list of selafin files, each containing data for a limited
-         number of nodes in the mesh, and NoData values for the other
-         nodes.
-"""
 """@history 05/04/2012 -- Sebastien E. Bourban:
          Addition of the new SELAFIN class to expand on calcs with the crunch.
          While calcsSELAFIN calculates a time varying variables, crunchSELAFIN
@@ -63,6 +57,12 @@
          Note that doing operation on one sub-file only, to produce one sub-file
          is not covered here as it could be done already.
 """
+"""@history 07/02/2013 -- Sebastien E. Bourban:
+         Additional capability implemented for subdivision of the mesh of
+         all SLF objects. A little bit like STBTEL but hopefully easier
+         to use from the command line. Linear interpolation is used for
+         new (in-between) points.
+"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
@@ -79,6 +79,7 @@ from parsers.parserFortran import cleanQuotes
 from parsers.parserLQD import LQD
 from utils.files import moveFile
 from utils.progressbar import ProgressBar
+from samplers.meshes import subdivideMesh
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
 #
@@ -396,6 +397,35 @@ class crunchSELAFIN(PARAFINS,alterSELAFIN):
          fct = calc['stop']
          appendCoreVarsSLF(self.slf,fct(t0,t,vari[icalc]))
       self.slf.fole.close()
+
+class subSELAFIN(SELAFIN):
+
+   def __init__(self,f):
+      SELAFIN.__init__(self,f)
+      self.IKLE,self.MESHX,self.MESHY,self.IPOBO,self.INTERP = subdivideMesh(self.IKLE,self.MESHX,self.MESHY)
+      
+   def putContent(self,fileName):
+      np3o = self.NPOIN3
+      self.NPOIN3 = len(self.MESHX)
+      np3n = self.NPOIN3
+      self.NELEM3 = len(self.IKLE)
+      self.fole = open(fileName,'wb')
+      putHeaderSLF(self)
+      pbar = ProgressBar(maxval=len(self.tags['times'])).start()
+      # ~~> Time stepping
+      varx = np.zeros((self.NVAR,self.NPOIN3),np.float32)
+      for t in range(len(self.tags['times'])):
+         appendCoreTimeSLF(self,t)
+         self.NPOIN3 = np3o           #\
+         vars = self.getVALUES(t)     #|+ game of shadows
+         self.NPOIN3 = np3n           #/
+         for iv in range(self.NVAR):
+            varx[iv][0:np3o] = vars[iv]
+            varx[iv][np3o:] = np.sum(vars[iv][self.INTERP],axis=1)/2.
+         appendCoreVarsSLF(self,varx)
+         pbar.update(t)
+      pbar.finish()
+      self.fole.close()
 
 class scanSPECTRAL(scanSELAFIN):
 
@@ -827,6 +857,33 @@ if __name__ == "__main__":
 
       slf.putContent(outFile)
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~~ Case of SUBDIVIDE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   elif codeName == 'subdivide':
+
+      if not options.freplace:
+         if len(args) != 3:
+            print '\nThe code "subdivide" (without --replace) here requires 2 file names\n'
+            sys.exit()
+         slfFile = args[1]
+         outFile = args[2]
+      else:
+         if len(args) != 2:
+            print '\nThe code "subdivide" (with --replace) here requires 1 file name at a time\n'
+            sys.exit()
+         slfFile = args[1]
+         outFile = "subdivide-tmp.slf"
+
+      slfFile = path.realpath(slfFile)
+      if not path.exists(slfFile):
+         print '\nCould not find the file named: ',slfFile
+         sys.exit()
+      print '\n\nSubdividing ' + path.basename(slfFile) + ' within ' + path.dirname(slfFile) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      slf = subSELAFIN( slfFile )
+      slf.putContent( outFile )
+
+      if options.freplace: moveFile(outFile,slfFile)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Case of UNKNOWN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

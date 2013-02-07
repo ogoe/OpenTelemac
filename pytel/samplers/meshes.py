@@ -11,6 +11,8 @@
 !________!                                                        `--'   `--
 """
 """@history 12/12/2012 -- Sebastien E. Bourban
+     Many methods developped for application to meshes. The latest
+        one being about subdivision of meshes.
 """
 """@brief
       Tools for sampling and interpolating through triangular meshes
@@ -97,6 +99,72 @@ def xyTraceMesh(inear,xyi,xyo,IKLE,MESHX,MESHY,neighbours=None):
 
    return found,ray,neighbours
 
+def subdivideMesh(IKLE,MESHX,MESHY):
+   """
+   Requires the matplotlib.tri package to be loaded.
+    - Will use already computed edges or re-create it if necessary.
+   This function return a new tuple IKLE,MESHX,MESHY where each triangle has been
+      subdivided in 4.
+   """   
+   # ~~> Singling out edges
+   from matplotlib.tri import Triangulation
+   edges = Triangulation(MESHX,MESHY,IKLE).get_cpp_triangulation().get_edges()
+   
+   # ~~> Memory allocation for new MESH
+   IELEM = len(IKLE); IPOIN = len(MESHX); IEDGE = len(edges)
+   JKLE = np.zeros((IELEM*4,3),dtype=np.int)       # you subdivide every elements by 4
+   MESHJ = np.zeros((IEDGE,2),dtype=np.int)        # you add one point on every edges
+   
+   # ~~> Lookup tables for node numbering on common edges
+   pa,pb = edges.T
+   k1b,k1a = np.sort(np.take(IKLE,[0,1],axis=1)).T
+   indx1 = np.searchsorted(pa,k1a)
+   jndx1 = np.searchsorted(pa,k1a,side='right')
+   k2b,k2a = np.sort(np.take(IKLE,[1,2],axis=1)).T
+   indx2 = np.searchsorted(pa,k2a)
+   jndx2 = np.searchsorted(pa,k2a,side='right')
+   k3b,k3a = np.sort(np.take(IKLE,[2,0],axis=1)).T
+   indx3 = np.searchsorted(pa,k3a)
+   jndx3 = np.searchsorted(pa,k3a,side='right')
+   
+   # ~~> Building one triangle at a time /!\ Please get this loop parallelised
+   j = 0
+   for i in range(IELEM):
+      k1 = indx1[i]+np.searchsorted(pb[indx1[i]:jndx1[i]],k1b[i])
+      k2 = indx2[i]+np.searchsorted(pb[indx2[i]:jndx2[i]],k2b[i])
+      k3 = indx3[i]+np.searchsorted(pb[indx3[i]:jndx3[i]],k3b[i])
+      # ~~> New connectivity JKLE
+      JKLE[j] = [IKLE[i][0],IPOIN+k1,IPOIN+k3]
+      JKLE[j+1] = [IKLE[i][1],IPOIN+k2,IPOIN+k1]
+      JKLE[j+2] = [IKLE[i][2],IPOIN+k3,IPOIN+k2]
+      JKLE[j+3] = [IPOIN+k1,IPOIN+k2,IPOIN+k3]
+      # ~~> New interpolation references for values and coordinates
+      MESHJ[k1] = [IKLE[i][0],IKLE[i][1]]
+      MESHJ[k2] = [IKLE[i][1],IKLE[i][2]]
+      MESHJ[k3] = [IKLE[i][2],IKLE[i][0]]
+      j += 4
+
+   # ~~> Reset IPOBO while you are at it
+   MESHX = np.resize(MESHX,IPOIN+IEDGE)
+   MESHY = np.resize(MESHY,IPOIN+IEDGE)
+   MESHX[IPOIN:] = np.sum(MESHX[MESHJ],axis=1)/2.
+   MESHY[IPOIN:] = np.sum(MESHY[MESHJ],axis=1)/2.
+   neighbours = Triangulation(MESHX,MESHY,JKLE).get_cpp_triangulation().get_neighbors()
+   JPOBO = np.zeros(IPOIN+IEDGE,np.int)
+   for n in range(IELEM*4):
+      s1,s2,s3 = neighbours[n]
+      e1,e2,e3 = JKLE[n]
+      if s1 < 0:
+        JPOBO[e1] = e1
+        JPOBO[e2] = e2
+      if s2 < 0:
+        JPOBO[e2] = e2
+        JPOBO[e3] = e3
+      if s3 < 0:
+        JPOBO[e3] = e3
+        JPOBO[e1] = e1
+
+   return JKLE,MESHX,MESHY,JPOBO,MESHJ
 
 def traceRay2XY(IKLE,MESHX,MESHY,neighbours,ei,xyi,en,xyn):
    """
