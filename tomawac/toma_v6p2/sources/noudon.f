@@ -257,10 +257,24 @@
 !       --------------------------------------------------------------
 !
       COEF=(AT-TV1)/(TV2-TV1)
-      DO I=1,NPOIN
-        F1(I)=(F12(I)-F11(I))*COEF+F11(I)
-        F2(I)=(F22(I)-F21(I))*COEF+F21(I)
-      ENDDO
+!
+      IF(TROUVE(1)) THEN
+        DO I=1,NPOIN
+          F1(I)=(F12(I)-F11(I))*COEF+F11(I)
+        ENDDO
+      ENDIF
+!
+      IF(TROUVE(2)) THEN
+        DO I=1,NPOIN
+          F2(I)=(F22(I)-F21(I))*COEF+F21(I)
+        ENDDO
+      ENDIF
+!
+      IF(TROUVE(3)) THEN
+        DO I=1,NPOIN
+          F3(I)=(F32(I)-F31(I))*COEF+F31(I)
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
