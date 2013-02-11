@@ -40,6 +40,11 @@
 !+   Finding the original number of nodes in parallel, and completing
 !+   KNOLG for upper planes in 3D.
 !
+!history  J-M HERVOUET (LNHE)
+!+        07/02/2013
+!+        V6P3
+!+   Argument NELMAX removed in call to SEGBOR.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| NAME IN 20 CHARACTERS TO ENABLE DIFFERENT
 !|                |   | OPTIONS. OPTIONS ARE:
@@ -211,7 +216,7 @@
 !
 !     IN PARALLEL MODE NSEGBOR (COMPUTED IN SEGBOR) IS NOT NPTFR
 !
-        CALL SEGBOR(NSEGBOR,IKLES,NELEM,NELMAX,NPOIN)
+        CALL SEGBOR(NSEGBOR,IKLES,NELEM,NPOIN)
       ELSE
         NSEGBOR=NPTFR
       ENDIF
@@ -443,6 +448,7 @@
       ALLOCATE(MESH%NELEM)
       MESH%NELEM  = BIEF_NBPTS(IELM0,MESH)
       ALLOCATE(MESH%NELMAX)
+!     WILL GIVE BACK NNELMAX FEEDED TO BIEF_ININDS ABOVE...
       MESH%NELMAX = BIEF_NBMPTS(IELM0,MESH)
 !
 !

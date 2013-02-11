@@ -2,10 +2,10 @@
                      SUBROUTINE SEGBOR
 !                    *****************
 !
-     &(NSEGBOR,IKLES,NELEM,NELMAX,NPOIN)
+     &(NSEGBOR,IKLES,NELEM,NPOIN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    DETERMINES THE NUMBER OF BOUNDARY SEGMENTS OF THE MESH
@@ -30,6 +30,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        07/02/2013
+!+        V6P3
+!+   Removing argument NELMAX.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IKLES          |-->| LIKE CONNECTIVITY TABLE BUT IN SELAFIN FORMAT
