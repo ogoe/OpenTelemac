@@ -7,11 +7,9 @@
 !  STBTEL VERSION 6.2
 !***********************************************************************
 !
-#if defined (HAVE_MED)
-      INCLUDE 'med.hf'
-#endif      
 !  AJOUTE PAR JMH POUR ADAPTATION A BIEF 6.0
 !
+      USE M_MED
       ! HARD MAX FILE NAME LENGTH
       INTEGER, PARAMETER :: MAXLENHARD = 144 
       CHARACTER(LEN=MAXLENHARD) NOMGEO,NOMFO1,NOMFON,NOMFO2,NOMIMP,
@@ -261,70 +259,6 @@
       ENDIF
       STOP    ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
       END SUBROUTINE PLANTE2
-!
-      SUBROUTINE IFVECTOR_(CHAR,ISFIRST,OK)
-      INTEGER :: J
-      CHARACTER(LEN=32), INTENT(INOUT) :: CHAR
-      INTEGER, INTENT(OUT)             :: ISFIRST
-      LOGICAL, INTENT(OUT)             :: OK
-      OK = .FALSE.
-      ISFIRST = 0
-      IF (CHAR(1:6).NE.'COTE_Z' .AND. CHAR(1:11).NE.'ELEVATION_Z') THEN
-      DO J = 2,31
-        IF (CHAR(J-1:J+1) .EQ. '_U_') THEN
-          CHAR(J:J) = '*'
-          ISFIRST = 1
-          OK = .TRUE.
-        ELSEIF (CHAR(J-1:J+1) .EQ. '_V_') THEN
-          CHAR(J:J) = '*'
-          ISFIRST = 2
-          OK = .TRUE.
-        ELSEIF (CHAR(J-1:J+1) .EQ. '_W_') THEN
-          CHAR(J:J) = '*'
-          ISFIRST = 3
-          OK = .TRUE.
-        ELSEIF (CHAR(J-1:J+1) .EQ. '_X_') THEN
-          CHAR(J:J) = '*'
-          ISFIRST = 1
-          OK = .TRUE.
-        ELSEIF (CHAR(J-1:J+1) .EQ. '_Y_') THEN
-          CHAR(J:J) = '*'
-          ISFIRST = 2
-          OK = .TRUE.
-        ELSEIF (CHAR(J-1:J+1) .EQ. '_Z_') THEN
-          CHAR(J:J) = '*'
-          ISFIRST = 3
-          OK = .TRUE.
-         ELSEIF (CHAR(J-1:J+1) .EQ. 'QX_') THEN
-           CHAR(J-1:J) = 'Q*'
-           ISFIRST = 1
-           OK = .TRUE.
-         ELSEIF (CHAR(J-1:J+1) .EQ. 'QY_') THEN
-           CHAR(J-1:J) = 'Q*'
-           ISFIRST = 2
-           OK = .TRUE.
-         ELSEIF (CHAR(J-1:J+1) .EQ. 'QZ_') THEN
-           CHAR(J-1:J) = 'Q*'
-           ISFIRST = 3
-           OK = .TRUE.
-         ELSEIF (CHAR(J-1:J+1) .EQ. 'U0_') THEN
-           CHAR(J-1:J) = '*0'
-           ISFIRST = 1
-           OK = .TRUE.
-         ELSEIF (CHAR(J-1:J+1) .EQ. 'V0_') THEN
-           CHAR(J-1:J) = '*0'
-           ISFIRST = 2
-           OK = .TRUE.
-         ELSEIF (CHAR(J-1:J+1) .EQ. 'W0_') THEN
-           CHAR(J-1:J) = '*0'
-           ISFIRST = 3
-           OK = .TRUE.
-        ENDIF
-      ENDDO
-      ENDIF
-!
-      RETURN
-      END SUBROUTINE IFVECTOR_
 !
       SUBROUTINE RENAME_VECTOR(STR,N)
       IMPLICIT NONE
