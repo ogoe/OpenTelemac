@@ -300,7 +300,7 @@ if __name__ == "__main__":
    d = date.today()
    columnsbuilt = []
    columns = []
-   ReportFilePlots = path.join(root,d.isoformat()+ '_' + 'ValidationReportPlots.csv')
+   ReportFilePlots = path.join(root,d.isoformat()+ '_' + 'ValidationReport.csv')
    columns = [cas,module,status]
    putDataCSV(ReportFilePlots,columns)
    ReportFileBuilt = path.join(root,d.isoformat()+ '_' + 'ValidationReportBuilt.csv') 
