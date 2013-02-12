@@ -53,7 +53,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)            :: NPOIN,NELMAX,NELEM
+      INTEGER, INTENT(IN)            :: NPOIN,NELEM
       INTEGER, INTENT(OUT)           :: NSEGBOR
       INTEGER, INTENT(IN)            :: IKLES(3,NELEM)
 !
