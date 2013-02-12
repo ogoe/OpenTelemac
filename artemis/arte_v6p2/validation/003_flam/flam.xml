@@ -24,11 +24,6 @@
        code="artemis" target="art_flamanville-scal.cas"
        title="flam scalar mode"
    />
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4"
-       code="artemis" target="art_flamanville-scal.cas"
-       title="flam parallel mode"
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

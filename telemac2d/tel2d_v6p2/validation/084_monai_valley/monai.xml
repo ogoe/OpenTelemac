@@ -24,11 +24,6 @@
        code="telemac2d" target="t2d_monai.cas"
        title="monai scalar mode"
    />
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_monai.cas"
-       title="monai parallel mode"
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

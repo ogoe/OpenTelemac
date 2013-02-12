@@ -29,16 +29,6 @@
        code="telemac2d" target="t2d_wesel_pos.cas" 
        title="wesel scalar mode" 
    />
-   <action xref="3" 
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_wesel.cas" 
-       title="wesel parallel mode" 
-   />  
-   <action xref="4" 
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_wesel_pos.cas" 
-       title="wesel parallel mode" 
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

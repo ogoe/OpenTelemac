@@ -41,11 +41,6 @@
    /> 
    <action xref="5"
        do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_gouttedo_cin.cas"
-       title="gouttedo parallel mode"
-   /> 
-   <action xref="6"
-       do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_gouttedo_qua.cas"
        title="gouttedo parallel mode"
    />

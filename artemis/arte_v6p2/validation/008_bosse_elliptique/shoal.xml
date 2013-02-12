@@ -24,11 +24,6 @@
        code="artemis" target="art_shoal.cas"
        title="elliptic shoal scalar mode"
    />
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4"
-       code="artemis" target="art_shoal.cas"
-       title="elliptic shoal parallel mode"
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

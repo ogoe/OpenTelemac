@@ -24,11 +24,6 @@
        code="artemis" target="kochin.cas"
        title="Incident potential from kochin function"
    /> 
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4"
-       code="artemis" target="kochin.cas"
-       title="Incident potential from kochin function parallel"
-   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

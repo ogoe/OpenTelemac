@@ -24,11 +24,6 @@
        code="artemis" target="art_creocean-scal.cas"
        title="creocean scalar mode"
    />
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="artemis" target="art_creocean-scal.cas"
-       title="creocean parallel mode"
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

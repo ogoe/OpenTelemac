@@ -281,6 +281,19 @@ if __name__ == "__main__":
                   i += 1
                   xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
       print "%s" % (time.ctime(time.time()))
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
+# ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
+      print '\n\nWritting Validation Report.\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      d = date.today()
+      columnsbuilt = []
+      columns = []
+      ReportFilePlots = path.join(root,d.isoformat()+ '_' + 'ValidationReportPlots.csv')
+      columns = [cas,module,status]
+      putDataCSV(ReportFilePlots,columns)
+      ReportFileBuilt = path.join(root,d.isoformat()+ '_' + 'ValidationReportBuilt.csv') 
+      columnsbuilt = [casbuilt,modulebuilt,configbuilt,cpubuilt]
+      putDataCSV(ReportFileBuilt,columnsbuilt)
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -292,20 +305,6 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    else: print '\n\nMy work is done\n\n'
-   
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
-# ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
-   print '\n\nWritting Validation Report.\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-   d = date.today()
-   columnsbuilt = []
-   columns = []
-   ReportFilePlots = path.join(root,d.isoformat()+ '_' + 'ValidationReport.csv')
-   columns = [cas,module,status]
-   putDataCSV(ReportFilePlots,columns)
-   ReportFileBuilt = path.join(root,d.isoformat()+ '_' + 'ValidationReportBuilt.csv') 
-   columnsbuilt = [casbuilt,modulebuilt,configbuilt,cpubuilt]
-   putDataCSV(ReportFileBuilt,columnsbuilt)
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
 

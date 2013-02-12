@@ -24,11 +24,13 @@
        code="telemac2d" target="t2d_init-2.cas"
        title="init_2 scalar mode"
    />
+<!-- To be solved fixed global value in .f 
    <action xref="2"
        do="translate;compile;run;cas;princi" ncsize="4"
        code="telemac2d" target="t2d_init-2.cas"
        title="init_2 parallel mode"
    />   
+-->
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

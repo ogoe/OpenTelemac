@@ -41,11 +41,6 @@
    />  
    <action xref="5" 
        do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_pildepon_cin.cas" 
-       title="pildepon parallel mode" 
-   />  
-   <action xref="6" 
-       do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_pildepon_qua.cas" 
        title="pildepon parallel mode" 
    />   

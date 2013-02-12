@@ -85,6 +85,27 @@ finally refined.
 ATTENTION: this polygon should have a convex shape and the coordinates
 of the vertices be given with an anti clock wise order.'
 
+NOM = 'PROCESSEURS PARALLELES' 
+NOM1 = 'PARALLEL PROCESSORS' 
+TYPE = ENTIER 
+INDEX = 5 
+DEFAUT = 0 
+DEFAUT1 = 0 
+MNEMO = 'NCSIZE' 
+RUBRIQUE = 'GENERALITES'
+RUBRIQUE1 = 'GENERALITIES'
+NIVEAU = 1 
+AIDE = 'NOMBRE DE PROCESSEURS EN CALCUL PARALLELE 
+0 : 1 machine, compilation sans bibliotheque de parallelisme 
+1 : 1 machine, compilation avec bibliotheque de parallelisme 
+2 : 2 processeurs ou machines en parallele 
+etc... ' 
+AIDE1 = 'NUMBER OF PROCESSORS FOR PARALLEL PROCESSING 
+0 : 1 machine, compiling without parallel library 
+1 : 1 machine, compiling with a parallel library 
+2 : 2 processors or machines in parallel 
+etc....' 
+
 NOM = 'DISTANCE MINIMALE ENTRE DEUX POINTS'
 NOM1 = 'MINIMUM DISTANCE BETWEEN TWO POINTS'
 TYPE = REEL

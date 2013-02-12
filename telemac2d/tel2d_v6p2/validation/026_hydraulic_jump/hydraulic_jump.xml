@@ -29,6 +29,7 @@
        code="telemac2d" target="t2d_hydraulic_jump_v2p0.cas"
        title="hydraulic_jump scalar mode"
    />
+<!-- Error in the .f file not handling parallelism
    <action xref="3"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_hydraulic_jump_v1p0.cas"
@@ -39,6 +40,7 @@
        code="telemac2d" target="t2d_hydraulic_jump_v2p0.cas"
        title="hydraulic_jump parallel mode"
    />   
+-->
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

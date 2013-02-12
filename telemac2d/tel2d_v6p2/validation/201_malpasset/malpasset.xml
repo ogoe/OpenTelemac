@@ -56,15 +56,10 @@
    /> 
    <action xref="8" 
        do="translate;compile;run;cas;princi" ncsize="4"  
-       code="telemac2d" target="t2d_malpasset-small_cin.cas" 
-       title="malpasset parallel mode" 
-   />  
-   <action xref="9" 
-       do="translate;compile;run;cas;princi" ncsize="4"  
        code="telemac2d" target="t2d_malpasset-small_pos.cas" 
        title="malpasset parallel mode" 
    />  
-   <action xref="10" 
+   <action xref="9" 
        do="translate;compile;run;cas;princi" ncsize="4"  
        code="telemac2d" target="t2d_malpasset-small_prim.cas" 
        title="malpasset parallel mode" 

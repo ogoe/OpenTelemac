@@ -288,7 +288,6 @@ class ACTION:
       setattr(specs,'split', options.split)
       setattr(specs,'run', options.run)
       setattr(specs,'merge', options.merge)
-      print 'test '+self.active["ncsize"]
       if options.ncsize != '' and self.active["ncsize"] != '': self.active["ncsize"] = options.ncsize
       setattr(specs,'ncsize', self.active["ncsize"])
       setattr(specs,'nctile', '1')    # default but should not be used for validation

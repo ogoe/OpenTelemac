@@ -24,11 +24,6 @@
        code="telemac2d" target="t2d_conservation.cas"
        title="conservation T2D+SIS scalar mode"
    />
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_conservation.cas"
-       title="conservation T2D+SIS parallel mode"
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

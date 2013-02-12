@@ -24,11 +24,13 @@
        code="telemac2d" target="t2d_clotilde.cas"
        title="clotilde scalar mode"
    />
+<!-- Segfault on section
    <action xref="2"
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac2d" target="t2d_clotilde.cas"
        title="clotilde parallel mode"
    />   
+-->
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

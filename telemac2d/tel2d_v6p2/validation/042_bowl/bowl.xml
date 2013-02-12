@@ -39,16 +39,6 @@
        code="telemac2d" target="t2d_bowl_fe_fr.cas" 
        title="parabolic bowl finite elements parallel mode" 
    />  
-   <action xref="5" 
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_bowl_vf_fr.cas" 
-       title="parabolic bowl finite elements parallel mode" 
-   />  
-   <action xref="6" 
-       do="translate;compile;run;cas;princi" ncsize="4" 
-       code="telemac2d" target="t2d_bowl_vf_gb.cas" 
-       title="parabolic bowl finite elements parallel mode" 
-   />
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ This section is being ignored at the moment --> 
  

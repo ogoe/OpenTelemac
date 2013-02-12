@@ -277,6 +277,7 @@
       IF(LNG.EQ.2) THEN
         WRITE(LU,*) 'COMPUTER TIME: ',TFIN-TDEB,' SECONDS'
       ENDIF
+      CALL P_EXIT()
 !
 !-----------------------------------------------------------------------
 !

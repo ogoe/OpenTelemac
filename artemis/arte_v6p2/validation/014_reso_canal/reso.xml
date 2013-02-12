@@ -24,11 +24,6 @@
        code="artemis" target="reso.cas"
        title="Resonance in a flume"
    />
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4"
-       code="artemis" target="reso.cas"
-       title="Resonance in a flume parallel"
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 

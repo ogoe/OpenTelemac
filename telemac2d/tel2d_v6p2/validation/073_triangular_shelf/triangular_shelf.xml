@@ -24,11 +24,6 @@
        code="telemac2d" target="t2d_triangular_shelf.cas"
        title="triangular_shelf scalar mode"
    />
-   <action xref="2"
-       do="translate;compile;run;cas;princi" ncsize="4"
-       code="telemac2d" target="t2d_triangular_shelf.cas"
-       title="triangular_shelf parallel mode"
-   />   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
 
@@ -36,11 +31,9 @@
    -->
    <plot1d xref="Gages1" type="history" config="together" time="[0;-1]" size="[12;5]" > 
       <layer vars="free surface:line" extract="[7.5;0]" target="1:T2DRES" />
-	  <layer vars="free surface:line" extract="[7.5;0]" target="2:T2DRES" />
    </plot1d>
    <plot1d xref="Gages2" type="history" config="together" time="[0;-1]" size="[12;5]" > 
       <layer vars="free surface:line" extract="[17;-5]" target="1:T2DRES" />
-	  <layer vars="free surface:line" extract="[17;-5]" target="2:T2DRES" />
    </plot1d>
    <plot1d xref="Gages3" type="history" config="together" time="[0;-1]" size="[12;5]" > 
       <layer vars="free surface:line" extract="[25;0]" target="1:T2DRES" />
