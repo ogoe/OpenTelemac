@@ -59,10 +59,8 @@
       valid configurations in an array. Testing for validity is now done
       within config.py
 """
-"""@history 04/02/2013 -- Juliette Parisi
+"""@history 15/02/2013 -- Juliette Parisi
          Validation Reports written, only with the bypass option.
-         One report for the build and one report for the Analysis
-         (Plots, Data extraction, etc)
 """
 """@brief
 """
@@ -135,6 +133,8 @@ if __name__ == "__main__":
       help="will bypass execution failures and try to carry on (final report at the end)" )
    parser.add_option("-k","--rank",type="string",dest="rank",default='',
       help="the suite of validation ranks (all by default)" )
+   parser.add_option("--revision",type="string",dest="revision",default='',
+      help="will use the SVN revision number in the Validation Summary Name (useful for Jenkins)" )   
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -188,11 +188,10 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       for xmlFile in xmls.keys():
-         cpu=[]
          print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
          try:
-            runXML(path.realpath(xmlFile),xmls[xmlFile],cpu,options.bypass)
+            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass)
          except Exception as e:
             xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
 
@@ -203,18 +202,10 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}
 # ~~~~ Variables needed to generate the Validattion report ~~~~~~~~~
-      casbuilt=[]
-      casbuilt.append('TestCase')
       cas=[]
       cas.append('TestCase')
-      configbuilt=[]
-      configbuilt.append('Configuration')
-      modulebuilt=[]
-      modulebuilt.append('Module')
       module=[]
       module.append('Module')
-      cpubuilt=[]
-      cpubuilt.append('Duration(s)')
       status=[]
       status.append('Duration(s)')
  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
@@ -252,18 +243,10 @@ if __name__ == "__main__":
             module.append(codeName)
             for xmlFile in xmls[codeName][key]:
                print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
-               for i in xmls[codeName][key][xmlFile].keys():
-                  casbuilt.append(key)
-                  modulebuilt.append(codeName)
-                  configbuilt.append(i)
-                  cpubuilt.append('failed')
-               
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print "%s" % (time.ctime(time.time()))
-      cpu=[]
-      i=1
       for codeName in xmls.keys():
          for key in xmls[codeName]:
             print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
@@ -271,14 +254,12 @@ if __name__ == "__main__":
             for xmlFile in xmls[codeName][key]:        
                try:
                   tic = time.clock()
-                  cpubuilt[i] = runXML(xmlFile,xmls[codeName][key][xmlFile],cpu,options.bypass)
+                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
                   toc = time.clock()
                   ttime = toc-tic
                   status.append(ttime)
-                  i += 1
                except Exception as e: 
                   status.append('failed')
-                  i += 1
                   xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
       print "%s" % (time.ctime(time.time()))
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
@@ -286,14 +267,11 @@ if __name__ == "__main__":
       print '\n\nWritting Validation Report.\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       d = date.today()
-      columnsbuilt = []
       columns = []
-      ReportFilePlots = path.join(root,d.isoformat()+ '_' + 'ValidationReportPlots.csv')
+      if options.revision != '': ReportFilePlots = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummary.csv')
+      else : ReportFilePlots = path.join(root,d.isoformat() + '_' + 'ValidationSummary.csv')
       columns = [cas,module,status]
       putDataCSV(ReportFilePlots,columns)
-      ReportFileBuilt = path.join(root,d.isoformat()+ '_' + 'ValidationReportBuilt.csv') 
-      columnsbuilt = [casbuilt,modulebuilt,configbuilt,cpubuilt]
-      putDataCSV(ReportFileBuilt,columnsbuilt)
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
