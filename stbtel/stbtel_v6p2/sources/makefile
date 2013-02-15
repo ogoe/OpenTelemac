@@ -49,7 +49,7 @@ DIRINC_PARAVOID   = $(PROJECT)/paravoid/paravoid_$(V_BIEF)/$(DIRLIB)
 DIRINC_SPECIAL    = $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)
 #
 FCO           = $(FC_OPT_COMPIL)
-LKO           = $(LK_OPT_OTHERS)
+LKO           = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 FC            = $(FC_NAM)
 FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) \
                                         $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
@@ -140,7 +140,8 @@ converter.f
 #
 #------- Objets
 #
-OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 PRINT	      = pr
 
@@ -276,6 +277,27 @@ delete_workdir :
 
 
 #------- Regles de compilation des sources FORTRAN
+
+.F.o:
+	@echo "=> Compilation de $< :"
+	@if [ ! -d ../$(DIRLIB) ]; then \
+	echo "creation du repertoire $(DIRLIB)";mkdir ../$(DIRLIB); fi
+	@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
+          DIR="`whoami`@`uname -n`:`pwd`" ; \
+	  remsh $(NAME_CIBLE) -l $(USR_CIBLE) \
+	  "cd workdir/compilation ;\
+	  rcp $$DIR/$(<F) . ;\
+	  $(FC_CIBLE) $(FCFLAG_CIBLE) $(<F) ;\
+	  rm $(*F).F ;\
+	  rcp $(*F).o $$DIR/. ";\
+	else \
+	  $(FC) $(FFLAGS) $< ; fi;
+	@if [ -r *.mod ]; then \
+	 echo "Transfert du module $(@F:.o=.mod) ";\
+	 cp  *.mod $(DEST)/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 echo "Transfert du module $(@F:.o=.MOD) ";\
+	 cp  *.MOD $(DEST)/.; /bin/rm *.MOD; fi;
 
 .f.o:
 	@echo "=> Compilation de $< :"

@@ -44,7 +44,7 @@ DIRINC_PARAVOID   = $(PROJECT)\paravoid\paravoid_$(V_BIEF)\$(DIRLIB)
 DIRINC_SPECIAL   = $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)
 #
 FCO       = $(FC_OPT_COMPIL)
-LKO       = $(LK_OPT_OTHERS)
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 FC        = $(FC_NAM)
 FFLAGS	  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) \
                                     $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
@@ -116,7 +116,8 @@ converter.f
 #
 #------- Objets
 #
-OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 #
 # ------------------------ Cibles
@@ -183,3 +184,33 @@ declarations_stbtel.o:
 	if EXIST $(DEST)\declarations_stbtel.mod del /f $(DEST)\declarations_stbtel.mod
 	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
 	move declarations_stbtel.mod $(DEST)
+lib_vtk_io.o:
+	$(FC) $(FFLAGS) lib_vtk_io.F
+	if EXIST $(DEST)\lib_vtk_io.mod del /f $(DEST)\lib_vtk_io.mod
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	move lib_vtk_io.mod $(DEST)
+conv_lim.o:
+	$(FC) $(FFLAGS) conv_lim.F
+	if EXIST $(DEST)\conv_lim.mod del /f $(DEST)\conv_lim.mod
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	move conv_lim.mod $(DEST)
+conv_unv.o:
+	$(FC) $(FFLAGS) conv_unv.F
+	if EXIST $(DEST)\conv_unv.mod del /f $(DEST)\conv_unv.mod
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	move conv_unv.mod $(DEST)
+conv_serafin.o:
+	$(FC) $(FFLAGS) conv_serafin.F
+	if EXIST $(DEST)\conv_serafin.mod del /f $(DEST)\conv_serafin.mod
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	move conv_serafin.mod $(DEST)
+conv_med.o:
+	$(FC) $(FFLAGS) conv_med.F
+	if EXIST $(DEST)\conv_med.mod del /f $(DEST)\conv_med.mod
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	move conv_med.mod $(DEST)
+conv_cgns.o:
+	$(FC) $(FFLAGS) conv_cgns.F
+	if EXIST $(DEST)\conv_cgns.mod del /f $(DEST)\conv_cgns.mod
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
+	move conv_cgns.mod $(DEST)
