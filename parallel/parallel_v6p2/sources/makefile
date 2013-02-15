@@ -55,6 +55,8 @@ DATE          = `date '+%d/%m/%y %H:%M'`
 MESSAGE       = @echo "$(PWD) $(LIBRARY) $(LOGNAME) $(DATE) $@ ($?)" >>$(JOURNAL);echo
 
 PARTEL        = partel
+PARTEL_PARA   = partel_para
+PARTEL_PRELIM = partel_prelim
 GRETEL        = gretel
 GREDELPTS     = gredelpts
 GREDELSEG     = gredelseg
@@ -65,7 +67,7 @@ DIFFSEL       = diffsel
 DEST	      = $(PROJECT)/parallel/parallel_$(VERSION)/$(DIRLIB)
 #
 
-LKLIB         = $(PROJECT)/parallel/parallel_$(VERSION)/$(DIRLIB)/libmetis.a 
+LKLIB         = $(LIBS_MPI) $(PROJECT)/parallel/parallel_$(VERSION)/$(DIRLIB)/libmetis.a 
 
 INSTALL	      = cp
 
@@ -112,6 +114,8 @@ SRCS	      = interface_parallel.f \
 		p_mpi_alltoallv_toma4.f
 
 SRCS_PARTEL= partel.F
+SRCS_PARTEL_PARA= partel_para.F 
+SRCS_PARTEL_PRELIM= partel_prelim.f
 SRCS_GRETEL= gretel_autop.f
 SRCS_GREDELPTS= gredelpts_autop.f
 SRCS_GREDELSEG= gredelseg_autop.f
@@ -122,8 +126,11 @@ SRCS_DIFFSEL=diffsel.f
 #
 #------- Objets
 #
-OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
-OBJS_PARTEL = $(subst .F,.o,$(subst .f,.o,$(SRCS_PARTEL)))
+TMP= $(SRCS:.f=.o)
+OBJS= $(TMP:.F=.o)
+OBJS_PARTEL = $(SRCS_PARTEL:.F=.o)
+OBJS_PARTEL_PARA = $(SRCS_PARTEL_PARA:.F=.o)
+OBJS_PARTEL_PRELIM = $(SRCS_PARTEL_PRELIM:.f=.o)
 OBJS_GRETEL = $(SRCS_GRETEL:.f=.o)
 OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.o)
 OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.o)
@@ -139,7 +146,7 @@ SHELL	      = /bin/sh
 # Definition des cibles
 #
 
-all:		$(LIBRARY) $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL)
+all:		$(LIBRARY) $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL)
 
 $(LIBRARY):	$(OBJS)
 		$(MESSAGE) "Archive $(LIBRARY) ..."
@@ -147,9 +154,11 @@ $(LIBRARY):	$(OBJS)
 		@if [ $(LIB_RANLIB) ]; then $(LIB_RANLIB) $(LIBRARY) > /dev/null ; fi
 		@echo "Termine."
 
-$(PARTEL) : $(OBJS_PARTEL) $(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(OBJS_GREDELMET) $(OBJS_GREDELHYD) $(OBJS_DIFFSEL)
+$(PARTEL) : $(OBJS_PARTEL) $(OBJS_PARTEL_PARA) $(OBJS_PARTEL_PRELIM) $(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(OBJS_GREDELMET) $(OBJS_GREDELHYD) $(OBJS_DIFFSEL)
 		$(MESSAGE) "Link de PARTEL/GRETEL/GREDELPTS/GREDELSEG/GREDELMET/GREDELHYD ..."
 		$(FC2) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL) $(OBJS_PARTEL) $(LKLIB) 
+		$(FC2) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PARA) $(OBJS_PARTEL_PARA) $(LKLIB) 
+		$(FC2) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PRELIM) $(OBJS_PARTEL_PRELIM) $(LKLIB) 
 		$(FC2) $(LKO) $(LK_OPT_OUTNAME) $(GRETEL) $(OBJS_GRETEL) $(LKLIB) 
 		$(FC2) $(LKO) $(LK_OPT_OUTNAME) $(GREDELPTS) $(OBJS_GREDELPTS) $(LKLIB) 
 		$(FC2) $(LKO) $(LK_OPT_OUTNAME) $(GREDELSEG) $(OBJS_GREDELSEG) $(LKLIB) 
@@ -159,7 +168,7 @@ $(PARTEL) : $(OBJS_PARTEL) $(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(
 		@echo "Termine."
 
 menage:;	$(MESSAGE) "Efface les objets, librairies, executables et core-file."
-		@rm -f $(OBJS) $(OBJS_PARTEL) $(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(OBJS_GREDELMET) $(OBJS_GREDELHYD) $(OBJS_DIFFSEL) *.a $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL) *.g90 core
+		@rm -f $(OBJS) $(OBJS_PARTEL) $(OBJS_PARTEL_PARA) $(OBJS_PARTEL_PRELIM) $(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(OBJS_GREDELMET) $(OBJS_GREDELHYD) $(OBJS_DIFFSEL) *.a $(PARTEL) $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) $(DIFFSEL) *.g90 core
 
 Menage:;	$(MESSAGE) "Efface les objets, bibliotheques et core-file."
 		@rm -f $(OBJS) *$(VERSION).a core tags
@@ -231,7 +240,7 @@ libcray:
 	  "cd compilation ;\
 	  rcp $$DIR/$(<F) . ;\
 	  $(FC_CRAY) $(FCFLAG_CRAY) $(<F) ;\
-	  rm $(*F).f ;\
+	  rm $(*F).F ;\
 	  rcp $(*F).o $$DIR/. ";\
 	else \
 	  $(FC) $(FFLAGS) $< ; fi;

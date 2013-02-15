@@ -72,7 +72,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+#if defined (HAVE_PTSCOTCH)
       USE ISO_C_BINDING
+#endif
       IMPLICIT NONE
 !
       INCLUDE 'mpif.h'
@@ -159,7 +161,6 @@
 !
 !     FOR PARMETIS
 !      
-      TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
       INTEGER, POINTER :: XADJ2(:), ADJNCY2(:)
       INTEGER, ALLOCATABLE :: ELMDIST(:)
       INTEGER :: T_P,N_P
@@ -176,6 +177,7 @@
 !
       REAL*8, DIMENSION(SCOTCH_DGRAPHDIM) :: PTSCOTCHGRAPH
       REAL*8, DIMENSION(SCOTCH_STRATDIM) :: PTSCOTCHSTRAT
+      TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
 !
 #endif
 !

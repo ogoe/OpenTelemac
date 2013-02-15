@@ -131,7 +131,8 @@ voisin.f     voisin31.f     waitfor.f     write_data.f write_data_serafin.f   wr
 #
 #------- Objets
 #
-OBJS = $(subst .F,.obj,$(subst .f,.obj,$(SRCS)))
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 #
 # ------------------------ Cibles

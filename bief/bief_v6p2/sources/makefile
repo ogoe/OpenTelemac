@@ -145,7 +145,8 @@ voisin.f     voisin31.f     waitfor.f     write_data.f write_data_serafin.f   wr
 #
 #------- Objets
 #
-OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
+TEMP = $(SRCS:.f=.o)
+OBJS = $(TEMP:.F=.o)
 
 PRINT	      = pr
 #
@@ -224,7 +225,7 @@ delete_workdir :
  
 #------- Modules
 #
-MODS =   bief_def.o declarations_telemac.o bief.o streamline.o
+MODS =   bief_def.o declarations_telemac.o bief.o streamline.o m_med.o
 
 modules:	$(MODS)
 		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
@@ -258,3 +259,23 @@ modules:	$(MODS)
 	 echo "Transfert du module $(@F:.o=.MOD) ";\
 	 cp  *.MOD $(DEST)/.; /bin/rm *.MOD; fi;
 
+.F.o:
+	@echo "=> Compilation de $< :"
+	@if [ ! -d ../$(DIRLIB) ]; then \
+	echo "creation du repertoire $(DIRLIB)";mkdir ../$(DIRLIB); fi
+	@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
+          DIR="`whoami`@`uname -n`:`pwd`" ; \
+	  remsh $(NAME_CIBLE) -l $(USR_CIBLE) \
+	  "cd workdir/compilation ;\
+	  rcp $$DIR/$(<F) . ;\
+	  $(FC_CIBLE) $(FCFLAG_CIBLE) $(<F) ;\
+	  rm $(*F).F ;\
+	  rcp $(*F).o $$DIR/. ";\
+	else \
+	  $(FC) $(FFLAGS) $< ; fi;
+	@if [ -r *.mod ]; then \
+	 echo "Transfert du module $(@F:.o=.mod) ";\
+	 cp  *.mod $(DEST)/.; /bin/rm *.mod; fi;
+	@if [ -r *.MOD ]; then \
+	 echo "Transfert du module $(@F:.o=.MOD) ";\
+	 cp  *.MOD $(DEST)/.; /bin/rm *.MOD; fi;

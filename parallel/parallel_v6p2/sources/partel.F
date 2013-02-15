@@ -65,7 +65,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+#if defined (HAVE_SCOTCH)
       USE ISO_C_BINDING
+#endif
       IMPLICIT NONE
 #if defined (HAVE_SCOTCH)
       include 'scotchf.h'
@@ -151,8 +153,8 @@
 !
       REAL*8, DIMENSION(SCOTCH_GRAPHDIM) :: SCOTCHGRAPH
       REAL*8, DIMENSION(SCOTCH_STRATDIM) :: SCOTCHSTRAT
-#endif
       TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
+#endif
       INTEGER, POINTER :: XADJ2(:), ADJNCY2(:)
 !
 ! FOR CALLING FRONT2

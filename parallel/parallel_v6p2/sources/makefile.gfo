@@ -106,8 +106,10 @@ SRCS_DIFFSEL=diffsel.f
 #
 #------- Objets
 #
-OBJS = $(subst .F,.o,$(subst .f,.o,$(SRCS)))
-OBJS_PARTEL = $(subst .F,.o,$(subst .f,.o,$(SRCS_PARTEL)))
+TEMP = $(SCRS:.f=.o)
+OBJS = $(TEMP:.F=.o)
+TEMP = $(SCRS_PARTEL:.f=.o)
+OBJS_PARTEL = $(TEMP:.F=.o)
 OBJS_GRETEL = $(SRCS_GRETEL:.f=.o)
 OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.o)
 OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.o)
