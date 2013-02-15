@@ -60,7 +60,7 @@
       DT = 1.E+12
       EPSL = 0.01D0
 
-      IF(ICIN.EQ.1.OR.ICIN.EQ.2) THEN
+      IF(ICIN.EQ.1) THEN
 !       KINETIC SCHEME
 !
         RA3 = SQRT(1.5D0*G)
