@@ -755,7 +755,6 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       print '    +> or run the following command within : ',path.basename(WDir)
       print '       ~>    run with EXE: ',path.basename(exename)
       if cfg.has_key('MPI'): print '       ~> or run with MPI: ',mpiCmd.replace('<exename>',path.basename(exename))
-      if cfg.has_key('HPC'): print '       ~> or run with HPC: ',hpcCmd.replace('<exename>',path.basename(exename))
       return []
 
    # ~~ Handling the partionning ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
