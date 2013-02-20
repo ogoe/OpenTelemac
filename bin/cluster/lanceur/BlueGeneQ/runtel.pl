@@ -253,14 +253,14 @@ BEGIN
                             else {$ps="/"; }   #Unix/Linux
 
 #Localiser les modules dans le rÃ©pertoire 'bin'
-  $project=`getproject`;  unshift (@INC, "$project$ps"."bin.bgq");
+  $project=`getproject`;  unshift (@INC, "$project$ps"."bin");
 
 #Verification des modules
-  if ( ! -e "$project$ps"."bin.bgq$ps"."tm_info.pm") 
+  if ( ! -e "$project$ps"."bin$ps"."tm_info.pm") 
        {die "FATAL : Module <tm_info> inaccessible.\n";}
   eval (require 'tm_info.pm'); 
   die "FATAL : Module <tm_info> incorrect ($@)"  if  ($@);
-  if ( ! -e "$project$ps"."bin.bgq$ps"."tm_casdico.pm") 
+  if ( ! -e "$project$ps"."bin$ps"."tm_casdico.pm") 
        {die "FATAL : Module <tm_casdico> inaccessible.\n";}
   eval (require 'tm_casdico.pm'); 
   die "FATAL : Module <tm_casdico> incorrect ($@)"  if  ($@);
@@ -1447,7 +1447,7 @@ ecrire_variable_fichier(F,"EXEDEFPARA", @vals[0]);
 #----------------------------------
 #------ ajout du fichier runcode.pl
 #----------------------------------
-$filename3=join "", $PROJECT,$ps,"bin.bgq",$ps,"runcode.pl";
+$filename3=join "", $PROJECT,$ps,"bin",$ps,"runcode.pl";
 open (F3, "<$filename3") or die "## Error : Open the $filename3 file is impossible\n";
 while($LIGNE = <F3>) 
   {                                             #Lecture et ajout des lignes du
