@@ -4401,7 +4401,7 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER NRK,I,ISTOP 
+      INTEGER NRK,I,ISTOP,ISTOP2 
       INTEGER, POINTER, DIMENSION(:)  :: ETABUF
 ! 
 !----------------------------------------------------------------------- 
@@ -4570,15 +4570,20 @@
 !         U ET UTILD VECTEURS (NOMB VAUT ALORS 1) 
 !         
           IF(U%ELM.EQ.13.OR.U%ELM.EQ.12) THEN 
-!           INTERPOLATION DES VITESSES POUR UNE VARIABLE QUADRATIQUE
+!           INTERPOLATION POUR UNE VARIABLE QUADRATIQUE
 !                                               OU QUASI-BULLE
             CALL BIEF_INTERP(U%R,UTILD%R,SHP,NDP,SHZ,ETA,SHF,FRE,ELT, 
-     &                       U%DIM1,DIM1U,NPLAN,U%ELM,IKLE,NELMAX,
+     &                       U%DIM1,DIM1U,
+     &                       NPLAN,U%ELM,IKLE,NELMAX,
      &                       PERIO,YA4D)        
           ELSE  
-!           INTERPOLATION DES VITESSES DANS LES AUTRES CAS 
+!           INTERPOLATION DANS LES AUTRES CAS
+!           IN THE CASE WHERE A VARIABLE IS QUASI-BUBBLE OR QUADRATIC
+!           AND ANOTHER ONE LINEAR, NPLOT WILL BE GREATER THAN THE
+!           NUMBER OF LINEAR POINTS, HENCE THE MIN(NPLOT...) BELOW 
             CALL BIEF_INTERP(U%R,UTILD%R,SHP,NDP,SHZ,ETA,SHF,FRE,ELT, 
-     &                       NPLOT,DIM1U,NPLAN,IELM,IKLE,NELMAX,
+     &                       MIN(NPLOT,U%DIM1),DIM1U,
+     &                       NPLAN,IELM,IKLE,NELMAX,
      &                       PERIO,YA4D) 
           ENDIF            
 ! 
@@ -4605,8 +4610,9 @@
           ELSE  
 !           INTERPOLATION DES VARIABLES DANS LES AUTRES CAS 
             CALL BIEF_INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
-     &                       ETA,SHF,FRE,ELT,NPLOT,DIM1U,NPLAN, 
-     &                       IELM,IKLE,NELMAX,PERIO,YA4D)
+     &                       ETA,SHF,FRE,ELT,
+     &                       MIN(NPLOT,U%ADR(I)%P%DIM1),DIM1U,
+     &                       NPLAN,IELM,IKLE,NELMAX,PERIO,YA4D)
           ENDIF 
 ! 
           ENDDO  
@@ -4664,15 +4670,25 @@
               WRITE(LU,*) 'NARRV=',NARRV
               WRITE(LU,*) 'NCHDIM=',NCHDIM,' IS TOO SMALL' 
             ENDIF
+            ISTOP2=0
             IF(NARRV.GT.SIZEBUF) THEN 
-              ISTOP=1 
+              ISTOP2=1 
               WRITE(LU,*) 'NARRV=',NARRV
               WRITE(LU,*) 'SIZEBUF=',SIZEBUF,' IS TOO SMALL' 
             ENDIF  
             ISTOP=P_ISUM(ISTOP) 
-            IF(ISTOP.GT.0) THEN 
-              WRITE (LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP, 
-     *                     ' PROCESSORS' 
+            IF(ISTOP.GT.0) THEN
+              WRITE(LU,*) 'SCARACT' 
+              WRITE(LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP, 
+     &                     ' PROCESSORS' 
+              CALL PLANTE(1) 
+              STOP 
+            ENDIF 
+            ISTOP2=P_ISUM(ISTOP2) 
+            IF(ISTOP2.GT.0) THEN
+              WRITE(LU,*) 'SCARACT' 
+              WRITE(LU,*) 'SIZE OF BUFFER SIZEBUF TOO SMALL IN ',
+     &                    ISTOP2,' PROCESSORS' 
               CALL PLANTE(1) 
               STOP 
             ENDIF 
@@ -5263,7 +5279,7 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER I,ISTOP,IPLOT 
+      INTEGER I,ISTOP,ISTOP2,IPLOT 
 ! 
 !----------------------------------------------------------------------- 
 ! 
@@ -5439,7 +5455,7 @@
             HEAPCHAR(NCHARA)%YP=SHP(2,IPLOT)   ! Y-POSITION (HERE SHP2)  
             HEAPCHAR(NCHARA)%ZP=SHP(3,IPLOT)   ! Z-POSITION (HERE SHP3)
             HEAPCHAR(NCHARA)%DX=SHZ(IPLOT)     ! X-DISPLACEMENT (HERE SHZ)  
-            HEAPCHAR(NCHARA)%DY=SHF(IPLOT)     ! NO SHF HERE   
+!           HEAPCHAR(NCHARA)%DY=SHF(IPLOT)     ! NO SHF HERE   
 !           HEAPCHAR(NCHARA)%DZ=0.D0           ! Z-DISPLACEMENT (NOT USED)   
 !
             HEAPCOUNTS(ISUB(IPLOT)+1)=HEAPCOUNTS(ISUB(IPLOT)+1)+1
@@ -5470,17 +5486,27 @@
             ISTOP=1 
             WRITE(LU,*) 'NARRV=',NARRV,' NCHDIM=',NCHDIM 
           ENDIF
+          ISTOP2=0
           IF(NARRV.GT.SIZEBUF) THEN 
-            ISTOP=1 
+            ISTOP2=1 
             WRITE(LU,*) 'SIZEBUF=',SIZEBUF,' NCHDIM=',NCHDIM 
           ENDIF  
           ISTOP=P_ISUM(ISTOP) 
           IF(ISTOP.GT.0) THEN 
-            WRITE (LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP, 
-     *                   ' PROCESSORS' 
+            WRITE(LU,*) 'POST_INTERP'
+            WRITE(LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP, 
+     &                   ' PROCESSORS' 
             CALL PLANTE(1) 
             STOP 
-          ENDIF 
+          ENDIF
+          ISTOP2=P_ISUM(ISTOP2) 
+          IF(ISTOP2.GT.0) THEN 
+            WRITE(LU,*) 'POST_INTERP'
+            WRITE(LU,*) 'SIZE OF BUFFER SIZEBUF TOO SMALL IN ',
+     &                  ISTOP2,' PROCESSORS' 
+            CALL PLANTE(1) 
+            STOP 
+          ENDIF  
 !
 !         RETRIEVING SHP, SHZ, ELT, ETA IN RECVCHAR
 !
