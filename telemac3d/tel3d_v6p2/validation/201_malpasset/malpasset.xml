@@ -18,7 +18,7 @@
  
 <!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    /!\ do="cas;princi" are being ignored at the moment 
--->  
+-->  <!--
    <action xref="1" 
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_malpasset_p2.cas" 
@@ -38,7 +38,7 @@
        do="translate;compile;run;cas;princi" 
        code="telemac3d" target="t3d_malpasset_large.cas" 
        title="malpasset scalar mode" 
-   />
+   /> -->
    <action xref="5" 
        do="translate;compile;run;cas;princi" ncsize="4" 
        code="telemac3d" target="t3d_malpasset_p2.cas" 

@@ -156,6 +156,7 @@ def getTimeHistorySLF(f,NVAR,NPOIN3):
 def getVariablesAt( f,tags,frame,NVAR,NPOIN3,varsIndexes ):
 
    z = np.zeros((len(varsIndexes),NPOIN3))
+   # if tags has 31 frames, len(tags)=31 from 0 to 30, then frame should be >= 0 and < len(tags)
    if frame < len(tags['cores']) and frame >= 0:
       f.seek(tags['cores'][frame])
       f.seek(4+4+4,1)
@@ -187,7 +188,8 @@ def parseSLF(f):
 
 def subsetVariablesSLF(vars,ALLVARS):
    ids = []; names = []
-   
+   # vars has the form "var1:object;var2:object;var3;var4"
+   # /!\ the ; separator might be a problem for command line action
    v = vars.split(';')
    for ivar in range(len(v)):
       vi = v[ivar].split(':')[0]
@@ -203,18 +205,16 @@ def subsetVariablesSLF(vars,ALLVARS):
    return ids,names
 
 def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName) ):
-   # TODO: rework subset of time properly
+
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   subset = time  # /!\ History requires 2 values
-   if len(time) < 1:
-      print "... Could not find a time frame to extract"
+   # /!\ History requires 2 values, both values should be integers starting from 0 to -1, just like frame
+   if len(time) != 2:
+      print "... A time history needs 2 frames. You seem to wish to extract ",len(time)," frame(s)."
       sys.exit()
    subset = []
    for i in range(len(time)):
-      subset.append(int(time[i]))
-      if time[i] < 0: subset[i] = [ max( 0, len(tags['cores']) + time[i] ) ]
-   #if time[0] < 0: subset = [ 0,max( 0, len(tags['cores']) + time[0] ) ]
-   #if time[1] < 0: subset = [ time[0],max( 0, len(tags['cores']) + time[1] + 1 ) ]
+      if time[i] < 0: subset.append(max( 0, len(tags['cores']) + time[i] ))
+      else: subset.append(max( time[i], len(tags['cores'])-1 ))
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    z = np.zeros((len(varsIndexes),len(bn),len(tags['cores'])))
@@ -261,54 +261,47 @@ def getNeighboursSLF(IKLE,MESHX,MESHY):
    except:
       #print '... you are in bad luck !'
       #print '       ~>  without matplotlib based on python 2.7, this operation takes a little longer'
-      neighbours,i,o = getNeighbourhoodSLF(IKLE)
+      insiders = {}; bounders = {}
+      #print '    +> start listing neighbours of edges'
+      ibar = 0; pbar = ProgressBar(maxval=(3*len(IKLE))).start()
+      for e,i in zip(IKLE,range(len(IKLE))):
+         nk = bounders.keys()
+         for k in [0,1,2]:
+            pbar.update(ibar); ibar += 1
+            if (e[k],e[(k+1)%3]) not in nk: bounders.update({ (e[(k+1)%3],e[k]):i })
+            else:
+               j = bounders[(e[k],e[(k+1)%3])]
+               insiders.update({(e[k],e[(k+1)%3]):[i,j]})
+               del bounders[(e[k],e[(k+1)%3])]
+      ibar = 0
+      neighbours = - np.ones((len(IKLE),3),dtype=np.int)
+      for e,i in zip(IKLE,range(len(IKLE))):
+         for k in [0,1,2]:
+            pbar.update(ibar); ibar += 1
+            if insiders.has_key((e[k],e[(k+1)%3])):
+               a,b = insiders[(e[k],e[(k+1)%3])]
+               if a == i: neighbours[i][k] = b
+               if b == i: neighbours[i][k] = a
+            if insiders.has_key((e[(k+1)%3],e[k])):
+               a,b = insiders[(e[(k+1)%3],e[k])]
+               if a == i: neighbours[i][k] = b
+               if b == i: neighbours[i][k] = a
+      #pbar.write('    +> listing neighbours of edges completed',ibar)
+      pbar.finish()
 
    return neighbours
 
-def getNeighbourhoodSLF(IKLE):
-
-   ne = []; insiders = {}; bounders = {}
-   #print '    +> start listing neighbours of edges'
-   ibar = 0; pbar = ProgressBar(maxval=(3*len(IKLE))).start()
-   for e,i in zip(IKLE,range(len(IKLE))):
-      nk = bounders.keys()
-      for k in [0,1,2]:
-         pbar.update(ibar); ibar += 1
-         if (e[k],e[(k+1)%3]) not in nk: bounders.update({ (e[(k+1)%3],e[k]):i })
-         else:
-            j = bounders[(e[k],e[(k+1)%3])]
-            insiders.update({(e[k],e[(k+1)%3]):[i,j]})
-            del bounders[(e[k],e[(k+1)%3])]
-   ibar = 0
-   neighbours = - np.ones((len(IKLE),3),dtype=np.int)
-   for e,i in zip(IKLE,range(len(IKLE))):
-      for k in [0,1,2]:
-         pbar.update(ibar); ibar += 1
-         if insiders.has_key((e[k],e[(k+1)%3])):
-            a,b = insiders[(e[k],e[(k+1)%3])]
-            if a == i: neighbours[i][k] = b
-            if b == i: neighbours[i][k] = a
-         if insiders.has_key((e[(k+1)%3],e[k])):
-            a,b = insiders[(e[(k+1)%3],e[k])]
-            if a == i: neighbours[i][k] = b
-            if b == i: neighbours[i][k] = a
-   #pbar.write('    +> listing neighbours of edges completed',ibar)
-   pbar.finish()
-
-   return neighbours,insiders,bounders
-
-
 def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName)):
-   # TODO: rework subset of time properly, particularly with 2 frames or more, whether
+   # TODO: rework subset of time with 3 frames or more, whether
    #    they define a range or a series of frames. The later is assumed for now
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if len(time) < 1:
-      print "... Could not find a time frame to extract"
+      print "... At least 1 frames is asked for."
       sys.exit()
    subset = []
    for i in range(len(time)):
-      subset.append(int(time[i]))
-      if time[i] < 0: subset[i] = max( 0, len(tags['cores']) + time[i] )
+      if time[i] < 0: subset.append(max( 0, len(tags['cores']) + time[i] ))
+      else: subset.append(max( time[i], len(tags['cores'])-1 ))
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    z = np.zeros((len(varsIndexes),len(subset),len(p))) #,len(tags['cores'])))
@@ -827,7 +820,6 @@ class PARAFINS(SELAFINS):
    def putContent(self,fileName): # TODO: files also have to have the same header
       self.slf.fole = open(fileName,'wb')
       ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
-      putHeaderSLF(self.slf)
       # ~~> Time stepping
       for t in range(len(self.slf.tags['times'])):
          ibar += 1
