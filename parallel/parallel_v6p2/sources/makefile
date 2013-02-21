@@ -78,8 +78,6 @@ SRCS	      = interface_parallel.f \
 		get_mpi_parameters.f \
 		org_charac_type1.f \
 		p_org_fonction_type.f \
-		p_org_charac_type_4d.f \
-		p_org_fonction_type_4d.f \
 		p_dmax.f \
 		p_dmin.f \
 		p_dsum.f \
@@ -108,10 +106,7 @@ SRCS	      = interface_parallel.f \
 		p_wait_paraco.f \
 		p_writ.f \
 		p_iwrit.f \
-		p_iwrit_c.f \
-		p_mpi_alltoallv_toma2.f \
-		p_mpi_alltoallv_toma3.f \
-		p_mpi_alltoallv_toma4.f
+		p_iwrit_c.f 
 
 SRCS_PARTEL= partel.F
 SRCS_PARTEL_PARA= partel_para.F 
