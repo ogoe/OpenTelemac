@@ -16,9 +16,6 @@
 !+          JAJ PRIVATISED MON JUL 21 10:41:04 CEST 2008
 !+          JAJ OPTIMISED WED JUL 30 15:40:45 CEST 2008
 !
-!warning  FORTRAN-77 CODE FORMATTING FOR TELEMAC SYSTEM!
-!+          (ESPECIALLY IMPORTANT FOR COMMANDS TAKING MORE THAN ONE LINE)
-!
 !history  J-M HERVOUET (LNHE)
 !+        31/07/2012
 !+        V6P2
@@ -34,6 +31,7 @@
 !+   However in 3D the vertical velocity is computed in Telemac-3D and
 !+   has truncation errors, this will trigger differences.
 !+   Now the sub-domain at the foot of the characteristic is returned
+!+   if SCARACT called with argument POST=.TRUE.
 !
 !history  J-M HERVOUET (LNHE)
 !+        08/01/2013
@@ -49,6 +47,12 @@
 !+   when one processor has nothing to send, some arrays were not
 !+   initialised.
 !
+!history  J-M HERVOUET (LNHE)
+!+        22/02/2013
+!+        V6P3
+!+   Particle tracking in //. 3 subroutines added: send_particles,
+!+   add_particle, del_particle, to be used by subroutine derive.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -62,7 +66,8 @@
 !     CALLED BY DERLAG (BIEF, USED BY TELEMAC-2D) 
 !     CALLED BY DERI3D (TELEMAC-3D)
 ! 
-      PUBLIC :: SCARACT,POST_INTERP 
+      PUBLIC :: SCARACT,POST_INTERP,SEND_PARTICLES,BIEF_INTERP
+      PUBLIC :: ADD_PARTICLE,DEL_PARTICLE 
 ! 
 !     MAX_BASKET_SIZE IS THE NUMBER OF ADVECTED VARIABLES IN ONE PROCEDURE CALL   
 ! 
@@ -456,7 +461,7 @@
           RDISPLS(1) = 0 ! SAVE THE RECEIVED DATA CONTIGUOUSLY  
           DO I=2,NCSIZE 
             RDISPLS(I) = RDISPLS(I-1)+RECVCOUNTS(I-1) 
-          END DO 
+          ENDDO 
           CALL P_MPI_ALLTOALLV
      &      (SENDCHAR,SENDCOUNTS,SDISPLS,CHARACTERISTIC, 
      &       RECVCHAR,RECVCOUNTS,RDISPLS,CHARACTERISTIC, 
@@ -622,6 +627,7 @@
 ! 
         SUBROUTINE INTERP_RECVCHAR_11  
      &      (VAL,N,IKLE,ELT,SHP,NELEM,NPOIN,NRANGE,IELM,POST,NOMB)
+          USE BIEF
           IMPLICIT NONE 
           INTEGER LNG,LU 
           COMMON/INFO/LNG,LU 
@@ -798,7 +804,7 @@
                 SHP(1,IPOIN)=RECVCHAR(I)%XP
                 SHP(2,IPOIN)=RECVCHAR(I)%YP
                 SHP(3,IPOIN)=RECVCHAR(I)%ZP
-                ELT(IPOIN)  =RECVCHAR(I)%INE             
+                ELT(IPOIN)  =RECVCHAR(I)%INE                             
               ENDDO
             ELSEIF(IELM.EQ.41) THEN
               IF(YA4D) THEN
@@ -4412,8 +4418,8 @@
 ! LATER ON, IT COUNTS THE IMPLANTED TRACEBACKS LOCALISED IN MY PARTITION 
 !
       INTEGER NCHARA,NLOSTCHAR,NARRV,IGEN,NSEND,NLOSTAGAIN 
-      INTEGER  P_IMAX, P_ISUM 
-      EXTERNAL P_IMAX, P_ISUM 
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
 !     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR (SORRY, STATIC)  
       INTEGER NCHDIM 
 ! 
@@ -4452,16 +4458,19 @@
 ! 
       ENDIF 
 ! 
-!     CASE OF A CALL FROM DIFFERENT PROGRAMMES WITH DIFFERENT NOMB 
+!     CASE OF A CALL FROM DIFFERENT PROGRAMMES WITH DIFFERENT NOMB
+!     A REALLOCATION IS DONE UNTIL THE MAXIMUM OF NOMB AND NPLOT
+!     IS REACHED
 !     JAJ + JMH 26/08/2008 
 ! 
       IF(NCSIZE.GT.1) THEN     
-        IF(NOMB.NE.LAST_NOMB.OR.NPLOT.GT.LAST_NPLOT) THEN 
+        IF(NOMB.GT.LAST_NOMB.OR.NPLOT.GT.LAST_NPLOT) THEN       
 !         DESTROY THE CHARACTERISTICS TYPE FOR COMM. 
+          LAST_NOMB=MAX(NOMB,LAST_NOMB)
+          LAST_NPLOT=MAX(NPLOT,LAST_NPLOT)
           CALL DEORG_CHARAC_TYPE()  
 !         SET DATA STRUCTURES ACCORDINGLY        
-          CALL ORGANISE_CHARS(NPLOT,NOMB,NCHDIM,LAST_NPLOT)         
-          LAST_NOMB=NOMB  
+          CALL ORGANISE_CHARS(LAST_NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)                   
         ENDIF 
 !    
 !       INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS) 
@@ -4637,9 +4646,8 @@
 ! THEY CAN BE SENT BACK TO THEIR ORIGIN PARTITIONS AND INTRODUCED  
 ! AT THEIR HEAD POSITIONS IN THE APPROPRIATE FIELDS 
 !----------------------------------------------------------------------- 
-! 
-      IF(NCSIZE.GT.1) THEN  
-   
+!
+      IF(NCSIZE.GT.1) THEN   
         IF(NCHARA>NCHDIM) THEN  
           WRITE (LU,*) ' @STREAMLINE::NCHARA>NCHDIM'  
           CALL PLANTE(1) 
@@ -4648,17 +4656,17 @@
         NSEND=NCHARA 
         NLOSTCHAR=NSEND     
 !         
-        IF(P_IMAX(NSEND).GT.0) THEN ! THERE ARE LOST TRACEBACKS SOMEWHERE 
+        IF(P_ISUM(NSEND).GT.0) THEN ! THERE ARE LOST TRACEBACKS SOMEWHERE 
 ! 
-!         PREPARE INITIAL SENDING OF COLLECTED LOST TRACEBACKS 
-          CALL PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA)  
+!         PREPARE INITIAL SENDING OF COLLECTED LOST TRACEBACKS
+          CALL PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA)
 ! 
           IGEN=0 ! NUMBER OF GENERATIONS (I.E. INTERFACE CROSSINGS ON THE WAY) 
           DO 
             IGEN=IGEN+1 
 !
 !           GET THE ARRIVING TRACEBACKS VIA ALL-TO-ALL COMMUNICATION
-! 
+!
             CALL GLOB_CHAR_COMM()    
 ! 
 !           COMPUTE THE NUMBER OF ARRIVED ONES 
@@ -4773,11 +4781,13 @@
 ! 
           IF(NARRV.GT.0) THEN 
             IF(U%TYPE.EQ.2) THEN 
-              IF(IELM.EQ.11) THEN 
+              IF(IELM.EQ.11) THEN
+!               CALLED EVEN IF NOMB=0, IN CASE POST=.TRUE. 
                 CALL INTERP_RECVCHAR_11 
      &            (U%R,1,IKLE,ELTBUF,SHPBUF,NELMAX,U%DIM1,NARRV,U%ELM,
      &             POST,NOMB) 
               ELSEIF(IELM.EQ.41) THEN 
+!               CALLED EVEN IF NOMB=0, IN CASE POST=.TRUE. 
                 CALL INTERP_RECVCHAR_41 
      &         (U%R,1,IKLE,ELTBUF,ETABUF,FREBUF,SHPBUF,SHZBUF,SHFBUF,
      &          NELMAX,NPOIN2,NPLAN,NARRV,POST,NOMB,PERIO,YA4D) 
@@ -4804,7 +4814,12 @@
                 WRITE(LU,*) 'WRONG IELM IN SCARACT:',IELM 
                 CALL PLANTE(1) 
                 STOP 
-              ENDIF 
+              ENDIF
+            ELSE
+              IF(LNG.EQ.1) WRITE(LU,17) U%TYPE,UTILD%TYPE 
+              IF(LNG.EQ.2) WRITE(LU,18) U%TYPE,UTILD%TYPE 
+              CALL PLANTE(1) 
+              STOP  
             ENDIF 
           ENDIF 
 !                 
@@ -4867,12 +4882,10 @@
           DO I=1,NPLOT
             ISUB(I)=IPID
           ENDDO
-        ENDIF ! P_IMAX(NSEND).GT.0 
+        ENDIF ! P_ISUM(NSEND).GT.0 
         CALL RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV) ! DEALLOCATING 
 !    
-      ENDIF ! NCSIZE.GT.1 
-!
-      LAST_NOMB=NOMB 
+      ENDIF ! NCSIZE.GT.1  
 ! 
 !----------------------------------------------------------------------- 
 ! 
@@ -5284,8 +5297,8 @@
 !----------------------------------------------------------------------- 
 ! 
       INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN 
-      INTEGER  P_IMAX, P_ISUM 
-      EXTERNAL P_IMAX, P_ISUM 
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
 !     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR  
       INTEGER NCHDIM  
 ! 
@@ -5307,7 +5320,8 @@
 ! 
 !     ORGANISE_CHARS MUST HAVE BEEN CALLED BEFORE IN A CALL TO SCARACT
 !     BUT WE MAY HAVE THE CASE OF A CALL FROM DIFFERENT PROGRAMMES WITH
-!     A DIFFERENT NOMB OR DIFFERENT NPLOT 
+!     A DIFFERENT NOMB OR DIFFERENT NPLOT, A REALLOCATION IS DONE UNTIL
+!     THE MAXIMUM OF NOMB AND NPLOT IS REACHED. 
 ! 
       IF(NCSIZE.GT.1) THEN     
         IF(NOMB.NE.LAST_NOMB.OR.NPLOT.GT.LAST_NPLOT) THEN 
@@ -5466,7 +5480,7 @@
         NSEND=NCHARA 
         NLOSTCHAR=NSEND    
 !         
-        IF(P_IMAX(NSEND).GT.0) THEN ! THERE ARE LOST TRACEBACKS SOMEWHERE 
+        IF(P_ISUM(NSEND).GT.0) THEN ! THERE ARE LOST TRACEBACKS SOMEWHERE 
 ! 
 !         PREPARE INITIAL SENDING OF COLLECTED LOST TRACEBACKS
 !         BASICALLY HEAPCHAR IS COPIED TO SENDCHAR...
@@ -5646,5 +5660,618 @@
 ! 
       RETURN  
       END SUBROUTINE POST_INTERP
+!                       ************************* 
+                        SUBROUTINE SEND_PARTICLES
+!                       ************************* 
+! 
+     &(X,Y,Z,SHP,SHZ,ELT,ETA,ISUB,TAG,NDP,NPLOT,NPLOT_MAX,MESH,NPLAN)
+! 
+!*********************************************************************** 
+! BIEF VERSION 6.3           24/04/97    J-M HERVOUET (LNHE) 
+! 
+!*********************************************************************** 
 !
+!brief    Exchanging particles between processors, after computing their
+!+        trajectory.
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        02/10/2012
+!+        V6P3
+!+     First version
+! 
+!----------------------------------------------------------------------- 
+!                             ARGUMENTS 
+! .________________.____.______________________________________________. 
+! |      NOM       |MODE|                   ROLE                       | 
+! |________________|____|______________________________________________|            
+! |   SHP          |<-- | COORDONNEES BARYCENTRIQUES 2D AU PIED DES      
+! |                |    | COURBES CARACTERISTIQUES.                     
+! |   ELT          | -->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES    
+! |                |    | CARACTERISTIQUES.                                               
+! |   ISUB         | -->| IN SCALAR MODE: NOT USED
+! |                |    | IN PARALLEL: RETURNS THE SUB-DOMAIN WHERE IS
+! |                |    | THE FOOT OF THE CHARACTERISTIC                       
+! |   NDP          | -->| NOMBRE DE POINTS PAR ELEMENT 2D.                       
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
+! 
+!----------------------------------------------------------------------- 
+! 
+! APPELE PAR : 
+! 
+! SOUS-PROGRAMMES APPELES : 
+! 
+!*********************************************************************** 
+! 
+      USE BIEF  
+! 
+      IMPLICIT NONE 
+      INTEGER LNG,LU 
+      COMMON/INFO/LNG,LU 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER, INTENT(IN)             :: NPLOT_MAX,NDP,NPLAN
+      INTEGER, INTENT(INOUT)          :: NPLOT
+      INTEGER, INTENT(INOUT)          :: ELT(NPLOT_MAX),ETA(NPLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: ISUB(NPLOT_MAX),TAG(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHP(NDP,NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZ(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(NPLOT_MAX),Y(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: Z(NPLOT_MAX)
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER I,ISTOP,IPLOT,NSENDG,NARRVG 
+! 
+!----------------------------------------------------------------------- 
+! 
+      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN 
+      DOUBLE PRECISION XVOID,YVOID,ZVOID
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR  
+      INTEGER NCHDIM  
+! 
+      SAVE 
+! 
+!----------------------------------------------------------------------- 
+! 
+      NCHDIM=LAST_NPLOT
+! 
+!     ORGANISE_CHARS MUST HAVE BEEN CALLED BEFORE IN A CALL TO SCARACT
+!     BUT WE MAY HAVE THE CASE OF A CALL FROM DIFFERENT PROGRAMMES WITH
+!     A DIFFERENT NOMB OR DIFFERENT NPLOT 
+! 
+!     NOMB IS HERE 0, SO LAST_NOMB IS KEPT, MEMORY OVERDIMENSIONED
+!     IF NOMB<>0 HAS BEEN USED BEFORE
+!     
+      IF(NPLOT.GT.LAST_NPLOT) THEN
+!       DESTROY THE CHARACTERISTICS TYPE FOR COMM. 
+        CALL DEORG_CHARAC_TYPE()  
+!       SET DATA STRUCTURES ACCORDINGLY  
+        CALL ORGANISE_CHARS(NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)        
+      ENDIF 
+!  
+!     INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS) 
+      NCHARA=0
+      HEAPCOUNTS=0  
+!
+!----------------------------------------------------------------------- 
+! 
+!     DATA ARE SENT TO SUB-DOMAINS WHERE THE PARTICLES HAVE GONE.
+!
+      DO IPLOT=1,NPLOT
+        IF(ISUB(IPLOT).NE.IPID) THEN
+          NCHARA=NCHARA+1 
+          IF(NCHARA.GT.NCHDIM) THEN  
+            WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM 
+            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM' 
+            WRITE (LU,*) 'IPID=',IPID  
+            CALL PLANTE(1) 
+            STOP 
+          ENDIF             
+          HEAPCHAR(NCHARA)%MYPID=IPID        ! THE ORIGIN PID  
+          HEAPCHAR(NCHARA)%NEPID=ISUB(IPLOT) ! THE NEXT PID  
+          HEAPCHAR(NCHARA)%INE=ELT(IPLOT)    ! ELEMENT THERE  
+          HEAPCHAR(NCHARA)%KNE=ETA(IPLOT)    ! LEVEL THERE 
+!         HEAPCHAR(NCHARA)%IFR=0             ! NO FREQUENCY THERE     
+          HEAPCHAR(NCHARA)%IOR=TAG(IPLOT)    ! THE PARTICLE TAG 
+!         HEAPCHAR(NCHARA)%ISP=0             ! R-K STEP AS COLLECTED (NOT USED) 
+!         HEAPCHAR(NCHARA)%NSP=0             ! R-K STEPS TO BE DONE  (NOT USED) 
+          HEAPCHAR(NCHARA)%XP=SHP(1,IPLOT)   ! X-POSITION (HERE SHP1)  
+          HEAPCHAR(NCHARA)%YP=SHP(2,IPLOT)   ! Y-POSITION (HERE SHP2)  
+          HEAPCHAR(NCHARA)%ZP=SHP(3,IPLOT)   ! Z-POSITION (HERE SHP3)
+          HEAPCHAR(NCHARA)%DX=SHZ(IPLOT)     ! DISPLACEMENT IN X, HERE SHZ  
+!         HEAPCHAR(NCHARA)%DY=Y(IPLOT)       ! Y  
+!         HEAPCHAR(NCHARA)%DZ=Z(IPLOT)       ! Z   
+!
+          HEAPCOUNTS(ISUB(IPLOT)+1)=HEAPCOUNTS(ISUB(IPLOT)+1)+1
+        ENDIF
+      ENDDO   
+! 
+      NSEND=NCHARA 
+      NLOSTCHAR=NSEND    
+!  
+      NSENDG=P_ISUM(NSEND) 
+!       
+      IF(NSENDG.GT.0) THEN ! THERE ARE LOST TRACEBACKS SOMEWHERE 
+! 
+!       PREPARE INITIAL SENDING OF COLLECTED LOST TRACEBACKS
+!       BASICALLY HEAPCHAR IS COPIED TO SENDCHAR...
+! 
+        CALL PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA) 
+! 
+!       NOW THE TRANSMISSION VIA ALL-TO-ALL COMMUNICATION
+!       RECVCHAR WILL BE FILLED
+!
+        CALL GLOB_CHAR_COMM()    
+! 
+!       COMPUTE THE NUMBER OF SET OF DATA ARRIVED 
+!  
+        NARRV = SUM(RECVCOUNTS)
+        NARRVG= P_ISUM(NARRV) 
+!
+        IF(NSENDG.NE.NARRVG) THEN
+          WRITE(LU,*) 'TOTAL SENT = ',NSENDG,' TOTAL RECEIVED = ',NARRVG
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!     
+        ISTOP=0 
+        IF(NARRV.GT.NCHDIM) THEN 
+          ISTOP=1 
+          WRITE(LU,*) 'NARRV=',NARRV,' NCHDIM=',NCHDIM 
+        ENDIF
+        ISTOP=P_ISUM(ISTOP) 
+        IF(ISTOP.GT.0) THEN 
+          WRITE(LU,*) 'SEND_PARTICLES'
+          WRITE(LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP, 
+     &                   ' PROCESSORS' 
+          CALL PLANTE(1) 
+          STOP 
+        ENDIF
+!
+!       RETRIEVING SHP, SHZ, ELT, ETA IN RECVCHAR
+!
+        IF(NARRV.GT.0) THEN
+          DO I=1,NARRV
+            IF(RECVCHAR(I)%NEPID.NE.IPID) THEN
+              WRITE(LU,*) 'ERROR IPID=',IPID,' NEPID=',
+     &                    RECVCHAR(I)%NEPID
+              CALL PLANTE(1)
+              STOP
+            ENDIF                    
+!           ADDING A PARTICLE WITH ALREADY KNOWN POSITION        
+            CALL ADD_PARTICLE(XVOID,YVOID,ZVOID,
+     &                        RECVCHAR(I)%IOR,NPLOT,NPLOT_MAX,
+     &                        X,Y,Z,TAG,SHP,SHZ,ELT,ETA,MESH,NPLAN,
+     &                        RECVCHAR(I)%XP,RECVCHAR(I)%YP,
+     &                        RECVCHAR(I)%ZP,RECVCHAR(NCHARA)%DX,
+     &                        RECVCHAR(I)%INE,RECVCHAR(I)%KNE)    
+!           THE PARTICLE IS IN THE SUB-DOMAIN AND SHOULD NOT BE
+!           REMOVED AFTER
+            ISUB(NPLOT)=IPID
+          ENDDO
+        ENDIF
+! 
+      ENDIF
+! 
+      CALL RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV) ! DEALLOCATING 
+! 
+!----------------------------------------------------------------------- 
+! 
+15    FORMAT(1X,'STREAMLINE::SEND_PARTICLES::',/,1X, 
+     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
+16    FORMAT(1X,'STREAMLINE::SEND_PARTICLES::',/,1X, 
+     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
+! 
+17    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
+     &          'TYPE D''OBJET INCONNU : ',2I6) 
+18    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
+     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
+!
+!----------------------------------------------------------------------- 
+! 
+      RETURN  
+      END SUBROUTINE SEND_PARTICLES
+!                    ***********************
+                     SUBROUTINE ADD_PARTICLE
+!                    ***********************
+!
+     &(X,Y,Z,TAG,NFLOT,NFLOT_MAX,XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
+     & ELTFLO,ETAFLO,MESH,NPLAN,SHP1,SHP2,SHP3,SHZ,ELT,ETA)
+!
+!***********************************************************************
+! BIEF   V6P3                                              14/02/2013
+!***********************************************************************
+!
+!brief    Adds a particle in the list and optionally locates it.
+!+
+!
+!history  J-M HERVOUET (LNHE)
+!+        14/02/2013
+!+        V6P3
+!+   Valentine day!
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ELT            |-->| ELEMENT OF THE FLOAT (IF 0, THE POINT WILL BE
+!|                |   | LOCATED HERE).
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| ETA            |-->| LEVEL OF THE FLOAT.
+!| ETAFLO         |<->| NUMBERS OF LEVELS WHERE ARE THE FLOATS
+!| MESH           |<->| MESH STRUCTURE
+!| NFLOT          |<->| NUMBER OF FLOATS.
+!| NFLOT_MAX      |<->| MAXIMUM NUMBER OF FLOATS.
+!| NPLAN          |-->| NUMBER OF PLANES (CASE OF MESHES OF PRISMS)
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!|                |   | ELEMENTS.
+!| SH1,2,3        |-->| BARYCENTRIC COORDINATES OF FLOAT IF LOCATED 
+!| SHZ            |-->| BARYCENTRIC COORDINATES OF FLOAT IN THE LEVEL
+!| SHZFLO         |-->| ARRAY OF BARYCENTRIC COORDINATES IN LEVELS
+!| TAG            |-->| TAG OF THE PARTICLE 
+!| TAGFLO         |-->| TAGS OF FLOATS  
+!| X              |-->| ABSCISSA OF POINT IN THE MESH
+!| XFLOT          |<->| ABSCISSAE OF FLOATS
+!| Y              |-->| ORDINATE OF POINT IN THE MESH
+!| YFLOT          |<->| ORDINATES OF FLOATS
+!| Z              |-->| ELEVATION OF POINT IN THE MESH
+!| ZFLOT          |<->| ELEVATIONS OF FLOATS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER         , INTENT(IN)    :: TAG,NFLOT_MAX,ELT,ETA,NPLAN
+      DOUBLE PRECISION, INTENT(IN)    :: X,Y,Z,SHP1,SHP2,SHP3,SHZ
+      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZFLOT(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: NFLOT
+      INTEGER         , INTENT(INOUT) :: TAGFLO(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: ELTFLO(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: ETAFLO(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(3,NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZFLO(NFLOT_MAX)
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER N1,N2,N3,N4,N5,N6,IELEM,NELEM,NELMAX,OLDTOT,NEWTOT,IELM
+      INTEGER NELEM2,NPOIN2,ELT3,IPLAN
+!
+      DOUBLE PRECISION DET1,DET2,DET3,ZF,ZS
+!
+      INTEGER  P_ISUM
+      EXTERNAL P_ISUM
+!
+!-----------------------------------------------------------------------
+!
+!     FOR CHECKING THAT A PARTICLE IS NOT ADDED TO SEVERAL SUBDOMAINS     
+!
+      IELM=MESH%TYPELM
+      NELEM=MESH%NELEM
+      NELMAX=MESH%NELMAX
+      NELEM2=NELEM/NPLAN
+      NPOIN2=MESH%NPOIN/NPLAN
+!
+      IF(ELT.GT.0) THEN
+!
+!       POINT COMES WITH ITS DATA (NOT CHECKED)
+!
+        NFLOT=NFLOT+1
+        IF(NFLOT.GT.NFLOT_MAX) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) 'NOMBRE DE PARTICULES SUPERIEUR A :'
+          IF(LNG.EQ.2) WRITE(LU,*) 'NUMBER OF PARTICLES GREATER THAN:'
+          WRITE(LU,*) NFLOT_MAX
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
+        IF(IELM.EQ.10) THEN
+          TAGFLO(NFLOT)=TAG
+          ELTFLO(NFLOT)=ELT
+          SHPFLO(1,NFLOT)=SHP1 
+          SHPFLO(2,NFLOT)=SHP2 
+          SHPFLO(3,NFLOT)=SHP3    
+          N1=MESH%IKLE%I(ELT         )
+          N2=MESH%IKLE%I(ELT+  NELMAX)
+          N3=MESH%IKLE%I(ELT+2*NELMAX)
+          XFLOT(NFLOT)=SHP1*MESH%X%R(N1)
+     &                +SHP2*MESH%X%R(N2)
+     &                +SHP3*MESH%X%R(N3)     
+          YFLOT(NFLOT)=SHP1*MESH%Y%R(N1)
+     &                +SHP2*MESH%Y%R(N2)
+     &                +SHP3*MESH%Y%R(N3)
+        ELSEIF(IELM.EQ.40) THEN
+          TAGFLO(NFLOT)=TAG
+          ELTFLO(NFLOT)=ELT
+          ETAFLO(NFLOT)=ETA
+          SHPFLO(1,NFLOT)=SHP1 
+          SHPFLO(2,NFLOT)=SHP2 
+          SHPFLO(3,NFLOT)=SHP3
+          SHZFLO(NFLOT)=SHZ 
+          ELT3=ELT+NELEM2*(ETA-1)           
+          N1=MESH%IKLE%I(ELT3         )
+          N2=MESH%IKLE%I(ELT3+  NELMAX)
+          N3=MESH%IKLE%I(ELT3+2*NELMAX)
+          N4=MESH%IKLE%I(ELT3+3*NELMAX)
+          N5=MESH%IKLE%I(ELT3+4*NELMAX)
+          N6=MESH%IKLE%I(ELT3+5*NELMAX)
+          XFLOT(NFLOT)=SHP1*MESH%X%R(N1)
+     &                +SHP2*MESH%X%R(N2)
+     &                +SHP3*MESH%X%R(N3)     
+          YFLOT(NFLOT)=SHP1*MESH%Y%R(N1)
+     &                +SHP2*MESH%Y%R(N2)
+     &                +SHP3*MESH%Y%R(N3)
+          ZFLOT(NFLOT)=(MESH%Z%R(N1)*SHP1 
+     &                 +MESH%Z%R(N2)*SHP2
+     &                 +MESH%Z%R(N3)*SHP3)*(1.D0-SHZ)
+     &               + (MESH%Z%R(N4)*SHP1 
+     &                 +MESH%Z%R(N5)*SHP2 
+     &                 +MESH%Z%R(N6)*SHP3)*SHZ
+        ELSE
+          WRITE(LU,*) 'ADD_PARTICLE, UNKNOWN ELEMENT:',IELM
+          CALL PLANTE(1)
+          STOP
+        ENDIF        
+! 
+      ELSE
+!
+!       FOR CHECKING THAT A PARTICLE IS NOT ADDED TO SEVERAL SUBDOMAINS 
+!
+        IF(NCSIZE.GT.1) THEN
+          OLDTOT=NFLOT
+          OLDTOT=P_ISUM(OLDTOT)
+        ENDIF
+!
+!       POINT TO BE LOCATED HERE
+!
+        IF(IELM.EQ.10.OR.IELM.EQ.40) THEN
+!
+          DO IELEM=1,NELEM
+            N1=MESH%IKLE%I(IELEM         )
+            N2=MESH%IKLE%I(IELEM+  NELMAX)
+            N3=MESH%IKLE%I(IELEM+2*NELMAX)
+!           DET1 = (N2N3,N2FLOT)  DET2 = (N3N1,N3FLOT)  DET3 = (N1N2,N1FLOT)
+            DET1=(MESH%X%R(N3)-MESH%X%R(N2))*(Y-MESH%Y%R(N2))
+     &          -(MESH%Y%R(N3)-MESH%Y%R(N2))*(X-MESH%X%R(N2))
+            DET2=(MESH%X%R(N1)-MESH%X%R(N3))*(Y-MESH%Y%R(N3))
+     &          -(MESH%Y%R(N1)-MESH%Y%R(N3))*(X-MESH%X%R(N3))
+            DET3=(MESH%X%R(N2)-MESH%X%R(N1))*(Y-MESH%Y%R(N1))
+     &          -(MESH%Y%R(N2)-MESH%Y%R(N1))*(X-MESH%X%R(N1))
+            IF(DET1.GE.0.D0.AND.DET2.GE.0.D0.AND.DET3.GE.0.D0) GOTO 30
+          ENDDO
+!
+        ELSE
+          WRITE(LU,*) 'ADD_PARTICLE, UNKNOWN ELEMENT:',IELM
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
+        IF(NCSIZE.LE.1) THEN
+          IF(LNG.EQ.1) WRITE(LU,33) TAG
+          IF(LNG.EQ.2) WRITE(LU,34) TAG
+33        FORMAT(1X,'LARGAGE DU FLOTTEUR',I6,/,
+     &           1X,'EN DEHORS DU DOMAINE DE CALCUL')
+34        FORMAT(1X,'DROP POINT OF FLOAT',I6,/,
+     &           1X,'OUT OF THE DOMAIN')
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!
+        GO TO 40
+!
+!       ELEMENT CONTAINING THE POINT OF RELEASE, COMPUTES THE SHPFLO
+!
+30      CONTINUE
+!
+        NFLOT=NFLOT+1
+        IF(NFLOT.GT.NFLOT_MAX) THEN
+          IF(LNG.EQ.1) WRITE(LU,*) 'NOMBRE DE PARTICULES SUPERIEUR A :'
+          IF(LNG.EQ.2) WRITE(LU,*) 'NUMBER OF PARTICLES GREATER THAN:'
+          WRITE(LU,*) NFLOT_MAX
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+        XFLOT(NFLOT)=X
+        YFLOT(NFLOT)=Y
+        TAGFLO(NFLOT)=TAG
+        SHPFLO(1,NFLOT) = DET1*MESH%SURDET%R(IELEM)
+        SHPFLO(2,NFLOT) = DET2*MESH%SURDET%R(IELEM)
+        SHPFLO(3,NFLOT) = DET3*MESH%SURDET%R(IELEM)
+        ELTFLO(NFLOT)   = IELEM
+!
+!       IN 3D, LOCATING THE POINT ON THE VERTICAL
+!
+        IF(IELM.EQ.40) THEN
+          ZF=MESH%Z%R(N1)*DET1*SHPFLO(1,NFLOT)
+     &      +MESH%Z%R(N2)*DET2*SHPFLO(2,NFLOT)
+     &      +MESH%Z%R(N3)*DET3*SHPFLO(3,NFLOT)
+          IF(Z.LT.ZF) THEN
+            IF(LNG.EQ.1) WRITE(LU,35) TAG
+            IF(LNG.EQ.2) WRITE(LU,36) TAG
+35          FORMAT('LARGAGE DU FLOTTEUR',I6,' EN DESSOUS DU FOND')
+36           FORMAT('DROP POINT OF FLOAT',I6,' BELOW THE BOTTOM')
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          ETAFLO(NFLOT)=0
+          DO IPLAN = 1,NPLAN-1
+            ZF=MESH%Z%R(N1+NPOIN2*(IPLAN-1))*DET1*SHPFLO(1,NFLOT)
+     &        +MESH%Z%R(N2+NPOIN2*(IPLAN-1))*DET2*SHPFLO(2,NFLOT)
+     &        +MESH%Z%R(N3+NPOIN2*(IPLAN-1))*DET3*SHPFLO(3,NFLOT)
+            ZS=MESH%Z%R(N1+NPOIN2*(IPLAN  ))*DET1*SHPFLO(1,NFLOT)
+     &        +MESH%Z%R(N2+NPOIN2*(IPLAN  ))*DET2*SHPFLO(2,NFLOT)
+     &        +MESH%Z%R(N3+NPOIN2*(IPLAN  ))*DET3*SHPFLO(3,NFLOT)
+            IF(Z.GE.ZF.AND.Z.LE.ZS) THEN
+              ETAFLO(NFLOT) = IPLAN
+              SHZFLO(NFLOT) = (Z-ZF)/MAX(ZS-ZF,1.D-10)
+            ENDIF
+          ENDDO
+          IF(ETAFLO(NFLOT).EQ.0) THEN
+            IF(LNG.EQ.1) WRITE(LU,37) TAG
+            IF(LNG.EQ.2) WRITE(LU,38) TAG
+37          FORMAT('LARGAGE DU FLOTTEUR',I6,' AU DESSUS DE LA SURFACE')
+38          FORMAT('DROP POINT OF FLOAT',I6,' ABOVE FREE SURFACE')
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDIF
+!
+40      CONTINUE
+!
+!       CHECKING THAT A PARTICLE IS NOT ADDED TO SEVERAL SUBDOMAINS     
+!       BECAUSE OF P_ISUM, WILL WORK ONLY IF ADD_PARTICLE CALLED BY ALL
+!       SUBDOMAINS... WHICH IS THE CASE SO FAR WITH
+!
+        IF(NCSIZE.GT.1) THEN
+          NEWTOT=NFLOT
+          NEWTOT=P_ISUM(NEWTOT)
+          IF(NEWTOT.EQ.OLDTOT) THEN
+            WRITE(LU,*) 'PARTICLE ',TAG,' IN NONE OF THE SUB-DOMAINS'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+          IF(NEWTOT-OLDTOT.GT.1) THEN
+            WRITE(LU,*) 'PARTICLE IN ',NEWTOT-OLDTOT,' SUB-DOMAINS'
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+        ENDIF
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END SUBROUTINE ADD_PARTICLE
+!                    ***********************
+                     SUBROUTINE DEL_PARTICLE
+!                    ***********************
+!
+     &(TAG,NFLOT,NFLOT_MAX,XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
+     & ELTFLO,ETAFLO,IELM,ISUB)
+!
+!***********************************************************************
+! BIEF   V6P3                                              14/02/2013
+!***********************************************************************
+!
+!brief    Removes a particle in the list. If it is not in the list it is
+!+        not removed, if there is no particle nothing is done
+!+        This will enable the algorithm to work in //.      
+!+
+!
+!history  J-M HERVOUET (LNHE)
+!+        14/02/2013
+!+        V6P3
+!+   Valentine day!
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| ETAFLO         |<->| LEVELS OF ELEMENTS WHERE ARE THE FLOATS
+!| IELM           |-->| TYPE OF ELEMENT : 10 = TRIANGLES
+!|                |   |                   40 = PRISMS
+!| NFLOT          |<->| NUMBER OF FLOATS.
+!| NFLOT_MAX      |<->| MAXIMUM NUMBER OF FLOATS.
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!|                |   | ELEMENTS.
+!| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS ON THE VERTICAL
+!| TAG            |-->| TAG OF THE PARTICLE 
+!| TAGFLO         |-->| TAGS OF FLOATS  
+!| XFLOT          |<->| ABSCISSAE OF FLOATS
+!| YFLOT          |<->| ORDINATES OF FLOATS
+!| ZFLOT          |<->| ELEVATIONS OF FLOATS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER         , INTENT(IN)    :: TAG,NFLOT_MAX,IELM
+      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZFLOT(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: NFLOT
+      INTEGER         , INTENT(INOUT) :: TAGFLO(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: ELTFLO(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: ETAFLO(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(3,NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZFLO(NFLOT_MAX)
+      INTEGER,OPTIONAL, INTENT(INOUT) :: ISUB(NFLOT_MAX)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IFLOT,I
+!
+!-----------------------------------------------------------------------
+!
+      IF(NFLOT.GT.0) THEN
+!
+        DO IFLOT=1,NFLOT
+          IF(TAGFLO(IFLOT).EQ.TAG) THEN
+            NFLOT=NFLOT-1
+!           IF THE PARTICLE TO REMOVE WAS THE LAST IN THE LIST
+!           IT IS USELESS TO UPDATE DATA
+            IF(NFLOT.GT.0.AND.IFLOT.NE.NFLOT+1) THEN
+!             UPDATING THE DATA
+              IF(IELM.EQ.10) THEN
+                DO I=IFLOT,NFLOT
+                  XFLOT(I)=XFLOT(I+1)
+                  YFLOT(I)=YFLOT(I+1)
+                  TAGFLO(I)=TAGFLO(I+1)
+                  ELTFLO(I)=ELTFLO(I+1)         
+                  SHPFLO(1,I)=SHPFLO(1,I+1) 
+                  SHPFLO(2,I)=SHPFLO(2,I+1) 
+                  SHPFLO(3,I)=SHPFLO(3,I+1)
+                ENDDO
+              ELSEIF(IELM.EQ.40) THEN
+                DO I=IFLOT,NFLOT
+                  XFLOT(I)=XFLOT(I+1)
+                  YFLOT(I)=YFLOT(I+1)
+                  ZFLOT(I)=ZFLOT(I+1)
+                  TAGFLO(I)=TAGFLO(I+1)
+                  ELTFLO(I)=ELTFLO(I+1) 
+                  ETAFLO(I)=ETAFLO(I+1)        
+                  SHPFLO(1,I)=SHPFLO(1,I+1) 
+                  SHPFLO(2,I)=SHPFLO(2,I+1) 
+                  SHPFLO(3,I)=SHPFLO(3,I+1)
+                  SHZFLO(I)=SHZFLO(I+1)
+                ENDDO
+              ELSE
+                WRITE(LU,*) 'DEL_PARTICLE'
+                IF(LNG.EQ.1) WRITE(LU,*) 'ELEMENT INCONNU :',IELM
+                IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN ELEMENT:',IELM
+                CALL PLANTE(1)
+                STOP
+              ENDIF
+              IF(PRESENT(ISUB)) THEN
+                DO I=IFLOT,NFLOT
+                  ISUB(I)=ISUB(I+1)         
+                ENDDO
+              ENDIF
+            ENDIF
+            EXIT
+          ENDIF
+        ENDDO
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END SUBROUTINE DEL_PARTICLE
+!
+!-----------------------------------------------------------------------
+!   
       END MODULE STREAMLINE

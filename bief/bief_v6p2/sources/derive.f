@@ -2,10 +2,11 @@
                      SUBROUTINE DERIVE
 !                    *****************
 !
-     &(U,V,DT,AT,X,Y,IKLE,IFABOR,LT,IELM,IELMU,NDP,NPOIN,
-     & NELEM,NELMAX,SURDET,XFLOT,YFLOT,
-     & SHPFLO,DEBFLO,FINFLO,TAGFLO,ELTFLO,NFLOT,FLOPRD,MESH,UL,
-     & ISUB,DX,DY,ELTBUF,SHPBUF,SIZEBUF)
+     &(U,V,W,DT,AT,X,Y,Z,IKLE,IFABOR,LT,IELM,IELMU,NDP,NPOIN,NPOIN2,
+     & NELEM,NELMAX,SURDET,XFLOT,YFLOT,ZFLOT,
+     & SHPFLO,SHZFLO,TAGFLO,ELTFLO,ETAFLO,
+     & NFLOT,NFLOT_MAX,FLOPRD,MESH,UL,
+     & ISUB,DX,DY,DZ,ELTBUF,SHPBUF,SHZBUF,SIZEBUF)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -42,19 +43,18 @@
 !+   will require further modifications.
 !
 !history  J-M HERVOUET (LNHE)
-!+        12/02/2013
+!+        22/02/2013
 !+        V6P3
-!+   New file format for Tecplot.
+!+   New file format for Tecplot. Works in parallel. Prepared for 3D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBFLO         |-->| TIME STEP FOR THE RELEASE OF FLOATS
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
 !| DX             |<->| WORK ARRAY (DISPLACEMENTS ALONG X)
 !| DY             |<->| WORK ARRAY (DISPLACEMENTS ALONG Y)
+!| DZ             |<->| WORK ARRAY (DISPLACEMENTS ALONG Z)
 !| ELTBUF         |<->| WORK ARRAY
 !| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
-!| FINFLO         |<->| TIME STEP FOR ENDING THE TREATMENT OF A FLOAT
-!|                |   | CAN BE CHANGED IF A FLOAT EXITS BY A FREE EXIT
+!| ETAFLO         |<->| LEVELS WHERE ARE THE FLOATS
 !| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEB TWO RECORDS
 !|                |   | FOR FLOATS POSITIONS.
 !| IELM           |-->| TYPE OF ELEMENT.
@@ -65,14 +65,19 @@
 !| IKLE           |-->| CONNECTIVITY TABLE.
 !| ISUB           |<->| ARRIVAL SUB-DOMAIN OF PARTICLES.
 !| LT             |-->| TIME STEP NUMBER.
+!| MESH           |<->| MESH STRUCTURE.
 !| NDP            |-->| NUMBER OF POINTS PER ELEMENT
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
-!| NFLOT          |-->| NOMBER OF FLOATS.
+!| NFLOT          |<->| NUMBER OF FLOATS.
+!| NFLOT_MAX      |<->| MAXIMUM NUMBER OF FLOATS.
 !| NPOIN          |-->| NUMBER OF POINTS
+!| NPOIN2         |-->| NUMBER OF POINTS IN 2D MESH
 !| SHPBUF         |<->| WORK ARRAY 
 !| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
 !|                |   | ELEMENTS.
+!| SHZBUF         |<->| WORK ARRAY 
+!| SHZFLO         |<->| BARYCENTRIC COORDINATE ON VERTICAL
 !| SIZEBUF        |-->| DILMENSION OF SOME WORK ARRAYS
 !| SURDET         |-->| 1/DETERMINANT, USED IN ISOPARAMETRIC
 !|                |   | TRANSFORMATION.
@@ -80,10 +85,13 @@
 !| U              |-->| X-COMPONENT OF VELOCITY
 !| UL             |-->| LOGICAL UNIT OF OUTPUT FILE
 !| V              |-->| Y-COMPONENT OF VELOCITY
+!| W              |-->| Z-COMPONENT OF VELOCITY
 !| X              |-->| ABSCISSAE OF POINTS IN THE MESH
 !| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
 !| XFLOT          |<->| ABSCISSAE OF FLOATS
 !| YFLOT          |<->| ORDINATES OF FLOATS
+!| ZFLOT          |<->| ELEVATIONS OF FLOATS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF, EX_DERIVE => DERIVE
@@ -96,35 +104,64 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER         , INTENT(IN)    :: NPOIN,LT,IELM,IELMU,NDP,NELEM
-      INTEGER         , INTENT(IN)    :: FLOPRD,NELMAX,NFLOT,UL,SIZEBUF
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),DT,AT
-      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
+      INTEGER         , INTENT(IN)    :: FLOPRD,NELMAX,UL,SIZEBUF,NPOIN2
+      INTEGER         , INTENT(IN)    :: NFLOT_MAX
+      INTEGER         , INTENT(INOUT) :: NFLOT
+      DOUBLE PRECISION, INTENT(IN)    :: DT,AT
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),W(NPOIN)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),Z(NPOIN)
       INTEGER         , INTENT(IN)    :: IKLE(NELMAX,NDP)
       INTEGER         , INTENT(IN)    :: IFABOR(NELMAX,NDP)
       DOUBLE PRECISION, INTENT(IN)    :: SURDET(NELEM)
-      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT),DX(NFLOT)
-      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT),DY(NFLOT)
-      INTEGER         , INTENT(INOUT) :: DEBFLO(NFLOT),FINFLO(NFLOT)
-      INTEGER         , INTENT(IN)    :: TAGFLO(NFLOT)
-      INTEGER         , INTENT(INOUT) :: ELTFLO(NFLOT),ELTBUF(SIZEBUF)
-      INTEGER         , INTENT(INOUT) :: ISUB(NFLOT)
-      DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(NDP,NFLOT)
+      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX),DX(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX),DY(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZFLOT(NFLOT_MAX),DZ(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: TAGFLO(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: ELTFLO(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: ETAFLO(NFLOT_MAX)
+      INTEGER         , INTENT(INOUT) :: ELTBUF(SIZEBUF)
+      INTEGER         , INTENT(INOUT) :: ISUB(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(NDP,NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZFLO(NFLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPBUF(NDP,SIZEBUF)
-      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZBUF(SIZEBUF)
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IFLOT,N1,N2,N3,IELEM,ETA(1),SENS,FRE(1)
-      INTEGER NPLAN,NPT,FREBUF(1)
+      INTEGER IFLOT,FRE(1),FREBUF(1),IPROC,NFLOTG,NPLAN,ELT
+      INTEGER N1,N2,N3,N4,N5,N6,NOMB,SENS
 !
-      DOUBLE PRECISION DET1,DET2,DET3,ZSTAR(1),ZCONV(1)
-      DOUBLE PRECISION SHZBUF(1),SHZ(1),Z(1),SHF(1)
+      DOUBLE PRECISION ZSTAR(1)
 !
       CHARACTER(LEN=32) TEXTE(2)
+      CHARACTER(LEN=72) LIGNE
+!
+      LOGICAL YESITIS
 !
       TYPE(BIEF_OBJ) :: SVOID
 !
+      INTEGER  P_ISUM
+      EXTERNAL P_ISUM
+!
+      CHARACTER(LEN=11) EXTENS
+      EXTERNAL          EXTENS
+!
+      LOGICAL DEJA
+      DATA    DEJA/.FALSE./
+!
+      SAVE
+!
 !-----------------------------------------------------------------------
+!
+!     PARAMETERISING THE CALL TO SCARACT
+!
+!     NUMBER OF PLANES
+      NPLAN=1
+!     NO VARIABLE TO INTERPOLATE AT THE FOOT OF CHARACTERISTICS
+      NOMB=0
+!     FORWARD TRACKING
+      SENS=1
 !
       IF(IELM.NE.11) THEN
         IF(LNG.EQ.1) WRITE(LU,123) IELM
@@ -137,166 +174,224 @@
 !
 !-----------------------------------------------------------------------
 !
-!     2D HERE
+!     INITIALISING SVOID AND HEADER OF A TECPLOT FILE
 !
-      NPLAN=1
+      IF(.NOT.DEJA) THEN
 !
-!     SCARACT WILL TREAT ALL POINTS TOGETHER
+!       THOUGH NOMB = 0, THESE COMPONENTS WILL BE USED IN SCARACT
 !
-      NPT=NFLOT
+        SVOID%TYPE=2
+        SVOID%DIM1=1
+        ALLOCATE(SVOID%R(1))
 !
-!     FORWARD CHARACTERISTICS
+!       HEADER OF TECPLOT FILE
 !
-      SENS=1
-!
-!     HEADER OF A TECPLOT FILE
-!
-      IF(LT.EQ.1) THEN
-        TEXTE(1)='X                               '
-        TEXTE(2)='Y                               '
-        IF(LNG.EQ.1) THEN
-          WRITE(UL,100) 'TITLE = "FICHIER DES FLOTTEURS"'
-        ELSE
-          WRITE(UL,100) 'TITLE = "DROGUES FILE"'
+        IF(IPID.EQ.0) THEN
+          TEXTE(1)='X                               '
+          TEXTE(2)='Y                               '
+          IF(LNG.EQ.1) THEN
+            WRITE(UL,100) 'TITLE = "FICHIER DES FLOTTEURS"'
+          ELSE
+            WRITE(UL,100) 'TITLE = "DROGUES FILE"'
+          ENDIF
+          WRITE(UL,100) 'VARIABLES = "LABELS","'//
+     &                   TEXTE(1)//'","'//TEXTE(2)//'","COLOUR"'
         ENDIF
-        WRITE(UL,100) 'VARIABLES = "LABELS","'//
-     &                 TEXTE(1)//'","'//TEXTE(2)//'","COLOUR"'
+        DEJA=.TRUE.
 100     FORMAT(A)
       ENDIF
 !
-      DO IFLOT=1,NFLOT
-!
-!       POINT ALREADY EXITED OR NOT YET RELEASED OR REMOVED
-        IF(DEBFLO(IFLOT).LT.0            .OR.
-     &                LT.LT.DEBFLO(IFLOT).OR.
-     &                LT.GT.FINFLO(IFLOT)     ) THEN
-!
-!         THE POINT WILL NOT BE TREATED IF GIVEN
-!         A STARTING ELEMENT EQUAL TO 0
-!        
-          ELTFLO(IFLOT) = 0       
-!        
-        ELSEIF(LT.EQ.DEBFLO(IFLOT)) THEN
+      SVOID%ELM=IELM
 !
 !-----------------------------------------------------------------------
-!
-!   - COMPUTES THE BARYCENTRIC COORDINATES OF A FLOAT IN THE MESH
-!     AT THE TIME OF RELEASE
-!
-!-----------------------------------------------------------------------
-!
-!         P1 TRIANGLES MESH
-!
-          DO IELEM=1,NELEM
-            N1=IKLE(IELEM,1)
-            N2=IKLE(IELEM,2)
-            N3=IKLE(IELEM,3)
-!
-! DET1 = (N2N3,N2FLOT)  DET2 = (N3N1,N3FLOT)  DET3 = (N1N2,N1FLOT)
-! ----------------------------------------------------------------
-!
-            DET1=(X(N3)-X(N2))*(YFLOT(IFLOT)-Y(N2))
-     &          -(Y(N3)-Y(N2))*(XFLOT(IFLOT)-X(N2))
-            DET2=(X(N1)-X(N3))*(YFLOT(IFLOT)-Y(N3))
-     &          -(Y(N1)-Y(N3))*(XFLOT(IFLOT)-X(N3))
-            DET3=(X(N2)-X(N1))*(YFLOT(IFLOT)-Y(N1))
-     &          -(Y(N2)-Y(N1))*(XFLOT(IFLOT)-X(N1))
-            IF(DET1.GE.0.D0.AND.DET2.GE.0.D0.AND.DET3.GE.0.D0) GOTO 30
-!
-          ENDDO
-!
-          IF(LNG.EQ.1) WRITE(LU,33) IFLOT
-          IF(LNG.EQ.2) WRITE(LU,34) IFLOT
-33        FORMAT(1X,'ERREUR D''INTERPOLATION DANS DERIVE :',/,
-     &           1X,'LARGAGE DU FLOTTEUR',I6,/,
-     &           1X,'EN DEHORS DU DOMAINE DE CALCUL')
-34        FORMAT(1X,'INTERPOLATION ERROR IN DERIVE :',/,
-     &           1X,'DROP POINT OF FLOAT',I6,/,
-     &           1X,'OUT OF THE DOMAIN')
-          CALL PLANTE(1)
-          STOP
-!
-! ELEMENT CONTAINING THE POINT OF RELEASE, COMPUTES THE SHPFLO
-! ------------------------------------------------------------
-!
-30        CONTINUE
-          SHPFLO(1,IFLOT) = DET1*SURDET(IELEM)
-          SHPFLO(2,IFLOT) = DET2*SURDET(IELEM)
-          SHPFLO(3,IFLOT) = DET3*SURDET(IELEM)
-          ELTFLO (IFLOT)  = IELEM
-!
-        ELSEIF(LT.GT.DEBFLO(IFLOT).AND.LT.LE.FINFLO(IFLOT)) THEN
-!
-!-----------------------------------------------------------------------
-!
-!   - COMPUTES THE SUCCESSIVE POSITIONS OF THIS FLOAT WHICH IS
-!     CARRIED BY THE CURRENT 
-!
-!-----------------------------------------------------------------------
-!
-        ENDIF
-!
-      ENDDO
 !
 !     TRAJECTORIES COMPUTED FOR ALL POINTS
 !
-      CALL SCARACT(SVOID,SVOID,U,V,V,V,X,Y,
-     &             ZSTAR,ZSTAR,
-     &             XFLOT,YFLOT,ZCONV,ZCONV,
-     &             DX,DY,DY,DY,Z,SHPFLO,
-     &             SHZ,SHF,SURDET,DT,
-     &             IKLE,IFABOR,ELTFLO,
-     &             ETA,FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,
-     &             0,NPOIN,NPOIN,NDP,NPLAN,1,
-     &             MESH,NPT,BIEF_NBPTS(IELMU,MESH),SENS,        
+      CALL SCARACT(SVOID,SVOID,U,V,W,W,X,Y,ZSTAR,ZSTAR,
+     &             XFLOT,YFLOT,ZFLOT,ZFLOT,
+     &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
+     &             IKLE,IFABOR,ELTFLO,ETAFLO,
+     &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,            
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,
+     &             MESH,NFLOT,BIEF_NBPTS(IELMU,MESH),SENS,        
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &             .FALSE.,.FALSE.,.FALSE.)
+     &              .TRUE.,.FALSE.,.FALSE.)
+!    &               POST,  PERIO,   YA4D)
+!                    POST=.TRUE. OTHERWISE ISUB IS NOT FILLED
 !
 !-----------------------------------------------------------------------
 !
-!     CASE OF LOST FLOATS OR FLOATS OUT OF TIME RANGE
-!     THEY WILL NOT BE PUT IN THE FILE
+      IF(NCSIZE.GT.1.AND.NFLOT.GT.0) THEN
 !
-      DO IFLOT=1,NFLOT
-!       FRESHLY LOST FLOATS, CHARACTERISTICS RETURN : - ELEMENT NUMBER
-        IF(ELTFLO(IFLOT).LT.0) THEN 
-!         DEBFLO STORES THE EXIT ELEMENT NUMBER
-!         DEBFLO<0 WILL NOT CHANGE TESTS ON DEBFLO AT THIS LEVEL
-          DEBFLO(IFLOT)=ELTFLO(IFLOT)
-          ELTFLO(IFLOT)=0
+!       IN // XFLOT AND YFLOT MAY HAVE BEEN DESTROYED BY SCARACT
+!       BECAUSE RE-USED FOR GENERATIONS OF LOST PARTICLES
+!       THEY ARE REDONE HERE FOR PARTICLES WHICH ARE STILL IN THE
+!       GLOBAL DOMAIN (TEST ISUB(IFLOT)=IPID NOT DONE, BUT COULD BE...)
+!
+        IF(IELM.EQ.11) THEN
+          DO IFLOT=1,NFLOT
+            ELT=ELTFLO(IFLOT)
+            IF(ELT.GT.0) THEN
+              N1=IKLE(ELT,1)
+              N2=IKLE(ELT,2)
+              N3=IKLE(ELT,3)
+              XFLOT(IFLOT)=SHPFLO(1,IFLOT)*X(N1)
+     &                    +SHPFLO(2,IFLOT)*X(N2)
+     &                    +SHPFLO(3,IFLOT)*X(N3)     
+              YFLOT(IFLOT)=SHPFLO(1,IFLOT)*Y(N1)
+     &                    +SHPFLO(2,IFLOT)*Y(N2)
+     &                    +SHPFLO(3,IFLOT)*Y(N3)
+            ENDIF   
+          ENDDO 
+        ELSE
+          DO IFLOT=1,NFLOT
+            ELT=ELTFLO(IFLOT)
+            IF(ELT.GT.0) THEN       
+              N1=IKLE(ELT,1)+NPOIN2*(ETAFLO(IFLOT)-1) 
+              N2=IKLE(ELT,2)+NPOIN2*(ETAFLO(IFLOT)-1)
+              N3=IKLE(ELT,3)+NPOIN2*(ETAFLO(IFLOT)-1)
+              N4=IKLE(ELT,1)+NPOIN2* ETAFLO(IFLOT) 
+              N5=IKLE(ELT,2)+NPOIN2* ETAFLO(IFLOT)
+              N6=IKLE(ELT,3)+NPOIN2* ETAFLO(IFLOT)
+              XFLOT(NFLOT)=SHPFLO(1,IFLOT)*X(N1)
+     &                    +SHPFLO(2,IFLOT)*X(N2)
+     &                    +SHPFLO(3,IFLOT)*X(N3)     
+              YFLOT(NFLOT)=SHPFLO(1,IFLOT)*Y(N1)
+     &                    +SHPFLO(2,IFLOT)*Y(N2)
+     &                    +SHPFLO(3,IFLOT)*Y(N3)
+              ZFLOT(NFLOT)=(Z(N1)*SHPFLO(1,IFLOT) 
+     &                     +Z(N2)*SHPFLO(2,IFLOT)
+     &                     +Z(N3)*SHPFLO(3,IFLOT))*(1.D0-SHZFLO(IFLOT))
+     &                    +(Z(N4)*SHPFLO(1,IFLOT) 
+     &                     +Z(N5)*SHPFLO(2,IFLOT) 
+     &                     +Z(N6)*SHPFLO(3,IFLOT))*SHZFLO(IFLOT)
+            ENDIF   
+          ENDDO 
+        ENDIF        
+!
+      ENDIF
+!
+!     SENDING THE PARTICLES THAT MIGRATED TO ANOTHER SUB-DOMAIN
+!
+      IF(NCSIZE.GT.1) THEN
+        CALL SEND_PARTICLES(XFLOT,YFLOT,ZFLOT,SHPFLO,SHZFLO,ELTFLO,
+     &                      ETAFLO,ISUB,TAGFLO,NDP,NFLOT,NFLOT_MAX,
+     &                      MESH,NPLAN)
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!     CASE OF LOST FLOATS (EXITED OR NOW REMOVED AFTER BEING SENT TO
+!                          ANOTHER SUB-DOMAIN) 
+!
+      IFLOT=1
+      IF(NCSIZE.GT.1) THEN
+!
+!       IN // MODE
+!
+11      CONTINUE
+!       LOST OR MIGRATED FLOATS
+        IF(NFLOT.GT.0.AND.NCSIZE.GT.1) THEN
+          IF(ELTFLO(IFLOT).LE.0.OR.ISUB(IFLOT).NE.IPID) THEN 
+            CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
+     &                        XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
+     &                        ELTFLO,ETAFLO,MESH%TYPELM,ISUB)
+!           THE SAME IFLOT IS NOW A NEW PARTICLE AND MUST BE CHECKED AGAIN!
+            IF(IFLOT.LE.NFLOT) GO TO 11
+          ENDIF
+          IFLOT=IFLOT+1
+          IF(IFLOT.LE.NFLOT) GO TO 11
         ENDIF
-!       OLD LOST FLOATS: THEIR DEBFLO IS NEGATIVE BUT ELTFLO HAS BEEN
-!       RESET TO 1
-        IF(DEBFLO(IFLOT).LT.0) THEN 
-          ELTFLO(IFLOT)=0
+!
+      ELSE
+!
+!       IN SCALAR MODE
+!
+10      CONTINUE
+!       LOST FLOATS ONLY
+        IF(NFLOT.GT.0) THEN
+          IF(ELTFLO(IFLOT).LE.0) THEN 
+            CALL DEL_PARTICLE(TAGFLO(IFLOT),NFLOT,NFLOT_MAX,
+     &                        XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
+     &                        ELTFLO,ETAFLO,MESH%TYPELM)
+!           THE SAME IFLOT IS NOW A NEW PARTICLE AND MUST BE CHECKED AGAIN!
+            IF(IFLOT.LE.NFLOT) GO TO 10
+          ENDIF
+          IFLOT=IFLOT+1
+          IF(IFLOT.LE.NFLOT) GO TO 10
         ENDIF
-!       FLOATS OUT OF TIME RANGE
-!       SCARACT WILL RETURN ELTFLO=1 IF GIVEN ELTFLO=0
-        IF(LT.LT.DEBFLO(IFLOT).OR.LT.GT.FINFLO(IFLOT)) THEN
-          ELTFLO(IFLOT) = 0
-        ENDIF
-      ENDDO
+!
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
 !     TECPLOT FILE
 !
-      IF(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT) THEN
-        NPT=0
-        DO IFLOT=1,NFLOT
-          IF(ELTFLO(IFLOT).GT.0) NPT=NPT+1
-        ENDDO
-        WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
-     *                ' seconds"',', I=',NPT,', SOLUTIONTIME=',AT
-        DO IFLOT=1,NFLOT
-          IF(ELTFLO(IFLOT).GT.0) THEN
-            WRITE(UL,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
-          ENDIF
-        ENDDO
-200     FORMAT(A,F12.4,A,A,I4,A,F12.4)
-300     FORMAT(I6,',',F16.8,',',F16.8,',',I2)
-      ENDIF      
+      IF(NCSIZE.GT.1) THEN
 !
+!       WAITING ALL PROCESSORS (SO THAT NFLOT IS UPDATED FOR ALL
+!                               BEFORE CALLING P_ISUM)
+! 
+        CALL P_SYNC
+!
+!       PARALLEL VERSION
+!
+        NFLOTG=P_ISUM(NFLOT)
+        IF(NFLOTG.GT.0.AND.(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT)) THEN
+!
+!         1) EVERY PROCESSOR WRITES ITS OWN DATA IN A FILE WITH EXTENSION
+!
+          IF(NFLOT.GT.0) THEN
+            OPEN(99,FILE=EXTENS(NCSIZE,IPID+1),
+     &           FORM='FORMATTED',STATUS='NEW')
+            DO IFLOT=1,NFLOT
+              WRITE(99,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
+            ENDDO
+            CLOSE(99)
+          ENDIF
+!
+!         2) WAITING ALL PROCESSORS
+!
+          CALL P_SYNC
+!
+!         3) PROCESSOR 0 READS ALL EXISTING FILES AND MERGES 
+!            THEM IN THE FINAL FILE
+!
+          IF(IPID.EQ.0) THEN      
+            WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
+     &      ' seconds"',', I=',NFLOTG,', SOLUTIONTIME=',AT
+            DO IPROC=1,NCSIZE
+              INQUIRE(FILE=EXTENS(NCSIZE,IPROC),EXIST=YESITIS)
+              IF(YESITIS) THEN
+                OPEN(99,FILE=EXTENS(NCSIZE,IPROC),
+     &               FORM='FORMATTED',STATUS='OLD')
+20              CONTINUE
+                READ(99,100,ERR=21,END=21) LIGNE
+                WRITE(UL,*) LIGNE
+                GO TO 20
+21              CONTINUE
+                CLOSE(99,STATUS='DELETE')
+              ENDIF
+            ENDDO
+          ENDIF
+!
+        ENDIF
+!
+      ELSE
+!
+!       SCALAR VERSION
+!
+        IF(NFLOT.GT.0.AND.(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT)) THEN
+            WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
+     &                    ' seconds"',', I=',NFLOT,', SOLUTIONTIME=',AT
+            DO IFLOT=1,NFLOT
+              WRITE(UL,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
+            ENDDO
+200       FORMAT(A,F12.4,A,A,I4,A,F12.4)
+300       FORMAT(I6,',',F16.8,',',F16.8,',',I2)
+        ENDIF
+!
+      ENDIF      
 !
 !-----------------------------------------------------------------------
 !

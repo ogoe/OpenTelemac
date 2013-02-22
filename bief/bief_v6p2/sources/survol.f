@@ -45,7 +45,7 @@
 !| ZEL            |-->| ELEVATIONS OF POINTS IN THE MESH, PER ELEMENT
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF, EX_SURVOL => SURVOL
+      USE BIEF   !, EX_SURVOL => SURVOL
 !
       IMPLICIT NONE
       INTEGER LNG,LU
