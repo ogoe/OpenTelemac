@@ -415,7 +415,7 @@ class PLOT:
 """
    Assumes that the directory ColourMaps is in PWD (i.e. ~root/pytel.)
 """
-def runXML(xmlFile,xmlConfig,bypass):
+def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
 
    xcpt = []                            # try all keys for full report
 
@@ -434,240 +434,242 @@ def runXML(xmlFile,xmlConfig,bypass):
    display = False
 
    # ~~ Action analysis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   do = ACTION(xmlFile,title,bypass)
-   first = True
-   for action in xmlRoot.findall("action"):
-      if first:
-         print '\n... looping through the todo list'
-         first = False
+   if runcase == True :
+      do = ACTION(xmlFile,title,bypass)
+      first = True
+      for action in xmlRoot.findall("action"):
+         if first:
+            print '\n... looping through the todo list'
+            first = False
 
-      # ~~ Step 1. Common check for keys and CAS file ~~~~~~~~~~~~~~
-      try:
-         doadd = do.addAction(action)
-      except Exception as e:
-         xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
-         continue    # bypass rest of the loop
-      else:
-         casFile = path.join(do.active['path'],doadd)
-         if not path.isfile(casFile):
-            xcpt.append({'name':'runXML','msg':'could not find your CAS file'+path.basename(casFile)})
+         # ~~ Step 1. Common check for keys and CAS file ~~~~~~~~~~~~~~
+         try:
+            doadd = do.addAction(action)
+         except Exception as e:
+            xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
             continue    # bypass rest of the loop
+         else:
+            casFile = path.join(do.active['path'],doadd)
+            if not path.isfile(casFile):
+               xcpt.append({'name':'runXML','msg':'could not find your CAS file'+path.basename(casFile)})
+               continue    # bypass rest of the loop
 
-      # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~
-      for cfgname in xmlConfig.keys():
-         cfg = xmlConfig[cfgname]['cfg']
-         if not do.addCFG(cfgname,cfg): continue
+         # ~~ Step 2. Loop over configurations ~~~~~~~~~~~~~~~~~~~~~~~~
+         for cfgname in xmlConfig.keys():
+            cfg = xmlConfig[cfgname]['cfg']
+            if not do.addCFG(cfgname,cfg): continue
 
-         # ~~> Parse DICO File and its IO Files default (only once)
-         dicoFile = getDICO(cfg,do.active["code"])
-         do.updateCFG({'dico':dicoFile})
-         dico = DICOS[dicoFile]['dico']
-         frgb = DICOS[dicoFile]['frgb']
-         cas = readCAS(scanCAS(casFile),dico,frgb)
-         if do.active["ncsize"] != '': setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
-         do.updateCFG({'cas':cas})
-         if not checkConsistency(cas,dico,frgb,cfg): continue
+            # ~~> Parse DICO File and its IO Files default (only once)
+            dicoFile = getDICO(cfg,do.active["code"])
+            do.updateCFG({'dico':dicoFile})
+            dico = DICOS[dicoFile]['dico']
+            frgb = DICOS[dicoFile]['frgb']
+            cas = readCAS(scanCAS(casFile),dico,frgb)
+            if do.active["ncsize"] != '': setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(do.active["ncsize"]))
+            do.updateCFG({'cas':cas})
+            if not checkConsistency(cas,dico,frgb,cfg): continue
 
-         # ~~> Create the safe
-         createDirectories(do.active['safe'])
-         idico = DICOS[dicoFile]['input']
-         odico = DICOS[dicoFile]['output']
-         # ~~> Define config-split storage
-         sortieFiles,iFS,oFS = setSafe(casFile,cas,idico,odico,do.active['safe'])   # TODO: look at relative paths
-         if sortieFiles != []: do.updateCFG({ 'sortie': sortieFiles })
-         do.updateCFG({ 'input':iFS })
-         do.updateCFG({ 'output':oFS })
+            # ~~> Create the safe
+            createDirectories(do.active['safe'])
+            idico = DICOS[dicoFile]['input']
+            odico = DICOS[dicoFile]['output']
+            # ~~> Define config-split storage
+            sortieFiles,iFS,oFS = setSafe(casFile,cas,idico,odico,do.active['safe'])   # TODO: look at relative paths
+            if sortieFiles != []: do.updateCFG({ 'sortie': sortieFiles })
+            do.updateCFG({ 'input':iFS })
+            do.updateCFG({ 'output':oFS })
 
-         # ~~> Case of coupling
-         cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
-         links = {}
-         for cplage in cplages:
-            for mod in cfg['MODULES'].keys():
-               if mod in cplage.lower():
-                  # ~~> Extract the CAS File name
-                  casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
-                  if casFilePlage == []: casFilePlage = defaut[0]
-                  else: casFilePlage = eval(casFilePlage[0])
-                  casFilePlage = path.join(path.dirname(casFile),casFilePlage)
-                  if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
-                  # ~~> Read the DICO File
-                  dicoFilePlage = getDICO(cfg,mod)
-                  dicoPlage = DICOS[dicoFilePlage]['dico']
-                  frgbPlage = DICOS[dicoFilePlage]['frgb']
-                  # ~~> Read the coupled CAS File
-                  casPlage = readCAS(scanCAS(casFilePlage),dicoPlage,frgbPlage)
-                  # ~~> Fill-in the safe
-                  idicoPlage = DICOS[dicoFilePlage]['input']
-                  odicoPlage = DICOS[dicoFilePlage]['output']
-                  sortiePlage,iFSPlage,oFSPlage = setSafe(casFilePlage,casPlage,idicoPlage,odicoPlage,do.active['safe'])   # TODO: look at relative paths
-                  links.update({mod:{}})
-                  links[mod].update({ 'code':mod, 'target':path.basename(casFilePlage),
-                     'cas':casPlage, 'frgb':frgbPlage, 'dico':dicoFilePlage,
-                     'iFS':iFSPlage, 'oFS':oFSPlage, 'sortie':sortiePlage })
-                  if sortiePlage != []: links[mod].update({ 'sortie':sortiePlage })
-         if links != {}: do.updateCFG({ "links":links })
+            # ~~> Case of coupling
+            cplages,defaut = getKeyWord('COUPLING WITH',cas,dico,frgb)
+            links = {}
+            for cplage in cplages:
+               for mod in cfg['MODULES'].keys():
+                  if mod in cplage.lower():
+                     # ~~> Extract the CAS File name
+                     casFilePlage,defaut = getKeyWord(mod.upper()+' STEERING FILE',cas,dico,frgb)
+                     if casFilePlage == []: casFilePlage = defaut[0]
+                     else: casFilePlage = eval(casFilePlage[0])
+                     casFilePlage = path.join(path.dirname(casFile),casFilePlage)
+                     if not path.isfile(casFilePlage): raise Exception([{'name':'runCAS','msg':'missing coupling CAS file for '+mod+': '+casFilePlage}])
+                     # ~~> Read the DICO File
+                     dicoFilePlage = getDICO(cfg,mod)
+                     dicoPlage = DICOS[dicoFilePlage]['dico']
+                     frgbPlage = DICOS[dicoFilePlage]['frgb']
+                     # ~~> Read the coupled CAS File
+                     casPlage = readCAS(scanCAS(casFilePlage),dicoPlage,frgbPlage)
+                     # ~~> Fill-in the safe
+                     idicoPlage = DICOS[dicoFilePlage]['input']
+                     odicoPlage = DICOS[dicoFilePlage]['output']
+                     sortiePlage,iFSPlage,oFSPlage = setSafe(casFilePlage,casPlage,idicoPlage,odicoPlage,do.active['safe'])   # TODO: look at relative paths
+                     links.update({mod:{}})
+                     links[mod].update({ 'code':mod, 'target':path.basename(casFilePlage),
+                        'cas':casPlage, 'frgb':frgbPlage, 'dico':dicoFilePlage,
+                        'iFS':iFSPlage, 'oFS':oFSPlage, 'sortie':sortiePlage })
+                     if sortiePlage != []: links[mod].update({ 'sortie':sortiePlage })
+            if links != {}: do.updateCFG({ "links":links })
 
-         # ~~ Step 3. Complete all actions ~~~~~~~~~~~~~~~~~~~~~~~~~
-         # options.do takes: translate;run;compile and none
-         doable = xmlConfig[cfgname]['options'].do
-         if doable == '': doable = do.active["do"]
-         if doable == '': doable = do.available
-         display = display or xmlConfig[cfgname]['options'].display
+            # ~~ Step 3. Complete all actions ~~~~~~~~~~~~~~~~~~~~~~~~~
+            # options.do takes: translate;run;compile and none
+            doable = xmlConfig[cfgname]['options'].do
+            if doable == '': doable = do.active["do"]
+            if doable == '': doable = do.available
+            display = display or xmlConfig[cfgname]['options'].display
 
-         # ~~> Action type A. Translate the CAS file
-         if "translate" in doable.split(';'):
-            try:
-               do.translateCAS(cfg['REBUILD'])
-            except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML','msg':'   +> translate'},e,bypass))
+            # ~~> Action type A. Translate the CAS file
+            if "translate" in doable.split(';'):
+               try:
+                  do.translateCAS(cfg['REBUILD'])
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> translate'},e,bypass))
 
-         # ~~> Action type B. Analysis of the CAS file
-         # TODO:
-         # - comparison with DEFAULT values of the DICTIONARY
-         #if "cas" in doable.split(';'):
-         # - comparison of dictionnaries betwen configurations
-         #if "dico" in doable.split(';'):
+            # ~~> Action type B. Analysis of the CAS file
+            # TODO:
+            # - comparison with DEFAULT values of the DICTIONARY
+            #if "cas" in doable.split(';'):
+            # - comparison of dictionnaries betwen configurations
+            #if "dico" in doable.split(';'):
 
-         # ~~> Action type C. Analysis of the PRINCI file
-         # TODO:
-         # - comparison with standard source files
-         #if "princi" in doable.split(';'):
-         #   out = diffTextFiles( f,t )
-         # - comparison of called subroutines between configurations
+            # ~~> Action type C. Analysis of the PRINCI file
+            # TODO:
+            # - comparison with standard source files
+            #if "princi" in doable.split(';'):
+            #   out = diffTextFiles( f,t )
+            # - comparison of called subroutines between configurations
 
-         # ~~> Action type D. Compilation of PRINCI file
-         # Contrary to the other step, Step 8 is completed where the original CAS file is
-         # (for no particularly good reason)
-        # YA: Removed because generating error when coupling copying the merged fortran file 
-        # as the main module file
-        # runcode is compiling the code anyway so what is the point of this action?
-        # TODO:
-        #    See what to do of this action
-        #if "compile" in doable.split(';'):
-        #   try:
-        #      do.compilePRINCI(cfg,cfg['REBUILD'])
-        #   except Exception as e:
-        #      xcpt.append(filterMessage({'name':'runXML','msg':'   +> compile'},e,bypass))
+            # ~~> Action type D. Compilation of PRINCI file
+            # Contrary to the other step, Step 8 is completed where the original CAS file is
+            # (for no particularly good reason)
+           # YA: Removed because generating error when coupling copying the merged fortran file 
+           # as the main module file
+           # runcode is compiling the code anyway so what is the point of this action?
+           # TODO:
+           #    See what to do of this action
+           #if "compile" in doable.split(';'):
+           #   try:
+           #      do.compilePRINCI(cfg,cfg['REBUILD'])
+           #   except Exception as e:
+           #      xcpt.append(filterMessage({'name':'runXML','msg':'   +> compile'},e,bypass))
 
-         # ~~> Action type E. Running CAS files
-         if "run" in doable.split(';'):
-            try:
-               do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
-            except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
+            # ~~> Action type E. Running CAS files
+            if "run" in doable.split(';'):
+               try:
+                  do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
 
    # ~~ Extraction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # did has all the IO references and the latest sortie files
+   if postprocess == True :
 
    # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   plot = PLOT(title,bypass)
-   first = True
-   for typePlot in ["plot1d","plot2d","plot3d","plotpv"]:
-      plot.addPlotType(typePlot)
-      for ploting in xmlRoot.findall(typePlot):
-         if first:
-            print '\n... gathering targets through the plot list'
-            first = False
-         # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
-         try:
-            plot.addDraw(ploting)
-         except Exception as e:
-            xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))
-            continue   # bypass the rest of the for loop
-
-         # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         for layer in ploting.findall("layer"):
+      plot = PLOT(title,bypass)
+      first = True
+      for typePlot in ["plot1d","plot2d","plot3d","plotpv"]:
+         plot.addPlotType(typePlot)
+         for ploting in xmlRoot.findall(typePlot):
+            if first:
+               print '\n... gathering targets through the plot list'
+               first = False
+            # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~
             try:
-               target = plot.addLayer(layer)
+               plot.addDraw(ploting)
             except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML','msg':'add layer to the list'},e,bypass))
+               xcpt.append(filterMessage({'name':'runXML','msg':'add plot to the list'},e,bypass))
                continue   # bypass the rest of the for loop
 
-            # ~~> round up targets and their configurations
-            xref,src = target.split(':')
-            if not do.dids.has_key(xref):
-               xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+xref})
+            # ~~ Step 2. Cumul layers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            for layer in ploting.findall("layer"):
+               try:
+                  target = plot.addLayer(layer)
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'add layer to the list'},e,bypass))
+                  continue   # bypass the rest of the for loop
 
-            # ~~> store layer and its configuration(s)
-            try:
-               findlayer = plot.findLayerConfig(do.dids[xref],src)
-            except Exception as e:
-               xcpt.append(filterMessage({'name':'runXML','msg':'could not find reference to draw the action: '+xref},e))
-               continue    # bypass the rest of the for loop
-            else:
-               plot.targetLayer(findlayer)
-         plot.update(plot.drawing)
+               # ~~> round up targets and their configurations
+               xref,src = target.split(':')
+               if not do.dids.has_key(xref):
+                  xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+xref})
 
-   # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # /!\ configurations cannot be called "together" or "distinct" or "oneofall"
-   first = True
-   for typePlot in plot.dids.keys():
-      if first:
-         print '\n... plotting figures'
-         first = False
+               # ~~> store layer and its configuration(s)
+               try:
+                  findlayer = plot.findLayerConfig(do.dids[xref],src)
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'could not find reference to draw the action: '+xref},e))
+                  continue    # bypass the rest of the for loop
+               else:
+                  plot.targetLayer(findlayer)
+            plot.update(plot.drawing)
 
-      for xref in plot.dids[typePlot]:
-         print '    +> reference: ',xref,' of type ',typePlot
+      # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
+      # /!\ configurations cannot be called "together" or "distinct" or "oneofall"
+      first = True
+      for typePlot in plot.dids.keys():
+         if first:
+            print '\n... plotting figures'
+            first = False
 
-         draw = plot.dids[typePlot][xref]
-         xlayers = ''   # now done with strings as arrays proved to be too challenging
-         for layer in draw["layers"]:
-            if layer['config'] == 'together':
-               xys = []
-               for x in xlayers.split('|'): xys.append( (x+';'+':'.join( layer['fileName'].keys() )).strip(';') )
-               xlayers = '|'.join(xys)
-            elif layer['config'] == 'distinct':
-               ylayers = layer['fileName'].keys()
-               xys = []
-               for i in range(len(ylayers)):
-                  for x in xlayers.split('|'): xys.append( (x+';'+ylayers[i]).strip(';') )
-               xlayers = '|'.join(xys)
-            elif layer['config'] == 'oneofall':
-               xys = []; cfg = layer['fileName'].keys()[0]     #/!\ you are sure to have at least one (?)
-               for x in xlayers.split('|'): xys.append( (x+';'+cfg).strip(';') )
-               xlayers = '|'.join(xys)
-            else:
-               if layer['config'] in layer['fileName'].keys():
+         for xref in plot.dids[typePlot]:
+            print '    +> reference: ',xref,' of type ',typePlot
+
+            draw = plot.dids[typePlot][xref]
+            xlayers = ''   # now done with strings as arrays proved to be too challenging
+            for layer in draw["layers"]:
+               if layer['config'] == 'together':
                   xys = []
-                  for x in xlayers.split('|'): xys.append( (x+';'+layer['config']).strip(';') )
-               xlayers = '|'.join(xys)
+                  for x in xlayers.split('|'): xys.append( (x+';'+':'.join( layer['fileName'].keys() )).strip(';') )
+                  xlayers = '|'.join(xys)
+               elif layer['config'] == 'distinct':
+                  ylayers = layer['fileName'].keys()
+                  xys = []
+                  for i in range(len(ylayers)):
+                     for x in xlayers.split('|'): xys.append( (x+';'+ylayers[i]).strip(';') )
+                  xlayers = '|'.join(xys)
+               elif layer['config'] == 'oneofall':
+                  xys = []; cfg = layer['fileName'].keys()[0]     #/!\ you are sure to have at least one (?)
+                  for x in xlayers.split('|'): xys.append( (x+';'+cfg).strip(';') )
+                  xlayers = '|'.join(xys)
+               else:
+                  if layer['config'] in layer['fileName'].keys():
+                     xys = []
+                     for x in xlayers.split('|'): xys.append( (x+';'+layer['config']).strip(';') )
+                  xlayers = '|'.join(xys)
 
-         nbFig = 0; alayers = xlayers.split('|')
-         for cfglist in alayers:
-            # ~~> Figure name
-            if len(alayers) == 1:
-               figureName = '.'.join([xref.replace(' ','_'),draw['outFormat']])
-            else:
-               nbFig += 1
-               figureName = '.'.join([xref.replace(' ','_'),str(nbFig),draw['outFormat']])
-            print '       ~> saved as: ',figureName
-            figureName = path.join(path.dirname(xmlFile),figureName)
-            # ~~> Figure size
-            draw["size"] = parseArrayPaires(draw["size"])
-            # ~~> Create Figure
-            figure = Figure(typePlot,draw,display,figureName)
+            nbFig = 0; alayers = xlayers.split('|')
+            for cfglist in alayers:
+               # ~~> Figure name
+               if len(alayers) == 1:
+                  figureName = '.'.join([xref.replace(' ','_'),draw['outFormat']])
+               else:
+                  nbFig += 1
+                  figureName = '.'.join([xref.replace(' ','_'),str(nbFig),draw['outFormat']])
+               print '       ~> saved as: ',figureName
+               figureName = path.join(path.dirname(xmlFile),figureName)
+               # ~~> Figure size
+               draw["size"] = parseArrayPaires(draw["size"])
+               # ~~> Create Figure
+               figure = Figure(typePlot,draw,display,figureName)
 
-            for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
-               for cfg in cfgs.split(':'):
-                  for file in layer['fileName'][cfg][0]:
+               for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
+                  for cfg in cfgs.split(':'):
+                     for file in layer['fileName'][cfg][0]:
 
-                     # ~~ 1d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     if typePlot == "plot1d":
-                        #print typePlot,' ... drawing'
-                        figure.draw( layer['fileName'][cfg][2], { 'file': file,
-                           'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
-                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } )
+                        # ~~ 1d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                        if typePlot == "plot1d":
+                           #print typePlot,' ... drawing'
+                           figure.draw( layer['fileName'][cfg][2], { 'file': file,
+                              'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
+                              'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } )
 
-                     # ~~ 2d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                     if typePlot == "plot2d":  # so far no plot type, but this may change
-                        #print typePlot,' ... drawing'
-                        figure.draw( layer['fileName'][cfg][2], { 'file': file,
-                           'roi': parseArrayPaires(draw['roi']),
-                           'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
-                           'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } )
+                        # ~~ 2d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                        if typePlot == "plot2d":  # so far no plot type, but this may change
+                           #print typePlot,' ... drawing'
+                           figure.draw( layer['fileName'][cfg][2], { 'file': file,
+                              'roi': parseArrayPaires(draw['roi']),
+                              'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
+                              'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } )
 
 
-            figure.show()
+               figure.show()
 
    """
             # ~~> plot3d

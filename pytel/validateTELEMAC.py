@@ -135,6 +135,8 @@ if __name__ == "__main__":
       help="the suite of validation ranks (all by default)" )
    parser.add_option("--revision",type="string",dest="revision",default='',
       help="will use the SVN revision number in the Validation Summary Name (useful for Jenkins)" )   
+   parser.add_option("--runcase",action="store_true",dest="runcase",default='',
+      help="will only do the actions from the xml file" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -151,6 +153,15 @@ if __name__ == "__main__":
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
    
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+# ~~~ Manage options to run only cases or only Post processing ~~~~~
+# (Running only Post processing has not been implemented yet )
+
+   if options.runcase == '' and options.postprocess == '': 
+       options.runcase = True
+       options.postprocess = True
+   elif options.runcase == True : options.postprocess = False     
+   #elif options.postprocess == True : options.built = False
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
    if not options.display:
@@ -191,7 +202,7 @@ if __name__ == "__main__":
          print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
          try:
-            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass)
+            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass,options.runcase,options.postprocess)
          except Exception as e:
             xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
 
@@ -254,7 +265,7 @@ if __name__ == "__main__":
             for xmlFile in xmls[codeName][key]:        
                try:
                   tic = time.clock()
-                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
                   toc = time.clock()
                   ttime = toc-tic
                   status.append(ttime)
@@ -268,10 +279,16 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       d = date.today()
       columns = []
-      if options.revision != '': ReportFilePlots = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummary.csv')
-      else : ReportFilePlots = path.join(root,d.isoformat() + '_' + 'ValidationSummary.csv')
+      if options.revision != '': 
+         if options.postprocess == False : SummaryFile  = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryRun.csv')
+         else : SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummary.csv')
+      else : 
+         if options.postprocess == False : SummaryFile  = path.join(root,d.isoformat() + '_' + 'ValidationSummaryRun.csv')
+         else : SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummary.csv')
       columns = [cas,module,status]
-      putDataCSV(ReportFilePlots,columns)
+      try : putDataCSV(SummaryFile,columns)
+      except Exception as e:
+         xcpts.addMessages('I could not write the Validation Summary',e,options.bypass)
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
