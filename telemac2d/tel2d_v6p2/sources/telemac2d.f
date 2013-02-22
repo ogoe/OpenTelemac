@@ -5,7 +5,7 @@
      &(PASS,ATDEP,NITER,CODE,DTDEP,NEWTIME,DOPRINT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    SOLVES THE SAINT-VENANT EQUATIONS FOR U,V,H.
@@ -148,6 +148,11 @@
 !+        03/08/2012
 !+        V6P2
 !+   Modification for adding breaches management during simulation
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        12/02/2013
+!+        V6P1
+!+   Call to FLOT and DERIVE modified, call to SORFLO removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
@@ -910,9 +915,11 @@
 !-----------------------------------------------------------------------
 !  DROGUE(S)
 !
-      IF(NFLOT.NE.0) CALL FLOT(XFLOT%R,YFLOT%R,NFLOT,NITFLO,
-     &                         FLOPRD,MESH%X%R,MESH%Y%R,
-     &                         NPOIN,DEBFLO%I,FINFLO%I,NIT)
+      IF(NFLOT_MAX.NE.0) THEN
+        CALL FLOT(XFLOT%R,YFLOT%R,NFLOT,NFLOT_MAX,MESH%X%R,MESH%Y%R,
+     &            MESH%IKLE%I,NELEM,NELMAX,
+     &            NPOIN,DEBFLO%I,FINFLO%I,TAGFLO%I,NIT)
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !  LAGRANGIAN DRIFT(S)
@@ -2087,7 +2094,7 @@
 !                           DROGUE(S)
 !=======================================================================
 !
-      IF(NFLOT.NE.0) THEN
+      IF(NFLOT_MAX.NE.0) THEN
 !
         IF(ENTET) CALL ENTETE(12,AT,LT)
 !
@@ -2096,12 +2103,13 @@
           CALL OS('X=Y/Z   ',VCONV,VCONV,MESH%COSLAT,C)
         ENDIF
 !
-        CALL DERIVE(UCONV%R,VCONV%R,DT,
+        CALL DERIVE(UCONV%R,VCONV%R,DT,AT,
      &              MESH%X%R,MESH%Y%R,MESH%IKLE%I,MESH%IFABOR%I,
      &              LT,IELM,UCONV%ELM,3,NPOIN,
      &              NELEM,NELMAX,MESH%SURDET%R,XFLOT%R,YFLOT%R,
-     &              SHPFLO%R,DEBFLO%I,FINFLO%I,ELTFLO%I,
-     &              NFLOT,NITFLO,FLOPRD,MESH)
+     &              SHPFLO%R,DEBFLO%I,FINFLO%I,TAGFLO%I,ELTFLO%I,
+     &              NFLOT,FLOPRD,MESH,T2D_FILES(T2DFLO)%LU,
+     &              IT1%I,T1%R,T2%R,IT2%I,W1%R,NPOIN)
 !
         IF(SPHERI) THEN
           CALL OS('X=XY    ',UCONV,MESH%COSLAT,S,C)
@@ -2376,14 +2384,6 @@
       IF(LNG.EQ.2.AND.LISTIN) WRITE(LU,19)
 18    FORMAT(/,1X,'FIN DE LA BOUCLE EN TEMPS',////)
 19    FORMAT(/,1X,'END OF TIME LOOP',////)
-!
-!-----------------------------------------------------------------------
-!
-      IF (NFLOT.NE.0) CALL SORFLO
-     &   (XFLOT%R,YFLOT%R,IKLFLO%I,DEBFLO%I,FINFLO%I,
-     &    NFLOT,NITFLO,FLOPRD,T2D_FILES(T2DRBI)%LU,TITCAS,
-     &    'STD',T2D_FILES(T2DRBI)%NAME,
-     &    NIT,MAXVAR,MARDAT,MARTIM,MESH,I_ORIG,J_ORIG)
 !
 !-----------------------------------------------------------------------
 !

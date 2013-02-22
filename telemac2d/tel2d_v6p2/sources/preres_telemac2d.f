@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                  21/08/2010
+! TELEMAC2D   V6P3                                  21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE VARIABLES WHICH WILL BE WRITTEN TO
@@ -43,11 +43,11 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      LOGICAL IMP,LEO,DEJA1,DEJA2,DEJA3
+      LOGICAL IMP,LEO,DEJA1,DEJA2
 !
       INTEGER LTT,N,IMAX,I
 !
-      DOUBLE PRECISION HHH,XMAX,NF,PI,AMP,PHA
+      DOUBLE PRECISION HHH,XMAX
 !
       INTRINSIC MAX,SQRT
 !
@@ -58,8 +58,7 @@
 !
       DATA DEJA1/.FALSE./
       DATA DEJA2/.FALSE./
-      DATA DEJA3/.FALSE./
-      SAVE DEJA1,DEJA2,DEJA3,NF
+      SAVE DEJA1,DEJA2
 !
 !-----------------------------------------------------------------------
 !

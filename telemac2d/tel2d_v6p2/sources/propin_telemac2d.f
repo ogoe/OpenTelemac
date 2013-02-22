@@ -81,7 +81,6 @@
 !|                |   | MASK(NPTFR,11): 1. IF H DEGREE OF FREEDOM
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
-!| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NBOR           |-->| GLOBAL NUMBER OF BOUNDARY POINTS
 !| NELBOR         |-->| FOR THE KTH BOUNDARY EDGE, GIVES THE CORRESPONDING
@@ -96,7 +95,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY : MESH
 !
       IMPLICIT NONE
       INTEGER LNG,LU

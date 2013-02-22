@@ -5,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE THROUGH A DAMOCLES CALL.
@@ -37,6 +37,11 @@
 !+        19/07/2012
 !+        V6P2
 !+   Modification for adding breaches management during simulation
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        12/02/2013
+!+        V6P3
+!+   Treatment of drogues (floats) modified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -191,7 +196,7 @@
       CLOSE(2)
       CLOSE(3)
 !
-!     DECODES 'SUBMIT' CHAINS
+!     ANALYSIS OF 'SUBMIT' CHAINS
 !
       CALL READ_SUBMIT(T2D_FILES,MAXLU_T2D,CODE1,FILE_DESC,300)
 !
@@ -280,9 +285,10 @@
           T2DBUS=I
         ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DBRC') THEN
           T2DBRC=I
+        ELSEIF(T2D_FILES(I)%TELNAME.EQ.'T2DFLO') THEN
+          T2DFLO=I
         ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06.AND.
-     &         I.NE.09.AND.I.NE.21.AND.I.NE.27.AND.I.NE.30.AND.
-     &         I.NE.31.AND.I.NE.32.AND.I.LE.47) THEN
+     &         I.NE.30.AND.I.NE.31.AND.I.NE.32) THEN
 !         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
 !         HAS RECEIVED NO NAME
           WRITE(LU,*) 'LECDON_TELEMAC2D: ERROR IN FILES NAMES' 
@@ -300,23 +306,25 @@
 !
 ! INTEGER KEYWORDS:
 !
-         LEOPRD           = MOTINT( ADRESS(1, 1) )
+      LEOPRD           = MOTINT( ADRESS(1, 1) )
 !
-!        'LISTING PRINTOUT PERIOD'
-         LISPRD           = MOTINT( ADRESS(1, 2) )
-!        ALIAS 'LISTING PRINTOUT PERIOD'
-         IF(TROUVE(1,64).EQ.2) THEN
-           LISPRD = MOTINT( ADRESS(1,64) )
-         ENDIF
+!     'LISTING PRINTOUT PERIOD'
+      LISPRD           = MOTINT( ADRESS(1, 2) )
 !
-         NIT              = MOTINT( ADRESS(1, 3) )
-!        FREE KEYWORD
-!        ??????           = MOTINT( ADRESS(1, 4) )
-         IF(DIMEN(1,5).NE.0) THEN
-           DO 20 K=1,DIMEN(1,5)
-            ICONVF(K)     = MOTINT( ADRESS(1,5) + K-1 )
-20         CONTINUE
-         ENDIF
+!     LISTING PRINTOUT PERIOD
+!
+      IF(TROUVE(1,64).EQ.2) THEN
+        LISPRD = MOTINT( ADRESS(1,64) )
+      ENDIF
+!
+      NIT              = MOTINT( ADRESS(1, 3) )
+!     FREE KEYWORD
+!     ??????           = MOTINT( ADRESS(1, 4) )
+      IF(DIMEN(1,5).NE.0) THEN
+        DO K=1,DIMEN(1,5)
+          ICONVF(K)     = MOTINT( ADRESS(1,5) + K-1 )
+        ENDDO
+      ENDIF
 !        INDEX 6, SEE AFTER 46 (NBUSE)
          ITURB            = MOTINT( ADRESS(1, 7) )
          KFROT            = MOTINT( ADRESS(1, 8) )
@@ -346,7 +354,7 @@
          SLVK%PRECON    = MOTINT( ADRESS(1,26) )
          SLVEP%PRECON = SLVK%PRECON
          LISRUG    = MOTINT( ADRESS(1,27) )
-         NFLOT     = MOTINT( ADRESS(1,28) )
+         NFLOT_MAX = MOTINT( ADRESS(1,28) )
          FLOPRD    = MOTINT( ADRESS(1,29) )
          NLAG      = MOTINT( ADRESS(1,30) )
          LISFON    = MOTINT( ADRESS(1,31) )
@@ -930,6 +938,8 @@
          T2D_FILES(T2DBUS)%NAME=MOTCAR( ADRESS(4,90) )
 !        BREACHES DATA FILE
          T2D_FILES(T2DBRC)%NAME=MOTCAR( ADRESS(4,91) )
+!        DROGUES FILE
+         T2D_FILES(T2DFLO)%NAME=MOTCAR( ADRESS(4,92) )
       IF(LISTIN) THEN
          IF(LNG.EQ.1) WRITE(LU,1000)
          IF(LNG.EQ.2) WRITE(LU,1001)
@@ -1494,12 +1504,6 @@
 !  NUMBER OF TIMESTEPS ACCORDING TO THE PARAMETER CHOSEN BY THE USER
 !
       NIT = MAX(NIT,INT(DUREE/DT +0.5D0))
-!
-!-----------------------------------------------------------------------
-!
-!  NUMER OF OUTPUTS FOR FLOATS
-!
-      NITFLO = (NIT-1)/FLOPRD + 1
 !
 !-----------------------------------------------------------------------
 !

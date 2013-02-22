@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    Memory allocation of structures, aliases, blocks...
@@ -42,6 +42,11 @@
 !+        V6P2
 !+   Modification for culvert management (no declared sources)
 !+   Allocation for Tubes/Bridges
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        12/02/2013
+!+        V6P3
+!+   Treatment of drogues (floats) changed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -795,16 +800,10 @@
 !
 !_______________________________________________________________________
 !
-      IF(NFLOT.NE.0) THEN
-        CALL BIEF_ALLVEC(1,XFLOT ,'XFLOT ',NITFLO*NFLOT,1,0,MESH)
-        CALL BIEF_ALLVEC(1,YFLOT ,'YFLOT ',NITFLO*NFLOT,1,0,MESH)
-        CALL BIEF_ALLVEC(1,SHPFLO,'SHPFLO',
-     &                     BIEF_NBPEL(IELM1,MESH)*NFLOT,1,0,MESH)
-      ELSE
-        CALL BIEF_ALLVEC(1,XFLOT ,'XFLOT ',0,1,0,MESH)
-        CALL BIEF_ALLVEC(1,YFLOT ,'YFLOT ',0,1,0,MESH)
-        CALL BIEF_ALLVEC(1,SHPFLO,'SHPFLO',0,1,0,MESH)
-      ENDIF
+      CALL BIEF_ALLVEC(1,XFLOT ,'XFLOT ',NFLOT_MAX,1,0,MESH)
+      CALL BIEF_ALLVEC(1,YFLOT ,'YFLOT ',NFLOT_MAX,1,0,MESH)
+      CALL BIEF_ALLVEC(1,SHPFLO,'SHPFLO',
+     &                        BIEF_NBPEL(IELM1,MESH)*NFLOT_MAX,1,0,MESH)
 !
 !_______________________________________________________________________
 !
@@ -1014,12 +1013,10 @@
 !
 !_______________________________________________________________________
 !
-!     IF THERE ARE NO DRIFTS, NO TEST ON NFLOT
-!     IF NFLOT IS 0, THE VECTORS WILL HAVE NO SIZE
-      CALL BIEF_ALLVEC(2,DEBFLO,'DEBFLO',NFLOT         ,1,0,MESH)
-      CALL BIEF_ALLVEC(2,FINFLO,'FINFLO',NFLOT         ,1,0,MESH)
-      CALL BIEF_ALLVEC(2,ELTFLO,'ELTFLO',NFLOT         ,1,0,MESH)
-      CALL BIEF_ALLVEC(2,IKLFLO,'IKLFLO',NFLOT*NITFLO*3,1,0,MESH)
+      CALL BIEF_ALLVEC(2,DEBFLO,'DEBFLO',NFLOT_MAX,1,0,MESH)
+      CALL BIEF_ALLVEC(2,FINFLO,'FINFLO',NFLOT_MAX,1,0,MESH)
+      CALL BIEF_ALLVEC(2,ELTFLO,'ELTFLO',NFLOT_MAX,1,0,MESH)
+      CALL BIEF_ALLVEC(2,TAGFLO,'TAGFLO',NFLOT_MAX,1,0,MESH)
 !
 !_______________________________________________________________________
 !

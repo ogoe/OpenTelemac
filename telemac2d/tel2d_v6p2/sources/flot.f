@@ -2,10 +2,11 @@
                      SUBROUTINE FLOT
 !                    ***************
 !
-     &(XFLOT,YFLOT,NFLOT,NITFLO,FLOPRD,X,Y,NPOIN,DEBFLO,FINFLO,NIT)
+     &(XFLOT,YFLOT,NFLOT,NFLOT_MAX,X,Y,IKLE,NELEM,NELMAX,NPOIN,
+     & DEBFLO,FINFLO,TAGFLO,NIT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    THE USER MUST GIVE :
@@ -39,12 +40,9 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DEBFLO         |<--| TIME STEP OF INITIAL RELEASE
 !| FINFLO         |<--| TIME STEP FOR END OF FOLLOW UP
-!| FLOPRD         |-->| NUMBER OF TIME-STEPS BETWEEN 2 RECORDS OF
-!|                |   | SUCCESSIVE POSITIONS OF FLOATING BODIES.
-!| NFLOT          |-->| NOMBRE DE FLOTTEURS.
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
 !| NIT            |-->| NUMBER OF TIME STEPS
-!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDS OF SUCCESIVE
-!|                |   | POSITIONS OF FLOATING BODIES.
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| X,Y            |-->| COORDINATES OF POINTS IN THE MESH
 !| XFLOT,YFLOT    |<--| POSITIONS OF FLOATING BODIES
@@ -56,11 +54,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT,NITFLO,FLOPRD
-      INTEGER, INTENT(INOUT)          :: DEBFLO(NFLOT),FINFLO(NFLOT)
+      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT_MAX
+      INTEGER, INTENT(IN)             :: NELEM,NELMAX
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,3)
+      INTEGER, INTENT(INOUT)          :: NFLOT
+      INTEGER, INTENT(INOUT)          :: DEBFLO(NFLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: FINFLO(NFLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: TAGFLO(NFLOT_MAX)
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NITFLO,NFLOT)
-      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NITFLO,NFLOT)
+      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -71,25 +74,33 @@
 !  1) STEP FOR THE BEGINNING OF RELEASE (DEBFLO)
 !  2) STEP FOR THE END OF RELEASE (FINFLO)
 !
-      DO 10 IFLOT=1,NFLOT
-         DEBFLO(IFLOT) = 1
-         FINFLO(IFLOT) = NIT
-10    CONTINUE
+      DO IFLOT=1,NFLOT
+        DEBFLO(IFLOT) = 1
+        FINFLO(IFLOT) = NIT
+      ENDDO
+!
+!     DEBFLO(1) = 1
+!     FINFLO(1) = NIT
+!     DEBFLO(2) = 100
+!     FINFLO(2) = 600
 !
 !-----------------------------------------------------------------------
 !
-!  3) COORDINATES OF FLOATING BODIES AT THE BEGINNING
+!  3) COORDINATES OF ALL FLOATING BODIES AT THE BEGINNING
 !
 !     INITIAL POSITION OF FLOATING BODIES WHEN RELEASED.
-!     DEFAULT VALUE NUMBER "IFLOT" IS RELEASED AT POINT "IFLOT"
 !
 !-----------------------------------------------------------------------
 !
-!     XFLOT(1,1)=-300000.D0
-!     YFLOT(1,1)= 300000.D0
+!     XFLOT(1)= -14.D0
+!     YFLOT(1)= 418.D0
 !
-!     XFLOT(1,2)= 0.D0
-!     YFLOT(1,2)= 300000.D0
+!     XFLOT(2)= 636.D0
+!     YFLOT(2)= 368.D0
+!
+!  4) REAL NUMBER OF FLOATS IN THE DOMAIN
+!
+      NFLOT=0
 !
 !-----------------------------------------------------------------------
 !
