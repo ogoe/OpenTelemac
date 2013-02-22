@@ -1,92 +1,94 @@
-C                       ***************
-                        SUBROUTINE FLOT
-C                       ***************
-C
-     *(XFLOT,YFLOT,NFLOT,NITFLO,FLOPRD,X,Y,NPOIN,DEBFLO,FINFLO,NIT)
-C
-C***********************************************************************
-C  TELEMAC 2D VERSION 5.2    17/08/94    J-M JANIN    (LNH) 30 87 72 84
-C
-C***********************************************************************
-C
-C   FONCTION : L'UTILISATEUR DOIT DONNER ICI :
-C
-C   1) LE PAS DE TEMPS DE LARGAGE DE CHAQUE FLOTTEUR
-C
-C   2) LE PAS DE TEMPS DE FIN DE CALCUL DE DERIVE DE CHAQUE FLOTTEUR
-C
-C   3) LA POSITION DES FLOTTEURS AU MOMENT DU LARGAGE
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE                       |
-C |________________|____|______________________________________________|
-C |    XFLOT,YFLOT |<-- | POSITIONS SUCCESSIVES DES FLOTTEURS.         |
-C |    NFLOT       | -->| NOMBRE DE FLOTTEURS.                         |
-C |    NITFLO      | -->| NOMBRE MAXIMAL D'ENREGISTREMENTS DES         |
-C |                |    | POSITIONS SUCCESSIVES DES FLOTTEURS.         |
-C |    FLOPRD      | -->| NOMBRE DE PAS DE TEMPS ENTRE 2 ENREGITREMENTS|
-C |                |    | DES POSITIONS SUCCESSIVES DES FLOTTEURS.     |
-C |    X,Y         | -->| COORDONNEES DES POINTS DU MAILLAGE.          |
-C |    NPOIN       | -->| NOMBRE DE POINTS DU MAILLAGE.                |
-C |    DEBFLO      |<-- | NUMEROS DES PAS DE TEMPS DE LARGAGE DE       |
-C |                |    | CHAQUE FLOTTEUR.                             |
-C |    FINFLO      |<-- | NUMEROS DES PAS DE TEMPS DE FIN DE CALCUL DE |
-C |                |    | DERIVE POUR CHAQUE FLOTTEUR.                 |
-C |    NIT         | -->| NOMBRE DE PAS DE TEMPS.                      |
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C APPELE PAR : TELMAC
-C
-C SOUS-PROGRAMME APPELE : NEANT
-C
-C***********************************************************************
-C
+!                    ***************
+                     SUBROUTINE FLOT
+!                    ***************
+!
+     &(XFLOT,YFLOT,NFLOT,NFLOT_MAX,X,Y,IKLE,NELEM,NELMAX,NPOIN,
+     & TAGFLO,SHPFLO,ELTFLO,MESH,LT,NIT,AT)
+!
+!***********************************************************************
+! TELEMAC2D   V6P3                                   21/08/2010
+!***********************************************************************
+!
+!brief    THE USER MUST GIVE :
+!+
+!+
+!+   1) THE TIMESTEP WHEN THE FLOATING BODY IS RELEASED.
+!+
+!+
+!+   2) THE TIME WHEN THE COMPUTATION IS STOPPED FOR THIS FLOATING BODY.
+!+
+!+
+!+   3) THE INITIAL POSITION OF THE FLOATING BODY AT THE TIME OF RELEASE.
+!
+!history  J-M JANIN (LNH)
+!+        17/08/1994
+!+        V5P2
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AT             |-->| TIME
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| LT             |-->| CURRENT TIME STEP
+!| MESH           |<->| MESH STRUCTURE
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
+!| NIT            |-->| NUMBER OF TIME STEPS
+!| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!|                |   | ELEMENTS.
+!| X,Y            |-->| COORDINATES OF POINTS IN THE MESH
+!| XFLOT,YFLOT    |<--| POSITIONS OF FLOATING BODIES
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE STREAMLINE, ONLY : ADD_PARTICLE,DEL_PARTICLE
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-C
-      INTEGER NFLOT,NITFLO,FLOPRD,NPOIN,IFLOT,NIT
-      INTEGER DEBFLO(NFLOT),FINFLO(NFLOT)
-C
-      DOUBLE PRECISION XFLOT(NITFLO,NFLOT),YFLOT(NITFLO,NFLOT)
-      DOUBLE PRECISION X(NPOIN),Y(NPOIN)
-C
-C-----------------------------------------------------------------------
-C
-C     INITIALISATION DU PAS DE TEMPS DE LARGAGE DE CHAQUE FLOTTEUR
-C     PAR DEFAUT, LE LARGAGE DE TOUS LES FLOTTEURS EST FAIT AU 1ER PAS
-C
-C-----------------------------------------------------------------------
-C
-C  1) PAS DE TEMPS DE LARGAGE (DEBFLO)
-C  2) PAS DE TEMPS DE FIN DE CALCUL (FINFLO)
-C
-      DEBFLO(1) = 1
-      FINFLO(1) = NIT
-      DEBFLO(2) = 100
-      FINFLO(2) = 600
-C
-C-----------------------------------------------------------------------
-C
-C  3) COORDONNEES DES FLOTTEURS AU DEPART
-C
-C     INITIALISATION DE LA POSITION DES FLOTTEURS AU MOMENT DU LARGAGE
-C     PAR DEFAUT, LE FLOTTEUR "IFLOT" EST LARGUE AU POINT "IFLOT"
-C
-C-----------------------------------------------------------------------
-C
-      XFLOT(1,1)= -14.D0
-      YFLOT(1,1)= 418.D0
-
-      XFLOT(1,2)= 636.D0
-      YFLOT(1,2)= 368.D0
-C
-C-----------------------------------------------------------------------
-C
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT_MAX,LT
+      INTEGER, INTENT(IN)             :: NELEM,NELMAX
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,3)
+      INTEGER, INTENT(INOUT)          :: NFLOT
+      INTEGER, INTENT(INOUT)          :: TAGFLO(NFLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: ELTFLO(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),AT
+      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(3,NFLOT_MAX)
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
+      IF(LT.LE.600.AND.(10*(LT/10).EQ.LT.OR.LT.EQ.1)) THEN
+        CALL ADD_PARTICLE(-220.D0,400.D0+LT/3.D0,0.D0,LT,NFLOT,
+     &                    NFLOT_MAX,XFLOT,YFLOT,YFLOT,TAGFLO,
+     &                    SHPFLO,SHPFLO,ELTFLO,ELTFLO,MESH,1,
+     &                    0.D0,0.D0,0.D0,0.D0,0,0)
+      ENDIF
+!
+!     IF(LT.EQ.600) THEN
+!        CALL DEL_PARTICLE(20,NFLOT,NFLOT_MAX,
+!    &                     XFLOT,YFLOT,YFLOT,TAGFLO,SHPFLO,SHPFLO,
+!    &                     ELTFLO,ELTFLO,MESH%TYPELM)
+!     ENDIF
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

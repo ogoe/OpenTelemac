@@ -1,3 +1,4 @@
+PROCESSEURS PARALLELES : 8
 /
 /  Temps calcul sur HP C3700                 : 27 s  5.5 24/11/2005
 /
@@ -22,8 +23,7 @@
 /  Temps calcul sur HP C3700 compilateur HP  : 13 s  04/05/2012
 /
 /
-/  Note : sur le fichier flot.slf, Rubens donne des mailles
-/         mal orientées, mais c'est bon quand même.
+/  Note : fichier des flotteurs au format Tecplot
 /
 /
 /----------------------------------------------------------------------
@@ -38,9 +38,9 @@
 FICHIER FORTRAN                     : t2d_flotteurs_v2p0.f
 FICHIER DES CONDITIONS AUX LIMITES  : geo_flotteurs.cli
 FICHIER DE GEOMETRIE                : geo_flotteurs.slf
-FICHIER DES RESULTATS               : r2d_flotteurs_v2p0.slf
+FICHIER DES RESULTATS               : res
 FICHIER DU CALCUL PRECEDENT         : r2d_flotteurs_v1p0.slf
-FICHIER DE RESULTATS BINAIRE        : rbi_flotteurs_v2p0.slf
+FICHIER DES FLOTTEURS               : flo.dat
 /
 /----------------------------------------------------------------------
 /                        OPTIONS GENERALES
@@ -51,9 +51,9 @@ TITRE : 'TELEMAC-2D - Initiation - Calcul numero 2'
 VARIABLES POUR LES SORTIES GRAPHIQUES             : 'U,V,S,B,H,Q,M,F,L'
 VARIABLES A IMPRIMER                              : ''
 PAS DE TEMPS                                      : 5.
-DUREE DU CALCUL                                   : 3600.
-PERIODE POUR LES SORTIES GRAPHIQUES               : 60
-PERIODE DE SORTIE LISTING                         : 24
+NOMBRE DE PAS DE TEMPS                            : 1440
+PERIODE POUR LES SORTIES GRAPHIQUES               : 72
+PERIODE DE SORTIE LISTING                         : 72
 SUITE DE CALCUL                                   : OUI
 /
 /----------------------------------------------------------------------
@@ -86,7 +86,9 @@ TRAITEMENT DU SYSTEME LINEAIRE                    : 2
 /----------------------------------------------------------------------
 / FLOTTEURS ET SECTIONS DE CONTROLE
 /----------------------------------------------------------------------
-SECTIONS DE CONTROLE                              :  56;211;286;43
-NOMBRE DE FLOTTEURS                               : 2
+SECTIONS DE CONTROLE                              : 56;211;286;43
+NOMBRE DE FLOTTEURS                               : 100
+/NOMBRE DE FLOTTEURS                               : 0
 PERIODE POUR LES SORTIES FLOTTEURS                : 60
+/DEBUGGER : 1
 &FIN                                                              
