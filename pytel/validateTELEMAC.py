@@ -137,6 +137,8 @@ if __name__ == "__main__":
       help="will use the SVN revision number in the Validation Summary Name (useful for Jenkins)" )   
    parser.add_option("--runcase",action="store_true",dest="runcase",default='',
       help="will only do the actions from the xml file" )
+   parser.add_option("-p","--postprocess",action="store_true",dest="postprocess",default='',
+      help="will only do the extracts and plots from the xml file (not implemented yet)" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
