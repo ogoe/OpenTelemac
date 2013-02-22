@@ -3,7 +3,7 @@
 !                    ***************
 !
      &(XFLOT,YFLOT,NFLOT,NFLOT_MAX,X,Y,IKLE,NELEM,NELMAX,NPOIN,
-     & DEBFLO,FINFLO,TAGFLO,NIT)
+     & TAGFLO,SHPFLO,ELTFLO,MESH,LT,NIT,AT)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   21/08/2010
@@ -37,16 +37,28 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUETIN (EDF R&D, LNHE)
+!+        22/02/2013
+!+        V6P3
+!+   New version called at every time step, compatible with //.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBFLO         |<--| TIME STEP OF INITIAL RELEASE
-!| FINFLO         |<--| TIME STEP FOR END OF FOLLOW UP
+!| AT             |-->| TIME
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| LT             |-->| CURRENT TIME STEP
+!| MESH           |<->| MESH STRUCTURE
 !| NFLOT          |-->| NUMBER OF FLOATS
 !| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
 !| NIT            |-->| NUMBER OF TIME STEPS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!|                |   | ELEMENTS.
 !| X,Y            |-->| COORDINATES OF POINTS IN THE MESH
 !| XFLOT,YFLOT    |<--| POSITIONS OF FLOATING BODIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE STREAMLINE, ONLY : ADD_PARTICLE,DEL_PARTICLE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -54,53 +66,40 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT_MAX
+      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT_MAX,LT
       INTEGER, INTENT(IN)             :: NELEM,NELMAX
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,3)
       INTEGER, INTENT(INOUT)          :: NFLOT
-      INTEGER, INTENT(INOUT)          :: DEBFLO(NFLOT_MAX)
-      INTEGER, INTENT(INOUT)          :: FINFLO(NFLOT_MAX)
       INTEGER, INTENT(INOUT)          :: TAGFLO(NFLOT_MAX)
-      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN)
+      INTEGER, INTENT(INOUT)          :: ELTFLO(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),AT
       DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(3,NFLOT_MAX)
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
+!     EXAMPLE : AT ITERATION 1 AND EVERY 10 ITERATIONS AFTER 600
+!               A PARTICLE IS RELEASED WITH COORDINATES
+!               X=-220.
+!               Y=400.D0+LT/3.D0
+!               AND TAG NUMBER LT
 !
-      INTEGER IFLOT
+!     IF(LT.LE.600.AND.(10*(LT/10).EQ.LT.OR.LT.EQ.1)) THEN
+!       CALL ADD_PARTICLE(-220.D0,400.D0+LT/3.D0,0.D0,LT,NFLOT,
+!    &                    NFLOT_MAX,XFLOT,YFLOT,YFLOT,TAGFLO,
+!    &                    SHPFLO,SHPFLO,ELTFLO,ELTFLO,MESH,1,
+!    &                    0.D0,0.D0,0.D0,0.D0,0,0)
+!     ENDIF
 !
-!-----------------------------------------------------------------------
+!     EXAMPLE : PARTICLE WITH TAG 20 REMOVED AT ITERATION 600
 !
-!  1) STEP FOR THE BEGINNING OF RELEASE (DEBFLO)
-!  2) STEP FOR THE END OF RELEASE (FINFLO)
-!
-      DO IFLOT=1,NFLOT
-        DEBFLO(IFLOT) = 1
-        FINFLO(IFLOT) = NIT
-      ENDDO
-!
-!     DEBFLO(1) = 1
-!     FINFLO(1) = NIT
-!     DEBFLO(2) = 100
-!     FINFLO(2) = 600
-!
-!-----------------------------------------------------------------------
-!
-!  3) COORDINATES OF ALL FLOATING BODIES AT THE BEGINNING
-!
-!     INITIAL POSITION OF FLOATING BODIES WHEN RELEASED.
-!
-!-----------------------------------------------------------------------
-!
-!     XFLOT(1)= -14.D0
-!     YFLOT(1)= 418.D0
-!
-!     XFLOT(2)= 636.D0
-!     YFLOT(2)= 368.D0
-!
-!  4) REAL NUMBER OF FLOATS IN THE DOMAIN
-!
-      NFLOT=0
+!     IF(LT.EQ.600) THEN
+!        CALL DEL_PARTICLE(20,NFLOT,NFLOT_MAX,
+!    &                     XFLOT,YFLOT,YFLOT,TAGFLO,SHPFLO,SHPFLO,
+!    &                     ELTFLO,ELTFLO,MESH%TYPELM)
+!     ENDIF
 !
 !-----------------------------------------------------------------------
 !

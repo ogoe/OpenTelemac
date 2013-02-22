@@ -287,6 +287,7 @@
       CHARR=.FALSE.
       SUSP=.FALSE.
       DISCLIN=11
+      NFLOT=0
 !
 !-----------------------------------------------------------------------
 !
@@ -910,15 +911,6 @@
 16      FORMAT(1X,'ITURB=',1I6,'UNKNOWN TURBULENCE MODEL')
         CALL PLANTE(1)
         STOP
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!  DROGUE(S)
-!
-      IF(NFLOT_MAX.NE.0) THEN
-        CALL FLOT(XFLOT%R,YFLOT%R,NFLOT,NFLOT_MAX,MESH%X%R,MESH%Y%R,
-     &            MESH%IKLE%I,NELEM,NELMAX,
-     &            NPOIN,DEBFLO%I,FINFLO%I,TAGFLO%I,NIT)
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -2103,13 +2095,26 @@
           CALL OS('X=Y/Z   ',VCONV,VCONV,MESH%COSLAT,C)
         ENDIF
 !
-        CALL DERIVE(UCONV%R,VCONV%R,DT,AT,
-     &              MESH%X%R,MESH%Y%R,MESH%IKLE%I,MESH%IFABOR%I,
-     &              LT,IELM,UCONV%ELM,3,NPOIN,
-     &              NELEM,NELMAX,MESH%SURDET%R,XFLOT%R,YFLOT%R,
-     &              SHPFLO%R,DEBFLO%I,FINFLO%I,TAGFLO%I,ELTFLO%I,
-     &              NFLOT,FLOPRD,MESH,T2D_FILES(T2DFLO)%LU,
-     &              IT1%I,T1%R,T2%R,IT2%I,W1%R,NPOIN)
+!       ADDING AND REMOVING DROGUES
+!
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FLOT'
+        CALL FLOT(XFLOT%R,YFLOT%R,NFLOT,NFLOT_MAX,MESH%X%R,MESH%Y%R,
+     &            MESH%IKLE%I,NELEM,NELMAX,NPOIN,TAGFLO%I,
+     &            SHPFLO%R,ELTFLO%I,MESH,LT,NIT,AT)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FLOT'
+!
+!       MOVING THEM
+!
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DERIVE'
+        CALL DERIVE(UCONV%R,VCONV%R,VCONV%R,DT,AT,
+     &              MESH%X%R,MESH%Y%R,MESH%Y%R,
+     &              MESH%IKLE%I,MESH%IFABOR%I,LT,IELM,UCONV%ELM,3,NPOIN,
+     &              NPOIN,
+     &              NELEM,NELMAX,MESH%SURDET%R,XFLOT%R,YFLOT%R,YFLOT%R,
+     &              SHPFLO%R,SHPFLO%R,TAGFLO%I,ELTFLO%I,ELTFLO%I,
+     &              NFLOT,NFLOT_MAX,FLOPRD,MESH,T2D_FILES(T2DFLO)%LU,
+     &              IT1%I,T1%R,T2%R,T2%R,IT2%I,W1%R,W1%R,NPOIN)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DERIVE'
 !
         IF(SPHERI) THEN
           CALL OS('X=XY    ',UCONV,MESH%COSLAT,S,C)
@@ -2195,7 +2200,6 @@
         CALL CONFIG_CODE(2)
 !
         SUSP1=SUSP.AND.PERCOU.EQ.1
-!RK     IF(SUSP1.OR.(CHARR.AND.(PERCOU*((LT-1)/PERCOU).EQ.LT-1))) THEN
         IF(SUSP1.OR.(CHARR.AND.(PERCOU*(LT/PERCOU).EQ.LT))) THEN
 !
           IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING SISYPHE, CHARRIAGE'
