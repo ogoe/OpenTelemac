@@ -1740,12 +1740,6 @@ c          Z = SL(IFRLIQ,NBOR(K))
 !
 !-----------------------------------------------------------------------
 !
-!  NUMER OF OUTPUTS FOR FLOATS
-!
-      NITFLO = (NIT-1)/FLOPRD + 1
-!
-!-----------------------------------------------------------------------
-!
 !  NPRIV MOFIFIED FOR OUTPUT OF USER-BUILT VARIABLES
 !
       DO I=1,4
