@@ -57,7 +57,6 @@ INSTALL	      = cp
 MAKEFILE      = makefile
 
 SRCS= interface_parallel.f \
-p_org_fonction_type.f  \
 errpvm.f get_mpi_parameters.f  org_charac_type1.f p_dmax.f p_dmin.f  p_dsum.f p_exit.f \
 p_imax.f p_imin.f p_init.f p_iread.f p_iread_c.f p_isum.f p_iwrit.f p_iwrit_c.f p_lsum.f p_mail.f \
 p_mpi_address.f p_mpi_address2.f p_mpi_address3.f \
