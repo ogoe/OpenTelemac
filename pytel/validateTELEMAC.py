@@ -289,9 +289,8 @@ if __name__ == "__main__":
          else : SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummary.csv')
       columns = [cas,module,status]
       try : putDataCSV(SummaryFile,columns)
-      except Exception as e:
-         xcpts.addMessages('I could not write the Validation Summary',e,options.bypass)
- 
+      except : xcpts.addMessages(['I could not write properly the Validation Summary, something went wrong'])
+          
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():
