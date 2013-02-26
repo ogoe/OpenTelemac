@@ -18,6 +18,7 @@
 !+        V6P3
 !+   Radiation stresses for Telemac now computed independently of the
 !+   printouts on results file.
+!+   Call to tomawac_constants moved to lecdon_tomawac.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -84,13 +85,6 @@
       SAVE
 !
 !-----------------------------------------------------------------------
-!
-!     SETTING CONSTANTS (PI, GRAVITY, ETC.)
-!
-      CALL TOMAWAC_CONSTANTS
-!
-!-----------------------------------------------------------------------
-!
 !
 !     QINDI ALLOCATED ONLY AT FIRST CALL
 !

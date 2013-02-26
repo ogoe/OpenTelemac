@@ -12,6 +12,9 @@
 !+                VARIABLES AT EACH NODE OF THE MESH.
 !+                VARIES SPATIALLY IN 2D (BINARY SELAFIN FORMAT).
 !
+!warning  STSDER used as work array here.
+!
+!
 !history  F. MARCOS
 !+        01/02/95
 !+        V1P0
@@ -39,6 +42,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  J-M HERVOUETO (EDF R&D, LNHE)
+!+        26/02/2013
+!+        V6P3
+!+   Use of work arrays optimised.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| LT             |-->| NUMBER OF THE TIME STEP CURRENTLY SOLVED
 !| NP1            |-->| NPOIN2.NPLAN.NF
@@ -57,7 +65,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER          I1    , I2    , IP
+      INTEGER          IP
       DOUBLE PRECISION U10   , FMIN  , FMAX
 !
       FMIN=FREQ(1)
@@ -71,15 +79,13 @@
 !
 !     ------------------------------- RADIATION STRESSES
 !
-      I1=NPOIN3*NF+1
-      I2=I1+NPOIN2*NF
       IF(.NOT.PROINF) THEN
         IF(SORLEO(11).OR.SORLEO(12).OR.SORLEO(13).OR.
      &     SORLEO(14).OR.SORLEO(15) ) CALL RADIAT
      &( STRA51%R, STRA52%R, STRA53%R, STRA54%R, STRA55%R,
      &  SXK%R   , XF1     , SCG%R   , SDEPTH%R,
 !       WORK TABLE HERE
-     &  STSDER%R(I1:I2),STRA36%R, STRA37%R, STRA38%R, STRA39%R)
+     &  STSDER%R,STRA36%R, STRA37%R, STRA38%R, STRA39%R)
       ENDIF
 !
 !     ------------------------------- DIRECTIONAL SPREADING

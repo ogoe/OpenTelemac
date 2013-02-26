@@ -46,7 +46,7 @@
 !history  J-M HERVOUET (EDF R&D LNHE)
 !+        01/02/2013
 !+        V6P3
-!+   New keywords added.
+!+   New keywords added. Call to tomawac_constants added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| NAME OF CALLING PROGRAMME
@@ -206,11 +206,17 @@
 !
 !-----------------------------------------------------------------------
 !
-!   ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
+!     SETTING CONSTANTS (PI, GRAVITY, ETC.)
+!
+      CALL TOMAWAC_CONSTANTS
 !
 !-----------------------------------------------------------------------
 !
-! INTEGER KEYWORDS
+!     ASSIGNS THE STEERING FILE VALUES TO THE PARAMETER FORTRAN NAME
+!
+!-----------------------------------------------------------------------
+!
+!     INTEGER KEYWORDS
 !
       GRAPRD = MOTINT( ADRESS(1,  1) )
       LISPRD = MOTINT( ADRESS(1,  2) )
