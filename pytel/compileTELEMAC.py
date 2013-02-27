@@ -339,6 +339,8 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
    cmd = cfg['MODULES'][eprog]['xexe']
    cmd = cmd.replace('<libs>',LibFiles)
+   # Special keyword for nag with ',' separating the libraries
+   cmd = cmd.replace('<libsnag>',LibFiles.replace(' ',','))
    cmd = cmd.replace('<objs>',ObjFiles)
    cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfg['root'])
    
@@ -353,6 +355,8 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    
    xecmd = cfg['MODULES'][eprog]['xexe']
    xecmd = xecmd.replace('<libs>',LibFile + ' ' + LibFiles)
+   # Special keyword for nag with ',' separating the libraries
+   xecmd = xecmd.replace('<libsnag>',LibFile.replace(' ',',') + ',' + LibFiles.replace(' ',','))
    # <exename> and <objs> ... still to be replaced
    xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
    
