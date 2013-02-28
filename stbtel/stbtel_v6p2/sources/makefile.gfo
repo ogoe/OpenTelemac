@@ -118,7 +118,6 @@ converter.f
 #
 TEMP = $(SRCS:.f=.o)
 OBJS = $(TEMP:.F=.o)
-
 #
 # ------------------------ Cibles
 #
