@@ -89,6 +89,6 @@ TRAITEMENT DU SYSTEME LINEAIRE                    : 2
 SECTIONS DE CONTROLE                              : 56;211;286;43
 NOMBRE DE FLOTTEURS                               : 100
 /NOMBRE DE FLOTTEURS                               : 0
-PERIODE POUR LES SORTIES FLOTTEURS                : 60
+PERIODE POUR LES SORTIES DE FLOTTEURS             : 60
 /DEBUGGER : 1
 &FIN                                                              
