@@ -462,8 +462,12 @@
            CALL VECTOR(T2_03, '=','MASBAS          ',IELM2H,-1.D0,SVIDE,
      &                 SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH2D,MSK,MASKEL)
            CALL OV('X=XY    ',T2_03%R,AFBORS%R,AFBORS%R,0.D0,NPOIN2)
-           CALL OV('X=X+Y   ',MTRA2%D%R(NPOIN3-NPOIN2+1:NPOIN3),
-     &                        T2_03%R,T2_03%R,0.D0,NPOIN2)
+           DO I=1,NPOIN2
+             MTRA2%D%R(NPOIN3-NPOIN2+I)=
+     &       MTRA2%D%R(NPOIN3-NPOIN2+I)+T2_03%R(I)
+           ENDDO
+!          CALL OV('X=X+Y   ',MTRA2%D%R(NPOIN3-NPOIN2+1:NPOIN3),
+!    &                        T2_03%R,T2_03%R,0.D0,NPOIN2)
          ENDIF
 !           (NON MASS-LUMPED FORM):
 !        FORMUL='FMATMA          '

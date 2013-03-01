@@ -422,7 +422,8 @@
      &              DT,MESH3D%IFABOR,IELM3,NPOIN2,NPLAN,1,1,
      &              MSK,MASKEL,MTRA2%X,MTRA2%D,MTRA2%D,TRAV3,
      &              IT1%I,IT2%I,IT2%I,IT3%I,IT4%I,IT2%I,
-     &              MESH3D,NELEM2,MESH2D%NELMAX,IKLE2,MESH2D%SURDET)
+     &              MESH3D,NELEM2,MESH2D%NELMAX,IKLE2,MESH2D%SURDET,
+     &              SIGMA=.TRUE.)
 !
       ENDIF
 !

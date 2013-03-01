@@ -255,6 +255,8 @@
           T3DBB1=I
         ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DBB2') THEN
           T3DBB2=I
+        ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DFLO') THEN
+          T3DFLO=I
         ENDIF
       ENDDO
 !
@@ -267,7 +269,7 @@
         NPLAN     = MAX(MOTINT(ADRESS(1, 2)),2)
         NTRAC     = MAX(MOTINT(ADRESS(1, 3)),0)
         MIXING    = MAX(MOTINT(ADRESS(1, 4)),0)
-        NFLOT     = MAX(MOTINT(ADRESS(1, 5)),0)
+        NFLOT_MAX = MAX(MOTINT(ADRESS(1, 5)),0)
         FLOPRD    = MAX(MOTINT(ADRESS(1, 6)),1)
         GRAPRD    = MAX(MOTINT(ADRESS(1, 7)),1)
         LISPRD    = MAX(MOTINT(ADRESS(1, 8)),1)
@@ -966,9 +968,11 @@ C END OF SOGREAH ADDITIONS
         T3D_FILES(T3DBI1)%FMT = MOTCAR( ADRESS(4,79) )(1:8)
         CALL MAJUS(T3D_FILES(T3DBI1)%FMT)
 !       RESTART FILE
-        T3D_FILES(T3DRST)%NAME=MOTCAR( ADRESS(4,85 ) )
+        T3D_FILES(T3DRST)%NAME=MOTCAR( ADRESS(4,85) )
 !       RESTART FILE FORMAT
         T3D_FILES(T3DRST)%FMT = MOTCAR( ADRESS(4,84) )(1:8)
+!       DROGUES FILE
+        T3D_FILES(T3DFLO)%NAME=MOTCAR( ADRESS(4,91) )
 !
 !-----------------------------------------------------------------------
 ! SEDIMENT - EX-LECSED.F
@@ -1658,12 +1662,6 @@ C     TO KEEP DHN FREE FOR CALLING CONTIN
           STOP
         ENDIF
       ENDIF
-!
-!
-!-----------------------------------------------------------------------
-! NUMBER OF FLOAT OUTPUTS
-!
-      NITFLO = (NIT-1)/FLOPRD + 1
 !
 !-----------------------------------------------------------------------
 !

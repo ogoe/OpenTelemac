@@ -165,6 +165,12 @@
       ENDIF
 !
 !=======================================================================
+! FOR DROGUES (CALLS TO FLOT3D WILL INCREASE OR DECREASE NFLOT)
+!=======================================================================
+!
+      NFLOT=0 
+!
+!=======================================================================
 ! FOR COMPUTING FLUXES OF ADVECTED VARIABLES
 !=======================================================================
 !
@@ -436,12 +442,6 @@
      &                  START_RECORD.EQ.0,MAXVAR,NPLAN)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SUITE'
 !
-        IF(RAZTIM) THEN
-          AT=0.D0
-          IF(LNG.EQ.1) WRITE(LU,*) 'TEMPS ECOULE REMIS A ZERO'
-          IF(LNG.EQ.2) WRITE(LU,*) 'ELAPSED TIME RESET TO ZERO'
-        ENDIF
-!
         DO K=1,NPOIN2
           H%R(K)=Z(K+NPOIN2*(NPLAN-1))-Z(K)
           ZF%R(K)=Z(K)
@@ -465,6 +465,14 @@
         ENDIF
 !
       ENDIF 
+!
+!     TIME OPTIONALLY RESET TO ZERO
+!
+      IF(RAZTIM) THEN
+        AT=0.D0
+        IF(LNG.EQ.1) WRITE(LU,*) 'TEMPS ECOULE REMIS A ZERO'
+        IF(LNG.EQ.2) WRITE(LU,*) 'ELAPSED TIME RESET TO ZERO'
+      ENDIF
 !
 !     ONLY TA IS INITIALISED IN CONDIM OR BIEF_SUITE
 !
@@ -698,13 +706,6 @@
         CALL VISCLIP(VISCVI,VISCTA,H,NPLAN,NPOIN3,NPOIN2,NTRAC,HLIM)
 !
       ENDIF
-!
-!-----------------------------------------------------------------------
-! FLOATS (EHM... TRACERS...)
-!
-      IF (NFLOT.NE.0) CALL FLOT3D
-     &   (XFLOT%R, YFLOT%R, ZFLOT%R, NFLOT, NITFLO, FLOPRD, X, Y, Z,
-     &    NPOIN3, DEBFLO%I, FINFLO%I, NIT)
 !
 !------------------------------------
 ! PREPARES THE 3D OUTPUT FILE :
@@ -2280,18 +2281,51 @@
 ! DROGUES/FLOATS/BUOYS
 !=======================================================================
 !
-      IF(NFLOT.GT.0) THEN
+      IF(NFLOT_MAX.GT.0) THEN
 !
-         IF(INFOGR) CALL MITTIT(12,AT,LT)
+        IF(SPHERI) THEN
+          CALL OS('X=Y/Z   ',UCONV,UCONV,MESH2D%COSLAT)
+          CALL OS('X=Y/Z   ',VCONV,VCONV,MESH2D%COSLAT)
+        ENDIF
 !
-         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DERI3D'
-         CALL DERI3D(UCONV%R,VCONV%R,WSCONV%R,DT,X,Y,ZCHAR%R,Z,IKLE2%I,
-     &               MESH3D%IFABOR%I,LT,NPOIN2,NELEM2,NPLAN,
-     &               MESH2D%SURDET%R,XFLOT%R,YFLOT%R,ZFLOT%R,ZSFLOT%R,
-     &               SHPFLO%R,SHZFLO%R,DEBFLO%I,FINFLO%I,ELTFLO%I,
-     &               ETAFLO%I,NFLOT,NITFLO,FLOPRD,
-     &               MESH3D,T3_01%R,T3_02%R,T3_03%R)
-         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DERI3D'
+!       ADDING AND REMOVING DROGUES
+!
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING FLO3D'
+        CALL FLOT3D(XFLOT%R,YFLOT%R,ZFLOT%R,NFLOT,NFLOT_MAX,X,Y,Z,
+     &              MESH3D%IKLE%I,
+     &              MESH3D%NELEM,MESH3D%NELMAX,NPOIN3,NPLAN,
+     &              TAGFLO%I,SHPFLO%R,SHZFLO%R,ELTFLO%I,ETAFLO%I,
+     &              MESH3D,LT,NIT,AT)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM FLO3D'
+!
+        IF(INFOGR) CALL MITTIT(12,AT,LT)
+!
+!       MOVING THEM
+!
+        IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING DERIVE'
+        CALL DERIVE(UCONV%R,VCONV%R,WCONV%R,DT,AT,
+     &              X,Y,Z,
+     &              MESH2D%IKLE%I,MESH3D%IFABOR%I,LT,IELM3,UCONV%ELM,
+     &              3,NPOIN3,NPOIN2,NELEM2,MESH2D%NELMAX,
+     &              MESH2D%SURDET%R,XFLOT%R,YFLOT%R,ZFLOT%R,
+     &              SHPFLO%R,SHZFLO%R,TAGFLO%I,ELTFLO%I,ETAFLO%I,
+     &              NFLOT,NFLOT_MAX,FLOPRD,MESH3D,T3D_FILES(T3DFLO)%LU,
+     &              IT1%I,T3_01%R,T3_02%R,T3_03%R,IT2%I,
+     &              MTRA1%X%R,MTRA2%X%R,NPOIN3)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM DERIVE'
+!        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE DERI3D'
+!        CALL DERI3D(UCONV%R,VCONV%R,WSCONV%R,DT,X,Y,ZCHAR%R,Z,IKLE2%I,
+!    &               MESH3D%IFABOR%I,LT,NPOIN2,NELEM2,NPLAN,
+!    &               MESH2D%SURDET%R,XFLOT%R,YFLOT%R,ZFLOT%R,ZSFLOT%R,
+!    &               SHPFLO%R,SHZFLO%R,DEBFLO%I,FINFLO%I,ELTFLO%I,
+!    &               ETAFLO%I,NFLOT,NITFLO,FLOPRD,
+!    &               MESH3D,T3_01%R,T3_02%R,T3_03%R)
+!        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE DERI3D'
+!
+        IF(SPHERI) THEN
+          CALL OS('X=XY    ',UCONV,MESH2D%COSLAT)
+          CALL OS('X=XY    ',VCONV,MESH2D%COSLAT)
+        ENDIF
 !
       ENDIF
 !
@@ -2358,19 +2392,6 @@ C     ENDIF
 !=======================================================================
 ! THE TIME LOOP ENDS HERE
 !=======================================================================
-!
-! TRACER/FLOAT OUTPUT
-!
-! NOTE: BINHYD DOES NOT CORRESPOND TO NOMRBI (BUT THERE IS NO SPECIFIC
-!                                             KEYWORD FOR WHAT BINRBI
-!                                             SHOULD BE)
-!
-      IF(NFLOT.NE.0) THEN
-        CALL SFLO3D(XFLOT%R,YFLOT%R,ZFLOT%R,IKLFLO%I,
-     &              TRAFLO%I,DEBFLO%I,FINFLO%I,NFLOT,NITFLO,FLOPRD,
-     &              T3D_FILES(T3DRBI)%LU,LISTIN,TITCAS,BINHYD,
-     &              T3D_FILES(T3DRBI)%NAME,NIT,I_ORIG,J_ORIG)
-      ENDIF
 !
 !-----------------------------------------------------------------------
 !

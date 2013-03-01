@@ -2,61 +2,45 @@
                      SUBROUTINE FLOT3D
 !                    *****************
 !
-     &(XFLOT,YFLOT,ZFLOT,NFLOT,NITFLO,FLOPRD,X,Y,Z,NPOIN,DEBFLO,FINFLO,
-     & NIT)
+     &(XFLOT,YFLOT,ZFLOT,NFLOT,NFLOT_MAX,X,Y,Z,IKLE,NELEM,NELMAX,NPOIN,
+     & NPLAN,TAGFLO,SHPFLO,SHZFLO,ELTFLO,ETAFLO,MESH3D,LT,NIT,AT)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
-!brief    THE USER MUST SPECIFY:
-!+
-!+            1) WHEN THE FLOATING BODY IS RELEASED (IN TERMS OF
-!+                   TIMESTEP NUMBER),
-!+
-!+            2) WHEN THE COMPUTATION IS STOPPED FOR THIS FLOATING BODY,
-!+
-!+            3) THE INITIAL POSITION OF THE FLOATING BODY.
+!brief    This subroutine is called at every time step, and the user can
+!+        add or remove particles as in the example given
 !
-!history  J-M JANIN   (LNH)
-!+        25/11/97
-!+        V5P1
-!+
-!
-!history  JACEK A. JANKOWSKI PINXIT
-!+        **/03/99
-!+
-!+   FORTRAN95 VERSION
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        13/07/2010
-!+        V6P0
-!+   Translation of French comments within the FORTRAN sources into
-!+   English comments
-!
-!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
-!+        21/08/2010
-!+        V6P0
-!+   Creation of DOXYGEN tags for automated documentation and
-!+   cross-referencing of the FORTRAN sources
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        26/02/2013
+!+        V6P3
+!+    First version.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| DEBFLO         |<->| TIME STEP OF INITIAL RELEASE
-!| FINFLO         |<->| TIME STEP FOR END OF FOLLOW UP
-!| FLOPRD         |-->| NUMBER OF TIME STEPS BETWEEN 2 RECORDINGS
-!|                |   | OF SUCCESSIVE POSITIONS OF DROGUES
-!| NFLOT          |-->| NUMBER OF DROGUES
+!| AT             |-->| TIME
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| ETAFLO         |<->| LEVELS WHERE ARE THE FLOATS
+!| LT             |-->| CURRENT TIME STEP
+!| MESH3D         |<->| 3D MESH STRUCTURE
+!| NFLOT          |-->| NUMBER OF FLOATS
+!| NFLOT_MAX      |-->| MAXIMUM NUMBER OF FLOATS
 !| NIT            |-->| NUMBER OF TIME STEPS
-!| NITFLO         |-->| MAXIMUM NUMBER OF RECORDINGS OF SUCCESSIVE
-!|                |   | POSITIONS OF DROGUES
+!| NPLAN          |-->| NUMBER OF PLANES
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
-!| X              |-->| COORDINATE
-!| XFLOT          |<->| SUCCESSIVE X POSITIONS OF DROGUES
-!| Y              |-->| COORDINATE
-!| YFLOT          |<->| SUCCESSIVE Y POSITIONS OF DROGUES
-!| Z              |-->| COORDINATE
-!| ZFLOT          |<->| SUCCESSIVE Z POSITIONS OF DROGUES
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!|                |   | ELEMENTS.
+!| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR LEVEL
+!| X              |-->| ABSCISSAE OF POINTS IN THE MESH
+!| Y              |-->| ORDINATES OF POINTS IN THE MESH
+!| Z              |-->| ELEVATIONS OF POINTS IN THE MESH
+!| XFLOT          |<->| ABSCISSAE OF FLOATING BODIES
+!| YFLOT          |<->| ORDINATES OF FLOATING BODIES
+!| ZFLOT          |<->| ELEVATIONS OF FLOATING BODIES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE STREAMLINE, ONLY : ADD_PARTICLE,DEL_PARTICLE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -64,46 +48,38 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)    :: NFLOT, NITFLO, FLOPRD, NPOIN, NIT
-      INTEGER, INTENT(INOUT) :: DEBFLO(NFLOT), FINFLO(NFLOT)
-!
-      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NITFLO,NFLOT)
-      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NITFLO,NFLOT)
-      DOUBLE PRECISION, INTENT(INOUT) :: ZFLOT(NITFLO,NFLOT)
-      DOUBLE PRECISION, INTENT(IN)  :: X(NPOIN), Y(NPOIN), Z(NPOIN)
+      INTEGER, INTENT(IN)             :: NPOIN,NIT,NFLOT_MAX,LT,NPLAN
+      INTEGER, INTENT(IN)             :: NELEM,NELMAX
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,*)
+      INTEGER, INTENT(INOUT)          :: NFLOT
+      INTEGER, INTENT(INOUT)          :: TAGFLO(NFLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: ELTFLO(NFLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: ETAFLO(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),Z(NPOIN),AT
+      DOUBLE PRECISION, INTENT(INOUT) :: XFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: YFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: ZFLOT(NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHPFLO(3,NFLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZFLO(NFLOT_MAX)
+      TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH3D
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+! 
+!     IF(LT.LE.600.AND.(10*(LT/10).EQ.LT.OR.LT.EQ.1)) THEN
+!       CALL ADD_PARTICLE(-220.D0,400.D0+LT/3.D0,259.D0+LT/100.D0,
+!    &                    LT,NFLOT,
+!    &                    NFLOT_MAX,XFLOT,YFLOT,ZFLOT,TAGFLO,
+!    &                    SHPFLO,SHZFLO,ELTFLO,ETAFLO,MESH3D,NPLAN,
+!    &                    0.D0,0.D0,0.D0,0.D0,0,0)
+!     ENDIF
 !
-      INTEGER IFLOT
-!
-!-----------------------------------------------------------------------
-!
-!  1) STEP FOR THE START OF RELEASE (DEBFLO)
-!  2) STEP FOR THE END OF RELEASE (FINFLO)
-!
-      DO IFLOT=1,NFLOT
-         DEBFLO(IFLOT) = 1
-         FINFLO(IFLOT) = NIT
-      END DO
-!
-!-----------------------------------------------------------------------
-!
-!  3) COORDINATES OF FLOATING BODIES AT THE BEGINNING
-!
-!     INITIAL POSITION OF FLOATING BODIES WHEN RELEASED
-!     DEFAULT VALUE NUMBER "IFLOT" IS RELEASED AT POINT "IFLOT"
-!
-!-----------------------------------------------------------------------
-!
-!     XFLOT(1,1)=-300000.D0
-!     YFLOT(1,1)= 300000.D0
-!     ZFLOT(1,1)= -10.D0
-!
-!     XFLOT(1,2)= 0.D0
-!     YFLOT(1,2)= 300000.D0
-!     ZFLOT(1,2)= 0.D0
+!     IF(LT.EQ.600) THEN
+!        CALL DEL_PARTICLE(20,NFLOT,NFLOT_MAX,
+!    &                     XFLOT,YFLOT,ZFLOT,TAGFLO,SHPFLO,SHZFLO,
+!    &                     ELTFLO,ETAFLO,MESH%TYPELM)
+!     ENDIF
 !
 !-----------------------------------------------------------------------
 !
       RETURN
-      END SUBROUTINE FLOT3D
+      END
