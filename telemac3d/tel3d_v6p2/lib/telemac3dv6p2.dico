@@ -2838,12 +2838,12 @@ RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1
 AIDE = 'Option utilisee principalement pour le dossier de validation. Le
-fichier des resultats du calcul precedent est alors considere comme une
+FICHIER DE REFERENCE est alors considere comme une
 reference a laquelle on va comparer le calcul. La comparaison
 est effectuee par le sous-programme VALIDA qui peut etre une comparaison
 avec une solution exacte par exemple.'
 AIDE1 = 'This option is primarily used for the validation documents.
-The PREVIOUS COMPUTATION FILE is then considered as a
+The REFERENCE FILE is then considered as a
 reference which the computation is going to be compared with.
 The comparison is made by the subroutine VALIDA, which can be
 modified as to
@@ -3832,7 +3832,8 @@ NIVEAU = 1
 COMPORT = 
 'Foreground ("EQUATIONS")
 IS BRUT (brown)'
-AIDE = 'utilise un resultat 2d dans FICHIER DE DONNEES BINAIRE
+AIDE = 'utilise un resultat 2d dans 
+ FICHIER DE DONNEES BINAIRE 1
  comme fichier de conditions initiales'
 AIDE1 = 'uses a 2D results file in BINARY DATA FILE 1 FORMAT
  as initial conditions file'
@@ -5810,6 +5811,23 @@ AIDE1 = 'For TPXO tidal data base only.
 Inference of minor constituents from the one read in input files 
 linked to keywords BINARY DATABASE 1 FOR TIDE 
 and BINARY DATABASE 2 FOR TIDE'
+/
+/ VERSION 6.2
+/ 
+NOM = 'FICHIER DES FLOTTEURS'
+NOM1 = 'DROGUES FILE'
+TYPE = CARACTERE 
+INDEX = 91
+MNEMO = 'T3D_FILES(T3DFLO)%NAME' 
+SUBMIT = 'T3DFLO-WRITE-14;T3DFLO;FACUL;ASC;ECR;SCAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier de resultat avec les positions des flotteurs' 
+AIDE1 = 'Results file with positions of drogues' 
+
 
 /
 /---------------------------------------------------------------------
@@ -5834,7 +5852,7 @@ TYPE = CARACTERE
 INDEX = 99
 /
 MNEMO = ''
-TAILLE = 41
+TAILLE = 42
 DEFAUT  = 'FICHIER DES PARAMETRES';
           'DICTIONNAIRE';
           'FICHIER FORTRAN';
@@ -5875,7 +5893,8 @@ DEFAUT  = 'FICHIER DES PARAMETRES';
           'FICHIER DU MODELE DE MAREE';
           'BASE ASCII DE DONNEES DE MAREE';
           'BASE BINAIRE 1 DE DONNEES DE MAREE';
-          'BASE BINAIRE 2 DE DONNEES DE MAREE'
+          'BASE BINAIRE 2 DE DONNEES DE MAREE';
+          'FICHIER DES FLOTTEURS'
 DEFAUT1 = 'STEERING FILE';
           'DICTIONARY';
           'FORTRAN FILE';
@@ -5916,7 +5935,8 @@ DEFAUT1 = 'STEERING FILE';
           'TIDAL MODEL FILE';
           'ASCII DATABASE FOR TIDE';
           'BINARY DATABASE 1 FOR TIDE';
-          'BINARY DATABASE 2 FOR TIDE'
+          'BINARY DATABASE 2 FOR TIDE';
+          'DROGUES FILE'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1
