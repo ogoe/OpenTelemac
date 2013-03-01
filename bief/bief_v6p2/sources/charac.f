@@ -7,7 +7,7 @@
      &  DT    , IFAMAS , IELM  , NPOIN2 , NPLAN , JF     , NF     ,
      &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT ,
      &  ETA   , FRE    , IT3   , ISUB   , FREBUF, MESH   ,
-     &  NELEM2, NELMAX2, IKLE2 , SURDET2, APOST , PERIODIC )
+     &  NELEM2, NELMAX2, IKLE2 , SURDET2, POST , PERIO , YA4D, SIGMA)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -47,8 +47,6 @@
 !|                |   |                   41 : PRISM IN TELEMAC3D
 !| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
 !| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
-!| APOST          |-->| IF YES, DATA MUST BE KEPT FOR A POSTERIORI
-!|                |   | INTERPOLATION
 !| ELT            |<->| ARRIVAL ELEMENT
 !| ETA            |<->| ARRIVAL LAYER (IN 3D WITH PRISMS)
 !| FRCONV         |-->| FREQUENCY COMPONENT OF ADVECTION FIELD
@@ -69,15 +67,19 @@
 !| NOMB           |-->| NUMBER OF VARIABLES TO BE ADVECTED
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN THE 2D MESH
-!| PERIODIC       |-->| IF YES, PERIODIC VERSION ON THE VERTICAL
+!| PERIO          |-->| IF YES, PERIODIC VERSION ON THE VERTICAL
+!| POST           |-->| IF YES, DATA MUST BE KEPT FOR A POSTERIORI
+!|                |   | INTERPOLATION
 !| SHP            |<->| BARYCENTRIC COORDINATES OF POINTS IN TRIANGLES
 !| SHZ            |<->| BARYCENTRIC COORDINATES ON VERTICAL
 !| SHF            |<->| BARYCENTRIC COORDINATES ON THE FREQUENCY AXIS
+!| SIGMA          |-->| IF YES, TRANSFORMES MESh FOR TELEMAC-3D
 !| SURDET2        |-->| GEOMETRIC COEFFICIENT USED IN PARAMETRIC TRANSFORMATION
 !| TB             |<->| BLOCK CONTAINING THE BIEF_OBJ WORK ARRAYS
 !| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
 !| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD
 !| WCONV          |-->| Z-COMPONENT OF ADVECTION FIELD IN THE TRANSFORMED MESH
+!| YA4D           |-->| IF YES, 4D VERSION FOR TOMAWAC
 !| ZSTAR          |-->| TRANSFORMED VERTICAL COORDINATES IN 3D 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -105,7 +107,7 @@
       DOUBLE PRECISION, INTENT(IN)         :: DT
       TYPE(BIEF_MESH) , INTENT(INOUT)      :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET :: IFAMAS
-      LOGICAL, OPTIONAL, INTENT(IN)        :: APOST,PERIODIC
+      LOGICAL, INTENT(IN), OPTIONAL        :: POST,PERIO,YA4D,SIGMA
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -116,31 +118,44 @@
       TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10
       INTEGER, DIMENSION(:), POINTER :: IFA
       INTEGER I,J,K,NPT,DIM1F,IPLAN
-      LOGICAL QUAD,QUAB,POST,PERIO,YA4D  
+      LOGICAL QUAD,QUAB,APOST,APERIO,AYA4D,ASIGMA  
 !
       INTRINSIC MIN
+! 
+!-----------------------------------------------------------------------
+!  OPTIONAL OPTIONS
+!-----------------------------------------------------------------------
 !
 !     ENABLING A POSTERIORI INTERPOLATION
 !
-      IF(PRESENT(APOST)) THEN
-        POST=APOST
+      IF(PRESENT(POST)) THEN
+        APOST=POST
       ELSE
-        POST=.FALSE.      
+        APOST=.FALSE.      
       ENDIF
 !
-      IF(PRESENT(PERIODIC)) THEN
-        PERIO=PERIODIC
+!     PERIODICITY FOR TOMAWAC
+!
+      IF(PRESENT(PERIO)) THEN
+        APERIO=PERIO
       ELSE
-        PERIO=.FALSE.      
+        APERIO=.FALSE.      
       ENDIF
 !
-!     YA4D: 4 DIMENSIONS (TOMAWAC).
-!     WE LOOK IF FREQ AND ZSTAR HAVE A DIFFERENT NAME.
+!     4D FOR TOMAWAC
 !
-      IF(FREQ%NAME.NE.ZSTAR%NAME) THEN
-        YA4D=.TRUE.
+      IF(PRESENT(YA4D)) THEN
+        AYA4D=YA4D
       ELSE
-        YA4D=.FALSE.
+        AYA4D=.FALSE.
+      ENDIF
+!
+!     TRANSFORMED MESH FOR TELEMAC-3D
+!
+      IF(PRESENT(SIGMA)) THEN
+        ASIGMA=SIGMA
+      ELSE
+        ASIGMA=.FALSE.
       ENDIF
 ! 
 !-----------------------------------------------------------------------
@@ -277,12 +292,12 @@
           ENDDO
         ENDDO 
 !       IN 4D, STARTING F OF POINTS (T9=FCONV)
-        IF(YA4D) THEN
+        IF(AYA4D) THEN
           CALL OV('X=C     ',T9%R,T9%R,T9%R,FREQ%R(JF),NPOIN2*NPLAN)
         ENDIF   
         CALL GTSH41(SHP%R,SHZ%R,SHF%R,WCONV%R,FRCONV%R,
      &              ELT,ETA,FRE,IKLE2%I,MESH%ELTCAR%I,
-     &              NPOIN2,NELMAX2,NPLAN,JF,NF,YA4D)
+     &              NPOIN2,NELMAX2,NPLAN,JF,NF,AYA4D)
         DIM1F=NPOIN2
       ELSE
         WRITE(LU,*) 'ELEMENT NOT IMPLEMENTED IN CHARAC: ',IELM
@@ -299,7 +314,7 @@
      &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
      &             3,NPLAN,NF,MESH,NPT,DIM1F,-1,
      &             MESH%M%X%R,T7%R,T10%R,FREBUF,SIZEBUF,
-     &             POST,PERIO,YA4D)  
+     &             APOST,APERIO,AYA4D,ASIGMA)  
 ! 
 !     PARALLEL COMMUNICATION
 !    

@@ -876,7 +876,7 @@
      &( U , V , W , DT , NRK , X , Y , ZSTAR , Z , IKLE2 , IBOR , 
      &  XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP , SHZ , ELT , ETA , 
      &  NPLOT , NPOIN2 , NELEM2 , NPLAN , SURDET , 
-     &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD) 
+     &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD,SIGMA) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           28/04/93     J-M JANIN (LNH) 30 87 72 84 
@@ -890,6 +890,768 @@
 !*********************************************************************** 
 ! 
 !  FONCTION : 
+! 
+!     REMONTEE OU DESCENTE 
+!     DES COURBES CARACTERISTIQUES 
+!     SUR DES PRISMES DE TELEMAC-3D 
+!     DANS L'INTERVALLE DE TEMPS DT 
+!     AVEC UNE DISCRETISATION ELEMENTS FINIS 
+! 
+! 
+!  DISCRETISATION : 
+! 
+!     LE DOMAINE EST APPROCHE PAR UNE DISCRETISATION ELEMENTS FINIS 
+!     UNE APPROXIMATION LOCALE EST DEFINIE POUR LE VECTEUR VITESSE : 
+!     LA VALEUR EN UN POINT D'UN ELEMENT NE DEPEND QUE DES VALEURS 
+!     AUX NOEUDS DE CET ELEMENT 
+! 
+! 
+!  RESTRICTIONS ET HYPOTHESES : 
+! 
+!     LE CHAMP CONVECTEUR U EST SUPPOSE INDEPENDANT DU TEMPS 
+! 
+!----------------------------------------------------------------------- 
+!                             ARGUMENTS 
+! .________________.____.______________________________________________. 
+! |      NOM       |MODE|                   ROLE                       | 
+! |________________|____|______________________________________________| 
+! |    U,V,W       | -->| COMPONENTS OF ADVECTION VELOCITY 
+! |                |    | BUT W IS W* x DELTAZ (STEMS FROM TRIDW2) 
+! |    DT          | -->| PAS DE TEMPS.                                | 
+! |    NRK         | -->| NOMBRE DE SOUS-PAS DE RUNGE-KUTTA.           | 
+! |    X,Y,ZSTAR   | -->| COORDONNEES DES POINTS DU MAILLAGE.          | 
+! |    Z           | -->| COTE DANS LE MAILLAGE REEL                   | 
+! |    IKLE2       | -->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE    | 
+! |                |    | ET GLOBALE DU MAILLAGE 2D.                   | 
+! |    IBOR        | -->| NUMEROS 2D DES ELEMENTS AYANT UNE FACE COMMUNE 
+! |                |    | AVEC L'ELEMENT .  SI IFABOR<0 OU NUL         | 
+! |                |    | ON A UNE FACE LIQUIDE,SOLIDE,OU PERIODIQUE   | 
+! |  X..,Y..,ZPLOT |<-->| POSITIONS SUCCESSIVES DES DERIVANTS.         | 
+! |    DX,DY,DZ    | -- | STOCKAGE DES SOUS-PAS .                      | 
+! |    SHP         |<-->| COORDONNEES BARYCENTRIQUES 2D AU PIED DES    | 
+! |                |    | COURBES CARACTERISTIQUES.                    | 
+! |    SHZ         |<-->| COORDONNEES BARYCENTRIQUES SUIVANT Z DES     | 
+! |                |    | NOEUDS DANS LEURS ETAGES "ETA" ASSOCIES.     | 
+! |    ELT         |<-->| NUMEROS DES ELEMENTS 2D CHOISIS POUR CHAQUE  | 
+! |                |    | NOEUD.                                       | 
+! |    ETA         |<-->| NUMEROS DES ETAGES CHOISIS POUR CHAQUE NOEUD.| 
+! |    NPLOT       | -->| NOMBRE DE DERIVANTS.                         | 
+! |    NPOIN2      | -->| NOMBRE DE POINTS DU MAILLAGE 2D.             | 
+! |    NELEM2      | -->| NOMBRE D'ELEMENTS DU MAILLAGE 2D.            | 
+! |    NPLAN       | -->| NOMBRE DE PLANS.   
+! |    SIGMA       | -->| IF YES, TRANSFORMED MESH  
+! |    SURDET      | -->| VARIABLE UTILISEE PAR LA TRANSFORMEE ISOPARAM. 
+! |    SENS        | -->| DESCENTE OU REMONTEE DES CARACTERISTIQUES.   | 
+! |    ISO         | -- | STOCKAGE BINAIRE DE LA FACE DE SORTIE.       | 
+! |________________|____|______________________________________________| 
+!  MODE: -->(DONNEE NON MODIFIEE),<--(RESULTAT),<-->(DONNEE MODIFIEE) 
+!----------------------------------------------------------------------- 
+!     - APPELE PAR : CARACT 
+!     - PROGRAMMES APPELES : NEANT 
+! 
+!*********************************************************************** 
+! 
+      USE BIEF
+! 
+      IMPLICIT NONE 
+      INTEGER LNG,LU 
+      COMMON/INFO/LNG,LU 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER         , INTENT(IN)    :: SENS,NPLAN,NCHDIM 
+      INTEGER         , INTENT(IN)    :: NPOIN2,NELEM2,NPLOT,NRK 
+      INTEGER         , INTENT(IN)    :: IKLE2(NELEM2,3) 
+      INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN) 
+      DOUBLE PRECISION, INTENT(IN)    :: W(NPOIN2,NPLAN),SURDET(NELEM2) 
+      DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
+      DOUBLE PRECISION, INTENT(INOUT) :: ZPLOT(NPLOT) 
+      DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT),SHZ(NPLOT) 
+      DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2),DT 
+      DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN2,NPLAN),ZSTAR(NPLAN) 
+      DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
+      DOUBLE PRECISION, INTENT(INOUT) :: DZ(NPLOT) 
+      INTEGER         , INTENT(IN)    :: IBOR(NELEM2,5,NPLAN-1) 
+      INTEGER         , INTENT(INOUT) :: ETA(NPLOT) 
+      INTEGER         , INTENT(IN)    :: IFAPAR(6,*) 
+      LOGICAL, INTENT(IN)             :: ADD,SIGMA 
+!  
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER IELE,ISO,ISPDONE,NSP 
+      INTEGER IPLOT,ISP,I1,I2,I3,IEL,IET,IET2,ISOH,ISOV,IFA,ISUI(3)
+! 
+      DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,ZP,NUM,DENOM 
+      DOUBLE PRECISION DELTAZ,EPSDZ,PAS2,ZUP,ZDOWN,ZZ 
+! 
+      INTRINSIC ABS , INT , MAX , SQRT 
+! 
+      DATA ISUI   / 2 , 3 , 1 / 
+      DATA EPSILO / -1.D-6 / 
+      DATA EPSDZ  /1.D-4/ 
+! 
+!----------------------------------------------------------------------- 
+!     FOR EVERY POINT 
+!----------------------------------------------------------------------- 
+! 
+      DO IPLOT = 1 , NPLOT 
+!
+        IF(ADD) THEN
+!
+        XPLOT(IPLOT)   = RECVCHAR(IPLOT)%XP  
+        YPLOT(IPLOT)   = RECVCHAR(IPLOT)%YP  
+        ZPLOT(IPLOT)   = RECVCHAR(IPLOT)%ZP 
+        DX(IPLOT)      = RECVCHAR(IPLOT)%DX  
+        DY(IPLOT)      = RECVCHAR(IPLOT)%DY 
+        DZ(IPLOT)      = RECVCHAR(IPLOT)%DZ  
+        ELT(IPLOT)     = RECVCHAR(IPLOT)%INE 
+        ETA(IPLOT)     = RECVCHAR(IPLOT)%KNE 
+        NSP            = RECVCHAR(IPLOT)%NSP ! R-K STEPS TO BE FULLFILLED 
+        ISPDONE        = RECVCHAR(IPLOT)%ISP ! R-K STEPS ALREADY DONE  
+        IEL = ELT(IPLOT) 
+        IET = ETA(IPLOT)  
+        XP  = XPLOT(IPLOT) 
+        YP  = YPLOT(IPLOT)  
+        ZP  = ZPLOT(IPLOT)  
+        I1 = IKLE2(IEL,1) 
+        I2 = IKLE2(IEL,2) 
+        I3 = IKLE2(IEL,3) 
+        SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+     &                 -(Y(I3)-Y(I2))*(XP-X(I2)))*SURDET(IEL) 
+        SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+     &                 -(Y(I1)-Y(I3))*(XP-X(I3)))*SURDET(IEL) 
+        SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+     &                 -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IEL)
+        IF(SIGMA) THEN 
+          SHZ(IPLOT) = (ZP-ZSTAR(IET)) / (ZSTAR(IET+1)-ZSTAR(IET))
+        ELSE
+          ZDOWN=SHP(1,IPLOT)*Z(I1,IET)
+     &         +SHP(2,IPLOT)*Z(I2,IET)
+     &         +SHP(3,IPLOT)*Z(I3,IET)
+          ZUP  =SHP(1,IPLOT)*Z(I1,IET+1)
+     &         +SHP(2,IPLOT)*Z(I2,IET+1)
+     &         +SHP(3,IPLOT)*Z(I3,IET+1)
+          SHZ(IPLOT) = (ZP-ZDOWN) / MAX(ZUP-ZDOWN,EPSDZ)       
+        ENDIF 
+!       ASSUME ALL ARE LOCALISED, IT WILL BE SET OTHERWISE IF LOST-AGAIN  
+        RECVCHAR(IPLOT)%NEPID=-1 
+!
+        ELSE
+!
+         IEL = ELT(IPLOT) 
+!        POINTS WITH IEL=0 ARE TREATED SO THAT THE FINAL
+!        INTERPOLATION GIVES 0.,
+!        AND WE SKIP TO NEXT POINT IPLOT (CYCLE)
+         IF(IEL.EQ.0) THEN
+           ELT(IPLOT)=1
+           ETA(IPLOT)=1
+           SHP(1,IPLOT)=0.D0
+           SHP(2,IPLOT)=0.D0
+           SHP(3,IPLOT)=0.D0
+           SHZ(IPLOT)=0.D0
+           CYCLE   
+         ENDIF
+         IET = ETA(IPLOT) 
+         I1 = IKLE2(IEL,1) 
+         I2 = IKLE2(IEL,2) 
+         I3 = IKLE2(IEL,3)  
+         DXP =( U(I1,IET  )*SHP(1,IPLOT) 
+     &        + U(I2,IET  )*SHP(2,IPLOT)
+     &        + U(I3,IET  )*SHP(3,IPLOT) )*(1.D0-SHZ(IPLOT)) 
+     &       +( U(I1,IET+1)*SHP(1,IPLOT) 
+     &        + U(I2,IET+1)*SHP(2,IPLOT) 
+     &        + U(I3,IET+1)*SHP(3,IPLOT) )*SHZ(IPLOT)  
+         DYP =( V(I1,IET  )*SHP(1,IPLOT) 
+     &        + V(I2,IET  )*SHP(2,IPLOT) 
+     &        + V(I3,IET  )*SHP(3,IPLOT) )*(1.D0-SHZ(IPLOT)) 
+     &       +( V(I1,IET+1)*SHP(1,IPLOT)
+     &        + V(I2,IET+1)*SHP(2,IPLOT) 
+     &        + V(I3,IET+1)*SHP(3,IPLOT) )*SHZ(IPLOT) 
+!        VERTICAL VELOCITY NOT CONSIDERED HERE !!
+         NSP=MAX(1,INT(NRK*DT*SQRT((DXP**2+DYP**2)*SURDET(IEL)))) 
+         ISPDONE=1
+!
+        ENDIF
+! 
+        PAS = SENS * DT / NSP
+! 
+!       LOOP ON RUNGE-KUTTA SUB-STEPS
+!
+!       COMPILER MUST DO NOTHING IF ISPDONE>NSP
+!       IN MODE "ADD", ISP = ISPDONE HAS NOT BEEN FULLY DONE
+!       IT IS RESTARTED HERE
+!
+      DO ISP = ISPDONE,NSP 
+! 
+!----------------------------------------------------------------------- 
+!       LOCALISING THE ARRIVAL POINT
+!----------------------------------------------------------------------- 
+!  
+        PAS2 = PAS 
+!
+!       IN MODE "ADD" ITERATIONS ALREADY DONE ARE SKIPPED AND
+!                     CHARACTERISTICS GONE IN ANOTHER SUB-DOMAIN SKIPPED                   
+!
+        IF(ADD) THEN
+          IF(ISP.EQ.ISPDONE) GO TO 50
+          IF(RECVCHAR(IPLOT)%NEPID.NE.-1) CYCLE 
+        ENDIF
+!
+        IEL = ELT(IPLOT) 
+        IET = ETA(IPLOT)  
+        I1 = IKLE2(IEL,1) 
+        I2 = IKLE2(IEL,2) 
+        I3 = IKLE2(IEL,3) 
+! 
+        DX(IPLOT) = ((U(I1,IET  )*SHP(1,IPLOT) 
+     &              + U(I2,IET  )*SHP(2,IPLOT) 
+     &              + U(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &              +(U(I1,IET+1)*SHP(1,IPLOT) 
+     &              + U(I2,IET+1)*SHP(2,IPLOT) 
+     &              + U(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) ) * PAS 
+! 
+        DY(IPLOT) = ((V(I1,IET  )*SHP(1,IPLOT)
+     &              + V(I2,IET  )*SHP(2,IPLOT) 
+     &              + V(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &              +(V(I1,IET+1)*SHP(1,IPLOT) 
+     &              + V(I2,IET+1)*SHP(2,IPLOT) 
+     &              + V(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) ) * PAS 
+!
+        IF(SIGMA) THEN 
+          DELTAZ =  (Z(I1,IET+1)-Z(I1,IET))*SHP(1,IPLOT) 
+     &            + (Z(I2,IET+1)-Z(I2,IET))*SHP(2,IPLOT) 
+     &            + (Z(I3,IET+1)-Z(I3,IET))*SHP(3,IPLOT) 
+! 
+          IF(DELTAZ.GT.EPSDZ) THEN 
+!           DIVISION BY DELTAZ IS DUE TO THE FACT THAT W IS  
+!           W* MULTIPLIED BY DELTAZ (IT STEMS FROM TRIDW2 IN TELEMAC3D) 
+            DZ(IPLOT) = ((W(I1,IET  )*SHP(1,IPLOT) 
+     &                  + W(I2,IET  )*SHP(2,IPLOT) 
+     &                  + W(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &                  +(W(I1,IET+1)*SHP(1,IPLOT) 
+     &                  + W(I2,IET+1)*SHP(2,IPLOT)
+     &                  + W(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) )   
+     &                  * PAS * (ZSTAR(IET+1)-ZSTAR(IET)) / DELTAZ 
+          ELSE 
+            DZ(IPLOT) = 0.D0 
+          ENDIF
+        ELSE
+          DZ(IPLOT) = ((W(I1,IET  )*SHP(1,IPLOT) 
+     &                + W(I2,IET  )*SHP(2,IPLOT) 
+     &                + W(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &                +(W(I1,IET+1)*SHP(1,IPLOT) 
+     &                + W(I2,IET+1)*SHP(2,IPLOT)
+     &                + W(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) ) * PAS
+        ENDIF 
+! 
+        XP = XPLOT(IPLOT) + DX(IPLOT) 
+        YP = YPLOT(IPLOT) + DY(IPLOT) 
+        ZP = ZPLOT(IPLOT) + DZ(IPLOT) 
+! 
+        SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+     &                 -(Y(I3)-Y(I2))*(XP-X(I2))) * SURDET(IEL) 
+        SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+     &                 -(Y(I1)-Y(I3))*(XP-X(I3))) * SURDET(IEL) 
+        SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+     &                 -(Y(I2)-Y(I1))*(XP-X(I1))) * SURDET(IEL) 
+        IF(SIGMA) THEN
+          SHZ(IPLOT) = (ZP-ZSTAR(IET)) / (ZSTAR(IET+1)-ZSTAR(IET)) 
+        ELSE
+          ZDOWN=SHP(1,IPLOT)*Z(I1,IET)
+     &         +SHP(2,IPLOT)*Z(I2,IET)
+     &         +SHP(3,IPLOT)*Z(I3,IET)
+          ZUP  =SHP(1,IPLOT)*Z(I1,IET+1)
+     &         +SHP(2,IPLOT)*Z(I2,IET+1)
+     &         +SHP(3,IPLOT)*Z(I3,IET+1)
+          SHZ(IPLOT) = (ZP-ZDOWN) / MAX(ZUP-ZDOWN,EPSDZ) 
+        ENDIF
+! 
+        XPLOT(IPLOT) = XP 
+        YPLOT(IPLOT) = YP 
+        ZPLOT(IPLOT) = ZP 
+!
+        IF(ADD) THEN
+!         CONTINUOUS SETTING OF THE REACHED POSITION FOR IPLOT  
+!         AND THE NUMBER OF STEPS DONE ALREADY
+          RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+          RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+          RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+          RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+          RECVCHAR(IPLOT)%DY=DY(IPLOT)
+          RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
+          RECVCHAR(IPLOT)%INE=ELT(IPLOT) 
+          RECVCHAR(IPLOT)%ISP=ISP 
+        ENDIF
+!
+!----------------------------------------------------------------------- 
+!       TEST: IS THE PATHLINE WENT OUT THE ORIGINAL ELEMENT
+!----------------------------------------------------------------------- 
+! 
+50      CONTINUE 
+! 
+        ISO = 0
+        IF(SHP(1,IPLOT).LT.EPSILO)      ISO=IBSET(ISO,2) 
+        IF(SHP(2,IPLOT).LT.EPSILO)      ISO=IBSET(ISO,3) 
+        IF(SHP(3,IPLOT).LT.EPSILO)      ISO=IBSET(ISO,4) 
+        IF(SHZ(IPLOT)  .LT.EPSILO)      ISO=IBSET(ISO,0) 
+        IF(SHZ(IPLOT)  .GT.1.D0-EPSILO) ISO=IBSET(ISO,1) 
+!
+        IF(ISO.NE.0) THEN
+! 
+!----------------------------------------------------------------------- 
+!         HERE WE ARE OUT OF THE ELEMENT
+!----------------------------------------------------------------------- 
+! 
+          ISOH = IAND(ISO,28) 
+          ISOV = IAND(ISO, 3) 
+          IEL = ELT(IPLOT)           
+          IET = ETA(IPLOT) 
+          XP = XPLOT(IPLOT) 
+          YP = YPLOT(IPLOT) 
+          ZP = ZPLOT(IPLOT) 
+! 
+          IF(ISOH.NE.0) THEN 
+! 
+            IF(ISOH.EQ.4) THEN 
+              IFA = 2 
+            ELSEIF(ISOH.EQ.8) THEN 
+              IFA = 3 
+            ELSEIF(ISOH.EQ.16) THEN 
+              IFA = 1 
+            ELSEIF(ISOH.EQ.12) THEN 
+              IFA = 2 
+              IF(DX(IPLOT)*(Y(IKLE2(IEL,3))-YP).LT. 
+     &           DY(IPLOT)*(X(IKLE2(IEL,3))-XP)) IFA = 3 
+            ELSEIF(ISOH.EQ.24) THEN 
+              IFA = 3 
+              IF(DX(IPLOT)*(Y(IKLE2(IEL,1))-YP).LT. 
+     &           DY(IPLOT)*(X(IKLE2(IEL,1))-XP)) IFA = 1 
+            ELSE 
+              IFA = 1 
+              IF(DX(IPLOT)*(Y(IKLE2(IEL,2))-YP).LT. 
+     &           DY(IPLOT)*(X(IKLE2(IEL,2))-XP)) IFA = 2 
+            ENDIF 
+! 
+            IF(ISOV.GT.0) THEN 
+              IF(SIGMA) THEN
+                IF(ABS(DZ(IPLOT)).GT.EPSDZ) THEN 
+!                 PERCENTAGE OF DISPLACEMENT DONE OUT OF THE ELEMENT
+                  A1 = (ZP-ZSTAR(IET+ISOV-1)) / DZ(IPLOT) 
+                ELSE 
+                  A1 = 0.D0 
+                ENDIF 
+                I1 = IKLE2(IEL,IFA) 
+                I2 = IKLE2(IEL,ISUI(IFA)) 
+!               IF EXIT POINT THROUGH LEVEL STILL IN TRIANGLE
+!               THEN THE REAL EXIT WAS FACES 4 OR 5
+!               UPPER AND LOWER TRIANGLE
+                IF ((X(I2)-X(I1))*(YP-A1*DY(IPLOT)-Y(I1)).GT. 
+     &              (Y(I2)-Y(I1))*(XP-A1*DX(IPLOT)-X(I1))) IFA=ISOV+3
+              ELSE
+                DENOM=-(X(I2)-X(I1))*DY(IPLOT)+(Y(I2)-Y(I1))*DX(IPLOT)
+!               PERCENTAGE OF DISPLACEMENT DONE IN THE ELEMENT
+                IF(ABS(DENOM).GT.1.D-10) THEN
+                  NUM=-(XP-X(I1))*DY(IPLOT)+(YP-Y(I1))*DX(IPLOT)
+                  A1=NUM/DENOM
+                ELSE
+                  A1=0.D0  
+                ENDIF
+                ZDOWN=      A1 *Z(I2,IET)
+     &               +(1.D0-A1)*Z(I1,IET)
+                ZUP  =      A1 *Z(I2,IET+1)
+     &               +(1.D0-A1)*Z(I1,IET+1)
+!               ZZ: ELEVATION WHEN CROSSING SEGMENT I1-I2
+                ZZ   = ZP-(1.D0-A1)*DZ(IPLOT)
+!               EXIT THROUGH LOWER OR UPPER TRIANGLE
+                IF(ZZ.GT.ZUP.OR.ZZ.LT.ZDOWN) IFA=ISOV+3                
+              ENDIF 
+            ENDIF 
+! 
+          ELSE 
+! 
+            IFA = ISOV + 3 
+! 
+          ENDIF 
+!
+          IEL = IBOR(IEL,IFA,IET)         
+! 
+          IF(IFA.LE.3) THEN 
+! 
+!----------------------------------------------------------------------- 
+!           HERE WE ARRIVE IN ANOTHER ELEMENT THROUGH A QUADRANGULAR FACE
+!----------------------------------------------------------------------- 
+! 
+            IF(IEL.GT.0) THEN 
+! 
+!----------------------------------------------------------------------- 
+!             RELOCALISING IN ADJACENT ELEMENT
+!----------------------------------------------------------------------- 
+! 
+              I1 = IKLE2(IEL,1) 
+              I2 = IKLE2(IEL,2) 
+              I3 = IKLE2(IEL,3) 
+              ELT(IPLOT) = IEL 
+              SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+     &                       -(Y(I3)-Y(I2))*(XP-X(I2)))*SURDET(IEL) 
+              SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+     &                       -(Y(I1)-Y(I3))*(XP-X(I3)))*SURDET(IEL) 
+              SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+     &                       -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IEL) 
+! 
+              GOTO 50 
+! 
+            ENDIF 
+! 
+!----------------------------------------------------------------------- 
+!           HERE WE PASS TO A NEIGHBOUR SUBDOMAIN AND COLLECT DATA
+!----------------------------------------------------------------------- 
+! 
+          IF(IEL.EQ.-2) THEN
+            IF(.NOT.ADD) THEN
+!             INTERFACE CROSSING 
+              CALL COLLECT_CHAR  
+     &            (IPID,IPLOT,ELT(IPLOT),IFA,ETA(IPLOT),0,ISP,  
+     &             NSP,XPLOT(IPLOT),YPLOT(IPLOT),
+     &             ZPLOT(IPLOT),0.D0,  
+     &             DX(IPLOT),DY(IPLOT),DZ(IPLOT),0.D0,  
+     &             IFAPAR,NCHDIM,NCHARA) 
+            ELSE 
+!             A LOST-AGAIN TRACEBACK DETECTED   
+!             PROCESSOR NUMBER   
+              RECVCHAR(IPLOT)%NEPID=IFAPAR(IFA,ELT(IPLOT))
+              RECVCHAR(IPLOT)%INE=IFAPAR(IFA+3,ELT(IPLOT))  
+              RECVCHAR(IPLOT)%KNE=ETA(IPLOT)       
+            ENDIF
+!           EXITING LOOP ON ISP
+            EXIT
+          ENDIF  
+! 
+!----------------------------------------------------------------------- 
+!           SPECIAL TREATMENT FOR SOLID OR LIQUID BOUNDARIES  
+!----------------------------------------------------------------------- 
+! 
+            DXP = DX(IPLOT) 
+            DYP = DY(IPLOT) 
+            I1  = IKLE2(ELT(IPLOT),IFA) 
+            I2  = IKLE2(ELT(IPLOT),ISUI(IFA)) 
+            DX1 = X(I2) - X(I1) 
+            DY1 = Y(I2) - Y(I1) 
+! 
+            IF(IEL.EQ.-1) THEN 
+! 
+!----------------------------------------------------------------------- 
+!             HERE SOLID BOUNDARY, VELOCITY IS PROJECTED ON THE BOUNDARY
+!             AND WE GO ON
+!----------------------------------------------------------------------- 
+! 
+              A1 = (DXP*DX1+DYP*DY1) / (DX1**2+DY1**2) 
+              DX(IPLOT) = A1 * DX1 
+              DY(IPLOT) = A1 * DY1 
+! 
+              A1=((XP-X(I1))*DX1+(YP-Y(I1))*DY1)/(DX1**2+DY1**2) 
+              SHP(          IFA  ,IPLOT) = 1.D0 - A1 
+              SHP(     ISUI(IFA) ,IPLOT) = A1 
+              SHP(ISUI(ISUI(IFA)),IPLOT) = 0.D0 
+              XPLOT(IPLOT) = X(I1) + A1 * DX1 
+              YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+              IF(ADD) THEN 
+                RECVCHAR(IPLOT)%XP=XPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%YP=YPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%ZP=ZPLOT(IPLOT) 
+                RECVCHAR(IPLOT)%DX=DX(IPLOT) 
+                RECVCHAR(IPLOT)%DY=DY(IPLOT)
+                RECVCHAR(IPLOT)%DZ=DZ(IPLOT)
+              ENDIF
+! 
+              GOTO 50 
+! 
+            ELSEIF(IEL.EQ.0) THEN 
+! 
+!----------------------------------------------------------------------- 
+!           HERE WE HAVE A LIQUID BOUNDARY, THE CHARACTERISTIC IS STOPPED
+!----------------------------------------------------------------------- 
+! 
+            DENOM = DXP*DY1-DYP*DX1 
+            IF(ABS(DENOM).GT.1.D-12) THEN 
+              A1 = (DXP*(YP-Y(I1))-DYP*(XP-X(I1))) / DENOM 
+            ELSE 
+              A1 = 0.D0 
+            ENDIF 
+            IF(A1.GT.1.D0) A1 = 1.D0 
+            IF(A1.LT.0.D0) A1 = 0.D0 
+            SHP(          IFA  ,IPLOT) = 1.D0 - A1 
+            SHP(     ISUI(IFA) ,IPLOT) = A1 
+            SHP(ISUI(ISUI(IFA)),IPLOT) = 0.D0 
+            XPLOT(IPLOT) = X(I1) + A1 * DX1 
+            YPLOT(IPLOT) = Y(I1) + A1 * DY1 
+            IF(ABS(DXP).GT.ABS(DYP)) THEN 
+              A1 = (XP-XPLOT(IPLOT))/DXP 
+            ELSE 
+              A1 = (YP-YPLOT(IPLOT))/DYP 
+            ENDIF 
+            ZPLOT(IPLOT) = ZP - A1*DZ(IPLOT) 
+            IF(SIGMA) THEN
+              SHZ(IPLOT) = (ZPLOT(IPLOT)-ZSTAR(IET)) 
+     &                   / (ZSTAR(IET+1)-ZSTAR(IET))
+            ELSE
+              SHZ(IPLOT) = (ZP-ZDOWN) / MAX(ZUP-ZDOWN,EPSDZ)
+            ENDIF 
+!           THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!           SENS=-1 FOR BACKWARD CHARACTERISTICS
+            ELT(IPLOT) = - SENS * ELT(IPLOT) 
+!           EXITING LOOP ON ISP
+            EXIT
+!
+            ELSE
+!
+              WRITE(LU,*) 'UNEXPECTED CASE IN SCHAR41'
+              WRITE(LU,*) 'IEL=',IEL
+              CALL PLANTE(1)
+              STOP
+!
+            ENDIF
+! 
+          ELSE 
+! 
+!----------------------------------------------------------------------- 
+!  CASE IFA = 4 OR 5  
+!  HERE WE EXIT THROUGH TOP OR BOTTOM OF THE PRISM
+!----------------------------------------------------------------------- 
+! 
+            IFA = IFA - 4 
+!           HENCE IFA NOW EQUALS 0 OR 1 
+! 
+            IF(IEL.EQ.1) THEN 
+! 
+!----------------------------------------------------------------------- 
+!           NO NEED TO RECOMPUTE THE VELOCITIES,
+!           RELOCALISING IN NEW ELEMENT
+!----------------------------------------------------------------------- 
+! 
+              ETA(IPLOT) = IET + IFA + IFA - 1 
+              IF(SIGMA) THEN
+                SHZ(IPLOT) = (ZP-ZSTAR(ETA(IPLOT))) 
+     &                     / (ZSTAR(ETA(IPLOT)+1)-ZSTAR(ETA(IPLOT)))
+              ELSE
+                ZDOWN=SHP(1,IPLOT)*Z(I1,ETA(IPLOT))
+     &               +SHP(2,IPLOT)*Z(I2,ETA(IPLOT))
+     &               +SHP(3,IPLOT)*Z(I3,ETA(IPLOT))
+                ZUP  =SHP(1,IPLOT)*Z(I1,ETA(IPLOT)+1)
+     &               +SHP(2,IPLOT)*Z(I2,ETA(IPLOT)+1)
+     &               +SHP(3,IPLOT)*Z(I3,ETA(IPLOT)+1)
+                SHZ(IPLOT) = (ZP-ZDOWN) / MAX(ZUP-ZDOWN,EPSDZ)
+              ENDIF 
+!
+              IF(ADD) THEN 
+                RECVCHAR(IPLOT)%KNE=ETA(IPLOT) 
+              ENDIF 
+! 
+              ISO = ISOH 
+! 
+              IF(SHZ(IPLOT).LT.     EPSILO) ISO=IBSET(ISO,0) 
+              IF(SHZ(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,1) 
+! 
+              GOTO 50 
+! 
+            ENDIF 
+! 
+            IF(IEL.EQ.-1) THEN 
+! 
+!----------------------------------------------------------------------- 
+!  LA, ON SAIT QUE LA FACE DE SORTIE EST UNE FRONTIERE SOLIDE 
+!  ON PROJETTE LE RELIQUAT SUR LA FRONTIERE PUIS ON SE RELOCALISE 
+!----------------------------------------------------------------------- 
+!
+              DZ(IPLOT) = 0.D0
+! 
+              IF(SIGMA) THEN 
+                ZPLOT(IPLOT) = ZSTAR(IET+IFA)                
+              ELSE
+                ZPLOT(IPLOT) = SHP(1,IPLOT)*Z(I1,IET+IFA)
+     &                        +SHP(2,IPLOT)*Z(I2,IET+IFA)
+     &                        +SHP(3,IPLOT)*Z(I3,IET+IFA)
+              ENDIF 
+              SHZ(IPLOT) = IFA
+! 
+              ISO = ISOH 
+              IF(ISOH.NE.0) GOTO 50 
+! 
+            ELSE 
+! 
+!----------------------------------------------------------------------- 
+!  LA, ON SAIT QUE LA FACE DE SORTIE EST UNE FRONTIERE LIQUIDE (CAS 0) 
+!      ON ARRETE ALORS LA REMONTEE DES CARACTERISTIQUES (SIGNE DE ELT) 
+!  OU, QUE L'ON VIENT DE TRAVERSER UN PLAN AVEC RECALCUL DES VITESSES 
+!  DEMANDE (CAS 2) 
+!----------------------------------------------------------------------- 
+!
+              IF(SIGMA) THEN 
+                IF(ABS(DZ(IPLOT)).GT.EPSDZ) THEN 
+                  A1 = (ZP-ZSTAR(IET+IFA)) / DZ(IPLOT) 
+                ELSE 
+                  A1 = 0.D0 
+                ENDIF 
+                XP = XP - A1*DX(IPLOT) 
+                YP = YP - A1*DY(IPLOT) 
+                ZP = ZSTAR(IET+IFA)
+              ELSE
+                WRITE(LU,*) 'SORTIE EN VERTICALE PAR FRONTIERE LIQUIDE'
+                WRITE(LU,*) 'CAS NON PROGRAMME'
+                CALL PLANTE(1)            
+                STOP              
+              ENDIF 
+              IELE = ELT(IPLOT) 
+              I1 = IKLE2(IELE,1) 
+              I2 = IKLE2(IELE,2) 
+              I3 = IKLE2(IELE,3) 
+! 
+              SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+     &                       -(Y(I3)-Y(I2))*(XP-X(I2)))*SURDET(IELE) 
+              SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+     &                       -(Y(I1)-Y(I3))*(XP-X(I3)))*SURDET(IELE) 
+              SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+     &                       -(Y(I2)-Y(I1))*(XP-X(I1)))*SURDET(IELE) 
+! 
+              IF(IEL.EQ.2) THEN 
+! 
+!----------------------------------------------------------------------- 
+!  LA, ON SAIT QUE LA FACE DE SORTIE SE SITUE SUR LE PLAN OU ON DEMANDE 
+!  UN RECALCUL DES VITESSES 
+!----------------------------------------------------------------------- 
+! 
+!               IF IFA = 1 EXIT THROUGH THE TOP 
+!               IF IFA = 0 EXIT THROUGH THE BOTTOM 
+!               THEN NEW IET IS  IET+1 IF IFA = 1 
+!                            AND IET-1 IF IFA = 0 
+!               THIS IS SUMMARISED BY IET=IET+2*IFA-1 
+! 
+!               RECOMPUTED VELOCITIES MUST BE TAKEN AT IET2=IET+IFA 
+!               I.E. BOTTOM IF EXIT THROUGH THE BOTTOM 
+!               AND TOP IF EXIT THROUGH THE TOP 
+! 
+                IET2 = IET + IFA 
+                IET  = IET + IFA + IFA - 1 
+!              
+                PAS2 = PAS2 * A1 
+! 
+                DX(IPLOT) = ( U(I1,IET2)*SHP(1,IPLOT) 
+     &                      + U(I2,IET2)*SHP(2,IPLOT) 
+     &                      + U(I3,IET2)*SHP(3,IPLOT) ) * PAS2 
+! 
+                DY(IPLOT) = ( V(I1,IET2)*SHP(1,IPLOT) 
+     &                      + V(I2,IET2)*SHP(2,IPLOT) 
+     &                      + V(I3,IET2)*SHP(3,IPLOT) ) * PAS2 
+!
+                IF(SIGMA) THEN 
+                  DELTAZ =  (Z(I1,IET+1)-Z(I1,IET))*SHP(1,IPLOT) 
+     &                    + (Z(I2,IET+1)-Z(I2,IET))*SHP(2,IPLOT) 
+     &                    + (Z(I3,IET+1)-Z(I3,IET))*SHP(3,IPLOT) 
+! 
+                  IF(DELTAZ.GT.EPSDZ) THEN 
+                    DZ(IPLOT) = ( W(I1,IET2)*SHP(1,IPLOT) 
+     &                          + W(I2,IET2)*SHP(2,IPLOT) 
+     &                          + W(I3,IET2)*SHP(3,IPLOT) ) * PAS2 
+     &                          * (ZSTAR(IET+1)-ZSTAR(IET)) / DELTAZ 
+                  ELSE 
+                    DZ(IPLOT) = 0.D0 
+                  ENDIF
+                ELSE
+                  DZ(IPLOT)=((W(I1,IET  )*SHP(1,IPLOT) 
+     &                    + W(I2,IET  )*SHP(2,IPLOT) 
+     &                    + W(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
+     &                    +(W(I1,IET+1)*SHP(1,IPLOT) 
+     &                    + W(I2,IET+1)*SHP(2,IPLOT)
+     &                    + W(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) )*PAS                
+                ENDIF 
+! 
+                XP = XP + DX(IPLOT) 
+                YP = YP + DY(IPLOT) 
+                ZP = ZP + DZ(IPLOT) 
+! 
+                SHP(1,IPLOT) = ((X(I3)-X(I2))*(YP-Y(I2)) 
+     &                       -(Y(I3)-Y(I2))*(XP-X(I2))) * SURDET(IELE) 
+                SHP(2,IPLOT) = ((X(I1)-X(I3))*(YP-Y(I3)) 
+     &                       -(Y(I1)-Y(I3))*(XP-X(I3))) * SURDET(IELE) 
+                SHP(3,IPLOT) = ((X(I2)-X(I1))*(YP-Y(I1)) 
+     &                       -(Y(I2)-Y(I1))*(XP-X(I1))) * SURDET(IELE)
+                IF(SIGMA) THEN 
+                  SHZ(IPLOT)=(ZP-ZSTAR(IET))/(ZSTAR(IET+1)-ZSTAR(IET))
+                ELSE
+                  ZDOWN=SHP(1,IPLOT)*Z(I1,IET)
+     &                 +SHP(2,IPLOT)*Z(I2,IET)
+     &                 +SHP(3,IPLOT)*Z(I3,IET)
+                  ZUP  =SHP(1,IPLOT)*Z(I1,IET+1)
+     &                 +SHP(2,IPLOT)*Z(I2,IET+1)
+     &                 +SHP(3,IPLOT)*Z(I3,IET+1)
+                  SHZ(IPLOT) = (ZP-ZDOWN) / MAX(ZUP-ZDOWN,EPSDZ)
+                ENDIF 
+! 
+                XPLOT(IPLOT) = XP 
+                YPLOT(IPLOT) = YP 
+                ZPLOT(IPLOT) = ZP 
+                ETA(IPLOT) = IET 
+! 
+                ISO = 0 
+! 
+                IF(SHP(1,IPLOT).LT.EPSILO) ISO=IBSET(ISO,2) 
+                IF(SHP(2,IPLOT).LT.EPSILO) ISO=IBSET(ISO,3) 
+                IF(SHP(3,IPLOT).LT.EPSILO) ISO=IBSET(ISO,4) 
+! 
+                IF(SHZ(IPLOT).LT.     EPSILO) ISO=IBSET(ISO,0) 
+                IF(SHZ(IPLOT).GT.1.D0-EPSILO) ISO=IBSET(ISO,1) 
+! 
+                GOTO 50 
+! 
+              ENDIF 
+! 
+              XPLOT(IPLOT) = XP 
+              YPLOT(IPLOT) = YP 
+              ZPLOT(IPLOT) = ZP 
+              SHZ  (IPLOT) = IFA 
+!             THIS IS A MARKER FOR PARTICLES EXITING A DOMAIN
+!             SENS=-1 FOR BACKWARD CHARACTERISTICS
+              ELT(IPLOT) = - SENS * ELT(IPLOT)
+!             EXITING LOOP ON ISP 
+              EXIT
+! 
+            ENDIF 
+! 
+          ENDIF 
+! 
+!       IF(ISO.NE.0) 
+        ENDIF 
+! 
+        ENDDO         
+!       
+      ENDDO 
+! 
+!----------------------------------------------------------------------- 
+! 
+      RETURN 
+      END SUBROUTINE SCHAR41
+!                       ************************ 
+                        SUBROUTINE SCHAR41_SIGMA 
+!                       ************************ 
+! 
+     &( U , V , W , DT , NRK , X , Y , ZSTAR , Z , IKLE2 , IBOR , 
+     &  XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP , SHZ , ELT , ETA , 
+     &  NPLOT , NPOIN2 , NELEM2 , NPLAN , SURDET , 
+     &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD) 
+! 
+!*********************************************************************** 
+! BIEF VERSION 6.2           28/04/93     J-M JANIN (LNH) 30 87 72 84 
+!                        12/10/05     J-M HERVOUET (LNHE) 01 30 87 80 18 
+! 
+! 08/11/04 : ADAPTATION A LA TRANSFORMEE SIGMA GENERALISEE 
+! 12/10/05 : BUG CORRIGE, VOIR VARIABLE IELE QUI ETAIT AVANT IEL 
+!            ET EFFACAIT UN AUTRE IEL. 
+!             
+! 
+!*********************************************************************** 
+! 
+!  FONCTION : Exactly like SCHAR41 but optimised for SIGMA=.TRUE.
+!             Could be replaced by SCHAR41.
 ! 
 !     REMONTEE OU DESCENTE 
 !     DES COURBES CARACTERISTIQUES 
@@ -1347,7 +2109,7 @@
 !
             ELSE
 !
-              WRITE(LU,*) 'UNEXPECTED CASE IN SCHAR41'
+              WRITE(LU,*) 'UNEXPECTED CASE IN SCHAR41_SIGMA'
               WRITE(LU,*) 'IEL=',IEL
               CALL PLANTE(1)
               STOP
@@ -1527,7 +2289,7 @@
 !----------------------------------------------------------------------- 
 ! 
       RETURN 
-      END SUBROUTINE SCHAR41
+      END SUBROUTINE SCHAR41_SIGMA
 !                       ********************** 
                         SUBROUTINE SCHAR41_PER 
 !                       ********************** 
@@ -4279,7 +5041,7 @@
      & DT , IKLE , IFABOR , ELT , ETA , FRE, ELTBUF, ISUB, IELM , 
      & IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NPLAN,NF,  
      & MESH ,NPLOT,DIM1U, SENS,SHPBUF,SHZBUF,SHFBUF,FREBUF,SIZEBUF,
-     & POST,PERIO,YA4D) 
+     & APOST,APERIO,AYA4D,ASIGMA) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.3           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -4403,12 +5165,14 @@
       INTEGER, INTENT(INOUT)          :: ELTBUF(NPLOT),FREBUF(NPLOT)
       INTEGER, TARGET,  INTENT(INOUT) :: ISUB(NPLOT)  
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
-      LOGICAL, INTENT(IN)             :: POST,PERIO,YA4D 	 
+      LOGICAL, INTENT(IN), OPTIONAL   :: APOST,APERIO,AYA4D,ASIGMA 	 
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
       INTEGER NRK,I,ISTOP,ISTOP2 
       INTEGER, POINTER, DIMENSION(:)  :: ETABUF
+!
+      LOGICAL POST,PERIO,YA4D,SIGMA
 ! 
 !----------------------------------------------------------------------- 
 !      
@@ -4425,7 +5189,43 @@
 ! 
       SAVE
 !
-      ETABUF => ISUB 
+      ETABUF => ISUB
+! 
+!-----------------------------------------------------------------------
+!  OPTIONAL OPTIONS
+!-----------------------------------------------------------------------
+!
+!     ENABLING A POSTERIORI INTERPOLATION
+!
+      IF(PRESENT(APOST)) THEN
+        POST=APOST
+      ELSE
+        POST=.FALSE.      
+      ENDIF
+!
+!     PERIODICITY FOR TOMAWAC
+!
+      IF(PRESENT(APERIO)) THEN
+        PERIO=APERIO
+      ELSE
+        PERIO=.FALSE.      
+      ENDIF
+!
+!     4D FOR TOMAWAC
+!
+      IF(PRESENT(AYA4D)) THEN
+        YA4D=AYA4D
+      ELSE
+        YA4D=.FALSE.
+      ENDIF
+!
+!     TRANSFORMED MESH FOR TELEMAC-3D
+!
+      IF(PRESENT(ASIGMA)) THEN
+        SIGMA=ASIGMA
+      ELSE
+        SIGMA=.FALSE.
+      ENDIF 
 ! 
 !----------------------------------------------------------------------- 
 !      
@@ -4530,7 +5330,7 @@
 !  
 !      APPEL DU SOUS-PROGRAMME DE REMONTEE DES COURBES CARATERISTIQUES 
 !
-         IF(PERIO) THEN
+         IF(PERIO.AND..NOT.SIGMA) THEN
            IF(YA4D) THEN
              CALL SCHAR41_PER_4D(UCONV,VCONV,WCONV,FRCONV,DT,NRK,X,Y,
      &                           ZSTAR,FREQ,Z,IKLE,IFABOR,
@@ -4545,12 +5345,26 @@
      &                        DIM1U,NELEM,NPLAN,SURDET,SENS, 
      &                        MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.)
            ENDIF
-         ELSE 
-           CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
-     &                  Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
-     &                  DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
-     &                  DIM1U,NELEM,NPLAN,SURDET,SENS, 
-     &                  MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.)
+         ELSEIF(.NOT.PERIO) THEN 
+           IF(SIGMA) THEN
+!            OPTIMISED FOR SIGMA=.TRUE, OTHERWISE = SCHAR41
+             CALL SCHAR41_SIGMA(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
+     &                          Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
+     &                          DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
+     &                          DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                          MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.)
+           ELSE
+             CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
+     &                        Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
+     &                        DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
+     &                        DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                        MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.,SIGMA)
+           ENDIF
+         ELSE
+           WRITE(LU,*) 'SCARACT: WRONG COMBINATION'
+           WRITE(LU,*) 'PERIO=',PERIO,' SIGMA=',SIGMA
+           CALL PLANTE(1)
+           STOP
          ENDIF 
 ! 
 !----------------------------------------------------------------------- 
@@ -4740,7 +5554,7 @@
 ! 
             ELSEIF(IELM.EQ.41) THEN
 !
-              IF(PERIO) THEN
+              IF(PERIO.AND..NOT.SIGMA) THEN
                 IF(YA4D) THEN
                   CALL SCHAR41_PER_4D(UCONV,VCONV,WCONV,FRCONV,DT,NRK,
      &                                X,Y,ZSTAR,FREQ,Z,IKLE,IFABOR,
@@ -4758,12 +5572,27 @@
      &                             NARRV,DIM1U,NELEM,NPLAN,SURDET,SENS, 
      &                             MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
                 ENDIF
+              ELSEIF(.NOT.PERIO) THEN
+                IF(SIGMA) THEN
+!                 OPTIMISED FOR SIGMA=.TRUE, OTHERWISE = SCHAR41
+                  CALL SCHAR41_SIGMA(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
+     &                               Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
+     &                               DY,DZ,SHPBUF,SHZBUF,
+     &                               ELTBUF,ETABUF,NARRV, 
+     &                               DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                               MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
+                ELSE
+                  CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
+     &                         Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
+     &                         DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,NARRV, 
+     &                         DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                         MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.,SIGMA)
+                ENDIF
               ELSE
-                CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
-     &                       Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
-     &                       DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,NARRV, 
-     &                       DIM1U,NELEM,NPLAN,SURDET,SENS, 
-     &                       MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
+                WRITE(LU,*) 'SCARACT: WRONG COMBINATION'
+                WRITE(LU,*) 'PERIO=',PERIO,' SIGMA=',SIGMA
+                CALL PLANTE(1)
+                STOP
               ENDIF
 !
             ENDIF  
@@ -5946,10 +6775,13 @@
       INTEGER N1,N2,N3,N4,N5,N6,IELEM,NELEM,NELMAX,OLDTOT,NEWTOT,IELM
       INTEGER NELEM2,NPOIN2,ELT3,IPLAN
 !
-      DOUBLE PRECISION DET1,DET2,DET3,ZF,ZS
+      DOUBLE PRECISION DET1,DET2,DET3,ZF,ZS,X1,X2,X3,Y1,Y2,Y3,SURDET
 !
       INTEGER  P_ISUM
       EXTERNAL P_ISUM
+!
+      DOUBLE PRECISION EPSILO
+      DATA EPSILO/1.D-10/
 !
 !-----------------------------------------------------------------------
 !
@@ -5958,7 +6790,11 @@
       IELM=MESH%TYPELM
       NELEM=MESH%NELEM
       NELMAX=MESH%NELMAX
-      NELEM2=NELEM/NPLAN
+      IF(NPLAN.GT.1) THEN
+        NELEM2=NELEM/(NPLAN-1)
+      ELSE
+        NELEM2=NELEM
+      ENDIF
       NPOIN2=MESH%NPOIN/NPLAN
 !
       IF(ELT.GT.0) THEN
@@ -6035,18 +6871,24 @@
 !
         IF(IELM.EQ.10.OR.IELM.EQ.40) THEN
 !
-          DO IELEM=1,NELEM
+          DO IELEM=1,NELEM2
+!           FIRST 3 POINTS OF ELEMENTS ON BOTTOM IN 3D COINCIDE
+!           WITH POINTS IN 2D
             N1=MESH%IKLE%I(IELEM         )
             N2=MESH%IKLE%I(IELEM+  NELMAX)
             N3=MESH%IKLE%I(IELEM+2*NELMAX)
-!           DET1 = (N2N3,N2FLOT)  DET2 = (N3N1,N3FLOT)  DET3 = (N1N2,N1FLOT)
-            DET1=(MESH%X%R(N3)-MESH%X%R(N2))*(Y-MESH%Y%R(N2))
-     &          -(MESH%Y%R(N3)-MESH%Y%R(N2))*(X-MESH%X%R(N2))
-            DET2=(MESH%X%R(N1)-MESH%X%R(N3))*(Y-MESH%Y%R(N3))
-     &          -(MESH%Y%R(N1)-MESH%Y%R(N3))*(X-MESH%X%R(N3))
-            DET3=(MESH%X%R(N2)-MESH%X%R(N1))*(Y-MESH%Y%R(N1))
-     &          -(MESH%Y%R(N2)-MESH%Y%R(N1))*(X-MESH%X%R(N1))
-            IF(DET1.GE.0.D0.AND.DET2.GE.0.D0.AND.DET3.GE.0.D0) GOTO 30
+            X1=MESH%X%R(N1)
+            X2=MESH%X%R(N2)
+            X3=MESH%X%R(N3)
+            Y1=MESH%Y%R(N1)
+            Y2=MESH%Y%R(N2)
+            Y3=MESH%Y%R(N3)
+            DET1=(X3-X2)*(Y-Y2)-(Y3-Y2)*(X-X2)
+            DET2=(X1-X3)*(Y-Y3)-(Y1-Y3)*(X-X3)
+            DET3=(X2-X1)*(Y-Y1)-(Y2-Y1)*(X-X1)                     
+            IF(DET1.GE.-EPSILO.AND.
+     &         DET2.GE.-EPSILO.AND.
+     &         DET3.GE.-EPSILO) GOTO 30
           ENDDO
 !
         ELSE
@@ -6056,11 +6898,11 @@
         ENDIF
 !
         IF(NCSIZE.LE.1) THEN
-          IF(LNG.EQ.1) WRITE(LU,33) TAG
-          IF(LNG.EQ.2) WRITE(LU,34) TAG
-33        FORMAT(1X,'LARGAGE DU FLOTTEUR',I6,/,
+          IF(LNG.EQ.1) WRITE(LU,33) TAG,X,Y
+          IF(LNG.EQ.2) WRITE(LU,34) TAG,X,Y
+33        FORMAT(1X,'LARGAGE DU FLOTTEUR',I6,/,G16.7,1X,G16.7,/,
      &           1X,'EN DEHORS DU DOMAINE DE CALCUL')
-34        FORMAT(1X,'DROP POINT OF FLOAT',I6,/,
+34        FORMAT(1X,'DROP POINT OF FLOAT',I6,/,G16.7,1X,G16.7,/,
      &           1X,'OUT OF THE DOMAIN')
           CALL PLANTE(1)
           STOP
@@ -6083,36 +6925,40 @@
         XFLOT(NFLOT)=X
         YFLOT(NFLOT)=Y
         TAGFLO(NFLOT)=TAG
-        SHPFLO(1,NFLOT) = DET1*MESH%SURDET%R(IELEM)
-        SHPFLO(2,NFLOT) = DET2*MESH%SURDET%R(IELEM)
-        SHPFLO(3,NFLOT) = DET3*MESH%SURDET%R(IELEM)
+        SURDET=1.D0/((X2-X1)*(Y3-Y1)-(X3-X1)*(Y2-Y1))
+        SHPFLO(1,NFLOT) = DET1*SURDET
+        SHPFLO(2,NFLOT) = DET2*SURDET
+        SHPFLO(3,NFLOT) = DET3*SURDET
         ELTFLO(NFLOT)   = IELEM
 !
 !       IN 3D, LOCATING THE POINT ON THE VERTICAL
 !
         IF(IELM.EQ.40) THEN
-          ZF=MESH%Z%R(N1)*DET1*SHPFLO(1,NFLOT)
-     &      +MESH%Z%R(N2)*DET2*SHPFLO(2,NFLOT)
-     &      +MESH%Z%R(N3)*DET3*SHPFLO(3,NFLOT)
+          ZF=MESH%Z%R(N1)*SHPFLO(1,NFLOT)
+     &      +MESH%Z%R(N2)*SHPFLO(2,NFLOT)
+     &      +MESH%Z%R(N3)*SHPFLO(3,NFLOT)
           IF(Z.LT.ZF) THEN
-            IF(LNG.EQ.1) WRITE(LU,35) TAG
-            IF(LNG.EQ.2) WRITE(LU,36) TAG
-35          FORMAT('LARGAGE DU FLOTTEUR',I6,' EN DESSOUS DU FOND')
-36           FORMAT('DROP POINT OF FLOAT',I6,' BELOW THE BOTTOM')
+            IF(LNG.EQ.1) WRITE(LU,35) TAG,Z,ZF
+            IF(LNG.EQ.2) WRITE(LU,36) TAG,Z,ZF
+35          FORMAT('LARGAGE DU FLOTTEUR',I6,' A Z=',G16.7,/,1X,
+     &             'EN DESSOUS DU FOND ZF=',G16.7)
+36          FORMAT('DROP POINT OF FLOAT',I6,' AT Z=',G16.7,/,1X,
+     &             'BELOW THE BOTTOM ZF=',G16.7)
             CALL PLANTE(1)
             STOP
           ENDIF
           ETAFLO(NFLOT)=0
           DO IPLAN = 1,NPLAN-1
-            ZF=MESH%Z%R(N1+NPOIN2*(IPLAN-1))*DET1*SHPFLO(1,NFLOT)
-     &        +MESH%Z%R(N2+NPOIN2*(IPLAN-1))*DET2*SHPFLO(2,NFLOT)
-     &        +MESH%Z%R(N3+NPOIN2*(IPLAN-1))*DET3*SHPFLO(3,NFLOT)
-            ZS=MESH%Z%R(N1+NPOIN2*(IPLAN  ))*DET1*SHPFLO(1,NFLOT)
-     &        +MESH%Z%R(N2+NPOIN2*(IPLAN  ))*DET2*SHPFLO(2,NFLOT)
-     &        +MESH%Z%R(N3+NPOIN2*(IPLAN  ))*DET3*SHPFLO(3,NFLOT)
+            ZF=MESH%Z%R(N1+NPOIN2*(IPLAN-1))*SHPFLO(1,NFLOT)
+     &        +MESH%Z%R(N2+NPOIN2*(IPLAN-1))*SHPFLO(2,NFLOT)
+     &        +MESH%Z%R(N3+NPOIN2*(IPLAN-1))*SHPFLO(3,NFLOT)
+            ZS=MESH%Z%R(N1+NPOIN2*(IPLAN  ))*SHPFLO(1,NFLOT)
+     &        +MESH%Z%R(N2+NPOIN2*(IPLAN  ))*SHPFLO(2,NFLOT)
+     &        +MESH%Z%R(N3+NPOIN2*(IPLAN  ))*SHPFLO(3,NFLOT)
             IF(Z.GE.ZF.AND.Z.LE.ZS) THEN
               ETAFLO(NFLOT) = IPLAN
               SHZFLO(NFLOT) = (Z-ZF)/MAX(ZS-ZF,1.D-10)
+              ZFLOT(NFLOT)=Z
             ENDIF
           ENDDO
           IF(ETAFLO(NFLOT).EQ.0) THEN

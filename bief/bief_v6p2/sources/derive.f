@@ -134,7 +134,7 @@
 !
       DOUBLE PRECISION ZSTAR(1)
 !
-      CHARACTER(LEN=32) TEXTE(2)
+      CHARACTER(LEN=32) TEXTE(3)
       CHARACTER(LEN=72) LIGNE
 !
       LOGICAL YESITIS
@@ -157,13 +157,13 @@
 !     PARAMETERISING THE CALL TO SCARACT
 !
 !     NUMBER OF PLANES
-      NPLAN=1
+      NPLAN=NPOIN/NPOIN2
 !     NO VARIABLE TO INTERPOLATE AT THE FOOT OF CHARACTERISTICS
       NOMB=0
 !     FORWARD TRACKING
       SENS=1
 !
-      IF(IELM.NE.11) THEN
+      IF(IELM.NE.11.AND.IELM.NE.41) THEN
         IF(LNG.EQ.1) WRITE(LU,123) IELM
         IF(LNG.EQ.2) WRITE(LU,124) IELM
 123     FORMAT(1X,'DERIVE : TYPE D''ELEMENT NON PREVU : ',1I6)
@@ -189,13 +189,19 @@
         IF(IPID.EQ.0) THEN
           TEXTE(1)='X                               '
           TEXTE(2)='Y                               '
+          TEXTE(3)='COTE Z          M               '
           IF(LNG.EQ.1) THEN
             WRITE(UL,100) 'TITLE = "FICHIER DES FLOTTEURS"'
           ELSE
             WRITE(UL,100) 'TITLE = "DROGUES FILE"'
           ENDIF
-          WRITE(UL,100) 'VARIABLES = "LABELS","'//
-     &                   TEXTE(1)//'","'//TEXTE(2)//'","COLOUR"'
+          IF(IELM.EQ.11) THEN
+            WRITE(UL,100) 'VARIABLES = "LABELS","'//
+     &                     TEXTE(1)//'","'//TEXTE(2)//'","COLOUR"'
+          ELSEIF(IELM.EQ.41) THEN
+            WRITE(UL,100) 'VARIABLES = "LABELS","'//
+     &      TEXTE(1)//'","'//TEXTE(2)//'","'//TEXTE(3)//'","COLOUR"'
+          ENDIF
         ENDIF
         DEJA=.TRUE.
 100     FORMAT(A)
@@ -212,12 +218,10 @@
      &             DX,DY,DZ,DZ,Z,SHPFLO,SHZFLO,SHZFLO,SURDET,DT,
      &             IKLE,IFABOR,ELTFLO,ETAFLO,
      &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,            
-     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,
-     &             MESH,NFLOT,BIEF_NBPTS(IELMU,MESH),SENS,        
+     &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,        
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &              .TRUE.,.FALSE.,.FALSE.)
-!    &               POST,  PERIO,   YA4D)
-!                    POST=.TRUE. OTHERWISE ISUB IS NOT FILLED
+     &             APOST=.TRUE.)
+!                  APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED
 !
 !-----------------------------------------------------------------------
 !
@@ -243,7 +247,7 @@
      &                    +SHPFLO(3,IFLOT)*Y(N3)
             ENDIF   
           ENDDO 
-        ELSE
+        ELSEIF(IELM.EQ.41) THEN
           DO IFLOT=1,NFLOT
             ELT=ELTFLO(IFLOT)
             IF(ELT.GT.0) THEN       
@@ -344,9 +348,16 @@
           IF(NFLOT.GT.0) THEN
             OPEN(99,FILE=EXTENS(NCSIZE,IPID+1),
      &           FORM='FORMATTED',STATUS='NEW')
-            DO IFLOT=1,NFLOT
-              WRITE(99,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
-            ENDDO
+            IF(IELM.EQ.11) THEN
+              DO IFLOT=1,NFLOT
+                WRITE(99,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
+              ENDDO
+            ELSE
+              DO IFLOT=1,NFLOT
+                WRITE(99,301) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),
+     &                        ZFLOT(IFLOT),1
+              ENDDO
+            ENDIF
             CLOSE(99)
           ENDIF
 !
@@ -382,13 +393,21 @@
 !       SCALAR VERSION
 !
         IF(NFLOT.GT.0.AND.(LT.EQ.1.OR.(LT/FLOPRD)*FLOPRD.EQ.LT)) THEN
-            WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
-     &                    ' seconds"',', I=',NFLOT,', SOLUTIONTIME=',AT
+          WRITE(UL,200) 'ZONE DATAPACKING=POINT, T="G_',AT,
+     &                  ' seconds"',', I=',NFLOT,', SOLUTIONTIME=',AT
+          IF(IELM.EQ.11) THEN
             DO IFLOT=1,NFLOT
               WRITE(UL,300) TAGFLO(IFLOT),XFLOT(IFLOT),YFLOT(IFLOT),1
             ENDDO
+          ELSE
+            DO IFLOT=1,NFLOT
+              WRITE(UL,301) TAGFLO(IFLOT),XFLOT(IFLOT),
+     &                      YFLOT(IFLOT),ZFLOT(IFLOT),1
+            ENDDO
+          ENDIF
 200       FORMAT(A,F12.4,A,A,I4,A,F12.4)
 300       FORMAT(I6,',',F16.8,',',F16.8,',',I2)
+301       FORMAT(I6,',',F16.8,',',F16.8,',',F16.8,',',I2)
         ENDIF
 !
       ENDIF      

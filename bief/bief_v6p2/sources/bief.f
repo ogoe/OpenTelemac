@@ -475,16 +475,16 @@
         END SUBROUTINE
 !
         SUBROUTINE CHARAC
-     &( FN    , FTILD  , NOMB   , UCONV  , VCONV , WCONV  , FRCONV , 
+     &( FN    , FTILD  , NOMB  , UCONV  , VCONV , WCONV  , FRCONV , 
      &  ZSTAR , FREQ   ,
-     &  DT    , IFAMAS , IELM   , NPOIN2 , NPLAN , IF     , NF     ,
-     &  MSK   , MASKEL , SHP    , SHZ    , SHF   , TB     , ELT   ,
-     &  ETA   , FRE    , IT3    , ISUB   , FREBUF, MESH  ,
-     &  NELEM2, NELMAX2, IKLE2  , SURDET2, APOST , PERIODIC )
+     &  DT    , IFAMAS , IELM  , NPOIN2 , NPLAN , JF     , NF     ,
+     &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT ,
+     &  ETA   , FRE    , IT3   , ISUB   , FREBUF, MESH   ,
+     &  NELEM2, NELMAX2, IKLE2 , SURDET2, POST , PERIO , YA4D,SIGMA)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER         , INTENT(IN)         :: NOMB
-      INTEGER         , INTENT(IN)         :: NPLAN,IF,NF,NELEM2
+      INTEGER         , INTENT(IN)         :: NPLAN,JF,NF,NELEM2
       INTEGER         , INTENT(IN)         :: NPOIN2,NELMAX2
       INTEGER         , INTENT(INOUT)      :: IELM
       INTEGER         , INTENT(INOUT)      :: ELT(*),ETA(*),FRE(*)
@@ -498,7 +498,7 @@
       DOUBLE PRECISION, INTENT(IN)         :: DT
       TYPE(BIEF_MESH) , INTENT(INOUT)      :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET :: IFAMAS
-      LOGICAL, OPTIONAL, INTENT(IN)        :: APOST,PERIODIC
+      LOGICAL       , INTENT(IN), OPTIONAL :: POST,PERIO,YA4D,SIGMA
         END SUBROUTINE
 !
         SUBROUTINE CHGDIS(X,OLDELT,NEWELT,MESH)
