@@ -806,7 +806,7 @@ and arrival times.
 The trajectory of drogues is recorded in the BINARY RESULTS 
 FILE that must be given in the steering file' 
  
-NOM = 'PERIODE POUR LES SORTIES FLOTTEURS' 
+NOM = 'PERIODE POUR LES SORTIES DE FLOTTEURS' 
 NOM1 = 'PRINTOUT PERIOD FOR DROGUES' 
 TYPE = ENTIER 
 INDEX = 29 
@@ -4123,7 +4123,7 @@ NIVEAU = 1
 AIDE = 'En dessous du seuil, les hauteurs negatives sont lissees' 
 AIDE1 = 'Below the threshold the negative depths are smoothed' 
 / 
-/ FOR COMPATIBILITY WITH TELEMAC-3D (FRENCH IN ENGLISH IS INTENTIONAL) 
+/ FOR COMPATIBILITY WITH TELEMAC-3D
 / SEE TREATMENT IN LECDON_TELEMAC2D 
 / 
 NOM  = 'PERIODE POUR LES SORTIES LISTING' 
