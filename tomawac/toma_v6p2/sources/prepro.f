@@ -219,8 +219,6 @@
 !
       DO JF=1,NF       
 !
-        WRITE(LU,*) 'FREQUENCE :',JF
-!
         CALL CHARAC(SHZ%ADR(JF)%P,SHZ%ADR(JF)%P,0,
      &              CX,CY,CT,CF,TETA,FREQ,DT,MESH3D%IFABOR,IELM3,
      &              NPOIN2,NPLAN,JF,NF,.FALSE.,BID,SHP%ADR(JF)%P,
@@ -231,7 +229,9 @@
 !                   A POSTERIORI INTERPOLATION
      &              .TRUE.,
 !                   AND PERIODICITY 
-     &              .TRUE.)   
+     &              .TRUE.,
+!                   AND 4D
+     &              .TRUE.) 
 !
       ENDDO
 !
