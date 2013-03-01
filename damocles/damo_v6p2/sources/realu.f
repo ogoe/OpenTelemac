@@ -5,7 +5,7 @@
      &( ICOL , LIGNE )
 !
 !***********************************************************************
-! DAMOCLES   V6P0                                   21/08/2010
+! DAMOCLES   V6P2                                   21/08/2010
 !***********************************************************************
 !
 !brief    DECODES A REAL, FROM COLUMN ICOL+1 OF THE LINE.
@@ -27,11 +27,6 @@
 !+        V5P1
 !+
 !
-!history  O. QUIQUEMPOIX (LNH)
-!+        15/12/1993
-!+
-!+
-!
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
@@ -44,6 +39,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (LNHE)
+!+        30/05/2012
+!+   Test  CDEB.EQ.'E'.OR.CDEB.EQ.'E'.OR.CDEB.EQ.'D'.OR.CDEB.EQ.'D'
+!+   Replaced by  CDEB.EQ.'E'.OR.CDEB.EQ.'D', other stupid tests alike.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ICOL           |<->| POSITION COURANTE DU POINTEUR DANS LA LIGNE
 !| LIGNE          |<->| LIGNE EN COURS DE DECODAGE
@@ -51,12 +51,11 @@
 !
       IMPLICIT NONE
 !
-!
       INTEGER          ICOL
       CHARACTER*(*)    LIGNE
 !
       INTEGER          NEXT,PREVAL
-      EXTERNAL NEXT,PREVAL
+      EXTERNAL         NEXT,PREVAL
 !
       INTEGER          LNG,LU
       INTEGER          NLIGN,LONGLI
@@ -128,8 +127,7 @@
 !
 ! CASE WHERE IT DEPENDS ON THE SECOND CHARACTER OF THE FOLLOWING LINE
 !
-     &      ((CDEB.EQ.'E'.OR.CDEB.EQ.'E'.OR.CDEB.EQ.'D'.OR.
-     &        CDEB.EQ.'D')
+     &      ( (CDEB.EQ.'E'.OR.CDEB.EQ.'D')
      &      .AND.
      &      ( CDEB2.EQ.'0'.OR.CDEB2.EQ.'1'.OR.CDEB2.EQ.'2'.OR.
      &        CDEB2.EQ.'3'.OR.CDEB2.EQ.'4'.OR.CDEB2.EQ.'5'.OR.
@@ -169,11 +167,11 @@
                 LIGNE(I:I)='.'
                 IPOINT = I
                 VUPOIN=.TRUE.
-           ELSE IF (LIGNE(I:I).EQ.'E'.OR.LIGNE(I:I).EQ.'E' ) THEN
+           ELSEIF (LIGNE(I:I).EQ.'E') THEN
 !          ACCEPTS BOTH FORMATS E AND D
                 FORMAE = .TRUE.
                 IFDECI = I-1
-           ELSE IF ( LIGNE(I:I).EQ.'D'.OR.LIGNE(I:I).EQ.'D') THEN
+           ELSEIF (LIGNE(I:I).EQ.'D') THEN
                 LIGNE(I:I)='E'
                 FORMAE = .TRUE.
                 IFDECI = I-1
