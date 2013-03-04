@@ -6677,7 +6677,7 @@
      &                        RECVCHAR(I)%IOR,NPLOT,NPLOT_MAX,
      &                        X,Y,Z,TAG,SHP,SHZ,ELT,ETA,MESH,NPLAN,
      &                        RECVCHAR(I)%XP,RECVCHAR(I)%YP,
-     &                        RECVCHAR(I)%ZP,RECVCHAR(NCHARA)%DX,
+     &                        RECVCHAR(I)%ZP,RECVCHAR(I)%DX,
      &                        RECVCHAR(I)%INE,RECVCHAR(I)%KNE)    
 !           THE PARTICLE IS IN THE SUB-DOMAIN AND SHOULD NOT BE
 !           REMOVED AFTER
