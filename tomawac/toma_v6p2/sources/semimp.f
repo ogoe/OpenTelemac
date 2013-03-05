@@ -261,7 +261,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_TOMAWAC, ONLY : DEUPI,T3_01,T3_02,TEXVEB,MESH,
-     &                                 NAMEWX,NAMEWY,UNITVEB
+     &                                 NAMEWX,NAMEWY,UNITVEB,PHASVEB
       USE INTERFACE_TOMAWAC, EX_SEMIMP => SEMIMP
 !
       IMPLICIT NONE
@@ -443,7 +443,7 @@
      &                  MESH%X%R,MESH%Y%R,NPOIN2,
      &                  NVENT,BINVEN,NBOR,NPTFR,TFIN,DDC,TV1,TV2, 
      &                  U1,U2,V1,V2,V1,V2,INDIC,
-     &                  'WIND   ',NVWIN,TEXVEB,TROUVE,UNITVEB)
+     &                  'WIND   ',NVWIN,TEXVEB,TROUVE,UNITVEB,PHASVEB)
           ELSE
             CALL ANAVEN(VENTX,VENTY,X,Y,NPOIN2,TFIN,DDC,VX_CTE,VY_CTE)
           ENDIF

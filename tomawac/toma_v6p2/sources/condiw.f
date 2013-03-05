@@ -133,7 +133,7 @@
      &                NPOIN2,WAC_FILES(WACCOB)%LU,BINCOU,NBOR,NPTFR,
      &                AT,DDC,TC1,TC2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
      &                SZM1%R,SZM2%R,INDIC,'COURANT',NVCOU,TEXCOB,TROUVE,
-     &                UNITCOB)
+     &                UNITCOB,PHASCOB)
 !         IF DEPTH READ
           IF(TROUVE(3)) THEN
             CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
@@ -182,7 +182,7 @@
      &                MESH%X%R,MESH%Y%R,NPOIN2,UL,BINMAR,NBOR,NPTFR,
      &                AT,DDC,TM1,TM2,SUC1%R,SUC2%R,SVC1%R,SVC2%R,
      &                SZM1%R,SZM2%R,INDIM,'HAUTEUR',NVHMA,TEXMAB,TROUVE,
-     &                UNITMAB)
+     &                UNITMAB,PHASMAB)
           CALL OV('X=Y-Z   ',DZHDT,SZM2%R,SZM1%R,0.D0,NPOIN2)
           CALL OV('X=CX    ',DZHDT,DZHDT,DZHDT,1.D0/(TM2-TM1),NPOIN2)
         ENDIF
@@ -291,7 +291,7 @@
      &                  NPOIN2,UL,BINVEN,NBOR,NPTFR,
      &                  AT,DDC,TV1,TV2,SUV1%R,SUV2%R,SVV1%R,SVV2%R,
      &                  SVV1%R,SVV2%R,INDIV,'VENT   ',NVWIN,TEXVEB,
-     &                  TROUVE,UNITVEB)
+     &                  TROUVE,UNITVEB,PHASVEB)
           ENDIF
         ENDIF
       ENDIF
