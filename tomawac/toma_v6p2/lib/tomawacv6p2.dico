@@ -4988,3 +4988,52 @@ est donne en heures'
 AIDE1 = 'Unit given in seconds, for example 3600. if time
 is given in hours'
 /
+/
+NOM = 'DEPHASAGE DU FICHIER DES COURANTS' 
+NOM1 = 'TIME SHIFT IN CURRENTS FILE' 
+TYPE = REEL 
+INDEX = 84 
+MNEMO = 'PHASCOB' 
+TAILLE= 0 
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE'  
+NIVEAU = 2 
+AIDE = 'Sera retranche au temps lu dans le fichier.
+L''unite est celle du fichier' 
+AIDE1 = 'Will be withdrawn from the time read in the file.
+ The unit is that of the file'
+/
+NOM = 'DEPHASAGE DU FICHIER DU NIVEAU DE LA MARE' 
+NOM1 = 'TIME SHIFT IN TIDAL WATER LEVEL FILE' 
+TYPE = REEL 
+INDEX = 85 
+MNEMO = 'PHASMAB' 
+TAILLE= 0 
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE'  
+NIVEAU = 2 
+AIDE = 'Sera retranche au temps lu dans le fichier.
+L''unite est celle du fichier' 
+AIDE1 = 'Will be withdrawn from the time read in the file.
+ The unit is that of the file'
+/
+NOM = 'DEPHASAGE DU FICHIER DES VENTS' 
+NOM1 = 'TIME SHIFT IN WINDS FILE' 
+TYPE = REEL 
+INDEX = 86 
+MNEMO = 'PHASVEB' 
+TAILLE= 0 
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 'FICHIERS DE DONNEES' 
+RUBRIQUE1 = 'DATA FILE'  
+NIVEAU = 2 
+AIDE = 'Sera retranche au temps lu dans le fichier.
+L''unite est celle du fichier' 
+AIDE1 = 'Will be withdrawn from the time read in the file.
+ The unit is that of the file'
+/
