@@ -62,9 +62,10 @@
 !+   Different call to VOISIN31, and call added for IELM=51
 !
 !history  J-M HERVOUET (LNHE) 
-!+        07/01/2013
+!+        06/03/2013
 !+        V6P3
-!+   XEL, YEL now built in 3D.
+!+   XEL, YEL now built in 3D. SURFAC based on XEL and YEL. Mercator
+!+   projection treated in 3D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| IDENTIFICATION OF PROGRAM OR EQUATIONS SOLVED
@@ -415,15 +416,13 @@
       ELSEIF(IELM.EQ.41.OR.IELM.EQ.51.OR.IELM.EQ.31) THEN
 !
 !       FOR PRISMS, SURFAC IS THE SURFACE OF THE TRIANGLES
+!       FOR ELEMENTS 51 AND 31 ???????? SHOULD NOT BE USED...
 !
         DO IELEM = 1 , NELEM
-          I1 = MESH%IKLE%I(IELEM)
-          I2 = MESH%IKLE%I(IELEM+NELMAX)
-          I3 = MESH%IKLE%I(IELEM+2*NELMAX)
-          X2 = - MESH%X%R(I1) + MESH%X%R(I2)
-          X3 = - MESH%X%R(I1) + MESH%X%R(I3)
-          Y2 = - MESH%Y%R(I1) + MESH%Y%R(I2)
-          Y3 = - MESH%Y%R(I1) + MESH%Y%R(I3)
+          X2 = MESH%XEL%R(IELEM+NELMAX)
+          X3 = MESH%XEL%R(IELEM+2*NELMAX)
+          Y2 = MESH%YEL%R(IELEM+NELMAX)
+          Y3 = MESH%YEL%R(IELEM+2*NELMAX)
           MESH%SURFAC%R(IELEM) = 0.5D0 * (X2*Y3 - X3*Y2)
         ENDDO
 !
