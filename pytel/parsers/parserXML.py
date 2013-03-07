@@ -434,7 +434,7 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
    display = False
 
    # ~~ Action analysis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if runcase == True :
+   if runcase != False :
       do = ACTION(xmlFile,title,bypass)
       first = True
       for action in xmlRoot.findall("action"):
@@ -559,7 +559,7 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
 
    # ~~ Extraction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # did has all the IO references and the latest sortie files
-   if postprocess == True :
+   if postprocess != False :
 
    # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       plot = PLOT(title,bypass)

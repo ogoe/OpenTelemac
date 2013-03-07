@@ -77,7 +77,7 @@ from os import path,walk,environ
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
-from parsers.parserCSV import putDataCSV
+from parsers.parserCSV import putDataCSV,getDataCSV
 from utils.messages import MESSAGES,filterMessage
 
 # _____             ________________________________________________
@@ -138,7 +138,10 @@ if __name__ == "__main__":
    parser.add_option("--runcase",action="store_true",dest="runcase",default='',
       help="will only do the actions from the xml file" )
    parser.add_option("-p","--postprocess",action="store_true",dest="postprocess",default='',
-      help="will only do the extracts and plots from the xml file (not implemented yet)" )
+      help="will only do the extracts and plots from the xml file" )
+   parser.add_option("--criteria",action="store_true",dest="criteria",default='',
+      help="will only do the criteria from the xml file" )
+	  
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -157,13 +160,22 @@ if __name__ == "__main__":
    
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~ Manage options to run only cases or only Post processing ~~~~~
-# (Running only Post processing has not been implemented yet )
+# (Running only the validation criteria has not been implemented yet )
 
-   if options.runcase == '' and options.postprocess == '': 
-       options.runcase = True
-       options.postprocess = True
-   elif options.runcase == True : options.postprocess = False     
-   #elif options.postprocess == True : options.built = False
+   if options.runcase == '' and options.postprocess == ''and options.criteria == '': 
+      options.runcase = True
+      options.postprocess = True
+      options.criteria = True
+   elif options.runcase == True : 
+      options.postprocess = False 
+      options.criteria = False
+   elif options.postprocess == True :
+      options.runcase = True 
+      options.criteria = False
+   elif options.criteria == True :
+      options.runcase = False
+      options.postprocess = False
+	  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
    if not options.display:
@@ -216,12 +228,13 @@ if __name__ == "__main__":
       xmls = {}
 # ~~~~ Variables needed to generate the Validattion report ~~~~~~~~~
       cas=[]
+      casrun=[]
       cas.append('TestCase')
       module=[]
       module.append('Module')
       status=[]
       status.append('Duration(s)')
- # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
       for cfgname in cfgs.keys():
          # still in lower case
          if options.rootDir != '': 
@@ -247,50 +260,128 @@ if __name__ == "__main__":
                      xmlPath = path.join(xmlDir,xmlFile)
                      if not xmls[codeName][key].has_key(xmlPath): xmls[codeName][key].update({xmlPath:{}})
                      xmls[codeName][key][xmlPath].update({cfgname: { 'cfg':cfg, 'options':options } })
-      # ~~> Print summary
+      
+      # Reading last step Validation Summary in order to run only successful 
+      # cases in the next step
+      
+      d = date.today()
+ 
+      if options.revision != '': 
+         if options.postprocess == True and options.criteria == False :
+            LastSummary = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryRun.csv')
+         elif options.postprocess == False and options.criteria == True :
+            LastSummary = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryPostProcess.csv')
+         else : LastSummary = ''
+      else :
+         if options.postprocess == True and options.criteria == False :
+            LastSummary = path.join(root,d.isoformat() + '_' + 'ValidationSummaryRun.csv')
+         elif options.postprocess == False and options.criteria == True :
+            LastSummary = path.join(root,d.isoformat() + '_' + 'ValidationSummaryPostProcess.csv')
+         else : LastSummary = ''
+      
+      if LastSummary != '':
+         Lastcas,Laststatus = getDataCSV(LastSummary,0,(0,2))
+      
+      # ~~> Print summary of test cases which will be run
+      i=0
       for codeName in xmls.keys():
          print '    +> ',codeName
          for key in xmls[codeName]:
-            print '    |    +> ',key
-            cas.append(key)
-            module.append(codeName)
-            for xmlFile in xmls[codeName][key]:
-               print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
-
+            if LastSummary != '':
+            # If one test case failed or has not been run in the last step,
+            # that test case won't be run either in the next step
+               i += 1
+               cas.append(key)
+               module.append(codeName)
+               if Laststatus[i]== 'failed' or Laststatus[i]== 'NotRun' : continue
+               else :
+                  print '    |    +> ',key
+                  casrun.append(key)
+                  for xmlFile in xmls[codeName][key]:
+                     print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
+            else : 
+               print '    |    +> ',key
+               cas.append(key)
+               casrun.append(key)
+               module.append(codeName)
+               for xmlFile in xmls[codeName][key]:
+                  print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
+               
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       print "%s" % (time.ctime(time.time()))
+      i=0
+      cpt = 0
       for codeName in xmls.keys():
          for key in xmls[codeName]:
-            print '\n\nValidation of ' + key + ' of module ' + codeName + '\n\
+            if LastSummary != '':
+               i += 1
+               if Laststatus[i]== 'failed' or Laststatus[i]== 'NotRun' :
+                  status.append('NotRun')
+                  continue
+               else :
+                  cpt += 1
+                  print '\n\nValidation of ' + key + ' of module ' + codeName + ' '+ str(cpt) + '/' + str(len(casrun)) + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-            for xmlFile in xmls[codeName][key]:        
-               try:
-                  tic = time.clock()
-                  runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
-                  toc = time.clock()
-                  ttime = toc-tic
-                  status.append(ttime)
-               except Exception as e: 
-                  status.append('failed')
-                  xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+                  for xmlFile in xmls[codeName][key]:        
+
+                     try:
+                        tic = time.clock()
+                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
+                        toc = time.clock()
+                        ttime = toc-tic
+                        status.append(ttime)
+                     except Exception as e: 
+                        status.append('failed')
+                        xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+            else :
+               cpt += 1
+               print '\n\nValidation of ' + key + ' of module ' + codeName + ' '+ str(cpt) + '/' + str(len(casrun)) + '\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+               for xmlFile in xmls[codeName][key]:        
+                     try:
+                        tic = time.clock()
+                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
+                        toc = time.clock()
+                        ttime = toc-tic
+                        status.append(ttime)
+                     except Exception as e: 
+                        status.append('failed')
+                        xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+                                
       print "%s" % (time.ctime(time.time()))
+      
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
 # ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
       print '\n\nWritting Validation Report.\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      d = date.today()
+
       columns = []
       if options.revision != '': 
-         if options.postprocess == False : SummaryFile  = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryRun.csv')
-         else : SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummary.csv')
+         if options.postprocess == False and options.criteria == False : 
+            SummaryFile  = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryRun.csv')
+         elif options.postprocess == True and options.criteria == False : 
+            SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryPostProcess.csv')
+         elif options.criteria == True and options.postprocess == False :
+            SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryCriteria.csv')
+         elif options.criteria == True and options.postprocess == True and options.runcase == True: 
+            SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummary.csv')
       else : 
-         if options.postprocess == False : SummaryFile  = path.join(root,d.isoformat() + '_' + 'ValidationSummaryRun.csv')
-         else : SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummary.csv')
+         if options.postprocess == False and options.criteria == False :
+            SummaryFile  = path.join(root,d.isoformat() + '_' + 'ValidationSummaryRun.csv')
+         elif options.postprocess == True and options.criteria == False : 
+            SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummaryPostProcess.csv')
+         elif options.criteria == True and options.postprocess == False: 
+            SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummaryCriteria.csv')
+         elif options.criteria == True and options.postprocess == True and options.runcase == True:
+            SummaryFile = path.join(root,d.isoformat() + '_' + 'ValidationSummary.csv')
+            
       columns = [cas,module,status]
+      
       try : putDataCSV(SummaryFile,columns)
       except : xcpts.addMessages(['I could not write properly the Validation Summary, something went wrong'])
-          
+
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():
@@ -298,10 +389,14 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
       + xcpts.exceptMessages()
     
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    else: print '\n\nMy work is done\n\n'
+   
 
+ 
+   
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
 
    sys.exit()
