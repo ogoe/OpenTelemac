@@ -785,7 +785,7 @@ de la houle et du courant :
                  6 : HUNZIKER (uniquement granulometrie etendue)
                       DE MASQUAGE DE HUNZIKER APPLIQUEE
                      et mot-cle HIDING-FACTOR not used
-                 7 : VAN RIJN (bed lozd)
+                 7 : VAN RIJN (bed load)
                  8 : BAILARD (charriage + suspension)
                  9 : DIBAJNIA ET WATANABE (total)
 L''utilisateur a aussi la possibilite d''imposer une autre formule de 
@@ -3374,3 +3374,34 @@ AIDE1 = 'MODEL FOR ACTIVE LAYER THICKNESS
          4 = Wong (2006)
          5 = Malcharek (2003)
          6 = 3*d50 within last time steps ALT'
+
+/
+/ Use velocity profile with Miles' approximation
+/
+NOM = 'SETTLING LAG'
+NOM1 = 'SETTLING LAG'
+TYPE = LOGIQUE
+INDEX = 27
+MNEMO = 'SET_LAG'
+DEFAUT = NON
+DEFAUT1 = NO
+NIVEAU = 2
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+AIDE = '(-)'
+AIDE1 = '(-)'
+/
+/ Suppress bed updating
+/
+NOM = 'STATIONARY MODE'
+NOM1 = 'STATIONARY MODE'
+TYPE = LOGIQUE
+INDEX = 28
+MNEMO = 'STAT_MODE'
+DEFAUT = NON
+DEFAUT1 = NO
+NIVEAU = 2
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+AIDE = '(-)'
+AIDE1 = '(-)'
