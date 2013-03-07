@@ -3,7 +3,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   30/07/2012
+! SISYPHE   V6P3                                   12/02/2013
 !***********************************************************************
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,7 +176,7 @@ C UHM + PAT: required to compile with Python
          INTEGER,          INTENT(IN)   :: I
          double precision, INTENT(IN)    :: Z_HIGH
          double precision, INTENT(IN)    :: Z_LOW
-         double precision, INTENT(out)   :: a(10)
+         double precision, INTENT(out)   :: a(*)
          END FUNCTION
       END INTERFACE
 C

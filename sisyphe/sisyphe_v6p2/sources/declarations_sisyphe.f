@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   30/07/2012
+! SISYPHE   V6P3                                   12/02/2013
 !***********************************************************************
 !
 !brief    DECLARATION OF PRINCIPAL SISYPHE VARIABLES
@@ -54,6 +54,18 @@
 !+        30/07/2012
 !+        V6P2
 !+ added new variable ZFCL_MS 
+!
+!history  Pablo Tassi PAT (EDF-LNHE)
+!+        12/02/2013
+!+        V6P3
+!+ Preparing for the use of a higher NSICLM value
+!+ (by Rebekka Kopmann)
+!
+!history  Pablo Tassi PAT (EDF-LNHE)
+!+        12/02/2013
+!+        V6P3
+!+ Settling lag: determines choice between Rouse and Miles concentration profile
+!+ (by Michiel Knaapen HRW)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -927,6 +939,15 @@ C si oui, couplage avec dredgesim
 !> @brief BED FRICTION PREDICTION
 C 
       LOGICAL :: KSPRED
+!
+! MAK
+!     Settling lag: determines choice between Rouse and Miles concentration profile
+!     SET_LAG = TRUE : Miles
+!             = FALSE: Rouse
+!
+      LOGICAL :: SET_LAG
+!     STATIONARY MODE: calculate sediment transport without updating the bed.
+      LOGICAL :: STAT_MODE
 C
 C-----------------------------------------------------------------------
 C
@@ -1145,7 +1166,7 @@ C
       CHARACTER(LEN=3) BINRESSIS,BINREFSIS
 !> @brief
 C
-      CHARACTER(LEN=32) VARCLA(10),TEXTE(MAXVAR),TEXTPR(MAXVAR)
+      CHARACTER(LEN=32) VARCLA(NSICLM),TEXTE(MAXVAR),TEXTPR(MAXVAR)
 !> @brief
 C
       CHARACTER(LEN=20) EQUA

@@ -8,7 +8,7 @@
      &  TOB,XMVS,XMVE,DM,GRAV,UNSV2D)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P3                                   12/02/2013
 !***********************************************************************
 !
 !brief    COMPUTES THE PARAMETERS OF THE SLOPE EFFECT.
@@ -34,7 +34,16 @@
 !+        19/07/2011
 !+        V6P1
 !+  Name of variables   
-!+   
+!+
+!history  Pablo Tassi PAT (EDF-LNHE)
+!+        12/02/2013
+!+        V6P3
+!+ Correction by Rebekka Kopmann (BAW):
+!+ Avoiding the slope effect at the open boundaries
+!+ So far only the magnitude is set to 1, but the directions are due to the slope effect. 
+!+ Specially at the outlet boundary, this can create problems. 
+!+ If a bar is moved out of the model there can be the situation, 
+!+ that you have a negative slope in longitudinal, which creates in inflow of the bed load 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| BETA           |-->| COEFFICIENT FOR SLOPING BED EFFECT ( KOCH AND FLOKSTRA) 
@@ -221,15 +230,26 @@
 !         QS IS NOT MODIFIED WHEN SPECIFIED BY THE USER                 !
 ! ********************************************************************* !
 !
-      DO K = 1 , NPTFR
-         IF (LIQBOR%I(K) == KENT) COEF%R(MESH%NBOR%I(K)) = 1.D0
-!                           R.K. MAY 2007
-!                           KSORT = 4
-         IF (LIQBOR%I(K) == 4) COEF%R(MESH%NBOR%I(K)) = 1.D0
+! RK no slope effect at the open boundaries
+      DO K = 1, NPTFR
+         IF (LIQBOR%I(K) == KENT) THEN 
+            COEF%R(MESH%NBOR%I(K)) = 1.D0
+            CALFA%R(MESH%NBOR%I(K)) = CTETA%R(MESH%NBOR%I(K))
+            SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
+         ENDIF
+!     R.K. MAY 2007
+!     KSORT = 4
+         IF (LIQBOR%I(K) == 4) THEN
+            COEF%R(MESH%NBOR%I(K)) = 1.D0
+            CALFA%R(MESH%NBOR%I(K)) = CTETA%R(MESH%NBOR%I(K))
+            SALFA%R(MESH%NBOR%I(K)) = STETA%R(MESH%NBOR%I(K))
+         ENDIF
       ENDDO
-!
+!     
 !======================================================================
 !======================================================================
 !
       RETURN
       END SUBROUTINE BEDLOAD_EFFPNT
+
+

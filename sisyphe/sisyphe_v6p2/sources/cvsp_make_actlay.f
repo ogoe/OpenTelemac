@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/06/2011
+! SISYPHE   V6P3                                   12/02/2013
 !***********************************************************************
 !
 !brief    Build a new Active Layer with Data from Vertical Sorting Profile
@@ -14,7 +14,11 @@
 !history  U.Merkel & REBEKKA KOPMANN
 !+        2012
 !+
-!+
+!history  Pablo Tassi PAT (EDF-LNHE)
+!+        12/02/2013
+!+        V6P3
+!+ Preparing for the use of a higher NSICLM value
+!+ (by Rebekka Kopmann)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -33,7 +37,6 @@
 !PAT
       DOUBLE PRECISION, EXTERNAL:: CVSP_ALT
       double precision sumes, sumav, ALT
-      double precision a(10)
       character*30, debugfile
 
 
@@ -115,17 +118,20 @@
                 !--------------------------------------------------------------
                 ! This is the core!
                     asum = 0.D0
-                    TEMP = CVSP_INTEGRATE_VOLUME(J,1,Z_HIGH,Z_LOW,a)
+!                    TEMP = CVSP_INTEGRATE_VOLUME(J,1,Z_HIGH,Z_LOW,a)
+                    TEMP = CVSP_INTEGRATE_VOLUME(J,1,Z_HIGH,Z_LOW,T1%R)
 
                 !Assign Fractions
                 do I=1,NSICLA
 
-                    AVAIL(J,K,I) = a(I) / ES(J,K)
+!                    AVAIL(J,K,I) = a(I) / ES(J,K)
+                    AVAIL(J,K,I) = T1%R(I) / ES(J,K)
                     asum = AVAIL(J,K,I) + asum
 
                 if ((AVAIL(J,K,I)>1+ZERO)) then
              WRITE(LU,*) "MAKE_AL_", J, K, I, AT,
-     &                 AVAIL(J,K,I), a(I), ES(J,K),Z_HIGH,Z_LOW, ES(J,K)
+!     &                 AVAIL(J,K,I), a(I), ES(J,K),Z_HIGH,Z_LOW, ES(J,K)
+     &              AVAIL(J,K,I), T1%R(I), ES(J,K),Z_HIGH,Z_LOW, ES(J,K)
              WRITE(LU,*) "ES,ALT,ELAY0,newalt",ES(J,K),ALT,ELAY0,new_alt
                        call plante(1)
                 endif
@@ -178,12 +184,14 @@
                         enddo
 
                         if(db(JG,0).eqv..true.) print*,'UHM_L_',K,i
-                        TEMP=CVSP_INTEGRATE_VOLUME(J,1,Z_HIGH,Z_LOW,a)
+!                        TEMP=CVSP_INTEGRATE_VOLUME(J,1,Z_HIGH,Z_LOW,a)
+                       TEMP=CVSP_INTEGRATE_VOLUME(J,1,Z_HIGH,Z_LOW,T1%R)
 
                      ! layerdicke ist Rest, Fraktion muss berechnet werden
                      do i=1,NSICLA
 
-                        AVAIL(J,K,I) = a(I) / ES(J,K)
+!                        AVAIL(J,K,I) = a(I) / ES(J,K)
+                        AVAIL(J,K,I) = T1%R(I) / ES(J,K)
                         asum = AVAIL(J,K,I) + asum
 
                         !DEBUG -------------------------
@@ -195,7 +203,8 @@
 
                if ((AVAIL(J,K,I)>1+ZERO)) then
                             PRINT * , "MAKE_AL_", J, K, I, AT,
-     &                        AVAIL(J,K,I), a(I), ES(J,K),Z_HIGH,Z_LOW
+!     &                        AVAIL(J,K,I), a(I), ES(J,K),Z_HIGH,Z_LOW
+     &                      AVAIL(J,K,I), T1%R(I), ES(J,K),Z_HIGH,Z_LOW
                endif
 
                      end do ! nsicla

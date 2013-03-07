@@ -4,7 +4,7 @@
 !
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   23/12/2011
+! SISYPHE   V6P3                                   12/02/2013
 !***********************************************************************
 !
 !brief    Compresses a Vertical Sorting Profile in Point J to prevent
@@ -17,7 +17,11 @@
 !history  UWE MERKEL
 !+        2011-12-23
 !+
-!+
+!history  Pablo Tassi PAT (EDF-LNHE)
+!+        12/02/2013
+!+        V6P3
+!+ Preparing for the use of a higher NSICLM value
+!+ (by Rebekka Kopmann)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| J              |<--| INDEX of a POINT in MESH
@@ -30,7 +34,8 @@
       INTEGER,           INTENT(IN)    :: J
 
 !PAT      double precision CVSP_INTEGRATE_VOLUME
-      double precision Z_LOW ,Z_HIGH, SECHIGHT, a(10)
+      double precision Z_LOW ,Z_HIGH, SECHIGHT
+! using T1 instead, assuming that number of nodes always bigger than number of grain size classes
 
       integer NewPro_MAX, K, I, JG
       logical db,ret !PAT,CVSP_CHECK_F
@@ -74,7 +79,9 @@
            if (k.eq.1) Z_LOW = PRO_D(J,1,1)
            if (k.eq.NewPro_MAX) Z_HIGH = PRO_D(J,PRO_MAX(J),1)
 
-           PRO_FNEW(K,I) = CVSP_INTEGRATE_VOLUME(J,I, Z_HIGH, Z_LOW,a)
+C           PRO_FNEW(K,I) = CVSP_INTEGRATE_VOLUME(J,I, Z_HIGH, Z_LOW,a)
+C     &                   / sechight
+           PRO_FNEW(K,I)=CVSP_INTEGRATE_VOLUME(J,I, Z_HIGH, Z_LOW,T1%R)
      &                   / sechight
 
            if (k.eq.1) PRO_FNEW(K,I) = PRO_FNEW(K,I) * 2.0D0

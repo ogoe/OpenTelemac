@@ -4,7 +4,7 @@ C                       ********************************************
 C
 C
         USE BIEF_DEF
-        !USE DECLARATIONS_SISYPHE, only: NSICLA
+        USE DECLARATIONS_SISYPHE, only: NSICLM
 
         implicit none
 C
@@ -48,7 +48,7 @@ C
 C-----------------------------------------------------------------------
 
 C     UHM DEBUG / Delete later
-        TYPE(BIEF_OBJ), TARGET :: VSP_FRA(10)   ! NSICLA!!!
+        TYPE(BIEF_OBJ), TARGET :: VSP_FRA(NSICLM)   
         TYPE(BIEF_OBJ), TARGET :: VSP_D, VSP_D50, VSP_ERROR
 
         TYPE(BIEF_OBJ), TARGET :: Ur2dHYD(NumVar2dHYD)

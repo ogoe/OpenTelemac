@@ -127,7 +127,7 @@ bedload_engel_cc.f        bedload_seccurrent.f       bilan_sisyphe.f\
 suspension_main.f        suspension_bilan_coh.f\
 bedload_evol.f             calcuw.f     disimp.f      lecdon_sisyphe.f   \
 bedload_formula.f          leclis.f                   suspension_rouse.f\
-tobw_sisyphe.f\
+tobw_sisyphe.f   suspension_miles.f\
 coefro_sisyphe.f           maskab.f                         tob_sisyphe.f\
 bedload_hiding_factor.f    condim_sisyphe.f           mean_grain_size.f\
 ride_vr.f\

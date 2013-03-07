@@ -207,14 +207,14 @@
       SUBROUTINE SUSPENSION_DEPOT    ! 
       ! **************************** !   
      &(TOB,HN, NPOIN, HMIN,XWC,VITCD,
-     & ZERO,KARMAN,XMVE, T1,T2,ZREF,FLUDPT,DEBUG,SEDCO)
+     & ZERO,KARMAN,FDM,FD90,XMVE, T1,T2,ZREF,FLUDPT,DEBUG,SEDCO,CSTAEQ)
       USE BIEF
       IMPLICIT NONE
-      TYPE (BIEF_OBJ),  INTENT(IN)    ::  HN, TOB
-      INTEGER,          INTENT(IN)    ::  NPOIN,DEBUG
+      TYPE (BIEF_OBJ),  INTENT(IN)    :: HN, TOB, CSTAEQ
+      INTEGER,          INTENT(IN)    :: NPOIN,DEBUG
       LOGICAL,          INTENT(IN)    :: SEDCO
-      DOUBLE PRECISION, INTENT(IN)    ::  HMIN
-      DOUBLE PRECISION, INTENT(IN)    :: XWC
+      DOUBLE PRECISION, INTENT(IN)    :: HMIN
+      DOUBLE PRECISION, INTENT(IN)    :: FDM,FD90,XWC
       DOUBLE PRECISION, INTENT(IN)    :: VITCD
       DOUBLE PRECISION, INTENT(IN)    :: ZERO, KARMAN,XMVE
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: T1,T2
@@ -519,6 +519,21 @@
 !======================================================================!
 !======================================================================!
 
+!================================================================!
+      SUBROUTINE SUSPENSION_MILES
+    !================================================================!
+!
+     & (HN,NPOIN,KARMAN,HMIN,ZERO,FDM,FD90,XWC,ZREF,T2)
+      USE BIEF
+      IMPLICIT NONE
+      TYPE(BIEF_OBJ),   INTENT(IN) :: HN,ZREF
+      INTEGER,          INTENT(IN) :: NPOIN
+      DOUBLE PRECISION, INTENT(IN) :: FDM,FD90,KARMAN,XWC,HMIN,ZERO
+      TYPE(BIEF_OBJ),   INTENT(INOUT) :: T2
+      !----------------------------------------------------------------!
+      END SUBROUTINE SUSPENSION_MILES
+      !================================================================!
+     
       END INTERFACE
       END MODULE INTERFACE_SISYPHE_SUSPENSION
 C

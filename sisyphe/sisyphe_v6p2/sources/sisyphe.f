@@ -1194,7 +1194,12 @@
 !
 !         UPDATES THE BOTTOM
 !
-          CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
+! mak:
+          IF (.NOT.(STAT_MODE)) THEN
+             CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
+          END IF
+! end mak
+!     CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
 !
 !         UPDATES THE LAYERS  --> ELAY
 !
@@ -1245,7 +1250,12 @@
 !
 !      UPDATES THE BOTTOM
 !
-       CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
+! mak:
+       IF (.NOT.(STAT_MODE)) THEN
+          CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
+       END IF
+! end mak
+!       CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
 !
 !      UPDATES THE LAYERS
 !      REDEFINES THE LAYER OF ERODABLE SEDIMENT
@@ -1347,7 +1357,12 @@ C!!! ONLY FOR ONE CLASS
 !
 !       UPDATES ZF (ELAY HAS BEEN UPDATED IN TASSEMENT)
 !
-        CALL OS('X=X+Y   ',X=ZF,Y=T3)
+! mak:
+       IF (.NOT.(STAT_MODE)) THEN
+          CALL OS('X=X+Y   ',X=ZF,Y=T3)
+       END IF
+! end mak
+!        CALL OS('X=X+Y   ',X=ZF,Y=T3)
 !
       ENDIF
 !
@@ -1373,7 +1388,12 @@ C!!! ONLY FOR ONE CLASS
 !
         IF(PART.EQ.-1) THEN
 !
-        CALL OS('X=X-Y   ',X=HN,Y=E)
+! mak:
+       IF (.NOT.(STAT_MODE)) THEN
+          CALL OS('X=X-Y   ',X=HN,Y=E)
+       END IF
+! end mak
+!      CALL OS('X=X-Y   ',X=HN,Y=E)
         IF(OPTBAN.GT.0) THEN
           DO I = 1,HN%DIM1
             IF(HN%R(I).LT.HMIN) THEN

@@ -1,4 +1,3 @@
-!CV verrouillafez options pour sediments mixte
 !                    *************************
                      SUBROUTINE LECDON_SISYPHE
 !                    *************************
@@ -6,7 +5,7 @@
      &(MOTCAR,FILE_DESC,PATH,NCAR,CODE)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   18/06/2012
+! SISYPHE   V6P3                                   12/02/2013
 !***********************************************************************
 !
 !brief    READS THE STEERING FILE BY CALL TO DAMOCLES.
@@ -100,6 +99,18 @@
 !+        18/06/2012
 !+        V6P2
 !+   updated version with HRW's development 
+!
+!history  Pablo Tassi PAT (EDF-LNHE)
+!+        12/02/2013
+!+        V6P3
+!+ Preparing for the use of a higher NSICLM value
+!+ (by Rebekka Kopmann)
+!
+!history  Pablo Tassi PAT (EDF-LNHE)
+!+        12/02/2013
+!+        V6P3
+!+ Settling lag: determines choice between Rouse and Miles concentration profile
+!+ (by Michiel Knaapen HRW)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
@@ -602,6 +613,16 @@ C     USED TO CHECK SIS_FILES(SISPRE)%NAME
 !     V6P1
       KSPRED   =MOTLOG(ADRESS(3,26))
 !
+! MAK
+!     Settling lag: determines choice between Rouse and Miles concentration profile
+!     SET_LAG = TRUE : Miles
+!             = FALSE: Rouse
+!
+      SET_LAG  = MOTLOG(ADRESS(3,27) )
+!     STATIONARY MODE: calculate sediment transport without updating the bed.
+      STAT_MODE  = MOTLOG(ADRESS(3,28) )
+! 
+!
 ! ################################### !
 ! CHARACTER STRING KEYWORDS           !
 ! ################################### !
@@ -755,13 +776,15 @@ C
       ENDIF
 C
 CMGDL
-C     CHECKS THE NUMBER OF
-      IF(NSICLA.GT.10) THEN
-      IF (LNG.EQ.1) WRITE(LU,80)
-        IF (LNG.EQ.2) WRITE(LU,81)
+C     CHECKS THE NUMBER OF NSICLA
+C      IF(NSICLA.GT.10) THEN
+      IF(NSICLA.GT.NSICLM) THEN
+      IF (LNG.EQ.1) WRITE(LU,80) NSICLM
+        IF (LNG.EQ.2) WRITE(LU,81) NSICLM
         WRITE(LU,*)
-80      FORMAT(/,1X,'LE NOMBRE MAXIMUM DE CLASSES DE SEDIMENTS EST 10')
-81      FORMAT(/,1X,'THE MAXIMUM NUMBER OF SEDIMENT CLASSES IS 10')
+80      FORMAT(/,1X,'LE NOMBRE MAXIMUM DE CLASSES DE SEDIMENTS EST 10'
+     &         , I2)
+81      FORMAT(/,1X,'THE MAXIMUM NUMBER OF SEDIMENT CLASSES IS', I2)
         CALL PLANTE(1)
         STOP
       ENDIF

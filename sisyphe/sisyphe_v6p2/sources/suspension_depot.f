@@ -1,10 +1,8 @@
 !                    ******************************
                      SUBROUTINE SUSPENSION_DEPOT  !
 !                    ******************************
-!
-     &(TOB,HN, NPOIN, HMIN,XWC,VITCD,
-     & ZERO,KARMAN,XMVE, T1,T2,ZREF,FLUDPT,DEBUG,SEDCO)
-
+     &(TOB,HN, NPOIN, HMIN,XWC,VITCD,ZERO,KARMAN,
+     & FDM,FD90,XMVE,T1,T2,ZREF,FLUDPT,DEBUG,SEDCO,CSTAEQ)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -56,6 +54,8 @@
 !| ZREF           |<->| REFERENCE ELEVATION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+
+      USE DECLARATIONS_SISYPHE, ONLY : SET_LAG ! DMK mod
       USE INTERFACE_SISYPHE,EX_SUSPENSION_DEPOT => SUSPENSION_DEPOT
       USE BIEF
       IMPLICIT NONE
@@ -64,11 +64,11 @@
 !
       ! 2/ GLOBAL VARIABLES
       ! -------------------
-      TYPE (BIEF_OBJ),  INTENT(IN)    ::  HN,TOB
+      TYPE (BIEF_OBJ),  INTENT(IN)    ::  HN,TOB,CSTAEQ
       INTEGER,          INTENT(IN)    ::  NPOIN,DEBUG
       LOGICAL,          INTENT(IN)    :: SEDCO
       DOUBLE PRECISION, INTENT(IN)    ::  HMIN
-      DOUBLE PRECISION, INTENT(IN)    :: XWC
+      DOUBLE PRECISION, INTENT(IN)    :: FDM,FD90,XWC
       DOUBLE PRECISION, INTENT(IN)    :: VITCD
       DOUBLE PRECISION, INTENT(IN)    :: ZERO, KARMAN,XMVE
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: T1,T2
@@ -102,17 +102,17 @@
 !
 !  COMPUTES THE PROBABILITY FOR DEPOSITION
 !
-         DO I = 1, NPOIN
-           IF(VITCD.GT.1.D-08) THEN
-             AUX = MAX(1.D0-(T1%R(I)/VITCD)**2,ZERO)
-           ELSE
-             AUX=0.D0
-           ENDIF
+        DO I = 1, NPOIN
+          IF(VITCD.GT.1.D-08) THEN
+            AUX = MAX(1.D0-(T1%R(I)/VITCD)**2,ZERO)
+          ELSE
+            AUX=0.D0
+          ENDIF
 !          COMPUTES THE IMPLICIT PART OF THE DEPOSITION FLUX
-           FLUDPT%R(I)= XWC*AUX
-         ENDDO
+          FLUDPT%R(I)= XWC*AUX
+        ENDDO
 ! UNIFORM SEDIMENT ALONG THE VERTICAL
-         CALL OS('X=C     ', X=T2, C=1.D0)
+        CALL OS('X=C     ', X=T2, C=1.D0)
 !
       ! ******************************************* !
       ! IB - FORMULATION FOR NON-COHESIVE SEDIMENTS !
@@ -125,11 +125,28 @@
             !  COMPUTES THE RATIO BETWEEN NEAR BED CONC. AND MEAN CONC.  !
             !                                  -->  T2    (TO KEEP )     !
             ! ***************************************************** !
-        IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_ROUSE'
-        CALL SUSPENSION_ROUSE(T1,HN,NPOIN,
+!       DMK Modification 06/05/2011
+
+        IF (.NOT.(SET_LAG)) THEN
+
+          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_ROUSE'
+          CALL SUSPENSION_ROUSE(T1,HN,NPOIN,
      &                        KARMAN,HMIN,ZERO,XWC,ZREF,T2)
-        IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_ROUSE'
+          IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_ROUSE'
 !
+        ELSEIF (SET_LAG) THEN
+
+          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_BETAFACTOR' 
+        CALL SUSPENSION_MILES(HN,NPOIN,KARMAN,HMIN,ZERO,
+     &                  FDM,FD90,XWC,ZREF,T2)
+          IF (DEBUG > 0) WRITE(LU,*) 'END SUSPENSION_BETAFACTOR'
+
+        ELSE
+          PRINT *, 'LAG FACTOR MUST BE EITHER "TRUE" OR "FALSE"'; STOP
+        ENDIF
+
+!       End of DMK mod
+
             ! *****************************************************  !
             !  COMPUTES THE DEPOSITION FLUX --> FLUDPT = XWC * T2    !
             ! *****************************************************  !
