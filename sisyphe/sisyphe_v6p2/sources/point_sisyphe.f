@@ -398,12 +398,12 @@ C     LAYCONC ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
       CALL BIEF_ALLVEC_IN_BLOCK(ZFCL_MS,NSICLA,1,
      *                              'ZFCL_MS',IELMT,1,2,MESH)
 !
-
-      ! ************* !
-      ! VI - MATRICES !
-      ! ************* !
-
-
+!
+!     ************* !
+!     VI - MATRICES !
+!     ************* !
+!
+!
       !================================================================!
       CALL BIEF_ALLMAT(AM1_S,'AM1_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
       CALL BIEF_ALLMAT(AM2_S,'AM2_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
