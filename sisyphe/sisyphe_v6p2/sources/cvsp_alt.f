@@ -1,6 +1,6 @@
-!        ************************************************************
-         DOUBLE PRECISION FUNCTION CVSP_ALT
-!        ************************************************************
+!                 **********************************
+                  DOUBLE PRECISION FUNCTION CVSP_ALT
+!                 **********************************
 !
      &(J, FORMULA)
 !
@@ -147,14 +147,12 @@
 
             CVSP_ALT = 5.D0 * dmax
             A1 = CVSP_ALT
-!            print*,'a1',a1,dmax
 
       !else if (Formula == 2) then
          !Fredsoe & Deigaard 1992
             CVSP_ALT = 2.D0 * tauB / (g*(rho_s-rho))
      &             / tan(phised/180.0D0*PI) / (1.D0-pon)
             A2 = CVSP_ALT
-!         print*,'a2',a2,CVSP_ALT,taub,g,rho_s,rho,phised,pi,pon
 
       !else if (Formula == 3) then
          !van RIJN 1993
@@ -166,7 +164,6 @@
             endif
 
             A3 = CVSP_ALT
-!            print*,'a3',a3,dstar,taub,tauc,d50
 
       !else if (Formula == 4) then
          !Wong 2006
@@ -178,14 +175,12 @@
      &                   -0.0549D0)**0.56D0
             endif
             A4 = CVSP_ALT
-!          print*,'a4',a4,d50,taub,rho_s,rho,g,d50
 
       !else if (Formula == 5) then
          !Malcherek 2003
 
             CVSP_ALT = d90 / (1.D0-pon) * max(1.D0,(tauB/tauC))
             A5 = CVSP_ALT
-!           print*,'a5',a5,d90,pon,taub,tauc
 
 
       !if (Formula == 6) then
@@ -193,7 +188,6 @@
 
             CVSP_ALT = 3.D0 * d50
             A6 = CVSP_ALT
-!           print*,'a6',a6,d50
 
       !else if (Formula == 0) then
          !constant from CAS file
@@ -222,38 +216,16 @@
     !CHECK FOR ERRORS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-
       if ((CVSP_ALT.le.FDM(1))) then
             CVSP_ALT = FDM(1)
       endif
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    !DEBUG PRINTOUT
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-           LLT= LT-1+PERCOU
-           LTT=(LLT/LEOPR)*LEOPR
-
-             JG = j
-             if (ncsize > 1) JG = mesh%knolg%I(J)
-
-        if (db(JG,0).eqv..true.) THEN
-
-             AT = DT*LT/PERCOU
-
-       !   write (88,'(I6,1X,13(G15.8,1X))')
-       !&      JG,AT,ES(J,1),D50,D90,DMAX,tauB,tauC,
-       !&      A1,A2,A3,A4,A5,A6      !,DSTAR, rho_s, rho, g
-       !&      ,pon,DSTAR,RHOCR, phised, tan(phised/180.0D0*PI)
-
-        endif
-
 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !
 
-        RETURN
+      RETURN
       END FUNCTION CVSP_ALT
 

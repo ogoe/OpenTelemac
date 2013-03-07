@@ -289,6 +289,7 @@
           if(LNG.EQ.2) WRITE(LU,*) 'IN ',ARRET2,' PROCESSOR(S)'
         endif
         call PLANTE(1)
+        STOP
       endif
 !
 !-----------------------------------------------------------------------
