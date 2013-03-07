@@ -50,6 +50,7 @@ as3_1111_q.f as3_1111_s.f   as3_1313_q.f  as3_1313_s.f  as3_1113.f    as3_1311.f
 as3_1112.f   as3_1211.f     as3_3131_s.f  as3_3131_q.f  as3_4141_s.f  as3_4141_q.f as3_8181_s.f as3_8181_q.f \
 atanc.f  bief_allmat.f bief_allvec.f bief_allvec_in_block.f bief_close_files.f \
 bief_desimp.f  bief_dim1_ext.f bief_dim2_ext.f bief_ininds.f bief_init.f \
+bief_erf.f  bief_gser.f bief_gammp.f bief_gcf.f bief_gammln.f \
 bief_nbfel.f bief_nbmpts.f  bief_nbpel.f  bief_nbpts.f  bief_nbseg.f  bief_nbsegel.f \
 bief_open_files.f bief_sum.f bief_suite.f  bief_valida.f \
 bilant.f     build_ikle_ext.f             cflp11.f    cflp12.f \
