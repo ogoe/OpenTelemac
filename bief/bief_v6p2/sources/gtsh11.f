@@ -39,6 +39,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ELT            |<--| ELEMENT CHOSEN FOR EVERY POINT
 !| ELTCAR         |-->| STARTING ELEMENT FOR LINEAR AND QUADRATIC POINTS
+!|                |   | MUST HAVE THE RELEVANT SIZE.
 !| IKLE           |-->| CONNECTIVITY TABLE
 !| NELEM          |-->| NUMBER OF ELEMENTS
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS
@@ -57,7 +58,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,NELEM,NELMAX,NSEG
-      INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),ELTCAR(NPOIN)
+      INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),ELTCAR(*)
 !                                            NPOIN
 !                                            NPOIN+NELEM
 !                                            NPOIN+NSEG
