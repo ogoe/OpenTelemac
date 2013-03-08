@@ -34,6 +34,11 @@
          Now capable of running/tranlating, etc. coupled simulations
          "links" has been added to the active aciton list.
 """
+"""@history 08/03/2013 -- Juliette Parisi:
+         Added the new extract Class in order to run post processing steps
+		 as running executables, other python scripts, reading and writting
+		 csv files ...
+"""
 """@brief
 """
 
@@ -42,7 +47,9 @@
 #
 # ~~> dependencies towards standard python
 import time
-from os import path
+import os
+import subprocess
+from os import path,walk
 from optparse import Values
 import sys
 from socket import gethostname
@@ -54,7 +61,7 @@ from parserStrings import parseArrayPaires
 from runcode import runCAS,checkConsistency,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from utils.files import getFileContent,putFileContent,createDirectories,copyFile,moveFile, matchSafe
+from utils.files import getFileContent,putFileContent,createDirectories,copyFile,moveFile, matchSafe, getTheseFiles
 from utils.messages import filterMessage
 from mtlplots.plotTELEMAC import Figure
 
@@ -151,7 +158,7 @@ class ACTION:
       self.bypass = bypass
       self.active = { 'path':path.dirname(xmlFile),'safe':'','cfg':'','dico':'',
          "target": None, "code": None, "xref": None, "do": None,
-         "title": '', "ncsize":'' }
+         "title": '', "ncsize":''}
       self.dids = {}
 
    def addAction(self,actions):
@@ -313,11 +320,102 @@ class META:
       if title != '': self.active["title"] = title
       self.bypass = bypass
 
-#class EXTRACT:
+# _____                      _______________________________________
+# ____/ Primary Class: EXTRACT /______________________________________/
+#
+class EXTRACT:
 
+   def __init__(self,xmlFile,title='',bypass=True):
+      if title != '': self.active["title"] = title
+      self.bypass = bypass
+      self.active = { 'path':path.dirname(xmlFile),'safe':'','cfg':'',"target": None,
+                      "code": None, "xref": None, "do": None,"title": '',"dependency":'',
+                      "reference":''}
+      self.dids = {}
+
+   def addExtract(self,actions):
+      try:
+         i = getXMLKeys(actions,self.active)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'ACTION::addACTION'},e,self.bypass)])  # only one item here
+      else:
+         self.active = i
+      if self.dids.has_key(self.active["xref"]):
+         raise Exception([{'name':'EXTRACT::addExtract','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
+      self.dids.update({ self.active["xref"]:{} })
+      self.code = self.active["code"]
+      return self.active["target"]
+
+   def addCFG(self,cfgname,cfg):
+      self.active['cfg'] = cfgname
+      if not self.active["code"] in cfg['MODULES'].keys():
+         print '... do not know about:' + self.active["code"] + ' in configuration:' + cfgname
+         return False
+      self.active['safe'] = path.join( path.join(self.active['path'],self.active["xref"]),cfgname )
+      self.dids[self.active["xref"]].update( { cfgname: {
+         'target': self.active["target"],
+         'safe': self.active['safe'],
+         'code': self.active["code"],
+         "links": {},
+         'path': self.active['path'],
+         'title': self.active["title"],
+         'cmaps': path.join(cfg['PWD'],'ColourMaps')
+         } } )
+      return True
+
+   def updateCFG(self,d): self.dids[self.active["xref"]][self.active['cfg']].update( d )
+
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #   Available Extracts
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   def readCSV(self,doextract):
+      xref = self.active["xref"]; cfgname = self.active['cfg']
+      active = self.dids[xref][cfgname]
+      if self.active["reference"] != '':
+         csvFile = path.join(doextract[self.active["reference"]][cfgname]['safe'],self.active["target"])
+      else : csvFile = path.join(self.active['path'],self.active["target"])
+      print '    +> reading your csv file :', self.active["target"]
+      self.dids[xref][cfgname]['csv']= [csvFile]
+      return csvFile
+
+   def runEXE(self):
+      xref = self.active["xref"]; cfgname = self.active['cfg']
+      active = self.dids[xref][cfgname]
+      exeFile = path.join(self.active['path'],self.active["target"])
+      copyFile(exeFile,self.active['safe'])
+      for file in self.active['dependency'].split(';'):
+         copyFile(file,self.active['safe'])
+      os.chdir(self.active['safe'])
+      print '    +> running your exe file :', self.active["target"],'\n'
+      os.system(self.active["target"])
+      
+   def runPYTHON(self):
+      xref = self.active["xref"]; cfgname = self.active['cfg']
+      active = self.dids[xref][cfgname]
+      pythonFile = path.join(self.active['path'],self.active["target"])
+      copyFile(pythonFile,self.active['safe'])
+      for file in self.active['dependency'].split(';'):
+         copyFile(file,self.active['safe'])
+      os.chdir(self.active['safe'])
+      print '    +> running your python script :', self.active["target"],'\n'
+      subprocess.check_call(self.active["target"] ,shell = True) 
+      if self.active["code"]=="postel3d":
+         self.dids[xref][cfgname]['output']= []
+         for filenames in walk(self.active['safe']) :
+            for file in filenames[2] :
+               if 'old' not in file.split('.') :
+                  if 'hor' in file.split('_'): 
+                     self.dids[xref][cfgname]['output'].append(path.join(filenames[0],file))
+                  if 'ver' in file.split('_'): 
+                     self.dids[xref][cfgname]['output'].append(path.join(filenames[0],file))   
+               elif 'old' in file.split('.') : continue      
+      return
+            
 # _____                      _______________________________________
 # ____/ Primary Class: PLOT /______________________________________/
-#
+#            
+
 class PLOT:
 
    def __init__(self,title='',bypass=True):
@@ -336,7 +434,7 @@ class PLOT:
       drawing = { "type":'', "xref":'', "deco": 'line', "size":'[10;10]',
          "time": '[-1]', "extract": '', "vars": '', "roi": '',
          "title": '', "config": 'distinct', 'outFormat': 'png',
-         'layers':[] }     # draw includes an array of layers
+         'layers':[],"columns":'[0;1]'}     # draw includes an array of layers
       try:
          i = getXMLKeys(draw,drawing)
       except Exception as e:
@@ -354,7 +452,8 @@ class PLOT:
       # ~~> set default from the upper drawer
       layering = { "vars":self.drawing["vars"], "time":self.drawing["time"],
          "extract":self.drawing["extract"], "target":'',
-         "title":'', "config":self.drawing["config"] }
+         "title":'', "config":self.drawing["config"],
+         "columns":self.drawing["columns"]}
       # ~~> reset from layer
       try:
          self.layering = getXMLKeys(layer,layering)
@@ -397,14 +496,20 @@ class PLOT:
                   layers.update({ cfg:[j,k[3],k[5]] })
                   cfgFound  = True
          if not cfgFound and dido[cfg].has_key('output'):
-            for i,j,k in dido[cfg]['output']:
-               k = k.split(';')
-               if src in k[1]:               # filename, fileForm, fileType
-                  # /!\ Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
-                  if k[5] =='SCAL': k[5] = k[1]
-                  # \!/
-                  layers.update({ cfg:[j,k[3],k[5]] })
-                  cfgFound = True
+            if dido[cfg]['code'] == 'postel3d':
+               for file in dido[cfg]['output']:
+                  if src == path.basename(file) :
+                     layers.update({ cfg:[[file],'','SELAFIN'] })
+                     cfgFound = True 
+            else :
+               for i,j,k in dido[cfg]['output']:
+                  k = k.split(';')
+                  if src in k[1]:               # filename, fileForm, fileType
+                     # /!\ Temporary fix because TOMAWAC's IOs names are not yet standard TELEMAC
+                     if k[5] =='SCAL': k[5] = k[1]
+                     # \!/
+                     layers.update({ cfg:[j,k[3],k[5]] })
+                     cfgFound = True
          oneFound = oneFound or cfgFound
       if not oneFound:
          raise Exception([{'name':'PLOT::findLayerConfig','msg':'did not find the file to draw: '+src}])
@@ -551,17 +656,84 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
            #      xcpt.append(filterMessage({'name':'runXML','msg':'   +> compile'},e,bypass))
 
             # ~~> Action type E. Running CAS files
+            #cpu=[]
             if "run" in doable.split(';'):
                try:
                   do.runCAS(xmlConfig[cfgname]['options'],cfg,cfg['REBUILD'])
                except Exception as e:
                   xcpt.append(filterMessage({'name':'runXML','msg':'   +> run'},e,bypass))
+           
 
    # ~~ Extraction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # did has all the IO references and the latest sortie files
    if postprocess != False :
+      doextract = EXTRACT(xmlFile,title,bypass)
+      first = True
+      for extract in xmlRoot.findall("extract"):
+         if first:
+            print '\n... looping through the extract todo list'
+            first = False
 
-   # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     # ~~ Step 1. Common check for keys and CAS file ~~~~~~~~~~~~~~
+         try:
+            doadd = doextract.addExtract(extract)
+         except Exception as e:
+            xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
+            continue
+            
+         for cfgname in xmlConfig.keys():
+            extractcfg = xmlConfig[cfgname]['cfg']
+            if not doextract.addCFG(cfgname,cfg): continue
+         
+            createDirectories(doextract.active['safe'])
+         
+            doable = xmlConfig[cfgname]['options'].do
+            if doable == '': doable = doextract.active["do"]
+            if doable == '': doable = doextract.available
+            display = display or xmlConfig[cfgname]['options'].display
+            for actionXREF in do.dids.keys(): racine = do.dids[actionXREF][cfgname]['path']
+
+            if "readCSV" in doable.split(';'):
+               os.chdir(racine)
+               try:
+                  csvFile = doextract.readCSV(doextract.dids)
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> readCSV'},e,bypass))
+
+            if "runEXE" in doable.split(';'):
+               os.chdir(racine)
+               try:                  
+                  if do.dids[actionXREF][cfgname]['links']!= {} :
+                     for code in do.dids[actionXREF][cfgname]['links'].keys():
+                        ResultFile = do.dids[actionXREF][cfgname]['links'][code]['oFS'][0][1][0]
+                        copyFile(ResultFile,doextract.active['safe'])
+                  else : ResultFile = do.dids[actionXREF][cfgname]['output'][0][1][0]
+                  copyFile(ResultFile,doextract.active['safe'])
+                  doextract.runEXE()
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> runEXE'},e,bypass))    
+
+            if "runPYTHON" in doable.split(';'):
+               os.chdir(racine)
+               try:
+                  if doextract.active["code"] == "postel3d" :
+                     ResultFile1 = do.dids[actionXREF][cfgname]['output'][1][1][0]
+                     ResultFile2 = do.dids[actionXREF][cfgname]['output'][0][1][0]
+                     copyFile(ResultFile1,doextract.active['safe'])
+                     copyFile(ResultFile2,doextract.active['safe'])
+                  elif do.dids[actionXREF][cfgname]['links']!= {} :
+                     for code in do.dids[actionXREF][cfgname]['links'].keys():
+                        ResultFile = do.dids[actionXREF][cfgname]['links'][code]['oFS'][0][1][0]
+                        copyFile(ResultFile,doextract.active['safe'])
+                  else : 
+                     ResultFile = do.dids[actionXREF][cfgname]['output'][0][1][0]
+                     copyFile(ResultFile,doextract.active['safe'])
+                  doextract.runPYTHON()
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> runPYTHON'},e,bypass))  
+
+
+      # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       plot = PLOT(title,bypass)
       first = True
       for typePlot in ["plot1d","plot2d","plot3d","plotpv"]:
@@ -587,17 +759,23 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
 
                # ~~> round up targets and their configurations
                xref,src = target.split(':')
-               if not do.dids.has_key(xref):
-                  xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+xref})
-
-               # ~~> store layer and its configuration(s)
-               try:
-                  findlayer = plot.findLayerConfig(do.dids[xref],src)
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'could not find reference to draw the action: '+xref},e))
-                  continue    # bypass the rest of the for loop
-               else:
-                  plot.targetLayer(findlayer)
+               if doextract.dids.has_key(xref): 
+                  try:
+                     findlayer = plot.findLayerConfig(doextract.dids[xref],src)
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'could not find reference to draw the extract: '+xref},e))
+                     continue    # bypass the rest of the for loop
+                  else : 
+                     plot.targetLayer(findlayer)
+               elif do.dids.has_key(xref):
+                  try:
+                     findlayer = plot.findLayerConfig(do.dids[xref],src)
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'could not find reference to draw the action: '+xref},e))
+                     continue    # bypass the rest of the for loop
+                  else : 
+                     plot.targetLayer(findlayer)
+               else : xcpt.append({'name':'runXML','msg':'could not find reference to draw the action: '+xref})      
             plot.update(plot.drawing)
 
       # ~~ Matrix distribution by plot types ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -652,17 +830,16 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
                for layer,cfgs in zip(draw["layers"],cfglist.split(';')):
                   for cfg in cfgs.split(':'):
                      for file in layer['fileName'][cfg][0]:
-
                         # ~~ 1d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         if typePlot == "plot1d":
                            #print typePlot,' ... drawing'
                            figure.draw( layer['fileName'][cfg][2], { 'file': file,
                               'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
-                              'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0] } )
+                              'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0],#})
+                              'columns':parseArrayPaires(layer["columns"])})
 
                         # ~~ 2d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         if typePlot == "plot2d":  # so far no plot type, but this may change
-                           #print typePlot,' ... drawing'
                            figure.draw( layer['fileName'][cfg][2], { 'file': file,
                               'roi': parseArrayPaires(draw['roi']),
                               'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
