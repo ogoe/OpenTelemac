@@ -24,13 +24,21 @@
        code="artemis" target="art_breach.cas"
        title="breach scalar mode"
    /> 
+
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    /!\ This section is being ignored at the moment -->
+   
+   <extract xref="exp" code="artemis"
+       do="readCSV" target="experiment.csv"
+       title="breach experiment data"
+   />
+ 
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
    <plot1d xref="Section" type="v-section" config="together" size="[10;7]" > 
       <layer vars="wave height:line" extract="[0;915][1800;915]" target="1:ARTRES"  time="[0]" /> 
+      <layer columns="[0;1]" target="exp:csv" />
    </plot1d>
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
