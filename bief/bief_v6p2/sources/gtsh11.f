@@ -58,8 +58,11 @@
 !
       INTEGER, INTENT(IN)             :: NPOIN,NELEM,NELMAX,NSEG
       INTEGER, INTENT(IN)             :: IKLE(NELMAX,*),ELTCAR(NPOIN)
-      INTEGER, INTENT(INOUT)          :: ELT(NPOIN)
-      DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPOIN)
+!                                            NPOIN
+!                                            NPOIN+NELEM
+!                                            NPOIN+NSEG
+      INTEGER, INTENT(INOUT)          :: ELT(*)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,*)
       LOGICAL, INTENT(IN)             :: QUAB,QUAD
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
