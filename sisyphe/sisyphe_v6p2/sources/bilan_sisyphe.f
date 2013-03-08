@@ -3,10 +3,10 @@
 !                    ************************
 !
      &(E,ESOMT,MESH,MSK,MASKEL,T1,T2,S,IELMU,VCUMU,DT,NPTFR,
-     & INFO,ZFCL_C,ZFCL_S,
+     & INFO,ZFCL_C,ZFCL_S,ZFCL_MS,
      & QSCLXC,QSCLYC,NSICLA,VOLTOT,DZF_GF,MASS_GF,LGRAFED,
      & NUMLIQ,NFRLIQ,FLBCLA,VF,LT,NIT,NPOIN,VOLU2D,CSF_SABLE,MASDEP,
-     & MASDEPT,SUSP)
+     & MASDEPT,CHARR,SUSP,SLIDE)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -82,6 +82,7 @@
 !| VOLU2D         |-->| INTEGRAL OF TEST FUNCTIONS (NOT ASSEMBLED IN //)
 !| ZFCL_C         |<->| BEDLOAD EVOLUTION FOR EACH SEDIMENT CLASS
 !| ZFCL_S         |<->| SUSPENDED LOAD EVOLUTION FOR EACH SEDIMENT CLASS
+!| ZFCL_MS        |<->| SLIDE EVOLUTION FOR EACH SEDIMENT CLASS
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
@@ -96,7 +97,7 @@
       INTEGER, INTENT(IN)          :: NPTFR,NFRLIQ,IELMU,NSICLA,LT,NIT
       INTEGER, INTENT(IN)          :: NPOIN,NUMLIQ(NPTFR)
       DOUBLE PRECISION, INTENT(IN) :: DT
-      LOGICAL, INTENT(IN)          :: MSK,INFO,VF,SUSP
+      LOGICAL, INTENT(IN)          :: MSK,INFO,VF,SUSP,SLIDE,CHARR
 !
       LOGICAL, INTENT(IN)          :: LGRAFED
       DOUBLE PRECISION, INTENT(INOUT) :: MASS_GF,VCUMU
@@ -110,6 +111,7 @@
 !
       TYPE(BIEF_OBJ), INTENT(IN)    :: MASKEL,S,ZFCL_C,QSCLXC,QSCLYC
       TYPE(BIEF_OBJ), INTENT(IN)    :: E,ESOMT,DZF_GF,VOLU2D,ZFCL_S
+      TYPE(BIEF_OBJ), INTENT(IN)    :: ZFCL_MS
       TYPE(BIEF_OBJ), INTENT(INOUT) :: T1,T2,FLBCLA
 !
 !-----------------------------------------------------------------------
@@ -154,11 +156,16 @@
 !
 !     COMPUTES THE FLUXES AT THE BOUNDARIES
 !
-      CALL OS('X=Y     ',X=T1,Y=FLBCLA%ADR(1)%P)
-      IF(NSICLA.GT.1) THEN
-        DO I=2,NSICLA
-          CALL OS('X=X+Y   ',X=T1,Y=FLBCLA%ADR(I)%P)
-        ENDDO
+      IF(CHARR) THEN
+        CALL OS('X=Y     ',X=T1,Y=FLBCLA%ADR(1)%P)
+        IF(NSICLA.GT.1) THEN
+          DO I=2,NSICLA
+            CALL OS('X=X+Y   ',X=T1,Y=FLBCLA%ADR(I)%P)
+          ENDDO
+        ENDIF
+      ELSE
+        CALL CPSTVC(FLBCLA%ADR(1)%P,T1)
+        CALL OS('X=0     ',X=T1)
       ENDIF
 !
       FLUXT=0.D0
@@ -196,13 +203,42 @@
 !       COMPUTES THE EVOLUTION PER CLASS
 !
         RMASCLA(ICLA)=0.D0
-        IF(SUSP) THEN
+        IF(SUSP.AND.SLIDE.AND.CHARR) THEN
+          DO I=1,NPOIN
+            RMASCLA(ICLA)=RMASCLA(ICLA)
+     &                   +( ZFCL_C%ADR(ICLA)%P%R(I)
+     &                     +ZFCL_S%ADR(ICLA)%P%R(I)
+     &                     +ZFCL_MS%ADR(ICLA)%P%R(I) )*VOLU2D%R(I)
+          ENDDO
+        ELSEIF(SLIDE.AND.CHARR) THEN
+          DO I=1,NPOIN
+            RMASCLA(ICLA)=RMASCLA(ICLA)
+     &                   +( ZFCL_C%ADR(ICLA)%P%R(I)
+     &                     +ZFCL_MS%ADR(ICLA)%P%R(I) )*VOLU2D%R(I)
+          ENDDO
+        ELSEIF(SUSP.AND.CHARR) THEN
           DO I=1,NPOIN
             RMASCLA(ICLA)=RMASCLA(ICLA)
      &                   +( ZFCL_C%ADR(ICLA)%P%R(I)
      &                     +ZFCL_S%ADR(ICLA)%P%R(I) )*VOLU2D%R(I)
           ENDDO
-        ELSE
+        ELSEIF(SUSP.AND.SLIDE) THEN
+          DO I=1,NPOIN
+            RMASCLA(ICLA)=RMASCLA(ICLA)
+     &                   +( ZFCL_S%ADR(ICLA)%P%R(I)
+     &                     +ZFCL_MS%ADR(ICLA)%P%R(I) )*VOLU2D%R(I)
+          ENDDO
+        ELSEIF(SUSP) THEN
+          DO I=1,NPOIN
+            RMASCLA(ICLA)=RMASCLA(ICLA)
+     &                   +ZFCL_S%ADR(ICLA)%P%R(I)*VOLU2D%R(I)
+          ENDDO
+        ELSEIF(SLIDE) THEN
+          DO I=1,NPOIN
+            RMASCLA(ICLA)=RMASCLA(ICLA)
+     &                   +ZFCL_MS%ADR(ICLA)%P%R(I)*VOLU2D%R(I)
+          ENDDO
+        ELSEIF(CHARR) THEN
           DO I=1,NPOIN
             RMASCLA(ICLA)=RMASCLA(ICLA)
      &                   +ZFCL_C%ADR(ICLA)%P%R(I)*VOLU2D%R(I)
@@ -213,7 +249,7 @@
 !       COMPUTES THE FREE FLUXES BY CLASS
 !
         FLUXTCLA=0.D0
-        IF(NFRLIQ.GT.0) THEN
+        IF(NFRLIQ.GT.0.AND.CHARR) THEN
           IF(NPTFR.GT.0) THEN
             DO IPTFR=1,NPTFR
               IFRLIQ=NUMLIQ(IPTFR)

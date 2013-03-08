@@ -37,8 +37,7 @@
 !
       CHARACTER C(2)
       CHARACTER(LEN=8) MOT(100)
-      INTEGER I,J,LONG,I1,I2,NMOT,L, iNTLU
-      LOGICAL OK
+      INTEGER I,J,LONG,I1,I2,NMOT
 !
       INTRINSIC LEN
 !
@@ -49,17 +48,17 @@
       C(1) = ';'
       C(2) = '|'
       LONG = LEN(INT_LIST)
-      if (LONG.EQ.0) THEN
+      IF(LONG.EQ.0) THEN
         WRITE(LU,*) 'Lecdon_SPLIT String Error'
-        call PLANTE(1)
+        CALL PLANTE(1)
         STOP
-      endif
+      ENDIF
 !
-      do I=1,LONG
-        do J=1,2
+      DO I=1,LONG
+        DO J=1,2
           if(INT_LIST(I:I).EQ.C(J)) INT_LIST(I:I) = ' '
-        enddo
-      enddo
+        ENDDO
+      ENDDO
 !
 ! 'INT_LIST' NOW IS MADE UP OF WORDS SEPARATED BY WHITE SPACES
 !
@@ -67,15 +66,15 @@
       NMOT=0
 !
  10   CONTINUE
-      if (I1.GE.LONG) GOTO 30
+      IF(I1.GE.LONG) GOTO 30
       I1=I1+1
-      if (INT_LIST(I1:I1).EQ.' ') GOTO 10
+      IF(INT_LIST(I1:I1).EQ.' ') GOTO 10
 !
       I2=0
 !
  20   CONTINUE
       I2=I2+1
-      if (INT_LIST(I1+I2:I1+I2).NE.' ') GOTO 20
+      IF(INT_LIST(I1+I2:I1+I2).NE.' ') GOTO 20
 !
       NMOT=NMOT+1
       MOT(NMOT)=INT_LIST(I1:I1+I2)
@@ -87,13 +86,13 @@
 !     Builds The POINT_ARRAY
 !
       FULLOUTPUT = .FALSE.
-      do J=1,100
+      DO J=1,100
         POINT_ARRAY(J) = -1
-      enddo
-      do J=1,NMOT
-        Read(Mot(j),* ) POINT_ARRAY(j)
-        if (POINT_ARRAY(J).eq.0) FULLOUTPUT = .TRUE.
-      enddo
+      ENDDO
+      DO J=1,NMOT
+        READ(Mot(j),* ) POINT_ARRAY(j)
+        IF (POINT_ARRAY(J).EQ.0) FULLOUTPUT = .TRUE.
+      ENDDO
 !
 !-----------------------------------------------------------------------
 !

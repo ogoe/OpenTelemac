@@ -71,7 +71,13 @@
 !+        V6P2
 !+   added bloc ZFCL_MS for evolution for each class due to sloping bed effects
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        08/03/2013
+!+        V6P3
+!+   Allocation of ZFCL_MS under condition of SLIDE.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
       USE BIEF
       USE DECLARATIONS_SISYPHE
       IMPLICIT NONE
@@ -302,16 +308,16 @@ C     FOR MIXED SEDIMENTS
       CALL ALLBLO(QBOR  , 'QBOR  ') ! BOUNDARY CONDITIONS
       CALL ALLBLO(AVAI  , 'AVAI  ') ! FRACTION OF EACH CLASS FOR THE TWO FIRST LAYERS
       CALL ALLBLO(LAYTHI, 'LAYTHI') ! LAYER THICKNESSES
-! V6P2 : concentration per layer for printout (CV)
+!     V6P2 : concentration per layer for printout (CV)
       CALL ALLBLO(LAYCONC, 'LAYCONC') ! LAYER THICKNESSES
-      !================================================================!
+!
       CALL ALLBLO(QSCL  , 'QSCL  ') ! TRANSPORT RATE FOR EACH CLASS
       CALL ALLBLO(QSCL_C, 'QSCL_C') ! BEDLOAD TRANSPORT RATE FOR EACH CLASS
       CALL ALLBLO(QSCLXC, 'QSCLXC') ! BEDLOAD TRANSPORT RATE FOR EACH CLASS ALONG X
       CALL ALLBLO(QSCLYC, 'QSCLYC') ! BEDLOAD TRANSPORT RATE FOR EACH CLASS ALONG Y
       CALL ALLBLO(ZFCL  , 'ZFCL  ') ! EVOLUTION FOR EACH CLASS
       CALL ALLBLO(ZFCL_C, 'ZFCL_C') ! EVOLUTION FOR EACH CLASS DUE TO BEDLOAD TRANSPORT
-      !================================================================!
+!
       CALL ALLBLO(CBOR  , 'CBOR  ') ! BOUNDARY CONDITIONS
       CALL ALLBLO(QSCL_S, 'QSCL_S') ! SUSPENDED TRANSPORT RATE FOR EACH CLASS
       CALL ALLBLO(QSCLXS, 'QSCLXS') ! SUSPENDED TRANSPORT RATE FOR EACH CLASS ALONG X
@@ -324,11 +330,10 @@ C     FOR MIXED SEDIMENTS
       CALL ALLBLO(CS    , 'CS    ') ! CONCENTRATION AT TIME N
       CALL ALLBLO(CTILD , 'CTILD ') ! CONCENTRATION AT TIME N+1/2 (=> ADVECTION STEP)
       CALL ALLBLO(CST   , 'CST   ') ! CONCENTRATION AT TIME N+1   (=> RESULT)      
-      !================================================================!
-! V6p2 (CV)
+!
+!     V6p2 (CV)
       CALL ALLBLO(ZFCL_MS, 'ZFCL_MS') ! EVOLUTION FOR EACH CLASS DUE TO SLOPING BED EFFECTS
 !
-      !================================================================!
       CALL BIEF_ALLVEC_IN_BLOCK(MASKTR,5     ,1,'MSKTR ',IELBT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(EBOR  ,NSICLA,1,'EBOR  ',IELBT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QBOR  ,NSICLA,1,'QBOR  ',IELBT,1,2,MESH)
@@ -342,7 +347,7 @@ C     FOR MIXED SEDIMENTS
 !                  RELEVANT SECTIONS OF AVAIL
 !
       CALL BIEF_ALLVEC_IN_BLOCK(AVAI,NOMBLAY*NSICLA,
-     *                          1,'AVAI  ',    0,1,0,MESH)
+     *                          1,'AVAI  ',0,1,0,MESH)
       DO I=1,NSICLA
         DO K=1,NOMBLAY
           AVAI%ADR(K+(I-1)*NOMBLAY)%P%R=>AVAIL(1:NPOIN,K,I)
@@ -353,34 +358,29 @@ C     FOR MIXED SEDIMENTS
 !
 !     LAYTHI ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
 !
-      CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,
-     *                          1, 'LAYTHI',     0, 1, 0,MESH)
+      CALL BIEF_ALLVEC_IN_BLOCK(LAYTHI,NOMBLAY,1,'LAYTHI',0,1,0,MESH)
       DO K=1,NOMBLAY
         LAYTHI%ADR(K)%P%R=>ES(1:NPOIN,K)
         LAYTHI%ADR(K)%P%MAXDIM1=NPOIN
         LAYTHI%ADR(K)%P%DIM1=NPOIN
       ENDDO
 !
-C     LAYCONC ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
-!CV V6P2
+!     LAYCONC ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
 !
-      CALL BIEF_ALLVEC_IN_BLOCK(LAYCONC,NOMBLAY,
-     *                          1, 'LAYCONC',     0, 1, 0,MESH)
+      CALL BIEF_ALLVEC_IN_BLOCK(LAYCONC,NOMBLAY,1,'LAYCONC',0,1,0,MESH)
       DO K=1,NOMBLAY
         LAYCONC%ADR(K)%P%R=>CONC(1:NPOIN,K)
         LAYCONC%ADR(K)%P%MAXDIM1=NPOIN
         LAYCONC%ADR(K)%P%DIM1=NPOIN
       ENDDO
 !
-!
-      !================================================================!
       CALL BIEF_ALLVEC_IN_BLOCK(QSCL  ,NSICLA,1,'QSCL  ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QSCL_C,NSICLA,1,'QSCL_C',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QSCLXC,NSICLA,1,'QSCLXC',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QSCLYC,NSICLA,1,'QSCLYC',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(ZFCL  ,NSICLA,1,'ZFCL  ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(ZFCL_C,NSICLA,1,'ZFCL_C',IELMT,1,2,MESH)
-      !================================================================!
+!
       CALL BIEF_ALLVEC_IN_BLOCK(CBOR  ,NSICLA,1,'CBOR  ',IELBT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QSCL_S,NSICLA,1,'QSCL_S',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(QSCLXS,NSICLA,1,'QSCLXS',IELMT,1,2,MESH)
@@ -393,40 +393,41 @@ C     LAYCONC ALLOCATED WITH SIZE 0 AND POINTING TO RELEVANT SECTIONS OF ES
       CALL BIEF_ALLVEC_IN_BLOCK(CS    ,NSICLA,1,'CS    ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(CTILD ,NSICLA,1,'CTILD ',IELMT,1,2,MESH)
       CALL BIEF_ALLVEC_IN_BLOCK(CST   ,NSICLA,1,'CST   ',IELMT,1,2,MESH)
-      !================================================================!
-! V6p2
-      CALL BIEF_ALLVEC_IN_BLOCK(ZFCL_MS,NSICLA,1,
-     *                              'ZFCL_MS',IELMT,1,2,MESH)
+!
+      IF(SLIDE) THEN
+        CALL BIEF_ALLVEC_IN_BLOCK(ZFCL_MS,NSICLA,1,
+     *                            'ZFCLMS',IELMT,1,2,MESH)
+      ELSE
+        CALL BIEF_ALLVEC_IN_BLOCK(ZFCL_MS,NSICLA,1,
+     *                            'ZFCLMS',    0,1,0,MESH)
+      ENDIF
+!
+!     ************* 
+!     VI - MATRICES 
+!     ************* 
 !
 !
-!     ************* !
-!     VI - MATRICES !
-!     ************* !
-!
-!
-      !================================================================!
       CALL BIEF_ALLMAT(AM1_S,'AM1_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
       CALL BIEF_ALLMAT(AM2_S,'AM2_S ',IELMT,IELMT,CFG   ,'Q','Q',MESH) ! SUSPENSION WORK MATRIX
       CALL BIEF_ALLMAT(MBOR ,'MBOR  ',IELBT,IELBT,CFGBOR,'Q','Q',MESH) ! SUSPENSION BOUNDRAY MATRIX
-      !================================================================!
-
-
-      ! ****************** !
-      ! VII - OTHER ARRAYS !
-      ! ****************** !
 !
-C     NTR SHOULD AT LEAST BE THE NUMBER OF VARIABLES IN VARSOR THAT WILL BE READ IN
-C     VALIDA. HERE UP TO THE LAYER THICKNESSES
-CV 2010 +1
-CV V6P2 
-C      NTR   = 27+(NOMBLAY+4)*NSICLA+NOMBLAY+NPRIV
+!
+!     ****************** 
+!     VII - OTHER ARRAYS 
+!     ****************** 
+!
+!     NTR SHOULD AT LEAST BE THE NUMBER OF VARIABLES IN VARSOR THAT WILL BE READ IN
+!     VALIDA. HERE UP TO THE LAYER THICKNESSES
+!
+!     CV V6P2 
+!     NTR   = 27+(NOMBLAY+4)*NSICLA+NOMBLAY+NPRIV
       NTR   = 27+(NOMBLAY+4)*NSICLA+2*NOMBLAY+NPRIV
       IF(SLVSED%SLV == 7) NTR = MAX(NTR,2+2*SLVSED%KRYLOV)
       IF(SLVTRA%SLV == 7) NTR = MAX(NTR,2+2*SLVTRA%KRYLOV)
       IF(3*(SLVSED%PRECON/3) == SLVSED%PRECON) NTR = NTR + 2 ! IF PRECOND. BLOC-DIAG (+2 DIAG)
       IF(3*(SLVTRA%PRECON/3) == SLVTRA%PRECON) NTR = NTR + 2 ! IF PRECOND. BLOC-DIAG (+2 DIAG)
 !
-C     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
+!     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
       CALL BIEF_ALLVEC(1, W1 , 'W1    ', IELM0    , 1,1,MESH) ! WORK ARRAY
       CALL BIEF_ALLVEC(1, TE1, 'TE1   ', IELM0_SUB, 1,1,MESH) ! WORK ARRAY BY ELEMENT
       CALL BIEF_ALLVEC(1, TE2, 'TE2   ', IELM0_SUB, 1,1,MESH) ! WORK ARRAY BY ELEMENT
@@ -440,12 +441,11 @@ C     W1 NO LONGER USED (IS SENT TO CVDFTR BUT CVDFTR DOES NOTHING WITH IT)
       CALL BIEF_ALLVEC_IN_BLOCK(VARCL,NVARCL,1,'CL    ',IELMT,1,2,MESH)
       IF(NPRIV.GT.0) THEN
         CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,MAX(NPRIV,4),
-     *                            1,'PRIV  ',IELMT,1, 2,MESH)
+     *                            1,'PRIV  ',IELMT,1,2,MESH)
       ELSE
-        CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,4           ,
-     *                            1,'PRIV  ',    0,1, 0,MESH)
+        CALL BIEF_ALLVEC_IN_BLOCK(PRIVE,4,1,'PRIV  ',0,1,0,MESH)
       ENDIF
-C     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
+!     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILES
       CALL OS('X=0     ',X=PRIVE)
 !
       ! ************ !
@@ -467,9 +467,9 @@ C     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
       T13  => TB%ADR(13)%P ! WORK ARRAY
       T14  => TB%ADR(14)%P ! WORK ARRAY
 !
-      ! ****************************************************************** !
-      ! IX - ALLOCATES A BLOCK CONNECTING A VARIABLE NAME TO ITS ARRAY     !
-      ! ****************************************************************** !
+!     **************************************************************
+!     IX - ALLOCATES A BLOCK CONNECTING A VARIABLE NAME TO ITS ARRAY
+!     **************************************************************
 !
       CALL ALLBLO(VARSOR, 'VARSOR')
       CALL ADDBLO(VARSOR, U2D    )            ! 01
@@ -492,65 +492,64 @@ C     TO AVOID WRITING NON-INITIALISED ARRAYS TO FILE
       CALL ADDBLO(VARSOR, ESOMT )             ! 18
       CALL ADDBLO(VARSOR, KS)                 ! 19
       CALL ADDBLO(VARSOR, MU)                 ! 20
-CV 2010
+!     CV 2010
       CALL ADDBLO(VARSOR, ACLADM)             ! 21
-C CV +1
+! CV +1
 ! JWI 31/05/2012 - added line to include wave orbital velocities
       CALL ADDBLO(VARSOR, UW  )               ! 22
 ! JWI END
-C     AVAI: FROM 23 TO 22+NOMBLAY*NSICLA
-C
+!     AVAI: FROM 23 TO 22+NOMBLAY*NSICLA
+!
       DO I = 1,NOMBLAY*NSICLA
         CALL ADDBLO(VARSOR, AVAI%ADR(I)%P)
       ENDDO
-C CV +1
-C     QSCL: FROM 23+NOMBLAY*NSICLA TO 22+(NOMBLAY+1)*NSICLA
-C
+! CV +1
+!     QSCL: FROM 23+NOMBLAY*NSICLA TO 22+(NOMBLAY+1)*NSICLA
+!
       DO I = 1, NSICLA
         CALL ADDBLO(VARSOR, QSCL%ADR(I)%P)
       ENDDO
-C
-C     CS: FROM 23+(NOMBLAY+1)*NSICLA TO 22+(NOMBLAY+2)*NSICLA
-C
+!
+!     CS: FROM 23+(NOMBLAY+1)*NSICLA TO 22+(NOMBLAY+2)*NSICLA
+!
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR, CS%ADR(I)%P)
       ENDDO
-CV 2010 ! +1      
+!     CV 2010 ! +1      
       CALL ADDBLO(VARSOR,QS_C)               ! 23+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSXC)               ! 24+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSYC)               ! 25+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QS_S)               ! 26+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSXS)               ! 27+(NOMBLAY+2)*NSICLA
       CALL ADDBLO(VARSOR,QSYS)               ! 28+(NOMBLAY+2)*NSICLA
-C
-C     QSCL_C: FROM 29+(NOMBLAY+2)*NSICLA TO 28+(NOMBLAY+3)*NSICLA
-C
+!
+!     QSCL_C: FROM 29+(NOMBLAY+2)*NSICLA TO 28+(NOMBLAY+3)*NSICLA
+!
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR,QSCL_C%ADR(I)%P)
       ENDDO
-C
-C     QSCL_S: FROM 29+(NOMBLAY+3)*NSICLA TO 28+(NOMBLAY+4)*NSICLA
-C
+!
+!     QSCL_S: FROM 29+(NOMBLAY+3)*NSICLA TO 28+(NOMBLAY+4)*NSICLA
+!
       DO I=1,NSICLA
         CALL ADDBLO(VARSOR,QSCL_S%ADR(I)%P)
       ENDDO
-C
-C     LAYTHI: FROM 29+(NOMBLAY+4)*NSICLA TO 28+(NOMBLAY+4)*NSICLA+NOMBLAY
-C
+!
+!     LAYTHI: FROM 29+(NOMBLAY+4)*NSICLA TO 28+(NOMBLAY+4)*NSICLA+NOMBLAY
+!
       DO I=1,NOMBLAY
         CALL ADDBLO(VARSOR,LAYTHI%ADR(I)%P) 
       ENDDO
-C
-CV V6P2: CONC FROM  29+(NOMBLAY+4)*NSICLA+NOMBLAY TO 28+(NOMBLAY+4)*NSICLA+2*NOMBLAY
-C
+!
+!CV   V6P2: CONC FROM  29+(NOMBLAY+4)*NSICLA+NOMBLAY TO 28+(NOMBLAY+4)*NSICLA+2*NOMBLAY
+!
       DO I=1,NOMBLAY
         CALL ADDBLO(VARSOR,LAYCONC%ADR(I)%P)
       ENDDO
-C
-C
-C     PRIVE: FROM 29+(NOMBLAY+4)*NSICLA+2*NOMBLAY TO
-C                 28+(NOMBLAY+4)*NSICLA+MAX(4,NPRIV)+2*NOMBLAY
-C
+!
+!     PRIVE: FROM 29+(NOMBLAY+4)*NSICLA+2*NOMBLAY TO
+!                 28+(NOMBLAY+4)*NSICLA+MAX(4,NPRIV)+2*NOMBLAY
+!
       DO I=1,MAX(4,NPRIV)
         CALL ADDBLO(VARSOR,PRIVE%ADR(I)%P)
       ENDDO
@@ -562,11 +561,10 @@ C
 ! CV   V6P2   ??    
 ! JWI 31/05/2012 - added 1 to include wave orbital velocities
 !         SORLEO(27+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+NOMBLAY+I)=.TRUE.
-           SORLEO(28+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY+I)=.TRUE.
+          SORLEO(28+MAX(4,NPRIV)+NSICLA*(NOMBLAY+4)+2*NOMBLAY+I)=.TRUE.
 ! JWI END
         ENDDO
       ENDIF
-!
 !
 !-----------------------------------------------------------------------
 ! !JAJ #### IF REQUIRED, HERE WE CAN READ THE INPUT SECTIONS FILE
@@ -614,5 +612,3 @@ C-----------------------------------------------------------------------
 C
       RETURN
       END
-C
-C######################################################################

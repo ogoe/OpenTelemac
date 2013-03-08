@@ -9,12 +9,12 @@
      & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   31/07/2012
+! SISYPHE   V6P3                                   31/07/2012
 !***********************************************************************
 !
-!brief
+!brief  The real main program of Sisyphe, with the time loop.
 !
-!history  C. LENORMANT; J.-M. HERVOUET; C. MACHET; C. VILLARET; U. MERKEL; R. KOPMANN
+!history  C. LENORMANT; J-M HERVOUET; C. MACHET; C. VILLARET; U. MERKEL; R. KOPMANN
 !+        20/03/2011
 !+        V6P1
 !+
@@ -51,20 +51,25 @@
 !+        V6P2
 !+   updated version with HRW's development (wave orbital velocities) + Soulsby-van Rijn's concentration
 !
-!history CV (LNHE) 
-!+ 		 12/06/2012
-!+       V6P2 
-!+    added AT0 to CALL CONLIT(MESH%NBOR%I,AT0)
+!history  CV (LNHE) 
+!+        12/06/2012
+!+        V6P2 
+!+   added AT0 to CALL CONLIT(MESH%NBOR%I,AT0)
 !
-!history CV (LNHE) 
-!+       02/07/2012 
-!+       V6P2 
-!+ DT changed to DTS in CALL FLUSEC_SISYPHE
+!history  CV (LNHE) 
+!+        02/07/2012 
+!+        V6P2 
+!+   DT changed to DTS in CALL FLUSEC_SISYPHE
 !
-!history CV (LNHE) 
-!+       28/08/2012 
-!+       V6P2 
-!+ modification call to init_sediment and suspension_main
+!history  CV (LNHE) 
+!+        28/08/2012 
+!+        V6P2 
+!+   Modification call to init_sediment and suspension_main
+!
+!history  J-M HERVOUETEDF R&D, LNHE) 
+!+        08/03/2013 
+!+        V6P3 
+!+   Adding multiclass treatment in slides.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
@@ -104,7 +109,7 @@
 !| ZF_SIS         |<->| BOTTOM ELEVATION SENT TO TELEMAC
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-! CV      USE INTERFACE_SISYPHE, EX_SISYPHE => SISYPHE
+      USE INTERFACE_SISYPHE, EX_SISYPHE => SISYPHE
       USE BIEF
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
@@ -150,16 +155,14 @@
       DOUBLE PRECISION   :: AT,VCUMU,MASS_GF
       DOUBLE PRECISION   :: HIST(1)
       LOGICAL            :: PASS,PASS_SUSP
-      LOGICAL            :: ENTETS,CHGMSK,YAZR
+      LOGICAL            :: ENTETS,YAZR
 !
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZF,SAVEQU,SAVEQV
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEZ
-! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVEUW
-! JWI END
 !
-      ! SAVES LOCAL VARIABLES
-      ! --------------------------------
+!     SAVES LOCAL VARIABLES
+! 
       SAVE VCUMU       ! FOR THE BALANCE
       SAVE MASS_GF             ! FOR GRAIN-FEEDING
       SAVE PASS, PASS_SUSP     ! IDENTIFIES 1ST TIMESTEP
@@ -168,12 +171,12 @@
 !     NUMEN0 : 1ST RECORD TO READ
       INTEGER :: NUMEN0
 !
-      ! VARIABLES TO READ IF COMPUTATION IS CONTINUED
-      ! --------------------------------
-      ! 0 : DISCARD
-      ! 1 : READ  (SEE SUBROUTINE NOMVAR)
+!     VARIABLES TO READ IF COMPUTATION IS CONTINUED
+!     --------------------------------
+!     0 : DISCARD
+!     1 : READ  (SEE SUBROUTINE NOMVAR)
 !
-!   HYDRO + EVOLUTION
+!     HYDRO + EVOLUTION
       DATA ALIRE /1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      &            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -707,7 +710,7 @@
          CALL OS('X=1/Y   ',X=UNSV2D,Y=V2DPAR,
      &           IOPT=2,INFINI=0.D0,ZERO=1.D-12)
 !
-! START OF MODIFICATIONS FOR MIXED SEDIMENTS
+!        START OF MODIFICATIONS FOR MIXED SEDIMENTS
 !
 !        SETTING THE NON-ERODABLE BED (IT CAN BE SET BEFORE
 !                                      IF COMPUTATION CONTINUED, I.E. DEBU)
@@ -723,12 +726,13 @@
 !
          IF(DEBUG.GT.0) WRITE(LU,*) 'INIT_SEDIMENT'
          CALL INIT_SEDIMENT(NSICLA,ELAY,ZF,ZR,NPOIN,
-     &                    AVAIL,FRACSED_GF,AVA0,LGRAFED,CALWC,
-     &                    XMVS,XMVE,GRAV,VCE,XWC,FDM,CALAC,AC,
-     &                    SEDCO, ES, ES_SABLE, ES_VASE,
-     &          NCOUCH_TASS,CONC_VASE,
-     &         MS_SABLE, MS_VASE,ACLADM, UNLADM,TOCE_SABLE,
-     &         CONC,NLAYER,DEBU,MIXTE)
+     &                      AVAIL,FRACSED_GF,AVA0,LGRAFED,CALWC,
+     &                      XMVS,XMVE,GRAV,VCE,XWC,FDM,CALAC,AC,
+     &                      SEDCO,ES,ES_SABLE,ES_VASE,
+     &                      NCOUCH_TASS,CONC_VASE,
+     &                      MS_SABLE, MS_VASE,ACLADM,
+     &                      UNLADM,TOCE_SABLE,
+     &                      CONC,NLAYER,DEBU,MIXTE)
          IF(DEBUG.GT.0) WRITE(LU,*) 'END INIT_SEDIMENT'
 !
 !
@@ -1195,16 +1199,16 @@
 !         UPDATES THE BOTTOM
 !
 ! mak:
-          IF (.NOT.(STAT_MODE)) THEN
-             CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
-          END IF
+          IF(.NOT.STAT_MODE) THEN
+            CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
+          ENDIF
 ! end mak
 !     CALL OS('X=X+Y   ',X=ZF,Y=ZF_C)
 !
 !         UPDATES THE LAYERS  --> ELAY
 !
           IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
-            IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
+            IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER BEDLOAD'
             IF(VSMTYPE.EQ.0) THEN 
               CALL LAYER(ZFCL_C,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
      &                   ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
@@ -1251,9 +1255,9 @@
 !      UPDATES THE BOTTOM
 !
 ! mak:
-       IF (.NOT.(STAT_MODE)) THEN
-          CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
-       END IF
+       IF(.NOT.STAT_MODE) THEN
+         CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
+       ENDIF
 ! end mak
 !       CALL OS('X=X+Y   ',X=ZF,Y=ZF_S)
 !
@@ -1262,16 +1266,16 @@
 !      EXTENDED GRANULOMETRY (TO BE REPLACED WITH NOMBLAY>1
 !
         IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
-          IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER'
-          IF (VSMTYPE.eq.0) THEN !UHM
-          CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
-     &               ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
-     &               AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          ELSE !UHM
-          CALL CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
-     &               ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
-     &               AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
-          ENDIF ! UHM
+          IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER SUSPENSION'
+          IF(VSMTYPE.EQ.0) THEN 
+            CALL LAYER(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+          ELSE 
+            CALL CVSP_MAIN(ZFCL_S,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                     ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                     AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+          ENDIF 
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
         ELSE
           CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
@@ -1282,7 +1286,7 @@
 ! RECONSTITUTES THE BEDLOAD AND/OR SUSPENSION DATA
 ! -----------------------------------------------------
 !
-        IF( DEBUG.GT.0) WRITE(LU,*) 'QS_RESULT'
+        IF(DEBUG.GT.0) WRITE(LU,*) 'QS_RESULT'
 !
         DO I = 1, NSICLA
           CALL OS('X=Y+Z   ',X=T1,Y=QSCLXC%ADR(I)%P,Z=QSCLXS%ADR(I)%P)
@@ -1308,17 +1312,27 @@
         IF(ENTET) CALL ENTETE_SISYPHE(14,AT0,LT)
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE MAXSLOPE'
-        CALL MAXSLOPE(PHISED,ZF%R,ZR%R,MESH%XEL%R,MESH%YEL%R,MESH%NELEM,
-     &                MESH%NELMAX,NPOIN,MESH%IKLE%I,T1,UNSV2D,MESH)
+        CALL MAXSLOPE(PHISED,ZF%R,ZR%R,MESH%XEL%R,MESH%YEL%R,
+     &                MESH%NELEM,
+     &                MESH%NELMAX,NPOIN,MESH%IKLE%I,T1,UNSV2D,MESH,
+     &                ZFCL_MS,AVAIL,NOMBLAY,NSICLA)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE MAXSLOPE'
         CALL OS('X=X+Y   ',X=ZF,Y=T1)
 !
-        IF(NSICLA.EQ.1) THEN
-          CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
+        IF(.NOT.MIXTE.AND.NSICLA.GT.1) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'LAYER AFTER SLIDE'
+          IF(VSMTYPE.EQ.0) THEN 
+            CALL LAYER(ZFCL_MS,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                 ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                 AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+          ELSE 
+            CALL CVSP_MAIN(ZFCL_MS,NLAYER,ZR,ZF,ESTRAT,ELAY,VOLU2D,
+     &                     ACLADM,NSICLA,NPOIN,ELAY0,VOLTOT,ES,
+     &                     AVAIL,CONST_ALAYER,DTS,T2%R,IT1%I)
+          ENDIF 
+          IF(DEBUG.GT.0) WRITE(LU,*) 'END_LAYER'
         ELSE
-          WRITE(LU,*) 'SLIDE NOT IMPLEMENTED WITH GRADED SEDIMENT'
-          CALL PLANTE(1)
-          STOP
+          CALL OS('X=Y-Z   ',X=ELAY,Y=ZF,Z=ZR)
         ENDIF
 !
       ENDIF
@@ -1358,9 +1372,9 @@ C!!! ONLY FOR ONE CLASS
 !       UPDATES ZF (ELAY HAS BEEN UPDATED IN TASSEMENT)
 !
 ! mak:
-       IF (.NOT.(STAT_MODE)) THEN
+       IF(.NOT.STAT_MODE) THEN
           CALL OS('X=X+Y   ',X=ZF,Y=T3)
-       END IF
+       ENDIF
 ! end mak
 !        CALL OS('X=X+Y   ',X=ZF,Y=T3)
 !
@@ -1389,9 +1403,9 @@ C!!! ONLY FOR ONE CLASS
         IF(PART.EQ.-1) THEN
 !
 ! mak:
-       IF (.NOT.(STAT_MODE)) THEN
-          CALL OS('X=X-Y   ',X=HN,Y=E)
-       END IF
+       IF(.NOT.STAT_MODE) THEN
+         CALL OS('X=X-Y   ',X=HN,Y=E)
+       ENDIF
 ! end mak
 !      CALL OS('X=X-Y   ',X=HN,Y=E)
         IF(OPTBAN.GT.0) THEN
@@ -1444,14 +1458,15 @@ C!!! ONLY FOR ONE CLASS
 !       COMPUTES THE COMPONENTS OF SAND TRANSPORT FOR THE MASS BALANCE,
 !       GRAPHIC OUTPUTS AND VALIDATION STAGE
 !
-        IF(BILMA.AND.CHARR) THEN
+        IF(BILMA) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'BILAN_SISYPHE'
           CALL BILAN_SISYPHE(E,ESOMT,MESH,MSK,MASKEL,T1,T2,S,
      &                       IELMU_SIS,VCUMU,DTS,NPTFR,ENTETS,
-     &                       ZFCL_C,ZFCL_S,
+     &                       ZFCL_C,ZFCL_S,ZFCL_MS,
      &                       QSCLXC,QSCLYC,NSICLA,VOLTOT,DZF_GF,MASS_GF,
      &                       LGRAFED,NUMLIQ%I,NFRLIQ,FLBCLA,VF,LT,NIT,
-     &                       NPOIN,VOLU2D,CSF_SABLE,MASDEP,MASDEPT,SUSP)
+     &                       NPOIN,VOLU2D,CSF_SABLE,MASDEP,MASDEPT,
+     &                       CHARR,SUSP,SLIDE)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BILAN_SISYPHE'
         ENDIF
 !
@@ -1459,9 +1474,6 @@ C!!! ONLY FOR ONE CLASS
 !
         IF(NCP.GT.0) THEN
           IF(DEBUG.GT.0) WRITE(LU,*) 'FLUSEC_SISYPHE'
-!
-! correction CV 2/07/2012
-!
           CALL FLUSEC_SISYPHE(U2D,V2D,HN,
      &                        QSXC,QSYC,CHARR,QSXS,QSYS,SUSP,
      &                        MESH%IKLE%I,
@@ -1483,8 +1495,7 @@ C!!! ONLY FOR ONE CLASS
             CALL OS('X=X+Y   ', X=QV, Y=DEL_QV)
             CALL OS('X=X+Y   ', X=Z , Y=DEL_Z)
 ! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
-            IF(HOULE.AND.UW%TYPR=='Q') 
-     &      CALL OS('X=X+Y   ', X=UW, Y=DEL_UW)
+            IF(HOULE.AND.UW%TYPR=='Q') CALL OS('X=X+Y   ',X=UW,Y=DEL_UW)
 ! JWI END
           ENDIF
           CALL OS('X=Y-Z   ', X=HN, Y=Z, Z=ZF)
@@ -1508,10 +1519,9 @@ C!!! ONLY FOR ONE CLASS
         ENDIF
 !
 !       END OF THE LOOP ON SUB-TIMESTEPS NSOUS
-! ---------------------------------------------------------
-        IF(DEBUG.GT.0) WRITE(LU,*) 'SOUS_ITERATION_NEXT'
-        IF (ISOUS < NSOUS) GOTO 702
-        IF(DEBUG.GT.0) WRITE(LU,*) 'END_SOUS_ITERATION'
+!
+        IF(ISOUS.LT.NSOUS) GO TO 702
+!
 !=======================================================================
 ! : 9        PRINTS OUT EXTREME VALUES
 !=======================================================================
@@ -1638,7 +1648,7 @@ C!!! ONLY FOR ONE CLASS
 !
 !       SENDS THE NEW ZF TO TELEMAC-2D OR 3D
 !
-        IF(CODE(1:7) == 'TELEMAC') THEN
+        IF(CODE(1:7).EQ.'TELEMAC') THEN
           CALL OV ('X=Y     ', ZF_SIS%R, ZF%R, ZF%R, 0.D0, NPOIN)
         ENDIF
 !
@@ -1681,5 +1691,3 @@ C!!! ONLY FOR ONE CLASS
 !
       RETURN
       END
-!
-!

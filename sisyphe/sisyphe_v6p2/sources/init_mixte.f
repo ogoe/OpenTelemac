@@ -94,7 +94,7 @@
 !     LOCAL VARIABLES
 !
       INTEGER I,J,K,NK
-      DOUBLE PRECISION HAUTSED,TEST1
+      DOUBLE PRECISION HAUTSED
       DOUBLE PRECISION DIFF,EST
       DOUBLE PRECISION, EXTERNAL :: P_DSUM
 !
@@ -252,13 +252,13 @@
 !     
           MASVT=MASV0
           IF(MIXTE) MASST=MASS0
-	  IF (.NOT.MIXTE) THEN 
+          IF (.NOT.MIXTE) THEN 
             IF(LNG.EQ.1) WRITE(LU,1) MASV0
             IF(LNG.EQ.2) WRITE(LU,2) MASV0
-	  ELSE
+          ELSE
             IF(LNG.EQ.1) WRITE(LU,10) MASV0, MASS0
             IF(LNG.EQ.2) WRITE(LU,20) MASV0, MASS0
-	  ENDIF  
+          ENDIF  
        ENDIF                   
 !
 001   FORMAT(1X,'MASSE INITIALE DU LIT DE VASE  : ', G20.11, ' KG')
