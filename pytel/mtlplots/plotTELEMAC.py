@@ -24,6 +24,9 @@
          (re-interpolate) vectors on a regular mesh, given the roi
          (region-of-interest) and the extract (="[nx,ny]").
 """
+"""@history 08/03/2013 -- Juliette Parisi:
+         Plot1D from csv file
+"""
 """@brief
 """
 
@@ -46,13 +49,14 @@ if hide_default:
    mpl.use('Agg')
 import matplotlib.pyplot as plt
 # ~~> dependencies from within pytel/parsers
-from myplot1d import drawHistoryLines,drawPolylineLines
+from myplot1d import drawHistoryLines,drawPolylineLines,drawCSV
 from myplot2d import drawMesh2DElements,drawMeshLines, \
    drawLabeledTriContours,drawColouredTriMaps, \
    drawColouredTriVects
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent
+from parsers.parserCSV import getColumnCSV
 from parsers.parserSortie import getValueHistorySortie
 from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,parseSLF,getValuePolylineSLF,subsetVariablesSLF
 from samplers.meshes import crossMesh,xysLocateMesh
@@ -219,6 +223,13 @@ class Figure1D:
          # ~~> Deco
          # ~~> Draw data
          drawHistoryLines(plt,data,deco)
+         
+      elif 'csv' in type.lower():
+         # ~~> Load & Extract data
+         data = getColumnCSV(what['file'],what['columns'][0])
+         # ~~> Deco
+         # ~~> Draw data
+         drawCSV(plt,data,deco)   
 
       elif 'SELAFIN' in type.upper():
          # ~~> Load data

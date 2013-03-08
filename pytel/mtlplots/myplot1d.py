@@ -12,6 +12,9 @@
 """
 """@history 30/08/2011 -- Sebastien E. Bourban
 """
+"""@history 08/03/2013 -- Juliette Parisi
+         Added drawCSV
+"""
 """@brief
 """
 
@@ -20,6 +23,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
+#import matplotlib.pyplot.legend as legend
 
 # _____                   __________________________________________
 # ____/ Plotting Toolbox /_________________________________________/
@@ -77,6 +81,13 @@ def drawPolylineLines(plt,(x,ys),deco):
 
       if deco['grid']: plt.grid(True)
 
+   return
+
+def drawCSV(plt,(x,y),deco):
+
+   plt.plot(x,y,'ro',label='Experiment')
+   plt.legend()
+   if deco['grid']: plt.grid(True)
    return
 
 # _____             ________________________________________________
