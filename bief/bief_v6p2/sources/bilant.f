@@ -69,7 +69,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)            :: LT,NIT,NFRLIQ,NPTFR
-      INTEGER, INTENT(IN)            :: NUMLIQ(NFRLIQ)
+      INTEGER, INTENT(IN)            :: NUMLIQ(NPTFR)
       DOUBLE PRECISION, INTENT(IN)   :: DT,MASSOU,AGGLOT,MASS_RAIN,TRAIN
       DOUBLE PRECISION, INTENT(INOUT):: MASTRAIN
       LOGICAL, INTENT(IN)            :: INFO,MSK
