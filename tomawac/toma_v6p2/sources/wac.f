@@ -6,7 +6,7 @@
      & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC)
 !
 !***********************************************************************
-! TOMAWAC   V6P2                                   25/06/2012
+! TOMAWAC   V6P3                                   25/06/2012
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE OF TOMAWAC
@@ -148,7 +148,7 @@
       ENDIF
 !
 !.....1.4 INITIALISATION DES TABLEAUX DATE ET TIME
-!     """"""""""""""""""""""""""""""""""""""""""""
+!     
       ADC=INT(DDC*1.D-8)
       MDC=INT(DDC*1.D-6)
       JDC=INT(DDC*1.D-4)
@@ -170,7 +170,7 @@
 !
 !-----------------------------------------------------------------------
 !
-! MESH ORGANISATION - 2D LEVEL
+!     MESH ORGANISATION - 2D LEVEL
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM POUR MESH2D'
       CALL LECLIM
@@ -185,11 +185,11 @@
      &            LVMAC,IELM2,LAMBD0,SPHE,MESH,STSDER,STSTOT,1,1,EQUA)
       IF(DEBUG.GT.0) WRITE(LU,*) 'SORTIE DE INBIEF'
 !
-! EXTENSION OF IKLE2 (SEE CALL TO POST_INTERP IN PROPA)
+!     EXTENSION OF IKLE2 (SEE CALL TO POST_INTERP IN PROPA)
 !
       CALL BUILD_IKLE_EXT(IKLE_EXT%I,IKLE_EXT%DIM1,IKLE2,NELEM2)
 !
-! MESH ORGANISATION - 3D LEVEL
+!     MESH ORGANISATION - 3D LEVEL
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE LECLIM POUR MESH3D'
       CALL LECLIM
@@ -241,8 +241,10 @@
           WRITE(LU,*)'REVISED MILD SLOPE EQUATION FORMULATION'
         ENDIF
         WRITE(LU,*) '****************************************'
+!
 !    SETS UP OF THE SUBDOMAINS FOR THE FREEMSESH METHOD
 !    AND CALCULATES THE INVERSE MATRICES FOR EACH SUBDOMAIN
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FREEMESH'
         CALL FRMSET(MESH%X%R, MESH%Y%R,SNEIGB%I,SNB_CLOSE%I,
      &              NPOIN2  , MAXNSP , NRD    , NELEM2 ,
@@ -250,7 +252,7 @@
      &              SRXX%R  , SRYY%R )
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FREEMESH'
       ENDIF
-!V6P2 End diffraction
+!
 !-----------------------------------------------------------------------
 !
 ! LECTURE DE LA COTE DU FOND (ZF) SUR LE FICHIER DE GEOMETRIE

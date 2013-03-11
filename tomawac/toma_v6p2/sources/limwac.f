@@ -128,7 +128,7 @@
 !
 !   MODIFIES THE TYPE OF BOUNDARY CONDITION (OPTIONAL)
 !
-!   TO BE CODED BU THE USER
+!   TO BE CODED BY THE USER
 !
 !   LIFBOR(IPTFR)=KENT OR KSORT
 !
@@ -140,6 +140,7 @@
 !
 !     THE FIRST TIME, ALLOCATES MEMORY FOR THE USEFUL ARRAYS
 !     ---------------------------------------------------------------
+!
       IF (LT.LT.1) THEN
         NPB=1
         IF (FLAG) THEN
@@ -249,14 +250,14 @@
 !     ===========================================================
       ENDIF
 !
-!
 !     -----------------------------------------------------------------
 !     DUPLICATES THE BOUNDARY CONDITION FROM DYNAM ON ALL THE
 !     DIRECTIONS AND FREQUENCIES, IF LIQUID BOUNDARY
 !     -----------------------------------------------------------------
-      IF (FLAG .OR. LIMSPE.EQ.7 .OR. SPEULI) THEN
+!
+      IF(FLAG.OR.LIMSPE.EQ.7.OR.SPEULI) THEN
         DO IPTFR=1,NPTFR
-          IF (LIFBOR(IPTFR).EQ.KENT) THEN
+          IF(LIFBOR(IPTFR).EQ.KENT) THEN
             DO IFF=1,NF
               DO IPLAN=1,NPLAN
                 F(NBOR(IPTFR),IPLAN,IFF)=FBOR(IPTFR,IPLAN,IFF)
@@ -266,7 +267,7 @@
         ENDDO
       ELSE
         DO IPTFR=1,NPTFR
-          IF (LIFBOR(IPTFR).EQ.KENT) THEN
+          IF(LIFBOR(IPTFR).EQ.KENT) THEN
             DO IFF=1,NF
               DO IPLAN=1,NPLAN
                 F(NBOR(IPTFR),IPLAN,IFF)=FB_CTE(IPLAN,IFF)
@@ -275,6 +276,7 @@
           ENDIF
         ENDDO
       ENDIF
+!
 !-----------------------------------------------------------------------
 !
       RETURN
