@@ -1,12 +1,12 @@
-!     		     ***************************
+!     		     *******************************
                      SUBROUTINE SUSPENSION_BILAN_COH
-!                    ***************************
+!                    *******************************
 !
      &(MESH,CST,HN,ZFCL_S,MASKEL,IELMT,ITRA,LT,NIT,DT,
-     &  XMVS,MS_VASE, NOMBLAY,NPOIN,
-     &  MASSOU,MASED0,MSK,ENTET,MASTEN,MASTOU,MASINI,T1,T2,
-     &  T3,MASFIN,MASDEPT,MASDEP,AGGLOT,
-     &  VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
+     & XMVS,MS_VASE, NOMBLAY,NPOIN,
+     & MASSOU,MASED0,MSK,ENTET,MASTEN,MASTOU,MASINI,T1,T2,
+     & T3,MASFIN,MASDEPT,MASDEP,AGGLOT,
+     & VOLU2D,NUMLIQ,NFRLIQ,NPTFR,FLBORTRA)
 !
 !***********************************************************************
 ! SISYPHE   V6P3                                   13/02/2013
@@ -75,7 +75,6 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ZFCL_S,MASKEL,FLBORTRA
       TYPE(BIEF_OBJ),   INTENT(IN)    :: VOLU2D
       INTEGER,          INTENT(IN)    :: IELMT,ITRA,LT,NIT,NFRLIQ,NPTFR
-!      INTEGER,          INTENT(IN)    :: NUMLIQ(NFRLIQ), NOMBLAY,NPOIN
       INTEGER,          INTENT(IN)    :: NUMLIQ(NPTFR), NOMBLAY,NPOIN
       DOUBLE PRECISION, INTENT(IN)    :: DT,XMVS
       DOUBLE PRECISION, INTENT(IN)    :: MASSOU,MASED0,AGGLOT

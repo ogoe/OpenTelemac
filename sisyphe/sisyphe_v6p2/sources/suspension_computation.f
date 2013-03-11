@@ -308,9 +308,9 @@
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
-      ! 2/ GLOBAL VARIABLES
-      ! -------------------
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
       TYPE (SLVCFG),    INTENT(INOUT) :: SLVTRA
       TYPE (BIEF_OBJ),  INTENT(IN)    :: ZF,VOLU2D,V2DPAR,UNSV2D
       TYPE (BIEF_OBJ),  INTENT(IN), TARGET    :: HN,HN_TEL
@@ -327,10 +327,9 @@
       INTEGER,          INTENT(IN)    :: KSORT,KLOG,KINC,KNEU
       INTEGER,          INTENT(IN)    :: NFRLIQ,NSICLA,NOMBLAY
       INTEGER,          INTENT(IN)    :: DEBUG,DIRFLU
-      INTEGER,          INTENT(IN)    :: NUMLIQ(NFRLIQ)
+      INTEGER,          INTENT(IN)    :: NUMLIQ(NPTFR)
       DOUBLE PRECISION, INTENT(IN)    :: TETA_SUSP, DT, MASED0
       DOUBLE PRECISION, INTENT(IN)    :: XWC,FDM,FD90
-! FD90
       DOUBLE PRECISION, INTENT(IN)    :: CSF_SABLE,AVA(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: KARMAN, XMVE, XMVS,VCE, GRAV
       DOUBLE PRECISION, INTENT(IN)    :: VITCD,VITCE,PARTHENIADES,HMIN
@@ -349,17 +348,14 @@
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: ZFCL_S
       TYPE (BIEF_OBJ),  INTENT(IN)    :: UCONV_TEL,VCONV_TEL
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUDPT,FLUDP,FLUER,FLBORTRA
-!mak      TYPE (BIEF_OBJ),  INTENT(INOUT) :: HPROP, DISP_C, CSTAEQ
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: HPROP, DISP_C, CSTAEQ,CSRATIO
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: FLUER_VASE,TOCE_MIXTE
-      TYPE (BIEF_OBJ),  INTENT(INOUT)  :: QSCLXS,QSCLYS
-!CV
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_SABLE(NPOIN, NOMBLAY)
-      DOUBLE PRECISION,  INTENT(INOUT) :: MS_VASE(NPOIN, NOMBLAY)
+      TYPE (BIEF_OBJ),  INTENT(INOUT) :: QSCLXS,QSCLYS
+      DOUBLE PRECISION, INTENT(INOUT) :: MS_SABLE(NPOIN, NOMBLAY)
+      DOUBLE PRECISION, INTENT(INOUT) :: MS_VASE(NPOIN, NOMBLAY)
       DOUBLE PRECISION, INTENT(INOUT) :: ES_SABLE(NPOIN,NOMBLAY)
-      DOUBLE PRECISION, INTENT(INOUT) :: ES_VASE(NPOIN,NOMBLAY)
-!CV      
-      DOUBLE PRECISION, INTENT(INOUT)  :: MASFIN,MASDEPT,MASDEP
+      DOUBLE PRECISION, INTENT(INOUT) :: ES_VASE(NPOIN,NOMBLAY)     
+      DOUBLE PRECISION, INTENT(INOUT) :: MASFIN,MASDEPT,MASDEP
       DOUBLE PRECISION, INTENT(IN)    :: ZERO
       DOUBLE PRECISION, INTENT(INOUT) :: MASSOU
       DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,NOMBLAY,NSICLA)
@@ -371,14 +367,7 @@
       INTEGER,          INTENT(IN)    :: ICQ
       CHARACTER(LEN=24), INTENT(IN)   :: CODE
 !
-!======================================================================!
-!======================================================================!
-!                               PROGRAM                                !
-!======================================================================!
-!======================================================================!
-!
-! 3/ LOCAL VARIABLES
-! ------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER          :: I,K,SOLSYS_SIS,OPTVF,BID(1),RESOL_MOD,IELMT
       DOUBLE PRECISION :: TETAH,AGGLOT
