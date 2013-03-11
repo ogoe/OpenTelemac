@@ -44,36 +44,41 @@
 !history  J-M HERVOUET (LNHE)
 !+        02/08/2011
 !+        V6P1   
-!+        CALL MITTIT(18,AT,LT) changed into CALL MITTIT(19,AT,LT)
-!+        CALL MITTIT(19,AT,LT) changed into CALL MITTIT(20,AT,LT)
-!+        2 fractional steps were not correctly labelled in the listing
+!+   CALL MITTIT(18,AT,LT) changed into CALL MITTIT(19,AT,LT)
+!+   CALL MITTIT(19,AT,LT) changed into CALL MITTIT(20,AT,LT)
+!+   2 fractional steps were not correctly labelled in the listing
 !
 !history  J-M HERVOUET (LNHE)
 !+        12/08/2011
 !+        V6P2   
-!+        Calls to CHECK and BIL3D changed
+!+   Calls to CHECK and BIL3D changed
 !
 !history  J-M HERVOUET (LNHE)
 !+        02/04/2012
 !+        V6P2   
-!+        Clean restart implemented.
+!+   Clean restart implemented.
 !
 !history  J-M HERVOUET (LNHE)
 !+        01/06/2012
 !+        V6P2   
-!+        Call to vector before call to Tel4del corrected (GRAZCO)
-!+        Initialisation of TAN after call to condim.
+!+   Call to vector before call to Tel4del corrected (GRAZCO)
+!+   Initialisation of TAN after call to condim.
 !
 !history  J-M HERVOUET (LNHE)
 !+        18/129/2012
 !+        V6P3   
-!+        Call to IFAB3DT added, arguments of cstkep removed.
+!+   Call to IFAB3DT added, arguments of cstkep removed.
 !
 !history  J-M HERVOUET (LNHE)
 !+        25/01/2013
 !+        V6P3   
-!+        TAN renamed TRN, copy of TRN on TA moved from after CONDIM to
-!+        after BIEF_SUITE, FLULIM set to 1 before first call to PRECON 
+!+   TAN renamed TRN, copy of TRN on TA moved from after CONDIM to
+!+   after BIEF_SUITE, FLULIM set to 1 before first call to PRECON 
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/03/2013
+!+        V6P3   
+!+   Call to METEO modified.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -604,9 +609,9 @@
 ! INITIALISES THE METEOROLOGICAL VARIABLES
 !
       IF (VENT.OR.ATMOS) CALL METEO
-     &   (PATMOS%R, WIND%ADR(1)%P%R, WIND%ADR(2)%P%R, FUAIR, FVAIR,
-     &    X2%R, Y2%R, AT, LT, NPOIN2, VENT, ATMOS, H%R, T2_01%R,
-     &    GRAV, RHO0, 0.D0, PRIVE)
+     &   (PATMOS%R,WIND%ADR(1)%P%R,WIND%ADR(2)%P%R,FUAIR,FVAIR,
+     &    X2%R,Y2%R,AT,LT,NPOIN2,VENT,ATMOS,H%R,T2_01%R,
+     &    GRAV,RHO0,0.D0,PRIVE,T3DFO1,T3D_FILES,LISTIN)
 !
 !-----------------------------------------------------------------------
 ! INITIALISES K AND EPSILON
@@ -1240,7 +1245,7 @@
       IF (VENT.OR.ATMOS) CALL METEO
      &   (PATMOS%R, WIND%ADR(1)%P%R, WIND%ADR(2)%P%R, FUAIR, FVAIR,
      &    X2%R, Y2%R, AT, LT, NPOIN2, VENT, ATMOS, H%R, T2_01%R,
-     &    GRAV, RHO0, 0.D0, PRIVE)
+     &    GRAV, RHO0, 0.D0, PRIVE,T3DFO1,T3D_FILES,LISTIN)
 !
 !-----------------------------------------------------------------------
 !
