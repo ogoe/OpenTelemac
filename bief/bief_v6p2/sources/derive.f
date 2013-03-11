@@ -230,45 +230,49 @@
 !       IN // XFLOT AND YFLOT MAY HAVE BEEN DESTROYED BY SCARACT
 !       BECAUSE RE-USED FOR GENERATIONS OF LOST PARTICLES
 !       THEY ARE REDONE HERE FOR PARTICLES WHICH ARE STILL IN THE
-!       GLOBAL DOMAIN (TEST ISUB(IFLOT)=IPID NOT DONE, BUT COULD BE...)
+!       SUB-DOMAIN
 !
         IF(IELM.EQ.11) THEN
           DO IFLOT=1,NFLOT
-            ELT=ELTFLO(IFLOT)
-            IF(ELT.GT.0) THEN
-              N1=IKLE(ELT,1)
-              N2=IKLE(ELT,2)
-              N3=IKLE(ELT,3)
-              XFLOT(IFLOT)=SHPFLO(1,IFLOT)*X(N1)
-     &                    +SHPFLO(2,IFLOT)*X(N2)
-     &                    +SHPFLO(3,IFLOT)*X(N3)     
-              YFLOT(IFLOT)=SHPFLO(1,IFLOT)*Y(N1)
-     &                    +SHPFLO(2,IFLOT)*Y(N2)
-     &                    +SHPFLO(3,IFLOT)*Y(N3)
-            ENDIF   
+            IF(ISUB(IFLOT).EQ.IPID) THEN
+              ELT=ELTFLO(IFLOT)
+              IF(ELT.GT.0) THEN
+                N1=IKLE(ELT,1)
+                N2=IKLE(ELT,2)
+                N3=IKLE(ELT,3)
+                XFLOT(IFLOT)=SHPFLO(1,IFLOT)*X(N1)
+     &                      +SHPFLO(2,IFLOT)*X(N2)
+     &                      +SHPFLO(3,IFLOT)*X(N3)     
+                YFLOT(IFLOT)=SHPFLO(1,IFLOT)*Y(N1)
+     &                      +SHPFLO(2,IFLOT)*Y(N2)
+     &                      +SHPFLO(3,IFLOT)*Y(N3)
+              ENDIF
+            ENDIF  
           ENDDO 
         ELSEIF(IELM.EQ.41) THEN
           DO IFLOT=1,NFLOT
-            ELT=ELTFLO(IFLOT)
-            IF(ELT.GT.0) THEN       
-              N1=IKLE(ELT,1)+NPOIN2*(ETAFLO(IFLOT)-1) 
-              N2=IKLE(ELT,2)+NPOIN2*(ETAFLO(IFLOT)-1)
-              N3=IKLE(ELT,3)+NPOIN2*(ETAFLO(IFLOT)-1)
-              N4=IKLE(ELT,1)+NPOIN2* ETAFLO(IFLOT) 
-              N5=IKLE(ELT,2)+NPOIN2* ETAFLO(IFLOT)
-              N6=IKLE(ELT,3)+NPOIN2* ETAFLO(IFLOT)
-              XFLOT(IFLOT)=SHPFLO(1,IFLOT)*X(N1)
-     &                    +SHPFLO(2,IFLOT)*X(N2)
-     &                    +SHPFLO(3,IFLOT)*X(N3)     
-              YFLOT(IFLOT)=SHPFLO(1,IFLOT)*Y(N1)
-     &                    +SHPFLO(2,IFLOT)*Y(N2)
-     &                    +SHPFLO(3,IFLOT)*Y(N3)
-              ZFLOT(IFLOT)=(Z(N1)*SHPFLO(1,IFLOT) 
-     &                     +Z(N2)*SHPFLO(2,IFLOT)
-     &                     +Z(N3)*SHPFLO(3,IFLOT))*(1.D0-SHZFLO(IFLOT))
-     &                    +(Z(N4)*SHPFLO(1,IFLOT) 
-     &                     +Z(N5)*SHPFLO(2,IFLOT) 
-     &                     +Z(N6)*SHPFLO(3,IFLOT))*SHZFLO(IFLOT)
+            IF(ISUB(IFLOT).EQ.IPID) THEN
+              ELT=ELTFLO(IFLOT)
+              IF(ELT.GT.0) THEN     
+                N1=IKLE(ELT,1)+NPOIN2*(ETAFLO(IFLOT)-1) 
+                N2=IKLE(ELT,2)+NPOIN2*(ETAFLO(IFLOT)-1)
+                N3=IKLE(ELT,3)+NPOIN2*(ETAFLO(IFLOT)-1)
+                N4=IKLE(ELT,1)+NPOIN2* ETAFLO(IFLOT) 
+                N5=IKLE(ELT,2)+NPOIN2* ETAFLO(IFLOT)
+                N6=IKLE(ELT,3)+NPOIN2* ETAFLO(IFLOT)
+                XFLOT(IFLOT)=SHPFLO(1,IFLOT)*X(N1)
+     &                      +SHPFLO(2,IFLOT)*X(N2)
+     &                      +SHPFLO(3,IFLOT)*X(N3)     
+                YFLOT(IFLOT)=SHPFLO(1,IFLOT)*Y(N1)
+     &                      +SHPFLO(2,IFLOT)*Y(N2)
+     &                      +SHPFLO(3,IFLOT)*Y(N3)
+                ZFLOT(IFLOT)=(Z(N1)*SHPFLO(1,IFLOT) 
+     &                      +Z(N2)*SHPFLO(2,IFLOT)
+     &                      +Z(N3)*SHPFLO(3,IFLOT))*(1.D0-SHZFLO(IFLOT))
+     &                      +(Z(N4)*SHPFLO(1,IFLOT) 
+     &                      +Z(N5)*SHPFLO(2,IFLOT) 
+     &                      +Z(N6)*SHPFLO(3,IFLOT))*SHZFLO(IFLOT)
+              ENDIF
             ENDIF   
           ENDDO 
         ENDIF        
