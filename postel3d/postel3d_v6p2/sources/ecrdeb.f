@@ -84,7 +84,7 @@
 !  ECRITURE DU NOMBRE DE VARIABLES EN SORTIE
 !
 !
-      CALL ECRI2(XB,NBV,CB,2,'I',CANAL,BINCOU,ISTAT)
+      CALL ECRI2(XB,NBV,CB,2,'I ',CANAL,BINCOU,ISTAT)
 !
 !-----------------------------------------------------------------------
 !

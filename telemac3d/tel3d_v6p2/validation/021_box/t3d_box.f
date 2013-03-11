@@ -657,7 +657,7 @@
 !           ASSEMBLED FORM OF PLUIE NEEDED HERE
             VOLU2(IS)=VOLU2(IS)+DT*PLUIE(IPOIN)
 !           DILUTION EFFECT FOR ALL TRACERS 
-            FC(IS)=FC(IS)+DT*(TRAIN-FC(IS))*PLUIE(IPOIN)/VOLU2(IS)                          
+            FC(IS)=FC(IS)+DT*(TRAIN-FC(IS))*PLUIE(IPOIN)/VOLU2(IS)
           ENDIF
         ENDDO
       ENDIF
@@ -1344,7 +1344,8 @@ C
       INTEGER :: USIGN; DOUBLE PRECISION :: w,a,b
       INTRINSIC DABS,DMIN1; EXTERNAL USIGN
       mm = w * 0.5D0 * ( USIGN(a)+USIGN(b) )*DMIN1( DABS(a),DABS(b) )
-      mm = 0.5D0 * ( USIGN(a+b)+USIGN(mm) )*DMIN1( 0.5D0*DABS(a+b),DABS(mm) )
+      mm = 0.5D0 * ( USIGN(a+b)+USIGN(mm) )*
+     &           DMIN1( 0.5D0*DABS(a+b),DABS(mm) )
       END FUNCTION
 C
 C#######################################################################
