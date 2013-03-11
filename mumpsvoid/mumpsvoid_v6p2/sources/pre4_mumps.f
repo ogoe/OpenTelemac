@@ -3,7 +3,7 @@
 !                    *********************
 !
      &(NPOIN,NSEGB,GLOSEGB,DAB1,DAB2,DAB3,DAB4,XAB1,XAB2,XAB3,XAB4,
-     & XX1,XX2,CVB1,CVB2,INFOGR,TYPEXT)
+     & XX1,XX2,CVB1,CVB2,INFOGR,TYPEXT,KNOLG,NPOIN_TOT,IPID)
 !
 !***********************************************************************
 ! MUMPSVOID   V6P0                                   21/08/2010
@@ -58,8 +58,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NPOIN,NSEGB
-      INTEGER, INTENT(IN) :: GLOSEGB(NSEGB*2)
+      INTEGER, INTENT(IN) :: NPOIN,NSEGB,NPOIN_TOT,IPID
+      INTEGER, INTENT(IN) :: GLOSEGB(NSEGB*2),KNOLG(*)
       LOGICAL, INTENT(IN) :: INFOGR
       DOUBLE PRECISION, INTENT(IN)    :: DAB1(NPOIN),DAB2(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: DAB3(NPOIN),DAB4(NPOIN)
