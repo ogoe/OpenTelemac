@@ -5,7 +5,7 @@
      &(OP,X,W,IW,Y,IY,LIMVOI,MXPTVS,NPMAX)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    FRONTAL MATRIX-VECTOR PRODUCT FOR ELEMENT 11-11.
@@ -29,6 +29,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/03/2013
+!+        V6P3
+!+   Dimension of LIMVOI now set to 11.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IW             |-->| ADDRESSES IN W
 !| IY             |-->| ADDRESSES IN Y
@@ -49,7 +54,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: NPMAX,MXPTVS
-      INTEGER, INTENT(IN) :: IW(NPMAX,*),IY(NPMAX,*),LIMVOI(MXPTVS,2)
+      INTEGER, INTENT(IN) :: IW(NPMAX,*),IY(NPMAX,*)
+!                                   11: SEE ALMESH                                        
+      INTEGER, INTENT(IN) :: LIMVOI(11,2)
       DOUBLE PRECISION, INTENT(INOUT) :: X(*)
       DOUBLE PRECISION, INTENT(IN)    :: W(*),Y(*)
       CHARACTER(LEN=8), INTENT(IN)    :: OP

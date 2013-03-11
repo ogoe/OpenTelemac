@@ -7,7 +7,7 @@
      & GLOSEG,SIZGLO,NSEG)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                  21/08/2010
 !***********************************************************************
 !
 !brief    COMPUTES THE ARRAYS GIVING ADRESSES FOR
@@ -29,6 +29,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/03/2013
+!+        V6P3
+!+   Dimension of LIMVOI now set to 11.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| GLOSEG         |-->| FIRST AND SECOND POINT OF SEGMENTS
@@ -69,7 +74,8 @@
       INTEGER, INTENT(IN)    :: NSEG,SIZGLO,NBOR(*)
       INTEGER, INTENT(IN)    :: IKLE(NELMAX,*),GLOSEG(SIZGLO,2)
       INTEGER, INTENT(OUT)   :: IKLEM1(NPMAX,MXPTVS,4,2)
-      INTEGER, INTENT(OUT)   :: LIMVOI(MXPTVS,2)
+!                                      11: SEE ALMESH AND OPASS
+      INTEGER, INTENT(OUT)   :: LIMVOI(11,2)
       INTEGER, INTENT(OUT)   :: T1(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

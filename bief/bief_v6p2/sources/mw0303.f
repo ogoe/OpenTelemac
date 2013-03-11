@@ -6,7 +6,7 @@
      & IKLEM1,DIMIKM,LIMVOI,MXPTVS,NPMAX,NPOIN,TRAV)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    FRONTAL MATRIX VECTOR PRODUCT FOR P1 TRIANGLES.
@@ -48,6 +48,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/03/2013
+!+        V6P3
+!+   Dimension of LIMVOI now set to 11.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| C              |-->| A GIVEN CONSTANT
@@ -91,7 +96,9 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN) :: DIMIKM,MXPTVS,NPMAX,NPOIN
-      INTEGER, INTENT(IN) :: IKLEM1(DIMIKM,4,2),LIMVOI(MXPTVS,2)
+!                                                      11: SEE ALMESH
+!                                                          AND OPTASS                                           
+      INTEGER, INTENT(IN) :: IKLEM1(DIMIKM,4,2),LIMVOI(11,2)
 !
       DOUBLE PRECISION, INTENT(INOUT) :: X(*),TRAV(*)
       DOUBLE PRECISION, INTENT(IN)    :: DA(*),Y(*)
@@ -195,5 +202,7 @@
 2001  FORMAT(1X,'MW0303 (BIEF) : DIAGONAL : UNKNOWN TYPE : ',A1)
 3000  FORMAT(1X,'MW0303 (BIEF) : OPERATION INCONNUE : ',A8)
 3001  FORMAT(1X,'MW0303 (BIEF) : UNKNOWN OPERATION : ',A8)
+!
+!-----------------------------------------------------------------------
 !
       END

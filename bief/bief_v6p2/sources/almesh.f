@@ -45,6 +45,11 @@
 !+        V6P3
 !+   Argument NELMAX removed in call to SEGBOR.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        11/03/2013
+!+        V6P3
+!+   Dimension of LIMVOI now set to (11,2).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| NAME IN 20 CHARACTERS TO ENABLE DIFFERENT
 !|                |   | OPTIONS. OPTIONS ARE:
@@ -627,7 +632,8 @@
 !       FOR OPTASS=3: SYM AND NOT SYM ARE DIFFERENT
         CALL BIEF_ALLVEC(2,MESH%IKLEM1,'IKLEM1',
      &                   BIEF_NBMPTS(IELM1,MESH)*MXPTVS,8,0,MESH)
-        CALL BIEF_ALLVEC(2,MESH%LIMVOI,'LIMVOI',MXPTVS,2,0,MESH)
+!       11 IS HERE THE MAXIMUM MXPTVS PROGRAMMED IN OPASS
+        CALL BIEF_ALLVEC(2,MESH%LIMVOI,'LIMVOI',11,2,0,MESH)
       ELSEIF(CFG(2).NE.1) THEN
         IF(LNG.EQ.1) WRITE(LU,96) CFG(2)
         IF(LNG.EQ.2) WRITE(LU,97) CFG(2)
