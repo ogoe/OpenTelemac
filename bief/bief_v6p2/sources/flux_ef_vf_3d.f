@@ -94,7 +94,7 @@
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 !
-      INTEGER IPLAN,N1,N2,N3,N4,IELEM,I1,I2,I3,S1,S2,S3,IT,IELEM3D,K,L      
+      INTEGER IPLAN,N1,N2,N3,N4,IELEM,I1,I2,I3,S1,S2,S3,IT,IELEM3D,K,L
 !
 !     TETRA : WILL GIVE THE LOCAL NUMBERS OF POINTS IN THE PRISM
 !             THE 0 CORRESPOND TO SITUATIONS

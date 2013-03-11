@@ -277,7 +277,7 @@
 ! RE-INITIALISE THE STRUCTURE AFTER COMPLETING ALL ACTIONS  
 !--------------------------------------------------------------------- 
 !       
-        SUBROUTINE RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV) 
+        SUBROUTINE RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV)
           IMPLICIT NONE 
           INTEGER, INTENT(OUT) :: NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV 
           NLOSTCHAR=0 
@@ -568,7 +568,7 @@
                 RECVCHAR(I)%BASKET(N) = 
      &          ( VAL(IKLE(ELT(I),1),ETA(I),1)  *SHP(1,I) 
      &          + VAL(IKLE(ELT(I),2),ETA(I),1)  *SHP(2,I)
-     &          + VAL(IKLE(ELT(I),3),ETA(I),1)  *SHP(3,I))*(1.D0-SHZ(I)) 
+     &          + VAL(IKLE(ELT(I),3),ETA(I),1)  *SHP(3,I))*(1.D0-SHZ(I))
      &         +( VAL(IKLE(ELT(I),1),ETA(I)+1,1)*SHP(1,I) 
      &          + VAL(IKLE(ELT(I),2),ETA(I)+1,1)*SHP(2,I) 
      &          + VAL(IKLE(ELT(I),3),ETA(I)+1,1)*SHP(3,I))*SHZ(I) 
@@ -804,7 +804,7 @@
                 SHP(1,IPOIN)=RECVCHAR(I)%XP
                 SHP(2,IPOIN)=RECVCHAR(I)%YP
                 SHP(3,IPOIN)=RECVCHAR(I)%ZP
-                ELT(IPOIN)  =RECVCHAR(I)%INE                             
+                ELT(IPOIN)  =RECVCHAR(I)%INE                            
               ENDDO
             ELSEIF(IELM.EQ.41) THEN
               IF(YA4D) THEN
@@ -963,7 +963,7 @@
       INTEGER         , INTENT(IN)    :: NPOIN2,NELEM2,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE2(NELEM2,3) 
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN) 
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: W(NPOIN2,NPLAN),SURDET(NELEM2) 
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: ZPLOT(NPLOT) 
@@ -1562,7 +1562,7 @@
      &                    + W(I3,IET  )*SHP(3,IPLOT))*(1.D0-SHZ(IPLOT)) 
      &                    +(W(I1,IET+1)*SHP(1,IPLOT) 
      &                    + W(I2,IET+1)*SHP(2,IPLOT)
-     &                    + W(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) )*PAS                
+     &                    + W(I3,IET+1)*SHP(3,IPLOT))*SHZ(IPLOT) )*PAS
                 ENDIF 
 ! 
                 XP = XP + DX(IPLOT) 
@@ -1724,7 +1724,7 @@
       INTEGER         , INTENT(IN)    :: NPOIN2,NELEM2,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE2(NELEM2,3) 
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN) 
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: W(NPOIN2,NPLAN),SURDET(NELEM2) 
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: ZPLOT(NPLOT) 
@@ -2387,7 +2387,7 @@
       INTEGER         , INTENT(IN)    :: NPOIN2,NELEM2,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE2(NELEM2,3) 
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN) 
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN2,NPLAN),V(NPOIN2,NPLAN)
       DOUBLE PRECISION, INTENT(IN)    :: W(NPOIN2,NPLAN),SURDET(NELEM2) 
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: ZPLOT(NPLOT) 
@@ -3026,7 +3026,7 @@
                         SUBROUTINE SCHAR41_PER_4D 
 !                       ************************* 
 ! 
-     &( U , V , W , F , DT , NRK , X , Y , ZSTAR , FREQ,Z ,IKLE2 ,IBOR , 
+     &( U , V , W , F , DT , NRK , X , Y , ZSTAR , FREQ,Z ,IKLE2 ,IBOR ,
      &  XPLOT , YPLOT , ZPLOT  , FPLOT,DX , DY , DZ , DF,
      &  SHP   , SHZ   , SHF    , ELT    , ETA , 
      &  FRE   , NPLOT , NPOIN2 , NELEM2 , NPLAN , NF,SURDET , 
@@ -3565,7 +3565,7 @@
               IF(.NOT.ADD) THEN
 !               INTERFACE CROSSING 
                 CALL COLLECT_CHAR  
-     &            (IPID,IPLOT,ELT(IPLOT),IFA,ETA(IPLOT),FRE(IPLOT),ISP,  
+     &            (IPID,IPLOT,ELT(IPLOT),IFA,ETA(IPLOT),FRE(IPLOT),ISP, 
      &             NSP,XPLOT(IPLOT),YPLOT(IPLOT),
      &             ZPLOT(IPLOT),FPLOT(IPLOT),  
      &             DX(IPLOT),DY(IPLOT),DZ(IPLOT),DF(IPLOT),  
@@ -3852,9 +3852,9 @@
 ! 
       INTEGER         , INTENT(IN)    :: SENS,NCHDIM 
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
-      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,3),IFABOR(NELMAX,3) 
+      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,3),IFABOR(NELMAX,3)
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM) 
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM)
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: DT 
@@ -4237,9 +4237,9 @@
 ! 
       INTEGER         , INTENT(IN)    :: SENS,NCHDIM 
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
-      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3) 
+      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3)
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM) 
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM)
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: DT 
@@ -4701,9 +4701,9 @@
 ! 
       INTEGER         , INTENT(IN)    :: SENS,NCHDIM 
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
-      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3) 
+      INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3)
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM) 
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM)
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: DT 
@@ -5136,7 +5136,7 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER, INTENT(IN)             :: NELEM,NELMAX,NPOIN,NPOIN2,NPLOT 
+      INTEGER, INTENT(IN)             :: NELEM,NELMAX,NPOIN,NPOIN2,NPLOT
       INTEGER, INTENT(IN)             :: NOMB,NDP,NPLAN,IELM,IELMU,NF
       INTEGER, INTENT(IN)             :: DIM1U,SENS,SIZEBUF
       TYPE(BIEF_OBJ)  , INTENT(IN)    :: U 
@@ -5165,7 +5165,7 @@
       INTEGER, INTENT(INOUT)          :: ELTBUF(NPLOT),FREBUF(NPLOT)
       INTEGER, TARGET,  INTENT(INOUT) :: ISUB(NPLOT)  
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
-      LOGICAL, INTENT(IN), OPTIONAL   :: APOST,APERIO,AYA4D,ASIGMA 	 
+      LOGICAL, INTENT(IN), OPTIONAL   :: APOST,APERIO,AYA4D,ASIGMA
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
@@ -5270,7 +5270,7 @@
           LAST_NPLOT=MAX(NPLOT,LAST_NPLOT)
           CALL DEORG_CHARAC_TYPE()  
 !         SET DATA STRUCTURES ACCORDINGLY        
-          CALL ORGANISE_CHARS(LAST_NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)                   
+          CALL ORGANISE_CHARS(LAST_NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)
         ENDIF 
 !    
 !       INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS) 
@@ -5335,7 +5335,7 @@
              CALL SCHAR41_PER_4D(UCONV,VCONV,WCONV,FRCONV,DT,NRK,X,Y,
      &                           ZSTAR,FREQ,Z,IKLE,IFABOR,
      &                           XCONV,YCONV,ZCONV,FCONV,DX, 
-     &                           DY,DZ,DF,SHP,SHZ,SHF,ELT,ETA,FRE,NPLOT, 
+     &                           DY,DZ,DF,SHP,SHZ,SHF,ELT,ETA,FRE,NPLOT,
      &                           DIM1U,NELEM,NPLAN,NF,SURDET,SENS, 
      &                           MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.)
            ELSE
@@ -5575,8 +5575,8 @@
               ELSEIF(.NOT.PERIO) THEN
                 IF(SIGMA) THEN
 !                 OPTIMISED FOR SIGMA=.TRUE, OTHERWISE = SCHAR41
-                  CALL SCHAR41_SIGMA(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
-     &                               Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
+                  CALL SCHAR41_SIGMA(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR,
+     &                               Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX,
      &                               DY,DZ,SHPBUF,SHZBUF,
      &                               ELTBUF,ETABUF,NARRV, 
      &                               DIM1U,NELEM,NPLAN,SURDET,SENS, 
@@ -5662,7 +5662,7 @@
 ! 
           IF(IGEN.GT.99) THEN  ! A SECURITY FUSE 
             WRITE(LU,*) '@STREAMLINE::SCARACT: ', 
-     &          'THE NUMBER OF TRACEBACK INTERFACE CROSSINGS IGEN > 99'  
+     &          'THE NUMBER OF TRACEBACK INTERFACE CROSSINGS IGEN > 99' 
             CALL PLANTE(1)  
             STOP 
           ENDIF 
@@ -6117,7 +6117,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: WSHF(SIZEBUF)
       INTEGER, INTENT(INOUT)          :: WELT(SIZEBUF),WETA(SIZEBUF)
       INTEGER, INTENT(INOUT)          :: WFRE(SIZEBUF)
-      LOGICAL, INTENT(IN)             :: PERIO,YA4D  	 
+      LOGICAL, INTENT(IN)             :: PERIO,YA4D
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
@@ -6218,7 +6218,7 @@
 !         INTERPOLATION DES VARIABLES POUR UNE VARIABLE QUADRATIQUE  
           CALL BIEF_INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
      &                     ETA,SHF,FRE,ELT,U%ADR(I)%P%DIM1,DIM1U, 
-     &                     NPLAN,U%ADR(I)%P%ELM,IKLE,NELMAX,PERIO,YA4D)          
+     &                     NPLAN,U%ADR(I)%P%ELM,IKLE,NELMAX,PERIO,YA4D)
         ELSE  
 !         INTERPOLATION DES VARIABLES DANS LES AUTRES CAS
           CALL BIEF_INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
@@ -6251,7 +6251,7 @@
             IF(NCHARA.GT.NCHDIM.OR.NCHARA.GT.SIZEBUF) THEN  
               WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM 
               WRITE (LU,*) 'SIZEBUF=',SIZEBUF  
-              WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM' 
+              WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
               WRITE (LU,*) 'IPID=',IPID  
               CALL PLANTE(1) 
               STOP 
@@ -6281,7 +6281,7 @@
             IF(NCHARA.GT.NCHDIM.OR.NCHARA.GT.SIZEBUF) THEN  
               WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM 
               WRITE (LU,*) 'SIZEBUF=',SIZEBUF  
-              WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM' 
+              WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM'
               WRITE (LU,*) 'IPID=',IPID  
               CALL PLANTE(1) 
               STOP 

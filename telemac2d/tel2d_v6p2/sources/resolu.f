@@ -180,7 +180,7 @@
       LOGICAL, INTENT(IN) :: LISTIN,DTVARI,YASMH,DIFVIT,DIFT
       DOUBLE PRECISION, INTENT(INOUT) :: T1(*),T2(*),T3(*),T4(*),T5(*)
       DOUBLE PRECISION, INTENT(IN)    :: XNEBOR(2*NPTFR),YNEBOR(2*NPTFR)
-      DOUBLE PRECISION, INTENT(IN)    :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)	
+      DOUBLE PRECISION, INTENT(IN)    :: XSGBOR(NPTFR,4),YSGBOR(NPTFR,4)
       DOUBLE PRECISION, INTENT(INOUT) :: DT
       DOUBLE PRECISION, INTENT(IN)    :: AT,VNOIN(3,*),GAMMA
       DOUBLE PRECISION, INTENT(IN)    :: TSCE2(MAXSCE,MAXTRA)
@@ -263,7 +263,7 @@
           WINF(2,K) =  H(NBOR(K))*UBOR(K)                 
           WINF(3,K) =  H(NBOR(K))*VBOR(K)
         ENDIF 
-       ENDDO                                                                                                                                              
+       ENDDO
                                         
        IF(ICIN .EQ.0) THEN
 !-----------------------------------------------------------------------
@@ -310,8 +310,8 @@
 !
       CALL FLUROE(W,FLUSCE,NUBO,VNOIN,
      &            WINF,FLUX,FLUSORT,FLUENT,NELEM,NSEG,NPTFR,   
-     *            NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
-     *            XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR)             
+     &            NPOIN,X,Y,AIRS,ZF,EPS,DMIN,G,
+     &            XNEBOR,YNEBOR,LIMPRO,NBOR,KDIR,KNEU,KDDL,FLBOR)
 !
 ! INTEGRATION IN TIME
 ! 

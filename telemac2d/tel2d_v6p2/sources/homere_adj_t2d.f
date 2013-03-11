@@ -259,7 +259,8 @@
         READ(T2D_FILES(T2DFO1)%LU,*,END=999) ITER,
      &       (SETSTR%R(I),I=1,NPARAM)
         IF(ITER.NE.NITERA) THEN
-          IF(LNG.EQ.1) WRITE(LU,*)'PB. DANS LE PLAN D''EXPERIENCE ITER=',ITER
+          IF(LNG.EQ.1) WRITE(LU,*) 'PB. DANS LE PLAN D''EXPERIENCE',
+     &                             ' ITER=',ITER
           IF(LNG.EQ.2) WRITE(LU,*)'PB. IN LIST OF TESTS AT ITER=',ITER
           STOP
         ENDIF

@@ -150,12 +150,12 @@
 !
             CPHAS = XK(IP,IFF)*SURDEUPIFREQ
             P0O=3.D0+TANH(W*(USOLD(IP)*CPHAS-0.1D0))
-            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))                       
+            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))                    
             CG1 = 0.5D0*GRAVIT*SURDEUPIFREQ
             B   = CG1*F_INT(IP)*XK(IP,IFF)**3
             SQBSCMOUT4=SQRT(B*SURCMOUT4)           
 !           COMPUTES THE BREAK/NON-BREAK TRANSITION          
-            PO = 0.5D0*(1.D0+TANH(10.D0*(SQBSCMOUT4-1.D0)))                         
+            PO = 0.5D0*(1.D0+TANH(10.D0*(SQBSCMOUT4-1.D0)))           
 !           COMPUTES THE BREAK BETA
             C3=-CMOUT3*SQRT(GRAVIT*XK(IP,IFF))                    
             BETAO=C3*SQBSCMOUT4**P0O
@@ -176,14 +176,14 @@
             CPHAS = XK(IP,IFF)*SURDEUPIFREQ              
             KD=MIN(XK(IP,IFF)*DEPTH(IP),350.D0)
             DEUKD=KD+KD                                            
-            CG1=( 0.5D0+XK(IP,IFF)*DEPTH(IP)/SINH(DEUKD) )/CPHAS           
+            CG1=( 0.5D0+XK(IP,IFF)*DEPTH(IP)/SINH(DEUKD) )/CPHAS     
             B = CG1*F_INT(IP)*XK(IP,IFF)**3          
-            SQBSCMOUT4=SQRT(B*SURCMOUT4)                                        
+            SQBSCMOUT4=SQRT(B*SURCMOUT4)                            
 !           COMPUTES THE BREAK BETA
             C3=-CMOUT3*SQRT(GRAVIT*XK(IP,IFF))         
             AUX=TANH(KD) 
             P0O=3.D0+TANH(W*(USOLD(IP)*CPHAS-0.1D0))
-            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))                     
+            P0N=3.D0+TANH(W*(USNEW(IP)*CPHAS-0.1D0))               
             BETAO=C3*SQBSCMOUT4**P0O*AUX**((2.D0-P0O)*0.25D0)
             BETAN=C3*SQBSCMOUT4**P0N*AUX**((2.D0-P0N)*0.25D0)
 !           COMPUTES THE NON-BREAK BETA

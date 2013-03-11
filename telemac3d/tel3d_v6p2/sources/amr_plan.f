@@ -129,7 +129,7 @@
         CALL MULT_INTERFACE_SEG(COEF,MESH2D%NH_COM_SEG%I,
      &                          MESH2D%NH_COM_SEG%DIM1,
      &                          MESH2D%NB_NEIGHB_SEG,
-     &                          MESH2D%NB_NEIGHB_PT_SEG%I,0.5D0,NSEG2)       
+     &                          MESH2D%NB_NEIGHB_PT_SEG%I,0.5D0,NSEG2)
       ENDIF
 !
 ! --------------------------------------------------------------------

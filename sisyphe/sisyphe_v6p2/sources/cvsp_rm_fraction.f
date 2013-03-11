@@ -289,24 +289,24 @@
 
                 do II=1,NSICLA
 
-                    PRO_D(J,KK,II) = -PROV_TOTAL + PRO_D(J,KK,II)        !Shift Depth
+                    PRO_D(J,KK,II) = -PROV_TOTAL + PRO_D(J,KK,II)      !Shift Depth
 
-                    if (PRO_D(J,KK,II).le.PRO_D(J,KK-1,II)) then        !Correcting 1D-15 errors which produce unsteady PDFs
+                    if (PRO_D(J,KK,II).le.PRO_D(J,KK-1,II)) then       !Correcting 1D-15 errors which produce unsteady PDFs
                         PRO_D(J,KK,II) = PRO_D(J,KK-1,II)
                     endif
 
                     if (rest1.gt.zero) then
-                    PRO_F(J,KK,II) = PRO_F(J,KK,II)/ REST1               !Normalize Fraction
+                    PRO_F(J,KK,II) = PRO_F(J,KK,II)/ REST1             !Normalize Fraction
                     else
-                    PRO_F(J,KK,II) = 1.D0 / NSICLA                       !In case of almost total loss
+                    PRO_F(J,KK,II) = 1.D0 / NSICLA                     !In case of almost total loss
                     endif
 
                 enddo
 
                     if (rest1.gt.zero) then
-                        PRO_F(J,KK,I) = 0.D0                              !Fraction I is removed
+                        PRO_F(J,KK,I) = 0.D0                           !Fraction I is removed
                     else
-                        PRO_F(J,KK,I) = 1.D0 / NSICLA                     !In case of almost total loss
+                        PRO_F(J,KK,I) = 1.D0 / NSICLA                  !In case of almost total loss
                     endif
 
             enddo
@@ -323,15 +323,15 @@
                 do II=1,NSICLA
                   if (rest1.gt.zero) then
                     PRO_F(J,LOWPNT,II) =
-     &                    PRO_F(J,LOWPNT,II) / REST1                         !Normalize Fraction
+     &                    PRO_F(J,LOWPNT,II) / REST1                    !Normalize Fraction
                   else
-                    PRO_F(J,LOWPNT,II) = 1.D0 / NSICLA                       !In case of almost total loss
+                    PRO_F(J,LOWPNT,II) = 1.D0 / NSICLA                  !In case of almost total loss
                   endif
                 enddo
 
-                  PRO_F(J,LOWPNT,I) = 0.D0                                   ! Fraction I is removed
+                  PRO_F(J,LOWPNT,I) = 0.D0                              ! Fraction I is removed
                   if (rest1.le.zero) PRO_F(J,LOWPNT,I) =
-     &                    1.D0 / NSICLA                                      !In case of almost total loss
+     &                    1.D0 / NSICLA                                 !In case of almost total loss
 
 
           !------------------------------------------------------------------

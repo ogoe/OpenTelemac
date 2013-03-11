@@ -1386,9 +1386,9 @@ C     TO KEEP DHN FREE FOR CALLING CONTIN
      &  .AND.SCHCTA(K).NE.ADV_LPO_TF.AND.SCHCTA(K).NE.ADV_NSC_TF) THEN
            IF(LNG.EQ.1) WRITE(LU,*)
      &    'LECDON: SCHEMA POUR LA CONVECTION DES TRACEURS INCONNU : ',
-     &                                                            SCHCTA(K)
+     &                                                        SCHCTA(K)
           IF (LNG.EQ.2) WRITE(LU,*)
-     &    'LECDON: SCHEME FOR ADVECTION OF TRACERS UNKNOWN: ',    SCHCTA(K)
+     &    'LECDON: SCHEME FOR ADVECTION OF TRACERS UNKNOWN: ', SCHCTA(K)
           CALL PLANTE(1)
           STOP
         ENDIF

@@ -77,7 +77,7 @@
         ENDIF
         AUX=(TAUP%R(I)-TAUC)/TAUC
         IF(AUX.GT.ZERO) THEN          
-          CSTAEQ%R(I)=0.015*FDM*SQRT(AUX**3)/(ZREF%R(I)*DSTAR**0.3D0)           
+          CSTAEQ%R(I)=0.015*FDM*SQRT(AUX**3)/(ZREF%R(I)*DSTAR**0.3D0)
         ELSE
           CSTAEQ%R(I) = 0.D0
         ENDIF

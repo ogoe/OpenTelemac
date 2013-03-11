@@ -188,7 +188,7 @@
           WRITE (LU,*) '                LAYERS'
           CALL PLANTE(1)
           STOP            
-        ENDIF	   
+        ENDIF   
         TEXTE_ES(K)(1:16)  = 'LAYER'//LAY//' THICKNESS'
         TEXTE_ES(K)(17:32) = 'M               '
       ENDDO
@@ -205,7 +205,7 @@
           WRITE (LU,*) '                LAYERS'
           CALL PLANTE(1)
           STOP            
-        ENDIF	   
+        ENDIF   
         TEXTE_CONC(K)(1:12)  = 'LAYER'//LAY//' CONC'
         TEXTE_CONC(K)(17:32) = 'KG/L            '
       ENDDO

@@ -574,7 +574,7 @@
           CBAR=C%R(N)
           HH  =HBTIL%R(K)
           UETA=UBTIL%R(K)*DETADX+VBTIL%R(K)*DETADY
-          W2R(K)=(HH+ZBTIL%R(K)-ZF%R(N))*CBAR+HH*(UETA-UETABAR)                               
+          W2R(K)=(HH+ZBTIL%R(K)-ZF%R(N))*CBAR+HH*(UETA-UETABAR)
         ENDIF
         ENDIF 
       ENDDO          
@@ -706,14 +706,14 @@
             ENDIF
           ENDIF     
           IF(C%R(N)**2.GT.GRAV*HMIN) THEN
-            HBOR(K)=(W2R(K)+W3R(K))/(2*C%R(N))                                      
+            HBOR(K)=(W2R(K)+W3R(K))/(2*C%R(N))
             IF(HBOR(K).GT.HMIN) THEN
 !             BEWARE TIDAL FLATS, AND HIDDEN PARAMETER 0.1
               HHBOR=MAX(0.1D0,HBOR(K))
               UBOR(K)=(       DETADY* W1R(K)
-     &                 +0.5D0*DETADX*(W2R(K)-W3R(K)))/HHBOR+U%R(N)              
+     &                 +0.5D0*DETADX*(W2R(K)-W3R(K)))/HHBOR+U%R(N)
               VBOR(K)=(      -DETADX* W1R(K)
-     &                 +0.5D0*DETADY*(W2R(K)-W3R(K)))/HHBOR+V%R(N)            
+     &                 +0.5D0*DETADY*(W2R(K)-W3R(K)))/HHBOR+V%R(N)
               IF(NTRAC.GT.0) THEN
                 DO ITRAC=1,NTRAC
 !                 REMEMBER THAT W4 IS STORED INTO SECOND DIMENSION OF TBOR

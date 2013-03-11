@@ -363,7 +363,7 @@
 !           ASSEMBLED FORM OF PLUIE NEEDED HERE
             VOLU2(IS)=VOLU2(IS)+DT*PLUIE(IPOIN)
 !           DILUTION EFFECT FOR ALL TRACERS 
-            FC(IS)=FC(IS)+DT*(TRAIN-FC(IS))*PLUIE(IPOIN)/VOLU2(IS)                          
+            FC(IS)=FC(IS)+DT*(TRAIN-FC(IS))*PLUIE(IPOIN)/VOLU2(IS)
           ENDIF
         ENDDO
       ENDIF

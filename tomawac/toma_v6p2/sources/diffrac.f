@@ -2,11 +2,11 @@
                         SUBROUTINE DIFFRAC 
 !                       ****************** 
 ! 
-     &( CX    , CY    , CT    , XK    , CG    , DEPTH , DZX   , DZY   ,  
-     &  FREQ  , COSTET, SINTET, NPOIN2, NPLAN , IFF   , NF    , PROINF,  
-     &  SPHE  , A     , DFREQ , F     , CCG   , DIV   , DELTA , DDX   ,  
-     &  DDY   , EPS   , NBOR  , NPTFR , XKONPT, RK    , RX    , RY    ,  
-     &  RXX   , RYY   , NEIGB , NB_CLOSE, DIFFRA, MAXNSP, FLTDIF      )  
+     &( CX    , CY    , CT    , XK    , CG    , DEPTH , DZX   , DZY   ,
+     &  FREQ  , COSTET, SINTET, NPOIN2, NPLAN , IFF   , NF    , PROINF,
+     &  SPHE  , A     , DFREQ , F     , CCG   , DIV   , DELTA , DDX   ,
+     &  DDY   , EPS   , NBOR  , NPTFR , XKONPT, RK    , RX    , RY    ,
+     &  RXX   , RYY   , NEIGB , NB_CLOSE, DIFFRA, MAXNSP, FLTDIF      )
 ! 
 !*********************************************************************** 
 ! TOMAWAC   V6P3                                   25/06/2012 
@@ -247,8 +247,8 @@
 !         
         ENDIF 
 ! 
-       	FRDK(:,1)=DDX         
-       	FRDK(:,2)=DDY     
+        FRDK(:,1)=DDX         
+        FRDK(:,2)=DDY     
 ! 
         DO IPOIN = 1,NPOIN2 
 ! 
@@ -287,7 +287,7 @@
 !DIFFRA=2 - Revised Mean Slope Equation model 
               IF(DIFFRA.EQ.1) THEN 
                 DELTA(IPOIN)=DIV(IPOIN)*XKONPT(IPOIN)/ 
-     &		     (CCG(IPOIN)*A(IPOIN)) 
+     &                       (CCG(IPOIN)*A(IPOIN)) 
               ELSE 
                 DELTA(IPOIN)=(DIV(IPOIN)/A(IPOIN)) 
               ENDIF 

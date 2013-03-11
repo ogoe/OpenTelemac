@@ -1385,7 +1385,7 @@ c$$$      U(22) = ZERO                                         ! theta1
 !
          DO I=1,TPXO_NCON
             C(I) = CMPLX( PF(I)*COS(OMEGA(I)*TIME+PHASE(I)+PU(I)),
-     &	                  PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
+     &                    PF(I)*SIN(OMEGA(I)*TIME+PHASE(I)+PU(I)),
      &                    KIND(1.D0))
          ENDDO
 !
