@@ -46,6 +46,11 @@
 !+        V6P2
 !+   Call to DEBIMP3D replaced by CALL DEBIMP_3D (new arguments)
 !
+!history  J.-M. HERVOUET (LNHE)
+!+        11/03/2013
+!+        V6P3
+!+   Test IFRLIQ.NE.0 line 210.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ENTET          |-->| LOGICAL, IF YES INFORMATION IS GIVEN ON MASS
 !|                |   | CONSERVATION.
@@ -202,7 +207,9 @@
         DO K=1,NPTFR2
           IFRLIQ=NUMLIQ%I(K)
           IPOIN2=NBOR2%I(K)
-          ZMIN(IFRLIQ)=MIN(ZMIN(IFRLIQ),ZF%R(IPOIN2)+H%R(IPOIN2))
+          IF(IFRLIQ.NE.0) THEN
+            ZMIN(IFRLIQ)=MIN(ZMIN(IFRLIQ),ZF%R(IPOIN2)+H%R(IPOIN2))
+          ENDIF
         ENDDO
         IF(NCSIZE.GT.1) THEN
           DO IFRLIQ=1,NFRLIQ
