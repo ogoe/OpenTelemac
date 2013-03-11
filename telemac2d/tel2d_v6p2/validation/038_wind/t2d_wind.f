@@ -3,7 +3,7 @@
 !                    ****************
 !
      &(PATMOS,WINDX,WINDY,FUAIR,FVAIR,X,Y,AT,LT,NPOIN,VENT,ATMOS,
-     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE)
+     & HN,TRA01,GRAV,ROEAU,NORD,PRIVE,FO1,FILES,LISTIN)
 !
 !***********************************************************************
 ! TELEMAC2D   V6P3                                   21/08/2010
@@ -58,7 +58,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY : T2DFO1,T2D_FILES,LISTIN
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -66,13 +65,14 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)             :: LT,NPOIN
-      LOGICAL, INTENT(IN)             :: ATMOS,VENT
+      INTEGER, INTENT(IN)             :: LT,NPOIN,FO1
+      LOGICAL, INTENT(IN)             :: ATMOS,VENT,LISTIN
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),HN(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: WINDX(NPOIN),WINDY(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: PATMOS(NPOIN),TRA01(NPOIN)
       DOUBLE PRECISION, INTENT(IN)    :: FUAIR,FVAIR,AT,GRAV,ROEAU,NORD
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: PRIVE
+      TYPE(BIEF_FILE), INTENT(IN)     :: FILES(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -110,7 +110,7 @@
 !
       IF(LT.EQ.0) THEN
 !
-        UL=T2D_FILES(T2DFO1)%LU
+        UL=FILES(FO1)%LU
 !
 !-----------------------------------------------------------------------
 !
