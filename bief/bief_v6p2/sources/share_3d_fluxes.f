@@ -57,7 +57,7 @@
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH2,MESH3
 !
       DOUBLE PRECISION, INTENT(INOUT) :: FLUX(*)
-      DOUBLE PRECISION, INTENT(INOUT) :: XMUL
+      DOUBLE PRECISION, INTENT(IN)    :: XMUL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
