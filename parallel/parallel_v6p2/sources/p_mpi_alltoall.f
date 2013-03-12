@@ -2,7 +2,8 @@
                      SUBROUTINE P_MPI_ALLTOALL
 !                    *************************
 !
-     &(SEND_BUFFER,NSEND,SEND_DATYP,RECV_BUFFER,NRECV,RECV_DATYP,COMM,IERR)
+     &(SEND_BUFFER,NSEND,SEND_DATYP,RECV_BUFFER,NRECV,RECV_DATYP,COMM,
+     & IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -46,7 +47,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)  :: SEND_BUFFER(*),NSEND,SEND_DATYP,NRECV,
+      INTEGER, INTENT(IN)  :: SEND_BUFFER(*),NSEND,SEND_DATYP,NRECV
       INTEGER, INTENT(IN)  :: RECV_DATYP,COMM
       INTEGER, INTENT(OUT) :: RECV_BUFFER(*),IERR
 !
