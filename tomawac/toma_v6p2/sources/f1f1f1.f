@@ -2,10 +2,10 @@
                         SUBROUTINE F1F1F1
 !                       *****************
 !
-     *( F1SF  , NF1   , IQ_OM1)
+     *(F1SF,NF1,IQ_OM1)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   15/06/2011
+! TOMAWAC   V6P3                                   15/06/2011
 !***********************************************************************
 !
 !brief   SUBROUTINE CALLED BY PRENL3
@@ -22,6 +22,11 @@
 !+        V6P1
 !+   Translation of French names of the variables in argument
 !
+!history  E. GAGNAIRE-RENOU
+!+        12/03/2013
+!+        V6P3
+!+   Better formatted: WRITE(LU,*), etc.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F1SF           |-->|
 !| IQ_OM1         |-->| SETTING FOR INTEGRATION ON OMEGA1
@@ -30,21 +35,32 @@
 !
       IMPLICIT NONE
 !
-!.....VARIABLES IN ARGUMENT
-!     """""""""""""""""""""
-      INTEGER          NF1   , IQ_OM1
-      DOUBLE PRECISION F1SF(*)
+      INTEGER LNG,LU
+      COMMON/INFO/ LNG,LU      
 !
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!.....LOCAL VARIABLES
-!     """"""""""""""""""
-      INTEGER          I     , M
+      INTEGER,          INTENT(IN)    :: IQ_OM1
+      INTEGER,          INTENT(INOUT) :: NF1
+      DOUBLE PRECISION, INTENT(INOUT) :: F1SF(*)
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER I,M
       DOUBLE PRECISION RAISON
 !
-      IF (IQ_OM1.EQ.1) THEN
-        IF (NF1.NE.14) THEN
-          WRITE(6,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
-          WRITE(6,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+!-----------------------------------------------------------------------
+!
+      IF(IQ_OM1.EQ.1) THEN
+        IF(NF1.NE.14) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+          ENDIF
+          CALL PLANTE(1)
           STOP
         ENDIF
         F1SF( 1)=0.30D0
@@ -62,10 +78,14 @@
         F1SF(13)=2.00D0
         F1SF(14)=2.50D0
         F1SF(15)=3.30D0
-      ELSEIF (IQ_OM1.EQ.2) THEN
+      ELSEIF(IQ_OM1.EQ.2) THEN
         IF (NF1.NE.26) THEN
-          WRITE(6,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
-          WRITE(6,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+            WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+          ENDIF
           STOP
         ENDIF
         F1SF( 1)=0.32D0
@@ -95,10 +115,15 @@
         F1SF(25)=2.40D0
         F1SF(26)=2.70D0
         F1SF(27)=3.20D0
-      ELSEIF (IQ_OM1.EQ.3) THEN
-        IF (NF1.NE.11) THEN
-          WRITE(6,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
-          WRITE(6,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+      ELSEIF(IQ_OM1.EQ.3) THEN
+        IF(NF1.NE.11) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+          ENDIF
           STOP
         ENDIF
         F1SF( 1)=0.30D0
@@ -113,10 +138,15 @@
         F1SF(10)=1.80D0
         F1SF(11)=2.40D0
         F1SF(12)=3.40D0
-      ELSEIF (IQ_OM1.EQ.4) THEN
-        IF (NF1.NE.40) THEN
-          WRITE(6,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
-          WRITE(6,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+      ELSEIF(IQ_OM1.EQ.4) THEN
+        IF(NF1.NE.40) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+          ENDIF
           STOP
         ENDIF
         NF1=20
@@ -130,22 +160,28 @@
         DO I=M,1,-1
           F1SF(I)=F1SF(I+1)/RAISON
         ENDDO
-      ELSEIF (IQ_OM1.EQ.5) THEN
+      ELSEIF(IQ_OM1.EQ.5) THEN
         RAISON=9.D0**(1.D0/DBLE(NF1))
-        F1SF(1)=1.0D0/3.0D0
+        F1SF(1)=1.D0/3.D0
         DO I=2,NF1+1
           F1SF(I)=F1SF(I-1)*RAISON
         ENDDO
-      ELSEIF (IQ_OM1.EQ.6) THEN
-        RAISON=(3.0D0-1.D0/3.D0)/DBLE(NF1)
-        F1SF(1)=1.0D0/3.0D0
+      ELSEIF(IQ_OM1.EQ.6) THEN
+        RAISON=(3.D0-1.D0/3.D0)/DBLE(NF1)
+        F1SF(1)=1.D0/3.D0
         DO I=2,NF1+1
           F1SF(I)=F1SF(I-1)+RAISON
         ENDDO
-      ELSEIF (IQ_OM1.EQ.7) THEN
-        IF (NF1.NE.20) THEN
-          WRITE(6,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
-          WRITE(6,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+      ELSEIF(IQ_OM1.EQ.7) THEN
+        IF(NF1.NE.20) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'ARRET DANS F1F1F1 : VALEUR INCORRECTE DE NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'    ET NF1 = ',NF1
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'PROGRAM STOP IN F1F1F1 : WRONG VALUE FOR NF1'
+            WRITE(LU,*) 'IQ_OM1 = ',IQ_OM1,'   AND NF1 = ',NF1	  
+          ENDIF
+          CALL PLANTE(1)
           STOP
         ENDIF
         F1SF( 1)=1.D0/3.D0
@@ -170,6 +206,8 @@
         F1SF(20)=2.52D0
         F1SF(21)=3.00D0
       ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END

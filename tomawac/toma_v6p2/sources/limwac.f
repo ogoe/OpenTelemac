@@ -10,7 +10,7 @@
      & PRIVE , NPRIV , SPEC  , FRA   , DEPTH , FRABL ,BOUNDARY_COLOUR)
 !
 !***********************************************************************
-! TOMAWAC   V6P1                                   21/06/2011
+! TOMAWAC   V6P3                                   21/06/2011
 !***********************************************************************
 !
 !brief    BOUNDARY CONDITIONS.
@@ -39,6 +39,11 @@
 !+        20/06/2011
 !+        V6P1
 !+   Translation of French names of the variables in argument
+!
+!history  E. GAGNAIRE-RENOU & J.-M. HERVOUET (EDF R&D, LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   A line IF(LIMSPE.EQ.0...) RETURN removed.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| APHILL         |-->| BOUNDARY PHILLIPS CONSTANT
@@ -126,13 +131,11 @@
 !
 !***********************************************************************
 !
-!   MODIFIES THE TYPE OF BOUNDARY CONDITION (OPTIONAL)
+!     MODIFIES THE TYPE OF BOUNDARY CONDITION (OPTIONAL)
 !
-!   TO BE CODED BY THE USER
+!     CAN BE CODED BY THE USER (SPEULI=.TRUE.)
 !
-!   LIFBOR(IPTFR)=KENT OR KSORT
-!
-      IF (LIMSPE.EQ.0 .AND. .NOT.SPEULI) RETURN
+!     LIFBOR(IPTFR)=KENT OR KSORT
 !
       FLAG=.FALSE.
       IF (VENT .AND. (LIMSPE.EQ.1 .OR. LIMSPE.EQ.2 .OR. LIMSPE.EQ.3
@@ -141,18 +144,18 @@
 !     THE FIRST TIME, ALLOCATES MEMORY FOR THE USEFUL ARRAYS
 !     ---------------------------------------------------------------
 !
-      IF (LT.LT.1) THEN
+      IF(LT.LT.1) THEN
         NPB=1
-        IF (FLAG) THEN
-           ALLOCATE(UV2D(1:NPTFR),VV2D(1:NPTFR))
-           NPB=NPTFR
+        IF(FLAG) THEN
+          ALLOCATE(UV2D(1:NPTFR),VV2D(1:NPTFR))
+          NPB=NPTFR
         ENDIF
-        IF (LIMSPE.EQ.7 .OR. SPEULI) THEN
-           ALLOCATE(PROF(1:NPTFR))
-           NPB=NPTFR
+        IF(LIMSPE.EQ.7 .OR. SPEULI) THEN
+          ALLOCATE(PROF(1:NPTFR))
+          NPB=NPTFR
         ENDIF
-        IF (NPB.EQ.1) THEN
-           ALLOCATE(FB_CTE(1:NPLAN,1:NF))
+        IF(NPB.EQ.1) THEN
+          ALLOCATE(FB_CTE(1:NPLAN,1:NF))
         ENDIF
       ENDIF
       IF (.NOT.ALLOCATED(UV2D)) ALLOCATE(UV2D(NPTFR))
@@ -163,59 +166,63 @@
 !     THE FIRST TIME (AND POSSIBLY SUBSEQUENTLY IF THE WIND IS NOT
 !     STATIONARY AND IF THE BOUNDARY SPECTRUM DEPENDS ON IT),
 !     COMPUTES THE BOUNDARY SPECTRUM
-!     ----------------------------------------------------------------
-      IF (LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI) THEN
-        IF (FLAG) THEN
+!    
+      IF(LT.LT.1 .OR. (.NOT.VENSTA.AND.FLAG) .OR. SPEULI) THEN
+        IF(FLAG) THEN
           DO IPTFR=1,NPTFR
             UV2D(IPTFR)=UV(NBOR(IPTFR))
             VV2D(IPTFR)=VV(NBOR(IPTFR))
-          ENDDO
+          ENDDO     
         ENDIF
         IF(LIMSPE.EQ.7 .OR. SPEULI) THEN
           DO IPTFR=1,NPTFR
             PROF(IPTFR)=DEPTH(NBOR(IPTFR))
           ENDDO
         ENDIF
-!
-!       CALLS SPEINI
-!     ----------------------------------------------------------------
+!   
         E2FMIN = 1.D-30
 !
-        IF (NPB.EQ.NPTFR) THEN
+!       WHEN NPB=1 FBOR ONLY FILLED FOR FIRST POINT
+!
+!       SPECTRUM ON BOUNDARIES
+!
+        IF(NPB.EQ.NPTFR) THEN
           CALL SPEINI
-     &( FBOR  , SPEC  , FRA    , UV2D  , VV2D  , FREQ ,
-     &  TETA  , GRAVIT, FPMAXL , FETCHL, SIGMAL, SIGMBL, GAMMAL, FPICL,
-     &  HM0L  , APHILL, TETA1L , SPRE1L, TETA2L, SPRE2L, XLAMDL,
-     &  NPTFR , NPLAN , NF     , LIMSPE, E2FMIN, PROF  , FRABL )
+     &(   FBOR  ,SPEC  ,FRA   ,UV2D  ,VV2D  ,FREQ ,
+     &    TETA  ,GRAVIT,FPMAXL,FETCHL,SIGMAL,SIGMBL,GAMMAL,FPICL,
+     &    HM0L  ,APHILL,TETA1L,SPRE1L,TETA2L,SPRE2L,XLAMDL,
+     &    NPB   ,NPLAN ,NF    ,LIMSPE,E2FMIN,PROF  ,FRABL )
         ELSE
           CALL SPEINI
-     &( FB_CTE, SPEC  , FRA    , UV2D  , VV2D  , FREQ ,
-     &  TETA  , GRAVIT, FPMAXL , FETCHL, SIGMAL, SIGMBL, GAMMAL, FPICL,
-     &  HM0L  , APHILL, TETA1L , SPRE1L, TETA2L, SPRE2L, XLAMDL,
-     &  NPB   , NPLAN , NF     , LIMSPE, E2FMIN, PROF  , FRABL )
+     &(   FB_CTE,SPEC  ,FRA   ,UV2D  ,VV2D  ,FREQ ,
+     &    TETA  ,GRAVIT,FPMAXL,FETCHL,SIGMAL,SIGMBL,GAMMAL,FPICL,
+     &    HM0L  ,APHILL,TETA1L,SPRE1L,TETA2L,SPRE2L,XLAMDL,
+     &    NPB   ,NPLAN ,NF    ,LIMSPE,E2FMIN,PROF  ,FRABL )
         ENDIF
 !
 !     ===========================================================
 !     TO BE MODIFIED BY USER - RESU CAN BE CHANGED
 !     ===========================================================
-        IF (SPEULI) THEN
+!
+        IF(SPEULI) THEN
 !
 !        EXEMPLE DE MODIFICATION DE FRA - A MODIFIER SUIVANT VOTRE CAS
 !        EXAMPLE OF MODIFICATION OF FRA - TO BE MODIFIED DEPENDING
 !        ON YOUR CASE
+!
 !        ALLOCATE(TRAV(1:NF))
 !
 !        DO IFREQ=1,NF
-!             IF (FREQ(IFF).LT.FPIC) THEN
-!              TRAV(IFF)=0.4538D0*(FREQ(IFF)/FPIC)**(-2.03D0)
-!           ELSE
-!              TRAV(IFF)=0.4538D0*(FREQ(IFF)/FPIC)**(1.04D0)
-!           ENDIF
+!          IF(FREQ(IFF).LT.FPIC) THEN
+!            TRAV(IFF)=0.4538D0*(FREQ(IFF)/FPIC)**(-2.03D0)
+!          ELSE
+!            TRAV(IFF)=0.4538D0*(FREQ(IFF)/FPIC)**(1.04D0)
+!          ENDIF
 !        ENDDO
 !
 !        DO IPLAN=1,NPLAN
-!             DTETA=TETA(IPLAN)-TETA1
-!           IF ((TETA(IPLAN)-TETA1).GT.DEUPI/2) THEN
+!           DTETA=TETA(IPLAN)-TETA1
+!           IF((TETA(IPLAN)-TETA1).GT.DEUPI/2.D0) THEN
 !              DTETA=DEUPI-DTETA
 !           ENDIF
 !           DO IFF=1,NF
@@ -231,23 +238,25 @@
 !        PARTIE A SUPPRIMER SI ON FAIT DES MODIFICATIONS
 !        DELETE THESE LINES IF MODIFICATIONS HAVE BEEN IMPLEMENTED
 !
-        IF (LNG.EQ.1) THEN
-          WRITE(LU,*)'*****  ERREUR LIMWAC  ******'
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) '*****  ERREUR LIMWAC  ******'
           WRITE(LU,*)
      &      ' VOUS NE MODIFIEZ PAS LE SPECTRE AUX LIMITES ALORS QUE'
-          WRITE(LU,*)' VOUS EN DEMANDEZ LA POSSIBILITE'
+          WRITE(LU,*) ' VOUS EN DEMANDEZ LA POSSIBILITE'
         ELSE
-          WRITE(LU,*)'*****  ERROR LIMWAC  ******'
+          WRITE(LU,*) '*****  ERROR LIMWAC  ******'
           WRITE(LU,*)
      &      ' YOU DID NOT MODIFY THE BOUNDARY SPECTRUM WHEREAS '
-          WRITE(LU,*)' YOU ASK FOR THAT '
+          WRITE(LU,*) ' YOU ASK FOR THAT '
         ENDIF
+        CALL PLANTE(1)
         STOP
       ENDIF
 !
 !     ===========================================================
 !     END OF USER MODIFICATIONS
 !     ===========================================================
+!
       ENDIF
 !
 !     -----------------------------------------------------------------

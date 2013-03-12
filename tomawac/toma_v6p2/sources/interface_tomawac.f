@@ -286,8 +286,9 @@
         SUBROUTINE F1F1F1
      &( F1SF  , NF1   , IQ_OM1)
       IMPLICIT NONE
-      INTEGER          NF1   , IQ_OM1
-      DOUBLE PRECISION F1SF(*)
+      INTEGER,          INTENT(IN)    :: IQ_OM1
+      INTEGER,          INTENT(INOUT) :: NF1
+      DOUBLE PRECISION, INTENT(INOUT) :: F1SF(*)
         END SUBROUTINE
       END INTERFACE
 !
