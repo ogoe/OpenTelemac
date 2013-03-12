@@ -2,7 +2,7 @@
                      SUBROUTINE P_MPI_TYPE_CREATE_STRUCT
 !                    ***********************************
 !
-     &(I1,I2,I3,I4,I5,I6)
+     &(NBLOCK,NELEM,DISPL,ELEM_TYPE,NEW_DATATYPE,IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -28,12 +28,12 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I1             |-->| NUMBER OF BLOCKS 
-!| I2             |-->| NUMBER OF ELEMENTS IN EACH BLOCK
-!| I3             |-->| BYTE DISLACEMENT   IN EACH BLOCK
-!| I4             |-->| TYPE OF ELEMENTS   IN EACH BLOCK 
-!| I5             |<--| NEW DATATYPE
-!| I6             |<--| ERROR VALUE
+!| NBLOCK           |-->| NUMBER OF BLOCKS 
+!| NELEM            |-->| NUMBER OF ELEMENTS IN EACH BLOCK
+!| DISPL            |-->| BYTE DISLACEMENT   IN EACH BLOCK
+!| ELEM_TYPE        |-->| TYPE OF ELEMENTS   IN EACH BLOCK 
+!| NEW_DATATYPE     |<--| NEW DATATYPE
+!| IERR             |<--| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -45,18 +45,20 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)                           :: I1,I6
-      INTEGER, INTENT(OUT)                          :: I5
-      INTEGER, INTENT(IN)                           :: I2(I1),I4(I1)
-      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: I3(I1)
+      INTEGER, INTENT(IN)                           :: NBLOCK,IERR
+      INTEGER, INTENT(OUT)                          :: NEW_DATATYPE
+      INTEGER, INTENT(IN)                           :: NELEM(NBLOCK)
+      INTEGER, INTENT(IN)                           :: ELEM_TYPE(NBLOCK)
+      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: DISPL(NBLOCK)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CALL MPI_TYPE_CREATE_STRUCT(I1,I2,I3,I4,I5,I6)
+      CALL MPI_TYPE_CREATE_STRUCT(NBLOCK,NELEM,DISPL,ELEM_TYPE,
+     &                            NEW_DATATYPE,IERR)
 !
-      IF(I6.NE.0) THEN
+      IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_TYPE_STRUCT:'
-        WRITE(LU,*) 'MPI ERROR ',I6
+        WRITE(LU,*) 'MPI ERROR ',IERR
         STOP
       ENDIF
 !

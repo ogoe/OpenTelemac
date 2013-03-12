@@ -2,7 +2,7 @@
                      SUBROUTINE P_MPI_ALLTOALL
 !                    *************************
 !
-     &(I1,I2,I3,I4,I5,I6,I7,I8)
+     &(SEND_BUFFER,NSEND,SEND_DATYP,RECV_BUFFER,NRECV,RECV_DATYP,COMM,IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -28,16 +28,16 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I1             |-->| SEND BUFFER  
-!| I2             |-->| SPECIFIES THE NUMBER OF ELEMENTS TO SEND TO EACH
-!|                |   | PROCESSOR  
-!| I3             |-->| DATA TYPE OF SEND BUFFER ELEMENTS
-!| I4             |<--| RECEIVE BUFFER
-!| I5             |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT 
-!|                |   | CAN BE RECEIVED FROM EACH PROCESSOR 
-!| I6             |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
-!| I7             |-->| COMMUNICATOR 
-!| I8             |<--| ERROR VALUE 
+!| SEND_BUFFER   |-->| SEND BUFFER  
+!| NSEND         |-->| SPECIFIES THE NUMBER OF ELEMENTS TO SEND TO EACH
+!|               |   | PROCESSOR  
+!| SEND_DATYP    |-->| DATA TYPE OF SEND BUFFER ELEMENTS
+!| RECV_BUFFER   |<--| RECEIVE BUFFER
+!| NRECV         |-->| SPECIFIES THE MAXIMUM NUMBER OF ELEMENTS THAT 
+!|               |   | CAN BE RECEIVED FROM EACH PROCESSOR 
+!| RECV_DATYP    |-->| DATA TYPE OF RECEIVE BUFFER ELEMENTS
+!| COMM          |-->| COMMUNICATOR 
+!| IERR          |<--| ERROR VALUE 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -46,16 +46,19 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)  :: I1(*),I2,I3,I5,I6,I7
-      INTEGER, INTENT(OUT) :: I4(*),I8
+      INTEGER, INTENT(IN)  :: SEND_BUFFER(*),NSEND,SEND_DATYP,NRECV,
+      INTEGER, INTENT(IN)  :: RECV_DATYP,COMM
+      INTEGER, INTENT(OUT) :: RECV_BUFFER(*),IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CALL MPI_ALLTOALL(I1,I2,I3,I4,I5,I6,I7,I8)
+      CALL MPI_ALLTOALL(SEND_BUFFER,NSEND,SEND_DATYP,
+     &                  RECV_BUFFER,NRECV,RECV_DATYP,
+     &                  COMM,IERR)
 !
-      IF(I8.NE.0) THEN
+      IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_ALLTOALL:'
-        WRITE(LU,*) 'MPI ERROR ',I8
+        WRITE(LU,*) 'MPI ERROR ',IERR
         STOP
       ENDIF
 !

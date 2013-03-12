@@ -2,7 +2,7 @@
                      SUBROUTINE P_MPI_TYPE_COMMIT
 !                    ****************************
 !
-     &(I1,I2)
+     &(DATA_TYPE,IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -28,8 +28,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I1             |-->| DATATYPE
-!| I2             |<--| ERROR VALUE
+!| DATA_TYPE        |-->| DATATYPE
+!| IERR             |<--| ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -38,16 +38,16 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN)  :: I1
-      INTEGER, INTENT(OUT) :: I2
+      INTEGER, INTENT(IN)  :: DATA_TYPE
+      INTEGER, INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CALL MPI_TYPE_COMMIT(I1,I2)
+      CALL MPI_TYPE_COMMIT(DATA_TYPE,IERR)
 !
-      IF(I2.NE.0) THEN
+      IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_TYPE_COMMIT:'
-        WRITE(LU,*) 'MPI ERROR ',I2
+        WRITE(LU,*) 'MPI ERROR ',IERR
         STOP
       ENDIF
 !

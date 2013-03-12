@@ -2,7 +2,7 @@
                      SUBROUTINE P_LSUM
 !                    *****************
 !
-     &(IARG1,LARG2)
+     &(BUFFER_LENGTH,LBUFFER)
 !
 !***********************************************************************
 ! PARALLEL   V6P1                                   21/08/2010
@@ -29,8 +29,8 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| IARG1          |-->| BUFFER SIZE
-!| LARG2          |<->| SEND BUFFER
+!| BUFFER_LENGTH          |-->| BUFFER SIZE
+!| LBUFFER          |<->| SEND BUFFER
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       IMPLICIT NONE
@@ -41,8 +41,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: IARG1
-      LOGICAL, DIMENSION(IARG1), INTENT(INOUT) :: LARG2
+      INTEGER, INTENT(IN) :: BUFFER_LENGTH
+      LOGICAL, DIMENSION(BUFFER_LENGTH), INTENT(INOUT) :: LBUFFER
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -51,7 +51,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      ALLOCATE(LAUX(IARG1),STAT=IER)
+      ALLOCATE(LAUX(BUFFER_LENGTH),STAT=IER)
       IF (IER.NE.0) THEN
         IF(LNG.EQ.1) WRITE(LU,*)'P_LSUM: ERREUR DANS ALLOCATION MEMOIRE'
         IF(LNG.EQ.2) WRITE(LU,*)'P_LSUM: ERROR IN MEMORY ALLOCATION'
@@ -59,11 +59,11 @@
         STOP
       ENDIF
 !
-      DO I=1,IARG1
-        LAUX(I)=LARG2(I)
+      DO I=1,BUFFER_LENGTH
+        LAUX(I)=LBUFFER(I)
       ENDDO
 !
-      CALL MPI_ALLREDUCE(LAUX,LARG2,IARG1,MPI_LOGICAL,
+      CALL MPI_ALLREDUCE(LAUX,LBUFFER,BUFFER_LENGTH,MPI_LOGICAL,
      &                   MPI_LOR,MPI_COMM_WORLD,IER)
 !
       IF(IER.NE.0) THEN

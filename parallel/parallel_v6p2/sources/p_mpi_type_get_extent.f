@@ -2,7 +2,7 @@
                      SUBROUTINE P_MPI_TYPE_GET_EXTENT
 !                    ********************************
 !
-     &(I1,I2,I3,IERR)
+     &(DATATYPE,LOWER_BOUND,EXTENT,IERR)
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -28,9 +28,9 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| I1             |-->|  DATATYPE
-!| I2             |<--|  LOWER BOUND OF THE DATATYPE
-!| I3             |<--|  EXTENT OF THE DATATYPE
+!| DATATYPE             |-->|  DATATYPE
+!| LOWER_BOUND             |<--|  LOWER BOUND OF THE DATATYPE
+!| EXTENT             |<--|  EXTENT OF THE DATATYPE
 !| IERR           |<--|  ERROR VALUE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -41,13 +41,13 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT) :: I2,I3
-      INTEGER, INTENT(INOUT)                        :: I1
-      INTEGER, INTENT(OUT)                          :: IERR
+      INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT):: LOWER_BOUND,EXTENT
+      INTEGER, INTENT(INOUT)                       :: DATATYPE
+      INTEGER, INTENT(OUT)                         :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      CALL MPI_TYPE_GET_EXTENT(I1,I2,I3,IERR)
+      CALL MPI_TYPE_GET_EXTENT(DATATYPE,LOWER_BOUND,EXTENT,IERR)
 !
       IF(IERR.NE.0) THEN
         WRITE(LU,*) 'P_MPI_TYPE_EXTENT:'

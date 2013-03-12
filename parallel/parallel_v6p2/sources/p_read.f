@@ -2,7 +2,7 @@
                      SUBROUTINE P_READ
 !                    *****************
 !
-     &(BUFFER,NBYTES,SOURCE,TYPE)
+     &(BUFFER,NBYTES,SOURCE,DATATYPE)
 !
 !***********************************************************************
 ! PARALLEL   V6P2                                   21/08/2010
@@ -54,7 +54,7 @@
 !|                |   | LENGTH IN BYTES / LAENGE IN BYTES
 !| SOURCE         |-->| ORIGINE DES DONNEES
 !|                |   | TID OF THE SENDER / KNOTEN-ID DES SENDER
-!| TYPE           |-->| TYPE DES DONNEES (MSGTAG DE PVM)
+!| DATATYPE           |-->| TYPE DES DONNEES (MSGTAG DE PVM)
 !|                |   | 0 - STRING
 !|                |   | 1 - BYTE1
 !|                |   | 2 - INTEGER2
@@ -73,7 +73,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER, INTENT(IN) :: NBYTES,SOURCE,TYPE
+      INTEGER, INTENT(IN) :: NBYTES,SOURCE,DATATYPE
       DOUBLE PRECISION, INTENT(OUT) :: BUFFER(*)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
