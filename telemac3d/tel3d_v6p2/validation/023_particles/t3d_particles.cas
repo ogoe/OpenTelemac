@@ -3,8 +3,8 @@
 /
 /
 /  12/03/2013 :
-/  Linux HP Z600 8 procs : 509 s (Intel compiler with full checking)
-/
+/  Linux HP Z600 8 procs :  509 s (Intel compiler with full checking)
+/  Linux HP Z600 1 proc  : 1730 s (Intel compiler with full checking)
 /
 FORTRAN FILE             : t3d_particles.f
 BOUNDARY CONDITIONS FILE : geo_particles.cli
@@ -31,7 +31,7 @@ NUMBER OF HORIZONTAL LEVELS = 10
 TITLE : 'TELEMAC-3D - particles in the current'
 /
 TIME STEP = 5. NUMBER OF TIME STEPS = 1440
-GRAPHIC PRINTOUT PERIOD = 36
+GRAPHIC PRINTOUT PERIOD = 144
 LISTING PRINTOUT PERIOD = 36                             
 VARIABLES FOR 2D GRAPHIC PRINTOUTS = 'U,V,H,B,S'
 VARIABLES FOR 3D GRAPHIC PRINTOUTS = 'Z,U,V,W'
