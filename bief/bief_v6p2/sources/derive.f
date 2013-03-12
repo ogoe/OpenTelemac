@@ -43,9 +43,9 @@
 !+   will require further modifications.
 !
 !history  J-M HERVOUET (LNHE)
-!+        22/02/2013
+!+        12/03/2013
 !+        V6P3
-!+   New file format for Tecplot. Works in parallel. Prepared for 3D.
+!+   New file format for Tecplot. Works in parallel. Works in 3D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -189,7 +189,11 @@
         IF(IPID.EQ.0) THEN
           TEXTE(1)='X                               '
           TEXTE(2)='Y                               '
-          TEXTE(3)='COTE Z          M               '
+          IF(LNG.EQ.1) THEN
+            TEXTE(3)='COTE Z          M               '
+          ELSE
+            TEXTE(3)='ELEVATION Z     M               '
+          ENDIF
           IF(LNG.EQ.1) THEN
             WRITE(UL,100) 'TITLE = "FICHIER DES FLOTTEURS"'
           ELSE
