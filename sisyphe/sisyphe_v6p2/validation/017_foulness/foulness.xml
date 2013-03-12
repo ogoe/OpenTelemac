@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="foulness">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <meta xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="foulness" author="M.Knaapen" contact="www.opentelemac.org" />
+   </meta>
+   <meta xref="vect">
+      <look colour="jet.xml" />
+   </meta>
+   <meta xref="line">
+      <look colour="k" />
+   </meta>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="Built"
+       do="translate;compile;run;cas;princi"
+       code="sisyphe" target="sis_foulness.cas"
+       title="Run Foulness with uncoupled sisyphe"
+   />
+  
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+  
+   <extract xref="Validate" code="sisyphe"
+       do="runPYTHON" target="plotFoulness.py"
+	   dependency="sisvali_foulness.exe;FieldData.txt"
+       title="Foulness validation"
+   />   
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+ 
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+
+</validation>
