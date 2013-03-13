@@ -20,7 +20,7 @@
      & SEUIL ,LBUF  ,DIMBUF,F_POIN,T_POIN,F_COEF,F_PROJ,TB_SCA,K_IF1 ,
      & K_1P  ,K_1M  ,K_IF2 ,K_IF3 ,K_1P2P,K_1P2M,K_1P3P,K_1P3M,K_1M2P,
      & K_1M2M,K_1M3P,K_1M3M,IDCONF,TB_V14,TB_V24,TB_V34,TB_TPM,TB_TMP,
-     & TB_FAC,MDIA  ,IANMDI,COEMDI,NVWIN)
+     & TB_FAC,MDIA  ,IANMDI,COEMDI,NVWIN ,DIAGHF)
 !
 !***********************************************************************
 ! TOMAWAC   V6P2                                   27/06/2011
@@ -82,6 +82,11 @@
 !+        27/06/2012
 !+        V6P2
 !+   Renamed SUM to SUME, due to NAG compiler
+!
+!history  E. GAGNAIRE-RENOU (EDF - LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   HF diagnostic tail is not necessarily imposed
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALFABJ         |-->| COEFFICIENT ALPHA OF BJ WAVE BREAKING MODEL
@@ -201,7 +206,8 @@
 !| STRIF          |-->| SELECTION OF QUADRUPLET INTERACTION MODEL
 !| SVENT          |-->| SELECTION OF THE WIND GENERATION MODEL
 !| T_POIN         |-->| WORK TABLE FOR SPECTRUM INTERPOLATION
-!| TAILF          |-->| SPECTRUM QUEUE FACTOR
+!| TAILF          |-->| SPECTRUM TAIL FACTOR
+!| DIAGHF         |-->| OPTION FOR SPECTRUM DIAGNOSTIC TAIL
 !| TAUWAV         |<->| STRESS DUE TO THE WAVES
 !| TAUX1          |<->| WORK TABLE
 !| TAUX2          |<->| WORK TABLE
@@ -276,7 +282,7 @@
       INTEGER IQBBJ , IHMBJ , IFRBJ , IWHTG , IFRTG , IFRRO
       INTEGER IEXPRO, IFRIH , NDTBRK, IDISRO, STRIA
       INTEGER NBOR(NPTFR)   , IANGNL(NPLAN,8)
-      INTEGER NBD   , QINDI(NBD)
+      INTEGER NBD   , QINDI(NBD) , DIAGHF
       DOUBLE PRECISION TAILF , CFROT1, GRAVIT, RAISF , DTSI  , TPROP
       DOUBLE PRECISION CMOUT1, CMOUT2, DDC   , TV1   , TV2   , ZVENT 
       DOUBLE PRECISION ROAIR , ROEAU , XKAPPA, BETAM , DECAL , CDRAG 
@@ -669,6 +675,7 @@
           ENDIF
         ENDDO
 !
+        IF(DIAGHF.EQ.1) THEN
 !
 !       6. TREATS THE HIGH FREQUENCIES DIFFERENTLY
 !       =======================================================
@@ -676,39 +683,51 @@
 !       6.1 COMPUTES THE MEAN FREQUENCY OF THE SPECTRUM
 !       ----------------------------------------------
 !
-        CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
+          CALL FREMOY(FMOY,F,FREQ,DFREQ,TAILF,NF,NPLAN,NPOIN2,
      &              TAUX1,TAUX2)
 !
-        AUX1=GRAVIT/(7.D0*DEUPI*FREQ(1))
-        AUX2=2.5D0/FREQ(1)
-        AUX3=1.D0/LOG10(RAISF)
+          AUX1=GRAVIT/(7.D0*DEUPI*FREQ(1))
+          AUX2=2.5D0/FREQ(1)
+          AUX3=1.D0/LOG10(RAISF)
 !
-        DO IP=1,NPOIN2
+          DO IP=1,NPOIN2
 !
 !       6.2 COMPUTES THE LAST FREQUENCY OF THE DISCRETISED SPECTRUM.
 !           THIS FREQUENCY IS THE MAXIMUM OF (FM1=4.*FPM ; FM2=2.5*FMOY).
 !           ITS INDEX IS MFMAX.
 !       -------------------------------------------------------------
 !
-          FM1 =AUX1/MAX(USNEW(IP),1.D-90)
-          FM2 =AUX2*FMOY(IP)
-          MF1=INT(AUX3*LOG10(FM1)+1.D0)
-          MF2=INT(AUX3*LOG10(FM2)+1.D0)
-          MFMAX=MIN(MAX(MF1,MF2),NF)
+            FM1 =AUX1/MAX(USNEW(IP),1.D-90)
+            FM2 =AUX2*FMOY(IP)
+            MF1=INT(AUX3*LOG10(FM1)+1.D0)
+            MF2=INT(AUX3*LOG10(FM2)+1.D0)
+            MFMAX=MIN(MAX(MF1,MF2),NF)
 !
 !       6.3 MODIFIES THE HIGH FREQUENCY PART OF THE SPECTRUM
 !           A DECREASE IN F**(-TAILF) IS IMPOSED BEYOND
 !           FREQ(MFMAX).  (TAILF=5 IN WAM-CYCLE 4)
 !       -------------------------------------------------------------
 !
-          DO IFF=MFMAX+1,NF
-            AUX4=(FREQ(MFMAX)/FREQ(IFF))**TAILF
-            DO JP=1,NPLAN
-              F(IP,JP,IFF)=AUX4*F(IP,JP,MFMAX)
+            DO IFF=MFMAX+1,NF
+              AUX4=(FREQ(MFMAX)/FREQ(IFF))**TAILF
+              DO JP=1,NPLAN
+                F(IP,JP,IFF)=AUX4*F(IP,JP,MFMAX)
+              ENDDO
             ENDDO
-          ENDDO
 !
-        ENDDO
+          ENDDO
+        ELSEIF(DIAGHF.GE.2) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'OPTION POUR LA QUEUE DIAGNOSTIQUE'
+            WRITE(LU,*) 'INCONNUE : DIAGHF=',DIAGHF
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'OPTION FOR DIAGNOSTIC TAIL'
+            WRITE(LU,*) 'UNKNOWN: DIAGHF=',DIAGHF
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF 
 !
 !       7. TAKES THE BREAKING SOURCE TERM INTO ACCOUNT
 !       =================================================

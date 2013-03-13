@@ -290,6 +290,10 @@
       INTEGER NPTDIF
 !V6P2 End diffraction
 !
+!> @brief DIAGNOSTIC TAIL OPTION
+! option pour la partie diagnostique du spectre
+      INTEGER DIAGHF
+!
 !> @brief TIME STEP
 ! pas de temps
       DOUBLE PRECISION DT
@@ -992,6 +996,10 @@
 !     2D RESULTS FILE
 ! 
       INTEGER :: WACRES
+!
+!     1D SPECTRA RESULTS FILE
+!
+      INTEGER :: WACSPE
 !
 !     PUNCTUAL RESULTS FILE
 !

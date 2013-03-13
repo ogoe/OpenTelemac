@@ -4,7 +4,8 @@
 !
      &( F     , TETA  , NPLAN , FREQ  , NF    , NK    ,
      &  NPOIN2, AT    , AUXIL , NOLEO , NLEO  , NSCO  ,
-     &  BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH )
+     &  BINSCO, DEBRES, TITCAS, DATE  , TIME  , KNOLG , MESH,
+     &  NSPE  , TISPEF)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   15/06/2011
@@ -56,6 +57,12 @@
 !+        V6P3
 !+   Parallelism treated with files.
 !
+!history  E. GAGNAIRE-RENOU (EDF - LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   Print out the 1D frequential spectrum at (same) selected nodes
+!+                (Scopgene format)
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| AUXIL          |<->| DIRECTIONAL SPECTRUM WORK TABLE
@@ -77,11 +84,18 @@
 !| TETA           |-->| DISRETIZED DIRECTION
 !| TIME           |-->| START TIME
 !| TITCAS         |-->| TITLE
+!| TISPEF         |-->| NAME OF THE 1D SPECTRA RESULTS FILE
+!| NSPE           |-->| LOGICAL UNIT NUMBER FOR THE 1D SPECTRA FILE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
 !
+      USE DECLARATIONS_TOMAWAC, ONLY : DEUPI
+!
       IMPLICIT NONE
+!
+      INTEGER LNG,LU
+      COMMON/INFO/ LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -97,6 +111,8 @@
       CHARACTER(LEN=72), INTENT(IN)   :: TITCAS
       CHARACTER(LEN=*) , INTENT(IN)   :: BINSCO
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH 
+      CHARACTER(LEN=144), INTENT(IN)  :: TISPEF  
+      INTEGER, INTENT(IN)             :: NSPE         
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -110,21 +126,28 @@
       CHARACTER*1  C1,C2,C3,C4,C5,C6
       TYPE(BIEF_MESH) :: MESHF
       LOGICAL         :: SORLEO(99)    
-      DOUBLE PRECISION AAT(1)
+      DOUBLE PRECISION AAT(1), DTETAR, F_INTF(NLEO,NF)
       REAL W(1)
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
+!
+      INTEGER  P_IMAX
+      EXTERNAL P_IMAX
 !
       SAVE
 !
 !-----------------------------------------------------------------------
 !
+      DTETAR=DEUPI/DBLE(NPLAN)
       NPSPE=NF*NPLAN
       NELEM=(NF-1)*NPLAN
 !     SORLEO = .FALSE.
       DO ILEO=1,NLEO
         KAMP1=NOLEO(ILEO)
-        IF(NCSIZE.GT.1.AND.KAMP1.GT.0) KAMP1=KNOLG(NOLEO(ILEO))
+        IF(NCSIZE.GT.1) THEN
+          IF(KAMP1.GT.0) KAMP1=KNOLG(NOLEO(ILEO))
+          KAMP1=P_IMAX(KAMP1)
+        ENDIF
         KAMP2=MOD(KAMP1,100000)
         KAMP3=MOD(KAMP2,10000)
         KAMP4=MOD(KAMP3,1000)
@@ -226,6 +249,14 @@
      &                    TIME,   ! START TIME
      &                    0,0)    ! COORDINATES OF THE ORIGIN.  
 !   
+          IF(TISPEF(1:1).NE.' ') THEN
+            WRITE(NSPE,'(A1,A72)') '/', TITCAS
+            WRITE(NSPE,'(I3)') NLEO
+            DO ILEO=1,NLEO
+              WRITE(NSPE,'(A32)') TEXTE(ILEO)
+            ENDDO
+            WRITE(NSPE,'(A19)') '0 0 0 0 0 0 0 0 0 0'
+          ENDIF
         ENDIF
 !
       ENDIF
@@ -235,7 +266,11 @@
       IF(IPID.EQ.0) THEN
         AAT(1) = AT
         CALL ECRI2(AAT,IBID,C,1,'R4',NSCO,'STD',ISTAT)
+        IF(LNG.EQ.1) WRITE(NSPE,1007) AAT
+        IF(LNG.EQ.2) WRITE(NSPE,1008) AAT
       ENDIF   
+1007  FORMAT('TEMPS = ',F13.5) 
+1008  FORMAT('TIME  = ',F13.5)     
 !
       IF(NCSIZE.GT.1) THEN
 !
@@ -271,7 +306,17 @@
      &              FORM='UNFORMATTED',STATUS='OLD')
             CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',99,'STD',ISTAT)
             CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
+            DO JF=1,NF
+              F_INTF(ILEO,JF)=0.0D0
+              DO K=1,NPLAN
+                F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
+              ENDDO
+            ENDDO  
             CLOSE(99,STATUS='DELETE')
+          ENDDO
+          DO JF=1,NF
+            WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
+     &                                (F_INTF(ILEO,JF),ILEO=1,NLEO)
           ENDDO
         ENDIF
 !
@@ -280,12 +325,19 @@
         DO ILEO=1,NLEO
           II=NOLEO(ILEO)
           DO JF=1,NF
+            F_INTF(ILEO,JF)=0.D0
             DO K=1,NPLAN
               AUXIL(K,JF)=F(II,K,JF)
+              F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+F(II,K,JF)*DTETAR
             ENDDO
+            IF(ABS(F_INTF(ILEO,JF)).LT.1.D-90) F_INTF(ILEO,JF)=0.D0
           ENDDO
           CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
-        ENDDO
+        ENDDO		  
+        DO JF=1,NF
+          WRITE(NSPE,'(100(E10.4,2X))') FREQ(JF),
+     &                                (F_INTF(ILEO,JF),ILEO=1,NLEO)
+        ENDDO	  	  
 !
       ENDIF
 !
