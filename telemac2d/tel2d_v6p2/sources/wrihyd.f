@@ -31,6 +31,13 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  C.-T. PHAM (LNHE), Y. AUDOUIN (LNHE)
+!+        12/03/2013
+!+        V6P2
+!+   Correction of bugs when LEN_TRIM(FILENAME) = 0 + cosmetics
+!+   Definition of the size of strings. In particular, TITRE has
+!+   a length lower or equal 72 => useless tests have been deleted
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DIFF_DEL       |-->| IF YES, WRITES DIFFUSION FILE FOR DELWAQ
 !| F              |-->| ARRAY TO STORE FRACTION OF DEPTH PER LAYER
@@ -72,7 +79,7 @@
       INTEGER,          INTENT(IN) :: NHYD,ITSTRT,ITSTOP,ITSTEP,NPOIN2
       INTEGER,          INTENT(IN) :: NSEG,NOLAY,NSTEPA,MBND
       INTEGER,          INTENT(IN) :: MARDAT(3),MARTIM(3)
-      CHARACTER(LEN=120), INTENT(IN) :: TITRE
+      CHARACTER(LEN=72),  INTENT(IN) :: TITRE
       CHARACTER(LEN=144), INTENT(IN) :: NOMSOU,NOMMAB,NOMCOU,NOMSAL
       CHARACTER(LEN=144), INTENT(IN) :: NOMINI,NOMVEB,NOMMAF,NOMVEL
       CHARACTER(LEN=144), INTENT(IN) :: NOMGEO,NOMLIM,NOMTEM,NOMVIS
@@ -144,34 +151,28 @@
      &    "vertical-diffusion           calculated              "
       WRITE ( NHYD, '(A)' )
      &    "description                                          "
+!  CHARACTER(LEN=72),  INTENT(IN) :: TITRE
+!  PREVIOUS TESTS FOR LEN GREATER THAN 80 ARE USELESS
       IWAQ = LEN_TRIM(TITRE)
-      IF ( IWAQ .GT. 40 ) THEN
-         WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:40),"'"
-         IF ( IWAQ .GT. 80 ) THEN
-            WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(41:80),"'"
-            IF ( IWAQ .GT. 120 ) THEN
-               WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(81:120),"'"
-            ELSE
-               WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(81:IWAQ),"'"
-            ENDIF
-         ELSE
-            WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(41:IWAQ),"'"
-            WRITE ( NHYD, '(A)' )
+      IF ( IWAQ .EQ. 0 ) THEN
+        WRITE ( NHYD, '(A)' )
      &    "   '                                    '            "
-         ENDIF
+        WRITE ( NHYD, '(A)' )
+     &    "   '                                    '            "
+        WRITE ( NHYD, '(A)' )
+     &    "   '                                    '            "
+      ELSEIF ( IWAQ .LE. 40 ) THEN
+        WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:IWAQ),"'"
+        WRITE ( NHYD, '(A)' )
+     &    "   '                                    '            "
+        WRITE ( NHYD, '(A)' )
+     &    "   '                                    '            "
       ELSE
-         WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:IWAQ),"'"
-         WRITE ( NHYD, '(A)' )
-     &    "   '                                    '            "
-         WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(1:40),"'"
+        WRITE ( NHYD, '(A,A,A)' ) "   '",TITRE(41:IWAQ),"'"
+        WRITE ( NHYD, '(A)' )
      &    "   '                                    '            "
       ENDIF
-!      WRITE ( NHYD, '(A,A,A)' )
-!     &    "   '",TITRE(1:IWAQ),"'"
-!      WRITE ( NHYD, '(A)' )
-!     &    "   '                                    '            "
-!      WRITE ( NHYD, '(A)' )
-!     &    "   '                                    '            "
       WRITE ( NHYD, '(A)' )
      &    "end-description                                      "
       WRITE ( NHYD, '(A,I4.4,I2.2,I2.2,I2.2,I2.2,I2.2,A)' )
@@ -227,115 +228,213 @@
       WRITE ( NHYD, '(A,I6)' )
      &    "number-water-quality-layers",NOLAY
       IWAQ = LEN_TRIM(NOMGEO)
-      WRITE ( NHYD, '(A,A,A)' )
-     &    "hydrodynamic-file        '",NOMGEO(1:IWAQ),"'"
+      I    = IWAQ
+      DO WHILE(I.GE.1)
+        IF((NOMGEO(I:I).NE.'/').AND.(NOMGEO(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
+      ENDDO
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
+     &    "hydrodynamic-file        '",NOMGEO(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "hydrodynamic-file        ''"
+      ENDIF
       WRITE ( NHYD, '(A)' )
      &    "aggregation-file         none                        "
-      WRITE ( NHYD, '(A,A,A)' )
-     &    "grid-indices-file        '",NOMGEO(1:IWAQ),"'"
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
+     &    "grid-indices-file        '",NOMGEO(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "grid-indices-file        ''"
+      ENDIF
       IWAQ = LEN_TRIM(NOMLIM)
-      WRITE ( NHYD, '(A,A,A)' )
-     &    "grid-coordinates-file    '",NOMLIM(1:IWAQ),"'"
+      I    = IWAQ
+      DO WHILE(I.GE.1)
+        IF((NOMLIM(I:I).NE.'/').AND.(NOMLIM(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
+      ENDDO
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
+     &    "grid-coordinates-file    '",NOMLIM(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "grid-coordinates-file    ''"
+      ENDIF
       IWAQ = LEN_TRIM(NOMSOU)
       I    = IWAQ
-      DO WHILE((NOMSOU(I:I).NE.'/').AND.(NOMSOU(I:I).NE.'\')
-     &                             .AND.(I.GE.1))
-        I = I-1
+      DO WHILE(I.GE.1)
+        IF((NOMSOU(I:I).NE.'/').AND.(NOMSOU(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
       ENDDO
-      WRITE ( NHYD, '(A,A,A)' )
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
      &    "volumes-file             '",NOMSOU(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "volumes-file             ''"
+      ENDIF
       IWAQ = LEN_TRIM(NOMMAB)
       I    = IWAQ
-      DO WHILE((NOMMAB(I:I).NE.'/').AND.(NOMMAB(I:I).NE.'\')
-     &                             .AND.(I.GE.1))
-        I = I-1
+      DO WHILE(I.GE.1)
+        IF((NOMMAB(I:I).NE.'/').AND.(NOMMAB(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
       ENDDO
-      WRITE ( NHYD, '(A,A,A)' )
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
      &    "areas-file               '",NOMMAB(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "areas-file               ''"
+      ENDIF
       IWAQ = LEN_TRIM(NOMCOU)
       I    = IWAQ
-      DO WHILE((NOMCOU(I:I).NE.'/').AND.(NOMCOU(I:I).NE.'\')
-     &                             .AND.(I.GE.1))
-        I = I-1
+      DO WHILE(I.GE.1)
+        IF((NOMCOU(I:I).NE.'/').AND.(NOMCOU(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
       ENDDO
-      WRITE ( NHYD, '(A,A,A)' )
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
      &    "flows-file               '",NOMCOU(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "flows-file               ''"
+      ENDIF
       IWAQ = LEN_TRIM(NOMVEB)
       I    = IWAQ
-      DO WHILE((NOMVEB(I:I).NE.'/').AND.(NOMVEB(I:I).NE.'\')
-     &                             .AND.(I.GE.1))
-        I = I-1
+      DO WHILE(I.GE.1)
+        IF((NOMVEB(I:I).NE.'/').AND.(NOMVEB(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
       ENDDO
-      WRITE ( NHYD, '(A,A,A)' )
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
      &    "pointers-file            '",NOMVEB(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "pointers-file            ''"
+      ENDIF
       IWAQ = LEN_TRIM(NOMMAF)
       I    = IWAQ
-      DO WHILE((NOMMAF(I:I).NE.'/').AND.(NOMMAF(I:I).NE.'\')
-     &                             .AND.(I.GE.1))
-        I = I-1
+      DO WHILE(I.GE.1)
+        IF((NOMMAF(I:I).NE.'/').AND.(NOMMAF(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
       ENDDO
-      WRITE ( NHYD, '(A,A,A)' )
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
      &    "lengths-file             '",NOMMAF(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "lengths-file             ''"
+      ENDIF
       IF(SALI_DEL) THEN
         IWAQ = LEN_TRIM(NOMSAL)
         I    = IWAQ
-        DO WHILE((NOMSAL(I:I).NE.'/').AND.(NOMSAL(I:I).NE.'\')
-     &                               .AND.(I.GE.1))
-          I = I-1
+        DO WHILE(I.GE.1)
+          IF((NOMSAL(I:I).NE.'/').AND.(NOMSAL(I:I).NE.'\')) THEN
+            I = I-1
+          ELSE
+            EXIT
+          ENDIF
         ENDDO
-        WRITE ( NHYD, '(A,A,A)' )
+        IF(IWAQ.NE.0) THEN
+          WRITE ( NHYD, '(A,A,A)' )
      &    "salinity-file            '",NOMSAL(I+1:IWAQ),"'"
+        ELSE
+          WRITE ( NHYD, '(A)' ) "salinity-file            ''"
+        ENDIF
       ELSE
-      WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &    "salinity-file            none                        "
       ENDIF
       IF(TEMP_DEL) THEN
         IWAQ = LEN_TRIM(NOMTEM)
         I    = IWAQ
-        DO WHILE((NOMTEM(I:I).NE.'/').AND.(NOMTEM(I:I).NE.'\')
-     &                               .AND.(I.GE.1))
-          I = I-1
+        DO WHILE(I.GE.1)
+          IF((NOMTEM(I:I).NE.'/').AND.(NOMTEM(I:I).NE.'\')) THEN
+            I = I-1
+          ELSE
+            EXIT
+          ENDIF
         ENDDO
-        WRITE ( NHYD, '(A,A,A)' )
+        IF(IWAQ.NE.0) THEN
+          WRITE ( NHYD, '(A,A,A)' )
      &    "temperature-file         '",NOMTEM(I+1:IWAQ),"'"
+        ELSE
+          WRITE ( NHYD, '(A)' ) "temperature-file         ''"
+        ENDIF
       ELSE
-      WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &    "temperature-file         none                        "
       ENDIF
       IF(DIFF_DEL) THEN
         IWAQ = LEN_TRIM(NOMVIS)
         I    = IWAQ
-        DO WHILE((NOMVIS(I:I).NE.'/').AND.(NOMVIS(I:I).NE.'\')
-     &                               .AND.(I.GE.1))
-          I = I-1
+        DO WHILE(I.GE.1)
+          IF((NOMVIS(I:I).NE.'/').AND.(NOMVIS(I:I).NE.'\')) THEN
+            I = I-1
+          ELSE
+            EXIT
+          ENDIF
         ENDDO
-        WRITE ( NHYD, '(A,A,A)' )
+        IF(IWAQ.NE.0) THEN
+          WRITE ( NHYD, '(A,A,A)' )
      &    "vert-diffusion-file      '",NOMVIS(I+1:IWAQ),"'"
+        ELSE
+          WRITE ( NHYD, '(A)' ) "vert-diffusion-file      ''"
+        ENDIF
       ELSE
-      WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &    "vert-diffusion-file      none                        "
       ENDIF
       IF(VELO_DEL) THEN
         IWAQ = LEN_TRIM(NOMVEL)
         I    = IWAQ
-        DO WHILE((NOMVEL(I:I).NE.'/').AND.(NOMVEL(I:I).NE.'\')
-     &                               .AND.(I.GE.1))
-          I = I-1
+        DO WHILE(I.GE.1)
+          IF((NOMVEL(I:I).NE.'/').AND.(NOMVEL(I:I).NE.'\')) THEN
+            I = I-1
+          ELSE
+            EXIT
+          ENDIF
         ENDDO
-        WRITE ( NHYD, '(A,A,A)' )
+        IF(IWAQ.NE.0) THEN
+          WRITE ( NHYD, '(A,A,A)' )
      &    "velocity-file            '",NOMVEL(I+1:IWAQ),"'"
+        ELSE
+          WRITE ( NHYD, '(A)' ) "velocity-file            ''"
+        ENDIF
       ELSE
-      WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &    "velocity-file            none                        "
       ENDIF
       IWAQ = LEN_TRIM(NOMINI)
       I    = IWAQ
-      DO WHILE((NOMINI(I:I).NE.'/').AND.(NOMINI(I:I).NE.'\')
-     &                             .AND.(I.GE.1))
-        I = I-1
+      DO WHILE(I.GE.1)
+        IF((NOMINI(I:I).NE.'/').AND.(NOMINI(I:I).NE.'\')) THEN
+          I = I-1
+        ELSE
+          EXIT
+        ENDIF
       ENDDO
-      WRITE ( NHYD, '(A,A,A)' )
+      IF(IWAQ.NE.0) THEN
+        WRITE ( NHYD, '(A,A,A)' )
      &    "surfaces-file            '",NOMINI(I+1:IWAQ),"'"
+      ELSE
+        WRITE ( NHYD, '(A)' ) "surfaces-file            ''"
+      ENDIF
       WRITE ( NHYD, '(A)' )
      &    "total-grid-file          none                        "
       WRITE ( NHYD, '(A)' )
@@ -347,15 +446,15 @@
       WRITE ( NHYD, '(A)' )
      &    "walking-discharges-file  none                        "
       IF ( NOLAY .GT. 1 ) THEN
-         WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &       "minimum-vert-diffusion                            "
-         WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &       "   upper-layer       0.0000E+00                   "
-         WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &       "   lower-layer       0.0000E+00                   "
-         WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &       "   interface-depth   0.0000E+00                   "
-         WRITE ( NHYD, '(A)' )
+        WRITE ( NHYD, '(A)' )
      &       "end-minimum-vert-diffusion                        "
       ENDIF
       WRITE ( NHYD, '(A)' )
@@ -373,14 +472,14 @@
 !      DO ILAY=1,NOLAY
 !     FROM TOP TO BOTTOM IN DELWAQ
       DO ILAY=NOLAY,1,-1
-         WRITE ( NHYD, '(F10.4)' ) F(1,ILAY)
+        WRITE ( NHYD, '(F10.4)' ) F(1,ILAY)
       ENDDO
       WRITE ( NHYD, '(A)' )
      &    "end-hydrodynamic-layers                           "
       WRITE ( NHYD, '(A)' )
      &    "water-quality-layers                              "
       DO ILAY=1,NOLAY
-         WRITE ( NHYD, '(F10.4)' ) 1.0
+        WRITE ( NHYD, '(F10.4)' ) 1.0
       ENDDO
       WRITE ( NHYD, '(A)' )
      &    "end-water-quality-layers                          "
