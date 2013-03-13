@@ -3658,7 +3658,7 @@ NOM1 = 'LIST OF FILES'
 TYPE = CARACTERE 
 INDEX = 99 
 MNEMO = '' 
-TAILLE = 20 
+TAILLE = 21 
 DEFAUT = 'FICHIER DES PARAMETRES'; 
          'DICTIONNAIRE'; 
          'FICHIER FORTRAN'; 
@@ -3678,7 +3678,8 @@ DEFAUT = 'FICHIER DES PARAMETRES';
          'FICHIER DE PARALLELISME'; 
          'FICHIER DE REFERENCE'; 
          'FICHIER DU NIVEAU DE LA MAREE BINAIRE'; 
-         'FICHIER DU NIVEAU DE LA MAREE FORMATE' 
+         'FICHIER DU NIVEAU DE LA MAREE FORMATE';
+	 'FICHIER DES RESULTATS SPECTRES 1D'
 DEFAUT1 ='STEERING FILE'; 
          'DICTIONARY'; 
          'FORTRAN FILE'; 
@@ -3698,7 +3699,8 @@ DEFAUT1 ='STEERING FILE';
          'PARALLELISM FILE'; 
          'REFERENCE FILE'; 
          'BINARY TIDAL WATER LEVEL FILE'; 
-         'FORMATTED TIDAL WATER LEVEL FILE' 
+         'FORMATTED TIDAL WATER LEVEL FILE';
+	 '1D SPECTRA RESULTS FILE' 
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
 NIVEAU = 1 
@@ -5037,3 +5039,60 @@ L''unite est celle du fichier'
 AIDE1 = 'Will be withdrawn from the time read in the file.
  The unit is that of the file'
 /
+NOM = 'OPTION POUR LA QUEUE DIAGNOSTIQUE' 
+NOM1 = 'OPTION FOR DIAGNOSTIC TAIL' 
+TYPE = INTEGER 
+INDEX = 47
+MNEMO = 'DIAGHF' 
+TAILLE= 0 
+DEFAUT = 1 
+DEFAUT1 = 1 
+RUBRIQUE = 'SPECTRES' 
+RUBRIQUE1 = 'SPECTRUM' 
+NIVEAU = 2 
+AIDE = 'Permet de choisir la methode de correction de la 
+partie diagnostique du spectre. 
+0 : Pas de queue diagnostique
+1 : Une decroissance en f^(-TAILF) est imposee au dessus de
+max(4fPM;2.5fmoy)
+**Mots-cles associes :** 
+FACTEUR DE QUEUE DU SPECTRE
+NOMBRE DE FREQUENCES 
+RAISON FREQUENTIELLE' 
+AIDE1 = 'Option to treat the spectrum diagnotic tail.
+0 : No diagnostic tail
+1 : A decrease in f^(-TAILF) is imposed beyond  
+max(4fPM;2.5fmoy) 
+**Related keywords :** 
+SPECTRUM TAIL FACTOR
+NUMBER OF FREQUENCIES 
+FREQUENTIAL RATIO' 
+/
+NOM = 'FICHIER DES RESULTATS SPECTRES 1D' 
+NOM1 = '1D SPECTRA RESULTS FILE' 
+TYPE = CARACTERE 
+INDEX = 50 
+MNEMO = 'Variable WAC_FILES(WACSPE)%NAME' 
+TAILLE= 0 
+SUBMIT = 'WACSPE-WRITE-44;WACSPE;FACUL;ASC;ECR;SCAL'  
+DEFAUT = '' 
+DEFAUT1 = '' 
+RUBRIQUE = 'RESULTATS' 
+RUBRIQUE1 = 'RESULTS' 
+NIVEAU = 1 
+AIDE = 'Nom du fichier dans lequel seront ecrits les spectres 
+frequentiels ponctuels (integres selon les directions). 
+**Mots-cles associes :** 
+FICHIER DES RESULTATS PONCTUELS
+ABSCISSES DES POINTS DE SORTIE DU SPECTRE 
+ORDONNEES DES POINTS DE SORTIE DU SPECTRE 
+PERIODE POUR LES SORTIES GRAPHIQUES 
+NUMERO DE LA PREMIERE ITERATION POUR LES SORTIES GRAPHIQUES' 
+AIDE1 = 'Name of the file into which the frequential punctual
+spectra (integrated accroding to the directions) will be written. 
+**Related keywords :** 
+PUNCTUAL RESULTS FILE 
+ABSCISSAE OF SPECTRUM PRINTOUT POINTS 
+ORDINATES OF SPECTRUM PRINTOUT POINTS 
+PERIOD FOR GRAPHIC PRINTOUTS 
+NUMBER OF FIRST ITERATION FOR GRAPHIC PRINTOUTS' 
