@@ -37,12 +37,12 @@ __date__ ="$21-Sep-2012 16:51:09$"
 def cleanDoc(docDir,fullclean):
    for dirpath,dirnames,files in walk(docDir): break
    for file in files :
-      if file.endswith("aux"): remove(file)
-      if file.endswith("out"): remove(file)
-      if file.endswith("toc"): remove(file)
-      if file.endswith("log"): remove(file)
+      if file.endswith(".aux"): remove(file)
+      if file.endswith(".out"): remove(file)
+      if file.endswith(".toc"): remove(file)
+      if file.endswith(".log"): remove(file)
       if file.endswith("~"): remove(file)
-      if fullclean and file.endswith("pdf"): remove(file)
+      if fullclean and file.endswith(".pdf"): remove(file)
 
 def compiletex(texfile,version):
    mes = MESSAGES(size=10)
@@ -99,7 +99,7 @@ if __name__ == "__main__":
    parser.add_option("--validation",
                      action="store_true",
                      dest="validation",
-                     default=False,
+                     default=True,
                      help="Will generate only the validation documentation" )
    parser.add_option("--clean",
                      action="store_true",
