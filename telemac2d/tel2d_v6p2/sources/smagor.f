@@ -65,7 +65,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,NPOIN,IELMU,IELMC
+      INTEGER N,NPOIN,IELMU
       DOUBLE PRECISION CS,CS2
 !
 !-----------------------------------------------------------------------
@@ -80,7 +80,6 @@
 !-----------------------------------------------------------------------
 !
       IELMU = U%ELM
-      IELMC = VISC%ELM
 !
 !     COMPUTES GRADIENTS (IN FACT AVERAGED GRADIENT MULTIPLIED BY
 !     A SURFACE WHICH IS THE INTEGRAL OF TEST FUNCTIONS ON THE DOMAIN,

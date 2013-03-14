@@ -43,6 +43,11 @@
 !+        V6P3
 !+   Treatment of drogues (floats) modified.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        14/03/2013
+!+        V6P3
+!+   Treatment of spatial projection type.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<--| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<--| VALUES OF KEY-WORDS OF TYPE CHARACTER
@@ -1926,6 +1931,25 @@
         ENDIF
         CALL PLANTE(1)
         STOP
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!  SPATIAL PROJECTION TYPE CHECKED IF SPHERICAL COORDINATES ASKED
+!
+      IF(SPHERI) THEN
+        IF(PROTYP.NE.2.AND.PROTYP.NE.3) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'TYPE DE PROJECTION SPATIALE : ',PROTYP
+            WRITE(LU,*) 'IMPOSSIBLE AVEC DES COORDONNEES SPHERIQUES'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'SPATIAL PROJECTION TYPE: ',PROTYP
+            WRITE(LU,*) 'IMPOSSIBLE WITH SPHERICAL COORDINATES'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

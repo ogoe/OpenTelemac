@@ -48,6 +48,11 @@
 !+        V6P3
 !+   Treatment of drogues (floats) changed.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        14/03/2013
+!+        V6P3
+!+   Treatment of latitude-longitude coordinates (call to almesh).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -116,7 +121,8 @@
 !
       CALL ALMESH(MESH,'MESH  ',IELMX,SPHERI,CFG,T2D_FILES(T2DGEO)%LU,
      &            EQUA,I3=I3,I4=I4,
-     &            FILE_FORMAT=T2D_FILES(T2DGEO)%FMT)
+     &            FILE_FORMAT=T2D_FILES(T2DGEO)%FMT,
+     &            PROJECTION=PROTYP,LATI0=LAMBD0,LONGI0=PHI0)
 !
 !     IF COORDINATES OF ORIGIN ARE IN GEOMETRY FILE AND NOT IN STEERING
 !     FILE, THE VALUES OF GEOMETRY FILE ARE TAKEN
