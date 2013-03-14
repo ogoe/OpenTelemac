@@ -500,6 +500,8 @@
              ENDDO
            ENDIF
          ENDIF
+!        SPATIAL PROJECTION TYPE
+         PROTYP = MOTINT(ADRESS(1,81))
 !
 ! REAL KEYWORDS:
 !

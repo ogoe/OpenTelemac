@@ -1048,6 +1048,10 @@
 !
       INTEGER NBRECH
 !
+!     SPATIAL PROJECTION TYPE
+!
+      INTEGER PROTYP
+!
 !
 !-----------------------------------------------------------------------
 !
