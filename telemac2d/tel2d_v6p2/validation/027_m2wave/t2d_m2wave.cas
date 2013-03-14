@@ -81,7 +81,7 @@ CORIOLIS                                     = YES
 /
 NUMBER OF PRIVATE ARRAYS                     = 1
 TIDAL FLATS                                  = NO
-SPHERICAL COORDINATES                        = YES
+SPHERICAL COORDINATES=YES SPATIAL PROJECTION TYPE=2
 ADVECTION OF U AND V                         = NO
 DIFFUSION OF VELOCITY                        = NO
 TYPE OF ADVECTION                            = 1;5
