@@ -253,7 +253,7 @@
 !
       DOUBLE PRECISION C,CFLMAX
 !
-      INTEGER IELMF,IELMH,IELMS,IELMU,MSKNEU,I,N,IOPT
+      INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT
 !
       LOGICAL MSQ,FV_SCHEME
 !
@@ -264,7 +264,6 @@
       IELMF = F%ELM
       IELMH = H%ELM
       IELMS = SM%ELM
-      IELMU = UCONV%ELM
 !
 !-----------------------------------------------------------------------
 !

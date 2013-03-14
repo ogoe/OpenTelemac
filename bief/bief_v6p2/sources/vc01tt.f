@@ -85,12 +85,11 @@
 !
       DOUBLE PRECISION XSUR120,COEF,F1234,X2,X3,X4,Y2,Y3,Y4,Z2,Z3,Z4
       DOUBLE PRECISION F1,F2,F3,F4
-      INTEGER I1,I2,I3,I4,IELEM,IELMF,DISCF
+      INTEGER I1,I2,I3,I4,IELEM,IELMF
 !
 !***********************************************************************
 !
       IELMF=SF%ELM
-      DISCF = SF%DIMDISC
 !
 !-----------------------------------------------------------------------
 !

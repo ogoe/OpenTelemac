@@ -3,7 +3,7 @@
 !                    *****************
 !
      &(MESH,NOM,IELM,SPHERI,CFG,NFIC,EQUA,NPLAN,NPMAX,NPTFRX,NELMAX,
-     & I3,I4,FILE_FORMAT)
+     & I3,I4,FILE_FORMAT,PROJECTION,LATI0,LONGI0)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -60,6 +60,8 @@
 !| I4             |-->| ORDINATE IN METERS OF ORIGIN POINT (OPTIONAL)
 !| IELM           |-->| ELEMENT TYPE WITH THE LARGET NUMBER OF DEGREES
 !|                |   | OF FREEDOM THAT WILL BE USED
+!| LATI0          |-->| LATITUDE OF ORIGIN POINT
+!| LONGI0         |-->| LONGITUDE OF ORIGIN POINT
 !| MESH           |-->| MESH STRUCTURE TO BE ALLOCATED
 !| NELMAX         |-->| MAXIMUM NUMBER OF ELEMENTS IN THE MESH
 !| NFIC           |-->| LOGICAL UNIT WHERE TO READ THE MESH
@@ -67,6 +69,7 @@
 !| NPLAN          |-->| NUMBER OF PLANES (OPTIONAL,3D MESHES OF PRISMS)
 !| NPMAX          |-->| MAXIMUM NUMBER OF POINTS IN THE MESH
 !| NPTFRX         |-->| MAXIMUM NUMBER OF BOUNDARY NODES
+!| PROJECTION     |<->| SPATIAL PROJECTION TYPE
 !| SPHERI         |-->| LOGICAL, IF YES : SPHERICAL COORDINATES
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -89,8 +92,9 @@
       INTEGER          , INTENT(IN),    OPTIONAL :: NPMAX
       INTEGER          , INTENT(IN),    OPTIONAL :: NPTFRX
       INTEGER          , INTENT(IN),    OPTIONAL :: NELMAX
-      INTEGER          , INTENT(INOUT), OPTIONAL :: I3,I4
+      INTEGER          , INTENT(INOUT), OPTIONAL :: I3,I4,PROJECTION
       CHARACTER(LEN=8) , INTENT(IN),    OPTIONAL :: FILE_FORMAT
+      DOUBLE PRECISION , INTENT(IN),    OPTIONAL :: LATI0,LONGI0
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -109,13 +113,41 @@
       INTEGER IELB0V,IELB1V,I
       INTEGER, EXTERNAL :: P_IMAX
 !
+      CHARACTER(LEN=8) FFORMAT
+!
+      INTEGER PROJEC
+      DOUBLE PRECISION LATI,LONGI
+!
 !-----------------------------------------------------------------------
 !
-      CHARACTER(LEN=8) FFORMAT
       IF(PRESENT(FILE_FORMAT)) THEN
         FFORMAT=FILE_FORMAT
       ELSE
         FFORMAT='SERAFIN '
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(PRESENT(PROJECTION)) THEN
+        PROJEC=PROJECTION
+      ELSE
+        PROJEC=1
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(PRESENT(LATI0)) THEN
+        LATI=LATI0
+      ELSE
+        LATI=0.D0
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      IF(PRESENT(LONGI0)) THEN
+        LONGI=LONGI0
+      ELSE
+        LONGI=0.D0
       ENDIF
 !
 !-----------------------------------------------------------------------
@@ -769,7 +801,7 @@
 !
 !       NOTE : NO Z HERE, AS IELM.EQ.41, SEE NOTE BELOW
         CALL READGEO3(MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPOIN,NFIC,IB,
-     *                FFORMAT)
+     *                FFORMAT,PROJEC,LATI,LONGI)
 !
         CALL CPIKLE3(MESH%IKLE%I,IKLES,NELEM,NNELMAX,NPOIN,NNPLAN,
      *               MESH%KNOLG%I)
@@ -781,7 +813,7 @@
 !       NOTE : WITH PRISMS Z IS COMPUTED WITH ZF AND H, OR
 !              READ IN THE PREVIOUS COMPUTATION FILE, HENCE NO Z HERE
         CALL READGEO3(MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPOIN,NFIC,IB,
-     *                FFORMAT)
+     *                FFORMAT,PROJEC,LATI,LONGI)
 !
         CALL CPIKLE2(MESH%IKLE%I,MESH%KLEI%I,IKLES,
      &               NELEM,NNELMAX,NPOIN,NNPLAN)
@@ -800,11 +832,11 @@
         ENDDO
         IF(IELM.EQ.11.OR.IELM.EQ.12.OR.IELM.EQ.13.OR.IELM.EQ.14) THEN
           CALL READGEO3(MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPOIN,NFIC,IB,
-     &                  FFORMAT)
+     &                  FFORMAT,PROJEC,LATI,LONGI)
         ELSEIF(IELM.EQ.31) THEN
 !         TETRAHEDRONS: READS THE Z COORDINATE AFTER X AND Y
           CALL READGEO3(MESH%KNOLG%I,MESH%X%R,MESH%Y%R,NPOIN,NFIC,IB,
-     &                  FFORMAT,MESH%Z%R)
+     &                  FFORMAT,PROJEC,LATI,LONGI,Z=MESH%Z%R)
         ENDIF
 !
       ELSE
