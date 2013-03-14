@@ -78,7 +78,8 @@
 !history  J-M HERVOUET (LNHE)
 !+        11/03/2013
 !+        V6P3   
-!+   Call to METEO modified.
+!+   Call to METEO modified. Stop if variables not found for a 2D
+!+   continuation.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -411,6 +412,24 @@
      &                   HIST,0,NPOIN2,AT,TEXTPR,VARCLA,
      &                   NVARCL,TROUVE,ALIRE2D,LISTIN,.TRUE.,MAXVAR)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SUITE'
+        IF(TROUVE(1).NE.1.OR.TROUVE(2).NE.1.OR.
+     &     TROUVE(4).NE.1) THEN
+         WRITE(LU,*)
+         IF(LNG.EQ.1) THEN
+           WRITE(LU,*) 'TELEMAC3D : VARIABLES U2D, V2D OU H ABSENTES'
+           WRITE(LU,*) '            SUITE 2D IMPOSSIBLE'
+           WRITE(LU,*) '            EN CAS DE PROBLEME DE LANGUE'
+           WRITE(LU,*) '            MODIFIER NOMVAR_2D_IN_3D'
+         ENDIF
+         IF(LNG.EQ.2) THEN
+           WRITE(LU,*) 'TELEMAC3D: VARIABLES U2D, V2D OR H NOT FOUND'
+           WRITE(LU,*) '           2D CONTINUATION IMPOSSIBLE'
+           WRITE(LU,*) '           IF IT IS A LANGUAGE PROBLEM'
+           WRITE(LU,*) '           YOU CAN MODIFY NOMVAR_2D_IN_3D'
+         ENDIF
+         CALL PLANTE(1)
+         STOP
+        ENDIF
       ENDIF
 !
 !     COPIES THE BOTTOM TOPOGRAPHY INTO Z (= MESH3D%Z%R)

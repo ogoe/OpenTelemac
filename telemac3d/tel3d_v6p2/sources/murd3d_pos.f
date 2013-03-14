@@ -154,8 +154,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION P_DSUM,P_DMIN,P_DMAX
-      EXTERNAL         P_DSUM,P_DMIN,P_DMAX
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM
       INTEGER  P_ISUM
       EXTERNAL P_ISUM
 !

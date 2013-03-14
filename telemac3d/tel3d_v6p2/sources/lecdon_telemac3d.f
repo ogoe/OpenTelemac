@@ -2161,5 +2161,24 @@ C  CHECKS THE EXISTENCE OF RELEVANT TRACERS FOR THE DENSITY LAW
 !
 !-----------------------------------------------------------------------
 !
+!  SPATIAL PROJECTION TYPE CHECKED IF SPHERICAL COORDINATES ASKED
+!
+      IF(SPHERI) THEN
+        IF(PROTYP.NE.2.AND.PROTYP.NE.3) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'TYPE DE PROJECTION SPATIALE : ',PROTYP
+            WRITE(LU,*) 'IMPOSSIBLE AVEC DES COORDONNEES SPHERIQUES'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'SPATIAL PROJECTION TYPE: ',PROTYP
+            WRITE(LU,*) 'IMPOSSIBLE WITH SPHERICAL COORDINATES'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
       RETURN
       END

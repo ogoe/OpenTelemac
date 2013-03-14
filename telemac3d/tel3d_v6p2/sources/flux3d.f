@@ -140,7 +140,7 @@
 !
       INTEGER IPLAN,IPTFR,I,IOPT
       CHARACTER(LEN=16) FORMUL
-      DOUBLE PRECISION SUM_FLUEXT,AUX
+      DOUBLE PRECISION SUM_FLUEXT
 !
 !***********************************************************************
 !
