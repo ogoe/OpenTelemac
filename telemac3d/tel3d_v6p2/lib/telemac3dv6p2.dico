@@ -2352,10 +2352,9 @@ RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
 AIDE = 'Fichier de donnees code en binaire mis a la disposition
-de l''utilisateur. Format Selafin, utilise en cas 
-de suite 2D et de flotteurs'
+de l''utilisateur. Format Selafin, utilise en cas de suite 2D'
 AIDE1 = 'Data file in binary mode, Selafin format, 
-used in case of 2D continuation and buoys'
+used in case of 2D continuation'
 
 NOM = 'FICHIER DE DONNEES BINAIRE 2'
 NOM1 = 'BINARY DATA FILE 2'
@@ -3944,18 +3943,18 @@ MNEMO = 'PROTYP'
 TAILLE = 0
 DEFAUT = 2
 DEFAUT1 = 2
-CHOIX = '1="LAMBERT"';
+CHOIX = '1="CARTESIEN, NON GEOREFERENCE"';
         '2="MERCATOR"';
-        '3="UTILISATEUR"'
-CHOIX1 = '1="LAMBERT"';
+        '3="LATITUDE LONGITUDE"'
+CHOIX1 = '1="CARTESIAN, NOT GEOREFERENCED"';
          '2="MERCATOR"';
-         '3="USER"'
+         '3="LATITUDE LONGITUDE"'
 CONTROLE = 1 ; 3
 RUBRIQUE = 'EQUATIONS';'GENERAL'
 RUBRIQUE1 = 'EQUATIONS';'GENERAL'
 NIVEAU = 1
-AIDE = ''
-AIDE1 = ''
+AIDE = 'Option 2 ou 3 obligatoire pour les coordonnees spheriques'
+AIDE1 = 'Option 2 or 3 mandatory for spherical coordinates'
 
 NOM = 'LATITUDE DU POINT ORIGINE'
 NOM1 = 'LATITUDE OF ORIGIN POINT'
