@@ -60,8 +60,8 @@
 !history  E. GAGNAIRE-RENOU (EDF - LNHE)
 !+        12/03/2013
 !+        V6P3
-!+   Print out the 1D frequential spectrum at (same) selected nodes
-!+                (Scopgene format)
+!+   Print out the 1D frequential spectrum at (same) selected nodes.
+!+   Scopgene format.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
@@ -119,20 +119,22 @@
       INTEGER  ISTAT , II    , JF    , K 
       INTEGER  KAMP1 , KAMP2 , KAMP3 , KAMP4 , KAMP5 , KAMP6 , ILEO
       INTEGER  IBID(1), NELEM, NPSPE
-      CHARACTER*72 C
-      CHARACTER*32 TEXTE(99)
-      CHARACTER*6  NUM
-      CHARACTER*2  CC
-      CHARACTER*1  C1,C2,C3,C4,C5,C6
-      TYPE(BIEF_MESH) :: MESHF
-      LOGICAL         :: SORLEO(99)    
-      DOUBLE PRECISION AAT(1), DTETAR, F_INTF(NLEO,NF)
+      CHARACTER(LEN=72) C
+      CHARACTER(LEN=32) TEXTE(99)
+      CHARACTER(LEN=6)  NUM
+      CHARACTER(LEN=2)  CC
+      CHARACTER(LEN=1)  C1,C2,C3,C4,C5,C6
+      TYPE(BIEF_MESH) MESHF
+      LOGICAL         SORLEO(99)    
+      DOUBLE PRECISION AAT(1),DTETAR
       REAL W(1)
       CHARACTER(LEN=11) EXTENS
       EXTERNAL          EXTENS
 !
       INTEGER  P_IMAX
       EXTERNAL P_IMAX
+!
+      DOUBLE PRECISION, ALLOCATABLE :: F_INTF(:,:)
 !
       SAVE
 !
@@ -185,6 +187,9 @@
         ALLOCATE(MESHF%DIM)
         ALLOCATE(MESHF%KNOLG)
         ALLOCATE(MESHF%KNOLG%I(NPSPE))
+!
+        ALLOCATE(F_INTF(NLEO,NF))
+!
         MESHF%NAME = 'MESH'
         MESHF%TYPELM = 20 !QUADRANGLE 2D MESH
         MESHF%NELEM  = NELEM
@@ -307,7 +312,7 @@
             CALL LIT(AUXIL,W,IBID,C,NPSPE,'R8',99,'STD',ISTAT)
             CALL ECRI2(AUXIL,IBID,C,NPSPE,'R4',NSCO,'STD',ISTAT)
             DO JF=1,NF
-              F_INTF(ILEO,JF)=0.0D0
+              F_INTF(ILEO,JF)=0.D0
               DO K=1,NPLAN
                 F_INTF(ILEO,JF)=F_INTF(ILEO,JF)+AUXIL(K,JF)*DTETAR
               ENDDO
