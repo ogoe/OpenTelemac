@@ -1,8 +1,9 @@
       MODULE CONV_SERAFIN
       CONTAINS
-!                       ***************** 
+!                       *********************** 
                         SUBROUTINE READ_SERAFIN 
-!                       *****************
+!                       ***********************
+!
      &(SLFFILE,LIMFILE)
 !
 !***********************************************************************
@@ -181,8 +182,11 @@
 !
       !READING THE COORDINATES
 
+!     PROJECTION
+      IDUM=1
+!
       CALL READGEO3(MESH2%KNOLG,MESH2%X,MESH2%Y,MESH2%NPOIN,
-     &              NINP,MESH2%IB,FFORMAT)
+     &              NINP,MESH2%IB,FFORMAT,IDUM,0.D0,0.D0)
 !
       ! COMPLETING COORDINATES NAME AND UNIT
       ALLOCATE(MESH2%NAMECOO(MESH2%NDIM),STAT=IERR)
