@@ -379,7 +379,7 @@ class EXTRACT:
       self.dids[xref][cfgname]['csv']= [csvFile]
       return csvFile
 
-   def runEXE(self):
+   def runEXE(self,doextract):
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
       exeFile = path.join(self.active['path'],self.active["target"])
@@ -390,16 +390,20 @@ class EXTRACT:
       print '    +> running your exe file :', self.active["target"],'\n'
       os.system(self.active["target"])
       
-   def runPYTHON(self):
+   def runPYTHON(self,doextract):
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
       pythonFile = path.join(self.active['path'],self.active["target"])
       copyFile(pythonFile,self.active['safe'])
       for file in self.active['dependency'].split(';'):
-         copyFile(file,self.active['safe'])
+         if self.active["reference"] != '':
+            depfile = path.join(doextract[self.active["reference"]][cfgname]['safe'],file)
+            copyFile(depfile,self.active['safe'])
+         else : copyFile(file,self.active['safe'])
       os.chdir(self.active['safe'])
       print '    +> running your python script :', self.active["target"],'\n'
-      subprocess.check_call(self.active["target"] ,shell = True) 
+      cmd = 'python ' + self.active["target"]
+      subprocess.check_call(cmd,shell = True) 
       if self.active["code"]=="postel3d":
          self.dids[xref][cfgname]['output']= []
          for filenames in walk(self.active['safe']) :
@@ -683,7 +687,7 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
             
          for cfgname in xmlConfig.keys():
             extractcfg = xmlConfig[cfgname]['cfg']
-            if not doextract.addCFG(cfgname,cfg): continue
+            if not doextract.addCFG(cfgname,extractcfg): continue
          
             createDirectories(doextract.active['safe'])
          
@@ -709,7 +713,7 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
                         copyFile(ResultFile,doextract.active['safe'])
                   else : ResultFile = do.dids[actionXREF][cfgname]['output'][0][1][0]
                   copyFile(ResultFile,doextract.active['safe'])
-                  doextract.runEXE()
+                  doextract.runEXE(doextract.dids)
                except Exception as e:
                   xcpt.append(filterMessage({'name':'runXML','msg':'   +> runEXE'},e,bypass))    
 
@@ -728,7 +732,7 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
                   else : 
                      ResultFile = do.dids[actionXREF][cfgname]['output'][0][1][0]
                      copyFile(ResultFile,doextract.active['safe'])
-                  doextract.runPYTHON()
+                  doextract.runPYTHON(doextract.dids)
                except Exception as e:
                   xcpt.append(filterMessage({'name':'runXML','msg':'   +> runPYTHON'},e,bypass))  
 
