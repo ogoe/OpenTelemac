@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="Sandpit">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <meta xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="SANDPIT" author="M.Knaapen" contact="www.opentelemac.org" />
+   </meta>
+   <meta xref="vect">
+      <look colour="jet.xml" />
+   </meta>
+   <meta xref="line">
+      <look colour="k" />
+   </meta>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="Built"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_sandpit.cas"
+       title="Run Sandpit with coupled sisyphe telemac"
+   />
+  
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->   
+   <extract xref="Validate" code="telemac2d"
+       do="runEXE" target="post_sandpit.exe"
+	   dependency="sandpitfin.exp;sandpitsta.exp"
+       title="Sandpit validation"
+   />
+   <extract xref="Plot" code="telemac2d"
+       do="runPYTHON" target="plot_sandpit.py"
+	   reference="Validate"
+	   dependency="Profiles.csv"
+       title="Sandpit validation"
+   />    
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+ 
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+
+</validation>
