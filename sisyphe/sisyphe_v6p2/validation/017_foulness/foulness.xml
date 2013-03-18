@@ -26,12 +26,17 @@
    />
   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   /!\ This section is being ignored at the moment -->
-  
+-->   
    <extract xref="Validate" code="sisyphe"
-       do="runPYTHON" target="plotFoulness.py"
-	   dependency="sisvali_foulness.exe;FieldData.txt"
+       do="runEXE" target="post_foulness.exe"
+	   dependency="FieldData.txt"
        title="Foulness validation"
+   />  
+   <extract xref="Plot" code="sisyphe"
+       do="runPYTHON" target="plot_foulness.py"
+	   reference="Validate"
+	   dependency="transport_rates.csv"
+       title="Foulness plots"
    />   
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

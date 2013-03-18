@@ -32,7 +32,7 @@ def get_data(filename):
    return t,g1,g2,g3,g4
 
 if __name__ == "__main__":
-    os.system('sisvali_foulness.exe')
+
     u,h,k,st_m,st_d = get_data('transport_rates.csv')
       
     #--------------------------
