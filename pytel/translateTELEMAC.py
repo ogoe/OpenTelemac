@@ -19,7 +19,7 @@
 #
 from config import OptionParser,parseConfigFile, parseConfig_TranslateTELEMAC
 from os import path,walk,mkdir,remove, environ
-from utils import getTheseFiles,getFileContent,putFileContent
+from utils.files import getTheseFiles,getFileContent,putFileContent
 import sys
 import re
 import urllib
