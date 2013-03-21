@@ -1,12 +1,12 @@
-!                       ***********************
-                        SUBROUTINE FLUX_HLLC
-!                       ***********************
+!                        ********************
+                         SUBROUTINE FLUX_HLLC
+!                        ********************
 
      &(XI,H1,H2,U1,U2,V1,V2,PSI1,PSI2,
      & XNN,YNN,ROT,HLLCFLX)
 !
 !***********************************************************************
-! TELEMAC 2D VERSION 6.2                                         R. ATA
+! TELEMAC 2D VERSION 6.3                                         R. ATA
 !
 !***********************************************************************
 !brief 
@@ -20,6 +20,12 @@
 !+        07/15/2012
 !+        V6P2
 !+
+!
+!history  RIADH ATA (EDF R&D-LNHE)
+!+        03/20/2013
+!+        V6P3
+!+  OPTIMIZATION OF THE CODE
+!+  AVOID DIVISION BY 0
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! |  FLX           | <--|  FLUX COMPONENTS AT THE INTERFACE            |
@@ -49,7 +55,8 @@
       DOUBLE PRECISION, INTENT(IN)    :: XI,V1,V2,XNN,YNN
       LOGICAL, INTENT(IN)             :: ROT
       DOUBLE PRECISION, INTENT(INOUT) :: HLLCFLX(4)
-!***********************************************************************
+!     
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER                         :: I,SPY
       DOUBLE PRECISION, PARAMETER     :: G = 9.81D0
@@ -65,24 +72,35 @@
       DOUBLE PRECISION                :: FLU2X,FLU2Y
       DOUBLE PRECISION                :: U0,POND,SSTAR
       DOUBLE PRECISION                :: FLX(4)
+!
 !-----------------------------------------------------------------------
-       EPS   = 1.E-6
-       GSUR2 = G/2.0D0
-       SPY   = 0
-!***********************************************************************
-! INITIALIZATION OF FLX AND HLLCFLX
+!
+      EPS   = 1.E-6
+      GSUR2 = G/2.D0
+      SPY   = 0
+      pQL   = 0.D0
+      pQR   = 0.D0
+      USTAR = 0.D0
+      HSTAR = 0.D0
+      AL    = 0.D0
+      AR    = 0.D0
+!
+!     INITIALIZATION OF FLX AND HLLCFLX
+!
       DO I=1,4
-         FLX(I)     = 0.0D0
-         HLLCFLX(I) = 0.0D0
+        FLX(I)     = 0.D0
+        HLLCFLX(I) = 0.D0
       ENDDO
 !
 !-----------------------------------------------------------------------
-! DEPTHS, VELOCITIES, TRACERS
+!
+!     DEPTHS, VELOCITIES, TRACERS
+!
       HL    = H1
       UL    = U1
       VL    = V1
       PSI_L = PSI1
-
+!
       HR    = H2
       UR    = U2
       VR    = V2
@@ -98,101 +116,127 @@
       UR  = XNN*U0+YNN*VR
       VR  =-YNN*U0+XNN*VR
 !
+!     CASE WITH DRY LEFT AND RIGHT 
+! 
+      IF(HL.LT.EPS.AND.HR.LT.EPS)GOTO 20 
+!
 10    CONTINUE
-! CELERITIES
+!
+!     CELERITIES
 !
       AL = SQRT(G*HL)
       AR = SQRT(G*HR)
-! STAR VARIABLES
+!
+!     STAR VARIABLES
+!
       HSTAR = 0.5D0*(HL+HR)-0.25D0*(UR-UL)*(HL+HR)/(AL+AR)
       USTAR = 0.5D0*(UL+UR)-0.25D0*(HR-HL)*(AL+AR)/(HL+HR)
-! COMPUTE pQL AND pQR:
-! IT WILL DEPEND IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE 
+!
+!     COMPUTE pQL AND pQR:
+!     IT WILL DEPEND IF WE ARE IN PRESENCE OF SHOCK OR RAREFACTION WAVE
+! 
       IF(HSTAR.LT.HL)THEN
-!        RAREFACTION
-         pQL = 1.0D0
+!       RAREFACTION
+        pQL = 1.D0
       ELSE
-!        SHOCK 
-         IF(HL.GT.EPS)THEN
-            pQL = SQRT(0.5D0*(HSTAR+HL)*HSTAR/HL**2)
-         ELSE
-            pQL = 0.0D0
-         ENDIF
+!       SHOCK 
+        IF(HL.GT.EPS)THEN
+          pQL = SQRT(0.5D0*(HSTAR+HL)*HSTAR/HL**2)
+        ELSE
+          pQL = 0.D0
+        ENDIF
       ENDIF
       IF(HSTAR.LT.HR)THEN
-!        RAREFACTION
-         pQR = 1.0D0
+!       RAREFACTION
+        pQR = 1.D0
       ELSE
-!        SHOCK
-         IF(HR.GT.EPS)THEN
-            pQR = SQRT(0.5D0*(HSTAR+HR)*HSTAR/HR**2)
-         ELSE
-            pQR = 0.0D0
-         ENDIF
+!       SHOCK
+        IF(HR.GT.EPS)THEN
+          pQR = SQRT(0.5D0*(HSTAR+HR)*HSTAR/HR**2)
+        ELSE
+          pQR = 0.D0
+        ENDIF
       ENDIF
-
-! COMPUTE SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
+!
+20    CONTINUE
+! 
+!     COMPUTE SL, SR AND SSTAR  (WE CONSIDER DRY CASES)
+!
       IF(HL.GT.EPS)THEN
-         SL = UL-AL*pQL
+        SL = UL-AL*pQL
       ELSE
-         SL = UR - 2.0D0*AR
-         SR = UR + AR
+        SL = UR - 2.D0*AR
+        SR = UR + AR
       ENDIF
-
+!
       IF(HR.GT.EPS)THEN
-         SR = UR + AR*pQR
+        SR = UR + AR*pQR
       ELSE
-         SL = UL - AL
-         SR = UL + 2.0D0*AL
+        SL = UL - AL
+        SR = UL + 2.0D0*AL
       ENDIF
       SSTAR = USTAR
-
-! COMPUTE QL AND QR
+!
+!     COMPUTE QL AND QR
+!
       QL(1)     = HL
       QL(2)     = HL*UL
       QL(3)     = HL*VL
       QL(4)     = HL*PSI_L
-
+!
       QR(1)     = HR
       QR(2)     = HR*UR
       QR(3)     = HR*VR
       QR(4)     = HR*PSI_R
-
-! COMPUTE QSTARL AND QSTARR
-      POND      = HL*( (SL-UL)/(SL-SSTAR) )
+!
+!     COMPUTE QSTARL AND QSTARR
+!
+      IF(ABS(SL-SSTAR).GT.EPS)THEN
+        POND = HL*(SL-UL)/(SL-SSTAR)
+      ELSE
+        POND = 0.D0
+      ENDIF
       QSTARL(1) = POND
       QSTARL(2) = POND*SSTAR
       QSTARL(3) = POND*VL
       QSTARL(4) = POND*PSI_L
-
-      POND      = HR*( (SR-UR)/(SR-SSTAR) ) 
+!
+      IF(ABS(SR-SSTAR).GT.EPS)THEN
+        POND = HR*(SR-UR)/(SR-SSTAR) 
+      ELSE
+        POND = 0.D0
+      ENDIF
       QSTARR(1) = POND
       QSTARR(2) = POND*SSTAR
       QSTARR(3) = POND*VR
       QSTARR(4) = POND*PSI_R
-
-! COMPUTE FL AND FR
+!
+!     COMPUTE FL AND FR
+!
       FL(1)     = HL*UL
       FL(2)     = HL*UL**2 +GSUR2*HL**2
       FL(3)     = HL*UL*VL
       FL(4)     = HL*UL*PSI_L 
-
+!
       FR(1)     = HR*UR
       FR(2)     = HR*UR**2 +GSUR2*HR**2
       FR(3)     = HR*UR*VR
       FR(4)     = HR*UR*PSI_R 
-
-! COMPUTE FSTARL SFTARR 
+!
+!     COMPUTE FSTARL SFTARR
+! 
       FSTARL(1) = FL(1) + SL*(QSTARL(1)-QL(1))
       FSTARL(2) = FL(2) + SL*(QSTARL(2)-QL(2))
       FSTARL(3) = FL(3) + SL*(QSTARL(3)-QL(3))
       FSTARL(4) = FL(4) + SL*(QSTARL(4)-QL(4))
-
+!
       FSTARR(1) = FR(1) + SR*(QSTARR(1)-QR(1))
       FSTARR(2) = FR(2) + SR*(QSTARR(2)-QR(2))
       FSTARR(3) = FR(3) + SR*(QSTARR(3)-QR(3))
       FSTARR(4) = FR(4) + SR*(QSTARR(4)-QR(4))
-! AND FINALLY THE HLLC FLUX (BEFORE ROTATION)
+!
+!     AND FINALLY THE HLLC FLUX (BEFORE ROTATION)
+!
       IF(XI.LT.SL)THEN
         FLX(1) = FL(1)
         FLX(2) = FL(2)
@@ -226,24 +270,21 @@
 !
 ! INVERSE ROTATION AND FINAL FLUX
 !
-       IF(ROT)THEN
-         FLU2X  = XNN*FLX(2) - YNN*FLX(3) 
-         FLU2Y  = YNN*FLX(2) + XNN*FLX(3)
-!
-         HLLCFLX(1) = FLX(1)
-         HLLCFLX(2) = FLU2X 
-         HLLCFLX(3) = FLU2Y
-         HLLCFLX(4) = FLX(4) 
-       ELSE
-! IN THIS CASE, NO ROTATION
-!
-! FINAL FLUX 
-!
-         HLLCFLX(1) = FLX(1)
-         HLLCFLX(2) = FLX(2) 
-         HLLCFLX(3) = FLX(3)
-         HLLCFLX(4) = FLX(4) 
-       ENDIF
+      IF(ROT)THEN
+        FLU2X  = XNN*FLX(2) - YNN*FLX(3) 
+        FLU2Y  = YNN*FLX(2) + XNN*FLX(3)
+        HLLCFLX(1) = FLX(1)
+        HLLCFLX(2) = FLU2X 
+        HLLCFLX(3) = FLU2Y
+        HLLCFLX(4) = FLX(4) 
+      ELSE
+!       IN THIS CASE, NO ROTATION
+!       FINAL FLUX 
+        HLLCFLX(1) = FLX(1)
+        HLLCFLX(2) = FLX(2) 
+        HLLCFLX(3) = FLX(3)
+        HLLCFLX(4) = FLX(4) 
+      ENDIF
 !
 50    CONTINUE
 !
