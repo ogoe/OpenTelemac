@@ -347,7 +347,6 @@
       DOUBLE PRECISION AUX1,AUX2,AUX3,AUX4,COEF   
       DOUBLE PRECISION FM1,FM2,TDEB,TFIN,VITVEN
       DOUBLE PRECISION VITMIN,HM0,HM0MAX,DTN,SUME,AUXI,USMIN
-      CHARACTER(LEN=7) CHDON
 !                              MDIA, HERE HARDCODED    
       DOUBLE PRECISION  XCCMDI(4)
 !
@@ -433,7 +432,6 @@
 !         2.1 UPDATES THE WIND FIELD FOR DATE TFIN
 !         ---------------------------------------------------
 !
-          CHDON='VENT   '
           IF(NOMVEB(1:1).NE.' '.OR.NOMVEF(1:1).NE.' ') THEN
             IF(NOMVEF(1:1).NE.' ') THEN
               NVENT=NVEF

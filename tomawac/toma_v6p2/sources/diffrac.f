@@ -6,7 +6,7 @@
      &  FREQ  , COSTET, SINTET, NPOIN2, NPLAN , IFF   , NF    , PROINF,
      &  SPHE  , A     , DFREQ , F     , CCG   , DIV   , DELTA , DDX   ,
      &  DDY   , EPS   , NBOR  , NPTFR , XKONPT, RK    , RX    , RY    ,
-     &  RXX   , RYY   , NEIGB , NB_CLOSE, DIFFRA, MAXNSP, FLTDIF      )
+     &  RXX   , RYY   , NEIGB , NB_CLOSE, DIFFRA, MAXNSP, FLTDIF,OPTDER)
 ! 
 !*********************************************************************** 
 ! TOMAWAC   V6P3                                   25/06/2012 
@@ -22,7 +22,6 @@
 !+        V5P5 
 !+ 
 ! 
-! 
 !history  G.MATTAROLO (EDF - LNHE) 
 !+        23/06/2012 
 !+        V6P2 
@@ -33,6 +32,12 @@
 !+        V6P3 
 !+   4 subroutines GRAD-... inlined and removed from the tomawac library
 !+   and then optimised.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        21/03/2013
+!+        V6P3 
+!+   Now velocities modified, not fully computed. 
+!+   A preliminary call of conwac is requested.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 !| A              |<--| AMPLITUDE OF DIRECTIONAL SPECTRUM 
@@ -89,41 +94,45 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
-      INTEGER NF,NPLAN,NPOIN2,NPTFR,IFF,MAXNSP
-      INTEGER NB_CLOSE(NPOIN2),NEIGB(NPOIN2,MAXNSP) 
-      INTEGER DIFFRA,NBOR(NPTFR) 
-      DOUBLE PRECISION CX(NPOIN2,NPLAN), CY(NPOIN2,NPLAN) 
-      DOUBLE PRECISION CT(NPOIN2,NPLAN), FREQ(NF) 
-      DOUBLE PRECISION CG(NPOIN2,NF), XK(NPOIN2,NF) 
-      DOUBLE PRECISION DEPTH(NPOIN2) 
-      DOUBLE PRECISION DZX(NPOIN2), DZY(NPOIN2) 
-      DOUBLE PRECISION COSTET(NPLAN), SINTET(NPLAN) 
-      DOUBLE PRECISION A(NPOIN2) 
-      DOUBLE PRECISION DFREQ(NF) 
-      DOUBLE PRECISION F(NPOIN2,NPLAN,NF) 
-      DOUBLE PRECISION CCG(NPOIN2), DIV(NPOIN2) 
-      DOUBLE PRECISION DELTA(NPOIN2) 
-      DOUBLE PRECISION DDX(NPOIN2), DDY(NPOIN2) 
-      DOUBLE PRECISION EPS 
-      DOUBLE PRECISION RK(MAXNSP,NPOIN2) 
-      DOUBLE PRECISION RX(MAXNSP,NPOIN2), RY(MAXNSP,NPOIN2)   
-      DOUBLE PRECISION RXX(MAXNSP,NPOIN2), RYY(MAXNSP,NPOIN2) 
-      DOUBLE PRECISION XKONPT(NPOIN2) 
-      LOGICAL PROINF,SPHE, FLTDIF 
+      INTEGER, INTENT(IN) :: NF,NPLAN,NPOIN2,NPTFR,IFF,MAXNSP,OPTDER
+      INTEGER, INTENT(IN) :: NB_CLOSE(NPOIN2),NEIGB(NPOIN2,MAXNSP) 
+      INTEGER, INTENT(IN)             :: DIFFRA,NBOR(NPTFR) 
+      DOUBLE PRECISION, INTENT(INOUT) :: CX(NPOIN2,NPLAN)
+      DOUBLE PRECISION, INTENT(INOUT) :: CY(NPOIN2,NPLAN) 
+      DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF) 
+      DOUBLE PRECISION, INTENT(INOUT) :: CT(NPOIN2,NPLAN) 
+      DOUBLE PRECISION, INTENT(IN)    :: CG(NPOIN2,NF),XK(NPOIN2,NF) 
+      DOUBLE PRECISION, INTENT(IN)    :: DEPTH(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: DZX(NPOIN2),DZY(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: COSTET(NPLAN),SINTET(NPLAN) 
+      DOUBLE PRECISION, INTENT(INOUT) :: A(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: DFREQ(NF) 
+      DOUBLE PRECISION, INTENT(IN)    :: F(NPOIN2,NPLAN,NF) 
+      DOUBLE PRECISION, INTENT(INOUT) :: CCG(NPOIN2), DIV(NPOIN2) 
+      DOUBLE PRECISION, INTENT(INOUT) :: DELTA(NPOIN2) 
+      DOUBLE PRECISION, INTENT(INOUT) :: DDX(NPOIN2), DDY(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: EPS 
+      DOUBLE PRECISION, INTENT(IN)    :: RK(MAXNSP,NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: RX(MAXNSP,NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: RY(MAXNSP,NPOIN2)   
+      DOUBLE PRECISION, INTENT(IN)    :: RXX(MAXNSP,NPOIN2)
+      DOUBLE PRECISION, INTENT(IN)    :: RYY(MAXNSP,NPOIN2) 
+      DOUBLE PRECISION, INTENT(INOUT) :: XKONPT(NPOIN2)  
+      LOGICAL, INTENT(IN)             :: PROINF,SPHE,FLTDIF 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !      
-      INTEGER I, IP, IPOIN 
-      DOUBLE PRECISION DDDN,DSDNSK,DEUKD
+      INTEGER I, IP, IPOIN
       DOUBLE PRECISION CDELTA,DELTAN
-      DOUBLE PRECISION S_RMSE_IN, WJUNK, WJUNK2 
       DOUBLE PRECISION,ALLOCATABLE:: SQRDELTA(:) 
-      DOUBLE PRECISION,ALLOCATABLE:: SQRCCG(:),A_RMSE(:) 
+      DOUBLE PRECISION,ALLOCATABLE:: SQRCCG(:)
       DOUBLE PRECISION,ALLOCATABLE:: FRDK(:,:),FRDA(:,:),SCDA(:,:) 
       LOGICAL,ALLOCATABLE:: L_DELTA(:) 
 !      
       LOGICAL DEJA
       DATA DEJA/.FALSE./
+!
+      INTRINSIC ABS,SQRT
 !      
       SAVE
 ! 
@@ -134,7 +143,6 @@
       IF(.NOT.DEJA)THEN
         ALLOCATE(SQRDELTA(NPOIN2))
         ALLOCATE(SQRCCG(NPOIN2))
-        ALLOCATE(A_RMSE(NPOIN2))
         ALLOCATE(FRDK(NPOIN2,2))
         ALLOCATE(FRDA(NPOIN2,2))
         ALLOCATE(SCDA(NPOIN2,3))
@@ -203,10 +211,8 @@
 !     
         DO IPOIN = 1,NPOIN2 
           A(IPOIN) = SQRT(2.D0*F(IPOIN,IP,IFF)*DFREQ(IFF)*DEUPI/NPLAN)
-          IF(DIFFRA.EQ.2)THEN 
-            S_RMSE_IN=XK(IPOIN,IFF)*SQRCCG(IPOIN) 
-            A_RMSE(IPOIN) =A(IPOIN)*S_RMSE_IN 
-            A(IPOIN)=A_RMSE(IPOIN) 
+          IF(DIFFRA.EQ.2)THEN  
+            A(IPOIN)=A(IPOIN)*XK(IPOIN,IFF)*SQRCCG(IPOIN)
           ENDIF 
         ENDDO 
 ! 
@@ -216,66 +222,122 @@
 ! 
         CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SA,
      *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-        CALL OV('X=YZ    ',SDDX%R,ST1%R,ST0%R,0.D0,NPOIN2)
+        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+        DO I=1,NPOIN2
+          FRDA(I,1)=ST1%R(I)*ST0%R(I)
+        ENDDO
         CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SA,
-     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)        
-        CALL OV('X=YZ    ',SDDY%R,ST1%R,ST0%R,0.D0,NPOIN2)
-!      
-       	FRDA(:,1)=DDX 
-       	FRDA(:,2)=DDY
+     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)        
+        DO I=1,NPOIN2
+          FRDA(I,2)=ST1%R(I)*ST0%R(I)
+        ENDDO
 !      	 
-!DIFFRA=1 - Mean Slope Equation model 
-!DIFFRA=2 - Revised Mean Slope Equation model
+!       DIFFRA=1 - Mean Slope Equation model 
+!       DIFFRA=2 - Revised Mean Slope Equation model
 !
         IF(DIFFRA.EQ.1) THEN 
 !                  
           CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SCCG,
      *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          CALL OV('X=YZ    ',SDDX%R,ST1%R,ST0%R,0.D0,NPOIN2)      
+          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+          DO I=1,NPOIN2
+            FRDK(I,1)=ST1%R(I)*ST0%R(I)
+          ENDDO      
           CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SCCG,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)          
-          CALL OV('X=YZ    ',SDDY%R,ST1%R,ST0%R,0.D0,NPOIN2)
+     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)          
+          DO I=1,NPOIN2
+            FRDK(I,2)=ST1%R(I)*ST0%R(I)
+          ENDDO
 !
         ELSE 
 !
           CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SXKONPT,
      *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
-          CALL OV('X=YZ    ',SDDX%R,ST1%R,ST0%R,0.D0,NPOIN2)
+          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+          DO I=1,NPOIN2
+            FRDK(I,1)=ST1%R(I)*ST0%R(I)
+          ENDDO
           CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SXKONPT,
-     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)          
-          CALL OV('X=YZ    ',SDDY%R,ST1%R,ST0%R,0.D0,NPOIN2)
+     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)          
+          DO I=1,NPOIN2
+            FRDK(I,2)=ST1%R(I)*ST0%R(I)
+          ENDDO
 !         
         ENDIF 
+!     
+!
+!       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!       CALCUL DE D2A/DX2 + D2A/DY2 AVEC LA METHODE FREEMESH
+!       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! 
-        FRDK(:,1)=DDX         
-        FRDK(:,2)=DDY     
+        IF(OPTDER.EQ.1) THEN
+!
+          DO IPOIN = 1,NPOIN2 
+!           calculate first and second derivative of A ( FFD=A) 
+!           note JMH: pour first il y a .FALSE.  !!!
+!                     et seul SCDA(IPOIN,3) est utilisé     
+            CALL RPI_INTR(NEIGB,NB_CLOSE, 
+     &                    RK(1,IPOIN),RX(1,IPOIN),RY(1,IPOIN), 
+     &                    RXX(1,IPOIN),RYY(1,IPOIN),
+     &                    NPOIN2,IPOIN,MAXNSP,A,
+     &                    FRDA(IPOIN,1),FRDA(IPOIN,2),
+     &                    SCDA(IPOIN,1),SCDA(IPOIN,2),
+     &                    SCDA(IPOIN,3),.FALSE.,.TRUE.) 
+        ENDDO
+!
+        ELSEIF(OPTDER.EQ.2) THEN
+!
+!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!         CALCUL DE D2A/DX2 + D2A/DY2 AVEC LA METHODE BETE
+!         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+!         FRDA not very convenient, copy required here...
+!
+          DO I=1,NPOIN2
+            SDDX%R(I)=FRDA(I,1)
+            SDDY%R(I)=FRDA(I,2)
+          ENDDO
+          CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDDX,
+     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+          DO I=1,NPOIN2
+            SCDA(I,3)=ST1%R(I)*ST0%R(I)
+          ENDDO
+          CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDDY,
+     *                ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+          IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
+          DO I=1,NPOIN2
+            SCDA(I,3)=SCDA(I,3)+ST1%R(I)*ST0%R(I)
+          ENDDO
+!
+        ELSE
+          WRITE(LU,*) 'OPTDER=',OPTDER,' NOT TREATED'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 ! 
-        DO IPOIN = 1,NPOIN2 
+!       DIFFRA=1 - Mean Slope Equation model 
+!       DIFFRA=2 - Revised Mean Slope Equation model
 ! 
-!   calculate first and second derivative of A ( FFD=A) 
-!        
-          CALL RPI_INTR(NEIGB,NB_CLOSE, 
-     &      RK(1,IPOIN),RX(1,IPOIN),RY(1,IPOIN), 
-     &      RXX(1,IPOIN),RYY(1,IPOIN), 
-     &      NPOIN2,IPOIN,MAXNSP,A,
-     &      FRDA(:,1),FRDA(:,2),SCDA,.FALSE.,.TRUE.) 
-! 
-!DIFFRA=1 - Mean Slope Equation model 
-!DIFFRA=2 - Revised Mean Slope Equation model
-! 
-          IF(DIFFRA.EQ.1)THEN 
+        IF(DIFFRA.EQ.1)THEN
+          DO IPOIN = 1,NPOIN2  
             DIV(IPOIN)=CCG(IPOIN)*SCDA(IPOIN,3) 
      &              + FRDK(IPOIN,1)*FRDA(IPOIN,1) 
-     &              + FRDK(IPOIN,2)*FRDA(IPOIN,2) 
-          ELSE 
+     &              + FRDK(IPOIN,2)*FRDA(IPOIN,2)
+          ENDDO 
+        ELSE
+          DO IPOIN = 1,NPOIN2  
             DIV(IPOIN)=XKONPT(IPOIN)*SCDA(IPOIN,3) 
-     &              + FRDK(IPOIN,1)*FRDA(IPOIN,1) 
-     &              + FRDK(IPOIN,2)*FRDA(IPOIN,2) 
-          ENDIF 
-!         JMH: WHAT IS THIS FOR ???? FOR DIVIDING BY 0 ?? 
-          IF(ABS(DIV(IPOIN)).LE.1.E-20) DIV(IPOIN)=0. 
-        ENDDO 
-! Calculating Delta=div/A       
+     &               + FRDK(IPOIN,1)*FRDA(IPOIN,1) 
+     &               + FRDK(IPOIN,2)*FRDA(IPOIN,2)
+          ENDDO 
+        ENDIF
+! 
+!       Calculating Delta=div/A
+!       
         DO IPOIN = 1,NPOIN2 
             L_DELTA(IPOIN)=.TRUE. 
             IF(F(IPOIN,IP,IFF).LE.EPS) THEN 
@@ -283,8 +345,8 @@
               L_DELTA(IPOIN)=.FALSE.   
               SQRDELTA(IPOIN) =1.D0 
             ELSE 
-!DIFFRA=1 - Mean Slope Equation model 
-!DIFFRA=2 - Revised Mean Slope Equation model 
+!             DIFFRA=1 - Mean Slope Equation model 
+!             DIFFRA=2 - Revised Mean Slope Equation model 
               IF(DIFFRA.EQ.1) THEN 
                 DELTA(IPOIN)=DIV(IPOIN)*XKONPT(IPOIN)/ 
      &                       (CCG(IPOIN)*A(IPOIN)) 
@@ -292,7 +354,8 @@
                 DELTA(IPOIN)=(DIV(IPOIN)/A(IPOIN)) 
               ENDIF 
 ! 
-              IF(DELTA(IPOIN).LE.-1.D0) THEN 
+              IF(DELTA(IPOIN).LE.-1.D0) THEN
+!               JMH: discutable !!!!!! 
                 SQRDELTA(IPOIN) =1.D0 
                 L_DELTA(IPOIN)=.FALSE. 
                 DELTA(IPOIN)= 0.D0  
@@ -300,19 +363,19 @@
                 SQRDELTA(IPOIN) = SQRT(1.D0+DELTA(IPOIN)) 
                 L_DELTA(IPOIN)=.TRUE. 
               ENDIF 
-! 
+!             JMH: discutable !!!!!
               IF(SQRDELTA(IPOIN).LE.EPS) THEN  
                 SQRDELTA(IPOIN) =1.D0  
                 L_DELTA(IPOIN)=.FALSE. 
                 DELTA(IPOIN)= 0.D0  
               ENDIF 
-           ENDIF 
+           ENDIF
         ENDDO 
 ! 
         DO I = 1,NPTFR 
           IPOIN = NBOR(I) 
-          L_DELTA(IPOIN)=.FALSE. 
-          SQRDELTA(IPOIN) =1.D0 
+          L_DELTA(IPOIN)=.FALSE.
+!         JMH: discutable !!! 
           DELTA(IPOIN)= 0.D0  
         ENDDO 
 ! 
@@ -320,37 +383,24 @@
 !       
         CALL VECTOR(ST1,'=','GRADF          X',IELM2,1.D0,SDELTA,
      *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)
+        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)
         CALL OV('X=YZ    ',SDDX%R,ST1%R,ST0%R,0.D0,NPOIN2)
         CALL VECTOR(ST1,'=','GRADF          Y',IELM2,1.D0,SDELTA,
-     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0)        
+     *              ST0,ST0,ST0,ST0,ST0,MESH,.FALSE.,ST0) 
+        IF(NCSIZE.GT.1) CALL PARCOM(ST1,2,MESH)       
         CALL OV('X=YZ    ',SDDY%R,ST1%R,ST0%R,0.D0,NPOIN2) 
 !
-!     calculation of CG_n =CG(1+delta)^0.5 
-!     and of transfer rates Cx,Cy,Ctheta 
+!       calculation of CG_n =CG(1+delta)^0.5 
+!       and of modified transfer rates Cx,Cy,Ctheta 
 !
         DO IPOIN=1,NPOIN2 
           IF(L_DELTA(IPOIN)) THEN 
             DELTAN = -SINTET(IP)*DDY(IPOIN)+COSTET(IP)*DDX(IPOIN) 
             CDELTA = CG(IPOIN,IFF)/SQRDELTA(IPOIN)/2.D0     
-            WJUNK=CDELTA*DELTAN 
-          ELSE   
-            SQRDELTA(IPOIN) =1.D0            
-            WJUNK=0.D0      
-          ENDIF 
-! 
-          DDDN=-SINTET(IP)*DZY(IPOIN)+COSTET(IP)*DZX(IPOIN)           
-          DEUKD=2.D0*XK(IPOIN,IFF)*DEPTH(IPOIN)	 
-          IF(DEUKD.GT.7.D2) THEN 
-            DSDNSK=0.D0 
-          ELSE 
-            DSDNSK=DEUPI*FREQ(IFF)*SQRDELTA(IPOIN)/SINH(DEUKD)          
-          ENDIF           
-!    
-          WJUNK2=DSDNSK*DDDN           
-          CT(IPOIN,IP)=-WJUNK2-WJUNK 
-          CX(IPOIN,IP)=CG(IPOIN,IFF)*SQRDELTA(IPOIN)*SINTET(IP) 
-          CY(IPOIN,IP)=CG(IPOIN,IFF)*SQRDELTA(IPOIN)*COSTET(IP)        
-! 
+            CT(IPOIN,IP)=CT(IPOIN,IP)*SQRDELTA(IPOIN)-CDELTA*DELTAN
+            CX(IPOIN,IP)=CX(IPOIN,IP)*SQRDELTA(IPOIN) 
+            CY(IPOIN,IP)=CY(IPOIN,IP)*SQRDELTA(IPOIN)      
+          ENDIF                  
         ENDDO   
 ! 
 220   CONTINUE   

@@ -2,12 +2,12 @@
                         SUBROUTINE RPI_INTR 
 !             		*******************
 ! 
-     &(NEIGB , NB_CLOSE, RK      , RX  , RY      , RXX     , RYY , 
-     & NPOIN2, I       , MAXNSP  , FFD , FIRDIV1 , FIRDIV2 , 
-     & SECDIV, FRSTDIV , SCNDDIV) 
+     &(NEIGB  , NB_CLOSE, RK      , RX  , RY      , RXX     , RYY , 
+     & NPOIN2 , I       , MAXNSP  , FFD , FIRDIV1 , FIRDIV2 , 
+     & SECDIV1, SECDIV2 , SECDIV3, FRSTDIV , SCNDDIV) 
 ! 
 !*********************************************************************** 
-! TOMAWAC   V6P2                                   25/06/2012 
+! TOMAWAC   V6P3                                   25/06/2012 
 !*********************************************************************** 
 ! 
 !brief    FREE-MESH METHOD FOR DIFFRACTION COMPUTATION 
@@ -29,6 +29,11 @@
 !+        23/06/2012 
 !+        V6P2 
 !+   Modification for V6P2 
+!
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        19/03/2013 
+!+        V6P3 
+!+   Arguments slightly changed to avoid copy before calling. 
 ! 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 !| FFD            |-->| INPUT FIELD FUNCTION 
@@ -49,74 +54,77 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       IMPLICIT NONE 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: NPOIN2, MAXNSP,I 
+      INTEGER, INTENT(IN) :: NEIGB(NPOIN2,MAXNSP),NB_CLOSE(NPOIN2) 
 ! 
-!.....VARIABLES IN ARGUMENT 
-!     """""""""""""""""""" 
-      INTEGER NPOIN2, MAXNSP, I 
-      INTEGER NEIGB(NPOIN2,MAXNSP), NB_CLOSE(NPOIN2) 
+      DOUBLE PRECISION, INTENT(IN)    :: RK(MAXNSP) 
+      DOUBLE PRECISION, INTENT(IN)    :: RX(MAXNSP),RY(MAXNSP)   
+      DOUBLE PRECISION, INTENT(IN)    :: RXX(MAXNSP),RYY(MAXNSP) 
+      DOUBLE PRECISION, INTENT(INOUT) :: SECDIV1,SECDIV2,SECDIV3 
+      DOUBLE PRECISION, INTENT(INOUT) :: FIRDIV1,FIRDIV2
+      DOUBLE PRECISION, INTENT(IN)    :: FFD(NPOIN2)
+!       
+      LOGICAL, INTENT(IN)             :: FRSTDIV,SCNDDIV 
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IPOIN,IP1
  
-      DOUBLE PRECISION RK(MAXNSP) 
-      DOUBLE PRECISION RX(MAXNSP), RY(MAXNSP)   
-      DOUBLE PRECISION RXX(MAXNSP), RYY(MAXNSP) 
-      DOUBLE PRECISION FIRDIV1(NPOIN2), SECDIV(NPOIN2,3) 
-      DOUBLE PRECISION FFD(NPOIN2),FIRDIV2(NPOIN2) 
-       
-      LOGICAL FRSTDIV, SCNDDIV 
-! 
-!.....LOCAL VARIABLES  
-!     """"""""""""""" 
-      INTEGER IP, IPOIN, IP1, IPOIN1, NDER 
- 
-      DOUBLE PRECISION,ALLOCATABLE:: WU_OM(:), ZETA(:) 
-      DOUBLE PRECISION WZ,WZX1,WZY1,WZX2,WZY2 
- 
-      LOGICAL FFUNC 
-      LOGICAL DEJA
-      
+      DOUBLE PRECISION,ALLOCATABLE:: WU_OM(:) 
+      DOUBLE PRECISION WZX1,WZY1,WZX2,WZY2 
+!
+      LOGICAL DEJA      
       DATA DEJA/.FALSE./
 !      
       SAVE
-!
-!************************************************************************ 
 ! 
-       IF(.NOT.DEJA)THEN
-         ALLOCATE(WU_OM(MAXNSP))
-         ALLOCATE(ZETA(NPOIN2))
-         DEJA=.TRUE.
-       ENDIF
-
-!       FFD the field function where data are coming from. 
-       DO IP1 =1,NB_CLOSE(I) 
-          IPOIN=NEIGB(I,IP1) 
-          WU_OM(IP1)=FFD(IPOIN) 
-       ENDDO 
+!----------------------------------------------------------------------- 
+! 
+      IF(.NOT.DEJA) THEN
+        ALLOCATE(WU_OM(MAXNSP))
+        DEJA=.TRUE.
+      ENDIF
+!
+!     FFD the field function where data are coming from.
+! 
+      DO IP1 =1,NB_CLOSE(I) 
+        IPOIN=NEIGB(I,IP1) 
+        WU_OM(IP1)=FFD(IPOIN) 
+      ENDDO 
 !   
 !     Calculate derivatives in IPOIN         
+!     note JMH : never used
 ! 
-       IF(FRSTDIV) THEN
-         WZX1=0.D0 
-         WZY1=0.D0 
-         DO IP1 =1,NB_CLOSE(I) 
-           WZX1=WZX1+RX(IP1)*WU_OM(IP1) 
-           WZY1=WZY1+RY(IP1)*WU_OM(IP1)           
-         ENDDO  
-         FIRDIV1(I)= WZX1 
-         FIRDIV2(I)= WZY1 
-       ENDIF 
- 
-       IF(SCNDDIV) THEN
-         WZX2=0.D0 
-         WZY2=0.D0 
-         DO IP1 =1,NB_CLOSE(I)     
+      IF(FRSTDIV) THEN
+        WZX1=0.D0 
+        WZY1=0.D0 
+        DO IP1 =1,NB_CLOSE(I) 
+          WZX1=WZX1+RX(IP1)*WU_OM(IP1) 
+          WZY1=WZY1+RY(IP1)*WU_OM(IP1)           
+        ENDDO  
+        FIRDIV1=WZX1 
+        FIRDIV2=WZY1 
+      ENDIF 
+!
+!     SECOND DERIVATIVES
+! 
+      IF(SCNDDIV) THEN
+        WZX2=0.D0 
+        WZY2=0.D0 
+        DO IP1 =1,NB_CLOSE(I)     
           WZX2=WZX2+RXX(IP1)*WU_OM(IP1) 
           WZY2=WZY2+RYY(IP1)*WU_OM(IP1)          
-         ENDDO    
-         SECDIV(I,1)= WZX2 
-         SECDIV(I,2)= WZY2 
-         SECDIV(I,3)= WZX2+WZY2     
-       ENDIF 
+        ENDDO    
+        SECDIV1=WZX2 
+        SECDIV2=WZY2 
+!       NOTE JMH : The only value really used
+        SECDIV3= WZX2+WZY2     
+      ENDIF 
 ! 
 !----------------------------------------------------------------------- 
 !  
       RETURN 
-      END  
+      END

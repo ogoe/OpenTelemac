@@ -71,9 +71,8 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION Z,C
-      INTEGER IPLAN, IPOIN, IELEM2, IFREQ
-      DOUBLE PRECISION AUXI
+      INTEGER IPLAN,IPOIN,IELEM2,IFREQ
+      DOUBLE PRECISION AUXI,C
 !
 !-----------------------------------------------------------------------
 !

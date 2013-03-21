@@ -106,7 +106,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,J,ISTAT,IW(1),MODE(3)
-      DOUBLE PRECISION DAT2,DAT2B(1),Z(1),C,COEF
+      DOUBLE PRECISION DAT2B(1),Z(1),C,COEF
       CHARACTER(LEN=3) C1
       CHARACTER(LEN=32) NAMEFR(3),NAMEGB(3)
       LOGICAL VOID

@@ -99,30 +99,32 @@
           IPOIN=NEIGB(I,IPOIN1) 
           RK_I(IP1,IPOIN1)=(RAD1(IP1,IPOIN1)+(AC*DC)**2)**QUO 
 ! 
-!    First derivative  
-          RY_I(IP1,IPOIN1)=2.*QUO*(RAD1(IP1,IPOIN1)+ 
-     &     (AC*DC)**2)**(QUO-1.)*(Y(IP)-Y(IPOIN)) 
+!         First derivative
+!  
+          RY_I(IP1,IPOIN1)=2.D0*QUO*(RAD1(IP1,IPOIN1)+ 
+     &     (AC*DC)**2)**(QUO-1.D0)*(Y(IP)-Y(IPOIN)) 
  
           RX_I(IP1,IPOIN1)=2.*QUO*(RAD1(IP1,IPOIN1)+ 
-     &     (AC*DC)**2)**(QUO-1.)*(X(IP)-X(IPOIN)) 
- 
-!    Second derivative  
+     &     (AC*DC)**2)**(QUO-1.D0)*(X(IP)-X(IPOIN)) 
+! 
+!         Second derivative
+!  
           RYY_I(IP1,IPOIN1) =2.D0*QUO*(RAD1(IP1,IPOIN1)+ 
-     &    (AC*DC)**2)**(QUO-1.)+4.*QUO*(QUO-1.)* 
-     &    (RAD1(IP1,IPOIN1)+(AC*DC)**2)**(QUO-2.)*(Y(IP)-Y(IPOIN))**2   
- 
+     &(AC*DC)**2)**(QUO-1.D0)+4.D0*QUO*(QUO-1.D0)* 
+     &(RAD1(IP1,IPOIN1)+(AC*DC)**2)**(QUO-2.D0)*(Y(IP)-Y(IPOIN))**2   
+! 
           RXX_I(IP1,IPOIN1)=2.D0*QUO*(RAD1(IP1,IPOIN1)+ 
-     &    (AC*DC)**2)**(QUO-1.)+4.*QUO*(QUO-1)* 
-     &    (RAD1(IP1,IPOIN1)+(AC*DC)**2)**(QUO-2.)*(X(IP)-X(IPOIN))**2 
+     &(AC*DC)**2)**(QUO-1.D0)+4.D0*QUO*(QUO-1.D0)* 
+     &(RAD1(IP1,IPOIN1)+(AC*DC)**2)**(QUO-2.D0)*(X(IP)-X(IPOIN))**2 
         ENDDO 
-       ENDDO         
+      ENDDO         
 ! 
-       RN=RK_I   
-       NP=NB_CLOSE(I) 
+      RN=RK_I   
+      NP=NB_CLOSE(I) 
 ! 
-       CALL INVERT(RN,NP,MAXNSP) 
+      CALL INVERT(RN,NP,MAXNSP) 
 ! 
-       DO IP1 =1,NB_CLOSE(I) 
+      DO IP1 =1,NB_CLOSE(I) 
          WZ=0.D0 
          WZX1=0.D0 
          WZY1=0.D0 
@@ -135,13 +137,13 @@
           WZx2=WZx2+RXX_I(1,IPOIN1)*RN(IPOIN1,IP1) 
           WZy2=WZy2+RYY_I(1,IPOIN1)*RN(IPOIN1,IP1) 
         ENDDO   
-!   write RK etc for the right form for each domain in one row 
-          RK_D(IP1)=WZ 
-          RX_D(IP1) = WZX1 
-          RY_D(IP1) = WZY1 
-          RXX_D(IP1) = WZX2 
-          RYY_D(IP1) = WZY2   
-       ENDDO 
+!       write RK etc for the right form for each domain in one row
+        RK_D(IP1)  = WZ 
+        RX_D(IP1)  = WZX1 
+        RY_D(IP1)  = WZY1 
+        RXX_D(IP1) = WZX2 
+        RYY_D(IP1) = WZY2   
+      ENDDO 
 ! 
       RETURN 
       END                   

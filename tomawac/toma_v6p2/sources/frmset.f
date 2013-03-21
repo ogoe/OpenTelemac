@@ -72,6 +72,7 @@
       DATA DEJA/.FALSE./
       
       SAVE
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       IF(.NOT.DEJA)THEN
@@ -209,8 +210,9 @@
 ! 
 ! CALCULATE THE RADIAL FUNCTION OF RPI 
 ! AND INVERSE MATRICES OF EACH SUB DOMAIN 
-        QUO = 1.03 
-        AC = 8. 
+!
+        QUO = 1.03D0 
+        AC = 8.D0 
         DO I=1,NPOIN2 
          CALL RPI_INVR(X, Y, NEIGB, NB_CLOSE, 
      &      RK(1,I), RX(1,I), RY(1,I), RXX(1,I), RYY(1,I), 

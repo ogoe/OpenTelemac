@@ -211,26 +211,25 @@
 !
 !-----------------------------------------------------------------------
 !
-!V6P2 Diffraction : FREEMESH METHOD
+!     V6P2 Diffraction : FREEMESH METHOD
+!
       IF(DIFFRA.GT.0) THEN
-        IF(NCSIZE.GT.1)THEN
+        IF(NCSIZE.GT.1.AND.OPTDER.EQ.1) THEN
           IF(LNG.EQ.1) THEN
-             WRITE(LU,*) ''
-             WRITE(LU,*) '***************************************'
-             WRITE(LU,*) ' ATTENTION : LA VERSION ACTUELLE DE    '
-             WRITE(LU,*) ' TOMAWAC NE PERMET PAS DE SIMULER LA   '
-             WRITE(LU,*) ' DIFFRACTION EN PARALLELE              '
-             WRITE(LU,*) '***************************************'
-           ELSE
-             WRITE(LU,*) ''
-             WRITE(LU,*) '***************************************'
-             WRITE(LU,*) ' ATTENTION : DIFFRACTION CANNOT BE     '
-             WRITE(LU,*) ' SIMULATED WHEN RUNNING TOMAWAC IN THE '
-             WRITE(LU,*) ' PARALLEL MODE                         '
-             WRITE(LU,*) '***************************************'
-           ENDIF
-           CALL PLANTE(1)
-           STOP
+            WRITE(LU,*) ''
+            WRITE(LU,*) '***************************************'
+            WRITE(LU,*) ' ATTENTION : DIFFRACTION               '
+            WRITE(LU,*) ' OPTION POUR LES DERIVEES SECONDES   '
+            WRITE(LU,*) ' PASSE A 2 EN PARALLELE              '
+            WRITE(LU,*) '***************************************'
+          ELSE
+            WRITE(LU,*) ''
+            WRITE(LU,*) '***************************************'
+            WRITE(LU,*) ' ATTENTION : DIFFRACTION               '
+            WRITE(LU,*) ' OPTION FOR THE SECOND DERIVATIVES     '
+            WRITE(LU,*) ' SET TO 2 IN PARALLEL MODE             '
+            WRITE(LU,*) '***************************************'
+          ENDIF
         ENDIF
         WRITE(LU,*) '****************************************'
         WRITE(LU,*) 'DIFFRACTION IS TAKEN INTO ACCOUNT      '
@@ -245,12 +244,14 @@
 !    SETS UP OF THE SUBDOMAINS FOR THE FREEMSESH METHOD
 !    AND CALCULATES THE INVERSE MATRICES FOR EACH SUBDOMAIN
 !
-        IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FREEMESH'
-        CALL FRMSET(MESH%X%R, MESH%Y%R,SNEIGB%I,SNB_CLOSE%I,
-     &              NPOIN2  , MAXNSP , NRD    , NELEM2 ,
-     &              MESH%IKLE%I,SRK%R, SRX%R  ,SRY%R   ,
-     &              SRXX%R  , SRYY%R )
-        IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FREEMESH'
+        IF(OPTDER.EQ.1) THEN
+          IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FREEMESH'
+          CALL FRMSET(MESH%X%R, MESH%Y%R,SNEIGB%I,SNB_CLOSE%I,
+     &                NPOIN2  , MAXNSP , NRD    , NELEM2 ,
+     &                MESH%IKLE%I,SRK%R, SRX%R  ,SRY%R   ,
+     &                SRXX%R  , SRYY%R )
+          IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FREEMESH'
+        ENDIF
       ENDIF
 !
 !-----------------------------------------------------------------------

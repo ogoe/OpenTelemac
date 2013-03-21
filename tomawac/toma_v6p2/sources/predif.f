@@ -12,7 +12,7 @@
      & FLTDIF, MESH3D, MESH  , IELM3 , TB    , ISUB  , SIKLE2)  
 ! 
 !*********************************************************************** 
-! TOMAWAC   V6P2                                   25/06/2012 
+! TOMAWAC   V6P3                                   25/06/2012 
 !*********************************************************************** 
 ! 
 !brief    PREPARES DIFFRACTION. 
@@ -24,14 +24,19 @@
 !+        04/12/2006 
 !+        V5P5 
 !+ 
-! 
-! 
+!  
 !history  G.MATTAROLO (EDF - LNHE) 
 !+        23/06/2012 
 !+        V6P2 
 !+   Modification for V6P2 
 !+   Taking into account both Mean Sloe Equation model (Berkhoff,1972) 
 !+      and Revised Mild Slope Equation model (Porter,2003) 
+!
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        21/03/2013
+!+        V6P3 
+!+   Call CONWAC added before call to DIFFRAC and DIFFRAC does only the
+!+   modification of the velocities. 
 ! 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 !| A              |<--| AMPLITUDE OF DIRECTIONAL SPECTRUM 
@@ -101,7 +106,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 ! 
       USE BIEF
-      USE DECLARATIONS_TOMAWAC, ONLY : PROMIN
+      USE DECLARATIONS_TOMAWAC, ONLY : PROMIN,OPTDER,COSF,TGF
       IMPLICIT NONE 
 ! 
       INTEGER LNG,LU 
@@ -145,46 +150,28 @@
       TYPE(BIEF_OBJ) :: BID 
 ! 
 !---------------------------------------------------------------------- 
-! 
-! 
+!  
       IF (.NOT.COURAN) THEN 
-! 
-!   ------------------------------------------------------------------- 
-!    
-!   RELATIVE = ABSOLUTE => ADVECTION IN 3D 
-!   SEPARATES OUT THE FREQUENCIES 
+!     
+!       RELATIVE = ABSOLUTE => ADVECTION IN 3D 
+!       SEPARATES OUT THE FREQUENCIES 
 ! 
         DO 200 IFF=1,NF 
 ! 
+!        COMPUTES THE ADVECTION FIELD 
+!
+         CALL CONWAC
+     &( CX%R  , CY%R  , CT%R , XK    , CG    , COSF  , TGF   , DEPTH ,
+     &  DZX   , DZY   , FREQ , COSTET, SINTET, NPOIN2, NPLAN , IFF  ,
+     &  NF    , PROINF, SPHE , PROMIN, TRA01) 
 ! 
-!      --------------------------------------------------------------- 
-! 
-!      COMPUTES THE ADVECTION FIELD 
-! 
+!        MODIFIESS THE ADVECTION FIELD WITH DIFFRACTION 
+!
          CALL DIFFRAC 
      &  (CX%R,CY%R,CT%R,XK,CG,DEPTH,DZX,DZY,FREQ,COSTET,SINTET, 
      &   NPOIN2,NPLAN,IFF,NF,PROINF,SPHE,A,DFREQ, 
      &   F,CCG,DIV,DELTA,DDX,DDY,EPS,NBOR,NPTFR,XKONPT, 
-     &   RK,RX,RY,RXX,RYY,NEIGB,NB_CLOSE,DIFFRA,MAXNSP,FLTDIF)  
-! 
-!      ---------------------------------------------------------------- 
-! 
-!      DETERMINES THE FOOT OF THE CHARACTERISTICS 
-! 
-!        CALL INIPIE(CX,CY,CT,X,Y,SHP%ADR(IFF)%P%R,
-!    &               SHZ%ADR(IFF)%P%R,ELT(1,IFF),ETA(1,IFF), 
-!    &               TRA01,TRA01(1,2),TRA01(1,3),
-!    &               TETA,IKLE2,NPOIN2,NELEM2,NPLAN, 
-!    &               ITR01,ITR01,ITR01,NELEM2,NPOIN2,IFABOR) 
-! 
-!        CALL MPOINT 
-!    &  (CX,CY,CT, 
-!    &   DT,X,Y,TETA,IKLE2,IFABOR,ETAP1,TRA01,TRA01(1,2), 
-!    &   TRA01(1,3),TRA01(1,4),TRA01(1,5),TRA01(1,6), 
-!    &   SHP%ADR(IFF)%P%R,
-!    &   SHZ%ADR(IFF)%P%R,ELT(1,IFF),ETA(1,IFF), 
-!    &   ITR01(1,1),NPOIN3, 
-!    &   NPOIN2,NELEM2,NPLAN,IFF,SURDET,-1,ITR01(1,2)) 
+     &   RK,RX,RY,RXX,RYY,NEIGB,NB_CLOSE,DIFFRA,MAXNSP,FLTDIF,OPTDER)  
 !
       DO IEL=1,NELEM2
         I1=IKLE2(IEL,1)

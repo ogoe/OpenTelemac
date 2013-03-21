@@ -78,8 +78,6 @@
 !
       TYPE (BIEF_OBJ), TARGET :: SSHZ
 !
-!
-!
       TYPE (BIEF_OBJ), TARGET ::SCT,SCF,SSHF,SXK,SCG ,
      & SZF,SDEPTH,SUC,SVC,SUC1,SVC1,SUC2,SVC2,SDZHDT,SDZX ,
      & SDZY,SDF_LIM,SUV,SVV,SUV1,SVV1,SUV2,SVV2,SZM1,SZM2,
@@ -103,7 +101,6 @@
 !     EXTENSION OF IKLE2 (WITH LARGER NUMBER OF ELEMENTS)
 !
       TYPE(BIEF_OBJ) :: IKLE_EXT
-!
 !
 !     BIEF_OBJ STRUCTURES FOR ARRAYS OF DIMENSION NPOIN3
 !
@@ -179,83 +176,109 @@
 !     DEPTH-INDUCED BREAKING DISSIPATION
 ! 
       INTEGER SBREK
-!> @brief DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD
-! modele deferlement bj : mode calcul de qb
+!
+!     DEPTH-INDUCED BREAKING 1 (BJ) QB COMPUTATION METHOD
+! 
       INTEGER IQBBJ
-!> @brief DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD
-! modele deferlement bj : mode calcul de hm
+!
+!     DEPTH-INDUCED BREAKING 1 (BJ) HM COMPUTATION METHOD
+! 
       INTEGER IHMBJ
-!> @brief DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY
-! modele deferlement bj : mode calcul de freq. caracteristique
+!
+!     DEPTH-INDUCED BREAKING 1 (BJ) CHARACTERISTIC FREQUENCY
+! 
       INTEGER IFRBJ
-!> @brief DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY
-! modele deferlement tg : mode calcul de freq. caracteristique
+!
+!     DEPTH-INDUCED BREAKING 2 (TG) CHARACTERISTIC FREQUENCY
+! 
       INTEGER IFRTG
-!> @brief DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION
-! modele deferlement tg : mode calcul de w(h)
+!
+!     DEPTH-INDUCED BREAKING 2 (TG) WEIGHTING FUNCTION
+! 
       INTEGER IWHTG
-!> @brief DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
-! modele deferlement ro : distribution houle
+!
+!     DEPTH-INDUCED BREAKING 3 (RO) WAVE HEIGHT DISTRIBUTION
+! 
       INTEGER IDISRO
-!> @brief DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
-! modele deferlement ro : exposant n
+!
+!     DEPTH-INDUCED BREAKING 3 (RO) EXPONENT WEIGHTING FUNCTION
+! 
       INTEGER IEXPRO
-!> @brief DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
-! modele deferlement ro : mode calcul de freq. caracteristique
+!
+!     DEPTH-INDUCED BREAKING 3 (RO) CHARACTERISTIC FREQUENCY
+! 
       INTEGER IFRRO
-!> @brief DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY
-! modele deferlement ih : mode calcul de freq. caracteristique
+!
+!     DEPTH-INDUCED BREAKING 4 (IH) CHARACTERISTIC FREQUENCY
+! 
       INTEGER IFRIH
-!> @brief NUMBER OF BREAKING TIME STEPS
-! nombre de sous-pas de temps de deferlement
+!
+!     NUMBER OF BREAKING TIME STEPS
+! 
       INTEGER NDTBRK
-!> @brief WAVE GROWTH LIMITER
-! limiteur de croissance
+!
+!     WAVE GROWTH LIMITER
+! 
       INTEGER LIMIT
-!> @brief CURRENTS FILE FORMAT
-! format du fichier des courants
+!
+!     CURRENTS FILE FORMAT
+! 
       INTEGER INDIC
-!> @brief WINDS FILE FORMAT
-! format du fichier des vents
+!
+!     WINDS FILE FORMAT
+! 
       INTEGER INDIV
-!> @brief TIDAL WATER LEVEL FILE FORMAT
-! format du fichier du niveau de la maree
+!
+!     TIDAL WATER LEVEL FILE FORMAT
+! 
       INTEGER INDIM
-!> @brief TYPE OF INITIAL DIRECTIONAL SPECTRUM
-! type de spectre directionnel initial
+!
+!     TYPE OF INITIAL DIRECTIONAL SPECTRUM
+! 
       INTEGER INISPE
-!> @brief TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
-! type de spectre directionnel aux limites
+!
+!     TYPE OF BOUNDARY DIRECTIONAL SPECTRUM
+! 
       INTEGER LIMSPE
-!> @brief TRIAD INTERACTIONS
-! indicateur de transferts entre triplets de frequences
+!
+!     TRIAD INTERACTIONS
+! 
       INTEGER STRIA
-!> @brief NUMBER OF ITERATIONS FOR THE SOURCE TERMS
-! nombre de sous-iterations pour les termes sources
+!
+!     NUMBER OF ITERATIONS FOR THE SOURCE TERMS
+! 
       INTEGER NSITS
-!> @brief RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED
-! rang de la donnee telemac a recuperer
+!
+!     RANK OF THE TELEMAC DATA ITEM TO BE RECOVERED
+! 
       INTEGER IDTEL
-!> @brief TIME INCREMENT NUMBER IN TELEMAC FILE
-! numero du pas de temps du fichier telemac
+!
+!     TIME INCREMENT NUMBER IN TELEMAC FILE
+! 
       INTEGER NPTT
-!> @brief VECTOR LENGTH
-! longueur du vecteur
+!
+!     VECTOR LENGTH
+! 
       INTEGER LVMAC
-!> @brief NUMBER OF PRIVATE ARRAYS
-! nombre de tableaux prives
+!
+!     NUMBER OF PRIVATE ARRAYS
+! 
       INTEGER NPRIV
-!> @brief INITIAL ANGULAR DISTRIBUTION FUNCTION
-! fonction de repartition angulaire initiale
+!
+!     INITIAL ANGULAR DISTRIBUTION FUNCTION
+!
       INTEGER FRABI
-!> @brief BOUNDARY ANGULAR DISTRIBUTION FUNCTION
-! fonction de repartition angulaire aux limites
+!
+!     BOUNDARY ANGULAR DISTRIBUTION FUNCTION
+! 
       INTEGER FRABL
+!
 !> @brief
 !
       INTEGER NPLEO
-!> @brief DEBUGGER
-! debugger
+!
+!     DEBUGGER
+! 
       INTEGER DEBUG
 !> @brief
 ! indicateur de sortie des variables 2d
@@ -274,43 +297,53 @@
 !> @brief SETTING FOR INTEGRATION ON OMEGA1
 ! reglage pour integration sur omega1 - QNL4 methode GQM
       INTEGER IQ_OM1
-!> @brief SETTING FOR INTEGRATION ON THETA1
-! reglage pour integration sur theta1 - QNL4 methode GQM
-      INTEGER NQ_TE1
-!> @brief SETTING FOR INTEGRATION ON OMEGA2
-! Nombre point d integration sur omega2 - QNL4 methode GQM
-      INTEGER NQ_OM2
-!GM Fin
-!V6P2 Diffraction
-!> @brief DIFFRACTION
-! prise en compte de la diffraction
-      INTEGER DIFFRA
-!> @brief STARTING TIME STEP FOR DIFFRACTION
-! Pas de temps debut diffraction 
-      INTEGER NPTDIF
-!V6P2 End diffraction
 !
-!> @brief DIAGNOSTIC TAIL OPTION
-! option pour la partie diagnostique du spectre
+!     SETTING FOR INTEGRATION ON THETA1
+! 
+      INTEGER NQ_TE1
+!
+!     SETTING FOR INTEGRATION ON OMEGA2
+! 
+      INTEGER NQ_OM2
+!
+!     DIFFRACTION
+! 
+      INTEGER DIFFRA
+!
+!     STARTING TIME STEP FOR DIFFRACTION
+! 
+      INTEGER NPTDIF
+!
+!     DIAGNOSTIC TAIL OPTION
+! 
       INTEGER DIAGHF
 !
-!> @brief TIME STEP
-! pas de temps
+!     OPTION FOR SECOND DERIVATIVES
+!
+      INTEGER OPTDER
+!
+!     TIME STEP
+!
       DOUBLE PRECISION DT
-!> @brief MINIMAL FREQUENCY
-! frequence minimale (premiere frequence de discretisation)
+!
+!     MINIMAL FREQUENCY
+! 
       DOUBLE PRECISION F1
-!> @brief FREQUENTIAL RATIO
-! raison frequentielle de discretisation
+!
+!     FREQUENTIAL RATIO
+! 
       DOUBLE PRECISION RAISF
-!> @brief DATE OF COMPUTATION BEGINNING
-! date de debut du calcul
+!
+!     DATE OF COMPUTATION BEGINNING
+! 
       DOUBLE PRECISION DDC
-!> @brief BOTTOM FRICTION COEFFICIENT
-! coefficient pour le terme de frottement sur le fond
+!
+!     BOTTOM FRICTION COEFFICIENT
+! 
       DOUBLE PRECISION CFROT1
-!> @brief WHITE CAPPING DISSIPATION COEFFICIENT
-! coefficient de dissipation par moutonnement
+!
+!     WHITE CAPPING DISSIPATION COEFFICIENT
+! 
       DOUBLE PRECISION CMOUT1
 !> @brief WHITE CAPPING WEIGHTING COEFFICIENT
 ! coefficient de ponderation pour le moutonnement
