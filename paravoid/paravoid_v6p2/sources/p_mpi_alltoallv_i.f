@@ -53,6 +53,8 @@
 !
 !-----------------------------------------------------------------------
 !
+      I10=0
+      I5(1)=0
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_MPI_ALLTOALLV_I VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_MPI_ALLTOALLV_I VOID VERSION'
 !

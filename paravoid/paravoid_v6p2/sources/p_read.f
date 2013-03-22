@@ -76,6 +76,7 @@
 !
 !-----------------------------------------------------------------------
 !
+      BUFFER(1)=0.D0
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_READ VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_READ IN ITS VOID VERSION'
 !

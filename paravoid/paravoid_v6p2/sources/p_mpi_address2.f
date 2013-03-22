@@ -40,12 +40,14 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      DOUBLE PRECISION, INTENT(IN)            :: LOCATION
-      INTEGER, INTENT(OUT)                    :: IER
-      INTEGER, INTENT(OUT) :: ADDRESS
+      DOUBLE PRECISION, INTENT(IN):: LOCATION
+      INTEGER, INTENT(OUT)        :: IER
+      INTEGER, INTENT(OUT)        :: ADDRESS
 !
 !-----------------------------------------------------------------------
 !
+      IER=0
+      ADDRESS=0
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE P_MPI_ADDRESS2 VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_MPI_ADDRESS2 VOID VERSION'
 !

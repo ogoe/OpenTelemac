@@ -5,7 +5,7 @@
      &(I1,I2,I3,I4,I5,I6,I7,I8,I9,I10)
 !
 !***********************************************************************
-! PARAVOID   V6P1                                   21/08/2010
+! PARAVOID   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    CALLS FUNCTION MPI_ALLTOALLV.
@@ -69,6 +69,8 @@
 !
 !-----------------------------------------------------------------------
 !
+      I5(1)%MYPID=0
+      I10=0
       IF(LNG.EQ.1) WRITE(LU,*) 'APPEL DE  P_MPI_ALLTOALLV  VERSION VIDE'
       IF(LNG.EQ.2) WRITE(LU,*) 'CALL OF P_MPI_ALLTOALLV VOID VERSION'
 !
