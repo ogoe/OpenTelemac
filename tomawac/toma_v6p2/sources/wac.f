@@ -25,7 +25,8 @@
 !+        22/03/2013
 !+        V6P3
 !+   New arguments DIRMOY_TEL,HM0_TEL, TPR5_TEL for transmission to
-!+   Sisyphe through Telemac-2D or 3D.
+!+   Sisyphe through Telemac-2D or 3D. Values computed in case of triple
+!+   coupling.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -919,7 +920,7 @@
 !     OF THE PRINTS TO RESULT FILE, WHICH IS NOT MANDATORY  
 !
       IF(PART.EQ.1.AND.LT_WAC.EQ.NIT) THEN
-!       STSTOT WORK ARRAY (ABSOLUTE FREQUENCY) FOR CALL RADIAT BELOW
+!       STSTOT WORK ARRAY (ABSOLUTE FREQUENCY) IN ALL THIS IF BLOCK
         CALL TRANSF(STSTOT%R , SF%R  , SFR%R , SDFR%R, SCOSTE%R,
      &              SSINTE%R , SUC%R , SVC%R , SXK%R , SITR11%I,
      &              SITR12%I , SITR13%I      , STRA31%R, STRA32%R,
@@ -935,9 +936,36 @@
           CALL OV('X=Y     ',UV_WAC%R,SUV%R,SUV%R,0.D0,NPOIN2)
           CALL OV('X=Y     ',VV_WAC%R,SVV%R,SVV%R,0.D0,NPOIN2)
         ENDIF
+        IF(INCLUS(COUPLING,'SISYPHE')) THEN
+!         3 VARIABLES THAT WILL BE TRANSMITTED TO SISYPHE
+!         ALL THIS IF BLOCK ADAPTED FROM DUMP2D
+!         MEAN DIRECTION
+          CALL TETMOY(DIRMOY_TEL%R,STSTOT%R,SCOSTE%R,SSINTE%R,
+     &                NPLAN,FREQ,SDFR%R,NF,NPOIN2,TAILF,STRA36%R,
+     &                STRA37%R,STRA38%R,STRA39%R)
+          IF(TRIGO) THEN
+            DO IP=1,NPOIN2
+              DIRMOY_TEL%R(IP)=(PISUR2-DIRMOY_TEL%R(IP))*GRADEG
+            ENDDO
+          ELSE
+            DO IP=1,NPOIN2
+              DIRMOY_TEL%R(IP)=DIRMOY_TEL%R(IP)*GRADEG
+            ENDDO
+          ENDIF
+!         SIGNIFICANT WAVE HEIGHT
+          CALL TOTNRJ(STRA37%R,STSTOT%R,SFR%R,SDFR%R,TAILF,
+     &                NF,NPLAN,NPOIN2)
+          DO IP=1,NPOIN2
+            HM0_TEL%R(IP)=4.D0*SQRT(TRA37(IP))
+          ENDDO
+!         TPR5
+          CALL FPREAD(TPR5_TEL%R,STSTOT%R,SFR%R,SDFR%R,NF,NPLAN,
+     &                NPOIN2,5.D0,TAILF,STRA38%R,STRA39%R)
+        ENDIF
+!
       ENDIF
 !
-   10 CONTINUE
+10    CONTINUE
 !
 !Fin COUPLAGE : fin du cycle IF(PART.NE.0)
       ENDIF
