@@ -123,7 +123,7 @@
 !     CALLS THE REAL MAIN PROGRAM
 !
       CALL WAC(-1,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,STRA01,
-     &         CODE,0.D0,0.D0,0,1)
+     &         CODE,0.D0,0.D0,0,1,STRA01,STRA01,STRA01)
 !
 !-----------------------------------------------------------------------
 !

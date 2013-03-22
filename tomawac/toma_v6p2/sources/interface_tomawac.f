@@ -2064,16 +2064,17 @@
 !
 !-----------------------------------------------------------------------
 !
-!V6P1 New arguments
       INTERFACE
         SUBROUTINE WAC
      &(PART, U_TEL, V_TEL, H_TEL, FX_WAC, FY_WAC, UV_WAC, VV_WAC,
-     & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC)
+     & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC,
+     & DIRMOY_TEL,HM0_TEL,TPR5_TEL)
       USE BIEF_DEF
       IMPLICIT NONE
       INTEGER,           INTENT(IN)      :: PART,NIT_TEL,PERCOU_WAC
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
       TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
+      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: DIRMOY_TEL,HM0_TEL,TPR5_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: UV_WAC,VV_WAC
       DOUBLE PRECISION,  INTENT(IN)      :: DT_TEL,T_TEL

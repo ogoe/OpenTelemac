@@ -3,7 +3,8 @@
 !                    **************
 !
      &(PART, U_TEL, V_TEL, H_TEL, FX_WAC, FY_WAC, UV_WAC, VV_WAC,
-     & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC)
+     & CODE, T_TEL, DT_TEL,NIT_TEL,PERCOU_WAC,
+     & DIRMOY_TEL,HM0_TEL,TPR5_TEL)
 !
 !***********************************************************************
 ! TOMAWAC   V6P3                                   25/06/2012
@@ -19,6 +20,12 @@
 !+   Radiation stresses for Telemac now computed independently of the
 !+   printouts on results file.
 !+   Call to tomawac_constants moved to lecdon_tomawac.
+!
+!history  J-M HERVOUET (EDF - LNHE)
+!+        22/03/2013
+!+        V6P3
+!+   New arguments DIRMOY_TEL,HM0_TEL, TPR5_TEL for transmission to
+!+   Sisyphe through Telemac-2D or 3D.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -53,6 +60,7 @@
       INTEGER,           INTENT(IN)      :: PART,NIT_TEL,PERCOU_WAC
       CHARACTER(LEN=24), INTENT(IN)      :: CODE
       TYPE(BIEF_OBJ),    INTENT(IN)      :: U_TEL,V_TEL,H_TEL
+      TYPE(BIEF_OBJ),    INTENT(INOUT)   :: DIRMOY_TEL,HM0_TEL,TPR5_TEL
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: FX_WAC,FY_WAC
       TYPE(BIEF_OBJ),    INTENT(INOUT)   :: UV_WAC,VV_WAC
       DOUBLE PRECISION,  INTENT(IN)      :: DT_TEL,T_TEL
