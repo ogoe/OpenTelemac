@@ -215,10 +215,8 @@
 !     PART 1 : INITIALISATION
 !------------------------------------------------------------------
 !
-
-            PERCOU = PERICOU !UHM!!!!!!!
-
-
+      PERCOU = PERICOU !UHM!!!!!!!
+!
       IF(PART==0.OR.PART==-1) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'INITIALIZATION'
 !
@@ -234,9 +232,7 @@
           ALIRE(12)=1
           ALIRE(13)=1
           ALIRE(14)=1
-! JWI 31/05/2012 - added line to include wave orbital velocities
           ALIRE(22)=1
-! JWI END
         ENDIF
 !
 !       READS THE SEDIMENTOLOGICAL DATA IN THE CONTINUATION FILE
@@ -251,29 +247,22 @@
           ALIRE(21)=1
 !         READS AVAI FROM THE PREVIOUS COMPUTATION FILE
           DO I=1,NSICLA*NOMBLAY
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
             ALIRE(22+I)=1
-! JWI END
           ENDDO
 !         READS CS (CONCENTRATION) FROM THE PREVIOUS COMPUTATION FILE
           IF(SUSP) THEN
             DO I=1,NSICLA
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
              ALIRE(22+(NOMBLAY+1)*NSICLA+I)=1
-! JWI END
             ENDDO
           ENDIF
 !         READS THE LAYER THICKNESSES
           DO I=1,NOMBLAY
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
             ALIRE(28+(NOMBLAY+4)*NSICLA+I)=1
-! JWI END
           ENDDO
         ENDIF
-!V6P2 CV lecture concentration des couches
-          IF(TASS) THEN
+!       V6P2 CV lecture concentration des couches
+        IF(TASS) THEN
           DO I=1,NOMBLAY
-! PAT 14/06/2012 - added 1 to include wave orbital velocities
             ALIRE(28+(NOMBLAY+4)*NSICLA+I+NOMBLAY)=1
           ENDDO
         ENDIF
@@ -367,21 +356,21 @@
 !       STANDARD SELAFIN FORMAT
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'ECRGEO'
-        ! CREATES DATA FILE USING A GIVEN FILE FORMAT : FORMAT_RES
-        ! THE DATA ARE CREATED IN THE FILE: SISRES, AND ARE
-        ! CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
-        ! CONTAINED IN THE FILE.
+!       CREATES DATA FILE USING A GIVEN FILE FORMAT : FORMAT_RES
+!       THE DATA ARE CREATED IN THE FILE: SISRES, AND ARE
+!       CHARACTERISED BY A TITLE AND NAME OF OUTPUT VARIABLES
+!       CONTAINED IN THE FILE.
         CALL CREATE_DATASET(SIS_FILES(SISRES)%FMT, ! RESULTS FILE FORMAT
      &                      SIS_FILES(SISRES)%LU,  ! LU FOR RESULTS FILE
      &                      TITCA,      ! TITLE
      &                      MAXVAR,     ! MAX NUMBER OF OUTPUT VARIABLES
      &                      TEXTE,      ! NAMES OF OUTPUT VARIABLES
      &                      SORLEO)     ! PRINT TO FILE OR NOT
-        ! WRITES THE MESH IN THE OUTPUT FILE :
-        ! IN PARALLEL, REQUIRES NCSIZE AND NPTIR.
-        ! THE REST OF THE INFORMATION IS IN MESH.
-        ! ALSO WRITES : START DATE/TIME AND COORDINATES OF THE
-        ! ORIGIN.
+!       WRITES THE MESH IN THE OUTPUT FILE :
+!       IN PARALLEL, REQUIRES NCSIZE AND NPTIR.
+!       THE REST OF THE INFORMATION IS IN MESH.
+!       ALSO WRITES : START DATE/TIME AND COORDINATES OF THE
+!       ORIGIN.
         CALL WRITE_MESH(SIS_FILES(SISRES)%FMT, ! RESULTS FILE FORMAT
      &                  SIS_FILES(SISRES)%LU,  ! LU FOR RESULTS FILE
      &                  MESH,          ! CHARACTERISES MESH
@@ -404,8 +393,6 @@
           ELSE
             MASK%R(K) = 0.D0
           ENDIF
-! JMH 24/07/2012: NOW READ IN LECLIS
-!         LIQBOR%I(K) = KSORT
         ENDDO
 !
 !=======================================================================
@@ -441,7 +428,6 @@
             NCALCU=1
             NIDT=NPAS
             NIT=NIDT
-!V
             NSOUS=1
           ELSE
             NCALCU = NMAREE
@@ -531,7 +517,6 @@
               IF(TROUVE(12).EQ.1) HW%TYPR='Q'
               IF(TROUVE(13).EQ.1) TW%TYPR='Q'
               IF(TROUVE(14).EQ.1) THETAW%TYPR='Q'
-! JWI 31/05/2012 - added 1 to include wave orbital velocities
               IF(TROUVE(22).EQ.1) UW%TYPR='Q'
               IF(UW%TYPR=='Q') THEN
                 WRITE(LU,*)
@@ -547,7 +532,6 @@
                 WRITE(LU,*) 'WILL BE COMPUTED IN CALCUW'
                 WRITE(LU,*)
               ENDIF
-! JWI END
             ENDIF
             IF(DEBUG.GT.0) WRITE(LU,*) 'END_BIEF_SUITE'
             IF(DEBUG.GT.0) WRITE(LU,*) 'RESCUE_SISYPHE'
@@ -613,9 +597,9 @@
         ENDIF
 !
         IF(CODE(1:7) == 'TELEMAC'.AND.PART==0) THEN
-!V
+!
           AT0=T_TEL
-!V
+!
           WRITE(LU,*) 'INITIALISATION EN CAS DE COUPLAGE : PART=',PART
 !         INFORMATION ON SUSPENSION SENT BACK
           CHARR_TEL = CHARR
@@ -641,6 +625,21 @@
              ENDIF
             ENDDO
           ENDIF
+!
+!         CASE OF TRIPLE COUPLING
+!
+          IF(INCLUS(COUPLING,'TOMAWAC')) THEN
+!           incident wave direction
+            CALL OS( 'X=Y     ',THETAW,THETAW_TEL)
+!           Wave period
+            CALL OS( 'X=Y     ', TW, TW_TEL)
+!           significant wave height
+            CALL OS( 'X=Y     ', HW , HW_TEL)
+            HW%TYPR='Q'
+            TW%TYPR='Q'
+            THETAW%TYPR='Q' 
+          ENDIF
+!
         ENDIF
 !
 !  ---- END COUPLING  -------------
@@ -675,11 +674,9 @@
 !       CHECKS THE WAVE DATA
 !
         IF(HOULE) THEN
-! JWI 31/05/2012 - added/modified lines to include wave orbital velocities
-         IF(UW%TYPR    .EQ.'Q') THEN
+         IF(UW%TYPR.EQ.'Q') THEN
 !          IF(HW%TYPR    .NE.'Q'.OR.
          ELSEIF(HW%TYPR    .NE.'Q'.OR.
-! JWI END
      &       TW%TYPR    .NE.'Q'.OR.
      &       THETAW%TYPR.NE.'Q') THEN
             WRITE(LU,*) ' '
@@ -755,13 +752,15 @@
 !  WAVE ORBITAL VELOCITY
 ! =====================================================================
         IF(HOULE) THEN
-! JWI 31/05/2012 - added lines to use wave orbital velocities directly if found in hydro file; otherwise compute with CALCUW
+!         JWI 31/05/2012 - added lines to use wave orbital velocities 
+!         directly if found in hydro file; otherwise compute with CALCUW
           IF(UW%TYPR    .NE.'Q') THEN
             CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
           ENDIF
-! JWI END
-           ENDIF
-! ======================================================================
+        ENDIF
+!
+! =====================================================================
+!
         IF(DEBUG.GT.0) WRITE(LU,*) 'TOB_SISYPHE'
         CALL TOB_SISYPHE(TOB,TOBW,MU,KS,KSP,KSR,CF,FW,
      &                   CHESTR,UETCAR,CF_TEL,KS_TEL,CODE ,
@@ -887,7 +886,6 @@
           CHARR = CHARR_TEL
           SUSP= SUSP_TEL
           AT0=T_TEL
-!UM 28.02.2011 MORPHOLOGIGCAL FACTOR
           DT=MOFAC*DT
 ! 
         ENDIF
@@ -974,16 +972,12 @@
                SAVEQU=>QU%R
                SAVEQV=>QV%R
                SAVEZ =>Z%R
-! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
                IF(HOULE.AND.UW%TYPR=='Q') SAVEUW=>UW%R
-! JWI END
                ZF%R  =>T4%R
                QU%R  =>DEL_QU%R
                QV%R  =>DEL_QV%R
                Z%R   =>DEL_Z%R
-! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
                IF(HOULE.AND.UW%TYPR=='Q') UW%R  =>DEL_UW%R
-! JWI END
 !
                NUMDEB=NUMDEB+1
 !
@@ -1006,19 +1000,16 @@
                QU%R=>SAVEQU
                QV%R=>SAVEQV
                Z%R=>SAVEZ
-! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
                IF(HOULE.AND.UW%TYPR=='Q') UW%R=>SAVEUW
-! JWI END
 !
 !              INCREMENT OF QU, QV AND Z PER SUB-TIME-STEP
                DO I = 1,NPOIN
                  DEL_QU%R(I) = (DEL_QU%R(I)-QU%R(I))/NSOUS
                  DEL_QV%R(I) = (DEL_QV%R(I)-QV%R(I))/NSOUS
                  DEL_Z%R(I)  = (DEL_Z%R(I) -Z%R(I)) /NSOUS
-! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file
-                 IF(HOULE.AND.UW%TYPR=='Q') DEL_UW%R(I) = 
-     &                (DEL_UW%R(I)-UW%R(I))/NSOUS
-! JWI END
+                 IF(HOULE.AND.UW%TYPR=='Q') THEN
+                   DEL_UW%R(I) = (DEL_UW%R(I)-UW%R(I))/NSOUS
+                 ENDIF
                ENDDO
 !
 !              UPDATES UNSTEADY HYDRO
@@ -1081,6 +1072,20 @@
           ENDIF
 !         FREE SURFACE
           CALL OS('X=Y+Z   ', X=Z, Y=ZF, Z=HN)
+!
+!         CV: COPY OF TOMAWAC VARIABLES
+!
+          IF(INCLUS(COUPLING,'TOMAWAC')) THEN
+!           direction houle incidente
+            CALL OS( 'X=Y     ',THETAW,THETAW_TEL)
+!           Wave period
+            CALL OS( 'X=Y     ', TW, TW_TEL)
+!           hauteur significative
+            CALL OS( 'X=Y     ', HW , HW_TEL)
+            HW%TYPR='Q'
+            TW%TYPR='Q'
+            THETAW%TYPR='Q' 
+          ENDIF
 !
         ENDIF
 !
@@ -1163,8 +1168,7 @@
 !  ---   WAVE ORBITAL VELOCITY --> UW
 !
          IF(HOULE) THEN
-! JWI 31/05/2012 - added line to use wave orbital velocities directly if found in hydro file; otherwise compute with CALCUW
-           IF(UW%TYPR    .NE.'Q') THEN
+           IF(UW%TYPR.NE.'Q') THEN
              CALL CALCUW(UW%R,HN%R,HW%R,TW%R,GRAV,NPOIN)
            ENDIF
          ENDIF
