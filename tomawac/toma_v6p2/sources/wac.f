@@ -650,6 +650,10 @@
 !       TPR5
         CALL FPREAD(TPR5_TEL%R,SF%R,SFR%R,SDFR%R,NF,NPLAN,
      &              NPOIN2,5.D0,TAILF,STRA38%R,STRA39%R)
+        DO IP=1,NPOIN2
+          TPR5_TEL%R(IP)=
+     &    1.D0/MIN(MAX(TPR5_TEL%R(IP),FREQ(1)),FREQ(NF))
+        ENDDO
       ENDIF
 !
 !=====C
@@ -990,6 +994,10 @@
 !         TPR5
           CALL FPREAD(TPR5_TEL%R,STSTOT%R,SFR%R,SDFR%R,NF,NPLAN,
      &                NPOIN2,5.D0,TAILF,STRA38%R,STRA39%R)
+          DO IP=1,NPOIN2
+            TPR5_TEL%R(IP)=
+     &      1.D0/MIN(MAX(TPR5_TEL%R(IP),FREQ(1)),FREQ(NF))
+          ENDDO
         ENDIF
 !
       ENDIF
