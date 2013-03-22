@@ -1,28 +1,31 @@
-!        ************************************************
-         DOUBLE PRECISION FUNCTION CVSP_INTEGRATE_VOLUME
-!        ************************************************
+!            ***********************************************
+             DOUBLE PRECISION FUNCTION CVSP_INTEGRATE_VOLUME
+!            ***********************************************
 !
-     &(J,I,Z_HIGH,Z_LOW,a)
+     &(J,I,Z_HIGH,Z_LOW,A)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/06/2011
+! SISYPHE   V6P3                                   14/03/2013
 !***********************************************************************
 !
-!brief    Integrates the Volume of a Fraction within the
-!+        Vertical Sorting Profil between 2 Depth Z-Coordinates Z_HIGH & Z_LOW
+!brief   INTEGRATES THE VOLUME OF A FRACTION WITHIN THE
+!+       VERTICAL SORTING PROFIL BETWEEN 2 DEPTH Z-COORDINATES Z_HIGH & Z_LOW
 !+
 !
-!history  UWE MERKEL
+!history UWE MERKEL
 !+        2011
 !+
-!+
+!history  P. A. TASSI (EDF R&D, LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   Cleaning, cosmetic
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| J              |<--| INDEX of a POINT in MESH
-!| I              |<--| INDEX of a Fraction in VERTICAL SORTING PROFILE
-!| Z_HIGH         |<--| Higher Depth Coordinate
-!| Z_LOW          |<--| Lower  Depth Coordinate
-!| a1 ..a10       |<--| integrated volumes per fraction
+!| J              |<--| INDEX OF A POINT IN MESH
+!| I              |<--| INDEX OF A FRACTION IN VERTICAL SORTING PROFILE
+!| Z_HIGH         |<--| HIGHER DEPTH COORDINATE
+!| Z_LOW          |<--| LOWER  DEPTH COORDINATE
+!| A1...A10       |<--| INTEGRATED VOLUMES PER FRACTION
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SISYPHE
@@ -31,257 +34,276 @@
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER,          INTENT(IN)   :: J
-      INTEGER,          INTENT(IN)   :: I
-      double precision, INTENT(IN)    :: Z_HIGH
-      double precision, INTENT(IN)    :: Z_LOW
-      double precision, INTENT(out)   :: a(10)
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      INTEGER,          INTENT(IN)  :: J
+      INTEGER,          INTENT(IN)  :: I
+      DOUBLE PRECISION, INTENT(IN)  :: Z_HIGH
+      DOUBLE PRECISION, INTENT(IN)  :: Z_LOW
+      DOUBLE PRECISION, INTENT(OUT) :: A(10)
 !
-      doUBLE PRECISION TEMP,tempold, dhig, dlow, AT, sumup, flow, fhig
-      doUBLE PRECISION TEMP2, TEMP2MAX, SUMUP2,TEMP3, TEMP3MAX, SUMUP3
-      double precision correct, chsum
-      integer l_cnt, mycase, f_cnt, revcnt, helper, lastcase, JG, k
-      logical ret,cvsp_check_f
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      DOUBLE PRECISION TEMP,TEMPOLD, DHIG, DLOW, AT, SUMUP, FLOW, FHIG
+      DOUBLE PRECISION TEMP2, TEMP2MAX, SUMUP2,TEMP3, TEMP3MAX, SUMUP3
+      DOUBLE PRECISION CORRECT, CHSUM
+      INTEGER L_CNT, MYCASE, F_CNT, REVCNT, HELPER, LASTCASE, JG, K
+      LOGICAL RET,CVSP_CHECK_F
       LOGICAL, EXTERNAL:: DB
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!----------------------------------------------------------------------- 
 !
-       JG = J
-       if (NCSIZE.gt.1) JG = mesh%knolg%I(J)
-
-            AT = DT*LT/PERCOU
-            sumup = 0.D0
-            sumup2  = 0.D0
-            sumup3  = 0.D0
-            mycase  = 0
-
-      !--------------------------------------------------------------------------
-      !-----doing all fractions ----------------------------
-      !--------------------------------------------------------------------------
-      do f_cnt = 1, NSICLA
-
-            TEMP = 0.D0
-            TEMP2 = 0.D0
-            TEMP2MAX = 0.D0
-            TEMP3 = 0.D0
-            TEMP3MAX = 0.D0
-            chsum = 0.D0
-
-
-      !--------------------------------------------------------------------------
-      !------Going through all sections------------------------------------------
-      !--------------------------------------------------------------------------
-      do l_cnt = 0,(PRO_MAX(J)-2)
-
-            tempold = temp
-            revcnt = PRO_MAX(J)-l_cnt
-
-            !Depth coordinates of the section to check
-            dhig = PRO_D(j,revcnt,f_cnt)
-            dlow = PRO_D(j,revcnt-1,f_cnt)
-
-
-      !Sorting profile section totally inside (Case ZddZ)
-      if ( (dhig <= Z_HIGH ) .AND.
-     &     (dlow >= Z_LOW  ) ) then
-
-               flow = PRO_F(j,revcnt-1,f_cnt)
-               fhig = PRO_F(j,revcnt,f_cnt)
-
-               mycase  = mycase  + 1
-               lastcase = 1
-
-               TEMP2 = 0.5D0*(fhig+flow)*(dhig-dlow)  + TEMP2
-               TEMP2MAX = Z_HIGH - dlow
-
-               do helper = 1, NSICLA
-                    chsum = PRO_F(j,revcnt, helper) + chsum
-               enddo
-               chsum = 1.D0 - chsum
-
-      !Sorting profile section partially lower (Case ZdZd)
-      elseif ((dhig <= Z_HIGH) .AND.
-     &       (dhig >  Z_LOW ) .AND.
-     &       (dlow <  Z_LOW ) )  then
-
-               fhig = PRO_F(j,revcnt,f_cnt)
-               flow = PRO_F(j,revcnt-1,f_cnt)
-               flow = - ((fhig-flow)/(dhig-dlow))*(dhig-Z_LOw) + fhig
-
-               !cut the section
-               dlow = Z_low
-
-               mycase  = mycase  + 1000
-               lastcase = 2
-
-               TEMP3 = 0.5D0*(fhig+flow)*(dhig-dlow)  + TEMP3
-               TEMP3MAX = dhig - dlow
-
-
-      !Sorting profile section partially higher (Case dZdZ)
-      elseif ((dhig > Z_HIGH) .AND.
-     &    (dlow >= Z_LOW) .AND.
-     &    (dlow <  Z_HIGH) ) then
-
-               flow = PRO_F(j,revcnt-1,f_cnt)
-
-
-               fhig = PRO_F(j,revcnt,f_cnt)
-               fhig = ((fhig-flow)/(dhig-dlow))*(Z_HIGH-dlow) + flow
-
-               !cut the section
-               dhig = Z_HIGH
-
-               mycase  = mycase  + 1000000
-               lastcase = 3
-
-
-      !Layer totally inside one section (Case dZZd)
-      elseif ((dhig >= Z_HIGH) .AND.
-     &    (dlow <= Z_LOW) ) then
-
-               fhig =
-     &           - (PRO_F(j,revcnt,f_cnt)-PRO_F(j,revcnt-1,f_cnt)) /
-     &             (dhig-dlow) *
-     &             (dhig-Z_HIGH)
-     &              + PRO_F(j,revcnt,f_cnt)
-
-               flow =
-     &           - (PRO_F(j,revcnt,f_cnt)-PRO_F(j,revcnt-1,f_cnt)) /
-     &             (dhig-dlow) *
-     &             (dhig-Z_LOW)
-     &             + PRO_F(j,revcnt,f_cnt)
-
-               !cut the section
-               dhig = Z_HIGH
-               dlow = Z_LOW
-
-               lastcase = 8
-               mycase  = mycase  + 100000000
-
-               !if(db(JG,0).eqv..true.) print*,'  CASE 100000000'
-
-      !Section with 0 strength
-      elseif (dhig == dlow) then
-               flow = 0.D0
-               fhig = 0.D0
-
-               mycase  = mycase  + 1000000000
-               lastcase = 4
-
-      !A true bug!
-      elseif (Z_LOW > Z_HIGH) then
-               flow = 0.D0
-               fhig = 0.D0
-
-               print*, 'UHM: Z_LOW >= Z_HIGH', dhig, dlow, z_high, z_low
-               call CVSP_P('./ERR/','zLOHI',JG)
-               mycase  = mycase  + 1000000000
-               lastcase = 5
-
-      !A true bug!
-      elseif (dhig < dlow) then
-               flow = 0.D0
-               fhig = 0.D0
-
-               print*, 'UHM: dhig <= dlow', J,dhig, dlow, z_high, z_low
-               call CVSP_P('./ERR/','dLOHI',JG)
-               mycase  = mycase  + 1000000000
-               lastcase = 6
-
-      !A section that is not involved / Not a bug!!
-      else
-
-               flow = 0.D0
-               fhig = 0.D0
-
-               !print*, 'UHM: IVT else', dhig, dlow, z_high, z_low
-
-               mycase  = mycase  + 1000000000
-               lastcase = 7
-
-      endif
-
-
-    !Trapezoid formula
-
-        TEMP = 0.5D0*(fhig+flow)*(dhig-dlow)  + TEMP
-
-      !Debug!Debug!Debug!Debug!Debug!Debug
-      if (0.5D0*(fhig+flow)*(dhig-dlow) < 0.D0) then
-      write(LU,fmt='(A,1X,2(I11,1X),11(G20.10,1X),1X,I11)')
-     &   'Integrate_Vol_ER_TMP:<0:'
-     &   ,JG, I, AT, fhig,flow,dhig,dlow, dhig-dlow, revcnt,
-     &         PRO_F(j,revcnt-1,f_cnt),PRO_F(j,revcnt,f_cnt),
-     &         PRO_D(j,revcnt-1,f_cnt),PRO_D(j,revcnt,f_cnt),lastcase
-            call CVSP_P('./ERR/','IVkT',JG)
-            call plante(1)
-      endif
-       !Debug!Debug!Debug!Debug!Debug!Debug
-
-      end do !section
-  !--------------------------------------------------------------------------
-  !--------------------------------------------------------------------------
-
-
-        !adding up fractions for debugging purposes
-        sumup = TEMP + sumup
-        sumup2 = temp2 + sumup2
-        sumup3 = temp3 + sumup3
-
-        a(f_cnt) = TEMP
-
-
-      end do !fraction
-
-        correct = (sumup / (Z_HIGH-Z_LOW))
-
-        CVSP_INTEGRATE_VOLUME = a(I) / correct
-
-      !Debug!Debug!Debug!Debug!Debug!Debug
-      if (CVSP_INTEGRATE_VOLUME < 0.D0) then
-        call CVSP_P('./ERR/','IVk0',JG)
-            write(*,fmt='(A,2(I11),14(G20.10))')'Integrate_Vol_ER:<0:'
-     &  ,JG, I, AT, CVSP_INTEGRATE_VOLUME, mycase ,Z_HIGH,Z_LOW,sumup,
-     &            sumup2,sumup3,chsum,a(1),a(2),a(3),a(4),a(5)
-            call plante(1)
-      endif
-      !Debug!Debug!Debug!Debug!Debug!Debug
-
-
-      !-------_CHECKSUM  OVER  ALL FRACTIONS AND LAYERS
-      sumup  = sumup  - abs(Z_HIGH-Z_LOW)
-      sumup2 = sumup2 - abs(temp2max)
-      sumup3 = sumup3 - abs(temp3max)
-      chsum =  chsum / 5.D0
-
-               !DEBUG
- !               if (isnan(sumup)) then
- !                   call CVSP_P('./ERR/','IV_E',JG)
- !                   print *, 'Integrate Volume NAN', Sumup, JG
- !                   call plante(1)
- !               endif
-
-               !DEBUG
-               !BEWARE: 1.D-5 is up to 10g of a 1000kg but higher accuracy
-               !Leads again to floating point truncation errors ...
-                if ((ABS(sumup).GT.1.D-5)) then
-                    call CVSP_P('./ERR/','IV_E',JG)
-                WRITE(LU,*) 'Integrate Volume ACCURRACY!!!', Sumup, JG
-                    do K = 1, Pro_MAX(J)
-                        ! removes numeric instabilities
-                    ret =  CVSP_CHECK_F(J,K,' IV_FiX:   ')
-                    enddo
-                    !call plante(1)
-                endif
-
-
-
-
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      JG = J
+      IF (NCSIZE.GT.1) JG = MESH%KNOLG%I(J)
+!      
+      AT = DT*LT/PERCOU
+      SUMUP = 0.D0
+      SUMUP2  = 0.D0
+      SUMUP3  = 0.D0
+      MYCASE  = 0
 !
+!-----------------------------------------------------------------------     
+! DOING ALL FRACTIONS
+!-----------------------------------------------------------------------
 !
-        RETURN
+      DO F_CNT = 1, NSICLA
+         TEMP = 0.D0
+         TEMP2 = 0.D0
+         TEMP2MAX = 0.D0
+         TEMP3 = 0.D0
+         TEMP3MAX = 0.D0
+         CHSUM = 0.D0
+!
+!-----------------------------------------------------------------------     
+! GOING THROUGH ALL SECTIONS
+!-----------------------------------------------------------------------
+!         
+         DO L_CNT = 0,(PRO_MAX(J)-2)
+            TEMPOLD = TEMP
+            REVCNT = PRO_MAX(J)-L_CNT
+!
+!-----------------------------------------------------------------------     
+! DEPTH COORDINATES OF THE SECTION TO CHECK
+!-----------------------------------------------------------------------
+!            
+            DHIG = PRO_D(J,REVCNT,F_CNT)
+            DLOW = PRO_D(J,REVCNT-1,F_CNT)
+!
+!-----------------------------------------------------------------------     
+! SORTING PROFILE SECTION TOTALLY INSIDE (CASE ZDDZ)
+!-----------------------------------------------------------------------
+!            
+            IF ( (DHIG <= Z_HIGH ) .AND.
+     &           (DLOW >= Z_LOW  ) ) THEN
+               
+               FLOW = PRO_F(J,REVCNT-1,F_CNT)
+               FHIG = PRO_F(J,REVCNT,F_CNT)
+!               
+               MYCASE  = MYCASE  + 1
+               LASTCASE = 1
+!               
+               TEMP2 = 0.5D0*(FHIG+FLOW)*(DHIG-DLOW)  + TEMP2
+               TEMP2MAX = Z_HIGH - DLOW
+!               
+               DO HELPER = 1, NSICLA
+                  CHSUM = PRO_F(J,REVCNT, HELPER) + CHSUM
+               ENDDO
+!
+               CHSUM = 1.D0 - CHSUM
+!
+!-----------------------------------------------------------------------     
+! SORTING PROFILE SECTION PARTIALLY LOWER (CASE ZDZD)
+!-----------------------------------------------------------------------
+!               
+            ELSEIF ((DHIG <= Z_HIGH) .AND.
+     &              (DHIG >  Z_LOW ) .AND.
+     &              (DLOW <  Z_LOW ) )  THEN
+               
+               FHIG = PRO_F(J,REVCNT,F_CNT)
+               FLOW = PRO_F(J,REVCNT-1,F_CNT)
+               FLOW = - ((FHIG-FLOW)/(DHIG-DLOW))*(DHIG-Z_LOW) + FHIG
+!
+!-----------------------------------------------------------------------     
+! CUT THE SECTION
+!-----------------------------------------------------------------------
+!               
+               DLOW = Z_LOW
+!               
+               MYCASE  = MYCASE  + 1000
+               LASTCASE = 2
+!               
+               TEMP3 = 0.5D0*(FHIG+FLOW)*(DHIG-DLOW)  + TEMP3
+               TEMP3MAX = DHIG - DLOW               
+!
+!-----------------------------------------------------------------------     
+! SORTING PROFILE SECTION PARTIALLY HIGHER (CASE DZDZ)
+!-----------------------------------------------------------------------
+!               
+            ELSEIF ((DHIG > Z_HIGH) .AND.
+     &              (DLOW >= Z_LOW) .AND.
+     &              (DLOW <  Z_HIGH) ) THEN
+!               
+               FLOW = PRO_F(J,REVCNT-1,F_CNT)
+!                              
+               FHIG = PRO_F(J,REVCNT,F_CNT)
+               FHIG = ((FHIG-FLOW)/(DHIG-DLOW))*(Z_HIGH-DLOW) + FLOW
+!
+!-----------------------------------------------------------------------     
+!INSERT
+!-----------------------------------------------------------------------
+!               
+!CUT THE SECTION
+               DHIG = Z_HIGH
+!               
+               MYCASE  = MYCASE + 1000000
+               LASTCASE = 3
+!
+!-----------------------------------------------------------------------     
+! LAYER TOTALLY INSIDE ONE SECTION (CASE DZZD)
+!-----------------------------------------------------------------------
+!               
+            ELSEIF ((DHIG >= Z_HIGH) .AND.
+     &              (DLOW <= Z_LOW) ) THEN
+!               
+               FHIG =
+     &              - (PRO_F(J,REVCNT,F_CNT)-PRO_F(J,REVCNT-1,F_CNT)) /
+     &              (DHIG-DLOW) *
+     &              (DHIG-Z_HIGH)
+     &              + PRO_F(J,REVCNT,F_CNT)
+!               
+               FLOW =
+     &              - (PRO_F(J,REVCNT,F_CNT)-PRO_F(J,REVCNT-1,F_CNT)) /
+     &              (DHIG-DLOW) *
+     &              (DHIG-Z_LOW)
+     &              + PRO_F(J,REVCNT,F_CNT)
+!
+!-----------------------------------------------------------------------     
+! CUT THE SECTION
+!-----------------------------------------------------------------------
+!               
+               DHIG = Z_HIGH
+               DLOW = Z_LOW
+!               
+               LASTCASE = 8
+               MYCASE  = MYCASE + 100000000
+!
+!-----------------------------------------------------------------------     
+! SECTION WITH 0 STRENGTH
+!-----------------------------------------------------------------------
+!               
+            ELSEIF (DHIG == DLOW) THEN
+               FLOW = 0.D0
+               FHIG = 0.D0
+!               
+               MYCASE  = MYCASE + 1000000000
+               LASTCASE = 4
+!               
+!A TRUE BUG!
+            ELSEIF (Z_LOW > Z_HIGH) THEN
+               FLOW = 0.D0
+               FHIG = 0.D0
+!               
+               WRITE(LU,*) 'Z_LOW >= Z_HIGH', DHIG, DLOW, Z_HIGH, Z_LOW
+               CALL CVSP_P('./ERR/','ZLOHI',JG)
+               MYCASE  = MYCASE + 1000000000
+               LASTCASE = 5
+!               
+!A TRUE BUG!
+            ELSEIF (DHIG < DLOW) THEN
+               FLOW = 0.D0
+               FHIG = 0.D0
+!               
+               WRITE(LU,*) 'DHIG <= DLOW', J,DHIG, DLOW, Z_HIGH, Z_LOW
+               CALL CVSP_P('./ERR/','DLOHI',JG)
+               MYCASE  = MYCASE + 1000000000
+               LASTCASE = 6
+!               
+!A SECTION THAT IS NOT INVOLVED / NOT A BUG!!
+            ELSE
+!               
+               FLOW = 0.D0
+               FHIG = 0.D0
+!               
+               MYCASE  = MYCASE + 1000000000
+               LASTCASE = 7
+!               
+            ENDIF
+!
+!-----------------------------------------------------------------------     
+! TRAPEZOID FORMULA
+!-----------------------------------------------------------------------
+!            
+            TEMP = 0.5D0*(FHIG+FLOW)*(DHIG-DLOW) + TEMP
+            
+!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG
+            IF (0.5D0*(FHIG+FLOW)*(DHIG-DLOW) < 0.D0) THEN
+               WRITE(LU,FMT='(A,1X,2(I11,1X),11(G20.10,1X),1X,I11)')
+     &              'INTEGRATE_VOL_ER_TMP:<0:'
+     &              ,JG, I, AT, FHIG,FLOW,DHIG,DLOW, DHIG-DLOW, REVCNT,
+     &              PRO_F(J,REVCNT-1,F_CNT),PRO_F(J,REVCNT,F_CNT),
+     &              PRO_D(J,REVCNT-1,F_CNT),PRO_D(J,REVCNT,F_CNT),
+     &              LASTCASE
+               CALL CVSP_P('./ERR/','IVKT',JG)
+               CALL PLANTE(1)
+            ENDIF
+!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG
+!            
+         ENDDO                 !SECTION
+!
+!-----------------------------------------------------------------------     
+! ADDING UP FRACTIONS FOR DEBUGGING PURPOSES
+!-----------------------------------------------------------------------
+!         
+         SUMUP = TEMP + SUMUP
+         SUMUP2 = TEMP2 + SUMUP2
+         SUMUP3 = TEMP3 + SUMUP3
+!         
+         A(F_CNT) = TEMP
+!
+      ENDDO                    !FRACTION
+!      
+      CORRECT = (SUMUP / (Z_HIGH-Z_LOW))
+      CVSP_INTEGRATE_VOLUME = A(I) / CORRECT
+!      
+!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG
+      IF (CVSP_INTEGRATE_VOLUME < 0.D0) THEN
+         CALL CVSP_P('./ERR/','IVK0',JG)
+         WRITE(*,FMT='(A,2(I11),14(G20.10))')'INTEGRATE_VOL_ER:<0:'
+     &        ,JG, I, AT, CVSP_INTEGRATE_VOLUME, MYCASE ,Z_HIGH,Z_LOW,
+     &        SUMUP,SUMUP2,SUMUP3,CHSUM,A(1),A(2),A(3),A(4),A(5)
+         CALL PLANTE(1)
+      ENDIF
+!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG!DEBUG      
+!
+!-----------------------------------------------------------------------     
+! CHECKSUM OVER ALL FRACTIONS AND LAYERS
+!-----------------------------------------------------------------------
+!      
+      SUMUP  = SUMUP  - ABS(Z_HIGH-Z_LOW)
+      SUMUP2 = SUMUP2 - ABS(TEMP2MAX)
+      SUMUP3 = SUMUP3 - ABS(TEMP3MAX)
+      CHSUM =  CHSUM / 5.D0
+!
+!-----------------------------------------------------------------------     
+! BEWARE: 1.D-5 IS UP TO 10G OF A 1000KG BUT HIGHER ACCURACY
+! LEADS AGAIN TO FLOATING POINT TRUNCATION ERRORS ...
+!-----------------------------------------------------------------------
+!           
+      IF (ABS(SUMUP).GT.1.D-5) THEN
+         CALL CVSP_P('./ERR/','IV_E',JG)
+         WRITE(LU,*) 'INTEGRATE VOLUME ACCURRACY!!!', SUMUP, JG
+         DO K = 1, PRO_MAX(J)
+!
+!-----------------------------------------------------------------------     
+! REMOVES NUMERIC INSTABILITIES
+!-----------------------------------------------------------------------
+!
+           RET =  CVSP_CHECK_F(J,K,' IV_FIX:   ')
+         ENDDO
+      ENDIF
+!     
+!-----------------------------------------------------------------------
+!
+      RETURN
       END FUNCTION CVSP_INTEGRATE_VOLUME
+      

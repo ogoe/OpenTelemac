@@ -6,7 +6,8 @@
      & U_TEL,V_TEL,H_TEL,HN_TEL,ZF_SIS,UETCAR,CF_TEL,KS_TEL,
      & CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      & U3D,V3D,T_TEL,VISC_TEL,DT_TEL,CHARR_TEL,SUSP_TEL,
-     & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV)
+     & FLBOR_TEL,SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV,
+     & THETAW_TEL,HW_TEL,TW_TEL)
 !
 !***********************************************************************
 ! SISYPHE   V6P3                                   31/07/2012
@@ -66,10 +67,17 @@
 !+        V6P2 
 !+   Modification call to init_sediment and suspension_main
 !
-!history  J-M HERVOUETEDF R&D, LNHE) 
+!history  J-M HERVOUET (EDF R&D, LNHE) 
 !+        08/03/2013 
 !+        V6P3 
 !+   Adding multiclass treatment in slides.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE) 
+!+        22/03/2013 
+!+        V6P3 
+!+   Adding arguments THETAW_TEL, HW_TEL, TW_TEL for variables
+!+   transmitted from Tomawac to Sisyphe through Telemac-2D or 3D in the
+!+   of triple coupling.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
@@ -135,6 +143,7 @@
       INTEGER,           INTENT(IN)    :: SOLSYS
       TYPE(BIEF_OBJ),    INTENT(IN)    :: FLBOR_TEL,DM1,ZCONV
       TYPE(BIEF_OBJ),    INTENT(IN)    :: UCONV_TEL,VCONV_TEL
+      TYPE(BIEF_OBJ),    INTENT(IN)    :: THETAW_TEL,HW_TEL,TW_TEL
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !

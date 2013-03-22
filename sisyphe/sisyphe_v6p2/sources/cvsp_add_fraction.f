@@ -2,105 +2,153 @@
                      SUBROUTINE CVSP_ADD_FRACTION
 !                    ****************************
 !
-     &(J, I, dZFCL, EVL)
+     &(J, I, DZFCL, EVL)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/06/2011
+! SISYPHE   V6P3                                   12/03/2013
 !***********************************************************************
 !
-!brief    Adds a Fraction to the topmost Vertical Sorting Profile Section
+!brief    ADDS A FRACTION TO THE TOPMOST VERTICAL SORTING PROFILE SECTION
 !
 !history  UWE MERKEL
 !+        2011
 !+
-!+
+!history  P. A. TASSI (EDF R&D, LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   Cleaning, cosmetic
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| J              |<--| INDEX of a POINT in MESH
-!| I              |<--| INDEX of a FRACTION
-!| dZFCL          |<--| EVOLUTION of FRACTION I [m]
-!| EVL            |<--| EVOLUTION of all FRACTIONS [m]
+!| J              |<--| INDEX OF A POINT IN MESH
+!| I              |<--| INDEX OF A FRACTION
+!| DZFCL          |<--| EVOLUTION OF FRACTION I [M]
+!| EVL            |<--| EVOLUTION OF ALL FRACTIONS [M]
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE DECLARATIONS_SISYPHE
 !
       IMPLICIT NONE
-      INTEGER,          INTENT(IN)    :: J
-      INTEGER,          INTENT(IN)    :: I
-      doUBLE PRECISION, INTENT(IN)    :: dZFCL
-      doUBLE PRECISION, INTENT(IN)    :: EVL
-
-      double precision STR_OLD, STR_NEW, temp1, temp2, AT
-      integer II
-      logical ret, CVSP_CHECK_F
 !
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-        AT = DT*LT/PERCOU
+      INTEGER,          INTENT(IN) :: J
+      INTEGER,          INTENT(IN) :: I
+      DOUBLE PRECISION, INTENT(IN) :: DZFCL
+      DOUBLE PRECISION, INTENT(IN) :: EVL
 !
-    ! Makes sure that there is no influence on the profile points below
-    ! By inserting a section with 0 strength if it doesn't exist already
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-       !Checks for breakpoint (= 0 strength)
-          if (PRO_MAX(J).gt.2) then
-          if (PRO_D(J,PRO_MAX(J)-1,1).gt.PRO_D(J,PRO_MAX(J)-2,1)) Then
-            !insert
-              PRO_MAX(j) = PRO_MAX(j) + 1
-            !shifts breakpoint
-            do II=1,NSICLA
-              PRO_F(J,PRO_MAX(J),II) = PRO_F(J,PRO_MAX(J)-1,II)
-              PRO_F(J,PRO_MAX(J)-1,II) = PRO_F(J,PRO_MAX(J)-2,II)
-              PRO_D(J,PRO_MAX(J),II) = PRO_D(J,PRO_MAX(J)-1,II)
-              PRO_D(J,PRO_MAX(J)-1,II) = PRO_D(J,PRO_MAX(J)-2,II)
-            enddo
-
-          endif
-          endif
-
-
-       ! Adds material
-
-       !Strength of Fraction
-       STR_OLD = (PRO_D(J,PRO_MAX(J),I)-PRO_D(J,PRO_MAX(J)-1,I))
-       STR_NEW = dZFCL + STR_OLD
-
-       !New Fractions
-       !top
-       PRO_F(J,PRO_MAX(J),I) =
-     &   (dZFCL + PRO_F(J,PRO_MAX(J),I) * STR_OLD) / (STR_NEW)
-       !bottom
-       PRO_F(J,PRO_MAX(J)-1,I) =
-     &   (dZFCL + PRO_F(J,PRO_MAX(J)-1,I) * STR_OLD) / (STR_NEW)
-
-       !New Depth=Z of Fraction
-       PRO_D(J,PRO_MAX(J),I) = dZFCL + PRO_D(J,PRO_MAX(J),I)
-
-       !Shifting Percentage for the other Fractions
-            do II=1,NSICLA
-              if (I /= II) then
-                ! SUM OF FRACTIONS AFTER SEDIMENTATION /= I
-                temp1 =
-     &             PRO_F(J,PRO_MAX(J),II) * STR_OLD / STR_NEW
-                temp2 =
-     &             PRO_F(J,PRO_MAX(J)-1,II) * STR_OLD / STR_NEW
-                ! Assign New Thickness & Corrected Fractions
-                PRO_F(J,PRO_MAX(J),II) = temp1
-                PRO_D(J,PRO_MAX(J),II) = dZFCL + PRO_D(J,PRO_MAX(J),II)
-                PRO_F(J,PRO_MAX(J)-1,II) = temp2
-              endif
-            enddo
-
-
-        ! Removes Floating Point Trucations
-        ret =  CVSP_CHECK_F(J,PRO_MAX(J),'ADF: MAX  ')
-        ret =  CVSP_CHECK_F(J,PRO_MAX(J)-1,'ADF: MAX+1')
-        if (PRO_MAX(J).gt.2) then
-            ret =  CVSP_CHECK_F(J,PRO_MAX(J)-2,'ADF: MAX+2')
-        endif
-        if (PRO_MAX(J).gt.3) then
-            ret =  CVSP_CHECK_F(J,PRO_MAX(J)-3,'ADF: MAX+3')
-        endif
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      DOUBLE PRECISION STR_OLD, STR_NEW, TEMP1, TEMP2, AT
+      INTEGER II
+      LOGICAL RET, CVSP_CHECK_F
+!
+!----------------------------------------------------------------------- 
+!
+      AT = DT*LT/PERCOU
+!
+!----------------------------------------------------------------------- 
+!     MAKES SURE THAT THERE IS NO INFLUENCE ON THE PROFILE POINTS BELOW
+!     BY INSERTING A SECTION WITH 0 STRENGTH IF IT DOESN'T EXIST ALREADY
+!
+!     CHECKS FOR BREAKPOINT (= 0 STRENGTH)
+!-----------------------------------------------------------------------
+!
+      IF (PRO_MAX(J).GT.2) THEN
+         IF (PRO_D(J,PRO_MAX(J)-1,1).GT.PRO_D(J,PRO_MAX(J)-2,1)) THEN
+!
+!-----------------------------------------------------------------------     
+!INSERT
+!-----------------------------------------------------------------------
+!
+            PRO_MAX(J) = PRO_MAX(J) + 1
+!
+!-----------------------------------------------------------------------     
+!SHIFTS BREAKPOINT
+!-----------------------------------------------------------------------
+!
+            DO II=1,NSICLA
+               PRO_F(J,PRO_MAX(J),II) = PRO_F(J,PRO_MAX(J)-1,II)
+               PRO_F(J,PRO_MAX(J)-1,II) = PRO_F(J,PRO_MAX(J)-2,II)
+               PRO_D(J,PRO_MAX(J),II) = PRO_D(J,PRO_MAX(J)-1,II)
+               PRO_D(J,PRO_MAX(J)-1,II) = PRO_D(J,PRO_MAX(J)-2,II)
+            ENDDO
+            
+         ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------     
+! ADDS MATERIAL
+!-----------------------------------------------------------------------
+!
+!
+!-----------------------------------------------------------------------     
+!STRENGTH OF FRACTION
+!-----------------------------------------------------------------------
+!
+      STR_OLD = (PRO_D(J,PRO_MAX(J),I)-PRO_D(J,PRO_MAX(J)-1,I))
+      STR_NEW = DZFCL + STR_OLD
+!
+!-----------------------------------------------------------------------           
+!NEW FRACTIONS
+!TOP
+!-----------------------------------------------------------------------
+!
+      PRO_F(J,PRO_MAX(J),I) =
+     &     (DZFCL + PRO_F(J,PRO_MAX(J),I) * STR_OLD) / (STR_NEW)
+!
+!-----------------------------------------------------------------------     
+!BOTTOM
+!-----------------------------------------------------------------------
+!
+      PRO_F(J,PRO_MAX(J)-1,I) =
+     &     (DZFCL + PRO_F(J,PRO_MAX(J)-1,I) * STR_OLD) / (STR_NEW)
+!
+!-----------------------------------------------------------------------     
+!NEW DEPTH=Z OF FRACTION
+!-----------------------------------------------------------------------
+!
+      PRO_D(J,PRO_MAX(J),I) = DZFCL + PRO_D(J,PRO_MAX(J),I)
+!
+!-----------------------------------------------------------------------            
+!SHIFTING PERCENTAGE FOR THE OTHER FRACTIONS
+!-----------------------------------------------------------------------
+!
+      DO II=1,NSICLA
+         IF (I /= II) THEN
+!
+!-----------------------------------------------------------------------      
+! SUM OF FRACTIONS AFTER SEDIMENTATION /= I
+!-----------------------------------------------------------------------
+!
+            TEMP1 =
+     &           PRO_F(J,PRO_MAX(J),II) * STR_OLD / STR_NEW
+            TEMP2 =
+     &           PRO_F(J,PRO_MAX(J)-1,II) * STR_OLD / STR_NEW
+!
+!-----------------------------------------------------------------------      
+! ASSIGN NEW THICKNESS & CORRECTED FRACTIONS
+!-----------------------------------------------------------------------
+!
+            PRO_F(J,PRO_MAX(J),II) = TEMP1
+            PRO_D(J,PRO_MAX(J),II) = DZFCL + PRO_D(J,PRO_MAX(J),II)
+            PRO_F(J,PRO_MAX(J)-1,II) = TEMP2
+         ENDIF
+      ENDDO
+!
+!-----------------------------------------------------------------------      
+! REMOVES FLOATING POINT TRUCATIONS
+!-----------------------------------------------------------------------
+!
+      RET =  CVSP_CHECK_F(J,PRO_MAX(J),'ADF: MAX  ')
+      RET =  CVSP_CHECK_F(J,PRO_MAX(J)-1,'ADF: MAX+1')
+      IF (PRO_MAX(J).GT.2) THEN
+         RET =  CVSP_CHECK_F(J,PRO_MAX(J)-2,'ADF: MAX+2')
+      ENDIF
+      IF (PRO_MAX(J).GT.3) THEN
+         RET =  CVSP_CHECK_F(J,PRO_MAX(J)-3,'ADF: MAX+3')
+      ENDIF
+!
+!-----------------------------------------------------------------------
 !
       RETURN
       END SUBROUTINE CVSP_ADD_FRACTION

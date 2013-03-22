@@ -1,49 +1,60 @@
-!                    ******************************************
-                     SUBROUTINE CVSP_CHECK_STEADY(J)
-!                    ******************************************
+!                     ****************************
+                      SUBROUTINE CVSP_CHECK_STEADY
+!                     ****************************
 !
+     &(J)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   21/06/2011
+! SISYPHE   V6P3                                  12/03/2013
 !***********************************************************************
 !
-!brief    Checks Vertical Sorting Profile to be steady in PRO_D
+!brief   CHECKS VERTICAL SORTING PROFILE TO BE STEADY IN PRO_D
 !
-!history  UWE MERKEL
+!history UWE MERKEL
 !+        2012
 !+
-!+
+!history  P. A. TASSI (EDF R&D, LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   Cleaning, cosmetic
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!| J              |<--| INDEX of a POINT in MESH
+!| J              |<--| INDEX OF A POINT IN MESH
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+!
       USE DECLARATIONS_SISYPHE
 !
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-      INTEGER,          INTENT(IN)    :: J
-
-      integer  K, JG
-      doUBLE PRECISION  AT
-
-         JG = j
-         if (ncsize > 1) JG = mesh%knolg%I(J)
-
-         AT = DT*LT/PERCOU
-
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        do K=1,PRO_MAX(J)-1
-           if ((PRO_D(J,K+1,1) - PRO_D(J,K,1)).lt.0.D0) then
-                WRITE(LU,*) 'ERR: Unsteady VSP! ,J,K,AT',
-     &                  JG, K, AT, PRO_D(J,K+1,1), PRO_D(J,K,1)
-                call CVSP_P('./ERR/','Unsteady_',JG)
-                call Plante(1)
-           endif
-        enddo
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-        RETURN
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER, INTENT(IN) :: J
+      INTEGER  K, JG
+      DOUBLE PRECISION AT
+!     
+!-----------------------------------------------------------------------
+!     
+      JG = J
+      IF(NCSIZE > 1) JG = MESH%KNOLG%I(J)
+!      
+      AT = DT*LT/PERCOU
+!     
+!-----------------------------------------------------------------------
+!     
+      DO K=1,PRO_MAX(J)-1
+        IF((PRO_D(J,K+1,1) - PRO_D(J,K,1)).LT.0.D0) THEN
+          WRITE(LU,*) 'ERR: UNSTEADY VSP! ,J,K,AT',
+     &           JG, K, AT, PRO_D(J,K+1,1), PRO_D(J,K,1)
+          CALL CVSP_P('./ERR/','UNSTEADY_',JG)
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ENDDO
+!     
+!-----------------------------------------------------------------------
+!     
+      RETURN
       END SUBROUTINE
-!
+     

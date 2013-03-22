@@ -653,7 +653,8 @@ C
      &                     CONSTFLOW,NSIS_CFD,SISYPHE_CFD,CODE,PERICOU,
      &                     U3D,V3D,T_TEL,VISC_TEL,
      &                     DT_TEL,CHARR_TEL,SUSP_TEL,FLBOR_TEL,
-     &                     SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV)
+     &                     SOLSYS,DM1,UCONV_TEL,VCONV_TEL,ZCONV,
+     &                     THETAW_TEL,HW_TEL,TW_TEL)
           USE BIEF_DEF
           IMPLICIT NONE
           INTEGER,          INTENT(IN)   :: PART,LOOPCOUNT,GRAFCOUNT
@@ -671,6 +672,7 @@ C
           INTEGER,           INTENT(IN)  :: SOLSYS
           TYPE(BIEF_OBJ), INTENT(IN)     :: FLBOR_TEL,DM1,ZCONV
           TYPE(BIEF_OBJ), INTENT(IN)     :: UCONV_TEL,VCONV_TEL
+          TYPE(BIEF_OBJ), INTENT(IN)     :: THETAW_TEL,HW_TEL,TW_TEL
         END SUBROUTINE
       END INTERFACE
 C

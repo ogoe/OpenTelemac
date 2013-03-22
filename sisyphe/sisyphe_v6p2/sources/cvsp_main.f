@@ -1,296 +1,269 @@
-!                    ****************
+!                    ********************
                      SUBROUTINE CVSP_MAIN
-!                    ****************
+!                    ********************
 !
      &(ZFCL_W,NLAYER,ZR,ZF,ESTRAT,ELAY,MASBAS,ACLADM,NSICLA,NPOIN,
      & ELAY0,VOLTOT,ES,AVAIL,CONST_ALAYER,DTS,ESTRATNEW,NLAYNEW)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   01/06/2012
+! SISYPHE   V6P3                                   14/03/2013
 !***********************************************************************
 !
-!brief    Continous Vertical Sorting Model
+!BRIEF    CONTINOUS VERTICAL SORTING MODEL
 !+        COMPUTES FRACTIONS FOR EACH CLASS AND EACH SECTION OF A C-VSM;
 !+
 !
-!
-!history  U.MERKEL (BAW), R.KOPMANN (BAW)
+!HISTORY  U.MERKEL (BAW), R.KOPMANN (BAW)
 !+        01/06/2012
 !+        V6P2
 !+
-!+
+!history  P. A. TASSI (EDF R&D, LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   Cleaning, cosmetic
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ACLADM         |---| CALCULATED GEOMETRICAL MEAN DIAMETER OF ACT LAY
 !| AVAIL          |<--| SEDIMENT FRACTION FOR EACH LAYER, CLASS, POINT
 !| CONST_ALAYER   |---|
-!| DTS            |---| TIMESTEP LENGTH IN [s]
+!| DTS            |---| TIMESTEP LENGTH IN [S]
 !| ELAY           |<--| ACTIVE LAYER THICKNESS FOR EACH POINT
 !| ELAY0          |---| WANTED ACTIVE LAYER THICKNESS
 !| ES             |---| LAYER THICKNESS
 !| ESTRAT         |<--| ACTIVE STRATUM THICKNESS FOR EACH POINT
-!| ESTRATNEW      |---| temporary ACTIVE STRATUM THICKNESS
+!| ESTRATNEW      |---| TEMPORARY ACTIVE STRATUM THICKNESS
 !| MASBAS         |---| AREA AROUND NODE
 !| NLAYER         |<--| NUMBER OF LAYER FOR EACH POINT
-!| NLAYNEW        |---| temporary NUMBER OF LAYER FOR EACH POINT
+!| NLAYNEW        |---| TEMPORARY NUMBER OF LAYER FOR EACH POINT
 !| NPOIN          |---| NUMBER OF MESH POINTS
 !| NSICLA         |---| NUMBER OF GRAIN CLASSES (FRACTIONS)
-!| VOLTOT         |---| TOTAL VOLUME around one POINT
+!| VOLTOT         |---| TOTAL VOLUME AROUND ONE POINT
 !| ZF             |---| BOTTOM ELEVATION
 !| ZFCL_W         |-->| EVOLUTION FOR EACH SEDIMENT CLASS
-!| ZR             |---| Rigid Bed
+!| ZR             |---| RIGID BED
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
       USE DECLARATIONS_SISYPHE, ONLY: CVSMOUTPUT,CVSM_OUT,CVSM_OUT_FULL,
-     &      PRO_F, PRO_D, PRO_MAX, PRO_MAX_MAX, PERCOU, HN,
-     &      E, LEOPR,LT,DT,PTINIG, MESH, ENTET, ZF_C,zfcl_c,Z
-      !USE DECLARATIONS_TELEMAC2D, ONLY:  H
-
+     &                                PRO_D,PRO_MAX,PRO_MAX_MAX,PERCOU,
+     &                                HN,LT,DT,MESH,Z
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
-
-      INTEGER iamcase, isicla, JG
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IAMCASE, ISICLA, JG
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       TYPE (BIEF_OBJ),  INTENT(IN)    :: ZFCL_W,ZR,ZF
       TYPE (BIEF_OBJ),  INTENT(IN)    :: MASBAS,ACLADM
       INTEGER,          INTENT(IN)    :: NSICLA,NPOIN
-      doUBLE PRECISION, INTENT(IN)    :: DTS
+      DOUBLE PRECISION, INTENT(IN)    :: DTS
       LOGICAL,          INTENT(IN)    :: CONST_ALAYER
       TYPE (BIEF_OBJ),  INTENT(INOUT) :: NLAYER,ESTRAT,ELAY
-      doUBLE PRECISION, INTENT(INOUT) :: ELAY0
-      doUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10)
-      doUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,10,NSICLA)
-      doUBLE PRECISION, INTENT(INOUT) :: VOLTOT(10),ESTRATNEW(NPOIN)
+      DOUBLE PRECISION, INTENT(INOUT) :: ELAY0
+      DOUBLE PRECISION, INTENT(INOUT) :: ES(NPOIN,10)
+      DOUBLE PRECISION, INTENT(INOUT) :: AVAIL(NPOIN,10,NSICLA)
+      DOUBLE PRECISION, INTENT(INOUT) :: VOLTOT(10),ESTRATNEW(NPOIN)
       INTEGER         , INTENT(INOUT) :: NLAYNEW(NPOIN)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      doUBLE PRECISION P_DSUM
-      EXTERNAL P_DSUM
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM
       INTEGER  P_ISUM
       EXTERNAL P_ISUM
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      Logical CVSP_CHECK_F, db, ret
+      LOGICAL CVSP_CHECK_F, DB, RET
       INTEGER I,J,K,ARRET,ARRET2
-      doUBLE PRECISION dZFCL,EVL,HEIGH,TEST1,TEST2,AEVOL,AUX,AT
-      double precision test,test3, delta
-      integer LLT, LTT, kk
-      character*50 debugstring
+      DOUBLE PRECISION DZFCL,EVL,HEIGH,AEVOL,AUX,AT,DELTA
+      INTEGER LLT, LTT, KK
+      CHARACTER*50 DEBUGSTRING
 !
-!-----------------------------------------------------------------------
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-!     TO CHECK FRACTIONS IN THE RANGE [-ZERO,1+ZERO]
-!
-      doUBLE PRECISION ZERO
-      DATA             ZERO/1.D-10/
-
       ARRET=0
       AT = DT*LT/PERCOU
-
-
+!     
 !-----------------------------------------------------------------------
+!     CHECK FOR RIGID BED ERRORS 
 !-----------------------------------------------------------------------
+!     
+      DO J=1,NPOIN
+        IF(Z%R(J)-ZF%R(J).LT.0.D0) THEN
+           WRITE(LU,*) 'UHM_Z.LT.ZF_BEF ',AT,Z%R(J),ZF%R(J),HN%R(J),
+     &                 (Z%R(J)-ZF%R(J))-HN%R(J)
+           CALL CVSP_P('./ERR/','Z_', J)
+        ENDIF
+      ENDDO
+!     
+!-----------------------------------------------------------------------     
+!     FOR ALL POINTS AND FOR ALL CLASSES
 !-----------------------------------------------------------------------
-!-----Check for Rigid bed errors
-
-      do J=1,NPOIN
-        if (Z%R(J)-ZF%R(J).lt.0.D0) then
-         WRITE(LU,*) 'UHM_Z.lt.ZF_Bef ',AT,Z%R(J),ZF%R(j),HN%R(J),
-     &            (Z%R(J)-ZF%R(J))-HN%R(J)
-            call CVSP_P('./ERR/','Z_', J)
-            !call PLANTE(1)
-        end if
-      enddo
-
-
+!     
+      DO J=1,NPOIN
+         JG = J
+         IF (NCSIZE.GT.1) JG = MESH%KNOLG%I(J)
+         EVL = 0.D0
+         DO ISICLA = 1,NSICLA
+         EVL = ZFCL_W%ADR(ISICLA)%P%R(J) + EVL
+      END DO
+!      
+! DEBUG INFO
+      IAMCASE = 0
+      IF (DB(JG,0).EQV..TRUE.) CALL CVSP_P('./VSP/','V_A',JG)
+! DEBUG INFO
+!     
+!-----------------------------------------------------------------------     
+! DEPOSITION IN SUM OVER ALL CASES
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!     For All POINTS AND for all CLASSES
-      do J=1,NPOIN
-
-       JG = J
-       if (NCSIZE.gt.1) JG = mesh%knolg%I(J)
-
-       EVL = 0.D0
-       do isicla = 1,nsicla
-         EVL = ZFCL_W%ADR(isicla)%P%R(J) + EVL
-       END do
-
-
-        !Debug Info
-        iamcase = 0
-        if (db(JG,0).eqv..true.) call CVSP_P('./VSP/','V_A',JG)
-        !/Debug Info
-
-!     -----------------------------------------------------------------------
-!     -----------------------------------------------------------------------
-!     DEPOSITION IN SUM OVER ALL CASES
-      if ((EVL.GT.0)) THEN
-          call CVSP_ADD_SECTION(J)
-      endif
 !
+      IF(EVL.GT.0) THEN
+        CALL CVSP_ADD_SECTION(J)
+      ENDIF
+!       
+      DO I=1,NSICLA
+         DZFCL = ZFCL_W%ADR(I)%P%R(J)
+         IF (EVL.GT.0D0) THEN
+            IF (DZFCL.GT.0.D0) THEN
+               CALL CVSP_ADD_FRACTION(J,I,DZFCL,EVL)
+               IAMCASE = 1 + IAMCASE !DEBUG INFO
+            ELSEIF( DZFCL.LT.0.D0) THEN
+               CALL CVSP_RM_FRACTION(J,I,DZFCL,EVL)
+               IAMCASE = 10 + IAMCASE !DEBUG INFO
+            ENDIF
+         ENDIF
+!     
+!-----------------------------------------------------------------------     
+! END DEPOSITION
+!-----------------------------------------------------------------------
 !
-      do I=1,NSICLA
-        dZFCL = ZFCL_W%ADR(I)%P%R(J)
-
-       if (EVL.GT.0D0) THEN
-         if (dZFCL.GT.0D0) THEN
-              call CVSP_ADD_FRACTION(J,I,dZFCL,EVL)
-              iamcase = 1 + iamcase !Debug Info
-         elseif( dZFCL.LT.0.D0) THEN
-              call CVSP_RM_FRACTION(J,I,dZFCL,EVL)
-              iamcase = 10 + iamcase !Debug Info
-         endif
-       endif
-!      END DEPOSITION-----------------------------------------------------------------------
+!-----------------------------------------------------------------------     
+! START EROSION IN SUM OVER ALL CASES
+!-----------------------------------------------------------------------
 !
+         IF(EVL.LT.0.D0) THEN
+            IF (DZFCL.GT.0.D0) THEN
+               CALL CVSP_ADD_FRACTION(J,I,DZFCL,EVL)
+               IAMCASE = 100 + IAMCASE !DEBUG INFO
+            ELSEIF(DZFCL.LT.0.D0) THEN
+               CALL CVSP_RM_FRACTION(J,I,DZFCL,EVL)
+               IAMCASE = 1000 + IAMCASE !DEBUG INFO
+            ENDIF                       ! DZFCL
+         ENDIF                          ! EVL < 0
+!     
+!-----------------------------------------------------------------------     
+! END EROSION
+!-----------------------------------------------------------------------
 !
-!      -----------------------------------------------------------------------
-!      START EROSION IN SUM OVER ALL CASES
-        if (EVL.LT.0.D0) THEN
-          if (dZFCL.GT.0.D0) THEN
-              call CVSP_ADD_FRACTION(J,I,dZFCL,EVL)
-              iamcase = 100 + iamcase !Debug Info
-          elseif(dZFCL.LT.0.D0) THEN
-              call CVSP_RM_FRACTION(J,I,dZFCL,EVL)
-              iamcase = 1000 + iamcase !Debug Info
-          endif ! dzfcl
-        endif ! evl < 0
-!      -----------------------------------------------------------------------
-!      END EROSION
-
-
-      enddo
-!     -----------------------------------------------------------------------
-!	  END For All CLASSES
-
-
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-
-
-      ! We are running out of section memory! COMPRESS NOW!
-        if ((PRO_MAX(J).gt.PRO_MAX_MAX/4*3).or.
-     &                  (PRO_MAX_MAX-PRO_MAX(J).lt.8*NSICLA)) then
-           call  CVSP_COMPRESS_DP(J, 1.0D-5)
-        endif
-
-
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-
-
-      !Synchronice VSP with LAYER (For Debugging ...)
-
-      delta = ZF%R(J) - PRO_D(J, PRO_MAX(J), 1)
-
-      if (delta.ne.0.D0) then
-          do I = 1 , NSICLA
-          do K = 1, Pro_MAX(J)
-            PRO_D(J, K, I) = PRO_D(J, K, I) + delta
-          enddo
-          enddo
-      endif
-
-
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-
-      !FINAL CHECK on new Fractions and Steady Stade
-
-          do K = 1, Pro_MAX(J)
-            ! removes numeric instabilities
-            ret =  CVSP_CHECK_F(J,K,' FINAL:   ')
-          enddo
-            call CVSP_CHECK_STEADY(J)
-
-!     END For All POINTS
-      enddo
+      ENDDO
 !
-
-
+!-----------------------------------------------------------------------     
+! END FOR ALL CLASSES
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-! PRINT OUT Sorting Profile for selected Global POINT NUMBERS
 !
-
-      if((CVSM_OUT).or.(db(-1,-1).eqv..true.)) Then
-        ! Writes the full VSP as Selaphine!!!!!
-        if (CVSM_OUT_FULL) call CVSP_WRITE_PROFILE()
-        ! Writes the VSP for single POINTS
-        do kk = 1,100
-        if (CVSMOUTPUT(kk).gt.0) THEN
-                call CVSP_P('./VSP/','V_', CVSMOUTPUT(kk))
-        endif
-        enddo
-      end if
-
-
-
+!-----------------------------------------------------------------------     
+! WE ARE RUNNING OUT OF SECTION MEMORY! COMPRESS NOW!
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-! Generate New Layers from Sorting Profile
 !
-
-      call CVSP_MAKE_ActLay()
-
-
+      IF ((PRO_MAX(J).GT.PRO_MAX_MAX/4*3).OR.
+     &     (PRO_MAX_MAX-PRO_MAX(J).LT.8*NSICLA)) THEN
+         CALL CVSP_COMPRESS_DP(J, 1.0D-5)
+      ENDIF
+!     
+!-----------------------------------------------------------------------     
+! SYNCHRONICE VSP WITH LAYER (FOR DEBUGGING ...)
 !-----------------------------------------------------------------------
+!
+      DELTA = ZF%R(J) - PRO_D(J, PRO_MAX(J), 1)
+!
+      IF (DELTA.NE.0.D0) THEN
+         DO I = 1 , NSICLA
+            DO K = 1, PRO_MAX(J)
+               PRO_D(J, K, I) = PRO_D(J, K, I) + DELTA
+            ENDDO
+         ENDDO
+      ENDIF
+!     
+!-----------------------------------------------------------------------     
+!FINAL CHECK ON NEW FRACTIONS AND STEADY STADE
 !-----------------------------------------------------------------------
+!
+      DO K = 1, PRO_MAX(J)
+!       REMOVES NUMERIC INSTABILITIES
+        RET =  CVSP_CHECK_F(J,K,' FINAL:   ')
+      ENDDO
+      CALL CVSP_CHECK_STEADY(J)
+!      
+! END FOR ALL POINTS
+      ENDDO
+!
+!-----------------------------------------------------------------------     
+! PRINT OUT SORTING PROFILE FOR SELECTED GLOBAL POINT NUMBERS!INSERT
 !-----------------------------------------------------------------------
-!-----Check for Rigid bed errors
-
-      do J=1,NPOIN
-        if (Z%R(J)-ZF%R(J).lt.0.D0) then
-         WRITE(LU,*) 'UHM_Z.lt.ZF ', I,AT,Z%R(J),ZF%R(j),HN%R(J),
-     &            (Z%R(J)-ZF%R(J))-HN%R(J)
-            call CVSP_P('./ERR/','Z_', J)
- !           call PLANTE(1)
-        end if
-      enddo
-
-
+!
+      IF((CVSM_OUT).OR.(DB(-1,-1).EQV..TRUE.)) THEN
+! WRITES THE FULL VSP AS SERAFIN
+         IF (CVSM_OUT_FULL) CALL CVSP_WRITE_PROFILE()
+! WRITES THE VSP FOR SINGLE POINTS
+         DO KK = 1, 100
+            IF (CVSMOUTPUT(KK).GT.0) THEN
+               CALL CVSP_P('./VSP/','V_', CVSMOUTPUT(KK))
+            ENDIF
+         ENDDO
+      END IF
+!     
+!-----------------------------------------------------------------------     
+! GENERATE NEW LAYERS FROM SORTING PROFILE
 !-----------------------------------------------------------------------
+!
+      CALL CVSP_MAKE_ACTLAY()
+!
+!-----------------------------------------------------------------------     
+! CHECK FOR RIGID BED ERRORS
 !-----------------------------------------------------------------------
+!
+      DO J=1,NPOIN
+         IF (Z%R(J)-ZF%R(J).LT.0.D0) THEN
+            WRITE(LU,*) 'UHM_Z.LT.ZF ', I,AT,Z%R(J),ZF%R(J),HN%R(J),
+     &           (Z%R(J)-ZF%R(J))-HN%R(J)
+            CALL CVSP_P('./ERR/','Z_', J)
+         END IF
+      ENDDO
+!     
+!-----------------------------------------------------------------------     
+! PRINT OUT NEW LAYERS FOR SELECTED GLOBAL POINT NUMBERS
 !-----------------------------------------------------------------------
-! PRINT OUT NEW LAYERS for selected Global POINT NUMBERS
-      if((CVSM_OUT).or.(db(-1,-1).eqv..true.)) Then
-        do kk = 1,100
-        if (CVSMOUTPUT(kk).gt.0) THEN
-                call LAYERS_P('./LAY/VSP_', CVSMOUTPUT(kk))
-        endif
-        enddo
-      end if
-
-
+!
+      IF((CVSM_OUT).OR.(DB(-1,-1).EQV..TRUE.)) THEN
+         DO KK = 1,100
+            IF (CVSMOUTPUT(KK).GT.0) THEN
+               CALL LAYERS_P('./LAY/VSP_', CVSMOUTPUT(KK))
+            ENDIF
+         ENDDO
+      END IF
+!
+!-----------------------------------------------------------------------     
+!     CLEAN STOP FOR ALL PROCESSORS IF PROBLEM
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!     CLEAN STOP FOR ALL PROCESSORS if PROBLEM
-        ARRET2=ARRET
-        if(NCSIZE.GT.1) ARRET2=P_ISUM(ARRET)
-
-      if(ARRET2.GT.0) THEN
-        if(LNG.EQ.1) WRITE(LU,*) 'ARRET APRES ERREUR DANS LAYER'
-        if(LNG.EQ.2) WRITE(LU,*) 'STOP AFTER AN ERROR IN LAYER'
-        if(ARRET.EQ.0) THEN
-          if(LNG.EQ.1) WRITE(LU,*) 'DANS ',ARRET2,' PROCESSEUR(S)'
-          if(LNG.EQ.2) WRITE(LU,*) 'IN ',ARRET2,' PROCESSOR(S)'
-        endif
-        call PLANTE(1)
-        STOP
-      endif
+!
+      ARRET2=ARRET
+      IF(NCSIZE.GT.1) ARRET2=P_ISUM(ARRET)
+      IF(ARRET2.GT.0) THEN
+         IF(LNG.EQ.1) WRITE(LU,*) 'ARRET APRES ERREUR DANS LAYER'
+         IF(LNG.EQ.2) WRITE(LU,*) 'STOP AFTER AN ERROR IN LAYER'
+         IF(ARRET.EQ.0) THEN
+            IF(LNG.EQ.1) WRITE(LU,*) 'DANS ',ARRET2,' PROCESSEUR(S)'
+            IF(LNG.EQ.2) WRITE(LU,*) 'IN ',ARRET2,' PROCESSOR(S)'
+         ENDIF
+         CALL PLANTE(1)
+         STOP
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !

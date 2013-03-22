@@ -119,7 +119,6 @@
 !| PATH           |-->| FULL PATH TO CODE DICTIONARY
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_SISYPHE
 C
@@ -1029,12 +1028,7 @@ C  V6P1: FOR THE BED FRICTION PREDICTOR USE LAW OF FRICTION 5 (NIKURADSE)
 C
       IF(KSPRED) KFROT=5
 C
+C----------------------------------------------------------------
 C
-
       RETURN
       END
-C
-C#######################################################################
-C
-C#######################################################################
-C
