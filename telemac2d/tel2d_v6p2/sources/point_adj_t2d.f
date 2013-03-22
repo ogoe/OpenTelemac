@@ -47,7 +47,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER IELBU,IELBH,IELBT,IELBK,IELBE,IELB1,IELMX,CFG(2),CFGBOR(2)
+      INTEGER IELBU,IELBH,CFG(2)
 !
 !-----------------------------------------------------------------------
 !
@@ -69,22 +69,13 @@
       IELM0 = 10*(IELMH/10)
       IELM1 = IELM0 + 1
 !
-      IELB1 = IELBOR(IELM1,1)
       IELBU = IELBOR(IELMU,1)
       IELBH = IELBOR(IELMH,1)
-      IELBT = IELBOR(IELMT,1)
-      IELBK = IELBOR(IELMK,1)
-      IELBE = IELBOR(IELME,1)
-!
-      IELMX=MAX(IELMU,IELMH,IELMT,IELMK,IELME)
 !
 ! TYPE OF STORAGE AND PRODUCT MATRIX X VECTOR
 !
       CFG(1) = OPTASS
       CFG(2) = PRODUC
-!     CFG FOR THE BOUNDARY MATRICES
-      CFGBOR(1) = 1
-      CFGBOR(2) = 1
 !
 !-----------------------------------------------------------------------
 !

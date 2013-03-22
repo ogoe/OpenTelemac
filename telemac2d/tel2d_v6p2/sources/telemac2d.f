@@ -159,6 +159,11 @@
 !+        V6P3
 !+   Call to METEO modified.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        22/03/2013
+!+        V6P3
+!+   Call to WAC and SISYPHE modified.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -231,7 +236,6 @@
       LOGICAL YASMI(MAXTRA)
 !
       CHARACTER(LEN=24), PARAMETER :: CODE1='TELEMAC2D               '
-      CHARACTER(LEN=16) :: FORMUL
 !
 !-----------------------------------------------------------------------
 !
@@ -1129,6 +1133,25 @@
         IF(LNG.EQ.2) WRITE(LU,*) 'TELEMAC2D COUPLED WITH: ',COUPLING
       ENDIF
 !
+      IF(INCLUS(COUPLING,'TOMAWAC')) THEN
+!
+        IF(LNG.EQ.1) THEN
+          WRITE (LU,*) 'TELEMAC-2D : COUPLAGE INTERNE AVEC TOMAWAC'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE (LU,*) 'TELEMAC-2D: INTERNAL COUPLING WITH TOMAWAC'
+        ENDIF
+        CALL CONFIG_CODE(3)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE TOMAWAC'
+!       CALL WAC(0,U,V,H,FXWAVE,FYWAVE,WINDX,WINDY,CODE1,AT,DT,NIT,
+!                PERCOU_WAC,DIRMOY,HM0,TPR5)
+        CALL WAC(0,U,V,H,FXWAVE,FYWAVE,T1   ,T2   ,CODE1,AT,DT,NIT,
+     &           PERCOU_WAC,DIRMOY,HM0,TPR5)
+        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM TOMAWAC'
+        CALL CONFIG_CODE(1)
+!
+       ENDIF
+!
 !     INITIALISES CONSTANT FLOW DISCHARGE (SEE SISYPHE)
 !     ------------------------------------------------------------------
 !
@@ -1162,7 +1185,8 @@
      &                  U,V,AT,VISC,DT,CHARR,SUSP,
 !                                      CHARR,SUSP : RETURNED BY SISYPHE
 !                                                   BUT THEN GIVEN TO IT
-     &                  FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
+     &                  FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
+     &                  DIRMOY,HM0,TPR5)
            IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM SISYPHE'
            CALL CONFIG_CODE(1)
 !          AVOIDS TWO OUTPUTS WHEN SISYPHE IS CALLED TWICE
@@ -1173,25 +1197,6 @@
            ENDIF
 !
          ENDIF
-!
-       ENDIF
-!
-      IF(INCLUS(COUPLING,'TOMAWAC')) THEN
-!
-        IF(LNG.EQ.1) THEN
-          WRITE (LU,*) 'TELEMAC-2D : COUPLAGE INTERNE AVEC TOMAWAC'
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE (LU,*) 'TELEMAC-2D: INTERNAL COUPLING WITH TOMAWAC'
-        ENDIF
-        CALL CONFIG_CODE(3)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE TOMAWAC'
-!       CALL WAC(0,U,V,H,FXWAVE,FYWAVE,WINDX,WINDY,CODE1,AT,DT,NIT,
-!                PERCOU_WAC)
-        CALL WAC(0,U,V,H,FXWAVE,FYWAVE,T1   ,T2   ,CODE1,AT,DT,NIT,
-     &           PERCOU_WAC)
-        IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM TOMAWAC'
-        CALL CONFIG_CODE(1)
 !
        ENDIF
 !
@@ -1278,9 +1283,9 @@
         CALL CONFIG_CODE(3)
         IF(DEBUG.GT.0) WRITE(LU,*) 'CALLING TOMAWAC'
 !       CALL WAC(1,U,V,H,FXWAVE,FYWAVE,WINDX,WINDY,CODE1,AT,
-!    *           DT,NIT,PERCOU_WAC)
+!    *           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5)
         CALL WAC(1,U,V,H,FXWAVE,FYWAVE,T1   ,T2   ,CODE1,AT,
-     &           DT,NIT,PERCOU_WAC)
+     &           DT,NIT,PERCOU_WAC,DIRMOY,HM0,TPR5)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM TOMAWAC'
         CALL CONFIG_CODE(1)
 !
@@ -2213,7 +2218,8 @@
           CALL SISYPHE(1,LT,LEOPRD_CHARR,LISPRD,NIT,U,V,H,HN,ZF,
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
      &                 CODE1,PERCOU,U,V,AT,VISC,DT*PERCOU,CHARR,SUSP1,
-     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
+     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
+     &                 DIRMOY,HM0,TPR5)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL SISYPHE, CHARRIAGE'
 !
         ENDIF
@@ -2224,7 +2230,8 @@
           CALL SISYPHE(1,LT,LEOPRD,LISPRD,NIT,U,V,H,HN,ZF,
      &                 CF,CF,CHESTR,CONSTFLOW_SIS,NSIS_CFD,SISYPHE_CFD,
      &                 CODE1,1,U,V,AT,VISC,DT,CHARR_TEL,SUSP,
-     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV)
+     &                 FLBOR,SOLSYS,DM1,USIS,VSIS,ZCONV,
+     &                 DIRMOY,HM0,TPR5)
           IF(DEBUG.GT.0) WRITE(LU,*) 'FIN APPEL DE SISYPHE, SUSPENSION'
 !
         ENDIF

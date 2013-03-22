@@ -53,7 +53,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      DOUBLE PRECISION COEFA,COEFB,COEFC
+      DOUBLE PRECISION COEFA,COEFB
       DOUBLE PRECISION ROMAX
 !
       INTRINSIC ABS
@@ -65,8 +65,6 @@
 !
       COEFB = ((-JCOUT1*((R02*R02)-(R03*R03)))-(JCOUT2*R03*R03)
      &     + (JCOUT3*R02*R02))/(R02*R03*(R02-R03))
-!
-      COEFC = JCOUT1
 !
       IF(COEFA.LE.0.D0) THEN
         WRITE(LU,*) 'INTERPOL : COEFFICIENT A LESS THAN ZERO:',COEFA
