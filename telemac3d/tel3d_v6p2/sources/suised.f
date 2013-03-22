@@ -104,10 +104,9 @@
 !
 !----------------------------------------------------------------------
 !
-      INTEGER IPOIN, IC
-      INTEGER IENRE  , ITER   , NENRE  , ISTAT
+      INTEGER IPOIN, ITER   , NENRE  , ISTAT
 !
-      INTEGER IB(10), N, ERR
+      INTEGER IB(10),ERR
       DOUBLE PRECISION, ALLOCATABLE :: XB(:)
       REAL, ALLOCATABLE :: RB(:)
       CHARACTER(LEN=80) CB

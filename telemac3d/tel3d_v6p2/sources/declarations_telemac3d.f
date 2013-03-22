@@ -585,6 +585,10 @@
 !
       TYPE(BIEF_OBJ),TARGET :: HBTIDE,UBTIDE,VBTIDE,NUMTIDE
 !
+!     VARIABLES TRANSMITTED FROM TOMAWAC TO SISYPHE
+!
+      TYPE(BIEF_OBJ) :: DIRMOY,HM0,TPR5
+!
 !-----------------------------------------------------------------------
 ! (2) MATRICES
 !-----------------------------------------------------------------------
