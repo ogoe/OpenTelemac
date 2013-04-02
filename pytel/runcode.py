@@ -131,7 +131,12 @@ def checkConsistency(cas,dico,frgb,cfg):
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    lang = 1
-   if cas.keys()[0] not in frgb['FR'].keys(): lang = 2
+   # Look to find the first key that is different in both language
+   i = 0
+   while cas.keys()[i] in frgb['FR'].keys()\
+         and cas.keys()[i] in frgb['GB'].keys():
+      i+=1
+   if cas.keys()[i] not in frgb['FR'].keys(): lang = 2
 
    # ~~ check for parallel consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
@@ -155,7 +160,12 @@ def processCAS(casFile,dico,frgb):
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    lang = 1
-   if cas.keys()[0] not in frgb['FR'].keys(): lang = 2
+   # Look to find the first key that is different in both language
+   i = 0
+   while cas.keys()[i] in frgb['FR'].keys()\
+         and cas.keys()[i] in frgb['GB'].keys():
+      i+=1
+   if cas.keys()[i] not in frgb['FR'].keys(): lang = 2
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    if lang == 1:
