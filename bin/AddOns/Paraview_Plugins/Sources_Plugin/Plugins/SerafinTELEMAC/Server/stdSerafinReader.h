@@ -223,7 +223,8 @@ public:
 		for(j=0; j<GetNumberOfVars(); j++)
 		{
 			this->GetVarNameById(j, name);
-			if ((strstr ( name, "VELOCITY") != NULL || strstr ( name, "VITESSE") != NULL)&& strstr ( name, "SCALAR VELOCITY") == NULL ) i++;
+			if ((strstr ( name, "VELOCITY") != NULL || strstr ( name, "VITESSE") != NULL) 
+                         && (strstr ( name, "SCALAR VELOCITY") == NULL && strstr ( name, "VITESSE SCALAIRE") == NULL )) i++;
 		}
 		return i;
 	}

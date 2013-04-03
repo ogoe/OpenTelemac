@@ -38,11 +38,11 @@
 /** +++++++++++++++++ Définition des méthodes de la classe FFileReader +++++++++++++++++ **/
 
 /* ******************* Constructeur *******************
-/* Ce constructeur reçoit un flux de lecture de fichier en argument .
-/* Gloabalement, les initialisations sont effectuée ici et le premier entier est lu pour
-/* déterminer dans quelle configuration d'écriture on se place en association avec le fichier .
-/* La différenciation petit/grand boutien est faite à la lecture du premier entier 
-/* qui doit valoir la taille maximale du titre soit 80 caractères (à l'heure où j'écris ces lignes) .
+ * Ce constructeur reçoit un flux de lecture de fichier en argument .
+ * Gloabalement, les initialisations sont effectuée ici et le premier entier est lu pour
+ * déterminer dans quelle configuration d'écriture on se place en association avec le fichier .
+ * La différenciation petit/grand boutien est faite à la lecture du premier entier 
+ * qui doit valoir la taille maximale du titre soit 80 caractères (à l'heure où j'écris ces lignes) .
  */
 FFileReader :: FFileReader(ifstream* stream)
 {
@@ -129,12 +129,12 @@ stdSerafinReader :: stdSerafinReader(ifstream* stream) : FFileReader(stream)
 // TODO compléter cette méthode !!!
 stdSerafinReader :: ~stdSerafinReader()
 {
-	// Ne rien faire pour le moment, provoque une 'légère fuite mémoire' maîtrisée
+	// Ne rien faire pour le moment, provoque une 'legere fuite memoire' maitrisee
 };
 
 /* ******************* createIndex ***************** */
 /* Cette méthode crée un index de taille et de position à partir des informations meta 
-/* afin de faciliter la lecture du fichier serafin .
+ * afin de faciliter la lecture du fichier serafin .
  */
 void stdSerafinReader :: createIndex ()
 {
@@ -184,13 +184,13 @@ void stdSerafinReader :: createIndex ()
 };
 
 /* ******************* readMetaData ***************** */
-/* Cette méthode permet de de lire les métadata dans le but de recueillir les informations
-/* essentielles incluses dans le fichier . Globalement, la démarche séquentielle est la suivante :
-/* 	-  lecture du titre et suppression des espaces en fin de chaîne s'il y en a 
-/* 	-  lecture du nombre de variables
-/* 	-  lecture du nom des variables et des leurs unités respectives
-/* 	-  lecture des paramamètres
-/*	-  lecture des informations de discrétisation
+/* Cette methode permet de de lire les métadata dans le but de recueillir les informations
+ * essentielles incluses dans le fichier . Globalement, la demarche sequentielle est la suivante :
+ * 	-  lecture du titre et suppression des espaces en fin de chaine s'il y en a 
+ * 	-  lecture du nombre de variables
+ * 	-  lecture du nom des variables et des leurs unités respectives
+ * 	-  lecture des paramamètres
+ *	-  lecture des informations de discrétisation
  */
 int stdSerafinReader :: readMetaData ()
 {
@@ -199,7 +199,7 @@ int stdSerafinReader :: readMetaData ()
 	if (ReadString(metadata->Title, TITLE_MAX_SIZE) != 88) return 0;// metadata->Title[TITLE_MAX_SIZE]='\0';
 	DeleteBlank(metadata->Title, TITLE_MAX_SIZE-8);
 	
-	//lecture du nombre de variables (on passe les entête)
+	//lecture du nombre de variables (on passe les entete)
 	skipReadingHeader(FileStream);
 	if ((*this.*readIntArray)(&(metadata->VarNumber), 1) != 96) return 0;
 	skipReadingHeader(FileStream);skipReadingHeader(FileStream);
@@ -213,7 +213,7 @@ int stdSerafinReader :: readMetaData ()
 			ReadString(metadata->VarList+compteur*VAR_DESC_SIZE*2, VAR_DESC_SIZE*2);
 	};
 	
-	// Lecture des paramètres et, si nécessaire, de la date de simu
+	// Lecture des parametres et, si necessaire, de la date de simu
 	skipReadingHeader(FileStream);
 	(*this.*readIntArray)(metadata->IParam, PARAM_NUMBER);
 	skipReadingHeader(FileStream);
@@ -225,12 +225,12 @@ int stdSerafinReader :: readMetaData ()
 		skipReadingHeader(FileStream);
 	};
 	
-	//lecture des information de discrétisation
+	//lecture des information de discrietisation
 	skipReadingHeader(FileStream);
 	(*this.*readIntArray)(metadata->DiscretizationInfo, DISC_DESC_SIZE);
 	skipReadingHeader(FileStream);
 	
-	// On lit l'entête du bloc de lecture pour connaître la taille de la table de connectivité
+	// On lit l'entete du bloc de lecture pour connaitre la taille de la table de connectivite
 	if (IsBigEndian()) s_readBlocSize ();else  ns_readBlocSize ();
 	
 	
@@ -392,7 +392,7 @@ void vtkSerafinReader::PrintSelf(ostream& os, vtkIndent indent)
 
   os << indent << "File Name: "       		<< (this->FileName ? this->FileName : "(none)") << endl;
   os << indent << "Number Of Nodes: " 		<< this->Reader->GetNumberOfNodes()		<< endl;
-  os << indent << "Number Of Node Fields: "  << this->Reader->GetNumberOfVars() 		<< endl;
+  os << indent << "Number Of Node Fields: "     << this->Reader->GetNumberOfVars() 		<< endl;
   os << indent << "Number Of Cells: " 		<< this->Reader->GetNumberOfElement() 		<< endl;
 
   
@@ -402,10 +402,10 @@ void vtkSerafinReader::ReadFile(vtkUnstructuredGrid *output, int time)
 {
 	output->Reset();
 	
-	// Ecriture de la géométrie
+	// Lecture de la geometrie
 	this->ReadGeometry(output,  time);
 	
-	// Ecriture des données
+	// Lecture des donnees
 	this->ReadData(output,  time);
 	
 	return;
@@ -419,7 +419,7 @@ void vtkSerafinReader::ReadGeometry(vtkUnstructuredGrid *output, int time)
 	
 	this->Reader->WriteCoord(coords->GetPointer (0), time);
 	
-	//Lecture de la table de connectivité
+	//Lecture de la table de connectivite
 	{
 		int i = 0, k = 0, l = 0;
 		vtkIdType list[27];
@@ -483,8 +483,15 @@ void vtkSerafinReader::ReadData(vtkUnstructuredGrid *output, int time)
 		
 		this->Reader->GetVarNameById(i, name);
 		
-		if ((strstr ( name, "VELOCITY") != NULL|| strstr ( name, "VITESSE") != NULL) && strstr ( name, "SCALAR VELOCITY") == NULL ) 
+		if ((strstr ( name, "VELOCITY") != NULL|| strstr ( name, "VITESSE") != NULL) 
+                  && strstr ( name, "SCALAR VELOCITY") == NULL   
+                  && strstr ( name, "VITESSE SCALAIRE") == NULL ) 
 		{
+                        // Changing name to remove _U _V _W
+                        if (strstr ( name, "VELOCITY") != NULL)
+                           strcpy(name,"VELOCITY");
+                        else
+                           strcpy(name,"VITESSE");
 			data->SetName(name);
 			data->SetNumberOfComponents(3);
 			
