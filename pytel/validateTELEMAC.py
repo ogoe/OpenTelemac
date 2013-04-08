@@ -62,9 +62,15 @@
 """@history 15/02/2013 -- Juliette Parisi
          Validation Reports written, only with the bypass option.
 """
+"""@history 07/03/2013 -- Juliette Parisi
+         New options created : --runcase, --postprocess, --criteria to run
+         respectively the simulation, the post process steps and the validation
+         criteria. A validation summary is produced for each step.
+		 Before running one the step, the previous step Validation Summary is read
+		 in order to run only successful cases in the next step.
+"""
 """@brief
 """
-
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
@@ -326,9 +332,9 @@ if __name__ == "__main__":
                   for xmlFile in xmls[codeName][key]:        
 
                      try:
-                        tic = time.clock()
+                        tic = time.time()
                         runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
-                        toc = time.clock()
+                        toc = time.time()
                         ttime = toc-tic
                         status.append(ttime)
                      except Exception as e: 
@@ -340,9 +346,9 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
                for xmlFile in xmls[codeName][key]:        
                      try:
-                        tic = time.clock()
+                        tic = time.time()
                         runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
-                        toc = time.clock()
+                        toc = time.time()
                         ttime = toc-tic
                         status.append(ttime)
                      except Exception as e: 
