@@ -18,7 +18,7 @@
      & NUMDIG,NWEIRS,NPSING,HFROT,FLULIM,YAFLULIM,RAIN,PLUIE)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    PROPAGATION - DIFFUSION - SOURCE TERMS STEP TO SOLVE
@@ -119,6 +119,12 @@
 !+        249/02/2012
 !+        V6P2
 !+   Rain and evaporation added
+!
+!history  J-M HERVOUET (LNHE)
+!+        09/04/2013
+!+        V6P3
+!+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS_2. Strangely 
+!+   avoids an "array temporary created" with Intel compiler.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
@@ -348,7 +354,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER I,IELMU,IELMH,UDIR,UDDL,UNEU,HOND,UNONNEU,IELEM,NELEM
-      INTEGER I1,I2,I3,DIMLIM,N,IOPT,DISCLIN
+      INTEGER I1,I2,I3,DIMLIM,DIMGLO,N,IOPT,DISCLIN
 !
       DOUBLE PRECISION Z(1),SL1,SL1U,C,FL1,FL2
 !
@@ -362,6 +368,7 @@
 !-----------------------------------------------------------------------
 !
       DIMLIM=LIMPRO%DIM1
+      DIMGLO=MESH%GLOSEG%DIM1
 !
       IELMH=H%ELM
       IELMU=U%ELM
@@ -904,8 +911,8 @@
      &      LIMPRO%I(1+2*DIMLIM:3*DIMLIM),
      &      KDIR,3,MESH%NPTFR,FLBOR,.FALSE.,
      &      V2DPAR,UNSV2D,IOPT,TB%ADR(11)%P,TB%ADR(12)%P,MASKPT,
-     &      MESH%GLOSEG%I(                 1:  MESH%GLOSEG%DIM1),
-     &      MESH%GLOSEG%I(MESH%GLOSEG%DIM1+1:2*MESH%GLOSEG%DIM1),
+     &      MESH%GLOSEG%I(       1:  DIMGLO),
+     &      MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
      &      MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,0.D0,0.D0)
 !                       2: HARDCODED OPTION
 !
