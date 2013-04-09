@@ -6,7 +6,7 @@
      & NPOIN,NPTFR,IELM,LIHBOR,KLOG,IFANUM,OPTASS,ISEG,T1,T2,T3)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    BUILDING DATA STRUCTURES TO NAVIGATE IN A 2D MESH.
@@ -36,6 +36,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNHE)
+!+        18/03/2013
+!+        V6P3
+!+   Error messages more accurate.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| IELM           |-->| TYPE D'ELEMENT.
@@ -222,16 +227,22 @@
       ENDDO
 !
       IF(I1.EQ.0.OR.I2.EQ.0) THEN
-        IF(LNG.EQ.1) WRITE(LU,810) IEL
-        IF(LNG.EQ.2) WRITE(LU,811) IEL
-810     FORMAT(1X,'ELEBD: ERREUR DE NUMEROTATION DE L''ELEMENT:' ,I10,/,
-     &         1X,'       CAUSE POSSIBLE :                       '   ,/,
+        IF(LNG.EQ.1) WRITE(LU,810) IPT,K1,IEL
+        IF(LNG.EQ.2) WRITE(LU,811) IPT,K1,IEL
+810     FORMAT(1X,'ELEBD: ERREUR AU POINT : ',I10                    ,/,
+     &         1X,'       LE POINT DE BORD :',I10                    ,/,
+     &         1X,'       N''APPARTIENT PAS A L''ELEMENT : ',I10     ,/,
+     &         1X,'       CAUSES POSSIBLES :  '                      ,/,
      &         1X,'       LE FICHIER DES CONDITIONS AUX LIMITES NE'  ,/,
-     &         1X,'       CORRESPOND PAS AU FICHIER DE GEOMETRIE  ')
-811     FORMAT(1X,'ELEBD: ERROR OF NUMBERING IN THE ELEMENT:',    I10,/,
-     &         1X,'       POSSIBLE REASON:                       '   ,/,
+     &         1X,'       CORRESPOND PAS AU FICHIER DE GEOMETRIE  '  ,/,
+     &         1X,'       OU LE MAILLAGE A UNE TOPOLOGIE DEFECTUEUSE')
+811     FORMAT(1X,'ELEBD: ERROR AT POINT:',    I10                   ,/,
+     &         1X,'       THE BOUNDARY POINT:',I10                   ,/,
+     &         1X,'       DOES NOT BELONG TO ELEMENT : ',I10         ,/,
+     &         1X,'       POSSIBLE REASONS:'                         ,/,
      &         1X,'       THE BOUNDARY CONDITION FILE IS NOT      '  ,/,
-     &         1X,'       RELEVANT TO THE GEOMETRY FILE           ')
+     &         1X,'       RELEVANT TO THE GEOMETRY FILE           '  ,/,
+     &         1X,'       OR THE MESH HAS A WRONG TOPOLOGY')
         CALL PLANTE(1)
         STOP
       ENDIF

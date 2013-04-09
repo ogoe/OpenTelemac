@@ -108,6 +108,12 @@
 !+   Mass balance programmed in case of implicit source term.
 !+   Arguments GIVEN_FLUX and FLUX_GIVEN added.
 !
+!history  J-M HERVOUET (LNHE)
+!+        09/04/2013
+!+        V6P3
+!+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS. Strangely 
+!+   avoids an "array temporary created" with Intel compiler.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AFBOR,BFBOR    |-->| COEFFICIENTS OF NEUMANN CONDITION
 !|                |   | VISC*DF/DN = AFBOR*F + BFBOR
@@ -253,7 +259,7 @@
 !
       DOUBLE PRECISION C,CFLMAX
 !
-      INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT
+      INTEGER IELMF,IELMH,IELMS,MSKNEU,I,N,IOPT,DIMGLO
 !
       LOGICAL MSQ,FV_SCHEME
 !
@@ -264,6 +270,7 @@
       IELMF = F%ELM
       IELMH = H%ELM
       IELMS = SM%ELM
+      DIMGLO=MESH%GLOSEG%DIM1
 !
 !-----------------------------------------------------------------------
 !
@@ -570,11 +577,11 @@
 !                                                       YAFLBOR
      &              LIMTRA%I,KDIR,KDDL,MESH%NPTFR,FLBOR,.TRUE.,
      &              V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,
-     &            MESH%GLOSEG%I(                 1:  MESH%GLOSEG%DIM1),
-     &            MESH%GLOSEG%I(MESH%GLOSEG%DIM1+1:2*MESH%GLOSEG%DIM1),
-     &            MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,TRAIN,
-     &            GIVEN_FLUX,FLUX_GIVEN)
-!                             2:HARDCODED OPTION FOR ALGORITHM
+     &              MESH%GLOSEG%I(       1:  DIMGLO),
+     &              MESH%GLOSEG%I(DIMGLO+1:2*DIMGLO),
+     &              MESH%NBOR%I,2,FLULIM%R,YAFLULIM,RAIN,PLUIE,TRAIN,
+     &              GIVEN_FLUX,FLUX_GIVEN)
+!                               2:HARDCODED OPTION FOR ALGORITHM
 !                               INDEPENDENT OF SEGMENT NUMBERING.
 !       IF EXITS AT THIS POINT, THE DIRICHLET ARE NOT DONE, ALSO WORKS
 !       CAN THEN CHECK THE MASS CONSERVATION EXACTLY
