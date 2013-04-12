@@ -1,3 +1,157 @@
+!                    *****************
+                     SUBROUTINE DRAGFO
+!                    *****************
+!
+     &(FUDRAG,FVDRAG)
+!
+!***********************************************************************
+! TELEMAC2D   V6P2                                   21/08/2010
+!***********************************************************************
+!
+!brief    ADDS THE DRAG FORCE OF VERTICAL STRUCTURES IN THE
+!+                MOMENTUM EQUATION.
+!code
+!+  FU IS THEN USED IN THE EQUATION AS FOLLOWS :
+!+
+!+  DU/DT + U GRAD(U) = - G * GRAD(FREE SURFACE) +..... + FU_IMP * U
+!+
+!+  AND THE TERM FU_IMP * U IS TREATED IMPLICITLY.
+!
+!warning  USER SUBROUTINE
+!
+!history  J-M HERVOUET
+!+        01/03/1990
+!+        V5P2
+!+
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        13/07/2010
+!+        V6P0
+!+   Translation of French comments within the FORTRAN sources into
+!+   English comments
+!
+!history  N.DURAND (HRW), S.E.BOURBAN (HRW)
+!+        21/08/2010
+!+        V6P0
+!+   Creation of DOXYGEN tags for automated documentation and
+!+   cross-referencing of the FORTRAN sources
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| FUDRAG         |<--| DRAG FORCE ALONG X
+!| FVDRAG         |<--| DRAG FORCE ALONG Y
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+      USE DECLARATIONS_TELEMAC2D
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      TYPE(BIEF_OBJ), INTENT(INOUT) :: FUDRAG,FVDRAG
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IELEM,I,I4,NSOM,DISCLIN
+      DOUBLE PRECISION UNORM,AIRE,SOM,XSOM(4),YSOM(4),X4,Y4
+!     DOUBLE PRECISION, PARAMETER :: CD=1.56D0,DIAM=2.D0
+      DOUBLE PRECISION, PARAMETER :: CD=1.34D0,DIAM=2.D0
+      INTEGER, PARAMETER :: N=1  
+!
+      DOUBLE PRECISION P_DSUM
+      EXTERNAL         P_DSUM    
+!
+!-----------------------------------------------------------------------
+!
+!     COMPUTES THE MASSE INTEGRALS
+!
+      CALL VECTOR (T1,'=','MASBAS          ',UN%ELM,1.D0,
+     &             S,S,S,S,S,S,MESH,.FALSE.,S)
+!
+      CALL CPSTVC(UN,FUDRAG)
+      CALL CPSTVC(VN,FVDRAG)
+      CALL OS('X=C     ',FUDRAG,FUDRAG,FUDRAG,0.D0)
+      CALL OS('X=C     ',FVDRAG,FVDRAG,FVDRAG,0.D0)
+!
+!-----------------------------------------------------------------------
+!
+!     EXAMPLE : DRAGFORCE IS SET IN A QUADRILATERAL DEFINED BY
+!               4 NODES
+!     SURFACE OF 20 X 40 CENTERED ON (0,0)
+!
+      NSOM = 4
+      XSOM(1) = -10.D0
+      XSOM(2) =  10.D0
+      XSOM(3) =  10.D0
+      XSOM(4) = -10.D0
+      YSOM(1) = -21.D0
+      YSOM(2) = -21.D0
+      YSOM(3) =  21.D0
+      YSOM(4) =  21.D0
+!
+!--------------------------------------------------------------
+!
+!     P1 POINTS
+!
+      AIRE=0.D0
+      DO I=1,BIEF_NBPTS(11,MESH)
+!
+        IF(INPOLY(X(I),Y(I),XSOM,YSOM,NSOM)) THEN
+          UNORM = SQRT(UN%R(I)**2+VN%R(I)**2)
+          FUDRAG%R(I) =  - 0.5D0 * N * DIAM * CD * UNORM
+          FVDRAG%R(I) =  - 0.5D0 * N * DIAM * CD * UNORM
+          AIRE = AIRE + T1%R(I)
+        ENDIF
+!
+      ENDDO
+!
+!     QUASI-BUBBLE POINTS
+!
+      IF(FU%ELM.EQ.12) THEN
+!
+        DISCLIN=11
+        CALL CHGDIS(FUDRAG,DISCLIN,12,MESH)
+        CALL CHGDIS(FVDRAG,DISCLIN,12,MESH)
+!
+        DO IELEM = 1 , NELEM
+          I4=IKLE%I(IELEM+3*NELMAX)
+          X4=(X(IKLE%I(IELEM         ))+
+     &        X(IKLE%I(IELEM+  NELMAX))+
+     &        X(IKLE%I(IELEM+2*NELMAX)))/3.D0
+          Y4=(Y(IKLE%I(IELEM         ))+
+     &        Y(IKLE%I(IELEM+  NELMAX))+
+     &        Y(IKLE%I(IELEM+2*NELMAX)))/3.D0
+          IF(INPOLY(X4,Y4,XSOM,YSOM,NSOM)) AIRE = AIRE + T1%R(I4)
+        ENDDO
+!
+      ENDIF
+!
+!     IN PARALLEL THE AREA MAY BE SPLIT INTO SEVERAL SUB-DOMAINS
+!
+      IF(NCSIZE.GT.0) AIRE=P_DSUM(AIRE)
+!
+!     NOW PREPARING THE DIVISION
+!
+      IF(AIRE.GT.1.D-6) THEN
+        SOM = 1.D0 / AIRE
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*) 'DRAGFO : AIRE DE LA ZONE NULLE'
+        IF(LNG.EQ.2) WRITE(LU,*) 'DRAGFO: AREA OF ZONE EQUAL TO ZERO'
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+!     DIVIDING BY THE AREA
+!
+      CALL OS('X=CX    ',X=FUDRAG,C=SOM)
+      CALL OS('X=CX    ',X=FVDRAG,C=SOM)
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END
 C                       *****************
                         SUBROUTINE CONDIN
 C                       *****************
@@ -108,142 +262,6 @@ C
 C
 C-----------------------------------------------------------------------
 C
-      RETURN
-      END           
-C                       *****************
-                        SUBROUTINE DRAGFO
-C                       *****************
-C
-     *(FUDRAG,FVDRAG)
-C
-C***********************************************************************
-C PROGICIEL : TELEMAC-2D 5.1          01/03/90    J-M HERVOUET
-C***********************************************************************
-C
-C  USER SUBROUTINE DRAGFO
-C
-C  FUNCTION  : ADDING THE DRAG FORCE OF VERTICAL STRUCTURES IN THE
-C              MOMENTUM EQUATION.
-C
-C  FU IS THEN USED IN THE EQUATION AS FOLLOWS :
-C
-C  DU/DT + U GRAD(U) = - G * GRAD(FREE SURFACE) +..... + FU_IMP * U
-C
-C  AND THE TERM FU_IMP * U IS TREATED IMPLICITLY.
-C
-C-----------------------------------------------------------------------
-C  ARGUMENTS 
-C .________________.____.______________________________________________
-C |      NOM       |MODE|                   ROLE
-C |________________|____|_______________________________________________
-C |      FU,FV     |<-->| COEFFICIENTS WHERE TO ADD THE FRICTION TERM.
-C |________________|____|______________________________________________
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C-----------------------------------------------------------------------
-C
-C PROGRAMME APPELANT :
-C PROGRAMMES APPELES : RIEN EN STANDARD
-C
-C***********************************************************************
-!
-      USE BIEF
-      USE DECLARATIONS_TELEMAC2D
-!
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      TYPE(BIEF_OBJ), INTENT(INOUT) :: FUDRAG,FVDRAG
-!
-!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-!
-      INTEGER IELEM,I,I4,NSOM
-      DOUBLE PRECISION UNORM,AIRE,SOM,XSOM(4),YSOM(4),X4,Y4
-!     DOUBLE PRECISION, PARAMETER :: CD=1.56D0,DIAM=2.D0
-      DOUBLE PRECISION, PARAMETER :: CD=1.34D0,DIAM=2.D0
-      INTEGER, PARAMETER :: N=1
-!
-!-----------------------------------------------------------------------
-!
-!     COMPUTES THE MASSE INTEGRALS
-!
-      CALL VECTOR (T1,'=','MASBAS          ',UN%ELM,1.D0,
-     &             S,S,S,S,S,S,MESH,.FALSE.,S)
-!
-      CALL CPSTVC(UN,FUDRAG)
-      CALL CPSTVC(VN,FVDRAG)
-      CALL OS('X=C     ',FUDRAG,FUDRAG,FUDRAG,0.D0)
-      CALL OS('X=C     ',FVDRAG,FVDRAG,FVDRAG,0.D0)
-!
-!-----------------------------------------------------------------------
-!
-!     EXAMPLE : DRAGFORCE IS SET IN A QUADRILATERAL DEFINED BY
-!               4 NODES
-!     SURFACE OF 20 X 40 CENTERED ON (0,0)
-!
-      NSOM = 4
-      XSOM(1) = -10.D0
-      XSOM(2) =  10.D0
-      XSOM(3) =  10.D0
-      XSOM(4) = -10.D0
-      YSOM(1) = -21.D0
-      YSOM(2) = -21.D0
-      YSOM(3) =  21.D0
-      YSOM(4) =  21.D0
-!
-!--------------------------------------------------------------
-!
-!     P1 POINTS
-!
-      AIRE=0.D0
-      DO I=1,BIEF_NBPTS(11,MESH)
-!
-        IF(INPOLY(X(I),Y(I),XSOM,YSOM,NSOM)) THEN
-          UNORM = SQRT(UN%R(I)**2+VN%R(I)**2)
-          FUDRAG%R(I) =  - 0.5D0 * N * DIAM * CD * UNORM
-          FVDRAG%R(I) =  - 0.5D0 * N * DIAM * CD * UNORM
-          AIRE = AIRE + T1%R(I)
-        ENDIF
-!
-      ENDDO
-!
-!     QUASI-BUBBLE POINTS
-!
-      IF(FU%ELM.EQ.12) THEN
-!
-        I=11
-        CALL CHGDIS(FUDRAG,I,12,MESH)
-        CALL CHGDIS(FVDRAG,I,12,MESH)
-!
-        DO IELEM = 1 , NELEM
-          I4=IKLE%I(IELEM+3*NELMAX)
-          X4=(X(IKLE%I(IELEM         ))+
-     &        X(IKLE%I(IELEM+  NELMAX))+
-     &        X(IKLE%I(IELEM+2*NELMAX)))/3.D0
-          Y4=(Y(IKLE%I(IELEM         ))+
-     &        Y(IKLE%I(IELEM+  NELMAX))+
-     &        Y(IKLE%I(IELEM+2*NELMAX)))/3.D0
-          IF(INPOLY(X4,Y4,XSOM,YSOM,NSOM)) AIRE = AIRE + T1%R(I4)
-        ENDDO
-!
-      ENDIF
-!
-      IF(AIRE.GT.1.D-6) THEN
-        SOM = 1.D0 / AIRE
-      ELSE
-        IF(LNG.EQ.1) WRITE(LU,*) 'DRAGFO : AIRE DE LA ZONE NULLE'
-        IF(LNG.EQ.2) WRITE(LU,*) 'DRAGFO: AREA OF ZONE EQUAL TO ZERO'
-        CALL PLANTE(1)
-        STOP
-      ENDIF
-!
-      CALL OS('X=CX    ',X=FUDRAG,C=SOM)
-      CALL OS('X=CX    ',X=FVDRAG,C=SOM)
-!
-!-----------------------------------------------------------------------
-!
       RETURN
       END
 C                       *****************
