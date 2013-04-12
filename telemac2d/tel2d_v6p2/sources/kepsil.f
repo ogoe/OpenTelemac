@@ -10,7 +10,7 @@
      & INFOKE,KDIR,MSK,MASKEL,MASKPT,S,SLVK,SLVEP,ICONV,OPTSUP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    DIFFUSION STEP FOR SOURCE TERMS (K-EPSILON MODEL).
@@ -18,11 +18,6 @@
 !history  J-M HERVOUET (LNH)
 !+        27/11/1992
 !+        V5P5
-!+
-!
-!history  L. VAN HAREN (LNH)
-!+        30/05/1994
-!+
 !+
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
@@ -36,6 +31,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        12/04/2013
+!+        V6P3
+!+   Now conditional call to DIRICH (for bound checking in parallelism)   
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<--| TURBULENT KINETIC ENERGY K AT TIME T(N+1)
@@ -354,10 +354,10 @@
 !
 !***********************************************************************
 !
-!     COMBINES THE MASS AND DIFFUSION MATRICES                         *
-!                                                                      *
-!     MAK = MAK + TM1/SIGMAK                                           *
-!     MAE = MAE + TM1/SIGMAE                                           *
+!     COMBINES THE MASS AND DIFFUSION MATRICES                         
+!                                                                      
+!     MAK = MAK + TM1/SIGMAK                                           
+!     MAE = MAE + TM1/SIGMAE                                           
 !
 !***********************************************************************
 !
@@ -368,8 +368,10 @@
 !     DIRICHLET TYPE BOUNDARY CONDITIONS
 !***********************************************************************
 !
-      CALL DIRICH(AK,MAK,SMK,KBOR,LIMKEP(1,1),TB,MESH,KDIR,MSK,MASKPT)
-      CALL DIRICH(EP,MAE,SME,EBOR,LIMKEP(1,2),TB,MESH,KDIR,MSK,MASKPT)
+      IF(NPTFR.GT.0) THEN
+        CALL DIRICH(AK,MAK,SMK,KBOR,LIMKEP(1,1),TB,MESH,KDIR,MSK,MASKPT)
+        CALL DIRICH(EP,MAE,SME,EBOR,LIMKEP(1,2),TB,MESH,KDIR,MSK,MASKPT)
+      ENDIF
 !
 !***********************************************************************
 !     SOLVES THE TWO OBTAINED SYSTEMS

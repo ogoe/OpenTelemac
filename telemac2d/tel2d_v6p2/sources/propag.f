@@ -126,6 +126,11 @@
 !+   DIMGLO=MESH%GLOSEG%DIM1 used in call to CVTRVF_POS_2. Strangely 
 !+   avoids an "array temporary created" with Intel compiler.
 !
+!history  J-M HERVOUET (LNHE)
+!+        12/04/2013
+!+        V6P3
+!+   Value of NELBOR controlled for allowing bound checking.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A23            |<->| MATRIX
 !| A32            |<->| MATRIX
@@ -1147,7 +1152,11 @@
 !
       IF(OPTBAN.EQ.3) THEN
         DO I=1,MESH%NPTFR
-          FLBOR%R(I)=FLBOR%R(I)*TE5%R(MESH%NELBOR%I(I))
+          N=MESH%NELBOR%I(I)
+!         N MAY BE 0 IN PARALLELISM
+          IF(N.GT.0) THEN
+            FLBOR%R(I)=FLBOR%R(I)*TE5%R(N)
+          ENDIF
         ENDDO
       ENDIF
 !
@@ -1215,8 +1224,12 @@
      &            1.D0,T6,S,S,S,S,S,MESH,.TRUE.,MASK%ADR(HOND)%P)
       IF(OPTBAN.EQ.3) THEN
         DO I=1,MESH%NPTFR
-          T2%R(I)=T2%R(I)*TE5%R(MESH%NELBOR%I(I))
-          T5%R(I)=T5%R(I)*TE5%R(MESH%NELBOR%I(I))
+          N=MESH%NELBOR%I(I)
+!         N MAY BE 0 IN PARALLELISM
+          IF(N.GT.0) THEN
+            T2%R(I)=T2%R(I)*TE5%R(N)
+            T5%R(I)=T5%R(I)*TE5%R(N)
+          ENDIF
         ENDDO
       ENDIF
       CALL OSDB( 'X=X+Y   ' , CV1 , T2 , S , C , MESH )
