@@ -22,7 +22,7 @@
      & FLUER_VASE,TOCE_MIXTE,MS_SABLE,MS_VASE,TASS,DIRFLU,QSCLXS,QSCLYS)
 !
 !***********************************************************************
-! SISYPHE   V6P2                                   18/06/2012
+! SISYPHE   V6P3                                   18/06/2012
 !***********************************************************************
 !
 !brief    MAIN SUBROUTINE FOR THE COMPUTATION OF THE
@@ -130,6 +130,11 @@
 !+   arguments for M_VASE in double precision
 !+   modification for limitation of FLUER with rigid lid
 !+   calling to suspension_bilan_coh
+!
+!history  J.-M. HERVOUET (LNHE)
+!+        15/04/2013
+!+        V6P3
+!+   YAFLULIM was not initialised in one case. 
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AC             |<->| CRITICAL SHIELDS PARAMETER
@@ -449,6 +454,8 @@
 !                                   2 : LEO POSTMA CONSTANT
 !                                   SEE CVTRVF IN BIEF AND
 !                                   V5.7 RELEASE NOTES      
+!
+      YAFLULIM=.FALSE.
 !
       IF(CORR_CONV.AND.(.NOT.SEDCO)) THEN
 !
@@ -772,8 +779,7 @@
 !     COMPUTES EVOLUTION AND UPDATES DATA
 !     TASS TO BE PASSED IN ARGUMENT
 !
-! 
-       
+!       
        IF(.NOT.SEDCO) THEN
          IF(.NOT.MIXTE) THEN
            CALL OS('X=Y-Z   ', X=ZFCL_S, Y=FLUDP, Z=FLUER)
