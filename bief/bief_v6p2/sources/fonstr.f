@@ -2,10 +2,10 @@
                      SUBROUTINE FONSTR
 !                    *****************
 !
-     &(H,ZF,Z,CHESTR,NGEO,NFON,NOMFON,MESH,FFON,LISTIN)
+     &(H,ZF,Z,CHESTR,NGEO,FFORMAT,NFON,NOMFON,MESH,FFON,LISTIN)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    LOOKS FOR 'BOTTOM' IN THE GEOMETRY FILE.
@@ -34,6 +34,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the format FFORMAT
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHESTR         |<--| FRICTION COEFFICIENT (DEPENDING ON FRICTION LAW)
 !| FFON           |-->| FRICTION COEFFICIENT IF CONSTANT
@@ -61,6 +66,7 @@
       DOUBLE PRECISION, INTENT(IN)  :: FFON
       LOGICAL, INTENT(IN)           :: LISTIN
       INTEGER, INTENT(IN)           :: NGEO,NFON
+      CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT      
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -98,16 +104,18 @@
 !
 !     LOOKS FOR THE FRICTION COEFFICIENT IN THE FILE
 !
-      IF(LNG.EQ.1) CALL FIND_IN_SEL(CHESTR,'FROTTEMENT      ',NGEO,W,OK,
-     &                              TIME=BID)
-      IF(LNG.EQ.2) CALL FIND_IN_SEL(CHESTR,'BOTTOM FRICTION ',NGEO,W,OK,
-     &                              TIME=BID)
+      IF(LNG.EQ.1) CALL FIND_IN_SEL(CHESTR,'FROTTEMENT      ',NGEO,
+     &                              FFORMAT,W,OK,TIME=BID)
+      IF(LNG.EQ.2) CALL FIND_IN_SEL(CHESTR,'BOTTOM FRICTION ',NGEO,
+     &                              FFORMAT,W,OK,TIME=BID)
 !     CASE OF A GEOMETRY FILE IN ANOTHER LANGUAGE
       IF(.NOT.OK.AND.LNG.EQ.1) THEN
-        CALL FIND_IN_SEL(CHESTR,'BOTTOM FRICTION ',NGEO,W,OK,TIME=BID)
+        CALL FIND_IN_SEL(CHESTR,'BOTTOM FRICTION ',NGEO,
+     &                   FFORMAT,W,OK,TIME=BID)
       ENDIF
       IF(.NOT.OK.AND.LNG.EQ.2) THEN
-        CALL FIND_IN_SEL(CHESTR,'FROTTEMENT      ',NGEO,W,OK,TIME=BID)
+        CALL FIND_IN_SEL(CHESTR,'FROTTEMENT      ',NGEO,
+     &                   FFORMAT,W,OK,TIME=BID)
       ENDIF
       IF(OK) THEN
         CALFRO = .FALSE.
@@ -121,49 +129,56 @@
 !
 !     LOOKS FOR THE BOTTOM ELEVATION IN THE FILE
 !
-      IF(LNG.EQ.1) CALL FIND_IN_SEL(ZF,'FOND            ',NGEO,W,OK,
-     &                              TIME=BID)
-      IF(LNG.EQ.2) CALL FIND_IN_SEL(ZF,'BOTTOM          ',NGEO,W,OK,
-     &                              TIME=BID)
+      IF(LNG.EQ.1) CALL FIND_IN_SEL(ZF,'FOND            ',NGEO,
+     &                              FFORMAT,W,OK,TIME=BID)
+      IF(LNG.EQ.2) CALL FIND_IN_SEL(ZF,'BOTTOM          ',NGEO,
+     &                              FFORMAT,W,OK,TIME=BID)
       IF(.NOT.OK.AND.LNG.EQ.1) THEN
-        CALL FIND_IN_SEL(ZF,'BOTTOM          ',NGEO,W,OK,TIME=BID)
+        CALL FIND_IN_SEL(ZF,'BOTTOM          ',NGEO,
+     &                   FFORMAT,W,OK,TIME=BID)
       ENDIF
       IF(.NOT.OK.AND.LNG.EQ.2) THEN
-        CALL FIND_IN_SEL(ZF,'FOND            ',NGEO,W,OK,TIME=BID)
+        CALL FIND_IN_SEL(ZF,'FOND            ',NGEO,
+     &                   FFORMAT,W,OK,TIME=BID)
       ENDIF
 !     MESHES FROM BALMAT ?
-      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'ALTIMETRIE      ',NGEO,W,OK,
-     &                             TIME=BID)
+      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'ALTIMETRIE      ',NGEO,
+     &                             FFORMAT,W,OK,TIME=BID)
 !     TOMAWAC IN FRENCH ?
-      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'COTE_DU_FOND    ',NGEO,W,OK,
-     &                             TIME=BID)
+      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'COTE_DU_FOND    ',NGEO,
+     &                             FFORMAT,W,OK,TIME=BID)
 !     TOMAWAC IN ENGLISH ?
-      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'BOTTOM_LEVEL    ',NGEO,W,OK,
-     &                             TIME=BID)
+      IF(.NOT.OK) CALL FIND_IN_SEL(ZF,'BOTTOM_LEVEL    ',NGEO,
+     &                             FFORMAT,W,OK,TIME=BID)
       LUZF = OK
 !
       IF(.NOT.LUZF) THEN
 !       LOOKS FOR WATER DEPTH AND FREE SURFACE ELEVATION
-        IF(LNG.EQ.1) CALL FIND_IN_SEL(H,'HAUTEUR D''EAU   ',NGEO,W,OK,
-     &                                TIME=BID)
-        IF(LNG.EQ.2) CALL FIND_IN_SEL(H,'WATER DEPTH     ',NGEO,W,OK,
-     &                                TIME=BID)
+        IF(LNG.EQ.1) CALL FIND_IN_SEL(H,'HAUTEUR D''EAU   ',NGEO,
+     &                                FFORMAT,W,OK,TIME=BID)
+        IF(LNG.EQ.2) CALL FIND_IN_SEL(H,'WATER DEPTH     ',NGEO,
+     &                                FFORMAT,W,OK,TIME=BID)
         IF(.NOT.OK.AND.LNG.EQ.1) THEN
-          CALL FIND_IN_SEL(H,'WATER DEPTH     ',NGEO,W,OK,TIME=BID)
+          CALL FIND_IN_SEL(H,'WATER DEPTH     ',NGEO,
+     &                     FFORMAT,W,OK,TIME=BID)
+
         ENDIF
         IF(.NOT.OK.AND.LNG.EQ.2) THEN
-          CALL FIND_IN_SEL(H,'HAUTEUR D''EAU   ',NGEO,W,OK,TIME=BID)
+          CALL FIND_IN_SEL(H,'HAUTEUR D''EAU   ',NGEO,
+     &                     FFORMAT,W,OK,TIME=BID)
         ENDIF
         LUH = OK
-        IF(LNG.EQ.1) CALL FIND_IN_SEL(Z,'SURFACE LIBRE   ',NGEO,W,OK,
-     &                                TIME=BID)
-        IF(LNG.EQ.2) CALL FIND_IN_SEL(Z,'FREE SURFACE    ',NGEO,W,OK,
-     &                                TIME=BID)
+        IF(LNG.EQ.1) CALL FIND_IN_SEL(Z,'SURFACE LIBRE   ',NGEO,
+     &                                FFORMAT,W,OK,TIME=BID)
+        IF(LNG.EQ.2) CALL FIND_IN_SEL(Z,'FREE SURFACE    ',NGEO,
+     &                                FFORMAT,W,OK,TIME=BID)
         IF(.NOT.OK.AND.LNG.EQ.1) THEN
-          CALL FIND_IN_SEL(Z,'FREE SURFACE    ',NGEO,W,OK,TIME=BID)
+          CALL FIND_IN_SEL(Z,'FREE SURFACE    ',NGEO,
+     &                     FFORMAT,W,OK,TIME=BID)
         ENDIF
         IF(.NOT.OK.AND.LNG.EQ.2) THEN
-          CALL FIND_IN_SEL(Z,'SURFACE LIBRE   ',NGEO,W,OK,TIME=BID)
+          CALL FIND_IN_SEL(Z,'SURFACE LIBRE   ',NGEO,
+     &                     FFORMAT,W,OK,TIME=BID)
         ENDIF
         LUZ = OK
       ENDIF

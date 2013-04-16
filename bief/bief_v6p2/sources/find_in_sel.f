@@ -2,10 +2,10 @@
                      SUBROUTINE FIND_IN_SEL
 !                    **********************
 !
-     &(RES,NAME,NFIC,W,OK,RECORD,NP,TIME)
+     &(RES,NAME,NFIC,FFORMAT,W,OK,RECORD,NP,TIME)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    LOOKS FOR A RESULT ARRAY IN A SELAFIN FILE.
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the format FFORMAT
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NAME           |-->| NAME OF VARIABLE (16 CHARACTERS)
@@ -54,6 +59,7 @@
       INTEGER, INTENT(IN),  OPTIONAL          :: RECORD
       INTEGER, INTENT(OUT), OPTIONAL          :: NP
       DOUBLE PRECISION, INTENT(OUT), OPTIONAL :: TIME
+      CHARACTER(LEN=8), INTENT(IN)  :: FFORMAT
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
@@ -62,10 +68,20 @@
       DOUBLE PRECISION XB(2)
       REAL RB(2)
 !
-      CHARACTER*1 CB
-      CHARACTER*32 TEXTLU(36)
+      CHARACTER(LEN=1) CB
+      CHARACTER(LEN=32) TEXTLU(36)
+!
+      CHARACTER(LEN=2) :: RF
 !
 !-----------------------------------------------------------------------
+!
+!     RK considering file format
+!
+      IF(FFORMAT.EQ.'SERAFIND') THEN
+        RF = 'R8'
+      ELSE
+        RF = 'R4'
+      ENDIF
 !
       IF(PRESENT(RECORD)) THEN
         REC = RECORD
@@ -78,7 +94,6 @@
 !-----------------------------------------------------------------------
 !
 !     'QUICKLY' READS UNTIL REACHES A TIME RECORD
-!
 !
 !     GOES TO THE BEGINNING OF THE FILE
 !
@@ -116,8 +131,8 @@
       CALL LIT(XB,RB,IB,CB,1,'I ',NFIC,'STD',ISTAT)
 !
 !     8 AND 9: X AND Y
-      CALL LIT(XB,W,IB,CB,1,'R4',NFIC,'STD',ISTAT)
-      CALL LIT(XB,W,IB,CB,1,'R4',NFIC,'STD',ISTAT)
+      CALL LIT(XB,W,IB,CB,1,RF,NFIC,'STD',ISTAT)
+      CALL LIT(XB,W,IB,CB,1,RF,NFIC,'STD',ISTAT)
 !
 !-----------------------------------------------------------------------
 !
@@ -127,7 +142,7 @@
 !
 !       TIME RECORD
 !
-        CALL LIT(XB,W,IB,CB,1,'R4',NFIC,'STD',ISTAT)
+        CALL LIT(XB,W,IB,CB,1,RF,NFIC,'STD',ISTAT)
 !       NOTE JMH : THE FOLLOWING INSTRUCTION RAISES PROBLEMS
 !       WHEN TIME IS NOT PRESENT, WITH NAG COMPILER AND OPTION -O4
         IF(PRESENT(TIME)) TIME=XB(1)
@@ -136,10 +151,10 @@
 !
 !         READS THE VARIABLE, OR SKIPS THE RECORD
           IF(TEXTLU(I)(1:16).EQ.NAME.AND.REC.EQ.IREC) THEN
-            CALL LIT(RES%R,W,IB,CB,NPOIN,'R4',NFIC,'STD',ISTAT)
+            CALL LIT(RES%R,W,IB,CB,NPOIN,RF,NFIC,'STD',ISTAT)
             OK=.TRUE.
           ELSE
-            CALL LIT(XB,W,IB,CB,1,'R4',NFIC,'STD',ISTAT)
+            CALL LIT(XB,W,IB,CB,1,RF,NFIC,'STD',ISTAT)
           ENDIF
 !
         ENDDO
