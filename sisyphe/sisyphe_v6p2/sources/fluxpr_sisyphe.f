@@ -6,7 +6,7 @@
      & FLXS,VOLNEGS,VOLPOSS,SUSP,FLXC,VOLNEGC,VOLPOSC,CHARR)
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P3                                   21/07/2011
 !***********************************************************************
 !
 !brief    COMPUTES FLUXES THROUGH CONTROL SECTIONS
@@ -32,6 +32,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Modifications for parallelism, marked !RK
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHARR          |-->| LOGICAL, BEDLOAD OR NOT
@@ -212,13 +217,23 @@
       ELSE ! .NOT.OLD_METHOD
 !
         DO ISEC = 1,NSEC
-!
+
+!RK parallel writing
+          IF (NCSIZE.GT.1) THEN 
           IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
      &                 P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
      &                                   P_DSUM(VOLPOS(ISEC))
           IF(LNG.EQ.2) WRITE(LU,231) ISEC,TRIM(CHAIN(ISEC)%DESCR),
      &                 P_DSUM(FLX(ISEC)),P_DSUM(VOLNEG(ISEC)),
      &                                   P_DSUM(VOLPOS(ISEC))
+!RK serial writing
+          ELSE !NCSIZE = < 1
+          IF(LNG.EQ.1) WRITE(LU,230) ISEC,TRIM(CHAIN(ISEC)%DESCR),
+     &                 FLX(ISEC),VOLNEG(ISEC),VOLPOS(ISEC)
+          IF(LNG.EQ.2) WRITE(LU,231) ISEC,TRIM(CHAIN(ISEC)%DESCR),
+     &                 FLX(ISEC),VOLNEG(ISEC),VOLPOS(ISEC)
+          ENDIF ! NCSIZE
+
 230       FORMAT(1X,/,1X,'SECTION DE CONTROLE ',1I2,
      &               ' (NOM ',A,')',//,5X,
      &               'DEBIT :                     ',G16.7,/,5X,
@@ -230,12 +245,21 @@
      &               'CUMULATED NEGATIVE VOLUME: ',G16.7,/,5X,
      &               'CUMULATED POSITIVE VOLUME: ',G16.7)
           IF(SUSP) THEN
+!RK parallel writing
+          IF (NCSIZE.GT.1) THEN
             IF(LNG.EQ.1) WRITE(LU,2301)
      &              P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
      &                                 P_DSUM(VOLPOSS(ISEC))
             IF(LNG.EQ.2) WRITE(LU,2302)
      &              P_DSUM(FLXS(ISEC)),P_DSUM(VOLNEGS(ISEC)),
      &                                 P_DSUM(VOLPOSS(ISEC))
+!RK serial writing
+          ELSE !NCSIZE < 1
+            IF(LNG.EQ.1) WRITE(LU,2301) FLXS(ISEC),VOLNEGS(ISEC),
+     &                                  VOLPOSS(ISEC)
+            IF(LNG.EQ.2) WRITE(LU,2302) FLXS(ISEC),VOLNEGS(ISEC),
+     &                                  VOLPOSS(ISEC)
+          ENDIF ! NCSIZE
 2301        FORMAT(5X,'DEBIT EN SUSPENSION :       ',G16.7,/,5X,
      &            'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
      &            'CUMUL DES DEBITS POSITIFS : ',G16.7)
@@ -244,12 +268,21 @@
      &            'CUMULATED POSITIVE VOLUME: ',G16.7)
           ENDIF
           IF(CHARR) THEN
+!RK parallel writing
+          IF (NCSIZE.GT.1) THEN
             IF(LNG.EQ.1) WRITE(LU,2303)
      &              P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
      &                                 P_DSUM(VOLPOSC(ISEC))
             IF(LNG.EQ.2) WRITE(LU,2304)
      &              P_DSUM(FLXC(ISEC)),P_DSUM(VOLNEGC(ISEC)),
      &                                 P_DSUM(VOLPOSC(ISEC))
+!RK serial writing
+          ELSE !NCSIZE < 1
+            IF(LNG.EQ.1) WRITE(LU,2303) FLXC(ISEC),VOLNEGC(ISEC),
+     &                                  VOLPOSC(ISEC)
+            IF(LNG.EQ.2) WRITE(LU,2304) FLXC(ISEC),VOLNEGC(ISEC),
+     &                                  VOLPOSC(ISEC)
+          ENDIF ! NCSIZE
 2303        FORMAT(5X,'DEBIT EN CHARRIAGE :        ',G16.7,/,5X,
      &            'CUMUL DES DEBITS NEGATIFS : ',G16.7,/,5X,
      &            'CUMUL DES DEBITS POSITIFS : ',G16.7)

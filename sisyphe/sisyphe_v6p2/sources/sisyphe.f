@@ -79,6 +79,11 @@
 !+   transmitted from Tomawac to Sisyphe through Telemac-2D or 3D in the
 !+   of triple coupling.
 !
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the file format in the call to FONSTR.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CF_TEL         |<->| QUADRATIC FRICTION COEFFICIENT FROM TELEMAC
 !| CHARR_TEL      |<->| LOGICAL, BED LOAD OR NOT: Sent to TELEMAC-2D
@@ -345,6 +350,7 @@
 !
         IF(DEBUG.GT.0) WRITE(LU,*) 'FONSTR'
         CALL FONSTR(T1,ZF,T2,CHESTR,SIS_FILES(SISGEO)%LU,
+     &              SIS_FILES(SISGEO)%FMT,
      &              SIS_FILES(SISFON)%LU,SIS_FILES(SISFON)%NAME,
      &              MESH,SFON,.TRUE.)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_FONSTR'
