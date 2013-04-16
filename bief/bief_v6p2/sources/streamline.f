@@ -53,6 +53,12 @@
 !+   Particle tracking in //. 3 subroutines added: send_particles,
 !+   add_particle, del_particle, to be used by subroutine derive.
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Case of successive uses of SCARACT. Bug corrected in the section
+!+   calling organise_chars when NPLOT > LAST_NPLOT.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -178,7 +184,7 @@
 !--------------------------------------------------------------------- 
 ! 
       SUBROUTINE ORGANISE_CHARS(NPARAM,NOMB,NCHDIM,LAST_NCHDIM) ! WATCH OUT 
-          USE BIEF_DEF, ONLY: NCSIZE 
+          USE BIEF_DEF, ONLY: NCSIZE,IPID
           IMPLICIT NONE 
           INTEGER, INTENT(IN)    :: NPARAM,NOMB 
           INTEGER, INTENT(INOUT) :: NCHDIM,LAST_NCHDIM 
@@ -5226,7 +5232,7 @@
       ELSE
         SIGMA=.FALSE.
       ENDIF 
-! 
+!
 !----------------------------------------------------------------------- 
 !      
       IF(INIT) THEN ! CHECK THINGS ONCE AND FOREVER  
@@ -5261,16 +5267,16 @@
 !     CASE OF A CALL FROM DIFFERENT PROGRAMMES WITH DIFFERENT NOMB
 !     A REALLOCATION IS DONE UNTIL THE MAXIMUM OF NOMB AND NPLOT
 !     IS REACHED
-!     JAJ + JMH 26/08/2008 
+!     JAJ + JMH 26/08/2008 + BUG CORRECTED 16/04/2013
 ! 
       IF(NCSIZE.GT.1) THEN     
         IF(NOMB.GT.LAST_NOMB.OR.NPLOT.GT.LAST_NPLOT) THEN       
 !         DESTROY THE CHARACTERISTICS TYPE FOR COMM. 
           LAST_NOMB=MAX(NOMB,LAST_NOMB)
-          LAST_NPLOT=MAX(NPLOT,LAST_NPLOT)
           CALL DEORG_CHARAC_TYPE()  
-!         SET DATA STRUCTURES ACCORDINGLY        
-          CALL ORGANISE_CHARS(LAST_NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)
+!         SET DATA STRUCTURES ACCORDINGLY      
+          CALL ORGANISE_CHARS(NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)
+          LAST_NPLOT=NPLOT
         ENDIF 
 !    
 !       INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS) 
