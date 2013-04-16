@@ -11,7 +11,7 @@
      & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN1,TRAIN2)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT AND MONOTONIC
@@ -39,10 +39,15 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
-!history  J-M HERVOUET   (LNHE)
+!history  J-M HERVOUET (LNHE)
 !+        12/07/2012
 !+        V6P2
 !+   T2 set to 0 to start with required in parallel
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P2
+!+   Intent of FLBOR changed and conditional building of FLBOR added.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -162,7 +167,8 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: F2BOR,F2N,SMI2
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA1,FLBORTRA2
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
-      TYPE(BIEF_OBJ), INTENT(IN)      :: F1SCEXP,F2SCEXP,S,MASKTR,FLBOR
+      TYPE(BIEF_OBJ), INTENT(IN)      :: F1SCEXP,F2SCEXP,S,MASKTR
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLBOR
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE
       TYPE(BIEF_MESH)                 :: MESH
 !
@@ -345,6 +351,13 @@
           F1%R(I)=F1%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN1-F1%R(I))
           F2%R(I)=F2%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN2-F2%R(I))
         ENDDO       
+      ENDIF
+!
+      IF(.NOT.YAFLBOR) THEN
+!       MASK=8 FOR LIQUID BOUNDARIES
+        CALL VECTOR(FLBOR,'=','FLUBDF          ',1,1.D0,
+     &              HPROP,HPROP,HPROP,
+     &              UDEL , VDEL, VDEL,MESH,.TRUE.,MASKTR%ADR(8)%P)
       ENDIF
 !
 !     BOUNDARY FLUXES : ADDING THE ENTERING (NEGATIVE) FLUXES

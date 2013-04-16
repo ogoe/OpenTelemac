@@ -10,7 +10,7 @@
      & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN,GIVEN_FLUX,FLUX_GIVEN)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT AND MONOTONIC
@@ -65,6 +65,11 @@
 !+        V6P2
 !+   T2 set to 0 to start with required in parallel
 !+   Arguments flux_given and given_flux added.
+!
+!history  J-M HERVOUET   (LNHE)
+!+        16/04/2013
+!+        V6P2
+!+   Intent of FLBOR changed and conditional building of FLBOR added
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
@@ -179,7 +184,8 @@
       TYPE(BIEF_OBJ), INTENT(IN)      :: FBOR,UDEL,VDEL,FN,SMI,SMH
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: TE1,FLBORTRA
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T1,T2,T3,T4,T5,T6,T7,T8
-      TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR,FLBOR
+      TYPE(BIEF_OBJ), INTENT(IN)      :: FSCEXP,S,MASKTR
+      TYPE(BIEF_OBJ), INTENT(INOUT)   :: FLBOR
       TYPE(BIEF_OBJ), INTENT(IN)      :: VISC_S,VISC,PLUIE,GIVEN_FLUX
       TYPE(BIEF_MESH)                 :: MESH
 !
@@ -373,6 +379,13 @@
 !                                                VALUE IN RAIN
           F%R(I)=F%R(I)+DT/MAX(HT%R(I),1.D-4)*C*(TRAIN-F%R(I))
         ENDDO       
+      ENDIF
+!
+      IF(.NOT.YAFLBOR) THEN
+!       MASK=8 FOR LIQUID BOUNDARIES
+        CALL VECTOR(FLBOR,'=','FLUBDF          ',1,1.D0,
+     &              HPROP,HPROP,HPROP,
+     &              UDEL , VDEL, VDEL,MESH,.TRUE.,MASKTR%ADR(8)%P)
       ENDIF
 !
 !     BOUNDARY FLUXES : ADDING THE ENTERING (NEGATIVE) FLUXES
