@@ -164,6 +164,11 @@
 !+        V6P3
 !+   Call to WAC and SISYPHE modified.
 !
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the file format in calls to FIND_IN_SEL.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ATDEP          |-->| STARTING TIME WHEN CALLED FOR COUPLING
 !| CODE           |-->| CALLING PROGRAM (IF COUPLING)
@@ -435,6 +440,7 @@
      &   .AND..NOT.INCLU2(ESTIME,'FRICTION'  )  ) THEN
 !       NO PARAMETER ESTIMATION
         CALL FONSTR(T1,ZF,T2,CHESTR,T2D_FILES(T2DGEO)%LU,
+     &              T2D_FILES(T2DGEO)%FMT,
      &              T2D_FILES(T2DFON)%LU,T2D_FILES(T2DFON)%NAME,
      &              MESH,FFON,LISTIN)
         CORBOT=.TRUE.
@@ -443,6 +449,7 @@
 !       FONSTR CALLED ONCE TO GET
 !       THE BOTTOM TOPOGRAPHY AND THE INITIAL FRICTION (CALL TO STRCHE)
         CALL FONSTR(T1,ZF,T2,CHESTR,T2D_FILES(T2DGEO)%LU,
+     &              T2D_FILES(T2DGEO)%FMT,
      &              T2D_FILES(T2DFON)%LU,T2D_FILES(T2DFON)%NAME,
      &              MESH,FFON,LISTIN)
 !       IF OPTID=0, VALUES OF SETSTR ARE GIVEN BY FILE, MUST NOT BE ERASED

@@ -14,7 +14,7 @@
      & NBUSE,ENTBUS,SORBUS,DBUS,UBUS,VBUS)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCE TERMS IN THE CONTINUITY EQUATION
@@ -95,6 +95,11 @@
 !+        V6P2
 !+   Modification for culvert management
 !+   Addition of Tubes management
+!
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the file format in calls to FIND_IN_SEL.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
@@ -546,23 +551,24 @@
             NOMX='FORCE FX        '
             NOMY='FORCE FY        '
             CALL FIND_IN_SEL(FXWAVE,NOMX,T2D_FILES(T2DBI1)%LU,
-     &                       W,OKX,NPTH,NP,ATH)
+     &                       T2D_FILES(T2DBI1)%FMT,W,OKX,NPTH,NP,ATH)
             CALL FIND_IN_SEL(FYWAVE,NOMY,T2D_FILES(T2DBI1)%LU,
-     &                       W,OKY,NPTH,NP,ATH)
+     &                       T2D_FILES(T2DBI1)%FMT,W,OKY,NPTH,NP,ATH)
             IF(.NOT.OKX.OR..NOT.OKY) THEN
 !             SECOND TRY (OLD VERSIONS OF ARTEMIS OR TOMAWAC)
               NOMX='FORCE_FX        '
               NOMY='FORCE_FY        '
               CALL FIND_IN_SEL(FXWAVE,NOMX,T2D_FILES(T2DBI1)%LU,
-     &                         W,OKX,NPTH,NP,ATH)
+     &                         T2D_FILES(T2DBI1)%FMT,W,OKX,NPTH,NP,ATH)
               CALL FIND_IN_SEL(FYWAVE,NOMY,T2D_FILES(T2DBI1)%LU,
-     &                         W,OKY,NPTH,NP,ATH)
+     &                         T2D_FILES(T2DBI1)%FMT,W,OKY,NPTH,NP,ATH)
             ENDIF
 !           CLANDESTINE VARIABLES FROM TOMAWAC TO SISYPHE
             IF(NVARCL.GT.0) THEN
               DO I=1,NVARCL
               CALL FIND_IN_SEL(VARCL%ADR(I)%P,VARCLA(I)(1:16),
      &                         T2D_FILES(T2DBI1)%LU,
+     &                         T2D_FILES(T2DBI1)%FMT,
      &                         W,OKC,NPTH,NP,ATH)
               IF(.NOT.OKC) THEN
                 IF(LNG.EQ.1) WRITE(LU,7) VARCLA(I)(1:16)

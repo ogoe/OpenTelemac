@@ -5,7 +5,7 @@
      &(ITER,TT)
 !
 !***********************************************************************
-! TELEMAC2D   V6P1                                   21/08/2010
+! TELEMAC2D   V6P3                                  21/08/2010
 !***********************************************************************
 !
 !brief    READS MEASURED H, U AND V AT TIME AT.
@@ -29,6 +29,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the file format in the call to FIND_IN_SEL.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ITER           |-->| ITERATION WHERE TO LOOK FOR THE MEASUREMENTS
@@ -62,11 +67,11 @@
 !       WHEN MEASUREMENTS ARE IN A SELAFIN FILE
 !
         CALL FIND_IN_SEL(HD,TEXTE(4)(1:16),T2D_FILES(T2DREF)%LU,
-     &                   W,OKH,RECORD=ITER,TIME=TPS)
+     &         T2D_FILES(T2DREF)%FMT,W,OKH,RECORD=ITER,TIME=TPS)
         CALL FIND_IN_SEL(UD,TEXTE(1)(1:16),T2D_FILES(T2DREF)%LU,
-     &                   W,OKU,RECORD=ITER,TIME=TPS)
+     &         T2D_FILES(T2DREF)%FMT,W,OKU,RECORD=ITER,TIME=TPS)
         CALL FIND_IN_SEL(VD,TEXTE(2)(1:16),T2D_FILES(T2DREF)%LU,
-     &                   W,OKV,RECORD=ITER,TIME=TPS)
+     &         T2D_FILES(T2DREF)%FMT,W,OKV,RECORD=ITER,TIME=TPS)
 !
         IF(.NOT.OKH.OR..NOT.OKU.OR..NOT.OKV) THEN
           IF(LNG.EQ.1) THEN
