@@ -81,6 +81,11 @@
 !+   Call to METEO modified. Stop if variables not found for a 2D
 !+   continuation.
 !
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the file format in calls to FIND_IN_SEL.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -315,6 +320,7 @@
 !
       IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE FONSTR'
       CALL FONSTR(T2_01,ZF,T2_02,RUGOF,T3D_FILES(T3DGEO)%LU,
+     &            T3D_FILES(T3DGEO)%FMT,
      &            T3D_FILES(T3DFON)%LU,T3D_FILES(T3DFON)%NAME,
      &            MESH2D,RUGOF0,LISTIN)
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE FONSTR'

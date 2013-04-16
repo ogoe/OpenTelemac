@@ -8,7 +8,7 @@
      & VENT,WIND,H,EBORS,NPOIN2,KMIN,EMIN,PRANDTL)
 !
 !***********************************************************************
-! TELEMAC3D   V6P1                                   21/08/2010
+! TELEMAC3D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    PREPARES THE SOURCE TERMS IN THE DIFFUSION EQUATION OF
@@ -40,6 +40,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        12/04/2013
+!+        V6P3
+!+   Richardson's number formula changed. It is built only if asked for
+!+   post-processing.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AK             |<->| TURBULENT ENERGY K
@@ -88,9 +94,8 @@
 !
       USE BIEF
       USE DECLARATIONS_TELEMAC3D, ONLY : IPBOT,NONHYD,CLIPK,CLIPE,WSIK,
-     &                                   YAP,RHO0,
-     &                                   PERNORM2,PERPROD,RIMIN,RIMAX,
-     &                                   OPTPROD
+     &                                   YAP,RHO0,PERNORM2,PERPROD,
+     &                                   RIMIN,RIMAX,OPTPROD,SORG3D
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -236,25 +241,29 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!                STRESS TENSOR AND RICHARDSON NUMBER
+!                             STRESS TENSOR 
 !-----------------------------------------------------------------------
 !
       DO N=1,NPOIN3
-!
         S2%R(N) = 2.D0 * (DUDX%R(N)**2+DVDY%R(N)**2+DWDZ%R(N)**2)
      &            + ( DUDY%R(N)+DVDX%R(N) )**2
      &            + ( DUDZ%R(N)+DWDX%R(N) )**2
      &            + ( DVDZ%R(N)+DWDY%R(N) )**2  
-!
-!       RICHARDSON NUMBER
-!
-        RI(N)=-GRAV*DTADZ%R(N)/MAX(S2%R(N),1.D-10)
-!
-!       CLIPPING BETWEEN RIMIN AND RIMAX
-!
-        RI(N)=MAX(MIN(RI(N),RIMAX),RIMIN)
-!
       ENDDO
+!
+!-----------------------------------------------------------------------
+!          RICHARDSON NUMBER (RESTRICTED TO VERTICAL GRADIENTS)
+!-----------------------------------------------------------------------
+!
+!     SO FAR ONLY FOR POST-PROCESSING...
+!
+      IF(SORG3D(10)) THEN
+        DO N=1,NPOIN3
+          RI(N)=-GRAV*DTADZ%R(N)/MAX(DUDZ%R(N)**2+DVDZ%R(N)**2,1.D-10)
+!         CLIPPING BETWEEN RIMIN AND RIMAX
+          RI(N)=MAX(MIN(RI(N),RIMAX),RIMIN)
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !                     TURBULENCE PRODUCTION

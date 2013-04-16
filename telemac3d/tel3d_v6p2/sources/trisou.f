@@ -49,6 +49,11 @@
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
 !
+!history  R. KOPMANN (EDF R&D, LNHE)
+!+        16/04/2013
+!+        V6P3
+!+   Adding the file format in calls to FIND_IN_SEL.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
 !| CORIOL         |-->| LOGICAL IF CORIOLIS FORCE OR NOT
@@ -526,8 +531,10 @@
             NOMX='FORCE FX        '
             NOMY='FORCE FY        '
             CALL FIND_IN_SEL(FXH,NOMX,T3D_FILES(T3DBI1)%LU,
+     &                       T3D_FILES(T3DBI1)%FMT,
      &                       W,OKX,NPTH,NP,ATH)
             CALL FIND_IN_SEL(FYH,NOMY,T3D_FILES(T3DBI1)%LU,
+     &                       T3D_FILES(T3DBI1)%FMT,
      &                       W,OKY,NPTH,NP,ATH)
 !
             IF(.NOT.OKX.OR..NOT.OKY) THEN
