@@ -46,6 +46,12 @@
 !+        V6P3
 !+   Keyword for spherical coordinates added.
 !
+!history  J-M HERVOUET (LNHE)
+!+        18/04/2013
+!+        V6P3
+!+   New keyword FILE FOR 2D CONTINUATION added, and coherence checked.
+!+   Look for T3DS2D.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| FILE_DESC      |<->| STORES STRINGS 'SUBMIT' OF DICTIONARY
 !| MOTCAR         |<->| KEYWORD IN CHARACTER
@@ -136,7 +142,6 @@
 ! DO NOT PRINT THE DICTIONARY OUT
 !
       DOC = .FALSE.
-!
 !
 !-----------------------------------------------------------------------
 !     OPENS THE DICTIONARY AND STEERING FILES
@@ -257,6 +262,26 @@
           T3DBB2=I
         ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DFLO') THEN
           T3DFLO=I
+        ELSEIF(T3D_FILES(I)%TELNAME.EQ.'T3DS2D') THEN
+          T3DS2D=I
+        ELSEIF(I.NE.02.AND.I.NE.03.AND.I.NE.05.AND.I.NE.06.AND.
+     &         I.NE.15.AND.I.NE.16.AND.I.NE.17.AND.
+     &         I.NE.19.AND.I.NE.20.AND.I.NE.21.AND.I.NE.33) THEN
+!         ONE FILE THAT SHOULD HAVE A STRING 'SUBMIT' IN DICTIONARY
+!         HAS RECEIVED NO NAME
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'LECDON_TELEMAC3D: ERREUR POUR LE FICHIER' 
+            WRITE(LU,*) 'I=',I,' NOM=',T3D_FILES(I)%TELNAME
+            WRITE(LU,*) 'IL MANQUE UNE CHAINE SUBMIT DANS LE'
+            WRITE(LU,*) 'DICTIONNAIRE'
+          ELSEIF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'LECDON_TELEMAC3D: ERROR FOR FILE NUMBER' 
+            WRITE(LU,*) 'I=',I,' NAME=',T3D_FILES(I)%TELNAME
+            WRITE(LU,*) 'THIS FILE SHOULD HAVE A STRING SUBMIT'
+            WRITE(LU,*) 'IN DICTIONARY'
+          ENDIF 
+          CALL PLANTE(1)
+          STOP
         ENDIF
       ENDDO
 !
@@ -265,765 +290,769 @@
 !
 ! INTEGER KEYWORDS
 !
-        NIT       = MAX(MOTINT(ADRESS(1, 1)),0)
-        NPLAN     = MAX(MOTINT(ADRESS(1, 2)),2)
-        NTRAC     = MAX(MOTINT(ADRESS(1, 3)),0)
-        MIXING    = MAX(MOTINT(ADRESS(1, 4)),0)
-        NFLOT_MAX = MAX(MOTINT(ADRESS(1, 5)),0)
-        FLOPRD    = MAX(MOTINT(ADRESS(1, 6)),1)
-        GRAPRD    = MAX(MOTINT(ADRESS(1, 7)),1)
-        LISPRD    = MAX(MOTINT(ADRESS(1, 8)),1)
-        GRADEB    = MAX(MOTINT(ADRESS(1, 9)),0)
-        LISDEB    = MAX(MOTINT(ADRESS(1,10)),0)
-        LISFON    = MAX(MOTINT(ADRESS(1,11)),0)
-        NSOUSI    = MAX(MOTINT(ADRESS(1,12)),1)
-!       NPLINT    = MAX(MIN(MOTINT(ADRESS(1,13)),NPLAN-1),1)
-        ITURBV    = MOTINT(ADRESS(1,14))
-        LISRUF    = MOTINT(ADRESS(1,15))
-        LISRUL    = MOTINT(ADRESS(1,16))
-        IORDRH    = MOTINT(ADRESS(1,17))
+      NIT       = MAX(MOTINT(ADRESS(1, 1)),0)
+      NPLAN     = MAX(MOTINT(ADRESS(1, 2)),2)
+      NTRAC     = MAX(MOTINT(ADRESS(1, 3)),0)
+      MIXING    = MAX(MOTINT(ADRESS(1, 4)),0)
+      NFLOT_MAX = MAX(MOTINT(ADRESS(1, 5)),0)
+      FLOPRD    = MAX(MOTINT(ADRESS(1, 6)),1)
+      GRAPRD    = MAX(MOTINT(ADRESS(1, 7)),1)
+      LISPRD    = MAX(MOTINT(ADRESS(1, 8)),1)
+      GRADEB    = MAX(MOTINT(ADRESS(1, 9)),0)
+      LISDEB    = MAX(MOTINT(ADRESS(1,10)),0)
+      LISFON    = MAX(MOTINT(ADRESS(1,11)),0)
+      NSOUSI    = MAX(MOTINT(ADRESS(1,12)),1)
+!     NPLINT    = MAX(MIN(MOTINT(ADRESS(1,13)),NPLAN-1),1)
+      ITURBV    = MOTINT(ADRESS(1,14))
+      LISRUF    = MOTINT(ADRESS(1,15))
+      LISRUL    = MOTINT(ADRESS(1,16))
+      IORDRH    = MOTINT(ADRESS(1,17))
 !
-        SCHCVI    = MOTINT(ADRESS(1,18))
-!       DEFAULT VALUE MAKES THAT DIMEN(1,19) IS AT LEAST 1
-        IF(NTRAC.GT.0) THEN
-          IF(DIMEN(1,19).LT.NTRAC) THEN
-            DO K=1,NTRAC
-              SCHCTA(K) = MOTINT(ADRESS(1,19))
-            ENDDO
-          ELSE
-            DO K=1,NTRAC
-              SCHCTA(K) = MOTINT(ADRESS(1,19)+K-1)
-            ENDDO
-          ENDIF
-        ENDIF
-        DAMPING   = MOTINT(ADRESS(1,20))
-        SCHCKE    = MOTINT(ADRESS(1,21))
-        SCHCH     = MOTINT(ADRESS(1,22))
-        SCHDVI    = MOTINT(ADRESS(1,23))
-        SCHDTA    = MOTINT(ADRESS(1,24))
-        KFROTL    = MOTINT(ADRESS(1,25))
-        SCHDKE    = MOTINT(ADRESS(1,26))
-!
-        SLVDVI%PRECON  =  MOTINT(ADRESS(1,27))
-        IF(NTRAC.GT.0) THEN
-          IF(DIMEN(1,28).LT.NTRAC) THEN
-            DO K=1,NTRAC
-              SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28))
-            ENDDO
-          ELSE
-            DO K=1,NTRAC
-              SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28)+K-1)
-            ENDDO        
-          ENDIF
-        ENDIF
-        SLVDSE%NITMAX  =  MOTINT(ADRESS(1,29))
-        SLVDKE%PRECON  =  MOTINT(ADRESS(1,30))
-        SLVPRO%PRECON  =  MOTINT(ADRESS(1,31))
-        SLVW%PRECON    =  MOTINT(ADRESS(1,32))
-!
-        SLVDVI%SLV = MOTINT(ADRESS(1,33))
-        IF(NTRAC.GT.0) THEN
-          IF(DIMEN(1,34).LT.NTRAC) THEN
-            DO K=1,NTRAC
-              SLVDTA(K)%SLV = MOTINT(ADRESS(1,34))
-            ENDDO
-          ELSE
-            DO K=1,NTRAC
-              SLVDTA(K)%SLV = MOTINT(ADRESS(1,34)+K-1)
-            ENDDO
-          ENDIF
-        ENDIF
-        PERCOU_WAC = MOTINT(ADRESS(1,35))
-        SLVDKE%SLV = MOTINT(ADRESS(1,36))
-        SLVPRO%SLV = MOTINT(ADRESS(1,37))
-        SLVW%SLV   = MOTINT(ADRESS(1,38))
-!
-        SLVDVI%NITMAX    = MOTINT(ADRESS(1,39))
-        SLVDTA(1)%NITMAX = MOTINT(ADRESS(1,40))
-        IF(NTRAC.GT.1) THEN
-          DO K=2,NTRAC
-            SLVDTA(K)%NITMAX = SLVDTA(1)%NITMAX 
+      SCHCVI    = MOTINT(ADRESS(1,18))
+!     DEFAULT VALUE MAKES THAT DIMEN(1,19) IS AT LEAST 1
+      IF(NTRAC.GT.0) THEN
+        IF(DIMEN(1,19).LT.NTRAC) THEN
+          DO K=1,NTRAC
+            SCHCTA(K) = MOTINT(ADRESS(1,19))
+          ENDDO
+        ELSE
+          DO K=1,NTRAC
+            SCHCTA(K) = MOTINT(ADRESS(1,19)+K-1)
           ENDDO
         ENDIF
-        PERCOU_SIS       = MOTINT(ADRESS(1,41))
-        SLVDKE%NITMAX    = MOTINT(ADRESS(1,42))
-        SLVPRO%NITMAX    = MOTINT(ADRESS(1,43))
-        SLVW%NITMAX      = MOTINT(ADRESS(1,44))
+      ENDIF
+      DAMPING   = MOTINT(ADRESS(1,20))
+      SCHCKE    = MOTINT(ADRESS(1,21))
+      SCHCH     = MOTINT(ADRESS(1,22))
+      SCHDVI    = MOTINT(ADRESS(1,23))
+      SCHDTA    = MOTINT(ADRESS(1,24))
+      KFROTL    = MOTINT(ADRESS(1,25))
+      SCHDKE    = MOTINT(ADRESS(1,26))
 !
-        NCSIZE    =     MOTINT(ADRESS(1,45))
+      SLVDVI%PRECON  =  MOTINT(ADRESS(1,27))
+      IF(NTRAC.GT.0) THEN
+        IF(DIMEN(1,28).LT.NTRAC) THEN
+          DO K=1,NTRAC
+            SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28))
+          ENDDO
+        ELSE
+          DO K=1,NTRAC
+            SLVDTA(K)%PRECON = MOTINT(ADRESS(1,28)+K-1)
+          ENDDO        
+        ENDIF
+      ENDIF
+      SLVDSE%NITMAX  =  MOTINT(ADRESS(1,29))
+      SLVDKE%PRECON  =  MOTINT(ADRESS(1,30))
+      SLVPRO%PRECON  =  MOTINT(ADRESS(1,31))
+      SLVW%PRECON    =  MOTINT(ADRESS(1,32))
 !
-        TRBAVI    =     MOTINT(ADRESS(1,46))
-        TRBATA    =     MOTINT(ADRESS(1,47))
-        BC_BOTTOM =     MOTINT(ADRESS(1,48))
-        TRBAKE    =     MOTINT(ADRESS(1,49))
+      SLVDVI%SLV = MOTINT(ADRESS(1,33))
+      IF(NTRAC.GT.0) THEN
+        IF(DIMEN(1,34).LT.NTRAC) THEN
+          DO K=1,NTRAC
+            SLVDTA(K)%SLV = MOTINT(ADRESS(1,34))
+          ENDDO
+        ELSE
+          DO K=1,NTRAC
+            SLVDTA(K)%SLV = MOTINT(ADRESS(1,34)+K-1)
+          ENDDO
+        ENDIF
+      ENDIF
+      PERCOU_WAC = MOTINT(ADRESS(1,35))
+      SLVDKE%SLV = MOTINT(ADRESS(1,36))
+      SLVPRO%SLV = MOTINT(ADRESS(1,37))
+      SLVW%SLV   = MOTINT(ADRESS(1,38))
+!
+      SLVDVI%NITMAX    = MOTINT(ADRESS(1,39))
+      SLVDTA(1)%NITMAX = MOTINT(ADRESS(1,40))
+      IF(NTRAC.GT.1) THEN
+        DO K=2,NTRAC
+          SLVDTA(K)%NITMAX = SLVDTA(1)%NITMAX 
+        ENDDO
+      ENDIF
+      PERCOU_SIS       = MOTINT(ADRESS(1,41))
+      SLVDKE%NITMAX    = MOTINT(ADRESS(1,42))
+      SLVPRO%NITMAX    = MOTINT(ADRESS(1,43))
+      SLVW%NITMAX      = MOTINT(ADRESS(1,44))
+!
+      NCSIZE    =     MOTINT(ADRESS(1,45))
+!
+      TRBAVI    =     MOTINT(ADRESS(1,46))
+      TRBATA    =     MOTINT(ADRESS(1,47))
+      BC_BOTTOM =     MOTINT(ADRESS(1,48))
+      TRBAKE    =     MOTINT(ADRESS(1,49))
 !
 ! NEW ONES 60,61 (50++ FOR SEDIMENT)
 !
-        LVMAC     =     MOTINT(ADRESS(1,61))
-        NPRIV     =     MOTINT(ADRESS(1,62))
-!       R3D2D     =     MOTINT(ADRESS(1,63))
+      LVMAC     =     MOTINT(ADRESS(1,61))
+      NPRIV     =     MOTINT(ADRESS(1,62))
+!     R3D2D     =     MOTINT(ADRESS(1,63))
 ! JMH 29/09/99:
-        KFROT     =     MOTINT(ADRESS(1,64))
+      KFROT     =     MOTINT(ADRESS(1,64))
 !
 ! NON-HYDROSTATIC
 !
-        SLVPOI%PRECON = MOTINT( ADRESS(1,71) )
-        SLVPOI%SLV    = MOTINT( ADRESS(1,72) )
-        SLVPOI%NITMAX = MOTINT( ADRESS(1,73) )
+      SLVPOI%PRECON = MOTINT( ADRESS(1,71) )
+      SLVPOI%SLV    = MOTINT( ADRESS(1,72) )
+      SLVPOI%NITMAX = MOTINT( ADRESS(1,73) )
 !
-!       FOLLOWING LINES ARE DONE LATER
-!       SLVDVI%KRYLOV = MOTINT( ADRESS(1,74) )
-!       SLVDTA(1)%KRYLOV = MOTINT( ADRESS(1,75) )
-!       SLVDKE%KRYLOV = MOTINT( ADRESS(1,76) )
-!       SLVPRO%KRYLOV = MOTINT( ADRESS(1,77) )
-        SLVPRJ%PRECON = MOTINT( ADRESS(1,78) )
-        SLVPRJ%SLV    = MOTINT( ADRESS(1,79) )
-        SLVPRJ%NITMAX = MOTINT( ADRESS(1,80) )
-!       FOLLOWING LINE IS DONE LATER
-!       SLVPOI%KRYLOV = MOTINT( ADRESS(1,81) )
-        START_RECORD  = MOTINT( ADRESS(1,82) )
-!       FOLLOWING LINES ARE DONE LATER
-!       SLVPRJ%KRYLOV = MOTINT( ADRESS(1,83) )
-!       SLVDSE%KRYLOV = MOTINT( ADRESS(1,84) )
-        ITURBH        = MOTINT( ADRESS(1,85) )
-        PROTYP        = MOTINT( ADRESS(1,86) )
-        OPTASS        = MOTINT( ADRESS(1,87) )
-        OPTASS2D      = OPTASS
-!       ??????        = MOTINT( ADRESS(1,88)     )
-!       ??????        = MOTINT( ADRESS(1,88) + 1 )
-        DENLAW        = MOTINT( ADRESS(1,89) )
-        OPTBAN        = MOTINT( ADRESS(1,90) )
-        MARDAT(1)     = MOTINT( ADRESS(1,91) )
-        MARDAT(2)     = MOTINT( ADRESS(1,91) + 1 )
-        MARDAT(3)     = MOTINT( ADRESS(1,91) + 2 )
-        MARTIM(1)     = MOTINT( ADRESS(1,92) )
-        MARTIM(2)     = MOTINT( ADRESS(1,92) + 1 )
-        MARTIM(3)     = MOTINT( ADRESS(1,92) + 2 )
-        OPTDIF        = MOTINT( ADRESS(1,93) )
-C       HYDSTEP       = MOTINT( ADRESS(1,94) )
-        DIRFLU(0)=0
-        DO K=1,MAXFRO
-          PROFVEL(K)=1
-          DIRFLU(K)=1
-          VERPROVEL(K)=1
-          STA_DIS_CURVES(K)=0
+!     FOLLOWING LINES ARE DONE LATER
+!     SLVDVI%KRYLOV = MOTINT( ADRESS(1,74) )
+!     SLVDTA(1)%KRYLOV = MOTINT( ADRESS(1,75) )
+!     SLVDKE%KRYLOV = MOTINT( ADRESS(1,76) )
+!     SLVPRO%KRYLOV = MOTINT( ADRESS(1,77) )
+      SLVPRJ%PRECON = MOTINT( ADRESS(1,78) )
+      SLVPRJ%SLV    = MOTINT( ADRESS(1,79) )
+      SLVPRJ%NITMAX = MOTINT( ADRESS(1,80) )
+!     FOLLOWING LINE IS DONE LATER
+!     SLVPOI%KRYLOV = MOTINT( ADRESS(1,81) )
+      START_RECORD  = MOTINT( ADRESS(1,82) )
+!     FOLLOWING LINES ARE DONE LATER
+!     SLVPRJ%KRYLOV = MOTINT( ADRESS(1,83) )
+!     SLVDSE%KRYLOV = MOTINT( ADRESS(1,84) )
+      ITURBH        = MOTINT( ADRESS(1,85) )
+      PROTYP        = MOTINT( ADRESS(1,86) )
+      OPTASS        = MOTINT( ADRESS(1,87) )
+      OPTASS2D      = OPTASS
+!     ??????        = MOTINT( ADRESS(1,88)     )
+!     ??????        = MOTINT( ADRESS(1,88) + 1 )
+      DENLAW        = MOTINT( ADRESS(1,89) )
+      OPTBAN        = MOTINT( ADRESS(1,90) )
+      MARDAT(1)     = MOTINT( ADRESS(1,91) )
+      MARDAT(2)     = MOTINT( ADRESS(1,91) + 1 )
+      MARDAT(3)     = MOTINT( ADRESS(1,91) + 2 )
+      MARTIM(1)     = MOTINT( ADRESS(1,92) )
+      MARTIM(2)     = MOTINT( ADRESS(1,92) + 1 )
+      MARTIM(3)     = MOTINT( ADRESS(1,92) + 2 )
+      OPTDIF        = MOTINT( ADRESS(1,93) )
+C     HYDSTEP       = MOTINT( ADRESS(1,94) )
+      DIRFLU(0)=0
+      DO K=1,MAXFRO
+        PROFVEL(K)=1
+        DIRFLU(K)=1
+        VERPROVEL(K)=1
+        STA_DIS_CURVES(K)=0
+      ENDDO
+      DO K=1,MAXFRO*MAXTRA
+        VERPROTRA(K)=1
+      ENDDO
+      IF(DIMEN(1,95).GT.0) THEN
+        DO K=1,DIMEN(1,95)
+          PROFVEL(K) = MOTINT( ADRESS(1,95) + K-1 )
         ENDDO
-        DO K=1,MAXFRO*MAXTRA
-          VERPROTRA(K)=1
-        ENDDO
-        IF(DIMEN(1,95).GT.0) THEN
-          DO K=1,DIMEN(1,95)
-            PROFVEL(K) = MOTINT( ADRESS(1,95) + K-1 )
-          ENDDO
-        ENDIF
-        TRANSF= MOTINT( ADRESS(1,96) )
+      ENDIF
+      TRANSF= MOTINT( ADRESS(1,96) )
 C
-        IF(DIMEN(1,97).GT.0) THEN
-          DO K=1,DIMEN(1,97)
-            DIRFLU(K) = MOTINT( ADRESS(1,97) + K-1 )
-          ENDDO
-        ENDIF
-        IF(DIMEN(1,98).GT.0) THEN
-          DO K=1,DIMEN(1,98)
-            VERPROVEL(K) = MOTINT( ADRESS(1,98) + K-1 )
-          ENDDO
-        ENDIF
-        IF(DIMEN(1,99).GT.0) THEN
-          DO K=1,DIMEN(1,99)
-            VERPROTRA(K) = MOTINT( ADRESS(1,99) + K-1 )
-          ENDDO
-        ENDIF
-        OPTSUP(1)=1
-        IF(DIMEN(1,100).GT.0) THEN
-          DO K=1,MAX(DIMEN(1,100),4)
-            OPTSUP(K) = MOTINT( ADRESS(1,100) + K-1 )
-          ENDDO
-        ENDIF
-C       SO FAR THE SUPG MATRIX IS THE SAME FOR ALL ADVECTIONS
-C       SEE IN PRECON
-C       OPTSUP(2)=OPTSUP(1)  (THIS IS DEPTH, NO LONGER USED)
-        OPTSUP(3)=OPTSUP(1)
-        OPTSUP(4)=OPTSUP(1)
-        WAQPRD=MOTINT( ADRESS(1,101) )
-C       KEYWORD: ORIGIN COORDINATES
-        I_ORIG = MOTINT( ADRESS(1,102)   )
-        J_ORIG = MOTINT( ADRESS(1,102)+1 )
-C       KEYWORD: STAGE-DISCHARGE CURVES
-        IF(DIMEN(1,103).NE.0) THEN
-          DO K=1,DIMEN(1,103)
-           STA_DIS_CURVES(K) = MOTINT( ADRESS(1,103) + K-1 )
-          ENDDO
-        ENDIF
-!       KEYWORD: DEBUGGER
-        DEBUG = MOTINT( ADRESS(1,104) )
-!       KEYWORD: RECORD IN THE WAVE DRIVEN CURRENTS FILE
-        NPTH = MOTINT( ADRESS(1,105) )
-!       KEYWORD: TREATMENT OF NEGATIVE DEPTHS
-        OPT_HNEG = MOTINT( ADRESS(1,106) )
-!       KEYWORD: SKIN FRICTION 
-        ICR = MOTINT( ADRESS(1,107) )
-!
-        ICQ=  MOTINT( ADRESS(1,108) )
-        IF(ICQ.NE.1.AND.ICQ.NE.3) THEN
-          IF(LNG.EQ.1) WRITE(LU,1401) ICQ
-          IF(LNG.EQ.2) WRITE(LU,1402) ICQ
-1401      FORMAT('ERREUR SUR LA CONCENTRATION DE REFERENCE : ',1I3)
-1402      FORMAT('ERROR ON THE REFERENCE CONCENTRATION: ',1I3)
-          CALL PLANTE(1)
-          STOP
-        ENDIF
-!
-        DO K=1,MAXFRO
-          FRTYPE(K)=1
+      IF(DIMEN(1,97).GT.0) THEN
+        DO K=1,DIMEN(1,97)
+          DIRFLU(K) = MOTINT( ADRESS(1,97) + K-1 )
         ENDDO
-        THOMFR=.FALSE.
-        IF(DIMEN(1,109).GT.0) THEN
-          DO K=1,DIMEN(1,109)
-            FRTYPE(K) = MOTINT( ADRESS(1,109) + K-1 )
-            IF(FRTYPE(K).EQ.2) THOMFR=.TRUE.
-          ENDDO
-        ENDIF
-!       KEYWORD: VERTICAL VELOCITY DERIVATIVES 
-        LINLOG = MOTINT( ADRESS(1,110) )
-!       OPTION FOR TIDAL BOUNDARY CONDITIONS
-        TIDALTYPE  = MOTINT(ADRESS(1,111))
-!       INPUT TIDAL DATA BASE
-        TIDALDB = MOTINT(ADRESS(1,112))
-!       GEOGRAPHIC SYSTEM IN WHICH THE NUMERICAL MODEL IS BUILT (TIDAL MODEL)
-        GEOSYST = MOTINT(ADRESS(1,113))
-!       ZONE NUMBER WHEN USING A PLANE PROJECTION,
-!       ASSOCIATED TO GEOGRAPHIC SYSTEM (TIDAL MODEL)
-        NUMZONE = MOTINT(ADRESS(1,114))
+      ENDIF
+      IF(DIMEN(1,98).GT.0) THEN
+        DO K=1,DIMEN(1,98)
+          VERPROVEL(K) = MOTINT( ADRESS(1,98) + K-1 )
+        ENDDO
+      ENDIF
+      IF(DIMEN(1,99).GT.0) THEN
+        DO K=1,DIMEN(1,99)
+          VERPROTRA(K) = MOTINT( ADRESS(1,99) + K-1 )
+        ENDDO
+      ENDIF
+      OPTSUP(1)=1
+      IF(DIMEN(1,100).GT.0) THEN
+        DO K=1,MAX(DIMEN(1,100),4)
+          OPTSUP(K) = MOTINT( ADRESS(1,100) + K-1 )
+        ENDDO
+      ENDIF
+C     SO FAR THE SUPG MATRIX IS THE SAME FOR ALL ADVECTIONS
+C     SEE IN PRECON
+C     OPTSUP(2)=OPTSUP(1)  (THIS IS DEPTH, NO LONGER USED)
+      OPTSUP(3)=OPTSUP(1)
+      OPTSUP(4)=OPTSUP(1)
+      WAQPRD=MOTINT( ADRESS(1,101) )
+C     KEYWORD: ORIGIN COORDINATES
+      I_ORIG = MOTINT( ADRESS(1,102)   )
+      J_ORIG = MOTINT( ADRESS(1,102)+1 )
+C     KEYWORD: STAGE-DISCHARGE CURVES
+      IF(DIMEN(1,103).NE.0) THEN
+        DO K=1,DIMEN(1,103)
+         STA_DIS_CURVES(K) = MOTINT( ADRESS(1,103) + K-1 )
+        ENDDO
+      ENDIF
+!     KEYWORD: DEBUGGER
+      DEBUG = MOTINT( ADRESS(1,104) )
+!     KEYWORD: RECORD IN THE WAVE DRIVEN CURRENTS FILE
+      NPTH = MOTINT( ADRESS(1,105) )
+!     KEYWORD: TREATMENT OF NEGATIVE DEPTHS
+      OPT_HNEG = MOTINT( ADRESS(1,106) )
+!     KEYWORD: SKIN FRICTION 
+      ICR = MOTINT( ADRESS(1,107) )
+!
+      ICQ=  MOTINT( ADRESS(1,108) )
+      IF(ICQ.NE.1.AND.ICQ.NE.3) THEN
+        IF(LNG.EQ.1) WRITE(LU,1401) ICQ
+        IF(LNG.EQ.2) WRITE(LU,1402) ICQ
+1401    FORMAT('ERREUR SUR LA CONCENTRATION DE REFERENCE : ',1I3)
+1402    FORMAT('ERROR ON THE REFERENCE CONCENTRATION: ',1I3)
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+!
+      DO K=1,MAXFRO
+        FRTYPE(K)=1
+      ENDDO
+      THOMFR=.FALSE.
+      IF(DIMEN(1,109).GT.0) THEN
+        DO K=1,DIMEN(1,109)
+          FRTYPE(K) = MOTINT( ADRESS(1,109) + K-1 )
+          IF(FRTYPE(K).EQ.2) THOMFR=.TRUE.
+        ENDDO
+      ENDIF
+!     KEYWORD: VERTICAL VELOCITY DERIVATIVES 
+      LINLOG = MOTINT( ADRESS(1,110) )
+!     OPTION FOR TIDAL BOUNDARY CONDITIONS
+      TIDALTYPE  = MOTINT(ADRESS(1,111))
+!     INPUT TIDAL DATA BASE
+      TIDALDB = MOTINT(ADRESS(1,112))
+!     GEOGRAPHIC SYSTEM IN WHICH THE NUMERICAL MODEL IS BUILT (TIDAL MODEL)
+      GEOSYST = MOTINT(ADRESS(1,113))
+!     ZONE NUMBER WHEN USING A PLANE PROJECTION,
+!     ASSOCIATED TO GEOGRAPHIC SYSTEM (TIDAL MODEL)
+      NUMZONE = MOTINT(ADRESS(1,114))
 !
 ! REAL KEYWORDS
 !
-        DT        = MOTREA(ADRESS(2, 1))
-        GRAV      = MOTREA(ADRESS(2, 2))
-        FCOR      = MOTREA(ADRESS(2, 3))
-        FAIR      = MOTREA(ADRESS(2, 4))
-        FUAIR     = MOTREA(ADRESS(2, 5))
-        FVAIR     = MOTREA(ADRESS(2, 6))
-        TAIR      = MOTREA(ADRESS(2, 7))
+      DT        = MOTREA(ADRESS(2, 1))
+      GRAV      = MOTREA(ADRESS(2, 2))
+      FCOR      = MOTREA(ADRESS(2, 3))
+      FAIR      = MOTREA(ADRESS(2, 4))
+      FUAIR     = MOTREA(ADRESS(2, 5))
+      FVAIR     = MOTREA(ADRESS(2, 6))
+      TAIR      = MOTREA(ADRESS(2, 7))
 !
-        IF(NTRAC.GT.0) THEN
-         IF(TROUVE(2,8).EQ.2.AND.DIMEN(2,8).EQ.NTRAC) THEN
-           DO I=1,NTRAC
-             BETAC(I)  = MOTREA(ADRESS(2, 8)+I-1)
-           ENDDO
-         ELSEIF(DENLAW.EQ.4) THEN
+      IF(NTRAC.GT.0) THEN
+        IF(TROUVE(2,8).EQ.2.AND.DIMEN(2,8).EQ.NTRAC) THEN
+          DO I=1,NTRAC
+            BETAC(I)  = MOTREA(ADRESS(2, 8)+I-1)
+          ENDDO
+        ELSEIF(DENLAW.EQ.4) THEN
           IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'AVEC LOI DE DENSITE = 4 DONNER LE MOT-CLE'
-          WRITE(LU,*)
-     &    'COEFFICIENT DE DILATATION BETA POUR LES TRACEURS'
-          WRITE(LU,*) 'POUR TOUS LES TRACEURS'
+         WRITE(LU,*) 'AVEC LOI DE DENSITE = 4 DONNER LE MOT-CLE'
+            WRITE(LU,*)
+     &      'COEFFICIENT DE DILATATION BETA POUR LES TRACEURS'
+            WRITE(LU,*) 'POUR TOUS LES TRACEURS'
           ENDIF
           IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'WITH DENSITY LAW = 4 GIVE THE KEY-WORD'
-          WRITE(LU,*) 'BETA EXPANSION COEFFICIENT FOR TRACERS'
-          WRITE(LU,*) 'FOR ALL TRACERS'
+            WRITE(LU,*) 'WITH DENSITY LAW = 4 GIVE THE KEY-WORD'
+            WRITE(LU,*) 'BETA EXPANSION COEFFICIENT FOR TRACERS'
+            WRITE(LU,*) 'FOR ALL TRACERS'
           ENDIF
           CALL PLANTE(1)
           STOP
-         ENDIF
-         IF(TROUVE(2,9).EQ.2.AND.DIMEN(2,9).GE.NTRAC) THEN
-           DO I=1,NTRAC
-             T0AC(I)  = MOTREA(ADRESS(2, 9)+I-1)
-           ENDDO
-         ELSEIF(DENLAW.EQ.4) THEN
+        ENDIF
+        IF(TROUVE(2,9).EQ.2.AND.DIMEN(2,9).GE.NTRAC) THEN
+          DO I=1,NTRAC
+            T0AC(I)  = MOTREA(ADRESS(2, 9)+I-1)
+          ENDDO
+        ELSEIF(DENLAW.EQ.4) THEN
           IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'AVEC LOI DE DENSITE = 4 DONNER LE MOT-CLE'
-          WRITE(LU,*) 'VALEUR DE REFERENCE DES TRACEURS'
-          WRITE(LU,*) 'POUR TOUS LES TRACEURS'
+            WRITE(LU,*) 'LOI DE DENSITE = 4 : DONNER LE MOT-CLE'
+            WRITE(LU,*) 'VALEUR DE REFERENCE DES TRACEURS'
+            WRITE(LU,*) 'POUR TOUS LES TRACEURS'
           ENDIF
           IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'WITH DENSITY LAW = 4 GIVE THE KEY-WORD'
-          WRITE(LU,*) 'STANDARD VALUE FOR TRACERS'
-          WRITE(LU,*) 'FOR ALL TRACERS'
+            WRITE(LU,*) 'WITH DENSITY LAW = 4 GIVE THE KEY-WORD'
+            WRITE(LU,*) 'STANDARD VALUE FOR TRACERS'
+            WRITE(LU,*) 'FOR ALL TRACERS'
           ENDIF
+          CALL PLANTE(1)
           STOP
-         ENDIF
         ENDIF
+      ENDIF
 !
-        RHO0      = MOTREA(ADRESS(2,10))
-        RUGOF0    = MOTREA(ADRESS(2,11))
-        RUGOL0    = MOTREA(ADRESS(2,12))
+      RHO0      = MOTREA(ADRESS(2,10))
+      RUGOF0    = MOTREA(ADRESS(2,11))
+      RUGOL0    = MOTREA(ADRESS(2,12))
 !
 ! (...THE SAME ZERO FOR ALL SOLVERS...)
 !
-        SLVDVI%ZERO = MOTREA(ADRESS(2,13))
-        SLVDTA(1)%ZERO = MOTREA(ADRESS(2,13))
-        IF(NTRAC.GT.1) THEN
-          DO K=2,NTRAC
-            SLVDTA(K)%ZERO = SLVDTA(1)%ZERO 
+      SLVDVI%ZERO = MOTREA(ADRESS(2,13))
+      SLVDTA(1)%ZERO = MOTREA(ADRESS(2,13))
+      IF(NTRAC.GT.1) THEN
+        DO K=2,NTRAC
+          SLVDTA(K)%ZERO = SLVDTA(1)%ZERO 
+        ENDDO
+      ENDIF
+!     NO KEY-WORD FOR THIS ONE
+      SLVDSE%ZERO = SLVDTA(1)%ZERO
+      SLVDKE%ZERO = MOTREA(ADRESS(2,13))
+      SLVPRO%ZERO = MOTREA(ADRESS(2,13))
+      SLVW%ZERO   = MOTREA(ADRESS(2,13))
+      SLVPOI%ZERO = MOTREA(ADRESS(2,13))
+      SLVPRJ%ZERO = MOTREA(ADRESS(2,13))
+!
+      HMIN      = MOTREA(ADRESS(2,14))
+      HAULIN    = MOTREA(ADRESS(2,15))
+      DNUVIH    = MOTREA(ADRESS(2,16))
+      DNUVIV    = MOTREA(ADRESS(2,17))
+      DNUTAH    = MOTREA(ADRESS(2,18))
+      DNUTAV    = MOTREA(ADRESS(2,19))
+!
+      IF(NTRAC.GT.0) THEN
+        IF(TROUVE(2,20).EQ.2.AND.DIMEN(2,20).GE.NTRAC) THEN
+          DO I=1,NTRAC
+            TRAC0(I) = MOTREA(ADRESS(2,20)+I-1)
           ENDDO
-        ENDIF
-!       NO KEY-WORD FOR THIS ONE
-        SLVDSE%ZERO = SLVDTA(1)%ZERO
-        SLVDKE%ZERO = MOTREA(ADRESS(2,13))
-        SLVPRO%ZERO = MOTREA(ADRESS(2,13))
-        SLVW%ZERO   = MOTREA(ADRESS(2,13))
-        SLVPOI%ZERO = MOTREA(ADRESS(2,13))
-        SLVPRJ%ZERO = MOTREA(ADRESS(2,13))
-!
-        HMIN      = MOTREA(ADRESS(2,14))
-        HAULIN    = MOTREA(ADRESS(2,15))
-        DNUVIH    = MOTREA(ADRESS(2,16))
-        DNUVIV    = MOTREA(ADRESS(2,17))
-        DNUTAH    = MOTREA(ADRESS(2,18))
-        DNUTAV    = MOTREA(ADRESS(2,19))
-!
-        IF(NTRAC.GT.0) THEN
-          IF(TROUVE(2,20).EQ.2.AND.DIMEN(2,20).GE.NTRAC) THEN
-            DO I=1,NTRAC
-              TRAC0(I) = MOTREA(ADRESS(2,20)+I-1)
-            ENDDO
-          ELSE
-            IF(LNG.EQ.1) THEN
-              WRITE(LU,*) 'DONNER LE MOT-CLE'
-              WRITE(LU,*) 'VALEURS INITIALES DES TRACEURS'
-              WRITE(LU,*) 'POUR TOUS LES TRACEURS'
-            ENDIF
-            IF(LNG.EQ.2) THEN
-              WRITE(LU,*) 'GIVE THE KEY-WORD'
-              WRITE(LU,*) 'INITIAL VALUES OF TRACERS'
-              WRITE(LU,*) 'FOR ALL TRACERS'
-            ENDIF
-            CALL PLANTE(1)
-            STOP
+        ELSE
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'DONNER LE MOT-CLE'
+            WRITE(LU,*) 'VALEURS INITIALES DES TRACEURS'
+            WRITE(LU,*) 'POUR TOUS LES TRACEURS'
           ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'GIVE THE KEY-WORD'
+            WRITE(LU,*) 'INITIAL VALUES OF TRACERS'
+            WRITE(LU,*) 'FOR ALL TRACERS'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
         ENDIF
+      ENDIF
 !
-        SLVDSE%EPS    = MOTREA(ADRESS(2,21))
-        SLVDVI%EPS    = MOTREA(ADRESS(2,22))
-        SLVDTA(1)%EPS = MOTREA(ADRESS(2,23))
-        IF(NTRAC.GT.1) THEN
-          DO K=2,NTRAC
-            SLVDTA(K)%EPS = SLVDTA(1)%EPS
-          ENDDO
-        ENDIF
-        HLIM          = MOTREA(ADRESS(2,24))
-        SLVDKE%EPS    = MOTREA(ADRESS(2,25))
-        SLVPRO%EPS    = MOTREA(ADRESS(2,26))
-        SLVW%EPS      = MOTREA(ADRESS(2,27))
+      SLVDSE%EPS    = MOTREA(ADRESS(2,21))
+      SLVDVI%EPS    = MOTREA(ADRESS(2,22))
+      SLVDTA(1)%EPS = MOTREA(ADRESS(2,23))
+      IF(NTRAC.GT.1) THEN
+        DO K=2,NTRAC
+          SLVDTA(K)%EPS = SLVDTA(1)%EPS
+        ENDDO
+      ENDIF
+      HLIM          = MOTREA(ADRESS(2,24))
+      SLVDKE%EPS    = MOTREA(ADRESS(2,25))
+      SLVPRO%EPS    = MOTREA(ADRESS(2,26))
+      SLVW%EPS      = MOTREA(ADRESS(2,27))
 !
-        TETAH     = MOTREA(ADRESS(2,28))
-        TETAU     = MOTREA(ADRESS(2,29))
-        AGGLOH    = MOTREA(ADRESS(2,30))
-        AGGLOU    = MOTREA(ADRESS(2,31))
+      TETAH     = MOTREA(ADRESS(2,28))
+      TETAU     = MOTREA(ADRESS(2,29))
+      AGGLOH    = MOTREA(ADRESS(2,30))
+      AGGLOU    = MOTREA(ADRESS(2,31))
 !
 !       VALUES OF TRACERS IN THE RAIN
 !
-        IF(NTRAC.GT.0) THEN
-          DO I=1,NTRAC
-            TRAIN(I) = 0.D0
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          TRAIN(I) = 0.D0
+        ENDDO
+        IF(TROUVE(2,32).EQ.2) THEN
+          DO I=1,DIMEN(2,32)
+            TRAIN(I) = MOTREA(ADRESS(2,32)+I-1)
           ENDDO
-          IF(TROUVE(2,32).EQ.2) THEN
-            DO I=1,DIMEN(2,32)
-              TRAIN(I) = MOTREA(ADRESS(2,32)+I-1)
-            ENDDO
-          ENDIF
         ENDIF
+      ENDIF
 !
-        NDEBIT=DIMEN(2,33)
-        DO I=1,NDEBIT
-         DEBIMP(I) = MOTREA(ADRESS(2,33)+I-1)
-        ENDDO
+      NDEBIT=DIMEN(2,33)
+      DO I=1,NDEBIT
+        DEBIMP(I) = MOTREA(ADRESS(2,33)+I-1)
+      ENDDO
 !
-        NCOTE=DIMEN(2,34)
-        DO I=1,NCOTE
-         COTIMP(I) = MOTREA(ADRESS(2,34)+I-1)
-        ENDDO
+      NCOTE=DIMEN(2,34)
+      DO I=1,NCOTE
+        COTIMP(I) = MOTREA(ADRESS(2,34)+I-1)
+      ENDDO
 !
-        NVIT=DIMEN(2,35)
-        DO I=1,NVIT
-         VITIMP(I) = MOTREA(ADRESS(2,35)+I-1)
-        ENDDO
+      NVIT=DIMEN(2,35)
+      DO I=1,NVIT
+        VITIMP(I) = MOTREA(ADRESS(2,35)+I-1)
+      ENDDO
 !
-!       CHECKING THE SIZE OF KEY-WORD TREATMENT OF FLUXES AT THE BOUNDARIES
-!       SOME USERS THINK IT IS A SINGLE VALUE FOR ALL BOUNDARIES     
+!     CHECKING THE SIZE OF KEY-WORD TREATMENT OF FLUXES AT THE BOUNDARIES
+!     SOME USERS THINK IT IS A SINGLE VALUE FOR ALL BOUNDARIES     
 !
-        IF(TROUVE(1,97).EQ.2.AND.
-     &      DIMEN(1,97).LT.MAX(NDEBIT,NCOTE,NVIT)) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*) 'LE MOT-CLEF'
-            WRITE(LU,*) 'TRAITEMENT DES FLUX AUX FRONTIERES'
-            WRITE(LU,*) 'DOIT ETRE UNE LISTE DE ',
-     &                   MAX(NDEBIT,NCOTE,NVIT),
-     &                  ' VALEURS AU MOINS'
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*) 'THE KEY-WORD'
-            WRITE(LU,*) 'TREATMENT OF FLUXES AT THE BOUNDARIES'
-            WRITE(LU,*) 'MUST BE A LIST OF ',
-     &                   MAX(NDEBIT,NCOTE,NVIT),
-     &                  ' VALUES AT LEAST'
-          ENDIF
-          CALL PLANTE(1)
-          STOP
+      IF(TROUVE(1,97).EQ.2.AND.
+     &    DIMEN(1,97).LT.MAX(NDEBIT,NCOTE,NVIT)) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'LE MOT-CLEF'
+          WRITE(LU,*) 'TRAITEMENT DES FLUX AUX FRONTIERES'
+          WRITE(LU,*) 'DOIT ETRE UNE LISTE DE ',
+     &                 MAX(NDEBIT,NCOTE,NVIT),
+     &                ' VALEURS AU MOINS'
         ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'THE KEY-WORD'
+          WRITE(LU,*) 'TREATMENT OF FLUXES AT THE BOUNDARIES'
+          WRITE(LU,*) 'MUST BE A LIST OF ',
+     &                 MAX(NDEBIT,NCOTE,NVIT),
+     &                ' VALUES AT LEAST'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
 ! NON-HYDROSTATIC
 !
-        SLVPOI%EPS = MOTREA( ADRESS(2, 71) )
-!       ??????     = MOTREA( ADRESS(2, 72) )
-        SLVPRJ%EPS = MOTREA( ADRESS(2, 73) )
-!       ?????      = MOTREA( ADRESS(2, 74) )
-        PHILAT     = MOTREA( ADRESS(2, 75) )
-        DELTA      = MOTREA( ADRESS(2, 76) )
+      SLVPOI%EPS = MOTREA( ADRESS(2, 71) )
+!     ??????     = MOTREA( ADRESS(2, 72) )
+      SLVPRJ%EPS = MOTREA( ADRESS(2, 73) )
+!     ?????      = MOTREA( ADRESS(2, 74) )
+      PHILAT     = MOTREA( ADRESS(2, 75) )
+      DELTA      = MOTREA( ADRESS(2, 76) )
 ! SOGREAH ADDITIONS
-        LATIT      = MOTREA( ADRESS(2, 77) )
-        LONGIT     = MOTREA( ADRESS(2, 78) )
-        NORD       = MOTREA( ADRESS(2, 79) )
-        NSCE=DIMEN(2,80)
-        DO I=1,NSCE
-          XSCE(I) = MOTREA(ADRESS(2,80)+I-1)
-          YSCE(I) = MOTREA(ADRESS(2,81)+I-1)
-          ZSCE(I) = MOTREA(ADRESS(2,82)+I-1)
-          QSCE(I) = MOTREA(ADRESS(2,83)+I-1)
+      LATIT      = MOTREA( ADRESS(2, 77) )
+      LONGIT     = MOTREA( ADRESS(2, 78) )
+      NORD       = MOTREA( ADRESS(2, 79) )
+      NSCE=DIMEN(2,80)
+      DO I=1,NSCE
+        XSCE(I) = MOTREA(ADRESS(2,80)+I-1)
+        YSCE(I) = MOTREA(ADRESS(2,81)+I-1)
+        ZSCE(I) = MOTREA(ADRESS(2,82)+I-1)
+        QSCE(I) = MOTREA(ADRESS(2,83)+I-1)
+      ENDDO
+!
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          DO J=1,NSCE
+            TASCE(J,I) = MOTREA(ADRESS(2,84)+((J-1)*NTRAC)+I-1)
+          ENDDO
         ENDDO
-!
-        IF(NTRAC.GT.0) THEN
-         DO I=1,NTRAC
-           DO J=1,NSCE
-             TASCE(J,I) = MOTREA(ADRESS(2,84)+((J-1)*NTRAC)+I-1)
-           ENDDO
-         ENDDO
-         NTRACER=DIMEN(2,85)
-         IF(NTRACER.GT.0) THEN
-C          TRACER WILL BE TRACER(NFRLIQ,NTRAC) BUT NFRLIQ UNKNOWN
-           DO I=1,NTRACER
-             TRACER(I)=MOTREA(ADRESS(2,85)+I-1)
-           ENDDO
-         ENDIF
+        NTRACER=DIMEN(2,85)
+        IF(NTRACER.GT.0) THEN
+C         TRACER WILL BE TRACER(NFRLIQ,NTRAC) BUT NFRLIQ UNKNOWN
+          DO I=1,NTRACER
+            TRACER(I)=MOTREA(ADRESS(2,85)+I-1)
+          ENDDO
         ENDIF
+      ENDIF
 !
-        NREJEU = DIMEN(2,86)
-        IF(NREJEU.EQ.NSCE) THEN
-          DO I=1,NSCE
-            USCE(I) = MOTREA(ADRESS(2,86)+I-1)
-          ENDDO
-        ELSEIF(NREJEU.EQ.0) THEN
-          DO I=1,NSCE
-            USCE(I) = 0.D0
-          ENDDO
-        ELSE
-          IF(LNG.EQ.1) WRITE(LU,*)
-     &      'MAUVAIS NOMBRE DE VITESSES DES SOURCES SELON X'
-          IF(LNG.EQ.2) WRITE(LU,*)
-     &      'WRONG NUMBER OF VELOCITIES OF SOURCES ALONG X'
-          STOP
-        ENDIF
+      NREJEU = DIMEN(2,86)
+      IF(NREJEU.EQ.NSCE) THEN
+        DO I=1,NSCE
+          USCE(I) = MOTREA(ADRESS(2,86)+I-1)
+        ENDDO
+      ELSEIF(NREJEU.EQ.0) THEN
+        DO I=1,NSCE
+          USCE(I) = 0.D0
+        ENDDO
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &    'MAUVAIS NOMBRE DE VITESSES DES SOURCES SELON X'
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &    'WRONG NUMBER OF VELOCITIES OF SOURCES ALONG X'
+        STOP
+      ENDIF
 !
-        IF(DIMEN(2,87).EQ.NSCE) THEN
-          DO I=1,NSCE
-            VSCE(I) = MOTREA(ADRESS(2,87)+I-1)
-          ENDDO
-        ELSEIF(DIMEN(2,87).EQ.0) THEN
-          DO I=1,NSCE
-            VSCE(I) = 0.D0
-          ENDDO
-        ELSE
-          IF(LNG.EQ.1) WRITE(LU,*)
-     &      'MAUVAIS NOMBRE DE VITESSES DES SOURCES SELON Y'
-          IF(LNG.EQ.2) WRITE(LU,*)
-     &      'WRONG NUMBER OF VELOCITIES OF SOURCES ALONG Y'
-        ENDIF
+      IF(DIMEN(2,87).EQ.NSCE) THEN
+        DO I=1,NSCE
+          VSCE(I) = MOTREA(ADRESS(2,87)+I-1)
+        ENDDO
+      ELSEIF(DIMEN(2,87).EQ.0) THEN
+        DO I=1,NSCE
+          VSCE(I) = 0.D0
+        ENDDO
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*)
+     &    'MAUVAIS NOMBRE DE VITESSES DES SOURCES SELON Y'
+        IF(LNG.EQ.2) WRITE(LU,*)
+     &    'WRONG NUMBER OF VELOCITIES OF SOURCES ALONG Y'
+      ENDIF
 !
-C END OF SOGREAH ADDITIONS
+! END OF SOGREAH ADDITIONS
 !
-        COTINI = MOTREA( ADRESS(2, 88) )
-        HAUTIN = MOTREA( ADRESS(2, 89) )
-        TETADI = MOTREA( ADRESS(2, 90) )
-        D50    = MOTREA( ADRESS(2, 91) )
-!       RELEASE 5.5 : MASS-LUMPING FOR DIFFUSION
-        AGGLOD = MOTREA( ADRESS(2, 92) )
-!       RELEASE 5.7 :
-        DUREE  = MOTREA( ADRESS(2, 93) )
-        NIT=MAX(NIT,INT(DUREE/DT+0.5))
-        TETAZCOMP = MOTREA( ADRESS(2, 94) )
-        RAIN_MMPD = MOTREA( ADRESS(2, 95) )
-        KSPRATIO  = MOTREA( ADRESS(2, 96) )
-        AC        = MOTREA( ADRESS(2, 97) )
-        HWIND     = MOTREA( ADRESS(2, 98) )
-!       COEFFICIENT TO CALIBRATE TIDAL RANGE
-        CTIDE     = MOTREA( ADRESS(2, 99) )
-!       COEFFICIENT TO CALIBRATE TIDAL VELOCITIES
-        CTIDEV    = MOTREA( ADRESS(2,100) )
-!       COEFFICIENT TO CALIBRATE SEA LEVEL (TIDAL MODEL)
-        MSL       = MOTREA( ADRESS(2,101) )
+      COTINI = MOTREA( ADRESS(2, 88) )
+      HAUTIN = MOTREA( ADRESS(2, 89) )
+      TETADI = MOTREA( ADRESS(2, 90) )
+      D50    = MOTREA( ADRESS(2, 91) )
+!     RELEASE 5.5 : MASS-LUMPING FOR DIFFUSION
+      AGGLOD = MOTREA( ADRESS(2, 92) )
+!     RELEASE 5.7 :
+      DUREE  = MOTREA( ADRESS(2, 93) )
+      NIT=MAX(NIT,INT(DUREE/DT+0.5))
+      TETAZCOMP = MOTREA( ADRESS(2, 94) )
+      RAIN_MMPD = MOTREA( ADRESS(2, 95) )
+      KSPRATIO  = MOTREA( ADRESS(2, 96) )
+      AC        = MOTREA( ADRESS(2, 97) )
+      HWIND     = MOTREA( ADRESS(2, 98) )
+!     COEFFICIENT TO CALIBRATE TIDAL RANGE
+      CTIDE     = MOTREA( ADRESS(2, 99) )
+!     COEFFICIENT TO CALIBRATE TIDAL VELOCITIES
+      CTIDEV    = MOTREA( ADRESS(2,100) )
+!     COEFFICIENT TO CALIBRATE SEA LEVEL (TIDAL MODEL)
+      MSL       = MOTREA( ADRESS(2,101) )
 !
 ! LOGICAL KEYWORDS
 !
-        DEBU      = .NOT.MOTLOG(ADRESS(3,1))
-        CONVEC    = MOTLOG(ADRESS(3, 2))
-        DIFFUS    = MOTLOG(ADRESS(3, 3))
-        PROP      = MOTLOG(ADRESS(3, 4))
-        CORIOL    = MOTLOG(ADRESS(3, 5))
-        VENT      = MOTLOG(ADRESS(3, 6))
-        ATMOS     = MOTLOG(ADRESS(3, 7))
-        RAZTIM    = MOTLOG(ADRESS(3, 8))
-        SEDI      = MOTLOG(ADRESS(3, 9))
-        IF(SEDI.AND.NTRAC.EQ.0) THEN
-          IF(LNG.EQ.1) THEN
-            WRITE(LU,*)
-            WRITE(LU,*) 'AVEC SEDIMENT IL FAUT AU MOINS UN TRACEUR'
-            WRITE(LU,*)
-          ENDIF
-          IF(LNG.EQ.2) THEN
-            WRITE(LU,*)
-            WRITE(LU,*) 'WITH SEDIMENT AT LEAST ONE TRACER NEEDED'
-            WRITE(LU,*)
-          ENDIF
-          CALL PLANTE(1)
-          STOP
+      DEBU      = .NOT.MOTLOG(ADRESS(3,1))
+      CONVEC    = MOTLOG(ADRESS(3, 2))
+      DIFFUS    = MOTLOG(ADRESS(3, 3))
+      PROP      = MOTLOG(ADRESS(3, 4))
+      CORIOL    = MOTLOG(ADRESS(3, 5))
+      VENT      = MOTLOG(ADRESS(3, 6))
+      ATMOS     = MOTLOG(ADRESS(3, 7))
+      RAZTIM    = MOTLOG(ADRESS(3, 8))
+      SEDI      = MOTLOG(ADRESS(3, 9))
+      IF(SEDI.AND.NTRAC.EQ.0) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*)
+          WRITE(LU,*) 'AVEC SEDIMENT IL FAUT AU MOINS UN TRACEUR'
+          WRITE(LU,*)
         ENDIF
-        MSKUSE       = MOTLOG(ADRESS(3,10))
-        BANDEC       = MOTLOG(ADRESS(3,11))
-        PROLIN       = MOTLOG(ADRESS(3,12))
-        BILMAS       = MOTLOG(ADRESS(3,13))
-        INFMAS       = MOTLOG(ADRESS(3,14))
-        RAIN         = MOTLOG(ADRESS(3,15))
-        INCHYD       = MOTLOG(ADRESS(3,16))
-        SPHERI       = MOTLOG(ADRESS(3,17))
-!       VARSUB       = MOTLOG(ADRESS(3,18))
-        VALID        = MOTLOG(ADRESS(3,19))
-        RESTART_MODE = MOTLOG(ADRESS(3,20))
-        TASSE        = MOTLOG(ADRESS(3,51))
-        GIBSON       = MOTLOG(ADRESS(3,52))
-        TURBWC       = MOTLOG(ADRESS(3,53))
-        LISTIN       = MOTLOG(ADRESS(3,61))
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*)
+          WRITE(LU,*) 'WITH SEDIMENT AT LEAST ONE TRACER NEEDED'
+          WRITE(LU,*)
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF
+      MSKUSE       = MOTLOG(ADRESS(3,10))
+      BANDEC       = MOTLOG(ADRESS(3,11))
+      PROLIN       = MOTLOG(ADRESS(3,12))
+      BILMAS       = MOTLOG(ADRESS(3,13))
+      INFMAS       = MOTLOG(ADRESS(3,14))
+      RAIN         = MOTLOG(ADRESS(3,15))
+      INCHYD       = MOTLOG(ADRESS(3,16))
+      SPHERI       = MOTLOG(ADRESS(3,17))
+!     VARSUB       = MOTLOG(ADRESS(3,18))
+      VALID        = MOTLOG(ADRESS(3,19))
+      RESTART_MODE = MOTLOG(ADRESS(3,20))
+      TASSE        = MOTLOG(ADRESS(3,51))
+      GIBSON       = MOTLOG(ADRESS(3,52))
+      TURBWC       = MOTLOG(ADRESS(3,53))
+      LISTIN       = MOTLOG(ADRESS(3,61))
 !
 ! NON-HYDROSTATIC
 !
-        CLDYN     = MOTLOG( ADRESS(3,70) )
-        NONHYD    = MOTLOG( ADRESS(3,71) )
-        DPWAVEQ   = MOTLOG( ADRESS(3,72) )
+      CLDYN     = MOTLOG( ADRESS(3,70) )
+      NONHYD    = MOTLOG( ADRESS(3,71) )
+      DPWAVEQ   = MOTLOG( ADRESS(3,72) )
 !
 ! SEDIMENT CONSOLIDATION
 !
-        CONSOL    = MOTLOG( ADRESS(3,73) )
+      CONSOL    = MOTLOG( ADRESS(3,73) )
 !
 ! CONSISTENT PROJECTION (CURRENTLY NOT USED...)
 !
-        CONPRO    = MOTLOG( ADRESS(3,74) )
+      CONPRO    = MOTLOG( ADRESS(3,74) )
 !
-        SUIT2     = MOTLOG( ADRESS(3,75) )
+      SUIT2     = MOTLOG( ADRESS(3,75) )
 ! COHESIVE SEDIMENT
-        SEDCO     = MOTLOG( ADRESS(3,76) )
+      SEDCO     = MOTLOG( ADRESS(3,76) )
 ! SALINITY AND TEMPERATURE OUTPUT FOR DELWAQ
-        SALI_DEL  = MOTLOG( ADRESS(3,77) )
-        TEMP_DEL  = MOTLOG( ADRESS(3,78) )
-        VELO_DEL  = MOTLOG( ADRESS(3,79) )
-        DIFF_DEL  = MOTLOG( ADRESS(3,80) )
+      SALI_DEL  = MOTLOG( ADRESS(3,77) )
+      TEMP_DEL  = MOTLOG( ADRESS(3,78) )
+      VELO_DEL  = MOTLOG( ADRESS(3,79) )
+      DIFF_DEL  = MOTLOG( ADRESS(3,80) )
 ! WAVE DRIVEN CURRENTS
-        COUROU    = MOTLOG( ADRESS(3,81) )
-!       BYPASS VOID VOLUMES
-        BYPASS    = MOTLOG( ADRESS(3,82) )
-!       VELOCITY PROJECTED ON SOLID LATERAL BOUNDARIES
-        VELPROLAT = MOTLOG( ADRESS(3,83) )
-!       VELOCITY PROJECTED ON BOTTOM
-        VELPROBOT = MOTLOG( ADRESS(3,84) )
-!       OIL SPILL MODEL
-        SPILL_MODEL=MOTLOG( ADRESS(3,85) )
-!       INFERENCE OF MINOR CONSTITUENTS OF TPXO TIDAL DATABASE
-        INTMICON  = MOTLOG( ADRESS(3,86) )
+      COUROU    = MOTLOG( ADRESS(3,81) )
+!     BYPASS VOID VOLUMES
+      BYPASS    = MOTLOG( ADRESS(3,82) )
+!     VELOCITY PROJECTED ON SOLID LATERAL BOUNDARIES
+      VELPROLAT = MOTLOG( ADRESS(3,83) )
+!     VELOCITY PROJECTED ON BOTTOM
+      VELPROBOT = MOTLOG( ADRESS(3,84) )
+!     OIL SPILL MODEL
+      SPILL_MODEL=MOTLOG( ADRESS(3,85) )
+!     INFERENCE OF MINOR CONSTITUENTS OF TPXO TIDAL DATABASE
+      INTMICON  = MOTLOG( ADRESS(3,86) )
 !
 ! CHARACTER KEYWORDS (APPROPRIATELY TRUNCATED!)
 !
-        TITCAS    = MOTCAR(ADRESS(4, 1))(1:72)
-        SORT3D    = MOTCAR(ADRESS(4, 2))(1:72)
-        CALL MAJUS(SORT3D)
-        SORT2D    = MOTCAR(ADRESS(4, 3))(1:72)
-        CALL MAJUS(SORT2D)
+      TITCAS    = MOTCAR(ADRESS(4, 1))(1:72)
+      SORT3D    = MOTCAR(ADRESS(4, 2))(1:72)
+      CALL MAJUS(SORT3D)
+      SORT2D    = MOTCAR(ADRESS(4, 3))(1:72)
+      CALL MAJUS(SORT2D)
 !
 ! FILENAMES FROM THE STEERING FILE
 !
-!       4 TO 5 : READ AND USED BY LAUNCHING PROCEDURE
-        T3D_FILES(T3DGEO)%NAME=MOTCAR( ADRESS(4, 6) )
-!       NOMFOR                =MOTCAR( ADRESS(4, 7) )
-!       NOMCAS                =MOTCAR( ADRESS(4, 8) )
-        T3D_FILES(T3DCLI)%NAME=MOTCAR( ADRESS(4, 9) )
-        T3D_FILES(T3DPRE)%NAME=MOTCAR( ADRESS(4,10) )
-        T3D_FILES(T3DRES)%NAME=MOTCAR( ADRESS(4,11) )
-        T3D_FILES(T3DFON)%NAME=MOTCAR( ADRESS(4,16) )
-        T3D_FILES(T3DSCO)%NAME=MOTCAR( ADRESS(4,17) )
-!       2D RESULTS FILE
-        T3D_FILES(T3DHYD)%NAME=MOTCAR( ADRESS(4,18) )
-        T3D_FILES(T3DFO1)%NAME=MOTCAR( ADRESS(4,19) )
-        T3D_FILES(T3DFO2)%NAME=MOTCAR( ADRESS(4,20) )
-        T3D_FILES(T3DBI1)%NAME=MOTCAR( ADRESS(4,21) )
-        T3D_FILES(T3DBI2)%NAME=MOTCAR( ADRESS(4,22) )
-        T3D_FILES(T3DREF)%NAME=MOTCAR( ADRESS(4,55) )
-!       MIGRHYCAR STEERING FILE
-        T3D_FILES(T3DMIG)%NAME=MOTCAR( ADRESS(4,57) )
-!       LIQUID BOUNDARY FILE
-        T3D_FILES(T3DIMP)%NAME=MOTCAR( ADRESS(4,58) )
-!       HARMONIC CONSTANTS FILE
-        T3D_FILES(T3DHAR)%NAME=MOTCAR( ADRESS(4,86) )
-!       TIDAL MODEL FILE
-        T3D_FILES(T3DTID)%NAME=MOTCAR( ADRESS(4,87) )
-!       TIDE DATA BASE FILE
-        T3D_FILES(T3DBDD)%NAME=MOTCAR( ADRESS(4,88) )
-!       BINARY TIDE DATABASE FILE 1 (FOR SATELLITE ALTIMETRY)
-        T3D_FILES(T3DBB1)%NAME=MOTCAR( ADRESS(4,89) )
-!       BINARY TIDE DATABASE FILE 2 (FOR SATELLITE ALTIMETRY)
-        T3D_FILES(T3DBB2)%NAME=MOTCAR( ADRESS(4,90) )
+!     4 TO 5 : READ AND USED BY LAUNCHING PROCEDURE
+      T3D_FILES(T3DGEO)%NAME=MOTCAR( ADRESS(4, 6) )
+!     NOMFOR                =MOTCAR( ADRESS(4, 7) )
+!     NOMCAS                =MOTCAR( ADRESS(4, 8) )
+      T3D_FILES(T3DCLI)%NAME=MOTCAR( ADRESS(4, 9) )
+      T3D_FILES(T3DPRE)%NAME=MOTCAR( ADRESS(4,10) )
+      T3D_FILES(T3DRES)%NAME=MOTCAR( ADRESS(4,11) )
+      T3D_FILES(T3DFON)%NAME=MOTCAR( ADRESS(4,16) )
+      T3D_FILES(T3DSCO)%NAME=MOTCAR( ADRESS(4,17) )
+!     2D RESULTS FILE
+      T3D_FILES(T3DHYD)%NAME=MOTCAR( ADRESS(4,18) )
+      T3D_FILES(T3DFO1)%NAME=MOTCAR( ADRESS(4,19) )
+      T3D_FILES(T3DFO2)%NAME=MOTCAR( ADRESS(4,20) )
+      T3D_FILES(T3DBI1)%NAME=MOTCAR( ADRESS(4,21) )
+      T3D_FILES(T3DBI2)%NAME=MOTCAR( ADRESS(4,22) )
+      T3D_FILES(T3DREF)%NAME=MOTCAR( ADRESS(4,55) )
+!     MIGRHYCAR STEERING FILE
+      T3D_FILES(T3DMIG)%NAME=MOTCAR( ADRESS(4,57) )
+!     LIQUID BOUNDARY FILE
+      T3D_FILES(T3DIMP)%NAME=MOTCAR( ADRESS(4,58) )
+!     HARMONIC CONSTANTS FILE
+      T3D_FILES(T3DHAR)%NAME=MOTCAR( ADRESS(4,86) )
+!     TIDAL MODEL FILE
+      T3D_FILES(T3DTID)%NAME=MOTCAR( ADRESS(4,87) )
+!     TIDE DATA BASE FILE
+      T3D_FILES(T3DBDD)%NAME=MOTCAR( ADRESS(4,88) )
+!     BINARY TIDE DATABASE FILE 1 (FOR SATELLITE ALTIMETRY)
+      T3D_FILES(T3DBB1)%NAME=MOTCAR( ADRESS(4,89) )
+!     BINARY TIDE DATABASE FILE 2 (FOR SATELLITE ALTIMETRY)
+      T3D_FILES(T3DBB2)%NAME=MOTCAR( ADRESS(4,90) )
 !
-!       INITIAL CONDITIONS
-        CDTINI    = MOTCAR(ADRESS(4,59))(1:72)
+!     INITIAL CONDITIONS
+      CDTINI    = MOTCAR(ADRESS(4,59))(1:72)
 !
-        BINGEO    = MOTCAR(ADRESS(4,24))(1:3)
-        CALL MAJUS(BINGEO)
-        BINRES    = MOTCAR(ADRESS(4,25))(1:3)
-        CALL MAJUS(BINRES)
-        BINPRE    = MOTCAR(ADRESS(4,26))(1:3)
-        CALL MAJUS(BINPRE)
-        BINHYD    = MOTCAR(ADRESS(4,27))(1:3)
-        CALL MAJUS(BINHYD)
-!       FORMAT OF THE GEOMETRY FILE
-        T3D_FILES(T3DGEO)%FMT = MOTCAR( ADRESS(4,29) )(1:8)
-        CALL MAJUS(T3D_FILES(T3DGEO)%FMT)
-!       FORMAT OF THE 3D RESULTS FILE
-        T3D_FILES(T3DRES)%FMT = MOTCAR( ADRESS(4,30) )(1:8)
-        CALL MAJUS(T3D_FILES(T3DRES)%FMT)
-!       FORMAT OF THE 2D RESULTS FILE
-        T3D_FILES(T3DHYD)%FMT = MOTCAR( ADRESS(4,28) )(1:8)
-        CALL MAJUS(T3D_FILES(T3DHYD)%FMT)
-!       FORMAT OF THE PREVIOUS COMPUTATION RESULTS FILE
-        T3D_FILES(T3DPRE)%FMT = MOTCAR( ADRESS(4,31) )(1:8)
-        CALL MAJUS(T3D_FILES(T3DPRE)%FMT)
+      BINGEO    = MOTCAR(ADRESS(4,24))(1:3)
+      CALL MAJUS(BINGEO)
+      BINRES    = MOTCAR(ADRESS(4,25))(1:3)
+      CALL MAJUS(BINRES)
+      BINPRE    = MOTCAR(ADRESS(4,26))(1:3)
+      CALL MAJUS(BINPRE)
+      BINHYD    = MOTCAR(ADRESS(4,27))(1:3)
+      CALL MAJUS(BINHYD)
+!     FORMAT OF THE GEOMETRY FILE
+      T3D_FILES(T3DGEO)%FMT = MOTCAR( ADRESS(4,29) )(1:8)
+      CALL MAJUS(T3D_FILES(T3DGEO)%FMT)
+!     FORMAT OF THE 3D RESULTS FILE
+      T3D_FILES(T3DRES)%FMT = MOTCAR( ADRESS(4,30) )(1:8)
+      CALL MAJUS(T3D_FILES(T3DRES)%FMT)
+!     FORMAT OF THE 2D RESULTS FILE
+      T3D_FILES(T3DHYD)%FMT = MOTCAR( ADRESS(4,28) )(1:8)
+      CALL MAJUS(T3D_FILES(T3DHYD)%FMT)
+!     FORMAT OF THE PREVIOUS COMPUTATION RESULTS FILE
+      T3D_FILES(T3DPRE)%FMT = MOTCAR( ADRESS(4,31) )(1:8)
+      CALL MAJUS(T3D_FILES(T3DPRE)%FMT)
 !
-!       INITIALISES AND READS THE NAMES OF TRACERS
+!     INITIALISES AND READS THE NAMES OF TRACERS
 !
-        IF(NTRAC.GT.0) THEN
-          DO I=1,NTRAC
-            IF(LNG.EQ.1) THEN
-             NAMETRAC(I) =  'TRACEUR '//I_IN_2_LETTERS(I)//'      '
-     &                     // '??              '
-            ELSEIF(LNG.EQ.2) THEN
-             NAMETRAC(I) =  'TRACER '//I_IN_2_LETTERS(I)//'       '
-     &                     // '??              '
-            ENDIF
-          ENDDO
-        ENDIF
-        NTRTOT=DIMEN(4,56)
-        IF(NTRTOT.GT.0.AND.NTRAC.GT.0) THEN
-          DO I=1,NTRTOT
-            NAMETRAC(I) = MOTCAR(ADRESS(4,56)+I-1)(1:32)
-          ENDDO
-        ENDIF
+      IF(NTRAC.GT.0) THEN
+        DO I=1,NTRAC
+          IF(LNG.EQ.1) THEN
+           NAMETRAC(I) =  'TRACEUR '//I_IN_2_LETTERS(I)//'      '
+     &                   // '??              '
+          ELSEIF(LNG.EQ.2) THEN
+           NAMETRAC(I) =  'TRACER '//I_IN_2_LETTERS(I)//'       '
+     &                   // '??              '
+          ENDIF
+        ENDDO
+      ENDIF
+      NTRTOT=DIMEN(4,56)
+      IF(NTRTOT.GT.0.AND.NTRAC.GT.0) THEN
+        DO I=1,NTRTOT
+          NAMETRAC(I) = MOTCAR(ADRESS(4,56)+I-1)(1:32)
+        ENDDO
+      ENDIF
 !
-        ELEMENT = MOTCAR(ADRESS(4,60))(1:72)
+      ELEMENT = MOTCAR(ADRESS(4,60))(1:72)
 !
-!       TELEMAC3D DISCRETISATION TYPES: 3D, 2D HORIZONTAL BOUNDARY,
-!       2D VERTICAL BOUNDARY
+!     TELEMAC3D DISCRETISATION TYPES: 3D, 2D HORIZONTAL BOUNDARY,
+!     2D VERTICAL BOUNDARY
 !
-        IF(ELEMENT(1:5).EQ.'PRISM') THEN
-         IELM3  = 41     ! TELEMAC3D PRISMS
-         IELM2H = 11     ! TRIANGULAR BOTTOM AND SURFACE
-         IELM2V = 71     ! QUADRILATERAL LATERAL BOUNDARIES
-        ELSEIF(ELEMENT(1:5).EQ.'TETRA') THEN
-         IELM3  = 51     ! PRISMS CUT INTO TETRAHEDRONS
-         IELM2H = 11     ! TRIANGULAR BOTTOM AND SURFACE
-         IELM2V = 61     ! TRIANGULAR LATERAL BOUNDARIES
-        ELSE
-         IF(LNG.EQ.1) WRITE(LU,*) 'ELEMENT INCONNU : ',ELEMENT
-         IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN ELEMENT: ',ELEMENT
-         CALL PLANTE(1)
-         STOP
-        ENDIF
+      IF(ELEMENT(1:5).EQ.'PRISM') THEN
+        IELM3  = 41     ! TELEMAC3D PRISMS
+        IELM2H = 11     ! TRIANGULAR BOTTOM AND SURFACE
+        IELM2V = 71     ! QUADRILATERAL LATERAL BOUNDARIES
+      ELSEIF(ELEMENT(1:5).EQ.'TETRA') THEN
+        IELM3  = 51     ! PRISMS CUT INTO TETRAHEDRONS
+        IELM2H = 11     ! TRIANGULAR BOTTOM AND SURFACE
+        IELM2V = 61     ! TRIANGULAR LATERAL BOUNDARIES
+      ELSE
+        IF(LNG.EQ.1) WRITE(LU,*) 'ELEMENT INCONNU : ',ELEMENT
+        IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN ELEMENT: ',ELEMENT
+        CALL PLANTE(1)
+        STOP
+      ENDIF
 !
-!       61: SISYPHE STEERING FILE, NOT READ HERE
+!     61: SISYPHE STEERING FILE, NOT READ HERE
 !
-!       COUPLING IN BIEF DECLARATIONS
-        COUPLING = MOTCAR(ADRESS(4,62))(1:74)
-!       63-71 : DELWAQ FILES
-        T3D_FILES(T3DDL1)%NAME=MOTCAR( ADRESS(4,63) )
-        T3D_FILES(T3DDL2)%NAME=MOTCAR( ADRESS(4,64) )
-        T3D_FILES(T3DDL3)%NAME=MOTCAR( ADRESS(4,65) )
-        T3D_FILES(T3DDL5)%NAME=MOTCAR( ADRESS(4,66) )
-        T3D_FILES(T3DDL6)%NAME=MOTCAR( ADRESS(4,67) )
-        T3D_FILES(T3DDL7)%NAME=MOTCAR( ADRESS(4,68) )
-        T3D_FILES(T3DL11)%NAME=MOTCAR( ADRESS(4,69) )
-        T3D_FILES(T3DDL4)%NAME=MOTCAR( ADRESS(4,70) )
-        T3D_FILES(T3DDL8)%NAME=MOTCAR( ADRESS(4,71) )
+!     COUPLING IN BIEF DECLARATIONS
+      COUPLING = MOTCAR(ADRESS(4,62))(1:74)
+!     63-71 : DELWAQ FILES
+      T3D_FILES(T3DDL1)%NAME=MOTCAR( ADRESS(4,63) )
+      T3D_FILES(T3DDL2)%NAME=MOTCAR( ADRESS(4,64) )
+      T3D_FILES(T3DDL3)%NAME=MOTCAR( ADRESS(4,65) )
+      T3D_FILES(T3DDL5)%NAME=MOTCAR( ADRESS(4,66) )
+      T3D_FILES(T3DDL6)%NAME=MOTCAR( ADRESS(4,67) )
+      T3D_FILES(T3DDL7)%NAME=MOTCAR( ADRESS(4,68) )
+      T3D_FILES(T3DL11)%NAME=MOTCAR( ADRESS(4,69) )
+      T3D_FILES(T3DDL4)%NAME=MOTCAR( ADRESS(4,70) )
+      T3D_FILES(T3DDL8)%NAME=MOTCAR( ADRESS(4,71) )
 !
-        T3D_FILES(T3DDL9)%NAME=MOTCAR( ADRESS(4,76) )
-        T3D_FILES(T3DL10)%NAME=MOTCAR( ADRESS(4,77) )
-!       STAGE-DISCHARGE CURVES FILE
-        T3D_FILES(T3DPAR)%NAME=MOTCAR( ADRESS(4,72) )
-!       SOURCES FILE (MUST BE ALSO NOMVEF IN TELEMAC-2D)
-        T3D_FILES(T3DVEF)%NAME=MOTCAR( ADRESS(4,73) )
-!       BINARY RESULTS FILE
-        T3D_FILES(T3DRBI)%NAME=MOTCAR( ADRESS(4,74) )
-!       FORMATTED RESULTS FILE
-        T3D_FILES(T3DRFO)%NAME=MOTCAR( ADRESS(4,75) )
+      T3D_FILES(T3DDL9)%NAME=MOTCAR( ADRESS(4,76) )
+      T3D_FILES(T3DL10)%NAME=MOTCAR( ADRESS(4,77) )
+!     STAGE-DISCHARGE CURVES FILE
+      T3D_FILES(T3DPAR)%NAME=MOTCAR( ADRESS(4,72) )
+!     SOURCES FILE (MUST BE ALSO NOMVEF IN TELEMAC-2D)
+      T3D_FILES(T3DVEF)%NAME=MOTCAR( ADRESS(4,73) )
+!     BINARY RESULTS FILE
+      T3D_FILES(T3DRBI)%NAME=MOTCAR( ADRESS(4,74) )
+!     FORMATTED RESULTS FILE
+      T3D_FILES(T3DRFO)%NAME=MOTCAR( ADRESS(4,75) )
 !
-!       76 AND 77: SEE IN DELWAQ FILES ABOVE
+!     76 AND 77: SEE IN DELWAQ FILES ABOVE
 !
-!       FORMAT OF THE REFERENCE FILE
-        T3D_FILES(T3DREF)%FMT = MOTCAR( ADRESS(4,78) )(1:8)
-        CALL MAJUS(T3D_FILES(T3DREF)%FMT)
-!       FORMAT OF THE BINARY DATA FILE 1
-        T3D_FILES(T3DBI1)%FMT = MOTCAR( ADRESS(4,79) )(1:8)
-        CALL MAJUS(T3D_FILES(T3DBI1)%FMT)
-!       RESTART FILE
-        T3D_FILES(T3DRST)%NAME=MOTCAR( ADRESS(4,85) )
-!       RESTART FILE FORMAT
-        T3D_FILES(T3DRST)%FMT = MOTCAR( ADRESS(4,84) )(1:8)
-!       DROGUES FILE
-        T3D_FILES(T3DFLO)%NAME=MOTCAR( ADRESS(4,91) )
+!     FORMAT OF THE REFERENCE FILE
+      T3D_FILES(T3DREF)%FMT = MOTCAR( ADRESS(4,78) )(1:8)
+      CALL MAJUS(T3D_FILES(T3DREF)%FMT)
+!     FORMAT OF THE BINARY DATA FILE 1
+      T3D_FILES(T3DBI1)%FMT = MOTCAR( ADRESS(4,79) )(1:8)
+      CALL MAJUS(T3D_FILES(T3DBI1)%FMT)
+!     RESTART FILE
+      T3D_FILES(T3DRST)%NAME=MOTCAR( ADRESS(4,85) )
+!     RESTART FILE FORMAT
+      T3D_FILES(T3DRST)%FMT = MOTCAR( ADRESS(4,84) )(1:8)
+!     DROGUES FILE
+      T3D_FILES(T3DFLO)%NAME=MOTCAR( ADRESS(4,91) )
+!     2D CONTINUATION FILE
+      T3D_FILES(T3DS2D)%NAME=MOTCAR( ADRESS(4,92) )
+!     FORMAT OF THE 2D CONTINUATION FILE
+      T3D_FILES(T3DS2D)%FMT = MOTCAR( ADRESS(4,93) )(1:8)
 !
 !-----------------------------------------------------------------------
 ! SEDIMENT - EX-LECSED.F
 !
 ! INTEGERS
 !
-        NPFMAX        = MOTINT(ADRESS(1,51))
-        SLVDSE%SLV    = MOTINT(ADRESS(1,52))
-        SLVDSE%PRECON = MOTINT(ADRESS(1,53))
+      NPFMAX        = MOTINT(ADRESS(1,51))
+      SLVDSE%SLV    = MOTINT(ADRESS(1,52))
+      SLVDSE%PRECON = MOTINT(ADRESS(1,53))
 !
 ! REALS
 !
-        RHOS      = MOTREA(ADRESS(2,51))
-        TOCD      = MOTREA(ADRESS(2,52))
-        CFDEP     = MOTREA(ADRESS(2,53))
-        EPAI0     = MOTREA(ADRESS(2,54))
-        DTC       = MOTREA(ADRESS(2,55))
-        CFMAX     = MOTREA(ADRESS(2,56))
-        MPART     = MOTREA(ADRESS(2,57))
-        TOCE      = MOTREA(ADRESS(2,58))
-        TURBA     = MOTREA(ADRESS(2,59))
-        TURBB     = MOTREA(ADRESS(2,60))
-        WCHU0     = MOTREA(ADRESS(2,61))
+      RHOS      = MOTREA(ADRESS(2,51))
+      TOCD      = MOTREA(ADRESS(2,52))
+      CFDEP     = MOTREA(ADRESS(2,53))
+      EPAI0     = MOTREA(ADRESS(2,54))
+      DTC       = MOTREA(ADRESS(2,55))
+      CFMAX     = MOTREA(ADRESS(2,56))
+      MPART     = MOTREA(ADRESS(2,57))
+      TOCE      = MOTREA(ADRESS(2,58))
+      TURBA     = MOTREA(ADRESS(2,59))
+      TURBB     = MOTREA(ADRESS(2,60))
+      WCHU0     = MOTREA(ADRESS(2,61))
 !
-        NCOUCH    = DIMEN(2,62)
-        IF(NCOUCH.NE.0) THEN
-          DO K = 1, NCOUCH
-            TREST(K) = MOTREA(ADRESS(2,62)+K-1)
-          ENDDO
-        ENDIF
-
+      NCOUCH    = DIMEN(2,62)
+      IF(NCOUCH.NE.0) THEN
+        DO K = 1, NCOUCH
+          TREST(K) = MOTREA(ADRESS(2,62)+K-1)
+        ENDDO
+      ENDIF
 !
 ! CHARACTERS
 !
-        T3D_FILES(T3DSED)%NAME=MOTCAR( ADRESS(4,51) )
-        T3D_FILES(T3DSUS)%NAME=MOTCAR( ADRESS(4,52) )
+      T3D_FILES(T3DSED)%NAME=MOTCAR( ADRESS(4,51) )
+      T3D_FILES(T3DSUS)%NAME=MOTCAR( ADRESS(4,52) )
 !
-        BIRSED    = MOTCAR(ADRESS(4,53))(1:3)
-        CALL MAJUS(BIRSED)
-        BISUIS    = MOTCAR(ADRESS(4,54))(1:3)
-        CALL MAJUS(BISUIS)
+      BIRSED    = MOTCAR(ADRESS(4,53))(1:3)
+      CALL MAJUS(BIRSED)
+      BISUIS    = MOTCAR(ADRESS(4,54))(1:3)
+      CALL MAJUS(BISUIS)
 !
 !-----------------------------------------------------------------------
 ! INFORMS THE USER THAT NO LISTING WILL APPEAR
 !
       IF(LISTIN) THEN
-         IF(LNG.EQ.1) WRITE(LU,103)
-         IF(LNG.EQ.2) WRITE(LU,104)
+        IF(LNG.EQ.1) WRITE(LU,103)
+        IF(LNG.EQ.2) WRITE(LU,104)
       ELSE
-         IF(LNG.EQ.1) WRITE(LU,*) '*** PAS DE LISTING DEMANDE ***'
-         IF(LNG.EQ.2) WRITE(LU,*) '*** NO LISTING REQUIRED ***'
+        IF(LNG.EQ.1) WRITE(LU,*) '*** PAS DE LISTING DEMANDE ***'
+        IF(LNG.EQ.2) WRITE(LU,*) '*** NO LISTING REQUIRED ***'
       ENDIF
 103   FORMAT(1X,/,19X, '********************************************',/,
      &            19X, '*               LECDON:                    *',/,
@@ -1039,12 +1068,12 @@ C END OF SOGREAH ADDITIONS
      &            19X, '********************************************',/)
 !
 !-----------------------------------------------------------------------
-C DEDUCES OTHER PARAMETERS
+! DEDUCES OTHER PARAMETERS
 !-----------------------------------------------------------------------
-C SEDIMENT CONCENTRATION IS THE LAST ACTIVE TRACER BY DEFINITION
+! SEDIMENT CONCENTRATION IS THE LAST ACTIVE TRACER BY DEFINITION
 !
-C SEDIMENT CONCENTRATION IS ONE OF ACTIVE TRACERS
-C TA(1,NTRAC) --> SEDIMENT CONCENTRATION IF SEDIMENTOLOGY
+! SEDIMENT CONCENTRATION IS ONE OF ACTIVE TRACERS
+! TA(1,NTRAC) --> SEDIMENT CONCENTRATION IF SEDIMENTOLOGY
 !
       IF (SEDI) THEN
         IF (LNG.EQ.1) WRITE(LU,111)
@@ -1816,25 +1845,6 @@ C  CHECKS THE EXISTENCE OF RELEVANT TRACERS FOR THE DENSITY LAW
 !
 !-----------------------------------------------------------------------
 !
-! REACTS IF A PREVIOUS COMPUTATION FILE IS REQUIRED, BUT NOT PROVIDED
-!
-      IF (T3DPRE/=0) THEN
-       IF(.NOT.DEBU.AND.T3D_FILES(T3DPRE)%NAME(1:1).EQ.' ') THEN
-        IF(LISTIN) THEN
-          IF(LNG.EQ.1) WRITE(LU,151)
-          IF(LNG.EQ.2) WRITE(LU,152)
-        ENDIF
-151     FORMAT(1X,'LECDON : UNE SUITE DE CALCUL EST DEMANDEE',/,10X,
-     &  'IL FAUT DONNER UN FICHIER DU CALCUL PRECEDENT',/)
-152     FORMAT(1X,'LECDON : A CONTINUED COMPUTATION REQUIRED, ',/,
-     &         1X,' A PREVIOUS COMPUTATION FILE IS NECESSARY',/)
-        CALL PLANTE(1)
-        STOP
-       ENDIF
-      ENDIF
-!
-!-----------------------------------------------------------------------
-!
 !  CROUT TYPE PRECONDITIONING WITH GMRES: NOT ON VECTOR MACHINES
 !
 161     FORMAT(1X,'LECDON: MOT-CLES SOLVEURS ET PRECONDITIONNEMENTS :',
@@ -2176,6 +2186,44 @@ C  CHECKS THE EXISTENCE OF RELEVANT TRACERS FOR THE DENSITY LAW
           CALL PLANTE(1)
           STOP
         ENDIF
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!  CHECKING COHERENCE FOR 2D COMPUTATION CONTINUED
+!
+      IF(SUIT2) THEN
+        IF(T3D_FILES(T3DS2D)%NAME(1:1).EQ.' ') THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'SUITE 2D :'
+            WRITE(LU,*) 'DONNER UN : FICHIER POUR SUITE 2D'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) '2D CONTINUATION:'
+            WRITE(LU,*) 'GIVE A: FILE FOR 2D CONTINUATION'
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!       OTHERWISE WOULD TRIGGER A 3D RESTART
+        DEBU=.TRUE.
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+!   REACTS IF A PREVIOUS COMPUTATION FILE IS REQUIRED, BUT NOT PROVIDED
+!
+      IF(.NOT.DEBU.AND.T3D_FILES(T3DPRE)%NAME(1:1).EQ.' ') THEN
+        IF(LISTIN) THEN
+          IF(LNG.EQ.1) WRITE(LU,151)
+          IF(LNG.EQ.2) WRITE(LU,152)
+        ENDIF
+151     FORMAT(1X,'LECDON : UNE SUITE DE CALCUL EST DEMANDEE',/,10X,
+     &  'IL FAUT DONNER UN FICHIER DU CALCUL PRECEDENT',/)
+152     FORMAT(1X,'LECDON : A CONTINUED COMPUTATION REQUIRED, ',/,
+     &         1X,' A PREVIOUS COMPUTATION FILE IS NECESSARY',/)
+        CALL PLANTE(1)
+        STOP
       ENDIF
 !
 !-----------------------------------------------------------------------

@@ -86,6 +86,11 @@
 !+        V6P3
 !+   Adding the file format in calls to FIND_IN_SEL.
 !
+!history  J-M HERVOUET (LNHE)
+!+        18/03/2013
+!+        V6P3   
+!+   Dealing with the newly created FILE FOR 2D CONTINUATION.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -414,7 +419,7 @@
       IF(SUIT2) THEN
         IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE SUITE AVEC UN FICHIER 2D'
          CALL BIEF_SUITE(VARSOR,VARCL,IBID,
-     &                   T3D_FILES(T3DBI1)%LU,T3D_FILES(T3DBI1)%FMT,
+     &                   T3D_FILES(T3DS2D)%LU,T3D_FILES(T3DS2D)%FMT,
      &                   HIST,0,NPOIN2,AT,TEXTPR,VARCLA,
      &                   NVARCL,TROUVE,ALIRE2D,LISTIN,.TRUE.,MAXVAR)
         IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SUITE'

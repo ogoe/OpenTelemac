@@ -14,7 +14,7 @@ GEOMETRY FILE            : geo_particles.slf
 DROGUES FILE             : t3d_particles.dat
 2D CONTINUATION : YES
 INITIAL TIME SET TO ZERO : YES
-BINARY DATA FILE 1       : restart_2d.slf 
+FILE FOR 2D CONTINUATION : restart_2d.slf 
 REFERENCE FILE           : f3d_particles.slf
 VALIDATION : YES
 /

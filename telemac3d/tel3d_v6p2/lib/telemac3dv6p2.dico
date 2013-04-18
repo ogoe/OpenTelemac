@@ -2113,7 +2113,7 @@ DEFAUT1 = 'DEFAUT'
 RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
 RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
 NIVEAU = 1
-AIDE = 'Nom du fichier FORTRAN à soumettre.'
+AIDE = 'Nom du fichier FORTRAN a soumettre.'
 AIDE1 = 'Name of FORTRAN file to be submitted.'
 
 NOM = 'FICHIER DES PARAMETRES'
@@ -5827,7 +5827,41 @@ NIVEAU = 1
 AIDE = 'Fichier de resultat avec les positions des flotteurs' 
 AIDE1 = 'Results file with positions of drogues' 
 
+NOM = 'FICHIER POUR SUITE 2D'
+NOM1 = 'FILE FOR 2D CONTINUATION'
+TYPE = CARACTERE 
+INDEX = 92
+MNEMO = 'T3D_FILES(T3DS2D)%NAME' 
+SUBMIT = 'T3DS2D-READ-15;T3DS2D;FACUL;BIN;LIT;SELAFIN' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier utilise en cas de suite 2D' 
+AIDE1 = 'File to be used in case of 2D continuation' 
 
+NOM = 'FORMAT DU FICHIER POUR SUITE 2D'
+NOM1 = 'FILE FOR 2D CONTINUATION FORMAT'
+TYPE = CARACTERE
+INDEX = 93
+MNEMO = 'T3D_FILES(T3DS2D)%FMT'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES'
+AIDE = 'Format du fichier pour suite 2D.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'File for 2D continuation format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
 /
 /---------------------------------------------------------------------
 /
@@ -5851,7 +5885,7 @@ TYPE = CARACTERE
 INDEX = 99
 /
 MNEMO = ''
-TAILLE = 42
+TAILLE = 43
 DEFAUT  = 'FICHIER DES PARAMETRES';
           'DICTIONNAIRE';
           'FICHIER FORTRAN';
@@ -5893,7 +5927,8 @@ DEFAUT  = 'FICHIER DES PARAMETRES';
           'BASE ASCII DE DONNEES DE MAREE';
           'BASE BINAIRE 1 DE DONNEES DE MAREE';
           'BASE BINAIRE 2 DE DONNEES DE MAREE';
-          'FICHIER DES FLOTTEURS'
+          'FICHIER DES FLOTTEURS';
+          'FICHIER POUR SUITE 2D'
 DEFAUT1 = 'STEERING FILE';
           'DICTIONARY';
           'FORTRAN FILE';
@@ -5935,7 +5970,8 @@ DEFAUT1 = 'STEERING FILE';
           'ASCII DATABASE FOR TIDE';
           'BINARY DATABASE 1 FOR TIDE';
           'BINARY DATABASE 2 FOR TIDE';
-          'DROGUES FILE'
+          'DROGUES FILE';
+          'FILE FOR 2D CONTINUATION'
 RUBRIQUE  = 'FICHIERS'
 RUBRIQUE1 = 'FILES'
 NIVEAU = 1
