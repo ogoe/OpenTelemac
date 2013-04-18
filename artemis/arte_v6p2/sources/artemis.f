@@ -177,7 +177,8 @@
 !  LOOKS FOR BOTTOM AND BOTTOM FRICTION IN THE GEOMETRY FILE :
 !-----------------------------------------------------------------------
 !
-      CALL FONSTR(T1,ZF,T2,FW,ART_FILES(ARTGEO)%LU,ART_FILES(ARTFON)%LU,
+      CALL FONSTR(T1,ZF,T2,FW,ART_FILES(ARTGEO)%LU,
+     &            ART_FILES(ARTGEO)%FMT,ART_FILES(ARTFON)%LU,
      &            ART_FILES(ARTFON)%NAME,MESH,FFON,LISTIN)
 !-----------------------------------------------------------------------
 !
