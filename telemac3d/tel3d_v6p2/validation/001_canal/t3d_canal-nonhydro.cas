@@ -36,7 +36,7 @@ FICHIER DE GEOMETRIE               : geo_canal.slf
 FICHIER DES RESULTATS 3D           : r3d_canal_nonhydro-t3d.slf
 FICHIER DES RESULTATS 2D           : r2d_canal_nonhydro-t3d.slf
 FICHIER DE REFERENCE               : f3d_canal_nonhydro.slf
-FICHIER DE DONNEES BINAIRE 1       : f2d_canal.slf
+FICHIER POUR SUITE 2D              : f2d_canal.slf
 /
 VALIDATION : OUI
 /
