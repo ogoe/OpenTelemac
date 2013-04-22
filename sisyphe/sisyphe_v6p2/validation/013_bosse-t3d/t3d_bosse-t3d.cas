@@ -52,7 +52,7 @@ FICHIER DE REFERENCE : f3d_bosse-t3d.slf
 SUITE 2D = OUI
 / on utilise le fichier résultat de Telemac 2d
 / cf 02.bosse_tel2d
-FICHIER DE DONNEES BINAIRE 1         : bosse-t2d_init.slf
+FICHIER POUR SUITE 2D        : bosse-t2d_init.slf
 TRANSFORMATION DU MAILLAGE : 2
 /
 /----------------------------------------------------------------------/ 
