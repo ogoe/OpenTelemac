@@ -9,7 +9,7 @@
      & NOMIMP)
 !
 !***********************************************************************
-! TELEMAC2D   V6P2                                   21/08/2010
+! TELEMAC2D   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    MODIFIES THE BOUNDARY CONDITIONS ARRAYS
@@ -40,6 +40,12 @@
 !+        06/04/2012
 !+        V6P2
 !+   Original point numbers sent to functions SL, VIT and TR
+!
+!history  J-M HERVOUET (LNHE)
+!+        25/04/2013
+!+        V6P3
+!+   A new test to see if NUMLIQ(K)>0 (it may happen with weirs that
+!+   LIHBOR(K)=KENT and NUMLIQ(K)=0.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| EQUA           |-->| STRING DESCRIBING THE EQUATIONS SOLVED
@@ -165,19 +171,22 @@
 !
         IFRLIQ=NUMLIQ(K)
 !
-        IF(STA_DIS_CURVES(IFRLIQ).EQ.1) THEN
-          Z = STA_DIS_CUR(IFRLIQ,FLUX_BOUNDARIES(IFRLIQ),
-     &                    PTS_CURVES(IFRLIQ),QZ,NFRLIQ,
-     &                    ZF(NBOR(K))+H%R(NBOR(K)))
-          HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
-          H%R(NBOR(K))=HBOR(K)
-        ELSEIF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
-          N=NBOR(K)
-          IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
-          Z = SL(IFRLIQ,N)
-          HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
-          H%R(NBOR(K))=HBOR(K)
-!       ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
+!          IFRLIQ.EQ.0 MAY HAPPEN WITH WEIRS
+        IF(IFRLIQ.GT.0) THEN
+          IF(STA_DIS_CURVES(IFRLIQ).EQ.1) THEN
+            Z = STA_DIS_CUR(IFRLIQ,FLUX_BOUNDARIES(IFRLIQ),
+     &                      PTS_CURVES(IFRLIQ),QZ,NFRLIQ,
+     &                      ZF(NBOR(K))+H%R(NBOR(K)))
+            HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
+            H%R(NBOR(K))=HBOR(K)
+          ELSEIF(NCOTE.GT.0.OR.NOMIMP(1:1).NE.' ') THEN
+            N=NBOR(K)
+            IF(NCSIZE.GT.1) N=MESH%KNOLG%I(N)
+            Z = SL(IFRLIQ,N)
+            HBOR(K) = MAX( 0.D0 , Z-ZF(NBOR(K)) )
+            H%R(NBOR(K))=HBOR(K)
+!         ELSE HBOR TAKEN IN BOUNDARY CONDITIONS FILE
+          ENDIF
         ENDIF
 !
       ENDIF

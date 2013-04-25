@@ -367,8 +367,7 @@
      &             SURDET,DT,IKLE,IFABOR,ELT_T,
      &             ETA,ETA,IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,
      &             NOMB,NPOIN,NPOIN,NDP,NPLAN,1,MESH,NPT,U%DIM1,-1,
-     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF,
-     &             .FALSE.,.FALSE.,.FALSE.)
+     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL, TBTIL AT BOUNDARY NODES NUMBERING
@@ -519,8 +518,7 @@
      &             SURDET,DT,IKLE,IFABOR,ELT_T,ETA,ETA,
      &             IT3%I,IT4%I,IELM,IELMU,NELEM,NELMAX,NOMB,NPOIN,
      &             NPOIN,NDP,NPLAN,1,MESH,NPT,U%DIM1,-1,
-     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF,
-     &             .FALSE.,.FALSE.,.FALSE.)
+     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING
@@ -624,8 +622,7 @@
      &             IT3%I,IT4%I,IELM,
      &             IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN,NDP,NPLAN,1, 
      &             MESH,NPT,U%DIM1,-1,
-     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF,
-     &             .FALSE.,.FALSE.,.FALSE.)
+     &             SHPBUF%R,SHPBUF%R,SHPBUF%R,FREBUF,SIZEBUF)
 !
 !----------------------------------------------------------------------
 !     UBTIL, VBTIL, HBTIL AT BOUNDARY NODES NUMBERING

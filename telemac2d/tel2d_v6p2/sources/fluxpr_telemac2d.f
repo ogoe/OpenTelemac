@@ -46,8 +46,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF_DEF, ONLY: IPID
-      USE DECLARATIONS_TELEMAC2D, ONLY:
-     &          T2D_FILES,T2DSEC,T2DSEO,CHAIN,TITCAS
+      USE DECLARATIONS_TELEMAC2D, ONLY: T2D_FILES,T2DSEO,CHAIN,TITCAS
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
