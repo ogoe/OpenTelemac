@@ -184,7 +184,7 @@
 !--------------------------------------------------------------------- 
 ! 
       SUBROUTINE ORGANISE_CHARS(NPARAM,NOMB,NCHDIM,LAST_NCHDIM) ! WATCH OUT 
-          USE BIEF_DEF, ONLY: NCSIZE,IPID
+          USE BIEF_DEF, ONLY: NCSIZE
           IMPLICIT NONE 
           INTEGER, INTENT(IN)    :: NPARAM,NOMB 
           INTEGER, INTENT(INOUT) :: NCHDIM,LAST_NCHDIM 
@@ -5044,10 +5044,10 @@
 ! 
      &(U,UTILD,UCONV,VCONV,WCONV,FRCONV,X,Y,ZSTAR,FREQ, 
      & XCONV,YCONV,ZCONV,FCONV,DX,DY,DZ,DF,Z,SHP,SHZ,SHF,SURDET, 
-     & DT , IKLE , IFABOR , ELT , ETA , FRE, ELTBUF, ISUB, IELM , 
+     & DT   , IKLE,IFABOR, ELT, ETA , FRE, ELTBUF, ISUB, IELM , 
      & IELMU,NELEM,NELMAX,NOMB,NPOIN,NPOIN2,NDP,NPLAN,NF,  
      & MESH ,NPLOT,DIM1U, SENS,SHPBUF,SHZBUF,SHFBUF,FREBUF,SIZEBUF,
-     & APOST,APERIO,AYA4D,ASIGMA) 
+     & APOST,APERIO,AYA4D,ASIGMA,ASTOCHA,AVISC) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.3           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -5071,7 +5071,10 @@
 !                             ARGUMENTS 
 ! .________________.____.______________________________________________. 
 ! |      NOM       |MODE|                   ROLE                       | 
-! |________________|____|______________________________________________| 
+! |________________|____|______________________________________________|
+! |   VISC         | -->| VISCOSITY (MAY BE TENSORIAL) 
+! |   STOCHA       | -->| STOCHASTIC DIFFUSION MODEL
+! |                |    | 0: NO DIFFUSION 1: ????       2: ????????
 ! |   U            | -->| VARIABLES A L'ETAPE N .                        
 ! |   UTILD        |<-- | VARIABLES APRES LA CONVECTION .                
 ! |   UCONV,VCONV..| -->| COMPOSANTES DES VITESSES DU CONVECTEUR. 
@@ -5172,13 +5175,17 @@
       INTEGER, TARGET,  INTENT(INOUT) :: ISUB(NPLOT)  
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
       LOGICAL, INTENT(IN), OPTIONAL   :: APOST,APERIO,AYA4D,ASIGMA
+      INTEGER, INTENT(IN), OPTIONAL   :: ASTOCHA
+      TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL, TARGET :: AVISC
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER NRK,I,ISTOP,ISTOP2 
+      INTEGER NRK,I,ISTOP,ISTOP2,STOCHA 
       INTEGER, POINTER, DIMENSION(:)  :: ETABUF
 !
       LOGICAL POST,PERIO,YA4D,SIGMA
+!
+      TYPE(BIEF_OBJ), POINTER :: VISC
 ! 
 !----------------------------------------------------------------------- 
 !      
@@ -5231,7 +5238,24 @@
         SIGMA=ASIGMA
       ELSE
         SIGMA=.FALSE.
-      ENDIF 
+      ENDIF
+!
+!     STOCHASTIC DIFFUSION
+!
+      IF(PRESENT(ASTOCHA)) THEN
+        STOCHA=ASTOCHA
+        IF(PRESENT(AVISC)) THEN
+          VISC=>AVISC
+        ELSE
+          WRITE(LU,*) 'STREAMLINE: STOCHASTIC DIFFUSION ASKED'
+          WRITE(LU,*) '            AND VISCOSITY NOT GIVEN'
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+      ELSE
+        STOCHA=0
+      ENDIF
+! 
 !
 !----------------------------------------------------------------------- 
 !      

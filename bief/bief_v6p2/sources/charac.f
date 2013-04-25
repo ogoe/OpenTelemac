@@ -7,7 +7,8 @@
      &  DT    , IFAMAS , IELM  , NPOIN2 , NPLAN , JF     , NF     ,
      &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT ,
      &  ETA   , FRE    , IT3   , ISUB   , FREBUF, MESH   ,
-     &  NELEM2, NELMAX2, IKLE2 , SURDET2, POST , PERIO , YA4D, SIGMA)
+     &  NELEM2, NELMAX2, IKLE2 , SURDET2, POST , PERIO , YA4D, SIGMA,
+     &  STOCHA, VISC)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -19,7 +20,7 @@
 !history  J-M HERVOUET (LNHE)
 !+        12/02/2010
 !+        V6P0
-!+
+!+   First version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -36,6 +37,12 @@
 !history  J-M HERVOUET (LNHE)
 !+        03/01/2012
 !+        V6P2
+!+   NPOIN instead of NPOIN2 in the call to SCARACT at the position
+!+   of argument NPLOT (goes with corrections in Streamline.f)
+!
+!history  J-M HERVOUET (LNHE)
+!+        18/04/2013
+!+        V6P3
 !+   NPOIN instead of NPOIN2 in the call to SCARACT at the position
 !+   of argument NPLOT (goes with corrections in Streamline.f)
 !
@@ -74,10 +81,13 @@
 !| SHZ            |<->| BARYCENTRIC COORDINATES ON VERTICAL
 !| SHF            |<->| BARYCENTRIC COORDINATES ON THE FREQUENCY AXIS
 !| SIGMA          |-->| IF YES, TRANSFORMES MESh FOR TELEMAC-3D
+!| STOCHA         |-->| STOCHASTIC DIFFUSION MODEL
+!|                |   | 0: NO DIFFUSION 1: ????       2: ????????
 !| SURDET2        |-->| GEOMETRIC COEFFICIENT USED IN PARAMETRIC TRANSFORMATION
 !| TB             |<->| BLOCK CONTAINING THE BIEF_OBJ WORK ARRAYS
 !| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
 !| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD
+!| VISC           |-->| VISCOSITY (MAY BE TENSORIAL)
 !| WCONV          |-->| Z-COMPONENT OF ADVECTION FIELD IN THE TRANSFORMED MESH
 !| YA4D           |-->| IF YES, 4D VERSION FOR TOMAWAC
 !| ZSTAR          |-->| TRANSFORMED VERTICAL COORDINATES IN 3D 
@@ -108,14 +118,16 @@
       TYPE(BIEF_MESH) , INTENT(INOUT)      :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET :: IFAMAS
       LOGICAL, INTENT(IN), OPTIONAL        :: POST,PERIO,YA4D,SIGMA
+      INTEGER, INTENT(IN), OPTIONAL        :: STOCHA
+      TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL, TARGET :: VISC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER NPOIN,IELMU,IELEM,SIZEBUF    
+      INTEGER NPOIN,IELMU,IELEM,SIZEBUF,ASTOCHA    
 !
 !-----------------------------------------------------------------------
 !
-      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10
+      TYPE(BIEF_OBJ), POINTER :: T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,AVISC
       INTEGER, DIMENSION(:), POINTER :: IFA
       INTEGER I,J,K,NPT,DIM1F,IPLAN
       LOGICAL QUAD,QUAB,APOST,APERIO,AYA4D,ASIGMA  
@@ -156,6 +168,34 @@
         ASIGMA=SIGMA
       ELSE
         ASIGMA=.FALSE.
+      ENDIF
+!
+!     STOCHASTIC DIFFUSION
+!
+      IF(PRESENT(STOCHA)) THEN
+        ASTOCHA=STOCHA
+      ELSE
+        ASTOCHA=0
+      ENDIF
+      IF(PRESENT(VISC)) THEN
+        AVISC => VISC
+      ELSE
+        IF(ASTOCHA.NE.0) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'CHARAC : AVEC DIFFUSION STOCHASTIQUE'
+            WRITE(LU,*) '         UN ARGUMENT VISC DOIT ETRE DONNE'
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'CHARAC: WITH STOCHASTIC DIFFUSION'
+            WRITE(LU,*) '        AN ARGUMENT VISC MUST BE GIVEN'
+          ENDIF
+          CALL PLANTE(1)
+          STOP          
+        ELSE
+!         HERE A DUMMY TARGET, WILL NOT BE USED 
+!         MAYBE NULLIFY WOULD BE BETTER ?
+          AVISC => IFAMAS
+        ENDIF
       ENDIF
 ! 
 !-----------------------------------------------------------------------
@@ -314,7 +354,7 @@
      &             IELM,IELMU,NELEM2,NELMAX2,NOMB,NPOIN,NPOIN2,
      &             3,NPLAN,NF,MESH,NPT,DIM1F,-1,
      &             MESH%M%X%R,T7%R,T10%R,FREBUF,SIZEBUF,
-     &             APOST,APERIO,AYA4D,ASIGMA)  
+     &             APOST,APERIO,AYA4D,ASIGMA,ASTOCHA,AVISC)  
 ! 
 !     PARALLEL COMMUNICATION
 !    
