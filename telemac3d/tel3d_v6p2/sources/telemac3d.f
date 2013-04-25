@@ -91,6 +91,13 @@
 !+        V6P3   
 !+   Dealing with the newly created FILE FOR 2D CONTINUATION.
 !
+!history  J-M HERVOUET (LNHE)
+!+        25/04/2013
+!+        V6P3   
+!+   AKN and EPN initialised in case of computation continued, for the
+!+   first call to PRECON.
+!+   Mesh better updated in case of coupling with Sisyphe.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -485,6 +492,10 @@
 !       SEE VARSO3 IN POINT FOR INDICES 8 AND 9 (K AND EPSILON)
         IF(TROUVE(8).EQ.1.AND.TROUVE(9).EQ.1) THEN
           AKEP=.FALSE.
+          AKOM=.FALSE.
+!         WILL BE USED BY FIRST CALL TO PRECON
+          CALL OS('X=Y     ',X=AKN,Y=AK)
+          CALL OS('X=Y     ',X=EPN,Y=EP)
         ENDIF
 !
         IF(TROUVE(19).EQ.1) THEN
@@ -647,8 +658,13 @@
 ! INITIALISES K AND EPSILON
 ! IF AKEP = .FALSE. K AND EPSILON HAVE BEEN GIVEN IN LECSUI OR CONDIM
 !
-      IF (ITURBV.EQ.3.AND.AKEP) CALL KEPINI(AK%R,EP%R,U%R,V%R,Z,
+      IF(ITURBV.EQ.3.AND.AKEP) THEN
+        CALL KEPINI(AK%R,EP%R,U%R,V%R,Z,
      &             ZF%R,NPOIN2,NPLAN,DNUVIH,DNUVIV,KARMAN,CMU,KMIN,EMIN)
+!       WILL BE USED BY FIRST CALL TO PRECON
+        CALL OS('X=Y     ',X=AKN,Y=AK)
+        CALL OS('X=Y     ',X=EPN,Y=EP)
+      ENDIF
 !
       IF(ITURBV.EQ.7.AND.AKOM) THEN
         CALL OS('X=C     ',X=AK,C=KMIN)
@@ -2232,14 +2248,23 @@
         CALL GRAD2D(GRADZF%ADR(1)%P,GRADZF%ADR(2)%P,ZPROP,NPLAN,SVIDE,
      &              UNSV2D,T2_02,T2_03,T2_04,
      &              IELM2H,MESH2D,MSK,MASKEL)
-!       USEFUL ? NOT SURE, IS DONE AT EACH TIME-STEP ELSEWHERE, SO..
 !       COMPUTES NEW Z COORDINATES
-!       CALL CALCOT(Z,H%R)
+        CALL CALCOT(Z,H%R)
 !       USEFUL ? NOT SURE, IS DONE AT EACH TIMESTEP ELSEWHERE, SO..
 !       CALL CALCOT(ZPROP%R,HPROP%R)
-!       CALL FSGRAD(GRADZS,ZFLATS,Z(NPOIN3-NPOIN2+1:NPOIN3),
-!    *              ZF,IELM2H,MESH2D,MSK,MASKEL,
-!    *              UNSV2D,T2_01,NPOIN2,OPTBAN,SVIDE)
+        CALL FSGRAD(GRADZS,ZFLATS,Z(NPOIN3-NPOIN2+1:NPOIN3),
+     &              ZF,IELM2H,MESH2D,MSK,MASKEL,
+     &              UNSV2D,T2_01,NPOIN2,OPTBAN,SVIDE)
+        CALL VECTOR(VOLU, '=', 'MASBAS          ',IELM3,1.D0-AGGLOH,
+     &       SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,.FALSE.,MASKEL)
+        IF(AGGLOH.GT.1.D-6) THEN
+          CALL VECTOR(VOLU, '+', 'MASBAS2         ',IELM3,AGGLOH,
+     &        SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,SVIDE,MESH3D,.FALSE.,MASKEL)
+        ENDIF
+        IF(NCSIZE.GT.1) THEN
+          CALL OS('X=Y     ',X=VOLUPAR,Y=VOLU)
+          CALL PARCOM(VOLUPAR,2,MESH3D)
+        ENDIF
 !
       ENDIF
 !
