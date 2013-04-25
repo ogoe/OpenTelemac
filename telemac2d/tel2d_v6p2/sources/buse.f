@@ -28,6 +28,12 @@
 !+        V6P2 
 !+     Correction in parallel.
 !
+!history  C. COULET (ARTELIA)
+!+        23/04/2013
+!+        V6P3
+!+     Correction of a bug.
+!+     Sometimes SECT=0 and DBUS<>0 due to relaxation
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ALTBUS         |-->| ELEVATIONS OF TUBES
 !| ANGBUS         |-->| ANGLE OF TUBES WITH AXIS OX.
@@ -59,7 +65,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE DECLARATIONS_TELEMAC2D, ONLY : V2DPAR,DT
+      USE DECLARATIONS_TELEMAC2D, ONLY : V2DPAR,DT,SECBUS
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -86,7 +92,7 @@
 !
       INTEGER N,I1,I2,ITRAC
 !
-      DOUBLE PRECISION SECT,L,LARG,HAUT
+      DOUBLE PRECISION L,LARG,HAUT
       DOUBLE PRECISION S1,S2,CE1,CE2,CS1,CS2,Q,QMAX1,QMAX2
       DOUBLE PRECISION RD1,RD2
 !
@@ -155,18 +161,18 @@
 !           FREE SURFACE FLOW WHICH FOLLOW A WEIR LAW
             IF(S2.GT.(0.666666667D0*(S1-RD2)+RD2)) THEN
               Q = LARG * SQRT( 2.D0*GRAV*(S1-S2)/(CE1+L+CS2) )*(S2-RD2)
-              SECT = (S2-RD2) * LARG
+              SECBUS%R(N) = (S2-RD2) * LARG
             ELSE
               Q = LARG * SQRT(2.D0*GRAV) * (S1-RD1)**1.5D0 * 0.385D0
-              SECT = (S1-RD1) * LARG
+              SECBUS%R(N) = (S1-RD1) * LARG
             ENDIF
           ELSE
 !           PRESSURE FLOW --> ORIFICE LAW
-            SECT = LARG * HAUT
+            SECBUS%R(N) = LARG * HAUT
             IF(S1.GE.(RD1+HAUT)) THEN
-              Q = SECT * SQRT( 2.D0*GRAV*(S1-S2)/(CE1+L) )
+              Q = SECBUS%R(N) * SQRT( 2.D0*GRAV*(S1-S2)/(CE1+L) )
             ELSE
-              Q = SECT * SQRT( 2.D0*GRAV*(S1-S2)/(L+CS2+CE1) )
+              Q = SECBUS%R(N) * SQRT( 2.D0*GRAV*(S1-S2)/(L+CS2+CE1) )
             ENDIF
           ENDIF
         ELSE
@@ -181,18 +187,18 @@
 !           FREE SURFACE FLOW WHICH FOLLOW A WEIR LAW
             IF(S1.GT.(0.6667*(S2-RD1)+RD1)) THEN
               Q=-LARG*SQRT(2.D0*GRAV*(S2-S1)/(CE2+L+CS1))*(S1-RD1)
-              SECT = (S1-RD1) * LARG
+              SECBUS%R(N) = (S1-RD1) * LARG
             ELSE
               Q = - LARG * SQRT( 2.D0*GRAV ) * SQRT((S2-RD2)**3) * 0.385
-              SECT = (S2-RD2) * LARG
+              SECBUS%R(N) = (S2-RD2) * LARG
             ENDIF
           ELSE
 !           PRESSURE FLOW --> ORIFICE LAW
-            SECT = LARG * HAUT
+            SECBUS%R(N) = LARG * HAUT
             IF(S2.GE.(RD2+HAUT)) THEN
-              Q = - SECT * SQRT( 2.D0*GRAV*(S2-S1)/(CE2+L) )
+              Q = - SECBUS%R(N) * SQRT( 2.D0*GRAV*(S2-S1)/(CE2+L) )
             ELSE
-              Q = - SECT * SQRT( 2.D0*GRAV*(S2-S1)/(L+CS1+CE2) )
+              Q = - SECBUS%R(N) * SQRT( 2.D0*GRAV*(S2-S1)/(L+CS1+CE2) )
             ENDIF
           ENDIF
         ELSE
@@ -239,8 +245,8 @@
 !  SAME APPROACH FOR VELOCITY AND TRACER
 !
       IF(DBUS(N).GT.0.D0) THEN
-        UBUS(N,2) = ( DBUS(N)/SECT ) * COS(ANGBUS(N,2))
-        VBUS(N,2) = ( DBUS(N)/SECT ) * SIN(ANGBUS(N,2))
+        UBUS(N,2) = ( DBUS(N)/SECBUS%R(N) ) * COS(ANGBUS(N,2))
+        VBUS(N,2) = ( DBUS(N)/SECBUS%R(N) ) * SIN(ANGBUS(N,2))
         IF(I1.GT.0) THEN
           UBUS(N,1) = U(I1)
           VBUS(N,1) = V(I1)
@@ -253,8 +259,8 @@
           VBUS(N,1)=P_DMAX(VBUS(N,1))+P_DMIN(VBUS(N,1))
         ENDIF
       ELSE
-        UBUS(N,1) = ( DBUS(N)/SECT ) * COS(ANGBUS(N,1))
-        VBUS(N,1) = ( DBUS(N)/SECT ) * SIN(ANGBUS(N,1))
+        UBUS(N,1) = ( DBUS(N)/SECBUS%R(N) ) * COS(ANGBUS(N,1))
+        VBUS(N,1) = ( DBUS(N)/SECBUS%R(N) ) * SIN(ANGBUS(N,1))
         IF(I2.GT.0) THEN
           UBUS(N,2) = U(I2)
           VBUS(N,2) = V(I2)

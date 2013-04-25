@@ -37,6 +37,11 @@
 !+        V6P2
 !+   Modification for adding breaches management during simulation
 !
+!history  C. COULET (ARTELIA)
+!+        23/04/2013
+!+        V6P3
+!+     Correction of a bug in BUSE.F
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -461,6 +466,7 @@
       TYPE(BIEF_OBJ),TARGET :: ENTBUS, SORBUS, LRGBUS, HAUBUS, ALTBUS
       TYPE(BIEF_OBJ),TARGET :: CSBUS , CEBUS , DELBUS, ANGBUS, LBUS
       TYPE(BIEF_OBJ),TARGET :: UBUS, VBUS, DBUS, TBUS, CLPBUS
+      TYPE(BIEF_OBJ),TARGET :: SECBUS
 !
 !      NEIGHBORS OF SEGMENT (FOR WAF SCHEME)
 !

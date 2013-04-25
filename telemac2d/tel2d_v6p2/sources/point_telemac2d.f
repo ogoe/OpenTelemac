@@ -53,6 +53,11 @@
 !+        V6P3
 !+   Treatment of latitude-longitude coordinates (call to almesh).
 !
+!history  C. COULET (ARTELIA)
+!+        23/04/2013
+!+        V6P3
+!+     Correction of a bug in BUSE.F
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -906,9 +911,11 @@
         CALL BIEF_ALLVEC(1,DBUS  ,'DBUS  ',NBUSE,1,0,MESH)
         CALL BIEF_ALLVEC(1,LRGBUS,'LRGBUS',NBUSE,1,0,MESH)
         CALL BIEF_ALLVEC(1,HAUBUS,'HAUBUS',NBUSE,1,0,MESH)
+        CALL BIEF_ALLVEC(1,SECBUS,'SECBUS',NBUSE,1,0,MESH)
         CALL BIEF_ALLVEC(2,CLPBUS,'CLPBUS',NBUSE,1,0,MESH)
         DO I=1, NBUSE
           DBUS%R(I)=0.D0
+          SECBUS%R(I)=1.D0
         ENDDO
         CALL ALLBLO(TBUS ,'TBUS  ')
         IF(NTRAC.GT.0) THEN
@@ -931,7 +938,8 @@
         CALL BIEF_ALLVEC(1,DBUS  ,'DBUS  ',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,LRGBUS,'LRGBUS',0,1,0,MESH)
         CALL BIEF_ALLVEC(1,HAUBUS,'HAUBUS',0,1,0,MESH)
-        CALL BIEF_ALLVEC(1,CLPBUS,'CLPBUS',0,1,0,MESH)
+        CALL BIEF_ALLVEC(1,SECBUS,'SECBUS',0,1,0,MESH)
+        CALL BIEF_ALLVEC(2,CLPBUS,'CLPBUS',0,1,0,MESH)
         CALL ALLBLO(TBUS ,'TBUS  ')
         IF(NTRAC.GT.0) THEN
           CALL BIEF_ALLVEC_IN_BLOCK(TBUS,NTRAC,1,'TBUS  ',
