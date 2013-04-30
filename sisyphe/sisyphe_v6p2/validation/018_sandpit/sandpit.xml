@@ -27,23 +27,21 @@
   
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->   
-   <extract xref="Validate" code="telemac2d"
-       do="runEXE" target="post_sandpit.exe"
-	   dependency="sandpitfin.exp;sandpitsta.exp"
-       title="Sandpit validation"
-   />
-   <extract xref="Plot" code="telemac2d"
-       do="runPYTHON" target="plot_sandpit.py"
-	   reference="Validate"
-	   dependency="Profiles.csv"
-       title="Sandpit validation"
-   />    
+   <extract xref="RunPython" >
+      <task  do="runPYTHON" target="post_sandpit.py"
+	   dependency="experiment_data.csv" code="sisyphe"
+       title="Sandpit post processing" />
+   </extract>
+ 
 
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    -->
  
 
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+<!-- Criteria ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   -->
 
 
