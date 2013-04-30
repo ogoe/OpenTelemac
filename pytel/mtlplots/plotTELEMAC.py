@@ -56,7 +56,7 @@ from myplot2d import drawMesh2DElements,drawMeshLines, \
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent
-from parsers.parserCSV import getColumnCSV
+from parsers.parserCSV import get2VariablesCSV
 from parsers.parserSortie import getValueHistorySortie
 from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,parseSLF,getValuePolylineSLF,subsetVariablesSLF
 from samplers.meshes import crossMesh,xysLocateMesh
@@ -226,7 +226,9 @@ class Figure1D:
          
       elif 'csv' in type.lower():
          # ~~> Load & Extract data
-         data = getColumnCSV(what['file'],what['columns'][0])
+         #data = getColumnCSV(what['file'],what['columns'][0])
+         var1,var2 = what['columns'].split(':')
+         data = get2VariablesCSV(what['file'],var1,var2)
          # ~~> Deco
          # ~~> Draw data
          drawCSV(plt,data,deco)   

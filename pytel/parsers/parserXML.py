@@ -36,8 +36,8 @@
 """
 """@history 08/03/2013 -- Juliette Parisi:
          Added the new extract Class in order to run post processing steps
-		 as running executables, other python scripts, reading and writting
-		 csv files ...
+		       as running executables, other python scripts, reading and writting
+		       csv files ...
 """
 """@brief
 """
@@ -53,16 +53,19 @@ from os import path,walk
 from optparse import Values
 import sys
 from socket import gethostname
+from scipy import linalg as la
+from itertools import izip_longest
 # ~~> dependencies from within pytel/parsers
 from parserKeywords import scanDICO,scanCAS,readCAS,translateCAS, getKeyWord,setKeyValue, getIOFilesSubmit
 from parserSortie import getLatestSortieFiles
 from parserStrings import parseArrayPaires
+from parserCSV import getVariableCSV,get2VariablesCSV,putDataCSV,addColumnCSV
 # ~~> dependencies towards the root of pytel
 from runcode import runCAS,checkConsistency,compilePRINCI
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent,putFileContent,createDirectories,copyFile,moveFile, matchSafe, getTheseFiles
-from utils.messages import filterMessage
+from utils.messages import filterMessage, MESSAGES
 from mtlplots.plotTELEMAC import Figure
 
 # _____                           __________________________________
@@ -328,40 +331,41 @@ class EXTRACT:
    def __init__(self,xmlFile,title='',bypass=True):
       if title != '': self.active["title"] = title
       self.bypass = bypass
-      self.active = { 'path':path.dirname(xmlFile),'safe':'','cfg':'',"target": None,
-                      "code": None, "xref": None, "do": None,"title": '',"dependency":'',
-                      "reference":''}
+      self.active = {'path':path.dirname(xmlFile),"xref": None,'cfg':'' ,'safe':''}
+      self.tasking = {}
       self.dids = {}
 
    def addExtract(self,actions):
       try:
          i = getXMLKeys(actions,self.active)
       except Exception as e:
-         raise Exception([filterMessage({'name':'ACTION::addACTION'},e,self.bypass)])  # only one item here
+         raise Exception([filterMessage({'name':'EXTRACT::addEXTRACT'},e,self.bypass)])  # only one item here
       else:
          self.active = i
       if self.dids.has_key(self.active["xref"]):
          raise Exception([{'name':'EXTRACT::addExtract','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
       self.dids.update({ self.active["xref"]:{} })
-      self.code = self.active["code"]
-      return self.active["target"]
+      print '\n    +> Extract :', self.active["xref"]
+      return 
 
    def addCFG(self,cfgname,cfg):
       self.active['cfg'] = cfgname
-      if not self.active["code"] in cfg['MODULES'].keys():
-         print '... do not know about:' + self.active["code"] + ' in configuration:' + cfgname
-         return False
       self.active['safe'] = path.join( path.join(self.active['path'],self.active["xref"]),cfgname )
-      self.dids[self.active["xref"]].update( { cfgname: {
-         'target': self.active["target"],
-         'safe': self.active['safe'],
-         'code': self.active["code"],
-         "links": {},
-         'path': self.active['path'],
-         'title': self.active["title"],
-         'cmaps': path.join(cfg['PWD'],'ColourMaps')
-         } } )
+      self.dids[self.active["xref"]].update( { cfgname: {'tasks':{} } } )
       return True
+   
+   def addtask(self,task):
+      tasking = { 'safe':'',"xref": '',"target": None,
+                      "code": '', "do": None,"title": None,"dependency":'',
+                      "reference":'',"ModelData":'',"ExactData":''}
+      cfgname = self.active['cfg']
+      try:
+         self.tasking = getXMLKeys(task,tasking)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'EXTRACT::addcondition'},e,self.bypass)])  # only one item here
+      self.dids[self.active["xref"]][self.active['cfg']]['tasks'] = self.tasking
+      self.tasking['safe'] = self.active['safe']
+      return self.tasking
 
    def updateCFG(self,d): self.dids[self.active["xref"]][self.active['cfg']].update( d )
 
@@ -369,53 +373,65 @@ class EXTRACT:
    #   Available Extracts
    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   def readCSV(self,doextract):
+   def readCSV(self,task):
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
-      if self.active["reference"] != '':
-         csvFile = path.join(doextract[self.active["reference"]][cfgname]['safe'],self.active["target"])
-      else : csvFile = path.join(self.active['path'],self.active["target"])
-      print '    +> reading your csv file :', self.active["target"]
+      if self.tasking["reference"] != '':
+         csvFile = path.join(self.dids[self.tasking["reference"]][cfgname]['tasks']['safe'],self.tasking["target"])
+      else : csvFile = path.join(self.active['path'],self.tasking["target"])
+      print '    +> reading your csv file :', self.tasking["target"]
       self.dids[xref][cfgname]['csv']= [csvFile]
       return csvFile
-
-   def runEXE(self,doextract):
-      xref = self.active["xref"]; cfgname = self.active['cfg']
-      active = self.dids[xref][cfgname]
-      exeFile = path.join(self.active['path'],self.active["target"])
-      copyFile(exeFile,self.active['safe'])
-      for file in self.active['dependency'].split(';'):
-         copyFile(file,self.active['safe'])
-      os.chdir(self.active['safe'])
-      print '    +> running your exe file :', self.active["target"],'\n'
-      os.system(self.active["target"])
       
-   def runPYTHON(self,doextract):
+   def runPYTHON(self,task):
       xref = self.active["xref"]; cfgname = self.active['cfg']
       active = self.dids[xref][cfgname]
-      pythonFile = path.join(self.active['path'],self.active["target"])
-      copyFile(pythonFile,self.active['safe'])
-      for file in self.active['dependency'].split(';'):
-         if self.active["reference"] != '':
-            depfile = path.join(doextract[self.active["reference"]][cfgname]['safe'],file)
+      pythonFile = path.join(self.active['path'],self.tasking["target"])
+      copyFile(pythonFile,self.tasking['safe'])
+      for file in self.tasking['dependency'].split(';'):
+         if self.tasking["reference"] != '':
+            depfile = path.join(self.dids[self.tasking["reference"]][cfgname]['tasks']['safe'],file)
             copyFile(depfile,self.active['safe'])
          else : copyFile(file,self.active['safe'])
       os.chdir(self.active['safe'])
-      print '    +> running your python script :', self.active["target"],'\n'
-      cmd = 'python ' + self.active["target"]
-      subprocess.check_call(cmd,shell = True) 
-      if self.active["code"]=="postel3d":
+
+      print '       +> running your python script :', self.tasking["target"],'\n'
+      if os.sep == '/': 
+         cmd = 'python '+ self.tasking["target"]
+         os.system(cmd)
+      else : subprocess.check_call(self.tasking["target"],shell = True)
+      
+      if self.tasking["code"]=="postel3d":
          self.dids[xref][cfgname]['output']= []
          for filenames in walk(self.active['safe']) :
             for file in filenames[2] :
-               if 'old' not in file.split('.') :
+               if 'old' not in file.split('.'):
                   if 'hor' in file.split('_'): 
                      self.dids[xref][cfgname]['output'].append(path.join(filenames[0],file))
                   if 'ver' in file.split('_'): 
                      self.dids[xref][cfgname]['output'].append(path.join(filenames[0],file))   
                elif 'old' in file.split('.') : continue      
       return
-            
+      
+   def CalcL2error(self,task):   
+      xref = self.active["xref"]; cfgname = self.active['cfg']
+      active = self.dids[xref][cfgname]
+      file = self.tasking["target"]
+      print '       +> Calculating L2 error :', self.tasking["title"],'\n'
+      if self.tasking["reference"] != '':
+         file = path.join(self.dids[self.tasking["reference"]][cfgname]['tasks']['safe'],file)
+      var1 = self.tasking["ModelData"].lower()
+      var2 = self.tasking["ExactData"].lower()
+      VarModel,VarExperiment = get2VariablesCSV(file,var1,var2)
+      L2error = (la.norm(VarModel-VarExperiment))/(la.norm(VarExperiment))
+      columns = [[self.tasking["title"],'None',L2error]]
+      file2 = path.join(self.active['safe'], xref +'.csv')
+      if path.exists(file2): 
+         columns = [[self.tasking["title"],'None',L2error]]
+         addColumnCSV(file2,columns[0])
+      else : putDataCSV(file2,columns)
+      return
+      
 # _____                      _______________________________________
 # ____/ Primary Class: PLOT /______________________________________/
 #            
@@ -438,7 +454,7 @@ class PLOT:
       drawing = { "type":'', "xref":'', "deco": 'line', "size":'[10;10]',
          "time": '[-1]', "extract": '', "vars": '', "roi": '',
          "title": '', "config": 'distinct', 'outFormat': 'png',
-         'layers':[],"columns":'[0;1]'}     # draw includes an array of layers
+         'layers':[],"columns":''}     # draw includes an array of layers
       try:
          i = getXMLKeys(draw,drawing)
       except Exception as e:
@@ -518,13 +534,136 @@ class PLOT:
       if not oneFound:
          raise Exception([{'name':'PLOT::findLayerConfig','msg':'did not find the file to draw: '+src}])
       return layers
+   
+   
+   
+   
+   
+class CRITERIA:
+
+   def __init__(self,xmlFile,title='',bypass=True):
+      if title != '': self.active["title"] = title
+      self.bypass = bypass
+      self.variabling = {}; self.conditionning = {}
+      self.active = { 'xref':None}
+      self.dids = {}
+
+   def addCriteria(self,criteria):
+      try:
+         i = getXMLKeys(criteria,self.active)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'ACTION::addCriteria'},e,self.bypass)])  # only one item here
+      else:
+         self.active = i
+      if self.dids.has_key(self.active["xref"]):
+         raise Exception([{'name':'CRITERIA::addCriteria','msg':'you are getting me confused, this xref already exists: '+self.active["xref"]}])
+      self.dids.update({ self.active["xref"]:{} })
+      print '\n    +> Validation Criteria :', self.active["xref"]
+      return 
+   
+   def addCFG(self,cfgname,cfg):
+      self.active['cfg'] = cfgname
+      self.dids[self.active["xref"]].update( { cfgname: {'variables':{},'condition':{} } } )
+      return True
+
+   def addvariable(self,variable):
+      variabling = {"vars": None, "target":None, "path":''}
+      cfgname = self.active['cfg']
+      try:
+         self.variabling = getXMLKeys(variable,variabling)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'CRITERIA::addvariable'},e,self.bypass)])  # only one item here
+           
+      self.dids[self.active["xref"]][self.active['cfg']]['variables'].update({self.variabling["vars"]:{}})
+      active = self.dids[self.active["xref"]][self.active['cfg']]['variables']
+          
+      folder,file = self.variabling["target"].split(':')
+      pathfolder = path.join(os.getcwd(),folder)
+      pathcfg = path.join(pathfolder,cfgname)
+      pathfile = path.join(pathcfg,file) 
+      
+      active[self.variabling["vars"]]['path'] = [pathfile]
+      self.variabling['path'] = [pathfile]
+      return
+   
+   def addcondition(self,condition,NBR):
+      conditionning = {"do": None, "success":None, "failure":None, "warning":'',
+                        "result":[]}
+      cfgname = self.active['cfg']
+      try:
+         self.conditionning = getXMLKeys(condition,conditionning)
+      except Exception as e:
+         raise Exception([filterMessage({'name':'CRITERIA::addcondition'},e,self.bypass)])  # only one item here
+           
+      self.dids[self.active["xref"]][self.active['cfg']]['condition'][NBR] = self.conditionning
+      return self.conditionning
+
+   def updateCFG(self,d): self.dids[self.active["xref"]][self.active['cfg']].update( d )
+   
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #   Available Operations for criteria
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   def compare(self,condition):
+      variables = self.dids[self.active["xref"]][self.active['cfg']]['variables']
+      
+      ######### Success condition ################################
+      NameVar1,operator,NameVar2 = condition["success"].split(':')
+      
+      print '         +> comparing :', NameVar1, '&', NameVar2
+
+      if NameVar1.isalpha() == False : var1 = float(NameVar1)
+      else :     
+         PathVar1 = variables[NameVar1]['path'][0]
+         var1 =getVariableCSV(PathVar1,NameVar1)
+      if NameVar2.isalpha() == False : var2 = float(NameVar2)
+      else :     
+         PathVar2 = variables[NameVar2]['path'][0]
+         var2 = getVariableCSV(PathVar2,NameVar2)
+      
+      if operator == 'LE' :
+         if var1 <= var2 : condition["result"].append('success')
+      elif operator == 'LT' :
+         if var1 < var2 : condition["result"].append('success')   
+      elif operator == 'GE' :
+         if var1 >= var2 : condition["result"].append('success')
+      elif operator == 'GT' :
+         if var1 > var2 : condition["result"].append('success')
+      
+         
+      ######### Failure condition ################################
+      NameVar1,operator,NameVar2 = condition["failure"].split(':')
+
+      if NameVar1.isalpha() == False : var1 = float(NameVar1)
+      else :     
+         PathVar1 = variables[NameVar1]['path'][0]
+         var1 =getVariableCSV(PathVar1,NameVar1)
+      if NameVar2.isalpha() == False : var2 = float(NameVar2)
+      else :     
+         PathVar2 = variables[NameVar2]['path'][0]
+         var2 = getVariableCSV(PathVar2,NameVar2)
+         
+      if operator == 'LE' :
+         if var1 <= var2 : condition["result"].append('failed')
+      elif operator == 'LT' :
+         if var1 < var2 : condition["result"].append('failed')   
+      elif operator == 'GE' :
+         if var1 >= var2 : condition["result"].append('failed')
+      elif operator == 'GT' :
+         if var1 > var2 : condition["result"].append('failed')   
+         
+      ######### Warning condition ################################
+      if condition["result"] == [] : condition["result"].append('warning')  
+      
+      return
+
 # _____                     ________________________________________
 # ____/ XML Parser Toolbox /_______________________________________/
 #
 """
    Assumes that the directory ColourMaps is in PWD (i.e. ~root/pytel.)
 """
-def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
+def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess,validationCriteria):
 
    xcpt = []                            # try all keys for full report
 
@@ -690,51 +829,48 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
             if not doextract.addCFG(cfgname,extractcfg): continue
          
             createDirectories(doextract.active['safe'])
+            
+            for task in extract.findall("task"):
+               try:
+                   doaddtask = doextract.addtask(task)
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
+                  continue
          
-            doable = xmlConfig[cfgname]['options'].do
-            if doable == '': doable = doextract.active["do"]
-            if doable == '': doable = doextract.available
-            display = display or xmlConfig[cfgname]['options'].display
-            for actionXREF in do.dids.keys(): racine = do.dids[actionXREF][cfgname]['path']
+               for actionXREF in do.dids.keys(): racine = do.dids[actionXREF][cfgname]['path']
+               
+               if "readCSV" in doaddtask["do"]:
+                  os.chdir(racine)
+                  try:
+                     csvFile = doextract.readCSV(doaddtask)
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'   +> readCSV'},e,bypass))
 
-            if "readCSV" in doable.split(';'):
-               os.chdir(racine)
-               try:
-                  csvFile = doextract.readCSV(doextract.dids)
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> readCSV'},e,bypass))
-
-            if "runEXE" in doable.split(';'):
-               os.chdir(racine)
-               try:                  
-                  if do.dids[actionXREF][cfgname]['links']!= {} :
-                     for code in do.dids[actionXREF][cfgname]['links'].keys():
-                        ResultFile = do.dids[actionXREF][cfgname]['links'][code]['oFS'][0][1][0]
+               if "runPYTHON" in doaddtask["do"]:
+                  os.chdir(racine)
+                  try:
+                     if doextract.tasking["code"] == "postel3d" :
+                        ResultFile1 = do.dids[actionXREF][cfgname]['output'][1][1][0]
+                        ResultFile2 = do.dids[actionXREF][cfgname]['output'][0][1][0]
+                        copyFile(ResultFile1,doextract.active['safe'])
+                        copyFile(ResultFile2,doextract.active['safe'])
+                     elif do.dids[actionXREF][cfgname]['links']!= {} :
+                        for code in do.dids[actionXREF][cfgname]['links'].keys():
+                           ResultFile = do.dids[actionXREF][cfgname]['links'][code]['oFS'][0][1][0]
+                           copyFile(ResultFile,doextract.active['safe'])
+                     else : 
+                        ResultFile = do.dids[actionXREF][cfgname]['output'][0][1][0]
                         copyFile(ResultFile,doextract.active['safe'])
-                  else : ResultFile = do.dids[actionXREF][cfgname]['output'][0][1][0]
-                  copyFile(ResultFile,doextract.active['safe'])
-                  doextract.runEXE(doextract.dids)
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> runEXE'},e,bypass))    
+                     doextract.runPYTHON(doextract.dids)
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'   +> runPYTHON'},e,bypass))  
 
-            if "runPYTHON" in doable.split(';'):
-               os.chdir(racine)
-               try:
-                  if doextract.active["code"] == "postel3d" :
-                     ResultFile1 = do.dids[actionXREF][cfgname]['output'][1][1][0]
-                     ResultFile2 = do.dids[actionXREF][cfgname]['output'][0][1][0]
-                     copyFile(ResultFile1,doextract.active['safe'])
-                     copyFile(ResultFile2,doextract.active['safe'])
-                  elif do.dids[actionXREF][cfgname]['links']!= {} :
-                     for code in do.dids[actionXREF][cfgname]['links'].keys():
-                        ResultFile = do.dids[actionXREF][cfgname]['links'][code]['oFS'][0][1][0]
-                        copyFile(ResultFile,doextract.active['safe'])
-                  else : 
-                     ResultFile = do.dids[actionXREF][cfgname]['output'][0][1][0]
-                     copyFile(ResultFile,doextract.active['safe'])
-                  doextract.runPYTHON(doextract.dids)
-               except Exception as e:
-                  xcpt.append(filterMessage({'name':'runXML','msg':'   +> runPYTHON'},e,bypass))  
+               if "L2error" in doaddtask["do"]:
+                  os.chdir(racine)
+                  try:
+                     doextract.CalcL2error(doaddtask)
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'   +> CalcL2error'},e,bypass))
 
 
       # ~~ Gathering targets ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -840,7 +976,7 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
                            figure.draw( layer['fileName'][cfg][2], { 'file': file,
                               'vars': layer["vars"], 'extract':parseArrayPaires(layer["extract"]),
                               'type': draw['type'], 'time':parseArrayPaires(layer["time"])[0],#})
-                              'columns':parseArrayPaires(layer["columns"])})
+                              'columns':layer["columns"]})
 
                         # ~~ 2d plots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                         if typePlot == "plot2d":  # so far no plot type, but this may change
@@ -851,6 +987,66 @@ def runXML(xmlFile,xmlConfig,bypass,runcase,postprocess):
 
 
                figure.show()
+               
+   # ~~ Validation Criteria ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #
+   racine = path.split(xmlFile)[0]
+   os.chdir(racine)
+   if validationCriteria != False : 
+      docriteria = CRITERIA(xmlFile,title,bypass)
+      first = True
+      for criteria in xmlRoot.findall("criteria"):
+         if first:
+            print '\n... looping through the Criteria todo list'
+            first = False
+
+     # ~~ Step 1. Common check for keys ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         try:
+            doadd = docriteria.addCriteria(criteria)
+         except Exception as e:
+            xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
+            continue
+            
+         for cfgname in xmlConfig.keys():
+            criteriacfg = xmlConfig[cfgname]['cfg']
+            if not docriteria.addCFG(cfgname,criteriacfg): continue
+         
+            for vars in criteria.findall("variable"):
+               try:
+                  doaddvariable = docriteria.addvariable(vars)
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
+                  continue
+            
+            conditionNBR = 1
+            for condition in criteria.findall("condition"):               
+               try:
+                  doaddcondition = docriteria.addcondition(condition,conditionNBR)
+                  conditionNBR += 1
+               except Exception as e:
+                  xcpt.append(filterMessage({'name':'runXML','msg':'add todo to the list'},e,bypass))
+                  continue  
+
+               if "compare" in doaddcondition["do"]:
+                  try:
+                     docriteria.compare(doaddcondition)
+                  except Exception as e:
+                     xcpt.append(filterMessage({'name':'runXML','msg':'   +> compare'},e,bypass))
+
+         
+         for criteria in docriteria.dids.keys() :        
+            for cfg in docriteria.dids[criteria]:
+               for NBR in docriteria.dids[criteria][cfg]['condition']:
+                  if docriteria.dids[criteria][cfg]['condition'][NBR]['result'][0] == 'success' : continue
+                  else :
+                     if docriteria.dids[criteria][cfg]['condition'][NBR]['result'][0] == 'warning' :
+                        print '\n!!!!!  Warning about the follwing condition %s !!!!!!!!\n' % docriteria.dids[criteria][cfg]['condition'][NBR]['success']
+                     else :
+                        #raise Exception([{'name':'CRITERIA','msg':'the following criteria failed: '+criteria}])
+                        raise Exception([{'name':'CRITERIA','msg':'the following condition failed: '+docriteria.dids[criteria][cfg]['condition'][NBR]['success']}])
+        
+
+
 
    """
             # ~~> plot3d

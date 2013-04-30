@@ -83,7 +83,7 @@ from os import path,walk,environ
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
-from parsers.parserCSV import putDataCSV,getDataCSV
+from parsers.parserCSV import putDataCSV,getValidationSummary
 from utils.messages import MESSAGES,filterMessage
 
 # _____             ________________________________________________
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
-   
+ 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~ Manage options to run only cases or only Post processing ~~~~~
 # (Running only the validation criteria has not been implemented yet )
@@ -222,7 +222,7 @@ if __name__ == "__main__":
          print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
          try:
-            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass,options.runcase,options.postprocess)
+            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass,options.runcase,options.postprocess,options.criteria)
          except Exception as e:
             xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
 
@@ -286,7 +286,9 @@ if __name__ == "__main__":
          else : LastSummary = ''
       
       if LastSummary != '':
-         Lastcas,Laststatus = getDataCSV(LastSummary,0,(0,2))
+         Summary = getValidationSummary(LastSummary)
+         Lastcas = Summary['TestCase']
+         Laststatus = Summary['Status']        
       
       # ~~> Print summary of test cases which will be run
       i=0
@@ -296,7 +298,6 @@ if __name__ == "__main__":
             if LastSummary != '':
             # If one test case failed or has not been run in the last step,
             # that test case won't be run either in the next step
-               i += 1
                cas.append(key)
                module.append(codeName)
                if Laststatus[i]== 'failed' or Laststatus[i]== 'NotRun' : continue
@@ -305,6 +306,7 @@ if __name__ == "__main__":
                   casrun.append(key)
                   for xmlFile in xmls[codeName][key]:
                      print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
+               i += 1      
             else : 
                print '    |    +> ',key
                cas.append(key)
@@ -321,7 +323,6 @@ if __name__ == "__main__":
       for codeName in xmls.keys():
          for key in xmls[codeName]:
             if LastSummary != '':
-               i += 1
                if Laststatus[i]== 'failed' or Laststatus[i]== 'NotRun' :
                   status.append('NotRun')
                   continue
@@ -333,13 +334,14 @@ if __name__ == "__main__":
 
                      try:
                         tic = time.time()
-                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
+                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess,options.criteria)
                         toc = time.time()
                         ttime = toc-tic
                         status.append(ttime)
                      except Exception as e: 
                         status.append('failed')
                         xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
+               i += 1
             else :
                cpt += 1
                print '\n\nValidation of ' + key + ' of module ' + codeName + ' '+ str(cpt) + '/' + str(len(casrun)) + '\n\
@@ -347,7 +349,7 @@ if __name__ == "__main__":
                for xmlFile in xmls[codeName][key]:        
                      try:
                         tic = time.time()
-                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess)
+                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess,options.criteria)
                         toc = time.time()
                         ttime = toc-tic
                         status.append(ttime)
@@ -404,5 +406,4 @@ if __name__ == "__main__":
  
    
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
-
    sys.exit()
