@@ -27,21 +27,21 @@
    
 <!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-   <extract xref="postel" code="postel3d"
+<!--   <extract xref="postel" code="postel3d"
        do="runPYTHON" target="postel3d.py p3d_box.cas"
 	   dependency="p3d_box.cas;geo_box.slf"
        title="Post process"
    /> 
- 
+   -->  
 <!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
    --> 
-   <plot1d xref="Tracer_downslope" type="history" time="[0;-1]" size="[12;5]" config="together" > 
+<!--   <plot1d xref="Tracer_downslope" type="history" time="[0;-1]" size="[12;5]" config="together" > 
       <layer vars="ExcessSal:line" target="postel:hor_001" extract="[1000;2000]" />  
    </plot1d> 
    <plot1d xref="Tracer_upslope" type="history" time="[0;-1]" size="[12;5]" config="together" > 
       <layer vars="ExcessSal:line" target="postel:hor_001" extract="[3000;2000]" />  
    </plot1d> 
-   
+    -->   
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
    <plot2d xref="Mesh" size="[10;10]"  > 
