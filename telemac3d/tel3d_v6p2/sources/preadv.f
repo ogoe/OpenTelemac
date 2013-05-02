@@ -1,5 +1,5 @@
 !                    *****************
-                     SUBROUTINE PRECON
+                     SUBROUTINE PREADV
 !                    *****************
 !
      &(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
@@ -69,6 +69,11 @@
 !+        V6P2
 !+   Specific treatment for LT=0 suppressed.
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/05/2013
+!+        V6P3
+!+   Was named PRECON, renamed PREADV for Python scanning sake.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| ISOUSI         |-->| RANK OF CURRENT SUB-ITERATION
 !| LT             |-->| CURRENT TIME STEP NUMBER
@@ -80,7 +85,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-      USE INTERFACE_TELEMAC3D, EX_PRECON => PRECON
+      USE INTERFACE_TELEMAC3D, EX_PREADV => PREADV
       USE DECLARATIONS_TELEMAC
       USE DECLARATIONS_TELEMAC3D, ONLY : MESH3D,FLUINT,FLUEXT,
      &                                   FLUEXTPAR,UCONV,VCONV,T3_01,
@@ -337,7 +342,7 @@
 !          MSUPG IS NOT SYMMETRICAL
          ELSEIF(OPTSUP(1).NE.0) THEN
            CALL PLANTE(1)
-           STOP 'UNEXPECTED VALUE OF OPTSUP IN PRECON'
+           STOP 'UNEXPECTED VALUE OF OPTSUP IN PREADV'
          ENDIF
 !
 !        MSUPG TRANSFORMED INTO NON SYMMETRICAL MATRIX

@@ -1385,7 +1385,7 @@ C
 C-----------------------------------------------------------------------
 C
       INTERFACE
-        SUBROUTINE PRECON(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
+        SUBROUTINE PREADV(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
       USE BIEF_DEF
       IMPLICIT NONE
       TYPE(BIEF_OBJ), INTENT(INOUT) :: W,WS,ZPROP

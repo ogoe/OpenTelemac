@@ -73,7 +73,7 @@
 !+        25/01/2013
 !+        V6P3   
 !+   TAN renamed TRN, copy of TRN on TA moved from after CONDIM to
-!+   after BIEF_SUITE, FLULIM set to 1 before first call to PRECON 
+!+   after BIEF_SUITE, FLULIM set to 1 before first call to PREADV 
 !
 !history  J-M HERVOUET (LNHE)
 !+        11/03/2013
@@ -95,7 +95,7 @@
 !+        25/04/2013
 !+        V6P3   
 !+   AKN and EPN initialised in case of computation continued, for the
-!+   first call to PRECON.
+!+   first call to PREADV.
 !+   Mesh better updated in case of coupling with Sisyphe.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -228,7 +228,7 @@
 !=======================================================================
 !
       LT     = 0       ! INITIALISES TIMESTEP
-!     INITIALISES NUMBER OF SUB-ITERATIONS, LOOK IN PRECON
+!     INITIALISES NUMBER OF SUB-ITERATIONS, LOOK IN PREADV
       ISOUSI = 0
       NVARCL = 0
       IF(NTRAC.GT.0) THEN
@@ -493,7 +493,7 @@
         IF(TROUVE(8).EQ.1.AND.TROUVE(9).EQ.1) THEN
           AKEP=.FALSE.
           AKOM=.FALSE.
-!         WILL BE USED BY FIRST CALL TO PRECON
+!         WILL BE USED BY FIRST CALL TO PREADV
           CALL OS('X=Y     ',X=AKN,Y=AK)
           CALL OS('X=Y     ',X=EPN,Y=EP)
         ENDIF
@@ -661,7 +661,7 @@
       IF(ITURBV.EQ.3.AND.AKEP) THEN
         CALL KEPINI(AK%R,EP%R,U%R,V%R,Z,
      &             ZF%R,NPOIN2,NPLAN,DNUVIH,DNUVIV,KARMAN,CMU,KMIN,EMIN)
-!       WILL BE USED BY FIRST CALL TO PRECON
+!       WILL BE USED BY FIRST CALL TO PREADV
         CALL OS('X=Y     ',X=AKN,Y=AK)
         CALL OS('X=Y     ',X=EPN,Y=EP)
       ENDIF
@@ -952,7 +952,7 @@
         ENDIF
       ENDIF
 !
-! SOURCE TERMS : FINDS LOCATION OF SOURCES (USED IN PRECON HEREAFTER)
+! SOURCE TERMS : FINDS LOCATION OF SOURCES (USED IN PREADV HEREAFTER)
 !                WILL SUBSEQUENTLY BE DONE AT EACH TIMESTEP
 !
       IF(NSCE.GT.0) THEN
@@ -978,7 +978,7 @@
       IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(15).NE.1)) THEN
         CALL OS('X=Y     ',X=VCONV,Y=V)
       ENDIF
-!     USED ONLY FOR TRIDW3 IN PRECON
+!     USED ONLY FOR TRIDW3 IN PREADV
       IF(NONHYD) THEN
         IF(DEBU.OR.(.NOT.DEBU.AND.TROUVE(16).NE.1)) THEN
           CALL OS('X=Y     ',X=WCONV,Y=W)
@@ -1043,7 +1043,7 @@
       CALL SOURCES_SINKS
       IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE SOURCES_SINKS'
 !
-!     FLULIM NOT INITIALISED AND USED IN PRECON, THROUGH FLUX3D
+!     FLULIM NOT INITIALISED AND USED IN PREADV, THROUGH FLUX3D
 !
       IF(OPT_HNEG.EQ.2) THEN
         DO I=1,MESH2D%NSEG
@@ -1051,11 +1051,11 @@
         ENDDO
       ENDIF
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE PRECON'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'PREMIER APPEL DE PREADV'
 !
-      CALL PRECON(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
+      CALL PREADV(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
 !
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DU PREMIER APPEL DE PRECON' 
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DU PREMIER APPEL DE PREADV' 
 !
 !     NOW SETTING VOLUN=VOLU (IN CASE OF COMPUTATION CONTINUED IT HAS
 !     BEEN RETRIEVED FROM THE PREVIOUS COMPUTATION)
@@ -2003,9 +2003,9 @@
 !     ALL ADVECTION SCHEMES EXCEPT SUPG
 !
       IF (INFOGR .AND. (.NOT.NONHYD)) CALL MITTIT(9,AT,LT)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PRECON'
-      CALL PRECON(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
-      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PRECON'
+      IF(DEBUG.GT.0) WRITE(LU,*) 'APPEL DE PREADV'
+      CALL PREADV(W,WS,ZPROP,ISOUSI,LT,VOLU,VOLUN)
+      IF(DEBUG.GT.0) WRITE(LU,*) 'RETOUR DE PREADV'
 !
 !-----------------------------------------------------------------------
 !     NOW CVDF3D WILL DO SUPG AND DIFFUSION
