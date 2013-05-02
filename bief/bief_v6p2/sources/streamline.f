@@ -59,6 +59,14 @@
 !+   Case of successive uses of SCARACT. Bug corrected in the section
 !+   calling organise_chars when NPLOT > LAST_NPLOT.
 !
+!history  J-M HERVOUET (LNHE)
+!+        26/04/2013
+!+        V6P3
+!+   Organise_chars changed: new strategy of memory allocation: same
+!+   maximum size for all processors, useful for some scenarios with
+!+   particle. A sub-domain without initial particle must be able to
+!+   receive one and needs memory for it.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -188,7 +196,7 @@
           IMPLICIT NONE 
           INTEGER, INTENT(IN)    :: NPARAM,NOMB 
           INTEGER, INTENT(INOUT) :: NCHDIM,LAST_NCHDIM 
-          INTEGER ISIZE 
+          INTEGER ISIZE
           IF (.NOT.ALLOCATED(HEAPCOUNTS)) ALLOCATE(HEAPCOUNTS(NCSIZE)) 
           IF (.NOT.ALLOCATED(SENDCOUNTS)) ALLOCATE(SENDCOUNTS(NCSIZE)) 
           IF (.NOT.ALLOCATED(RECVCOUNTS)) ALLOCATE(RECVCOUNTS(NCSIZE)) 
@@ -201,8 +209,9 @@
           SDISPLS=0 
           RDISPLS=0 
           ICHA=0 
-! 
-          NCHDIM=NPARAM          
+!
+          NCHDIM=NPARAM
+!         
           IF(LAST_NCHDIM.EQ.0) THEN
 !           CASE OF A FIRST CALL (THINK THAT NCHDIM MAY BE 0)
             ISIZE=MAX(NCHDIM,1)
@@ -5194,9 +5203,9 @@
 ! PRE-NUMBER OF INITIALLY COLLECTED LOST CHARACTERISTICS  
 ! LATER ON, IT COUNTS THE IMPLANTED TRACEBACKS LOCALISED IN MY PARTITION 
 !
-      INTEGER NCHARA,NLOSTCHAR,NARRV,IGEN,NSEND,NLOSTAGAIN 
-      INTEGER  P_ISUM 
-      EXTERNAL P_ISUM 
+      INTEGER NCHARA,NLOSTCHAR,NARRV,IGEN,NSEND,NLOSTAGAIN,MAXNPLOT 
+      INTEGER  P_ISUM,P_IMAX 
+      EXTERNAL P_ISUM,P_IMAX 
 !     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR (SORRY, STATIC)  
       INTEGER NCHDIM 
 ! 
@@ -5255,7 +5264,17 @@
       ELSE
         STOCHA=0
       ENDIF
-! 
+!
+!     MEMORY WILL BE THE SAME IN ALL PROCESSORS, NOT A PROBLEM FOR WELL
+!     BALANCED PARTITIONS IF NPLOT IS THE NUMBER OF POINTS. WITH
+!     PARTICLES IT WILL AVOID THAT A PROCESSOR HAS NO MEMORY TO RECEIVE
+!     PARTICLES, BECAUSE IT HAD SEEN NO PARTICLE BEFORE
+!
+      IF(NCSIZE.GT.1) THEN
+        MAXNPLOT=P_IMAX(NPLOT) 
+      ELSE
+        MAXNPLOT=NPLOT
+      ENDIF
 !
 !----------------------------------------------------------------------- 
 !      
@@ -5280,10 +5299,10 @@
 ! 
         WRITE(LU,*) 'USING STREAMLINE VERSION 6.3 FOR CHARACTERISTICS' 
 ! 
-!       NOW THE VERY NECESSARY INITIALISATION PROCEDURES  
+!       NOW THE VERY NECESSARY INITIALISATION PROCEDURES
 ! 
         IF(NCSIZE.GT.1) THEN       
-          CALL ORGANISE_CHARS(NPLOT,NOMB,NCHDIM,LAST_NPLOT)         
+          CALL ORGANISE_CHARS(MAXNPLOT,NOMB,NCHDIM,LAST_NPLOT)         
         ENDIF
 ! 
       ENDIF 
@@ -5294,13 +5313,13 @@
 !     JAJ + JMH 26/08/2008 + BUG CORRECTED 16/04/2013
 ! 
       IF(NCSIZE.GT.1) THEN     
-        IF(NOMB.GT.LAST_NOMB.OR.NPLOT.GT.LAST_NPLOT) THEN       
+        IF(NOMB.GT.LAST_NOMB.OR.MAXNPLOT.GT.LAST_NPLOT) THEN       
 !         DESTROY THE CHARACTERISTICS TYPE FOR COMM. 
           LAST_NOMB=MAX(NOMB,LAST_NOMB)
           CALL DEORG_CHARAC_TYPE()  
 !         SET DATA STRUCTURES ACCORDINGLY      
-          CALL ORGANISE_CHARS(NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)
-          LAST_NPLOT=NPLOT
+          CALL ORGANISE_CHARS(MAXNPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)
+          LAST_NPLOT=MAXNPLOT
         ENDIF 
 !    
 !       INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS) 
@@ -5435,7 +5454,7 @@
 !           AND ANOTHER ONE LINEAR, NPLOT WILL BE GREATER THAN THE
 !           NUMBER OF LINEAR POINTS, HENCE THE MIN(NPLOT...) BELOW 
             CALL BIEF_INTERP(U%R,UTILD%R,SHP,NDP,SHZ,ETA,SHF,FRE,ELT, 
-     &                       MIN(NPLOT,U%DIM1),DIM1U,
+     &                       MIN(NPLOT,UTILD%DIM1),DIM1U,
      &                       NPLAN,IELM,IKLE,NELMAX,
      &                       PERIO,YA4D) 
           ENDIF            
@@ -5464,7 +5483,7 @@
 !           INTERPOLATION DES VARIABLES DANS LES AUTRES CAS 
             CALL BIEF_INTERP(U%ADR(I)%P%R,UTILD%ADR(I)%P%R,SHP,NDP,SHZ, 
      &                       ETA,SHF,FRE,ELT,
-     &                       MIN(NPLOT,U%ADR(I)%P%DIM1),DIM1U,
+     &                       MIN(NPLOT,UTILD%ADR(I)%P%DIM1),DIM1U,
      &                       NPLAN,IELM,IKLE,NELMAX,PERIO,YA4D)
           ENDIF 
 ! 

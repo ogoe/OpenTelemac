@@ -489,23 +489,26 @@
      &  STOCHA, VISC)
       USE BIEF_DEF
       IMPLICIT NONE
-      INTEGER         , INTENT(IN)         :: NOMB
-      INTEGER         , INTENT(IN)         :: NPLAN,JF,NF,NELEM2
-      INTEGER         , INTENT(IN)         :: NPOIN2,NELMAX2
-      INTEGER         , INTENT(INOUT)      :: IELM
-      INTEGER         , INTENT(INOUT)      :: ELT(*),ETA(*),FRE(*)
-      INTEGER         , INTENT(INOUT)      :: IT3(*),ISUB(*),FREBUF(*)
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FN,UCONV,VCONV,WCONV
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FRCONV
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: ZSTAR,MASKEL,IKLE2,SURDET2
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FREQ
-      TYPE(BIEF_OBJ)  , INTENT(INOUT)      :: FTILD,TB,SHP,SHZ,SHF
-      LOGICAL         , INTENT(IN)         :: MSK
-      DOUBLE PRECISION, INTENT(IN)         :: DT
-      TYPE(BIEF_MESH) , INTENT(INOUT)      :: MESH
-      TYPE(BIEF_OBJ)  , INTENT(IN), TARGET :: IFAMAS
-      LOGICAL, INTENT(IN), OPTIONAL        :: POST,PERIO,YA4D,SIGMA
-      INTEGER, INTENT(IN), OPTIONAL        :: STOCHA
+      INTEGER         , INTENT(IN)           :: NOMB
+      INTEGER         , INTENT(IN)           :: NPLAN,JF,NF,NELEM2
+      INTEGER         , INTENT(IN)           :: NPOIN2,NELMAX2
+      INTEGER         , INTENT(INOUT)        :: IELM
+      INTEGER         , INTENT(INOUT)        :: FRE(*)
+      INTEGER         , INTENT(INOUT),TARGET :: ELT(*),ETA(*)
+      INTEGER         , INTENT(INOUT)        :: IT3(*),ISUB(*),FREBUF(*)
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FN,UCONV,VCONV,WCONV
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FRCONV
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: ZSTAR,MASKEL,IKLE2
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: SURDET2
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FREQ
+      TYPE(BIEF_OBJ)  , INTENT(INOUT)        :: TB,SHF
+      TYPE(BIEF_OBJ)  , INTENT(INOUT),TARGET :: FTILD,SHP,SHZ
+      LOGICAL         , INTENT(IN)           :: MSK
+      DOUBLE PRECISION, INTENT(IN)           :: DT
+      TYPE(BIEF_MESH) , INTENT(INOUT)        :: MESH
+      TYPE(BIEF_OBJ)  , INTENT(IN), TARGET   :: IFAMAS
+      LOGICAL, INTENT(IN), OPTIONAL          :: POST,PERIO,YA4D,SIGMA
+      INTEGER, INTENT(IN), OPTIONAL          :: STOCHA
       TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL, TARGET :: VISC
         END SUBROUTINE
 !

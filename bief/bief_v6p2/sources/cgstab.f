@@ -9,7 +9,7 @@
 !***********************************************************************
 !
 !brief    SOLVES THE LINEAR SYSTEM A X = B
-!+                USING THE SQUARED CONJUGATE GRADIENT METHOD.
+!+        USING THE SQUARED CONJUGATE GRADIENT METHOD STABILLISED.
 !code
 !+-----------------------------------------------------------------------
 !+                        PRECONDITIONING

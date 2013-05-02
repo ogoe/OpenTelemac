@@ -46,6 +46,12 @@
 !+   NPOIN instead of NPOIN2 in the call to SCARACT at the position
 !+   of argument NPLOT (goes with corrections in Streamline.f)
 !
+!history  J-M HERVOUET (LNHE)
+!+        02/05/2013
+!+        V6P3
+!+   Arguments STOCHA and VISC added. Attribute target added for some
+!+   others (it helps prepare weak form of characteristics).
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
 !| FN             |-->| VARIABLES AT TIME N .
@@ -82,7 +88,7 @@
 !| SHF            |<->| BARYCENTRIC COORDINATES ON THE FREQUENCY AXIS
 !| SIGMA          |-->| IF YES, TRANSFORMES MESh FOR TELEMAC-3D
 !| STOCHA         |-->| STOCHASTIC DIFFUSION MODEL
-!|                |   | 0: NO DIFFUSION 1: ????       2: ????????
+!|                |   | 0: NO DIFFUSION 1: oil spill       2: algae
 !| SURDET2        |-->| GEOMETRIC COEFFICIENT USED IN PARAMETRIC TRANSFORMATION
 !| TB             |<->| BLOCK CONTAINING THE BIEF_OBJ WORK ARRAYS
 !| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
@@ -102,23 +108,26 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         , INTENT(IN)         :: NOMB
-      INTEGER         , INTENT(IN)         :: NPLAN,JF,NF,NELEM2
-      INTEGER         , INTENT(IN)         :: NPOIN2,NELMAX2
-      INTEGER         , INTENT(INOUT)      :: IELM
-      INTEGER         , INTENT(INOUT)      :: ELT(*),ETA(*),FRE(*)
-      INTEGER         , INTENT(INOUT)      :: IT3(*),ISUB(*),FREBUF(*)
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FN,UCONV,VCONV,WCONV
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FRCONV
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: ZSTAR,MASKEL,IKLE2,SURDET2
-      TYPE(BIEF_OBJ)  , INTENT(IN)         :: FREQ
-      TYPE(BIEF_OBJ)  , INTENT(INOUT)      :: FTILD,TB,SHP,SHZ,SHF
-      LOGICAL         , INTENT(IN)         :: MSK
-      DOUBLE PRECISION, INTENT(IN)         :: DT
-      TYPE(BIEF_MESH) , INTENT(INOUT)      :: MESH
-      TYPE(BIEF_OBJ)  , INTENT(IN), TARGET :: IFAMAS
-      LOGICAL, INTENT(IN), OPTIONAL        :: POST,PERIO,YA4D,SIGMA
-      INTEGER, INTENT(IN), OPTIONAL        :: STOCHA
+      INTEGER         , INTENT(IN)           :: NOMB
+      INTEGER         , INTENT(IN)           :: NPLAN,JF,NF,NELEM2
+      INTEGER         , INTENT(IN)           :: NPOIN2,NELMAX2
+      INTEGER         , INTENT(INOUT)        :: IELM
+      INTEGER         , INTENT(INOUT)        :: FRE(*)
+      INTEGER         , INTENT(INOUT),TARGET :: ELT(*),ETA(*)
+      INTEGER         , INTENT(INOUT)        :: IT3(*),ISUB(*),FREBUF(*)
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FN,UCONV,VCONV,WCONV
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FRCONV
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: ZSTAR,MASKEL,IKLE2
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: SURDET2
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FREQ
+      TYPE(BIEF_OBJ)  , INTENT(INOUT)        :: TB,SHF
+      TYPE(BIEF_OBJ)  , INTENT(INOUT),TARGET :: FTILD,SHP,SHZ
+      LOGICAL         , INTENT(IN)           :: MSK
+      DOUBLE PRECISION, INTENT(IN)           :: DT
+      TYPE(BIEF_MESH) , INTENT(INOUT)        :: MESH
+      TYPE(BIEF_OBJ)  , INTENT(IN), TARGET   :: IFAMAS
+      LOGICAL, INTENT(IN), OPTIONAL          :: POST,PERIO,YA4D,SIGMA
+      INTEGER, INTENT(IN), OPTIONAL          :: STOCHA
       TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL, TARGET :: VISC
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -240,11 +249,11 @@
 !     THE OFF-DIAGONAL TERMS OF WORK MATRIX IN MESH WILL BE USED AS
 !     SHPBUF(3,SIZEBUF)
 !
-      SIZEBUF=(MESH%M%X%DIM1*MESH%M%X%DIM2)/3
+      SIZEBUF=(MESH%M%X%MAXDIM1*MESH%M%X%MAXDIM2)/3
 !
 !     T7 WILL BE USED AS SHZBUF(SIZEBUF)
 !
-      SIZEBUF=MIN(SIZEBUF,T7%DIM1)
+      SIZEBUF=MIN(SIZEBUF,T7%MAXDIM1)
 !
 !     IT3 WILL BE USED AS ELTBUF
 !
