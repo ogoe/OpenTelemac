@@ -17,6 +17,10 @@
 !brief    CALLS THE METHOD OF CHARACTERISTICS
 !+               (SUBROUTINE CARACT).
 !
+!warning  So far the size of some arrays cannot be checked:
+!+        FRE, ELT, ETA, IT3, ISUB, FREBUF, it would be better to send
+!+        BIEF_OBJ structures.        
+!
 !history  J-M HERVOUET (LNHE)
 !+        12/02/2010
 !+        V6P0
@@ -113,8 +117,11 @@
       INTEGER         , INTENT(IN)           :: NPOIN2,NELMAX2
       INTEGER         , INTENT(INOUT)        :: IELM
       INTEGER         , INTENT(INOUT)        :: FRE(*)
-      INTEGER         , INTENT(INOUT),TARGET :: ELT(*),ETA(*)
-      INTEGER         , INTENT(INOUT)        :: IT3(*),ISUB(*),FREBUF(*)
+!     NEXT 3 DIMENSIONS ARE A MINIMUM
+      INTEGER         , INTENT(INOUT),TARGET :: ELT(NPOIN2*NPLAN)
+      INTEGER         , INTENT(INOUT),TARGET :: ETA(NPOIN2*NPLAN)
+      INTEGER         , INTENT(INOUT),TARGET :: IT3(NPOIN2*NPLAN)
+      INTEGER         , INTENT(INOUT)        :: ISUB(*),FREBUF(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FN,UCONV,VCONV,WCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FRCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: ZSTAR,MASKEL,IKLE2
@@ -285,7 +292,7 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!     CHECKING SHP SIZE (ONCE A BUG...)
+!     CHECKING DIMENSIONS OF ARRAYS 
 !-----------------------------------------------------------------------
 !
       IF(3*NPT.GT.SHP%MAXDIM1*SHP%MAXDIM2) THEN
@@ -301,7 +308,22 @@
         ENDIF
         CALL PLANTE(1)
         STOP
-      ENDIF   
+      ENDIF
+!
+      IF(MAX(NPOIN2,NPT).GT.T2%MAXDIM1) THEN
+        IF(LNG.EQ.1) THEN
+          WRITE(LU,*) 'TAILLE DE T2:',T2%MAXDIM1
+          WRITE(LU,*) 'TROP PETITE DANS CHARAC, ',MAX(NPOIN2,NPT)
+          WRITE(LU,*) 'REQUISE'
+        ENDIF
+        IF(LNG.EQ.2) THEN
+          WRITE(LU,*) 'SIZE OF T2:',T2%MAXDIM1
+          WRITE(LU,*) 'TOO SMALL IN CHARAC, ',MAX(NPOIN2,NPT)
+          WRITE(LU,*) 'REQUESTED'
+        ENDIF
+        CALL PLANTE(1)
+        STOP
+      ENDIF         
 !
 !-----------------------------------------------------------------------
 !  APPEL DE CARACT

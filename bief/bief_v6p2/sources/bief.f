@@ -494,8 +494,11 @@
       INTEGER         , INTENT(IN)           :: NPOIN2,NELMAX2
       INTEGER         , INTENT(INOUT)        :: IELM
       INTEGER         , INTENT(INOUT)        :: FRE(*)
-      INTEGER         , INTENT(INOUT),TARGET :: ELT(*),ETA(*)
-      INTEGER         , INTENT(INOUT)        :: IT3(*),ISUB(*),FREBUF(*)
+!     NEXT 3 DIMENSIONS ARE A MINIMUM
+      INTEGER         , INTENT(INOUT),TARGET :: ELT(NPOIN2*NPLAN)
+      INTEGER         , INTENT(INOUT),TARGET :: ETA(NPOIN2*NPLAN)
+      INTEGER         , INTENT(INOUT),TARGET :: IT3(NPOIN2*NPLAN)
+      INTEGER         , INTENT(INOUT)        :: ISUB(*),FREBUF(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FN,UCONV,VCONV,WCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FRCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: ZSTAR,MASKEL,IKLE2
