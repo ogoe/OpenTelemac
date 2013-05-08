@@ -11,8 +11,6 @@
 !________!                                                        `--'   `--
 """
 """@history 12/12/2012 -- Sebastien E. Bourban
-     Many methods developped for application to meshes. The latest
-        one being about subdivision of meshes.
 """
 """@brief
       Tools for sampling and interpolating through triangular meshes
@@ -155,14 +153,14 @@ def subdivideMesh(IKLE,MESHX,MESHY):
       s1,s2,s3 = neighbours[n]
       e1,e2,e3 = JKLE[n]
       if s1 < 0:
-        JPOBO[e1] = e1
-        JPOBO[e2] = e2
+        JPOBO[e1] = e1+1
+        JPOBO[e2] = e2+1
       if s2 < 0:
-        JPOBO[e2] = e2
-        JPOBO[e3] = e3
+        JPOBO[e2] = e2+1
+        JPOBO[e3] = e3+1
       if s3 < 0:
-        JPOBO[e3] = e3
-        JPOBO[e1] = e1
+        JPOBO[e3] = e3+1
+        JPOBO[e1] = e1+1
 
    return JKLE,MESHX,MESHY,JPOBO,MESHJ
 
