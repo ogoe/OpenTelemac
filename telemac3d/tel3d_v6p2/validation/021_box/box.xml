@@ -44,9 +44,9 @@
     -->   
 <!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   --> 
-   <plot2d xref="Mesh" size="[10;10]"  > 
+<!--   <plot2d xref="Mesh" size="[10;10]"  > 
       <layer vars="domain indicator:mesh" target="postel:hor_001" config="oneofall" time="[5]"/> 
    </plot2d>
-   
+   -->   
    
 </validation>
