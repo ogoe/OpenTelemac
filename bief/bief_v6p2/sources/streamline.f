@@ -4202,13 +4202,18 @@
      & IFAPAR,MESH,NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
-! BIEF VERSION 6.2           24/04/97    J-M JANIN (LNH) 30 87 72 84 
+! BIEF VERSION 6.3           24/04/97    J-M JANIN (LNH) 30 87 72 84 
 ! 
 !*********************************************************************** 
 ! 
 !  FONCTION : THIS IS A MERE COPY OF SCHAR11, EXCEPT THE INTERPOLATION
 !             OF VELOCITY WHICH IS HERE CONSIDERED QUASI-BUBBLE
 ! 
+!history  J-M HERVOUET (LNHE)
+!+        07/04/2013
+!+        V6P3
+!+   Correct size of velocities given to allow bound checking.
+!
 !----------------------------------------------------------------------- 
 !                             ARGUMENTS 
 ! .________________.____.______________________________________________. 
@@ -4254,7 +4259,8 @@
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3)
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM)
+      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN+NELEM),V(NPOIN+NELEM)
+      DOUBLE PRECISION, INTENT(IN)    :: SURDET(NELEM)
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: DT 
@@ -4656,7 +4662,6 @@
 !     
       RETURN 
       END SUBROUTINE SCHAR12 
-!
 !                       ****************** 
                         SUBROUTINE SCHAR13 
 !                       ****************** 
@@ -4673,6 +4678,12 @@
 !  FONCTION : THIS IS A MERE COPY OF SCHAR11, EXCEPT THE INTERPOLATION
 !             OF VELOCITY WHICH IS HERE CONSIDERED QUADRATIC
 ! 
+!history  J-M HERVOUET (LNHE)
+!+        07/04/2013
+!+        V6P3
+!+   Size of velocities set to * to blind bound checking. The correct
+!+   quadratic size would be needed here.
+!
 !----------------------------------------------------------------------- 
 !                             ARGUMENTS 
 ! .________________.____.______________________________________________. 
@@ -4718,7 +4729,8 @@
       INTEGER         , INTENT(IN)    :: NPOIN,NELEM,NELMAX,NPLOT,NRK 
       INTEGER         , INTENT(IN)    :: IKLE(NELMAX,6),IFABOR(NELMAX,3)
       INTEGER         , INTENT(INOUT) :: ELT(NPLOT),NCHARA 
-      DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),SURDET(NELEM)
+!                                        QUADRATIC VELOCITIES
+      DOUBLE PRECISION, INTENT(IN)    :: U(*),V(*),SURDET(NELEM)
       DOUBLE PRECISION, INTENT(INOUT) :: XPLOT(NPLOT),YPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: DT 
@@ -5385,13 +5397,13 @@
      &                           ZSTAR,FREQ,Z,IKLE,IFABOR,
      &                           XCONV,YCONV,ZCONV,FCONV,DX, 
      &                           DY,DZ,DF,SHP,SHZ,SHF,ELT,ETA,FRE,NPLOT,
-     &                           DIM1U,NELEM,NPLAN,NF,SURDET,SENS, 
+     &                           NPOIN2,NELEM,NPLAN,NF,SURDET,SENS, 
      &                           MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.)
            ELSE
              CALL SCHAR41_PER(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                        Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                        DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
-     &                        DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                        NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                        MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.)
            ENDIF
          ELSEIF(.NOT.PERIO) THEN 
@@ -5400,13 +5412,13 @@
              CALL SCHAR41_SIGMA(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                          Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                          DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
-     &                          DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                          NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                          MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.)
            ELSE
              CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                        Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                        DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
-     &                        DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                        NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                        MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.,SIGMA)
            ENDIF
          ELSE
@@ -5611,14 +5623,14 @@
      &                                DX,DY,DZ,DF,
      &                                SHPBUF,SHZBUF,SHFBUF,
      &                                ELTBUF,ETABUF,FREBUF, 
-     &                                NARRV,DIM1U,NELEM,
+     &                                NARRV,NPOIN2,NELEM,
      &                                NPLAN,NF,SURDET,SENS, 
      &                                MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
                 ELSE
                   CALL SCHAR41_PER(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                             Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                             DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF, 
-     &                             NARRV,DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                             NARRV,NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                             MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
                 ENDIF
               ELSEIF(.NOT.PERIO) THEN
@@ -5628,13 +5640,13 @@
      &                               Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX,
      &                               DY,DZ,SHPBUF,SHZBUF,
      &                               ELTBUF,ETABUF,NARRV, 
-     &                               DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                               NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                               MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
                 ELSE
                   CALL SCHAR41(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
      &                         Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                         DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF,NARRV, 
-     &                         DIM1U,NELEM,NPLAN,SURDET,SENS, 
+     &                         NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                         MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.,SIGMA)
                 ENDIF
               ELSE

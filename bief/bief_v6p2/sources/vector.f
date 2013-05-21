@@ -55,6 +55,11 @@
 !+        V6P3
 !+   Arguments added to VECTOS
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        03/05/2013
+!+        V6P3
+!+   Checking size of vector, and status=0 allowed if OP='='.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| F              |-->| FUNCTION USED IN THE VECTOR FORMULA (BIEF_OBJ)
 !| FORMUL         |-->| STRING WITH THE FORMULA DESCRIBING THE VECTOR
@@ -122,10 +127,29 @@
      &  ' FOR THE VECTOR ',A6,' : ',1I6,' <=> ',1I6)
         CALL PLANTE(1)
         STOP
-      ELSEIF(VEC%STATUS.EQ.2.OR.VEC%STATUS.EQ.1) THEN
+      ELSEIF(VEC%STATUS.EQ.2.OR.VEC%STATUS.EQ.1.OR.
+     &      (VEC%STATUS.EQ.0.AND.OP.EQ.'=')) THEN
         NPT = BIEF_NBPTS(IELM1,MESH)
         VEC%ELM = IELM1
-        VEC%DIM1= NPT
+        IF(NPT.GT.VEC%MAXDIM1) THEN
+          IF(LNG.EQ.1) THEN
+            WRITE(LU,*) 'LE VECTEUR ',VEC%NAME
+            WRITE(LU,*) 'A UNE DIMENSION TROP PETITE : ',VEC%MAXDIM1
+            WRITE(LU,*) 'IL NE PEUT ETRE UTILISE DANS VECTOR'
+            WRITE(LU,*) 'POUR UNE TAILLE DE ',NPT
+          ENDIF
+          IF(LNG.EQ.2) THEN
+            WRITE(LU,*) 'VECTOR ',VEC%NAME
+            WRITE(LU,*) 'HAS A FIRST DIMENSION OF: ',VEC%MAXDIM1
+            WRITE(LU,*) 'IT CANNOT BE USED IN VECTOR'
+            WRITE(LU,*) 'FOR A SIZE OF ',NPT
+          ENDIF
+          CALL PLANTE(1)
+          STOP
+        ELSE
+          VEC%DIM1= NPT
+          IF(VEC%STATUS.EQ.0) VEC%STATUS=2
+        ENDIF
       ELSE
         IF(LNG.EQ.1) THEN
           WRITE(LU,*) 'LE VECTEUR ',VEC%NAME,' A UN STATUT EGAL A',

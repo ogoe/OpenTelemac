@@ -56,6 +56,11 @@
 !+   Arguments STOCHA and VISC added. Attribute target added for some
 !+   others (it helps prepare weak form of characteristics).
 !
+!history  J-M HERVOUET (LNHE)
+!+        16/05/2013
+!+        V6P3
+!+   Attribute target for ISUB.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP
 !| FN             |-->| VARIABLES AT TIME N .
@@ -117,11 +122,12 @@
       INTEGER         , INTENT(IN)           :: NPOIN2,NELMAX2
       INTEGER         , INTENT(INOUT)        :: IELM
       INTEGER         , INTENT(INOUT)        :: FRE(*)
-!     NEXT 3 DIMENSIONS ARE A MINIMUM
+!     NEXT 4 DIMENSIONS ARE A MINIMUM
       INTEGER         , INTENT(INOUT),TARGET :: ELT(NPOIN2*NPLAN)
       INTEGER         , INTENT(INOUT),TARGET :: ETA(NPOIN2*NPLAN)
       INTEGER         , INTENT(INOUT),TARGET :: IT3(NPOIN2*NPLAN)
-      INTEGER         , INTENT(INOUT)        :: ISUB(*),FREBUF(*)
+      INTEGER         , INTENT(INOUT),TARGET :: ISUB(NPOIN2*NPLAN)
+      INTEGER         , INTENT(INOUT)        :: FREBUF(*)
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FN,UCONV,VCONV,WCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FRCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: ZSTAR,MASKEL,IKLE2
