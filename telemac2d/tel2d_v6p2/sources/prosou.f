@@ -67,11 +67,6 @@
 !note  SOURCE TERMS FU AND FV ARE FIRST COMPUTED IN P1.
 !+         THEY ARE THEN EXTENDED TO QUASI-BUBBLE IF REQUIRED.
 !
-!history  J-M HERVOUET (LNHE)
-!+        08/04/2008
-!+        V6P0
-!+
-!
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
 !+        V6P0
@@ -100,6 +95,12 @@
 !+        16/04/2013
 !+        V6P3
 !+   Adding the file format in calls to FIND_IN_SEL.
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        21/05/2013
+!+        V6P3
+!+   Possibility of negative depths taken into account when limiting
+!+   evaporation on dry zones.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME
@@ -379,7 +380,7 @@
         IF(BANDEC) THEN
 !         EVAPORATION (TENTATIVELY...) LIMITED BY AVAILABLE WATER
           DO I=1,NPOIN
-            PLUIE%R(I)=MAX(RAIN_MPS,-HN%R(I)*SURDT)
+            PLUIE%R(I)=MAX(RAIN_MPS,-MAX(HN%R(I),0.D0)*SURDT)
           ENDDO
         ELSE
           CALL OS('X=C     ',X=PLUIE,C=RAIN_MPS)

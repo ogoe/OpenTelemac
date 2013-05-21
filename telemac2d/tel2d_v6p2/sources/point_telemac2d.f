@@ -56,7 +56,12 @@
 !history  C. COULET (ARTELIA)
 !+        23/04/2013
 !+        V6P3
-!+     Correction of a bug in BUSE.F
+!+   Correction of a bug in BUSE.F
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        21/05/2013
+!+        V6P3
+!+   Size of arrays in TB modified in case of floats.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,7 +79,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER MEMW1,NTR,NTRT,NTRKE,I,J,I3,I4,ITRAC
+      INTEGER MEMW1,NTR,NTRT,NTRKE,I,J,I3,I4,ITRAC,SIZ
       INTEGER IELMX,IELMC1,IELMC2,IELMUT,IELMHT
       INTEGER IELBU,IELBH,IELBT,IELBK,IELBE,IELB1
       INTEGER IELBX,CFG(2),CFGBOR(2),ERR
@@ -509,7 +514,8 @@
 !
       CALL ALLBLO(TB ,'TB    ')
 !
-      CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',IELMX,1,2,MESH)
+      SIZ=MAX(BIEF_NBPTS(IELMX,MESH),NFLOT_MAX)
+      CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',SIZ,1,0,MESH)
 !
 !     ALIAS FOR THE FIRST 22 WORKING ARRAYS OF THE BLOCK: TB
 !
@@ -1021,17 +1027,24 @@
 !
 !     INTEGER WORKING ARRAY (MINIMUM SIZE NELEM)
 !
-      IF(IELMX.GT.11) THEN
-        CALL BIEF_ALLVEC(2,IT1,'IT1   ',IELMX,1,2,MESH)
-        CALL BIEF_ALLVEC(2,IT2,'IT2   ',IELMX,1,2,MESH)
-        CALL BIEF_ALLVEC(2,IT3,'IT3   ',IELMX,1,2,MESH)
-        CALL BIEF_ALLVEC(2,IT4,'IT4   ',IELMX,1,2,MESH)
-      ELSE
-        CALL BIEF_ALLVEC(2,IT1,'IT1   ',   10,1,2,MESH)
-        CALL BIEF_ALLVEC(2,IT2,'IT2   ',   10,1,2,MESH)
-        CALL BIEF_ALLVEC(2,IT3,'IT3   ',   10,1,2,MESH)
-        CALL BIEF_ALLVEC(2,IT4,'IT4   ',   10,1,2,MESH)
-      ENDIF
+      SIZ=MAX(BIEF_NBPTS(IELMX,MESH),
+     &        BIEF_NBPTS(10,MESH),
+     &        NFLOT_MAX)
+      CALL BIEF_ALLVEC(2,IT1,'IT1   ',SIZ,1,0,MESH)
+      CALL BIEF_ALLVEC(2,IT2,'IT2   ',SIZ,1,0,MESH)
+      CALL BIEF_ALLVEC(2,IT3,'IT3   ',SIZ,1,0,MESH)
+      CALL BIEF_ALLVEC(2,IT4,'IT4   ',SIZ,1,0,MESH)
+!     IF(IELMX.GT.11) THEN
+!       CALL BIEF_ALLVEC(2,IT1,'IT1   ',IELMX,1,2,MESH)
+!       CALL BIEF_ALLVEC(2,IT2,'IT2   ',IELMX,1,2,MESH)
+!       CALL BIEF_ALLVEC(2,IT3,'IT3   ',IELMX,1,2,MESH)
+!       CALL BIEF_ALLVEC(2,IT4,'IT4   ',IELMX,1,2,MESH)
+!     ELSE
+!       CALL BIEF_ALLVEC(2,IT1,'IT1   ',   10,1,2,MESH)
+!       CALL BIEF_ALLVEC(2,IT2,'IT2   ',   10,1,2,MESH)
+!       CALL BIEF_ALLVEC(2,IT3,'IT3   ',   10,1,2,MESH)
+!       CALL BIEF_ALLVEC(2,IT4,'IT4   ',   10,1,2,MESH)
+!     ENDIF
 !
 !_______________________________________________________________________
 !

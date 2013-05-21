@@ -1618,13 +1618,13 @@ NIVEAU = 2
 AIDE = 'Criteres d''arret pour un ecoulement permanent 
 ces coefficients sont respectivement appliques a 
         1) U et V 
-        2) H ou C 
+        2) H 
         3) T 
 A utiliser avec le mot-cle : ARRET SI UN ETAT PERMANENT EST ATTEINT' 
 AIDE1 = 'Stop criteria for a steady state 
 These coefficients are applied respectively to 
         1) U and V 
-        2) H  or C 
+        2) H 
         3) T 
 To be used with the key-word: STOP IF A STEADY STATE IS REACHED' 
  
@@ -5308,8 +5308,8 @@ TYPE = ENTIER
 INDEX = 81
 MNEMO = 'PROTYP'
 TAILLE = 0
-DEFAUT = 2
-DEFAUT1 = 2
+DEFAUT = 1
+DEFAUT1 = 1
 CHOIX = '1="CARTESIEN, NON GEOREFERENCE"';
         '2="MERCATOR"';
         '3="LATITUDE LONGITUDE"'
