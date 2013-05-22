@@ -62,6 +62,7 @@
 !+        21/05/2013
 !+        V6P3
 !+   Size of arrays in TB modified in case of floats.
+!+   (22/05/2013: provisionally cancelled)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -514,8 +515,9 @@
 !
       CALL ALLBLO(TB ,'TB    ')
 !
-      SIZ=MAX(BIEF_NBPTS(IELMX,MESH),NFLOT_MAX)
-      CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',SIZ,1,0,MESH)
+!     SIZ=MAX(BIEF_NBPTS(IELMX,MESH),NFLOT_MAX)
+!     CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',SIZ,1,0,MESH)
+      CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',IELMX,1,2,MESH)
 !
 !     ALIAS FOR THE FIRST 22 WORKING ARRAYS OF THE BLOCK: TB
 !
