@@ -5,7 +5,7 @@
      &( X , Y )
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    COPIES A VECTOR STRUCTURE ONTO ANOTHER.
@@ -26,6 +26,11 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (LNH)
+!+        22/05/2013
+!+        V6P3
+!+   STATUS now also considered.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| X              |-->| STRUCTURE TO BE COPIED
@@ -97,6 +102,13 @@
       Y%DIM2 = X%DIM2
 !     CASE OF DISCONTINUOUS VECTORS
       Y%DIMDISC = X%DIMDISC
+!
+!     A VECTOR WITH PREVIOUS STATUS 0 NOW DEFINED ON A MESH
+!     IT IS DECLARED AS STATUS 2 (DISCRETISATION THAT CAN BE CHANGED)
+!
+      IF(Y%STATUS.EQ.0.AND.(X%STATUS.EQ.1.OR.X%STATUS.EQ.2)) THEN
+        Y%STATUS=2
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
