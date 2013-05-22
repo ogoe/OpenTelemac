@@ -182,7 +182,7 @@
       DOUBLE PRECISION HMIN,HHBOR,DETADX,DETADY,TBAR(100),TT(100)
       DOUBLE PRECISION UCSI,UCSIBAR,UETA,UETABAR,CBAR,HH,TETA
       DOUBLE PRECISION ZSTAR(1),ZCONV(1,1),SHZ(1),Z(1,1),UNORM,NORMZS
-      INTEGER ELM_UFIELD,ELM_VFIELD,ELM_HFIELD,IELEM,SIZEBUF
+      INTEGER IELEM,SIZEBUF
 !
       DATA HMIN  /2.D-2/
 !      
@@ -202,15 +202,6 @@
 !     SIZE OF BUFFER FOR SHP
 !
       SIZEBUF=SHPBUF%DIM1/3
-!
-!-----------------------------------------------------------------------
-!
-!     INTERPOLATED VARIABLES MUST BE DECLARED AS LINEAR
-!     HERE WORK BIEF_OBJ STRUCTURES MAY BE OF DIFFERENT DISCRETISATION
-!
-      ELM_UFIELD=UFIELD%ELM
-      ELM_VFIELD=VFIELD%ELM
-      ELM_HFIELD=HFIELD%ELM
 !
 !-----------------------------------------------------------------------
 !
@@ -251,14 +242,14 @@
       CALL OS('X=Y     ',X=UFIELD,Y=U)
       CALL OS('X=Y     ',X=VFIELD,Y=V)
 !
-!     FORCING DISCRETISATION
+!     FORCING DISCRETISATION TO IELM
 !
       UFIELD%ELM=IELM
       VFIELD%ELM=IELM
       HFIELD%ELM=IELM
 !
       UFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
-      VFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
+      VFIELD%DIM1=BIEF_NBPTS(IELM,MESH) 
       HFIELD%DIM1=BIEF_NBPTS(IELM,MESH)
 !      
       TETA=1.D0
@@ -732,18 +723,6 @@
         ENDIF
         ENDIF
       ENDDO
-!
-!-----------------------------------------------------------------------
-!
-!     RESTORING ORIGINAL DISCRETISATIONS
-!                                       
-      UFIELD%ELM=ELM_UFIELD
-      VFIELD%ELM=ELM_VFIELD
-      HFIELD%ELM=ELM_HFIELD
-!      
-      UFIELD%DIM1=BIEF_NBPTS(ELM_UFIELD,MESH)
-      VFIELD%DIM1=BIEF_NBPTS(ELM_VFIELD,MESH)
-      HFIELD%DIM1=BIEF_NBPTS(ELM_HFIELD,MESH) 
 !
 !-----------------------------------------------------------------------
 !

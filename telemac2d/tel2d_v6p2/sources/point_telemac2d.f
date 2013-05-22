@@ -59,10 +59,9 @@
 !+   Correction of a bug in BUSE.F
 !
 !history  J-M HERVOUET (EDF R&D, LNHE)
-!+        21/05/2013
+!+        22/05/2013
 !+        V6P3
 !+   Size of arrays in TB modified in case of floats.
-!+   (22/05/2013: provisionally cancelled)
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -515,9 +514,11 @@
 !
       CALL ALLBLO(TB ,'TB    ')
 !
-!     SIZ=MAX(BIEF_NBPTS(IELMX,MESH),NFLOT_MAX)
-!     CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',SIZ,1,0,MESH)
-      CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',IELMX,1,2,MESH)
+      IF(NFLOT_MAX.GT.BIEF_NBPTS(IELMX,MESH)) THEN
+        CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',NFLOT_MAX,1,0,MESH)
+      ELSE
+        CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',IELMX,1,2,MESH)
+      ENDIF
 !
 !     ALIAS FOR THE FIRST 22 WORKING ARRAYS OF THE BLOCK: TB
 !
