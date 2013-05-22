@@ -77,6 +77,7 @@ SRCS	      = interface_parallel.f \
 		errpvm.f \
 		get_mpi_parameters.f \
 		org_charac_type1.f \
+		org_charac_type_alg.f \
 		p_dmax.f \
 		p_dmin.f \
 		p_dsum.f \
