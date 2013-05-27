@@ -1058,6 +1058,14 @@
 !
       INTEGER PROTYP
 !
+!     ALGAE TYPE
+!
+      INTEGER ALGTYP
+!
+!     OPTION FOR CHARACTERISTICS
+!
+      INTEGER OPTCHA
+!
 !
 !-----------------------------------------------------------------------
 !
@@ -1245,6 +1253,10 @@
 !     IF YES, THE USER WANTS TO DEFINE BREACHES
 !  
       LOGICAL BRECHE
+!
+!     IF YES, THE PARTICLES ARE ALGAE
+!  
+      LOGICAL ALGAE
 !
 !-----------------------------------------------------------------------
 !
@@ -1500,6 +1512,17 @@
 !
       DOUBLE PRECISION HREC
 !
+!     DIAMETRE OF ALGAE
+!
+      DOUBLE PRECISION DALGAE
+!
+!     DENSITY OF ALGAE
+!
+      DOUBLE PRECISION RALGAE
+!
+!     THICKNESS OF ALGAE
+!
+      DOUBLE PRECISION EALGAE
 !
 !-----------------------------------------------------------------------
 !

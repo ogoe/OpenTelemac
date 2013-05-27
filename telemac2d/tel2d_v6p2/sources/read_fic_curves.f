@@ -28,9 +28,11 @@
 !+   cross-referencing of the FORTRAN sources
 !
 !history  J-M HERVOUET (LNHE)
-!+        13/12/2012
+!+        27/05/2013
 !+        V6P3
-!+   Now works with tabs as well as spaces as delimiters
+!+   Now works with tabs as well as spaces as delimiters, and the 
+!+   variable FIRST introduced (NAG compiler refuses two successive
+!+   reads at an end of file, so error redirected as end).
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| NFIC           |-->| LOGICAL UNIT OF FILE
@@ -60,17 +62,27 @@
 !
       INTRINSIC CHAR
 !
+      LOGICAL FIRST
+!
 !-----------------------------------------------------------------------
 !
       NMAXPTS=0
 !     FILE WILL BE READ TWICE, THE FIRST TIME (PASS=0) TO COUNT DATA
 !                              THE SECOND TIME (PASS=1) TO READ THEM
       PASS=0
+      FIRST=.TRUE.
 !
 10    CONTINUE
       REWIND(NFIC)
 !     SKIPS COMMENTS
-1     READ(NFIC,FMT='(A)',END=1000,ERR=999) LIGNE
+1     CONTINUE
+      IF(FIRST) THEN
+        READ(NFIC,FMT='(A)',END=1000,ERR=999) LIGNE
+      ELSE
+!       FOR SOME COMPILERS READING AFTER END IS AN ERROR
+!       SO HERE ERROR IS TREATED AS END
+        READ(NFIC,FMT='(A)',END=1000,ERR=1000) LIGNE
+      ENDIF
       IF(LIGNE(1:1).EQ.'#') GO TO 1
 !
 !     NOW A LINE ANNOUNCING Q(??) OR Z(??)
@@ -112,7 +124,8 @@
 !       SKIPS UNITS (UNITS NOT CHECKED)
         READ(NFIC,FMT='(A)',END=1000,ERR=999) LIGNE
         PTS_CURVES(ICURVE)=0
-4       READ(NFIC,FMT='(A)',END=1001,ERR=999) LIGNE
+4       CONTINUE
+        READ(NFIC,FMT='(A)',END=1001,ERR=999) LIGNE
         IF(LIGNE(1:1).NE.'#') THEN
           PTS_CURVES(ICURVE)=PTS_CURVES(ICURVE)+1
           IF(PASS.EQ.1) THEN
@@ -131,6 +144,7 @@
 !       END OF BLOCK FOR CURVE ICURVE
 1001    NMAXPTS=MAX(NMAXPTS,PTS_CURVES(ICURVE))
 !       TREATS THE NEXT CURVE
+        FIRST=.FALSE.
         GO TO 1
       ELSE
         IF(LNG.EQ.1) THEN
@@ -185,7 +199,7 @@
           STOP
         ENDIF
         PASS=1
-!       SHOOT AGAIN
+!       SHOOT AGAIN WITH PASS = 1
         GO TO 10
       ENDIF
 !

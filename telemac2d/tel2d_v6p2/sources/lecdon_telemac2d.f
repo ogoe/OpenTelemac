@@ -516,6 +516,10 @@
          ENDIF
 !        SPATIAL PROJECTION TYPE
          PROTYP = MOTINT(ADRESS(1,81))
+!        ALGAE TYPE
+         ALGTYP = MOTINT(ADRESS(1,82))
+!        OPTION FOR CHARACTERISTICS
+         OPTCHA = MOTINT(ADRESS(1,83))
 !
 ! REAL KEYWORDS:
 !
@@ -738,6 +742,12 @@
              ENDDO
            ENDIF
          ENDIF
+!        DIAMETRE OF ALGAE
+         DALGAE   = MOTREA( ADRESS(2,68) )
+!        DENSITY OF ALGAE
+         RALGAE   = MOTREA( ADRESS(2,69) )
+!        THICKNESS OF ALGAE
+         EALGAE   = MOTREA( ADRESS(2,70) )
 !
 ! LOGICAL KEYWORDS:
 !
@@ -746,7 +756,8 @@
          ELSE
            DEBU = .TRUE.
          ENDIF
-!
+!        BREACHES
+         BRECHE    = MOTLOG( ADRESS(3, 2) )
          LISTIN    = MOTLOG( ADRESS(3, 3) )
          DIFVIT    = MOTLOG( ADRESS(3, 4) )
          ATMOS     = MOTLOG( ADRESS(3, 5) )
@@ -794,10 +805,10 @@
          SPILL_MODEL  = MOTLOG( ADRESS(3,45) )
 !        INFERENCE OF MINOR CONSTITUENTS OF TPXO TIDAL DATABASE
          INTMICON  = MOTLOG( ADRESS(3,46) )
+!        ALGAE TRANSPORT MODEL
+         ALGAE     = MOTLOG( ADRESS(3,47) )
 !
          IF(.NOT.DEFZON) NZONE=0
-!        BREACHES
-         BRECHE    = MOTLOG( ADRESS(3,2) )
 !
 ! CHARACTER STRING KEYWORDS : SOME ARE USED BY THE LAUNCHING
 !                             PROCEDURE

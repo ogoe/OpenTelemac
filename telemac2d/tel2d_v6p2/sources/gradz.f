@@ -147,20 +147,20 @@
 !
 !    EXTRAPOLATES AND CAPS
 !
-       ILIM=1
-       BETA=1.D0
+         ILIM=1
+         BETA=1.D0
          DSZ(1,NSG)  =  EXLIM(ILIM,BETA,GRADI,GRIJ )
          DSZ(2,NSG)  =  EXLIM (ILIM,BETA,GRADJ,GRJI )
 !
          IF(DSZ(1,NSG).GE.0.D0) THEN
-         DSP(NUBO1) = DSP(NUBO1) + AIRST(1,NSG)*DSZ(1,NSG)
+           DSP(NUBO1) = DSP(NUBO1) + AIRST(1,NSG)*DSZ(1,NSG)
          ELSE
-         DSM(NUBO1) = DSM(NUBO1) - AIRST(1,NSG)*DSZ(1,NSG)
+           DSM(NUBO1) = DSM(NUBO1) - AIRST(1,NSG)*DSZ(1,NSG)
          ENDIF
          IF(DSZ(2,NSG).GE.0.) THEN
-         DSP(NUBO2) = DSP(NUBO2) + AIRST(2,NSG)*DSZ(2,NSG)
+           DSP(NUBO2) = DSP(NUBO2) + AIRST(2,NSG)*DSZ(2,NSG)
          ELSE
-         DSM(NUBO2) = DSM(NUBO2) - AIRST(2,NSG)*DSZ(2,NSG)
+           DSM(NUBO2) = DSM(NUBO2) - AIRST(2,NSG)*DSZ(2,NSG)
          ENDIF
 !
        ENDDO
@@ -168,10 +168,10 @@
 !  COMPUTES THE CORRECTIONS NECESSARY TO HAVE CONSERVATION
 !
       DO IS=1,NS
-       CORR(IS) =  DSM(IS) - DSP(IS)
-       AMDS =MAX(DSP(IS),DSM(IS))
+        CORR(IS) =  DSM(IS) - DSP(IS)
+        AMDS =MAX(DSP(IS),DSM(IS))
         IF(AMDS.GT.0.D0) THEN
-        CORR(IS) = CORR(IS)/AMDS
+          CORR(IS) = CORR(IS)/AMDS
         ENDIF
       ENDDO
 !
