@@ -685,43 +685,44 @@ C
 C
       INTEGER IELMT,IELMH_SIS,IELMU_SIS,IELMX
 !> @brief
-C standard du fichier de geometrie
+! standard du fichier de geometrie
       INTEGER STDGEO
 !> @brief
-C
+!
       INTEGER LOGDES ,LOGPRE ,OPTBAN ,LVMAC
 !> @brief HYDRODYNAMIC CODE
-C code de calcul utilise pour l'hydrodynamique
+! code de calcul utilise pour l'hydrodynamique
       INTEGER HYDRO
 !> @brief MATRIX STORAGE
-C stockage des matrices
+! stockage des matrices
       INTEGER OPTASS
 !> @brief NUMBER OF SUB-ITERATIONS
-C nombre de sous-iterations
+! nombre de sous-iterations
       INTEGER NSOUS
 !> @brief
-C
+!
       INTEGER MARDAT(3),MARTIM(3),PRODUC
-!> @brief OPTION FOR THE TREATMENT OF NON ERODABLE BEDS
-C option de traitement des fonds non erodables
+!
+!     OPTION FOR THE TREATMENT OF NON ERODABLE BEDS
+! 
       INTEGER CHOIX
 !> @brief
-C
-      INTEGER PTINIL, PTINIG
+!
+      INTEGER PTINIL,PTINIG
 !> @brief NUMBER OF PRIVATE ARRAYS
-C nombre de tableaux prives
+! nombre de tableaux prives
       INTEGER NPRIV
 !> @brief COUPLING PERIOD
-C periode de couplage
+! periode de couplage
       INTEGER PERCOU
 !> @brief NUMERO DU PAS DE TEMPS
-C
+!
       INTEGER LT
 !> @brief
-C
+!
       INTEGER RESOL
 !> @brief
-C
+!
       INTEGER DEPER
 !
 !     FORMULA FOR DEVIATION
@@ -800,7 +801,7 @@ C
 !     NUMBER OF GIVEN SSOLID DISCHARGES GIVEN BY USER
 !
       INTEGER NSOLDIS
-
+!
 !// UHM // For the Continous Vertical Sorting MODEL
 !
 !     Type of the Vertical Grain Sorting: Hirano Layers or Continous-VSM
@@ -822,8 +823,10 @@ C
 !     CHOOSE A MODEL FOR ESTIMATION OF A DYNAMIC ACTIVE LAYER THICKNESS
 !
       INTEGER ALT_MODEL
-
-!// UHM //
+!
+!     MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES
+!
+      INTEGER MAXADV
 !
 !-----------------------------------------------------------------------
 !

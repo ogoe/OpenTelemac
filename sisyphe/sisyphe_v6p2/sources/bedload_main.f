@@ -19,7 +19,7 @@
      &   QSCLXC, QSXC, QSCLYC, QSYC, SALFA, ZF_C, ZFCL_C, NSOUS,
      &   ENTETS, SECCURRENT, SLOPEFF,
      &   PHISED, DEVIA, BETA2, BIJK,SEDCO,HOULE,
-     &   U3D,V3D,CODE,FLBCLA)
+     &   U3D,V3D,CODE,FLBCLA,MAXADV)
 !
 !***********************************************************************
 ! SISYPHE   V6P1                                   21/07/2011
@@ -197,7 +197,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: S,UNLADM
       TYPE(BIEF_OBJ),   INTENT(IN)    :: UW, THETAW,  TOBW, TW
       TYPE(BIEF_OBJ),   INTENT(IN)    :: ZF
-      INTEGER,          INTENT(IN)    :: DEBUG, HIDFAC, ICF
+      INTEGER,          INTENT(IN)    :: DEBUG, HIDFAC, ICF,MAXADV
       INTEGER,          INTENT(IN)    :: IELMT, ISOUS, KDDL, KDIR, KENT
       INTEGER,          INTENT(IN)    :: KINC, KLOG, KNEU, KSORT
       INTEGER,          INTENT(IN)    :: LOADMETH, LT,NPOIN, NPTFR
@@ -304,7 +304,7 @@
      &                      T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,
      &                      T13,CSF_SABLE,BREACH,QSCLXC%ADR(I)%P,
      &                      QSCLYC%ADR(I)%P,ZFCL_C%ADR(I)%P,SLOPEFF,
-     &                      I,FLBCLA,LIQBOR,QBOR%ADR(I)%P)
+     &                      I,FLBCLA,LIQBOR,QBOR%ADR(I)%P,MAXADV)
           IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_EVOL'
 !
 !         NOW DIVIDING BY CSF_SABLE TO GET THE EVOLUTION OF BED

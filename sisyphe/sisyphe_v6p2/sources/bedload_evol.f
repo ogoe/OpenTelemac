@@ -9,7 +9,7 @@
      & VF,ENTET,MSK,CONST_ALAYER,LCONDIS,MESH,
      & QS,T1,T2,T3,T4,T5,T6,T7,T8,T9,
      & T10,T11,T12,T13,CSF_SABLE,BREACH,QSX,QSY,ZFCL,SLOPEFF,ICLA,
-     & FLBCLA,LIQBOR,QBOR)
+     & FLBCLA,LIQBOR,QBOR,MAXADV)
 !
 !***********************************************************************
 ! SISYPHE   V6P3                                   21/07/2011
@@ -80,6 +80,7 @@
 !| LS0            |-->| (A SUPPRIMER)
 !| MASK           |-->| BLOCK OF MASKS, EVERY ONE FOR A TYPE OF BOUNDARY
 !| MASKEL         |-->| MASKING OF ELEMENTS
+!| MAXADV         |-->| MAXIMUM NUMBER OF ITERATIONS (IN POSITIVE_DEPTHS)
 !| MESH           |<->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
@@ -127,6 +128,7 @@
       TYPE(BIEF_OBJ),   INTENT(IN)    :: MASKEL,MASK,V2DPAR
       INTEGER,          INTENT(IN)    :: DEBUG,SLOPEFF,NPOIN,NPTFR,ICLA
       INTEGER,          INTENT(IN)    :: IELMT,KENT,KDIR,LOADMETH,KDDL
+      INTEGER,          INTENT(IN)    :: MAXADV
       DOUBLE PRECISION, INTENT(IN)    :: DTS,DM,D90,HMIN,LS0
       DOUBLE PRECISION, INTENT(IN)    :: GRAV,XMVS,XMVE,VCE,AVA(NPOIN)
       LOGICAL,          INTENT(IN)    :: VF,ENTET,MSK
@@ -195,7 +197,8 @@
      &                        ZFCL,T12,T13,MESH%GLOSEG%I,
      &                        MESH%GLOSEG%DIM1,MESH%MSEG%X,
      &                        FLULIM,MESH%NSEG,UNSV2D,CSF_SABLE,ICLA,
-     &                        FLBCLA%ADR(ICLA)%P,AVA,LIQBOR,QBOR)
+     &                        FLBCLA%ADR(ICLA)%P,AVA,LIQBOR,QBOR,
+     &                        MAXADV)
         IF(DEBUG.GT.0) WRITE(LU,*) 'END_BEDLOAD_SOLVS_FE'
       ENDIF
 !

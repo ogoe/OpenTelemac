@@ -4,7 +4,8 @@
 !
      &(MESH,S,EBOR,MASKEL,MASK,QSX,QSY,IELMT,NPOIN,NPTFR,KENT,KDIR,KDDL,
      & LIMTEC,DT,MSK,ENTET,T1,T2,T3,T4,T8,ZFCL,HZ,HZN,GLOSEG,DIMGLO,
-     & FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,ICLA,FLBCLA,AVA,LIQBOR,QBOR)
+     & FLODEL,FLULIM,NSEG,UNSV2D,CSF_SABLE,ICLA,FLBCLA,AVA,LIQBOR,QBOR,
+     & MAXADV)
 !
 !***********************************************************************
 ! SISYPHE   V6P2                                   21/07/2011
@@ -101,6 +102,7 @@
 !| MASK           |-->| BLOCK OF MASKS, EVERY ONE FOR A TYPE OF BOUNDARY
 !|                |   | SEE DIFFIN.F IN LIBRARY BIEF.
 !| MASKEL         |-->| MASKING OF ELEMENTS
+!| MAXADV         |-->| MAXIMUM NUMBER OF ITERATIONS (IN POSITIVE_DEPTH)
 !| MESH           |<->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS
 !| NPOIN          |-->| NUMBER OF POINTS
@@ -131,7 +133,7 @@
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH
       TYPE(BIEF_OBJ),   INTENT(IN)    :: S,MASKEL,MASK,QSX,QSY
       INTEGER,          INTENT(IN)    :: IELMT,NPOIN,NPTFR,KENT,KDIR
-      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA,KDDL
+      INTEGER,          INTENT(IN)    :: DIMGLO,NSEG,ICLA,KDDL,MAXADV
       INTEGER,          INTENT(IN)    :: GLOSEG(DIMGLO,2)
       DOUBLE PRECISION, INTENT(IN)    :: DT,CSF_SABLE,AVA(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: FLULIM(NSEG)
@@ -190,7 +192,7 @@
      &                     1,FLULIM,
      &                     LIMTEC%I,T8%R  ,KDIR,ENTET,MESH%W%R,
 !                                   EBOR%R
-     &                     'SISYPHE                 ',2)
+     &                     'SISYPHE                 ',2,MAXADV)
 !                                                     2 : HARDCODED
 !                             OPTION FOR POSITIVE DEPTHS ALGORITHMS
 !                             HERE CHOICE OF OPTION INDEPENDENT OF
