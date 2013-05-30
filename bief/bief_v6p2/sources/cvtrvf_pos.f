@@ -7,7 +7,8 @@
      & T1,T2,T3,T4,T5,T6,T7,T8,HNT,HT,AGGLOH,TE1,DT,ENTET,BILAN,
      & OPDTRA,MSK,MASKEL,S,MASSOU,OPTSOU,LIMTRA,KDIR,KDDL,NPTFR,FLBOR,
      & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,GLOSEG1,GLOSEG2,NBOR,
-     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN,GIVEN_FLUX,FLUX_GIVEN)
+     & OPTION,FLULIM,YAFLULIM,RAIN,PLUIE,TRAIN,GIVEN_FLUX,FLUX_GIVEN,
+     & NITMAX)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -119,6 +120,7 @@
 !| MESH           |-->| MESH STRUCTURE
 !| MSK            |-->| IF YES, THERE IS MASKED ELEMENTS.
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
+!| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPDTRA         |-->| OPTION FOR THE DIFFUSION OF TRACERS
 !| OPTION         |-->| OPTION OF ALGORITHM FOR EDGE-BASED ADVECTION
@@ -169,7 +171,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: OPDTRA,OPTSOU,KDIR,NPTFR,SOLSYS
-      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION
+      INTEGER, INTENT(IN)             :: KDDL,IOPT,OPTION,NITMAX
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: LIMTRA(NPTFR),NBOR(NPTFR)
 !                                                         NSEG
@@ -709,7 +711,7 @@
       IF(C.NE.CPREV.AND.ABS(C-CPREV).GT.CINIT*1.D-9
      &             .AND.C.NE.0.D0) THEN
         CPREV=C
-        GO TO 777
+        IF(NITER.LT.NITMAX) GO TO 777
       ENDIF
 !
 !     RAIN-EVAPORATION: RAIN DONE ABOVE, NOW EVAPORATION

@@ -6,7 +6,7 @@
      & NELEM,NELMAX,SURDET,XFLOT,YFLOT,ZFLOT,
      & SHPFLO,SHZFLO,TAGFLO,ELTFLO,ETAFLO,
      & NFLOT,NFLOT_MAX,FLOPRD,MESH,UL,
-     & ISUB,DX,DY,DZ,ELTBUF,SHPBUF,SHZBUF,SIZEBUF)
+     & ISUB,DX,DY,DZ,ELTBUF,SHPBUF,SHZBUF,SIZEBUF,STOCHA,VISC)
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -22,7 +22,7 @@
 !history  J-M JANIN (LNH)
 !+        18/08/94
 !+        V5P1
-!+
+!+   Original version.
 !
 !history  N.DURAND (HRW), S.E.BOURBAN (HRW)
 !+        13/07/2010
@@ -46,6 +46,11 @@
 !+        12/03/2013
 !+        V6P3
 !+   New file format for Tecplot. Works in parallel. Works in 3D.
+!
+!history  J-M HERVOUET (LNHE)
+!+        12/03/2013
+!+        V6P3
+!+   Arguments STOCHA and VISC added
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| DT             |-->| TIME STEP (I.E. TIME INTERVAL).
@@ -105,7 +110,7 @@
 !
       INTEGER         , INTENT(IN)    :: NPOIN,LT,IELM,IELMU,NDP,NELEM
       INTEGER         , INTENT(IN)    :: FLOPRD,NELMAX,UL,SIZEBUF,NPOIN2
-      INTEGER         , INTENT(IN)    :: NFLOT_MAX
+      INTEGER         , INTENT(IN)    :: NFLOT_MAX,STOCHA
       INTEGER         , INTENT(INOUT) :: NFLOT
       DOUBLE PRECISION, INTENT(IN)    :: DT,AT
       DOUBLE PRECISION, INTENT(IN)    :: U(NPOIN),V(NPOIN),W(NPOIN)
@@ -125,6 +130,7 @@
       DOUBLE PRECISION, INTENT(INOUT) :: SHZFLO(NFLOT_MAX)
       DOUBLE PRECISION, INTENT(INOUT) :: SHPBUF(NDP,SIZEBUF)
       DOUBLE PRECISION, INTENT(INOUT) :: SHZBUF(SIZEBUF)
+      TYPE(BIEF_OBJ)  , INTENT(IN)    :: VISC
       TYPE(BIEF_MESH) , INTENT(INOUT) :: MESH
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -224,7 +230,7 @@
      &             FRE,ELTBUF,ISUB,IELM,IELMU,NELEM,NELMAX,            
      &             NOMB,NPOIN,NPOIN2,NDP,NPLAN,1,MESH,NFLOT,NPOIN2,SENS,        
      &             SHPBUF,SHZBUF,SHZBUF,FREBUF,SIZEBUF,
-     &             APOST=.TRUE.)
+     &             APOST=.TRUE.,ASTOCHA=STOCHA,AVISC=VISC)
 !                  APOST=.TRUE. OTHERWISE ISUB IS NOT FILLED
 !
 !-----------------------------------------------------------------------

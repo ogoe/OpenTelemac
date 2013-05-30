@@ -5,10 +5,10 @@
      &(T1,T2,T3,T4,H,HN,MESH,FLODEL,COMPUTE_FLODEL,FLBOR,DT,
      & UNSV2D,NPOIN,GLOSEG1,GLOSEG2,NBOR,NPTFR,YAFLODEL,
      & SMH,YASMH,OPTSOU,FLULIM,LIMPRO,HBOR,KDIR,INFO,FLOPOINT,
-     & NAMECODE,OPTION)
+     & NAMECODE,OPTION,NITMAX)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    SUPPRESSES NEGATIVE DEPTHS BY A LIMITATION OF FLUXES.
@@ -59,6 +59,7 @@
 !| MESH           |<->| MESH STRUCTURE
 !| NAMECODE       |-->| NAME OF CALLING CODE (SISYPHE, TELEMEC2D, ETC.)
 !| NBOR           |-->| GLOBAL NUMBERS OF BOUNDARY POINTS
+!| NITMAX         |-->| MAXIMUM NUMBER OF ITERATIONS
 !| NPOIN          |-->| NUMBER OF POINTS IN THE MESH
 !| NPTFR          |-->| NUMBER OF BOUNDARY POINTS
 !| OPTION         |-->| OPTION OF ALGORITHM FOR EDGE-BASED ADVECTION
@@ -84,6 +85,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER, INTENT(IN)             :: NPOIN,NPTFR,OPTSOU,KDIR,OPTION
+      INTEGER, INTENT(IN)             :: NITMAX
       INTEGER, INTENT(IN)             :: GLOSEG1(*),GLOSEG2(*)
       INTEGER, INTENT(IN)             :: NBOR(NPTFR)
       INTEGER, INTENT(IN)             :: LIMPRO(NPTFR)
@@ -108,8 +110,6 @@
       DATA             EPS_FLUX/1.D-15/
       LOGICAL TESTING
       DATA TESTING/.FALSE./
-      INTEGER NITMAX
-      DATA NITMAX/1000/
 !
 !-----------------------------------------------------------------------
 !
