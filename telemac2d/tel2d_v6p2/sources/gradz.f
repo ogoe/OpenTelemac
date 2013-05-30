@@ -70,7 +70,7 @@
 !
       INTEGER IS,I1,I2,I3,JT,J,NSG,NUBO1,NUBO2,ILIM
       DOUBLE PRECISION AIRJ,DXTZ,DYTZ,AIX,AIY,AJX,AJY
-      DOUBLE PRECISION ZF1,ZF2,GRADI,GRADJ,GRIJ,GRJI,AMDS,DSH
+      DOUBLE PRECISION GRADI,GRADJ,GRIJ,GRJI,AMDS,DSH
 !
       DOUBLE PRECISION EXLIM
       EXTERNAL         EXLIM
@@ -83,7 +83,6 @@
       ENDDO
 !
       DO JT=1,NT
-!
          I1 = NU(JT,1)
          I2 = NU(JT,2)
          I3 = NU(JT,3)
@@ -102,10 +101,10 @@
       ENDDO
 !
       DO IS=1,NS
-         DXIZ(IS) = DXIZ(IS)/(3.D0*AIRS(IS))
-         DYIZ(IS) = DYIZ(IS)/(3.D0*AIRS(IS))
-         DSP(IS)  = 0.D0
-         DSM(IS)  = 0.D0
+        DXIZ(IS) = DXIZ(IS)/(3.D0*AIRS(IS))
+        DYIZ(IS) = DYIZ(IS)/(3.D0*AIRS(IS))
+        DSP(IS)  = 0.D0
+        DSM(IS)  = 0.D0
       ENDDO
 !
 !    REBUILDS BY INTERFACE
@@ -117,9 +116,6 @@
          NUBO1     = NUBO(1,NSG)
          NUBO2     = NUBO(2,NSG)
 !
-         ZF1   =    ZF(NUBO1)
-         ZF2   =    ZF(NUBO2)
-!
          AIX       = CMI(1,NSG)-X(NUBO1)
          AIY       = CMI(2,NSG)-Y(NUBO1)
          AJX       = CMI(1,NSG)-X(NUBO2)
@@ -128,9 +124,7 @@
 !        NODE GRADIENTS
 !
          GRADI  = AIX*DXIZ(NUBO1) + AIY*DYIZ(NUBO1)
-!
          GRADJ  = AJX*DXIZ(NUBO2) + AJY*DYIZ(NUBO2)
-!
 !
          I1 = NU(J,1)
          I2 = NU(J,2)
@@ -142,15 +136,14 @@
          DYTZ =ZF(I1)*DPY(1,J) +ZF(I2)*DPY(2,J) + ZF(I3)*DPY(3,J)
 !
          GRIJ  = AIX*DXTZ + AIY*DYTZ
-!
          GRJI  = AJX*DXTZ + AJY*DYTZ
 !
 !    EXTRAPOLATES AND CAPS
 !
          ILIM=1
          BETA=1.D0
-         DSZ(1,NSG)  =  EXLIM(ILIM,BETA,GRADI,GRIJ )
-         DSZ(2,NSG)  =  EXLIM (ILIM,BETA,GRADJ,GRJI )
+         DSZ(1,NSG)  =  EXLIM(ILIM,BETA,GRADI,GRIJ)
+         DSZ(2,NSG)  =  EXLIM(ILIM,BETA,GRADJ,GRJI)
 !
          IF(DSZ(1,NSG).GE.0.D0) THEN
            DSP(NUBO1) = DSP(NUBO1) + AIRST(1,NSG)*DSZ(1,NSG)
@@ -180,15 +173,13 @@
          NUBO1 = NUBO(1,NSG)
          NUBO2 = NUBO(2,NSG)
 !
-         DSH =  DSZ(1,NSG)
-         DSZ(1,NSG) =   DSH +
-     & MIN(0.D0,CORR(NUBO1))*MAX(0.D0,DSH)+
-     & MAX(0.D0,CORR(NUBO1))*MAX(0.D0,-DSH)
+         DSH = DSZ(1,NSG)
+         DSZ(1,NSG) = DSH + MIN(0.D0,CORR(NUBO1))*MAX(0.D0,DSH)
+     &                    + MAX(0.D0,CORR(NUBO1))*MAX(0.D0,-DSH)
+         DSH = DSZ(2,NSG)
+         DSZ(2,NSG) = DSH + MIN(0.D0,CORR(NUBO2))*MAX(0.D0,DSH)
+     &                    + MAX(0.D0,CORR(NUBO2))*MAX(0.D0,-DSH)
 !
-         DSH     =  DSZ(2,NSG)
-         DSZ(2,NSG) =   DSH +
-     & MIN(0.D0,CORR(NUBO2))*MAX(0.D0,DSH)+
-     & MAX(0.D0,CORR(NUBO2))*MAX(0.D0,-DSH)
       ENDDO
 !
 !-----------------------------------------------------------------------

@@ -1066,6 +1066,14 @@
 !
       INTEGER OPTCHA
 !
+!     MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES
+!
+      INTEGER MAXADV
+!
+!     STOCHASTIC DIFFUSION MODEL (FOR PARTICLES ALGAE, OIL SPILLS...)
+!
+      INTEGER STOCHA
+!
 !
 !-----------------------------------------------------------------------
 !

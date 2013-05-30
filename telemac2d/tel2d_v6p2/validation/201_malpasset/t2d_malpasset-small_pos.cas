@@ -1,4 +1,4 @@
- PROCESSEURS PARALLELES : 0 
+ PROCESSEURS PARALLELES : 0
 /
 /  TEMPS D'EXECUTION SUR LES DIFFERENTES MACHINES :
 /
@@ -6,6 +6,9 @@
 /                              169 s 04/08/2009
 /                              160 s 21/05/2010 (Nag : 408 s    Intel : 69 s)
 /  AVEC DT=4 s : VERSION 6.2 : 207 s 22/05/2012 
+/
+/  AVEC DT=4 s : VERSION 6.3 : 34 s 30/05/2013 (Nag 1 proc.) 
+/                               7 s 30/05/2013 (Nag 8 proc.) 
 /
 FICHIER DE GEOMETRIE               = geo_malpasset-small.slf
 FICHIER FORTRAN                    = t2d_malpasset-small.f

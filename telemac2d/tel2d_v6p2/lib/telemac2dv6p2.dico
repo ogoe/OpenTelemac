@@ -5333,7 +5333,7 @@ DEFAUT = NON
 DEFAUT1 = NO 
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS'
-NIVEAU = 1 
+NIVEAU = 2
 AIDE = 'Si oui, les flotteurs seront des algues' 
 AIDE1 = 'If yes, the floats or particles will be algae' 
 
@@ -5347,7 +5347,7 @@ DEFAUT = 0.1
 DEFAUT1 = 0.1
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS'
-NIVEAU = 1
+NIVEAU = 2
 AIDE = 'Diametre des algues en m'
 AIDE1 = 'Diametre of algae in m'
 
@@ -5361,7 +5361,7 @@ DEFAUT = 1050.
 DEFAUT1 = 1050.
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS'
-NIVEAU = 1
+NIVEAU = 2
 AIDE = 'Masse volumique des algues en kg/m3'
 AIDE1 = 'Density of algae in kg/m3'
 
@@ -5375,7 +5375,7 @@ DEFAUT = 0.01
 DEFAUT1 = 0.01
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS'
-NIVEAU = 1
+NIVEAU = 2
 AIDE = 'Epaisseur des algues en m'
 AIDE1 = 'Thickness of algae in m'
 
@@ -5393,7 +5393,7 @@ CHOIX1=
 '1="??"';'2="??"'
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
-NIVEAU = 1
+NIVEAU = 2
 AIDE = 'Type des algues'
 AIDE1 = 'Algae type'
 
@@ -5409,9 +5409,39 @@ CHOIX='1="??"';'2="??"'
 CHOIX1='1="??"';'2="??"'
 RUBRIQUE = 'PARAMETRES PHYSIQUES'
 RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
-NIVEAU = 1
+NIVEAU = 2
 AIDE = '1: forme forte 2: forme faible'
 AIDE1 = '1: strong form 2: weak form'
+
+NOM = 'MAXIMUM D''ITERATIONS POUR LES SCHEMAS DE CONVECTION' 
+NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES' 
+TYPE = ENTIER
+INDEX = 84
+MNEMO = 'MAXADV'
+TAILLE = 0
+DEFAUT = 10
+DEFAUT1 = 10
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Seulement pour schemes 13 et 14'
+AIDE1 = 'Only for schemes 13 and 14'
+
+NOM = 'MODELE DE DIFFUSION STOCHASTIQUE' 
+NOM1 = 'STOCHASTIC DIFFUSION MODEL' 
+TYPE = ENTIER
+INDEX = 85
+MNEMO = 'STOCHA'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+CHOIX='0="Pas de modele"';'1="??"';'2="??"'
+CHOIX1='0="No model"';'1="??"';'2="??"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Pour les particules : flotteurs, algues, hydrocarbures'
+AIDE1 = 'Meant for particles: drogues, algae, oil spills'
 
 / 
 / POUR LES LANCEURS PERL : 
