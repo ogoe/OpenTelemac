@@ -75,6 +75,7 @@ SRCS	      = interface_parallel.f \
 		p_mpi_address3.f \
 		p_mpi_alltoall.f \
 		p_mpi_alltoallv.f \
+		p_mpi_alltoallv_alg.f \
 		p_mpi_alltoallv_i.f \
 		p_mpi_type_commit.f \
 		p_mpi_type_get_extent.f \
