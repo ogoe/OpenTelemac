@@ -1685,7 +1685,9 @@
      &              MSK   , MASKEL , BM1%X    , BM1%D , BM1%D , TB   ,
      &              IT1%I , IT2%I  , IT2%I    ,IT3%I  , IT4%I , IT2%I,
      &              MESH  , MESH%NELEM        ,MESH%NELMAX    ,
-     &              MESH%IKLE,MESH%SURDET)
+     &              MESH%IKLE,MESH%SURDET,
+!                   FOR WEAK FORM OF ADVECTION
+     &              AM1,CV1,SLVPRO,0.D0,ENTET,3,UNSV2D,1)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHARAC'
 !
         IF(SPHERI) THEN
