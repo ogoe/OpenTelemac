@@ -519,8 +519,8 @@
          IF (DEBUG > 0) WRITE(LU,*) 'SUSPENSION_EROSION'
           CALL SUSPENSION_EROSION(T4,HN,FDM,FD90,AVA,NPOIN,CHARR,XMVE,
      &                            XMVS,VCE,GRAV,HMIN,XWC,ZERO,
-     &                   ZREF,AC,FLUER,CSTAEQ,QS_C,ICQ,U2D,V2D,CSRATIO,
-     &        T14,DEBUG)
+     &                            ZREF,AC,FLUER,CSTAEQ,QS_C,ICQ,U2D,V2D,
+     &                            CSRATIO,T14,DEBUG)
          IF (DEBUG > 0) WRITE(LU,*) 'END_SUSPENSION_EROSION'
 !
 !        NOTE JMH : THIS SHOULD BE INCLUDED IN SUSPENSION_EROSION
@@ -661,7 +661,8 @@
      &              IELMT,NPOIN,1,1,1,
      &              MSK,MASKEL,AM1_S%X,AM1_S%D,AM1_S%D,
      &              TB,IT1%I,IT2%I,IT2%I,IT3%I,IT4%I,IT2%I,
-     &              MESH,MESH%NELEM,MESH%NELMAX,MESH%IKLE,MESH%SURDET)
+     &              MESH,MESH%NELEM,MESH%NELMAX,MESH%IKLE,MESH%SURDET,
+     &              AM2_S,T14,SLVTRA,1.D0,ENTETS,3,UNSV2D,1)
         IF (DEBUG > 0) WRITE(LU,*) 'END_CHARAC'
       ENDIF
 !
