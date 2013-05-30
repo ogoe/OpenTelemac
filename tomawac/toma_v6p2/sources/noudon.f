@@ -39,6 +39,12 @@
 !+        V6P3
 !+   Only SELAFIN format with same mesh kept. Arguments removed.
 !
+!history  E. GAGNAIRE-RENOU & J-M HERVOUET (EDF - LNHE)
+!+        16/05/2013
+!+        V6P3
+!+   In the case where a new record is not read, array TROUVE must be
+!+   however built.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| COMPUTATION TIME
 !| BINDON         |-->| DATA FILE BINARY
@@ -182,6 +188,7 @@
              VOID=.FALSE.
            ENDIF
          ENDDO
+!        VARIABLE NOT USEFUL, JUMPING THE RECORD
          IF(VOID) READ(NDON)
        ENDDO
 !
@@ -250,6 +257,20 @@
         WRITE(LU,*) '************************************************'
         CALL PLANTE(1)
         ENDIF
+!
+      ELSE
+!
+        TROUVE(1)=.FALSE.
+        TROUVE(2)=.FALSE.
+        TROUVE(3)=.FALSE.
+        DO I =1,NVAR
+          DO J=1,3
+            IF((TEXTE(I).EQ.NAMEFR(J).OR.TEXTE(I).EQ.NAMEGB(J)).AND.
+     &        MODE(J).GT.0) THEN
+              TROUVE(J)=.TRUE.
+            ENDIF
+          ENDDO
+        ENDDO
 !
       ENDIF
 !
