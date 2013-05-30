@@ -475,7 +475,7 @@ CHOIX1 = '0="NO ADVECTION"';
          '3="EXPLICIT LEO POSTMA"';
          '4="EXPLICIT + MURD SCHEME N"';
          '5="EXPLICIT + MURD SCHEME PSI"';
-         '13="LEOPOSTMA FOR TIDAL FLATS"';
+         '13="LEO POSTMA FOR TIDAL FLATS"';
          '14="N-SCHEME FOR TIDAL FLATS"'
 CONTROLE = 0 ; 14
 DEFAUT = 5
@@ -526,7 +526,7 @@ CHOIX1 = '0="NO ADVECTION"';
          '3="EXPLICIT LEO POSTMA"';
          '4="EXPLICIT + MURD SCHEME N"';
          '5="EXPLICIT + MURD SCHEME PSI"';
-         '13="LEOPOSTMA FOR TIDAL FLATS"';
+         '13="LEO POSTMA FOR TIDAL FLATS"';
          '14="N-SCHEME FOR TIDAL FLATS"'
 CONTROLE = 0 ; 5
 DEFAUT = 1
@@ -5862,6 +5862,21 @@ Possible values are:
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
+
+NOM = 'MAXIMUM D''ITERATIONS POUR LES SCHEMAS DE CONVECTION' 
+NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES' 
+TYPE = ENTIER
+INDEX = 115
+MNEMO = 'MAXADV'
+TAILLE = 0
+DEFAUT = 10
+DEFAUT1 = 10
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Seulement pour schemes 13 et 14'
+AIDE1 = 'Only for schemes 13 and 14'
+
 /
 /---------------------------------------------------------------------
 /
