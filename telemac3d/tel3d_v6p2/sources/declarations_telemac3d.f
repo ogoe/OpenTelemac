@@ -1794,47 +1794,55 @@
 !
 !
       CHARACTER(LEN=32) NAMETRAC(32)
-C
-C-----------------------------------------------------------------------
-C (8) SLVCFG STRUCTURES
-C-----------------------------------------------------------------------
-C
-!> @brief SOLVER FOR DIFFUSION OF VELOCITIES
-C solveur pour la diffusion des vitesses
+!
+!-----------------------------------------------------------------------
+! (8) SLVCFG STRUCTURES
+!-----------------------------------------------------------------------
+!
+!     SOLVER FOR DIFFUSION OF VELOCITIES
+!
       TYPE(SLVCFG) :: SLVDVI
-!> @brief SOLVER FOR PROPAGATION
-C solveur pour la propagation
+!
+!     SOLVER FOR PROPAGATION
+!
       TYPE(SLVCFG) :: SLVPRO
-!> @brief SOLVER FOR DIFFUSION OF K-EPSILON
-C solveur pour la diffusion du k-epsilon
+!
+!     SOLVER FOR DIFFUSION OF K-EPSILON
+!
       TYPE(SLVCFG) :: SLVDKE
-!> @brief SOLVER FOR DIFFUSION OF TRACERS
-C solveur pour la diffusion des traceurs
+!
+!     SOLVER FOR DIFFUSION OF TRACERS
+!
       TYPE(SLVCFG) :: SLVDTA(MAXTRA)
-!> @brief SOLVER FOR VERTICAL VELOCITY COMPONENT
-C solveur pour la vitesse verticale
+!
+!     SOLVER FOR VERTICAL VELOCITY COMPONENT
+!
       TYPE(SLVCFG) :: SLVW
-!> @brief SOLVER FOR DIFFUSION OF THE SEDIMENT
-C solveur pour la diffusion du sediment
+!
+!     SOLVER FOR DIFFUSION OF THE SEDIMENT
+!
       TYPE(SLVCFG) :: SLVDSE
-!> @brief SOLVER FOR PPE (NON-HYDROSTATIC)
-C solveur pour ppe
+!
+!     SOLVER FOR PPE (NON-HYDROSTATIC)
+!
       TYPE(SLVCFG) :: SLVPOI
-!> @brief SOLVER FOR PROJECTION (NON-HYDROSTATIC)
-C solveur pour la projection
+!
+!     SOLVER FOR PROJECTION (NON-HYDROSTATIC)
+!
       TYPE(SLVCFG) :: SLVPRJ
-C
-c-----------------------------------------------------------------------
-C (9) MESH STRUCTURE(S)
-C-----------------------------------------------------------------------
-C 2 SEPARATE MESHES, 2D AS USUAL AND 3D WITH SIGMA-MESH SPECIFIC
-C FEATURES, SEE ALMESH.F
-C
-!> @brief 2D MESH WITH SIGMA-MESH SPECIFIC FEATURES
-C maillage 2d
+!
+!-----------------------------------------------------------------------
+! (9) MESH STRUCTURE(S)
+!-----------------------------------------------------------------------
+! 2 SEPARATE MESHES, 2D AS USUAL AND 3D WITH SIGMA-MESH SPECIFIC
+! FEATURES, SEE ALMESH.F
+!
+!     2D MESH WITH SIGMA-MESH SPECIFIC FEATURES
+!
       TYPE(BIEF_MESH) :: MESH2D
-!> @brief 3D MESH WITH SIGMA-MESH SPECIFIC FEATURES
-! maillage 3d
+!
+!     3D MESH WITH SIGMA-MESH SPECIFIC FEATURES
+! 
       TYPE(BIEF_MESH) :: MESH3D
 !
 !-----------------------------------------------------------------------
