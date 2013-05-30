@@ -36,6 +36,11 @@
 !+   The value of transmitted fluxes is given back in FLODEL in all
 !+   cases, YAFLODEL no longer used (but left for compatibility)
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        30/05/2013
+!+        V6P2
+!+   Argument NITMAX added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| COMPUTE_FLODEL |-->| IF YES, COMPUTE FLODEL HERE 
 !| DT             |-->| TIME STEP

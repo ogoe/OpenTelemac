@@ -49,6 +49,11 @@
 !+        V6P2
 !+   Intent of FLBOR changed and conditional building of FLBOR added.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        30/05/2013
+!+        V6P2
+!+   Argument NITMAX added.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING UTILISE DANS L'EQUATION DE CONTINUITE
 !| BILAN          |-->| LOGICAL TRIGGERING A MASS BALANCE INFORMATION

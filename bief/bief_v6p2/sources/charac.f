@@ -5,10 +5,11 @@
      &( FN    , FTILD  , NOMB  , UCONV  , VCONV , WCONV  , FRCONV , 
      &  ZSTAR , FREQ   ,
      &  DT    , IFAMAS , IELM  , NPOIN2 , NPLAN , JF     , NF     ,
-     &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT ,
+     &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT    ,
      &  ETA   , FRE    , IT3   , ISUB   , FREBUF, MESH   ,
-     &  NELEM2, NELMAX2, IKLE2 , SURDET2, POST , PERIO , YA4D, SIGMA,
-     &  STOCHA, VISC)
+     &  NELEM2, NELMAX2, IKLE2 , SURDET2, AM1   , RHS    , SLV    , 
+     &  AGGLO , LISTIN , NGAUSS, UNSV   , OPTWEA, POST   , PERIO  , 
+     &  YA4D  , SIGMA  , STOCHA, VISC )
 !
 !***********************************************************************
 ! BIEF   V6P3                                   21/08/2010
@@ -61,14 +62,17 @@
 !+        V6P3
 !+   Attribute target for ISUB.
 !
+!history  J-M HERVOUET (LNHE)
+!+        30/05/2013
+!+        V6P3
+!+   8 new arguments for preparing weak form of characteristics.
+!+   Otherwise they are not used.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| AGGLO          |-->| MASS-LUMPING (FOR WEAK FORM)
+!| AM1            |<->| A MATRIX (FOR WEAK FORM)
+!| RHS            |<->| A RIGHT-HAND SIDE (FOR WEAK FORM)
 !| DT             |-->| TIME STEP
-!| FN             |-->| VARIABLES AT TIME N .
-!| FTILD          |<--| VARIABLES AFTER ADVECTION .
-!| IELM           |-->| TYPE OF ELEMENT : 11 : TRIANGLE P1
-!|                |   |                   41 : PRISM IN TELEMAC3D
-!| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
-!| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
 !| ELT            |<->| ARRIVAL ELEMENT
 !| ETA            |<->| ARRIVAL LAYER (IN 3D WITH PRISMS)
 !| FRCONV         |-->| FREQUENCY COMPONENT OF ADVECTION FIELD
@@ -76,9 +80,16 @@
 !| FREBUF         |<->| INTEGER WORK ARRAY (IN 4D)
 !| FREQ           |-->| DISCRETISED FREQUENCIES (IN 4D).
 !|                |   | IF NOT TOMAWAC, MUST BE ZSTAR !!!!!!!!!!!
-!| JF             |-->| FREQUENCY (IN A RANGE OF 1 TO NF)
+!| FN             |-->| VARIABLES AT TIME N .
+!| FTILD          |<--| VARIABLES AFTER ADVECTION .
+!| IELM           |-->| TYPE OF ELEMENT : 11 : TRIANGLE P1
+!|                |   |                   41 : PRISM IN TELEMAC3D
+!| IFAMAS         |-->| A MODIFIED IFABOR WHEN ELEMENTS ARE MASKED
+!| IKLE2          |-->| CONNECTIVITY TABLE FOR TRIANGLES
 !| IT3            |<->| INTEGER WORK ARRAY
 !| ISUB           |<->| ARRIVAL SUB-DOMAIN (IN PARALLEL)
+!| JF             |-->| FREQUENCY (IN A RANGE OF 1 TO NF)
+!| LISTIN         |-->| IF YES, PRINTS INFORMATIONS ON LISTING (WEAK FORM)
 !| MASKEL         |-->| MASKING OF ELEMENTS
 !|                |   | =1. : NORMAL   =0. : MASKED ELEMENT
 !| MESH           |-->| MESH STRUCTURE
@@ -86,21 +97,27 @@
 !| NELEM2         |-->| NUMBER OF ELEMENTS IN 2D
 !| NELMAX2        |-->| MAXIMUM NUMBER OF ELEMENTS IN 2D
 !| NF             |-->| NUMBER OF FREQUENCIES (IN 4D)
+!| NGAUSS         |-->| NUMBER OF GAUSS POINTS (WEAK FORM)
 !| NOMB           |-->| NUMBER OF VARIABLES TO BE ADVECTED
 !| NPLAN          |-->| NUMBER OF PLANES IN THE 3D MESH OF PRISMS
 !| NPOIN2         |-->| NUMBER OF POINTS IN THE 2D MESH
+!| OPTWEA         |-->| OPTION FOR THE FORM OF CHARACTERISTICS
+!|                |   | 0 : STRONG (CLASSICAL) FORM
+!|                |   | 1 : BACKWARD WEAK FORM
 !| PERIO          |-->| IF YES, PERIODIC VERSION ON THE VERTICAL
 !| POST           |-->| IF YES, DATA MUST BE KEPT FOR A POSTERIORI
 !|                |   | INTERPOLATION
 !| SHP            |<->| BARYCENTRIC COORDINATES OF POINTS IN TRIANGLES
 !| SHZ            |<->| BARYCENTRIC COORDINATES ON VERTICAL
 !| SHF            |<->| BARYCENTRIC COORDINATES ON THE FREQUENCY AXIS
-!| SIGMA          |-->| IF YES, TRANSFORMES MESh FOR TELEMAC-3D
+!| SIGMA          |-->| IF YES, TRANSFORMES MESH FOR TELEMAC-3D
+!| SLV            |-->| A SOLVER CONFIGURATION (FOR WEAK FORM)
 !| STOCHA         |-->| STOCHASTIC DIFFUSION MODEL
 !|                |   | 0: NO DIFFUSION 1: oil spill       2: algae
 !| SURDET2        |-->| GEOMETRIC COEFFICIENT USED IN PARAMETRIC TRANSFORMATION
 !| TB             |<->| BLOCK CONTAINING THE BIEF_OBJ WORK ARRAYS
 !| UCONV          |-->| X-COMPONENT OF ADVECTION FIELD
+!| UNSV           |-->| 1/(INTEGRAL OF TEST FUNCTIONS)
 !| VCONV          |-->| Y-COMPONENT OF ADVECTION FIELD
 !| VISC           |-->| VISCOSITY (MAY BE TENSORIAL)
 !| WCONV          |-->| Z-COMPONENT OF ADVECTION FIELD IN THE TRANSFORMED MESH
@@ -117,11 +134,10 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER         , INTENT(IN)           :: NOMB
+      INTEGER         , INTENT(IN)           :: NOMB,OPTWEA,NGAUSS
       INTEGER         , INTENT(IN)           :: NPLAN,JF,NF,NELEM2
       INTEGER         , INTENT(IN)           :: NPOIN2,NELMAX2
-      INTEGER         , INTENT(INOUT)        :: IELM
-      INTEGER         , INTENT(INOUT)        :: FRE(*)
+      INTEGER         , INTENT(INOUT)        :: IELM,FRE(*)
 !     NEXT 4 DIMENSIONS ARE A MINIMUM
       INTEGER         , INTENT(INOUT),TARGET :: ELT(NPOIN2*NPLAN)
       INTEGER         , INTENT(INOUT),TARGET :: ETA(NPOIN2*NPLAN)
@@ -131,14 +147,15 @@
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FN,UCONV,VCONV,WCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FRCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: ZSTAR,MASKEL,IKLE2
-      TYPE(BIEF_OBJ)  , INTENT(IN)           :: SURDET2
-      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FREQ
-      TYPE(BIEF_OBJ)  , INTENT(INOUT)        :: TB,SHF
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: SURDET2,FREQ,UNSV
+      TYPE(BIEF_OBJ)  , INTENT(INOUT)        :: TB,SHF,AM1,RHS
       TYPE(BIEF_OBJ)  , INTENT(INOUT),TARGET :: FTILD,SHP,SHZ
-      LOGICAL         , INTENT(IN)           :: MSK
-      DOUBLE PRECISION, INTENT(IN)           :: DT
+      LOGICAL         , INTENT(IN)           :: MSK,LISTIN
+      DOUBLE PRECISION, INTENT(IN)           :: DT,AGGLO
       TYPE(BIEF_MESH) , INTENT(INOUT)        :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET   :: IFAMAS
+      TYPE(SLVCFG)    , INTENT(IN)           :: SLV
+!
       LOGICAL, INTENT(IN), OPTIONAL          :: POST,PERIO,YA4D,SIGMA
       INTEGER, INTENT(IN), OPTIONAL          :: STOCHA
       TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL, TARGET :: VISC

@@ -503,17 +503,17 @@
      &( FN    , FTILD  , NOMB  , UCONV  , VCONV , WCONV  , FRCONV , 
      &  ZSTAR , FREQ   ,
      &  DT    , IFAMAS , IELM  , NPOIN2 , NPLAN , JF     , NF     ,
-     &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT ,
+     &  MSK   , MASKEL , SHP   , SHZ    , SHF   , TB     , ELT    ,
      &  ETA   , FRE    , IT3   , ISUB   , FREBUF, MESH   ,
-     &  NELEM2, NELMAX2, IKLE2 , SURDET2, POST , PERIO , YA4D, SIGMA,
-     &  STOCHA, VISC)
+     &  NELEM2, NELMAX2, IKLE2 , SURDET2, AM1   , RHS    , SLV    , 
+     &  AGGLO , LISTIN , NGAUSS, UNSV   , OPTWEA, POST   , PERIO  , 
+     &  YA4D  , SIGMA  , STOCHA, VISC )
       USE BIEF_DEF
       IMPLICIT NONE
-      INTEGER         , INTENT(IN)           :: NOMB
+      INTEGER         , INTENT(IN)           :: NOMB,OPTWEA,NGAUSS
       INTEGER         , INTENT(IN)           :: NPLAN,JF,NF,NELEM2
       INTEGER         , INTENT(IN)           :: NPOIN2,NELMAX2
-      INTEGER         , INTENT(INOUT)        :: IELM
-      INTEGER         , INTENT(INOUT)        :: FRE(*)
+      INTEGER         , INTENT(INOUT)        :: IELM,FRE(*)
 !     NEXT 4 DIMENSIONS ARE A MINIMUM
       INTEGER         , INTENT(INOUT),TARGET :: ELT(NPOIN2*NPLAN)
       INTEGER         , INTENT(INOUT),TARGET :: ETA(NPOIN2*NPLAN)
@@ -523,17 +523,17 @@
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FN,UCONV,VCONV,WCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: FRCONV
       TYPE(BIEF_OBJ)  , INTENT(IN)           :: ZSTAR,MASKEL,IKLE2
-      TYPE(BIEF_OBJ)  , INTENT(IN)           :: SURDET2
-      TYPE(BIEF_OBJ)  , INTENT(IN)           :: FREQ
-      TYPE(BIEF_OBJ)  , INTENT(INOUT)        :: TB,SHF
+      TYPE(BIEF_OBJ)  , INTENT(IN)           :: SURDET2,FREQ,UNSV
+      TYPE(BIEF_OBJ)  , INTENT(INOUT)        :: TB,SHF,AM1,RHS
       TYPE(BIEF_OBJ)  , INTENT(INOUT),TARGET :: FTILD,SHP,SHZ
-      LOGICAL         , INTENT(IN)           :: MSK
-      DOUBLE PRECISION, INTENT(IN)           :: DT
+      LOGICAL         , INTENT(IN)           :: MSK,LISTIN
+      DOUBLE PRECISION, INTENT(IN)           :: DT,AGGLO
       TYPE(BIEF_MESH) , INTENT(INOUT)        :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET   :: IFAMAS
       LOGICAL, INTENT(IN), OPTIONAL          :: POST,PERIO,YA4D,SIGMA
       INTEGER, INTENT(IN), OPTIONAL          :: STOCHA
       TYPE(BIEF_OBJ), INTENT(IN), OPTIONAL, TARGET :: VISC
+      TYPE(SLVCFG)    , INTENT(IN)           :: SLV
         END SUBROUTINE
 !
         SUBROUTINE CHGDIS(X,OLDELT,NEWELT,MESH)
