@@ -1247,6 +1247,10 @@
 !
       INTEGER OPTPROD,LIMKF,LIMEF,LIMKS,LIMES
 !
+!     MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES
+!
+      INTEGER MAXADV
+!
 !-----------------------------------------------------------------------
 ! (5) LOGICAL VALUES
 !-----------------------------------------------------------------------

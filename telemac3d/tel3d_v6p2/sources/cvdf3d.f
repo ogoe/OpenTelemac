@@ -16,7 +16,7 @@
      & TRAV3,MESH2D,MATR2H,H,OPTBAN,OPTDIF,TETADI,
      & YAWCC,WCC,AGGLOD,NSCE,SOURCES,FSCE,NUMLIQ,DIRFLU,NFRLIQ,
      & VOLUT,ZT,ZPROP,RAIN,PLUIE,PARAPLUIE,TRAIN,
-     & FLODEL,FLOPAR,SIGMAG,IPBOT)
+     & FLODEL,FLOPAR,SIGMAG,IPBOT,MAXADV)
 !
 !***********************************************************************
 ! TELEMAC3D   V6P3                                   21/08/2010
@@ -112,6 +112,7 @@
 !| MASKPT         |-->| MASKING PER POINT.
 !|                |   | =1. : NORMAL   =0. : MASKED
 !| MATR2H         |<->| WORK MATRIX 2DH
+!| MAXADV         |-->| MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES
 !| MDIFF          |<->| DIFFUSION MATRIX
 !| MESH2D         |<->| 2D MESH
 !| MESH3D         |<->| 3D MESH
@@ -213,7 +214,7 @@
       TYPE(BIEF_OBJ), INTENT(INOUT)   :: T2_01,T2_02,T2_03,ZT
       TYPE(BIEF_OBJ), TARGET, INTENT(INOUT) :: VOLUT
       TYPE(BIEF_MESH), INTENT(INOUT)  :: MESH3D
-      INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2
+      INTEGER, INTENT(IN)             :: NPOIN3,NPOIN2,MAXADV
       INTEGER, INTENT(IN)             :: IPBOT(NPOIN2)
       INTEGER, INTENT(IN)             :: NPLAN,NELEM2,NELEM3,LV
       INTEGER, INTENT(IN)             :: OPTBAN,OPTDIF
@@ -444,7 +445,7 @@
      &                   MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
      &                   TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
      &                   TRAV3%ADR(8)%P,
-     &                   TRAV3%ADR(9)%P,2,IELM3)
+     &                   TRAV3%ADR(9)%P,2,IELM3,MAXADV)
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER
@@ -471,7 +472,7 @@
      &                   MESH3D%GLOSEG%DIM1,MESH2D%NSEG,NPLAN,
      &                   TRAV3%ADR(6)%P,TRAV3%ADR(7)%P,
      &                   TRAV3%ADR(8)%P,
-     &                   TRAV3%ADR(9)%P,2,IELM3)
+     &                   TRAV3%ADR(9)%P,2,IELM3,MAXADV)
 !
 !        S0F CANCELLED TO AVOID A DUPLICATE TREATMENT
 !        IF DIFF3D IS CALLED AFTER

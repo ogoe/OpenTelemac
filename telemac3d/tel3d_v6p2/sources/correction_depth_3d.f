@@ -128,7 +128,7 @@
 !                                   YASMH OPTSOU
 !                              SMH IN PROJECTED FORM IN T3D
      &                         FLULIM%R,LIHBOR%I,HBOR%R,KENT,INFOGR,
-     &                         MESH2D%W%R,NAMECODE,2)
+     &                         MESH2D%W%R,NAMECODE,2,MAXADV)
 !                                                  2 HARDCODED OPTION
 !                                                  FOR POSITIVE DEPTH ALGORITHM
 !                                                  INDEPENDENT OF SEGMENT
