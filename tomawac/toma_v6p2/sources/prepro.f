@@ -149,6 +149,7 @@
 !
       INTEGER JF,IEL,I1,I2,I3
       TYPE(BIEF_OBJ) :: BID
+      TYPE(SLVCFG) :: SLVBID
 !
 !----------------------------------------------------------------------
 !
@@ -194,6 +195,7 @@
      &            ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
      &            SIKLE2,
      &            MESH%SURDET,
+     &            BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
 !                 A POSTERIORI INTERPOLATION
      &            .TRUE.,
 !                 AND PERIODICITY 
@@ -226,6 +228,7 @@
      &              ELT(1,JF),ETA(1,JF),FRE(1,JF),ITR01,
      &              ISUB(1,JF),ITR01(1,2),MESH3D,NELEM2,NELEM2,
      &              SIKLE2,MESH%SURDET,
+     &              BID,BID,SLVBID,0.D0,.FALSE.,3,BID,1,
 !                   A POSTERIORI INTERPOLATION
      &              .TRUE.,
 !                   AND PERIODICITY 
