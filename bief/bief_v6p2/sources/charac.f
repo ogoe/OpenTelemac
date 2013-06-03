@@ -154,7 +154,7 @@
       DOUBLE PRECISION, INTENT(IN)           :: DT,AGGLO
       TYPE(BIEF_MESH) , INTENT(INOUT)        :: MESH
       TYPE(BIEF_OBJ)  , INTENT(IN), TARGET   :: IFAMAS
-      TYPE(SLVCFG)    , INTENT(IN)           :: SLV
+      TYPE(SLVCFG)    , INTENT(INOUT)        :: SLV
 !
       LOGICAL, INTENT(IN), OPTIONAL          :: POST,PERIO,YA4D,SIGMA
       INTEGER, INTENT(IN), OPTIONAL          :: STOCHA
