@@ -1687,7 +1687,7 @@
      &              MESH  , MESH%NELEM        ,MESH%NELMAX    ,
      &              MESH%IKLE,MESH%SURDET,
 !                   FOR WEAK FORM OF ADVECTION
-     &              AM1,CV1,SLVPRO,0.D0,ENTET,3,UNSV2D,1)
+     &              AM1,CV1,SLVPRO,AGGLOW,ENTET,NGAUSS,UNSV2D,OPTCHA)
         IF(DEBUG.GT.0) WRITE(LU,*) 'BACK FROM CHARAC'
 !
         IF(SPHERI) THEN
