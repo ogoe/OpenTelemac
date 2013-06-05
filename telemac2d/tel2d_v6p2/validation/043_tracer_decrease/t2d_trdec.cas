@@ -43,6 +43,7 @@ INFORMATIONS SUR LE SOLVEUR           =VRAI
 / EQUATIONS 
 /--------------------------------------------------------------------- 
 / 
+LOI DE FROTTEMENT SUR LE FOND : 0 
 CONVECTION                                          =NON 
 DIFFUSION DES VITESSES                              =NON 
 LOI DE DEGRADATION DES TRACEURS                     =0;1 
