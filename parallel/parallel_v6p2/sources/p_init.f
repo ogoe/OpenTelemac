@@ -73,7 +73,7 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER MYTID,IER,I,NPREAD
+      INTEGER IER,NPREAD
 !
       CHARACTER*255 EXE
 !
@@ -115,7 +115,7 @@
         STOP
       ENDIF
 !
-! OBTAINS MYTID, IT IS VIRTUALLY THE PROCESSOR NUMBER (RANK)
+! OBTAINS IPID, IT IS VIRTUALLY THE PROCESSOR NUMBER (RANK)
 !
       CALL MPI_COMM_RANK(MPI_COMM_WORLD,IPID,IER)
       IF(IER.NE.0) THEN
