@@ -31,7 +31,7 @@
 !     
       CHARACTER(LEN=MAXLENHARD),INTENT(IN) :: LIMFILE
 !
-      INTEGER :: I,IFAM
+      INTEGER :: I
       INTEGER :: IERR,IPTFR,IDUM,INBOR,IHBOR,IUBOR,IVBOR
       INTEGER :: VALUES(MAXFAM)
       DOUBLE PRECISION :: DDUM
@@ -44,6 +44,8 @@
 !      
 !-----------------------------------------------------------------------
 !
+      DDUM=0.0
+      IDUM=0
       IF(DEBUG) WRITE(LU,*) 'LIMFILE : ',TRIM(LIMFILE)
       ! READING THE BOUNDARY LIMIT FILE
       OPEN(NLIM,IOSTAT=IERR,FILE=LIMFILE,FORM='FORMATTED')
@@ -173,7 +175,6 @@
 !
       INTEGER :: IDUM,I,IERR,IHBOR,IUBOR,IVBOR
       DOUBLE PRECISION :: DDUM
-      CHARACTER*50 :: MYFMT
 !
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) 

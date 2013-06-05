@@ -42,7 +42,6 @@
       INTEGER :: TIMESTEP
       CHARACTER(LEN=32) :: VARI
       REAL :: TIME
-      DOUBLE PRECISION :: DDUMMY      
       INTEGER :: IB(6)
       DOUBLE PRECISION XB(1)
       REAL :: RB(1)
@@ -52,9 +51,6 @@
       DOUBLE PRECISION, ALLOCATABLE :: TMP2(:)
       CHARACTER*2 :: RF
       CHARACTER*8 :: FFORMAT
-      DOUBLE PRECISION :: MIN_DIST,MAX_DIST,DIST
-      INTEGER I1,I2,I3,I_MIN
-      DOUBLE PRECISION :: X,Y,KM
 !
       WRITE(LU,*) '----------------------------------------------------'
       IF(LNG.EQ.1) WRITE(LU,*) '------DEBUT LECTURE DU FICHIER SERAFIN'
@@ -269,8 +265,8 @@
             CALL LIT(TMP2,TMP,IB,CB,
      &               MESH2%NPOIN,
      &               RF,NINP,'STD',ISTAT)
-            DO I1=1,MESH2%NPOIN
-              MESH2%RESULTS(I,J,I1) = TMP2(I1)
+            DO K=1,MESH2%NPOIN
+              MESH2%RESULTS(I,J,K) = TMP2(K)
             ENDDO
           ENDDO
         ENDDO
