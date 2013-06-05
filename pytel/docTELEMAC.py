@@ -46,7 +46,6 @@ def cleanDoc(docDir,fullclean):
 
 def compiletex(texfile,version):
    mes = MESSAGES(size=10)
-   print 'currentDir = '+getcwd()
    try:
      tail, code = mes.runCmd("pdflatex --jobname="+texfile+"_"+version+" "+texfile+".tex",False)
    except Exception as e:
@@ -58,6 +57,21 @@ def compiletex(texfile,version):
       raise Exception([filterMessage({'name':'compiletex','msg':'something went wrong, I am not sure why.'},e,bypass)])
    if code != 0: raise Exception([{'name':'compiletex','msg':'could not compile your tex files (runcode='+str(code)+').\n      '+tail}])
    
+def compileDoc(docDir,docType,codename,version,cleanup,fullcleanup):
+          chdir(docDir)
+          if cleanup or fullcleanup:
+            cleanDoc(docDir,fullclean)
+            print '   - Cleaned up folder '+docDir+'\n'
+          else:
+            # Check if the file exist
+            if path.exists(docDir+sep+codename+"_"+docType+".tex"):
+              # removing pdflatex temporary files
+              cleanDoc(docDir,False)
+              # compiling the texfile
+              compiletex(codename+"_"+docType,version)
+            else:
+              print "   - Skipping "+codename+", "+codename+"_"+docType+".tex not found "
+
 if __name__ == "__main__":
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -70,7 +84,9 @@ if __name__ == "__main__":
    SYSTELCFG = path.join(path.dirname(PWD),'config')
    if environ.has_key('SYSTELCFG'): SYSTELCFG = environ['SYSTELCFG']
    if path.isdir(SYSTELCFG): SYSTELCFG = path.join(SYSTELCFG,'systel.cfg')
-   parser = OptionParser("usage: %prog [options] \nuse -h for more help.")
+   parser = OptionParser("usage: %prog [options] \nuse -h for more help.\n\
+                          By Default all the documentation are generated\n\
+                          use the options --validation/reference/user/release to compile only one")
    parser.add_option("-c", "--configname",
                      type="string",
                      dest="configName",
@@ -99,8 +115,23 @@ if __name__ == "__main__":
    parser.add_option("--validation",
                      action="store_true",
                      dest="validation",
-                     default=True,
-                     help="Will generate only the validation documentation" )
+                     default=False,
+                     help="Will generate the validation documentation" )
+   parser.add_option("--reference",
+                     action="store_true",
+                     dest="reference",
+                     default=False,
+                     help="Will generate the reference documentation" )
+   parser.add_option("--user",
+                     action="store_true",
+                     dest="user",
+                     default=False,
+                     help="Will generate the user documentation" )
+   parser.add_option("--release",
+                     action="store_true",
+                     dest="release",
+                     default=False,
+                     help="Will generate the release note" )
    parser.add_option("--clean",
                      action="store_true",
                      dest="cleanup",
@@ -131,6 +162,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Compile the valiation documentation
    currentDir = getcwd()
+   doall = not (options.validation or options.user or options.reference or options.release )
    for cfgname in cfgs.keys():
       # still in lower case
       if options.rootDir != '': 
@@ -141,24 +173,40 @@ if __name__ == "__main__":
       if options.modules != '': cfgs[cfgname]['modules'] = options.modules
       cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
       cfg.update({ 'PWD':PWD })
-      # Look on all the modules for validation
-      if options.validation :
-         for codeName in cfg['VALIDATION'].keys():
-           docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'validation'
-           chdir(docDir)
-           if options.cleanup or options.fullcleanup:
-             print '\nCleaning up folder '+docDir+'\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-             cleanDoc(docDir,options.fullcleanup)
-           else:
-             print '\nCompilation of the validation documentation for '+ codeName +'\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-             # Removing pdflatex temporary files
-             cleanDoc(docDir,False)
-             # Compiling the texfile
-             compiletex(codeName+"_validation",cfgs[cfgname]['version'])
-
+      # Loop on all the modules
       
+      # Initialise output message
+      output_mess = '\n\n Documentation created:\n'
+      for codeName in cfg['VALIDATION'].keys():
+        print '\nCompilation of the documentation for '+ codeName +'\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+      # Look on all the modules for the validation documentation
+        if (options.validation or doall):
+          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'validation'
+          chdir(docDir)
+          compileDoc(docDir,"validation",codeName,cfgs[cfgname]['version'],\
+                     options.cleanup,options.fullcleanup)
+          output_mess = output_mess+'   - Created '+codeName+'_validation_'+cfgs[cfgname]['version']+'.pdf\n'
+        if (options.reference or doall):
+          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'reference'
+          chdir(docDir)
+          compileDoc(docDir,"reference",codeName,cfgs[cfgname]['version'],\
+                     options.cleanup,options.fullcleanup)
+          output_mess = output_mess+'   - Created '+codeName+'_reference_'+cfgs[cfgname]['version']+'.pdf\n'
+        if (options.user or doall):
+          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'user'
+          chdir(docDir)
+          compileDoc(docDir,"user",codeName,cfgs[cfgname]['version'],\
+                     options.cleanup,options.fullcleanup)
+          output_mess = output_mess+'   - Created '+codeName+'_user_'+cfgs[cfgname]['version']+'.pdf\n'
+        if (options.release or doall):
+          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'release_note'
+          chdir(docDir)
+          compileDoc(docDir,"release_note",codeName,cfgs[cfgname]['version'],\
+                     options.cleanup,options.fullcleanup)
+          output_mess = output_mess+'   - Created '+codeName+'_release_note_'+cfgs[cfgname]['version']+'.pdf\n'
+      
+   print output_mess
    print '\n\nMy work is done\n\n'
 
    sys.exit()

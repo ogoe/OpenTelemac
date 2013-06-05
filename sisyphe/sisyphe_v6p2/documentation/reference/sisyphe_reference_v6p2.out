@@ -1,0 +1,49 @@
+\BOOKMARK [1][]{section.1}{Introduction}{}
+\BOOKMARK [2][]{subsection.1.1}{Coupling with hydrodynamics}{section.1}
+\BOOKMARK [2][]{subsection.1.2}{Numerical kernel}{section.1}
+\BOOKMARK [2][]{subsection.1.3}{Preprocessing and Postprocessing}{section.1}
+\BOOKMARK [2][]{subsection.1.4}{Outline of the manual}{section.1}
+\BOOKMARK [1][]{section.2}{Running a sedimentological computation}{}
+\BOOKMARK [2][]{subsection.2.1}{Input files}{section.2}
+\BOOKMARK [2][]{subsection.2.2}{Steering file}{section.2}
+\BOOKMARK [2][]{subsection.2.3}{Coupling hydrodynamics and morphodynamics}{section.2}
+\BOOKMARK [2][]{subsection.2.4}{Boundary conditions file}{section.2}
+\BOOKMARK [1][]{section.3}{Flow-sediment interactions}{}
+\BOOKMARK [2][]{subsection.3.1}{Sediment and fluid properties}{section.3}
+\BOOKMARK [2][]{subsection.3.2}{Bed shear stress}{section.3}
+\BOOKMARK [2][]{subsection.3.3}{Skin friction correction}{section.3}
+\BOOKMARK [2][]{subsection.3.4}{Bed roughness predictor}{section.3}
+\BOOKMARK [2][]{subsection.3.5}{Sediment transport}{section.3}
+\BOOKMARK [1][]{section.4}{Bed-load transport}{}
+\BOOKMARK [2][]{subsection.4.1}{Exner equation}{section.4}
+\BOOKMARK [2][]{subsection.4.2}{Sediment transport formulae}{section.4}
+\BOOKMARK [2][]{subsection.4.3}{Bed slope effect}{section.4}
+\BOOKMARK [2][]{subsection.4.4}{Bedload transport in curved channels}{section.4}
+\BOOKMARK [2][]{subsection.4.5}{Treatment of rigid beds}{section.4}
+\BOOKMARK [2][]{subsection.4.6}{Tidal flats}{section.4}
+\BOOKMARK [2][]{subsection.4.7}{Boundary conditions for imposed sediment transport rates}{section.4}
+\BOOKMARK [1][]{section.5}{Suspended load}{}
+\BOOKMARK [2][]{subsection.5.1}{Suspended load transport equation}{section.5}
+\BOOKMARK [2][]{subsection.5.2}{Bed evolution}{section.5}
+\BOOKMARK [2][]{subsection.5.3}{Equilibrium concentrations}{section.5}
+\BOOKMARK [2][]{subsection.5.4}{Convection velocity}{section.5}
+\BOOKMARK [2][]{subsection.5.5}{Initial and boundary conditions for sediment concentrations}{section.5}
+\BOOKMARK [1][]{section.6}{Wave effects}{}
+\BOOKMARK [2][]{subsection.6.1}{Introduction}{section.6}
+\BOOKMARK [2][]{subsection.6.2}{Wave-induced bottom friction}{section.6}
+\BOOKMARK [2][]{subsection.6.3}{Wave-induced ripples}{section.6}
+\BOOKMARK [2][]{subsection.6.4}{Wave-induced sand transport}{section.6}
+\BOOKMARK [1][]{section.7}{Sand grading effects}{}
+\BOOKMARK [2][]{subsection.7.1}{Sediment bed composition}{section.7}
+\BOOKMARK [2][]{subsection.7.2}{Sediment transport of sediment mixtures}{section.7}
+\BOOKMARK [1][]{section.8}{Cohesive sediment}{}
+\BOOKMARK [2][]{subsection.8.1}{Introduction}{section.8}
+\BOOKMARK [2][]{subsection.8.2}{Initialization of cohesive sediment}{section.8}
+\BOOKMARK [2][]{subsection.8.3}{Erosion/deposition properties}{section.8}
+\BOOKMARK [2][]{subsection.8.4}{CONSOLIDATION MODEL}{section.8}
+\BOOKMARK [2][]{subsection.8.5}{Multi-layer iso-pycnal Gibson's model}{section.8}
+\BOOKMARK [2][]{subsection.8.6}{Application Test Cases}{section.8}
+\BOOKMARK [1][]{section.9}{Mixed sediments}{}
+\BOOKMARK [2][]{subsection.9.1}{Sediment bed composition}{section.9}
+\BOOKMARK [2][]{subsection.9.2}{Erosion/deposition fluxes}{section.9}
+\BOOKMARK [2][]{subsection.9.3}{Bed evolution}{section.9}
