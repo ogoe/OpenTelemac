@@ -34,7 +34,7 @@ BOUNDARY CONDITIONS FILE        = geo_weirs.cli
 RESULTS FILE                    = r2d_weirs.slf
 REFERENCE FILE                  = f2d_weirs.slf
 WEIRS DATA FILE                 = fo1_weirs.txt
-PARALLEL PROCESSORS             = 8
+/PARALLEL PROCESSORS             = 8
 /
 /----------------------------------------------
 /  GENERAL INFORMATIONS - OUTPUTS
