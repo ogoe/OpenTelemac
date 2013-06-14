@@ -2,7 +2,7 @@
                      SUBROUTINE ORG_CHARAC_TYPE_ALG 
 !                    ****************************** 
 ! 
-     &(ALG_CHAR)                      
+     &(ALG_CHAR,NOMB)                      
 !
 !***********************************************************************
 ! PARALLEL   V6P3                                   21/08/2010
@@ -28,18 +28,19 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
       INTEGER, INTENT(INOUT) :: ALG_CHAR 
+      INTEGER, INTENT(IN)    :: NOMB 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
 !     ARRAY OF DISPLACEMENTS BETWEEN BASIC COMPONENTS, HERE INITIALISED ONLY 
 !
-      INTEGER (KIND=MPI_ADDRESS_KIND), DIMENSION(17) :: CH_DELTA
+      INTEGER (KIND=MPI_ADDRESS_KIND), DIMENSION(18) :: CH_DELTA
 ! 
 !     ARRAY OF BLOCKLENGTHS OF TYPE COMPONENTS, BASKET INITIALISED TO 1 
 !
-      INTEGER, DIMENSION(17) :: CH_BLENGTH  
+      INTEGER, DIMENSION(18) :: CH_BLENGTH  
 !     ARRAY OF COMPONENT TYPES IN TERMS OF THE MPI COMMUNICATION  
-      INTEGER, DIMENSION(17) :: CH_TYPES 
+      INTEGER, DIMENSION(18) :: CH_TYPES 
       INTEGER IER,I      
       INTEGER (KIND=MPI_ADDRESS_KIND) :: EXTENT,ILB,IUB,INTEX 
 !     
@@ -58,10 +59,11 @@
 !       DOUBLE PRECISION :: UX_AV,UY_AV,UZ_AV  ! THE (X,Y,Z) AVERAGE FLUID VELOCITY  
 !       DOUBLE PRECISION :: K_AV,EPS_AV  ! THE VALUES OF K AND EPS  
 !       DOUBLE PRECISION :: H_FLU  ! THE WATER DEPTH AT POSITION OF VELOCITY 
+!         DOUBLE PRECISION :: PSI(3,101) ! VARIABLE PSI USED FOR THE BASSET FORCE 
 !     END TYPE ALG_TYPE 
 !     
-      CH_BLENGTH=(/1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1/)  
-      CH_DELTA=  (/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/) 
+      CH_BLENGTH=(/1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1/)  
+      CH_DELTA=  (/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0/) 
 !
 !     INTEGERS IN THE STRUCTURE
 !
@@ -77,10 +79,26 @@
       CALL P_MPI_TYPE_GET_EXTENT(MPI_DOUBLE_PRECISION,ILB,INTEX,IER) 
 !     THE NINE REMAINING DOUBLE PRECISION (INCLUDING BASKET)     
       DO I=6,16
-         CH_DELTA(I)=CH_DELTA(I-1)+INTEX 
-      ENDDO 
+        CH_DELTA(I)=CH_DELTA(I-1)+INTEX 
+      ENDDO
+! 
+!     INDEX FOR PSI
+!
+      CH_DELTA(17)=CH_DELTA(16)+INTEX
 !     ADDRESS AFTER THE THE LAST DOUBLE PRECISION
-      CH_DELTA(17)=CH_DELTA(16)+INTEX      
+      CH_DELTA(18)=CH_DELTA(17)+INTEX*3*101
+!
+!     CHECKING NOMB
+!
+      IF(NOMB.GT.3*101) THEN 
+        WRITE (LU,*) 'PARALLEL::ORG_CHARAC_TYPE_ALG' 
+        WRITE (LU,*) 'NOMB>3*101 ==> NWIN OR NDIR BADLY DEFINED' 
+        WRITE (LU,*) 'NWIN SHOULD BE 100'  
+        WRITE (LU,*) 'NDIR SHOULD BE 2 OR 3'
+        CALL PLANTE(1) 
+        STOP 
+      ENDIF      
+      CH_BLENGTH(17) = NOMB
 !     
       CH_TYPES(1) =MPI_INTEGER          !MYPID
       CH_TYPES(2) =MPI_INTEGER          !NEPID
@@ -98,21 +116,22 @@
       CH_TYPES(14)=MPI_DOUBLE_PRECISION !K_AV
       CH_TYPES(15)=MPI_DOUBLE_PRECISION !EPS_AV
       CH_TYPES(16)=MPI_DOUBLE_PRECISION !H_FLU
-      CH_TYPES(17)=MPI_UB               !THE TYPE UPPER BOUND MARKER           
-      CALL P_MPI_TYPE_CREATE_STRUCT(17,CH_BLENGTH,CH_DELTA,CH_TYPES, 
+      CH_TYPES(17)=MPI_DOUBLE_PRECISION !PSI
+      CH_TYPES(18)=MPI_UB               !THE TYPE UPPER BOUND MARKER           
+      CALL P_MPI_TYPE_CREATE_STRUCT(18,CH_BLENGTH,CH_DELTA,CH_TYPES, 
      &                              ALG_CHAR,IER) 
       CALL P_MPI_TYPE_COMMIT(ALG_CHAR,IER) 
       CALL P_MPI_TYPE_GET_EXTENT(ALG_CHAR,ILB,EXTENT,IER) 
       IUB=ILB+EXTENT 
 !      
-      IF(ILB.NE.CH_DELTA(1).OR.IUB.NE.CH_DELTA(17)) THEN 
+      IF(ILB.NE.CH_DELTA(1).OR.IUB.NE.CH_DELTA(18)) THEN 
         WRITE(LU,*) ' PARALLEL::ORG_CHARAC_TYPE_ALG:' 
         WRITE(LU,*) ' MEMORY PROBLEM WITH THIS COMPILER: ' 
         WRITE(LU,*) ' ILB=',ILB,' NOT EQUAL TO CH_DELTA(1)=', 
      &        CH_DELTA(1) 
         WRITE(LU,*) ' OR' 
-        WRITE(LU,*) ' IUB=',IUB,' NOT EQUAL TO CH_DELTA(17)=', 
-     &        CH_DELTA(17) 
+        WRITE(LU,*) ' IUB=',IUB,' NOT EQUAL TO CH_DELTA(18)=', 
+     &        CH_DELTA(18) 
         CALL PLANTE(1) 
         STOP 
       ENDIF 
