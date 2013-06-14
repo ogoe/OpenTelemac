@@ -5862,7 +5862,9 @@ Possible values are:
 - SERAFIN : classical single precision format in Telemac; 
 - SERAFIND: classical double precision format in Telemac;
 - MED     : MED format based on HDF5'
-
+/
+/ VERSION 6.2
+/ 
 NOM = 'MAXIMUM D''ITERATIONS POUR LES SCHEMAS DE CONVECTION' 
 NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES' 
 TYPE = ENTIER
@@ -5876,6 +5878,52 @@ RUBRIQUE1 = 'NUMERICAL PARAMETERS'
 NIVEAU = 2
 AIDE = 'Seulement pour schemes 13 et 14'
 AIDE1 = 'Only for schemes 13 and 14'
+
+NOM = 'OPTION POUR LES CARACTERISTIQUES'
+NOM1 = 'OPTION FOR CHARACTERISTICS'
+TYPE = ENTIER
+INDEX = 116
+MNEMO = 'OPTCHA'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+CHOIX='1="fortes"';'2="faibles"'
+CHOIX1='1="strong"';'2="weak"'
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS' 
+NIVEAU = 2
+AIDE = '1: forme forte 2: forme faible'
+AIDE1 = '1: strong form 2: weak form'
+
+NOM = 'NOMBRE DE POINTS DE GAUSS POUR LES CARACTERISTIQUES FAIBLES' 
+NOM1 = 'NUMBER OF GAUSS POINTS FOR WEAK CHARACTERISTICS' 
+TYPE = ENTIER
+INDEX = 117
+MNEMO = 'NGAUSS'
+TAILLE = 0
+DEFAUT = 3
+DEFAUT1 = 3
+CHOIX='1="1 point"';'3="3 points"';'6="6 points"'
+CHOIX1='1="1 point"';'3="3 points"';'6="6 points"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Voir les release notes 6.3'
+AIDE1 = 'See release notes 6.3'
+
+NOM = 'MASS-LUMPING POUR LES CARACTERISTIQUES FAIBLES'
+NOM1 = 'MASS-LUMPING FOR WEAK CHARACTERISTICS'
+TYPE = REAL
+INDEX = 102
+MNEMO = 'AGGLOW'
+TAILLE = 0
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 'PARAMETRES PHYSIQUES'
+RUBRIQUE1 = 'PHYSICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Applique a la matrice de masse'
+AIDE1 = 'To be applied to the mass matrix'
 
 /
 /---------------------------------------------------------------------
