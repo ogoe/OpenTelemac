@@ -100,12 +100,12 @@
      &                                   N_ADV,BYPASS,WEL,MMURD,MURD_TF,
      &                                   WSCONV,VOLU2D,NONHYD,GRADEB,
      &                                   ITURBV,MTRA2,FC3D,IT1,IT2,IT3,
-     &                                   IT4,TRAV3,ZCONV,IKLE2,
-     &                                   UCONVC,VCONVC,OPT_HNEG,WCONV,
-     &                                   ZCHAR,NELEM2,MSUPG,UNSV2D,NSCE,
-     &                                   SOURCES,SEM2D,UNSV3D,
-     &                                   U,GRADZF,SEM3D,DSSUDT,OPTBAN,
-     &                                   INFOGR,SLVPRO
+     &                                   IT4,TRAV3,ZCONV,IKLE2,UCONVC,
+     &                                   VCONVC,OPT_HNEG,WCONV,ZCHAR,
+     &                                   NELEM2,MSUPG,UNSV2D,NSCE,
+     &                                   SOURCES,SEM2D,UNSV3D,U,GRADZF,
+     &                                   SEM3D,DSSUDT,OPTBAN,INFOGR,
+     &                                   SLVPRO,AGGLOW,NGAUSS,OPTCHA
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -429,8 +429,8 @@
      &              MSK,MASKEL,MTRA2%X,MTRA2%D,MTRA2%D,TRAV3,
      &              IT1%I,IT2%I,IT2%I,IT3%I,IT4%I,IT2%I,
      &              MESH3D,NELEM2,MESH2D%NELMAX,IKLE2,MESH2D%SURDET,
-     &              MTRA1,SEM3D,SLVPRO,0.D0,INFOGR,6,UNSV3D,1,             
-     &              SIGMA=.TRUE.)
+     &              MTRA1,SEM3D,SLVPRO,AGGLOW,INFOGR,NGAUSS,UNSV3D,
+     &              OPTCHA,SIGMA=.TRUE.)
 !
       ENDIF
 !

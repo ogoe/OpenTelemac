@@ -12,7 +12,7 @@
      &  COUROU,NPTH,T3D_FILES,T3DBI1)
 !
 !***********************************************************************
-! TELEMAC3D   V6P2                                  21/08/2010
+! TELEMAC3D   V6P3                                 21/08/2010
 !***********************************************************************
 !
 !brief    SOURCE TERMS FOR U & V MOMENTUM EQUATIONS.
@@ -53,6 +53,11 @@
 !+        16/04/2013
 !+        V6P3
 !+   Adding the file format in calls to FIND_IN_SEL.
+!
+!history  J-M HERVOUET (LNHE)
+!+        14/06/2013
+!+        V6P3
+!+   In last loop on sources a test IF(ISCE(I).GT.0) THEN has been added
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AT             |-->| TIME OF TIME STEP
@@ -619,12 +624,16 @@
 !       THIS IS DONE DIRECTLY INTO SUBROUTINE MURD3D, AND NOT WITH CV1
 !
         DO I=1,NREJEU
-        CV1((KSCE(I)-1)*NPOIN2+ISCE(I))=CV1((KSCE(I)-1)*NPOIN2+ISCE(I))
-     &      + (USCE(I)-UN3((KSCE(I)-1)*NPOIN2+ISCE(I)))*
-     &               QSCE(I)/VOLU(ISCE(I),KSCE(I))
-        CV2((KSCE(I)-1)*NPOIN2+ISCE(I))=CV2((KSCE(I)-1)*NPOIN2+ISCE(I))
-     &      + (VSCE(I)-VN3((KSCE(I)-1)*NPOIN2+ISCE(I)))*
-     &               QSCE(I)/VOLU(ISCE(I),KSCE(I))
+          IF(ISCE(I).GT.0) THEN
+            CV1((KSCE(I)-1)*NPOIN2+ISCE(I))=
+     &      CV1((KSCE(I)-1)*NPOIN2+ISCE(I))
+     &      +(USCE(I)-UN3((KSCE(I)-1)*NPOIN2+ISCE(I)))*
+     &                                     QSCE(I)/VOLU(ISCE(I),KSCE(I))
+            CV2((KSCE(I)-1)*NPOIN2+ISCE(I))=
+     &      CV2((KSCE(I)-1)*NPOIN2+ISCE(I))
+     &      +(VSCE(I)-VN3((KSCE(I)-1)*NPOIN2+ISCE(I)))*
+     &                                     QSCE(I)/VOLU(ISCE(I),KSCE(I))
+          ENDIF
         ENDDO
 !
       ENDIF
@@ -633,4 +642,3 @@
 !
       RETURN
       END
-
