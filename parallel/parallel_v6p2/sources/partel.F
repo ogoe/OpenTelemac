@@ -2747,23 +2747,6 @@ C
 C
 C-----------------------------------------------------------------------
 C
-      IF(NILE.GT.300.OR.NFRSOL.GT.300.OR.NFRLIQ.GT.300) THEN
-        IF(LNG.EQ.1) THEN
-          WRITE(LU,*) 'FRONT2 : DEPASSEMENT DE TABLEAUX'
-          WRITE(LU,*) '         AUGMENTER MAXFRO DANS LE CODE APPELANT' 
-          WRITE(LU,*) '         A LA VALEUR ',MAX(NILE,NFRSOL,NFRLIQ)
-        ENDIF
-        IF(LNG.EQ.2) THEN
-          WRITE(LU,*) 'FRONT2: SIZE OF ARRAYS EXCEEDED'
-          WRITE(LU,*) '        INCREASE MAXFRO IN THE CALLING PROGRAM' 
-          WRITE(LU,*) '        UP TO THE VALUE ',MAX(NILE,NFRSOL,NFRLIQ)
-        ENDIF
-!!! CM        CALL PARTEL_PLANTE2(-1)
-!!! CM        STOP
-      ENDIF
-C
-C-----------------------------------------------------------------------
-C
       RETURN
       END 
 C                       ************************
