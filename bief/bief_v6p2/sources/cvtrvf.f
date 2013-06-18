@@ -9,7 +9,7 @@
      & YAFLBOR,V2DPAR,UNSV2D,IOPT,FLBORTRA,MASKPT,RAIN,PLUIE,TRAIN)
 !
 !***********************************************************************
-! BIEF   V6P2                                   21/08/2010
+! BIEF   V6P3                                   21/08/2010
 !***********************************************************************
 !
 !brief    FINITE VOLUMES, UPWIND, EXPLICIT ADVECTOR.
@@ -40,6 +40,11 @@
 !+        V6P2
 !+   Rain and evaporation added (after initiative by O. Boutron, from
 !+   Tour du Valat, and O. Bertrand, Artelia group)
+!
+!history  SARA PAVAN & J-M HERVOUET (LNHE)
+!+        18/06/2013
+!+        V6P3
+!+   New call to CFLVF, for new monotonicity criterion.
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| AGGLOH         |-->| MASS-LUMPING IN CONTINUITY EQUATION
@@ -143,11 +148,12 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER IELMF,I,IOPT1,IOPT2
+      INTEGER IELEM,I1,I2,I3
       LOGICAL YACSTE
 !
 !-----------------------------------------------------------------------
 !
-      DOUBLE PRECISION MASSET,MASSETN,TSOU,DTMAX,DT_REMAIN,DDT,TDT
+      DOUBLE PRECISION MASSET,MASSETN,TSOU,DT_REMAIN,DDT,TDT
       DOUBLE PRECISION FXT2
       CHARACTER(LEN=16) FORMUL
       DOUBLE PRECISION, POINTER, DIMENSION(:) :: SAVE_HT,SAVE_HNT
@@ -303,15 +309,17 @@
 !
 !     COMPUTES THE MAXIMUM TIMESTEP ENSURING MONOTONICITY
 !
-      CALL CFLVF(DTMAX,T5%R,HT%R,FXMAT,FXMATPAR,
+      CALL CFLVF(DDT,T5%R,HT%R,FXMAT,FXMATPAR,
 !                                   FLBOR%R(NPOIN)
      &           V2DPAR%R,DT_REMAIN,T7%R   ,SMH%R,
      &           YASMH,T8,MESH%NSEG,MESH%NPOIN,MESH%NPTFR,
      &           MESH%GLOSEG%I,MESH%GLOSEG%DIM1,MESH,MSK,MASKPT,
-     &           RAIN,PLUIE%R)
-      IF(NCSIZE.GT.1) DTMAX=P_DMIN(DTMAX)
+     &           RAIN,PLUIE%R,T4%R,MESH%NELEM,MESH%IKLE%I,
+     &           LIMTRA,KDIR,FBOR%R,FSCEXP%R,TRAIN,MESH%NBOR%I,
+     &           T3,T6)
 !
-      DDT=MIN(DT_REMAIN,DTMAX)
+      IF(NCSIZE.GT.1) DDT=P_DMIN(DDT)
+!
       TDT=TDT+DDT
 !
 !     T5 WILL TAKE THE SUCCESSIVE VALUES OF H
