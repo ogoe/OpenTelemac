@@ -36,6 +36,11 @@
 !+        V6P2
 !+   New variables for graphic printouts added, for a clean restart.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        18/06/2013
+!+        V6P3
+!+   Size of IT1,2,3,4 modified in case of weak characteristics.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -50,7 +55,8 @@
 !-----------------------------------------------------------------------
 !
       INTEGER CFG(2),CFG2D(2),CFGMURD(2),CFGBOR2D(2),CFGMURD_TF(2)
-      INTEGER ITRAC,ITAB,IELM,IELV,IELH,STATUT,NTR,I,NSEG
+      INTEGER ITRAC,ITAB,IELM,IELV,IELH,STATUT,NTR,I,NSEG,SIZ
+      LOGICAL YESWEAK
       CHARACTER(LEN=1) TYPDIA, TYPEXT
 !
 !-----------------------------------------------------------------------
@@ -61,6 +67,19 @@
       ENDIF
  20   FORMAT(1X,/,1X,'POINT_TELEMAC3D: ALLOCATION DE LA MEMOIRE',/)
  21   FORMAT(1X,/,1X,'POINT_TELEMAC3D: MEMORY ALLOCATION',/)
+!
+!-----------------------------------------------------------------------
+!
+!     WILL THERE BE WEAK CHARACTERISTICS?
+!
+      YESWEAK=.FALSE.
+      IF(OPTCHA.GT.1) THEN
+        IF(SCHCVI.EQ.ADV_CAR) YESWEAK=.TRUE.
+        IF(SCHCKE.EQ.ADV_CAR) YESWEAK=.TRUE. 
+        DO ITRAC=1,NTRAC
+          IF(SCHCTA(ITRAC).EQ.ADV_CAR) YESWEAK=.TRUE.
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 ! DECLARES DISCRETISATION TYPES HERE
@@ -838,11 +857,14 @@ C K-EPSILON MODEL
 ! INTEGER WORK FIELDS
 !
       CALL ALLBLO(ITRAV3,'ITRAV3')
-      CALL BIEF_ALLVEC_IN_BLOCK(ITRAV3,4,2,'ITR3V ',IELM3,1,1,MESH3D)
+      SIZ=BIEF_NBMPTS(IELM3,MESH3D)
+!                                         40 OR 50
+      IF(YESWEAK) SIZ=MAX(SIZ,BIEF_NBMPTS(10*(IELM3/10),MESH3D)*NGAUSS)
+      CALL BIEF_ALLVEC_IN_BLOCK(ITRAV3,4,2,'ITR3V ',SIZ,1,0,MESH3D)
 !
-! POINTERS TO 5 INTEGER WORK FIELDS
+! POINTERS TO 4 INTEGER WORK FIELDS
 !
-      IT1 => ITRAV3%ADR(1)%P
+      IT1 => ITRAV3%ADR(1)%P     
       IT2 => ITRAV3%ADR(2)%P
       IT3 => ITRAV3%ADR(3)%P
       IT4 => ITRAV3%ADR(4)%P
