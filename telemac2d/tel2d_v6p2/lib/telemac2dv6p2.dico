@@ -1195,7 +1195,7 @@ NIVEAU = 2
 AIDE = 'Si > 0., declenche la procedure de ressuyage qui evite
 le franchissement parasite des digues mal discretisees' 
 AIDE1 = 'If > 0., will trigger the receding procedure that
-avoids overwhelming of dyles which are too loosely 
+avoids overwhelming of dykes which are too loosely 
 discretised ' 
  
 NOM = 'IMPLICITATION POUR LA HAUTEUR' 
@@ -1461,7 +1461,7 @@ RUBRIQUE1 = 'EQUATIONS, INITIAL CONDITIONS'
 COMPORT = 
 'Foreground ("EQUATIONS, CONDITIONS INITIALES") IS VALEUR (brown)' 
 NIVEAU = 1 
-CONTROLE = 0; 2000 
+CONTROLE = -427.; 8848. 
 AIDE = 'Valeur utilisee avec l''option : 
      CONDITIONS INITIALES - COTE CONSTANTE' 
 AIDE1 ='Value to be used with the option : 

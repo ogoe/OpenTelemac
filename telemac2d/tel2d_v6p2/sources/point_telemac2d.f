@@ -63,6 +63,11 @@
 !+        V6P3
 !+   Size of arrays in TB modified in case of floats.
 !
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        18/06/2013
+!+        V6P3
+!+   Size of IT1,2,3,4 modified in case of weak characteristics.
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
@@ -84,7 +89,9 @@
       INTEGER IELBU,IELBH,IELBT,IELBK,IELBE,IELB1
       INTEGER IELBX,CFG(2),CFGBOR(2),ERR
 !
-      CHARACTER*1 TYP
+      LOGICAL YESWEAK
+!
+      CHARACTER(LEN=1) TYP
 !
       INTRINSIC MAX
 !
@@ -100,6 +107,17 @@
 21    FORMAT(1X,///,26X,'*****************************',/,
      &26X,              '*    MEMORY ORGANIZATION    *',/,
      &26X,              '*****************************',/)
+!
+!-----------------------------------------------------------------------
+!
+!     WILL THERE BE WEAK CHARACTERISTICS?
+!
+      YESWEAK=.FALSE.
+      IF(OPTCHA.GT.1) THEN
+        DO I=1,4
+          IF(CONVV(I).AND.ICONVF(I).EQ.ADV_CAR) YESWEAK=.TRUE.
+        ENDDO
+      ENDIF
 !
 !-----------------------------------------------------------------------
 !
@@ -514,7 +532,7 @@
 !
       CALL ALLBLO(TB ,'TB    ')
 !
-      IF(NFLOT_MAX.GT.BIEF_NBPTS(IELMX,MESH)) THEN
+      IF(NFLOT_MAX.GT.BIEF_NBMPTS(IELMX,MESH)) THEN
         CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',NFLOT_MAX,1,0,MESH)
       ELSE
         CALL BIEF_ALLVEC_IN_BLOCK(TB,NTR,1,'TB    ',IELMX,1,2,MESH)
@@ -770,7 +788,7 @@
 !
 !-----------------------------------------------------------------------
 !
-! ALLOCATES THE BLOCKS
+!     ALLOCATES THE BLOCKS
 !
 !     FUNCTIONS GATHERED IN A BLOCK FOR TIME N AND A BLOCK FOR TIME N+1
 !
@@ -1030,24 +1048,13 @@
 !
 !     INTEGER WORKING ARRAY (MINIMUM SIZE NELEM)
 !
-      SIZ=MAX(BIEF_NBPTS(IELMX,MESH),
-     &        BIEF_NBPTS(10,MESH),
-     &        NFLOT_MAX)
+      SIZ=MAX(BIEF_NBMPTS(IELMX,MESH),BIEF_NBMPTS(10,MESH),NFLOT_MAX)
+      IF(YESWEAK) SIZ=MAX(SIZ,BIEF_NBMPTS(10,MESH)*NGAUSS)
+!
       CALL BIEF_ALLVEC(2,IT1,'IT1   ',SIZ,1,0,MESH)
       CALL BIEF_ALLVEC(2,IT2,'IT2   ',SIZ,1,0,MESH)
       CALL BIEF_ALLVEC(2,IT3,'IT3   ',SIZ,1,0,MESH)
       CALL BIEF_ALLVEC(2,IT4,'IT4   ',SIZ,1,0,MESH)
-!     IF(IELMX.GT.11) THEN
-!       CALL BIEF_ALLVEC(2,IT1,'IT1   ',IELMX,1,2,MESH)
-!       CALL BIEF_ALLVEC(2,IT2,'IT2   ',IELMX,1,2,MESH)
-!       CALL BIEF_ALLVEC(2,IT3,'IT3   ',IELMX,1,2,MESH)
-!       CALL BIEF_ALLVEC(2,IT4,'IT4   ',IELMX,1,2,MESH)
-!     ELSE
-!       CALL BIEF_ALLVEC(2,IT1,'IT1   ',   10,1,2,MESH)
-!       CALL BIEF_ALLVEC(2,IT2,'IT2   ',   10,1,2,MESH)
-!       CALL BIEF_ALLVEC(2,IT3,'IT3   ',   10,1,2,MESH)
-!       CALL BIEF_ALLVEC(2,IT4,'IT4   ',   10,1,2,MESH)
-!     ENDIF
 !
 !_______________________________________________________________________
 !

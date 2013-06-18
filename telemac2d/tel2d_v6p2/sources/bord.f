@@ -89,7 +89,8 @@
       USE BIEF
       USE INTERFACE_TELEMAC2D, EX_BORD => BORD
       USE DECLARATIONS_TELEMAC2D, ONLY: STA_DIS_CURVES,PTS_CURVES,QZ,
-     &                                  FLUX_BOUNDARIES,MAXFRO,TIDALTYPE
+     &                                  FLUX_BOUNDARIES,MAXFRO,
+     &                                  TIDALTYPE,BOUNDARY_COLOUR
 !
       IMPLICIT NONE
       INTEGER LNG,LU
