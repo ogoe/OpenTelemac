@@ -237,14 +237,14 @@
         TRAC=.FALSE.
       ENDIF
 !
-!     DATE AND TIME (SO FAR NOT A KEYWORD IN TELEMAC-3D)
+!     DATE AND TIME (NOW TAKEN FROM KEYWORDS MARTIM AND MARDAT)
 !
-      DATE(1) = 0      
-      DATE(2) = 0     
-      DATE(3) = 0
-      TIME(1) = 0
-      TIME(2) = 0
-      TIME(3) = 0
+      DATE(1) = MARDAT(1)
+      DATE(2) = MARDAT(2)
+      DATE(3) = MARDAT(3)
+      TIME(1) = MARTIM(1)
+      TIME(2) = MARTIM(2)
+      TIME(3) = MARTIM(3)
 !
       INFOGR = LISTIN
 !
