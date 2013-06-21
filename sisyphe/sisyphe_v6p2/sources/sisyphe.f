@@ -937,19 +937,11 @@
             ELSE
               ENTET = .FALSE.
             ENDIF
-
 !
 !  ----     PRINTOUTS TO C-VSP !!! UHM
 !
-
             CVSM_OUT  = .FALSE.
-            if(CVSMPPERIOD*((LT)/CVSMPPERIOD) == (LT)) THEN
-              CVSM_OUT = .TRUE.
-            else
-              CVSM_OUT = .FALSE.
-            endif
-
-
+            IF(CVSMPPERIOD*(LT/CVSMPPERIOD.EQ.LT) CVSM_OUT = .TRUE.
 !
 !----       READS AND UPDATES H AND ZF
 !----       IF 1ST PASS OR UNSTEADY AND NO COUPLING
@@ -1082,11 +1074,11 @@
 !         CV: COPY OF TOMAWAC VARIABLES
 !
           IF(INCLUS(COUPLING,'TOMAWAC')) THEN
-!           direction houle incidente
+!           INCIDENT WAVE DIRECTION
             CALL OS( 'X=Y     ',THETAW,THETAW_TEL)
 !           Wave period
             CALL OS( 'X=Y     ', TW, TW_TEL)
-!           hauteur significative
+!           SIGNIFICANT HEIGHT
             CALL OS( 'X=Y     ', HW , HW_TEL)
             HW%TYPR='Q'
             TW%TYPR='Q'
