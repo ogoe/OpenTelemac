@@ -101,13 +101,19 @@ class DELWAQ:
       self.HYDRODT = int(self.dwqList['hydrodynamic-timestep'])
       self.HYDROIT = 1 + ( self.HYDROAT-self.HYDRO0T ) / self.HYDRODT
       self.HYDRO00 = 0
+      self.tfrom = self.HYDRO0T
+      self.tstop = self.HYDROAT
 
-   def resetDWQ(self):
-      self.HYDRO00 = self.HYDRO0T
-      #self.HYDRO0T = 0 # self.HYDRO0T - self.HYDRO00
-      #self.HYDROAT = self.HYDROAT - self.HYDRO00
-
+   def resetDWQ(self): self.HYDRO00 = self.HYDRO0T
+ 
    def minvolDWQ(self,value): self.minvol = float(value)
+
+   def sampleDWQ(self,tfrom,tstop):
+      self.tfrom = float(tfrom)
+      if self.tfrom < 0: self.tfrom = self.HYDROAT + self.tfrom + 1
+      self.tstop = float(tstop)
+      if self.tstop < 0: self.tstop = self.HYDROAT + self.tstop + 1
+      if self.tfrom > self.tstop: self.tstop = self.tfrom
 
    def parseDWQ(self,lines):
       dwqList = {}
@@ -273,10 +279,13 @@ class DELWAQ:
          VOLUME = np.asarray( unpack('>'+str(self.NPOIN3)+'f',file.read(4*self.NPOIN3)) )
          VOLUME = np.maximum(VOLUME,minvol)
          file.seek(4,1)
-         pbar.write('            ~> read iteration: '+str(it),i)
-         fole.write(pack('<ii',4*n1,it-self.HYDRO00))
-         fole.write(pack('<'+str(self.NPOIN3)+'f',*(VOLUME)))
-         fole.write(pack('<i',4*n1))
+         if it >= self.tfrom and it <= self.tstop:
+            pbar.write('            ~> read iteration: '+str(it),i)
+            fole.write(pack('<ii',4*n1,it-self.HYDRO00))
+            fole.write(pack('<'+str(self.NPOIN3)+'f',*(VOLUME)))
+            fole.write(pack('<i',4*n1))
+         else:
+            pbar.write('            ~> ignore iteration: '+str(it),i)
          pbar.update(i)
       pbar.finish()
 
@@ -302,10 +311,13 @@ class DELWAQ:
          l,it = unpack('>ii',file.read(4+4))
          VFLUXES = np.asarray( unpack('>'+str(n3)+'f',file.read(4*n3)) )
          file.seek(4,1)
-         pbar.write('            ~> read iteration: '+str(it),i)
-         fole.write(pack('<ii',4*n3,it-self.HYDRO00))
-         fole.write(pack('<'+str(n3)+'f',*(VFLUXES)))
-         fole.write(pack('<i',4*n3))
+         if it >= self.tfrom and it <= self.tstop:
+            pbar.write('            ~> read iteration: '+str(it),i)
+            fole.write(pack('<ii',4*n3,it-self.HYDRO00))
+            fole.write(pack('<'+str(n3)+'f',*(VFLUXES)))
+            fole.write(pack('<i',4*n3))
+         else:
+            pbar.write('            ~> ignore iteration: '+str(it),i)
          pbar.update(i)
       pbar.finish()
 
@@ -331,10 +343,13 @@ class DELWAQ:
          l,it = unpack('>ii',file.read(4+4))
          AREAS = np.asarray( unpack('>'+str(n3)+'f',file.read(4*n3)) )
          file.seek(4,1)
-         pbar.write('            ~> read iteration: '+str(it),i)
-         fole.write(pack('<ii',4*n3,it-self.HYDRO00))
-         fole.write(pack('<'+str(n3)+'f',*(AREAS)))
-         fole.write(pack('<i',4*n3))
+         if it >= self.tfrom and it <= self.tstop:
+            pbar.write('            ~> read iteration: '+str(it),i)
+            fole.write(pack('<ii',4*n3,it-self.HYDRO00))
+            fole.write(pack('<'+str(n3)+'f',*(AREAS)))
+            fole.write(pack('<i',4*n3))
+         else:
+            pbar.write('            ~> ignore iteration: '+str(it),i)
          pbar.update(i)
       pbar.finish()
 
@@ -368,6 +383,8 @@ if __name__ == "__main__":
    parser.add_option("-v", "--version",type="string",dest="version",default='',help="specify the version number, default is taken from config file" )
    parser.add_option("--reset",action="store_true",dest="areset",default=False,help="reset the start time to zero" )
    parser.add_option("--minvol",type="string",dest="minvol",default='0.001',help="make sure there is a minimum volume" )
+   parser.add_option("--from",type="string",dest="tfrom",default="1",help="specify the first frame included" )
+   parser.add_option("--stop",type="string",dest="tstop",default="-1",help="specify the last frame included (negative from the end)" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -407,6 +424,7 @@ if __name__ == "__main__":
       # ~~> Possible options so far
       if options.areset: dwq.resetDWQ()
       dwq.minvolDWQ(options.minvol)
+      dwq.sampleDWQ(options.tfrom,options.tstop)
 
       # ~~> Convert to Little Endian
       dwq.big2little()
