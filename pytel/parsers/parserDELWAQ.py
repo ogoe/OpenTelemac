@@ -107,6 +107,7 @@ class DELWAQ:
       #self.HYDRO0T = 0 # self.HYDRO0T - self.HYDRO00
       #self.HYDROAT = self.HYDROAT - self.HYDRO00
 
+   def minvolDWQ(self,value): self.minvol = float(value)
 
    def parseDWQ(self,lines):
       dwqList = {}
@@ -263,12 +264,14 @@ class DELWAQ:
 
       # ~~ Read/Write dimensions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       n1 = self.NPOIN3+1
+      minvol = self.minvol * np.ones(self.NPOIN3,dtype=np.float32)
 
       # ~~ Read volumes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       pbar = ProgressBar(maxval=self.HYDROIT).start()
       for i in range(self.HYDROIT):
          l,it = unpack('>ii',file.read(4+4))
          VOLUME = np.asarray( unpack('>'+str(self.NPOIN3)+'f',file.read(4*self.NPOIN3)) )
+         VOLUME = np.maximum(VOLUME,minvol)
          file.seek(4,1)
          pbar.write('            ~> read iteration: '+str(it),i)
          fole.write(pack('<ii',4*n1,it-self.HYDRO00))
@@ -364,6 +367,7 @@ if __name__ == "__main__":
    parser.add_option("-r", "--rootdir",type="string",dest="rootDir",default='',help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",type="string",dest="version",default='',help="specify the version number, default is taken from config file" )
    parser.add_option("--reset",action="store_true",dest="areset",default=False,help="reset the start time to zero" )
+   parser.add_option("--minvol",type="string",dest="minvol",default='0.001',help="make sure there is a minimum volume" )
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
       print '\nNot able to get to the configuration file: ' + options.configFile + '\n'
@@ -402,6 +406,7 @@ if __name__ == "__main__":
       
       # ~~> Possible options so far
       if options.areset: dwq.resetDWQ()
+      dwq.minvolDWQ(options.minvol)
 
       # ~~> Convert to Little Endian
       dwq.big2little()
