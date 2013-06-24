@@ -5,7 +5,7 @@
      & (H , ZF , ZR , Z , X , Y , NPOIN , CHOIX , NLISS )
 !
 !***********************************************************************
-! SISYPHE   V6P1                                   21/07/2011
+! SISYPHE   V6P3                                  21/07/2011
 !***********************************************************************
 !
 !brief    FIXES THE NON-ERODABLE BED ELEVATION ZR.
@@ -29,6 +29,12 @@
 !+        V6P0
 !+   Creation of DOXYGEN tags for automated documentation and
 !+   cross-referencing of the FORTRAN sources
+!
+!history  J-M HERVOUET (EDF R&D, LNHE)
+!+        21/06/2013
+!+        V6P3
+!+   Now ZR=ZF-100.D0 by default
+!+   previous versions was erronneously ZR=-100.D0
 !
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| CHOIX          |-->| SELECTED METHOD FOR THE TREATMENT OF RIGID BEDS
@@ -60,13 +66,13 @@
 !
       INTEGER I
 !
-!--------------------
+!---------------------
 ! RIGID BEDS POSITION
 !---------------------
 !
-!     DEFAULT VALUE:       ZR=ZF-100
+!     DEFAULT VALUE: ZR=ZF-100.D0
 !
-      CALL OV( 'X=C       ',ZR,ZF,ZF,-100.D0,NPOIN)
+      CALL OV('X=Y+C   ',ZR,ZF,ZF,-100.D0,NPOIN)
 !
 !------------------
 ! SMOOTHING OPTION
@@ -76,6 +82,18 @@
 !             DEFAULT VALUE : NLISS = 0 (NO SMOOTHING)
 !
       NLISS = 0
+!
+!--------------------------------------------------
+! CONTROL (CAN BE ACTIVATED IF ZR USER DEFINED...)
+!--------------------------------------------------
+!
+!     DO I=1,NPOIN
+!       IF(ZR(I).GT.ZF(I)) THEN
+!         WRITE(LU,*) 'POINT ',I,' NON ERODABLE BED HIGHER THAN BED'
+!         CALL PLANTE(1)
+!         STOP
+!       ENDIF
+!     ENDDO
 !
 !-----------------------------------------------------------------------
 !
