@@ -208,7 +208,7 @@
       INTEGER NOEUD,NBRE_NOEUD_INTERNE
       INTEGER NBRE_NOEUD_INTERF
       INTEGER NBRE_EF_I
-      LOGICAL INTERFACE      
+      LOGICAL INTERFCE      
 !
 ! #### FOR SECTIONS 
 !
@@ -1256,19 +1256,19 @@
 !
          NBRE_EF_I=0            ! NOMBRE D'ELEMENTS FINIS INTERFACES DU SDI
          DO J=1,NELEM_P(I)      ! ON PARCOURS A NOUVEAU LES ELEMENTS FINIS DU SDI
-           INTERFACE=.FALSE.
+           INTERFCE=.FALSE.
            EF=ELELG(J,I)
            DO K=1,NDP_2D
              NOEUD=IKLES((EF-1)*3+K)
              IF(ABS(NBRE_EF_LOC(KNOGL(NOEUD,I))).NE.NBRE_EF(NOEUD))
      &        THEN
-               INTERFACE=.TRUE.
+               INTERFCE=.TRUE.
              ENDIF
              IF(NBRE_EF_LOC(KNOGL(NOEUD,I)).NE.NBRE_EF(NOEUD).AND. 
      &          NBRE_EF_LOC(KNOGL(NOEUD,I)).GT.0) THEN
 !              NOEUD EST INTERFACE CAR IL RESTE DES ELEMENTS FINIS
 !              HORS DE SDI QUI LE CONTIENT
-               INTERFACE=.TRUE.
+               INTERFCE=.TRUE.
                NPTIR_P(I)=NPTIR_P(I)+1
                CUT_P(NPTIR_P(I),I)=NOEUD
                PART_P(NOEUD,0)=PART_P(NOEUD,0)+1
@@ -1283,7 +1283,7 @@
                NBRE_EF_LOC(KNOGL(NOEUD,I))=-NBRE_EF_LOC(KNOGL(NOEUD,I))
              ENDIF
            ENDDO 
-           IF(INTERFACE) THEN 
+           IF(INTERFCE) THEN 
              NBRE_EF_I=NBRE_EF_I+1 ! L'ELEMENT FINI EST DONC AUSSI INTERFACE
              EF_I(NBRE_EF_I)=EF
              EF_II(NBRE_EF_I)=J
