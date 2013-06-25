@@ -95,7 +95,7 @@
         WRITE (LU,*) 'NOMB>3*101 ==> NWIN OR NDIR BADLY DEFINED' 
         WRITE (LU,*) 'NWIN SHOULD BE 100'  
         WRITE (LU,*) 'NDIR SHOULD BE 2 OR 3'
-        CALL PLANTE(1) 
+!       CALL PLANTE(1) 
         STOP 
       ENDIF      
       CH_BLENGTH(17) = NOMB
@@ -132,7 +132,7 @@
         WRITE(LU,*) ' OR' 
         WRITE(LU,*) ' IUB=',IUB,' NOT EQUAL TO CH_DELTA(18)=', 
      &        CH_DELTA(18) 
-        CALL PLANTE(1) 
+!       CALL PLANTE(1) 
         STOP 
       ENDIF 
       RETURN  

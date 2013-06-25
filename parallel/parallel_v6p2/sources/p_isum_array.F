@@ -29,9 +29,9 @@
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
+      INTEGER, INTENT(IN)  :: NCOUNT
       INTEGER, INTENT(IN)  :: SEND_BUFFER(NCOUNT)
       INTEGER, INTENT(OUT) :: RECV_BUFFER(NCOUNT)
-      INTEGER, INTENT(IN)  :: NCOUNT
       INTEGER, INTENT(OUT) :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

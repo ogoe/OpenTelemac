@@ -225,6 +225,19 @@ libcray:
 		@$(MAKE) -f $(MAKEFILE) FCO="$(FC_OPT_CRAY)" DIRLIB=unicos
 		@$(MAKE) -f $(MAKEFILE) install DIRLIB=unicos
 		remsh $(NAME_CRAY) -l $(USR_CRAY) "rm -rf compilation "
+
+#------- Modules
+#
+MODS =   declarations_parallel.o 
+
+modules:	$(MODS)
+		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
+		  DIR="`whoami`@`uname -n`:`pwd`" ; \
+		  remsh $(NAME_CIBLE) -l $(USR_CIBLE) \
+		  "cd workdir/compilation ;\
+		  rcp *.mod $$DIR/. ";\
+		  mv *.mod $(DEST)/.; fi;
+		@echo "=> Transfert des modules effectue !"
 		
 #------- Regles de compilation des sources FORTRAN
 
