@@ -524,7 +524,7 @@ if __name__ == "__main__":
 # ~~ Prepare the cmdf file to avoid future scans ~~~~~~~~~~~~~~~~~~~
                   print '\nUpdating your cmdf file for compilation without scan for ' + item + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-                  ForDir = path.join(cfg['MODULES'][prg[item][0]]['path'],cfgname)
+                  ForDir = path.join(cfg['MODULES'][prg[item][0]]['path'],'sources')
                   # If this is the first time we are compiling the cfgname subfolder might not exists
                   # If it is the case we create one
                   if not path.exists(ForDir): 
@@ -566,18 +566,19 @@ if __name__ == "__main__":
          cmdfFiles = {}; HOMERES = {} 
          #Liborder in the cmdf file is incorrect using fixed order instead
          #TODO: Solve order error for example jultim and gregtim
-         LIBDEPS = ['special', 'paravoid', 'parallel', 'mumpsvoid', 'damocles', 'bief', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d']
+         LIBDEPS = ['special', 'parallel', 'mumps', 'damocles', 'bief', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
          rebuild = cfg['COMPILER']['REBUILD']
+         print cfg['COMPILER']['MODULES']
          for mod in cfg['COMPILER']['MODULES']:
             cmdfFiles.update({mod:{}})
             for verpath,vernames,file in walk(path.join(cfgs[cfgname]['root'],mod)) : break
             for vername in vernames:
                if cfgs[cfgname]['version'] in vername:
-                  # While going through the modules if ti is the first time we run the compilation the cfgnale folder
+                  # While going through the modules if ti is the first time we run the compilation the cfgname folder
                   # will not exist
                   if not path.isdir(path.join(verpath,vername+sep+cfgname)) : 
                      mkdir(path.join(verpath,vername+sep+cfgname))
-                  for p,d,filenames in walk(path.join(verpath,vername+sep+cfgname)) : break
+                  for p,d,filenames in walk(path.join(verpath,vername+sep+'sources')) : break
                   for file in filenames:
                      if path.splitext(file)[1] == '.cmdf':
                         try: cmdf = getScanContent(path.join(p,file),options.bypass)

@@ -74,44 +74,46 @@ INSTALL	      = cp
 MAKEFILE      = makefile
 
 SRCS	      = interface_parallel.f \
-		errpvm.f \
-		get_mpi_parameters.f \
-		org_charac_type1.f \
-		org_charac_type_alg.f \
-		p_dmax.f \
-		p_dmin.f \
-		p_dsum.f \
-		p_exit.f \
-		p_imax.f \
-		p_imin.f \
-		p_init.f \
-		p_isum.f \
-		p_lsum.f \
-		p_mail.f \
-		p_mpi_address.f \
-		p_mpi_address2.f \
-		p_mpi_address3.f \
-		p_mpi_alltoall.f \
-		p_mpi_alltoallv.f \
-		p_mpi_alltoallv_alg.f \
-		p_mpi_alltoallv_i.f \
-		p_mpi_type_commit.f \
-		p_mpi_type_get_extent.f \
-		p_mpi_type_free.f \
-		p_mpi_type_create_struct.f \
-		p_read.f \
-		p_iread.f \
-		p_iread_c.f \
-		p_sync.f \
-		p_time.f \
-		p_wait_paraco.f \
-		p_writ.f \
-		p_iwrit.f \
-		p_iwrit_c.f 
+                declarations_parallel.F \
+		errpvm.F \
+		org_charac_type1.F \
+		org_charac_type_alg.F \
+		p_dmax.F \
+		p_dmin.F \
+		p_dsum.F \
+		p_exit.F \
+		p_imax.F \
+		p_imin.F \
+		p_init.F \
+		p_isum.F \
+                p_isum_array.F \
+                p_imax_array.F \
+		p_lsum.F \
+		p_mail.F \
+		p_mpi_address.F \
+		p_mpi_address2.F \
+		p_mpi_address3.F \
+		p_mpi_alltoall.F \
+		p_mpi_alltoallv.F \
+		p_mpi_alltoallv_alg.F \
+		p_mpi_alltoallv_i.F \
+		p_mpi_type_commit.F \
+		p_mpi_type_get_extent.F \
+		p_mpi_type_free.F \
+		p_mpi_type_create_struct.F \
+		p_read.F \
+		p_iread.F \
+		p_iread_c.F \
+		p_sync.F \
+		p_time.F \
+		p_wait_paraco.F \
+		p_writ.F \
+		p_iwrit.F \
+		p_iwrit_c.F 
 
-SRCS_PARTEL= partel.F
+SRCS_PARTEL= partel.F 
 SRCS_PARTEL_PARA= partel_para.F 
-SRCS_PARTEL_PRELIM= partel_prelim.f
+SRCS_PARTEL_PRELIM= partel_prelim.F
 SRCS_GRETEL= gretel_autop.f
 SRCS_GREDELPTS= gredelpts_autop.f
 SRCS_GREDELSEG= gredelseg_autop.f
@@ -125,8 +127,8 @@ SRCS_DIFFSEL=diffsel.f
 TMP= $(SRCS:.f=.o)
 OBJS= $(TMP:.F=.o)
 OBJS_PARTEL = $(SRCS_PARTEL:.F=.o)
-OBJS_PARTEL_PARA = $(SRCS_PARTEL_PARA:.F=.o)
-OBJS_PARTEL_PRELIM = $(SRCS_PARTEL_PRELIM:.f=.o)
+OBJS_PARTEL_PARA = $(SRCS_PARTEL_PARA:.F=.o) $(OBJS)
+OBJS_PARTEL_PRELIM = $(SRCS_PARTEL_PRELIM:.F=.o)
 OBJS_GRETEL = $(SRCS_GRETEL:.f=.o)
 OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.o)
 OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.o)

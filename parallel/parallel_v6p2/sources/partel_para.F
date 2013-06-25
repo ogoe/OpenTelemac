@@ -72,16 +72,8 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-#if defined (HAVE_PTSCOTCH)
-      USE ISO_C_BINDING
-#endif
+      USE DECLARATIONS_PARALLEL
       IMPLICIT NONE
-!
-      INCLUDE 'mpif.h'
-!     PTSCOTCH'S HEADER (FORTRAN)
-#if defined (HAVE_PTSCOTCH)
-      INCLUDE "ptscotchf.h"
-#endif
 !
 !   MAXIMUM GEOMETRICAL MULTIPLICITY OF A NODE (VARIABLE AUSSI
 !   PRESENTE DANS LA BIEF, NE PAS CHANGER L'UNE SANS L'AUTRE)
@@ -153,33 +145,8 @@
 !
 !   METISOLOGY
 !
-      INTEGER NPARTS, ETYPE, NUMFLAG, EDGECUT, NCOMMONNODES
+      INTEGER NPARTS,NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPART(:), NPART(:)
-      INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
-      INTEGER, ALLOCATABLE :: NULLTABLE(:)
-      CHARACTER(LEN=10) FMT1, FMT2, FMT3, FMT5, FMT6
-!
-!     FOR PARMETIS
-!      
-      INTEGER, POINTER :: XADJ2(:), ADJNCY2(:)
-      INTEGER, ALLOCATABLE :: ELMDIST(:)
-      INTEGER :: T_P,N_P
-      INTEGER, ALLOCATABLE :: EPART_LOC(:)
-      REAL*4, ALLOCATABLE :: TPWGTS(:), UBVEC(:)
-      INTEGER :: NCON
-      INTEGER :: OPTIONS(0:2)
-      INTEGER :: NELEM_GLOBAL, NELEM_LOC
-      INTEGER :: WGTFLAG
-      DOUBLE PRECISION, ALLOCATABLE :: VWGT(:)
-      INTEGER, ALLOCATABLE :: RECVBUF(:)
-
-#if defined (HAVE_PTSCOTCH)
-!
-      REAL*8, DIMENSION(SCOTCH_DGRAPHDIM) :: PTSCOTCHGRAPH
-      REAL*8, DIMENSION(SCOTCH_STRATDIM) :: PTSCOTCHSTRAT
-      TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
-!
-#endif
 !
 !   FOR CALLING FRONT2
 !
@@ -203,13 +170,6 @@
 !
       INTEGER  TDEB, TFIN, TDEBP, TFINP, TEMPS, PARSEC
       INTEGER  TDEB_GLOB, TFIN_GLOB
-      INTEGER  TIME_IN_SECONDS
-      EXTERNAL TIME_IN_SECONDS
-!
-!   PARTEL_PARA_EXTENS FUNCTION
-!
-      CHARACTER(LEN=11) :: PARTEL_PARA_EXTENS
-      EXTERNAL PARTEL_PARA_EXTENS
 !
 !----------------------------------------------------------------------
 !
@@ -256,23 +216,13 @@
       INTEGER, ALLOCATABLE :: VER (:)
       INTEGER, ALLOCATABLE :: EDGETAB (:)
       INTEGER DECOUP
+      EXTERNAL P_TIME
+      DOUBLE PRECISION P_TIME
+      CHARACTER(len=250) :: PATH
+      INTEGER :: NCAR, NCSIZE
       NDP_2D=3
       NDP_3D=6
-      CALL MPI_INIT(IER)
-      IF(IER.NE.0) THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 'P_INIT: ERREUR DANS MPI_INIT'
-         IF(LNG.EQ.2) WRITE(LU,*) 'P_INIT: ERROR IN MPI_INIT'
-         WRITE(LU,*) 'MPI ERROR ',IER
-         STOP
-      ENDIF
-!
-      CALL MPI_COMM_RANK(MPI_COMM_WORLD,ID,IER)
-      IF(IER.NE.0) THEN
-         IF(LNG.EQ.1) WRITE(LU,*) 'P_INIT: ERREUR DANS MPI_COMM_RANK'
-         IF(LNG.EQ.2) WRITE(LU,*) 'P_INIT: ERROR IN MPI_COMM_RANK'
-         WRITE(LU,*) 'MPI ERROR ',IER
-         STOP
-      ENDIF
+      CALL P_INIT(PATH, NCAR, ID, NCSIZE)
 !
 !----------------------------------------------------------------------
 !
@@ -364,7 +314,7 @@
       ENDIF
 !
       IF (ID .EQ. 0)  THEN
-         STARTTIME=MPI_WTIME()
+         STARTTIME=p_time()
       END IF
       OPEN(NINP,FILE=NAMEINP,STATUS='OLD',FORM='UNFORMATTED')
       REWIND NINP
@@ -499,9 +449,9 @@
 !      END DO
 !      STOP
  111  CLOSE (NINP)
-      CALL MPI_BARRIER(MPI_COMM_WORLD,IER)
+      CALL P_SYNC()
       IF (ID .EQ. 0) THEN
-         STARTCTIME=MPI_WTIME()
+         STARTCTIME=p_time()
          WRITE(LU,*) 'TEMPS LECTURE :',STARTCTIME-STARTTIME
       END IF
 
@@ -740,300 +690,19 @@
 !       1 : METIS IF PARMETIS NOT INSTALLED PARMETIS OTHERWISE
 !       2 : PT SCOTCH
 !        
-        IF(PMETHOD.EQ.1) THEN
-#if defined(HAVE_PARMETIS)
-          WRITE(LU,*) 'BEGIN PARTITIONING WITH PARMETIS'
-          ! Calling parmetis metis parallel partitionner        
-          ALLOCATE (ELMDIST(NPARTS+1),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'ELMDIST')
-!          
-!         THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN
-!         EDGE
-          IF (NDP==3.OR.NDP==6) THEN 
-             NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
-          ELSE
-             WRITE(LU,*) 'PARMETIS: IMPLEMENTED FOR ',
-     &                   'TRIANGLES OR PRISMS ONLY'
-             CALL PARTEL_PARA_PLANTE2(-1)
-             STOP
-          ENDIF 
-!         
-!         ELMDIST: THIS ARRAY DESCRIBES HOW THE ELEMENTS OF THE MESH ARE DISTRIBUTED AMONG THE PROCESSORS. 
-!              IT IS ANALOGOUS TO THE VTXDIST ARRAY. ITS CONTENTS ARE IDENTICAL FOR EVERY PROCESSOR. 
-          ELMDIST(1)=1
-          DO I=1,NPARTS-1
-             ELMDIST(I+1) = ELMDIST(I) + NELEM/NPARTS
-          ENDDO
-          ELMDIST(NPARTS+1) = NELEM + 1
-!          
-          NELEM_LOC = ELMDIST(ID+2) - ELMDIST(ID+1)
-!         
-          ALLOCATE (EPTR(NELEM_LOC+1),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPTR')
-          ALLOCATE (EIND(NELEM_LOC*NDP),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EIND')
-          ALLOCATE (EPART_LOC(NELEM_LOC),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPART_LOC')
-!         
-!         EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
-!         
-          DO I=1,NELEM_LOC+1
-             EPTR(I) = (I-1)*NDP + 1
-          ENDDO
-!       
-          K=1
-          DO I=ELMDIST(ID+1),ELMDIST(ID+2)-1
-             DO J=1,NDP
-                EIND(K) = IKLES((I-1)*NDP+J)
-                K = K + 1
-             ENDDO   
-          ENDDO    
-!         
-!         REPRESENT THE NUMBER OF PARAMETER FOR BALANCING THE PARTIRION
-          NCON = 1
-!         
-          ALLOCATE (TPWGTS(NCON*NPARTS),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'TPWGTS')
-          ALLOCATE (UBVEC(NCON),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'UBVEC')
-!         
-          TPWGTS(:) = 1.0/FLOAT(NPARTS)
-          OPTIONS(:)=0
-          UBVEC(:) = 1.05
-          WGTFLAG = 0
-          NUMFLAG = 1
-!         
-          CALL PARMETIS_V3_PARTMESHKWAY(ELMDIST, EPTR, EIND, VWGT,
-     &                              WGTFLAG, NUMFLAG,
-     &                              NCON, NCOMMONNODES, NPARTS, TPWGTS,
-     &                              UBVEC, OPTIONS, EDGECUT, EPART_LOC, 
-     &                              MPI_COMM_WORLD)
-          
-          ALLOCATE(RECVBUF(NPARTS),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER(LU,'RECVBUF')
-          DO I=1,NPARTS
-            RECVBUF(I) = ELMDIST(I+1) - ELMDIST(I)
-          ENDDO
-          ELMDIST = ELMDIST - 1
-          CALL MPI_ALLGATHERV(EPART_LOC,NELEM_LOC,MPI_INTEGER,EPART,
-     &                      RECVBUF,ELMDIST,MPI_INTEGER,MPI_COMM_WORLD,
-     &                      ERR)
-!          
-          DEALLOCATE(ELMDIST)
-          DEALLOCATE(EPART_LOC)
-          DEALLOCATE(RECVBUF)
-          DEALLOCATE(EIND)
-          DEALLOCATE(EPTR)
-#else
-          WRITE(LU,*) 'BEGIN PARTITIONING WITH METIS'
-          ALLOCATE (EPTR(NELEM2+1),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPTR')
-          ALLOCATE (EIND(NELEM2*NDP),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EIND')     
-!         
-          DO I=1,NELEM2+1
-             EPTR(I) = (I-1)*NDP + 1
-          ENDDO
-!         
-          K=1
-          DO I=1,NELEM2
-             DO J=1,NDP
-                EIND(K) = IKLES((I-1)*NDP+J)
-                K = K + 1
-             ENDDO   
-          ENDDO    
-!         
-!         SWITCH TO C NUMBERING
-          EIND = EIND -1
-          EPTR = EPTR -1
-!         
-!         METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
-!         NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
-!         NCOMMONNODES = 3   FOR TETRAHEDRE
-!         NCOMMONNODES = 4   FOR HEXAHEDRE
-          
-!         
-          IF (NDP==3.OR.NDP==6) THEN 
-             NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
-          ELSE
-           WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
-             CALL PARTEL_PARA_PLANTE2(-1)
-             STOP
-          ENDIF 
-          
-!         WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
-!         IS RELEVANT HERE.  
-!         
-!         IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
-!         IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
-!         
-          NUMFLAG = 1
-!         
-          WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
-          IF (TIMECOUNT) THEN 
-             CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-             TDEBP = TEMPS
-          ENDIF
-!         
-            CALL METIS_PARTMESHDUAL 
-     &          (NELEM2, NPOIN2, EPTR, EIND, NULLTABLE,
-     &           NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
-     &           NULLTABLE, EDGECUT, EPART, NPART)
-!         
-          WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
-          IF (TIMECOUNT) THEN
-            CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-            TFINP = TEMPS
-            WRITE(LU,*) ' RUNTIME OF METIS ',
-     &                (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
-          ENDIF
-!         
-!         DEALLOCATING TEMPORARY ARRAYS FOR METIS
-!         SWITCHING EPART TO FORTRAN NUMBERING (1...N)      
-          EPART = EPART+1
-          DEALLOCATE(EPTR)
-          DEALLOCATE(EIND)
-#endif
-        ELSE IF(PMETHOD.EQ.2) THEN
-#if defined (HAVE_PTSCOTCH)             
-          WRITE(LU,*) 'BEGIN PARTITIONING WITH PTSCOTCH'
-!          
-          ALLOCATE (ELMDIST(N_P+1),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'ELMDIST')
-!         
-!!        The number of common point needed between 2 elements to make an
-!         edge
-          IF (NDP==3.OR.NDP==6) THEN 
-             NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
-          ELSE
-             WRITE(LU,*) 'PTSCOTCH: IMPLEMENTED FOR ',
-     &                   'TRIANGLES OR PRISMS ONLY'
-             CALL PARTEL_PARA_PLANTE2(-1)
-             STOP
-          ENDIF 
-!         
-!    ELM  DIST: THIS ARRAY DESCRIBES HOW THE ELEMENTS OF THE MESH ARE DISTRIBUTED AMONG THE PROCESSORS. 
-!!             IT IS ANALOGOUS TO THE VTXDIST ARRAY. ITS CONTENTS ARE IDENTICAL FOR EVERY PROCESSOR. 
-!              SAME PRINCIPAL AS FOR XADJ AND ADJCNY
-          ELMDIST(1)=1
-          DO I=1,N_P-1
-             ELMDIST(I+1) = ELMDIST(I) + NELEM_GLOBAL/N_P
-          ENDDO
-          ELMDIST(N_P+1) = NELEM_GLOBAL + 1
-!          
-          NELEM_LOC = ELMDIST(T_P+1) - ELMDIST(T_P)
-!         
-          ALLOCATE (EPTR(NELEM_LOC+1),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPTR')
-          ALLOCATE (EIND(NELEM_LOC*NDP),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EIND')
-          ALLOCATE (EPART_LOC(NELEM_LOC),STAT=ERR)
-          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPART_LOC')
-!         
-!         EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
-!                  (SEE DISCUSSION IN SECTION 4.3).
-!         
-          DO I=1,NELEM_LOC+1
-             EPTR(I) = (I-1)*NDP + 1
-          ENDDO
-!         
-          K=1
-          DO I=ELMDIST(T_P),ELMDIST(T_P+1)-1
-             DO J=1,NDP
-                EIND(K) = IKLES((I-1)*NDP+J)
-                K = K + 1
-             ENDDO   
-          ENDDO    
-!         
-!!!! REP! RESENT THE NUMBER OF PARAMETER FOR BALANCING THE PARTIRION
-          NCON = 1
-!         
-          ALLOCATE(PTXADJ(1))
-          ALLOCATE(PTADJNCY(1))
-          CALL PARMETIS_V3_MESH2DUAL(ELMDIST, EPTR, EIND, 
-     &                             NUMFLAG, NCOMMONNODES,
-     &                             PTXADJ,PTADJNCY,
-     &                             MPI_COMM_WORLD)
-!         
-          DEALLOCATE(EPTR,EIND)
-          ALLOCATE(RECVBUF(1))
-          RECVBUF(1) = NELEM_LOC+1
-          CALL C_F_POINTER(PTXADJ(1),XADJ2,RECVBUF)
-!          
-          RECVBUF(1) = XADJ2(NELEM_LOC+1)-1
-          CALL C_F_POINTER(PTADJNCY(1),ADJNCY2,RECVBUF)
-          DEALLOCATE(RECVBUF)
-!         
-          ! BEGINNING PT-SCOTCH PARTIONNING
-!          
-          CALL SCOTCHFSTRATINIT(PTSCOTCHSTRAT,ERR)
-          IF (ERR.EQ.0) THEN
-            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT INITIALIZE STRAT'
-            CALL PARTEL_PARA_PLANTE2(-1)
-          ENDIF   
-!         
-          CALL SCOTCHFDGRAPHINIT(PTSCOTCHGRAPH,MPI_COMM_WORLD,ERR)
-          IF (ERR.EQ.0) THEN
-            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT INITIALIZE GRAPH'
-            CALL PARTEL_PARA_PLANTE2(-1)
-          ENDIF
-!         
-          CALL SCOTCHFDGRAPHBUILD ( PTSCOTCHGRAPH,     ! GRAFDAT
-     &                              NUMFLAG,     ! BASEVAL
-     &                              NELEM_LOC,  ! VERTLOCNBR
-     &                              NELEM_LOC,  ! VERTLOCMAX=VERLOCNBR (NO HOLES IN GLOBAL
-                                       ! NUMBERING)
-     &                              XADJ2,  ! VERTLOCTAB
-     &                              XADJ2(2:NELEM_LOC+1),  ! VENDLOCTAB = NULL
-     &                              XADJ2,  ! VELOLOCTAB = NULL
-     &                              XADJ2,  ! VLBLLOCTAB = NULL
-     &                              XADJ2(NELEM_LOC+1)-1,  ! EDGELOCNBR
-     &                              XADJ2(NELEM_LOC+1)-1,  ! EDGELOCSIZ
-     &                              ADJNCY2,  ! EDGELOCATAB
-     &                              ADJNCY2,  ! EDGEGSTTAB = NULL
-     &                              ADJNCY2,  ! EDLOLOCTAB = NULL
-     &                              ERR)
-          IF (ERR.EQ.0) THEN
-            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT BUILD GRAPH'
-            CALL PARTEL_PARA_PLANTE2(-1)
-          ENDIF
-!         
-          CALL SCOTCHFDGRAPHCHECK(PTSCOTCHGRAPH,ERR)
-          IF (ERR.EQ.0) THEN
-            WRITE(LU,*) 'PTSCOTCH ERROR: GRAPH NOT CONSISTANT'
-            CALL PARTEL_PARA_PLANTE2(-1)
-          ENDIF
-!          
-          CALL SCOTCHFDGRAPHPART ( PTSCOTCHGRAPH, 
-     &                            NPARTS, 
-     &                            PTSCOTCHSTRAT,
-     &                            EPART_LOC, 
-     &                            ERR )
-!         
-          IF (ERR.EQ.0) THEN
-            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT PARTITION GRAPH'
-            CALL PARTEL_PARA_PLANTE2(-1)
-          END IF
-!!!! CHA! NGING EPART NUMBERING TO 1-NPART
-          DO I=1,NELEM_LOC
-             EPART_LOC(I) = EPART_LOC(I) + 1
-          ENDDO
-!           
-          CALL SCOTCHFGRAPHEXIT(PTSCOTCHGRAPH)
-!         
-          CALL SCOTCHFSTRATEXIT(PTSCOTCHSTRAT)
-!          DEALLOCATE(XADJ2)
-!          DEALLOCATE(ADJNCY2)
-          DEALLOCATE(PTXADJ)
-          DEALLOCATE(PTADJNCY)
-          DEALLOCATE(ELMDIST)
-          DEALLOCATE(EPART_LOC)
-          DEALLOCATE(RECVBUF)
-#else
-          WRITE(LU,*) "TRYING TO PARTITIONNE WITH PTSCOTCH WHEN",
-     &                "PTSCOTCH IS NOT INSTALLED" 
-          CALL PARTEL_PARA_PLANTE2(-1)
-#endif        
+        WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS'
+        IF (TIMECOUNT) THEN 
+           CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+           TDEBP = TEMPS
+        ENDIF
+        CALL PARTITIONER_PARA(PMETHOD, NELEM2, NPOIN, NDP, NPARTS,
+     &                           IKLES, EPART, NPART)
+        WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
+        IF (TIMECOUNT) THEN
+          CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+          TFINP = TEMPS
+          WRITE(LU,*) ' RUNTIME OF METIS ',
+     &              (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
         ENDIF
       ENDIF
 !
@@ -1171,9 +840,7 @@
             GELEGL(EF)=NELEM_P
          END IF
       END DO
-      CALL MPI_ALLREDUCE(GELEGL,GELEGL1,NELEM2,MPI_INTEGER,
-     &        MPI_SUM,
-     &     MPI_COMM_WORLD,IER)
+      CALL P_ISUM_ARRAY(GELEGL,GELEGL1,NELEM2,IER)
       DEALLOCATE(GELEGL)
       DEALLOCATE(NPART)
       NPTFR_P=0
@@ -1275,10 +942,7 @@
       NB_INTER_GLOB=0
       ! IF (ID. EQ. 0) WRITE(89,*) SORT
       ! CUT=0
-      CALL MPI_ALLREDUCE(SORT,CUT,NPOIN2,
-     &        MPI_INTEGER,
-     &        MPI_MAX,
-     &        MPI_COMM_WORLD,IER)
+      CALL P_IMAX_ARRAY(SORT,CUT,NPOIN2,IER)
 !
       DO J=1,NPOIN2
          IF (CUT(J) .NE. 0) THEN
@@ -1313,10 +977,8 @@
             PART_P_TMP1(I)=I
             PART_P_TMP1(NPARTS+1)=PART_P_TMP1(NPARTS+1)+1
          END IF
-         CALL MPI_ALLREDUCE(PART_P_TMP1,PART_P_TMP2,NPARTS+1,
-     &        MPI_INTEGER,
-     &        MPI_SUM,
-     &        MPI_COMM_WORLD,IER)
+         CALL P_ISUM_ARRAY(PART_P_TMP1,PART_P_TMP2,NPARTS+1,
+     &        IER)
          DO K=1,NPARTS
             IF (PART_P_TMP2(K) .NE. 0 .AND. K .NE. I) THEN
                COMPT=COMPT+1
@@ -1402,9 +1064,9 @@
 
 !       STOP
 !       DO I=1,NPARTS
-      CALL MPI_BARRIER(MPI_COMM_WORLD,IER)
+      CALL P_SYNC()
       IF (ID .EQ. 0) THEN
-         STARTIOTIME=MPI_WTIME()
+         STARTIOTIME=p_time()
          WRITE(LU,*) 'TEMPS CALCUL :',STARTIOTIME-STARTCTIME
       END IF
 !
@@ -1673,7 +1335,7 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
          ENDIF
       END DO
       CLOSE (NOUT)
-      CALL MPI_BARRIER(MPI_COMM_WORLD,IER)
+      CALL P_SYNC()
 !
 !======================================================================
 !   WRITING EPART AND NPART
@@ -1741,9 +1403,9 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !     &    (1.0*(TFIN-TDEB))/(1.0*PARSEC),' SECONDS'
 !        WRITE(LU,*) ' '
       ENDIF
-      CALL MPI_BARRIER(MPI_COMM_WORLD,IER)
+      CALL P_SYNC()
       IF (ID .EQ. 0) THEN
-         ENDTIME=MPI_WTIME()
+         ENDTIME=p_time()
          WRITE(LU,*) 'TEMPS ECRITURE :',ENDTIME-STARTIOTIME
          WRITE(LU,*) 'TEMPS TOTAL :',ENDTIME-STARTTIME
          WRITE(LU,*) '+---- PARTEL: NORMAL TERMINATION ----+'
@@ -1752,11 +1414,11 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
       GO TO 999
  300  WRITE(LU,*) 'ERROR BY READING. '
       CALL PARTEL_PARA_PLANTE2(-1)
-      CALL MPI_BARRIER(MPI_COMM_WORLD,IER)
- 999  CALL MPI_FINALIZE()
+      CALL P_SYNC()
+ 999  CALL P_EXIT()
       STOP
-      END PROGRAM PARTEL_PARA
 
+      CONTAINS
 
       SUBROUTINE PARTEL_PARA_ALLOER (N, CHFILE)
       IMPLICIT NONE
@@ -1806,84 +1468,6 @@ C               CUT(NPTIR) = IRAND_P(KNOGL(NBOR(K)))
 !     CALL EXIT(ICODE)
       END SUBROUTINE PARTEL_PARA_PLANTE2
 C
-C                       *********************************************
-                        CHARACTER(LEN=11) FUNCTION PARTEL_PARA_EXTENS
-C                       *********************************************
-C
-     *(N,IPID)
-C
-C***********************************************************************
-C  PARA       VERSION 4.0         08/01/97        J-M HERVOUET (LNH)
-C
-C***********************************************************************
-C
-C      FONCTIONS: PARTEL_PARA_EXTENSION DES FICHIERS SUR CHAQUE PROCESSEUR.
-C      ==========
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________|
-C |     N          | -->| NOMBRE DE PROCESSEURS MOINS UN = NCSIZE-1
-C |     IPID       | -->| NUMERO DU PROCESSEUR
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C APPELE PAR :
-C
-C SOUS-PROGRAMMES APPELES : NEANT
-C
-C**********************************************************************
-C
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-C
-      INTEGER IPID,N
-C
-C-----------------------------------------------------------------------
-C
-      IF(N.GT.0) THEN
-C
-        PARTEL_PARA_EXTENS='00000-00000'
-C
-        IF(N.LT.10) THEN
-          WRITE(PARTEL_PARA_EXTENS(05:05),'(I1)') N
-        ELSEIF(N.LT.100) THEN
-          WRITE(PARTEL_PARA_EXTENS(04:05),'(I2)') N
-        ELSEIF(N.LT.1000) THEN
-          WRITE(PARTEL_PARA_EXTENS(03:05),'(I3)') N
-        ELSEIF(N.LT.10000) THEN
-          WRITE(PARTEL_PARA_EXTENS(02:05),'(I4)') N
-        ELSE
-          WRITE(PARTEL_PARA_EXTENS(01:05),'(I5)') N
-        ENDIF
-C
-        IF(IPID.LT.10) THEN
-          WRITE(PARTEL_PARA_EXTENS(11:11),'(I1)') IPID
-        ELSEIF(IPID.LT.100) THEN
-          WRITE(PARTEL_PARA_EXTENS(10:11),'(I2)') IPID
-        ELSEIF(IPID.LT.1000) THEN
-          WRITE(PARTEL_PARA_EXTENS(09:11),'(I3)') IPID
-        ELSEIF(IPID.LT.10000) THEN
-          WRITE(PARTEL_PARA_EXTENS(08:11),'(I4)') IPID
-        ELSE
-          WRITE(PARTEL_PARA_EXTENS(07:11),'(I5)') IPID
-        ENDIF
-C
-      ELSE
-C
-        PARTEL_PARA_EXTENS='       '
-C
-      ENDIF
-C
-C-----------------------------------------------------------------------
-C
-      RETURN
-      END
 C                       ************************
                         SUBROUTINE PARTEL_FRONT2
 C                       ************************
@@ -2299,7 +1883,7 @@ C
 C-----------------------------------------------------------------------
 C
       RETURN
-      END
+      END SUBROUTINE
 C                       ************************
                         SUBROUTINE PARTEL_VOISIN
 C                       ************************
@@ -2428,7 +2012,7 @@ C
       IF(IMAX.GT.IDIMAT) THEN
         IF(LNG.EQ.1) WRITE(LU,51) IDIMAT,IMAX
         IF(LNG.EQ.2) WRITE(LU,52) IDIMAT,IMAX
-51      FORMAT(1X,'VOISIN: TAILLE DE MAT1,2,3 (',1I15,') INSUFFISANTE',/,
+51     FORMAT(1X,'VOISIN: TAILLE DE MAT1,2,3 (',1I15,') INSUFFISANTE',/,
      *         1X,'IL FAUT AU MOINS : ',1I15)
 52      FORMAT(1X,'VOISIN: SIZE OF MAT1,2,3 (',1I15,') TOO SHORT',/,
      *         1X,'MINIMUM SIZE: ',1I15)
@@ -2503,7 +2087,7 @@ C
 C-----------------------------------------------------------------------
 C
       RETURN
-      END
+      END SUBROUTINE
 C                       ***********************
                         SUBROUTINE PARTEL_ELEBD
 C                       ***********************
@@ -2701,7 +2285,7 @@ C
       IF(I1.EQ.0.OR.I2.EQ.0) THEN
         IF(LNG.EQ.1) WRITE(LU,810) IEL
         IF(LNG.EQ.2) WRITE(LU,811) IEL
-810     FORMAT(1X,'ELEBD: ERREUR DE NUMEROTATION DANS L''ELEMENT:',I15,/,
+810    FORMAT(1X,'ELEBD: ERREUR DE NUMEROTATION DANS L''ELEMENT:',I15,/,
      *         1X,'       CAUSE POSSIBLE :                       '   ,/,
      *         1X,'       LE FICHIER DES CONDITIONS AUX LIMITES NE'  ,/,
      *         1X,'       CORRESPOND PAS AU FICHIER DE GEOMETRIE  ')
@@ -2729,4 +2313,455 @@ C
 C-----------------------------------------------------------------------
 C
       RETURN
-      END
+      END SUBROUTINE
+!                    **************
+                     SUBROUTINE PARTITIONER_PARA
+!                    **************
+     &    (PMETHOD, NELEM, NPOIN, NDP, NPARTS, IKLES, EPART, NPART)
+!
+!
+!***********************************************************************
+! PARALLEL   V6P2                                   21/08/2010
+!***********************************************************************
+!
+!brief    call to the partionning software
+!
+!history   R. KOPMANN (BAW)
+!+
+!+
+!+         created
+!
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| PMETHOD        |<--| 1: FOR METIS 2: FOR SCOTCH
+!| NELEM          |<--| THE NUMBER OF ELEMENTS
+!| NDP            |<--| THE NUMBE OF POINT PER ELEMENT
+!| NPARTS         |<--| NUMBER OF PARTITIONS
+!| IKLES          |<--| CONNECTIVITY TABLE
+!| EPART          |-->| PARTITION NUMBER OF AN ELEMENT
+!| MYPART         |-->| PARTITION NUMBER OF A POINT
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+#if defined (HAVE_SCOTCH)
+      USE ISO_C_BINDING
+#endif
+      IMPLICIT NONE
+!
+!     PTSCOTCH'S HEADER (FORTRAN)
+#if defined (HAVE_PTSCOTCH)
+      INCLUDE "ptscotchf.h"
+#endif
+!     
+      INTEGER, INTENT(IN)  :: PMETHOD
+      INTEGER, INTENT(IN)  :: NELEM
+      INTEGER, INTENT(IN)  :: NPOIN
+      INTEGER, INTENT(IN)  :: NDP
+      INTEGER, INTENT(IN)  :: IKLES(NELEM*NDP)
+      INTEGER, INTENT(IN)  :: NPARTS
+      INTEGER, INTENT(OUT) :: EPART(NELEM)
+!TODO: Remove ??
+      INTEGER, INTENT(OUT) :: NPART(NELEM)
+!
+!-----------------------------------------------------------------------
+!
+!
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      INTEGER :: ERR, I, J, K
+!
+!     FOR PARMETIS
+!      
+      INTEGER :: NCOMMONNODES
+      INTEGER :: EDGECUT
+      INTEGER, POINTER :: XADJ2(:), ADJNCY2(:)
+      INTEGER, ALLOCATABLE :: ELMDIST(:)
+      INTEGER, ALLOCATABLE :: NULLTABLE(:)
+      INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
+      INTEGER :: T_P,N_P
+      INTEGER, ALLOCATABLE :: EPART_LOC(:)
+      REAL*4, ALLOCATABLE :: TPWGTS(:), UBVEC(:)
+      INTEGER :: NCON
+      INTEGER :: OPTIONS(0:2)
+      INTEGER :: NELEM_GLOBAL, NELEM_LOC
+      INTEGER :: WGTFLAG
+      DOUBLE PRECISION, ALLOCATABLE :: VWGT(:)
+      INTEGER, ALLOCATABLE :: RECVBUF(:)
+      INTEGER :: NUMFLAG
+#if defined (HAVE_PTSCOTCH)
+!
+      REAL*8, DIMENSION(SCOTCH_DGRAPHDIM) :: PTSCOTCHGRAPH
+      REAL*8, DIMENSION(SCOTCH_STRATDIM) :: PTSCOTCHSTRAT
+      TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
+!
+#endif
+        IF(PMETHOD.EQ.1) THEN
+#if defined(HAVE_PARMETIS)
+          WRITE(LU,*) 'BEGIN PARTITIONING WITH PARMETIS'
+          ! Calling parmetis metis parallel partitionner        
+          ALLOCATE (ELMDIST(NPARTS+1),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'ELMDIST')
+!          
+!         THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN
+!         EDGE
+          IF (NDP==3.OR.NDP==6) THEN 
+             NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
+          ELSE
+             WRITE(LU,*) 'PARMETIS: IMPLEMENTED FOR ',
+     &                   'TRIANGLES OR PRISMS ONLY'
+             CALL PARTEL_PARA_PLANTE2(-1)
+             STOP
+          ENDIF 
+!         
+!         ELMDIST: THIS ARRAY DESCRIBES HOW THE ELEMENTS OF THE MESH ARE DISTRIBUTED AMONG THE PROCESSORS. 
+!              IT IS ANALOGOUS TO THE VTXDIST ARRAY. ITS CONTENTS ARE IDENTICAL FOR EVERY PROCESSOR. 
+          ELMDIST(1)=1
+          DO I=1,NPARTS-1
+            ELMDIST(I+1) = ELMDIST(I) + NELEM/NPARTS
+          ENDDO
+          ELMDIST(NPARTS+1) = NELEM + 1
+!          
+          NELEM_LOC = ELMDIST(ID+2) - ELMDIST(ID+1)
+!         
+          ALLOCATE (EPTR(NELEM_LOC+1),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPTR')
+          ALLOCATE (EIND(NELEM_LOC*NDP),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EIND')
+          ALLOCATE (EPART_LOC(NELEM_LOC),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPART_LOC')
+!         
+!         EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
+!         
+          DO I=1,NELEM_LOC+1
+            EPTR(I) = (I-1)*NDP + 1
+          ENDDO
+!       
+          K=1
+          DO I=ELMDIST(ID+1),ELMDIST(ID+2)-1
+            DO J=1,NDP
+              EIND(K) = IKLES((I-1)*NDP+J)
+              K = K + 1
+            ENDDO   
+          ENDDO    
+!         
+!         REPRESENT THE NUMBER OF PARAMETER FOR BALANCING THE PARTIRION
+          NCON = 1
+!         
+          ALLOCATE (TPWGTS(NCON*NPARTS),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'TPWGTS')
+          ALLOCATE (UBVEC(NCON),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'UBVEC')
+!         
+          TPWGTS(:) = 1.0/FLOAT(NPARTS)
+          OPTIONS(:)=0
+          UBVEC(:) = 1.05
+          WGTFLAG = 0
+          NUMFLAG = 1
+!         
+          CALL PARMETIS_V3_PARTMESHKWAY(ELMDIST, EPTR, EIND, VWGT,
+     &                              WGTFLAG, NUMFLAG,
+     &                              NCON, NCOMMONNODES, NPARTS, TPWGTS,
+     &                              UBVEC, OPTIONS, EDGECUT, EPART_LOC, 
+     &                              MPI_COMM_WORLD)
+          
+          ALLOCATE(RECVBUF(NPARTS),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER(LU,'RECVBUF')
+          DO I=1,NPARTS
+            RECVBUF(I) = ELMDIST(I+1) - ELMDIST(I)
+          ENDDO
+          ELMDIST = ELMDIST - 1
+          CALL P_ALLGATHERV_I(EPART_LOC,NELEM_LOC,MPI_INTEGER,EPART,
+     &                      RECVBUF,ELMDIST,MPI_INTEGER,MPI_COMM_WORLD,
+     &                      ERR)
+!          
+          DEALLOCATE(ELMDIST)
+          DEALLOCATE(EPART_LOC)
+          DEALLOCATE(RECVBUF)
+          DEALLOCATE(EIND)
+          DEALLOCATE(EPTR)
+#endif
+        ELSE IF(PMETHOD.EQ.2) THEN
+#if defined (HAVE_PTSCOTCH)             
+          WRITE(LU,*) 'BEGIN PARTITIONING WITH PTSCOTCH'
+!          
+          ALLOCATE (ELMDIST(N_P+1),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'ELMDIST')
+!         
+!!        The number of common point needed between 2 elements to make an
+!         edge
+          IF (NDP==3.OR.NDP==6) THEN 
+             NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
+          ELSE
+             WRITE(LU,*) 'PTSCOTCH: IMPLEMENTED FOR ',
+     &                   'TRIANGLES OR PRISMS ONLY'
+             CALL PARTEL_PARA_PLANTE2(-1)
+             STOP
+          ENDIF 
+!         
+!    ELM  DIST: THIS ARRAY DESCRIBES HOW THE ELEMENTS OF THE MESH ARE DISTRIBUTED AMONG THE PROCESSORS. 
+!!             IT IS ANALOGOUS TO THE VTXDIST ARRAY. ITS CONTENTS ARE IDENTICAL FOR EVERY PROCESSOR. 
+!              SAME PRINCIPAL AS FOR XADJ AND ADJCNY
+          ELMDIST(1)=1
+          DO I=1,N_P-1
+             ELMDIST(I+1) = ELMDIST(I) + NELEM_GLOBAL/N_P
+          ENDDO
+          ELMDIST(N_P+1) = NELEM_GLOBAL + 1
+!          
+          NELEM_LOC = ELMDIST(T_P+1) - ELMDIST(T_P)
+!         
+          ALLOCATE (EPTR(NELEM_LOC+1),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPTR')
+          ALLOCATE (EIND(NELEM_LOC*NDP),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EIND')
+          ALLOCATE (EPART_LOC(NELEM_LOC),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPART_LOC')
+!         
+!         EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
+!                  (SEE DISCUSSION IN SECTION 4.3).
+!         
+          DO I=1,NELEM_LOC+1
+             EPTR(I) = (I-1)*NDP + 1
+          ENDDO
+!         
+          K=1
+          DO I=ELMDIST(T_P),ELMDIST(T_P+1)-1
+             DO J=1,NDP
+                EIND(K) = IKLES((I-1)*NDP+J)
+                K = K + 1
+             ENDDO   
+          ENDDO    
+!         
+!!!! REP! RESENT THE NUMBER OF PARAMETER FOR BALANCING THE PARTIRION
+          NCON = 1
+!         
+          ALLOCATE(PTXADJ(1))
+          ALLOCATE(PTADJNCY(1))
+          CALL PARMETIS_V3_MESH2DUAL(ELMDIST, EPTR, EIND, 
+     &                             NUMFLAG, NCOMMONNODES,
+     &                             PTXADJ,PTADJNCY,
+     &                             MPI_COMM_WORLD)
+!         
+          DEALLOCATE(EPTR,EIND)
+          ALLOCATE(RECVBUF(1))
+          RECVBUF(1) = NELEM_LOC+1
+          CALL C_F_POINTER(PTXADJ(1),XADJ2,RECVBUF)
+!          
+          RECVBUF(1) = XADJ2(NELEM_LOC+1)-1
+          CALL C_F_POINTER(PTADJNCY(1),ADJNCY2,RECVBUF)
+          DEALLOCATE(RECVBUF)
+!         
+          ! BEGINNING PT-SCOTCH PARTIONNING
+!          
+          CALL SCOTCHFSTRATINIT(PTSCOTCHSTRAT,ERR)
+          IF (ERR.EQ.0) THEN
+            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT INITIALIZE STRAT'
+            CALL PARTEL_PARA_PLANTE2(-1)
+          ENDIF   
+!         
+          CALL SCOTCHFDGRAPHINIT(PTSCOTCHGRAPH,MPI_COMM_WORLD,ERR)
+          IF (ERR.EQ.0) THEN
+            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT INITIALIZE GRAPH'
+            CALL PARTEL_PARA_PLANTE2(-1)
+          ENDIF
+!         
+          CALL SCOTCHFDGRAPHBUILD ( PTSCOTCHGRAPH,     ! GRAFDAT
+     &                              NUMFLAG,     ! BASEVAL
+     &                              NELEM_LOC,  ! VERTLOCNBR
+     &                              NELEM_LOC,  ! VERTLOCMAX=VERLOCNBR (NO HOLES IN GLOBAL
+                                       ! NUMBERING)
+     &                              XADJ2,  ! VERTLOCTAB
+     &                              XADJ2(2:NELEM_LOC+1),  ! VENDLOCTAB = NULL
+     &                              XADJ2,  ! VELOLOCTAB = NULL
+     &                              XADJ2,  ! VLBLLOCTAB = NULL
+     &                              XADJ2(NELEM_LOC+1)-1,  ! EDGELOCNBR
+     &                              XADJ2(NELEM_LOC+1)-1,  ! EDGELOCSIZ
+     &                              ADJNCY2,  ! EDGELOCATAB
+     &                              ADJNCY2,  ! EDGEGSTTAB = NULL
+     &                              ADJNCY2,  ! EDLOLOCTAB = NULL
+     &                              ERR)
+          IF (ERR.EQ.0) THEN
+            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT BUILD GRAPH'
+            CALL PARTEL_PARA_PLANTE2(-1)
+          ENDIF
+!         
+          CALL SCOTCHFDGRAPHCHECK(PTSCOTCHGRAPH,ERR)
+          IF (ERR.EQ.0) THEN
+            WRITE(LU,*) 'PTSCOTCH ERROR: GRAPH NOT CONSISTANT'
+            CALL PARTEL_PARA_PLANTE2(-1)
+          ENDIF
+!          
+          CALL SCOTCHFDGRAPHPART ( PTSCOTCHGRAPH, 
+     &                            NPARTS, 
+     &                            PTSCOTCHSTRAT,
+     &                            EPART_LOC, 
+     &                            ERR )
+!         
+          IF (ERR.EQ.0) THEN
+            WRITE(LU,*) 'PTSCOTCH ERROR: CANNOT PARTITION GRAPH'
+            CALL PARTEL_PARA_PLANTE2(-1)
+          END IF
+!!!! CHA! NGING EPART NUMBERING TO 1-NPART
+          DO I=1,NELEM_LOC
+             EPART_LOC(I) = EPART_LOC(I) + 1
+          ENDDO
+!           
+          CALL SCOTCHFGRAPHEXIT(PTSCOTCHGRAPH)
+!         
+          CALL SCOTCHFSTRATEXIT(PTSCOTCHSTRAT)
+!          DEALLOCATE(XADJ2)
+!          DEALLOCATE(ADJNCY2)
+          DEALLOCATE(PTXADJ)
+          DEALLOCATE(PTADJNCY)
+          DEALLOCATE(ELMDIST)
+          DEALLOCATE(EPART_LOC)
+          DEALLOCATE(RECVBUF)
+#else
+          WRITE(LU,*) "TRYING TO PARTITIONNE WITH PTSCOTCH WHEN",
+     &                "PTSCOTCH IS NOT INSTALLED" 
+          CALL PARTEL_PARA_PLANTE2(-1)
+#endif        
+        ELSEIF(PMETHOD.EQ.3) THEN
+          WRITE(LU,*) 'BEGIN PARTITIONING WITH METIS'
+          ALLOCATE (EPTR(NELEM+1),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EPTR')
+          ALLOCATE (EIND(NELEM*NDP),STAT=ERR)
+          IF (ERR.NE.0) CALL PARTEL_PARA_ALLOER (LU, 'EIND')     
+!         
+          DO I=1,NELEM+1
+             EPTR(I) = (I-1)*NDP + 1
+          ENDDO
+!         
+          K=1
+          DO I=1,NELEM
+             DO J=1,NDP
+                EIND(K) = IKLES((I-1)*NDP+J)
+                K = K + 1
+             ENDDO   
+          ENDDO    
+!         
+!         SWITCH TO C NUMBERING
+          EIND = EIND -1
+          EPTR = EPTR -1
+!         
+!         METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
+!         NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
+!         NCOMMONNODES = 3   FOR TETRAHEDRE
+!         NCOMMONNODES = 4   FOR HEXAHEDRE
+          
+!         
+          IF (NDP==3.OR.NDP==6) THEN 
+             NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
+          ELSE
+           WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
+             CALL PARTEL_PARA_PLANTE2(-1)
+             STOP
+          ENDIF 
+          
+!         WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
+!         IS RELEVANT HERE.  
+!         
+!         IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
+!         IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
+!         
+          NUMFLAG = 1
+!         
+!         
+#if defined(HAVE_MPI)
+            CALL METIS_PARTMESHDUAL 
+     &          (NELEM, NPOIN, EPTR, EIND, NULLTABLE,
+     &           NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
+     &           NULLTABLE, EDGECUT, EPART, NPART)
+#else
+        WRITE(LU,*) 'ERROR: TRY TO RUN PARTEL_PARA WITH A '//
+     &              'SERIAL CONFIGURATION'
+        CALL PARTEL_PARA_PLANTE2(-1)
+#endif
+!         
+!         
+!         DEALLOCATING TEMPORARY ARRAYS FOR METIS
+!         SWITCHING EPART TO FORTRAN NUMBERING (1...N)      
+          EPART = EPART+1
+          DEALLOCATE(EPTR)
+          DEALLOCATE(EIND)
+!
+        ENDIF
+      END SUBROUTINE PARTITIONER_PARA
+!
+!                    *********************************
+                     CHARACTER(LEN=11) FUNCTION PARTEL_PARA_EXTENS
+!                    *********************************
+!
+     &(N,I)
+!
+!***********************************************************************
+! BIEF   V6P3                                   21/08/2010
+!***********************************************************************
+!
+!brief    GIVES THE PARTEL_PARA_EXTENSION FOR NAMING FILES IN PARALLEL
+!+
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/07/2008
+!+        V5P9
+!+  
+!
+!history  J-M HERVOUET (LNHE)
+!+        22/11/2012
+!+        V6P3
+!+   USE BIEF removed, IIPID and IPID changed into I.
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| N              |-->| TOTAL NUMBER OF PROCESSORS
+!| I              |-->| RANK OF THE PROCESSOR
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+!     USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      INTEGER, INTENT(IN) :: I,N
+!
+!-----------------------------------------------------------------------
+!
+      IF(N.GT.0) THEN
+!
+        PARTEL_PARA_EXTENS='00000-00000'
+!
+        IF(N.LT.10) THEN
+          WRITE(PARTEL_PARA_EXTENS(05:05),'(I1)') N
+        ELSEIF(N.LT.100) THEN
+          WRITE(PARTEL_PARA_EXTENS(04:05),'(I2)') N
+        ELSEIF(N.LT.1000) THEN
+          WRITE(PARTEL_PARA_EXTENS(03:05),'(I3)') N
+        ELSEIF(N.LT.10000) THEN
+          WRITE(PARTEL_PARA_EXTENS(02:05),'(I4)') N
+        ELSE
+          WRITE(PARTEL_PARA_EXTENS(01:05),'(I5)') N
+        ENDIF
+!
+        IF(I.LT.10) THEN
+          WRITE(PARTEL_PARA_EXTENS(11:11),'(I1)') I
+        ELSEIF(I.LT.100) THEN
+          WRITE(PARTEL_PARA_EXTENS(10:11),'(I2)') I
+        ELSEIF(I.LT.1000) THEN
+          WRITE(PARTEL_PARA_EXTENS(09:11),'(I3)') I
+        ELSEIF(I.LT.10000) THEN
+          WRITE(PARTEL_PARA_EXTENS(08:11),'(I4)') I
+        ELSE
+          WRITE(PARTEL_PARA_EXTENS(07:11),'(I5)') I
+        ENDIF
+!
+      ELSE
+!
+        PARTEL_PARA_EXTENS='           '
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END FUNCTION PARTEL_PARA_EXTENS
+!
+      END PROGRAM PARTEL_PARA

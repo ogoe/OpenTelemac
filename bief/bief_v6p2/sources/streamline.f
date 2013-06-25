@@ -80,6 +80,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE DECLARATIONS_PARALLEL
       IMPLICIT NONE   
       PRIVATE
 ! 
@@ -99,7 +100,6 @@
 ! 
 !     SEE CALL GET_MPI_PARAMETERS IN SCARACT 
 !        
-      INTEGER MPI_INTEGER,MPI_REAL8,MPI_UB,MPI_COMM_WORLD,MPI_SUCCESS
       INTEGER LAST_NOMB,LAST_NPLOT  
 !  
 !     THE TYPE FOR CHARACTERISTICS - LOST TRACEBACKS 
@@ -108,21 +108,23 @@
 !
 !     SEE ORG_CHARAC_TYPE1 IN LIBRARY PARALLEL
 !     IT MUST BE THE SAME LOCAL TYPE
+!
+!     YA: NOW THE TYPE IS DECLARED IN DECLARATIONS_PARALLEL IN PARALLEL
 ! 
-      TYPE CHARAC_TYPE 
-        SEQUENCE         ! BUT SEEMS USELESS   
-        INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD) 
-        INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO  
-        INTEGER :: INE   ! THE LOCAL 2D ELEMENT NR THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
-        INTEGER :: KNE   ! THE LOCAL LEVEL THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
-        INTEGER :: IOR   ! THE POSITION OF THE TRAJECTORY -HEAD- IN MYPID [THE 2D/3D NODE OF ORIGIN] 
-        INTEGER :: ISP   ! CURRENT RUNGE-KUTTA STEPS PASSED AS COLLECTED 
-        INTEGER :: NSP   ! TOTAL RUNGE-KUTTA STEPS 
-        INTEGER :: IFR   ! FREQUENCY
-        DOUBLE PRECISION :: XP,YP,ZP,FP  ! THE (X,Y,Z,F)-POSITION 
-        DOUBLE PRECISION :: DX,DY,DZ,DF  ! THE CORRESPONDING DISPLACEMENTS
-        DOUBLE PRECISION :: BASKET(MAX_BASKET_SIZE) ! VARIABLES INTERPOLATED AT THE FOOT   
-      END TYPE CHARAC_TYPE 
+!     TYPE CHARAC_TYPE 
+!       SEQUENCE   ! BUT SEEMS USELESS   
+!       INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD) 
+!       INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO  
+!       INTEGER :: INE   ! THE LOCAL 2D ELEMENT NR THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
+!       INTEGER :: KNE   ! THE LOCAL LEVEL THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
+!       INTEGER :: IOR   ! THE POSITION OF THE TRAJECTORY -HEAD- IN MYPID [THE 2D/3D NODE OF ORIGIN] 
+!       INTEGER :: ISP   ! CURRENT RUNGE-KUTTA STEPS PASSED AS COLLECTED 
+!       INTEGER :: NSP   ! TOTAL RUNGE-KUTTA STEPS 
+!       INTEGER :: IFR   ! FREQUENCY
+!       DOUBLE PRECISION :: XP,YP,ZP,FP  ! THE (X,Y,Z,F)-POSITION 
+!       DOUBLE PRECISION :: DX,DY,DZ,DF  ! THE CORRESPONDING DISPLACEMENTS
+!       DOUBLE PRECISION :: BASKET(MAX_BASKET_SIZE) ! VARIABLES INTERPOLATED AT THE FOOT   
+!     END TYPE CHARAC_TYPE 
 ! 
 !     THE CORRESPONDING MPI TYPE
 !  
@@ -149,19 +151,25 @@
 !
 !     STRUCTURE TO SEND THE INFO ASSOCIATED WITH ALGAE TRANSPORT
 !
-      TYPE ALG_TYPE 
-        SEQUENCE   ! NECESSARY TO DEFINE MPI TYPE ALG_CHAR
-        INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD) 
-        INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO  
-        INTEGER :: IGLOB  ! THE GLOBAL NUMBER OF THE PARTICLES 
-        INTEGER :: FLAG  ! USED TO ALIGN FIELDS
-        DOUBLE PRECISION :: VX,VY,VZ  ! THE (X,Y,Z) PARTICLE VELOCITY  
-        DOUBLE PRECISION :: UX,UY,UZ  ! THE (X,Y,Z) FLUID VELOCITY  
-        DOUBLE PRECISION :: UX_AV,UY_AV,UZ_AV  ! THE (X,Y,Z) AVERAGE FLUID VELOCITY  
-        DOUBLE PRECISION :: K_AV,EPS_AV  ! THE VALUES OF K AND EPS  
-        DOUBLE PRECISION :: H_FLU  ! THE WATER DEPTH AT POSITION OF VELOCITY 
-        DOUBLE PRECISION :: PSI(3*101) ! VARIABLE PSI USED FOR THE BASSET FORCE 
-      END TYPE ALG_TYPE 
+!
+!     STRUCTURE TO SEND THE INFO ASSOCIATED WITH ALGAE TRANSPORT
+!     THE STRUCTURE IS DECLARED IN DECLARATIONS_PARALLEL
+!     YA: NOW THE TYPE IS DECLARED IN DECLARATIONS_PARALLEL IN PARALLEL
+!
+!     TYPE ALG_TYPE 
+!       SEQUENCE   ! NECESSARY TO DEFINE MPI TYPE ALG_CHAR
+!       INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD) 
+!       INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO  
+!       INTEGER :: IGLOB  ! THE GLOBAL NUMBER OF THE PARTICLES 
+!       INTEGER :: FLAG  ! USED TO ALIGN FIELDS
+!       DOUBLE PRECISION :: VX,VY,VZ  ! THE (X,Y,Z) PARTICLE VELOCITY  
+!       DOUBLE PRECISION :: UX,UY,UZ  ! THE (X,Y,Z) FLUID VELOCITY  
+!       DOUBLE PRECISION :: UX_AV,UY_AV,UZ_AV  ! THE (X,Y,Z) AVERAGE FLUID VELOCITY  
+!       DOUBLE PRECISION :: K_AV,EPS_AV  ! THE VALUES OF K AND EPS  
+!       DOUBLE PRECISION :: H_FLU  ! THE WATER DEPTH AT POSITION OF VELOCITY 
+!       DOUBLE PRECISION :: PSI(3*101) ! VARIABLE PSI USED FOR THE BASSET FORCE 
+!     END TYPE ALG_TYPE 
+!
 ! 
 !     THE CORRESPONDING MPI TYPE
 !  
@@ -3787,45 +3795,45 @@
               I1 = IKLE2(IEL,IFA)
               I2 = IKLE2(IEL,ISUI(IFA))
               IF(ISOF.GT.0) THEN
-      	        IF(ISOT.GT.0) THEN
-      	          A1=(FP- FREQ(IFR+ISOF-1))/DF(IPLOT)
-      	          A2=(ZP-ZSTAR(IET+ISOT-1))/DZ(IPLOT)
-      	          IF(A1.LT.A2) THEN
+                IF(ISOT.GT.0) THEN
+                  A1=(FP- FREQ(IFR+ISOF-1))/DF(IPLOT)
+                  A2=(ZP-ZSTAR(IET+ISOT-1))/DZ(IPLOT)
+                  IF(A1.LT.A2) THEN
                     IF((X(I2)-X(I1))*(YP-A1*DY(IPLOT)-Y(I1)).GT.
      &                 (Y(I2)-Y(I1))*(XP-A1*DX(IPLOT)-X(I1))) THEN
                       IFA=ISOF+5
                     ENDIF
-      	          ELSE
+                  ELSE
                     IF((X(I2)-X(I1))*(YP-A2*DY(IPLOT)-Y(I1)).GT.
      &             (Y(I2)-Y(I1))*(XP-A2*DX(IPLOT)-X(I1))) THEN
                       IFA=ISOT+3
                     ENDIF
-      		  ENDIF
-      	        ELSE
+                  ENDIF
+                ELSE
                   A1 = (FP-FREQ(IFR+ISOF-1)) / DF(IPLOT)
                   IF((X(I2)-X(I1))*(YP-A1*DY(IPLOT)-Y(I1)).GT.
      &               (Y(I2)-Y(I1))*(XP-A1*DX(IPLOT)-X(I1))) THEN
                     IFA=ISOF+5
                   ENDIF
-      	        ENDIF
-      	      ELSE
+                ENDIF
+              ELSE
                 A1 = (ZP-ZSTAR(IET+ISOT-1)) / DZ(IPLOT)
                 IF((X(I2)-X(I1))*(YP-A1*DY(IPLOT)-Y(I1)).GT.
      &             (Y(I2)-Y(I1))*(XP-A1*DX(IPLOT)-X(I1))) THEN
                   IFA=ISOT+3
                 ENDIF
-      	      ENDIF
+              ENDIF
             ENDIF
 !
           ELSEIF(ISOT.GT.0) THEN
-      	    IFA = ISOT + 3
+            IFA = ISOT + 3
             IF(ISOF.GT.0) THEN
-      	      A1=(FP-FREQ(IFR+ISOF-1))/DF(IPLOT)
-      	      A2=(ZP-ZSTAR(IET+ISOT-1))/DZ(IPLOT)
-      	      IF(A1.LT.A2) IFA = ISOF + 5
-      	    ENDIF
+              A1=(FP-FREQ(IFR+ISOF-1))/DF(IPLOT)
+              A2=(ZP-ZSTAR(IET+ISOT-1))/DZ(IPLOT)
+              IF(A1.LT.A2) IFA = ISOF + 5
+            ENDIF
           ELSE
-      	    IFA = ISOF + 5
+            IFA = ISOF + 5
           ENDIF        
 !
           IF(IFA.LE.3) THEN
@@ -3965,15 +3973,15 @@
 !-----------------------------------------------------------------------
 !
               ETA(IPLOT) = IET + IFA + IFA - 1
-      	      IF(ETA(IPLOT).EQ.NPLAN+1) THEN
-      		ETA(IPLOT)=1
-      		ZP=ZP-ZSTAR(NPLAN+1)
-      		ZPLOT(IPLOT)=ZP
+              IF(ETA(IPLOT).EQ.NPLAN+1) THEN
+                ETA(IPLOT)=1
+                ZP=ZP-ZSTAR(NPLAN+1)
+                ZPLOT(IPLOT)=ZP
               ENDIF
-      	      IF(ETA(IPLOT).EQ.0) THEN
-      		ETA(IPLOT) = NPLAN
-      		ZP=ZP+ZSTAR(NPLAN+1)
-      		ZPLOT(IPLOT)=ZP
+              IF(ETA(IPLOT).EQ.0) THEN
+                ETA(IPLOT) = NPLAN
+                ZP=ZP+ZSTAR(NPLAN+1)
+                ZPLOT(IPLOT)=ZP
               ENDIF
               SHZ(IPLOT) = (ZP-ZSTAR(ETA(IPLOT)))
      &                   / (ZSTAR(ETA(IPLOT)+1)-ZSTAR(ETA(IPLOT)))
@@ -4034,12 +4042,12 @@
 !-----------------------------------------------------------------------
 !
               FPLOT(IPLOT)=FREQ(IFR+IFA)
-      	      DF(IPLOT)=0.D0
-      	      SHF(IPLOT)=IFA
-      	      ISO = ISOH +ISOT
-      	      IF(ISO.NE.0) THEN
-      	        GO TO 50
-      	      ENDIF
+              DF(IPLOT)=0.D0
+              SHF(IPLOT)=IFA
+              ISO = ISOH +ISOT
+              IF(ISO.NE.0) THEN
+                GO TO 50
+              ENDIF
 !
             ENDIF
 !
@@ -6115,9 +6123,6 @@
       IF(INIT) THEN ! CHECK THINGS ONCE AND FOREVER  
 ! 
 !       SEE IN LIBRARY PARALLEL OR PARAVOID (AND INCLUDE 'mpif.h' OR NOT) 
-! 
-        CALL GET_MPI_PARAMETERS(MPI_INTEGER,MPI_REAL8,MPI_UB, 
-     *                          MPI_COMM_WORLD,MPI_SUCCESS) 
 ! 
         INIT=.FALSE. 
         LAST_NOMB=NOMB

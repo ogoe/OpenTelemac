@@ -65,13 +65,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-#if defined (HAVE_SCOTCH)
-      USE ISO_C_BINDING
-#endif
       IMPLICIT NONE
-#if defined (HAVE_SCOTCH)
-      include 'scotchf.h'
-#endif
 !
 !     MAXIMUM GEOMETRICAL MULTIPLICITY OF A NODE (VARIABLE AUSSI
 !     PRESENTE DANS LA BIEF, NE PAS CHANGER L'UNE SANS L'AUTRE)
@@ -137,21 +131,8 @@
 !
 ! METISOLOGY
 !
-      INTEGER NPARTS, NUMFLAG, EDGECUT, NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPART(:), NPART(:)
-      INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
-      INTEGER, ALLOCATABLE :: NULLTABLE(:)
-!
-! SCOTCH
-!
-#if defined (HAVE_SCOTCH)
-!
-      REAL*8, DIMENSION(SCOTCH_GRAPHDIM) :: SCOTCHGRAPH
-      REAL*8, DIMENSION(SCOTCH_STRATDIM) :: SCOTCHSTRAT
-      TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
-      INTEGER, POINTER :: XADJ2(:), ADJNCY2(:)
-      INTEGER, ALLOCATABLE :: RECVBUF(:)
-#endif
+      INTEGER NPARTS
 !
 ! FOR CALLING FRONT2
 !
@@ -174,11 +155,6 @@
 ! TIME MEASURING 
 !
       INTEGER  TDEB, TFIN, TDEBP, TFINP, TEMPS, PARSEC
-!
-! PARTEL_EXTENS FUNCTION
-!
-      CHARACTER(LEN=11) :: PARTEL_EXTENS
-      EXTERNAL PARTEL_EXTENS   
 !
 !----------------------------------------------------------------------
 !
@@ -829,233 +805,23 @@
 !     PARTITIONNING METHOD
 !     1 : METIS
 !     2 : SCOTCH
+      WRITE(LU,*) ' THE MESH PARTITIONING STEP STARTS'
+      IF(TIMECOUNT) THEN 
+!       CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+        TDEBP = TEMPS
+      ENDIF
+      CALL PARTITIONER(PMETHOD, NELEM2, NPOIN2, 3, NPARTS, 
+     &                 IKLES, EPART, NPART)
+      IF (TIMECOUNT) THEN
+!       CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
+        TFINP = TEMPS
+        WRITE(LU,*) ' RUNTIME OF METIS ',
+     &            (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
+      ENDIF
+      WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
 !
-      IF(PMETHOD.EQ.1) THEN
 !
 !----------------------------------------------------------------------
-!       NEW METIS INTERFACE (>= VERSION 5) :
-!       
-!       EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS
-!       THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
-!       CF. DISCUSSION IN SECTION 4.3 (?)
-!       
-        ALLOCATE(EPTR(NELEM2+1),STAT=ERR)
-        IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
-        ALLOCATE(EIND(NELEM2*NDP),STAT=ERR)
-        IF(ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')     
-!       
-!       CORRECTION JMH 04/07/2012 : BELOW NDP MUST BE 3
-!       IT WOULD NOT WORK IN 3D WITH NDP=6
-!       
-        DO I=1,NELEM2+1
-!         EPTR(I) = (I-1)*NDP + 1
-          EPTR(I) = (I-1)*3 + 1
-        ENDDO
-!       
-        K=1
-        DO I=1,NELEM2
-!         DO J=1,NDP
-          DO J=1,3
-            EIND(K) = IKLES((I-1)*3+J)
-            K = K + 1
-          ENDDO   
-        ENDDO    
-!       
-!       END OF CORRECTION JMH 04/07/2012
-!       
-!       SWITCH TO C NUMBERING
-        EIND = EIND -1
-        EPTR = EPTR -1
-!       
-!       METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
-!       NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
-!       NCOMMONNODES = 3   FOR TETRAHEDRE
-!       NCOMMONNODES = 4   FOR HEXAHEDRE
-        
-!       
-        IF (NDP==3.OR.NDP==6) THEN 
-           NCOMMONNODES = 2 ! FOR TRIANGLE OR PRISM
-        ELSE
-           WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
-           CALL PARTEL_PLANTE2(-1)
-           STOP
-        ENDIF 
-!        
-!       WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
-!       IS RELEVANT HERE.
-!       
-!       IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
-!       IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
-!       
-        NUMFLAG = 1
-!       
-        WRITE(LU,*) 'USING ONLY METIS_PARTMESHDUAL SUBROUTINE'
-!       
-        IF(TIMECOUNT) THEN 
-          CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-          TDEBP = TEMPS
-        ENDIF
-!     
-        WRITE(LU,*) ' THE MESH PARTITIONING STEP METIS STARTS' 
-!  
-        CALL METIS_PARTMESHDUAL 
-     &        (NELEM2, NPOIN2, EPTR, EIND, NULLTABLE,
-     &         NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
-     &         NULLTABLE, EDGECUT, EPART, NPART)
-!       
-        WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
-        IF (TIMECOUNT) THEN
-          CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-          TFINP = TEMPS
-          WRITE(LU,*) ' RUNTIME OF METIS ',
-     &              (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
-        ENDIF
-!       
-!       DEALLOCATING TEMPORARY ARRAYS FOR METIS
-!       
-!       EPART IS AN ARRAY
-        EPART = EPART+1
-        DEALLOCATE(EPTR)
-        DEALLOCATE(EIND)
-      ELSE IF(PMETHOD.EQ.2) THEN
-#if defined (HAVE_SCOTCH)      
-!
-!       SCOTCH PARTITIONER
-!      
-        WRITE(LU,*) 'BEGIN PARTITIONING WITH SCOTCH'
-        ALLOCATE (EPTR(NELEM2+1),STAT=ERR)
-        IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
-        ALLOCATE (EIND(NELEM2*NDP),STAT=ERR)
-        IF (ERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')
-!
-!       bUILDING EPTR AND EIND SAME AS BEFORE.
-!
-        DO I=1,NELEM2+1
-           EPTR(I) = (I-1)*NDP + 1
-        ENDDO
-! 
-        K=1
-        DO I=1,NELEM2
-           DO J=1,NDP
-              EIND(K) = IKLES((I-1)*NDP+J)
-              K = K + 1
-           ENDDO   
-        ENDDO    
-!       THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN
-!       EDGE
-!       NCOMMONNODES = 2 FOR TRIANGLE OR RECTANGLE
-!       NCOMMONNODES = 3 FOR TETRAHEDRE
-!       NCOMMONNODES = 4 FOR HEXAHEDRE
-        IF (NDP==3.OR.NDP==6) THEN 
-           NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
-        ELSE
-           WRITE(LU,*)'SCOTCH: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
-           CALL PARTEL_PLANTE2(-1)
-           STOP
-        ENDIF 
-
-!
-!       mETIS_MESHTODUAL USES POINTER OF POINTER (PTXADJ, PTADJNCY) SO IN ORDER TO USE THAT
-!       IN FORTRAN WE USE THE ISO_BINDING MODULE
-!        
-        ALLOCATE(PTXADJ(1))
-        ALLOCATE(PTADJNCY(1))
-!
-!       BUILD THE DUAL GRAPH BY CALLING THE METIS SUBROUTINE
-!        
-        NUMFLAG = 1
-        CALL METIS_MESHTODUAL
-     &       (NELEM2, NPOIN2, EPTR, EIND, NCOMMONNODES, NUMFLAG,
-     &        PTXADJ, PTADJNCY)
-
-!
-!       TRANSFORM THE C POINTER OF POINTER BACK TO A FORTRAN ARRAY
-!        
-        ALLOCATE(RECVBUF(1))
-        RECVBUF(1) = NELEM2+1
-        CALL C_F_POINTER(PTXADJ(1),XADJ2,RECVBUF)
-!        
-        RECVBUF(1) = XADJ2(NELEM2+1)-1
-        CALL C_F_POINTER(PTADJNCY(1),ADJNCY2,RECVBUF)
-        DEALLOCATE(RECVBUF)
-!
-!       INITIALIZE THE GRAPH AND THE STRATEGY USED BY SCOTCH FOR THE
-!       PARTITIONING WE USE THE DEFAULT STRATEGY
-!        
-        CALL SCOTCHFSTRATINIT(SCOTCHSTRAT, ERR)
-        IF (ERR.NE.0) THEN
-          WRITE(LU,*) 'SCOTCH ERROR: CANNOT INITIALIZE STRAT'
-          CALL PARTEL_PLANTE2(-1)
-        ENDIF
-!
-        CALL sCOTCHfGRAPHiNIT(SCOTCHGRAPH, ERR)
-        IF (ERR.NE.0) THEN
-          WRITE(LU,*) 'SCOTCH ERROR: CANNOT INITIALIZE GRAPH'
-          CALL PARTEL_PLANTE2(-1)
-        ENDIF
-!
-        CALL SCOTCHFGRAPHBUILD ( SCOTCHGRAPH,         ! GRAFDAT
-     &                           NUMFLAG,             ! BASEVAL
-     &                           NELEM2,              ! VERTNBR
-     &                           XADJ2(1:NELEM2),     ! VERTTAB
-     &                           XADJ2(2:NELEM2+1),   ! VENDTAB 
-     &                           XADJ2(1:NELEM2),     ! VELOTAB, VERTEX WEIGHTS (nULL)
-     &                           XADJ2(1:NELEM2),     ! VLBLTAB, VERTEX LABELS (nULL)
-     &                           XADJ2(NELEM2+1)-1,   ! EDGENBR 
-     &                           ADJNCY2,             ! EDGETAB 
-     &                           ADJNCY2,             ! EDLOTAB (nULL)
-     &                           ERR )
-!
-        IF (ERR.NE.0) THEN
-          WRITE(LU,*) 'SCOTCH ERROR: CANNOT BUILD GRAPH'
-          CALL PARTEL_PLANTE2(-1)
-        ENDIF
-!
-        CALL SCOTCHFGRAPHCHECK(SCOTCHGRAPH,ERR)
-        IF (ERR.NE.0) THEN
-          WRITE(LU,*) 'SCOTCH ERROR: GRAPH NOT CONSISTANT'
-          CALL PARTEL_PLANTE2(-1)
-        ENDIF
-!
-        ! RUN PARTITIONING
-        WRITE(LU,*) ' THE MESH PARTITIONING STEP SCOTCH STARTS'
-        CALL SCOTCHFGRAPHPART ( SCOTCHGRAPH, 
-     &                          NPARTS, 
-     &                          SCOTCHSTRAT,
-     &                          EPART, 
-     &                          ERR )
-!
-        IF (ERR.NE.0) THEN
-          WRITE(LU,*) 'SCOTCH ERROR: CANNOT PARTITION GRAPH'
-          CALL PARTEL_PLANTE2(-1)
-        END IF
-        WRITE(LU,*) ' THE MESH PARTITIONING STEP HAS FINISHED'
-        IF (TIMECOUNT) THEN
-          CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
-          TFINP = TEMPS
-          WRITE(LU,*) ' RUNTIME OF SCOTCH ',
-     &              (1.0*(TFINP-TDEBP))/(1.0*PARSEC),' SECONDS'
-        ENDIF
-!!!! CHANGING EPART NUMBERING TO 1-NPART
-        EPART = EPART + 1
-
-        CALL SCOTCHFGRAPHEXIT (SCOTCHGRAPH)
-        CALL SCOTCHFSTRATEXIT (SCOTCHSTRAT)
-
-!
-!        THOSE DEALLOCATION CAN GENERATE ERROR WITH SOME COMPILER
-!        DEALLOCATE(XADJ2)
-!        DEALLOCATE(ADJNCY2)
-        DEALLOCATE(PTXADJ)
-        DEALLOCATE(PTADJNCY)
-        DEALLOCATE(EIND)
-        DEALLOCATE(EPTR)
-#else
-        WRITE(LU,*) "TRYING TO USE SCOTCH TO PARTIONNE WHEN SCOTCH",
-     &              " IS NOT INSTALLED"
-        CALL PARTEL_PLANTE2(-1)
-#endif        
-      ENDIF
 !      
 !======================================================================
 ! STEP 3 : ALLOCATE THE GLOBAL  ARRAYS NOT DEPENDING OF THE PARTITION
@@ -2086,7 +1852,7 @@ CD   -------------------------------------------------------------------
       CALL PARTEL_PLANTE2(-1)
 !
  999  STOP  
-      END PROGRAM PARTEL
+      CONTAINS
 !
 !----------------------------------------------------------------------      
 !
@@ -2141,84 +1907,6 @@ CD   -------------------------------------------------------------------
 !     CALL EXIT(ICODE)
       END SUBROUTINE PARTEL_PLANTE2
 C
-C                       ****************************************
-                        CHARACTER(LEN=11) FUNCTION PARTEL_EXTENS
-C                       ****************************************
-C
-     *(N,IPID)
-C
-C***********************************************************************
-C  PARA       VERSION 4.0         08/01/97        J-M HERVOUET (LNH)
-C
-C***********************************************************************
-C
-C      FONCTIONS: PARTEL_EXTENSION DES FICHIERS SUR CHAQUE PROCESSEUR.
-C      ==========
-C
-C-----------------------------------------------------------------------
-C                             ARGUMENTS
-C .________________.____.______________________________________________.
-C |      NOM       |MODE|                   ROLE
-C |________________|____|______________________________________________|
-C |     N          | -->| NOMBRE DE PROCESSEURS MOINS UN = NCSIZE-1
-C |     IPID       | -->| NUMERO DU PROCESSEUR
-C |________________|____|______________________________________________|
-C MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE)
-C
-C-----------------------------------------------------------------------
-C
-C APPELE PAR :
-C
-C SOUS-PROGRAMMES APPELES : NEANT
-C
-C**********************************************************************
-C
-      IMPLICIT NONE
-      INTEGER LNG,LU
-      COMMON/INFO/LNG,LU
-C
-      INTEGER IPID,N
-C
-C-----------------------------------------------------------------------
-C
-      IF(N.GT.0) THEN
-C
-        PARTEL_EXTENS='00000-00000'
-C
-        IF(N.LT.10) THEN
-          WRITE(PARTEL_EXTENS(05:05),'(I1)') N
-        ELSEIF(N.LT.100) THEN
-          WRITE(PARTEL_EXTENS(04:05),'(I2)') N
-        ELSEIF(N.LT.1000) THEN
-          WRITE(PARTEL_EXTENS(03:05),'(I3)') N
-        ELSEIF(N.LT.10000) THEN
-          WRITE(PARTEL_EXTENS(02:05),'(I4)') N
-        ELSE
-          WRITE(PARTEL_EXTENS(01:05),'(I5)') N
-        ENDIF
-C
-        IF(IPID.LT.10) THEN
-          WRITE(PARTEL_EXTENS(11:11),'(I1)') IPID
-        ELSEIF(IPID.LT.100) THEN
-          WRITE(PARTEL_EXTENS(10:11),'(I2)') IPID
-        ELSEIF(IPID.LT.1000) THEN
-          WRITE(PARTEL_EXTENS(09:11),'(I3)') IPID
-        ELSEIF(IPID.LT.10000) THEN
-          WRITE(PARTEL_EXTENS(08:11),'(I4)') IPID
-        ELSE
-          WRITE(PARTEL_EXTENS(07:11),'(I5)') IPID
-        ENDIF
-C
-      ELSE
-C
-        PARTEL_EXTENS='       '
-C
-      ENDIF
-C
-C-----------------------------------------------------------------------
-C
-      RETURN
-      END
 C                       ************************
                         SUBROUTINE PARTEL_FRONT2
 C                       ************************
@@ -2748,7 +2436,7 @@ C
 C-----------------------------------------------------------------------
 C
       RETURN
-      END 
+      END SUBROUTINE PARTEL_FRONT2
 C                       ************************
                         SUBROUTINE PARTEL_VOISIN
 C                       ************************
@@ -2952,7 +2640,7 @@ C
 C-----------------------------------------------------------------------
 C
       RETURN
-      END
+      END SUBROUTINE PARTEL_VOISIN
 C                       ***********************
                         SUBROUTINE PARTEL_ELEBD
 C                       ***********************
@@ -3182,7 +2870,7 @@ C
 C-----------------------------------------------------------------------
 C
       RETURN
-      END
+      END SUBROUTINE PARTEL_ELEBD
       
 C                       ******************
 !
@@ -3310,7 +2998,7 @@ C
       INTEGER, DIMENSION(:), ALLOCATABLE :: CONVTRI,CONVTET ! CONVERTISSEUR 
          ! NUMERO LOCAL TRIA/TETRA NUMERO GLOBAL; INVERSE DE TYPELEM(:,2)
       INTEGER            ::  PARSEC  ! RUNTIME
-      CHARACTER(LEN=11), EXTERNAL :: PARTEL_EXTENS ! PARTEL_EXTENSION DES NOMS FICHIER
+      CHARACTER(LEN=11), EXTERNAL :: PARTEL_PARTEL_EXTENS ! PARTEL_PARTEL_EXTENSION DES NOMS FICHIER
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPOINTSD, NELEMSD ! NBRE
                             ! DE POINTS ET D'ELEMENTS PAR SOUS-DOMAINE
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPOINTISD  ! NBRE
@@ -4217,31 +3905,6 @@ C                  WRITE(*,*) N, '---> ',M
       ALLOCATE (NPART(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'NPART')
 !
-      ALLOCATE (EPTR(NBTET+1),STAT=IERR)
-      IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPTR')
-      ALLOCATE (EIND(NBTET*4),STAT=IERR)
-      IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'EIND')
-!     
-      DO I=1,NBTET+1
-        EPTR(I) = (I-1)*4 + 1
-      ENDDO
-!     
-      K=1
-      DO I=1,NBTET
-        DO J=1,4
-          EIND(K) = IKLESTET((I-1)*4+J)
-          K = K + 1
-        ENDDO
-      ENDDO
-!
-!     SWITCH TO C NUMBERING
-      EIND = EIND - 1
-      EPTR = EPTR - 1
-!
-!     METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
-!     NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
-      NCOMMONNODES = 3 ! FOR TETRAHEDRE
-!     NCOMMONNODES = 4   FOR HEXAHEDRE
 !
 !----------------------------------------------------------------------
 !    CALL METIS : MESH PARTITIONNING
@@ -4252,10 +3915,8 @@ C                  WRITE(*,*) N, '---> ',M
       WRITE(LU,*)' '
       WRITE(LU,*)' STARTING METIS MESH PARTITIONING------------------+'
 !
-        CALL METIS_PARTMESHDUAL
-     &      (NBTET, NPOINT, EPTR, EIND, NULLTABLE,
-     &       NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
-     &       NULLTABLE, EDGECUT, EPART, NPART)
+      CALL PARTITIONER(1, NBTET, NPOINT, 4, NPARTS, IKLESTET,
+     &                 EPART, NPART)
 !
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(6),COUNT_RATE=PARSEC)
 !
@@ -5531,4 +5192,360 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
 !
 !-----------------------------------------------------------------------
 !  
-      END
+      END SUBROUTINE PARTEL_VOISIN31
+!                    **************
+                     SUBROUTINE PARTITIONER
+!                    **************
+     &    (PMETHOD, NELEM, NPOIN, NDP, NPARTS, IKLES, EPART, NPART)
+!
+!
+!***********************************************************************
+! PARALLEL   V6P2                                   21/08/2010
+!***********************************************************************
+!
+!brief    call to the partionning software
+!
+!history   R. KOPMANN (BAW)
+!+
+!+
+!+         created
+!
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| PMETHOD        |<--| 1: FOR METIS 2: FOR SCOTCH
+!| NELEM          |<--| THE NUMBER OF ELEMENTS
+!| NDP            |<--| THE NUMBE OF POINT PER ELEMENT
+!| NPARTS         |<--| NUMBER OF PARTITIONS
+!| IKLES          |<--| CONNECTIVITY TABLE
+!| EPART          |-->| PARTITION NUMBER OF AN ELEMENT
+!| MYPART         |-->| PARTITION NUMBER OF A POINT
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+#if defined (HAVE_SCOTCH)
+      USE ISO_C_BINDING
+#endif
+      IMPLICIT NONE
+#if defined (HAVE_SCOTCH)
+      include 'scotchf.h'
+#endif
+!     
+      INTEGER, INTENT(IN)  :: PMETHOD
+      INTEGER, INTENT(IN)  :: NELEM
+      INTEGER, INTENT(IN)  :: NPOIN
+      INTEGER, INTENT(IN)  :: NDP
+      INTEGER, INTENT(IN)  :: IKLES(NELEM*NDP)
+      INTEGER, INTENT(IN)  :: NPARTS
+      INTEGER, INTENT(OUT) :: EPART(NELEM)
+!TODO: Remove ??
+      INTEGER, INTENT(OUT) :: NPART(NELEM)
+!
+!-----------------------------------------------------------------------
+!
+!
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      INTEGER :: I,J,K,ERR
+      INTEGER ETYPE, NUMFLAG, EDGECUT, NCOMMONNODES
+      INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
+      INTEGER, ALLOCATABLE :: NULLTABLE(:)
+      CHARACTER(LEN=10) :: FMT1, FMT2, FMT3
+      INTEGER, ALLOCATABLE :: RECVBUF(:)
+!
+! SCOTCH
+!
+#if defined (HAVE_SCOTCH)
+      REAL*8, DIMENSION(SCOTCH_GRAPHDIM) :: SCOTCHGRAPH
+      REAL*8, DIMENSION(SCOTCH_STRATDIM) :: SCOTCHSTRAT
+      TYPE(C_PTR), POINTER :: PTXADJ(:), PTADJNCY(:)
+#endif
+      INTEGER, POINTER :: XADJ2(:), ADJNCY2(:)
+
+      IF(PMETHOD.EQ.1) THEN 
+        WRITE(LU,*) 'BEGIN PARTITIONING WITH METIS'
+!       NEW METIS INTERFACE (>= VERSION 5) :
+!       
+!       EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS
+!       THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
+!       CF. DISCUSSION IN SECTION 4.3 (?)
+!       
+        ALLOCATE(EPTR(NELEM+1),STAT=ERR)
+        IF(ERR.NE.0) THEN
+          WRITE(lu,*) 'ERROR: Bad allocation of EPTR'
+        ENDIF 
+        ALLOCATE(EIND(NELEM*NDP),STAT=ERR)
+        IF(ERR.NE.0) THEN
+          WRITE(lu,*) 'ERROR: Bad allocation of EIND'
+        ENDIF 
+!       
+!       CORRECTION JMH 04/07/2012 : BELOW NDP MUST BE 3
+!       IT WOULD NOT WORK IN 3D WITH NDP=6
+!       
+        DO I=1,NELEM+1
+          EPTR(I) = (I-1)*NDP + 1
+        ENDDO
+!       
+        K=1
+        DO I=1,NELEM
+          DO J=1,NDP
+            EIND(K) = IKLES((I-1)*NDP+J)
+            K = K + 1
+          ENDDO   
+        ENDDO    
+!       
+!       END OF CORRECTION JMH 04/07/2012
+!       
+!       SWITCH TO C NUMBERING
+        EIND = EIND -1
+        EPTR = EPTR -1
+!       
+!       METIS REQUIRES THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN EDGE
+!       NCOMMONNODES = 2   FOR TRIANGLE OR RECTANGLE
+!       NCOMMONNODES = 3   FOR TETRAHEDRE
+!       NCOMMONNODES = 4   FOR HEXAHEDRE
+        
+!       
+        IF (NDP==3.OR.NDP==6) THEN 
+           NCOMMONNODES = 2 ! FOR TRIANGLE OR PRISM
+        ELSE IF(NDP==4) THEN
+           NCOMMONNODES = 3 ! FORT TETRAHEDRON
+        ELSE
+           WRITE(LU,*) 'METIS: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
+           CALL PARTEL_PLANTE2(-1)
+        ENDIF 
+!        
+!       WE ONLY USE METIS_PARTMESHDUAL AS ONLY THE FINITE ELEMENTS PARTITION
+!       IS RELEVANT HERE.
+!       
+!       IMPORTANT: WE USE FORTRAN-LIKE FIELD ELEMENTS NUMBERING 1...N
+!       IN C VERSION, 0...N-1 NUMBERING IS APPLIED!!!
+!       
+        NUMFLAG = 1
+!       
+#if defined(HAVE_MPI)
+        CALL METIS_PARTMESHDUAL 
+     &        (NELEM, NPOIN, EPTR, EIND, NULLTABLE,
+     &         NULLTABLE, NCOMMONNODES, NPARTS, NULLTABLE, 
+     &         NULLTABLE, EDGECUT, EPART, NPART)
+#else
+        WRITE(LU,*) 'ERROR: TRY TO RUN PARTEL WITH A '//
+     &              'SERIAL CONFIGURATION'
+        CALL PARTEL_PLANTE2(-1)
+#endif
+!       
+!       DEALLOCATING TEMPORARY ARRAYS FOR METIS
+!       
+!       EPART IS AN ARRAY
+        EPART = EPART+1
+        DEALLOCATE(EPTR)
+        DEALLOCATE(EIND)
+      ELSE IF(PMETHOD.EQ.2) THEN
+#if defined (HAVE_SCOTCH)      
+!
+!       SCOTCH PARTITIONER
+!      
+        WRITE(LU,*) 'BEGIN PARTITIONING WITH SCOTCH'
+        ALLOCATE (EPTR(NELEM+1),STAT=ERR)
+        IF (ERR.NE.0) CALL PARTEL_PART_ALLOER (LU, 'EPTR')
+        ALLOCATE (EIND(NELEM*NDP),STAT=ERR)
+        IF (ERR.NE.0) CALL PARTEL_PART_ALLOER (LU, 'EIND')
+!
+!       bUILDING EPTR AND EIND SAME AS BEFORE.
+!
+        DO I=1,NELEM+1
+           EPTR(I) = (I-1)*NDP + 1
+        ENDDO
+! 
+        K=1
+        DO I=1,NELEM
+           DO J=1,NDP
+              EIND(K) = IKLES((I-1)*NDP+J)
+              K = K + 1
+           ENDDO   
+        ENDDO    
+!       THE NUMBER OF COMMON POINT NEEDED BETWEEN 2 ELEMENTS TO MAKE AN
+!       EDGE
+!       NCOMMONNODES = 2 FOR TRIANGLE OR RECTANGLE
+!       NCOMMONNODES = 3 FOR TETRAHEDRE
+!       NCOMMONNODES = 4 FOR HEXAHEDRE
+        IF (NDP==3.OR.NDP==6) THEN 
+           NCOMMONNODES = 2 ! FOR TRIANGLE OR RECTANGLE
+        ELSE
+           WRITE(LU,*)'SCOTCH: IMPLEMENTED FOR TRIANGLES OR PRISMS ONLY'
+           CALL PARTEL_PLANTE2(-1)
+        ENDIF 
+
+!
+!       mETIS_MESHTODUAL USES POINTER OF POINTER (PTXADJ, PTADJNCY) SO IN ORDER TO USE THAT
+!       IN FORTRAN WE USE THE ISO_BINDING MODULE
+!        
+        ALLOCATE(PTXADJ(1))
+        ALLOCATE(PTADJNCY(1))
+!
+!       BUILD THE DUAL GRAPH BY CALLING THE METIS SUBROUTINE
+!        
+        NUMFLAG = 1
+        CALL METIS_MESHTODUAL
+     &       (NELEM, NPOIN, EPTR, EIND, NCOMMONNODES, NUMFLAG,
+     &        PTXADJ, PTADJNCY)
+
+!
+!       TRANSFORM THE C POINTER OF POINTER BACK TO A FORTRAN ARRAY
+!        
+        ALLOCATE(RECVBUF(1))
+        RECVBUF(1) = NELEM+1
+        CALL C_F_POINTER(PTXADJ(1),XADJ2,RECVBUF)
+!        
+        RECVBUF(1) = XADJ2(NELEM+1)-1
+        CALL C_F_POINTER(PTADJNCY(1),ADJNCY2,RECVBUF)
+        DEALLOCATE(RECVBUF)
+!
+!       INITIALIZE THE GRAPH AND THE STRATEGY USED BY SCOTCH FOR THE
+!       PARTITIONING WE USE THE DEFAULT STRATEGY
+!        
+        CALL SCOTCHFSTRATINIT(SCOTCHSTRAT, ERR)
+        IF (ERR.NE.0) THEN
+          WRITE(LU,*) 'SCOTCH ERROR: CANNOT INITIALIZE STRAT'
+          CALL PARTEL_PLANTE2(-1)
+        ENDIF
+!
+        CALL SCOTCHFGRAPHINIT(SCOTCHGRAPH, ERR)
+        IF (ERR.NE.0) THEN
+          WRITE(LU,*) 'SCOTCH ERROR: CANNOT INITIALIZE GRAPH'
+          CALL PARTEL_PLANTE2(-1)
+        ENDIF
+!
+        CALL SCOTCHFGRAPHBUILD ( SCOTCHGRAPH,         ! GRAFDAT
+     &                           NUMFLAG,             ! BASEVAL
+     &                           NELEM,              ! VERTNBR
+     &                           XADJ2(1:NELEM),     ! VERTTAB
+     &                           XADJ2(2:NELEM+1),   ! VENDTAB 
+     &                           XADJ2(1:NELEM),     ! VELOTAB, VERTEX WEIGHTS (nULL)
+     &                           XADJ2(1:NELEM),     ! VLBLTAB, VERTEX LABELS (nULL)
+     &                           XADJ2(NELEM+1)-1,   ! EDGENBR 
+     &                           ADJNCY2,             ! EDGETAB 
+     &                           ADJNCY2,             ! EDLOTAB (nULL)
+     &                           ERR )
+!
+        IF (ERR.NE.0) THEN
+          WRITE(LU,*) 'SCOTCH ERROR: CANNOT BUILD GRAPH'
+          CALL PARTEL_PLANTE2(-1)
+        ENDIF
+!
+        CALL SCOTCHFGRAPHCHECK(SCOTCHGRAPH,ERR)
+        IF (ERR.NE.0) THEN
+          WRITE(LU,*) 'SCOTCH ERROR: GRAPH NOT CONSISTANT'
+          CALL PARTEL_PLANTE2(-1)
+        ENDIF
+!
+        ! RUN PARTITIONING
+        CALL SCOTCHFGRAPHPART ( SCOTCHGRAPH, 
+     &                          NPARTS, 
+     &                          SCOTCHSTRAT,
+     &                          EPART, 
+     &                          ERR )
+!
+        IF (ERR.NE.0) THEN
+          WRITE(LU,*) 'SCOTCH ERROR: CANNOT PARTITION GRAPH'
+          CALL PARTEL_PLANTE2(-1)
+        END IF
+!!!! CHANGING EPART NUMBERING TO 1-NPART
+        EPART = EPART + 1
+
+        CALL SCOTCHFGRAPHEXIT (SCOTCHGRAPH)
+        CALL SCOTCHFSTRATEXIT (SCOTCHSTRAT)
+
+!
+!        THOSE DEALLOCATION CAN GENERATE ERROR WITH SOME COMPILER
+!        DEALLOCATE(XADJ2)
+!        DEALLOCATE(ADJNCY2)
+        DEALLOCATE(PTXADJ)
+        DEALLOCATE(PTADJNCY)
+        DEALLOCATE(EIND)
+        DEALLOCATE(EPTR)
+#else
+        WRITE(LU,*) "TRYING TO USE SCOTCH TO PARTIONNE WHEN SCOTCH",
+     &              " IS NOT INSTALLED"
+        CALL PARTEL_PLANTE2(-1)
+#endif        
+        ENDIF
+      END SUBROUTINE PARTITIONER
+!
+!                    *********************************
+                     CHARACTER(LEN=11) FUNCTION PARTEL_EXTENS
+!                    *********************************
+!
+     &(N,I)
+!
+!***********************************************************************
+! BIEF   V6P3                                   21/08/2010
+!***********************************************************************
+!
+!brief    GIVES THE PARTEL_EXTENSION FOR NAMING FILES IN PARALLEL
+!+
+!
+!history  J-M HERVOUET (LNHE)
+!+        11/07/2008
+!+        V5P9
+!+  
+!
+!history  J-M HERVOUET (LNHE)
+!+        22/11/2012
+!+        V6P3
+!+   USE BIEF removed, IIPID and IPID changed into I.
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| N              |-->| TOTAL NUMBER OF PROCESSORS
+!| I              |-->| RANK OF THE PROCESSOR
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+!     USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+      INTEGER, INTENT(IN) :: I,N
+!
+!-----------------------------------------------------------------------
+!
+      IF(N.GT.0) THEN
+!
+        PARTEL_EXTENS='00000-00000'
+!
+        IF(N.LT.10) THEN
+          WRITE(PARTEL_EXTENS(05:05),'(I1)') N
+        ELSEIF(N.LT.100) THEN
+          WRITE(PARTEL_EXTENS(04:05),'(I2)') N
+        ELSEIF(N.LT.1000) THEN
+          WRITE(PARTEL_EXTENS(03:05),'(I3)') N
+        ELSEIF(N.LT.10000) THEN
+          WRITE(PARTEL_EXTENS(02:05),'(I4)') N
+        ELSE
+          WRITE(PARTEL_EXTENS(01:05),'(I5)') N
+        ENDIF
+!
+        IF(I.LT.10) THEN
+          WRITE(PARTEL_EXTENS(11:11),'(I1)') I
+        ELSEIF(I.LT.100) THEN
+          WRITE(PARTEL_EXTENS(10:11),'(I2)') I
+        ELSEIF(I.LT.1000) THEN
+          WRITE(PARTEL_EXTENS(09:11),'(I3)') I
+        ELSEIF(I.LT.10000) THEN
+          WRITE(PARTEL_EXTENS(08:11),'(I4)') I
+        ELSE
+          WRITE(PARTEL_EXTENS(07:11),'(I5)') I
+        ENDIF
+!
+      ELSE
+!
+        PARTEL_EXTENS='           '
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END FUNCTION PARTEL_EXTENS
+!
+      END PROGRAM PARTEL

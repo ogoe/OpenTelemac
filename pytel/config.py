@@ -861,16 +861,17 @@ def parseUserModules(cfgDict,modules):
    # ~~ Deal with all ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if 'system' in userList : userList = ' '.join(modules.keys())
    # ~~ Activates parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if cfgDict.has_key('options'):
-      if 'parallel' in cfgDict['options'].lower():
-         userList = userList.replace('paravoid','')
-         if modules.has_key('paravoid'): del modules['paravoid']
-      else:
-         userList = userList.replace('parallel','')
-         if modules.has_key('parallel'): del modules['parallel']
-   else:
-      userList = userList.replace('parallel','')
-      if modules.has_key('parallel'): del modules['parallel']
+   # No distinction for the folder now parallel is always used
+#  if cfgDict.has_key('options'):
+#     if 'parallel' in cfgDict['options'].lower():
+#        userList = userList.replace('paravoid','')
+#        if modules.has_key('paravoid'): del modules['paravoid']
+#     else:
+#        userList = userList.replace('parallel','')
+#        if modules.has_key('parallel'): del modules['parallel']
+#  else:
+#     userList = userList.replace('parallel','')
+#     if modules.has_key('parallel'): del modules['parallel']
    # ~~ Activates openmi ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #if cfgDict.has_key('options'):
    #   if 'openmi' in cfgDict['options'].lower():
