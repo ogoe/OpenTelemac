@@ -18,11 +18,12 @@
 VERSION       = v6p2
 
 DIRINC     = $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)
+DIRINC_PARALLEL  = $(PROJECT)/parallel/parallel_$(VERSION)/$(DIRLIB)
 
 #
 FCO       = $(FC_OPT_COMPIL)
 F90       = $(FC_NAM)
-F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL)
 #
 # ----- Règles de compilation Fortran
 #

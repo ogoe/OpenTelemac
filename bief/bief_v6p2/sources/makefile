@@ -18,6 +18,7 @@ NOM_GENERIQUE = bief
 VERSION = v6p2
 
 DIRINC    = $(PROJECT)/bief/bief_$(VERSION)/$(DIRLIB)
+DIRINC_PARALLEL  = $(PROJECT)/parallel/parallel_$(VERSION)/$(DIRLIB)
 
 ###########################
 # Definition des macros
@@ -40,7 +41,7 @@ include $(SYSTELCFG)/cfgmak.mak
 #
 FCO           = $(FC_OPT_COMPIL)
 FC            = $(FC_NAM)
-FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC)
+FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL)
 
 MODE          =
 LIBRARY	      = $(NOM_GENERIQUE)$(MODE)$(VERSION).a
