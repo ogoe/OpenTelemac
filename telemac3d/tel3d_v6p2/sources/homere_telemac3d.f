@@ -84,7 +84,7 @@
      &14X,'     T    E      L      E      M   M  A   A  C    ',/,
      &14X,'     T    EEEEE  LLLLL  EEEEE  M   M  A   A  CCCCC',/,
      &14X,'                                                  ',/,
-     &14X,'            3D   VERSION 6.2   FORTRAN 90    ',/,
+     &14X,'            3D   VERSION 6.3   FORTRAN 90    ',/,
      &14X,/////)
 !
 !-----------------------------------------------------------------------
