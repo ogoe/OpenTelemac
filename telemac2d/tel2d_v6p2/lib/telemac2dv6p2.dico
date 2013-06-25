@@ -4470,15 +4470,15 @@ TYPE = ENTIER
 INDEX = 68 
 MNEMO = 'STA_DIS_CURVES' 
 TAILLE = 2 
-CHOIX = '0="non"';'1="Z(Q)"';'2="Q(Z)"' 
-CHOIX1 = '0="no"';'1="Z(Q)"';'2="Q(Z)"' 
+CHOIX = '0="non"';'1="Z(Q)"';'non programme 2="Q(Z)"' 
+CHOIX1 = '0="no"';'1="Z(Q)"';'not programmed 2="Q(Z)"' 
 RUBRIQUE = 'CONDITIONS LIMITES' 
 RUBRIQUE1 = 'BOUNDARY CONDITIONS' 
 NIVEAU = 1 
 AIDE = 'Indique si une courbe de tarage doit etre utilisee 
-pour une frontiere 0:non 1:Z(Q) 2: Q(Z)' 
+pour une frontiere 0:non 1:Z(Q) 2: Q(Z) (2 non programme)' 
 AIDE1 = 'Says if a discharge-elevation curve must be used 
-for a given boundary :NO 1:Z(Q) 2: Q(Z)' 
+for a given boundary :NO 1:Z(Q) 2: Q(Z) (2 not programmed)' 
 / 
 NOM = 'FICHIER DES COURBES DE TARAGE' 
 NOM1 = 'STAGE-DISCHARGE CURVES FILE' 
