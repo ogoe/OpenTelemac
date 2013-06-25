@@ -459,12 +459,19 @@
           IF(HBOR(IPTFR).LT.0.D0) THEN
             IF(LNG.EQ.1) THEN
               WRITE(LU,*) 'HAUTEUR NEGATIVE IMPOSEE A UNE FRONTIERE'
-              WRITE(LU,*) 'VERIFIER VOTRE SOUS-PROGRAMME BORD3D'
+              WRITE(LU,*) 'VERIFIER VOTRE SOUS-PROGRAMME :'
             ENDIF
             IF(LNG.EQ.2) THEN
               WRITE(LU,*) 'NEGATIVE DEPTH PRESCRIBED ON BOUNDARY'
-              WRITE(LU,*) 'CHECK YOUR SPECIFIC SUBROUTINE BORD3D'
+              WRITE(LU,*) 'CHECK YOUR SPECIFIC SUBROUTINE:'
             ENDIF
+            IF(NAMECODE(1:7).EQ.'SISYPHE') THEN
+              WRITE(LU,*) 'BEDLOAD_SOLVS_FE'
+            ELSEIF(NAMECODE(1:7).EQ.'TELEMAC2D') THEN
+              WRITE(LU,*) 'BORD'
+            ELSEIF(NAMECODE(1:7).EQ.'TELEMAC3D') THEN
+              WRITE(LU,*) 'BORD3D'
+            ENDIF       
             CALL PLANTE(1)
             STOP
           ENDIF
