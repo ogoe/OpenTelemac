@@ -3612,12 +3612,12 @@ TAILLE = 5
 DEFAUT = 'tomawac|toma_VVV|PPP|tomawacMMMVVV.LLL'; 
 'bief|bief_VVV|PPP|biefMMMVVV.LLL'; 
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL'; 
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'; 
+'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'; 
 'special|special_VVV|PPP|specialMMMVVV.LLL' 
 DEFAUT1 = 'tomawac|toma_VVV|PPP|tomawacMMMVVV.LLL'; 
 'bief|bief_VVV|PPP|biefMMMVVV.LLL'; 
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL'; 
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'; 
+'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'; 
 'special|special_VVV|PPP|specialMMMVVV.LLL' 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL' 
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION' 
