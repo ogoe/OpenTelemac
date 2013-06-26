@@ -14,10 +14,9 @@
 #--------------------Tableau de description des repertoires
 
 @dirs=(
-#Libs : Bief, Damocles, Paravoid, Special, MumpsVoid
+#Libs : Bief, Damocles, Parallel, Special, Mumps
 	"damocles|damo_v6p2|sources",
-	"mumpsvoid|mumpsvoid_v6p2|sources",
-	"paravoid|paravoid_v6p2|sources",
+	"mumps|mumps_v6p2|sources",
 	"parallel|parallel_v6p2|sources",
 	"bief|bief_v6p2|sources",
 	"special|special_v6p2|sources",

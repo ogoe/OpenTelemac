@@ -6269,6 +6269,7 @@ DEFAUT = 'telemac3d|tel3d_VVV|PPP|telemac3dMMMVVV.LLL';
 'bief|bief_VVV|PPP|biefMMMVVV.LLL';
 'special|special_VVV|PPP|specialMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
 'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'
 
 DEFAUT1 = 'telemac3d|tel3d_VVV|PPP|telemac3dMMMVVV.LLL';
@@ -6278,6 +6279,7 @@ DEFAUT1 = 'telemac3d|tel3d_VVV|PPP|telemac3dMMMVVV.LLL';
 'bief|bief_VVV|PPP|biefMMMVVV.LLL';
 'special|special_VVV|PPP|specialMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
 'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'
 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'

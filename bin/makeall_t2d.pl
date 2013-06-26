@@ -12,9 +12,8 @@
 #--------------------Tableau de description des repertoires
 
 @dirs=(
-#Libs : Bief, Damocles, Paravoid
+#Libs : Bief, Damocles, Parallel
 	"damocles|damo_v5p2|sources",
-	"paravoid|paravoid_v5p2|sources",
 	"parallel|parallel_v5p2|sources",
 	"bief|bief_v5p2|sources",
 #T2d

@@ -20,7 +20,6 @@ V_SISYPHE     = V6P2
 V_TOMAWAC     = V6P2
 V_BIEF 	  = V6P2
 V_DAMOCLES    = V6P2
-V_PARAVOID    = V6P2
 V_PARALLEL    = V6P2
 V_SPECIAL     = V6P2
 
@@ -28,10 +27,9 @@ V_SPECIAL     = V6P2
 DIRINC           = $(PROJECT)\telemac2d\tel2d_$(VERSION)\$(DIRLIB)
 DIRINC_BIEF      = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)
 DIRINC_DAMOCLES  = $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)
-DIRINC_PARAVOID  = $(PROJECT)\paravoid\paravoid_$(V_PARAVOID)\$(DIRLIB)
+DIRINC_PARALLEL  = $(PROJECT)\parallel\parallel_$(V_PARALLEL)\$(DIRLIB)
 DIRINC_SISYPHE   = $(PROJECT)\sisyphe\sisyphe_$(VERSION)\$(DIRLIB)
 DIRINC_TOMAWAC   = $(PROJECT)\tomawac\toma_$(V_TOMAWAC)\$(DIRLIB)
-DIRINC_PARAVOID  = $(PROJECT)\paravoid\paravoid_$(V_PARAVOID)\$(DIRLIB)
 DIRINC_PARALLEL  = $(PROJECT)\parallel\parallel_$(V_PARALLEL)\$(DIRLIB)
 DIRINC_SPECIAL   = $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)
 #
@@ -43,18 +41,8 @@ F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
                    $(FC_OPT_INCLUDE)$(DIRINC_SISYPHE) \
                    $(FC_OPT_INCLUDE)$(DIRINC_TOMAWAC) \
                    $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
-
-F90_PARA  = $(FCO) $(FC_OPT_OTHERS) \
-                   $(FC_OPT_INCLUDE)$(DIRINC) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_SISYPHE) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_TOMAWAC) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
                    $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL) \
                    $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
-
 
 LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 #
@@ -71,22 +59,15 @@ LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
 DEST          = $(PROJECT)\telemac2d\tel2d_$(VERSION)\$(DIRLIB)
 
 EXEDEF	        = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
-EXEDEFPARA    = $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe
 #SYSLIB        = netapi32.lib advapi32.lib
 LKLIB         = $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\sisyphe\sisyphe_$(V_SISYPHE)\$(DIRLIB)\sisyphe$(MODE)$(V_SISYPHE).lib \
                 $(PROJECT)\tomawac\toma_$(V_TOMAWAC)\$(DIRLIB)\tomawac$(MODE)$(V_TOMAWAC).lib \
                 $(PROJECT)\damocles\damo_$(VERSION)\$(DIRLIB)\damo$(MODE)$(VERSION).lib \
                 $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib \
-                $(PROJECT)\paravoid\paravoid_$(VERSION)\$(DIRLIB)\paravoid$(MODE)$(VERSION).lib \
-                $(LK_LIB_SPECIAL) $(LIBMUMPSPAR)#$(SYSLIB)
-LKLIBPARA     = $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)\bief$(MODE)$(VERSION).lib \
-                $(PROJECT)\sisyphe\sisyphe_$(V_SISYPHE)\$(DIRLIB)\sisyphe$(MODE)$(V_SISYPHE).lib \
-                $(PROJECT)\tomawac\toma_$(V_TOMAWAC)\$(DIRLIB)\tomawac$(MODE)$(V_TOMAWAC).lib \
-                $(PROJECT)\damocles\damo_$(VERSION)\$(DIRLIB)\damo$(MODE)$(VERSION).lib \
-                $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib\
                 $(PROJECT)\parallel\parallel_$(VERSION)\$(DIRLIB)\parallel$(MODE)$(VERSION).lib \
-                $(LK_LIB_SPECIAL) $(LIBS_MPI) $(LIBMUMPSPAR)#$(SYSLIB)
+                $(PROJECT)\mumps\mumps_$(VERSION)\$(DIRLIB)\mumps$(MODE)$(VERSION).lib \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)#$(SYSLIB)
 
 #------------------------ Liste des fichiers
 #
@@ -144,7 +125,6 @@ OBJS = $(SRCS:.f=.obj)
 ALL: $(MODS) $(LIBRARY) $(EXEDEF)
 
 exedef:         $(EXEDEF)
-exedefpara:     $(EXEDEFPARA)
 
 "$(LIBRARY)" : $(OBJS)
 	@echo  -
@@ -155,12 +135,6 @@ exedefpara:     $(EXEDEFPARA)
 	@echo  -
 	@echo ---------------------Link executable par defaut
 	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS)  $(LKLIB)
-	echo "Termine."
-
-"$(EXEDEFPARA)":	$(OBJS)
-	@echo  -
-	@echo ---------------------Link executable parallele par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe $(OBJS)  $(LKLIBPARA)
 	echo "Termine."
 
 #--- Suppression des ".obj" (existants) + ".lib"
@@ -182,15 +156,6 @@ install: $(LIBRARY) $(EXEDEF)
 	copy $(LIBRARY) $(DEST)\$(LIBRARY)
 	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
 	copy $(EXEDEF)  $(DEST)\$(EXEDEF)
-
-#--- Installation de la librairie
-parallel: $(LIBRARY) $(EXEDEFPARA)
-	@echo  -
-	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
-	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
-	copy $(LIBRARY) $(DEST)\$(LIBRARY)
-	@echo ---------------------Installe $(EXEDEFPARA) dans $(DEST).
-	copy $(EXEDEFPARA)  $(DEST)\$(EXEDEFPARA)
 
 #--- Librairie en DEBUG
 libdebug:

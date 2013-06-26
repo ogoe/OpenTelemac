@@ -1081,12 +1081,14 @@ DEFAUT = 'stbtel|stbtel_VVV|PPP|stbtelMMMVVV.LLL';
 'bief|bief_VVV|PPP|biefMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
 'special|special_VVV|PPP|specialMMMVVV.LLL';
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
+'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'
 DEFAUT1 = 'stbtel|stbtel_VVV|PPP|stbtelMMMVVV.LLL';
 'bief|bief_VVV|PPP|biefMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
 'special|special_VVV|PPP|specialMMMVVV.LLL';
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL'
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
+'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
 NIVEAU = 1

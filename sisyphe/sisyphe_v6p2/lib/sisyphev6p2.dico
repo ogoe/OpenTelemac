@@ -3372,6 +3372,7 @@ DEFAUT = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.LLL';
 'special|special_VVV|PPP|specialMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
 'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
 /'dredgesim|dredgesim_VVV|PPP|dredgesimMMMVVV.LLL'
 
 DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.LLL';
@@ -3379,6 +3380,7 @@ DEFAUT1 = 'sisyphe|sisyphe_VVV|PPP|sisypheMMMVVV.LLL';
 'special|special_VVV|PPP|specialMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
 'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL'
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
 /'dredgesim|dredgesim_VVV|PPP|dredgesimMMMVVV.LLL'
 
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'

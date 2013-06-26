@@ -34,7 +34,6 @@ V_SISYPHE     = v6p2
 V_TOMAWAC     = v6p2
 V_BIEF 	      = v6p2
 V_DAMOCLES    = v6p2
-V_PARAVOID    = v6p2
 V_PARALLEL    = v6p2
 V_SPECIAL     = v6p2
 #
@@ -60,7 +59,6 @@ DIRINC_SISYPHE   = $(PROJECT)/sisyphe/sisyphe_$(VERSION)/$(DIRLIB)
 DIRINC_TOMAWAC   = $(PROJECT)/tomawac/toma_$(VERSION)/$(DIRLIB)
 DIRINC_BIEF      = $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)
 DIRINC_DAMOCLES  = $(PROJECT)/damocles/damo_$(V_DAMOCLES)/$(DIRLIB)
-DIRINC_PARAVOID  = $(PROJECT)/paravoid/paravoid_$(V_PARAVOID)/$(DIRLIB)
 DIRINC_PARALLEL  = $(PROJECT)/parallel/parallel_$(V_PARALLEL)/$(DIRLIB)
 DIRINC_SPECIAL   = $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)
 #
@@ -69,9 +67,7 @@ DIRINC_SPECIAL   = $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)
 FCO           = $(FC_OPT_COMPIL)
 LKO           = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 FC            = $(FC_NAM)
-FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_SISYPHE) $(FC_OPT_INCLUDE)$(DIRINC_TOMAWAC) $(FC_OPT_INCLUDE)$(DIRINC_BIEF) $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID) $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
-#
-FFLAGSPARA    = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_SISYPHE) $(FC_OPT_INCLUDE)$(DIRINC_TOMAWAC) $(FC_OPT_INCLUDE)$(DIRINC_BIEF) $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL) $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
+FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_SISYPHE) $(FC_OPT_INCLUDE)$(DIRINC_TOMAWAC) $(FC_OPT_INCLUDE)$(DIRINC_BIEF) $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL) $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
 #
 MODE          =
 
@@ -84,17 +80,9 @@ LKLIB         = $(PROJECT)/sisyphe/sisyphe_$(V_SISYPHE)/$(DIRLIB)/sisyphe$(MODE)
                 $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)/bief$(MODE)$(V_BIEF).a \
                 $(PROJECT)/damocles/damo_$(V_DAMOCLES)/$(DIRLIB)/damo$(MODE)$(V_DAMOCLES).a \
                 $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)/special$(MODE)$(V_SPECIAL).a \
-                $(PROJECT)/paravoid/paravoid_$(V_PARAVOID)/$(DIRLIB)/paravoid$(MODE)$(V_PARAVOID).a \
-                $(LK_LIB_SPECIAL) $(LIBMUMPSPAR)
-
-EXEDEFPARA    = $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe
-LKLIBPARA     = $(PROJECT)/sisyphe/sisyphe_$(V_SISYPHE)/$(DIRLIB)/sisyphe$(MODE)$(V_SISYPHE).a \
-                $(PROJECT)/tomawac/toma_$(V_TOMAWAC)/$(DIRLIB)/tomawac$(MODE)$(V_TOMAWAC).a \
-                $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)/bief$(MODE)$(V_BIEF).a \
-                $(PROJECT)/damocles/damo_$(V_DAMOCLES)/$(DIRLIB)/damo$(MODE)$(V_DAMOCLES).a \
-                $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)/special$(MODE)$(V_SPECIAL).a \
                 $(PROJECT)/parallel/parallel_$(V_PARALLEL)/$(DIRLIB)/parallel$(MODE)$(V_PARALLEL).a \
-                $(LK_LIB_SPECIAL) $(LIBS_MPI) $(LIBMUMPSPAR)
+                $(PROJECT)/mumps/mumps_$(VERSION)/$(DIRLIB)/mumps$(MODE)$(VERSION).a \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI) 
 
 JOURNAL       = journal
 DATE          = `date '+%d/%m/%y %H:%M'`
@@ -169,7 +157,6 @@ SHELL	      = /bin/sh
 
 all:		modules  $(LIBRARY) $(EXEDEF) delete_workdir
 exedef:         $(EXEDEF)
-exedefpara:	$(EXEDEFPARA)
 
 $(LIBRARY):	$(OBJS)
 		$(MESSAGE) "Archive $(LIBRARY) ..."
@@ -196,19 +183,6 @@ $(EXEDEF):	$(OBJS)
 		  $(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB) ; fi;
 		@echo "Termine."
 
-#---- we use LK_NAM in parallel case as well
-
-$(EXEDEFPARA):	$(OBJS)
-		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
-		  if [ "$(DIRLIB)" = "unicos" ]; then \
-		    $(MAKE) -f $(MAKEFILE) execray DIRLIB=unicos ; fi; \
-		  if [ "$(DIRLIB)" = "fuji" ]; then \
-		    $(MAKE) -f $(MAKEFILE) execray DIRLIB=fuji ; fi; \
-		else \
-		  echo "Link parallel executable par defaut ..." ; \
-		  $(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe $(OBJS) $(LKLIBPARA); fi;
-		@echo "Termine."
-
 menage:;	$(MESSAGE) "Efface les objets, librairies, executables et core-file."
 		@rm -f $(OBJS) *.a *.exe *.mod *.MOD *.g90 core
 
@@ -228,17 +202,6 @@ install:	$(LIBRARY) $(EXEDEF)
 		@$(MESSAGE) "Installe $(EXEDEF) dans $(DEST)."
 		@if [ $(DEST) != . ]; then \
 		(rm -f $(DEST)/$(EXEDEF); $(INSTALL) $(EXEDEF) $(DEST)); fi
-
-parallel:	$(LIBRARY) $(EXEDEFPARA)
-		@if [ ! -d ../$(DIRLIB) ]; then \
-		echo "creation du repertoire $(DIRLIB)";mkdir ../$(DIRLIB); fi
-		@rm  -f $(DEST)/$(NOM_GENERIQUE)$(MODE)$(VERSION).a
-		@$(MESSAGE) "Installe $(LIBRARY) dans $(DEST)."
-		@if [ $(DEST) != . ]; then \
-		(rm -f $(DEST)/$(LIBRARY); $(INSTALL) $(LIBRARY) $(DEST)); fi
-		@$(MESSAGE) "Installe $(EXEDEFPARA) dans $(DEST)."
-		@if [ $(DEST) != . ]; then \
-		(rm -f $(DEST)/$(EXEDEFPARA); $(INSTALL) $(EXEDEFPARA) $(DEST)); fi
 
 #--- Librairie en DEBUG
 libdebug:

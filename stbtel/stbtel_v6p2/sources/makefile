@@ -20,7 +20,6 @@ VERSION	      = v6p2
 V_BIEF        = v6p2
 V_DAMOCLES    = v6p2
 V_SPECIAL     = v6p2
-V_PARAVOID    = v6p2
 V_PARALLEL    = v6p2
 
 #
@@ -45,7 +44,7 @@ include $(SYSTELCFG)/cfgmak.mak
 DIRINC            = $(PROJECT)/stbtel/stbtel_$(VERSION)/$(DIRLIB)
 DIRINC_BIEF       = $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)
 DIRINC_DAMOCLES   = $(PROJECT)/damocles/damo_$(V_BIEF)/$(DIRLIB)
-DIRINC_PARAVOID   = $(PROJECT)/paravoid/paravoid_$(V_BIEF)/$(DIRLIB)
+DIRINC_PARALLEL   = $(PROJECT)/parallel/parallel_$(V_PARALLEL)/$(DIRLIB)
 DIRINC_SPECIAL    = $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)
 #
 FCO           = $(FC_OPT_COMPIL)
@@ -55,7 +54,7 @@ FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) \
                                         $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
                                         $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
                                         $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL) \
-                                        $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID)
+                                        $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL)
 
 
 MODE          =
@@ -66,8 +65,8 @@ EXEDEF	      = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 LKLIB         = $(PROJECT)/bief/bief_$(VERSION)/$(DIRLIB)/bief$(MODE)$(VERSION).a \
                 $(PROJECT)/damocles/damo_$(VERSION)/$(DIRLIB)/damo$(MODE)$(VERSION).a \
                 $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)/special$(MODE)$(V_SPECIAL).a \
-                $(PROJECT)/paravoid/paravoid_$(VERSION)/$(DIRLIB)/paravoid$(MODE)$(VERSION).a \
-                $(LK_LIB_SPECIAL)
+                $(PROJECT)/parallel/parallel_$(VERSION)/$(DIRLIB)/parallel$(MODE)$(VERSION).a \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 JOURNAL       = journal
 DATE          = `date '+%d/%m/%y %H:%M'`

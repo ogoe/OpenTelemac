@@ -74,10 +74,7 @@ fi
 if [ ! -d "$PROJECT/damocles/damo_$version/sources/" ] ; then
 	error_exit "$PROJECT/damocles/damo_$version/sources/ is not a directory. Aborting."
 fi
-if [ ! -d "$PROJECT/paravoid/paravoid_$version/sources/" ] ; then
-	error_exit "$PROJECT/paravoid/paravoid_$version/sources/ is not a directory. Aborting."
-fi
-if [[ ! -d "$PROJECT/parallel/parallel_$version/sources/"  && "$doParallel" = "1" ]] ; then
+if [ ! -d "$PROJECT/parallel/parallel_$version/sources/" ] ; then
 	error_exit "$PROJECT/parallel/parallel_$version/sources/ is not a directory. Aborting."
 fi
 if [ ! -d "$PROJECT/bief/bief_$version/sources/" ] ; then
@@ -124,35 +121,18 @@ maktel all install
 
 #maktel libdebug
 
-# Paravoid
+# parallel
 echo
-echo "Compiling Paravoid"
+echo "Compiling parallel"
 echo "------------------"
 echo
-cd $PROJECT/paravoid/paravoid_$version/sources/
+cd $PROJECT/parallel/parallel_$version/sources/
 if [ $doMenage != "0" ] ; then
 	maktel Menage
 fi
 maktel all install
 
 #maktel libdebug
-
-
-# Parallel
-if [ "$doParallel" = "1" ] ; then
-	echo
-	echo "Compiling Parallel"
-	echo "------------------"
-	echo
-	cd $PROJECT/parallel/parallel_$version/sources/
-	if [ $doMenage != "0" ] ; then
-		maktel Menage
-	fi
-	maktel install
-
-#	maktel libdebug
-
-fi
 
 # Bief
 echo

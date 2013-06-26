@@ -16,9 +16,6 @@
 NOM_GENERIQUE = special
 
 VERSION	      = v6p2
-V_BIEF        = v6p2
-V_PARAVOID    = v6p2
-V_PARALLEL    = v6p2
 
 ###########################
 # Definition des macros
@@ -44,7 +41,7 @@ DIRINC_BIEF      = $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)
 
 FCO           = $(FC_OPT_COMPIL)
 FC            = $(FC_NAM)
-FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_BIEF)
+FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) 
 
 MODE          =
 LIBRARY	      = $(NOM_GENERIQUE)$(MODE)$(VERSION).a

@@ -79,7 +79,7 @@ use Benchmark;
 #############################################################################
 
 # Decomposition de VERSION :
-# codes T2D, BIEF, DAMOCLES, PARAVOID
+# codes T2D, BIEF, DAMOCLES, PARALLEL
 
 @VERS = split(/,/, $VERSION); $v0=$VERS[0];                 # 1 meme version pour tous
 if ( $VERS[1] eq "" ) { @VERS=($v0,$v0,$v0,$v0,$v0,$v0,$v0,$v0,$v0)};
@@ -104,7 +104,7 @@ $MPI_ROOT  = join "",$PROJECT,$ps,"mpi",$ps,$dirlib;
 if ($NCSIZE < 1 && $CALCIUM ne "OUI" )
   {    #scalaire
   $LIBPARALL  = "";
-  $LIBMUMPS=$libmumpsseq;
+  $LIBMUMPS= "";
   $LIB_SYS = "";
 # PLG INGEROP  if($ENV{"OS"} eq "Windows_NT")  {$LIB_SYS = "advapi32.lib netapi32.lib";}
   $LIB_CALCIUM = "";
@@ -112,7 +112,7 @@ if ($NCSIZE < 1 && $CALCIUM ne "OUI" )
 else { #parallele
   $INCDIR     = $INCDIR." $cmdInc$MPI_ROOT$ps"."include";
   $LIBPARALL  = $libsmpi;
-  $LIBMUMPS=$libmumpspar;
+  $LIBMUMPS= "";
 
   if ($CALCIUM eq "OUI")   #ajout libs du coupleur Calcium
   {
@@ -121,8 +121,6 @@ else { #parallele
     $LIBCALCIUM = "$ACCC_ROOT"."$ps"."$PVM_ARCH"."$ps"."lib"."$ps"."libFcpl.a";
   }
 
-  #Remplacer PARAVOID par PARALLEL
-  $BIBLI =~ s/paravoid/parallel/g;
   #Trouver le path du repertoire parallel pour PARTEL/GRETEL
   $PathParall=$BIBLI;
   $BIBLI =~  m/.*\s+(.*parallel).*/i; $PathParall =$1;
@@ -140,7 +138,7 @@ else { #parallele
 
 #Bilan des librairies a considerer : BIBLI
 # special lib added
-$BIBLI="$BIBLI  $LIB_SYS $LIBSPECIAL $LIBCALCIUM $LIBPARALL  $LIBMUMPS " ;
+$BIBLI="$BIBLI  $LIB_SYS $LIBSPECIAL $LIBCALCIUM $LIBPARALL  " ;
 
 #############################################################################
 #    EXECUTABLE PAR DEFAUT

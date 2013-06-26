@@ -753,12 +753,14 @@ TAILLE = 5
 DEFAUT = 'postel3d|postel3d_VVV|PPP|postel3dMMMVVV.LLL';
 'bief|bief_VVV|PPP|biefMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL';
+'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL';
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
 'special|special_VVV|PPP|specialMMMVVV.LLL'
 DEFAUT1 = 'postel3d|postel3d_VVV|PPP|postel3dMMMVVV.LLL';
 'bief|bief_VVV|PPP|biefMMMVVV.LLL';
 'damocles|damo_VVV|PPP|damoMMMVVV.LLL';
-'paravoid|paravoid_VVV|PPP|paravoidMMMVVV.LLL';
+'parallel|parallel_VVV|PPP|parallelMMMVVV.LLL';
+'mumps|mumps_VVV|PPP|mumpsMMMVVV.LLL'; 
 'special|special_VVV|PPP|specialMMMVVV.LLL'
 RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
 RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'

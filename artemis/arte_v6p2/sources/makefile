@@ -19,7 +19,6 @@ NOM_GENERIQUE = artemis
 VERSION	      = v6p2
 V_BIEF 	      = v6p2
 V_DAMOCLES    = v6p2
-V_PARAVOID    = v6p2
 V_PARALLEL    = v6p2
 V_SPECIAL     = v6p2
 
@@ -43,7 +42,6 @@ include $(SYSTELCFG)/cfgmak.mak
 DIRINC           = $(PROJECT)/artemis/arte_$(VERSION)/$(DIRLIB)
 DIRINC_BIEF      = $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)
 DIRINC_DAMOCLES  = $(PROJECT)/damocles/damo_$(V_DAMOCLES)/$(DIRLIB)
-DIRINC_PARAVOID  = $(PROJECT)/paravoid/paravoid_$(V_PARAVOID)/$(DIRLIB)
 DIRINC_PARALLEL  = $(PROJECT)/parallel/parallel_$(V_PARALLEL)/$(DIRLIB)
 DIRINC_SPECIAL   = $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)
 
@@ -52,7 +50,7 @@ MODE          =
 FCO           = $(FC_OPT_COMPIL)
 LKO           = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
 FC            = $(FC_NAM)
-FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_BIEF) $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID) $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
+FFLAGS        = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(DIRINC_BIEF) $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL) $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
 
 MODE          =
 
@@ -61,18 +59,10 @@ LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).a
 EXEDEF        = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 LKLIB         = $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)/bief$(MODE)$(V_BIEF).a \
                 $(PROJECT)/damocles/damo_$(V_DAMOCLES)/$(DIRLIB)/damo$(MODE)$(V_DAMOCLES).a \
-                $(PROJECT)/paravoid/paravoid_$(V_PARAVOID)/$(DIRLIB)/paravoid$(MODE)$(V_PARAVOID).a \
-                $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)/special$(MODE)$(V_SPECIAL).a \
-                $(LK_LIB_SPECIAL) $(LIBMUMPSPAR)
-EXEDEFPARA    = $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe
-LKLIBPARA     = $(PROJECT)/bief/bief_$(V_BIEF)/$(DIRLIB)/bief$(MODE)$(V_BIEF).a \
-                $(PROJECT)/damocles/damo_$(V_DAMOCLES)/$(DIRLIB)/damo$(MODE)$(V_DAMOCLES).a \
                 $(PROJECT)/parallel/parallel_$(V_PARALLEL)/$(DIRLIB)/parallel$(MODE)$(V_PARALLEL).a \
                 $(PROJECT)/special/special_$(V_SPECIAL)/$(DIRLIB)/special$(MODE)$(V_SPECIAL).a \
-                $(LK_LIB_SPECIAL) $(LIBS_MPI) $(LIBMUMPSPAR)
-
-
-
+                $(PROJECT)/mumps/mumps_$(VERSION)/$(DIRLIB)/mumps$(MODE)$(VERSION).a \
+                $(LIBS_MPI) $(LK_LIB_SPECIAL) 
 
 JOURNAL       = journal
 DATE          = `date '+%d/%m/%y %H:%M'`
@@ -151,22 +141,6 @@ $(EXEDEF):	$(OBJS)
 		@echo "Termine."
 
 
-$(EXEDEFPARA):	$(OBJS)
-		@if [ "$(DIRLIB)" = "unicos" -o "$(DIRLIB)" = "fuji" ]; then \
-		  if [ "$(DIRLIB)" = "unicos" ]; then \
-		    $(MAKE) -f $(MAKEFILE) execray DIRLIB=unicos ; fi; \
-		  if [ "$(DIRLIB)" = "fuji" ]; then \
-		    $(MAKE) -f $(MAKEFILE) execray DIRLIB=fuji ; fi; \
-		else \
-		  echo "Link parallel executable par defaut ..." ; \
-		  $(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe $(OBJS) $(LKLIBPARA); fi;
-		@echo "Termine."
-
-
-
-
-
-
 menage:;	$(MESSAGE) "Efface les objets, librairies, executables et core-file."
 		@rm -f $(OBJS) *.a *.exe *.mod *.MOD *.g90 core
 
@@ -186,18 +160,6 @@ install:	$(LIBRARY) $(EXEDEF)
 		@$(MESSAGE) "Installe $(EXEDEF) dans $(DEST)."
 		@if [ $(DEST) != . ]; then \
 		(rm -f $(DEST)/$(EXEDEF); $(INSTALL) $(EXEDEF) $(DEST)); fi
-
-parallel:	$(LIBRARY) $(EXEDEFPARA)
-		@if [ ! -d ../$(DIRLIB) ]; then \
-		echo "creation du repertoire $(DIRLIB)";mkdir ../$(DIRLIB); fi
-		@rm  -f $(DEST)/$(NOM_GENERIQUE)$(MODE)$(VERSION).a
-		@$(MESSAGE) "Installe $(LIBRARY) dans $(DEST)."
-		@if [ $(DEST) != . ]; then \
-		(rm -f $(DEST)/$(LIBRARY); $(INSTALL) $(LIBRARY) $(DEST)); fi
-		@$(MESSAGE) "Installe $(EXEDEFPARA) dans $(DEST)."
-		@if [ $(DEST) != . ]; then \
-		(rm -f $(DEST)/$(EXEDEFPARA); $(INSTALL) $(EXEDEFPARA) $(DEST)); fi
-
 
 #--- Librairie en DEBUG
 libdebug:

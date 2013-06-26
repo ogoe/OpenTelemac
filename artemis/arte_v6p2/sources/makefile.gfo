@@ -18,7 +18,6 @@
 VERSION    = V6P2
 V_BIEF     = V6P2
 V_DAMOCLES = V6P2
-V_PARAVOID = V6P2
 V_PARALLEL = V6P2
 V_SPECIAL  = V6P2
 
@@ -27,7 +26,6 @@ V_SPECIAL  = V6P2
 DIRINC = $(PROJECT)\artemis\arte_$(VERSION)\$(DIRLIB)
 DIRINC_BIEF     = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)
 DIRINC_DAMOCLES = $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)
-DIRINC_PARAVOID = $(PROJECT)\paravoid\paravoid_$(V_PARAVOID)\$(DIRLIB)
 DIRINC_PARALLEL = $(PROJECT)\parallel\parallel_$(V_PARALLEL)\$(DIRLIB)
 DIRINC_SPECIAL   = $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)
 
@@ -35,13 +33,6 @@ DIRINC_SPECIAL   = $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)
 FCO       = $(FC_OPT_COMPIL)
 F90       = $(FC_NAM)
 F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID) \
-                   $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL) \
-                   $(FC_OPT_INCLUDE)$(DIRINC)
-
-F90_PARA  = $(FCO) $(FC_OPT_OTHERS) \
                    $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
                    $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
                    $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL) \
@@ -65,15 +56,10 @@ DEST          = $(PROJECT)\artemis\arte_$(VERSION)\$(DIRLIB)
 EXEDEF	  = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 LKLIB         = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)\bief$(MODE)$(V_BIEF).lib \
                 $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)\damo$(MODE)$(V_DAMOCLES).lib \
-                $(PROJECT)\paravoid\paravoid_$(V_PARAVOID)\$(DIRLIB)\paravoid$(MODE)$(V_PARAVOID).lib \
-                $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib  \
-                $(LIBMUMPSPAR)
-EXEDEFPARA	  = $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe
-LKLIBPARA     = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)\bief$(MODE)$(V_BIEF).lib \
-                $(PROJECT)\damocles\damo_$(V_DAMOCLES)\$(DIRLIB)\damo$(MODE)$(V_DAMOCLES).lib \
                 $(PROJECT)\parallel\parallel_$(V_PARALLEL)\$(DIRLIB)\parallel$(MODE)$(V_PARALLEL).lib \
                 $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib  \
-                $(LIBS_MPI) $(LIBMUMPSPAR)
+                $(PROJECT)\mumps\mumps_$(V_SPECIAL)\$(DIRLIB)\mumps$(MODE)$(V_SPECIAL).lib  \
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
 
 #------------------------ Liste des fichiers
 #
@@ -115,13 +101,6 @@ exedefpara:     $(EXEDEFPARA)
 	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION).exe $(OBJS) $(LKLIB)
 	echo "Termine."
 
-"$(EXEDEFPARA)":	$(OBJS)
-	@echo  -
-	@echo ---------------------Link executable parallele par defaut
-	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME) $(NOM_GENERIQUE)$(MODE)$(VERSION)_MP.exe $(OBJS)  $(LKLIBPARA)
-	echo "Termine."
-
-
 #--- Suppression des ".obj" (existants) + ".lib"
 menage:  $(SRCS)
 	@echo  -
@@ -140,15 +119,6 @@ install: $(LIBRARY) $(EXEDEF)
 	copy $(LIBRARY) $(DEST)\$(LIBRARY)
 	@echo ---------------------Installe $(EXEDEF) dans $(DEST).
 	copy $(EXEDEF)  $(DEST)\$(EXEDEF)
-
-#--- Parallel version
-parallel: $(LIBRARY) $(EXEDEFPARA)
-	@echo  -
-	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
-	if NOT EXIST $(DEST)\NUL mkdir $(DEST)
-	copy $(LIBRARY) $(DEST)\$(LIBRARY)
-	@echo ---------------------Installe $(EXEDEFPARA) dans $(DEST).
-	copy $(EXEDEFPARA)  $(DEST)\$(EXEDEFPARA)
 
 #--- Librairie en DEBUG
 libdebug:

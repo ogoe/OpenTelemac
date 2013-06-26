@@ -22,7 +22,7 @@ NOM_GENERIQUE = stbtel
 VERSION	      = v6p2
 V_BIEF        = v6p2
 V_DAMOCLES    = v6p2
-V_PARAVOID    = v6p2
+V_PARALLEL    = v6p2
 V_SPECIAL     = v6p2
 #
 MODE          =
@@ -33,14 +33,14 @@ EXEDEF	      = $(NOM_GENERIQUE)$(MODE)$(VERSION).exe
 SYSLIB        =
 LKLIB         = $(PROJECT)\bief\bief_$(VERSION)\$(DIRLIB)\bief$(MODE)$(VERSION).lib \
                 $(PROJECT)\damocles\damo_$(VERSION)\$(DIRLIB)\damo$(MODE)$(VERSION).lib \
-                $(PROJECT)\paravoid\paravoid_$(VERSION)\$(DIRLIB)\paravoid$(MODE)$(VERSION).lib \
+                $(PROJECT)\parallel\parallel_$(VERSION)\$(DIRLIB)\parallel$(MODE)$(VERSION).lib \
                 $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)\special$(MODE)$(V_SPECIAL).lib \
                 $(SYSLIB)
 
 DIRINC            = $(PROJECT)\stbtel\stbtel_$(VERSION)\$(DIRLIB)
 DIRINC_BIEF       = $(PROJECT)\bief\bief_$(V_BIEF)\$(DIRLIB)
 DIRINC_DAMOCLES   = $(PROJECT)\damocles\damo_$(V_BIEF)\$(DIRLIB)
-DIRINC_PARAVOID   = $(PROJECT)\paravoid\paravoid_$(V_BIEF)\$(DIRLIB)
+DIRINC_PARALLEL   = $(PROJECT)\parallel\parallel_$(V_BIEF)\$(DIRLIB)
 DIRINC_SPECIAL   = $(PROJECT)\special\special_$(V_SPECIAL)\$(DIRLIB)
 #
 FCO       = $(FC_OPT_COMPIL)
@@ -49,7 +49,7 @@ FC        = $(FC_NAM)
 FFLAGS	  = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) \
                                     $(FC_OPT_INCLUDE)$(DIRINC_BIEF) \
                                     $(FC_OPT_INCLUDE)$(DIRINC_DAMOCLES) \
-                                    $(FC_OPT_INCLUDE)$(DIRINC_PARAVOID) \
+                                    $(FC_OPT_INCLUDE)$(DIRINC_PARALLEL) \
                                     $(FC_OPT_INCLUDE)$(DIRINC_SPECIAL)
 
 #
