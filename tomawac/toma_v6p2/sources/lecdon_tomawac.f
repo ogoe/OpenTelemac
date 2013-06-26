@@ -176,7 +176,7 @@
         ELSEIF(WAC_FILES(I)%TELNAME.EQ.'WACRES') THEN
           WACRES=I
         ELSEIF(WAC_FILES(I)%TELNAME.EQ.'WACREF') THEN
-          WACREF=I	  
+          WACREF=I
         ELSEIF(WAC_FILES(I)%TELNAME.EQ.'WACSPE') THEN
           WACSPE=I
         ELSEIF(WAC_FILES(I)%TELNAME.EQ.'WACLEO') THEN
@@ -583,12 +583,6 @@
       DO K=1,MAXVAR
         SORIMP(K)=.FALSE.
       ENDDO
-!
-!
- 1001 FORMAT('*** INCOMPATIBILITE DES MOTS CLES ***
-     &                ARRET DU PROGRAMME')
- 1002 FORMAT('*** INCOMPATIBILITY OF THE KEY WORDS ***
-     &                   PROGRAM STOP')
 !
 !-----------------------------------------------------------------------
 !
