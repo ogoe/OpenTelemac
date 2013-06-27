@@ -1283,7 +1283,7 @@ if ($NCSIZE > 0 )   #cas parallèle : MPIlink
  else               #cas scalaire
   { $dolink =  "$linkage";
     $dolink =~ s/a\.exe/$EXEFILE/;       # nom de l'exe = "out####.exe"
-    $dolink = "$dolink @FicToLink $BIBLI";
+    $dolink = "$dolink @FicToLink $BIBLI $libsmpi";
   }
 
 #Lancement LINK
