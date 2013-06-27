@@ -93,6 +93,8 @@
       PUBLIC :: SCARACT,POST_INTERP,SEND_PARTICLES,BIEF_INTERP
       PUBLIC :: ADD_PARTICLE,DEL_PARTICLE,ORGANISE_ALGS,SEND_INFO_ALG
       PUBLIC :: DEL_INFO_ALG
+      PUBLIC :: OIL_SEND_PARTICLES,OIL_DEL_PARTICLE,OIL_SEND_INFO
+      PUBLIC :: OIL_ORGANISE_CHARS
 ! 
 !     MAX_BASKET_SIZE IS THE NUMBER OF ADVECTED VARIABLES IN ONE PROCEDURE CALL   
 ! 
@@ -170,7 +172,6 @@
 !       DOUBLE PRECISION :: PSI(3*101) ! VARIABLE PSI USED FOR THE BASSET FORCE 
 !     END TYPE ALG_TYPE 
 !
-! 
 !     THE CORRESPONDING MPI TYPE
 !  
       INTEGER :: ALG_CHAR 
@@ -184,6 +185,47 @@
       TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::HEAPALG 
       TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::SENDALG 
       TYPE(ALG_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::RECVALG 
+! 
+!     FOR OIL SPILLS
+! 
+!     TYPE OIL_TYPE 
+!       SEQUENCE  
+!       INTEGER :: MYPID ! PARTITION OF THE TRACEBACK ORIGIN (HEAD) 
+!       INTEGER :: NEPID ! THE NEIGHBOUR PARTITION THE TRACEBACK ENTERS TO  
+!       INTEGER :: INE   ! THE LOCAL 2D ELEMENT NR THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
+!       INTEGER :: KNE   ! THE LOCAL LEVEL THE TRACEBACK ENTERS IN THE NEIGBOUR PARTITION    
+!       INTEGER :: IOR   ! THE POSITION OF THE TRAJECTORY -HEAD- IN MYPID [THE 2D/3D NODE OF ORIGIN] 
+!       INTEGER :: STATE   ! CURRENT RUNGE-KUTTA STEPS PASSED AS COLLECTED 
+!       INTEGER :: TPSECH   ! TOTAL RUNGE-KUTTA STEPS 
+!       INTEGER :: IFR   ! FREQUENCY
+!       DOUBLE PRECISION :: SURFACE
+!       DOUBLE PRECISION :: MASS0
+!       DOUBLE PRECISION :: MASS
+!       DOUBLE PRECISION :: MASS_EVAP
+!       DOUBLE PRECISION :: MASS_DISS
+!       DOUBLE PRECISION :: MASS_HAP(10)
+!       DOUBLE PRECISION :: MASS_COMPO(10)
+!       DOUBLE PRECISION :: TB_HAP(10)
+!       DOUBLE PRECISION :: TB_COMPO(10)
+!       DOUBLE PRECISION :: SOL_HAP(10)
+!       DOUBLE PRECISION :: SOL_COMPO(10) 
+!     END TYPE OIL_TYPE
+!
+!     THE CORRESPONDING MPI TYPE
+!   
+      INTEGER :: OIL_CHARAC
+! 
+!     STRUCTURES FOR ALL-TO-ALL COMMUNICATION / SEND AND RECEIVE WITH COUNTERS 
+!     HEAP/SEND/RECVCOUNTS : COUNT THE NUMBER OF LOST TRACEBACKS PARTITION-WISE 
+!     S/RDISPLS : DISPLACEMENTS IN PARTITION-WISE SORTED SEND/RECVCHARS  
+!     HEAPCHAR : FOR SAVING INITIALLY LOST CHARACTERISTICS AND COLLECTING  
+!                THE IMPLANTED TRACEBACKS LOCALISED IN MY PARTITION  
+!     WHILE COLLECTING IS DONE IN HEAPCHARS, MOST ACTIVE OPERATIONS IN RECVCHAR 
+!     SENDCHAR REQUIRED DUE TO THE SPECIFIC SORTING FOR MPI_ALLTOALLV (OPTIMISE?)  
+! 
+      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::HEAPOIL
+      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::SENDOIL 
+      TYPE (OIL_TYPE),ALLOCATABLE,DIMENSION(:),SAVE::RECVOIL 
 !
 !     IF SET TO TRUE, EVERY DETAILED DEBUGGING IS SWITCHED ON
 !  
@@ -340,7 +382,39 @@
           CALL ORG_CHARAC_TYPE1(NOMB,TRACE,CHARACTERISTIC) ! COMMIT THE CHARACTERISTICS TYPE FOR COMM
           ENDIF
         RETURN 
-      END SUBROUTINE ORGANISE_CHARS_FOR_A  
+      END SUBROUTINE ORGANISE_CHARS_FOR_A 
+      
+!=================================================================================
+!                            OILSPILL                                             
+!=================================================================================
+
+      SUBROUTINE OIL_ORGANISE_CHARS(NPARAM) ! WATCH OUT 
+          USE BIEF_DEF, ONLY: NCSIZE
+          IMPLICIT NONE 
+          INTEGER, INTENT(IN)    :: NPARAM
+          IF (.NOT.ALLOCATED(HEAPCOUNTS)) ALLOCATE(HEAPCOUNTS(NCSIZE)) 
+          IF (.NOT.ALLOCATED(SENDCOUNTS)) ALLOCATE(SENDCOUNTS(NCSIZE)) 
+          IF (.NOT.ALLOCATED(RECVCOUNTS)) ALLOCATE(RECVCOUNTS(NCSIZE)) 
+          IF (.NOT.ALLOCATED(SDISPLS))    ALLOCATE(SDISPLS(NCSIZE)) 
+          IF (.NOT.ALLOCATED(RDISPLS))    ALLOCATE(RDISPLS(NCSIZE)) 
+          IF (.NOT.ALLOCATED(ICHA))       ALLOCATE(ICHA(NCSIZE)) 
+          HEAPCOUNTS=0 
+          SENDCOUNTS=0 
+          RECVCOUNTS=0 
+          SDISPLS=0 
+          RDISPLS=0 
+          ICHA=0 
+          ALLOCATE(SENDOIL(NPARAM)) 
+          ALLOCATE(RECVOIL(NPARAM)) 
+          ALLOCATE(HEAPOIL(NPARAM))
+          CALL OIL_ORG_CHARAC_TYPE(OIL_CHARAC) ! COMMIT THE CHARACTERISTICS TYPE FOR COMM
+          RETURN 
+        END SUBROUTINE OIL_ORGANISE_CHARS
+          
+!=================================================================================
+!                            OILSPILL                                             
+!=================================================================================
+ 
 ! 
 !--------------------------------------------------------------------- 
 ! ALLOCATE ALL STATIC FIELDS FOR ALL-TO-ALL COMMUNICATION 
@@ -537,7 +611,7 @@
           SDISPLS(1) = 0 ! CONTIGUOUS DATA 
           DO I=2,NCSIZE 
             SDISPLS(I) = SDISPLS(I-1)+SENDCOUNTS(I-1) 
-          END DO 
+          ENDDO 
           ICHA=SENDCOUNTS ! A RUNNING COUNTER PARTITION-WISE 
           DO I=1,NCHARA 
 !           HEAPCHAR(I)%NEPID+1 - THE PARTITION WE SEND TO / OR -1  
@@ -557,7 +631,7 @@
 ! PREPARE HEAPALG AND SENDALG ACCORDING TO THE MPI_ALLTOALL(V)
 ! REQUIREMENTS 
 !--------------------------------------------------------------------- 
-!
+! 
         SUBROUTINE PREP_INITIAL_SEND_ALG(NSEND,NLOSTCHAR,NCHARA) 
           USE BIEF_DEF, ONLY : NCSIZE
           IMPLICIT NONE 
@@ -587,7 +661,47 @@
           HEAPCOUNTS=0  
           NCHARA=0  
           RETURN  
-        END SUBROUTINE PREP_INITIAL_SEND_ALG 
+        END SUBROUTINE PREP_INITIAL_SEND_ALG
+         
+!====================================================================
+!                         OILSPILL
+!====================================================================
+
+        SUBROUTINE OIL_PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA) 
+          USE BIEF_DEF, ONLY : NCSIZE 
+          IMPLICIT NONE 
+          INTEGER LNG,LU 
+          COMMON/INFO/LNG,LU 
+          INTEGER, INTENT(IN)    :: NSEND 
+          INTEGER, INTENT(OUT)   :: NLOSTCHAR 
+          INTEGER, INTENT(INOUT) :: NCHARA 
+          INTEGER I,N 
+!         JMH: THIS LINE IS PERHAPS A BUG, SEE PREP_SENDBACK...
+          IF(NCHARA.EQ.0) RETURN  
+          SENDCOUNTS=HEAPCOUNTS 
+          SDISPLS(1) = 0 ! CONTIGUOUS DATA 
+          DO I=2,NCSIZE 
+            SDISPLS(I) = SDISPLS(I-1)+SENDCOUNTS(I-1) 
+          END DO 
+          ICHA=SENDCOUNTS ! A RUNNING COUNTER PARTITION-WISE 
+          DO I=1,NCHARA 
+!           HEAPCHAR(I)%NEPID+1 - THE PARTITION WE SEND TO / OR -1  
+            IF(HEAPOIL(I)%NEPID.GE.0) THEN              
+              N=HEAPOIL(I)%NEPID+1  
+              SENDOIL(SDISPLS(N)+ICHA(N))=HEAPOIL(I) 
+              ICHA(N)=ICHA(N)-1 
+            ENDIF  
+          ENDDO  
+          NLOSTCHAR = NSEND 
+          HEAPCOUNTS=0  
+          NCHARA=0 
+          RETURN  
+        END SUBROUTINE OIL_PREP_INITIAL_SEND 
+        
+!====================================================================
+!                          OILSPILL
+!====================================================================
+
 ! 
 !--------------------------------------------------------------------- 
 ! COLLECT IMPLANTED TRACEBACKS WHICH ARE COMPLETED/LOCALISED  
@@ -629,12 +743,12 @@
 ! (OPTIMISE(?): HEAP-FOUND AND PREP_LOST_AGAIN CAN BE JOINED) 
 !--------------------------------------------------------------------- 
 ! 
-        SUBROUTINE PREP_LOST_AGAIN(NOMB,NSEND,NLOSTAGAIN,NARRV) 
+        SUBROUTINE PREP_LOST_AGAIN(NSEND,NARRV) 
           USE BIEF_DEF, ONLY : NCSIZE 
           IMPLICIT NONE 
           INTEGER LNG,LU 
           COMMON/INFO/LNG,LU 
-          INTEGER,INTENT(IN)   :: NOMB,NLOSTAGAIN,NARRV 
+          INTEGER,INTENT(IN)   :: NARRV 
           INTEGER, INTENT(OUT) :: NSEND 
           INTEGER I,N 
           SDISPLS(1) = 0 ! CONTIGUOUS DATA MARKER 
@@ -661,18 +775,14 @@
 ! ALL-TO-ALL PATTERN INCLUDE MY OWN LOST TRACEBACKS THAT CAME BACK 
 !--------------------------------------------------------------------- 
 ! 
-        SUBROUTINE PREP_SENDBACK(NOMB,NCHARA) 
+        SUBROUTINE PREP_SENDBACK(NCHARA) 
           USE BIEF_DEF, ONLY: IPID, NCSIZE 
           IMPLICIT NONE  
           INTEGER LNG,LU 
           COMMON/INFO/LNG,LU 
-          INTEGER, INTENT(IN) :: NOMB 
           INTEGER, INTENT(INOUT) :: NCHARA 
           INTEGER  :: I,N 
-!         JMH 28/01/2013: THIS RETURN SEEMS A BUG "AB ORIGINE"
-!                         WITH THE UHM EXPRESSING DOUBTS OF THE
-!                         AUTHOR...
-!         IF (NCHARA.EQ.0) RETURN ! UHM. 
+!
           SENDCOUNTS=HEAPCOUNTS 
           SDISPLS(1) = 0 ! CONTIGUOUS DATA 
           DO I=2,NCSIZE 
@@ -777,8 +887,49 @@
           ENDIF     
 !
           RETURN 
-        END SUBROUTINE GLOB_ALG_COMM 
+        END SUBROUTINE GLOB_ALG_COMM
+         
+!====================================================================
+!                         OILSPILL
+!====================================================================
+
+        SUBROUTINE OIL_GLOB_CHAR_COMM() 
+          USE BIEF_DEF, ONLY : NCSIZE 
+          IMPLICIT NONE 
+          INTEGER LNG,LU 
+          COMMON/INFO/LNG,LU 
+          INTEGER :: I,IER 
+          CALL P_MPI_ALLTOALL(SENDCOUNTS,1,MPI_INTEGER,  
+     &                        RECVCOUNTS,1,MPI_INTEGER,  
+     &                        MPI_COMM_WORLD,IER) 
+          IF(IER.NE.MPI_SUCCESS) THEN 
+            WRITE(LU,*)  
+     &       ' @STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALL ERROR: ',IER 
+            CALL PLANTE(1) 
+            STOP 
+          ENDIF     
+          RDISPLS(1) = 0 ! SAVE THE RECEIVED DATA CONTIGUOUSLY  
+          DO I=2,NCSIZE 
+            RDISPLS(I) = RDISPLS(I-1)+RECVCOUNTS(I-1) 
+          ENDDO 
+          CALL P_MPI_ALLTOALLV_OIL
+     &      (SENDOIL,SENDCOUNTS,SDISPLS,OIL_CHARAC, 
+     &       RECVOIL,RECVCOUNTS,RDISPLS,OIL_CHARAC, 
+     &       MPI_COMM_WORLD,IER) 
+          IF(IER.NE.MPI_SUCCESS) THEN 
+            WRITE(LU,*)  
+     &       ' @STREAMLINE::GLOB_CHAR_COMM::MPI_ALLTOALLV ERROR: ',IER 
+            CALL PLANTE(1) 
+            STOP  
+          ENDIF     
+          RETURN 
+        END SUBROUTINE OIL_GLOB_CHAR_COMM 
+!
+!====================================================================
+!                         OILSPILL
+!====================================================================
 ! 
+
 !--------------------------------------------------------------------- 
 ! TELEMAC3D PRISMS, INTERPOLATION OF RECVCHAR  
 ! ELT,ETA AND SHP,SHZ MUST BE CORRECTLY PROVIDED VIA ADD_CHAR11   
@@ -2606,7 +2757,7 @@
                         SUBROUTINE SCHAR41_PER 
 !                       ********************** 
 ! 
-     &( U , V , W , DT , NRK , X , Y , ZSTAR , Z , IKLE2 , IBOR , 
+     &( U , V , W , DT , NRK , X , Y , ZSTAR , IKLE2 , IBOR , 
      &  XPLOT , YPLOT , ZPLOT , DX , DY , DZ , SHP , SHZ , ELT , ETA , 
      &  NPLOT , NPOIN2 , NELEM2 , NPLAN , SURDET , 
      &  SENS  , IFAPAR, NCHDIM,NCHARA,ADD) 
@@ -2656,8 +2807,7 @@
 ! |                |    | BUT W IS W* x DELTAZ (STEMS FROM TRIDW2) 
 ! |    DT          | -->| PAS DE TEMPS.                                | 
 ! |    NRK         | -->| NOMBRE DE SOUS-PAS DE RUNGE-KUTTA.           | 
-! |    X,Y,ZSTAR   | -->| COORDONNEES DES POINTS DU MAILLAGE.          | 
-! |    Z           | -->| COTE DANS LE MAILLAGE REEL                   | 
+! |    X,Y,ZSTAR   | -->| COORDONNEES DES POINTS DU MAILLAGE.          |                   | 
 ! |    IKLE2       | -->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE    | 
 ! |                |    | ET GLOBALE DU MAILLAGE 2D.                   | 
 ! |    IBOR        | -->| NUMEROS 2D DES ELEMENTS AYANT UNE FACE COMMUNE 
@@ -2705,8 +2855,8 @@
       DOUBLE PRECISION, INTENT(INOUT) :: ZPLOT(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT),SHZ(NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2),DT 
-!                                                              PERIODICITY                                                              
-      DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN2,NPLAN),ZSTAR(NPLAN+1) 
+!                                              PERIODICITY                                                              
+      DOUBLE PRECISION, INTENT(IN)    :: ZSTAR(NPLAN+1) 
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: DZ(NPLOT) 
       INTEGER         , INTENT(IN)    :: IBOR(NELEM2,5,NPLAN-1) 
@@ -3338,7 +3488,7 @@
                         SUBROUTINE SCHAR41_PER_4D 
 !                       ************************* 
 ! 
-     &( U , V , W , F , DT , NRK , X , Y , ZSTAR , FREQ,Z ,IKLE2 ,IBOR ,
+     &( U , V , W , F , DT , NRK , X , Y , ZSTAR , FREQ ,IKLE2 ,IBOR ,
      &  XPLOT , YPLOT , ZPLOT  , FPLOT,DX , DY , DZ , DF,
      &  SHP   , SHZ   , SHF    , ELT    , ETA , 
      &  FRE   , NPLOT , NPOIN2 , NELEM2 , NPLAN , NF,SURDET , 
@@ -3389,8 +3539,7 @@
 ! |                |    | BUT W IS W* x DELTAZ (STEMS FROM TRIDW2) 
 ! |    DT          | -->| PAS DE TEMPS.                                | 
 ! |    NRK         | -->| NOMBRE DE SOUS-PAS DE RUNGE-KUTTA.           | 
-! |    X,Y,ZSTAR   | -->| COORDONNEES DES POINTS DU MAILLAGE.          | 
-! |    Z           | -->| COTE DANS LE MAILLAGE REEL                   | 
+! |    X,Y,ZSTAR   | -->| COORDONNEES DES POINTS DU MAILLAGE.          | | 
 ! |    IKLE2       | -->| TRANSITION ENTRE LES NUMEROTATIONS LOCALE    | 
 ! |                |    | ET GLOBALE DU MAILLAGE 2D.                   | 
 ! |    IBOR        | -->| NUMEROS 2D DES ELEMENTS AYANT UNE FACE COMMUNE 
@@ -3442,8 +3591,8 @@
       DOUBLE PRECISION, INTENT(INOUT) :: SHP(3,NPLOT),SHZ(NPLOT)
       DOUBLE PRECISION, INTENT(INOUT) :: SHF(NPLOT) 
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN2),Y(NPOIN2),DT 
-!                                                              PERIODICITY                                                              
-      DOUBLE PRECISION, INTENT(IN)    :: Z(NPOIN2,NPLAN),ZSTAR(NPLAN+1) 
+!                                              PERIODICITY                                                              
+      DOUBLE PRECISION, INTENT(IN)    :: ZSTAR(NPLAN+1) 
       DOUBLE PRECISION, INTENT(IN)    :: FREQ(NF)
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       DOUBLE PRECISION, INTENT(INOUT) :: DZ(NPLOT),DF(NPLOT) 
@@ -3459,7 +3608,7 @@
       INTEGER IETP1,IFA,ISUI(3),IFR
 ! 
       DOUBLE PRECISION PAS,EPSILO,A1,A2,DX1,DY1,DXP,DYP,DZP,XP,YP,ZP,FP 
-      DOUBLE PRECISION DELTAZ,EPSDZ,PAS2,DFP,DENOM 
+      DOUBLE PRECISION PAS2,DFP,DENOM 
 !
       INTEGER  P_IMAX 
       EXTERNAL P_IMAX
@@ -3468,7 +3617,6 @@
 ! 
       DATA ISUI   / 2 , 3 , 1 / 
       DATA EPSILO / -1.D-6 / 
-      DATA EPSDZ  /1.D-4/ 
 ! 
       NSPMAX=1  
       ETA1(NPLAN)=1
@@ -4091,7 +4239,7 @@
 ! 
      &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT, 
      & NPLOT,NPOIN,NELEM,NELMAX,SURDET,SENS, 
-     & IFAPAR,MESH,NCHDIM,NCHARA,ADD) 
+     & IFAPAR,NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -4173,7 +4321,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN) 
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       INTEGER, INTENT(IN)             :: IFAPAR(6,*) 
-      TYPE (BIEF_MESH), INTENT(INOUT) :: MESH
       LOGICAL, INTENT(IN)             :: ADD
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
@@ -4496,7 +4643,7 @@
 ! 
      &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT, 
      & NPLOT,NPOIN,NELEM,NELMAX,SURDET,SENS, 
-     & IFAPAR,MESH,NCHDIM,NCHARA,ADD,IELM,VISC,STOCHA) 
+     & IFAPAR,NCHDIM,NCHARA,ADD,IELM,VISC,STOCHA) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -4579,7 +4726,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN),VISC(NPOIN) 
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       INTEGER, INTENT(IN)             :: IFAPAR(6,*) 
-      TYPE (BIEF_MESH), INTENT(INOUT) :: MESH
       LOGICAL, INTENT(IN)             :: ADD
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
@@ -4592,7 +4738,7 @@
       DOUBLE PRECISION SHP22,SHP23,SHP24
       DOUBLE PRECISION SHP33,SHP31,SHP34 
 !     FOR STOCHASTIC DIFFUSION
-      DOUBLE PRECISION RAND1,RAND2,A,B,C,D,E,DIFF_X,DIFF_Y,DEUXPI 
+      DOUBLE PRECISION RAND1,RAND2,A,C,D,E,DIFF_X,DIFF_Y,DEUXPI 
 ! 
       DATA ISUI   / 2 , 3 , 1 / 
       DATA ISUI2  / 3 , 1 , 2 / 
@@ -5018,7 +5164,7 @@
 ! 
      &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT, 
      & NPLOT,NPOIN,NELEM,NELMAX,SURDET,SENS, 
-     & IFAPAR,MESH,NCHDIM,NCHARA,ADD) 
+     & IFAPAR,NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.3           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -5086,12 +5232,11 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN) 
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       INTEGER, INTENT(IN)             :: IFAPAR(6,*) 
-      TYPE (BIEF_MESH), INTENT(INOUT) :: MESH
       LOGICAL, INTENT(IN)             :: ADD 
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 !      
-      INTEGER IPLOT,ISP,I1,I2,I3,I4,I5,I6,IEL,ISO,IFA,ISUI(3),ISUI2(3)
+      INTEGER IPLOT,ISP,I1,I2,I3,IEL,ISO,IFA,ISUI(3),ISUI2(3)
       INTEGER IPROC,ILOC,ISPDONE,NSP
       DOUBLE PRECISION PAS,EPSILO,A1,DX1,DY1,DXP,DYP,XP,YP,DENOM
       DOUBLE PRECISION SHP11,SHP12,SHP14
@@ -5487,7 +5632,7 @@
 ! 
      &(U,V,DT,NRK,X,Y,IKLE,IFABOR,XPLOT,YPLOT,DX,DY,SHP,ELT, 
      & NPLOT,NPOIN,NELEM,NELMAX,SURDET,SENS, 
-     & IFAPAR,MESH,NCHDIM,NCHARA,ADD) 
+     & IFAPAR,NCHDIM,NCHARA,ADD) 
 ! 
 !*********************************************************************** 
 ! BIEF VERSION 6.2           24/04/97    J-M JANIN (LNH) 30 87 72 84 
@@ -5556,7 +5701,6 @@
       DOUBLE PRECISION, INTENT(IN)    :: X(NPOIN),Y(NPOIN) 
       DOUBLE PRECISION, INTENT(INOUT) :: DX(NPLOT),DY(NPLOT) 
       INTEGER, INTENT(IN)             :: IFAPAR(6,*) 
-      TYPE (BIEF_MESH), INTENT(INOUT) :: MESH
       LOGICAL, INTENT(IN)             :: ADD
 !  
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
@@ -6209,30 +6353,38 @@
 ! 
 !       APPEL DU SOUS-PROGRAMME DE REMONTEE DES COURBES CARACTERISTIQUES 
 ! 
-        IF(IELMU.EQ.11) THEN
+        IF(STOCHA.EQ.1)THEN
+          CALL SCHAR11_STO(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
+     &                     XCONV,YCONV,DX,DY,SHP,ELT,
+     &                     NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
+     &                     MESH%IFAPAR%I,NCHDIM,NCHARA,.FALSE.,
+     &                     IELM,VISC%R,STOCHA)
+        ELSE  
+          IF(IELMU.EQ.11) THEN
 !    
-          CALL SCHAR11(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                 XCONV,YCONV,DX,DY,SHP,ELT,
-     &                 NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,ADD)  
+            CALL SCHAR11(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
+     &                   XCONV,YCONV,DX,DY,SHP,ELT,
+     &                   NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
+     &                   MESH%IFAPAR%I,NCHDIM,NCHARA,ADD)  
 !
-        ELSEIF(IELMU.EQ.12) THEN
-          CALL SCHAR12(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                 XCONV,YCONV,DX,DY,SHP,ELT, 
-     &                 NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,ADD)
+          ELSEIF(IELMU.EQ.12) THEN
+            CALL SCHAR12(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
+     &                   XCONV,YCONV,DX,DY,SHP,ELT, 
+     &                   NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
+     &                   MESH%IFAPAR%I,NCHDIM,NCHARA,ADD)
 !
-        ELSEIF(IELMU.EQ.13) THEN
+          ELSEIF(IELMU.EQ.13) THEN
 !     
-          CALL SCHAR13(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
-     &                 XCONV,YCONV,DX,DY,SHP,ELT, 
-     &                 NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                 MESH%IFAPAR%I,MESH,NCHDIM,NCHARA,ADD)
+            CALL SCHAR13(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
+     &                   XCONV,YCONV,DX,DY,SHP,ELT, 
+     &                   NPLOT,DIM1U,NELEM,NELMAX,SURDET,SENS, 
+     &                   MESH%IFAPAR%I,NCHDIM,NCHARA,ADD)
 !
-        ELSE
-          WRITE(LU,*) 'WRONG DISCRETISATION OF VELOCITY:',IELMU
-          CALL PLANTE(1)
-          STOP
+          ELSE
+            WRITE(LU,*) 'WRONG DISCRETISATION OF VELOCITY:',IELMU
+            CALL PLANTE(1)
+            STOP
+          ENDIF
         ENDIF 
 ! 
 !----------------------------------------------------------------------- 
@@ -6247,14 +6399,14 @@
          IF(PERIO.AND..NOT.SIGMA) THEN
            IF(YA4D) THEN
              CALL SCHAR41_PER_4D(UCONV,VCONV,WCONV,FRCONV,DT,NRK,X,Y,
-     &                           ZSTAR,FREQ,Z,IKLE,IFABOR,
+     &                           ZSTAR,FREQ,IKLE,IFABOR,
      &                           XCONV,YCONV,ZCONV,FCONV,DX, 
      &                           DY,DZ,DF,SHP,SHZ,SHF,ELT,ETA,FRE,NPLOT,
      &                           NPOIN2,NELEM,NPLAN,NF,SURDET,SENS, 
      &                           MESH%IFAPAR%I,NCHDIM,NCHARA,ADD)
            ELSE
              CALL SCHAR41_PER(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
-     &                        Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
+     &                        IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                        DY,DZ,SHP,SHZ,ELT,ETA,NPLOT, 
      &                        NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                        MESH%IFAPAR%I,NCHDIM,NCHARA,ADD)
@@ -6435,36 +6587,44 @@
 !           COMPUTING SHAPE FUNCTIONS BY THE WAY / 2D OR 3D  
 ! 
             IF(IELM.EQ.11) THEN
+              IF(STOCHA.EQ.1)THEN
+                CALL SCHAR11_STO(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
+     &                           XCONV,YCONV,DX,DY,SHPBUF,ELTBUF,
+     &                           NARRV,DIM1U,NELEM,NELMAX,SURDET,SENS, 
+     &                           MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.,
+     &                           IELM,VISC%R,STOCHA)
+              ELSE 
 !
-              IF(IELMU.EQ.11) THEN
+                IF(IELMU.EQ.11) THEN
 !
                 CALL SCHAR11(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
      &                       XCONV,YCONV,DX,DY,SHPBUF,ELTBUF, 
      &                       NARRV,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                       MESH%IFAPAR%I,MESH,NCHDIM,NARRV,
+     &                       MESH%IFAPAR%I,NCHDIM,NARRV,
      &                       .TRUE.)
 !
-              ELSEIF(IELMU.EQ.12) THEN
+                ELSEIF(IELMU.EQ.12) THEN
 ! 
                 CALL SCHAR12(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
      &                       XCONV,YCONV,DX,DY,SHPBUF,ELTBUF, 
      &                       NARRV,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                       MESH%IFAPAR%I,MESH,NCHDIM,NARRV,
+     &                       MESH%IFAPAR%I,NCHDIM,NARRV,
      &                       .TRUE.)
 !
 !
-              ELSEIF(IELMU.EQ.13) THEN
+                ELSEIF(IELMU.EQ.13) THEN
 !
                 CALL SCHAR13(UCONV,VCONV,DT,NRK,X,Y,IKLE,IFABOR, 
      &                       XCONV,YCONV,DX,DY,SHPBUF,ELTBUF, 
      &                       NARRV,DIM1U,NELEM,NELMAX,SURDET,SENS, 
-     &                       MESH%IFAPAR%I,MESH,NCHDIM,NARRV,
+     &                       MESH%IFAPAR%I,NCHDIM,NARRV,
      &                       .TRUE.)
 !
-              ELSE
-                WRITE(LU,*) 'WRONG DISCRETISATION OF VELOCITY:',IELMU
-                CALL PLANTE(1)
-                STOP
+                ELSE
+                  WRITE(LU,*) 'WRONG DISCRETISATION OF VELOCITY:',IELMU
+                  CALL PLANTE(1)
+                  STOP
+                ENDIF
               ENDIF
 ! 
             ELSEIF(IELM.EQ.41) THEN
@@ -6472,7 +6632,7 @@
               IF(PERIO.AND..NOT.SIGMA) THEN
                 IF(YA4D) THEN
                   CALL SCHAR41_PER_4D(UCONV,VCONV,WCONV,FRCONV,DT,NRK,
-     &                                X,Y,ZSTAR,FREQ,Z,IKLE,IFABOR,
+     &                                X,Y,ZSTAR,FREQ,IKLE,IFABOR,
      &                                XCONV,YCONV,ZCONV,FCONV,
      &                                DX,DY,DZ,DF,
      &                                SHPBUF,SHZBUF,SHFBUF,
@@ -6482,7 +6642,7 @@
      &                                MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
                 ELSE
                   CALL SCHAR41_PER(UCONV,VCONV,WCONV,DT,NRK,X,Y,ZSTAR, 
-     &                             Z,IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
+     &                             IKLE,IFABOR,XCONV,YCONV,ZCONV,DX, 
      &                             DY,DZ,SHPBUF,SHZBUF,ELTBUF,ETABUF, 
      &                             NARRV,NPOIN2,NELEM,NPLAN,SURDET,SENS, 
      &                             MESH%IFAPAR%I,NCHDIM,NARRV,.TRUE.)
@@ -6570,7 +6730,7 @@
           CALL HEAP_FOUND(NLOSTAGAIN,NARRV,NCHARA)  
 !
           IF(P_ISUM(NLOSTAGAIN).GT.0) THEN ! THERE ARE LOST-AGAINS SOMEWHERE   
-            CALL PREP_LOST_AGAIN(NOMB,NSEND,NLOSTAGAIN,NARRV) ! PREPARE SENDING LOST-AGAINS  
+            CALL PREP_LOST_AGAIN(NSEND,NARRV) ! PREPARE SENDING LOST-AGAINS  
           ELSE  
             EXIT ! NO LOST-AGAIN TRACEBACKS ANYWHERE, LEAVE THESE ITERATIONS 
           ENDIF 
@@ -6586,7 +6746,7 @@
 ! 
 !         PREPARE SENDING OF THE HEAPED LOCALISED TRACEBACKS 
 !
-          CALL PREP_SENDBACK(NOMB,NCHARA) 
+          CALL PREP_SENDBACK(NCHARA) 
 
 !         THE FINAL SEND/RECV OF THE LOST TRACEBACKS BACK VIA ALLTOALL COMM. 
           CALL GLOB_CHAR_COMM() 
@@ -7354,7 +7514,7 @@
 !
 !         PREPARE SENDING OF THE HEAPED LOCALISED TRACEBACKS 
 !
-          CALL PREP_SENDBACK(NOMB,NCHARA)
+          CALL PREP_SENDBACK(NCHARA)
 !
 !         THE FINAL SEND/RECV OF INTERPOLATED VALUES VIA ALLTOALL COMM.
 !
@@ -8122,15 +8282,11 @@
 ! 
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
 ! 
-      INTEGER I,ISTOP,IPLOT,NSENDG,NARRVG 
-      INTEGER IDIR,IWIN
-      INTEGER N_INFO_ALG
-      INTEGER,ALLOCATABLE,DIMENSION(:) :: I_SUB_INFO
+      INTEGER I,ISTOP,IPLOT,NSENDG,NARRVG,IDIR,IWIN
 ! 
 !----------------------------------------------------------------------- 
 ! 
-      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN 
-      DOUBLE PRECISION XVOID,YVOID,ZVOID
+      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND 
       INTEGER  P_ISUM 
       EXTERNAL P_ISUM 
 !     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR  
@@ -8441,6 +8597,622 @@
 !
       RETURN
       END SUBROUTINE DEL_INFO_ALG
+!                       ***************************** 
+                        SUBROUTINE OIL_SEND_PARTICLES
+!                       ***************************** 
+! 
+     &(X,Y,Z,SHP,SHZ,ELT,ETA,ISUB,TAG,NDP,NPLOT,NPLOT_MAX,MESH,NPLAN,
+     &     PARTICULES)
+! 
+!*********************************************************************** 
+! BIEF VERSION 6.3           24/04/97    J-M HERVOUET (LNHE) 
+! 
+!*********************************************************************** 
+!
+!brief    Exchanging particles between processors, after computing their
+!+        trajectory.
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        02/10/2012
+!+        V6P3
+!+     First version
+! 
+!----------------------------------------------------------------------- 
+!                             ARGUMENTS 
+! .________________.____.______________________________________________. 
+! |      NOM       |MODE|                   ROLE                       | 
+! |________________|____|______________________________________________|            
+! |   SHP          |<-- | COORDONNEES BARYCENTRIQUES 2D AU PIED DES      
+! |                |    | COURBES CARACTERISTIQUES.                     
+! |   ELT          | -->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES    
+! |                |    | CARACTERISTIQUES.                                               
+! |   ISUB         | -->| IN SCALAR MODE: NOT USED
+! |                |    | IN PARALLEL: RETURNS THE SUB-DOMAIN WHERE IS
+! |                |    | THE FOOT OF THE CHARACTERISTIC                       
+! |   NDP          | -->| NOMBRE DE POINTS PAR ELEMENT 2D.                       
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
+! 
+!----------------------------------------------------------------------- 
+! 
+! APPELE PAR : 
+! 
+! SOUS-PROGRAMMES APPELES : 
+! 
+!*********************************************************************** 
+! 
+      USE BIEF
+! 
+      IMPLICIT NONE 
+      INTEGER LNG,LU 
+      COMMON/INFO/LNG,LU 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER, INTENT(IN)             :: NPLOT_MAX,NDP,NPLAN
+      INTEGER, INTENT(INOUT)          :: NPLOT
+      INTEGER, INTENT(INOUT)          :: ELT(NPLOT_MAX),ETA(NPLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: ISUB(NPLOT_MAX),TAG(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHP(NDP,NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZ(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(NPLOT_MAX),Y(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: Z(NPLOT_MAX)
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+      TYPE(OIL_PART), DIMENSION(NPLOT_MAX)::PARTICULES
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER I,ISTOP,IPLOT,NSENDG,NARRVG 
+! 
+!----------------------------------------------------------------------- 
+! 
+      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND,NLOSTAGAIN,NFLOT_OIL
+      DOUBLE PRECISION XVOID,YVOID,ZVOID
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR  
+      INTEGER NCHDIM  
+! 
+      SAVE 
+! 
+!----------------------------------------------------------------------- 
+! 
+      NCHDIM=LAST_NPLOT
+! 
+!     ORGANISE_CHARS MUST HAVE BEEN CALLED BEFORE IN A CALL TO SCARACT
+!     BUT WE MAY HAVE THE CASE OF A CALL FROM DIFFERENT PROGRAMMES WITH
+!     A DIFFERENT NOMB OR DIFFERENT NPLOT 
+! 
+!     NOMB IS HERE 0, SO LAST_NOMB IS KEPT, MEMORY OVERDIMENSIONED
+!     IF NOMB<>0 HAS BEEN USED BEFORE
+!     
+      IF(NPLOT.GT.LAST_NPLOT) THEN
+!       DESTROY THE CHARACTERISTICS TYPE FOR COMM. 
+        CALL DEORG_CHARAC_TYPE()  
+!       SET DATA STRUCTURES ACCORDINGLY  
+        CALL ORGANISE_CHARS(NPLOT,LAST_NOMB,NCHDIM,LAST_NPLOT)        
+      ENDIF 
+!  
+!     INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS) 
+      NCHARA=0
+      HEAPCOUNTS=0  
+!
+!----------------------------------------------------------------------- 
+! 
+!     DATA ARE SENT TO SUB-DOMAINS WHERE THE PARTICLES HAVE GONE.
+!
+      DO IPLOT=1,NPLOT
+        IF(ISUB(IPLOT).NE.IPID.AND.PARTICULES(IPLOT)%STATE.EQ.1) THEN
+          NCHARA=NCHARA+1 
+          IF(NCHARA.GT.NCHDIM) THEN  
+            WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM 
+            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM' 
+            WRITE (LU,*) 'IPID=',IPID  
+            CALL PLANTE(1) 
+            STOP 
+          ENDIF             
+          HEAPCHAR(NCHARA)%MYPID=IPID        ! THE ORIGIN PID  
+          HEAPCHAR(NCHARA)%NEPID=ISUB(IPLOT) ! THE NEXT PID  
+          HEAPCHAR(NCHARA)%INE=ELT(IPLOT)    ! ELEMENT THERE  
+          HEAPCHAR(NCHARA)%KNE=ETA(IPLOT)    ! LEVEL THERE 
+!         HEAPCHAR(NCHARA)%IFR=0             ! NO FREQUENCY THERE     
+          HEAPCHAR(NCHARA)%IOR=TAG(IPLOT)    ! THE PARTICLE TAG 
+!         HEAPCHAR(NCHARA)%ISP=0             ! R-K STEP AS COLLECTED (NOT USED) 
+!         HEAPCHAR(NCHARA)%NSP=0             ! R-K STEPS TO BE DONE  (NOT USED) 
+          HEAPCHAR(NCHARA)%XP=SHP(1,IPLOT)   ! X-POSITION (HERE SHP1)  
+          HEAPCHAR(NCHARA)%YP=SHP(2,IPLOT)   ! Y-POSITION (HERE SHP2)  
+          HEAPCHAR(NCHARA)%ZP=SHP(3,IPLOT)   ! Z-POSITION (HERE SHP3)
+!         HEAPCHAR(NCHARA)%FP=0              ! F-POSITION (NOT USED HERE)
+          HEAPCHAR(NCHARA)%DX=SHZ(IPLOT)     ! DISPLACEMENT IN X, HERE SHZ  
+!         HEAPCHAR(NCHARA)%DY=               ! DY (NOT USED HERE)  
+!         HEAPCHAR(NCHARA)%DZ=               ! DZ (NOT USED HERE) 
+!         HEAPCHAR(NCHARA)%DF=               ! DF (NOT USED HERE)
+!         HEAPCHAR(NCHARA)%BASKET            ! SIZE MAX_BASKET_SIZE   
+!
+          HEAPCOUNTS(ISUB(IPLOT)+1)=HEAPCOUNTS(ISUB(IPLOT)+1)+1
+        ENDIF
+      ENDDO   
+! 
+      NSEND=NCHARA 
+      NLOSTCHAR=NSEND    
+!  
+      NSENDG=P_ISUM(NSEND) 
+!       
+      IF(NSENDG.GT.0) THEN ! THERE ARE LOST TRACEBACKS SOMEWHERE 
+! 
+!       PREPARE INITIAL SENDING OF COLLECTED LOST TRACEBACKS
+!       BASICALLY HEAPCHAR IS COPIED TO SENDCHAR...
+! 
+        CALL PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA) 
+! 
+!       NOW THE TRANSMISSION VIA ALL-TO-ALL COMMUNICATION
+!       RECVCHAR WILL BE FILLED
+!
+        CALL GLOB_CHAR_COMM()    
+! 
+!       COMPUTE THE NUMBER OF SET OF DATA ARRIVED 
+!  
+        NARRV = SUM(RECVCOUNTS)
+        NARRVG= P_ISUM(NARRV) 
+!
+        IF(NSENDG.NE.NARRVG) THEN
+          WRITE(LU,*) 'TOTAL SENT = ',NSENDG,' TOTAL RECEIVED = ',NARRVG
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!     
+        ISTOP=0 
+        IF(NARRV.GT.NCHDIM) THEN 
+          ISTOP=1 
+          WRITE(LU,*) 'NARRV=',NARRV,' NCHDIM=',NCHDIM 
+        ENDIF
+        ISTOP=P_ISUM(ISTOP) 
+        IF(ISTOP.GT.0) THEN 
+          WRITE(LU,*) 'SEND_PARTICLES'
+          WRITE(LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP, 
+     &                   ' PROCESSORS' 
+          CALL PLANTE(1) 
+          STOP 
+        ENDIF
+!
+!       RETRIEVING SHP, SHZ, ELT, ETA IN RECVCHAR
+!
+        IF(NARRV.GT.0) THEN
+          DO I=1,NARRV
+            IF(RECVCHAR(I)%NEPID.NE.IPID) THEN
+              WRITE(LU,*) 'ERROR IPID=',IPID,' NEPID=',
+     &                    RECVCHAR(I)%NEPID
+              CALL PLANTE(1)
+              STOP
+            ENDIF         
+!           ADDING A PARTICLE WITH ALREADY KNOWN POSITION        
+!================================================================
+!                         OILSPILL
+!================================================================
+!
+            NFLOT_OIL = 0
+            CALL ADD_PARTICLE(XVOID,YVOID,ZVOID,
+     &                        RECVCHAR(I)%IOR,NFLOT_OIL,1,
+     &                        X,Y,Z,TAG,SHP,SHZ,ELT,ETA,MESH,NPLAN,
+     &                        RECVCHAR(I)%XP,RECVCHAR(I)%YP,
+     &                        RECVCHAR(I)%ZP,RECVCHAR(I)%DX,
+     &                        RECVCHAR(I)%INE,RECVCHAR(I)%KNE)    
+
+            IF(NFLOT_OIL.EQ.1)THEN
+               NPLOT = NPLOT+1
+               PARTICULES(NPLOT)%XOIL = X(1)
+               PARTICULES(NPLOT)%YOIL = Y(1)
+               PARTICULES(NPLOT)%ID = TAG(1)
+               PARTICULES(NPLOT)%SHPOIL(1) = SHP(1,1)
+               PARTICULES(NPLOT)%SHPOIL(2) = SHP(2,1)
+               PARTICULES(NPLOT)%SHPOIL(3) = SHP(3,1)
+               PARTICULES(NPLOT)%ELTOIL = ELT(1)
+            ENDIF
+!================================================================
+!                         OILSPILL
+!================================================================
+!           THE PARTICLE IS IN THE SUB-DOMAIN AND SHOULD NOT BE
+!           REMOVED AFTER
+            ISUB(NPLOT)=IPID
+          ENDDO
+        ENDIF
+! 
+      ENDIF
+! 
+      CALL RE_INITIALISE_CHARS(NSEND,NLOSTCHAR,NLOSTAGAIN,NARRV) ! DEALLOCATING 
+! 
+!----------------------------------------------------------------------- 
+! 
+15    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES::',/,1X, 
+     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
+16    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES::',/,1X, 
+     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
+! 
+17    FORMAT(1X,'STREAMLINE::SEND_PARTICLES',/,1X,
+     &          'TYPE D''OBJET INCONNU : ',2I6) 
+18    FORMAT(1X,'STREAMLINE::OIL_SEND_PARTICLES',/,1X,
+     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
+!
+!----------------------------------------------------------------------- 
+! 
+      RETURN  
+      END SUBROUTINE OIL_SEND_PARTICLES
+!                       ************************
+                        SUBROUTINE OIL_SEND_INFO
+!                       ************************
+! 
+     &(X,Y,Z,SHP,SHZ,ELT,ETA,ISUB,TAG,NDP,NPLOT,NPLOT_MAX,MESH,NPLAN,
+     & PARTICULES,NB_COMPO,NB_HAP)
+! 
+!*********************************************************************** 
+! BIEF VERSION 6.3           24/04/97    J-M HERVOUET (LNHE) 
+! 
+!*********************************************************************** 
+!
+!brief    Exchanging particles between processors, after computing their
+!+        trajectory.
+!
+!history  J-M HERVOUET (EDF-LNHE)
+!+        02/10/2012
+!+        V6P3
+!+     First version
+! 
+!----------------------------------------------------------------------- 
+!                             ARGUMENTS 
+! .________________.____.______________________________________________. 
+! |      NOM       |MODE|                   ROLE                       | 
+! |________________|____|______________________________________________|            
+! |   SHP          |<-- | COORDONNEES BARYCENTRIQUES 2D AU PIED DES      
+! |                |    | COURBES CARACTERISTIQUES.                     
+! |   ELT          | -->| NUMEROS DES ELEMENTS 2D AU PIED DES COURBES    
+! |                |    | CARACTERISTIQUES.                                               
+! |   ISUB         | -->| IN SCALAR MODE: NOT USED
+! |                |    | IN PARALLEL: RETURNS THE SUB-DOMAIN WHERE IS
+! |                |    | THE FOOT OF THE CHARACTERISTIC                       
+! |   NDP          | -->| NOMBRE DE POINTS PAR ELEMENT 2D.                       
+! |________________|____|______________________________________________
+! MODE : -->(DONNEE NON MODIFIEE), <--(RESULTAT), <-->(DONNEE MODIFIEE) 
+! 
+!----------------------------------------------------------------------- 
+! 
+! APPELE PAR : 
+! 
+! SOUS-PROGRAMMES APPELES : 
+! 
+!*********************************************************************** 
+! 
+      USE BIEF
+! 
+      IMPLICIT NONE 
+      INTEGER LNG,LU 
+      COMMON/INFO/LNG,LU 
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER, INTENT(IN)             :: NPLOT_MAX,NDP,NPLAN
+      INTEGER, INTENT(IN)             :: NB_COMPO,NB_HAP
+      INTEGER, INTENT(INOUT)          :: NPLOT
+      INTEGER, INTENT(INOUT)          :: ELT(NPLOT_MAX),ETA(NPLOT_MAX)
+      INTEGER, INTENT(INOUT)          :: ISUB(NPLOT_MAX),TAG(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHP(NDP,NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: SHZ(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(NPLOT_MAX),Y(NPLOT_MAX)
+      DOUBLE PRECISION, INTENT(INOUT) :: Z(NPLOT_MAX)
+      TYPE(BIEF_MESH),  INTENT(INOUT) :: MESH
+      TYPE(OIL_PART), DIMENSION(NPLOT_MAX)::PARTICULES
+! 
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ 
+! 
+      INTEGER I,ISTOP,IPLOT,NSENDG,NARRVG,K
+! 
+!----------------------------------------------------------------------- 
+! 
+      INTEGER NCHARA,NLOSTCHAR,NARRV,NSEND
+      INTEGER  P_ISUM 
+      EXTERNAL P_ISUM 
+!     STATIC DIMENSION FOR HEAPCHAR, SENDCHAR, RECVCHAR  
+      INTEGER NCHDIM  
+! 
+      SAVE 
+! 
+!----------------------------------------------------------------------- 
+!  
+!  
+!     INITIALISING NCHARA (NUMBER OF LOST CHARACTERISTICS)
+      NCHDIM=LAST_NPLOT
+      NCHARA=0
+      HEAPCOUNTS=0  
+!
+!----------------------------------------------------------------------- 
+! 
+!     DATA ARE SENT TO SUB-DOMAINS WHERE THE PARTICLES HAVE GONE.
+!
+      DO IPLOT=1,NPLOT
+!!       IF(ISUB(IPLOT).NE.IPID) THEN
+         IF(ISUB(IPLOT).NE.IPID.AND.PARTICULES(IPLOT)%STATE.EQ.1) THEN
+          NCHARA=NCHARA+1 
+          IF(NCHARA.GT.NCHDIM) THEN  
+            WRITE (LU,*) 'NCHARA=',NCHARA,' NCHDIM=',NCHDIM 
+            WRITE (LU,*) 'POST_INTERP::NCHARA>NCHDIM, INCREASE NCHDIM' 
+            WRITE (LU,*) 'IPID=',IPID  
+            CALL PLANTE(1) 
+            STOP 
+          ENDIF 
+!        
+!====================================================================================
+!                                OILSPILL
+!====================================================================================
+!  
+          HEAPOIL(NCHARA)%MYPID=IPID        ! THE ORIGIN PID  
+          HEAPOIL(NCHARA)%NEPID=ISUB(IPLOT) ! THE NEXT PID  
+          HEAPOIL(NCHARA)%INE=ELT(IPLOT)    ! ELEMENT THERE  
+          HEAPOIL(NCHARA)%KNE=ETA(IPLOT)    ! LEVEL THERE 
+!         HEAPOIL(NCHARA)%IFR=0             ! NO FREQUENCY THERE     
+          HEAPOIL(NCHARA)%IOR=TAG(IPLOT)    ! THE PARTICLE TAG 
+          HEAPOIL(NCHARA)%STATE=PARTICULES(IPLOT)%STATE ! R-K STEP AS COLLECTED (NOT USED) 
+          HEAPOIL(NCHARA)%TPSECH=PARTICULES(IPLOT)%TPSECH ! R-K STEPS TO BE DONE  (NOT USED) 
+          HEAPOIL(NCHARA)%SURFACE=PARTICULES(IPLOT)%SURFACE   ! X-POSITION (HERE SHP1) 
+          HEAPOIL(NCHARA)%MASS0=PARTICULES(IPLOT)%MASS0
+          HEAPOIL(NCHARA)%MASS=PARTICULES(IPLOT)%MASS
+          HEAPOIL(NCHARA)%MASS_EVAP=PARTICULES(IPLOT)%MASS_EVAP
+          HEAPOIL(NCHARA)%MASS_DISS=PARTICULES(IPLOT)%MASS_DISS
+          DO K=1,NB_HAP
+            HEAPOIL(NCHARA)%MASS_HAP(K)=PARTICULES(IPLOT)%HAP(K)%MASS
+            HEAPOIL(NCHARA)%TB_HAP(K)=PARTICULES(IPLOT)%HAP(K)%TB
+            HEAPOIL(NCHARA)%SOL_HAP(K)=PARTICULES(IPLOT)%HAP(K)%SOL
+          ENDDO
+          DO K=1,NB_COMPO
+            HEAPOIL(NCHARA)%MASS_COMPO(K)= 
+     &           PARTICULES(IPLOT)%COMPO(K)%MASS
+            HEAPOIL(NCHARA)%TB_COMPO(K)=
+     &           PARTICULES(IPLOT)%COMPO(K)%TB
+            HEAPOIL(NCHARA)%SOL_COMPO(K)=
+     &           PARTICULES(IPLOT)%COMPO(K)%SOL
+          ENDDO
+!
+          HEAPCOUNTS(ISUB(IPLOT)+1)=HEAPCOUNTS(ISUB(IPLOT)+1)+1
+!
+!====================================================================================
+!                                OILSPILL
+!==================================================================================== 
+!
+        ENDIF
+      ENDDO   
+! 
+      NSEND=NCHARA 
+      NLOSTCHAR=NSEND    
+!  
+      NSENDG=P_ISUM(NSEND) 
+
+!       
+      IF(NSENDG.GT.0) THEN ! THERE ARE LOST TRACEBACKS SOMEWHERE 
+! 
+!       PREPARE INITIAL SENDING OF COLLECTED LOST TRACEBACKS
+!       BASICALLY HEAPCHAR IS COPIED TO SENDCHAR...
+! 
+        CALL OIL_PREP_INITIAL_SEND(NSEND,NLOSTCHAR,NCHARA) 
+! 
+!       NOW THE TRANSMISSION VIA ALL-TO-ALL COMMUNICATION
+!       RECVCHAR WILL BE FILLED
+!
+        CALL OIL_GLOB_CHAR_COMM()    
+! 
+!       COMPUTE THE NUMBER OF SET OF DATA ARRIVED 
+!  
+        NARRV = SUM(RECVCOUNTS)
+        NARRVG= P_ISUM(NARRV) 
+!
+        IF(NSENDG.NE.NARRVG) THEN
+          WRITE(LU,*) 'TOTAL SENT = ',NSENDG,' TOTAL RECEIVED = ',NARRVG
+          CALL PLANTE(1)
+          STOP
+        ENDIF
+!     
+        ISTOP=0 
+        IF(NARRV.GT.NCHDIM) THEN 
+          ISTOP=1 
+          WRITE(LU,*) 'NARRV=',NARRV,' NCHDIM=',NCHDIM 
+        ENDIF
+        ISTOP=P_ISUM(ISTOP) 
+        IF(ISTOP.GT.0) THEN 
+          WRITE(LU,*) 'SEND_PARTICLES'
+          WRITE(LU,*) 'TOO MANY LOST TRACEBACKS IN ',ISTOP, 
+     &                   ' PROCESSORS' 
+          CALL PLANTE(1) 
+          STOP 
+        ENDIF
+!
+!       RETRIEVING SHP, SHZ, ELT, ETA IN RECVCHAR
+!
+        IF(NARRV.GT.0) THEN
+          DO I=1,NARRV
+            IF(RECVOIL(I)%NEPID.NE.IPID) THEN
+              WRITE(LU,*) 'ERROR IPID=',IPID,' NEPID=',
+     &                    RECVOIL(I)%NEPID
+              CALL PLANTE(1)
+              STOP
+            ENDIF
+!         
+!================================================================
+!                         OILSPILL
+!================================================================
+!
+!           ADDING A PARTICLE WITH ALREADY KNOWN POSITION 
+!
+            PARTICULES(NPLOT+I)%STATE=RECVOIL(I)%STATE
+            PARTICULES(NPLOT+I)%TPSECH=RECVOIL(I)%TPSECH
+            PARTICULES(NPLOT+I)%SURFACE=RECVOIL(I)%SURFACE
+            PARTICULES(NPLOT+I)%MASS0=RECVOIL(I)%MASS0
+            PARTICULES(NPLOT+I)%MASS=RECVOIL(I)%MASS
+            PARTICULES(NPLOT+I)%MASS_EVAP=RECVOIL(I)%MASS_EVAP
+            PARTICULES(NPLOT+I)%MASS_DISS=RECVOIL(I)%MASS_DISS
+            DO K=1,NB_COMPO
+              PARTICULES(NPLOT+I)%COMPO(K)%MASS=RECVOIL(I)%MASS_COMPO(K)
+              PARTICULES(NPLOT+I)%COMPO(K)%TB=RECVOIL(I)%TB_COMPO(K)
+              PARTICULES(NPLOT+I)%COMPO(K)%SOL=RECVOIL(I)%SOL_COMPO(K)
+            ENDDO
+            DO K=1,NB_HAP
+              PARTICULES(NPLOT+I)%HAP(K)%MASS=RECVOIL(I)%MASS_HAP(K)
+              PARTICULES(NPLOT+I)%HAP(K)%TB=RECVOIL(I)%TB_HAP(K)
+              PARTICULES(NPLOT+I)%HAP(K)%SOL=RECVOIL(I)%SOL_HAP(K)
+            ENDDO
+!================================================================
+!                         OILSPILL
+!================================================================
+          ENDDO
+        ENDIF
+! 
+      ENDIF
+! 
+!----------------------------------------------------------------------- 
+! 
+15    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO::',/,1X, 
+     &          'MAUVAIS BLOC DES VARIABLES : ',2I6) 
+16    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO::',/,1X, 
+     &          'WRONG BLOCK OF VARIABLES : ',2I6) 
+! 
+17    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO',/,1X,
+     &          'TYPE D''OBJET INCONNU : ',2I6) 
+18    FORMAT(1X,'STREAMLINE::OIL_SEND_INFO',/,1X,
+     &          'UNKNOWN TYPE OF OBJECT : ',2I6) 
+!
+!----------------------------------------------------------------------- 
+! 
+      RETURN  
+      END SUBROUTINE OIL_SEND_INFO
+!                    ***************************
+                     SUBROUTINE OIL_DEL_PARTICLE
+!                    ***************************
+!
+     &(TAG,NFLOT,NFLOT_MAX,IELM,ISUB,PARTICULES,NB_COMPO,NB_HAP)
+!
+!***********************************************************************
+! BIEF   V6P3                                              14/02/2013
+!***********************************************************************
+!
+!brief    Removes a particle in the list. If it is not in the list it is
+!+        not removed, if there is no particle nothing is done
+!+        This will enable the algorithm to work in //.      
+!+
+!
+!history  J-M HERVOUET (LNHE)
+!+        14/02/2013
+!+        V6P3
+!+   Valentine day!
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| ELTFLO         |<->| NUMBERS OF ELEMENTS WHERE ARE THE FLOATS
+!| ETAFLO         |<->| LEVELS OF ELEMENTS WHERE ARE THE FLOATS
+!| IELM           |-->| TYPE OF ELEMENT : 10 = TRIANGLES
+!|                |   |                   40 = PRISMS
+!| NFLOT          |<->| NUMBER OF FLOATS.
+!| NFLOT_MAX      |<->| MAXIMUM NUMBER OF FLOATS.
+!| SHPFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS IN THEIR 
+!|                |   | ELEMENTS.
+!| SHZFLO         |<->| BARYCENTRIC COORDINATES OF FLOATS ON THE VERTICAL
+!| TAG            |-->| TAG OF THE PARTICLE 
+!| TAGFLO         |-->| TAGS OF FLOATS  
+!| XFLOT          |<->| ABSCISSAE OF FLOATS
+!| YFLOT          |<->| ORDINATES OF FLOATS
+!| ZFLOT          |<->| ELEVATIONS OF FLOATS
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE BIEF
+!
+      IMPLICIT NONE
+      INTEGER LNG,LU
+      COMMON/INFO/LNG,LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER         , INTENT(IN)    :: TAG,NFLOT_MAX,IELM
+      INTEGER         , INTENT(IN)    :: NB_COMPO,NB_HAP
+      INTEGER         , INTENT(INOUT) :: NFLOT
+      INTEGER,OPTIONAL, INTENT(INOUT) :: ISUB(NFLOT_MAX)
+      TYPE(OIL_PART), DIMENSION(NFLOT_MAX)::PARTICULES
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER IFLOT,I,K
+!
+!-----------------------------------------------------------------------
+!
+      IF(NFLOT.GT.0) THEN
+!
+         DO IFLOT=1,NFLOT
+            IF(PARTICULES(IFLOT)%ID.EQ.TAG) THEN
+               NFLOT=NFLOT-1
+!     IF THE PARTICLE TO REMOVE WAS THE LAST IN THE LIST
+!     IT IS USELESS TO UPDATE DATA
+               IF(NFLOT.GT.0.AND.IFLOT.NE.NFLOT+1) THEN
+!     UPDATING THE DATA
+                  IF(IELM.EQ.10) THEN
+                     DO I=IFLOT,NFLOT
+                       PARTICULES(I)%XOIL=PARTICULES(I+1)%XOIL
+                       PARTICULES(I)%YOIL=PARTICULES(I+1)%YOIL
+                       PARTICULES(I)%ID=PARTICULES(I+1)%ID
+                       PARTICULES(I)%ELTOIL=PARTICULES(I+1)%ELTOIL
+                       PARTICULES(I)%SHPOIL(1)=PARTICULES(I+1)%SHPOIL(1)
+                       PARTICULES(I)%SHPOIL(2)=PARTICULES(I+1)%SHPOIL(2)
+                       PARTICULES(I)%SHPOIL(3)=PARTICULES(I+1)%SHPOIL(3)
+!========================================================================
+!    ON SUPPRIME LES INFOS SUPPLEMENTAIRES PORTEES PAR LES PARTICULES
+!========================================================================
+                       PARTICULES(I)%STATE=PARTICULES(I+1)%STATE
+                       PARTICULES(I)%TPSECH=PARTICULES(I+1)%TPSECH
+                       PARTICULES(I)%SURFACE=PARTICULES(I+1)%SURFACE
+                       PARTICULES(I)%MASS0=PARTICULES(I+1)%MASS0
+                       PARTICULES(I)%MASS=PARTICULES(I+1)%MASS
+                       PARTICULES(I)%MASS_EVAP=PARTICULES(I+1)%MASS_EVAP
+                       PARTICULES(I)%MASS_DISS=PARTICULES(I+1)%MASS_DISS
+                       DO K=1,NB_HAP
+                          PARTICULES(I)%HAP(K)%MASS=
+     &                         PARTICULES(I+1)%HAP(K)%MASS
+                          PARTICULES(I)%HAP(K)%TB=
+     &                         PARTICULES(I+1)%HAP(K)%TB
+                          PARTICULES(I)%HAP(K)%SOL=
+     &                         PARTICULES(I+1)%HAP(K)%SOl
+                       END DO
+                       DO K=1,NB_COMPO
+                          PARTICULES(I)%COMPO(K)%MASS=
+     &                         PARTICULES(I+1)%COMPO(K)%MASS
+                          PARTICULES(I)%COMPO(K)%TB=
+     &                         PARTICULES(I+1)%COMPO(K)%TB
+                          PARTICULES(I)%COMPO(K)%SOL=
+     &                         PARTICULES(I+1)%COMPO(K)%SOl
+                       END DO
+!========================================================================
+!    ON SUPPRIME LES INFOS SUPPLEMENTAIRES PORTEES PAR LES PARTICULES
+!========================================================================
+                     ENDDO
+                  ELSE
+                     WRITE(LU,*) 'DEL_PARTICLE'
+                     IF(LNG.EQ.1) WRITE(LU,*) 'ELEMENT INCONNU :',IELM
+                     IF(LNG.EQ.2) WRITE(LU,*) 'UNKNOWN ELEMENT:',IELM
+                     CALL PLANTE(1)
+                     STOP
+                  ENDIF
+                  IF(PRESENT(ISUB)) THEN
+                     DO I=IFLOT,NFLOT
+                        ISUB(I)=ISUB(I+1)         
+                     ENDDO
+                  ENDIF
+               ENDIF
+               EXIT
+            ENDIF
+         ENDDO
+!
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END SUBROUTINE OIL_DEL_PARTICLE 
+           
+!================================================================
+!                         OILSPILL
+!================================================================
+
 !
 !-----------------------------------------------------------------------
 !   

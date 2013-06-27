@@ -536,4 +536,31 @@
 !
 !=======================================================================
 !
+!  STRUCTURES FOR OIL SPILLS
+!
+!=======================================================================
+!
+      TYPE COMPO
+        DOUBLE PRECISION::SOL
+        DOUBLE PRECISION::MASS
+        DOUBLE PRECISION::TB
+      END TYPE COMPO
+      
+      TYPE OIL_PART
+        INTEGER::STATE
+        INTEGER::ELTOIL
+        INTEGER::TPSECH
+        INTEGER::ID
+        DOUBLE PRECISION::XOIL,YOIL
+        DOUBLE PRECISION::MASS0
+        DOUBLE PRECISION::MASS
+        DOUBLE PRECISION::MASS_EVAP,MASS_DISS
+        DOUBLE PRECISION::SURFACE
+        DOUBLE PRECISION,DIMENSION(3)::SHPOIL
+        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::COMPO   
+        TYPE(COMPO),DIMENSION(:),ALLOCATABLE::HAP
+      END TYPE OIL_PART
+!
+!=======================================================================
+!
       END MODULE BIEF_DEF
