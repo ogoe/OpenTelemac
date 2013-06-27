@@ -44,7 +44,7 @@ FCO           = $(FC_OPT_COMPIL)
 LKO           = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS) 
 FC            = $(FC_MPI)
 FC2           = $(FC_NAM)
-FFLAGS	      = $(FCO) $(FC_OPT_COMPIL) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(INCMPI)
+FFLAGS	      = $(FCO) $(FC_OPT_OTHERS) $(FC_OPT_INCLUDE)$(DIRINC) $(FC_OPT_INCLUDE)$(INCMPI)
 
 MODE          =
 
