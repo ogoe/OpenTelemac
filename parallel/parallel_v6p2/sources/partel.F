@@ -176,7 +176,7 @@
 ! 
       INTEGER IFALOC(3)
       LOGICAL FOUND
-      INTEGER NDP_2D,NDP_3D
+      INTEGER NDP_2D
       INTEGER EF,POS
       INTEGER, ALLOCATABLE :: NBRE_EF(:),NBRE_EF_LOC(:),EF_I(:)
       INTEGER, ALLOCATABLE :: TAB_TMP(:),EF_II(:)
@@ -207,12 +207,11 @@
 !
 !     CD: FLAG FOR SERAFIN FORMAT (.TRUE. IF DOUBLE PRECISION)
 !
-      LOGICAL :: SERAFIND 
+      LOGICAL SERAFIND
 !
 !----------------------------------------------------------------------
 !
       NDP_2D=3
-      NDP_3D=6
 !
       CALL SYSTEM_CLOCK (COUNT=TEMPS, COUNT_RATE=PARSEC)
       TIMECOUNT = .TRUE.
@@ -2871,11 +2870,6 @@ C-----------------------------------------------------------------------
 C
       RETURN
       END SUBROUTINE PARTEL_ELEBD
-      
-C                       ******************
-!
-! 29/01/2009:
-
 C                       ******************
                         SUBROUTINE PARES3D
 C                       ******************
@@ -2990,7 +2984,6 @@ C
       INTEGER            :: NBTET,NBTRI  ! NBRE DE TETRA, TRIANGLE BORD
       INTEGER, DIMENSION(:), ALLOCATABLE :: TETTRI, TETTRI2 ! JOINTURE
                                                !  TETRA/TRIANGLE DE BORD
-      INTEGER            ::  EDGECUT ! VAR. AUXILIAIRE POUR METIS
       INTEGER, DIMENSION(:), ALLOCATABLE :: EPART ! NUMERO DE PARTITION
                                                   ! PAR ELEMENT
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPART ! NUMERO DE PARTITION
@@ -2998,7 +2991,6 @@ C
       INTEGER, DIMENSION(:), ALLOCATABLE :: CONVTRI,CONVTET ! CONVERTISSEUR 
          ! NUMERO LOCAL TRIA/TETRA NUMERO GLOBAL; INVERSE DE TYPELEM(:,2)
       INTEGER            ::  PARSEC  ! RUNTIME
-      CHARACTER(LEN=11), EXTERNAL :: PARTEL_PARTEL_EXTENS ! PARTEL_PARTEL_EXTENSION DES NOMS FICHIER
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPOINTSD, NELEMSD ! NBRE
                             ! DE POINTS ET D'ELEMENTS PAR SOUS-DOMAINE
       INTEGER, DIMENSION(:), ALLOCATABLE :: NPOINTISD  ! NBRE
@@ -3079,18 +3071,15 @@ C     SIZE NPOINT*MAX_TRIA
 CD********************************************************     
       INTEGER SOMFAC(3,4)
       DATA SOMFAC / 1,2,3 , 4,1,2 , 2,3,4 , 3,4,1  /
-
 !     
 !     METISOLOGY
 !
-      INTEGER :: NCOMMONNODES
-      INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
       INTEGER, ALLOCATABLE :: NULLTABLE(:)
-
-
-!-----------------------------------------------------------------------
+!
+!-------------
 ! 1. PREAMBULE
-!---------------
+!-------------
+!
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(1),COUNT_RATE=PARSEC)
       ALLOCATE (VECTNB(NBSDOMVOIS-3))
       WRITE(LU,*)' '
@@ -3896,19 +3885,13 @@ C                  WRITE(*,*) N, '---> ',M
 !----------------------------------------------------------------------
 !     NEW METIS INTERFACE (>= VERSION 5) :
 !
-!     EPTR, EIND: THESE ARRAYS SPECIFIES THE ELEMENTS
-!     THAT ARE STORED LOCALLY AT EACH PROCESSOR. 
-!     CF. DISCUSSION IN SECTION 4.3 (?)
-!
       ALLOCATE(EPART(NBTET),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'EPART')
       ALLOCATE (NPART(NPOINT),STAT=IERR)
       IF (IERR.NE.0) CALL PARTEL_ALLOER (LU, 'NPART')
 !
-!
 !----------------------------------------------------------------------
 !    CALL METIS : MESH PARTITIONNING
-!
 !
       CALL SYSTEM_CLOCK(COUNT=TEMPS_SC(5),COUNT_RATE=PARSEC)
 !
@@ -3926,12 +3909,10 @@ C                  WRITE(*,*) N, '---> ',M
      &           (1.0*(TEMPS_SC(6)-TEMPS_SC(5)))/(1.0*PARSEC),' SECONDS'
       WRITE(LU,80) NELEMTOTAL,NPOINT
       WRITE(LU,81) NBTET,NBTRI
-      WRITE(LU,82) EDGECUT,NPARTS
+      WRITE(LU,82) NPARTS
       WRITE(LU,*) 'SORTIE DE METIS CORRECTE'
 !
       EPART = EPART+1
-      DEALLOCATE(EPTR)
-      DEALLOCATE(EIND)
 !
 CD ******************************************************
 CD     LOOP OVER THE TETRA TO COMPUTER THE NUMBER AND THE LABEL
@@ -4538,8 +4519,7 @@ C OB F
      &       ' #NODES                 : ',I8)
    81 FORMAT(' #TETRAHEDRONS            : ',I8,
      &       ' #TRIANGLE MESH BORDER  : ',I8)
-   82 FORMAT(' #EDGECUTS                : ',I8,
-     &       ' #NPARTS                : ',I8)   
+   82 FORMAT(' #NPARTS                : ',I8)   
    83 FORMAT('  RUNTIME                 : ',F10.2,' S')
    86 FORMAT('  DOMAIN: ',I3,' #ELEMENTS:   ',I8,' #NODES:   ',I8,
      &       ' #INTERFACENODES:   ',I8)
@@ -4573,8 +4553,7 @@ C OB F
 
 ! 7.E MESSAGES D'ERREURS
 !---------------
-  110 TEXTERROR='! UNEXPECTED FILE FORMAT1: '//NAMELOG//' !'
-      GOTO 999
+ 
   111 TEXTERROR='! UNEXPECTED FILE FORMAT2: '//NAMEINP//' !'
       GOTO 999
   112 TEXTERROR='! UNEXPECTED FILE FORMAT3: '//NAMEINP2//' !'
@@ -4582,8 +4561,6 @@ C OB F
   113 TEXTERROR='! UNEXPECTED FILE FORMAT4: '//NAMELOG2//' !'
       GOTO 999
   120 TEXTERROR='! UNEXPECTED EOF WHILE READING: '//NAMELOG//' !'
-      GOTO 999
-  121 TEXTERROR='! UNEXPECTED EOF WHILE READING: '//NAMEINP//' !'
       GOTO 999
   130 TEXTERROR='! PROBLEM WHILE OPENING: '//NAMELOG//' !'
       GOTO 999
@@ -4596,8 +4573,6 @@ C OB F
   140 TEXTERROR='! FILE DOES NOT EXIST: '//NAMEINP//' !'
       GOTO 999
   141 TEXTERROR='! FILE DOES NOT EXIST: '//NAMELOG//' !'
-      GOTO 999
-  142 TEXTERROR='! UNKNOWN TYPE OF ELEMENT IN THE MESH !'
       GOTO 999
   143 DO J = 1,NELEMTOTAL
         IF (TYPELEM(J,2)==I) WRITE(UNIT=STR8,FMT='(I8)')J
@@ -4618,11 +4593,7 @@ C OB F
       GOTO 999
   147 TEXTERROR='! PROBLEM WHILE WRITING: '//NAMEINP2//' !'
       GOTO 999
-  148 TEXTERROR='! SEVERAL ELEMENTS MAY BE FORGOTTEN BY PARTITIONNING !'
-      GOTO 999
   149 TEXTERROR='! NO INPUT UNV FILE !' 
-      GOTO 999
-  150 TEXTERROR='! NO INPUT LOG FILE !' 
       GOTO 999
   151 WRITE(UNIT=STR8,FMT='(I8)')J
       WRITE(UNIT=STR26,FMT='(I3,1X,I3,1X,I3,1X,I3,1X,I3,1X,I3)')
@@ -5245,8 +5216,7 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
-      INTEGER :: I,J,K,ERR
-      INTEGER ETYPE, NUMFLAG, EDGECUT, NCOMMONNODES
+      INTEGER I,J,K,ERR,NUMFLAG,EDGECUT,NCOMMONNODES
       INTEGER, ALLOCATABLE :: EPTR(:), EIND(:)
       INTEGER, ALLOCATABLE :: NULLTABLE(:)
       CHARACTER(LEN=10) :: FMT1, FMT2, FMT3
@@ -5470,10 +5440,9 @@ C$$$      INTEGER, DIMENSION(NPOIN)            :: NBOR_INV
 #endif        
         ENDIF
       END SUBROUTINE PARTITIONER
-!
-!                    *********************************
+!                    ****************************************
                      CHARACTER(LEN=11) FUNCTION PARTEL_EXTENS
-!                    *********************************
+!                    ****************************************
 !
      &(N,I)
 !

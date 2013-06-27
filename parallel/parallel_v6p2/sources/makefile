@@ -77,6 +77,7 @@ SRCS	      = interface_parallel.f \
                 declarations_parallel.F \
 		errpvm.F \
 		org_charac_type1.F \
+		oil_org_charac_type.F \
 		org_charac_type_alg.F \
 		p_dmax.F \
 		p_dmin.F \
@@ -96,6 +97,7 @@ SRCS	      = interface_parallel.f \
 		p_mpi_alltoall.F \
 		p_mpi_alltoallv.F \
 		p_mpi_alltoallv_alg.F \
+		p_mpi_alltoallv_oil.F \
 		p_mpi_alltoallv_i.F \
 		p_mpi_type_commit.F \
 		p_mpi_type_get_extent.F \
