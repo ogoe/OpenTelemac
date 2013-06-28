@@ -1961,7 +1961,7 @@
 !
       IF(SPILL_MODEL) THEN
 !
-        CALL OIL_SPILL_2D
+        CALL OIL_SPILL_2D(YASMI)
 !
       ENDIF
 !
@@ -2107,7 +2107,7 @@
 !                           DROGUE(S)
 !=======================================================================
 !
-      IF(NFLOT_MAX.NE.0) THEN
+      IF(NFLOT_MAX.NE.0.AND..NOT.SPILL_MODEL) THEN
 !
         IF(ENTET) CALL ENTETE(12,AT,LT)
 !
