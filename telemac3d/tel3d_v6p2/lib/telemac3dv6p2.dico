@@ -4216,9 +4216,13 @@ TAILLE = 2
 RUBRIQUE = 'EQUATIONS';'SOURCES'
 RUBRIQUE1 = 'EQUATIONS';'SOURCES'
 NIVEAU = 1
-AIDE = 'Fixe la valeur des tracuers aux sources 
+AIDE = 'Fixe la valeur des traceurs aux sources 
+toutes les sources pour le premier traceur
+puis toutes les sources du deuxieme traceur, etc.
 (cf. manuel de reference).'
 AIDE1 = 'Sets the value of the tracers at the sources 
+all sources for first tracer, then
+all sources for second tracer, etc.
 (see reference manual).'
 
 NOM = 'VALEURS IMPOSEES DES TRACEURS'
