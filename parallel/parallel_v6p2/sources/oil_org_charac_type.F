@@ -43,9 +43,9 @@
 !| TRACE          |<---| IF .TRUE. TRACE EXECUTION
 !| CHARACTERISTIC |--->| DATATYPE FOR CHARACTERISTIC 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!           
+!
+      USE DECLARATIONS_PARALLEL           
       IMPLICIT NONE 
-      INCLUDE 'mpif.h' 
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ! 
