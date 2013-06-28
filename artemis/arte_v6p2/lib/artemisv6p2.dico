@@ -1826,6 +1826,37 @@ AIDE1 = '
 Yes, if one wants to account for breaking process (see also 
 reals of index 18, 19, 20, 21, 22, 23, and integer of index 
 12, 13).' 
+
+NOM = 'COURANT' 
+NOM1 = 'CURRENT' 
+TYPE = LOGIQUE 
+INDEX = 13 
+MNEMO = 'COURANT' 
+TAILLE = 0 
+DEFAUT = NON 
+DEFAUT1 = NON 
+RUBRIQUE = 'COURANT';'COURANT' 
+RUBRIQUE1 = 'CURRENT';'CURRENT' 
+COMPORT = 'Foreground 
+("CURRENT") 
+IS VALEUR (Blue)'; 
+/'Affichage 
+/("CURRENT") 
+/IS VALEUR ()'; 
+'Affichage 
+("CURRENT KIRBY KOSTENSE") 
+IS VALEUR ()'; 
+'Affichage 
+("DISSIPATION*DEFERLEMENT*FORMULATION DE BATTJES") 
+IS VALEUR ()' 
+NIVEAU= 1 
+AIDE = 
+ 'TRUE : PRISE EN COMPTE DE LA REFRACTION DE LA HOULE PAR
+  LE COURANT.
+  Modele retenu : Kostense et Al. (1988) '
+AIDE1 = 
+ 'TRUE : WAVE REFRACTION DUE TO CURRENT IS
+  DESCRIBED USING KOSTENSE MODEL (1988)'
  
 NOM = 'KDALLY' 
 NOM1 = 'KDALLY'  
