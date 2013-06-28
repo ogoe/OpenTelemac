@@ -1,11 +1,11 @@
 !                    ******************
-                     SUBROUTINE SD_NDRV
+                     SUBROUTINE SD_CDRV
 !                    ******************
 !
-     &(N,R,C,IC,IA,JA,A,B,Z,NSP,ISP,RSP,ESP,PATH,FLAG)
+     &(N, R,C,IC, IA,JA,A, B, Z, NSP,ISP,RSP,ESP, PATH, FLAG)
 !
 !***********************************************************************
-! BIEF   V6P2                                    21/07/2011
+! BIEF   V6P3                                   30/06/2013
 !***********************************************************************
 !
 !brief    DRIVER FOR SUBROUTINES TO SOLVE SPARSE NONSYMMETRICAL
@@ -183,6 +183,11 @@
 !+        V6P2
 !+   LRATIO set to 1 instead of 2 and suppressed.
 !
+!history  C.PEYRARD (LNHE)
+!+        30/06/2013
+!+        V6P3
+!+   SD_NDRV => SD_CDRV 
+!
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !| A              |-->|NONZERO ENTRIES OF THE COEFFICIENT MATRIX M, 
 !|                |   |STORED BY ROWS
@@ -231,104 +236,128 @@
 !| Z              |<--|SOLUTION X
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+      USE BIEF, EX_SD_CDRV => SD_CDRV
+!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
-      INTEGER N,NSP
-      INTEGER R(*),C(*),IC(*),IA(*),JA(*),ISP(*)
-      INTEGER ESP,PATH,FLAG,Q,IM,D,U,ROW,TMP,UMAX,VMAX
-      DOUBLE PRECISION A(*),B(*),Z(*),RSP(*)
+      INTEGER, INTENT(IN) :: N,NSP,PATH,R(N),C(N)
+      INTEGER, INTENT(INOUT) :: FLAG,IA(*),JA(*),ISP(*),ESP,IC(*)
+      DOUBLE PRECISION, INTENT(IN)    :: B(N)
+      DOUBLE PRECISION, INTENT(INOUT) :: A(*),Z(N),RSP(NSP)
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!      
+      INTEGER  D, U, Q, ROW, TMP, AR,  UMAX      
+      INTEGER IL,IJL,IU,IJU,IRL,JRL,JL,MAX,JLMAX,IRA,JRA,IRAC,IRU,JRU
+      INTEGER JUTMP , JUMAX,JU
+      INTEGER I,J ,L,LMAX , LRATIO    
+      
+!  SET LRATIO EQUAL TO THE RATIO BETWEEN THE LENGTH OF FLOATING POINT
+!  AND INTEGER ARRAY DATA.  E. G., LRATIO = 1 FOR (REAL, INTEGER),
+!  LRATIO = 2 FOR (DOUBLE PRECISION, INTEGER)
 !
-      INTEGER IL,JL,IU,JU,JLMAX,JUTMP,JUMAX,J,L,LMAX
+!      DATA LRATIO/2/  
+      LRATIO=1         
+      IF (PATH.LT.1 .OR. 5.LT.PATH)  GO TO 111
+!******INITIALIZE AND DIVIDE UP TEMPORARY STORAGE  *******************
+      IL   = 1
+      IJL  = IL  + (N+1)
+      IU   = IJL +   N
+      IJU  = IU  + (N+1)
+      IRL  = IJU +   N
+      JRL  = IRL +   N
+      JL   = JRL +   N      
 !
-!-----------------------------------------------------------------------
+!  ******  REORDER A IF NECESSARY, CALL NSFC IF FLAG IS SET  ***********
+      IF ((PATH-1) * (PATH-5) .NE. 0)  GO TO 5
+        MAX = (LRATIO*NSP + 1 - JL) - (N+1) - 5*N
+        JLMAX = MAX/2
+        Q     = JL   + JLMAX
+        IRA   = Q    + (N+1)
+        JRA   = IRA  +   N
+        IRAC  = JRA  +   N
+        IRU   = IRAC +   N
+        JRU   = IRU  +   N
+        JUTMP = JRU  +   N
+        JUMAX = LRATIO*NSP  + 1 - JUTMP
+        ESP = MAX/LRATIO
+        IF (JLMAX.LE.0 .OR. JUMAX.LE.0)  GO TO 110
+        DO 1 I=1,N
+          IF (C(I).NE.I)  GO TO 2
+   1      CONTINUE
+        GO TO 3
+   2    AR = NSP + 1 - N
+!CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NROC_CP'
+        CALL  SD_NROC
+     *     (N, IC, IA,JA,A, ISP(IL), RSP(AR), ISP(IU), FLAG)
+        IF (FLAG.NE.0)  GO TO 100
 !
-      IF(PATH.LT.1.OR.PATH.GT.5) GO TO 111
+!CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NSFC_CP'
+   3    CALL  SD_NSFC
+     *     (N, R, IC, IA,JA,
+     *      JLMAX, ISP(IL), ISP(JL), ISP(IJL),
+     *      JUMAX, ISP(IU), ISP(JUTMP), ISP(IJU),
+     *      ISP(Q), ISP(IRA), ISP(JRA), ISP(IRAC),
+     *      ISP(IRL), ISP(JRL), ISP(IRU), ISP(JRU),  FLAG)
+        IF(FLAG .NE. 0)  GO TO 100
+!  ******  MOVE JU NEXT TO JL  *****************************************
+        JLMAX = ISP(IJL+N-1)
+        JU    = JL + JLMAX
+        JUMAX = ISP(IJU+N-1)
+        IF (JUMAX.LE.0)  GO TO 5
+        DO 4 J=1,JUMAX
+   4      ISP(JU+J-1) = ISP(JUTMP+J-1)
 !
-!  ******  INITIALISES AND DIVIDES UP TEMPORARY STORAGE  ***************
-!
-      IL = 1
-      IU = IL + N+1
-      JL = IU + N+1
-!
-!  ******  CALLS NSF IF FLAG IS SET  ***********************************
-!
-      IF(PATH.NE.1.AND.PATH.NE.5)  GO TO 2
-      VMAX = NSP - JL - 2*N
-      JLMAX = VMAX/2
-      Q = JL + JLMAX
-      IM = Q + (N+1)
-      JUTMP = IM  +   N
-      JUMAX = NSP + 1 - JUTMP
-      ESP = VMAX
-      IF(JLMAX.LE.0.OR.JUMAX.LE.0)  GO TO 110
-      CALL SD_NSF(N,R,IC,IA,JA,ISP(IL),ISP(JL),JLMAX,ISP(IU),
-     &            ISP(JUTMP),JUMAX,ISP(Q),ISP(IM),FLAG)
-      IF (FLAG.NE.0)  GO TO 100
-!
-!  ******  MOVES JU NEXT TO JL  ****************************************
-!
-      JLMAX = ISP(IL+N)-1
-      JU    = JL + JLMAX
-      JUMAX = ISP(IU+N)-1
-      IF(JUMAX.GE.1) THEN
-        DO J=1,JUMAX
-          ISP(JU+J-1) = ISP(JUTMP+J-1)
-        ENDDO
-      ENDIF
-!
-!  ******  CALLS REMAINING SUBROUTINES  ********************************
-!
-2     CONTINUE
-      JLMAX = ISP(IL+N)-1
+!  ******  CALL REMAINING SUBROUTINES  *********************************
+   5  JLMAX = ISP(IJL+N-1)
       JU    = JL  + JLMAX
-      JUMAX = ISP(IU+N)-1
-      L     = JU + JUMAX 
-      LMAX  = JLMAX
+      JUMAX = ISP(IJU+N-1)
+      L     = (JU + JUMAX - 2 + LRATIO)  /  LRATIO    +    1
+      LMAX  = ISP(IL+N) - 1
       D     = L   + LMAX
       U     = D   + N
       ROW   = NSP + 1 - N
       TMP   = ROW - N
       UMAX  = TMP - U
-      ESP = UMAX - JUMAX
+      ESP   = UMAX - (ISP(IU+N) - 1)
+!      
+      IF ((PATH-1) * (PATH-2) .NE. 0)  GO TO 6
+        IF (UMAX.LT.0)  GO TO 110
+!CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NNFC_CP'
+        CALL SD_NNFC
+     *     (N,  R, C, IC,  IA, JA, A, Z, B,
+     *      LMAX, ISP(IL), ISP(JL), ISP(IJL), RSP(L),  RSP(D),
+     *      UMAX, ISP(IU), ISP(JU), ISP(IJU), RSP(U),
+     *      RSP(ROW), RSP(TMP),  ISP(IRL), ISP(JRL),  FLAG)
+!CP        WRITE(LU,*) 'FLAG=', FLAG
+        IF(FLAG .NE. 0)  GO TO 100
 !
-      IF(PATH.NE.1.AND.PATH.NE.2) GO TO 3
-      IF(UMAX.LE.0) GO TO 110
-      CALL SD_NNF(N,R,C,IC,IA,JA,A,Z,B,
-     &            ISP(IL),ISP(JL),RSP(L),LMAX,RSP(D),
-     &            ISP(IU),ISP(JU),RSP(U),UMAX,
-     &            RSP(ROW),RSP(TMP),FLAG)
-      IF(FLAG.NE.0) GO TO 100
+   6  IF ((PATH-3) .NE. 0)  GO TO 7
+!CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NNSC_CP'
+        CALL SD_NNSC
+     *     (N,  R, C,  ISP(IL), ISP(JL), ISP(IJL), RSP(L),
+     *      RSP(D),    ISP(IU), ISP(JU), ISP(IJU), RSP(U),
+     *      Z, B,  RSP(TMP))
+!
+   7  IF ((PATH-4) .NE. 0)  GO TO 8
+!CP        WRITE(LU,*) 'CCP : ON APPELLE SD_NNTC_CP'
+        CALL SD_NNTC
+     *     (N,  R, C,  ISP(IL), ISP(JL), ISP(IJL), RSP(L),
+     *      RSP(D),    ISP(IU), ISP(JU), ISP(IJU), RSP(U),
+     *      Z, B,  RSP(TMP))
+        
+   8  RETURN
+!
+! ** ERROR.. ERROR DETECTED IN NROC, NSFC, NNFC, OR NNSC
+ 100  RETURN
+! ** ERROR.. INSUFFICIENT STORAGE
+ 110  FLAG = 10*N + 1
       RETURN
-!
-3     IF(PATH.NE.3)  GO TO 4
-      CALL SD_NNS(N,R,C,ISP(IL),ISP(JL),RSP(L),RSP(D),
-     &            ISP(IU),ISP(JU),RSP(U),Z,B,RSP(TMP))
-!
-4     IF(PATH.NE.4) GO TO 5
-          CALL SD_NNT(N,R,C,ISP(IL),ISP(JL),RSP(L),RSP(D),
-     &                ISP(IU),ISP(JU),RSP(U),Z,B,RSP(TMP))
-!
-!-----------------------------------------------------------------------
-!
-5     RETURN
-!
-!-----------------------------------------------------------------------
-!
-! ** ERROR:  ERROR DETECTED IN NSF, NNF, NNS, OR NNT
-100   RETURN
-! ** ERROR:  INSUFFICIENT STORAGE
-110   FLAG = 10*N + 1
-      RETURN
-! ** ERROR:  ILLEGAL PATH SPECIFICATION
-111   FLAG = 11*N + 1
-!
-!-----------------------------------------------------------------------
-!
+! ** ERROR.. ILLEGAL PATH SPECIFICATION
+ 111  FLAG = 11*N + 1
       RETURN
       END

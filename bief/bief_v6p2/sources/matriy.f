@@ -161,7 +161,7 @@
 !
       INTEGER AAQ(3,3,2),BBQ(4,4,2),ABQ(3,4,2),BAQ(4,3,2),PPQ(6,6,2)
       INTEGER AAS(3,3,2),BBS(4,4,2),OOS(2,2,2),FFS(4,4,2),PPS(6,6,2)
-      INTEGER ACQ(3,6,2),CAQ(6,3,2)
+      INTEGER ACQ(3,6,2),CAQ(6,3,2),OOQ(2,2,2)
 !
 !  BEWARE: SHOULD TRANSPOSE THE FOLLOWING MATRICES IN NON-SPECIAL
 !  CASES, BECAUSE OF THE FORTRAN NOTATION OF DATA
@@ -170,6 +170,12 @@
 !          THESE DATA ALSO APPEAR IN MATVCT
 !
       DATA OOS/  0 ,  1 ,
+     &           1 ,  0 ,
+! S=2 NOT IMPLEMENTED
+     &           0 ,  0 ,
+     &           0 ,  0 /
+!
+      DATA OOQ/  0 ,  2 ,
      &           1 ,  0 ,
 ! S=2 NOT IMPLEMENTED
      &           0 ,  0 ,
@@ -2331,6 +2337,64 @@
 !         CALL PLANTE(1)
 !         STOP
 !       ENDIF
+!
+!=======================================================================
+!     F GRAD (U.GRAD) MATRIX (NOT IMPLEMENTED)
+!=======================================================================
+!
+      ELSEIF(FORMUL(1:15).EQ.'MATFGUG        ') THEN
+!
+!       P1 SEGMENT ROW ELEMENT
+        IF(IELM1.EQ.1) THEN
+!.......................................................................
+!         P1 SEGMENT COLUMN ELEMENT
+          IF(IELM2.EQ.1.AND.S.EQ.1) THEN
+             CALL MT09OO(   T(1,1)   ,XM(1,OOQ(1,2,S)),
+     &                      XM(1,OOQ(2,1,S)),   T(1,2),
+     &                   XMUL,SF,F,SG,G,SU,SV,U,V,
+     &	                 IKLBOR(1,1),IKLBOR(1,2),
+     &                   NBOR,NELEB,NELMAX)
+!
+             TYPDIA='Q'
+             TYPEXT='Q'
+!.......................................................................
+!         OTHER
+!.......................................................................
+!
+!         ELSEIF
+!
+!-----------------------------------------------------------------------
+!         ERROR ON THE COLUMN ELEMENT
+!-----------------------------------------------------------------------
+!
+          ELSE
+            IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
+            IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
+            IF (LNG.EQ.1) WRITE(LU,2000) IELM1
+            IF (LNG.EQ.2) WRITE(LU,2001) IELM1
+            IF (LNG.EQ.1) WRITE(LU,3000) IELM2
+            IF (LNG.EQ.2) WRITE(LU,3001) IELM2
+            CALL PLANTE(1)
+            STOP
+          ENDIF
+!
+!-----------------------------------------------------------------------
+!       OTHER
+!-----------------------------------------------------------------------
+!
+!       ELSEIF
+!-----------------------------------------------------------------------
+!       ERROR ON THE ROW ELEMENT
+!-----------------------------------------------------------------------
+!
+        ELSE
+          IF (LNG.EQ.1) WRITE(LU,1000) FORMUL
+          IF (LNG.EQ.2) WRITE(LU,1001) FORMUL
+          IF (LNG.EQ.1) WRITE(LU,2000) IELM1
+          IF (LNG.EQ.2) WRITE(LU,2001) IELM1
+          CALL PLANTE(1)
+          STOP
+        ENDIF
 !
 !=======================================================================
 !     - PSIJ GRAD(F PSII) MATRIX

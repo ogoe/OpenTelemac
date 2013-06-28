@@ -89,7 +89,7 @@ mt03bb.f     mt03cc.f       mt04aa.f      mt04bb.f  mt04cc.f  mt04pp.f  mt04tt.f
 mt05aa.f     mt05bb.f       mt05cc.f      mt05pp.f  mt05tt.f  mt06aa.f \
 mt06bb.f     mt06cc.f       mt06ff.f      mt06ft.f  mt06ft2.f mt06oo.f  mt06oc.f  mt06pp.f  mt06tt.f  mt07aa.f  \
 mt07bb.f     mt07cc.f       mt08aa.f      mt08ab.f  mt08ac.f  mt08ba.f \
-mt08bb.f     mt08pp.f       mt08tt.f      mt11aa.f  mt11ab.f  mt11ac.f \
+mt08bb.f     mt08pp.f       mt08tt.f      mt09oo.f  mt11aa.f  mt11ab.f  mt11ac.f \
 mt11ba.f     mt11bb.f       mt12aa.f      mt12ab.f  mt12ac.f \
 mt12ba.f     mt12bb.f       mt13aa.f      mt13ab.f \
 mt13ba.f     mt13bb.f       mt13cc.f      mt13ca.f  mt14pp.f  mt14tt.f mt99aa.f \
@@ -110,10 +110,10 @@ proxim.f     ptel11.f       ptel31.f      ptel41.f  pttoel.f      puog.f \
 puog1.f      p_dot.f        p_dots.f      readgeo1.f \
 readgeo2.f   readgeo3.f     read_config.f read_submit.f remseg.f  rem11.f \
 rem21.f      rem41.f        remont.f      rescjg.f \
-sd_md.f      sd_mdi.f       sd_mdm.f      sd_mdp.f      sd_mdu.f \
+sd_md.f      sd_mdi.f       sd_mdm.f      sd_mdp.f      sd_mdu.f sd_nroc.f \
 sd_odrv.f    sd_sdrv.f      sd_snf.f      sd_sns.f      sd_sro.f \
 sd_ssf.f     sd_strssd.f    sd_strtri.f   sd_strsg4.f   sd_fabcad.f sd_fabsg4.f  sd_solve_1.f   sd_solve_4.f \
-sd_ndrv.f    sd_nnf.f       sd_nns.f      sd_nnt.f      sd_nsf.f \
+sd_cdrv.f    sd_nnfc.f      sd_nnsc.f     sd_nntc.f     sd_nsfc.f \
 segbor.f     share_3d_fluxes.f            skipgeo.f     slop10.f      slopes.f \
 solaux.f     solve.f        somme.f       somme2.f      sortie.f \
 stoseg.f     stoseg31.f     stoseg41.f     stoseg51.f    strche.f      suite_serafin.f surv11.f \
