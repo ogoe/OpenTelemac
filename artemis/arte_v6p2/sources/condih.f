@@ -50,6 +50,8 @@
 !
       INTRINSIC SINH, SQRT
 !
+      DOUBLE PRECISION AMPLC
+
 !-----------------------------------------------------------------------
 !
       CALL MAJUS(CDTINI)
@@ -157,6 +159,41 @@
 !
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!         CURRENT DEFINITION ON THE DOMAIN : DEFAULT 0 
+!                       (EXAMPLE IS GIVEN BELOW)
+!----------------------------------------------------------------------
+!   => DEFINE YOUR CURRENT VALUES IN THE FOLLOWING LOOP
+      IF(COURANT) THEN
+        AMPLC=0D0
+     	DO I=1,NPOIN!
+	UC%R(I)=AMPLC
+	VC%R(I)=AMPLC
+	ENDDO
+      ENDIF	
+!
+!=====================================
+! === EXAMPLE OF X,Y DEPENDENT CURRENT 
+!=====================================
+!      IF(COURANT) THEN
+!
+!       AMPLC=1.D0
+!     	DO I=1,NPOIN!
+!	 UC%R(I)=0.D0
+!	 VC%R(I)=0.D0
+!	 IF(X(I).GE.5.D0.AND.X(I).LT.13.D0)THEN
+!	   UC%R(I)=AMPLC*((X(I)-5.D0)/8.D0)
+!	  ELSEIF(X(I).GE.13.D0)THEN
+!	   UC%R(I)=AMPLC
+!	 ENDIF
+!	ENDDO
+!
+!      ENDIF	
+
+
+C-----------------------------------------------------------------------
+
+
 !
       RETURN
       END

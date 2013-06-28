@@ -157,7 +157,7 @@
 !       This way LECLIM ONLY READ the boundary conditions file and
 !       DO NOT CHANGE the LIHBOR values
 !
-      WRITE(6,*) 'ON ENTRE DANS LECLIM'
+!      WRITE(6,*) 'ON ENTRE DANS LECLIM'
       CALL LECLIM (LIHBOR%I   , LIUBOR%I , ITB1%I , ITB1%I,
      &             TB1%R      , TB1%R    , TB1%R  , TB1%R ,
      &             TB1%R      , TB1%R    , TB1%R  ,
@@ -165,7 +165,7 @@
      &             ART_FILES(ARTCLI)%LU,
      &             0       , 0    , 0 ,  0 , 0 , 0,
      &             NUMLIQ%I   ,MESH,BOUNDARY_COLOUR%I)
-      WRITE(6,*) 'ON SORT DE LECLIM'
+!      WRITE(6,*) 'ON SORT DE LECLIM'
 
 !-----------------------------------------------------------------------
 !

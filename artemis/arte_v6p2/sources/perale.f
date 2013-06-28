@@ -5,7 +5,7 @@
      &(PALE,GAMMA,PERPIC,NPALE,TRA01,NPOIN,PRIVE,NPRIV,PMIN,PMAX)
 !
 !***********************************************************************
-! ARTEMIS   V6P1                                   21/08/2010
+! ARTEMIS   V6P3                                  21/08/2010
 !***********************************************************************
 !
 !brief    DISCRETISES AN ENERGY SPECTRUM IN NPALE BANDS
@@ -47,7 +47,6 @@
 !| TRA01          |<->| WORK STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE INTERFACE_ARTEMIS, EX_PERALE=> PERALE
       USE INTERFACE_ARTEMIS, ONLY: SPE
       USE BIEF
 !
@@ -66,9 +65,6 @@
 !
       DOUBLE PRECISION FP,GAM,DELTA
       COMMON /COEFHE/ FP,GAM,DELTA
-!
-!      DOUBLE PRECISION SPE
-!      EXTERNAL SPE
 !
       INTRINSIC LOG,FLOAT
 !

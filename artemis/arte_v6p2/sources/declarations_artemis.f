@@ -1,4 +1,3 @@
-C ============ DECLARATIONS_ARTEMIS DOIT VENIR AVANT TOUT LE RESTE
 !                    ***************************
                      MODULE DECLARATIONS_ARTEMIS
 !                    ***************************
@@ -76,10 +75,10 @@ C ============ DECLARATIONS_ARTEMIS DOIT VENIR AVANT TOUT LE RESTE
 ! phase de la houle
       TYPE(BIEF_OBJ), TARGET :: PHAS
 !brief SURFACE WAVE VELOCITY COMPONENT
-! vitesse en surface (a t=0)              !!!!! really? !!!!!
+! vitesse en surface (a t=0)              
       TYPE(BIEF_OBJ), TARGET :: U0
 !brief SURFACE WAVE VELOCITY COMPONENT
-! vitesse en surface (a t=0)              !!!!! really? !!!!!
+! vitesse en surface (a t=0)              
       TYPE(BIEF_OBJ), TARGET :: V0
 !brief MEAN COSINE OF WAVE DIRECTION
 ! moyennes des cosinus de la direction de houle
@@ -310,23 +309,14 @@ C ============ DECLARATIONS_ARTEMIS DOIT VENIR AVANT TOUT LE RESTE
 
 
 !brief FLOW
-! courant
+! CURRENT VELOCITY IN X IDRECTION
       TYPE(BIEF_OBJ), TARGET :: UC
 !brief FLOW
-! courant
+! CURRENT VELOCITY IN Y IDRECTION
       TYPE(BIEF_OBJ), TARGET :: VC
 !brief RELATIVE ANGULAR FREQUENCY
-! pulsation relative
+! RELATIVE PULSATION
       TYPE(BIEF_OBJ), TARGET :: WR
-!brief WAVE VECTOR
-! vecteur d'onde
-      TYPE(BIEF_OBJ), TARGET :: KN1
-!brief WAVE VECTOR
-! vecteur d'onde
-      TYPE(BIEF_OBJ), TARGET :: KN2
-!brief
-!
-      TYPE(BIEF_OBJ), TARGET :: KNANC1,KNANC2
 !
 !-----------------------------------------------------------------------
 !
@@ -676,12 +666,6 @@ C ============ DECLARATIONS_ARTEMIS DOIT VENIR AVANT TOUT LE RESTE
 !brief MAXIMUM SPECTRAL PERIOD
 ! periode maximum du spectre
       DOUBLE PRECISION PMAX
-!brief
-! courant : valeurs en x
-      DOUBLE PRECISION CURRENTX
-!brief
-! courant : valeurs en y
-      DOUBLE PRECISION CURRENTY
 !
 !-----------------------------------------------------------------------
 !
@@ -788,6 +772,18 @@ C ============ DECLARATIONS_ARTEMIS DOIT VENIR AVANT TOUT LE RESTE
 !
       TYPE(BIEF_OBJ),POINTER :: T12
 !brief WORKING VECTOR IN TBBD
+!
+      TYPE(BIEF_OBJ),POINTER :: T13
+!brief WORKING VECTOR IN TB
+!
+      TYPE(BIEF_OBJ),POINTER :: T14
+!brief WORKING VECTOR IN TB
+!
+      TYPE(BIEF_OBJ),POINTER :: T15
+!brief WORKING VECTOR IN TB
+!
+      TYPE(BIEF_OBJ),POINTER :: T16
+!brief WORKING VECTOR IN TB
 !
       TYPE(BIEF_OBJ),POINTER :: TBD1
 !brief WORKING VECTOR IN TBBD
@@ -897,7 +893,3 @@ C ============ DECLARATIONS_ARTEMIS DOIT VENIR AVANT TOUT LE RESTE
       SAVE
 !
       END MODULE DECLARATIONS_ARTEMIS
-
-
-
-

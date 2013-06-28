@@ -58,13 +58,22 @@
       PARAMETER (ZERO = 1.D-10)
       PARAMETER (PI = 3.1415926535897932384626433D0)
       PARAMETER (RADDEG = 57.29577951D0)
+      
 !
 !=======================================================================
 ! WAVE HEIGHT
 !=======================================================================
 !
       CALL OS( 'X=N(Y,Z)', T1, PHIR, PHII , BID             )
-      CALL OS( 'X=CY    ', HHO  ,T1, SBID ,(2.D0*OMEGA/GRAV))
+      IF (COURANT) THEN
+C     WE USE WR (RELATIVE PULSATION) 
+         CALL OS( 'X=CY    ', X=T2   ,Y=WR, C=2.D0/GRAV)
+         CALL OS( 'X=YZ    ', X=HHO  ,Y=T1, Z=T2 )
+!         CALL OS( 'X=CY    ', X=HHO  ,Y=T1, C=2.D0*OMEGA/GRAV)
+      ELSE
+C     WE USE OMEGA 
+         CALL OS( 'X=CY    ', X=HHO  ,Y=T1, C=2.D0*OMEGA/GRAV)
+      ENDIF
 !
 !=======================================================================
 ! PHASE OF THE POTENTIAL (IN RADIAN)
@@ -81,122 +90,36 @@
 !=======================================================================
 ! FREE SURFACE ELEVATION
 !=======================================================================
-!
-      DO 20 I=1,NPOIN
-         S%R(I) = -OMEGA/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
-20    CONTINUE
-!
+      IF (COURANT) THEN
+          DO 20 I=1,NPOIN
+             S%R(I) = -WR%R(I)/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
+20        ENDDO
+      ELSE
+          DO I=1,NPOIN
+             S%R(I) = -OMEGA/GRAV*PHII%R(I) + H%R(I) + ZF%R(I)
+          ENDDO
+      ENDIF
+
+
 !=======================================================================
-! SPEEDS AT THE SURFACE (AT T=0 AND T=OMEGA/4)
+! WAVE INIDENCE USING SPEEDS AT THE SURFACE (AT T=0 AND T=OMEGA/4)
 !=======================================================================
-!
-! COMPUTES THE GRADIENTS (PHIR AND PHII)
-!
-!
-      CALL VECTOR(U0 , '=' , 'GRADF          X' , IELM ,
-     &            1.D0 , PHIR , SBID, SBID , SBID , SBID , SBID ,
-     &            MESH , MSK , MASKEL )
-!
-      CALL VECTOR(V0 , '=' , 'GRADF          Y' , IELM ,
-     &            1.D0 , PHIR , SBID , SBID , SBID , SBID , SBID ,
-     &            MESH , MSK , MASKEL )
-!
-!     THE OLD VARIABLE U1 IS STORED IN T3
-!     BECAUSE IT IS USED TO COMPUTE INCI
-!
-      CALL VECTOR(T3 , '=' , 'GRADF          X' , IELM ,
-     &            1.D0 , PHII , SBID , SBID , SBID , SBID , SBID ,
-     &            MESH , MSK , MASKEL )
-!
-!     THE OLD VARIABLE V1 IS STORED IN T4
-!     BECAUSE IT IS USED TO COMPUTE INCI
-!
-      CALL VECTOR(T4 , '=' , 'GRADF          Y' , IELM ,
-     &            1.D0 , PHII , SBID , SBID , SBID , SBID , SBID ,
-     &            MESH , MSK , MASKEL )
-!
-      CALL VECTOR(T1 , '=' , 'MASBAS          ' , IELM ,
-     &            1.D0 , SBID , SBID , SBID , SBID , SBID , SBID ,
-     &            MESH , MSK , MASKEL )
-!
-      CALL OS( 'X=Y/Z   ' , U0    , U0    , T1 , BID )
-      CALL OS( 'X=Y/Z   ' , V0    , V0    , T1 , BID )
-      CALL OS( 'X=Y/Z   ' , T3    , T3    , T1 , BID )
-      CALL OS( 'X=Y/Z   ' , T4    , T4    , T1 , BID )
-!
+      WRITE(6,*) 'AVANT CALDIR'
+      CALL CALDIR()
+      WRITE(6,*) 'APRES CALDIR'
 !=======================================================================
-! COMPUTES WAVE INCIDENCE
-!=======================================================================
-!
-!        U0 (D(PHIR)/DX) : A      U1 (D(PHII)/DX): B
-!        V0 (D(PHIR)/DY) : C      V1 (D(PHII)/DY): D
-! FROM U= A COS WT + B SIN WT  TO : U = A1 COS ( WT - PHI1)
-!      V= C COS WT + D SIN WT       V = A2 COS ( WT - PHI2)
-!
-      DO 30 I=1,NPOIN
-        A1 = SQRT ( U0%R(I)*U0%R(I) + T3%R(I)*T3%R(I) )
-        PHI1 = ATAN2( T3%R(I),U0%R(I) )
-        A2 = SQRT ( V0%R(I)*V0%R(I) + T4%R(I)*T4%R(I) )
-        PHI2 = ATAN2( T4%R(I),V0%R(I) )
-!
-! WRITTEN AS : U = A1 COS ( (WT - PHI1))
-!              V = A2 COS ( (WT - PHI1) - PHI )
-! WHERE PHI IS BETWEEN 0 AND 2*PI
-!
-        PHI = PHI2 - PHI1
-        IF (PHI.LT.0.D0)   PHI = PHI+2.D0*PI
-!
-! ESTIMATES THE DIRECTION AND (WT0) WHEN THE ELLIPSE'S MAJOR AXIS
-! IS REACHED.
-! TREATS INDIVIDUAL CASES (LINEAR POLARISATION)
-!
-        MODPHI = DMOD( PHI, PI )
-        IF ( (MODPHI.LT.ZERO).OR.((PI-MODPHI).LT.ZERO) ) THEN
-          WT0 = PHI1
-          IF ( (PHI.LT.2D0*ZERO).OR.((2.D0*PI-PHI).LT.2D0*ZERO) )THEN
-            ALPHA0 = ATAN2( A2,A1 )
-          ELSE
-!                  (ABS(PHI-PI).LT.2D0*ZERO)
-            ALPHA0 = 2.D0*PI - ATAN2( A2,A1 )
-          ENDIF
-        ELSE
-! GENERAL CASE: ELLIPTIC POLARISATION
-!        TAN(2*(WT0 - PHI1)) = A2**2*SIN(2*PHI)/(A1**2+A2**2*COS(2*PHI))
-          TETA01 = ATAN2( (A2*A2*SIN(2*PHI)) ,
-     &                    (A1*A1 + A2*A2*COS(2*PHI)) ) / 2.D0
-          XU1 = A1 * COS ( TETA01)
-          XV1 = A2 * COS ( TETA01 - PHI )
-          XU2 = -A1 * SIN ( TETA01)
-          XV2 = -A2 * SIN ( TETA01 - PHI )
-          D1 = XU1*XU1 + XV1*XV1
-          D2 = XU2*XU2 + XV2*XV2
-          IF (D2.GT.D1) THEN
-             TETA01 = TETA01 + PI/2.D0
-             XU1    = XU2
-             XV1    = XV2
-          ENDIF
-          WT0    = TETA01 + PHI1
-          ALPHA0 = ATAN2( XV1,XU1 )
-        ENDIF
-        INCI%R(I)  = ALPHA0
-        T2%R(I) = WT0
- 30   CONTINUE
-!
-! FREE SURFACE IN PHASE WITH ALPHA0
-! INCIDENCE IS CONSIDERED POSITIVE WHEN THE FREE SURFACE IS
-! POSITIVE.
-!
-      DO 40 I=1,NPOIN
-         A1 = -(PHII%R(I)*COS(T2%R(I))-PHIR%R(I)*SIN(T2%R(I)))
-         IF (A1.LT.0.D0) THEN
-           IF (INCI%R(I).GE.0.D0) THEN
-             INCI%R(I) = INCI%R(I) - PI
-           ELSE
-             INCI%R(I) = INCI%R(I) + PI
-           ENDIF
-         ENDIF
- 40   CONTINUE
-!
+!    NOMBRES D INTERET POUR LE COURANT, ATTENTION IL FAUT DECLARER 4 VARIABLES
+!                                                 PRIVEES DANS LE .cas
+!      IF (COURANT) THEN
+!      ON IMPRIME LE COURANT ET LE VECTEUR D ONDE
+!       DO I=1,NPOIN
+!        PRIVE%ADR(1)%P%R(I) = UC%R(I)
+!        PRIVE%ADR(2)%P%R(I) = VC%R(I)
+!        PRIVE%ADR(3)%P%R(I) = T5%R(I)
+!        PRIVE%ADR(4)%P%R(I) = T6%R(I)
+!       ENDDO
+!      ENDIF
+ 
 !=======================================================================
 !
       RETURN

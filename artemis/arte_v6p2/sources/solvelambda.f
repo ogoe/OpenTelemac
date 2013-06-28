@@ -1,0 +1,91 @@
+!                 ********************** 
+                  SUBROUTINE SOLVELAMBDA
+!                 ********************** 
+!                  
+     *(XK,XUC,XVC,XKX,XKY,XH)
+!
+!***********************************************************************
+! ARTEMIS   V6P3                                     06/2013
+!***********************************************************************
+!
+!brief    RESOLUTION OF DISPERSION EQUATION WITH CURRENT  
+!+        USING  DICHOTOMIE
+!                          ->->
+!   Eq solved on k : omega-k.U = sqrt(gk tanh(kH))        
+!
+!history  D.IDIER / J.PARISI / C.PEYRARD 
+!+        30/06/2013
+!+        V6P3
+!
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!| XK             |<-->| K : NOMBRE D'ONDE AU POINT I
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+      USE DECLARATIONS_ARTEMIS
+      IMPLICIT NONE
+      INTEGER LU
+      COMMON  LU
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+!
+!+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+!
+      INTEGER          NIT
+      DOUBLE PRECISION XUC,XVC,XH,XK,XKX,XKY
+      DOUBLE PRECISION K10,K20,K30,AK10,AK20,AK30,DELTA,AK01,AK02,AK03
+!
+!-----------------------------------------------------------------------
+!
+      NIT=0
+      K10=XK
+C Produit scalaire K.U
+      IF((XUC*XKX+XVC*XKY).GE.0D0)THEN
+       K20=1.D-04*K10
+      ELSE
+       K20=10.D0*K10
+      ENDIF
+      K30 =(K10+K20)*0.5D0
+      AK01=(XUC*XKX)
+      AK02=(XVC*XKY)
+      AK03=SQRT(XKX**2+XKY**2) 
+          
+97    CONTINUE   
+      NIT=NIT+1
+      IF(NIT.GT.100000) THEN
+        WRITE(LU,*) 'ERREUR : ROUTINE SOLVELAMBDA !        '
+        WRITE(LU,*) 'PROBLEME DANS LA DICHOTOMIE  !        '
+        WRITE(LU,*) '--------------------------------------'
+        WRITE(LU,*) 'ATTENTION : SI LE COURANT EST OPPOSE A'
+        WRITE(LU,*) 'LA HOULE, L EQUATION DE DISPERSION N A'
+        WRITE(LU,*) 'PAS TOUJOURS UNE SOLUTION             '
+        WRITE(LU,*) '--------------------------------------'
+        STOP
+      ENDIF
+!            
+      AK10=SQRT(GRAV*K10*TANH(K10*XH))-OMEGA
+     & +    (AK01+AK02)*K10/AK03
+      AK20=SQRT(GRAV*K20*TANH(K20*XH))-OMEGA 
+     & +    (AK01+AK02)*K20/AK03
+      AK30=SQRT(GRAV*K30*TANH(K30*XH))-OMEGA
+     & +    (AK01+AK02)*K30/AK03 
+!      
+      IF(AK30*AK20.GE.0.D0)THEN 
+        K20=K30
+        K30=(K10+K30)*0.5D0
+      ELSEIF(AK30*AK20.LE.0.D0)THEN
+        K10=K30
+        K30=(K20+K30)*0.5D0
+      ENDIF
+      DELTA=ABS(K20-K10)/K20
+!      
+      IF(DELTA.GT.1.D-6)THEN
+       GOTO 97
+      ELSE
+        XK=K30
+      ENDIF
+!
+!-----------------------------------------------------------------------
+!
+      RETURN
+      END

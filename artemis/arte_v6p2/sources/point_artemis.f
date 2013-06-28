@@ -236,7 +236,7 @@
 !
 !  NUMBER OF ARRAYS TO ALLOCATE : NTR
 !           14 : FOR CGSTAB (=2 X 7)
-      NTR = 14
+      NTR = 16
 !     FOR GMRES: NTR DEPENDS ON THE DIMENSION OF THE KRYLOV SPACE
       IF(SLVART%SLV.EQ.7) NTR = MAX(NTR,4+4*SLVART%KRYLOV)
 !     2 ADDITIONAL DIAGONALS TO STORE WITH PRECONDITIONING BLOCK-DIAGONAL
@@ -254,7 +254,7 @@
 !
 !     ALIASES FOR THE FIRST 4 WORKING ARRAYS IN THE BLOCK TB
 !
-! 12 WORKING ARRAYS
+! 16 WORKING ARRAYS
       T1 =>TB%ADR( 1)%P
       T2 =>TB%ADR( 2)%P
       T3 =>TB%ADR( 3)%P
@@ -267,6 +267,10 @@
       T10 =>TB%ADR( 10)%P
       T11 =>TB%ADR( 11)%P
       T12 =>TB%ADR( 12)%P
+      T13 =>TB%ADR( 13)%P
+      T14 =>TB%ADR( 14)%P
+      T15 =>TB%ADR( 15)%P
+      T16 =>TB%ADR( 16)%P
 !
 ! WORKING ARRAY (SIZE NPTFR)
 !
@@ -379,21 +383,11 @@
 !
 !
 !
-! --> ER : START
-! --> FLOW
-!      IF (COURANT) THEN
+! --> CURRENT VALOCITY : X and Y DIRECTIONS
          CALL BIEF_ALLVEC(1, UC ,'UC     ',IELM, 1 , 2 ,MESH)
          CALL BIEF_ALLVEC(1, VC ,'VC     ',IELM, 1 , 2 ,MESH)
 ! --> RELATIVE ANGULAR FREQUENCY
          CALL BIEF_ALLVEC(1, WR ,'WR     ',IELM, 1 , 2 ,MESH)
-! --> INTERMEDIATE REAL VECTOR: WAVE VECTOR AND ERROR
-        CALL BIEF_ALLVEC(1, KN1 ,'KN1     ',IELM, 1 , 2 ,MESH)
-        CALL BIEF_ALLVEC(1, KN2 ,'KN2     ',IELM, 1 , 2 ,MESH)
-        CALL BIEF_ALLVEC(1, KNANC1 ,'KNANC1     ',IELM, 1 , 2 ,MESH)
-        CALL BIEF_ALLVEC(1, KNANC2 ,'KNANC2     ',IELM, 1 , 2 ,MESH)
-!      ENDIF
-! --> ER : END
-!  END FOR REALS
 !
 !
 !_______________________________________________________________________
@@ -504,3 +498,7 @@
 !
       RETURN
       END
+
+
+
+

@@ -53,7 +53,7 @@
 !+
 !+           /
 !+       -  /  BPHIRB * PSII*PSIJ  DB
-!+         /B
+!+         /B 
 !+
 !+           /                         /
 !+ BM1 =  - /  APHIR * PSII*PSIJ DB + /  C*CG* K * MU * PSII * PSIJ DS
@@ -127,6 +127,13 @@
       DOUBLE PRECISION CBID,FFW
       DOUBLE PRECISION PI,DEGRAD,RADDEG
 !
+C--> VARIABLES FOR CURRENT IN BERKHO
+      DOUBLE PRECISION ERREUR1,ERREUR2,ERRMAX1,KNORM
+      DOUBLE PRECISION MODKN1,MODKN2,XMUL,XK,ZERO
+      
+      
+      INTEGER J,ITERKN
+!
 !-----------------------------------------------------------------------
 !
       PARAMETER( PI = 3.1415926535897932384626433D0 , DEGRAD=PI/180.D0 )
@@ -151,25 +158,91 @@
       ENDIF
 !
 !-----------------------------------------------------------------------
-!
+      ITERKN=0
+      IF (COURANT) THEN
+       ZERO=1E-10
+C      INITIALISATION OF WAVE VECTOR COMPONENTS X&Y : T5 , T6 
+       CALL OS('X=0     ',X=T5)
+       CALL OS('X=0     ',X=T6)
+      ENDIF
+
 !
 !-----------------------------------------------------------------------
 !
-! ITERATIVE LOOP ON THE VARIABLE MU (DISSIPATION)
+C     =========================================
+!98 : DISSIPATION : ITERATIVE LOOP ON THE VARIABLE MU 
+98    CONTINUE
+
+
+      IF (COURANT) THEN
+C       --> CURRENT FIRST ITERATION : U=0  
+        IF(ITERKN.EQ.0)GOTO 988
+
+C
+C-----------------------------------------------------------------------
+C
+C     =========================================
+!99 : WAVE-CURRENT : ITERATIVE LOOP ON WAVE NUMBER AND WAVE INCIDENCE
+!99	CONTINUE
 !
-!
-!     =========================================
-!
-!     COMPUTES MATRICES AND SECOND MEMBERS
-!
-!     =========================================
-!
+C	CURRENT VELOCITY
+C       ----------------
+        CALL OS('X=Y     ', X=T11 , Y=UC )
+        CALL OS('X=Y     ', X=T12 , Y=VC )
+C		
+C       OLD WAVE VECTOR STORAGE
+C       -----------------------
+        CALL OS( 'X=Y     ' , X=T7 , Y=T5 ) 
+	CALL OS( 'X=Y     ' , X=T8 , Y=T6 )      
+C
+!       COMPUTE WAVE INCIDENCE USING SPEED AT THE FREE SURFACE
+C       ------------------------------------------------------
+C       -----------
+        CALL CALDIR()
+C       -----------
+C        --> PHIR,PHII
+C        --  T1,T2,T3,T4
+C       <--  INCI
+
+C       --- DIRECTION OF VECTOR K : INCI
+        CALL OS( 'X=COS(Y)' , T5,INCI,SBID,0.D0)
+        CALL OS( 'X=SIN(Y)' , T6,INCI,SBID,0.D0)
+C       T5 = K  COS(INCIDENCE)
+        CALL OS( 'X=XY    ' , X=T5 , Y=K)      
+C       T6 = K  SIN(INCIDENCE)
+        CALL OS( 'X=XY    ' , X=T6 , Y=K)      
+C
+C       COMPUTE WR AND WAVE NUMBER AMPLITUDE
+C       ------------------------------------
+        DO I=1,NPOIN
+	 XK =K%R(I)
+	 CALL SOLVELAMBDA(XK,
+     *                    UC%R(I),VC%R(I),T5%R(I),T6%R(I),H%R(I))
+         K%R(I) =XK
+	 
+         WR%R(I)=SQRT(GRAV*K%R(I)*TANH(K%R(I)*H%R(I)))
+	 C%R(I) =WR%R(I)/K%R(I)
+         CG%R(I)=0.5D0*C%R(I)*
+     &           (1.D0 + 2.D0*K%R(I)*H%R(I)/SINH(2.D0*K%R(I)*H%R(I)))
+	ENDDO
+C
+C	ACTUALIZATION OF BOUNDARY CONDITIONS : K AS CHANGED !!
+C       ------------------------------------------------------
+C	 ----------
+         CALL PHBOR       
+C        ----------
+C     END OF WAVE-CURRENT FIRST STEP : NEXT STEP IS COMPUTING AM AND BM     
+      ENDIF
+      
+988   CONTINUE
+C
+C     =========================================
+!                   MATRIX AM
+C     =========================================
 !     ---------------------------
 !     DIFFUSION MATRIX FOR AM1
 !     ---------------------------
-! CER
-98    CONTINUE
-! CER
+! 
       CALL OS( 'X=YZ    ' , T1 , C , CG , CBID )
       CALL MATRIX(AM1,'M=N     ','MATDIF          ',IELM,IELM,
      &            1.D0,S,S,S,T1,T1,S,MESH,MSK,MASKEL)
@@ -192,51 +265,107 @@
 !     -----------------------
 !     MASS MATRIX FOR AM1
 !     -----------------------
-!
-!
-      CALL OS( 'X=Y/Z   ' , T1 , CG , C , CBID )
-!
-! SECOND ORDER BOTTOM EFFECTS ? (IPENTCO > 0 --> T1 = T1*(1+F) )
-! 0 : NO EFFECT /  1 : GRADIENT / 2 : CURVATURE /  3 : GRADIENT+CURVATURE
-      IF ( (IPENTCO.GT.(0.5)).AND.(IPENTCO.LT.(3.5)) ) THEN
-!       on modifie T2 T4 T5 T6 T7 T9 T8 T11 T12
-        CALL PENTCO(IPENTCO)
-!       T3 = 1+F  
-        CALL OS( 'X=YZ    ' , T1 , T1 , T3 , CBID )
+!     (WARNING : CAN'T USE CURRENT AND SECOND ORDER BOTTOM EFFECTS AT THE SAME TIME)
+      IF (COURANT) THEN
+         XMUL=1.D0
+         CALL OS( 'X=YZ    ' , X=T1,Y=CG,Z=C)
+         CALL OS( 'X=YZ    ' , X=T2 , Y=K , Z=K)
+         CALL OS( 'X=XY    ' , X=T1 , Y=T2)      
+         CALL OS( 'X=C     ' , X=T2 , C=OMEGA**2)
+	 IF(ITERKN.EQ.0)THEN
+	  CALL OS( 'X=C     ' , X=T3 , C=OMEGA**2)
+	 ELSE      
+          CALL OS( 'X=YZ    ' , X=T3 , Y=WR , Z=WR )
+	 ENDIF
+         CALL OS( 'X=Y+Z   ' , X=T1 , Y=T1 , Z=T2)
+         CALL OS( 'X=Y-Z   ' , X=T1 , Y=T1 , Z=T3)  
+	 IF (IPENTCO.GT.(0.5)) THEN
+	   WRITE(LU,*) 'IT IS NOT POSSIBLE TO USE '
+	   WRITE(LU,*) 'CURRENT + BOTTOM EFFECTS AT THE SAME TIME'
+	   WRITE(LU,*) '- FOR CURRENT ALONE, FIX IPENTO=0'
+  	   WRITE(LU,*) '- FOR BOTTOM EFFECTS ALONE, DON T USE CURRENT'
+  	   WRITE(LU,*) '-------------------------'
+  	   WRITE(LU,*) 'THE CODE IS GOING TO STOP'
+  	   WRITE(LU,*) '-------------------------'
+           STOP
+	 ENDIF
+      ELSE
+         CALL OS( 'X=Y/Z   ' , X=T1,Y=CG,Z=C)
+	 XMUL=OMEGA**2
+!        SECOND ORDER BOTTOM EFFECTS ?    
+!          (IPENTCO > 0 --> T1 = T1*(1+F) )
+!           0 : NO EFFECT /  1 : GRADIENT / 2 : CURVATURE /  3 : GRADIENT+CURVATURE
+          IF ( (IPENTCO.GT.(0.5)).AND.(IPENTCO.LT.(3.5)) ) THEN
+              CALL PENTCO(IPENTCO)
+!             <--T3 = 1+F  
+!             -- T2 T4 T5 T6 T7 T9 T8 T11 T12
+              CALL OS( 'X=YZ    ' , T1 , T1 , T3 , CBID )
+          ENDIF
       ENDIF
-!
+
       CALL MATRIX(AM2,'M=N     ','FMATMA          ', IELM , IELM ,
-     &            OMEGA**2 , T1,S,S,S,S,S,MESH,MSK,MASKEL)
+     &            XMUL , T1,S,S,S,S,S,MESH,MSK,MASKEL)
 !
+
 !     --------------------------------------------------
-!     COMPUTES DIFFUSION MATRIX - MASS MATRIX
+!     COMPUTES DIFFUSION MATRIX - MASS MATRIX 
 !     --------------------------------------------------
-!
       CALL OM( 'M=M+CN  ' , AM1 , AM2 , C , -1.D0 , MESH )
 !
+
+!
+      IF (COURANT) THEN
+!     --------------------------------------------------
+!     ADDS CURRENT - CONVECTION MATRIX
+!     --------------------------------------------------
+!
+       CALL MATRIX(AM2,'M=N     ','MAUGUG          ', IELM , IELM ,
+     &            1.D0 , S,S,S,UC,VC,S,MESH,MSK,MASKEL)
+!
+       CALL OM( 'M=M+CN  ' , AM1 , AM2 , C , -1.D0 , MESH )
+!
+      ENDIF
 !     --------------------------------
 !     ADDS THE BOUNDARY TERM TO AM1
 !     --------------------------------
 !
-!     (HERE T1 IS A DUMMY STRUCTURE)
+C      AM1 et AM2 --> NON-SYMETRIQUES
+       CALL OM( 'M=X(M)  ' , AM1 , AM1 , SBID , CBID , MESH )
+       CALL OM( 'M=X(M)  ' , AM2 , AM2 , SBID , CBID , MESH )
 !
-!        ------------------------------
+!        ----------------------------
 !        BOUNDARY TERM: INCIDENT WAVE
-!     ------------------------------
+!        ----------------------------
 !
-      IF (NPTFR .GT. 0) THEN
+       IF (NPTFR .GT. 0) THEN
          CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
      &        -1.D0,BPHI1B,S,S,S,S,S,MESH,.TRUE.,MASK1)
          CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
-      END IF
+C
+C
+         IF(COURANT) THEN
+          CALL MATRIX(MBOR,'M=N     ','MATFGUG        ',IELMB,IELMB,
+     &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
+     &        MESH,.TRUE.,MASK1)
+          CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
+         ENDIF
+C  
+       ENDIF
 !     ------------------------------
 !     BOUNDARY TERM: FREE EXIT
 !     ------------------------------
-      IF (NPTFR .GT. 0) THEN
+       IF (NPTFR .GT. 0) THEN
          CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
      &        -1.D0,BPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
          CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
-      END IF
+C
+         IF(COURANT) THEN
+          CALL MATRIX(MBOR,'M=N     ','MATFGUG        ',IELMB,IELMB,
+     &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
+     &        MESH,.TRUE.,MASK2)
+          CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
+         ENDIF
+       ENDIF
 !     ------------------------------
 !     BOUNDARY TERM : SOLID BOUNDARY
 !     ------------------------------
@@ -245,7 +374,7 @@
      &        -1.D0,BPHI3B,S,S,S,S,S,MESH,.TRUE.,MASK3)
          CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
       END IF
-!     ------------------------------
+!     --------------------- ---------
 !     BOUNDARY TERM: IMPOSED WAVE
 !     ------------------------------
       IF (NPTFR .GT. 0) THEN
@@ -258,13 +387,23 @@
 !      BOUNDARY TERM: INCIDENT POTENTIAL
 !     ------------------------------
 !
-      IF (NPTFR .GT. 0) THEN
+       IF (NPTFR .GT. 0) THEN
          CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
      &        -1.D0,BPHI1B,S,S,S,S,S,MESH,.TRUE.,MASK5)
          CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
-      END IF
-
+C
+         IF(COURANT) THEN
+          CALL MATRIX(MBOR,'M=N     ','MATFGUG        ',IELMB,IELMB,
+     &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
+     &        MESH,.TRUE.,MASK5)
+          CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
+         ENDIF
+C	 
+       ENDIF
 !
+C     =========================================
+!                   SECOND MEMBERS
+C     =========================================
 !     ---------------------
 !     SECOND MEMBERS : CV1
 !     ---------------------
@@ -327,7 +466,6 @@ C       --- CALCUL DE i COS(TETAP) GAMMA
          IF (NPTFR .GT. 0) THEN
             CALL VECTOR(T1,'=','MASVEC          ',IELMB,
      &           1.D0,CPHI2B,S,S,S,S,S,MESH,.TRUE.,MASK2)
-!     END IF
             CALL OSDB( 'X=X+Y   ' , CV1 , T1 , SBID , CBID , MESH )
          END IF
 !     ------------------------------
@@ -440,7 +578,10 @@ CCP
 !           CALL PARCOM(CV2,2,MESH)
 !	  ENDIF
 CCP
-
+C     =========================================
+!                   MATRIX BM
+C     =========================================
+C
 !     ----------------------------------------------------------
 !     COMPUTES THE MATRIX BM1 FOR THE MU VALUES SPECIFIED
 !     FOR THE ITERATION 'ITERMU'
@@ -452,6 +593,46 @@ CCP
       CALL MATRIX(BM1,'M=N     ','FMATMA          ', IELM , IELM ,
      &            1.D0 , T1,S,S,S,S,S,MESH,MSK,MASKEL)
 !
+      IF ((COURANT).AND.(ITERKN.GT.0)) THEN
+!     ----------------------------------------------------------
+!     ADD TERMS TO BM1 FOR THE CURRENT 2*OMEGA.U TERM
+!     ----------------------------------------------------------
+C          ON DESYMETRISE BM1
+           CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
+C
+           CALL MATRIX(BM2,'M=N     ','MATVGR         ',IELM ,IELM ,
+     *            2D0*OMEGA , S,S,S,UC,VC,S,
+     *            MESH,MSK,MASKEL)  
+C
+           CALL OM( 'M=M+N   ' , BM1 , BM2 , T1 , CBID , MESH )
+C
+!     ----------------------------------------------------------
+!     ADD TERMS TO THE MATRIX BM1 FOR THE CURRENT : DIV(U) TERM
+!     ----------------------------------------------------------
+C
+           CALL VECTOR(T2 , '=' , 'MASBAS          ' , IELM ,
+     *            1.D0 , S , S , S , S , S , S ,
+     *            MESH , MSK  , MASKEL )
+C
+      	   CALL VECTOR(T13 , '=' , 'GRADF          X' , IELM ,
+     *            1.D0 , UC , S , S , S , S , S ,
+     *            MESH , MSK , MASKEL)
+C
+           CALL VECTOR(T14 , '=' , 'GRADF          Y' , IELM ,
+     *            1.D0 , VC , S , S , S , S , S ,
+     *            MESH , MSK , MASKEL)
+C
+           CALL OS( 'X=Y+Z   ' , X=T15 , Y=T14 , Z=T13 )
+           CALL OS( 'X=Y/Z   ' , X=T16 , Y=T15 , Z=T2 )  
+C
+	   CALL MATRIX(BM2,'M=N     ','FMATMA          ',IELM ,IELM ,
+     *            OMEGA , T16,S,S,S,S,S,
+     *            MESH,MSK,MASKEL)
+C
+           CALL OM( 'M=M+N   ' , BM1 , BM2 , SBID , CBID , MESH )
+      ENDIF
+
+
 !     -------------------------------------------
 !     ADDS THE BOUNDARY TERM TO BM1
 !     -------------------------------------------
@@ -462,9 +643,10 @@ CCP
 !        ------------------------------
          CALL MATRIX(MBOR,'M=N     ','FMATMA          ',IELMB,IELMB,
      &        -1.D0,APHI1B,S,S,S,S,S,MESH,.TRUE.,MASK1)
+!         WRITE (*,*)'MBOR = ', MBOR%TYPEXT
          CALL OM( 'M=M+N   ' , BM1 , MBOR , T1 , CBID , MESH )
       END IF
-!     ------------------------------
+!        ------------------------------
 !        BOUNDARY TERM: FREE EXIT
 !        ------------------------------
       IF (NPTFR .GT. 0) THEN
@@ -507,7 +689,12 @@ CCP
 !     BM1 BECOMES NONSYMMETRICAL
 !     --------------------------
 !
-      CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
+C     SI ON N'A PAS DE COURANT OU SI ON NE L'A PAS ENCORE PRIS EN COMPTE
+C
+      IF ((.NOT.COURANT).OR.ITERKN.EQ.0) THEN
+       CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
+      ENDIF
+
 !
 !     ----------------------------
 !     TRIES MASS-LUMPING OF BM1
@@ -559,7 +746,7 @@ CCP
 !     ==========================================================
 !
       IF (3*(SLVART%PRECON/3).EQ.SLVART%PRECON) THEN
-       CALL OM( 'M=X(M)  ' , AM1 , AM1 , SBID , CBID , MESH )
+        CALL OM( 'M=X(M)  ' , AM1 , AM1 , SBID , CBID , MESH )
         CALL OM( 'M=X(M)  ' , AM2 , AM2 , SBID , CBID , MESH )
       ENDIF
 !
@@ -585,20 +772,61 @@ CCP
  240  FORMAT(/,1X,'RESOLUTION DU SYSTEME LINEAIRE (SOLVE)',/)
  241  FORMAT(/,1X,'LINEAR SYSTEM SOLVING (SOLVE)',/)
 !
-      IF(SLVART%SLV.EQ.8 .OR. SLVART%SLV.EQ.9 ) THEN
-!
-!      CHANGES THE SIGN OF THE SECOND EQUATION
-!
-       CALL OS('X=-Y    ',X=MAT%ADR(3)%P%D,Y=MAT%ADR(3)%P%D)
-       CALL OS('X=-Y    ',X=MAT%ADR(4)%P%D,Y=MAT%ADR(4)%P%D)
-       CALL OS('X=-Y    ',X=MAT%ADR(3)%P%X,Y=MAT%ADR(3)%P%X)
-       CALL OS('X=-Y    ',X=MAT%ADR(4)%P%X,Y=MAT%ADR(4)%P%X)
-       CALL OS('X=-Y    ',X=RHS%ADR(2)%P,Y=RHS%ADR(2)%P)
-      ENDIF
-!
-!
       CALL SOLVE(UNK,MAT,RHS,TB,SLVART,INFOGR,MESH,AM3)
 !
+      IF (COURANT) THEN  
+C     CONVERGENCE ON WAVE VECTOR
+C     ==========================
+C       Error Initialisation 
+        ERRMAX1=0.D0
+C       Increment for wave-current iteration
+        ITERKN = ITERKN + 1
+C       CONVERGENCE CRITERION ON WAVE NUMBER : 1%
+        EPSDIS =1.D-02
+	ERREUR1=0.D0
+C                                     ->    ->
+C       MAX ERROR CALCULATION : NORM( Kn - Kn-1 )/NORM(Kn) < EPSDIS
+        IF (ITERKN.GT.1) THEN
+         DO I=1,NPOIN
+	  KNORM=max(1000D0*ZERO,SQRT((T5%R(I)**2+T6%R(I)**2)))
+	  ERREUR1=((T7%R(I)-T5%R(I))/KNORM)**2
+	  ERREUR2=((T8%R(I)-T6%R(I))/KNORM)**2
+          ERREUR1=ERREUR1+ERREUR2
+	  ERREUR1=SQRT(ERREUR1)
+	  IF (ERREUR1.GT.ERRMAX1) THEN
+	   ERRMAX1=ERREUR1
+	  ENDIF
+         ENDDO
+         ERREUR1=ERRMAX1
+	ENDIF
+C         
+C        TEST OF THE MAX ERROR
+C        ----------------------
+        WRITE(LU,*) '-----------------------------------------------'
+	IF (ITERKN.GT.1) THEN
+	 WRITE(LU,*) 'WAVE-CURRENT : DIFF. BETWEEN 2 ITER. =',ERREUR1
+         WRITE(LU,*) 'LOOP FOR WAVE-CURRENT : TOLERANCE    =',EPSDIS
+	ELSE
+         WRITE(LU,*) 'INITIAL LOOP FOR WAVE-CURRENT TERMINATED'
+	ENDIF
+        IF ( (ERREUR1.GT.EPSDIS).OR.(ITERKN.EQ.1) ) THEN
+C        NEW ITERATION FOR WAVE INCIDENCE AND WAVE NUMBER
+          GOTO 98
+	 ELSE
+	  ITERKN=0
+        ENDIF
+
+        IF (LNG.EQ.1) WRITE(LU,202) ITERKN
+        IF (LNG.EQ.2) WRITE(LU,203) ITERKN
+202     FORMAT(/,1X,'NOMBRE DE SOUS-ITERATIONS POUR LA DIRECTION DE K:',
+     *   1X,I3)  
+203     FORMAT(/,1X,'NUMBER OF SUB-ITERATIONS FOR DIRECTION OF K:',
+     *   1X,I3)
+C
+C     END OF THE LOOP ON WAVE DIRECTION AND WAVE NUMBER
+C     =================================================
+      ENDIF
+
 !
 !     ============================================================
 !
