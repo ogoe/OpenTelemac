@@ -77,7 +77,11 @@ sub RunMake
     if($make==1)
     	{
   	system ("maktel menage");
- 	system ("maktel install");
+ 	$error = system ("maktel install");
+        if($error != 0)
+        {
+          die "===== $curdir : Error while running maktel install\n"
+        }
         printf "===== $curdir : maktel install\n";
 #
 # Pour les libs faire en plus les libs Debug et Profile
