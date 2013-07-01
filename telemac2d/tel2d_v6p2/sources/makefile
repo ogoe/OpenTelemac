@@ -102,7 +102,7 @@ MAKEFILE      = makefile
 SRCS= \
 friction_def.f\
 declarations_telemac2d.f  interface_telemac2d.f  \
-m_coupling_estel3d.f tpxo.f okada.f oil_spill_2d.f \
+m_coupling_estel3d.f tpxo.f okada.f oilspill.f \
 homere_telemac2d.f                     \
 lecdon_telemac2d.f                     \
 akepin.f assignstr.f astro.f  bilan.f  \
