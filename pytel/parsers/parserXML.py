@@ -303,6 +303,12 @@ class ACTION:
       setattr(specs,'nctile', '1')    # default but should not be used for validation
       setattr(specs,'bypass',self.bypass)
 
+      # In case we are not in a parallel configuration 
+      # we do not run test with ncsize greater than one
+      if self.active['ncsize'] <> '1' \
+         and self.active['ncsize'] <> '0' \
+         and self.active['ncsize'] <> '' \
+         and ('parallel' not in cfg['options']): return
       # ~~> check on sorties and run
       casFile = path.join(self.active['path'],self.active["target"])
       sacFile = path.join(self.active['safe'],self.active["target"])
