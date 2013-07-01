@@ -57,6 +57,9 @@
       DOUBLE PRECISION, INTENT(INOUT) :: XA(*),RHS(NPOIN)
       DOUBLE PRECISION, INTENT(INOUT) :: XINC(NPOIN),DA(NPOIN)
       CHARACTER(LEN=1), INTENT(IN)    :: TYPEXT
+!
+!-----------------------------------------------------------------------
+!
       COMMON/INFO/LNG,LU
       INTEGER LNG,LU
 !
