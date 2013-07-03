@@ -1,0 +1,52 @@
+<?xml version="1.0"?> 
+<!-- Validation and verification of test cases, given a list of CAS files 
+--> 
+<validation xref="t3dbox"> 
+ 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+   <meta xref="default"> 
+      <look format="png" colourbar="jet.xml" /> 
+      <data title="box" author="telemac3d" contact="www.opentelemac.org" /> 
+   </meta> 
+   <meta xref="vect"> 
+      <look colour="jet.xml" /> 
+   </meta> 
+   <meta xref="line"> 
+      <look colour="k" /> 
+   </meta> 
+ 
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ do="cas;princi" are being ignored at the moment 
+-->  
+   <action xref="t3d_Run" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac3d" target="t3d_box.cas" 
+       title="box scalar mode" 
+   />
+   
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+<!--   <extract xref="postel" code="postel3d"
+       do="runPYTHON" target="postel3d.py p3d_box.cas"
+	   dependency="p3d_box.cas;geo_box.slf"
+       title="Post process"
+   /> 
+   -->  
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+<!--   <plot1d xref="Tracer_downslope" type="history" time="[0;-1]" size="[12;5]" config="together" > 
+      <layer vars="ExcessSal:line" target="postel:hor_001" extract="[1000;2000]" />  
+   </plot1d> 
+   <plot1d xref="Tracer_upslope" type="history" time="[0;-1]" size="[12;5]" config="together" > 
+      <layer vars="ExcessSal:line" target="postel:hor_001" extract="[3000;2000]" />  
+   </plot1d> 
+    -->   
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+  --> 
+<!--   <plot2d xref="Mesh" size="[10;10]"  > 
+      <layer vars="domain indicator:mesh" target="postel:hor_001" config="oneofall" time="[5]"/> 
+   </plot2d>
+   -->   
+   
+</validation>

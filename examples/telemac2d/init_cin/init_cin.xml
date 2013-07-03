@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- Validation and verification of test cases, given a list of CAS files
+-->
+<validation xref="init_cin">
+
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+   <meta xref="default">
+      <look format="png" colourbar="jet.xml" />
+      <data title="init_cin" author="telemac2d" contact="www.opentelemac.org" />
+   </meta>
+   <meta xref="vect">
+      <look colour="jet.xml" />
+   </meta>
+   <meta xref="line">
+      <look colour="k" />
+   </meta>
+
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ do="cas;princi" are being ignored at the moment
+--> 
+   <action xref="1"
+       do="translate;compile;run;cas;princi"
+       code="telemac2d" target="t2d_init_cin.cas"
+       title="init_cin scalar mode"
+   />
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   /!\ This section is being ignored at the moment -->
+
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   -->
+<!-- /!\ Being ignored at the moment. Cf. <telemac2d>/.../011_bumpflu/bumpflu.xml
+-->
+
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+   <plot2d xref="Mesh" size="[10;5]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[10;5]" > 
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d>
+   <plot2d xref="FreeSurface_t1" size="[10;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[1]" /> 
+   </plot2d>
+   <plot2d xref="FreeSurface_tf" size="[10;5]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="Turb_Visco_tf" size="[10;5]" > 
+      <layer vars="viscosite turb:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+
+</validation>

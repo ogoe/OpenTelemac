@@ -1,0 +1,19 @@
+/**********************************************************************/
+/                  EXAMPLE OF CONVERTION                               /
+/                 UNV TO MED WITH BOUNDARY CONDITIONS                  /
+/**********************************************************************/
+/ WARNING : You need med library to fullfill this test
+/ Define that we are using the converter part of stbtel
+CONVERTISSEUR                 : OUI
+/ Allow debug informations to be displayed
+DEBUG                         : OUI
+/ INPUT INFORMATIONS
+FORMAT DU FICHIER D ENTREE    : 'SERAFIN'
+FICHIER D ENTREE              : 'geo_riogrande.slf'
+/ OUPUT INFORMATIONS
+FORMAT DU FICHIER DE SORTIE   : 'UNV'
+FICHIER DE SORTIE             : 'geo_riogrande.unv'
+FICHIER LOG EN SORTIE         : 'geo_riogrande.log'
+/
+&ETA
+&FIN

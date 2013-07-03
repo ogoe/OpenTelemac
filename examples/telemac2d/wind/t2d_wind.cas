@@ -1,0 +1,97 @@
+/
+/ See Fortran file to have an example of subroutine meteo.
+/
+/-------------------------------------------------------------------/
+/   TELEMAC-2D  -  VALIDATION TEST CASE NUMBER 10 -  12/2001        /
+/                            WIND SET-UP                            /
+/-------------------------------------------------------------------/
+/
+/ HP C3700 compilateur HP      :  1 s       version 5.7 19/04/2007
+/ HP C3700 compilateur Nag     :  3 s       version 5.7 19/04/2007
+/ Dell 2.8 MHz compilateur pgi :  0 s  !!!! version 5.7 19/04/2007
+/
+/ HP C3700 compilateur HP      :  1 s       version 5.8 20/12/2007
+/ HP C3700 compilateur Nag     :  0 s       version 5.8 26/12/2007
+/ Dell 2.8 MHz compilateur pgi :  ? s  !!!! version 5.8 
+/
+/ HP C3700 compilateur HP      :  1 s       version 5.9 16/10/2008
+/ HP C3700 compilateur Nag     :  1 s       version 5.9 17/10/2008
+/ Dell 2.8 MHz compilateur pgi :  0.15 s  ! version 5.9 16/10/2008 
+/
+/ HP C3700 compilateur HP        :    1 s    version 6.0 24/11/2009
+/ HP C3700 compilateur Nag       :    1 s    version 6.0 27/11/2009
+/ Dell 2.8 MHz compilateur Intel : 0.05 s    version 6.0 27/11/2009
+/
+/ Version 6.2
+/
+/ HP C3700 compilateur HP        :    1 s    21/05/2012
+/
+/----------------------------------------------
+/  COMPUTER INFORMATIONS
+/----------------------------------------------
+/
+GEOMETRY FILE                   = geo_wind.slf
+FORTRAN FILE                    = t2d_wind.f
+BOUNDARY CONDITIONS FILE        = geo_wind.cli
+RESULTS FILE                    = r2d_wind.slf
+REFERENCE FILE                  = f2d_wind.slf
+PREVIOUS COMPUTATION FILE       = ini_wind.slf
+FORMATTED DATA FILE 1           = fo1_wind
+PARALLEL PROCESSORS             = 0
+/
+/
+/----------------------------------------------
+/  GENERAL INFORMATIONS - OUTPUTS
+/----------------------------------------------
+/
+TITLE                                        = 'WIND SET UP'
+VARIABLES FOR GRAPHIC PRINTOUTS              = 'U,V,H,S,X,Y'
+GRAPHIC PRINTOUT PERIOD                      = 1
+LISTING PRINTOUT PERIOD                      = 1
+VALIDATION                                   = YES
+TIME STEP                                    = 10.
+NUMBER OF TIME STEPS                         = 10
+MASS-BALANCE                                 = YES
+INFORMATION ABOUT SOLVER                     = YES
+/
+/----------------------------------------------
+/  INITIAL CONDITIONS
+/----------------------------------------------
+/
+COMPUTATION CONTINUED                        = YES
+/
+/----------------------------------------------
+/  PHYSICAL PARAMETERS
+/----------------------------------------------
+/
+LAW OF BOTTOM FRICTION                       = 0
+FRICTION COEFFICIENT                         = 60.
+TURBULENCE MODEL                             = 1
+VELOCITY DIFFUSIVITY                         = 0.
+/
+/----------------------------------------------
+/  NUMERICAL PARAMETERS 
+/----------------------------------------------
+/
+TYPE OF ADVECTION                            = 1;5
+SUPG OPTION                                  = 1;2
+SOLVER ACCURACY                              = 1.E-3
+DISCRETIZATIONS IN SPACE                     = 11 ; 11 
+PRECONDITIONING                              = 2
+IMPLICITATION FOR DEPTH                      = 0.5
+IMPLICITATION FOR VELOCITY                   = 0.5 
+INITIAL GUESS FOR H                          = 0
+MATRIX STORAGE                               = 3
+MATRIX-VECTOR PRODUCT                        = 2  
+/
+/----------------------------------------------
+/  WIND
+/----------------------------------------------
+/
+WIND                                         = YES
+COEFFICIENT OF WIND INFLUENCE                = 1.2615E-3 
+WIND VELOCITY ALONG X                        = 5.
+WIND VELOCITY ALONG Y                        = 0.
+/  END OF STEERING FILE 
+/             
+&FIN

@@ -1,0 +1,79 @@
+<?xml version="1.0"?> 
+<!-- Validation and verification of test cases, given a list of CAS files 
+--> 
+<validation xref="weirs"> 
+ 
+<!-- Extras and Meta Data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+   <meta xref="default"> 
+      <look format="png" colourbar="jet.xml" /> 
+      <data title="weirs" author="telemac2d" contact="www.opentelemac.org" /> 
+   </meta> 
+   <meta xref="vect"> 
+      <look colour="jet.xml" /> 
+   </meta> 
+   <meta xref="line"> 
+      <look colour="k" /> 
+   </meta> 
+ 
+<!-- Actions on CAS files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ do="cas;princi" are being ignored at the moment 
+-->  
+   <action xref="1" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_bowl_fe_fr.cas" 
+       title="parabolic bowl finite elements scalar mode" 
+   />  
+   <action xref="2" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_bowl_vf_fr.cas" 
+       title="parabolic bowl finite elements scalar mode" 
+   />  
+   <action xref="3" 
+       do="translate;compile;run;cas;princi" 
+       code="telemac2d" target="t2d_bowl_vf_gb.cas" 
+       title="parabolic bowl finite elements scalar mode" 
+   />
+   <action xref="4" 
+       do="translate;compile;run;cas;princi" ncsize="4" 
+       code="telemac2d" target="t2d_bowl_fe_fr.cas" 
+       title="parabolic bowl finite elements parallel mode" 
+   />  
+<!-- Actions on output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   /!\ This section is being ignored at the moment --> 
+ 
+<!-- plot1d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+   --> 
+   <plot1d xref="FreeSurface_Section" type="v-section" size="[12;5]" config="together" time="[0]">
+      <layer vars="surface libre:line" extract="[-4000;0][4000;0]" target="1:T2DRES" time="[0]"/> 
+      <layer vars="surface libre:line" extract="[-4000;0][4000;0]" target="1:T2DRES" time="[1]"/> 
+   </plot1d>  
+ 
+<!-- plot2d ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+  --> 
+   <plot2d xref="Mesh" size="[10;10]" > 
+      <layer vars="fond:mesh" target="1:T2DGEO" config="oneofall" /> 
+   </plot2d> 
+   <plot2d xref="Bathy" size="[10;10]" > 
+      <layer vars="fond:map" target="1:T2DRES" config="oneofall" /> 
+   </plot2d>  
+    <plot2d xref="FreeSurface_fe" size="[10;10]" > 
+      <layer vars="surface libre:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="VelocityU_fe" size="[10;10]" > 
+      <layer vars="vitesse U:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="VelocityV_fe" size="[10;10]" > 
+      <layer vars="vitesse V:map" target="1:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+    <plot2d xref="FreeSurface_vf_fr" size="[10;10]" > 
+      <layer vars="surface libre:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d> 
+   <plot2d xref="VelocityU_vf_fr" size="[10;10]" > 
+      <layer vars="vitesse U:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   <plot2d xref="VelocityV_vf_fr" size="[10;10]" > 
+      <layer vars="vitesse V:map" target="2:T2DRES" config="oneofall" time="[-1]" /> 
+   </plot2d>
+   
+</validation>
