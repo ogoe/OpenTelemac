@@ -1,0 +1,4 @@
+<ColorMap name="CIELab Blue to Red" space="Lab">
+  <Point x="0" o="0" r="0" g="0.6" b="0.74902"/>
+  <Point x="1" o="1" r="0.768627" g="0.466667" b="0.341176"/>
+</ColorMap>
