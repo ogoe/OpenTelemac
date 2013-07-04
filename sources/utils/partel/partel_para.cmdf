@@ -1,0 +1,21 @@
+[general]
+path: <root>|sources|utils|partel
+module: partel
+liborder: parallel partel
+version: v6p3
+name: PARTEL_PARA
+
+[partel]
+path: <root>|sources|utils|partel
+files: partel_para.F
+
+[parallel]
+path: <root>|sources|utils|parallel
+files: declarations_parallel.F
+  p_exit.F
+  p_allgatherv_i.F
+  p_sync.F
+  p_isum_array.F
+  p_imax_array.F
+  p_time.F
+  p_init.F

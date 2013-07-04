@@ -1,0 +1,10 @@
+[general]
+path: <root>|sources|utils|partel
+module: partel
+liborder: partel
+version: v6p3
+name: PARTEL_PRELIM
+
+[partel]
+path: <root>|sources|utils|partel
+files: partel_prelim.F
