@@ -1,0 +1,359 @@
+\section{Bed-load transport}\label{ch:bedload}
+\subsection{Exner equation}
+
+\subsubsection{Equilibrium conditions}
+Bed-load occurs in a thin near-bed high-concentrated region. The bed-load
+layer therefore adapts very rapidly to any changes in the flow conditions,
+such that equilibrium conditions can be considered to be valid. The bed-load
+transport rate can then be calculated by use of some equilibrium sediment
+transport formula, as a function of various flow and sediment parameters,
+assuming that the transport rate corresponds to saturation conditions.
+
+\subsubsection{Bed evolution}
+To calculate the bed evolution, \sisyphe solves the Exner equation:
+\begin{equation}\label{eq:exner}
+(1-n)\frac{\partial Z_f}{\partial t} + \grad\cdot Q_b =0, 
+\end{equation}
+where $n$ is the non-cohesive bed porosity ($n \approx 0.4$ for non cohesive sediment), $Z_f$ the bottom elevation, and $Q_b$ (m$^{2}$s$^{-1}$) the solid volume transport (bedload) per unit width.
+\nomenclature{$n$}{non-cohesive bed porosity}%
+\nomenclature{$Z_f$}{the bottom elevation}%
+
+Equation (\ref{eq:exner}) states that the variation of sediment bed thickness can be
+derived from a simple mass balance and it is valid for equilibrium
+conditions. 
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily BEDLOAD = YES} (default option)
+\item {\ttfamily SUSPENDED LOAD = NO} (default option)
+\item {\ttfamily NON COHESIVE BED POROSITY} (default option {\ttfamily = 0.4}). 
+\end{itemize}
+\end{bclogo}
+
+\subsubsection{Bedload transport formulae}
+For currents only (no wave effects), a large number of semi-empirical
+formulae can be found in the literature to calculate the bedload transport
+rate. \sisyphe offers the choice among different bedload formulae
+including the Meyer-Peter and M\"{u}ller, Engelund-Hansen and Einstein-Brown formulae.
+
+Most sediment transport formulae assume threshold conditions for the onset
+of erosion (e.g. Meyer-Peter and M\"{u}ller, van Rijn and Hunziker). Other formulae are based on similar
+energy concept (e.g. Engelund-Hansen) or can be derived from a statistical approach (e.g. Einstein-Brown,
+Bijker, etc.). The non-dimensional current-induced sand transport rate $\Phi_s$, is expressed as:
+\begin{equation}\label{eq:Phis}
+\Phi_s = \frac{Q_s}{\sqrt{g(s-1)d_{50}^3}} 
+\end{equation}
+with $\rho_s$ the sediment density; $s=\rho_s/\rho$ the relative density; $d$ the sand grain diameter ($=d_{50}$ for uniform grains); and $g$ the gravity. As presented next, the non-dimensional sand transport rate $\Phi_s$ is, in general, expressed as a function of the non-dimensional
+skin friction or Shields parameter $\theta'$, defined by:
+
+\begin{equation}\label{eq:shieldsp}
+\theta'=\frac{\mu\tau_0}{(\rho_s-\rho)gd_{50}},
+\end{equation}
+with $\mu$ the correction factor for skin friction.
+
+\subsection{Sediment transport formulae}\label{sec:Sedimenttransportformulae}
+\subsubsection{Choice of formulae}
+The choice of a transport formula depends on the selected value of the model
+parameter {\ttfamily ICF}, as defined in the steering file by the keyword {\ttfamily BED-LOAD TRANSPORT FORMULA}.
+By setting {\ttfamily ICF = 0}, the user can program a specific transport formula through the subroutine {\ttfamily qsform.f}.
+Other sediment transport formulae, described in Chapters~\ref{ch:waves} and \ref{ch:nonuniform}, have been
+programmed in \sisyphe to account for the effects of waves (cf. Bijker,
+Bailard, Dibajnia and Watanabe, etc.) or sand grading (cf. Hunziker). 
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily BED-LOAD TRANSPORT FORMULA} (default option: Meyer-Peter-Muller formula {\ttfamily ICF=1})
+\end{itemize}
+\end{bclogo}
+
+\begin{itemize}
+\item {\ttfamily ICF = 1} (Meyer-Peter-Mueller formula):
+this classical bed-load formula has been validated for coarse sediments in
+the range ($0.4$ mm $< d_{50} < 29$ mm). It is based on the
+concept of initial entrainment:
+\begin{equation*}
+\Phi_b=\left\{\begin{array}{ll}
+0 & \quad\text{if}\,\theta'<\theta_c\\
+\alpha_{mpm} & (\theta'-\theta_c)^{3/2}\quad\text{otherwise}
+\end{array}
+\right.
+\end{equation*}
+with $\alpha_{mpm}$ a coefficient ($=8$ by default), $\theta_c$ the critical Shields parameter ($= 0.047$ by default). The  coefficient $\alpha_{mpm}$ can be modified in the steering file by the keyword {\ttfamily MPM COEFFICIENT}.
+
+\item {\ttfamily ICF = 2} (Einstein-Brown formula): this bed-load formula is recommended for gravel ($d_{50} > 2$ mm) and
+large bed shear stress $\theta > \theta_c$. The solid
+transport rate (see \cite{Einstein}) is expressed as:
+\begin{equation}\label{eq:EinsteinBrown}
+\Phi_b = F(D_*)f(\theta'), 
+\end{equation}
+with
+\begin{equation}\label{eq:EinsteinFDs}
+F(D_*) = \left(\frac{2}{3} +\frac{36}{D_*}\right)^{0.5} - \left( \frac{36}{D_*}\right)^{0.5}, 
+\end{equation}
+and
+\begin{equation*}
+f(\theta')=\left\{\begin{array}{ll}
+2.15\exp(-0.391/\theta') & \quad\text{if}\,\,\theta' \leq 0.2 \\
+40\,\theta^{'3}          & \quad\text{otherwise}
+\end{array}
+\right.
+\end{equation*}
+where the non-dimensional diameter $D_*$ is defined according to Equation (\ref{eq:Ds}).
+
+\item {\ttfamily ICF = 3 or 30} (Engelund-Hansen formula): this formula predicts the total load (bedload plus suspended load). It is recommended for fine sediments, in the
+range ($0.2$ mm $< d_{50} < 1$ mm but beware that the use of
+a total load formula is only suitable under equilibrium conditions (quasi-steady and uniform flow). 
+The two different forms of the same equation are:
+programmed in \sisyphe:
+\begin{itemize}
+ \item {\ttfamily ICF = 30} corresponds to the original formula, where the
+transport rate is related to the skin friction without threshold:
+\begin{equation}\label{eq:EH1}
+\Phi_s = 0.1\,\theta'^{5/2} 
+\end{equation}
+\item {\ttfamily ICF = 3} corresponds to the version modified by Chollet and
+Cunge~\cite{Chollet} to account for the effects of sand dunes. The transport rate is related to the total bed shear stress as:
+\begin{equation}\label{eq:EH2}
+\Phi_s = \frac{0.1}{C_d} \hat{\theta}^{5/2}, 
+\end{equation}
+where the dimensionless bed shear stress $\hat \theta$ is calculated as a function of the dimensionless skin friction $\theta'$:
+\begin{equation*}
+\hat{\theta}=\left\{\begin{array}{ll}
+0 &\quad \text{if}\,\theta' < 0.06\,\text{(flat bed regime - no transport)} \\ 
+\sqrt{2.5(\theta'-0.06)} &\quad \text{if}\, 0.06 < \theta' < 0.384\,\text{(dune regime)} \\ 
+1.065\theta'^{0.176} &\quad \text{if}\, 0.384 < \theta' < 1.08\,\text{(transition regime)} \\ 
+\theta' &\quad \text{if}\,\theta' > 1.08\,\text{(flat bed regime - upper regime)}
+\end{array}
+\right.
+\end{equation*}
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+To avoid the suspended load to be calculated twice, in the case of coupling between bedload and suspended load ({\ttfamily SUSPENSION = YES}), the total load formula ({\ttfamily ICF = 3 or 30}) should not be used.
+\end{bclogo}
+
+\end{itemize}
+
+\item {\ttfamily ICF = 7} (van Rijn's formula): this formula was proposed by van Rijn~\cite{vanRijn84} to calculate the
+bedload transport rate for particles of size $0.2$ mm $< d_{50} < 2$ mm:
+\begin{equation}\label{eq:vR}
+\Phi_b = 0.053 D_*^{-0.3} \left( \frac{\theta_p-\theta_{cr}}{\theta_{cr}} \right)^{2.1}.
+\end{equation}
+\end{itemize}
+
+\subsubsection{Validity range of sediment transport formulae}
+Most sediment transport formulae are based on experiments performed under
+fluvial, unidirectional flows. These formulae shown a rapid variation of the bedload
+transport prediction, as a function of the mean flow intensity. Therefore, an increasing of the
+current velocity by $10\%$ will result, depending on the formula being used,
+in an increasing of the transport rate of over $30\%$ (Meyer-Peter), $60\%$
+(Engelund-Hansen) or almost $80\%$ (Einstein-Brown). Therefore, any error made
+when calculating the hydrodynamics will be significantly amplified by the
+sediment transport rates estimates. On the other hand, under variable flow
+conditions (e.g. tidal regime), the average transport will be highly
+influenced by the stronger currents and will not be directly related to the
+mean flow.
+
+The validity range of the different formulae can be summarized in Table~\ref{tab:bedload}.
+
+\begin{table}[H]
+  \centering
+\begin{tabular}{llll}
+\hline
+   Formula & Meyer-Peter & Einstein-Brown & Engelund-Hansen \\
+\hline
+   {\ttfamily IFC} & {\ttfamily 1} & {\ttfamily 2} & {\ttfamily 3 or 30} \\
+   Mode of transport & bedload & bedload & total load  \\
+   Validity range ($d_{50}$) & $0.4 - 3$ mm & $0.3-29$ mm & $0.2-1$ mm \\
+   Rippled bottoms & Yes & Yes & Yes \\
+   Low bedload flows & Yes & Yes & No \\
+   High bedload flows & Yes & Yes & Yes \\
+\hline
+ \end{tabular}
+\caption{Validity range of some of the sand transport formulae programmed in \sisyphe
+(for currents only).}
+  \label{tab:bedload}
+\end{table}
+
+
+\subsection{Bed slope effect}
+The effect of a sloping bottom is to increase the bedload transport rate in the
+downslope direction, and to reduce it in the upslope bedload direction. In \sisyphe, a
+correction factor can be applied to both the magnitude and direction of the solid transport
+rate, before solving the bed evolution equation. The bed slope effect is activated if the keyword 
+{\ttfamily SLOPE EFFECT} is present in the \sisyphe steering file. 
+
+Two different formulations for both effects are available depending on the
+choice of the keywords {\ttfamily FORMULA FOR SLOPE EFFECT}, which chooses the magnitude correction and {\ttfamily FORMULA FOR DEVIATION}, which chooses the direction correction.
+
+\subsubsection{Correction of the magnitude of bedload transport rate (formula for slope effect)}
+\begin{itemize}
+\item {\ttfamily SLOPEFF = 1}: this correction method is based on
+the Koch and Flokstra's formula~\cite{Koch}. The solid transport rate
+intensity $Q_{b0}$ is multiplied by a factor $1-\beta\partial Z_f/\partial s$, thus: 
+\begin{equation}\label{eq:SLOPEFF1}
+Q_b = Q_{b0}\left(1-\beta\frac{\partial Z_f}{\partial s}\right), 
+\end{equation}
+with $s$ the coordinate in the current direction and $\beta$ an empirical factor, which can be specified with the associated keyword {\ttfamily BETA} (default value {\ttfamily = 1.3}). This effect of bed slope is then similar
+to adding a diffusion term in the bed evolution equation. It tends to smooth the results and is often used to reduce unstabilities.
+
+\item {\ttfamily SLOPEFF=2}: this correction is based on the method of Soulsby (1997), in which the threshold bed
+shear stress $\theta_{co}$ is modified as a function of the bed slope $\chi$, the angle of repose of the sediment $\phi_s$, modified in the \sisyphe steering file with the keyword {\ttfamily FRICTION ANGLE OF THE SEDIMENT} ({\ttfamily = 40}$^\circ$ by default), and the angle of the current to the upslope direction $\psi$: 
+\begin{equation}\label{eq:SLOPEFF2}
+\frac{\theta_c}{\theta_{co}} = \frac{\cos\psi \sin\chi + 
+( \cos^2\chi \tan^2\phi_s - \sin^2\psi \sin^2\chi)^{0.5}}{\tan
+\phi_s},
+\end{equation}
+with $\theta_c$ the modified threshold bed shear stress.
+
+\subsubsection{Correction of the direction of bedload transport rate (formula for deviation)}
+The change in the direction of solid transport is taken into account by the
+formula:
+\begin{equation}\label{eq:dirsand}
+\tan\alpha = \tan\delta -T\frac{\partial Z_f}{\partial n}, 
+\end{equation}
+where $\alpha$ is the direction of solid transport in relation
+to the flow direction, $\delta$ is the direction of bottom stress in relation to the flow
+direction, and $n$ is the coordinate along the axis perpendicular to the flow. 
+\begin{itemize}
+\item {\ttfamily DEVIA = 1}: according to Koch and Flochstra, the coefficient $T$ depends exclusively on the Shields parameter
+\begin{equation}\label{eq:DEVIA1}
+T=\frac{4}{6\theta} 
+\end{equation}
+\item {\ttfamily DEVIA = 2}: the deviation is calculated based on Talmon \emph{et al.}~\cite{Talmon} and
+depends on the Shields parameter and an empirical coefficient $\beta_2$
+\begin{equation}\label{eq:DEVIA2}
+T=\frac{1}{\beta_2\sqrt{\theta}} 
+\end{equation}
+The empirical coefficient $\beta_2$ can be modified by the keyword {\ttfamily PARAMETER FOR DEVIATION} ({\ttfamily = 0.85} by default).
+\end{itemize}
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily SLOPE EFFECT} ({\ttfamily = NO}, default option)
+\item {\ttfamily FORMULA FOR SLOPE EFFECT} ({\ttfamily SLOPEFF = 1}, default option)
+\item {\ttfamily FORMULA FOR DEVIATION} ({\ttfamily DEVIA = 1}, default option)
+\item {\ttfamily FRICTION ANGLE OF THE SEDIMENT} ($\phi_s = 40^\circ$, default value) 
+\item {\ttfamily BETA} ($\beta = 1.3$, default value)
+\item {\ttfamily PARAMETER FOR DEVIATION} ($\beta_2 = 0.85$, default value)
+\end{itemize}
+\end{bclogo}
+
+\end{itemize}
+
+
+\subsection{Bedload transport in curved channels}
+The bedload movement direction deviates from the main flow direction due to helical flow effect~\cite{Wu}. Different authors proposed empirical formulas for evaluating this deviation. The Engelund formula~\cite{Engelund74}, based on the assumption that the bottom shear stress, the bed roughness and the mean water depth are constant in the cross-section, is
+\begin{equation}
+\tan \delta = 7\frac{h}{r}
+\end{equation}
+where $\delta$ is the angle between the bedload movement and main flow direction, $h$ the mean water depth and $r$ the local radius of curvature. Yalin and Ferrera da Silva~\cite{YalinFerrera} have showed that $\delta$ is proportional to $h/r$. The local radius $r$ can be computed based on the the cross sectional variation of the free surface~\cite{????}:
+\begin{equation*}
+r=-\rho\alpha'\frac{U^2}{g\frac{\partial Z_s}{\partial y}}, 
+\end{equation*}
+with $\alpha'$ a coefficient($\alpha' \approx 1.0$).
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily SECONDARY CURRENTS} ({\ttfamily = NO}, default option)
+\item {\ttfamily SECONDARY CURRENTS ALPHA COEFFICIENT} ({\ttfamily = 1.0}, default option) 
+\end{itemize}
+\end{bclogo}
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+This option should only be activated when the flow is calculated by a depth-averaged model.
+\end{bclogo}
+
+\subsection{Treatment of rigid beds}
+\subsubsection{Different methods}
+Non-erodible beds are treated numerically by limiting bedload erosion and letting incoming sediment pass over. 
+The problem of rigid beds is conceptually trivial but numerically complex. In finite elements the
+minimum water depth algorithm allows a natural treatment of rigid
+beds, see~\cite{Hervouet11}. The sediment is managed as a layer with a
+depth that must remain positive, and the Exner equation is solved similarly to the shallow-water continuity equation.
+Different algorithms can be chosen with the keyword {\ttfamily OPTION FOR THE TREATMENT OF NON ERODABLE BEDS} and the space location and position of the rigid bed can be changed in subroutine \texttt{noerod.f}.
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily OPTION FOR THE TREATMENT OF NON ERODABLE BEDS} ({\ttfamily = NO}, default option)
+\begin{itemize}
+\item {\ttfamily = 0}: erodable bottoms everywhere (default option)
+\item {\ttfamily = 1}: minimisation of the solid discharge
+\item {\ttfamily = 2}: nul solid discharge
+\item {\ttfamily = 3}: minimisation of the solid discharge in {\ttfamily FINITE ELEMENTS / MASS-LUMPING}
+\item {\ttfamily = 4}: minimisation of the solid discharge in {\ttfamily FINITE VOLUMES}
+\end{itemize}
+\end{itemize}
+\end{bclogo}
+
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+When the rigid bed can be reached during the computation, it is advised
+to use the method {\ttfamily 3} or the method {\ttfamily 4}.
+\end{bclogo}
+
+\subsection{Tidal flats}
+Tidal flats are the areas of the computational domain where the water depth can become zero during the simulation. In \sisyphe, tidal flats can be treated with the keyword {\ttfamily TIDAL FLATS}. The companion keyword {\ttfamily OPTION FOR THE TREATMENT OF TIDAL FLATS} allows to choose between two different approaches:
+\begin{itemize}
+\item {\ttfamily OPTBAN = 1}: is the default option, and the equations are solved everywhere. The
+water depth is set to a minimum value, controlled by the keyword {\ttfamily MINIMAL VALUE OF THE WATER HEIGHT}, with a default value {\ttfamily= 1.D-3}m. 
+\item {\ttfamily OPTBAN = 2}: this option removes from the computational domain the elements with
+points that present a water depth less than a minimum value. This option should be avoided because it is not exactly mass-conservative.
+\end{itemize}
+
+\medskip
+\begin{bclogo}[couleur=blue!10,arrondi=0.1, logo=\bcinfo]{Keywords}
+\begin{itemize}
+\item {\ttfamily TIDAL FLATS} ({\ttfamily = YES}, default option) 
+\item {\ttfamily MINIMAL VALUE OF THE WATER HEIGHT} ({\ttfamily = 1.D-3}m, default value)
+\item {\ttfamily OPTION FOR THE TREATMENT OF TIDAL FLATS} ({\ttfamily OPTBAN = 1}, default option)
+\end{itemize}
+\end{bclogo}
+
+
+\subsection{Boundary conditions for imposed sediment transport rates}
+\begin{bclogo}[couleur = blue!10, arrondi = 0.10, logo = \bcattention]{\textsf{Attention}}
+From v6.2, as a general case the user has to specify \textbf{two different boundary conditions files}: a conlim file for the hydrodynamics module (e.g., for \teldd) and a different conlim file for \sisyphe. This allows the user to apply different boundary conditions for a tracer and for bed evolution or concentration, for \teldd and \sisyphe, respectively. However, in most simple applications, the same boundary condition can be used.
+\end{bclogo}
+
+For example, for an imposed flow rate {\ttfamily LIUBOR = 5} and {\ttfamily LIVBOR = 5} and imposed tracer {\ttfamily TBOR = 5}, the information contained in the hydrodynamics boundary condition file includes:
+ \begin{verbatim}
+LIHBOR     LIUBOR     LIVBOR    ...    LITBOR     TBOR
+4          5          5         ...    5          0.         
+\end{verbatim}
+
+In the sediment transport boundary condition file, the following boundary condition types can be imposed:
+
+\subsubsection{Imposed zero bed evolution}
+For this case, {\ttfamily LIEBOR = 5}
+ \begin{verbatim}
+(not used)     LIQBOR     (not used)    ...    LIEBOR     EBOR
+(4)          4          (5)             ...    5          0.         
+\end{verbatim}
+equivalent to:
+ \begin{verbatim}
+(not used)     LIQBOR     (not used)    ...    LIEBOR     EBOR
+(4)          5          (5)             ...    5          0.         
+\end{verbatim}
+That implies that the same boundary condition file can be used.
+
+\subsubsection{Imposed sediment transport rates}
+For this case, {\ttfamily LIEBOR = 4} and  {\ttfamily LIQBOR = 5}
+ \begin{verbatim}
+(not used)     LIQBOR     (not used)    Q2BOR    ...    LIEBOR     EBOR
+(4)            5          (5)           1.E-5    ...    4          0.         
+\end{verbatim}
+For this case, a boundary condition file for \sisyphe is needed. {\ttfamily LIHBOR} is actually not used but is now available for users. {\ttfamily LIQBOR} is the boundary condition on solid discharge (that was before given by user in subroutine {\ttfamily conlis.f}, after initialization to {\ttfamily KSORT} in \sisyphe). On liquid boundaries you must now have {\ttfamily LIQBOR=5 (KENT)} and {\ttfamily LIEBOR=4 (KSORT)} for boundaries with prescribed solid discharge or {\ttfamily LIEBOR=5 (KENT)} and {\ttfamily LIQBOR=4 (KSORT)} for boundaries with prescribed variation of elevation. 
+
+{\ttfamily Q2BOR} is the prescribed solid discharge given at boundary points, and expressed in m$^2$s$^{-1}$, excluding voids. If the keyword {\ttfamily PRESCRIBED SOLID DISCHARGES} is given in the parameter file, these values will be taken as such to give {\ttfamily QBOR} per point, which is in m$^3$s$^{-1}$, excluding voids. When the keyword {\ttfamily PRESCRIBED SOLID DISCHARGES} is given it supersedes {\ttfamily Q2BOR}, which is then taken as a profile.
+
+All these values are meant for the total if there are sediment classes, and in this case they will be distributed to every class with the help of the fractions (array {\ttfamily AVAIL}), this is done for {\ttfamily EBOR} and {\ttfamily QBOR} in {\ttfamily conlis.f} and may be changed.
+
+%For suspended load, concentrations can be imposed on the upstream boundary or imposed, by reading an input concentration file (for time-varying concentrations). The other options available in 6.1 are either to impose constant concentrations on the upstream boundary or to calculate the concentrations assuming equilibrium conditions (if {\ttfamily LICBOR = 5}). 
+%Note: the type of boundary condition depends on {\ttfamily LIEBOR} ({\ttfamily LICBOR} is set equal to {\ttfamily LIEBOR}). This value is changed depending on the sign $\mathbf u \cdot \mathbf n$ in subroutine {\ttfamily diffin.f}.
+
+
+

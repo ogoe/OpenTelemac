@@ -1,0 +1,50 @@
+/**
+\mainpage Telemac Hydrodynamic Simulation System
+\anchor MainPageSection
+
+<table>
+ <tr>
+   <td>
+     \image html hrw-logo.jpg 
+     \par Introduction
+            Welcome to Telemac. 
+            Put description here.
+
+     \par Telemac Architecture
+            The Telemac System is made of the following modules:
+            \li TELEMAC2D
+            \li TELEMAC3D
+            \li TOMAWAC
+            \li ARTEMIS
+            \li SISYPHE
+
+            Paragraph describing architecture goes here
+
+     \par Flow Modelling
+            How Telemac is used for flow modelling
+
+
+     \par Building
+            How to build telemac from sources....
+
+     \par Running
+            How to set up and run telemac....
+
+     \n \n
+
+   </td>
+   </tr>
+ <tr>
+   <td>
+   \par Malpasset Dam Break Example
+   \n \n
+   \image html malpa.gif
+   </td>
+ </tr>
+</table>
+  \n
+  Return to Main Page: \ref MainPageSection
+*/
+
+
+
