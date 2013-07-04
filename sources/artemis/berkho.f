@@ -344,7 +344,7 @@ C      AM1 et AM2 --> NON-SYMETRIQUES
 C
 C
          IF(COURANT) THEN
-          CALL MATRIX(MBOR,'M=N     ','MATFGUG        ',IELMB,IELMB,
+          CALL MATRIX(MBOR,'M=N     ','MATFGUG         ',IELMB,IELMB,
      &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
      &        MESH,.TRUE.,MASK1)
           CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
@@ -360,7 +360,7 @@ C
          CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
 C
          IF(COURANT) THEN
-          CALL MATRIX(MBOR,'M=N     ','MATFGUG        ',IELMB,IELMB,
+          CALL MATRIX(MBOR,'M=N     ','MATFGUG         ',IELMB,IELMB,
      &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
      &        MESH,.TRUE.,MASK2)
           CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
@@ -393,7 +393,7 @@ C
          CALL OM( 'M=M+N   ' , AM1 , MBOR , T1 , CBID , MESH )
 C
          IF(COURANT) THEN
-          CALL MATRIX(MBOR,'M=N     ','MATFGUG        ',IELMB,IELMB,
+          CALL MATRIX(MBOR,'M=N     ','MATFGUG         ',IELMB,IELMB,
      &        1.D0,MESH%XSGBOR,MESH%YSGBOR,S,UC,VC,S,
      &        MESH,.TRUE.,MASK5)
           CALL OM( 'M=M+N   ' , AM1 , MBOR , SBID , CBID , MESH )
@@ -600,7 +600,7 @@ C
 C          ON DESYMETRISE BM1
            CALL OM( 'M=X(M)  ' , BM1 , BM1 , SBID , CBID , MESH )
 C
-           CALL MATRIX(BM2,'M=N     ','MATVGR         ',IELM ,IELM ,
+           CALL MATRIX(BM2,'M=N     ','MATVGR          ',IELM ,IELM ,
      *            2D0*OMEGA , S,S,S,UC,VC,S,
      *            MESH,MSK,MASKEL)  
 C
