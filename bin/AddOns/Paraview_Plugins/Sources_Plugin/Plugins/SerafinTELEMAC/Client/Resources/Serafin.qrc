@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/ParaViewResources" >
-        <file>SerafinReader.xml</file>
-    </qresource>
-</RCC>
