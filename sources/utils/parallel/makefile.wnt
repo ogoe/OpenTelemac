@@ -1,0 +1,145 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     CCT - MHL
+#
+# Makefile de PARALLEL pour WindowsNT (avec Intel).
+#
+# ATTENTION : doit être lancé dans le répertoire adéquat :
+#                   parallel*/.../sources.
+#
+# Modes supportés :
+#        % maktel
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#-----------------------------------------------------Juin-2001-DeltaCAD
+#--- Definitions pour PVM
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+VERSION    = V6P2
+
+
+
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
+
+DIRINC_MPI    = $(PROJECT)\..\mpi\include
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+                   $(FC_OPT_INCLUDE)$(DIRINC) \
+                   $(FC_OPT_INCLUDE)$(DIRINC_MPI)
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.obj:
+    $(F90) $(F90_PROJ) $<  
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = parallel
+MODE          =
+LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
+DEST          = $(PROJECT)\builds\$(DIRLIB)
+
+
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS	      = interface_parallel.f \
+		errpvm.F \
+                extens.f \
+                declarations_parallel.F \
+		org_charac_type1.F \
+		org_charac_type_alg.F \
+		p_dmax.F \
+		p_dmin.F \
+		p_dsum.F \
+		p_exit.F \
+		p_imax.F \
+		p_imin.F \
+		p_init.F \
+		p_isum.F \
+                p_isum_array.F \
+                p_imax_array.F \
+		p_lsum.F \
+		p_mail.F \
+		p_mpi_address.F \
+		p_mpi_address2.F \
+		p_mpi_address3.F \
+		p_mpi_alltoall.F \
+		p_mpi_alltoallv.F \
+		p_mpi_alltoallv_alg.F \
+		p_mpi_alltoallv_i.F \
+		p_mpi_type_commit.F \
+		p_mpi_type_get_extent.F \
+		p_mpi_type_free.F \
+		p_mpi_type_create_struct.F \
+		p_read.F \
+		p_iread.F \
+		p_iread_c.F \
+		p_sync.F \
+		p_time.F \
+		p_wait_paraco.F \
+		p_writ.F \
+		p_iwrit.F \
+		p_iwrit_c.F 
+
+#
+#------- Objets
+#
+TEMP = $(SCRS:.f=.obj)
+OBJS = $(TEMP:.F=.obj)
+#
+#------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(MODS) $(LIBRARY) 
+
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
+
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS) 
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).obj del /q  $(**B).obj
+	@echo ---------------------Destruction des librairies
+	!@if EXIST *.lib del /q  *.lib
+
+#--- Installation de la librairie
+install: $(LIBRARY) 
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	copy $(LIBRARY) $(DEST)\lib\$(LIBRARY)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
+	nmake /f makefile.wnt install  "MODE=d"
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
+	nmake /f makefile.wnt install  "MODE=p"
+
+#------- Modules
+#
+MODS = *.obj
+
+interface_parallel.obj:
+    $(F90) $(F90_PROJ) interface_parallel.f
+    if EXIST $(DEST)\lib\interface_parallel.mod del /f $(DEST)\lib\interface_parallel.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move interface_parallel.mod $(DEST)\lib

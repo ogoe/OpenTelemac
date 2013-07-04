@@ -1,0 +1,127 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     CCT - MHL
+#
+# Makefile de PARALLEL pour WindowsNT (avec Intel).
+#
+# ATTENTION : doit être lancé dans le répertoire adéquat :
+#                   parallel*/.../sources.
+#
+# Modes supportés :
+#        % maktel
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#-----------------------------------------------------Juin-2001-DeltaCAD
+#--- Definitions pour PVM
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+VERSION    = V6P2
+
+
+
+DIRINC = $(PROJECT)\builds\$(DIRLIB)\lib
+
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+                   $(FC_OPT_INCLUDE)$(DIRINC)
+
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.obj:
+    $(F90) $(F90_PROJ) $<  
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = gretel
+MODE          =
+DEST          = $(PROJECT)\builds\$(DIRLIB)
+
+GRETEL        = gretel$(VERSION).exe
+GREDELPTS     = gredelpts$(VERSION).exe
+GREDELSEG     = gredelseg$(VERSION).exe
+GREDELMET     = gredelmet$(VERSION).exe
+GREDELHYD     = gredelhyd$(VERSION).exe
+
+LKLIB         = parallel$(MODE)$(VERSION).lib  \
+                $(LK_LIN_SPECIAL) $(LIBS_MPI)
+
+
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS_GRETEL= gretel_autop.f
+SRCS_GREDELPTS= gredelpts_autop.f
+SRCS_GREDELSEG= gredelseg_autop.f
+SRCS_GREDELMET= gredelmet_autop.f
+SRCS_GREDELHYD= gredelhyd_autop.f
+
+#
+#------- Objets
+#
+OBJS_GRETEL = $(SRCS_GRETEL:.f=.obj)
+OBJS_GREDELPTS = $(SRCS_GREDELPTS:.f=.obj)
+OBJS_GREDELSEG = $(SRCS_GREDELSEG:.f=.obj)
+OBJS_GREDELMET = $(SRCS_GREDELMET:.f=.obj)
+OBJS_GREDELHYD = $(SRCS_GREDELHYD:.f=.obj)
+#
+#------------------------ Cibles
+#
+#--- La librairie (non installée)
+all: $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD) 
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME)$(LIBRARY) $(OBJS)
+
+"$(GRETEL)" : $(OBJS_GRETEL) $(OBJS_GREDELPTS) $(OBJS_GREDELSEG) $(OBJS_GREDELMET) $(OBJS_GREDELHYD) 
+	@echo  -
+	@echo ---------------------Link de GRETEL et autres.
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(GRETEL) $(OBJS_GRETEL) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(GREDELPTS) $(OBJS_GREDELPTS) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(GREDELSEG) $(OBJS_GREDELSEG) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(GREDELMET) $(OBJS_GREDELMET) $(LKLIB)
+	$(LK_NAM) $(LKO) $(LK_OPT_OUTNAME)$(GREDELHYD) $(OBJS_GREDELHYD) $(LKLIB)
+	echo "Termine."
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS_GRETEL) $(SRCS_GREDELPTS) $(SRCS_GREDELSEG) $(SRCS_GREDELMET) $(SRCS_GREDELHYD) 
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).obj del /q  $(**B).obj
+	@echo ---------------------Destruction des executables
+	!@if EXIST *.exe del /q  *.exe
+
+#--- Installation de la librairie
+install: $(GRETEL) $(GREDELPTS) $(GREDELSEG) $(GREDELMET) $(GREDELHYD)
+	@echo  -
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	@echo ---------------------Installe GRETEL et autres.
+	copy $(GRETEL) $(DEST)\bin\$(GRETEL)
+	copy $(GREDELPTS) $(DEST)\bin\$(GREDELPTS)
+	copy $(GREDELSEG) $(DEST)\bin\$(GREDELSEG)
+	copy $(GREDELMET) $(DEST)\bin\$(GREDELMET)
+	copy $(GREDELHYD) $(DEST)\bin\$(GREDELHYD)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
+	nmake /f makefile.wnt install  "MODE=d"
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.wnt "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
+	nmake /f makefile.wnt install  "MODE=p"
+
+#------- Modules
+#

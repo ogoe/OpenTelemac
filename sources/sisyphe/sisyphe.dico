@@ -1,0 +1,3417 @@
+&DYN
+/CV 15/03/2009: 
+/        KSPRATIO=0: skin friction prediction FOR KSP
+/        KFROT=0 OR LESS : Assume flat bed KS=KSP  
+/ Ajout des variables KS, KSP, CHESTR pour les sorties graphiques
+/ Frottement de peau (ICR =1 par defaut)
+/---SYSTEME-TELEMAC-V6P2-----------------------SISYPHE-----------------------
+/
+/Signification des differents mode d'acquisition/restitution
+/des fichiers vis a vis du parallelisme :
+/
+/  - "SCAL" :	
+/     Meme fichier pour tous les processeurs lu par tous.	
+/     Seule la version du maetre est consideree apres calcul.
+/
+/  - "SELAFIN" :	
+/     Le fichier est "decompose/regroupe en sous-domaines" avec les outils
+/      "partel/gretel" (dans le mode par defaut "parallelisme automatique")	
+/     Chaque processeur dispose d'un fichier prive.
+/  - "SELAFIN-GEOM" :
+/     idem SELAFIN mais pour le fichier de geometrie ='FICHIER DE GEOMETRIE'
+/      (usage par le regoupeur GRETEL en parallelisme)
+/
+/  - "PARAL" :	
+/     Le fichier est duplique avant calcul ("LIT") pour chaque processeur
+/      (avec une extension numerique), sauf s'il pre-existe avec cette  
+/      extension numerique : il est alors utilise (copie).	
+/     En mode "non automatique" : les fichiers lus doivent pre-exister avec 
+/      leur extension numerique.	
+/     S'il s'agit d'un fichier resultat ("ECR"), le fichier est restitue
+/      avec son extension numerique (fichier specifique a chaque processeur).	
+/
+/  - "CONLIM" :	
+/     Cette valeur designe le fichier des "conditions aux limites"	
+/     (utilise par le decoupeur "partel").
+/
+/  - "SECTION" :
+/     Sections input file, to be treated in parallel by partel in
+/     a similar way as CONLIM   !jaj ####
+/
+/---SYSTEME-TELEMAC-V6P2------------------------DeltaCAD-/-Septembre-2003----
+/
+NOM = 'FICHIER DE GEOMETRIE'
+NOM1 = 'GEOMETRY FILE'
+TYPE = CARACTERE
+INDEX = 6
+MNEMO = 'SIS_FILES(SISGEO)%NAME'
+TAILLE = 0
+SUBMIT = 'SISGEO-READ-01;SISGEO;OBLIG;BIN;LIT;SELAFIN-GEOM'
+/DEFAUT = ''
+/DEFAUT1 = ''
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+COMPORT =
+'Foreground ("ENTREES-SORTIES, FICHIERS*NOMS")
+IS VALEUR (red)'
+NIVEAU = 1
+APPARENCE = 'LISTE IS FICHIER'
+AIDE = 'Nom du fichier contenant le maillage du calcul a realiser.'
+AIDE1 = 'Name of the file containing the mesh. This file may also
+contain the topography and the friction coefficients.'
+
+NOM = 'TITRE'
+NOM1 = 'TITLE'
+TYPE = CARACTERE    
+INDEX = 1
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+COMPORT = 'Foreground ("ENTREES-SORTIES, GENERALITES*CALCUL")
+IS BRUT (red)'
+NIVEAU = 1
+AIDE = 'Titre du cas etudie. 
+Ce titre sera inscrit dans les sorties. '
+AIDE1 = 'Title of the case being considered. 
+This title shall be marked on the printouts.'
+/
+NOM = 'VARIABLES POUR LES SORTIES GRAPHIQUES'
+NOM1 = 'VARIABLES FOR GRAPHIC PRINTOUTS'
+TYPE = CARACTERE
+INDEX = 2
+DEFAUT = 'U,V,H,S,B,E'
+DEFAUT1 = 'U,V,H,S,B,E'
+APPARENCE = 'LISTE IS EDITABLE'
+CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
+'V="vitesse suivant l''axe des y (m/s)"';
+'C="celerite"';
+'H="hauteur d''eau (m)"';
+'S="cote de la surface libre (m)"';
+'B="cote du fond (m)"';
+'F="nombre de Froude"';
+'Q="debit"';
+'I="composante du debit selon l''axe des x"';
+'J="composante du debit selon l''axe des y"';
+'M="debit solide"';
+'N="composante du debit solide selon l''axe des x"';
+'P="composante du debit solide selon l''axe des y"';
+'E="evolution du fond"';
+'R="fonds non erodables"';
+'W="hauteur de houle"';
+'X="periode de houle"';
+'UWB="wave orbital velocity (m/s)"';
+'KS="coefficient de Rugosité totale (m)"';
+'TOB="Contrainte de frottement(N/m2)"';
+'MU = "Coefficient de correction pour frottement de peau"';
+'D50 = "Diametre moyen du sediment"';
+'THETAW="angle entre la houle et l''axe Oy (deg)"';
+'QSSUSP="taux de transport en suspension"';
+'QSBL="taux de transport par charriage"';
+'1Ai="fraction de sediment de la classe i dans la premiere couche"';
+'2Ai="fraction de sediment de la classe i dans la deuxieme couche"';
+'kAi="fraction of sediment of class i in the k layer"';
+'kES="thickness of the k layer"';
+'kCONC="concentration of bed layer k"';
+'QSi="debit solide pour la classe i"';
+'CSi="concentration volumique ou g/l pour la classe i"';
+'CSAT="concentration volumique equil. ou g/l"';
+'A="variable supplementaire A"';
+'G="variable supplementaire G"';
+'L="variable supplementaire L"';
+'O="variable supplementaire O"'
+/
+CHOIX1= 'U="velocity along x axis (m/s)"';
+'V="velocity along y axis (m/s)"';
+'C="wawe celerity (m/s)"';
+'H="water depth (m)"';
+'S="free surface elevation (m)"';
+'B="bottom elevation (m)"';
+'F="Froude number"';
+'Q="scalar flowrate of fluid (m2/s)"';
+'I="flowrate along x axis (m2/s)"';
+'J="flowrate along y axis (m2/s)"';
+'M="bed-load discharge (m2/s)"';
+'N="bed-load discharge along x axis (m2/s)"';
+'P="bed-load discharge along y axis (m2/s)"';
+'E="bottom evolution (m)"';
+'R="non erodable bottom"';
+'KS="total bed roughness (m)"';
+'TOB="Bed Shear stress (Totalfriction) (N/m2)"';
+'MU = "Skin friction correction factor"';
+'D50 = "Mean grain diameter"';
+'THETAW="wave angle with axis Oy (deg)"';
+'QSSUSP="suspended load transport rate (m2/s)"';
+'QSBL="bed load transport rate (m2/s)"';
+'W="wave height"';
+'X="wave period"';
+'UWB="wave orbital velocity (m/s)"';
+'1Ai="fraction of sediment of class i in the first layer"';
+'2Ai="fraction of sediment of class i in the second layer"';
+'kAi="fraction of sediment of class i in the k layer"';
+'kES="thickness of the k layer"';
+'kCONC="concentration of bed layer k"';
+'QSi="bed load transport rate of sediment of class i"';
+'CSi="concentration volumic or mass concentration for class i"';
+'CSAT="saturated concentration (kg/m3)"';
+'A="supplementary variable A"';
+'G="supplementary variable G"';
+'L="supplementary variable L"';
+'O="supplementary variable O"'
+/
+RUBRIQUE = 'ENTREES-SORTIES, GRAPHIQUES ET LISTING'
+RUBRIQUE1 = 'INPUT-OUTPUT, GRAPHICS AND LISTING'
+NIVEAU = 1
+AIDE  = 'Noms des variables que l''utilisateur veut ecrire dans
+le fichier des resultats.
+Chaque variable est representee par une lettre.
+Le choix des separateurs est libre. Voir CHOIX ci-dessus.
+ On peut utiliser *, *A* signifie : toutes les fractions'
+AIDE1 = 'Names of variables the user wants to write
+into the graphic results file.
+Each variable is represented by a letter. See CHOIX1 above.
+ One can use *, *A* means all fractions'
+
+NOM = 'VARIABLES A IMPRIMER'
+NOM1 = 'VARIABLES TO BE PRINTED'
+TYPE = CARACTERE
+INDEX = 3
+DEFAUT = ' '
+DEFAUT1 = ' '
+APPARENCE = 'LISTE IS EDITABLE'
+CHOIX = 'U="vitesse suivant l''axe des x (m/s)"';
+'V="vitesse suivant l''axe des y (m/s)"';
+'C="celerite"';
+'H="hauteur d''eau (m)"';
+'S="cote de la surface libre (m)"';
+'B="cote du fond (m)"';
+'F="nombre de Froude"';
+'Q="debit"';
+'I="composante du debit selon l''axe des x"';
+'J="composante du debit selon l''axe des y"';
+'M="debit solide"';
+'N="composante du debit solide selon l''axe des x"';
+'P="composante du debit solide selon l''axe des y"';
+'E="evolution du fond"';
+'R="fonds non erodables"';
+'W="hauteur de houle"';
+'X="periode de houle"';
+'KS="coefficient de frottement (m)"';
+'TOB="frottement moyen (N/m2)"';
+'THETAW="angle entre la houle et l''axe Oy (deg)"';
+'1Ai="fraction de sediment de la classe i dans la premiere couche"';
+'2Ai="fraction de sediment de la classe i dans la deuxieme couche"';
+'QSi="debit solide pour la classe i"';
+'CSi="concentration pour la classe i"';
+'*ES = "thicknes of bed layer i"';
+'*CONC= "concentration of bed layer i "';
+'A="variable supplementaire A"';
+'G="variable supplementaire G"';
+'L="variable supplementaire L"';
+'O="variable supplementaire O"'
+CHOIX1= 'U="velocity along x axis (m/s)"';
+'V="velocity along y axis (m/s)"';
+'C="wawe celerity (m/s)"';
+'H="water depth (m)"';
+'S="free surface elevation (m)"';
+'B="bottom elevation (m)"';
+'F="Froude number"';
+'Q="scalar flowrate of fluid (m2/s)"';
+'I="flowrate along x axis (m2/s)"';
+'J="flowrate along y axis (m2/s)"';
+'M="bed-load discharge (m2/s)"';
+'N="bed-load discharge along x axis (m2/s)"';
+'P="bed-load discharge along y axis (m2/s)"';
+'E="bottom evolution (m)"';
+'R="non erodable bottom"';
+'KS="bed friction coefficient (m if Nikuradse)"';
+'TOB="mean bottom friction (N/m2)"';
+'THETAW="wave angle with axis Oy (deg)"';
+'W="wave height"';
+'X="wave period"';
+'1Ai="fraction of sediment of class i in the first layer"';
+'2Ai="fraction of sediment of class i in the second layer"';
+'QSi="bed load transport rate of sediment of class i"';
+'*ES = "thicknes of bed layer i"';
+'*CONC= "concentration of bed layer i "';
+'CSi="concentration for class i"';
+'CSAT="saturated concentration (kg/m3)"';
+'A="supplementary variable A"';
+'G="supplementary variable G"';
+'L="supplementary variable L"';
+'O="supplementary variable O"'
+RUBRIQUE = 'RESULTATS'
+RUBRIQUE1 = 'RESULTS'
+NIVEAU = 2
+AIDE  = 'Nom des variables que l''utilisateur desire ecrire sur
+le lisring. Meme possibilites que pour les sorties graphiques.'
+AIDE1 = 'Names of variables the user wants to write on the listing.
+Each variable is represented by a letter in the same manner as
+it is done in the graphic results file.'
+
+NOM = 'USER CRAY'
+NOM1 = 'USER CRAY'
+TYPE = CARACTERE
+INDEX = 4
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = 'Userid CRAY de l''utilisateur.'
+AIDE1 = 'User''s identity on CRAY.'
+
+NOM = 'MOT DE PASSE CRAY'
+NOM1 = 'PASSWORD CRAY'
+TYPE = CARACTERE
+INDEX = 5
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = 'Mot de passe associe a l''USER CRAY.'
+AIDE1 = 'Password related to USER CRAY.'
+
+NOM = 'FICHIER FORTRAN'
+NOM1 = 'FORTRAN FILE'
+TYPE = CARACTERE
+INDEX = 7
+SUBMIT = 'INUTILE;sisfort.f;FACUL;ASC;LIT;FORTRAN'
+DEFAUT = 'DEFAUT'
+DEFAUT1 = 'DEFAUT'
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+NIVEAU = 1
+APPARENCE = 'LISTE IS FICHIER'
+AIDE = 'Nom du fichier FORTRAN a soumettre.'
+AIDE1 = 'Name of FORTRAN file to be submitted.'
+
+NOM = 'FICHIER DES PARAMETRES'
+NOM1 = 'STEERING FILE'
+TYPE = CARACTERE
+INDEX = 8
+SUBMIT = 'INUTILE;SISCAS;OBLIG;ASC;LIT;CAS'
+DEFAUT = ''
+DEFAUT1 = ''
+NIVEAU = 0
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Nom du fichier contenant les parametres du calcul
+a realiser. Il peut-etre ecrit par l''utilisateur avec EDAMOX.'
+AIDE1 = 'Name of the file containing the parameters 
+of the computation. Could be written by the user with EDAMOX.'
+
+NOM = 'FICHIER DES CONDITIONS AUX LIMITES'
+NOM1 = 'BOUNDARY CONDITIONS FILE'
+TYPE = CARACTERE
+INDEX = 9
+MNEMO='SIS_FILES(SISLIM)%NAME'
+SUBMIT = 'SISLIM-READ-07;SISCLI;OBLIG;ASC;LIT;CONLIM'
+/DEFAUT = ''
+/DEFAUT1 = ''
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+APPARENCE = 'LISTE IS FICHIER'
+NIVEAU = 1
+AIDE = 'Nom du fichier contenant les types de conditions aux limites.
+Ce fichier est rempli de facon automatique par le mailleur au moyen de
+couleurs affectees aux noeuds des frontieres du domaine de calcul.'
+AIDE1 = 'Name of the file containing the types of boundary conditions.
+This file is filled automatically by the mesh generator through
+colours that are assigned to the computation domain boundary nodes.'
+
+NOM = 'FICHIER HYDRODYNAMIQUE'
+NOM1 = 'HYDRODYNAMIC FILE'
+TYPE = CARACTERE
+INDEX = 29
+MNEMO = 'SIS_FILES(SISHYD)%NAME'
+TAILLE = 0
+SUBMIT = 'SISHYD-READ-05;SISHYD;FACUL;BIN;LIT;SELAFIN'
+DEFAUT = ''
+DEFAUT1 = ''
+NIVEAU = 1
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS'
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES'
+AIDE = 'Nom d''un fichier contenant les resultats d''un calcul
+precedent realise sur le meme maillage. L''hydrodynamique
+du calcul sera donnee, soit par le dernier pas de temps
+de ce fichier si le calcul est permanent,
+soit par les pas de temps representant la maree 
+ou la crue consideree si le calcul est instationnaire
+Remarque : Si l''on modelise le transport sous l''action 
+combinee du courant et de la houle (mot-cle  DE 
+TRANSPORT SOLIDE =4) ce fichier doit contenir non 
+seulement les donnees hydrodynamiques(hauteur d''eau,vitesses)
+mais aussi les donnees de houle (hauteur de houle, periode de 
+houle).Les donnees de houle peuvent toutefois etre imposees 
+par l''utilisateur dans le sous programme CONDIM.'
+AIDE1 = 'Name of a file containing the results a previous 
+computation  made on the same mesh. The hydrodynamic will 
+be given by the last record of the file if the case is 
+steady or, if the case is unsteady, by the time steps 
+describing the tide or flood.
+Remark :If the bed-load transport under the combined 
+action of currents and wave is modelled (keyword 
+BED-LOAD TRANSPORT FORMULA set equal to 4), this file
+must contain not only the hydrodynamic data
+(water height, velocities) but also the wave data 
+(wave height, wave period).However, the user has also
+ the possibility to give the values
+of the wave data in the subroutine CONDIM. '
+
+NOM = 'FICHIER DE HOULE'
+NOM1 = 'WAVE FILE'
+TYPE = CARACTERE
+INDEX = 30
+MNEMO = 'SIS_FILES(SISCOU)%NAME'
+TAILLE = 0
+SUBMIT = 'SISCOU-READ-10;SISCOU;FACUL;BIN;LIT;SELAFIN'
+DEFAUT = ''
+DEFAUT1 = ''
+NIVEAU = 2
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+COMPORT = 'DISPLAY %PRISE EN COMPTE DE LA HOULE% = OUI'
+APPARENCE = 'LISTE IS FICHIER'
+AIDE = 'Nom d''un fichier contenant les resultats d''un calcul
+precedent TOMAWAC realise sur le meme maillage. La houle sera donnee, 
+par le dernier pas de temps
+de ce fichier . Seules les donnees de houle de ce fichier 
+seront conservees (hauteur de houle, periode de 
+houle, angle de la houle).
+Les donnees hydrodynamiques(hauteur d''eau,vitesses) seront lues 
+dans le fichier hydrodynamique (Verifier la compatibilite !!!)
+Les donnees de houle peuvent aussi etre imposees 
+par l''utilisateur dans le sous programme CONDIM_SISYPHE. 
+ou encore lues dans le fichier hydrodynamique.'
+AIDE1 = 'Name of a file containing the results a previous 
+TOMAWAC computation  made on the same mesh. The wave data (wave height,
+ wave period, wave angle ) will 
+be given by the last record of the file.
+The user has to verify that both informations (wave and current data)
+are consistent.
+Remark :The wave data can also be specified in 
+ the hydrodynamic file. the user has also
+ the possibility to give the values
+of the wave data in the subroutine CONDIM. 
+This is recommended for non-steady flow simulation.'
+
+NOM = 'FICHIER PRECEDENT SEDIMENTOLOGIQUE'
+NOM1 = 'PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE'
+TYPE = CARACTERE
+INDEX = 11
+MNEMO = 'SIS_FILES(SISPRE)%NAME'
+TAILLE = 0
+SUBMIT = 'SISPRE-READ-04;SISPRE;FACUL;BIN;LIT;SELAFIN'
+DEFAUT = ''
+DEFAUT1 = ''
+RUBRIQUE = 'CONDITIONS INITIALES'
+RUBRIQUE1 = 'INITIAL CONDITIONS'
+APPARENCE = 'LISTE IS FICHIER'
+NIVEAU = 1
+COMPORT = 'DISPLAY %SUITE DE CALCUL% = OUI'
+AIDE = 'Nom d''un fichier contenant les resultats d''un
+calcul precedent sedimentologique realise sur le meme maillage 
+et dont le dernier pas de temps enregistre va fournir les 
+conditions initiales pour une suite de de calcul.'
+AIDE1 = 'Name of a file containing the results of an 
+earlier  sedimentological computation which was made 
+on the same mesh. The last recorded time step will provide
+the initial conditions for the new computation.'
+
+NOM = 'FICHIER DES RESULTATS'
+NOM1 = 'RESULTS FILE'
+TYPE = CARACTERE
+INDEX = 12
+MNEMO = 'SIS_FILES(SISRES)%NAME'
+TAILLE = 0
+/ READWRITE CAR RELU EN CAS DE VALIDATION
+SUBMIT = 'SISRES-READWRITE-08;SISRES;OBLIG;BIN;ECR;SELAFIN'
+/DEFAUT = ''
+/DEFAUT1 = ''
+NIVEAU = 1
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'RESULTATS'
+RUBRIQUE1 = 'RESULTS'
+AIDE = 'Nom du fichier dans lequel seront ecrits les resultats avec
+une periodicite donnee par le mot cle PERIODE DE SORTIE GRAPHIQUE.'
+AIDE1 = 'Name of the file into wich the computation results shall be
+written, the periodicity being given by the keyword
+GRAPHIC PRINTOUT PERIOD.'
+
+NOM = 'NUMERO DE VERSION'
+NOM1 = 'RELEASE'  
+TYPE = CARACTERE
+INDEX = 13
+DEFAUT = 'V6P2'
+DEFAUT1 = 'V6P2'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 3
+AIDE = 'Numero de version des bibliotheques utilisees par SISYPHE.'
+AIDE1 = 'Release of the libraries used by SISYPHE.'
+
+NOM = 'TEMPS MACHINE CRAY'
+NOM1 = 'CPU TIME' 
+TYPE = CARACTERE
+INDEX = 14
+DEFAUT = '10'
+DEFAUT1 = '10'
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Temps CPU (en secondes) alloue pour la realisation du calcul.
+Attention; il s''agit bien d''une chaine de caracteres.'
+AIDE1 = 'C.P.U. time (in seconds) allowed for making the computation.
+Please note that this keyword is a string of characters.'
+
+NOM = 'PLACE MEMOIRE CRAY'
+NOM1 = 'MEMORY SPACE CRAY' 
+TYPE = CARACTERE
+INDEX = 15
+DEFAUT = '1500000W'
+DEFAUT1 = '1500000W'
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = 'Place memoire (en mots de 8 octets) reservee en machine pour la
+realisation du calcul.'
+AIDE1 = 'Storage capacity (in words of 8 bytes) reserved in machine for
+making the computation.'
+
+NOM = 'FICHIER DES FONDS'
+NOM1 = 'BOTTOM TOPOGRAPHY FILE'  
+TYPE = CARACTERE
+INDEX = 16
+MNEMO = 'SIS_FILES(SISFON)%NAME'
+SUBMIT = 'SISFON-READ-09;SISFON;FACUL;ASC;LIT;PARAL'
+DEFAUT = ''
+DEFAUT1 = ''
+NIVEAU = 1
+APPARENCE='LISTE IS FICHIER'
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+AIDE = 'Nom du fichier facultatif contenant la bathymetrie 
+associee au maillage.'
+AIDE1 = 'Name of the possible file containing the bathymetric data.'
+
+NOM = 'BIBLIOTHEQUES'
+NOM1 = 'LIBRARIES' 
+TYPE = CARACTERE
+INDEX = 17
+TAILLE = 0
+DEFAUT = 'SISYPHE,TELEMAC,UTIL,DAMO,BIEF,HP'
+DEFAUT1 = 'SISYPHE,TELEMAC,UTIL,DAMO,BIEF,HP'
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = 'Utilise par la procedure de lancement sur station de travail.'
+AIDE1 = 'Used by the start-up procedure at the workstation.'
+
+NOM = 'STANDARD DU FICHIER DE GEOMETRIE'
+NOM1 = 'GEOMETRY FILE BINARY' 
+TYPE = CARACTERE
+INDEX = 18
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Type de binaire pour l''ecriture du fichier de geometrie.
+Ce type depend de la machine ou ce fichier est genere.
+Les differentes valeurs sont :
+   IBM, pour un fichier sur IBM (depuis un CRAY)
+   I3E, pour un fichier sur HP (depuis un CRAY)
+   STD, pour le type de binaire de la machine ou l''utilisateur 
+        travaille. Les commandes standard READ et WRITE sont 
+        alors utilisees.'
+AIDE1 = 'Binary file type used for writing the geometry file.
+This type depends on the machine on which the file was generated.
+The possible values are as follows :
+   IBM, for a file on an IBM (from a CRAY)
+   I3E, for a file on an HP (from a CRAY)
+   STD, binary type of the machine on which the user is working.
+        The normal READ and WRITE commands are then used.'
+
+NOM = 'STANDARD DU FICHIER HYDRODYNAMIQUE'
+NOM1 = 'HYDRODYNAMIC FILE BINARY' 
+TYPE = CARACTERE
+INDEX = 19
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'obsolete'
+AIDE1 = 'obsolete'
+
+NOM = 'STANDARD DU FICHIER PRECEDENT SEDIMENTOLOGIQUE'
+NOM1 = 'BINARY OF THE PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE'
+TYPE = CARACTERE
+INDEX = 20
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Type de binaire pour l''ecriture du fichier precedent 
+sedimentologique. Ce type depend de la machine ou le fichier 
+precedent sedimentologique est genere. Les differentes valeurs
+sont identiques a celles du fichier de geometrie.'
+AIDE1 = 'Binary file type used for writing the previous
+sedimentological computation results file.
+This type depends on the machine on which the file
+was generated. The possible values are the same as for
+the geometry file.'
+
+NOM = 'STANDARD DU FICHIER RESULTAT'
+NOM1 = 'RESULTS FILE BINARY'
+TYPE = CARACTERE
+INDEX = 21
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Type de binaire pour l''ecriture du fichier des resultats.
+Ce type depend de la machine ou le fichier des resultats est genere.
+Les differentes valeurs sont identiques a celles du fichier de
+geometrie.'
+AIDE1 = 'Binary file type used for writing the results file.
+This type depends on the machine on which the file was generated.
+The possible values are the same as for the geometry file.'
+
+NOM = 'FICHIER DE REFERENCE'
+NOM1 = 'REFERENCE FILE'
+TYPE = CARACTERE
+INDEX = 22
+MNEMO = 'SIS_FILES(SISREF)%NAME'
+TAILLE = 0
+SUBMIT = 'SISREF-READ-22;SISREF;FACUL;BIN;LIT;SELAFIN'
+DEFAUT = ''
+DEFAUT1 = ''
+NIVEAU = 2
+APPARENCE = 'LISTE IS FICHIER'
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+AIDE = 'Nom du fichier servant a valider le calcul.
+Si VALIDATION = OUI, les resultats du calcul vont etre 
+comparees aux valeurs contenues dans ce fichier.
+La comparaison est effectuee par le sous-programme VALIDA.' 
+AIDE1 = 'Name of the file used to validate the computation.
+If VALIDATION = YES, the results of the computation will be 
+compared with the values of this file. The comparison is        
+made by the subroutine VALIDA.'     
+
+NOM = 'STANDARD DU FICHIER DE REFERENCE'
+NOM1 = 'REFERENCE FILE BINARY'
+TYPE = CARACTERE
+INDEX = 23
+DEFAUT = 'STD'
+DEFAUT1 = 'STD'
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Type de binaire pour l''ecriture du fichier de reference.
+Ce type depend de la machine ou le fichier de reference est genere.
+Les differentes valeurs sont identiques a celles du fichier
+de geometrie.'
+AIDE1 = 'Binary file type used for writing the reference file.
+This type depends on the machine on which the file was generated.
+The possible values are the same as for the geometry file.'
+
+
+NOM = 'BILAN DE MASSE'
+NOM1 = 'MASS-BALANCE'   
+TYPE = LOGIQUE
+INDEX = 1
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'RESULTATS'
+RUBRIQUE1 = 'RESULTS'
+NIVEAU = 1
+AIDE = 'Determine si oui ou non le bilan de masse est realise.'
+AIDE1 = 'Determines whether a check of the mass-balance over the domain
+is made or not'
+
+NOM = 'CAS PERMANENT'
+NOM1 = 'STEADY CASE'     
+TYPE = LOGIQUE
+INDEX = 2
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'Definit si l''hydrodynamique a prendre en compte est
+permanente ou non. Si la valeur OUI est donnee a ce mot-cle,
+le dernier enregistrement du fichier du calcul precedent
+constituera le champ (h,u,v et eventuellement hauteur et periode
+de houle) a prendre en compte.'
+AIDE1 = 'Specifies steady or unsteady case.If this keyword 
+is equal to YES, the last record of the previous computation
+file will give the values of h,u,v and eventually wave height
+and period to be considered.'
+
+NOM = 'BANCS DECOUVRANTS'
+NOM1 = 'TIDAL FLATS'
+TYPE = LOGIQUE
+INDEX = 3
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'permet de supprimer les tests sur les bancs decouvrants, dans
+les cas ou l''on est certain qu''il n''y en aura pas.
+En cas de doute : oui'
+AIDE1 = 'When no, the specific treatments for tidal flats
+are by-passed.
+This spares time, but of course you must be sure that you
+have no tidal flats'
+
+NOM = 'VALIDATION'
+NOM1 = 'VALIDATION'
+TYPE = LOGIQUE
+INDEX = 4
+DEFAUT = NON
+DEFAUT1 = NO                                                             
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'    
+NIVEAU = 2                                                              
+AIDE = 'Option utilisee principalement pour le dossier de validation.
+Si ce mot-cle vaut OUI, les resultats du calcul vont alors etre 
+compares aux valeurs du fichier de reference.
+La comparaison est effectuee par le sous-programme VALIDA qui peut
+etre modifie pour realiser, par exemple, une comparaison avec 
+une solution exacte.'
+AIDE1 = 'This option is primarily used for the validation  
+documents. If this keyword is equal to YES, the REFERENCE FILE 
+is then considered as a reference which the computation is
+going to be compared with. 
+The comparison is made by the subroutine VALIDA, which can be      
+modified so as to include,for example,a comparison with an 
+exact solution.'
+
+NOM = 'FREE LOGICAL 1'
+NOM1 = 'FREE LOGICAL 1'
+TYPE = LOGIQUE
+INDEX = 5
+MNEMO = ' '
+DEFAUT = NON
+DEFAUT1 = NO
+NIVEAU = 1                                                              
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'   
+NIVEAU = 1                                                              
+AIDE = ' '
+AIDE1 = ' '
+
+NOM = 'MASS-LUMPING'
+NOM1 = 'MASS-LUMPING'
+TYPE = LOGIQUE
+INDEX = 6
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+NIVEAU = 2                                                            
+AIDE = 'Si oui, on effectue du mass-lumping sur la cote du fond.
+Ceci revient a ramener toute la matrice de masse sur sa 
+diagonale lors de la resolution du systeme. Cette technique permet 
+d''accelerer le code et de le rendre egalement plus stable. Cependant,
+les solutions obtenues se trouvent lissees.'
+AIDE1 = 'If this key word is equal to yes, the mass matrix is then
+condensed on its diagonal.This technique is used to accelerate the
+computation and also to make it more stable.However, the solutions 
+obtained are smoothed.'
+
+NOM = 'FREE INTEGER 1'
+NOM1 = 'FREE INTEGER 1'    
+TYPE = ENTIER
+INDEX = 1
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = ' '
+AIDE1 = ' '
+
+NOM = 'COEFFICIENT DE FROTTEMENT'
+NOM1 = 'FRICTION COEFFICIENT'
+TYPE = REEL
+INDEX = 7
+DEFAUT = 50.
+DEFAUT1 = 50.
+RUBRIQUE = 'FROTTEMENT'
+RUBRIQUE1 = 'FRICTION'
+NIVEAU = 1
+COMPORT =
+'Foreground ("EQUATIONS*FROTTEMENT ET LISSAGE")
+IS BRUT (brown)'
+AIDE = 'Fixe la valeur du coefficient de Strickler
+intervenant dans le calcul de la contrainte de
+frottement au fond. Sa signification depend de
+la LOI DE FROTTEMENT SUR LE FOND.'
+AIDE1 = 'Sets the value of the friction coefficient
+to calculate the bed shear stress.
+Depends on the LAW OF BOTTOM FRICTION.'
+
+NOM = 'FORMULE DE TRANSPORT SOLIDE'
+NOM1 = 'BED-LOAD TRANSPORT FORMULA'    
+TYPE = ENTIER
+INDEX = 2
+MNEMO = 'ICF'
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'CHARRIAGE'
+RUBRIQUE1 = 'BED-LOAD' 
+NIVEAU = 1
+COMPORT = 'DISPLAY %CHARRIAGE% = TRUE'
+AIDE = '10 formules de transport solide sont implementees dans SISYPHE.
+Les formules Ne3, Ne30 et Ne9 ne doivent pas etre utilisees en cas de couplage avec la suspension.
+Les formules Ne4, Ne5, Ne8 and Ne9 calculent le taux de transport sous l''action combinee
+de la houle et du courant :
+                 1 : MEYER-PETER (charriage)
+                 2 : EINSTEIN-BROWN (charriage)
+                 3 : ENGELUND-HANSEN + CHOLLET ET CUNGE (VERSION 5.3)
+                 30: ENGELUND-HANSEN (total)
+                 4 : BIJKER (charriage + suspension)
+                 5 : SOULSBY - VAN RIJN (charriage + suspension)
+                 6 : HUNZIKER (uniquement granulometrie etendue)
+                      DE MASQUAGE DE HUNZIKER APPLIQUEE
+                     et mot-cle HIDING-FACTOR not used
+                 7 : VAN RIJN (bed load)
+                 8 : BAILARD (charriage + suspension)
+                 9 : DIBAJNIA ET WATANABE (total)
+L''utilisateur a aussi la possibilite d''imposer une autre formule de 
+transport solide (sous-programme QSFORM.F) en fixant la valeur 
+du mot cle a 0 :
+                 0 :  IMPOSEE PAR L''UTILISATEUR
+Attention : dans ce cas, il n''est pas possible de choisir l''option
+PAS DE TEMPS VARIABLE.'
+
+AIDE1 = '10 bed-load or total load transport formulas are implemented in SISYPHE.
+The formula Ne3, Ne30 and Ne9 should not be used in the case of coupling with the suspension. 
+The formula Ne4, Ne5, Ne8 and Ne9  model the transport under the combined action of 
+currents and waves :
+                 1 : MEYER-PETER (bed load)
+                 2 : EINSTEIN-BROWN (bed load)
+                 3 : ENGELUND-HANSEN + CHOLLET AND CUNGE (VERSION 5.3)
+                 30: ENGELUND-HANSEN (total)
+                 4 : BIJKER (bed load + suspension)
+                 5 : SOULSBY - VAN RIJN (bed load + suspension)
+                 6 : HUNZIKER (only for sand grading)
+                     IN THIS CASE HIDING FACTOR KEYWORD DISCARDED
+                     And Hunziker formula used 
+                 7 : VAN RIJN (bed load)
+                 8  : BAILARD (bed load + suspension)
+                 9 : DIBAJNIA ET WATANABE (total)
+Users can also program other formulas (subroutine QSFORM.f) setting 
+this key word to zero :
+                 0 : FORMULA PROGRAMMED BY USER
+Warning : it is not then possible to choose the option 
+VARIABLE TIME-STEP'
+
+NOM = 'NOMBRE DE PAS DE TEMPS'
+NOM1 = 'NUMBER OF TIME STEPS'  
+TYPE = ENTIER
+INDEX = 3
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+COMPORT = 'DISPLAY %CAS PERMANENT% = TRUE'
+AIDE = 'Definit, en permanent, le nombre de pas de temps effectues 
+lors de l''execution du code. En non permanent, ce mot-cle 
+n''est pas utilise.'
+AIDE1 = 'Specifies, for a steady case, the number of time steps 
+performed when running the code. For an unsteady case, this 
+keyword is not used.'
+
+NOM = 'NOMBRE DE MAREES OU CRUES'
+NOM1 = 'NUMBER OF TIDES OR FLOODS'       
+TYPE = ENTIER
+INDEX = 4
+DEFAUT = 1
+DEFAUT1 = 1
+MNEMO = 'NMAREE'
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+AIDE = 'En non permanent, definit le nombre de marees ou de crues 
+effectuees lors de l''execution du code.En permanent, ce mot-cle 
+n''est pas utilise.'
+AIDE1 = 'For an unsteady case, specifies the number of tides or 
+floods performed when running the code. For a steady case, this 
+keyword is not used.'
+
+
+NOM = 'FREE INTEGER 2'
+NOM1 = 'FREE INTEGER 2'            
+TYPE = ENTIER
+INDEX = 5
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 1
+AIDE = ' '
+AIDE1 = ' '
+
+NOM = 'PERIODE DE SORTIE GRAPHIQUE'
+NOM1 = 'GRAPHIC PRINTOUT PERIOD'        
+TYPE = ENTIER
+INDEX = 6
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'RESULTATS'
+RUBRIQUE1 = 'RESULTS'
+NIVEAU = 1
+AIDE = 'Determine la periode en nombre de pas de temps d''impression
+des ''VARIABLES POUR LES SORTIES GRAPHIQUES'' (voir ce mot-cle)
+dans le ''FICHIER DES RESULTATS''.'
+AIDE1 = 'Determines, in number of time steps, the printout period for
+the ''VARIABLES FOR GRAPHIC PRINTOUTS'' in the ''RESULTS FILE''.'
+
+NOM = 'PERIODE DE SORTIE LISTING'
+NOM1 = 'LISTING PRINTOUT PERIOD'        
+TYPE = ENTIER
+INDEX = 7
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'RESULTATS'
+RUBRIQUE1 = 'RESULTS'
+NIVEAU = 1
+AIDE = 'Determine la periode en nombre de pas de temps d''impression
+des ''VARIABLES A IMPRIMER'' (voir ce mot-cle).
+La sortie des resultats est effectuee sur le fichier listing
+(fichier cas_numerodeprocessus.sortie sur station de travail).'
+AIDE1 = 'Determines, in number of time steps, the printout period of
+the ''VARIABLES TO BE PRINTED''.
+The results are printed out on the listing file
+(file cas_numerodeprocessus.sortie on a workstation).'
+
+NOM = 'MAILLEUR'
+NOM1 = 'MESHING'                         
+TYPE = ENTIER
+INDEX = 8
+DEFAUT = 3
+DEFAUT1 = 3
+NIVEAU = 1
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'TYPE DU MAILLEUR'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'MESH GENERATOR'
+COMPORT = 'Foreground ("ENTREES-SORTIES, GENERALITES*TYPE DU MAILLEUR")
+IS BRUT (red)'
+AIDE = 'MAILLEUR  1: MAILLEUR DIFFERENCES FINIES AU STANDARD LEONARD
+                  2: MAILLEUR ELEMENTS FINIS AU STANDARD PABLO 2D
+                  3: MAILLEUR ELEMENTS FINIS AU STANDARD SELAFIN.'
+AIDE1 = 'MESHING  1: LEONARD STANDARD FINITE DIFFERENTS MESH-GENERATOR
+                  2: PABLO 2D STANDARD FINITE ELEMENTS MESH-GENERATOR
+                  3: SELAFIN STANDARD FINITE ELEMENTS MESH-GENERATOR.'
+
+NOM = 'LOGICIEL DE DESSIN'
+NOM1 = 'GRAPHIC SOFTWARE'               
+TYPE = ENTIER
+INDEX = 9
+DEFAUT = 3
+DEFAUT1 = 3
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Definit le logiciel graphique choisi pour la realisation des
+sorties graphiques :
+                     1: LEONARD
+                     2: RUBENS
+                     3: SELAFIN.'
+AIDE1 = 'Specifies the used graphic software for the
+graphic printouts :
+                     1: LEONARD 
+                     2: RUBENS
+                     3: SELAFIN.'
+
+NOM = 'LOGICIEL DE DESSIN DU CALCUL PRECEDENT'
+NOM1 = 'GRAPHIC SOFTWARE OF THE HYDRODYNAMIC COMPUTATION'
+TYPE = ENTIER
+INDEX = 10
+DEFAUT = 3
+DEFAUT1 = 3
+NIVEAU = 0
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+AIDE = 'Definit le logiciel graphique choisi pour la realisation des
+sorties graphiques du calcul precedent :
+                     1: LEONARD
+                     2: RUBENS
+                     3: SELAFIN.'
+AIDE1 = 'Specifies the used graphic software for the
+graphic printouts of the previous computation:
+                     1: LEONARD 
+                     2: RUBENS
+                     3: SELAFIN.'
+
+NOM = 'OPTION DE TRAITEMENT DES BANCS DECOUVRANTS'
+NOM1 = 'OPTION FOR THE TREATMENT OF TIDAL FLATS'
+TYPE = ENTIER
+INDEX = 11
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'
+NIVEAU = 2
+AIDE = 'Utilise si ''BANCS DECOUVRANTS'' est vrai
+   1 : EQUATIONS RESOLUES PARTOUT AVEC CORRECTION
+       SUR LES BANCS DECOUVRANTS
+   2 : GEL DES ELEMENTS DECOUVRANTS
+Il est conseille de choisir l''option 1 car elle permet de
+conserver la masse.' 
+AIDE1 = 'Used if ''TIDAL FLATS'' is true
+   1 : EQUATIONS SOLVED EVERYWHERE WITH CORRECTION ON TIDAL FLATS
+   2 : DRY ELEMENTS FROZEN
+It is recommended to choose 1 since it ensures mass conservation.'
+
+NOM = 'LONGUEUR DU VECTEUR'
+NOM1 = 'VECTOR LENGTH'
+TYPE = ENTIER
+INDEX = 12
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 1
+AIDE = 'longueur du vecteur pour les machines vectorielles.'
+AIDE1 = 'vector length on vector machines.'
+
+NOM = 'CODE DE CALCUL UTILISE POUR L''HYDRODYNAMIQUE'
+NOM1 = 'HYDRODYNAMIC CODE'
+TYPE = ENTIER
+INDEX = 13
+MNEMO = 'HYDRO'
+DEFAUT = 1
+DEFAUT1 = 1
+CHOIX = '1="TELEMAC-2D"'
+CHOIX1 = '1="TELEMAC-2D"'
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = 'specifie le code utilise pour modeliser l''hydrodynamique'
+
+NOM = 'NOMBRE DE SOUS-ITERATIONS'
+NOM1 = 'NUMBER OF SUB-ITERATIONS'
+TYPE = ENTIER
+INDEX = 14
+MNEMO = 'NSOUS'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+AIDE = 'permet de realiser des sous iterations au sein de la
+boucle en temps (En mode non permananet). 
+Peut etre utile en non permanent lorsque le
+pas de temps qui est donne par le pas de sortie graphique du
+FICHIER DE CALCUL PRECEDENT est trop grand.'
+AIDE1 = 'enable to realize sub-iteration inside a time step
+(this key word is not used if the key word VARIABLE TIME-STEP
+is set equal to yes). It could be useful for a non steady case 
+be useful for a non steady case when the time step which is fixed  
+by the graphic printout period of the HYDRODYNAMIC FILE
+is too large.'
+
+
+NOM = 'DATE DE L''ORIGINE DES TEMPS'
+NOM1 = 'ORIGINAL DATE OF TIME'
+TYPE = INTEGER
+INDEX = 15
+TAILLE = 3
+DEFAUT = 0;0;0
+DEFAUT1 = 0;0;0
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+AIDE = 'Permet de fixer la date d''origine des temps du modele lors
+de la prise en compte de la force generatrice de la maree.'
+AIDE1 ='Give the date of the time origin of the model when taking into
+account the tide generating force.'
+
+NOM = 'HEURE DE L''ORIGINE DES TEMPS'
+NOM1 = 'ORIGINAL HOUR OF TIME'
+TYPE = INTEGER
+INDEX = 16
+TAILLE = 3
+DEFAUT = 0;0;0
+DEFAUT1 = 0;0;0
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+AIDE = 'Permet de fixer l''heure d''origine des temps du modele lors
+de la prise en compte de la force generatrice de la maree.'
+AIDE1 ='Give the time of the time origin of the model when taking into
+account of the tide generator force.'
+
+NOM = 'SOLVEUR'
+NOM1 = 'SOLVER'
+TYPE = ENTIER
+INDEX = 17
+MNEMO = 'METHOD'
+TAILLE = 0
+DEFAUT = 3
+DEFAUT1 = 3
+CHOIX = '3="equation normale"';
+'1="gradient conjuge"';
+'2="residu conjuge"';
+'4="erreur minimale"';
+'6="cgstab"';
+'7="gmres"'
+CHOIX1 = '3="conjugate gradient on a normal equation"';
+'1="conjugate gradient"';
+'2="conjugate residual"';
+'4="minimum error"';
+'6="cgstab"';
+'7="gmres"'
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 2
+AIDE = 'Permet de choisir le solveur utilise pour la resolution de
+l''equation de continuite sur le fond (ce parametre n''est utilise
+que si le mot cle MASS LUMPING est egal a faux). Toutes les methodes  
+proposees actuellement s''apparentent au Gradient Conjugue. Ce sont :
+  1 : gradient conjugue
+  2 : residu conjugue
+  3 : gradient conjugue sur equation normale
+  4 : erreur minimale
+  5 : gradient conjugue carre (non programme)
+  6 : gradient conjugue carre stabilise (cgstab)
+  7 : gmres (voir aussi option du solveur)'
+AIDE1 = 'Makes it possible to select the solver used for solving the
+bottom evolution equation (Used only if the key-word MASS LUMPING 
+is equal to false). All the currently available methods are 
+variations of the Conjugate Gradient method. They are as follows:
+1: conjugate gradient
+2: conjugate residual
+3: conjugate gradient on a normal equation
+4: minimum error
+5: conjugate gradient squared (not implemented)
+6: conjugate gradient squared stabilised (cgstab)
+7: gmres (see option for solver)'
+
+NOM = 'OPTION DU SOLVEUR'
+NOM1 = 'SOLVER OPTION'
+TYPE = ENTIER
+INDEX = 18
+MNEMO = 'METHOD'
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 2
+AIDE = 'si le solveur est GMRES (7) le mot cle est la dimension de
+l''espace de KRILOV (valeurs conseillees entre 2 et 15). Ce parametre
+n''est utilise que si le mot cle MASS LUMPING est egal a faux.'
+AIDE1 = 'WHEN GMRES (7) IS CHOSEN, DIMENSION OF THE KRYLOV SPACE
+TRY VALUES BETWEEN 2 AND 15. Used only if the key-word MASS LUMPING 
+is equal to false'
+
+NOM = 'PRECONDITIONNEMENT'
+NOM1 = 'PRECONDITIONING'
+TYPE = ENTIER
+INDEX = 19
+MNEMO = 'PRECON'
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+CHOIX = '2="diagonal"'; '0="aucun"';
+'3="diagonal condensee"'; '7="crout"';
+'14="diagonal et crout"'; '21="diagonal condense et crout"'
+CHOIX1 = '2="diagonal"'; '0="no preconditioning"';
+'3="diagonal condensee"'; '7="crout"';
+'14="diagonal and crout"'; '21="diagonal condensed  and crout"'
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 2
+AIDE = 'Permet de preconditionner le systeme lineaire afin d''accelerer 
+la convergence lors de sa resolution (ce parametre n''est utilise que 
+si le mot cle MASS LUMPING est egal a faux).
+ - 0 : pas de preconditionnement;
+ - 2 : preconditionnement diagonal.
+ - 3 : preconditionnement diagonal-bloc
+ - 7 : preconditionnement de Crout par element.
+Certains preconditionnements sont cumulables
+(les diagonaux 2 ou 3 avec les autres)
+Pour cette raison on ne retient que les nombres premiers pour
+designer les preconditionnements. Si l''on souhaite en cumuler
+plusieurs on formera le produit des options correspondantes.'
+AIDE1 = 'Choice of the preconditioning in the resolution of the linear
+system that the convergence is speeded up when it is being solved (Used 
+only if the key-word MASS LUMPING  is equal to false).
+ 0: no preconditioning
+ 2: diagonal preconditioning
+ 3: diagonal preconditioning with the condensed matrix
+ 7: Crout''s preconditioning per element (not implemented).
+Some operations (either 2 or 3 diagonal preconditioning) can be
+performed concurrently with the others.
+Only prime numbers are therefore kept to denote the preconditioning
+operations. When several of them are to be performed concurrently,
+the product of relevant options shall be made.'
+
+NOM = 'MAXIMUM D''ITERATIONS POUR LE SOLVEUR'
+NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR SOLVER'
+TYPE = ENTIER
+INDEX = 20
+MNEMO = 'NITMAX'
+TAILLE = 0
+DEFAUT = 60
+DEFAUT1 = 60
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 2
+AIDE = 'Les algorithmes utilises pour la resolution de l''etape de
+propagation etant iteratifs; il est necessaire de limiter le nombre
+d''iterations autorisees.
+Remarque : Ce parametre n''est utilise que si le mot cle MASS LUMPING 
+est egal a faux.'
+AIDE1 = 'Since the algorithms used for solving the propagation step are
+iterative, the allowed number of iterations should be limited.
+NOTE:Used only if the key-word MASS LUMPING is equal to false .'
+
+NOM = 'OPTION DE TRAITEMENT DES FONDS NON ERODABLES'
+NOM1 = 'OPTION FOR THE TREATMENT OF NON ERODABLE BEDS'
+TYPE = ENTIER
+INDEX = 21
+MNEMO = 'CHOIX'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+AIDE = 'Ce parametre permet de fixer la methode retenue pour traiter 
+les fonds non erodables :
+        0 = FONDS ERODABLES PARTOUT
+        1 = MINIMISATION DU DEBIT SOLIDE POUR LES FONDS NON ERODABLES
+        2 = DEBIT SOLIDE NUL POUR LES FONDS NON ERODABLES
+        3 = MINIMISATION DU DEBIT SOLIDE EN ELEMENTS FINIS/MASS-LUMPING
+        4 = MINIMISATION DU DEBIT SOLIDE EN VOLUMES FINIS
+Quand le fond rigide peut etre atteint lors de la simulation, il est
+conseille d utiliser la metode 3 ou bien 4'
+AIDE1 = 'This parameters determines the method used to treat the 
+non erodable bottoms :
+        0 = ERODABLE BOTTOMS EVERYWHERE
+        1 = MINIMISATION OF THE SOLID DISCHARGE
+        2 = NUL SOLID DISCHARGE
+        3 = MINIMISATION OF THE SOLID DISCHARGE IN FE / MASS-LUMPING
+        4 = MINIMISATION OF THE SOLID DISCHARGE IN FINITE VOLUMES
+When the rigid bed can be reached during the computation, it is advised
+to use the method 3 or the method 4'
+
+NOM = 'RAPPORT D''EVOLUTION CRITIQUE'
+NOM1 = 'CRITICAL EVOLUTION RATIO'         
+TYPE = REEL
+INDEX = 1
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'Definit le moment ou l''extrapolation du champ de courant
+par SISYPHE n''est plus valable. Ce nombre represente le rapport
+maximum entre les evolutions et la hauteur d''eau admissible.
+Generalement, on admet qu''une evolution inferieure a 0,1 fois
+la hauteur d''eau ne modifie pas sensiblement la repartition
+du champ de courant.'
+AIDE1 = 'Specifies the moment when the SISYPHE extrapolation current 
+filed is no more valid. This value set the maximum ratio between
+evolutions and the water depth.
+Generally, it is considered that an evolution lower than 0,1 time the 
+water depth does not perceptibly modify the current field distribution.'
+
+NOM = 'MASSE VOLUMIQUE DE L''EAU'
+NOM1 = 'WATER DENSITY'              
+TYPE = REEL
+INDEX = 2
+DEFAUT = 1000.
+DEFAUT1 = 1000.
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+NIVEAU = 1
+COMPORT =
+'Foreground ("PARAMETRES PHYSIQUES")
+IS BRUT (yellow)'
+AIDE = 'Fixe la valeur de la masse volumique de l''eau.'
+AIDE1 = 'sets the value of water density.'
+
+NOM = 'MASSE VOLUMIQUE DU SEDIMENT'
+NOM1 = 'SEDIMENT DENSITY'         
+TYPE = REEL
+INDEX = 3
+DEFAUT = 2650.
+DEFAUT1 = 2650.
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+NIVEAU = 1
+AIDE = 'Fixe la valeur de la masse volumique du sediment 
+           en Kg/m3'
+AIDE1 = 'sets the value of the sediment density
+           en Kg/m3'
+
+/NOM = 'COEFFICIENT FONCTION DE LA POROSITE'
+/NOM1 = 'COEFFICIENT FUNCTION OF THE POROSITY'
+NOM = 'POROSITE DU LIT NON COHESIF'
+NOM1 = 'NON COHESIVE BED POROSITY'
+TYPE = REEL
+INDEX = 5
+TAILLE = 1
+MNEMO = 'XKV'
+DEFAUT = 0.4
+DEFAUT1 = 0.4
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+NIVEAU = 1
+AIDE = 'la concentration volumique  du lit est definie par 
+	CSF= (1-porosite)
+Ce paramètre est utilisé  pour les sediments non-cohesifs.'
+AIDE1 = 'The bed volume concentration CSF=(1-porosity) is used to calculate 
+the bed evolution of non-cohesive sand transport.'
+
+
+NOM = 'PARAMETRES DE SHIELDS'
+NOM1 = 'SHIELDS PARAMETERS'            
+TYPE = REEL
+MNEMO = 'AC'
+INDEX = 6
+TAILLE = 10
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'Utilise pour determiner la valeur de la contrainte critique
+d''entrainement (sédiments non-cohésifs). En multiclasse, specifier la valeur 
+pour chaque classe,sinon on prend la même valeur.
+Par défaut (si aucune valeur donnee) le code calcule lui 
+même le parametre de Shields en fonction du diametre.'
+AIDE1 = 'Used to determine the critical bed shear stress value (non-cohesive sediments). 
+For multi grain size, 
+the shields parameter needs to be specified for each class. If only one 
+value is specified, the shields parameter will be considered constant. 
+The default option (no shields given in parameter file)
+is to calculate the shields parameter as a function of 
+sand grain diameter (see logical CALAC).'
+
+NOM = 'GRAVITE'
+NOM1 = 'GRAVITY ACCELERATION'             
+TYPE = REEL
+INDEX = 8
+DEFAUT = 9.81
+DEFAUT1 = 9.81
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+NIVEAU = 1
+AIDE = 'Fixe la valeur de l''acceleration de la pesanteur.
+         M/S2'
+AIDE1 = 'Sets the value of the acceleration due to gravity.
+         M/S2'
+
+NOM = 'ZERO'
+NOM1 = 'ZERO'                            
+TYPE = REEL
+INDEX = 9
+DEFAUT = 1.E-6
+DEFAUT1 = 1.E-6
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+NIVEAU = 1
+AIDE = 'Fixe le zero du code.'
+AIDE1 = 'Sets the zero of the code.'
+
+NOM = 'VISCOSITE CINEMATIQUE EAU'
+NOM1 = 'WATER VISCOSITY'        
+TYPE = REEL
+INDEX = 10
+MNEMO = 'VCE'
+DEFAUT = 1.E-6
+DEFAUT1 = 1.E-6
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+NIVEAU = 3
+AIDE = 'Definit la viscosite cinematique de l''eau.
+         M/S2'
+AIDE1 = 'Specifies the water kinematic viscosity.
+         M/S2'
+
+NOM = 'VALEUR MINIMUM DE H'
+NOM1 = 'MINIMAL VALUE OF THE WATER HEIGHT'
+TYPE = REEL
+INDEX = 11
+MNEMO = 'HMIN'
+DEFAUT = 1.E-3
+DEFAUT1 = 1.E-3
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+COMPORT = 'DISPLAY %BANCS DECOUVRANTS% = TRUE'
+AIDE = 'Fixe la valeur minimale de la hauteur d''eau. 
+Est utilise lorsque le mot cle BANCS DECOUVRANTS est egal a oui.'
+AIDE1 = 'Sets the minimum value of the water depth.
+Is used when the keyword TIDAL FLATS is equal to yes.'
+
+NOM = 'PAS DE TEMPS'
+NOM1 = 'TIME STEP'                     
+TYPE = REEL
+INDEX = 12
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+COMPORT = 'DISPLAY %CAS PERMANENT% = TRUE'
+AIDE = 'Definit le pas de temps du calcul en secondes en 
+permanent. En non permanent, ce pas de temps est donne par le 
+pas de sortie graphique du fichier precedent. Mais si aucun 
+nom n''est donne pour le ''FICHIER DU CALCUL PRECEDENT'' (les 
+variables hydrodynamiques pouvant etre imposees dans CONDIM),
+la valeur du pas de temps donnee dans le fichier des 
+parametres est la aussi consideree.
+Remarque : si le mot-cle "PAS DE TEMPS VARIABLE EST EGAL A OUI"
+le pas de temps necessaire a une bonne resolution est calcule
+dans le code et des sous iterations sont realisees.'
+AIDE1 = 'Specifies the time step in seconds in steady case.
+For an unsteady case, this time step is fixed by the graphic
+printout period of the previous computation file, except if
+no name is given for the ''HYDRODYNAMIC FILE'' in 
+the steering file.
+Remark : If the keyword ''VARIABLE TIME STEP'' is set equal
+to yes, the time step required for a correct resolution is
+computed in the code and sub-iterations are performed'
+
+NOM = 'TEMPS D''ORIGINE DE L''HYDROGRAMME'
+NOM1 = 'STARTING TIME OF THE HYDROGRAM'                  
+TYPE = REEL
+INDEX = 13
+MNEMO = 'TPREC'
+DEFAUT = -1000.
+DEFAUT1 = -1000.
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+AIDE = 'Ce mot cle fixe le temps auquel le calcul SISYPHE debute
+sauf en cas de suite de calcul car le temps initial est
+alors lu sur le "fichier precedent sedimentologique". En non
+permanent, ce mot cle designe de plus le temps correspondant 
+au premier enregistrement a lire dans le "fichier du calcul
+precedent" contenant les donnees hydrodynamiques.'
+AIDE1 = 'this key word specifies the time when SISYPHE computation
+begins except when a computation is continued (the initial time
+is then read on the "previous sendimentological file".   
+For an unsteady case, it moreover specifies the time which 
+corresponds to the 1st record to be read in the "previous 
+computation file"(the file which contains the hydrodynamic 
+ data).'
+
+NOM = 'PERIODE DE LA MAREE'
+NOM1 = 'TIDE PERIOD'              
+TYPE = REEL
+INDEX = 14
+DEFAUT = 44640.
+RUBRIQUE = 'TEMPS'
+RUBRIQUE1 = 'TIME'
+NIVEAU = 1
+COMPORT = 'DISPLAY %CAS PERMANENT% = TRUE'
+AIDE = 'Fixe la valeur de la periode de l''evenement 
+(maree ou crue) en non permanent.'
+AIDE1 = 'Sets the period of the event (tide or flood) 
+for an unsteady case.'
+
+NOM = 'TETA'
+NOM1 = 'TETA'                             
+TYPE = REEL
+INDEX = 15
+DEFAUT = 0.
+DEFAUT1 = 0.
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+NIVEAU = 3
+AIDE = 'Definit le coefficient d''implicitation du schema numerique.'
+AIDE1 = 'Specifies the implicitation coefficient of the numerical
+scheme.'
+
+NOM = 'BETA'
+NOM1 = 'BETA'                             
+TYPE = REEL
+INDEX = 16
+DEFAUT = 1.3
+DEFAUT1 = 1.3
+RUBRIQUE = 'EFFET PENTE'
+RUBRIQUE1 = 'SLOPE EFFECT'
+NIVEAU = 2
+AIDE = 'Determine la valeur du coefficient beta qui intervient dans la
+formulation de l''effet de pente de Koch et Flokstra.'
+AIDE1 = 'Specifies the value of the beta coefficient used in the Koch 
+and Flokstra slope effect formulation.'
+
+NOM = 'PRECISION DU SOLVEUR'
+NOM1 = 'SOLVER ACCURACY'
+TYPE = REEL
+INDEX = 17
+MNEMO = 'EPSI'
+TAILLE = 0
+DEFAUT = 1.E-7
+DEFAUT1 = 1.E-7
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 1
+AIDE = 'Precision demandee pour la resolution du systeme
+(ce parametre n''est utilise que si le mot cle MASS LUMPING
+ est egal a faux).'
+AIDE1 = 'Required accuracy for solving the linear system
+(used only if the key word MASS LUMPING is equal to false).'
+
+
+NOM = 'BIBLIOTHEQUE PVM1'
+NOM1 = 'PVM1 LIBRARY'
+TYPE = CARACTERE
+INDEX = 24
+MNEMO = ''
+TAILLE = 0
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = 'Utilise par la procedure de lancement sur station de travail'
+AIDE1 = 'Utilise par la procedure de lancement sur station de travail'
+
+
+NOM = 'BIBLIOTHEQUE PVM2'
+NOM1 = 'PVM2 LIBRARY'
+TYPE = CARACTERE
+INDEX = 25
+MNEMO = ''
+TAILLE = 0
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0
+AIDE = 'Utilise par la procedure de lancement sur station de travail'
+AIDE1 = 'Utilise par la procedure de lancement sur station de travail'
+
+
+/ NOUVEAUTES 5.2
+
+/
+/ KEYWORD COUPLING PERIOD REMOVED ON 18/04/2011 BY JMH+PT
+/
+
+NOM = 'NOMBRE DE TABLEAUX PRIVES'
+NOM1 = 'NUMBER OF PRIVATE ARRAYS'
+TYPE = ENTIER
+INDEX = 23
+MNEMO = 'NPRIV'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'
+NIVEAU = 3
+AIDE = 'Nombre de tableaux mis a disposition de l utilisateur'
+AIDE1 = 'Number of arrays for own user programming'
+
+NOM = 'PROCESSEURS PARALLELES'
+NOM1 = 'PARALLEL PROCESSORS'
+TYPE = ENTIER
+INDEX = 24
+MNEMO = 'NCSIZE'
+CONTROLE = 0;256
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'
+NIVEAU = 1
+AIDE = 'NOMBRE DE PROCESSEURS EN CALCUL PARALLELE
+0 : 1 machine, compilation sans bibliotheque de parallelisme
+1 : 1 machine, compilation avec bibliotheque de parallelisme
+2 : 2 processeurs ou machines en parallele
+etc... '
+AIDE1 = 'NUMBER OF PROCESSORS FOR PARALLEL PROCESSING
+0 : 1 machine, compiling without parallel library
+1 : 1 machine, compiling with a parallel library
+2 : 2 processors or machines in parallel
+etc....'
+
+//      MODIF V5P3
+/
+
+NOM = 'NOMBRE DE CLASSES GRANULOMETRIQUES'
+NOM1 = 'NUMBER OF SIZE-CLASSES OF BED MATERIAL'
+TYPE = ENTIER
+INDEX = 252
+MNEMO = 'NSICLA'
+TAILLE = 0 
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 2 
+AIDE = 'Fixe la valeur du nombre de classes granulometriques
+de grains considerees dans le calcul'
+AIDE1 = 'Sets value of number of size classes of bed materials.'
+
+NOM = 'HIDING FACTOR PAR CLASSE GRANULO'
+NOM1 = 'HIDING FACTOR FOR PARTICULAR SIZE CLASS'
+TYPE = REEL
+INDEX = 253
+MNEMO = 'HIDI'
+TAILLE = 10 
+DEFAUT = 1.;1.;1.;1.;1.;1.;1.;1.;1.;1.
+DEFAUT1 = 1.;1.;1.;1.;1.;1.;1.;1.;1.;1.
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 2 
+AIDE = 'Fixe la valeur du facteur de pavage par classe 
+granulometrique'
+AIDE1 = 'Sets value of hiding factor for particular size class.'
+
+NOM = 'D90'
+NOM1 = 'D90'
+TYPE = REEL
+INDEX = 255
+MNEMO = 'FD90'
+TAILLE = 10 
+DEFAUT = .01;.01;.01;.01;.01;.01;.01;.01;.01;.01
+DEFAUT1 = .01;.01;.01;.01;.01;.01;.01;.01;.01;.01
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 1  
+AIDE = 'Sets value of diameter d90 for particular size class.
+Si le mot cle n est pas entre, la valeur par defaut est 
+celle du diametre moyen des grains '
+AIDE1 = 'Sets value of diameter d90 for particular size class.
+If the keyword is not in the sterring file, the default value
+is the value of the mean diameter of the sediment.'
+
+NOM = 'DIAMETRES DES GRAINS'
+NOM1 = 'SEDIMENT DIAMETERS'
+TYPE = REEL
+INDEX = 4
+MNEMO = 'FDM'
+TAILLE = 10 
+DEFAUT = .01;.01;.01;.01;.01;.01;.01;.01;.01;.01
+DEFAUT1 = .01;.01;.01;.01;.01;.01;.01;.01;.01;.01
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 1  
+AIDE = 'Sets value of diameter dm for particular size class.'
+AIDE1 = 'Sets value of diameter dm for particular size class.'
+/
+/ ANCIEN MOT-CLE EN ALIAS, VOIR PROGRAMMATION DANS LECDON
+/
+NOM = 'DIAMETRE MOYEN DES GRAINS'
+NOM1 = 'MEAN DIAMETER OF THE SEDIMENT'
+TYPE = REEL
+INDEX = 28
+MNEMO = 'FDM'
+TAILLE = 10
+DEFAUT = .01;.01;.01;.01;.01;.01;.01;.01;.01;.01
+DEFAUT1 = .01;.01;.01;.01;.01;.01;.01;.01;.01;.01
+RUBRIQUE = 'INUTILE'
+RUBRIQUE1 = 'USELESS'
+NIVEAU = 0 
+AIDE = 'Sets value of diameter dm for particular size class.'
+AIDE1 = 'Sets value of diameter dm for particular size class.'
+
+NOM = 'FRACTION INITIALE PAR CLASSE SEDIMENTOLOGIQUE'
+NOM1 = 'INITIAL FRACTION FOR PARTICULAR SIZE CLASS'
+TYPE = REEL
+INDEX = 258
+MNEMO = 'AVA0'
+TAILLE = 10 
+DEFAUT = 1.;0.;0.;0.;0.;0.;0.;0.;0.;0.
+DEFAUT1 =1.;0.;0.;0.;0.;0.;0.;0.;0.;0.
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 2  
+AIDE = 'Sets value of initial fraction for particular size class.'
+AIDE1 = 'Sets value of initial fraction for particular size class.'
+
+NOM = 'VOLUMES FINIS'
+NOM1 = 'FINITE VOLUMES'
+TYPE = LOGIQUE
+INDEX = 253
+MNEMO = 'VF'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+NIVEAU = 1
+AIDE = 'Methodes volumes finis ou pas'
+AIDE1 = 'Finite volumes method or not'
+
+NOM = 'EPAISSEUR DE COUCHE ACTIVE'
+NOM1 = 'ACTIVE LAYER THICKNESS'
+TYPE = REEL
+INDEX = 259
+MNEMO = 'ELAY0'
+TAILLE = 0
+DEFAUT = 10000
+DEFAUT1 = 10000
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 2
+AIDE = 'Epaisseur de reference pour la stratification du lit. La
+composition de la premiere couche sert a calculer le transport
+solide. Utiliser une tres grande valeur pour ne pas avoir de
+stratification. '
+AIDE1 = 'Thickness for bed stratification. Composition of first
+layer is used to compute bed load transport rate. If you do not want
+a stratification, use a large value'
+
+NOM = 'HIDING FACTOR FORMULA'
+NOM1 = 'HIDING FACTOR FORMULA'
+TYPE = ENTIER
+INDEX = 253
+MNEMO = 'HIDFAC'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 2
+AIDE = '4 formules pour le hiding factor sont programmees dans SISYPHE
+     0: const => il faut donner le HIDING FACTOR PAR CLASSE GRANULO
+     1: Egiazaroff
+     2: Ashida & Michiue
+      : 
+     4: Karim, Holly & Yang'
+AIDE1 = '4 hiding factor formulas are implemented in SISYPHE
+     0: const => need to give HIDING FACTOR FOR PARTICULAR SIZE CLASS
+     1: Egiazaroff
+     2: Ashida & Michiue
+      : 
+     4: Karim, Holly & Yang'
+
+/ VERSION 5.4
+/
+NOM = 'SUSPENSION'
+NOM1 = 'SUSPENSION'
+TYPE = LOGIQUE
+INDEX = 7
+DEFAUT = NON
+DEFAUT1 = NO
+NIVEAU = 1                                                              
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'    
+NIVEAU = 1                                                              
+AIDE = 'calcul avec suspension'
+AIDE1 = ''
+
+NOM = 'CHARRIAGE'
+NOM1 = 'BED LOAD'
+TYPE = LOGIQUE
+INDEX = 8
+DEFAUT = OUI
+DEFAUT1 = YES
+NIVEAU = 1                                                              
+RUBRIQUE = 'CHARRIAGE'
+RUBRIQUE1 = 'BED-LOAD'     
+NIVEAU = 1                                                              
+AIDE = 'calcul avec charriage'
+AIDE1 = ''
+
+NOM = 'FORME DE LA CONVECTION'
+NOM1 = 'TYPE OF ADVECTION'             
+TYPE = ENTIER   
+INDEX = 25
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+CHOIX =
+'1="CARACTERISTIQUES"';
+'2="SUPG"';
+'3="SCHEMA N CONSERVATIF"' ;
+'4="SCHEMA N CONSERVATIF"' ;
+'5="SCHEMA PSI CONSERVATIF"';
+'6="SCHEMA PSI NON CONSERVATIF"';
+'7="SCHEMA N IMPLICITE NON CONSERVATIF"';
+'13="SCHEMA N PAR SEGMENTS"';
+'14="SCHEMA N PAR SEGMENTS"'
+CHOIX1 =
+'1="CHARACTERISTICS"';
+'2="SUPG"';
+'3="CONSERVATIVE N-SCHEME"';
+'4="CONSERVATIVE N-SCHEME"';
+'5="CONSERVATIVE PSI-SCHEME"';
+'6="NON CONSERVATIVE PSI SCHEME"';
+'7="IMPLICIT NON CONSERVATIVE N SCHEME"';
+'13="EDGE-BASED N-SCHEME"';
+'14="EDGE-BASED N-SCHEME"'
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'Determine le schema utilise pour la convection :
+1: caracteristiques
+2: schema semi-implicite + supg
+3 et 4: schema N
+5: schema psi
+6: schema psi non conservatif
+7: schema N non conservatif
+13 et 14: schema N par segment (recommande pour les bancs decouvrants)'
+
+AIDE1 = 'Scheme used for advection of suspended sediment :
+1: characteristics
+2: semi-implicit SUPG
+3 et 4: N scheme
+5: psi scheme
+6: non conservative psi scheme
+7: non conservative N scheme
+13 et 14: Edge-based N scheme (recommended for tidal flats)'
+
+NOM = 'SOLVEUR POUR LA SUSPENSION'
+NOM1 = 'SOLVER FOR SUSPENSION'                          
+TYPE = ENTIER   
+INDEX = 26
+TAILLE = 0
+DEFAUT = 3
+DEFAUT1 = 3
+CHOIX = '1="gradient conjuge"';
+'2="residu conjuge"';
+'3="gradient conjuge sur equation normale"';
+'4="erreur minimale"';
+'7="gmres (voir ausi option du solveur)"'
+CHOIX1 = '1="conjugate gradient"';
+'2="conjugate residual"';
+'3="conjugate gradient on a normal equation"';
+'4="minimum error"';
+'7="gmres (see option for the solver for tracer diffusion)"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'SOLVEUR';'SUSPENSION'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'SOLVER';'SUSPENSION'
+AIDE = '
+Permet de choisir le solveur utilise pour la resolution
+de l''etape de propagation. Toutes les methodes proposees
+actuellement s''apparentent au Gradient Conjugue. Ce sont :
+ 1 : gradient conjugue
+ 2 : residu conjugue
+ 3 : gradient conjugue sur equation normale
+ 4 : erreur minimale
+ 7 : gmres'
+AIDE1 = ' '
+
+NOM = 'OPTION DU SOLVEUR POUR LA SUSPENSION'
+NOM1 = 'SOLVER OPTION FOR SUSPENSION'               
+TYPE = ENTIER   
+INDEX = 27
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 2
+AIDE = 'Parametre supplementaire disponible pour le solveur.
+Dans le cas du solveur gmres, il s''agit de la dimension
+de l''espace de Krylov.'
+AIDE1 = ' '
+
+NOM = 'PRECONDITIONNEMENT POUR LA SUSPENSION' 
+NOM1 = 'PRECONDITIONING FOR SUSPENSION'               
+TYPE = ENTIER   
+INDEX = 28
+TAILLE = 0
+DEFAUT = 2 
+DEFAUT1 = 2
+CHOIX = '2="diagonal"'; '0="aucun"';
+'3="diagonal condensee"'; '7="crout"'
+CHOIX1 = '2="diagonal"'; '0="no preconditioning"';
+'3="diagonal condensee"'; '7="crout"'
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = '
+Permet de preconditionner le systeme de l''etape de propagation
+afin d''accelerer la convergence lors de sa resolution.
+   - 0 : pas de preconditionnement,
+   - 2 : preconditionnement diagonal.
+   - 3 : preconditionnement diagonal avec la matrice condensee.
+   - 7 : preconditionnement de Crout par element.
+ Certains preconditionnements sont cumulables
+ (les diagonaux 2 ou 3 avec les autres)
+ Pour cette raison on ne retient que les nombres premiers pour
+ designer les preconditionnements. Si l''on souhaite en cumuler
+ plusieurs on formera le produit des options correspondantes.'
+AIDE1 = ' '
+
+NOM = 'MAXIMUM D''ITERATIONS POUR LE SOLVEUR POUR LA SUSPENSION'
+NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR SOLVER FOR SUSPENSION'     
+TYPE = ENTIER   
+INDEX = 29
+TAILLE = 0
+DEFAUT = 50
+DEFAUT1 = 50
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+
+NOM = 'OPTION DE SUPG'
+NOM1 = 'SUPG OPTION' 
+TYPE = ENTIER   
+INDEX = 32
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+NIVEAU = 2
+COMPORT = 'DISPLAY %FORME DE LA CONVECTION% = 2'
+
+NOM = 'PRODUIT MATRICE-VECTEUR'
+NOM1 = 'MATRIX-VECTOR PRODUCT' 
+TYPE = ENTIER   
+INDEX = 33
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+NIVEAU = 3
+
+NOM = 'STOCKAGE DES MATRICES'
+NOM1 = 'MATRIX STORAGE'
+TYPE = ENTIER
+INDEX = 34
+MNEMO = 'OPTASS'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+NIVEAU = 1
+
+NOM = 'OPTION POUR LA DIFFUSION DU TRACEUR'
+NOM1 = 'OPTION FOR THE DIFFUSION OF TRACER'
+TYPE = ENTIER
+INDEX = 35
+MNEMO = 'OPDTRA'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'NUMERIQUE'
+RUBRIQUE1 = 'NUMERICAL'
+CHOIX = '1="div( nu grad(T) )"';
+'2="1/h div ( h nu grad(T)"'
+CHOIX1= '1="div( nu grad(T) )"';
+'2="1/h div ( h nu grad(T)"'
+NIVEAU = 1
+AIDE = '1: Diffusion de la forme div( nu grad(T) )
+        2: Diffusion de la forme 1/h div ( h nu grad(T) )'
+AIDE1= '1: Diffusion in the form div( nu grad(T) )
+        2: Diffusion in the form 1/h div ( h nu grad(T) )'
+
+NOM = 'OPTION POUR LA DISPERSION'
+NOM1 = 'OPTION FOR THE DISPERSION' 
+TYPE = ENTIER   
+INDEX = 31
+MNEMO = 'OPTDIF'
+TAILLE = 0
+DEFAUT = 1
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+AIDE = ' 1 les mots cles dispersion longitudinale
+et dispersion transversale permettent d affecter une valeur constante,
+2 K1=alphal u*h et K2=alphat u*h affectent les valeurs alphal et alphat 
+(par default alphal=6 et alphat=0.6, 3 dipersion fournie par
+ telemac2d'
+
+
+/ NOTE JMH : CE MOT-CLEF N EST PLUS UTILISE
+NOM = 'FORMULATION POUR DEPOT ET EROSION'
+NOM1 = 'FORMULATION FOR DEPOSITION AND EROSION'     
+TYPE = ENTIER   
+INDEX = 36
+TAILLE = 0
+DEFAUT = 2
+DEFAUT1 = 2
+CHOIX = 
+'1="KRONE ET PARTHENIADES"';
+'2="FREDSOE / ROUSE"'
+CHOIX1 = 
+'1="KRONE ET PARTHENIADES"';
+'2="FREDSOE / ROUSE"'
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+
+NOM = 'LOI DE FROTTEMENT SUR LE FOND'
+NOM1 = 'LAW OF BOTTOM FRICTION'
+TYPE = ENTIER
+INDEX = 37
+MNEMO = 'KFROT'
+TAILLE = 0
+DEFAUT = 3
+DEFAUT1 = 3
+CHOIX = '1=" "';
+        '2="CHEZY"';
+        '3="STRICKLER"';
+        '4="MANNING"';
+        '5="NIKURADSE"'
+CHOIX1 = '1=" "';
+         '2="CHEZY"';
+         '3="STRICKLER"';
+         '4="MANNING"';
+         '5="NIKURADSE"'
+RUBRIQUE = 'FROTTEMENT'
+RUBRIQUE1 = 'FRICTION'
+NIVEAU = 1
+AIDE = 'Selectionne le type de formulation utilisee pour le calcul
+du frottement sur le fond, voir COEFFICIENT DE FROTTEMENT.
+Pour les lois possibles, voir CHOIX ci-dessus (cf. Note de principe).
+En cas de couplage avec Telemac, le choix du frottement est impose par Telemac, sauf
+si le mot-cle :PREDICTION DE LA RUGOSITE est mis a OUI' 
+AIDE1 = 'Selects the type of formulation used for the bottom friction.
+To know the possible laws see CHOIX1 above. See FRICTION COEFFICIENT. Beware: in the case
+of internal coupling with Telemac, the friction coefficient is selected in the Telemac steering 
+file, except when BED ROUGHNESS PREDICTION is set to YES'
+
+NOM = 'TETA SUSPENSION'
+NOM1 = 'TETA SUSPENSION'                             
+TYPE = REEL     
+INDEX = 18
+MNEMO = 'TETA_SUSP'
+TAILLE = 0
+DEFAUT = 1.
+DEFAUT1 = 1.
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE='facteur implicitation du terme de depot et de la diffusion.
+ si teta =0, tout le terme de depot est traite de maniere explicite.'
+AIDE=' implicitation factor for the deposition flux and the diffusion.
+ for teta =0, the deposition flux is only explicit.'
+
+
+NOM = 'DISPERSION LONGITUDINALE'
+NOM1 = 'DISPERSION ALONG THE FLOW'             
+TYPE = REEL     
+INDEX = 19
+TAILLE = 0
+DEFAUT = 1.E-2
+DEFAUT1 = 1.E-2
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+
+NOM = 'DISPERSION TRANSVERSALE'
+NOM1 = 'DISPERSION ACROSS THE FLOW'
+TYPE = REEL     
+INDEX = 20
+TAILLE = 0
+DEFAUT = 1.E-2
+DEFAUT1 = 1.E-2
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+
+NOM = 'PRECISION DU SOLVEUR POUR LA SUSPENSION'
+NOM1 = 'SOLVER ACCURACY FOR SUSPENSION'             
+TYPE = REEL     
+INDEX = 21
+TAILLE = 0
+DEFAUT = 1.E-8
+DEFAUT1 = 1.E-8
+RUBRIQUE = 'SOLVEUR'
+RUBRIQUE1 = 'SOLVER'
+NIVEAU = 1
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+
+
+NOM = 'VITESSES DE CHUTE'
+NOM1 = 'SETTLING VELOCITIES' 
+MNEMO = 'XWC'       
+TYPE = REEL
+INDEX = 22
+TAILLE = 10
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'Pas de valeur par defaut
+Si non donne par l utilisateur, on utilise la subroutine vitchu-sisyphe : 
+formules de Stokes, Zanke ou Van Rijn, selon la taille des grains'
+AIDE1 = 'The default value is not given. If the user does not
+give a value, the subroutine vitchu-sisyphe is used:
+Stockes, Zanke or Van Rijn formulae depending on the grain size'
+
+NOM = 'PRISE EN COMPTE DE LA HOULE'
+NOM1 = 'EFFECT OF WAVES'   
+TYPE = LOGIQUE
+INDEX = 10
+MNEMO = 'HOULE'
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'Prend en compte l''effet de la houle sur le transport solide'
+AIDE1 = 'Takes into account the effect of waves'
+
+NOM = 'EPAISSEUR DE COUCHE ACTIVE CONSTANTE'
+NOM1 = 'CONSTANT ACTIVE LAYER THICKNESS'
+TYPE = LOGIQUE
+INDEX = 11
+MNEMO = 'CONST_ALAYER'
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 2
+AIDE = 'epaisseur de couche active constante ou non'
+AIDE1 = 'constant active layer thickness or not'
+
+NOM = 'CONSTANT FLOW DISCHARGE'
+NOM1 = 'CONSTANT FLOW DISCHARGE'
+TYPE = LOGIQUE
+INDEX = 12
+MNEMO = 'LCONDIS'
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+AIDE = 'constant flow discharge or not'
+AIDE1 = 'constant flow discharge or not'
+
+NOM = 'GRAIN-FEEDING'
+NOM1 = 'GRAIN-FEEDING'
+TYPE = LOGIQUE
+INDEX = 13
+MNEMO = 'LGRAFED'
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+AIDE = 'Now suppressed'
+AIDE1 = 'Now suppressed'
+
+NOM = 'NOMBRE D''ITERATIONS POUR TELEMAC'
+NOM1 = 'NUMBER OF ITERATIONS FOR TELEMAC'
+TYPE = ENTIER
+INDEX = 38
+MNEMO = 'NCONDIS'
+DEFAUT = 500
+DEFAUT1 = 500
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+COMPORT = 'DISPLAY %CONSTANT FLOW% = OUI'
+AIDE = 'Nombre d''iteration a effecuter avec telemac pour obtenir
+un nouvel ecoulement quasi stationnaire.
+A utiliser avec l''option constant flow discharge'
+AIDE1 = 'Number of iteration to do wtih telemac in order to obtain a
+new quasi-stationary flow.
+To use with the option constant flow discharge'
+
+NOM = 'CRITERE POUR METTRE A JOUR L''HYDRODYNAMIQUE'
+NOM1 = 'CRITERION TO UPDATE THE FLOW'
+TYPE = REAL
+INDEX = 23
+MNEMO = 'CRIT_CFD'
+DEFAUT = 0.1
+DEFAUT1 = 0.1
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+COMPORT = 'DISPLAY %CONSTANT FLOW% = OUI'
+AIDE = 'Critere (Hauteur du fond>CRIT_CFD*Hauteur d''eau) pour mettre
+a jour l''ecoulement.
+A utiliser avec l''option constant flow discharge'
+AIDE1 = 'Criterion (Bottom height>CRIT_CFD*Water depth) in order to
+update the flow.
+To use with the option constant flow discharge'
+
+/
+/ pour le nouveau couplage interne
+/
+NOM = 'DICTIONNAIRE'
+NOM1 = 'DICTIONARY'
+TYPE = CARACTERE
+INDEX = 100
+MNEMO = ''
+SUBMIT = 'INUTILE;SISDICO;OBLIG;ASC;LIT;DICO'
+DEFAUT = 'sisyphev6p2.dico'
+DEFAUT1 = 'sisyphev6p2.dico'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'ENVIRONNEMENT'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATION ENVIRONMENT'
+NIVEAU = -3
+AIDE ='Dictionnaire des mots cles.'
+AIDE1 ='Key word dictionary.'
+
+/
+/ VERSION 5.5 (SEE ALSO HYDRODYNAMIC FILE)
+/
+NOM = 'SUITE DE CALCUL'
+NOM1 = 'COMPUTATION CONTINUED'
+TYPE = LOGIQUE
+INDEX = 14
+MNEMO = 'DEBU'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'CONDITIONS INITIALES'
+RUBRIQUE1 = 'INITIAL CONDITIONS'
+NIVEAU = 1
+AIDE = 'Determine si le calcul en cours est independant de tout autre
+resultat ou est une reprise effectuee a partir du resultat d''un calcul
+precedent.
+NON : Il s''agit du premier passage pour ce calcul et il est necessaire
+de definir un jeu complet de conditions initiales
+OUI : Il s''agit d''une reprise de calcul :
+les conditions initiales sont constituees par le dernier pas de
+temps du ''FICHIER PRECEDENT SEDIMENTOLOGIQUE'' du fichier des parametres
+utilise pour soumettre le calcul.
+Par contre, l''ensemble des donnees du fichier des parametres
+peuvent etre redefinies 
+De meme, il est necessaire de definir des conditions aux limites'
+AIDE1 = 'Determines whether the computation under way is an independent
+result or is following an earlier result.
+NO: It is the first run for this computation and a whole set of
+initial conditions should be defined.
+YES: It follows a former computation:
+the initial conditions consist in the last time step of the
+PREVIOUS COMPUTATION FILE
+in the steering file used for submitting the computation.
+All the data from the steering file may be defined once again, which
+provides an opportunity to change, for example, the time step.
+It is also possible to define new boundary conditions.'
+
+
+NOM = 'RATIO ENTRE LA RUGOSITE DE PEAU ET LE DIAMETRE MOYEN'
+NOM1 = 'RATIO BETWEEN SKIN FRICTION AND MEAN DIAMETER'
+TYPE = REAL
+INDEX = 24
+MNEMO = 'KSPRATIO'
+DEFAUT = 3.0
+DEFAUT1 = 3.0
+RUBRIQUE = 'FROTTEMENT'
+RUBRIQUE1 = 'FRICTION'
+NIVEAU = 2
+AIDE = 'Ratio pour le calcul du frottement de peau.
+rugosite de peau = ratio * diametre moyen.
+( pour la granulometrie etendue, le diametre moyen utilise
+est une valeur moyenne par noeud calculee a partir de la fraction
+et du diametre moyen de chaque sediment en chaque noeud du maillage)'
+AIDE1 = ' Ratio for the computation of skin friction.
+skin roughness = ratio * mean diameter
+(for the mixture of sand, the mean diameter used is a value per node which
+is computed thanks to the fraction and the mean diameter of each sediment
+for each node of the mesh)
+if KSPRATIO =0 : use skin friction prediction from Van Rijn (2007)
+for currents and the Wiberg and Harris method for waves'
+
+
+NOM = 'CONCENTRATION D''EQUILIBRE EN ENTREE'
+NOM1 = 'EQUILIBRIUM INFLOW CONCENTRATION'
+TYPE = LOGIQUE
+INDEX = 15
+MNEMO = 'IMP_INFLOW_C'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'impose la concentration en entree du domaine et les concentrations initiales
+en utilisant la formule de Fredsoe pour les sediments non-cohesifs'
+AIDE1 = 'impose the equilibrium concentration for the inflow and at t=0 in the whole domain
+thanks to the formula of Fredsoe for non cohesive sediments'
+
+
+NOM = 'COURANTS SECONDAIRES'
+NOM1 = 'SECONDARY CURRENTS'
+TYPE = LOGIQUE
+INDEX = 16  
+MNEMO = 'SECCURRENT' 
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 2
+AIDE = 'Pour prendre en compte les courants secondaires'
+AIDE1 = 'using the parametrisation for secondary currents'
+ 
+ 
+NOM = 'CONCENTRATION MASSIQUE'
+NOM1 = 'MASS CONCENTRATION'
+TYPE = LOGIQUE
+INDEX = 17
+MNEMO = 'UNIT'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE= 'par defaut, le code calcule les concentrations volumiques.
+Ce mot cle permet dimprimer et de relire des concentrations en g/l.
+Les concentrations imposees aux limites 
+(fichier condim, concentration de condim_susp)
+sont alors aussi donnees par l utilisateur en g/l et 
+reconverties en  concentration volumique par le code.'
+AIDE1 = 'Determines if concentrations (input and output)  
+are  mass concentrations in g/l or adimensionnal volume concentrations 
+(default option).'
+
+ 
+NOM = 'FORMULE POUR EFFET DE PENTE' 
+NOM1 = 'FORMULA FOR SLOPE EFFECT' 
+TYPE = ENTIER 
+INDEX = 39 
+MNEMO = 'SLOPEFF' 
+DEFAUT = 1 
+DEFAUT1 = 1 
+RUBRIQUE = 'EFFET PENTE'
+RUBRIQUE1 = 'SLOPE EFFECT'
+NIVEAU = 2
+COMPORT = 'DISPLAY %EFFET DE PENTE% = OUI'
+AIDE = '1 : formule de Koch et Flokstra, modifie le transport solide 
+            mot cle associe : BETA 
+        2 : formule de Soulsby, modifie la contrainte seuil, ne peut  
+            donc etre utilisee que avec une formule a seuil. 
+            mot cle associe : ANGLE DE REPOS DU SEDIMENT' 
+AIDE1 = '1 : formula of Koch et Flokstra, modification of bed load 
+             linked keyword : BETA 
+         2 : formula of Soulsby, modification critical shear stress, 
+             can only be used with a threshold fomula 
+             linked keyword : FRICTION ANGLE OF THE SEDIMENT' 
+ 
+ 
+NOM = 'ANGLE DE FROTTEMENT DU SEDIMENT' 
+NOM1 = 'FRICTION ANGLE OF THE SEDIMENT' 
+TYPE = REAL 
+INDEX = 25 
+MNEMO = 'PHISED' 
+DEFAUT = 40. 
+DEFAUT1 = 40. 
+RUBRIQUE = 'EFFET PENTE'
+RUBRIQUE1 = 'SLOPE EFFECT'
+NIVEAU = 2
+AIDE = 'Angle de repos du sediment, intervient pour la prise de compte 
+ de la pente sur la contrainte critique par la formule de Soulsby. 
+Utiliser si ...=2' 
+AIDE1 = 'Angle of repose of the sediment. Used in the Soulsby formula 
+to take into account the influence of bed slope on critical shear stress. 
+Use if ...=2' 
+ 
+ 
+NOM = 'FORMULE POUR LA DEVIATION' 
+NOM1 = 'FORMULA FOR DEVIATION' 
+TYPE = ENTIER 
+INDEX = 40 
+MNEMO = 'DEVIA' 
+DEFAUT  = 1 
+DEFAUT1 = 1 
+RUBRIQUE = 'EFFET PENTE'
+RUBRIQUE1 = 'SLOPE EFFECT'
+NIVEAU = 2
+AIDE = '1 : Koch et Flokstra
+        2 : formule de Talmon et al. 1995, JHR 33(4) formules (1) et (17) 
+            mot cle associe : BETA2' 
+AIDE1 = '1: Koch and Flokstra 
+         2: formula of Talmon et al. 1995, JHR 33(4) formulas (1) and (17) 
+            linked keyword : BETA2' 
+ 
+ 
+NOM = 'PARAMETRE POUR LA DEVIATION' 
+NOM1 = 'PARAMETER FOR DEVIATION' 
+TYPE = REAL 
+INDEX = 26 
+MNEMO = 'BETA2' 
+DEFAUT = 0.85
+DEFAUT1 = 0.85
+RUBRIQUE = 'EFFET PENTE'
+RUBRIQUE1 = 'SLOPE EFFECT'
+NIVEAU = 2
+AIDE = 'Parametre pour la deviation causee par effet de pente 
+ pour la formule de Talmon et al. 
+Une valeur elevee provoque une faible deviation' 
+AIDE1 = 'Parameter pour la deviation pour la formule de Talmon et al.' 
+
+/
+/ VERSION 5.7 
+/
+ 
+NOM = 'COEFFICIENT B DE LA FORMULE DE BIJKER' 
+NOM1 = 'B VALUE FOR THE BIJKER FORMULA' 
+TYPE = REAL 
+INDEX = 27
+MNEMO = 'BIJK' 
+DEFAUT = 2.D0
+DEFAUT1 = 2.D0
+RUBRIQUE = 'CHARRIAGE'
+RUBRIQUE1 = 'BED-LOAD'
+NIVEAU = 2 
+AIDE = 'Coefficient b de la formule de Bijker' 
+AIDE1 = 'b value for the Bijker formula'
+
+ 
+NOM = 'FORMULE POUR LA CONCENTRATION DE REFERENCE' 
+NOM1 = 'REFERENCE CONCENTRATION FORMULA' 
+TYPE = ENTIER 
+INDEX = 41
+MNEMO = 'ICQ' 
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 2 
+AIDE = '1 : formule de Zyserman et Fredsoe 
+        2 : methode de Bijker. La concentration au fond 
+        est reliee au taux de transport par charriage  
+        3 : formule de Van Rijn (1987)     
+        4 : formule de Soulsy_van Rijn' 
+AIDE1 = '1 : Zysderman and Fredsoe, equilibrium formula
+         2: Bijker method. The near bed concentration 
+         is related to the bedload . This option cannot be used 
+         without bedload transport
+         3: Van Rijn formula 
+         4: Soulsby_van Rijn formula'
+/        
+NOM = 'CORRECTION DU CHAMP CONVECTEUR'
+NOM1 = 'CORRECTION ON CONVECTION VELOCITY'
+TYPE = LOGIQUE
+INDEX = 18
+MNEMO = 'CORR_CONV'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE= 'Modification du champ convecteur 2D pour prise en compte du gradient vertical 
+de vitesse et concentration'
+AIDE1 = 'Modification of 2D convection velocities  to account for velocity 
+and concentration profiles'
+/
+NOM = 'SEDIMENTS COHESIFS'
+NOM1 = 'COHESIVE SEDIMENTS'
+TYPE = LOGIQUE
+INDEX = 19
+MNEMO = 'SEDCO'
+TAILLE = 10 
+/     SYNTAXE ACCEPTEE PAR DAMOCLES POUR UN LOGIQUE
+DEFAUT  = 0;0;0;0;0;0;0;0;0;0
+DEFAUT1 = 0;0;0;0;0;0;0;0;0;0
+RUBRIQUE = 'GRANULOMETRIE'
+RUBRIQUE1 = 'BED MATERIAL'
+NIVEAU = 1  
+AIDE = ''
+AIDE1 = ''
+/
+NOM = 'SECTIONS DE CONTROLE'
+NOM1 = 'CONTROL SECTIONS'
+TYPE = INTEGER
+INDEX = 42
+MNEMO = 'CTRLSC'
+TAILLE = 3
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'Couples de points (numeros globaux dans le maillage) entre
+lesquels les debits instantanes et cumules seront donnes.'
+AIDE1 ='Couples of points (global numbers in the mesh) defining sections
+ where the instantaneous and cumulated discharges will be given'
+/
+NOM = 'COORDONNEES DE L''ORIGINE'
+NOM1 = 'ORIGIN COORDINATES'
+TYPE = ENTIER
+INDEX = 43
+MNEMO = 'I_ORIG,J_ORIG'
+TAILLE = 2
+DEFAUT  = 0;0
+DEFAUT1 = 0;0
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'
+NIVEAU = 2
+AIDE = 'Valeur en metres, utilise pour eviter les trop grands nombres, transmis
+dans le format Selafin mais pas d''autre traitement pour l''instant'
+AIDE1 = 'Value in metres, used to avoid large real numbers, 
+added in Selafin format, but so far no other treatment'
+/
+/NOM = 'CONCENTRATION VOLUMIQUE DU LIT COHESIF'
+/NOM1 = 'VOLUME CONCENTRATION OF THE COHESIVE BED'
+/TYPE = REEL
+/INDEX = 29
+/TAILLE = 1
+/MNEMO = 'CSF_VASE'
+/DEFAUT = 0.08
+/DEFAUT1 = 0.08
+/RUBRIQUE = 'SUSPENSION'
+/RUBRIQUE1 = 'SUSPENSION'
+/NIVEAU = 1
+/suppressed keyword
+/'CONCENTRATIONS DE VASE PAR COUCHE'
+/'MUD CONCENTRATION PER LAYER'
+/
+
+NOM  = 'GLISSEMENT DU SEDIMENT'
+NOM1 = 'SEDIMENT SLIDE'
+TYPE = LOGIQUE
+INDEX = 20
+MNEMO = 'SLIDE'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'EFFET PENTE'
+RUBRIQUE1 = 'SLOPE EFFECT'
+NIVEAU = 2
+AIDE= 'Prise en compte de la pente d''equilibre du sable donnee par le mot-cle
+ANGLE DE FROTTEMENT DU SEDIMENT'
+AIDE1 = 'If yes, the key-word FRICTION ANGLE OF THE SEDIMENT is taken into account
+for slope stability'
+/
+NOM  = 'DIFFUSION'
+NOM1 = 'DIFFUSION'
+TYPE = LOGIQUE
+INDEX = 21
+MNEMO = 'DIFT'
+TAILLE = 0
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 2
+AIDE= 'Prise en compte de la diffusion de la concentration de sediment
+en suspension'
+AIDE1 = 'If yes, diffusion of the concentration of suspended 
+sediment is done'
+/
+NOM  = 'EFFET DE PENTE'
+NOM1 = 'SLOPE EFFECT'
+TYPE = LOGIQUE
+INDEX = 22
+MNEMO = 'EFFPEN'
+TAILLE = 0
+DEFAUT = OUI
+DEFAUT1 = YES
+RUBRIQUE = 'EFFET PENTE'
+RUBRIQUE1 = 'SLOPE EFFECT'
+NIVEAU = 2
+AIDE= 'Prise en compte de l''effet de pente : 
+deviation et modification du seuil critique. 
+NON supprime les mots-cles
+ POUR EFFET DE PENTE et  POUR LA DEVIATION'
+AIDE1 = 'If yes, slope effect taken into account:
+deviation + modification of critical shear stress.
+NO will cancel the key-words
+FORMULA FOR SLOPE EFFECT and FORMULA FOR DEVIATION'
+/
+/ VERSION 5.9 
+/
+NOM  = 'DEBUGGER'
+NOM1 = 'DEBUGGER'
+TYPE = INTEGER
+INDEX = 44
+MNEMO = 'DEBUG'
+TAILLE = 0
+DEFAUT = 0
+DEFAUT1 = 0
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'
+NIVEAU = 1
+AIDE= 'Pour imprimer la sequence des appels, mettre 1'
+AIDE1 = 'If 1, calls of subroutines will be printed in the listing'
+/
+NOM = 'CONCENTRATIONS INITIALES EN SUSPENSION'
+NOM1 = 'INITIAL SUSPENSION CONCENTRATIONS'
+TYPE = REEL
+INDEX = 30
+TAILLE = 2
+MNEMO = 'CS0'
+DEFAUT  = 0.;0.;0.;0.;0.;0.;0.;0.;0.;0.
+DEFAUT1 = 0.;0.;0.;0.;0.;0.;0.;0.;0.;0.
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
+AIDE = 'Pour la suspension, sert a initialiser la valeur
+ de la concentration volumique pour chaque classe. ne sera pas pris
+ en compte si CONCENTRATION EN ENTREE IMPOSEE=OUI'
+AIDE1 = 'In case of suspension, will be used to initialize the value
+of volume concentration for each class. Will not be used if
+ EQUILIBRIUM INFLOW CONCENTRATION=YES'
+/
+NOM = 'CONCENTRATIONS PAR CLASSE AUX FRONTIERES'
+NOM1 = 'CONCENTRATION PER CLASS AT BOUNDARIES'
+TYPE = REEL
+INDEX = 31
+TAILLE = 2
+MNEMO = 'CBOR_CLASSE'
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 1
+AIDE = 'Pour la suspension, sert a initialiser la valeur
+ de la concentration volumique de chaque classe pour chaque frontiere
+ ordre : frontiere 1 (classe 1, classe 2, etc.) , puis frontiere 2, etc'
+AIDE1 = 'In case of suspension, will be used to initialize the value
+of volume concentration for each class and each boundary
+order: boundary 1 (class 1, class2, etc., then boundary 2, etc.'
+/
+NOM = 'TASSEMENT DU LIT COHESIF'
+NOM1 = 'MUD CONSOLIDATION'
+TYPE = LOGIQUE
+INDEX = 23
+MNEMO = 'TASS'
+TAILLE = 0 
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 1  
+AIDE = 'Prise en compte du tassement par un modele multi-couche'
+AIDE1 = 'consolidation of the mud or sand mud-mixture sediment bed
+ accounted for'
+/
+/ Nouveaux mots cles pour sediments mixtes
+/
+NOM = 'SEDIMENT MIXTE'
+NOM1 = 'MIXED SEDIMENT'
+TYPE = LOGIQUE
+INDEX = 24
+MNEMO = 'MIXTE'
+TAILLE = 0 
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1  
+AIDE = 'Melange sable vase: 2 classes seulement'
+AIDE1 = 'Mixture of cohesive and non cohesive sediment : 2 class only'
+/
+/ COHESIVE SEDIMENT BED STRUCTURE
+/ GENERAL CASE : NCOUCH_TASS =1
+/ ONLY THE TOP LAYER NEEDS TO BE DEFINED 
+/
+NOM = 'NOMBRE DE COUCHES POUR LE TASSEMENT'
+NOM1 = 'NUMBER OF LAYERS OF THE CONSOLIDATION MODEL' 
+TYPE = ENTIER   
+INDEX = 45
+MNEMO = 'NCOUCH_TASS'
+TAILLE = 0
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
+AIDE = 'Structure verticale du lit cohesif- le nombre de couche doit 
+       etre inferieur à 10'
+AIDE1 = 'Vertical bed structure - The number of layers should be less
+       than 10'
+/
+NOM = 'CONCENTRATIONS DU LIT DE VASE'
+NOM1 = 'MUD CONCENTRATION PER LAYER'
+TYPE = REEL
+INDEX = 32
+TAILLE = 2
+MNEMO = 'CONC_VASE'
+DEFAUT  = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
+DEFAUT1  = 50. ;100.;150.;200.;250.;300.;350.;400.;450.;500.
+RUBRIQUE = 'COHESIVE SEDIMENT'
+RUBRIQUE1 = 'COHESIVE SEDIMENT'
+NIVEAU = 2
+AIDE = 'Concentration du lit de vase en g/ l - défini par couches'
+AIDE1 = 'Concentrations of the mud-bed in g per l (per layer)'
+/
+/
+NOM = 'CONTRAINTE CRITIQUE D''EROSION DE LA VASE'
+NOM1 = 'CRITICAL EROSION SHEAR STRESS OF THE MUD'
+TYPE = REEL
+INDEX = 34
+TAILLE = 10
+MNEMO = 'TOCE_VASE'
+DEFAUT  = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
+DEFAUT1 = 0.01;0.02;0.03;0.04;0.05;0.06;0.07;0.08;0.09;1.
+RUBRIQUE = 'COHESIVE SEDIMENT'
+RUBRIQUE1 = 'COHESIVE SEDIMENT'
+NIVEAU = 2
+COMPORT = 'DISPLAY %TASSEMENT DU LIT COHESIF% = OUI'
+AIDE = 'Taux critique d erosion de la vase needs to be defined 
+        for each layer (N par m2)'
+AIDE1 = 'Critical erosion shear stress of the mud per layer (N per m2)'
+/
+/ FOR SIMPLE MULTI-LAYER ALGORITHM
+/
+NOM = 'TRANSFERT DE MASSE PAR COUCHE'
+NOM1 = 'MASS TRANSFER PER LAYER'
+TYPE = REEL
+INDEX = 33
+TAILLE = 2
+MNEMO = 'TRANS_MASS'
+DEFAUT  = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
+2.5D-05;2.0D-05;1.5D-05;1.0D-05;0.D0
+DEFAUT1  = 5.D-05;4.5D-05;4.0D-05;3.5D-05;3.0D-05;
+2.5D-05;2.0D-05;1.5D-05;1.0D-05;0.D0
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+AIDE = 'Mass transfert coefficients of 
+the multilayer consolidation model in s-1'
+AIDE1= 'Coefficients de transfert de masse du modele 
+de tassement multicouche en s-1'
+/
+/  FOR COUPLING WITH DREDGESIM
+/
+NOM = 'DREDGESIM'
+NOM1 = 'DREDGESIM'
+TYPE = LOGIQUE
+INDEX = 25
+MNEMO = 'DREDGESIM'
+TAILLE = 0 
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'
+NIVEAU = 2
+AIDE = 'Pour le couplage avec DredgeSim'
+AIDE1 = 'For coupling with DredgeSim'
+/
+NOM = 'FICHIER DE DREDGESIM'
+NOM1 = 'DREDGESIM FILE'  
+TYPE = CARACTERE
+INDEX = 27
+MNEMO = 'SIS_FILES(SISMAF)%NAME'
+SUBMIT = 'SISMAF-READ-21;SISMAF;FACUL;ASC;LIT;PARAL'
+DEFAUT = ''
+DEFAUT1 = ''
+NIVEAU = 1
+APPARENCE='LISTE IS FICHIER'
+RUBRIQUE = 'DIVERS'
+RUBRIQUE1 = 'MISCELLANEOUS'
+COMPORT = 'DISPLAY %DREDGESIM% = OUI'
+AIDE = 'Nom du fichier de commandes de DredgeSim'
+AIDE1 = 'Name of the DredgeSim steering file'
+
+NOM = 'FORMAT DU FICHIER DES RESULTATS'
+NOM1 = 'RESULTS FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 31
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+RUBRIQUE = 'RESULTATS'
+RUBRIQUE1 = 'RESULTS'
+NIVEAU = 1
+AIDE = 'Format du fichier de resultats.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Results file format. Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
+
+NOM = 'FORMAT DU FICHIER HYDRODYNAMIQUE'
+NOM1 = 'HYDRODYNAMIC FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 32
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 1
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+AIDE = 'Format du fichier de resultats du calcul precedent.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Previous computation results file format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
+
+NOM = 'FORMAT DU FICHIER DE REFERENCE'
+NOM1 = 'REFERENCE FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 33
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 1
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+AIDE = 'Format du fichier de resultats du calcul precedent.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Previous computation results file format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
+
+NOM = 'FORMAT DU FICHIER PRECEDENT SEDIMENTOLOGIQUE'
+NOM1 = 'PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 34
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 1
+RUBRIQUE = 'CONDITIONS INITIALES'
+RUBRIQUE1 = 'INITIAL CONDITIONS'
+COMPORT = 'DISPLAY %SUITE DE CALCUL% = OUI'
+AIDE = 'Format du fichier de resultats du calcul precedent.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Previous computation results file format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
+/
+/PAT 090812
+/
+NOM = 'FORMAT DU FICHIER DE GEOMETRIE' 
+NOM1 = 'GEOMETRY FILE FORMAT' 
+TYPE = CARACTERE 
+INDEX = 39 
+MNEMO = '????' 
+DEFAUT = 'SERAFIN ' 
+DEFAUT1 = 'SERAFIN ' 
+NIVEAU = 2 
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     ' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES' 
+AIDE = 'Format du fichier de geometrie. 
+Les valeurs possibles sont : 
+- SERAFIN : format standard simple precision pour Telemac;  
+- SERAFIND: format standard double precision pour Telemac; 
+- MED     : format MED base sur HDF5' 
+AIDE1 = 'Geometry file format. 
+Possible values are: 
+- SERAFIN : classical single precision format in Telemac;  
+- SERAFIND: classical double precision format in Telemac; 
+- MED     : MED format based on HDF5' 
+
+NOM = 'FORMAT DU FICHIER DE HOULE'
+NOM1 = 'WAVE FILE FORMAT'
+TYPE = CARACTERE
+INDEX = 35
+MNEMO = '?????'
+DEFAUT = 'SERAFIN '
+DEFAUT1 = 'SERAFIN '
+CHOIX = 'SERAFIN ';'SERAFIND';'MED     '
+NIVEAU = 2
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+COMPORT = 'DISPLAY %PRISE EN COMPTE DE LA HOULE% = OUI'
+AIDE = 'Format du fichier de houle.
+Les valeurs possibles sont :
+- SERAFIN : format standard simple precision pour Telemac; 
+- SERAFIND: format standard double precision pour Telemac;
+- MED     : format MED base sur HDF5'
+AIDE1 = 'Wave file format.
+Possible values are:
+- SERAFIN : classical single precision format in Telemac; 
+- SERAFIND: classical double precision format in Telemac;
+- MED     : MED format based on HDF5'
+/
+/  V6P0
+/
+NOM = 'CORRECTION FROTTEMENT DE PEAU'
+NOM1 = 'SKIN FRICTION CORRECTION'    
+TYPE = ENTIER
+INDEX = 46
+MNEMO = 'ICR'
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'FROTTEMENT'
+RUBRIQUE1 = 'FRICTION'
+NIVEAU = 2
+AIDE = 'prise en compte du frottement de peau (voir aussi KSPRATIO)
+       0 : pas de correction (TAUP= TOB)
+       1 : fond plat (KSP= KSPRATIO * D50)
+       2 : prise en compte des rides'
+AIDE1= 'formula to predict the skin bed roughness (see also KSPRATIO)
+       0 : NO correction (TAUP= TOB)
+       1 : Flat bed (KSP= KSPRATIO * D50)
+       2 : Ripple correction factor'
+/
+/NOM = 'VITESSE CRITIQUE D''EROSION DE LA VASE'
+/NOM1 = 'CRITICAL EROSION SHEAR VELOCITY OF THE MUD'
+/TYPE = REEL
+/INDEX = 35
+/TAILLE = 1
+/MNEMO = 'VITCE'
+/DEFAUT  = 0.01
+/DEFAUT1 = 0.01
+/RUBRIQUE = 'SUSPENSION'
+/RUBRIQUE1 = 'SUSPENSION'
+/NIVEAU = 2
+/COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+/AIDE = 'Vitesse critique d erosion de la vase pour un lit uniforme (m/s), 
+/utilisé seulement si pas de consolidation '
+/AIDE1 = 'Critical erosion shear velocity of the uniform mud without
+/consolidation model (m/s)'     
+/ 
+/ use TOCE_VASE instead (see keywords'CONTRAINTE CRITIQUE D''EROSION DE LA VASE'
+/ 'CRITICAL EROSION SHEAR STRESS OF THE MUD'
+/
+NOM = 'VITESSE CRITIQUE DE DEPOT DE LA VASE'
+NOM1 = 'CRITICAL SHEAR VELOCITY FOR MUD DEPOSITION'
+TYPE = REEL
+INDEX = 36
+MNEMO = 'VITCD'
+DEFAUT  = 1000.
+DEFAUT1 = 1000.
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'Vitesse critique de depot de la vase (m/s)'
+AIDE1 = 'Critical shear velocity for deposition (m/s)'     
+/
+NOM = 'CONSTANTE DE PARTHENIADES'
+NOM1 = 'PARTHENIADES CONSTANT'
+TYPE = REEL
+INDEX = 37
+MNEMO = 'PARTHENIADES'
+DEFAUT  = 1.E-03
+DEFAUT1 = 1.E-03
+RUBRIQUE = 'SUSPENSION'
+RUBRIQUE1 = 'SUSPENSION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'constante de la loi d''erosion de la vase (Kg/m2/s)'
+AIDE1 = 'constant of the Krone and Partheniades erosion law (Kg/m2/s)'     
+/
+/ jaj re-using a found not used parameter
+/
+NOM = 'NOMBRE DE COUCHES POUR GRANULO ETENDUE'
+NOM1 = 'NUMBER OF BED LOAD MODEL LAYERS'
+TYPE = INTEGER
+INDEX = 251 
+MNEMO = 'NOMBLAY'
+TAILLE = 1
+DEFAUT = 2
+DEFAUT1 = 2
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+NIVEAU = 1
+AIDE = 'Comme son nom l''indique..., defaut NOMBLAY=2'
+AIDE1 ='This is the given allocation limit, secure default NOMLAY=2'
+
+// jaj #### added for sections 
+
+NOM = 'FICHIER DES SECTIONS DE CONTROLE'
+NOM1 = 'SECTIONS INPUT FILE'
+TYPE = CARACTERE
+INDEX = 36
+MNEMO = 'SIS_FILES(SISSEC)%NAME'
+SUBMIT = 'SISSEC-READ-45;SISSEC;FACUL;ASC;LIT;SECTION'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'FICHIERS DONNEES'
+RUBRIQUE1 = 'DATA FILES'
+NIVEAU = 1
+AIDE = 'sections input file, partitioned'
+AIDE1 = 'sections input file, partitioned'
+
+NOM = 'SECTIONS OUTPUT FILE'
+NOM1 = 'SECTIONS OUTPUT FILE'
+TYPE = CARACTERE
+INDEX = 37
+MNEMO = 'SIS_FILES(SISSEO)%NAME'
+SUBMIT = 'SISSEO-WRITE-46;SISSEO;FACUL;ASC;ECR;SCAL'
+DEFAUT = ' '
+DEFAUT1 = ' '
+RUBRIQUE = 'RESULTATS'
+RUBRIQUE1 = 'RESULTS'
+NIVEAU = 1
+AIDE = 'sections output file, written by the master'
+AIDE1 = 'sections output file, written by the master'
+/
+/ VERSION 6.1
+/
+NOM = 'PREDICTION DE LA RUGOSITE'
+NOM1 = 'BED ROUGHNESS PREDICTION'
+TYPE = LOGIQUE
+INDEX = 26
+MNEMO = 'KSPRED'
+TAILLE = 0
+DEFAUT = NON
+DEFAUT1 = NO
+RUBRIQUE = 'TRANSPORT SOLIDE';'NONEQUILIBRIUM BED LOAD'
+RUBRIQUE1 = 'SEDIMENT TRANSPORT';'NONEQUILIBRIUM BED LOAD'
+NIVEAU = 1
+AIDE = 'Calcul de la rugosite de Nikuradse 
+- voir OPTION DU PREDICTEUR DE RUGOSITE -
+la loi de frottement est forcee a 5 et le coefficient de frottement 
+ne sont pas utilisés.
+En cas de couplage, le frottement est envoye a Telemac'
+AIDE1 = 'The bed roughness is predicted according to the selected
+BED ROUGHNESS PREDICTOR OPTION. In case of coupling with Telemac2d,
+the calculated bed roughness is sent to Telemac.
+The FRICTION COEFFICIENT and FRICTION LAW are no longer
+used (KFROT is set to 5)'
+
+NOM = 'OPTION DU PREDICTEUR DE RUGOSITE'
+NOM1 = 'BED ROUGHNESS PREDICTOR OPTION'
+TYPE = INTEGER
+INDEX = 47 
+MNEMO = 'IKS'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL'
+NIVEAU = 1
+AIDE = '1 : Fond plat ks=KSPRATIO D50,
+2: Fond ride (methode de Wiberg et Harris), 
+3: Dunes et megarides (methode de Van Rijn)'
+AIDE1 ='1: Flat bed, 2: Rippled bed, 
+3: Dunes and mega ripples (Method of Van Rijn)'
+
+NOM = 'TRAITEMENT DES FLUX AUX FRONTIERES'
+NOM1 = 'TREATMENT OF FLUXES AT THE BOUNDARIES'
+TYPE = INTEGER
+INDEX = 22
+MNEMO = 'DIRFLU'
+TAILLE = 0
+DEFAUT = 1 
+DEFAUT1= 1
+CHOIX='1="Priorite aux valeurs imposees"';'2="Priorite aux flux"'
+CHOIX1='1="Priority to prescribed values"';'2="Priority to fluxes"'
+RUBRIQUE = 'PARAMETRES NUMERIQUES';'GENERAL' 
+RUBRIQUE1 = 'NUMERICAL PARAMETERS';'GENERAL' 
+NIVEAU = 1
+AIDE = 'Utilise pour les schemas PSI et N, avec option 2, on ne retrouve
+pas exactement les valeurs imposees des traceurs,
+mais le flux est correct'
+AIDE1= 'Used so far only with the PSI and N schemes.
+With option 2, Dirichlet prescribed values are not obeyed,
+but the fluxes are correct'
+/
+/ V6P1 CV
+/
+NOM = 'OPTION DU MODELE DE TASSEMENT'
+NOM1 = 'CONSOLIDATION MODEL'
+TYPE = INTEGER
+INDEX = 48 
+MNEMO = 'ITASS'
+TAILLE = 1
+DEFAUT = 1
+DEFAUT1 = 1
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+AIDE = '1 :Modele multicouche de Walther,
+2: Modele de Thiebot (Gibson theory), 
+3: Modele de Lenormant'
+AIDE1 ='1: Multilayer model of Walther, 2: Thiebot , 
+3: Lenormant'
+/
+NOM = 'CONCENTRATION GEL'
+NOM1 = 'GEL CONCENTRATION'
+TYPE = REEL
+INDEX = 38
+MNEMO = 'CONC_GEL'
+DEFAUT  = 310.D0
+DEFAUT1 = 310.D0
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'Concentration de transition pour modele de Thiebot (Kg/m3)'
+AIDE1 = 'Gel Concentration (Kg/m3)'    
+/ 
+/ V6P2 LAV ...
+/
+NOM = 'CONCENTRATION MAXIMALE'
+NOM1 = 'MAXIMUM CONCENTRATION'
+TYPE = REEL
+INDEX = 50
+MNEMO = 'CONC_MAX'
+DEFAUT  = 364.D0
+DEFAUT1 = 364.D0
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'Concentration maximale du modele de Thiebot (Kg/m3)'
+AIDE1 = 'Maximum Concentration for Thiebot consolidation model(Kg/m3)' 
+/... fin modifs LAV
+/
+NOM = 'COEFFICIENT DE PERMEABILITE'
+NOM1 = 'PERMEABILITY COEFFICIENT'
+TYPE = REEL
+INDEX = 39
+MNEMO = 'COEF_N'
+DEFAUT  = 8.D0
+DEFAUT1 = 8.D0
+RUBRIQUE = 'TASSEMENT'
+RUBRIQUE1 = 'CONSOLIDATION'
+NIVEAU = 2
+COMPORT = 'DISPLAY %SUSPENSION% = OUI'
+AIDE = 'Coefficient de permeabilite pour le modele de consolidation '
+AIDE1 = 'Coefficient of permeability for consolidation model'
+/
+/ UM MPM
+/
+NOM = 'MPM COEFFICIENT'
+NOM1 = 'MPM COEFFICIENT'
+TYPE = REEL
+INDEX = 260
+MNEMO = 'MPM'
+DEFAUT  = 8.0E-00
+DEFAUT1 = 8.0E-00
+RUBRIQUE = ''
+RUBRIQUE1 = ''
+NIVEAU = 1
+AIDE = '(-)'
+AIDE1 = 'Meyer-Peter Mueller Coefficient(-)'     
+/
+/ UM ALPHA
+/
+NOM = 'SECONDARY CURRENTS ALPHA COEFFICIENT'
+NOM1 = 'SECONDARY CURRENTS ALPHA COEFFICIENT'
+TYPE = REEL
+INDEX = 261
+MNEMO = 'ALPHA'
+DEFAUT  = 1.0E-00
+DEFAUT1 = 1.0E-00
+RUBRIQUE = 'SEDIMENTOLOGIE';'GENERAL'
+RUBRIQUE1 = 'SEDIMENTOLOGY';'GENERAL'
+NIVEAU = 1
+AIDE = '(-)'
+AIDE1 = 'Alpha coefficient of secondary current(-)'     
+/
+/ UM MORPHOLOGICAL FACTOR
+/
+NOM = 'MORPHOLOGICAL FACTOR'
+NOM1 = 'MORPHOLOGICAL FACTOR'
+TYPE = REEL
+INDEX = 262
+MNEMO = 'MOFAC'
+DEFAUT  = 1.0E-00
+DEFAUT1 = 1.0E-00
+RUBRIQUE = 'OPTIONS DE CALCUL';'GENERAL'
+RUBRIQUE1 = 'COMPUTATIONAL INFORMATION';'GENERAL'
+NIVEAU = 1
+AIDE = '(-)'
+AIDE1 = 'Amplification for the morphological time scale(-)'     
+/
+/ New file for variations in time of boundary conditions
+/
+NOM = 'FICHIER DES FRONTIERES LIQUIDES' 
+NOM1 = 'LIQUID BOUNDARIES FILE' 
+TYPE = CARACTERE 
+INDEX = 38 
+MNEMO = 'SIS_FILES(SISLIQ)%NAME' 
+SUBMIT = 'SISLIQ-READ-12;SISLIQ;FACUL;ASC;LIT;PARAL' 
+DEFAUT = ' ' 
+DEFAUT1 = ' ' 
+APPARENCE = 'LISTE IS FICHIER' 
+RUBRIQUE = 'ENTREES-SORTIES, FICHIERS';'NOMS' 
+RUBRIQUE1 = 'INPUT-OUTPUT, FILES';'NAMES' 
+NIVEAU = 1 
+AIDE = 'Fichier de variations en temps des conditions aux limites. 
+Les donnees de ce fichier sont sur le canal SIS_FILES(SISLIQ)%LU.' 
+AIDE1 = 'Variations in time of boundary conditions. Data of this file are read 
+on channel SIS_FILES(SISLIQ)%LU.'  
+/
+NOM = 'DEBITS SOLIDES IMPOSES' 
+NOM1 = 'PRESCRIBED SOLID DISCHARGES' 
+TYPE = REEL 
+INDEX = 51 
+MNEMO = 'SOLDIS' 
+TAILLE = 2 
+RUBRIQUE = 'EQUATIONS, CONDITIONS LIMITES' 
+RUBRIQUE1 = 'EQUATIONS, BOUNDARY CONDITIONS'  
+NIVEAU = 1 
+AIDE = ' Valeurs des debits solides imposes aux frontieres
+liquides entrantes (m3/s sans les vides).
+Une valeur par frontiere liquide' 
+AIDE1 = 'Values of prescribed solid discharges
+at the inflow boundaries (m3/s without voids).
+One value per liquid boundary' 
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'VERTICAL GRAIN SORTING MODEL'
+NOM1 = 'VERTICAL GRAIN SORTING MODEL'
+TYPE = ENTIER
+INDEX = 53
+MNEMO = 'VSMTYPE'
+TAILLE = 0
+DEFAUT  = 0
+DEFAUT1 = 0
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Defines the model of the vertical grain sorting:
+        0 = HR-VSM = Layer Model (Classic Hirano / Ribberink approach)
+        1 = C-VSM (Continous Vertical Grain Sorting Model)'
+/
+
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM MAXIMUM SECTIONS'
+NOM1 = 'C-VSM MAXIMUM SECTIONS'
+TYPE = ENTIER
+INDEX = 49
+MNEMO = 'PRO_MAX_MAX'
+TAILLE = 0
+DEFAUT  = 200
+DEFAUT1 = 200
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Defines the maximum discretisation of the
+         Continous Vertical Sorting Model:
+         Should be bigger than 8xNumber of Fractions.
+         The bigger the higher the RAM requirements,
+         but the faster and accurater the
+         bookkeeping of the sediments.'
+/
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM FULL PRINTOUT PERIOD'
+NOM1 = 'C-VSM FULL PRINTOUT PERIOD'
+TYPE = ENTIER
+INDEX = 50
+MNEMO = 'CVSMPPERIOD'
+TAILLE = 0
+DEFAUT  = 0
+DEFAUT1 = 0
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Number of Timesteps to next printout
+         of the full C-VSM. These printouts are highly
+         time and disc consuming.
+         0 = Coupled to GRAPHIC PRINTOUT PERIOD
+         >0 = Own printout period for the C-VSM'
+/
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM PRINTOUT SELECTION'
+NOM1 = 'C-VSM PRINTOUT SELECTION'
+TYPE = CARACTERE
+INDEX = 51
+MNEMO = 'CVSMOUTPUT'
+TAILLE = 0
+DEFAUT  = 0;0;0;0;0;0;0;0;0;0;0;0;0
+DEFAUT1 = 0;0;0;0;0;0;0;0;0;0;0;0;0
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'Printout the C-VSM for the whole model as SELAFIN
+         or / and for some nodes as .VSP.CSV file.
+         Give Up to 100 INTEGER numbers separated by ";"
+         0 = Full model .-> .RES
+         N = 1,2...NPOINT; 2D-ID of a SELFIN MESH POINT ->.CSV'
+/
+
+
+/
+/ UHM VERTICAL GRAIN SORTING MODEL (VSM)
+/
+NOM = 'C-VSM DYNAMIC ALT MODEL'
+NOM1 = 'C-VSM DYNAMIC ALT MODEL'
+TYPE = ENTIER
+INDEX = 52
+MNEMO = 'ALT_MODEL'
+TAILLE = 0
+DEFAUT  = 5
+DEFAUT1 = 5
+RUBRIQUE = 'GRANULOMETRIE;C-VSM'
+RUBRIQUE1 = 'BED MATERIAL;C-VSM'
+NIVEAU = 2
+AIDE = '(-)'
+AIDE1 = 'MODEL FOR ACTIVE LAYER THICKNESS
+         0 = ELAY0 (Keyword: ACTIVE LAYER THICKNESS)
+         1 = Hunziker & Günther
+         2 = Fredsoe & Deigaard (1992)
+         3 = van RIJN (1993)
+         4 = Wong (2006)
+         5 = Malcherek (2003)
+         6 = 3*d50 within last time steps ALT'
+
+/
+/ Use velocity profile with Miles' approximation
+/
+NOM = 'SETTLING LAG'
+NOM1 = 'SETTLING LAG'
+TYPE = LOGIQUE
+INDEX = 27
+MNEMO = 'SET_LAG'
+DEFAUT = NON
+DEFAUT1 = NO
+NIVEAU = 2
+RUBRIQUE = 'PHYSIQUE'
+RUBRIQUE1 = 'PHYSICS'
+AIDE = '(-)'
+AIDE1 = '(-)'
+/
+/ Suppress bed updating
+/
+NOM = 'STATIONARY MODE'
+NOM1 = 'STATIONARY MODE'
+TYPE = LOGIQUE
+INDEX = 28
+MNEMO = 'STAT_MODE'
+DEFAUT = NON
+DEFAUT1 = NO
+NIVEAU = 2
+RUBRIQUE = 'GENERAL'
+RUBRIQUE1 = 'GENERAL'
+AIDE = '(-)'
+AIDE1 = '(-)'
+/
+/ Version 6.3
+/
+NOM = 'MAXIMUM D''ITERATIONS POUR LES SCHEMAS DE CONVECTION' 
+NOM1 = 'MAXIMUM NUMBER OF ITERATIONS FOR ADVECTION SCHEMES' 
+TYPE = ENTIER
+INDEX = 54
+MNEMO = 'MAXADV'
+TAILLE = 0
+DEFAUT = 10
+DEFAUT1 = 10
+RUBRIQUE = 'PARAMETRES NUMERIQUES'
+RUBRIQUE1 = 'NUMERICAL PARAMETERS'
+NIVEAU = 2
+AIDE = 'Seulement pour schemes 13 et 14'
+AIDE1 = 'Only for schemes 13 and 14'
+/
+/ FOR PERL OR PYTHON SCRIPTS
+/
+/
+NOM = 'LISTE DES FICHIERS'
+NOM1 = 'LIST OF FILES'
+TYPE = CARACTERE
+INDEX = 99
+MNEMO = ''
+TAILLE = 16
+DEFAUT = 'FICHIER DE GEOMETRIE';
+         'FICHIER DES CONDITIONS AUX LIMITES';
+         'FICHIER DES RESULTATS';
+         'FICHIER DES FONDS';
+         'FICHIER DE REFERENCE';
+         'FICHIER PRECEDENT SEDIMENTOLOGIQUE';
+         'FICHIER DU CALCUL PRECEDENT';
+         'FICHIER HYDRODYNAMIQUE';
+         'FICHIER DE HOULE';
+         'FICHIER FORTRAN';
+         'FICHIER DES PARAMETRES';
+         'FICHIER DE DREDGESIM';
+         'DICTIONNAIRE';
+         'SECTIONS INPUT FILE';
+         'SECTIONS OUTPUT FILE';
+         'FICHIER DES FRONTIERES LIQUIDES'
+DEFAUT1 ='GEOMETRY FILE';
+         'BOUNDARY CONDITIONS FILE';
+         'RESULTS FILE';
+         'BOTTOM TOPOGRAPHY FILE';
+         'REFERENCE FILE';
+         'PREVIOUS SEDIMENTOLOGICAL COMPUTATION FILE';
+         'PREVIOUS COMPUTATION FILE';
+         'HYDRODYNAMIC FILE';
+         'WAVE FILE';
+         'FORTRAN FILE';
+         'STEERING FILE';
+         'DREDGESIM FILE';
+         'DICTIONARY';        
+         'SECTIONS INPUT FILE';
+         'SECTIONS OUTPUT FILE';
+         'LIQUID BOUNDARIES FILE'
+         
+NOM = 'DESCRIPTION DES LIBRAIRIES'
+NOM1 = 'DESCRIPTION OF LIBRARIES'
+TYPE = CARACTERE
+INDEX = 54
+MNEMO = 'LINKLIBS'
+TAILLE = 5
+DEFAUT = 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
+'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|mumpsMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL'; 
+'builds|PPP|lib|parallelMMMVVV.LLL'; 
+'builds|PPP|lib|specialMMMVVV.LLL' 
+/'builds|PPP|lib|dredgesimMMMVVV.LLL'
+DEFAUT1 = 'builds|PPP|lib|sisypheMMMVVV.LLL'; 
+'builds|PPP|lib|biefMMMVVV.LLL'; 
+'builds|PPP|lib|mumpsMMMVVV.LLL';
+'builds|PPP|lib|damoMMMVVV.LLL'; 
+'builds|PPP|lib|parallelMMMVVV.LLL'; 
+'builds|PPP|lib|specialMMMVVV.LLL' 
+/'builds|PPP|lib|dredgesimMMMVVV.LLL'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Description des librairies de SISYPHE'
+AIDE1 = 'SISYPHE LIBRARIES description'
+
+NOM = 'EXECUTABLE PAR DEFAUT'
+NOM1 = 'DEFAULT EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 57
+MNEMO = 'EXEDEF'
+TAILLE = 1
+DEFAUT  = 'builds|PPP|bin|sisypheMMMVVV.exe'
+DEFAUT1 = 'builds|PPP|bin|sisypheMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable par defaut de SISYPHE'
+AIDE1 = 'Default executable for SISYPHE'
+
+NOM = 'EXECUTABLE PARALLELE PAR DEFAUT'
+NOM1 = 'DEFAULT PARALLEL EXECUTABLE'
+TYPE = CARACTERE
+INDEX = 58
+MNEMO = 'EXEDEFPARA'
+TAILLE = 1
+DEFAUT  = 'builds|PPP|bin|sisypheMMMVVV.exe'
+DEFAUT1 = 'builds|PPP|bin|sisypheMMMVVV.exe'
+RUBRIQUE = 'ENTREES-SORTIES, GENERALITES';'CALCUL'
+RUBRIQUE1 = 'INPUT-OUTPUT, INFORMATION';'COMPUTATIONAL INFORMATION'
+NIVEAU = 1
+AIDE  = 'Executable par defaut de SISYPHE'
+AIDE1 = 'Default executable for SISYPHE'
+/

@@ -1,0 +1,153 @@
+#------------------------------makefile.wnt----------------------------
+#     Système TELEMAC Version 6.0     PLG / INGEROP
+#
+# Makefile de PARALLEL pour WindowsNT (GFORTRAN/G95).
+#
+# ATTENTION : doit être lancé dans le répertoire adéquat :
+#                   parallel*/.../sources.
+#
+# Modes supportés :
+#        % maktel
+#        % maktel  [all] [install] [menage]
+#        % maktel  libdebug
+#        % maktel  libprofile
+#-----------------------------------------------------Juin-2001-DeltaCAD
+#--- Definitions pour PVM
+#
+#--- Definitions pour SYSTEME TELEMAC
+!include <$(SYSTELCFG)\cfgmak.mak>
+VERSION    = V6P2
+
+
+
+DIRINC = $(PROJECT)\builds\$(dirlib)\lib
+
+DIRINC_MPI    = $(PROJECT)\..\mpi\include
+#
+FCO       = $(FC_OPT_COMPIL)
+F90       = $(FC_NAM)
+F90_PROJ  = $(FCO) $(FC_OPT_OTHERS) \
+                   $(FC_OPT_INCLUDE)$(DIRINC) \
+                   $(FC_OPT_INCLUDE) $(DIRINC_MPI)
+LKO       = $(LK_OPT_NORMAL) $(LK_OPT_OTHERS)
+#
+# ----- Règles de compilation Fortran
+#
+.f.o:
+    $(F90) $(F90_PROJ) $<
+#
+#----- Paramétrage Telemac
+#
+NOM_GENERIQUE = parallel
+MODE          =
+LIBRARY       = $(NOM_GENERIQUE)$(MODE)$(VERSION).lib
+DEST          = $(PROJECT)\builds\$(DIRLIB)
+
+LKLIB         = $(PROJECT)\builds\$(drilib)\lib\special$(MODE)$(VERSION).lib  \
+                $(PROJECT)\..\lib\libmetis.lib
+                $(LK_LIB_SPECIAL) $(LIBS_MPI)
+
+#------------------------ Liste des fichiers
+#
+#------- Sources Fortran
+
+SRCS	      = interface_parallel.f \
+		errpvm.F \
+                extens.f \
+                declarations_parallel.F \
+		org_charac_type1.F \
+		org_charac_type_alg.F \
+		p_dmax.F \
+		p_dmin.F \
+		p_dsum.F \
+		p_exit.F \
+		p_imax.F \
+		p_imin.F \
+		p_init.F \
+		p_isum.F \
+                p_isum_array.F \
+                p_imax_array.F \
+		p_lsum.F \
+		p_mail.F \
+		p_mpi_address.F \
+		p_mpi_address2.F \
+		p_mpi_address3.F \
+		p_mpi_alltoall.F \
+		p_mpi_alltoallv.F \
+		p_mpi_alltoallv_alg.F \
+		p_mpi_alltoallv_i.F \
+		p_mpi_type_commit.F \
+		p_mpi_type_get_extent.F \
+		p_mpi_type_free.F \
+		p_mpi_type_create_struct.F \
+		p_read.F \
+		p_iread.F \
+		p_iread_c.F \
+		p_sync.F \
+		p_time.F \
+		p_wait_paraco.F \
+		p_writ.F \
+		p_iwrit.F \
+		p_iwrit_c.F 
+#
+#------- Objets
+#
+TEMP = $(SCRS:.f=.o)
+OBJS = $(TEMP:.F=.o)
+#
+# ------------------------ Cibles
+#
+#--- La librairie (non installée)
+ALL: $(MODS) $(LIBRARY) 
+
+
+"$(LIBRARY)" : $(OBJS)
+	@echo  -
+	@echo ---------------------Création de la librairie.
+	$(LIB_NAM) $(LIB_OPT_OTHERS) $(LIB_OPT_OUTNAME) $(LIBRARY) $(OBJS)
+
+
+#--- Suppression des ".obj" (existants) + ".lib"
+menage:  $(SRCS)
+	@echo  -
+	@echo ---------------------Destruction de tous les objets.
+	!@if EXIST $(**B).o del /q  $(**B).o
+	@echo ---------------------Destruction des librairies
+	!@if EXIST *.lib del /q  *.lib
+
+#--- Scalar version
+install: $(LIBRARY) 
+	@echo  -
+	@echo ---------------------Installe $(LIBRARY) dans $(DEST).
+	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+	copy $(LIBRARY) $(DEST)\lib\$(LIBRARY)
+
+#--- Librairie en DEBUG
+libdebug:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie DEBUG de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_DEBUG)"  "MODE=d"
+	nmake /f makefile.gfo install  "MODE=d"
+
+#--- Librairie en PROFILE
+libprofile:
+	@echo  -
+	@echo ---------------------Cree/Installe la librairie PROFILE de $(NOM_GENERIQUE) dans $(DEST).
+	nmake /f makefile.gfo "FCO=$(FC_OPT_PROFILE)"  "MODE=p"
+	nmake /f makefile.gfo install  "MODE=p"
+
+#------- Modules
+#
+MODS = *.o
+
+declarations_parallel.o:
+    $(F90) $(F90_PROJ) declarations_parallel.f
+    if EXIST $(DEST)\lib\declarations_parallel.mod del /f $(DEST)\lib\declarations_parallel.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move declarations_parallel.mod $(DEST)\lib
+
+interface_parallel.o:
+    $(F90) $(F90_PROJ) interface_parallel.f
+    if EXIST $(DEST)\lib\interface_parallel.mod del /f $(DEST)\lib\interface_parallel.mod
+  	if NOT EXIST $(DEST)\NUL mkdir $(DEST) $(DEST)\lib $(DEST)\bin
+    move interface_parallel.mod $(DEST)\lib
