@@ -74,7 +74,7 @@ import numpy as np
 # ~~> dependencies towards other modules
 from config import OptionParser
 # ~~> dependencies towards other modules
-from parsers.parserSELAFIN import SELAFIN,SELAFINS,PARAFINS,putHeaderSLF,appendCoreTimeSLF,appendCoreVarsSLF,getVariablesAt,subsetVariablesSLF
+from parsers.parserSELAFIN import SELAFIN,SELAFINS,PARAFINS,subsetVariablesSLF
 from parsers.parserFortran import cleanQuotes
 from parsers.parserLQD import LQD
 from utils.files import moveFile

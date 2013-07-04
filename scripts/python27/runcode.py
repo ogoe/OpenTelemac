@@ -144,11 +144,12 @@ def checkConsistency(cas,dico,frgb,cfg):
    ncsize = 0
    if value != []: ncsize = value[0]
    elif defaut != []: ncsize = int(defaut[0])
-   if 'parallel' not in cfg['MODULES'].keys():
+   if cfg['PARALLEL'] == None:
       if ncsize != 0: return False
-   else:
-      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
-      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,max(ncsize,1))
+   if cfg['PARALLEL'] != None:
+      if ncsize == 0: return False
+   if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
+   if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,max(ncsize,1))
 
    # ~~ check for openmi consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
@@ -757,10 +758,12 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       # >>> Parallel tools
       # ~~> Path
       PARDir = pbin
-      if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
+      if cfg['PARALLEL'] != None:
+         if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
       # ~~> Call to PARTEL
       parCmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
-      if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
+      if cfg['PARALLEL'] != None:
+         if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
       parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
       parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)
       # ~~> Creating the PARA files

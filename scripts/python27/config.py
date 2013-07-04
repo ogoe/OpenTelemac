@@ -597,15 +597,11 @@ def parseConfig_ValidateTELEMAC(cfg):
          sys.exit()
    else:
       val_root = cfg['val_root'].replace('<root>',cfgTELEMAC['root'])
-   val_found = path.isdir(val_root)
    get,tbd = parseUserModules(cfg,cfgTELEMAC['MODULES'])
    cfgTELEMAC.update({'REBUILD':tbd})
    for mod in get.split():
       if mod in cfgTELEMAC['MODULES'].keys():
-         if val_found:
-            val_dir = cfgTELEMAC['MODULES'][mod]['path'].replace(cfgTELEMAC['root'],val_root)
-         else:
-            val_dir = val_root.replace('<modpath>',cfgTELEMAC['MODULES'][mod]['path'])
+         val_dir = path.join(val_root,mod)
          if path.isdir(val_dir):
             val_mod = getFiles_ValidationTELEMAC(val_dir,val_ranks)
             if val_mod != {}:
@@ -618,12 +614,14 @@ def parseConfig_ValidateTELEMAC(cfg):
    cfgTELEMAC.update({'PARALLEL':get})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
    # .. in theory, mpi could be replaced by something else (?)
-   if cfgTELEMAC['PARALLEL'] != {}: get = getMPI(cfg)
-   if get != {}: cfgTELEMAC.update({'MPI':get})
+   if cfgTELEMAC['PARALLEL'] != None:
+      get = getMPI(cfg)
+      if get != None: cfgTELEMAC.update({'MPI':get})
    # Get hpc_cmdexec and hpc_infile for hpc option
    # .. in theory, bsub could be replaced by another queueing system
-   if cfgTELEMAC['PARALLEL'] != {}: get = getHPC(cfg)
-   if get != {}: cfgTELEMAC.update({'HPC':get})
+   if cfgTELEMAC['PARALLEL'] != None:
+      get = getHPC(cfg)
+      if get != None: cfgTELEMAC.update({'HPC':get})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -677,12 +675,14 @@ def parseConfig_RunningTELEMAC(cfg):
    cfgTELEMAC.update({'PARALLEL':get})
    # Get mpi_cpulist and mpi_cmdexec: for mpi option
    # .. in theory, mpi could be replaced by something else (?)
-   if cfgTELEMAC['PARALLEL'] != {}: get = getMPI(cfg)
-   if get != {}: cfgTELEMAC.update({'MPI':get})
+   if cfgTELEMAC['PARALLEL'] != None:
+      get = getMPI(cfg)
+      if get != None: cfgTELEMAC.update({'MPI':get})
    # Get hpc_cmdexec and hpc_infile for hpc option
    # .. in theory, bsub could be replaced by another queueing system
-   if cfgTELEMAC['PARALLEL'] != {}: get = getHPC(cfg)
-   if get != {}: cfgTELEMAC.update({'HPC':get})
+   if cfgTELEMAC['PARALLEL'] != None:
+      get = getHPC(cfg)
+      if get != None: cfgTELEMAC.update({'HPC':get})
 
    # Get command_zip: and command_piz:
    # the command lines to zip/unzip respectively
@@ -708,12 +708,11 @@ def getFiles_ValidationTELEMAC(root,ranks):
 
    for dirpath,dirnames,filenames in walk(root) : break
    for dir in dirnames:
-      if dir[0] in str(ranks):
-         val = { dir:[] }
-         for valpath,valnames,filenames in walk(path.join(dirpath,dir)) : break
-         for file in filenames:
-            if path.splitext(file)[1] == '.xml' : val[dir].append(file)
-         if val[dir] != []: validation.update(val)
+      val = { dir:[] }
+      for valpath,valnames,filenames in walk(path.join(dirpath,dir)) : break
+      for file in filenames:
+         if path.splitext(file)[1] == '.xml' : val[dir].append(file)
+      if val[dir] != []: validation.update(val)
 
    return validation
 
@@ -800,13 +799,12 @@ def getEXTERNALs(cfgDict,ext,mod): # key ext_all and ext_..., with ext = mods, i
 """
 def getPARALLEL(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   parallel = {}
+   parallel = None
    if cfgDict.has_key('options'):
       if 'parallel' in cfgDict['options'].lower():
+         parallel = {}
          if cfgDict.has_key('par_path'): parallel.update({'PATH':cfgDict['par_path']})
          if cfgDict.has_key('par_cmdexec'): parallel.update({'EXEC':cfgDict['par_cmdexec']})
-         #FD : a key is mandatory here. And then we can ask for MPI & HPC
-         parallel.update({'PARALLEL':'activated'})
    return parallel
 
 """
@@ -815,9 +813,10 @@ def getPARALLEL(cfgDict):
 """
 def getMPI(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   mpi = {}
+   mpi = None
    if cfgDict.has_key('options'):
       if 'mpi' in cfgDict['options'].lower():
+         mpi = {}
          mpi.update({'HOSTS':gethostname().split('.')[0]}) # /!\ defaulting on  the local hostname
          if cfgDict.has_key('mpi_hosts'):
             if len(cfgDict['mpi_hosts'].split()) > 0: mpi['HOSTS'] = cfgDict['mpi_hosts']
@@ -836,9 +835,10 @@ def getMPI(cfgDict):
 """
 def getHPC(cfgDict):
    # ~~ Loads Compiler Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   hpc = {}
+   hpc = None
    if cfgDict.has_key('options'):
       if 'hpc' in cfgDict['options'].lower():
+         hpc = {}
          if cfgDict.has_key('hpc_stdin'): hpc.update({'STDIN':cfgDict['hpc_stdin']})
          if cfgDict.has_key('hpc_cmdexec'):
             hpc.update({'EXEC':cfgDict['hpc_cmdexec']})

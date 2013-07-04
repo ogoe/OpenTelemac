@@ -66,7 +66,7 @@ from shutil import copytree,ignore_patterns
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_CompactTELEMAC
 # ~~> dependencies towards other pytel/modules
-from utils.files import createDirectories,removeDirectories,zip,copyFiles,copyFile
+from utils.files import createDirectories,removeDirectories,zip,copyFile
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

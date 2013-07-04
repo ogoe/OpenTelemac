@@ -12,17 +12,13 @@
 """
 """@history 30/08/2011 -- Sebastien E. Bourban
 """
-"""@history 08/03/2013 -- Juliette Parisi
-         Added drawCSV
-"""
-"""@brief
-"""
 
 # _____          ___________________________________________________
 # ____/ Imports /__________________________________________________/
 #
 # ~~> dependencies towards standard python
 import sys
+import numpy as np
 #import matplotlib.pyplot.legend as legend
 
 # _____                   __________________________________________
@@ -31,6 +27,7 @@ import sys
 
 def drawHistoryLines(plt,(x,ys),deco):
 
+   # ~~ Data draw ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xname,x0 = x
    plt.xlabel(xname)
    for y in ys:
@@ -51,13 +48,35 @@ def drawHistoryLines(plt,(x,ys),deco):
             for j in range(len(y0[i])):
                #plt.ylabel(n0[i])
                plt.plot(x0,y0[i][j])
-      if deco['grid']: plt.grid(True)
+
+   # ~~ Deco ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   print deco
+   # ~~> plt.grid
+   if deco.has_key('grid'): plt.grid(deco['grid'])
+   # ~~> plt.axis
+   xmin = np.min(x0); xmax = np.max(x0)
+   xgap = xmax-xmin
+   xmin -= 0.1*xgap; xmax += 0.1*xgap
+   ymin = np.min(y0); ymax = np.max(y0)
+   ygap = ymax-ymin
+   ymin -= 0.1*ygap; ymax += 0.1*ygap
+   if deco.has_key('roi'):
+      if deco['roi'] != '':
+         xmin = min(deco['roi'][0][0],deco['roi'][1][0])
+         xmax = max(deco['roi'][0][0],deco['roi'][1][0])
+         ymin = min(deco['roi'][0][1],deco['roi'][1][1])
+         ymax = max(deco['roi'][0][1],deco['roi'][1][1])
+   #crax = plt.gca()
+   #crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
+   #crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
+   plt.axis([xmin,xmax,ymin,ymax])
 
    return
 
 
 def drawPolylineLines(plt,(x,ys),deco):
 
+   # ~~ Data draw ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xname,x0 = x
    plt.xlabel(xname)
    for y in ys:
@@ -79,15 +98,27 @@ def drawPolylineLines(plt,(x,ys),deco):
                #plt.ylabel(str(n1[i]))
                plt.plot(x0,y0[i][j])
 
-      if deco['grid']: plt.grid(True)
+   # ~~ Deco ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # ~~> plt.grid
+   if deco.has_key('grid'): plt.grid(deco['grid'])
+   # ~~> plt.axis
+   xmin = np.min(x0); xmax = np.max(x0)
+   xgap = xmax-xmin
+   xmin -= 0.1*xgap; xmax += 0.1*xgap
+   ymin = np.min(y0); ymax = np.max(y0)
+   ygap = ymax-ymin
+   ymin -= 0.1*ygap; ymax += 0.1*ygap
+   if deco.has_key('roi'):
+      if deco['roi'] != '':
+         xmin = min(deco['roi'][0][0],deco['roi'][1][0])
+         xmax = max(deco['roi'][0][0],deco['roi'][1][0])
+         ymin = min(deco['roi'][0][1],deco['roi'][1][1])
+         ymax = max(deco['roi'][0][1],deco['roi'][1][1])
+   #crax = plt.gca()
+   #crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
+   #crax.set_ylim(ymin,ymax)   # sets y axis limits, default 0-1
+   plt.axis([xmin,xmax,ymin,ymax])
 
-   return
-
-def drawCSV(plt,(x,y),deco):
-
-   plt.plot(x,y,'ro',label='Experiment')
-   plt.legend()
-   if deco['grid']: plt.grid(True)
    return
 
 # _____             ________________________________________________

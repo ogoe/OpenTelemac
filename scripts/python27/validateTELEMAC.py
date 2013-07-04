@@ -61,6 +61,7 @@
 """
 """@history 15/02/2013 -- Juliette Parisi
          Validation Reports written, only with the bypass option.
+         The new class REPORT has been created to group the specifics.
 """
 """@history 07/03/2013 -- Juliette Parisi
          New options created : --runcase, --postprocess, --criteria to run
@@ -68,6 +69,12 @@
          criteria. A validation summary is produced for each step.
 		 Before running one the step, the previous step Validation Summary is read
 		 in order to run only successful cases in the next step.
+"""
+"""@history 28/04/2013 -- Juliette Parisi and Sebastien Bourban
+   Re-work of the options --runcase, --postprocess, --criteria in
+      order to combine them with previous --action, --draw options.
+   This should make the whole process more generic.
+   Wiki documentation remains to be done.
 """
 """@brief
 """
@@ -79,12 +86,82 @@ import sys
 import time
 from datetime import date
 from os import path,walk,environ
+from numpy import dtype, loadtxt
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
-from parsers.parserCSV import putDataCSV,getValidationSummary
 from utils.messages import MESSAGES,filterMessage
+
+# _____                         ____________________________________
+# ____/ Primary Class: REPORTs /___________________________________/
+#
+class REPORT:
+
+   # Name of the report: [ root, date/version, '_ValidationSummary_', action/reportName, .csv ]
+   fileFields = [ '', date.today().isoformat(), '_ValidationSummary_', None ,'.csv' ]
+   # Collumns of the report
+   dtReport = dtype([('Case','S30'),('Module','S15'),('Status','S30'),('Duration','S30')])
+   # Constant definition
+   comment = '#'
+   delimiter = ','
+   # File content
+   headers = []
+   columns = []
+   
+   def __init__(self, root, reportName, r=None, d=None):
+      # r: Jenkins' version number if present
+      self.fileFields[0] = root + path.sep
+      if r != None: self.fileFields[1] = r
+      self.fileFields[3] = reportName
+      self.fileName = ''.join(self.fileFields)
+      if path.exists(self.fileName):
+         self.headers = getHeaders(self.fileName)
+         self.columns = loadtxt(self.fileName, dtype=self.dtReport, comments=self.comment, skiprows=len(self.headers), delimiter=self.delimiter)
+      else:
+         print 'Not able to find your REPORT file: ' + self.fileName
+         print ' ... I will therefore create a new one\n'
+
+   # Headers are the first few lines (if any) that start with '#'
+   def getHeaders(self,fileName):
+      File = open(fileName,'r')
+      head = []
+      for line in file:
+         if line[0] == self.comment: head.append(line)
+         else: break
+      file.close()
+      return head
+   
+   def putContent(self):
+      return
+
+class actionREPORT(REPORT):
+   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Action',r,d)
+   
+class extractREPORT(REPORT):
+   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Extract',r,d)
+
+class drawREPORT(REPORT):
+   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Plot',r,d)
+
+class checkREPORT(REPORT):
+   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Check',r,d)
+
+
+class REPORTS:
+   
+   def __init__(self): self.reports = {}
+   
+   def addReport(self, root, r=None, d=None):
+      if not self.reports.has_key(root):
+         self.reports.update({root:{}})
+         self.reports[root].update({'act':actionREPORT(root,r,d)})
+         self.reports[root].update({'get':extractREPORT(root,r,d)})
+         self.reports[root].update({'draw':drawREPORT(root,r,d)})
+         self.reports[root].update({'test':checkREPORT(root,r,d)})
+   
+   def filterRanks(self):
+      return
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -115,10 +192,6 @@ if __name__ == "__main__":
       help="specify the root, default is taken from config file" )
    parser.add_option("-v", "--version",type="string",dest="version",default='',
       help="specify the version number, default is taken from config file" )
-   parser.add_option("-a", "--action",type="string",dest="do",default='',
-      help="filter specific process actions from the XML file (none can be used)" )
-   parser.add_option("-d", "--draw",type="string",dest="draw",default='',
-      help="filter specific drawing actions from the XML file (none can be used)" )
    parser.add_option("-m", "--modules",type="string",dest="modules",default='',
       help="specify the list modules, default is taken from config file" )
    parser.add_option("-s", "--screen",action="store_true",dest="display",default=False,
@@ -137,16 +210,20 @@ if __name__ == "__main__":
       help="will only run the simulation if option there" )
    parser.add_option("-b","--bypass",action="store_true",dest="bypass",default=False,
       help="will bypass execution failures and try to carry on (final report at the end)" )
+# Combine with all filters above, "rank" now controls everything and Jenkins can control "rank"
    parser.add_option("-k","--rank",type="string",dest="rank",default='',
-      help="the suite of validation ranks (all by default)" )
-   parser.add_option("--revision",type="string",dest="revision",default='',
-      help="will use the SVN revision number in the Validation Summary Name (useful for Jenkins)" )   
-   parser.add_option("--runcase",action="store_true",dest="runcase",default='',
-      help="will only do the actions from the xml file" )
-   parser.add_option("-p","--postprocess",action="store_true",dest="postprocess",default='',
-      help="will only do the extracts and plots from the xml file" )
-   parser.add_option("--criteria",action="store_true",dest="criteria",default='',
-      help="will only do the criteria from the xml file" )
+      help="5 integers joined by point (--rank 0.0.0.0 is all by default)" )
+# These filters reset "rank" to do just one or more things
+   parser.add_option("--act",type="string",dest="action",default='',
+      help="filter specific actions from the XML file, and will only do these by default" )
+   parser.add_option("--draw",type="string",dest="drawing",default='',
+      help="filter specific drawings from the XML file, and will only do these by default" )
+   parser.add_option("--get",type="string",dest="extraction",default='',
+      help="filter specific data extractions from the XML file and will only do these by default" )
+   parser.add_option("--test",type="string",dest="criteria",default='',
+      help="filter specific drawing actions from the XML file, and will only do these" )
+   parser.add_option("--report",action="store_true",dest="report",default=False,
+      help="will create a report summary if option is present" )
 	  
    options, args = parser.parse_args()
    if not path.isfile(options.configFile):
@@ -163,25 +240,40 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
+
  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ~~~ Manage options to run only cases or only Post processing ~~~~~
-# (Running only the validation criteria has not been implemented yet )
+# ~~~ Manage options to run only ranked actions ~~~~~~~~~~~~~~~~~~~~
+   # if no option are set, then all will be available
+   if options.action + options.drawing + options.extraction + options.criteria == '' :
+      # rank = 0 can be divided by all prime numbers
+      options.todos = { 'act':{'rank':0,'todo':options.action},
+         'draw':{'rank':0,'todo':options.drawing},
+         'get':{'rank':0,'todo':options.extraction},
+         'test':{'rank':0,'todo':options.criteria} }
+   # else, only those options will be avaiable at their specific rank
+   else:
+      # rank =1 or -1 cannot be divided by any prime number
+      options.todos = { 'act':{'rank':-1,'todo':''},
+         'draw':{'rank':-1,'todo':''},
+         'get':{'rank':-1,'todo':''},
+         'test':{'rank':-1,'todo':''} }
+      if options.action != '': options.todos['act'] = {'rank':0,'todo':options.action}
+      if options.drawing != '': options.todos['draw'] = {'rank':0,'todo':options.drawing}
+      if options.extraction != '': options.todos['get'] = {'rank':0,'todo':options.extraction}
+      if options.criteria != '': options.todos['test'] = {'rank':0,'todo':options.criteria}
+   # however, if rank is present, then it takes over
+   if options.rank != '':
+      rank = options.rank.split('.')
+      options.todos['act']['rank'] = int(rank[0])
+      if abs(options.todos['act']['rank']) == 1:  options.todos['act']['todo'] = 'none'
+      options.todos['draw']['rank'] = int(rank[1])
+      if abs(options.todos['draw']['rank']) == 1:  options.todos['draw']['todo'] = 'none'
+      options.todos['get']['rank'] = int(rank[2])
+      if abs(options.todos['get']['rank']) == 1:  options.todos['get']['todo'] = 'none'
+      options.todos['test']['rank'] = int(rank[3])
+      if abs(options.todos['test']['rank']) == 1:  options.todos['test']['todo'] = 'none'
 
-   if options.runcase == '' and options.postprocess == ''and options.criteria == '': 
-      options.runcase = True
-      options.postprocess = True
-      options.criteria = True
-   elif options.runcase == True : 
-      options.postprocess = False 
-      options.criteria = False
-   elif options.postprocess == True :
-      options.runcase = True 
-      options.criteria = False
-   elif options.criteria == True :
-      options.runcase = False
-      options.postprocess = False
-	  
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Forces not to use any Xwindows backend for Jenkins ~~~~~~~~~~
    if not options.display:
@@ -191,6 +283,8 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xcpts = MESSAGES()
+# ~~~~ Reporting summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   if options.report: report = REPORTS(options.version)
 
    if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -222,7 +316,7 @@ if __name__ == "__main__":
          print '\n\nFocused validation on ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
          try:
-            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass,options.runcase,options.postprocess,options.criteria)
+            runXML(path.realpath(xmlFile),xmls[xmlFile],options.bypass)
          except Exception as e:
             xcpts.addMessages([filterMessage({'name':'runXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
 
@@ -231,30 +325,23 @@ if __name__ == "__main__":
 # ~~~~ Turning XML / config loops inside out ~~~~~~~~~~~~~~~~~~~~~~~
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
-      xmls = {}
-# ~~~~ Variables needed to generate the Validattion report ~~~~~~~~~
-      cas=[]
-      casrun=[]
-      cas.append('TestCase')
-      module=[]
-      module.append('Module')
-      status=[]
-      status.append('Duration(s)')
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
+      xmls = {}; nxmls = 0
+      if options.report: report = REPORTS()
       for cfgname in cfgs.keys():
          # still in lower case
          if options.rootDir != '': 
             cfgs[cfgname]['root'] = path.abspath(options.rootDir)
             root = path.abspath(options.rootDir)
-         else : root = cfgs[cfgname]['root']  
+         else : root = cfgs[cfgname]['root']
          if options.version != '': cfgs[cfgname]['version'] = options.version
          if options.modules != '': cfgs[cfgname]['modules'] = options.modules
          cfgs[cfgname]['display'] = options.display
          # parsing for proper naming
-         if options.rank != '': cfgs[cfgname]['val_rank'] = options.rank
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
-
+         # Reporting per configuration (/root)
+         if options.report: report.addReport(root,r=options.version)
+         # gathering XMLs
          for codeName in cfg['VALIDATION'].keys():
             xmlKeys = cfg['VALIDATION'][codeName]
             if not xmls.has_key(codeName): xmls.update({codeName:{}})
@@ -265,115 +352,47 @@ if __name__ == "__main__":
                   for xmlFile in xmlKeys[key]:
                      xmlPath = path.join(xmlDir,xmlFile)
                      if not xmls[codeName][key].has_key(xmlPath): xmls[codeName][key].update({xmlPath:{}})
+                     nxmls += 1
                      xmls[codeName][key][xmlPath].update({cfgname: { 'cfg':cfg, 'options':options } })
-      
-      # Reading last step Validation Summary in order to run only successful 
-      # cases in the next step
-      
-      d = date.today()
- 
-      if options.revision != '': 
-         if options.postprocess == True and options.criteria == False :
-            LastSummary = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryRun.csv')
-         elif options.postprocess == False and options.criteria == True :
-            LastSummary = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryPostProcess.csv')
-         else : LastSummary = ''
-      else :
-         if options.postprocess == True and options.criteria == False :
-            LastSummary = path.join(root,d.isoformat() + '_' + 'ValidationSummaryRun.csv')
-         elif options.postprocess == False and options.criteria == True :
-            LastSummary = path.join(root,d.isoformat() + '_' + 'ValidationSummaryPostProcess.csv')
-         else : LastSummary = ''
-      
-      if LastSummary != '':
-         Summary = getValidationSummary(LastSummary)
-         Lastcas = Summary['TestCase']
-         Laststatus = Summary['Status']        
-      
-      # ~~> Print summary of test cases which will be run
-      i=0
-      for codeName in xmls.keys():
-         print '    +> ',codeName
-         for key in xmls[codeName]:
-            if LastSummary != '':
-            # If one test case failed or has not been run in the last step,
-            # that test case won't be run either in the next step
-               cas.append(key)
-               module.append(codeName)
-               if Laststatus[i]== 'failed' or Laststatus[i]== 'NotRun' : continue
-               else :
-                  print '    |    +> ',key
-                  casrun.append(key)
-                  for xmlFile in xmls[codeName][key]:
-                     print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
-               i += 1      
-            else : 
-               print '    |    +> ',key
-               cas.append(key)
-               casrun.append(key)
-               module.append(codeName)
-               for xmlFile in xmls[codeName][key]:
-                  print '    |    |    +> ',path.basename(xmlFile),xmls[codeName][key][xmlFile].keys()
-               
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Running the XML commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      print "%s" % (time.ctime(time.time()))
-      i=0
-      cpt = 0
+      print '\n\nLooping through all XML files ... on %s\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' % (time.ctime(time.time()))
+      ixmls = 0
       for codeName in xmls.keys():
          for key in xmls[codeName]:
-            if LastSummary != '':
-               if Laststatus[i]== 'failed' or Laststatus[i]== 'NotRun' :
-                  status.append('NotRun')
-                  continue
-               else :
-                  cpt += 1
-                  print '\n\nValidation of ' + key + ' of module ' + codeName + ' '+ str(cpt) + '/' + str(len(casrun)) + '\n\
+            for xmlFile in xmls[codeName][key]:
+               ixmls += 1
+               print '\n\nValidation of ' + key + ' of module ' + codeName
+               print '     XML file: < '  + str(ixmls) + '/' + str(nxmls) + ' > ' + xmlFile + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-                  for xmlFile in xmls[codeName][key]:        
+               #try:
+               tic = time.time()
+               runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass)
+               toc = time.time()
+               ttime = toc-tic
+               if options.report: report.update()
+               #except Exception as e:
+               #   status.append('failed')
+               #   xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
 
-                     try:
-                        tic = time.time()
-                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess,options.criteria)
-                        toc = time.time()
-                        ttime = toc-tic
-                        status.append(ttime)
-                     except Exception as e: 
-                        status.append('failed')
-                        xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
-               i += 1
-            else :
-               cpt += 1
-               print '\n\nValidation of ' + key + ' of module ' + codeName + ' '+ str(cpt) + '/' + str(len(casrun)) + '\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-               for xmlFile in xmls[codeName][key]:        
-                     try:
-                        tic = time.time()
-                        runXML(xmlFile,xmls[codeName][key][xmlFile],options.bypass,options.runcase,options.postprocess,options.criteria)
-                        toc = time.time()
-                        ttime = toc-tic
-                        status.append(ttime)
-                     except Exception as e: 
-                        status.append('failed')
-                        xcpts.addMessages([filterMessage({'name':'_____________\nrunXML::main:\n      '+path.dirname(xmlFile)},e,options.bypass)])
-                                
-      print "%s" % (time.ctime(time.time()))
-      
+   """
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<         
 # ~~~~ Writes the Validation Report in a CSV file ~~~~~~~~~~~~~~~~~~~~
-      print '\n\nWritting Validation Report.\n\
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
+      print '\n\nWritting Validation Report ... on    %s\n\
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' % (time.ctime(time.time()))
 
       columns = []
-      if options.revision != '': 
+      if options.version != '':
          if options.postprocess == False and options.criteria == False : 
-            SummaryFile  = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryRun.csv')
+            SummaryFile  = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummaryRun.csv')
          elif options.postprocess == True and options.criteria == False : 
-            SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryPostProcess.csv')
+            SummaryFile = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummaryPostProcess.csv')
          elif options.criteria == True and options.postprocess == False :
-            SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummaryCriteria.csv')
+            SummaryFile = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummaryCriteria.csv')
          elif options.criteria == True and options.postprocess == True and options.runcase == True: 
-            SummaryFile = path.join(root,'Revision#'+ options.revision + '_' + 'ValidationSummary.csv')
+            SummaryFile = path.join(root,'Revision#'+ options.version + '_' + 'ValidationSummary.csv')
       else : 
          if options.postprocess == False and options.criteria == False :
             SummaryFile  = path.join(root,d.isoformat() + '_' + 'ValidationSummaryRun.csv')
@@ -386,9 +405,9 @@ if __name__ == "__main__":
             
       columns = [cas,module,status]
       
-      try : putDataCSV(SummaryFile,columns)
+      try : pass #putDataCSV(SummaryFile,columns)
       except : xcpts.addMessages(['I could not write properly the Validation Summary, something went wrong'])
-
+   """
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -401,9 +420,7 @@ if __name__ == "__main__":
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    else: print '\n\nMy work is done\n\n'
-   
 
- 
    
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
    sys.exit()

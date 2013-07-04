@@ -49,17 +49,17 @@ if hide_default:
    mpl.use('Agg')
 import matplotlib.pyplot as plt
 # ~~> dependencies from within pytel/parsers
-from myplot1d import drawHistoryLines,drawPolylineLines,drawCSV
+from myplot1d import drawHistoryLines,drawPolylineLines
 from myplot2d import drawMesh2DElements,drawMeshLines, \
    drawLabeledTriContours,drawColouredTriMaps, \
    drawColouredTriVects
 # ~~> dependencies towards other pytel/modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.files import getFileContent
-from parsers.parserCSV import get2VariablesCSV
+from parsers.parserCSV import CSV
 from parsers.parserSortie import getValueHistorySortie
-from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,parseSLF,getValuePolylineSLF,subsetVariablesSLF
-from samplers.meshes import crossMesh,xysLocateMesh
+from parsers.parserSELAFIN import SELAFIN,getValueHistorySLF,getValuePolylineSLF,subsetVariablesSLF
+from samplers.meshes import xysLocateMesh,sliceMesh
 from parsers.parserStrings import parseArrayPaires
 
 # _____                   __________________________________________
@@ -146,9 +146,12 @@ hrwd = {
 'anno.label1.font.weight' : 'bold',
 'anno.label1.placement' : 'plot'
 }
-#
-#    Get current axes instance with plt.gca(), and current figure
-#       with plt.gcf()
+
+def decoStandard(userdeco):
+   for key in deco.keys():
+      if not userdeco.has_key(key): userdeco.update({key:deco[key]})
+   return userdeco
+
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
 #
@@ -207,31 +210,115 @@ def openFigure(plot):
    ~ plt.axis([np.min(x0),np.max(x0),np.min(y0),np.max(y0)])
      could be used to restrict the view to a user-defined zoom
 """
+# _____                          ___________________________________
+# ____/ Primary Classes: Drawer /__________________________________/
+#
+class Drawer1D:
+
+   def __init__(self,(plt,fig)):
+      self.plt = plt
+      self.fig = fig
+
+   def doHistoryLines(self,data,deco): drawHistoryLines(self.plt,data,deco)
+   def doPolylineLines(self,data,deco): drawPolylineLines(self.plt,data,deco)
+
+   def show(self): self.plt.show()
+   def savefig(self,fileName): self.plt.savefig(fileName)
+
+class Drawer2D:
+
+   def __init__(self,(plt,fig)):
+      self.plt = plt
+      self.fig = fig
+
+   def doMesh2DElements(self,elements,deco): drawMesh2DElements(self.plt,elements,deco)
+   def doMeshLines(self,edgexy,deco): drawMeshLines(self.plt,edgexy,deco)
+   def doColouredTriMaps(self,data,deco): drawColouredTriMaps(self.plt,data,deco)
+   def doLabeledTriContours(self,data,deco): drawLabeledTriContours(self.plt,data,deco)
+   def doColouredTriVects(self,data,deco): drawColouredTriVects(self.plt,data,deco)
+
+   def show(self): self.plt.show()
+   def savefig(self,fileName): self.plt.savefig(fileName)
+
+# _____                         ____________________________________
+# ____/ Primary Classes:Dumper /___________________________________/
+#
+
+class Dumper1D:
+   
+   def __init__(self):
+      self.csv = CSV()
+
+   def doHistoryLines(self,data,deco):
+      time,values = data
+      self.csv.addColumns(time,values)
+   def doPolylineLines(self,data,deco):
+      dist,values = data
+      self.csv.addColumns(dist,values)
+   
+   def putFileContent(self,fileName): self.csv.putFileContent(fileName)
+
+class Dumper2D:
+
+   def __init__(self):
+      self.slf = SELAFIN()
+
+   def doMesh2DElements(self,elements,deco): pass #dumpMesh2DElements(plt,elements,deco)
+   def doMeshLines(self,edgexy,deco): pass #dumpMeshLines(plt,edgexy,deco)
+   def doColouredTriMaps(self,data,deco): pass #dumpColouredTriMaps(plt,data,deco)
+   def doLabeledTriContours(self,data,deco): pass #dumpLabeledTriContours(plt,data,deco)
+   def doColouredTriVects(self,data,deco): pass #dumpColouredTriVects(plt,data,deco)
+
 # _____                        _____________________________________
 # ____/ Primary Class: FIGURE /____________________________________/
 #
-class Figure1D:
-# TODO: use the names to label the curves
+class Figure:
+   do = None
 
-   def draw(self,type,what,fig):
-      
+   def __init__(self,type,plot,figureName,display=False):
+      if type == 'plot1d':
+         self.do = Drawer1D(openFigure(plot))
+      elif type == 'plot2d':
+         self.do = Drawer2D(openFigure(plot))
+      elif type == 'save1d':
+         self.do = Dumper1D()
+      elif type == 'save2d':
+         self.do = Dumper2D()
+      else:
+         print '... do not know how to Figure this one out: ' + type
+         sys.exit()
+      self.typePlot = type
+      self.figureName = figureName
+      self.display = display
+
+   def show(self):
+      if self.display: self.do.show()
+      else: self.do.savefig(self.figureName)
+
+   def dump(self):
+      self.do.putFileContent(self.figureName)
+
+class Figure1D(Figure):
+   # TODO: use the names to label the curves
+
+   def draw(self,type,what):
+
       if 'sortie' in type.lower():
          # ~~> Load data
          sortie = getFileContent(what['file'])
          # ~~> Extract data
          data = getValueHistorySortie(sortie,what['vars'])
-         # ~~> Deco
-         # ~~> Draw data
-         drawHistoryLines(plt,data,deco)
-         
+         # ~~> Draw/Dump data
+         self.do.doHistoryLines(data,decoStandard(what["deco"]))
+
       elif 'csv' in type.lower():
          # ~~> Load & Extract data
-         #data = getColumnCSV(what['file'],what['columns'][0])
-         var1,var2 = what['columns'].split(':')
-         data = get2VariablesCSV(what['file'],var1,var2)
-         # ~~> Deco
-         # ~~> Draw data
-         drawCSV(plt,data,deco)   
+         csv = CSV()
+         #t,data = 
+         csv.getFileContent(what['file'])
+         t,data = csv.getColumns(what["vars"])
+         # ~~> Draw/Dump data
+         self.do.doHistoryLines((t,[('experiment',data[0],data[1])]),decoStandard(what["deco"]))
 
       elif 'SELAFIN' in type.upper():
          # ~~> Load data
@@ -240,33 +327,30 @@ class Figure1D:
          if what['type'] == 'history':
             # ~~> Extract data
             vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
-            support,tree,neighbours = xysLocateMesh(what["extract"],slf.IKLE,slf.MESHX,slf.MESHY)
-            data = getValueHistorySLF(slf.file,slf.tags,what['time'],(support[1],slf.IKLE[support[1]],support[2]),slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
-            # ~~> Deco
-            if what.has_key('roi'):
-               if what['roi'] != []: deco['roi'] = what['roi']
-            # ~~> Draw data
-            drawHistoryLines(plt,data,deco)
+            support,tree,neighbours = xysLocateMesh(what["extract"],slf.IKLE2,slf.MESHX,slf.MESHY)
+            # - support[1] is the list of elements, one for each x,y in what["extract"]
+            # - slf.IKLE2[support[1]] is the list triplet of node, one triplet for each element
+            # - support[2] is the list of lambdas
+            t,data = getValueHistorySLF(slf.file,slf.tags,what['time'],(support[1],slf.IKLE2[support[1]],support[2]),slf.NVAR,slf.NPOIN3,vars)
+            # ~~> Draw/Dump data
+            self.do.doHistoryLines((t,[('history',vars[1],what["extract"],data)]),decoStandard(what["deco"]))
             
          elif what['type'] == 'v-section':
             # ~~> Extract data
             vars = subsetVariablesSLF(what["vars"],slf.VARNAMES)
-            support,tree,neighbours = crossMesh(what["extract"],slf.IKLE,slf.MESHX,slf.MESHY)
-            data = getValuePolylineSLF(slf.file,slf.tags,what['time'],(support[0],slf.IKLE[support[1]],support[2]),slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
-            # ~~> Deco
-            deco['roi'] = [ [np.min(slf.MESHX),np.min(slf.MESHY)], [np.max(slf.MESHX),np.max(slf.MESHY)] ]
-            if what.has_key('roi'):
-               if what['roi'] != []: deco['roi'] = what['roi']
-            # ~~> Draw data
-            drawPolylineLines(plt,data,deco)
+            support,tree = sliceMesh(what["extract"],slf.IKLE2,slf.MESHX,slf.MESHY)
+            d,xy,t,data = getValuePolylineSLF(slf.file,slf.tags,what['time'],support,slf.TITLE,slf.NVAR,slf.NPOIN3,vars)
+            # ~~> Draw/Dump data
+            self.do.doPolylineLines((d,[('v-section',vars[1],t,data)]),decoStandard(what["deco"]))
 
          else: print '... do not know how to draw this type: ' + what['type']
 
       else:
          print '... do not know how to draw this format: ' + type
 
-class Figure2D:
-   def draw(self,type,what,fig):
+class Figure2D(Figure):
+
+   def draw(self,type,what):
 
       # ~~> Load data
       slf = SELAFIN(what['file'])
@@ -294,21 +378,21 @@ class Figure2D:
 
             if "mesh" in t:
                # ~~> Extract mesh connectivity
-               if elements == None: elements = np.dstack((slf.MESHX[slf.IKLE],slf.MESHY[slf.IKLE]))
-               # ~~> Draw (works with triangles and quads)
-               drawMesh2DElements(plt,elements,deco)
+               if elements == None: elements = np.dstack((slf.MESHX[slf.IKLE2],slf.MESHY[slf.IKLE2]))
+               # ~~> Draw/Dump (works with triangles and quads)
+               self.do.doMesh2DElements(elements,decoStandard(what["deco"]))
 
             elif "wire" in t:
                # ~~> Extract unique edges and outline /!\ assumes all same clowise orientation
                if edges == []:
-                  for e in slf.IKLE:
-                     for n in range(slf.NDP):
-                        if (e[n],e[(n+1)%slf.NDP]) not in edges: edges.append((e[(n+1)%slf.NDP],e[n]))
+                  for e in slf.IKLE2:
+                     for n in range(slf.NDP2):
+                        if (e[n],e[(n+1)%slf.NDP2]) not in edges: edges.append((e[(n+1)%slf.NDP2],e[n]))
                   # ~~> Assemble wires
                   for e in edges:
                      edgexy.append(( (slf.MESHX[e[0]],slf.MESHY[e[0]]) , (slf.MESHX[e[1]],slf.MESHY[e[1]]) ))
-               # ~~> Draw (works with triangles and quads)
-               drawMeshLines(plt,edgexy,deco)
+               # ~~> Draw/Dump (works with triangles and quads)
+               self.do.doMeshLines(edgexy,decoStandard(what["deco"]))
 
             else:
                # ~~> Extract variable data
@@ -317,6 +401,7 @@ class Figure2D:
                if what.has_key('time'):
                   frame = int(what['time'][0])
                   if frame < 0: frame = max( 0, len(slf.tags['cores']) + frame )
+                  else: frame = max( frame,len(slf.tags['cores'])-1 )
                slf.file.seek(slf.tags['cores'][frame])
                slf.file.read(4+4+4)
                for ivar in range(slf.NVAR):
@@ -331,12 +416,12 @@ class Figure2D:
                if len(VARSORS) > 1:
                   if "arrow" in t or "angle" in t:
                      if what['extract'] != []:
-                        dx = (xmax-xmin)/what['extract'][0][0]
-                        dy = (ymax-ymin)/what['extract'][0][1]
+                        dx = (xmax-xmin)/float(what['extract'][0][0])
+                        dy = (ymax-ymin)/float(what['extract'][0][1])
                         grid = np.meshgrid(np.arange(xmin, xmax+dx, dx),np.arange(ymin, ymax+dy, dy))
                         MESHX = np.concatenate(grid[0]); MESHY = np.concatenate(grid[1])
-                        support,tree,neighbours = xysLocateMesh(np.dstack((MESHX,MESHY))[0],slf.IKLE,slf.MESHX,slf.MESHY)
-                        le,ln,bn = support[1],slf.IKLE[support[1]],support[2]
+                        support,tree,neighbours = xysLocateMesh(np.dstack((MESHX,MESHY))[0],slf.IKLE2,slf.MESHX,slf.MESHY)
+                        le,ln,bn = support[1],slf.IKLE2[support[1]],support[2]
                         VARSOR = [np.zeros(len(le),np.float32),np.zeros(len(le),np.float32)]
                         for xy in range(len(bn)):
                            if le[xy] >= 0:
@@ -348,15 +433,15 @@ class Figure2D:
                else:
                   VARSOR = VARSORS[0]
                # ~~> Element types
-               if slf.NDP == 3: IKLE = np.array(slf.IKLE)
-               elif slf.NDP == 4:
+               if slf.NDP3 == 3: IKLE = np.array(slf.IKLE2)
+               elif slf.NDP3 == 4:
                   # ~~> split each quad into triangles
-                  IKLE = np.delete(np.concatenate((slf.IKLE,np.roll(slf.IKLE,2,axis=1))),np.s_[3::],axis=1)
-               # ~~> Draw (multiple options possible)
-               if "map" in t: drawColouredTriMaps(plt,(slf.MESHX,slf.MESHY,IKLE,VARSOR),deco)
-               if "label" in t: drawLabeledTriContours(plt,(slf.MESHX,slf.MESHY,slf.IKLE,VARSOR),deco)
-               if "arrow" in t: drawColouredTriVects(plt,(MESHX,MESHY,VARSOR,False),deco)
-               if "angle" in t: drawColouredTriVects(plt,(MESHX,MESHY,VARSOR,True),deco)
+                  IKLE = np.delete(np.concatenate((slf.IKLE2,np.roll(slf.IKLE2,2,axis=1))),np.s_[3::],axis=1)
+               # ~~> Draw/Dump (multiple options possible)
+               if "map" in t: self.do.doColouredTriMaps((slf.MESHX,slf.MESHY,IKLE,VARSOR),decoStandard(what["deco"]))
+               if "label" in t: self.do.doLabeledTriContours((slf.MESHX,slf.MESHY,slf.IKLE2,VARSOR),decoStandard(what["deco"]))
+               if "arrow" in t: self.do.doColouredTriVects((MESHX,MESHY,VARSOR,False),decoStandard(what["deco"]))
+               if "angle" in t: self.do.doColouredTriVects((MESHX,MESHY,VARSOR,True),decoStandard(what["deco"]))
 
       else:
          print '... do not know how to draw this format: ' + type
@@ -364,41 +449,6 @@ class Figure2D:
       slf.file.close()
 
       return
-
-
-class Figure(Figure1D,Figure2D):
-   plt = None; fig = None
-   
-   def __init__(self,type,plot,display,figureName):
-      self.typePlot = type
-      self.figureName = figureName
-      self.display = display
-      #/!\ fig represents here plt as well as fig in fig = plt.figure()
-      self.plt,self.fig = openFigure(plot)
-
-   def draw(self,type,what):
-      if self.typePlot == "plot1d":
-         Figure1D.draw(self,type,what,(self.plt,self.fig))
-      elif self.typePlot == "plot2d":
-         Figure2D.draw(self,type,what,(self.plt,self.fig))
-         #try:
-         #   import plt.tricontour
-         #   tricontour_loaded = True
-         #except:
-         #   tricontour_loaded = False
-         #if tricontour_loaded:
-         #   Figure2D.draw(self,type,what,(self.plt,self.fig))
-         #else:
-         #   print '\ntricontour not available on your system'
-         #   print ' ... unable to plot 2D figures'
-      else:
-         print '... do not know how to draw this type: ' + type
-         sys.exit()
-
-   def show(self):
-      if self.display: self.plt.show()
-      else: self.plt.savefig(self.figureName)
-
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/

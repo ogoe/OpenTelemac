@@ -214,6 +214,15 @@ def drawLabeledTriContours(plt,(x,y,ikle,z),deco):
    #l,b,w,h = plt.gca().get_position().bounds
    #ll,bb,ww,hh = CB.ax.get_position().bounds
    #CB.ax.set_position([ll, b+0.1*h, ww, h*0.8])
+   xmin = deco['roi'][0][0]; xmax = deco['roi'][1][0]
+   ymin = deco['roi'][0][1]; ymax = deco['roi'][1][1]
+   if deco.has_key('crax.xlim'):
+      xmin -= deco['crax.xlim']; xmax += deco['crax.xlim']
+   if deco.has_key('crax.ylim'):
+      ymin -= deco['crax.ylim']; ymin += deco['crax.ylim']
+   crax.set_xlim(xmin,xmax)   # sets x axis limits, default 0-1
+   crax.set_ylim(ymim,ymax)   # sets y axis limits, default 0-1
+   crax.axis('equal')         # sets both axis scale to be equal
 
    return
 

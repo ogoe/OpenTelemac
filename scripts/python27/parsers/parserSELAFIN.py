@@ -61,7 +61,6 @@ import glob
 import numpy as np
 # ~~> dependencies towards other modules
 # ~~> dependencies towards other pytel/modules
-from utils.geometry import isClose,isInsideTriangle,getBarycentricWeights,getSegmentIntersection
 from utils.progressbar import ProgressBar
 from utils.files import getFileContent,putFileContent
 
