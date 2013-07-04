@@ -159,7 +159,7 @@ cmd_obj:    gfortran [fflags] <mods> <incs> <f95name>
 # ~~> dependencies towards standard python
 import re
 import sys
-from os import path, walk, listdir, environ, remove
+from os import path, walk, listdir, environ
 from socket import gethostname
 import ConfigParser
 from optparse import OptionParser
@@ -958,15 +958,17 @@ def cleanConfig(cfg,cfgname):
       removeDirectories(cfgDir)
       print '\n    +> build deleted!'
    else: print '\n ... Found no build to delete!'
-   found = False
-   for mod in cfg['MODULES'].keys():
-      for dirpath,dirnames,filenames in walk(cfg['MODULES'][mod]['path']) : break
-      for file in filenames:
-         if path.splitext(file)[1] == '.cmdf':
-            found = True
-            remove(path.join(dirpath,file))
-   if found: print '    +> cmdf files deleted!\n'
-   else: print ' ... found no cmdf file to delete!\n'
+   # The cmdf files are to be versioned, therefore no delete required.
+   # The cmdf files are recreated when the --rescan option is used
+   #found = False
+   #for mod in cfg['MODULES'].keys():
+   #   for dirpath,dirnames,filenames in walk(cfg['MODULES'][mod]['path']) : break
+   #   for file in filenames:
+   #      if path.splitext(file)[1] == '.cmdf':
+   #         found = True
+   #         remove(path.join(dirpath,file))
+   #if found: print '    +> cmdf files deleted!\n'
+   #else: print ' ... found no cmdf file to delete!\n'
 
 
 # _____             ________________________________________________
@@ -1044,7 +1046,7 @@ if __name__ == "__main__":
       print '    +> version: ',cfg['version']
       print '    +> module:  ',' / '.join(cfg['MODULES'].keys())
       print '    +> options: ',cfg['options']
-      if options.configDelete: cleanConfig(cfg)
+      if options.configDelete: cleanConfig(cfg,cfgname)
    
    print '\n\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'

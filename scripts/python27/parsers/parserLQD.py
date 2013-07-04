@@ -52,17 +52,17 @@ def getLQD(file):
 
    # ~~ Parse head ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    icore = 0
-   while re.match(ken_header,core[icore]): icore += 1
+   while re.match(lqd_header,core[icore]): icore += 1
    head = core[0:icore]
    # /!\ icore starts the body
 
    # ~~ Parse variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    jcore = icore+1
    while icore < len(core) and jcore < len(core):
-      if re.match(ken_header,core[icore]):
+      if re.match(lqd_header,core[icore]):
          icore += 1; jcore += 1
          continue
-      if re.match(ken_header,core[jcore]):
+      if re.match(lqd_header,core[jcore]):
          jcore += 1
          continue
       core[icore].replace(',',' ')
@@ -79,7 +79,7 @@ def getLQD(file):
    # ~~ Size valid values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    icore = jcore+1
    while icore < len(core):
-      if not re.match(ken_header,core[jcore]): icore += 1
+      if not re.match(lqd_header,core[jcore]): icore += 1
 
    # ~~ Parse body ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # This is also fairly fast, so you might not need a progress bar
@@ -87,7 +87,7 @@ def getLQD(file):
    z = np.zeros( len(vars)-1,jcore-icore )
    itime = 0
    for icore in core[jcore+1:]:
-      if re.match(ken_header,icore): continue
+      if re.match(lqd_header,icore): continue
       values = icore.replace(',',' ').split()
       t[itime] = float(value[0])
       for ivar in range(len(values[1:])): z[itime][ivar] = float(value[ivar])

@@ -222,7 +222,7 @@ class DELWAQ:
       # ~~ Read/Write dimensions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       NSEG2 = ( 3*self.geo.NELEM3 + self.conlim.NPTFR )/2
       MBND2 = np.count_nonzero(self.conlim.BOR['lih'] != 2)
-      n3 = 2*self.geo.NPLAN*( NSEG2 ) # +MBND2
+      n3 = 2*self.geo.NPLAN*( NSEG2 + MBND2 )
       n4 = 2*( self.geo.NPLAN-1 )*self.geo.NPOIN3
 
       # ~~ Read lengths ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -302,7 +302,7 @@ class DELWAQ:
       # ~~ Read/Write dimensions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       NSEG2 = ( 3*self.geo.NELEM3 + self.conlim.NPTFR )/2
       MBND2 = np.count_nonzero(self.conlim.BOR['lih'] != 2)
-      n3 = ( NSEG2 ) # + MBND2
+      n3 = ( NSEG2 + MBND2 )
       n4 = 2*( self.geo.NPLAN-1 )*self.geo.NPOIN3
 
       # ~~ Read volumes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -334,7 +334,7 @@ class DELWAQ:
       # ~~ Read/Write dimensions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       NSEG2 = ( 3*self.geo.NELEM3 + self.conlim.NPTFR )/2
       MBND2 = np.count_nonzero(self.conlim.BOR['lih'] != 2)
-      n3 = ( NSEG2 ) # + MBND2
+      n3 = ( NSEG2 + MBND2 )
       n4 = 2*( self.geo.NPLAN-1 )*self.geo.NPOIN3
 
       # ~~ Read volumes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

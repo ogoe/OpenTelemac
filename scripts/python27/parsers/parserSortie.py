@@ -195,21 +195,13 @@ def getValueHistorySortie(content,vars):
 
    # ~~ Extract data
    title = parseNameOfStudy(content)
-   i,x = parseTimeProfile(content)
+   i,x0 = parseTimeProfile(content)
    y1,y2,y3 = parseValueProfile(content)
 
    y0 = []
    for var in vars.split(';'):
       v,s = var.split(':')
       
-      # ~~ x-axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      x0 = x  # you allow for choice ...
-      #if s == "time": x0 = x
-      #elif s == "iterator": x0 = i
-      #else:
-      #   print '... do not know how to understand: ' + s + ' as support '
-      #   sys.exit()
-
       # ~~ y-axis ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       if v == "voltotal": y0.append(y1)
       elif v == "volfluxes": y0.append(y2)

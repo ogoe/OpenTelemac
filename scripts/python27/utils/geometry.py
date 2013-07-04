@@ -48,6 +48,10 @@ import math
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
 #
+
+def isCCW((x1,y1),(x2,y2),(x3,y3)):
+   return (y3-y1)*(x2-x1) > (y2-y1)*(x3-x1)
+
 """@brief
    Returns the coordinate of the point at the intersection
       of two segments, defined by (p1,p2) and (p3,p4)
@@ -56,16 +60,32 @@ def getSegmentIntersection( (x1,y1),(x2,y2),(x3,y3),(x4,y4) ):
 
    det = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4)
    if det == 0: return []
+
+   # ~~> Using the mlab tools
+   #if mlab.segments_intersect( ((x1,y1),(x2,y2)),((x3,y3),(x4,y4)) ):
+   #   x0 = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/det
+   #   y0 = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/det
+   #   return [[x0,y0],getNorm2((x0,y0),(x4,y4))/getNorm2((x3,y3),(x4,y4))]
+   #return []
+
+   # ~~> Using the clock-wise argument
+   #if isCCW((x1,y1),(x3,y3),(x4,y4)) != isCCW((x2,y2),(x3,y3),(x4,y4)) \
+   #   and isCCW((x1,y1),(x2,y2),(x3,y3)) != isCCW((x1,y1),(x2,y2),(x4,y4)):
+   #   x0 = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/det
+   #   y0 = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/det
+   #   return [[x0,y0],getNorm2((x0,y0),(x4,y4))/getNorm2((x3,y3),(x4,y4))]
+   #return []
+
+   # ~~> Using the bounding box method
    x0 = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/det
    y0 = ((y3-y4)*(x1*y2-y1*x2)-(y1-y2)*(x3*y4-y3*x4))/det
-   accuracy = np.power(10.0, -5+np.floor(np.log10(abs(x1+x2+x3+x4))))
+   accuracy = np.power(10.0, -5  +np.floor(np.log10(abs(x1+x2+x3+x4))))
    if ( min(x1,x2)-x0 ) > accuracy or ( x0-max(x1,x2) ) > accuracy: return []
    if ( min(x3,x4)-x0 ) > accuracy or ( x0-max(x3,x4) ) > accuracy: return []
-   accuracy = np.power(10.0, -5+np.floor(np.log10(abs(y1+y2+y3+y4))))
+   accuracy = np.power(10.0, -5  +np.floor(np.log10(abs(y1+y2+y3+y4))))
    if ( min(y1,y2)-y0 ) > accuracy or ( y0-max(y1,y2) ) > accuracy: return []
    if ( min(y3,y4)-y0 ) > accuracy or ( y0-max(y3,y4) ) > accuracy: return []
-
-   return [[x0,y0]]
+   return [[x0,y0],getNorm2((x0,y0),(x4,y4))/getNorm2((x3,y3),(x4,y4))]
 
 """@brief
    Returns the coordinate of the point at the intersection
@@ -144,13 +164,24 @@ def getConeAngle( (x1,y1),(x2,y2),(x3,y3) ):
    return 0
    """
 
-def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3), size=5 ):
+def isInsideTriangle( (xo,yo),(x1,y1),(x2,y2),(x3,y3), size=5, nomatter=False ):
 
-   l1,l2,l3 = getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
-   accuracy = np.power(10.0, -size+np.floor(np.log10(abs(l1+l2+l3))))
-   #if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 : return [ l1, l2, l3 ]
-   if l1 >= -accuracy and l1 <= 1.0+accuracy and l2 >= -accuracy and l2 <= 1.0+accuracy and l3 >= -accuracy and l3 <= 1.0+accuracy : return [ l1, l2, l3 ]
+   # ~~> Taking sides
+   l1 = (xo-x2)*(y1-y2)-(x1-x2)*(yo-y2) < 0.0
+   l2 = (xo-x3)*(y2-y3)-(x2-x3)*(yo-y3) < 0.0
+   l3 = (xo-x1)*(y3-y1)-(x3-x1)*(yo-y1) < 0.0
+   if l1 == l2 == l3:
+      return getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
+   if nomatter: return getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
    return []
+
+   # ~~> Using barycentric weight
+   #l1,l2,l3 = getBarycentricWeights( (xo,yo),(x1,y1),(x2,y2),(x3,y3) )
+   #accuracy = np.power(10.0, -size+np.floor(np.log10(abs(l1+l2+l3))))
+   ##if l1 >= 0.0 and l1 <= 1.0 and l2 >= 0.0 and l2 <= 1.0 and l3 >= 0.0 and l3 <= 1.0 : return [ l1, l2, l3 ]
+   #if l1 >= -accuracy and l1 <= 1.0+accuracy and l2 >= -accuracy and l2 <= 1.0+accuracy and l3 >= -accuracy and l3 <= 1.0+accuracy : return [ l1, l2, l3 ]
+   #if nomatter: return [ l1,l2,l3 ]
+   #return []
 
 def isInsidePoly( (xo,yo), poly, close=True ):
 # ... by the "Ray Casting Method".

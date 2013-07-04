@@ -73,119 +73,6 @@ from utils.files import getFileContent,putFileContent
 # ____/ General Toolbox /__________________________________________/
 #
 
-def getHeaderParametersSLF(f):
-
-   # ~~ Read title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l,TITLE,chk = unpack('>i80si',f.read(4+80+4))
-   if l!=chk:
-      print '... Cannot read the TITLE of your SELAFIN file'
-      sys.exit()
-
-   # ~~ Read NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l,NBV1,NBV2,chk = unpack('>iiii',f.read(4+8+4))
-   # ~~ Read variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   VARNAMES = []; VARUNITS = []
-   for i in range(NBV1):
-     l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
-     VARNAMES.append(vn)
-     VARUNITS.append(vu)
-   CLDNAMES = []; CLDUNITS = []
-   for i in range(NBV2):
-     l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
-     CLDNAMES.append(vn)
-     CLDUNITS.append(vu)
-
-   # ~~ Read IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   d = unpack('>12i',f.read(4+40+4))
-   IPARAM = np.asarray( d[1:11] )
-
-   # ~~ Read DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   DATETIME = [1972,07,13,17,15,13]
-   if IPARAM[9] == 1:
-      d = unpack('>8i',f.read(4+24+4))
-      DATETIME = np.asarray( d[1:9] )
-
-   # ~~ Read NELEM3, NPOIN3, NDP, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   l,NELEM3,NPOIN3,NDP,NPLAN,chk = unpack('>6i',f.read(4+16+4))
-
-   return TITLE, NBV1,VARNAMES,VARUNITS, NBV2,CLDNAMES,CLDUNITS, IPARAM, DATETIME, NELEM3,NPOIN3,NDP,NPLAN
-
-def getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN):
-
-   # ~~ Read the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.seek(4,1)
-   IKLE = np.array( unpack('>'+str(NELEM3*NDP)+'i',f.read(4*NELEM3*NDP)) ).reshape((NELEM3,NDP))
-   f.seek(4,1)
-
-   # ~~ Read the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.seek(4,1)
-   IPOBO = np.asarray( unpack('>'+str(NPOIN3)+'i',f.read(4*NPOIN3)) )
-   f.seek(4,1)
-
-   # ~~ Read the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
-   f.seek(4,1)
-   MESHX = np.asarray( unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN)) )
-   f.seek(4,1)
-
-   # ~~ Read the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
-   f.seek(4,1)
-   MESHY = np.asarray( unpack('>'+str(NPOIN3/NPLAN)+'f',f.read(4*NPOIN3/NPLAN)) )
-   f.seek(4,1)
-
-   return IKLE-1,IPOBO,MESHX,MESHY
-
-def getTimeHistorySLF(f,NVAR,NPOIN3):
-
-   ATs = []; ATt = []
-   while True:
-      try:
-         ATt.append(f.tell())
-         # ~~ Read AT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         f.seek(4,1)
-         ATs.append(unpack('>f',f.read(4))[0])
-         f.seek(4,1)
-         # ~~ Skip Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         f.seek(NVAR*(4+4*NPOIN3+4),1)
-         
-      except:
-         ATt.pop(len(ATt)-1)   # since the last record failed the try
-         break
-
-   return ATt, np.asarray(ATs)
-
-def getVariablesAt( f,tags,frame,NVAR,NPOIN3,varsIndexes ):
-
-   z = np.zeros((len(varsIndexes),NPOIN3))
-   # if tags has 31 frames, len(tags)=31 from 0 to 30, then frame should be >= 0 and < len(tags)
-   if frame < len(tags['cores']) and frame >= 0:
-      f.seek(tags['cores'][frame])
-      f.seek(4+4+4,1)
-      for ivar in range(NVAR):
-         f.seek(4,1)
-         if ivar in varsIndexes:
-            z[varsIndexes.index(ivar)] = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
-         else:
-            f.seek(4*NPOIN3,1)
-         f.seek(4,1)
-
-   return z
-
-def parseSLF(f):
-   
-   tags = { }; f.seek(0)
-   
-   tags.update({ 'meta': f.tell() })
-   TITLE,NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS,IPARAM,DATETIME,NELEM3,NPOIN3,NDP,NPLAN = getHeaderParametersSLF(f)
-
-   tags.update({ 'mesh': f.tell() })
-   IKLE,IPOBO,MESHX,MESHY = getHeaderMeshSLF(f,NELEM3,NPOIN3,NDP,NPLAN)
-
-   ATtags,ATs = getTimeHistorySLF(f,NBV1+NBV2,NPOIN3)
-   tags.update({ 'cores': ATtags })
-   tags.update({ 'times': ATs })
-
-   return tags, TITLE,DATETIME,IPARAM,(NELEM3,NPOIN3,NDP,NPLAN),(NBV1,VARNAMES,VARUNITS,NBV2,CLDNAMES,CLDUNITS),(IKLE,IPOBO,MESHX,MESHY)
-
 def subsetVariablesSLF(vars,ALLVARS):
    ids = []; names = []
    # vars has the form "var1:object;var2:object;var3;var4"
@@ -204,23 +91,27 @@ def subsetVariablesSLF(vars,ALLVARS):
 
    return ids,names
 
-def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,varsName) ):
+def getValueHistorySLF( f,tags,time,(le,ln,bn),NVAR,NPOIN3,(varsIndexes,varsName) ):
 
    # ~~ Subset time ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # /!\ History requires 2 values, both values should be integers starting from 0 to -1, just like frame
    if len(time) != 2:
       print "... A time history needs 2 frames. You seem to wish to extract ",len(time)," frame(s)."
       sys.exit()
-   subset = []
    for i in range(len(time)):
-      if time[i] < 0: subset.append(max( 0, len(tags['cores']) + time[i] ))
-      else: subset.append(max( time[i], len(tags['cores'])-1 ))
+      if time[i] < 0: time[i] = max( 0, len(tags['cores']) + time[i] )
+      else: time[i] = min( time[i], len(tags['cores'])-1 )
+   subset = []
+   for t in range(len(tags['cores'])):
+      if t >= time[0] and t <= time[1]: subset.append(t)
+   if len(subset) < 3:
+      print "... A time history needs 2 frames. I could not find any time stamps given the interval: ",time
+      sys.exit()
 
    # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   z = np.zeros((len(varsIndexes),len(bn),len(tags['cores'])))
-   for t in range(len(tags['cores'])):
-      if t < subset[0] or t > subset[1]: continue
-      f.seek(tags['cores'][t])
+   z = np.zeros((len(varsIndexes),len(bn),len(subset)))
+   for t in range(len(subset)):
+      f.seek(tags['cores'][subset[t]])
       f.seek(4+4+4,1)
       for ivar in range(NVAR):
          f.seek(4,1)
@@ -232,9 +123,9 @@ def getValueHistorySLF( f,tags,time,(le,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,va
             f.seek(4*NPOIN3,1)
          f.seek(4,1)
 
-   return ('Time (s)',tags['times']),[(TITLE,varsName,le,z)]
+   return ('Time (s)',tags['times'][subset]),z
 
-def getEdgesSLF(IKLE,MESHX,MESHY):
+def getEdgesSLF(IKLE,MESHX,MESHY,showbar=True):
 
    try:
       from matplotlib.tri import Triangulation
@@ -243,17 +134,19 @@ def getEdgesSLF(IKLE,MESHX,MESHY):
       #print '... you are in bad luck !'
       #print '       ~>  without matplotlib based on python 2.7, this operation takes ages'
       edges = []
-      ibar = 0; pbar = ProgressBar(maxval=len(IKLE)).start()
+      ibar = 0
+      if showbar: pbar = ProgressBar(maxval=len(IKLE)).start()
       for e in IKLE:
-         pbar.update(ibar); ibar += 1
+         ibar += 1
+         if showbar: pbar.update(ibar)
          if [e[0],e[1]] not in edges: edges.append([e[1],e[0]])
          if [e[1],e[2]] not in edges: edges.append([e[2],e[1]])
          if [e[2],e[0]] not in edges: edges.append([e[0],e[2]])
-      pbar.finish()
+      if showbar: pbar.finish()
 
    return edges
 
-def getNeighboursSLF(IKLE,MESHX,MESHY):
+def getNeighboursSLF(IKLE,MESHX,MESHY,showbar=True):
 
    try:
       from matplotlib.tri import Triangulation
@@ -263,11 +156,13 @@ def getNeighboursSLF(IKLE,MESHX,MESHY):
       #print '       ~>  without matplotlib based on python 2.7, this operation takes a little longer'
       insiders = {}; bounders = {}
       #print '    +> start listing neighbours of edges'
-      ibar = 0; pbar = ProgressBar(maxval=(3*len(IKLE))).start()
+      ibar = 0
+      if showbar: pbar = ProgressBar(maxval=(3*len(IKLE))).start()
       for e,i in zip(IKLE,range(len(IKLE))):
          nk = bounders.keys()
          for k in [0,1,2]:
-            pbar.update(ibar); ibar += 1
+            ibar += 1
+            if showbar: pbar.update(ibar)
             if (e[k],e[(k+1)%3]) not in nk: bounders.update({ (e[(k+1)%3],e[k]):i })
             else:
                j = bounders[(e[k],e[(k+1)%3])]
@@ -277,7 +172,8 @@ def getNeighboursSLF(IKLE,MESHX,MESHY):
       neighbours = - np.ones((len(IKLE),3),dtype=np.int)
       for e,i in zip(IKLE,range(len(IKLE))):
          for k in [0,1,2]:
-            pbar.update(ibar); ibar += 1
+            ibar += 1
+            if showbar: pbar.update(ibar)
             if insiders.has_key((e[k],e[(k+1)%3])):
                a,b = insiders[(e[k],e[(k+1)%3])]
                if a == i: neighbours[i][k] = b
@@ -287,7 +183,7 @@ def getNeighboursSLF(IKLE,MESHX,MESHY):
                if a == i: neighbours[i][k] = b
                if b == i: neighbours[i][k] = a
       #pbar.write('    +> listing neighbours of edges completed',ibar)
-      pbar.finish()
+      if showbar: pbar.finish()
 
    return neighbours
 
@@ -321,107 +217,12 @@ def getValuePolylineSLF(f,tags,time,(p,ln,bn),TITLE,NVAR,NPOIN3,(varsIndexes,var
          if ivar in varsIndexes:
             VARSOR = unpack('>'+str(NPOIN3)+'f',f.read(4*NPOIN3))
             for xy in range(len(p)):
-               z[varsIndexes.index(ivar)][it][xy] = bn[xy][0]*VARSOR[ln[xy][0]] + bn[xy][1]*VARSOR[ln[xy][1]] + bn[xy][2]*VARSOR[ln[xy][2]]
+               z[varsIndexes.index(ivar)][it][xy] = bn[xy]*VARSOR[ln[xy][0]] + (1.0-bn[xy])*VARSOR[ln[xy][1]]
          else:
             f.read(4*NPOIN3)
          f.read(4)
 
-   return ('Distance (m)',x),[(TITLE,varsName,subset,z)]
-
-def putSLF(slf):
-
-   putHeaderSLF(slf)
-   # ~~ Write time varying variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for t in range(len(slf.tags['times'])):
-      appendCoreTimeSLF(slf,t)
-      VARSOR = slf.getVALUES(t)
-      appendCoreVarsSLF(slf,VARSOR)
-
-   return
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
-#                                                 Header \_/
-#
-
-def putHeaderSLF(slf): #TODO: optimise for speed, use of struct.Struct
-   f = slf.fole
-
-   # ~~ Write title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>i80si',80,slf.TITLE,80))
-
-  # ~~ Write NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>iiii',4+4,slf.NBV1,slf.NBV2,4+4))
-
-   # ~~ Write variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for i in range(slf.NBV1):
-      f.write(pack('>i',32))
-      f.write(pack('>16s',slf.VARNAMES[i]))
-      f.write(pack('>16s',slf.VARUNITS[i]))
-      f.write(pack('>i',32))
-   for i in range(slf.NBV2):
-      f.write(pack('>i',32))
-      f.write(pack('>16s',slf.CLDNAMES[i]))
-      f.write(pack('>16s',slf.CLDUNITS[i]))
-      f.write(pack('>i',32))
-
-   # ~~ Write IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>i',4*10))
-   for i in range(len(slf.IPARAM)): f.write(pack('>i',slf.IPARAM[i]))
-   f.write(pack('>i',4*10))
-
-   # ~~ Write DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if slf.IPARAM[9] == 1:
-      f.write(pack('>i',4*6))
-      for i in range(6): f.write(pack('>i',slf.DATETIME[i]))
-      f.write(pack('>i',4*6))
-
-   # ~~ Write NELEM3, NPOIN3, NDP, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>6i',4*4,slf.NELEM3,slf.NPOIN3,slf.NDP,slf.NPLAN,4*4))
-
-   # ~~ Write the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>i',4*slf.NELEM3*slf.NDP))
-   f.write(pack('>'+str(slf.NELEM3*slf.NDP)+'i',*(n+1 for e in slf.IKLE for n in e)))
-   f.write(pack('>i',4*slf.NELEM3*slf.NDP))
-
-   # ~~ Write the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>i',4*slf.NPOIN3))
-   f.write(pack('>'+str(slf.NPOIN3)+'i',*(slf.IPOBO)))
-   f.write(pack('>i',4*slf.NPOIN3))
-
-   # ~~ Write the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>i',4*slf.NPOIN3))
-   f.write(pack('>'+str(slf.NPOIN3)+'f',*(slf.MESHX)))
-   f.write(pack('>i',4*slf.NPOIN3))
-
-   # ~~ Write the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
-   f.write(pack('>i',4*slf.NPOIN3))
-   f.write(pack('>'+str(slf.NPOIN3)+'f',*(slf.MESHY)))
-   f.write(pack('>i',4*slf.NPOIN3))
-
-   return
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/^\~~~~~~~~
-#                                                   Core \_/
-#
-
-def appendCoreTimeSLF(slf,t):
-   f = slf.fole
-
-   # Print time record
-   f.write(pack('>ifi',4,slf.tags['times'][t],4))
-
-   return
-
-def appendCoreVarsSLF(slf,VARSOR):
-   f = slf.fole
-
-   # Print variable records
-   for v in VARSOR:
-      f.write(pack('>i',4*slf.NPOIN3))
-      f.write(pack('>'+str(slf.NPOIN3)+'f',*(v)))
-      f.write(pack('>i',4*slf.NPOIN3))
-
-   return
+   return ('Distance (m)',x),p,subset,z
 
 # _____                  ___________________________________________
 # ____/ Primary Classes /__________________________________________/
@@ -533,56 +334,230 @@ class CONLIM:
 
 class SELAFIN:
 
-   DATETIME = [1972,07,13,17,24,27]  # ... needed here ecause optional in SLF
+   DATETIME = [1972,07,13,17,24,27]  # ... needed here because optional in SLF
    
    def __init__(self,fileName):
       self.fileName = fileName
       if fileName != '':
          self.file = open(fileName,'rb')
-         self.tags,self.TITLE,self.DATETIME,self.IPARAM,numbers,vars,mesh = parseSLF(self.file)
+         # ~~> header parameters
+         self.tags = { 'meta': self.file.tell() }
+         self.getHeaderParametersSLF()
+         # ~~> mesh and connectivity
+         self.tags.update({ 'mesh': self.file.tell() })
+         self.getHeaderMeshSLF()
+         # ~~> time series
+         self.tags = { 'cores':[],'times':[] }
+         self.getTimeHistorySLF()
       else:
-         self.tags = []; self.TITLE = ''; self.IPARAM = []
-         numbers = ( 0,0,0,0 ); vars = ( 0,[],[],0,[],[] )
-         mesh = ( [],[],[],[] )
-      self.NELEM3,self.NPOIN3,self.NDP,self.NPLAN = numbers
-      self.NBV1,self.VARNAMES,self.VARUNITS,self.NBV2,self.CLDNAMES,self.CLDUNITS = vars
+         self.TITLE = ''
+         self.NBV1 = 0; self.NBV2 = 0; self.NVAR = self.NBV1 + self.NBV2
+         self.VARINDEX = range(self.NVAR)
+         self.IPARAM = []
+         self.NELEM3 = 0; self.NPOIN3 = 0; self.NDP3 = 0; self.NPLAN = 1
+         self.NELEM2 = 0; self.NPOIN2 = 0; self.NDP2 = 0
+         self.NBV1 = 0; self.VARNAMES = []; self.VARUNITS = []
+         self.NBV2 = 0; self.CLDNAMES = []; self.CLDUNITS = []
+         self.IKLE3 = []; self.IKLE2 = []; self.IPOB2 = []; self.IPOB3 = []; self.MESHX = []; self.MESHY = []
+         self.tags = { 'cores':[],'times':[] }
+
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #   Parsing the Big-Endian binary file
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   def getHeaderParametersSLF(self):
+      f = self.file
+      # ~~ Read title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      l,self.TITLE,chk = unpack('>i80si',f.read(4+80+4))
+      if l!=chk:
+         print '... Cannot read the TITLE of your SELAFIN file'
+         print '     +> Maybe it is the wrong file format or wrong Endian ?'
+         sys.exit()
+      # ~~ Read NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      l,self.NBV1,self.NBV2,chk = unpack('>iiii',f.read(4+8+4))
       self.NVAR = self.NBV1 + self.NBV2
       self.VARINDEX = range(self.NVAR)
-      self.IKLE,self.IPOBO,self.MESHX,self.MESHY = mesh
+      # ~~ Read variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      self.VARNAMES = []; self.VARUNITS = []
+      for i in range(self.NBV1):
+         l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
+         self.VARNAMES.append(vn)
+         self.VARUNITS.append(vu)
+      self.CLDNAMES = []; self.CLDUNITS = []
+      for i in range(self.NBV2):
+         l,vn,vu,chk = unpack('>i16s16si',f.read(4+16+16+4))
+         self.CLDNAMES.append(vn)
+         self.CLDUNITS.append(vu)
+      # ~~ Read IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      d = unpack('>12i',f.read(4+40+4))
+      self.IPARAM = np.asarray( d[1:11] )
+      # ~~ Read DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      self.DATETIME = [1972,07,13,17,15,13]
+      if self.IPARAM[9] == 1:
+         d = unpack('>8i',f.read(4+24+4))
+         self.DATETIME = np.asarray( d[1:9] )
+      # ~~ Read NELEM3, NPOIN3, NDP3, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      l,self.NELEM3,self.NPOIN3,self.NDP3,self.NPLAN,chk = unpack('>6i',f.read(4+16+4))
+      self.NELEM2 = self.NELEM3
+      self.NPOIN2 = self.NPOIN3
+      self.NDP2 = self.NDP3
+      self.NPLAN = max( 1,self.NPLAN )
+      if self.IPARAM[6] > 1:
+         self.NPLAN = self.IPARAM[6] # /!\ How strange is that ?
+         self.NELEM2 = self.NELEM3 / ( self.NPLAN - 1 )
+         self.NPOIN2 = self.NPOIN3 / self.NPLAN
+         self.NDP2 = self.NDP3 / 2
 
-   def getVALUES(self,t):
-      return getVariablesAt( self.file,self.tags,t,self.NVAR,self.NPOIN3,self.VARINDEX )
+   def getHeaderMeshSLF(self):
+      f = self.file
+      # ~~ Read the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.seek(4,1)
+      self.IKLE3 = np.array( unpack('>'+str(self.NELEM3*self.NDP3)+'i',f.read(4*self.NELEM3*self.NDP3)) ) - 1
+      f.seek(4,1)
+      if self.NPLAN > 1: self.IKLE2 = np.compress( self.IKLE3 < self.NPOIN2, self.IKLE3 ).reshape((self.NELEM2,self.NDP2))
+      self.IKLE3 = self.IKLE3.reshape((self.NELEM3,self.NDP3))
+      if self.NPLAN == 1: self.IKLE2 = self.IKLE3
+      # ~~ Read the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.seek(4,1)
+      self.IPOB3 = np.asarray( unpack('>'+str(self.NPOIN3)+'i',f.read(4*self.NPOIN3)) )
+      f.seek(4,1)
+      self.IPOB2 = self.IPOB3[0:self.NPOIN2]
+      # ~~ Read the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
+      f.seek(4,1)
+      self.MESHX = np.asarray( unpack('>'+str(self.NPOIN3)+'f',f.read(4*self.NPOIN3))[0:self.NPOIN2] )
+      f.seek(4,1)
+      # ~~ Read the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~
+      f.seek(4,1)
+      self.MESHY = np.asarray( unpack('>'+str(self.NPOIN3)+'f',f.read(4*self.NPOIN3))[0:self.NPOIN2] )
+      f.seek(4,1)
 
-   def putContent(self,fileName):
+   def getTimeHistorySLF(self):
+      f = self.file
+      ATs = []; ATt = []
+      while True:
+         try:
+            ATt.append(f.tell())
+            # ~~ Read AT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            f.seek(4,1)
+            ATs.append(unpack('>f',f.read(4))[0])
+            f.seek(4,1)
+            # ~~ Skip Values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            f.seek(self.NVAR*(4+4*self.NPOIN3+4),1)
+         except:
+            ATt.pop(len(ATt)-1)   # since the last record failed the try
+            break
+      self.tags.update({ 'cores': ATt })
+      self.tags.update({ 'times': np.asarray(ATs) })
+
+   def getVariablesAt( self,frame,varsIndexes ):
+      f = self.file
+      z = np.zeros((len(varsIndexes),self.NPOIN3))
+      # if tags has 31 frames, len(tags)=31 from 0 to 30, then frame should be >= 0 and < len(tags)
+      if frame < len(self.tags['cores']) and frame >= 0:
+         f.seek(self.tags['cores'][frame])
+         f.seek(4+4+4,1)
+         for ivar in range(self.NVAR):
+            f.seek(4,1)
+            if ivar in varsIndexes:
+               z[varsIndexes.index(ivar)] = unpack('>'+str(self.NPOIN3)+'f',f.read(4*self.NPOIN3))
+            else:
+               f.seek(4*self.NPOIN3,1)
+            f.seek(4,1)
+      return z
+
+   def appendHeaderSLF(self):
+      f = self.fole
+      # ~~ Write title ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>i80si',80,self.TITLE,80))
+     # ~~ Write NBV(1) and NBV(2) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>iiii',4+4,self.NBV1,self.NBV2,4+4))
+      # ~~ Write variable names and units ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      for i in range(self.NBV1):
+         f.write(pack('>i',32))
+         f.write(pack('>16s',self.VARNAMES[i]))
+         f.write(pack('>16s',self.VARUNITS[i]))
+         f.write(pack('>i',32))
+      for i in range(self.NBV2):
+         f.write(pack('>i',32))
+         f.write(pack('>16s',self.CLDNAMES[i]))
+         f.write(pack('>16s',self.CLDUNITS[i]))
+         f.write(pack('>i',32))
+      # ~~ Write IPARAM array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>i',4*10))
+      for i in range(len(self.IPARAM)): f.write(pack('>i',self.IPARAM[i]))
+      f.write(pack('>i',4*10))
+      # ~~ Write DATE/TIME array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      if self.IPARAM[9] == 1:
+         f.write(pack('>i',4*6))
+         for i in range(6): f.write(pack('>i',self.DATETIME[i]))
+         f.write(pack('>i',4*6))
+      # ~~ Write NELEM3, NPOIN3, NDP3, NPLAN ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>6i',4*4,self.NELEM3,self.NPOIN3,self.NDP3,1,4*4))  #/!\ where is NPLAN ?
+      # ~~ Write the IKLE array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>i',4*self.NELEM3*self.NDP3))
+      f.write(pack('>'+str(self.NELEM3*self.NDP3)+'i',*(n+1 for e in self.IKLE3 for n in e)))
+      f.write(pack('>i',4*self.NELEM3*self.NDP3))
+      # ~~ Write the IPOBO array ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>i',4*self.NPOIN3))
+      f.write(pack('>'+str(self.NPOIN3)+'i',*(self.IPOB3)))
+      f.write(pack('>i',4*self.NPOIN3))
+      # ~~ Write the x-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>i',4*self.NPOIN3))
+      f.write(pack('>'+str(self.NPOIN3)+'f',*(np.tile(self.MESHX,self.NPLAN))))
+      f.write(pack('>i',4*self.NPOIN3))
+      # ~~ Write the y-coordinates of the nodes ~~~~~~~~~~~~~~~~~~~~~~~
+      f.write(pack('>i',4*self.NPOIN3))
+      f.write(pack('>'+str(self.NPOIN3)+'f',*(np.tile(self.MESHY,self.NPLAN))))
+      f.write(pack('>i',4*self.NPOIN3))
+
+   def appendCoreTimeSLF( self,t ):
+      f = self.fole
+      # Print time record
+      f.write(pack('>ifi',4,self.tags['times'][t],4))
+
+   def appendCoreVarsSLF( self,VARSOR ):
+      f = self.fole
+      # Print variable records
+      for v in VARSOR:
+         f.write(pack('>i',4*self.NPOIN3))
+         f.write(pack('>'+str(self.NPOIN3)+'f',*(v)))
+         f.write(pack('>i',4*self.NPOIN3))
+
+   def putContent( self,fileName,showbar=True ):
       self.fole = open(fileName,'wb')
-      ibar = 0; pbar = ProgressBar(maxval=len(self.tags['times'])).start()
-      putHeaderSLF(self)
+      ibar = 0
+      if showbar: pbar = ProgressBar(maxval=len(self.tags['times'])).start()
+      self.appendHeaderSLF()
       for t in range(len(self.tags['times'])):
          ibar += 1
-         appendCoreTimeSLF(self,t)
-         appendCoreVarsSLF(self,self.getVALUES(t))
-         pbar.update(ibar)
+         self.appendCoreTimeSLF(t)
+         self.appendCoreVarsSLF(self.getVALUES(t))
+         if showbar: pbar.update(ibar)
       self.fole.close()
-      pbar.finish()
+      if showbar: pbar.finish()
 
-   def getSERIES( self,nodes,varsIndexes=[] ):
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #   Tool Box
+   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   def getVALUES( self,t ):
+      return self.getVariablesAt( t,self.VARINDEX )
+
+   def getSERIES( self,nodes,varsIndexes=[],showbar=True ):
       f = self.file
       if varsIndexes == []: varsIndexes = self.VARINDEX
-
       # ~~ Ordering the nodes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       # This assumes that nodes starts at 1
       onodes = np.sort(np.array( zip(range(len(nodes)),nodes), dtype=[ ('0',int),('1',int) ] ),order='1')
-
       # ~~ Extract time profiles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       z = np.zeros((len(varsIndexes),len(nodes),len(self.tags['cores'])))
       f.seek(self.tags['cores'][0])
-      pbar = ProgressBar(maxval=len(self.tags['cores'])).start()
+      if showbar: pbar = ProgressBar(maxval=len(self.tags['cores'])).start()
       for t in range(len(self.tags['cores'])):
          f.seek(self.tags['cores'][t])
          f.seek(4+4+4,1)
-         pbar.update(t)
+         if showbar: pbar.update(t)
          for ivar in range(self.NVAR):
-
             f.seek(4,1)
             if ivar in varsIndexes:
                jnod = onodes[0]
@@ -596,8 +571,7 @@ class SELAFIN:
             else:
                f.seek(4*self.NPOIN3,1)
             f.seek(4,1)
-
-      pbar.finish()
+      if showbar: pbar.finish()
       return z
 
    def __del__(self): self.file.close()
@@ -640,23 +614,23 @@ class SELAFINS:
          if len(self.slfs) == 2:  # /!\ difference only between two files
             self.slf.fole = open(fileName,'wb')
             ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
-            putHeaderSLF(self.slf)
+            self.slf.appendHeaderSLF()
             for t in range(len(self.slf.tags['times'])):
                ibar += 1
-               appendCoreTimeSLF(self.slf,t)
-               appendCoreVarsSLF(self.slf,self.slf.getVALUES(t)-self.slfs[1].getVALUES(t))
+               self.slf.appendCoreTimeSLF(t)
+               self.slf.appendCoreVarsSLF(self.slf.getVALUES(t)-self.slfs[1].getVALUES(t))
                pbar.update(ibar)
             pbar.finish()
-         else: SELAFIN.putContent(self.slf,fileName) # just a copy
+         else: self.slf.putContent(fileName) # just a copy
       elif self.suite:
          self.slf.fole = open(fileName,'wb')
          ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
-         putHeaderSLF(self.slf)
+         self.slf.appendHeaderSLF()
          for t in range(len(self.slf.tags['times'])):
             ibar += 1
             time = self.slf.tags['times'][t]
-            appendCoreTimeSLF(self.slf,t)
-            appendCoreVarsSLF(self.slf,self.slf.getVALUES(t))
+            self.slf.appendCoreTimeSLF(t)
+            self.slf.appendCoreVarsSLF(getVALUES(t))
             pbar.update(ibar)
          pbar.finish()
          for slf in self.slfs:
@@ -666,8 +640,8 @@ class SELAFINS:
                if slf.tags['times'][t] > time:
                   ibar += 1
                   time = slf.tags['times'][t]
-                  appendCoreTimeSLF(slf,t)
-                  appendCoreVarsSLF(slf,slf.getVALUES(t))
+                  slf.appendCoreTimeSLF(t)
+                  slf.appendCoreVarsSLF(slf.getVALUES(t))
                   pbar.update(ibar)
             pbar.finish()
          self.slf.fole.close()
@@ -690,13 +664,13 @@ class SELAFINS:
             self.slf.NBV1 = len(self.slf.VARNAMES)
             self.slf.NBV2 = len(self.slf.CLDNAMES)
          ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
-         putHeaderSLF(self.slf)
+         self.slf.appendHeaderSLF()
          for t in range(len(self.slf.tags['times'])):
             ibar += 1
-            appendCoreTimeSLF(self.slf,t)
-            appendCoreVarsSLF(self.slf,self.slf.getVALUES(t))
+            self.slf.appendCoreTimeSLF(t)
+            self.slf.appendCoreVarsSLF(self.slf.getVALUES(t))
             for slf in self.slfs[1:]:
-               appendCoreVarsSLF(self.slf,slf.getVALUES(t))
+               self.slf.appendCoreVarsSLF(slf.getVALUES(t))
             pbar.update(ibar)
          pbar.finish()
          self.slf.fole.close()
@@ -720,12 +694,12 @@ class SELAFINS:
          self.slf.NBV1 = len(self.slf.VARNAMES)
          self.slf.NBV2 = len(self.slf.CLDNAMES)
          ibar = 0; pbar = ProgressBar(maxval=len(slf.tags['times'])).start()
-         putHeaderSLF(self.slf)
+         self.slf.appendHeaderSLF()
          for t in range(len(slf.tags['times'])):
             ibar += 1
-            appendCoreTimeSLF(slf,t)
-            appendCoreVarsSLF(self.slf,self.slf.getVALUES(0))
-            appendCoreVarsSLF(slf,slf.getVALUES(t))
+            slf.appendCoreTimeSLF(slf,t)
+            self.slf.appendCoreVarsSLF(self.slf.getVALUES(0))
+            slf.appendCoreVarsSLF(slf.getVALUES(t))
             pbar.update(ibar)
          pbar.finish()
          self.slf.fole.close()
@@ -761,7 +735,7 @@ class PARAFINS(SELAFINS):
             sys.exit()
          # ~~> Create the corresponding map
          self.mapPOIN = np.zeros(self.slf.NPOIN3,dtype=np.int)
-         for i,slf in zip(range(len(self.slfs)),self.slfs): self.mapPOIN[slf.IPOBO-1] = i
+         for i,slf in zip(range(len(self.slfs)),self.slfs): self.mapPOIN[slf.IPOB3-1] = i
 
    def addRoot(self,root):
       # ~~> list all entries
@@ -794,7 +768,7 @@ class PARAFINS(SELAFINS):
          VARSOR = np.zeros((self.slf.NBV1+self.slf.NBV2,self.slf.NPOIN3))
          for slf in self.slfs:
             VARSUB = slf.getVALUES(t)
-            for v in range(self.slf.NVAR): VARSOR[v][slf.IPOBO-1] = VARSUB[v]
+            for v in range(self.slf.NVAR): VARSOR[v][slf.IPOB3-1] = VARSUB[v]
       else: VARSOR = self.slf.getVALUES(t)
       return VARSOR
 
@@ -808,7 +782,7 @@ class PARAFINS(SELAFINS):
             if not islf in mproc: continue
             # ~~> Filter the list of nodes according to sub IPOBO
             subGnodes = np.compress( mproc==islf, np.array( zip(range(len(nodes)),nodes), dtype=[ ('r',int),('n',int) ] ) )
-            subLnodes = np.searchsorted(np.sort(slf.IPOBO),subGnodes['n']) + 1 # /!\ why does this work in a sorted way ?
+            subLnodes = np.searchsorted(np.sort(slf.IPOB2),subGnodes['n']) + 1 # /!\ why does this work in a sorted way ?
             print '         ~> ',len(subLnodes),' nodes from partition ',islf
             # ~~> Get the series from individual sub-files
             subz = slf.getSERIES(subLnodes,varsIndexes)
@@ -817,17 +791,19 @@ class PARAFINS(SELAFINS):
          return z
       else: return self.slf.getSERIES(nodes)  # ,varsIndexes not necessary
 
-   def putContent(self,fileName): # TODO: files also have to have the same header
+   def putContent(self,fileName,showbar=True): # TODO: files also have to have the same header
       self.slf.fole = open(fileName,'wb')
-      ibar = 0; pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
+      ibar = 0
+      if showbar: pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
+      self.slf.appendHeaderSLF()
       # ~~> Time stepping
       for t in range(len(self.slf.tags['times'])):
          ibar += 1
-         appendCoreTimeSLF(self.slf,t) # Time stamps
-         appendCoreVarsSLF(self.slf,self.getPALUES(t))
-         pbar.update(ibar)
+         self.slf.appendCoreTimeSLF(t) # Time stamps
+         self.slf.appendCoreVarsSLF(self.getPALUES(t))
+         if showbar: pbar.update(ibar)
       self.slf.fole.close()
-      pbar.finish()
+      if showbar: pbar.finish()
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/

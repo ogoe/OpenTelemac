@@ -46,6 +46,8 @@ from distutils.dep_util import newer
 # ~~> dependencies towards other modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from utils.progressbar import ProgressBar
+from utils.messages import filterMessage
+
 # _____                   __________________________________________
 # ____/ Global Variables /_________________________________________/
 #
@@ -165,9 +167,20 @@ def copyFile2File(fi,fo):
 """
 def moveFile(fi,po):
    if path.exists(path.join(po,path.basename(fi))):
-      remove(path.join(po,path.basename(fi)))
-      time.sleep(5) # /!\ addition for windows operating system
-   if path.exists(fi): shutil.move(fi,po)
+      try:
+         remove(path.join(po,path.basename(fi)))
+      except:
+         time.sleep(5) # /!\ addition for windows operating system
+         try: remove(path.join(po,path.basename(fi)))
+         except Exception as e:
+            raise Exception([filterMessage({'name':'moveFile::remove','msg':'I could not remove your existing file: '+fi},e,True)])
+   if path.exists(fi):
+      try: shutil.move(fi,po)
+      except:
+         time.sleep(5) # /!\ addition for windows operating system
+         try: shutil.move(fi,po)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'moveFile::shutil.move','msg':'I could not move your file: '+fi+'\n   ... maybe the detination exists?'},e,True)])
    return
 
 """
@@ -209,7 +222,12 @@ def matchSafe(fi,ex,safe,ck):
    for fo in filenames:
       if fnmatch(fo,ex):
          if ck > 1:  #TODO: try except if file access not granted
-            remove(path.join(dp,fo))
+            try: remove(path.join(dp,fo))
+            except:
+               time.sleep(5) # /!\ addition for windows operating system
+               try: remove(path.join(dp,fo))
+               except Exception as e:
+                  raise Exception([filterMessage({'name':'matchSafe::remove','msg':'I could not remove your existing file: '+path.join(dp,fo)},e,True)])
             continue
          exnames.append(path.join(dp,fo))
    if exnames == []: return True

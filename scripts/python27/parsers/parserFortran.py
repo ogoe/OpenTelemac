@@ -46,7 +46,8 @@
 # ~~> dependencies towards standard python
 import re
 import sys
-from os import path,walk,remove, environ, sep, listdir
+from copy import deepcopy
+from os import path,walk,remove, environ, sep
 # ~~> dependencies towards the root of pytel
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
 from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC
@@ -539,7 +540,7 @@ def parsePrincipalWrap(lines):
 
 def parsePrincipalMain(lines,who,type,name,args,resu):
    core = []; core.extend(lines)
-   whi = dict.copy(who); whi['uses'] = {}; whi['vars'] = {}; whi['calls'] = {}; whi['called'] = [] #; whi['alias'] = {}
+   whi = deepcopy(who); whi['uses'] = {}; whi['vars'] = {}; whi['calls'] = {}; whi['called'] = [] #; whi['alias'] = {}
    whi['type'] = type; whi['name'] = name; whi['args'] = args; whi['resu'] = resu
 
    # ~~ Lists aliases in File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -953,6 +954,34 @@ def parseFortHeader(core):
 
    return docs,vars,core
 
+def getPrincipalWrapNames(difFile):
+   # Filter most unuseful
+   SrcF = open(difFile,'r')
+   if path.splitext(path.basename(difFile))[1].lower() in ['.f90','.f95']:
+      flines = delContinuedsF90(delComments(SrcF))        # Strips the F90+ commented lines
+   else:
+      flines = delContinuedsF77(delComments(SrcF))        # Strips the F77 commented lines
+   SrcF.close()                                           # and deletes the continuation characters
+   # Identify main items
+   pFiles = []
+   while flines != []:
+      code,w,face,ctns,flines = parsePrincipalWrap(flines)
+      pFiles.append(w[1])
+   return pFiles
+
+def filterPrincipalWrapNames(uNames,sFiles):
+   oFiles = {}
+   for sFile in sFiles:
+      SrcF = open(sFile,'r')
+      if path.splitext(path.basename(sFile))[1].lower() in ['.f90','.f95']:
+         flines = delContinuedsF90(delComments(SrcF))
+      else:
+         flines = delContinuedsF77(delComments(SrcF))
+      SrcF.close()
+      code,w,face,ctns,flines = parsePrincipalWrap(flines)
+      if w[1] in uNames: oFiles.update({w[1]:sFile})
+   return oFiles
+
 # Note that the spaces are kept in the 'after' text for possible formatting
 doxytags = '(brief|note|warning|history|bug|code)'
 doxycomment = re.compile(r'\s*!(?P<name>%s\b)(?P<after>.*?)\s*\Z'%(doxytags)) #,re.I)
@@ -1160,48 +1189,28 @@ if __name__ == "__main__":
          difFile = args[1]
          # ~~> Scans the first user PRINCI file
          print '      ~> scanning your PRINCI file: ',path.basename(difFile)
-         SrcF = open(difFile,'r')
-         if path.splitext(path.basename(difFile))[1].lower() in ['.f90','.f95']:
-            flines = delContinuedsF90(delComments(SrcF))        # Strips the F90+ commented lines
-         else:
-            flines = delContinuedsF77(delComments(SrcF))        # Strips the F77 commented lines
-         SrcF.close()                                           # and deletes the continuation characters
-         pFiles = []
-         print '        +> found:'
-         while flines != []:
-            code,w,face,ctns,flines = parsePrincipalWrap(flines)
-            pFiles.append(w[1])
-            print '            - ',w[1]
+         pFiles = getPrincipalWrapNames(difFile)
          if pFiles == []:
             print '         ... nothing !'
             print '\n... This does not seem a Fortran file I can read.\n'
             sys.exit()
+         else:
+            print '        +> found:'
+            for oFile in pFiles: print '           - ',oFile
 
       if len(args[1:]) == 1: # if only one PRINCI ...
          # ~~> Get and store original version of files
          print '      ~> scanning the entire system: '
          oFiles = {}
-         print '        +> found:'
-         if not options.noscan:
-            for mod in cfg['MODULES']:
-               for oFile in getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f','.f90']):
-                  SrcF = open(oFile,'r')
-                  if path.splitext(path.basename(oFile))[1].lower() in ['.f90','.f95']:
-                     flines = delContinuedsF90(delComments(SrcF))
-                  else:
-                     flines = delContinuedsF77(delComments(SrcF))
-                  SrcF.close()
-                  code,w,face,ctns,flines = parsePrincipalWrap(flines)
-                  if w[1] in pFiles:
-                     oFiles.update({w[1]:oFile})
-                     print '            - ',w[1],' in ',path.basename(oFile),' in ',mod
-         else:
-            print '\n... Option with noscan not implemented yet ...\n'
-            sys.exit()
+         for mod in cfg['MODULES']: oFiles.update( filterPrincipalWrapNames( pFiles,
+            getTheseFiles(path.join(cfg['MODULES'][mod]['path'],'sources'),['.f','.f90']) ) )
          if oFiles == {}:
             print '         ... nothing !'
             print '\n... Your program does not seem to be related to the system in this configuration.\n'
             sys.exit()
+         else:
+            print '        +> found:'
+            for oFile in oFiles: print '           - ',path.basename(oFile)
          oriFile = path.splitext(difFile)[0]+'.original'+path.splitext(difFile)[1]
          putFileContent(oriFile,[])
          for p in pFiles:

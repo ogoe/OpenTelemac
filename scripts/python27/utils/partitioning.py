@@ -84,8 +84,7 @@ from progressbar import ProgressBar
 from files import getFileContent
 # ~~> dependencies towards one level up modules
 sys.path.append( path.join( path.dirname(sys.argv[0]), '..' ) ) # clever you !
-from parsers.parserSELAFIN import CONLIM,SELAFIN,putHeaderSLF, \
-   appendCoreTimeSLF,appendCoreVarsSLF,subsetVariablesSLF,getVariablesAt
+from parsers.parserSELAFIN import CONLIM,SELAFIN,subsetVariablesSLF
 from parsers.parserKenue import putInS
 
 # _____                          ___________________________________
@@ -147,7 +146,8 @@ class splitSELAFIN():
       SLFn.VARINDEX = range(self.slf.NVAR)
       #   Unchanged numbers
       SLFn.NPLAN = self.slf.NPLAN
-      SLFn.NDP = self.slf.NDP
+      SLFn.NDP2 = self.slf.NDP2
+      SLFn.NDP3 = self.slf.NDP3
 
       return SLFn
 
@@ -157,7 +157,7 @@ class splitSELAFIN():
       # ~~> NPARTS is the number of parts /!\ does not check continuity vs. missing parts
       NPARTS = max(*KSPLIT)
 
-      NSPLIT = np.zeros( self.slf.NPOIN3 ,dtype=np.int )
+      NSPLIT = np.zeros( self.slf.NPOIN2 ,dtype=np.int )
       for part in range(NPARTS):
          k = np.compress(KSPLIT==(part+1),range(len(self.slf.IKLE)))
          NSPLIT[self.slf.IKLE[k]] = KSPLIT[k]
@@ -173,9 +173,7 @@ class splitSELAFIN():
          print '... Could not find ',var,', you may need another split method'
          sys.exit()
       # ~~> NSPLIT is the interger value of the variable PROCESSORS (time frame 0)
-      NSPLIT = np.array( \
-         getVariablesAt( self.slf.file,self.slf.tags,0,self.slf.NVAR,self.slf.NPOIN3,i )[0], \
-         dtype=np.int)
+      NSPLIT = np.array( self.slf.getVariablesAt( 0,i )[0], dtype=np.int)
 
       # ~~> NPARTS is the number of parts /!\ does not check continuity vs. missing parts
       NPARTS = max(*NSPLIT) + 1   # User numbering NSPLIT starts from 0
@@ -187,7 +185,7 @@ class splitSELAFIN():
    def setSplitForBoundaries(self,NSPLIT,KFRGL,KSPLIT):
 
       # ~~> Join up the global boundary nodes with the halo elements
-      IPOBO = np.zeros(self.slf.NPOIN3,dtype=np.int)
+      IPOBO = np.zeros(self.slf.NPOIN2,dtype=np.int)
       IPOBO[KFRGL.keys()] = np.array(KFRGL.values(),dtype=np.int)+1  # this is so the nonzero search is easier
 
       # ~~> Cross check partition quality -- step 1
@@ -292,7 +290,7 @@ class splitSELAFIN():
 
    def resetPartition(self,part,PINTER,KSPLIT):
 
-      MASKER = np.zeros(self.slf.NPOIN3,dtype=np.int)
+      MASKER = np.zeros(self.slf.NPOIN2,dtype=np.int)
       for p in PINTER: MASKER[p] = np.arange(len(p))+1 # PINTER is ordered
 
       KIKLE = np.compress(np.maximum(*(MASKER[self.slf.IKLE].T))>=0,range(len(self.slf.IKLE)))
@@ -571,11 +569,11 @@ class splitSELAFIN():
          print '\n... Printing the domain split into a SELAFIN'
          fileRoot,fileExts = path.splitext(self.slf.fileName)
          self.slf.fole = open(fileRoot+'_PROCS'+fileExts,'wb')
-         putHeaderSLF(self.slf)
-         appendCoreTimeSLF(self.slf,0)
+         self.slf.appendHeaderSLF()
+         self.slf.appendCoreTimeSLF(0)
          VARSOR = self.slf.getVALUES(0)
          for v in range(self.slf.NVAR): VARSOR[v] = self.NSPLIT
-         appendCoreVarsSLF(self.slf,VARSOR)
+         self.slf.appendCoreVarsSLF(VARSOR)
          self.slf.fole.close()
 
       print '\n... Storing the global liquid boundary numbering (NUMLIQ)'
@@ -631,9 +629,9 @@ class splitSELAFIN():
          fmti = fmti[len(fmti)-5:]
          print '    +> part ',part+1,' of ',self.NPARTS
 
-         self.slfn.IKLE = LIKLE[part]
-         self.slfn.NELEM3 = len(LIKLE[part])
-         self.slfn.NPOIN3 = len(KNOLG[part])
+         self.slfn.IKLE2 = LIKLE[part]
+         self.slfn.NELEM2 = len(LIKLE[part])
+         self.slfn.NPOIN2 = len(KNOLG[part])
          # ~~> IPARAM has two new values: 8:NPTFR and 9:NPTIR
          self.slfn.IPARAM[7] = len(np.unique(np.concatenate(polyFILTER[part])))
          self.slfn.IPARAM[8] = len(NPTIR[part])
@@ -642,8 +640,8 @@ class splitSELAFIN():
 
          print '       ~> filtering the MESH'
          # ~~> GEO file: MESH coordinates
-         self.slfn.MESHX = np.zeros(self.slfn.NPOIN3,dtype=np.float32)
-         self.slfn.MESHY = np.zeros(self.slfn.NPOIN3,dtype=np.float32)
+         self.slfn.MESHX = np.zeros(self.slfn.NPOIN2,dtype=np.float32)
+         self.slfn.MESHY = np.zeros(self.slfn.NPOIN2,dtype=np.float32)
          self.slfn.MESHX = self.slf.MESHX[KNOLG[part]]
          self.slfn.MESHY = self.slf.MESHY[KNOLG[part]]
 
@@ -654,13 +652,13 @@ class splitSELAFIN():
          # ~~> GEO file: Printing
          print '       ~> printing: ',self.slfn.fileName
          self.slfn.fole = open(self.slfn.fileName,'wb')
-         putHeaderSLF(self.slfn)
-         LVARSOR = np.zeros((self.slfn.NVAR,self.slfn.NPOIN3),dtype=np.float32)
+         self.slfn.appendHeaderSLF()
+         LVARSOR = np.zeros((self.slfn.NVAR,self.slfn.NPOIN2),dtype=np.float32)
          for t in range(len(self.slf.tags['times'])):
-            appendCoreTimeSLF(self.slfn,t)
+            self.slfn.appendCoreTimeSLF(t)
             VARSOR = self.slf.getVALUES(t)
             for v in range(self.slfn.NVAR): LVARSOR[v] = VARSOR[v][KNOLG[part]]
-            appendCoreVarsSLF(self.slfn,LVARSOR)
+            self.slfn.appendCoreVarsSLF(LVARSOR)
          self.slfn.fole.close()
 
       if not self.isCONLIM: return

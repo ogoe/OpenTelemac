@@ -153,19 +153,20 @@ class scanSELAFIN(PARAFINS,chopSELAFIN): # /!\ does not support PARAFINS yet -- 
       if len(self.slf.CLDNAMES) > 0: print "CLANDESTINES :\n   - " + "\n   - ".join(v+u for v,u in zip(self.slf.CLDNAMES,self.slf.CLDUNITS))
       print "NUMBERs      :"
       print "   - NPLAN* = ",self.slf.IPARAM[6],"\n   - NPTFR* = ",self.slf.IPARAM[7],"\n   - IFACE* = ",self.slf.IPARAM[8]
-      print "   - NELEM3 = ",self.slf.NELEM3,"\n   - NPOIN3 = ",self.slf.NPOIN3,"\n   - NDP    = ",self.slf.NDP,"\n   - NPLAN  = ",self.slf.NPLAN
+      print "   - NELEM3 = ",self.slf.NELEM3,"\n   - NPOIN3 = ",self.slf.NPOIN3,"\n   - NDP3   = ",self.slf.NDP3,"\n   - NPLAN  = ",self.slf.NPLAN
+      if self.slf.NPLAN > 1: print "   - NELEM2 = ",self.slf.NELEM2,"\n   - NPOIN2 = ",self.slf.NPOIN2,"\n   - NDP2   = ",self.slf.NDP2
       print "MESH         : / min: [ ",np.min(self.slf.MESHX),";",np.min(self.slf.MESHY),"]  / max: [ ",np.max(self.slf.MESHX),";",np.max(self.slf.MESHY),"]"
 
    def printCore(self):
       for v in range(self.slf.NBV1):
          print "VARIABLE     : ",self.slf.VARNAMES[v]
          for t in range(len(self.slf.tags['times'])):
-            VARSOR = getVariablesAt( self.slf.file,self.slf.tags,t,self.slf.NVAR,self.slf.NPOIN3,[self.slf.VARINDEX[v]] )
+            VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v]] )
             print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
       for v in range(self.slf.NBV2):
          print "CLANDESTINE  : ",self.slf.CLDNAMES[v]
          for t in range(len(self.slf.tags['times'])):
-            VARSOR = getVariablesAt( self.slf.file,self.slf.tags,t,self.slf.NVAR,self.slf.NPOIN3,[self.slf.VARINDEX[v+self.slf.NBV1]] )
+            VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v+self.slf.NBV1]] )
             print "    / TIME: ",self.slf.tags['times'][t],"/ min:",np.min(VARSOR[0]),"/ max:",np.max(VARSOR[0])
 
    def printTimeSummary(self):
@@ -268,13 +269,13 @@ class calcsSELAFIN(PARAFINS,alterSELAFIN):
    def putContent(self,fileName):
       self.slf.fole = open(fileName,'wb')
       pbar = ProgressBar(maxval=len(self.slf.tags['times'])).start()
-      putHeaderSLF(self.slf)
+      self.slf.appendHeaderSLF()
       # ~~> Time stepping
       for t in range(len(self.slf.tags['times'])):
-         appendCoreTimeSLF(self.slf,t)
+         self.slf.appendCoreTimeSLF(t)
          vars = self.getPALUES(t)
-         appendCoreVarsSLF(self.slf,vars)
-         for fct,args in self.calcs: appendCoreVarsSLF(self.slf,fct(vars,args))
+         self.slf.appendCoreVarsSLF(vars)
+         for fct,args in self.calcs: self.slf.appendCoreVarsSLF(fct(vars,args))
          pbar.update(t)
       pbar.finish()
       self.slf.fole.close()
@@ -390,39 +391,71 @@ class crunchSELAFIN(PARAFINS,alterSELAFIN):
             self.slf.VARNAMES.append(cname)
             self.slf.VARUNITS.append(cunit)
             self.slf.NBV1 += 1
-      putHeaderSLF(self.slf)
+      self.slf.appendHeaderSLF()
       # ~~> Core
-      appendCoreTimeSLF(self.slf,0)
+      self.slf.appendCoreTimeSLF(0)
       for calc,icalc in zip(self.calcs,range(len(self.calcs))):
          fct = calc['stop']
-         appendCoreVarsSLF(self.slf,fct(t0,t,vari[icalc]))
+         self.slf.appendCoreVarsSLF(fct(t0,t,vari[icalc]))
       self.slf.fole.close()
 
-class subSELAFIN(SELAFIN):
+class subSELAFIN(SELAFIN): # TODO with 3D
 
    def __init__(self,f):
       SELAFIN.__init__(self,f)
-      self.IKLE,self.MESHX,self.MESHY,self.IPOBO,self.INTERP = subdivideMesh(self.IKLE,self.MESHX,self.MESHY)
+      self.IKLE2,self.MESHX,self.MESHY,self.IPOB2,self.INTERP = subdivideMesh(self.IKLE2,self.MESHX,self.MESHY)
       
    def putContent(self,fileName):
+      # ~~> Doubling the number of NPLAN
+      nplo = self.NPLAN
+      if self.NPLAN > 1: self.NPLAN = 2 * self.NPLAN - 1
+      npln = self.NPLAN
+      if self.IPARAM[6] > 1: self.IPARAM[6] = self.NPLAN
+      # ~~> Getting the new size of NPOIN2 from MESHX
+      np2o = self.NPOIN2
+      self.NPOIN2 = len(self.MESHX)
+      np2n = self.NPOIN2
+      # ~~> Setting the new size of NPOIN3
       np3o = self.NPOIN3
-      self.NPOIN3 = len(self.MESHX)
+      self.NPOIN3 = self.NPLAN * self.NPOIN2
       np3n = self.NPOIN3
-      self.NELEM3 = len(self.IKLE)
+      # ~~> Getting the new size of NELEM2 from self.IKLE2
+      nel2o = self.NELEM2
+      self.NELEM2 = len(self.IKLE2)
+      nel2n = self.NELEM2
+      # ~~> Setting the new size of NELEM3
+      nel3o = self.NELEM3
+      if self.NPLAN > 1: self.NELEM3 = (self.NPLAN-1)*self.NELEM2
+      else: self.NELEM3 = self.NELEM2
+      nel3n = self.NELEM3
+      # ~~> Connecting
+      self.IPOB3 = np.zeros(self.NPOIN3,dtype=np.int)
+      for iplan in range(self.NPLAN):
+         self.IPOB3[0+iplan*self.NPOIN2:self.NPOIN2+iplan*self.NPOIN2] = self.IPOB2[0:self.NPOIN2]+iplan*self.NPOIN2
+      if self.NPLAN > 1:
+         self.IKLE3 = np.zeros(self.NELEM3*self.NDP3,dtype=np.int)
+         self.IKLE3[0+self.NELEM2:self.NELEM2] = self.IKLE2[0:self.NELEM2]
+         for iplan in range(self.NPLAN-1):
+            self.IKLE3[(iplan+1)*self.NELEM2:(iplan+2)*self.NELEM2] = self.IKLE2[iplan*self.NELEM2:(iplan+1)*self.NELEM2]
+      else:
+         self.IKLE3 = self.IKLE2
+      # ~~> Filing
       self.fole = open(fileName,'wb')
-      putHeaderSLF(self)
+      self.appendHeaderSLF()
       pbar = ProgressBar(maxval=len(self.tags['times'])).start()
       # ~~> Time stepping
       varx = np.zeros((self.NVAR,self.NPOIN3),np.float32)
       for t in range(len(self.tags['times'])):
-         appendCoreTimeSLF(self,t)
+         self.appendCoreTimeSLF(t)
          self.NPOIN3 = np3o           #\
          vars = self.getVALUES(t)     #|+ game of shadows
          self.NPOIN3 = np3n           #/
          for iv in range(self.NVAR):
-            varx[iv][0:np3o] = vars[iv]
-            varx[iv][np3o:] = np.sum(vars[iv][self.INTERP],axis=1)/2.
-         appendCoreVarsSLF(self,varx)
+            for iplan in range(nplo):
+               varx[iv][0+2*iplan*np2o:np2o+2*iplan*np2o] = vars[iv][0+iplan*np2o:np2o+iplan*np2o]
+               varx[iv][np2o+2*iplan*np2o:] = np.sum(vars[iv][self.INTERP+iplan*np2o],axis=1)/2.
+               if iplan > 1: varx[iv][np2n+2*iplan*np2n:2*np2n+2*iplan*np2o] = ( varx[iv][0+2*iplan*np2n:np2n+2*iplan*np2o] + varx[iv][2*np2n+2*iplan*np2n:3*np2n+2*iplan*np2o] )/2.
+         self.appendCoreVarsSLF(varx)
          pbar.update(t)
       pbar.finish()
       self.fole.close()
@@ -441,7 +474,7 @@ class scanSPECTRAL(scanSELAFIN):
       for v in range(self.slf.NBV1):
          print "VARIABLE     : ",self.slf.VARNAMES[v]
          for t in range(len(self.slf.tags['times'])):
-            VARSOR = getVariablesAt( self.slf.file,self.slf.tags,t,self.slf.NVAR,self.slf.NPOIN3,[self.slf.VARINDEX[v]] )
+            VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v]] )
             print "    / TIME: ",self.slf.tags['times'][t]
             # na significant figures
             accuracy = np.power(10.0, -na+np.floor(np.log10(abs(np.max(VARSOR)))))
@@ -453,7 +486,7 @@ class scanSPECTRAL(scanSELAFIN):
       for v in range(self.slf.NBV2):
          print "CLANDESTINE  : ",self.slf.CLDNAMES[v]
          for t in range(len(self.slf.tags['times'])):
-            VARSOR = getVariablesAt( self.slf.file,self.slf.tags,t,self.slf.NVAR,self.slf.NPOIN3,[self.slf.VARINDEX[v+self.slf.NBV1]] )
+            VARSOR = self.slf.getVariablesAt( t,[self.slf.VARINDEX[v+self.slf.NBV1]] )
             print "    / TIME: ",self.slf.tags['times'][t]
             # na significant figures
             accuracy = np.power(10.0, -na+np.floor(np.log10(abs(np.max(VARSOR)))))

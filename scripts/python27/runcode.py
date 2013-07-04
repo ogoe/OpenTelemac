@@ -129,14 +129,15 @@ from parsers.parserSortie import getLatestSortieFiles
 
 def checkConsistency(cas,dico,frgb,cfg):
 
+   kl,vl = cas
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    lang = 1
    # Look to find the first key that is different in both language
    i = 0
-   while cas.keys()[i] in frgb['FR'].keys()\
-         and cas.keys()[i] in frgb['GB'].keys():
+   while kl[i][0] == '&' or \
+      ( kl[i] in frgb['FR'].keys() and kl[i] in frgb['GB'].keys() ):
       i+=1
-   if cas.keys()[i] not in frgb['FR'].keys(): lang = 2
+   if kl[i] not in frgb['FR'].keys(): lang = 2
 
    # ~~ check for parallel consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    value,defaut = getKeyWord('PROCESSEURS PARALLELES',cas,dico,frgb)
@@ -146,8 +147,8 @@ def checkConsistency(cas,dico,frgb,cfg):
    if 'parallel' not in cfg['MODULES'].keys():
       if ncsize != 0: return False
    else:
-      if lang == 1: setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
-      if lang == 2: setKeyValue('PARALLEL PROCESSORS',cas,frgb,max(ncsize,1))
+      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,max(ncsize,1))
+      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,max(ncsize,1))
 
    # ~~ check for openmi consistency ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
@@ -158,24 +159,25 @@ def processCAS(casFile,dico,frgb):
    # ~~ extract keywords ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cas = readCAS(scanCAS(casFile),dico,frgb)
 
-   # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
+   # ~~ check language on one of the input file names ~~~~~`~~~~~~~~~
    lang = 1
+   kl = cas[0]
    # Look to find the first key that is different in both language
    i = 0
-   while cas.keys()[i] in frgb['FR'].keys()\
-         and cas.keys()[i] in frgb['GB'].keys():
+   while kl[i][0] == '&' or \
+      ( kl[i] in frgb['FR'].keys() and kl[i] in frgb['GB'].keys() ):
       i+=1
-   if cas.keys()[i] not in frgb['FR'].keys(): lang = 2
+   if kl[i] not in frgb['FR'].keys(): lang = 2
 
    # ~~ check language on one of the input file names ~~~~~~~~~~~~~~
    if lang == 1:
       print '... simulation en Francais avec ',path.basename(casFile)
-      setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
-      setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
+      cas = setKeyValue('FICHIER DES PARAMETRES',cas,frgb,repr(path.basename(casFile)))
+      cas = setKeyValue('DICTIONNAIRE',cas,frgb,repr(path.normpath(frgb['DICO'])))
    if lang == 2:
       print '... running in English with ',path.basename(casFile)
-      setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
-      setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
+      cas = setKeyValue('STEERING FILE',cas,frgb,repr(path.basename(casFile)))
+      cas = setKeyValue('DICTIONARY',cas,frgb,repr(path.normpath(frgb['DICO'])))
 
    return cas,lang
 
@@ -190,9 +192,9 @@ def processLIT(cas,iFiles,TMPDir,ncsize,update):
 
    xcpt = []                            # try all files for full report
    # ~~ copy input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k in cas.keys():
+   for k,v in zip(*cas):
       if iFiles.has_key(k):
-         cref = eval(cas[k][0])
+         cref = eval(v[0]) #eval(v[k][0])
          if not path.isfile(cref):
             xcpt.append({'name':'processLIT','msg':'file does not exist: '+path.basename(cref)})
             continue
@@ -241,12 +243,12 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
 
    xcpt = []                            # try all files for full report
    # ~~ copy output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k in cas.keys():
+   for k,v in zip(*cas):
       if oFiles.has_key(k):
          if oFiles[k].split(';')[5] == 'MULTI':   # POSTEL3D
             npsize = 1
             while 1:                              # HORIZONTAL SECTION FILES
-               cref = path.join(CASDir,eval(cas[k][0])+'_{0:03d}'.format(npsize))
+               cref = path.join(CASDir,eval(v[0])+'_{0:03d}'.format(npsize))
                if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)
                if not path.isfile(crun): break
@@ -258,7 +260,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                nptime = 1
                if not path.isfile(oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)): break
                while 1:
-                  cref = path.join(CASDir,eval(cas[k][0])+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
+                  cref = path.join(CASDir,eval(v[0])+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime))
                   if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                   crun = oFiles[k].split(';')[1]+'_{0:03d}'.format(npsize)+'-{0:03d}'.format(nptime)
                   if not path.isfile(crun): break
@@ -268,7 +270,7 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
                npsize = npsize + 1
          elif oFiles[k].split(';')[5] == 'PARAL' and ncsize > 1: # MAIN MODULE
             npsize = 1
-            cb,ce = path.splitext(eval(cas[k][0]))
+            cb,ce = path.splitext(eval(v[0]))
             while 1:
                cref = path.join(CASDir,cb+'{0:05d}-{1:05d}'.format(ncsize-1,npsize)+ce)
                if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
@@ -281,12 +283,12 @@ def processECR(cas,oFiles,CASDir,TMPDir,sortiefile,ncsize,bypass):
          elif oFiles[k].split(';')[5] == 'MULTI2':
             for crun in listdir('.') :
                if crun.count(oFiles[k].split(';')[1]) == 1:
-                  cref = path.join(CASDir,crun.lower().replace(oFiles[k].split(';')[1].lower(),eval(cas[k][0]).split('.')[0])) + '.' + eval(cas[k][0]).split('.')[1]
+                  cref = path.join(CASDir,crun.lower().replace(oFiles[k].split(';')[1].lower(),eval(v[0]).split('.')[0])) + '.' + eval(v[0]).split('.')[1]
                   if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
                   shutil.move(crun,cref)
                   print '  moving: ', path.basename(cref)
          else:
-            cref = path.join(CASDir,eval(cas[k][0]))
+            cref = path.join(CASDir,eval(v[0]))
             if path.isfile(cref): shutil.move(cref,cref+'.old') #shutil.copy2(cref,cref+'.old')
             crun = oFiles[k].split(';')[1]
             if not path.isfile(crun):
@@ -408,8 +410,10 @@ def processExecutable(useName,objName,f90Name,objCmd,exeCmd,CASDir,bypass):
 
 def compilePRINCI(princiFile,codeName,cfgName,cfg,bypass):
 
-   objFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdo')
-   exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+cfg['version']+'.cmdx')
+   plib = cfg['MODULES'][codeName]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
+   pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
+   objFile = path.join(plib,codeName+'.cmdo')
+   exeFile = path.join(plib,codeName+'.cmdx')
    if not path.exists(objFile) or not path.exists(exeFile):
       raise Exception([{'name':'compilePRINCI','msg':'... could not find:' + exeFile + \
          '\n    ~~~> you may need to compile your system with the configuration: ' + cfgName }])
@@ -432,7 +436,7 @@ def getCONLIM(cas,iFiles):
 
    # ~~ look for CONLIM ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    CONLIM = ''
-   for k in cas.keys():
+   for k in cas[0]:
       if iFiles.has_key(k):
          if iFiles[k].split(';')[5] == 'CONLIM': CONLIM = iFiles[k].split(';')[1]
    return CONLIM
@@ -441,7 +445,7 @@ def getGLOGEO(cas,iFiles):
 
    # ~~ look for GLOBAL GEO ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    GLOGEO = ''
-   for k in cas.keys():
+   for k in cas[0]:
       if iFiles.has_key(k):
          if iFiles[k].split(';')[5][-4:] == 'GEOM': GLOGEO = iFiles[k].split(';')[1]
    return GLOGEO
@@ -450,17 +454,17 @@ def runPartition(partel,cas,conlim,iFiles,ncsize,bypass):
 
    if ncsize < 2: return True
    # ~~ split input files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k in cas.keys():
+   for k in cas[0]:
       if iFiles.has_key(k):
          crun = iFiles[k].split(';')[1]
          if iFiles[k].split(';')[5][0:7] == 'SELAFIN':
-            print ' partitioning: ', path.basename(crun)   # path.basename(cas[k][0])
+            print ' partitioning: ', path.basename(crun)
             try:
                runPARTEL(partel,crun,conlim,ncsize,bypass)
             except Exception as e:
                raise Exception([filterMessage({'name':'runPartition'},e,bypass)])
          elif iFiles[k].split(';')[5][0:5] == 'PARAL':
-            print ' duplicating: ', path.basename(crun)    # path.basename(cas[k][0])
+            print ' duplicating: ', path.basename(crun)
             for n in range(ncsize): shutil.copy2(crun,crun+('00000'+str(ncsize-1))[-5:]+'-'+('00000'+str(n))[-5:])
 
    return True
@@ -533,7 +537,7 @@ def runRecollection(gretel,cas,glogeo,oFiles,ncsize,bypass):
 
    if ncsize < 2: return True
    # ~~ aggregate output files ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for k in cas.keys():
+   for k in cas[0]:
       if oFiles.has_key(k):
          crun = oFiles[k].split(';')[1]
          type = oFiles[k].split(';')[5]
@@ -595,8 +599,8 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
    cas,lang = processCAS(casFile,dico,frgb)
    # ~~ Forces run in parallel ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if options.ncsize != '':
-      if lang == 1: setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(options.ncsize))
-      if lang == 2: setKeyValue('PARALLEL PROCESSORS',cas,frgb,int(options.ncsize))
+      if lang == 1: cas = setKeyValue('PROCESSEURS PARALLELES',cas,frgb,int(options.ncsize))
+      if lang == 2: cas = setKeyValue('PARALLEL PROCESSORS',cas,frgb,int(options.ncsize))
    # ~~ Consistency checks ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if not checkConsistency(cas,dico,frgb,cfg):
       raise Exception([{'name':'runCAS','msg':'inconsistent CAS file: '+casFile+ \
@@ -690,9 +694,11 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if path.isfile(f90FilePlage):
          putFileContent(f90File,getFileContent(f90File)+['']+getFileContent(f90FilePlage))
          remove(f90FilePlage)
+   plib = cfg['MODULES'][codeName]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgName+sep+'lib')
+   pbin = cfg['root']+sep+'builds'+sep+cfgName+sep+'bin'
    objFile = path.splitext(f90File)[0] + cfg['SYSTEM']['sfx_obj']
       #> default executable name
-   exeFile = path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+'_'+cfg['version']+cfg['SYSTEM']['sfx_exe'])
+   exeFile = path.join(pbin,codeName+cfg['SYSTEM']['sfx_exe'])
       #> user defined executable name
    useFile = exeFile
    value,defaut = getKeyWord('FICHIER FORTRAN',cas,dico,frgb)
@@ -703,16 +709,16 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
       if path.exists(useFile):
          if isNewer(useFile,useFort) == 1 or cfg['REBUILD'] == 1 : remove(useFile)
       #> default command line compilation and linkage
-   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+'_'+cfg['version']+'.cmdo')):
+   if not path.exists(path.join(plib,codeName+'.cmdo')):
       raise Exception([{'name':'runCAS','msg': \
-         '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+'_'+cfg['version']+'.cmdo') + '\n' + \
+         '\nNot able to find your OBJECT command line: ' + path.join(plib,codeName+'.cmdo') + '\n' + \
          '\n ... you have to compile this module at least: '+codeName}])
-   objCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+'_'+cfg['version']+'.cmdo'))[0]
-   if not path.exists(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+'_'+cfg['version']+'.cmdx')):
+   objCmd = getFileContent(path.join(plib,codeName+'.cmdo'))[0]
+   if not path.exists(path.join(plib,codeName+'.cmdx')):
       raise Exception([{'name':'runCAS','msg': \
-         '\nNot able to find your OBJECT command line: ' + path.join(cfgName,codeName+'_'+cfg['version']+'.cmdx') + '\n' + \
+         '\nNot able to find your OBJECT command line: ' + path.join(plib,codeName+'.cmdx') + '\n' + \
          '\n ... you have to compile this module at least: '+codeName}])
-   exeCmd = getFileContent(path.join(path.join(cfg['MODULES'][codeName]['path'],cfgName),codeName+'_'+cfg['version']+'.cmdx'))[0]
+   exeCmd = getFileContent(path.join(plib,codeName+'.cmdx'))[0]
    # >>> Compiling the executable if required
    exename = path.join(WDir,'out_'+path.basename(useFile))
    runCmd = exename
@@ -750,10 +756,10 @@ def runCAS(cfgName,cfg,codeName,casFile,options):
 
       # >>> Parallel tools
       # ~~> Path
-      PARDir = path.join(cfg['MODULES']['parallel']['path'],cfgName)
-      if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',path.join(cfg['MODULES']['parallel']['path'],cfgName))
+      PARDir = pbin
+      if cfg['PARALLEL'].has_key('PATH'): PARDir = cfg['PARALLEL']['PATH'].replace('<root>',cfg['root']).replace('<config>',pbin)
       # ~~> Call to PARTEL
-      parCmd = path.join('<config>'+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
+      parCmd = path.join(pbin+sep+'partel'+cfg['SYSTEM']['sfx_exe']+' < PARTEL.PAR >> <partel.log>')
       if cfg['PARALLEL'].has_key('EXEC'): parCmd = cfg['PARALLEL']['EXEC']
       parCmd = parCmd.replace('<mpi_cmdexec>',mpiCmd).replace('<exename>','')
       parCmd = parCmd.replace('<root>',cfg['root']).replace('<config>',PARDir)

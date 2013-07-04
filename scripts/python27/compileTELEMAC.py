@@ -82,11 +82,12 @@ import sys
 from os import path, sep, walk, chdir, remove, environ
 import ConfigParser
 # ~~> dependencies towards the root of pytel
-from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC,cleanConfig
+from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC,cleanConfig,getFolders_ModulesTELEMAC
 from parsers.parserFortran import scanSources
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories,putFileContent,isNewer
 from utils.messages import MESSAGES,filterMessage
+from utils.progressbar import ProgressBar
 
 # _____                  ___________________________________________
 # ____/ General Toolbox /__________________________________________/
@@ -157,30 +158,31 @@ def getTree(name,lname,list,level,rebuild):
 def putScanContent(file,content):
    lines = []
    if content.has_key('general'):
-      lines.append('[general]'+'\n'+'path: '+content['general']['path']+'\n'+'module: '+content['general']['module'])
+      lines.append('[general]'+'\n'+'path: '+content['general']['path'].replace(content['general']['root'],'<root>').replace(sep,'|')+'\n'+'module: '+content['general']['module'])
       lines.append('liborder: '+' '.join(content['general']['liborder']))
       lines.append('version: '+content['general']['version']+'\n'+'name: '+content['general']['name'])
    for lib in content.keys():
       if lib == 'general': continue
-      lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path']+'\n'+'files: '+'\n  '.join(content[lib]['files']))
+      lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path'].replace(content['general']['root'],'<root>').replace(sep,'|')+'\n'+'files: '+'\n  '.join(content[lib]['files']))
    putFileContent(file,lines)
    return
 
-def getScanContent(file,bypass):
+def getScanContent(file,root,bypass):
    content = {}
-   if not path.exists(file): raise Exception([{'name':'getScanContent','msg':'Could not find the cmdf-scan file: '+file}])
+   if not path.exists(file): raise Exception([{'name':'getScanContent','msg':'Could not find the cmdf-scan file: '+file+'\n     ... you may have to use the --rescan option'}])
    # ~~ Read Configuration File ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    cfgfile = ConfigParser.RawConfigParser()
    try:
       cfgfile.read(file)
    except Exception as e:
-      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not read the required parameters in the cmdf-scan file: '+file},e,bypass)])
+      raise Exception([filterMessage({'name':'getScanContent','msg':'Could not read the required parameters in the cmdf-scan file: '+file+'\n     ... you may have to use the --rescan option'},e,bypass)])
    # ~~ Read General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    try:
       general = dict(cfgfile.items('general'))
    except Exception as e:
       raise Exception([filterMessage({'name':'getScanContent','msg':'Could not find the general section in the cmdf-scan file: '+file},e,bypass)])
    if not general.has_key('path'): raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the general section of the cmdf-scan file:'+file}])
+   general['path'] = general['path'].replace('<root>',root).replace('|',sep)
    if not general.has_key('module'): raise Exception([{'name':'getScanContent','msg':'Could not find the key module in the general section of the cmdf-scan file:'+file}])
    if not general.has_key('liborder'): raise Exception([{'name':'getScanContent','msg':'Could not find the key liborder in the general section of the cmdf-scan file:'+file}])
    if not general.has_key('version'): raise Exception([{'name':'getScanContent','msg':'Could not find the key version in the general section of the cmdf-scan file:'+file}])
@@ -193,6 +195,7 @@ def getScanContent(file,bypass):
       if lib not in content['general']['liborder']: raise Exception([{'name':'getScanContent','msg':'Found a section not in the [general] liborder key ' + lib + ' of the cmdf-scan file:'+file}])
       content.update({lib:dict(cfgfile.items(lib))})
       if not content[lib].has_key('path'): raise Exception([{'name':'getScanContent','msg':'Could not find the key path in the section ' + lib + ' of the cmdf-scan file:'+file}])
+      content[lib]['path'] = content[lib]['path'].replace('<root>',root).replace('|',sep)
       if not content[lib].has_key('files'): raise Exception([{'name':'getScanContent','msg':'Could not find the key files in the section ' + lib + ' of the cmdf-scan file:'+file}])
       content[lib]['files'] = content[lib]['files'].replace('\n',' ').replace('  ',' ').split()
    for lib in content['general']['liborder']:
@@ -204,7 +207,7 @@ def createObjFiles(oname,oprog,odict,ocfg,bypass):
    Root,Suffix = path.splitext(path.basename(oname))
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ObjDir = cfg['MODULES'][odict['libname']]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ocfg)
+   ObjDir = cfg['MODULES'][odict['libname']]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ocfg+sep+'lib')
    createDirectories(ObjDir)
    chdir(ObjDir)
 
@@ -222,7 +225,7 @@ def createObjFiles(oname,oprog,odict,ocfg,bypass):
    cmd = cmd.replace('<incs>',incs)
    mods = ''
    for mod in HOMERES[oprog]['deps']:
-      mods = mods + cfg['MODULES'][odict['libname']]['mods'].replace('<config>',cfg['MODULES'][mod]['path']).replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ocfg) + ' '
+      mods = mods + cfg['MODULES'][odict['libname']]['mods'].replace('<config>',cfg['MODULES'][mod]['path']).replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ocfg+sep+'lib') + ' '
    cmd = cmd.replace('<mods>',mods)
    cmd = cmd.replace('<f95name>',path.join(odict['path'],oname))
    cmd = cmd.replace('<config>',ObjDir).replace('<root>',cfg['root'])
@@ -234,22 +237,22 @@ def createObjFiles(oname,oprog,odict,ocfg,bypass):
    except Exception as e:
       raise Exception([filterMessage({'name':'createObjFiles','msg':'something went wrong, I am not sure why. Please verify your compiler installation or the python script itself.'},e,bypass)])
    if code != 0: raise Exception([{'name':'createObjFiles','msg':'could not compile your FORTRAN (runcode='+str(code)+').\n      '+tail}])
-   if odict['type'] == 'M': print '   - created ' + ObjFile + ' and ' + ModFile
-   else: print '   - created ' + ObjFile
+   if odict['type'] == 'M': out = '   - created ' + ObjFile + ' and ' + ModFile
+   else: out = '   - created ' + ObjFile
    odict['time'] = 1
    #and remove .f from objList
-   return
+   return out
 
 def createLibFiles(lname,lcfg,lprog,bypass):
    # ~~ Assumes that all objects are in <config> ~~~~~~~~~~~~~~~~~~~
    # ~~ recreates the lib regardless ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   LibDir = cfg['MODULES'][path.basename(lname)]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg)
+   LibDir = cfg['MODULES'][path.basename(lname)]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg+sep+'lib')
    chdir(LibDir)
 
    # LibFile is now created directly within prg[0]'s directory - /!\ hopefuly, the directory exists
-   LibFile = path.join(cfg['MODULES'][lprog]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg),lname + '_' + cfg['version'] + cfg['SYSTEM']['sfx_lib'])
+   LibFile = path.join(cfg['MODULES'][lname]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+lcfg+sep+'lib'),lprog.lower() + cfg['SYSTEM']['sfx_lib'])
 
    # ~~ Lists all objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
@@ -260,7 +263,7 @@ def createLibFiles(lname,lcfg,lprog,bypass):
       if lib == lname: ObjFiles = ObjFiles + (path.basename(obj).lower()+cfg['SYSTEM']['sfx_obj']+' ')
 
    # ~~ is linkage necessary ? ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 1 and path.exists(LibFile): remove(LibFile)
+   if cfg['COMPILER']['REBUILD'] > 0 and cfg['COMPILER']['REBUILD'] < 2 and path.exists(LibFile): remove(LibFile)
    if path.exists(LibFile):
       refresh = False
       for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,LibFile) == 0 ) or ( not path.exists(o) )
@@ -281,34 +284,44 @@ def createLibFiles(lname,lcfg,lprog,bypass):
       raise Exception([filterMessage({'name':'createLibFiles','msg':'something went wrong, I am not sure why. Please verify your compilation or the python script itself.'},e,bypass)])
    if code != 0: raise Exception([{'name':'createLibFiles','msg':'Could not pack your library (runcode='+str(code)+').\n      '+tail}])
    print '   - created ' + LibFile
-   return
+   return False
 
 def createExeFiles(ename,ecfg,eprog,bypass):
 
    # ~~ Directories ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ExeDir = cfg['MODULES'][eprog.lower()]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ecfg)
-   chdir(ExeDir)
-   
+   LibDir = cfg['MODULES'][eprog]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ecfg+sep+'lib')
+   chdir(LibDir)
+   ExeDir = cfg['root']+sep+'builds'+sep+ecfg+sep+'bin'
+   createDirectories(ExeDir)
+
    # ~~ Removes existing executables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   ExeFile = path.join(ExeDir,eprog + '_' + cfg['version'] + cfg['SYSTEM']['sfx_exe'])
-   LibFile = path.join(ExeDir,eprog + '_' + cfg['version'] + cfg['SYSTEM']['sfx_lib'])
-   ObjCmd = path.join(ExeDir,eprog + '.cmdo')
-   ExeCmd = path.join(ExeDir,eprog + '.cmdx')
+   if 'homere' in ename.lower() or 'systeme' in ename.lower():
+      ExeFile = path.join(ExeDir,eprog + cfg['SYSTEM']['sfx_exe'])
+      ObjCmd = path.join(LibDir,eprog + '.cmdo')
+      ExeCmd = path.join(LibDir,eprog + '.cmdx')
+   else:
+      ExeFile = path.join(ExeDir,ename + cfg['SYSTEM']['sfx_exe'])
+      ObjCmd = path.join(LibDir,ename + '.cmdo')
+      ExeCmd = path.join(LibDir,ename + '.cmdx')
    if cfg['COMPILER']['REBUILD'] > 0 and path.exists(ExeFile): remove(ExeFile)
 
    # ~~ Lists all system libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    LibFiles = ''
-   for lib in HOMERES[ename.upper()]['deps'][:len(HOMERES[ename.upper()]['deps'])]:   # /!\ [1:] to create the exe from local objs.
-      l = path.join(ExeDir,lib.lower()+'_'+cfg['version']+cfg['SYSTEM']['sfx_lib'])
+   for lib in HOMERES[ename.upper()]['deps'][:len(HOMERES[ename.upper()]['deps'])-1]:   # /!\ [1:] to create the exe from local objs.
+      l = path.join(cfg['MODULES'][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ecfg+sep+'lib'),ename.lower()+cfg['SYSTEM']['sfx_lib'])
       if not path.exists(l): raise Exception([{'name':'createExeFiles','msg':'Library missing:\n      '+l}])
       LibFiles = l + ' ' + LibFiles
+   lib = HOMERES[ename.upper()]['deps'][len(HOMERES[ename.upper()]['deps'])-1]
+   libFile = path.join(cfg['MODULES'][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ecfg+sep+'lib'),ename.lower()+cfg['SYSTEM']['sfx_lib'])
+   if not path.exists(libFile): raise Exception([{'name':'createExeFiles','msg':'Library missing:\n      '+libFile}])
 
    # ~~ Add external libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   for lib in cfg['MODULES'][eprog]['libs'].split():
-      # FD@EDF : temporary removal of the following action
-      # => interesting but we should also support LDFLAGS as -lpthread -lmpich -lmed...
-      #if not path.exists(lib): raise Exception([{'name':'createExeFiles','msg':'External library missing:\n      '+lib}])
-      LibFiles = LibFiles + lib + ' '
+   if cfg['MODULES'][eprog].has_key('libs'):
+      for lib in cfg['MODULES'][eprog]['libs'].split():
+         # FD@EDF : temporary removal of the following action
+         # => interesting but we should also support LDFLAGS as -lpthread -lmpich -lmed...
+         #if not path.exists(lib): raise Exception([{'name':'createExeFiles','msg':'External library missing:\n      '+lib}])
+         LibFiles = LibFiles + lib + ' '
 
    # ~~ Lists local objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    ObjFiles = ''
@@ -334,7 +347,7 @@ def createExeFiles(ename,ecfg,eprog,bypass):
          for o in ObjFiles.split(): refresh = refresh or ( isNewer(o,ExeFile) == 0 )
          for l in LibFiles.split(): refresh = refresh or ( isNewer(l,ExeFile) == 0 )
          if refresh: remove(ExeFile)
-   if path.exists(ExeFile): return
+   if path.exists(ExeFile): return True
    
    # ~~ creation of the exe (according to makefile.wnt + systel.ini):
    # ~~ xilink.exe /stack:536870912 /out:postel3dV5P9.exe declarations_postel3d.obj coupeh.obj lecdon_postel3d.obj postel3d.obj coupev.obj lecr3d.obj pre2dh.obj pre2dv.obj ecrdeb.obj nomtra.obj homere_postel3d.obj point_postel3d.obj ..\..\..\bief\bief_V5P9\1\biefV5P9.lib ..\..\..\damocles\damo_V5P9\1\damoV5P9.lib ..\..\..\paravoid\paravoid_V5P9\1\paravoidV5P9.lib ..\..\..\special\special_V5P9\1\specialV5P9.lib
@@ -343,23 +356,24 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    # Special keyword for nag with ',' separating the libraries
    cmd = cmd.replace('<libsnag>',LibFiles.replace(' ',','))
    cmd = cmd.replace('<objs>',ObjFiles)
-   cmd = cmd.replace('<exename>',ExeFile).replace('<config>',ExeDir).replace('<root>',cfg['root'])
+   cmd = cmd.replace('<exename>',ExeFile).replace('<config>',LibDir).replace('<root>',cfg['root'])
    
    xocmd = cfg['MODULES'][eprog]['xobj']
    xocmd = xocmd.replace('<incs>',cfg['MODULES'][eprog]['incs'])
    mods = ''
    for mod in HOMERES[ename.upper()]['deps']:
-      mods = mods + path.join(cfg['MODULES'][eprog]['mods'].replace('<config>',cfg['MODULES'][mod]['path']),ecfg) + ' '
+      mods = mods + cfg['MODULES'][eprog.lower()]['mods'].replace('<config>',cfg['MODULES'][mod]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+ecfg+sep+'lib')) + ' '
    xocmd = xocmd.replace('<mods>',mods)
    # <f95name> ... still to be replaced
-   xocmd = xocmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
+   xocmd = xocmd.replace('<config>',LibDir).replace('<root>',cfg['root'])
    
+   LibFiles = LibFiles + ' ' + libFile
    xecmd = cfg['MODULES'][eprog]['xexe']
-   xecmd = xecmd.replace('<libs>',LibFile + ' ' + LibFiles)
+   xecmd = xecmd.replace('<libs>',LibFiles)
    # Special keyword for nag with ',' separating the libraries
-   xecmd = xecmd.replace('<libsnag>',LibFile.replace(' ',',') + ',' + LibFiles.replace(' ',','))
+   xecmd = xecmd.replace('<libsnag>',LibFiles.replace(' ',','))
    # <exename> and <objs> ... still to be replaced
-   xecmd = xecmd.replace('<config>',ExeDir).replace('<root>',cfg['root'])
+   xecmd = xecmd.replace('<config>',LibDir).replace('<root>',cfg['root'])
    
    if debug : print cmd
    mes = MESSAGES(size=10)
@@ -379,7 +393,7 @@ def createExeFiles(ename,ecfg,eprog,bypass):
    print '   - created ' + ExeFile
    putFileContent(ObjCmd,[xocmd])
    putFileContent(ExeCmd,[xecmd])
-   return
+   return False
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -433,12 +447,12 @@ if __name__ == "__main__":
                       dest="bypass",
                       default=False,
                       help="will bypass execution failures and try to carry on (final report at the end)" )
-   parser.add_option("-s","--scan",
+   parser.add_option("--rescan",
                       action="store_true",
-                      dest="scan",
+                      dest="rescan",
                       default=False,
-                      help="will bypass the scan of sources by checking only the cmdf files present" )
-   parser.add_option("","--clean",
+                      help="will redo the scan of sources for an update of all the cmdf files" )
+   parser.add_option("--clean",
                       action="store_true",
                       dest="cleanup",
                       default=False,
@@ -483,11 +497,9 @@ if __name__ == "__main__":
          try: cleanConfig(cfg,cfgname)
          except Exception as e:
            xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> could not clean up your configuration: '+ cfgname},e,options.bypass)])
-         # The config clean just removed the .cmdf files so we force the scan
-         options.scan = True
 
       # Only if we ask for a scan
-      if options.scan:
+      if options.rescan:
 # ~~ Scans all source files to build a relation database ~~~~~~~~~~~
          fic,mdl,sbt,fct,prg,dep,all = scanSources(cfgname,cfg,BYPASS)
 
@@ -512,7 +524,7 @@ if __name__ == "__main__":
                   ForCmd = path.join(ForDir,prg[item][0] + '.cmdf')
                else:
                   ForCmd = path.join(ForDir,item.lower() + '.cmdf')
-               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
+               FileList = {'general':{'root':cfg['root'],'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
                for obj,lib in HOMERES[item]['add']:
                   try:
                      fic = all[lib][path.splitext(path.basename(obj))[0].upper()]
@@ -529,7 +541,7 @@ if __name__ == "__main__":
                   FileList[lib]['files'].append(fic['file'])
                if not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,FileList)
                else:
-                  FixeList = getScanContent(ForCmd,options.bypass)
+                  FixeList = getScanContent(ForCmd,cfg['root'],options.bypass)
                   for lib in FileList.keys():
                      if lib == 'general': continue
                      if FixeList.has_key(lib):
@@ -537,19 +549,23 @@ if __name__ == "__main__":
                            if fic not in FixeList[lib]['files']: FixeList[lib]['files'].append(fic)
                   putScanContent(ForCmd,FixeList)
 
+         options.rescan = False
+         cfg['MODULES'] = getFolders_ModulesTELEMAC(cfg['root'])
+
       #Liborder in the cmdf file is incorrect using fixed order instead
       #TODO: Solve order error for example jultim and gregtim
       #DONE: the error on the order, but has to be tested -- replace LIBDEPS by MAKSYSTEL['deps']...'liborder' in the loop below
       LIBDEPS = ['special', 'parallel', 'mumps', 'gretel', 'partel', 'diffsel', 'damocles', 'bief', 'postel3d', 'sisyphe', 'artemis', 'tomawac', 'stbtel', 'telemac2d', 'telemac3d', 'estel3d', 'mascaret', 'api']
 
 # ~~ Scans all cmdf files found in all modules ~~~~~~~~~~~~~~~~~~~~~
-      cmdfFiles = {}; HOMERES = {}
+      cmdfFiles = {}; HOMERES = {}; found = False
       rebuild = cfg['COMPILER']['REBUILD']
       for mod in cfg['COMPILER']['MODULES']:
          cmdfFiles.update({mod:{}})
          if mod in cfg['MODULES'].keys():
+            found = found or ( cfg['MODULES'][mod]['cmdfs'] != [] )
             for cmdFile in cfg['MODULES'][mod]['cmdfs']:   # make sure the key cmdfs exists
-               try: cmdf = getScanContent(cmdFile,options.bypass)
+               try: cmdf = getScanContent(cmdFile,cfg['root'],options.bypass)
                except Exception as e:
                   xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Scanning the cmdf file: '+path.basename(cmdFile)},e,options.bypass)])
                cmdfFiles[mod].update({cmdf['general']['name']:cmdf})
@@ -564,7 +580,7 @@ if __name__ == "__main__":
                   if lib == 'general': continue
                   for file in cmdfFiles[mod][item][lib]['files'] :
                      srcName = cmdfFiles[mod][item][lib]['path']+sep+file
-                     p = cmdfFiles[mod][item][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname)
+                     p = cmdfFiles[mod][item][lib]['path'].replace(cfg['root']+sep+'sources',cfg['root']+sep+'builds'+sep+cfgname+sep+'lib')
                      createDirectories(p)
                      objName = p + sep + path.splitext(file)[0] + cfg['SYSTEM']['sfx_obj']
                      try:
@@ -575,23 +591,33 @@ if __name__ == "__main__":
                      except Exception as e:
                            xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> Could not find the following file for compilation: '+path.basename(srcName)+'\n         ... so it may have to be removed from the following cmdf file: '+cmdFile},e,options.bypass)])
 # ~~ Creates modules and objects ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            for obj,lib in HOMERES[item]['add'] :
-               try:
-                  createObjFiles(obj,item,{'libname':lib,'type':'','path':cmdfFiles[mod][item][lib]['path']},cfgname,options.bypass)
-               except Exception as e:
-                  xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
+            if HOMERES[item]['add'] == []: print '      +> There is no need to compile any object'
+            else:
+               ibar = 0; pbar = ProgressBar(maxval=len(HOMERES[item]['add'])).start()
+               for obj,lib in HOMERES[item]['add'] :
+                  try:
+                     pbar.write( createObjFiles(obj,item,{'libname':lib,'type':'','path':cmdfFiles[mod][item][lib]['path']},cfgname,options.bypass),ibar )
+                     ibar = ibar + 1; pbar.update(ibar)
+                  except Exception as e:
+                     xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating objects: '+path.basename(obj)},e,options.bypass)])
+               pbar.finish()
 # ~~ Creates libraries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            foundLib = True
             for lib in HOMERES[item]['deps']:
                try:
-                  createLibFiles(lib,cfgname,mod,options.bypass)
+                  f = createLibFiles(lib,cfgname,item,options.bypass)
                except Exception as e:
                   xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating library: '+path.basename(lib)},e,options.bypass)])
+               foundLib = foundLib and f
+            if foundLib: print '      +> There is no need to package any library'
 # ~~ Creates executable ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             try:
-               createExeFiles(item.lower(),cfgname,mod,options.bypass)
+               foundExe = createExeFiles(item.lower(),cfgname,mod,options.bypass)
             except Exception as e:
                xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> creating executable: '+ item.lower()},e,options.bypass)])
-        
+            if foundExe: print '      +> There is no need to create the associate executable'
+      if not found: xcpts.addMessages([{'name':'compileTELEMAC::main:','msg':'Could not find any cmdf file for config ' + cfgname + '. You may have to use the --rescan option'}])
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    if xcpts.notEmpty():

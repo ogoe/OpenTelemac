@@ -36,6 +36,10 @@
       valid configurations in an array. Testing for validity is now done
       within config.py
 """
+"""@history 17/06/2013 -- Sebastien E. Bourban
+   keywords are now placed into a list (as opposed to dictionary) so to
+      remember the order of entrance in the CAS file.
+"""
 """@brief
 """
 
@@ -83,7 +87,7 @@ dicokeys = ['AIDE','AIDE1','APPARENCE','CHOIX','CHOIX1','COMPORT','COMPOSE',
 # ____/ CAS FILES  /_______________________________________________/
 #
 def scanCAS(cas):
-   keylist = []
+   keylist = []; vallist = []
    casLines = getFileContent(cas)
    # ~~ clean comments
    core = []
@@ -100,76 +104,78 @@ def scanCAS(cas):
       proc = re.match(key_none,casStream)
       if proc:
          casStream = proc.group('after')
+         keylist.append(proc.group('key').strip())
+         vallist.append([''])
          continue
       # ~~ key
       proc = re.match(key_equals,casStream)
       if not proc:
-         print '... hmmm, did not see this one coming ...'
-         break
+         raise Exception([{'name':'scanCAS','msg':'... hmmm, did not see this one coming ...\n   around there :'+casStream[:100]}])
       kw = proc.group('key').strip()
       casStream = proc.group('after')   # still hold the separator
       # ~~ val
       proc = re.match(val_equals,casStream)
-      if not proc:
-         print 'no value to keyword ',kw
-         sys.exit()
+      if not proc: raise Exception([{'name':'scanCAS','msg':'no value to keyword '+kw}])
       val = []
       while proc:
          val.append(proc.group('val').replace("'",''))
          casStream = proc.group('after')   # still hold the separator
          proc = re.match(val_equals,casStream)
-      keylist.append([kw,val])
-
-   # ~~ sort out the groups, starting with 'NOM'
-   keywords = {}
-   while keylist != []:
-      keywords.update({keylist[0][0]:keylist[0][1]})
-      keylist.pop(0)
-
-   return keywords
+      if kw in keylist:
+         vallist[keylist.index(kw)] = val
+      else:
+         keylist.append(kw)
+         vallist.append(val)
+   
+   return (keylist,vallist)
 
 def readCAS(keywords,dico,frgb):
 
-   outwords = keywords.copy()       # shallow copy is here sufficient
-   for key,value in keywords.iteritems():
+   keylist,vallist = keywords
+   for key,value in zip(*keywords):
       kw = key
+      if kw[0] == '&': continue
       if kw not in dico.keys(): kw = frgb['GB'][kw]
       if dico[kw]['TYPE'][0] == 'LOGIQUE':
          vals = []
          for val in value:
             if val.upper() in ['YES','Y','TRUE','OUI','O','VRAI']: vals.append('TRUE')
             if val.upper() in ['NO','N','FALSE','NON','N','FAUX']: vals.append('FALSE')
-         outwords.update({key:vals})
+         vallist[keylist.index(key)] = vals
       elif dico[kw]['TYPE'][0] in ['ENTIER','INTEGER']:
          vals = []
          for val in value: vals.append(int(val))
-         outwords.update({key:vals})
+         vallist[keylist.index(key)] = vals
       elif dico[kw]['TYPE'][0] in ['REEL','REAL']:
          vals = []
          for val in value: vals.append(float(val.lower().replace('d','e')))
-         outwords.update({key:vals})
+         vallist[keylist.index(key)] = vals
       else:
          vals = []
          for val in value: vals.append(repr(val))
-         outwords.update({key:vals})
+         vallist[keylist.index(key)] = vals
 
-   return outwords
+   return (keylist,vallist)
 
 def rewriteCAS(cas):
 
    lines = []
-   for key,val in cas.iteritems():
+   for key,val in zip(*cas):
+      if val == []: raise Exception([{'name':'rewriteCAS','msg':'... inapropriate value set for keyword: '+key}])
 
+      # ~~~> Special keys starting with '&'
+      if key[0] == '&':
+         line = ''; lcur = key
       # ~~~> Check if final size more than 72 characters
-      if len(' ' + key + ' : ' + str(val[0])) < 73:
+      elif len(' ' + key + ' : ' + str(val[0])) < 73:
          line = ''; lcur = ' ' + key + ' : ' + str(val[0])
       else:
          line = ' ' + key + ' :\n'
          if len('    ' + str(val[0])) < 73: lcur = '    ' + str(val[0])
          else:
             lcur = ''
-            for i in range(len(str(val[0]))/65+1):
-               lcur = lcur + '    ' + ( str(val[0])+65*' ' )[65*i:65*i+65] + '\n'
+            for i in range(len(str(val[0]))/72+1):
+               lcur = lcur + ( str(val[0])+72*' ' )[72*i:72*i+72] + '\n'
       for v in val[1:]:
          if len(lcur + ';'+str(v)) < 72:
             lcur = lcur + ';'+str(v)
@@ -192,8 +198,7 @@ def translateCAS(cas,frgb):
       casLines[i] = casLines[i].replace('"""',"'''").replace('"',"'")
       proc = re.match(key_comment,casLines[i]+'/')
       head = proc.group('before').strip()
-      # ~~> special keys starting with '&'
-      if not re.match(key_none,head+' '): core.append(head)
+      core.append(head)
    casStream = ' '.join(core)
 
    frLines = []; gbLines = []
@@ -218,8 +223,7 @@ def translateCAS(cas,frgb):
       while casStream != '':
          proc = re.match(key_equals,casStream)
          if not proc:
-            print '... hmmm, did not see this one coming ...'
-            break
+            raise Exception([{'name':'scanCAS','msg':'... hmmm, did not see this one coming ...\n   around there :'+casStream[:100]}])
          kw = proc.group('key').strip()
          if kw not in head: break  # move on to next line
 
@@ -368,41 +372,47 @@ def getIOFilesSubmit(frgb,dico):
 def getKeyWord(key,cas,dico,frgb):
 
    value = []; defaut = []
+   kl,vl = cas
    if key in frgb['GB'].keys():
       defaut = dico[frgb['GB'][key]]['DEFAUT1']
-      if key in cas.keys(): value = cas[key]
-      elif frgb['GB'][key] in cas.keys(): value = cas[frgb['GB'][key]]
+      if key in kl: value = vl[kl.index(key)]
+      elif frgb['GB'][key] in kl: value = vl[kl.index(frgb['GB'][key])]
    if key in frgb['FR'].keys():
       defaut = dico[key]['DEFAUT']
-      if key in cas.keys(): value = cas[key]
-      elif frgb['FR'][key] in cas.keys(): value = cas[frgb['FR'][key]]
+      if key in kl: value = vl[kl.index(key)]
+      elif frgb['FR'][key] in kl: value = vl[kl.index(frgb['FR'][key])]
 
    return value,defaut
 
 def getSubmitWord(key,cas,iFS,oFS):
 
-   value = []
+   value = []; kl,vl = cas
    for i in iFS.keys():
       if key == iFS[i].split(';')[1]:
-         if i in cas.keys(): value = cas[i]
+         if i in kl: value = vl[kl.index(i)]
    for i in oFS.keys():
       if key == oFS[i].split(';')[1]:
-         if i in cas.keys(): value = cas[i]
+         if i in kl: value = vl[kl.index(i)]
 
    return value
 
 def setKeyValue(key,cas,frgb,value):
 
+   kl,vl = cas
    if key in frgb['GB'].keys():
-      if key in cas.keys(): cas[key] = [value]
-      elif frgb['GB'][key] in cas.keys(): cas[frgb['GB'][key]] = [value]
-      else: cas.update({key:[value]})
+      if key in kl: vl[kl.index(key)] = [value]
+      elif frgb['GB'][key] in kl: vl[kl.index(frgb['GB'][key])] = [value]
+      else:
+         kl.insert(0,key)      # insert instead of append so before &FIN
+         vl.insert(0,[value])
    if key in frgb['FR'].keys():
-      if key in cas.keys(): cas[key] = [value]
-      elif frgb['FR'][key] in cas.keys(): cas[frgb['FR'][key]] = [value]
-      else: cas.update({key:[value]})
+      if key in kl: vl[kl.index(key)] = [value]
+      elif frgb['FR'][key] in kl: vl[kl.index(frgb['FR'][key])] = [value]
+      else:
+         kl.insert(0,key)      # insert instead of append so before &FIN
+         vl.insert(0,[value])
 
-   return True
+   return (kl,vl)
 
 # _____             ________________________________________________
 # ____/ MAIN CALL  /_______________________________________________/
@@ -477,7 +487,7 @@ if __name__ == "__main__":
          print '\n\nConfiguration ' + cfgname + ', Module '+ mod + '\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          print '... reading module dictionary'
-         frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+'.dico'))
+         frgb,dico = scanDICO(path.join(path.join(cfg['MODULES'][mod]['path'],'lib'),mod+cfg['version']+'.dico'))
          for casFile in cfg['VALIDATION'][mod]:
             print '... CAS file: ',casFile
             casKeys = readCAS(scanCAS(casFile),dico,frgb)
