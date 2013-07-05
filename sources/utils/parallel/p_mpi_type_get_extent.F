@@ -42,7 +42,7 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER(KIND=MPI_ADDRESS_KIND), INTENT(INOUT):: LOWER_BOUND,EXTENT
-      INTEGER, INTENT(INOUT)                       :: DATATYPE
+      INTEGER, INTENT(IN)                       :: DATATYPE
       INTEGER, INTENT(OUT)                         :: IERR
 !
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

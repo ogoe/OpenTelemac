@@ -1,10 +1,28 @@
 [general]
 path: <root>|sources|utils|partel
 module: partel
-liborder: partel
-version: v6p3
+liborder: special bief partel
+version: v6p2
 name: PARTEL
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  check_allocate.f
+  extens.f
+
+[bief]
+path: <root>|sources|utils|bief
+files: bief_def.f
+  bief.f
+  voisin.f
+  elebd.f
+  front2.f
+  voisin31.f
+  elebd31.f
 
 [partel]
 path: <root>|sources|utils|partel
 files: partel.F
+  pares3d.f
+  partitioner.F

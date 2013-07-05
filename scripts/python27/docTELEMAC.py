@@ -21,7 +21,7 @@
 #
 # ~~> dependencies towards standard python
 import sys
-from os import system, getcwd, chdir, remove, walk, sep, environ, path
+from os import system, getcwd, chdir, remove, walk, sep, environ, path, linesep
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
@@ -41,6 +41,7 @@ def cleanDoc(docDir,fullclean):
       if file.endswith(".out"): remove(file)
       if file.endswith(".toc"): remove(file)
       if file.endswith(".log"): remove(file)
+      if file.endswith(".nlo"): remove(file)
       if file.endswith("~"): remove(file)
       if fullclean and file.endswith(".pdf"): remove(file)
 
@@ -57,10 +58,26 @@ def compiletex(texfile,version):
       raise Exception([filterMessage({'name':'compiletex','msg':'something went wrong, I am not sure why.'},e,bypass)])
    if code != 0: raise Exception([{'name':'compiletex','msg':'could not compile your tex files (runcode='+str(code)+').\n      '+tail}])
    
+# Creates the CASELIST.tex which includes all the test cases tex file
+def createCaseListFile(docDir, cfgVal):
+  caseListFile = docDir+sep+'latex'+sep+'CASELIST.tex'
+  # Remove the file if it is already there
+  if path.exists(caseListFile): remove(caseListFile)
+  f = open(caseListFile,'w')
+  valDir = cfgVal['path']
+  # Loop on all test cases
+  for case in cfgVal.keys():
+    # Skip the 'path' key
+    if case != 'path':
+      s = linesep+'\subincludefrom{'+valDir+sep+case+sep+'doc'+sep+'}{'+case+'}'+\
+          linesep+'\clearpage'+linesep
+      f.write(s)
+  f.close()
+    
 def compileDoc(docDir,docType,codename,version,cleanup,fullcleanup):
           chdir(docDir)
           if cleanup or fullcleanup:
-            cleanDoc(docDir,fullclean)
+            cleanDoc(docDir,fullcleanup)
             print '   - Cleaned up folder '+docDir+'\n'
           else:
             # Check if the file exist
@@ -182,29 +199,34 @@ if __name__ == "__main__":
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
       # Look on all the modules for the validation documentation
         if (options.validation or doall):
-          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'validation'
+          docDir = root + sep + 'documentation' + sep + codeName + sep + 'validation'
           chdir(docDir)
+          createCaseListFile(docDir, cfg['VALIDATION'][codeName])
           compileDoc(docDir,"validation",codeName,cfgs[cfgname]['version'],\
                      options.cleanup,options.fullcleanup)
-          output_mess = output_mess+'   - Created '+codeName+'_validation_'+cfgs[cfgname]['version']+'.pdf\n'
+          if not (options.cleanup or options.fullcleanup): 
+            output_mess = output_mess+'   - Created '+codeName+'_validation_'+cfgs[cfgname]['version']+'.pdf\n'
         if (options.reference or doall):
-          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'reference'
+          docDir = root + sep + 'documentation' + sep + codeName + sep + 'reference'
           chdir(docDir)
           compileDoc(docDir,"reference",codeName,cfgs[cfgname]['version'],\
                      options.cleanup,options.fullcleanup)
-          output_mess = output_mess+'   - Created '+codeName+'_reference_'+cfgs[cfgname]['version']+'.pdf\n'
+          if not (options.cleanup or options.fullcleanup): 
+            output_mess = output_mess+'   - Created '+codeName+'_reference_'+cfgs[cfgname]['version']+'.pdf\n'
         if (options.user or doall):
-          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'user'
+          docDir = root + sep + 'documentation' + sep + codeName + sep + 'user'
           chdir(docDir)
           compileDoc(docDir,"user",codeName,cfgs[cfgname]['version'],\
                      options.cleanup,options.fullcleanup)
-          output_mess = output_mess+'   - Created '+codeName+'_user_'+cfgs[cfgname]['version']+'.pdf\n'
+          if not (options.cleanup or options.fullcleanup): 
+            output_mess = output_mess+'   - Created '+codeName+'_user_'+cfgs[cfgname]['version']+'.pdf\n'
         if (options.release or doall):
-          docDir = cfg['MODULES'][codeName]['path'] + sep + 'documentation' + sep + 'release_note'
+          docDir = root + sep + 'documentation' + sep + codeName + sep + 'release_note'
           chdir(docDir)
           compileDoc(docDir,"release_note",codeName,cfgs[cfgname]['version'],\
                      options.cleanup,options.fullcleanup)
-          output_mess = output_mess+'   - Created '+codeName+'_release_note_'+cfgs[cfgname]['version']+'.pdf\n'
+          if not (options.cleanup or options.fullcleanup): 
+            output_mess = output_mess+'   - Created '+codeName+'_release_note_'+cfgs[cfgname]['version']+'.pdf\n'
       
    print output_mess
    print '\n\nMy work is done\n\n'

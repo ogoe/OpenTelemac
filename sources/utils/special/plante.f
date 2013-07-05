@@ -5,7 +5,7 @@
      &(IVAL)
 !
 !***********************************************************************
-! BIEF   V6P1                                   21/08/2010
+! SPECIAL   V6P1                                   21/08/2010
 !***********************************************************************
 !
 !brief    CAUSES A DIVIDE CHECK IF IVAL = 0 SUCH THAT THE CALL TREE
@@ -42,9 +42,6 @@
 !| IVAL           |-->| INTEGER VALUE, OPTION, SEE CODE BELOW
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-      USE BIEF
-      USE DECLARATIONS_TELEMAC
-!
       IMPLICIT NONE
       INTEGER LNG,LU
       COMMON/INFO/LNG,LU
@@ -63,12 +60,6 @@
       IF(LNG.EQ.2) WRITE(LU,20)
 10    FORMAT(1X,///,1X,'PLANTE : ARRET DU PROGRAMME APRES ERREUR')
 20    FORMAT(1X,///,1X,'PLANTE: PROGRAM STOPPED AFTER AN ERROR')
-!
-      IF(NCSIZE.GT.1) THEN
-        IF(LNG.EQ.1) WRITE(LU,*) 'SORTIE DE PVM : APPEL DE P_EXIT'
-        IF(LNG.EQ.2) WRITE(LU,*) 'EXITING PVM: CALLING P_EXIT'
-        CALL P_EXIT
-      ENDIF
 !
 !-----------------------------------------------------------------------
 ! PARALLEL MODE
@@ -94,11 +85,11 @@
       WRITE(LU,*) 'RETURNING EXIT CODE: ', ICODE
 !
 !     POSSIBLE SYSTEM DEPENDENT EXIT PROCEDURE
-!
-      CALL SPECIAL_PLANTE(IVAL,NCSIZE,LNG,LU)
+!     YA: THIS CALL IS OBSOLETE
+!      CALL SPECIAL_PLANTE(IVAL,NCSIZE,LNG,LU)
 !
       STOP 0   ! WHICH IS USUALLY EQUIVALENT TO CALL EXIT(0)
 !
 !-----------------------------------------------------------------------
 !
-      END
+      END SUBROUTINE PLANTE

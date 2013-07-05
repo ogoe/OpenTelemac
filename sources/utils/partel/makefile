@@ -53,7 +53,9 @@ MESSAGE       = @echo "$(PWD) $(LIBRARY) $(LOGNAME) $(DATE) $@ ($?)" >>$(JOURNAL
 
 DEST          =  $(PROJECT)/builds/$(DIRLIB)
 
-LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
+LKLIB         = $(PROJECT)/builds/$(DIRLIB)/lib/bief$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/parallel$(MODE)$(VERSION).a \
+                $(PROJECT)/builds/$(DIRLIB)/lib/special$(MODE)$(VERSION).a \
                 $(PROJECT)/optionals/metis-5.1.0/libmetis/libmetis.a \
                 $(LIBS_MPI)
 
@@ -65,14 +67,15 @@ MAKEFILE      = makefile
 #
 #------- Sources Fortran
 
-SRCS_PARTEL= partel.F 
-SRCS_PARTEL_PARA= partel_para.F 
-SRCS_PARTEL_PRELIM= partel_prelim.F
+SRCS_PARTEL= partel.F partitioner.F pares3d.f
+SRCS_PARTEL_PARA= partel_para.F partitioner_para.F
+SRCS_PARTEL_PRELIM= partel_prelim.F partitioner.F
 
 #
 #------- Objets
 #
-OBJS_PARTEL = $(SRCS_PARTEL:.F=.o)
+TEMP = $(SRCS_PARTEL:.F=.o)
+OBJS_PARTEL = $(TEMP:.f=.o)
 OBJS_PARTEL_PARA = $(SRCS_PARTEL_PARA:.F=.o) 
 OBJS_PARTEL_PRELIM = $(SRCS_PARTEL_PRELIM:.F=.o)
 
@@ -87,14 +90,18 @@ SHELL	      = /bin/sh
 
 all:		$(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) 
 
-$(PARTEL) : $(OBJS_PARTEL) $(OBJS_PARTEL_PARA) $(OBJS_PARTEL_PRELIM)
+$(PARTEL) : $(OBJS_PARTEL) 
 		$(MESSAGE) "Link de $(PARTEL)"
 		$(FC) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL) $(OBJS_PARTEL) $(LKLIB) 
-		$(MESSAGE) "Link de $(PARTEL_PARA)"
-		$(FC) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PARA) $(OBJS_PARTEL_PARA) $(LKLIB) 
+
+$(PARTEL_PRELIM) : $(OBJS_PARTEL_PRELIM)
 		$(MESSAGE) "Link de $(PARTEL_PRELIM)"
 		$(FC) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PRELIM) $(OBJS_PARTEL_PRELIM) $(LKLIB) 
 		@echo "Termine."
+
+$(PARTEL_PARA) : $(OBJS_PARTEL_PARA)
+		$(MESSAGE) "Link de $(PARTEL_PARA)"
+		$(FC) $(LKO) $(LK_OPT_OUTNAME) $(PARTEL_PARA) $(OBJS_PARTEL_PARA) $(LKLIB) 
 
 menage:;	$(MESSAGE) "Efface les objets, librairies, executables et core-file."
 		@rm -f $(OBJS_PARTEL) $(OBJS_PARTEL_PARA) $(OBJS_PARTEL_PRELIM) $(PARTEL) $(PARTEL_PARA) $(PARTEL_PRELIM) *.g90 core

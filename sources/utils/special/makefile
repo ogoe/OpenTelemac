@@ -62,7 +62,8 @@ MAKEFILE      = makefile
 #------- Sources Fortran
 
 SRCS= \
-gracestop.f     special_plante.f
+gracestop.f     special_plante.f extens.f\
+check_allocate.f plante.f
 #
 #------- Objets
 #

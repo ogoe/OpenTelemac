@@ -155,15 +155,15 @@ def getTree(name,lname,list,level,rebuild):
    return list[lname][name]['time'],rank+1
 
 
-def putScanContent(file,content):
+def putScanContent(file,root,content):
    lines = []
    if content.has_key('general'):
-      lines.append('[general]'+'\n'+'path: '+content['general']['path'].replace(content['general']['root'],'<root>').replace(sep,'|')+'\n'+'module: '+content['general']['module'])
+      lines.append('[general]'+'\n'+'path: '+content['general']['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'module: '+content['general']['module'])
       lines.append('liborder: '+' '.join(content['general']['liborder']))
       lines.append('version: '+content['general']['version']+'\n'+'name: '+content['general']['name'])
    for lib in content.keys():
       if lib == 'general': continue
-      lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path'].replace(content['general']['root'],'<root>').replace(sep,'|')+'\n'+'files: '+'\n  '.join(content[lib]['files']))
+      lines.append('\n['+lib+']'+'\n'+'path: '+content[lib]['path'].replace(root,'<root>').replace(sep,'|')+'\n'+'files: '+'\n  '.join(content[lib]['files']))
    putFileContent(file,lines)
    return
 
@@ -524,7 +524,7 @@ if __name__ == "__main__":
                   ForCmd = path.join(ForDir,prg[item][0] + '.cmdf')
                else:
                   ForCmd = path.join(ForDir,item.lower() + '.cmdf')
-               FileList = {'general':{'root':cfg['root'],'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
+               FileList = {'general':{'path':cfg['MODULES'][prg[item][0]]['path'],'version':cfgs[cfgname]['version'],'name':item,'module':prg[item][0],'liborder':MAKSYSTEL['deps']}}
                for obj,lib in HOMERES[item]['add']:
                   try:
                      fic = all[lib][path.splitext(path.basename(obj))[0].upper()]
@@ -539,7 +539,7 @@ if __name__ == "__main__":
                      xcpts.addMessages([filterMessage({'name':'compileTELEMAC::main:\n      +> missmatch between Fortran name and file name for: '+path.splitext(obj)[0].upper()},e,options.bypass)])
                   if not FileList.has_key(lib): FileList.update({lib:{'path':fic['path'],'files':[]}})
                   FileList[lib]['files'].append(fic['file'])
-               if not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,FileList)
+               if not path.exists(ForCmd) or rebuild == 2: putScanContent(ForCmd,cfg['root'],FileList)
                else:
                   FixeList = getScanContent(ForCmd,cfg['root'],options.bypass)
                   for lib in FileList.keys():
@@ -547,10 +547,11 @@ if __name__ == "__main__":
                      if FixeList.has_key(lib):
                         for fic in FileList[lib]['files']:
                            if fic not in FixeList[lib]['files']: FixeList[lib]['files'].append(fic)
-                  putScanContent(ForCmd,FixeList)
+                  putScanContent(ForCmd,cfg['root'],FixeList)
 
          options.rescan = False
-         cfg['MODULES'] = getFolders_ModulesTELEMAC(cfg['root'])
+#  This generates an error if you do the compilation afterwords
+#         cfg['MODULES'] = getFolders_ModulesTELEMAC(cfg['root'])
 
       #Liborder in the cmdf file is incorrect using fixed order instead
       #TODO: Solve order error for example jultim and gregtim

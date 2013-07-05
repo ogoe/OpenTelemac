@@ -1,140 +1,9 @@
 [general]
 path: <root>|sources|telemac2d
 module: telemac2d
-liborder: special parallel damocles mumps bief tomawac sisyphe telemac2d
-version: v6p3
+liborder: special parallel mumps damocles bief tomawac sisyphe telemac2d
+version: v6p2
 name: HOMERE_TELEMAC2D
-
-[special]
-path: <root>|sources|utils|special
-files: special_plante.f
-  gracestop.f
-
-[tomawac]
-path: <root>|sources|tomawac
-files: declarations_tomawac.f
-  point_tomawac.f
-  nomvar_tomawac.f
-  tomawac_constants.f
-  lecdon_tomawac.f
-  interface_tomawac.f
-  preqt2.f
-  tetmoy.f
-  lecsui.f
-  ifabtom.f
-  fremoy.f
-  venuti.f
-  maruti.f
-  couuti.f
-  noudon.f
-  stress.f
-  anaven.f
-  tautot.f
-  ustar1.f
-  ustar2.f
-  wnscou.f
-  qbrek4.f
-  qbbj78.f
-  qbrek1.f
-  gammln.f
-  foncro.f
-  bornes.f
-  qgauss.f
-  qbrek3.f
-  qbrek2.f
-  qwind3.f
-  qwind2.f
-  qwind1.f
-  cqueue.f
-  qnlin1.f
-  qnlin2.f
-  qnlin3.f
-  totnrj.f
-  kmoyen.f
-  frem01.f
-  frem02.f
-  qtria1.f
-  qmout1.f
-  qmout2.f
-  kerbou.f
-  qtria2.f
-  fpread.f
-  qfrot1.f
-  frepic.f
-  qwindl.f
-  semimp.f
-  propa.f
-  impr.f
-  filt_sa.f
-  rpi_intr.f
-  diffrac.f
-  conwac.f
-  predif.f
-  initab.f
-  vitfon.f
-  radiat.f
-  spread.f
-  wpower.f
-  dump2d.f
-  corfon.f
-  iniphy.f
-  ecrspe.f
-  spetma.f
-  spejon.f
-  delfra.f
-  fsprd1.f
-  fsprd3.f
-  fsprd2.f
-  speini.f
-  limwac.f
-  invert.f
-  rpi_invr.f
-  frmset.f
-  transf.f
-  intang.f
-  angles.f
-  prenl1.f
-  gauleg.f
-  couple.f
-  f1f1f1.f
-  prenl3.f
-  prenl2.f
-  ecrete.f
-  conw4d.f
-  prepro.f
-  anamar.f
-  cormar.f
-  sor3d.f
-  anacos.f
-  lecdoi.f
-  lecdon.f
-  condiw.f
-  wac.f
-
-[damocles]
-path: <root>|sources|utils|damocles
-files: majus.f
-  longlu.f
-  preval.f
-  cmd.f
-  precar.f
-  next.f
-  carlu.f
-  influ.f
-  dico.f
-  loglu.f
-  classe.f
-  aidelu.f
-  intlu.f
-  prev.f
-  realu.f
-  damoc.f
-  damocle.f
-
-[mumps]
-path: <root>|sources|utils|mumps
-files: solve_mumps.F
-  pre4_mumps.F
 
 [bief]
 path: <root>|sources|utils|bief
@@ -146,7 +15,6 @@ files: bief_def.f
   read_config.f
   bief_init.f
   inclus.f
-  plante.f
   m_med.F
   extens.f
   bief_open_files.f
@@ -168,16 +36,16 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
-  cpikle3.f
-  bief_ininds.f
-  cpikle2.f
   lit.f
   readgeo1.f
+  bief_ininds.f
   corrxy.f
   readgeo3.f
   readgeo2.f
+  cpikle3.f
   mxptel31.f
   mxptel.f
+  cpikle2.f
   ov_2.f
   almesh.f
   ovd.f
@@ -187,14 +55,6 @@ files: bief_def.f
   read_submit.f
   sortie.f
   bief_close_files.f
-  errmax.f
-  ecri2.f
-  ecrgeo.f
-  skipgeo.f
-  write_data_serafin.f
-  write_data.f
-  impvec.f
-  bief_desimp.f
   vc13cc.f
   vc04tt.f
   vc01tt0.f
@@ -259,6 +119,14 @@ files: bief_def.f
   cg1112.f
   chgdis.f
   inpoly.f
+  ecri2.f
+  ecrgeo.f
+  skipgeo.f
+  write_data_serafin.f
+  write_data.f
+  impvec.f
+  bief_desimp.f
+  errmax.f
   litenr.f
   bief_eof.f
   suite_serafin.f
@@ -335,7 +203,6 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
-  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -350,7 +217,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt04bb.f
+  mt02pp.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -364,7 +231,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt02pp.f
+  mt11ac.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -372,7 +239,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt11ac.f
+  mt12aa.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -384,6 +251,7 @@ files: bief_def.f
   mt13ab.f
   mt13aa.f
   mt06bb.f
+  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -591,146 +459,131 @@ files: bief_def.f
   bief_erf.f
   masktf.f
 
-[parallel]
-path: <root>|sources|utils|parallel
-files: declarations_parallel.F
-  p_init.F
-  p_exit.F
-  p_imax.F
-  p_wait_paraco.F
-  p_iwrit.F
-  p_iread.F
-  p_dsum.F
-  p_mpi_type_get_extent.F
-  p_mpi_type_create_struct.F
-  p_mpi_type_commit.F
-  org_charac_type1.F
-  p_sync.F
-  p_isum.F
-  p_mpi_alltoall.F
-  p_mpi_alltoallv.F
-  oil_org_charac_type.F
-  p_mpi_alltoallv_alg.F
-  p_mpi_alltoallv_oil.F
-  p_mpi_type_free.F
-  org_charac_type_alg.F
-  p_dmin.F
-  p_dmax.F
-  p_imin.F
+[mumps]
+path: <root>|sources|utils|mumps
+files: solve_mumps.F
+  pre4_mumps.F
 
-[sisyphe]
-path: <root>|sources|sisyphe
-files: declarations_sisyphe.f
-  read_sections_sisyphe.f
-  point_sisyphe.f
-  interface_sisyphe_bedload.f
-  interface_sisyphe_suspension.f
-  interface_sisyphe.f
-  dredgesim_interface.f
-  maxslope.f
-  suspension_dispersion.f
-  suspension_erosion_coh.f
-  suspension_evol.f
-  suspension_bilan.f
-  suspension_vanrijn.f
-  suspension_fredsoe.f
-  suspension_bijker.f
-  suspension_flux_mixte.f
-  suspension_bilan_coh.f
-  suspension_sandflow.f
-  suspension_erosion.f
-  suspension_listing.f
-  suspension_conv.f
-  suspension_rouse.f
-  suspension_miles.f
-  suspension_depot.f
-  suspension_computation.f
-  suspension_main.f
-  disimp.f
-  read_fic_conc.f
-  cgl.f
-  conlit.f
-  bedload_direction.f
-  bedload_interact.f
-  bedload_bailard.f
-  bedload_engel_cc.f
-  bedload_hunz_meyer.f
-  bedload_meyer.f
-  bedload_soulsby.f
-  bedload_engel.f
-  bedload_vanrijn.f
-  bedload_seccurrent.f
-  integ.f
-  bedload_bijker.f
-  bedload_calcdw.f
-  bedload_dibwat.f
-  qsform.f
-  bedload_einst.f
-  bedload_formula.f
-  condim_susp.f
-  init_transport.f
-  predes.f
-  condis_sisyphe.f
-  rescue_sisyphe.f
-  noerod.f
-  bilan_sisyphe.f
-  init_constant.f
-  corstr_sisyphe.f
-  leclis.f
-  sis_arret.f
-  condim_sisyphe.f
-  tassement_2.f
-  tassement.f
-  bedload_diffin.f
-  bedload_nerbed_vf.f
-  bedload_solvs_fe.f
-  bedload_solvs_vf.f
-  bedload_evol.f
-  bedload_hiding_factor.f
-  bedload_effpnt.f
-  bedload_solidischarge.f
-  bedload_main.f
-  fluxpr_sisyphe.f
-  flusec_sisyphe.f
-  db.f
-  cvsp_outputfiles.f
-  cvsp_p.f
-  cvsp_check_steady.f
-  cvsp_integrate_volume.f
-  cvsp_check_f.f
-  cvsp_compress_brut.f
-  cvsp_compress_dp.f
-  cvsp_add_section.f
-  cvsp_write_profile.f
-  cvsp_compress_clean.f
-  cvsp_rm_fraction.f
-  cvsp_alt.f
-  layers_p.f
-  cvsp_make_actlay.f
-  cvsp_add_fraction.f
-  cvsp_main.f
-  init_compo.f
-  init_avai.f
-  init_compo_coh.f
-  init_mixte.f
-  vitchu_sisyphe.f
-  init_sediment.f
-  layer.f
-  rescue_sisyphe_notperma.f
-  coefro_sisyphe.f
-  ride.f
-  ride_vr.f
-  ks_sisyphe.f
-  tobw_sisyphe.f
-  tob_sisyphe.f
-  calcuw.f
-  mean_grain_size.f
-  init_zero.f
-  entete_sisyphe.f
-  sisyphe.f
-  lecdon_split_outputpoints.f
-  nomvar_sisyphe.f
-  lecdon_sisyphe.f
+[tomawac]
+path: <root>|sources|tomawac
+files: declarations_tomawac.f
+  point_tomawac.f
+  nomvar_tomawac.f
+  tomawac_constants.f
+  lecdon_tomawac.f
+  interface_tomawac.f
+  preqt2.f
+  tetmoy.f
+  lecsui.f
+  ifabtom.f
+  fremoy.f
+  venuti.f
+  maruti.f
+  couuti.f
+  noudon.f
+  stress.f
+  anaven.f
+  tautot.f
+  ustar1.f
+  ustar2.f
+  wnscou.f
+  qbrek4.f
+  qbbj78.f
+  qbrek1.f
+  foncro.f
+  bornes.f
+  qgauss.f
+  gammln.f
+  qbrek3.f
+  qbrek2.f
+  qwind3.f
+  qwind2.f
+  qwind1.f
+  cqueue.f
+  qnlin1.f
+  qnlin2.f
+  qnlin3.f
+  totnrj.f
+  kmoyen.f
+  frem01.f
+  frem02.f
+  qtria1.f
+  qmout1.f
+  qmout2.f
+  kerbou.f
+  qtria2.f
+  fpread.f
+  qfrot1.f
+  frepic.f
+  qwindl.f
+  semimp.f
+  propa.f
+  impr.f
+  filt_sa.f
+  rpi_intr.f
+  diffrac.f
+  conwac.f
+  predif.f
+  initab.f
+  vitfon.f
+  radiat.f
+  spread.f
+  wpower.f
+  dump2d.f
+  corfon.f
+  iniphy.f
+  ecrspe.f
+  spetma.f
+  spejon.f
+  delfra.f
+  fsprd1.f
+  fsprd3.f
+  fsprd2.f
+  speini.f
+  limwac.f
+  invert.f
+  rpi_invr.f
+  frmset.f
+  transf.f
+  intang.f
+  angles.f
+  prenl1.f
+  gauleg.f
+  couple.f
+  f1f1f1.f
+  prenl3.f
+  prenl2.f
+  ecrete.f
+  conw4d.f
+  prepro.f
+  anamar.f
+  cormar.f
+  sor3d.f
+  anacos.f
+  lecdoi.f
+  lecdon.f
+  condiw.f
+  wac.f
+
+[damocles]
+path: <root>|sources|utils|damocles
+files: majus.f
+  longlu.f
+  preval.f
+  cmd.f
+  precar.f
+  next.f
+  carlu.f
+  influ.f
+  dico.f
+  loglu.f
+  classe.f
+  aidelu.f
+  intlu.f
+  prev.f
+  realu.f
+  damoc.f
+  damocle.f
 
 [telemac2d]
 path: <root>|sources|telemac2d
@@ -744,10 +597,10 @@ files: friction_def.f
   nomvar_telemac2d.f
   lecdon_telemac2d.f
   initstr.f
-  metgra.f
   dragfo.f
   fricti.f
   cost_function.f
+  metgra.f
   assignstr.f
   def_zones.f
   mesures.f
@@ -755,6 +608,8 @@ files: friction_def.f
   newstr.f
   m_coupling_estel3d.f
   oilspill.f
+  sl.f
+  vit.f
   conv_mercator_to_degdec.f
   conv_lambert_to_degdec.f
   tpxo.f
@@ -766,10 +621,8 @@ files: friction_def.f
   nodalupv_pugh.f
   bord_tide.f
   tidal_model_t2d.f
-  sl.f
   sta_dis_cur.f
   tr.f
-  vit.f
   debimp.f
   bord.f
   valro.f
@@ -908,3 +761,149 @@ files: friction_def.f
   point_adj_t2d.f
   homere_adj_t2d.f
   homere_telemac2d.f
+
+[sisyphe]
+path: <root>|sources|sisyphe
+files: declarations_sisyphe.f
+  read_sections_sisyphe.f
+  point_sisyphe.f
+  interface_sisyphe_bedload.f
+  interface_sisyphe_suspension.f
+  interface_sisyphe.f
+  dredgesim_interface.f
+  maxslope.f
+  suspension_dispersion.f
+  suspension_erosion_coh.f
+  suspension_evol.f
+  suspension_bilan.f
+  suspension_vanrijn.f
+  suspension_fredsoe.f
+  suspension_bijker.f
+  suspension_flux_mixte.f
+  suspension_bilan_coh.f
+  suspension_sandflow.f
+  suspension_erosion.f
+  suspension_listing.f
+  suspension_conv.f
+  suspension_rouse.f
+  suspension_miles.f
+  suspension_depot.f
+  suspension_computation.f
+  suspension_main.f
+  disimp.f
+  read_fic_conc.f
+  cgl.f
+  conlit.f
+  bedload_direction.f
+  bedload_interact.f
+  bedload_bailard.f
+  bedload_engel_cc.f
+  bedload_hunz_meyer.f
+  bedload_meyer.f
+  bedload_soulsby.f
+  bedload_engel.f
+  bedload_vanrijn.f
+  bedload_seccurrent.f
+  integ.f
+  bedload_bijker.f
+  bedload_calcdw.f
+  bedload_dibwat.f
+  qsform.f
+  bedload_einst.f
+  bedload_formula.f
+  condim_susp.f
+  init_transport.f
+  predes.f
+  condis_sisyphe.f
+  rescue_sisyphe.f
+  noerod.f
+  bilan_sisyphe.f
+  init_constant.f
+  corstr_sisyphe.f
+  leclis.f
+  sis_arret.f
+  condim_sisyphe.f
+  tassement_2.f
+  tassement.f
+  bedload_diffin.f
+  bedload_nerbed_vf.f
+  bedload_solvs_fe.f
+  bedload_solvs_vf.f
+  bedload_evol.f
+  bedload_hiding_factor.f
+  bedload_effpnt.f
+  bedload_solidischarge.f
+  bedload_main.f
+  fluxpr_sisyphe.f
+  flusec_sisyphe.f
+  db.f
+  cvsp_outputfiles.f
+  cvsp_p.f
+  cvsp_check_steady.f
+  cvsp_integrate_volume.f
+  cvsp_check_f.f
+  cvsp_compress_brut.f
+  cvsp_compress_dp.f
+  cvsp_add_section.f
+  cvsp_write_profile.f
+  cvsp_compress_clean.f
+  cvsp_rm_fraction.f
+  cvsp_alt.f
+  layers_p.f
+  cvsp_make_actlay.f
+  cvsp_add_fraction.f
+  cvsp_main.f
+  init_compo.f
+  init_avai.f
+  init_compo_coh.f
+  init_mixte.f
+  vitchu_sisyphe.f
+  init_sediment.f
+  layer.f
+  rescue_sisyphe_notperma.f
+  coefro_sisyphe.f
+  ride.f
+  ride_vr.f
+  ks_sisyphe.f
+  tobw_sisyphe.f
+  tob_sisyphe.f
+  calcuw.f
+  mean_grain_size.f
+  init_zero.f
+  entete_sisyphe.f
+  sisyphe.f
+  lecdon_split_outputpoints.f
+  nomvar_sisyphe.f
+  lecdon_sisyphe.f
+
+[parallel]
+path: <root>|sources|utils|parallel
+files: declarations_parallel.F
+  p_init.F
+  p_imax.F
+  p_exit.F
+  p_wait_paraco.F
+  p_iwrit.F
+  p_iread.F
+  p_dsum.F
+  p_mpi_type_get_extent.F
+  p_mpi_type_create_struct.F
+  p_mpi_type_commit.F
+  org_charac_type1.F
+  p_sync.F
+  p_isum.F
+  p_mpi_alltoall.F
+  p_mpi_alltoallv.F
+  oil_org_charac_type.F
+  p_mpi_alltoallv_alg.F
+  p_mpi_alltoallv_oil.F
+  p_mpi_type_free.F
+  org_charac_type_alg.F
+  p_dmin.F
+  p_dmax.F
+  p_imin.F
+
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  gracestop.f

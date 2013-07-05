@@ -81,7 +81,7 @@ diraux.f     diri01.f       diri04.f      diri09.f  \
 dirich.f     dlduseg.f      dldu11.f      dldu21.f      dldu41.f  \
 dmo.f        dot.f          dots.f        downup.f  \
 dwnup1.f     ecrgeo.f       ecri2.f       elapse.f      elebd.f       eleb3d.f eleb3dt.f \
-elebd31.f    bief_eof.f     equnor.f      errmin.f      errmax.f    extens.f fasp.f  \
+elebd31.f    bief_eof.f     equnor.f      errmin.f      errmax.f    fasp.f  \
 filp10.f     filp11.f       filp12.f      filpol.f      flux_ef_vf.f  flux_ef_vf_3d.f \
 filter.f     find_in_sel.f  flux3dlim.f   flux_mask.f   fluxpr.f   \
 fond.f       fonstr.f       front2.f      fropro.f      geoelt.f      gettri.f gettriebe.f gettriseg.f \
@@ -115,7 +115,7 @@ os.f         osbd.f         osdb.f \
 osdbif.f     ov.f           ovbd.f        ovd.f \
 ovdb.f       ovd_2.f        ov_2.f        paraco.f \
 paragl.f     parcom.f       parcom2.f     parcom2_seg.f parcom_bord.f parini.f  parmoy.f \
-plante.f     positive_depths.f    \
+positive_depths.f    \
 prebd4.f     prebd9.f       prebdt.f \
 precd1.f     precd4.f       precd9.f      precdt.f  preverseg.f  preverebe.f \
 proxim.f     ptel11.f       ptel31.f      ptel41.f  pttoel.f      puog.f \

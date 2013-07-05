@@ -1,8 +1,8 @@
 [general]
 path: <root>|sources|utils|gretel
 module: gretel
-liborder: special parallel bief gretel
-version: v6p3
+liborder: special bief gretel
+version: v6p2
 name: GREDELSEG_AUTOP
 
 [gretel]
@@ -13,16 +13,9 @@ files: gredelseg_autop.f
 path: <root>|sources|utils|bief
 files: bief_def.f
   bief.f
-  declarations_telemac.f
-  plante.f
   stoseg.f
   voisin.f
 
-[parallel]
-path: <root>|sources|utils|parallel
-files: declarations_parallel.F
-  p_exit.F
-
 [special]
 path: <root>|sources|utils|special
-files: special_plante.f
+files: plante.f

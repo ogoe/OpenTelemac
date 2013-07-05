@@ -1,8 +1,8 @@
 [general]
 path: <root>|sources|stbtel
 module: stbtel
-liborder: special parallel damocles bief stbtel
-version: v6p3
+liborder: special parallel bief damocles stbtel
+version: v6p2
 name: HOMERE_STBTEL
 
 [stbtel]
@@ -84,7 +84,6 @@ path: <root>|sources|utils|bief
 files: bief_def.f
   bief.f
   declarations_telemac.f
-  plante.f
   m_med.F
   lit.f
   ecri2.f
@@ -108,4 +107,4 @@ files: declarations_parallel.F
 
 [special]
 path: <root>|sources|utils|special
-files: special_plante.f
+files: plante.f

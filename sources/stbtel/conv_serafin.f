@@ -39,7 +39,6 @@
 !+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 !
       INTEGER :: I,J,K,IERR,IDUM
-      INTEGER :: TIMESTEP
       CHARACTER(LEN=32) :: VARI
       REAL :: TIME
       INTEGER :: IB(6)

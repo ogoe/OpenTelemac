@@ -54,7 +54,7 @@ LKLIB         = $(PROJECT)\builds\$(DIRLIB)\lib\bief$(MODE)$(VERSION).lib \
 #
 #------- Sources Fortran
 
-SRCS	      = partel.F
+SRCS	      = partel.F pares3d.f partitioner.F
 #------- Objets
 #
 TEMP = $(SCRS:.f=.obj)
