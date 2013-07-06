@@ -108,9 +108,9 @@
 import sys
 import shutil
 import threading
-from time import gmtime, strftime
+from time import localtime, strftime
 from subprocess import *
-from os import path,walk,mkdir,chdir,remove,system,sep,environ,listdir
+from os import path,walk,mkdir,chdir,remove,sep,environ,listdir
 # ~~> dependencies towards other modules
 from config import OptionParser,parseConfigFile,parseConfig_RunningTELEMAC
 # ~~> dependencies towards other pytel/modules
@@ -185,7 +185,7 @@ def processCAS(casFile,dico,frgb):
 def processTMP(casFile):
 
    # ~~ TMP Directory ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   TMPDir = casFile + '_' + strftime("%Y-%m-%d-%Hh%Mmin%Ss", gmtime())
+   TMPDir = casFile + '_' + strftime("%Y-%m-%d-%Hh%Mmin%Ss", localtime())
 
    return TMPDir
 
@@ -1034,7 +1034,7 @@ if __name__ == "__main__":
          stdin = stdin.replace('<ncnodes>',str(ncnodes))
          stdin = stdin.replace('<wdir>',options.wDir)
          stdin = stdin.replace('<email>',options.email)
-         stdin = stdin.replace('<time>',strftime("%Y-%m-%d-%Hh%Mmin%Ss", gmtime()))
+         stdin = stdin.replace('<time>',strftime("%Y-%m-%d-%Hh%Mmin%Ss", localtime()))
          stdin = stdin.replace('<jobname>',options.jobname)
          stdin = stdin.replace('<queue>',options.hpc_queue)
          stdin = stdin.replace('<walltime>',options.walltime)
