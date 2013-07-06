@@ -532,7 +532,7 @@
         CHARACTER(LEN=24) :: DESCR
         INTEGER :: NSEG
         INTEGER, POINTER :: LISTE(:,:)
-      END TYPE
+      END TYPE CHAIN_TYPE
 !
 !=======================================================================
 !
