@@ -2,7 +2,7 @@
 path: <root>|sources|stbtel
 module: stbtel
 liborder: special parallel bief damocles stbtel
-version: v6p2
+version: v6p3
 name: HOMERE_STBTEL
 
 [stbtel]
@@ -12,10 +12,9 @@ files: declarations_stbtel.F
   iniadc.f
   conv_unv.f
   conv_cgns.F
-  conv_lim.f
   conv_serafin.f
+  conv_lim.f
   conv_med.F
-  lib_vtk_io.F
   conv_vtk.F
   converter.f
   inisel.f
@@ -69,24 +68,24 @@ files: longlu.f
   next.f
   carlu.f
   influ.f
-  dico.f
   loglu.f
   classe.f
   aidelu.f
   intlu.f
-  prev.f
+  dico.f
   realu.f
+  prev.f
   damoc.f
   damocles.f
 
 [bief]
 path: <root>|sources|utils|bief
-files: bief_def.f
-  bief.f
-  declarations_telemac.f
+files: declarations_telemac.f
   m_med.F
   lit.f
   ecri2.f
+  bief_def.f
+  bief.f
   readgeo1.f
   corrxy.f
   readgeo3.f

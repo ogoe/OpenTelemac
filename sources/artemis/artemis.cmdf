@@ -2,13 +2,47 @@
 path: <root>|sources|artemis
 module: artemis
 liborder: special parallel mumps damocles bief artemis
-version: v6p2
+version: v6p3
 name: HOMERE_ARTEMIS
 
-[mumps]
-path: <root>|sources|utils|mumps
-files: solve_mumps.F
-  pre4_mumps.F
+[artemis]
+path: <root>|sources|artemis
+files: declarations_artemis.f
+  point_artemis.f
+  interface_artemis.f
+  nomvar_artemis.f
+  lecdon_artemis.f
+  masque_artemis.f
+  radia2.f
+  radia1.f
+  dismoy.f
+  borh.f
+  calcmn.f
+  calcqb.f
+  calcfw.f
+  phbor.f
+  fcte1.f
+  fcte2.f
+  pentco.f
+  cntpre.f
+  solvelambda.f
+  caldir.f
+  calcue.f
+  fwspec.f
+  berkho.f
+  spd.f
+  dirale.f
+  utimp.f
+  calctm.f
+  calres.f
+  entart.f
+  calre2.f
+  corfon.f
+  condih.f
+  spe.f
+  perale.f
+  artemis.f
+  homere_artemis.f
 
 [damocles]
 path: <root>|sources|utils|damocles
@@ -21,14 +55,19 @@ files: majus.f
   precar.f
   carlu.f
   influ.f
-  dico.f
   loglu.f
   classe.f
   aidelu.f
-  prev.f
+  dico.f
   realu.f
+  prev.f
   damoc.f
   damocle.f
+
+[mumps]
+path: <root>|sources|utils|mumps
+files: solve_mumps.F
+  pre4_mumps.F
 
 [bief]
 path: <root>|sources|utils|bief
@@ -51,18 +90,18 @@ files: bief_def.f
   cpstvc.f
   bief_nbsegel.f
   segbor.f
+  cpikle3.f
+  bief_ininds.f
+  cpikle2.f
   lit.f
   readgeo1.f
-  bief_ininds.f
-  ielbor.f
   corrxy.f
   readgeo3.f
   readgeo2.f
-  cpikle3.f
   mxptel31.f
   mxptel.f
   bief_nbfel.f
-  cpikle2.f
+  ielbor.f
   ov_2.f
   almesh.f
   read_submit.f
@@ -151,6 +190,7 @@ files: bief_def.f
   mt03cc.f
   mt12ab.f
   mt01aa.f
+  mt12aa.f
   mt99bb.f
   mt04pp.f
   mt08bb.f
@@ -165,7 +205,7 @@ files: bief_def.f
   mt06oo.f
   mt06pp.f
   mt06aa.f
-  mt02pp.f
+  mt04bb.f
   mt05pp.f
   mt04tt.f
   mt12bb.f
@@ -179,7 +219,7 @@ files: bief_def.f
   mt05aa.f
   mt11aa.f
   mt11ab.f
-  mt11ac.f
+  mt02pp.f
   mt03aa.f
   mt02bb.f
   mt01bb.f
@@ -187,7 +227,7 @@ files: bief_def.f
   mt06ff.f
   mt12ac.f
   mt99aa.f
-  mt12aa.f
+  mt11ac.f
   mt04cc.f
   mt08ab.f
   mt08pp.f
@@ -199,7 +239,6 @@ files: bief_def.f
   mt13ab.f
   mt13aa.f
   mt06bb.f
-  mt04bb.f
   mt06ft.f
   mt03bb.f
   mt07bb.f
@@ -407,15 +446,9 @@ files: bief_def.f
   clip.f
   write_mesh_serafin.f
   write_mesh.f
-  extens.f
   bief_open_files.f
   time_in_seconds.f
   bief_close_files.f
-
-[special]
-path: <root>|sources|utils|special
-files: plante.f
-  gracestop.f
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -431,41 +464,8 @@ files: declarations_parallel.F
   p_dmin.F
   p_exit.F
 
-[artemis]
-path: <root>|sources|artemis
-files: declarations_artemis.f
-  point_artemis.f
-  interface_artemis.f
-  nomvar_artemis.f
-  lecdon_artemis.f
-  masque_artemis.f
-  radia2.f
-  radia1.f
-  dismoy.f
-  borh.f
-  calcmn.f
-  calcqb.f
-  calcfw.f
-  phbor.f
-  fcte1.f
-  fcte2.f
-  pentco.f
-  cntpre.f
-  solvelambda.f
-  caldir.f
-  calcue.f
-  fwspec.f
-  berkho.f
-  spd.f
-  dirale.f
-  utimp.f
-  calctm.f
-  calres.f
-  entart.f
-  calre2.f
-  corfon.f
-  condih.f
-  spe.f
-  perale.f
-  artemis.f
-  homere_artemis.f
+[special]
+path: <root>|sources|utils|special
+files: plante.f
+  gracestop.f
+  extens.f

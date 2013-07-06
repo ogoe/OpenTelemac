@@ -2,7 +2,7 @@
 path: <root>|sources|utils|partel
 module: partel
 liborder: parallel special bief partel
-version: v6p2
+version: v6p3
 name: PARTEL_PARA
 
 [bief]
@@ -11,8 +11,12 @@ files: bief_def.f
   bief.f
   front2.f
   voisin.f
-  extens.f
   elebd.f
+
+[partel]
+path: <root>|sources|utils|partel
+files: partitioner_para.F
+  partel_para.F
 
 [parallel]
 path: <root>|sources|utils|parallel
@@ -25,12 +29,8 @@ files: declarations_parallel.F
   p_imax_array.F
   p_init.F
 
-[partel]
-path: <root>|sources|utils|partel
-files: partitioner_para.F
-  partel_para.F
-
 [special]
 path: <root>|sources|utils|special
 files: plante.f
   check_allocate.f
+  extens.f
