@@ -182,6 +182,24 @@ def moveFile(fi,po):
          except Exception as e:
             raise Exception([filterMessage({'name':'moveFile::shutil.move','msg':'I could not move your file: '+fi+'\n   ... maybe the detination exists?'},e,True)])
    return
+"""
+"""
+def moveFile2File(fi,fo):
+   if path.exists(fo):
+      try: remove(fo)
+      except:
+         time.sleep(5) # /!\ addition for windows operating system
+         try: remove(fo)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'moveFile2File::remove','msg':'I could not remove your existing file: '+fo},e,True)])
+   if path.exists(fi):
+      try: shutil.move(fi,fo)
+      except:
+         time.sleep(5) # /!\ addition for windows operating system
+         try: shutil.move(fi,fo)
+         except Exception as e:
+            raise Exception([filterMessage({'name':'moveFile2File::shutil.move','msg':'I could not move your file: '+fi+'\n   ... maybe the detination exists?'},e,True)])
+   return
 
 """
    Walk through the directory structure available from the root
