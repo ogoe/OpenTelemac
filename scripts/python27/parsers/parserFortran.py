@@ -141,12 +141,13 @@ var_doublep = re.compile(r'(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+(|\.
 var_integer = re.compile(r'(?P<before>.*?)(?P<number>\b(|[^a-zA-Z(,])(?:(\d+)(\b|[^a-zA-Z,)])))(?P<after>[^\Z]*)\Z') #,re.I)
 f90logic = '(FALSE|TRUE|EQ|NE|GT|LT|GE|LE|OR|AND|XOR)'
 #?var_logical = re.compile(r'.*?(?P<logic>\.\s*?%s\s*?\.).*?'%(f90logic)) #,re.I)
-var_logical = re.compile(r'[^\.](?P<logic>\.\s?%s\s?\.)'%(f90logic)) #,re.I)
+var_logical = re.compile(r'.*?(?P<logic>\.\s?%s\s?\.)'%(f90logic)) #,re.I)
 #?var_pointer = re.compile(r'\s*(?P<before>.*?)(?P<this>%\w+)(?P<after>.*?)\s*\Z') #,re.I)
 var_pointer = re.compile(r'(?P<before>.*?)(?P<this>%\w+)(?P<after>[^\Z]*)\Z') #,re.I)
 #?var_word = re.compile(r'\s*(?P<before>.*?)(?P<word>\b\w+?\b)(?P<after>.*?)\s*\Z') #,re.I)
 var_word = re.compile(r'(?P<before>.*?)(?P<word>\b\w+?\b)(?P<after>[^\Z]*)\Z') #,re.I)
 
+var_only = re.compile(r'\s*ONLY\s*:(?P<after>[^\Z]*)\Z') #,re.I)
 #?var_assocs = re.compile(r'\s*(?P<before>.*?)(?P<name>\s*\b\w+?\b\s*=\s*)(?P<after>.*?)\s*\Z') #,re.I)
 var_assocs = re.compile(r'(?P<before>.*?)(?P<name>\s?\b\w+?\b\s?=\s?)(?P<after>[^\Z]*)\Z') #,re.I)
 #?var_equals = re.compile(r'\s*(?P<before>.*?)(?P<name>\s*\b\w+?\b)(?P<value>\s*=[^,]*)(?P<after>.*?)\s*\Z') #,re.I)
@@ -409,13 +410,19 @@ def parseDeclarations(lines):
    return core,{ 'cmn':listCommon, 'dec':listDeclar, 'itz':listIntrinsic, 'xtn':listExternal, 'als':[] }
 
 def parseUses(lines):
-   listUses = {}; listAlias = {}; core = []; core.extend(lines)
+   listUses = {}; core = []; core.extend(lines)
    for line in lines :
       proc = re.match(use_title,line)
       if proc :
          name = proc.group('name')                                               # You should not find None here
-         args = ''
-         if proc.group('after') != None: args = proc.group('after')              # Do you need to distinguish the ONLYs ?
+         args = []
+         if proc.group('after') != None:                                         # Do you need to distinguish the ONLYs ?
+            pa = proc.group('after')
+            if pa != '':
+               proc = re.match(var_only,pa)
+               if proc :
+                  for a in proc.group('after').split(','):
+                     args.append(a.strip())
          core.pop(0)
          addToList(listUses,name,args)
       else: break
@@ -550,7 +557,7 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
    core,uses = parseUses(core)
    for k in uses.keys():
       whi['uses'].update({k:[]})
-      for v in uses[k]: addToList(whi['uses'],k,v)
+      for v in uses[k][0]: addToList(whi['uses'],k,v)
 
    # ~~ Imposes IMPLICIT NONE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    core,l = parseImplicitNone(core)
@@ -566,6 +573,10 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
          if k in decs['dec']: decs['dec'].remove(k)
    for dec in args:
       if dec in decs['dec']: decs['dec'].remove(dec)
+   for k in uses.keys():
+      for dec in uses[k][0]:
+         for v in decs['dec']:
+            if dec == v: decs['dec'].remove(dec)
    for k in decs.keys():
       whi['vars'][k] = []
       for v in decs[k]: addToList(whi['vars'],k,v)
@@ -586,8 +597,10 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
                found = False
                for cmn in whi['vars']['cmn']:
                   if fct in cmn[1]: found = True
+               for cmn in uses.keys():
+                  if fct in uses[cmn][0]: found = True
                if not found and fct != name: fcts.append(fct)
-   whi['functions'] = fcts # still includes the ones from the USEs (and xtn)
+   whi['functions'] = fcts # still includes xtn
 
    return name,whi,core
 
@@ -744,7 +757,7 @@ def scanSources(cfgdir,cfg,BYPASS):
          SrcF.close()                                           # and deletes the continuation characters
          
          core = flines
-         found = False #ndu
+         found = False
          while core != [] and not found:                             # ignores what might be in the file after the main program
 
             # ~~ Parse Main Structure ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
