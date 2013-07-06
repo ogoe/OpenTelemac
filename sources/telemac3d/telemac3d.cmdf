@@ -34,9 +34,9 @@ files: declarations_parallel.F
 
 [telemac2d]
 path: <root>|sources|telemac2d
-files: interface_telemac2d.f
-  friction_def.f
+files: friction_def.f
   declarations_telemac2d.f
+  interface_telemac2d.f
   read_fic_frliq.f
   q.f
   grad_zconv.f

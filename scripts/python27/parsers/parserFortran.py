@@ -415,14 +415,15 @@ def parseUses(lines):
       proc = re.match(use_title,line)
       if proc :
          name = proc.group('name')                                               # You should not find None here
-         args = []
+         args = ''
          if proc.group('after') != None:                                         # Do you need to distinguish the ONLYs ?
             pa = proc.group('after')
             if pa != '':
                proc = re.match(var_only,pa)
                if proc :
-                  for a in proc.group('after').split(','):
-                     args.append(a.strip())
+                  args = proc.group('after').strip()
+               else:
+                  args = pa.strip()
          core.pop(0)
          addToList(listUses,name,args)
       else: break
@@ -557,7 +558,7 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
    core,uses = parseUses(core)
    for k in uses.keys():
       whi['uses'].update({k:[]})
-      for v in uses[k][0]: addToList(whi['uses'],k,v)
+      for v in uses[k]: addToList(whi['uses'],k,v)
 
    # ~~ Imposes IMPLICIT NONE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    core,l = parseImplicitNone(core)
@@ -573,10 +574,9 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
          if k in decs['dec']: decs['dec'].remove(k)
    for dec in args:
       if dec in decs['dec']: decs['dec'].remove(dec)
-   for k in uses.keys():
-      for dec in uses[k][0]:
-         for v in decs['dec']:
-            if dec == v: decs['dec'].remove(dec)
+   #for k in uses.keys():
+   #   for v in decs['dec']:
+   #      if v in uses[k][0]: decs['dec'].remove(dec)
    for k in decs.keys():
       whi['vars'][k] = []
       for v in decs[k]: addToList(whi['vars'],k,v)
@@ -597,8 +597,8 @@ def parsePrincipalMain(lines,who,type,name,args,resu):
                found = False
                for cmn in whi['vars']['cmn']:
                   if fct in cmn[1]: found = True
-               for cmn in uses.keys():
-                  if fct in uses[cmn][0]: found = True
+               #for cmn in uses.keys():
+               #   if fct in uses[cmn][0]: found = True
                if not found and fct != name: fcts.append(fct)
    whi['functions'] = fcts # still includes xtn
 

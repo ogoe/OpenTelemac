@@ -84,22 +84,24 @@
 # ~~> dependencies towards standard python
 import sys
 import time
-from datetime import date
 from os import path,walk,environ
-from numpy import dtype, loadtxt
+from numpy import dtype,loadtxt
 # ~~> dependencies towards the root of pytel
 from config import OptionParser,parseConfigFile, parseConfig_ValidateTELEMAC
 # ~~> dependencies towards other pytel/modules
 from parsers.parserXML import runXML
 from utils.messages import MESSAGES,filterMessage
+from utils.files import moveFile2File,putFileContent
 
 # _____                         ____________________________________
 # ____/ Primary Class: REPORTs /___________________________________/
 #
 class REPORT:
 
-   # Name of the report: [ root, date/version, '_ValidationSummary_', action/reportName, .csv ]
-   fileFields = [ '', date.today().isoformat(), '_ValidationSummary_', None ,'.csv' ]
+   # Version number
+   version = ''
+   # Name of the report: [ root, version, '_ValidationSummary_', action/reportName, date, .csv ]
+   fileFields = [ '[version]', 'ValidationSummary', '[name]' , '[date]' ]
    # Collumns of the report
    dtReport = dtype([('Case','S30'),('Module','S15'),('Status','S30'),('Duration','S30')])
    # Constant definition
@@ -109,18 +111,27 @@ class REPORT:
    headers = []
    columns = []
    
-   def __init__(self, root, reportName, r=None, d=None):
-      # r: Jenkins' version number if present
-      self.fileFields[0] = root + path.sep
-      if r != None: self.fileFields[1] = r
-      self.fileFields[3] = reportName
-      self.fileName = ''.join(self.fileFields)
+   def __init__(self, root, version, reportName ):
+      # ~~> Current file name
+      self.fileFields[0] = version
+      self.fileFields[2] = reportName
+      self.fileFields[3] = time.strftime("%Y-%m-%d-%Hh%Mmin%Ss", time.localtime(time.time()))
+      self.fileName = path.join( root, '_'.join(self.fileFields)+'.csv' )
+      # ~~> Possible existing file name
+      for dirpath,dirnames,filenames in walk(root) : break
+      for filename in filenames:
+         n,e = path.splitext(filename)
+         if e =='.csv' and n.split('_')[0] == version and n.split('_')[2] == reportName:
+            print '      +> Moving existing: ' + n.split('_')[3] + ' to ' + self.fileName
+            moveFile2File(filename,self.fileName)
+      # ~~> Possible existing file name
       if path.exists(self.fileName):
-         self.headers = getHeaders(self.fileName)
-         self.columns = loadtxt(self.fileName, dtype=self.dtReport, comments=self.comment, skiprows=len(self.headers), delimiter=self.delimiter)
+         print ' loading '
+         #self.headers = getHeaders(self.fileName)
+         #self.columns = loadtxt(self.fileName, dtype=self.dtReport, comments=self.comment, skiprows=len(self.headers), delimiter=self.delimiter)
       else:
-         print 'Not able to find your REPORT file: ' + self.fileName
-         print ' ... I will therefore create a new one\n'
+         print '      +> Creating: ' + path.basename(self.fileName)
+         self.putContent(['try'])
 
    # Headers are the first few lines (if any) that start with '#'
    def getHeaders(self,fileName):
@@ -131,34 +142,37 @@ class REPORT:
          else: break
       file.close()
       return head
-   
-   def putContent(self):
-      return
+
+   def putHeaders(self):
+      putFileContent(self.fileName,dtReport)
+
+   def putContent(self,content):
+      putFileContent(self.fileName,content)
 
 class actionREPORT(REPORT):
-   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Action',r,d)
+   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Action')
    
 class extractREPORT(REPORT):
-   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Extract',r,d)
+   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Extract')
 
 class drawREPORT(REPORT):
-   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Plot',r,d)
+   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Plot')
 
 class checkREPORT(REPORT):
-   def __init__(self, root, r=None, d=None): REPORT.__init__(self, root, 'Check',r,d)
+   def __init__(self, root, version): REPORT.__init__(self, root,version, 'Check')
 
 
 class REPORTS:
    
-   def __init__(self): self.reports = {}
-   
-   def addReport(self, root, r=None, d=None):
-      if not self.reports.has_key(root):
-         self.reports.update({root:{}})
-         self.reports[root].update({'act':actionREPORT(root,r,d)})
-         self.reports[root].update({'get':extractREPORT(root,r,d)})
-         self.reports[root].update({'draw':drawREPORT(root,r,d)})
-         self.reports[root].update({'test':checkREPORT(root,r,d)})
+   def __init__(self):
+      self.reports = {}
+
+   def add(self,root,version):
+      if not self.reports.has_key(root): self.reports.update({root:{}})
+      self.reports[root].update({'act':actionREPORT(root,version)})
+      self.reports[root].update({'get':extractREPORT(root,version)})
+      self.reports[root].update({'draw':drawREPORT(root,version)})
+      self.reports[root].update({'test':checkREPORT(root,version)})
    
    def filterRanks(self):
       return
@@ -241,7 +255,7 @@ if __name__ == "__main__":
 # ~~~~ Works for all configurations unless specified ~~~~~~~~~~~~~~~
    cfgs = parseConfigFile(options.configFile,options.configName)
 
- 
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~ Manage options to run only ranked actions ~~~~~~~~~~~~~~~~~~~~
    # if no option are set, then all will be available
@@ -284,7 +298,7 @@ if __name__ == "__main__":
 # ~~~~ Reporting errors ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xcpts = MESSAGES()
 # ~~~~ Reporting summary ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   if options.report: report = REPORTS(options.version)
+   if options.report: report = REPORTS()
 
    if args != []:
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -326,7 +340,6 @@ if __name__ == "__main__":
       print '\n\nScanning XML files and configurations\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
       xmls = {}; nxmls = 0
-      if options.report: report = REPORTS()
       for cfgname in cfgs.keys():
          # still in lower case
          if options.rootDir != '': 
@@ -340,7 +353,10 @@ if __name__ == "__main__":
          cfg = parseConfig_ValidateTELEMAC(cfgs[cfgname])
          cfg.update({ 'PWD':PWD })
          # Reporting per configuration (/root)
-         if options.report: report.addReport(root,r=options.version)
+         if options.report:
+            report.add(root,cfgs[cfgname]['version'])
+            print report.reports
+         sys.exit()
          # gathering XMLs
          for codeName in cfg['VALIDATION'].keys():
             xmlKeys = cfg['VALIDATION'][codeName]
@@ -415,7 +431,7 @@ if __name__ == "__main__":
       print '\n\nHummm ... I could not complete my work.\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n' \
       + xcpts.exceptMessages()
-    
+
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # ~~~~ Jenkins' success message ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

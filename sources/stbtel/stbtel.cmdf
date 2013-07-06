@@ -12,9 +12,10 @@ files: declarations_stbtel.F
   iniadc.f
   conv_unv.f
   conv_cgns.F
-  conv_serafin.f
   conv_lim.f
+  conv_serafin.f
   conv_med.F
+  lib_vtk_io.F
   conv_vtk.F
   converter.f
   inisel.f
@@ -80,12 +81,12 @@ files: longlu.f
 
 [bief]
 path: <root>|sources|utils|bief
-files: declarations_telemac.f
+files: bief_def.f
+  bief.f
+  declarations_telemac.f
   m_med.F
   lit.f
   ecri2.f
-  bief_def.f
-  bief.f
   readgeo1.f
   corrxy.f
   readgeo3.f

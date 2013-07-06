@@ -1,15 +1,15 @@
 [general]
 path: <root>|sources|sisyphe
 module: sisyphe
-liborder: special telemac2d parallel mumps damocles bief sisyphe
+liborder: special parallel telemac2d mumps damocles bief sisyphe
 version: v6p3
 name: HOMERE_SISYPHE
 
 [telemac2d]
 path: <root>|sources|telemac2d
-files: interface_telemac2d.f
-  friction_def.f
+files: friction_def.f
   declarations_telemac2d.f
+  interface_telemac2d.f
   read_fic_frliq.f
   q.f
 
