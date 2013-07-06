@@ -82,7 +82,7 @@ import sys
 from os import path, sep, walk, chdir, remove, environ
 import ConfigParser
 # ~~> dependencies towards the root of pytel
-from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC,cleanConfig,getFolders_ModulesTELEMAC
+from config import OptionParser,parseConfigFile, parseConfig_CompileTELEMAC,cleanConfig
 from parsers.parserFortran import scanSources
 # ~~> dependencies towards other pytel/modules
 from utils.files import createDirectories,putFileContent,isNewer
@@ -508,8 +508,9 @@ if __name__ == "__main__":
          print '\nUpdating your cmdf file for compilation without scan\n\
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n'
          for item in prg.keys() :
-            print '      +> '+item
+
             if prg[item][0] in cfg['COMPILER']['MODULES']:
+               print '      +> '+item
                   
 # ~~ Builds the Call Tree for each main program ~~~~~~~~~~~~~~~~~~~~
                debug = False; rebuild = cfg['COMPILER']['REBUILD']
@@ -550,8 +551,7 @@ if __name__ == "__main__":
                   putScanContent(ForCmd,cfg['root'],FixeList)
 
          options.rescan = False
-#  This generates an error if you do the compilation afterwords
-#         cfg['MODULES'] = getFolders_ModulesTELEMAC(cfg['root'])
+         cfg = parseConfig_CompileTELEMAC(cfgs[cfgname])
 
       #Liborder in the cmdf file is incorrect using fixed order instead
       #TODO: Solve order error for example jultim and gregtim
