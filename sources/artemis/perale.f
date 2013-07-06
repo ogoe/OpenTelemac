@@ -47,7 +47,7 @@
 !| TRA01          |<->| WORK STRUCTURE
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!      USE INTERFACE_ARTEMIS, ONLY: SPE
+      USE INTERFACE_ARTEMIS, ONLY: SPE
       USE BIEF
 !
       IMPLICIT NONE
@@ -67,8 +67,6 @@
       COMMON /COEFHE/ FP,GAM,DELTA
 !
       INTRINSIC LOG,FLOAT
-      DOUBLE PRECISION SPE
-      EXTERNAL SPE
 !
 !-----------------------------------------------------------------------
 !

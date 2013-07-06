@@ -53,7 +53,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
       USE BIEF
-!      USE INTERFACE_ARTEMIS, ONLY: SPD
+      USE INTERFACE_ARTEMIS, ONLY: SPD
 !
       IMPLICIT NONE
       INTEGER LNG,LU
@@ -68,9 +68,6 @@
 !
       DOUBLE PRECISION EXPO
       COMMON /COEFHD/ EXPO
-!
-      DOUBLE PRECISION SPD
-      EXTERNAL SPD
 !
 !-----------------------------------------------------------------------
 !
