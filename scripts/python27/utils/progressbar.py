@@ -135,7 +135,7 @@ class ETA(ProgressBarWidget):
 
    def format_time(self, seconds):
       return str(int(seconds+1))+'s'
-      #return time.strftime('%H:%M:%S', time.gmtime(seconds))
+      #return time.strftime('%H:%M:%S', time.localtime(seconds))
 
    # ~~> Updates the widget to show the ETA or total time when finished.
    def update(self, pbar):
