@@ -433,10 +433,11 @@ class subSELAFIN(SELAFIN): # TODO with 3D
       for iplan in range(self.NPLAN):
          self.IPOB3[0+iplan*self.NPOIN2:self.NPOIN2+iplan*self.NPOIN2] = self.IPOB2[0:self.NPOIN2]+iplan*self.NPOIN2
       if self.NPLAN > 1:
-         self.IKLE3 = np.zeros(self.NELEM3*self.NDP3,dtype=np.int)
-         self.IKLE3[0+self.NELEM2:self.NELEM2] = self.IKLE2[0:self.NELEM2]
-         for iplan in range(self.NPLAN-1):
-            self.IKLE3[(iplan+1)*self.NELEM2:(iplan+2)*self.NELEM2] = self.IKLE2[iplan*self.NELEM2:(iplan+1)*self.NELEM2]
+         self.IKLE3 = np.zeros(self.NELEM3*self.NDP3,dtype=np.int).reshape((self.NELEM3,self.NDP3))
+         for ielem in range(self.NELEM2):  # TODO:(JPC), convert to numpy calculations
+            for inode in range(self.NDP2): self.IKLE3[ielem][inode] = self.IKLE2[ielem][inode]
+            for inode in range(self.NDP2): self.IKLE3[ielem][inode+self.NDP2] = self.IKLE2[ielem][inode]+self.NPOIN2
+            for iplan in range(self.NPLAN-2): self.IKLE3[ielem+(iplan+1)*self.NELEM2] = self.IKLE3[ielem+iplan*self.NELEM2]+self.NPOIN2
       else:
          self.IKLE3 = self.IKLE2
       # ~~> Filing
@@ -450,11 +451,12 @@ class subSELAFIN(SELAFIN): # TODO with 3D
          self.NPOIN3 = np3o           #\
          vars = self.getVALUES(t)     #|+ game of shadows
          self.NPOIN3 = np3n           #/
-         for iv in range(self.NVAR):
+         for iv in range(self.NVAR):  # TODO:(JPC), convert to numpy calculations
             for iplan in range(nplo):
-               varx[iv][0+2*iplan*np2o:np2o+2*iplan*np2o] = vars[iv][0+iplan*np2o:np2o+iplan*np2o]
-               varx[iv][np2o+2*iplan*np2o:] = np.sum(vars[iv][self.INTERP+iplan*np2o],axis=1)/2.
-               if iplan > 1: varx[iv][np2n+2*iplan*np2n:2*np2n+2*iplan*np2o] = ( varx[iv][0+2*iplan*np2n:np2n+2*iplan*np2o] + varx[iv][2*np2n+2*iplan*np2n:3*np2n+2*iplan*np2o] )/2.
+               varx[iv][0+2*iplan*np2n:np2o+2*iplan*np2n] = vars[iv][0+iplan*np2o:np2o+iplan*np2o]
+               varx[iv][np2o+2*iplan*np2n:np2o+2*iplan*np2n+np2n-np2o] = np.sum(vars[iv][self.INTERP+iplan*np2o],axis=1)/2.
+            for iplan in range(nplo-1):
+               varx[iv][(2*iplan+1)*np2n:(2*iplan+2)*np2n] = ( varx[iv][2*iplan*np2n:(2*iplan+1)*np2n]+varx[iv][(2*iplan+2)*np2n:(2*iplan+3)*np2n] )/2.
          self.appendCoreVarsSLF(varx)
          pbar.update(t)
       pbar.finish()
